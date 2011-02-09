@@ -2,9 +2,9 @@
 * Copyright (C) 2007-2011 German Aerospace Center (DLR/SC)
 *
 * Created: 2010-08-13 Markus Litz <Markus.Litz@dlr.de>
-* Changed: $Id: tigl_fortran.h 4416 2011-02-08 21:03:40Z litz_ma $ 
+* Changed: $Id$ 
 *
-* Version: $Revision: 4416 $
+* Version: $Revision$
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@
 */
 /**
 * @file
-* @date   $Date: 2011-02-08 22:03:40 +0100 (Di, 08 Feb 2011) $
+* @date   $Date$
 * @brief  Declaration of the TIGL Fortran wrapper interface.
 */
 
