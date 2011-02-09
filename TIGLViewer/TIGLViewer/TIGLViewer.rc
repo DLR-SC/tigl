@@ -1,0 +1,621 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// Deutsch (Deutschland) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_DEU)
+#ifdef _WIN32
+LANGUAGE LANG_GERMAN, SUBLANG_GERMAN
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
+    "#define _AFX_NO_OLE_RESOURCES\r\n"
+    "#define _AFX_NO_TRACKER_RESOURCES\r\n"
+    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
+    "\r\n"
+    "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_DEU)\r\n"
+    "LANGUAGE 7, 1\r\n"
+    "#pragma code_page(1252)\r\n"
+    "#include ""res\\TIGLViewer.rc2""  // Nicht mit Microsoft Visual C++ bearbeitete Ressourcen\r\n"
+    "#include ""afxres.rc""         // Standardkomponenten\r\n"
+    "#include ""afxprint.rc""       // Ressourcen für Drucken/Seitenansicht\r\n"
+    "#endif\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDR_MAINFRAME           ICON                    "res\\TIGLViewer.ico"
+IDR_TIGLCHILDFRAME      ICON                    "res\\cpacs.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDR_MAINFRAME           BITMAP                  "res\\Toolbar.bmp"
+IDR_TIGLCHILDFRAME      BITMAP                  "res\\toolbar_tigl_childframe.bmp"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Toolbar
+//
+
+IDR_MAINFRAME TOOLBAR  16, 15
+BEGIN
+    BUTTON      ID_FILE_OPEN
+    SEPARATOR
+    BUTTON      ID_APP_ABOUT
+END
+
+IDR_TIGLCHILDFRAME TOOLBAR  16, 15
+BEGIN
+    BUTTON      ID_SHOW_WING_PROFILES
+    BUTTON      ID_SHOW_WINGS
+    BUTTON      ID_SHOW_WING_TRIANGULATION
+    BUTTON      ID_SHOW_WING_POINTS
+    SEPARATOR
+    BUTTON      ID_SHOW_FUSELAGE_PROFILES
+    BUTTON      ID_SHOW_FUSELAGES
+    BUTTON      ID_SHOW_FUSELAGE_TRIANGULATION
+    BUTTON      ID_SHOW_FUSELAGE_POINTS
+    SEPARATOR
+    BUTTON      ID_SHOW_ALL_POINTS
+    BUTTON      ID_SHOW_ALL
+    SEPARATOR
+    BUTTON      ID_EXPORT_AS_IGES
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_MAINFRAME MENU 
+BEGIN
+    POPUP "&Datei"
+    BEGIN
+        MENUITEM "Ö&ffnen...\tStrg+O",          ID_FILE_OPEN
+        MENUITEM SEPARATOR
+        MENUITEM "&Beenden",                    ID_APP_EXIT
+    END
+    POPUP "&Ansicht"
+    BEGIN
+        MENUITEM "&Symbolleiste",               ID_VIEW_TOOLBAR
+        MENUITEM "Status&leiste",               ID_VIEW_STATUS_BAR
+    END
+    POPUP "&Hilfe"
+    BEGIN
+        MENUITEM "&Info über TIGLViewer...",    ID_APP_ABOUT
+    END
+END
+
+IDR_TIGLCHILDFRAME MENU 
+BEGIN
+    POPUP "&Datei"
+    BEGIN
+        MENUITEM "Ö&ffnen...\tStrg+O",          ID_FILE_OPEN
+        MENUITEM SEPARATOR
+        MENUITEM "Export fused parts as IGES",  ID_EXPORT_FUSED_IGES
+        MENUITEM "Export as IGES...",           ID_EXPORT_AS_IGES
+        POPUP "Export as STL"
+        BEGIN
+            MENUITEM "Wing by Index...",            ID_EXPORTASSTL_WINGBYINDEX
+
+            MENUITEM "Wing by uID...",              ID_EXPORTASSTL_WINGBYUID
+            MENUITEM "Fuselage by Index...",        ID_EXPORTASSTL_FUSELAGEBYINDEX
+
+            MENUITEM "Fuselage by uID...",          ID_EXPORTASSTL_FUSELAGEBYUID
+
+            MENUITEM "Complete Geometry...",        ID_EXPORTASSTL_COMPLETEGEOMETRY
+
+        END
+        POPUP "Export as VTK"
+        BEGIN
+            MENUITEM "Wing with CPACS information", ID_EXPORTASVTK_WINGBYINDEX
+
+            MENUITEM "Wing simple",                 ID_EXPORTASVTK_WINGBYUID
+            MENUITEM "Fuselage with CPACS information", 
+                                                    ID_EXPORTASVTK_FUSELAGEBYINDEX
+
+            MENUITEM "Fuselage simple",             ID_EXPORTASVTK_FUSELAGEBYUID
+
+            MENUITEM "Complete Geometry...",        ID_EXPORTASVTK_COMPLETEGEOMETRY
+
+        END
+        MENUITEM SEPARATOR
+        MENUITEM "&Beenden",                    ID_APP_EXIT
+    END
+    POPUP "&Ansicht"
+    BEGIN
+        MENUITEM "&Symbolleiste",               ID_VIEW_TOOLBAR
+        MENUITEM "Status&leiste",               ID_VIEW_STATUS_BAR
+    END
+    POPUP "&CPACS"
+    BEGIN
+        MENUITEM "Draw wing profiles",          ID_SHOW_WING_PROFILES
+        MENUITEM "Draw wings",                  ID_SHOW_WINGS
+        MENUITEM "Draw wing triangulation",     ID_SHOW_WING_TRIANGULATION
+        MENUITEM "Draw wing surface points",    ID_SHOW_WING_POINTS
+        MENUITEM "Draw overlay CPACS profile points", 
+                                                ID_CPACS_DRAWOVERLAYCPACSPROFILEPOINTS
+
+        MENUITEM SEPARATOR
+        MENUITEM "Draw fuselage profiles",      ID_SHOW_FUSELAGE_PROFILES
+        MENUITEM "Draw fuselages",              ID_SHOW_FUSELAGES
+        MENUITEM "Draw fuselage triangulation", ID_SHOW_FUSELAGE_TRIANGULATION
+
+        MENUITEM "Draw fuselage surface points", ID_SHOW_FUSELAGE_POINTS
+        MENUITEM "Draw fuselage surface point at 45°", 
+                                                ID_SHOW_FUSELAGE_POINTS_ANGLE
+
+        MENUITEM SEPARATOR
+        MENUITEM "Draw all",                    ID_SHOW_ALL
+        MENUITEM "Draw all surface points",     ID_SHOW_ALL_POINTS
+        MENUITEM SEPARATOR
+        MENUITEM "Draw fused fuselages",        ID_CPACS_DRAWFUSEDFUSELAGES
+        MENUITEM "Draw fused wings",            ID_CPACS_DRAWFUSEDWINGS
+        MENUITEM "Draw all parts fused ",       ID_CPACS_DRAWFUSEDALL
+        MENUITEM SEPARATOR
+        MENUITEM "Show intersection line",      ID_CPACS_SHOWINTERSECTIONLINE
+
+    END
+    POPUP "A&lgorithm"
+    BEGIN
+        MENUITEM "Wire bspline interpolation",  ID_INTERPOLATE_BSPLINE_WIRE
+        MENUITEM "Wire linear interpolation",   ID_INTERPOLATE_LINEAR_WIRE
+        MENUITEM "Wire bspline approximation",  ID_APPROXIMATE_BSPLINE_WIRE
+    END
+    POPUP "&Fenster"
+    BEGIN
+        MENUITEM "&Neues Fenster",              ID_WINDOW_NEW
+        MENUITEM "Ü&berlappend",                ID_WINDOW_CASCADE
+        MENUITEM "&Nebeneinander",              ID_WINDOW_TILE_HORZ
+        MENUITEM "&Symbole anordnen",           ID_WINDOW_ARRANGE
+    END
+    POPUP "&Hilfe"
+    BEGIN
+        MENUITEM "&Info über TIGLViewer...",    ID_APP_ABOUT
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Accelerator
+//
+
+IDR_MAINFRAME ACCELERATORS 
+BEGIN
+    "N",            ID_FILE_NEW,            VIRTKEY, CONTROL
+    "O",            ID_FILE_OPEN,           VIRTKEY, CONTROL
+    "S",            ID_FILE_SAVE,           VIRTKEY, CONTROL
+    "P",            ID_FILE_PRINT,          VIRTKEY, CONTROL
+    "Z",            ID_EDIT_UNDO,           VIRTKEY, CONTROL
+    "X",            ID_EDIT_CUT,            VIRTKEY, CONTROL
+    "C",            ID_EDIT_COPY,           VIRTKEY, CONTROL
+    "V",            ID_EDIT_PASTE,          VIRTKEY, CONTROL
+    VK_BACK,        ID_EDIT_UNDO,           VIRTKEY, ALT
+    VK_DELETE,      ID_EDIT_CUT,            VIRTKEY, SHIFT
+    VK_INSERT,      ID_EDIT_COPY,           VIRTKEY, CONTROL
+    VK_INSERT,      ID_EDIT_PASTE,          VIRTKEY, SHIFT
+    VK_F6,          ID_NEXT_PANE,           VIRTKEY 
+    VK_F6,          ID_PREV_PANE,           VIRTKEY, SHIFT
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_ABOUTBOX DIALOGEX 0, 0, 235, 81
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | 
+    WS_SYSMENU
+CAPTION "Info über TIGLViewer"
+FONT 8, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    LTEXT           "TIGLViewer Version 0.9",IDC_STATIC,21,13,119,8,
+                    SS_NOPREFIX
+    LTEXT           "Copyright (c) 2006-2011",IDC_STATIC,21,45,119,8
+    DEFPUSHBUTTON   "OK",IDOK,178,58,50,16,WS_GROUP
+    LTEXT           "Simulation- and Softwaretecnology (SC)",IDC_STATIC,21,
+                    25,177,8
+    LTEXT           "German Aerospace Center (DLR)",IDC_STATIC,21,35,186,8
+END
+
+IDD_WING_PROFILE_DIALOG DIALOGEX 0, 0, 259, 165
+STYLE DS_SETFONT | DS_MODALFRAME | DS_3DLOOK | DS_FIXEDSYS | WS_POPUP | 
+    WS_CAPTION | WS_SYSMENU
+CAPTION "Select wing profile"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LISTBOX         IDC_WING_PROFILE_LIST,15,18,228,110,LBS_SORT | 
+                    LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP,
+                    WS_EX_STATICEDGE
+    DEFPUSHBUTTON   "OK",IDOK,65,143,50,14
+    GROUPBOX        "Available wing profiles",IDC_WING_GROUP_TEXT,7,7,244,
+                    128
+    PUSHBUTTON      "Abbruch",IDCANCEL,143,143,50,14
+END
+
+IDD_WING_DIALOG DIALOGEX 0, 0, 259, 165
+STYLE DS_SETFONT | DS_MODALFRAME | DS_3DLOOK | DS_FIXEDSYS | WS_POPUP | 
+    WS_CAPTION | WS_SYSMENU
+CAPTION "Select Wing"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LISTBOX         IDC_WING_LIST,15,18,228,110,LBS_SORT | 
+                    LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP,
+                    WS_EX_STATICEDGE
+    DEFPUSHBUTTON   "OK",IDOK,69,144,50,14
+    GROUPBOX        "Available wings",IDC_STATIC,7,7,244,128
+    PUSHBUTTON      "Abbruch",IDCANCEL,141,144,50,14
+END
+
+IDD_FUSELAGE_PROFILE_DIALOG DIALOGEX 0, 0, 259, 165
+STYLE DS_SETFONT | DS_MODALFRAME | DS_3DLOOK | DS_FIXEDSYS | WS_POPUP | 
+    WS_CAPTION | WS_SYSMENU
+CAPTION "Select fuselage profile"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LISTBOX         IDC_FUSELAGE_PROFILE_LIST,15,18,228,110,LBS_SORT | 
+                    LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP,
+                    WS_EX_STATICEDGE
+    DEFPUSHBUTTON   "OK",IDOK,65,143,50,14
+    GROUPBOX        "Available fuselage profiles",IDC_FUSELAGE_GROUP_TEXT,7,
+                    7,244,128
+    PUSHBUTTON      "Abbruch",IDCANCEL,143,143,50,14
+END
+
+IDD_FUSELAGE_DIALOG DIALOGEX 0, 0, 259, 165
+STYLE DS_SETFONT | DS_MODALFRAME | DS_3DLOOK | DS_FIXEDSYS | WS_POPUP | 
+    WS_CAPTION | WS_SYSMENU
+CAPTION "Select Fuselage"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LISTBOX         IDC_FUSELAGE_LIST,15,18,228,110,LBS_SORT | 
+                    LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP,
+                    WS_EX_STATICEDGE
+    DEFPUSHBUTTON   "OK",IDOK,69,144,50,14
+    GROUPBOX        "Available fuselages",IDC_STATIC,7,7,244,128
+    PUSHBUTTON      "Abbruch",IDCANCEL,141,144,50,14
+END
+
+IDD_CONFIGURATION_DIALOG DIALOGEX 0, 0, 259, 165
+STYLE DS_SETFONT | DS_MODALFRAME | DS_3DLOOK | DS_FIXEDSYS | WS_POPUP | 
+    WS_CAPTION | WS_SYSMENU
+CAPTION "Select CPACS Configuration"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LISTBOX         IDC_CONFIGURATION_LIST,15,18,228,110,LBS_SORT | 
+                    LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP,
+                    WS_EX_STATICEDGE
+    DEFPUSHBUTTON   "OK",IDOK,69,144,50,14
+    GROUPBOX        "Available Configurations",IDC_STATIC,7,7,244,128
+    PUSHBUTTON      "Abbruch",IDCANCEL,141,144,50,14
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,7,0,0
+ PRODUCTVERSION 1,7,0,0
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040704e4"
+        BEGIN
+            VALUE "CompanyName", "Simulation- and Softwaretecnology (SC), German Aerospace Center (DLR)"
+            VALUE "Copyright (C) 2005", "(c) Deutsches Zentrum für Luft- und Raumfahrt e.V. (DLR). Alle Rechte vorbehalten."
+            VALUE "FileDescription", "Viewer Application for the TIVA Geometry Library (TIGL)"
+            VALUE "FileVersion", "0.9.0"
+            VALUE "InternalName", "TIGLViewer.exe"
+            VALUE "OriginalFilename", "TIGLViewer.exe"
+            VALUE "ProductName", "TIGLViewer"
+            VALUE "ProductVersion", "0.9.0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x407, 1252
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO 
+BEGIN
+    IDD_ABOUTBOX, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 228
+        TOPMARGIN, 6
+        BOTTOMMARGIN, 74
+    END
+
+    IDD_WING_PROFILE_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 251
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 158
+    END
+
+    IDD_WING_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 251
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 158
+    END
+
+    IDD_FUSELAGE_PROFILE_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 251
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 158
+    END
+
+    IDD_FUSELAGE_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 251
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 158
+    END
+
+    IDD_CONFIGURATION_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 251
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 158
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE 
+BEGIN
+    IDR_MAINFRAME           "TIGLViewer\n\nTIGLViewer\n\n\nTIGLViewer.Document\nTIGLViewer.Document"
+END
+
+STRINGTABLE 
+BEGIN
+    AFX_IDS_APP_TITLE       "TIGLViewer"
+    AFX_IDS_IDLEMESSAGE     "Bereit"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_INDICATOR_EXT        "ER"
+    ID_INDICATOR_CAPS       "UF"
+    ID_INDICATOR_NUM        "NUM"
+    ID_INDICATOR_SCRL       "RF"
+    ID_INDICATOR_OVR        "ÜB"
+    ID_INDICATOR_REC        "MA"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_FILE_NEW             "Erstellt ein neues Dokument.\nNeu"
+    ID_FILE_OPEN            "Öffnet ein vorhandenes Dokument.\nÖffnen"
+    ID_FILE_CLOSE           "Schließt das aktive Dokument.\nSchließen"
+    ID_FILE_SAVE            "Speichert das aktive Dokument.\nSpeichern"
+    ID_FILE_SAVE_AS         "Speichert das aktive Dokument unter einem neuem Namen.\nSpeichern unter"
+    ID_FILE_PAGE_SETUP      "Ändert die Druckoptionen.\nSeite einrichten"
+    ID_FILE_PRINT_SETUP     "Ändert den Drucker und die Druckoptionen.\nDruckereinrichtung"
+    ID_FILE_PRINT           "Druckt das aktive Dokument.\nDrucken"
+    ID_FILE_PRINT_PREVIEW   "Zeigt ganze Seiten an.\nSeitenansicht"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_APP_ABOUT            "Zeigt Programm-, Versions- und Copyrightinformationen an.\nInfo"
+    ID_APP_EXIT             "Beendet die Anwendung und fordert zum Speichern der Dokumente auf.\nBeenden"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_FILE_MRU_FILE1       "Öffnet das Dokument."
+    ID_FILE_MRU_FILE2       "Öffnet das Dokument."
+    ID_FILE_MRU_FILE3       "Öffnet das Dokument."
+    ID_FILE_MRU_FILE4       "Öffnet das Dokument."
+    ID_FILE_MRU_FILE5       "Öffnet das Dokument."
+    ID_FILE_MRU_FILE6       "Öffnet das Dokument."
+    ID_FILE_MRU_FILE7       "Öffnet das Dokument."
+    ID_FILE_MRU_FILE8       "Öffnet das Dokument."
+    ID_FILE_MRU_FILE9       "Öffnet das Dokument."
+    ID_FILE_MRU_FILE10      "Öffnet das Dokument."
+    ID_FILE_MRU_FILE11      "Öffnet das Dokument."
+    ID_FILE_MRU_FILE12      "Öffnet das Dokument."
+    ID_FILE_MRU_FILE13      "Öffnet das Dokument."
+    ID_FILE_MRU_FILE14      "Öffnet das Dokument."
+    ID_FILE_MRU_FILE15      "Öffnet das Dokument."
+    ID_FILE_MRU_FILE16      "Öffnet das Dokument."
+END
+
+STRINGTABLE 
+BEGIN
+    ID_NEXT_PANE            "Wechselt zum nächsten Fensterbereich.\nNächster Bereich"
+    ID_PREV_PANE            "Wechselt zum vorherigen Fensterbereich.\nVorheriger Bereich"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_WINDOW_NEW           "Öffnet ein weiteres Fenster für das aktive Dokument.\nNeues Fenster"
+    ID_WINDOW_ARRANGE       "Ordnet die Symbole im unteren Fensterrand an.\nSymbole anordnen"
+    ID_WINDOW_CASCADE       "Ordnet die Fenster überlappend an.\nÜberlappende Fenster"
+    ID_WINDOW_TILE_HORZ     "Ordnet die Fenster nebeneinander an.\nFenster nebeneinander"
+    ID_WINDOW_TILE_VERT     "Ordnet die Fenster nebeneinander an.\nFenster nebeneinander"
+    ID_WINDOW_SPLIT         "Teilt das aktive Fenster in Bereiche.\nTeilen"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_EDIT_CLEAR           "Löscht die Auswahl.\nLöschen"
+    ID_EDIT_CLEAR_ALL       "Löscht alles.\nAlles löschen"
+    ID_EDIT_COPY            "Kopiert die Auswahl in die Zwischenablage.\nKopieren"
+    ID_EDIT_CUT             "Überträgt die Auswahl in die Zwischenablage.\nAusschneiden"
+    ID_EDIT_FIND            "Sucht den angegebenen Text.\nSuchen"
+    ID_EDIT_PASTE           "Fügt den Inhalt der Zwischenablage ein.\nEinfügen"
+    ID_EDIT_REPEAT          "Wiederholt den letzten Vorgang.\nWiederholen"
+    ID_EDIT_REPLACE         "Ersetzt den angegebenen Text.\nErsetzen"
+    ID_EDIT_SELECT_ALL      "Markiert das gesamte Dokument.\nAlles auswählen"
+    ID_EDIT_UNDO            "Macht den letzten Vorgang rückgängig.\nRückgängig"
+    ID_EDIT_REDO            "Wiederholt den zuletzt rückgängig gemachten Vorgang.\nWiederherstellen"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_VIEW_TOOLBAR         "Blendet die Symbolleiste ein oder aus.\nSymbolleiste"
+    ID_VIEW_STATUS_BAR      "Blendet die Statusleiste ein oder aus.\nStatusleiste"
+END
+
+STRINGTABLE 
+BEGIN
+    AFX_IDS_SCSIZE          "Ändert die Fenstergröße."
+    AFX_IDS_SCMOVE          "Ändert die Position des Fensters."
+    AFX_IDS_SCMINIMIZE      "Minimiert das Fenster."
+    AFX_IDS_SCMAXIMIZE      "Maximiert das Fenster."
+    AFX_IDS_SCNEXTWINDOW    "Wechselt zum nächsten Dokumentfenster."
+    AFX_IDS_SCPREVWINDOW    "Wechselt zum vorherigen Dokumentfenster."
+    AFX_IDS_SCCLOSE         "Schließt das aktive Fenster und fordert zum Speichern des Dokuments auf."
+END
+
+STRINGTABLE 
+BEGIN
+    AFX_IDS_SCRESTORE       "Stellt die ursprüngliche Fenstergröße wieder her."
+    AFX_IDS_SCTASKLIST      "Aktiviert die Taskliste."
+END
+
+STRINGTABLE 
+BEGIN
+    AFX_IDS_PREVIEW_CLOSE   "Beendet die Seitenansicht.\nSeitenansicht beenden"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_SHOW_ALL             "Show complete CPACS configuration\nComplete CPACS"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_INTERPOLATE_BSPLINE_WIRE 
+                            "Build wire from points via bspline interpolation\nBspline interpolation"
+    ID_INTERPOLATE_LINEAR_WIRE 
+                            "Build wire from points via linear interpolation\nLinear interpolation"
+    ID_APPROXIMATE_BSPLINE_WIRE 
+                            "Build wire from points via bspline approximation\nBspline approximation"
+    ID_SHOW_WINGS           "Show single wings\nSingle wings"
+    ID_SHOW_WING_POINTS     "Draw single wings by showing surface points\nWing surface points"
+    ID_SHOW_WING_MESHES     "Show triangulation of the wings\nShow triangulation"
+    ID_SHOW_WING_TRIANGULATION 
+                            "Show wing triangulation\nShow wing triangulation"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_SHOW_ALL_POINTS      "Show complete CPACS configuration by drawing surface points\nShow all surface points"
+    ID_DATEI_EXPORTASIGES   "Export CPACS configuration as IGES file\nExport as IGES file"
+    ID_EXPORT_AS_IGES       "Export CPACS configuration as IGES\nExport as IGES"
+    ID_SHOW_WING_PROFILES   "Draw only wing profiles\nWing profiles"
+    ID_SHOW_FUSELAGE_PROFILES "Draw fuselage profiles\nFuselage profiles"
+    ID_SHOW_FUSELAGES       "Draw single fuselages\nFuselages"
+    ID_SHOW_FUSELAGE_TRIANGULATION 
+                            "Draw fuselage triangulation\nFuselage triangulation"
+    ID_SHOW_FUSELAGE_POINTS "Draw fuselage surface points\nFuselage surface points"
+END
+
+#endif    // Deutsch (Deutschland) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#define _AFX_NO_SPLITTER_RESOURCES
+#define _AFX_NO_OLE_RESOURCES
+#define _AFX_NO_TRACKER_RESOURCES
+#define _AFX_NO_PROPERTY_RESOURCES
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_DEU)
+LANGUAGE 7, 1
+#pragma code_page(1252)
+#include "res\TIGLViewer.rc2"  // Nicht mit Microsoft Visual C++ bearbeitete Ressourcen
+#include "afxres.rc"         // Standardkomponenten
+#include "afxprint.rc"       // Ressourcen für Drucken/Seitenansicht
+#endif
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

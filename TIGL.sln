@@ -1,0 +1,101 @@
+Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TIGL", "Src\Src.vcproj", "{8AE6C374-2BCF-4CC8-86D7-6BAD3533EF3C}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CUnitTests", "CUnitTests\CUnitTests.vcproj", "{1A9C232B-8A0E-4F27-BCAC-7DA1A8BDF0DB}"
+	ProjectSection(ProjectDependencies) = postProject
+		{8AE6C374-2BCF-4CC8-86D7-6BAD3533EF3C} = {8AE6C374-2BCF-4CC8-86D7-6BAD3533EF3C}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mfcsample", "TIGLViewer\mfcsample\mfcsample.vcproj", "{659F8165-A984-409B-A501-469CA96E52B1}"
+	ProjectSection(ProjectDependencies) = postProject
+		{8AE6C374-2BCF-4CC8-86D7-6BAD3533EF3C} = {8AE6C374-2BCF-4CC8-86D7-6BAD3533EF3C}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TIGLViewer", "TIGLViewer\TIGLViewer\TIGLViewer.vcproj", "{195C5AFB-5770-43FE-8115-3D4956C9DA64}"
+	ProjectSection(ProjectDependencies) = postProject
+		{659F8165-A984-409B-A501-469CA96E52B1} = {659F8165-A984-409B-A501-469CA96E52B1}
+		{8AE6C374-2BCF-4CC8-86D7-6BAD3533EF3C} = {8AE6C374-2BCF-4CC8-86D7-6BAD3533EF3C}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TIGLDemo", "TIGLDemo\TIGLDemo.vcproj", "{30E98CCD-8306-4F69-BA18-3E7B789DA741}"
+	ProjectSection(ProjectDependencies) = postProject
+		{8AE6C374-2BCF-4CC8-86D7-6BAD3533EF3C} = {8AE6C374-2BCF-4CC8-86D7-6BAD3533EF3C}
+	EndProjectSection
+EndProject
+Project("{6989167D-11E4-40FE-8C1A-2192A86A7E90}") = "TIGLDemo Fortran", "TIGLDemo\TIGLDemo Fortran.vfproj", "{59202788-7150-41A0-9EE8-B548676CFC1B}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+	ProjectSection(ProjectDependencies) = postProject
+		{8AE6C374-2BCF-4CC8-86D7-6BAD3533EF3C} = {8AE6C374-2BCF-4CC8-86D7-6BAD3533EF3C}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		Debug = Debug
+		Debug_DLL = Debug_DLL
+		Release = Release
+		Release_DLL = Release_DLL
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{8AE6C374-2BCF-4CC8-86D7-6BAD3533EF3C}.Debug.ActiveCfg = Debug|Win32
+		{8AE6C374-2BCF-4CC8-86D7-6BAD3533EF3C}.Debug.Build.0 = Debug|Win32
+		{8AE6C374-2BCF-4CC8-86D7-6BAD3533EF3C}.Debug_DLL.ActiveCfg = Debug_DLL|Win32
+		{8AE6C374-2BCF-4CC8-86D7-6BAD3533EF3C}.Debug_DLL.Build.0 = Debug_DLL|Win32
+		{8AE6C374-2BCF-4CC8-86D7-6BAD3533EF3C}.Release.ActiveCfg = Release|Win32
+		{8AE6C374-2BCF-4CC8-86D7-6BAD3533EF3C}.Release.Build.0 = Release|Win32
+		{8AE6C374-2BCF-4CC8-86D7-6BAD3533EF3C}.Release_DLL.ActiveCfg = Release_DLL|Win32
+		{8AE6C374-2BCF-4CC8-86D7-6BAD3533EF3C}.Release_DLL.Build.0 = Release_DLL|Win32
+		{1A9C232B-8A0E-4F27-BCAC-7DA1A8BDF0DB}.Debug.ActiveCfg = Debug|Win32
+		{1A9C232B-8A0E-4F27-BCAC-7DA1A8BDF0DB}.Debug.Build.0 = Debug|Win32
+		{1A9C232B-8A0E-4F27-BCAC-7DA1A8BDF0DB}.Debug_DLL.ActiveCfg = Debug_DLL|Win32
+		{1A9C232B-8A0E-4F27-BCAC-7DA1A8BDF0DB}.Release.ActiveCfg = Release|Win32
+		{1A9C232B-8A0E-4F27-BCAC-7DA1A8BDF0DB}.Release.Build.0 = Release|Win32
+		{1A9C232B-8A0E-4F27-BCAC-7DA1A8BDF0DB}.Release_DLL.ActiveCfg = Release_DLL|Win32
+		{659F8165-A984-409B-A501-469CA96E52B1}.Debug.ActiveCfg = Debug|Win32
+		{659F8165-A984-409B-A501-469CA96E52B1}.Debug.Build.0 = Debug|Win32
+		{659F8165-A984-409B-A501-469CA96E52B1}.Debug_DLL.ActiveCfg = Debug_DLL|Win32
+		{659F8165-A984-409B-A501-469CA96E52B1}.Release.ActiveCfg = Release|Win32
+		{659F8165-A984-409B-A501-469CA96E52B1}.Release.Build.0 = Release|Win32
+		{659F8165-A984-409B-A501-469CA96E52B1}.Release_DLL.ActiveCfg = Release_DLL|Win32
+		{195C5AFB-5770-43FE-8115-3D4956C9DA64}.Debug.ActiveCfg = Debug|Win32
+		{195C5AFB-5770-43FE-8115-3D4956C9DA64}.Debug.Build.0 = Debug|Win32
+		{195C5AFB-5770-43FE-8115-3D4956C9DA64}.Debug_DLL.ActiveCfg = Debug|Win32
+		{195C5AFB-5770-43FE-8115-3D4956C9DA64}.Release.ActiveCfg = Release|Win32
+		{195C5AFB-5770-43FE-8115-3D4956C9DA64}.Release.Build.0 = Release|Win32
+		{195C5AFB-5770-43FE-8115-3D4956C9DA64}.Release_DLL.ActiveCfg = Release|Win32
+		{30E98CCD-8306-4F69-BA18-3E7B789DA741}.Debug.ActiveCfg = Debug|Win32
+		{30E98CCD-8306-4F69-BA18-3E7B789DA741}.Debug.Build.0 = Debug|Win32
+		{30E98CCD-8306-4F69-BA18-3E7B789DA741}.Debug_DLL.ActiveCfg = Debug_DLL|Win32
+		{30E98CCD-8306-4F69-BA18-3E7B789DA741}.Debug_DLL.Build.0 = Debug_DLL|Win32
+		{30E98CCD-8306-4F69-BA18-3E7B789DA741}.Release.ActiveCfg = Release|Win32
+		{30E98CCD-8306-4F69-BA18-3E7B789DA741}.Release.Build.0 = Release|Win32
+		{30E98CCD-8306-4F69-BA18-3E7B789DA741}.Release_DLL.ActiveCfg = Release_DLL|Win32
+		{30E98CCD-8306-4F69-BA18-3E7B789DA741}.Release_DLL.Build.0 = Release_DLL|Win32
+		{59202788-7150-41A0-9EE8-B548676CFC1B}.Debug.ActiveCfg = Debug|Win32
+		{59202788-7150-41A0-9EE8-B548676CFC1B}.Debug.Build.0 = Debug|Win32
+		{59202788-7150-41A0-9EE8-B548676CFC1B}.Debug_DLL.ActiveCfg = Debug|Win32
+		{59202788-7150-41A0-9EE8-B548676CFC1B}.Release.ActiveCfg = Release|Win32
+		{59202788-7150-41A0-9EE8-B548676CFC1B}.Release.Build.0 = Release|Win32
+		{59202788-7150-41A0-9EE8-B548676CFC1B}.Release_DLL.ActiveCfg = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionItems) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal
