@@ -295,7 +295,7 @@ DLL_EXPORT TiglReturnCode tiglIsCPACSConfigurationHandleValid(TiglCPACSConfigura
 * <b>Fortran syntax:</b>
 *
 * tigl_use_algorithm(integer anAlgorithm, integer returnCode)
-*
+* #PY:# no outputs
 *
 * @param anAlgorithm (in): Specifies the algorithm to use, see TiglAlgorithmCode
 *
@@ -394,7 +394,7 @@ DLL_EXPORT TiglReturnCode tiglWingGetSegmentCount(TiglCPACSConfigurationHandle c
 *                           real pointYPtr,
 *                           real pointZPtr,
 *                           integer returnCode)
-*
+* #PY:4,5,6#
 *
 * @param cpacsHandle  (in) : Handle for the CPACS configuration
 * @param wingIndex    (in) : The index of the wing, starting at 1
@@ -443,7 +443,7 @@ DLL_EXPORT TiglReturnCode tiglWingGetUpperPoint(TiglCPACSConfigurationHandle cpa
 *                           real pointYPtr,
 *                           real pointZPtr,
 *                           integer returnCode)
-*
+* #PY:4,5,6#
 *
 * @param cpacsHandle  (in) : Handle for the CPACS configuration
 * @param wingIndex    (in) : The index of the wing, starting at 1
@@ -611,7 +611,7 @@ DLL_EXPORT TiglReturnCode tiglWingGetOuterConnectedSegmentIndex(TiglCPACSConfigu
 *                                               integer sectionUIDPtr,
 *                                               integer elementUIDPtr,
 *                                               integer returnCode)
-*
+* #PY:2,3#
 *
 * @param cpacsHandle     (in) : Handle for the CPACS configuration
 * @param wingIndex       (in) : The index of a wing, starting at 1
@@ -643,7 +643,7 @@ DLL_EXPORT TiglReturnCode tiglWingGetInnerSectionAndElementIndex(TiglCPACSConfig
 *                                               integer sectionIndexPtr,
 *                                               integer elementIndexPtr,
 *                                               integer returnCode)
-*
+* #PY:2,3#
 *
 * @param cpacsHandle     (in) : Handle for the CPACS configuration
 * @param wingIndex       (in) : The index of a wing, starting at 1
@@ -678,7 +678,7 @@ DLL_EXPORT TiglReturnCode tiglWingGetOuterSectionAndElementIndex(TiglCPACSConfig
 *                                               character sectionUIDPtr,
 *                                               character elementUIDPtr,
 *                                               integer returnCode)
-*
+* #PY:2,3#
 *
 * @param cpacsHandle     (in) : Handle for the CPACS configuration
 * @param wingIndex       (in) : The index of a wing, starting at 1
@@ -712,7 +712,7 @@ DLL_EXPORT TiglReturnCode tiglWingGetInnerSectionAndElementUID(TiglCPACSConfigur
 *                                               character sectionUIDPtr,
 *                                               character elementUIDPtr,
 *                                               integer returnCode)
-*
+* #PY:2,3#
 *
 * @param cpacsHandle     (in) : Handle for the CPACS configuration
 * @param wingIndex       (in) : The index of a wing, starting at 1
@@ -838,7 +838,7 @@ DLL_EXPORT TiglReturnCode tiglWingGetUID(TiglCPACSConfigurationHandle cpacsHandl
 *
 * @param cpacsHandle     (in) : Handle for the CPACS configuration
 * @param wingIndex       (in) : The index of a wing, starting at 1
-* @param segmentIndex       (in) : The index of a segment, starting at 1
+* @param segmentIndex    (in) : The index of a segment, starting at 1
 * @param profileNamePtr  (out): The uid of the wing
 *
 * Usage example:
@@ -902,9 +902,9 @@ DLL_EXPORT TiglReturnCode tiglWingGetSegmentUID(TiglCPACSConfigurationHandle cpa
 *   - TIGL_ERROR if some other error occurred
 */
 DLL_EXPORT TiglReturnCode tiglWingGetSectionUID(TiglCPACSConfigurationHandle cpacsHandle,
-                                                 int wingIndex,
-                                                 int sectionIndex,
-                                                 char** uidNamePtr);
+                                                int wingIndex,
+                                                int sectionIndex,
+                                                char** uidNamePtr);
 
 
 /**
@@ -916,9 +916,9 @@ DLL_EXPORT TiglReturnCode tiglWingGetSectionUID(TiglCPACSConfigurationHandle cpa
 * tigl_wing_get_symmetry(integer cpacsHandle, int wingIndex, integer symmetryAxisPtr, integer returnCode)
 *
 *
-* @param cpacsHandle     (in) : Handle for the CPACS configuration
-* @param wingIndex       (in) : Index of the Wing to export
-* @param symmetryAxisPtr (in) : Returning TiglSymmetryAxis enum pointer
+* @param cpacsHandle     (in) :  Handle for the CPACS configuration
+* @param wingIndex       (in) :  Index of the Wing to export
+* @param symmetryAxisPtr (out) : Returning TiglSymmetryAxis enum pointer
 *
 * @return
 *   - TIGL_SUCCESS if no error occurred
@@ -927,7 +927,7 @@ DLL_EXPORT TiglReturnCode tiglWingGetSectionUID(TiglCPACSConfigurationHandle cpa
 *   - TIGL_ERROR if some other error occurred
 */
 DLL_EXPORT TiglReturnCode tiglWingGetSymmetry(TiglCPACSConfigurationHandle cpacsHandle, int wingIndex,
-                                                TiglSymmetryAxis* symmetryAxisPtr);
+                                              TiglSymmetryAxis* symmetryAxisPtr);
 
 
 /*@}*/
@@ -950,7 +950,7 @@ DLL_EXPORT TiglReturnCode tiglWingGetSymmetry(TiglCPACSConfigurationHandle cpacs
 *                         integer returnCode)
 *
 *
-* @param cpacsHandle  (in)     : Handle for the CPACS configuration
+* @param cpacsHandle      (in) : Handle for the CPACS configuration
 * @param fuselageCountPtr (out): Pointer to the number of fuselages
 *
 * @return
@@ -1010,7 +1010,7 @@ DLL_EXPORT TiglReturnCode tiglFuselageGetSegmentCount(TiglCPACSConfigurationHand
 *                         real pointYPtr,
 *                         real pointZPtr,
 *                         integer returnCode)
-*
+* #PY:4,5,6#
 *
 * @param cpacsHandle   (in) : Handle for the CPACS configuration
 * @param fuselageIndex (in) : The index of the fuselage, starting at 1
@@ -1059,7 +1059,7 @@ DLL_EXPORT TiglReturnCode tiglFuselageGetPoint(TiglCPACSConfigurationHandle cpac
 *                               real pointYPtr,
 *                               real pointZPtr,
 *                               integer returnCode)
-*
+* #PY:4,5,6#
 *
 * @param cpacsHandle   (in) : Handle for the CPACS configuration
 * @param fuselageIndex (in) : The index of the fuselage, starting at 1
@@ -1114,7 +1114,7 @@ DLL_EXPORT TiglReturnCode tiglFuselageGetPointAngle(TiglCPACSConfigurationHandle
 *                                          real pointYPtr,
 *                                          real pointZPtr,
 *                                          integer returnCode)
-*
+* #PY:6,7,8#
 *
 * @param cpacsHandle   (in) : Handle for the CPACS configuration
 * @param fuselageIndex (in) : The index of the fuselage, starting at 1
@@ -1170,7 +1170,7 @@ DLL_EXPORT TiglReturnCode tiglFuselageGetPointAngleTranslated(TiglCPACSConfigura
 *                                   real pointYPtr,
 *                                   real pointZPtr,
 *                                   integer returnCode)
-*
+* #PY:5,6,7#
 *
 * @param cpacsHandle   (in) : Handle for the CPACS configuration
 * @param fuselageIndex (in) : The index of the fuselage, starting at 1
@@ -1221,7 +1221,7 @@ DLL_EXPORT TiglReturnCode tiglFuselageGetPointOnXPlane(TiglCPACSConfigurationHan
 *                                   real pointYPtr,
 *                                   real pointZPtr,
 *                                   integer returnCode)
-*
+* #PY:5,6,7#
 *
 * @param cpacsHandle   (in) : Handle for the CPACS configuration
 * @param fuselageIndex (in) : The index of the fuselage, starting at 1
@@ -1514,7 +1514,7 @@ DLL_EXPORT TiglReturnCode tiglFuselageGetEndConnectedSegmentIndex(TiglCPACSConfi
 *                                                   character sectionUIDPtr,
 *                                                   character elementUIDPtr,
 *                                                   integer returnCode)
-*
+* #PY:2,3#
 *
 * @param cpacsHandle     (in) : Handle for the CPACS configuration
 * @param fuselageIndex   (in) : The index of a fuselage, starting at 1
@@ -1549,7 +1549,7 @@ DLL_EXPORT TiglReturnCode tiglFuselageGetStartSectionAndElementUID(TiglCPACSConf
 *                                                 character sectionUIDPtr,
 *                                                 character elementUIDPtr,
 *                                                 integer returnCode)
-*
+* #PY:2,3#
 *
 * @param cpacsHandle     (in) : Handle for the CPACS configuration
 * @param fuselageIndex   (in) : The index of a fuselage, starting at 1
@@ -1585,7 +1585,7 @@ DLL_EXPORT TiglReturnCode tiglFuselageGetEndSectionAndElementUID(TiglCPACSConfig
 *                                                   integer sectionIndexPtr,
 *                                                   integer elementIndexPtr,
 *                                                   integer returnCode)
-*
+* #PY:2,3#
 *
 * @param cpacsHandle     (in) : Handle for the CPACS configuration
 * @param fuselageIndex   (in) : The index of a fuselage, starting at 1
@@ -1618,7 +1618,7 @@ DLL_EXPORT TiglReturnCode tiglFuselageGetStartSectionAndElementIndex(TiglCPACSCo
 *                                                 integer sectionIndexPtr,
 *                                                 integer elementIndexPtr,
 *                                                 integer returnCode)
-*
+* #PY:2,3#
 *
 * @param cpacsHandle     (in) : Handle for the CPACS configuration
 * @param fuselageIndex   (in) : The index of a fuselage, starting at 1
@@ -1824,9 +1824,9 @@ DLL_EXPORT TiglReturnCode tiglFuselageGetSectionUID(TiglCPACSConfigurationHandle
 * tigl_fuselage_get_symmetry(integer cpacsHandle, int fuselageIndex, integer symmetryAxisPtr, integer returnCode)
 *
 *
-* @param cpacsHandle     (in) : Handle for the CPACS configuration
-* @param fuselageIndex   (in) : Index of the Wing to export
-* @param symmetryAxisPtr (in) : Returning TiglSymmetryAxis enum pointer
+* @param cpacsHandle     (in)  : Handle for the CPACS configuration
+* @param fuselageIndex   (in)  : Index of the Wing to export
+* @param symmetryAxisPtr (out) : Returning TiglSymmetryAxis enum pointer
 *
 * @return
 *   - TIGL_SUCCESS if no error occurred
@@ -1866,7 +1866,7 @@ DLL_EXPORT TiglReturnCode tiglFuselageGetSymmetry(TiglCPACSConfigurationHandle c
 *														  real* pointYPtr,
 *														  real* pointZPtr,
 *														  integer returnCode);
-*
+* #PY:4,5,6#
 *
 * @param cpacsHandle 		(in) : Handle for the CPACS configuration
 * @param componentUidOne 	(in) : The UID of the first component
@@ -1963,7 +1963,7 @@ VTK-Export: There a various different VTK exports functions in TIGL. All functio
 * <b>Fortran syntax:</b>
 *
 * tigl_export_iges(integer cpacsHandle, character*n filenamePtr, integer returnCode)
-*
+* #PY:#
 *
 * @param cpacsHandle (in) : Handle for the CPACS configuration
 * @param filenamePtr (in) : Pointer to an IGES export file name
@@ -1985,7 +1985,7 @@ DLL_EXPORT TiglReturnCode tiglExportIGES(TiglCPACSConfigurationHandle cpacsHandl
 * <b>Fortran syntax:</b>
 *
 * tigl_export_fused_wing_fuselage_iges(integer cpacsHandle, character*n filenamePtr, integer returnCode)
-*
+* #PY:#
 *
 * @param cpacsHandle (in) : Handle for the CPACS configuration
 * @param filenamePtr (in) : Pointer to an IGES export file name
@@ -1997,7 +1997,7 @@ DLL_EXPORT TiglReturnCode tiglExportIGES(TiglCPACSConfigurationHandle cpacsHandl
 *   - TIGL_ERROR if some other error occurred
 */
 DLL_EXPORT TiglReturnCode tiglExportFusedWingFuselageIGES(TiglCPACSConfigurationHandle cpacsHandle,
-												char* filenamePtr);
+												          char* filenamePtr);
 
 
 /**
@@ -2007,7 +2007,7 @@ DLL_EXPORT TiglReturnCode tiglExportFusedWingFuselageIGES(TiglCPACSConfiguration
 * <b>Fortran syntax:</b>
 *
 * tigl_export_meshed_wing_stl(integer cpacsHandle, int wingIndex, character*n filenamePtr, integer returnCode, real deflection)
-*
+* #PY:#
 *
 * @param cpacsHandle (in) : Handle for the CPACS configuration
 * @param wingIndex   (in) : Index of the Wing to export
@@ -2022,7 +2022,7 @@ DLL_EXPORT TiglReturnCode tiglExportFusedWingFuselageIGES(TiglCPACSConfiguration
 *   - TIGL_ERROR if some other error occurred
 */
 DLL_EXPORT TiglReturnCode tiglExportMeshedWingSTL(TiglCPACSConfigurationHandle cpacsHandle, int wingIndex,
-                                                    char* filenamePtr, double deflection); 
+                                                  char* filenamePtr, double deflection); 
 
 
 
@@ -2033,7 +2033,7 @@ DLL_EXPORT TiglReturnCode tiglExportMeshedWingSTL(TiglCPACSConfigurationHandle c
 * <b>Fortran syntax:</b>
 *
 * tigl_export_meshed_fuselage_stl(integer cpacsHandle, int fuselageIndex, character*n filenamePtr, integer returnCode, real deflection)
-*
+* #PY:#
 *
 * @param cpacsHandle   (in) : Handle for the CPACS configuration
 * @param fuselageIndex (in) : Index of the Fuselage to export
@@ -2048,7 +2048,7 @@ DLL_EXPORT TiglReturnCode tiglExportMeshedWingSTL(TiglCPACSConfigurationHandle c
 *   - TIGL_ERROR if some other error occurred
 */
 DLL_EXPORT TiglReturnCode tiglExportMeshedFuselageSTL(TiglCPACSConfigurationHandle cpacsHandle, int fuselageIndex,
-                                                        char* filenamePtr, double deflection);
+                                                      char* filenamePtr, double deflection);
 
 
 /**
@@ -2058,7 +2058,7 @@ DLL_EXPORT TiglReturnCode tiglExportMeshedFuselageSTL(TiglCPACSConfigurationHand
 * <b>Fortran syntax:</b>
 *
 * tigl_export_meshed_geometry_stl(integer cpacsHandle, character*n filenamePtr, integer returnCode, real deflection)
-*
+* #PY:#
 *
 * @param cpacsHandle (in) : Handle for the CPACS configuration
 * @param filenamePtr (in) : Pointer to an STL export file name
@@ -2071,7 +2071,7 @@ DLL_EXPORT TiglReturnCode tiglExportMeshedFuselageSTL(TiglCPACSConfigurationHand
 *   - TIGL_ERROR if some other error occurred
 */
 DLL_EXPORT TiglReturnCode tiglExportMeshedGeometrySTL(TiglCPACSConfigurationHandle cpacsHandle, char* filenamePtr,
-                                                        double deflection);
+                                                      double deflection);
 
 
 /**
@@ -2081,7 +2081,7 @@ DLL_EXPORT TiglReturnCode tiglExportMeshedGeometrySTL(TiglCPACSConfigurationHand
 * <b>Fortran syntax:</b>
 *
 * tigl_export_meshed_wing_vtk_by_index(integer cpacsHandle, int wingIndex, character*n filenamePtr, integer returnCode, real deflection)
-*
+* #PY:#
 *
 * @param cpacsHandle (in) : Handle for the CPACS configuration
 * @param wingIndex   (in) : Index of the Wing to export
@@ -2107,7 +2107,7 @@ DLL_EXPORT TiglReturnCode tiglExportMeshedWingVTKByIndex(const TiglCPACSConfigur
 * <b>Fortran syntax:</b>
 *
 * tigl_export_meshed_wing_vtk_by_uid(integer cpacsHandle, character*n wingUID, character*n filenamePtr, integer returnCode, real deflection)
-*
+* #PY:#
 *
 * @param cpacsHandle (in) : Handle for the CPACS configuration
 * @param wingUID     (in) : UID of the Wing to export
@@ -2122,7 +2122,7 @@ DLL_EXPORT TiglReturnCode tiglExportMeshedWingVTKByIndex(const TiglCPACSConfigur
 *   - TIGL_ERROR if some other error occurred
 */
 DLL_EXPORT TiglReturnCode tiglExportMeshedWingVTKByUID(const TiglCPACSConfigurationHandle cpacsHandle, const char* wingUID,
-                                                  const char* filenamePtr, const double deflection);
+                                                       const char* filenamePtr, const double deflection);
 
 
 
@@ -2133,7 +2133,7 @@ DLL_EXPORT TiglReturnCode tiglExportMeshedWingVTKByUID(const TiglCPACSConfigurat
 * <b>Fortran syntax:</b>
 *
 * tigl_export_meshed_fuselage_vtk_by_index(integer cpacsHandle, int fuselageIndex, character*n filenamePtr, integer returnCode, real deflection)
-*
+* #PY:#
 *
 * @param cpacsHandle   (in) : Handle for the CPACS configuration
 * @param fuselageIndex (in) : Index of the Fuselage to export
@@ -2148,7 +2148,7 @@ DLL_EXPORT TiglReturnCode tiglExportMeshedWingVTKByUID(const TiglCPACSConfigurat
 *   - TIGL_ERROR if some other error occurred
 */
 DLL_EXPORT TiglReturnCode tiglExportMeshedFuselageVTKByIndex(const TiglCPACSConfigurationHandle cpacsHandle, const int fuselageIndex,
-                                                      const char* filenamePtr, const double deflection);
+                                                             const char* filenamePtr, const double deflection);
 
 
 /**
@@ -2158,7 +2158,7 @@ DLL_EXPORT TiglReturnCode tiglExportMeshedFuselageVTKByIndex(const TiglCPACSConf
 * <b>Fortran syntax:</b>
 *
 * tigl_export_meshed_fuselage_vtk_by_uid(integer cpacsHandle, character*n fuselageUID, character*n filenamePtr, integer returnCode, real deflection)
-*
+* #PY:#
 *
 * @param cpacsHandle   (in) : Handle for the CPACS configuration
 * @param fuselageUID   (in) : UID of the Fuselage to export
@@ -2183,7 +2183,7 @@ DLL_EXPORT TiglReturnCode tiglExportMeshedFuselageVTKByUID(const TiglCPACSConfig
 * <b>Fortran syntax:</b>
 *
 * tigl_export_meshed_geometry_vtk(integer cpacsHandle, character*n filenamePtr, integer returnCode, real deflection)
-*
+* #PY:#
 *
 * @param cpacsHandle (in) : Handle for the CPACS configuration
 * @param filenamePtr (in) : Pointer to an VTK export file name (*.vtp = polygonal XML_VTK)
@@ -2212,7 +2212,7 @@ DLL_EXPORT TiglReturnCode tiglExportMeshedGeometryVTK(const TiglCPACSConfigurati
 * <b>Fortran syntax:</b>
 *
 * tigl_export_meshed_wing_vtk_simple_by_uid(integer cpacsHandle, character*n wingUID, character*n filenamePtr, integer returnCode, real deflection)
-*
+* #PY:#
 *
 * @param cpacsHandle (in) : Handle for the CPACS configuration
 * @param wingUID     (in) : UID of the Wing to export
@@ -2244,7 +2244,7 @@ DLL_EXPORT TiglReturnCode tiglExportMeshedWingVTKSimpleByUID(const TiglCPACSConf
 * <b>Fortran syntax:</b>
 *
 * tigl_export_meshed_fuselage_vtk_simple_by_uid(integer cpacsHandle, character*n fuselageUID, character*n filenamePtr, integer returnCode, real deflection)
-*
+* #PY:#
 *
 * @param cpacsHandle   (in) : Handle for the CPACS configuration
 * @param fuselageUID   (in) : UID of the Fuselage to export
@@ -2275,7 +2275,7 @@ DLL_EXPORT TiglReturnCode tiglExportMeshedFuselageVTKSimpleByUID(const TiglCPACS
 * <b>Fortran syntax:</b>
 *
 * tigl_export_meshed_geometry_vtk_simple(integer cpacsHandle, character*n filenamePtr, integer returnCode, real deflection)
-*
+* #PY:#
 *
 * @param cpacsHandle (in) : Handle for the CPACS configuration
 * @param filenamePtr (in) : Pointer to an VTK export file name (*.vtp = polygonal XML_VTK)
@@ -2357,7 +2357,7 @@ DLL_EXPORT TiglReturnCode tiglGetMaterialUID(const TiglCPACSConfigurationHandle 
 *   - TIGL_ERROR if some other error occurred
 */
 DLL_EXPORT TiglReturnCode tiglFuselageGetVolume(TiglCPACSConfigurationHandle cpacsHandle, int fuselageIndex,
-                                                  double *volumePtr);
+                                                double *volumePtr);
 
 
 
@@ -2381,7 +2381,7 @@ DLL_EXPORT TiglReturnCode tiglFuselageGetVolume(TiglCPACSConfigurationHandle cpa
 *   - TIGL_ERROR if some other error occurred
 */
 DLL_EXPORT TiglReturnCode tiglWingGetVolume(TiglCPACSConfigurationHandle cpacsHandle, int wingIndex,
-                                                  double *volumePtr);
+                                            double *volumePtr);
 
 
 
@@ -2599,8 +2599,6 @@ DLL_EXPORT TiglReturnCode tiglFuselageGetSegmentSurfaceArea(TiglCPACSConfigurati
 DLL_EXPORT TiglReturnCode tiglComponentGetHashCode(TiglCPACSConfigurationHandle cpacsHandle,
 												   char* componentUID,
 												   int* hashCodePtr);
-
-
 
 #endif /* TIGL_H */
 
