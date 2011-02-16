@@ -1,4 +1,4 @@
-# Set the path first!
+# Set the occ-path first!
 CASROOT=/opt/OpenCASCADE
 LOCAL_INCLUDES=/develop/TIXI/include -I/develop/TIXI/local-include -I../../TIXI/Src -I/usr/include/opencascade 
 LOCAL_LIBS=-L../../TIXI/lib
