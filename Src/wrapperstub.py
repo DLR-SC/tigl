@@ -74,7 +74,7 @@ class Tigl(object):
         tiglReturn = self.TIGL.tiglOpenCPACSConfiguration(tixi._handle, uuid, byref(self._handle))
         if tiglReturn != ReturnCode.SUCCESS:
             self._handle.value = -1
-        self._validateReturnValue(tiglReturn)
+        self._validateReturnValue(tiglReturn, configuration)
     
     def close(self):
         ''' Closes the current document.
