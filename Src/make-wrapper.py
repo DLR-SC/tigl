@@ -464,7 +464,7 @@ def createMethodStubs(defs):
                 onlyInputs.remove(o) # keep only input variables in onlyInputs
         if len(onlyInputs) > 0:
             hasParams = ", "
-        if (len(onlyInputs)+len(outs)) > 1 or (useHandle != "" and len(outs) > 0):
+        if (len(onlyInputs) + len(outs)) > 1 or (useHandle != "" and (len(onlyInputs) + len(outs)) > 0):
             useHandle += ", "
             
         # Create stub header. python method header, c-call, array output names
@@ -542,7 +542,7 @@ def createMethodStubs(defs):
             if p not in outs and not arr:
                 returnValue += "        _c_%s.value = %s\n" % (p.name, p.name)
         returnValue += "        tiglReturn = self.TIGL.tigl%s(%s%s)\n" % (methodName[0].upper() + methodName[1:], useHandle, cString)
-        returnValue += "        self._validateReturnValue(tiglReturn)\n"
+        returnValue += "        self._validateReturnValue(tiglReturn%s%s)\n" % (hasParams, pString)
         
         # create return line, either tuple or single value
         if len(outs) > 1:

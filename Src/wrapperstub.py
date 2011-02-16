@@ -26,12 +26,20 @@ from ctypes import *
 %s# generated enums are placed before this text
 
 class TiglException(Exception):
-    ''' The exception encapsulates error return codes '''
-    def __init__(self, error = "UNKNOWN"):
+    ''' The exception encapsulates the error return code of the library and arguments that were provided for the function. '''
+    def __init__(self, code, *args, **kwargs):
         Exception.__init__(self)
-        self.error = error
+        self.code = code
+        if "error" in kwargs:
+            self.error = str(kwargs["error"])
+        elif code in TiglReturnCode._names:
+            self.error = TiglReturnCode._names[code]
+        else:
+            self.error = "UNDEFINED"
+        self.args = tuple(*args)
+        self.kwargs = dict(**kwargs)
     def __str__(self):
-        return str(ReturnCode._names[self.error])
+        return self.error + " (" + str(self.code) + ") " + str(list(self.args)) + " " + str(self.kwargs)
 
 class Tigl(object):
     def __init__(self):
@@ -42,7 +50,9 @@ class Tigl(object):
             self.TIGL = cdll.TIGL
         else:
             self.TIGL = CDLL("libTIGL.so")
-        self.version = self.TIGL.tiglGetVersion()
+        self.version = c_char_p()
+        self.version.value = self.TIXI.tixiGetVersion()
+        self.version = self.version.value
             
     def __del__(self):
         ''' The destructor cleans up the library '''
@@ -51,10 +61,10 @@ class Tigl(object):
                 self.close()
                 self.TIGL = None
 
-    def _validateReturnValue(self, tiglReturn):
+    def _validateReturnValue(self, tixiReturn, *args, **kwargs):
         ''' Helper function to raise an exception if return value is not SUCCESS '''
         if tiglReturn != ReturnCode.TIGL_SUCCESS:
-            raise TiglException(tiglReturn)
+            raise TiglException(tiglReturn, args, kwargs)
 
     def open(self, tixi, configuration):
         ''' Open a document from a file. Tixi is from tixiwrapper and should have already opened a data set. '''
