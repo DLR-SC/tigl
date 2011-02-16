@@ -42,6 +42,8 @@ OBJECTS = $(OBJDIR)/CCPACSConfigurationManager.o \
 			$(OBJDIR)/CCPACSFuselages.o \
 			$(OBJDIR)/CCPACSHeader.o \
 			$(OBJDIR)/CCPACSWingConnection.o \
+			$(OBJDIR)/CCPACSWingComponentSegment.o \
+			$(OBJDIR)/CCPACSWingComponentSegments.o \
 			$(OBJDIR)/CCPACSWing.o \
 			$(OBJDIR)/CCPACSWingPositioning.o \
 			$(OBJDIR)/CCPACSWingPositionings.o \
