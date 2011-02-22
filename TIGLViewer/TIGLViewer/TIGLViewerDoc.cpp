@@ -30,6 +30,7 @@
 #include "FuselageDialog.h"
 #include "FuselageUIDDialog.h"
 #include "ConfigurationDialog.h"
+#include "InputBox.h"
 #include "ISession_Point.h"
 #include "CTiglIntersectionCalculation.h"
 #include "ISession_Text.h"
@@ -78,6 +79,7 @@
 #include "CTiglTransformation.h"
 #include "TopoDS_Solid.hxx"
 #include "ShapeAnalysis_ShapeContents.hxx"
+#include "BRepBuilderAPI_Transform.hxx"
 
 
 // CTIGLViewerDoc
@@ -110,6 +112,7 @@ BEGIN_MESSAGE_MAP(CTIGLViewerDoc, OCC_3dBaseDoc)
     ON_COMMAND(ID_SHOW_FUSELAGE_TRIANGULATION, OnShowFuselageTriangulation)
     ON_COMMAND(ID_SHOW_FUSELAGE_POINTS, OnShowFuselagePoints)
 	ON_COMMAND(ID_SHOW_FUSELAGE_POINTS_ANGLE, OnShowFuselagePointsAngle)
+	ON_COMMAND(ID_CPACS_DRAW_MINIMUM_DISTANCE_GROUND, OnDrawMinumumDistanceToGround)
 	ON_COMMAND(ID_CPACS_DRAWFUSEDFUSELAGES, OnShowFusedFuselages)
 	ON_COMMAND(ID_CPACS_DRAWFUSEDALL, OnShowFusedAll)		
 	ON_COMMAND(ID_CPACS_DRAWFUSEDWINGS, OnShowFusedWings)
@@ -1330,6 +1333,124 @@ void CTIGLViewerDoc::OnShowFusedAll()
 
     DrawXYZAxis();
 }
+
+
+
+// Draws a point where the distance between the selected fuselage and the ground is at minimum.
+// The Fuselage could be turned with a given angle at at given axis, specified by a point and a direction.
+void CTIGLViewerDoc::OnDrawMinumumDistanceToGround()
+{
+	double axisPntX = 0.0;
+	double axisPntY = 0.0;
+	double axisPntZ = 0.0;
+	double axisDirX = 0.0;
+	double axisDirY = 0.0;
+	double axisDirZ = 0.0;
+	double angle = 0.0;
+
+	myAISContext->EraseAll(Standard_False);
+
+	// Get the right fuselage	
+	CFuselageUIDDialog dlg(*this);
+    if (dlg.DoModal() != IDOK)
+        return;
+	std::string uid = dlg.GetFuselageUID();
+	tigl::CCPACSFuselage& fuselage = GetConfiguration().GetFuselage(uid);
+	TopoDS_Shape fusedFuselage = fuselage.GetLoft();
+
+	// get all values for the axis
+	InputBoxHelper ibox(AfxGetMainWnd()->m_hWnd);
+	
+	if (ibox.DoModal("DrawMinumumDistanceToGround", "Please specifiy the X-value of the axis on which the aircraft should be rotated.")) {
+			axisPntX = atof(ibox.Text);
+	}
+
+	if (ibox.DoModal("DrawMinumumDistanceToGround", "Please specifiy the Y-value of the axis on which the aircraft should be rotated.")) {
+		axisPntY = atof(ibox.Text);
+	}
+
+	if (ibox.DoModal("DrawMinumumDistanceToGround", "Please specifiy the Z-value of the axis on which the aircraft should be rotated.")) {
+		axisPntZ = atof(ibox.Text);
+	}
+
+	// get direction
+	if (ibox.DoModal("DrawMinumumDistanceToGround", "Please specifiy the X-value of the direction of the axis on which the aircraft should be rotated.")) {
+			axisDirX = atof(ibox.Text);
+	}
+
+	if (ibox.DoModal("DrawMinumumDistanceToGround", "Please specifiy the Y-value of the direction of the axis on which the aircraft should be rotated.")) {
+			axisDirY = atof(ibox.Text);
+	}
+	
+	if (ibox.DoModal("DrawMinumumDistanceToGround", "Please specifiy the Z-value of the direction of the axis on which the aircraft should be rotated.")) {
+			axisDirZ = atof(ibox.Text);
+	}
+
+	// get the angle	
+	if (ibox.DoModal("DrawMinumumDistanceToGround", "Please specifiy the angle (in degree) on which the aircraft should be rotated.")) {
+			angle = atof(ibox.Text);
+	}
+
+
+	
+	// Definition of the axis of rotation
+	 gp_Ax1 RAxis(gp_Pnt(axisPntX, axisPntY, axisPntZ), gp_Dir(axisDirX, axisDirY, axisDirZ));
+
+	Handle(Geom_Line) aGeomAxis= new Geom_Line(RAxis);
+	Handle(Geom_TrimmedCurve) trimmedLine = GC_MakeSegment(RAxis, -20 * 0.2, 20 * 1.2);
+    TopoDS_Edge le_te_edge = BRepBuilderAPI_MakeEdge(trimmedLine);
+    Handle(AIS_Shape) lineShape = new AIS_Shape(le_te_edge);
+    lineShape->SetColor(Quantity_NOC_GOLD /*Quantity_NOC_WHITE*/);
+    myAISContext->Display(lineShape, Standard_True);
+
+	
+	// now rotate fuselage
+	gp_Trsf myTrsf;
+	myTrsf.SetRotation(RAxis, angle *PI / 180);
+	BRepBuilderAPI_Transform xform(fusedFuselage, myTrsf);
+	fusedFuselage = xform.Shape();
+
+	// draw rotated fuselage
+	Handle(AIS_Shape) fuselageShape = new AIS_Shape(fusedFuselage);
+    fuselageShape->SetColor(Quantity_NOC_BLUE2);
+    myAISContext->Display(fuselageShape, Standard_False);   
+
+
+	//build cutting plane for intersection
+    gp_Pnt p1(-25, -25, -8);
+    gp_Pnt p2( 45, -25, -8);
+    gp_Pnt p3( 45,  25, -8);
+    gp_Pnt p4(-25,  25, -8);
+
+    Handle(Geom_TrimmedCurve) shaft_line1 = GC_MakeSegment(p1,p2);
+    Handle(Geom_TrimmedCurve) shaft_line2 = GC_MakeSegment(p2,p3);
+    Handle(Geom_TrimmedCurve) shaft_line3 = GC_MakeSegment(p3,p4);
+    Handle(Geom_TrimmedCurve) shaft_line4 = GC_MakeSegment(p4,p1);
+
+    TopoDS_Edge shaft_edge1 = BRepBuilderAPI_MakeEdge(shaft_line1);
+    TopoDS_Edge shaft_edge2 = BRepBuilderAPI_MakeEdge(shaft_line2);
+    TopoDS_Edge shaft_edge3 = BRepBuilderAPI_MakeEdge(shaft_line3);
+    TopoDS_Edge shaft_edge4 = BRepBuilderAPI_MakeEdge(shaft_line4);
+
+    TopoDS_Wire shaft_wire = BRepBuilderAPI_MakeWire(shaft_edge1, shaft_edge2, shaft_edge3, shaft_edge4);
+    TopoDS_Face shaft_face = BRepBuilderAPI_MakeFace(shaft_wire);
+
+	Handle(AIS_Shape) shape = new AIS_Shape(shaft_face);
+	shape->SetColor(Quantity_NOC_BROWN);
+	myAISContext->Display(shape, Standard_False);   
+
+
+	gp_Pnt closest_pnt = fuselage.GetMinumumDistanceToGround(RAxis, angle);
+	
+	// display point on fuselage
+	std::ostringstream text;
+    text << "LE(" << closest_pnt.X() << ", " << closest_pnt.Y() << ", " << closest_pnt.Z() << ")";
+	DisplayPoint(closest_pnt, const_cast<char*>(text.str().c_str()), Standard_False, 0.0, 0.0, 0.0, 2.0);
+
+}
+
+
+
 
 
 /**

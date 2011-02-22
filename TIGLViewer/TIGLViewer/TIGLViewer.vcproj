@@ -163,6 +163,9 @@
 				RelativePath=".\FuselageUIDDialog.cpp">
 			</File>
 			<File
+				RelativePath=".\InputBox.cpp">
+			</File>
+			<File
 				RelativePath=".\ISession_Point.cpp">
 			</File>
 			<File
@@ -220,6 +223,9 @@
 			</File>
 			<File
 				RelativePath=".\FuselageUIDDialog.h">
+			</File>
+			<File
+				RelativePath=".\InputBox.h">
 			</File>
 			<File
 				RelativePath=".\ISession_Point.h">

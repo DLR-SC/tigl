@@ -36,6 +36,14 @@
 #include "GProp_GProps.hxx"
 #include "BRep_Tool.hxx"
 #include "BRepGProp.hxx"
+#include "BRepBuilderAPI_Transform.hxx"
+#include "Geom_TrimmedCurve.hxx"
+#include "TopoDS_Edge.hxx"
+#include "BRepBuilderAPI_MakeEdge.hxx"
+#include "BRepBuilderAPI_MakeFace.hxx"
+#include "BRepBuilderAPI_MakeWire.hxx"
+#include "GC_MakeSegment.hxx"
+#include "BRepExtrema_DistShapeShape.hxx"
 
 
 namespace tigl {
@@ -358,6 +366,46 @@ namespace tigl {
 	{
 		GetLoft();
 		return fusedSegments.HashCode(2294967295);
+	}
+
+	// Returns the point where the distance between the selected fuselage and the ground is at minimum.
+	// The Fuselage could be turned with a given angle at at given axis, specified by a point and a direction.
+	gp_Pnt CCPACSFuselage::GetMinumumDistanceToGround(gp_Ax1 RAxis, double angle)
+	{
+
+		TopoDS_Shape fusedFuselage = GetLoft();
+
+		// now rotate the fuselage
+		gp_Trsf myTrsf;
+		myTrsf.SetRotation(RAxis, angle *PI / 180);
+		BRepBuilderAPI_Transform xform(fusedFuselage, myTrsf);
+		fusedFuselage = xform.Shape();
+
+		// build cutting plane for intersection
+		// We move the "ground" to "-1000" to be sure it is _under_ the fuselage
+		gp_Pnt p1(-1.0e7, -1.0e7, -1000);
+		gp_Pnt p2( 1.0e7, -1.0e7, -1000);
+		gp_Pnt p3( 1.0e7,  1.0e7, -1000);
+		gp_Pnt p4(-1.0e7,  1.0e7, -1000);
+
+		Handle(Geom_TrimmedCurve) shaft_line1 = GC_MakeSegment(p1,p2);
+		Handle(Geom_TrimmedCurve) shaft_line2 = GC_MakeSegment(p2,p3);
+		Handle(Geom_TrimmedCurve) shaft_line3 = GC_MakeSegment(p3,p4);
+		Handle(Geom_TrimmedCurve) shaft_line4 = GC_MakeSegment(p4,p1);
+
+		TopoDS_Edge shaft_edge1 = BRepBuilderAPI_MakeEdge(shaft_line1);
+		TopoDS_Edge shaft_edge2 = BRepBuilderAPI_MakeEdge(shaft_line2);
+		TopoDS_Edge shaft_edge3 = BRepBuilderAPI_MakeEdge(shaft_line3);
+		TopoDS_Edge shaft_edge4 = BRepBuilderAPI_MakeEdge(shaft_line4);
+
+		TopoDS_Wire shaft_wire = BRepBuilderAPI_MakeWire(shaft_edge1, shaft_edge2, shaft_edge3, shaft_edge4);
+		TopoDS_Face shaft_face = BRepBuilderAPI_MakeFace(shaft_wire);
+
+		// calculate extrema
+		BRepExtrema_DistShapeShape extrema(fusedFuselage, shaft_face);
+		extrema.Perform();
+
+		return extrema.PointOnShape1(1);
 	}
 
 } // end namespace tigl

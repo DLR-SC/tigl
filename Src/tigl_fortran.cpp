@@ -1038,3 +1038,37 @@ void tiglComponentIntersectionLineCount_f(TiglCPACSConfigurationHandle* cpacsHan
 }
 
 
+void tiglFuselageGetMinumumDistanceToGround_f(TiglCPACSConfigurationHandle* cpacsHandle,
+											 char *fuselageUID,
+											 double* axisPntX,
+											 double* axisPntY,
+											 double* axisPntZ,
+											 double* axisDirX,
+											 double* axisDirY,
+											 double* axisDirZ,
+											 double* angle,
+											 double* pointXPtr,
+											 double* pointYPtr,
+											 double* pointZPtr,
+											 TiglReturnCode* returnCode,
+											 int lengthString1)
+{
+	  char *cString = NULL;
+	  cString = makeCString(fuselageUID, lengthString1);
+	  *returnCode = tiglFuselageGetMinumumDistanceToGround(*cpacsHandle,
+			  	  	  	  	  	  	  	  	  	  	  	  	 cString,
+			  	  	  	  	  	  	  	  	  	  	  	  	 *axisPntX,
+			  	  	  	  	  	  	  	  	  	  	  	  	 *axisPntY,
+			  	  	  	  	  	  	  	  	  	  	  	  	 *axisPntZ,
+			  	  	  	  	  	  	  	  	  	  	  	  	 *axisDirX,
+															 *axisDirY,
+															 *axisDirZ,
+															 *angle,
+															 pointXPtr,
+															 pointYPtr,
+															 pointZPtr);
+	  free(cString);
+}
+
+
+

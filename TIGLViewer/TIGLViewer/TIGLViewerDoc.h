@@ -76,6 +76,10 @@ public:
 	// Draws a fuselage intersection point at 45° degrees
     afx_msg void OnShowFuselagePointsAngle();
 
+	// Draws a point where the distance between the selected fuselage and the ground is at minimum.
+	// The Fuselage could be turned with a given angle at at given axis, specified by a point and a direction.
+	afx_msg void OnDrawMinumumDistanceToGround();
+
     // Draws whole CPACS configuration by drawing some surface points
     afx_msg void OnShowAllPoints();
 

@@ -190,6 +190,9 @@ BEGIN
         MENUITEM "Draw fuselage surface point at 45°", 
                                                 ID_SHOW_FUSELAGE_POINTS_ANGLE
 
+        MENUITEM "Draw Minumum Distance to Ground", 
+                                                ID_CPACS_DRAW_MINIMUM_DISTANCE_GROUND
+
         MENUITEM SEPARATOR
         MENUITEM "Draw all",                    ID_SHOW_ALL
         MENUITEM "Draw all surface points",     ID_SHOW_ALL_POINTS

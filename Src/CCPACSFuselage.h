@@ -115,6 +115,10 @@ namespace tigl {
         // Returns a unique Hashcode for a specific geometric component
 		int GetComponentHashCode(void);
 
+		// Returns the point where the distance between the selected fuselage and the ground is at minimum.
+		// The Fuselage could be turned with a given angle at at given axis, specified by a point and a direction.
+		gp_Pnt GetMinumumDistanceToGround(gp_Ax1 RAxis, double angle);
+
     protected:
 		// Cleanup routine
 		void Cleanup(void);

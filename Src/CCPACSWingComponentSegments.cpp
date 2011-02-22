@@ -83,13 +83,13 @@ namespace tigl {
 		throw CTiglError("Error: Invalid uid in CCPACSWingComponentSegments::GetComponentSegment", TIGL_INDEX_ERROR);
 	}
 
-	// Gets total segment count
+	// Gets total componentSegment count
 	int CCPACSWingComponentSegments::GetComponentSegmentCount(void)
 	{
 		return static_cast<int>(componentSegments.size());
 	}
 
-	// Read CPACS segments element
+	// Read CPACS componentSegments element
 	void CCPACSWingComponentSegments::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& wingXPath)
 	{
 		Cleanup();
@@ -99,14 +99,17 @@ namespace tigl {
 		std::string   tempString;
 		char*         elementPath;
 
-		/* Get segment element count */
+		/* Get componentSegment element count */
 		tempString  = wingXPath + "/componentSegments";
 		elementPath = const_cast<char*>(tempString.c_str());
 		tixiRet = tixiGetNamedChildrenCount(tixiHandle, elementPath, "componentSegment", &componentSegmentCount);
-		if (tixiRet != SUCCESS)
-			throw CTiglError("XML error: tixiGetNamedChildrenCount failed in CCPACSWingComponentSegments::ReadCPACS", TIGL_XML_ERROR);
+		if (tixiRet != SUCCESS) {
+			// componentSegments are optional right now.
+			fprintf(stderr, "Info: CPACS data set does not contain any componentSegments at wing %s\n", wingXPath.c_str());
+			return;
+		}
 
-		// Loop over all segments
+		// Loop over all componentSegments
 		for (int i = 1; i <= componentSegmentCount; i++) {
 			CCPACSWingComponentSegment* componentSegment = new CCPACSWingComponentSegment(wing, i);
 			componentSegments.push_back(componentSegment);

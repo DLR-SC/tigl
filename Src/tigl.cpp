@@ -1785,6 +1785,55 @@ DLL_EXPORT TiglReturnCode tiglFuselageGetSymmetry(TiglCPACSConfigurationHandle c
 
 
 
+
+DLL_EXPORT TiglReturnCode tiglFuselageGetMinumumDistanceToGround(TiglCPACSConfigurationHandle cpacsHandle,
+																 char *fuselageUID,
+																 double axisPntX,
+																 double axisPntY,
+																 double axisPntZ,
+																 double axisDirX,
+																 double axisDirY,
+																 double axisDirZ,
+																 double angle,
+																 double* pointXPtr,
+																 double* pointYPtr,
+																 double* pointZPtr)
+{
+	 if (pointXPtr == 0 || pointYPtr == 0 || pointZPtr == 0) {
+		std::cerr << "Error: Null pointer argument for pointXPtr, pointYPtr or pointZPtr ";
+		std::cerr << "in function call to tiglFuselageGetMinumumDistanceToGround." << std::endl;
+		return TIGL_NULL_POINTER;
+	}
+
+	 // Definition of the axis of rotation
+	 gp_Ax1 RAxis(gp_Pnt(axisPntX, axisPntY, axisPntZ), gp_Dir(axisDirX, axisDirY, axisDirZ));
+
+
+		try {
+			tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+			tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+			tigl::CCPACSFuselage& fuselage = config.GetFuselage(fuselageUID);
+			gp_Pnt point = fuselage.GetMinumumDistanceToGround(RAxis, angle);
+			*pointXPtr = point.X();
+			*pointYPtr = point.Y();
+			*pointZPtr = point.Z();
+			return TIGL_SUCCESS;
+		}
+		catch (std::exception& ex) {
+			std::cerr << ex.what() << std::endl;
+			return TIGL_ERROR;
+		}
+		catch (tigl::CTiglError& ex) {
+			std::cerr << ex.getError() << std::endl;
+			return ex.getCode();
+		}
+		catch (...) {
+			std::cerr << "Caught an exception in tiglFuselageGetPointOnYPlane!" << std::endl;
+			return TIGL_ERROR;
+		}
+}
+
+
 /*****************************************************************************************************/
 
 

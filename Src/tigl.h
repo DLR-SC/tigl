@@ -1838,6 +1838,62 @@ DLL_EXPORT TiglReturnCode tiglFuselageGetSymmetry(TiglCPACSConfigurationHandle c
                                                   TiglSymmetryAxis* symmetryAxisPtr);
 
 
+
+/**
+* @brief Returns the point where the distance between the selected fuselage and the ground is at minimum.
+*		 The Fuselage could be turned with a given angle at at given axis, specified by a point and a direction.
+*
+*
+* <b>Fortran syntax:</b>
+*
+* tigl_fuselage_get_minumum_distance_to_ground(integer cpacsHandle,
+* 												character*n fuselageUID,
+* 												real axisPntX,
+* 												real axisPntY,
+* 												real axisPntZ,
+* 												real axisDirX,
+* 												real axisDirY,
+* 												real axisDirZ,
+* 												real angle,
+* 												real pointXPtr,
+* 												real pointYPtr,
+* 												real pointZPtr)
+*
+* @param cpacsHandle     	(in) : Handle for the CPACS configuration
+* @param fuselageUID        (in) : The uid of the fuselage
+* @param axisPntX        	(in) : X-coordinate of the point that specifies the axis of rotation
+* @param axisPntY        	(in) : Y-coordinate of the point that specifies the axis of rotation
+* @param axisPntZ        	(in) : Z-coordinate of the point that specifies the axis of rotation
+* @param axisDirX        	(in) : X-coordinate of the direction that specifies the axis of rotation
+* @param axisDirY        	(in) : Y-coordinate of the direction that specifies the axis of rotation
+* @param axisDirZ        	(in) : Z-coordinate of the direction that specifies the axis of rotation
+* @param angle        		(in) : The angle (in Degree) by which the fuselage should be turned on the axis of rotation
+* @param pointXPtr    		(out): Pointer to the x-coordinate of the point in absolute world coordinates
+* @param pointYPtr     		(out): Pointer to the y-coordinate of the point in absolute world coordinates
+* @param pointZPtr     		(out): Pointer to the z-coordinate of the point in absolute world coordinates
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_INDEX_ERROR if fuselageUID is not valid
+*   - TIGL_NULL_POINTER if pointXPtr, pointYPtr or pointZPtr are null pointers
+*   - TIGL_ERROR if some other error occurred
+*/
+DLL_EXPORT TiglReturnCode tiglFuselageGetMinumumDistanceToGround(TiglCPACSConfigurationHandle cpacsHandle,
+																 char *fuselageUID,
+																 double axisPntX,
+																 double axisPntY,
+																 double axisPntZ,
+																 double axisDirX,
+																 double axisDirY,
+																 double axisDirZ,
+																 double angle,
+																 double* pointXPtr,
+																 double* pointYPtr,
+																 double* pointZPtr);
+
+
+
 /*****************************************************************************************************/
 
 /*@}*/

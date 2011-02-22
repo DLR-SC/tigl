@@ -127,6 +127,7 @@ extern "C" {
 #define tiglComponentGetHashCode_f TIGL_COMPONENT_GET_HASH_CODE
 #define tiglComponentIntersectionPoint_f TIGL_COMPONENT_INTERSECTION_POINT
 #define tiglComponentIntersectionLineCount_f TIGL_COMPONENT_INTERSECTION_LINE_COUNT
+#define tiglFuselageGetMinumumDistanceToGround_f TIGL_FUSELAGE_GET_MINIMUM_DISTANCE_TO_GROUND
 
 #else
 
@@ -193,6 +194,7 @@ extern "C" {
 #define tiglComponentGetHashCode_f FORTRAN_NAME(tigl_component_get_hash_code)
 #define tiglComponentIntersectionPoint_f FORTRAN_NAME(tigl_component_intersection_point)
 #define tiglComponentIntersectionLineCount_f FORTRAN_NAME(tigl_component_intersection_line_count)
+#define tiglFuselageGetMinumumDistanceToGround_f FORTRAN_NAME(tigl_fuselage_get_minumum_distance_to_ground)
 
 
 #endif /* IFORT_WIN32 */
@@ -656,6 +658,24 @@ void tiglComponentIntersectionLineCount_f(TiglCPACSConfigurationHandle* cpacsHan
 										TiglReturnCode* returnCode,
 										int lengthString1,
 										int lengthString2);
+
+
+void tiglFuselageGetMinumumDistanceToGround_f(TiglCPACSConfigurationHandle* cpacsHandle,
+											 char *fuselageUID,
+											 double* axisPntX,
+											 double* axisPntY,
+											 double* axisPntZ,
+											 double* axisDirX,
+											 double* axisDirY,
+											 double* axisDirZ,
+											 double* angle,
+											 double* pointXPtr,
+											 double* pointYPtr,
+											 double* pointZPtr,
+											 TiglReturnCode* returnCode,
+											 int lengthString1);
+
+
 
 #ifdef __cplusplus
 }
