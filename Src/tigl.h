@@ -1859,6 +1859,7 @@ DLL_EXPORT TiglReturnCode tiglFuselageGetSymmetry(TiglCPACSConfigurationHandle c
 * 												real pointYPtr,
 * 												real pointZPtr)
 *
+* #PY:8,9,10#
 * @param cpacsHandle     	(in) : Handle for the CPACS configuration
 * @param fuselageUID        (in) : The uid of the fuselage
 * @param axisPntX        	(in) : X-coordinate of the point that specifies the axis of rotation
