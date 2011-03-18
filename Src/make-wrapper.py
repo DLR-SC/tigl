@@ -601,6 +601,8 @@ if __name__ == '__main__':
             description = 'Generated Python wrapper for the TIGL C library'
         )
     
+    upload = "--upload" in sys.argv # to Google code
+
     # Source distribution
     print "\nBuilding source distribution"
     sys.argv = ['tiglwrapper.py', 'sdist'] # need an existing argv[0] here for some stupid reason
@@ -613,3 +615,17 @@ if __name__ == '__main__':
         s()
 
     os.remove("MANIFEST")
+
+    # Upload to google
+    if upload:
+        import getpass
+        import googlecode_upload
+        sys.stdout.write('Please enter your googlecode.com username: ')
+        sys.stdout.flush()
+        username = sys.stdin.readline().rstrip()
+        print 'Please enter your googlecode.com password (not the gmail password).'
+        password = getpass.getpass()
+        path = os.path.join(".", "dist/tiglwrapper-2011-01.win32.exe")
+        googlecode_upload.upload_find_auth(path, "tigl", "TIGL Python Wrapper Win32 Installer", user_name = username, password = password)
+        path = os.path.join(".", "dist/tiglwrapper-2011-01.zip")
+        googlecode_upload.upload_find_auth(path, "tigl", "TIGL Python Wrapper Source", user_name = username, password = password)
