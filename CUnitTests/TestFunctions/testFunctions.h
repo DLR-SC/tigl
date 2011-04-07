@@ -30,6 +30,7 @@ int preTiglOpenCPACSConfiguration(void);
 int postTiglOpenCPACSConfiguration(void);
 void tiglOpenCPACSConfiguration_nullPointerArgument(void);
 void tiglOpenCPACSConfiguration_success(void); 
+void tiglOpenCPACSConfiguration_without_uid(void);
 
 int preTiglGetCPACSTixiHandle(void);
 int postTiglGetCPACSTixiHandle(void);

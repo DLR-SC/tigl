@@ -52,11 +52,6 @@ DLL_EXPORT TiglReturnCode tiglOpenCPACSConfiguration(TixiDocumentHandle tixiHand
         std::cerr << "Error: Null pointer argument for cpacsHandlePtr in function call to tiglOpenCPACSConfiguration." << std::endl;
         return TIGL_NULL_POINTER;
     }
-	if (configurationUID == 0) {
-        std::cerr << "Error: Null pointer argument for configurationUID";
-        std::cerr << "in function call to tiglOpenCPACSConfiguration." << std::endl;
-        return TIGL_NULL_POINTER;
-    }
 
 	/* check TIXI Version */
 	if( atof(tixiGetVersion()) < atof(tiglGetVersion()) ) {
@@ -64,24 +59,42 @@ DLL_EXPORT TiglReturnCode tiglOpenCPACSConfiguration(TixiDocumentHandle tixiHand
 		return TIGL_WRONG_TIXI_VERSION;
 	}
 
-	/* Check if configuration exists */
-	char *ConfigurationXPathPrt = NULL;
-	char *tmpString = NULL;
-	char *tmpString2 = NULL;
+	/* check if there is only one configuration in the data set. Then we open this */
+	/* configuration automatically */
+	if (configurationUID == 0 || strcmp(configurationUID, "")==0) {
+		ReturnCode    tixiRet;
+		int sectionCount = 0;
 
-	tixiUIDGetXPath(tixiHandle, configurationUID, &tmpString2);
-	ConfigurationXPathPrt = (char *) malloc(sizeof(char) * (strlen(tmpString2) + 50));
-	strcpy(ConfigurationXPathPrt, tmpString2);
-	strcat(ConfigurationXPathPrt, "[@uID=\"");
-	strcat(ConfigurationXPathPrt, configurationUID);
-	strcat(ConfigurationXPathPrt, "\"]");
-	int tixiReturn = tixiGetTextElement( tixiHandle, ConfigurationXPathPrt, &tmpString);
-	if(tixiReturn != 0) {
-		std::cerr << "Configuration '" << configurationUID << "' not found!" << std::endl;
-		return TIGL_ERROR;
+		tixiRet = tixiGetNamedChildrenCount(tixiHandle, "/cpacs/vehicles/aircraft", "model", &sectionCount);
+		if (tixiRet != SUCCESS) {
+			std::cerr << "No configuration specified!" << std::endl;
+			return TIGL_ERROR;
+		}
+		tixiGetTextAttribute(tixiHandle, "/cpacs/vehicles/aircraft/model", "uID", &configurationUID);
+		if (tixiRet != SUCCESS) {
+			std::cerr << "Problems reading configuration-uid!" << std::endl;
+			return TIGL_ERROR;
+		}
 	}
+	else {
+		/* Check if configuration exists */
+		char *ConfigurationXPathPrt = NULL;
+		char *tmpString = NULL;
+		char *tmpString2 = NULL;
 
-	free(ConfigurationXPathPrt);
+		tixiUIDGetXPath(tixiHandle, configurationUID, &tmpString2);
+		ConfigurationXPathPrt = (char *) malloc(sizeof(char) * (strlen(tmpString2) + 50));
+		strcpy(ConfigurationXPathPrt, tmpString2);
+		strcat(ConfigurationXPathPrt, "[@uID=\"");
+		strcat(ConfigurationXPathPrt, configurationUID);
+		strcat(ConfigurationXPathPrt, "\"]");
+		int tixiReturn = tixiGetTextElement( tixiHandle, ConfigurationXPathPrt, &tmpString);
+		if(tixiReturn != 0) {
+			std::cerr << "Configuration '" << configurationUID << "' not found!" << std::endl;
+			return TIGL_ERROR;
+		}
+		free(ConfigurationXPathPrt);
+	}
 
     tigl::CCPACSConfiguration* config = 0;
     try {

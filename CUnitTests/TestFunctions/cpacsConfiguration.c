@@ -72,6 +72,22 @@ void tiglOpenCPACSConfiguration_success(void)
 	CU_ASSERT(tiglCloseCPACSConfiguration(tiglHandle) == TIGL_SUCCESS);
 }
 
+/**
+* Tests a successfull open of tiglOpenCPACSConfiguration with specifiing the uid of the configuration.
+*/
+void tiglOpenCPACSConfiguration_without_uid(void) 
+{
+	// Test with NULL argument
+	CU_ASSERT(tiglOpenCPACSConfiguration(tixiHandle, NULL, &tiglHandle) == TIGL_SUCCESS);
+	CU_ASSERT(tiglHandle > 0);
+	CU_ASSERT(tiglCloseCPACSConfiguration(tiglHandle) == TIGL_SUCCESS);
+
+	// Test with empty string argument
+	CU_ASSERT(tiglOpenCPACSConfiguration(tixiHandle, "", &tiglHandle) == TIGL_SUCCESS);
+	CU_ASSERT(tiglHandle > 0);
+	CU_ASSERT(tiglCloseCPACSConfiguration(tiglHandle) == TIGL_SUCCESS);
+}
+
 /******************************************************************************/
 
 int preTiglGetCPACSTixiHandle(void)

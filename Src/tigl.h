@@ -216,7 +216,8 @@ typedef enum TiglImportExportFormat TiglImportExportFormat;
 * @param tixiHandle     (in) : Handle to a TIXI document. The TIXI document should not be closed until the
 *                              CPACS configuration is closed. First close the CPACS configuration, then
 *                              the TIXI document.
-* @param configurationUID (in) : The UID of the configuration that shloud be loaded by TIGL.
+* @param configurationUID (in) : The UID of the configuration that should be loaded by TIGL. Could be NULL or
+* 								 an empty string if the data set contains only one configuration.
 * @param cpacsHandlePtr (out): Handle to the CPACS configuration. This handle is used in calls to other TIGL functions.
 *
 * @return

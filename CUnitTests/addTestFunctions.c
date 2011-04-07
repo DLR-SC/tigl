@@ -47,6 +47,7 @@ void addTestFunctions(void)
   if (!(pSuite = CU_add_suite("tiglOpenCPACSConfiguration", preTiglOpenCPACSConfiguration, postTiglOpenCPACSConfiguration))) PRINT_ERROR;
   if (!(CU_add_test(pSuite, "tiglOpenCPACSConfiguration_nullPointerArgument", tiglOpenCPACSConfiguration_nullPointerArgument))) PRINT_ERROR;
   if (!(CU_add_test(pSuite, "tiglOpenCPACSConfiguration_success", tiglOpenCPACSConfiguration_success))) PRINT_ERROR;
+  if (!(CU_add_test(pSuite, "tiglOpenCPACSConfiguration_without_uid", tiglOpenCPACSConfiguration_without_uid))) PRINT_ERROR;
 
   printf("Add suite for tiglGetCPACSTixiHandle\n");
   if (!(pSuite = CU_add_suite("tiglGetCPACSTixiHandle", preTiglGetCPACSTixiHandle, postTiglGetCPACSTixiHandle))) PRINT_ERROR;
