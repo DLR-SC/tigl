@@ -1,0 +1,1 @@
+devenv TIGLViewer\TIGLViewer.vcproj /project TIGLViewer /build %1
