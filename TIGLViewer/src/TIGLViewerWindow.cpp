@@ -459,4 +459,3 @@ void TIGLViewerWindow::createMenus()
     helpMenu->addAction(aboutAction);
     helpMenu->addAction(aboutQtAction);
 }
-

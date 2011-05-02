@@ -48,7 +48,11 @@ int main(int argc, char *argv[])
 
 	TIGLViewerWindow *window = new TIGLViewerWindow();
 	window->show();
-	//window->setInitialCpacsFileName("C:\\tmp\\CPACS_14_A320.xml");
+
+	// if a filename is given, open the configuration
+	if(!PARAMS.initialFilename.isEmpty()) {
+		window->setInitialCpacsFileName(PARAMS.initialFilename);
+	}
 
 	retval = app.exec();
     return retval;
