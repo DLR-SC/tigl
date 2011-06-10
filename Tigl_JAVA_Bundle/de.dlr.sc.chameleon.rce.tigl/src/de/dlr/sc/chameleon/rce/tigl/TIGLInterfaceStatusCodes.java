@@ -2,9 +2,9 @@
 * Copyright (C) 2007-2011 German Aerospace Center (DLR/SC)
 *
 * Created: 2010-08-13 Markus Litz <Markus.Litz@dlr.de>
-* Changed: $Id: TIGLInterfaceStatusCodes.java 3 2011-02-09 14:50:00Z markus.litz $ 
+* Changed: $Id$ 
 *
-* Version: $Revision: 3 $
+* Version: $Revision$
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ import java.util.Map;
  * 
  * Enum for the TIGL Return Codes.
  *
- * @version $LastChangedRevision: 1 $
+ * @version $LastChangedRevision$
  * @author Markus Litz
  */
 public enum TIGLInterfaceStatusCodes {
