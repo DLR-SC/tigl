@@ -11,29 +11,31 @@ devenv /clean Release /project TIGL %SOLUTION_NAME%
 devenv /build Release /project TIGL %SOLUTION_NAME%
 
 REM Build TIGLViewer
-devenv TIGLViewer\mfcsample\mfcsample.vcproj /project mfcsample /clean Release
-devenv TIGLViewer\mfcsample\mfcsample.vcproj /project mfcsample /build Release
-
-devenv TIGLViewer\TIGLViewer\TIGLViewer.vcproj /project TIGLViewer /clean Release
-devenv TIGL.sln /project TIGLViewer /build Release
+cd TIGLViewer
+nmake clean
+qmake
+nmake release
+cd ..
 
 REM Build API-Docu
-doxygen Doc/Doxyfile
+rem doxygen Doc/Doxyfile
 
-rem - Build structure
+rem - Build directory structure
 rm -rf Install
-mkdir Install\Static
-mkdir Install\Dynamic
-mkdir Install\Include
+mkdir Install\TIGL\Static
+mkdir Install\TIGL\Dynamic
+mkdir Install\TIGL\Include
+mkdir Install\TIGL\Doc
 mkdir Install\TIGLViewer
-mkdir Install\Doc
 
-copy /Y Src\Release\TIGL.lib Install\Static
-copy /Y Src\Release_Dll\TIGL.lib Install\Dynamic
-copy /Y Src\Release_Dll\TIGL.dll Install\Dynamic
-copy /Y Src\tigl.h Install\Include
-copy /Y TIGLViewer\release Install\TIGLViewer
-xcopy /E /Y doc\html Install\doc
+copy /Y Src\Release\TIGL.lib Install\TIGL\Static
+copy /Y Src\Release_Dll\TIGL.lib Install\TIGL\Dynamic
+copy /Y Src\Release_Dll\TIGL.dll Install\TIGL\Dynamic
+copy /Y Src\tigl.h Install\TIGL\Include
+xcopy /E /Y doc\html Install\TIGL\doc
+copy /Y TIGLViewer\release\TIGLViewer.exe Install\TIGLViewer
+copy /Y TIGLViewer\release\TIGLViewer.lib Install\TIGLViewer
 
 REM - zip it 
-7za a TIGL-0.X_Win32_msvc7.1_static_shared.zip Install
+7za a TIGL-0.X_Win32_msvc2008_static_shared.zip Install\TIGL
+7za a TIGLViewer-0.X_Win32.zip Install\TIGLViewer
