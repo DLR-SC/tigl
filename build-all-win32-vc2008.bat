@@ -18,7 +18,7 @@ nmake release
 cd ..
 
 REM Build API-Docu
-rem doxygen Doc/Doxyfile
+doxygen Doc/Doxyfile
 
 rem - Build directory structure
 rm -rf Install
@@ -37,5 +37,8 @@ copy /Y TIGLViewer\release\TIGLViewer.exe Install\TIGLViewer
 copy /Y TIGLViewer\release\TIGLViewer.lib Install\TIGLViewer
 
 REM - zip it 
-7za a TIGL-0.X_Win32_msvc2008_static_shared.zip Install\TIGL
-7za a TIGLViewer-0.X_Win32.zip Install\TIGLViewer
+cd Install
+7za a ..\TIGL-0.X_Win32_msvc2008_static_shared.zip TIGL
+7za a ..\TIGLViewer-0.X_Win32.zip TIGLViewer
+cd..
+
