@@ -70,6 +70,50 @@
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
+			<File
+				RelativePath=".\src\CommandLineParameters.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\main.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\OCC_Point.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\OCC_Text.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\TIGLViewerApplication.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\TIGLViewerContext.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\TIGLViewerDocument.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\TIGLViewerInputoutput.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\TIGLViewerInternal.h.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\TIGLViewerWidget.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\TIGLViewerWindow.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Ressourcendateien"
