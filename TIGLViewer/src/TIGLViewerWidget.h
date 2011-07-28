@@ -98,7 +98,6 @@ signals:
 	void pointClicked ( V3d_Coordinate X, V3d_Coordinate Y, V3d_Coordinate Z );
 	void sendStatus   ( const QString aMessage );
 
-	// Just a placeholder for now
 	void popupMenu ( const TIGLViewerWidget* aView, const QPoint aPoint );
 	void error ( int errorCode, QString& errorDescription );
 

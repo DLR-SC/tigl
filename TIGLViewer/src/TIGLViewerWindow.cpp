@@ -234,8 +234,8 @@ void TIGLViewerWindow::createActions()
     printAction->setStatusTip(tr("Print the document"));
     connect(printAction, SIGNAL(triggered()), this, SLOT(print()));
 
-    exitAction = new QAction(tr("E&xit"), this);
-    exitAction->setShortcut(tr("Ctrl+X"));
+    exitAction = new QAction(tr("Exit"), this);
+    exitAction->setShortcut(tr("Ctrl+Q"));
     exitAction->setStatusTip(tr("Exit the application"));
     connect(exitAction, SIGNAL(triggered()), this, SLOT(close()));
 

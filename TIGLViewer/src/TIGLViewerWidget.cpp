@@ -131,7 +131,7 @@ void TIGLViewerWidget::initializeOCC(const Handle_AIS_InteractiveContext& aConte
 		// Set my window (Hwnd) into the OCC view
 	    myView->SetWindow( myWindow, rc , paintCallBack, this  );
 		// Set up axes (Trihedron) in lower left corner.
-		myView->SetScale( 2 );			// Choose a "nicer" intial scale
+		myView->SetScale( 2 );			// Choose a "nicer" initial scale
 
 		// Set up axes (Trihedron) in lower left corner.
 #ifdef OCC_PATCHED
@@ -139,8 +139,9 @@ void TIGLViewerWidget::initializeOCC(const Handle_AIS_InteractiveContext& aConte
 #else
 		myView->TriedronDisplay( Aspect_TOTP_LEFT_LOWER, Quantity_NOC_WHITE, 0.1, V3d_WIREFRAME );
 #endif
-		// For testing OCC patches
-		// myView->ColorScaleDisplay();	
+
+		//myView->ColorScaleDisplay();
+
 		// Map the window
 		if (!myWindow->IsMapped())
 		{
@@ -194,7 +195,7 @@ void TIGLViewerWidget::mousePressEvent( QMouseEvent* e )
 	myKeyboardFlags = e->modifiers();
 
 	// The button mappings can be used as a mask. This code prevents conflicts
-	// when more than one button pressed simutaneously.
+	// when more than one button pressed simultaneously.
 	if ( e->button() & Qt::LeftButton )
 	{
 		onLeftButtonDown  ( myKeyboardFlags, e->pos() );
@@ -538,6 +539,11 @@ void TIGLViewerWidget::setReset ()
 }
 
 
+void TIGLViewerWidget::popupMenu( const TIGLViewerWidget* aView, const QPoint aPoint )
+{
+  // TODO: implement!
+}
+
 
 void TIGLViewerWidget::onLeftButtonDown(  Qt::KeyboardModifiers nFlags, const QPoint point )
 {
@@ -551,7 +557,6 @@ void TIGLViewerWidget::onLeftButtonDown(  Qt::KeyboardModifiers nFlags, const QP
         switch ( myMode )
         {
             case CurAction3d_Nothing:
-				// emit pointClicked( myV3dX, myV3dY, myV3dZ );
 				break;
 
 			case CurAction3d_Picking:
@@ -621,12 +626,7 @@ void TIGLViewerWidget::onLeftButtonUp(  Qt::KeyboardModifiers nFlags, const QPoi
 	{
 		switch( myMode )
 		{
-
 			case CurAction3d_Nothing:
-				break;
-
-			case CurAction3d_Picking:
-				// Shouldn't get here yet
 				if ( myCurrentPoint == myStartPoint )
 				{
 					inputEvent( nFlags & MULTISELECTIONKEY );
@@ -710,17 +710,11 @@ void TIGLViewerWidget::onMouseMove( Qt::MouseButtons buttons,
 {
 	myCurrentPoint = point;
 
-	if ( buttons & Qt::LeftButton  ||
-			buttons & Qt::RightButton ||
-				buttons & Qt::MidButton )
+	if ( buttons & Qt::LeftButton  || buttons & Qt::RightButton || buttons & Qt::MidButton )
 	{
 		switch ( myMode )
 		{
 			case CurAction3d_Nothing:
-				break;
-
-			case CurAction3d_Picking:
-				// Shouldn't get here yet
 				drawRubberBand ( myStartPoint, myCurrentPoint );
 				dragEvent( myStartPoint, myCurrentPoint, nFlags & MULTISELECTIONKEY );
 				break;
