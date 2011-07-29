@@ -310,31 +310,30 @@ void TIGLViewerWindow::createActions()
 
 	gridXYAction = new QAction(tr("XY Grid"), this);
     gridXYAction->setStatusTip(tr("Grid on XY Plane"));
-	//gridOffAction->setShortcut(tr("Ctrl+Z"));
+	gridOffAction->setShortcut(tr("Ctrl+F"));
     connect(gridXYAction, SIGNAL(triggered()), myVC, SLOT(gridXY()));
 
 	gridXZAction = new QAction(tr("XZ Grid"), this);
     gridXZAction->setStatusTip(tr("Grid on XZ Plane"));
-	//gridXZAction->setShortcut(tr("Ctrl+Y"));
+	gridXZAction->setShortcut(tr("Ctrl+Y"));
     connect(gridXZAction, SIGNAL(triggered()), myVC, SLOT(gridXZ()));
 
 	gridYZAction = new QAction(tr("YZ Grid"), this);
 	gridYZAction->setStatusTip(tr("Grid on YZ Plane"));
-	//gridOffAction->setShortcut(tr("Ctrl+Z"));
+	gridOffAction->setShortcut(tr("Ctrl+G"));
     connect(gridYZAction, SIGNAL(triggered()), myVC, SLOT(gridYZ()));
 
 	gridRectAction = new QAction(tr("Rectangular"), this);
 	gridRectAction->setStatusTip(tr("Retangular grid"));
-	//gridOffAction->setShortcut(tr("Ctrl+Z"));
+	gridOffAction->setShortcut(tr("Ctrl+H"));
     connect(gridRectAction, SIGNAL(triggered()), myVC, SLOT(gridRect()));
 
 	gridCircAction = new QAction(tr("Circular"), this);
 	gridCircAction->setStatusTip(tr("Circular grid"));
-	//gridOffAction->setShortcut(tr("Ctrl+Z"));
+	gridOffAction->setShortcut(tr("Ctrl+J"));
     connect(gridCircAction, SIGNAL(triggered()), myVC, SLOT(gridCirc()));
 
 	// Standard View
-
 	viewFrontAction = new QAction(tr("Front"), this);
 	viewFrontAction->setStatusTip(tr("View From Front"));
     connect(viewFrontAction, SIGNAL(triggered()), myOCC, SLOT(viewFront()));
@@ -376,15 +375,21 @@ void TIGLViewerWindow::createActions()
 	connect(backgroundAction, SIGNAL(triggered()), myOCC, SLOT(background()));
 
 
-	// CPACS Actions
-
+	// CPACS Wing Actions
 	drawWingProfilesAction = new QAction( tr("Show Wing Profiles"), this );
 	drawWingProfilesAction->setStatusTip(tr("Show the profiles of a specific wing."));
 	connect(drawWingProfilesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingProfiles()));
 
+	drawWingOverlayCPACSProfilePointsAction = new QAction( tr("Show Wing overlay profile points"), this );
+	drawWingOverlayCPACSProfilePointsAction->setStatusTip(tr("Show the profiles point of a specific wing profile."));
+	connect(drawWingOverlayCPACSProfilePointsAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingOverlayProfilePoints()));
 
 
 
+	// CPACS Fuselage Actions
+	drawFuselageProfilesAction = new QAction( tr("Show Fuselage Profiles"), this );
+	drawFuselageProfilesAction->setStatusTip(tr("Show the profiles of a specific fuselage."));
+	connect(drawFuselageProfilesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFuselageProfiles()));
 
 	// The co-ordinates from the view
 	connect( myOCC, SIGNAL(mouseMoved(V3d_Coordinate,V3d_Coordinate,V3d_Coordinate)),
@@ -418,8 +423,16 @@ void TIGLViewerWindow::createMenus()
 		editMenu->addAction( copyAction );
 		editMenu->addAction( pasteAction );
 
+		// CPACS menu
 	cpacsMenu = menuBar()->addMenu( tr("&CPACS") );
-		cpacsMenu->addAction( drawWingProfilesAction );
+		cpacsWingMenu = cpacsMenu->addMenu( tr("&Wing Methods") );
+			cpacsWingMenu->addAction( drawWingProfilesAction );
+			cpacsWingMenu->addAction( drawWingOverlayCPACSProfilePointsAction );
+
+		cpacsFuselageMenu = cpacsMenu->addMenu( tr("&Fuselage Methods") );
+			cpacsFuselageMenu->addAction( drawFuselageProfilesAction );
+
+
 
 	viewMenu = menuBar()->addMenu( tr("&View") );
 		viewDisplayMenu = viewMenu->addMenu( tr("&Display") );

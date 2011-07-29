@@ -185,6 +185,46 @@ QString TIGLViewerDocument::dlgGetWingProfileSelection()
 }
 
 
+// Fuselage selection Dialog
+QString TIGLViewerDocument::dlgGetFuselageSelection()
+{
+	QStringList fuselages;
+	bool ok;
+
+	// Initialize wing list
+	tigl::CCPACSConfiguration& config = GetConfiguration();
+	int fuselageCount = config.GetFuselageCount();
+	for (int i = 1; i <= fuselageCount; i++)
+	{
+		tigl::CCPACSFuselage& fuselage = config.GetFuselage(i);
+		std::string name = fuselage.GetUID();
+		if (name == "") name = "Unknown fuselage";
+		fuselages << name.c_str();
+	}
+	return QInputDialog::getItem(parent, tr("Select Fuselage"), tr("Available Fuselages:"), fuselages, 0, false, &ok);
+}
+
+// Fuselage profile Dialog
+QString TIGLViewerDocument::dlgGetFuselageProfileSelection()
+{
+	QStringList fuselageProfiles;
+	bool ok;
+
+	// Initialize fuselage list
+	tigl::CCPACSConfiguration& config = GetConfiguration();
+	int profileCount = config.GetFuselageProfileCount();
+	for (int i = 1; i <= profileCount; i++)
+	{
+		tigl::CCPACSFuselageProfile& profile = config.GetFuselageProfile(i);
+		std::string profileUID = profile.GetUID();
+		std::string name     = profile.GetName();
+		fuselageProfiles << profileUID.c_str();
+	}
+
+	return QInputDialog::getItem(parent, tr("Select Fuselage Profile"), tr("Available Fuselage Profiles:"), fuselageProfiles, 0, false, &ok);
+}
+
+
 void TIGLViewerDocument::OnShowAll( )
 {
 	myAISContext->EraseAll(Standard_False);
@@ -301,7 +341,73 @@ void TIGLViewerDocument::drawWingProfiles()
             std::cerr << ex.getError() << std::endl;
         }
     }
-
-//    DrawXYZAxis();
-
+    // DrawXYZAxis();
 }
+
+void TIGLViewerDocument::drawWingOverlayProfilePoints()
+{
+	QString wingUid = dlgGetWingSelection();
+
+	tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
+
+	for (int i = 1; i <= wing.GetSegmentCount(); i++)
+	{
+		// Draw inner profile points
+		tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(i);
+		std::vector<tigl::CTiglPoint*> innerPoints = segment.GetRawInnerProfilePoints();
+		for (std::vector<tigl::CTiglPoint*>::size_type i = 0; i < innerPoints.size(); i++)
+		{
+			gp_Pnt pnt = innerPoints[i]->Get_gp_Pnt();
+			pnt = wing.GetWingTransformation().Transform(pnt);
+			DisplayPoint(pnt, "", Standard_False, 0.0, 0.0, 0.0, 2.0);
+		}
+
+		// Draw outer profile points
+		std::vector<tigl::CTiglPoint*> outerPoints = segment.GetRawOuterProfilePoints();
+		for (std::vector<tigl::CTiglPoint*>::size_type i = 0; i < outerPoints.size(); i++)
+		{
+			gp_Pnt pnt = outerPoints[i]->Get_gp_Pnt();
+			pnt = wing.GetWingTransformation().Transform(pnt);
+			DisplayPoint(pnt, "", Standard_False, 0.0, 0.0, 0.0, 2.0);
+		}
+	}
+}
+
+
+
+void TIGLViewerDocument::drawFuselageProfiles()
+{
+	QString fuselageProfile = dlgGetFuselageProfileSelection();
+
+    myAISContext->EraseAll(Standard_False);
+
+    tigl::CCPACSFuselageProfile& profile = GetConfiguration().GetFuselageProfile(fuselageProfile.toStdString());
+    TopoDS_Wire wire        = profile.GetWire(true);
+    Handle(AIS_Shape) shape = new AIS_Shape(wire);
+    shape->SetColor(Quantity_NOC_WHITE);
+    myAISContext->Display(shape, Standard_True);
+
+    for (double zeta = 0.0; zeta <= 1.0; zeta += 0.1)
+   {
+	   try {
+		   gp_Pnt wirePoint = profile.GetPoint(zeta);
+		   std::ostringstream text;
+		   text << "PT(" << zeta << ")";
+		   DisplayPoint(wirePoint, const_cast<char*>(text.str().c_str()), Standard_False, 0.0, 0.0, 0.0, 2.0);
+		   text.str("");
+	   }
+	   catch (tigl::CTiglError& ex) {
+		   std::cerr << ex.getError() << std::endl;
+	   }
+   }
+
+   //DrawXYZAxis();
+}
+
+
+
+
+
+
+
+

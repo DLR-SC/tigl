@@ -539,10 +539,10 @@ void TIGLViewerWidget::setReset ()
 }
 
 
-void TIGLViewerWidget::popupMenu( const TIGLViewerWidget* aView, const QPoint aPoint )
-{
-  // TODO: implement!
-}
+//void TIGLViewerWidget::popupMenu( const TIGLViewerWidget* aView, const QPoint aPoint )
+//{
+//  // TODO: implement!
+//}
 
 
 void TIGLViewerWidget::onLeftButtonDown(  Qt::KeyboardModifiers nFlags, const QPoint point )
