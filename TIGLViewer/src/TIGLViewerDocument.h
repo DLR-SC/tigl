@@ -63,16 +63,23 @@ public:
 	tigl::CCPACSConfiguration& GetConfiguration(void) const;
 
 public slots:
+	// Wing slots
 	void drawWingProfiles();
+	void drawWingOverlayProfilePoints();
 
+	// Fuselage slots
+	void drawFuselageProfiles();
 
 private slots:
 
-	// Wing selection Dialog
+	// Wing selection dialogs
 	QString dlgGetWingSelection();
-
-	// Wing profile Dialog
 	QString dlgGetWingProfileSelection();
+
+
+	// Fuselage selection dialogs
+	QString dlgGetFuselageSelection();
+	QString dlgGetFuselageProfileSelection();
 
 
 private: 

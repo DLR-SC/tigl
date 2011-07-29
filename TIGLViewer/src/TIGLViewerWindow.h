@@ -77,6 +77,8 @@ private:
     QMenu *helpMenu;
 	QMenu *gridMenu;
 	QMenu *cpacsMenu;
+	QMenu *cpacsWingMenu;
+	QMenu *cpacsFuselageMenu;
 
     QAction *newAction;
     QAction *openAction;
@@ -117,7 +119,14 @@ private:
 	QAction *backgroundAction;
     QAction *aboutQtAction;
 
+    // Wing actions
     QAction *drawWingProfilesAction;
+    QAction *drawWingOverlayCPACSProfilePointsAction;
+
+    // Fuselage actions
+    QAction *drawFuselageProfilesAction;
+
+
 
 	// The OpenCASCADE widget and context;
 	TIGLViewerWidget*     	myOCC;
