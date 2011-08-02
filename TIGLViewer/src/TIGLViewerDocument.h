@@ -23,6 +23,7 @@
 
 #include <QtCore/QObject>
 #include "TIGLViewer.h"
+#include "TIGLViewerWidget.h"
 #include "tigl.h"
 #include "CTiglError.h"
 #include "CCPACSConfiguration.h"
@@ -70,6 +71,7 @@ public slots:
 
 	// Fuselage slots
 	void drawFuselageProfiles();
+	void drawFuselage();
 
 private slots:
 
@@ -87,6 +89,7 @@ private:
     TiglCPACSConfigurationHandle 			m_cpacsHandle;
     QWidget* 								parent;
     Handle_AIS_InteractiveContext			myAISContext;
+    TIGLViewerWidget*     					myOCC;
 	
 };
 

@@ -342,7 +342,6 @@ void TIGLViewerWidget::fitExtents( void )
 void TIGLViewerWidget::fitAll( void )
 {
 	if (!myView.IsNull())
-
 	{
 		myView->ZFitAll();
 		myView->FitAll();

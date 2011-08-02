@@ -31,6 +31,7 @@
 
 #include "TIGLViewerDocument.h"
 #include "TIGLViewerInternal.h"
+#include "TIGLViewerWindow.h"
 #include "OCC_Point.h"
 #include "OCC_Text.h"
 
@@ -38,6 +39,7 @@ TIGLViewerDocument::TIGLViewerDocument( QWidget *parentWidget, const Handle_AIS_
 {
 	parent = parentWidget;
 	myAISContext = ic;
+	myOCC = ((TIGLViewerWindow*) parent)->getMyOCC();
 }
 
 
@@ -97,6 +99,7 @@ void TIGLViewerDocument::openCpacsConfiguration(const QString fileName)
 								QMessageBox::Abort );
 	}
 	OnShowAll();
+	myOCC->fitAll();
 }
 
 
@@ -421,6 +424,8 @@ void TIGLViewerDocument::drawWings()
         loft = wing.GetWingTransformation().Transform(loft);
         displayShape(loft);
     }
+
+    myOCC->fitAll();
 
 //    DrawXYZAxis();
 }
