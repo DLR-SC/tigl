@@ -120,6 +120,7 @@ private:
     QAction *aboutQtAction;
 
     // Wing actions
+    QAction *drawWings;
     QAction *drawWingProfilesAction;
     QAction *drawWingOverlayCPACSProfilePointsAction;
 
