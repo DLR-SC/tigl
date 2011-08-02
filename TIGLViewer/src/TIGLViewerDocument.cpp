@@ -405,6 +405,26 @@ void TIGLViewerDocument::drawFuselageProfiles()
 }
 
 
+void TIGLViewerDocument::drawWings()
+{
+	QString wingUid = dlgGetWingSelection();
+	tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
+
+    myAISContext->EraseAll(Standard_False);
+
+    for (int i = 1; i <= wing.GetSegmentCount(); i++)
+    {
+        // Draw segment loft
+        tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(i);
+        TopoDS_Shape loft = segment.GetLoft();
+        // Transform by wing transformation
+        loft = wing.GetWingTransformation().Transform(loft);
+        displayShape(loft);
+    }
+
+//    DrawXYZAxis();
+}
+
 
 
 

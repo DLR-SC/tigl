@@ -384,12 +384,18 @@ void TIGLViewerWindow::createActions()
 	drawWingOverlayCPACSProfilePointsAction->setStatusTip(tr("Show the profiles point of a specific wing profile."));
 	connect(drawWingOverlayCPACSProfilePointsAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingOverlayProfilePoints()));
 
+	drawWings = new QAction( tr("Show Wings"), this );
+	drawWings->setStatusTip(tr("Shows a selected wing."));
+	connect(drawWings, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWings()));
+
 
 
 	// CPACS Fuselage Actions
 	drawFuselageProfilesAction = new QAction( tr("Show Fuselage Profiles"), this );
 	drawFuselageProfilesAction->setStatusTip(tr("Show the profiles of a specific fuselage."));
 	connect(drawFuselageProfilesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFuselageProfiles()));
+
+
 
 	// The co-ordinates from the view
 	connect( myOCC, SIGNAL(mouseMoved(V3d_Coordinate,V3d_Coordinate,V3d_Coordinate)),
@@ -426,6 +432,7 @@ void TIGLViewerWindow::createMenus()
 		// CPACS menu
 	cpacsMenu = menuBar()->addMenu( tr("&CPACS") );
 		cpacsWingMenu = cpacsMenu->addMenu( tr("&Wing Methods") );
+			cpacsWingMenu->addAction( drawWings );
 			cpacsWingMenu->addAction( drawWingProfilesAction );
 			cpacsWingMenu->addAction( drawWingOverlayCPACSProfilePointsAction );
 
