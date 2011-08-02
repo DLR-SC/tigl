@@ -2,9 +2,9 @@
 * Copyright (C) 2007-2011 German Aerospace Center (DLR/SC)
 *
 * Created: 2010-08-13 Markus Litz <Markus.Litz@dlr.de>
-* Changed: $Id: main.cpp 4583 2011-04-15 09:13:36Z litz_ma $
+* Changed: $Id$
 *
-* Version: $Revision: 4583 $
+* Version: $Revision$
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
