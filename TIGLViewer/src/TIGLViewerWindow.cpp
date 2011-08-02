@@ -133,8 +133,14 @@ void TIGLViewerWindow::open()
 	}
 
 	myOCC->fitAll();
-
 }
+
+
+TIGLViewerWidget* TIGLViewerWindow::getMyOCC()
+{
+    return myOCC;
+}
+
 
 void TIGLViewerWindow::save()
 {

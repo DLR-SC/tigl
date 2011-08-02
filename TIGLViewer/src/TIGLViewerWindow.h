@@ -44,6 +44,9 @@ public:
 
 	void setInitialCpacsFileName(QString filename);
 
+	// Returns the Open CASCADE Widget and Context.
+	TIGLViewerWidget* getMyOCC();
+
 private slots:
     void newFile();
     void open();
@@ -126,6 +129,7 @@ private:
 
     // Fuselage actions
     QAction *drawFuselageProfilesAction;
+    QAction *drawFuselage;
 
 
 
