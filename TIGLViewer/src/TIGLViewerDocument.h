@@ -2,9 +2,9 @@
 * Copyright (C) 2007-2011 German Aerospace Center (DLR/SC)
 *
 * Created: 2010-08-13 Markus Litz <Markus.Litz@dlr.de>
-* Changed: $Id: TIGLViewerDocument.h 4482 2011-03-04 18:50:36Z litz_ma $
+* Changed: $Id$
 *
-* Version: $Revision: 4482 $
+* Version: $Revision$
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -66,8 +66,9 @@ public:
 public slots:
 	// Wing slots
 	void drawWingProfiles();
-	void drawWings();
+	void drawWing();
 	void drawWingOverlayProfilePoints();
+	void drawWingTriangulation();
 
 	// Fuselage slots
 	void drawFuselageProfiles();

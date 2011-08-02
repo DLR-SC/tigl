@@ -2,9 +2,9 @@
 * Copyright (C) 2007-2011 German Aerospace Center (DLR/SC)
 *
 * Created: 2010-08-13 Markus Litz <Markus.Litz@dlr.de>
-* Changed: $Id: TIGLViewerWindow.cpp 4591 2011-04-15 15:28:24Z litz_ma $
+* Changed: $Id$
 *
-* Version: $Revision: 4591 $
+* Version: $Revision$
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -390,9 +390,13 @@ void TIGLViewerWindow::createActions()
 	drawWingOverlayCPACSProfilePointsAction->setStatusTip(tr("Show the profiles point of a specific wing profile."));
 	connect(drawWingOverlayCPACSProfilePointsAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingOverlayProfilePoints()));
 
-	drawWings = new QAction( tr("Show Wings"), this );
-	drawWings->setStatusTip(tr("Shows a selected wing."));
-	connect(drawWings, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWings()));
+	drawWingsAction = new QAction( tr("Show Wings"), this );
+	drawWingsAction->setStatusTip(tr("Shows a selected wing."));
+	connect(drawWingsAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWing()));
+
+	drawWingTriangulationAction = new QAction( tr("Show Wing triangulation"), this );
+	drawWingTriangulationAction->setStatusTip(tr("Shows the triangulation of a selected wing."));
+	connect(drawWingTriangulationAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingTriangulation()));
 
 
 
@@ -400,6 +404,10 @@ void TIGLViewerWindow::createActions()
 	drawFuselageProfilesAction = new QAction( tr("Show Fuselage Profiles"), this );
 	drawFuselageProfilesAction->setStatusTip(tr("Show the profiles of a specific fuselage."));
 	connect(drawFuselageProfilesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFuselageProfiles()));
+
+	drawFuselageAction = new QAction( tr("Show Fuselage"), this );
+	drawFuselageAction->setStatusTip(tr("Show a specific fuselage."));
+	connect(drawFuselageAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFuselage()));
 
 
 
@@ -438,12 +446,14 @@ void TIGLViewerWindow::createMenus()
 		// CPACS menu
 	cpacsMenu = menuBar()->addMenu( tr("&CPACS") );
 		cpacsWingMenu = cpacsMenu->addMenu( tr("&Wing Methods") );
-			cpacsWingMenu->addAction( drawWings );
+			cpacsWingMenu->addAction( drawWingsAction );
 			cpacsWingMenu->addAction( drawWingProfilesAction );
 			cpacsWingMenu->addAction( drawWingOverlayCPACSProfilePointsAction );
+			cpacsWingMenu->addAction( drawWingTriangulationAction );
 
 		cpacsFuselageMenu = cpacsMenu->addMenu( tr("&Fuselage Methods") );
 			cpacsFuselageMenu->addAction( drawFuselageProfilesAction );
+			cpacsFuselageMenu->addAction( drawFuselageAction );
 
 
 

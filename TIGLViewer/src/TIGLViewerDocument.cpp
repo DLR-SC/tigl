@@ -2,9 +2,9 @@
 * Copyright (C) 2007-2011 German Aerospace Center (DLR/SC)
 *
 * Created: 2010-08-13 Markus Litz <Markus.Litz@dlr.de>
-* Changed: $Id: TIGLViewerDocument.cpp 4591 2011-04-15 15:28:24Z litz_ma $
+* Changed: $Id$
 *
-* Version: $Revision: 4591 $
+* Version: $Revision$
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -28,12 +28,15 @@
 #include <Handle_AIS_Shape.hxx>
 #include <AIS_Shape.hxx>
 #include <AIS_InteractiveContext.hxx>
+#include <BRepAlgoAPI_Fuse.hxx>
+#include <TopoDS_Shell.hxx>
 
 #include "TIGLViewerDocument.h"
 #include "TIGLViewerInternal.h"
 #include "TIGLViewerWindow.h"
 #include "OCC_Point.h"
 #include "OCC_Text.h"
+
 
 TIGLViewerDocument::TIGLViewerDocument( QWidget *parentWidget, const Handle_AIS_InteractiveContext& ic )
 {
@@ -408,7 +411,7 @@ void TIGLViewerDocument::drawFuselageProfiles()
 }
 
 
-void TIGLViewerDocument::drawWings()
+void TIGLViewerDocument::drawWing()
 {
 	QString wingUid = dlgGetWingSelection();
 	tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
@@ -425,13 +428,119 @@ void TIGLViewerDocument::drawWings()
         displayShape(loft);
     }
 
-    myOCC->fitAll();
-
 //    DrawXYZAxis();
 }
 
 
 
+void TIGLViewerDocument::drawFuselage()
+{
+	QString fuselageUid = dlgGetFuselageSelection();
+	tigl::CCPACSFuselage& fuselage = GetConfiguration().GetFuselage(fuselageUid.toStdString());
+
+    myAISContext->EraseAll(Standard_False);
+
+    for (int i = 1; i <= fuselage.GetSegmentCount(); i++)
+    {
+        // Draw segment loft
+        tigl::CCPACSFuselageSegment& segment = (tigl::CCPACSFuselageSegment &) fuselage.GetSegment(i);
+        TopoDS_Shape loft = segment.GetLoft();
+        // Transform by fuselage transformation
+        loft = fuselage.GetFuselageTransformation().Transform(loft);
+        Handle(AIS_Shape) shape = new AIS_Shape(loft);
+        shape->SetColor(Quantity_NOC_BLUE2);
+        myAISContext->Display(shape, Standard_False);
+    }
+
+//    DrawXYZAxis();
+}
+
+
+void TIGLViewerDocument::drawWingTriangulation()
+{
+	QString wingUid = dlgGetWingSelection();
+	tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
+
+    //clear screen
+    myAISContext->EraseAll(Standard_False);
+
+	tigl::CCPACSWingSegment& firstSegment = (tigl::CCPACSWingSegment &) wing.GetSegment(1);
+	TopoDS_Shape fusedWing = firstSegment.GetLoft();
+
+    for (int i = 2; i <= wing.GetSegmentCount(); i++)
+    {
+        tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(i);
+        TopoDS_Shape loft = segment.GetLoft();
+
+        TopExp_Explorer shellExplorer;
+        TopExp_Explorer faceExplorer;
+
+		fusedWing = BRepAlgoAPI_Fuse(fusedWing, loft);
+    }
+
+	BRepMesh::Mesh(fusedWing, 0.01);
+
+	BRep_Builder builder;
+    TopoDS_Compound compound;
+    builder.MakeCompound(compound);
+
+    TopExp_Explorer shellExplorer;
+    TopExp_Explorer faceExplorer;
+    for (shellExplorer.Init(fusedWing, TopAbs_SHELL); shellExplorer.More(); shellExplorer.Next())
+    {
+        TopoDS_Shell shell = TopoDS::Shell(shellExplorer.Current());
+
+        for (faceExplorer.Init(shell, TopAbs_FACE); faceExplorer.More(); faceExplorer.Next())
+        {
+            TopoDS_Face face = TopoDS::Face(faceExplorer.Current());
+            TopLoc_Location location;
+            Handle(Poly_Triangulation) triangulation = BRep_Tool::Triangulation(face, location);
+            if (triangulation.IsNull())
+                continue;
+
+            gp_Trsf nodeTransformation = location;
+            const TColgp_Array1OfPnt& nodes = triangulation->Nodes();
+
+            int index1, index2, index3;
+            const Poly_Array1OfTriangle& triangles = triangulation->Triangles();
+            for (int j = triangles.Lower(); j <= triangles.Upper(); j++)
+            {
+                const Poly_Triangle& triangle = triangles(j);
+                triangle.Get(index1, index2, index3);
+                gp_Pnt point1 = nodes(index1).Transformed(nodeTransformation);
+                gp_Pnt point2 = nodes(index2).Transformed(nodeTransformation);
+                gp_Pnt point3 = nodes(index3).Transformed(nodeTransformation);
+
+                // Transform by wing transformation
+                point1 = wing.GetWingTransformation().Transform(point1);
+                point2 = wing.GetWingTransformation().Transform(point2);
+                point3 = wing.GetWingTransformation().Transform(point3);
+
+                BRepBuilderAPI_MakePolygon poly;
+                poly.Add(point1);
+                poly.Add(point2);
+                poly.Add(point3);
+                poly.Close();
+
+                TopoDS_Face triangleFace = BRepBuilderAPI_MakeFace(poly.Wire());
+                builder.Add(compound, triangleFace);
+
+                BRepBuilderAPI_MakeEdge edge1(point1, point2);
+                BRepBuilderAPI_MakeEdge edge2(point2, point3);
+                BRepBuilderAPI_MakeEdge edge3(point3, point1);
+                builder.Add(compound, edge1);
+                builder.Add(compound, edge2);
+                builder.Add(compound, edge3);
+            }
+        }
+    }
+    Handle(AIS_Shape) triangulation = new AIS_Shape(compound);
+    myAISContext->SetDisplayMode(triangulation, 1);
+    myAISContext->SetColor(triangulation, Quantity_NOC_BLUE2);
+    myAISContext->Display(triangulation);
+
+    //DrawXYZAxis();
+}
 
 
 
