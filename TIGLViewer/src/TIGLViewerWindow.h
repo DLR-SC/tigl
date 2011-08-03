@@ -133,6 +133,7 @@ private:
     QAction *drawFuselageProfilesAction;
     QAction *drawFuselageAction;
     QAction *drawFuselageTriangulationAction;
+    QAction *drawFuselageSamplePointsAction;
 
 
 
