@@ -131,6 +131,7 @@ private:
     // Fuselage actions
     QAction *drawFuselageProfilesAction;
     QAction *drawFuselageAction;
+    QAction *drawFuselageTriangulationAction;
 
 
 

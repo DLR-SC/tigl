@@ -69,6 +69,7 @@ public slots:
 	void drawWing();
 	void drawWingOverlayProfilePoints();
 	void drawWingTriangulation();
+	void drawFuselageTriangulation();
 
 	// Fuselage slots
 	void drawFuselageProfiles();
