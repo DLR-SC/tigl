@@ -630,3 +630,60 @@ void TIGLViewerDocument::drawFuselageTriangulation()
 }
 
 
+void TIGLViewerDocument::drawWingSamplePoints()
+{
+	QString wingUid = dlgGetWingSelection();
+	tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
+
+    myAISContext->EraseAll(Standard_False);
+
+    for (int segmentIndex = 1; segmentIndex <= wing.GetSegmentCount(); segmentIndex++)
+    {
+        // Draw segment loft
+        tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(segmentIndex);
+        TopoDS_Shape loft = segment.GetLoft();
+        // Transform by wing transformation
+        loft = wing.GetWingTransformation().Transform(loft);
+        Handle(AIS_Shape) shape = new AIS_Shape(loft);
+        shape->SetColor(Quantity_NOC_BLUE2);
+        myAISContext->Display(shape, Standard_True);
+
+        // Draw some points on the wing segment
+        for (double eta = 0.0; eta <= 1.0; eta += 0.1)
+        {
+            for (double xsi = 0.0; xsi <= 1.0; xsi += 0.1)
+            {
+                double x, y, z;
+                TiglReturnCode res = tiglWingGetUpperPoint(
+                    m_cpacsHandle,
+                    1,	// TODO: we need to implement that function to use UID instead of index!
+                    segmentIndex,
+                    eta,
+                    xsi,
+                    &x,
+                    &y,
+                    &z);
+
+                Handle(OCC_Point) aGraphicPoint = new OCC_Point(x, y, z);
+                myAISContext->Display(aGraphicPoint, Standard_False);
+
+                res = tiglWingGetLowerPoint(
+                    m_cpacsHandle,
+                    1,	// TODO: we need to implement that function to use UID instead of index!
+                    segmentIndex,
+                    eta,
+                    xsi,
+                    &x,
+                    &y,
+                    &z);
+
+                aGraphicPoint = new OCC_Point(x, y, z);
+                myAISContext->Display(aGraphicPoint, Standard_False);
+            }
+        }
+    }
+//    DrawXYZAxis();
+}
+
+
+
