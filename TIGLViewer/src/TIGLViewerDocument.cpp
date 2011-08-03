@@ -686,4 +686,47 @@ void TIGLViewerDocument::drawWingSamplePoints()
 }
 
 
+void TIGLViewerDocument::drawFuselageSamplePoints()
+{
+	QString fuselageUid = dlgGetFuselageSelection();
+	tigl::CCPACSFuselage& fuselage = GetConfiguration().GetFuselage(fuselageUid.toStdString());
+
+	myAISContext->EraseAll(Standard_False);
+
+	for (int segmentIndex = 1; segmentIndex <= fuselage.GetSegmentCount(); segmentIndex++)
+	{
+		// Draw segment loft
+		tigl::CCPACSFuselageSegment& segment = (tigl::CCPACSFuselageSegment &) fuselage.GetSegment(segmentIndex);
+		TopoDS_Shape loft = segment.GetLoft();
+		// Transform by fuselage transformation
+		loft = fuselage.GetFuselageTransformation().Transform(loft);
+		Handle(AIS_Shape) shape = new AIS_Shape(loft);
+		shape->SetColor(Quantity_NOC_BLUE2);
+		myAISContext->Display(shape, Standard_True);
+
+		// Draw some points on the fuselage segment
+		for (double eta = 0.0; eta <= 1.0; eta += 0.25)
+		{
+			for (double zeta = 0.0; zeta <= 1.0; zeta += 0.1)
+			{
+				double x, y, z;
+				TiglReturnCode res = tiglFuselageGetPoint(
+					m_cpacsHandle,
+                    1,	// TODO: we need to implement that function to use UID instead of index!
+					segmentIndex,
+					eta,
+					zeta,
+					&x,
+					&y,
+					&z);
+
+				Handle(OCC_Point) aGraphicPoint = new OCC_Point(x, y, z);
+				myAISContext->Display(aGraphicPoint, Standard_False);
+			}
+		}
+	}
+
+	// DrawXYZAxis();
+}
+
 
