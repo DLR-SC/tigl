@@ -409,6 +409,10 @@ void TIGLViewerWindow::createActions()
 	drawFuselageAction->setStatusTip(tr("Show a specific fuselage."));
 	connect(drawFuselageAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFuselage()));
 
+	drawFuselageTriangulationAction = new QAction( tr("Show Fuselage triangulation"), this );
+	drawFuselageTriangulationAction->setStatusTip(tr("Shows the triangulation of a selected fuselage."));
+	connect(drawFuselageTriangulationAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFuselageTriangulation()));
+
 
 
 	// The co-ordinates from the view
@@ -454,6 +458,7 @@ void TIGLViewerWindow::createMenus()
 		cpacsFuselageMenu = cpacsMenu->addMenu( tr("&Fuselage Methods") );
 			cpacsFuselageMenu->addAction( drawFuselageProfilesAction );
 			cpacsFuselageMenu->addAction( drawFuselageAction );
+			cpacsFuselageMenu->addAction( drawFuselageTriangulationAction );
 
 
 
