@@ -127,6 +127,7 @@ private:
     QAction *drawWingProfilesAction;
     QAction *drawWingOverlayCPACSProfilePointsAction;
     QAction *drawWingTriangulationAction;
+    QAction *drawWingSamplePointsAction;
 
     // Fuselage actions
     QAction *drawFuselageProfilesAction;

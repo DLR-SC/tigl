@@ -383,11 +383,11 @@ void TIGLViewerWindow::createActions()
 
 	// CPACS Wing Actions
 	drawWingProfilesAction = new QAction( tr("Show Wing Profiles"), this );
-	drawWingProfilesAction->setStatusTip(tr("Show the profiles of a specific wing."));
+	drawWingProfilesAction->setStatusTip(tr("Show the profiles of a wing."));
 	connect(drawWingProfilesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingProfiles()));
 
 	drawWingOverlayCPACSProfilePointsAction = new QAction( tr("Show Wing overlay profile points"), this );
-	drawWingOverlayCPACSProfilePointsAction->setStatusTip(tr("Show the profiles point of a specific wing profile."));
+	drawWingOverlayCPACSProfilePointsAction->setStatusTip(tr("Show the profiles point of a wing profile."));
 	connect(drawWingOverlayCPACSProfilePointsAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingOverlayProfilePoints()));
 
 	drawWingsAction = new QAction( tr("Show Wings"), this );
@@ -395,22 +395,27 @@ void TIGLViewerWindow::createActions()
 	connect(drawWingsAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWing()));
 
 	drawWingTriangulationAction = new QAction( tr("Show Wing triangulation"), this );
-	drawWingTriangulationAction->setStatusTip(tr("Shows the triangulation of a selected wing."));
+	drawWingTriangulationAction->setStatusTip(tr("Shows the triangulation of a wing."));
 	connect(drawWingTriangulationAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingTriangulation()));
+
+
+	drawWingSamplePointsAction = new QAction( tr("Show Sample Wing points"), this );
+	drawWingSamplePointsAction->setStatusTip(tr("Show sample points on a wing."));
+	connect(drawWingSamplePointsAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingSamplePoints()));
 
 
 
 	// CPACS Fuselage Actions
 	drawFuselageProfilesAction = new QAction( tr("Show Fuselage Profiles"), this );
-	drawFuselageProfilesAction->setStatusTip(tr("Show the profiles of a specific fuselage."));
+	drawFuselageProfilesAction->setStatusTip(tr("Show the profiles of a fuselage."));
 	connect(drawFuselageProfilesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFuselageProfiles()));
 
 	drawFuselageAction = new QAction( tr("Show Fuselage"), this );
-	drawFuselageAction->setStatusTip(tr("Show a specific fuselage."));
+	drawFuselageAction->setStatusTip(tr("Show a fuselage."));
 	connect(drawFuselageAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFuselage()));
 
 	drawFuselageTriangulationAction = new QAction( tr("Show Fuselage triangulation"), this );
-	drawFuselageTriangulationAction->setStatusTip(tr("Shows the triangulation of a selected fuselage."));
+	drawFuselageTriangulationAction->setStatusTip(tr("Shows the triangulation of a fuselage."));
 	connect(drawFuselageTriangulationAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFuselageTriangulation()));
 
 
@@ -454,6 +459,7 @@ void TIGLViewerWindow::createMenus()
 			cpacsWingMenu->addAction( drawWingProfilesAction );
 			cpacsWingMenu->addAction( drawWingOverlayCPACSProfilePointsAction );
 			cpacsWingMenu->addAction( drawWingTriangulationAction );
+			cpacsWingMenu->addAction( drawWingSamplePointsAction );
 
 		cpacsFuselageMenu = cpacsMenu->addMenu( tr("&Fuselage Methods") );
 			cpacsFuselageMenu->addAction( drawFuselageProfilesAction );
