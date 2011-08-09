@@ -78,6 +78,11 @@ public slots:
 	void drawFuselageSamplePoints();
 	void drawFuselageSamplePointsAngle();
 
+	// TIGL slots
+	void tiglInterpolateBsplineWire();
+	void tiglInterpolateLinearWire();
+	void tiglApproximateBsplineWireAction();
+
 private slots:
 
 	// Wing selection dialogs
