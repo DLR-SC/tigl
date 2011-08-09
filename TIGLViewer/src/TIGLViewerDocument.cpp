@@ -101,7 +101,7 @@ void TIGLViewerDocument::openCpacsConfiguration(const QString fileName)
 								tr("Error opening a CPACS configuration"),
 								QMessageBox::Abort );
 	}
-	OnShowAll();
+	drawAllFuselagesAndWings();
 	myOCC->fitAll();
 }
 
@@ -245,7 +245,8 @@ void TIGLViewerDocument::tiglApproximateBsplineWireAction()
     tiglUseAlgorithm(TIGL_APPROXIMATE_BSPLINE_WIRE);
 }
 
-void TIGLViewerDocument::OnShowAll( )
+
+void TIGLViewerDocument::drawAllFuselagesAndWings( )
 {
 	myAISContext->EraseAll(Standard_False);
 
@@ -261,7 +262,6 @@ void TIGLViewerDocument::OnShowAll( )
 
 			// Transform by wing transformation
 			loft = wing.GetWingTransformation().Transform(loft);
-
 			displayShape(loft);
 		}
 	}
@@ -278,7 +278,6 @@ void TIGLViewerDocument::OnShowAll( )
 
 			// Transform by fuselage transformation
 			loft = fuselage.GetFuselageTransformation().Transform(loft);
-
 			displayShape(loft);
 		}
 	}

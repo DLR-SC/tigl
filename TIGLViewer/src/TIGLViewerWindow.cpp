@@ -405,6 +405,12 @@ void TIGLViewerWindow::createActions()
 
 
 	// CPACS Fuselage Actions
+	showAllWingsAndFuselagesAction = new QAction( tr("Show all Fuselages and Wings"), this );
+	showAllWingsAndFuselagesAction->setStatusTip(tr("Show all Fuselages and Wings."));
+	connect(showAllWingsAndFuselagesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawAllFuselagesAndWings()));
+
+
+	// CPACS Fuselage Actions
 	drawFuselageProfilesAction = new QAction( tr("Show Fuselage Profiles"), this );
 	drawFuselageProfilesAction->setStatusTip(tr("Show the profiles of a fuselage."));
 	connect(drawFuselageProfilesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFuselageProfiles()));
@@ -476,6 +482,9 @@ void TIGLViewerWindow::createMenus()
 
 	// CPACS menu
 	cpacsMenu = menuBar()->addMenu( tr("&CPACS") );
+		cpacsAircraftMenu = cpacsMenu->addMenu( tr("&Aircraft Methods") );
+		cpacsAircraftMenu->addAction( showAllWingsAndFuselagesAction );
+
 		cpacsWingMenu = cpacsMenu->addMenu( tr("&Wing Methods") );
 			cpacsWingMenu->addAction( drawWingsAction );
 			cpacsWingMenu->addAction( drawWingProfilesAction );

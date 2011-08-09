@@ -80,6 +80,7 @@ private:
     QMenu *helpMenu;
 	QMenu *gridMenu;
 	QMenu *cpacsMenu;
+	QMenu *cpacsAircraftMenu;
 	QMenu *cpacsWingMenu;
 	QMenu *cpacsFuselageMenu;
 	QMenu *tiglMenu;
@@ -123,6 +124,10 @@ private:
 
 	QAction *backgroundAction;
     QAction *aboutQtAction;
+
+    // Aircraft actions
+    QAction *showAllWingsAndFuselagesAction;
+
 
     // Wing actions
     QAction *drawWingsAction;

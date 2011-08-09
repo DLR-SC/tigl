@@ -46,7 +46,6 @@ public:
     ~TIGLViewerDocument( );
 
     void openCpacsConfiguration(const QString fileName);
-    void OnShowAll( );
 
     // a small helper when we just want to display a shape
     Handle(AIS_Shape) displayShape(TopoDS_Shape shape);
@@ -64,6 +63,9 @@ public:
 	tigl::CCPACSConfiguration& GetConfiguration(void) const;
 
 public slots:
+	// Aircraft slots
+	void drawAllFuselagesAndWings( );
+
 	// Wing slots
 	void drawWingProfiles();
 	void drawWing();
