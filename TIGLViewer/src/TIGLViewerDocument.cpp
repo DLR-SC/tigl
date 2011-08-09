@@ -230,6 +230,20 @@ QString TIGLViewerDocument::dlgGetFuselageProfileSelection()
 	return QInputDialog::getItem(parent, tr("Select Fuselage Profile"), tr("Available Fuselage Profiles:"), fuselageProfiles, 0, false, &ok);
 }
 
+void TIGLViewerDocument::tiglInterpolateBsplineWire()
+{
+	tiglUseAlgorithm(TIGL_INTERPOLATE_BSPLINE_WIRE);
+}
+
+void TIGLViewerDocument::tiglInterpolateLinearWire()
+{
+    tiglUseAlgorithm(TIGL_INTERPOLATE_LINEAR_WIRE);
+}
+
+void TIGLViewerDocument::tiglApproximateBsplineWireAction()
+{
+    tiglUseAlgorithm(TIGL_APPROXIMATE_BSPLINE_WIRE);
+}
 
 void TIGLViewerDocument::OnShowAll( )
 {
@@ -667,15 +681,14 @@ void TIGLViewerDocument::drawWingSamplePoints()
                 Handle(OCC_Point) aGraphicPoint = new OCC_Point(x, y, z);
                 myAISContext->Display(aGraphicPoint, Standard_False);
 
-                res = tiglWingGetLowerPoint(
-                    m_cpacsHandle,
-                    1,	// TODO: we need to implement that function to use UID instead of index!
-                    segmentIndex,
-                    eta,
-                    xsi,
-                    &x,
-                    &y,
-                    &z);
+                tiglWingGetLowerPoint( m_cpacsHandle,
+										1,	// TODO: we need to implement that function to use UID instead of index!
+										segmentIndex,
+										eta,
+										xsi,
+										&x,
+										&y,
+										&z);
 
                 aGraphicPoint = new OCC_Point(x, y, z);
                 myAISContext->Display(aGraphicPoint, Standard_False);
@@ -710,15 +723,14 @@ void TIGLViewerDocument::drawFuselageSamplePoints()
 			for (double zeta = 0.0; zeta <= 1.0; zeta += 0.1)
 			{
 				double x, y, z;
-				TiglReturnCode res = tiglFuselageGetPoint(
-					m_cpacsHandle,
-                    1,	// TODO: we need to implement that function to use UID instead of index!
-					segmentIndex,
-					eta,
-					zeta,
-					&x,
-					&y,
-					&z);
+				tiglFuselageGetPoint(m_cpacsHandle,
+										1,	// TODO: we need to implement that function to use UID instead of index!
+										segmentIndex,
+										eta,
+										zeta,
+										&x,
+										&y,
+										&z);
 
 				Handle(OCC_Point) aGraphicPoint = new OCC_Point(x, y, z);
 				myAISContext->Display(aGraphicPoint, Standard_False);

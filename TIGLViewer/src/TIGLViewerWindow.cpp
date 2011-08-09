@@ -427,6 +427,21 @@ void TIGLViewerWindow::createActions()
 
 
 
+	// TIGL Actions
+	tiglInterpolateBsplineWireAction = new QAction( tr("Use Bspline Interpolation"), this );
+	tiglInterpolateBsplineWireAction->setStatusTip(tr("Use a BSpline interpolation between the points of a wire"));
+	connect(tiglInterpolateBsplineWireAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(tiglInterpolateBsplineWire()));
+
+	tiglInterpolateLinearWireAction = new QAction( tr("Use Linear Interpolation"), this );
+	tiglInterpolateLinearWireAction->setStatusTip(tr("Use a linear interpolation between the points of a wire"));
+	connect(tiglInterpolateLinearWireAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(tiglInterpolateLinearWire()));
+
+	tiglApproximateBsplineWireAction = new QAction( tr("Use BSpline Approximation"), this );
+	tiglApproximateBsplineWireAction->setStatusTip(tr("Use a BSpline approximation for the points of a wire"));
+	connect(tiglApproximateBsplineWireAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(tiglApproximateBsplineWireAction()));
+
+
+
 	// The co-ordinates from the view
 	connect( myOCC, SIGNAL(mouseMoved(V3d_Coordinate,V3d_Coordinate,V3d_Coordinate)),
 		     this,   SLOT(xyzPosition(V3d_Coordinate,V3d_Coordinate,V3d_Coordinate)) );
@@ -459,7 +474,7 @@ void TIGLViewerWindow::createMenus()
 		editMenu->addAction( copyAction );
 		editMenu->addAction( pasteAction );
 
-		// CPACS menu
+	// CPACS menu
 	cpacsMenu = menuBar()->addMenu( tr("&CPACS") );
 		cpacsWingMenu = cpacsMenu->addMenu( tr("&Wing Methods") );
 			cpacsWingMenu->addAction( drawWingsAction );
@@ -475,6 +490,12 @@ void TIGLViewerWindow::createMenus()
 			cpacsFuselageMenu->addAction( drawFuselageSamplePointsAction );
 			cpacsFuselageMenu->addAction( drawFuselageSamplePointsAngleAction );
 
+	// TIGL menu
+	tiglMenu = menuBar()->addMenu( tr("&TIGL Methods") );
+		tiglAlgorithmMenu = tiglMenu->addMenu( tr("Algorithm") );
+			tiglAlgorithmMenu->addAction( tiglInterpolateBsplineWireAction );
+			tiglAlgorithmMenu->addAction( tiglInterpolateLinearWireAction );
+			tiglAlgorithmMenu->addAction( tiglApproximateBsplineWireAction );
 
 
 	viewMenu = menuBar()->addMenu( tr("&View") );

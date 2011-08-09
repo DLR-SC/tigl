@@ -82,6 +82,8 @@ private:
 	QMenu *cpacsMenu;
 	QMenu *cpacsWingMenu;
 	QMenu *cpacsFuselageMenu;
+	QMenu *tiglMenu;
+	QMenu *tiglAlgorithmMenu;
 
     QAction *newAction;
     QAction *openAction;
@@ -136,6 +138,10 @@ private:
     QAction *drawFuselageSamplePointsAction;
     QAction *drawFuselageSamplePointsAngleAction;
 
+    // TIGL actions
+    QAction *tiglInterpolateBsplineWireAction;
+    QAction *tiglInterpolateLinearWireAction;
+    QAction *tiglApproximateBsplineWireAction;
 
 
 	// The OpenCASCADE widget and context;
