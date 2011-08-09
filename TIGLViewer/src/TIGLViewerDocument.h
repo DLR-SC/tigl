@@ -76,6 +76,7 @@ public slots:
 	void drawFuselage();
 	void drawFuselageTriangulation();
 	void drawFuselageSamplePoints();
+	void drawFuselageSamplePointsAngle();
 
 private slots:
 

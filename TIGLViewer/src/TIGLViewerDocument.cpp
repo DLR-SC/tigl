@@ -730,3 +730,44 @@ void TIGLViewerDocument::drawFuselageSamplePoints()
 }
 
 
+
+void TIGLViewerDocument::drawFuselageSamplePointsAngle()
+{
+	int fuselageIndex = 1;
+	int segmentIndex = 15;
+	double angle = 45.0; // turn through 45 degrees
+	double x, y, z;
+
+	myAISContext->EraseAll(Standard_False);
+	tigl::CCPACSFuselage& fuselage = GetConfiguration().GetFuselage(fuselageIndex);
+
+	// Draw the fuselage
+	for (int i = 1; i <= fuselage.GetSegmentCount(); i++)
+	{
+		tigl::CCPACSFuselageSegment& segment = (tigl::CCPACSFuselageSegment &) fuselage.GetSegment(i);
+		TopoDS_Shape loft = segment.GetLoft();
+
+		// Transform by fuselage transformation
+		loft = fuselage.GetFuselageTransformation().Transform(loft);
+
+		displayShape(loft);
+	}
+
+	// Display the intersection point
+	tiglFuselageGetPointAngle(m_cpacsHandle,
+								fuselageIndex,
+								segmentIndex,
+								0.5,
+								angle,
+								&x,
+								&y,
+								&z);
+
+	Handle(OCC_Point) aGraphicPoint = new OCC_Point(x, y, z);
+	myAISContext->Display(aGraphicPoint, Standard_False);
+
+//	DrawXYZAxis();
+}
+
+
+
