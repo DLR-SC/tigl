@@ -421,6 +421,10 @@ void TIGLViewerWindow::createActions()
 	drawFuselageSamplePointsAction->setStatusTip(tr("Show sample points on a fuselage."));
 	connect(drawFuselageSamplePointsAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFuselageSamplePoints()));
 
+	drawFuselageSamplePointsAngleAction = new QAction( tr("Show Sample Fuselage point at 45°"), this );
+	drawFuselageSamplePointsAngleAction->setStatusTip(tr("Show sample point on a fuselage at 45° and eta = 0.5"));
+	connect(drawFuselageSamplePointsAngleAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFuselageSamplePointsAngle()));
+
 
 
 	// The co-ordinates from the view
@@ -469,6 +473,7 @@ void TIGLViewerWindow::createMenus()
 			cpacsFuselageMenu->addAction( drawFuselageAction );
 			cpacsFuselageMenu->addAction( drawFuselageTriangulationAction );
 			cpacsFuselageMenu->addAction( drawFuselageSamplePointsAction );
+			cpacsFuselageMenu->addAction( drawFuselageSamplePointsAngleAction );
 
 
 

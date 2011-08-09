@@ -134,6 +134,7 @@ private:
     QAction *drawFuselageAction;
     QAction *drawFuselageTriangulationAction;
     QAction *drawFuselageSamplePointsAction;
+    QAction *drawFuselageSamplePointsAngleAction;
 
 
 
