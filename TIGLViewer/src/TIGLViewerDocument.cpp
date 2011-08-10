@@ -281,7 +281,6 @@ void TIGLViewerDocument::drawAllFuselagesAndWings( )
 			displayShape(loft);
 		}
 	}
-
 }
 
 
@@ -360,7 +359,6 @@ void TIGLViewerDocument::drawWingProfiles()
             std::cerr << ex.getError() << std::endl;
         }
     }
-    // DrawXYZAxis();
 }
 
 void TIGLViewerDocument::drawWingOverlayProfilePoints()
@@ -419,8 +417,6 @@ void TIGLViewerDocument::drawFuselageProfiles()
 		   std::cerr << ex.getError() << std::endl;
 	   }
    }
-
-   //DrawXYZAxis();
 }
 
 
@@ -440,8 +436,6 @@ void TIGLViewerDocument::drawWing()
         loft = wing.GetWingTransformation().Transform(loft);
         displayShape(loft);
     }
-
-//    DrawXYZAxis();
 }
 
 
@@ -464,8 +458,6 @@ void TIGLViewerDocument::drawFuselage()
         shape->SetColor(Quantity_NOC_BLUE2);
         myAISContext->Display(shape, Standard_False);
     }
-
-//    DrawXYZAxis();
 }
 
 
@@ -551,8 +543,6 @@ void TIGLViewerDocument::drawWingTriangulation()
     myAISContext->SetDisplayMode(triangulation, 1);
     myAISContext->SetColor(triangulation, Quantity_NOC_BLUE2);
     myAISContext->Display(triangulation);
-
-    //DrawXYZAxis();
 }
 
 
@@ -638,8 +628,6 @@ void TIGLViewerDocument::drawFuselageTriangulation()
     myAISContext->SetDisplayMode(triangulation, 1);
     myAISContext->SetColor(triangulation, Quantity_NOC_BLUE2);
     myAISContext->Display(triangulation);
-
-    //DrawXYZAxis();
 }
 
 
@@ -694,7 +682,6 @@ void TIGLViewerDocument::drawWingSamplePoints()
             }
         }
     }
-//    DrawXYZAxis();
 }
 
 
@@ -736,8 +723,6 @@ void TIGLViewerDocument::drawFuselageSamplePoints()
 			}
 		}
 	}
-
-	// DrawXYZAxis();
 }
 
 
@@ -776,8 +761,6 @@ void TIGLViewerDocument::drawFuselageSamplePointsAngle()
 
 	Handle(OCC_Point) aGraphicPoint = new OCC_Point(x, y, z);
 	myAISContext->Display(aGraphicPoint, Standard_False);
-
-//	DrawXYZAxis();
 }
 
 
