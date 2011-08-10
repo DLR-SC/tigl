@@ -102,7 +102,6 @@ void TIGLViewerDocument::openCpacsConfiguration(const QString fileName)
 								QMessageBox::Abort );
 	}
 	drawAllFuselagesAndWings();
-	myOCC->fitAll();
 }
 
 
@@ -110,7 +109,6 @@ TIGLViewerDocument::~TIGLViewerDocument( )
 {
 	m_cpacsHandle = -1;
 }
-
 
 // Returns the CPACS configuration
 tigl::CCPACSConfiguration& TIGLViewerDocument::GetConfiguration(void) const
@@ -248,8 +246,6 @@ void TIGLViewerDocument::tiglApproximateBsplineWireAction()
 
 void TIGLViewerDocument::drawAllFuselagesAndWings( )
 {
-	myAISContext->EraseAll(Standard_False);
-
 	// Draw all wings
 	for (int w = 1; w <= GetConfiguration().GetWingCount(); w++)
 	{
@@ -655,7 +651,7 @@ void TIGLViewerDocument::drawWingSamplePoints()
             for (double xsi = 0.0; xsi <= 1.0; xsi += 0.1)
             {
                 double x, y, z;
-                TiglReturnCode res = tiglWingGetUpperPoint(
+                tiglWingGetUpperPoint(
                     m_cpacsHandle,
                     1,	// TODO: we need to implement that function to use UID instead of index!
                     segmentIndex,
@@ -762,6 +758,134 @@ void TIGLViewerDocument::drawFuselageSamplePointsAngle()
 	Handle(OCC_Point) aGraphicPoint = new OCC_Point(x, y, z);
 	myAISContext->Display(aGraphicPoint, Standard_False);
 }
+
+
+void TIGLViewerDocument::drawAllFuselagesAndWingsSurfacePoints()
+{
+	 myAISContext->EraseAll(Standard_False);
+	std::ostringstream text;
+
+	// Draw all wings
+	for (int wingIndex = 1; wingIndex <= GetConfiguration().GetWingCount(); wingIndex++)
+	{
+		tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingIndex);
+
+		for (int segmentIndex = 1; segmentIndex <= wing.GetSegmentCount(); segmentIndex++)
+		{
+			tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(segmentIndex);
+			TopoDS_Shape loft = segment.GetLoft();
+			// Transform by wing transformation
+			loft = wing.GetWingTransformation().Transform(loft);
+			Handle(AIS_Shape) shape = new AIS_Shape(loft);
+			shape->SetColor(Quantity_NOC_BLUE2);
+			myAISContext->Display(shape, Standard_True);
+
+			for (double eta = 0.0; eta <= 1.0; eta += 0.1)
+			{
+				for (double xsi = 0.0; xsi <= 1.0; xsi += 0.1)
+				{
+					double x, y, z;
+					tiglWingGetUpperPoint(
+						m_cpacsHandle,
+						wingIndex,
+						segmentIndex,
+						eta,
+						xsi,
+						&x,
+						&y,
+						&z);
+
+					Handle(OCC_Point) aGraphicPoint = new OCC_Point(x, y, z);
+					myAISContext->Display(aGraphicPoint,Standard_False);
+					//text << "PT(" << xsi << ", " << eta << ")";
+					//text << "(" << x << ", " << y << ", " << z << ")";
+					//DisplayPoint(gp_Pnt(x, y, z), const_cast<char*>(text.str().c_str()), Standard_False, 0.0, 0.0, 0.0, 2.0);
+					//text.str("");
+
+					tiglWingGetLowerPoint(
+						m_cpacsHandle,
+						wingIndex,
+						segmentIndex,
+						eta,
+						xsi,
+						&x,
+						&y,
+						&z);
+
+					aGraphicPoint = new OCC_Point(x, y, z);
+					myAISContext->Display(aGraphicPoint,Standard_False);
+				}
+			}
+		}
+	}
+
+	// Draw all fuselages
+	for (int fuselageIndex = 1; fuselageIndex <= GetConfiguration().GetFuselageCount(); fuselageIndex++)
+	{
+		tigl::CCPACSFuselage& fuselage = GetConfiguration().GetFuselage(fuselageIndex);
+
+		for (int segmentIndex = 1; segmentIndex <= fuselage.GetSegmentCount(); segmentIndex++)
+		{
+			// Draw segment loft
+			tigl::CCPACSFuselageSegment& segment = (tigl::CCPACSFuselageSegment &) fuselage.GetSegment(segmentIndex);
+			TopoDS_Shape loft = segment.GetLoft();
+			// Transform by fuselage transformation
+			loft = fuselage.GetFuselageTransformation().Transform(loft);
+			Handle(AIS_Shape) shape = new AIS_Shape(loft);
+			shape->SetColor(Quantity_NOC_BLUE2);
+			myAISContext->Display(shape, Standard_True);
+
+			// Draw some points on the fuselage segment
+			for (double eta = 0.0; eta <= 1.0; eta += 0.25)
+			{
+				for (double zeta = 0.0; zeta <= 1.0; zeta += 0.1)
+				{
+					double x, y, z;
+					tiglFuselageGetPoint(
+										m_cpacsHandle,
+										fuselageIndex,
+										segmentIndex,
+										eta,
+										zeta,
+										&x,
+										&y,
+										&z);
+
+					Handle(OCC_Point) aGraphicPoint = new OCC_Point(x, y, z);
+					myAISContext->Display(aGraphicPoint,Standard_False);
+				}
+			}
+		}
+	}
+}
+
+
+// -----------------------
+// Export Functions
+// -----------------------
+
+void TIGLViewerDocument::exportWithTigl()
+{
+//    CFileDialog dlg(FALSE,_T("*.iges"),NULL,OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,
+//        "IGES Files (*.iges )|*.iges;|IGES Files (*.igs )| *.igs;||", NULL );
+//
+//    if (dlg.DoModal() == IDOK)
+//    {
+//        SetCursor(AfxGetApp()->LoadStandardCursor(IDC_WAIT));
+//        std::string filename(dlg.GetPathName());
+//        char* filenamePtr = const_cast<char*>(filename.c_str());
+//        TiglReturnCode err = tiglExportIGES(m_cpacsHandle, filenamePtr);
+//        SetCursor(AfxGetApp()->LoadStandardCursor(IDC_ARROW));
+//        if (err != TIGL_SUCCESS)
+//        {
+//            std::ostringstream str;
+//            str << "Error while exporting as IGES, Error code = " << err;
+//            AfxMessageBox(str.str().c_str(), MB_ICONERROR | MB_OK);
+//        }
+//    }
+}
+
+
 
 
 

@@ -64,7 +64,8 @@ public:
 
 public slots:
 	// Aircraft slots
-	void drawAllFuselagesAndWings( );
+	void drawAllFuselagesAndWings();
+	void drawAllFuselagesAndWingsSurfacePoints();
 
 	// Wing slots
 	void drawWingProfiles();
@@ -84,6 +85,7 @@ public slots:
 	void tiglInterpolateBsplineWire();
 	void tiglInterpolateLinearWire();
 	void tiglApproximateBsplineWireAction();
+	void exportWithTigl();
 
 private slots:
 

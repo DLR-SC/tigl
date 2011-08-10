@@ -78,6 +78,9 @@ void TIGLViewerWindow::setInitialCpacsFileName(QString filename)
 {
 	cpacsFileName = filename;
 	cpacsConfiguration->openCpacsConfiguration(filename);
+	statusBar()->showMessage(tr("Hello and welcome to TIGLViewer :)"));
+	myOCC->viewAxo();
+	myOCC->fitAll();
 }
 
 
@@ -132,6 +135,7 @@ void TIGLViewerWindow::open()
 		reader.importModel ( fileInfo.absoluteFilePath(), format, myOCC->getContext() );
 	}
 
+	myOCC->viewAxo();
 	myOCC->fitAll();
 }
 
@@ -144,7 +148,41 @@ TIGLViewerWidget* TIGLViewerWindow::getMyOCC()
 
 void TIGLViewerWindow::save()
 {
+	QString 	fileName;
+	QString		fileType;
+	QFileInfo	fileInfo;
+
+	TIGLViewerInputOutput::FileFormat format;
+	TIGLViewerInputOutput writer;
+
     statusBar()->showMessage(tr("Invoked File|Save"));
+
+    fileName = QFileDialog::getSaveFileName(this, tr("Save as..."), myLastFolder, tr("Geometry Export (*.iges *.brep *.step *.stl *.vrml)"));
+
+    if (!fileName.isEmpty())
+	{
+		fileInfo.setFile(fileName);
+		fileType = fileInfo.suffix();
+		if (fileType.toLower() == tr("brep") || fileType.toLower() == tr("rle"))
+		{
+			format = TIGLViewerInputOutput::FormatBREP;
+		}
+		if (fileType.toLower() == tr("step") || fileType.toLower() == tr("stp"))
+		{
+			format = TIGLViewerInputOutput::FormatSTEP;
+		}
+		if (fileType.toLower() == tr("iges") || fileType.toLower() == tr("igs"))
+		{
+			format = TIGLViewerInputOutput::FormatIGES;
+		}
+		if (fileType.toLower() == tr("stl"))
+		{
+			format = TIGLViewerInputOutput::FormatSTL;
+		}
+
+		myLastFolder = fileInfo.absolutePath();
+		writer.exportModel ( fileInfo.absoluteFilePath(), format, myOCC->getContext() );
+	}
 }
 
 void TIGLViewerWindow::print()
@@ -404,10 +442,14 @@ void TIGLViewerWindow::createActions()
 
 
 
-	// CPACS Fuselage Actions
+	// CPACS Aircraft Actions
 	showAllWingsAndFuselagesAction = new QAction( tr("Show all Fuselages and Wings"), this );
 	showAllWingsAndFuselagesAction->setStatusTip(tr("Show all Fuselages and Wings."));
 	connect(showAllWingsAndFuselagesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawAllFuselagesAndWings()));
+
+	showAllWingsAndFuselagesSurfacePointsAction = new QAction( tr("Show sample Surface points on Fuselages and Wings"), this );
+	showAllWingsAndFuselagesSurfacePointsAction->setStatusTip(tr("Show sample Surface points on Fuselages and Wings."));
+	connect(showAllWingsAndFuselagesSurfacePointsAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawAllFuselagesAndWingsSurfacePoints()));
 
 
 	// CPACS Fuselage Actions
@@ -446,6 +488,9 @@ void TIGLViewerWindow::createActions()
 	tiglApproximateBsplineWireAction->setStatusTip(tr("Use a BSpline approximation for the points of a wire"));
 	connect(tiglApproximateBsplineWireAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(tiglApproximateBsplineWireAction()));
 
+	tiglExportIgesAction = new QAction( tr("Export Model With TIGL"), this );
+	tiglExportIgesAction->setStatusTip(tr("Export Model With TIGL"));
+	connect(tiglExportIgesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportWithTigl()));
 
 
 	// The co-ordinates from the view
@@ -484,6 +529,7 @@ void TIGLViewerWindow::createMenus()
 	cpacsMenu = menuBar()->addMenu( tr("&CPACS") );
 		cpacsAircraftMenu = cpacsMenu->addMenu( tr("&Aircraft Methods") );
 		cpacsAircraftMenu->addAction( showAllWingsAndFuselagesAction );
+		cpacsAircraftMenu->addAction( showAllWingsAndFuselagesSurfacePointsAction );
 
 		cpacsWingMenu = cpacsMenu->addMenu( tr("&Wing Methods") );
 			cpacsWingMenu->addAction( drawWingsAction );
@@ -499,12 +545,16 @@ void TIGLViewerWindow::createMenus()
 			cpacsFuselageMenu->addAction( drawFuselageSamplePointsAction );
 			cpacsFuselageMenu->addAction( drawFuselageSamplePointsAngleAction );
 
+
 	// TIGL menu
 	tiglMenu = menuBar()->addMenu( tr("&TIGL Methods") );
 		tiglAlgorithmMenu = tiglMenu->addMenu( tr("Algorithm") );
 			tiglAlgorithmMenu->addAction( tiglInterpolateBsplineWireAction );
 			tiglAlgorithmMenu->addAction( tiglInterpolateLinearWireAction );
 			tiglAlgorithmMenu->addAction( tiglApproximateBsplineWireAction );
+
+		tiglExportMenu = fileMenu->addMenu( tr("&Export unsing TIGL") );
+			tiglExportMenu->addAction( tiglExportIgesAction );
 
 
 	viewMenu = menuBar()->addMenu( tr("&View") );
