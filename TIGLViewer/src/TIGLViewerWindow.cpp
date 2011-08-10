@@ -187,44 +187,96 @@ void TIGLViewerWindow::save()
 
 void TIGLViewerWindow::print()
 {
-    statusBar()->showMessage(tr("Invoked File|Print"));
+	QMessageBox msgBox;
+	QString text = 	"Printing is not yet implemented!<br>Go to TIGLViewer project page \
+					(<a href=\"http://code.google.com/p/tigl/\">http://code.google.com/p/tigl/</a>) and make a feature request";
+
+	statusBar()->showMessage(tr("Invoked File|Print"));
+
+	msgBox.setWindowTitle("Undo not yet implemented!");
+	msgBox.setText(text);
+	msgBox.exec();
 }
 
 void TIGLViewerWindow::undo()
 {
-    statusBar()->showMessage(tr("Invoked Edit|Undo"));
+	QMessageBox msgBox;
+	QString text = 	"Undo is not yet implemented!<br>Go to TIGLViewer project page \
+					(<a href=\"http://code.google.com/p/tigl/\">http://code.google.com/p/tigl/</a>) and make a feature request";
+
+	statusBar()->showMessage(tr("Invoked Edit|Undo"));
+
+	msgBox.setWindowTitle("Undo not yet implemented!");
+	msgBox.setText(text);
+	msgBox.exec();
 }
 
 void TIGLViewerWindow::redo()
 {
+	QMessageBox msgBox;
+	QString text = 	"Redo is not yet implemented!<br>Go to TIGLViewer project page \
+					(<a href=\"http://code.google.com/p/tigl/\">http://code.google.com/p/tigl/</a>) and make a feature request";
+
     statusBar()->showMessage(tr("Invoked Edit|Redo"));
+
+	msgBox.setWindowTitle("Redo not yet implemented!");
+	msgBox.setText(text);
+	msgBox.exec();
 }
 
 void TIGLViewerWindow::cut()
 {
+	QMessageBox msgBox;
+	QString text = 	"Cut is not yet implemented!<br>Go to TIGLViewer project page \
+					(<a href=\"http://code.google.com/p/tigl/\">http://code.google.com/p/tigl/</a>) and make a feature request";
+
     statusBar()->showMessage(tr("Invoked Edit|Cut"));
+
+	msgBox.setWindowTitle("Cut not yet implemented!");
+	msgBox.setText(text);
+	msgBox.exec();
 }
 
 void TIGLViewerWindow::copy()
 {
+	QMessageBox msgBox;
+	QString text = 	"Copy is not yet implemented!<br>Go to TIGLViewer project page \
+					(<a href=\"http://code.google.com/p/tigl/\">http://code.google.com/p/tigl/</a>) and make a feature request";
+
     statusBar()->showMessage(tr("Invoked Edit|Copy"));
+
+	msgBox.setWindowTitle("Copy not yet implemented!");
+	msgBox.setText(text);
+	msgBox.exec();
 }
 
 void TIGLViewerWindow::paste()
 {
+	QMessageBox msgBox;
+	QString text = 	"Paste is not yet implemented!<br>Go to TIGLViewer project page \
+					(<a href=\"http://code.google.com/p/tigl/\">http://code.google.com/p/tigl/</a>) and make a feature request";
+
     statusBar()->showMessage(tr("Invoked Edit|Paste"));
+
+	msgBox.setWindowTitle("Paste not yet implemented!");
+	msgBox.setText(text);
+	msgBox.exec();
 }
 
 void TIGLViewerWindow::about()
 {
-	char text[200];
-	sprintf(text, "The <b>TIGLViewer</b> allows you to view CPACS geometries.<br> \
-				   Copyright (C) 2007-2011 German Aerospace Center (DLR/SC) <br><br> \
-				   TIXI version: %s <br> \
-				   TIGL version: %s", tixiGetVersion(), tiglGetVersion());
+	QString text;
 	QString tixiVersion(tixiGetVersion());
+	QString tiglVersion(tiglGetVersion());
+
+	text = 	"The <b>TIGLViewer</b> allows you to view CPACS geometries.<br> \
+				   Copyright (C) 2007-2011 German Aerospace Center (DLR/SC) <br><br>";
+	text += "TIXI version: " + tixiVersion + "<br>";
+	text += "TIGL version: " + tiglVersion + "<br><br>";
+	text += "Visit the TIGLViewer project page at <a href=\"http://code.google.com/p/tigl/\">http://code.google.com/p/tigl/</a>";
+
     statusBar()->showMessage(tr("Invoked Help|About"));
-    QMessageBox::about(this, tr("About Menu"), tr(text));
+    QMessageBox::about(this, tr("About Menu"), text);
 }
 
 void TIGLViewerWindow::aboutQt()
@@ -553,7 +605,7 @@ void TIGLViewerWindow::createMenus()
 			tiglAlgorithmMenu->addAction( tiglInterpolateLinearWireAction );
 			tiglAlgorithmMenu->addAction( tiglApproximateBsplineWireAction );
 
-		tiglExportMenu = fileMenu->addMenu( tr("&Export unsing TIGL") );
+		tiglExportMenu = tiglMenu->addMenu( tr("&Export unsing TIGL") );
 			tiglExportMenu->addAction( tiglExportIgesAction );
 
 
