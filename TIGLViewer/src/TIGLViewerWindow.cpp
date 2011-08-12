@@ -292,7 +292,7 @@ void TIGLViewerWindow::xyzPosition (V3d_Coordinate X,
 	QString aString;
 	QTextStream ts(&aString);
 	ts << X << "," << Y << "," << Z;
-	statusBar()->showMessage(aString);
+	//statusBar()->showMessage(aString); // do not bother user with x,y,z crap
 }
 
 void TIGLViewerWindow::addPoint (V3d_Coordinate X,
@@ -541,6 +541,10 @@ void TIGLViewerWindow::createActions()
 	connect(tiglApproximateBsplineWireAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(tiglApproximateBsplineWireAction()));
 
 	// Export functions
+	tiglExportFusedIgesAction = new QAction( tr("Export Fused Model as IGES"), this );
+	tiglExportFusedIgesAction->setStatusTip(tr("Export Fused Model as IGES"));
+	connect(tiglExportFusedIgesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportFusedAsIges()));
+
 	tiglExportIgesAction = new QAction( tr("Export Model as IGES"), this );
 	tiglExportIgesAction->setStatusTip(tr("Export Model as IGES"));
 	connect(tiglExportIgesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportAsIges()));
@@ -552,6 +556,23 @@ void TIGLViewerWindow::createActions()
 	tiglExportMeshedFuselageSTL = new QAction( tr("Export meshed Fuselage as STL"), this );
 	tiglExportMeshedFuselageSTL->setStatusTip(tr("Export meshed Fuselage as STL"));
 	connect(tiglExportMeshedFuselageSTL, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportMeshedFuselageSTL()));
+
+	tiglExportMeshedWingVTK = new QAction( tr("Export meshed Wing as VTK"), this );
+	tiglExportMeshedWingVTK->setStatusTip(tr("Export meshed Wing as VTK"));
+	connect(tiglExportMeshedWingVTK, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportMeshedWingVTK()));
+
+	tiglExportMeshedWingVTKsimple = new QAction( tr("Export meshed Wing as simple VTK"), this );
+	tiglExportMeshedWingVTKsimple->setStatusTip(tr("Export meshed Wing as simple VTK - no cpacs realted export"));
+	connect(tiglExportMeshedWingVTKsimple, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportMeshedWingVTKsimple()));
+
+	tiglExportMeshedFuselageVTK = new QAction( tr("Export meshed Fuselage as VTK"), this );
+	tiglExportMeshedFuselageVTK->setStatusTip(tr("Export meshed Fuselage as VTK"));
+	connect(tiglExportMeshedFuselageVTK, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportMeshedFuselageVTK()));
+
+	tiglExportMeshedFuselageVTKsimple = new QAction( tr("Export meshed Fuselage as simple VTK"), this );
+	tiglExportMeshedFuselageVTKsimple->setStatusTip(tr("Export meshed Fuselage as simple VTK - no cpacs realted export"));
+	connect(tiglExportMeshedFuselageVTKsimple, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportMeshedFuselageVTKsimple()));
+
 
 
 	// The co-ordinates from the view
@@ -616,8 +637,14 @@ void TIGLViewerWindow::createMenus()
 
 		tiglExportMenu = tiglMenu->addMenu( tr("&Export unsing TIGL") );
 			tiglExportMenu->addAction( tiglExportIgesAction );
+			tiglExportMenu->addAction( tiglExportFusedIgesAction );
 			tiglExportMenu->addAction( tiglExportMeshedWingSTL );
 			tiglExportMenu->addAction( tiglExportMeshedFuselageSTL );
+			tiglExportMenu->addAction( tiglExportMeshedWingVTK );
+			tiglExportMenu->addAction( tiglExportMeshedWingVTKsimple );
+			tiglExportMenu->addAction( tiglExportMeshedFuselageVTK );
+			tiglExportMenu->addAction( tiglExportMeshedFuselageVTKsimple );
+
 
 
 	viewMenu = menuBar()->addMenu( tr("&View") );

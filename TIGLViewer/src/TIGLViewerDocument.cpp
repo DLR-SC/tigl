@@ -876,7 +876,6 @@ void TIGLViewerDocument::drawAllFuselagesAndWingsSurfacePoints()
 // -----------------------
 void TIGLViewerDocument::exportAsIges()
 {
-
 	QString 	fileName;
 	QString		fileType;
 	QFileInfo	fileInfo;
@@ -895,9 +894,29 @@ void TIGLViewerDocument::exportAsIges()
 	}
 }
 
+
+void TIGLViewerDocument::exportFusedAsIges()
+{
+	QString 	fileName;
+	QString		fileType;
+	QFileInfo	fileInfo;
+
+	TIGLViewerInputOutput writer;
+
+	writeToStatusBar(tr("Saving fused model as IGES file with TIGL..."));
+
+	fileName = QFileDialog::getSaveFileName(parent, tr("Save as..."), myLastFolder, tr("Export IGES(*.iges *.igs)"));
+
+	if (!fileName.isEmpty())
+	{
+		QApplication::setOverrideCursor( Qt::WaitCursor );
+		TiglReturnCode err = tiglExportFusedWingFuselageIGES(m_cpacsHandle, qstringToCstring(fileName));
+		QApplication::restoreOverrideCursor();
+	}
+}
+
 void TIGLViewerDocument::exportMeshedWingSTL()
 {
-
 	QString 	fileName;
 	QString		fileType;
 	QFileInfo	fileInfo;
@@ -921,7 +940,6 @@ void TIGLViewerDocument::exportMeshedWingSTL()
 
 void TIGLViewerDocument::exportMeshedFuselageSTL()
 {
-
 	QString 	fileName;
 	QString		fileType;
 	QFileInfo	fileInfo;
@@ -937,6 +955,95 @@ void TIGLViewerDocument::exportMeshedFuselageSTL()
 	{
 		QApplication::setOverrideCursor( Qt::WaitCursor );
 		TiglReturnCode err = tiglExportMeshedFuselageSTL(m_cpacsHandle, 1 /*fuselageUid*/, qstringToCstring(fileName), 0.01);
+		QApplication::restoreOverrideCursor();
+	}
+}
+
+
+void TIGLViewerDocument::exportMeshedWingVTK()
+{
+	QString 	fileName;
+	QString		fileType;
+	QFileInfo	fileInfo;
+	TIGLViewerInputOutput writer;
+
+	//QString wingUid = dlgGetWingSelection(); // TODO: switch to uid based export
+
+	writeToStatusBar(tr("Saving meshed Wing as VTK file with TIGL..."));
+
+	fileName = QFileDialog::getSaveFileName(parent, tr("Save as..."), myLastFolder, tr("Export STL(*.stl)"));
+
+	if (!fileName.isEmpty())
+	{
+		QApplication::setOverrideCursor( Qt::WaitCursor );
+		TiglReturnCode err = tiglExportMeshedWingVTKByIndex(m_cpacsHandle, 1 /*wingUid*/, qstringToCstring(fileName), 0.1);
+		QApplication::restoreOverrideCursor();
+	}
+}
+
+
+void TIGLViewerDocument::exportMeshedWingVTKsimple()
+{
+	QString 	fileName;
+	QString		fileType;
+	QFileInfo	fileInfo;
+	TIGLViewerInputOutput writer;
+
+	QString wingUid = dlgGetWingSelection();
+
+	writeToStatusBar(tr("Saving meshed Wing as simple VTK file with TIGL..."));
+
+	fileName = QFileDialog::getSaveFileName(parent, tr("Save as..."), myLastFolder, tr("Export STL(*.stl)"));
+
+	if (!fileName.isEmpty())
+	{
+		QApplication::setOverrideCursor( Qt::WaitCursor );
+		TiglReturnCode err = tiglExportMeshedWingVTKSimpleByUID(m_cpacsHandle, qstringToCstring(wingUid), qstringToCstring(fileName), 0.1);
+		QApplication::restoreOverrideCursor();
+	}
+}
+
+
+
+void TIGLViewerDocument::exportMeshedFuselageVTK()
+{
+	QString 	fileName;
+	QString		fileType;
+	QFileInfo	fileInfo;
+	TIGLViewerInputOutput writer;
+
+	//QString wingUid = dlgGetWingSelection(); // TODO: switch to uid based export
+
+	writeToStatusBar(tr("Saving meshed Fuselage as VTK file with TIGL..."));
+
+	fileName = QFileDialog::getSaveFileName(parent, tr("Save as..."), myLastFolder, tr("Export STL(*.stl)"));
+
+	if (!fileName.isEmpty())
+	{
+		QApplication::setOverrideCursor( Qt::WaitCursor );
+		TiglReturnCode err = tiglExportMeshedFuselageVTKByIndex(m_cpacsHandle, 1 /*wingUid*/, qstringToCstring(fileName), 0.1);
+		QApplication::restoreOverrideCursor();
+	}
+}
+
+
+void TIGLViewerDocument::exportMeshedFuselageVTKsimple()
+{
+	QString 	fileName;
+	QString		fileType;
+	QFileInfo	fileInfo;
+	TIGLViewerInputOutput writer;
+
+	QString fuselageUid = dlgGetFuselageSelection();
+
+	writeToStatusBar(tr("Saving meshed Fuselage as simple VTK file with TIGL..."));
+
+	fileName = QFileDialog::getSaveFileName(parent, tr("Save as..."), myLastFolder, tr("Export STL(*.stl)"));
+
+	if (!fileName.isEmpty())
+	{
+		QApplication::setOverrideCursor( Qt::WaitCursor );
+		TiglReturnCode err = tiglExportMeshedFuselageVTKSimpleByUID(m_cpacsHandle, qstringToCstring(fuselageUid), qstringToCstring(fileName), 0.1);
 		QApplication::restoreOverrideCursor();
 	}
 }
