@@ -540,9 +540,9 @@ void TIGLViewerWindow::createActions()
 	tiglApproximateBsplineWireAction->setStatusTip(tr("Use a BSpline approximation for the points of a wire"));
 	connect(tiglApproximateBsplineWireAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(tiglApproximateBsplineWireAction()));
 
-	tiglExportIgesAction = new QAction( tr("Export Model With TIGL"), this );
-	tiglExportIgesAction->setStatusTip(tr("Export Model With TIGL"));
-	connect(tiglExportIgesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportWithTigl()));
+	tiglExportIgesAction = new QAction( tr("Export Model as IGES"), this );
+	tiglExportIgesAction->setStatusTip(tr("Export Model as IGES"));
+	connect(tiglExportIgesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportAsIges()));
 
 
 	// The co-ordinates from the view
@@ -647,3 +647,5 @@ void TIGLViewerWindow::createMenus()
     helpMenu->addAction(aboutAction);
     helpMenu->addAction(aboutQtAction);
 }
+
+
