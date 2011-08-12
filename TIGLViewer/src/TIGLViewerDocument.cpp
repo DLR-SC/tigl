@@ -22,6 +22,10 @@
 #include <qnamespace.h>
 #include <QMessageBox>
 #include <QInputDialog>
+#include <QStatusBar>
+#include <QFileInfo>
+#include <QFileDialog>
+#include <QApplication>
 
 #include <string.h>
 
@@ -45,6 +49,15 @@ TIGLViewerDocument::TIGLViewerDocument( QWidget *parentWidget, const Handle_AIS_
 	myOCC = ((TIGLViewerWindow*) parent)->getMyOCC();
 }
 
+void TIGLViewerDocument::writeToStatusBar(QString text)
+{
+	((TIGLViewerWindow*) parent)->statusBar()->showMessage(text);
+}
+
+char* TIGLViewerDocument::qstringToCstring(QString text)
+{
+	return _strdup((const char*)text.toLatin1());
+}
 
 void TIGLViewerDocument::openCpacsConfiguration(const QString fileName)
 {
@@ -54,8 +67,7 @@ void TIGLViewerDocument::openCpacsConfiguration(const QString fileName)
 
 	TixiDocumentHandle tixiHandle = -1;
 
-	char *cfileName = _strdup((const char*)fileName.toLatin1());
-	ReturnCode tixiRet = tixiOpenDocument(cfileName, &tixiHandle);
+	ReturnCode tixiRet = tixiOpenDocument(qstringToCstring(fileName), &tixiHandle);
 	if (tixiRet != SUCCESS) {
 		//return FALSE;
 	}
@@ -70,8 +82,7 @@ void TIGLViewerDocument::openCpacsConfiguration(const QString fileName)
 		char *text;
 		tixiRet = tixiGetTextAttribute( tixiHandle, CPACS_XPATH_AIRCRAFT_MODEL, "uID", &text);
 		configurations << text;
-	}
-	for (int i = 0; i < countRotorcrafts; i++) {
+	}	for (int i = 0; i < countRotorcrafts; i++) {
 		char *text;
 		tixiRet = tixiGetTextAttribute(tixiHandle, CPACS_XPATH_ROTORCRAFT_MODEL, "uID", &text);
 		configurations << text;
@@ -864,25 +875,25 @@ void TIGLViewerDocument::drawAllFuselagesAndWingsSurfacePoints()
 // Export Functions
 // -----------------------
 
-void TIGLViewerDocument::exportWithTigl()
+void TIGLViewerDocument::exportAsIges()
 {
-//    CFileDialog dlg(FALSE,_T("*.iges"),NULL,OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,
-//        "IGES Files (*.iges )|*.iges;|IGES Files (*.igs )| *.igs;||", NULL );
-//
-//    if (dlg.DoModal() == IDOK)
-//    {
-//        SetCursor(AfxGetApp()->LoadStandardCursor(IDC_WAIT));
-//        std::string filename(dlg.GetPathName());
-//        char* filenamePtr = const_cast<char*>(filename.c_str());
-//        TiglReturnCode err = tiglExportIGES(m_cpacsHandle, filenamePtr);
-//        SetCursor(AfxGetApp()->LoadStandardCursor(IDC_ARROW));
-//        if (err != TIGL_SUCCESS)
-//        {
-//            std::ostringstream str;
-//            str << "Error while exporting as IGES, Error code = " << err;
-//            AfxMessageBox(str.str().c_str(), MB_ICONERROR | MB_OK);
-//        }
-//    }
+
+	QString 	fileName;
+	QString		fileType;
+	QFileInfo	fileInfo;
+
+	TIGLViewerInputOutput writer;
+
+	writeToStatusBar(tr("Saving as IGES file with TIGL..."));
+
+	fileName = QFileDialog::getSaveFileName(parent, tr("Save as..."), myLastFolder, tr("Export as IGES(*.iges *.igs)"));
+
+	if (!fileName.isEmpty())
+	{
+		QApplication::setOverrideCursor( Qt::WaitCursor );
+		TiglReturnCode err = tiglExportIGES(m_cpacsHandle, qstringToCstring(fileName));
+		QApplication::restoreOverrideCursor();
+	}
 }
 
 

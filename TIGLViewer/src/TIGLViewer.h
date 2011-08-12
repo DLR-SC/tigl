@@ -40,6 +40,7 @@
 #include <Quantity_NameOfColor.hxx>
 #include <V3d_Coordinate.hxx>
 
+
 #ifdef WNT
 #include <Handle_WNT_Window.hxx>
 #else

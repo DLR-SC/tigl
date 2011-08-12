@@ -85,7 +85,7 @@ public slots:
 	void tiglInterpolateBsplineWire();
 	void tiglInterpolateLinearWire();
 	void tiglApproximateBsplineWireAction();
-	void exportWithTigl();
+	void exportAsIges();
 
 private slots:
 
@@ -104,6 +104,10 @@ private:
     QWidget* 								parent;
     Handle_AIS_InteractiveContext			myAISContext;
     TIGLViewerWidget*     					myOCC;
+
+    void writeToStatusBar(QString text);
+    QString myLastFolder; // TODO: synchronize with TIGLViewerWindow
+    char* qstringToCstring(QString text);
 	
 };
 
