@@ -874,7 +874,6 @@ void TIGLViewerDocument::drawAllFuselagesAndWingsSurfacePoints()
 // -----------------------
 // Export Functions
 // -----------------------
-
 void TIGLViewerDocument::exportAsIges()
 {
 
@@ -886,7 +885,7 @@ void TIGLViewerDocument::exportAsIges()
 
 	writeToStatusBar(tr("Saving as IGES file with TIGL..."));
 
-	fileName = QFileDialog::getSaveFileName(parent, tr("Save as..."), myLastFolder, tr("Export as IGES(*.iges *.igs)"));
+	fileName = QFileDialog::getSaveFileName(parent, tr("Save as..."), myLastFolder, tr("Export IGES(*.iges *.igs)"));
 
 	if (!fileName.isEmpty())
 	{
@@ -896,7 +895,51 @@ void TIGLViewerDocument::exportAsIges()
 	}
 }
 
+void TIGLViewerDocument::exportMeshedWingSTL()
+{
 
+	QString 	fileName;
+	QString		fileType;
+	QFileInfo	fileInfo;
+	TIGLViewerInputOutput writer;
+
+	//QString wingUid = dlgGetWingSelection(); // TODO: switch to uid based export
+
+	writeToStatusBar(tr("Saving meshed Wing as STL file with TIGL..."));
+
+	fileName = QFileDialog::getSaveFileName(parent, tr("Save as..."), myLastFolder, tr("Export STL(*.stl)"));
+
+	if (!fileName.isEmpty())
+	{
+		QApplication::setOverrideCursor( Qt::WaitCursor );
+		TiglReturnCode err = tiglExportMeshedWingSTL(m_cpacsHandle, 1 /*wingUid*/, qstringToCstring(fileName), 0.01);
+		QApplication::restoreOverrideCursor();
+	}
+}
+
+
+
+void TIGLViewerDocument::exportMeshedFuselageSTL()
+{
+
+	QString 	fileName;
+	QString		fileType;
+	QFileInfo	fileInfo;
+	TIGLViewerInputOutput writer;
+
+	//QString fuselageUid = dlgGetFuselageSelection(); // TODO: switch to uid based export
+
+	writeToStatusBar(tr("Saving meshed Fuselage as STL file with TIGL..."));
+
+	fileName = QFileDialog::getSaveFileName(parent, tr("Save as..."), myLastFolder, tr("Export STL(*.stl)"));
+
+	if (!fileName.isEmpty())
+	{
+		QApplication::setOverrideCursor( Qt::WaitCursor );
+		TiglReturnCode err = tiglExportMeshedFuselageSTL(m_cpacsHandle, 1 /*fuselageUid*/, qstringToCstring(fileName), 0.01);
+		QApplication::restoreOverrideCursor();
+	}
+}
 
 
 
