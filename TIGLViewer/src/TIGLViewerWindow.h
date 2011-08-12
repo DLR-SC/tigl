@@ -153,9 +153,13 @@ private:
 
 	// Export actions
     QAction *tiglExportIgesAction;
+    QAction *tiglExportFusedIgesAction;
     QAction *tiglExportMeshedWingSTL;
     QAction *tiglExportMeshedFuselageSTL;
-
+    QAction *tiglExportMeshedWingVTK;
+    QAction *tiglExportMeshedWingVTKsimple;
+    QAction *tiglExportMeshedFuselageVTK;
+    QAction *tiglExportMeshedFuselageVTKsimple;
 
 	// The OpenCASCADE widget and context;
 	TIGLViewerWidget*     	myOCC;
