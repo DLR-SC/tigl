@@ -540,9 +540,18 @@ void TIGLViewerWindow::createActions()
 	tiglApproximateBsplineWireAction->setStatusTip(tr("Use a BSpline approximation for the points of a wire"));
 	connect(tiglApproximateBsplineWireAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(tiglApproximateBsplineWireAction()));
 
+	// Export functions
 	tiglExportIgesAction = new QAction( tr("Export Model as IGES"), this );
 	tiglExportIgesAction->setStatusTip(tr("Export Model as IGES"));
 	connect(tiglExportIgesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportAsIges()));
+
+	tiglExportMeshedWingSTL = new QAction( tr("Export meshed Wing as STL"), this );
+	tiglExportMeshedWingSTL->setStatusTip(tr("Export meshed Wing as STL"));
+	connect(tiglExportMeshedWingSTL, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportMeshedWingSTL()));
+
+	tiglExportMeshedFuselageSTL = new QAction( tr("Export meshed Fuselage as STL"), this );
+	tiglExportMeshedFuselageSTL->setStatusTip(tr("Export meshed Fuselage as STL"));
+	connect(tiglExportMeshedFuselageSTL, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportMeshedFuselageSTL()));
 
 
 	// The co-ordinates from the view
@@ -607,6 +616,8 @@ void TIGLViewerWindow::createMenus()
 
 		tiglExportMenu = tiglMenu->addMenu( tr("&Export unsing TIGL") );
 			tiglExportMenu->addAction( tiglExportIgesAction );
+			tiglExportMenu->addAction( tiglExportMeshedWingSTL );
+			tiglExportMenu->addAction( tiglExportMeshedFuselageSTL );
 
 
 	viewMenu = menuBar()->addMenu( tr("&View") );

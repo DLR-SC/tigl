@@ -150,7 +150,11 @@ private:
     QAction *tiglInterpolateBsplineWireAction;
     QAction *tiglInterpolateLinearWireAction;
     QAction *tiglApproximateBsplineWireAction;
+
+	// Export actions
     QAction *tiglExportIgesAction;
+    QAction *tiglExportMeshedWingSTL;
+    QAction *tiglExportMeshedFuselageSTL;
 
 
 	// The OpenCASCADE widget and context;

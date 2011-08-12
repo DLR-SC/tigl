@@ -86,6 +86,8 @@ public slots:
 	void tiglInterpolateLinearWire();
 	void tiglApproximateBsplineWireAction();
 	void exportAsIges();
+	void exportMeshedWingSTL();
+	void exportMeshedFuselageSTL();
 
 private slots:
 
