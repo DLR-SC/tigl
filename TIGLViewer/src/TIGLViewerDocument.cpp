@@ -1054,7 +1054,9 @@ void TIGLViewerDocument::drawFusedFuselage()
 	QString fuselageUid = dlgGetFuselageSelection();
 
 	myAISContext->EraseAll(Standard_False);
+	QApplication::setOverrideCursor( Qt::WaitCursor );
 	tigl::CCPACSFuselage& fuselage = GetConfiguration().GetFuselage(fuselageUid.toStdString());
+	QApplication::restoreOverrideCursor();
 	displayShape(fuselage.GetLoft());
 }
 
@@ -1064,11 +1066,20 @@ void TIGLViewerDocument::drawFusedWing()
 	QString wingUid = dlgGetWingSelection();
 
 	myAISContext->EraseAll(Standard_False);
+	QApplication::setOverrideCursor( Qt::WaitCursor );
 	tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
+	QApplication::restoreOverrideCursor();
 	displayShape(wing.GetLoft());
 }
 
 
+void TIGLViewerDocument::drawFusedAircraft()
+{
+	QApplication::setOverrideCursor( Qt::WaitCursor );
+	TopoDS_Shape airplane = GetConfiguration().GetFusedAirplane();
+	QApplication::restoreOverrideCursor();
+	displayShape(airplane);
+}
 
 
 
