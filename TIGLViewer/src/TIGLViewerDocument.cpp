@@ -1082,7 +1082,30 @@ void TIGLViewerDocument::drawFusedAircraft()
 }
 
 
+void TIGLViewerDocument::drawWingFuselageIntersectionLine()
+{
+	QString wingUid = dlgGetWingSelection();
+	QString fuselageUid = dlgGetFuselageSelection();
 
+	/* now calculate intersection and display single points */
+	for (double eta = 0.0; eta <= 1.0; eta += 0.1)
+	{
+		double x, y, z;
+
+		TiglReturnCode res = tiglComponentIntersectionPoint(
+							m_cpacsHandle,
+							qstringToCstring(fuselageUid),	//fuselage UID
+							qstringToCstring(wingUid),	//wing uid
+							1,	// wireID
+							eta,
+							&x,
+							&y,
+							&z);
+
+		OCC_Point* aGraphicPoint = new OCC_Point(x, y, z);
+		myAISContext->Display(aGraphicPoint,Standard_False);
+	}
+}
 
 
 
