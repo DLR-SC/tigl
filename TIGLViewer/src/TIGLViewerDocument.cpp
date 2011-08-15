@@ -1049,4 +1049,31 @@ void TIGLViewerDocument::exportMeshedFuselageVTKsimple()
 }
 
 
+void TIGLViewerDocument::drawFusedFuselage()
+{
+	QString fuselageUid = dlgGetFuselageSelection();
+
+	myAISContext->EraseAll(Standard_False);
+	tigl::CCPACSFuselage& fuselage = GetConfiguration().GetFuselage(fuselageUid.toStdString());
+	displayShape(fuselage.GetLoft());
+}
+
+
+void TIGLViewerDocument::drawFusedWing()
+{
+	QString wingUid = dlgGetWingSelection();
+
+	myAISContext->EraseAll(Standard_False);
+	tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
+	displayShape(wing.GetLoft());
+}
+
+
+
+
+
+
+
+
+
 

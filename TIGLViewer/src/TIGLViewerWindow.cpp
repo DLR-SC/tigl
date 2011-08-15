@@ -456,6 +456,7 @@ void TIGLViewerWindow::createActions()
 
 	viewAxoAction = new QAction(tr("Axonometric"), this);
 	viewAxoAction->setStatusTip(tr("Axonometric view"));
+	viewAxoAction->setShortcut(tr("Ctrl+D"));
     connect(viewAxoAction, SIGNAL(triggered()), myOCC, SLOT(viewAxo()));
 
 	viewGridAction = new QAction(tr("Grid"), this);
@@ -480,8 +481,8 @@ void TIGLViewerWindow::createActions()
 	drawWingOverlayCPACSProfilePointsAction->setStatusTip(tr("Show the profiles point of a wing profile."));
 	connect(drawWingOverlayCPACSProfilePointsAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingOverlayProfilePoints()));
 
-	drawWingsAction = new QAction( tr("Show Wings"), this );
-	drawWingsAction->setStatusTip(tr("Shows a selected wing."));
+	drawWingsAction = new QAction( tr("Show Wing"), this );
+	drawWingsAction->setStatusTip(tr("Shows a wing."));
 	connect(drawWingsAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWing()));
 
 	drawWingTriangulationAction = new QAction( tr("Show Wing triangulation"), this );
@@ -492,6 +493,9 @@ void TIGLViewerWindow::createActions()
 	drawWingSamplePointsAction->setStatusTip(tr("Show sample points on a wing."));
 	connect(drawWingSamplePointsAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingSamplePoints()));
 
+	drawFusedWingAction = new QAction( tr("Show Fused Wing"), this );
+	drawFusedWingAction->setStatusTip(tr("Shows a fused wing."));
+	connect(drawFusedWingAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFusedWing()));
 
 
 	// CPACS Aircraft Actions
@@ -524,6 +528,10 @@ void TIGLViewerWindow::createActions()
 	drawFuselageSamplePointsAngleAction = new QAction( tr("Show Sample Fuselage point at 45°"), this );
 	drawFuselageSamplePointsAngleAction->setStatusTip(tr("Show sample point on a fuselage at 45° and eta = 0.5"));
 	connect(drawFuselageSamplePointsAngleAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFuselageSamplePointsAngle()));
+
+	drawFusedFuselageAction = new QAction( tr("Show Fused Fuselage"), this );
+	drawFusedFuselageAction->setStatusTip(tr("Show a fused fuselage."));
+	connect(drawFusedFuselageAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFusedFuselage()));
 
 
 
@@ -619,6 +627,7 @@ void TIGLViewerWindow::createMenus()
 			cpacsWingMenu->addAction( drawWingOverlayCPACSProfilePointsAction );
 			cpacsWingMenu->addAction( drawWingTriangulationAction );
 			cpacsWingMenu->addAction( drawWingSamplePointsAction );
+			cpacsWingMenu->addAction( drawFusedWingAction );
 
 		cpacsFuselageMenu = cpacsMenu->addMenu( tr("&Fuselage Methods") );
 			cpacsFuselageMenu->addAction( drawFuselageProfilesAction );
@@ -626,6 +635,7 @@ void TIGLViewerWindow::createMenus()
 			cpacsFuselageMenu->addAction( drawFuselageTriangulationAction );
 			cpacsFuselageMenu->addAction( drawFuselageSamplePointsAction );
 			cpacsFuselageMenu->addAction( drawFuselageSamplePointsAngleAction );
+			cpacsFuselageMenu->addAction( drawFusedFuselageAction );
 
 
 	// TIGL menu

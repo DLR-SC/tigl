@@ -73,6 +73,7 @@ public slots:
 	void drawWingOverlayProfilePoints();
 	void drawWingTriangulation();
 	void drawWingSamplePoints();
+	void drawFusedWing();
 
 	// Fuselage slots
 	void drawFuselageProfiles();
@@ -80,6 +81,7 @@ public slots:
 	void drawFuselageTriangulation();
 	void drawFuselageSamplePoints();
 	void drawFuselageSamplePointsAngle();
+	void drawFusedFuselage();
 
 	// TIGL slots
 	void tiglInterpolateBsplineWire();
