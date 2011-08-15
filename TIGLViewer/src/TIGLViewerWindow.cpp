@@ -507,6 +507,10 @@ void TIGLViewerWindow::createActions()
 	showAllWingsAndFuselagesSurfacePointsAction->setStatusTip(tr("Show sample Surface points on Fuselages and Wings."));
 	connect(showAllWingsAndFuselagesSurfacePointsAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawAllFuselagesAndWingsSurfacePoints()));
 
+	drawFusedAircraftAction = new QAction( tr("Show the complete Aircraft fused"), this );
+	drawFusedAircraftAction->setStatusTip(tr("Shows the complete Aircraft fused."));
+	connect(drawFusedAircraftAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFusedAircraft()));
+
 
 	// CPACS Fuselage Actions
 	drawFuselageProfilesAction = new QAction( tr("Show Fuselage Profiles"), this );
@@ -617,25 +621,23 @@ void TIGLViewerWindow::createMenus()
 
 	// CPACS menu
 	cpacsMenu = menuBar()->addMenu( tr("&CPACS") );
-		cpacsAircraftMenu = cpacsMenu->addMenu( tr("&Aircraft Methods") );
-		cpacsAircraftMenu->addAction( showAllWingsAndFuselagesAction );
-		cpacsAircraftMenu->addAction( showAllWingsAndFuselagesSurfacePointsAction );
-
-		cpacsWingMenu = cpacsMenu->addMenu( tr("&Wing Methods") );
-			cpacsWingMenu->addAction( drawWingsAction );
-			cpacsWingMenu->addAction( drawWingProfilesAction );
-			cpacsWingMenu->addAction( drawWingOverlayCPACSProfilePointsAction );
-			cpacsWingMenu->addAction( drawWingTriangulationAction );
-			cpacsWingMenu->addAction( drawWingSamplePointsAction );
-			cpacsWingMenu->addAction( drawFusedWingAction );
-
-		cpacsFuselageMenu = cpacsMenu->addMenu( tr("&Fuselage Methods") );
-			cpacsFuselageMenu->addAction( drawFuselageProfilesAction );
-			cpacsFuselageMenu->addAction( drawFuselageAction );
-			cpacsFuselageMenu->addAction( drawFuselageTriangulationAction );
-			cpacsFuselageMenu->addAction( drawFuselageSamplePointsAction );
-			cpacsFuselageMenu->addAction( drawFuselageSamplePointsAngleAction );
-			cpacsFuselageMenu->addAction( drawFusedFuselageAction );
+		cpacsMenu->addAction( showAllWingsAndFuselagesAction );
+		cpacsMenu->addAction( showAllWingsAndFuselagesSurfacePointsAction );
+		cpacsMenu->addAction( drawFusedAircraftAction );
+		cpacsMenu->addSeparator();
+		cpacsMenu->addAction( drawWingsAction );
+		cpacsMenu->addAction( drawWingProfilesAction );
+		cpacsMenu->addAction( drawWingOverlayCPACSProfilePointsAction );
+		cpacsMenu->addAction( drawWingTriangulationAction );
+		cpacsMenu->addAction( drawWingSamplePointsAction );
+		cpacsMenu->addAction( drawFusedWingAction );
+		cpacsMenu->addSeparator();
+		cpacsMenu->addAction( drawFuselageAction );
+		cpacsMenu->addAction( drawFuselageProfilesAction );
+		cpacsMenu->addAction( drawFuselageTriangulationAction );
+		cpacsMenu->addAction( drawFuselageSamplePointsAction );
+		cpacsMenu->addAction( drawFuselageSamplePointsAngleAction );
+		cpacsMenu->addAction( drawFusedFuselageAction );
 
 
 	// TIGL menu
