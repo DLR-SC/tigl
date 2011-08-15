@@ -511,6 +511,10 @@ void TIGLViewerWindow::createActions()
 	drawFusedAircraftAction->setStatusTip(tr("Shows the complete Aircraft fused."));
 	connect(drawFusedAircraftAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFusedAircraft()));
 
+	drawWingFuselageIntersectionLineAction = new QAction( tr("Show Intersection Line Between Wing and Fuselage"), this );
+	drawWingFuselageIntersectionLineAction->setStatusTip(tr("Show Intersection Line Between Wing and Fuselage"));
+	connect(drawWingFuselageIntersectionLineAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingFuselageIntersectionLine()));
+
 
 	// CPACS Fuselage Actions
 	drawFuselageProfilesAction = new QAction( tr("Show Fuselage Profiles"), this );
@@ -624,6 +628,7 @@ void TIGLViewerWindow::createMenus()
 		cpacsMenu->addAction( showAllWingsAndFuselagesAction );
 		cpacsMenu->addAction( showAllWingsAndFuselagesSurfacePointsAction );
 		cpacsMenu->addAction( drawFusedAircraftAction );
+		cpacsMenu->addAction( drawWingFuselageIntersectionLineAction );
 		cpacsMenu->addSeparator();
 		cpacsMenu->addAction( drawWingsAction );
 		cpacsMenu->addAction( drawWingProfilesAction );
@@ -647,7 +652,7 @@ void TIGLViewerWindow::createMenus()
 			tiglAlgorithmMenu->addAction( tiglInterpolateLinearWireAction );
 			tiglAlgorithmMenu->addAction( tiglApproximateBsplineWireAction );
 
-		tiglExportMenu = tiglMenu->addMenu( tr("&Export unsing TIGL") );
+		tiglExportMenu = tiglMenu->addMenu( tr("&Export using TIGL") );
 			tiglExportMenu->addAction( tiglExportIgesAction );
 			tiglExportMenu->addAction( tiglExportFusedIgesAction );
 			tiglExportMenu->addAction( tiglExportMeshedWingSTL );

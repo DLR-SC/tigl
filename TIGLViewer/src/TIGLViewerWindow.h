@@ -127,6 +127,7 @@ private:
     QAction *showAllWingsAndFuselagesAction;
     QAction *showAllWingsAndFuselagesSurfacePointsAction;
     QAction *drawFusedAircraftAction;
+    QAction *drawWingFuselageIntersectionLineAction;
 
     // Wing actions
     QAction *drawWingsAction;
