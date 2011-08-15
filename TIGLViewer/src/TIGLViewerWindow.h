@@ -137,6 +137,7 @@ private:
     QAction *drawWingOverlayCPACSProfilePointsAction;
     QAction *drawWingTriangulationAction;
     QAction *drawWingSamplePointsAction;
+    QAction *drawFusedWingAction;
 
     // Fuselage actions
     QAction *drawFuselageProfilesAction;
@@ -144,7 +145,7 @@ private:
     QAction *drawFuselageTriangulationAction;
     QAction *drawFuselageSamplePointsAction;
     QAction *drawFuselageSamplePointsAngleAction;
-
+    QAction *drawFusedFuselageAction;
 
     // TIGL actions
     QAction *tiglInterpolateBsplineWireAction;
