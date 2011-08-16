@@ -11,12 +11,12 @@ mkdir TIGL/include
 # build static TIGL
 cd Src
 make clean
-make -f Makefile
+make -j 4 -f Makefile
 cp libTIGL.a ../TIGL/lib
 
 # build shared TIGL
-make -f Makefile.shared clean
-make -f Makefile.shared
+make -j 4 -f Makefile.shared clean
+make -j 4 -f Makefile.shared
 cp libTIGL.so ../TIGL/lib
 cd ..
 
