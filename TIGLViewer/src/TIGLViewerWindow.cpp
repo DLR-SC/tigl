@@ -497,6 +497,10 @@ void TIGLViewerWindow::createActions()
 	drawFusedWingAction->setStatusTip(tr("Shows a fused wing."));
 	connect(drawFusedWingAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFusedWing()));
 
+	drawWingComponentSegmentAction = new QAction( tr("Show Wing Component Segment"), this );
+	drawWingComponentSegmentAction->setStatusTip(tr("Shows a wing component segment."));
+	connect(drawWingComponentSegmentAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingComponentSegment()));
+
 
 	// CPACS Aircraft Actions
 	showAllWingsAndFuselagesAction = new QAction( tr("Show all Fuselages and Wings"), this );
@@ -522,7 +526,7 @@ void TIGLViewerWindow::createActions()
 	connect(drawFuselageProfilesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFuselageProfiles()));
 
 	drawFuselageAction = new QAction( tr("Show Fuselage"), this );
-	drawFuselageAction->setStatusTip(tr("Show a fuselage."));
+	drawFuselageAction->setStatusTip(tr("Shows a fuselage."));
 	connect(drawFuselageAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFuselage()));
 
 	drawFuselageTriangulationAction = new QAction( tr("Show Fuselage triangulation"), this );
@@ -636,6 +640,7 @@ void TIGLViewerWindow::createMenus()
 		cpacsMenu->addAction( drawWingTriangulationAction );
 		cpacsMenu->addAction( drawWingSamplePointsAction );
 		cpacsMenu->addAction( drawFusedWingAction );
+		cpacsMenu->addAction( drawWingComponentSegmentAction );
 		cpacsMenu->addSeparator();
 		cpacsMenu->addAction( drawFuselageAction );
 		cpacsMenu->addAction( drawFuselageProfilesAction );

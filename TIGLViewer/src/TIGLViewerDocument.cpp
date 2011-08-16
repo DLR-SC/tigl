@@ -1108,6 +1108,19 @@ void TIGLViewerDocument::drawWingFuselageIntersectionLine()
 }
 
 
+void TIGLViewerDocument::drawWingComponentSegment()
+{
+	QString wingUid = dlgGetWingSelection();
+
+	myAISContext->EraseAll(Standard_False);
+	QApplication::setOverrideCursor( Qt::WaitCursor );
+	TopoDS_Shape componentSegment = GetConfiguration().GetWing(wingUid.toStdString()).GetComponentSegment(1).GetLoft();
+	QApplication::restoreOverrideCursor();
+	displayShape(componentSegment);
+}
+
+
+
 
 
 
