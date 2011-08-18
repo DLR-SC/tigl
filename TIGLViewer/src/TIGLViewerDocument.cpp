@@ -34,6 +34,10 @@
 #include <AIS_InteractiveContext.hxx>
 #include <BRepAlgoAPI_Fuse.hxx>
 #include <TopoDS_Shell.hxx>
+#include <gce_MakeLin.hxx>
+#include <Handle_Geom_TrimmedCurve.hxx>
+#include <GC_MakeSegment.hxx>:w
+
 
 #include "TIGLViewerDocument.h"
 #include "TIGLViewerInternal.h"
@@ -56,7 +60,7 @@ void TIGLViewerDocument::writeToStatusBar(QString text)
 
 char* TIGLViewerDocument::qstringToCstring(QString text)
 {
-	return _strdup((const char*)text.toLatin1());
+	return strdup((const char*)text.toLatin1());
 }
 
 void TIGLViewerDocument::openCpacsConfiguration(const QString fileName)
@@ -67,7 +71,8 @@ void TIGLViewerDocument::openCpacsConfiguration(const QString fileName)
 
 	TixiDocumentHandle tixiHandle = -1;
 
-	ReturnCode tixiRet = tixiOpenDocument(qstringToCstring(fileName), &tixiHandle);
+	char *cfileName = strdup((const char*)fileName.toLatin1());
+	ReturnCode tixiRet = tixiOpenDocument(cfileName, &tixiHandle);
 	if (tixiRet != SUCCESS) {
 		//return FALSE;
 	}
@@ -100,7 +105,7 @@ void TIGLViewerDocument::openCpacsConfiguration(const QString fileName)
 											 tr("Available Configurations:"), configurations, 0, false, &ok);
 		if (ok && !item.isEmpty())
 		{
-			tiglRet = tiglOpenCPACSConfiguration(tixiHandle, _strdup((const char*)item.toLatin1()), &m_cpacsHandle);
+			tiglRet = tiglOpenCPACSConfiguration(tixiHandle, strdup((const char*)item.toLatin1()), &m_cpacsHandle);
 		}
 	}
 

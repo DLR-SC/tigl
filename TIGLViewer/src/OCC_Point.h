@@ -18,8 +18,6 @@
 #include <AIS_Shape.hxx>
 #include <gp_Lin.hxx>
 #include <Geom_Line.hxx>
-#include <gce_MakeLin.hxx>
-#include <GC_MakeSegment.hxx>
 #include "TopoDS.hxx"
 #include "gp_Pnt2d.hxx"
 #include "gp_Vec2d.hxx"
@@ -34,9 +32,6 @@
 #include "Geom2dAPI_InterCurveCurve.hxx"
 #include "GeomAPI.hxx"
 #include "gp_Pln.hxx"
-#include "gce_MakeDir.hxx"
-#include "gce_MakePln.hxx"
-#include "TopLoc_Location.hxx"
 #include "Poly_Triangulation.hxx"
 #include "BRep_Builder.hxx"
 #include "Poly_Array1OfTriangle.hxx"

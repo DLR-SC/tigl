@@ -1,8 +1,8 @@
 CONFIG(release, release|debug) { 
 	message ("Building Release Version") 
 	LIBS += -L$(CASROOT)/Linux/lib -lBinLPlugin \
-		-lTIGL \
 		-lTIXI \
+		-lTIGL \
 		-lBinPlugin \
 		-lBinXCAFPlugin \
 		-lFWOSPlugin \
@@ -18,12 +18,6 @@ CONFIG(release, release|debug) {
 		-lTKBRep \
 		-lTKCAF \
 		-lTKCDF \
-		-lTKCDLFront \
-		-lTKCPPClient \
-		-lTKCPPExt \
-		-lTKCPPIntExt \
-		-lTKCPPJini \
-		-lTKCSFDBSchema \
 		-lTKernel \
 		-lTKFeat \
 		-lTKFillet \
@@ -32,7 +26,6 @@ CONFIG(release, release|debug) {
 		-lTKGeomAlgo \
 		-lTKGeomBase \
 		-lTKHLR \
-		-lTKIDLFront \
 		-lTKIGES \
 		-lTKLCAF \
 		-lTKMath \
@@ -54,7 +47,6 @@ CONFIG(release, release|debug) {
 		-lTKSTEPAttr \
 		-lTKSTEPBase \
 		-lTKSTL \
-		-lTKTCPPExt \
 		-lTKTopAlgo \
 		-lTKV2d \
 		-lTKV3d \
@@ -96,12 +88,6 @@ CONFIG(debug, release|debug) {
 		-lTKBRep \
 		-lTKCAF \
 		-lTKCDF \
-		-lTKCDLFront \
-		-lTKCPPClient \
-		-lTKCPPExt \
-		-lTKCPPIntExt \
-		-lTKCPPJini \
-		-lTKCSFDBSchema \
 		-lTKernel \
 		-lTKFeat \
 		-lTKFillet \
@@ -110,7 +96,6 @@ CONFIG(debug, release|debug) {
 		-lTKGeomAlgo \
 		-lTKGeomBase \
 		-lTKHLR \
-		-lTKIDLFront \
 		-lTKIGES \
 		-lTKLCAF \
 		-lTKMath \
@@ -132,7 +117,6 @@ CONFIG(debug, release|debug) {
 		-lTKSTEPAttr \
 		-lTKSTEPBase \
 		-lTKSTL \
-		-lTKTCPPExt \
 		-lTKTopAlgo \
 		-lTKV2d \
 		-lTKV3d \
