@@ -22,12 +22,6 @@ CONFIG(release, release|debug) {
 		$(CASROOT)/win32/lib/TKBRep.lib \
 		$(CASROOT)/win32/lib/TKCAF.lib \
 		$(CASROOT)/win32/lib/TKCDF.lib \
-		$(CASROOT)/win32/lib/TKCDLFront.lib \
-		$(CASROOT)/win32/lib/TKCPPClient.lib \
-		$(CASROOT)/win32/lib/TKCPPExt.lib \
-		$(CASROOT)/win32/lib/TKCPPIntExt.lib \
-		$(CASROOT)/win32/lib/TKCPPJini.lib \
-		$(CASROOT)/win32/lib/TKCSFDBSchema.lib \
 		$(CASROOT)/win32/lib/TKDCAF.lib \
 		$(CASROOT)/win32/lib/TKDraw.lib \
 		$(CASROOT)/win32/lib/TKernel.lib \
@@ -38,7 +32,6 @@ CONFIG(release, release|debug) {
 		$(CASROOT)/win32/lib/TKGeomAlgo.lib \
 		$(CASROOT)/win32/lib/TKGeomBase.lib \
 		$(CASROOT)/win32/lib/TKHLR.lib \
-		$(CASROOT)/win32/lib/TKIDLFront.lib \
 		$(CASROOT)/win32/lib/TKIGES.lib \
 		$(CASROOT)/win32/lib/TKjcas.lib \
 		$(CASROOT)/win32/lib/TKLCAF.lib \
@@ -61,7 +54,6 @@ CONFIG(release, release|debug) {
 		$(CASROOT)/win32/lib/TKSTEPAttr.lib \
 		$(CASROOT)/win32/lib/TKSTEPBase.lib \
 		$(CASROOT)/win32/lib/TKSTL.lib \
-		$(CASROOT)/win32/lib/TKTCPPExt.lib \
 		$(CASROOT)/win32/lib/TKTopAlgo.lib \
 		$(CASROOT)/win32/lib/TKTopTest.lib \
 		$(CASROOT)/win32/lib/TKV2d.lib \
@@ -108,12 +100,6 @@ CONFIG(debug, release|debug) {
 		$(CASROOT)/win32/libd/TKBRep.lib \
 		$(CASROOT)/win32/libd/TKCAF.lib \
 		$(CASROOT)/win32/libd/TKCDF.lib \
-		$(CASROOT)/win32/libd/TKCDLFront.lib \
-		$(CASROOT)/win32/libd/TKCPPClient.lib \
-		$(CASROOT)/win32/libd/TKCPPExt.lib \
-		$(CASROOT)/win32/libd/TKCPPIntExt.lib \
-		$(CASROOT)/win32/libd/TKCPPJini.lib \
-		$(CASROOT)/win32/libd/TKCSFDBSchema.lib \
 		$(CASROOT)/win32/libd/TKDCAF.lib \
 		$(CASROOT)/win32/libd/TKDraw.lib \
 		$(CASROOT)/win32/libd/TKernel.lib \
@@ -124,7 +110,6 @@ CONFIG(debug, release|debug) {
 		$(CASROOT)/win32/libd/TKGeomAlgo.lib \
 		$(CASROOT)/win32/libd/TKGeomBase.lib \
 		$(CASROOT)/win32/libd/TKHLR.lib \
-		$(CASROOT)/win32/libd/TKIDLFront.lib \
 		$(CASROOT)/win32/libd/TKIGES.lib \
 		$(CASROOT)/win32/libd/TKjcas.lib \
 		$(CASROOT)/win32/libd/TKLCAF.lib \
@@ -147,7 +132,6 @@ CONFIG(debug, release|debug) {
 		$(CASROOT)/win32/libd/TKSTEPAttr.lib \
 		$(CASROOT)/win32/libd/TKSTEPBase.lib \
 		$(CASROOT)/win32/libd/TKSTL.lib \
-		$(CASROOT)/win32/libd/TKTCPPExt.lib \
 		$(CASROOT)/win32/libd/TKTopAlgo.lib \
 		$(CASROOT)/win32/libd/TKTopTest.lib \
 		$(CASROOT)/win32/libd/TKV2d.lib \
