@@ -5,7 +5,8 @@
 TEMPLATE = app
 TARGET = TIGLViewer
 DEPENDPATH += . 
-INCLUDEPATH += . $(CASROOT)/inc ../Src ../../TIXI/Src
+INCLUDEPATH += . $(CASROOT)/inc ../Src ../../TIXI/Src /opt/opencascade/inc
+LIBS += -L../../TIXI/lib -L../Src
 
 # Input
 CONFIG  += qt dll debug_and_release build_all 

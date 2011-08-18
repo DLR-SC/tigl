@@ -31,6 +31,8 @@
 #include "CTiglAlgorithmManager.h"
 #include "tixi.h"
 
+#include "Handle_AIS_Shape.hxx"
+
 class QOCC_DECLSPEC TIGLViewerDocument : public QObject
 {
 	Q_OBJECT
