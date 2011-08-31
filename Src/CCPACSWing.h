@@ -86,8 +86,9 @@ namespace tigl {
 		// Get segment count
 		int GetComponentSegmentCount(void);
 
-		// Returns the segment for a given index
+		// Returns the segment for a given index or uid
 		ITiglSegment & GetComponentSegment(const int index);
+		ITiglSegment & GetComponentSegment(std::string uid);
 
 		// Gets the wing transformation
 		CTiglTransformation GetWingTransformation(void);

@@ -236,7 +236,6 @@ namespace tigl {
         return (ITiglSegment &) segments.GetSegment(index);
     }
 
-
 	 // Get componentSegment count
     int CCPACSWing::GetComponentSegmentCount(void)
     {
@@ -248,6 +247,13 @@ namespace tigl {
     {
 		return (ITiglSegment &) componentSegments.GetComponentSegment(index);
     }
+
+    // Returns the segment for a given uid
+    ITiglSegment & CCPACSWing::GetComponentSegment(std::string uid)
+    {
+		return (ITiglSegment &) componentSegments.GetComponentSegment(uid);
+    }
+
 
     // Gets the loft of the whole wing.
 	TopoDS_Shape & CCPACSWing::GetLoft(void)
