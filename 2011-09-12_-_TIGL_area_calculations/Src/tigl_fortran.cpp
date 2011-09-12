@@ -816,6 +816,13 @@ void tiglFuselageGetSegmentSurfaceArea_f(TiglCPACSConfigurationHandle *cpacsHand
 }
 
 
+void tiglWingGetReferenceArea_f(TiglCPACSConfigurationHandle *cpacsHandle,
+                                 int *wingIndex,
+                                 double *referenceAreaPtr,
+                                 TiglReturnCode* returnCode)
+{
+    *returnCode = tiglWingGetReferenceArea(*cpacsHandle, *wingIndex, referenceAreaPtr);
+}
 
 
 /*****************************************************************************************************/
