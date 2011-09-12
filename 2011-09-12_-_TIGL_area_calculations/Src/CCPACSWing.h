@@ -114,6 +114,14 @@ namespace tigl {
 		// Gets the surfade area of this wing
         double GetSurfaceArea();
 
+        // Returns the reference area of this wing.
+		// Here, we always take the reference wing area to be that of the trapezoidal portion of the wing projected into the centerline.
+		// The leading and trailing edge chord extensions are not included in this definition and for some airplanes, such as Boeing's Blended
+		// Wing Body, the difference can be almost a factor of two between the "real" wing area and the "trap area". Some companies use reference
+		// wing areas that include portions of the chord extensions, and in some studies, even tail area is included as part of the reference area.
+		// For simplicity, we use the trapezoidal area here.
+		double GetReferenceArea();
+
         // Returns the Component Type TIGL_COMPONENT_WING.
         TiglGeometricComponentType GetComponentType(void) {return TIGL_COMPONENT_WING;}
 
