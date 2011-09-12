@@ -1,0 +1,61 @@
+Anmerkungen und Informationen zur TIGL-Bibliothek unter Linux
+=============================================================
+
+
+Benötigte Softwarekomponenten und Einstellungen zur Verwendung von TIGL unter GNU-Linux
+-------------------------------------------------------------------------------------------
+
+-----------------
+- OpenCasacade: -
+-----------------
+
+Download unter http://www.opencascade.org oder über den TIVA-Projektserver. Installation über das Setup-Programm von OpenCascade. Sollte sich das Installationsprogramm nicht normal ausführen lassen, kann es manuel mit "java -jar Linux/<jar-file>" ausgeführt werden. Wichtig ist, dass man bei der während der Installation gestellten Frage, ob die Benutzerumgebung angepasst werden soll, mit "Ja" antwortet. Hierdurch werden wichtige Umgebungsvariablen für die Verwendung von OpenCasacade gesetzt und die OpenCascade-libraries werden mit in $PATH aufgenommen. Hierdurch wird auch die Umgebungsvariable $CASROOT gesetzt, die auf das OpenCascade-Installationsverzeichnis zeigt und beim Build-Prozess für die Referenzierung von includes und libs verwendet werden kann.
+Ab der Version 6.3.0 bietet OpenCASCADE keinen eigenen Installer mehr für Linux an. Für alle gängigen Distributionen sind jedoch fertige Packete im z.B. RPM oder DEB Format vorhanden.
+
+---------
+- TIXI: -
+---------
+
+Die TIXI-Bibliothek muss zusammen mit den zugehörigen libxml2 Bibliotheken und Include-Dateien installiert sein. 
+
+Evtl. ist es sinnvoll ein Verzeichnis /DLR/TIVA/local mit den Unterverzeichnissen lib und include
+anzulegen, in die alle benötigten includes und libs (ausser OpenCascade) hineinkopiert werden:
+
+/DLR/TIVA/local
+/DLR/TIVA/local/include
+/DLR/TIVA/local/lib
+
+Weiterhin hilfreich ist es dann, das Verzeichnis /DLR/TIVA/local/lib mit in die Umgebungsvariable $PATH aufzunehmen. Hier können dann neben statischen Bibliotheken auch notwendige libraries liegen, die bei der Ausführung von selbst erstellten Programmen benötigt werden. Umgebungsvariable können unter einer bash-shell beispielsweise exportiert werden mit "export PATH=${PATH}:/DLR/TIVA/local/lib"
+
+
+--------------------------------------------------------------------
+- Wichtige Einstellungen und Anmerkungen für das Arbeiten mit gcc: -
+--------------------------------------------------------------------
+
+Beim Erstellen einer Anwendung, die die TIGL-Bibliothek verwendet, muss der include-Pfad des Compilers den Pfad zu tigl.h und tixi.h enthalten. Mit obigem Vorschlag also: "/DLR/TIVA/local/include"
+Beim kompilieren kann das mit der an die Befehlszeile angehangenen Option "-I" gemacht werden ("-I/DLR/TIVA/local/include"), oder aber durch das anpassen der entsprechenden Makefiles.
+
+
+Der Linker muss als Pfad den Pfad zu den OpenCascade-Bibliotheken und der libTIXI.a bzw. libTIGL.a enthalten. Mit obigem Vorschlag wäre dies: "$(CASROOT)/win32/lib";/DLR/TIVA/local/lib"
+Beim kompilieren kann das mit den an die Befehlszeile angehangenen Optionen -L gemacht werden ("-L$(CASROOT)/win32/lib -L/DLR/TIVA/local/lib"), oder aber durch das anpassen der entsprechenden Makefiles.
+
+
+
+Folgende Bibliotheken müssen beim Erstellen einer TIGL-Anwendung hinzugelinkt werden:
+
+        -lTKernel -lTKMath -lTKG2d -lTKG3d -lTKGeomBase -lTKBRep -lTKGeomAlgo -lTKTopAlgo \
+         -lTKPrim -lTKBool -TKBO.dll -lTKFeat -lTKFillet -lTKOffset -lTKHLR \
+         -lTKService -lTKV2d -lTKV3d -lTKPCAF -lTKCDF -lTKCAF \
+         -lPTKernel -lTKIGES -lTKSTEP -lTKSTL -lTKVRML -lTKShHealing \
+         -lTKXSBase -lTKPShape -lTKShapeSchema -lTKOpenGl  -lTKBO  \
+         -lTKBool -lTKTopAlgo -lTKPrim -lTKOffset -lTKFillet -lTKBO -lTIXI -lTIXIf -lTIGL -lxml2
+
+Diese Bibliotheken können dem Linker in der Befehlszeile angehangen werden oder aber in dem entsprechenden Makefile eingetragen werden.
+
+Wichtig: Auf aktuellen Systemen ist meistens die libstdc++6 installiert, für eine korrekte Funktionalität muss auch noch die libstdc++5 installiert werden. Packete finden sich in der Regel für alle gängigen, Packetabhänigen Systeme.
+
+Das mitgelieferte Beispielprogramm TIGLDemo enthält ein gcc Makefile, das bis auf die anzupassenden Pfade für die includes und libs alle nötigen Einstellungen enthält. Diese kann als Grundlage für eigene Projekdateien verwendet werden. Evtl. muss hier noch explizit zu den zusätzlichen Bibliotheken in den Linker-Einstellungen noch die "libTIGL.a" hinzugefügt werden.
+
+
+
+  
