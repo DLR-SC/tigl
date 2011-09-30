@@ -81,6 +81,9 @@ void TIGLViewerWindow::setInitialCpacsFileName(QString filename)
 	statusBar()->showMessage(tr("Hello and welcome to TIGLViewer :)"));
 	myOCC->viewAxo();
 	myOCC->fitAll();
+	watcher = new QFileSystemWatcher();
+	watcher->addPath(filename);
+	QObject::connect(watcher, SIGNAL(fileChanged(QString)), cpacsConfiguration, SLOT(updateConfiguration()));
 }
 
 
@@ -129,6 +132,9 @@ void TIGLViewerWindow::open()
 		if (fileType.toLower() == tr("xml"))
 		{
 			cpacsConfiguration->openCpacsConfiguration(fileInfo.absoluteFilePath());
+			watcher = new QFileSystemWatcher();
+			watcher->addPath(fileInfo.absoluteFilePath());
+			QObject::connect(watcher, SIGNAL(fileChanged(QString)), cpacsConfiguration, SLOT(updateConfiguration()));
 		}
 
 		myLastFolder = fileInfo.absolutePath();

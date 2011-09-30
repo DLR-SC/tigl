@@ -102,6 +102,9 @@ public slots:
 	void exportMeshedFuselageVTKsimple();
 
 
+	// General slots
+	void updateConfiguration();
+
 private slots:
 
 	// Wing selection dialogs
@@ -119,6 +122,7 @@ private:
     QWidget* 								parent;
     Handle_AIS_InteractiveContext			myAISContext;
     TIGLViewerWidget*     					myOCC;
+    QString 								loadedConfigurationFileName;
 
     void writeToStatusBar(QString text);
     QString myLastFolder; // TODO: synchronize with TIGLViewerWindow
