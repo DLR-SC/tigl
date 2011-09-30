@@ -32,6 +32,7 @@
 class QAction;
 class QLabel;
 class QMenu;
+class QFileSystemWatcher;
 
 class TIGLViewerWindow : public QMainWindow
 {
@@ -170,6 +171,7 @@ private:
 	TIGLViewerDocument*		cpacsConfiguration;
 	QString cpacsFileName;
 	QString controlFileName;
+	QFileSystemWatcher *watcher;
 
 };
 

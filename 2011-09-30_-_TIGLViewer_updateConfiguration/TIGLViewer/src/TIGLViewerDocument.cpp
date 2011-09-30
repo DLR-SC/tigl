@@ -53,6 +53,11 @@ TIGLViewerDocument::TIGLViewerDocument( QWidget *parentWidget, const Handle_AIS_
 	myOCC = ((TIGLViewerWindow*) parent)->getMyOCC();
 }
 
+TIGLViewerDocument::~TIGLViewerDocument( )
+{
+	m_cpacsHandle = -1;
+}
+
 void TIGLViewerDocument::writeToStatusBar(QString text)
 {
 	((TIGLViewerWindow*) parent)->statusBar()->showMessage(text);
@@ -98,7 +103,8 @@ void TIGLViewerDocument::openCpacsConfiguration(const QString fileName)
 	if (countRotorcrafts + countAircrafts == 1)
 	{
 		tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "", &m_cpacsHandle);
-	} else
+	}
+	else
 	{
 		bool ok;
 		QString item = QInputDialog::getItem(parent, tr("Select CPACS Configuration"),
@@ -118,13 +124,24 @@ void TIGLViewerDocument::openCpacsConfiguration(const QString fileName)
 								QMessageBox::Abort );
 	}
 	drawAllFuselagesAndWings();
+	loadedConfigurationFileName = fileName;
 }
 
 
-TIGLViewerDocument::~TIGLViewerDocument( )
+/**
+ * Re-reads the CPACS configuration.
+ */
+void TIGLViewerDocument::updateConfiguration()
 {
-	m_cpacsHandle = -1;
+	// Right now, we just close the tigl session and open a new one
+	if (!loadedConfigurationFileName.isEmpty()) {
+		tiglCloseCPACSConfiguration(m_cpacsHandle);
+		m_cpacsHandle = -1;
+		myAISContext->EraseAll(Standard_False);
+		openCpacsConfiguration(loadedConfigurationFileName);
+	}
 }
+
 
 // Returns the CPACS configuration
 tigl::CCPACSConfiguration& TIGLViewerDocument::GetConfiguration(void) const
