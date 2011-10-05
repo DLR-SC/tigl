@@ -314,6 +314,19 @@ void TIGLViewerWindow::statusMessage (const QString aMessage)
 }
 
 
+void TIGLViewerWindow::displayErrorMessage (const QString aMessage, QString aHeader = "TIGL Error")
+{
+	QMessageBox::StandardButton reply;
+	reply = QMessageBox::information(this, aHeader, aMessage);
+	if (reply == QMessageBox::Ok) {
+		// Ok pressed
+	}
+	else {
+		// Escape pressed
+	}
+}
+
+
 void TIGLViewerWindow::createActions()
 {
     newAction = new QAction(tr("&New"), this);
