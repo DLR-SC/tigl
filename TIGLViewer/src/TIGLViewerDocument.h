@@ -125,6 +125,7 @@ private:
     QString 								loadedConfigurationFileName;
 
     void writeToStatusBar(QString text);
+    void displayError(QString text, QString header);
     QString myLastFolder; // TODO: synchronize with TIGLViewerWindow
     char* qstringToCstring(QString text);
 	

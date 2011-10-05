@@ -48,6 +48,9 @@ public:
 	// Returns the Open CASCADE Widget and Context.
 	TIGLViewerWidget* getMyOCC();
 
+	// Displays a simple dialog for error messages
+	void displayErrorMessage (const QString aMessage, QString aHeader);
+
 private slots:
     void newFile();
     void open();
