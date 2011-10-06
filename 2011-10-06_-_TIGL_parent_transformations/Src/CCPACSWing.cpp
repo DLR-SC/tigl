@@ -358,7 +358,23 @@ namespace tigl {
     {
         return GetWingTransformation();
     }
+
+	// Sets the Transformation object
+    void CCPACSWing::Translate(CTiglPoint trans)
+    {
+    	translation.x += trans.x;
+    	translation.y += trans.y;
+    	translation.z += trans.z;
+    	invalidated = true;
+		Update();
+    }
     
+    // Get Translation
+    CTiglPoint CCPACSWing::GetTranslation(void)
+    {
+    	return translation;
+    }
+
 	// Returns the surface area of this wing
 	double CCPACSWing::GetSurfaceArea(void)
     {

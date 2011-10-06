@@ -102,6 +102,9 @@ namespace tigl {
     protected:
         void OutputComponentTree(ITiglGeometricComponent* parent);
 
+		// transform all components realtiv to their parents
+		void transformAllComponents(ITiglGeometricComponent* parent);
+
     private:
 		// Copy constructor
 		CCPACSConfiguration(const CCPACSConfiguration& ) : wings(0), fuselages(0) { /* Do nothing */ }

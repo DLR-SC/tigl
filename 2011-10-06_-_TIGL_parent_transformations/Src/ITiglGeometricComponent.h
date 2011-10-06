@@ -65,6 +65,12 @@ namespace tigl {
 
         // Get transformation object
         virtual CTiglTransformation GetTransformation(void) = 0;
+		
+		// Set transformation object
+        virtual void Translate(CTiglPoint trans) = 0;
+
+        // Get component translation
+        virtual CTiglPoint GetTranslation(void) = 0;
 
         // number of segments
         virtual int GetSegmentCount(void) = 0;
