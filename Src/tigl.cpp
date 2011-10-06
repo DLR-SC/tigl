@@ -2764,6 +2764,38 @@ DLL_EXPORT TiglReturnCode tiglFuselageGetSegmentSurfaceArea(TiglCPACSConfigurati
 }
 
 
+DLL_EXPORT TiglReturnCode tiglWingGetReferenceArea(TiglCPACSConfigurationHandle cpacsHandle, int wingIndex,
+																				double *referenceAreaPtr)
+{
+    if (wingIndex < 1) {
+        std::cerr << "Error: Wing index index is less than zero ";
+        std::cerr << "in function call to tiglWingGetReferenceArea." << std::endl;
+        return TIGL_INDEX_ERROR;
+    }
+
+    try {
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+        tigl::CCPACSWing& wing = config.GetWing(wingIndex);
+        *referenceAreaPtr = wing.GetReferenceArea();
+        return TIGL_SUCCESS;
+    }
+    catch (std::exception& ex) {
+        std::cerr << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        std::cerr << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        std::cerr << "Caught an exception in tiglWingGetReferenceArea!" << std::endl;
+        return TIGL_ERROR;
+    }
+}
+
+
+
 /*****************************************************************************************************/
 /*                     Component Utility Functions                                                      */
 /*****************************************************************************************************/
