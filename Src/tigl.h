@@ -2618,6 +2618,32 @@ DLL_EXPORT TiglReturnCode tiglFuselageGetSegmentSurfaceArea(TiglCPACSConfigurati
 															int segmentIndex,
 															double* surfaceAreaPtr);
 
+/**
+* @brief Returns the reference area of the wing.
+*
+* Here, we always take the reference wing area to be that of the trapezoidal portion of the wing projected into the centerline.
+* The leading and trailing edge chord extensions are not included in this definition and for some airplanes, such as Boeing's Blended
+* Wing Body, the difference can be almost a factor of two between the "real" wing area and the "trap area". Some companies use reference
+* wing areas that include portions of the chord extensions, and in some studies, even tail area is included as part of the reference area.
+* For simplicity, we use the trapezoidal area here.
+*
+* <b>Fortran syntax:</b>
+*
+* tigl_wing_get_reference_area(integer cpacsHandle, int wingIndex, real referenceAreaPtr, integer returnCode)
+*
+*
+* @param cpacsHandle       (in) : Handle for the CPACS configuration
+* @param wingIndex         (in) : Index of the Wing to calculate the area, starting at 1
+* @param referenceAreaPtr  (out): The refence area of the wing
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_INDEX_ERROR if wingIndex is less or equal zero
+*   - TIGL_ERROR if some other error occurred
+*/
+DLL_EXPORT TiglReturnCode tiglWingGetrefenceArea(TiglCPACSConfigurationHandle cpacsHandle, int wingIndex,
+																				double *referenceAreaPtr);
 
 /*@}*/
 /*****************************************************************************************************/

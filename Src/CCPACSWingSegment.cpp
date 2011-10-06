@@ -673,4 +673,24 @@ namespace tigl {
 	}
 
 
+
+	// Returns the reference area of this wing.
+	// Here, we always take the reference wing area to be that of the trapezoidal portion of the wing projected into the centerline.
+	// The leading and trailing edge chord extensions are not included in this definition and for some airplanes, such as Boeing's Blended
+	// Wing Body, the difference can be almost a factor of two between the "real" wing area and the "trap area". Some companies use reference
+	// wing areas that include portions of the chord extensions, and in some studies, even tail area is included as part of the reference area.
+	// For simplicity, we use the trapezoidal area here.
+	double CCPACSWingSegment::GetReferenceArea()
+	{
+		double refArea = 0.0;
+		MakeSurfaces();
+
+		// Calculate surface area
+		GProp_GProps System;
+		BRepGProp::SurfaceProperties(upperShape, System);
+		refArea = System.Mass();
+		return refArea;
+	}
+
+
 } // end namespace tigl

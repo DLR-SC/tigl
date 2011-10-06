@@ -372,6 +372,23 @@ namespace tigl {
         return myArea;
 	}
 
+	// Returns the reference area of this wing.
+	// Here, we always take the reference wing area to be that of the trapezoidal portion of the wing projected into the centerline.
+	// The leading and trailing edge chord extensions are not included in this definition and for some airplanes, such as Boeing's Blended
+	// Wing Body, the difference can be almost a factor of two between the "real" wing area and the "trap area". Some companies use reference
+	// wing areas that include portions of the chord extensions, and in some studies, even tail area is included as part of the reference area.
+	// For simplicity, we use the trapezoidal area here.
+	double CCPACSWing::GetReferenceArea()
+	{
+		double refArea = 0.0;
+
+		for (int i=1; i <= segments.GetSegmentCount(); i++) {
+			refArea += segments.GetSegment(i).GetReferenceArea();
+		}
+		return refArea;
+	}
+
+
 	// Returns a unique Hashcode for a specific geometric component
 	int CCPACSWing::GetComponentHashCode(void)
 	{

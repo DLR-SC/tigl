@@ -109,6 +109,7 @@ extern "C" {
 #define tiglFuselageGetSurfaceArea_f TIGL_FUSELAGE_GET_SURFACE_AREA
 #define tiglWingGetSurfaceArea_f TIGL_WING_GET_SURFACE_AREA
 #define tiglWingGetSegmentSurfaceArea_f TIGL_WING_GET_SEGMENT_SURFACE_AREA
+#define tiglWingGetReferenceArea_f TIGL_WING_GET_REFERENCE_AREA
 #define tiglFuselageGetSegmentSurfaceArea_f TIGL_FUSELAGE_GET_SEGMENT_SURFACE_AREA
 #define tiglFuselageGetPointOnXPlane_f TIGL_FUSELAGE_GET_POINT_ON_XPLANE
 #define tiglFuselageGetPointOnYPlane_f TIGL_FUSELAGE_GET_POINT_ON_YPLANE
@@ -176,6 +177,7 @@ extern "C" {
 #define tiglFuselageGetSurfaceArea_f FORTRAN_NAME(tigl_fuselage_get_surface_area)
 #define tiglWingGetSurfaceArea_f FORTRAN_NAME(tigl_wing_get_surface_area)
 #define tiglWingGetSegmentSurfaceArea_f FORTRAN_NAME(tigl_wing_get_segment_surface_area)
+#define tiglWingGetReferenceArea_f FORTRAN_NAME(tigl_wing_get_reference_area)
 #define tiglFuselageGetSegmentSurfaceArea_f FORTRAN_NAME(tigl_fuselage_get_segment_surface_area)
 #define tiglFuselageGetPointOnXPlane_f FORTRAN_NAME(tigl_fuselage_get_point_on_xplane)
 #define tiglFuselageGetPointOnYPlane_f FORTRAN_NAME(tigl_fuselage_get_point_on_yplane)
@@ -550,6 +552,10 @@ void tiglFuselageGetSegmentSurfaceArea_f(TiglCPACSConfigurationHandle *cpacsHand
                                     double *surfaceAreaPtr,
                                     TiglReturnCode* returnCode);
 
+void tiglWingGetReferenceArea_f(TiglCPACSConfigurationHandle *cpacsHandle,
+                                 int *wingIndex,
+                                 double *referenceAreaPtr,
+                                 TiglReturnCode* returnCode);
 
 /*****************************************************************************************************/
 /*                    VTK EXPORT                                                                     */
