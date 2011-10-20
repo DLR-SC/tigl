@@ -114,6 +114,50 @@
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
+			<File
+				RelativePath=".\src\CommandLineParameters.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\OCC_Point.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\OCC_Text.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\TIGLViewer.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\TIGLViewerApplication.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\TIGLViewerContext.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\TIGLViewerDocument.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\TIGLViewerInputoutput.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\TIGLViewerInternal.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\TIGLViewerWidget.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\TIGLViewerWindow.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Ressourcendateien"
@@ -121,10 +165,6 @@
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
 		</Filter>
-		<File
-			RelativePath=".\readme.txt"
-			>
-		</File>
 	</Files>
 	<Globals>
 	</Globals>
