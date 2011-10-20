@@ -128,6 +128,13 @@ namespace tigl {
         // Returns a unique Hashcode for a specific geometric component
 		int GetComponentHashCode(void);
 
+		// Returns the lower Surface of a Segment
+		Handle(Geom_Surface) GetLowerSegmentSurface(int index);
+
+		// Returns the upper Surface of a Segment
+		Handle(Geom_Surface) GetUpperSegmentSurface(int index);
+
+
     protected:
 		// Cleanup routine
 		void Cleanup(void);

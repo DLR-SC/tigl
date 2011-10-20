@@ -695,12 +695,18 @@ namespace tigl {
 	// Returns the lower Surface of this Segment
 	Handle(Geom_Surface) CCPACSWingSegment::GetLowerSurface()
 	{
+		if(!surfacesAreValid) {
+			MakeSurfaces();
+		}
 		return lowerSurface;
 	}
 
 	// Returns the upper Surface of this Segment
 	Handle(Geom_Surface) CCPACSWingSegment::GetUpperSurface()
 	{
+		if(!surfacesAreValid) {
+			MakeSurfaces();
+		}
 		return upperSurface;
 	}
 

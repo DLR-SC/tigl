@@ -395,5 +395,19 @@ namespace tigl {
 		GetLoft();
 		return fusedSegments.HashCode(2294967295);
 	}
+	
+	// Returns the lower Surface of a Segment
+	Handle(Geom_Surface) CCPACSWing::GetLowerSegmentSurface(int index)
+	{
+		return segments.GetSegment(index).GetLowerSurface();
+	}
+
+	// Returns the upper Surface of a Segment
+	Handle(Geom_Surface) CCPACSWing::GetUpperSegmentSurface(int index)
+	{
+		return segments.GetSegment(index).GetUpperSurface();
+	}
+
+
 
 } // end namespace tigl
