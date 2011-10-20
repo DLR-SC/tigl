@@ -692,5 +692,16 @@ namespace tigl {
 		return refArea;
 	}
 
+	// Returns the lower Surface of this Segment
+	Handle(Geom_Surface) CCPACSWingSegment::GetLowerSurface()
+	{
+		return lowerSurface;
+	}
+
+	// Returns the upper Surface of this Segment
+	Handle(Geom_Surface) CCPACSWingSegment::GetUpperSurface()
+	{
+		return upperSurface;
+	}
 
 } // end namespace tigl
