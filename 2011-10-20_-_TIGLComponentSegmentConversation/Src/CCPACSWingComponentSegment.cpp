@@ -410,6 +410,13 @@ namespace tigl {
 		int segmentCount = wing->GetSegmentCount();
 		double resultpoint;
 
+		// Quick check if the point even is on this wing
+		BRepClass3d_SolidClassifier quickClassifier;
+		quickClassifier.Load(wing->GetLoft());
+		quickClassifier.Perform(pnt, 1.0e-3);
+		if((quickClassifier.State() != TopAbs_IN) || (quickClassifier.State() != TopAbs_ON)){
+			return NULL;
+		}
 
 		for (i=1; i <= segmentCount; i++)
 		{
