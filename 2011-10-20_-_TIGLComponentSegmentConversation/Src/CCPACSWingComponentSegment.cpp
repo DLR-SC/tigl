@@ -71,7 +71,6 @@
 #include "BRepAdaptor_Surface.hxx"
 #include "GeomAdaptor_Surface.hxx"
 #include "GC_MakeLine.hxx"
-
 #include "Geom_BSplineCurve.hxx"
 #include "GeomAPI_PointsToBSpline.hxx"
 #include "GeomAdaptor_HCurve.hxx"
@@ -80,6 +79,7 @@
 #include "GeomFill_FillingStyle.hxx"
 #include "Geom_BSplineSurface.hxx"
 #include "GeomAPI_ProjectPointOnSurf.hxx"
+#include "BRepClass3d_SolidClassifier.hxx"
 
 
 #ifndef max
@@ -94,7 +94,6 @@ namespace tigl {
         , mySegmentIndex(aSegmentIndex)
         , surfacesAreValid(false)
 	{
-		//Cleanup();
 	}
 
 	// Destructor
@@ -208,7 +207,7 @@ namespace tigl {
 				inComponentSection = true;
 			}
 
-			// try next segment if this is not withing the componentSegment
+			// try next segment if this is not within the componentSegment
 			if (!inComponentSection) continue;
 			
 			CCPACSWingConnection& startConnection = segment.GetInnerConnection();
@@ -263,7 +262,7 @@ namespace tigl {
 			generator.AddWire(endWire);
 		} else 
 		{
-			// somethings goes wrong, we could not find the ending Segment.
+			// something goes wrong, we could not find the ending Segment.
 			throw CTiglError("Error: Could not find toSectionElement in CCPACSWingComponentSegment::BuildLoft", TIGL_ERROR);
 		}
 
@@ -290,6 +289,13 @@ namespace tigl {
 		GProp_GProps AreaSystem;
 		BRepGProp::SurfaceProperties(loft, AreaSystem);
 		mySurfaceArea = AreaSystem.Mass();
+
+				double x = 0.0;
+				double y = 0.0;
+				double z = 0.0;
+				gp_Pnt point = wing->GetUpperPoint(1, 0.5, 0.5);
+				wing->GetWingTransformation().Transform(point);
+				findSegment(point);
 
 	}
 
@@ -398,5 +404,30 @@ namespace tigl {
 		return toElementUID;
 	}
 
+	const std::string & CCPACSWingComponentSegment::findSegment(gp_Pnt pnt)
+	{
+		int i = 0;
+		int segmentCount = wing->GetSegmentCount();
+		double resultpoint;
+
+
+		for (i=1; i <= segmentCount; i++)
+		{
+			
+			//Handle_Geom_Surface aSurf = wing->GetUpperSegmentSurface(i);
+			TopoDS_Shape segmentLoft = wing->GetSegment(i).GetLoft();
+			segmentLoft = wing->GetWingTransformation().Transform(segmentLoft);
+
+			BRepClass3d_SolidClassifier classifier;
+			classifier.Load(segmentLoft);
+			classifier.Perform(pnt, 1.0e-3);
+			TopAbs_State aState=classifier.State();
+			if((classifier.State() == TopAbs_IN) || (classifier.State() == TopAbs_ON)){
+				std::cout<<" i am in the circle"<<std::endl;
+			}
+		}
+
+		return "";
+	}
 
 } // end namespace tigl
