@@ -108,6 +108,8 @@ namespace tigl {
 //		gp_Pnt GetPoint(double eta, double xsi, bool fromUpper);
 
 
+		// Returns the segment to a given point on the componentSegment. 
+		// Returns null if the point is not an that wing!
 		const std::string & findSegment(gp_Pnt pnt);
 
     private:

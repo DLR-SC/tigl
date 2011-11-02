@@ -289,15 +289,8 @@ namespace tigl {
 		GProp_GProps AreaSystem;
 		BRepGProp::SurfaceProperties(loft, AreaSystem);
 		mySurfaceArea = AreaSystem.Mass();
-
-				double x = 0.0;
-				double y = 0.0;
-				double z = 0.0;
-				gp_Pnt point = wing->GetUpperPoint(1, 0.5, 0.5);
-				wing->GetWingTransformation().Transform(point);
-				findSegment(point);
-
 	}
+
 
 //	// Gets the upper point in relative wing coordinates for a given eta and xsi
 //	gp_Pnt CCPACSWingComponentSegment::GetUpperPoint(double eta, double xsi)
@@ -404,11 +397,13 @@ namespace tigl {
 		return toElementUID;
 	}
 
+	// Returns the segment to a given point on the componentSegment. 
+	// Returns null if the point is not an that wing!
 	const std::string & CCPACSWingComponentSegment::findSegment(gp_Pnt pnt)
 	{
 		int i = 0;
+		std::string resultUID;
 		int segmentCount = wing->GetSegmentCount();
-		double resultpoint;
 
 		// Quick check if the point even is on this wing
 		BRepClass3d_SolidClassifier quickClassifier;
@@ -418,9 +413,9 @@ namespace tigl {
 			return NULL;
 		}
 
+		// now discover the right segment
 		for (i=1; i <= segmentCount; i++)
-		{
-			
+		{			
 			//Handle_Geom_Surface aSurf = wing->GetUpperSegmentSurface(i);
 			TopoDS_Shape segmentLoft = wing->GetSegment(i).GetLoft();
 			segmentLoft = wing->GetWingTransformation().Transform(segmentLoft);
@@ -430,11 +425,12 @@ namespace tigl {
 			classifier.Perform(pnt, 1.0e-3);
 			TopAbs_State aState=classifier.State();
 			if((classifier.State() == TopAbs_IN) || (classifier.State() == TopAbs_ON)){
-				std::cout<<" i am in the circle"<<std::endl;
+				resultUID = wing->GetSegment(i).GetUID();
+				break;
 			}
 		}
 
-		return "";
+		return resultUID;
 	}
 
 } // end namespace tigl

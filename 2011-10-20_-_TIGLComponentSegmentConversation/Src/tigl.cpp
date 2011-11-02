@@ -892,6 +892,42 @@ DLL_EXPORT TiglReturnCode tiglWingGetSymmetry(TiglCPACSConfigurationHandle cpacs
 }
 
 
+DLL_EXPORT TiglReturnCode tiglWingComponentSegmentFindSegment(TiglCPACSConfigurationHandle cpacsHandle,
+															 char *componentSegmentUID, double x, double y,
+															 double z, char** segmentUID)
+{
+	if (segmentUID == 0) {
+        std::cerr << "Error: Null pointer argument for segmentUID ";
+        std::cerr << "in function call to tiglWingComponentSegmentFindSegment." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+
+    try {
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        //tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+        //tigl::CCPACSWing& wing = config.GetWing(wingIndex);
+        //*symmetryAxisPtr = wing.GetSymmetryAxis();
+
+		////gp_Pnt point = wing->GetUpperPoint(1, 0.5, 0.5);
+		////wing->GetWingTransformation().Transform(point);
+		////findSegment(point);
+        return TIGL_SUCCESS;
+    }
+    catch (std::exception& ex) {
+        std::cerr << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        std::cerr << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        std::cerr << "Caught an exception in tiglWingComponentSegmentFindSegment!" << std::endl;
+        return TIGL_ERROR;
+    }
+}
+
+
 /**********************************************************************************************/
 
 
