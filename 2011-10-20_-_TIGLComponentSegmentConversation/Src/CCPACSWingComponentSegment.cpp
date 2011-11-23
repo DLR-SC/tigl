@@ -197,7 +197,7 @@ namespace tigl {
 			std::string x = segment.GetInnerSectionElementUID();
 			
 			// if we found the outer section, break...
-			if(segment.GetInnerSectionElementUID() == toElementUID) {
+			if( (segment.GetInnerSectionElementUID() == toElementUID) || segment.GetOuterSectionElementUID() == toElementUID) ) {
 				i++;
 				break;
 			}
