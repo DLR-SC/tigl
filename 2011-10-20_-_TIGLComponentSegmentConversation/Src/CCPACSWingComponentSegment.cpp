@@ -197,7 +197,7 @@ namespace tigl {
 			std::string x = segment.GetInnerSectionElementUID();
 			
 			// if we found the outer section, break...
-			if( (segment.GetInnerSectionElementUID() == toElementUID) || (segment.GetOuterSectionElementUID() == toElementUID) ) {
+			if(segment.GetInnerSectionElementUID() == toElementUID) {
 				i++;
 				break;
 			}
@@ -235,7 +235,8 @@ namespace tigl {
 
 		// somethings goes wrong, we could not find the starting Segment.
 		if (!inComponentSection) {
-			throw CTiglError("Error: Could not find fromSectionElement in CCPACSWingComponentSegment::BuildLoft", TIGL_ERROR);
+			 std::cerr << "Error: Could not find fromSectionElement in CCPACSWingComponentSegment::BuildLoft" << endl;
+			 return;
 		}
 
 		CCPACSWingSegment& segment = (CCPACSWingSegment&) wing->GetSegment(--i);
