@@ -160,6 +160,12 @@ namespace tigl {
 		// For simplicity, we use the trapezoidal area here.
         double GetReferenceArea();
 
+		// Returns the lower Surface of this Segment
+		Handle(Geom_Surface) GetLowerSurface();
+
+		// Returns the upper Surface of this Segment
+		Handle(Geom_Surface) GetUpperSurface();
+
 
     protected:
 		// Cleanup routine

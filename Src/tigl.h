@@ -931,6 +931,16 @@ DLL_EXPORT TiglReturnCode tiglWingGetSymmetry(TiglCPACSConfigurationHandle cpacs
                                               TiglSymmetryAxis* symmetryAxisPtr);
 
 
+
+DLL_EXPORT TiglReturnCode tiglWingComponentSegmentFindSegment(TiglCPACSConfigurationHandle cpacsHandle,
+																 char *componentSegmentUID, double x, double y,
+																 double z, char** segmentUID, char** wingUID);
+
+//DLL_EXPORT TiglReturnCode tiglWingComponentSegmentPointGetSegmentEtaXsi(TiglCPACSConfigurationHandle cpacsHandle,
+//																		char *componentSegmentUID, double eta, double xsi,
+//																		char** segmentUID, double *eta, double *xsi);
+
+
 /*@}*/
 /*****************************************************************************************************/
 
@@ -1276,7 +1286,7 @@ DLL_EXPORT TiglReturnCode tiglFuselageGetPointOnYPlane(TiglCPACSConfigurationHan
 * @param segmentIndex  (in) : The index of the segment of the fuselage, starting at 1
 * @param eta           (in) : eta in the range 0.0 <= eta <= 1.0
 * @param ypos          (in) : X position
-* @param numPointsPtr  (out): Pointer to a interger for the number of intersection points
+* @param numPointsPtr  (out): Pointer to a integer for the number of intersection points
 *
 * @return
 *   - TIGL_SUCCESS if a point was found
