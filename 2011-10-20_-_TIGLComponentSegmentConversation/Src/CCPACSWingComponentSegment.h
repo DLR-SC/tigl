@@ -88,6 +88,9 @@ namespace tigl {
 		// Gets the toElementUID of this segment
 		const std::string & GetToElementUID(void);
 
+		// Returns the segment to a given point on the componentSegment.
+		// Returns null if the point is not an that wing!
+		const std::string findSegment(double x, double y, double z);
 
     protected:
 		// Cleanup routine
@@ -106,11 +109,6 @@ namespace tigl {
         // edge on the outer wing profile. If fromUpper is true, a point
         // on the upper surface is returned, otherwise from the lower.
 //		gp_Pnt GetPoint(double eta, double xsi, bool fromUpper);
-
-
-		// Returns the segment to a given point on the componentSegment. 
-		// Returns null if the point is not an that wing!
-		const std::string & findSegment(gp_Pnt pnt);
 
     private:
 		// Copy constructor

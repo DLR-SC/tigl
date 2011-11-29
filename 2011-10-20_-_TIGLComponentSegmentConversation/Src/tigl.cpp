@@ -894,7 +894,7 @@ DLL_EXPORT TiglReturnCode tiglWingGetSymmetry(TiglCPACSConfigurationHandle cpacs
 
 DLL_EXPORT TiglReturnCode tiglWingComponentSegmentFindSegment(TiglCPACSConfigurationHandle cpacsHandle,
 															 char *componentSegmentUID, double x, double y,
-															 double z, char** segmentUID)
+															 double z, char** segmentUID, char** wingUID)
 {
 	if (segmentUID == 0) {
         std::cerr << "Error: Null pointer argument for segmentUID ";
@@ -902,16 +902,37 @@ DLL_EXPORT TiglReturnCode tiglWingComponentSegmentFindSegment(TiglCPACSConfigura
         return TIGL_NULL_POINTER;
     }
 
+	if (wingUID == 0) {
+        std::cerr << "Error: Null pointer argument for wingUID ";
+        std::cerr << "in function call to tiglWingComponentSegmentFindSegment." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+
     try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
-        //tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
-        //tigl::CCPACSWing& wing = config.GetWing(wingIndex);
-        //*symmetryAxisPtr = wing.GetSymmetryAxis();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
 
-		////gp_Pnt point = wing->GetUpperPoint(1, 0.5, 0.5);
-		////wing->GetWingTransformation().Transform(point);
-		////findSegment(point);
-        return TIGL_SUCCESS;
+        // iterate through wings and find componentSegment
+
+        for(int wingIndex=1; wingIndex <= config.GetWingCount(); wingIndex++) {
+        	tigl::CCPACSWing& wing = config.GetWing(wingIndex);
+
+        	for(int componentSegment = 1; componentSegment <= wing.GetComponentSegmentCount(); componentSegment++) {
+        		tigl::CCPACSWingComponentSegment& cs = (tigl::CCPACSWingComponentSegment&) wing.GetComponentSegment(componentSegment);
+        		if( cs.GetUID() == componentSegmentUID) {
+        			std::string wUID = wing.GetUID();
+					*wingUID = (char *) malloc(strlen(wUID.c_str()) * sizeof(char) + 1);
+					strcpy(*wingUID, const_cast<char*>(wUID.c_str()));
+
+        			std::string smUID = cs.findSegment(x, y, z);
+					*segmentUID = (char *) malloc(strlen(smUID.c_str()) * sizeof(char) + 1);
+        			strcpy(*segmentUID, const_cast<char*>(smUID.c_str()));
+
+					return TIGL_SUCCESS;
+        		}
+        	}
+        }
+		return TIGL_ERROR;
     }
     catch (std::exception& ex) {
         std::cerr << ex.what() << std::endl;

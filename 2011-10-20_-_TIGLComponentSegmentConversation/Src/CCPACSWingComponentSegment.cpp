@@ -400,18 +400,20 @@ namespace tigl {
 
 	// Returns the segment to a given point on the componentSegment. 
 	// Returns null if the point is not an that wing!
-	const std::string & CCPACSWingComponentSegment::findSegment(gp_Pnt pnt)
+	const std::string CCPACSWingComponentSegment::findSegment(double x, double y, double z)
 	{
 		int i = 0;
 		std::string resultUID;
 		int segmentCount = wing->GetSegmentCount();
+		gp_Pnt pnt(x, y, z);
 
 		// Quick check if the point even is on this wing
 		BRepClass3d_SolidClassifier quickClassifier;
+		
 		quickClassifier.Load(wing->GetLoft());
 		quickClassifier.Perform(pnt, 1.0e-3);
-		if((quickClassifier.State() != TopAbs_IN) || (quickClassifier.State() != TopAbs_ON)){
-			return NULL;
+		if((quickClassifier.State() != TopAbs_IN) && (quickClassifier.State() != TopAbs_ON)){
+			return resultUID;
 		}
 
 		// now discover the right segment

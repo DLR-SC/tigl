@@ -933,8 +933,8 @@ DLL_EXPORT TiglReturnCode tiglWingGetSymmetry(TiglCPACSConfigurationHandle cpacs
 
 
 DLL_EXPORT TiglReturnCode tiglWingComponentSegmentFindSegment(TiglCPACSConfigurationHandle cpacsHandle,
-																	 char *componentSegmentUID, double x, double y,
-																	 double z, char** segmentUID);
+																 char *componentSegmentUID, double x, double y,
+																 double z, char** segmentUID, char** wingUID);
 
 //DLL_EXPORT TiglReturnCode tiglWingComponentSegmentPointGetSegmentEtaXsi(TiglCPACSConfigurationHandle cpacsHandle,
 //																		char *componentSegmentUID, double eta, double xsi,
