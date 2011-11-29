@@ -365,10 +365,10 @@ namespace tigl {
 
         // Apply wing profile transformation to wires
         CTiglTransformation transformation;
-        transformation.AddProjectionOnXYPlane();
-        // Rotate 90.0 degree around x axis to move x-y plane into x-z plane
-        transformation.AddRotationX(90.0);
-        // Set all y values to 0
+//        transformation.AddProjectionOnXYPlane();
+//        // Rotate 90.0 degree around x axis to move x-y plane into x-z plane
+//        transformation.AddRotationX(90.0);
+//        // Set all y values to 0
         transformation.AddProjectionOnXZPlane();
 
         TopoDS_Shape tempShapeClosed   = transformation.Transform(tempWireClosed);

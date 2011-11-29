@@ -56,11 +56,8 @@ namespace tigl {
     {
         transformation.SetIdentity();
 
-        // move local reference point to (0,0,0)
-        transformation.AddTranslation(translation.x, translation.y, translation.z);
-
         // scale normalized coordinates relative to (0,0,0)
-        transformation.AddScaling(scaling.x, scaling.y, scaling.z);
+		transformation.AddScaling(scaling.x, scaling.y, scaling.z);
 
         // rotate wing profile elements around their local reference points
         transformation.AddRotationZ(rotation.z);
@@ -68,6 +65,9 @@ namespace tigl {
         transformation.AddRotationY(rotation.y);
         // rotate section according to wing profile roll
         transformation.AddRotationX(rotation.x);
+
+        // move local reference point to (0,0,0)
+		transformation.AddTranslation(translation.x, translation.y, translation.z);
     }
 
     // Update internal section data

@@ -231,12 +231,6 @@ namespace tigl {
 
         // Apply fuselage profile transformation to wire
         CTiglTransformation transformation;
-        transformation.AddProjectionOnXYPlane();
-        // Rotate 90.0 degree around x axis to move x-y plane into x-z plane
-        transformation.AddRotationX(90.0);
-        // Set all y values to 0
-        transformation.AddProjectionOnXZPlane();
-
         TopoDS_Shape tempShapeClosed   = transformation.Transform(tempWireClosed);
         TopoDS_Shape tempShapeOriginal = transformation.Transform(tempWireOriginal);
 
@@ -252,12 +246,6 @@ namespace tigl {
     gp_Pnt CCPACSFuselageProfile::TransformPoint(const gp_Pnt& aPoint) const
     {
         CTiglTransformation transformation;
-        transformation.AddProjectionOnXYPlane();
-        // Rotate 90.0 degree around x axis to move x-y plane into x-z plane
-        transformation.AddRotationX(90.0);
-        // Set all y values to 0
-        transformation.AddProjectionOnXZPlane();
-
         return transformation.Transform(aPoint);
     }
 
