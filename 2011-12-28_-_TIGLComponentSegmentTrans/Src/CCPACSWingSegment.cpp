@@ -563,11 +563,11 @@ namespace tigl {
 		// Build virtual eta line.
 		// eta is in x = 0
 		gp_Pnt pnt0 = GetPoint(0, xsi, true);
-		pnt0 = wing->GetWingTransformation().Transform(pnt);		
+		pnt0 = wing->GetWingTransformation().Transform(pnt0);		
 		pnt0 = gp_Pnt(0, pnt0.Y(), pnt0.Z());
 
 		gp_Pnt pnt1 = GetPoint(1, xsi, true);
-		pnt1 = wing->GetWingTransformation().Transform(pnt);
+		pnt1 = wing->GetWingTransformation().Transform(pnt1);
 		pnt1 = gp_Pnt(0, pnt1.Y(), pnt1.Z());
 
 		BRepBuilderAPI_MakeWire etaWireBuilder;
@@ -597,7 +597,7 @@ namespace tigl {
 		Standard_Real len1 = GCPnts_AbscissaPoint::Length( aCompoundCurve1 );
 		Standard_Real len2 = GCPnts_AbscissaPoint::Length( aCompoundCurve2 );
 
-		return (len1 / 1000) * len2;
+		return (len1 / 100) * len2;
 	}
 
 

@@ -972,7 +972,7 @@ DLL_EXPORT TiglReturnCode tiglWingComponentSegmentPointGetSegmentEtaXsi(TiglCPAC
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
 
         tigl::CCPACSWing& wing = config.GetWing(1);
-		tigl::CCPACSWingComponentSegment& componentSegment = (tigl::CCPACSWingComponentSegment &) wing.GetComponentSegment(1);
+		tigl::CCPACSWingComponentSegment& componentSegment = (tigl::CCPACSWingComponentSegment &) wing.GetComponentSegment(componentSegmentUID);
 
 		gp_Pnt pnt = componentSegment.GetPoint(eta, xsi);
 		*segmentXsi = xsi;
