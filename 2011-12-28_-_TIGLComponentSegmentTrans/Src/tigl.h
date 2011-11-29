@@ -963,9 +963,10 @@ DLL_EXPORT TiglReturnCode tiglWingComponentSegmentFindSegment(TiglCPACSConfigura
 																 double z, char** segmentUID, char** wingUID);
 
 
-//DLL_EXPORT TiglReturnCode tiglWingComponentSegmentPointGetSegmentEtaXsi(TiglCPACSConfigurationHandle cpacsHandle,
-//																		char *componentSegmentUID, double eta, double xsi,
-//																		char** segmentUID, double *eta, double *xsi);
+DLL_EXPORT TiglReturnCode tiglWingComponentSegmentPointGetSegmentEtaXsi(TiglCPACSConfigurationHandle cpacsHandle,
+																		char *componentSegmentUID, double eta, double xsi,
+																		char** wingUID, char** segmentUID,
+																		double *segmentEta, double *segmentXsi);
 
 
 /*@}*/

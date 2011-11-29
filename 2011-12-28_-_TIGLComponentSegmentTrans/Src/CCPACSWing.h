@@ -80,8 +80,9 @@ namespace tigl {
 		// Get segment count
 		int GetSegmentCount(void);
 
-		// Returns the segment for a given index
+		// Returns the segment for a given index or uid
 		ITiglSegment & GetSegment(const int index);
+		ITiglSegment & GetSegment(std::string uid);
 
 		// Get segment count
 		int GetComponentSegmentCount(void);
