@@ -343,6 +343,22 @@ namespace tigl {
         return GetFuselageTransformation();
     }
 
+	// Sets the Transformation object
+    void CCPACSFuselage::Translate(CTiglPoint trans)
+    {
+    	translation.x += trans.x;
+    	translation.y += trans.y;
+    	translation.z += trans.z;
+    	invalidated = true;
+		Update();
+    }
+
+    // Get Translation
+    CTiglPoint CCPACSFuselage::GetTranslation(void)
+    {
+    	return translation;
+    }
+
     // Returns the circumference of the segment "segmentIndex" at a given eta
     double CCPACSFuselage::GetCircumference(const int segmentIndex, const double eta)
     {
