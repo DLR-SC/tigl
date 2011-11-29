@@ -20,6 +20,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{27442EF1-FD26-42FB-A625-DB53451E1F7A}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TIGLViewer", "TIGLViewer\TIGLViewer.vcproj", "{6CAFAABE-2D09-4772-B54F-DA739762D2DE}"
+	ProjectSection(ProjectDependencies) = postProject
+		{8AE6C374-2BCF-4CC8-86D7-6BAD3533EF3C} = {8AE6C374-2BCF-4CC8-86D7-6BAD3533EF3C}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

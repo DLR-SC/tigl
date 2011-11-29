@@ -111,6 +111,12 @@ namespace tigl {
         // Get the Transformation object
         CTiglTransformation GetTransformation(void);
         
+		// Sets a Transformation object
+        void Translate(CTiglPoint trans);
+
+        // Get Translation
+        CTiglPoint GetTranslation(void);
+
 		// Gets the surfade area of this wing
         double GetSurfaceArea();
 

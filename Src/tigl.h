@@ -2656,8 +2656,8 @@ DLL_EXPORT TiglReturnCode tiglWingGetrefenceArea(TiglCPACSConfigurationHandle cp
 
 /**
 * @brief Returns a unique HashCode for a geometric components. The component, for example a wing or a fuselage,
-* 		 could be specified via its UID. The HashCode is the same as long as the geometie of this component
-* 		 has not changed.
+* 		 could be specified via its UID. The HashCode is the same as long as the geometry of this component
+* 		 has not changed. The HashCode is valid through the current session only!
 * 		 Computes a hash value to represent this shape.
 * 		 This value is computed from the value of the underlying shape reference and the
 * 		 location. Orientation is not taken into account.

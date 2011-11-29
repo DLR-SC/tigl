@@ -72,6 +72,29 @@ namespace tigl {
 		header.ReadCPACS(tixiDocumentHandle);
 		wings.ReadCPACS(tixiDocumentHandle, configurationUID);
         fuselages.ReadCPACS(tixiDocumentHandle, configurationUID);
+
+		// Now do parent <-> child transformations. Child should use the
+		// parent coordinate system as root. 
+		try {
+			transformAllComponents(uidManager.GetRootComponent());	
+		}
+		catch (tigl::CTiglError& ex) {
+			std::cerr << ex.getError() << std::endl;
+		}
+	}
+
+	// transform all components realtiv to their parents
+    void CCPACSConfiguration::transformAllComponents(ITiglGeometricComponent* parent)
+    {
+		ITiglGeometricComponent::ChildContainerType& children = parent->GetChildren();
+        ITiglGeometricComponent::ChildContainerType::iterator pIter;
+        CTiglPoint parentTranslation = parent->GetTranslation();
+        for (pIter = children.begin(); pIter != children.end(); pIter++) {
+            ITiglGeometricComponent* child = *pIter;
+            child->Translate(parentTranslation);
+            transformAllComponents(child);
+			
+        }
 	}
 
 

@@ -111,8 +111,6 @@ namespace tigl {
     {
         ITiglGeometricComponent* component = GetComponent(uid);
         std::string parentUID = component->GetParentUID();
-
-        // And now some Sackhaarcode :-D You know? Rotzevoll?
         return (parentUID.empty() ? 0 : GetComponent(parentUID));
     }
 
