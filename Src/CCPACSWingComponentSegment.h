@@ -88,6 +88,9 @@ namespace tigl {
 		// Gets the toElementUID of this segment
 		const std::string & GetToElementUID(void);
 
+		// Returns the segment to a given point on the componentSegment.
+		// Returns null if the point is not an that wing!
+		const std::string findSegment(double x, double y, double z);
 
     protected:
 		// Cleanup routine
@@ -107,7 +110,6 @@ namespace tigl {
         // on the upper surface is returned, otherwise from the lower.
 //		gp_Pnt GetPoint(double eta, double xsi, bool fromUpper);
 
-
     private:
 		// Copy constructor
 		CCPACSWingComponentSegment(const CCPACSWingComponentSegment& )  { /* Do nothing */ }
@@ -119,16 +121,16 @@ namespace tigl {
 	private:
 		std::string          name;                 /**< Segment name                            */
 		std::string          uid;                  /**< Segment uid                             */
-		std::string          fromElementUID;      	/**< Inner segment uid (root			        */
-		std::string          toElementUID;      	/**< Outer segment uid (tip)			        */
+		std::string          fromElementUID;       /**< Inner segment uid (root			        */
+		std::string          toElementUID;         /**< Outer segment uid (tip)			        */
 		CCPACSWing*          wing;                 /**< Parent wing                             */
 		TopoDS_Shape         loft;                 /**< The loft between two sections           */
 		bool                 invalidated;          /**< Internal state flag                     */
         int                  mySegmentIndex;       /**< Index of this segment                   */
         double               myVolume;             /**< Volume of this segment                  */
         double               mySurfaceArea;        /**< Surface area of this segment            */
-		TopoDS_Shape		 upperShape;		   /**< Upper shape of this segment				*/
-		TopoDS_Shape		 lowerShape;
+		TopoDS_Shape		 upperShape;		   /**< Upper shape of this componentSegment	*/
+		TopoDS_Shape		 lowerShape;		   /**< Lower shape of this componentSegment	*/
 		Handle(Geom_Surface) upperSurface;
 		Handle(Geom_Surface) lowerSurface;
 		bool                 surfacesAreValid;

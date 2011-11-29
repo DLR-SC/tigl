@@ -23,8 +23,8 @@
 			>
 			<Tool
 				Name="VCNMakeTool"
-				BuildCommandLine="nmake"
-				ReBuildCommandLine="qmake &amp;&amp; nmake clean &amp;&amp; nmake"
+				BuildCommandLine="nmake debug"
+				ReBuildCommandLine="qmake &amp;&amp; nmake clean &amp;&amp; nmake debug"
 				CleanCommandLine="nmake clean"
 				Output="Debug\TIGLViewer.exe"
 				PreprocessorDefinitions="WIN32;_DEBUG"
@@ -114,6 +114,50 @@
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
+			<File
+				RelativePath=".\src\CommandLineParameters.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\OCC_Point.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\OCC_Text.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\TIGLViewer.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\TIGLViewerApplication.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\TIGLViewerContext.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\TIGLViewerDocument.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\TIGLViewerInputoutput.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\TIGLViewerInternal.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\TIGLViewerWidget.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\TIGLViewerWindow.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Ressourcendateien"
