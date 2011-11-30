@@ -962,7 +962,35 @@ DLL_EXPORT TiglReturnCode tiglWingComponentSegmentFindSegment(TiglCPACSConfigura
 																 char *componentSegmentUID, double x, double y,
 																 double z, char** segmentUID, char** wingUID);
 
-
+/**
+* @brief Returns eta, xsi, segmentUID and wingUID for a given eta and xsi on a componentSegment.
+*
+*
+* <b>Fortran syntax:</b>
+*
+* tigl_wing_component_segment_point_get_segment_eta_xsi(integer cpacsHandle,
+* 										  				character*n componentSegmentUID,
+* 														real eta, real xsi
+* 										  				character*n wingUID,
+* 										  				character*n segmentUID,
+* 										  				real segmentEta, real segmentXsi
+* 										  				integer returnCode)
+*
+*
+* @param cpacsHandle     		(in)  : Handle for the CPACS configuration
+* @param componentSegmentUID    (in)  : UID of the componentSegment to search for
+* @param eta, xsi 				(in)  : Eta and Xsi of the point of the componentSegment
+* @param wingUID				(out) : UID of the wing that fits to the given point and componentSegment
+* @param segmentUID				(out) : UID of the segment that fits to the given point and componentSegment
+* @param segmentEta				(out) : Eta of the point on the corresponding segment.
+* @param segmentXsi				(out) : Xsi of the point on the corresponding segment.
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_INDEX_ERROR if wingIndex is less or equal zero
+*   - TIGL_ERROR if some other error occurred
+*/
 DLL_EXPORT TiglReturnCode tiglWingComponentSegmentPointGetSegmentEtaXsi(TiglCPACSConfigurationHandle cpacsHandle,
 																		char *componentSegmentUID, double eta, double xsi,
 																		char** wingUID, char** segmentUID,
