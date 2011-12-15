@@ -85,7 +85,6 @@ private:
 	QMenu *gridMenu;
 	QMenu *cpacsMenu;
 	QMenu *tiglMenu;
-	QMenu *tiglAlgorithmMenu;
 	QMenu *tiglExportMenu;
 
     QAction *newAction;
@@ -151,10 +150,6 @@ private:
     QAction *drawFusedFuselageAction;
 
     // TIGL actions
-    QAction *tiglInterpolateBsplineWireAction;
-    QAction *tiglInterpolateLinearWireAction;
-    QAction *tiglApproximateBsplineWireAction;
-
 	// Export actions
     QAction *tiglExportIgesAction;
     QAction *tiglExportFusedIgesAction;

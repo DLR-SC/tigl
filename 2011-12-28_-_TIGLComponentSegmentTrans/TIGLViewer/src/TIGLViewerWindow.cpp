@@ -567,18 +567,6 @@ void TIGLViewerWindow::createActions()
 
 
 	// TIGL Actions
-	tiglInterpolateBsplineWireAction = new QAction( tr("Use Bspline Interpolation"), this );
-	tiglInterpolateBsplineWireAction->setStatusTip(tr("Use a BSpline interpolation between the points of a wire"));
-	connect(tiglInterpolateBsplineWireAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(tiglInterpolateBsplineWire()));
-
-	tiglInterpolateLinearWireAction = new QAction( tr("Use Linear Interpolation"), this );
-	tiglInterpolateLinearWireAction->setStatusTip(tr("Use a linear interpolation between the points of a wire"));
-	connect(tiglInterpolateLinearWireAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(tiglInterpolateLinearWire()));
-
-	tiglApproximateBsplineWireAction = new QAction( tr("Use BSpline Approximation"), this );
-	tiglApproximateBsplineWireAction->setStatusTip(tr("Use a BSpline approximation for the points of a wire"));
-	connect(tiglApproximateBsplineWireAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(tiglApproximateBsplineWireAction()));
-
 	// Export functions
 	tiglExportFusedIgesAction = new QAction( tr("Export Fused Model as IGES"), this );
 	tiglExportFusedIgesAction->setStatusTip(tr("Export Fused Model as IGES"));
@@ -671,10 +659,6 @@ void TIGLViewerWindow::createMenus()
 
 	// TIGL menu
 	tiglMenu = menuBar()->addMenu( tr("&TIGL Methods") );
-		tiglAlgorithmMenu = tiglMenu->addMenu( tr("Algorithm") );
-			tiglAlgorithmMenu->addAction( tiglInterpolateBsplineWireAction );
-			tiglAlgorithmMenu->addAction( tiglInterpolateLinearWireAction );
-			tiglAlgorithmMenu->addAction( tiglApproximateBsplineWireAction );
 
 		tiglExportMenu = tiglMenu->addMenu( tr("&Export using TIGL") );
 			tiglExportMenu->addAction( tiglExportIgesAction );

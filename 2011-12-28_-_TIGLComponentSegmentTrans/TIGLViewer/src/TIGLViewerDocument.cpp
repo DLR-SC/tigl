@@ -267,22 +267,6 @@ QString TIGLViewerDocument::dlgGetFuselageProfileSelection()
 	return QInputDialog::getItem(parent, tr("Select Fuselage Profile"), tr("Available Fuselage Profiles:"), fuselageProfiles, 0, false, &ok);
 }
 
-void TIGLViewerDocument::tiglInterpolateBsplineWire()
-{
-	tiglUseAlgorithm(TIGL_INTERPOLATE_BSPLINE_WIRE);
-}
-
-void TIGLViewerDocument::tiglInterpolateLinearWire()
-{
-    tiglUseAlgorithm(TIGL_INTERPOLATE_LINEAR_WIRE);
-}
-
-void TIGLViewerDocument::tiglApproximateBsplineWireAction()
-{
-    tiglUseAlgorithm(TIGL_APPROXIMATE_BSPLINE_WIRE);
-}
-
-
 void TIGLViewerDocument::drawAllFuselagesAndWings( )
 {
 	// Draw all wings
