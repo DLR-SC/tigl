@@ -56,6 +56,7 @@ private slots:
     void open();
     void save();
     void print();
+	void setBackgroundImage();
     void undo();
     void redo();
     void cut();
@@ -99,6 +100,7 @@ private:
     QAction *copyAction;
     QAction *pasteAction;
     QAction *aboutAction;
+	QAction *setBackgroundAction;
 
 	QAction *fitAction;
 	QAction *fitAllAction;

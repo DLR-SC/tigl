@@ -204,6 +204,49 @@ void TIGLViewerWindow::print()
 	msgBox.exec();
 }
 
+
+void TIGLViewerWindow::setBackgroundImage()
+{
+	QString		fileName;
+	QString		fileType;
+	QFileInfo	fileInfo;
+
+	TIGLViewerInputOutput::FileFormat format;
+	TIGLViewerInputOutput reader;
+
+    statusBar()->showMessage(tr("Invoked File|Load Background Image"));
+
+	QMessageBox msgBox;
+	QString text = 	"Undo is not yet implemented!<br>Go to TIGLViewer project page \
+					(<a href=\"http://code.google.com/p/tigl/\">http://code.google.com/p/tigl/</a>) and make a feature request";
+
+	msgBox.setWindowTitle("Background pictures not yet implemented!");
+	msgBox.setText(text);
+	msgBox.exec();
+
+
+	//fileName = QFileDialog::getOpenFileName (	this,
+	//			  								tr("Open Background Image"),
+	//											myLastFolder,
+	//											tr( "IMAGES (*.jpg *.png *.bmp);;" ) );
+	//if (!fileName.isEmpty())
+	//{
+	//	fileInfo.setFile(fileName);
+	//	fileType = fileInfo.suffix();
+	//	
+	//	if (fileType.toLower() == tr("bmp"))
+	//	{
+	//		Standard_CString FileName("C:\\DLR\\TIVA\\TIGL\\TIGLViewer\\x.bmp");
+	//		Aspect_FillMethod FillStyle(Aspect_FM_CENTERED);//Aspect_FM_STRETCH //Aspect_FM_CENTERED
+	//		Standard_Boolean update(Standard_True);
+	//		myOCC->getView()->SetBackgroundImage(FileName);
+	//	}
+
+	//	myLastFolder = fileInfo.absolutePath();
+	//}
+}
+
+
 void TIGLViewerWindow::undo()
 {
 	QMessageBox msgBox;
@@ -348,6 +391,11 @@ void TIGLViewerWindow::createActions()
     printAction->setShortcut(tr("Ctrl+P"));
     printAction->setStatusTip(tr("Print the document"));
     connect(printAction, SIGNAL(triggered()), this, SLOT(print()));
+
+	setBackgroundAction = new QAction(tr("&Load Background Image"), this);
+    setBackgroundAction->setShortcut(tr("Ctrl+B"));
+    setBackgroundAction->setStatusTip(tr("Set Background Image from file"));
+    connect(setBackgroundAction, SIGNAL(triggered()), this, SLOT(setBackgroundImage()));
 
     exitAction = new QAction(tr("Exit"), this);
     exitAction->setShortcut(tr("Ctrl+Q"));
@@ -634,6 +682,7 @@ void TIGLViewerWindow::createMenus()
 		fileMenu->addAction( openAction );
 		fileMenu->addAction( saveAction );
 		fileMenu->addAction( printAction );
+		fileMenu->addAction( setBackgroundAction );
 
 		fileMenu->addSeparator();
 		fileMenu->addAction( exitAction );
