@@ -112,30 +112,88 @@ namespace tigl {
             /* Get point count */
             int   pointCount;
 			if (tixiGetNamedChildrenCount(tixiHandle, const_cast<char*>(elementPath.c_str()), "point", &pointCount) != SUCCESS) {
-                throw CTiglError("Error: tixiGetNamedChildrenCount failed in CCPACSWingProfile::ReadCPACS", TIGL_XML_ERROR);
-            }
+				throw CTiglError("Error: tixiGetNamedChildrenCount failed in CCPACSWingProfile::ReadCPACS", TIGL_XML_ERROR);
+			}
 
-            if (pointCount < 2)
-            {
-                throw CTiglError("Error: Not enough points for building a wing profile in CCPACSWingProfile::ReadCPACS", TIGL_ERROR);
-            }
+			if (pointCount > 2)
+			{
+				// Loop over all points
+				for (int i = 1; i <= pointCount; i++)
+				{
+					CTiglPoint* point = new CTiglPoint(0.0, 0.0, 0.0);
+					coordinates.push_back(point);
 
-            // Loop over all points
-            for (int i = 1; i <= pointCount; i++)
-            {
-                CTiglPoint* point = new CTiglPoint(0.0, 0.0, 0.0);
-                coordinates.push_back(point);
+					std::ostringstream xpath;
+					xpath << elementPath.c_str() << "/point[" << i << "]";
+					char *ptrPathChar = "";
+					std::string x = xpath.str();
+					ptrPathChar = const_cast<char*>(x.c_str());
 
+					if (tixiGetPoint(tixiHandle, ptrPathChar, &(point->x), &(point->y), &(point->z)) != SUCCESS) {
+						throw CTiglError("Error: XML error while reading <point/> in CCPACSWingProfile::ReadCPACS", TIGL_XML_ERROR);
+					}
+				}
+			}
+			else // read in vector based point list
+			{
+				// create xXpath
 				std::ostringstream xpath;
-				xpath << elementPath.c_str() << "/point[" << i << "]";
-				char *ptrPathChar = "";
-				std::string x = xpath.str();
-				ptrPathChar = const_cast<char*>(x.c_str());
+				xpath << elementPath.c_str() << "/x";
+				std::string xXpath = xpath.str();
 
-				if (tixiGetPoint(tixiHandle, ptrPathChar, &(point->x), &(point->y), &(point->z)) != SUCCESS) {
-                    throw CTiglError("Error: XML error while reading <point/> in CCPACSWingProfile::ReadCPACS", TIGL_XML_ERROR);
-                }
-            }
+				// create yXpath
+				std::ostringstream ypath;
+				ypath << elementPath.c_str() << "/y";
+				std::string yXpath = ypath.str();
+
+				// create zXpath
+				std::ostringstream zpath;
+				zpath << elementPath.c_str() << "/z";
+				std::string zXpath = zpath.str();
+
+				// check the number of elements in all three vectors. It has to be the same, otherwise cancel
+				int countX;
+				int countY;
+				int countZ;
+				if (tixiGetVectorSize(tixiHandle, const_cast<char*>(xXpath.c_str()), &countX) != SUCCESS){
+					throw CTiglError("Error: XML error while reading point vector <x> in CCPACSWingProfile::ReadCPACS", TIGL_XML_ERROR);
+				}
+				if (tixiGetVectorSize(tixiHandle, const_cast<char*>(yXpath.c_str()), &countY) != SUCCESS){
+					throw CTiglError("Error: XML error while reading point vector <y> in CCPACSWingProfile::ReadCPACS", TIGL_XML_ERROR);
+				}
+				if (tixiGetVectorSize(tixiHandle, const_cast<char*>(zXpath.c_str()), &countZ) != SUCCESS){
+					throw CTiglError("Error: XML error while reading point vector <z> in CCPACSWingProfile::ReadCPACS", TIGL_XML_ERROR);
+				}
+
+				if (countX != countY || countX != countZ || countY != countZ) {
+					throw CTiglError("Error: Vector size for profile points are not eqal in CCPACSWingProfile::ReadCPACS", TIGL_XML_ERROR);
+				}
+
+				// read in vectors
+				double *xCoordinates = new double[countX];
+				double *yCoordinates = new double[countY];
+				double *zCoordinates = new double[countZ];
+
+				if (tixiGetFloatVector(tixiHandle, const_cast<char*>(xXpath.c_str()), &xCoordinates, countX) != SUCCESS) {
+					throw CTiglError("Error: XML error while reading point vector <x> in CCPACSWingProfile::ReadCPACS", TIGL_XML_ERROR);
+				}
+				if (tixiGetFloatVector(tixiHandle, const_cast<char*>(yXpath.c_str()), &yCoordinates, countY) != SUCCESS) {
+					throw CTiglError("Error: XML error while reading point vector <y> in CCPACSWingProfile::ReadCPACS", TIGL_XML_ERROR);
+				}
+				if (tixiGetFloatVector(tixiHandle, const_cast<char*>(zXpath.c_str()), &zCoordinates, countZ) != SUCCESS) {
+					throw CTiglError("Error: XML error while reading point vector <z> in CCPACSWingProfile::ReadCPACS", TIGL_XML_ERROR);
+				}
+
+				// Loop over all points in the vector
+				for (int i = 1; i <= countX; i++)
+				{
+					CTiglPoint* point = new CTiglPoint(xCoordinates[i], yCoordinates[i], zCoordinates[i]);
+					coordinates.push_back(point);
+				}
+			}
+
+
+
         }
         catch (...)
         {
