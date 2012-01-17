@@ -58,7 +58,8 @@ enum TiglReturnCode
     TIGL_CLOSE_FAILED       = 6,
     TIGL_INDEX_ERROR        = 7,
     TIGL_STRING_TRUNCATED   = 8,
-    TIGL_WRONG_TIXI_VERSION = 9
+    TIGL_WRONG_TIXI_VERSION = 9,
+	TIGL_UID_ERROR			= 10
 };
 
 /**
@@ -76,6 +77,7 @@ enum TiglReturnCode
 * - TIGL_INDEX_ERROR
 * - TIGL_STRING_TRUNCATED
 * - TIGL_WRONG_TIXI_VERSION
+* - TIGL_UID_ERROR
 *
 */
 typedef enum TiglReturnCode TiglReturnCode;
@@ -2652,8 +2654,32 @@ DLL_EXPORT TiglReturnCode tiglFuselageGetSegmentSurfaceArea(TiglCPACSConfigurati
 *   - TIGL_INDEX_ERROR if wingIndex is less or equal zero
 *   - TIGL_ERROR if some other error occurred
 */
-DLL_EXPORT TiglReturnCode tiglWingGetrefenceArea(TiglCPACSConfigurationHandle cpacsHandle, int wingIndex,
+DLL_EXPORT TiglReturnCode tiglWingGetRefenceArea(TiglCPACSConfigurationHandle cpacsHandle, int wingIndex,
 																				double *referenceAreaPtr);
+
+
+/**
+* @brief Returns the wetted area of the wing.
+*
+* <b>Fortran syntax:</b>
+*
+* tigl_wing_get_wetted_area(integer cpacsHandle, character*n wingUID, real referenceAreaPtr, integer returnCode)
+*
+*
+* @param cpacsHandle       (in) : Handle for the CPACS configuration
+* @param wungUID           (in) : UID of the Wing to calculate the wetted area
+* @param referenceAreaPtr  (out): The wetted area of the wing
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_UID_ERROR if wingUID is wrong
+*   - TIGL_NULL_POINTER if wingIUD is NULL
+*   - TIGL_ERROR if some other error occurred
+*/
+DLL_EXPORT TiglReturnCode tiglWingGetWettedArea(TiglCPACSConfigurationHandle cpacsHandle, char* wingUID,
+																				double *wettedAreaPtr);
+
 
 /*@}*/
 /*****************************************************************************************************/

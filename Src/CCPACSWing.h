@@ -128,6 +128,9 @@ namespace tigl {
 		// For simplicity, we use the trapezoidal area here.
 		double GetReferenceArea();
 
+		// Returns wetted Area
+		double GetWettedArea(TopoDS_Shape parent);
+
         // Returns the Component Type TIGL_COMPONENT_WING.
         TiglGeometricComponentType GetComponentType(void) {return TIGL_COMPONENT_WING;}
 

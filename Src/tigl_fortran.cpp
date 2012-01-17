@@ -821,9 +821,17 @@ void tiglWingGetReferenceArea_f(TiglCPACSConfigurationHandle *cpacsHandle,
                                  double *referenceAreaPtr,
                                  TiglReturnCode* returnCode)
 {
-    *returnCode = tiglWingGetReferenceArea(*cpacsHandle, *wingIndex, referenceAreaPtr);
+    *returnCode = tiglWingGetRefenceArea(*cpacsHandle, *wingIndex, referenceAreaPtr);
 }
 
+
+void tiglWingGetWettedArea_f(TiglCPACSConfigurationHandle *cpacsHandle,
+                                 char *wingUID,
+                                 double *referenceAreaPtr,
+                                 TiglReturnCode* returnCode)
+{
+    *returnCode = tiglWingGetWettedArea(*cpacsHandle, wingUID, referenceAreaPtr);
+}
 
 /*****************************************************************************************************/
 /*                    VTK EXPORT                                                                     */

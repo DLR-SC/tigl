@@ -75,6 +75,9 @@ namespace tigl {
         // Returns the wing for a given UID.
         CCPACSWing& GetWing(const std::string UID) const;
 
+		// Returns the wetted area for a given wing.
+        TopoDS_Shape GetParentLoft(const std::string UID);
+
 		// Returns the total count of fuselage profiles in this configuration
 		int GetFuselageProfileCount(void) const;
 

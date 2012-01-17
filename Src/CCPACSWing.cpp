@@ -34,6 +34,7 @@
 #include "ShapeFix_Shape.hxx"
 #include "GProp_GProps.hxx"
 #include "BRepGProp.hxx"
+#include "BRepAlgoAPI_Cut.hxx"
 
 
 namespace tigl {
@@ -402,6 +403,20 @@ namespace tigl {
 			refArea += segments.GetSegment(i).GetReferenceArea();
 		}
 		return refArea;
+	}
+
+
+	double CCPACSWing::GetWettedArea(TopoDS_Shape parent)
+	{
+		double wetArea = 0.0;
+		TopoDS_Shape loft = GetLoft();
+
+		TopoDS_Shape wettedLoft = BRepAlgoAPI_Cut(loft, parent); 
+
+		GProp_GProps System;
+		BRepGProp::SurfaceProperties(wettedLoft, System);
+        wetArea = System.Mass();
+		return wetArea;
 	}
 
 

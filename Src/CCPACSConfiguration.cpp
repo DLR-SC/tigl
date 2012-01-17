@@ -162,6 +162,11 @@ namespace tigl {
         return wings.GetWing(UID);
     }
 
+	TopoDS_Shape CCPACSConfiguration::GetParentLoft(const std::string UID)
+	{
+		return uidManager.GetParentComponent(UID)->GetLoft();
+	}
+
 	// Returns the total count of fuselage profiles in this configuration
 	int CCPACSConfiguration::GetFuselageProfileCount(void) const
 	{
