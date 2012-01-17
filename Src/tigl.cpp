@@ -2852,6 +2852,39 @@ DLL_EXPORT TiglReturnCode tiglWingGetReferenceArea(TiglCPACSConfigurationHandle 
 }
 
 
+DLL_EXPORT TiglReturnCode tiglWingGetWettedArea(TiglCPACSConfigurationHandle cpacsHandle, char* wingUID,
+																				double *wettedAreaPtr)
+{
+    if (wingUID == NULL) {
+        std::cerr << "Error: WingUID is empty ";
+        std::cerr << "in function call to tiglWingGetWettedArea." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+
+    try {
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+        tigl::CCPACSWing& wing = config.GetWing(wingUID);
+		TopoDS_Shape parent = config.GetParentLoft(wingUID);
+        *wettedAreaPtr = wing.GetWettedArea(parent);
+        return TIGL_SUCCESS;
+    }
+    catch (std::exception& ex) {
+        std::cerr << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        std::cerr << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        std::cerr << "Caught an exception in tiglWingGetWettedArea!" << std::endl;
+        return TIGL_ERROR;
+    }
+}
+
+
+
 
 /*****************************************************************************************************/
 /*                     Component Utility Functions                                                      */

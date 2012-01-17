@@ -129,6 +129,7 @@ extern "C" {
 #define tiglComponentIntersectionPoint_f TIGL_COMPONENT_INTERSECTION_POINT
 #define tiglComponentIntersectionLineCount_f TIGL_COMPONENT_INTERSECTION_LINE_COUNT
 #define tiglFuselageGetMinumumDistanceToGround_f TIGL_FUSELAGE_GET_MINIMUM_DISTANCE_TO_GROUND
+#define tiglWingGetWettedArea_f TIGL_WING_GET_WETTED_AREA
 
 #else
 
@@ -197,6 +198,7 @@ extern "C" {
 #define tiglComponentIntersectionPoint_f FORTRAN_NAME(tigl_component_intersection_point)
 #define tiglComponentIntersectionLineCount_f FORTRAN_NAME(tigl_component_intersection_line_count)
 #define tiglFuselageGetMinumumDistanceToGround_f FORTRAN_NAME(tigl_fuselage_get_minumum_distance_to_ground)
+#define tiglWingGetWettedArea_f FORTRAN_NAME(tigl_wing_get_wetted_area)
 
 
 #endif /* IFORT_WIN32 */
@@ -556,6 +558,11 @@ void tiglWingGetReferenceArea_f(TiglCPACSConfigurationHandle *cpacsHandle,
                                  int *wingIndex,
                                  double *referenceAreaPtr,
                                  TiglReturnCode* returnCode);
+
+ void tiglWingGetWettedArea_f(TiglCPACSConfigurationHandle *cpacsHandle,
+								  char *wingUID,
+								  double *referenceAreaPtr,
+								  TiglReturnCode* returnCode);
 
 /*****************************************************************************************************/
 /*                    VTK EXPORT                                                                     */
