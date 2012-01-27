@@ -17,7 +17,7 @@ INCDIR=$(SRCDIR)
 OBJDIR=.
 BINDIR=.
 
-LIB_OCC= -lTIXI -lxml2 -lm -lPTKernel-6.3.0 -lc -ldl -lTKBO-6.3.0 -lTKBool-6.3.0 -lTKBRep-6.3.0 -lTKCAF-6.3.0 -lTKCDF-6.3.0 -lTKernel-6.3.0 -lTKFeat-6.3.0 -lTKFillet-6.3.0 -lTKG2d-6.3.0 -lTKG3d-6.3.0 -lTKGeomAlgo-6.3.0 -lTKGeomBase-6.3.0 -lTKHLR-6.3.0 -lTKIGES-6.3.0 -lTKLCAF-6.3.0 -lTKMath-6.3.0 -lTKMesh-6.3.0 -lTKOffset-6.3.0 -lTKOpenGl-6.3.0 -lTKPCAF-6.3.0 -lTKPLCAF-6.3.0 -lTKPrim-6.3.0 -lTKPShape-6.3.0 -lTKService-6.3.0 -lTKShapeSchema-6.3.0 -lTKShHealing-6.3.0 -lTKSTEP-6.3.0 -lTKSTEP209-6.3.0 -lTKSTEPAttr-6.3.0 -lTKSTEPBase-6.3.0 -lTKSTL-6.3.0 -lTKTopAlgo-6.3.0 -lTKV2d-6.3.0 -lTKV3d-6.3.0 -lTKVRML-6.3.0 -lTKXSBase-6.3.0 -lpthread 
+LIB_OCC= -lTIXI -lxml2 -lm -lPTKernel -lc -ldl -lTKBO -lTKBool -lTKBRep -lTKCAF -lTKCDF -lTKernel -lTKFeat -lTKFillet -lTKG2d -lTKG3d -lTKGeomAlgo -lTKGeomBase -lTKHLR -lTKIGES -lTKLCAF -lTKMath -lTKMesh -lTKOffset -lTKOpenGl -lTKPCAF -lTKPLCAF -lTKPrim -lTKPShape -lTKService -lTKShapeSchema -lTKShHealing -lTKSTEP -lTKSTEP209 -lTKSTEPAttr -lTKSTEPBase -lTKSTL -lTKTopAlgo -lTKV2d -lTKV3d -lTKVRML -lTKXSBase -lpthread 
 
 CXXFLAGS=-DCSFDB -DHAVE_CONFIG_H -DHAVE_WOK_CONFIG_H \
 	 -DLIN -DLININTEL $(OCC_INCLUDES) 
