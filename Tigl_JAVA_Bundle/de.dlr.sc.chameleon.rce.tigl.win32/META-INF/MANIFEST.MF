@@ -4,7 +4,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Chameleon RCE TIGL Win32 bundle
 Bundle-SymbolicName: de.dlr.sc.chameleon.rce.tigl.win32
 Bundle-Version: 1.2011.2.qualifier
-Fragment-Host: de.dlr.sc.chameleon.rce.tigl;bundle-version="1.2011.2"
+Fragment-Host: de.dlr.sc.chameleon.rce.tigl
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-NativeCode: 
   /lib/msvcp71d.dll ;
