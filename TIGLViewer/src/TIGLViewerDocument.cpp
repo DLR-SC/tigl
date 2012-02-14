@@ -107,7 +107,13 @@ void TIGLViewerDocument::openCpacsConfiguration(const QString fileName)
 
 	// Get configuration from user and open with TIGL
 	TiglReturnCode tiglRet;
-	if (countRotorcrafts + countAircrafts == 1)
+	if (countRotorcrafts + countAircrafts == 0)
+	{
+		// no configuration present
+		loadedConfigurationFileName = fileName;
+		return;
+	}
+	else if (countRotorcrafts + countAircrafts == 1)
 	{
 		tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "", &m_cpacsHandle);
 	}
@@ -126,7 +132,7 @@ void TIGLViewerDocument::openCpacsConfiguration(const QString fileName)
 	{
 		tixiCloseDocument(tixiHandle);
 		m_cpacsHandle = -1;
-		displayError(QString("Error in function <u>tiglOpenCPACSConfiguration</u>. Error code: %1").arg(tiglRet), "TIGL Error");
+		//displayError(QString("Error in function <u>tiglOpenCPACSConfiguration</u>. Error code: %1").arg(tiglRet), "TIGL Error");
 		return;
 	}
 	drawAllFuselagesAndWings();

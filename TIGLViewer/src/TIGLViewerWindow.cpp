@@ -236,10 +236,11 @@ void TIGLViewerWindow::setBackgroundImage()
 	//	
 	//	if (fileType.toLower() == tr("bmp"))
 	//	{
-	//		Standard_CString FileName("C:\\DLR\\TIVA\\TIGL\\TIGLViewer\\x.bmp");
-	//		Aspect_FillMethod FillStyle(Aspect_FM_CENTERED);//Aspect_FM_STRETCH //Aspect_FM_CENTERED
-	//		Standard_Boolean update(Standard_True);
-	//		myOCC->getView()->SetBackgroundImage(FileName);
+			//Standard_CString FileName("C:\\DLR\\TIVA\\TIGL\\TIGLViewer\\x.bmp");
+			//Aspect_FillMethod FillStyle(Aspect_FM_CENTERED);//Aspect_FM_STRETCH //Aspect_FM_CENTERED
+			//Standard_Boolean update(Standard_True);
+			//myOCC->getView()->SetBackgroundImage(FileName, FillStyle, update);
+			//myOCC->redraw();
 	//	}
 
 	//	myLastFolder = fileInfo.absolutePath();
@@ -720,10 +721,10 @@ void TIGLViewerWindow::createMenus()
 
 	// TIGL menu
 	tiglMenu = menuBar()->addMenu( tr("&TIGL Methods") );
-		tiglAlgorithmMenu = tiglMenu->addMenu( tr("Algorithm") );
-			tiglAlgorithmMenu->addAction( tiglInterpolateBsplineWireAction );
-			tiglAlgorithmMenu->addAction( tiglInterpolateLinearWireAction );
-			tiglAlgorithmMenu->addAction( tiglApproximateBsplineWireAction );
+		//tiglAlgorithmMenu = tiglMenu->addMenu( tr("Algorithm") );
+		//	tiglAlgorithmMenu->addAction( tiglInterpolateBsplineWireAction );
+		//	tiglAlgorithmMenu->addAction( tiglInterpolateLinearWireAction );
+		//	tiglAlgorithmMenu->addAction( tiglApproximateBsplineWireAction );
 
 		tiglExportMenu = tiglMenu->addMenu( tr("&Export using TIGL") );
 			tiglExportMenu->addAction( tiglExportIgesAction );
