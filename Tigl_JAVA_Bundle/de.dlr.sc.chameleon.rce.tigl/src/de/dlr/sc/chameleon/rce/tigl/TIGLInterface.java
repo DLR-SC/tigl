@@ -364,6 +364,43 @@ public class TIGLInterface {
         return point;
     }
     
+    
+    /**
+     * 
+     * Returns an absolute point from a given relative coordinates eta, xsi on 
+     * a fuselage
+     * 
+     * @param fuselageIndex - The index number of the fuselage.
+     * @param segmentIndex- the segment index where the relative coordinates belong to.
+     * @param eta - the eta coordinate, going from 0 - 1
+     * @param xsi - the xsi coordinate, going from 0 - 1
+     * @return - a Point object with x, y, z.
+     */
+    public TIGLPoint tiglFuselageGetPoint(final int fuselageIndex, final int segmentIndex, final double eta, final double xsi) {
+    	TIGLPoint point = new TIGLPoint();
+    	
+        if (!checkTiglConfiguration()) {
+            return point;
+        }
+        
+        DoubleByReference pointX = new DoubleByReference();
+        DoubleByReference pointY = new DoubleByReference();
+        DoubleByReference pointZ = new DoubleByReference();
+
+        // get lower Point from TIGL
+        errorCode = TIGL.INSTANCE.tiglFuselageGetPoint(tiglHandle.getValue(), fuselageIndex, segmentIndex, eta, xsi, pointX, pointY, pointZ);
+        if (errorCode != 0) {
+            LOGGER.error("tiglExportIGES failed in TIGLInterface::tiglFuselageGetPoint");
+            return point;
+        }  
+        
+        point.setX(pointX.getValue());
+        point.setY(pointY.getValue());
+        point.setZ(pointZ.getValue());
+        
+        return point;
+    }
+    
     /**
      * Cleanup TIGL stuff. Force TIGL to free memory. 
      */
@@ -513,6 +550,7 @@ public class TIGLInterface {
         int tiglExportMeshedFuselageVTKSimpleByUID(final int cpacsHandle, final String fuselageUID, final String fileName, final double deflection);
         int tiglWingGetUpperPoint(final int cpacsHandle, final int wingIndex, final int segmentIndex, final double eta, final double xsi, final DoubleByReference pointX, final DoubleByReference pointY, final DoubleByReference pointZ);
         int tiglWingGetLowerPoint(final int cpacsHandle, final int wingIndex, final int segmentIndex, final double eta, final double xsi, final DoubleByReference pointX, final DoubleByReference pointY, final DoubleByReference pointZ);
+        int tiglFuselageGetPoint(final int cpacsHandle, final int fuselageIndex, final int segmentIndex, final double eta, final double xsi, final DoubleByReference pointX, final DoubleByReference pointY, final DoubleByReference pointZ);
         int tiglOpenCPACSConfiguration(final int tixiHandle, final String configurationUID, final IntByReference cpacsHandle);
         int tiglCloseCPACSConfiguration(final int cpacsHandle);
         String tiglGetVersion(); 
