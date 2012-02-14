@@ -309,9 +309,9 @@ public class TIGLInterface {
             return point;
         }
         
-        final DoubleByReference pointX = new DoubleByReference();
-        final DoubleByReference pointY = new DoubleByReference();
-        final DoubleByReference pointZ = new DoubleByReference();
+        DoubleByReference pointX = new DoubleByReference();
+        DoubleByReference pointY = new DoubleByReference();
+        DoubleByReference pointZ = new DoubleByReference();
 
         // get uppper Point from TIGL
         errorCode = TIGL.INSTANCE.tiglWingGetUpperPoint(tiglHandle.getValue(), wingIndex, segmentIndex, eta, xsi, pointX, pointY, pointZ);
@@ -346,9 +346,9 @@ public class TIGLInterface {
             return point;
         }
         
-        final DoubleByReference pointX = new DoubleByReference();
-        final DoubleByReference pointY = new DoubleByReference();
-        final DoubleByReference pointZ = new DoubleByReference();
+        DoubleByReference pointX = new DoubleByReference();
+        DoubleByReference pointY = new DoubleByReference();
+        DoubleByReference pointZ = new DoubleByReference();
 
         // get lower Point from TIGL
         errorCode = TIGL.INSTANCE.tiglWingGetUpperPoint(tiglHandle.getValue(), wingIndex, segmentIndex, eta, xsi, pointX, pointY, pointZ);
