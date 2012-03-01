@@ -146,13 +146,13 @@ namespace tigl {
 		elementPath = const_cast<char*>(tempString.c_str());
 		tixiGetDoubleElement(tixiHandle, elementPath, &length);
 
-		// Get subelement "sweepangle"
-		tempString  = positioningXPath + "/sweepangle";
+		// Get subelement "sweepAngle"
+		tempString  = positioningXPath + "/sweepAngle";
 		elementPath = const_cast<char*>(tempString.c_str());
 		tixiGetDoubleElement(tixiHandle, elementPath, &sweepangle);
 
-		// Get subelement "dihedralangle"
-		tempString  = positioningXPath + "/dihedralangle";
+		// Get subelement "dihedralAngle"
+		tempString  = positioningXPath + "/dihedralAngle";
 		elementPath = const_cast<char*>(tempString.c_str());
 		tixiGetDoubleElement(tixiHandle, elementPath, &dihedralangle);
 

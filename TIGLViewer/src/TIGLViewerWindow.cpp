@@ -450,10 +450,12 @@ void TIGLViewerWindow::createActions()
     connect(fitAllAction, SIGNAL(triggered()), myOCC, SLOT(fitAll()));
 
 	zoomAction = new QAction(tr("&Zoom"), this);
+	zoomAction->setShortcut(tr("Ctrl+Z"));
 	zoomAction->setStatusTip(tr("Zoom in window"));
     connect(zoomAction, SIGNAL(triggered()), myOCC, SLOT(fitArea()));
 
-	panAction = new QAction(tr("&Pan"), this);
+	panAction = new QAction(tr("&Translate"), this);
+	panAction->setShortcut(tr("Ctrl+T"));
     panAction->setStatusTip(tr("Window panning"));
     connect(panAction, SIGNAL(triggered()), myOCC, SLOT(pan()));
 
