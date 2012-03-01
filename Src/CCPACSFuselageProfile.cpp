@@ -193,7 +193,6 @@ namespace tigl {
 				}
             }
 
-
         }
         catch (...)
         {
