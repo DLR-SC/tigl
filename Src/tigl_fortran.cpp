@@ -821,7 +821,7 @@ void tiglWingGetReferenceArea_f(TiglCPACSConfigurationHandle *cpacsHandle,
                                  double *referenceAreaPtr,
                                  TiglReturnCode* returnCode)
 {
-    *returnCode = tiglWingGetRefenceArea(*cpacsHandle, *wingIndex, referenceAreaPtr);
+    //*returnCode = tiglWingGetRefenceArea(*cpacsHandle, *wingIndex, referenceAreaPtr);
 }
 
 
