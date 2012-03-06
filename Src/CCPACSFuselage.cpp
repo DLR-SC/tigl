@@ -256,9 +256,8 @@ namespace tigl {
 	// Builds a fused shape of all fuselage segments
 	void CCPACSFuselage::BuildFusedSegments(void)
 	{
-		// Ne need a smooth fuselage, after OCC fixes this, we need  to use: 
-		// BRepOffsetAPI_ThruSections generator(Standard_True, Standard_False, Precision::Confusion() );
-		BRepOffsetAPI_ThruSections generator(Standard_True, Standard_True, Precision::Confusion() );
+		// Ne need a smooth fuselage by default
+		BRepOffsetAPI_ThruSections generator(Standard_True, Standard_False, Precision::Confusion() );
 
 		for (int i=1; i <= segments.GetSegmentCount(); i++) {
 			CCPACSFuselageConnection& startConnection = segments.GetSegment(i).GetStartConnection();

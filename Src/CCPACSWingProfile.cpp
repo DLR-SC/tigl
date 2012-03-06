@@ -185,14 +185,12 @@ namespace tigl {
 				}
 
 				// Loop over all points in the vector
-				for (int i = 1; i <= countX; i++)
+				for (int i = 0; i < countX; i++)
 				{
 					CTiglPoint* point = new CTiglPoint(xCoordinates[i], yCoordinates[i], zCoordinates[i]);
 					coordinates.push_back(point);
 				}
 			}
-
-
 
         }
         catch (...)
