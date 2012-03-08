@@ -79,7 +79,9 @@
 #include "GeomFill_FillingStyle.hxx"
 #include "Geom_BSplineSurface.hxx"
 #include "GeomAPI_ProjectPointOnSurf.hxx"
-
+#include "BRepExtrema_DistShapeShape.hxx"
+#include "GCPnts_AbscissaPoint.hxx"
+#include "BRepAdaptor_CompCurve.hxx"
 
 #ifndef max
 #define max(a, b) (((a) > (b)) ? (a) : (b))
@@ -554,6 +556,50 @@ namespace tigl {
     {
     	return uid.c_str();
     }
+
+
+	double CCPACSWingSegment::GetEta(gp_Pnt pnt, double xsi)
+    {
+		// Build virtual eta line.
+		// eta is in x = 0
+		gp_Pnt pnt0 = GetPoint(0, xsi, true);
+		pnt0 = wing->GetWingTransformation().Transform(pnt0);		
+		pnt0 = gp_Pnt(0, pnt0.Y(), pnt0.Z());
+
+		gp_Pnt pnt1 = GetPoint(1, xsi, true);
+		pnt1 = wing->GetWingTransformation().Transform(pnt1);
+		pnt1 = gp_Pnt(0, pnt1.Y(), pnt1.Z());
+
+		BRepBuilderAPI_MakeWire etaWireBuilder;
+		TopoDS_Edge etaEdge = BRepBuilderAPI_MakeEdge(pnt0, pnt1);
+		etaWireBuilder.Add(etaEdge);
+		TopoDS_Wire etaLine = etaWireBuilder.Wire();
+		
+		// intersection line
+		Handle(Geom_TrimmedCurve) profileLine = GC_MakeSegment(pnt, gp_Pnt(-1e9, 0, 0));
+		BRepBuilderAPI_MakeEdge ME(profileLine);     
+		TopoDS_Shape aCrv(ME.Edge());
+		
+		// now find intersection point
+		BRepExtrema_DistShapeShape extrema(etaLine, aCrv);
+		extrema.Perform();
+		gp_Pnt intersectionPoint = extrema.PointOnShape1(1);
+
+		// now the small line, a fraction of the original eta line
+		BRepBuilderAPI_MakeWire wireBuilder;
+		TopoDS_Edge edge = BRepBuilderAPI_MakeEdge(pnt0, intersectionPoint);
+		wireBuilder.Add(edge);
+		TopoDS_Wire fractionLine = wireBuilder.Wire();
+
+		BRepAdaptor_CompCurve aCompoundCurve1(etaLine, Standard_True);
+		BRepAdaptor_CompCurve aCompoundCurve2(fractionLine, Standard_True);
+
+		Standard_Real len1 = GCPnts_AbscissaPoint::Length( aCompoundCurve1 );
+		Standard_Real len2 = GCPnts_AbscissaPoint::Length( aCompoundCurve2 );
+
+		return (len1 / 100) * len2;
+	}
+
 
     // Returns eta as parametric distance from a given point on the surface
     double CCPACSWingSegment::GetEta(gp_Pnt pnt, bool isUpper)

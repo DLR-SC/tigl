@@ -71,6 +71,17 @@ namespace tigl {
 		return (CCPACSWingSegment &) (*(segments[idx]));
 	}
 
+	// Gets a segment by uid. 
+	CCPACSWingSegment & CCPACSWingSegments::GetSegment(const std::string& segmentUID)
+	{
+		for (CCPACSWingSegmentContainer::size_type i = 0; i < segments.size(); i++) {
+			if (segments[i]->GetUID() == segmentUID) {
+				return (CCPACSWingSegment &) (*(segments[i]));
+			}
+		}
+		throw CTiglError("Error: Invalid uid in CCPACSWingSegments::GetSegment", TIGL_INDEX_ERROR);
+	}
+
 	// Gets total segment count
 	int CCPACSWingSegments::GetSegmentCount(void)
 	{

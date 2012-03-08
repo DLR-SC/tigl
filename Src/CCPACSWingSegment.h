@@ -138,6 +138,9 @@ namespace tigl {
         // Returns eta as parametric distance from a given point on the surface
         // Get information about a point beeing on upper/lower side with "GetIsOnTop"
         double GetEta(gp_Pnt pnt, bool isUpper);
+		
+		// calculates eta from a given XSI and 
+		double GetEta(gp_Pnt pnt, double xsi);
 
         // Returns zeta as parametric distance from a given point on the surface
         // Get information about a point beeing on upper/lower side with "GetIsOnTop"
@@ -166,6 +169,13 @@ namespace tigl {
 		// Returns the upper Surface of this Segment
 		Handle(Geom_Surface) GetUpperSurface();
 
+        // Returns an upper or lower point on the segment surface in
+        // dependence of parameters eta and xsi, which range from 0.0 to 1.0.
+        // For eta = 0.0, xsi = 0.0 point is equal to leading edge on the
+        // inner wing profile. For eta = 1.0, xsi = 1.0 point is equal to the trailing
+        // edge on the outer wing profile. If fromUpper is true, a point
+        // on the upper surface is returned, otherwise from the lower.
+		gp_Pnt GetPoint(double eta, double xsi, bool fromUpper);
 
     protected:
 		// Cleanup routine
@@ -176,14 +186,6 @@ namespace tigl {
 
 		// Builds the loft between the two segment sections
 		void BuildLoft(void);
-
-        // Returns an upper or lower point on the segment surface in
-        // dependence of parameters eta and xsi, which range from 0.0 to 1.0.
-        // For eta = 0.0, xsi = 0.0 point is equal to leading edge on the
-        // inner wing profile. For eta = 1.0, xsi = 1.0 point is equal to the trailing
-        // edge on the outer wing profile. If fromUpper is true, a point
-        // on the upper surface is returned, otherwise from the lower.
-		gp_Pnt GetPoint(double eta, double xsi, bool fromUpper);
 
 
     private:
