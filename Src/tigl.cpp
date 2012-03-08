@@ -949,6 +949,58 @@ DLL_EXPORT TiglReturnCode tiglWingComponentSegmentFindSegment(TiglCPACSConfigura
 }
 
 
+
+DLL_EXPORT TiglReturnCode tiglWingComponentSegmentPointGetSegmentEtaXsi(TiglCPACSConfigurationHandle cpacsHandle,
+																		char *componentSegmentUID, double eta, double xsi,
+																		char** wingUID, char** segmentUID,
+																		double *segmentEta, double *segmentXsi)
+{
+	if (segmentUID == 0) {
+        std::cerr << "Error: Null pointer argument for segmentUID ";
+        std::cerr << "in function call to tiglWingComponentSegmentPointGetSegmentEtaXsi." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+
+	if (wingUID == 0) {
+        std::cerr << "Error: Null pointer argument for wingUID ";
+        std::cerr << "in function call to tiglWingComponentSegmentPointGetSegmentEtaXsi." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+
+    try {
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+
+        tigl::CCPACSWing& wing = config.GetWing(1);
+		tigl::CCPACSWingComponentSegment& componentSegment = (tigl::CCPACSWingComponentSegment &) wing.GetComponentSegment(componentSegmentUID);
+
+		gp_Pnt pnt = componentSegment.GetPoint(eta, xsi);
+		*segmentXsi = xsi;
+		
+		tiglWingComponentSegmentFindSegment(cpacsHandle, componentSegmentUID,
+											pnt.X(), pnt.Y(), pnt.Z(),
+											segmentUID, wingUID);
+
+		tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment&) wing.GetSegment(*segmentUID);
+		*segmentEta = segment.GetEta(pnt, xsi);
+
+		return TIGL_SUCCESS;
+    }
+    catch (std::exception& ex) {
+        std::cerr << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        std::cerr << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        std::cerr << "Caught an exception in tiglWingComponentSegmentPointGetSegmentEtaXsi!" << std::endl;
+        return TIGL_ERROR;
+    }
+}
+
+
 /**********************************************************************************************/
 
 

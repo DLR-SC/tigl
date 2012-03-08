@@ -80,6 +80,9 @@
 #include "Geom_BSplineSurface.hxx"
 #include "GeomAPI_ProjectPointOnSurf.hxx"
 #include "BRepClass3d_SolidClassifier.hxx"
+#include "BRepAdaptor_CompCurve.hxx"
+#include "BRepExtrema_DistShapeShape.hxx"
+#include "GCPnts_AbscissaPoint.hxx"
 
 
 #ifndef max
@@ -293,18 +296,103 @@ namespace tigl {
 	}
 
 
-//	// Gets the upper point in relative wing coordinates for a given eta and xsi
-//	gp_Pnt CCPACSWingComponentSegment::GetUpperPoint(double eta, double xsi)
-//	{
-//        return GetPoint(eta, xsi, true);
-//	}
-//
-//    // Gets the lower point in relative wing coordinates for a given eta and xsi
-//    gp_Pnt CCPACSWingComponentSegment::GetLowerPoint(double eta, double xsi)
-//	{
-//        return GetPoint(eta, xsi, false);
-//	}
-//
+	// Gets a point in relative wing coordinates for a given eta and xsi
+	gp_Pnt CCPACSWingComponentSegment::GetPoint(double eta, double xsi)
+	{
+		// search for ETA coordinate
+		std::vector<gp_Pnt> CPointContainer;
+		std::vector<gp_Pnt> CPointContainer2d;
+		bool inComponentSection = false;
+
+		if (eta < 0.0 || eta > 1.0)
+		{
+			throw CTiglError("Error: Parameter eta not in the range 0.0 <= eta <= 1.0 in CCPACSWingComponentSegment::GetPoint", TIGL_ERROR);
+		}
+		if (xsi < 0.0 || xsi > 1.0)
+		{
+			throw CTiglError("Error: Parameter xsi not in the range 0.0 <= xsi <= 1.0 in CCPACSWingComponentSegment::GetPoint", TIGL_ERROR);
+		}
+
+		for (int i = 1; i <= wing->GetSegmentCount(); i++)
+		{
+			tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing->GetSegment(i);
+
+
+			// if we found the outer section, break...
+			if( (segment.GetInnerSectionElementUID() == toElementUID) || (segment.GetOuterSectionElementUID() == toElementUID)) {
+				gp_Pnt pnt = segment.GetPoint(0, xsi, true);
+				pnt = wing->GetWingTransformation().Transform(pnt);
+				CPointContainer.push_back(pnt);
+
+				pnt = segment.GetPoint(1, xsi, true);
+				pnt = wing->GetWingTransformation().Transform(pnt);
+				CPointContainer.push_back(pnt);
+
+				i++;
+				break;
+			}
+
+			// Ok, we found the first segment of this componentSegment
+			if(segment.GetInnerSectionElementUID() == fromElementUID) {
+				inComponentSection = true;
+			}
+
+			// try next segment if this is not within the componentSegment
+			if (!inComponentSection) continue;
+
+			gp_Pnt pnt = segment.GetPoint(0, xsi, true);
+			pnt = wing->GetWingTransformation().Transform(pnt);
+			CPointContainer.push_back(pnt);
+		}
+
+
+		// make all point in 2d because its only a projection 
+		for (int j = 0; j < CPointContainer.size(); j++)
+		{
+			gp_Pnt pnt = CPointContainer[j];
+			pnt = gp_Pnt(0, pnt.Y(), pnt.Z());
+			CPointContainer2d.push_back(pnt);
+		}
+
+
+		// build virtual ETA-line
+		BRepBuilderAPI_MakeWire wireBuilder;
+	   for (int j = 1; j < CPointContainer2d.size(); j++)
+	   {
+		   TopoDS_Edge edge = BRepBuilderAPI_MakeEdge(CPointContainer2d[j - 1], CPointContainer2d[j]);
+		   wireBuilder.Add(edge);
+	   }
+	   TopoDS_Wire etaLinie = wireBuilder.Wire();
+		
+		// build virtual XSI-line
+		BRepBuilderAPI_MakeWire wireBuilderXsi;
+	   for (int j = 1; j < CPointContainer.size(); j++)
+	   {
+		   TopoDS_Edge edge = BRepBuilderAPI_MakeEdge(CPointContainer[j - 1], CPointContainer[j]);
+		   wireBuilderXsi.Add(edge);
+	   }
+	   TopoDS_Wire xsiLinie = wireBuilderXsi.Wire();
+
+		// ETA 3D point
+		BRepAdaptor_CompCurve aCompoundCurve(etaLinie, Standard_True);
+		gp_Pnt etaPnt;
+		
+		Standard_Real len = GCPnts_AbscissaPoint::Length( aCompoundCurve );
+		aCompoundCurve.D0( len * eta, etaPnt );
+
+
+		// intersection line
+		Handle(Geom_TrimmedCurve) profileLine = GC_MakeSegment(etaPnt, gp_Pnt(1e9, 0, 0));
+		BRepBuilderAPI_MakeEdge ME(profileLine);     
+		TopoDS_Shape aCrv(ME.Edge());
+
+		//intersection point
+		BRepExtrema_DistShapeShape extrema(xsiLinie, aCrv);
+		extrema.Perform();
+
+		return extrema.PointOnShape1(1);
+	}
+
 
     // Returns the volume of this segment
     double CCPACSWingComponentSegment::GetVolume(void)

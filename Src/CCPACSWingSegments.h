@@ -56,8 +56,9 @@ namespace tigl {
 		// Read CPACS segments element
 		void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& wingXPath);
 
-		// Gets a segment by index. 
+		// Gets a segment by index or UID.
 		CCPACSWingSegment & GetSegment(const int index);
+		CCPACSWingSegment & GetSegment(const std::string& segmentUID);
 
 		// Gets total segment count
 		int GetSegmentCount(void);

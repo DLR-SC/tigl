@@ -237,6 +237,12 @@ namespace tigl {
         return (ITiglSegment &) segments.GetSegment(index);
     }
 
+	// Returns the segment for a given uid
+    ITiglSegment & CCPACSWing::GetSegment(std::string uid)
+    {
+        return (ITiglSegment &) segments.GetSegment(uid);
+    }
+
 	 // Get componentSegment count
     int CCPACSWing::GetComponentSegmentCount(void)
     {
