@@ -185,7 +185,7 @@ enum TiglImportExportFormat
 /**
  * @brief Definition of the TIGL version number.
  */
-#define TIGL_VERSION  "1.0"
+#define TIGL_VERSION  "2.0"
 
 
 /**
