@@ -80,12 +80,37 @@ namespace tigl {
         // Read wing profiles
 		profiles.ReadCPACS(tixiHandle);
 
-        if (tixiCheckElement(tixiHandle, wingXPathPrt) != SUCCESS)
-            return;
-
         /* Get wing element count */
 		int wingCount;
-		if (tixiGetNamedChildrenCount(tixiHandle, wingXPathPrt, "wing", &wingCount) != SUCCESS)
+		if (tixiGetNamedChildrenCount(tixiHandle, wingXPathPrt, "wing", &wingCount) == SUCCESS)
+		{
+			// Loop over all wings
+			for (int i = 1; i <= wingCount; i++) {
+				CCPACSWing* wing = new CCPACSWing(configuration);
+				wings.push_back(wing);
+
+				std::ostringstream xpath;
+				xpath << wingXPathPrt << "/wing[" << i << "]";
+				wing->ReadCPACS(tixiHandle, xpath.str());
+			}
+			free(wingXPathPrt);
+		}
+
+		// Rotorblades
+		wingXPathPrt = (char *) malloc(sizeof(char) * (strlen(tmpString) + 50));
+		strcpy(wingXPathPrt, tmpString);
+		strcat(wingXPathPrt, "[@uID=\"");
+		strcat(wingXPathPrt, configurationUID);
+		strcat(wingXPathPrt, "\"]/rotorBlades");
+
+		// Read wing profiles
+		profiles.ReadCPACS(tixiHandle);
+
+		if (tixiCheckElement(tixiHandle, wingXPathPrt) != SUCCESS)
+			return;
+
+		/* Get wing element count */
+		if (tixiGetNamedChildrenCount(tixiHandle, wingXPathPrt, "rotorBlade", &wingCount) != SUCCESS)
 			throw CTiglError("XML error: tixiGetNamedChildrenCount failed in CCPACSWings::ReadCPACS", TIGL_XML_ERROR);
 
 		// Loop over all wings
@@ -94,7 +119,7 @@ namespace tigl {
 			wings.push_back(wing);
 
 			std::ostringstream xpath;
-			xpath << wingXPathPrt << "/wing[" << i << "]";
+			xpath << wingXPathPrt << "/rotorBlade[" << i << "]";
 			wing->ReadCPACS(tixiHandle, xpath.str());
 		}
 		free(wingXPathPrt);

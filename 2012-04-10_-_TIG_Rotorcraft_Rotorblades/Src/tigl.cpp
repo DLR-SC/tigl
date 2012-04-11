@@ -63,17 +63,22 @@ DLL_EXPORT TiglReturnCode tiglOpenCPACSConfiguration(TixiDocumentHandle tixiHand
 	/* configuration automatically */
 	if (configurationUID == 0 || strcmp(configurationUID, "")==0) {
 		ReturnCode    tixiRet;
+		ReturnCode    tixiRotorcraftRet;
 		int sectionCount = 0;
 
-		tixiRet = tixiGetNamedChildrenCount(tixiHandle, "/cpacs/vehicles/aircraft", "model", &sectionCount);
-		if (tixiRet != SUCCESS) {
+		tixiRet           = tixiGetNamedChildrenCount(tixiHandle, "/cpacs/vehicles/aircraft", "model", &sectionCount);
+		tixiRotorcraftRet = tixiGetNamedChildrenCount(tixiHandle, "/cpacs/vehicles/rotorcraft", "model", &sectionCount);
+		if ((tixiRet != SUCCESS) && (tixiRotorcraftRet != SUCCESS)) {
 			std::cerr << "No configuration specified!" << std::endl;
 			return TIGL_ERROR;
 		}
-		tixiGetTextAttribute(tixiHandle, "/cpacs/vehicles/aircraft/model", "uID", &configurationUID);
+		tixiRet = tixiGetTextAttribute(tixiHandle, "/cpacs/vehicles/aircraft/model", "uID", &configurationUID);
 		if (tixiRet != SUCCESS) {
-			std::cerr << "Problems reading configuration-uid!" << std::endl;
-			return TIGL_ERROR;
+			tixiRet = tixiGetTextAttribute(tixiHandle, "/cpacs/vehicles/rotorcraft/model", "uID", &configurationUID);
+			if (tixiRet != SUCCESS) {
+				std::cerr << "Problems reading configuration-uid!" << std::endl;
+				return TIGL_ERROR;
+			}
 		}
 	}
 	else {
@@ -2982,3 +2987,5 @@ DLL_EXPORT TiglReturnCode tiglComponentGetHashCode(TiglCPACSConfigurationHandle 
 		return TIGL_ERROR;
 	}
 }
+
+
