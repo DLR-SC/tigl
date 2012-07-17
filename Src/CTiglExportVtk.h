@@ -45,7 +45,24 @@ namespace tigl {
     {
         bool operator()(const gp_Pnt lhs, const gp_Pnt rhs) const
         {
-            return !lhs.IsEqual(rhs, Precision::Confusion());   // must return "isLower"
+			// old comparison made problems as if abs(lhs-rhs) < prec
+			// lhs < rhs and rhs < lhs will be true. The map container 
+			// doesnt like this!
+            // return !lhs.IsEqual(rhs, Precision::Confusion());   // must return "isLower"
+
+			// @todo following lines have to be tested
+			if(lhs.X() < rhs.X())
+				return true;
+			else if (lhs.X() == rhs.X()) {
+				if(lhs.Y() < rhs.Y())
+					return true;
+				else if(lhs.Y() == rhs.Y())
+					return lhs.Z() < rhs.Z();
+				else 
+					return false;
+			}
+			else
+				return false;
         }
     };
 

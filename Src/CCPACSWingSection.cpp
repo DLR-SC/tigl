@@ -45,6 +45,7 @@ namespace tigl {
     void CCPACSWingSection::Cleanup(void)
     {
         name = "";
+		uID  = "";
         transformation.SetIdentity();
         translation = CTiglPoint(0.0, 0.0, 0.0);
         scaling     = CTiglPoint(1.0, 1.0, 1.0);
