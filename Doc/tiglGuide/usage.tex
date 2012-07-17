@@ -1,0 +1,61 @@
+
+\chapter{Using TIGL}\label{usingTIGL}
+
+\section{Usage Example}\label{Usage Example}
+
+\subsection{Open a CPACS configuration}
+This is how to open a CPACS configuration. Please mention that first \emph{TIXI} has to be used to open a CPACS configuration.
+
+
+\subsection{Querying the geometrical structure}
+Below you find some example how to query the geometrical structure of a CPACS configuration.
+
+
+\subsection{Example how to use TIGL out of python scripts}
+This is a small sample script that does nothing more than opening an CPACS data set and exporting it as an iges file.
+
+\begin{verbatim}
+from ctypes import *
+from os import *
+
+# define handles
+cpacsHandle = c_int(0)
+tixiHandle = c_int(0)
+filename   = "./cpacs_example.xml"
+exportName = "./cpacs_example.iges"
+
+# open TIXI and TIGL shared libraries
+import sys
+if sys.platform == 'win32':
+    TIXI = cdll.TIXI
+    TIGL = cdll.TIGL
+else:
+    TIXI = CDLL("libTIXI.so")
+    TIGL = CDLL("libTIGL.so")
+
+# Open a CPACS configuration file. First open the CPACS-XML file
+# with TIXI to get a tixi handle and then use this handle to open
+# and read the CPACS configuration.
+tixiReturn = TIXI.tixiOpenDocument(filename, byref(tixiHandle))
+if tixiReturn != 0:
+    print 'Error: tixiOpenDocument failed for file: ' + filename
+    exit(1)
+
+tiglReturn = TIGL.tiglOpenCPACSConfiguration(tixiHandle, "VFW-614", byref(cpacsHandle))
+if tiglReturn != 0:
+    TIXI.tixiCloseDocument(tixiHandle)
+    print "Error: tiglOpenCPACSConfiguration failed for file: " + filename
+    exit(1)
+
+#------------------------------------
+# Export CPACS geometry as IGES file.
+#------------------------------------
+print "Exporting CPACS geometry as IGES file..."
+TIGL.tiglExportIGES(cpacsHandle, exportName)
+
+\end{verbatim}
+
+
+
+
+

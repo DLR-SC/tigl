@@ -1,0 +1,1 @@
+devenv Src.vcproj /project tigl /build %1
