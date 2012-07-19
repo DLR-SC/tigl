@@ -39,6 +39,7 @@ class TIGLViewerWindow : public QMainWindow
     Q_OBJECT
 
 public:
+    enum { MaxRecentFiles = 5 };
 
     TIGLViewerWindow();
 	Handle_AIS_InteractiveContext& getContext() { return myVC->getContext(); };
@@ -54,6 +55,7 @@ public:
 private slots:
     void newFile();
     void open();
+    void openRecentFile();
     void save();
     void print();
 	void setBackgroundImage();
@@ -75,8 +77,12 @@ private slots:
 private:
     void createActions();
     void createMenus();
+    void openFile(const QString&);
+    void updateRecentFileActions();
+    void setCurrentFile(const QString &);
 
     QMenu *fileMenu;
+    QMenu *recentFileMenu;
     QMenu *editMenu;
 	QMenu *viewMenu;
 	QMenu *viewActionsMenu;
@@ -100,7 +106,8 @@ private:
     QAction *copyAction;
     QAction *pasteAction;
     QAction *aboutAction;
-	QAction *setBackgroundAction;
+    QAction *setBackgroundAction;
+    QAction *recentFileActions[MaxRecentFiles];
 
 	QAction *fitAction;
 	QAction *fitAllAction;
