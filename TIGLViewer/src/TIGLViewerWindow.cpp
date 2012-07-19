@@ -97,11 +97,6 @@ void TIGLViewerWindow::newFile()
 void TIGLViewerWindow::open()
 {
 	QString		fileName;
-	QString		fileType;
-	QFileInfo	fileInfo;
-
-	TIGLViewerInputOutput::FileFormat format;
-	TIGLViewerInputOutput reader;
 
     statusBar()->showMessage(tr("Invoked File|Open"));
 
@@ -113,36 +108,73 @@ void TIGLViewerWindow::open()
 													"BREP (*.brep *.rle);;"
 													"STEP (*.step *.stp);;"
 													"IGES (*.iges *.igs)" ) );
-	if (!fileName.isEmpty())
-	{
-		fileInfo.setFile(fileName);
-		fileType = fileInfo.suffix();
-		if (fileType.toLower() == tr("brep") || fileType.toLower() == tr("rle"))
-		{
-			format = TIGLViewerInputOutput::FormatBREP;
-		}
-		if (fileType.toLower() == tr("step") || fileType.toLower() == tr("stp"))
-		{
-			format = TIGLViewerInputOutput::FormatSTEP;
-		}
-		if (fileType.toLower() == tr("iges") || fileType.toLower() == tr("igs"))
-		{
-			format = TIGLViewerInputOutput::FormatIGES;
-		}
-		if (fileType.toLower() == tr("xml"))
-		{
-			cpacsConfiguration->openCpacsConfiguration(fileInfo.absoluteFilePath());
-			watcher = new QFileSystemWatcher();
-			watcher->addPath(fileInfo.absoluteFilePath());
-			QObject::connect(watcher, SIGNAL(fileChanged(QString)), cpacsConfiguration, SLOT(updateConfiguration()));
-		}
+    openFile(fileName);
+}
 
-		myLastFolder = fileInfo.absolutePath();
-		reader.importModel ( fileInfo.absoluteFilePath(), format, myOCC->getContext() );
-	}
+void TIGLViewerWindow::openRecentFile()
+{
+    QAction *action = qobject_cast<QAction *>(sender());
+    if (action)
+        openFile(action->data().toString());
+}
 
-	myOCC->viewAxo();
-	myOCC->fitAll();
+void TIGLViewerWindow::openFile(const QString& fileName)
+{
+    QString		fileType;
+    QFileInfo	fileInfo;
+
+    TIGLViewerInputOutput::FileFormat format;
+    TIGLViewerInputOutput reader;
+
+    statusBar()->showMessage(tr("Invoked File|Open"));
+
+    if (!fileName.isEmpty())
+    {
+        fileInfo.setFile(fileName);
+        fileType = fileInfo.suffix();
+        if (fileType.toLower() == tr("brep") || fileType.toLower() == tr("rle"))
+        {
+            format = TIGLViewerInputOutput::FormatBREP;
+        }
+        if (fileType.toLower() == tr("step") || fileType.toLower() == tr("stp"))
+        {
+            format = TIGLViewerInputOutput::FormatSTEP;
+        }
+        if (fileType.toLower() == tr("iges") || fileType.toLower() == tr("igs"))
+        {
+            format = TIGLViewerInputOutput::FormatIGES;
+        }
+        if (fileType.toLower() == tr("xml"))
+        {
+            cpacsConfiguration->openCpacsConfiguration(fileInfo.absoluteFilePath());
+            watcher = new QFileSystemWatcher();
+            watcher->addPath(fileInfo.absoluteFilePath());
+            QObject::connect(watcher, SIGNAL(fileChanged(QString)), cpacsConfiguration, SLOT(updateConfiguration()));
+        }
+
+        myLastFolder = fileInfo.absolutePath();
+        setCurrentFile(fileName);
+        reader.importModel ( fileInfo.absoluteFilePath(), format, myOCC->getContext() );
+    }
+
+    myOCC->viewAxo();
+    myOCC->fitAll();
+}
+
+void TIGLViewerWindow::setCurrentFile(const QString &fileName)
+{
+    setWindowFilePath(fileName);
+
+    QSettings settings("DLR SC-VK","TIGLViewer");
+    QStringList files = settings.value("recentFileList").toStringList();
+    files.removeAll(fileName);
+    files.prepend(fileName);
+    while (files.size() > MaxRecentFiles)
+        files.removeLast();
+
+    settings.setValue("recentFileList", files);
+
+    updateRecentFileActions();
 }
 
 
@@ -382,6 +414,13 @@ void TIGLViewerWindow::createActions()
     openAction->setShortcut(tr("Ctrl+O"));
     openAction->setStatusTip(tr("Open an existing file"));
     connect(openAction, SIGNAL(triggered()), this, SLOT(open()));
+
+    for (int i = 0; i < MaxRecentFiles; ++i) {
+        recentFileActions[i] = new QAction(this);
+        recentFileActions[i]->setVisible(false);
+        connect(recentFileActions[i], SIGNAL(triggered()),
+                this, SLOT(openRecentFile()));
+    }
 
     saveAction = new QAction(tr("&Save"), this);
     saveAction->setShortcut(tr("Ctrl+S"));
@@ -680,9 +719,15 @@ void TIGLViewerWindow::createActions()
 
 void TIGLViewerWindow::createMenus()
 {
-    fileMenu = menuBar()->addMenu( tr("&File") );
+	fileMenu = menuBar()->addMenu( tr("&File") );
 		fileMenu->addAction( newAction );
 		fileMenu->addAction( openAction );
+
+		recentFileMenu = fileMenu->addMenu( tr("&Recent Files") );
+			for (int i = 0; i < MaxRecentFiles; ++i)
+				recentFileMenu->addAction(recentFileActions[i]);
+			updateRecentFileActions();
+
 		fileMenu->addAction( saveAction );
 		fileMenu->addAction( printAction );
 		fileMenu->addAction( setBackgroundAction );
@@ -690,7 +735,7 @@ void TIGLViewerWindow::createMenus()
 		fileMenu->addSeparator();
 		fileMenu->addAction( exitAction );
 
-   	editMenu = menuBar()->addMenu( tr("&Edit") );
+	editMenu = menuBar()->addMenu( tr("&Edit") );
 		editMenu->addAction( undoAction );
 		editMenu->addAction( redoAction );
 		editMenu->addSeparator();
@@ -779,4 +824,22 @@ void TIGLViewerWindow::createMenus()
     helpMenu->addAction(aboutQtAction);
 }
 
+void TIGLViewerWindow::updateRecentFileActions()
+{
+    QSettings settings("DLR SC-VK","TIGLViewer");
+    QStringList files = settings.value("recentFileList").toStringList();
+
+    int numRecentFiles = qMin(files.size(), (int)MaxRecentFiles);
+
+    for (int i = 0; i < numRecentFiles; ++i) {
+        QString text = tr("&%1 %2").arg(i + 1).arg(QFileInfo(files[i]).fileName());
+        recentFileActions[i]->setText(text);
+        recentFileActions[i]->setData(files[i]);
+        recentFileActions[i]->setVisible(true);
+    }
+    for (int j = numRecentFiles; j < MaxRecentFiles; ++j)
+        recentFileActions[j]->setVisible(false);
+
+    recentFileMenu->setEnabled(numRecentFiles > 0);
+}
 
