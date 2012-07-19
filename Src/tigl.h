@@ -49,17 +49,18 @@ extern "C" {
  */
 enum TiglReturnCode
 {
-    TIGL_SUCCESS            = 0,
-    TIGL_ERROR              = 1,
-    TIGL_NULL_POINTER       = 2,
-    TIGL_NOT_FOUND          = 3,
-    TIGL_XML_ERROR          = 4,
-    TIGL_OPEN_FAILED        = 5,
-    TIGL_CLOSE_FAILED       = 6,
-    TIGL_INDEX_ERROR        = 7,
-    TIGL_STRING_TRUNCATED   = 8,
-    TIGL_WRONG_TIXI_VERSION = 9,
-	TIGL_UID_ERROR			= 10
+    TIGL_SUCCESS             = 0,
+    TIGL_ERROR               = 1,
+    TIGL_NULL_POINTER        = 2,
+    TIGL_NOT_FOUND           = 3,
+    TIGL_XML_ERROR           = 4,
+    TIGL_OPEN_FAILED         = 5,
+    TIGL_CLOSE_FAILED        = 6,
+    TIGL_INDEX_ERROR         = 7,
+    TIGL_STRING_TRUNCATED    = 8,
+    TIGL_WRONG_TIXI_VERSION  = 9,
+    TIGL_UID_ERROR           = 10,
+    TIGL_WRONG_CPACS_VERSION = 11
 };
 
 /**
@@ -186,6 +187,7 @@ enum TiglImportExportFormat
  * @brief Definition of the TIGL version number.
  */
 #define TIGL_VERSION  "2.0"
+#define TIGL_VERSION_MAJOR 2
 
 
 /**

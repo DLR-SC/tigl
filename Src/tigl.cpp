@@ -59,6 +59,25 @@ DLL_EXPORT TiglReturnCode tiglOpenCPACSConfiguration(TixiDocumentHandle tixiHand
 		return TIGL_WRONG_TIXI_VERSION;
 	}
 
+    /* check CPACS Version */
+    {
+        double dcpacsVersion = 1.0;
+        ReturnCode tixiRet = tixiGetDoubleElement(tixiHandle, "/cpacs/header/cpacsVersion", &dcpacsVersion);
+        if(tixiRet != SUCCESS){
+            // NO CPACS Version Information in Header
+            std::cerr << "Error: No CPACS version information in file header. CPACS file seems to be too old." << std::endl;
+            return TIGL_WRONG_CPACS_VERSION;
+        }
+        else {
+            if (dcpacsVersion < (double) TIGL_VERSION_MAJOR){
+                std::cerr << "Error: too old CPACS dataset. CPACS version has to be at least " << (double) TIGL_VERSION_MAJOR << "!" << std::endl;
+                return TIGL_WRONG_CPACS_VERSION;
+            }
+            else if (dcpacsVersion > atof(tiglGetVersion())) 
+                std::cout << "Warning: CPACS dataset version is higher than TIGL library version!" << std::endl;
+        }
+    }
+
 	/* check if there is only one configuration in the data set. Then we open this */
 	/* configuration automatically */
 	if (configurationUID == 0 || strcmp(configurationUID, "")==0) {
