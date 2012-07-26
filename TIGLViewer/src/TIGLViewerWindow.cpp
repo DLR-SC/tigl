@@ -10,7 +10,7 @@
 * you may not use this file except in compliance with the License.
 * You may obtain a copy of the License at
 *
-*     http://www.apache.org/licenses/LICENSE-2.0
+*     http://www.apache.org/licenses/LICENSE-2.0
 *
 * Unless required by applicable law or agreed to in writing, software
 * distributed under the License is distributed on an "AS IS" BASIS,
@@ -24,6 +24,7 @@
 #include <QtCore/QTextStream>
 #include <QtCore/QFileInfo>
 #include <QtCore/QString>
+#include <QShortcut>
 
 #include <BRepBuilderAPI_MakeVertex.hxx>
 #include <TopoDS_Vertex.hxx>
@@ -402,7 +403,6 @@ void TIGLViewerWindow::displayErrorMessage (const QString aMessage, QString aHea
 	}
 }
 
-
 void TIGLViewerWindow::createActions()
 {
     newAction = new QAction(tr("&New"), this);
@@ -540,26 +540,32 @@ void TIGLViewerWindow::createActions()
 
 	// Standard View
 	viewFrontAction = new QAction(tr("Front"), this);
+    viewFrontAction->setShortcut(Qt::Key_1);
 	viewFrontAction->setStatusTip(tr("View From Front"));
     connect(viewFrontAction, SIGNAL(triggered()), myOCC, SLOT(viewFront()));
 
 	viewBackAction = new QAction(tr("Back"), this);
+    viewBackAction->setShortcut(Qt::Key_2);
 	viewBackAction->setStatusTip(tr("View From Back"));
     connect(viewBackAction, SIGNAL(triggered()), myOCC, SLOT(viewBack()));
 
 	viewTopAction = new QAction(tr("Top"), this);
+    viewTopAction->setShortcut(Qt::Key_3);
 	viewTopAction->setStatusTip(tr("View From Top"));
     connect(viewTopAction, SIGNAL(triggered()), myOCC, SLOT(viewTop()));
 
 	viewBottomAction = new QAction(tr("Bottom"), this);
+    viewBottomAction->setShortcut(Qt::Key_4);
 	viewBottomAction->setStatusTip(tr("View From Bottom"));
     connect(viewBottomAction, SIGNAL(triggered()), myOCC, SLOT(viewBottom()));
 
 	viewLeftAction = new QAction(tr("Left"), this);
+    viewLeftAction->setShortcut(Qt::Key_5);
 	viewLeftAction->setStatusTip(tr("View From Left"));
     connect(viewLeftAction, SIGNAL(triggered()), myOCC, SLOT(viewLeft()));
 
 	viewRightAction = new QAction(tr("Right"), this);
+    viewRightAction->setShortcut(Qt::Key_6);
 	viewRightAction->setStatusTip(tr("View From Right"));
     connect(viewRightAction, SIGNAL(triggered()), myOCC, SLOT(viewRight()));
 
@@ -575,6 +581,18 @@ void TIGLViewerWindow::createActions()
 	viewResetAction = new QAction(tr("Reset"), this);
 	viewResetAction->setStatusTip(tr("Reset the view"));
     connect(viewResetAction, SIGNAL(triggered()), myOCC, SLOT(viewReset()));
+
+    viewZoomIn = new QAction(tr("Zoom in"), this);
+    viewZoomIn->setShortcut(Qt::Key_Plus);
+    viewZoomIn->setStatusTip(tr("Zoom in the view"));
+    connect(viewZoomIn, SIGNAL(triggered()), myOCC, SLOT(zoomIn()));
+
+    viewZoomOut = new QAction(tr("Zoom out"), this);
+    viewZoomOut->setShortcut(Qt::Key_Minus);
+    viewZoomOut->setStatusTip(tr("Zoom out the view"));
+    connect(viewZoomOut, SIGNAL(triggered()), myOCC, SLOT(zoomOut()));
+
+
 
 	backgroundAction = new QAction( tr("&Background"), this );
 	backgroundAction->setStatusTip(tr("Change the background colour"));
@@ -798,6 +816,8 @@ void TIGLViewerWindow::createMenus()
 			viewDisplayMenu->addAction( viewGridAction );
 			viewDisplayMenu->addSeparator();
 			viewDisplayMenu->addAction( viewResetAction );
+            viewDisplayMenu->addAction( viewZoomIn );
+            viewDisplayMenu->addAction( viewZoomOut );
 			viewDisplayMenu->addSeparator();
 			viewDisplayMenu->addAction( backgroundAction );
 
