@@ -10,7 +10,7 @@
 * you may not use this file except in compliance with the License.
 * You may obtain a copy of the License at
 *
-*     http://www.apache.org/licenses/LICENSE-2.0
+*     http://www.apache.org/licenses/LICENSE-2.0
 *
 * Unless required by applicable law or agreed to in writing, software
 * distributed under the License is distributed on an "AS IS" BASIS,
@@ -36,6 +36,8 @@
 #include "TIGLViewerInternal.h"
 #include "TIGLViewerDocument.h"
 
+// 10% zoom per wheel or key event
+#define TIGLVIEWER_ZOOM_STEP 1.10
 
 TIGLViewerWidget::TIGLViewerWidget( const Handle_AIS_InteractiveContext& aContext,
 								QWidget *parent, 
@@ -283,11 +285,11 @@ void TIGLViewerWidget::wheelEvent ( QWheelEvent* e )
 		Standard_Real currentScale = myView->Scale();
 		if (e->delta() > 0)
 		{
-			currentScale *= 1.10; // +10%
+            currentScale *= TIGLVIEWER_ZOOM_STEP; // +10%
 		}
 		else
 		{
-			currentScale /= 1.10; // -10%
+            currentScale /= TIGLVIEWER_ZOOM_STEP; // -10%
 		}
 		myView->SetScale( currentScale );
 	}
@@ -363,6 +365,19 @@ void TIGLViewerWidget::zoom( void )
     setMode( CurAction3d_DynamicZooming );
 }
 
+void TIGLViewerWidget::zoomIn()
+{
+    if( !myView.IsNull() ){
+       myView->SetScale( myView->Scale() * TIGLVIEWER_ZOOM_STEP);
+    }
+}
+
+void TIGLViewerWidget::zoomOut()
+{
+    if( !myView.IsNull() ){
+       myView->SetScale( myView->Scale() / TIGLVIEWER_ZOOM_STEP);
+    }
+}
 
 void TIGLViewerWidget::pan( void )
 {
@@ -408,7 +423,7 @@ void TIGLViewerWidget::viewFront()
 {
 	if(!myView.IsNull())
 	{
-	    myView->SetProj( V3d_Yneg );
+        myView->SetProj( V3d_Xneg );
 	}
 }
 
@@ -417,7 +432,7 @@ void TIGLViewerWidget::viewBack()
 {
 	if(!myView.IsNull())
 	{
-	    myView->SetProj( V3d_Ypos );
+        myView->SetProj( V3d_Xpos );
 	}
 }
 
@@ -446,7 +461,7 @@ void TIGLViewerWidget::viewLeft()
 {
 	if(!myView.IsNull())
 	{
-	    myView->SetProj( V3d_Xneg );
+        myView->SetProj( V3d_Yneg );
 	}
 }
 
@@ -455,7 +470,7 @@ void TIGLViewerWidget::viewRight()
 {
 	if(!myView.IsNull())
 	{
-	    myView->SetProj( V3d_Xpos );
+        myView->SetProj( V3d_Ypos );
 	}
 }
 
