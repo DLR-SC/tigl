@@ -20,8 +20,8 @@ HEADERS += src/TIGLViewerApplication.h\
            src/TIGLViewer.h \
 		   src/TIGLViewerInternal.h \
 		   src/CommandLineParameters.h \
-		   src/OCC_Point.h \
-		   src/OCC_Text.h
+                   src/ISession_Point.h \
+                   src/ISession_Text.h
            
 SOURCES += 	src/main.cpp \
 	   		src/TIGLViewerApplication.cpp \
@@ -31,8 +31,8 @@ SOURCES += 	src/main.cpp \
            	src/TIGLViewerDocument.cpp \
            	src/TIGLViewerWindow.cpp \
            	src/CommandLineParameters.cpp \
-           	src/OCC_Point.cpp \
-           	src/OCC_Text.cpp
+                src/ISession_Point.cpp \
+                src/ISession_Text.cpp
                       
 DEFINES += CSFDB QOCC_STATIC
 

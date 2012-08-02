@@ -44,14 +44,14 @@ TIGLViewerWidget::TIGLViewerWidget( const Handle_AIS_InteractiveContext& aContex
 								Qt::WindowFlags f )
 : QWidget( parent, f | Qt::MSWindowsOwnDC ),
 	myView            ( NULL ),
-	myRubberBand      ( NULL ),
+    myViewResized	  ( Standard_False ),
+    myViewInitialized ( Standard_False ),
 	myMode			  ( CurAction3d_Undefined ),
 	myGridSnap        ( Standard_False ),
-	myViewResized	  ( Standard_False ),
-	myViewInitialized ( Standard_False ),
+    myDetection		  ( AIS_SOD_Nothing ),
+    myRubberBand      ( NULL ),
 	myPrecision		  ( 0.001 ),
 	myViewPrecision   ( 0.0 ),
-	myDetection		  ( AIS_SOD_Nothing ),
 	myKeyboardFlags   ( Qt::NoModifier ),
 	myButtonFlags	  ( Qt::NoButton )
 {

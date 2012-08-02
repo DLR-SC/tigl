@@ -392,7 +392,7 @@ namespace tigl {
 
 		// now rotate the fuselage
 		gp_Trsf myTrsf;
-		myTrsf.SetRotation(RAxis, angle *PI / 180);
+		myTrsf.SetRotation(RAxis, angle * M_PI / 180.);
 		BRepBuilderAPI_Transform xform(fusedFuselage, myTrsf);
 		fusedFuselage = xform.Shape();
 

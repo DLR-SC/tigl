@@ -161,7 +161,7 @@ namespace tigl {
 
     private:
 		// Copy constructor
-		CCPACSWing(const CCPACSWing & ) : segments(0), componentSegments(0) { /* Do nothing */ }
+        CCPACSWing(const CCPACSWing & ) : CTiglAbstractGeometricComponent(), segments(0), componentSegments(0) { /* Do nothing */ }
 
 		// Assignment operator
 		void operator=(const CCPACSWing & ) { /* Do nothing */ }

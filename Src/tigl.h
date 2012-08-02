@@ -60,7 +60,8 @@ enum TiglReturnCode
     TIGL_STRING_TRUNCATED    = 8,
     TIGL_WRONG_TIXI_VERSION  = 9,
     TIGL_UID_ERROR           = 10,
-    TIGL_WRONG_CPACS_VERSION = 11
+    TIGL_WRONG_CPACS_VERSION = 11,
+    TIGL_UNINITIALIZED       = 12
 };
 
 /**

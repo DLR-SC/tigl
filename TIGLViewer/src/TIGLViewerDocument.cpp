@@ -10,7 +10,7 @@
 * you may not use this file except in compliance with the License.
 * You may obtain a copy of the License at
 *
-*     http://www.apache.org/licenses/LICENSE-2.0
+*     http://www.apache.org/licenses/LICENSE-2.0
 *
 * Unless required by applicable law or agreed to in writing, software
 * distributed under the License is distributed on an "AS IS" BASIS,
@@ -19,6 +19,9 @@
 * limitations under the License.
 */
 
+#include "TIGLViewerDocument.h"
+
+// QT Stuff
 #include <qnamespace.h>
 #include <QMessageBox>
 #include <QInputDialog>
@@ -29,21 +32,26 @@
 
 #include <string.h>
 
+// OpenCascade Stuff
 #include <Handle_AIS_Shape.hxx>
 #include <AIS_Shape.hxx>
 #include <AIS_InteractiveContext.hxx>
 #include <BRepAlgoAPI_Fuse.hxx>
+#include <BRepBuilderAPI_MakeEdge.hxx>
+#include <BRepMesh.hxx>
 #include <TopoDS_Shell.hxx>
+#include <Poly_Triangulation.hxx>
+#include <BRepBuilderAPI_MakePolygon.hxx>
+#include <BRepBuilderAPI_MakeFace.hxx>
 #include <gce_MakeLin.hxx>
 #include <Handle_Geom_TrimmedCurve.hxx>
 #include <GC_MakeSegment.hxx>
 
-
-#include "TIGLViewerDocument.h"
+// TIGLViewer includes
 #include "TIGLViewerInternal.h"
 #include "TIGLViewerWindow.h"
-#include "OCC_Point.h"
-#include "OCC_Text.h"
+#include "ISession_Point.h"
+#include "ISession_Text.h"
 
 
 TIGLViewerDocument::TIGLViewerDocument( QWidget *parentWidget, const Handle_AIS_InteractiveContext& ic )
@@ -106,7 +114,7 @@ void TIGLViewerDocument::openCpacsConfiguration(const QString fileName)
 	}
 
 	// Get configuration from user and open with TIGL
-	TiglReturnCode tiglRet;
+    TiglReturnCode tiglRet = TIGL_UNINITIALIZED;
 	if (countRotorcrafts + countAircrafts == 0)
 	{
 		// no configuration present
@@ -182,9 +190,9 @@ void TIGLViewerDocument::DisplayPoint(gp_Pnt& aPoint,
                                   Standard_Real aZoffset,
                                   Standard_Real TextScale)
 {
-    Handle(OCC_Point) aGraphicPoint = new OCC_Point(aPoint);
+    Handle(ISession_Point) aGraphicPoint = new ISession_Point(aPoint);
     myAISContext->Display(aGraphicPoint,UpdateViewer);
-    Handle(OCC_Text) aGraphicText = new OCC_Text(aText, aPoint.X() + anXoffset,
+    Handle(ISession_Text) aGraphicText = new ISession_Text(aText, aPoint.X() + anXoffset,
     											 aPoint.Y() + anYoffset,
     											 aPoint.Z() + aZoffset);
     aGraphicText->SetScale(TextScale);
@@ -706,7 +714,7 @@ void TIGLViewerDocument::drawWingSamplePoints()
                     &y,
                     &z);
 
-                Handle(OCC_Point) aGraphicPoint = new OCC_Point(x, y, z);
+                Handle(ISession_Point) aGraphicPoint = new ISession_Point(x, y, z);
                 myAISContext->Display(aGraphicPoint, Standard_False);
 
                 tiglWingGetLowerPoint( m_cpacsHandle,
@@ -718,7 +726,7 @@ void TIGLViewerDocument::drawWingSamplePoints()
 										&y,
 										&z);
 
-                aGraphicPoint = new OCC_Point(x, y, z);
+                aGraphicPoint = new ISession_Point(x, y, z);
                 myAISContext->Display(aGraphicPoint, Standard_False);
             }
         }
@@ -759,7 +767,7 @@ void TIGLViewerDocument::drawFuselageSamplePoints()
 										&y,
 										&z);
 
-				Handle(OCC_Point) aGraphicPoint = new OCC_Point(x, y, z);
+                Handle(ISession_Point) aGraphicPoint = new ISession_Point(x, y, z);
 				myAISContext->Display(aGraphicPoint, Standard_False);
 			}
 		}
@@ -800,7 +808,7 @@ void TIGLViewerDocument::drawFuselageSamplePointsAngle()
 								&y,
 								&z);
 
-	Handle(OCC_Point) aGraphicPoint = new OCC_Point(x, y, z);
+    Handle(ISession_Point) aGraphicPoint = new ISession_Point(x, y, z);
 	myAISContext->Display(aGraphicPoint, Standard_False);
 }
 
@@ -840,7 +848,7 @@ void TIGLViewerDocument::drawAllFuselagesAndWingsSurfacePoints()
 						&y,
 						&z);
 
-					Handle(OCC_Point) aGraphicPoint = new OCC_Point(x, y, z);
+                    Handle(ISession_Point) aGraphicPoint = new ISession_Point(x, y, z);
 					myAISContext->Display(aGraphicPoint,Standard_False);
 					//text << "PT(" << xsi << ", " << eta << ")";
 					//text << "(" << x << ", " << y << ", " << z << ")";
@@ -857,7 +865,7 @@ void TIGLViewerDocument::drawAllFuselagesAndWingsSurfacePoints()
 						&y,
 						&z);
 
-					aGraphicPoint = new OCC_Point(x, y, z);
+                    aGraphicPoint = new ISession_Point(x, y, z);
 					myAISContext->Display(aGraphicPoint,Standard_False);
 				}
 			}
@@ -896,7 +904,7 @@ void TIGLViewerDocument::drawAllFuselagesAndWingsSurfacePoints()
 										&y,
 										&z);
 
-					Handle(OCC_Point) aGraphicPoint = new OCC_Point(x, y, z);
+                    Handle(ISession_Point) aGraphicPoint = new ISession_Point(x, y, z);
 					myAISContext->Display(aGraphicPoint,Standard_False);
 				}
 			}
@@ -925,7 +933,7 @@ void TIGLViewerDocument::exportAsIges()
 		QApplication::setOverrideCursor( Qt::WaitCursor );
 		TiglReturnCode err = tiglExportIGES(m_cpacsHandle, qstringToCstring(fileName));
 		QApplication::restoreOverrideCursor();
-		if(err != SUCCESS) {
+        if(err != TIGL_SUCCESS) {
 			displayError(QString("Error in function <u>tiglExportIGES</u>. Error code: %1").arg(err), "TIGL Error");
 		}
 	}
@@ -949,7 +957,7 @@ void TIGLViewerDocument::exportFusedAsIges()
 		QApplication::setOverrideCursor( Qt::WaitCursor );
 		TiglReturnCode err = tiglExportFusedWingFuselageIGES(m_cpacsHandle, qstringToCstring(fileName));
 		QApplication::restoreOverrideCursor();
-		if(err != SUCCESS) {
+        if(err != TIGL_SUCCESS) {
 			displayError(QString("Error in function <u>tiglExportFusedWingFuselageIGES</u>. Error code: %1").arg(err), "TIGL Error");
 		}
 	}
@@ -973,7 +981,7 @@ void TIGLViewerDocument::exportMeshedWingSTL()
 		QApplication::setOverrideCursor( Qt::WaitCursor );
 		TiglReturnCode err = tiglExportMeshedWingSTL(m_cpacsHandle, 1 /*wingUid*/, qstringToCstring(fileName), 0.01);
 		QApplication::restoreOverrideCursor();
-		if(err != SUCCESS) {
+        if(err != TIGL_SUCCESS) {
 			displayError(QString("Error in function <u>tiglExportMeshedWingSTL</u>. Error code: %1").arg(err), "TIGL Error");
 		}
 	}
@@ -999,7 +1007,7 @@ void TIGLViewerDocument::exportMeshedFuselageSTL()
 		QApplication::setOverrideCursor( Qt::WaitCursor );
 		TiglReturnCode err = tiglExportMeshedFuselageSTL(m_cpacsHandle, 1 /*fuselageUid*/, qstringToCstring(fileName), 0.01);
 		QApplication::restoreOverrideCursor();
-		if(err != SUCCESS) {
+        if(err != TIGL_SUCCESS) {
 			displayError(QString("Error in function <u>tiglExportMeshedFuselageSTL</u>. Error code: %1").arg(err), "TIGL Error");
 		}
 	}
@@ -1024,7 +1032,7 @@ void TIGLViewerDocument::exportMeshedWingVTK()
 		QApplication::setOverrideCursor( Qt::WaitCursor );
 		TiglReturnCode err = tiglExportMeshedWingVTKByIndex(m_cpacsHandle, 1 /*wingUid*/, qstringToCstring(fileName), 0.1);
 		QApplication::restoreOverrideCursor();
-		if(err != SUCCESS) {
+        if(err != TIGL_SUCCESS) {
 			displayError(QString("Error in function <u>tiglExportMeshedWingVTKByIndex</u>. Error code: %1").arg(err), "TIGL Error");
 		}
 	}
@@ -1049,7 +1057,7 @@ void TIGLViewerDocument::exportMeshedWingVTKsimple()
 		QApplication::setOverrideCursor( Qt::WaitCursor );
 		TiglReturnCode err = tiglExportMeshedWingVTKSimpleByUID(m_cpacsHandle, qstringToCstring(wingUid), qstringToCstring(fileName), 0.1);
 		QApplication::restoreOverrideCursor();
-		if(err != SUCCESS) {
+        if(err != TIGL_SUCCESS) {
 			displayError(QString("Error in function <u>tiglExportMeshedWingVTKSimpleByUID</u>. Error code: %1").arg(err), "TIGL Error");
 		}
 	}
@@ -1075,7 +1083,7 @@ void TIGLViewerDocument::exportMeshedFuselageVTK()
 		QApplication::setOverrideCursor( Qt::WaitCursor );
 		TiglReturnCode err = tiglExportMeshedFuselageVTKByIndex(m_cpacsHandle, 1 /*wingUid*/, qstringToCstring(fileName), 0.1);
 		QApplication::restoreOverrideCursor();
-		if(err != SUCCESS) {
+        if(err != TIGL_SUCCESS) {
 			displayError(QString("Error in function <u>tiglExportMeshedFuselageVTKByIndex</u>. Error code: %1").arg(err), "TIGL Error");
 		}
 	}
@@ -1100,7 +1108,7 @@ void TIGLViewerDocument::exportMeshedFuselageVTKsimple()
 		QApplication::setOverrideCursor( Qt::WaitCursor );
 		TiglReturnCode err = tiglExportMeshedFuselageVTKSimpleByUID(m_cpacsHandle, qstringToCstring(fuselageUid), qstringToCstring(fileName), 0.1);
 		QApplication::restoreOverrideCursor();
-		if(err != SUCCESS) {
+        if(err != TIGL_SUCCESS) {
 			displayError(QString("Error in function <u>tiglExportMeshedFuselageVTKSimpleByUID</u>. Error code: %1").arg(err), "TIGL Error");
 		}
 	}
@@ -1160,9 +1168,9 @@ void TIGLViewerDocument::drawWingFuselageIntersectionLine()
 							&y,
 							&z);
 
-		OCC_Point* aGraphicPoint = new OCC_Point(x, y, z);
+        ISession_Point* aGraphicPoint = new ISession_Point(x, y, z);
 		myAISContext->Display(aGraphicPoint,Standard_False);
-		if(res != SUCCESS) {
+        if(res != TIGL_SUCCESS) {
 			displayError(QString("Error in function <u>tiglComponentIntersectionPoint</u>. Error code: %1").arg(res), "TIGL Error");
 		}
 	}
