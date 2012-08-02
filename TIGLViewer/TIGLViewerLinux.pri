@@ -1,138 +1,109 @@
-CONFIG(release, release|debug) { 
-	message ("Building Release Version") 
-	LIBS += -L$(CASROOT)/Linux/lib -lBinLPlugin \
-		-lTIXI \
-		-lTIGL \
-		-lBinPlugin \
-		-lBinXCAFPlugin \
-		-lFWOSPlugin \
-		-lPTKernel \
-		-lStdLPlugin \
-		-lStdPlugin \
-		-lTKAdvTools \
-		-lTKBin \
-		-lTKBinL \
-		-lTKBinXCAF \
-		-lTKBO \
-		-lTKBool \
-		-lTKBRep \
-		-lTKCAF \
-		-lTKCDF \
-		-lTKernel \
-		-lTKFeat \
-		-lTKFillet \
-		-lTKG2d \
-		-lTKG3d \
-		-lTKGeomAlgo \
-		-lTKGeomBase \
-		-lTKHLR \
-		-lTKIGES \
-		-lTKLCAF \
-		-lTKMath \
-		-lTKMesh \
-		-lTKMeshVS \
-		-lTKOffset \
-		-lTKOpenGl \
-		-lTKPCAF \
-		-lTKPLCAF \
-		-lTKPrim \
-		-lTKPShape \
-		-lTKService \
-		-lTKShapeSchema \
-		-lTKShHealing \
-		-lTKStdLSchema \
-		-lTKStdSchema \
-		-lTKSTEP \
-		-lTKSTEP209 \
-		-lTKSTEPAttr \
-		-lTKSTEPBase \
-		-lTKSTL \
-		-lTKTopAlgo \
-		-lTKV2d \
-		-lTKV3d \
-		-lTKVRML \
-		-lTKXCAF \
-		-lTKXCAFSchema \
-		-lTKXDEIGES \
-		-lTKXDESTEP \
-		-lTKXml \
-		-lTKXmlL \
-		-lTKXmlXCAF \
-		-lTKXSBase \
-		-lXCAFPlugin \
-		-lXmlLPlugin \
-		-lXmlPlugin \
-		-lXmlXCAFPlugin
-#		-ltk -lXmu
+CONFIG(release, release|debug) {
+    message ("Building Release Version")
+    LIBS += -L$(CASROOT)/Linux/lib \
+        -lTIXI \
+        -lTIGL \
+        -lPTKernel \
+        -lTKAdvTools \
+        -lTKBin \
+        -lTKBinL \
+        -lTKBinXCAF \
+        -lTKBO \
+        -lTKBool \
+        -lTKBRep \
+        -lTKernel \
+        -lTKFeat \
+        -lTKGeomAlgo \
+        -lTKGeomBase \
+        -lTKIGES \
+        -lTKLCAF \
+        -lTKMath \
+        -lTKOpenGl \
+        -lTKPrim \
+        -lTKPShape \
+        -lTKService \
+        -lTKShapeSchema \
+        -lTKShHealing \
+        -lTKStdLSchema \
+        -lTKStdSchema \
+        -lTKSTL \
+        -lTKTopAlgo \
+        -lTKV2d \
+        -lTKV3d \
+        -lTKVRML \
+        -lTKXCAF \
+        -lTKXCAFSchema \
+        -lTKXDEIGES \
+        -lTKXDESTEP \
+        -lTKXmlXCAF \
+        -lTKXSBase
+
+    LIBS += -lxml2 -lxslt -lcurl
+
+# OCC libs not needed but were linked before
+
+#        -lFWOSPlugin \
+#        -lTKCAF \
+#        -lTKCDF \
+#        -lTKHLR \
+#        -lTKXml \
+#        -lTKXmlL \
+#        -lTKSTEP \
+#        -lTKSTEP209 \
+#        -lTKSTEPAttr \
+#        -lTKSTEPBase \
+#        -lTKPCAF \
+#        -lTKPLCAF \
+#        -lTKMesh \
+#        -lTKMeshVS \
+#        -lTKOffset
+#        -lTKFillet \
+#        -lTKG2d \
+#        -lTKG3d \
 }
 #################################################################
 # Change the lib to libd if you have a debug OpenCASCADE build.	#
 #################################################################	
 CONFIG(debug, release|debug) { 
 	message ("Building Debug Version") 
-	LIBS += -L$(CASROOT)/Linux/lib -lBinLPlugin \
-		-lTIGL \
-		-lTIXI \
-		-lBinPlugin \
-		-lBinXCAFPlugin \
-		-lFWOSPlugin \
-		-lPTKernel \
-		-lStdLPlugin \
-		-lStdPlugin \
-		-lTKAdvTools \
-		-lTKBin \
-		-lTKBinL \
-		-lTKBinXCAF \
-		-lTKBO \
-		-lTKBool \
-		-lTKBRep \
-		-lTKCAF \
-		-lTKCDF \
-		-lTKernel \
-		-lTKFeat \
-		-lTKFillet \
-		-lTKG2d \
-		-lTKG3d \
-		-lTKGeomAlgo \
-		-lTKGeomBase \
-		-lTKHLR \
-		-lTKIGES \
-		-lTKLCAF \
-		-lTKMath \
-		-lTKMesh \
-		-lTKMeshVS \
-		-lTKOffset \
-		-lTKOpenGl \
-		-lTKPCAF \
-		-lTKPLCAF \
-		-lTKPrim \
-		-lTKPShape \
-		-lTKService \
-		-lTKShapeSchema \
-		-lTKShHealing \
-		-lTKStdLSchema \
-		-lTKStdSchema \
-		-lTKSTEP \
-		-lTKSTEP209 \
-		-lTKSTEPAttr \
-		-lTKSTEPBase \
-		-lTKSTL \
-		-lTKTopAlgo \
-		-lTKV2d \
-		-lTKV3d \
-		-lTKVRML \
-		-lTKXCAF \
-		-lTKXCAFSchema \
-		-lTKXDEIGES \
-		-lTKXDESTEP \
-		-lTKXml \
-		-lTKXmlL \
-		-lTKXmlXCAF \
-		-lTKXSBase \
-		-lXCAFPlugin \
-		-lXmlLPlugin \
-		-lXmlPlugin \
-		-lXmlXCAFPlugin
-#		-ltk -lXmu
+    LIBS += -L$(CASROOT)/Linux/lib \
+        -lTIXI \
+        -lTIGL \
+        -lPTKernel \
+        -lTKAdvTools \
+        -lTKBin \
+        -lTKBinL \
+        -lTKBinXCAF \
+        -lTKBO \
+        -lTKBool \
+        -lTKBRep \
+        -lTKernel \
+        -lTKFeat \
+        -lTKGeomAlgo \
+        -lTKGeomBase \
+        -lTKIGES \
+        -lTKLCAF \
+        -lTKMath \
+        -lTKOpenGl \
+        -lTKPrim \
+        -lTKPShape \
+        -lTKService \
+        -lTKShapeSchema \
+        -lTKShHealing \
+        -lTKStdLSchema \
+        -lTKStdSchema \
+        -lTKSTL \
+        -lTKTopAlgo \
+        -lTKV2d \
+        -lTKV3d \
+        -lTKVRML \
+        -lTKXCAF \
+        -lTKXCAFSchema \
+        -lTKXDEIGES \
+        -lTKXDESTEP \
+        -lTKXmlXCAF \
+        -lTKXSBase
+
+    LIBS += -lxml2 -lxslt -lcurl
 }
 		

@@ -709,7 +709,7 @@ namespace tigl {
 
         // now rotate line
         gp_Trsf myTrsf;
-		myTrsf.SetRotation(axis, alpha *PI / 180);
+		myTrsf.SetRotation(axis, alpha * M_PI / 180.);
         BRepBuilderAPI_Transform xform(lineShape, myTrsf);
         lineShape = xform.Shape();
 

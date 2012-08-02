@@ -140,7 +140,7 @@ namespace tigl {
 
     private:
 		// Copy constructor
-		CCPACSFuselage(const CCPACSFuselage & ) : segments(0) { /* Do nothing */ }
+        CCPACSFuselage(const CCPACSFuselage & ) : CTiglAbstractGeometricComponent(), segments(0) { /* Do nothing */ }
 
 		// Assignment operator
 		void operator=(const CCPACSFuselage & ) { /* Do nothing */ }
