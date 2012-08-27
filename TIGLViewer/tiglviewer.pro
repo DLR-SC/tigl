@@ -5,8 +5,8 @@
 TEMPLATE = app
 TARGET = TIGLViewer
 DEPENDPATH += . 
-INCLUDEPATH += . $(CASROOT)/inc ../Src ../../TIXI/Src /opt/opencascade/inc
-LIBS += -L../../TIXI/lib -L../Src
+INCLUDEPATH += . $(CASROOT)/inc ../Src ../../tixi/src /opt/opencascade/inc
+LIBS += -L../../tixi/lib -L../Src
 
 # Input
 CONFIG  += qt dll debug_and_release build_all 
@@ -18,10 +18,11 @@ HEADERS += src/TIGLViewerApplication.h\
            src/TIGLViewerDocument.h \
            src/TIGLViewerWindow.h \
            src/TIGLViewer.h \
-		   src/TIGLViewerInternal.h \
-		   src/CommandLineParameters.h \
-                   src/ISession_Point.h \
-                   src/ISession_Text.h
+           src/TIGLViewerInternal.h \
+           src/CommandLineParameters.h \
+           src/ISession_Point.h \
+           src/ISession_Text.h 
+
            
 SOURCES += 	src/main.cpp \
 	   		src/TIGLViewerApplication.cpp \
@@ -31,8 +32,8 @@ SOURCES += 	src/main.cpp \
            	src/TIGLViewerDocument.cpp \
            	src/TIGLViewerWindow.cpp \
            	src/CommandLineParameters.cpp \
-                src/ISession_Point.cpp \
-                src/ISession_Text.cpp
+            src/ISession_Point.cpp \
+            src/ISession_Text.cpp
                       
 DEFINES += CSFDB QOCC_STATIC
 
