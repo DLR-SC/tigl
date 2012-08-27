@@ -278,6 +278,7 @@ namespace tigl {
 	// Builds a fused shape of all wing segments
 	void CCPACSWing::BuildFusedSegments(void)
 	{
+		//@todo: this probably works only if the wings does not split somewere
 		BRepOffsetAPI_ThruSections generator(Standard_True, Standard_True, Precision::Confusion() );
 
 		for (int i=1; i <= segments.GetSegmentCount(); i++) {

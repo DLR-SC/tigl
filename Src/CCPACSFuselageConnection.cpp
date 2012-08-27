@@ -86,14 +86,18 @@ namespace tigl {
 		CCPACSFuselage& fuselage              = segment->GetFuselage();
 		std::string profileUID;
 
+		bool found = false;
 		for(int i=1; i <= fuselage.GetSectionCount(); i++) {
 			CCPACSFuselageSection& section        = fuselage.GetSection(i);
 			for(int j=1; j <= section.GetSectionElementCount(); j++) {
 				if(section.GetSectionElement(j).GetUID() == elementUID ) {
 					CCPACSFuselageSectionElement& element = section.GetSectionElement(j);
 					profileUID            = element.GetProfileIndex();
+					found = true;
+					break;
 				}
 			}
+			if( found ) break;
 		}
 		CCPACSConfiguration& config  	  = fuselage.GetConfiguration();
 
