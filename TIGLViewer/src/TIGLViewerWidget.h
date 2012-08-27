@@ -72,12 +72,15 @@ public:
 						ViewHlrOnId };
 */
 public:
+    TIGLViewerWidget(QWidget*);
 
 	TIGLViewerWidget( const Handle_AIS_InteractiveContext& aContext = NULL,
 					 QWidget *parent = NULL, 
 					 Qt::WindowFlags wflags = 0 );
 
     ~TIGLViewerWidget();
+
+    void setContext(const Handle_AIS_InteractiveContext& aContext){ myContext = aContext; }
 
 	void initializeOCC(const Handle_AIS_InteractiveContext& aContext = NULL);
 
@@ -174,6 +177,7 @@ private: // members
 	QCursor							myCrossCursor;
 
 private: // methods
+    void initialize();
 
 	void onLeftButtonDown  ( Qt::KeyboardModifiers nFlags, const QPoint point );
     void onMiddleButtonDown( Qt::KeyboardModifiers nFlags, const QPoint point );

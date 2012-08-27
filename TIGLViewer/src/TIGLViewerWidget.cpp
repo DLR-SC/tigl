@@ -39,10 +39,14 @@
 // 10% zoom per wheel or key event
 #define TIGLVIEWER_ZOOM_STEP 1.10
 
+TIGLViewerWidget::TIGLViewerWidget(QWidget * parent)
+    : QWidget(parent) {
+    initialize();
+}
+
 TIGLViewerWidget::TIGLViewerWidget( const Handle_AIS_InteractiveContext& aContext,
 								QWidget *parent, 
-								Qt::WindowFlags f )
-: QWidget( parent, f | Qt::MSWindowsOwnDC ),
+                                Qt::WindowFlags f ) :
 	myView            ( NULL ),
     myViewResized	  ( Standard_False ),
     myViewInitialized ( Standard_False ),
@@ -53,44 +57,59 @@ TIGLViewerWidget::TIGLViewerWidget( const Handle_AIS_InteractiveContext& aContex
 	myPrecision		  ( 0.001 ),
 	myViewPrecision   ( 0.0 ),
 	myKeyboardFlags   ( Qt::NoModifier ),
-	myButtonFlags	  ( Qt::NoButton )
-{
-	myContext = aContext;
-	// Needed to generate mouse events
-	setMouseTracking( true );
+	myButtonFlags	  ( Qt::NoButton ){
+    initialize();
+    myContext = aContext;
+}
 
-	// Avoid Qt background clears to improve resizing speed,
-	// along with a couple of other attributes
-	setAutoFillBackground( false );				
-	setAttribute( Qt::WA_NoSystemBackground );	
+void TIGLViewerWidget::initialize(){
+    myView            = NULL;
+    myRubberBand      = NULL;
+    myMode			  = CurAction3d_Undefined;
+    myGridSnap        = Standard_False;
+    myViewResized	  = Standard_False;
+    myViewInitialized = Standard_False;
+    myPrecision		  = 0.001;
+    myViewPrecision   = 0.0;
+    myDetection		  = AIS_SOD_Nothing;
+    myKeyboardFlags   = Qt::NoModifier;
+    myButtonFlags	  = Qt::NoButton;
 
-	// This next attribute seems to be the secret of allowing OCC on Win32
-	// to "own" the window, even though its only supposed to work on X11.
-	setAttribute( Qt::WA_PaintOnScreen );
+    // Needed to generate mouse events
+    setMouseTracking( true );
 
-	// Here's a modified pick point cursor from AutoQ3D
-	QBitmap curb1( 48, 48 );
-	QBitmap curb2( 48, 48 );
-	curb1.fill( QColor( 255, 255, 255 ) );
-	curb2.fill( QColor( 255, 255, 255 ) );
-	QPainter p;
+    // Avoid Qt background clears to improve resizing speed,
+    // along with a couple of other attributes
+    setAutoFillBackground( false );
+    setAttribute( Qt::WA_NoSystemBackground );
 
-	p.begin( &curb1 );
-		p.drawLine( 24,  0, 24, 47 );
-		p.drawLine(  0, 24, 47, 24 );
-		p.setBrush( Qt::NoBrush );
-		p.drawRect( 18, 18, 12, 12 );
-	p.end();
-	myCrossCursor = QCursor( curb2, curb1, 24, 24 );
+    // This next attribute seems to be the secret of allowing OCC on Win32
+    // to "own" the window, even though its only supposed to work on X11.
+    setAttribute( Qt::WA_PaintOnScreen );
 
-	// Create a rubber band box for later mouse activity
-	myRubberBand = new QRubberBand( QRubberBand::Rectangle, this );
-	if (myRubberBand)
-	{
-		// If you don't set a style, QRubberBand doesn't work properly
-		// take this line out if you don't believe me.
-		myRubberBand->setStyle( (QStyle*) new QPlastiqueStyle() );
-	}
+    // Here's a modified pick point cursor from AutoQ3D
+    QBitmap curb1( 48, 48 );
+    QBitmap curb2( 48, 48 );
+    curb1.fill( QColor( 255, 255, 255 ) );
+    curb2.fill( QColor( 255, 255, 255 ) );
+    QPainter p;
+
+    p.begin( &curb1 );
+        p.drawLine( 24,  0, 24, 47 );
+        p.drawLine(  0, 24, 47, 24 );
+        p.setBrush( Qt::NoBrush );
+        p.drawRect( 18, 18, 12, 12 );
+    p.end();
+    myCrossCursor = QCursor( curb2, curb1, 24, 24 );
+
+    // Create a rubber band box for later mouse activity
+    myRubberBand = new QRubberBand( QRubberBand::Rectangle, this );
+    if (myRubberBand)
+    {
+        // If you don't set a style, QRubberBand doesn't work properly
+        // take this line out if you don't believe me.
+        myRubberBand->setStyle( (QStyle*) new QPlastiqueStyle() );
+    }
 }
 
 
@@ -964,7 +983,8 @@ int TIGLViewerWidget::paintCallBack (Aspect_Drawable /* drawable */,
 }
 
 
-
+// TODO: this routine prevents setting the background color
+// either we should set it back here or we should skip it.
 void TIGLViewerWidget::paintOCC( void )
 {
 	glDisable( GL_LIGHTING ); 
@@ -994,6 +1014,7 @@ void TIGLViewerWidget::paintOCC( void )
 	}
 #endif
 
+    // purple gradient background
     glBegin( GL_QUADS);
     {
       glColor4f  (  0.1f, 0.1f, 0.1f, 1.0f );

@@ -12,7 +12,7 @@ LIBS += -L../../tixi/lib -L../Src
 CONFIG  += qt dll debug_and_release build_all 
 CONFIG  += opengl 
 HEADERS += src/TIGLViewerApplication.h\
-	   	   src/TIGLViewerContext.h \
+           src/TIGLViewerContext.h \
            src/TIGLViewerWidget.h \
            src/TIGLViewerInputoutput.h \
            src/TIGLViewerDocument.h \
@@ -21,8 +21,8 @@ HEADERS += src/TIGLViewerApplication.h\
            src/TIGLViewerInternal.h \
            src/CommandLineParameters.h \
            src/ISession_Point.h \
-           src/ISession_Text.h 
-
+           src/ISession_Text.h \
+           src/TIGLDebugStream.h 
            
 SOURCES += 	src/main.cpp \
 	   		src/TIGLViewerApplication.cpp \
@@ -75,3 +75,6 @@ unix {
         	# 32-bit Linux
 	}
 }
+
+FORMS += \
+    src/TIGLViewerWindow.ui
