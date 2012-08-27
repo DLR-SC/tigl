@@ -381,4 +381,14 @@ namespace tigl {
         return gp_Pnt(transformed.X(), transformed.Y(), transformed.Z());
     }
 
+	void CTiglTransformation::printTransformMatrix()
+	{
+		for(int i = 0; i < 4; ++i){
+			for(int j = 0; j < 4; ++j){
+				cout << m_matrix[i][j] << "\t";
+			}
+			cout << endl;
+		}
+	}
+
 } // end namespace tigl

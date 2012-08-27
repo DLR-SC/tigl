@@ -106,6 +106,9 @@ namespace tigl {
 		// Default copy constructor and assignment operator are correct
 		// since memberwise copy is enough for this class.
 
+		// for debug purposes
+		void printTransformMatrix();
+
 	private:
 		double m_matrix[4][4];
 	
