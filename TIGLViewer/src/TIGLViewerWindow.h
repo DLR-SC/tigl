@@ -29,13 +29,15 @@
 #include "TIGLViewerWidget.h"
 #include "TIGLViewerInputoutput.h"
 
+#include "ui_TIGLViewerWindow.h"
+
 class QAction;
 class QLabel;
 class QMenu;
 class QFileSystemWatcher;
 class QShortcut;
 
-class TIGLViewerWindow : public QMainWindow
+class TIGLViewerWindow : public QMainWindow, private Ui::TIGLViewerWindow
 {
     Q_OBJECT
 
@@ -43,6 +45,7 @@ public:
     enum { MaxRecentFiles = 5 };
 
     TIGLViewerWindow();
+    ~TIGLViewerWindow();
 	Handle_AIS_InteractiveContext& getContext() { return myVC->getContext(); };
 
 	void setInitialCpacsFileName(QString filename);
@@ -82,103 +85,9 @@ private:
     void updateRecentFileActions();
     void setCurrentFile(const QString &);
 
-    QMenu *fileMenu;
-    QMenu *recentFileMenu;
-    QMenu *editMenu;
-	QMenu *viewMenu;
-	QMenu *viewActionsMenu;
-	QMenu *viewDisplayMenu;
-    QMenu *formatMenu;
-    QMenu *helpMenu;
-	QMenu *gridMenu;
-	QMenu *cpacsMenu;
-	QMenu *tiglMenu;
-	QMenu *tiglAlgorithmMenu;
-	QMenu *tiglExportMenu;
-
-    QAction *newAction;
-    QAction *openAction;
-    QAction *saveAction;
-    QAction *printAction;
-    QAction *exitAction;
-    QAction *undoAction;
-    QAction *redoAction;
-    QAction *cutAction;
-    QAction *copyAction;
-    QAction *pasteAction;
-    QAction *aboutAction;
-    QAction *setBackgroundAction;
     QAction *recentFileActions[MaxRecentFiles];
 
-	QAction *fitAction;
-	QAction *fitAllAction;
-	QAction *zoomAction;
-	QAction *panAction;
-	QAction *rotAction;
-
-	QAction *gridXYAction;
-	QAction *gridXZAction;
-	QAction *gridYZAction;
-	QAction *gridOnAction;
-	QAction *gridOffAction;
-	QAction *gridRectAction;
-	QAction *gridCircAction;
-
-	QAction *viewFrontAction;
-	QAction *viewBackAction;
-	QAction *viewTopAction;
-	QAction *viewBottomAction;
-	QAction *viewLeftAction;
-	QAction *viewRightAction;
-	QAction *viewAxoAction;
-	QAction *viewResetAction;
-	QAction *viewGridAction; /** Action for grid view */
-    QAction *viewZoomIn;
-    QAction *viewZoomOut;
-
-	QAction *backgroundAction;
-    QAction *aboutQtAction;
-
-    // Aircraft actions
-    QAction *showAllWingsAndFuselagesAction;
-    QAction *showAllWingsAndFuselagesSurfacePointsAction;
-    QAction *drawFusedAircraftAction;
-    QAction *drawWingFuselageIntersectionLineAction;
-
-    // Wing actions
-    QAction *drawWingsAction;
-    QAction *drawWingProfilesAction;
-    QAction *drawWingOverlayCPACSProfilePointsAction;
-    QAction *drawWingTriangulationAction;
-    QAction *drawWingSamplePointsAction;
-    QAction *drawFusedWingAction;
-    QAction *drawWingComponentSegmentAction;
-
-    // Fuselage actions
-    QAction *drawFuselageProfilesAction;
-    QAction *drawFuselageAction;
-    QAction *drawFuselageTriangulationAction;
-    QAction *drawFuselageSamplePointsAction;
-    QAction *drawFuselageSamplePointsAngleAction;
-    QAction *drawFusedFuselageAction;
-
-    // TIGL actions
-    QAction *tiglInterpolateBsplineWireAction;
-    QAction *tiglInterpolateLinearWireAction;
-    QAction *tiglApproximateBsplineWireAction;
-
-	// Export actions
-    QAction *tiglExportIgesAction;
-    QAction *tiglExportFusedIgesAction;
-    QAction *tiglExportMeshedWingSTL;
-    QAction *tiglExportMeshedFuselageSTL;
-    QAction *tiglExportMeshedWingVTK;
-    QAction *tiglExportMeshedWingVTKsimple;
-    QAction *tiglExportMeshedFuselageVTK;
-    QAction *tiglExportMeshedFuselageVTKsimple;
-
-	// The OpenCASCADE widget and context;
-	TIGLViewerWidget*     	myOCC;
+	// The OpenCASCADE context;
 	TIGLViewerContext*  	myVC;
 
 	QString 				myLastFolder;
@@ -187,6 +96,7 @@ private:
 	QString cpacsFileName;
 	QString controlFileName;
 	QFileSystemWatcher *watcher;
+    class QDebugStream * stdoutStream, * errorStream;
 
 };
 

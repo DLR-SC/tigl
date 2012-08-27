@@ -10,7 +10,7 @@
 * you may not use this file except in compliance with the License.
 * You may obtain a copy of the License at
 *
-*     http://www.apache.org/licenses/LICENSE-2.0
+*     http://www.apache.org/licenses/LICENSE-2.0
 *
 * Unless required by applicable law or agreed to in writing, software
 * distributed under the License is distributed on an "AS IS" BASIS,
@@ -152,6 +152,16 @@ void TIGLViewerContext::gridYZ  ( void )
 }
 
 /*!
+ * \brief Toggles the grid on and off
+ */
+void TIGLViewerContext::toggleGrid(bool gridIsOn){
+    if(gridIsOn)
+        gridOn();
+    else
+        gridOff();
+}
+
+/*!
 \brief	Turn the grid on.
  */
 void TIGLViewerContext::gridOn  ( void )
@@ -186,6 +196,19 @@ void TIGLViewerContext::gridCirc ( void )
 	myGridType = Aspect_GT_Circular;
 	myViewer->ActivateGrid( myGridType , myGridMode );
 	myViewer->Grid()->SetColors( myGridColor, myGridTenthColor );
+}
+
+/*!
+ * \brief Toggles wireframe view.
+ * \param wireframe True, if wireframes should be printed
+ */
+void TIGLViewerContext::wireFrame(bool wireframe){
+    if(!myContext.IsNull()){
+        if(wireframe)
+            myContext->SetDisplayMode(AIS_WireFrame);
+        else
+            myContext->SetDisplayMode(AIS_Shaded);
+    }
 }
 
 void TIGLViewerContext::setGridOffset (Quantity_Length offset)

@@ -76,6 +76,7 @@
     <ClInclude Include="src\CommandLineParameters.h" />
     <ClInclude Include="src\ISession_Point.h" />
     <ClInclude Include="src\ISession_Text.h" />
+    <ClInclude Include="src\TIGLDebugStream.h" />
     <ClInclude Include="src\TIGLViewer.h" />
     <ClInclude Include="src\TIGLViewerApplication.h" />
     <ClInclude Include="src\TIGLViewerContext.h" />
