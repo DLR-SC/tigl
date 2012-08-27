@@ -419,6 +419,7 @@ namespace tigl {
         if (tempWireClosed.IsNull() == Standard_True || tempWireOriginal.IsNull() == Standard_True)
             throw CTiglError("Error: TopoDS_Wire is null in CCPACSWingProfile::BuildWire", TIGL_ERROR);
 
+		//@todo: do we really want to remove all y information? this has to be a bug
         // Apply wing profile transformation to wires
         CTiglTransformation transformation;
         transformation.AddProjectionOnXZPlane();

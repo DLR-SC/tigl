@@ -172,7 +172,7 @@ tigl::CCPACSConfiguration& TIGLViewerDocument::GetConfiguration(void) const
 
 
 // a small helper when we just want to display a shape
-Handle(AIS_Shape) TIGLViewerDocument::displayShape(TopoDS_Shape loft)
+Handle(AIS_Shape) TIGLViewerDocument::displayShape(const TopoDS_Shape& loft)
 {
 	Handle(AIS_Shape) shape = new AIS_Shape(loft);
 	shape->SetColor(Quantity_NOC_BLUE2);
@@ -217,7 +217,11 @@ QString TIGLViewerDocument::dlgGetWingSelection()
 		wings << name.c_str();
 	}
 
-	return QInputDialog::getItem(parent, tr("Select Wing"), tr("Available Wings:"), wings, 0, false, &ok);
+	QString choice = QInputDialog::getItem(parent, tr("Select Wing"), tr("Available Wings:"), wings, 0, false, &ok);
+    if(ok)
+        return choice;
+    else
+        return "";
 }
 
 
@@ -307,11 +311,7 @@ void TIGLViewerDocument::drawAllFuselagesAndWings( )
 		for (int i = 1; i <= wing.GetSegmentCount(); i++)
 		{
 			tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(i);
-			TopoDS_Shape loft = segment.GetLoft();
-
-			// Transform by wing transformation
-			loft = wing.GetWingTransformation().Transform(loft);
-			displayShape(loft);
+			displayShape(segment.GetLoft());
 		}
 	}
 
@@ -337,6 +337,8 @@ void TIGLViewerDocument::drawAllFuselagesAndWings( )
 void TIGLViewerDocument::drawWingProfiles()
 {
 	QString wingProfile = dlgGetWingProfileSelection();
+    if(wingProfile == "")
+        return;
 
     myAISContext->EraseAll(Standard_False);
 
@@ -472,6 +474,9 @@ void TIGLViewerDocument::drawFuselageProfiles()
 void TIGLViewerDocument::drawWing()
 {
 	QString wingUid = dlgGetWingSelection();
+    if(wingUid=="")
+        return;
+
 	tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
 
     myAISContext->EraseAll(Standard_False);
@@ -480,9 +485,7 @@ void TIGLViewerDocument::drawWing()
     {
         // Draw segment loft
         tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(i);
-        TopoDS_Shape loft = segment.GetLoft();
-        // Transform by wing transformation
-        loft = wing.GetWingTransformation().Transform(loft);
+        TopoDS_Shape& loft = wing.GetSegment(i).GetLoft();
         displayShape(loft);
     }
 }
@@ -513,14 +516,22 @@ void TIGLViewerDocument::drawFuselage()
 void TIGLViewerDocument::drawWingTriangulation()
 {
 	QString wingUid = dlgGetWingSelection();
+    // cancel on abort
+    if (wingUid == "")
+        return;
+
 	tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
 
     //clear screen
     myAISContext->EraseAll(Standard_False);
 
+#ifdef ORIG_METH
+    //TODO: somehow we get problems here when fusing the segments with BRepAlgoAPI_Fuse
+    // we should check why this happens
 	tigl::CCPACSWingSegment& firstSegment = (tigl::CCPACSWingSegment &) wing.GetSegment(1);
-	TopoDS_Shape fusedWing = firstSegment.GetLoft();
+    TopoDS_Shape fusedWing = firstSegment.GetLoft();
 
+    try{
     for (int i = 2; i <= wing.GetSegmentCount(); i++)
     {
         tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(i);
@@ -529,10 +540,20 @@ void TIGLViewerDocument::drawWingTriangulation()
         TopExp_Explorer shellExplorer;
         TopExp_Explorer faceExplorer;
 
-		fusedWing = BRepAlgoAPI_Fuse(fusedWing, loft);
+        fusedWing = BRepAlgoAPI_Fuse(fusedWing, loft);
     }
+    }
+    catch(tigl::CTiglError& ex){
+        cerr << ex.getError() << endl;
 
-	BRepMesh::Mesh(fusedWing, 0.01);
+    }
+#else
+    //we do not fuse segments anymore but build it from scratch with the profiles
+    TopoDS_Shape& fusedWing = wing.GetLoft();
+#endif
+
+
+    BRepMesh::Mesh(fusedWing, 0.01);
 
 	BRep_Builder builder;
     TopoDS_Compound compound;
@@ -561,14 +582,10 @@ void TIGLViewerDocument::drawWingTriangulation()
             {
                 const Poly_Triangle& triangle = triangles(j);
                 triangle.Get(index1, index2, index3);
+                // NOTE: not sure if we need to transform here. what is nodeTransformation?
                 gp_Pnt point1 = nodes(index1).Transformed(nodeTransformation);
                 gp_Pnt point2 = nodes(index2).Transformed(nodeTransformation);
                 gp_Pnt point3 = nodes(index3).Transformed(nodeTransformation);
-
-                // Transform by wing transformation
-                point1 = wing.GetWingTransformation().Transform(point1);
-                point2 = wing.GetWingTransformation().Transform(point2);
-                point3 = wing.GetWingTransformation().Transform(point3);
 
                 BRepBuilderAPI_MakePolygon poly;
                 poly.Add(point1);
@@ -588,8 +605,7 @@ void TIGLViewerDocument::drawWingTriangulation()
             }
         }
     }
-    Handle(AIS_Shape) triangulation = new AIS_Shape(compound);
-    myAISContext->SetDisplayMode(triangulation, 1);
+    Handle(AIS_Shape) triangulation = new AIS_Shape(fusedWing);
     myAISContext->SetColor(triangulation, Quantity_NOC_BLUE2);
     myAISContext->Display(triangulation);
 }
@@ -691,9 +707,8 @@ void TIGLViewerDocument::drawWingSamplePoints()
     {
         // Draw segment loft
         tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(segmentIndex);
-        TopoDS_Shape loft = segment.GetLoft();
-        // Transform by wing transformation
-        loft = wing.GetWingTransformation().Transform(loft);
+        TopoDS_Shape& loft = segment.GetLoft();
+
         Handle(AIS_Shape) shape = new AIS_Shape(loft);
         shape->SetColor(Quantity_NOC_BLUE2);
         myAISContext->Display(shape, Standard_True);
@@ -826,9 +841,8 @@ void TIGLViewerDocument::drawAllFuselagesAndWingsSurfacePoints()
 		for (int segmentIndex = 1; segmentIndex <= wing.GetSegmentCount(); segmentIndex++)
 		{
 			tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(segmentIndex);
-			TopoDS_Shape loft = segment.GetLoft();
-			// Transform by wing transformation
-			loft = wing.GetWingTransformation().Transform(loft);
+			TopoDS_Shape& loft = segment.GetLoft();
+
 			Handle(AIS_Shape) shape = new AIS_Shape(loft);
 			shape->SetColor(Quantity_NOC_BLUE2);
 			myAISContext->Display(shape, Standard_True);
@@ -1130,6 +1144,8 @@ void TIGLViewerDocument::drawFusedFuselage()
 void TIGLViewerDocument::drawFusedWing()
 {
 	QString wingUid = dlgGetWingSelection();
+    if(wingUid=="")
+        return;
 
 	myAISContext->EraseAll(Standard_False);
 	QApplication::setOverrideCursor( Qt::WaitCursor );

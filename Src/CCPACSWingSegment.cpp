@@ -243,6 +243,9 @@ namespace tigl {
 		generator.Build();
 		loft = generator.Shape();
 
+		// transform into global coordinate system
+		loft = GetWing().GetWingTransformation().Transform(loft);
+
         // Now we build the triangulation of the loft. To determine a reasonable
         // value for the deflection (see OpenCascade documentation), we build the
         // bounding box around the loft. The greatest dimension of the bounding
@@ -261,6 +264,7 @@ namespace tigl {
         double deflection = max(0.001, dist * 0.001);
 
         BRepTools::Clean(loft);
+        BRepMesh::Mesh(loft, deflection);
 
 		Handle(ShapeFix_Shape) sfs = new ShapeFix_Shape;
 		sfs->Init ( loft );
