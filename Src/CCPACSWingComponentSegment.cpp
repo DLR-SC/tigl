@@ -347,7 +347,7 @@ namespace tigl {
 
 
 		// make all point in 2d because its only a projection 
-		for (int j = 0; j < CPointContainer.size(); j++)
+		for (unsigned int j = 0; j < CPointContainer.size(); j++)
 		{
 			gp_Pnt pnt = CPointContainer[j];
 			pnt = gp_Pnt(0, pnt.Y(), pnt.Z());
@@ -357,7 +357,7 @@ namespace tigl {
 
 		// build virtual ETA-line
 		BRepBuilderAPI_MakeWire wireBuilder;
-	   for (int j = 1; j < CPointContainer2d.size(); j++)
+	   for (unsigned int j = 1; j < CPointContainer2d.size(); j++)
 	   {
 		   TopoDS_Edge edge = BRepBuilderAPI_MakeEdge(CPointContainer2d[j - 1], CPointContainer2d[j]);
 		   wireBuilder.Add(edge);
@@ -366,7 +366,7 @@ namespace tigl {
 		
 		// build virtual XSI-line
 		BRepBuilderAPI_MakeWire wireBuilderXsi;
-	   for (int j = 1; j < CPointContainer.size(); j++)
+	   for (unsigned int j = 1; j < CPointContainer.size(); j++)
 	   {
 		   TopoDS_Edge edge = BRepBuilderAPI_MakeEdge(CPointContainer[j - 1], CPointContainer[j]);
 		   wireBuilderXsi.Add(edge);

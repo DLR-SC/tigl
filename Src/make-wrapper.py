@@ -316,7 +316,7 @@ def findDefs(lines, markers):
     for i, line in enumerate(lines):
         if isPragma(line):
             continue # ignore irrelevant lines
-        m = re.search("\\s*DLL_EXPORT\\s+(\\S+)\\s+(\\S+)\\s*\\((.*)\\);", line) #1 = return type, 2 = method name, 3 = parameters
+        m = re.search("\\s*TIGL_COMMON_EXPORT\\s+(\\S+)\\s+(\\S+)\\s*\\((.*)\\);", line) #1 = return type, 2 = method name, 3 = parameters
         if m == None:
             print >> sys.stderr, "Could not parse method definition", line
             continue
@@ -345,7 +345,7 @@ def parseMethodHeaders(contents):
         contents: the tigl.h file.
     '''
     markerLineNos, markers = findLinesWith(contents, "#PY:") # find annotation lines
-    lineNos, lines = findLinesWith(contents, "DLL_EXPORT", ");") # find header lines
+    lineNos, lines = findLinesWith(contents, "TIGL_COMMON_EXPORT", ");") # find header lines
     markers = matchLineNumbers(markerLineNos, lineNos, markers) # assosiate both
     defs = findDefs(lines, markers) # extract information from signatures, list of Def1
     return defs
@@ -591,7 +591,7 @@ if __name__ == '__main__':
     
     s = functools.partial(setup,
             name = 'tiglwrapper',
-            version = '2011-01',
+            version = '2012-08',
             py_modules = ['tiglwrapper'],
             url = 'http://code.google.com/p/tigl/',
             author = 'Arne Bachmann',
@@ -625,7 +625,7 @@ if __name__ == '__main__':
         username = sys.stdin.readline().rstrip()
         print 'Please enter your googlecode.com password (not the gmail password).'
         password = getpass.getpass()
-        path = os.path.join(".", "dist/tiglwrapper-2011-01.win32.exe")
+        path = os.path.join(".", "dist/tiglwrapper-2012-08.win32.exe")
         googlecode_upload.upload_find_auth(path, "tigl", "TIGL Python Wrapper Win32 Installer", user_name = username, password = password)
-        path = os.path.join(".", "dist/tiglwrapper-2011-01.zip")
+        path = os.path.join(".", "dist/tiglwrapper-2012-08.zip")
         googlecode_upload.upload_find_auth(path, "tigl", "TIGL Python Wrapper Source", user_name = username, password = password)

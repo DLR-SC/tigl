@@ -46,7 +46,7 @@
 /* Public visible functions.                                                 */
 /*****************************************************************************/
 
-DLL_EXPORT TiglReturnCode tiglOpenCPACSConfiguration(TixiDocumentHandle tixiHandle, char* configurationUID, TiglCPACSConfigurationHandle* cpacsHandlePtr)
+TIGL_COMMON_EXPORT TiglReturnCode tiglOpenCPACSConfiguration(TixiDocumentHandle tixiHandle, char* configurationUID, TiglCPACSConfigurationHandle* cpacsHandlePtr)
 {
     if (cpacsHandlePtr == 0) {
         std::cerr << "Error: Null pointer argument for cpacsHandlePtr in function call to tiglOpenCPACSConfiguration." << std::endl;
@@ -143,7 +143,7 @@ DLL_EXPORT TiglReturnCode tiglOpenCPACSConfiguration(TixiDocumentHandle tixiHand
 }
 
 
-DLL_EXPORT TiglReturnCode tiglCloseCPACSConfiguration(TiglCPACSConfigurationHandle cpacsHandle)
+TIGL_COMMON_EXPORT TiglReturnCode tiglCloseCPACSConfiguration(TiglCPACSConfigurationHandle cpacsHandle)
 {
     try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
@@ -165,7 +165,7 @@ DLL_EXPORT TiglReturnCode tiglCloseCPACSConfiguration(TiglCPACSConfigurationHand
 }
 
 
-DLL_EXPORT TiglReturnCode tiglGetCPACSTixiHandle(TiglCPACSConfigurationHandle cpacsHandle, TixiDocumentHandle* tixiHandlePtr)
+TIGL_COMMON_EXPORT TiglReturnCode tiglGetCPACSTixiHandle(TiglCPACSConfigurationHandle cpacsHandle, TixiDocumentHandle* tixiHandlePtr)
 {
     if (tixiHandlePtr == 0) {
         std::cerr << "Error: Null pointer argument for tixiHandlePtr in function call to tiglGetCPACSTixiHandle." << std::endl;
@@ -193,7 +193,7 @@ DLL_EXPORT TiglReturnCode tiglGetCPACSTixiHandle(TiglCPACSConfigurationHandle cp
 }
 
 
-DLL_EXPORT TiglReturnCode tiglIsCPACSConfigurationHandleValid(TiglCPACSConfigurationHandle cpacsHandle, TiglBoolean* isValidPtr)
+TIGL_COMMON_EXPORT TiglReturnCode tiglIsCPACSConfigurationHandleValid(TiglCPACSConfigurationHandle cpacsHandle, TiglBoolean* isValidPtr)
 {
     try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
@@ -216,7 +216,7 @@ DLL_EXPORT TiglReturnCode tiglIsCPACSConfigurationHandleValid(TiglCPACSConfigura
 
 
 
-DLL_EXPORT TiglReturnCode tiglUseAlgorithm(TiglAlgorithmCode anAlgorithm)
+TIGL_COMMON_EXPORT TiglReturnCode tiglUseAlgorithm(TiglAlgorithmCode anAlgorithm)
 {
     try {
         tigl::CTiglAlgorithmManager& manager = tigl::CTiglAlgorithmManager::GetInstance();
@@ -243,7 +243,7 @@ DLL_EXPORT TiglReturnCode tiglUseAlgorithm(TiglAlgorithmCode anAlgorithm)
 /**
 	gives the tigl version number
 */
-DLL_EXPORT char* tiglGetVersion()
+TIGL_COMMON_EXPORT char* tiglGetVersion()
 {
 	static char version[] = TIGL_VERSION;
 	return version;
@@ -253,7 +253,7 @@ DLL_EXPORT char* tiglGetVersion()
 /**********************************************************************************************/
 
 
-DLL_EXPORT TiglReturnCode tiglWingGetUpperPoint(TiglCPACSConfigurationHandle cpacsHandle,
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetUpperPoint(TiglCPACSConfigurationHandle cpacsHandle,
                                                 int wingIndex,
                                                 int segmentIndex,
                                                 double eta,
@@ -296,7 +296,7 @@ DLL_EXPORT TiglReturnCode tiglWingGetUpperPoint(TiglCPACSConfigurationHandle cpa
 }
 
 
-DLL_EXPORT TiglReturnCode tiglWingGetLowerPoint(TiglCPACSConfigurationHandle cpacsHandle,
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetLowerPoint(TiglCPACSConfigurationHandle cpacsHandle,
                                                 int wingIndex,
                                                 int segmentIndex,
                                                 double eta,
@@ -336,7 +336,7 @@ DLL_EXPORT TiglReturnCode tiglWingGetLowerPoint(TiglCPACSConfigurationHandle cpa
 }
 
 
-DLL_EXPORT TiglReturnCode tiglGetWingCount(TiglCPACSConfigurationHandle cpacsHandle, int* wingCountPtr)
+TIGL_COMMON_EXPORT TiglReturnCode tiglGetWingCount(TiglCPACSConfigurationHandle cpacsHandle, int* wingCountPtr)
 {
     if (wingCountPtr == 0) {
         std::cerr << "Error: Null pointer argument for wingCountPtr ";
@@ -365,7 +365,7 @@ DLL_EXPORT TiglReturnCode tiglGetWingCount(TiglCPACSConfigurationHandle cpacsHan
 }
 
 
-DLL_EXPORT TiglReturnCode tiglWingGetSegmentCount(TiglCPACSConfigurationHandle cpacsHandle,
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSegmentCount(TiglCPACSConfigurationHandle cpacsHandle,
                                                   int wingIndex,
                                                   int* segmentCountPtr)
 {
@@ -397,7 +397,7 @@ DLL_EXPORT TiglReturnCode tiglWingGetSegmentCount(TiglCPACSConfigurationHandle c
 }
 
 
-DLL_EXPORT TiglReturnCode tiglWingGetInnerConnectedSegmentCount(TiglCPACSConfigurationHandle cpacsHandle,
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetInnerConnectedSegmentCount(TiglCPACSConfigurationHandle cpacsHandle,
                                                                 int wingIndex,
                                                                 int segmentIndex,
                                                                 int* segmentCountPtr)
@@ -431,7 +431,7 @@ DLL_EXPORT TiglReturnCode tiglWingGetInnerConnectedSegmentCount(TiglCPACSConfigu
 }
 
 
-DLL_EXPORT TiglReturnCode tiglWingGetOuterConnectedSegmentCount(TiglCPACSConfigurationHandle cpacsHandle,
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetOuterConnectedSegmentCount(TiglCPACSConfigurationHandle cpacsHandle,
                                                                 int wingIndex,
                                                                 int segmentIndex,
                                                                 int* segmentCountPtr)
@@ -465,7 +465,7 @@ DLL_EXPORT TiglReturnCode tiglWingGetOuterConnectedSegmentCount(TiglCPACSConfigu
 }
 
 
-DLL_EXPORT TiglReturnCode tiglWingGetInnerConnectedSegmentIndex(TiglCPACSConfigurationHandle cpacsHandle,
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetInnerConnectedSegmentIndex(TiglCPACSConfigurationHandle cpacsHandle,
                                                                 int wingIndex,
                                                                 int segmentIndex,
                                                                 int n,
@@ -500,7 +500,7 @@ DLL_EXPORT TiglReturnCode tiglWingGetInnerConnectedSegmentIndex(TiglCPACSConfigu
 }
 
 
-DLL_EXPORT TiglReturnCode tiglWingGetOuterConnectedSegmentIndex(TiglCPACSConfigurationHandle cpacsHandle,
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetOuterConnectedSegmentIndex(TiglCPACSConfigurationHandle cpacsHandle,
                                                                 int wingIndex,
                                                                 int segmentIndex,
                                                                 int n,
@@ -535,7 +535,7 @@ DLL_EXPORT TiglReturnCode tiglWingGetOuterConnectedSegmentIndex(TiglCPACSConfigu
 }
 
 
-DLL_EXPORT TiglReturnCode tiglWingGetInnerSectionAndElementIndex(TiglCPACSConfigurationHandle cpacsHandle,
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetInnerSectionAndElementIndex(TiglCPACSConfigurationHandle cpacsHandle,
                                                                 int wingIndex,
                                                                 int segmentIndex,
                                                                 int* sectionIndexPtr,
@@ -578,7 +578,7 @@ DLL_EXPORT TiglReturnCode tiglWingGetInnerSectionAndElementIndex(TiglCPACSConfig
 }
 
 
-DLL_EXPORT TiglReturnCode tiglWingGetOuterSectionAndElementIndex(TiglCPACSConfigurationHandle cpacsHandle,
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetOuterSectionAndElementIndex(TiglCPACSConfigurationHandle cpacsHandle,
                                                                 int wingIndex,
                                                                 int segmentIndex,
                                                                 int* sectionIndexPtr,
@@ -622,7 +622,7 @@ DLL_EXPORT TiglReturnCode tiglWingGetOuterSectionAndElementIndex(TiglCPACSConfig
 
 
 
-DLL_EXPORT TiglReturnCode tiglWingGetInnerSectionAndElementUID(TiglCPACSConfigurationHandle cpacsHandle,
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetInnerSectionAndElementUID(TiglCPACSConfigurationHandle cpacsHandle,
                                                                 int wingIndex,
                                                                 int segmentIndex,
                                                                 char** sectionUIDPtr,
@@ -668,7 +668,7 @@ DLL_EXPORT TiglReturnCode tiglWingGetInnerSectionAndElementUID(TiglCPACSConfigur
 }
 
 
-DLL_EXPORT TiglReturnCode tiglWingGetOuterSectionAndElementUID(TiglCPACSConfigurationHandle cpacsHandle,
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetOuterSectionAndElementUID(TiglCPACSConfigurationHandle cpacsHandle,
                                                                 int wingIndex,
                                                                 int segmentIndex,
                                                                 char** sectionUIDPtr,
@@ -714,7 +714,7 @@ DLL_EXPORT TiglReturnCode tiglWingGetOuterSectionAndElementUID(TiglCPACSConfigur
 }
 
 
-DLL_EXPORT TiglReturnCode tiglWingGetProfileName(TiglCPACSConfigurationHandle cpacsHandle,
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetProfileName(TiglCPACSConfigurationHandle cpacsHandle,
                                                  int wingIndex,
                                                  int sectionIndex,
                                                  int elementIndex,
@@ -762,7 +762,7 @@ DLL_EXPORT TiglReturnCode tiglWingGetProfileName(TiglCPACSConfigurationHandle cp
 
 
 
-DLL_EXPORT TiglReturnCode tiglWingGetUID(TiglCPACSConfigurationHandle cpacsHandle,
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetUID(TiglCPACSConfigurationHandle cpacsHandle,
                                                  int wingIndex,
                                                  char** uidNamePtr)
 {
@@ -799,7 +799,7 @@ DLL_EXPORT TiglReturnCode tiglWingGetUID(TiglCPACSConfigurationHandle cpacsHandl
     }
 }
 
-DLL_EXPORT TiglReturnCode tiglWingGetSegmentUID(TiglCPACSConfigurationHandle cpacsHandle,
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSegmentUID(TiglCPACSConfigurationHandle cpacsHandle,
                                                  int wingIndex,
                                                  int segmentIndex,
                                                  char** uidNamePtr)
@@ -839,7 +839,7 @@ DLL_EXPORT TiglReturnCode tiglWingGetSegmentUID(TiglCPACSConfigurationHandle cpa
 }
 
 
-DLL_EXPORT TiglReturnCode tiglWingGetSectionUID(TiglCPACSConfigurationHandle cpacsHandle,
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSectionUID(TiglCPACSConfigurationHandle cpacsHandle,
                                                  int wingIndex,
                                                  int sectionIndex,
                                                  char** uidNamePtr)
@@ -879,7 +879,7 @@ DLL_EXPORT TiglReturnCode tiglWingGetSectionUID(TiglCPACSConfigurationHandle cpa
 }
 
 
-DLL_EXPORT TiglReturnCode tiglWingGetSymmetry(TiglCPACSConfigurationHandle cpacsHandle, int wingIndex,
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSymmetry(TiglCPACSConfigurationHandle cpacsHandle, int wingIndex,
                                                 TiglSymmetryAxis* symmetryAxisPtr)
 {
 
@@ -911,7 +911,7 @@ DLL_EXPORT TiglReturnCode tiglWingGetSymmetry(TiglCPACSConfigurationHandle cpacs
 }
 
 
-DLL_EXPORT TiglReturnCode tiglWingComponentSegmentFindSegment(TiglCPACSConfigurationHandle cpacsHandle,
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentFindSegment(TiglCPACSConfigurationHandle cpacsHandle,
 															 char *componentSegmentUID, double x, double y,
 															 double z, char** segmentUID, char** wingUID)
 {
@@ -969,7 +969,7 @@ DLL_EXPORT TiglReturnCode tiglWingComponentSegmentFindSegment(TiglCPACSConfigura
 
 
 
-DLL_EXPORT TiglReturnCode tiglWingComponentSegmentPointGetSegmentEtaXsi(TiglCPACSConfigurationHandle cpacsHandle,
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentPointGetSegmentEtaXsi(TiglCPACSConfigurationHandle cpacsHandle,
 																		char *componentSegmentUID, double eta, double xsi,
 																		char** wingUID, char** segmentUID,
 																		double *segmentEta, double *segmentXsi)
@@ -1023,7 +1023,7 @@ DLL_EXPORT TiglReturnCode tiglWingComponentSegmentPointGetSegmentEtaXsi(TiglCPAC
 /**********************************************************************************************/
 
 
-DLL_EXPORT TiglReturnCode tiglGetFuselageCount(TiglCPACSConfigurationHandle cpacsHandle, int* fuselageCountPtr)
+TIGL_COMMON_EXPORT TiglReturnCode tiglGetFuselageCount(TiglCPACSConfigurationHandle cpacsHandle, int* fuselageCountPtr)
 {
     if (fuselageCountPtr == 0) {
         std::cerr << "Error: Null pointer argument for fuselageCountPtr ";
@@ -1052,7 +1052,7 @@ DLL_EXPORT TiglReturnCode tiglGetFuselageCount(TiglCPACSConfigurationHandle cpac
 }
 
 
-DLL_EXPORT TiglReturnCode tiglFuselageGetSegmentCount(TiglCPACSConfigurationHandle cpacsHandle,
+TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSegmentCount(TiglCPACSConfigurationHandle cpacsHandle,
                                                       int fuselageIndex,
                                                       int* segmentCountPtr)
 {
@@ -1084,7 +1084,7 @@ DLL_EXPORT TiglReturnCode tiglFuselageGetSegmentCount(TiglCPACSConfigurationHand
 }
 
 
-DLL_EXPORT TiglReturnCode tiglFuselageGetPoint(TiglCPACSConfigurationHandle cpacsHandle,
+TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetPoint(TiglCPACSConfigurationHandle cpacsHandle,
                                                int fuselageIndex,
                                                int segmentIndex,
                                                double eta,
@@ -1125,7 +1125,7 @@ DLL_EXPORT TiglReturnCode tiglFuselageGetPoint(TiglCPACSConfigurationHandle cpac
 
 
 
-DLL_EXPORT TiglReturnCode tiglFuselageGetPointAngle(TiglCPACSConfigurationHandle cpacsHandle,
+TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetPointAngle(TiglCPACSConfigurationHandle cpacsHandle,
                                                     int fuselageIndex,
                                                     int segmentIndex,
                                                     double eta,
@@ -1169,7 +1169,7 @@ DLL_EXPORT TiglReturnCode tiglFuselageGetPointAngle(TiglCPACSConfigurationHandle
 }
 
 
-DLL_EXPORT TiglReturnCode tiglFuselageGetPointAngleTranslated(TiglCPACSConfigurationHandle cpacsHandle,
+TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetPointAngleTranslated(TiglCPACSConfigurationHandle cpacsHandle,
                                                               int fuselageIndex,
                                                               int segmentIndex,
                                                               double eta,
@@ -1215,7 +1215,7 @@ DLL_EXPORT TiglReturnCode tiglFuselageGetPointAngleTranslated(TiglCPACSConfigura
 }
 
 
-DLL_EXPORT TiglReturnCode tiglFuselageGetPointOnXPlane(TiglCPACSConfigurationHandle cpacsHandle,
+TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetPointOnXPlane(TiglCPACSConfigurationHandle cpacsHandle,
                                                         int fuselageIndex,
                                                         int segmentIndex,
                                                         double eta,
@@ -1258,7 +1258,7 @@ DLL_EXPORT TiglReturnCode tiglFuselageGetPointOnXPlane(TiglCPACSConfigurationHan
 
 
 
-DLL_EXPORT TiglReturnCode tiglFuselageGetPointOnYPlane(TiglCPACSConfigurationHandle cpacsHandle,
+TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetPointOnYPlane(TiglCPACSConfigurationHandle cpacsHandle,
                                                         int fuselageIndex,
                                                         int segmentIndex,
                                                         double eta,
@@ -1300,7 +1300,7 @@ DLL_EXPORT TiglReturnCode tiglFuselageGetPointOnYPlane(TiglCPACSConfigurationHan
 }
 
 
-DLL_EXPORT TiglReturnCode tiglFuselageGetNumPointsOnXPlane(TiglCPACSConfigurationHandle cpacsHandle,
+TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetNumPointsOnXPlane(TiglCPACSConfigurationHandle cpacsHandle,
                                                            int fuselageIndex,
                                                            int segmentIndex,
                                                            double eta,
@@ -1336,7 +1336,7 @@ DLL_EXPORT TiglReturnCode tiglFuselageGetNumPointsOnXPlane(TiglCPACSConfiguratio
 }
 
 
-DLL_EXPORT TiglReturnCode tiglFuselageGetNumPointsOnYPlane(TiglCPACSConfigurationHandle cpacsHandle,
+TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetNumPointsOnYPlane(TiglCPACSConfigurationHandle cpacsHandle,
                                                            int fuselageIndex,
                                                            int segmentIndex,
                                                            double eta,
@@ -1372,7 +1372,7 @@ DLL_EXPORT TiglReturnCode tiglFuselageGetNumPointsOnYPlane(TiglCPACSConfiguratio
 }
 
 
-DLL_EXPORT TiglReturnCode tiglFuselageGetCircumference(TiglCPACSConfigurationHandle cpacsHandle,
+TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetCircumference(TiglCPACSConfigurationHandle cpacsHandle,
                                                         int fuselageIndex,
                                                         int segmentIndex,
                                                         double eta,
@@ -1408,7 +1408,7 @@ DLL_EXPORT TiglReturnCode tiglFuselageGetCircumference(TiglCPACSConfigurationHan
 
 
 
-DLL_EXPORT TiglReturnCode tiglFuselageGetStartConnectedSegmentCount(TiglCPACSConfigurationHandle cpacsHandle,
+TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetStartConnectedSegmentCount(TiglCPACSConfigurationHandle cpacsHandle,
                                                                     int fuselageIndex,
                                                                     int segmentIndex,
                                                                     int* segmentCountPtr)
@@ -1442,7 +1442,7 @@ DLL_EXPORT TiglReturnCode tiglFuselageGetStartConnectedSegmentCount(TiglCPACSCon
 }
 
 
-DLL_EXPORT TiglReturnCode tiglFuselageGetEndConnectedSegmentCount(TiglCPACSConfigurationHandle cpacsHandle,
+TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetEndConnectedSegmentCount(TiglCPACSConfigurationHandle cpacsHandle,
                                                                   int fuselageIndex,
                                                                   int segmentIndex,
                                                                   int* segmentCountPtr)
@@ -1476,7 +1476,7 @@ DLL_EXPORT TiglReturnCode tiglFuselageGetEndConnectedSegmentCount(TiglCPACSConfi
 }
 
 
-DLL_EXPORT TiglReturnCode tiglFuselageGetStartConnectedSegmentIndex(TiglCPACSConfigurationHandle cpacsHandle,
+TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetStartConnectedSegmentIndex(TiglCPACSConfigurationHandle cpacsHandle,
                                                                     int fuselageIndex,
                                                                     int segmentIndex,
                                                                     int n,
@@ -1511,7 +1511,7 @@ DLL_EXPORT TiglReturnCode tiglFuselageGetStartConnectedSegmentIndex(TiglCPACSCon
 }
 
 
-DLL_EXPORT TiglReturnCode tiglFuselageGetEndConnectedSegmentIndex(TiglCPACSConfigurationHandle cpacsHandle,
+TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetEndConnectedSegmentIndex(TiglCPACSConfigurationHandle cpacsHandle,
                                                                   int fuselageIndex,
                                                                   int segmentIndex,
                                                                   int n,
@@ -1545,7 +1545,7 @@ DLL_EXPORT TiglReturnCode tiglFuselageGetEndConnectedSegmentIndex(TiglCPACSConfi
     }
 }
 
-DLL_EXPORT TiglReturnCode tiglFuselageGetStartSectionAndElementUID(TiglCPACSConfigurationHandle cpacsHandle,
+TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetStartSectionAndElementUID(TiglCPACSConfigurationHandle cpacsHandle,
                                                                      int fuselageIndex,
                                                                      int segmentIndex,
                                                                      char** sectionUIDPtr,
@@ -1592,7 +1592,7 @@ DLL_EXPORT TiglReturnCode tiglFuselageGetStartSectionAndElementUID(TiglCPACSConf
 
 
 
-DLL_EXPORT TiglReturnCode tiglFuselageGetEndSectionAndElementUID(TiglCPACSConfigurationHandle cpacsHandle,
+TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetEndSectionAndElementUID(TiglCPACSConfigurationHandle cpacsHandle,
                                                                    int fuselageIndex,
                                                                    int segmentIndex,
                                                                    char** sectionUIDPtr,
@@ -1639,7 +1639,7 @@ DLL_EXPORT TiglReturnCode tiglFuselageGetEndSectionAndElementUID(TiglCPACSConfig
 
 
 
-DLL_EXPORT TiglReturnCode tiglFuselageGetStartSectionAndElementIndex (TiglCPACSConfigurationHandle cpacsHandle,
+TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetStartSectionAndElementIndex (TiglCPACSConfigurationHandle cpacsHandle,
                                                                      int fuselageIndex,
                                                                      int segmentIndex,
                                                                      int* sectionIndexPtr,
@@ -1681,7 +1681,7 @@ DLL_EXPORT TiglReturnCode tiglFuselageGetStartSectionAndElementIndex (TiglCPACSC
 }
 
 
-DLL_EXPORT TiglReturnCode tiglFuselageGetEndSectionAndElementIndex(TiglCPACSConfigurationHandle cpacsHandle,
+TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetEndSectionAndElementIndex(TiglCPACSConfigurationHandle cpacsHandle,
                                                                    int fuselageIndex,
                                                                    int segmentIndex,
                                                                    int* sectionIndexPtr,
@@ -1723,7 +1723,7 @@ DLL_EXPORT TiglReturnCode tiglFuselageGetEndSectionAndElementIndex(TiglCPACSConf
 }
 
 
-DLL_EXPORT TiglReturnCode tiglFuselageGetProfileName(TiglCPACSConfigurationHandle cpacsHandle,
+TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetProfileName(TiglCPACSConfigurationHandle cpacsHandle,
                                                      int fuselageIndex,
                                                      int sectionIndex,
                                                      int elementIndex,
@@ -1770,7 +1770,7 @@ DLL_EXPORT TiglReturnCode tiglFuselageGetProfileName(TiglCPACSConfigurationHandl
 }
 
 
-DLL_EXPORT TiglReturnCode tiglFuselageGetUID(TiglCPACSConfigurationHandle cpacsHandle,
+TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetUID(TiglCPACSConfigurationHandle cpacsHandle,
                                              int fuselageIndex,
                                              char** uidNamePtr)
 {
@@ -1808,7 +1808,7 @@ DLL_EXPORT TiglReturnCode tiglFuselageGetUID(TiglCPACSConfigurationHandle cpacsH
 }
 
 
-DLL_EXPORT TiglReturnCode tiglFuselageGetSegmentUID(TiglCPACSConfigurationHandle cpacsHandle,
+TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSegmentUID(TiglCPACSConfigurationHandle cpacsHandle,
                                                  int fuselageIndex,
                                                  int segmentIndex,
                                                  char** uidNamePtr)
@@ -1848,7 +1848,7 @@ DLL_EXPORT TiglReturnCode tiglFuselageGetSegmentUID(TiglCPACSConfigurationHandle
 }
 
 
-DLL_EXPORT TiglReturnCode tiglFuselageGetSectionUID(TiglCPACSConfigurationHandle cpacsHandle,
+TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSectionUID(TiglCPACSConfigurationHandle cpacsHandle,
                                                      int fuselageIndex,
                                                      int sectionIndex,
                                                      char** uidNamePtr)
@@ -1894,7 +1894,7 @@ DLL_EXPORT TiglReturnCode tiglFuselageGetSectionUID(TiglCPACSConfigurationHandle
 
 
 
-DLL_EXPORT TiglReturnCode tiglFuselageGetSymmetry(TiglCPACSConfigurationHandle cpacsHandle, int fuselageIndex,
+TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSymmetry(TiglCPACSConfigurationHandle cpacsHandle, int fuselageIndex,
                                                 TiglSymmetryAxis* symmetryAxisPtr)
 {
     if (fuselageIndex < 1) {
@@ -1927,7 +1927,7 @@ DLL_EXPORT TiglReturnCode tiglFuselageGetSymmetry(TiglCPACSConfigurationHandle c
 
 
 
-DLL_EXPORT TiglReturnCode tiglFuselageGetMinumumDistanceToGround(TiglCPACSConfigurationHandle cpacsHandle,
+TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetMinumumDistanceToGround(TiglCPACSConfigurationHandle cpacsHandle,
 																 char *fuselageUID,
 																 double axisPntX,
 																 double axisPntY,
@@ -1979,7 +1979,7 @@ DLL_EXPORT TiglReturnCode tiglFuselageGetMinumumDistanceToGround(TiglCPACSConfig
 
 
 
-DLL_EXPORT TiglReturnCode tiglComponentIntersectionPoint(TiglCPACSConfigurationHandle cpacsHandle,
+TIGL_COMMON_EXPORT TiglReturnCode tiglComponentIntersectionPoint(TiglCPACSConfigurationHandle cpacsHandle,
 														 char*  componentUidOne,
 														 char*  componentUidTwo,
 														 int lineID,
@@ -2034,7 +2034,7 @@ DLL_EXPORT TiglReturnCode tiglComponentIntersectionPoint(TiglCPACSConfigurationH
 
 
 
-DLL_EXPORT TiglReturnCode tiglComponentIntersectionLineCount(TiglCPACSConfigurationHandle cpacsHandle,
+TIGL_COMMON_EXPORT TiglReturnCode tiglComponentIntersectionLineCount(TiglCPACSConfigurationHandle cpacsHandle,
 																		char*  componentUidOne,
 																		char*  componentUidTwo,
 																		int* numWires)
@@ -2076,7 +2076,7 @@ DLL_EXPORT TiglReturnCode tiglComponentIntersectionLineCount(TiglCPACSConfigurat
 /*                         Export Functions                                                          */
 /*****************************************************************************************************/
 
-DLL_EXPORT TiglReturnCode tiglExportIGES(TiglCPACSConfigurationHandle cpacsHandle, char* filenamePtr)
+TIGL_COMMON_EXPORT TiglReturnCode tiglExportIGES(TiglCPACSConfigurationHandle cpacsHandle, char* filenamePtr)
 {
     if (filenamePtr == 0) {
         std::cerr << "Error: Null pointer argument for filenamePtr";
@@ -2107,7 +2107,7 @@ DLL_EXPORT TiglReturnCode tiglExportIGES(TiglCPACSConfigurationHandle cpacsHandl
 }
 
 
-DLL_EXPORT TiglReturnCode tiglExportFusedWingFuselageIGES(TiglCPACSConfigurationHandle cpacsHandle,
+TIGL_COMMON_EXPORT TiglReturnCode tiglExportFusedWingFuselageIGES(TiglCPACSConfigurationHandle cpacsHandle,
                               char* filenamePtr)
 {
     if (filenamePtr == 0) {
@@ -2139,7 +2139,7 @@ DLL_EXPORT TiglReturnCode tiglExportFusedWingFuselageIGES(TiglCPACSConfiguration
 }
 
 
-DLL_EXPORT TiglReturnCode tiglExportMeshedWingSTL(TiglCPACSConfigurationHandle cpacsHandle, int wingIndex,
+TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedWingSTL(TiglCPACSConfigurationHandle cpacsHandle, int wingIndex,
                                                 char* filenamePtr, double deflection)
 {
     if (filenamePtr == 0) {
@@ -2176,7 +2176,7 @@ DLL_EXPORT TiglReturnCode tiglExportMeshedWingSTL(TiglCPACSConfigurationHandle c
 }
 
 
-DLL_EXPORT TiglReturnCode tiglExportMeshedFuselageSTL(TiglCPACSConfigurationHandle cpacsHandle, int fuselageIndex,
+TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedFuselageSTL(TiglCPACSConfigurationHandle cpacsHandle, int fuselageIndex,
                                                 char* filenamePtr, double deflection)
 {
     if (filenamePtr == 0) {
@@ -2214,7 +2214,7 @@ DLL_EXPORT TiglReturnCode tiglExportMeshedFuselageSTL(TiglCPACSConfigurationHand
 
 
 
-DLL_EXPORT TiglReturnCode tiglExportMeshedGeometrySTL(TiglCPACSConfigurationHandle cpacsHandle, char* filenamePtr, double deflection)
+TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedGeometrySTL(TiglCPACSConfigurationHandle cpacsHandle, char* filenamePtr, double deflection)
 {
     if (filenamePtr == 0) {
         std::cerr << "Error: Null pointer argument for filenamePtr";
@@ -2245,7 +2245,7 @@ DLL_EXPORT TiglReturnCode tiglExportMeshedGeometrySTL(TiglCPACSConfigurationHand
 }
 
 
-DLL_EXPORT TiglReturnCode tiglExportMeshedWingVTKByIndex(const TiglCPACSConfigurationHandle cpacsHandle, const int wingIndex,
+TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedWingVTKByIndex(const TiglCPACSConfigurationHandle cpacsHandle, const int wingIndex,
                                                   const char* filenamePtr, const double deflection)
 {
     if (filenamePtr == 0) {
@@ -2293,7 +2293,7 @@ DLL_EXPORT TiglReturnCode tiglExportMeshedWingVTKByIndex(const TiglCPACSConfigur
 }
 
 
-DLL_EXPORT TiglReturnCode tiglExportMeshedWingVTKByUID(const TiglCPACSConfigurationHandle cpacsHandle, const char* wingUID,
+TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedWingVTKByUID(const TiglCPACSConfigurationHandle cpacsHandle, const char* wingUID,
                                                         const char* filenamePtr, const double deflection)
 {
     if (filenamePtr == 0) {
@@ -2341,7 +2341,7 @@ DLL_EXPORT TiglReturnCode tiglExportMeshedWingVTKByUID(const TiglCPACSConfigurat
 }
 
 
-DLL_EXPORT TiglReturnCode tiglExportMeshedFuselageVTKByIndex(const TiglCPACSConfigurationHandle cpacsHandle, const int fuselageIndex,
+TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedFuselageVTKByIndex(const TiglCPACSConfigurationHandle cpacsHandle, const int fuselageIndex,
                                                       const char* filenamePtr, const double deflection)
 {
     if (filenamePtr == 0) {
@@ -2378,7 +2378,7 @@ DLL_EXPORT TiglReturnCode tiglExportMeshedFuselageVTKByIndex(const TiglCPACSConf
 }
 
 
-DLL_EXPORT TiglReturnCode tiglExportMeshedFuselageVTKByUID(const TiglCPACSConfigurationHandle cpacsHandle, const char* fuselageUID,
+TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedFuselageVTKByUID(const TiglCPACSConfigurationHandle cpacsHandle, const char* fuselageUID,
                                                            const char* filenamePtr, const double deflection)
 {
     if (filenamePtr == 0) {
@@ -2416,7 +2416,7 @@ DLL_EXPORT TiglReturnCode tiglExportMeshedFuselageVTKByUID(const TiglCPACSConfig
 
 
 
-DLL_EXPORT TiglReturnCode tiglExportMeshedGeometryVTK(const TiglCPACSConfigurationHandle cpacsHandle, const char* filenamePtr, const double deflection)
+TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedGeometryVTK(const TiglCPACSConfigurationHandle cpacsHandle, const char* filenamePtr, const double deflection)
 {
     if (filenamePtr == 0) {
         std::cerr << "Error: Null pointer argument for filenamePtr";
@@ -2449,7 +2449,7 @@ DLL_EXPORT TiglReturnCode tiglExportMeshedGeometryVTK(const TiglCPACSConfigurati
 
 
 
-DLL_EXPORT TiglReturnCode tiglExportMeshedWingVTKSimpleByUID(const TiglCPACSConfigurationHandle cpacsHandle, const char* wingUID,
+TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedWingVTKSimpleByUID(const TiglCPACSConfigurationHandle cpacsHandle, const char* wingUID,
                                                              const char* filenamePtr, const double deflection)
 {
     if (filenamePtr == 0) {
@@ -2498,7 +2498,7 @@ DLL_EXPORT TiglReturnCode tiglExportMeshedWingVTKSimpleByUID(const TiglCPACSConf
 
 
 
-DLL_EXPORT TiglReturnCode tiglExportMeshedFuselageVTKSimpleByUID(const TiglCPACSConfigurationHandle cpacsHandle, const char* fuselageUID,
+TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedFuselageVTKSimpleByUID(const TiglCPACSConfigurationHandle cpacsHandle, const char* fuselageUID,
                                                                    const char* filenamePtr, const double deflection)
 {
     if (filenamePtr == 0) {
@@ -2536,7 +2536,7 @@ DLL_EXPORT TiglReturnCode tiglExportMeshedFuselageVTKSimpleByUID(const TiglCPACS
 
 
 
-DLL_EXPORT TiglReturnCode tiglExportMeshedGeometryVTKSimple(const TiglCPACSConfigurationHandle cpacsHandle, const char* filenamePtr, const double deflection)
+TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedGeometryVTKSimple(const TiglCPACSConfigurationHandle cpacsHandle, const char* filenamePtr, const double deflection)
 {
     if (filenamePtr == 0) {
         std::cerr << "Error: Null pointer argument for filenamePtr";
@@ -2572,7 +2572,7 @@ DLL_EXPORT TiglReturnCode tiglExportMeshedGeometryVTKSimple(const TiglCPACSConfi
 /*****************************************************************************************************/
 /*                     Material functions                                                            */
 /*****************************************************************************************************/
-DLL_EXPORT TiglReturnCode tiglGetMaterialUID(const TiglCPACSConfigurationHandle cpacsHandle, char* segmentUID,
+TIGL_COMMON_EXPORT TiglReturnCode tiglGetMaterialUID(const TiglCPACSConfigurationHandle cpacsHandle, char* segmentUID,
                                              double eta, double xsi, char** uidMaterialPtr)
 {
     if (segmentUID == 0) {
@@ -2606,7 +2606,7 @@ DLL_EXPORT TiglReturnCode tiglGetMaterialUID(const TiglCPACSConfigurationHandle 
 /*                     Volume calculations                                                           */
 /*****************************************************************************************************/
 
-DLL_EXPORT TiglReturnCode tiglFuselageGetVolume(TiglCPACSConfigurationHandle cpacsHandle, int fuselageIndex,
+TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetVolume(TiglCPACSConfigurationHandle cpacsHandle, int fuselageIndex,
                                                   double *volumePtr)
 {
     if (fuselageIndex < 1) {
@@ -2637,7 +2637,7 @@ DLL_EXPORT TiglReturnCode tiglFuselageGetVolume(TiglCPACSConfigurationHandle cpa
 }
 
 
-DLL_EXPORT TiglReturnCode tiglWingGetVolume(TiglCPACSConfigurationHandle cpacsHandle, int wingIndex,
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetVolume(TiglCPACSConfigurationHandle cpacsHandle, int wingIndex,
                                                   double *volumePtr)
 {
     if (wingIndex < 1) {
@@ -2668,7 +2668,7 @@ DLL_EXPORT TiglReturnCode tiglWingGetVolume(TiglCPACSConfigurationHandle cpacsHa
 }
 
 
-DLL_EXPORT TiglReturnCode tiglWingGetSegmentVolume(TiglCPACSConfigurationHandle cpacsHandle,
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSegmentVolume(TiglCPACSConfigurationHandle cpacsHandle,
                                                    int wingIndex,
                                                    int segmentIndex,
                                                    double* volumePtr)
@@ -2707,7 +2707,7 @@ DLL_EXPORT TiglReturnCode tiglWingGetSegmentVolume(TiglCPACSConfigurationHandle 
     }
 }
 
-DLL_EXPORT TiglReturnCode tiglFuselageGetSegmentVolume(TiglCPACSConfigurationHandle cpacsHandle,
+TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSegmentVolume(TiglCPACSConfigurationHandle cpacsHandle,
                                                    int fuselageIndex,
                                                    int segmentIndex,
                                                    double* volumePtr)
@@ -2750,7 +2750,7 @@ DLL_EXPORT TiglReturnCode tiglFuselageGetSegmentVolume(TiglCPACSConfigurationHan
 /*                     Surface Area calculations                                                     */
 /*****************************************************************************************************/
 
-DLL_EXPORT TiglReturnCode tiglWingGetSurfaceArea(TiglCPACSConfigurationHandle cpacsHandle, int wingIndex,
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSurfaceArea(TiglCPACSConfigurationHandle cpacsHandle, int wingIndex,
 																				double *surfaceAreaPtr)
 {
     if (wingIndex < 1) {
@@ -2781,7 +2781,7 @@ DLL_EXPORT TiglReturnCode tiglWingGetSurfaceArea(TiglCPACSConfigurationHandle cp
 }
 
 
-DLL_EXPORT TiglReturnCode tiglFuselageGetSurfaceArea(TiglCPACSConfigurationHandle cpacsHandle, int fuselageIndex,
+TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSurfaceArea(TiglCPACSConfigurationHandle cpacsHandle, int fuselageIndex,
 																					double *surfaceAreaPtr)
 {
     if (fuselageIndex < 1) {
@@ -2812,7 +2812,7 @@ DLL_EXPORT TiglReturnCode tiglFuselageGetSurfaceArea(TiglCPACSConfigurationHandl
 }
 
 
-DLL_EXPORT TiglReturnCode tiglWingGetSegmentSurfaceArea(TiglCPACSConfigurationHandle cpacsHandle,
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSegmentSurfaceArea(TiglCPACSConfigurationHandle cpacsHandle,
 														int wingIndex,
 														int segmentIndex,
 														double* surfaceAreaPtr)
@@ -2852,7 +2852,7 @@ DLL_EXPORT TiglReturnCode tiglWingGetSegmentSurfaceArea(TiglCPACSConfigurationHa
 }
 
 
-DLL_EXPORT TiglReturnCode tiglFuselageGetSegmentSurfaceArea(TiglCPACSConfigurationHandle cpacsHandle,
+TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSegmentSurfaceArea(TiglCPACSConfigurationHandle cpacsHandle,
 															int fuselageIndex,
 															int segmentIndex,
 															double* surfaceAreaPtr)
@@ -2892,7 +2892,7 @@ DLL_EXPORT TiglReturnCode tiglFuselageGetSegmentSurfaceArea(TiglCPACSConfigurati
 }
 
 
-DLL_EXPORT TiglReturnCode tiglWingGetReferenceArea(TiglCPACSConfigurationHandle cpacsHandle, int wingIndex,
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetReferenceArea(TiglCPACSConfigurationHandle cpacsHandle, int wingIndex,
 																				double *referenceAreaPtr)
 {
     if (wingIndex < 1) {
@@ -2923,7 +2923,7 @@ DLL_EXPORT TiglReturnCode tiglWingGetReferenceArea(TiglCPACSConfigurationHandle 
 }
 
 
-DLL_EXPORT TiglReturnCode tiglWingGetWettedArea(TiglCPACSConfigurationHandle cpacsHandle, char* wingUID,
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetWettedArea(TiglCPACSConfigurationHandle cpacsHandle, char* wingUID,
 																				double *wettedAreaPtr)
 {
     if (wingUID == NULL) {
@@ -2962,7 +2962,7 @@ DLL_EXPORT TiglReturnCode tiglWingGetWettedArea(TiglCPACSConfigurationHandle cpa
 /*****************************************************************************************************/
 
 
-DLL_EXPORT TiglReturnCode tiglComponentGetHashCode(TiglCPACSConfigurationHandle cpacsHandle,
+TIGL_COMMON_EXPORT TiglReturnCode tiglComponentGetHashCode(TiglCPACSConfigurationHandle cpacsHandle,
 												   char* componentUID,
 												   int* hashCodePtr)
 {
