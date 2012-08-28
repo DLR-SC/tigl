@@ -5,7 +5,7 @@
 TEMPLATE = app
 TARGET = TIGLViewer
 DEPENDPATH += . 
-INCLUDEPATH += . $(CASROOT)/inc ../Src ../../tixi/src /opt/opencascade/inc
+INCLUDEPATH += . $(CASROOT)/inc ../Src ../../tixi/src /opt/opencascade/inc src
 LIBS += -L../../tixi/lib -L../Src
 
 # Input

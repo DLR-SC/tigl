@@ -97,6 +97,7 @@ namespace tigl {
         , mySegmentIndex(aSegmentIndex)
         , surfacesAreValid(false)
 	{
+        Cleanup();
 	}
 
 	// Destructor
