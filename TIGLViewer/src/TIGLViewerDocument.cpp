@@ -20,6 +20,7 @@
 */
 
 #include "TIGLViewerDocument.h"
+#include "TIGLViewerWindow.h"
 
 // QT Stuff
 #include <qnamespace.h>
@@ -49,7 +50,6 @@
 
 // TIGLViewer includes
 #include "TIGLViewerInternal.h"
-#include "TIGLViewerWindow.h"
 #include "ISession_Point.h"
 #include "ISession_Text.h"
 
@@ -485,7 +485,7 @@ void TIGLViewerDocument::drawWing()
     {
         // Draw segment loft
         tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(i);
-        TopoDS_Shape& loft = wing.GetSegment(i).GetLoft();
+        const TopoDS_Shape& loft = wing.GetSegment(i).GetLoft();
         displayShape(loft);
     }
 }
@@ -707,7 +707,7 @@ void TIGLViewerDocument::drawWingSamplePoints()
     {
         // Draw segment loft
         tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(segmentIndex);
-        TopoDS_Shape& loft = segment.GetLoft();
+        const TopoDS_Shape& loft = segment.GetLoft();
 
         Handle(AIS_Shape) shape = new AIS_Shape(loft);
         shape->SetColor(Quantity_NOC_BLUE2);
@@ -841,7 +841,7 @@ void TIGLViewerDocument::drawAllFuselagesAndWingsSurfacePoints()
 		for (int segmentIndex = 1; segmentIndex <= wing.GetSegmentCount(); segmentIndex++)
 		{
 			tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(segmentIndex);
-			TopoDS_Shape& loft = segment.GetLoft();
+			const TopoDS_Shape& loft = segment.GetLoft();
 
 			Handle(AIS_Shape) shape = new AIS_Shape(loft);
 			shape->SetColor(Quantity_NOC_BLUE2);
