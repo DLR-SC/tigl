@@ -605,7 +605,7 @@ void TIGLViewerDocument::drawWingTriangulation()
             }
         }
     }
-    Handle(AIS_Shape) triangulation = new AIS_Shape(fusedWing);
+    Handle(AIS_Shape) triangulation = new AIS_Shape(compound);
     myAISContext->SetColor(triangulation, Quantity_NOC_BLUE2);
     myAISContext->Display(triangulation);
 }
@@ -1069,7 +1069,7 @@ void TIGLViewerDocument::exportMeshedWingVTKsimple()
 	if (!fileName.isEmpty())
 	{
 		QApplication::setOverrideCursor( Qt::WaitCursor );
-		TiglReturnCode err = tiglExportMeshedWingVTKSimpleByUID(m_cpacsHandle, qstringToCstring(wingUid), qstringToCstring(fileName), 0.1);
+		TiglReturnCode err = tiglExportMeshedWingVTKSimpleByUID(m_cpacsHandle, qstringToCstring(wingUid), qstringToCstring(fileName), 0.001);
 		QApplication::restoreOverrideCursor();
         if(err != TIGL_SUCCESS) {
 			displayError(QString("Error in function <u>tiglExportMeshedWingVTKSimpleByUID</u>. Error code: %1").arg(err), "TIGL Error");
@@ -1151,7 +1151,9 @@ void TIGLViewerDocument::drawFusedWing()
 	QApplication::setOverrideCursor( Qt::WaitCursor );
 	tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
 	QApplication::restoreOverrideCursor();
-	displayShape(wing.GetLoft());
+	TopoDS_Shape& loft = wing.GetLoft();
+	BRepMesh::Mesh(loft, 0.01);
+	displayShape(loft);
 }
 
 
