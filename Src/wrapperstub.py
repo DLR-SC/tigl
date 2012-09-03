@@ -51,7 +51,7 @@ class Tigl(object):
         else:
             self.TIGL = CDLL("libTIGL.so")
         self.version = c_char_p()
-        self.version.value = self.TIXI.tixiGetVersion()
+        self.version.value = self.TIGL.tiglGetVersion()
         self.version = self.version.value
             
     def __del__(self):
