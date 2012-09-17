@@ -22,8 +22,6 @@
 * @file
 * @brief  Implementation of CPACS fuselage segment handling routines.
 */
-
-#include <math.h>
 #include <iostream>
 
 #include "CCPACSFuselageSegment.h"
@@ -78,6 +76,8 @@
 #define max(a, b) (((a) > (b)) ? (a) : (b))
 #endif
 
+#define _USE_MATH_DEFINES
+#include <math.h>
 
 namespace tigl {
 

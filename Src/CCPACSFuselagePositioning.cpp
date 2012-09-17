@@ -98,26 +98,31 @@ namespace tigl {
 		return startSection;
 	}
 
-	// Build end transformation matrix for the positioning
+	// Build outer transformation matrix for the positioning
 	void CCPACSFuselagePositioning::BuildMatrix(void)
 	{
-		// Compose the transformation for the end section reference point.
-		// Each fuselage positioning will have its own orientation independently from
-		// any previous sections (no angle chain).
-		// Only the translation is matched to join the positioning length lines.
-		// So any change e.g. in sweep angle will affect only this positioning.
+		// Compose the transformation for the tip section reference point.
+		// The positioning transformation is basically a translation in two steps:
+		// 1. from the fuselage origin to the startPoint (= endPoint of previous positioning)
+		// 2. from the innerPoint to the endPoint with coordinates given
+		//    in a "spherical" coordinate system (length, sweepAngle, dihedralAngle).
+		// The original section is neither rotated by sweepAngle nor by dihedralAngle.
 
-		double xEnd = length * sin(CTiglTransformation::DegreeToRadian(sweepangle));
-		double yEnd = length * cos(CTiglTransformation::DegreeToRadian(sweepangle));
-		double zEnd = 0.0;
+		// Calculate the cartesian translation components for step two from "spherical" input coordinates
+		CTiglTransformation tempTransformation;
+		tempTransformation.SetIdentity();
+		tempTransformation.AddRotationZ(-sweepangle);
+		tempTransformation.AddRotationX(dihedralangle);
+		gp_Pnt tempPnt = tempTransformation.Transform(gp_Pnt(0.0, length, 0.0));
 
+		// Setup transformation combining both steps
 		endTransformation.SetIdentity();
-		endTransformation.AddTranslation(xEnd, yEnd, zEnd);
-		endTransformation.AddRotationX(dihedralangle);
-		endTransformation.AddTranslation(startPoint.x, startPoint.y, startPoint.z);
+		endTransformation.AddTranslation( startPoint.x + tempPnt.X() , 
+                                          startPoint.y + tempPnt.Y() , 
+                                          startPoint.z + tempPnt.Z() );
 
-		// Calculate end section point by transforming origin
-		gp_Pnt tempPnt = endTransformation.Transform(gp_Pnt(0.0, 0.0, 0.0));
+		// calculate outer section point by transforming origin
+		tempPnt = endTransformation.Transform(gp_Pnt(0.0, 0.0, 0.0));
 		endPoint.x = tempPnt.X();
 		endPoint.y = tempPnt.Y();
 		endPoint.z = tempPnt.Z();
