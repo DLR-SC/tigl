@@ -102,22 +102,27 @@ namespace tigl {
 	void CCPACSWingPositioning::BuildMatrix(void)
 	{
 		// Compose the transformation for the tip section reference point.
-		// Each wing positioning will have its own orientation independently from
-		// any inboard sections (no anle chain).
-		// Only the translation is matched to join the positioning length lines.
-		// So any change e.g. in sweep angle will affect only this positioning.
+		// The positioning transformation is basically a translation in two steps:
+		// 1. from the wing origin to the innerPoint (= outerPoint of previous positioning)
+		// 2. from the innerPoint to the outerPoint with coordinates given
+		//    in a "spherical" coordinate system (length, sweepAngle, dihedralAngle).
+		// The original section is neither rotated by sweepAngle nor by dihedralAngle.
 
-		double xtip = length * sin(CTiglTransformation::DegreeToRadian(sweepangle));
-		double ytip = length * cos(CTiglTransformation::DegreeToRadian(sweepangle));
-		double ztip = 0.0;
+		// Calculate the cartesian translation components for step two from "spherical" input coordinates
+		CTiglTransformation tempTransformation;
+		tempTransformation.SetIdentity();
+		tempTransformation.AddRotationZ(-sweepangle);
+		tempTransformation.AddRotationX(dihedralangle);
+		gp_Pnt tempPnt = tempTransformation.Transform(gp_Pnt(0.0, length, 0.0));
 
+		// Setup transformation combining both steps
 		outerTransformation.SetIdentity();
-		outerTransformation.AddTranslation(xtip, ytip, ztip);
-		outerTransformation.AddRotationX(dihedralangle);
-		outerTransformation.AddTranslation(innerPoint.x, innerPoint.y, innerPoint.z);
+		outerTransformation.AddTranslation( innerPoint.x + tempPnt.X() , 
+		                                    innerPoint.y + tempPnt.Y() , 
+											innerPoint.z + tempPnt.Z() );
 
 		// calculate outer section point by transforming orign
-		gp_Pnt tempPnt = outerTransformation.Transform(gp_Pnt(0.0, 0.0, 0.0));
+		tempPnt = outerTransformation.Transform(gp_Pnt(0.0, 0.0, 0.0));
 		outerPoint.x = tempPnt.X();
 		outerPoint.y = tempPnt.Y();
 		outerPoint.z = tempPnt.Z();

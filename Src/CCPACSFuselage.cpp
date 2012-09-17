@@ -45,6 +45,9 @@
 #include "GC_MakeSegment.hxx"
 #include "BRepExtrema_DistShapeShape.hxx"
 
+#define _USE_MATH_DEFINES
+#include <math.h>
+
 
 namespace tigl {
 
