@@ -169,10 +169,10 @@ namespace tigl {
 					throw CTiglError("Error: Vector size for profile points are not eqal in CCPACSWingProfile::ReadCPACS", TIGL_XML_ERROR);
 				}
 
-				// read in vectors
-				double *xCoordinates = new double[countX];
-				double *yCoordinates = new double[countY];
-				double *zCoordinates = new double[countZ];
+				// read in vectors, vectors are allocated and freed by tixi
+				double *xCoordinates = NULL;
+				double *yCoordinates = NULL;
+				double *zCoordinates = NULL;
 
 				if (tixiGetFloatVector(tixiHandle, const_cast<char*>(xXpath.c_str()), &xCoordinates, countX) != SUCCESS) {
 					throw CTiglError("Error: XML error while reading point vector <x> in CCPACSWingProfile::ReadCPACS", TIGL_XML_ERROR);
