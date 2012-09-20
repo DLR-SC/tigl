@@ -102,7 +102,9 @@ namespace tigl {
         // periodic. After calling this method, the curve is still closed but
         // no longer periodic, which leads to errors when creating the 3d-lofts
         // from the curves.
-        hcurve->SetNotPeriodic();
+		// @todo: the line is uncommented due to a bug in OCC. Please check in future 
+		// future release! 
+        // hcurve->SetNotPeriodic();
 
 		TopoDS_Edge edge = BRepBuilderAPI_MakeEdge(hcurve);
 		BRepBuilderAPI_MakeWire wireBuilder(edge);
