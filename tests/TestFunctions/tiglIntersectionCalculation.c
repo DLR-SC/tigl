@@ -20,23 +20,20 @@
 */
 /**
 * @file
-* @brief Tests for testing export functions.
+* @brief Tests for testing behavior of the TIGL intersection calculation routines.
 */
 
 #include "CUnit/CUnit.h"
 #include "tigl.h"
+#include <stdio.h>
 
-//#include "BRepPrimAPI_MakeCylinder.hxx"
-
-
-/******************************************************************************/
 
 static TixiDocumentHandle           tixiHandle;
 static TiglCPACSConfigurationHandle tiglHandle;
 
-int preTiglExport(void)
+int preTiglIntersection(void)
 {
-    char* filename = "../TestData/cpacs_25032009.xml";
+	char* filename = "TestData/cpacs_25032009.xml";
 	ReturnCode tixiRet;
 	TiglReturnCode tiglRet;
 
@@ -51,7 +48,7 @@ int preTiglExport(void)
 	return (tiglRet == TIGL_SUCCESS ? 0 : 1);
 }
 
-int postTiglExport(void)
+int postTiglIntersection(void)
 {
 	tiglCloseCPACSConfiguration(tiglHandle);
 	tixiCloseDocument(tixiHandle);
@@ -60,22 +57,14 @@ int postTiglExport(void)
 	return 0;
 }
 
-/******************************************************************************/
-
-//void tiglExportMeshedWingVTK_small_example(void)
-//{
-//    const BRepPrimAPI_MakeCylinder cone(/* radius */ 2.0, /* height */ 8.0);
-//    const CTiglExportVtk writer(config);
-//    writer.ExportMeshedWingVTK
-//}
-
 /**
-* Tests tiglWingGetProfileName with invalid CPACS handle.
+* Tests 
 */
-void tiglExportMeshedWingVTK_success(void)
+void tiglIntersection_FuselageWingIntersects(void)
 {
-    char* vtkWingFilename = "../TestData/export/cpacs_25032009_wing1.vtp";
-    char* vtkFuselageFilename = "../TestData/export/cpacs_25032009_fuselage1.vtp";
-    char* vtkGeometryFilename = "../TestData/export/cpacs_25032009_geometry.vtp";
-//    CU_ASSERT(tiglExportMeshedWingVTK(tiglHandle, 1, vtkWingFilename, 0.01) == TIGL_SUCCESS);
+	TiglBoolean returnValue;
+
+	// bisher keine TIGL function da!
 }
+
+

@@ -36,7 +36,7 @@ static TiglCPACSConfigurationHandle tiglHandle;
 
 int preTiglWing(void)
 {
-	char* filename = "../TestData/cpacs_25032009.xml";
+	char* filename = "TestData/cpacs_25032009.xml";
 	ReturnCode tixiRet;
 	TiglReturnCode tiglRet;
 

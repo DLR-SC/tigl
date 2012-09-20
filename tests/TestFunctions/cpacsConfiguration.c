@@ -36,7 +36,7 @@ static TiglCPACSConfigurationHandle tiglHandle;
 
 int preTiglOpenCPACSConfiguration(void)
 {
-	char* filename = "../TestData/VFW-614-cpacs_0_9.xml";
+	char* filename = "TestData/VFW-614-cpacs_0_9.xml";
 	ReturnCode tixiRet;
 
 	tiglHandle = -1;
@@ -92,7 +92,7 @@ void tiglOpenCPACSConfiguration_without_uid(void)
 
 int preTiglGetCPACSTixiHandle(void)
 {
-	char* filename = "../TestData/VFW-614-cpacs_0_9.xml";
+	char* filename = "TestData/VFW-614-cpacs_0_9.xml";
 	ReturnCode tixiRet;
 	TiglReturnCode tiglRet;
 
@@ -146,7 +146,7 @@ void tiglGetCPACSTixiHandle_success(void)
 
 int preTiglIsCPACSConfigurationHandleValid(void)
 {
-	char* filename = "../TestData/VFW-614-cpacs_0_9.xml";
+	char* filename = "TestData/VFW-614-cpacs_0_9.xml";
 	ReturnCode tixiRet;
 	TiglReturnCode tiglRet;
 
