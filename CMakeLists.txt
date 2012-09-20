@@ -47,3 +47,32 @@ find_package( TIXI REQUIRED)
 add_subdirectory(src)
 add_subdirectory(TIGLViewer)
 add_subdirectory(tests)
+
+INCLUDE(InstallRequiredSystemLibraries)
+
+set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Martin Siggel") #required for debian/ubuntu
+set(CPACK_PACKAGE_VENDOR "www.dlr.de/sc")
+set(CPACK_PACKAGE_VERSION ${TIGL_VERSION})
+set(CPACK_PACKAGE_VERSION_MAJOR ${TIGL_VERSION_MAJOR})
+set(CPACK_PACKAGE_VERSION_MINOR ${TIGL_VERSION_MINOR})
+set(CPACL_PACKAGE_VERSION_PATCH ${TIGL_VERSION_PATCH})
+set(CPACK_RESOURCE_FILE_LICENSE ${PROJECT_SOURCE_DIR}/LICENSE.txt)
+set(CPACK_PACKAGE_INSTALL_REGISTRY_KEY "TIGL") 
+
+# set path variable for installer
+set(CPACK_NSIS_MODIFY_PATH ON)
+if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+  set(CPACK_NSIS_INSTALL_ROOT "$PROGRAMFILES64")
+else()
+  set(CPACK_NSIS_INSTALL_ROOT "$PROGRAMFILES")
+endif()
+
+set(CPACK_PACKAGE_EXECUTABLES 
+	"TIGLViewer" "TIGL Viewer"
+)
+
+include(CPack)
+cpack_add_component(viewer DISPLAY_NAME "TIGL Viewer + 3rd Party DLLs")
+cpack_add_component(headers DISPLAY_NAME "Headers")
+#cpack_add_component(interfaces DISPLAY_NAME "Interfaces/Bindings")
+#cpack_add_component(docu DISPLAY_NAME "Documentation")
