@@ -154,18 +154,7 @@ void TIGLViewerWindow::openFile(const QString& fileName)
     {
         fileInfo.setFile(fileName);
         fileType = fileInfo.suffix();
-        if (fileType.toLower() == tr("brep") || fileType.toLower() == tr("rle"))
-        {
-            format = TIGLViewerInputOutput::FormatBREP;
-        }
-        if (fileType.toLower() == tr("step") || fileType.toLower() == tr("stp"))
-        {
-            format = TIGLViewerInputOutput::FormatSTEP;
-        }
-        if (fileType.toLower() == tr("iges") || fileType.toLower() == tr("igs"))
-        {
-            format = TIGLViewerInputOutput::FormatIGES;
-        }
+        
         if (fileType.toLower() == tr("xml"))
         {
             cpacsConfiguration->openCpacsConfiguration(fileInfo.absoluteFilePath());
@@ -173,10 +162,25 @@ void TIGLViewerWindow::openFile(const QString& fileName)
             watcher->addPath(fileInfo.absoluteFilePath());
             QObject::connect(watcher, SIGNAL(fileChanged(QString)), cpacsConfiguration, SLOT(updateConfiguration()));
         }
+        else {
 
-        myLastFolder = fileInfo.absolutePath();
-        setCurrentFile(fileName);
-        reader.importModel ( fileInfo.absoluteFilePath(), format, myOCC->getContext() );
+            if (fileType.toLower() == tr("brep") || fileType.toLower() == tr("rle"))
+            {
+                format = TIGLViewerInputOutput::FormatBREP;
+            }
+            if (fileType.toLower() == tr("step") || fileType.toLower() == tr("stp"))
+            {
+                format = TIGLViewerInputOutput::FormatSTEP;
+            }
+            if (fileType.toLower() == tr("iges") || fileType.toLower() == tr("igs"))
+            {
+                format = TIGLViewerInputOutput::FormatIGES;
+            }
+
+            myLastFolder = fileInfo.absolutePath();
+            setCurrentFile(fileName);
+            reader.importModel ( fileInfo.absoluteFilePath(), format, myOCC->getContext() );
+        }
     }
 
     myOCC->viewAxo();
@@ -372,7 +376,7 @@ void TIGLViewerWindow::about()
 	QString text;
 	QString tixiVersion(tixiGetVersion());
 	QString tiglVersion(tiglGetVersion());
-	QString occtVersion(OCC_VERSION_COMPLETE);
+	QString occtVersion = QString("%1.%2.%3").arg(OCC_VERSION_MAJOR).arg(OCC_VERSION_MINOR).arg(OCC_VERSION_MAINTENANCE);
 
 	text = 	"The <b>TIGLViewer</b> allows you to view CPACS geometries.<br> \
 				   Copyright (C) 2007-2011 German Aerospace Center (DLR/SC) <br><br>";

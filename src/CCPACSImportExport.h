@@ -30,6 +30,7 @@
 #include "CTiglError.h"
 #include <string>
 #include <vector>
+#include <climits>
 
 #include "TopTools_HSequenceOfShape.hxx"
 #include "TopoDS_Shape.hxx"

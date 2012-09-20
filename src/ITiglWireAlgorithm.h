@@ -27,6 +27,7 @@
 #define ITIGLWIREALGORITHM_H
 
 #include <vector>
+#include <climits>
 #include "gp_Pnt.hxx"
 #include "TopoDS_Wire.hxx"
 #include "tigl.h"
