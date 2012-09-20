@@ -10,7 +10,7 @@ LIBS += -L../../tixi/lib -L../Src
 
 # Input
 CONFIG  += qt dll debug_and_release build_all 
-CONFIG  += opengl 
+#CONFIG  += opengl 
 HEADERS += src/TIGLViewerApplication.h\
            src/TIGLViewerContext.h \
            src/TIGLViewerWidget.h \

@@ -33,10 +33,14 @@ extern "C" {
 
 #include "tixi.h"
 
-#ifdef WIN32_DLL
-#   define TIGL_COMMON_EXPORT __declspec (dllexport)
+#if defined(WIN32)
+  #if defined (TIGL_EXPORTS)
+    #define TIGL_COMMON_EXPORT __declspec (dllexport)
+  #else
+    #define TIGL_COMMON_EXPORT
+  #endif
 #else
-#   define TIGL_COMMON_EXPORT
+    #define TIGL_COMMON_EXPORT
 #endif
 
 /**
@@ -187,7 +191,9 @@ enum TiglImportExportFormat
 /**
  * @brief Definition of the TIGL version number.
  */
-#define TIGL_VERSION  "2.0"
+#ifndef TIGL_VERSION
+  #define TIGL_VERSION  "2.0"
+#endif
 #define TIGL_VERSION_MAJOR 2
 
 

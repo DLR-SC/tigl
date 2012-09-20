@@ -172,7 +172,7 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies>TIXI.lib;libxml2.lib;TKVrml.lib;TKStl.lib;TKBRep.lib;TKBool.lib;TKIGES.lib;TKShHealing.lib;TKSTEP.lib;TKXSBase.lib;TKShapeSchema.lib;FWOSPlugin.lib;PTKernel.lib;TKCAF.lib;TKCDF.lib;TKDraw.lib;TKernel.lib;TKFeat.lib;TKFillet.lib;TKG2d.lib;TKG3d.lib;TKGeomAlgo.lib;TKGeomBase.lib;TKHLR.lib;TKMath.lib;TKMesh.lib;TKOffset.lib;TKPCAF.lib;TKPrim.lib;TKPShape.lib;TKService.lib;TKTopAlgo.lib;TKV2d.lib;TKV3d.lib;TKBO.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(CASROOT)\win32\vc10\lib;$(TIXI_LIB_SHARED_GCC_VC7);../../TIXI/Src/Release_DLL;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(CASROOT)\win32\vc10\lib;$(TIXI_LIB_SHARED_GCC_VC7);..\..\tixi\lib\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention>
       </DataExecutionPrevention>
