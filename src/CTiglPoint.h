@@ -26,6 +26,7 @@
 #ifndef CTIGLPOINT_H
 #define CTIGLPOINT_H
 
+#include <climits>
 #include "gp_Pnt.hxx"
 #include <iostream>
 
