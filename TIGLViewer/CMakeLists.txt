@@ -57,7 +57,8 @@ QT4_WRAP_CPP(tv_hdr_MOC ${tv_hdr_comp})
 QT4_WRAP_UI(tv_ui_HEADERS ${tv_ui_comp})
 
 add_definitions(-DCSFDB -DQOCC_STATIC)
-include_directories( ${OpenCASCADE_INCLUDE_DIR} ${TIXI_INCLUDE_DIRS} ${PROJECT_SOURCE_DIR}/src)
+include_directories( ${OpenCASCADE_INCLUDE_DIR} ${TIXI_INCLUDE_DIRS})
+include_directories( ${PROJECT_SOURCE_DIR}/src ${CMAKE_CURRENT_SOURCE_DIR}/src) 
 
 # include path for ui files
 include_directories( ${CMAKE_CURRENT_BINARY_DIR} )

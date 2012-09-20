@@ -33,6 +33,7 @@
 #include <AIS_InteractiveContext.hxx>
 #include <Aspect_RectangularGrid.hxx>
 #include <V3d_View.hxx>
+#include <Standard_Version.hxx>
 
 #include "TIGLViewerWindow.h"
 #include "TIGLDebugStream.h"
@@ -371,11 +372,13 @@ void TIGLViewerWindow::about()
 	QString text;
 	QString tixiVersion(tixiGetVersion());
 	QString tiglVersion(tiglGetVersion());
+	QString occtVersion(OCC_VERSION_COMPLETE);
 
 	text = 	"The <b>TIGLViewer</b> allows you to view CPACS geometries.<br> \
 				   Copyright (C) 2007-2011 German Aerospace Center (DLR/SC) <br><br>";
 	text += "TIXI version: " + tixiVersion + "<br>";
-	text += "TIGL version: " + tiglVersion + "<br><br>";
+	text += "TIGL version: " + tiglVersion + "<br>";
+	text += "OpenCascade version: " + occtVersion + "<br><br>";
 	text += "Visit the TIGLViewer project page at <a href=\"http://code.google.com/p/tigl/\">http://code.google.com/p/tigl/</a>";
 
     statusBar()->showMessage(tr("Invoked Help|About"));
