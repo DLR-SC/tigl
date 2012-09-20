@@ -57,8 +57,7 @@ QT4_WRAP_CPP(tv_hdr_MOC ${tv_hdr_comp})
 QT4_WRAP_UI(tv_ui_HEADERS ${tv_ui_comp})
 
 add_definitions(-DCSFDB -DQOCC_STATIC)
-include_directories( ${OpenCASCADE_INCLUDE_DIR} ${TIXI_INCLUDE_DIRS})
-include_directories( ${PROJECT_SOURCE_DIR}/src ${CMAKE_CURRENT_SOURCE_DIR}/src) 
+include_directories( ${OpenCASCADE_INCLUDE_DIR} ${TIXI_INCLUDE_DIRS} ${PROJECT_SOURCE_DIR}/src)
 
 # include path for ui files
 include_directories( ${CMAKE_CURRENT_BINARY_DIR} )
@@ -81,6 +80,41 @@ target_link_libraries(TIGLViewer
 	${TIXI_LIBRARIES} 
 	TIGL_static
 )
+
+#--------------------------------------------------------------------------------
+# Now the installation stuff below
+#--------------------------------------------------------------------------------
+
+SET(APPS "\${CMAKE_INSTALL_PREFIX}/bin/TIGLViewer")
+IF(APPLE)
+  SET(APPS "\${CMAKE_INSTALL_PREFIX}/TIGLViewer.app")
+ENDIF(APPLE)
+IF(WIN32)
+  SET(APPS "\${CMAKE_INSTALL_PREFIX}/bin/TIGLViewer.exe")
+ENDIF(WIN32)
+
+#--------------------------------------------------------------------------------
+# Install the tixiDemo application, on Apple, the bundle is at the root of the
+# install tree, and on other platforms it'll go into the bin directory.
+INSTALL(TARGETS TIGLViewer 
+    BUNDLE DESTINATION . COMPONENT viewer
+    RUNTIME DESTINATION bin COMPONENT viewer
+    )
+
+# directories to look for dependencies
+SET(DIRS ${ADD_LIB_PATH})
+
+if (WIN32 OR APPLE)
+
+# Now the work of copying dependencies into the bundle/package
+# The quotes are escaped and variables to use at install time have their $ escaped
+# An alternative is the do a configure_file() on a script and use install(SCRIPT  ...).
+INSTALL(CODE "
+    include(BundleUtilities)
+    fixup_bundle(\"${APPS}\" \"\" \"${DIRS}\")
+    " COMPONENT viewer)
+
+endif()
 
 else(QT4_FOUND)
 message(STATUS "No qt4 was found. TIGLViewer will not be build!")
