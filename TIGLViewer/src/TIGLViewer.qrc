@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/">
+        <file>../TIGLViewer.ico</file>
+    </qresource>
+</RCC>
