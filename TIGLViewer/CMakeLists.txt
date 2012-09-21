@@ -57,7 +57,8 @@ QT4_WRAP_CPP(tv_hdr_MOC ${tv_hdr_comp})
 QT4_WRAP_UI(tv_ui_HEADERS ${tv_ui_comp})
 
 add_definitions(-DCSFDB -DQOCC_STATIC)
-include_directories( ${OpenCASCADE_INCLUDE_DIR} ${TIXI_INCLUDE_DIRS} ${PROJECT_SOURCE_DIR}/src)
+include_directories( ${OpenCASCADE_INCLUDE_DIR} ${TIXI_INCLUDE_DIRS})
+include_directories( ${PROJECT_SOURCE_DIR}/src ${CMAKE_CURRENT_SOURCE_DIR}/src )
 
 # include path for ui files
 include_directories( ${CMAKE_CURRENT_BINARY_DIR} )
@@ -66,7 +67,12 @@ source_group(MOCS REGULAR_EXPRESSION "moc_")
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
 
-add_executable(TIGLViewer 
+if(WIN32)
+  # comment this line if you want to see an additional console window
+  set(TYPE WIN32)
+endif(WIN32)
+
+add_executable(TIGLViewer ${TYPE}
 		${tv_src_comp} 
 		${tv_hdr_MOC} 
 		${tv_hdr_comp} 
@@ -84,6 +90,17 @@ target_link_libraries(TIGLViewer
 #--------------------------------------------------------------------------------
 # Now the installation stuff below
 #--------------------------------------------------------------------------------
+# install runtime libs
+if(WIN32)
+if(OCC_VERSION_STRING VERSION_EQUAL "6.3")
+SET(CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS
+   "$ENV{SYSTEMROOT}/system32/msvcp71.dll"
+   "$ENV{SYSTEMROOT}/system32/msvcr71.dll"
+)
+endif()
+endif(WIN32)
+INCLUDE(InstallRequiredSystemLibraries)
+
 
 SET(APPS "\${CMAKE_INSTALL_PREFIX}/bin/TIGLViewer")
 IF(APPLE)

@@ -48,8 +48,6 @@ add_subdirectory(src)
 add_subdirectory(TIGLViewer)
 add_subdirectory(tests)
 
-INCLUDE(InstallRequiredSystemLibraries)
-
 set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Martin Siggel") #required for debian/ubuntu
 set(CPACK_PACKAGE_VENDOR "www.dlr.de/sc")
 set(CPACK_PACKAGE_VERSION ${TIGL_VERSION})

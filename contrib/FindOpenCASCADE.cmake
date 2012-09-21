@@ -12,7 +12,7 @@
 #  OpenCASCADE_LINK_DIRECTORY - location of OCC libraries
 
 # ${OpenCASCADE_FOUND} is cached, so once OCC is found this block shouldn't have to run again
-IF( NOT OpenCASCADE_FOUND STREQUAL TRUE )
+IF( NOT OpenCASCADE_FOUND )
   IF(UNIX)
     set( _incsearchpath /usr/include/opencascade /opt/occ/inc $ENV{CASROOT}/inc )
     if (APPLE)
@@ -48,15 +48,33 @@ IF( NOT OpenCASCADE_FOUND STREQUAL TRUE )
     MESSAGE( FATAL_ERROR "Cannot find OCC lib dir. Install opencascade or set CASROOT or create a symlink /opt/occ/lib pointing to the dir where the OCC libs are." )
   ELSE( OpenCASCADE_LINK_DIRECTORY STREQUAL ${_testlibname}-NOTFOUND )
     SET( OpenCASCADE_FOUND TRUE CACHE BOOL "Has OCC been found?" FORCE )
-    SET( _firsttime TRUE ) #so that messages are only printed once
+	SET( _firsttime TRUE ) #so that messages are only printed once
+
     MESSAGE( STATUS "Found OCC include dir: ${OpenCASCADE_INCLUDE_DIR}" )
     MESSAGE( STATUS "Found OCC lib dir: ${OpenCASCADE_LINK_DIRECTORY}" )
   ENDIF( OpenCASCADE_LINK_DIRECTORY STREQUAL ${_testlibname}-NOTFOUND )
-ELSE( NOT OpenCASCADE_FOUND STREQUAL TRUE )
+ELSE( NOT OpenCASCADE_FOUND  )
   SET( _firsttime FALSE ) #so that messages are only printed once
-ENDIF( NOT OpenCASCADE_FOUND STREQUAL TRUE )
+ENDIF( NOT OpenCASCADE_FOUND )
 
-IF( OpenCASCADE_FOUND STREQUAL TRUE )
+IF( OpenCASCADE_FOUND )
+
+  # get version
+  IF(OpenCASCADE_INCLUDE_DIR)
+	FOREACH(_occ_version_header Standard_Version.hxx)
+     IF(EXISTS "${OpenCASCADE_INCLUDE_DIR}/${_occ_version_header}")
+      FILE(STRINGS "${OpenCASCADE_INCLUDE_DIR}/${_occ_version_header}" occ_version_str REGEX "^#define[\t ]+OCC_VERSION_STRING[\t ]+\".*\"")
+
+      STRING(REGEX REPLACE "^#define[\t ]+OCC_VERSION_STRING[\t ]+\"([^\"]*)\".*" "\\1" OCC_VERSION_STRING "${occ_version_str}")
+      UNSET(occ_version_str)
+      BREAK()
+     ENDIF()
+	ENDFOREACH(_occ_version_header)
+  ENDIF()
+  IF( _firsttime STREQUAL TRUE )
+      MESSAGE(STATUS "OCC Version: ${OCC_VERSION_STRING}")
+  ENDIF( _firsttime STREQUAL TRUE )  
+   
   IF( DEFINED OpenCASCADE_FIND_COMPONENTS )
     FOREACH( _libname ${OpenCASCADE_FIND_COMPONENTS} )
       #look for libs in OpenCASCADE_LINK_DIRECTORY
@@ -96,4 +114,4 @@ IF( OpenCASCADE_FOUND STREQUAL TRUE )
   ELSE( DEFINED OpenCASCADE_FIND_COMPONENTS )
     MESSAGE( AUTHOR_WARNING "Developer must specify required libraries to link against in the cmake file, i.e. find_package( OpenCASCADE REQUIRED COMPONENTS TKernel TKBRep) . Otherwise no libs will be added - linking against ALL OCC libraries is slow!")
   ENDIF( DEFINED OpenCASCADE_FIND_COMPONENTS )
-ENDIF( OpenCASCADE_FOUND STREQUAL TRUE )
+ENDIF( OpenCASCADE_FOUND  )
