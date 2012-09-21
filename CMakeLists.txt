@@ -47,6 +47,7 @@ find_package( TIXI REQUIRED)
 add_subdirectory(src)
 add_subdirectory(TIGLViewer)
 add_subdirectory(tests)
+include(createDoc)
 
 set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Martin Siggel") #required for debian/ubuntu
 set(CPACK_PACKAGE_VENDOR "www.dlr.de/sc")
@@ -73,4 +74,4 @@ include(CPack)
 cpack_add_component(viewer DISPLAY_NAME "TIGL Viewer + 3rd Party DLLs")
 cpack_add_component(headers DISPLAY_NAME "Headers")
 #cpack_add_component(interfaces DISPLAY_NAME "Interfaces/Bindings")
-#cpack_add_component(docu DISPLAY_NAME "Documentation")
+cpack_add_component(docu DISPLAY_NAME "Documentation")
