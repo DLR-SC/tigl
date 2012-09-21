@@ -55,6 +55,7 @@ endforeach()
 # moc header files
 QT4_WRAP_CPP(tv_hdr_MOC ${tv_hdr_comp})
 QT4_WRAP_UI(tv_ui_HEADERS ${tv_ui_comp})
+QT4_ADD_RESOURCES( tv_rcrs src/TIGLViewer.qrc )
 
 add_definitions(-DCSFDB -DQOCC_STATIC)
 include_directories( ${OpenCASCADE_INCLUDE_DIR} ${TIXI_INCLUDE_DIRS})
@@ -77,6 +78,7 @@ add_executable(TIGLViewer ${TYPE}
 		${tv_hdr_MOC} 
 		${tv_hdr_comp} 
 		${tv_ui_comp}
+        ${tv_rcrs}
 )
 
 target_link_libraries(TIGLViewer 
@@ -92,12 +94,13 @@ target_link_libraries(TIGLViewer
 #--------------------------------------------------------------------------------
 # install runtime libs
 if(WIN32)
-if(OCC_VERSION_STRING VERSION_EQUAL "6.3")
-SET(CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS
-   "$ENV{SYSTEMROOT}/system32/msvcp71.dll"
-   "$ENV{SYSTEMROOT}/system32/msvcr71.dll"
-)
-endif()
+  FILE(TO_CMAKE_PATH "$ENV{SYSTEMROOT}" SYSTEMROOT)
+  if(OCC_VERSION_STRING VERSION_EQUAL "6.3")
+    SET(CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS
+      "${SYSTEMROOT}/system32/msvcp71.dll"
+      "${SYSTEMROOT}/system32/msvcr71.dll"
+    )
+  endif()
 endif(WIN32)
 INCLUDE(InstallRequiredSystemLibraries)
 
