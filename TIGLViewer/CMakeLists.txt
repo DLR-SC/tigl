@@ -80,11 +80,11 @@ add_executable(TIGLViewer ${TYPE}
 )
 
 target_link_libraries(TIGLViewer 
+	TIGL_static
+	${TIXI_LIBRARIES} 
 	${QT_LIBRARIES} 
 	${OPENGL_LIBRARIES} 
 	${OpenCASCADE_LIBRARIES} 
-	${TIXI_LIBRARIES} 
-	TIGL_static
 )
 
 #--------------------------------------------------------------------------------
