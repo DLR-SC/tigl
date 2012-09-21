@@ -55,6 +55,7 @@ endforeach()
 # moc header files
 QT4_WRAP_CPP(tv_hdr_MOC ${tv_hdr_comp})
 QT4_WRAP_UI(tv_ui_HEADERS ${tv_ui_comp})
+# compile icons
 QT4_ADD_RESOURCES( tv_rcrs src/TIGLViewer.qrc )
 
 add_definitions(-DCSFDB -DQOCC_STATIC)
@@ -71,6 +72,8 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
 if(WIN32)
   # comment this line if you want to see an additional console window
   set(TYPE WIN32)
+  # add program icon
+  set(tv_icon_rc src/TIGLViewer.rc)
 endif(WIN32)
 
 add_executable(TIGLViewer ${TYPE}
@@ -79,6 +82,7 @@ add_executable(TIGLViewer ${TYPE}
 		${tv_hdr_comp} 
 		${tv_ui_comp}
         ${tv_rcrs}
+		${tv_icon_rc}
 )
 
 target_link_libraries(TIGLViewer 
@@ -114,7 +118,7 @@ IF(WIN32)
 ENDIF(WIN32)
 
 #--------------------------------------------------------------------------------
-# Install the tixiDemo application, on Apple, the bundle is at the root of the
+# Install the TIGLViewer application, on Apple, the bundle is at the root of the
 # install tree, and on other platforms it'll go into the bin directory.
 INSTALL(TARGETS TIGLViewer 
     BUNDLE DESTINATION . COMPONENT viewer
