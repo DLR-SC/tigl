@@ -71,7 +71,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
 
 if(WIN32)
   # comment this line if you want to see an additional console window
-  set(TYPE WIN32)
+  #set(TYPE WIN32)
   # add program icon
   set(tv_icon_rc src/TIGLViewer.rc)
 endif(WIN32)
@@ -125,6 +125,11 @@ INSTALL(TARGETS TIGLViewer
     RUNTIME DESTINATION bin COMPONENT viewer
     )
 
+# TKOpenGL is loaded as a plugin, hence we must manually install it
+if(WIN32)
+ INSTALL(FILES ${OpenCASCADE_DLL_DIRECTORY}/TKOpenGL.dll DESTINATION bin)
+endif(WIN32)	
+	
 # directories to look for dependencies
 SET(DIRS ${ADD_LIB_PATH})
 

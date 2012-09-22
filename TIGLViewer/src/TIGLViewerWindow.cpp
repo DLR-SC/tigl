@@ -177,11 +177,11 @@ void TIGLViewerWindow::openFile(const QString& fileName)
                 format = TIGLViewerInputOutput::FormatIGES;
             }
 
-            myLastFolder = fileInfo.absolutePath();
-            setCurrentFile(fileName);
             reader.importModel ( fileInfo.absoluteFilePath(), format, myOCC->getContext() );
         }
     }
+    myLastFolder = fileInfo.absolutePath();
+    setCurrentFile(fileName);
 
     myOCC->viewAxo();
     myOCC->fitAll();

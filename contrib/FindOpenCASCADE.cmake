@@ -26,7 +26,9 @@ IF( NOT OpenCASCADE_FOUND )
       # MESSAGE("************ FindOpenCASCADE.cmake has not been tried on windows and may or may not work! *************")
       set( _incsearchpath $ENV{CASROOT}\\inc C:\\OpenCASCADE6.3.0\\ros\\inc )
       set( _testlibname TKernel.lib )
+	  set( _testdllname TKernel.dll )
       set( _libsearchpath $ENV{CASROOT}\\win32\\lib C:\\OpenCASCADE6.3.0\\ros\\win32\\lib )
+	  set( _dllsearchpath $ENV{CASROOT}\\win32\\bin  C:\\OpenCASCADE6.3.0\\ros\\win32\\bin )
     ELSE(WIN32)
       message( FATAL_ERROR "Unknown system! Exiting." )
     ENDIF (WIN32)
@@ -43,16 +45,29 @@ IF( NOT OpenCASCADE_FOUND )
   #  OCC has so many libs, there is increased risk of a name collision.
   #  Requiring that all libs be in the same directory reduces the risk.
   FIND_PATH( OpenCASCADE_LINK_DIRECTORY ${_testlibname} PATH ${_libsearchpath} DOC "Path to OCC libs" )
-  IF( OpenCASCADE_LINK_DIRECTORY STREQUAL ${_testlibname}-NOTFOUND )
+  IF( OpenCASCADE_LINK_DIRECTORY STREQUAL OpenCASCADE_LINK_DIRECTORY-NOTFOUND)
     SET( OpenCASCADE_FOUND FALSE CACHE BOOL FORCE )
     MESSAGE( FATAL_ERROR "Cannot find OCC lib dir. Install opencascade or set CASROOT or create a symlink /opt/occ/lib pointing to the dir where the OCC libs are." )
-  ELSE( OpenCASCADE_LINK_DIRECTORY STREQUAL ${_testlibname}-NOTFOUND )
-    SET( OpenCASCADE_FOUND TRUE CACHE BOOL "Has OCC been found?" FORCE )
-	SET( _firsttime TRUE ) #so that messages are only printed once
-
-    MESSAGE( STATUS "Found OCC include dir: ${OpenCASCADE_INCLUDE_DIR}" )
-    MESSAGE( STATUS "Found OCC lib dir: ${OpenCASCADE_LINK_DIRECTORY}" )
-  ENDIF( OpenCASCADE_LINK_DIRECTORY STREQUAL ${_testlibname}-NOTFOUND )
+  ENDIF( OpenCASCADE_LINK_DIRECTORY STREQUAL OpenCASCADE_LINK_DIRECTORY-NOTFOUND )
+  
+  # check dll path
+  if(WIN32)
+    FIND_PATH( OpenCASCADE_DLL_DIRECTORY ${_testdllname} PATH ${_dllsearchpath} DOC "Path to OCC dlls" )
+	IF( OpenCASCADE_DLL_DIRECTORY STREQUAL OpenCASCADE_DLL_DIRECTORY-NOTFOUND )
+	  SET( OpenCASCADE_FOUND FALSE CACHE BOOL FORCE )
+      MESSAGE( FATAL_ERROR "Cannot find OCC DLL dir. Install opencascade or set CASROOT to the correct directory." )
+	ENDIF( OpenCASCADE_DLL_DIRECTORY STREQUAL OpenCASCADE_DLL_DIRECTORY-NOTFOUND )
+  endif(WIN32)
+  
+  # everything was found
+  SET( OpenCASCADE_FOUND TRUE CACHE BOOL "Has OCC been found?" FORCE )
+  SET( _firsttime TRUE ) #so that messages are only printed once
+  MESSAGE( STATUS "Found OCC include dir: ${OpenCASCADE_INCLUDE_DIR}" )
+  MESSAGE( STATUS "Found OCC lib dir: ${OpenCASCADE_LINK_DIRECTORY}" )
+  if(WIN32)
+    MESSAGE( STATUS "Found OCC dll dir: ${OpenCASCADE_DLL_DIRECTORY}" )
+  endif(WIN32)
+  
 ELSE( NOT OpenCASCADE_FOUND  )
   SET( _firsttime FALSE ) #so that messages are only printed once
 ENDIF( NOT OpenCASCADE_FOUND )
