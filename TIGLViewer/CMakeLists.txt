@@ -66,6 +66,7 @@ include_directories( ${PROJECT_SOURCE_DIR}/src ${CMAKE_CURRENT_SOURCE_DIR}/src )
 include_directories( ${CMAKE_CURRENT_BINARY_DIR} )
 
 source_group(MOCS REGULAR_EXPRESSION "moc_")
+source_group(RESOURCES REGULAR_EXPRESSION "qrc_")
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
 
@@ -127,11 +128,15 @@ INSTALL(TARGETS TIGLViewer
 
 # TKOpenGL is loaded as a plugin, hence we must manually install it
 if(WIN32)
- INSTALL(FILES ${OpenCASCADE_DLL_DIRECTORY}/TKOpenGL.dll DESTINATION bin)
+  set( OCC_PLUGINS TKOpenGl.dll )
+  foreach( _plug ${OCC_PLUGINS} )
+     set(OCC_PLUGINS_FULL ${OCC_PLUGINS_FULL} ${OpenCASCADE_DLL_DIRECTORY}/${_plug} )
+  endforeach()
+  INSTALL(FILES ${OCC_PLUGINS_FULL} DESTINATION bin COMPONENT viewer)
 endif(WIN32)	
 	
 # directories to look for dependencies
-SET(DIRS ${ADD_LIB_PATH})
+SET(DIRS ${TIXI_BINARY_DIR} ${OpenCASCADE_DLL_DIRECTORY} ${QT_BINARY_DIR} ${ADD_LIB_PATH})
 
 if (WIN32 OR APPLE)
 
@@ -140,7 +145,7 @@ if (WIN32 OR APPLE)
 # An alternative is the do a configure_file() on a script and use install(SCRIPT  ...).
 INSTALL(CODE "
     include(BundleUtilities)
-    fixup_bundle(\"${APPS}\" \"\" \"${DIRS}\")
+    fixup_bundle(\"${APPS}\" \"${OCC_PLUGINS_FULL}\" \"${DIRS}\")
     " COMPONENT viewer)
 
 endif()
