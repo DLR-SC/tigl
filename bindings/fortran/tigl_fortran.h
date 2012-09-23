@@ -48,19 +48,15 @@
 extern "C" {
 #endif
 
-#if defined G77_LINUX || defined G77_IRIX || defined G77_MINGW
-#define FORTRAN_NAME(a) a##__
+#if defined G77_LINUX || defined G77_IRIX || defined G77_MINGW || defined G77
+	#define FORTRAN_NAME(a) a##__
+#elif defined F90_HPUX
+	#define FORTRAN_NAME(a) a
+#elif defined F90_IRIX || defined GFORTRAN
+	#define FORTRAN_NAME(a) a##_
+#else
+	#define FORTRAN_NAME(a) a
 #endif
-
-#if defined F90_HPUX
-#define FORTRAN_NAME(a) a
-#endif
-
-#if defined F90_IRIX
-#define FORTRAN_NAME(a) a##_
-#endif
-
-#define FORTRAN_NAME(a) a##__
 
 #ifdef IFORT_WIN32
 
