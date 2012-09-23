@@ -24,7 +24,7 @@ import re
 import sys
 import types
 
-fd = open('wrapperstub.py', 'r')
+fd = open('@CMAKE_CURRENT_SOURCE_DIR@/wrapperstub.py', 'r')
 stub = fd.read()
 fd.close()
 
@@ -570,7 +570,7 @@ if __name__ == '__main__':
         doctest.testmod()
         sys.exit(0)
     
-    fd = open("tigl.h", "r")
+    fd = open("@PROJECT_SOURCE_DIR@/src/tigl.h", "r")
     tiglFile = fd.read().split("\n")
     fd.close()
 
