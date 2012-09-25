@@ -18,9 +18,13 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-
+#include <algorithm>
 #include <cmath>
 #include <iostream>
+
+#ifdef WIN32
+#include <windows.h>
+#endif
 #include <GL/gl.h>
 #include <GL/glu.h>
 
@@ -801,21 +805,22 @@ AIS_StatusOfDetection TIGLViewerWidget::moveEvent( QPoint point )
 
 AIS_StatusOfPick TIGLViewerWidget::dragEvent( const QPoint startPoint, const QPoint endPoint, const bool multi )
 {
+	using namespace std;
 	AIS_StatusOfPick pick = AIS_SOP_NothingSelected;
 	if (multi)
 	{
-		pick = myContext->ShiftSelect( std::min (startPoint.x(), endPoint.x()),
-									   std::min (startPoint.y(), endPoint.y()),
-									   std::max (startPoint.x(), endPoint.x()),
-									   std::max (startPoint.y(), endPoint.y()),
+		pick = myContext->ShiftSelect( min (startPoint.x(), endPoint.x()),
+									   min (startPoint.y(), endPoint.y()),
+									   max (startPoint.x(), endPoint.x()),
+									   max (startPoint.y(), endPoint.y()),
 									   myView );
 	}
 	else
 	{
-		pick = myContext->Select( std::min (startPoint.x(), endPoint.x()),
-								  std::min (startPoint.y(), endPoint.y()),
-								  std::max (startPoint.x(), endPoint.x()),
-								  std::max (startPoint.y(), endPoint.y()),
+		pick = myContext->Select( min (startPoint.x(), endPoint.x()),
+								  min (startPoint.y(), endPoint.y()),
+								  max (startPoint.x(), endPoint.x()),
+								  max (startPoint.y(), endPoint.y()),
 								  myView );
 	}
     emit selectionChanged();
@@ -888,8 +893,9 @@ void TIGLViewerWidget::setMode( const CurrentAction3d mode )
 
 Standard_Real TIGLViewerWidget::precision( Standard_Real aReal )
 {
+	using namespace std;
 	Standard_Real preciseReal;
-	Standard_Real thePrecision = std::max (myPrecision, viewPrecision());
+	Standard_Real thePrecision = max (myPrecision, viewPrecision());
 	
 	if ( myPrecision != 0.0 )
 	{
