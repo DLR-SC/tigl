@@ -10,7 +10,7 @@
 * you may not use this file except in compliance with the License.
 * You may obtain a copy of the License at
 *
-*     http://www.apache.org/licenses/LICENSE-2.0
+*     http://www.apache.org/licenses/LICENSE-2.0
 *
 * Unless required by applicable law or agreed to in writing, software
 * distributed under the License is distributed on an "AS IS" BASIS,
@@ -19,6 +19,10 @@
 * limitations under the License.
 */
 
+#include "TIGLViewerDocument.h"
+#include "TIGLViewerWindow.h"
+
+// QT Stuff
 #include <qnamespace.h>
 #include <QMessageBox>
 #include <QInputDialog>
@@ -29,21 +33,25 @@
 
 #include <string.h>
 
+// OpenCascade Stuff
 #include <Handle_AIS_Shape.hxx>
 #include <AIS_Shape.hxx>
 #include <AIS_InteractiveContext.hxx>
 #include <BRepAlgoAPI_Fuse.hxx>
+#include <BRepBuilderAPI_MakeEdge.hxx>
+#include <BRepMesh.hxx>
 #include <TopoDS_Shell.hxx>
+#include <Poly_Triangulation.hxx>
+#include <BRepBuilderAPI_MakePolygon.hxx>
+#include <BRepBuilderAPI_MakeFace.hxx>
 #include <gce_MakeLin.hxx>
 #include <Handle_Geom_TrimmedCurve.hxx>
 #include <GC_MakeSegment.hxx>
 
-
-#include "TIGLViewerDocument.h"
+// TIGLViewer includes
 #include "TIGLViewerInternal.h"
-#include "TIGLViewerWindow.h"
-#include "OCC_Point.h"
-#include "OCC_Text.h"
+#include "ISession_Point.h"
+#include "ISession_Text.h"
 
 
 TIGLViewerDocument::TIGLViewerDocument( QWidget *parentWidget, const Handle_AIS_InteractiveContext& ic )
@@ -106,7 +114,7 @@ void TIGLViewerDocument::openCpacsConfiguration(const QString fileName)
 	}
 
 	// Get configuration from user and open with TIGL
-	TiglReturnCode tiglRet;
+    TiglReturnCode tiglRet = TIGL_UNINITIALIZED;
 	if (countRotorcrafts + countAircrafts == 0)
 	{
 		// no configuration present
@@ -164,7 +172,7 @@ tigl::CCPACSConfiguration& TIGLViewerDocument::GetConfiguration(void) const
 
 
 // a small helper when we just want to display a shape
-Handle(AIS_Shape) TIGLViewerDocument::displayShape(TopoDS_Shape loft)
+Handle(AIS_Shape) TIGLViewerDocument::displayShape(const TopoDS_Shape& loft)
 {
 	Handle(AIS_Shape) shape = new AIS_Shape(loft);
 	shape->SetColor(Quantity_NOC_BLUE2);
@@ -182,9 +190,9 @@ void TIGLViewerDocument::DisplayPoint(gp_Pnt& aPoint,
                                   Standard_Real aZoffset,
                                   Standard_Real TextScale)
 {
-    Handle(OCC_Point) aGraphicPoint = new OCC_Point(aPoint);
+    Handle(ISession_Point) aGraphicPoint = new ISession_Point(aPoint);
     myAISContext->Display(aGraphicPoint,UpdateViewer);
-    Handle(OCC_Text) aGraphicText = new OCC_Text(aText, aPoint.X() + anXoffset,
+    Handle(ISession_Text) aGraphicText = new ISession_Text(aText, aPoint.X() + anXoffset,
     											 aPoint.Y() + anYoffset,
     											 aPoint.Z() + aZoffset);
     aGraphicText->SetScale(TextScale);
@@ -209,7 +217,11 @@ QString TIGLViewerDocument::dlgGetWingSelection()
 		wings << name.c_str();
 	}
 
-	return QInputDialog::getItem(parent, tr("Select Wing"), tr("Available Wings:"), wings, 0, false, &ok);
+	QString choice = QInputDialog::getItem(parent, tr("Select Wing"), tr("Available Wings:"), wings, 0, false, &ok);
+    if(ok)
+        return choice;
+    else
+        return "";
 }
 
 
@@ -299,11 +311,7 @@ void TIGLViewerDocument::drawAllFuselagesAndWings( )
 		for (int i = 1; i <= wing.GetSegmentCount(); i++)
 		{
 			tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(i);
-			TopoDS_Shape loft = segment.GetLoft();
-
-			// Transform by wing transformation
-			loft = wing.GetWingTransformation().Transform(loft);
-			displayShape(loft);
+			displayShape(segment.GetLoft());
 		}
 	}
 
@@ -329,6 +337,8 @@ void TIGLViewerDocument::drawAllFuselagesAndWings( )
 void TIGLViewerDocument::drawWingProfiles()
 {
 	QString wingProfile = dlgGetWingProfileSelection();
+    if(wingProfile == "")
+        return;
 
     myAISContext->EraseAll(Standard_False);
 
@@ -464,6 +474,9 @@ void TIGLViewerDocument::drawFuselageProfiles()
 void TIGLViewerDocument::drawWing()
 {
 	QString wingUid = dlgGetWingSelection();
+    if(wingUid=="")
+        return;
+
 	tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
 
     myAISContext->EraseAll(Standard_False);
@@ -472,9 +485,7 @@ void TIGLViewerDocument::drawWing()
     {
         // Draw segment loft
         tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(i);
-        TopoDS_Shape loft = segment.GetLoft();
-        // Transform by wing transformation
-        loft = wing.GetWingTransformation().Transform(loft);
+        const TopoDS_Shape& loft = wing.GetSegment(i).GetLoft();
         displayShape(loft);
     }
 }
@@ -505,14 +516,22 @@ void TIGLViewerDocument::drawFuselage()
 void TIGLViewerDocument::drawWingTriangulation()
 {
 	QString wingUid = dlgGetWingSelection();
+    // cancel on abort
+    if (wingUid == "")
+        return;
+
 	tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
 
     //clear screen
     myAISContext->EraseAll(Standard_False);
 
+#ifdef ORIG_METH
+    //TODO: somehow we get problems here when fusing the segments with BRepAlgoAPI_Fuse
+    // we should check why this happens
 	tigl::CCPACSWingSegment& firstSegment = (tigl::CCPACSWingSegment &) wing.GetSegment(1);
-	TopoDS_Shape fusedWing = firstSegment.GetLoft();
+    TopoDS_Shape fusedWing = firstSegment.GetLoft();
 
+    try{
     for (int i = 2; i <= wing.GetSegmentCount(); i++)
     {
         tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(i);
@@ -521,10 +540,20 @@ void TIGLViewerDocument::drawWingTriangulation()
         TopExp_Explorer shellExplorer;
         TopExp_Explorer faceExplorer;
 
-		fusedWing = BRepAlgoAPI_Fuse(fusedWing, loft);
+        fusedWing = BRepAlgoAPI_Fuse(fusedWing, loft);
     }
+    }
+    catch(tigl::CTiglError& ex){
+        cerr << ex.getError() << endl;
 
-	BRepMesh::Mesh(fusedWing, 0.01);
+    }
+#else
+    //we do not fuse segments anymore but build it from scratch with the profiles
+    TopoDS_Shape& fusedWing = wing.GetLoft();
+#endif
+
+
+    BRepMesh::Mesh(fusedWing, 0.01);
 
 	BRep_Builder builder;
     TopoDS_Compound compound;
@@ -553,14 +582,10 @@ void TIGLViewerDocument::drawWingTriangulation()
             {
                 const Poly_Triangle& triangle = triangles(j);
                 triangle.Get(index1, index2, index3);
+                // NOTE: not sure if we need to transform here. what is nodeTransformation?
                 gp_Pnt point1 = nodes(index1).Transformed(nodeTransformation);
                 gp_Pnt point2 = nodes(index2).Transformed(nodeTransformation);
                 gp_Pnt point3 = nodes(index3).Transformed(nodeTransformation);
-
-                // Transform by wing transformation
-                point1 = wing.GetWingTransformation().Transform(point1);
-                point2 = wing.GetWingTransformation().Transform(point2);
-                point3 = wing.GetWingTransformation().Transform(point3);
 
                 BRepBuilderAPI_MakePolygon poly;
                 poly.Add(point1);
@@ -581,7 +606,6 @@ void TIGLViewerDocument::drawWingTriangulation()
         }
     }
     Handle(AIS_Shape) triangulation = new AIS_Shape(compound);
-    myAISContext->SetDisplayMode(triangulation, 1);
     myAISContext->SetColor(triangulation, Quantity_NOC_BLUE2);
     myAISContext->Display(triangulation);
 }
@@ -683,9 +707,8 @@ void TIGLViewerDocument::drawWingSamplePoints()
     {
         // Draw segment loft
         tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(segmentIndex);
-        TopoDS_Shape loft = segment.GetLoft();
-        // Transform by wing transformation
-        loft = wing.GetWingTransformation().Transform(loft);
+        const TopoDS_Shape& loft = segment.GetLoft();
+
         Handle(AIS_Shape) shape = new AIS_Shape(loft);
         shape->SetColor(Quantity_NOC_BLUE2);
         myAISContext->Display(shape, Standard_True);
@@ -706,7 +729,7 @@ void TIGLViewerDocument::drawWingSamplePoints()
                     &y,
                     &z);
 
-                Handle(OCC_Point) aGraphicPoint = new OCC_Point(x, y, z);
+                Handle(ISession_Point) aGraphicPoint = new ISession_Point(x, y, z);
                 myAISContext->Display(aGraphicPoint, Standard_False);
 
                 tiglWingGetLowerPoint( m_cpacsHandle,
@@ -718,7 +741,7 @@ void TIGLViewerDocument::drawWingSamplePoints()
 										&y,
 										&z);
 
-                aGraphicPoint = new OCC_Point(x, y, z);
+                aGraphicPoint = new ISession_Point(x, y, z);
                 myAISContext->Display(aGraphicPoint, Standard_False);
             }
         }
@@ -759,7 +782,7 @@ void TIGLViewerDocument::drawFuselageSamplePoints()
 										&y,
 										&z);
 
-				Handle(OCC_Point) aGraphicPoint = new OCC_Point(x, y, z);
+                Handle(ISession_Point) aGraphicPoint = new ISession_Point(x, y, z);
 				myAISContext->Display(aGraphicPoint, Standard_False);
 			}
 		}
@@ -800,7 +823,7 @@ void TIGLViewerDocument::drawFuselageSamplePointsAngle()
 								&y,
 								&z);
 
-	Handle(OCC_Point) aGraphicPoint = new OCC_Point(x, y, z);
+    Handle(ISession_Point) aGraphicPoint = new ISession_Point(x, y, z);
 	myAISContext->Display(aGraphicPoint, Standard_False);
 }
 
@@ -818,9 +841,8 @@ void TIGLViewerDocument::drawAllFuselagesAndWingsSurfacePoints()
 		for (int segmentIndex = 1; segmentIndex <= wing.GetSegmentCount(); segmentIndex++)
 		{
 			tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(segmentIndex);
-			TopoDS_Shape loft = segment.GetLoft();
-			// Transform by wing transformation
-			loft = wing.GetWingTransformation().Transform(loft);
+			const TopoDS_Shape& loft = segment.GetLoft();
+
 			Handle(AIS_Shape) shape = new AIS_Shape(loft);
 			shape->SetColor(Quantity_NOC_BLUE2);
 			myAISContext->Display(shape, Standard_True);
@@ -840,7 +862,7 @@ void TIGLViewerDocument::drawAllFuselagesAndWingsSurfacePoints()
 						&y,
 						&z);
 
-					Handle(OCC_Point) aGraphicPoint = new OCC_Point(x, y, z);
+                    Handle(ISession_Point) aGraphicPoint = new ISession_Point(x, y, z);
 					myAISContext->Display(aGraphicPoint,Standard_False);
 					//text << "PT(" << xsi << ", " << eta << ")";
 					//text << "(" << x << ", " << y << ", " << z << ")";
@@ -857,7 +879,7 @@ void TIGLViewerDocument::drawAllFuselagesAndWingsSurfacePoints()
 						&y,
 						&z);
 
-					aGraphicPoint = new OCC_Point(x, y, z);
+                    aGraphicPoint = new ISession_Point(x, y, z);
 					myAISContext->Display(aGraphicPoint,Standard_False);
 				}
 			}
@@ -896,7 +918,7 @@ void TIGLViewerDocument::drawAllFuselagesAndWingsSurfacePoints()
 										&y,
 										&z);
 
-					Handle(OCC_Point) aGraphicPoint = new OCC_Point(x, y, z);
+                    Handle(ISession_Point) aGraphicPoint = new ISession_Point(x, y, z);
 					myAISContext->Display(aGraphicPoint,Standard_False);
 				}
 			}
@@ -925,7 +947,7 @@ void TIGLViewerDocument::exportAsIges()
 		QApplication::setOverrideCursor( Qt::WaitCursor );
 		TiglReturnCode err = tiglExportIGES(m_cpacsHandle, qstringToCstring(fileName));
 		QApplication::restoreOverrideCursor();
-		if(err != SUCCESS) {
+        if(err != TIGL_SUCCESS) {
 			displayError(QString("Error in function <u>tiglExportIGES</u>. Error code: %1").arg(err), "TIGL Error");
 		}
 	}
@@ -949,7 +971,7 @@ void TIGLViewerDocument::exportFusedAsIges()
 		QApplication::setOverrideCursor( Qt::WaitCursor );
 		TiglReturnCode err = tiglExportFusedWingFuselageIGES(m_cpacsHandle, qstringToCstring(fileName));
 		QApplication::restoreOverrideCursor();
-		if(err != SUCCESS) {
+        if(err != TIGL_SUCCESS) {
 			displayError(QString("Error in function <u>tiglExportFusedWingFuselageIGES</u>. Error code: %1").arg(err), "TIGL Error");
 		}
 	}
@@ -973,7 +995,7 @@ void TIGLViewerDocument::exportMeshedWingSTL()
 		QApplication::setOverrideCursor( Qt::WaitCursor );
 		TiglReturnCode err = tiglExportMeshedWingSTL(m_cpacsHandle, 1 /*wingUid*/, qstringToCstring(fileName), 0.01);
 		QApplication::restoreOverrideCursor();
-		if(err != SUCCESS) {
+        if(err != TIGL_SUCCESS) {
 			displayError(QString("Error in function <u>tiglExportMeshedWingSTL</u>. Error code: %1").arg(err), "TIGL Error");
 		}
 	}
@@ -999,7 +1021,7 @@ void TIGLViewerDocument::exportMeshedFuselageSTL()
 		QApplication::setOverrideCursor( Qt::WaitCursor );
 		TiglReturnCode err = tiglExportMeshedFuselageSTL(m_cpacsHandle, 1 /*fuselageUid*/, qstringToCstring(fileName), 0.01);
 		QApplication::restoreOverrideCursor();
-		if(err != SUCCESS) {
+        if(err != TIGL_SUCCESS) {
 			displayError(QString("Error in function <u>tiglExportMeshedFuselageSTL</u>. Error code: %1").arg(err), "TIGL Error");
 		}
 	}
@@ -1024,7 +1046,7 @@ void TIGLViewerDocument::exportMeshedWingVTK()
 		QApplication::setOverrideCursor( Qt::WaitCursor );
 		TiglReturnCode err = tiglExportMeshedWingVTKByIndex(m_cpacsHandle, 1 /*wingUid*/, qstringToCstring(fileName), 0.1);
 		QApplication::restoreOverrideCursor();
-		if(err != SUCCESS) {
+        if(err != TIGL_SUCCESS) {
 			displayError(QString("Error in function <u>tiglExportMeshedWingVTKByIndex</u>. Error code: %1").arg(err), "TIGL Error");
 		}
 	}
@@ -1047,9 +1069,9 @@ void TIGLViewerDocument::exportMeshedWingVTKsimple()
 	if (!fileName.isEmpty())
 	{
 		QApplication::setOverrideCursor( Qt::WaitCursor );
-		TiglReturnCode err = tiglExportMeshedWingVTKSimpleByUID(m_cpacsHandle, qstringToCstring(wingUid), qstringToCstring(fileName), 0.1);
+		TiglReturnCode err = tiglExportMeshedWingVTKSimpleByUID(m_cpacsHandle, qstringToCstring(wingUid), qstringToCstring(fileName), 0.001);
 		QApplication::restoreOverrideCursor();
-		if(err != SUCCESS) {
+        if(err != TIGL_SUCCESS) {
 			displayError(QString("Error in function <u>tiglExportMeshedWingVTKSimpleByUID</u>. Error code: %1").arg(err), "TIGL Error");
 		}
 	}
@@ -1075,7 +1097,7 @@ void TIGLViewerDocument::exportMeshedFuselageVTK()
 		QApplication::setOverrideCursor( Qt::WaitCursor );
 		TiglReturnCode err = tiglExportMeshedFuselageVTKByIndex(m_cpacsHandle, 1 /*wingUid*/, qstringToCstring(fileName), 0.1);
 		QApplication::restoreOverrideCursor();
-		if(err != SUCCESS) {
+        if(err != TIGL_SUCCESS) {
 			displayError(QString("Error in function <u>tiglExportMeshedFuselageVTKByIndex</u>. Error code: %1").arg(err), "TIGL Error");
 		}
 	}
@@ -1100,7 +1122,7 @@ void TIGLViewerDocument::exportMeshedFuselageVTKsimple()
 		QApplication::setOverrideCursor( Qt::WaitCursor );
 		TiglReturnCode err = tiglExportMeshedFuselageVTKSimpleByUID(m_cpacsHandle, qstringToCstring(fuselageUid), qstringToCstring(fileName), 0.1);
 		QApplication::restoreOverrideCursor();
-		if(err != SUCCESS) {
+        if(err != TIGL_SUCCESS) {
 			displayError(QString("Error in function <u>tiglExportMeshedFuselageVTKSimpleByUID</u>. Error code: %1").arg(err), "TIGL Error");
 		}
 	}
@@ -1122,12 +1144,16 @@ void TIGLViewerDocument::drawFusedFuselage()
 void TIGLViewerDocument::drawFusedWing()
 {
 	QString wingUid = dlgGetWingSelection();
+    if(wingUid=="")
+        return;
 
 	myAISContext->EraseAll(Standard_False);
 	QApplication::setOverrideCursor( Qt::WaitCursor );
 	tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
 	QApplication::restoreOverrideCursor();
-	displayShape(wing.GetLoft());
+	TopoDS_Shape& loft = wing.GetLoft();
+	BRepMesh::Mesh(loft, 0.01);
+	displayShape(loft);
 }
 
 
@@ -1160,9 +1186,9 @@ void TIGLViewerDocument::drawWingFuselageIntersectionLine()
 							&y,
 							&z);
 
-		OCC_Point* aGraphicPoint = new OCC_Point(x, y, z);
+        ISession_Point* aGraphicPoint = new ISession_Point(x, y, z);
 		myAISContext->Display(aGraphicPoint,Standard_False);
-		if(res != SUCCESS) {
+        if(res != TIGL_SUCCESS) {
 			displayError(QString("Error in function <u>tiglComponentIntersectionPoint</u>. Error code: %1").arg(res), "TIGL Error");
 		}
 	}

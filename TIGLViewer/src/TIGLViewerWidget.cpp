@@ -10,7 +10,7 @@
 * you may not use this file except in compliance with the License.
 * You may obtain a copy of the License at
 *
-*     http://www.apache.org/licenses/LICENSE-2.0
+*     http://www.apache.org/licenses/LICENSE-2.0
 *
 * Unless required by applicable law or agreed to in writing, software
 * distributed under the License is distributed on an "AS IS" BASIS,
@@ -18,9 +18,13 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-
+#include <algorithm>
 #include <cmath>
 #include <iostream>
+
+#ifdef WIN32
+#include <windows.h>
+#endif
 #include <GL/gl.h>
 #include <GL/glu.h>
 
@@ -36,59 +40,80 @@
 #include "TIGLViewerInternal.h"
 #include "TIGLViewerDocument.h"
 
+// 10% zoom per wheel or key event
+#define TIGLVIEWER_ZOOM_STEP 1.10
+
+TIGLViewerWidget::TIGLViewerWidget(QWidget * parent)
+    : QWidget(parent) {
+    initialize();
+}
 
 TIGLViewerWidget::TIGLViewerWidget( const Handle_AIS_InteractiveContext& aContext,
 								QWidget *parent, 
-								Qt::WindowFlags f )
-: QWidget( parent, f | Qt::MSWindowsOwnDC ),
+                                Qt::WindowFlags f ) :
 	myView            ( NULL ),
-	myRubberBand      ( NULL ),
+    myViewResized	  ( Standard_False ),
+    myViewInitialized ( Standard_False ),
 	myMode			  ( CurAction3d_Undefined ),
 	myGridSnap        ( Standard_False ),
-	myViewResized	  ( Standard_False ),
-	myViewInitialized ( Standard_False ),
+    myDetection		  ( AIS_SOD_Nothing ),
+    myRubberBand      ( NULL ),
 	myPrecision		  ( 0.001 ),
 	myViewPrecision   ( 0.0 ),
-	myDetection		  ( AIS_SOD_Nothing ),
 	myKeyboardFlags   ( Qt::NoModifier ),
-	myButtonFlags	  ( Qt::NoButton )
-{
-	myContext = aContext;
-	// Needed to generate mouse events
-	setMouseTracking( true );
+	myButtonFlags	  ( Qt::NoButton ){
+    initialize();
+    myContext = aContext;
+}
 
-	// Avoid Qt background clears to improve resizing speed,
-	// along with a couple of other attributes
-	setAutoFillBackground( false );				
-	setAttribute( Qt::WA_NoSystemBackground );	
+void TIGLViewerWidget::initialize(){
+    myView            = NULL;
+    myRubberBand      = NULL;
+    myMode			  = CurAction3d_Undefined;
+    myGridSnap        = Standard_False;
+    myViewResized	  = Standard_False;
+    myViewInitialized = Standard_False;
+    myPrecision		  = 0.001;
+    myViewPrecision   = 0.0;
+    myDetection		  = AIS_SOD_Nothing;
+    myKeyboardFlags   = Qt::NoModifier;
+    myButtonFlags	  = Qt::NoButton;
 
-	// This next attribute seems to be the secret of allowing OCC on Win32
-	// to "own" the window, even though its only supposed to work on X11.
-	setAttribute( Qt::WA_PaintOnScreen );
+    // Needed to generate mouse events
+    setMouseTracking( true );
 
-	// Here's a modified pick point cursor from AutoQ3D
-	QBitmap curb1( 48, 48 );
-	QBitmap curb2( 48, 48 );
-	curb1.fill( QColor( 255, 255, 255 ) );
-	curb2.fill( QColor( 255, 255, 255 ) );
-	QPainter p;
+    // Avoid Qt background clears to improve resizing speed,
+    // along with a couple of other attributes
+    setAutoFillBackground( false );
+    setAttribute( Qt::WA_NoSystemBackground );
 
-	p.begin( &curb1 );
-		p.drawLine( 24,  0, 24, 47 );
-		p.drawLine(  0, 24, 47, 24 );
-		p.setBrush( Qt::NoBrush );
-		p.drawRect( 18, 18, 12, 12 );
-	p.end();
-	myCrossCursor = QCursor( curb2, curb1, 24, 24 );
+    // This next attribute seems to be the secret of allowing OCC on Win32
+    // to "own" the window, even though its only supposed to work on X11.
+    setAttribute( Qt::WA_PaintOnScreen );
 
-	// Create a rubber band box for later mouse activity
-	myRubberBand = new QRubberBand( QRubberBand::Rectangle, this );
-	if (myRubberBand)
-	{
-		// If you don't set a style, QRubberBand doesn't work properly
-		// take this line out if you don't believe me.
-		myRubberBand->setStyle( (QStyle*) new QPlastiqueStyle() );
-	}
+    // Here's a modified pick point cursor from AutoQ3D
+    QBitmap curb1( 48, 48 );
+    QBitmap curb2( 48, 48 );
+    curb1.fill( QColor( 255, 255, 255 ) );
+    curb2.fill( QColor( 255, 255, 255 ) );
+    QPainter p;
+
+    p.begin( &curb1 );
+        p.drawLine( 24,  0, 24, 47 );
+        p.drawLine(  0, 24, 47, 24 );
+        p.setBrush( Qt::NoBrush );
+        p.drawRect( 18, 18, 12, 12 );
+    p.end();
+    myCrossCursor = QCursor( curb2, curb1, 24, 24 );
+
+    // Create a rubber band box for later mouse activity
+    myRubberBand = new QRubberBand( QRubberBand::Rectangle, this );
+    if (myRubberBand)
+    {
+        // If you don't set a style, QRubberBand doesn't work properly
+        // take this line out if you don't believe me.
+        myRubberBand->setStyle( (QStyle*) new QPlastiqueStyle() );
+    }
 }
 
 
@@ -283,11 +308,11 @@ void TIGLViewerWidget::wheelEvent ( QWheelEvent* e )
 		Standard_Real currentScale = myView->Scale();
 		if (e->delta() > 0)
 		{
-			currentScale *= 1.10; // +10%
+            currentScale *= TIGLVIEWER_ZOOM_STEP; // +10%
 		}
 		else
 		{
-			currentScale /= 1.10; // -10%
+            currentScale /= TIGLVIEWER_ZOOM_STEP; // -10%
 		}
 		myView->SetScale( currentScale );
 	}
@@ -363,6 +388,19 @@ void TIGLViewerWidget::zoom( void )
     setMode( CurAction3d_DynamicZooming );
 }
 
+void TIGLViewerWidget::zoomIn()
+{
+    if( !myView.IsNull() ){
+       myView->SetScale( myView->Scale() * TIGLVIEWER_ZOOM_STEP);
+    }
+}
+
+void TIGLViewerWidget::zoomOut()
+{
+    if( !myView.IsNull() ){
+       myView->SetScale( myView->Scale() / TIGLVIEWER_ZOOM_STEP);
+    }
+}
 
 void TIGLViewerWidget::pan( void )
 {
@@ -408,7 +446,7 @@ void TIGLViewerWidget::viewFront()
 {
 	if(!myView.IsNull())
 	{
-	    myView->SetProj( V3d_Yneg );
+        myView->SetProj( V3d_Xneg );
 	}
 }
 
@@ -417,7 +455,7 @@ void TIGLViewerWidget::viewBack()
 {
 	if(!myView.IsNull())
 	{
-	    myView->SetProj( V3d_Ypos );
+        myView->SetProj( V3d_Xpos );
 	}
 }
 
@@ -446,7 +484,7 @@ void TIGLViewerWidget::viewLeft()
 {
 	if(!myView.IsNull())
 	{
-	    myView->SetProj( V3d_Xneg );
+        myView->SetProj( V3d_Yneg );
 	}
 }
 
@@ -455,7 +493,7 @@ void TIGLViewerWidget::viewRight()
 {
 	if(!myView.IsNull())
 	{
-	    myView->SetProj( V3d_Xpos );
+        myView->SetProj( V3d_Ypos );
 	}
 }
 
@@ -767,21 +805,22 @@ AIS_StatusOfDetection TIGLViewerWidget::moveEvent( QPoint point )
 
 AIS_StatusOfPick TIGLViewerWidget::dragEvent( const QPoint startPoint, const QPoint endPoint, const bool multi )
 {
+	using namespace std;
 	AIS_StatusOfPick pick = AIS_SOP_NothingSelected;
 	if (multi)
 	{
-		pick = myContext->ShiftSelect( std::min (startPoint.x(), endPoint.x()),
-									   std::min (startPoint.y(), endPoint.y()),
-									   std::max (startPoint.x(), endPoint.x()),
-									   std::max (startPoint.y(), endPoint.y()),
+		pick = myContext->ShiftSelect( min (startPoint.x(), endPoint.x()),
+									   min (startPoint.y(), endPoint.y()),
+									   max (startPoint.x(), endPoint.x()),
+									   max (startPoint.y(), endPoint.y()),
 									   myView );
 	}
 	else
 	{
-		pick = myContext->Select( std::min (startPoint.x(), endPoint.x()),
-								  std::min (startPoint.y(), endPoint.y()),
-								  std::max (startPoint.x(), endPoint.x()),
-								  std::max (startPoint.y(), endPoint.y()),
+		pick = myContext->Select( min (startPoint.x(), endPoint.x()),
+								  min (startPoint.y(), endPoint.y()),
+								  max (startPoint.x(), endPoint.x()),
+								  max (startPoint.y(), endPoint.y()),
 								  myView );
 	}
     emit selectionChanged();
@@ -854,8 +893,9 @@ void TIGLViewerWidget::setMode( const CurrentAction3d mode )
 
 Standard_Real TIGLViewerWidget::precision( Standard_Real aReal )
 {
+	using namespace std;
 	Standard_Real preciseReal;
-	Standard_Real thePrecision = std::max (myPrecision, viewPrecision());
+	Standard_Real thePrecision = max (myPrecision, viewPrecision());
 	
 	if ( myPrecision != 0.0 )
 	{
@@ -949,7 +989,8 @@ int TIGLViewerWidget::paintCallBack (Aspect_Drawable /* drawable */,
 }
 
 
-
+// TODO: this routine prevents setting the background color
+// either we should set it back here or we should skip it.
 void TIGLViewerWidget::paintOCC( void )
 {
 	glDisable( GL_LIGHTING ); 
@@ -979,6 +1020,7 @@ void TIGLViewerWidget::paintOCC( void )
 	}
 #endif
 
+    // purple gradient background
     glBegin( GL_QUADS);
     {
       glColor4f  (  0.1f, 0.1f, 0.1f, 1.0f );
