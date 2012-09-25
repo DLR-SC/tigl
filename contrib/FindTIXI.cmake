@@ -24,8 +24,8 @@
 FIND_PATH(TIXI_INCLUDE_DIR 
 	NAMES tixi.h
 	PATHS
-	"[HKEY_LOCAL_MACHINE\\SOFTWARE\\www.dlr.de/sc\\TIXI]/include"
-    "[HKEY_LOCAL_MACHINE\\SOFTWARE\\Wow6432Node\\www.dlr.de/sc\\TIXI]/include")
+	"[HKEY_LOCAL_MACHINE\\SOFTWARE\\www.dlr.de/sc\\TIXI]/include" 
+)
 	
 # MARK_AS_ADVANCED(TIXI_INCLUDE_DIR)
 
@@ -34,7 +34,6 @@ FIND_LIBRARY(TIXI_LIBRARY NAMES
 	TIXI
 	PATHS
 	"[HKEY_LOCAL_MACHINE\\SOFTWARE\\www.dlr.de/sc\\TIXI]/lib"
-	"[HKEY_LOCAL_MACHINE\\SOFTWARE\\Wow6432Node\\www.dlr.de/sc\\TIXI]/lib"
 )
 # MARK_AS_ADVANCED(TIXI_LIBRARY)
 
@@ -43,7 +42,7 @@ FIND_PATH(TIXI_BINARY_DIR
 	NAMES TIXI.dll
 	PATHS
 	"[HKEY_LOCAL_MACHINE\\SOFTWARE\\www.dlr.de/sc\\TIXI]/bin"
-    "[HKEY_LOCAL_MACHINE\\SOFTWARE\\Wow6432Node\\www.dlr.de/sc\\TIXI]/bin")
+)
 endif(WIN32)
 
 # handle the QUIETLY and REQUIRED arguments and set TIXI_FOUND to TRUE if 
