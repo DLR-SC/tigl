@@ -33,6 +33,7 @@
 #include <AIS_InteractiveContext.hxx>
 #include <Aspect_RectangularGrid.hxx>
 #include <V3d_View.hxx>
+#include <Standard_Version.hxx>
 
 #include "TIGLViewerWindow.h"
 #include "TIGLDebugStream.h"
@@ -153,18 +154,7 @@ void TIGLViewerWindow::openFile(const QString& fileName)
     {
         fileInfo.setFile(fileName);
         fileType = fileInfo.suffix();
-        if (fileType.toLower() == tr("brep") || fileType.toLower() == tr("rle"))
-        {
-            format = TIGLViewerInputOutput::FormatBREP;
-        }
-        if (fileType.toLower() == tr("step") || fileType.toLower() == tr("stp"))
-        {
-            format = TIGLViewerInputOutput::FormatSTEP;
-        }
-        if (fileType.toLower() == tr("iges") || fileType.toLower() == tr("igs"))
-        {
-            format = TIGLViewerInputOutput::FormatIGES;
-        }
+        
         if (fileType.toLower() == tr("xml"))
         {
             cpacsConfiguration->openCpacsConfiguration(fileInfo.absoluteFilePath());
@@ -172,11 +162,26 @@ void TIGLViewerWindow::openFile(const QString& fileName)
             watcher->addPath(fileInfo.absoluteFilePath());
             QObject::connect(watcher, SIGNAL(fileChanged(QString)), cpacsConfiguration, SLOT(updateConfiguration()));
         }
+        else {
 
-        myLastFolder = fileInfo.absolutePath();
-        setCurrentFile(fileName);
-        reader.importModel ( fileInfo.absoluteFilePath(), format, myOCC->getContext() );
+            if (fileType.toLower() == tr("brep") || fileType.toLower() == tr("rle"))
+            {
+                format = TIGLViewerInputOutput::FormatBREP;
+            }
+            if (fileType.toLower() == tr("step") || fileType.toLower() == tr("stp"))
+            {
+                format = TIGLViewerInputOutput::FormatSTEP;
+            }
+            if (fileType.toLower() == tr("iges") || fileType.toLower() == tr("igs"))
+            {
+                format = TIGLViewerInputOutput::FormatIGES;
+            }
+
+            reader.importModel ( fileInfo.absoluteFilePath(), format, myOCC->getContext() );
+        }
     }
+    myLastFolder = fileInfo.absolutePath();
+    setCurrentFile(fileName);
 
     myOCC->viewAxo();
     myOCC->fitAll();
@@ -371,11 +376,13 @@ void TIGLViewerWindow::about()
 	QString text;
 	QString tixiVersion(tixiGetVersion());
 	QString tiglVersion(tiglGetVersion());
+	QString occtVersion = QString("%1.%2.%3").arg(OCC_VERSION_MAJOR).arg(OCC_VERSION_MINOR).arg(OCC_VERSION_MAINTENANCE);
 
 	text = 	"The <b>TIGLViewer</b> allows you to view CPACS geometries.<br> \
 				   Copyright (C) 2007-2011 German Aerospace Center (DLR/SC) <br><br>";
 	text += "TIXI version: " + tixiVersion + "<br>";
-	text += "TIGL version: " + tiglVersion + "<br><br>";
+	text += "TIGL version: " + tiglVersion + "<br>";
+	text += "OpenCascade version: " + occtVersion + "<br><br>";
 	text += "Visit the TIGLViewer project page at <a href=\"http://code.google.com/p/tigl/\">http://code.google.com/p/tigl/</a>";
 
     statusBar()->showMessage(tr("Invoked Help|About"));
