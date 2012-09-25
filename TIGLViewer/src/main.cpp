@@ -10,7 +10,7 @@
 * you may not use this file except in compliance with the License.
 * You may obtain a copy of the License at
 *
-*     http://www.apache.org/licenses/LICENSE-2.0
+*     http://www.apache.org/licenses/LICENSE-2.0
 *
 * Unless required by applicable law or agreed to in writing, software
 * distributed under the License is distributed on an "AS IS" BASIS,
@@ -21,6 +21,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <clocale>
 
 #include <QString>
 #include <QtGui/QtGui>
@@ -39,6 +40,9 @@ void showHelp(QString);
 int main(int argc, char *argv[])
 {
 	TIGLViewerApplication app( argc, argv );
+
+    // we need to set us locale as we use "." for decimal point
+    setlocale(LC_NUMERIC, "C");
 
 	int retval = parseArguments(app.arguments());
     if (retval != 0) {
@@ -130,3 +134,11 @@ int parseArguments(QStringList argList)
 
 	return 0;
 }
+
+#ifdef WIN32
+#include <windows.h>
+int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow )
+{
+    return main( nCmdShow, &lpCmdLine ); 
+}
+#endif

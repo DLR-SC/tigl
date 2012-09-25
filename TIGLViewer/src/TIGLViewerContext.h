@@ -10,7 +10,7 @@
 * you may not use this file except in compliance with the License.
 * You may obtain a copy of the License at
 *
-*     http://www.apache.org/licenses/LICENSE-2.0
+*     http://www.apache.org/licenses/LICENSE-2.0
 *
 * Unless required by applicable law or agreed to in writing, software
 * distributed under the License is distributed on an "AS IS" BASIS,
@@ -48,13 +48,15 @@ public:
 
 public slots:
 
-	void gridXY   ( void );
-	void gridXZ   ( void );
-	void gridYZ   ( void );
-	void gridOn   ( void );
-	void gridOff  ( void );
-	void gridRect ( void );
-	void gridCirc ( void );
+    void gridXY     ( void );
+    void gridXZ     ( void );
+    void gridYZ     ( void );
+    void toggleGrid ( bool );
+    void gridOn     ( void );
+    void gridOff    ( void );
+    void gridRect   ( void );
+    void gridCirc   ( void );
+    void wireFrame  ( bool );
 
 signals:
 

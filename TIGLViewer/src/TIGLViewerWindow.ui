@@ -1,0 +1,894 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>TIGLViewerWindow</class>
+ <widget class="QMainWindow" name="TIGLViewerWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>615</width>
+    <height>398</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="TIGLViewer.qrc">
+    <normaloff>:/TIGLViewer.ico</normaloff>:/TIGLViewer.ico</iconset>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <widget class="QSplitter" name="splitter">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <widget class="TIGLViewerWidget" name="myOCC" native="true">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>70</verstretch>
+        </sizepolicy>
+       </property>
+      </widget>
+      <widget class="QTextBrowser" name="console">
+       <property name="baseSize">
+        <size>
+         <width>0</width>
+         <height>100</height>
+        </size>
+       </property>
+      </widget>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>615</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="fileMenu">
+    <property name="title">
+     <string>&amp;File</string>
+    </property>
+    <widget class="QMenu" name="recentFileMenu">
+     <property name="title">
+      <string>&amp;Recent Files</string>
+     </property>
+    </widget>
+    <addaction name="newAction"/>
+    <addaction name="openAction"/>
+    <addaction name="recentFileMenu"/>
+    <addaction name="saveAction"/>
+    <addaction name="printAction"/>
+    <addaction name="setBackgroundAction"/>
+    <addaction name="separator"/>
+    <addaction name="exitAction"/>
+   </widget>
+   <widget class="QMenu" name="editMenu">
+    <property name="title">
+     <string>&amp;Edit</string>
+    </property>
+    <addaction name="undoAction"/>
+    <addaction name="redoAction"/>
+    <addaction name="separator"/>
+    <addaction name="cutAction"/>
+    <addaction name="copyAction"/>
+    <addaction name="pasteAction"/>
+   </widget>
+   <widget class="QMenu" name="cpacsMenu">
+    <property name="title">
+     <string>&amp;CPACS</string>
+    </property>
+    <widget class="QMenu" name="menuAircraft">
+     <property name="title">
+      <string>Aircraft</string>
+     </property>
+     <addaction name="showAllWingsAndFuselagesAction"/>
+     <addaction name="showAllWingsAndFuselagesSurfacePointsAction"/>
+     <addaction name="drawFusedAircraftAction"/>
+    </widget>
+    <widget class="QMenu" name="menuWings">
+     <property name="title">
+      <string>Wings</string>
+     </property>
+     <addaction name="drawWingsAction"/>
+     <addaction name="drawWingProfilesAction"/>
+     <addaction name="drawWingOverlayCPACSProfilePointsAction"/>
+     <addaction name="drawWingTriangulationAction"/>
+     <addaction name="drawWingSamplePointsAction"/>
+     <addaction name="drawFusedWingAction"/>
+     <addaction name="drawWingComponentSegmentAction"/>
+    </widget>
+    <widget class="QMenu" name="menuFuselages">
+     <property name="title">
+      <string>Fuselages</string>
+     </property>
+     <addaction name="drawFuselageAction"/>
+     <addaction name="drawFuselageProfilesAction"/>
+     <addaction name="drawFuselageTriangulationAction"/>
+     <addaction name="drawFuselageSamplePointsAction"/>
+     <addaction name="drawFuselageSamplePointsAngleAction"/>
+     <addaction name="drawFusedFuselageAction"/>
+    </widget>
+    <addaction name="menuAircraft"/>
+    <addaction name="menuWings"/>
+    <addaction name="menuFuselages"/>
+   </widget>
+   <widget class="QMenu" name="tiglMenu">
+    <property name="title">
+     <string>&amp;TIGL Methods</string>
+    </property>
+    <widget class="QMenu" name="tiglExportMenu">
+     <property name="title">
+      <string>&amp;Export using TIGL</string>
+     </property>
+     <addaction name="tiglExportIgesAction"/>
+     <addaction name="tiglExportFusedIgesAction"/>
+     <addaction name="tiglExportMeshedWingSTL"/>
+     <addaction name="tiglExportMeshedFuselageSTL"/>
+     <addaction name="tiglExportMeshedWingVTK"/>
+     <addaction name="tiglExportMeshedWingVTKsimple"/>
+     <addaction name="tiglExportMeshedFuselageVTK"/>
+     <addaction name="tiglExportMeshedFuselageVTKsimple"/>
+    </widget>
+    <addaction name="tiglExportMenu"/>
+   </widget>
+   <widget class="QMenu" name="viewMenu">
+    <property name="title">
+     <string>&amp;View</string>
+    </property>
+    <widget class="QMenu" name="viewDisplayMenu">
+     <property name="title">
+      <string>&amp;Display</string>
+     </property>
+     <addaction name="viewFrontAction"/>
+     <addaction name="viewBackAction"/>
+     <addaction name="viewTopAction"/>
+     <addaction name="viewBottomAction"/>
+     <addaction name="viewLeftAction"/>
+     <addaction name="viewRightAction"/>
+     <addaction name="separator"/>
+     <addaction name="viewAxoAction"/>
+     <addaction name="viewGridAction"/>
+     <addaction name="separator"/>
+     <addaction name="viewResetAction"/>
+     <addaction name="viewZoomInAction"/>
+     <addaction name="viewZoomOutAction"/>
+     <addaction name="separator"/>
+     <addaction name="backgroundAction"/>
+     <addaction name="showConsoleAction"/>
+     <addaction name="showWireframeAction"/>
+    </widget>
+    <widget class="QMenu" name="viewActionsMenu">
+     <property name="title">
+      <string>&amp;Actions</string>
+     </property>
+     <addaction name="fitAction"/>
+     <addaction name="fitAllAction"/>
+     <addaction name="zoomAction"/>
+     <addaction name="panAction"/>
+     <addaction name="rotAction"/>
+    </widget>
+    <widget class="QMenu" name="gridMenu">
+     <property name="title">
+      <string>&amp;Grid</string>
+     </property>
+     <addaction name="gridOnAction"/>
+     <addaction name="separator"/>
+     <addaction name="gridXYAction"/>
+     <addaction name="gridXZAction"/>
+     <addaction name="gridYZAction"/>
+     <addaction name="separator"/>
+     <addaction name="gridRectAction"/>
+     <addaction name="gridCircAction"/>
+    </widget>
+    <addaction name="viewDisplayMenu"/>
+    <addaction name="separator"/>
+    <addaction name="viewActionsMenu"/>
+    <addaction name="separator"/>
+    <addaction name="gridMenu"/>
+   </widget>
+   <widget class="QMenu" name="helpMenu">
+    <property name="title">
+     <string>&amp;Help</string>
+    </property>
+    <addaction name="aboutAction"/>
+    <addaction name="aboutQtAction"/>
+   </widget>
+   <addaction name="fileMenu"/>
+   <addaction name="editMenu"/>
+   <addaction name="cpacsMenu"/>
+   <addaction name="tiglMenu"/>
+   <addaction name="viewMenu"/>
+   <addaction name="helpMenu"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <action name="newAction">
+   <property name="text">
+    <string>&amp;New</string>
+   </property>
+   <property name="toolTip">
+    <string>Create a new file</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+N</string>
+   </property>
+  </action>
+  <action name="openAction">
+   <property name="text">
+    <string>&amp;Open...</string>
+   </property>
+   <property name="toolTip">
+    <string>Open an existing file</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+O</string>
+   </property>
+  </action>
+  <action name="actionRecent_Files">
+   <property name="text">
+    <string>Recent Files</string>
+   </property>
+  </action>
+  <action name="actionBlubb">
+   <property name="text">
+    <string>blubb</string>
+   </property>
+  </action>
+  <action name="saveAction">
+   <property name="text">
+    <string>&amp;Save</string>
+   </property>
+   <property name="toolTip">
+    <string>Save the document to disk</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
+  </action>
+  <action name="printAction">
+   <property name="text">
+    <string>&amp;Print</string>
+   </property>
+   <property name="toolTip">
+    <string>Print the document</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+P</string>
+   </property>
+  </action>
+  <action name="setBackgroundAction">
+   <property name="text">
+    <string>&amp;Load Background Image</string>
+   </property>
+   <property name="toolTip">
+    <string>Set Background Image from file</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+B</string>
+   </property>
+  </action>
+  <action name="exitAction">
+   <property name="text">
+    <string>Exit</string>
+   </property>
+   <property name="toolTip">
+    <string>Exit the application</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Q</string>
+   </property>
+  </action>
+  <action name="undoAction">
+   <property name="text">
+    <string>&amp;Undo</string>
+   </property>
+   <property name="toolTip">
+    <string>Undo the last operation</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Z</string>
+   </property>
+  </action>
+  <action name="redoAction">
+   <property name="text">
+    <string>&amp;Redo</string>
+   </property>
+   <property name="toolTip">
+    <string>Redo the last operation</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Y</string>
+   </property>
+  </action>
+  <action name="cutAction">
+   <property name="text">
+    <string>Cu&amp;t</string>
+   </property>
+   <property name="toolTip">
+    <string>Cut the current selection's contents to the clipboard</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+X</string>
+   </property>
+  </action>
+  <action name="copyAction">
+   <property name="text">
+    <string>&amp;Copy</string>
+   </property>
+   <property name="toolTip">
+    <string>Copy the current selection's contents to the clipboard</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+C</string>
+   </property>
+  </action>
+  <action name="pasteAction">
+   <property name="text">
+    <string>&amp;Paste</string>
+   </property>
+   <property name="toolTip">
+    <string>Paste the clipboard's contents into the current selection</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+V</string>
+   </property>
+  </action>
+  <action name="showAllWingsAndFuselagesAction">
+   <property name="text">
+    <string>Show all Fuselages and Wings</string>
+   </property>
+   <property name="statusTip">
+    <string>Show all Fuselages and Wings</string>
+   </property>
+   <property name="whatsThis">
+    <string>Show all Fuselages and Wings</string>
+   </property>
+  </action>
+  <action name="showAllWingsAndFuselagesSurfacePointsAction">
+   <property name="text">
+    <string>Show sample Surface points on Fuselage and Wings</string>
+   </property>
+   <property name="toolTip">
+    <string>Show sample Surface points on Fuselages and Wings</string>
+   </property>
+   <property name="statusTip">
+    <string>Show sample Surface points on Fuselages and Wings</string>
+   </property>
+  </action>
+  <action name="drawFusedAircraftAction">
+   <property name="text">
+    <string>Show the complete Aircraft fused</string>
+   </property>
+   <property name="statusTip">
+    <string>Show the complete Aircraft fused</string>
+   </property>
+  </action>
+  <action name="drawWingsAction">
+   <property name="text">
+    <string>Show Wing</string>
+   </property>
+   <property name="toolTip">
+    <string>Show a wing only</string>
+   </property>
+  </action>
+  <action name="drawWingProfilesAction">
+   <property name="text">
+    <string>Show Wing Profiles</string>
+   </property>
+   <property name="toolTip">
+    <string>Show the profiles of a wing</string>
+   </property>
+   <property name="statusTip">
+    <string>Show the profiles of a wing</string>
+   </property>
+  </action>
+  <action name="drawWingOverlayCPACSProfilePointsAction">
+   <property name="text">
+    <string>Show Wing overlay profile points</string>
+   </property>
+   <property name="toolTip">
+    <string>Show the points of a wing profile</string>
+   </property>
+  </action>
+  <action name="drawWingTriangulationAction">
+   <property name="text">
+    <string>Show Wing triangulation</string>
+   </property>
+   <property name="toolTip">
+    <string>Shows the triangulation of a wing</string>
+   </property>
+  </action>
+  <action name="drawWingSamplePointsAction">
+   <property name="text">
+    <string>Show Sample Wing points</string>
+   </property>
+   <property name="toolTip">
+    <string>Show sample points on a wing</string>
+   </property>
+   <property name="statusTip">
+    <string/>
+   </property>
+  </action>
+  <action name="drawFusedWingAction">
+   <property name="text">
+    <string>Show Fused Wing</string>
+   </property>
+   <property name="toolTip">
+    <string>Shows a fused wing</string>
+   </property>
+   <property name="statusTip">
+    <string>Shows a fused wing</string>
+   </property>
+  </action>
+  <action name="drawWingComponentSegmentAction">
+   <property name="text">
+    <string>Show Wing Component Segment</string>
+   </property>
+   <property name="statusTip">
+    <string>Shows a wing component segment</string>
+   </property>
+   <property name="whatsThis">
+    <string>Shows a wing component segment</string>
+   </property>
+  </action>
+  <action name="drawFuselageAction">
+   <property name="text">
+    <string>Show Fuselage</string>
+   </property>
+   <property name="toolTip">
+    <string>Shows a fuselage</string>
+   </property>
+   <property name="statusTip">
+    <string>Shows a fuselage.</string>
+   </property>
+  </action>
+  <action name="drawFuselageProfilesAction">
+   <property name="text">
+    <string>Show Fuselage Profiles</string>
+   </property>
+   <property name="toolTip">
+    <string>Show the profiles of a fuselage</string>
+   </property>
+   <property name="statusTip">
+    <string>Show the profiles of a fuselage</string>
+   </property>
+  </action>
+  <action name="drawFuselageTriangulationAction">
+   <property name="text">
+    <string>Show Fuselage triangulation</string>
+   </property>
+   <property name="toolTip">
+    <string>Shows the triangulation of a fuselage</string>
+   </property>
+   <property name="statusTip">
+    <string>Shows the triangulation of a fuselage.</string>
+   </property>
+  </action>
+  <action name="drawFuselageSamplePointsAction">
+   <property name="text">
+    <string>Show Sample Fuselage points</string>
+   </property>
+   <property name="toolTip">
+    <string>Show sample points on a fuselage</string>
+   </property>
+   <property name="statusTip">
+    <string>Show sample points on a fuselage.</string>
+   </property>
+  </action>
+  <action name="drawFuselageSamplePointsAngleAction">
+   <property name="text">
+    <string>Show Sample Fuselage point at 45°</string>
+   </property>
+   <property name="toolTip">
+    <string>Show sample point on a fuselage at 45° and eta = 0.5</string>
+   </property>
+   <property name="statusTip">
+    <string>Show sample point on a fuselage at 45° and eta = 0.5.</string>
+   </property>
+  </action>
+  <action name="drawFusedFuselageAction">
+   <property name="text">
+    <string>Show Fused Fuselage</string>
+   </property>
+   <property name="toolTip">
+    <string>Show a fused fuselage</string>
+   </property>
+   <property name="statusTip">
+    <string>Show a fused fuselage.</string>
+   </property>
+  </action>
+  <action name="tiglExportIgesAction">
+   <property name="text">
+    <string>Export Model as IGES</string>
+   </property>
+   <property name="statusTip">
+    <string>Export Model as IGES.</string>
+   </property>
+  </action>
+  <action name="tiglExportFusedIgesAction">
+   <property name="text">
+    <string>Export Fused Model as IGES</string>
+   </property>
+   <property name="statusTip">
+    <string>Export Fused Model as IGES.</string>
+   </property>
+  </action>
+  <action name="tiglExportMeshedWingSTL">
+   <property name="text">
+    <string>Export meshed Wing as STL</string>
+   </property>
+   <property name="statusTip">
+    <string>Export meshed Wing as STL.</string>
+   </property>
+  </action>
+  <action name="tiglExportMeshedWingVTK">
+   <property name="text">
+    <string>Export meshed Wing as VTK</string>
+   </property>
+   <property name="statusTip">
+    <string>Export meshed Wing as VTK.</string>
+   </property>
+  </action>
+  <action name="tiglExportMeshedWingVTKsimple">
+   <property name="text">
+    <string>Export meshed Wing as simple VTK</string>
+   </property>
+   <property name="toolTip">
+    <string>Export meshed Wing as simple VTK - no cpacs related export</string>
+   </property>
+   <property name="statusTip">
+    <string>Export meshed Wing as simple VTK - no cpacs related export.</string>
+   </property>
+  </action>
+  <action name="tiglExportMeshedFuselageVTK">
+   <property name="text">
+    <string>Export meshed Fuselage as VTK</string>
+   </property>
+   <property name="statusTip">
+    <string>Export meshed Fuselage as VTK.</string>
+   </property>
+  </action>
+  <action name="tiglExportMeshedFuselageVTKsimple">
+   <property name="text">
+    <string>Export meshed Fuselage as simple VTK</string>
+   </property>
+   <property name="toolTip">
+    <string>Export meshed Fuselage as simple VTK - no cpacs realted export</string>
+   </property>
+   <property name="statusTip">
+    <string>Export meshed Fuselage as simple VTK - no cpacs realted export.</string>
+   </property>
+  </action>
+  <action name="tiglExportMeshedFuselageSTL">
+   <property name="text">
+    <string>Export meshed Fuselage as STL</string>
+   </property>
+   <property name="statusTip">
+    <string>Export meshed Fuselage as STL.</string>
+   </property>
+  </action>
+  <action name="viewFrontAction">
+   <property name="text">
+    <string>Front</string>
+   </property>
+   <property name="toolTip">
+    <string>View from front</string>
+   </property>
+   <property name="shortcut">
+    <string>1</string>
+   </property>
+  </action>
+  <action name="viewBackAction">
+   <property name="text">
+    <string>Back</string>
+   </property>
+   <property name="toolTip">
+    <string>View from the back</string>
+   </property>
+   <property name="shortcut">
+    <string>2</string>
+   </property>
+  </action>
+  <action name="viewTopAction">
+   <property name="text">
+    <string>Top</string>
+   </property>
+   <property name="toolTip">
+    <string>View from the top</string>
+   </property>
+   <property name="shortcut">
+    <string>3</string>
+   </property>
+  </action>
+  <action name="viewBottomAction">
+   <property name="text">
+    <string>Bottom</string>
+   </property>
+   <property name="toolTip">
+    <string>View from the bottom</string>
+   </property>
+   <property name="shortcut">
+    <string>4</string>
+   </property>
+  </action>
+  <action name="viewLeftAction">
+   <property name="text">
+    <string>Left</string>
+   </property>
+   <property name="toolTip">
+    <string>View from the left</string>
+   </property>
+   <property name="shortcut">
+    <string>5</string>
+   </property>
+  </action>
+  <action name="viewRightAction">
+   <property name="text">
+    <string>Right</string>
+   </property>
+   <property name="toolTip">
+    <string>View from the right</string>
+   </property>
+   <property name="shortcut">
+    <string>6</string>
+   </property>
+  </action>
+  <action name="viewAxoAction">
+   <property name="text">
+    <string>Axonometric</string>
+   </property>
+   <property name="toolTip">
+    <string>Axonometric view</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+D</string>
+   </property>
+  </action>
+  <action name="viewGridAction">
+   <property name="text">
+    <string>Grid</string>
+   </property>
+   <property name="toolTip">
+    <string>View on the grid</string>
+   </property>
+  </action>
+  <action name="viewResetAction">
+   <property name="text">
+    <string>Reset</string>
+   </property>
+   <property name="toolTip">
+    <string>Reset the view</string>
+   </property>
+  </action>
+  <action name="viewZoomInAction">
+   <property name="text">
+    <string>Zoom in</string>
+   </property>
+   <property name="toolTip">
+    <string>Zoom in the view</string>
+   </property>
+   <property name="shortcut">
+    <string>+</string>
+   </property>
+  </action>
+  <action name="viewZoomOutAction">
+   <property name="text">
+    <string>Zoom out</string>
+   </property>
+   <property name="toolTip">
+    <string>Zoom out the view</string>
+   </property>
+   <property name="shortcut">
+    <string>-</string>
+   </property>
+  </action>
+  <action name="backgroundAction">
+   <property name="text">
+    <string>Change &amp;Background</string>
+   </property>
+   <property name="toolTip">
+    <string>Change the background color</string>
+   </property>
+  </action>
+  <action name="fitAction">
+   <property name="text">
+    <string>&amp;Fit Window</string>
+   </property>
+   <property name="toolTip">
+    <string>Fit to window</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+F</string>
+   </property>
+  </action>
+  <action name="fitAllAction">
+   <property name="text">
+    <string>Fit &amp;All</string>
+   </property>
+   <property name="toolTip">
+    <string>Fit contents to viewport</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+A</string>
+   </property>
+  </action>
+  <action name="zoomAction">
+   <property name="text">
+    <string>&amp;Zoom</string>
+   </property>
+   <property name="toolTip">
+    <string>Zoom in window</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Z</string>
+   </property>
+  </action>
+  <action name="panAction">
+   <property name="text">
+    <string>&amp;Translate</string>
+   </property>
+   <property name="toolTip">
+    <string>Window panning</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+T</string>
+   </property>
+  </action>
+  <action name="rotAction">
+   <property name="text">
+    <string>&amp;Rotate</string>
+   </property>
+   <property name="toolTip">
+    <string>Window rotation</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+R</string>
+   </property>
+  </action>
+  <action name="gridOnAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Grid On</string>
+   </property>
+   <property name="iconText">
+    <string>Show grid</string>
+   </property>
+   <property name="toolTip">
+    <string>Turn the grid on/off</string>
+   </property>
+   <property name="statusTip">
+    <string>Turn the grid on/off</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+G</string>
+   </property>
+  </action>
+  <action name="gridOffAction">
+   <property name="text">
+    <string>Gri&amp;d Off</string>
+   </property>
+   <property name="toolTip">
+    <string>Turn the grid off</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+J</string>
+   </property>
+  </action>
+  <action name="gridXYAction">
+   <property name="text">
+    <string>XY Grid</string>
+   </property>
+   <property name="toolTip">
+    <string>Grid on XY Plane</string>
+   </property>
+  </action>
+  <action name="gridXZAction">
+   <property name="text">
+    <string>XZ Grid</string>
+   </property>
+   <property name="toolTip">
+    <string>Grid on XZ Plane</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Y</string>
+   </property>
+  </action>
+  <action name="gridYZAction">
+   <property name="text">
+    <string>YZ Grid</string>
+   </property>
+   <property name="toolTip">
+    <string>Grid on YZ Plane</string>
+   </property>
+  </action>
+  <action name="gridRectAction">
+   <property name="text">
+    <string>Rectangular</string>
+   </property>
+   <property name="statusTip">
+    <string>Rectangular grid</string>
+   </property>
+  </action>
+  <action name="gridCircAction">
+   <property name="text">
+    <string>Polar</string>
+   </property>
+   <property name="toolTip">
+    <string>Polar grid</string>
+   </property>
+  </action>
+  <action name="aboutAction">
+   <property name="text">
+    <string>&amp;About</string>
+   </property>
+   <property name="toolTip">
+    <string>Show the application's About box</string>
+   </property>
+  </action>
+  <action name="aboutQtAction">
+   <property name="text">
+    <string>About &amp;Qt</string>
+   </property>
+   <property name="toolTip">
+    <string>Show the Qt library's About box</string>
+   </property>
+  </action>
+  <action name="showConsoleAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Console</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+D</string>
+   </property>
+  </action>
+  <action name="showWireframeAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Wireframe</string>
+   </property>
+   <property name="statusTip">
+    <string>Show wireframes</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+W</string>
+   </property>
+  </action>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>TIGLViewerWidget</class>
+   <extends>QWidget</extends>
+   <header>TIGLViewerWidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>
