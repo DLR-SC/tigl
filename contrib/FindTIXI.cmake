@@ -23,8 +23,9 @@
 # Look for the header file.
 FIND_PATH(TIXI_INCLUDE_DIR 
 	NAMES tixi.h
-	PATHS
+	HINTS
 	${TIXI_PATH}/include
+	PATHS
 	"[HKEY_LOCAL_MACHINE\\SOFTWARE\\www.dlr.de/sc\\TIXI]/include" 
 )
 	
@@ -33,8 +34,9 @@ FIND_PATH(TIXI_INCLUDE_DIR
 # Look for the library.
 FIND_LIBRARY(TIXI_LIBRARY NAMES 
 	TIXI
+	HINTS
+	${TIXI_PATH}/lib
 	PATHS
-    ${TIXI_PATH}/lib
 	"[HKEY_LOCAL_MACHINE\\SOFTWARE\\www.dlr.de/sc\\TIXI]/lib"
 )
 # MARK_AS_ADVANCED(TIXI_LIBRARY)
@@ -42,8 +44,9 @@ FIND_LIBRARY(TIXI_LIBRARY NAMES
 if(WIN32)
 FIND_PATH(TIXI_BINARY_DIR 
 	NAMES TIXI.dll
-	PATHS
+	HINTS
 	${TIXI_PATH}/bin
+	PATHS
 	"[HKEY_LOCAL_MACHINE\\SOFTWARE\\www.dlr.de/sc\\TIXI]/bin"
 )
 endif(WIN32)
