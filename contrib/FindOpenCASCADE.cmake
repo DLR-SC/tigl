@@ -14,7 +14,7 @@
 # ${OpenCASCADE_FOUND} is cached, so once OCC is found this block shouldn't have to run again
 IF( NOT OpenCASCADE_FOUND )
   IF(UNIX)
-    set( _incsearchpath /usr/include/opencascade /opt/occ/inc $ENV{CASROOT}/inc )
+    set( _incsearchpath /usr/include/opencascade /opt/occ/inc $ENV{CASROOT}/inc $ENV{CASROOT}/include/oce)
     if (APPLE)
       set( _testlibname libTKernel.dylib )
     else (APPLE)
