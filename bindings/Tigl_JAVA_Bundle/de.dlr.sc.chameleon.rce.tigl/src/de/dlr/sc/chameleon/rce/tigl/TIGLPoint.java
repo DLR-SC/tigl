@@ -2,9 +2,9 @@
 * Copyright (C) 2007-2011 German Aerospace Center (DLR/SC)
 *
 * Created: 2010-08-13 Markus Litz <Markus.Litz@dlr.de>
-* Changed: $Id: TIGLInterface.java 52 2011-06-10 11:17:42Z markus.litz $ 
+* Changed: $Id$ 
 *
-* Version: $Revision: 52 $
+* Version: $Revision$
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ package de.dlr.sc.chameleon.rce.tigl;
 /**
  * 3D-Point container class with getter and setter for simple 3d points.
  * 
- * @version $LastChangedRevision: 52 $
+ * @version $LastChangedRevision$
  * @author Markus Litz
  *
  */
