@@ -67,6 +67,7 @@ private:
 	Handle_TopTools_HSequenceOfShape importBREP ( const QString& );
 
 	Handle_TopTools_HSequenceOfShape importIGES ( const QString& );
+	Handle_TopTools_HSequenceOfShape importSTL  ( const QString& );
 	Handle_TopTools_HSequenceOfShape importSTEP ( const QString& );
 	Handle_TopTools_HSequenceOfShape importCSFDB( const QString& );
 

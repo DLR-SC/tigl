@@ -64,6 +64,7 @@ namespace tigl {
 	{
 		wings.Invalidate();
         fuselages.Invalidate();
+        fusedAirplane.Nullify();
 	}
 
 	// Build up memory structure for whole CPACS file
@@ -101,9 +102,11 @@ namespace tigl {
 	// Returns the boolean fused airplane as TopoDS_Shape
 	TopoDS_Shape CCPACSConfiguration::GetFusedAirplane(void)
     {
-		ITiglGeometricComponent* rootComponent = uidManager.GetRootComponent();
-		fusedAirplane = rootComponent->GetLoft();
-		OutputComponentTree(rootComponent);
+		if(fusedAirplane.IsNull()){
+			ITiglGeometricComponent* rootComponent = uidManager.GetRootComponent();
+			fusedAirplane = rootComponent->GetLoft();
+			OutputComponentTree(rootComponent);
+		}
 		return(fusedAirplane);
 	}
 

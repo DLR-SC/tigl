@@ -129,7 +129,8 @@ void TIGLViewerWindow::open()
 													"Other drawing types (*.brep *.rle *.igs *iges *.stp *.step);;"
 													"BREP (*.brep *.rle);;"
 													"STEP (*.step *.stp);;"
-													"IGES (*.iges *.igs)" ) );
+													"IGES (*.iges *.igs);;"
+													"STL  (*.stl)" ) );
     openFile(fileName);
 }
 
@@ -175,6 +176,10 @@ void TIGLViewerWindow::openFile(const QString& fileName)
             if (fileType.toLower() == tr("iges") || fileType.toLower() == tr("igs"))
             {
                 format = TIGLViewerInputOutput::FormatIGES;
+            }
+            if (fileType.toLower() == tr("stl"))
+            {
+                format = TIGLViewerInputOutput::FormatSTL;
             }
 
             reader.importModel ( fileInfo.absoluteFilePath(), format, myOCC->getContext() );

@@ -52,9 +52,6 @@ namespace tigl {
         CCPACSWing& wing = myConfig.GetWing(wingIndex);
         TopoDS_Shape loft = wing.GetLoft();
 
-        // Transform loft by wing transformation => absolute world coordinates
-        loft = wing.GetWingTransformation().Transform(loft);
-
         BRepMesh::Mesh(loft, deflection);
         StlAPI_Writer *StlWriter = new StlAPI_Writer();
         StlWriter->Write(loft, const_cast<char*>(filename.c_str()));

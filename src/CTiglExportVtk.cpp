@@ -379,7 +379,6 @@ namespace tigl {
                 if(component.GetComponentType() == TIGL_COMPONENT_WING) {
                     ITiglSegment & segment = component.GetSegment(y);
                     segmentLoft = segment.GetLoft(); // get 3d shape of the segment
-					segmentLoft = component.GetTransformation().Transform(segmentLoft);
                 }
                 if(component.GetComponentType() == TIGL_COMPONENT_FUSELAGE) {
                     segmentLoft = component.GetLoft();
