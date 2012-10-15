@@ -374,7 +374,8 @@ namespace tigl {
     	translation.y += trans.y;
     	translation.z += trans.z;
     	invalidated = true;
-		Update();
+    	segments.Invalidate();
+    	Update();
     }
     
     // Get Translation

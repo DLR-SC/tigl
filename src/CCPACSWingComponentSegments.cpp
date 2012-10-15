@@ -105,7 +105,7 @@ namespace tigl {
 		tixiRet = tixiGetNamedChildrenCount(tixiHandle, elementPath, "componentSegment", &componentSegmentCount);
 		if (tixiRet != SUCCESS) {
 			// componentSegments are optional right now.
-			fprintf(stderr, "Info: CPACS data set does not contain any componentSegments at wing %s\n", wingXPath.c_str());
+			cerr << "Info: CPACS data set does not contain any componentSegments at wing " << wingXPath.c_str() << endl;
 			return;
 		}
 

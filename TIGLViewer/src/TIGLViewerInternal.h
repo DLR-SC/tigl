@@ -218,6 +218,7 @@
 
 // specific STL
 #include <StlAPI_Writer.hxx>
+#include <StlAPI_Reader.hxx>
 
 // specific VRML
 #include <VrmlAPI_Writer.hxx>

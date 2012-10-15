@@ -96,6 +96,7 @@ namespace tigl {
 		: wing(aWing)
         , mySegmentIndex(aSegmentIndex)
         , surfacesAreValid(false)
+        , invalidated(true)
 	{
         Cleanup();
 	}

@@ -70,6 +70,9 @@ Handle_TopTools_HSequenceOfShape TIGLViewerInputOutput::importModel( const FileF
         case FormatIGES:
             shapes = importIGES( file );
             break;
+        case FormatSTL:
+            shapes = importSTL ( file );
+            break;
         case FormatSTEP:
             shapes = importSTEP( file );
             break;
@@ -185,6 +188,22 @@ Handle_TopTools_HSequenceOfShape TIGLViewerInputOutput::importIGES( const QStrin
         TopoDS_Shape aShape = Reader.OneShape();
         aSequence->Append( aShape );
     }
+	return aSequence;
+}
+
+Handle_TopTools_HSequenceOfShape TIGLViewerInputOutput::importSTL( const QString& file )
+{
+    Handle_TopTools_HSequenceOfShape aSequence = NULL;
+	TopoDS_Shape aShape;
+	StlAPI_Reader Reader;
+	Reader.Read(aShape, file.toStdString().c_str());
+	
+
+	if(!aShape.IsNull()){
+		aSequence = new TopTools_HSequenceOfShape();
+		aSequence->Append(aShape);
+	}
+
 	return aSequence;
 }
 

@@ -128,6 +128,7 @@ private:
     void displayError(QString text, QString header);
     QString myLastFolder; // TODO: synchronize with TIGLViewerWindow
     char* qstringToCstring(QString text);
+    void createShapeTriangulation(const class TopoDS_Shape& shape, class TopoDS_Compound& compound);
 	
 };
 

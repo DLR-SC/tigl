@@ -68,9 +68,6 @@ namespace tigl {
                 CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(i);
                 TopoDS_Shape loft = segment.GetLoft();
 
-                // Transform loft by wing transformation => absolute world coordinates
-                loft = wing.GetWingTransformation().Transform(loft);
-
                 igesWriter.AddShape(loft);
             }
         }

@@ -54,6 +54,9 @@ namespace tigl {
    		// Gets the loft of a geometric component
 		virtual TopoDS_Shape & GetLoft(void) = 0;
 
+        // Returns the unique id of this component
+        virtual std::string GetUID(void) = 0;
+
         // Returns the parent unique id
         virtual std::string GetParentUID(void) = 0;
 
