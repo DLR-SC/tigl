@@ -204,6 +204,7 @@ void TIGLViewerWindow::setCurrentFile(const QString &fileName)
         files.removeLast();
 
     settings.setValue("recentFileList", files);
+    settings.setValue("lastFolder", myLastFolder);
 
     updateRecentFileActions();
 }
@@ -587,5 +588,7 @@ void TIGLViewerWindow::updateRecentFileActions()
         recentFileActions[j]->setVisible(false);
 
     recentFileMenu->setEnabled(numRecentFiles > 0);
+
+    myLastFolder = settings.value("lastFolder").toString();
 }
 
