@@ -242,7 +242,11 @@ QString TIGLViewerDocument::dlgGetWingProfileSelection()
 		wingProfiles << profileUID.c_str();
 	}
 
-	return QInputDialog::getItem(parent, tr("Select Wing Profile"), tr("Available Wing Profiles:"), wingProfiles, 0, false, &ok);
+	QString choice = QInputDialog::getItem(parent, tr("Select Wing Profile"), tr("Available Wing Profiles:"), wingProfiles, 0, false, &ok);
+    if(ok)
+        return choice;
+    else
+        return "";
 }
 
 
@@ -262,7 +266,11 @@ QString TIGLViewerDocument::dlgGetFuselageSelection()
 		if (name == "") name = "Unknown fuselage";
 		fuselages << name.c_str();
 	}
-	return QInputDialog::getItem(parent, tr("Select Fuselage"), tr("Available Fuselages:"), fuselages, 0, false, &ok);
+	QString choice = QInputDialog::getItem(parent, tr("Select Fuselage"), tr("Available Fuselages:"), fuselages, 0, false, &ok);
+    if(ok)
+        return choice;
+    else
+        return "";
 }
 
 // Fuselage profile Dialog
@@ -282,7 +290,11 @@ QString TIGLViewerDocument::dlgGetFuselageProfileSelection()
 		fuselageProfiles << profileUID.c_str();
 	}
 
-	return QInputDialog::getItem(parent, tr("Select Fuselage Profile"), tr("Available Fuselage Profiles:"), fuselageProfiles, 0, false, &ok);
+	QString choice = QInputDialog::getItem(parent, tr("Select Fuselage Profile"), tr("Available Fuselage Profiles:"), fuselageProfiles, 0, false, &ok);
+    if(ok)
+        return choice;
+    else
+        return "";
 }
 
 void TIGLViewerDocument::tiglInterpolateBsplineWire()
@@ -415,6 +427,8 @@ void TIGLViewerDocument::drawWingProfiles()
 void TIGLViewerDocument::drawWingOverlayProfilePoints()
 {
 	QString wingUid = dlgGetWingSelection();
+	if(wingUid == "")
+		return;
 
 	tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
 
@@ -446,6 +460,8 @@ void TIGLViewerDocument::drawWingOverlayProfilePoints()
 void TIGLViewerDocument::drawFuselageProfiles()
 {
 	QString fuselageProfile = dlgGetFuselageProfileSelection();
+	if(fuselageProfile == "")
+		return;
 
     myAISContext->EraseAll(Standard_False);
 
@@ -495,6 +511,9 @@ void TIGLViewerDocument::drawWing()
 void TIGLViewerDocument::drawFuselage()
 {
 	QString fuselageUid = dlgGetFuselageSelection();
+	if(fuselageUid == "")
+		return;
+
 	tigl::CCPACSFuselage& fuselage = GetConfiguration().GetFuselage(fuselageUid.toStdString());
 
     myAISContext->EraseAll(Standard_False);
@@ -565,6 +584,9 @@ void TIGLViewerDocument::drawWingTriangulation()
 void TIGLViewerDocument::drawFuselageTriangulation()
 {
 	QString fuselageUid = dlgGetFuselageSelection();
+	if(fuselageUid == "")
+		return;
+
 	tigl::CCPACSFuselage& fuselage = GetConfiguration().GetFuselage(fuselageUid.toStdString());
 
     //clear screen
@@ -588,6 +610,9 @@ void TIGLViewerDocument::drawFuselageTriangulation()
 void TIGLViewerDocument::drawWingSamplePoints()
 {
 	QString wingUid = dlgGetWingSelection();
+	if(wingUid == "")
+		return;
+
 	tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
 
     myAISContext->EraseAll(Standard_False);
@@ -641,6 +666,9 @@ void TIGLViewerDocument::drawWingSamplePoints()
 void TIGLViewerDocument::drawFuselageSamplePoints()
 {
 	QString fuselageUid = dlgGetFuselageSelection();
+	if(fuselageUid == "")
+		return;
+
 	tigl::CCPACSFuselage& fuselage = GetConfiguration().GetFuselage(fuselageUid.toStdString());
 
 	myAISContext->EraseAll(Standard_False);
@@ -873,7 +901,9 @@ void TIGLViewerDocument::exportMeshedWingSTL()
 	QFileInfo	fileInfo;
 	TIGLViewerInputOutput writer;
 
-	//QString wingUid = dlgGetWingSelection(); // TODO: switch to uid based export
+	/*QString wingUid = dlgGetWingSelection(); 
+	if(wingUid == "")
+		return;*/
 
 	writeToStatusBar(tr("Saving meshed Wing as STL file with TIGL..."));
 
@@ -882,7 +912,7 @@ void TIGLViewerDocument::exportMeshedWingSTL()
 	if (!fileName.isEmpty())
 	{
 		QApplication::setOverrideCursor( Qt::WaitCursor );
-		TiglReturnCode err = tiglExportMeshedWingSTL(m_cpacsHandle, 1 /*wingUid*/, qstringToCstring(fileName), 0.01);
+		TiglReturnCode err = tiglExportMeshedWingSTL(m_cpacsHandle, 1 /* wingUid.toStdString().c_str() */, qstringToCstring(fileName), 0.01);
 		QApplication::restoreOverrideCursor();
         if(err != TIGL_SUCCESS) {
 			displayError(QString("Error in function <u>tiglExportMeshedWingSTL</u>. Error code: %1").arg(err), "TIGL Error");
@@ -899,7 +929,9 @@ void TIGLViewerDocument::exportMeshedFuselageSTL()
 	QFileInfo	fileInfo;
 	TIGLViewerInputOutput writer;
 
-	//QString fuselageUid = dlgGetFuselageSelection(); // TODO: switch to uid based export
+	/*QString fuselageUid = dlgGetFuselageSelection(); 
+	if(fuselageUid == "")
+		return;*/
 
 	writeToStatusBar(tr("Saving meshed Fuselage as STL file with TIGL..."));
 
@@ -924,7 +956,9 @@ void TIGLViewerDocument::exportMeshedWingVTK()
 	QFileInfo	fileInfo;
 	TIGLViewerInputOutput writer;
 
-	//QString wingUid = dlgGetWingSelection(); // TODO: switch to uid based export
+	QString wingUid = dlgGetWingSelection();
+	if(wingUid == "")
+		return;
 
 	writeToStatusBar(tr("Saving meshed Wing as VTK file with TIGL..."));
 
@@ -933,7 +967,7 @@ void TIGLViewerDocument::exportMeshedWingVTK()
 	if (!fileName.isEmpty())
 	{
 		QApplication::setOverrideCursor( Qt::WaitCursor );
-		TiglReturnCode err = tiglExportMeshedWingVTKByIndex(m_cpacsHandle, 1 /*wingUid*/, qstringToCstring(fileName), 0.1);
+		TiglReturnCode err = tiglExportMeshedWingVTKByUID(m_cpacsHandle, wingUid.toStdString().c_str(), qstringToCstring(fileName), 0.1);
 		QApplication::restoreOverrideCursor();
         if(err != TIGL_SUCCESS) {
 			displayError(QString("Error in function <u>tiglExportMeshedWingVTKByIndex</u>. Error code: %1").arg(err), "TIGL Error");
@@ -950,6 +984,8 @@ void TIGLViewerDocument::exportMeshedWingVTKsimple()
 	TIGLViewerInputOutput writer;
 
 	QString wingUid = dlgGetWingSelection();
+	if(wingUid == "")
+		return;
 
 	writeToStatusBar(tr("Saving meshed Wing as simple VTK file with TIGL..."));
 
@@ -975,7 +1011,9 @@ void TIGLViewerDocument::exportMeshedFuselageVTK()
 	QFileInfo	fileInfo;
 	TIGLViewerInputOutput writer;
 
-	//QString wingUid = dlgGetWingSelection(); // TODO: switch to uid based export
+	QString wingUid = dlgGetFuselageSelection();
+	if(wingUid == "")
+		return;
 
 	writeToStatusBar(tr("Saving meshed Fuselage as VTK file with TIGL..."));
 
@@ -984,7 +1022,7 @@ void TIGLViewerDocument::exportMeshedFuselageVTK()
 	if (!fileName.isEmpty())
 	{
 		QApplication::setOverrideCursor( Qt::WaitCursor );
-		TiglReturnCode err = tiglExportMeshedFuselageVTKByIndex(m_cpacsHandle, 1 /*wingUid*/, qstringToCstring(fileName), 0.1);
+		TiglReturnCode err = tiglExportMeshedFuselageVTKByUID(m_cpacsHandle, wingUid.toStdString().c_str(), qstringToCstring(fileName), 0.1);
 		QApplication::restoreOverrideCursor();
         if(err != TIGL_SUCCESS) {
 			displayError(QString("Error in function <u>tiglExportMeshedFuselageVTKByIndex</u>. Error code: %1").arg(err), "TIGL Error");
@@ -1021,6 +1059,8 @@ void TIGLViewerDocument::exportMeshedFuselageVTKsimple()
 void TIGLViewerDocument::drawFusedFuselage()
 {
 	QString fuselageUid = dlgGetFuselageSelection();
+	if(fuselageUid == "")
+		return;
 
 	myAISContext->EraseAll(Standard_False);
 	QApplication::setOverrideCursor( Qt::WaitCursor );
@@ -1054,11 +1094,27 @@ void TIGLViewerDocument::drawFusedAircraft()
 	displayShape(airplane);
 }
 
+void TIGLViewerDocument::drawFusedAircraftTriangulation()
+{
+	QApplication::setOverrideCursor( Qt::WaitCursor );
+	TopoDS_Shape airplane = GetConfiguration().GetFusedAirplane();
+	BRepMesh::Mesh(airplane, 0.1);
+	TopoDS_Compound triangulation;
+	createShapeTriangulation(airplane, triangulation);
+
+	QApplication::restoreOverrideCursor();
+	displayShape(triangulation);
+}
+
 
 void TIGLViewerDocument::drawWingFuselageIntersectionLine()
 {
 	QString wingUid = dlgGetWingSelection();
+	if(wingUid == "")
+		return;
 	QString fuselageUid = dlgGetFuselageSelection();
+	if(fuselageUid == "")
+		return;
 
 	/* now calculate intersection and display single points */
 	for (double eta = 0.0; eta <= 1.0; eta += 0.1)
@@ -1087,6 +1143,8 @@ void TIGLViewerDocument::drawWingFuselageIntersectionLine()
 void TIGLViewerDocument::drawWingComponentSegment()
 {
 	QString wingUid = dlgGetWingSelection();
+	if(wingUid == "")
+		return;
 
 	myAISContext->EraseAll(Standard_False);
 	QApplication::setOverrideCursor( Qt::WaitCursor );
@@ -1095,7 +1153,9 @@ void TIGLViewerDocument::drawWingComponentSegment()
 	displayShape(componentSegment);
 }
 
-
+/*
+ * Reads traingles from Mesh of shape and creates vertices and triangular faces
+ */
 void TIGLViewerDocument::createShapeTriangulation(const TopoDS_Shape& shape, TopoDS_Compound& compound){
 	BRep_Builder builder;
     builder.MakeCompound(compound);

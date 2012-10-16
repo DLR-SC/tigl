@@ -508,6 +508,8 @@ void TIGLViewerWindow::createActions()
 	connect(showAllWingsAndFuselagesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawAllFuselagesAndWings()));
 	connect(showAllWingsAndFuselagesSurfacePointsAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawAllFuselagesAndWingsSurfacePoints()));
 	connect(drawFusedAircraftAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFusedAircraft()));
+	connect(drawWingFuselageLineAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingFuselageIntersectionLine()));
+	connect(showFusedAirplaneTriangulation, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFusedAircraftTriangulation()));
 
     /*drawWingFuselageIntersectionLineAction->setStatusTip(tr("Show Intersection Line Between Wing and Fuselage"));
     connect(drawWingFuselageIntersectionLineAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingFuselageIntersectionLine()));*/

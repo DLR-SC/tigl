@@ -14,7 +14,7 @@
    <string>MainWindow</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="TIGLViewer.qrc">
+   <iconset>
     <normaloff>:/TIGLViewer.ico</normaloff>:/TIGLViewer.ico</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
@@ -99,6 +99,8 @@
      <addaction name="showAllWingsAndFuselagesAction"/>
      <addaction name="showAllWingsAndFuselagesSurfacePointsAction"/>
      <addaction name="drawFusedAircraftAction"/>
+     <addaction name="showFusedAirplaneTriangulation"/>
+     <addaction name="drawWingFuselageLineAction"/>
     </widget>
     <widget class="QMenu" name="menuWings">
      <property name="title">
@@ -878,6 +880,16 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+W</string>
+   </property>
+  </action>
+  <action name="drawWingFuselageLineAction">
+   <property name="text">
+    <string>Draw Fuseling/Wing Intersection line</string>
+   </property>
+  </action>
+  <action name="showFusedAirplaneTriangulation">
+   <property name="text">
+    <string>Show fused Airplane Triangulation</string>
    </property>
   </action>
  </widget>
