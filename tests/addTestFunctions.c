@@ -236,6 +236,7 @@ void addTestFunctions(void)
   if (!(pSuite = CU_add_suite("FuselageWingIntersects", preTiglIntersection, postTiglIntersection ))) PRINT_ERROR;
   if (!(CU_add_test(pSuite, "tiglIntersection_FuselageWingIntersects", tiglIntersection_FuselageWingIntersects ))) PRINT_ERROR;
 
-
+  if (!(pSuite = CU_add_suite("WingComponentSegment", preTiglWingComponentSegment, postTiglWingComponentSegment ))) PRINT_ERROR;
+  if (!(CU_add_test(pSuite, "tiglWingComponentGetEtaXsi_success", tiglWingComponentGetEtaXsi_success ))) PRINT_ERROR;
 }
 

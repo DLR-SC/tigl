@@ -14,6 +14,7 @@ set(TEST_FUNCTS_SRC
 	tiglIntersectionCalculation.c
 	tiglWing.c
 	tiglWingGetPoint.c
+	tiglWingComponentSegment.c
 	tiglWingSegment.c
 )
 
