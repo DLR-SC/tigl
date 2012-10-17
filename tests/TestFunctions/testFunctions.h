@@ -191,5 +191,6 @@ void tiglIntersection_FuselageWingIntersects(void);
 int preTiglExport(void);
 int postTiglExport(void);
 void tiglExportMeshedWingVTK_success(void);
+void tiglExportMeshedFuselageVTK_success(void);
 
 #endif /* TESTFUNCTIONS_H */

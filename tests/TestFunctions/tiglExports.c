@@ -36,7 +36,7 @@ static TiglCPACSConfigurationHandle tiglHandle;
 
 int preTiglExport(void)
 {
-    char* filename = "TestData/cpacs_25032009.xml";
+    char* filename = "TestData/CPACS_21_D150.xml";
 	ReturnCode tixiRet;
 	TiglReturnCode tiglRet;
 
@@ -47,7 +47,7 @@ int preTiglExport(void)
 	if (tixiRet != SUCCESS) 
 		return 1;
 
-	tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "VFW-614", &tiglHandle);
+	tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "D150_VAMP", &tiglHandle);
 	return (tiglRet == TIGL_SUCCESS ? 0 : 1);
 }
 
@@ -74,8 +74,13 @@ int postTiglExport(void)
 */
 void tiglExportMeshedWingVTK_success(void)
 {
-    char* vtkWingFilename = "TestData/export/cpacs_25032009_wing1.vtp";
-    char* vtkFuselageFilename = "TestData/export/cpacs_25032009_fuselage1.vtp";
-    char* vtkGeometryFilename = "TestData/export/cpacs_25032009_geometry.vtp";
-//    CU_ASSERT(tiglExportMeshedWingVTK(tiglHandle, 1, vtkWingFilename, 0.01) == TIGL_SUCCESS);
+    char* vtkWingFilename = "TestData/export/D150modelID_wing1.vtp";
+    char* vtkGeometryFilename = "TestData/export/D150modelID_geometry.vtp";
+    CU_ASSERT(tiglExportMeshedWingVTKByIndex(tiglHandle, 1, vtkWingFilename, 0.01) == TIGL_SUCCESS);
+}
+
+void tiglExportMeshedFuselageVTK_success(void)
+{
+    char* vtkFuselageFilename = "TestData/export/D150modelID_fuselage1.vtp";
+    CU_ASSERT(tiglExportMeshedFuselageVTKSimpleByUID(tiglHandle, "D150_VAMP_FL1", vtkFuselageFilename, 0.1) == TIGL_SUCCESS);
 }

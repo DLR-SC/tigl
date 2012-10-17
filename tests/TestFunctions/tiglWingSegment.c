@@ -35,7 +35,7 @@ static TiglCPACSConfigurationHandle tiglHandle;
 
 int preTiglWingSegment(void)
 {
-	char* filename = "TestData/cpacs_25032009.xml";
+	char* filename = "TestData/CPACS_21_D150.xml";
 	ReturnCode tixiRet;
 	TiglReturnCode tiglRet;
 
@@ -46,7 +46,7 @@ int preTiglWingSegment(void)
 	if (tixiRet != SUCCESS) 
 		return 1;
 
-	tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "VFW-614", &tiglHandle);
+	tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "D150_VAMP", &tiglHandle);
 	return (tiglRet == TIGL_SUCCESS ? 0 : 1);
 }
 
@@ -85,7 +85,7 @@ void tiglGetWingCount_success(void)
 {
     int wingCount;
     CU_ASSERT(tiglGetWingCount(tiglHandle, &wingCount) == TIGL_SUCCESS);
-    CU_ASSERT(wingCount == 2);
+    CU_ASSERT(wingCount == 3);
 }
 
 /***************************************************************************************************/
@@ -514,20 +514,20 @@ void tiglWingGetInnerSectionAndElementUID_success(void)
     char* elementUID;
 
     CU_ASSERT(tiglWingGetInnerSectionAndElementUID(tiglHandle, 1, 1, &sectionUID, &elementUID) == TIGL_SUCCESS);
-	CU_ASSERT(strcmp(sectionUID, "SMY0.") == 0);
-    CU_ASSERT(strcmp(elementUID, "ME_SMY0.") == 0);
+    CU_ASSERT(strcmp(sectionUID, "D150_VAMP_W1_Sec1") == 0);
+    CU_ASSERT(strcmp(elementUID, "D150_VAMP_W1_Sec1_Elem1") == 0);
 	free(sectionUID);
 	free(elementUID);
     
 	CU_ASSERT(tiglWingGetInnerSectionAndElementUID(tiglHandle, 1, 2, &sectionUID, &elementUID) == TIGL_SUCCESS);
-    CU_ASSERT(strcmp(sectionUID, "SMY3.087") == 0);
-    CU_ASSERT(strcmp(elementUID, "ME_SMY3.087") == 0);
+    CU_ASSERT(strcmp(sectionUID, "D150_VAMP_W1_Sec2") == 0);
+    CU_ASSERT(strcmp(elementUID, "D150_VAMP_W1_Sec2_Elem1") == 0);
 	free(sectionUID);
 	free(elementUID);
 
     CU_ASSERT(tiglWingGetInnerSectionAndElementUID(tiglHandle, 1, 3, &sectionUID, &elementUID) == TIGL_SUCCESS);
-    CU_ASSERT(strcmp(sectionUID, "SMY7.453") == 0);
-    CU_ASSERT(strcmp(elementUID, "ME_SMY7.453") == 0);
+    CU_ASSERT(strcmp(sectionUID, "D150_VAMP_W1_Sec3") == 0);
+    CU_ASSERT(strcmp(elementUID, "D150_VAMP_W1_Sec3_Elem1") == 0);
     free(sectionUID);
 	free(elementUID);
 }
@@ -572,20 +572,20 @@ void tiglWingGetOuterSectionAndElementUID_success(void)
 	char* sectionUID;
     char* elementUID;
     CU_ASSERT(tiglWingGetOuterSectionAndElementUID(tiglHandle, 1, 1, &sectionUID, &elementUID) == TIGL_SUCCESS);
-    CU_ASSERT(strcmp(sectionUID, "SMY3.087") == 0);
-    CU_ASSERT(strcmp(elementUID, "ME_SMY3.087") == 0);
+    CU_ASSERT(strcmp(sectionUID, "D150_VAMP_W1_Sec2") == 0);
+    CU_ASSERT(strcmp(elementUID, "D150_VAMP_W1_Sec2_Elem1") == 0);
 	free(sectionUID);
 	free(elementUID);
 
     CU_ASSERT(tiglWingGetOuterSectionAndElementUID(tiglHandle, 1, 2, &sectionUID, &elementUID) == TIGL_SUCCESS);
-    CU_ASSERT(strcmp(sectionUID, "SMY7.453") == 0);
-    CU_ASSERT(strcmp(elementUID, "ME_SMY7.453") == 0);
+    CU_ASSERT(strcmp(sectionUID, "D150_VAMP_W1_Sec3") == 0);
+    CU_ASSERT(strcmp(elementUID, "D150_VAMP_W1_Sec3_Elem1") == 0);
     free(sectionUID);
 	free(elementUID);
 	
 	CU_ASSERT(tiglWingGetOuterSectionAndElementUID(tiglHandle, 1, 3, &sectionUID, &elementUID) == TIGL_SUCCESS);
-    CU_ASSERT(strcmp(sectionUID, "SMY10.724") == 0);
-	CU_ASSERT(strcmp(elementUID, "ME_SMY10.724") == 0);
+    CU_ASSERT(strcmp(sectionUID, "D150_VAMP_W1_Sec4") == 0);
+    CU_ASSERT(strcmp(elementUID, "D150_VAMP_W1_Sec4_Elem1") == 0);
 	free(sectionUID);
 	free(elementUID);
 }

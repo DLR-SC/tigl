@@ -36,7 +36,7 @@ static TiglCPACSConfigurationHandle tiglHandle;
 
 int preTiglWing(void)
 {
-	char* filename = "TestData/cpacs_25032009.xml";
+	char* filename = "TestData/CPACS_21_D150.xml";
 	ReturnCode tixiRet;
 	TiglReturnCode tiglRet;
 
@@ -47,7 +47,7 @@ int preTiglWing(void)
 	if (tixiRet != SUCCESS) 
 		return 1;
 
-	tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "VFW-614", &tiglHandle);
+	tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "D150_VAMP", &tiglHandle);
 	return (tiglRet == TIGL_SUCCESS ? 0 : 1);
 }
 
@@ -114,7 +114,7 @@ void tiglWingGetProfileName_success(void)
 {
     char* namePtr = 0;
     CU_ASSERT(tiglWingGetProfileName(tiglHandle, 1, 1, 1, &namePtr) == TIGL_SUCCESS);
-    CU_ASSERT(strcmp(namePtr, "VFW614 wing airfoil Y=0.") == 0);
+    CU_ASSERT(strcmp(namePtr, "NameD150_VAMP_W_SupCritProf1") == 0);
 }
 
 
@@ -125,7 +125,7 @@ void tiglWingGetUID_success(void)
 {
     char* namePtr = 0;
     CU_ASSERT(tiglWingGetUID(tiglHandle, 1, &namePtr) == TIGL_SUCCESS);
-    CU_ASSERT(strcmp(namePtr, "MainWing") == 0);
+    CU_ASSERT(strcmp(namePtr, "D150_VAMP_W1") == 0);
 }
 
 
@@ -136,7 +136,7 @@ void tiglWingGetSegmentUID_success(void)
 {
     char* namePtr = 0;
     CU_ASSERT(tiglWingGetSegmentUID(tiglHandle, 1, 1, &namePtr) == TIGL_SUCCESS);
-    CU_ASSERT(strcmp(namePtr, "MainWingInnerSegment") == 0);
+    CU_ASSERT(strcmp(namePtr, "D150_VAMP_W1_Seg1") == 0);
 }
 
 
@@ -147,7 +147,7 @@ void tiglWingGetSectionUID_success(void)
 {
     char* namePtr = 0;
     CU_ASSERT(tiglWingGetSectionUID(tiglHandle, 1, 1, &namePtr) == TIGL_SUCCESS);
-    CU_ASSERT(strcmp(namePtr, "SMY0.") == 0);
+    CU_ASSERT(strcmp(namePtr, "D150_VAMP_W1_Sec1") == 0);
 }
 
 
