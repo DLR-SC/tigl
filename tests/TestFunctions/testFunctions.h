@@ -193,4 +193,8 @@ int postTiglExport(void);
 void tiglExportMeshedWingVTK_success(void);
 void tiglExportMeshedFuselageVTK_success(void);
 
+int preTiglWingComponentSegment(void);
+int postTiglWingComponentSegment(void);
+void tiglWingComponentGetEtaXsi_success(void);
+
 #endif /* TESTFUNCTIONS_H */

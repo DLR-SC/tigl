@@ -511,7 +511,6 @@ namespace tigl {
 		{			
 			//Handle_Geom_Surface aSurf = wing->GetUpperSegmentSurface(i);
 			TopoDS_Shape segmentLoft = wing->GetSegment(i).GetLoft();
-			segmentLoft = wing->GetWingTransformation().Transform(segmentLoft);
 
 			BRepClass3d_SolidClassifier classifier;
 			classifier.Load(segmentLoft);
