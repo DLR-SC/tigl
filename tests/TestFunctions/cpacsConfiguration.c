@@ -36,7 +36,7 @@ static TiglCPACSConfigurationHandle tiglHandle;
 
 int preTiglOpenCPACSConfiguration(void)
 {
-	char* filename = "TestData/VFW-614-cpacs_0_9.xml";
+	char* filename = "TestData/CPACS_21_D150.xml";
 	ReturnCode tixiRet;
 
 	tiglHandle = -1;
@@ -59,7 +59,7 @@ int postTiglOpenCPACSConfiguration(void)
 */
 void tiglOpenCPACSConfiguration_nullPointerArgument(void) 
 {
-	CU_ASSERT(tiglOpenCPACSConfiguration(tixiHandle, "VFW-614", NULL) == TIGL_NULL_POINTER);
+	CU_ASSERT(tiglOpenCPACSConfiguration(tixiHandle, "D150_VAMP", NULL) == TIGL_NULL_POINTER);
 }
 
 /**
@@ -67,7 +67,7 @@ void tiglOpenCPACSConfiguration_nullPointerArgument(void)
 */
 void tiglOpenCPACSConfiguration_success(void) 
 {
-	CU_ASSERT(tiglOpenCPACSConfiguration(tixiHandle, "VFW-614", &tiglHandle) == TIGL_SUCCESS);
+	CU_ASSERT(tiglOpenCPACSConfiguration(tixiHandle, "D150_VAMP", &tiglHandle) == TIGL_SUCCESS);
 	CU_ASSERT(tiglHandle > 0);
 	CU_ASSERT(tiglCloseCPACSConfiguration(tiglHandle) == TIGL_SUCCESS);
 }
@@ -92,7 +92,7 @@ void tiglOpenCPACSConfiguration_without_uid(void)
 
 int preTiglGetCPACSTixiHandle(void)
 {
-	char* filename = "TestData/VFW-614-cpacs_0_9.xml";
+	char* filename = "TestData/CPACS_21_D150.xml";
 	ReturnCode tixiRet;
 	TiglReturnCode tiglRet;
 
@@ -103,7 +103,7 @@ int preTiglGetCPACSTixiHandle(void)
 	if (tixiRet != SUCCESS) 
 		return 1;
 
-	tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "VFW-614", &tiglHandle);
+	tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "D150_VAMP", &tiglHandle);
 	return (tiglRet == TIGL_SUCCESS ? 0 : 1);
 }
 
@@ -146,7 +146,7 @@ void tiglGetCPACSTixiHandle_success(void)
 
 int preTiglIsCPACSConfigurationHandleValid(void)
 {
-	char* filename = "TestData/VFW-614-cpacs_0_9.xml";
+	char* filename = "TestData/CPACS_21_D150.xml";
 	ReturnCode tixiRet;
 	TiglReturnCode tiglRet;
 
@@ -157,7 +157,7 @@ int preTiglIsCPACSConfigurationHandleValid(void)
 	if (tixiRet != SUCCESS) 
 		return 1;
 
-	tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "VFW-614", &tiglHandle);
+	tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "D150_VAMP", &tiglHandle);
 	return (tiglRet == TIGL_SUCCESS ? 0 : 1);
 }
 

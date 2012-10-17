@@ -35,7 +35,7 @@ static TiglCPACSConfigurationHandle tiglHandle;
 
 int preTiglFuselageSegment(void)
 {
-	char* filename = "TestData/cpacs_25032009.xml";
+	char* filename = "TestData/CPACS_21_D150.xml";
 	ReturnCode tixiRet;
 	TiglReturnCode tiglRet;
 
@@ -46,7 +46,7 @@ int preTiglFuselageSegment(void)
 	if (tixiRet != SUCCESS) 
 		return 1;
 
-	tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "VFW-614", &tiglHandle);
+	tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "D150_VAMP", &tiglHandle);
 	return (tiglRet == TIGL_SUCCESS ? 0 : 1);
 }
 
@@ -123,7 +123,7 @@ void tiglFuselageGetSegmentCount_success(void)
 {
 	int segmentCount;
 	CU_ASSERT(tiglFuselageGetSegmentCount(tiglHandle, 1, &segmentCount) == TIGL_SUCCESS);
-	CU_ASSERT(segmentCount == 50);
+	CU_ASSERT(segmentCount == 59);
 }
 
 /***************************************************************************************************/
@@ -220,7 +220,7 @@ void tiglFuselageGetEndConnectedSegmentCount_success(void)
 	int segmentCount;
 	CU_ASSERT(tiglFuselageGetEndConnectedSegmentCount(tiglHandle, 1, 1, &segmentCount) == TIGL_SUCCESS);
 	CU_ASSERT(segmentCount == 1);
-	CU_ASSERT(tiglFuselageGetEndConnectedSegmentCount(tiglHandle, 1, 50, &segmentCount) == TIGL_SUCCESS);
+	CU_ASSERT(tiglFuselageGetEndConnectedSegmentCount(tiglHandle, 1, 59, &segmentCount) == TIGL_SUCCESS);
 	CU_ASSERT(segmentCount == 0);
 }
 
@@ -321,7 +321,7 @@ void tiglFuselageGetEndConnectedSegmentIndex_invalidN(void)
 	int connectedSegment;
 	CU_ASSERT(tiglFuselageGetEndConnectedSegmentIndex(tiglHandle, 1, 1, 2, &connectedSegment) == TIGL_INDEX_ERROR);
 	CU_ASSERT(tiglFuselageGetEndConnectedSegmentIndex(tiglHandle, 1, 1, 0, &connectedSegment) == TIGL_INDEX_ERROR);
-	CU_ASSERT(tiglFuselageGetEndConnectedSegmentIndex(tiglHandle, 1, 50, 1, &connectedSegment) == TIGL_INDEX_ERROR);
+	CU_ASSERT(tiglFuselageGetEndConnectedSegmentIndex(tiglHandle, 1, 59, 1, &connectedSegment) == TIGL_INDEX_ERROR);
 }
 
 /**
@@ -514,20 +514,20 @@ void tiglFuselageGetStartSectionAndElementUID_success(void)
     char* sectionUID;
     char* elementUID;
     CU_ASSERT(tiglFuselageGetStartSectionAndElementUID(tiglHandle, 1, 1, &sectionUID, &elementUID) == TIGL_SUCCESS);
-    CU_ASSERT(strcmp(sectionUID, "SFX0.0174") == 0);
-    CU_ASSERT(strcmp(elementUID, "ME_SMX0.0174") == 0);
+    CU_ASSERT(strcmp(sectionUID, "D150_VAMP_FL1_Sec1") == 0);
+    CU_ASSERT(strcmp(elementUID, "D150_VAMP_FL1_Sec1_Elem1") == 0);
 	free(sectionUID);
 	free(elementUID);
 
     CU_ASSERT(tiglFuselageGetStartSectionAndElementUID(tiglHandle, 1, 2, &sectionUID, &elementUID) == TIGL_SUCCESS);
-    CU_ASSERT(strcmp(sectionUID, "SFX0.4207") == 0);
-    CU_ASSERT(strcmp(elementUID, "ME_SMX0.4207") == 0);
+    CU_ASSERT(strcmp(sectionUID, "D150_VAMP_FL1_Sec2") == 0);
+    CU_ASSERT(strcmp(elementUID, "D150_VAMP_FL1_Sec2_Elem1") == 0);
 	free(sectionUID);
 	free(elementUID);
 
     CU_ASSERT(tiglFuselageGetStartSectionAndElementUID(tiglHandle, 1, 3, &sectionUID, &elementUID) == TIGL_SUCCESS);
-    CU_ASSERT(strcmp(sectionUID, "SFX0.8241") == 0);
-    CU_ASSERT(strcmp(elementUID, "ME_SMX0.8241") == 0);
+    CU_ASSERT(strcmp(sectionUID, "D150_VAMP_FL1_Sec3") == 0);
+    CU_ASSERT(strcmp(elementUID, "D150_VAMP_FL1_Sec3_Elem1") == 0);
 	free(sectionUID);
 	free(elementUID);
 }
@@ -572,20 +572,20 @@ void tiglFuselageGetEndSectionAndElementUID_success(void)
     char* sectionUID;
     char* elementUID;
     CU_ASSERT(tiglFuselageGetEndSectionAndElementUID(tiglHandle, 1, 1, &sectionUID, &elementUID) == TIGL_SUCCESS);
-    CU_ASSERT(strcmp(sectionUID, "SFX0.4207") == 0);
-    CU_ASSERT(strcmp(elementUID, "ME_SMX0.4207") == 0);
+    CU_ASSERT(strcmp(sectionUID, "D150_VAMP_FL1_Sec2") == 0);
+    CU_ASSERT(strcmp(elementUID, "D150_VAMP_FL1_Sec2_Elem1") == 0);
 	free(sectionUID);
 	free(elementUID);
 
     CU_ASSERT(tiglFuselageGetEndSectionAndElementUID(tiglHandle, 1, 2, &sectionUID, &elementUID) == TIGL_SUCCESS);
-    CU_ASSERT(strcmp(sectionUID, "SFX0.8241") == 0);
-    CU_ASSERT(strcmp(elementUID, "ME_SMX0.8241") == 0);
+    CU_ASSERT(strcmp(sectionUID, "D150_VAMP_FL1_Sec3") == 0);
+    CU_ASSERT(strcmp(elementUID, "D150_VAMP_FL1_Sec3_Elem1") == 0);
 	free(sectionUID);
 	free(elementUID);
 
     CU_ASSERT(tiglFuselageGetEndSectionAndElementUID(tiglHandle, 1, 3, &sectionUID, &elementUID) == TIGL_SUCCESS);
-    CU_ASSERT(strcmp(sectionUID, "SFX1.2274") == 0);
-    CU_ASSERT(strcmp(elementUID, "ME_SMX1.2274") == 0);
+    CU_ASSERT(strcmp(sectionUID, "D150_VAMP_FL1_Sec4") == 0);
+    CU_ASSERT(strcmp(elementUID, "D150_VAMP_FL1_Sec4_Elem1") == 0);
 	free(sectionUID);
 	free(elementUID);
 }

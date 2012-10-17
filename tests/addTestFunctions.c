@@ -42,7 +42,8 @@ void addTestFunctions(void)
   printf("Add suite for export routines\n");
   if (!(pSuite = CU_add_suite("tiglExport", preTiglExport, postTiglExport))) PRINT_ERROR;
   if (!(CU_add_test(pSuite, "tiglExportMeshedWingVTK", tiglExportMeshedWingVTK_success))) PRINT_ERROR; 
- 
+  if (!(CU_add_test(pSuite, "tiglExportMeshedFuselageVTK", tiglExportMeshedFuselageVTK_success))) PRINT_ERROR; 
+
   printf("Add suite for tiglOpenCPACSConfiguration\n");
   if (!(pSuite = CU_add_suite("tiglOpenCPACSConfiguration", preTiglOpenCPACSConfiguration, postTiglOpenCPACSConfiguration))) PRINT_ERROR;
   if (!(CU_add_test(pSuite, "tiglOpenCPACSConfiguration_nullPointerArgument", tiglOpenCPACSConfiguration_nullPointerArgument))) PRINT_ERROR;
@@ -230,7 +231,7 @@ void addTestFunctions(void)
 
 
   printf("Add suite for tiglIntersectionCalculation\n");
-  if (!(pSuite = CU_add_suite("tiglIntersectionCalculation", 0, 0 ))) PRINT_ERROR;
+  //if (!(pSuite = CU_add_suite("tiglIntersectionCalculation", 0, 0 ))) PRINT_ERROR;
 
   if (!(pSuite = CU_add_suite("FuselageWingIntersects", preTiglIntersection, postTiglIntersection ))) PRINT_ERROR;
   if (!(CU_add_test(pSuite, "tiglIntersection_FuselageWingIntersects", tiglIntersection_FuselageWingIntersects ))) PRINT_ERROR;

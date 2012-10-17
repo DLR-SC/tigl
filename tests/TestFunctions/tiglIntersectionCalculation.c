@@ -33,7 +33,7 @@ static TiglCPACSConfigurationHandle tiglHandle;
 
 int preTiglIntersection(void)
 {
-	char* filename = "TestData/cpacs_25032009.xml";
+	char* filename = "TestData/CPACS_21_D150.xml";
 	ReturnCode tixiRet;
 	TiglReturnCode tiglRet;
 
@@ -44,7 +44,7 @@ int preTiglIntersection(void)
 	if (tixiRet != SUCCESS) 
 		return 1;
 
-	tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "VFW-614", &tiglHandle);
+	tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "D150_VAMP", &tiglHandle);
 	return (tiglRet == TIGL_SUCCESS ? 0 : 1);
 }
 

@@ -26,6 +26,8 @@ endforeach()
 include_directories(${CUNIT_INCLUDE_DIRS} ${XML_INCLUDE_DIRS} ${TIXI_INCLUDE_DIRS})
 include_directories(${PROJECT_SOURCE_DIR}/src ${CMAKE_CURRENT_SOURCE_DIR}/TestFunctions)
 
+add_definitions(-DTIGL_VERSION=\"${TIGL_VERSION}\")
+
 add_executable(CUnitTests ${TEST_SUITE_SRC})
 target_link_libraries(CUnitTests ${CUNIT_LIBRARIES} TIGL)
 
