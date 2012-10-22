@@ -799,6 +799,47 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetUID(TiglCPACSConfigurationHandle cp
     }
 }
 
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetIndex(TiglCPACSConfigurationHandle cpacsHandle,
+                                                 const char * wingUID,
+                                                 int* wingIndexPtr)
+{
+    if (wingUID == 0) {
+        std::cerr << "Error: Null pointer argument for wingUID ";
+        std::cerr << "in function call to tiglWingGetIndex." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+
+    try {
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+        
+        int nwings = config.GetWingCount();
+        for(int iwing = 1; iwing <= nwings; ++iwing){
+            tigl::CCPACSWing& wing = config.GetWing(iwing);
+            if(wing.GetUID() == std::string(wingUID)){
+                *wingIndexPtr = iwing;
+                return TIGL_SUCCESS;
+            }
+        }
+
+        std::cerr << "Error in tiglWingGetIndex: the wing \"" << wingUID << "\" can not be found!" << std::endl;
+        *wingIndexPtr = -1;
+        return TIGL_UID_ERROR;
+    }
+    catch (std::exception& ex) {
+        std::cerr << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        std::cerr << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        std::cerr << "Caught an exception in tiglWingGetIndex!" << std::endl;
+        return TIGL_ERROR;
+    }
+}
+
 TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSegmentUID(TiglCPACSConfigurationHandle cpacsHandle,
                                                  int wingIndex,
                                                  int segmentIndex,
@@ -834,6 +875,49 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSegmentUID(TiglCPACSConfigurationHa
     }
     catch (...) {
         std::cerr << "Caught an exception in tiglWingGetSegmentUID!" << std::endl;
+        return TIGL_ERROR;
+    }
+}
+
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSegmentIndex(TiglCPACSConfigurationHandle cpacsHandle,
+                                                 int wingIndex,
+                                                 const char * segmentUID,
+                                                 int * segmentIndex) {
+     if (segmentUID == 0) {
+        std::cerr << "Error: Null pointer argument for segmentUID ";
+        std::cerr << "in function call to tiglWingGetSegmentIndex." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+
+    try {
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+        tigl::CCPACSWing& wing = config.GetWing(wingIndex);
+
+        int nseg = wing.GetSegmentCount();
+        for(int i = 1; i <= nseg; ++i){
+            tigl::ITiglSegment& actSegment = wing.GetSegment(i);
+            if( actSegment.GetUID() == std::string(segmentUID)) {
+                *segmentIndex = i;
+                return TIGL_SUCCESS;
+            }
+        }
+
+        std::cerr << "Error in tiglWingGetSegmentIndex: the wing with index=" << wingIndex << " has no segment with an UID=" 
+                  << segmentUID << "!" << std::endl;
+        *segmentIndex = -1;
+        return TIGL_UID_ERROR;
+    }
+    catch (std::exception& ex) {
+        std::cerr << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        std::cerr << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        std::cerr << "Caught an exception in tiglWingGetSegmentIndex!" << std::endl;
         return TIGL_ERROR;
     }
 }

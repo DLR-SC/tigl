@@ -121,8 +121,17 @@ void tiglWingGetProfileName_invalidElement(void);
 void tiglWingGetProfileName_nullPointerArgument(void);
 void tiglWingGetProfileName_success(void);
 void tiglWingGetUID_success(void);
+void tiglWingGetIndex_success(void);
+void tiglWingGetIndex_wrongUID(void);
+void tiglWingGetIndex_nullPtr(void);
+void tiglWingGetIndex_wrongHandle(void);
 void tiglWingGetSegmentUID_success(void);
 void tiglWingGetSectionUID_success(void);
+void tiglWingGetSegmentIndex_success(void);
+void tiglWingGetSegmentIndex_wrongUID(void);
+void tiglWingGetSegmentIndex_nullPtr(void);
+void tiglWingGetSegmentIndex_wrongWing(void);
+void tiglWingGetSegmentIndex_wrongHandle(void);
 
 int preTiglFuselageGetPoint(void);
 int postTiglFuselageGetPoint(void);
