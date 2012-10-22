@@ -397,6 +397,17 @@ void tiglWingGetUID_f(TiglCPACSConfigurationHandle* cpacsHandle,
 	}
 }
 
+void tiglWingGetIndex_f(TiglCPACSConfigurationHandle* cpacsHandle,
+                            char* uidNamePtr,
+                            int* wingIndex,
+                            TiglReturnCode* returnCode,
+                            int lengthString1)
+{
+	char* namePtr = makeCString(uidNamePtr, lengthString1);
+	*returnCode = tiglWingGetIndex(*cpacsHandle, namePtr, wingIndex);
+	free(namePtr);
+}
+
 
 void tiglWingGetSegmentUID_f(TiglCPACSConfigurationHandle* cpacsHandle,
 							int* wingIndex,
@@ -416,6 +427,19 @@ void tiglWingGetSegmentUID_f(TiglCPACSConfigurationHandle* cpacsHandle,
 			*returnCode = TIGL_STRING_TRUNCATED;
 		}
 	}
+}
+
+void tiglWingGetSegmentIndex(TiglCPACSConfigurationHandle* cpacsHandle,
+							int* wingIndex,
+							char* uidNamePtr,
+                            int* segmentIndex,
+                            TiglReturnCode* returnCode,
+                            int lengthString1)
+{
+	char * namePtr = makeCString(uidNamePtr, lengthString1);
+
+	*returnCode = tiglWingGetSegmentIndex(*cpacsHandle, *wingIndex, namePtr, segmentIndex);
+	free(namePtr);
 }
 
 

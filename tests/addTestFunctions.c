@@ -158,6 +158,18 @@ void addTestFunctions(void)
   if (!(CU_add_test(pSuite, "tiglWingGetSegmentUID_success", tiglWingGetSegmentUID_success))) PRINT_ERROR; 
   if (!(CU_add_test(pSuite, "tiglWingGetSectionUID_success", tiglWingGetSectionUID_success))) PRINT_ERROR; 
  
+  printf("Add tests some index wing routines\n");
+  if (!(CU_add_test(pSuite, "tiglWingGetIndex_success", tiglWingGetIndex_success))) PRINT_ERROR; 
+  if (!(CU_add_test(pSuite, "tiglWingGetIndex_wrongUID", tiglWingGetIndex_wrongUID))) PRINT_ERROR; 
+  if (!(CU_add_test(pSuite, "tiglWingGetIndex_nullPtr", tiglWingGetIndex_nullPtr))) PRINT_ERROR; 
+  if (!(CU_add_test(pSuite, "tiglWingGetIndex_wrongHandle", tiglWingGetIndex_wrongHandle))) PRINT_ERROR; 
+
+  printf("Add tests some segment getIndex routines\n");
+  if (!(CU_add_test(pSuite, "tiglWingGetSegmentIndex_success", tiglWingGetSegmentIndex_success))) PRINT_ERROR;
+  if (!(CU_add_test(pSuite, "tiglWingGetSegmentIndex_wrongUID", tiglWingGetSegmentIndex_wrongUID))) PRINT_ERROR;
+  if (!(CU_add_test(pSuite, "tiglWingGetSegmentIndex_nullPtr", tiglWingGetSegmentIndex_nullPtr))) PRINT_ERROR;
+  if (!(CU_add_test(pSuite, "tiglWingGetSegmentIndex_wrongWing", tiglWingGetSegmentIndex_wrongWing))) PRINT_ERROR;
+  if (!(CU_add_test(pSuite, "tiglWingGetSegmentIndex_wrongHandle", tiglWingGetSegmentIndex_wrongHandle))) PRINT_ERROR;
 
   printf("Add suite for tiglFuselageGetPoint\n");
   if (!(pSuite = CU_add_suite("tiglFuselageGetPoint", preTiglFuselageGetPoint, postTiglFuselageGetPoint))) PRINT_ERROR;

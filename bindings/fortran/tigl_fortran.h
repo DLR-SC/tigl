@@ -83,7 +83,9 @@ extern "C" {
 #define tiglWingGetOuterSectionAndElementUID_f TIGL_WING_GET_OUTER_SECTION_AND_ELEMENT_UID
 #define tiglWingGetProfileName_f TIGL_WING_GET_PROFILE_NAME
 #define tiglWingGetUID_f TIGL_WING_GET_UID
+#define tiglWingGetIndex_f TIGL_WING_GET_INDEX
 #define tiglWingGetSegmentUID_f TIGL_WING_GET_SEGMENT_UID
+#define tiglWingGetSegmentIndex_f TIGL_WING_GET_SEGMENT_INDEX
 #define tiglWingGetSectionUID_f TIGL_WING_GET_SECTION_UID
 #define tiglWingGetSymmetry_f TIGL_WING_GET_SYMMETRY
 #define tiglGetFuselageCount_f TIGL_GET_FUSELAGE_COUNT

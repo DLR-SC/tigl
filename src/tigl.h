@@ -832,6 +832,42 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetUID(TiglCPACSConfigurationHandle cp
                                                  int wingIndex,
                                                  char** uidNamePtr);
 
+/**
+* @brief Returns the Index of a wing.
+*
+*
+* <b>Fortran syntax:</b>
+*
+* tigl_wing_get_index(integer cpacsHandle,
+*                            character*n uIDNamePtr,
+*                            integer wingIndex,
+*                            integer returnCode)
+*
+*
+* @param cpacsHandle     (in) : Handle for the CPACS configuration
+* @param wingUID         (in) : The uid of the wing
+* @param wingIndexPtr    (out): The index of a wing, starting at 1
+*
+* Usage example:
+*
+@verbatim
+   TiglReturnCode returnCode;
+   int wingIndex;
+   returnCode = tiglWingGetUID(cpacsHandle, wingUID, &wingIndex);
+   printf("The Index of the wing is %d\n", wingIndex);
+@endverbatim
+*
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_UID_ERROR if wingUID does not exist
+*   - TIGL_NULL_POINTER if wingUID is a null pointer
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetIndex(TiglCPACSConfigurationHandle cpacsHandle,
+                                                 const char* wingUID,
+                                                 int* wingIndexPtr);
 
 /**
 * @brief Returns the UID of a segment of a wing. The string returned must not be
@@ -851,7 +887,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetUID(TiglCPACSConfigurationHandle cp
 * @param cpacsHandle     (in) : Handle for the CPACS configuration
 * @param wingIndex       (in) : The index of a wing, starting at 1
 * @param segmentIndex    (in) : The index of a segment, starting at 1
-* @param profileNamePtr  (out): The uid of the wing
+* @param uidNamePtr      (out): The uid of the wing
 *
 * Usage example:
 *
@@ -875,6 +911,48 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSegmentUID(TiglCPACSConfigurationHa
                                                  int segmentIndex,
                                                  char** uidNamePtr);
 
+
+
+/**
+* @brief Returns the Index of a segment of a wing. 
+*
+*
+* <b>Fortran syntax:</b>
+*
+* tigl_wing_get_segment_index(integer cpacsHandle,
+*                            integer wingIndex,
+*                            character*n uIDNamePtr,
+*                            integer segmentIndex,
+*                            integer returnCode)
+*
+*
+* @param cpacsHandle     (in) : Handle for the CPACS configuration
+* @param wingIndex       (in) : The index of a wing, starting at 1
+* @param segmentUID      (in) : The uid of the wing
+* @param segmentIndexPtr (out) : The index of a segment, starting at 1
+*
+* Usage example:
+*
+@verbatim
+   TiglReturnCode returnCode;
+   int segmentIndex;
+   returnCode = tiglWingGetSegmentIndex(cpacsHandle, wing, uidName, &segmentIndex);
+   printf("The Index of the segment of wing %d is %d\n", wing, segmentIndex);
+@endverbatim
+*
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_INDEX_ERROR if wingIndex is not valid
+*   - TIGL_UID_ERROR if the segmentUID does not exist
+*   - TIGL_NULL_POINTER if segmentUID is a null pointer
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSegmentIndex(TiglCPACSConfigurationHandle cpacsHandle,
+                                                 int wingIndex,
+                                                 const char * segmentUID,
+                                                 int * segmentIndexPtr);
 
 /**
 * @brief Returns the UID of a section of a wing. The string returned must not be
