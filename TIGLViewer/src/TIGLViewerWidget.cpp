@@ -630,7 +630,11 @@ void TIGLViewerWidget::onMiddleButtonDown(  Qt::KeyboardModifiers nFlags, const 
 	{
 		setMode( CurAction3d_DynamicPanning );
 	}
-    setMode( CurAction3d_DynamicRotation );
+	else
+	{
+		setMode( CurAction3d_DynamicRotation );
+		myView->StartRotation( myStartPoint.x(), myStartPoint.y() );
+	}
 }
 
 
@@ -866,7 +870,7 @@ void TIGLViewerWidget::setMode( const CurrentAction3d mode )
 				setCursor( Qt::SizeAllCursor );
 				break;
 			case CurAction3d_DynamicZooming:
-				setCursor( Qt::CrossCursor );
+				setCursor( Qt::PointingHandCursor );
 				break;
 			case CurAction3d_DynamicRotation:
 				setCursor( Qt::CrossCursor );
