@@ -26,16 +26,21 @@ set(tv_src
 	TIGLViewerWindow.cpp
 	)
 	
+# normal header files
 set(tv_hdr
 	CommandLineParameters.h
 	ISession_Point.h
 	ISession_Text.h
+    TIGLViewer.h
+)
+
+# qobject header files that have to be moced
+set(tv_hdr_qobj
 	TIGLDebugStream.h
 	TIGLViewerApplication.h
 	TIGLViewerContext.h
 	TIGLViewerDocument.h
 	TIGLViewerInputoutput.h
-	TIGLViewer.h
 	TIGLViewerInputoutput.h
 	TIGLViewerWidget.h
 	TIGLViewerWindow.h
@@ -48,12 +53,15 @@ set(tv_ui_comp
 foreach ( _fname ${tv_src})
    set(tv_src_comp ${tv_src_comp} src/${_fname})
 endforeach()
+foreach ( _fname ${tv_hdr_qobj})
+   set(tv_hdr_qobj_comp ${tv_hdr_qobj_comp} src/${_fname})
+endforeach()
 foreach ( _fname ${tv_hdr})
    set(tv_hdr_comp ${tv_hdr_comp} src/${_fname})
 endforeach()
 
 # moc header files
-QT4_WRAP_CPP(tv_hdr_MOC ${tv_hdr_comp})
+QT4_WRAP_CPP(tv_hdr_MOC ${tv_hdr_qobj_comp})
 QT4_WRAP_UI(tv_ui_HEADERS ${tv_ui_comp})
 # compile icons
 QT4_ADD_RESOURCES( tv_rcrs src/TIGLViewer.qrc )
@@ -80,6 +88,7 @@ endif(WIN32)
 add_executable(TIGLViewer ${TYPE}
 		${tv_src_comp} 
 		${tv_hdr_MOC} 
+ 		${tv_hdr_qobj_comp}        
 		${tv_hdr_comp} 
 		${tv_ui_comp}
         ${tv_rcrs}

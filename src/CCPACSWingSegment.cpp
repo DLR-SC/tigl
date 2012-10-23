@@ -139,14 +139,14 @@ namespace tigl {
 		std::string tempString;
 
 		// Get subelement "name"
-		char* ptrName = "";
+		char* ptrName = NULL;
 		tempString    = segmentXPath + "/name";
 		elementPath   = const_cast<char*>(tempString.c_str());
 		tixiGetTextElement(tixiHandle, elementPath, &ptrName);
 		name          = ptrName;
 
         // Get attribute "uid"
-        char* ptrUID = "";
+        char* ptrUID = NULL;
         tempString   = "uID";
         elementPath  = const_cast<char*>(tempString.c_str());
         tixiGetTextAttribute(tixiHandle, const_cast<char*>(segmentXPath.c_str()), const_cast<char*>(tempString.c_str()), &ptrUID);

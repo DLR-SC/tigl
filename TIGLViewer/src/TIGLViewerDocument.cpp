@@ -183,7 +183,7 @@ Handle(AIS_Shape) TIGLViewerDocument::displayShape(const TopoDS_Shape& loft)
 
 // Displays a point on the screen
 void TIGLViewerDocument::DisplayPoint(gp_Pnt& aPoint,
-                                  char* aText,
+                                  const char* aText,
                                   Standard_Boolean UpdateViewer,
                                   Standard_Real anXoffset,
                                   Standard_Real anYoffset,
@@ -500,7 +500,6 @@ void TIGLViewerDocument::drawWing()
     for (int i = 1; i <= wing.GetSegmentCount(); i++)
     {
         // Draw segment loft
-        tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(i);
         const TopoDS_Shape& loft = wing.GetSegment(i).GetLoft();
         displayShape(loft);
     }

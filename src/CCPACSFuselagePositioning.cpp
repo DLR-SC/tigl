@@ -162,7 +162,7 @@ namespace tigl {
 		tixiGetDoubleElement(tixiHandle, elementPath, &dihedralangle);
 
 		// Get subelement "toSectionUID"
-		char*		  ptrOuterSection = "";
+		char*		  ptrOuterSection = NULL;
 		tempString  = positioningXPath + "/toSectionUID";
 		elementPath = const_cast<char*>(tempString.c_str());
 		if (tixiGetTextElement(tixiHandle, elementPath, &ptrOuterSection) != SUCCESS)
@@ -170,7 +170,7 @@ namespace tigl {
 		endSection = ptrOuterSection;
 
 		// Get subelement "fromSectionUID"
-		char*		  ptrInnerSection = "";
+		char*		  ptrInnerSection = NULL;
 		tempString  = positioningXPath + "/fromSectionUID";
 		elementPath = const_cast<char*>(tempString.c_str());
 		if (tixiCheckElement(tixiHandle, elementPath) == SUCCESS) {

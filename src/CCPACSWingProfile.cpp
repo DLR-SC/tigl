@@ -95,17 +95,17 @@ namespace tigl {
         try
         {
             // Get profiles "uid"
-            char* ptrUID = "";
+            char* ptrUID = NULL;
 			tixiGetTextAttribute(tixiHandle, const_cast<char*>(ProfileXPath.c_str()), "uID", &ptrUID);
             uid = ptrUID;
 
             // Get subelement "name"
-            char* ptrName = "";
+            char* ptrName = NULL;
 			tixiGetTextElement(tixiHandle, const_cast<char*>(namePath.c_str()), &ptrName);
             name = ptrName;
 
             // Get subelement "description"
-			char* ptrDescription = "";
+			char* ptrDescription = NULL;
 			tixiGetTextElement(tixiHandle, const_cast<char*>(describtionPath.c_str()), &ptrDescription);
             description = ptrDescription;
 
@@ -125,7 +125,7 @@ namespace tigl {
 
 					std::ostringstream xpath;
 					xpath << elementPath.c_str() << "/point[" << i << "]";
-					char *ptrPathChar = "";
+					char *ptrPathChar = NULL;
 					std::string x = xpath.str();
 					ptrPathChar = const_cast<char*>(x.c_str());
 

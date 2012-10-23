@@ -163,7 +163,6 @@ namespace tigl {
         }
 
 		//TopoDS_Wire wire;
-		int i=1;
         double length = ComputeWireLength(wireID) * zeta;
 		TopoDS_Wire intersectionWire = (Wires[--wireID]);
 

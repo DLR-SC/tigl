@@ -230,7 +230,9 @@
 #include <WNT_Window.hxx>
 #include <Graphic3d_WNTGraphicDevice.hxx>
 #else
+#ifndef __APPLE__
 #include <GL/glx.h>
+#endif
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/Xatom.h>

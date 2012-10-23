@@ -154,7 +154,7 @@ namespace tigl {
 		std::string tempString;
 
 		// Get subelement "element"
-		char*			ptrElementUID = "";
+		char*			ptrElementUID = NULL;
 		tempString	=	connectionXPath;
 		elementPath   = const_cast<char*>(tempString.c_str());
 		if (tixiGetTextElement(tixiHandle, elementPath, &ptrElementUID) != SUCCESS)

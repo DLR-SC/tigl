@@ -70,7 +70,9 @@ namespace tigl {
 		char *wingXPathPrt = NULL;
 		char *tmpString = NULL;
 
-		int error = tixiUIDGetXPath(tixiHandle, configurationUID, &tmpString);
+		if (tixiUIDGetXPath(tixiHandle, configurationUID, &tmpString) != SUCCESS) 
+            throw CTiglError("XML error: tixiUIDGetXPath failed in CCPACSWings::ReadCPACS", TIGL_XML_ERROR);
+
 		wingXPathPrt = (char *) malloc(sizeof(char) * (strlen(tmpString) + 50));
 		strcpy(wingXPathPrt, tmpString);
 		strcat(wingXPathPrt, "[@uID=\"");

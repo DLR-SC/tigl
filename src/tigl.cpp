@@ -2504,10 +2504,12 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedWingVTKByIndex(const TiglCPACS
     catch(char *str)
     {
         std::cerr << str << std::endl;
+        return TIGL_ERROR;
     }
     catch(std::string str)
     {
         std::cerr << str << std::endl;
+        return TIGL_ERROR;
     }
     catch (...)
     {
@@ -2552,10 +2554,12 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedWingVTKByUID(const TiglCPACSCo
     catch(char *str)
     {
         std::cerr << str << std::endl;
+        return TIGL_ERROR;
     }
     catch(std::string str)
     {
         std::cerr << str << std::endl;
+        return TIGL_ERROR;
     }
     catch (...)
     {
@@ -2708,10 +2712,12 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedWingVTKSimpleByUID(const TiglC
     catch(char *str)
     {
         std::cerr << str << std::endl;
+        return TIGL_ERROR;
     }
     catch(std::string str)
     {
         std::cerr << str << std::endl;
+        return TIGL_ERROR;
     }
     catch (...)
     {

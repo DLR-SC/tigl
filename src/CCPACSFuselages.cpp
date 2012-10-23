@@ -71,7 +71,9 @@ namespace tigl {
 		char *fuselagesXPathPrt = NULL;
 		char *tmpString = NULL;
 
-		int error = tixiUIDGetXPath(tixiHandle, configurationUID, &tmpString);
+		if (tixiUIDGetXPath(tixiHandle, configurationUID, &tmpString) != SUCCESS)
+            throw CTiglError("XML error: tixiUIDGetXPath failed in CCPACSFuselages::ReadCPACS", TIGL_XML_ERROR);
+
 		fuselagesXPathPrt = (char *) malloc(sizeof(char) * (strlen(tmpString) + 50));
 		strcpy(fuselagesXPathPrt, tmpString);
 		strcat(fuselagesXPathPrt, "[@uID=\"");
