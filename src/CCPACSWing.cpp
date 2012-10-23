@@ -41,9 +41,9 @@ namespace tigl {
 
     // Constructor
     CCPACSWing::CCPACSWing(CCPACSConfiguration* config)
-        : configuration(config)
-        , segments(this)
+        : segments(this)
     	, componentSegments(this)
+        , configuration(config)
 		, rebuildFusedSegments(true)
     {
         Cleanup();
@@ -118,14 +118,14 @@ namespace tigl {
         std::string tempString;
 
         // Get subelement "name"
-        char* ptrName = "";
+        char* ptrName = NULL;
         tempString    = wingXPath + "/name";
         elementPath   = const_cast<char*>(tempString.c_str());
         tixiGetTextElement(tixiHandle, elementPath, &ptrName);
         name          = ptrName;
 
         // Get attribute "uid"
-        char* ptrUID = "";
+        char* ptrUID = NULL;
         tempString   = "uID";
         elementPath  = const_cast<char*>(tempString.c_str());
         tixiGetTextAttribute(tixiHandle, const_cast<char*>(wingXPath.c_str()), const_cast<char*>(tempString.c_str()), &ptrUID);
@@ -133,14 +133,14 @@ namespace tigl {
 
 
         // Get symmetry axis attribute
-        char* ptrSym = "";
+        char* ptrSym = NULL;
         tempString   = "symmetry";
         elementPath  = const_cast<char*>(tempString.c_str());
         tixiGetTextAttribute(tixiHandle, const_cast<char*>(wingXPath.c_str()), const_cast<char*>(tempString.c_str()), &ptrSym);
         SetSymmetryAxis(ptrSym);
 
         // Get subelement "parent_uid"
-        char* ptrParentUID = "";
+        char* ptrParentUID = NULL;
         tempString         = wingXPath + "/parentUID";
         elementPath        = const_cast<char*>(tempString.c_str());
 		if (tixiCheckElement(tixiHandle, elementPath) == SUCCESS) {

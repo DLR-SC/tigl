@@ -54,7 +54,7 @@ public:
 
 	// Draws a point
 	void DisplayPoint(gp_Pnt& aPoint,
-						char* aText,
+						const char* aText,
 						Standard_Boolean UpdateViewer,
 						Standard_Real anXoffset,
 						Standard_Real anYoffset,

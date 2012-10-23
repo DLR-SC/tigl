@@ -79,9 +79,9 @@ namespace tigl {
 	{
 		Cleanup();
 
-		char* ptrName      = "";
-		char* ptrCreator   = "";
-		char* ptrTimestamp = "";
+		char* ptrName      = NULL;
+		char* ptrCreator   = NULL;
+		char* ptrTimestamp = NULL;
 
 		tixiGetTextElement(tixiHandle, "/cpacs/header/name",      &ptrName);
 		tixiGetTextElement(tixiHandle, "/cpacs/header/creator",   &ptrCreator);
