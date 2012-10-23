@@ -204,6 +204,10 @@ void tiglExportMeshedFuselageVTK_success(void);
 
 int preTiglWingComponentSegment(void);
 int postTiglWingComponentSegment(void);
+void tiglWingGetComponentSegmentCount_success(void);
+void tiglWingGetComponentSegmentCount_nullPtr(void);
+void tiglWingGetComponentSegmentCount_wrongWing(void);
+void tiglWingGetComponentSegmentCount_wrongHandle(void);
 void tiglWingComponentGetEtaXsi_success(void);
 
 #endif /* TESTFUNCTIONS_H */

@@ -396,6 +396,37 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSegmentCount(TiglCPACSConfiguration
     }
 }
 
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetComponentSegmentCount(TiglCPACSConfigurationHandle cpacsHandle,
+                                                  int wingIndex,
+                                                  int* compSegmentCountPtr)
+{
+    if (compSegmentCountPtr == 0) {
+        std::cerr << "Error: Null pointer argument for compSegmentCountPtr ";
+        std::cerr << "in function call to tiglWingGetSegmentCount." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+
+    try {
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+        tigl::CCPACSWing& wing = config.GetWing(wingIndex);
+        *compSegmentCountPtr = wing.GetComponentSegmentCount();
+        return TIGL_SUCCESS;
+    }
+    catch (std::exception& ex) {
+        std::cerr << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        std::cerr << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        std::cerr << "Caught an exception in tiglWingGetComponentSegmentCount!" << std::endl;
+        return TIGL_ERROR;
+    }
+}
+
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetInnerConnectedSegmentCount(TiglCPACSConfigurationHandle cpacsHandle,
                                                                 int wingIndex,
@@ -808,6 +839,11 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetIndex(TiglCPACSConfigurationHandle 
         std::cerr << "in function call to tiglWingGetIndex." << std::endl;
         return TIGL_NULL_POINTER;
     }
+    if (wingIndexPtr == 0) {
+        std::cerr << "Error: Null pointer argument for wingIndexPtr ";
+        std::cerr << "in function call to tiglWingGetIndex." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
 
     try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
@@ -883,8 +919,13 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSegmentIndex(TiglCPACSConfiguration
                                                  int wingIndex,
                                                  const char * segmentUID,
                                                  int * segmentIndex) {
-     if (segmentUID == 0) {
+    if (segmentUID == 0) {
         std::cerr << "Error: Null pointer argument for segmentUID ";
+        std::cerr << "in function call to tiglWingGetSegmentIndex." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+    if (segmentIndex == 0) {
+        std::cerr << "Error: Null pointer argument for segmentIndex ";
         std::cerr << "in function call to tiglWingGetSegmentIndex." << std::endl;
         return TIGL_NULL_POINTER;
     }
