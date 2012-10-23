@@ -59,6 +59,30 @@ int postTiglWingComponentSegment(void)
 	return 0;
 }
 
+void tiglWingGetComponentSegmentCount_success(void){
+	int numCompSeg = 0;
+	CU_ASSERT(tiglWingGetComponentSegmentCount(tiglHandle, 1, &numCompSeg) == TIGL_SUCCESS);
+	CU_ASSERT(numCompSeg == 1);
+}
+
+void tiglWingGetComponentSegmentCount_wrongWing(void){
+	int numCompSeg = 0;
+	// this example contains only 3 wings
+	CU_ASSERT(tiglWingGetComponentSegmentCount(tiglHandle, 4, &numCompSeg) == TIGL_INDEX_ERROR);
+}
+
+void tiglWingGetComponentSegmentCount_nullPtr(void){
+	// this example contains only 3 wings
+	CU_ASSERT(tiglWingGetComponentSegmentCount(tiglHandle, 1, NULL) == TIGL_NULL_POINTER);
+}
+
+void tiglWingGetComponentSegmentCount_wrongHandle(void){
+	int numCompSeg = 0;
+	TiglCPACSConfigurationHandle myWrongHandle = -1234;
+	CU_ASSERT(tiglWingGetComponentSegmentCount(myWrongHandle, 1, &numCompSeg) == TIGL_NOT_FOUND);
+}
+
+
 void tiglWingComponentGetEtaXsi_success(void)
 {
 	char * name = NULL;

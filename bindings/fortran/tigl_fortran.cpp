@@ -220,6 +220,14 @@ void tiglWingGetSegmentCount_f(TiglCPACSConfigurationHandle* cpacsHandle,
     *returnCode = tiglWingGetSegmentCount(*cpacsHandle, *wingIndex, segmentCountPtr);
 }
 
+void tiglWingGetComponentSegmentCount_f(TiglCPACSConfigurationHandle* cpacsHandle,
+                               int* wingIndex,
+                               int* compSegmentCountPtr,
+                               TiglReturnCode* returnCode)
+{
+    *returnCode = tiglWingGetComponentSegmentCount(*cpacsHandle, *wingIndex, compSegmentCountPtr);
+}
+
 
 void tiglWingGetUpperPoint_f(TiglCPACSConfigurationHandle* cpacsHandle,
                              int* wingIndex,

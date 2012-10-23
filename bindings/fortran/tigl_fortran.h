@@ -73,6 +73,7 @@ extern "C" {
 #define tiglExportMeshedGeometrySTL_f TIGL_EXPORT_MESHED_GEOMETRY_STL
 #define tiglGetWingCount_f TIGL_GET_WING_COUNT
 #define tiglWingGetSegmentCount_f TIGL_WING_GET_SEGMENT_COUNT
+#define tiglWingGetComponentSegmentCount_f TIGL_WING_GET_COMPONENT_SEGMENT_COUNT
 #define tiglWingGetUpperPoint_f TIGL_WING_GET_UPPER_POINT
 #define tiglWingGetLowerPoint_f TIGL_WING_GET_LOWER_POINT
 #define tiglWingGetInnerConnectedSegmentCount_f TIGL_WING_GET_INNER_CONNECTED_SEGMENT_COUNT
@@ -144,6 +145,7 @@ extern "C" {
 #define tiglExportMeshedGeometrySTL_f FORTRAN_NAME(tigl_export_meshed_geometry_stl)
 #define tiglGetWingCount_f FORTRAN_NAME(tigl_get_wing_count)
 #define tiglWingGetSegmentCount_f FORTRAN_NAME(tigl_wing_get_segment_count)
+#define tiglWingGetComponentSegmentCount_f FORTRAN_NAME(tigl_wing_get_component_segment_count)
 #define tiglWingGetUpperPoint_f FORTRAN_NAME(tigl_wing_get_upper_point)
 #define tiglWingGetLowerPoint_f FORTRAN_NAME(tigl_wing_get_lower_point)
 #define tiglWingGetInnerConnectedSegmentCount_f FORTRAN_NAME(tigl_wing_get_inner_connected_segment_count)
@@ -154,7 +156,9 @@ extern "C" {
 #define tiglWingGetOuterSectionAndElementUID_f FORTRAN_NAME(tigl_wing_get_outer_section_and_element_uid)
 #define tiglWingGetProfileName_f FORTRAN_NAME(tigl_wing_get_profile_name)
 #define tiglWingGetUID_f FORTRAN_NAME(tigl_wing_get_uid)
+#define tiglWingGetIndex_f FORTRAN_NAME(tigl_wing_get_index)
 #define tiglWingGetSegmentUID_f FORTRAN_NAME(tigl_wing_get_segment_uid)
+#define tiglWingGetSegmentIndex_f FORTRAN_NAME(tigl_wing_get_segment_index)
 #define tiglWingGetSectionUID_f FORTRAN_NAME(tigl_wing_get_section_uid)
 #define tiglWingGetSymmetry_f FORTRAN_NAME(tigl_wing_get_symmetry)
 #define tiglGetFuselageCount_f FORTRAN_NAME(tigl_get_fuselage_count)

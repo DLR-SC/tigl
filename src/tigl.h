@@ -385,6 +385,31 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSegmentCount(TiglCPACSConfiguration
                                                   int* segmentCountPtr);
 
 /**
+* @brief Returns the number of component segments for a wing in a CPACS configuration.
+*
+*
+* <b>Fortran syntax:</b>
+*
+* tigl_wing_get_component_segment_count(integer cpacsHandle, integer wingIndex, integer compSegmentCountPtr, integer returnCode)
+*
+*
+* @param cpacsHandle         (in) : Handle for the CPACS configuration
+* @param wingIndex           (in) : The index of the wing, starting at 1
+* @param compSegmentCountPtr (out): Pointer to the number of component segments
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_INDEX_ERROR if wingIndex is not valid
+*   - TIGL_NULL_POINTER if compSegmentCountPtr is a null pointer
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetComponentSegmentCount(TiglCPACSConfigurationHandle cpacsHandle,
+                                                  int wingIndex,
+                                                  int* compSegmentCountPtr);
+
+
+/**
 * @brief Returns a point on the upper wing surface for a
 * a given wing and segment index.
 *

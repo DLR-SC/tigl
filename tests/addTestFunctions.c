@@ -249,6 +249,10 @@ void addTestFunctions(void)
   if (!(CU_add_test(pSuite, "tiglIntersection_FuselageWingIntersects", tiglIntersection_FuselageWingIntersects ))) PRINT_ERROR;
 
   if (!(pSuite = CU_add_suite("WingComponentSegment", preTiglWingComponentSegment, postTiglWingComponentSegment ))) PRINT_ERROR;
+  if (!(CU_add_test(pSuite, "tiglWingGetComponentSegmentCount_success", tiglWingGetComponentSegmentCount_success ))) PRINT_ERROR;
+  if (!(CU_add_test(pSuite, "tiglWingGetComponentSegmentCount_nullPtr", tiglWingGetComponentSegmentCount_nullPtr ))) PRINT_ERROR;
+  if (!(CU_add_test(pSuite, "tiglWingGetComponentSegmentCount_wrongWing", tiglWingGetComponentSegmentCount_wrongWing ))) PRINT_ERROR;
+  if (!(CU_add_test(pSuite, "tiglWingGetComponentSegmentCount_wrongHandle", tiglWingGetComponentSegmentCount_wrongHandle ))) PRINT_ERROR;
   if (!(CU_add_test(pSuite, "tiglWingComponentGetEtaXsi_success", tiglWingComponentGetEtaXsi_success ))) PRINT_ERROR;
 }
 
