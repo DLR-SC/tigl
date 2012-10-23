@@ -209,5 +209,6 @@ void tiglWingGetComponentSegmentCount_nullPtr(void);
 void tiglWingGetComponentSegmentCount_wrongWing(void);
 void tiglWingGetComponentSegmentCount_wrongHandle(void);
 void tiglWingComponentGetEtaXsi_success(void);
+void tiglWingComponentGetEtaXsi_wrongUID(void);
 
 #endif /* TESTFUNCTIONS_H */

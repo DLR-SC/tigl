@@ -1115,20 +1115,33 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentPointGetSegmentEtaXsi(
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
 
-        tigl::CCPACSWing& wing = config.GetWing(1);
-		tigl::CCPACSWingComponentSegment& componentSegment = (tigl::CCPACSWingComponentSegment &) wing.GetComponentSegment(componentSegmentUID);
+        // search for component segment
+        int nwings = config.GetWingCount();
+        for(int iwing = 1; iwing <= nwings; ++iwing){
+            tigl::CCPACSWing& wing = config.GetWing(iwing);
+            int ncompSegs = wing.GetComponentSegmentCount();
+            for (int jcompSeg = 1; jcompSeg <= ncompSegs; ++jcompSeg){
+                tigl::CCPACSWingComponentSegment & compSeg = (tigl::CCPACSWingComponentSegment &) wing.GetComponentSegment(jcompSeg);
+                if( compSeg.GetUID() == std::string(componentSegmentUID) ){
+                    //now do the calculations
+                    gp_Pnt pnt = compSeg.GetPoint(eta, xsi);
+                    *segmentXsi = xsi;
 
-		gp_Pnt pnt = componentSegment.GetPoint(eta, xsi);
-		*segmentXsi = xsi;
-		
-		tiglWingComponentSegmentFindSegment(cpacsHandle, componentSegmentUID,
-											pnt.X(), pnt.Y(), pnt.Z(),
-											segmentUID, wingUID);
+                    tiglWingComponentSegmentFindSegment(cpacsHandle, componentSegmentUID,
+                            pnt.X(), pnt.Y(), pnt.Z(),
+                            segmentUID, wingUID);
 
-		tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment&) wing.GetSegment(*segmentUID);
-		*segmentEta = segment.GetEta(pnt, xsi);
+                    tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment&) wing.GetSegment(*segmentUID);
+                    *segmentEta = segment.GetEta(pnt, xsi);
 
-		return TIGL_SUCCESS;
+                    return TIGL_SUCCESS;
+                }
+            }
+        }
+
+        // the component segment was not found
+        std::cerr << "Error: Invalid uid in tiglWingComponentSegmentPointGetSegmentEtaXsi" << std::endl;
+        return TIGL_UID_ERROR;
     }
     catch (std::exception& ex) {
         std::cerr << ex.what() << std::endl;

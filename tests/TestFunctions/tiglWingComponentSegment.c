@@ -85,15 +85,31 @@ void tiglWingGetComponentSegmentCount_wrongHandle(void){
 
 void tiglWingComponentGetEtaXsi_success(void)
 {
-	char * name = NULL;
-	char * compSegUID = "D150_VAMP_W1_CompSeg1";
-
 	double eta = 0.1103;
 	double xsi = 0.812922;
 	char * wingUID = NULL;
 	char * segmentUID = NULL;
 	double segmentEta = 0., segmentXsi = 0.;
 
-	TiglReturnCode ret = tiglWingComponentSegmentPointGetSegmentEtaXsi(tiglHandle, compSegUID, eta, xsi, &wingUID, &segmentUID, &segmentEta, &segmentXsi);
+	TiglReturnCode ret = tiglWingComponentSegmentPointGetSegmentEtaXsi(tiglHandle, "D150_VAMP_W1_CompSeg1", eta, xsi, &wingUID, &segmentUID, &segmentEta, &segmentXsi);
 	CU_ASSERT( ret == TIGL_SUCCESS);
+	CU_ASSERT(strcmp(wingUID, "D150_VAMP_W1") == 0);
+
+	// test for a bug  in tigl 2.0.2, occurs when component segment does not lie on first wing
+	eta = 0.16;
+	xsi = 0.577506;
+	ret = tiglWingComponentSegmentPointGetSegmentEtaXsi(tiglHandle, "D150_VAMP_HL1_CompSeg1", eta, xsi, &wingUID, &segmentUID, &segmentEta, &segmentXsi);
+	CU_ASSERT(ret == TIGL_SUCCESS);
+	CU_ASSERT(strcmp(wingUID, "D150_VAMP_HL1") == 0);
+}
+
+void tiglWingComponentGetEtaXsi_wrongUID(void){
+	double eta = 0.1103;
+	double xsi = 0.812922;
+	char * wingUID = NULL;
+	char * segmentUID = NULL;
+	double segmentEta = 0., segmentXsi = 0.;
+
+	TiglReturnCode ret = tiglWingComponentSegmentPointGetSegmentEtaXsi(tiglHandle, "invalid_comp_seg", eta, xsi, &wingUID, &segmentUID, &segmentEta, &segmentXsi);
+	CU_ASSERT(ret == TIGL_UID_ERROR);
 }

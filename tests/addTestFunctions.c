@@ -254,5 +254,6 @@ void addTestFunctions(void)
   if (!(CU_add_test(pSuite, "tiglWingGetComponentSegmentCount_wrongWing", tiglWingGetComponentSegmentCount_wrongWing ))) PRINT_ERROR;
   if (!(CU_add_test(pSuite, "tiglWingGetComponentSegmentCount_wrongHandle", tiglWingGetComponentSegmentCount_wrongHandle ))) PRINT_ERROR;
   if (!(CU_add_test(pSuite, "tiglWingComponentGetEtaXsi_success", tiglWingComponentGetEtaXsi_success ))) PRINT_ERROR;
+  if (!(CU_add_test(pSuite, "tiglWingComponentGetEtaXsi_wrongUID", tiglWingComponentGetEtaXsi_wrongUID ))) PRINT_ERROR;
 }
 
