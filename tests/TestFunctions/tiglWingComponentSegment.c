@@ -82,6 +82,47 @@ void tiglWingGetComponentSegmentCount_wrongHandle(void){
 	CU_ASSERT(tiglWingGetComponentSegmentCount(myWrongHandle, 1, &numCompSeg) == TIGL_NOT_FOUND);
 }
 
+void tiglWingGetComponentSegmentUID_success(void){
+    char * uid = NULL;
+    CU_ASSERT(tiglWingGetComponentSegmentUID(tiglHandle, 1, 1, &uid) == TIGL_SUCCESS);
+    CU_ASSERT(strcmp(uid, "D150_VAMP_W1_CompSeg1") == 0);
+
+    CU_ASSERT(tiglWingGetComponentSegmentUID(tiglHandle, 2, 1, &uid) == TIGL_SUCCESS);
+    CU_ASSERT(strcmp(uid, "D150_VAMP_HL1_CompSeg1") == 0);
+
+    CU_ASSERT(tiglWingGetComponentSegmentUID(tiglHandle, 3, 1, &uid) == TIGL_SUCCESS);
+    CU_ASSERT(strcmp(uid, "D150_VAMP_SL1_CompSeg1") == 0);
+}
+
+void tiglWingGetComponentSegmentUID_indexFail(void){
+    char * uid = NULL;
+    CU_ASSERT(tiglWingGetComponentSegmentUID(tiglHandle, 1, 2, &uid) == TIGL_INDEX_ERROR);
+    CU_ASSERT(tiglWingGetComponentSegmentUID(tiglHandle,-1, 1, &uid) == TIGL_INDEX_ERROR);
+    CU_ASSERT(tiglWingGetComponentSegmentUID(tiglHandle, 4, 1, &uid) == TIGL_INDEX_ERROR);
+}
+
+void tiglWingComponentSegmentIndex_success(void){
+    int segment = 0;
+    CU_ASSERT(tiglWingGetComponentSegmentIndex(tiglHandle, 1, "D150_VAMP_W1_CompSeg1", &segment) == TIGL_SUCCESS);
+    CU_ASSERT(segment == 1);
+
+    segment = 0;
+    CU_ASSERT(tiglWingGetComponentSegmentIndex(tiglHandle, 2, "D150_VAMP_HL1_CompSeg1", &segment) == TIGL_SUCCESS);
+    CU_ASSERT(segment == 1);
+
+    segment = 0;
+    CU_ASSERT(tiglWingGetComponentSegmentIndex(tiglHandle, 3, "D150_VAMP_SL1_CompSeg1", &segment) == TIGL_SUCCESS);
+    CU_ASSERT(segment == 1);
+}
+
+void tiglWingComponentSegmentIndex_wrongUID(void){
+    int segment = 0;
+    // component segment UID exist, but on wing 1
+    CU_ASSERT(tiglWingGetComponentSegmentIndex(tiglHandle, 2, "D150_VAMP_W1_CompSeg1", &segment) == TIGL_UID_ERROR);
+
+    CU_ASSERT(tiglWingGetComponentSegmentIndex(tiglHandle, 1, "invalid_uid", &segment) == TIGL_UID_ERROR);
+}
+
 
 void tiglWingComponentGetEtaXsi_success(void)
 {
