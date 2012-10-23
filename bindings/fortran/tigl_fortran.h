@@ -74,6 +74,8 @@ extern "C" {
 #define tiglGetWingCount_f TIGL_GET_WING_COUNT
 #define tiglWingGetSegmentCount_f TIGL_WING_GET_SEGMENT_COUNT
 #define tiglWingGetComponentSegmentCount_f TIGL_WING_GET_COMPONENT_SEGMENT_COUNT
+#define tiglWingGetComponentSegmentUID_f TIGL_WING_GET_COMPONENT_SEGMENT_UID
+#define tiglWingGetComponentSegmentIndex_f TIGL_WING_GET_COMPONENT_SEGMENT_INDEX
 #define tiglWingGetUpperPoint_f TIGL_WING_GET_UPPER_POINT
 #define tiglWingGetLowerPoint_f TIGL_WING_GET_LOWER_POINT
 #define tiglWingGetInnerConnectedSegmentCount_f TIGL_WING_GET_INNER_CONNECTED_SEGMENT_COUNT
@@ -146,6 +148,8 @@ extern "C" {
 #define tiglGetWingCount_f FORTRAN_NAME(tigl_get_wing_count)
 #define tiglWingGetSegmentCount_f FORTRAN_NAME(tigl_wing_get_segment_count)
 #define tiglWingGetComponentSegmentCount_f FORTRAN_NAME(tigl_wing_get_component_segment_count)
+#define tiglWingGetComponentSegmentUID_f FORTRAN_NAME(tigl_wing_get_component_segment_uid)
+#define tiglWingGetComponentSegmentIndex_f FORTRAN_NAME(tigl_wing_get_component_segment_index)
 #define tiglWingGetUpperPoint_f FORTRAN_NAME(tigl_wing_get_upper_point)
 #define tiglWingGetLowerPoint_f FORTRAN_NAME(tigl_wing_get_lower_point)
 #define tiglWingGetInnerConnectedSegmentCount_f FORTRAN_NAME(tigl_wing_get_inner_connected_segment_count)

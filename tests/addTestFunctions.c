@@ -253,6 +253,13 @@ void addTestFunctions(void)
   if (!(CU_add_test(pSuite, "tiglWingGetComponentSegmentCount_nullPtr", tiglWingGetComponentSegmentCount_nullPtr ))) PRINT_ERROR;
   if (!(CU_add_test(pSuite, "tiglWingGetComponentSegmentCount_wrongWing", tiglWingGetComponentSegmentCount_wrongWing ))) PRINT_ERROR;
   if (!(CU_add_test(pSuite, "tiglWingGetComponentSegmentCount_wrongHandle", tiglWingGetComponentSegmentCount_wrongHandle ))) PRINT_ERROR;
+
+  if (!(CU_add_test(pSuite, "tiglWingGetComponentSegmentUID_success", tiglWingGetComponentSegmentUID_success ))) PRINT_ERROR;
+  if (!(CU_add_test(pSuite, "tiglWingGetComponentSegmentUID_indexFail", tiglWingGetComponentSegmentUID_indexFail ))) PRINT_ERROR;
+
+  if (!(CU_add_test(pSuite, "tiglWingComponentSegmentIndex_success", tiglWingComponentSegmentIndex_success ))) PRINT_ERROR;
+  if (!(CU_add_test(pSuite, "tiglWingComponentSegmentIndex_wrongUID", tiglWingComponentSegmentIndex_wrongUID ))) PRINT_ERROR;
+
   if (!(CU_add_test(pSuite, "tiglWingComponentGetEtaXsi_success", tiglWingComponentGetEtaXsi_success ))) PRINT_ERROR;
   if (!(CU_add_test(pSuite, "tiglWingComponentGetEtaXsi_wrongUID", tiglWingComponentGetEtaXsi_wrongUID ))) PRINT_ERROR;
 }

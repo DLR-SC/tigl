@@ -228,6 +228,38 @@ void tiglWingGetComponentSegmentCount_f(TiglCPACSConfigurationHandle* cpacsHandl
     *returnCode = tiglWingGetComponentSegmentCount(*cpacsHandle, *wingIndex, compSegmentCountPtr);
 }
 
+void tiglWingGetComponentSegmentUID_f(TiglCPACSConfigurationHandle* cpacsHandle,
+							int* wingIndex,
+							int* segmentIndex,
+                            char* uidNamePtr,
+                            TiglReturnCode* returnCode,
+                            int lengthString1)
+{
+	const char* namePtr = 0;
+	*returnCode = tiglWingGetComponentSegmentUID(*cpacsHandle, *wingIndex, *segmentIndex, &uidNamePtr);
+
+	if (*returnCode == TIGL_SUCCESS)
+	{
+		copyToFortranString(namePtr, lengthString1, uidNamePtr);
+		if ((size_t) lengthString1 < strlen(namePtr) + 1)
+		{
+			*returnCode = TIGL_STRING_TRUNCATED;
+		}
+	}
+}
+
+void tiglWingGetComponentSegmentIndex(TiglCPACSConfigurationHandle* cpacsHandle,
+							int* wingIndex,
+							char* uidNamePtr,
+                            int* segmentIndex,
+                            TiglReturnCode* returnCode,
+                            int lengthString1)
+{
+	char * namePtr = makeCString(uidNamePtr, lengthString1);
+
+	*returnCode = tiglWingGetComponentSegmentIndex(*cpacsHandle, *wingIndex, namePtr, segmentIndex);
+	free(namePtr);
+}
 
 void tiglWingGetUpperPoint_f(TiglCPACSConfigurationHandle* cpacsHandle,
                              int* wingIndex,
