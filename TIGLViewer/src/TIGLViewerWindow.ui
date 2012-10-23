@@ -736,7 +736,7 @@
     <string>Zoom in window</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+Z</string>
+    <string>Ctrl+E</string>
    </property>
   </action>
   <action name="panAction">
