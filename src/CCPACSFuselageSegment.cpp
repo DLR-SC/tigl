@@ -108,6 +108,7 @@ namespace tigl {
 	void CCPACSFuselageSegment::Cleanup(void)
 	{
 		name = "";
+		uid  = "";
 		Invalidate();
 	}
 
@@ -133,15 +134,15 @@ namespace tigl {
 		char* ptrName = NULL;
 		tempString    = segmentXPath + "/name";
 		elementPath   = const_cast<char*>(tempString.c_str());
-		tixiGetTextElement(tixiHandle, elementPath, &ptrName);
-		name          = ptrName;
+		if (tixiGetTextElement(tixiHandle, elementPath, &ptrName) == SUCCESS)
+		    name          = ptrName;
 
         // Get attribute "uid"
         char* ptrUID = NULL;
         tempString   = "uID";
         elementPath  = const_cast<char*>(tempString.c_str());
-        tixiGetTextAttribute(tixiHandle, const_cast<char*>(segmentXPath.c_str()), const_cast<char*>(tempString.c_str()), &ptrUID);
-        uid = ptrUID;
+        if (tixiGetTextAttribute(tixiHandle, const_cast<char*>(segmentXPath.c_str()), const_cast<char*>(tempString.c_str()), &ptrUID) == SUCCESS)
+            uid = ptrUID;
 
 		// Start connection
 		tempString = segmentXPath + "/fromElementUID";

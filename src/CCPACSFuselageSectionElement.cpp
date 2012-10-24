@@ -91,22 +91,22 @@ namespace tigl {
         char* ptrName = NULL;
         tempString    = elementXPath + "/name";
         elementPath   = const_cast<char*>(tempString.c_str());
-        tixiGetTextElement(tixiHandle, elementPath, &ptrName);
-        name          = ptrName;
+        if (tixiGetTextElement(tixiHandle, elementPath, &ptrName) == SUCCESS)
+            name          = ptrName;
 
         // Get subelement "profileUID"
 		char* ptrUID  = NULL;
         tempString    = elementXPath + "/profileUID";
         elementPath   = const_cast<char*>(tempString.c_str());
-        tixiGetTextElement(tixiHandle, elementPath, &ptrUID);
-		profileUID	  = ptrUID;
+        if (tixiGetTextElement(tixiHandle, elementPath, &ptrUID) == SUCCESS)
+		    profileUID	  = ptrUID;
 
 		// Get attribute "uID"
 		char* ptrMyUID  = NULL;
         tempString    = elementXPath;
         elementPath   = const_cast<char*>(tempString.c_str());
-        tixiGetTextAttribute(tixiHandle, elementPath, "uID", &ptrMyUID);
-		uid	  = ptrMyUID;
+        if (tixiGetTextAttribute(tixiHandle, elementPath, "uID", &ptrMyUID) == SUCCESS)
+		    uid	  = ptrMyUID;
 
         // Get subelement "/transformation/translation"
         tempString  = elementXPath + "/transformation/translation";

@@ -83,13 +83,14 @@ namespace tigl {
 		char* ptrCreator   = NULL;
 		char* ptrTimestamp = NULL;
 
-		tixiGetTextElement(tixiHandle, "/cpacs/header/name",      &ptrName);
-		tixiGetTextElement(tixiHandle, "/cpacs/header/creator",   &ptrCreator);
-		tixiGetTextElement(tixiHandle, "/cpacs/header/timestamp", &ptrTimestamp);
+		if (tixiGetTextElement(tixiHandle, "/cpacs/header/name",      &ptrName) == SUCCESS)
+		    name      = ptrName;
 
-		name      = ptrName;
-		creator   = ptrCreator;
-		timestamp = ptrTimestamp;
+		if (tixiGetTextElement(tixiHandle, "/cpacs/header/creator",   &ptrCreator) == SUCCESS)
+		    creator   = ptrCreator;
+
+		if (tixiGetTextElement(tixiHandle, "/cpacs/header/timestamp", &ptrTimestamp) == SUCCESS)
+		    timestamp = ptrTimestamp;
 	}
 
 	// Cleanup routine
