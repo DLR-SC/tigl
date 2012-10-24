@@ -62,6 +62,7 @@ namespace tigl {
         childContainer.clear();
         SetUID("");
         SetParentUID("");
+        SetSymmetryAxis("");
     }
 
     // Gets the component uid

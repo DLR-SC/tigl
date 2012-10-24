@@ -45,6 +45,7 @@ namespace tigl {
     void CCPACSFuselageSection::Cleanup(void)
     {
         name = "";
+        uid = "";
         transformation.SetIdentity();
         translation = CTiglPoint(0.0, 0.0, 0.0);
         scaling     = CTiglPoint(1.0, 1.0, 1.0);
@@ -88,14 +89,14 @@ namespace tigl {
         char* ptrName = NULL;
         tempString    = sectionXPath + "/name";
         elementPath   = const_cast<char*>(tempString.c_str());
-        tixiGetTextElement(tixiHandle, elementPath, &ptrName);
-        name          = ptrName;
+        if (tixiGetTextElement(tixiHandle, elementPath, &ptrName) == SUCCESS)
+            name          = ptrName;
 
 		// Get attribute "uID"
 		char* ptrUID  = NULL;
         tempString    = sectionXPath;
         elementPath   = const_cast<char*>(tempString.c_str());
-        tixiGetTextAttribute(tixiHandle, elementPath, "uID", &ptrUID);
+        if (tixiGetTextAttribute(tixiHandle, elementPath, "uID", &ptrUID) == SUCCESS)
 		uid           = ptrUID;
 
         // Get subelement "/transformation/translation"

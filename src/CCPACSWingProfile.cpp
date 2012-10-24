@@ -96,18 +96,18 @@ namespace tigl {
         {
             // Get profiles "uid"
             char* ptrUID = NULL;
-			tixiGetTextAttribute(tixiHandle, const_cast<char*>(ProfileXPath.c_str()), "uID", &ptrUID);
-            uid = ptrUID;
+			if (tixiGetTextAttribute(tixiHandle, const_cast<char*>(ProfileXPath.c_str()), "uID", &ptrUID) == SUCCESS)
+                uid = ptrUID;
 
             // Get subelement "name"
             char* ptrName = NULL;
-			tixiGetTextElement(tixiHandle, const_cast<char*>(namePath.c_str()), &ptrName);
-            name = ptrName;
+			if (tixiGetTextElement(tixiHandle, const_cast<char*>(namePath.c_str()), &ptrName) == SUCCESS)
+                name = ptrName;
 
             // Get subelement "description"
 			char* ptrDescription = NULL;
-			tixiGetTextElement(tixiHandle, const_cast<char*>(describtionPath.c_str()), &ptrDescription);
-            description = ptrDescription;
+			if (tixiGetTextElement(tixiHandle, const_cast<char*>(describtionPath.c_str()), &ptrDescription) == SUCCESS)
+                description = ptrDescription;
 
             /* Get point count */
             int   pointCount;
@@ -125,9 +125,8 @@ namespace tigl {
 
 					std::ostringstream xpath;
 					xpath << elementPath.c_str() << "/point[" << i << "]";
-					char *ptrPathChar = NULL;
 					std::string x = xpath.str();
-					ptrPathChar = const_cast<char*>(x.c_str());
+					char * ptrPathChar = const_cast<char*>(x.c_str());
 
 					if (tixiGetPoint(tixiHandle, ptrPathChar, &(point->x), &(point->y), &(point->z)) != SUCCESS) {
 						throw CTiglError("Error: XML error while reading <point/> in CCPACSWingProfile::ReadCPACS", TIGL_XML_ERROR);

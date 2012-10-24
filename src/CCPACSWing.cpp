@@ -121,32 +121,34 @@ namespace tigl {
         char* ptrName = NULL;
         tempString    = wingXPath + "/name";
         elementPath   = const_cast<char*>(tempString.c_str());
-        tixiGetTextElement(tixiHandle, elementPath, &ptrName);
-        name          = ptrName;
+        if (tixiGetTextElement(tixiHandle, elementPath, &ptrName) == SUCCESS)
+            name          = ptrName;
 
         // Get attribute "uid"
         char* ptrUID = NULL;
         tempString   = "uID";
         elementPath  = const_cast<char*>(tempString.c_str());
-        tixiGetTextAttribute(tixiHandle, const_cast<char*>(wingXPath.c_str()), const_cast<char*>(tempString.c_str()), &ptrUID);
-        SetUID(ptrUID);
+        if (tixiGetTextAttribute(tixiHandle, const_cast<char*>(wingXPath.c_str()), const_cast<char*>(tempString.c_str()), &ptrUID) == SUCCESS)
+            SetUID(ptrUID);
 
 
         // Get symmetry axis attribute
         char* ptrSym = NULL;
         tempString   = "symmetry";
         elementPath  = const_cast<char*>(tempString.c_str());
-        tixiGetTextAttribute(tixiHandle, const_cast<char*>(wingXPath.c_str()), const_cast<char*>(tempString.c_str()), &ptrSym);
-        SetSymmetryAxis(ptrSym);
+        if (tixiGetTextAttribute(tixiHandle, const_cast<char*>(wingXPath.c_str()), const_cast<char*>(tempString.c_str()), &ptrSym) == SUCCESS)
+            SetSymmetryAxis(ptrSym);
 
         // Get subelement "parent_uid"
         char* ptrParentUID = NULL;
         tempString         = wingXPath + "/parentUID";
         elementPath        = const_cast<char*>(tempString.c_str());
-		if (tixiCheckElement(tixiHandle, elementPath) == SUCCESS) {
-	        tixiGetTextElement(tixiHandle, elementPath, &ptrParentUID);
-		}
-        SetParentUID(ptrParentUID);
+        if (tixiCheckElement(tixiHandle, elementPath) == SUCCESS &&
+            tixiGetTextElement(tixiHandle, elementPath, &ptrParentUID) == SUCCESS)
+        {
+            SetParentUID(ptrParentUID);
+        }
+
 
         // Get subelement "/transformation/translation"
         tempString  = wingXPath + "/transformation/translation";

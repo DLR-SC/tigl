@@ -173,8 +173,8 @@ namespace tigl {
 		char*		  ptrInnerSection = NULL;
 		tempString  = positioningXPath + "/fromSectionUID";
 		elementPath = const_cast<char*>(tempString.c_str());
-		if (tixiCheckElement(tixiHandle, elementPath) == SUCCESS) {
-			tixiGetTextElement(tixiHandle, elementPath, &ptrInnerSection);
+		if (tixiCheckElement(tixiHandle, elementPath) == SUCCESS && 
+			tixiGetTextElement(tixiHandle, elementPath, &ptrInnerSection) == SUCCESS) {
 			innerSection = ptrInnerSection;
 		}else {
 			innerSection = "";
