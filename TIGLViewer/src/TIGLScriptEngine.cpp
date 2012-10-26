@@ -24,25 +24,36 @@
 
 #include <QtGui/QWidget>
 
-TIGLScriptEngine::TIGLScriptEngine()
+TIGLScriptEngine::TIGLScriptEngine(QLineEdit *le)
 {
     scriptProxy = new TIGLScriptProxy();
-    
-    QScriptEngine engine;
-    TIGLScriptProxy::registerClass(&engine);
-    
+    TIGLScriptProxy::registerClass(&engine); 
+    lineEdit = le;
+    prefixString = "$";
 }
 
 
-QString TIGLScriptEngine::textChanged(QString line)
+void TIGLScriptEngine::textChanged(QString line)
 {
-    script = line;
-    return line;
+    // do fancy stuff in future
 }
 
-void TIGLScriptEngine::eval()
+QString TIGLScriptEngine::eval()
 {
-    emit printResults("Return Pressed");
+    QScriptValue val;
+//    engine.evaluate("var tigl = new TIGL();");
+//    val = engine.evaluate("tigl.tiglGetWingCount();");
+
+    val = engine.evaluate(lineEdit->text());
+    QString result = val.toString();
+    if(result == "undefined") {
+        result = "done";
+    }
+
+    emit printResults("<b><font color=\"lime\">" + prefixString + lineEdit->text() + "</font></b>");
+    emit printResults("<b><font color=\"olive\">" + prefixString + result + "</font></b>");
+    lineEdit->setText("");
+    return "";
 }
 
 

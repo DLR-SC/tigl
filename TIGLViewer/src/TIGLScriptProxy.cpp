@@ -25,7 +25,14 @@
 
 TIGLScriptProxy::TIGLScriptProxy()
 {
-    
+    m_cpacsHandle = 1;
+}
+
+// Returns the CPACS configuration
+tigl::CCPACSConfiguration& TIGLScriptProxy::GetConfiguration(void) const
+{
+    tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+    return manager.GetConfiguration(m_cpacsHandle);
 }
 
 void TIGLScriptProxy::registerClass(QScriptEngine* engine)
@@ -38,24 +45,22 @@ void TIGLScriptProxy::registerClass(QScriptEngine* engine)
         engine->globalObject().setProperty("TIGL", metaObject);
 }
 
-int TIGLScriptProxy::pixelWidth()
+QStringList TIGLScriptProxy::getMemberFunctions()
 {
 }
 
-int TIGLScriptProxy::pixelHeight()
+int TIGLScriptProxy::tiglGetWingCount()
 {
+    tigl::CCPACSConfiguration& config = GetConfiguration();
+    return(config.GetWingCount());
 }
 
-QString TIGLScriptProxy::eval(QString)
-{
-    
-}
 
 QScriptValue TIGLScriptProxyConstructor(QScriptContext * context, QScriptEngine * engine)
 {
         QString fileName = context->argument(0).toString();
         //QObject *parent = context->argument(1).toQObject();
-        TIGLScriptProxy *tigl = new TIGLScriptProxy();//, parent);
-        return engine->newQObject(tigl, QScriptEngine::ScriptOwnership);
+        TIGLScriptProxy *TIGL = new TIGLScriptProxy();//, parent);
+        return engine->newQObject(TIGL, QScriptEngine::ScriptOwnership);
 }
 
