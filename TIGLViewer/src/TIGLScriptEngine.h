@@ -39,7 +39,7 @@ class TIGLScriptEngine :public QObject
         
         public slots:
                 void textChanged(QString line);
-                QString eval();
+                void eval();
                 
         signals:
                 void printResults(QString text);
@@ -51,6 +51,7 @@ class TIGLScriptEngine :public QObject
                 QString script;
                 QString prefixString;
                 QLineEdit *lineEdit;
+                void displayHelp();
 };
 
 
