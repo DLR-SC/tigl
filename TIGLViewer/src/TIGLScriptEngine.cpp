@@ -54,8 +54,8 @@ void TIGLScriptEngine::eval()
     }
 
     // only for testing purpose
-    engine.evaluate("var tixi = new TIXI();");
-    val = engine.evaluate("tixi.tixiGetVersion();");
+    engine.evaluate("var tigl = new TIGL();");
+    val = engine.evaluate("tigl.tiglGetFuselageCount();");
 
 //    val = engine.evaluate(lineEdit->text());
     QString result = val.toString();
@@ -77,8 +77,6 @@ void TIGLScriptEngine::displayHelp()
     helpString += tiglScriptProxy->getMemberFunctions().join(" - ") + "\n\n";
     helpString += "Available TIXI functions: \n";
     helpString += tixiScriptProxy->getMemberFunctions().join(" - ") + "\n\n";
-
-
 
     emit printResults( helpString );
 }
