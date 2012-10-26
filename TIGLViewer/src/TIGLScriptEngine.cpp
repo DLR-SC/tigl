@@ -54,12 +54,12 @@ void TIGLScriptEngine::eval()
     }
 
     // only for testing purpose
-    engine.evaluate("var tigl = new TIGL();");
-    engine.evaluate("var tixi = new TIXI();");
+    //engine.evaluate("var tigl = new TIGL();");
+    //engine.evaluate("var tixi = new TIXI();");
     //val = engine.evaluate("tigl.tiglGetFuselageCount();");
-    val = engine.evaluate("tixi.tixiGetTextElement('/cpacs/header/name');");
+    //val = engine.evaluate("tixi.tixiGetTextElement('/cpacs/header/name');");
 
-//    val = engine.evaluate(lineEdit->text());
+    val = engine.evaluate(lineEdit->text());
     QString result = val.toString();
     if(result == "undefined") {
         result = "done";
@@ -79,6 +79,15 @@ void TIGLScriptEngine::displayHelp()
     helpString += tiglScriptProxy->getMemberFunctions().join(" - ") + "\n\n";
     helpString += "Available TIXI functions: \n";
     helpString += tixiScriptProxy->getMemberFunctions().join(" - ") + "\n\n";
+
+    helpString += "Usage example TIGL: \n";
+    helpString += "Initialize TIGL: \tvar tigl = new TIGL();\n";
+    helpString += "Use TIGL: \ttigl.tiglGetFuselageCount();\n";
+    helpString += "Usage example TIXI: \n";
+    helpString += "Initialize TIXI: \tvar tixi = new TIXI();\n";
+    helpString += "Use TIXI: \ttixi.tixiGetTextElement('/cpacs/header/name');\n";
+    helpString += "Type 'help' to get a list of available TIXI/TIGL fuctions.";
+
 
     emit printResults( helpString );
 }
