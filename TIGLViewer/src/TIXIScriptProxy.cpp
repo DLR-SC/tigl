@@ -34,6 +34,12 @@ TixiDocumentHandle TIXIScriptProxy::GetConfiguration(void) const
     return tixiHandle;
 }
 
+char* TIXIScriptProxy::qString2char(QString str)
+{
+    QByteArray ba = str.toLocal8Bit();
+    return (ba.data());
+}
+
 void TIXIScriptProxy::registerClass(QScriptEngine* engine)
 {
         if (!engine)
@@ -44,9 +50,16 @@ void TIXIScriptProxy::registerClass(QScriptEngine* engine)
         engine->globalObject().setProperty("TIXI", metaObject);
 }
 
+QScriptValue TIXIScriptProxyConstructor(QScriptContext * context, QScriptEngine * engine)
+{
+        QString fileName = context->argument(0).toString();
+        TIXIScriptProxy *TIXI = new TIXIScriptProxy();//, parent);
+        return engine->newQObject(TIXI, QScriptEngine::ScriptOwnership);
+}
+
 QStringList TIXIScriptProxy::getMemberFunctions()
 {
-    return QStringList()  << "xx" << "tixiGetVersion ";
+    return QStringList()  << "tixiGetTextElement(elementPath)" << "tixiGetVersion ";
 }
 
 QString TIXIScriptProxy::tixiGetVersion()
@@ -54,12 +67,12 @@ QString TIXIScriptProxy::tixiGetVersion()
     return(::tixiGetVersion());
 }
 
-
-
-QScriptValue TIXIScriptProxyConstructor(QScriptContext * context, QScriptEngine * engine)
+QString TIXIScriptProxy::tixiGetTextElement(QString elementPath)
 {
-        QString fileName = context->argument(0).toString();
-        TIXIScriptProxy *TIXI = new TIXIScriptProxy();//, parent);
-        return engine->newQObject(TIXI, QScriptEngine::ScriptOwnership);
+    char *text;
+    ::tixiGetTextElement (GetConfiguration(), qString2char(elementPath), &text);
+    printf("\n%s\n", text);
+    return(QString(text));
 }
+
 
