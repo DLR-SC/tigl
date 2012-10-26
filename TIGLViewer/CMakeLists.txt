@@ -26,6 +26,7 @@ set(tv_src
     TIGLViewerWidget.cpp
     TIGLViewerWindow.cpp
     TIGLScriptProxy.cpp
+    TIXIScriptProxy.cpp
     TIGLScriptEngine.cpp
 )
 	
@@ -48,7 +49,8 @@ set(tv_hdr_qobj
 	TIGLViewerWidget.h
 	TIGLViewerWindow.h
 	TIGLScriptProxy.h
-        TIGLScriptEngine.h
+	TIXIScriptProxy.h
+    TIGLScriptEngine.h
 )
 
 set(tv_ui_comp

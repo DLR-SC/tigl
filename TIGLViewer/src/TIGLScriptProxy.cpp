@@ -2,7 +2,7 @@
 * Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
 *
 * Created: 2010-08-13 Markus Litz <Markus.Litz@dlr.de>
-* Changed: $Id: TIGLScriptProxy.h 64 2012-10-23 23:54:09Z markus.litz $
+* Changed: $Id: TIGLScriptProxy.cpp 64 2012-10-23 23:54:09Z markus.litz $
 *
 * Version: $Revision: 64 $
 *
@@ -47,6 +47,7 @@ void TIGLScriptProxy::registerClass(QScriptEngine* engine)
 
 QStringList TIGLScriptProxy::getMemberFunctions()
 {
+    return QStringList()  << "tiglGetWingCount" << "tiglGetVersion ";
 }
 
 int TIGLScriptProxy::tiglGetWingCount()
@@ -54,6 +55,13 @@ int TIGLScriptProxy::tiglGetWingCount()
     tigl::CCPACSConfiguration& config = GetConfiguration();
     return(config.GetWingCount());
 }
+
+QString TIGLScriptProxy::tiglGetVersion()
+{
+    tigl::CCPACSConfiguration& config = GetConfiguration();
+    return(::tiglGetVersion());
+}
+
 
 
 QScriptValue TIGLScriptProxyConstructor(QScriptContext * context, QScriptEngine * engine)

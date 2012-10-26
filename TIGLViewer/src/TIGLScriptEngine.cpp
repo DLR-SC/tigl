@@ -20,14 +20,17 @@
 */
 
 #include "TIGLScriptEngine.h"
+#include "TIXIScriptProxy.h"
 #include "TIGLScriptProxy.h"
 
 #include <QtGui/QWidget>
 
 TIGLScriptEngine::TIGLScriptEngine(QLineEdit *le)
 {
-    scriptProxy = new TIGLScriptProxy();
+    tiglScriptProxy = new TIGLScriptProxy();
+    tixiScriptProxy = new TIXIScriptProxy();
     TIGLScriptProxy::registerClass(&engine); 
+    TIXIScriptProxy::registerClass(&engine);
     lineEdit = le;
     prefixString = "$";
 }
@@ -35,16 +38,18 @@ TIGLScriptEngine::TIGLScriptEngine(QLineEdit *le)
 
 void TIGLScriptEngine::textChanged(QString line)
 {
-    // do fancy stuff in future
+    // do fancy stuff in future, like input-completion
 }
 
 QString TIGLScriptEngine::eval()
 {
     QScriptValue val;
-//    engine.evaluate("var tigl = new TIGL();");
-//    val = engine.evaluate("tigl.tiglGetWingCount();");
 
-    val = engine.evaluate(lineEdit->text());
+    // only for testing purpose
+    engine.evaluate("var tixi = new TIXI();");
+    val = engine.evaluate("tixi.tixiGetVersion();");
+
+//    val = engine.evaluate(lineEdit->text());
     QString result = val.toString();
     if(result == "undefined") {
         result = "done";
