@@ -7,30 +7,33 @@ find_package(Qt4)
 #build only tiglviewer if qt was found
 if(QT4_FOUND)
 
+SET( QT_USE_QTSCRIPT TRUE )
 include(${QT_USE_FILE})
 add_definitions(${QT_DEFINITIONS})
 
 find_package(OpenGL REQUIRED)
 
 set(tv_src
-	CommandLineParameters.cpp
-	ISession_Point.cpp
-	ISession_Text.cpp
-	main.cpp
-	TIGLViewerApplication.cpp
-	TIGLViewerContext.cpp
-	TIGLViewerDocument.cpp
-	TIGLViewerInputoutput.cpp
-	TIGLViewerInternal.h.cpp
-	TIGLViewerWidget.cpp
-	TIGLViewerWindow.cpp
-	)
+    CommandLineParameters.cpp
+    ISession_Point.cpp
+    ISession_Text.cpp
+    main.cpp
+    TIGLViewerApplication.cpp
+    TIGLViewerContext.cpp
+    TIGLViewerDocument.cpp
+    TIGLViewerInputoutput.cpp
+    TIGLViewerInternal.h.cpp
+    TIGLViewerWidget.cpp
+    TIGLViewerWindow.cpp
+    TIGLScriptProxy.cpp
+    TIGLScriptEngine.cpp
+)
 	
 # normal header files
 set(tv_hdr
-	CommandLineParameters.h
-	ISession_Point.h
-	ISession_Text.h
+    CommandLineParameters.h
+    ISession_Point.h
+    ISession_Text.h
     TIGLViewer.h
 )
 
@@ -44,6 +47,8 @@ set(tv_hdr_qobj
 	TIGLViewerInputoutput.h
 	TIGLViewerWidget.h
 	TIGLViewerWindow.h
+	TIGLScriptProxy.h
+        TIGLScriptEngine.h
 )
 
 set(tv_ui_comp
