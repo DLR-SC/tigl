@@ -90,7 +90,7 @@ TIGLViewerWindow::TIGLViewerWindow()
     setMinimumSize(160, 160);
     showMaximized();
     
-    scriptEngine = new TIGLScriptEngine();
+    scriptEngine = new TIGLScriptEngine(scriptInput);
     QObject::connect(scriptInput, SIGNAL(textChanged(QString)), scriptEngine, SLOT(textChanged(QString)));
     QObject::connect(scriptInput, SIGNAL(returnPressed()), scriptEngine, SLOT(eval()));
     QObject::connect(scriptEngine, SIGNAL(printResults(QString)), console, SLOT(append(QString)));
@@ -498,6 +498,7 @@ void TIGLViewerWindow::createActions()
     connect(viewZoomOutAction, SIGNAL(triggered()), myOCC, SLOT(zoomOut()));
 	connect(backgroundAction, SIGNAL(triggered()), myOCC, SLOT(background()));
     connect(showConsoleAction, SIGNAL(toggled(bool)), console, SLOT(setVisible(bool)));
+    connect(showScriptAction, SIGNAL(toggled(bool)), scriptInput, SLOT(setVisible(bool)));
     connect(showWireframeAction, SIGNAL(toggled(bool)), myVC, SLOT(wireFrame(bool)));
 
 

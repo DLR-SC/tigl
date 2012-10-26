@@ -25,16 +25,23 @@
 #include <QtCore/QObject>
 
 #include <QtScript>
+#include <QString>
+
+#include "tigl.h"
+#include "tixi.h"
+#include "CCPACSConfiguration.h"
+#include "CCPACSConfigurationManager.h"
 
 class TIGLScriptProxy :public QObject
 {
         Q_OBJECT
         
-    //         Q_PROPERTY( int numBarcodes READ numBarcodes() )
-    //         Q_PROPERTY( int pixelWidth READ pixelWidth() )
-    //         Q_PROPERTY( int pixelHeight READ pixelHeight() )
-    //         Q_PROPERTY( int resolution READ resolution() )
+             Q_PROPERTY( QString wingCount READ tiglGetWingCount() )
         
+        private:
+                // Returns the CPACS configuration
+                tigl::CCPACSConfiguration& GetConfiguration(void) const;
+
         public:
                 TIGLScriptProxy();
                 //~TIGLScriptProxy();
@@ -42,14 +49,16 @@ class TIGLScriptProxy :public QObject
                 static void registerClass(QScriptEngine *);
         
         public slots:
-                int pixelWidth();
-                int pixelHeight();
-
-                QString eval(QString line);
+                QStringList getMemberFunctions();
+                
+                // wrapped tigl functions
+                int tiglGetWingCount();
 
         private:
                 QString m_fileName;
+                QStringList memberFunctions;
                 int m_cpacsHandle;
+
 };
 
 QScriptValue TIGLScriptProxyConstructor(QScriptContext *, QScriptEngine *);

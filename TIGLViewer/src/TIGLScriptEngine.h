@@ -23,6 +23,7 @@
 
 #include <QtCore/QString>
 #include <QtCore/QObject>
+#include <QtGui/QLineEdit>
 #include <QtScript>
 
 #include "TIGLScriptProxy.h"
@@ -32,20 +33,22 @@ class TIGLScriptEngine :public QObject
         Q_OBJECT
      
         public:
-                TIGLScriptEngine();
+                TIGLScriptEngine(QLineEdit *le);
                 //~TIGLScriptEngine();
         
         public slots:
-                QString textChanged(QString line);
-                void eval();
+                void textChanged(QString line);
+                QString eval();
                 
         signals:
                 void printResults(QString text);
 
         private:
+                QScriptEngine engine;
                 TIGLScriptProxy *scriptProxy;
                 QString script;
-                int m_cpacsHandle;
+                QString prefixString;
+                QLineEdit *lineEdit;
 };
 
 
