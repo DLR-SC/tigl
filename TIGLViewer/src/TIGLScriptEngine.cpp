@@ -41,9 +41,17 @@ void TIGLScriptEngine::textChanged(QString line)
     // do fancy stuff in future, like input-completion
 }
 
-QString TIGLScriptEngine::eval()
+void TIGLScriptEngine::eval()
 {
     QScriptValue val;
+    QString commandLine = lineEdit->text();
+
+    // display help
+    if (commandLine == "help" || commandLine == "hilfe" || commandLine == "damn" || commandLine == "?") {
+        displayHelp();
+        lineEdit->setText("");
+        return;
+    }
 
     // only for testing purpose
     engine.evaluate("var tixi = new TIXI();");
@@ -55,13 +63,25 @@ QString TIGLScriptEngine::eval()
         result = "done";
     }
 
-    emit printResults("<b><font color=\"lime\">" + prefixString + lineEdit->text() + "</font></b>");
-    emit printResults("<b><font color=\"olive\">" + prefixString + result + "</font></b>");
+    emit printResults("<i><font color=\"lime\">" + prefixString + lineEdit->text() + "</font></i>");
+    emit printResults("<font color=\"olive\">" + prefixString + result + "</font>");
     lineEdit->setText("");
-    return "";
 }
 
+void TIGLScriptEngine::displayHelp()
+{
+    QString helpString;
 
+    helpString =  "====== TIGLViewer scripting help ======\n\n";
+    helpString += "Available TIGL functions: \n";
+    helpString += tiglScriptProxy->getMemberFunctions().join(" - ") + "\n\n";
+    helpString += "Available TIXI functions: \n";
+    helpString += tixiScriptProxy->getMemberFunctions().join(" - ") + "\n\n";
+
+
+
+    emit printResults( helpString );
+}
 
 
 
