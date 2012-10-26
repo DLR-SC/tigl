@@ -55,7 +55,9 @@ void TIGLScriptEngine::eval()
 
     // only for testing purpose
     engine.evaluate("var tigl = new TIGL();");
-    val = engine.evaluate("tigl.tiglGetFuselageCount();");
+    engine.evaluate("var tixi = new TIXI();");
+    //val = engine.evaluate("tigl.tiglGetFuselageCount();");
+    val = engine.evaluate("tixi.tixiGetTextElement('/cpacs/header/name');");
 
 //    val = engine.evaluate(lineEdit->text());
     QString result = val.toString();

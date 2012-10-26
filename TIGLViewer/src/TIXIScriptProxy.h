@@ -38,6 +38,7 @@ class TIXIScriptProxy :public QObject
         private:
                 // Returns the TIXI handle
                 TixiDocumentHandle GetConfiguration(void) const;
+                char* qString2char(QString str);
 
         public:
                 TIXIScriptProxy();
@@ -50,6 +51,7 @@ class TIXIScriptProxy :public QObject
                 
                 // wrapped tixi functions
                 QString tixiGetVersion();
+                QString tixiGetTextElement (QString elementPath);
 
         private:
                 QStringList memberFunctions;
