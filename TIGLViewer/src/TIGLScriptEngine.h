@@ -27,6 +27,7 @@
 #include <QtScript>
 
 #include "TIGLScriptProxy.h"
+#include "TIXIScriptProxy.h"
 
 class TIGLScriptEngine :public QObject
 {
@@ -45,7 +46,8 @@ class TIGLScriptEngine :public QObject
 
         private:
                 QScriptEngine engine;
-                TIGLScriptProxy *scriptProxy;
+                TIGLScriptProxy *tiglScriptProxy;
+                TIXIScriptProxy *tixiScriptProxy;
                 QString script;
                 QString prefixString;
                 QLineEdit *lineEdit;

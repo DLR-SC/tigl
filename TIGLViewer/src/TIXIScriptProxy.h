@@ -2,7 +2,7 @@
 * Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
 *
 * Created: 2010-08-13 Markus Litz <Markus.Litz@dlr.de>
-* Changed: $Id: TIGLScriptProxy.h 64 2012-10-23 23:54:09Z markus.litz $
+* Changed: $Id: TIXIScriptProxy.h 64 2012-10-23 23:54:09Z markus.litz $
 *
 * Version: $Revision: 64 $
 *
@@ -18,8 +18,8 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-#ifndef TIGLSCRIPTPOXY_H
-#define TIGLSCRIPTPOXY_H
+#ifndef TIXISCRIPTPOXY_H
+#define TIXISCRIPTPOXY_H
 
 #include <QtCore/QString>
 #include <QtCore/QObject>
@@ -27,42 +27,37 @@
 #include <QtScript>
 #include <QString>
 
-#include "tigl.h"
 #include "tixi.h"
-#include "CCPACSConfiguration.h"
-#include "CCPACSConfigurationManager.h"
 
-class TIGLScriptProxy :public QObject
+class TIXIScriptProxy :public QObject
 {
         Q_OBJECT
         
-             Q_PROPERTY( QString wingCount READ tiglGetWingCount() )
+                // Q_PROPERTY( QString wingCount READ tiglGetWingCount() )
         
         private:
-                // Returns the CPACS configuration
-                tigl::CCPACSConfiguration& GetConfiguration(void) const;
+                // Returns the TIXI handle
+                TixiDocumentHandle GetConfiguration(void) const;
 
         public:
-                TIGLScriptProxy();
-                //~TIGLScriptProxy();
+                TIXIScriptProxy();
+                //~TIXIScriptProxy();
                 
                 static void registerClass(QScriptEngine *);
         
         public slots:
                 QStringList getMemberFunctions();
                 
-                // wrapped tigl functions
-                int tiglGetWingCount();
-                QString tiglGetVersion();
+                // wrapped tixi functions
+                QString tixiGetVersion();
 
         private:
-                QString m_fileName;
                 QStringList memberFunctions;
-                int m_cpacsHandle;
+                int tixiHandle;
 
 };
 
-QScriptValue TIGLScriptProxyConstructor(QScriptContext *, QScriptEngine *);
+QScriptValue TIXIScriptProxyConstructor(QScriptContext *, QScriptEngine *);
 
-#endif // TIGLSCRIPTPOXY_H
+#endif // TIXISCRIPTPOXY_H
 
