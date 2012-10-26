@@ -48,6 +48,9 @@
       </widget>
      </widget>
     </item>
+    <item>
+     <widget class="QLineEdit" name="scriptInput"/>
+    </item>
    </layout>
   </widget>
   <widget class="QMenuBar" name="menubar">

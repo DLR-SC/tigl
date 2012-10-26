@@ -2,9 +2,9 @@
 * Copyright (C) 2007-2011 German Aerospace Center (DLR/SC)
 *
 * Created: 2010-08-13 Markus Litz <Markus.Litz@dlr.de>
-* Changed: $Id$
+* Changed: $Id: TIGLViewerWindow.h 203 2012-09-25 08:47:55Z martinsiggel $
 *
-* Version: $Revision$
+* Version: $Revision: 203 $
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -28,6 +28,7 @@
 #include "TIGLViewerContext.h"
 #include "TIGLViewerWidget.h"
 #include "TIGLViewerInputoutput.h"
+#include "TIGLScriptEngine.h"
 
 #include "ui_TIGLViewerWindow.h"
 
@@ -97,6 +98,7 @@ private:
 	QString controlFileName;
 	QFileSystemWatcher *watcher;
     class QDebugStream * stdoutStream, * errorStream;
+    TIGLScriptEngine * scriptEngine;
 
 };
 
