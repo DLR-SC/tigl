@@ -1,5 +1,5 @@
 /* 
-* Copyright (C) 2007-2011 German Aerospace Center (DLR/SC)
+* Copyright (C) 2007-2012 German Aerospace Center (DLR/SC)
 *
 * Created: 2010-08-13 Markus Litz <Markus.Litz@dlr.de>
 * Changed: $Id$ 
@@ -10,7 +10,7 @@
 * you may not use this file except in compliance with the License.
 * You may obtain a copy of the License at
 *
-*     http://www.apache.org/licenses/LICENSE-2.0
+*     http://www.apache.org/licenses/LICENSE-2.0
 *
 * Unless required by applicable law or agreed to in writing, software
 * distributed under the License is distributed on an "AS IS" BASIS,
@@ -23,25 +23,24 @@
 * @brief Tests for testing behavior of the TIGL algorithm selection routines.
 */
 
-#include "CUnit/CUnit.h"
+#include "test.h" // Brings in the GTest framework
 #include "tigl.h"
-#include <stdio.h>
 
 
 /**
 * Tests tiglUseAlgorithm with invalid algorithm codes.
 */
-void tiglUseAlgorithm_invalidAlgorithm(void)
+TEST(TIGLUseAlgorithm, invalidAlgorithm)
 {
-    CU_ASSERT(tiglUseAlgorithm(-1) == TIGL_ERROR);
+    ASSERT_TRUE(tiglUseAlgorithm((TiglAlgorithmCode)-1) == TIGL_ERROR);
 }
 
 /**
 * Tests tiglUseAlgorithm with valid algorithm codes.
 */
-void tiglUseAlgorithm_validAlgorithm(void)
+TEST(TIGLUseAlgorithm, validAlgorithm)
 {
-    CU_ASSERT(tiglUseAlgorithm(TIGL_INTERPOLATE_BSPLINE_WIRE) == TIGL_SUCCESS);
-    CU_ASSERT(tiglUseAlgorithm(TIGL_APPROXIMATE_BSPLINE_WIRE) == TIGL_SUCCESS);
-    CU_ASSERT(tiglUseAlgorithm(TIGL_INTERPOLATE_LINEAR_WIRE)  == TIGL_SUCCESS);
+    ASSERT_TRUE(tiglUseAlgorithm(TIGL_INTERPOLATE_BSPLINE_WIRE) == TIGL_SUCCESS);
+    ASSERT_TRUE(tiglUseAlgorithm(TIGL_APPROXIMATE_BSPLINE_WIRE) == TIGL_SUCCESS);
+    ASSERT_TRUE(tiglUseAlgorithm(TIGL_INTERPOLATE_LINEAR_WIRE)  == TIGL_SUCCESS);
 }

@@ -46,9 +46,17 @@ find_package( TIXI REQUIRED)
 
 add_subdirectory(src)
 add_subdirectory(TIGLViewer)
-add_subdirectory(tests)
 add_subdirectory(bindings)
+
+#create gtests, override gtest standard setting
+option(gtest_force_shared_crt "" ON)
+mark_as_advanced(gtest_force_shared_crt)
+set (gtest_SOURCE_DIR "thirdparty/gtest-1.6.0")
+add_subdirectory (${gtest_SOURCE_DIR} EXCLUDE_FROM_ALL)
+add_subdirectory(tests EXCLUDE_FROM_ALL)
+
 include(createDoc)
+
 
 set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Martin Siggel") #required for debian/ubuntu
 set(CPACK_PACKAGE_VENDOR "www.dlr.de/sc")
