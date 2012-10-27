@@ -23,44 +23,43 @@
 * @brief Tests for testing behavior of the TIGL intersection calculation routines.
 */
 
-#include "CUnit/CUnit.h"
+#include "test.h" // Brings in the GTest framework
 #include "tigl.h"
-#include <stdio.h>
 
 
 static TixiDocumentHandle           tixiHandle;
 static TiglCPACSConfigurationHandle tiglHandle;
 
-int preTiglIntersection(void)
-{
-	char* filename = "TestData/CPACS_21_D150.xml";
-	ReturnCode tixiRet;
-	TiglReturnCode tiglRet;
+class TiglIntersection : public ::testing::Test {
+ protected:
+  virtual void SetUp() {
+        char* filename = "TestData/CPACS_21_D150.xml";
+        ReturnCode tixiRet;
+        TiglReturnCode tiglRet;
 
-	tiglHandle = -1;
-	tixiHandle = -1;
-	
-	tixiRet = tixiOpenDocument(filename, &tixiHandle);
-	if (tixiRet != SUCCESS) 
-		return 1;
+        tiglHandle = -1;
+        tixiHandle = -1;
+        
+        tixiRet = tixiOpenDocument(filename, &tixiHandle);
+        ASSERT_TRUE (tixiRet == SUCCESS);
 
-	tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "D150_VAMP", &tiglHandle);
-	return (tiglRet == TIGL_SUCCESS ? 0 : 1);
-}
+        tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "D150_VAMP", &tiglHandle);
+        ASSERT_TRUE(tiglRet == TIGL_SUCCESS);
+  }
 
-int postTiglIntersection(void)
-{
-	tiglCloseCPACSConfiguration(tiglHandle);
-	tixiCloseDocument(tixiHandle);
-	tiglHandle = -1;
-	tixiHandle = -1;
-	return 0;
-}
+  virtual void TearDown() {
+        ASSERT_TRUE(tiglCloseCPACSConfiguration(tiglHandle) == SUCCESS);
+        ASSERT_TRUE(tixiCloseDocument(tixiHandle) == SUCCESS);
+        tiglHandle = -1;
+        tixiHandle = -1;
+  }
+};
+
 
 /**
 * Tests 
 */
-void tiglIntersection_FuselageWingIntersects(void)
+TEST_F(TiglIntersection, tiglIntersection_FuselageWingIntersects)
 {
 	TiglBoolean returnValue;
 

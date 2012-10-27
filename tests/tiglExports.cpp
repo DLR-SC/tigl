@@ -23,10 +23,8 @@
 * @brief Tests for testing export functions.
 */
 
-#include "CUnit/CUnit.h"
+#include "test.h" // Brings in the GTest framework
 #include "tigl.h"
-
-//#include "BRepPrimAPI_MakeCylinder.hxx"
 
 
 /******************************************************************************/
@@ -34,35 +32,37 @@
 static TixiDocumentHandle           tixiHandle;
 static TiglCPACSConfigurationHandle tiglHandle;
 
-int preTiglExport(void)
-{
+class tiglExport : public ::testing::Test {
+ protected:
+  virtual void SetUp() {
     char* filename = "TestData/CPACS_21_D150.xml";
-	ReturnCode tixiRet;
-	TiglReturnCode tiglRet;
+        ReturnCode tixiRet;
+        TiglReturnCode tiglRet;
 
-	tiglHandle = -1;
-	tixiHandle = -1;
-	
-	tixiRet = tixiOpenDocument(filename, &tixiHandle);
-	if (tixiRet != SUCCESS) 
-		return 1;
+        tiglHandle = -1;
+        tixiHandle = -1;
+        
+        tixiRet = tixiOpenDocument(filename, &tixiHandle);
+        ASSERT_TRUE( tixiRet == SUCCESS);
 
-	tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "D150_VAMP", &tiglHandle);
-	return (tiglRet == TIGL_SUCCESS ? 0 : 1);
-}
+        tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "D150_VAMP", &tiglHandle);
+        ASSERT_TRUE (tiglRet == TIGL_SUCCESS);
 
-int postTiglExport(void)
-{
-	tiglCloseCPACSConfiguration(tiglHandle);
-	tixiCloseDocument(tixiHandle);
-	tiglHandle = -1;
-	tixiHandle = -1;
-	return 0;
-}
+  }
+
+  virtual void TearDown() {
+        ASSERT_TRUE(tiglCloseCPACSConfiguration(tiglHandle));
+        ASSERT_TRUE(tixiCloseDocument(tixiHandle));
+        tiglHandle = -1;
+        tixiHandle = -1;
+  }
+};
+
+
 
 /******************************************************************************/
 
-//void tiglExportMeshedWingVTK_small_example(void)
+//void tiglxEportMeshedWingVTK_small_example(void)
 //{
 //    const BRepPrimAPI_MakeCylinder cone(/* radius */ 2.0, /* height */ 8.0);
 //    const CTiglExportVtk writer(config);
@@ -72,15 +72,15 @@ int postTiglExport(void)
 /**
 * Tests tiglWingGetProfileName with invalid CPACS handle.
 */
-void tiglExportMeshedWingVTK_success(void)
+TEST_F(tiglExport, export_meshed_wing_success)
 {
     char* vtkWingFilename = "TestData/export/D150modelID_wing1.vtp";
     char* vtkGeometryFilename = "TestData/export/D150modelID_geometry.vtp";
-    CU_ASSERT(tiglExportMeshedWingVTKByIndex(tiglHandle, 1, vtkWingFilename, 0.01) == TIGL_SUCCESS);
+    ASSERT_TRUE(tiglExportMeshedWingVTKByIndex(tiglHandle, 1, vtkWingFilename, 0.01) == TIGL_SUCCESS);
 }
 
-void tiglExportMeshedFuselageVTK_success(void)
+TEST_F(tiglExport, export_meshed_fuselage_success)
 {
     char* vtkFuselageFilename = "TestData/export/D150modelID_fuselage1.vtp";
-    CU_ASSERT(tiglExportMeshedFuselageVTKSimpleByUID(tiglHandle, "D150_VAMP_FL1", vtkFuselageFilename, 0.1) == TIGL_SUCCESS);
+    ASSERT_TRUE(tiglExportMeshedFuselageVTKSimpleByUID(tiglHandle, "D150_VAMP_FL1", vtkFuselageFilename, 0.1) == TIGL_SUCCESS);
 }
