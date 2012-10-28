@@ -1,44 +1,16 @@
-# TIGL units tests makefile
+# units tests makefile
 
-find_package(CUNIT)
+FILE (GLOB_RECURSE test_SRCS *.cpp *.cxx *.cc *.C *.c *.h *.hpp)
+SET (test_LIBS gtest TIGL)
+SET (test_BIN ${PROJECT_NAME}-unittests)
 
-if(CUNIT_FOUND)
+INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR} ${PROJECT_SOURCE_DIR}/src ${XML_INCLUDE_DIRS}, ${TIXI_INCLUDE_DIRS})
 
-set(TEST_FUNCTS_SRC 
-	cpacsConfiguration.c
-	testFunctions.h
-	tiglAlgorithm.c	
-	tiglExports.c
-	tiglFuselageGetPoint.c
-	tiglFuselageSegment.c
-	tiglIntersectionCalculation.c
-	tiglWing.c
-	tiglWingGetPoint.c
-	tiglWingComponentSegment.c
-	tiglWingSegment.c
-)
+LINK_DIRECTORIES(${LIBRARY_OUTPUT_PATH})
+ADD_EXECUTABLE(${test_BIN} ${test_SRCS} )
+TARGET_LINK_LIBRARIES(${test_BIN} ${test_LIBS})
+ADD_CUSTOM_TARGET(check ${test_BIN} --gtest_output=xml DEPENDS ${test_BIN} COMMENT "Executing unit tests..." VERBATIM SOURCES ${test_SRCS})
+ADD_CUSTOM_TARGET(test DEPENDS check)
 
-set(TEST_SUITE_SRC CUMain.c addTestFunctions.c)
-
-foreach(FILE ${TEST_FUNCTS_SRC})
-	set(TEST_SUITE_SRC ${TEST_SUITE_SRC} TestFunctions/${FILE})
-endforeach()
-
-include_directories(${CUNIT_INCLUDE_DIRS} ${XML_INCLUDE_DIRS} ${TIXI_INCLUDE_DIRS})
-include_directories(${PROJECT_SOURCE_DIR}/src ${CMAKE_CURRENT_SOURCE_DIR}/TestFunctions)
-
-add_definitions(-DTIGL_VERSION=\"${TIGL_VERSION}\")
-
-add_executable(CUnitTests ${TEST_SUITE_SRC})
-target_link_libraries(CUnitTests ${CUNIT_LIBRARIES} TIGL)
-
-# copy the test data to the build directory
-add_custom_command(
-	TARGET CUnitTests
-	POST_BUILD
-	COMMAND ${CMAKE_COMMAND}
-	ARGS -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/TestData/ ${CMAKE_CURRENT_BINARY_DIR}/TestData
-)
-
-endif(CUNIT_FOUND)
-
+#execute_process(COMMAND ${CMAKE_PROGRAM} -E copy_if_different ${PROJECT_SOURCE_DIR}/tests/TestData tests/Testdata)
+file(COPY ${PROJECT_SOURCE_DIR}/tests/TestData DESTINATION ${CMAKE_CURRENT_BINARY_DIR})

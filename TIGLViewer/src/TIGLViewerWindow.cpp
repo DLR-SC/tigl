@@ -2,9 +2,9 @@
 * Copyright (C) 2007-2011 German Aerospace Center (DLR/SC)
 *
 * Created: 2010-08-13 Markus Litz <Markus.Litz@dlr.de>
-* Changed: $Id$
+* Changed: $Id: TIGLViewerWindow.cpp 214 2012-10-16 09:20:45Z martinsiggel $
 *
-* Version: $Revision$
+* Version: $Revision: 214 $
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -37,6 +37,7 @@
 
 #include "TIGLViewerWindow.h"
 #include "TIGLDebugStream.h"
+#include "TIGLScriptEngine.h"
 #include "CommandLineParameters.h"
 
 void ShowOrigin ( Handle_AIS_InteractiveContext theContext );
@@ -78,7 +79,7 @@ TIGLViewerWindow::TIGLViewerWindow()
     console->setTextColor(Qt::green);
     console->append("TIGLViewer console output\n\n");
 
-	cpacsConfiguration = new TIGLViewerDocument(this, myOCC->getContext());
+    cpacsConfiguration = new TIGLViewerDocument(this, myOCC->getContext());
 
     createActions();
     createMenus();
@@ -88,11 +89,19 @@ TIGLViewerWindow::TIGLViewerWindow()
     setWindowTitle(tr(PARAMS.windowTitle.toAscii().data()));
     setMinimumSize(160, 160);
     showMaximized();
+    
+    scriptEngine = new TIGLScriptEngine(scriptInput);
+    QObject::connect(scriptInput, SIGNAL(textChanged(QString)), scriptEngine, SLOT(textChanged(QString)));
+    QObject::connect(scriptInput, SIGNAL(returnPressed()), scriptEngine, SLOT(eval()));
+    QObject::connect(scriptEngine, SIGNAL(printResults(QString)), console, SLOT(append(QString)));
+
+    scriptInput->setFocus();
 }
 
 TIGLViewerWindow::~TIGLViewerWindow(){
     delete stdoutStream;
     delete errorStream;
+    delete scriptEngine;
 }
 
 
@@ -491,6 +500,7 @@ void TIGLViewerWindow::createActions()
     connect(viewZoomOutAction, SIGNAL(triggered()), myOCC, SLOT(zoomOut()));
 	connect(backgroundAction, SIGNAL(triggered()), myOCC, SLOT(background()));
     connect(showConsoleAction, SIGNAL(toggled(bool)), console, SLOT(setVisible(bool)));
+    connect(showScriptAction, SIGNAL(toggled(bool)), scriptInput, SLOT(setVisible(bool)));
     connect(showWireframeAction, SIGNAL(toggled(bool)), myVC, SLOT(wireFrame(bool)));
 
 

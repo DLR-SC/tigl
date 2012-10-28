@@ -2,9 +2,9 @@
 * Copyright (C) 2007-2011 German Aerospace Center (DLR/SC)
 *
 * Created: 2010-08-13 Markus Litz <Markus.Litz@dlr.de>
-* Changed: $Id$
+* Changed: $Id: main.cpp 203 2012-09-25 08:47:55Z martinsiggel $
 *
-* Version: $Revision$
+* Version: $Revision: 203 $
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -70,9 +70,10 @@ void showHelp(QString appName)
 	QString helpText = appName + " [--help] [--filename <filename>]\n\n";
 	helpText += "  --help                  	This help page\n";
 	helpText += "  --filename <filename>	Initial CPACS file to open and display.\n";
-	helpText += "  --modelUID <uid>			Initial model uid open and display.\n";
+	helpText += "  --modelUID <uid>         Initial model uid open and display.\n";
 	helpText += "  --windowtitle <title>	The titel of the TIGLViewer window.\n";
 	helpText += "  --controlFile <filename>	Name of the control file.\n";
+        helpText += "  --JediMode <on|off>      Makes you some kind of superhero like CPACS-Ninja.\n";
 
 	QMessageBox::information(0, "TIGLViewer Argument Error",
 								 helpText,
