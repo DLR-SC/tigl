@@ -51,8 +51,8 @@ class tiglExport : public ::testing::Test {
   }
 
   virtual void TearDown() {
-        ASSERT_TRUE(tiglCloseCPACSConfiguration(tiglHandle));
-        ASSERT_TRUE(tixiCloseDocument(tixiHandle));
+        ASSERT_TRUE(tiglCloseCPACSConfiguration(tiglHandle) == TIGL_SUCCESS);
+        ASSERT_TRUE(tixiCloseDocument(tixiHandle) == SUCCESS);
         tiglHandle = -1;
         tixiHandle = -1;
   }
