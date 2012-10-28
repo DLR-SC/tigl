@@ -195,6 +195,6 @@ TEST_F(tiglCPACSConfigurationHandleValid,validHandle)
 */
 TEST_F(tiglCPACSConfigurationHandleValid, version_valid)
 {
-	ASSERT_TRUE(!strcmp(tiglGetVersion(), TIGL_VERSION));
+    ASSERT_TRUE(!strcmp(tiglGetVersion(), TIGL_VERSION));
 }
 
