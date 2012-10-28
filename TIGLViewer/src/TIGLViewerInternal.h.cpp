@@ -2,9 +2,9 @@
 * Copyright (C) 2007-2011 German Aerospace Center (DLR/SC)
 *
 * Created: 2010-08-13 Markus Litz <Markus.Litz@dlr.de>
-* Changed: $Id$
+* Changed: $Id: TIGLViewerInternal.h.cpp 64 2011-08-02 13:54:09Z markus.litz $
 *
-* Version: $Revision$
+* Version: $Revision: 64 $
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.

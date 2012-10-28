@@ -48,6 +48,9 @@
       </widget>
      </widget>
     </item>
+    <item>
+     <widget class="QLineEdit" name="scriptInput"/>
+    </item>
    </layout>
   </widget>
   <widget class="QMenuBar" name="menubar">
@@ -172,6 +175,7 @@
      <addaction name="separator"/>
      <addaction name="backgroundAction"/>
      <addaction name="showConsoleAction"/>
+     <addaction name="showScriptAction"/>
      <addaction name="showWireframeAction"/>
     </widget>
     <widget class="QMenu" name="viewActionsMenu">
@@ -866,6 +870,20 @@
    </property>
    <property name="shortcut">
     <string>Alt+D</string>
+   </property>
+  </action>
+    <action name="showScriptAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>ScriptInput</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+S</string>
    </property>
   </action>
   <action name="showWireframeAction">
