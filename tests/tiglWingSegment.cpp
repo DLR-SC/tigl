@@ -26,10 +26,11 @@
 #include "test.h" // Brings in the GTest framework
 #include "tigl.h"
 
-/***************************************************************************************************/
+#include "CCPACSConfigurationManager.h"
+#include "CCPACSWing.h"
+#include "CCPACSWingSegment.h"
 
-static TixiDocumentHandle           tixiHandle;
-static TiglCPACSConfigurationHandle tiglHandle;
+/***************************************************************************************************/
 
 class WingSegment : public ::testing::Test {
  protected:
@@ -54,6 +55,37 @@ class WingSegment : public ::testing::Test {
         tiglHandle = -1;
         tixiHandle = -1;
   }
+
+  TixiDocumentHandle           tixiHandle;
+  TiglCPACSConfigurationHandle tiglHandle;
+};
+
+class WingSegmentSimple : public ::testing::Test {
+ protected:
+  virtual void SetUp() {
+        char* filename = "TestData/simpletest.cpacs.xml";
+        ReturnCode tixiRet;
+        TiglReturnCode tiglRet;
+
+        tiglHandle = -1;
+        tixiHandle = -1;
+        
+        tixiRet = tixiOpenDocument(filename, &tixiHandle);
+        ASSERT_TRUE (tixiRet == SUCCESS);
+
+        tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "Cpacs2Test", &tiglHandle);
+        ASSERT_TRUE(tiglRet == TIGL_SUCCESS);
+  }
+
+  virtual void TearDown() {
+        ASSERT_TRUE(tiglCloseCPACSConfiguration(tiglHandle) == SUCCESS);
+        ASSERT_TRUE(tixiCloseDocument(tixiHandle) == SUCCESS);
+        tiglHandle = -1;
+        tixiHandle = -1;
+  }
+
+  TixiDocumentHandle           tixiHandle;
+  TiglCPACSConfigurationHandle tiglHandle;
 };
 
 /***************************************************************************************************/
@@ -587,5 +619,71 @@ TEST_F(WingSegment, tiglWingGetOuterSectionAndElementUID_success)
 	free(elementUID);
 }
 
+/* Tests on simple geometry__________________________ */
+TEST_F(WingSegmentSimple, getPoint_accuracy)
+{
+    double x = 0., y = 0., z = 0.;
+    ASSERT_TRUE(tiglWingGetUpperPoint(tiglHandle, 1, 1, 0.5, 0.5, &x, &y, &z) == TIGL_SUCCESS);
+    ASSERT_NEAR(y, 0.5, 1e-7);
+    ASSERT_NEAR(x, 0.5, 1e-7);
+    //z value read from profile data
+    ASSERT_NEAR(z, 0.0529402520006, 1e-7);
 
+    ASSERT_TRUE(tiglWingGetUpperPoint(tiglHandle, 1, 2, 0.5, 0.5, &x, &y, &z) == TIGL_SUCCESS);
+    ASSERT_NEAR(y, 1.5, 1e-7);
+    ASSERT_NEAR(x, 0.625, 1e-7);
+}
+
+TEST_F(WingSegmentSimple, getChordPointInternal_accuracy)
+{
+    // now we have do use the internal interface as we currently have no public api for this
+    tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
+    tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
+    tigl::CCPACSWing& wing = config.GetWing(1);
+
+    tigl::CCPACSWingSegment& segment  = (tigl::CCPACSWingSegment&) wing.GetSegment(1);
+    tigl::CCPACSWingSegment& segment2 = (tigl::CCPACSWingSegment&) wing.GetSegment(2);
+    gp_Pnt point = segment.GetChordPoint(0,0.5);
+    ASSERT_NEAR(point.X(), 0.5,1e-7);
+    ASSERT_NEAR(point.Y(), 0., 1e-7);
+    ASSERT_NEAR(point.Z(), 0., 1e-7);
+
+    point = segment.GetChordPoint(1,0.5);
+    ASSERT_NEAR(point.X(), 0.5,1e-7);
+    ASSERT_NEAR(point.Y(), 1., 1e-7);
+    ASSERT_NEAR(point.Z(), 0., 1e-7);
+
+    point = segment2.GetChordPoint(0.5,0.5);
+    ASSERT_NEAR(point.X(), 0.625 ,1e-7);
+    ASSERT_NEAR(point.Y(), 1.5, 1e-7);
+    ASSERT_NEAR(point.Z(), 0., 1e-7);
+
+    point = segment2.GetChordPoint(1,0.5);
+    ASSERT_NEAR(point.X(), 0.75 ,1e-7);
+    ASSERT_NEAR(point.Y(), 2., 1e-7);
+    ASSERT_NEAR(point.Z(), 0., 1e-7);
+}
+
+TEST_F(WingSegmentSimple, trafo_Consistency){
+    // we transform eta, xsi to x,y,z and perform the back transform
+    // we check if we get the the same eta xsi as before
+    int segIndex = 1;
+    double eta_start = 0.5;
+    double xsi_start = 0.5;
+    double x = 0., y = 0., z = 0.;
+    ASSERT_TRUE(tiglWingGetUpperPoint(tiglHandle, 1, segIndex, eta_start, xsi_start, &x, &y, &z) == TIGL_SUCCESS);
+
+    // now we have do use the internal interface as we currently have no public api for this
+    tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
+    tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
+    tigl::CCPACSWing& wing = config.GetWing(1);
+    tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment&) wing.GetSegment(segIndex);
+
+    gp_Pnt point(x,y,z);
+    double xsi_end = segment.GetXsi(point, true);
+    double eta_end = segment.GetEta(point, true);
+
+    ASSERT_NEAR(eta_end, eta_start, 1e-7);
+    ASSERT_NEAR(xsi_end, xsi_start, 1e-7);
+}
 

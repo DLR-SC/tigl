@@ -27,9 +27,6 @@
 #include "tigl.h"
 
 
-static TixiDocumentHandle           tixiHandle;
-static TiglCPACSConfigurationHandle tiglHandle;
-
 class TiglIntersection : public ::testing::Test {
  protected:
   virtual void SetUp() {
@@ -53,6 +50,9 @@ class TiglIntersection : public ::testing::Test {
         tiglHandle = -1;
         tixiHandle = -1;
   }
+
+    TixiDocumentHandle           tixiHandle;
+    TiglCPACSConfigurationHandle tiglHandle;
 };
 
 

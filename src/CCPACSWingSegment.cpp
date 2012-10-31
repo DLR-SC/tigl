@@ -26,6 +26,7 @@
 #include <math.h>
 #include <iostream>
 #include <string>
+#include <cassert>
 
 #include "CCPACSWingSegment.h"
 #include "CCPACSWing.h"
@@ -506,6 +507,43 @@ namespace tigl {
 		return profilePoint;
     }
 
+    gp_Pnt CCPACSWingSegment::GetChordPoint(double eta, double xsi)
+    {
+        if (eta < 0.0 || eta > 1.0)
+        {
+            throw CTiglError("Error: Parameter eta not in the range 0.0 <= eta <= 1.0 in CCPACSWingSegment::GetPoint", TIGL_ERROR);
+        }
+
+		CCPACSWingProfile& innerProfile = innerConnection.GetProfile();
+		CCPACSWingProfile& outerProfile = outerConnection.GetProfile();
+
+        // Compute points on wing profiles for the given xsi
+        gp_Pnt innerProfilePoint = innerProfile.GetChordPoint(xsi);
+        gp_Pnt outerProfilePoint = outerProfile.GetChordPoint(xsi);
+
+        // Do section element transformation on points
+        innerProfilePoint = innerConnection.GetSectionElementTransformation().Transform(innerProfilePoint);
+        outerProfilePoint = outerConnection.GetSectionElementTransformation().Transform(outerProfilePoint);
+
+        // Do section transformations
+        innerProfilePoint = innerConnection.GetSectionTransformation().Transform(innerProfilePoint);
+        outerProfilePoint = outerConnection.GetSectionTransformation().Transform(outerProfilePoint);
+
+        // Do positioning transformations
+        innerProfilePoint = innerConnection.GetPositioningTransformation().Transform(innerProfilePoint);
+        outerProfilePoint = outerConnection.GetPositioningTransformation().Transform(outerProfilePoint);
+
+        // Get point on wing segment in dependence of eta by linear interpolation
+        Handle(Geom_TrimmedCurve) profileLine = GC_MakeSegment(innerProfilePoint, outerProfilePoint);
+        Standard_Real firstParam = profileLine->FirstParameter();
+        Standard_Real lastParam  = profileLine->LastParameter();
+        Standard_Real param = (lastParam - firstParam) * eta;
+        gp_Pnt profilePoint;
+        profileLine->D0(param, profilePoint);
+
+		return profilePoint;
+    }
+
     // Returns the inner profile points as read from TIXI. The points are already transformed.
     std::vector<CTiglPoint*> CCPACSWingSegment::GetRawInnerProfilePoints()
     {
@@ -567,11 +605,11 @@ namespace tigl {
     {
 		// Build virtual eta line.
 		// eta is in x = 0
-		gp_Pnt pnt0 = GetPoint(0, xsi, true);
+		gp_Pnt pnt0 = GetChordPoint(0, xsi);
 		pnt0 = wing->GetWingTransformation().Transform(pnt0);		
 		pnt0 = gp_Pnt(0, pnt0.Y(), pnt0.Z());
 
-		gp_Pnt pnt1 = GetPoint(1, xsi, true);
+		gp_Pnt pnt1 = GetChordPoint(1, xsi);
 		pnt1 = wing->GetWingTransformation().Transform(pnt1);
 		pnt1 = gp_Pnt(0, pnt1.Y(), pnt1.Z());
 
@@ -602,7 +640,9 @@ namespace tigl {
 		Standard_Real len1 = GCPnts_AbscissaPoint::Length( aCompoundCurve1 );
 		Standard_Real len2 = GCPnts_AbscissaPoint::Length( aCompoundCurve2 );
 
-		return (len1 / 100) * len2;
+		assert(len1 != 0.);
+
+		return len2/len1;
 	}
 
 

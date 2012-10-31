@@ -55,6 +55,9 @@ class TiglFuselage_segment : public ::testing::Test {
         tiglHandle = -1;
         tixiHandle = -1;
   }
+
+    TixiDocumentHandle           tixiHandle;
+    TiglCPACSConfigurationHandle tiglHandle;
 };
 
 
