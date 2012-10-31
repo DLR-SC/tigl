@@ -30,9 +30,6 @@
 
 /******************************************************************************/
 
-static TixiDocumentHandle           tixiHandle;
-static TiglCPACSConfigurationHandle tiglHandle;
-
 class TiglWing : public ::testing::Test {
  protected:
   virtual void SetUp() {
@@ -56,6 +53,9 @@ class TiglWing : public ::testing::Test {
         tiglHandle = -1;
         tixiHandle = -1;
   }
+
+  TixiDocumentHandle           tixiHandle;
+  TiglCPACSConfigurationHandle tiglHandle;
 };
 
 /******************************************************************************/

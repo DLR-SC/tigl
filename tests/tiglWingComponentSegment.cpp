@@ -26,10 +26,11 @@
 #include "test.h" // Brings in the GTest framework
 #include "tigl.h"
 
-/******************************************************************************/
+#include "CCPACSConfigurationManager.h"
+#include "CCPACSWing.h"
+#include "CCPACSWingComponentSegment.h"
 
-static TixiDocumentHandle           tixiHandle;
-static TiglCPACSConfigurationHandle tiglHandle;
+/******************************************************************************/
 
 class WingComponentSegment : public ::testing::Test {
  protected:
@@ -54,8 +55,39 @@ class WingComponentSegment : public ::testing::Test {
         tiglHandle = -1;
         tixiHandle = -1;
   }
+
+  TixiDocumentHandle           tixiHandle;
+  TiglCPACSConfigurationHandle tiglHandle;
 };
 
+
+class WingComponentSegmentSimple : public ::testing::Test {
+ protected:
+  virtual void SetUp() {
+        char* filename = "TestData/simpletest.cpacs.xml";
+        ReturnCode tixiRet;
+        TiglReturnCode tiglRet;
+
+        tiglHandle = -1;
+        tixiHandle = -1;
+        
+        tixiRet = tixiOpenDocument(filename, &tixiHandle);
+        ASSERT_TRUE (tixiRet == SUCCESS);
+
+        tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "Cpacs2Test", &tiglHandle);
+        ASSERT_TRUE(tiglRet == TIGL_SUCCESS);
+  }
+
+  virtual void TearDown() {
+        ASSERT_TRUE(tiglCloseCPACSConfiguration(tiglHandle) == SUCCESS);
+        ASSERT_TRUE(tixiCloseDocument(tixiHandle) == SUCCESS);
+        tiglHandle = -1;
+        tixiHandle = -1;
+  }
+
+  TixiDocumentHandle           tixiHandle;
+  TiglCPACSConfigurationHandle tiglHandle;
+};
 
 TEST_F(WingComponentSegment, tiglWingGetComponentSegmentCount_success)
 {
@@ -159,4 +191,49 @@ TEST_F(WingComponentSegment, tiglWingComponentGetEtaXsi_wrongUID){
 
 	TiglReturnCode ret = tiglWingComponentSegmentPointGetSegmentEtaXsi(tiglHandle, "invalid_comp_seg", eta, xsi, &wingUID, &segmentUID, &segmentEta, &segmentXsi);
 	ASSERT_TRUE(ret == TIGL_UID_ERROR);
+}
+
+TEST_F(WingComponentSegmentSimple, getPointInternal_accuracy)
+{
+    int compseg = 1;
+    // now we have do use the internal interface as we currently have no public api for this
+    tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
+    tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
+    tigl::CCPACSWing& wing = config.GetWing(1);
+    tigl::CCPACSWingComponentSegment& segment = (tigl::CCPACSWingComponentSegment&) wing.GetComponentSegment(compseg);
+
+    gp_Pnt point = segment.GetPoint(0.25, 0.5);
+    ASSERT_NEAR(point.X(), 0.5, 1e-7);
+    ASSERT_NEAR(point.Y(), 0.5, 1e-7);
+
+    point = segment.GetPoint(0.5, 0.5);
+    ASSERT_NEAR(point.X(), 0.5, 1e-7);
+    ASSERT_NEAR(point.Y(), 1.0, 1e-7);
+
+    point = segment.GetPoint(0.75, 0.5);
+    ASSERT_NEAR(point.X(), 0.625, 1e-7);
+    ASSERT_NEAR(point.Y(), 1.5, 1e-7);
+}
+
+TEST_F(WingComponentSegmentSimple, tiglWingComponentSegmentPointGetSegmentEtaXsi_success1){
+        // now the tests
+        double csEta = 0., csXsi = 0.;
+        char *wingUID = NULL, *segmentUID = NULL;
+        tiglWingComponentSegmentPointGetSegmentEtaXsi(tiglHandle, "WING_CS1", 0.25, 0.5, &wingUID, &segmentUID, &csEta, &csXsi);
+        ASSERT_STREQ("Wing",wingUID);
+        ASSERT_STREQ("Cpacs2Test_Wing_Seg_1_2", segmentUID);
+        ASSERT_NEAR(csEta, 0.5, 1e-7);
+        ASSERT_NEAR(csXsi, 0.5, 1e-7);
+
+        tiglWingComponentSegmentPointGetSegmentEtaXsi(tiglHandle, "WING_CS1", 0.49, 0.5, &wingUID, &segmentUID, &csEta, &csXsi);
+        ASSERT_STREQ("Wing",wingUID);
+        ASSERT_STREQ("Cpacs2Test_Wing_Seg_1_2", segmentUID);
+        ASSERT_NEAR(csEta, 0.98, 1e-7);
+        ASSERT_NEAR(csXsi, 0.5, 1e-7);
+
+        tiglWingComponentSegmentPointGetSegmentEtaXsi(tiglHandle, "WING_CS1", 0.75, 0.5, &wingUID, &segmentUID, &csEta, &csXsi);
+        ASSERT_STREQ("Wing",wingUID);
+        ASSERT_STREQ("Cpacs2Test_Wing_Seg_2_3", segmentUID);
+        ASSERT_NEAR(csEta, 0.5, 1e-7);
+        ASSERT_NEAR(csXsi, 0.5, 1e-7);
 }

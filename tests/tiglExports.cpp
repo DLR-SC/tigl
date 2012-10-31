@@ -29,9 +29,6 @@
 
 /******************************************************************************/
 
-static TixiDocumentHandle           tixiHandle;
-static TiglCPACSConfigurationHandle tiglHandle;
-
 class tiglExport : public ::testing::Test {
  protected:
   virtual void SetUp() {
@@ -56,6 +53,9 @@ class tiglExport : public ::testing::Test {
         tiglHandle = -1;
         tixiHandle = -1;
   }
+
+    TixiDocumentHandle           tixiHandle;
+    TiglCPACSConfigurationHandle tiglHandle;
 };
 
 

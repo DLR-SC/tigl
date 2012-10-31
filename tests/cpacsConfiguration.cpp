@@ -30,9 +30,6 @@
 
 /******************************************************************************/
 
-static TixiDocumentHandle           tixiHandle;
-static TiglCPACSConfigurationHandle tiglHandle;
-
 class tiglOpenCpacsConfiguration : public ::testing::Test {
  protected:
   virtual void SetUp() {
@@ -50,6 +47,9 @@ class tiglOpenCpacsConfiguration : public ::testing::Test {
         tiglHandle = -1;
         tixiHandle = -1;
   }
+
+    TixiDocumentHandle           tixiHandle;
+    TiglCPACSConfigurationHandle tiglHandle;
 };
 
 
@@ -115,6 +115,9 @@ class TiglGetCPACSTixiHandle : public ::testing::Test {
         tiglHandle = -1;
         tixiHandle = -1;
   }
+
+  TixiDocumentHandle           tixiHandle;
+  TiglCPACSConfigurationHandle tiglHandle;
 };
 
 
@@ -167,6 +170,9 @@ class tiglCPACSConfigurationHandleValid : public ::testing::Test {
         tiglHandle = -1;
         tixiHandle = -1;
   }
+
+  TixiDocumentHandle           tixiHandle;
+  TiglCPACSConfigurationHandle tiglHandle;
 };
 
 /**
