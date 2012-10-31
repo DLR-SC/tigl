@@ -28,9 +28,6 @@
 
 /******************************************************************************/
 
-static TixiDocumentHandle           tixiHandle;
-static TiglCPACSConfigurationHandle tiglHandle;
-
 class WingGetPoint : public ::testing::Test {
  protected:
   virtual void SetUp() {
@@ -54,6 +51,9 @@ class WingGetPoint : public ::testing::Test {
         tiglHandle = -1;
         tixiHandle = -1;
   }
+
+  TixiDocumentHandle           tixiHandle;
+  TiglCPACSConfigurationHandle tiglHandle;
 };
 
 /**

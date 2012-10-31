@@ -29,9 +29,6 @@
 
 /******************************************************************************/
 
-static TixiDocumentHandle           tixiHandle;
-static TiglCPACSConfigurationHandle tiglHandle;
-
 class TiglFuselageGetPoint : public ::testing::Test {
  protected:
   virtual void SetUp() {
@@ -55,6 +52,9 @@ class TiglFuselageGetPoint : public ::testing::Test {
         tiglHandle = -1;
         tixiHandle = -1;
   }
+
+    TixiDocumentHandle           tixiHandle;
+    TiglCPACSConfigurationHandle tiglHandle;
 };
 
 /**
@@ -62,8 +62,11 @@ class TiglFuselageGetPoint : public ::testing::Test {
 */
 TEST_F(TiglFuselageGetPoint, invalidHandle)
 {
+    std::cout << "Start test" << std::endl;
     double x, y, z;
     ASSERT_TRUE(tiglFuselageGetPoint(-1, 1, 1, 0.0, 0.0, &x, &y, &z) == TIGL_NOT_FOUND);
+    ASSERT_TRUE(tiglFuselageGetPoint(-2, 1, 1, 0.0, 0.0, &x, &y, &z) == TIGL_NOT_FOUND);
+    ASSERT_TRUE(tiglFuselageGetPoint(-3, 1, 1, 0.0, 0.0, &x, &y, &z) == TIGL_NOT_FOUND);
 }
 
 /**

@@ -73,6 +73,9 @@ namespace tigl {
 		// Gets the lower point in relative wing coordinates for a given eta and xsi
 		gp_Pnt GetLowerPoint(double eta, double xsi);
 
+		// Gets the point on the wing chord surface in relative wing coordinates for a given eta and xsi
+		gp_Pnt GetChordPoint(double eta, double xsi);
+
         // Returns the inner section UID of this segment
 		std::string GetInnerSectionUID(void);
 
