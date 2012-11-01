@@ -34,7 +34,7 @@
 
 class WingSegment : public ::testing::Test {
  protected:
-  virtual void SetUp() {
+  static void SetUpTestCase() {
         char* filename = "TestData/CPACS_21_D150.xml";
         ReturnCode tixiRet;
         TiglReturnCode tiglRet;
@@ -44,49 +44,67 @@ class WingSegment : public ::testing::Test {
         
         tixiRet = tixiOpenDocument(filename, &tixiHandle);
         ASSERT_TRUE (tixiRet == SUCCESS);
-
         tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "D150_VAMP", &tiglHandle);
         ASSERT_TRUE(tiglRet == TIGL_SUCCESS);
   }
 
-  virtual void TearDown() {
+  static void TearDownTestCase() {
         ASSERT_TRUE(tiglCloseCPACSConfiguration(tiglHandle) == SUCCESS);
         ASSERT_TRUE(tixiCloseDocument(tixiHandle) == SUCCESS);
         tiglHandle = -1;
         tixiHandle = -1;
   }
+  
+  virtual void SetUp() {}
+  virtual void TearDown() {}
+  
 
-  TixiDocumentHandle           tixiHandle;
-  TiglCPACSConfigurationHandle tiglHandle;
+  static TixiDocumentHandle           tixiHandle;
+  static TiglCPACSConfigurationHandle tiglHandle;
 };
+
+
+TixiDocumentHandle WingSegment::tixiHandle = 0;
+TiglCPACSConfigurationHandle WingSegment::tiglHandle = 0;
+
+/***************************************************************************************************/
+
 
 class WingSegmentSimple : public ::testing::Test {
  protected:
-  virtual void SetUp() {
+  static void SetUpTestCase() {
         char* filename = "TestData/simpletest.cpacs.xml";
         ReturnCode tixiRet;
         TiglReturnCode tiglRet;
 
-        tiglHandle = -1;
-        tixiHandle = -1;
+        tiglSimpleHandle = -1;
+        tixiSimpleHandle = -1;
         
-        tixiRet = tixiOpenDocument(filename, &tixiHandle);
+        tixiRet = tixiOpenDocument(filename, &tixiSimpleHandle);
         ASSERT_TRUE (tixiRet == SUCCESS);
 
-        tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "Cpacs2Test", &tiglHandle);
+        tiglRet = tiglOpenCPACSConfiguration(tixiSimpleHandle, "Cpacs2Test", &tiglSimpleHandle);
         ASSERT_TRUE(tiglRet == TIGL_SUCCESS);
   }
 
-  virtual void TearDown() {
-        ASSERT_TRUE(tiglCloseCPACSConfiguration(tiglHandle) == SUCCESS);
-        ASSERT_TRUE(tixiCloseDocument(tixiHandle) == SUCCESS);
-        tiglHandle = -1;
-        tixiHandle = -1;
+  static void TearDownTestCase() {
+        ASSERT_TRUE(tiglCloseCPACSConfiguration(tiglSimpleHandle) == SUCCESS);
+        ASSERT_TRUE(tixiCloseDocument(tixiSimpleHandle) == SUCCESS);
+        tiglSimpleHandle = -1;
+        tixiSimpleHandle = -1;
   }
+  
+  virtual void SetUp() {}
+  virtual void TearDown() {}
+  
 
-  TixiDocumentHandle           tixiHandle;
-  TiglCPACSConfigurationHandle tiglHandle;
+  static TixiDocumentHandle           tixiSimpleHandle;
+  static TiglCPACSConfigurationHandle tiglSimpleHandle;
 };
+
+
+TixiDocumentHandle WingSegmentSimple::tixiSimpleHandle = 0;
+TiglCPACSConfigurationHandle WingSegmentSimple::tiglSimpleHandle = 0;
 
 /***************************************************************************************************/
 
@@ -623,13 +641,13 @@ TEST_F(WingSegment, tiglWingGetOuterSectionAndElementUID_success)
 TEST_F(WingSegmentSimple, getPoint_accuracy)
 {
     double x = 0., y = 0., z = 0.;
-    ASSERT_TRUE(tiglWingGetUpperPoint(tiglHandle, 1, 1, 0.5, 0.5, &x, &y, &z) == TIGL_SUCCESS);
+    ASSERT_TRUE(tiglWingGetUpperPoint(tiglSimpleHandle, 1, 1, 0.5, 0.5, &x, &y, &z) == TIGL_SUCCESS);
     ASSERT_NEAR(y, 0.5, 1e-7);
     ASSERT_NEAR(x, 0.5, 1e-7);
     //z value read from profile data
     ASSERT_NEAR(z, 0.0529402520006, 1e-7);
 
-    ASSERT_TRUE(tiglWingGetUpperPoint(tiglHandle, 1, 2, 0.5, 0.5, &x, &y, &z) == TIGL_SUCCESS);
+    ASSERT_TRUE(tiglWingGetUpperPoint(tiglSimpleHandle, 1, 2, 0.5, 0.5, &x, &y, &z) == TIGL_SUCCESS);
     ASSERT_NEAR(y, 1.5, 1e-7);
     ASSERT_NEAR(x, 0.625, 1e-7);
 }
@@ -638,7 +656,7 @@ TEST_F(WingSegmentSimple, getChordPointInternal_accuracy)
 {
     // now we have do use the internal interface as we currently have no public api for this
     tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
-    tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
+    tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglSimpleHandle);
     tigl::CCPACSWing& wing = config.GetWing(1);
 
     tigl::CCPACSWingSegment& segment  = (tigl::CCPACSWingSegment&) wing.GetSegment(1);
@@ -671,11 +689,11 @@ TEST_F(WingSegmentSimple, trafo_Consistency){
     double eta_start = 0.5;
     double xsi_start = 0.5;
     double x = 0., y = 0., z = 0.;
-    ASSERT_TRUE(tiglWingGetUpperPoint(tiglHandle, 1, segIndex, eta_start, xsi_start, &x, &y, &z) == TIGL_SUCCESS);
+    ASSERT_TRUE(tiglWingGetUpperPoint(tiglSimpleHandle, 1, segIndex, eta_start, xsi_start, &x, &y, &z) == TIGL_SUCCESS);
 
     // now we have do use the internal interface as we currently have no public api for this
     tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
-    tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
+    tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglSimpleHandle);
     tigl::CCPACSWing& wing = config.GetWing(1);
     tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment&) wing.GetSegment(segIndex);
 
