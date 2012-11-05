@@ -58,6 +58,9 @@ namespace tigl {
         // Returns the name of the wing profile
         std::string GetName(void) const;
 
+        // Gets the C pointer of the name string
+        const char * GetNamePtr(void) const;
+
 		// Returns the description of the wing profile
         std::string GetDescription(void) const;
 
