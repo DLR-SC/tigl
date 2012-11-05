@@ -853,8 +853,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetInnerSectionAndElementUID(TiglCPACS
 TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetOuterSectionAndElementUID(TiglCPACSConfigurationHandle cpacsHandle,
                                                                  int wingIndex,
                                                                  int segmentIndex,
-                                                                 char** sectionIndexPtr,
-                                                                 char** elementIndexPtr);
+                                                                 char** sectionUIDPtr,
+                                                                 char** elementUIDPtr);
 
 
 /**
@@ -1083,7 +1083,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSegmentIndex(TiglCPACSConfiguration
 * @param cpacsHandle     (in) : Handle for the CPACS configuration
 * @param wingIndex       (in) : The index of a wing, starting at 1
 * @param sectionIndex    (in) : The index of a section, starting at 1
-* @param profileNamePtr  (out): The uid of the wing
+* @param uidNamePtr      (out): The uid of the wing
 *
 * Usage example:
 *
@@ -1542,7 +1542,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetPointOnYPlane(TiglCPACSConfigur
 * @param fuselageIndex (in) : The index of the fuselage, starting at 1
 * @param segmentIndex  (in) : The index of the segment of the fuselage, starting at 1
 * @param eta           (in) : eta in the range 0.0 <= eta <= 1.0
-* @param ypos          (in) : X position
+* @param xpos          (in) : X position
 * @param numPointsPtr  (out): Pointer to a integer for the number of intersection points
 *
 * @return
@@ -1620,11 +1620,11 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetNumPointsOnYPlane(TiglCPACSConf
 *                                 integer returnCode)
 *
 *
-* @param cpacsHandle   (in) : Handle for the CPACS configuration
-* @param fuselageIndex (in) : The index of the fuselage, starting at 1
-* @param segmentIndex  (in) : The index of the segment of the fuselage, starting at 1
-* @param eta           (in) : eta in the range 0.0 <= eta <= 1.0
-* @param circumference (out): The Circumference of the fuselage at the given position
+* @param cpacsHandle      (in) : Handle for the CPACS configuration
+* @param fuselageIndex    (in) : The index of the fuselage, starting at 1
+* @param segmentIndex     (in) : The index of the segment of the fuselage, starting at 1
+* @param eta              (in) : eta in the range 0.0 <= eta <= 1.0
+* @param circumferencePtr (out): The Circumference of the fuselage at the given position
 *
 * @return
 *   - TIGL_SUCCESS if a point was found
@@ -2014,7 +2014,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetUID(TiglCPACSConfigurationHandl
 * @param cpacsHandle     (in) : Handle for the CPACS configuration
 * @param fuselageIndex   (in) : The index of a fuselage, starting at 1
 * @param segmentIndex    (in) : The index of a segment, starting at 1
-* @param profileNamePtr  (out): The uid of the fuselage
+* @param uidNamePtr      (out): The uid of the fuselage
 *
 * Usage example:
 *
@@ -2057,7 +2057,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSegmentUID(TiglCPACSConfigurati
 * @param cpacsHandle     (in) : Handle for the CPACS configuration
 * @param fuselageIndex   (in) : The index of a fuselage, starting at 1
 * @param sectionIndex    (in) : The index of a section, starting at 1
-* @param profileNamePtr  (out): The uid of the fuselage
+* @param uidNamePtr      (out): The uid of the fuselage
 *
 * Usage example:
 *
@@ -2673,7 +2673,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglGetMaterialUID(const TiglCPACSConfiguratio
 *
 * @param cpacsHandle     (in) : Handle for the CPACS configuration
 * @param fuselageIndex   (in) : Index of the fuselage to calculate the volume, starting at 1
-* @param volumenPtr      (out): The volume of the fuselage
+* @param volumePtr       (out): The volume of the fuselage
 *
 * @return
 *   - TIGL_SUCCESS if no error occurred
@@ -2697,7 +2697,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetVolume(TiglCPACSConfigurationHa
 *
 * @param cpacsHandle     (in) : Handle for the CPACS configuration
 * @param wingIndex       (in) : Index of the Wing to calculate the volume, starting at 1
-* @param volumenPtr      (out): The volume of the wing
+* @param volumePtr      (out): The volume of the wing
 *
 * @return
 *   - TIGL_SUCCESS if no error occurred
@@ -2921,9 +2921,9 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetReferenceArea(TiglCPACSConfiguratio
 * tigl_wing_get_wetted_area(integer cpacsHandle, character*n wingUID, real referenceAreaPtr, integer returnCode)
 *
 *
-* @param cpacsHandle       (in) : Handle for the CPACS configuration
-* @param wungUID           (in) : UID of the Wing to calculate the wetted area
-* @param referenceAreaPtr  (out): The wetted area of the wing
+* @param cpacsHandle     (in) : Handle for the CPACS configuration
+* @param wingUID         (in) : UID of the Wing to calculate the wetted area
+* @param wettedAreaPtr   (out): The wetted area of the wing
 *
 * @return
 *   - TIGL_SUCCESS if no error occurred
@@ -2974,6 +2974,9 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetWettedArea(TiglCPACSConfigurationHa
 TIGL_COMMON_EXPORT TiglReturnCode tiglComponentGetHashCode(TiglCPACSConfigurationHandle cpacsHandle,
 												   char* componentUID,
 												   int* hashCodePtr);
+
+
+/*@}*/ // end of doxygen group
 
 #endif /* TIGL_H */
 
