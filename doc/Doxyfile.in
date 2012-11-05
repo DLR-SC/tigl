@@ -75,7 +75,6 @@ GENERATE_DEPRECATEDLIST= YES
 ENABLED_SECTIONS       = 
 MAX_INITIALIZER_LINES  = 30
 SHOW_USED_FILES        = YES
-SHOW_DIRECTORIES       = YES
 FILE_VERSION_FILTER    = 
 #---------------------------------------------------------------------------
 # configuration options related to warning and progress messages
@@ -131,14 +130,13 @@ HTML_FILE_EXTENSION    =
 HTML_HEADER            = 
 HTML_FOOTER            = doc/footer.html
 HTML_STYLESHEET        = 
-HTML_ALIGN_MEMBERS     = YES
 GENERATE_HTMLHELP      = YES
 GENERATE_DOCSET        = NO
 DOCSET_FEEDNAME        = "Doxygen generated docs"
 DOCSET_BUNDLE_ID       = org.doxygen.Project
 HTML_DYNAMIC_SECTIONS  = YES
 CHM_FILE               = 
-HHC_LOCATION           = "hhc.exe"
+HHC_LOCATION           = 
 GENERATE_CHI           = NO
 BINARY_TOC             = YES
 TOC_EXPAND             = YES
