@@ -101,6 +101,7 @@ namespace tigl {
 
         VtkWriter *vtkWriter = new VtkWriter(myConfig);
         vtkWriter->Write(loft, component, const_cast<char*>(filename.c_str()), deflection, TIGL_VTK_COMPLEX);
+        delete vtkWriter;
     }
 
     // Exports a by UID selected wing, boolean fused and meshed, as STL file
@@ -111,6 +112,7 @@ namespace tigl {
 
         VtkWriter *vtkWriter = new VtkWriter(myConfig);
         vtkWriter->Write(loft, component, const_cast<char*>(filename.c_str()), deflection, TIGL_VTK_COMPLEX);
+        delete vtkWriter;
     }
 
 
@@ -123,6 +125,7 @@ namespace tigl {
 
         VtkWriter *vtkWriter = new VtkWriter(myConfig);
         vtkWriter->Write(loft, component, const_cast<char*>(filename.c_str()), deflection, TIGL_VTK_COMPLEX);
+        delete vtkWriter;
     }
 
     // Exports a by UID selected fuselage, boolean fused and meshed, as VTK file
@@ -133,6 +136,7 @@ namespace tigl {
 
         VtkWriter *vtkWriter = new VtkWriter(myConfig);
         vtkWriter->Write(loft, component, const_cast<char*>(filename.c_str()), deflection, TIGL_VTK_COMPLEX);
+        delete vtkWriter;
     }
     
 
@@ -155,6 +159,7 @@ namespace tigl {
 
         VtkWriter *vtkWriter = new VtkWriter(myConfig);
         vtkWriter->Write(loft, component, const_cast<char*>(filename.c_str()), deflection, TIGL_VTK_SIMPLE);
+        delete vtkWriter;
     }
 
     // Exports a by UID selected fuselage, boolean fused and meshed, as VTK file
@@ -165,6 +170,7 @@ namespace tigl {
 
         VtkWriter *vtkWriter = new VtkWriter(myConfig);
         vtkWriter->Write(loft, component, const_cast<char*>(filename.c_str()), deflection, TIGL_VTK_SIMPLE);
+        delete vtkWriter;
     }
 
 
