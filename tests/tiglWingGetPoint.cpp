@@ -30,7 +30,7 @@
 
 class WingGetPoint : public ::testing::Test {
  protected:
-  virtual void SetUp() {
+  static void SetUpTestCase() {
         char* filename = "TestData/CPACS_21_D150.xml";
         ReturnCode tixiRet;
         TiglReturnCode tiglRet;
@@ -40,21 +40,32 @@ class WingGetPoint : public ::testing::Test {
         
         tixiRet = tixiOpenDocument(filename, &tixiHandle);
         ASSERT_TRUE (tixiRet == SUCCESS);
-
         tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "D150_VAMP", &tiglHandle);
         ASSERT_TRUE(tiglRet == TIGL_SUCCESS);
   }
 
-  virtual void TearDown() {
+  static void TearDownTestCase() {
         ASSERT_TRUE(tiglCloseCPACSConfiguration(tiglHandle) == SUCCESS);
         ASSERT_TRUE(tixiCloseDocument(tixiHandle) == SUCCESS);
         tiglHandle = -1;
         tixiHandle = -1;
   }
+  
+  virtual void SetUp() {}
+  virtual void TearDown() {}
+  
 
-  TixiDocumentHandle           tixiHandle;
-  TiglCPACSConfigurationHandle tiglHandle;
+  static TixiDocumentHandle           tixiHandle;
+  static TiglCPACSConfigurationHandle tiglHandle;
 };
+
+
+TixiDocumentHandle WingGetPoint::tixiHandle = 0;
+TiglCPACSConfigurationHandle WingGetPoint::tiglHandle = 0;
+
+
+/******************************************************************************/
+
 
 /**
 * Tests tiglWingGetUpperPoint with invalid CPACS handle.

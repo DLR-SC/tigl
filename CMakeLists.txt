@@ -15,6 +15,8 @@ set(TIGL_VERSION_MINOR 0)
 set(TIGL_VERSION_PATCH 2+)
 set(TIGL_VERSION "${TIGL_VERSION_MAJOR}.${TIGL_VERSION_MINOR}.${TIGL_VERSION_PATCH}")
 
+OPTION(ENABLE_COVERAGE "Enable GCov coverage analysis (defines a 'coverage' target and enforces static build of tigl)" ON)
+
 set(ADD_INCLUDE_PATH "" CACHE PATH "Additional include path for package search")
 set(ADD_LIB_PATH "" CACHE PATH     "Additional library path for package search")
 
@@ -43,6 +45,17 @@ set (OCC_LIBS
 
 find_package( OpenCASCADE REQUIRED COMPONENTS ${OCC_LIBS})
 find_package( TIXI REQUIRED)
+
+# code coverage analysis
+IF (CMAKE_BUILD_TYPE STREQUAL "Debug")
+        IF(ENABLE_COVERAGE)
+                MESSAGE(STATUS "Coverage enabled")
+                INCLUDE(CodeCoverage)
+                SETUP_TARGET_FOR_COVERAGE(coverage ${PROJECT_NAME}-unittests coverageReport)
+        ELSE()
+                MESSAGE(STATUS "Coverage disabled")
+        ENDIF()
+ENDIF()
 
 # visual leak detector, useful for debugging under windows
 find_package( VLD )

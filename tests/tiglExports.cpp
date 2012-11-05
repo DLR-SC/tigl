@@ -31,8 +31,8 @@
 
 class tiglExport : public ::testing::Test {
  protected:
-  virtual void SetUp() {
-    char* filename = "TestData/CPACS_21_D150.xml";
+  static void SetUpTestCase() {
+        char* filename = "TestData/CPACS_21_D150.xml";
         ReturnCode tixiRet;
         TiglReturnCode tiglRet;
 
@@ -40,24 +40,29 @@ class tiglExport : public ::testing::Test {
         tixiHandle = -1;
         
         tixiRet = tixiOpenDocument(filename, &tixiHandle);
-        ASSERT_TRUE( tixiRet == SUCCESS);
-
+        ASSERT_TRUE (tixiRet == SUCCESS);
         tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "D150_VAMP", &tiglHandle);
-        ASSERT_TRUE (tiglRet == TIGL_SUCCESS);
-
+        ASSERT_TRUE(tiglRet == TIGL_SUCCESS);
   }
 
-  virtual void TearDown() {
-        ASSERT_TRUE(tiglCloseCPACSConfiguration(tiglHandle) == TIGL_SUCCESS);
+  static void TearDownTestCase() {
+        ASSERT_TRUE(tiglCloseCPACSConfiguration(tiglHandle) == SUCCESS);
         ASSERT_TRUE(tixiCloseDocument(tixiHandle) == SUCCESS);
         tiglHandle = -1;
         tixiHandle = -1;
   }
+  
+  virtual void SetUp() {}
+  virtual void TearDown() {}
+  
 
-    TixiDocumentHandle           tixiHandle;
-    TiglCPACSConfigurationHandle tiglHandle;
+  static TixiDocumentHandle           tixiHandle;
+  static TiglCPACSConfigurationHandle tiglHandle;
 };
 
+
+TixiDocumentHandle tiglExport::tixiHandle = 0;
+TiglCPACSConfigurationHandle tiglExport::tiglHandle = 0;
 
 
 /******************************************************************************/
