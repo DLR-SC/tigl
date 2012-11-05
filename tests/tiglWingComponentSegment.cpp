@@ -129,7 +129,7 @@ TEST_F(WingComponentSegment, tiglWingGetComponentSegmentUID_success)
 {
     char * uid = NULL;
     ASSERT_TRUE(tiglWingGetComponentSegmentUID(tiglHandle, 1, 1, &uid) == TIGL_SUCCESS);
-    ASSERT_TRUE("D150_VAMP_W1_CompSeg1", uid);
+    ASSERT_STREQ("D150_VAMP_W1_CompSeg1", uid);
 
     ASSERT_TRUE(tiglWingGetComponentSegmentUID(tiglHandle, 2, 1, &uid) == TIGL_SUCCESS);
     ASSERT_STREQ("D150_VAMP_HL1_CompSeg1", uid);
