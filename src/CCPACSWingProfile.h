@@ -64,6 +64,9 @@ namespace tigl {
 		// Returns the uid of the wing profile
         std::string GetUID(void) const;
 
+        // Gets the C pointer of the UID string
+        const char * GetUIDPtr(void) const;
+
         // Invalidates internal wing profile state
         void Invalidate(void);
 

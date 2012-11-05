@@ -42,6 +42,10 @@
 #include "gp_Pnt.hxx"
 #include "TopoDS_Shape.hxx"
 
+#ifdef HAVE_VLD
+#include <vld.h>
+#endif
+
 /*****************************************************************************/
 /* Public visible functions.                                                 */
 /*****************************************************************************/
@@ -858,8 +862,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetProfileName(TiglCPACSConfigurationH
 		std::string profileUID = element.GetProfileIndex();
         tigl::CCPACSWingProfile& profile = config.GetWingProfile(profileUID);
 
-        *profileNamePtr = (char *) malloc(profile.GetName().length() * sizeof(char) + 1);
-        strcpy(*profileNamePtr, profile.GetName().c_str());
+        *profileNamePtr = const_cast<char*>(profile.GetUIDPtr());
 
         return TIGL_SUCCESS;
     }

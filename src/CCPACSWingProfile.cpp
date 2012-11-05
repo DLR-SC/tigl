@@ -218,6 +218,11 @@ namespace tigl {
         return uid;
     }
 
+    const char * CCPACSWingProfile::GetUIDPtr(void) const
+    {
+        return uid.c_str();
+    }
+
     // Invalidates internal wing profile state
     void CCPACSWingProfile::Invalidate(void)
     {
