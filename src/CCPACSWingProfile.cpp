@@ -206,6 +206,12 @@ namespace tigl {
         return name;
     }
 
+    // Returns the name of the wing profile
+    const char * CCPACSWingProfile::GetNamePtr(void) const
+    {
+        return name.c_str();
+    }
+
 	// Returns the describtion of the wing profile
     std::string CCPACSWingProfile::GetDescription(void) const
     {

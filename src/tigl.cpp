@@ -859,7 +859,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetProfileName(TiglCPACSConfigurationH
 		std::string profileUID = element.GetProfileIndex();
         tigl::CCPACSWingProfile& profile = config.GetWingProfile(profileUID);
 
-        *profileNamePtr = const_cast<char*>(profile.GetUIDPtr());
+        *profileNamePtr = const_cast<char*>(profile.GetNamePtr());
 
         return TIGL_SUCCESS;
     }
