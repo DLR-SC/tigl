@@ -119,7 +119,7 @@ TEST_F(TiglWing, tiglWingGetProfileName_success)
 {
     char* namePtr = 0;
     ASSERT_TRUE(tiglWingGetProfileName(tiglHandle, 1, 1, 1, &namePtr) == TIGL_SUCCESS);
-    ASSERT_TRUE(strcmp(namePtr, "NameD150_VAMP_W_SupCritProf1") == 0);
+    ASSERT_STREQ( "NameD150_VAMP_W_SupCritProf1", namePtr);
 }
 
 
@@ -130,7 +130,7 @@ TEST_F(TiglWing, tiglWingGetUID_success)
 {
     char* namePtr = 0;
     ASSERT_TRUE(tiglWingGetUID(tiglHandle, 1, &namePtr) == TIGL_SUCCESS);
-    ASSERT_TRUE(strcmp(namePtr, "D150_VAMP_W1") == 0);
+    ASSERT_STREQ( "D150_VAMP_W1", namePtr);
 }
 
 
@@ -141,7 +141,7 @@ TEST_F(TiglWing, tiglWingGetSegmentUID_success)
 {
     char* namePtr = 0;
     ASSERT_TRUE(tiglWingGetSegmentUID(tiglHandle, 1, 1, &namePtr) == TIGL_SUCCESS);
-    ASSERT_TRUE(strcmp(namePtr, "D150_VAMP_W1_Seg1") == 0);
+    ASSERT_STREQ( "D150_VAMP_W1_Seg1", namePtr);
 }
 
 
@@ -152,7 +152,7 @@ TEST_F(TiglWing, tiglWingGetSectionUID_success)
 {
     char* namePtr = 0;
     ASSERT_TRUE(tiglWingGetSectionUID(tiglHandle, 1, 1, &namePtr) == TIGL_SUCCESS);
-    ASSERT_TRUE(strcmp(namePtr, "D150_VAMP_W1_Sec1") == 0);
+    ASSERT_STREQ( "D150_VAMP_W1_Sec1", namePtr);
 }
 
 /**
