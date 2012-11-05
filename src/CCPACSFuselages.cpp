@@ -83,10 +83,11 @@ namespace tigl {
 		// Read fuselage profiles
 		profiles.ReadCPACS(tixiHandle);
 
-        if (tixiCheckElement(tixiHandle, fuselagesXPathPrt) != SUCCESS)
-            return;
-
-        /* Get fuselage element count */
+		if (tixiCheckElement(tixiHandle, fuselagesXPathPrt) != SUCCESS){
+			free(fuselagesXPathPrt);
+			return;
+		}
+		/* Get fuselage element count */
 		int fuselageCount;
 		if (tixiGetNamedChildrenCount(tixiHandle, fuselagesXPathPrt, "fuselage", &fuselageCount) != SUCCESS)
 			throw CTiglError("XML error: tixiGetNamedChildrenCount failed in CCPACSFuselages::ReadCPACS", TIGL_XML_ERROR);
