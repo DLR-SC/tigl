@@ -1133,7 +1133,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSymmetry(TiglCPACSConfigurationHand
 
 
 /**
-* @brief Returns the segmentUID and wingUID for a given point on a componentSegment.
+* @brief Returns the segmentUID and wingUID for a given point on a componentSegment. The returned strings have to be freed by the user.
 *
 *
 * <b>Fortran syntax:</b>
@@ -1180,8 +1180,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentFindSegment(TiglCPACSC
 * @param cpacsHandle     		(in)  : Handle for the CPACS configuration
 * @param componentSegmentUID    (in)  : UID of the componentSegment to search for
 * @param eta, xsi 				(in)  : Eta and Xsi of the point of the componentSegment
-* @param wingUID				(out) : UID of the wing that fits to the given point and componentSegment
-* @param segmentUID				(out) : UID of the segment that fits to the given point and componentSegment
+* @param wingUID				(out) : UID of the wing that fits to the given point and componentSegment. The returned string has to be freed by the user.
+* @param segmentUID				(out) : UID of the segment that fits to the given point and componentSegment. The returned string has to be freed by the user.
 * @param segmentEta				(out) : Eta of the point on the corresponding segment.
 * @param segmentXsi				(out) : Xsi of the point on the corresponding segment.
 *
