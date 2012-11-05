@@ -44,6 +44,17 @@ set (OCC_LIBS
 find_package( OpenCASCADE REQUIRED COMPONENTS ${OCC_LIBS})
 find_package( TIXI REQUIRED)
 
+# visual leak detector, useful for debugging under windows
+find_package( VLD )
+if(VLD_FOUND)
+    set(USE_VLD False CACHE BOOL "Enable Visual Leak Detector.")
+	if(USE_VLD)
+        add_definitions(-DHAVE_VLD=1)
+		include_directories(${VLD_INCLUDE_DIRS})
+	endif(USE_VLD)
+endif()
+
+
 add_subdirectory(src)
 add_subdirectory(TIGLViewer)
 add_subdirectory(bindings)

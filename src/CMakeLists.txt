@@ -12,10 +12,13 @@ file(GLOB TIGL_SRC
     "*.cpp"
 )
 
+if(MSVC)
+    add_definitions(-D_CRT_SECURE_NO_WARNINGS=1)
+endif(MSVC)
 
 # tigl dll/so library
 add_library(TIGL SHARED ${TIGL_SRC})
-target_link_libraries (TIGL ${OpenCASCADE_LIBRARIES} ${TIXI_LIBRARIES})
+target_link_libraries (TIGL ${OpenCASCADE_LIBRARIES} ${TIXI_LIBRARIES} ${VLD_LIBRARIES})
 set_target_properties( TIGL PROPERTIES VERSION ${TIGL_VERSION})
 
 install (TARGETS TIGL 

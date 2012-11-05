@@ -42,9 +42,6 @@
 #include "gp_Pnt.hxx"
 #include "TopoDS_Shape.hxx"
 
-#ifdef HAVE_VLD
-#include <vld.h>
-#endif
 
 /*****************************************************************************/
 /* Public visible functions.                                                 */
