@@ -130,7 +130,7 @@ namespace tigl {
         VtkWriter(CCPACSConfiguration & config);
 
         // No destructor needed
-        ~VtkWriter(void) {}
+        ~VtkWriter(void);
 
         // Write out the triangulation into a XML-VTK polydata file (*.vtp)
         void Write(const TopoDS_Shape & shape, ITiglGeometricComponent & component, const std::string& filename, const double deflection = 0.01, VTK_EXPORT_MODE mode = TIGL_VTK_SIMPLE);

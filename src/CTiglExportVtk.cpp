@@ -183,6 +183,7 @@ namespace tigl {
     VtkWriter::VtkWriter(CCPACSConfiguration& config)
         :myConfig(config)
     {
+        pointArray = NULL;
     }
     
     // Write out the shape to a VTK file
@@ -234,7 +235,8 @@ namespace tigl {
 		file << "      </Polys>" << endl << "    </Piece>" << endl << "  </PolyData>" << endl << "</VTKFile>" << endl;
         file.close();
         cout << "TIGL VTK export with " << points << " unique points and " << triangles << " triangles." << endl;
-		//delete(pointArray);
+        delete[] pointArray;
+        pointArray = NULL;
     }
 
 
@@ -357,6 +359,7 @@ namespace tigl {
         } // for shells
 
         // copy map to enumerated array
+        if(pointArray) delete[] pointArray;
         pointArray = new gp_Pnt[pointMap.size()];
         const unsigned int points = pointMap.size();
         for (PointMapType::iterator it = pointMap.begin(); it != pointMap.end(); ++it) {
@@ -427,6 +430,7 @@ namespace tigl {
             } // loop over segments
 
             // copy map to enumerated array
+            if(pointArray) delete[] pointArray;
             pointArray = new gp_Pnt[pointMap.size()];
             const unsigned int points = pointMap.size();
             for (PointMapType::iterator it = pointMap.begin(); it != pointMap.end(); ++it) {
@@ -494,6 +498,11 @@ namespace tigl {
             V1.Cross(V2); // V1 = Normal
         }
         return V1;
+    }
+
+    VtkWriter::~VtkWriter(){
+        if(pointArray) delete[] pointArray;
+        pointArray = NULL;
     }
 
 } // end namespace tigl
