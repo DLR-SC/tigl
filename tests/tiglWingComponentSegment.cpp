@@ -129,13 +129,13 @@ TEST_F(WingComponentSegment, tiglWingGetComponentSegmentUID_success)
 {
     char * uid = NULL;
     ASSERT_TRUE(tiglWingGetComponentSegmentUID(tiglHandle, 1, 1, &uid) == TIGL_SUCCESS);
-    ASSERT_TRUE(strcmp(uid, "D150_VAMP_W1_CompSeg1") == 0);
+    ASSERT_TRUE("D150_VAMP_W1_CompSeg1", uid);
 
     ASSERT_TRUE(tiglWingGetComponentSegmentUID(tiglHandle, 2, 1, &uid) == TIGL_SUCCESS);
-    ASSERT_TRUE(strcmp(uid, "D150_VAMP_HL1_CompSeg1") == 0);
+    ASSERT_STREQ("D150_VAMP_HL1_CompSeg1", uid);
 
     ASSERT_TRUE(tiglWingGetComponentSegmentUID(tiglHandle, 3, 1, &uid) == TIGL_SUCCESS);
-    ASSERT_TRUE(strcmp(uid, "D150_VAMP_SL1_CompSeg1") == 0);
+    ASSERT_STREQ("D150_VAMP_SL1_CompSeg1", uid);
 }
 
 TEST_F(WingComponentSegment, tiglWingGetComponentSegmentUID_indexFail)
@@ -181,14 +181,18 @@ TEST_F(WingComponentSegment, tiglWingComponentGetEtaXsi_success)
 
 	TiglReturnCode ret = tiglWingComponentSegmentPointGetSegmentEtaXsi(tiglHandle, "D150_VAMP_W1_CompSeg1", eta, xsi, &wingUID, &segmentUID, &segmentEta, &segmentXsi);
 	ASSERT_TRUE( ret == TIGL_SUCCESS);
-	ASSERT_TRUE(strcmp(wingUID, "D150_VAMP_W1") == 0);
+	ASSERT_STREQ("D150_VAMP_W1", wingUID);
+	free(wingUID); wingUID = NULL;
+	free(segmentUID); segmentUID = NULL;
 
 	// test for a bug  in tigl 2.0.2, occurs when component segment does not lie on first wing
 	eta = 0.16;
 	xsi = 0.577506;
 	ret = tiglWingComponentSegmentPointGetSegmentEtaXsi(tiglHandle, "D150_VAMP_HL1_CompSeg1", eta, xsi, &wingUID, &segmentUID, &segmentEta, &segmentXsi);
 	ASSERT_TRUE(ret == TIGL_SUCCESS);
-	ASSERT_TRUE(strcmp(wingUID, "D150_VAMP_HL1") == 0);
+	ASSERT_STREQ("D150_VAMP_HL1", wingUID);
+	free(wingUID); wingUID = NULL;
+	free(segmentUID); segmentUID = NULL;
 }
 
 TEST_F(WingComponentSegment, tiglWingComponentGetEtaXsi_wrongUID){
@@ -200,6 +204,8 @@ TEST_F(WingComponentSegment, tiglWingComponentGetEtaXsi_wrongUID){
 
 	TiglReturnCode ret = tiglWingComponentSegmentPointGetSegmentEtaXsi(tiglHandle, "invalid_comp_seg", eta, xsi, &wingUID, &segmentUID, &segmentEta, &segmentXsi);
 	ASSERT_TRUE(ret == TIGL_UID_ERROR);
+	free(wingUID); wingUID = NULL;
+	free(segmentUID); segmentUID = NULL;
 }
 
 TEST_F(WingComponentSegmentSimple, getPointInternal_accuracy)
@@ -233,16 +239,22 @@ TEST_F(WingComponentSegmentSimple, tiglWingComponentSegmentPointGetSegmentEtaXsi
         ASSERT_STREQ("Cpacs2Test_Wing_Seg_1_2", segmentUID);
         ASSERT_NEAR(csEta, 0.5, 1e-7);
         ASSERT_NEAR(csXsi, 0.5, 1e-7);
+        free(wingUID); wingUID = NULL;
+        free(segmentUID); segmentUID = NULL;
 
         tiglWingComponentSegmentPointGetSegmentEtaXsi(tiglHandle, "WING_CS1", 0.49, 0.5, &wingUID, &segmentUID, &csEta, &csXsi);
         ASSERT_STREQ("Wing",wingUID);
         ASSERT_STREQ("Cpacs2Test_Wing_Seg_1_2", segmentUID);
         ASSERT_NEAR(csEta, 0.98, 1e-7);
         ASSERT_NEAR(csXsi, 0.5, 1e-7);
+        free(wingUID); wingUID = NULL;
+        free(segmentUID); segmentUID = NULL;
 
         tiglWingComponentSegmentPointGetSegmentEtaXsi(tiglHandle, "WING_CS1", 0.75, 0.5, &wingUID, &segmentUID, &csEta, &csXsi);
         ASSERT_STREQ("Wing",wingUID);
         ASSERT_STREQ("Cpacs2Test_Wing_Seg_2_3", segmentUID);
         ASSERT_NEAR(csEta, 0.5, 1e-7);
         ASSERT_NEAR(csXsi, 0.5, 1e-7);
+        free(wingUID); wingUID = NULL;
+        free(segmentUID); segmentUID = NULL;
 }
