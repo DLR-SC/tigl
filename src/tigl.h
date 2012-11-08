@@ -151,11 +151,18 @@ enum TiglAlgorithmCode
  \ingroup Enums Definition of possible types for geometric components. Used for calculations where
   the type if the component changes the way of behavior.
 */
-enum TiglGeometricComponentType
-{
-    TIGL_COMPONENT_FUSELAGE  = 0,        /**< The Component is a fuselage */
-    TIGL_COMPONENT_WING      = 1,        /**< The Component is a wing */
-};
+typedef unsigned int TiglGeometricComponentType;
+
+#define  TIGL_COMPONENT_PHYSICAL        1
+#define  TIGL_COMPONENT_LOGICAL         2
+#define  TIGL_COMPONENT_PLANE           4
+#define  TIGL_COMPONENT_FUSELAGE        8        /**< The Component is a fuselage */
+#define  TIGL_COMPONENT_WING            16       /**< The Component is a wing */
+#define  TIGL_COMPONENT_SEGMENT         32
+#define  TIGL_COMPONENT_WINGSEGMENT     64
+#define  TIGL_COMPONENT_FUSELSEGMENT    128
+#define  TIGL_COMPONENT_WINGCOMPSEGMENT 256
+
 
 
 /**

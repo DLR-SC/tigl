@@ -103,10 +103,10 @@ namespace tigl {
 		TopoDS_Shape GetFusedAirplane(void);
 
     protected:
-        void OutputComponentTree(ITiglGeometricComponent* parent);
+        void OutputComponentTree(CTiglAbstractPhysicalComponent* parent);
 
 		// transform all components realtiv to their parents
-		void transformAllComponents(ITiglGeometricComponent* parent);
+        void transformAllComponents(CTiglAbstractPhysicalComponent* parent);
 
     private:
 		// Copy constructor

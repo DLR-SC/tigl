@@ -30,11 +30,10 @@
 
 #include "tixi.h"
 #include "CTiglTransformation.h"
-#include "ITiglSegment.h"
 #include "CCPACSFuselageSections.h"
 #include "CCPACSFuselageSegments.h"
 #include "CCPACSFuselagePositionings.h"
-#include "CTiglAbstractGeometricComponent.h"
+#include "CTiglAbstractPhysicalComponent.h"
 
 #include "TopoDS_Shape.hxx"
 #include "TopoDS_Compound.hxx"
@@ -44,8 +43,9 @@
 namespace tigl {
 
 	class CCPACSConfiguration;
+	class CTiglAbstractSegment;
 
-    class CCPACSFuselage : public CTiglAbstractGeometricComponent
+    class CCPACSFuselage : public CTiglAbstractPhysicalComponent
 	{
 
 	public:
@@ -64,9 +64,6 @@ namespace tigl {
 		// Returns the name of the fuselage
 		std::string GetName(void) const;
 
-        // Returns the uid of the fuselage
-        const char* GetUIDPtr(void);
-
 		// Returns the parent configuration
 		CCPACSConfiguration & GetConfiguration(void) const;
 
@@ -76,11 +73,11 @@ namespace tigl {
 		// Returns the section for a given index
 		CCPACSFuselageSection& GetSection(int index) const;
 
-		// Get segment count
-		int GetSegmentCount(void);
+        // Get segment count
+        int GetSegmentCount(void);
 
-		// Returns the segment for a given index
-		ITiglSegment & GetSegment(const int index);
+        // Returns the segment for a given index
+        CTiglAbstractSegment & GetSegment(const int index);
 
 		// Gets the fuselage transformation
 		CTiglTransformation GetFuselageTransformation(void);
@@ -106,9 +103,6 @@ namespace tigl {
         // sets a Transformation object
         void Translate(CTiglPoint trans);
 
-        // Get Translation
-        CTiglPoint GetTranslation(void);
-
         // Gets the surfade area of this wing
         double GetSurfaceArea();
 
@@ -116,10 +110,7 @@ namespace tigl {
         double GetCircumference(int segmentIndex, double eta);
 
         // Returns the Component Type TIGL_COMPONENT_FUSELAGE
-        TiglGeometricComponentType GetComponentType(void) {return TIGL_COMPONENT_FUSELAGE;}
-
-        // Returns a unique Hashcode for a specific geometric component
-		int GetComponentHashCode(void);
+        TiglGeometricComponentType GetComponentType(void) {return TIGL_COMPONENT_FUSELAGE | TIGL_COMPONENT_PHYSICAL;}
 
 		// Returns the point where the distance between the selected fuselage and the ground is at minimum.
 		// The Fuselage could be turned with a given angle at at given axis, specified by a point and a direction.
@@ -140,18 +131,13 @@ namespace tigl {
 
     private:
 		// Copy constructor
-        CCPACSFuselage(const CCPACSFuselage & ) : CTiglAbstractGeometricComponent(), segments(0) { /* Do nothing */ }
+        CCPACSFuselage(const CCPACSFuselage & ) : CTiglAbstractPhysicalComponent(), segments(0) { /* Do nothing */ }
 
 		// Assignment operator
 		void operator=(const CCPACSFuselage & ) { /* Do nothing */ }
 
 	private:
 		std::string                name;                 /**< Fuselage name           */
-        std::string                uid;                  /**< Fuselage UID            */
-		CTiglTransformation        transformation;       /**< Fuselage transformation */
-		CTiglPoint                 translation;          /**< Fuselage translation    */
-		CTiglPoint                 scaling;              /**< Fuselage scaling        */
-		CTiglPoint                 rotation;             /**< Fuselage rotation       */
 		CCPACSFuselageSections     sections;             /**< Fuselage sections       */
 		CCPACSFuselageSegments     segments;             /**< Fuselage segments       */
 		CCPACSFuselagePositionings positionings;         /**< Fuselage positionings   */

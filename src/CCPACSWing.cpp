@@ -27,7 +27,7 @@
 
 #include "CCPACSWing.h"
 #include "CCPACSConfiguration.h"
-#include "ITiglSegment.h"
+#include "CTiglAbstractSegment.h"
 
 #include "BRepOffsetAPI_ThruSections.hxx"
 #include "BRepAlgoAPI_Fuse.hxx"
@@ -201,14 +201,6 @@ namespace tigl {
         return name;
     }
 
-    // Returns the uid of the wing
-    const char* CCPACSWing::GetUIDPtr(void)
-    {
-		//std::string uid = GetUID();
-        uid = GetUID();
-        return uid.c_str();
-    }
-
     // Returns the parent configuration
     CCPACSConfiguration& CCPACSWing::GetConfiguration(void) const
     {
@@ -234,15 +226,15 @@ namespace tigl {
     }
 
     // Returns the segment for a given index
-    ITiglSegment & CCPACSWing::GetSegment(const int index)
+    CTiglAbstractSegment & CCPACSWing::GetSegment(const int index)
     {
-        return (ITiglSegment &) segments.GetSegment(index);
+        return (CTiglAbstractSegment &) segments.GetSegment(index);
     }
 
 	// Returns the segment for a given uid
-    ITiglSegment & CCPACSWing::GetSegment(std::string uid)
+    CTiglAbstractSegment & CCPACSWing::GetSegment(std::string uid)
     {
-        return (ITiglSegment &) segments.GetSegment(uid);
+        return (CTiglAbstractSegment &) segments.GetSegment(uid);
     }
 
 	 // Get componentSegment count
@@ -252,15 +244,15 @@ namespace tigl {
     }
 
     // Returns the segment for a given index
-    ITiglSegment & CCPACSWing::GetComponentSegment(const int index)
+    CTiglAbstractSegment & CCPACSWing::GetComponentSegment(const int index)
     {
-		return (ITiglSegment &) componentSegments.GetComponentSegment(index);
+        return (CTiglAbstractSegment &) componentSegments.GetComponentSegment(index);
     }
 
     // Returns the segment for a given uid
-    ITiglSegment & CCPACSWing::GetComponentSegment(std::string uid)
+    CTiglAbstractSegment & CCPACSWing::GetComponentSegment(std::string uid)
     {
-		return (ITiglSegment &) componentSegments.GetComponentSegment(uid);
+        return (CTiglAbstractSegment &) componentSegments.GetComponentSegment(uid);
     }
 
 
@@ -372,9 +364,7 @@ namespace tigl {
 	// Sets the Transformation object
     void CCPACSWing::Translate(CTiglPoint trans)
     {
-    	translation.x += trans.x;
-    	translation.y += trans.y;
-    	translation.z += trans.z;
+        CTiglAbstractGeometricComponent::Translate(trans);
     	invalidated = true;
     	segments.Invalidate();
     	Update();
@@ -429,13 +419,6 @@ namespace tigl {
 		return wetArea;
 	}
 
-
-	// Returns a unique Hashcode for a specific geometric component
-	int CCPACSWing::GetComponentHashCode(void)
-	{
-		GetLoft();
-		return fusedSegments.HashCode(2294967295);
-	}
 	
 	// Returns the lower Surface of a Segment
 	Handle(Geom_Surface) CCPACSWing::GetLowerSegmentSurface(int index)
