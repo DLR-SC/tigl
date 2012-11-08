@@ -40,6 +40,7 @@
 #include <QtGui/QColorDialog>
 #include <QtGui/QPlastiqueStyle>
 #include <QMessageBox>
+#include <QInputDialog>
 
 #include "TIGLViewerWidget.h"
 #include "TIGLViewerInternal.h"
@@ -584,9 +585,39 @@ void TIGLViewerWidget::eraseSelected()
 {
     if(!myView.IsNull())
     {
-        for (myContext->InitCurrent(); myContext->MoreCurrent (); myContext->NextCurrent ())
+        for (myContext->InitCurrent(); myContext->MoreCurrent(); myContext->NextCurrent())
             myContext->Erase(myContext->Current(), Standard_True, Standard_False);
 
+        myContext->ClearCurrents();
+    }
+}
+
+
+void TIGLViewerWidget::setTransparency()
+{
+    bool ok;
+    int transparency;
+
+    QInputDialog *dialog = new QInputDialog(this);
+    dialog->setInputMode(QInputDialog::IntInput);
+    connect(dialog, SIGNAL(intValueChanged(int)), this, SLOT(setTransparency(int)));
+    transparency = dialog->getInt(this, tr("Select transparency level"), tr("Transparency:"), 75, 0, 100, 1, &ok);
+    setTransparency(transparency);
+}
+
+void TIGLViewerWidget::setTransparency(int tr)
+{
+    Standard_Real transparency = 0.1;
+    if ( (tr < 0) || (tr > 100)) {
+        return;
+    }
+    transparency = tr * 0.01;
+
+    if(!myView.IsNull())
+    {
+        for (myContext->InitCurrent(); myContext->MoreCurrent(); myContext->NextCurrent()) {
+            myContext->SetTransparency(myContext->Current(), transparency, Standard_True);
+        }
         myContext->ClearCurrents();
     }
 }

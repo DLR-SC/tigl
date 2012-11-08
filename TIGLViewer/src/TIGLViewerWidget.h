@@ -130,6 +130,8 @@ public slots:
 	void viewReset();
 	void setReset();
 	void eraseSelected();
+    void setTransparency();
+    void setTransparency(int tr);
 
 protected: // methods
 

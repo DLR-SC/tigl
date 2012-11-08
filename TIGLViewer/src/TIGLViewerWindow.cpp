@@ -61,15 +61,21 @@ void TIGLViewerWindow::contextMenuEvent(QContextMenuEvent *event)
      QMenu menu(this);
 
      bool OneOrMoreIsSelected = false;
-       for (myVC->getContext()->InitCurrent(); myVC->getContext()->MoreCurrent (); myVC->getContext()->NextCurrent ())
+     for (myVC->getContext()->InitCurrent(); myVC->getContext()->MoreCurrent (); myVC->getContext()->NextCurrent ())
          if (myVC->getContext()->IsDisplayed(myVC->getContext()->Current())) OneOrMoreIsSelected=true;
 
      if(OneOrMoreIsSelected) {
-         QAction *eraseAct;
-         eraseAct = new QAction(tr("&Erase"), this);
-         eraseAct->setStatusTip(tr("Erase selected components"));
-         menu.addAction(eraseAct);
-         connect(eraseAct, SIGNAL(triggered()), myOCC, SLOT(eraseSelected()));
+        QAction *eraseAct;
+        eraseAct = new QAction(tr("&Erase"), this);
+        eraseAct->setStatusTip(tr("Erase selected components"));
+        menu.addAction(eraseAct);
+        connect(eraseAct, SIGNAL(triggered()), myOCC, SLOT(eraseSelected()));
+
+        QAction *transparencyAct;
+        transparencyAct = new QAction(tr("&Transparency"), this);
+        transparencyAct->setStatusTip(tr("Component Transparency"));
+        menu.addAction(transparencyAct);
+        connect(transparencyAct, SIGNAL(triggered()), myOCC, SLOT(setTransparency()));
      }
 
      menu.exec(event->globalPos());
