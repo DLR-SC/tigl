@@ -56,6 +56,24 @@ void ShowOrigin ( Handle_AIS_InteractiveContext theContext )
 	AddVertex ( 0.0, 0.0, 0.0, theContext);
 }
 
+void TIGLViewerWindow::contextMenuEvent(QContextMenuEvent *event)
+ {
+     QMenu menu(this);
+
+     bool OneOrMoreIsSelected = false;
+       for (myVC->getContext()->InitCurrent(); myVC->getContext()->MoreCurrent (); myVC->getContext()->NextCurrent ())
+         if (myVC->getContext()->IsDisplayed(myVC->getContext()->Current())) OneOrMoreIsSelected=true;
+
+     if(OneOrMoreIsSelected) {
+         QAction *eraseAct;
+         eraseAct = new QAction(tr("&Erase"), this);
+         eraseAct->setStatusTip(tr("Erase selected components"));
+         menu.addAction(eraseAct);
+         connect(eraseAct, SIGNAL(triggered()), myOCC, SLOT(eraseSelected()));
+     }
+
+     menu.exec(event->globalPos());
+ }
 
 TIGLViewerWindow::TIGLViewerWindow()
 	: myLastFolder(tr(""))
@@ -559,7 +577,6 @@ void TIGLViewerWindow::createActions()
 	connect(tiglExportMeshedWingVTKsimple, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportMeshedWingVTKsimple()));
 	connect(tiglExportMeshedFuselageVTK, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportMeshedFuselageVTK()));
 	connect(tiglExportMeshedFuselageVTKsimple, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportMeshedFuselageVTKsimple()));
-
 
 	// The co-ordinates from the view
 	connect( myOCC, SIGNAL(mouseMoved(V3d_Coordinate,V3d_Coordinate,V3d_Coordinate)),
