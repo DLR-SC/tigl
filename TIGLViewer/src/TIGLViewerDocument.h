@@ -48,6 +48,8 @@ public:
     ~TIGLViewerDocument( );
 
     void openCpacsConfiguration(const QString fileName);
+    void closeCpacsConfiguration();
+    TiglCPACSConfigurationHandle getCpacsHandle(void) const;
 
     // a small helper when we just want to display a shape
     Handle(AIS_Shape) displayShape(const TopoDS_Shape& shape);
@@ -63,6 +65,9 @@ public:
 
     // Returns the CPACS configuration
 	tigl::CCPACSConfiguration& GetConfiguration(void) const;
+
+signals:
+    void documentUpdated(TiglCPACSConfigurationHandle);
 
 public slots:
 	// Aircraft slots
