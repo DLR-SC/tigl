@@ -27,7 +27,6 @@
 
 #include "CCPACSFuselage.h"
 #include "CCPACSFuselageSegment.h"
-#include "ITiglSegment.h"
 #include "CCPACSConfiguration.h"
 
 #include "BRepOffsetAPI_ThruSections.hxx"
@@ -209,14 +208,6 @@ namespace tigl {
         return name;
     }
 
-    // Returns the uid of the fuselage
-    const char* CCPACSFuselage::GetUIDPtr(void)
-    {
-        //std::string uid = GetUID();
-        uid = GetUID();
-        return uid.c_str();
-    }
-
     // Returns the parent configuration
     CCPACSConfiguration& CCPACSFuselage::GetConfiguration(void) const
     {
@@ -242,9 +233,9 @@ namespace tigl {
     }
 
     // Returns the segment for a given index
-    ITiglSegment & CCPACSFuselage::GetSegment(const int index)
+    CTiglAbstractSegment & CCPACSFuselage::GetSegment(const int index)
     {
-        return (ITiglSegment &) segments.GetSegment(index);
+        return (CTiglAbstractSegment &) segments.GetSegment(index);
     }
 
     // Gets the loft of the whole fuselage.
@@ -354,17 +345,9 @@ namespace tigl {
 	// Sets the Transformation object
     void CCPACSFuselage::Translate(CTiglPoint trans)
     {
-    	translation.x += trans.x;
-    	translation.y += trans.y;
-    	translation.z += trans.z;
+        CTiglAbstractGeometricComponent::Translate(trans);
     	invalidated = true;
 		Update();
-    }
-
-    // Get Translation
-    CTiglPoint CCPACSFuselage::GetTranslation(void)
-    {
-    	return translation;
     }
 
     // Returns the circumference of the segment "segmentIndex" at a given eta
@@ -384,13 +367,6 @@ namespace tigl {
         myArea = System.Mass();
         return myArea;
     }
-	
-	// Returns a unique Hashcode for a specific geometric component
-	int CCPACSFuselage::GetComponentHashCode(void)
-	{
-		GetLoft();
-		return fusedSegments.HashCode(2294967295);
-	}
 
 	// Returns the point where the distance between the selected fuselage and the ground is at minimum.
 	// The Fuselage could be turned with a given angle at at given axis, specified by a point and a direction.

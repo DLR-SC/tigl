@@ -30,12 +30,12 @@
 
 #include "tixi.h"
 #include "CTiglTransformation.h"
-#include "CTiglAbstractGeometricComponent.h"
+#include "CTiglAbstractPhysicalComponent.h"
 #include "CCPACSWingSections.h"
 #include "CCPACSWingSegments.h"
 #include "CCPACSWingComponentSegments.h"
 #include "CCPACSWingPositionings.h"
-#include "ITiglSegment.h"
+#include "CTiglAbstractSegment.h"
 
 #include "TopoDS_Shape.hxx"
 #include "TopoDS_Compound.hxx"
@@ -46,7 +46,7 @@ namespace tigl {
 
 	class CCPACSConfiguration;
 
-    class CCPACSWing : public CTiglAbstractGeometricComponent
+    class CCPACSWing : public CTiglAbstractPhysicalComponent
 	{
 
 	public:
@@ -65,9 +65,6 @@ namespace tigl {
 		// Returns the name of the wing
 		const std::string & GetName(void) const;
 
-		// Returns the uid of the wing
-		const char* GetUIDPtr(void);
-
 		// Returns the parent configuration
 		CCPACSConfiguration & GetConfiguration(void) const;
 
@@ -81,15 +78,15 @@ namespace tigl {
 		int GetSegmentCount(void);
 
 		// Returns the segment for a given index or uid
-		ITiglSegment & GetSegment(const int index);
-		ITiglSegment & GetSegment(std::string uid);
+		CTiglAbstractSegment & GetSegment(const int index);
+		CTiglAbstractSegment & GetSegment(std::string uid);
 
 		// Get segment count
 		int GetComponentSegmentCount(void);
 
 		// Returns the segment for a given index or uid
-		ITiglSegment & GetComponentSegment(const int index);
-		ITiglSegment & GetComponentSegment(std::string uid);
+		CTiglAbstractSegment & GetComponentSegment(const int index);
+		CTiglAbstractSegment & GetComponentSegment(std::string uid);
 
 		// Gets the wing transformation
 		CTiglTransformation GetWingTransformation(void);
@@ -133,10 +130,7 @@ namespace tigl {
 		double GetWettedArea(TopoDS_Shape parent);
 
         // Returns the Component Type TIGL_COMPONENT_WING.
-        TiglGeometricComponentType GetComponentType(void) {return TIGL_COMPONENT_WING;}
-
-        // Returns a unique Hashcode for a specific geometric component
-		int GetComponentHashCode(void);
+        TiglGeometricComponentType GetComponentType(void) {return TIGL_COMPONENT_WING | TIGL_COMPONENT_PHYSICAL;}
 
 		// Returns the lower Surface of a Segment
 		Handle(Geom_Surface) GetLowerSegmentSurface(int index);
@@ -161,18 +155,13 @@ namespace tigl {
 
     private:
 		// Copy constructor
-        CCPACSWing(const CCPACSWing & ) : CTiglAbstractGeometricComponent(), segments(0), componentSegments(0) { /* Do nothing */ }
+        CCPACSWing(const CCPACSWing & ) : CTiglAbstractPhysicalComponent(), segments(0), componentSegments(0) { /* Do nothing */ }
 
 		// Assignment operator
 		void operator=(const CCPACSWing & ) { /* Do nothing */ }
 
 	private:
 		std::string                	name;                 	/**< Wing name           */
-		std::string				   	uid;					/**< Wing UID			  */
-		CTiglTransformation        	transformation;       	/**< Wing transformation */
-		CTiglPoint                 	translation;          	/**< Wing translation    */
-		CTiglPoint                 	scaling;              	/**< Wing scaling        */
-		CTiglPoint                 	rotation;             	/**< Wing rotation       */
 		CCPACSWingSections         	sections;             	/**< Wing sections       */
 		CCPACSWingSegments         	segments;             	/**< Wing segments       */
 		CCPACSWingComponentSegments	componentSegments;     	/**< Wing ComponentSegments       */

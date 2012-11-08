@@ -93,9 +93,8 @@ namespace tigl {
 
 	// Constructor
 	CCPACSWingComponentSegment::CCPACSWingComponentSegment(CCPACSWing* aWing, int aSegmentIndex)
-		: wing(aWing)
-        , invalidated(true)
-        , mySegmentIndex(aSegmentIndex)
+        : CTiglAbstractSegment(aSegmentIndex)
+        , wing(aWing)
         , surfacesAreValid(false)
 	{
         Cleanup();
@@ -118,10 +117,12 @@ namespace tigl {
 	void CCPACSWingComponentSegment::Cleanup(void)
 	{
 		name = "";
-		uid  = "";
 		fromElementUID = "";
-		toElementUID = "";
-		Invalidate();
+        toElementUID  = "";
+        myVolume      = 0.;
+        mySurfaceArea = 0.;
+        surfacesAreValid = false;
+        CTiglAbstractSegment::Cleanup();
 	}
 
 	// Update internal segment data
@@ -154,7 +155,7 @@ namespace tigl {
         tempString   = "uID";
         elementPath  = const_cast<char*>(tempString.c_str());
         if (tixiGetTextAttribute(tixiHandle, const_cast<char*>(segmentXPath.c_str()), const_cast<char*>(tempString.c_str()), &ptrUID) == SUCCESS)
-            uid = ptrUID;
+            SetUID(ptrUID);
 
 		// Get fromElementUID
         char* ptrFromElementUID = NULL;
@@ -181,7 +182,7 @@ namespace tigl {
 
 
 	// Gets the loft between the two segment sections
-	TopoDS_Shape CCPACSWingComponentSegment::GetLoft(void)
+    TopoDS_Shape& CCPACSWingComponentSegment::GetLoft(void)
 	{
 		Update();
 		return loft;
@@ -467,18 +468,6 @@ namespace tigl {
 //		return profilePoint;
 //    }
 //
-    // Gets the uid of this segment
-    const std::string & CCPACSWingComponentSegment::GetUID(void)
-    {
-    	return uid;
-    }
-
-    // Gets the uid of this segment
-    const char* CCPACSWingComponentSegment::GetUIDPtr(void)
-    {
-    	return uid.c_str();
-    }
-
 
     // Gets the fromElementUID of this segment
 	const std::string & CCPACSWingComponentSegment::GetFromElementUID(void)

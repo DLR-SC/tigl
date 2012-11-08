@@ -32,7 +32,7 @@
 #include "CCPACSFuselageConnection.h"
 #include "CTiglTransformation.h"
 #include "CTiglPoint.h"
-#include "ITiglSegment.h"
+#include "CTiglAbstractSegment.h"
 
 #include "TopoDS_Shape.hxx"
 
@@ -41,7 +41,7 @@ namespace tigl {
 
 	class CCPACSFuselage;
 
-	class CCPACSFuselageSegment : public ITiglSegment
+	class CCPACSFuselageSegment : public CTiglAbstractSegment
 	{
 
 	public:
@@ -50,9 +50,6 @@ namespace tigl {
 
 		// Virtual Destructor
 		virtual ~CCPACSFuselageSegment(void);
-
-		// Invalidates internal state
-		void Invalidate(void);
 
 		// Read CPACS segment elements
 		void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& segmentXPath);
@@ -64,7 +61,7 @@ namespace tigl {
         int GetSegmentIndex(void) const;
 
 		// Gets the loft between the two segment sections
-		TopoDS_Shape GetLoft(void);
+        TopoDS_Shape& GetLoft(void);
 
         // Returns the start section UID of this segment
 		std::string GetStartSectionUID(void);
@@ -133,12 +130,6 @@ namespace tigl {
 		// Gets the surface area of this segment
         double GetSurfaceArea();
 
-        // Gets the uid of this segment
-        const std::string & GetUID(void);
-
-        // Gets the C pointer of the UID string
-        const char* GetUIDPtr(void);
-
         // Gets the wire on the loft at a given eta
         TopoDS_Shape getWireOnLoft(double eta);
 
@@ -150,6 +141,8 @@ namespace tigl {
 
         // Returns the outer profile points as read from TIXI. The points are already transformed.
         std::vector<CTiglPoint*> GetRawEndProfilePoints();
+
+        TiglGeometricComponentType GetComponentType(){return TIGL_COMPONENT_FUSELSEGMENT | TIGL_COMPONENT_SEGMENT | TIGL_COMPONENT_LOGICAL;}
 
     protected:
 		// Cleanup routine
@@ -169,13 +162,9 @@ namespace tigl {
 		void operator=(const CCPACSFuselageSegment& ) { /* Do nothing */ }
 
 		std::string              name;                 /**< Segment name                            */
-        std::string              uid;                  /**< Segment uid                             */
 		CCPACSFuselageConnection startConnection;      /**< Start segment connection                */
 		CCPACSFuselageConnection endConnection;        /**< End segment connection                  */
 		CCPACSFuselage*          fuselage;             /**< Parent fuselage                         */
-		TopoDS_Shape             loft;                 /**< The loft between two sections           */
-		bool                     invalidated;          /**< Internal state flag                     */
-        int                      mySegmentIndex;       /**< Index of this segment                   */
         double                   myVolume;             /**< Volume of this segment                  */
         double                   mySurfaceArea;        /**< Surface Area of this segment            */
         double                   myWireLength;         /**< Wire length of this segment for a given zeta */
