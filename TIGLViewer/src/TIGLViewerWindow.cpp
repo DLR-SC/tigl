@@ -95,8 +95,6 @@ TIGLViewerWindow::TIGLViewerWindow()
     QObject::connect(scriptInput, SIGNAL(textChanged(QString)), scriptEngine, SLOT(textChanged(QString)));
     QObject::connect(scriptInput, SIGNAL(returnPressed()), scriptEngine, SLOT(eval()));
     QObject::connect(scriptEngine, SIGNAL(printResults(QString)), console, SLOT(append(QString)));
-
-    scriptInput->setFocus();
 }
 
 TIGLViewerWindow::~TIGLViewerWindow(){
