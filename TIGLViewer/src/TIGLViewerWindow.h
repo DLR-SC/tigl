@@ -57,10 +57,14 @@ public:
 	// Displays a simple dialog for error messages
 	void displayErrorMessage (const QString aMessage, QString aHeader);
 
+public slots:
+    void updateMenus(TiglCPACSConfigurationHandle);
+
 private slots:
     void newFile();
     void open();
     void openRecentFile();
+    void closeConfiguration();
     void save();
     void print();
 	void setBackgroundImage();

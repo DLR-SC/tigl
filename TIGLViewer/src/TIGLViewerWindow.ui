@@ -75,6 +75,7 @@
     <addaction name="openAction"/>
     <addaction name="recentFileMenu"/>
     <addaction name="saveAction"/>
+    <addaction name="closeAction"/>
     <addaction name="printAction"/>
     <addaction name="setBackgroundAction"/>
     <addaction name="separator"/>
@@ -872,7 +873,7 @@
     <string>Alt+D</string>
    </property>
   </action>
-    <action name="showScriptAction">
+  <action name="showScriptAction">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -908,6 +909,11 @@
   <action name="showFusedAirplaneTriangulation">
    <property name="text">
     <string>Show fused Airplane Triangulation</string>
+   </property>
+  </action>
+  <action name="closeAction">
+   <property name="text">
+    <string>&amp;Close Configuration</string>
    </property>
   </action>
  </widget>

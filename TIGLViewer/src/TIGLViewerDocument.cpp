@@ -59,6 +59,7 @@ TIGLViewerDocument::TIGLViewerDocument( QWidget *parentWidget, const Handle_AIS_
 	parent = parentWidget;
 	myAISContext = ic;
 	myOCC = ((TIGLViewerWindow*) parent)->getMyOCC();
+	m_cpacsHandle = -1;
 }
 
 TIGLViewerDocument::~TIGLViewerDocument( )
@@ -147,6 +148,24 @@ void TIGLViewerDocument::openCpacsConfiguration(const QString fileName)
 	loadedConfigurationFileName = fileName;
 }
 
+void TIGLViewerDocument::closeCpacsConfiguration(){
+    if(m_cpacsHandle < 1)
+        return;
+
+    TixiDocumentHandle tixiHandle = -1;
+    tiglGetCPACSTixiHandle(m_cpacsHandle, &tixiHandle);
+
+    tiglCloseCPACSConfiguration(m_cpacsHandle);
+    m_cpacsHandle = -1;
+
+    if(tixiHandle > 0){
+        tixiCloseDocument(tixiHandle);
+    }
+
+    myAISContext->EraseAll(Standard_False);
+    emit documentUpdated(m_cpacsHandle);
+}
+
 
 /**
  * Re-reads the CPACS configuration.
@@ -159,6 +178,7 @@ void TIGLViewerDocument::updateConfiguration()
 		m_cpacsHandle = -1;
 		myAISContext->EraseAll(Standard_False);
 		openCpacsConfiguration(loadedConfigurationFileName);
+		emit documentUpdated(m_cpacsHandle);
 	}
 }
 
@@ -1210,6 +1230,8 @@ void TIGLViewerDocument::createShapeTriangulation(const TopoDS_Shape& shape, Top
     }
 }
 
-
+TiglCPACSConfigurationHandle TIGLViewerDocument::getCpacsHandle(void) const {
+    return this->m_cpacsHandle;
+}
 
 

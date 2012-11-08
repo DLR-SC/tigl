@@ -83,6 +83,7 @@ TIGLViewerWindow::TIGLViewerWindow()
 
     createActions();
     createMenus();
+    updateMenus(-1);
 
     statusBar()->showMessage(tr("A context menu is available by right-clicking"));
 
@@ -143,6 +144,10 @@ void TIGLViewerWindow::open()
     openFile(fileName);
 }
 
+void TIGLViewerWindow::closeConfiguration(){
+    cpacsConfiguration->closeCpacsConfiguration();
+}
+
 void TIGLViewerWindow::openRecentFile()
 {
     QAction *action = qobject_cast<QAction *>(sender());
@@ -168,6 +173,7 @@ void TIGLViewerWindow::openFile(const QString& fileName)
         if (fileType.toLower() == tr("xml"))
         {
             cpacsConfiguration->openCpacsConfiguration(fileInfo.absoluteFilePath());
+            updateMenus(cpacsConfiguration->getCpacsHandle());
             watcher = new QFileSystemWatcher();
             watcher->addPath(fileInfo.absoluteFilePath());
             QObject::connect(watcher, SIGNAL(fileChanged(QString)), cpacsConfiguration, SLOT(updateConfiguration()));
@@ -449,6 +455,7 @@ void TIGLViewerWindow::createActions()
 {
     connect(newAction, SIGNAL(triggered()), this, SLOT(newFile()));
     connect(openAction, SIGNAL(triggered()), this, SLOT(open()));
+    connect(closeAction, SIGNAL(triggered()), this, SLOT(closeConfiguration()));
 
     for (int i = 0; i < MaxRecentFiles; ++i) {
         recentFileActions[i] = new QAction(this);
@@ -567,6 +574,8 @@ void TIGLViewerWindow::createActions()
 	connect( myOCC, SIGNAL(sendStatus(const QString)),
 		     this,  SLOT  (statusMessage(const QString)) );
 
+	connect( cpacsConfiguration, SIGNAL(documentUpdated(TiglCPACSConfigurationHandle)), 
+		     this, SLOT(updateMenus(TiglCPACSConfigurationHandle)) );
 }
 
 void TIGLViewerWindow::createMenus()
@@ -604,3 +613,16 @@ void TIGLViewerWindow::updateRecentFileActions()
     myLastFolder = settings.value("lastFolder").toString();
 }
 
+void TIGLViewerWindow::updateMenus(TiglCPACSConfigurationHandle hand){
+    int nWings = 0;
+    int nFuselages = 0;
+    if(hand > 0){
+        tiglGetWingCount(hand, &nWings);
+        tiglGetFuselageCount(hand, &nFuselages);
+    }
+    menuWings->setEnabled(nWings > 0);
+    menuFuselages->setEnabled(nFuselages > 0);
+    menuAircraft->setEnabled(nWings > 0 || nFuselages > 0);
+
+    closeAction->setEnabled(hand > 0);
+}
