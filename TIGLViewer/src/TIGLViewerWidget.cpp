@@ -580,12 +580,16 @@ void TIGLViewerWidget::setReset ()
 	}
 }
 
+void TIGLViewerWidget::eraseSelected()
+{
+    if(!myView.IsNull())
+    {
+        for (myContext->InitCurrent(); myContext->MoreCurrent (); myContext->NextCurrent ())
+            myContext->Erase(myContext->Current(), Standard_True, Standard_False);
 
-//void TIGLViewerWidget::popupMenu( const TIGLViewerWidget* aView, const QPoint aPoint )
-//{
-//  // TODO: implement!
-//}
-
+        myContext->ClearCurrents();
+    }
+}
 
 void TIGLViewerWidget::onLeftButtonDown(  Qt::KeyboardModifiers nFlags, const QPoint point )
 {
@@ -647,15 +651,15 @@ void TIGLViewerWidget::onMiddleButtonDown(  Qt::KeyboardModifiers nFlags, const 
 void TIGLViewerWidget::onRightButtonDown(  Qt::KeyboardModifiers nFlags, const QPoint point )
 {
 	myStartPoint = point;
-    if ( nFlags & CASCADESHORTCUTKEY )
-    {
-		setMode( CurAction3d_DynamicRotation );
-		myView->StartRotation( point.x(), point.y() );
-    }
-    else
-    {
-        emit popupMenu ( this, point );
-    }
+//    if ( nFlags & CASCADESHORTCUTKEY )
+//    {
+//		setMode( CurAction3d_DynamicRotation );
+//		myView->StartRotation( point.x(), point.y() );
+//    }
+//    else
+//    {
+//        emit popupMenu ( this, point );
+//    }
 }
 
 
@@ -739,7 +743,7 @@ void TIGLViewerWidget::onRightButtonUp(  Qt::KeyboardModifiers nFlags, const QPo
 	{
 		if ( myMode == CurAction3d_Nothing )
 		{
-			emit popupMenu ( this, point );
+//			emit popupMenu ( this, point );
 		}
 		else
 		{
@@ -747,7 +751,6 @@ void TIGLViewerWidget::onRightButtonUp(  Qt::KeyboardModifiers nFlags, const QPo
 		}
 	}
 }
-
 
 
 void TIGLViewerWidget::onMouseMove( Qt::MouseButtons buttons,
