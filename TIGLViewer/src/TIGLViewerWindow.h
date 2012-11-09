@@ -57,8 +57,11 @@ public:
 	// Displays a simple dialog for error messages
 	void displayErrorMessage (const QString aMessage, QString aHeader);
 
+//@todo remove ifdefs, just inserted for release 2.0.3
+#if 0
 protected:
      void contextMenuEvent(QContextMenuEvent *event);
+#endif
 
 public slots:
     void updateMenus(TiglCPACSConfigurationHandle);

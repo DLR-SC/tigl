@@ -56,6 +56,8 @@ void ShowOrigin ( Handle_AIS_InteractiveContext theContext )
 	AddVertex ( 0.0, 0.0, 0.0, theContext);
 }
 
+//@TODO: please enable lines in again, we disable the menu just for the release 2.0.3
+#if 0
 void TIGLViewerWindow::contextMenuEvent(QContextMenuEvent *event)
  {
      QMenu menu(this);
@@ -80,6 +82,7 @@ void TIGLViewerWindow::contextMenuEvent(QContextMenuEvent *event)
 
      menu.exec(event->globalPos());
  }
+#endif
 
 TIGLViewerWindow::TIGLViewerWindow()
 	: myLastFolder(tr(""))
@@ -119,6 +122,7 @@ TIGLViewerWindow::TIGLViewerWindow()
     QObject::connect(scriptInput, SIGNAL(textChanged(QString)), scriptEngine, SLOT(textChanged(QString)));
     QObject::connect(scriptInput, SIGNAL(returnPressed()), scriptEngine, SLOT(eval()));
     QObject::connect(scriptEngine, SIGNAL(printResults(QString)), console, SLOT(append(QString)));
+    scriptInput->setVisible(false);
 }
 
 TIGLViewerWindow::~TIGLViewerWindow(){
