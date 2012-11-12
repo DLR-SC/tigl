@@ -29,9 +29,6 @@
 
 /***************************************************************************************************/
 
-static TixiDocumentHandle           tixiHandle;
-static TiglCPACSConfigurationHandle tiglHandle;
-
 class TiglFuselage_segment : public ::testing::Test {
  protected:
   static void SetUpTestCase() {
