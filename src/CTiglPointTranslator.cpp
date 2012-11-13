@@ -70,7 +70,7 @@ void CTiglPointTranslator::calcP(double alpha, double beta, CTiglPoint& p) const
 // in the plane defined by x1, x2, x3, x4. 
 double CTiglPointTranslator::calc_obj(double eta, double xsi){
     CTiglPoint p;
-    calcP(eta,xsi, p);
+    calcP(eta, xsi, p);
 
     return p.norm2Sqr();
 }
@@ -155,7 +155,7 @@ int CTiglPointTranslator::optimize(double& eta, double& xsi){
 }
 
 TiglReturnCode CTiglPointTranslator::translate(const CTiglPoint& xx, double* eta, double * xsi){
-    if(!eta || ! xsi){
+    if(!eta || !xsi){
         std::cerr << "Error in CTiglPointTranslator::translate(): eta and xsi may not be NULL Pointers!" << std::endl;
         return TIGL_NULL_POINTER;
     }
