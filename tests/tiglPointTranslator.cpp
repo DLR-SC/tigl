@@ -140,17 +140,17 @@ TEST(TiglPointTranslator, performance){
 
     CTiglPointTranslator trans(x1, x2, x3, x4 );
 
-	clock_t start = clock();
+    clock_t start = clock();
 
     for(int i = 0; i < nruns; ++i){
         trans.translate(p, &eta, &xsi) ;
         //just some dummy to prevent compiler optimization
         x = x + 1.0;
-	}
-	
-	ASSERT_EQ((double)nruns, x);
-	ASSERT_NEAR(0.5, eta, 1e-7);
-	ASSERT_NEAR(0.5, xsi, 1e-7);
+    }
+
+    ASSERT_EQ((double)nruns, x);
+    ASSERT_NEAR(0.5, eta, 1e-7);
+    ASSERT_NEAR(0.5, xsi, 1e-7);
         
     clock_t stop = clock();
     double time_elapsed = (double)(stop - start)/(double)CLOCKS_PER_SEC/(double)nruns;

@@ -2,9 +2,6 @@
 * Copyright (C) 2007-2011 German Aerospace Center (DLR/SC)
 *
 * Created: 2012-11-13 Martin Siggel <Martin.Siggel@dlr.de>
-* Changed: $Id$ 
-*
-* Version: $Revision$
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -34,6 +31,8 @@ namespace tigl {
 
 class CTiglPointTranslator{
 public:
+    CTiglPointTranslator();
+
     /**
      * @brief The class is initialized with the corners of a quadriangle. 
      * @param xfl (in) Coordinate of front left point
@@ -42,20 +41,40 @@ public:
      * @param xbr (in) Coordinate of back right point
      */
     CTiglPointTranslator(const CTiglPoint& xfl, const CTiglPoint& xfr, const CTiglPoint& xbl, const CTiglPoint& xbr);
+    
+    /**
+     * @brief Defines the quadriangle by the given for spatial points.
+     * @param xfl (in) Coordinate of front left point
+     * @param xfr (in) Coordinate of front right point
+     * @param xbl (in) Coordinate of back left point
+     * @param xbr (in) Coordinate of back right point
+     */
+    void setQuadriangle(const CTiglPoint& xfl, const CTiglPoint& xfr, const CTiglPoint& xbl, const CTiglPoint& xbr);
 
-    // finds an eta-xsi coordinate that minimizes the distance to point x
+    /// Finds an eta-xsi coordinate that minimizes the distance to point x.
+    /// The function is not reentrant. If you want to parallelize it, use 
+    /// multiple instances of CTiglPointTranslator.
     TiglReturnCode translate(const CTiglPoint& x, double* eta, double* xsi);
+    
+    /// Converts from eta-xsi to spatial coordinates. Reentrant.
+    TiglReturnCode translate(double eta, double xsi, CTiglPoint* x) const;
+    
+    /// Projects the point x onto the plane and returns that point p.
+    /// The function is not reentrant. If you want to parallelize it, use 
+    /// multiple instances of CTiglPointTranslator.
+    TiglReturnCode project(const CTiglPoint& x, CTiglPoint* p);
 
 private:
     int optimize(double& eta, double& xsi);
     double calc_obj (double eta, double xsi);
     int    calc_grad_hess(double eta, double xsi);
-    void calcP(double eta, double xsi, CTiglPoint& p);
+    void   calcP(double eta, double xsi, CTiglPoint& p) const;
 
     CTiglPoint a, b, c, d;
     CTiglPoint x;
     double hess[2][2];
     double grad[2];
+    bool initialized;
 };
 
 } // end namespace tigl
