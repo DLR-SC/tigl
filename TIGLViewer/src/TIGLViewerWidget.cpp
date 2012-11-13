@@ -40,6 +40,7 @@
 #include <QtGui/QColorDialog>
 #include <QtGui/QPlastiqueStyle>
 #include <QMessageBox>
+#include <QInputDialog>
 
 #include "TIGLViewerWidget.h"
 #include "TIGLViewerInternal.h"
@@ -580,12 +581,46 @@ void TIGLViewerWidget::setReset ()
 	}
 }
 
+void TIGLViewerWidget::eraseSelected()
+{
+    if(!myView.IsNull())
+    {
+        for (myContext->InitCurrent(); myContext->MoreCurrent(); myContext->NextCurrent())
+            myContext->Erase(myContext->Current(), Standard_True, Standard_False);
 
-//void TIGLViewerWidget::popupMenu( const TIGLViewerWidget* aView, const QPoint aPoint )
-//{
-//  // TODO: implement!
-//}
+        myContext->ClearCurrents();
+    }
+}
 
+
+void TIGLViewerWidget::setTransparency()
+{
+    bool ok;
+    int transparency;
+
+    QInputDialog *dialog = new QInputDialog(this);
+    dialog->setInputMode(QInputDialog::IntInput);
+    connect(dialog, SIGNAL(intValueChanged(int)), this, SLOT(setTransparency(int)));
+    transparency = dialog->getInt(this, tr("Select transparency level"), tr("Transparency:"), 75, 0, 100, 1, &ok);
+    setTransparency(transparency);
+}
+
+void TIGLViewerWidget::setTransparency(int tr)
+{
+    Standard_Real transparency = 0.1;
+    if ( (tr < 0) || (tr > 100)) {
+        return;
+    }
+    transparency = tr * 0.01;
+
+    if(!myView.IsNull())
+    {
+        for (myContext->InitCurrent(); myContext->MoreCurrent(); myContext->NextCurrent()) {
+            myContext->SetTransparency(myContext->Current(), transparency, Standard_True);
+        }
+        myContext->ClearCurrents();
+    }
+}
 
 void TIGLViewerWidget::onLeftButtonDown(  Qt::KeyboardModifiers nFlags, const QPoint point )
 {
@@ -647,15 +682,15 @@ void TIGLViewerWidget::onMiddleButtonDown(  Qt::KeyboardModifiers nFlags, const 
 void TIGLViewerWidget::onRightButtonDown(  Qt::KeyboardModifiers nFlags, const QPoint point )
 {
 	myStartPoint = point;
-    if ( nFlags & CASCADESHORTCUTKEY )
-    {
-		setMode( CurAction3d_DynamicRotation );
-		myView->StartRotation( point.x(), point.y() );
-    }
-    else
-    {
-        emit popupMenu ( this, point );
-    }
+//    if ( nFlags & CASCADESHORTCUTKEY )
+//    {
+//		setMode( CurAction3d_DynamicRotation );
+//		myView->StartRotation( point.x(), point.y() );
+//    }
+//    else
+//    {
+//        emit popupMenu ( this, point );
+//    }
 }
 
 
@@ -739,7 +774,7 @@ void TIGLViewerWidget::onRightButtonUp(  Qt::KeyboardModifiers nFlags, const QPo
 	{
 		if ( myMode == CurAction3d_Nothing )
 		{
-			emit popupMenu ( this, point );
+//			emit popupMenu ( this, point );
 		}
 		else
 		{
@@ -747,7 +782,6 @@ void TIGLViewerWidget::onRightButtonUp(  Qt::KeyboardModifiers nFlags, const QPo
 		}
 	}
 }
-
 
 
 void TIGLViewerWidget::onMouseMove( Qt::MouseButtons buttons,

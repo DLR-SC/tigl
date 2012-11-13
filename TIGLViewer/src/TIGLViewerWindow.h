@@ -57,6 +57,9 @@ public:
 	// Displays a simple dialog for error messages
 	void displayErrorMessage (const QString aMessage, QString aHeader);
 
+protected:
+     void contextMenuEvent(QContextMenuEvent *event);
+
 public slots:
     void updateMenus(TiglCPACSConfigurationHandle);
 
