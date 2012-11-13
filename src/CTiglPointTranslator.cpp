@@ -2,9 +2,6 @@
 * Copyright (C) 2007-2011 German Aerospace Center (DLR/SC)
 *
 * Created: 2012-11-13 Martin Siggel <Martin.Siggel@dlr.de>
-* Changed: $Id$ 
-*
-* Version: $Revision$
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -26,8 +23,9 @@
 #include "CTiglPointTranslator.h"
 #include "tigl.h"
 
-#define SQR(x) ((x)*(x))
+#include <cassert>
 
+// uncomment, if you want to see the function working
 //#define DEBUG
 
 namespace tigl{
@@ -36,7 +34,18 @@ namespace {
     inline double max(double a, double b) { return a > b ? a : b; }
 }
 
+CTiglPointTranslator::CTiglPointTranslator(){
+    grad[0] = 0.; grad[1] = 0.;
+    hess[0][0] = hess[0][1] = hess[1][0] = hess[1][1] = 0.;
+    
+    initialized = false;
+}
+
 CTiglPointTranslator::CTiglPointTranslator(const CTiglPoint& x1, const CTiglPoint& x2, const CTiglPoint& x3, const CTiglPoint& x4){
+    setQuadriangle(x1, x2, x3, x4);
+}
+
+void CTiglPointTranslator::setQuadriangle(const CTiglPoint& x1, const CTiglPoint& x2, const CTiglPoint& x3, const CTiglPoint& x4){
     a = x2-x1;
     b = x3-x1;
     c = x1-x2-x3+x4;
@@ -44,10 +53,12 @@ CTiglPointTranslator::CTiglPointTranslator(const CTiglPoint& x1, const CTiglPoin
 
     grad[0] = 0.; grad[1] = 0.;
     hess[0][0] = hess[0][1] = hess[1][0] = hess[1][1] = 0.;
+    
+    initialized = true;
 }
 
 // Vector between point x and a point on the plane defined by (x1,x2,x3,x4);
-void CTiglPointTranslator::calcP(double alpha, double beta, CTiglPoint& p){
+void CTiglPointTranslator::calcP(double alpha, double beta, CTiglPoint& p) const{
     p.x = alpha*a.x + beta*b.x + alpha*beta*c.x + d.x - x.x;
     p.y = alpha*a.y + beta*b.y + alpha*beta*c.y + d.y - x.y;
     p.z = alpha*a.z + beta*b.z + alpha*beta*c.z + d.z - x.z;
@@ -94,20 +105,18 @@ int CTiglPointTranslator::optimize(double& eta, double& xsi){
 
     calc_grad_hess(eta, xsi);
 
-
     // iterate
     int iter      = 0;
     int numOfIter = 100;
-    double prec = 1e-5;
+    double prec   = 1e-5;
 
     while ( iter < numOfIter && 
-          (of_old - of)/max(abs(of),1) > prec && 
-          sqrt(grad[0]*grad[0]+grad[1]*grad[1]) >prec
-          ) 
+            (of_old - of)/max(fabs(of),1.) > prec && 
+            sqrt(grad[0]*grad[0]+grad[1]*grad[1]) > prec ) 
     {
         // calc direction
         double det = hess[0][0]*hess[1][1] - hess[0][1]*hess[1][0];
-        if ( abs(det) < 1e-12 ){
+        if ( fabs(det) < 1e-12 ){
             std::cerr << "Error: Determinant too small in CTiglPointTranslator::optimize!" << std::endl;
             return 1;
         }
@@ -115,8 +124,8 @@ int CTiglPointTranslator::optimize(double& eta, double& xsi){
         // calculate inverse hessian
         double inv_hess[2][2];
         double invdet = 1./det;
-        inv_hess[0][0] = invdet * ( hess[1][1] );
-        inv_hess[1][1] = invdet * ( hess[0][0] );
+        inv_hess[0][0] =  invdet * ( hess[1][1] );
+        inv_hess[1][1] =  invdet * ( hess[0][0] );
         inv_hess[0][1] = -invdet * ( hess[0][1] );
         inv_hess[1][0] = -invdet * ( hess[1][0] );
 
@@ -150,6 +159,8 @@ TiglReturnCode CTiglPointTranslator::translate(const CTiglPoint& xx, double* eta
         std::cerr << "Error in CTiglPointTranslator::translate(): eta and xsi may not be NULL Pointers!" << std::endl;
         return TIGL_NULL_POINTER;
     }
+    
+    assert(initialized);
 
     grad[0] = 0.; grad[1] = 0.;
     hess[0][0] = hess[0][1] = hess[1][0] = hess[1][1] = 0.;
@@ -161,5 +172,42 @@ TiglReturnCode CTiglPointTranslator::translate(const CTiglPoint& xx, double* eta
     else 
         return TIGL_SUCCESS;
 } 
+
+// converts from eta-xsi to spatial coordinates
+TiglReturnCode CTiglPointTranslator::translate(double eta, double xsi, CTiglPoint* px) const{
+    if(!px){
+        std::cerr << "Error in CTiglPointTranslator::translate(): x may not be a NULL Pointer!" << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+    
+    assert(initialized);
+    
+    calcP(eta, xsi, *px);
+    
+    return TIGL_SUCCESS;
+}
+    
+// projects the point x onto the plane and returns this point
+TiglReturnCode CTiglPointTranslator::project(const CTiglPoint& xx, CTiglPoint* px){
+    if(!px){
+        std::cerr << "Error in CTiglPointTranslator::project(): p may not be a NULL Pointer!" << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+    
+    assert(initialized);
+    
+    double eta = 0., xsi = 0.;
+    
+    grad[0] = 0.; grad[1] = 0.;
+    hess[0][0] = hess[0][1] = hess[1][0] = hess[1][1] = 0.;
+
+    this->x = xx;
+    if(optimize(eta, xsi) != 0){
+        return TIGL_ERROR;
+    }
+    
+    calcP(eta,xsi,*px);
+    return TIGL_SUCCESS;
+}
 
 } // end namespace tigl
