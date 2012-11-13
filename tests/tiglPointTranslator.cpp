@@ -25,8 +25,11 @@
 #include "CTiglPointTranslator.h"
 #include <ctime>
 #include <cstdio>
+#include "Precision.hxx"
 
 using namespace tigl;
+
+static double abs_error = Precision::Confusion();
 
 TEST(TiglPointTranslator, simple){
     CTiglPoint x1(0,2,0);
@@ -41,23 +44,23 @@ TEST(TiglPointTranslator, simple){
     CTiglPointTranslator trans(x1, x2, x3, x4 );
 
     ASSERT_EQ ( TIGL_SUCCESS,  trans.translate(p, &eta, &xsi) );
-    ASSERT_NEAR( 0.5, eta, 1e-7);
-    ASSERT_NEAR( 0.5, xsi, 1e-7);
+    ASSERT_NEAR( 0.5, eta, abs_error);
+    ASSERT_NEAR( 0.5, xsi, abs_error);
 
     p.x = 1; p.y = 0; p.z = 0;
     ASSERT_EQ ( TIGL_SUCCESS,  trans.translate(p, &eta, &xsi) );
-    ASSERT_NEAR( 0.5, eta, 1e-7);
-    ASSERT_NEAR( 1.0, xsi, 1e-7);
+    ASSERT_NEAR( 0.5, eta, abs_error);
+    ASSERT_NEAR( 1.0, xsi, abs_error);
 
     p.x = 0; p.y = 0; p.z = 0;
     ASSERT_EQ ( TIGL_SUCCESS,  trans.translate(p, &eta, &xsi) );
-    ASSERT_NEAR( 0.0, eta, 1e-7);
-    ASSERT_NEAR( 1.0, xsi, 1e-7);
+    ASSERT_NEAR( 0.0, eta, abs_error);
+    ASSERT_NEAR( 1.0, xsi, abs_error);
 
     p.x = 1.5; p.y = 1; p.z = 3;
     ASSERT_EQ ( TIGL_SUCCESS,  trans.translate(p, &eta, &xsi) );
-    ASSERT_NEAR( 0.75, eta, 1e-7);
-    ASSERT_NEAR( 0.5 , xsi, 1e-7);
+    ASSERT_NEAR( 0.75, eta, abs_error);
+    ASSERT_NEAR( 0.5 , xsi, abs_error);
 
 }
 
@@ -74,28 +77,28 @@ TEST(TiglPointTranslator, simple2){
     CTiglPointTranslator trans(x1, x2, x3, x4 );
 
     ASSERT_EQ ( TIGL_SUCCESS,  trans.translate(p, &eta, &xsi) );
-    ASSERT_NEAR( 0.5, eta, 1e-7);
-    ASSERT_NEAR( 0.5, xsi, 1e-7);
+    ASSERT_NEAR( 0.5, eta, abs_error);
+    ASSERT_NEAR( 0.5, xsi, abs_error);
     
     p.x = -1.; p.y = 0.; p.z = 0;
     ASSERT_EQ ( TIGL_SUCCESS,  trans.translate(p, &eta, &xsi) );
-    ASSERT_NEAR( 0., eta, 1e-7);
-    ASSERT_NEAR( 0., xsi, 1e-7);
+    ASSERT_NEAR( 0., eta, abs_error);
+    ASSERT_NEAR( 0., xsi, abs_error);
     
     p.x = 0.; p.y = 1.; p.z = 0;
     ASSERT_EQ ( TIGL_SUCCESS,  trans.translate(p, &eta, &xsi) );
-    ASSERT_NEAR( 1., eta, 1e-7);
-    ASSERT_NEAR( 0., xsi, 1e-7);
+    ASSERT_NEAR( 1., eta, abs_error);
+    ASSERT_NEAR( 0., xsi, abs_error);
     
     p.x = 0.; p.y = -1.; p.z = 0;
     ASSERT_EQ ( TIGL_SUCCESS,  trans.translate(p, &eta, &xsi) );
-    ASSERT_NEAR( 0., eta, 1e-7);
-    ASSERT_NEAR( 1., xsi, 1e-7);
+    ASSERT_NEAR( 0., eta, abs_error);
+    ASSERT_NEAR( 1., xsi, abs_error);
     
     p.x = 1.; p.y = 0.; p.z = 0;
     ASSERT_EQ ( TIGL_SUCCESS,  trans.translate(p, &eta, &xsi) );
-    ASSERT_NEAR( 1., eta, 1e-7);
-    ASSERT_NEAR( 1., xsi, 1e-7);            
+    ASSERT_NEAR( 1., eta, abs_error);
+    ASSERT_NEAR( 1., xsi, abs_error);            
 }
 
 TEST(TiglPointTranslator, advanced){
@@ -111,18 +114,18 @@ TEST(TiglPointTranslator, advanced){
     CTiglPointTranslator trans(x1, x2, x3, x4 );
 
     ASSERT_EQ ( TIGL_SUCCESS,  trans.translate(p, &eta, &xsi) );
-    ASSERT_NEAR( 0.5, eta, 1e-7);
-    ASSERT_NEAR( 0.5, xsi, 1e-7);
+    ASSERT_NEAR( 0.5, eta, abs_error);
+    ASSERT_NEAR( 0.5, xsi, abs_error);
 
     p.x = 1.5; p.y = 2; p.z = 0;
     ASSERT_EQ ( TIGL_SUCCESS,  trans.translate(p, &eta, &xsi) );
-    ASSERT_NEAR( 0.25, eta, 1e-7);
-    ASSERT_NEAR( 0.5 , xsi, 1e-7);
+    ASSERT_NEAR( 0.25, eta, abs_error);
+    ASSERT_NEAR( 0.5 , xsi, abs_error);
 
     p.x = 1.5; p.y = 2; p.z = -3;
     ASSERT_EQ ( TIGL_SUCCESS,  trans.translate(p, &eta, &xsi) );
-    ASSERT_NEAR( 0.25, eta, 1e-7);
-    ASSERT_NEAR( 0.5 , xsi, 1e-7);
+    ASSERT_NEAR( 0.25, eta, abs_error);
+    ASSERT_NEAR( 0.5 , xsi, abs_error);
 }
 
 TEST(TiglPointTranslator, performance){
@@ -149,8 +152,8 @@ TEST(TiglPointTranslator, performance){
     }
 
     ASSERT_EQ((double)nruns, x);
-    ASSERT_NEAR(0.5, eta, 1e-7);
-    ASSERT_NEAR(0.5, xsi, 1e-7);
+    ASSERT_NEAR(0.5, eta, abs_error);
+    ASSERT_NEAR(0.5, xsi, abs_error);
         
     clock_t stop = clock();
     double time_elapsed = (double)(stop - start)/(double)CLOCKS_PER_SEC/(double)nruns;
