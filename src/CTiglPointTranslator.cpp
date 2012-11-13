@@ -1,9 +1,34 @@
+/* 
+* Copyright (C) 2007-2011 German Aerospace Center (DLR/SC)
+*
+* Created: 2012-11-13 Martin Siggel <Martin.Siggel@dlr.de>
+* Changed: $Id$ 
+*
+* Version: $Revision$
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
+/**
+* @file 
+* @brief  Calculates from x,y,z coordinates to eta-xsi coordinates.
+*/
+
 #include "CTiglPointTranslator.h"
 #include "tigl.h"
 
 #define SQR(x) ((x)*(x))
 
-#define DEBUG
+//#define DEBUG
 
 namespace tigl{
 
@@ -52,6 +77,7 @@ int CTiglPointTranslator::calc_grad_hess(double alpha, double beta){
     return 0;
 }
 
+// We use newtons optimization method for fast convergence
 int CTiglPointTranslator::optimize(double& eta, double& xsi){
     eta = 0.;
     xsi = 0.;
@@ -97,18 +123,19 @@ int CTiglPointTranslator::optimize(double& eta, double& xsi){
         eta += alpha*dir[0];
         xsi += alpha*dir[1];
 
-#ifdef DEBUG
-        std::cout << "Iteration=" << iter << " f=" << of << " norm(grad)=" << grad[0]*grad[0]+grad[1]*grad[1] << std::endl;
-#endif
-
         // calculate new values
         of_old = of;
         of = calc_obj(eta,xsi);
         calc_grad_hess(eta,xsi);
 
+#ifdef DEBUG
+        std::cout << "Iteration=" << iter+1 << " f=" << of << " norm(grad)=" << grad[0]*grad[0]+grad[1]*grad[1] << std::endl;
+#endif
+
         iter++;
     }
 
+    return 0;
 }
 
 TiglReturnCode CTiglPointTranslator::translate(const CTiglPoint& xx, double* eta, double * xsi){
@@ -121,7 +148,11 @@ TiglReturnCode CTiglPointTranslator::translate(const CTiglPoint& xx, double* eta
     hess[0][0] = hess[0][1] = hess[1][0] = hess[1][1] = 0.;
 
     this->x = xx;
-    optimize(*eta, *xsi);
+    if(optimize(*eta, *xsi) != 0){
+        return TIGL_ERROR;
+    }
+    else 
+        return TIGL_SUCCESS;
 } 
 
 } // end namespace tigl
