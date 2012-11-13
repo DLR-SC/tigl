@@ -46,12 +46,17 @@ CTiglPointTranslator::CTiglPointTranslator(const CTiglPoint& x1, const CTiglPoin
     hess[0][0] = hess[0][1] = hess[1][0] = hess[1][1] = 0.;
 }
 
+// Vector between point x and a point on the plane defined by (x1,x2,x3,x4);
 void CTiglPointTranslator::calcP(double alpha, double beta, CTiglPoint& p){
     p.x = alpha*a.x + beta*b.x + alpha*beta*c.x + d.x - x.x;
     p.y = alpha*a.y + beta*b.y + alpha*beta*c.y + d.y - x.y;
     p.z = alpha*a.z + beta*b.z + alpha*beta*c.z + d.z - x.z;
 }
 
+
+// This defines our minimization problem. The objective function
+// measures the vector p(eta,xsi) (distance of x and a point 
+// in the plane defined by x1, x2, x3, x4. 
 double CTiglPointTranslator::calc_obj(double eta, double xsi){
     CTiglPoint p;
     calcP(eta,xsi, p);
@@ -59,6 +64,8 @@ double CTiglPointTranslator::calc_obj(double eta, double xsi){
     return p.norm2Sqr();
 }
 
+
+// calculate gradient and hessian of our minimization problem
 int CTiglPointTranslator::calc_grad_hess(double alpha, double beta){
     CTiglPoint p;
     calcP(alpha,beta, p);
@@ -66,12 +73,12 @@ int CTiglPointTranslator::calc_grad_hess(double alpha, double beta){
     CTiglPoint acb = a + c*beta;
     CTiglPoint bca = b + c*alpha;
 
-    grad[0] = 2*CTiglPoint::inner_prod(p, acb);
-    grad[1] = 2*CTiglPoint::inner_prod(p, bca);
+    grad[0] = 2.*CTiglPoint::inner_prod(p, acb);
+    grad[1] = 2.*CTiglPoint::inner_prod(p, bca);
 
-    hess[0][0] = 2*acb.norm2Sqr();
-    hess[1][1] = 2*bca.norm2Sqr();
-    hess[0][1] = 2*CTiglPoint::inner_prod(bca, acb) + 2*CTiglPoint::inner_prod(p, c);
+    hess[0][0] = 2.*acb.norm2Sqr();
+    hess[1][1] = 2.*bca.norm2Sqr();
+    hess[0][1] = 2.*CTiglPoint::inner_prod(bca, acb) + 2.*CTiglPoint::inner_prod(p, c);
     hess[1][0] = hess[0][1];
 
     return 0;
@@ -83,7 +90,7 @@ int CTiglPointTranslator::optimize(double& eta, double& xsi){
     xsi = 0.;
 
     double of = calc_obj(eta,xsi);
-    double of_old = of + 1;
+    double of_old = of + 1.;
 
     calc_grad_hess(eta, xsi);
 

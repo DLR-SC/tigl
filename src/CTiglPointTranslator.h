@@ -34,9 +34,16 @@ namespace tigl {
 
 class CTiglPointTranslator{
 public:
-    CTiglPointTranslator(const CTiglPoint& xvl, const CTiglPoint& xvr, const CTiglPoint& xhl, const CTiglPoint& xhr);
+    /**
+     * @brief The class is initialized with the corners of a quadriangle. 
+     * @param xfl (in) Coordinate of front left point
+     * @param xfr (in) Coordinate of front right point
+     * @param xbl (in) Coordinate of back left point
+     * @param xbr (in) Coordinate of back right point
+     */
+    CTiglPointTranslator(const CTiglPoint& xfl, const CTiglPoint& xfr, const CTiglPoint& xbl, const CTiglPoint& xbr);
 
-    // finds an eta-xsi coordinate that minimizes the distance to x
+    // finds an eta-xsi coordinate that minimizes the distance to point x
     TiglReturnCode translate(const CTiglPoint& x, double* eta, double* xsi);
 
 private:
