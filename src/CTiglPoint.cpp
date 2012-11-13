@@ -54,6 +54,38 @@ namespace tigl {
 		return *this;
 	}
 
+    CTiglPoint CTiglPoint::operator+(const CTiglPoint& aPoint) const{
+        CTiglPoint p;
+        p.x = x + aPoint.x;
+        p.y = y + aPoint.y;
+        p.z = z + aPoint.z;
+        return p;
+    }
+
+    CTiglPoint CTiglPoint::operator-(const CTiglPoint& aPoint) const{
+        CTiglPoint p;
+        p.x = x - aPoint.x;
+        p.y = y - aPoint.y;
+        p.z = z - aPoint.z;
+        return p;
+    }
+
+    CTiglPoint CTiglPoint::operator*(double s) const{
+        CTiglPoint p;
+        p.x = x*s;
+        p.y = y*s;
+        p.z = z*s;
+        return p;
+    }
+
+    double CTiglPoint::norm2Sqr() const {
+        return x*x+y*y+z*z;
+    }
+
+    double CTiglPoint::norm2() const {
+        return sqrt(x*x + y*y + z*z);
+    }
+
 	// Destructor
 	CTiglPoint::~CTiglPoint(void)
 	{
@@ -70,5 +102,9 @@ namespace tigl {
 	{
 		aStream << "CTiglPoint: (" << x << ", " << y << ", " << z << ")";
 	}
+
+    double CTiglPoint::inner_prod(const CTiglPoint& a, const CTiglPoint& b) {
+        return a.x*b.x + a.y*b.y + a.z*b.z;
+    }
 
 } // end namespace tigl
