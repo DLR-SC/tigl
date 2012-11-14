@@ -105,6 +105,7 @@ TIGLViewerWindow::TIGLViewerWindow()
     console->setPalette(p);
     console->setTextColor(Qt::green);
     console->append("TIGLViewer console output\n\n");
+    console->setVisible(false);
 
     cpacsConfiguration = new TIGLViewerDocument(this, myOCC->getContext());
 
