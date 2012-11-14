@@ -28,6 +28,11 @@
 // uncomment, if you want to see the function working
 //#define DEBUG
 
+
+#define C1    0.1
+#define BTFAC 0.5
+
+
 namespace tigl{
 
 namespace {
@@ -95,13 +100,34 @@ int CTiglPointTranslator::calc_grad_hess(double alpha, double beta){
     return 0;
 }
 
+// more infos here: http://en.wikipedia.org/wiki/Wolfe_conditions
+inline double CTiglPointTranslator::armijoBacktrack(double eta, double xsi, double * dir, double alpha, double& of){
+    double slope = grad[0]*dir[0]+grad[1]*dir[1];
+    assert(slope < 0);
+
+    int iter = 0;
+    double of_init=of;
+
+    while ( (of=calc_obj(eta + alpha*dir[0], xsi + alpha*dir[1])) > of_init + C1*alpha*slope ){
+        alpha *= BTFAC;
+        if(iter++ > 20) {
+            std::cerr << "Error: line search cannot find sufficient decrease, abort" << std::endl;
+            alpha = 0.;
+            of = of_init;
+            break;
+        }
+    }
+
+    return alpha;
+}
+
 // We use newtons optimization method for fast convergence
 int CTiglPointTranslator::optimize(double& eta, double& xsi){
     eta = 0.;
     xsi = 0.;
 
     double of = calc_obj(eta,xsi);
-    double of_old = of + 1.;
+    double of_old = 2.*of;
 
     calc_grad_hess(eta, xsi);
 
@@ -111,10 +137,12 @@ int CTiglPointTranslator::optimize(double& eta, double& xsi){
     double prec   = 1e-5;
 
     while ( iter < numOfIter && 
-            (of_old - of)/max(fabs(of),1.) > prec && 
+            (of_old - of)/max(of, 1.) > prec && 
             sqrt(grad[0]*grad[0]+grad[1]*grad[1]) > prec ) 
     {
-        // calc direction
+        of_old = of;
+
+        // calculate determinant of hessian
         double det = hess[0][0]*hess[1][1] - hess[0][1]*hess[1][0];
         if ( fabs(det) < 1e-12 ){
             std::cerr << "Error: Determinant too small in CTiglPointTranslator::optimize!" << std::endl;
@@ -129,23 +157,24 @@ int CTiglPointTranslator::optimize(double& eta, double& xsi){
         inv_hess[0][1] = -invdet * ( hess[0][1] );
         inv_hess[1][0] = -invdet * ( hess[1][0] );
 
-        // calculate search direction
+        // calculate newton search direction
         double dir[2];
         dir[0] = - inv_hess[0][0]*grad[0] - inv_hess[0][1]*grad[1];
         dir[1] = - inv_hess[1][0]*grad[0] - inv_hess[1][1]*grad[1];
 
+        double alpha = 1.;
+        // we need a line search to ensure convergence, lets take backtracking approach
+        alpha = armijoBacktrack(eta, xsi, dir, alpha, of);
 
-        double alpha = 1;
         eta += alpha*dir[0];
         xsi += alpha*dir[1];
 
-        // calculate new values
-        of_old = of;
-        of = calc_obj(eta,xsi);
+        // calculate new gradient and hessian, of is already calculated in backtracking
         calc_grad_hess(eta,xsi);
 
 #ifdef DEBUG
-        std::cout << "Iteration=" << iter+1 << " f=" << of << " norm(grad)=" << grad[0]*grad[0]+grad[1]*grad[1] << std::endl;
+        std::cout << "Iter=" << iter+1 << " eta;xi=(" << eta << ";" << xsi << ") f=" << of
+                  << " norm(grad)=" << grad[0]*grad[0]+grad[1]*grad[1] <<  " alpha=" << alpha << std::endl;
 #endif
 
         iter++;
@@ -183,6 +212,7 @@ TiglReturnCode CTiglPointTranslator::translate(double eta, double xsi, CTiglPoin
     assert(initialized);
     
     calcP(eta, xsi, *px);
+    *px += x;
     
     return TIGL_SUCCESS;
 }
@@ -207,6 +237,7 @@ TiglReturnCode CTiglPointTranslator::project(const CTiglPoint& xx, CTiglPoint* p
     }
     
     calcP(eta,xsi,*px);
+    *px += xx;
     return TIGL_SUCCESS;
 }
 

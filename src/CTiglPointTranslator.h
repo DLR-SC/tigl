@@ -16,8 +16,11 @@
 * limitations under the License.
 */
 /**
-* @file 
-* @brief  Calculates from x,y,z coordinates to eta-xsi coordinates.
+* @file CTiglPointTranslator.h
+* @brief  Translates between spatial coordinates (x,y,z) and eta-xsi coordinates on a bilinear surface.
+*
+* The theory behind the calculation is given in the document http://tigl.googlecode.com/files/PointTranslatorTheory.pdf
+* Information about the newton solver can be found here: http://en.wikipedia.org/wiki/Newton%27s_method_in_optimization
 */
 
 
@@ -69,6 +72,7 @@ private:
     double calc_obj (double eta, double xsi);
     int    calc_grad_hess(double eta, double xsi);
     void   calcP(double eta, double xsi, CTiglPoint& p) const;
+    double armijoBacktrack(double eta, double xsi, double * dir, double alpha_init, double& obj_value);
 
     CTiglPoint a, b, c, d;
     CTiglPoint x;

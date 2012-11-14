@@ -128,6 +128,42 @@ TEST(TiglPointTranslator, advanced){
     ASSERT_NEAR( 0.5 , xsi, abs_error);
 }
 
+TEST(TiglPointTranslator, consistency){
+    // create a bit more complex surface
+    CTiglPoint x1(0,4,0);
+    CTiglPoint x2(8,4,0);
+    CTiglPoint x3(0,0,-1.);
+    CTiglPoint x4(4,0,0.5);
+
+    CTiglPointTranslator trans(x1, x2, x3, x4 );
+    // now some random eta xsi pairs
+    double eta_orig = 0.283;
+    double xsi_orig = 0.8398;
+
+    CTiglPoint p(0,0,0);
+    ASSERT_EQ ( TIGL_SUCCESS,  trans.translate(eta_orig,xsi_orig,&p) );
+
+    //now translate back into eta xsi
+    double eta, xsi;
+    ASSERT_EQ ( TIGL_SUCCESS,  trans.translate(p, &eta, &xsi) );
+
+    //we relax the error a bit, if we need more precision we have 
+    //to adapt the algorithm
+    double precision = 1e-5;
+    ASSERT_NEAR( eta_orig, eta, precision);
+    ASSERT_NEAR( xsi_orig, xsi, precision);
+
+    //now another pair, interestingly, for this numbers we need the
+    //backtracking. if we comment it out, the algorithm diverges!
+    eta_orig = 0.84723;
+    xsi_orig = 0.314159265;
+
+    ASSERT_EQ ( TIGL_SUCCESS,  trans.translate(eta_orig,xsi_orig,&p) );
+    ASSERT_EQ ( TIGL_SUCCESS,  trans.translate(p, &eta, &xsi) );
+    ASSERT_NEAR( eta_orig, eta, precision);
+    ASSERT_NEAR( xsi_orig, xsi, precision);
+}
+
 TEST(TiglPointTranslator, performance){
     int nruns = 1000000;
     
@@ -161,5 +197,6 @@ TEST(TiglPointTranslator, performance){
     printf("Elapsed average time: %f [us]\n", time_elapsed);
     
     ASSERT_TRUE(true);
-   
 }
+
+

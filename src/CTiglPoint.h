@@ -48,6 +48,9 @@ namespace tigl {
 		// Addition of points
 		CTiglPoint operator+(const CTiglPoint& aPoint) const;
 
+		// Addition of a point
+		CTiglPoint& operator+=(const CTiglPoint& aPoint);
+
 		// Subtraction of points
 		CTiglPoint operator-(const CTiglPoint& aPoint) const;
 
