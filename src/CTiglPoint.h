@@ -75,6 +75,9 @@ namespace tigl {
 		// scalar product
 		static double inner_prod(const CTiglPoint& aPoint, const CTiglPoint& bPoint);
 
+		// cross product
+		static CTiglPoint cross_prod(const CTiglPoint& a, const CTiglPoint& b);
+
 	public:
 		double x;
 		double y;
