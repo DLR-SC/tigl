@@ -113,5 +113,13 @@ namespace tigl {
     double CTiglPoint::inner_prod(const CTiglPoint& a, const CTiglPoint& b) {
         return a.x*b.x + a.y*b.y + a.z*b.z;
     }
+    
+    CTiglPoint CTiglPoint::cross_prod(const CTiglPoint& a, const CTiglPoint& b) {
+        CTiglPoint c;
+        c.x = a.y*b.z - a.z*b.y;
+        c.y = a.z*b.x - a.x*b.z;
+        c.z = a.x*b.y - a.y*b.x;
+        return c;
+    }
 
 } // end namespace tigl
