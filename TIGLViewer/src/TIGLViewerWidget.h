@@ -131,7 +131,11 @@ public slots:
 	void setReset();
 	void eraseSelected();
     void setTransparency();
-    void setTransparency(int tr);
+    void setTransparency(int);
+    void setObjectsWireframe();
+    void setObjectsShading();
+    void setObjectsColor();
+    void setObjectsMaterial();
 
 protected: // methods
 

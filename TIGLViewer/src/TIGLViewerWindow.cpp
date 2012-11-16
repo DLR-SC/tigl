@@ -76,6 +76,30 @@ void TIGLViewerWindow::contextMenuEvent(QContextMenuEvent *event)
         transparencyAct->setStatusTip(tr("Component Transparency"));
         menu.addAction(transparencyAct);
         connect(transparencyAct, SIGNAL(triggered()), myOCC, SLOT(setTransparency()));
+
+        QAction *wireframeAct;
+        wireframeAct = new QAction(tr("&Wireframe"), this);
+        wireframeAct->setStatusTip(tr("Component Wireframe"));
+        menu.addAction(wireframeAct);
+        connect(wireframeAct, SIGNAL(triggered()), myOCC, SLOT(setObjectsWireframe()));
+
+        QAction *shadingAct;
+        shadingAct = new QAction(tr("&Shading"), this);
+        shadingAct->setStatusTip(tr("Component Shading"));
+        menu.addAction(shadingAct);
+        connect(shadingAct, SIGNAL(triggered()), myOCC, SLOT(setObjectsShading()));
+
+        QAction *colorAct;
+        colorAct = new QAction(tr("&Color"), this);
+        colorAct->setStatusTip(tr("Component Color"));
+        menu.addAction(colorAct);
+        connect(colorAct, SIGNAL(triggered()), myOCC, SLOT(setObjectsColor()));
+
+        QAction *materialAct;
+        materialAct = new QAction(tr("&Material"), this);
+        materialAct->setStatusTip(tr("Component Material"));
+        menu.addAction(materialAct);
+        connect(materialAct, SIGNAL(triggered()), myOCC, SLOT(setObjectsMaterial()));
      }
 
      menu.exec(event->globalPos());
