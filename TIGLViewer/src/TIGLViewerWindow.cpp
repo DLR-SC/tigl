@@ -76,6 +76,12 @@ void TIGLViewerWindow::contextMenuEvent(QContextMenuEvent *event)
         transparencyAct->setStatusTip(tr("Component Transparency"));
         menu.addAction(transparencyAct);
         connect(transparencyAct, SIGNAL(triggered()), myOCC, SLOT(setTransparency()));
+
+        QAction *wireframeAct;
+        wireframeAct = new QAction(tr("&Wireframe"), this);
+        wireframeAct->setStatusTip(tr("Toggle Component Wireframe"));
+        menu.addAction(wireframeAct);
+        connect(wireframeAct, SIGNAL(triggered()), myOCC, SLOT(setObjectsWireframe()));
      }
 
      menu.exec(event->globalPos());
