@@ -133,6 +133,7 @@ public slots:
     void setTransparency();
     void setTransparency(int);
     void setObjectsWireframe();
+    void setObjectsShading();
 
 protected: // methods
 
