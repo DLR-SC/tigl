@@ -618,7 +618,6 @@ void TIGLViewerWidget::setTransparency(int tr)
         for (myContext->InitCurrent(); myContext->MoreCurrent(); myContext->NextCurrent()) {
             myContext->SetTransparency(myContext->Current(), transparency, Standard_True);
         }
-        myContext->ClearCurrents();
     }
 }
 
@@ -629,7 +628,6 @@ void TIGLViewerWidget::setObjectsWireframe()
         for (myContext->InitCurrent(); myContext->MoreCurrent(); myContext->NextCurrent()) {
             myContext->SetDisplayMode(myContext->Current(), 0);
         }
-        myContext->ClearCurrents();
     }
 }
 
@@ -640,9 +638,19 @@ void TIGLViewerWidget::setObjectsShading()
         for (myContext->InitCurrent(); myContext->MoreCurrent(); myContext->NextCurrent()) {
             myContext->SetDisplayMode(myContext->Current(), 1);
         }
-        myContext->ClearCurrents();
     }
 }
+
+void TIGLViewerWidget::setObjectsColor()
+{
+    QColor color = QColorDialog::getColor(Qt::green, this);
+     if (color.isValid()) {
+         for (myContext->InitCurrent(); myContext->MoreCurrent(); myContext->NextCurrent()) {
+             myContext->SetColor (myContext->Current(),Quantity_Color(color.red()/255., color.green()/255., color.blue()/255., Quantity_TOC_RGB));
+          }
+     }
+}
+
 
 void TIGLViewerWidget::onLeftButtonDown(  Qt::KeyboardModifiers nFlags, const QPoint point )
 {

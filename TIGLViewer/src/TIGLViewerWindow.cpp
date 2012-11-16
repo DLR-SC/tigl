@@ -88,6 +88,12 @@ void TIGLViewerWindow::contextMenuEvent(QContextMenuEvent *event)
         shadingAct->setStatusTip(tr("Component Shading"));
         menu.addAction(shadingAct);
         connect(shadingAct, SIGNAL(triggered()), myOCC, SLOT(setObjectsShading()));
+
+        QAction *colorAct;
+        colorAct = new QAction(tr("&Color"), this);
+        colorAct->setStatusTip(tr("Component Color"));
+        menu.addAction(colorAct);
+        connect(colorAct, SIGNAL(triggered()), myOCC, SLOT(setObjectsColor()));
      }
 
      menu.exec(event->globalPos());
