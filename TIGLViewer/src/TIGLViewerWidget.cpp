@@ -633,6 +633,17 @@ void TIGLViewerWidget::setObjectsWireframe()
     }
 }
 
+void TIGLViewerWidget::setObjectsShading()
+{
+    if(!myView.IsNull())
+    {
+        for (myContext->InitCurrent(); myContext->MoreCurrent(); myContext->NextCurrent()) {
+            myContext->SetDisplayMode(myContext->Current(), 1);
+        }
+        myContext->ClearCurrents();
+    }
+}
+
 void TIGLViewerWidget::onLeftButtonDown(  Qt::KeyboardModifiers nFlags, const QPoint point )
 {
     myStartPoint = point;

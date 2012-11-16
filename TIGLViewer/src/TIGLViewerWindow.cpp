@@ -79,9 +79,15 @@ void TIGLViewerWindow::contextMenuEvent(QContextMenuEvent *event)
 
         QAction *wireframeAct;
         wireframeAct = new QAction(tr("&Wireframe"), this);
-        wireframeAct->setStatusTip(tr("Toggle Component Wireframe"));
+        wireframeAct->setStatusTip(tr("Component Wireframe"));
         menu.addAction(wireframeAct);
         connect(wireframeAct, SIGNAL(triggered()), myOCC, SLOT(setObjectsWireframe()));
+
+        QAction *shadingAct;
+        shadingAct = new QAction(tr("&Shading"), this);
+        shadingAct->setStatusTip(tr("Component Shading"));
+        menu.addAction(shadingAct);
+        connect(shadingAct, SIGNAL(triggered()), myOCC, SLOT(setObjectsShading()));
      }
 
      menu.exec(event->globalPos());
