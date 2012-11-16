@@ -94,6 +94,12 @@ void TIGLViewerWindow::contextMenuEvent(QContextMenuEvent *event)
         colorAct->setStatusTip(tr("Component Color"));
         menu.addAction(colorAct);
         connect(colorAct, SIGNAL(triggered()), myOCC, SLOT(setObjectsColor()));
+
+        QAction *materialAct;
+        materialAct = new QAction(tr("&Material"), this);
+        materialAct->setStatusTip(tr("Component Material"));
+        menu.addAction(materialAct);
+        connect(materialAct, SIGNAL(triggered()), myOCC, SLOT(setObjectsMaterial()));
      }
 
      menu.exec(event->globalPos());
