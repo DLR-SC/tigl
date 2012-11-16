@@ -601,7 +601,7 @@ void TIGLViewerWidget::setTransparency()
     QInputDialog *dialog = new QInputDialog(this);
     dialog->setInputMode(QInputDialog::IntInput);
     connect(dialog, SIGNAL(intValueChanged(int)), this, SLOT(setTransparency(int)));
-    transparency = dialog->getInt(this, tr("Select transparency level"), tr("Transparency:"), 75, 0, 100, 1, &ok);
+    transparency = dialog->getInt(this, tr("Select transparency level"), tr("Transparency:"), 25, 0, 100, 1, &ok);
     setTransparency(transparency);
 }
 
@@ -618,9 +618,79 @@ void TIGLViewerWidget::setTransparency(int tr)
         for (myContext->InitCurrent(); myContext->MoreCurrent(); myContext->NextCurrent()) {
             myContext->SetTransparency(myContext->Current(), transparency, Standard_True);
         }
-        myContext->ClearCurrents();
     }
 }
+
+void TIGLViewerWidget::setObjectsWireframe()
+{
+    if(!myView.IsNull())
+    {
+        for (myContext->InitCurrent(); myContext->MoreCurrent(); myContext->NextCurrent()) {
+            myContext->SetDisplayMode(myContext->Current(), 0);
+        }
+    }
+}
+
+void TIGLViewerWidget::setObjectsShading()
+{
+    if(!myView.IsNull())
+    {
+        for (myContext->InitCurrent(); myContext->MoreCurrent(); myContext->NextCurrent()) {
+            myContext->SetDisplayMode(myContext->Current(), 1);
+        }
+    }
+}
+
+void TIGLViewerWidget::setObjectsColor()
+{
+    QColor color = QColorDialog::getColor(Qt::green, this);
+     if (color.isValid()) {
+         for (myContext->InitCurrent(); myContext->MoreCurrent(); myContext->NextCurrent()) {
+             myContext->SetColor (myContext->Current(),Quantity_Color(color.red()/255., color.green()/255., color.blue()/255., Quantity_TOC_RGB));
+          }
+     }
+}
+
+void TIGLViewerWidget::setObjectsMaterial()
+{
+    bool ok;
+    QStringList items;
+
+    QMap<QString, Graphic3d_NameOfMaterial> materialMap;
+    materialMap["Brass"] = Graphic3d_NOM_BRASS;
+    materialMap["Bronze"] = Graphic3d_NOM_BRONZE;
+    materialMap["Copper"] = Graphic3d_NOM_COPPER;
+    materialMap["Gold"] = Graphic3d_NOM_GOLD;
+    materialMap["Pewter"] = Graphic3d_NOM_PEWTER;
+    materialMap["Plaster"] = Graphic3d_NOM_PLASTER;
+    materialMap["Plastic"] = Graphic3d_NOM_PLASTIC;
+    materialMap["Silver"] = Graphic3d_NOM_SILVER;
+    materialMap["Steel"] = Graphic3d_NOM_STEEL;
+    materialMap["Stone"] = Graphic3d_NOM_STONE;
+    materialMap["Shiny Plastic"] = Graphic3d_NOM_SHINY_PLASTIC;
+    materialMap["Satin"] = Graphic3d_NOM_SATIN;
+    materialMap["Metalized"] = Graphic3d_NOM_METALIZED;
+    materialMap["Neon GNC"] = Graphic3d_NOM_NEON_GNC;
+    materialMap["Chrome"] = Graphic3d_NOM_CHROME;
+    materialMap["Aluminium"] = Graphic3d_NOM_ALUMINIUM;
+    materialMap["Obsidian"] = Graphic3d_NOM_OBSIDIAN;
+    materialMap["Neon PHC"] = Graphic3d_NOM_NEON_PHC;
+    materialMap["Jade"] = Graphic3d_NOM_JADE;
+    materialMap["Default"] = Graphic3d_NOM_DEFAULT;
+
+    QMapIterator<QString, Graphic3d_NameOfMaterial> i(materialMap);
+    while (i.hasNext()) {
+        i.next();
+        items << i.key();
+    }
+    QString item = QInputDialog::getItem(this, tr("Select Material"), tr("Material:"), items, 0, false, &ok);
+    if (ok && !item.isEmpty()) {
+        for (myContext->InitCurrent(); myContext->MoreCurrent(); myContext->NextCurrent()) {
+             myContext->SetMaterial (myContext->Current(),  materialMap[item]);
+        }
+    }
+}
+
 
 void TIGLViewerWidget::onLeftButtonDown(  Qt::KeyboardModifiers nFlags, const QPoint point )
 {
@@ -1051,6 +1121,8 @@ void TIGLViewerWidget::paintOCC( void )
 	GLfloat depth  =  1.0f;
 
     glOrtho( left, right, bottom, top, 1.0, -1.0 );
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_COLOR);
 
 #ifndef OCC_PATCHED
 	glEnable(GL_BLEND);
