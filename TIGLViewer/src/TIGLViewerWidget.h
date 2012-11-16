@@ -132,6 +132,7 @@ public slots:
 	void eraseSelected();
     void setTransparency();
     void setTransparency(int);
+    void setObjectsWireframe();
 
 protected: // methods
 
