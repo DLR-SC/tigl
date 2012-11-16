@@ -135,6 +135,7 @@ public slots:
     void setObjectsWireframe();
     void setObjectsShading();
     void setObjectsColor();
+    void setObjectsMaterial();
 
 protected: // methods
 
