@@ -601,7 +601,7 @@ void TIGLViewerWidget::setTransparency()
     QInputDialog *dialog = new QInputDialog(this);
     dialog->setInputMode(QInputDialog::IntInput);
     connect(dialog, SIGNAL(intValueChanged(int)), this, SLOT(setTransparency(int)));
-    transparency = dialog->getInt(this, tr("Select transparency level"), tr("Transparency:"), 75, 0, 100, 1, &ok);
+    transparency = dialog->getInt(this, tr("Select transparency level"), tr("Transparency:"), 25, 0, 100, 1, &ok);
     setTransparency(transparency);
 }
 
@@ -1051,6 +1051,8 @@ void TIGLViewerWidget::paintOCC( void )
 	GLfloat depth  =  1.0f;
 
     glOrtho( left, right, bottom, top, 1.0, -1.0 );
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_COLOR);
 
 #ifndef OCC_PATCHED
 	glEnable(GL_BLEND);

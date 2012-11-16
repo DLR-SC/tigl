@@ -131,7 +131,7 @@ public slots:
 	void setReset();
 	void eraseSelected();
     void setTransparency();
-    void setTransparency(int tr);
+    void setTransparency(int);
 
 protected: // methods
 
