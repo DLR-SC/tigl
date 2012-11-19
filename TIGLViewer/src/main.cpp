@@ -55,6 +55,8 @@ int main(int argc, char *argv[])
 
 	// if a filename is given, open the configuration
 	if(!PARAMS.initialFilename.isEmpty()) {
+		if(window->getMyOCC())
+			window->getMyOCC()->repaint();
 		window->setInitialCpacsFileName(PARAMS.initialFilename);
 	}
 
