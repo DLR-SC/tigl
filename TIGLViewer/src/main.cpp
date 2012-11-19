@@ -73,7 +73,7 @@ void showHelp(QString appName)
 	helpText += "  --modelUID <uid>         Initial model uid open and display.\n";
 	helpText += "  --windowtitle <title>	The titel of the TIGLViewer window.\n";
 	helpText += "  --controlFile <filename>	Name of the control file.\n";
-        helpText += "  --JediMode <on|off>      Makes you some kind of superhero like CPACS-Ninja.\n";
+	helpText += "  --JediMode <on|off>      Makes you some kind of superhero like CPACS-Ninja.\n";
 
 	QMessageBox::information(0, "TIGLViewer Argument Error",
 								 helpText,

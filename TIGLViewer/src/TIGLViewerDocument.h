@@ -47,7 +47,7 @@ public:
 	TIGLViewerDocument( QWidget *parentWidget, const Handle_AIS_InteractiveContext& ic );
     ~TIGLViewerDocument( );
 
-    void openCpacsConfiguration(const QString fileName);
+    TiglReturnCode openCpacsConfiguration(const QString fileName);
     void closeCpacsConfiguration();
     TiglCPACSConfigurationHandle getCpacsHandle(void) const;
 

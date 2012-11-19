@@ -212,7 +212,10 @@ void TIGLViewerWindow::openFile(const QString& fileName)
         
         if (fileType.toLower() == tr("xml"))
         {
-            cpacsConfiguration->openCpacsConfiguration(fileInfo.absoluteFilePath());
+            TiglReturnCode tiglRet = cpacsConfiguration->openCpacsConfiguration(fileInfo.absoluteFilePath());
+            if(tiglRet != TIGL_SUCCESS)
+                return;
+
             updateMenus(cpacsConfiguration->getCpacsHandle());
             watcher = new QFileSystemWatcher();
             watcher->addPath(fileInfo.absoluteFilePath());
