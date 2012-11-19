@@ -83,7 +83,7 @@ char* TIGLViewerDocument::qstringToCstring(QString text)
 	return strdup((const char*)text.toLatin1());
 }
 
-void TIGLViewerDocument::openCpacsConfiguration(const QString fileName)
+TiglReturnCode TIGLViewerDocument::openCpacsConfiguration(const QString fileName)
 {
 	QStringList configurations;
 
@@ -95,7 +95,7 @@ void TIGLViewerDocument::openCpacsConfiguration(const QString fileName)
 	ReturnCode tixiRet = tixiOpenDocument(cfileName, &tixiHandle);
 	if (tixiRet != SUCCESS) {
 		displayError(QString("Error in function <u>tixiOpenDocument</u> when opening <br>file <i>"+fileName+"</i>. Error code: %1").arg(tixiRet), "TIXI Error");
-		return;
+		return TIGL_XML_ERROR;
 	}
 
 	// read configuration names
@@ -120,7 +120,7 @@ void TIGLViewerDocument::openCpacsConfiguration(const QString fileName)
 	{
 		// no configuration present
 		loadedConfigurationFileName = fileName;
-		return;
+		return TIGL_UNINITIALIZED;
 	}
 	else if (countRotorcrafts + countAircrafts == 1)
 	{
@@ -142,10 +142,11 @@ void TIGLViewerDocument::openCpacsConfiguration(const QString fileName)
 		tixiCloseDocument(tixiHandle);
 		m_cpacsHandle = -1;
 		//displayError(QString("Error in function <u>tiglOpenCPACSConfiguration</u>. Error code: %1").arg(tiglRet), "TIGL Error");
-		return;
+		return tiglRet;
 	}
 	drawAllFuselagesAndWings();
 	loadedConfigurationFileName = fileName;
+	return TIGL_SUCCESS;
 }
 
 void TIGLViewerDocument::closeCpacsConfiguration(){
