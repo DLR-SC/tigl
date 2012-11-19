@@ -76,9 +76,9 @@ void TIGLScriptEngine::displayHelp()
 
     helpString =  "====== TIGLViewer scripting help ======\n\n";
     helpString += "Available TIGL functions: \n";
-    helpString += tiglScriptProxy->getMemberFunctions().join(" - ") + "\n\n";
+    helpString += tiglScriptProxy->getMemberFunctions().join("\n") + "\n\n";
     helpString += "Available TIXI functions: \n";
-    helpString += tixiScriptProxy->getMemberFunctions().join(" - ") + "\n\n";
+    helpString += tixiScriptProxy->getMemberFunctions().join("\n") + "\n\n";
 
     helpString += "Usage example TIGL: \n";
     helpString += "Initialize TIGL: \tvar tigl = new TIGL();\n";
