@@ -155,13 +155,7 @@ TIGLViewerWindow::~TIGLViewerWindow(){
 void TIGLViewerWindow::setInitialCpacsFileName(QString filename)
 {
 	cpacsFileName = filename;
-	cpacsConfiguration->openCpacsConfiguration(filename);
-	statusBar()->showMessage(tr("Hello and welcome to TIGLViewer :)"));
-	myOCC->viewAxo();
-	myOCC->fitAll();
-	watcher = new QFileSystemWatcher();
-	watcher->addPath(filename);
-	QObject::connect(watcher, SIGNAL(fileChanged(QString)), cpacsConfiguration, SLOT(updateConfiguration()));
+    openFile(filename);
 }
 
 
