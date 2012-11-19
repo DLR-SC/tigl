@@ -87,7 +87,7 @@ private slots:
 	void statusMessage (const QString aMessage);
 
 private:
-    void createActions();
+    void connectSignals();
     void createMenus();
     void openFile(const QString&);
     void updateRecentFileActions();

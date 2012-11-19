@@ -118,8 +118,6 @@ TIGLViewerWindow::TIGLViewerWindow()
     stdoutStream = new QDebugStream(std::cout);
     errorStream  = new QDebugStream(std::cerr);
     errorStream->setMarkup("<b><font color=\"red\">Error:","</font></b>");
-    connect(stdoutStream, SIGNAL(sendString(QString)), console, SLOT(append(QString)));
-    connect(errorStream , SIGNAL(sendString(QString)), console, SLOT(append(QString)));
 
     QPalette p = console->palette();
     p.setColor(QPalette::Base, Qt::black);
@@ -128,8 +126,9 @@ TIGLViewerWindow::TIGLViewerWindow()
     console->append("TIGLViewer console output\n\n");
 
     cpacsConfiguration = new TIGLViewerDocument(this, myOCC->getContext());
+    scriptEngine = new TIGLScriptEngine(scriptInput);
 
-    createActions();
+    connectSignals();
     createMenus();
     updateMenus(-1);
 
@@ -138,11 +137,6 @@ TIGLViewerWindow::TIGLViewerWindow()
     setWindowTitle(tr(PARAMS.windowTitle.toAscii().data()));
     setMinimumSize(160, 160);
     showMaximized();
-    
-    scriptEngine = new TIGLScriptEngine(scriptInput);
-    QObject::connect(scriptInput, SIGNAL(textChanged(QString)), scriptEngine, SLOT(textChanged(QString)));
-    QObject::connect(scriptInput, SIGNAL(returnPressed()), scriptEngine, SLOT(eval()));
-    QObject::connect(scriptEngine, SIGNAL(printResults(QString)), console, SLOT(append(QString)));
 }
 
 TIGLViewerWindow::~TIGLViewerWindow(){
@@ -494,7 +488,7 @@ void TIGLViewerWindow::displayErrorMessage (const QString aMessage, QString aHea
 	}
 }
 
-void TIGLViewerWindow::createActions()
+void TIGLViewerWindow::connectSignals()
 {
     connect(newAction, SIGNAL(triggered()), this, SLOT(newFile()));
     connect(openAction, SIGNAL(triggered()), this, SLOT(open()));
@@ -618,6 +612,13 @@ void TIGLViewerWindow::createActions()
 
 	connect( cpacsConfiguration, SIGNAL(documentUpdated(TiglCPACSConfigurationHandle)), 
 		     this, SLOT(updateMenus(TiglCPACSConfigurationHandle)) );
+
+    connect(stdoutStream, SIGNAL(sendString(QString)), console, SLOT(append(QString)));
+    connect(errorStream , SIGNAL(sendString(QString)), console, SLOT(append(QString)));
+
+    connect(scriptInput, SIGNAL(textChanged(QString)), scriptEngine, SLOT(textChanged(QString)));
+    connect(scriptInput, SIGNAL(returnPressed()), scriptEngine, SLOT(eval()));
+    connect(scriptEngine, SIGNAL(printResults(QString)), console, SLOT(append(QString)));
 }
 
 void TIGLViewerWindow::createMenus()
