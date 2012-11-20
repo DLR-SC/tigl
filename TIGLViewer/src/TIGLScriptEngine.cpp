@@ -10,7 +10,7 @@
 * you may not use this file except in compliance with the License.
 * You may obtain a copy of the License at
 *
-* Â  Â  http://www.apache.org/licenses/LICENSE-2.0
+* Â  Â  http://www.apache.org/licenses/LICENSE-2.0
 *
 * Unless required by applicable law or agreed to in writing, software
 * distributed under the License is distributed on an "AS IS" BASIS,
@@ -32,7 +32,7 @@ TIGLScriptEngine::TIGLScriptEngine(QLineEdit *le)
     TIGLScriptProxy::registerClass(&engine); 
     TIXIScriptProxy::registerClass(&engine);
     lineEdit = le;
-    prefixString = "$";
+    prefixString = "  $ ";
 }
 
 
@@ -41,10 +41,9 @@ void TIGLScriptEngine::textChanged(QString line)
     // do fancy stuff in future, like input-completion
 }
 
-void TIGLScriptEngine::eval()
+void TIGLScriptEngine::eval(QString commandLine)
 {
     QScriptValue val;
-    QString commandLine = lineEdit->text();
 
     // display help
     if (commandLine == "help" || commandLine == "hilfe" || commandLine == "damn" || commandLine == "?") {
@@ -59,15 +58,21 @@ void TIGLScriptEngine::eval()
     //val = engine.evaluate("tigl.tiglGetFuselageCount();");
     //val = engine.evaluate("tixi.tixiGetTextElement('/cpacs/header/name');");
 
-    val = engine.evaluate(lineEdit->text());
+    val = engine.evaluate(commandLine);
     QString result = val.toString();
     if(result == "undefined") {
         result = "done";
     }
 
-    emit printResults("<i><font color=\"lime\">" + prefixString + lineEdit->text() + "</font></i>");
-    emit printResults("<font color=\"olive\">" + prefixString + result + "</font>");
+    emit printResults( prefixString + lineEdit->text() + "\n" + prefixString + result  );
     lineEdit->setText("");
+}
+
+void TIGLScriptEngine::eval()
+{
+    QString commandLine = lineEdit->text();
+
+    eval(commandLine);
 }
 
 void TIGLScriptEngine::displayHelp()

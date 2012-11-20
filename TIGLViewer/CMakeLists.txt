@@ -28,6 +28,7 @@ set(tv_src
     TIGLScriptProxy.cpp
     TIXIScriptProxy.cpp
     TIGLScriptEngine.cpp
+    TiglViewerConsole.cpp
 )
 	
 # normal header files
@@ -50,7 +51,8 @@ set(tv_hdr_qobj
 	TIGLViewerWindow.h
 	TIGLScriptProxy.h
 	TIXIScriptProxy.h
-    TIGLScriptEngine.h
+	TIGLScriptEngine.h
+	TiglViewerConsole.h
 )
 
 set(tv_ui_comp

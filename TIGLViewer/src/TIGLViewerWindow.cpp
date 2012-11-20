@@ -122,8 +122,8 @@ TIGLViewerWindow::TIGLViewerWindow()
     QPalette p = console->palette();
     p.setColor(QPalette::Base, Qt::black);
     console->setPalette(p);
-    console->setTextColor(Qt::green);
-    console->append("TIGLViewer console output\n\n");
+    //console->setTextColor(Qt::green);
+    console->output("TIGLViewer console output\n\n");
 
     cpacsConfiguration = new TIGLViewerDocument(this, myOCC->getContext());
     scriptEngine = new TIGLScriptEngine(scriptInput);
@@ -613,12 +613,15 @@ void TIGLViewerWindow::connectSignals()
 	connect( cpacsConfiguration, SIGNAL(documentUpdated(TiglCPACSConfigurationHandle)), 
 		     this, SLOT(updateMenus(TiglCPACSConfigurationHandle)) );
 
-    connect(stdoutStream, SIGNAL(sendString(QString)), console, SLOT(append(QString)));
-    connect(errorStream , SIGNAL(sendString(QString)), console, SLOT(append(QString)));
+    connect(stdoutStream, SIGNAL(sendString(QString)), console, SLOT(output(QString)));
+    connect(errorStream , SIGNAL(sendString(QString)), console, SLOT(output(QString)));
 
     connect(scriptInput, SIGNAL(textChanged(QString)), scriptEngine, SLOT(textChanged(QString)));
     connect(scriptInput, SIGNAL(returnPressed()), scriptEngine, SLOT(eval()));
-    connect(scriptEngine, SIGNAL(printResults(QString)), console, SLOT(append(QString)));
+    connect(scriptEngine, SIGNAL(printResults(QString)), console, SLOT(output(QString)));
+
+    connect(console, SIGNAL(onChange(QString)), scriptEngine, SLOT(textChanged(QString)));
+    connect(console, SIGNAL(onCommand(QString)), scriptEngine, SLOT(eval(QString)));
 }
 
 void TIGLViewerWindow::createMenus()
