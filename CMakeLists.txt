@@ -12,7 +12,7 @@ endif()
 project (TIGL)
 set(TIGL_VERSION_MAJOR 2)
 set(TIGL_VERSION_MINOR 0)
-set(TIGL_VERSION_PATCH 2+)
+set(TIGL_VERSION_PATCH 3+)
 set(TIGL_VERSION "${TIGL_VERSION_MAJOR}.${TIGL_VERSION_MINOR}.${TIGL_VERSION_PATCH}")
 
 OPTION(ENABLE_COVERAGE "Enable GCov coverage analysis (defines a 'coverage' target and enforces static build of tigl)" ON)

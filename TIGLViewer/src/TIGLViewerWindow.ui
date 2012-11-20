@@ -14,7 +14,7 @@
    <string>MainWindow</string>
   </property>
   <property name="windowIcon">
-   <iconset>
+   <iconset resource="TIGLViewer.qrc">
     <normaloff>:/TIGLViewer.ico</normaloff>:/TIGLViewer.ico</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
@@ -223,6 +223,25 @@
    <addaction name="helpMenu"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
+  <widget class="QToolBar" name="toolBar">
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="openAction"/>
+   <addaction name="saveAction"/>
+   <addaction name="closeAction"/>
+   <addaction name="separator"/>
+   <addaction name="viewTopAction"/>
+   <addaction name="viewLeftAction"/>
+   <addaction name="viewFrontAction"/>
+   <addaction name="viewAxoAction"/>
+  </widget>
   <action name="newAction">
    <property name="text">
     <string>&amp;New</string>
@@ -235,6 +254,10 @@
    </property>
   </action>
   <action name="openAction">
+   <property name="icon">
+    <iconset resource="TIGLViewer.qrc">
+     <normaloff>:/gfx/document-open.png</normaloff>:/gfx/document-open.png</iconset>
+   </property>
    <property name="text">
     <string>&amp;Open...</string>
    </property>
@@ -256,6 +279,10 @@
    </property>
   </action>
   <action name="saveAction">
+   <property name="icon">
+    <iconset resource="TIGLViewer.qrc">
+     <normaloff>:/gfx/document-save.png</normaloff>:/gfx/document-save.png</iconset>
+   </property>
    <property name="text">
     <string>&amp;Save</string>
    </property>
@@ -589,6 +616,10 @@
    </property>
   </action>
   <action name="viewFrontAction">
+   <property name="icon">
+    <iconset resource="TIGLViewer.qrc">
+     <normaloff>:/gfx/view-front.png</normaloff>:/gfx/view-front.png</iconset>
+   </property>
    <property name="text">
     <string>Front</string>
    </property>
@@ -611,6 +642,10 @@
    </property>
   </action>
   <action name="viewTopAction">
+   <property name="icon">
+    <iconset resource="TIGLViewer.qrc">
+     <normaloff>:/gfx/view-top.png</normaloff>:/gfx/view-top.png</iconset>
+   </property>
    <property name="text">
     <string>Top</string>
    </property>
@@ -633,6 +668,10 @@
    </property>
   </action>
   <action name="viewLeftAction">
+   <property name="icon">
+    <iconset resource="TIGLViewer.qrc">
+     <normaloff>:/gfx/view-left.png</normaloff>:/gfx/view-left.png</iconset>
+   </property>
    <property name="text">
     <string>Left</string>
    </property>
@@ -655,6 +694,10 @@
    </property>
   </action>
   <action name="viewAxoAction">
+   <property name="icon">
+    <iconset resource="TIGLViewer.qrc">
+     <normaloff>:/gfx/view-axo.png</normaloff>:/gfx/view-axo.png</iconset>
+   </property>
    <property name="text">
     <string>Axonometric</string>
    </property>
@@ -912,6 +955,10 @@
    </property>
   </action>
   <action name="closeAction">
+   <property name="icon">
+    <iconset resource="TIGLViewer.qrc">
+     <normaloff>:/gfx/document-close.png</normaloff>:/gfx/document-close.png</iconset>
+   </property>
    <property name="text">
     <string>&amp;Close Configuration</string>
    </property>
@@ -925,6 +972,8 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="TIGLViewer.qrc"/>
+ </resources>
  <connections/>
 </ui>

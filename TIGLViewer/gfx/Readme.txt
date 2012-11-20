@@ -1,0 +1,1 @@
+Images taken from http://openiconlibrary.sourceforge.net
