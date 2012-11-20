@@ -34,12 +34,11 @@ class TIGLScriptEngine :public QObject
         Q_OBJECT
      
         public:
-                TIGLScriptEngine(QLineEdit *le);
+                TIGLScriptEngine();
                 //~TIGLScriptEngine();
         
         public slots:
                 void textChanged(QString line);
-                void eval();
                 void eval(QString commandLine);
                 
         signals:
@@ -51,7 +50,6 @@ class TIGLScriptEngine :public QObject
                 TIXIScriptProxy *tixiScriptProxy;
                 QString script;
                 QString prefixString;
-                QLineEdit *lineEdit;
                 void displayHelp();
 };
 

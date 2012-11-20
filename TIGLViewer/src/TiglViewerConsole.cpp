@@ -3,7 +3,7 @@
 Console::Console(QWidget *parent) :
     QPlainTextEdit(parent)
 {
-    prompt = "redis> ";
+    prompt = "TiglViewer> ";
 
     QPalette p = palette();
     p.setColor(QPalette::Base, Qt::black);
@@ -61,11 +61,7 @@ void Console::onEnter()
 
 void Console::output(QString s)
 {
-    textCursor().insertBlock();
-    QTextCharFormat format;
-    format.setForeground(Qt::white);
-    textCursor().setBlockCharFormat(format);
-    textCursor().insertText(s);
+    appendHtml(QString("<font color=\"white\">%1</font><br/><br/>").arg(s));
     insertPrompt();
     isLocked = false;
 }

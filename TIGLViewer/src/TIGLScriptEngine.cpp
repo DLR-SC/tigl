@@ -25,13 +25,12 @@
 
 #include <QtGui/QWidget>
 
-TIGLScriptEngine::TIGLScriptEngine(QLineEdit *le)
+TIGLScriptEngine::TIGLScriptEngine()
 {
     tiglScriptProxy = new TIGLScriptProxy();
     tixiScriptProxy = new TIXIScriptProxy();
     TIGLScriptProxy::registerClass(&engine); 
     TIXIScriptProxy::registerClass(&engine);
-    lineEdit = le;
     prefixString = "  $ ";
 }
 
@@ -48,7 +47,6 @@ void TIGLScriptEngine::eval(QString commandLine)
     // display help
     if (commandLine == "help" || commandLine == "hilfe" || commandLine == "damn" || commandLine == "?") {
         displayHelp();
-        lineEdit->setText("");
         return;
     }
 
@@ -64,33 +62,25 @@ void TIGLScriptEngine::eval(QString commandLine)
         result = "done";
     }
 
-    emit printResults( prefixString + lineEdit->text() + "\n" + prefixString + result  );
-    lineEdit->setText("");
-}
-
-void TIGLScriptEngine::eval()
-{
-    QString commandLine = lineEdit->text();
-
-    eval(commandLine);
+    emit printResults( prefixString + result  );
 }
 
 void TIGLScriptEngine::displayHelp()
 {
     QString helpString;
 
-    helpString =  "====== TIGLViewer scripting help ======\n\n";
-    helpString += "Available TIGL functions: \n";
-    helpString += tiglScriptProxy->getMemberFunctions().join("\n") + "\n\n";
-    helpString += "Available TIXI functions: \n";
-    helpString += tixiScriptProxy->getMemberFunctions().join("\n") + "\n\n";
+    helpString =  "====== TIGLViewer scripting help ======<br/><br/>";
+    helpString += "Available TIGL functions: <br/>";
+    helpString += tiglScriptProxy->getMemberFunctions().join("<br/>") + "<br/><br/>";
+    helpString += "Available TIXI functions: <br/>";
+    helpString += tixiScriptProxy->getMemberFunctions().join("<br/>") + "<br/><br/>";
 
-    helpString += "Usage example TIGL: \n";
-    helpString += "Initialize TIGL: \tvar tigl = new TIGL();\n";
-    helpString += "Use TIGL: \ttigl.tiglGetFuselageCount();\n";
-    helpString += "Usage example TIXI: \n";
-    helpString += "Initialize TIXI: \tvar tixi = new TIXI();\n";
-    helpString += "Use TIXI: \ttixi.tixiGetTextElement('/cpacs/header/name');\n";
+    helpString += "Usage example TIGL: <br/>";
+    helpString += "Initialize TIGL: \tvar tigl = new TIGL();<br/>";
+    helpString += "Use TIGL: \ttigl.tiglGetFuselageCount();<br/>";
+    helpString += "Usage example TIXI: <br/>";
+    helpString += "Initialize TIXI: \tvar tixi = new TIXI();<br/>";
+    helpString += "Use TIXI: \ttixi.tixiGetTextElement('/cpacs/header/name');<br/>";
     helpString += "Type 'help' to get a list of available TIXI/TIGL fuctions.";
 
 

@@ -117,7 +117,7 @@ TIGLViewerWindow::TIGLViewerWindow()
     //redirect everything to TIGL console, let error messages be printed in red
     stdoutStream = new QDebugStream(std::cout);
     errorStream  = new QDebugStream(std::cerr);
-    errorStream->setMarkup("<b><font color=\"red\">Error:","</font></b>");
+    errorStream->setMarkup("<b><font color=\"red\">","</font></b>");
 
     QPalette p = console->palette();
     p.setColor(QPalette::Base, Qt::black);
@@ -126,7 +126,7 @@ TIGLViewerWindow::TIGLViewerWindow()
     console->output("TIGLViewer console output\n\n");
 
     cpacsConfiguration = new TIGLViewerDocument(this, myOCC->getContext());
-    scriptEngine = new TIGLScriptEngine(scriptInput);
+    scriptEngine = new TIGLScriptEngine;
 
     connectSignals();
     createMenus();
@@ -542,9 +542,8 @@ void TIGLViewerWindow::connectSignals()
     connect(viewResetAction, SIGNAL(triggered()), myOCC, SLOT(viewReset()));
     connect(viewZoomInAction, SIGNAL(triggered()), myOCC, SLOT(zoomIn()));
     connect(viewZoomOutAction, SIGNAL(triggered()), myOCC, SLOT(zoomOut()));
-	connect(backgroundAction, SIGNAL(triggered()), myOCC, SLOT(background()));
+    connect(backgroundAction, SIGNAL(triggered()), myOCC, SLOT(background()));
     connect(showConsoleAction, SIGNAL(toggled(bool)), console, SLOT(setVisible(bool)));
-    connect(showScriptAction, SIGNAL(toggled(bool)), scriptInput, SLOT(setVisible(bool)));
     connect(showWireframeAction, SIGNAL(toggled(bool)), myVC, SLOT(wireFrame(bool)));
 
 
@@ -616,10 +615,7 @@ void TIGLViewerWindow::connectSignals()
     connect(stdoutStream, SIGNAL(sendString(QString)), console, SLOT(output(QString)));
     connect(errorStream , SIGNAL(sendString(QString)), console, SLOT(output(QString)));
 
-    connect(scriptInput, SIGNAL(textChanged(QString)), scriptEngine, SLOT(textChanged(QString)));
-    connect(scriptInput, SIGNAL(returnPressed()), scriptEngine, SLOT(eval()));
     connect(scriptEngine, SIGNAL(printResults(QString)), console, SLOT(output(QString)));
-
     connect(console, SIGNAL(onChange(QString)), scriptEngine, SLOT(textChanged(QString)));
     connect(console, SIGNAL(onCommand(QString)), scriptEngine, SLOT(eval(QString)));
 }
