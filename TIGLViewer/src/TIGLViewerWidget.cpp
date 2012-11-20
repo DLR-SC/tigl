@@ -694,6 +694,7 @@ void TIGLViewerWidget::setObjectsMaterial()
 
 void TIGLViewerWidget::onLeftButtonDown(  Qt::KeyboardModifiers nFlags, const QPoint point )
 {
+    setFocus(Qt::MouseFocusReason);
     myStartPoint = point;
     if ( nFlags & CASCADESHORTCUTKEY )
     {

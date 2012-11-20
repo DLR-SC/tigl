@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>615</width>
-    <height>398</height>
+    <width>783</width>
+    <height>578</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -37,6 +37,12 @@
          <verstretch>70</verstretch>
         </sizepolicy>
        </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>300</height>
+        </size>
+       </property>
       </widget>
       <widget class="Console" name="console">
        <property name="baseSize">
@@ -48,9 +54,6 @@
       </widget>
      </widget>
     </item>
-    <item>
-     <widget class="QLineEdit" name="scriptInput"/>
-    </item>
    </layout>
   </widget>
   <widget class="QMenuBar" name="menubar">
@@ -58,7 +61,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>615</width>
+     <width>783</width>
      <height>21</height>
     </rect>
    </property>
@@ -176,7 +179,6 @@
      <addaction name="separator"/>
      <addaction name="backgroundAction"/>
      <addaction name="showConsoleAction"/>
-     <addaction name="showScriptAction"/>
      <addaction name="showWireframeAction"/>
     </widget>
     <widget class="QMenu" name="viewActionsMenu">
