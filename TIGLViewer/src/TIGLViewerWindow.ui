@@ -38,7 +38,7 @@
         </sizepolicy>
        </property>
       </widget>
-      <widget class="QTextBrowser" name="console">
+      <widget class="Console" name="console">
        <property name="baseSize">
         <size>
          <width>0</width>
@@ -970,6 +970,11 @@
    <extends>QWidget</extends>
    <header>TIGLViewerWidget.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>Console</class>
+   <extends>QPlainTextEdit</extends>
+   <header>TiglViewerConsole.h</header>
   </customwidget>
  </customwidgets>
  <resources>
