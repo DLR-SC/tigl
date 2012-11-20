@@ -162,6 +162,15 @@ TEST(TiglPointTranslator, consistency){
     ASSERT_EQ ( TIGL_SUCCESS,  trans.translate(p, &eta, &xsi) );
     ASSERT_NEAR( eta_orig, eta, precision);
     ASSERT_NEAR( xsi_orig, xsi, precision);
+
+    // lets test some points outside the quadriangle
+    eta_orig = -1.735;
+    xsi_orig = 2.3;
+
+    ASSERT_EQ ( TIGL_SUCCESS,  trans.translate(eta_orig,xsi_orig,&p) );
+    ASSERT_EQ ( TIGL_SUCCESS,  trans.translate(p, &eta, &xsi) );
+    ASSERT_NEAR( eta_orig, eta, precision);
+    ASSERT_NEAR( xsi_orig, xsi, precision);
 }
 
 TEST(TiglPointTranslator, performance){
