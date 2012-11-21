@@ -1,3 +1,13 @@
+/**
+ * Implementation of a console window
+ *
+ * Credits go to Petr Trofimov, https://github.com/ptrofimov/RedisConsole
+ *//**
+ * Implementation of a console window
+ *
+ * Credits go to Petr Trofimov, https://github.com/ptrofimov/RedisConsole
+ */
+
 #include "TiglViewerConsole.h"
 
 Console::Console(QWidget *parent) :
