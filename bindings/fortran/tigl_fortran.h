@@ -131,6 +131,7 @@ extern "C" {
 #define tiglComponentIntersectionLineCount_f TIGL_COMPONENT_INTERSECTION_LINE_COUNT
 #define tiglFuselageGetMinumumDistanceToGround_f TIGL_FUSELAGE_GET_MINIMUM_DISTANCE_TO_GROUND
 #define tiglWingGetWettedArea_f TIGL_WING_GET_WETTED_AREA
+#define tiglGetErrorString_f TIGL_GET_ERROR_STRING
 
 #else
 
@@ -205,7 +206,7 @@ extern "C" {
 #define tiglComponentIntersectionLineCount_f FORTRAN_NAME(tigl_component_intersection_line_count)
 #define tiglFuselageGetMinumumDistanceToGround_f FORTRAN_NAME(tigl_fuselage_get_minumum_distance_to_ground)
 #define tiglWingGetWettedArea_f FORTRAN_NAME(tigl_wing_get_wetted_area)
-
+#define tiglGetErrorString_f FORTRAN_NAME(tigl_get_error_string)
 
 #endif /* IFORT_WIN32 */
 
