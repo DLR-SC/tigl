@@ -505,7 +505,7 @@ namespace tigl {
 		BRepClass3d_SolidClassifier quickClassifier;
 		
 		quickClassifier.Load(wing->GetLoft());
-		quickClassifier.Perform(pnt, 1.0e-3);
+		quickClassifier.Perform(pnt, 1.0e-2);
 		if((quickClassifier.State() != TopAbs_IN) && (quickClassifier.State() != TopAbs_ON)){
 			return resultUID;
 		}
