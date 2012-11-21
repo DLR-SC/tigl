@@ -76,6 +76,7 @@
     </widget>
     <addaction name="newAction"/>
     <addaction name="openAction"/>
+    <addaction name="openScriptAction"/>
     <addaction name="recentFileMenu"/>
     <addaction name="saveAction"/>
     <addaction name="closeAction"/>
@@ -268,6 +269,14 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+O</string>
+   </property>
+  </action>
+    <action name="openScriptAction">
+   <property name="text">
+    <string>Open Script</string>
+   </property>
+   <property name="toolTip">
+    <string>Open a script file</string>
    </property>
   </action>
   <action name="actionRecent_Files">

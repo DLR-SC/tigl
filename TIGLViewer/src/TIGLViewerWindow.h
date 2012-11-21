@@ -66,6 +66,7 @@ public slots:
 private slots:
     void newFile();
     void open();
+    void openScript();
     void openRecentFile();
     void closeConfiguration();
     void save();
