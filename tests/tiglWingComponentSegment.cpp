@@ -63,6 +63,34 @@ class WingComponentSegment : public ::testing::Test {
   static TiglCPACSConfigurationHandle tiglHandle;
 };
 
+class WingComponentSegment2 : public ::testing::Test {
+ protected:
+  virtual void SetUp() {
+        char* filename = "TestData/CPACS_20_D250_10.xml";
+        ReturnCode tixiRet;
+        TiglReturnCode tiglRet;
+
+        tiglHandle = -1;
+        tixiHandle = -1;
+        
+        tixiRet = tixiOpenDocument(filename, &tixiHandle);
+        ASSERT_EQ (SUCCESS, tixiRet);
+        tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "D250_VAMP", &tiglHandle);
+        ASSERT_EQ(TIGL_SUCCESS, tiglRet);
+  }
+
+  virtual void TearDown() {
+        ASSERT_EQ(SUCCESS, tiglCloseCPACSConfiguration(tiglHandle));
+        ASSERT_EQ(TIGL_SUCCESS, tixiCloseDocument(tixiHandle));
+        tiglHandle = -1;
+        tixiHandle = -1;
+  }
+
+  TixiDocumentHandle           tixiHandle;
+  TiglCPACSConfigurationHandle tiglHandle;
+};
+
+
 
 TixiDocumentHandle WingComponentSegment::tixiHandle = 0;
 TiglCPACSConfigurationHandle WingComponentSegment::tiglHandle = 0;
@@ -207,6 +235,32 @@ TEST_F(WingComponentSegment, tiglWingComponentGetEtaXsi_wrongUID){
 	free(wingUID); wingUID = NULL;
 	free(segmentUID); segmentUID = NULL;
 }
+
+
+TEST_F(WingComponentSegment2, tiglWingComponentGetEtaXsi_success)
+{
+	double eta = 0.3336;
+	double xsi = 0.;
+	char * wingUID = NULL;
+	char * segmentUID = NULL;
+	double segmentEta = 0., segmentXsi = 0.;
+
+	TiglReturnCode ret = tiglWingComponentSegmentPointGetSegmentEtaXsi(tiglHandle, "D250_wing_CS", eta, xsi, &wingUID, &segmentUID, &segmentEta, &segmentXsi);
+	ASSERT_EQ(TIGL_SUCCESS, ret);
+	ASSERT_STREQ("D250_wing", wingUID);
+	free(wingUID); wingUID = NULL;
+	free(segmentUID); segmentUID = NULL;
+
+	eta = 0.;
+	xsi = 0.5;
+
+	ret = tiglWingComponentSegmentPointGetSegmentEtaXsi(tiglHandle, "D250_wing_CS", eta, xsi, &wingUID, &segmentUID, &segmentEta, &segmentXsi);
+	ASSERT_EQ(TIGL_SUCCESS, ret);
+	ASSERT_STREQ("D250_wing", wingUID);
+	free(wingUID); wingUID = NULL;
+	free(segmentUID); segmentUID = NULL;
+}
+
 
 TEST_F(WingComponentSegmentSimple, getPointInternal_accuracy)
 {

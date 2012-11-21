@@ -628,17 +628,10 @@ namespace tigl {
 		extrema.Perform();
 		gp_Pnt intersectionPoint = extrema.PointOnShape1(1);
 
+		//length of the eta line
+		Standard_Real len1 = pnt0.Distance(pnt1);
 		// now the small line, a fraction of the original eta line
-		BRepBuilderAPI_MakeWire wireBuilder;
-		TopoDS_Edge edge = BRepBuilderAPI_MakeEdge(pnt0, intersectionPoint);
-		wireBuilder.Add(edge);
-		TopoDS_Wire fractionLine = wireBuilder.Wire();
-
-		BRepAdaptor_CompCurve aCompoundCurve1(etaLine, Standard_True);
-		BRepAdaptor_CompCurve aCompoundCurve2(fractionLine, Standard_True);
-
-		Standard_Real len1 = GCPnts_AbscissaPoint::Length( aCompoundCurve1 );
-		Standard_Real len2 = GCPnts_AbscissaPoint::Length( aCompoundCurve2 );
+		Standard_Real len2 = pnt0.Distance(intersectionPoint);
 
 		assert(len1 != 0.);
 
