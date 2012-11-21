@@ -10,7 +10,7 @@
 * you may not use this file except in compliance with the License.
 * You may obtain a copy of the License at
 *
-* Â  Â  http://www.apache.org/licenses/LICENSE-2.0
+* ï¿½  ï¿½  http://www.apache.org/licenses/LICENSE-2.0
 *
 * Unless required by applicable law or agreed to in writing, software
 * distributed under the License is distributed on an "AS IS" BASIS,
@@ -38,6 +38,20 @@ TIGLScriptEngine::TIGLScriptEngine()
 void TIGLScriptEngine::textChanged(QString line)
 {
     // do fancy stuff in future, like input-completion
+}
+
+
+void TIGLScriptEngine::openFile(QString fileName)
+{
+    QString script;
+    QFile file(fileName);
+    if (file.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        while (!file.atEnd()) {
+            script += file.readLine() + "\n";
+        }
+        eval(script);
+    }
 }
 
 void TIGLScriptEngine::eval(QString commandLine)

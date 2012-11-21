@@ -178,6 +178,20 @@ void TIGLViewerWindow::open()
     openFile(fileName);
 }
 
+
+void TIGLViewerWindow::openScript()
+{
+    QString     fileName;
+
+    statusBar()->showMessage(tr("Invoked File|Open Script"));
+
+    fileName = QFileDialog::getOpenFileName (   this,
+                                                tr("Open File"),
+                                                myLastFolder,
+                                                tr( "Choose your script (*)" ) );
+    scriptEngine->openFile(fileName);
+}
+
 void TIGLViewerWindow::closeConfiguration(){
     cpacsConfiguration->closeCpacsConfiguration();
 }
@@ -492,6 +506,7 @@ void TIGLViewerWindow::connectSignals()
 {
     connect(newAction, SIGNAL(triggered()), this, SLOT(newFile()));
     connect(openAction, SIGNAL(triggered()), this, SLOT(open()));
+    connect(openScriptAction, SIGNAL(triggered()), this, SLOT(openScript()));
     connect(closeAction, SIGNAL(triggered()), this, SLOT(closeConfiguration()));
 
     for (int i = 0; i < MaxRecentFiles; ++i) {
@@ -606,8 +621,7 @@ void TIGLViewerWindow::connectSignals()
 	connect( myOCC, SIGNAL(pointClicked(V3d_Coordinate,V3d_Coordinate,V3d_Coordinate)),
 		     this,   SLOT (addPoint    (V3d_Coordinate,V3d_Coordinate,V3d_Coordinate)) );
 
-	connect( myOCC, SIGNAL(sendStatus(const QString)),
-		     this,  SLOT  (statusMessage(const QString)) );
+	connect( myOCC, SIGNAL(sendStatus(const QString)), this,  SLOT  (statusMessage(const QString)) );
 
 	connect( cpacsConfiguration, SIGNAL(documentUpdated(TiglCPACSConfigurationHandle)), 
 		     this, SLOT(updateMenus(TiglCPACSConfigurationHandle)) );
