@@ -122,7 +122,6 @@ TIGLViewerWindow::TIGLViewerWindow()
     QPalette p = console->palette();
     p.setColor(QPalette::Base, Qt::black);
     console->setPalette(p);
-    //console->setTextColor(Qt::green);
     console->output("TIGLViewer console output\n\n");
 
     cpacsConfiguration = new TIGLViewerDocument(this, myOCC->getContext());
@@ -132,6 +131,8 @@ TIGLViewerWindow::TIGLViewerWindow()
     createMenus();
     updateMenus(-1);
 
+    loadSettings();
+
     statusBar()->showMessage(tr("A context menu is available by right-clicking"));
 
     setWindowTitle(tr(PARAMS.windowTitle.toAscii().data()));
@@ -140,6 +141,8 @@ TIGLViewerWindow::TIGLViewerWindow()
 }
 
 TIGLViewerWindow::~TIGLViewerWindow(){
+    saveSettings();
+
     delete stdoutStream;
     delete errorStream;
     delete scriptEngine;
@@ -273,6 +276,26 @@ void TIGLViewerWindow::setCurrentFile(const QString &fileName)
     settings.setValue("lastFolder", myLastFolder);
 
     updateRecentFileActions();
+}
+
+void TIGLViewerWindow::loadSettings(){
+    QSettings settings("DLR SC-VK","TIGLViewer");
+
+    bool showConsole = settings.value("show_console",QVariant(true)).toBool();
+    console->setVisible(showConsole);
+    showConsoleAction->setChecked(showConsole);
+
+    QByteArray splitterPos = settings.value("console_position").toByteArray();
+    splitter->restoreState(splitterPos);
+}
+
+void TIGLViewerWindow::saveSettings(){
+    QSettings settings("DLR SC-VK","TIGLViewer");
+
+    bool showConsole = showConsoleAction->isChecked();
+    settings.setValue("show_console", showConsole);
+
+    settings.setValue("console_position", splitter->saveState());
 }
 
 

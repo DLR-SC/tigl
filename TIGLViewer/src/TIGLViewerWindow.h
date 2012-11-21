@@ -46,7 +46,7 @@ public:
     enum { MaxRecentFiles = 5 };
 
     TIGLViewerWindow();
-    ~TIGLViewerWindow();
+    virtual ~TIGLViewerWindow();
 	Handle_AIS_InteractiveContext& getContext() { return myVC->getContext(); };
 
 	void setInitialCpacsFileName(QString filename);
@@ -93,6 +93,8 @@ private:
     void openFile(const QString&);
     void updateRecentFileActions();
     void setCurrentFile(const QString &);
+    void loadSettings();
+    void saveSettings();
 
     QAction *recentFileActions[MaxRecentFiles];
 

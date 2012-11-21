@@ -61,6 +61,8 @@ int main(int argc, char *argv[])
 	}
 
 	retval = app.exec();
+    window->hide();
+    delete window;
     return retval;
 }
 
