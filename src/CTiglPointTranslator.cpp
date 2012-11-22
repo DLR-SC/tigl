@@ -103,6 +103,16 @@ int CTiglPointTranslator::calc_grad_hess(double alpha, double beta){
 // more infos here: http://en.wikipedia.org/wiki/Wolfe_conditions
 inline double CTiglPointTranslator::armijoBacktrack(double eta, double xsi, double * dir, double alpha, double& of){
     double slope = grad[0]*dir[0]+grad[1]*dir[1];
+    // the hessian might not be positive definite
+    if(slope >= 0){
+#ifdef DEBUG
+        std::cout << "Warning: Hessian not pos. definite. Switch back to gradient." << std::endl;
+#endif
+        dir[0] = -grad[0];
+        dir[1] = -grad[1];
+        slope = grad[0]*dir[0]+grad[1]*dir[1];
+    }
+
     assert(slope < 0);
 
     int iter = 0;
@@ -111,6 +121,7 @@ inline double CTiglPointTranslator::armijoBacktrack(double eta, double xsi, doub
     while ( (of=calc_obj(eta + alpha*dir[0], xsi + alpha*dir[1])) > of_init + C1*alpha*slope ){
         alpha *= BTFAC;
         if(iter++ > 20) {
+            //normally we should not get here (except from pathological functions)
             std::cerr << "Error: line search cannot find sufficient decrease, abort" << std::endl;
             alpha = 0.;
             of = of_init;
