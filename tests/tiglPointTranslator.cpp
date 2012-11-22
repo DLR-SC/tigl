@@ -101,6 +101,24 @@ TEST(TiglPointTranslator, simple2){
     ASSERT_NEAR( 1., xsi, abs_error);            
 }
 
+// in this test, the hessian is not positive definite at the beginning, thus the algorithm would die if we dont do anything
+TEST(TiglPointTranslator, indefinite_hessian){
+    CTiglPoint x1(0,2,0);
+    CTiglPoint x2(2,4,0);
+    CTiglPoint x3(0,0,0);
+    CTiglPoint x4(2,0,0);
+
+    CTiglPoint p(1,1,0);
+
+    double eta, xsi;
+
+    CTiglPointTranslator trans(x1, x2, x3, x4 );
+
+    ASSERT_EQ ( TIGL_SUCCESS,  trans.translate(p, &eta, &xsi) );
+    ASSERT_NEAR( 0.5,   eta, abs_error);
+    ASSERT_NEAR( 2./3., xsi, abs_error);
+}
+
 TEST(TiglPointTranslator, advanced){
     CTiglPoint x1(0,4,0);
     CTiglPoint x2(8,4,0);
@@ -196,11 +214,12 @@ TEST(TiglPointTranslator, performance){
         x = x + 1.0;
     }
 
+    clock_t stop = clock();
+
     ASSERT_EQ((double)nruns, x);
     ASSERT_NEAR(0.5, eta, abs_error);
     ASSERT_NEAR(0.5, xsi, abs_error);
         
-    clock_t stop = clock();
     double time_elapsed = (double)(stop - start)/(double)CLOCKS_PER_SEC/(double)nruns;
     time_elapsed *= 1000000.;
     printf("Elapsed average time: %f [us]\n", time_elapsed);
