@@ -240,6 +240,11 @@
    <addaction name="saveAction"/>
    <addaction name="closeAction"/>
    <addaction name="separator"/>
+   <addaction name="selectAction"/>
+   <addaction name="panAction"/>
+   <addaction name="rotAction"/>
+   <addaction name="zoomAction"/>
+   <addaction name="separator"/>
    <addaction name="viewTopAction"/>
    <addaction name="viewLeftAction"/>
    <addaction name="viewFrontAction"/>
@@ -271,7 +276,7 @@
     <string>Ctrl+O</string>
    </property>
   </action>
-    <action name="openScriptAction">
+  <action name="openScriptAction">
    <property name="text">
     <string>Open Script</string>
    </property>
@@ -788,6 +793,10 @@
    </property>
   </action>
   <action name="zoomAction">
+   <property name="icon">
+    <iconset resource="TIGLViewer.qrc">
+     <normaloff>:/gfx/zoom.png</normaloff>:/gfx/zoom.png</iconset>
+   </property>
    <property name="text">
     <string>&amp;Zoom</string>
    </property>
@@ -799,6 +808,10 @@
    </property>
   </action>
   <action name="panAction">
+   <property name="icon">
+    <iconset resource="TIGLViewer.qrc">
+     <normaloff>:/gfx/translate.png</normaloff>:/gfx/translate.png</iconset>
+   </property>
    <property name="text">
     <string>&amp;Translate</string>
    </property>
@@ -810,6 +823,10 @@
    </property>
   </action>
   <action name="rotAction">
+   <property name="icon">
+    <iconset resource="TIGLViewer.qrc">
+     <normaloff>:/gfx/rotate.png</normaloff>:/gfx/rotate.png</iconset>
+   </property>
    <property name="text">
     <string>&amp;Rotate</string>
    </property>
@@ -972,6 +989,18 @@
    </property>
    <property name="text">
     <string>&amp;Close Configuration</string>
+   </property>
+  </action>
+  <action name="selectAction">
+   <property name="icon">
+    <iconset resource="TIGLViewer.qrc">
+     <normaloff>:/gfx/select.png</normaloff>:/gfx/select.png</iconset>
+   </property>
+   <property name="text">
+    <string>Select Components</string>
+   </property>
+   <property name="toolTip">
+    <string>Select Components</string>
    </property>
   </action>
  </widget>

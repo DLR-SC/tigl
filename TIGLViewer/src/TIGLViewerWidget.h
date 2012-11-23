@@ -115,6 +115,7 @@ public slots:
     void pan();
     void globalPan();
     void rotation();
+    void selecting();
     void hiddenLineOn();
     void hiddenLineOff();
 	void background();
