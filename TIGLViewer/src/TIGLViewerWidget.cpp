@@ -421,6 +421,11 @@ void TIGLViewerWidget::rotation( void )
 }
 
 
+void TIGLViewerWidget::selecting( void )
+{
+    setMode( CurAction3d_Nothing );
+}
+
 
 void TIGLViewerWidget::globalPan()
 {

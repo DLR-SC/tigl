@@ -559,6 +559,7 @@ void TIGLViewerWindow::connectSignals()
     connect(zoomAction, SIGNAL(triggered()),myOCC, SLOT(zoom()));
     connect(panAction, SIGNAL(triggered()), myOCC, SLOT(pan()));
     connect(rotAction, SIGNAL(triggered()), myOCC, SLOT(rotation()));
+    connect(selectAction, SIGNAL(triggered()), myOCC, SLOT(selecting()));
 
     // view->grid menu
     connect(gridOnAction, SIGNAL(toggled(bool)), myVC, SLOT(toggleGrid(bool)));
