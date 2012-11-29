@@ -86,6 +86,8 @@ private slots:
 				   V3d_Coordinate Y,
 				   V3d_Coordinate Z);
 	void statusMessage (const QString aMessage);
+	void loadSettings();
+	void saveSettings();
 
 private:
     void connectSignals();
@@ -93,8 +95,8 @@ private:
     void openFile(const QString&);
     void updateRecentFileActions();
     void setCurrentFile(const QString &);
-    void loadSettings();
-    void saveSettings();
+
+    void closeEvent(QCloseEvent*);
 
     QAction *recentFileActions[MaxRecentFiles];
 

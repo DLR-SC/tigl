@@ -26,32 +26,19 @@
    </property>
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
-     <widget class="QSplitter" name="splitter">
-      <property name="orientation">
-       <enum>Qt::Vertical</enum>
+     <widget class="TIGLViewerWidget" name="myOCC" native="true">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+        <horstretch>0</horstretch>
+        <verstretch>70</verstretch>
+       </sizepolicy>
       </property>
-      <widget class="TIGLViewerWidget" name="myOCC" native="true">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-         <horstretch>0</horstretch>
-         <verstretch>70</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="minimumSize">
-        <size>
-         <width>0</width>
-         <height>300</height>
-        </size>
-       </property>
-      </widget>
-      <widget class="Console" name="console">
-       <property name="baseSize">
-        <size>
-         <width>0</width>
-         <height>100</height>
-        </size>
-       </property>
-      </widget>
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>300</height>
+       </size>
+      </property>
      </widget>
     </item>
    </layout>
@@ -228,7 +215,7 @@
   <widget class="QStatusBar" name="statusbar"/>
   <widget class="QToolBar" name="toolBar">
    <property name="windowTitle">
-    <string>toolBar</string>
+    <string>File</string>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
@@ -239,7 +226,17 @@
    <addaction name="openAction"/>
    <addaction name="saveAction"/>
    <addaction name="closeAction"/>
-   <addaction name="separator"/>
+  </widget>
+  <widget class="QToolBar" name="toolBarView">
+   <property name="windowTitle">
+    <string>Views</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
    <addaction name="selectAction"/>
    <addaction name="panAction"/>
    <addaction name="rotAction"/>
@@ -249,6 +246,28 @@
    <addaction name="viewLeftAction"/>
    <addaction name="viewFrontAction"/>
    <addaction name="viewAxoAction"/>
+  </widget>
+  <widget class="QDockWidget" name="consoleDockWidget">
+   <property name="windowTitle">
+    <string>Tigl Console</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>8</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents_2">
+    <layout class="QVBoxLayout" name="verticalLayout2">
+     <item>
+      <widget class="Console" name="console">
+       <property name="baseSize">
+        <size>
+         <width>0</width>
+         <height>100</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
   </widget>
   <action name="newAction">
    <property name="text">

@@ -122,7 +122,6 @@ TIGLViewerWindow::TIGLViewerWindow()
     QPalette p = console->palette();
     p.setColor(QPalette::Base, Qt::black);
     console->setPalette(p);
-    console->output("TIGLViewer console output\n\n");
 
     cpacsConfiguration = new TIGLViewerDocument(this, myOCC->getContext());
     scriptEngine = new TIGLScriptEngine;
@@ -137,12 +136,9 @@ TIGLViewerWindow::TIGLViewerWindow()
 
     setWindowTitle(tr(PARAMS.windowTitle.toAscii().data()));
     setMinimumSize(160, 160);
-    showMaximized();
 }
 
 TIGLViewerWindow::~TIGLViewerWindow(){
-    saveSettings();
-
     delete stdoutStream;
     delete errorStream;
     delete scriptEngine;
@@ -282,20 +278,21 @@ void TIGLViewerWindow::loadSettings(){
     QSettings settings("DLR SC-VK","TIGLViewer");
 
     bool showConsole = settings.value("show_console",QVariant(true)).toBool();
-    console->setVisible(showConsole);
-    showConsoleAction->setChecked(showConsole);
 
-    QByteArray splitterPos = settings.value("console_position").toByteArray();
-    splitter->restoreState(splitterPos);
+    restoreGeometry(settings.value("MainWindowGeom").toByteArray());
+    restoreState(settings.value("MainWindowState").toByteArray());
+    consoleDockWidget->setVisible(showConsole);
+    showConsoleAction->setChecked(showConsole);
 }
 
 void TIGLViewerWindow::saveSettings(){
     QSettings settings("DLR SC-VK","TIGLViewer");
 
-    bool showConsole = showConsoleAction->isChecked();
+    bool showConsole = consoleDockWidget->isVisible();
     settings.setValue("show_console", showConsole);
 
-    settings.setValue("console_position", splitter->saveState());
+    settings.setValue("MainWindowGeom", saveGeometry());
+    settings.setValue("MainWindowState", saveState());
 }
 
 
@@ -582,7 +579,8 @@ void TIGLViewerWindow::connectSignals()
     connect(viewZoomInAction, SIGNAL(triggered()), myOCC, SLOT(zoomIn()));
     connect(viewZoomOutAction, SIGNAL(triggered()), myOCC, SLOT(zoomOut()));
     connect(backgroundAction, SIGNAL(triggered()), myOCC, SLOT(background()));
-    connect(showConsoleAction, SIGNAL(toggled(bool)), console, SLOT(setVisible(bool)));
+    connect(showConsoleAction, SIGNAL(toggled(bool)), consoleDockWidget, SLOT(setVisible(bool)));
+    connect(consoleDockWidget, SIGNAL(visibilityChanged(bool)), showConsoleAction, SLOT(setChecked(bool)));
     connect(showWireframeAction, SIGNAL(toggled(bool)), myVC, SLOT(wireFrame(bool)));
 
 
@@ -705,4 +703,8 @@ void TIGLViewerWindow::updateMenus(TiglCPACSConfigurationHandle hand){
     menuAircraft->setEnabled(nWings > 0 || nFuselages > 0);
 
     closeAction->setEnabled(hand > 0);
+}
+
+void TIGLViewerWindow::closeEvent(QCloseEvent*) {
+    saveSettings();
 }
