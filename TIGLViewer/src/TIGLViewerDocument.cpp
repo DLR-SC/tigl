@@ -406,7 +406,7 @@ void TIGLViewerDocument::drawWingProfiles()
         lineShape->SetColor(Quantity_NOC_GOLD /*Quantity_NOC_WHITE*/);
         myAISContext->Display(lineShape, Standard_True);
     }
-    cout << "nProf: " << profile.GetCoordinateContainer().size() << endl;
+
     if(profile.GetCoordinateContainer().size() < 15) {
         for(int i = 0; i < profile.GetCoordinateContainer().size(); ++i){
             tigl::CTiglPoint * p = profile.GetCoordinateContainer().at(i);
