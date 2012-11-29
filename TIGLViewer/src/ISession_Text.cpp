@@ -25,6 +25,7 @@ IMPLEMENT_STANDARD_RTTIEXT(ISession_Text,AIS_InteractiveObject)
 #include "Graphic2d_Vertex.hxx"
 #include "Graphic2d_DisplayList.hxx"
 #include "Prs3d_Text.hxx"
+#include "Prs3d_Presentation.hxx"
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -77,6 +78,7 @@ void ISession_Text::Compute(const Handle(PrsMgr_PresentationManager3d)&,
                              const Handle(Prs3d_Presentation)& aPresentation,
                              const Standard_Integer /*aMode*/)
 {
+    aPresentation->Color(Quantity_NOC_GREEN);
     Prs3d_Text::Draw(aPresentation,myDrawer,MyText,gp_Pnt(  MyX ,MyY,MyZ ));
 }
 

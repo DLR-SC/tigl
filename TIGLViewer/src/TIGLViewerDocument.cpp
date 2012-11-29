@@ -52,7 +52,7 @@
 #include "TIGLViewerInternal.h"
 #include "ISession_Point.h"
 #include "ISession_Text.h"
-
+#include "CTiglPoint.h"
 
 TIGLViewerDocument::TIGLViewerDocument( QWidget *parentWidget, const Handle_AIS_InteractiveContext& ic )
 {
@@ -406,10 +406,20 @@ void TIGLViewerDocument::drawWingProfiles()
         lineShape->SetColor(Quantity_NOC_GOLD /*Quantity_NOC_WHITE*/);
         myAISContext->Display(lineShape, Standard_True);
     }
+    cout << "nProf: " << profile.GetCoordinateContainer().size() << endl;
+    if(profile.GetCoordinateContainer().size() < 15) {
+        for(int i = 0; i < profile.GetCoordinateContainer().size(); ++i){
+            tigl::CTiglPoint * p = profile.GetCoordinateContainer().at(i);
+            std::stringstream str;
+            str << i << ": (" << p->x << ", " << p->y << ", " << p->z << ")";
+            DisplayPoint(p->Get_gp_Pnt(), str.str().c_str(), Standard_False, 0., 0., 0., 6.);
+        }
 
-    // Draw some points on the wing profile
-    for (double xsi = 0.0; xsi <= 1.0; xsi = xsi + 0.2)
-    {
+    }
+    else {
+      // Draw some points on the wing profile
+      for (double xsi = 0.0; xsi <= 1.0; xsi = xsi + 0.2)
+      {
         try {
             gp_Pnt chordPoint = profile.GetChordPoint(xsi);
             text << "CPT(" << xsi << ")";
@@ -442,6 +452,7 @@ void TIGLViewerDocument::drawWingProfiles()
         catch (tigl::CTiglError& ex) {
             std::cerr << ex.getError() << std::endl;
         }
+      }
     }
 }
 
@@ -492,19 +503,30 @@ void TIGLViewerDocument::drawFuselageProfiles()
     shape->SetColor(Quantity_NOC_WHITE);
     myAISContext->Display(shape, Standard_True);
 
-    for (double zeta = 0.0; zeta <= 1.0; zeta += 0.1)
-   {
-	   try {
-		   gp_Pnt wirePoint = profile.GetPoint(zeta);
-		   std::ostringstream text;
-		   text << "PT(" << zeta << ")";
-		   DisplayPoint(wirePoint, const_cast<char*>(text.str().c_str()), Standard_False, 0.0, 0.0, 0.0, 2.0);
-		   text.str("");
-	   }
-	   catch (tigl::CTiglError& ex) {
-		   std::cerr << ex.getError() << std::endl;
-	   }
-   }
+    if(profile.GetCoordinateContainer().size() < 15) {
+        for(int i = 0; i < profile.GetCoordinateContainer().size(); ++i){
+            tigl::CTiglPoint * p = profile.GetCoordinateContainer().at(i);
+            std::stringstream str;
+            str << i << ": (" << p->x << ", " << p->y << ", " << p->z << ")";
+            DisplayPoint(p->Get_gp_Pnt(), str.str().c_str(), Standard_False, 0., 0., 0., 6.);
+        }
+
+    }
+    else {
+        for (double zeta = 0.0; zeta <= 1.0; zeta += 0.1)
+        {
+          try {
+            gp_Pnt wirePoint = profile.GetPoint(zeta);
+            std::ostringstream text;
+            text << "PT(" << zeta << ")";
+            DisplayPoint(wirePoint, const_cast<char*>(text.str().c_str()), Standard_False, 0.0, 0.0, 0.0, 2.0);
+            text.str("");
+          }
+          catch (tigl::CTiglError& ex) {
+            std::cerr << ex.getError() << std::endl;
+          }
+        }
+    }
 }
 
 

@@ -485,7 +485,8 @@ namespace tigl {
         for (CCPACSCoordinateContainer::size_type i = 0; i < coordinates.size(); i++)
         {
             gp_Pnt pnt = coordinates[i]->Get_gp_Pnt();
-            pnt = TransformPoint(pnt);
+            //@TODO: i dont't see why we should transform here
+            //pnt = TransformPoint(pnt);
             newPointVector.push_back(new CTiglPoint(pnt.X(), pnt.Y(), pnt.Z()));
         }
         return newPointVector;
