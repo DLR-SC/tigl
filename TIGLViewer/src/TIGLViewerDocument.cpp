@@ -412,7 +412,8 @@ void TIGLViewerDocument::drawWingProfiles()
             tigl::CTiglPoint * p = profile.GetCoordinateContainer().at(i);
             std::stringstream str;
             str << i << ": (" << p->x << ", " << p->y << ", " << p->z << ")";
-            DisplayPoint(p->Get_gp_Pnt(), str.str().c_str(), Standard_False, 0., 0., 0., 6.);
+            gp_Pnt pnt = p->Get_gp_Pnt();
+            DisplayPoint(pnt, str.str().c_str(), Standard_False, 0., 0., 0., 6.);
         }
 
     }
@@ -508,7 +509,8 @@ void TIGLViewerDocument::drawFuselageProfiles()
             tigl::CTiglPoint * p = profile.GetCoordinateContainer().at(i);
             std::stringstream str;
             str << i << ": (" << p->x << ", " << p->y << ", " << p->z << ")";
-            DisplayPoint(p->Get_gp_Pnt(), str.str().c_str(), Standard_False, 0., 0., 0., 6.);
+            gp_Pnt pnt = p->Get_gp_Pnt();
+            DisplayPoint(pnt, str.str().c_str(), Standard_False, 0., 0., 0., 6.);
         }
 
     }
