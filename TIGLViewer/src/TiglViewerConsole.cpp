@@ -19,6 +19,7 @@ Console::Console(QWidget *parent) :
     p.setColor(QPalette::Base, Qt::black);
     p.setColor(QPalette::Text, Qt::green);
     setPalette(p);
+    appendPlainText("Type \"help\" for help\n\n");
 
     history = new QStringList;
     historyPos = 0;
