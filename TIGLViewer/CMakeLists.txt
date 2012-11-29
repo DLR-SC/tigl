@@ -76,6 +76,11 @@ QT4_WRAP_UI(tv_ui_HEADERS ${tv_ui_comp})
 QT4_ADD_RESOURCES( tv_rcrs src/TIGLViewer.qrc )
 
 add_definitions(-DCSFDB -DQOCC_STATIC)
+
+if(OCC_VERSION_STRING VERSION_GREATER "6.3")
+    add_definitions(-DOCC_PATCHED)
+endif()
+
 include_directories( ${OpenCASCADE_INCLUDE_DIR} ${TIXI_INCLUDE_DIRS})
 include_directories( ${PROJECT_SOURCE_DIR}/src ${CMAKE_CURRENT_SOURCE_DIR}/src )
 
