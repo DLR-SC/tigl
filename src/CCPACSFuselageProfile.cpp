@@ -281,8 +281,17 @@ namespace tigl {
         // Build wire from fuselage profile points
         CTiglAlgorithmManager& manager        = CTiglAlgorithmManager::GetInstance();
         const ITiglWireAlgorithm& wireBuilder = manager.GetWireAlgorithm();
+        const CTiglInterpolateBsplineWire * pSplineBuilder = dynamic_cast<const CTiglInterpolateBsplineWire*>(&wireBuilder);
+        if(pSplineBuilder){
+            const_cast<CTiglInterpolateBsplineWire*>(pSplineBuilder)->setSteadyEndpoints(true);
+        }
+
         TopoDS_Wire tempWireClosed   = wireBuilder.BuildWire(points, true);
         TopoDS_Wire tempWireOriginal = wireBuilder.BuildWire(points, false);
+        if(pSplineBuilder){
+            const_cast<CTiglInterpolateBsplineWire*>(pSplineBuilder)->setSteadyEndpoints(false);
+        }
+
         if (tempWireClosed.IsNull() == Standard_True || tempWireOriginal.IsNull() == Standard_True)
             throw CTiglError("Error: TopoDS_Wire is null in CCPACSFuselageProfile::BuildWire", TIGL_ERROR);
 
