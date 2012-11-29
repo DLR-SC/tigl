@@ -45,6 +45,10 @@ namespace tigl {
 		// Builds the wire from the given points
 		virtual TopoDS_Wire BuildWire(const CPointContainer& points, bool forceClosed = false) const;
 
+
+		// if set to true, the endpoints of a closed wire will be c1 steady
+        virtual void setSteadyEndpoints(bool b) { c1steady = b; }
+
 		// Returns the algorithm code identifier for an algorithm
 		virtual TiglAlgorithmCode GetAlgorithmCode(void) const;
 
@@ -68,6 +72,8 @@ namespace tigl {
 
 		// Assignment operator
 		void operator=(const CTiglInterpolateBsplineWire& )              { /* Do nothing */ }
+
+		bool c1steady;
 
 	};
 

@@ -41,6 +41,7 @@ namespace tigl {
 	// Constructor
 	CTiglInterpolateBsplineWire::CTiglInterpolateBsplineWire()
 	{
+		c1steady = false;
 	}
 
 	// Destructor
@@ -51,6 +52,8 @@ namespace tigl {
 	// Builds the wire from the given points
 	TopoDS_Wire CTiglInterpolateBsplineWire::BuildWire(const CPointContainer& points, bool forceClosed) const
 	{
+        bool endTangency = c1steady;
+
         if (points.size() < 2)
 			throw CTiglError("Error: To less points to build a curve in CTiglInterpolateBsplineWire::BuildCurve", TIGL_ERROR);
 
@@ -71,18 +74,17 @@ namespace tigl {
             prevPnt = nextPnt;
 		}
 
+
         // Test if we have to build a closed bspline curve from the remaining
         // points. This is true if the start and end point are very close to each other.
         bool closedBspline = false;
         int pointCount  = static_cast<Standard_Integer>(usedPoints.size());
         gp_Pnt startPnt = usedPoints[0];
         gp_Pnt endPnt   = usedPoints[pointCount - 1];
-        while (pointCount > 1 && startPnt.Distance(endPnt) <= Precision::Confusion())
-        {
-            closedBspline = true;
-            forceClosed   = true;
-            pointCount--;
-            endPnt = usedPoints[pointCount - 1];
+
+        if(forceClosed  && startPnt.Distance(endPnt) > Precision::Confusion()){
+            // do to compatibilty, tangency is only allowed if start and endpoint are specified the same
+            endTangency = false;
         }
 
         if (pointCount < 2)
@@ -94,7 +96,13 @@ namespace tigl {
 			hpoints->SetValue(j + 1, usedPoints[j]);
 		}
 
-        GeomAPI_Interpolate interPol(hpoints, closedBspline, Precision::Confusion());
+        GeomAPI_Interpolate interPol(hpoints, false, Precision::Confusion());
+        if(forceClosed && endTangency){
+            gp_Vec tangent(usedPoints[usedPoints.size()-2], usedPoints[1]);
+            tangent *= 0.5;
+            interPol.Load(tangent, tangent, false);
+        }
+        
 		interPol.Perform();
         Handle(Geom_BSplineCurve) hcurve = interPol.Curve();
 
