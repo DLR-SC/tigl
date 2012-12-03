@@ -33,6 +33,7 @@
 #include <Handle_AIS_InteractiveContext.hxx>
 #include <Handle_V3d_View.hxx>
 #include <Handle_V3d_Viewer.hxx>
+#include <Handle_Visual3d_Layer.hxx>
 #include <Handle_TopTools_HSequenceOfShape.hxx>
 #include <Standard_TypeDef.hxx>
 #include <Quantity_Factor.hxx>

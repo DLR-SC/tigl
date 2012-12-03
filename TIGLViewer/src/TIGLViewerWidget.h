@@ -38,6 +38,7 @@
 
 class Handle_AIS_InteractiveContext;
 class Handle_V3d_View;
+class Handle_Visual3d_Layer;
 
 class QOCC_DECLSPEC TIGLViewerWidget : public QWidget
 {
@@ -119,6 +120,7 @@ public slots:
     void hiddenLineOn();
     void hiddenLineOff();
 	void background();
+	void setBGImage(const QString&);
 	void viewFront();
     void viewBack();
     void viewTop();
@@ -160,6 +162,7 @@ private: // members
 	Handle_V3d_View                 myView;
 	Handle_V3d_Viewer               myViewer;
 	Handle_AIS_InteractiveContext   myContext;
+	Handle_Visual3d_Layer           myLayer;
 					
 	Standard_Boolean				myViewResized;
 	Standard_Boolean				myViewInitialized;

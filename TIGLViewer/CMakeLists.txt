@@ -81,6 +81,10 @@ if(OCC_VERSION_STRING VERSION_GREATER "6.3")
     add_definitions(-DOCC_PATCHED)
 endif()
 
+if(OCC_VERSION_STRING VERSION_GREATER "6.4")
+    add_definitions(-DOCC_BG)
+endif()
+
 include_directories( ${OpenCASCADE_INCLUDE_DIR} ${TIXI_INCLUDE_DIRS})
 include_directories( ${PROJECT_SOURCE_DIR}/src ${CMAKE_CURRENT_SOURCE_DIR}/src )
 
