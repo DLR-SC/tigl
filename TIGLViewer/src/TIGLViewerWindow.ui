@@ -25,6 +25,9 @@
     </sizepolicy>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout">
+    <property name="margin">
+     <number>0</number>
+    </property>
     <item>
      <widget class="TIGLViewerWidget" name="myOCC" native="true">
       <property name="sizePolicy">
