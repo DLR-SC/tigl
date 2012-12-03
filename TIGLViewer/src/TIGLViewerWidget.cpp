@@ -46,6 +46,9 @@
 #include "TIGLViewerInternal.h"
 #include "TIGLViewerDocument.h"
 
+#include "Visual3d_Layer.hxx"
+
+
 // 10% zoom per wheel or key event
 #define TIGLVIEWER_ZOOM_STEP 1.10
 
@@ -58,6 +61,8 @@ TIGLViewerWidget::TIGLViewerWidget( const Handle_AIS_InteractiveContext& aContex
 								QWidget *parent, 
                                 Qt::WindowFlags f ) :
 	myView            ( NULL ),
+    myViewer          ( NULL ),
+    myLayer           ( NULL ),
     myViewResized	  ( Standard_False ),
     myViewInitialized ( Standard_False ),
 	myMode			  ( CurAction3d_Undefined ),
@@ -74,6 +79,8 @@ TIGLViewerWidget::TIGLViewerWidget( const Handle_AIS_InteractiveContext& aContex
 
 void TIGLViewerWidget::initialize(){
     myView            = NULL;
+    myViewer          = NULL;
+    myLayer           = NULL;
     myRubberBand      = NULL;
     myMode			  = CurAction3d_Undefined;
     myGridSnap        = Standard_False;
@@ -184,6 +191,14 @@ void TIGLViewerWidget::initializeOCC(const Handle_AIS_InteractiveContext& aConte
 		setMode( CurAction3d_Nothing );
 		// This is to signal any connected slots that the view is ready.
 		myViewInitialized = Standard_True;
+
+		myLayer   = new Visual3d_Layer (myViewer->Viewer(), Aspect_TOL_OVERLAY, Standard_True /*aSizeDependant*/);
+
+#ifdef OCC_BG
+        myView->SetBgGradientColors ( Quantity_Color(245./256., 245./256., 252./256. , Quantity_TOC_RGB), Quantity_Color(49./256., 49./256., 49./256. , Quantity_TOC_RGB), Aspect_GFM_VER, Standard_False);
+#endif
+
+
 		emit initialized();
 	}
 }
@@ -562,7 +577,13 @@ void TIGLViewerWidget::background()
     Standard_Real R1;
     Standard_Real G1;
     Standard_Real B1;
+#ifdef OCC_BG
+    Quantity_Color c1, c2;
+    myView->GradientBackgroundColors(c1,c2);
+    R1 = c1.Red(); G1 = c1.Green(); B1 = c1.Blue();
+#else
     myView->BackgroundColor(Quantity_TOC_RGB,R1,G1,B1);
+#endif
     aColor.setRgb(( int )R1*255, ( int )G1*255, ( int )B1*255);
 
     QColor aRetColor = QColorDialog::getColor(aColor);
@@ -572,7 +593,21 @@ void TIGLViewerWidget::background()
         R1 = aRetColor.red()/255.;
         G1 = aRetColor.green()/255.;
         B1 = aRetColor.blue()/255.;
+#ifdef OCC_BG
+        // Disable provious gradient
+        myView->SetBgGradientColors ( Quantity_NOC_BLACK , Quantity_NOC_BLACK, Aspect_GFM_NONE, Standard_False);
+
+        float fu = 2;
+        float fd = 0.2;
+
+        Quantity_Color up  (R1*fu > 1 ? 1. : R1*fu, G1*fu > 1 ? 1. : G1*fu, B1*fu > 1 ? 1. : B1*fu, Quantity_TOC_RGB);
+        Quantity_Color down(R1*fd > 1 ? 1. : R1*fd, G1*fd > 1 ? 1. : G1*fd, B1*fd > 1 ? 1. : B1*fd, Quantity_TOC_RGB);
+
+        myView->SetBgGradientColors( up, down, Aspect_GFM_VER, Standard_False);
+
+#else
         myView->SetBackgroundColor(Quantity_TOC_RGB,R1,G1,B1);
+#endif
     }
     redraw();
 }
@@ -584,6 +619,13 @@ void TIGLViewerWidget::setReset ()
 		myView->SetViewOrientationDefault() ;
 		viewPrecision( true );
 	}
+}
+
+void TIGLViewerWidget::setBGImage(const QString& filename){
+    if(!myView.IsNull()){
+        myView->SetBackgroundImage(filename.toStdString().c_str(), Aspect_FM_CENTERED,Standard_False);
+        redraw();
+    }
 }
 
 void TIGLViewerWidget::eraseSelected()
@@ -1110,8 +1152,11 @@ int TIGLViewerWidget::paintCallBack (Aspect_Drawable /* drawable */,
 
 // TODO: this routine prevents setting the background color
 // either we should set it back here or we should skip it.
+// Also, this code confuses the ftgl renderer introduced in
+// OCC 6.4.0. Thus we should only use it with old OCC
 void TIGLViewerWidget::paintOCC( void )
 {
+#ifndef OCC_BG
 	glDisable( GL_LIGHTING ); 
 	glMatrixMode( GL_MODELVIEW );
 	glPushMatrix();
@@ -1156,7 +1201,7 @@ void TIGLViewerWidget::paintOCC( void )
 	glPopMatrix();
 	glMatrixMode( GL_MODELVIEW );
 	glPopMatrix();
-
+#endif
 }
 
 

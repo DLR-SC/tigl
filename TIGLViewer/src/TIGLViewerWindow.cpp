@@ -366,35 +366,24 @@ void TIGLViewerWindow::setBackgroundImage()
 
     statusBar()->showMessage(tr("Invoked File|Load Background Image"));
 
-	QMessageBox msgBox;
-	QString text = 	"Undo is not yet implemented!<br>Go to TIGLViewer project page \
-					(<a href=\"http://code.google.com/p/tigl/\">http://code.google.com/p/tigl/</a>) and make a feature request";
+	fileName = QFileDialog::getOpenFileName (	this,
+				  								tr("Open Background Image"),
+												myLastFolder,
+												tr( "Images (*.gif *.bmp);;" ) );
+	if (!fileName.isEmpty())
+	{
+		fileInfo.setFile(fileName);
+		fileType = fileInfo.suffix();
+		
+		if (fileType.toLower() == tr("bmp") || fileType.toLower() == tr("gif"))
+		{
+			myOCC->setBGImage(fileName);
+		}
+		else {
+			displayErrorMessage(tr("Invalid image format!"),tr("TIGL Error"));
+		}
 
-	msgBox.setWindowTitle("Background pictures not yet implemented!");
-	msgBox.setText(text);
-	msgBox.exec();
-
-
-	//fileName = QFileDialog::getOpenFileName (	this,
-	//			  								tr("Open Background Image"),
-	//											myLastFolder,
-	//											tr( "IMAGES (*.jpg *.png *.bmp);;" ) );
-	//if (!fileName.isEmpty())
-	//{
-	//	fileInfo.setFile(fileName);
-	//	fileType = fileInfo.suffix();
-	//	
-	//	if (fileType.toLower() == tr("bmp"))
-	//	{
-			//Standard_CString FileName("C:\\DLR\\TIVA\\TIGL\\TIGLViewer\\x.bmp");
-			//Aspect_FillMethod FillStyle(Aspect_FM_CENTERED);//Aspect_FM_STRETCH //Aspect_FM_CENTERED
-			//Standard_Boolean update(Standard_True);
-			//myOCC->getView()->SetBackgroundImage(FileName, FillStyle, update);
-			//myOCC->redraw();
-	//	}
-
-	//	myLastFolder = fileInfo.absolutePath();
-	//}
+	}
 }
 
 

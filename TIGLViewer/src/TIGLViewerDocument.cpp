@@ -408,7 +408,7 @@ void TIGLViewerDocument::drawWingProfiles()
     }
 
     if(profile.GetCoordinateContainer().size() < 15) {
-        for(int i = 0; i < profile.GetCoordinateContainer().size(); ++i){
+        for(unsigned int i = 0; i < profile.GetCoordinateContainer().size(); ++i){
             tigl::CTiglPoint * p = profile.GetCoordinateContainer().at(i);
             std::stringstream str;
             str << i << ": (" << p->x << ", " << p->y << ", " << p->z << ")";
@@ -505,7 +505,7 @@ void TIGLViewerDocument::drawFuselageProfiles()
     myAISContext->Display(shape, Standard_True);
 
     if(profile.GetCoordinateContainer().size() < 15) {
-        for(int i = 0; i < profile.GetCoordinateContainer().size(); ++i){
+        for(unsigned int i = 0; i < profile.GetCoordinateContainer().size(); ++i){
             tigl::CTiglPoint * p = profile.GetCoordinateContainer().at(i);
             std::stringstream str;
             str << i << ": (" << p->x << ", " << p->y << ", " << p->z << ")";
