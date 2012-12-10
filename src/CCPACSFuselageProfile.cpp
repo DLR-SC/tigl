@@ -283,13 +283,13 @@ namespace tigl {
         const ITiglWireAlgorithm& wireBuilder = manager.GetWireAlgorithm();
         const CTiglInterpolateBsplineWire * pSplineBuilder = dynamic_cast<const CTiglInterpolateBsplineWire*>(&wireBuilder);
         if(pSplineBuilder){
-            const_cast<CTiglInterpolateBsplineWire*>(pSplineBuilder)->setSteadyEndpoints(true);
+            const_cast<CTiglInterpolateBsplineWire*>(pSplineBuilder)->setEndpointContinuity(C1);
         }
 
         TopoDS_Wire tempWireClosed   = wireBuilder.BuildWire(points, true);
         TopoDS_Wire tempWireOriginal = wireBuilder.BuildWire(points, false);
         if(pSplineBuilder){
-            const_cast<CTiglInterpolateBsplineWire*>(pSplineBuilder)->setSteadyEndpoints(false);
+            const_cast<CTiglInterpolateBsplineWire*>(pSplineBuilder)->setEndpointContinuity(C0);
         }
 
         if (tempWireClosed.IsNull() == Standard_True || tempWireOriginal.IsNull() == Standard_True)
