@@ -20,6 +20,7 @@ endif(MSVC)
 add_library(TIGL SHARED ${TIGL_SRC})
 target_link_libraries (TIGL ${OpenCASCADE_LIBRARIES} ${TIXI_LIBRARIES} ${VLD_LIBRARIES})
 set_target_properties( TIGL PROPERTIES VERSION ${TIGL_VERSION})
+set_target_properties( TIGL PROPERTIES SOVERSION "${TIGL_VERSION_MAJOR}")
 
 install (TARGETS TIGL 
 		 EXPORT tigl-targets
