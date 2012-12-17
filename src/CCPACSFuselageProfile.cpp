@@ -266,8 +266,12 @@ namespace tigl {
     void CCPACSFuselageProfile::BuildWires(void)
     {
         ITiglWireAlgorithm::CPointContainer points;
+
+        if(coordinates.size() < 2)
+            throw CTiglError("Error: Number of points is less than 2 in CCPACSFuselageProfile::BuildWire", TIGL_ERROR);
+
 		points.push_back(coordinates[0]->Get_gp_Pnt());
-		for (CCPACSCoordinateContainer::size_type i = 1; i < coordinates.size(); i++) 
+		for (CCPACSCoordinateContainer::size_type i = 1; i < coordinates.size() -1 ; i++) 
 		{
 			gp_Pnt p1 = coordinates[i-1]->Get_gp_Pnt();
 			gp_Pnt p2 = coordinates[i]->Get_gp_Pnt();
@@ -277,6 +281,15 @@ namespace tigl {
 				points.push_back(coordinates[i]->Get_gp_Pnt());
 			}
 		}
+
+        // we always want to include the endpoint, if it's the same as the startpoint
+        // we use the startpoint to enforce closing of the spline
+        gp_Pnt pStart =  coordinates[0]->Get_gp_Pnt();
+        gp_Pnt pEnd   =  coordinates[coordinates.size()-1]->Get_gp_Pnt();
+        if(checkSamePoints(pStart,pEnd))
+            points.push_back(pStart);
+        else
+            points.push_back(pEnd);
 
         // Build wire from fuselage profile points
         CTiglAlgorithmManager& manager        = CTiglAlgorithmManager::GetInstance();
