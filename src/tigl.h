@@ -65,7 +65,8 @@ enum TiglReturnCode
     TIGL_WRONG_TIXI_VERSION  = 9,
     TIGL_UID_ERROR           = 10,
     TIGL_WRONG_CPACS_VERSION = 11,
-    TIGL_UNINITIALIZED       = 12
+    TIGL_UNINITIALIZED       = 12,
+    TIGL_MATH_ERROR          = 13
 };
 
 const static char * TiglErrorStrings[] = { 
@@ -81,7 +82,8 @@ const static char * TiglErrorStrings[] = {
     "TIGL_WRONG_TIXI_VERSION",
     "TIGL_UID_ERROR",
     "TIGL_WRONG_CPACS_VERSION",
-    "TIGL_UNINITIALIZED"
+    "TIGL_UNINITIALIZED",
+    "TIGL_MATH_ERROR"
 };
 
 /**

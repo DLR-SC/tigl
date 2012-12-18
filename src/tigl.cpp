@@ -3233,7 +3233,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglComponentGetHashCode(TiglCPACSConfiguratio
 }
 
 TIGL_COMMON_EXPORT const char * tiglGetErrorString(TiglReturnCode code){
-    if(code > TIGL_UNINITIALIZED || code < 0){
+    if(code > TIGL_MATH_ERROR || code < 0){
         std::cerr << "TIGL error code " << code << " is unknown!" << std::endl;
         return "TIGL_UNKNOWN_ERROR";
     }
