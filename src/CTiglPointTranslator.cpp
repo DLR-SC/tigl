@@ -22,6 +22,7 @@
 
 #include "CTiglPointTranslator.h"
 #include "tigl.h"
+#include "CTiglOptimizer.h"
 
 #include <cassert>
 
@@ -39,14 +40,15 @@ namespace {
     inline double max(double a, double b) { return a > b ? a : b; }
 }
 
-CTiglPointTranslator::CTiglPointTranslator(){
-    grad[0] = 0.; grad[1] = 0.;
-    hess[0][0] = hess[0][1] = hess[1][0] = hess[1][1] = 0.;
-    
+void CTiglPointTranslator::SegmentProjection::setProjectionPoint(const CTiglPoint& p){
+    _x = p;
+}
+
+CTiglPointTranslator::CTiglPointTranslator() : projector(*this, a,b,c,d){ 
     initialized = false;
 }
 
-CTiglPointTranslator::CTiglPointTranslator(const CTiglPoint& x1, const CTiglPoint& x2, const CTiglPoint& x3, const CTiglPoint& x4){
+CTiglPointTranslator::CTiglPointTranslator(const CTiglPoint& x1, const CTiglPoint& x2, const CTiglPoint& x3, const CTiglPoint& x4) : projector(*this, a,b,c,d) {
     setQuadriangle(x1, x2, x3, x4);
 }
 
@@ -56,142 +58,79 @@ void CTiglPointTranslator::setQuadriangle(const CTiglPoint& x1, const CTiglPoint
     c = x1-x2-x3+x4;
     d = x1;
 
-    grad[0] = 0.; grad[1] = 0.;
-    hess[0][0] = hess[0][1] = hess[1][0] = hess[1][1] = 0.;
-    
     initialized = true;
 }
 
 // Vector between point x and a point on the plane defined by (x1,x2,x3,x4);
 void CTiglPointTranslator::calcP(double alpha, double beta, CTiglPoint& p) const{
-    p.x = alpha*a.x + beta*b.x + alpha*beta*c.x + d.x - x.x;
-    p.y = alpha*a.y + beta*b.y + alpha*beta*c.y + d.y - x.y;
-    p.z = alpha*a.z + beta*b.z + alpha*beta*c.z + d.z - x.z;
+    p.x = alpha*a.x + beta*b.x + alpha*beta*c.x + d.x;
+    p.y = alpha*a.y + beta*b.y + alpha*beta*c.y + d.y;
+    p.z = alpha*a.z + beta*b.z + alpha*beta*c.z + d.z;
 }
 
 
 // This defines our minimization problem. The objective function
 // measures the vector p(eta,xsi) (distance of x and a point 
 // in the plane defined by x1, x2, x3, x4. 
-double CTiglPointTranslator::calc_obj(double eta, double xsi){
+double CTiglPointTranslator::SegmentProjection::getFunctionValue(const double * x) const{
     CTiglPoint p;
-    calcP(eta, xsi, p);
+    _t.translate(x[0], x[1], &p);
+    p -= _x;
 
     return p.norm2Sqr();
 }
 
 
 // calculate gradient and hessian of our minimization problem
-int CTiglPointTranslator::calc_grad_hess(double alpha, double beta){
+void CTiglPointTranslator::SegmentProjection::getGradientHessian(const double * x, double * grad, double * hess) const{
     CTiglPoint p;
-    calcP(alpha,beta, p);
+    _t.translate(x[0], x[1], &p);
+    p -= _x;
 
-    CTiglPoint acb = a + c*beta;
-    CTiglPoint bca = b + c*alpha;
+    double alpha = x[0];
+    double beta  = x[1];
+
+    CTiglPoint acb = _a + _c*beta;
+    CTiglPoint bca = _b + _c*alpha;
 
     grad[0] = 2.*CTiglPoint::inner_prod(p, acb);
     grad[1] = 2.*CTiglPoint::inner_prod(p, bca);
 
-    hess[0][0] = 2.*acb.norm2Sqr();
-    hess[1][1] = 2.*bca.norm2Sqr();
-    hess[0][1] = 2.*CTiglPoint::inner_prod(bca, acb) + 2.*CTiglPoint::inner_prod(p, c);
-    hess[1][0] = hess[0][1];
-
-    return 0;
+    TIGL_MATRIX2D(hess,2,0,0) = 2.*acb.norm2Sqr();
+    TIGL_MATRIX2D(hess,2,1,1) = 2.*bca.norm2Sqr();
+    TIGL_MATRIX2D(hess,2,0,1) = 2.*CTiglPoint::inner_prod(bca, acb) + 2.*CTiglPoint::inner_prod(p, _c);
+    TIGL_MATRIX2D(hess,2,1,0) = TIGL_MATRIX2D(hess,2,0,1);
 }
 
-// more infos here: http://en.wikipedia.org/wiki/Wolfe_conditions
-inline double CTiglPointTranslator::armijoBacktrack(double eta, double xsi, double * dir, double alpha, double& of){
-    double slope = grad[0]*dir[0]+grad[1]*dir[1];
-    // the hessian might not be positive definite
-    if(slope >= 0){
-#ifdef DEBUG
-        std::cout << "Warning: Hessian not pos. definite. Switch back to gradient." << std::endl;
-#endif
-        dir[0] = -grad[0];
-        dir[1] = -grad[1];
-        slope = grad[0]*dir[0]+grad[1]*dir[1];
-    }
+void CTiglPointTranslator::SegmentProjection::getGradient(const double * x, double * grad) const{
+    CTiglPoint p;
+    _t.translate(x[0], x[1], &p);
+    p -= _x;
 
-    assert(slope < 0);
+    double alpha = x[0];
+    double beta  = x[1];
 
-    int iter = 0;
-    double of_init=of;
+    CTiglPoint acb = _a + _c*beta;
+    CTiglPoint bca = _b + _c*alpha;
 
-    while ( (of=calc_obj(eta + alpha*dir[0], xsi + alpha*dir[1])) > of_init + C1*alpha*slope ){
-        alpha *= BTFAC;
-        if(iter++ > 20) {
-            //normally we should not get here (except from pathological functions)
-            std::cerr << "Error: line search cannot find sufficient decrease, abort" << std::endl;
-            alpha = 0.;
-            of = of_init;
-            break;
-        }
-    }
-
-    return alpha;
+    grad[0] = 2.*CTiglPoint::inner_prod(p, acb);
+    grad[1] = 2.*CTiglPoint::inner_prod(p, bca);
 }
 
-// We use newtons optimization method for fast convergence
-int CTiglPointTranslator::optimize(double& eta, double& xsi){
-    eta = 0.;
-    xsi = 0.;
+void CTiglPointTranslator::SegmentProjection::getHessian(const double * x, double * hess) const{
+    CTiglPoint p;
+    _t.translate(x[0], x[1], &p);
+    p -= _x;
 
-    double of = calc_obj(eta,xsi);
-    double of_old = 2.*of;
+    double alpha = x[0];
+    double beta  = x[1];
 
-    calc_grad_hess(eta, xsi);
+    CTiglPoint acb = _a + _c*beta;
+    CTiglPoint bca = _b + _c*alpha;
 
-    // iterate
-    int iter      = 0;
-    int numOfIter = 100;
-    double prec   = 1e-5;
-
-    while ( iter < numOfIter && 
-            (of_old - of)/max(of, 1.) > prec && 
-            sqrt(grad[0]*grad[0]+grad[1]*grad[1]) > prec ) 
-    {
-        of_old = of;
-
-        // calculate determinant of hessian
-        double det = hess[0][0]*hess[1][1] - hess[0][1]*hess[1][0];
-        if ( fabs(det) < 1e-12 ){
-            std::cerr << "Error: Determinant too small in CTiglPointTranslator::optimize!" << std::endl;
-            return 1;
-        }
-
-        // calculate inverse hessian
-        double inv_hess[2][2];
-        double invdet = 1./det;
-        inv_hess[0][0] =  invdet * ( hess[1][1] );
-        inv_hess[1][1] =  invdet * ( hess[0][0] );
-        inv_hess[0][1] = -invdet * ( hess[0][1] );
-        inv_hess[1][0] = -invdet * ( hess[1][0] );
-
-        // calculate newton search direction
-        double dir[2];
-        dir[0] = - inv_hess[0][0]*grad[0] - inv_hess[0][1]*grad[1];
-        dir[1] = - inv_hess[1][0]*grad[0] - inv_hess[1][1]*grad[1];
-
-        double alpha = 1.;
-        // we need a line search to ensure convergence, lets take backtracking approach
-        alpha = armijoBacktrack(eta, xsi, dir, alpha, of);
-
-        eta += alpha*dir[0];
-        xsi += alpha*dir[1];
-
-        // calculate new gradient and hessian, of is already calculated in backtracking
-        calc_grad_hess(eta,xsi);
-
-#ifdef DEBUG
-        std::cout << "Iter=" << iter+1 << " eta;xi=(" << eta << ";" << xsi << ") f=" << of
-                  << " norm(grad)=" << grad[0]*grad[0]+grad[1]*grad[1] <<  " alpha=" << alpha << std::endl;
-#endif
-
-        iter++;
-    }
-
-    return 0;
+    TIGL_MATRIX2D(hess,2,0,0) = 2.*acb.norm2Sqr();
+    TIGL_MATRIX2D(hess,2,1,1) = 2.*bca.norm2Sqr();
+    TIGL_MATRIX2D(hess,2,0,1) = 2.*CTiglPoint::inner_prod(bca, acb) + 2.*CTiglPoint::inner_prod(p, _c);
 }
 
 TiglReturnCode CTiglPointTranslator::translate(const CTiglPoint& xx, double* eta, double * xsi){
@@ -199,18 +138,21 @@ TiglReturnCode CTiglPointTranslator::translate(const CTiglPoint& xx, double* eta
         std::cerr << "Error in CTiglPointTranslator::translate(): eta and xsi may not be NULL Pointers!" << std::endl;
         return TIGL_NULL_POINTER;
     }
-    
+    double x[2];
+    x[0] = 0; x[1] = 0;
+
     assert(initialized);
 
-    grad[0] = 0.; grad[1] = 0.;
-    hess[0][0] = hess[0][1] = hess[1][0] = hess[1][1] = 0.;
+    projector.setProjectionPoint(xx);
+    projector.setNumericalStepSize(1.e-5);
 
-    this->x = xx;
-    if(optimize(*eta, *xsi) != 0){
+    if( CTiglOptimizer::optNewton2d(projector, x) != TIGL_SUCCESS){
         return TIGL_ERROR;
     }
-    else 
+    else {
+        *eta = x[0]; *xsi = x[1];
         return TIGL_SUCCESS;
+    }
 } 
 
 // converts from eta-xsi to spatial coordinates
@@ -223,7 +165,6 @@ TiglReturnCode CTiglPointTranslator::translate(double eta, double xsi, CTiglPoin
     assert(initialized);
     
     calcP(eta, xsi, *px);
-    *px += x;
     
     return TIGL_SUCCESS;
 }
@@ -234,21 +175,19 @@ TiglReturnCode CTiglPointTranslator::project(const CTiglPoint& xx, CTiglPoint* p
         std::cerr << "Error in CTiglPointTranslator::project(): p may not be a NULL Pointer!" << std::endl;
         return TIGL_NULL_POINTER;
     }
-    
-    assert(initialized);
-    
-    double eta = 0., xsi = 0.;
-    
-    grad[0] = 0.; grad[1] = 0.;
-    hess[0][0] = hess[0][1] = hess[1][0] = hess[1][1] = 0.;
+    double x[2];
+    x[0] = 0; x[1] = 0;
 
-    this->x = xx;
-    if(optimize(eta, xsi) != 0){
+    assert(initialized);
+
+    projector.setProjectionPoint(xx);
+
+    if(CTiglOptimizer::optNewton2d(projector, x) != TIGL_SUCCESS){
         return TIGL_ERROR;
     }
     
-    calcP(eta,xsi,*px);
-    *px += xx;
+    calcP(x[0],x[1],*px);
+
     return TIGL_SUCCESS;
 }
 

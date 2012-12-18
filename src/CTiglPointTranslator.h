@@ -29,6 +29,7 @@
 
 #include "CTiglPoint.h"
 #include "tigl.h"
+#include "ITiglObjectiveFunction.h"
 
 namespace tigl {
 
@@ -68,16 +69,37 @@ public:
     TiglReturnCode project(const CTiglPoint& x, CTiglPoint* p);
 
 private:
-    int optimize(double& eta, double& xsi);
-    double calc_obj (double eta, double xsi);
-    int    calc_grad_hess(double eta, double xsi);
-    void   calcP(double eta, double xsi, CTiglPoint& p) const;
-    double armijoBacktrack(double eta, double xsi, double * dir, double alpha_init, double& obj_value);
+    class SegmentProjection : public tigl::ITiglObjectiveFunction {
+    public:
+        SegmentProjection(CTiglPointTranslator& t, CTiglPoint & a, CTiglPoint& b, CTiglPoint& c, CTiglPoint& d) 
+          : ITiglObjectiveFunction(), _t(t), _a(a), _b(b), _c(c), _d(d), _x(0,0,0) {
+        }
 
+        virtual ~SegmentProjection(void){}
+
+        void setProjectionPoint(const CTiglPoint& p);
+
+        virtual double getFunctionValue(const double * x) const ;
+        void   getGradient     (const double * x, double * dx) const  ;
+        void   getHessian      (const double * x, double * H)  const  ;
+        void   getGradientHessian(const double * x, double * dx, double * H) const;
+
+        virtual int getParameterCount() const { return 2; }
+        virtual bool hasAnalyticGradient() const { return true; }
+        virtual bool hasAnalyticHessian () const { return true; }
+
+    private:
+        CTiglPointTranslator& _t;
+        CTiglPoint &_a, &_b, &_c, &_d;
+        CTiglPoint _x;
+    };
+
+    void   calcP(double eta, double xsi, CTiglPoint& p) const;
+
+
+    SegmentProjection projector;
     CTiglPoint a, b, c, d;
-    CTiglPoint x;
-    double hess[2][2];
-    double grad[2];
+
     bool initialized;
 };
 

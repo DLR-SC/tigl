@@ -1,0 +1,133 @@
+#include "CTiglOptimizer.h"
+
+#include <iostream>
+#include <cassert>
+
+#include "ITiglObjectiveFunction.h"
+#include "CTiglError.h"
+
+#define C1    0.1
+#define BTFAC 0.5
+
+namespace {
+    inline double max(double a, double b) { return a > b ? a : b; }
+}
+
+//#define DEBUG
+
+namespace tigl{
+
+// more infos here: http://en.wikipedia.org/wiki/Wolfe_conditions
+inline double CTiglOptimizer::armijoBacktrack2d(const class ITiglObjectiveFunction& f, const double * x, 
+    const double * grad, double * dir, 
+    double alpha, double& of)
+{
+    double slope = grad[0]*dir[0]+grad[1]*dir[1];
+    // the hessian might not be positive definite
+    if(slope >= 0){
+#ifdef DEBUG
+        std::cout << "Warning: Hessian not pos. definite. Switch back to gradient." << std::endl;
+#endif
+        dir[0] = -grad[0];
+        dir[1] = -grad[1];
+        slope = grad[0]*dir[0]+grad[1]*dir[1];
+    }
+
+    assert(slope < 0);
+    
+    double xnew[2];
+    xnew[0] = x[0] + alpha*dir[0];
+    xnew[1] = x[1] + alpha*dir[1];
+
+    int iter = 0;
+    double of_init=of;
+
+    while ( (of=f.getFunctionValue(xnew)) > of_init + C1*alpha*slope ){
+        alpha *= BTFAC;
+        if(iter++ > 20) {
+            //normally we should not get here (except from pathological functions)
+            std::cerr << "Error: line search cannot find sufficient decrease, abort" << std::endl;
+            alpha = 0.;
+            of = of_init;
+            break;
+        }
+        xnew[0] = x[0] + alpha*dir[0];
+        xnew[1] = x[1] + alpha*dir[1];
+    }
+
+    return alpha;
+}
+
+TiglReturnCode CTiglOptimizer::optNewton2d(const class ITiglObjectiveFunction& f, double * x, double gradTol, double ofTol){
+    
+    if(f.getParameterCount() != 2) {
+        std::cerr << "Error: Determinant too small in CTiglPointTranslator::optimize!" << std::endl;
+        return TIGL_MATH_ERROR;
+    }
+
+    double grad[2];
+    double hess[4];
+
+    double of = f.getFunctionValue(x);
+    double of_old = 2.*of;
+
+#ifdef DEBUG
+    std::cout << "Initial guess eta=" << x[0] << " xsi=" << x[1] << " f=" << of << std::endl;
+#endif
+
+    f.getGradientHessian(x, grad, hess);
+
+    // iterate
+    int iter      = 0;
+    int numOfIter = 100;
+
+    while ( iter < numOfIter && 
+            (of_old - of)/max(of, 1.) > ofTol && 
+            sqrt(grad[0]*grad[0]+grad[1]*grad[1]) > gradTol ) 
+    {
+        of_old = of;
+
+        // calculate determinant of hessian
+        double det = TIGL_MATRIX2D(hess,2,0,0)*TIGL_MATRIX2D(hess,2,1,1) - TIGL_MATRIX2D(hess,2,0,1)*TIGL_MATRIX2D(hess,2,1,0);
+        if ( fabs(det) < 1e-12 ){
+            std::cerr << "Error: Determinant too small in CTiglPointTranslator::optimize!" << std::endl;
+            return TIGL_MATH_ERROR;
+        }
+
+        // calculate inverse hessian
+        double inv_hess[4];
+        double invdet = 1./det;
+        TIGL_MATRIX2D(inv_hess,2,0,0)  =  invdet * ( TIGL_MATRIX2D(hess,2,1,1) );
+        TIGL_MATRIX2D(inv_hess,2,1,1)  =  invdet * ( TIGL_MATRIX2D(hess,2,0,0) );
+        TIGL_MATRIX2D(inv_hess,2,0,1)  = -invdet * ( TIGL_MATRIX2D(hess,2,0,1) );
+        TIGL_MATRIX2D(inv_hess,2,1,0)  = -invdet * ( TIGL_MATRIX2D(hess,2,1,0) );
+
+        // calculate newton search direction
+        double dir[2];
+        dir[0] = - TIGL_MATRIX2D(inv_hess,2,0,0) *grad[0] - TIGL_MATRIX2D(inv_hess,2,0,1) *grad[1];
+        dir[1] = - TIGL_MATRIX2D(inv_hess,2,1,0) *grad[0] - TIGL_MATRIX2D(inv_hess,2,1,1) *grad[1];
+
+        double alpha = 1.;
+        // we need a line search to ensure convergence, lets take backtracking approach
+        alpha = armijoBacktrack2d(f,x, grad, dir, alpha, of);
+
+        x[0] += alpha*dir[0];
+        x[1] += alpha*dir[1];
+
+        // calculate new gradient and hessian, of is already calculated in backtracking
+        f.getGradientHessian(x, grad, hess);
+
+#ifdef DEBUG
+        std::cout << "Iter=" << iter+1 << " eta;xi=(" << x[0] << ";" << x[1] << ") f=" << of
+                  << " norm(grad)=" << grad[0]*grad[0]+grad[1]*grad[1] <<  " alpha=" << alpha << std::endl;
+#endif
+
+        iter++;
+    }
+
+    return TIGL_SUCCESS;
+}
+
+
+
+}

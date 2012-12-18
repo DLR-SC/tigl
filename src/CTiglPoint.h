@@ -54,6 +54,9 @@ namespace tigl {
 		// Subtraction of points
 		CTiglPoint operator-(const CTiglPoint& aPoint) const;
 
+		// Subtraction of a point
+		CTiglPoint& operator-=(const CTiglPoint& aPoint);
+
 		// Scaling of points
 		CTiglPoint operator*(double) const;
 

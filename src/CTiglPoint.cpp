@@ -77,6 +77,13 @@ namespace tigl {
         return p;
     }
 
+    CTiglPoint& CTiglPoint::operator-=(const CTiglPoint& aPoint) {
+        x -= aPoint.x;
+        y -= aPoint.y;
+        z -= aPoint.z;
+        return *this;
+    }
+
     CTiglPoint CTiglPoint::operator*(double s) const{
         CTiglPoint p;
         p.x = x*s;
