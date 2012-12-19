@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <cassert>
+#include <cmath>
 
 #include "ITiglObjectiveFunction.h"
 #include "CTiglError.h"
@@ -131,3 +132,4 @@ TiglReturnCode CTiglOptimizer::optNewton2d(const class ITiglObjectiveFunction& f
 
 
 }
+
