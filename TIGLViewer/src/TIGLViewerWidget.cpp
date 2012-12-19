@@ -177,6 +177,7 @@ void TIGLViewerWidget::initializeOCC(const Handle_AIS_InteractiveContext& aConte
 #else
 		myView->TriedronDisplay( Aspect_TOTP_LEFT_LOWER, Quantity_NOC_WHITE, 0.1, V3d_WIREFRAME );
 #endif
+		myView->SetAntialiasingOn();
 
 		//myView->ColorScaleDisplay();
 
