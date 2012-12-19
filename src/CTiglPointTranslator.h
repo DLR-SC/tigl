@@ -55,18 +55,18 @@ public:
      */
     void setQuadriangle(const CTiglPoint& xfl, const CTiglPoint& xfr, const CTiglPoint& xbl, const CTiglPoint& xbr);
 
-    /// Finds an eta-xsi coordinate that minimizes the distance to point x.
+    /// Finds an eta-xsi coordinate that minimizes the distance to point p.
     /// The function is not reentrant. If you want to parallelize it, use 
     /// multiple instances of CTiglPointTranslator.
-    TiglReturnCode translate(const CTiglPoint& x, double* eta, double* xsi);
+    TiglReturnCode translate(const CTiglPoint& p, double* eta, double* xsi);
     
     /// Converts from eta-xsi to spatial coordinates. Reentrant.
-    TiglReturnCode translate(double eta, double xsi, CTiglPoint* x) const;
+    TiglReturnCode translate(double eta, double xsi, CTiglPoint* p) const;
     
-    /// Projects the point x onto the plane and returns that point p.
+    /// Projects the point p onto the plane and returns that point pOnSurf.
     /// The function is not reentrant. If you want to parallelize it, use 
     /// multiple instances of CTiglPointTranslator.
-    TiglReturnCode project(const CTiglPoint& x, CTiglPoint* p);
+    TiglReturnCode project(const CTiglPoint& p, CTiglPoint* pOnSurf);
 
 private:
     class SegmentProjection : public tigl::ITiglObjectiveFunction {
@@ -94,7 +94,7 @@ private:
         CTiglPoint _x;
     };
 
-    void   calcP(double eta, double xsi, CTiglPoint& p) const;
+    void   calcPoint(double eta, double xsi, CTiglPoint& p) const;
 
 
     SegmentProjection projector;

@@ -62,7 +62,7 @@ void CTiglPointTranslator::setQuadriangle(const CTiglPoint& x1, const CTiglPoint
 }
 
 // Vector between point x and a point on the plane defined by (x1,x2,x3,x4);
-void CTiglPointTranslator::calcP(double alpha, double beta, CTiglPoint& p) const{
+void CTiglPointTranslator::calcPoint(double alpha, double beta, CTiglPoint& p) const{
     p.x = alpha*a.x + beta*b.x + alpha*beta*c.x + d.x;
     p.y = alpha*a.y + beta*b.y + alpha*beta*c.y + d.y;
     p.z = alpha*a.z + beta*b.z + alpha*beta*c.z + d.z;
@@ -133,61 +133,62 @@ void CTiglPointTranslator::SegmentProjection::getHessian(const double * x, doubl
     TIGL_MATRIX2D(hess,2,0,1) = 2.*CTiglPoint::inner_prod(bca, acb) + 2.*CTiglPoint::inner_prod(p, _c);
 }
 
-TiglReturnCode CTiglPointTranslator::translate(const CTiglPoint& xx, double* eta, double * xsi){
+TiglReturnCode CTiglPointTranslator::translate(const CTiglPoint& p, double* eta, double * xsi){
     if(!eta || !xsi){
         std::cerr << "Error in CTiglPointTranslator::translate(): eta and xsi may not be NULL Pointers!" << std::endl;
         return TIGL_NULL_POINTER;
     }
-    double x[2];
-    x[0] = 0; x[1] = 0;
+    double etaxsi[2];
+    etaxsi[0] = 0; etaxsi[1] = 0;
 
     assert(initialized);
 
-    projector.setProjectionPoint(xx);
-    projector.setNumericalStepSize(1.e-5);
+    projector.setProjectionPoint(p);
 
-    if( CTiglOptimizer::optNewton2d(projector, x) != TIGL_SUCCESS){
-        return TIGL_ERROR;
+    TiglReturnCode ret = CTiglOptimizer::optNewton2d(projector, etaxsi);
+    if (ret != TIGL_SUCCESS){
+        return ret;
     }
     else {
-        *eta = x[0]; *xsi = x[1];
+        *eta = etaxsi[0]; *xsi = etaxsi[1];
         return TIGL_SUCCESS;
     }
 } 
 
 // converts from eta-xsi to spatial coordinates
-TiglReturnCode CTiglPointTranslator::translate(double eta, double xsi, CTiglPoint* px) const{
-    if(!px){
+TiglReturnCode CTiglPointTranslator::translate(double eta, double xsi, CTiglPoint* p) const{
+    if(!p){
         std::cerr << "Error in CTiglPointTranslator::translate(): x may not be a NULL Pointer!" << std::endl;
         return TIGL_NULL_POINTER;
     }
     
     assert(initialized);
     
-    calcP(eta, xsi, *px);
+    calcPoint(eta, xsi, *p);
     
     return TIGL_SUCCESS;
 }
     
 // projects the point x onto the plane and returns this point
-TiglReturnCode CTiglPointTranslator::project(const CTiglPoint& xx, CTiglPoint* px){
-    if(!px){
+TiglReturnCode CTiglPointTranslator::project(const CTiglPoint& xx, CTiglPoint* pOnSurf){
+    if(!pOnSurf){
         std::cerr << "Error in CTiglPointTranslator::project(): p may not be a NULL Pointer!" << std::endl;
         return TIGL_NULL_POINTER;
     }
-    double x[2];
-    x[0] = 0; x[1] = 0;
+    double etaxsi[2];
+    etaxsi[0] = 0; etaxsi[1] = 0;
 
     assert(initialized);
 
     projector.setProjectionPoint(xx);
 
-    if(CTiglOptimizer::optNewton2d(projector, x) != TIGL_SUCCESS){
-        return TIGL_ERROR;
+
+    TiglReturnCode ret = CTiglOptimizer::optNewton2d(projector, etaxsi);
+    if (ret != TIGL_SUCCESS){
+        return ret;
     }
     
-    calcP(x[0],x[1],*px);
-
+    calcPoint(etaxsi[0],etaxsi[1],*pOnSurf);
     return TIGL_SUCCESS;
 }
 
