@@ -106,8 +106,6 @@ class ComponentSegmentGeometry:
 		
 		pbeg = self.__p1*(1-xsi) + self.__p3*xsi
 		pend = self.__p2*(1-xsi) + self.__p4*xsi
-		
-		p = pbeg + (pend-pbeg)*(eta - eta1p)/(eta2p-eta1p)
 	
 		# calculate derivatives
 		deta1p = self.__eta3 - self.__eta1;
@@ -125,7 +123,7 @@ class ComponentSegmentGeometry:
 		
 		h3 =  1/(eta2p-eta1p);
 		dh3 = -1/(eta2p-eta1p)**2*(deta2p-deta1p);
-		d2h3 =  2/(eta2p-eta1p)**3*(deta2p-deta1p);
+		d2h3 = 2/(eta2p-eta1p)**3*(deta2p-deta1p)**2;
 		
 		# p(eta, xsi)
 		p_ = pbeg + hv1*h2*h3;

@@ -153,6 +153,10 @@ def ms_optNewton(objFunc, gradFunc, hessFunc, x_start):
 		
 		# iteration counter
 		iteration = iteration + 1;
+		if dot(dx,direc) >= 0:
+			print 'Warning: hessian not positive definite. Go along gradient'
+			direc = -dx
+			
 		alpha = mb_backtrackingLineSearch(objFunc,objFuncValue,x,dx,direc);
 		
 		
@@ -238,4 +242,24 @@ def ms_optQuasiNewton(objFunc, gradFunc, x_start, type='bfgs'):
 		print 'Iter {}: of = {} @ x = {} alpha = {}.'.format(iteration, objFuncValue, x, alpha)
 
 	return x
+	
+def ms_numGrad(objfun, x, h):
+	fcur = objfun(x)
+	dx = x * 0
+	for i in range(0,size(x)):
+		xnew = copy(x)
+		xnew[i] = x[i] + h
+		dx[i] = (objfun(xnew) - fcur)/h
+	
+	return dx
 
+def ms_numHess(objhess, x, h):
+	curdx = objhess(x)
+	dx = x * 0
+	H = zeros((size(x), size(x)))
+	for i in range(0,size(x)):
+		xnew = copy(x)
+		xnew[i] = x[i] + h
+		H[i,:] = (objhess(xnew) - curdx)/h
+	
+	return H
