@@ -6,14 +6,16 @@ from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
 
 class ComponentSegmentGeometry:
-	def __init__(self, p1, p2, p3, p4):
-		self.setPoints(p1, p2, p3, p4)
+	def __init__(self, p1, p2, p3, p4, etamin, etamax):
+		self.setPoints(p1, p2, p3, p4, etamin, etamax)
 		
-	def setPoints(self, p1, p2, p3, p4):
+	def setPoints(self, p1, p2, p3, p4, etamin, etamax):
 		self.__p1 = p1
 		self.__p2 = p2
 		self.__p3 = p3
 		self.__p4 = p4
+		self.__etamin = etamin
+		self.__etamax = etamax
 
 		sv = p2 - p1
 		sh = p4 - p3
@@ -56,6 +58,8 @@ class ComponentSegmentGeometry:
 
 
 	def calcCSPoint(self, eta, xsi):
+		eta_ = (eta - self.__etamin)/(self.__etamax - self.__etamin)
+	
 		#calculate eta values at given xsi 
 		eta1p = self.__eta1*(1-xsi) + self.__eta3*xsi
 		eta2p = self.__eta2*(1-xsi) + self.__eta4*xsi
@@ -65,13 +69,16 @@ class ComponentSegmentGeometry:
 		pbeg = self.__p1*(1-xsi) + self.__p3*xsi
 		pend = self.__p2*(1-xsi) + self.__p4*xsi
 		
-		p = pbeg + (pend-pbeg)*(eta - eta1p)/(eta2p-eta1p)
+		p = pbeg + (pend-pbeg)*(eta_ - eta1p)/(eta2p-eta1p)
 		
 		return p
 
 
 	# calculates the tangents in eta and xsi direction at the given point
 	def calcCSPointTangents(self, eta, xsi):
+		eta_ = (eta - self.__etamin)/(self.__etamax - self.__etamin)
+		deta_ = 1. /(self.__etamax - self.__etamin)
+
 		#calculate eta values at given xsi 
 		eta1p = self.__eta1*(1-xsi) + self.__eta3*xsi
 		eta2p = self.__eta2*(1-xsi) + self.__eta4*xsi
@@ -86,8 +93,8 @@ class ComponentSegmentGeometry:
 		dpend  = self.__p4   - self.__p2;
 		
 		J = zeros((3,2))
-		J[:,0] = (pend-pbeg)/(eta2p-eta1p);
-		J[:,1] = dpbeg + (dpend-dpbeg)*(eta - eta1p)/(eta2p-eta1p) + (pend - pbeg)*(-deta1p/(eta2p-eta1p) - (eta - eta1p)/((eta2p-eta1p)**2)*(deta2p - deta1p) );
+		J[:,0] = (pend-pbeg)/(eta2p-eta1p)*deta_;
+		J[:,1] = dpbeg + (dpend-dpbeg)*(eta_ - eta1p)/(eta2p-eta1p) + (pend - pbeg)*(-deta1p/(eta2p-eta1p) - (eta - eta1p)/((eta2p-eta1p)**2)*(deta2p - deta1p) );
 		
 		return J
 
@@ -99,6 +106,8 @@ class ComponentSegmentGeometry:
 
 
 	def __calcCSHessian(self, eta, xsi, p):
+		eta_ = (eta - self.__etamin)/(self.__etamax - self.__etamin)
+		deta_ = 1. /(self.__etamax - self.__etamin)
 		
 		#calculate eta values at given xsi 
 		eta1p = self.__eta1*(1-xsi) + self.__eta3*xsi
@@ -118,7 +127,7 @@ class ComponentSegmentGeometry:
 		hv1 =  pend -  pbeg;
 		dhv1 = dpend - dpbeg;
 		
-		h2 = eta -  eta1p;
+		h2 = eta_ -  eta1p;
 		dh2 =    - deta1p;
 		
 		h3 =  1/(eta2p-eta1p);
@@ -129,11 +138,11 @@ class ComponentSegmentGeometry:
 		p_ = pbeg + hv1*h2*h3;
 		
 		# first derivative, dp(eta, xsi)
-		J1 = hv1*h3;
+		J1 = hv1*h3*deta_;
 		J2 = dpbeg + dhv1*h2*h3 + hv1*(dh2*h3 + h2 * dh3);
 		
 		# second order derivative d2p(eta, xsi), H11 is zero!
-		H21 =   dhv1*h3 + hv1*dh3;
+		H21 =   (dhv1*h3 + hv1*dh3)*deta_;
 		H22 =   dhv1*(dh2*h3 + h2*dh3)*2 + hv1*( 2*dh2*dh3 + h2*d2h3 );
 		
 		# finally applying for the object function
@@ -147,23 +156,29 @@ class ComponentSegmentGeometry:
 
         
 	def projectOnCS(self, p):
-		opttype = 'gradient'
-		x = array([0.0,0.0])
+		opttype = 'newton'
+		# calculate initial guess, project onto leading edge and inner section
+		eta = dot(p - self.__p1, self.__p2 - self.__p1)/( linalg.norm(self.__p2 - self.__p1)**2)
+		xsi = dot(p - self.__p1, self.__p3 - self.__p1)/( linalg.norm(self.__p3 - self.__p1)**2)
+		# scale according to local eta range
+		eta = eta*(self.__etamax-self.__etamin) + self.__etamin
+		x = array([eta,xsi])
 		
 		of    = lambda x: linalg.norm(self.calcCSPoint(x[0], x[1])-p)**2;
 		ograd = lambda x: 2.* dot(self.calcCSPointTangents(x[0], x[1]).transpose(), self.calcCSPoint(x[0], x[1])-p);
 		ohess = lambda x: self.__calcCSHessian( x[0], x[1], p);
+		#ohess = lambda x:  ms_numHess(ograd, x, 1e-9)
 		
 		fig2 = plt.figure();
 		
-		X, Y = meshgrid(arange(-0.2, 1.2, 0.02), arange(-0.2, 1.2, 0.02))
+		X, Y = meshgrid(arange(self.__etamin-0.2, self.__etamax+0.2, 0.02), arange(-0.2, 1.2, 0.02))
 		Z = zeros(X.shape);
 	
 		for i in range(0,size(X,0)):
 			for j in range(0,size(X,1)):
 				Z[i,j] = of([X[i,j], Y[i,j]])
 		
-		plt.imshow(Z,origin='lower', extent=[-0.2,1.2,-0.2,1.2], aspect=1./1.)
+		plt.imshow(Z,origin='lower', extent=[self.__etamin-0.2, self.__etamax+0.2,-0.2,1.2], aspect=1./1.)
 		plt.colorbar();	
 		plt.contour(X,Y,Z)
 		plt.title('Objective function opt:'+opttype)
@@ -186,12 +201,14 @@ class ComponentSegmentGeometry:
 
         
 	def calcCSIsoXsiLine(self, xsi):
-		P1 = self.calcCSPoint(0,xsi);
-		P2 = self.calcCSPoint(1,xsi);
+		P1 = self.calcCSPoint(self.__etamin,xsi);
+		P2 = self.calcCSPoint(self.__etamax,xsi);
 		return ([P1[0], P2[0]],  [P1[1], P2[1]], [P1[2], P2[2]] )
 
 
 	def calcCSIsoEtaLine(self, eta):
+		eta_ = (eta - self.__etamin)/(self.__etamax - self.__etamin)
+	
 		# calculate bilinear vectors
 		a = -self.__p1 + self.__p2;
 		b = -self.__p1 + self.__p3;
@@ -204,7 +221,7 @@ class ComponentSegmentGeometry:
 		n = array([0, -sv[1], -sv[2]])
 	
 		# calculate eta point on leading edge
-		p_ = self.__p1p*(1-eta) + eta*self.__p2p;
+		p_ = self.__p1p*(1-eta_) + eta_*self.__p2p;
 
 		a1 =  dot(p_-d,n);
 		a2 = -dot(b,n);
