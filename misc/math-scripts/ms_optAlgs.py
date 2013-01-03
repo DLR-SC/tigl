@@ -134,7 +134,7 @@ def ms_optNewton(objFunc, gradFunc, hessFunc, x_start):
 	x               = x_start;
 	oldx = x;
 	objFuncValue    = objFunc(x);
-	oldObjFuncValue = objFuncValue * 2.;
+	oldObjFuncValue = objFuncValue * 2. + 1;
 	
 	dx  = gradFunc(x);
 	hess = hessFunc(x);
