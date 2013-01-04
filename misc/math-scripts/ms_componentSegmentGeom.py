@@ -1,3 +1,24 @@
+#
+# Copyright (C) 2007-2011 German Aerospace Center (DLR/SC)
+#
+# Created: 2012-12-17 Martin Siggel <Martin.Siggel@dlr.de>
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# @file ms_componentSegmentGeom.py
+# @brief Implements coordinate transforms on the component segment geometry
+#
+
 from numpy import *
 from ms_optAlgs import *
 
@@ -63,8 +84,6 @@ class ComponentSegmentGeometry:
 		#calculate eta values at given xsi 
 		eta1p = self.__eta1*(1-xsi) + self.__eta3*xsi
 		eta2p = self.__eta2*(1-xsi) + self.__eta4*xsi
-        
-        
 		
 		pbeg = self.__p1*(1-xsi) + self.__p3*xsi
 		pend = self.__p2*(1-xsi) + self.__p4*xsi
@@ -99,7 +118,7 @@ class ComponentSegmentGeometry:
 		return J
 
 
-	def calcCSPointNorm(self,  eta, xsi):
+	def calcCSPointNormal(self,  eta, xsi):
 		J = self.calcCSPointTangents(eta, xsi);
 		normal = cross(J[:,1],J[:,0])
 		return normal/linalg.norm(normal)
@@ -154,7 +173,7 @@ class ComponentSegmentGeometry:
 		
 		return 2.*H
 
-        
+
 	def projectOnCS(self, p):
 		opttype = 'newton'
 		# calculate initial guess, project onto leading edge and inner section
@@ -196,11 +215,11 @@ class ComponentSegmentGeometry:
 			x_= ms_optCG(of,ograd, x, 'fr')
 		else:
 			x_= ms_optNewton(of,ograd,ohess,x)
-        	
+		
 		eta = x_[0]; xsi = x_[1];
 		return (eta, xsi)
 
-        
+
 	def calcCSIsoXsiLine(self, xsi):
 		P1 = self.calcCSPoint(self.__etamin,xsi);
 		P2 = self.calcCSPoint(self.__etamax,xsi);
@@ -232,7 +251,7 @@ class ComponentSegmentGeometry:
 		# this calculates the intersection curve from the segment with a plane (normal vector n, point p2)
 		al = lambda beta: (a1 + a2*beta)/(a3 + a4*beta);
 	
-		# 3d interseaction curve, parametrized by beta [0,1]
+		# 3d intersection curve, parameterized by beta [0,1]
 		cu = lambda beta: outer(a,al(beta)) + outer(b,beta) + outer(c,al(beta)*beta) + outer(d, ones(size(beta)));
 	
 		xsi = linspace(0,1,30);
