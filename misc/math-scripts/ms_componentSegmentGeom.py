@@ -26,8 +26,11 @@ import matplotlib as mpl
 from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
 
+class Elongation:
+	Left, No, Right, LeftRight = range(4)
+
 class ComponentSegmentGeometry:
-	def __init__(self, p1, p2, p3, p4, etamin, etamax):
+	def __init__(self, p1, p2, p3, p4, etamin = 0, etamax = 1):
 		self.setPoints(p1, p2, p3, p4, etamin, etamax)
 		
 	def setPoints(self, p1, p2, p3, p4, etamin, etamax):
@@ -77,7 +80,34 @@ class ComponentSegmentGeometry:
 		self.__eta3 = dot(p3-self.__p1p,n) / dot(self.__p2p-self.__p1p,n)
 		self.__eta4 = dot(p4-self.__p1p,n) / dot(self.__p2p-self.__p1p,n)
 
-
+	# sets the eta range from inner segment tip to the outer tip
+	def setEtaMinMax(self, etamin, etamax):
+		self.__etamax = etamax
+		self.__etamin = etamin
+	
+	# sets the eta range of the leading edge. if e.g. the trailing edge is longer than
+	# the leading edge, this makes a difference to setEtaMinMax
+	def setLeadingEdgeEtas(self, eta_in, eta_out):
+		# we need to scale etamax, etamin accordingly
+		etamin = (self.__eta2*eta_in - self.__eta1*eta_out)/(self.__eta2 - self.__eta1)
+		etamax = etamin + (eta_out - eta_in)/(self.__eta2 - self.__eta1)
+		self.setEtaMinMax(etamin, etamax)
+		
+	def calcProjectedLeadingEdgeLength(self, elongation):
+		p1 = self.__p1;
+		p2 = self.__p2;
+		if elongation   == Elongation.Left:
+			p1 = self.__p1p
+		elif elongation == Elongation.Right:
+			p2 = self.__p2p
+		elif elongation == Elongation.LeftRight:
+			p1 = self.__p1p
+			p2 = self.__p2p
+		
+		# project leading edge into the z-y plane
+		vProj = array([0, 1, 1])
+		return linalg.norm(vProj*(p2-p1))
+		
 	def calcCSPoint(self, eta, xsi):
 		eta_ = (eta - self.__etamin)/(self.__etamax - self.__etamin)
 	
@@ -220,13 +250,22 @@ class ComponentSegmentGeometry:
 		return (eta, xsi)
 
 
-	def calcCSIsoXsiLine(self, xsi):
-		P1 = self.calcCSPoint(self.__etamin,xsi);
-		P2 = self.calcCSPoint(self.__etamax,xsi);
+	def calcCSIsoXsiLine(self, xsi, extentToGeometry = False):
+		etamin = self.__etamin
+		etamax = self.__etamax
+		
+		if not extentToGeometry:
+			etamin = xsi * (self.__eta3 - self.__eta1) + self.__eta1
+			etamin = etamin * (self.__etamax - self.__etamin) + self.__etamin
+			etamax = xsi * (self.__eta4 - self.__eta2) + self.__eta2
+			etamax = etamax * (self.__etamax - self.__etamin) + self.__etamin
+		
+		P1 = self.calcCSPoint(etamin,xsi);
+		P2 = self.calcCSPoint(etamax,xsi);
 		return ([P1[0], P2[0]],  [P1[1], P2[1]], [P1[2], P2[2]] )
 
 
-	def calcCSIsoEtaLine(self, eta):
+	def calcCSIsoEtaLine(self, eta, extentToGeometry = False):
 		eta_ = (eta - self.__etamin)/(self.__etamax - self.__etamin)
 	
 		# calculate bilinear vectors
@@ -254,7 +293,16 @@ class ComponentSegmentGeometry:
 		# 3d intersection curve, parameterized by beta [0,1]
 		cu = lambda beta: outer(a,al(beta)) + outer(b,beta) + outer(c,al(beta)*beta) + outer(d, ones(size(beta)));
 	
-		xsi = linspace(0,1,30);
+		xsistart = 0 if (eta_ <= self.__eta2) else (eta_ - self.__eta2)/(self.__eta4 - self.__eta2)
+		xsistop  = 1 if (eta_ <= self.__eta4) else (eta_ - self.__eta2)/(self.__eta4 - self.__eta2)
+		
+		xsistart = xsistart if (eta_ >= self.__eta1) else (eta_ - self.__eta1)/(self.__eta3 - self.__eta1)
+		xsistop  = xsistop  if (eta_ >= self.__eta3) else (eta_ - self.__eta1)/(self.__eta3 - self.__eta1)
+	
+		if extentToGeometry:
+			xsi = linspace(0,1,30)
+		else:
+			xsi = linspace(xsistart,xsistop,30)
 		points = cu(xsi);
 	
 		X = points[0,:];
@@ -262,3 +310,21 @@ class ComponentSegmentGeometry:
 		Z = points[2,:];
 	
 		return (X,Y,Z)
+
+	def drawSegment(self, axis, extentToGeometry = False):
+		start  = math.ceil (self.__etamin*10.)/10.
+		stop =   math.floor(self.__etamax*10.)/10.
+		
+		for alpha in linspace(start, stop, round((stop - start)/0.1 + 1.)):
+				X,Y,Z = self.calcCSIsoEtaLine(alpha, extentToGeometry)
+				axis.plot(X,Y,Z,'g');
+				
+		for beta in arange(0,1.01,0.1):
+			X,Y,Z = self.calcCSIsoXsiLine(beta, extentToGeometry)
+			axis.plot(X,Y,Z,'g');
+			
+		lw = 2
+		axis.plot([self.__p1[0], self.__p2[0]], [self.__p1[1], self.__p2[1]], [self.__p1[2], self.__p2[2]],'b',linewidth=lw);
+		axis.plot([self.__p1[0], self.__p3[0]], [self.__p1[1], self.__p3[1]], [self.__p1[2], self.__p3[2]],'b',linewidth=lw);
+		axis.plot([self.__p4[0], self.__p2[0]], [self.__p4[1], self.__p2[1]], [self.__p4[2], self.__p2[2]],'b',linewidth=lw);
+		axis.plot([self.__p3[0], self.__p4[0]], [self.__p3[1], self.__p4[1]], [self.__p3[2], self.__p4[2]],'b',linewidth=lw);
