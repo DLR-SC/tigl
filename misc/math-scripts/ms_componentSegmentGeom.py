@@ -94,7 +94,7 @@ class ComponentSegmentGeometry:
 		
 		J = zeros((3,2))
 		J[:,0] = (pend-pbeg)/(eta2p-eta1p)*deta_;
-		J[:,1] = dpbeg + (dpend-dpbeg)*(eta_ - eta1p)/(eta2p-eta1p) + (pend - pbeg)*(-deta1p/(eta2p-eta1p) - (eta - eta1p)/((eta2p-eta1p)**2)*(deta2p - deta1p) );
+		J[:,1] = dpbeg + (dpend-dpbeg)*(eta_ - eta1p)/(eta2p-eta1p) + (pend - pbeg)*(-deta1p/(eta2p-eta1p) - (eta_ - eta1p)/((eta2p-eta1p)**2)*(deta2p - deta1p) );
 		
 		return J
 
@@ -158,7 +158,7 @@ class ComponentSegmentGeometry:
 	def projectOnCS(self, p):
 		opttype = 'newton'
 		# calculate initial guess, project onto leading edge and inner section
-		eta = dot(p - self.__p1, self.__p2 - self.__p1)/( linalg.norm(self.__p2 - self.__p1)**2)
+		eta = dot(p - self.__p1p, self.__p2p - self.__p1p)/( linalg.norm(self.__p2p - self.__p1p)**2)
 		xsi = dot(p - self.__p1, self.__p3 - self.__p1)/( linalg.norm(self.__p3 - self.__p1)**2)
 		# scale according to local eta range
 		eta = eta*(self.__etamax-self.__etamin) + self.__etamin
@@ -166,6 +166,7 @@ class ComponentSegmentGeometry:
 		
 		of    = lambda x: linalg.norm(self.calcCSPoint(x[0], x[1])-p)**2;
 		ograd = lambda x: 2.* dot(self.calcCSPointTangents(x[0], x[1]).transpose(), self.calcCSPoint(x[0], x[1])-p);
+		#ograd = lambda x: ms_numGrad(of, x, 1e-9)
 		ohess = lambda x: self.__calcCSHessian( x[0], x[1], p);
 		#ohess = lambda x:  ms_numHess(ograd, x, 1e-9)
 		
