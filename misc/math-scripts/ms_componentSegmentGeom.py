@@ -29,6 +29,50 @@ import matplotlib.pyplot as plt
 class Elongation:
 	Left, No, Right, LeftRight = range(4)
 
+class ComponentSegment:
+	
+	def __init__(self):
+		self.segments = []
+
+	def addSegment(self, p1, p2, p3, p4):
+		self.segments.append(ComponentSegmentGeometry(p1,p2,p3,p4))
+		self.__calcEtaRanges()
+		
+	def __calcEtaRanges(self):
+		size = len(self.segments)
+		# calculate total projected length
+		len_tot = 0
+		for item in self.segments:
+			len_tot = len_tot + item.calcProjectedLeadingEdgeLength(Elongation.No)
+		
+		len_tot = len_tot + self.segments[0].calcProjectedLeadingEdgeLength(Elongation.Left) \
+						- self.segments[0].calcProjectedLeadingEdgeLength(Elongation.No) \
+						+ self.segments[size-1].calcProjectedLeadingEdgeLength(Elongation.Right) \
+						- self.segments[size-1].calcProjectedLeadingEdgeLength(Elongation.No)
+				
+		#calculate inner eta of first segment
+		etastart = (self.segments[0].calcProjectedLeadingEdgeLength(Elongation.Left) \
+					- self.segments[0].calcProjectedLeadingEdgeLength(Elongation.No) )/len_tot
+		
+		for item in self.segments:
+			etastop = etastart + item.calcProjectedLeadingEdgeLength(Elongation.No)/len_tot
+			item.setLeadingEdgeEtas(etastart, etastop)
+			etastart = etastop
+			
+	
+	def draw(self, axis):
+		for item in self.segments:
+			item.drawSegment(axis)
+			
+	def drawPoint(self, axis, eta, xsi):
+		for item in self.segments:
+			if item.checkCoordValidity(eta,xsi) == True:
+				point = item.calcCSPoint(eta,xsi)
+				axis.plot([point[0]], [point[1]], [point[2]],'rx')
+				break
+				
+
+
 class ComponentSegmentGeometry:
 	def __init__(self, p1, p2, p3, p4, etamin = 0, etamax = 1):
 		self.setPoints(p1, p2, p3, p4, etamin, etamax)
@@ -84,6 +128,9 @@ class ComponentSegmentGeometry:
 	def setEtaMinMax(self, etamin, etamax):
 		self.__etamax = etamax
 		self.__etamin = etamin
+		
+	def getEtaMinMax(self):
+		return self.__etamin, self.__etamax
 	
 	# sets the eta range of the leading edge. if e.g. the trailing edge is longer than
 	# the leading edge, this makes a difference to setEtaMinMax
@@ -92,6 +139,18 @@ class ComponentSegmentGeometry:
 		etamin = (self.__eta2*eta_in - self.__eta1*eta_out)/(self.__eta2 - self.__eta1)
 		etamax = etamin + (eta_out - eta_in)/(self.__eta2 - self.__eta1)
 		self.setEtaMinMax(etamin, etamax)
+
+	def checkCoordValidity(self, eta, xsi):
+		if eta < self.__etamin or eta > self.__etamax or xsi < 0 or xsi > 1:
+			return False
+		else:
+			actetamin = (1-xsi)*self.__eta1 + xsi*self.__eta3
+			actetamax = (1-xsi)*self.__eta2 + xsi*self.__eta4
+			if (eta>= actetamin) and (eta <= actetamax):
+				return True
+			else:
+				return False
+			
 		
 	def calcProjectedLeadingEdgeLength(self, elongation):
 		p1 = self.__p1;
@@ -202,8 +261,7 @@ class ComponentSegmentGeometry:
 		H[1,0] = H[0,1];
 		
 		return 2.*H
-
-
+	
 	def projectOnCS(self, p):
 		opttype = 'newton'
 		# calculate initial guess, project onto leading edge and inner section
