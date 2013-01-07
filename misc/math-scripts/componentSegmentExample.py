@@ -31,26 +31,23 @@ p1 = array([0, 0.0, -0.3])
 p2 = array([2.0,5.4, 0.0])
 p3 = array([3.5,0.0, 0.0])
 p4 = array([3.5,6.4, 0.0])
-p5 = array([3.2, 9.0, 0.4])
-p6 = array([3.8, 9.5, 0.5])
+p5 = array([3.4, 9.0, 0.4])
+p6 = array([4.0, 9.5, 0.5])
 
 CS  = ComponentSegmentGeometry(p1, p2, p3, p4)
-CS2 = ComponentSegmentGeometry(p2, p5, p4, p6)
 
-# calculate range of eta values, this has to be done automatically in future
-ltot = CS.calcProjectedLeadingEdgeLength(Elongation.Left) + CS2.calcProjectedLeadingEdgeLength(Elongation.Right)
-etastart = CS.calcProjectedLeadingEdgeLength(Elongation.Left)/ltot;
-etastop  = etastart + CS2.calcProjectedLeadingEdgeLength(Elongation.No)/ltot;
-
-CS.setLeadingEdgeEtas(0, etastart)
-CS2.setLeadingEdgeEtas(etastart, etastop)
+compSeg = ComponentSegment()
+compSeg.addSegment(p1, p2, p3, p4)
+compSeg.addSegment(p2, p5, p4, p6)
 
 fig = plt.figure()
 ax = fig.gca(projection='3d')
 
-
-CS.drawSegment(ax, False)
-CS2.drawSegment(ax, False)
+compSeg.draw(ax)
+compSeg.drawPoint(ax, 0.1, 0.1)
+compSeg.drawPoint(ax, 0.9, 0.9)
+compSeg.drawPoint(ax, 0.6, 0.4)
+compSeg.drawPoint(ax, 0.6, 0.2)
 
 #plot iso eta and xsi lines in segment coordinates,
 for alpha in arange(0,1.01,0.1):
