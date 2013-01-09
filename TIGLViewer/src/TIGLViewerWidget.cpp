@@ -18,14 +18,18 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
+
+#include "TIGLViewerWidget.h"
+
 #include <algorithm>
 #include <cmath>
 #include <iostream>
 
 #ifdef WIN32
-  #include <windows.h>
-  #include <WNT_WDriver.hxx>
   #include <WNT_Window.hxx>
+  #include <Graphic3d_WNTGraphicDevice.hxx>
+  #include <gl/GL.h>
+  #include <gl/GLU.h>
 #elif defined __APPLE__
   #include <OpenGL/gl.h>
   #include <OpenGL/glu.h>
@@ -40,6 +44,7 @@
   #include <X11/Xmu/StdCmap.h>
   #undef QT_CLEAN_NAMESPACE
   #include <Xw_Window.hxx>
+  #include <Xw_GraphicDevice.hxx>
 #endif
 
 #include <QtGui/QApplication>
@@ -48,10 +53,10 @@
 #include <QtGui/QInputEvent>
 #include <QtGui/QColorDialog>
 #include <QtGui/QPlastiqueStyle>
+#include <QtGui/QRubberband>
 #include <QMessageBox>
 #include <QInputDialog>
 
-#include "TIGLViewerWidget.h"
 #include "TIGLViewerInternal.h"
 #include "TIGLViewerDocument.h"
 

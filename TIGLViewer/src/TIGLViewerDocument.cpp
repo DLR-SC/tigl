@@ -50,6 +50,8 @@
 
 // TIGLViewer includes
 #include "TIGLViewerInternal.h"
+#include "CCPACSConfigurationManager.h"
+#include "TIGLViewerInputoutput.h"
 #include "ISession_Point.h"
 #include "ISession_Text.h"
 #include "CTiglPoint.h"

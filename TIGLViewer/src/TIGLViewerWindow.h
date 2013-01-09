@@ -24,11 +24,8 @@
 
 #include <QMainWindow>
 
-#include "TIGLViewerDocument.h"
 #include "TIGLViewerContext.h"
-#include "TIGLViewerWidget.h"
-#include "TIGLViewerInputoutput.h"
-#include "TIGLScriptEngine.h"
+#include "tigl.h"
 
 #include "ui_TIGLViewerWindow.h"
 
@@ -105,12 +102,12 @@ private:
 
 	QString 				myLastFolder;
 
-	TIGLViewerDocument*		cpacsConfiguration;
+	class TIGLViewerDocument*	cpacsConfiguration;
 	QString cpacsFileName;
 	QString controlFileName;
 	QFileSystemWatcher *watcher;
     class QDebugStream * stdoutStream, * errorStream;
-    TIGLScriptEngine * scriptEngine;
+    class TIGLScriptEngine * scriptEngine;
 
 };
 
