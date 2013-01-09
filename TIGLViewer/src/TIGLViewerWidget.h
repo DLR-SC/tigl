@@ -22,9 +22,7 @@
 #ifndef TIGLVIEWERWIDGET_H
 #define TIGLVIEWERWIDGET_H
 
-#include <QtGui/QRubberBand>
-#include <QtGui/QToolBar>
-
+#include <QWidget>
 
 #if defined WNT
 #include <Handle_WNT_Window.hxx>
@@ -99,7 +97,7 @@ public:
 
 	//Overrides
 	QPaintEngine* paintEngine() const;
-	QToolBar*	  myToolBar;
+	class QToolBar*	  myToolBar;
 
 	void redraw( bool isPainting = false );
 
@@ -186,7 +184,7 @@ private: // members
 									myV3dY,   
 									myV3dZ;
 		
-	QRubberBand*					myRubberBand;
+	class QRubberBand*				myRubberBand;
 	QPoint							myStartPoint;
 	QPoint							myCurrentPoint;
 	

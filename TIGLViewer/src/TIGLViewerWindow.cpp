@@ -36,6 +36,8 @@
 #include <Standard_Version.hxx>
 
 #include "TIGLViewerWindow.h"
+#include "TIGLViewerDocument.h"
+#include "TIGLViewerInputoutput.h"
 #include "TIGLDebugStream.h"
 #include "TIGLScriptEngine.h"
 #include "CommandLineParameters.h"
