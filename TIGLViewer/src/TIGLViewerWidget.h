@@ -25,6 +25,15 @@
 #include <QtGui/QRubberBand>
 #include <QtGui/QToolBar>
 
+
+#if defined WNT
+#include <Handle_WNT_Window.hxx>
+#elif defined __APPLE__
+#include <Handle_Aspect_Window.hxx>
+#else
+#include <Handle_Xw_Window.hxx>
+#endif
+
 #include "TIGLViewer.h"
 
 
@@ -153,8 +162,10 @@ protected: // methods
 
 private: // members
 
-#ifdef WNT
+#if defined WNT
     Handle_WNT_Window				myWindow;
+#elif defined __APPLE__
+    Handle_Aspect_Window            myWindow;
 #else
     Handle_Xw_Window				myWindow;
 #endif // WNT

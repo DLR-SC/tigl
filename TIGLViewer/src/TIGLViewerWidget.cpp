@@ -23,14 +23,23 @@
 #include <iostream>
 
 #ifdef WIN32
-#include <windows.h>
-#endif
-#ifdef __APPLE__
-#include <OpenGL/gl.h>
-#include <OpenGL/glu.h>
+  #include <windows.h>
+  #include <WNT_WDriver.hxx>
+  #include <WNT_Window.hxx>
+#elif defined __APPLE__
+  #include <OpenGL/gl.h>
+  #include <OpenGL/glu.h>
+  #include <Cocoa_Window.hxx>
 #else
-#include <GL/gl.h>
-#include <GL/glu.h>
+  #include <GL/gl.h>
+  #include <GL/glu.h>
+  #include <GL/glx.h>
+  #include <X11/Xlib.h>
+  #include <X11/Xutil.h>
+  #include <X11/Xatom.h>
+  #include <X11/Xmu/StdCmap.h>
+  #undef QT_CLEAN_NAMESPACE
+  #include <Xw_Window.hxx>
 #endif
 
 #include <QtGui/QApplication>
@@ -150,13 +159,15 @@ void TIGLViewerWidget::initializeOCC(const Handle_AIS_InteractiveContext& aConte
     short lo = (short)   windowHandle;
     short hi = (short) ( windowHandle >> 16 );
 
-#ifdef WNT
+#if defined WNT
 	// rc = (Aspect_RenderingContext) wglGetCurrentContext();
     myWindow = new WNT_Window( Handle(Graphic3d_WNTGraphicDevice)
 							   ::DownCast( myContext->CurrentViewer()->Device() ) ,
 							   (int) hi, (int) lo );
 	// Turn off background erasing in OCC's window
 	myWindow->SetFlags( WDF_NOERASEBKGRND );
+#elif defined __APPLE__
+    myWindow = new Cocoa_Window(reinterpret_cast<NSView *>(winId()));
 #else
 	// rc = (Aspect_RenderingContext) glXGetCurrentContext(); // Untested!
     myWindow = new Xw_Window( Handle(Graphic3d_GraphicDevice)
@@ -177,7 +188,7 @@ void TIGLViewerWidget::initializeOCC(const Handle_AIS_InteractiveContext& aConte
 #else
 		myView->TriedronDisplay( Aspect_TOTP_LEFT_LOWER, Quantity_NOC_WHITE, 0.1, V3d_WIREFRAME );
 #endif
-		myView->SetAntialiasingOn();
+        //myView->SetAntialiasingOn();
 
 		//myView->ColorScaleDisplay();
 
