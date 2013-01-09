@@ -37,14 +37,8 @@
 #else
   #include <GL/gl.h>
   #include <GL/glu.h>
-  #include <GL/glx.h>
-  #include <X11/Xlib.h>
-  #include <X11/Xutil.h>
-  #include <X11/Xatom.h>
-  #include <X11/Xmu/StdCmap.h>
-  #undef QT_CLEAN_NAMESPACE
   #include <Xw_Window.hxx>
-  #include <Xw_GraphicDevice.hxx>
+  #include <Graphic3d_GraphicDevice.hxx>
 #endif
 
 #include <QtGui/QApplication>
@@ -53,7 +47,7 @@
 #include <QtGui/QInputEvent>
 #include <QtGui/QColorDialog>
 #include <QtGui/QPlastiqueStyle>
-#include <QtGui/QRubberband>
+#include <QRubberBand>
 #include <QMessageBox>
 #include <QInputDialog>
 
