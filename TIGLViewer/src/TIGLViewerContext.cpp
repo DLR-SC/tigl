@@ -23,6 +23,15 @@
 #include "TIGLViewerContext.h"
 #include "TIGLViewerInternal.h"
 
+#ifdef WNT
+#include <Graphic3d_WNTGraphicDevice.hxx>
+#else
+#ifndef __APPLE__
+#include <Xw_GraphicDevice.hxx>
+#endif
+#include <Graphic3d_GraphicDevice.hxx>
+#endif
+
 TIGLViewerContext::TIGLViewerContext()
 {
 	// Create the OCC Viewers
