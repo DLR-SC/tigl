@@ -1,5 +1,5 @@
 \section{Component segment coordinate transform}
-
+%
 \begin{figure}[htb]
   \centering
   % trim left, bottom, right , top
@@ -7,8 +7,9 @@
 	\caption{Illustration for the calculation of the component segment coordinate transformation}
 	\label{fig:cs_surf}
 \end{figure}
-
-Definitions:
+%
+The coordinate transform of component segment coordinates is somewhat more complicated than the segment coordinate transform. To simplify the procedure, the component segment should consist of only one segment for now. The segment is again defined by its corner points $\vec p_1 \dots \vec p_4$. Figure \ref{fig:cs_surf} should help understanding the forthcoming calculations. \par
+First we need some definitions:
 \begin{itemize}
 	\item Leading edge:  $ \vec s_v = \vec p_2 - \vec p_1 $
 	\item Trailing edge: $ \vec s_h = \vec p_4 - \vec p_3 $
@@ -61,3 +62,23 @@ Combining both equations leads to $\eta_3 = \frac {(\vec p_3 - {\vec p_1}^\prime
 \eta_i = \frac {(\vec p_i - {\vec p_1}^\prime) \cdot \vec n }{({\vec p_2}^\prime - {\vec p_1}^\prime)\cdot \vec n}.
 \end{equation}
 
+After doing these calculations (which have to be done only once), we can finally proceed to the coordinate transform.
+
+\subsection{Calculating 3D coordinates of the $(\eta, \xi)$ pair}
+The easiest way to do the transformation is to move first in $\xi$ direction. As the component segment is straight between the points $(\vec p_1, \vec p_3)$ and $(\vec p_2, \vec p_4)$ by definition, we move first along these lines:
+\begin{align}
+\vec p_{beg}(\xi) &= (1-\xi)\vec p_1 + \xi \vec p_3 \\
+\vec p_{end}(\xi) &= (1-\xi)\vec p_2 + \xi \vec p_4
+\end{align}
+
+The corresponding eta coordinates of the points are 
+\begin{align}
+\eta_{beg}(\xi) &= (1-\xi)\eta_1 + \xi \eta_3 \\
+\eta_{end}(\xi) &= (1-\xi)\eta_2 + \xi \eta_4
+\end{align}
+
+Finally, we walk along the line defined by the new point $\vec p_{beg}$ and $\vec p_{end}$ (depicted green in figure \ref{fig:cs_surf}). We have to keep in mind their eta coordinates (which are not 0 and 1)! We get our final result
+
+\begin{equation}
+\vec p(\eta, \xi) = \vec p_{beg} (\xi) + \frac {\eta - \eta_{beg}(\xi)}{\eta_{end}(\xi) - \eta_{beg}(\xi)} \cdot \left( \vec p_{end}(\xi) - \vec p_{beg}(\xi) \right).
+\end{equation}
