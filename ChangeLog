@@ -1,3 +1,28 @@
+Version 2.0.4
+---------------
+- New API Functions: 
+	- Added function tiglGetErrorString
+- Fixes:
+	- Fixed bug in tiglWingComponentSegmentPointGetSegmentEtaXsi
+	- Fixed camberline / chordline bug
+	- Fixed exception, when no airfoils are available
+- TIGLViewer:
+	- Added scripting interface to TIGLViewer. It is now possible to call TIGL/TIXI functions from within the TIGLViewer. The output is displayed in the console-view. Find more information here.
+	- Added context-popup menu on right click. Available actions:
+		- Removing of geometric shapes
+		- Set transparency level of geometric shapes
+		- Set color of selected shapes
+		- Set material of selected shapes
+		- Set wireframe/shading of selected shapes
+	- Works now also in Mac OSX (since opencascade commit 4fe5661 )
+	- Added toolbars
+	- Added option to load a background image
+	- Added autosave of user settings
+	- Menus are disabled/enabled depending on dataset
+	- Script could be loaded from file via "File->open Script"
+    - Fixed opening from command line
+    - Fixed bad font rendering for OpenCascade? > = 6.4.0
+
 Version 2.0.3
 ---------------
 - New API Functions:
@@ -27,6 +52,7 @@ Version 2.0.3
 
 
 Version 2.0.2
+---------------
 -Fixed wing translation bug in TIGLViewer and export Functions
 -Implemented STL import
 -The result of the fused plane calculation is now chached 
@@ -40,7 +66,7 @@ Version 2.0.2
 
 
 Version 2.0.1
-
+---------------
 -Fixed geometry transformations like sweep angle and dihedral angle rotating sections
 -Fixed scalings that lead to a translation of sections
 -Datasets with CPACS Version < 2.0 are now rejected
@@ -57,7 +83,7 @@ Version 2.0.1
 
 
 Version 2.0
-
+---------------
 -Compatible with CPACS 2.0
 -Corrected the implicit rotation of fuselage and wing profiles. They shouldn't turn from x-y to x-z by TIGL
 -TIGL now uses the coordinate system of parent components for child components. This is only done when parent --> child 
@@ -77,7 +103,7 @@ Version 2.0
 
 
 Version 1.0
-
+---------------
 -New Functions
     -tiglComponentIntersectionPoint Returns a point on the intersection line of two geometric components. Often 
      there are more one intersection line, therefore you need to specify the line.
