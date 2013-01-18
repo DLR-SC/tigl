@@ -26,6 +26,8 @@
 #include "CTiglAbstractGeometricComponent.h"
 #include "CTiglError.h"
 
+#include <BRepBuilderAPI_Transform.hxx>
+
 namespace tigl {
 
     // Constructor
@@ -105,6 +107,31 @@ namespace tigl {
         translation.x += trans.x;
         translation.y += trans.y;
         translation.z += trans.z;
+    }
+
+    TopoDS_Shape CTiglAbstractGeometricComponent::GetMirroredLoft(void){
+        if(mySymmetryAxis == TIGL_NO_SYMMETRY){
+            TopoDS_Shape nullShape;
+            nullShape.Nullify();
+            return  nullShape;
+        }
+
+        gp_Ax2 mirrorPlane;
+        if(mySymmetryAxis == TIGL_X_Z_PLANE){
+            mirrorPlane = gp_Ax2(gp_Pnt(0,0,0),gp_Dir(0.,1.,0.));
+        }
+        else if(mySymmetryAxis == TIGL_X_Y_PLANE){
+            mirrorPlane = gp_Ax2(gp_Pnt(0,0,0),gp_Dir(0.,0.,1.));
+        }
+        else if(mySymmetryAxis == TIGL_Y_Z_PLANE){
+            mirrorPlane = gp_Ax2(gp_Pnt(0,0,0),gp_Dir(1.,0.,0.));
+        }
+
+        gp_Trsf theTransformation;
+        theTransformation.SetMirror(mirrorPlane);
+        BRepBuilderAPI_Transform myBRepTransformation(GetLoft(), theTransformation);
+
+        return myBRepTransformation.Shape();
     }
 
 } // end namespace tigl

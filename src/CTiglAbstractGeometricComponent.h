@@ -47,6 +47,9 @@ namespace tigl {
    		// Gets the loft of a geometric component
 		virtual TopoDS_Shape& GetLoft(void) = 0;
 
+		// Get the loft mirrored at the mirror plane
+		virtual TopoDS_Shape GetMirroredLoft(void);
+
         // Gets the component uid
         virtual const std::string& GetUID(void);
 

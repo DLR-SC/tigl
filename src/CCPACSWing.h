@@ -138,6 +138,8 @@ namespace tigl {
 		// Returns the upper Surface of a Segment
 		Handle(Geom_Surface) GetUpperSegmentSurface(int index);
 
+		virtual void SetSymmetryAxis(const std::string& axis);
+
 
     protected:
 		// Cleanup routine
