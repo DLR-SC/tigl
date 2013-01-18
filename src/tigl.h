@@ -65,7 +65,25 @@ enum TiglReturnCode
     TIGL_WRONG_TIXI_VERSION  = 9,
     TIGL_UID_ERROR           = 10,
     TIGL_WRONG_CPACS_VERSION = 11,
-    TIGL_UNINITIALIZED       = 12
+    TIGL_UNINITIALIZED       = 12,
+    TIGL_MATH_ERROR          = 13
+};
+
+const static char * TiglErrorStrings[] = { 
+    "TIGL_SUCCESS", 
+    "TIGL_ERROR", 
+    "TIGL_NULL_POINTER" ,
+    "TIGL_NOT_FOUND",
+    "TIGL_XML_ERROR",
+    "TIGL_OPEN_FAILED",
+    "TIGL_CLOSE_FAILED",
+    "TIGL_INDEX_ERROR",
+    "TIGL_STRING_TRUNCATED",
+    "TIGL_WRONG_TIXI_VERSION",
+    "TIGL_UID_ERROR",
+    "TIGL_WRONG_CPACS_VERSION",
+    "TIGL_UNINITIALIZED",
+    "TIGL_MATH_ERROR"
 };
 
 /**
@@ -2981,6 +2999,20 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetWettedArea(TiglCPACSConfigurationHa
 TIGL_COMMON_EXPORT TiglReturnCode tiglComponentGetHashCode(TiglCPACSConfigurationHandle cpacsHandle,
 												   char* componentUID,
 												   int* hashCodePtr);
+
+
+/**
+* @brief Translates an error code into a string
+*
+* <b>Fortran syntax:</b>
+*
+* tigl_get_error_string(integer return_code, character*n error_msg)
+*
+* @param TiglReturnCode  (in) : Return value of a tigl function
+* 
+* @returns Error code as a string.
+*/
+TIGL_COMMON_EXPORT const char * tiglGetErrorString(TiglReturnCode);
 
 
 /*@}*/ // end of doxygen group

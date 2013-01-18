@@ -32,6 +32,11 @@
 
 namespace tigl {
 
+	enum ETiglContinuity{
+		C0,
+		C1
+	};
+
 	class CTiglInterpolateBsplineWire : public ITiglWireAlgorithm
 	{
 
@@ -44,6 +49,10 @@ namespace tigl {
 
 		// Builds the wire from the given points
 		virtual TopoDS_Wire BuildWire(const CPointContainer& points, bool forceClosed = false) const;
+
+
+		// if set to true, the endpoints of a closed wire will be c1 steady
+		virtual void setEndpointContinuity(enum ETiglContinuity cont) { continuity = cont; }
 
 		// Returns the algorithm code identifier for an algorithm
 		virtual TiglAlgorithmCode GetAlgorithmCode(void) const;
@@ -68,6 +77,8 @@ namespace tigl {
 
 		// Assignment operator
 		void operator=(const CTiglInterpolateBsplineWire& )              { /* Do nothing */ }
+
+		ETiglContinuity continuity;
 
 	};
 

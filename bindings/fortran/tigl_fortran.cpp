@@ -1148,5 +1148,8 @@ void tiglFuselageGetMinumumDistanceToGround_f(TiglCPACSConfigurationHandle* cpac
 	  free(cString);
 }
 
-
+void tiglGetErrorString_f(TiglReturnCode code, char * strpointer, int lengthStr){
+    const char * str = tiglGetErrorString(code);
+    copyToFortranString(str, lengthStr, strpointer);
+}
 

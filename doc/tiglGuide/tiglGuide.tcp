@@ -6,7 +6,7 @@ Version=4
 MainFile=tiglGuide.tex
 UseBibTeX=0
 UseMakeIndex=0
-ActiveProfile=LaTeX => DVI
-ProjectLanguage=
-ProjectDialect=
+ActiveProfile=LaTeX => PDF
+ProjectLanguage=de
+ProjectDialect=DE
 

@@ -10,7 +10,7 @@
 * you may not use this file except in compliance with the License.
 * You may obtain a copy of the License at
 *
-*     http://www.apache.org/licenses/LICENSE-2.0
+*     http://www.apache.org/licenses/LICENSE-2.0
 *
 * Unless required by applicable law or agreed to in writing, software
 * distributed under the License is distributed on an "AS IS" BASIS,
@@ -225,23 +225,6 @@
 
 // The OpenCASCADE includes...
 #include <AIS_InteractiveContext.hxx>
-#ifdef WNT
-#include <WNT_WDriver.hxx>
-#include <WNT_Window.hxx>
-#include <Graphic3d_WNTGraphicDevice.hxx>
-#else
-#ifndef __APPLE__
-#include <GL/glx.h>
-#endif
-#include <X11/Xlib.h>
-#include <X11/Xutil.h>
-#include <X11/Xatom.h>
-#include <X11/Xmu/StdCmap.h>
-#undef QT_CLEAN_NAMESPACE
-#include <Xw_Window.hxx>
-#include <Xw_GraphicDevice.hxx>
-#include <Graphic3d_GraphicDevice.hxx>
-#endif
 
 #endif // TIGLVIEWERINTERNAL_H
 

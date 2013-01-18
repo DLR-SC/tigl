@@ -190,6 +190,8 @@ namespace tigl {
         :myConfig(config)
     {
         pointArray = NULL;
+        pointsMin = 0;
+        pointsMax = 0;
     }
     
     // Write out the shape to a VTK file

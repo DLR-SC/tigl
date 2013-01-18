@@ -10,7 +10,7 @@
 * you may not use this file except in compliance with the License.
 * You may obtain a copy of the License at
 *
-*     http://www.apache.org/licenses/LICENSE-2.0
+* �  �  http://www.apache.org/licenses/LICENSE-2.0
 *
 * Unless required by applicable law or agreed to in writing, software
 * distributed under the License is distributed on an "AS IS" BASIS,
@@ -25,14 +25,13 @@
 
 #include <QtGui/QWidget>
 
-TIGLScriptEngine::TIGLScriptEngine(QLineEdit *le)
+TIGLScriptEngine::TIGLScriptEngine()
 {
     tiglScriptProxy = new TIGLScriptProxy();
     tixiScriptProxy = new TIXIScriptProxy();
     TIGLScriptProxy::registerClass(&engine); 
     TIXIScriptProxy::registerClass(&engine);
-    lineEdit = le;
-    prefixString = "$";
+    prefixString = "  $ ";
 }
 
 
@@ -41,15 +40,27 @@ void TIGLScriptEngine::textChanged(QString line)
     // do fancy stuff in future, like input-completion
 }
 
-void TIGLScriptEngine::eval()
+
+void TIGLScriptEngine::openFile(QString fileName)
+{
+    QString script;
+    QFile file(fileName);
+    if (file.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        while (!file.atEnd()) {
+            script += file.readLine() + "\n";
+        }
+        eval(script);
+    }
+}
+
+void TIGLScriptEngine::eval(QString commandLine)
 {
     QScriptValue val;
-    QString commandLine = lineEdit->text();
 
     // display help
     if (commandLine == "help" || commandLine == "hilfe" || commandLine == "damn" || commandLine == "?") {
         displayHelp();
-        lineEdit->setText("");
         return;
     }
 
@@ -59,33 +70,31 @@ void TIGLScriptEngine::eval()
     //val = engine.evaluate("tigl.tiglGetFuselageCount();");
     //val = engine.evaluate("tixi.tixiGetTextElement('/cpacs/header/name');");
 
-    val = engine.evaluate(lineEdit->text());
+    val = engine.evaluate(commandLine);
     QString result = val.toString();
     if(result == "undefined") {
         result = "done";
     }
 
-    emit printResults("<i><font color=\"lime\">" + prefixString + lineEdit->text() + "</font></i>");
-    emit printResults("<font color=\"olive\">" + prefixString + result + "</font>");
-    lineEdit->setText("");
+    emit printResults( prefixString + result  );
 }
 
 void TIGLScriptEngine::displayHelp()
 {
     QString helpString;
 
-    helpString =  "====== TIGLViewer scripting help ======\n\n";
-    helpString += "Available TIGL functions: \n";
-    helpString += tiglScriptProxy->getMemberFunctions().join(" - ") + "\n\n";
-    helpString += "Available TIXI functions: \n";
-    helpString += tixiScriptProxy->getMemberFunctions().join(" - ") + "\n\n";
+    helpString =  "====== TIGLViewer scripting help ======<br/><br/>";
+    helpString += "Available TIGL functions: <br/>";
+    helpString += tiglScriptProxy->getMemberFunctions().join("<br/>") + "<br/><br/>";
+    helpString += "Available TIXI functions: <br/>";
+    helpString += tixiScriptProxy->getMemberFunctions().join("<br/>") + "<br/><br/>";
 
-    helpString += "Usage example TIGL: \n";
-    helpString += "Initialize TIGL: \tvar tigl = new TIGL();\n";
-    helpString += "Use TIGL: \ttigl.tiglGetFuselageCount();\n";
-    helpString += "Usage example TIXI: \n";
-    helpString += "Initialize TIXI: \tvar tixi = new TIXI();\n";
-    helpString += "Use TIXI: \ttixi.tixiGetTextElement('/cpacs/header/name');\n";
+    helpString += "Usage example TIGL: <br/>";
+    helpString += "Initialize TIGL: \tvar tigl = new TIGL();<br/>";
+    helpString += "Use TIGL: \ttigl.tiglGetFuselageCount();<br/>";
+    helpString += "Usage example TIXI: <br/>";
+    helpString += "Initialize TIXI: \tvar tixi = new TIXI();<br/>";
+    helpString += "Use TIXI: \ttixi.tixiGetTextElement('/cpacs/header/name');<br/>";
     helpString += "Type 'help' to get a list of available TIXI/TIGL fuctions.";
 
 

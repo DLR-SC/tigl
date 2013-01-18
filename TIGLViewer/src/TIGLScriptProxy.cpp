@@ -82,7 +82,6 @@ int TIGLScriptProxy::tiglGetWingCount()
 
 QString TIGLScriptProxy::tiglGetVersion()
 {
-    tigl::CCPACSConfiguration& config = GetConfiguration();
     return(::tiglGetVersion());
 }
 

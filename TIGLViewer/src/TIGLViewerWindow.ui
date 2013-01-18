@@ -6,15 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>615</width>
-    <height>398</height>
+    <width>783</width>
+    <height>578</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <property name="windowIcon">
-   <iconset>
+   <iconset resource="TIGLViewer.qrc">
     <normaloff>:/TIGLViewer.ico</normaloff>:/TIGLViewer.ico</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
@@ -25,31 +25,24 @@
     </sizepolicy>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout">
+    <property name="margin">
+     <number>0</number>
+    </property>
     <item>
-     <widget class="QSplitter" name="splitter">
-      <property name="orientation">
-       <enum>Qt::Vertical</enum>
+     <widget class="TIGLViewerWidget" name="myOCC" native="true">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+        <horstretch>0</horstretch>
+        <verstretch>70</verstretch>
+       </sizepolicy>
       </property>
-      <widget class="TIGLViewerWidget" name="myOCC" native="true">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-         <horstretch>0</horstretch>
-         <verstretch>70</verstretch>
-        </sizepolicy>
-       </property>
-      </widget>
-      <widget class="QTextBrowser" name="console">
-       <property name="baseSize">
-        <size>
-         <width>0</width>
-         <height>100</height>
-        </size>
-       </property>
-      </widget>
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>300</height>
+       </size>
+      </property>
      </widget>
-    </item>
-    <item>
-     <widget class="QLineEdit" name="scriptInput"/>
     </item>
    </layout>
   </widget>
@@ -58,7 +51,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>615</width>
+     <width>783</width>
      <height>21</height>
     </rect>
    </property>
@@ -73,6 +66,7 @@
     </widget>
     <addaction name="newAction"/>
     <addaction name="openAction"/>
+    <addaction name="openScriptAction"/>
     <addaction name="recentFileMenu"/>
     <addaction name="saveAction"/>
     <addaction name="closeAction"/>
@@ -176,7 +170,6 @@
      <addaction name="separator"/>
      <addaction name="backgroundAction"/>
      <addaction name="showConsoleAction"/>
-     <addaction name="showScriptAction"/>
      <addaction name="showWireframeAction"/>
     </widget>
     <widget class="QMenu" name="viewActionsMenu">
@@ -223,6 +216,62 @@
    <addaction name="helpMenu"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
+  <widget class="QToolBar" name="toolBar">
+   <property name="windowTitle">
+    <string>File</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="openAction"/>
+   <addaction name="saveAction"/>
+   <addaction name="closeAction"/>
+  </widget>
+  <widget class="QToolBar" name="toolBarView">
+   <property name="windowTitle">
+    <string>Views</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="selectAction"/>
+   <addaction name="panAction"/>
+   <addaction name="rotAction"/>
+   <addaction name="zoomAction"/>
+   <addaction name="separator"/>
+   <addaction name="viewTopAction"/>
+   <addaction name="viewLeftAction"/>
+   <addaction name="viewFrontAction"/>
+   <addaction name="viewAxoAction"/>
+  </widget>
+  <widget class="QDockWidget" name="consoleDockWidget">
+   <property name="windowTitle">
+    <string>Tigl Console</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>8</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents_2">
+    <layout class="QVBoxLayout" name="verticalLayout2">
+     <item>
+      <widget class="Console" name="console">
+       <property name="baseSize">
+        <size>
+         <width>0</width>
+         <height>100</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+  </widget>
   <action name="newAction">
    <property name="text">
     <string>&amp;New</string>
@@ -235,6 +284,10 @@
    </property>
   </action>
   <action name="openAction">
+   <property name="icon">
+    <iconset resource="TIGLViewer.qrc">
+     <normaloff>:/gfx/document-open.png</normaloff>:/gfx/document-open.png</iconset>
+   </property>
    <property name="text">
     <string>&amp;Open...</string>
    </property>
@@ -243,6 +296,14 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+O</string>
+   </property>
+  </action>
+  <action name="openScriptAction">
+   <property name="text">
+    <string>Open Script</string>
+   </property>
+   <property name="toolTip">
+    <string>Open a script file</string>
    </property>
   </action>
   <action name="actionRecent_Files">
@@ -256,6 +317,10 @@
    </property>
   </action>
   <action name="saveAction">
+   <property name="icon">
+    <iconset resource="TIGLViewer.qrc">
+     <normaloff>:/gfx/document-save.png</normaloff>:/gfx/document-save.png</iconset>
+   </property>
    <property name="text">
     <string>&amp;Save</string>
    </property>
@@ -589,6 +654,10 @@
    </property>
   </action>
   <action name="viewFrontAction">
+   <property name="icon">
+    <iconset resource="TIGLViewer.qrc">
+     <normaloff>:/gfx/view-front.png</normaloff>:/gfx/view-front.png</iconset>
+   </property>
    <property name="text">
     <string>Front</string>
    </property>
@@ -611,6 +680,10 @@
    </property>
   </action>
   <action name="viewTopAction">
+   <property name="icon">
+    <iconset resource="TIGLViewer.qrc">
+     <normaloff>:/gfx/view-top.png</normaloff>:/gfx/view-top.png</iconset>
+   </property>
    <property name="text">
     <string>Top</string>
    </property>
@@ -633,6 +706,10 @@
    </property>
   </action>
   <action name="viewLeftAction">
+   <property name="icon">
+    <iconset resource="TIGLViewer.qrc">
+     <normaloff>:/gfx/view-left.png</normaloff>:/gfx/view-left.png</iconset>
+   </property>
    <property name="text">
     <string>Left</string>
    </property>
@@ -655,6 +732,10 @@
    </property>
   </action>
   <action name="viewAxoAction">
+   <property name="icon">
+    <iconset resource="TIGLViewer.qrc">
+     <normaloff>:/gfx/view-axo.png</normaloff>:/gfx/view-axo.png</iconset>
+   </property>
    <property name="text">
     <string>Axonometric</string>
    </property>
@@ -734,6 +815,10 @@
    </property>
   </action>
   <action name="zoomAction">
+   <property name="icon">
+    <iconset resource="TIGLViewer.qrc">
+     <normaloff>:/gfx/zoom.png</normaloff>:/gfx/zoom.png</iconset>
+   </property>
    <property name="text">
     <string>&amp;Zoom</string>
    </property>
@@ -745,6 +830,10 @@
    </property>
   </action>
   <action name="panAction">
+   <property name="icon">
+    <iconset resource="TIGLViewer.qrc">
+     <normaloff>:/gfx/translate.png</normaloff>:/gfx/translate.png</iconset>
+   </property>
    <property name="text">
     <string>&amp;Translate</string>
    </property>
@@ -756,6 +845,10 @@
    </property>
   </action>
   <action name="rotAction">
+   <property name="icon">
+    <iconset resource="TIGLViewer.qrc">
+     <normaloff>:/gfx/rotate.png</normaloff>:/gfx/rotate.png</iconset>
+   </property>
    <property name="text">
     <string>&amp;Rotate</string>
    </property>
@@ -912,8 +1005,24 @@
    </property>
   </action>
   <action name="closeAction">
+   <property name="icon">
+    <iconset resource="TIGLViewer.qrc">
+     <normaloff>:/gfx/document-close.png</normaloff>:/gfx/document-close.png</iconset>
+   </property>
    <property name="text">
     <string>&amp;Close Configuration</string>
+   </property>
+  </action>
+  <action name="selectAction">
+   <property name="icon">
+    <iconset resource="TIGLViewer.qrc">
+     <normaloff>:/gfx/select.png</normaloff>:/gfx/select.png</iconset>
+   </property>
+   <property name="text">
+    <string>Select Components</string>
+   </property>
+   <property name="toolTip">
+    <string>Select Components</string>
    </property>
   </action>
  </widget>
@@ -924,7 +1033,14 @@
    <header>TIGLViewerWidget.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>Console</class>
+   <extends>QPlainTextEdit</extends>
+   <header>TiglViewerConsole.h</header>
+  </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="TIGLViewer.qrc"/>
+ </resources>
  <connections/>
 </ui>

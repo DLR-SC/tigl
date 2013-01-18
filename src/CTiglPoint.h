@@ -45,6 +45,27 @@ namespace tigl {
 		// Assignment operator
 		CTiglPoint& operator=(const CTiglPoint& aPoint);
 
+		// Addition of points
+		CTiglPoint operator+(const CTiglPoint& aPoint) const;
+
+		// Addition of a point
+		CTiglPoint& operator+=(const CTiglPoint& aPoint);
+
+		// Subtraction of points
+		CTiglPoint operator-(const CTiglPoint& aPoint) const;
+
+		// Subtraction of a point
+		CTiglPoint& operator-=(const CTiglPoint& aPoint);
+
+		// Scaling of points
+		CTiglPoint operator*(double) const;
+
+		// returns a'*a
+		double norm2Sqr() const;
+
+		// returns the length of the vector
+		double norm2() const;
+
 		// Virtual Destructor
 		virtual ~CTiglPoint(void);
 
@@ -53,6 +74,12 @@ namespace tigl {
 
 		// Dump internal point data
 		void Dump(std::ostream& aStream) const;
+
+		// scalar product
+		static double inner_prod(const CTiglPoint& aPoint, const CTiglPoint& bPoint);
+
+		// cross product
+		static CTiglPoint cross_prod(const CTiglPoint& a, const CTiglPoint& b);
 
 	public:
 		double x;
