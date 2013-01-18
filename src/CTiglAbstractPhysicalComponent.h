@@ -70,6 +70,8 @@ namespace tigl {
 		// Returns the segment for a given index
         virtual class CTiglAbstractSegment & GetSegment(const int index) = 0;
 
+        virtual void SetSymmetryAxis(const std::string& axis);
+
     protected:
         // Resets the geometric component.
         virtual void Reset(void);
