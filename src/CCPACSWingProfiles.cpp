@@ -84,7 +84,8 @@ namespace tigl {
 		elementPath = const_cast<char*>(elementString.c_str());
 		tixiRet = tixiGetNamedChildrenCount(tixiHandle, elementPath, "wingAirfoil", &elementCount);
 		if (tixiRet != SUCCESS) {
-			throw CTiglError("XML error: tixiGetNamedChildrenCount failed in CCPACSWingProfiles::ReadCPACS", TIGL_XML_ERROR);
+			cerr << "Warning: no wing profiles are defined!" << endl;
+			return;
 		}
 
 		// Loop over all section elements

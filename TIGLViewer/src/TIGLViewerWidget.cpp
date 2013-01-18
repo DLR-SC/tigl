@@ -18,19 +18,27 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
+
+#include "TIGLViewerWidget.h"
+
 #include <algorithm>
 #include <cmath>
 #include <iostream>
 
 #ifdef WIN32
-#include <windows.h>
-#endif
-#ifdef __APPLE__
-#include <OpenGL/gl.h>
-#include <OpenGL/glu.h>
+  #include <WNT_Window.hxx>
+  #include <Graphic3d_WNTGraphicDevice.hxx>
+  #include <gl/GL.h>
+  #include <gl/GLU.h>
+#elif defined __APPLE__
+  #include <OpenGL/gl.h>
+  #include <OpenGL/glu.h>
+  #include <Cocoa_Window.hxx>
 #else
-#include <GL/gl.h>
-#include <GL/glu.h>
+  #include <GL/gl.h>
+  #include <GL/glu.h>
+  #include <Xw_Window.hxx>
+  #include <Graphic3d_GraphicDevice.hxx>
 #endif
 
 #include <QtGui/QApplication>
@@ -39,11 +47,15 @@
 #include <QtGui/QInputEvent>
 #include <QtGui/QColorDialog>
 #include <QtGui/QPlastiqueStyle>
+#include <QRubberBand>
 #include <QMessageBox>
+#include <QInputDialog>
 
-#include "TIGLViewerWidget.h"
 #include "TIGLViewerInternal.h"
 #include "TIGLViewerDocument.h"
+
+#include "Visual3d_Layer.hxx"
+
 
 // 10% zoom per wheel or key event
 #define TIGLVIEWER_ZOOM_STEP 1.10
@@ -57,6 +69,8 @@ TIGLViewerWidget::TIGLViewerWidget( const Handle_AIS_InteractiveContext& aContex
 								QWidget *parent, 
                                 Qt::WindowFlags f ) :
 	myView            ( NULL ),
+    myViewer          ( NULL ),
+    myLayer           ( NULL ),
     myViewResized	  ( Standard_False ),
     myViewInitialized ( Standard_False ),
 	myMode			  ( CurAction3d_Undefined ),
@@ -73,6 +87,8 @@ TIGLViewerWidget::TIGLViewerWidget( const Handle_AIS_InteractiveContext& aContex
 
 void TIGLViewerWidget::initialize(){
     myView            = NULL;
+    myViewer          = NULL;
+    myLayer           = NULL;
     myRubberBand      = NULL;
     myMode			  = CurAction3d_Undefined;
     myGridSnap        = Standard_False;
@@ -142,13 +158,15 @@ void TIGLViewerWidget::initializeOCC(const Handle_AIS_InteractiveContext& aConte
     short lo = (short)   windowHandle;
     short hi = (short) ( windowHandle >> 16 );
 
-#ifdef WNT
+#if defined WNT
 	// rc = (Aspect_RenderingContext) wglGetCurrentContext();
     myWindow = new WNT_Window( Handle(Graphic3d_WNTGraphicDevice)
 							   ::DownCast( myContext->CurrentViewer()->Device() ) ,
 							   (int) hi, (int) lo );
 	// Turn off background erasing in OCC's window
 	myWindow->SetFlags( WDF_NOERASEBKGRND );
+#elif defined __APPLE__
+    myWindow = new Cocoa_Window(reinterpret_cast<NSView *>(winId()));
 #else
 	// rc = (Aspect_RenderingContext) glXGetCurrentContext(); // Untested!
     myWindow = new Xw_Window( Handle(Graphic3d_GraphicDevice)
@@ -169,6 +187,7 @@ void TIGLViewerWidget::initializeOCC(const Handle_AIS_InteractiveContext& aConte
 #else
 		myView->TriedronDisplay( Aspect_TOTP_LEFT_LOWER, Quantity_NOC_WHITE, 0.1, V3d_WIREFRAME );
 #endif
+        //myView->SetAntialiasingOn();
 
 		//myView->ColorScaleDisplay();
 
@@ -183,6 +202,14 @@ void TIGLViewerWidget::initializeOCC(const Handle_AIS_InteractiveContext& aConte
 		setMode( CurAction3d_Nothing );
 		// This is to signal any connected slots that the view is ready.
 		myViewInitialized = Standard_True;
+
+		myLayer   = new Visual3d_Layer (myViewer->Viewer(), Aspect_TOL_OVERLAY, Standard_True /*aSizeDependant*/);
+
+#ifdef OCC_BG
+        myView->SetBgGradientColors ( Quantity_Color(245./256., 245./256., 252./256. , Quantity_TOC_RGB), Quantity_Color(49./256., 49./256., 49./256. , Quantity_TOC_RGB), Aspect_GFM_VER, Standard_False);
+#endif
+
+
 		emit initialized();
 	}
 }
@@ -420,6 +447,11 @@ void TIGLViewerWidget::rotation( void )
 }
 
 
+void TIGLViewerWidget::selecting( void )
+{
+    setMode( CurAction3d_Nothing );
+}
+
 
 void TIGLViewerWidget::globalPan()
 {
@@ -556,7 +588,13 @@ void TIGLViewerWidget::background()
     Standard_Real R1;
     Standard_Real G1;
     Standard_Real B1;
+#ifdef OCC_BG
+    Quantity_Color c1, c2;
+    myView->GradientBackgroundColors(c1,c2);
+    R1 = c1.Red(); G1 = c1.Green(); B1 = c1.Blue();
+#else
     myView->BackgroundColor(Quantity_TOC_RGB,R1,G1,B1);
+#endif
     aColor.setRgb(( int )R1*255, ( int )G1*255, ( int )B1*255);
 
     QColor aRetColor = QColorDialog::getColor(aColor);
@@ -566,7 +604,21 @@ void TIGLViewerWidget::background()
         R1 = aRetColor.red()/255.;
         G1 = aRetColor.green()/255.;
         B1 = aRetColor.blue()/255.;
+#ifdef OCC_BG
+        // Disable provious gradient
+        myView->SetBgGradientColors ( Quantity_NOC_BLACK , Quantity_NOC_BLACK, Aspect_GFM_NONE, Standard_False);
+
+        float fu = 2;
+        float fd = 0.2;
+
+        Quantity_Color up  (R1*fu > 1 ? 1. : R1*fu, G1*fu > 1 ? 1. : G1*fu, B1*fu > 1 ? 1. : B1*fu, Quantity_TOC_RGB);
+        Quantity_Color down(R1*fd > 1 ? 1. : R1*fd, G1*fd > 1 ? 1. : G1*fd, B1*fd > 1 ? 1. : B1*fd, Quantity_TOC_RGB);
+
+        myView->SetBgGradientColors( up, down, Aspect_GFM_VER, Standard_False);
+
+#else
         myView->SetBackgroundColor(Quantity_TOC_RGB,R1,G1,B1);
+#endif
     }
     redraw();
 }
@@ -580,15 +632,127 @@ void TIGLViewerWidget::setReset ()
 	}
 }
 
+void TIGLViewerWidget::setBGImage(const QString& filename){
+    if(!myView.IsNull()){
+        myView->SetBackgroundImage(filename.toStdString().c_str(), Aspect_FM_CENTERED,Standard_False);
+        redraw();
+    }
+}
 
-//void TIGLViewerWidget::popupMenu( const TIGLViewerWidget* aView, const QPoint aPoint )
-//{
-//  // TODO: implement!
-//}
+void TIGLViewerWidget::eraseSelected()
+{
+    if(!myView.IsNull())
+    {
+        for (myContext->InitCurrent(); myContext->MoreCurrent(); myContext->NextCurrent())
+            myContext->Erase(myContext->Current(), Standard_True, Standard_False);
+
+        myContext->ClearCurrents();
+    }
+}
+
+
+void TIGLViewerWidget::setTransparency()
+{
+    bool ok;
+    int transparency;
+
+    QInputDialog *dialog = new QInputDialog(this);
+    dialog->setInputMode(QInputDialog::IntInput);
+    connect(dialog, SIGNAL(intValueChanged(int)), this, SLOT(setTransparency(int)));
+    transparency = dialog->getInt(this, tr("Select transparency level"), tr("Transparency:"), 25, 0, 100, 1, &ok);
+    setTransparency(transparency);
+}
+
+void TIGLViewerWidget::setTransparency(int tr)
+{
+    Standard_Real transparency = 0.1;
+    if ( (tr < 0) || (tr > 100)) {
+        return;
+    }
+    transparency = tr * 0.01;
+
+    if(!myView.IsNull())
+    {
+        for (myContext->InitCurrent(); myContext->MoreCurrent(); myContext->NextCurrent()) {
+            myContext->SetTransparency(myContext->Current(), transparency, Standard_True);
+        }
+    }
+}
+
+void TIGLViewerWidget::setObjectsWireframe()
+{
+    if(!myView.IsNull())
+    {
+        for (myContext->InitCurrent(); myContext->MoreCurrent(); myContext->NextCurrent()) {
+            myContext->SetDisplayMode(myContext->Current(), 0);
+        }
+    }
+}
+
+void TIGLViewerWidget::setObjectsShading()
+{
+    if(!myView.IsNull())
+    {
+        for (myContext->InitCurrent(); myContext->MoreCurrent(); myContext->NextCurrent()) {
+            myContext->SetDisplayMode(myContext->Current(), 1);
+        }
+    }
+}
+
+void TIGLViewerWidget::setObjectsColor()
+{
+    QColor color = QColorDialog::getColor(Qt::green, this);
+     if (color.isValid()) {
+         for (myContext->InitCurrent(); myContext->MoreCurrent(); myContext->NextCurrent()) {
+             myContext->SetColor (myContext->Current(),Quantity_Color(color.red()/255., color.green()/255., color.blue()/255., Quantity_TOC_RGB));
+          }
+     }
+}
+
+void TIGLViewerWidget::setObjectsMaterial()
+{
+    bool ok;
+    QStringList items;
+
+    QMap<QString, Graphic3d_NameOfMaterial> materialMap;
+    materialMap["Brass"] = Graphic3d_NOM_BRASS;
+    materialMap["Bronze"] = Graphic3d_NOM_BRONZE;
+    materialMap["Copper"] = Graphic3d_NOM_COPPER;
+    materialMap["Gold"] = Graphic3d_NOM_GOLD;
+    materialMap["Pewter"] = Graphic3d_NOM_PEWTER;
+    materialMap["Plaster"] = Graphic3d_NOM_PLASTER;
+    materialMap["Plastic"] = Graphic3d_NOM_PLASTIC;
+    materialMap["Silver"] = Graphic3d_NOM_SILVER;
+    materialMap["Steel"] = Graphic3d_NOM_STEEL;
+    materialMap["Stone"] = Graphic3d_NOM_STONE;
+    materialMap["Shiny Plastic"] = Graphic3d_NOM_SHINY_PLASTIC;
+    materialMap["Satin"] = Graphic3d_NOM_SATIN;
+    materialMap["Metalized"] = Graphic3d_NOM_METALIZED;
+    materialMap["Neon GNC"] = Graphic3d_NOM_NEON_GNC;
+    materialMap["Chrome"] = Graphic3d_NOM_CHROME;
+    materialMap["Aluminium"] = Graphic3d_NOM_ALUMINIUM;
+    materialMap["Obsidian"] = Graphic3d_NOM_OBSIDIAN;
+    materialMap["Neon PHC"] = Graphic3d_NOM_NEON_PHC;
+    materialMap["Jade"] = Graphic3d_NOM_JADE;
+    materialMap["Default"] = Graphic3d_NOM_DEFAULT;
+
+    QMapIterator<QString, Graphic3d_NameOfMaterial> i(materialMap);
+    while (i.hasNext()) {
+        i.next();
+        items << i.key();
+    }
+    QString item = QInputDialog::getItem(this, tr("Select Material"), tr("Material:"), items, 0, false, &ok);
+    if (ok && !item.isEmpty()) {
+        for (myContext->InitCurrent(); myContext->MoreCurrent(); myContext->NextCurrent()) {
+             myContext->SetMaterial (myContext->Current(),  materialMap[item]);
+        }
+    }
+}
 
 
 void TIGLViewerWidget::onLeftButtonDown(  Qt::KeyboardModifiers nFlags, const QPoint point )
 {
+    setFocus(Qt::MouseFocusReason);
     myStartPoint = point;
     if ( nFlags & CASCADESHORTCUTKEY )
     {
@@ -647,15 +811,15 @@ void TIGLViewerWidget::onMiddleButtonDown(  Qt::KeyboardModifiers nFlags, const 
 void TIGLViewerWidget::onRightButtonDown(  Qt::KeyboardModifiers nFlags, const QPoint point )
 {
 	myStartPoint = point;
-    if ( nFlags & CASCADESHORTCUTKEY )
-    {
-		setMode( CurAction3d_DynamicRotation );
-		myView->StartRotation( point.x(), point.y() );
-    }
-    else
-    {
-        emit popupMenu ( this, point );
-    }
+//    if ( nFlags & CASCADESHORTCUTKEY )
+//    {
+//		setMode( CurAction3d_DynamicRotation );
+//		myView->StartRotation( point.x(), point.y() );
+//    }
+//    else
+//    {
+//        emit popupMenu ( this, point );
+//    }
 }
 
 
@@ -739,7 +903,7 @@ void TIGLViewerWidget::onRightButtonUp(  Qt::KeyboardModifiers nFlags, const QPo
 	{
 		if ( myMode == CurAction3d_Nothing )
 		{
-			emit popupMenu ( this, point );
+//			emit popupMenu ( this, point );
 		}
 		else
 		{
@@ -747,7 +911,6 @@ void TIGLViewerWidget::onRightButtonUp(  Qt::KeyboardModifiers nFlags, const QPo
 		}
 	}
 }
-
 
 
 void TIGLViewerWidget::onMouseMove( Qt::MouseButtons buttons,
@@ -1000,8 +1163,11 @@ int TIGLViewerWidget::paintCallBack (Aspect_Drawable /* drawable */,
 
 // TODO: this routine prevents setting the background color
 // either we should set it back here or we should skip it.
+// Also, this code confuses the ftgl renderer introduced in
+// OCC 6.4.0. Thus we should only use it with old OCC
 void TIGLViewerWidget::paintOCC( void )
 {
+#ifndef OCC_BG
 	glDisable( GL_LIGHTING ); 
 	glMatrixMode( GL_MODELVIEW );
 	glPushMatrix();
@@ -1017,6 +1183,8 @@ void TIGLViewerWidget::paintOCC( void )
 	GLfloat depth  =  1.0f;
 
     glOrtho( left, right, bottom, top, 1.0, -1.0 );
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_COLOR);
 
 #ifndef OCC_PATCHED
 	glEnable(GL_BLEND);
@@ -1044,7 +1212,7 @@ void TIGLViewerWidget::paintOCC( void )
 	glPopMatrix();
 	glMatrixMode( GL_MODELVIEW );
 	glPopMatrix();
-
+#endif
 }
 
 

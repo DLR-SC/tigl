@@ -36,6 +36,8 @@
 #include <Standard_Version.hxx>
 
 #include "TIGLViewerWindow.h"
+#include "TIGLViewerDocument.h"
+#include "TIGLViewerInputoutput.h"
 #include "TIGLDebugStream.h"
 #include "TIGLScriptEngine.h"
 #include "CommandLineParameters.h"
@@ -56,6 +58,54 @@ void ShowOrigin ( Handle_AIS_InteractiveContext theContext )
 	AddVertex ( 0.0, 0.0, 0.0, theContext);
 }
 
+void TIGLViewerWindow::contextMenuEvent(QContextMenuEvent *event)
+ {
+     QMenu menu(this);
+
+     bool OneOrMoreIsSelected = false;
+     for (myVC->getContext()->InitCurrent(); myVC->getContext()->MoreCurrent (); myVC->getContext()->NextCurrent ())
+         if (myVC->getContext()->IsDisplayed(myVC->getContext()->Current())) OneOrMoreIsSelected=true;
+
+     if(OneOrMoreIsSelected) {
+        QAction *eraseAct;
+        eraseAct = new QAction(tr("&Erase"), this);
+        eraseAct->setStatusTip(tr("Erase selected components"));
+        menu.addAction(eraseAct);
+        connect(eraseAct, SIGNAL(triggered()), myOCC, SLOT(eraseSelected()));
+
+        QAction *transparencyAct;
+        transparencyAct = new QAction(tr("&Transparency"), this);
+        transparencyAct->setStatusTip(tr("Component Transparency"));
+        menu.addAction(transparencyAct);
+        connect(transparencyAct, SIGNAL(triggered()), myOCC, SLOT(setTransparency()));
+
+        QAction *wireframeAct;
+        wireframeAct = new QAction(tr("&Wireframe"), this);
+        wireframeAct->setStatusTip(tr("Component Wireframe"));
+        menu.addAction(wireframeAct);
+        connect(wireframeAct, SIGNAL(triggered()), myOCC, SLOT(setObjectsWireframe()));
+
+        QAction *shadingAct;
+        shadingAct = new QAction(tr("&Shading"), this);
+        shadingAct->setStatusTip(tr("Component Shading"));
+        menu.addAction(shadingAct);
+        connect(shadingAct, SIGNAL(triggered()), myOCC, SLOT(setObjectsShading()));
+
+        QAction *colorAct;
+        colorAct = new QAction(tr("&Color"), this);
+        colorAct->setStatusTip(tr("Component Color"));
+        menu.addAction(colorAct);
+        connect(colorAct, SIGNAL(triggered()), myOCC, SLOT(setObjectsColor()));
+
+        QAction *materialAct;
+        materialAct = new QAction(tr("&Material"), this);
+        materialAct->setStatusTip(tr("Component Material"));
+        menu.addAction(materialAct);
+        connect(materialAct, SIGNAL(triggered()), myOCC, SLOT(setObjectsMaterial()));
+     }
+
+     menu.exec(event->globalPos());
+ }
 
 TIGLViewerWindow::TIGLViewerWindow()
 	: myLastFolder(tr(""))
@@ -69,34 +119,25 @@ TIGLViewerWindow::TIGLViewerWindow()
     //redirect everything to TIGL console, let error messages be printed in red
     stdoutStream = new QDebugStream(std::cout);
     errorStream  = new QDebugStream(std::cerr);
-    errorStream->setMarkup("<b><font color=\"red\">Error:","</font></b>");
-    connect(stdoutStream, SIGNAL(sendString(QString)), console, SLOT(append(QString)));
-    connect(errorStream , SIGNAL(sendString(QString)), console, SLOT(append(QString)));
+    errorStream->setMarkup("<b><font color=\"red\">","</font></b>");
 
     QPalette p = console->palette();
     p.setColor(QPalette::Base, Qt::black);
     console->setPalette(p);
-    console->setTextColor(Qt::green);
-    console->append("TIGLViewer console output\n\n");
 
     cpacsConfiguration = new TIGLViewerDocument(this, myOCC->getContext());
+    scriptEngine = new TIGLScriptEngine;
 
-    createActions();
+    connectSignals();
     createMenus();
     updateMenus(-1);
+
+    loadSettings();
 
     statusBar()->showMessage(tr("A context menu is available by right-clicking"));
 
     setWindowTitle(tr(PARAMS.windowTitle.toAscii().data()));
     setMinimumSize(160, 160);
-    showMaximized();
-    
-    scriptEngine = new TIGLScriptEngine(scriptInput);
-    QObject::connect(scriptInput, SIGNAL(textChanged(QString)), scriptEngine, SLOT(textChanged(QString)));
-    QObject::connect(scriptInput, SIGNAL(returnPressed()), scriptEngine, SLOT(eval()));
-    QObject::connect(scriptEngine, SIGNAL(printResults(QString)), console, SLOT(append(QString)));
-
-    scriptInput->setFocus();
 }
 
 TIGLViewerWindow::~TIGLViewerWindow(){
@@ -109,13 +150,7 @@ TIGLViewerWindow::~TIGLViewerWindow(){
 void TIGLViewerWindow::setInitialCpacsFileName(QString filename)
 {
 	cpacsFileName = filename;
-	cpacsConfiguration->openCpacsConfiguration(filename);
-	statusBar()->showMessage(tr("Hello and welcome to TIGLViewer :)"));
-	myOCC->viewAxo();
-	myOCC->fitAll();
-	watcher = new QFileSystemWatcher();
-	watcher->addPath(filename);
-	QObject::connect(watcher, SIGNAL(fileChanged(QString)), cpacsConfiguration, SLOT(updateConfiguration()));
+    openFile(filename);
 }
 
 
@@ -142,6 +177,20 @@ void TIGLViewerWindow::open()
 													"IGES (*.iges *.igs);;"
 													"STL  (*.stl)" ) );
     openFile(fileName);
+}
+
+
+void TIGLViewerWindow::openScript()
+{
+    QString     fileName;
+
+    statusBar()->showMessage(tr("Invoked File|Open Script"));
+
+    fileName = QFileDialog::getOpenFileName (   this,
+                                                tr("Open File"),
+                                                myLastFolder,
+                                                tr( "Choose your script (*)" ) );
+    scriptEngine->openFile(fileName);
 }
 
 void TIGLViewerWindow::closeConfiguration(){
@@ -172,7 +221,10 @@ void TIGLViewerWindow::openFile(const QString& fileName)
         
         if (fileType.toLower() == tr("xml"))
         {
-            cpacsConfiguration->openCpacsConfiguration(fileInfo.absoluteFilePath());
+            TiglReturnCode tiglRet = cpacsConfiguration->openCpacsConfiguration(fileInfo.absoluteFilePath());
+            if(tiglRet != TIGL_SUCCESS)
+                return;
+
             updateMenus(cpacsConfiguration->getCpacsHandle());
             watcher = new QFileSystemWatcher();
             watcher->addPath(fileInfo.absoluteFilePath());
@@ -222,6 +274,27 @@ void TIGLViewerWindow::setCurrentFile(const QString &fileName)
     settings.setValue("lastFolder", myLastFolder);
 
     updateRecentFileActions();
+}
+
+void TIGLViewerWindow::loadSettings(){
+    QSettings settings("DLR SC-VK","TIGLViewer");
+
+    bool showConsole = settings.value("show_console",QVariant(true)).toBool();
+
+    restoreGeometry(settings.value("MainWindowGeom").toByteArray());
+    restoreState(settings.value("MainWindowState").toByteArray());
+    consoleDockWidget->setVisible(showConsole);
+    showConsoleAction->setChecked(showConsole);
+}
+
+void TIGLViewerWindow::saveSettings(){
+    QSettings settings("DLR SC-VK","TIGLViewer");
+
+    bool showConsole = consoleDockWidget->isVisible();
+    settings.setValue("show_console", showConsole);
+
+    settings.setValue("MainWindowGeom", saveGeometry());
+    settings.setValue("MainWindowState", saveState());
 }
 
 
@@ -295,35 +368,24 @@ void TIGLViewerWindow::setBackgroundImage()
 
     statusBar()->showMessage(tr("Invoked File|Load Background Image"));
 
-	QMessageBox msgBox;
-	QString text = 	"Undo is not yet implemented!<br>Go to TIGLViewer project page \
-					(<a href=\"http://code.google.com/p/tigl/\">http://code.google.com/p/tigl/</a>) and make a feature request";
+	fileName = QFileDialog::getOpenFileName (	this,
+				  								tr("Open Background Image"),
+												myLastFolder,
+												tr( "Images (*.gif *.bmp);;" ) );
+	if (!fileName.isEmpty())
+	{
+		fileInfo.setFile(fileName);
+		fileType = fileInfo.suffix();
+		
+		if (fileType.toLower() == tr("bmp") || fileType.toLower() == tr("gif"))
+		{
+			myOCC->setBGImage(fileName);
+		}
+		else {
+			displayErrorMessage(tr("Invalid image format!"),tr("TIGL Error"));
+		}
 
-	msgBox.setWindowTitle("Background pictures not yet implemented!");
-	msgBox.setText(text);
-	msgBox.exec();
-
-
-	//fileName = QFileDialog::getOpenFileName (	this,
-	//			  								tr("Open Background Image"),
-	//											myLastFolder,
-	//											tr( "IMAGES (*.jpg *.png *.bmp);;" ) );
-	//if (!fileName.isEmpty())
-	//{
-	//	fileInfo.setFile(fileName);
-	//	fileType = fileInfo.suffix();
-	//	
-	//	if (fileType.toLower() == tr("bmp"))
-	//	{
-			//Standard_CString FileName("C:\\DLR\\TIVA\\TIGL\\TIGLViewer\\x.bmp");
-			//Aspect_FillMethod FillStyle(Aspect_FM_CENTERED);//Aspect_FM_STRETCH //Aspect_FM_CENTERED
-			//Standard_Boolean update(Standard_True);
-			//myOCC->getView()->SetBackgroundImage(FileName, FillStyle, update);
-			//myOCC->redraw();
-	//	}
-
-	//	myLastFolder = fileInfo.absolutePath();
-	//}
+	}
 }
 
 
@@ -451,10 +513,11 @@ void TIGLViewerWindow::displayErrorMessage (const QString aMessage, QString aHea
 	}
 }
 
-void TIGLViewerWindow::createActions()
+void TIGLViewerWindow::connectSignals()
 {
     connect(newAction, SIGNAL(triggered()), this, SLOT(newFile()));
     connect(openAction, SIGNAL(triggered()), this, SLOT(open()));
+    connect(openScriptAction, SIGNAL(triggered()), this, SLOT(openScript()));
     connect(closeAction, SIGNAL(triggered()), this, SLOT(closeConfiguration()));
 
     for (int i = 0; i < MaxRecentFiles; ++i) {
@@ -484,6 +547,7 @@ void TIGLViewerWindow::createActions()
     connect(zoomAction, SIGNAL(triggered()),myOCC, SLOT(zoom()));
     connect(panAction, SIGNAL(triggered()), myOCC, SLOT(pan()));
     connect(rotAction, SIGNAL(triggered()), myOCC, SLOT(rotation()));
+    connect(selectAction, SIGNAL(triggered()), myOCC, SLOT(selecting()));
 
     // view->grid menu
     connect(gridOnAction, SIGNAL(toggled(bool)), myVC, SLOT(toggleGrid(bool)));
@@ -505,9 +569,9 @@ void TIGLViewerWindow::createActions()
     connect(viewResetAction, SIGNAL(triggered()), myOCC, SLOT(viewReset()));
     connect(viewZoomInAction, SIGNAL(triggered()), myOCC, SLOT(zoomIn()));
     connect(viewZoomOutAction, SIGNAL(triggered()), myOCC, SLOT(zoomOut()));
-	connect(backgroundAction, SIGNAL(triggered()), myOCC, SLOT(background()));
-    connect(showConsoleAction, SIGNAL(toggled(bool)), console, SLOT(setVisible(bool)));
-    connect(showScriptAction, SIGNAL(toggled(bool)), scriptInput, SLOT(setVisible(bool)));
+    connect(backgroundAction, SIGNAL(triggered()), myOCC, SLOT(background()));
+    connect(showConsoleAction, SIGNAL(toggled(bool)), consoleDockWidget, SLOT(setVisible(bool)));
+    connect(consoleDockWidget, SIGNAL(visibilityChanged(bool)), showConsoleAction, SLOT(setChecked(bool)));
     connect(showWireframeAction, SIGNAL(toggled(bool)), myVC, SLOT(wireFrame(bool)));
 
 
@@ -562,7 +626,6 @@ void TIGLViewerWindow::createActions()
 	connect(tiglExportMeshedFuselageVTK, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportMeshedFuselageVTK()));
 	connect(tiglExportMeshedFuselageVTKsimple, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportMeshedFuselageVTKsimple()));
 
-
 	// The co-ordinates from the view
 	connect( myOCC, SIGNAL(mouseMoved(V3d_Coordinate,V3d_Coordinate,V3d_Coordinate)),
 		     this,   SLOT(xyzPosition(V3d_Coordinate,V3d_Coordinate,V3d_Coordinate)) );
@@ -571,11 +634,17 @@ void TIGLViewerWindow::createActions()
 	connect( myOCC, SIGNAL(pointClicked(V3d_Coordinate,V3d_Coordinate,V3d_Coordinate)),
 		     this,   SLOT (addPoint    (V3d_Coordinate,V3d_Coordinate,V3d_Coordinate)) );
 
-	connect( myOCC, SIGNAL(sendStatus(const QString)),
-		     this,  SLOT  (statusMessage(const QString)) );
+	connect( myOCC, SIGNAL(sendStatus(const QString)), this,  SLOT  (statusMessage(const QString)) );
 
 	connect( cpacsConfiguration, SIGNAL(documentUpdated(TiglCPACSConfigurationHandle)), 
 		     this, SLOT(updateMenus(TiglCPACSConfigurationHandle)) );
+
+    connect(stdoutStream, SIGNAL(sendString(QString)), console, SLOT(output(QString)));
+    connect(errorStream , SIGNAL(sendString(QString)), console, SLOT(output(QString)));
+
+    connect(scriptEngine, SIGNAL(printResults(QString)), console, SLOT(output(QString)));
+    connect(console, SIGNAL(onChange(QString)), scriptEngine, SLOT(textChanged(QString)));
+    connect(console, SIGNAL(onCommand(QString)), scriptEngine, SLOT(eval(QString)));
 }
 
 void TIGLViewerWindow::createMenus()
@@ -625,4 +694,8 @@ void TIGLViewerWindow::updateMenus(TiglCPACSConfigurationHandle hand){
     menuAircraft->setEnabled(nWings > 0 || nFuselages > 0);
 
     closeAction->setEnabled(hand > 0);
+}
+
+void TIGLViewerWindow::closeEvent(QCloseEvent*) {
+    saveSettings();
 }

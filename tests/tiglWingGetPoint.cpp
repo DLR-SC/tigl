@@ -59,6 +59,35 @@ class WingGetPoint : public ::testing::Test {
   static TiglCPACSConfigurationHandle tiglHandle;
 };
 
+class WingGetPointSimple : public ::testing::Test {
+ protected:
+  virtual void SetUp() {
+        char* filename = "TestData/simpletest.cpacs.xml";
+        ReturnCode tixiRet;
+        TiglReturnCode tiglRet;
+
+        tiglHandle = -1;
+        tixiHandle = -1;
+        
+        tixiRet = tixiOpenDocument(filename, &tixiHandle);
+        ASSERT_TRUE (tixiRet == SUCCESS);
+
+        tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "Cpacs2Test", &tiglHandle);
+        ASSERT_TRUE(tiglRet == TIGL_SUCCESS);
+  }
+
+  virtual void TearDown() {
+        ASSERT_TRUE(tiglCloseCPACSConfiguration(tiglHandle) == SUCCESS);
+        ASSERT_TRUE(tixiCloseDocument(tixiHandle) == SUCCESS);
+        tiglHandle = -1;
+        tixiHandle = -1;
+  }
+
+  TixiDocumentHandle           tixiHandle;
+  TiglCPACSConfigurationHandle tiglHandle;
+};
+
+
 
 TixiDocumentHandle WingGetPoint::tixiHandle = 0;
 TiglCPACSConfigurationHandle WingGetPoint::tiglHandle = 0;
@@ -207,4 +236,51 @@ TEST_F(WingGetPoint, tiglWingGetLowerPoint_success)
     ASSERT_TRUE(tiglWingGetLowerPoint(tiglHandle, 1, 1, 0.0, 0.0, &x, &y, &z) == TIGL_SUCCESS);
     ASSERT_TRUE(tiglWingGetLowerPoint(tiglHandle, 1, 1, 0.5, 0.5, &x, &y, &z) == TIGL_SUCCESS);
     ASSERT_TRUE(tiglWingGetLowerPoint(tiglHandle, 1, 1, 1.0, 1.0, &x, &y, &z) == TIGL_SUCCESS);
+}
+
+TEST_F(WingGetPointSimple, checkCamberLine){
+
+    //inner wing profile
+    for(double xsi = 0; xsi <= 1.0; xsi += 0.001){
+        double xl,yl, zl;
+        ASSERT_TRUE(tiglWingGetLowerPoint(tiglHandle, 1, 1, 0.0, xsi, &xl, &yl, &zl) == TIGL_SUCCESS);
+
+        double xu,yu, zu;
+        ASSERT_TRUE(tiglWingGetUpperPoint(tiglHandle, 1, 1, 0.0, xsi, &xu, &yu, &zu) == TIGL_SUCCESS);
+
+        ASSERT_NEAR(0., zu+zl, 1e-9);
+    }
+
+    // outer wing profile
+    for(double xsi = 0; xsi <= 1.0; xsi += 0.001){
+        double xl,yl, zl;
+        ASSERT_TRUE(tiglWingGetLowerPoint(tiglHandle, 1, 1, 1.0, xsi, &xl, &yl, &zl) == TIGL_SUCCESS);
+
+        double xu,yu, zu;
+        ASSERT_TRUE(tiglWingGetUpperPoint(tiglHandle, 1, 1, 1.0, xsi, &xu, &yu, &zu) == TIGL_SUCCESS);
+
+        ASSERT_NEAR(0., zu+zl, 1e-9);
+    }
+
+    // middle wing profile
+    for(double xsi = 0; xsi <= 1.0; xsi += 0.001){
+        double xl,yl, zl;
+        ASSERT_TRUE(tiglWingGetLowerPoint(tiglHandle, 1, 1, 0.5, xsi, &xl, &yl, &zl) == TIGL_SUCCESS);
+
+        double xu,yu, zu;
+        ASSERT_TRUE(tiglWingGetUpperPoint(tiglHandle, 1, 1, 0.5, xsi, &xu, &yu, &zu) == TIGL_SUCCESS);
+
+        ASSERT_NEAR(0., zu+zl, 1e-9);
+    }
+
+    // middle wing profile, segment 2
+    for(double xsi = 0; xsi <= 1.0; xsi += 0.001){
+        double xl,yl, zl;
+        ASSERT_TRUE(tiglWingGetLowerPoint(tiglHandle, 1, 2, 0.5, xsi, &xl, &yl, &zl) == TIGL_SUCCESS);
+
+        double xu,yu, zu;
+        ASSERT_TRUE(tiglWingGetUpperPoint(tiglHandle, 1, 2, 0.5, xsi, &xu, &yu, &zu) == TIGL_SUCCESS);
+
+        ASSERT_NEAR(0., zu+zl, 1e-9);
+    }
 }

@@ -24,11 +24,8 @@
 
 #include <QMainWindow>
 
-#include "TIGLViewerDocument.h"
 #include "TIGLViewerContext.h"
-#include "TIGLViewerWidget.h"
-#include "TIGLViewerInputoutput.h"
-#include "TIGLScriptEngine.h"
+#include "tigl.h"
 
 #include "ui_TIGLViewerWindow.h"
 
@@ -46,7 +43,7 @@ public:
     enum { MaxRecentFiles = 5 };
 
     TIGLViewerWindow();
-    ~TIGLViewerWindow();
+    virtual ~TIGLViewerWindow();
 	Handle_AIS_InteractiveContext& getContext() { return myVC->getContext(); };
 
 	void setInitialCpacsFileName(QString filename);
@@ -57,12 +54,16 @@ public:
 	// Displays a simple dialog for error messages
 	void displayErrorMessage (const QString aMessage, QString aHeader);
 
+protected:
+     void contextMenuEvent(QContextMenuEvent *event);
+
 public slots:
     void updateMenus(TiglCPACSConfigurationHandle);
 
 private slots:
     void newFile();
     void open();
+    void openScript();
     void openRecentFile();
     void closeConfiguration();
     void save();
@@ -82,13 +83,17 @@ private slots:
 				   V3d_Coordinate Y,
 				   V3d_Coordinate Z);
 	void statusMessage (const QString aMessage);
+	void loadSettings();
+	void saveSettings();
 
 private:
-    void createActions();
+    void connectSignals();
     void createMenus();
     void openFile(const QString&);
     void updateRecentFileActions();
     void setCurrentFile(const QString &);
+
+    void closeEvent(QCloseEvent*);
 
     QAction *recentFileActions[MaxRecentFiles];
 
@@ -97,12 +102,12 @@ private:
 
 	QString 				myLastFolder;
 
-	TIGLViewerDocument*		cpacsConfiguration;
+	class TIGLViewerDocument*	cpacsConfiguration;
 	QString cpacsFileName;
 	QString controlFileName;
 	QFileSystemWatcher *watcher;
     class QDebugStream * stdoutStream, * errorStream;
-    TIGLScriptEngine * scriptEngine;
+    class TIGLScriptEngine * scriptEngine;
 
 };
 

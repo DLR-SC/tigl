@@ -22,8 +22,15 @@
 #ifndef TIGLVIEWERWIDGET_H
 #define TIGLVIEWERWIDGET_H
 
-#include <QtGui/QRubberBand>
-#include <QtGui/QToolBar>
+#include <QWidget>
+
+#if defined WNT
+#include <Handle_WNT_Window.hxx>
+#elif defined __APPLE__
+#include <Handle_Aspect_Window.hxx>
+#else
+#include <Handle_Xw_Window.hxx>
+#endif
 
 #include "TIGLViewer.h"
 
@@ -38,6 +45,7 @@
 
 class Handle_AIS_InteractiveContext;
 class Handle_V3d_View;
+class Handle_Visual3d_Layer;
 
 class QOCC_DECLSPEC TIGLViewerWidget : public QWidget
 {
@@ -89,7 +97,7 @@ public:
 
 	//Overrides
 	QPaintEngine* paintEngine() const;
-	QToolBar*	  myToolBar;
+	class QToolBar*	  myToolBar;
 
 	void redraw( bool isPainting = false );
 
@@ -101,7 +109,6 @@ signals:
 	void pointClicked ( V3d_Coordinate X, V3d_Coordinate Y, V3d_Coordinate Z );
 	void sendStatus   ( const QString aMessage );
 
-	void popupMenu ( const TIGLViewerWidget* aView, const QPoint aPoint );
 	void error ( int errorCode, QString& errorDescription );
 
 public slots:
@@ -116,9 +123,11 @@ public slots:
     void pan();
     void globalPan();
     void rotation();
+    void selecting();
     void hiddenLineOn();
     void hiddenLineOff();
 	void background();
+	void setBGImage(const QString&);
 	void viewFront();
     void viewBack();
     void viewTop();
@@ -130,6 +139,13 @@ public slots:
 	void viewGrid();
 	void viewReset();
 	void setReset();
+	void eraseSelected();
+    void setTransparency();
+    void setTransparency(int);
+    void setObjectsWireframe();
+    void setObjectsShading();
+    void setObjectsColor();
+    void setObjectsMaterial();
 
 protected: // methods
 
@@ -144,8 +160,10 @@ protected: // methods
 
 private: // members
 
-#ifdef WNT
+#if defined WNT
     Handle_WNT_Window				myWindow;
+#elif defined __APPLE__
+    Handle_Aspect_Window            myWindow;
 #else
     Handle_Xw_Window				myWindow;
 #endif // WNT
@@ -153,6 +171,7 @@ private: // members
 	Handle_V3d_View                 myView;
 	Handle_V3d_Viewer               myViewer;
 	Handle_AIS_InteractiveContext   myContext;
+	Handle_Visual3d_Layer           myLayer;
 					
 	Standard_Boolean				myViewResized;
 	Standard_Boolean				myViewInitialized;
@@ -165,7 +184,7 @@ private: // members
 									myV3dY,   
 									myV3dZ;
 		
-	QRubberBand*					myRubberBand;
+	class QRubberBand*				myRubberBand;
 	QPoint							myStartPoint;
 	QPoint							myCurrentPoint;
 	

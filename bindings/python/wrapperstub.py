@@ -63,7 +63,7 @@ class Tigl(object):
 
     def _validateReturnValue(self, tixiReturn, *args, **kwargs):
         ''' Helper function to raise an exception if return value is not SUCCESS '''
-        if tiglReturn != ReturnCode.TIGL_SUCCESS:
+        if tiglReturn != TiglReturnCode.TIGL_SUCCESS:
             raise TiglException(tiglReturn, args, kwargs)
 
     def open(self, tixi, configuration):
@@ -72,7 +72,7 @@ class Tigl(object):
             self._validateReturnValue(TiglReturnCode.TIGL_OPEN_FAILED) # raise a generic exception
         uuid = c_char_p(configuration)
         tiglReturn = self.TIGL.tiglOpenCPACSConfiguration(tixi._handle, uuid, byref(self._handle))
-        if tiglReturn != ReturnCode.SUCCESS:
+        if tiglReturn != TiglReturnCode.SUCCESS:
             self._handle.value = -1
         self._validateReturnValue(tiglReturn, configuration)
     

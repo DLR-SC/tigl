@@ -23,15 +23,9 @@
 
 #include <QtCore/QObject>
 #include "TIGLViewer.h"
-#include "TIGLViewerWidget.h"
-#include "tigl.h"
-#include "CTiglError.h"
 #include "CCPACSConfiguration.h"
-#include "CCPACSConfigurationManager.h"
-#include "CTiglAlgorithmManager.h"
-#include "tixi.h"
 
-#include "Handle_AIS_Shape.hxx"
+#include <Handle_AIS_Shape.hxx>
 
 class QOCC_DECLSPEC TIGLViewerDocument : public QObject
 {
@@ -47,7 +41,7 @@ public:
 	TIGLViewerDocument( QWidget *parentWidget, const Handle_AIS_InteractiveContext& ic );
     ~TIGLViewerDocument( );
 
-    void openCpacsConfiguration(const QString fileName);
+    TiglReturnCode openCpacsConfiguration(const QString fileName);
     void closeCpacsConfiguration();
     TiglCPACSConfigurationHandle getCpacsHandle(void) const;
 
@@ -127,7 +121,7 @@ private:
     TiglCPACSConfigurationHandle 			m_cpacsHandle;
     QWidget* 								parent;
     Handle_AIS_InteractiveContext			myAISContext;
-    TIGLViewerWidget*     					myOCC;
+    class TIGLViewerWidget* 				myOCC;
     QString 								loadedConfigurationFileName;
 
     void writeToStatusBar(QString text);

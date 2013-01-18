@@ -1,5 +1,58 @@
-Version 2.0.2
+Version 2.0.4
+---------------
+- New API Functions: 
+	- Added function tiglGetErrorString
+- Fixes:
+	- Fixed bug in tiglWingComponentSegmentPointGetSegmentEtaXsi
+	- Fixed camberline / chordline bug
+	- Fixed exception, when no airfoils are available
+- TIGLViewer:
+	- Added scripting interface to TIGLViewer. It is now possible to call TIGL/TIXI functions from within the TIGLViewer. The output is displayed in the console-view. Find more information here.
+	- Added context-popup menu on right click. Available actions:
+		- Removing of geometric shapes
+		- Set transparency level of geometric shapes
+		- Set color of selected shapes
+		- Set material of selected shapes
+		- Set wireframe/shading of selected shapes
+	- Works now also in Mac OSX (since opencascade commit 4fe5661 )
+	- Added toolbars
+	- Added option to load a background image
+	- Added autosave of user settings
+	- Menus are disabled/enabled depending on dataset
+	- Script could be loaded from file via "File->open Script"
+    - Fixed opening from command line
+    - Fixed bad font rendering for OpenCascade? > = 6.4.0
 
+Version 2.0.3
+---------------
+- New API Functions:
+	- tiglWingGetIndex Returns the wing index given a wing UID
+	- tiglWingGetSegmentIndex Returns the segment index given a wing segment UID
+	- tiglWingGetComponentSegmentCount Returns the number of component segments for a specific wing (selected by wing index)
+	- tiglWingGetComponentSegmentIndex Translates component segment UID into component segment index
+	- tiglWingGetComponentSegmentUID Translates component segment index into component segment UID
+- Fixes:
+	- Fixed tiglWingComponentSegmentPointGetSegmentEtaXsi
+	- Fixed accuracy of CCPACSWingComponentSegment::getPoint
+	- Fixed accuracy of CCPACSWingSegment::getEta
+	- Fixed memory management handling of tiglWingGetProfileName
+	- Fixed memory leaks in VTK export
+	- Fixed memory leak in CCPACSFuselages
+- TIGLViewer:
+	- Menus are enabled/disabled depending on number of wings/fuselages
+	- Added close configuration menu entry
+	- improved view rotation with middle mouse button
+- Added CCPACSWingSegment::GetChordPoint to internal API
+- Added a simple cpacs data set for accuracy testing
+- Added some accuracy tests for getPoint functions
+- Added support for visual leak detector
+- Changed UnitTesting? Framework to google-test
+- Changed tigl linking to static for unit tests
+- Added coverage with gcov (gcc only) to project
+
+
+Version 2.0.2
+---------------
 -Fixed wing translation bug in TIGLViewer and export Functions
 -Implemented STL import
 -The result of the fused plane calculation is now chached 
@@ -13,7 +66,7 @@ Version 2.0.2
 
 
 Version 2.0.1
-
+---------------
 -Fixed geometry transformations like sweep angle and dihedral angle rotating sections
 -Fixed scalings that lead to a translation of sections
 -Datasets with CPACS Version < 2.0 are now rejected
@@ -30,7 +83,7 @@ Version 2.0.1
 
 
 Version 2.0
-
+---------------
 -Compatible with CPACS 2.0
 -Corrected the implicit rotation of fuselage and wing profiles. They shouldn't turn from x-y to x-z by TIGL
 -TIGL now uses the coordinate system of parent components for child components. This is only done when parent --> child 
@@ -50,7 +103,7 @@ Version 2.0
 
 
 Version 1.0
-
+---------------
 -New Functions
     -tiglComponentIntersectionPoint Returns a point on the intersection line of two geometric components. Often 
      there are more one intersection line, therefore you need to specify the line.
