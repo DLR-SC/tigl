@@ -26,7 +26,7 @@
 #ifndef CTIGLUIDMANAGER_H
 #define CTIGLUIDMANAGER_H
 
-#include "ITiglGeometricComponent.h"
+#include "CTiglAbstractPhysicalComponent.h"
 #include <map>
 #include <string>
 
@@ -36,27 +36,27 @@ namespace tigl {
 	{
 
     private:
-        typedef std::map<const std::string, ITiglGeometricComponent*> UIDStoreContainerType;        
+        typedef std::map<const std::string, CTiglAbstractPhysicalComponent*> UIDStoreContainerType;
 
 	public:
 		// Constructor
         CTiglUIDManager(void);
 
         // Function to add a UID and a geometric component to the uid store.
-        void AddUID(const std::string& uid, ITiglGeometricComponent* componentPtr);
+        void AddUID(const std::string& uid, CTiglAbstractPhysicalComponent* componentPtr);
 
         // Checks if a UID already exists. 
         bool HasUID(const std::string& uid) const;
 
         // Returns a pointer to the geometric component for the given unique id.
-        ITiglGeometricComponent* GetComponent(const std::string& uid);
+        CTiglAbstractPhysicalComponent* GetComponent(const std::string& uid);
 
         // Returns the parent component for a component or a null pointer
         // if there is no parent.
-        ITiglGeometricComponent* GetParentComponent(const std::string& uid);
+        CTiglAbstractPhysicalComponent* GetParentComponent(const std::string& uid);
 
         // Returns the root component of the geometric topology.
-        ITiglGeometricComponent* GetRootComponent(void);
+        CTiglAbstractPhysicalComponent* GetRootComponent(void);
 
         // Clears the uid store
         void Clear(void);
@@ -84,7 +84,7 @@ namespace tigl {
     private:
         UIDStoreContainerType    uidStore;
 		bool                     invalidated;          /**< Internal state flag */
-        ITiglGeometricComponent* rootComponent;        /**< Ptr to the root component of the component tree */
+        CTiglAbstractPhysicalComponent* rootComponent;        /**< Ptr to the root component of the component tree */
 
 	};
 

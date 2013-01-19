@@ -92,10 +92,10 @@ namespace tigl {
 
 	// Constructor
 	CCPACSWingSegment::CCPACSWingSegment(CCPACSWing* aWing, int aSegmentIndex)
-		: innerConnection(this)
+        : CTiglAbstractSegment(aSegmentIndex)
+        , innerConnection(this)
 		, outerConnection(this)
 		, wing(aWing)
-        , mySegmentIndex(aSegmentIndex)
         , surfacesAreValid(false)
 	{
 		Cleanup();
@@ -110,7 +110,7 @@ namespace tigl {
 	// Invalidates internal state
 	void CCPACSWingSegment::Invalidate(void)
 	{
-		invalidated = true;
+        CTiglAbstractSegment::Invalidate();
 		surfacesAreValid = false;
 	}
 
@@ -118,8 +118,10 @@ namespace tigl {
 	void CCPACSWingSegment::Cleanup(void)
 	{
 		name = "";
-		uid  = "";
-		Invalidate();
+        upperShape.Nullify();
+        lowerShape.Nullify();
+        surfacesAreValid = false;
+        CTiglAbstractSegment::Cleanup();
 	}
 
 	// Update internal segment data
@@ -152,7 +154,7 @@ namespace tigl {
         tempString   = "uID";
         elementPath  = const_cast<char*>(tempString.c_str());
         if (tixiGetTextAttribute(tixiHandle, const_cast<char*>(segmentXPath.c_str()), const_cast<char*>(tempString.c_str()), &ptrUID) == SUCCESS)
-            uid = ptrUID;
+            SetUID(ptrUID);
 
 		// Inner connection
 		tempString = segmentXPath + "/fromElementUID";
@@ -171,14 +173,8 @@ namespace tigl {
 		return *wing;
 	}
 
-    // Returns the segment index of this segment
-    int CCPACSWingSegment::GetSegmentIndex(void) const
-    {
-        return mySegmentIndex;
-    }
-
 	// Gets the loft between the two segment sections
-	TopoDS_Shape CCPACSWingSegment::GetLoft(void)
+    TopoDS_Shape& CCPACSWingSegment::GetLoft(void)
 	{
 		Update();
 		return loft;
@@ -585,19 +581,6 @@ namespace tigl {
 
         }
         return pointsTransformed;
-    }
-
-
-    // Gets the uid of this segment
-    const std::string & CCPACSWingSegment::GetUID(void)
-    {
-    	return uid;
-    }
-
-    // Gets the uid of this segment
-    const char* CCPACSWingSegment::GetUIDPtr(void)
-    {
-    	return uid.c_str();
     }
 
 

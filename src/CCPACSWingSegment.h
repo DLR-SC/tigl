@@ -31,7 +31,7 @@
 #include "tixi.h"
 #include "CCPACSWingConnection.h"
 #include "CTiglPoint.h"
-#include "ITiglSegment.h"
+#include "CTiglAbstractSegment.h"
 
 #include "TopoDS_Shape.hxx"
 #include "TopoDS_Wire.hxx"
@@ -42,7 +42,7 @@ namespace tigl {
 
 	class CCPACSWing;
 
-	class CCPACSWingSegment : public ITiglSegment
+	class CCPACSWingSegment : public CTiglAbstractSegment
 	{
 
 	public:
@@ -61,11 +61,8 @@ namespace tigl {
 		// Returns the wing this segment belongs to
 		CCPACSWing& GetWing(void) const;
 
-        // Returns the segment index of this segment
-		int GetSegmentIndex(void) const;
-
 		// Gets the loft between the two segment sections
-		TopoDS_Shape GetLoft(void);
+        TopoDS_Shape& GetLoft(void);
 
 		// Gets the upper point in relative wing coordinates for a given eta and xsi
 		gp_Pnt GetUpperPoint(double eta, double xsi);
@@ -126,12 +123,6 @@ namespace tigl {
 		// Gets the surface area of this segment
         double GetSurfaceArea();
 
-        // Gets the uid of this segment
-        const std::string & GetUID(void);
-
-        // Gets the C pointer of the UID string
-        const char* GetUIDPtr(void);
-
         // helper function to get the inner transformed chord line wire, used in GetLoft and when determining triangulation midpoints projection on segments in VtkExport
         TopoDS_Wire GetInnerWire(void);
 
@@ -180,6 +171,8 @@ namespace tigl {
         // on the upper surface is returned, otherwise from the lower.
 		gp_Pnt GetPoint(double eta, double xsi, bool fromUpper);
 
+        TiglGeometricComponentType GetComponentType(){ return TIGL_COMPONENT_WINGSEGMENT | TIGL_COMPONENT_SEGMENT | TIGL_COMPONENT_LOGICAL; }
+
     protected:
 		// Cleanup routine
 		void Cleanup(void);
@@ -193,7 +186,7 @@ namespace tigl {
 
     private:
 		// Copy constructor
-		CCPACSWingSegment(const CCPACSWingSegment& ) : innerConnection(0), outerConnection(0) { /* Do nothing */ }
+        CCPACSWingSegment(const CCPACSWingSegment& ) : innerConnection(0), outerConnection(0) { /* Do nothing */ }
 
 		// Assignment operator
 		void operator=(const CCPACSWingSegment& ) { /* Do nothing */ }
@@ -204,13 +197,9 @@ namespace tigl {
 
 	private:
 		std::string          name;                 /**< Segment name                            */
-		std::string          uid;                  /**< Segment uid                             */
 		CCPACSWingConnection innerConnection;      /**< Inner segment connection (root)         */
 		CCPACSWingConnection outerConnection;      /**< Outer segment connection (tip)          */
 		CCPACSWing*          wing;                 /**< Parent wing                             */
-		TopoDS_Shape         loft;                 /**< The loft between two sections           */
-		bool                 invalidated;          /**< Internal state flag                     */
-        int                  mySegmentIndex;       /**< Index of this segment                   */
         double               myVolume;             /**< Volume of this segment                  */
         double               mySurfaceArea;        /**< Surface area of this segment            */
 		TopoDS_Shape		 upperShape;		   /**< Upper shape of this segment				*/

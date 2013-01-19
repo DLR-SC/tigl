@@ -47,33 +47,41 @@ namespace tigl {
    		// Gets the loft of a geometric component
 		virtual TopoDS_Shape& GetLoft(void) = 0;
 
+		// Get the loft mirrored at the mirror plane
+		virtual TopoDS_Shape GetMirroredLoft(void);
+
         // Gets the component uid
-        virtual std::string GetUID(void);
+        virtual const std::string& GetUID(void);
 
         // Sets the component uid
         virtual void SetUID(const std::string& uid);
 
-        // Returns the parent unique id
-        virtual std::string GetParentUID(void);
+        // Gets symmetry axis
+        virtual TiglSymmetryAxis GetSymmetryAxis(void);
 
-        // Sets the parent uid.
-        virtual void SetParentUID(const std::string& parentUID);
+        // Sets symmetry axis
+        virtual void SetSymmetryAxis(const std::string& axis);
 
-        // Adds a child to this geometric component.
-        virtual void AddChild(ITiglGeometricComponent* componentPtr);
+        // Returns a unique Hashcode for a specific geometric component
+        int GetComponentHashCode(void);
 
-        // Returns a pointer to the list of children of a component.
-        virtual ChildContainerType& GetChildren(void);
+        // Get transformation object
+        virtual CTiglTransformation GetTransformation(void);
 
-		// Gets symmetry axis
-		virtual TiglSymmetryAxis GetSymmetryAxis(void);
+        // Get component translation
+        virtual CTiglPoint GetTranslation(void);
 
-		// Sets symmetry axis
-		virtual void SetSymmetryAxis(const std::string& axis);
+        // Set transformation object
+        virtual void Translate(CTiglPoint trans);
 
     protected:
         // Resets the geometric component.
         virtual void Reset(void);
+
+        CTiglTransformation        transformation;
+        CTiglPoint                 translation;
+        CTiglPoint                 scaling;
+        CTiglPoint                 rotation;
 
     private:
 		// Copy constructor
@@ -83,11 +91,8 @@ namespace tigl {
 		void operator=(const CTiglAbstractGeometricComponent& ) { /* Do nothing */ }
 
     private:
-        ChildContainerType childContainer;
         std::string        myUID;           /**< UID of this component               */
-        std::string        parentUID;       /**< UID of the parent of this component */
         TiglSymmetryAxis   mySymmetryAxis;  /**< SymmetryAxis of this component      */
-
 	};
 
 } // end namespace tigl

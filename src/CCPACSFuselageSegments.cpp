@@ -96,7 +96,7 @@ namespace tigl {
 			throw CTiglError("XML error: tixiGetNamedChildrenCount failed in CCPACSFuselageSegments::ReadCPACS", TIGL_XML_ERROR);
 
 		// Loop over all segments
-		for (int i = 1; i <= segmentCount; i++) {
+        for (int i = 1; i <= segmentCount; i++) {
 			CCPACSFuselageSegment* segment = new CCPACSFuselageSegment(fuselage, i);
 			segments.push_back(segment);
 
@@ -104,7 +104,7 @@ namespace tigl {
 			std::ostringstream xpath;
 			xpath << tempString << i << "]"; 
 			segment->ReadCPACS(tixiHandle, xpath.str());
-		}
+        }
 
 	}
 

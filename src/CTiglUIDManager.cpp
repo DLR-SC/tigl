@@ -54,7 +54,7 @@ namespace tigl {
     }
 
     // Function to add a UID and a geometric component to the uid store.
-    void CTiglUIDManager::AddUID(const std::string& uid, ITiglGeometricComponent* componentPtr)
+    void CTiglUIDManager::AddUID(const std::string& uid, CTiglAbstractPhysicalComponent* componentPtr)
     {
         if (uid.empty()) {
             throw CTiglError("Error: Empty UID in CTiglUIDManager::AddUID", TIGL_XML_ERROR);
@@ -83,7 +83,7 @@ namespace tigl {
     }
 
     // Returns a pointer to the geometric component for the given unique id.
-    ITiglGeometricComponent* CTiglUIDManager::GetComponent(const std::string& uid)
+    CTiglAbstractPhysicalComponent* CTiglUIDManager::GetComponent(const std::string& uid)
     {
         if (uid.empty()) {
             throw CTiglError("Error: Empty UID in CTiglUIDManager::GetComponent", TIGL_XML_ERROR);
@@ -107,15 +107,15 @@ namespace tigl {
 
     // Returns the parent component for a component or a null pointer
     // if there is no parent.
-    ITiglGeometricComponent* CTiglUIDManager::GetParentComponent(const std::string& uid)
+    CTiglAbstractPhysicalComponent* CTiglUIDManager::GetParentComponent(const std::string& uid)
     {
-        ITiglGeometricComponent* component = GetComponent(uid);
+        CTiglAbstractPhysicalComponent* component = GetComponent(uid);
         std::string parentUID = component->GetParentUID();
         return (parentUID.empty() ? 0 : GetComponent(parentUID));
     }
 
     // Returns the root component of the geometric topology.
-    ITiglGeometricComponent* CTiglUIDManager::GetRootComponent(void)
+    CTiglAbstractPhysicalComponent* CTiglUIDManager::GetRootComponent(void)
     {
         Update();
         return rootComponent;
@@ -129,7 +129,7 @@ namespace tigl {
         int parentCnt = 0;
 
         for (pIter = uidStore.begin(); pIter != uidStore.end(); pIter++) {
-            ITiglGeometricComponent* component = pIter->second;
+            CTiglAbstractPhysicalComponent* component = pIter->second;
             if (component->GetParentUID().empty()) {
                 if (parentCnt != 0) {
                     throw CTiglError("Error: More than one root component found in CTiglUIDManager::FindRootComponent", TIGL_ERROR);
@@ -151,9 +151,9 @@ namespace tigl {
         UIDStoreContainerType::iterator pIter;
 
         for (pIter = uidStore.begin(); pIter != uidStore.end(); pIter++) {
-            ITiglGeometricComponent* component = pIter->second;
+            CTiglAbstractPhysicalComponent* component = pIter->second;
             if (!component->GetParentUID().empty()) {
-                ITiglGeometricComponent* parent = GetComponent(component->GetParentUID());
+                CTiglAbstractPhysicalComponent* parent = GetComponent(component->GetParentUID());
                 parent->AddChild(component);
             }
         }
