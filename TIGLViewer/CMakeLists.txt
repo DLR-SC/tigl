@@ -103,6 +103,10 @@ if(WIN32)
   set(tv_icon_rc src/TIGLViewer.rc)
 endif(WIN32)
 
+if(APPLE)
+   set(TYPE MACOSX_BUNDLE)
+endif()
+
 add_executable(TIGLViewer ${TYPE}
 		${tv_src_comp} 
 		${tv_hdr_MOC} 
@@ -139,7 +143,7 @@ INCLUDE(InstallRequiredSystemLibraries)
 
 SET(APPS "\${CMAKE_INSTALL_PREFIX}/bin/TIGLViewer")
 IF(APPLE)
-  SET(APPS "\${CMAKE_INSTALL_PREFIX}/TIGLViewer.app")
+  SET(APPS "\${CMAKE_INSTALL_PREFIX}/TIGLViewer.app/Contents/MacOS/TIGLViewer")
 ENDIF(APPLE)
 IF(WIN32)
   SET(APPS "\${CMAKE_INSTALL_PREFIX}/bin/TIGLViewer.exe")
@@ -163,7 +167,7 @@ if(WIN32)
 endif(WIN32)	
 	
 # directories to look for dependencies
-SET(DIRS ${TIXI_BINARY_DIR} ${OpenCASCADE_DLL_DIRECTORY} ${QT_BINARY_DIR} ${ADD_LIB_PATH})
+SET(DIRS ${TIXI_BINARY_DIR} ${OpenCASCADE_DLL_DIRECTORY}  ${OpenCASCADE_LINK_DIRECTORY} ${QT_BINARY_DIR} ${ADD_LIB_PATH})
 
 if (WIN32 OR APPLE)
 
@@ -172,6 +176,7 @@ if (WIN32 OR APPLE)
 # An alternative is the do a configure_file() on a script and use install(SCRIPT  ...).
 INSTALL(CODE "
     include(BundleUtilities)
+    set(BU_CHMOD_BUNDLE_ITEMS ON)
     fixup_bundle(\"${APPS}\" \"${OCC_PLUGINS_FULL}\" \"${DIRS}\")
     " COMPONENT viewer)
 
