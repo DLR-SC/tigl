@@ -142,7 +142,7 @@ namespace tigl {
     {
         for(int i=0; i < GetFuselageCount(); i++)
         {
-            const std::string tmpUID((*fuselages[i]).GetUIDPtr());
+            const std::string tmpUID(fuselages[i]->GetUID());
             if(tmpUID == UID) {
                 return (*fuselages[i]);
             }

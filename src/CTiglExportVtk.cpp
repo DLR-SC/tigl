@@ -32,8 +32,8 @@
 
 #include "CTiglExportVtk.h"
 #include "CCPACSConfiguration.h"
-#include "ITiglGeometricComponent.h"
-#include "ITiglSegment.h"
+#include "CTiglAbstractPhysicalComponent.h"
+#include "CTiglAbstractSegment.h"
 #include "CCPACSWing.h"
 #include "CCPACSConfiguration.h"
 #include "CCPACSConfigurationManager.h"
@@ -96,7 +96,7 @@ namespace tigl {
     void CTiglExportVtk::ExportMeshedWingVTKByIndex(const int wingIndex, const std::string& filename, const double deflection)
     {
         //exportMode = TIGL_VTK_COMPLEX;
-        ITiglGeometricComponent & component = myConfig.GetWing(wingIndex);
+        CTiglAbstractPhysicalComponent & component = myConfig.GetWing(wingIndex);
         TopoDS_Shape loft = component.GetLoft();
 
         VtkWriter *vtkWriter = new VtkWriter(myConfig);
@@ -107,7 +107,7 @@ namespace tigl {
     // Exports a by UID selected wing, boolean fused and meshed, as STL file
     void CTiglExportVtk::ExportMeshedWingVTKByUID(const std::string wingUID, const std::string& filename, const double deflection)
     {
-        ITiglGeometricComponent & component = myConfig.GetWing(wingUID);
+        CTiglAbstractPhysicalComponent & component = myConfig.GetWing(wingUID);
         TopoDS_Shape loft = component.GetLoft();
 
         VtkWriter *vtkWriter = new VtkWriter(myConfig);
@@ -120,7 +120,7 @@ namespace tigl {
     // Exports a by index selected fuselage, boolean fused and meshed, as VTK file
     void CTiglExportVtk::ExportMeshedFuselageVTKByIndex(const int fuselageIndex, const std::string& filename, const double deflection)
     {
-        ITiglGeometricComponent & component = myConfig.GetFuselage(fuselageIndex);
+        CTiglAbstractPhysicalComponent & component = myConfig.GetFuselage(fuselageIndex);
         TopoDS_Shape loft = component.GetLoft();
 
         VtkWriter *vtkWriter = new VtkWriter(myConfig);
@@ -131,7 +131,7 @@ namespace tigl {
     // Exports a by UID selected fuselage, boolean fused and meshed, as VTK file
     void CTiglExportVtk::ExportMeshedFuselageVTKByUID(const std::string fuselageUID, const std::string& filename, const double deflection)
     {
-        ITiglGeometricComponent & component = myConfig.GetFuselage(fuselageUID);
+        CTiglAbstractPhysicalComponent & component = myConfig.GetFuselage(fuselageUID);
         TopoDS_Shape loft = component.GetLoft();
 
         VtkWriter *vtkWriter = new VtkWriter(myConfig);
@@ -154,7 +154,7 @@ namespace tigl {
     // Exports a by UID selected wing, boolean fused and meshed, as STL file
     void CTiglExportVtk::ExportMeshedWingVTKSimpleByUID(const std::string wingUID, const std::string& filename, const double deflection)
     {
-        ITiglGeometricComponent & component = myConfig.GetWing(wingUID);
+        CTiglAbstractPhysicalComponent & component = myConfig.GetWing(wingUID);
         TopoDS_Shape loft;
 
         VtkWriter *vtkWriter = new VtkWriter(myConfig);
@@ -165,7 +165,7 @@ namespace tigl {
     // Exports a by UID selected fuselage, boolean fused and meshed, as VTK file
     void CTiglExportVtk::ExportMeshedFuselageVTKSimpleByUID(const std::string fuselageUID, const std::string& filename, const double deflection)
     {
-        ITiglGeometricComponent & component = myConfig.GetFuselage(fuselageUID);
+        CTiglAbstractPhysicalComponent & component = myConfig.GetFuselage(fuselageUID);
         TopoDS_Shape loft;
 
         VtkWriter *vtkWriter = new VtkWriter(myConfig);
@@ -195,7 +195,7 @@ namespace tigl {
     }
     
     // Write out the shape to a VTK file
-    void VtkWriter::Write(const TopoDS_Shape & shape, ITiglGeometricComponent & component, const std::string& filename, const double deflection, VTK_EXPORT_MODE mode)
+    void VtkWriter::Write(const TopoDS_Shape & shape, CTiglAbstractPhysicalComponent & component, const std::string& filename, const double deflection, VTK_EXPORT_MODE mode)
     {
         pointsMin = 0;
         pointsMax = 0;
@@ -250,7 +250,7 @@ namespace tigl {
 
 
     // Helper function to detect unique points in all triangles
-    unsigned int VtkWriter::FindUniquePoints(const TopoDS_Shape & shape, ITiglGeometricComponent & component, const double deflection) {
+    unsigned int VtkWriter::FindUniquePoints(const TopoDS_Shape & shape, CTiglAbstractPhysicalComponent & component, const double deflection) {
         TopExp_Explorer shellExplorer;
         TopExp_Explorer faceExplorer;
         TopOpeBRepDS_SurfaceExplorer surfaceExplorer;
@@ -321,7 +321,7 @@ namespace tigl {
                         const BRepBuilderAPI_MakeVertex foundVertex(project1.NearestPoint());
                         for (int s = 1; s <= segmentCount; s++) // find segment belonging to the intersection point on the explored surface (may always be just one, but we don't know for sure)
                         {
-                            ITiglSegment & segment = component.GetSegment(s);
+                            CTiglAbstractSegment & segment = component.GetSegment(s);
                             TopoDS_Shape segmentLoft = segment.GetLoft(); // get 3d shape of the segment
 
                             // 4. find minimum distance to determine the linked segment of the surface intersection
@@ -378,7 +378,7 @@ namespace tigl {
     }
 
 
-    unsigned int VtkWriter::SimpleTriangulation(const TopoDS_Shape & shape, ITiglGeometricComponent & component, const double deflection) {
+    unsigned int VtkWriter::SimpleTriangulation(const TopoDS_Shape & shape, CTiglAbstractPhysicalComponent & component, const double deflection) {
             TopExp_Explorer shellExplorer;
             TopExp_Explorer faceExplorer;
             const int segmentCount = component.GetSegmentCount();
@@ -387,11 +387,11 @@ namespace tigl {
             { 
 				TopoDS_Shape segmentLoft;
 
-                if(component.GetComponentType() == TIGL_COMPONENT_WING) {
-                    ITiglSegment & segment = component.GetSegment(y);
+                if( (component.GetComponentType() & TIGL_COMPONENT_WING) > 0) {
+                    CTiglAbstractSegment & segment = component.GetSegment(y);
                     segmentLoft = segment.GetLoft(); // get 3d shape of the segment
                 }
-                if(component.GetComponentType() == TIGL_COMPONENT_FUSELAGE) {
+                if( (component.GetComponentType() & TIGL_COMPONENT_FUSELAGE) > 0) {
                     segmentLoft = component.GetLoft();
                 }
                 BRepMesh::Mesh(segmentLoft, deflection);

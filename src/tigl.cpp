@@ -450,7 +450,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetComponentSegmentUID(TiglCPACSConfig
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSWing& wing = config.GetWing(wingIndex);
         tigl::CCPACSWingComponentSegment& segment = (tigl::CCPACSWingComponentSegment &) wing.GetComponentSegment(compSegmentIndex);
-        *uidNamePtr = const_cast<char*>(segment.GetUIDPtr());
+        *uidNamePtr = const_cast<char*>(segment.GetUID().c_str());
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
@@ -489,7 +489,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetComponentSegmentIndex(TiglCPACSConf
 
         int nseg = wing.GetComponentSegmentCount();
         for(int i = 1; i <= nseg; ++i){
-            tigl::ITiglSegment& actSegment = wing.GetComponentSegment(i);
+            tigl::CTiglAbstractSegment& actSegment = wing.GetComponentSegment(i);
             if( actSegment.GetUID() == std::string(compSegmentUID)) {
                 *segmentIndex = i;
                 return TIGL_SUCCESS;
@@ -899,7 +899,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetUID(TiglCPACSConfigurationHandle cp
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSWing& wing = config.GetWing(wingIndex);
-        *uidNamePtr = const_cast<char*>(wing.GetUIDPtr());
+        *uidNamePtr = const_cast<char*> (wing.GetUID().c_str());
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
@@ -984,7 +984,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSegmentUID(TiglCPACSConfigurationHa
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSWing& wing = config.GetWing(wingIndex);
         tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(segmentIndex);
-        *uidNamePtr = const_cast<char*>(segment.GetUIDPtr());
+        *uidNamePtr = const_cast<char*>(segment.GetUID().c_str());
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
@@ -1023,7 +1023,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSegmentIndex(TiglCPACSConfiguration
 
         int nseg = wing.GetSegmentCount();
         for(int i = 1; i <= nseg; ++i){
-            tigl::ITiglSegment& actSegment = wing.GetSegment(i);
+            tigl::CTiglAbstractSegment& actSegment = wing.GetSegment(i);
             if( actSegment.GetUID() == std::string(segmentUID)) {
                 *segmentIndex = i;
                 return TIGL_SUCCESS;
@@ -2014,7 +2014,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetUID(TiglCPACSConfigurationHandl
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSFuselage& fuselage = config.GetFuselage(fuselageIndex);
-        *uidNamePtr = const_cast<char*>(fuselage.GetUIDPtr());
+        *uidNamePtr = const_cast<char*>(fuselage.GetUID().c_str());
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
@@ -2054,7 +2054,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSegmentUID(TiglCPACSConfigurati
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSFuselage& fuselage = config.GetFuselage(fuselageIndex);
         tigl::CCPACSFuselageSegment& segment = (tigl::CCPACSFuselageSegment&) fuselage.GetSegment(segmentIndex);
-        *uidNamePtr = const_cast<char*>(segment.GetUIDPtr());
+        *uidNamePtr = const_cast<char*>(segment.GetUID().c_str());
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {

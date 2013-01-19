@@ -85,13 +85,13 @@ namespace tigl {
 	}
 
 	// transform all components realtiv to their parents
-    void CCPACSConfiguration::transformAllComponents(ITiglGeometricComponent* parent)
+    void CCPACSConfiguration::transformAllComponents(CTiglAbstractPhysicalComponent* parent)
     {
-		ITiglGeometricComponent::ChildContainerType& children = parent->GetChildren();
-        ITiglGeometricComponent::ChildContainerType::iterator pIter;
+        CTiglAbstractPhysicalComponent::ChildContainerType& children = parent->GetChildren();
+        CTiglAbstractPhysicalComponent::ChildContainerType::iterator pIter;
         CTiglPoint parentTranslation = parent->GetTranslation();
         for (pIter = children.begin(); pIter != children.end(); pIter++) {
-            ITiglGeometricComponent* child = *pIter;
+            CTiglAbstractPhysicalComponent* child = *pIter;
             child->Translate(parentTranslation);
             transformAllComponents(child);
 			
@@ -103,7 +103,7 @@ namespace tigl {
 	TopoDS_Shape CCPACSConfiguration::GetFusedAirplane(void)
     {
 		if(fusedAirplane.IsNull()){
-			ITiglGeometricComponent* rootComponent = uidManager.GetRootComponent();
+            CTiglAbstractPhysicalComponent* rootComponent = uidManager.GetRootComponent();
 			fusedAirplane = rootComponent->GetLoft();
 			OutputComponentTree(rootComponent);
 		}
@@ -112,15 +112,14 @@ namespace tigl {
 
 
 	// This function does the boolean fusing 
-    void CCPACSConfiguration::OutputComponentTree(ITiglGeometricComponent* parent)
+    void CCPACSConfiguration::OutputComponentTree(CTiglAbstractPhysicalComponent *parent)
     {
-        ITiglGeometricComponent::ChildContainerType& children = parent->GetChildren();
-        ITiglGeometricComponent::ChildContainerType::iterator pIter;
+        CTiglAbstractPhysicalComponent::ChildContainerType& children = parent->GetChildren();
+        CTiglAbstractPhysicalComponent::ChildContainerType::iterator pIter;
         for (pIter = children.begin(); pIter != children.end(); pIter++) {
-            ITiglGeometricComponent* child = *pIter;
+            CTiglAbstractPhysicalComponent* child = *pIter;
 			TopoDS_Shape tmpShape = child->GetLoft();
 			fusedAirplane = BRepAlgoAPI_Fuse(fusedAirplane, tmpShape);
-            OutputComponentTree(child);
         }
     }
 

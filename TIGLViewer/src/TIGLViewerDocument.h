@@ -46,7 +46,7 @@ public:
     TiglCPACSConfigurationHandle getCpacsHandle(void) const;
 
     // a small helper when we just want to display a shape
-    Handle(AIS_Shape) displayShape(const TopoDS_Shape& shape);
+    Handle(AIS_Shape) displayShape(const TopoDS_Shape& shape, Quantity_NameOfColor col = Quantity_NOC_BLUE2);
 
 	// Draws a point
 	void DisplayPoint(gp_Pnt& aPoint,

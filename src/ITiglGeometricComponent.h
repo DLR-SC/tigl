@@ -32,9 +32,8 @@
 
 #include "tigl.h"
 #include "CTiglTransformation.h"
-#include "ITiglSegment.h"
 
-#include "TopoDS_Shape.hxx"
+class TopoDS_Shape;
 
 
 namespace tigl {
@@ -42,29 +41,15 @@ namespace tigl {
 	class ITiglGeometricComponent
 	{
 
-    public:
-        // Container type to store a components children
-        typedef std::list<ITiglGeometricComponent*> ChildContainerType;
-
-    protected:
-        // Define a std::map to store the indices of already fused segments
-        typedef std::map<int, int> FusedElementsContainerType;
-
 	public:
    		// Gets the loft of a geometric component
 		virtual TopoDS_Shape & GetLoft(void) = 0;
 
         // Returns the unique id of this component
-        virtual std::string GetUID(void) = 0;
+        virtual const std::string& GetUID(void) = 0;
 
-        // Returns the parent unique id
-        virtual std::string GetParentUID(void) = 0;
-
-        // Adds a child to this geometric component.
-        virtual void AddChild(ITiglGeometricComponent* componentPtr) = 0;
-
-        // Returns a pointer to the list of children of a component.
-        virtual ChildContainerType & GetChildren(void) = 0;
+        // Sets the unique id of this component
+        virtual void SetUID(const std::string&) = 0;
 
         // Get transformation object
         virtual CTiglTransformation GetTransformation(void) = 0;
@@ -75,17 +60,8 @@ namespace tigl {
         // Get component translation
         virtual CTiglPoint GetTranslation(void) = 0;
 
-        // number of segments
-        virtual int GetSegmentCount(void) = 0;
-
-		// Returns the segment for a given index
-		virtual ITiglSegment & GetSegment(const int index) = 0;
-
 		// Returns the Geometric type of this component, e.g. Wing or Fuselage
 		virtual TiglGeometricComponentType GetComponentType(void) = 0;
-
-		// Returns a unique Hashcode for a specific geometric component
-		virtual int GetComponentHashCode(void) = 0;
 
     protected:
         // Resets the geometric component.

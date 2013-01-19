@@ -133,14 +133,14 @@ namespace tigl {
         ~VtkWriter(void);
 
         // Write out the triangulation into a XML-VTK polydata file (*.vtp)
-        void Write(const TopoDS_Shape & shape, ITiglGeometricComponent & component, const std::string& filename, const double deflection = 0.01, VTK_EXPORT_MODE mode = TIGL_VTK_SIMPLE);
+        void Write(const TopoDS_Shape & shape, class CTiglAbstractPhysicalComponent & component, const std::string& filename, const double deflection = 0.01, VTK_EXPORT_MODE mode = TIGL_VTK_SIMPLE);
 
     private:
         // Finds unique points and assign them to a segment
-        unsigned int FindUniquePoints(const TopoDS_Shape & shape, ITiglGeometricComponent & component, const double deflection);
+        unsigned int FindUniquePoints(const TopoDS_Shape & shape, class CTiglAbstractPhysicalComponent & component, const double deflection);
 
         // Build simple and fast triangulation
-        unsigned int SimpleTriangulation(const TopoDS_Shape & shape, ITiglGeometricComponent & component, const double deflection);
+        unsigned int SimpleTriangulation(const TopoDS_Shape & shape, class CTiglAbstractPhysicalComponent & component, const double deflection);
 
 
         void FindOrCreatePointIndex(std::vector<unsigned int> & list, gp_Pnt point);

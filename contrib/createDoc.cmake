@@ -46,6 +46,9 @@ if(DOXYGEN_FOUND)
 			WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/doc/tiglGuide/
 			COMMAND ${LATEX}
 			ARGS tiglGuide.tex --output-directory=${PROJECT_BINARY_DIR}/doc/
+			# run latex twice to get references right (normal use case of latex, don't ask why)
+		    COMMAND ${LATEX}
+			ARGS tiglGuide.tex --output-directory=${PROJECT_BINARY_DIR}/doc/
 		)
 
 		add_custom_target(pdf
