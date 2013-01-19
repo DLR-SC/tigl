@@ -164,7 +164,10 @@ if(WIN32)
      set(OCC_PLUGINS_FULL ${OCC_PLUGINS_FULL} ${OpenCASCADE_DLL_DIRECTORY}/${_plug} )
   endforeach()
   INSTALL(FILES ${OCC_PLUGINS_FULL} DESTINATION bin COMPONENT viewer)
-endif(WIN32)	
+endif(WIN32)
+if(APPLE)
+  INSTALL(FILES ${TKOpenGl_OCCLIB} DESTINATION TIGLViewer.app/Contents/MacOS/ COMPONENT viewer)
+endif(APPLE)
 	
 # directories to look for dependencies
 SET(DIRS ${TIXI_BINARY_DIR} ${OpenCASCADE_DLL_DIRECTORY}  ${OpenCASCADE_LINK_DIRECTORY} ${QT_BINARY_DIR} ${ADD_LIB_PATH})
