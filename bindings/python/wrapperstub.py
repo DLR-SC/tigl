@@ -61,8 +61,8 @@ class Tigl(object):
                 self.close()
                 self.TIGL = None
 
-    def _validateReturnValue(self, tixiReturn, *args, **kwargs):
-        ''' Helper function to raise an exception if return value is not SUCCESS '''
+    def _validateReturnValue(self, tiglReturn, *args, **kwargs):
+        ''' Helper function to raise an exception if return value is not TIGL_SUCCESS '''
         if tiglReturn != TiglReturnCode.TIGL_SUCCESS:
             raise TiglException(tiglReturn, args, kwargs)
 
