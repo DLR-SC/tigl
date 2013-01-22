@@ -67,9 +67,9 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglOpenCPACSConfiguration(TixiDocumentHandle 
         if(tixiRet != SUCCESS){
             // NO CPACS Version Information in Header
             if(tixiRet == ELEMENT_PATH_NOT_UNIQUE)
-                std::cerr << "Error: Multiple CPACS version entries found. Please verify CPACS file." << std::endl;
+                std::cerr << "Warning: Multiple CPACS version entries found. Please verify CPACS file." << std::endl;
             else if(tixiRet == ELEMENT_NOT_FOUND)
-                std::cerr << "Error: No CPACS version information in file header. CPACS file seems to be too old." << std::endl;
+                std::cerr << "Warning: No CPACS version information in file header. CPACS file seems to be too old." << std::endl;
             else
                 std::cerr << "Error: reading in CPACS version," << std::endl;
             return TIGL_WRONG_CPACS_VERSION;
