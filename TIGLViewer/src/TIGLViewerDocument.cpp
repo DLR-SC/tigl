@@ -195,10 +195,10 @@ tigl::CCPACSConfiguration& TIGLViewerDocument::GetConfiguration(void) const
 
 
 // a small helper when we just want to display a shape
-Handle(AIS_Shape) TIGLViewerDocument::displayShape(const TopoDS_Shape& loft)
+Handle(AIS_Shape) TIGLViewerDocument::displayShape(const TopoDS_Shape& loft, Quantity_NameOfColor color)
 {
 	Handle(AIS_Shape) shape = new AIS_Shape(loft);
-	shape->SetColor(Quantity_NOC_BLUE2);
+	shape->SetColor(color);
 	myAISContext->Display(shape, Standard_True);
 	return shape;
 }
@@ -347,6 +347,15 @@ void TIGLViewerDocument::drawAllFuselagesAndWings( )
 		{
 			tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(i);
 			displayShape(segment.GetLoft());
+		}
+
+		if(wing.GetSymmetryAxis() == TIGL_NO_SYMMETRY)
+			continue;
+
+		for (int i = 1; i <= wing.GetSegmentCount(); i++)
+		{
+			tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(i);
+			displayShape(segment.GetMirroredLoft(), Quantity_NOC_VIOLETRED);
 		}
 	}
 

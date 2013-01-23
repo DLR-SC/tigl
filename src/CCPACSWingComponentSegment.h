@@ -31,7 +31,7 @@
 #include "tixi.h"
 #include "CCPACSWingConnection.h"
 #include "CTiglPoint.h"
-#include "ITiglSegment.h"
+#include "CTiglAbstractSegment.h"
 
 #include "TopoDS_Shape.hxx"
 #include "TopoDS_Wire.hxx"
@@ -42,7 +42,7 @@ namespace tigl {
 
 	class CCPACSWing;
 
-	class CCPACSWingComponentSegment : public ITiglSegment
+	class CCPACSWingComponentSegment : public CTiglAbstractSegment
 	{
 
 	public:
@@ -62,7 +62,7 @@ namespace tigl {
 		CCPACSWing& GetWing(void) const;
 
 		// Gets the loft between the two segment sections
-		TopoDS_Shape GetLoft(void);
+		TopoDS_Shape& GetLoft(void);
 
 		// Gets a point in relative wing coordinates for a given eta and xsi
 		gp_Pnt GetPoint(double eta, double xsi);
@@ -73,12 +73,6 @@ namespace tigl {
 		// Gets the surface area of this segment
         double GetSurfaceArea();
 
-        // Gets the uid of this segment
-        const std::string & GetUID(void);
-
-        // Gets the C pointer of the UID string
-        const char* GetUIDPtr(void);
-
         // Gets the fromElementUID of this segment
 		const std::string & GetFromElementUID(void);
 
@@ -88,6 +82,8 @@ namespace tigl {
 		// Returns the segment to a given point on the componentSegment.
 		// Returns null if the point is not an that wing!
 		const std::string findSegment(double x, double y, double z);
+
+        TiglGeometricComponentType GetComponentType(){ return TIGL_COMPONENT_WINGCOMPSEGMENT | TIGL_COMPONENT_SEGMENT | TIGL_COMPONENT_LOGICAL; }
 
     protected:
 		// Cleanup routine
@@ -117,13 +113,9 @@ namespace tigl {
 
 	private:
 		std::string          name;                 /**< Segment name                            */
-		std::string          uid;                  /**< Segment uid                             */
 		std::string          fromElementUID;       /**< Inner segment uid (root			        */
 		std::string          toElementUID;         /**< Outer segment uid (tip)			        */
 		CCPACSWing*          wing;                 /**< Parent wing                             */
-		TopoDS_Shape         loft;                 /**< The loft between two sections           */
-		bool                 invalidated;          /**< Internal state flag                     */
-        int                  mySegmentIndex;       /**< Index of this segment                   */
         double               myVolume;             /**< Volume of this segment                  */
         double               mySurfaceArea;        /**< Surface area of this segment            */
 		TopoDS_Shape		 upperShape;		   /**< Upper shape of this componentSegment	*/

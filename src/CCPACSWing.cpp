@@ -27,7 +27,7 @@
 
 #include "CCPACSWing.h"
 #include "CCPACSConfiguration.h"
-#include "ITiglSegment.h"
+#include "CTiglAbstractSegment.h"
 
 #include "BRepOffsetAPI_ThruSections.hxx"
 #include "BRepAlgoAPI_Fuse.hxx"
@@ -131,14 +131,6 @@ namespace tigl {
         if (tixiGetTextAttribute(tixiHandle, const_cast<char*>(wingXPath.c_str()), const_cast<char*>(tempString.c_str()), &ptrUID) == SUCCESS)
             SetUID(ptrUID);
 
-
-        // Get symmetry axis attribute
-        char* ptrSym = NULL;
-        tempString   = "symmetry";
-        elementPath  = const_cast<char*>(tempString.c_str());
-        if (tixiGetTextAttribute(tixiHandle, const_cast<char*>(wingXPath.c_str()), const_cast<char*>(tempString.c_str()), &ptrSym) == SUCCESS)
-            SetSymmetryAxis(ptrSym);
-
         // Get subelement "parent_uid"
         char* ptrParentUID = NULL;
         tempString         = wingXPath + "/parentUID";
@@ -192,6 +184,13 @@ namespace tigl {
         // Register ourself at the unique id manager
         configuration->GetUIDManager().AddUID(ptrUID, this);
 
+        // Get symmetry axis attribute, has to be done, when segments are build
+        char* ptrSym = NULL;
+        tempString   = "symmetry";
+        elementPath  = const_cast<char*>(tempString.c_str());
+        if (tixiGetTextAttribute(tixiHandle, const_cast<char*>(wingXPath.c_str()), const_cast<char*>(tempString.c_str()), &ptrSym) == SUCCESS)
+            SetSymmetryAxis(ptrSym);
+
         Update();
     }
 
@@ -199,14 +198,6 @@ namespace tigl {
     const std::string& CCPACSWing::GetName(void) const
     {
         return name;
-    }
-
-    // Returns the uid of the wing
-    const char* CCPACSWing::GetUIDPtr(void)
-    {
-		//std::string uid = GetUID();
-        uid = GetUID();
-        return uid.c_str();
     }
 
     // Returns the parent configuration
@@ -234,15 +225,15 @@ namespace tigl {
     }
 
     // Returns the segment for a given index
-    ITiglSegment & CCPACSWing::GetSegment(const int index)
+    CTiglAbstractSegment & CCPACSWing::GetSegment(const int index)
     {
-        return (ITiglSegment &) segments.GetSegment(index);
+        return (CTiglAbstractSegment &) segments.GetSegment(index);
     }
 
 	// Returns the segment for a given uid
-    ITiglSegment & CCPACSWing::GetSegment(std::string uid)
+    CTiglAbstractSegment & CCPACSWing::GetSegment(std::string uid)
     {
-        return (ITiglSegment &) segments.GetSegment(uid);
+        return (CTiglAbstractSegment &) segments.GetSegment(uid);
     }
 
 	 // Get componentSegment count
@@ -252,15 +243,15 @@ namespace tigl {
     }
 
     // Returns the segment for a given index
-    ITiglSegment & CCPACSWing::GetComponentSegment(const int index)
+    CTiglAbstractSegment & CCPACSWing::GetComponentSegment(const int index)
     {
-		return (ITiglSegment &) componentSegments.GetComponentSegment(index);
+        return (CTiglAbstractSegment &) componentSegments.GetComponentSegment(index);
     }
 
     // Returns the segment for a given uid
-    ITiglSegment & CCPACSWing::GetComponentSegment(std::string uid)
+    CTiglAbstractSegment & CCPACSWing::GetComponentSegment(std::string uid)
     {
-		return (ITiglSegment &) componentSegments.GetComponentSegment(uid);
+        return (CTiglAbstractSegment &) componentSegments.GetComponentSegment(uid);
     }
 
 
@@ -372,9 +363,7 @@ namespace tigl {
 	// Sets the Transformation object
     void CCPACSWing::Translate(CTiglPoint trans)
     {
-    	translation.x += trans.x;
-    	translation.y += trans.y;
-    	translation.z += trans.z;
+        CTiglAbstractGeometricComponent::Translate(trans);
     	invalidated = true;
     	segments.Invalidate();
     	Update();
@@ -429,13 +418,6 @@ namespace tigl {
 		return wetArea;
 	}
 
-
-	// Returns a unique Hashcode for a specific geometric component
-	int CCPACSWing::GetComponentHashCode(void)
-	{
-		GetLoft();
-		return fusedSegments.HashCode(2294967295);
-	}
 	
 	// Returns the lower Surface of a Segment
 	Handle(Geom_Surface) CCPACSWing::GetLowerSegmentSurface(int index)
@@ -447,6 +429,21 @@ namespace tigl {
 	Handle(Geom_Surface) CCPACSWing::GetUpperSegmentSurface(int index)
 	{
 		return segments.GetSegment(index).GetUpperSurface();
+	}
+
+	// sets the symmetry plane for all childs, segments and component segments
+	void CCPACSWing::SetSymmetryAxis(const std::string& axis){
+		CTiglAbstractGeometricComponent::SetSymmetryAxis(axis);
+
+		for(int i = 1; i <= segments.GetSegmentCount(); ++i){
+			CCPACSWingSegment& segment = segments.GetSegment(i);
+			segment.SetSymmetryAxis(axis);
+		}
+
+		for(int i = 1; i <= componentSegments.GetComponentSegmentCount(); ++i){
+			CCPACSWingComponentSegment& compSeg = componentSegments.GetComponentSegment(i);
+			compSeg.SetSymmetryAxis(axis);
+		}
 	}
 
 

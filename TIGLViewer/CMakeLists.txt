@@ -4,14 +4,17 @@
 # set up QT
 find_package(Qt4)	
 
+set(PROGNAME "TIGLViewer")
+
 #build only tiglviewer if qt was found
 if(QT4_FOUND)
 
-SET( QT_USE_QTSCRIPT TRUE )
+# we need opengl in order to build tiglviewer
+find_package(OpenGL REQUIRED)
+
+set( QT_USE_QTSCRIPT TRUE )
 include(${QT_USE_FILE})
 add_definitions(${QT_DEFINITIONS})
-
-find_package(OpenGL REQUIRED)
 
 set(tv_src
     CommandLineParameters.cpp
@@ -99,21 +102,33 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
 if(WIN32)
   # comment this line if you want to see an additional console window
   #set(TYPE WIN32)
+
   # add program icon
   set(tv_icon_rc src/TIGLViewer.rc)
 endif(WIN32)
 
-add_executable(TIGLViewer ${TYPE}
+if(APPLE)
+   set(TYPE MACOSX_BUNDLE)
+
+   set( MACOSX_BUNDLE_SHORT_VERSION_STRING ${TIGL_VERSION} )
+   set( MACOSX_BUNDLE_VERSION ${TIGL_VERSION} )
+   set( MACOSX_BUNDLE_LONG_VERSION_STRING Version ${TIGL_VERSION} )
+
+   # add program icon
+   set(MACOSX_BUNDLE_ICON_FILE ${PROGNAME}.icns )
+endif()
+
+add_executable(${PROGNAME} ${TYPE}
 		${tv_src_comp} 
 		${tv_hdr_MOC} 
  		${tv_hdr_qobj_comp}        
 		${tv_hdr_comp} 
 		${tv_ui_comp}
-        ${tv_rcrs}
+		${tv_rcrs}
 		${tv_icon_rc}
 )
 
-target_link_libraries(TIGLViewer 
+target_link_libraries(${PROGNAME} 
 	TIGL_static
 	${TIXI_LIBRARIES} 
 	${QT_LIBRARIES} 
@@ -124,8 +139,29 @@ target_link_libraries(TIGLViewer
 #--------------------------------------------------------------------------------
 # Now the installation stuff below
 #--------------------------------------------------------------------------------
-# install runtime libs
-if(WIN32)
+
+#--------------------------------------------------------------------------------
+# Install the TIGLViewer application, on Apple, the bundle is at the root of the
+# install tree, and on other platforms it'll go into the bin directory.
+INSTALL(TARGETS ${PROGNAME} 
+    BUNDLE DESTINATION . COMPONENT viewer
+    RUNTIME DESTINATION bin COMPONENT viewer
+    )
+
+
+set(APPS "\${CMAKE_INSTALL_PREFIX}/bin/${PROGNAME}")
+IF(APPLE)
+  set(APPS "\${CMAKE_INSTALL_PREFIX}/${PROGNAME}.app/Contents/MacOS/${PROGNAME}")
+
+  # TKOpenGL is loaded as a plugin, hence we must manually install it
+  INSTALL(FILES ${TKOpenGl_OCCLIB} DESTINATION TIGLViewer.app/Contents/MacOS/ COMPONENT viewer)
+  # copy icon
+  INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/gfx/${PROGNAME}.icns DESTINATION ${PROGNAME}.app/Contents/Resources/ COMPONENT viewer)
+ENDIF(APPLE)
+IF(WIN32)
+  set(APPS "\${CMAKE_INSTALL_PREFIX}/bin/${PROGNAME}.exe")
+
+  # install runtime libs
   FILE(TO_CMAKE_PATH "$ENV{SYSTEMROOT}" SYSTEMROOT)
   if(OCC_VERSION_STRING VERSION_EQUAL "6.3")
     SET(CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS
@@ -133,47 +169,31 @@ if(WIN32)
       "${SYSTEMROOT}/system32/msvcr71.dll"
     )
   endif()
-endif(WIN32)
-INCLUDE(InstallRequiredSystemLibraries)
 
-
-SET(APPS "\${CMAKE_INSTALL_PREFIX}/bin/TIGLViewer")
-IF(APPLE)
-  SET(APPS "\${CMAKE_INSTALL_PREFIX}/TIGLViewer.app")
-ENDIF(APPLE)
-IF(WIN32)
-  SET(APPS "\${CMAKE_INSTALL_PREFIX}/bin/TIGLViewer.exe")
-ENDIF(WIN32)
-
-#--------------------------------------------------------------------------------
-# Install the TIGLViewer application, on Apple, the bundle is at the root of the
-# install tree, and on other platforms it'll go into the bin directory.
-INSTALL(TARGETS TIGLViewer 
-    BUNDLE DESTINATION . COMPONENT viewer
-    RUNTIME DESTINATION bin COMPONENT viewer
-    )
-
-# TKOpenGL is loaded as a plugin, hence we must manually install it
-if(WIN32)
+  # TKOpenGL is loaded as a plugin, hence we must manually install it
   set( OCC_PLUGINS TKOpenGl.dll )
   foreach( _plug ${OCC_PLUGINS} )
      set(OCC_PLUGINS_FULL ${OCC_PLUGINS_FULL} ${OpenCASCADE_DLL_DIRECTORY}/${_plug} )
   endforeach()
   INSTALL(FILES ${OCC_PLUGINS_FULL} DESTINATION bin COMPONENT viewer)
-endif(WIN32)	
+ENDIF(WIN32)
+
+INCLUDE(InstallRequiredSystemLibraries)
+
 	
-# directories to look for dependencies
-SET(DIRS ${TIXI_BINARY_DIR} ${OpenCASCADE_DLL_DIRECTORY} ${QT_BINARY_DIR} ${ADD_LIB_PATH})
+# set directories to look for dependencies
+set(DIRS ${TIXI_BINARY_DIR} ${OpenCASCADE_DLL_DIRECTORY}  ${OpenCASCADE_LINK_DIRECTORY} ${QT_BINARY_DIR} ${ADD_LIB_PATH})
 
 if (WIN32 OR APPLE)
-
-# Now the work of copying dependencies into the bundle/package
-# The quotes are escaped and variables to use at install time have their $ escaped
-# An alternative is the do a configure_file() on a script and use install(SCRIPT  ...).
-INSTALL(CODE "
+  # Now the work of copying dependencies into the bundle/package
+  # The quotes are escaped and variables to use at install time have their $ escaped
+  # An alternative is the do a configure_file() on a script and use install(SCRIPT  ...).
+  INSTALL(CODE "
     include(BundleUtilities)
+    set(BU_CHMOD_BUNDLE_ITEMS ON)
     fixup_bundle(\"${APPS}\" \"${OCC_PLUGINS_FULL}\" \"${DIRS}\")
-    " COMPONENT viewer)
+    " COMPONENT viewer
+  )
 
 endif()
 

@@ -1,4 +1,4 @@
-/* 
+/*
 * Copyright (C) 2007-2011 German Aerospace Center (DLR/SC)
 *
 * Created: 2010-08-13 Markus Litz <Markus.Litz@dlr.de>
@@ -23,26 +23,38 @@
 * @brief  Interface of CPACS wing/fuselage segment handling routines.
 */
 
-#ifndef ITIGLSEGMENT_H
-#define ITIGLSEGMENT_H
+#ifndef CTIGLABTRACTSEGMENT_H
+#define CTIGLABTRACTSEGMENT_H
 
 #include <string>
-
+#include "tigl.h"
+#include "CTiglAbstractGeometricComponent.h"
 
 namespace tigl {
 
-	class ITiglSegment
+    class CTiglAbstractSegment : public CTiglAbstractGeometricComponent
 	{
 
 	public:
-		// Gets the loft between the two segment sections
-		virtual TopoDS_Shape GetLoft(void) = 0;
+        CTiglAbstractSegment(int segIndex);
 
-        // Gets the uid of this segment
-        virtual const std::string & GetUID(void) = 0;
+        // Invalidates internal state
+        void Invalidate(void);
 
-	};  // end class ITiglSegment
+        // Returns the segment index of this segment
+        int GetSegmentIndex(void) const;
+
+    protected:
+        void Cleanup();
+
+        int                  mySegmentIndex;       /**< Index of this segment                   */
+        TopoDS_Shape         loft;                 /**< The loft between two sections           */
+        bool                 invalidated;          /**< Internal state flag                     */
+
+        CTiglAbstractSegment(){} /* do nothing */
+
+	};  // end class CTiglAbstractSegment
 
 } // end namespace tigl
 
-#endif // ITIGLSEGMENT_H
+#endif // CTIGLABTRACTSEGMENT_H
