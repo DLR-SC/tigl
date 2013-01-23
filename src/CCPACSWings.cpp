@@ -140,7 +140,7 @@ namespace tigl {
     {
         for(int i=0; i < GetWingCount(); i++)
         {
-            const std::string tmpUID((*wings[i]).GetUIDPtr());
+            const std::string tmpUID(wings[i]->GetUID());
             if(tmpUID == UID) {
                 return (*wings[i]);
             }

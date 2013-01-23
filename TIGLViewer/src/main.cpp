@@ -40,6 +40,14 @@ void showHelp(QString);
 int main(int argc, char *argv[])
 {
 	TIGLViewerApplication app( argc, argv );
+    
+#ifdef __APPLE__
+    if(!getenv("CSF_GraphicShr")){
+        static char env[64];
+        strcpy(env,"CSF_GraphicShr=@executable_path/libTKOpenGl.dylib");
+        putenv(env);
+    }
+#endif
 
     // we need to set us locale as we use "." for decimal point
     setlocale(LC_NUMERIC, "C");

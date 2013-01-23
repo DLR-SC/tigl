@@ -84,10 +84,10 @@ namespace tigl {
     
 	// Constructor
 	CCPACSFuselageSegment::CCPACSFuselageSegment(CCPACSFuselage* aFuselage, int aSegmentIndex)
-		: startConnection(this)
+        : CTiglAbstractSegment(aSegmentIndex)
+        , startConnection(this)
 		, endConnection(this)
 		, fuselage(aFuselage)
-        , mySegmentIndex(aSegmentIndex)
 	{
 		Cleanup();
 	}
@@ -98,18 +98,14 @@ namespace tigl {
 		Cleanup();
 	}
 
-	// Invalidates internal state
-	void CCPACSFuselageSegment::Invalidate(void)
-	{
-		invalidated = true;
-	}
-
 	// Cleanup routine
 	void CCPACSFuselageSegment::Cleanup(void)
 	{
 		name = "";
-		uid  = "";
-		Invalidate();
+        myVolume      = 0.;
+        mySurfaceArea = 0.;
+        myWireLength  = 0.;
+        CTiglAbstractSegment::Cleanup();
 	}
 
 	// Update internal segment data
@@ -142,7 +138,7 @@ namespace tigl {
         tempString   = "uID";
         elementPath  = const_cast<char*>(tempString.c_str());
         if (tixiGetTextAttribute(tixiHandle, const_cast<char*>(segmentXPath.c_str()), const_cast<char*>(tempString.c_str()), &ptrUID) == SUCCESS)
-            uid = ptrUID;
+            SetUID(ptrUID);
 
 		// Start connection
 		tempString = segmentXPath + "/fromElementUID";
@@ -168,7 +164,7 @@ namespace tigl {
     }
 
 	// Gets the loft between the two segment sections
-	TopoDS_Shape CCPACSFuselageSegment::GetLoft(void)
+    TopoDS_Shape& CCPACSFuselageSegment::GetLoft(void)
 	{
 		Update();
 		return loft;
@@ -480,20 +476,6 @@ namespace tigl {
         }
         return pointsTransformed;
      }
-
-
-
-    // Gets the uid of this segment
-    const std::string& CCPACSFuselageSegment::GetUID(void)
-    {
-        return uid;
-    }
-
-    // Gets the uid of this segment
-    const char* CCPACSFuselageSegment::GetUIDPtr(void)
-    {
-        return uid.c_str();
-    }
 
     gp_Pnt CCPACSFuselageSegment::GetPointOnYPlane(double eta, double ypos, int pointIndex)
     {
