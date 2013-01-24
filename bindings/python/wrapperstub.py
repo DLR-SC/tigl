@@ -1,4 +1,3 @@
-#! /usr/bin/env python
 #############################################################################
 # Copyright (C) 2007-2011 German Aerospace Center (DLR/SC)
 #
