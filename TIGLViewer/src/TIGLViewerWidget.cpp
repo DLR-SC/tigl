@@ -354,6 +354,14 @@ void TIGLViewerWidget::wheelEvent ( QWheelEvent* e )
 	}
 }
 
+void TIGLViewerWidget::keyPressEvent(QKeyEvent* e){
+	if(e->key() == Qt::Key_Delete){
+		eraseSelected();
+	}
+	else
+		QWidget::keyPressEvent(e);
+}
+
 
 void TIGLViewerWidget::idle( )
 {
