@@ -1,11 +1,14 @@
 # TIGL Library
 
+configure_file (
+  "${CMAKE_CURRENT_SOURCE_DIR}/tigl_version.h.in"
+  "${CMAKE_CURRENT_BINARY_DIR}/tigl_version.h"
+)
+
 source_group(Fuselage REGULAR_EXPRESSION "CCPACSFuselage")
 source_group(Wing REGULAR_EXPRESSION "CCPACSWing")
 
-include_directories(${OpenCASCADE_INCLUDE_DIR} ${TIXI_INCLUDE_DIRS})
-
-add_definitions(-DTIGL_VERSION=\"${TIGL_VERSION}\")
+include_directories(${OpenCASCADE_INCLUDE_DIR} ${TIXI_INCLUDE_DIRS} ${CMAKE_CURRENT_BINARY_DIR})
 
 file(GLOB TIGL_SRC
     "*.h"
@@ -31,7 +34,7 @@ install (TARGETS TIGL
 		 
 install (EXPORT tigl-targets DESTINATION ${CMAKE_INSTALL_LIBDIR}/tigl)			 
 		 
-install (FILES tigl.h 
+install (FILES tigl.h ${CMAKE_CURRENT_BINARY_DIR}/tigl_version.h
 		 DESTINATION include
 		 COMPONENT headers)		 
 
