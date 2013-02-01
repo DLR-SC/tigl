@@ -27,6 +27,7 @@
 #include <exception>
 
 #include "tigl.h"
+#include "tigl_version.h"
 #include "CTiglError.h"
 #include "CTiglIntersectionCalculation.h"
 #include "CCPACSConfiguration.h"
@@ -251,7 +252,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglUseAlgorithm(TiglAlgorithmCode anAlgorithm
 */
 TIGL_COMMON_EXPORT char* tiglGetVersion()
 {
-	static char version[] = TIGL_VERSION;
+	static char version[] = TIGL_VERSION_STRING;
 	return version;
 }
 

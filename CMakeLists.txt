@@ -12,16 +12,14 @@ endif()
 project (TIGL)
 set(TIGL_VERSION_MAJOR 2)
 set(TIGL_VERSION_MINOR 0)
-set(TIGL_VERSION_PATCH 4)
+set(TIGL_VERSION_PATCH 4+)
 set(TIGL_VERSION "${TIGL_VERSION_MAJOR}.${TIGL_VERSION_MINOR}.${TIGL_VERSION_PATCH}")
 
-OPTION(ENABLE_COVERAGE "Enable GCov coverage analysis (defines a 'coverage' target and enforces static build of tigl)" ON)
+set(TIGL_ADD_INCLUDE_PATH "" CACHE PATH "Additional include path for package search")
+set(TIGL_ADD_LIB_PATH "" CACHE PATH     "Additional library path for package search")
 
-set(ADD_INCLUDE_PATH "" CACHE PATH "Additional include path for package search")
-set(ADD_LIB_PATH "" CACHE PATH     "Additional library path for package search")
-
-set(CMAKE_INCLUDE_PATH "${CMAKE_INCLUDE_PATH}" ${ADD_INCLUDE_PATH})
-set(CMAKE_LIBRARY_PATH "${CMAKE_LIBRARY_PATH}" ${ADD_LIB_PATH})
+set(CMAKE_INCLUDE_PATH "${CMAKE_INCLUDE_PATH}" ${TIGL_ADD_INCLUDE_PATH})
+set(CMAKE_LIBRARY_PATH "${CMAKE_LIBRARY_PATH}" ${TIGL_ADD_LIB_PATH})
 
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/contrib)
 include(GNUInstallDirs)
@@ -48,7 +46,9 @@ find_package( TIXI REQUIRED)
 
 # code coverage analysis
 IF (CMAKE_BUILD_TYPE STREQUAL "Debug")
-        IF(ENABLE_COVERAGE)
+	OPTION(TIGL_ENABLE_COVERAGE "Enable GCov coverage analysis (defines a 'coverage' target and enforces static build of tigl)" OFF)
+        IF(TIGL_ENABLE_COVERAGE)
+		
                 MESSAGE(STATUS "Coverage enabled")
                 INCLUDE(CodeCoverage)
                 SETUP_TARGET_FOR_COVERAGE(coverage ${PROJECT_NAME}-unittests coverageReport)
@@ -60,11 +60,11 @@ ENDIF()
 # visual leak detector, useful for debugging under windows
 find_package( VLD )
 if(VLD_FOUND)
-    set(USE_VLD False CACHE BOOL "Enable Visual Leak Detector.")
-	if(USE_VLD)
-        add_definitions(-DHAVE_VLD=1)
+	set(TIGL_USE_VLD False CACHE BOOL "Enable Visual Leak Detector.")
+	if(TIGL_USE_VLD)
+		add_definitions(-DHAVE_VLD=1)
 		include_directories(${VLD_INCLUDE_DIRS})
-	endif(USE_VLD)
+	endif(TIGL_USE_VLD)
 endif()
 
 
@@ -73,11 +73,15 @@ add_subdirectory(TIGLViewer)
 add_subdirectory(bindings)
 
 #create gtests, override gtest standard setting
-option(gtest_force_shared_crt "" ON)
-mark_as_advanced(gtest_force_shared_crt)
-set (gtest_SOURCE_DIR "thirdparty/gtest-1.6.0")
-add_subdirectory (${gtest_SOURCE_DIR} EXCLUDE_FROM_ALL)
-add_subdirectory(tests EXCLUDE_FROM_ALL)
+option(TIGL_BUILD_TESTS "Build TIGL Testsuite" OFF)
+
+if(TIGL_BUILD_TESTS)
+  option(gtest_force_shared_crt "" ON)
+  mark_as_advanced(gtest_force_shared_crt)
+  set (gtest_SOURCE_DIR "thirdparty/gtest-1.6.0")
+  add_subdirectory (${gtest_SOURCE_DIR})
+  add_subdirectory(tests)
+endif(TIGL_BUILD_TESTS)
 
 include(createDoc)
 
@@ -90,6 +94,17 @@ set(CPACK_PACKAGE_VERSION_MINOR ${TIGL_VERSION_MINOR})
 set(CPACK_PACKAGE_VERSION_PATCH ${TIGL_VERSION_PATCH})
 set(CPACK_RESOURCE_FILE_LICENSE ${PROJECT_SOURCE_DIR}/LICENSE.txt)
 set(CPACK_PACKAGE_INSTALL_REGISTRY_KEY "TIGL") 
+
+# set generators
+if(CPACK_GENERATOR)	
+    #already set
+elseif(APPLE)
+    set(CPACK_GENERATOR DragNDrop)
+elseif(WIN32)
+    set(CPACK_GENERATOR "NSIS;ZIP")
+else()
+    set(CPACK_GENERATOR TGZ)
+endif()
 
 # set path variable for installer
 set(CPACK_NSIS_MODIFY_PATH ON)

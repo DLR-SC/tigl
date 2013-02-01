@@ -154,7 +154,7 @@ IF(APPLE)
   set(APPS "\${CMAKE_INSTALL_PREFIX}/${PROGNAME}.app/Contents/MacOS/${PROGNAME}")
 
   # TKOpenGL is loaded as a plugin, hence we must manually install it
-  INSTALL(FILES ${TKOpenGl_OCCLIB} DESTINATION TIGLViewer.app/Contents/MacOS/ COMPONENT viewer)
+  INSTALL(FILES ${TKOpenGl_OCCLIB} DESTINATION ${PROGNAME}.app/Contents/MacOS/ COMPONENT viewer)
   # copy icon
   INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/gfx/${PROGNAME}.icns DESTINATION ${PROGNAME}.app/Contents/Resources/ COMPONENT viewer)
 ENDIF(APPLE)
