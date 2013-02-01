@@ -462,7 +462,7 @@ void TIGLViewerWindow::about()
 	QString occtVersion = QString("%1.%2.%3").arg(OCC_VERSION_MAJOR).arg(OCC_VERSION_MINOR).arg(OCC_VERSION_MAINTENANCE);
 
 	text = 	"The <b>TIGLViewer</b> allows you to view CPACS geometries.<br> \
-				   Copyright (C) 2007-2011 German Aerospace Center (DLR/SC) <br><br>";
+                   Copyright (C) 2007-2013 German Aerospace Center (DLR/SC) <br><br>";
 	text += "TIXI version: " + tixiVersion + "<br>";
 	text += "TIGL version: " + tiglVersion + "<br>";
 	text += "OpenCascade version: " + occtVersion + "<br><br>";
