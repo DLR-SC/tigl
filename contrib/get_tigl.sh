@@ -20,11 +20,11 @@
 # It downloads the required binaries from our openbuildservice page
 # and copies them into on tar.gz file
 
-#package version and name
+#package name
 PACKAGE=TIGL
-VERSION=2.0.4
 
 
+VERSION=UNKNOWN
 DIST=NO_DIST
 FDIST=NO_DIST
 PACK_ARCH=NO_ARCH
@@ -202,8 +202,6 @@ download() {
 
 checkArguments $@
 
-NAME="$PACKAGE-$VERSION-$FDIST-$ARCH"
-
 pwdir=`pwd`
 tmpdir=`mktemp -d`
 cd $tmpdir
@@ -228,27 +226,31 @@ if [[ $PACK_TYPE == rpm ]]; then
   # select required files
   for file in $filelist; do
 	#opencascade	
-	if [[ $file == OCE*.rpm ]] && [[ $file != OCE-devel* ]]
+	if [[ $file == OCE*.rpm ]] && [[ $file != OCE-devel* ]] && [[ $file != *debuginfo* ]]
 	then
 		bin_file_list+=($file)
 	fi
 	
 	#ftgl
-	if [[ $file == libftgl2*.rpm ]] && [[ $file != libftgl2-32bit*.rpm ]]
+	if [[ $file == libftgl2*.rpm ]] && [[ $file != libftgl2-32bit*.rpm ]] && [[ $file != *debuginfo* ]]
 	then
 		bin_file_list+=($file)
 	fi
 
 	#TIXI
-	if [[ $file == libTIXI2*.rpm ]] 
+	if [[ $file == libTIXI2*.rpm ]]  && [[ $file != *debuginfo* ]]
 	then
 		bin_file_list+=($file)
 	fi
 	
 	#TIGL
-	if [[ $file == libTIGL2*.rpm ]] || [[ $file == tigl-*.rpm ]]
+	if [[ $file == libTIGL2*.rpm ]] || [[ $file == tigl-*.rpm ]] && [[ $file != *debuginfo* ]]
 	then
 		bin_file_list+=($file)
+        	#extract version number        
+		if [[ $file == libTIGL2-*.rpm ]]; then
+			VERSION=`echo $file | awk '{split($0,array,"-")} END{print array[2]}'`
+		fi
 	fi
   done
 elif [[ $PACK_TYPE == deb ]]; then
@@ -276,6 +278,10 @@ elif [[ $PACK_TYPE == deb ]]; then
 	if [[ $file == libtigl*.deb ]] || [[ $file == tigl-*.deb ]]
 	then
 		bin_file_list+=($file)
+        	#extract version number        
+		if [[ $file == libtigl2_*.deb ]]; then
+			VERSION=`echo $file | awk '{split($0,array,"_")} END{print array[2]}' | awk '{split($0,array,"-")} END{print array[1]}'`
+		fi
 	fi
   done
 else
@@ -283,6 +289,7 @@ else
     exit 4
 fi
 
+NAME="$PACKAGE-$VERSION-$FDIST-$ARCH"
 
 #download and extract files
 for file in ${bin_file_list[@]}; do
