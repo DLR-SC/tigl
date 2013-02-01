@@ -34,7 +34,7 @@ PACK_TYPE=NO_TYPE
 
 
 function printUsage {
-    echo "usage: build-package <distro> <arch>"
+    echo "usage: get_tigl.sh <distro> <arch>"
     echo
     echo "Valid distributions:"
     echo "    SLE_11         Suse Linux Enterprise 11"
