@@ -192,9 +192,15 @@ function checkArguments {
     FDIST=$tmp_dist
 }
 
-checkArguments $@
 
-echo "Downloading for for $DIST $PACK_ARCH"
+download() {
+    local url=$1
+    echo -n "    "
+    wget --progress=dot $url 2>&1 | grep --line-buffered "%" | sed -u -e "s,\.,,g" | awk '{printf("\b\b\b\b%4s", $2)}'
+    return $?
+}
+
+checkArguments $@
 
 NAME="$PACKAGE-$VERSION-$FDIST-$ARCH"
 
@@ -204,11 +210,19 @@ cd $tmpdir
 
 prefix=http://download.opensuse.org/repositories/home:/martinsiggel/$DIST/$PACK_ARCH/
 
+echo "Downloading from repository $prefix"
+echo "Using working directory: $tmpdir"
+echo
+
 # get list of available files to download 
-wget $prefix/
+wget -q $prefix/
+if [[ $? -ne 0 ]]; then
+    echo "Error downloading file list from $prefix"
+    exit 7
+fi
+
 filelist=`cat index.html | grep  $PACK_TYPE | awk '{print $7}' |  cut -d'"' -f 2`
 
-echo $filelist 
 
 if [[ $PACK_TYPE == rpm ]]; then
   # select required files
@@ -272,12 +286,20 @@ fi
 
 #download and extract files
 for file in ${bin_file_list[@]}; do
-	wget $prefix/$file
+	echo -n " - Downloading $prefix$file... "
+	download $prefix$file
+	if [[ $? -ne 0 ]]; then
+	    echo
+	    echo "Error downloading $file"
+	    exit 7
+	fi
+	echo
+
         if [[ $PACK_TYPE == rpm ]]; then
-	    rpm2cpio $file | cpio -idmv
+	    rpm2cpio $file | cpio -idm 2> /dev/null
 	elif [[ $PACK_TYPE == deb ]]; then
 	    ar x $file
-	    tar -zxvf data.tar.gz
+	    tar -zxf data.tar.gz
 	else
 	    echo "Unknown package type $PACK_TYPE"
 	    exit 5
