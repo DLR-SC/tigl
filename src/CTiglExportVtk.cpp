@@ -420,9 +420,16 @@ namespace tigl {
                             const gp_Pnt tpoint3 = nodes(index3).Transformed(nodeTransformation);
 
                             // determine unique point indices
-                            FindOrCreatePointIndex(triangleList1, tpoint1);
-                            FindOrCreatePointIndex(triangleList2, tpoint2);
-                            FindOrCreatePointIndex(triangleList3, tpoint3);
+                            if ( face.Orientation() == TopAbs_FORWARD){
+                                FindOrCreatePointIndex(triangleList1, tpoint1);
+                                FindOrCreatePointIndex(triangleList2, tpoint2);
+                                FindOrCreatePointIndex(triangleList3, tpoint3);
+                            }
+                            else {
+                                FindOrCreatePointIndex(triangleList1, tpoint1);
+                                FindOrCreatePointIndex(triangleList2, tpoint3);
+                                FindOrCreatePointIndex(triangleList3, tpoint2);
+                            }
 
                             // set data
                             triangleUID.push_back("");
