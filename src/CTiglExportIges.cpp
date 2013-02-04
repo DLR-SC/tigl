@@ -29,6 +29,7 @@
 #include "Standard_CString.hxx"
 #include "IGESControl_Controller.hxx"
 #include "IGESControl_Writer.hxx"
+#include "IGESData_IGESModel.hxx"
 #include "Interface_Static.hxx"
 
 
@@ -52,11 +53,15 @@ namespace tigl {
     void CTiglExportIges::ExportIGES(const std::string& filename) const
     {
         IGESControl_Controller::Init();
-        IGESControl_Writer igesWriter;
 
+        Interface_Static::SetCVal("xstep.cascade.unit", "M");
+        Interface_Static::SetCVal("write.iges.unit", "M");
         Interface_Static::SetIVal("write.iges.brep.mode", 0);
         Interface_Static::SetCVal("write.iges.header.author", "TIGL");
         Interface_Static::SetCVal("write.iges.header.company", "German Aerospace Center (DLR), SC");
+
+        IGESControl_Writer igesWriter;
+        igesWriter.Model()->ApplyStatic(); // apply set parameters
 
         // Export all wings of the configuration
         for (int w = 1; w <= myConfig.GetWingCount(); w++)
@@ -102,11 +107,15 @@ namespace tigl {
         TopoDS_Shape fusedAirplane = myConfig.GetFusedAirplane();
 
         IGESControl_Controller::Init();
-        IGESControl_Writer igesWriter;
 
+        Interface_Static::SetCVal("xstep.cascade.unit", "M");
+        Interface_Static::SetCVal("write.iges.unit", "M");
         Interface_Static::SetIVal("write.iges.brep.mode", 0);
         Interface_Static::SetCVal("write.iges.header.author", "TIGL");
         Interface_Static::SetCVal("write.iges.header.company", "German Aerospace Center (DLR), SC");
+
+        IGESControl_Writer igesWriter;
+        igesWriter.Model()->ApplyStatic(); // apply set parameters
 
         igesWriter.AddShape(fusedAirplane);
 
