@@ -2,6 +2,9 @@
 <ui version="4.0">
  <class>TIGLViewerSettingsDialog</class>
  <widget class="QDialog" name="TIGLViewerSettingsDialog">
+  <property name="windowModality">
+   <enum>Qt::ApplicationModal</enum>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -11,7 +14,11 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Settings</string>
+   <string>Preferences</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="TIGLViewer.qrc">
+    <normaloff>:/gfx/settings.png</normaloff>:/gfx/settings.png</iconset>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="1" column="1" colspan="3">
