@@ -1027,6 +1027,10 @@
    </property>
   </action>
   <action name="settingsAction">
+   <property name="icon">
+    <iconset resource="TIGLViewer.qrc">
+     <normaloff>:/gfx/settings.png</normaloff>:/gfx/settings.png</iconset>
+   </property>
    <property name="text">
     <string>Settings</string>
    </property>

@@ -13,5 +13,6 @@
     <file>../gfx/zoom.png</file>
     <file>../gfx/select.png</file>
     <file>../gfx/settings-display.png</file>
+    <file>../gfx/settings.png</file>
 </qresource>
 </RCC>
