@@ -39,7 +39,7 @@
 #include "StlAPI_Writer.hxx"
 #include "Interface_Static.hxx"
 #include "StlAPI.hxx"
-#include "BrepTools.hxx"
+#include "BRepTools.hxx"
 
 
 namespace tigl {
