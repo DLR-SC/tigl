@@ -12,5 +12,6 @@
     <file>../gfx/rotate.png</file>
     <file>../gfx/zoom.png</file>
     <file>../gfx/select.png</file>
+    <file>../gfx/settings-display.png</file>
 </qresource>
 </RCC>

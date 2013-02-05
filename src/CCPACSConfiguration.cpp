@@ -39,6 +39,7 @@
 #include "StlAPI_Writer.hxx"
 #include "Interface_Static.hxx"
 #include "StlAPI.hxx"
+#include "BrepTools.hxx"
 
 
 namespace tigl {
@@ -100,7 +101,7 @@ namespace tigl {
 
 
 	// Returns the boolean fused airplane as TopoDS_Shape
-	TopoDS_Shape CCPACSConfiguration::GetFusedAirplane(void)
+	TopoDS_Shape& CCPACSConfiguration::GetFusedAirplane(void)
     {
 		if(fusedAirplane.IsNull()){
             CTiglAbstractPhysicalComponent* rootComponent = uidManager.GetRootComponent();
@@ -114,12 +115,42 @@ namespace tigl {
 	// This function does the boolean fusing 
     void CCPACSConfiguration::OutputComponentTree(CTiglAbstractPhysicalComponent *parent)
     {
+    	if(!parent)
+    		throw CTiglError("Null Pointer argument in CCPACSConfiguration::OutputComponentTree", TIGL_NULL_POINTER);
+
+    	bool calcFullModel = true;
+
+    	TopoDS_Shape tmpShape = parent->GetMirroredLoft();
+    	if(!tmpShape.IsNull() && calcFullModel && (parent->GetComponentType()& TIGL_COMPONENT_WING)){
+    		try{
+    			fusedAirplane = BRepAlgoAPI_Fuse(fusedAirplane, tmpShape);
+    		}
+			catch(...){
+				throw CTiglError( "Error fusing "  + parent->GetUID() + " mirrored component!", TIGL_ERROR);
+			}
+    	}
+
         CTiglAbstractPhysicalComponent::ChildContainerType& children = parent->GetChildren();
         CTiglAbstractPhysicalComponent::ChildContainerType::iterator pIter;
         for (pIter = children.begin(); pIter != children.end(); pIter++) {
             CTiglAbstractPhysicalComponent* child = *pIter;
-			TopoDS_Shape tmpShape = child->GetLoft();
-			fusedAirplane = BRepAlgoAPI_Fuse(fusedAirplane, tmpShape);
+			tmpShape = child->GetLoft();
+			try{
+			   fusedAirplane = BRepAlgoAPI_Fuse(fusedAirplane, tmpShape);
+			}
+			catch(...){
+				throw CTiglError( "Error fusing "  + parent->GetUID() + " with " + child->GetUID(), TIGL_ERROR);
+			}
+			tmpShape = child->GetMirroredLoft();
+			if(tmpShape.IsNull() || !calcFullModel)
+				continue;
+
+			try{
+			   fusedAirplane = BRepAlgoAPI_Fuse(fusedAirplane, tmpShape);
+			}
+			catch(...){
+				throw CTiglError( "Error fusing "  + parent->GetUID() + " with mirrored component " + child->GetUID(), TIGL_ERROR);
+			}
         }
     }
 

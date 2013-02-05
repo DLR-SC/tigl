@@ -36,11 +36,13 @@
 #include <Standard_Version.hxx>
 
 #include "TIGLViewerWindow.h"
+#include "TIGLViewerSettingsDialog.h"
 #include "TIGLViewerDocument.h"
 #include "TIGLViewerInputoutput.h"
 #include "TIGLDebugStream.h"
 #include "TIGLScriptEngine.h"
 #include "CommandLineParameters.h"
+#include "TIGLViewerSettings.h"
 
 void ShowOrigin ( Handle_AIS_InteractiveContext theContext );
 void AddVertex  ( double x, double y, double z, Handle_AIS_InteractiveContext theContext );
@@ -111,6 +113,10 @@ TIGLViewerWindow::TIGLViewerWindow()
 	: myLastFolder(tr(""))
 {
     setupUi(this);
+
+    tiglViewerSettings = new TIGLViewerSettings();
+    settingsDialog = new TIGLViewerSettingsDialog(*tiglViewerSettings, this);
+
     myVC  = new TIGLViewerContext();
     myOCC->setContext(myVC->getContext());
     Handle(AIS_InteractiveContext) context = myVC->getContext();
@@ -125,7 +131,7 @@ TIGLViewerWindow::TIGLViewerWindow()
     p.setColor(QPalette::Base, Qt::black);
     console->setPalette(p);
 
-    cpacsConfiguration = new TIGLViewerDocument(this, myOCC->getContext());
+    cpacsConfiguration = new TIGLViewerDocument(this, myOCC->getContext(), getSettings());
     scriptEngine = new TIGLScriptEngine;
 
     connectSignals();
@@ -144,6 +150,7 @@ TIGLViewerWindow::~TIGLViewerWindow(){
     delete stdoutStream;
     delete errorStream;
     delete scriptEngine;
+    delete tiglViewerSettings;
 }
 
 
@@ -285,6 +292,9 @@ void TIGLViewerWindow::loadSettings(){
     restoreState(settings.value("MainWindowState").toByteArray());
     consoleDockWidget->setVisible(showConsole);
     showConsoleAction->setChecked(showConsole);
+
+    tiglViewerSettings->loadSettings();
+    settingsDialog->updateEntries();
 }
 
 void TIGLViewerWindow::saveSettings(){
@@ -295,6 +305,8 @@ void TIGLViewerWindow::saveSettings(){
 
     settings.setValue("MainWindowGeom", saveGeometry());
     settings.setValue("MainWindowState", saveState());
+
+    tiglViewerSettings->storeSettings();
 }
 
 
@@ -645,6 +657,8 @@ void TIGLViewerWindow::connectSignals()
     connect(scriptEngine, SIGNAL(printResults(QString)), console, SLOT(output(QString)));
     connect(console, SIGNAL(onChange(QString)), scriptEngine, SLOT(textChanged(QString)));
     connect(console, SIGNAL(onCommand(QString)), scriptEngine, SLOT(eval(QString)));
+
+    connect(settingsAction, SIGNAL(triggered()), settingsDialog, SLOT(show()));
 }
 
 void TIGLViewerWindow::createMenus()
@@ -698,4 +712,8 @@ void TIGLViewerWindow::updateMenus(TiglCPACSConfigurationHandle hand){
 
 void TIGLViewerWindow::closeEvent(QCloseEvent*) {
     saveSettings();
+}
+
+TIGLViewerSettings& TIGLViewerWindow::getSettings(){
+	return *tiglViewerSettings;
 }
