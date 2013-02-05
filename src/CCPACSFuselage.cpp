@@ -257,7 +257,7 @@ namespace tigl {
 		// @TODO: OpenCascade::ThruSections is currently buggy and crashes, if smooth lofting
 		// is performed. Therefore we swicth the 2. parameter to Standard_True (non smooth lofting).
 		// This has to be reverted, as soon as the bug is fixed!!!
-		BRepOffsetAPI_ThruSections generator(Standard_True, Standard_True, Precision::Confusion() );
+		BRepOffsetAPI_ThruSections generator(Standard_True, Standard_False, Precision::Confusion() );
 
 		for (int i=1; i <= segments.GetSegmentCount(); i++) {
 			CCPACSFuselageConnection& startConnection = segments.GetSegment(i).GetStartConnection();
