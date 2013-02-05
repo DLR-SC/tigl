@@ -100,7 +100,7 @@ namespace tigl {
         CTiglUIDManager& GetUIDManager(void);
 
 		// Returns the bolean fused airplane as TopoDS_Shape
-		TopoDS_Shape GetFusedAirplane(void);
+		TopoDS_Shape& GetFusedAirplane(void);
 
     protected:
         void OutputComponentTree(CTiglAbstractPhysicalComponent* parent);

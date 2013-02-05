@@ -51,6 +51,8 @@ public:
 	// Returns the Open CASCADE Widget and Context.
 	TIGLViewerWidget* getMyOCC();
 
+	class TIGLViewerSettings& getSettings();
+
 	// Displays a simple dialog for error messages
 	void displayErrorMessage (const QString aMessage, QString aHeader);
 
@@ -108,6 +110,8 @@ private:
 	QFileSystemWatcher *watcher;
     class QDebugStream * stdoutStream, * errorStream;
     class TIGLScriptEngine * scriptEngine;
+    class TIGLViewerSettingsDialog * settingsDialog;
+    class TIGLViewerSettings * tiglViewerSettings;
 
 };
 

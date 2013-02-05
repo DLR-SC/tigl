@@ -28,10 +28,12 @@ set(tv_src
     TIGLViewerInternal.h.cpp
     TIGLViewerWidget.cpp
     TIGLViewerWindow.cpp
+    TIGLViewerSettingsDialog.cpp
     TIGLScriptProxy.cpp
     TIXIScriptProxy.cpp
     TIGLScriptEngine.cpp
     TiglViewerConsole.cpp
+    TIGLViewerSettings.cpp
 )
 	
 # normal header files
@@ -40,6 +42,7 @@ set(tv_hdr
     ISession_Point.h
     ISession_Text.h
     TIGLViewer.h
+    TIGLViewerSettings.h
 )
 
 # qobject header files that have to be moced
@@ -52,6 +55,7 @@ set(tv_hdr_qobj
 	TIGLViewerInputoutput.h
 	TIGLViewerWidget.h
 	TIGLViewerWindow.h
+	TIGLViewerSettingsDialog.h
 	TIGLScriptProxy.h
 	TIXIScriptProxy.h
 	TIGLScriptEngine.h
@@ -60,6 +64,7 @@ set(tv_hdr_qobj
 
 set(tv_ui_comp
 	src/TIGLViewerWindow.ui
+	src/TIGLViewerSettingsDialog.ui
 )
 	
 foreach ( _fname ${tv_src})

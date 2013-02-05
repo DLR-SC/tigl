@@ -244,26 +244,6 @@ namespace tigl {
 		// transform into global coordinate system
 		loft = GetWing().GetWingTransformation().Transform(loft);
 
-        // Now we build the triangulation of the loft. To determine a reasonable
-        // value for the deflection (see OpenCascade documentation), we build the
-        // bounding box around the loft. The greatest dimension of the bounding
-        // box is then used as a measure for the deflection.
-        Bnd_Box boundingBox;
-        BRepBndLib::Add(loft, boundingBox);
-        Standard_Real xmin, ymin, zmin, xmax, ymax, zmax;
-        boundingBox.Get(xmin, ymin, zmin, xmax, ymax, zmax);
-
-        Standard_Real xdist = xmax - xmin;
-        Standard_Real ydist = ymax - ymin;
-        Standard_Real zdist = zmax - zmin;
-
-        double dist = max(max(xdist, ydist), zdist);
-
-        double deflection = max(0.001, dist * 0.001);
-
-        BRepTools::Clean(loft);
-        BRepMesh::Mesh(loft, deflection);
-
 		Handle(ShapeFix_Shape) sfs = new ShapeFix_Shape;
 		sfs->Init ( loft );
 		sfs->Perform();

@@ -37,7 +37,6 @@
 #include <Handle_AIS_Shape.hxx>
 #include <AIS_Shape.hxx>
 #include <AIS_InteractiveContext.hxx>
-#include <BRepAlgoAPI_Fuse.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepMesh.hxx>
 #include <TopoDS_Shell.hxx>
@@ -45,8 +44,8 @@
 #include <BRepBuilderAPI_MakePolygon.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <gce_MakeLin.hxx>
-#include <Handle_Geom_TrimmedCurve.hxx>
 #include <GC_MakeSegment.hxx>
+#include <BRepBndLib.hxx>
 
 // TIGLViewer includes
 #include "TIGLViewerInternal.h"
@@ -55,8 +54,13 @@
 #include "ISession_Point.h"
 #include "ISession_Text.h"
 #include "CTiglPoint.h"
+#include "CTiglError.h"
+#include "TIGLViewerSettings.h"
 
-TIGLViewerDocument::TIGLViewerDocument( QWidget *parentWidget, const Handle_AIS_InteractiveContext& ic )
+#define max(a,b) ((a) > (b) ? (a) : (b))
+
+TIGLViewerDocument::TIGLViewerDocument( QWidget *parentWidget, const Handle_AIS_InteractiveContext& ic, const TIGLViewerSettings& set )
+: _settings(set)
 {
 	parent = parentWidget;
 	myAISContext = ic;
@@ -194,11 +198,40 @@ tigl::CCPACSConfiguration& TIGLViewerDocument::GetConfiguration(void) const
 }
 
 
+// creates triangulation of shape
+// returns true, of mesh was done
+bool meshShape(const TopoDS_Shape& loft, double rel_deflection){
+    // Now we build the triangulation of the loft. To determine a reasonable
+    // value for the deflection (see OpenCascade documentation), we build the
+    // bounding box around the loft. The greatest dimension of the bounding
+    // box is then used as a measure for the deflection.
+	Bnd_Box boundingBox;
+	BRepBndLib::Add(loft, boundingBox);
+	Standard_Real xmin, ymin, zmin, xmax, ymax, zmax;
+	boundingBox.Get(xmin, ymin, zmin, xmax, ymax, zmax);
+
+	Standard_Real xdist = xmax - xmin;
+	Standard_Real ydist = ymax - ymin;
+	Standard_Real zdist = zmax - zmin;
+
+	double dist = max(max(xdist, ydist), zdist);
+
+	double deflection = max(rel_deflection, dist * rel_deflection);
+	if(!BRepTools::Triangulation (loft, deflection)){
+		BRepTools::Clean(loft);
+		BRepMesh::Mesh(loft, deflection);
+		return true;
+	}
+	else
+		return false;
+}
+
 // a small helper when we just want to display a shape
 Handle(AIS_Shape) TIGLViewerDocument::displayShape(const TopoDS_Shape& loft, Quantity_NameOfColor color)
 {
 	Handle(AIS_Shape) shape = new AIS_Shape(loft);
 	shape->SetColor(color);
+	shape->SetOwnDeviationCoefficient(_settings.tesselationAccuracy());
 	myAISContext->Display(shape, Standard_True);
 	return shape;
 }
@@ -569,6 +602,7 @@ void TIGLViewerDocument::drawFuselage()
 	if(fuselageUid == "")
 		return;
 
+	QApplication::setOverrideCursor( Qt::WaitCursor );
 	tigl::CCPACSFuselage& fuselage = GetConfiguration().GetFuselage(fuselageUid.toStdString());
 
     myAISContext->EraseAll(Standard_False);
@@ -580,10 +614,9 @@ void TIGLViewerDocument::drawFuselage()
         TopoDS_Shape loft = segment.GetLoft();
         // Transform by fuselage transformation
         loft = fuselage.GetFuselageTransformation().Transform(loft);
-        Handle(AIS_Shape) shape = new AIS_Shape(loft);
-        shape->SetColor(Quantity_NOC_BLUE2);
-        myAISContext->Display(shape, Standard_False);
+        displayShape(loft);
     }
+	QApplication::restoreOverrideCursor();
 }
 
 void TIGLViewerDocument::drawWingTriangulation()
@@ -593,46 +626,20 @@ void TIGLViewerDocument::drawWingTriangulation()
     if (wingUid == "")
         return;
 
+	QApplication::setOverrideCursor( Qt::WaitCursor );
 	tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
 
     //clear screen
     myAISContext->EraseAll(Standard_False);
-#ifdef ORIG_METH
-    //TODO: somehow we get problems here when fusing the segments with BRepAlgoAPI_Fuse
-    // we should check why this happens
-	tigl::CCPACSWingSegment& firstSegment = (tigl::CCPACSWingSegment &) wing.GetSegment(1);
-    TopoDS_Shape fusedWing = firstSegment.GetLoft();
 
-    try{
-    for (int i = 2; i <= wing.GetSegmentCount(); i++)
-    {
-        tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(i);
-        TopoDS_Shape loft = segment.GetLoft();
-
-        TopExp_Explorer shellExplorer;
-        TopExp_Explorer faceExplorer;
-
-        fusedWing = BRepAlgoAPI_Fuse(fusedWing, loft);
-    }
-    }
-    catch(tigl::CTiglError& ex){
-        cerr << ex.getError() << endl;
-
-    }
-#else
     //we do not fuse segments anymore but build it from scratch with the profiles
     TopoDS_Shape& fusedWing = wing.GetLoft();
-#endif
-
-
-    BRepMesh::Mesh(fusedWing, 0.01);
 
 	TopoDS_Compound compound;
 	createShapeTriangulation(fusedWing, compound);
 	
-    Handle(AIS_Shape) triangulation = new AIS_Shape(compound);
-    myAISContext->SetColor(triangulation, Quantity_NOC_BLUE2);
-    myAISContext->Display(triangulation);
+	displayShape(compound);
+	QApplication::restoreOverrideCursor();
 }
 
 
@@ -642,23 +649,18 @@ void TIGLViewerDocument::drawFuselageTriangulation()
 	if(fuselageUid == "")
 		return;
 
+	QApplication::setOverrideCursor( Qt::WaitCursor );
 	tigl::CCPACSFuselage& fuselage = GetConfiguration().GetFuselage(fuselageUid.toStdString());
 
     //clear screen
     myAISContext->EraseAll(Standard_False);
-    cout << "Calculating fused fuselage geometry..." ;
     TopoDS_Shape fusedWing = fuselage.GetLoft();
 
-    BRepMesh::Mesh(fusedWing, 0.01);
-    cout << "done" << endl;
+    TopoDS_Compound triangulation;
+    createShapeTriangulation(fusedWing, triangulation);
 
-    TopoDS_Compound compound;
-    createShapeTriangulation(fusedWing, compound);
-
-    Handle(AIS_Shape) triangulation = new AIS_Shape(compound);
-    myAISContext->SetDisplayMode(triangulation, 1);
-    myAISContext->SetColor(triangulation, Quantity_NOC_BLUE2);
-    myAISContext->Display(triangulation);
+    displayShape(triangulation);
+    QApplication::restoreOverrideCursor();
 }
 
 
@@ -1120,8 +1122,8 @@ void TIGLViewerDocument::drawFusedFuselage()
 	myAISContext->EraseAll(Standard_False);
 	QApplication::setOverrideCursor( Qt::WaitCursor );
 	tigl::CCPACSFuselage& fuselage = GetConfiguration().GetFuselage(fuselageUid.toStdString());
-	QApplication::restoreOverrideCursor();
 	displayShape(fuselage.GetLoft());
+	QApplication::restoreOverrideCursor();
 }
 
 
@@ -1134,31 +1136,39 @@ void TIGLViewerDocument::drawFusedWing()
 	myAISContext->EraseAll(Standard_False);
 	QApplication::setOverrideCursor( Qt::WaitCursor );
 	tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
-	QApplication::restoreOverrideCursor();
 	TopoDS_Shape& loft = wing.GetLoft();
-	BRepMesh::Mesh(loft, 0.01);
 	displayShape(loft);
+	QApplication::restoreOverrideCursor();
 }
 
 
 void TIGLViewerDocument::drawFusedAircraft()
 {
 	QApplication::setOverrideCursor( Qt::WaitCursor );
-	TopoDS_Shape airplane = GetConfiguration().GetFusedAirplane();
+	try {
+		TopoDS_Shape& airplane = GetConfiguration().GetFusedAirplane();
+		myAISContext->EraseAll(Standard_False);
+		displayShape(airplane);
+	}
+	catch(tigl::CTiglError & error){
+		std::cerr << error.getError() << std::endl;
+	}
+	catch(...){
+		std::cerr << "Unknown Exception" << std::endl;
+	}
 	QApplication::restoreOverrideCursor();
-	displayShape(airplane);
 }
 
 void TIGLViewerDocument::drawFusedAircraftTriangulation()
 {
 	QApplication::setOverrideCursor( Qt::WaitCursor );
-	TopoDS_Shape airplane = GetConfiguration().GetFusedAirplane();
-	BRepMesh::Mesh(airplane, 0.1);
+	TopoDS_Shape& airplane = GetConfiguration().GetFusedAirplane();
+	myAISContext->EraseAll(Standard_False);
 	TopoDS_Compound triangulation;
 	createShapeTriangulation(airplane, triangulation);
 
-	QApplication::restoreOverrideCursor();
 	displayShape(triangulation);
+	QApplication::restoreOverrideCursor();
 }
 
 
@@ -1204,15 +1214,16 @@ void TIGLViewerDocument::drawWingComponentSegment()
 	myAISContext->EraseAll(Standard_False);
 	QApplication::setOverrideCursor( Qt::WaitCursor );
 	TopoDS_Shape componentSegment = GetConfiguration().GetWing(wingUid.toStdString()).GetComponentSegment(1).GetLoft();
-	QApplication::restoreOverrideCursor();
 	displayShape(componentSegment);
+	QApplication::restoreOverrideCursor();
 }
 
 /*
  * Reads traingles from Mesh of shape and creates vertices and triangular faces
  */
 void TIGLViewerDocument::createShapeTriangulation(const TopoDS_Shape& shape, TopoDS_Compound& compound){
-	BRep_Builder builder;
+    meshShape(shape, _settings.triangulationAccuracy());
+    BRep_Builder builder;
     builder.MakeCompound(compound);
 
     TopExp_Explorer shellExplorer;

@@ -38,7 +38,7 @@ class QOCC_DECLSPEC TIGLViewerDocument : public QObject
 
 public:
 
-	TIGLViewerDocument( QWidget *parentWidget, const Handle_AIS_InteractiveContext& ic );
+	TIGLViewerDocument( QWidget *parentWidget, const Handle_AIS_InteractiveContext& ic, const class TIGLViewerSettings& set );
     ~TIGLViewerDocument( );
 
     TiglReturnCode openCpacsConfiguration(const QString fileName);
@@ -119,6 +119,7 @@ private slots:
 
 private: 
     TiglCPACSConfigurationHandle 			m_cpacsHandle;
+    const TIGLViewerSettings&				_settings;
     QWidget* 								parent;
     Handle_AIS_InteractiveContext			myAISContext;
     class TIGLViewerWidget* 				myOCC;

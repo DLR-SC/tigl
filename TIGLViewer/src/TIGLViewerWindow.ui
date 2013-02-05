@@ -72,6 +72,7 @@
     <addaction name="closeAction"/>
     <addaction name="printAction"/>
     <addaction name="setBackgroundAction"/>
+    <addaction name="settingsAction"/>
     <addaction name="separator"/>
     <addaction name="exitAction"/>
    </widget>
@@ -853,7 +854,7 @@
     <string>&amp;Rotate</string>
    </property>
    <property name="toolTip">
-    <string>Window rotation</string>
+    <string>Rotate</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+R</string>
@@ -1023,6 +1024,11 @@
    </property>
    <property name="toolTip">
     <string>Select Components</string>
+   </property>
+  </action>
+  <action name="settingsAction">
+   <property name="text">
+    <string>Settings</string>
    </property>
   </action>
  </widget>
