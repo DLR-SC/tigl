@@ -129,6 +129,9 @@ namespace tigl {
 		// Returns wetted Area
 		double GetWettedArea(TopoDS_Shape parent);
 
+		// Returns the wingspan of the wing
+		double GetWingspan(void);
+
         // Returns the Component Type TIGL_COMPONENT_WING.
         TiglGeometricComponentType GetComponentType(void) {return TIGL_COMPONENT_WING | TIGL_COMPONENT_PHYSICAL;}
 

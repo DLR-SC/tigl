@@ -3245,3 +3245,61 @@ TIGL_COMMON_EXPORT const char * tiglGetErrorString(TiglReturnCode code){
     }
     return TiglErrorStrings[code];
 }
+
+TIGL_COMMON_EXPORT TiglReturnCode tiglConfigurationGetLength(TiglCPACSConfigurationHandle cpacsHandle, double * pLength){
+    if (pLength == NULL) {
+        std::cerr << "Error: argument pLength is NULL in tiglConfigurationGetLength!";
+        return TIGL_NULL_POINTER;
+    }
+
+    try {
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+        *pLength = config.GetAirplaneLenth();
+        return TIGL_SUCCESS;
+    }
+    catch (std::exception& ex) {
+        std::cerr << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        std::cerr << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        std::cerr << "Caught an exception in tiglConfigurationGetLength!" << std::endl;
+        return TIGL_ERROR;
+    }
+}
+
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSpan(TiglCPACSConfigurationHandle cpacsHandle, const char* wingUID, double * pSpan){
+    if (pSpan == NULL) {
+        std::cerr << "Error: argument pSpan is NULL in tiglConfigurationGetLength!";
+        return TIGL_NULL_POINTER;
+    }
+
+    if (wingUID == NULL) {
+        std::cerr << "Error: argument wingUID is NULL in tiglConfigurationGetLength!";
+        return TIGL_NULL_POINTER;
+    }
+
+    try {
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+        tigl::CCPACSWing& wing = config.GetWing(wingUID);
+        *pSpan = wing.GetWingspan();
+        return TIGL_SUCCESS;
+    }
+    catch (std::exception& ex) {
+        std::cerr << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        std::cerr << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        std::cerr << "Caught an exception in tiglConfigurationGetLength!" << std::endl;
+        return TIGL_ERROR;
+    }
+}
