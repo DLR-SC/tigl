@@ -35,6 +35,14 @@
 #include "GProp_GProps.hxx"
 #include "BRepGProp.hxx"
 #include "BRepAlgoAPI_Cut.hxx"
+#include "Bnd_Box.hxx"
+#include "BRepBndLib.hxx"
+
+namespace {
+	inline double max(double a, double b){
+		return a > b? a : b;
+	}
+}
 
 
 namespace tigl {
@@ -443,6 +451,50 @@ namespace tigl {
 		for(int i = 1; i <= componentSegments.GetComponentSegmentCount(); ++i){
 			CCPACSWingComponentSegment& compSeg = componentSegments.GetComponentSegment(i);
 			compSeg.SetSymmetryAxis(axis);
+		}
+	}
+
+	double CCPACSWing::GetWingspan() {
+		Bnd_Box boundingBox;
+		if (GetSymmetryAxis() == TIGL_NO_SYMMETRY) {
+			for (int i = 1; i <= GetSegmentCount(); ++i) {
+				TopoDS_Shape& segmentShape = GetSegment(i).GetLoft();
+				BRepBndLib::Add(segmentShape, boundingBox);
+			}
+
+			Standard_Real xmin, xmax, ymin, ymax, zmin, zmax;
+			boundingBox.Get(xmin, ymin, zmin, xmax, ymax, zmax);
+			double xw = xmax - xmin;
+			double yw = ymax - ymin;
+			double zw = zmax - zmin;
+
+			return max(xw, max(yw, zw));
+		}
+		else {
+			for (int i = 1; i <= GetSegmentCount(); ++i) {
+				CTiglAbstractSegment& segment = GetSegment(i);
+				TopoDS_Shape& segmentShape = segment.GetLoft();
+				BRepBndLib::Add(segmentShape, boundingBox);
+				TopoDS_Shape segmentMirroredShape = segment.GetMirroredLoft();
+				BRepBndLib::Add(segmentMirroredShape, boundingBox);
+			}
+
+			Standard_Real xmin, xmax, ymin, ymax, zmin, zmax;
+			boundingBox.Get(xmin, ymin, zmin, xmax, ymax, zmax);
+
+			switch (GetSymmetryAxis()){
+			case TIGL_X_Y_PLANE:
+				return zmax-zmin;
+				break;
+			case TIGL_X_Z_PLANE:
+				return ymax-ymin;
+				break;
+			case TIGL_Y_Z_PLANE:
+				return xmax-ymin;
+				break;
+			default:
+				return ymax-ymin;
+			}
 		}
 	}
 

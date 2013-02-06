@@ -40,7 +40,10 @@
 #include "Interface_Static.hxx"
 #include "StlAPI.hxx"
 #include "BRepTools.hxx"
+#include <BRepBndLib.hxx>
+#include <Bnd_Box.hxx>
 
+#include <cfloat>
 
 namespace tigl {
 
@@ -240,6 +243,51 @@ namespace tigl {
     CTiglUIDManager& CCPACSConfiguration::GetUIDManager(void)
     {
         return uidManager;
+    }
+
+    double CCPACSConfiguration::GetAirplaneLenth(void){
+	    Bnd_Box boundingBox;
+
+    	// Draw all wings
+    	for (int w = 1; w <= GetWingCount(); w++)
+    	{
+    		tigl::CCPACSWing& wing = GetWing(w);
+
+    		for (int i = 1; i <= wing.GetSegmentCount(); i++)
+    		{
+    			tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(i);
+    	    	BRepBndLib::Add(segment.GetLoft(), boundingBox);
+
+    		}
+
+    		if(wing.GetSymmetryAxis() == TIGL_NO_SYMMETRY)
+    			continue;
+
+    		for (int i = 1; i <= wing.GetSegmentCount(); i++)
+    		{
+    			tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(i);
+    	    	BRepBndLib::Add(segment.GetLoft(), boundingBox);
+    		}
+    	}
+
+    	for (int f = 1; f <= GetFuselageCount(); f++)
+    	{
+    		tigl::CCPACSFuselage& fuselage = GetFuselage(f);
+
+    		for (int i = 1; i <= fuselage.GetSegmentCount(); i++)
+    		{
+    			tigl::CCPACSFuselageSegment& segment = (tigl::CCPACSFuselageSegment &) fuselage.GetSegment(i);
+    			TopoDS_Shape loft = segment.GetLoft();
+
+    			// Transform by fuselage transformation
+    			loft = fuselage.GetFuselageTransformation().Transform(loft);
+    	    	BRepBndLib::Add(segment.GetLoft(), boundingBox);
+    		}
+    	}
+    	Standard_Real xmin, xmax, ymin, ymax, zmin, zmax;
+    	boundingBox.Get(xmin, ymin, zmin, xmax, ymax, zmax);
+
+    	return xmax-xmin;
     }
 
 } // end namespace tigl

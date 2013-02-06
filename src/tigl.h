@@ -3015,6 +3015,35 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglComponentGetHashCode(TiglCPACSConfiguratio
 TIGL_COMMON_EXPORT const char * tiglGetErrorString(TiglReturnCode);
 
 
+/**
+* @brief Returns the length of the plane
+*
+* <b>Fortran syntax:</b>
+*
+* tigl_configuration_get_length(real length, integer return_code)
+*
+* @param cpacsHandle (in) : Handle for the CPACS configuration
+* @param pLength    (out) : Length of plane
+*
+* @returns Error code
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglConfigurationGetLength(TiglCPACSConfigurationHandle cpacsHandle, double * pLength);
+
+/**
+* @brief Returns the span of a wing
+*
+* <b>Fortran syntax:</b>
+*
+* tigl_wing_get_span(real length, character*n winguid, integer return_code)
+*
+* @param cpacsHandle (in) : Handle for the CPACS configuration
+* @param wingUID     (in) : UID of the Wing
+* @param pSpan      (out) : Wing span
+*
+* @returns Error code
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSpan(TiglCPACSConfigurationHandle cpacsHandle, const char* wingUID, double * pSpan);
+
 /*@}*/ // end of doxygen group
 
 #endif /* TIGL_H */

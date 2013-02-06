@@ -75,7 +75,6 @@ namespace tigl {
         // Returns the wing for a given UID.
         CCPACSWing& GetWing(const std::string UID) const;
 
-		// Returns the wetted area for a given wing.
         TopoDS_Shape GetParentLoft(const std::string UID);
 
 		// Returns the total count of fuselage profiles in this configuration
@@ -101,6 +100,9 @@ namespace tigl {
 
 		// Returns the bolean fused airplane as TopoDS_Shape
 		TopoDS_Shape& GetFusedAirplane(void);
+
+		// Returns the length of the airplane
+		double GetAirplaneLenth(void);
 
     protected:
         void OutputComponentTree(CTiglAbstractPhysicalComponent* parent);
