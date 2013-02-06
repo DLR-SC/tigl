@@ -64,6 +64,7 @@
 
 // algorithms
 #include "BRepMesh.hxx"
+#include "BRepTools.hxx"
 #include "BRep_Tool.hxx"
 #include "BRepLib_FindSurface.hxx"
 #include "BRepExtrema_DistShapeShape.hxx"
@@ -263,6 +264,7 @@ namespace tigl {
         const Handle(Geom_Surface) & surface = findSurface.Surface();
 
         // 1. mesh
+        BRepTools::Clean(shape);
         BRepMesh::Mesh(shape, deflection);
 
         for (shellExplorer.Init(shape, TopAbs_SHELL); shellExplorer.More(); shellExplorer.Next()) {
@@ -394,6 +396,7 @@ namespace tigl {
                 if( (component.GetComponentType() & TIGL_COMPONENT_FUSELAGE) > 0) {
                     segmentLoft = component.GetLoft();
                 }
+        		BRepTools::Clean(segmentLoft);
                 BRepMesh::Mesh(segmentLoft, deflection);
 
                 for (shellExplorer.Init(segmentLoft, TopAbs_SHELL); shellExplorer.More(); shellExplorer.Next()) {
