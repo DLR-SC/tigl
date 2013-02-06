@@ -55,7 +55,8 @@
 #include "TIGLViewerDocument.h"
 
 #include "Visual3d_Layer.hxx"
-
+#include "V3d_DirectionalLight.hxx"
+#include "V3d_AmbientLight.hxx"
 
 // 10% zoom per wheel or key event
 #define TIGLVIEWER_ZOOM_STEP 1.10
@@ -153,7 +154,7 @@ void TIGLViewerWidget::initializeOCC(const Handle_AIS_InteractiveContext& aConte
 	myContext = aContext;
 	myViewer  = myContext->CurrentViewer();
 	myView    = myViewer->CreateView();
-	
+
 	int windowHandle = (int) winId();
     short lo = (short)   windowHandle;
     short hi = (short) ( windowHandle >> 16 );
@@ -206,7 +207,7 @@ void TIGLViewerWidget::initializeOCC(const Handle_AIS_InteractiveContext& aConte
 		myLayer   = new Visual3d_Layer (myViewer->Viewer(), Aspect_TOL_OVERLAY, Standard_True /*aSizeDependant*/);
 
 #ifdef OCC_BG
-        myView->SetBgGradientColors ( Quantity_Color(245./256., 245./256., 252./256. , Quantity_TOC_RGB), Quantity_Color(49./256., 49./256., 49./256. , Quantity_TOC_RGB), Aspect_GFM_VER, Standard_False);
+        myView->SetBgGradientColors ( Quantity_Color(1., 1., 1. , Quantity_TOC_RGB), Quantity_Color(0.2, 0.184, 0.128, Quantity_TOC_RGB), Aspect_GFM_VER, Standard_False);
 #endif
 
 
