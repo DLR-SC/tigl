@@ -1052,7 +1052,10 @@ void TIGLViewerDocument::exportMeshedWingVTKsimple()
 	if (!fileName.isEmpty())
 	{
 		QApplication::setOverrideCursor( Qt::WaitCursor );
-		TiglReturnCode err = tiglExportMeshedWingVTKSimpleByUID(m_cpacsHandle, qstringToCstring(wingUid), qstringToCstring(fileName), 0.001);
+		tigl::CCPACSWing& wing = GetConfiguration().GetWing(qstringToCstring(wingUid));
+		double deflection = wing.GetWingspan()/2. * _settings.triangulationAccuracy();
+
+		TiglReturnCode err = tiglExportMeshedWingVTKSimpleByUID(m_cpacsHandle, qstringToCstring(wingUid), qstringToCstring(fileName), deflection);
 		QApplication::restoreOverrideCursor();
         if(err != TIGL_SUCCESS) {
 			displayError(QString("Error in function <u>tiglExportMeshedWingVTKSimpleByUID</u>. Error code: %1").arg(err), "TIGL Error");
