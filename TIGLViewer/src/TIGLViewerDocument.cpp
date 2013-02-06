@@ -227,9 +227,10 @@ bool meshShape(const TopoDS_Shape& loft, double rel_deflection){
 }
 
 // a small helper when we just want to display a shape
-Handle(AIS_Shape) TIGLViewerDocument::displayShape(const TopoDS_Shape& loft, Quantity_NameOfColor color)
+Handle(AIS_Shape) TIGLViewerDocument::displayShape(const TopoDS_Shape& loft, Quantity_Color color)
 {
 	Handle(AIS_Shape) shape = new AIS_Shape(loft);
+	shape->SetMaterial(Graphic3d_NOM_METALIZED);
 	shape->SetColor(color);
 	shape->SetOwnDeviationCoefficient(_settings.tesselationAccuracy());
 	myAISContext->Display(shape, Standard_True);
@@ -388,7 +389,7 @@ void TIGLViewerDocument::drawAllFuselagesAndWings( )
 		for (int i = 1; i <= wing.GetSegmentCount(); i++)
 		{
 			tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(i);
-			displayShape(segment.GetMirroredLoft(), Quantity_NOC_VIOLETRED);
+			displayShape(segment.GetMirroredLoft(), Quantity_NOC_MirrShapeCol);
 		}
 	}
 

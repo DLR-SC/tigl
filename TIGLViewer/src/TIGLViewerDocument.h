@@ -26,6 +26,10 @@
 #include "CCPACSConfiguration.h"
 
 #include <Handle_AIS_Shape.hxx>
+#include <Quantity_Color.hxx>
+
+#define Quantity_NOC_ShapeCol (Quantity_Color(0., 170./255.,1., Quantity_TOC_RGB))
+#define Quantity_NOC_MirrShapeCol (Quantity_Color(251./255., 1., 169./255., Quantity_TOC_RGB))
 
 class QOCC_DECLSPEC TIGLViewerDocument : public QObject
 {
@@ -46,7 +50,7 @@ public:
     TiglCPACSConfigurationHandle getCpacsHandle(void) const;
 
     // a small helper when we just want to display a shape
-    Handle(AIS_Shape) displayShape(const TopoDS_Shape& shape, Quantity_NameOfColor col = Quantity_NOC_BLUE2);
+    Handle(AIS_Shape) displayShape(const TopoDS_Shape& shape, Quantity_Color col = Quantity_NOC_ShapeCol);
 
 	// Draws a point
 	void DisplayPoint(gp_Pnt& aPoint,
