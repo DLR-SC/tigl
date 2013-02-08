@@ -78,6 +78,7 @@
 #include "BRepBuilderAPI_MakeEdge.hxx"
 #include "GeomAPI_ProjectPointOnSurf.hxx"
 
+#include "VtkPolyData.h"
 
 namespace tigl {
 
@@ -198,6 +199,7 @@ namespace tigl {
     // Write out the shape to a VTK file
     void VtkWriter::Write(const TopoDS_Shape & shape, CTiglAbstractPhysicalComponent & component, const std::string& filename, const double deflection, VTK_EXPORT_MODE mode)
     {
+
         pointsMin = 0;
         pointsMax = 0;
         unsigned int points;
@@ -383,6 +385,10 @@ namespace tigl {
     unsigned int VtkWriter::SimpleTriangulation(const TopoDS_Shape & shape, CTiglAbstractPhysicalComponent & component, const double deflection) {
             TopExp_Explorer shellExplorer;
             TopExp_Explorer faceExplorer;
+
+            int iTriang = 1;
+            VTKPolyData polyData;
+
             const int segmentCount = component.GetSegmentCount();
 
             for(int y=1; y <= segmentCount; y++ )
@@ -427,12 +433,22 @@ namespace tigl {
                                 FindOrCreatePointIndex(triangleList1, tpoint1);
                                 FindOrCreatePointIndex(triangleList2, tpoint2);
                                 FindOrCreatePointIndex(triangleList3, tpoint3);
+
+                                polyData.addPoint(Point(tpoint1.X(), tpoint1.Y(), tpoint1.Z()), iTriang);
+                                polyData.addPoint(Point(tpoint2.X(), tpoint2.Y(), tpoint2.Z()), iTriang);
+                                polyData.addPoint(Point(tpoint3.X(), tpoint3.Y(), tpoint3.Z()), iTriang);
                             }
                             else {
                                 FindOrCreatePointIndex(triangleList1, tpoint1);
                                 FindOrCreatePointIndex(triangleList2, tpoint3);
                                 FindOrCreatePointIndex(triangleList3, tpoint2);
+
+                                polyData.addPoint(Point(tpoint1.X(), tpoint1.Y(), tpoint1.Z()), iTriang);
+                                polyData.addPoint(Point(tpoint3.X(), tpoint3.Y(), tpoint3.Z()), iTriang);
+                                polyData.addPoint(Point(tpoint2.X(), tpoint2.Y(), tpoint2.Z()), iTriang);
                             }
+
+                            iTriang++;
 
                             // set data
                             triangleUID.push_back("");
@@ -455,6 +471,8 @@ namespace tigl {
                 pointArray[(it->second)] = (it->first);// copy keys (points) to the array element of the value (index number)
             }
             pointMap.clear();
+
+            polyData.write("mytest.vtp");
 
             return points;
         }
