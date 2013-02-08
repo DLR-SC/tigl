@@ -407,6 +407,19 @@ void TIGLViewerDocument::drawAllFuselagesAndWings( )
 			loft = fuselage.GetFuselageTransformation().Transform(loft);
 			displayShape(loft);
 		}
+
+		if(fuselage.GetSymmetryAxis() == TIGL_NO_SYMMETRY)
+			continue;
+
+		for (int i = 1; i <= fuselage.GetSegmentCount(); i++)
+		{
+			tigl::CCPACSFuselageSegment& segment = (tigl::CCPACSFuselageSegment &) fuselage.GetSegment(i);
+			TopoDS_Shape loft = segment.GetMirroredLoft();
+
+			// Transform by fuselage transformation
+			loft = fuselage.GetFuselageTransformation().Transform(loft);
+			displayShape(loft, Quantity_NOC_MirrShapeCol);
+		}
 	}
 }
 

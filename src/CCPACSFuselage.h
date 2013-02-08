@@ -116,6 +116,8 @@ namespace tigl {
 		// The Fuselage could be turned with a given angle at at given axis, specified by a point and a direction.
 		gp_Pnt GetMinumumDistanceToGround(gp_Ax1 RAxis, double angle);
 
+        void SetSymmetryAxis(const std::string& axis);
+
     protected:
 		// Cleanup routine
 		void Cleanup(void);
