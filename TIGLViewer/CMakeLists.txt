@@ -10,19 +10,14 @@ set(PROGNAME "TIGLViewer")
 if(QT4_FOUND)
 
 # required opencascade libraries
-set (OCC_LIBS 
-	PTKernel
-	TKBO TKBool TKBRep
-	TKernel TKG2d
-	TKG3d TKGeomAlgo TKGeomBase TKIGES
-	TKMath TKMesh TKOffset
+set (TV_OCC_LIBS ${OCC_LIBS}
+	PTKernel TKOffset
 	TKPShape TKSTEP
-	TKService TKShapeSchema TKShHealing 
-	TKSTL TKTopAlgo TKV2d TKV3d 
-	TKVRML TKXSBase 
+	TKService TKShapeSchema  
+	TKV2d TKV3d TKVRML  
 )
 
-find_package( OpenCASCADE REQUIRED COMPONENTS ${OCC_LIBS})
+find_package( OpenCASCADE REQUIRED COMPONENTS ${TV_OCC_LIBS})
 
 
 # we need opengl in order to build tiglviewer
