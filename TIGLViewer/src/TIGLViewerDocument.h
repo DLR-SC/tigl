@@ -113,6 +113,7 @@ private slots:
 
 	// Wing selection dialogs
 	QString dlgGetWingSelection();
+	QString dlgGetWingComponentSegmentSelection();
 	QString dlgGetWingProfileSelection();
 
 
