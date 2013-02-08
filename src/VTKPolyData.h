@@ -12,7 +12,7 @@ public:
         x = 0.; y = 0.; z = 0.;
     }
 
-    Point(int X,int Y,int Z){
+    Point(double X,double Y,double Z){
         x = X; y = Y; z = Z;
     }
     double dist2(const Point& p) const {

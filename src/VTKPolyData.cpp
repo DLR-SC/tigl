@@ -67,7 +67,7 @@ void VTKPolyData::write_stream(std::ostream& out ){
 
     out << "<?xml version=\"1.0\"?>"  << std::endl;
     out << "<VTKFile type=\"PolyData\" version=\"0.1\" byte_order=\"LittleEndian\" compressor=\"vtkZLibDataCompressor\">" << std::endl;
-    out << "  <PolyData>";
+    out << "  <PolyData>" << endl;
     out << "   <Piece NumberOfPoints=\"" << tmplist.size() <<  "\" NumberOfVerts=\"0\" NumberOfLines=\"0\" NumberOfStrips=\"0\" NumberOfPolys=\"" << polys.size() << "\">"
         << std::endl;
     out << "      <Points>" << std::endl;
@@ -102,7 +102,7 @@ void VTKPolyData::write_stream(std::ostream& out ){
     {
         if ((i % 10 == 0) && (i != (polys.size() - 1)))
         {
-            out << endl << "         ";
+            out << endl << "             ";
         }
         int np = polys[i].getNVert();
         next += np;
