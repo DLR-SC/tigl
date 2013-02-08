@@ -48,6 +48,8 @@ public:
 
 	void setInitialCpacsFileName(QString filename);
 
+	void setInitialControlFile(QString filename);
+
 	// Returns the Open CASCADE Widget and Context.
 	TIGLViewerWidget* getMyOCC();
 

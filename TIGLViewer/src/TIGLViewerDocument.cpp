@@ -281,6 +281,33 @@ QString TIGLViewerDocument::dlgGetWingSelection()
         return "";
 }
 
+// Wing Component Segment selection Dialog
+QString TIGLViewerDocument::dlgGetWingComponentSegmentSelection()
+{
+	QStringList compSegs;
+	bool ok;
+
+	// Initialize wing list
+	tigl::CCPACSConfiguration& config = GetConfiguration();
+	int wingCount = config.GetWingCount();
+	for (int i = 1; i <= wingCount; i++)
+	{
+		tigl::CCPACSWing& wing = config.GetWing(i);
+		for(int j = 1; j <= wing.GetComponentSegmentCount(); ++j){
+			tigl::CTiglAbstractSegment& segment = wing.GetComponentSegment(j);
+			std::string name = segment.GetUID();
+			if (name == "") name = "Unknown component segment";
+			compSegs << name.c_str();
+		}
+	}
+
+	QString choice = QInputDialog::getItem(parent, tr("Select Component Segment"), tr("Available Component Segments:"), compSegs, 0, false, &ok);
+    if(ok)
+        return choice;
+    else
+        return "";
+}
+
 
 // Wing profile Dialog
 QString TIGLViewerDocument::dlgGetWingProfileSelection()
@@ -406,6 +433,19 @@ void TIGLViewerDocument::drawAllFuselagesAndWings( )
 			// Transform by fuselage transformation
 			loft = fuselage.GetFuselageTransformation().Transform(loft);
 			displayShape(loft);
+		}
+
+		if(fuselage.GetSymmetryAxis() == TIGL_NO_SYMMETRY)
+			continue;
+
+		for (int i = 1; i <= fuselage.GetSegmentCount(); i++)
+		{
+			tigl::CCPACSFuselageSegment& segment = (tigl::CCPACSFuselageSegment &) fuselage.GetSegment(i);
+			TopoDS_Shape loft = segment.GetMirroredLoft();
+
+			// Transform by fuselage transformation
+			loft = fuselage.GetFuselageTransformation().Transform(loft);
+			displayShape(loft, Quantity_NOC_MirrShapeCol);
 		}
 	}
 }
@@ -1211,14 +1251,29 @@ void TIGLViewerDocument::drawWingFuselageIntersectionLine()
 
 void TIGLViewerDocument::drawWingComponentSegment()
 {
-	QString wingUid = dlgGetWingSelection();
+	QString wingUid = dlgGetWingComponentSegmentSelection();
 	if(wingUid == "")
 		return;
 
+	TopoDS_Shape* pComponentSegment = NULL;
 	myAISContext->EraseAll(Standard_False);
 	QApplication::setOverrideCursor( Qt::WaitCursor );
-	TopoDS_Shape componentSegment = GetConfiguration().GetWing(wingUid.toStdString()).GetComponentSegment(1).GetLoft();
-	displayShape(componentSegment);
+	for(int i = 1; i <= GetConfiguration().GetWingCount();++i){
+		tigl::CCPACSWing& wing = GetConfiguration().GetWing(i);
+		for(int j = 1; j <= wing.GetComponentSegmentCount();++j){
+			tigl::CTiglAbstractSegment& segment = wing.GetComponentSegment(j);
+			if(segment.GetUID() == wingUid.toStdString()){
+				pComponentSegment = &(segment.GetLoft());
+				break;
+			}
+		}
+	}
+
+	if(pComponentSegment)
+		displayShape(*pComponentSegment);
+	else {
+		cerr << "Component segment \"" << wingUid.toStdString() << "\" not found" << endl;
+	}
 	QApplication::restoreOverrideCursor();
 }
 
