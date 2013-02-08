@@ -68,6 +68,12 @@ int main(int argc, char *argv[])
 		window->setInitialCpacsFileName(PARAMS.initialFilename);
 	}
 
+	if(!PARAMS.controlFile.isEmpty()){
+		if(window->getMyOCC())
+			window->getMyOCC()->repaint();
+		window->setInitialControlFile(PARAMS.controlFile);
+	}
+
 	retval = app.exec();
     window->hide();
     delete window;

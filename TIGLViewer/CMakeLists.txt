@@ -45,6 +45,7 @@ set(tv_src
     TIGLScriptEngine.cpp
     TiglViewerConsole.cpp
     TIGLViewerSettings.cpp
+    TIGLViewerControlFile.cpp
 )
 	
 # normal header files
@@ -54,6 +55,7 @@ set(tv_hdr
     ISession_Text.h
     TIGLViewer.h
     TIGLViewerSettings.h
+    TIGLViewerControlFile.h
 )
 
 # qobject header files that have to be moced
