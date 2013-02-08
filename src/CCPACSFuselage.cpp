@@ -141,13 +141,6 @@ namespace tigl {
         if (tixiGetTextAttribute(tixiHandle, const_cast<char*>(fuselageXPath.c_str()), const_cast<char*>(tempString.c_str()), &ptrUID) == SUCCESS)
             SetUID(ptrUID);
 
-        // Get symmetry axis attribute
-        char* ptrSym = NULL;
-        tempString   = "symmetry";
-        elementPath  = const_cast<char*>(tempString.c_str());
-        if (tixiGetTextAttribute(tixiHandle, const_cast<char*>(fuselageXPath.c_str()), const_cast<char*>(tempString.c_str()), &ptrSym) == SUCCESS)
-            SetSymmetryAxis(ptrSym);
-
         // Get subelement "parent_uid"
         char* ptrParentUID = NULL;
         tempString         = fuselageXPath + "/parentUID";
@@ -198,6 +191,13 @@ namespace tigl {
 
         // Register ourself at the unique id manager
         configuration->GetUIDManager().AddUID(ptrUID, this);
+
+        // Get symmetry axis attribute
+        char* ptrSym = NULL;
+        tempString   = "symmetry";
+        elementPath  = const_cast<char*>(tempString.c_str());
+        if (tixiGetTextAttribute(tixiHandle, const_cast<char*>(fuselageXPath.c_str()), const_cast<char*>(tempString.c_str()), &ptrSym) == SUCCESS)
+            SetSymmetryAxis(ptrSym);
 
         Update();
     }
@@ -406,6 +406,16 @@ namespace tigl {
 		extrema.Perform();
 
 		return extrema.PointOnShape1(1);
+	}
+
+	// sets the symmetry plane for all childs, segments and component segments
+	void CCPACSFuselage::SetSymmetryAxis(const std::string& axis){
+		CTiglAbstractGeometricComponent::SetSymmetryAxis(axis);
+
+		for(int i = 1; i <= segments.GetSegmentCount(); ++i){
+			CCPACSFuselageSegment& segment = segments.GetSegment(i);
+			segment.SetSymmetryAxis(axis);
+		}
 	}
 
 } // end namespace tigl
