@@ -20,7 +20,7 @@
 */
 /**
 * @file
-* @brief  Implementation of an abstrac segment class
+* @brief  Implementation of an abstract segment class
 */
 
 #include "CTiglAbstractSegment.h"
