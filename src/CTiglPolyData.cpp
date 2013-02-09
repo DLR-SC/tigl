@@ -1,4 +1,26 @@
+/*
+* Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
+*
+* Created: 2013-02-09 Martin Siggel <Martin.Siggel@dlr.de>
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*
+* @file CTiglPolyData.cpp
+* @brief Handles polygon data for export and rendering usage
+*/
+
 #include "CTiglPolyData.h"
+#include "CTiglPoint.h"
 
 #include <iostream>
 #include <cassert>
@@ -8,17 +30,19 @@
 #include <fstream>
 #include <cfloat>
 
+using namespace tigl;
+
 // Comparer for gp_Pnts
-struct gp_PntEquals
+struct TiglPointComparer
 {
     
     // function should only return true, if lhs < rhs
-    bool operator()(const PolyPoint lhs, const PolyPoint rhs) const
+    bool operator()(const CTiglPoint lhs, const CTiglPoint rhs) const
     {
         
         // if two points lie inside the epsilon environment
         // they should be the same, hence lhs is not smaller than rhs
-        if(lhs.dist2(rhs) < 1e-10 )
+        if(lhs.distance2(rhs) < 1e-10 )
             return false;
         
         
@@ -38,7 +62,7 @@ struct gp_PntEquals
     }
 };
 
-typedef std::map<PolyPoint, unsigned int, gp_PntEquals> PointMap;
+typedef std::map<CTiglPoint, unsigned int, TiglPointComparer> PointMap;
 
 struct PolyImpl{
     PolyImpl(int num){ myid = num; }
@@ -66,7 +90,7 @@ public:
         min_coord = DBL_MAX;
         max_coord = DBL_MIN;
     }
-    void addPoint(const PolyPoint& p, int polynum);
+    void addPoint(const CTiglPoint &p, int polynum);
     void write_stream(std::ostream&);
     
     
@@ -84,8 +108,8 @@ CTiglPolyData::~CTiglPolyData(){
     delete impl;
 }
 
-void CTiglPolyData::addPoint(const PolyPoint &p, int num){
-    impl->addPoint(p, num);
+void CTiglPolyData::addPoint(const CTiglPoint &p, int id){
+    impl->addPoint(p, id);
 }
 
 void CTiglPolyData::printVTK(){
@@ -101,12 +125,12 @@ void CTiglPolyData::writeVTK(const char * filename){
     impl->write_stream(out);
 }
 
-void PolyDataImpl::addPoint(const PolyPoint& p, int polynum){
+void PolyDataImpl::addPoint(const CTiglPoint& p, int polynum){
     using namespace std;
     //check if point is already in pointlist
     int index = pointlist.size();
     std::pair<PointMap::iterator,bool> ret;
-    ret = pointlist.insert(std::pair<PolyPoint, int>(p,index));
+    ret = pointlist.insert(std::pair<CTiglPoint, int>(p,index));
     index = ret.first->second;
 #ifndef NDEBUG
     if(ret.second == false){
@@ -130,7 +154,7 @@ void PolyDataImpl::addPoint(const PolyPoint& p, int polynum){
 // to do so, we need function like tixiAddAttributeAtElementIndex as the DataArray node comes twice
 void PolyDataImpl::write_stream(std::ostream& out ){
     using namespace std;
-    std::vector<PolyPoint> tmplist;
+    std::vector<CTiglPoint> tmplist;
     tmplist.resize(pointlist.size());
 
     PointMap::iterator it = pointlist.begin();
@@ -155,7 +179,7 @@ void PolyDataImpl::write_stream(std::ostream& out ){
     out << "         <DataArray type=\"Float64\" Name=\"Points\" NumberOfComponents=\"3\" format=\"ascii\" RangeMin=\"" << min_coord << "\" RangeMax=\"" << max_coord << "\">"
         << std::endl;
 
-    std::vector<PolyPoint>::iterator tmpit = tmplist.begin();
+    std::vector<CTiglPoint>::iterator tmpit = tmplist.begin();
     for(; tmpit != tmplist.end(); ++tmpit){
         out <<     "             ";
         out << tmpit->x << " " << tmpit->y << " " << tmpit->z << std::endl;
@@ -195,19 +219,6 @@ void PolyDataImpl::write_stream(std::ostream& out ){
     out <<         "   </Piece>" << std::endl;
     out <<         "  </PolyData>" << std::endl;
     out <<         "</VTKFile>" << std::endl;
-}
-
-void PolyPoint::print()const{
-    std::cout << "(" << x << "," << y << "," << z << ")\n";
-}
-
-void PolyPoint::getMinMax(double & min, double & max) const {
-    min = x;
-    if(y < min) min = y;
-    if(z < min) min = z;
-    max = x;
-    if(y > max) max = y;
-    if(z > max) max = z;
 }
 
 void PolyImpl::addPoint(int index){

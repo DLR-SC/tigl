@@ -42,6 +42,8 @@ namespace tigl {
 		// Copy constructor
 		CTiglPoint(const CTiglPoint& aPoint);
 
+        CTiglPoint(const gp_Pnt& aPoint);
+
 		// Assignment operator
 		CTiglPoint& operator=(const CTiglPoint& aPoint);
 
@@ -80,6 +82,12 @@ namespace tigl {
 
 		// cross product
 		static CTiglPoint cross_prod(const CTiglPoint& a, const CTiglPoint& b);
+
+        // square distance to another point
+        double distance2(const CTiglPoint& point) const;
+
+        // returns minimum and maximum component
+        void getMinMax(double & min, double & max) const;
 
 	public:
 		double x;

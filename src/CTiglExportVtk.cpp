@@ -386,7 +386,7 @@ namespace tigl {
             TopExp_Explorer shellExplorer;
             TopExp_Explorer faceExplorer;
 
-            int iTriang = 1;
+            int iPolyNum = 1;
             CTiglPolyData polyData;
 
             const int segmentCount = component.GetSegmentCount();
@@ -434,21 +434,21 @@ namespace tigl {
                                 FindOrCreatePointIndex(triangleList2, tpoint2);
                                 FindOrCreatePointIndex(triangleList3, tpoint3);
 
-                                polyData.addPoint(PolyPoint(tpoint1.X(), tpoint1.Y(), tpoint1.Z()), iTriang);
-                                polyData.addPoint(PolyPoint(tpoint2.X(), tpoint2.Y(), tpoint2.Z()), iTriang);
-                                polyData.addPoint(PolyPoint(tpoint3.X(), tpoint3.Y(), tpoint3.Z()), iTriang);
+                                polyData.addPoint(tpoint1, iPolyNum);
+                                polyData.addPoint(tpoint2, iPolyNum);
+                                polyData.addPoint(tpoint3, iPolyNum);
                             }
                             else {
                                 FindOrCreatePointIndex(triangleList1, tpoint1);
                                 FindOrCreatePointIndex(triangleList2, tpoint3);
                                 FindOrCreatePointIndex(triangleList3, tpoint2);
 
-                                polyData.addPoint(PolyPoint(tpoint1.X(), tpoint1.Y(), tpoint1.Z()), iTriang);
-                                polyData.addPoint(PolyPoint(tpoint3.X(), tpoint3.Y(), tpoint3.Z()), iTriang);
-                                polyData.addPoint(PolyPoint(tpoint2.X(), tpoint2.Y(), tpoint2.Z()), iTriang);
+                                polyData.addPoint(tpoint1, iPolyNum);
+                                polyData.addPoint(tpoint3, iPolyNum);
+                                polyData.addPoint(tpoint2, iPolyNum);
                             }
 
-                            iTriang++;
+                            iPolyNum++;
 
                             // set data
                             triangleUID.push_back("");
