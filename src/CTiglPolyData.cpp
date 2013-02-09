@@ -77,22 +77,22 @@ public:
 };
 
 
-PolyData::PolyData(): impl(new PolyDataImpl){
+CTiglPolyData::CTiglPolyData(): impl(new PolyDataImpl){
 }
 
-PolyData::~PolyData(){
+CTiglPolyData::~CTiglPolyData(){
     delete impl;
 }
 
-void PolyData::addPoint(const PolyPoint &p, int num){
+void CTiglPolyData::addPoint(const PolyPoint &p, int num){
     impl->addPoint(p, num);
 }
 
-void PolyData::printVTK(){
+void CTiglPolyData::printVTK(){
     impl->write_stream(std::cout);
 }
 
-void PolyData::writeVTK(const char * filename){
+void CTiglPolyData::writeVTK(const char * filename){
     std::ofstream out(filename);
     if(!out.is_open()){
         std::cerr << "Cannot open file to write " << filename << std::endl;

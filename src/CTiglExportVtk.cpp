@@ -387,7 +387,7 @@ namespace tigl {
             TopExp_Explorer faceExplorer;
 
             int iTriang = 1;
-            PolyData polyData;
+            CTiglPolyData polyData;
 
             const int segmentCount = component.GetSegmentCount();
 
