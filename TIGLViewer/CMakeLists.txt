@@ -11,7 +11,7 @@ if(QT4_FOUND)
 
 # required opencascade libraries
 set (TV_OCC_LIBS ${OCC_LIBS}
-	PTKernel TKOffset
+	PTKernel TKOffset TKOpenGl
 	TKPShape TKSTEP
 	TKService TKShapeSchema  
 	TKV2d TKV3d TKVRML  
