@@ -210,6 +210,8 @@ namespace tigl {
             points = FindUniquePoints(shape, component, deflection);
 		}
 
+        return;
+
         const unsigned int triangles = triangleList1.size();
         ofstream file;
         file.open(const_cast<char*>(filename.c_str()) , ios::out);
@@ -386,7 +388,6 @@ namespace tigl {
             TopExp_Explorer shellExplorer;
             TopExp_Explorer faceExplorer;
 
-            int iPolyNum = 1;
             CTiglPolyData polyData;
 
             const int segmentCount = component.GetSegmentCount();
@@ -428,34 +429,22 @@ namespace tigl {
                             const gp_Pnt tpoint2 = nodes(index2).Transformed(nodeTransformation);
                             const gp_Pnt tpoint3 = nodes(index3).Transformed(nodeTransformation);
 
+                            CTiglPolygon polygon;
+
                             // determine unique point indices
                             if ( face.Orientation() == TopAbs_FORWARD){
-                                FindOrCreatePointIndex(triangleList1, tpoint1);
-                                FindOrCreatePointIndex(triangleList2, tpoint2);
-                                FindOrCreatePointIndex(triangleList3, tpoint3);
-
-                                polyData.addPoint(tpoint1, iPolyNum);
-                                polyData.addPoint(tpoint2, iPolyNum);
-                                polyData.addPoint(tpoint3, iPolyNum);
+                                polygon.addPoint(tpoint1);
+                                polygon.addPoint(tpoint2);
+                                polygon.addPoint(tpoint3);
                             }
                             else {
-                                FindOrCreatePointIndex(triangleList1, tpoint1);
-                                FindOrCreatePointIndex(triangleList2, tpoint3);
-                                FindOrCreatePointIndex(triangleList3, tpoint2);
-
-                                polyData.addPoint(tpoint1, iPolyNum);
-                                polyData.addPoint(tpoint3, iPolyNum);
-                                polyData.addPoint(tpoint2, iPolyNum);
+                                polygon.addPoint(tpoint1);
+                                polygon.addPoint(tpoint3);
+                                polygon.addPoint(tpoint2);
                             }
 
-                            iPolyNum++;
-
-                            // set data
-                            triangleUID.push_back("");
-                            triangleSegment.push_back(0);
-                            triangleOnTop.push_back(0);
-                            triangleEta.push_back(0.0);
-                            triangleXsi.push_back(0.0);
+                            polygon.setMetadata("unknown 0 0.0 0.0 0");
+                            polyData.addPolygon(polygon);
 
                         } // for triangles
                     } // for faces
