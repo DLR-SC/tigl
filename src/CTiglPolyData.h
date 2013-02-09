@@ -26,10 +26,10 @@ public:
 };
 
 
-class PolyData{
+class CTiglPolyData{
 public:
-    PolyData();
-    ~PolyData();
+    CTiglPolyData();
+    ~CTiglPolyData();
     
     void addPoint(const PolyPoint& p, int polynum);
     
