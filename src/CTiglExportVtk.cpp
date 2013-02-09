@@ -78,7 +78,7 @@
 #include "BRepBuilderAPI_MakeEdge.hxx"
 #include "GeomAPI_ProjectPointOnSurf.hxx"
 
-#include "CTIGLPolyData.h"
+#include "CTiglPolyData.h"
 
 namespace tigl {
 

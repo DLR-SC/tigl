@@ -1,4 +1,4 @@
-#include "CTIGLPolyData.h"
+#include "CTiglPolyData.h"
 
 #include <iostream>
 #include <cassert>
