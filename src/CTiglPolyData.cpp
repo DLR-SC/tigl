@@ -65,7 +65,18 @@ struct TiglPointComparer
 typedef std::map<CTiglPoint, unsigned int, TiglPointComparer> PointMap;
 
 struct PolyImpl{
-    PolyImpl(int num){ myid = num; }
+    PolyImpl(int num){
+        myid = num;
+        _metadata = "";
+    }
+
+    void setMetadata(const std::string& str){
+        _metadata = str;
+    }
+
+    const std::string& getMetadata() const{
+        return _metadata;
+    }
     
     void addPoint(int index);
     
@@ -76,6 +87,9 @@ struct PolyImpl{
     
 private:
     std::vector<int> pindex;
+
+    //each polygon should have it's own metadata
+    std::string _metadata;
     
 private:
     int myid;
@@ -91,6 +105,8 @@ public:
         max_coord = DBL_MIN;
     }
     void addPoint(const CTiglPoint &p, int polynum);
+    void addPolygon(const CTiglPolygon&);
+
     void write_stream(std::ostream&);
     
     
@@ -125,6 +141,10 @@ void CTiglPolyData::writeVTK(const char * filename){
     impl->write_stream(out);
 }
 
+void CTiglPolyData::addPolygon(const CTiglPolygon & p){
+    impl->addPolygon(p);
+}
+
 void PolyDataImpl::addPoint(const CTiglPoint& p, int polynum){
     using namespace std;
     //check if point is already in pointlist
@@ -149,6 +169,17 @@ void PolyDataImpl::addPoint(const CTiglPoint& p, int polynum){
     if(mmin < min_coord) min_coord = mmin;
     if(mmax > max_coord) max_coord = mmax;
 }
+
+
+void PolyDataImpl::addPolygon(const CTiglPolygon & poly){
+    int polynum = polys.size() + 1;
+    for(unsigned int i = 0 ; i < poly.getNPoints(); ++i){
+        addPoint(poly.getPointConst(i), polynum);
+    }
+    assert(polynum = polys.size());
+    polys.at(polynum-1).setMetadata(poly.getMetadata());
+}
+
 
 // we should switch to tixi ad some point
 // to do so, we need function like tixiAddAttributeAtElementIndex as the DataArray node comes twice
@@ -207,18 +238,25 @@ void PolyDataImpl::write_stream(std::ostream& out ){
     {
         if ((i % 10 == 0) && (i != (polys.size() - 1)))
         {
-            out << endl << "             ";
+            out << endl << "            ";
         }
         int np = polys[i].getNVert();
         next += np;
         out << " " << next;
     }
-    out << endl << "         </DataArray>" << endl;
+    out << endl
+        << "         </DataArray>" << endl;
 
-    out <<         "      </Polys>" << std::endl;
-    out <<         "   </Piece>" << std::endl;
-    out <<         "  </PolyData>" << std::endl;
-    out <<         "</VTKFile>" << std::endl;
+    // write metadata
+    out << "         <MetaData elements=\"uID segmentIndex eta xsi isOnTop\">" << endl;
+    for (unsigned int i = 0; i < polys.size(); i ++){
+        out << "             " << polys.at(i).getMetadata() << endl;
+    }
+    out <<  "        </MetaData>" << endl;
+    out <<  "      </Polys>" << std::endl;
+    out <<  "   </Piece>" << std::endl;
+    out <<  "  </PolyData>" << std::endl;
+    out <<  "</VTKFile>" << std::endl;
 }
 
 void PolyImpl::addPoint(int index){
@@ -236,4 +274,33 @@ void PolyImpl::repair(){
         std::cerr << "ERROR: polygon " << myid << " must contain at least 3 points!" << pindex.size()<< std::endl;
         exit(1);
     }
+}
+
+CTiglPolygon::CTiglPolygon(){
+    _metadata.clear();
+    _points.clear();
+}
+
+unsigned int CTiglPolygon::getNPoints() const{
+    return _points.size();
+}
+
+void CTiglPolygon::addPoint(const CTiglPoint & p){
+    _points.push_back(p);
+}
+
+CTiglPoint& CTiglPolygon::getPoint(unsigned int index){
+    return _points.at(index);
+}
+
+const CTiglPoint& CTiglPolygon::getPointConst(unsigned int index) const{
+    return _points.at(index);
+}
+
+void CTiglPolygon::setMetadata(const char * text){
+    _metadata = text;
+}
+
+const char * CTiglPolygon::getMetadata() const{
+    return _metadata.c_str();
 }
