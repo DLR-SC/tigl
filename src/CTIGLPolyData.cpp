@@ -1,4 +1,4 @@
-#include "vtkpolydata.h"
+#include "CTIGLPolyData.h"
 
 #include <iostream>
 #include <cassert>
@@ -6,13 +6,107 @@
 #include <map>
 
 #include <fstream>
+#include <cfloat>
 
-void VTKPolyData::addPoint(const Point& p, int polynum){
+// Comparer for gp_Pnts
+struct gp_PntEquals
+{
+    
+    // function should only return true, if lhs < rhs
+    bool operator()(const PolyPoint lhs, const PolyPoint rhs) const
+    {
+        
+        // if two points lie inside the epsilon environment
+        // they should be the same, hence lhs is not smaller than rhs
+        if(lhs.dist2(rhs) < 1e-10 )
+            return false;
+        
+        
+        // as lhs and rhs don't lie inside an epsilon environment
+        if(lhs.x < rhs.x)
+            return true;
+        else if (lhs.x == rhs.x) {
+            if(lhs.y < rhs.y)
+                return true;
+            else if(lhs.y == rhs.y)
+                return lhs.z < rhs.z;
+            else
+                return false;
+        }
+        else
+            return false;
+    }
+};
+
+typedef std::map<PolyPoint, unsigned int, gp_PntEquals> PointMap;
+
+struct PolyImpl{
+    PolyImpl(int num){ myid = num; }
+    
+    void addPoint(int index);
+    
+    void repair();
+    
+    int getNVert(){ return pindex.size();}
+    int getPointIndex(int i) { return pindex.at(i); }
+    
+private:
+    std::vector<int> pindex;
+    
+private:
+    int myid;
+};
+
+
+class PolyDataImpl {
+public:
+    PolyDataImpl(){
+        pointlist.clear();
+        polys.clear();
+        min_coord = DBL_MAX;
+        max_coord = DBL_MIN;
+    }
+    void addPoint(const PolyPoint& p, int polynum);
+    void write_stream(std::ostream&);
+    
+    
+    double min_coord;
+    double max_coord;
+    PointMap pointlist;
+    std::vector<PolyImpl> polys;
+};
+
+
+PolyData::PolyData(): impl(new PolyDataImpl){
+}
+
+PolyData::~PolyData(){
+    delete impl;
+}
+
+void PolyData::addPoint(const PolyPoint &p, int num){
+    impl->addPoint(p, num);
+}
+
+void PolyData::printVTK(){
+    impl->write_stream(std::cout);
+}
+
+void PolyData::writeVTK(const char * filename){
+    std::ofstream out(filename);
+    if(!out.is_open()){
+        std::cerr << "Cannot open file to write " << filename << std::endl;
+        return;
+    }
+    impl->write_stream(out);
+}
+
+void PolyDataImpl::addPoint(const PolyPoint& p, int polynum){
     using namespace std;
     //check if point is already in pointlist
     int index = pointlist.size();
     std::pair<PointMap::iterator,bool> ret;
-    ret = pointlist.insert(std::pair<Point, int>(p,index));
+    ret = pointlist.insert(std::pair<PolyPoint, int>(p,index));
     index = ret.first->second;
 #ifndef NDEBUG
     if(ret.second == false){
@@ -21,7 +115,7 @@ void VTKPolyData::addPoint(const Point& p, int polynum){
     }
 #endif
     if(polynum > (int) polys.size()){
-        polys.push_back(Polygon(polynum));
+        polys.push_back(PolyImpl(polynum));
     }
     assert(polynum == polys.size());
     polys.at(polynum-1).addPoint(index);
@@ -32,24 +126,11 @@ void VTKPolyData::addPoint(const Point& p, int polynum){
     if(mmax > max_coord) max_coord = mmax;
 }
 
-void VTKPolyData::write(const char * filename){
-    std::ofstream out(filename);
-    if(!out.is_open()){
-        std::cerr << "Cannot open file to write " << filename << std::endl;
-        return;
-    }
-    write_stream(out);
-}
-
-void VTKPolyData::print(){
-    write_stream(std::cout);
-}
-
 // we should switch to tixi ad some point
 // to do so, we need function like tixiAddAttributeAtElementIndex as the DataArray node comes twice
-void VTKPolyData::write_stream(std::ostream& out ){
+void PolyDataImpl::write_stream(std::ostream& out ){
     using namespace std;
-    std::vector<Point> tmplist;
+    std::vector<PolyPoint> tmplist;
     tmplist.resize(pointlist.size());
 
     PointMap::iterator it = pointlist.begin();
@@ -58,7 +139,7 @@ void VTKPolyData::write_stream(std::ostream& out ){
         tmplist.at(index) = it->first;
     }
 
-    std::vector<Polygon>::iterator pit = polys.begin();
+    std::vector<PolyImpl>::iterator pit = polys.begin();
     int nvert = 0;;
     for(; pit != polys.end(); ++pit){
         pit->repair();
@@ -74,7 +155,7 @@ void VTKPolyData::write_stream(std::ostream& out ){
     out << "         <DataArray type=\"Float64\" Name=\"Points\" NumberOfComponents=\"3\" format=\"ascii\" RangeMin=\"" << min_coord << "\" RangeMax=\"" << max_coord << "\">"
         << std::endl;
 
-    std::vector<Point>::iterator tmpit = tmplist.begin();
+    std::vector<PolyPoint>::iterator tmpit = tmplist.begin();
     for(; tmpit != tmplist.end(); ++tmpit){
         out <<     "             ";
         out << tmpit->x << " " << tmpit->y << " " << tmpit->z << std::endl;
@@ -116,11 +197,11 @@ void VTKPolyData::write_stream(std::ostream& out ){
     out <<         "</VTKFile>" << std::endl;
 }
 
-void Point::print()const{
+void PolyPoint::print()const{
     std::cout << "(" << x << "," << y << "," << z << ")\n";
 }
 
-void Point::getMinMax(double & min, double & max) const {
+void PolyPoint::getMinMax(double & min, double & max) const {
     min = x;
     if(y < min) min = y;
     if(z < min) min = z;
@@ -129,14 +210,14 @@ void Point::getMinMax(double & min, double & max) const {
     if(z > max) max = z;
 }
 
-void Polygon::addPoint(int index){
+void PolyImpl::addPoint(int index){
     // dont add same point twice
     if(pindex.size() == 0 || pindex.back() != index){
          pindex.push_back(index);
     }
 }
 
-void Polygon::repair(){
+void PolyImpl::repair(){
     if(pindex.size() > 0 && pindex.front() == pindex.back()){
         pindex.pop_back();
     }
