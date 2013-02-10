@@ -38,7 +38,7 @@ set (OCC_LIBS
 )
 
 find_package( OpenCASCADE REQUIRED COMPONENTS ${OCC_LIBS})
-find_package( TIXI REQUIRED)
+find_package( TIXI 2.0.3 REQUIRED)
 
 # code coverage analysis
 IF (CMAKE_BUILD_TYPE STREQUAL "Debug")
