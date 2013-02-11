@@ -53,10 +53,22 @@ private:
     std::vector<CTiglPoint> _points;
 };
 
+// @TODO: we should add also a normal vector for each point
 class CTiglPolyData{
 public:
     CTiglPolyData();
     ~CTiglPolyData();
+    
+    // creates a new surface, switches current surface to the new one
+    // we store the polygon data as different surfaces
+    // to allow hard edges
+    void createNewSurface();
+    
+    // returns number of surfaces
+    unsigned int getNSurfaces();
+    
+    // changes the current surface, we count from 1 to getNSurfaces
+    void switchSurface(unsigned int iSurf);
     
     // adds a point to a polygon with a specific id
     void addPoint(const class CTiglPoint& p, int id);
