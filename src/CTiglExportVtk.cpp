@@ -447,6 +447,7 @@ namespace tigl {
                             polyData.addPolygon(polygon);
 
                         } // for triangles
+                        polyData.createNewSurface();
                     } // for faces
                 } // for shells
                 if(component.GetComponentType() == TIGL_COMPONENT_FUSELAGE) break;
