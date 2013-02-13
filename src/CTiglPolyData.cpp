@@ -286,7 +286,7 @@ unsigned int CTiglPolyData::getNPointsOfPoly(unsigned int ipoly) const {
 }
 
 const CTiglPoint& CTiglPolyData::getPointOfPoly(unsigned int iPoint, unsigned int iPoly) const {
-	return impl->getPointOfPoly(iPoint,  iPoly);
+    return impl->getPointOfPoly(iPoint,  iPoly);
 }
 
 //--------------------------------------------------------------------------//
@@ -387,27 +387,27 @@ unsigned int PolyDataImpl::getNSurfaces(){
 }
 
 unsigned int PolyDataImpl::getNPolygons() const{
-	return itCurrentSurface->polys.size();
+    return itCurrentSurface->polys.size();
 }
 
 unsigned int PolyDataImpl::getNPointsOfPoly(unsigned int ipoly) const{
-	if(ipoly >= 0 && ipoly < getNPolygons())
-		return itCurrentSurface->polys[ipoly].getNVert();
-	else
-		throw tigl::CTiglError("Illegal Polygon Index at PolyDataImpl::getNPointsOfPoly", TIGL_INDEX_ERROR);
+    if(ipoly >= 0 && ipoly < getNPolygons())
+        return itCurrentSurface->polys[ipoly].getNVert();
+    else
+        throw tigl::CTiglError("Illegal Polygon Index at PolyDataImpl::getNPointsOfPoly", TIGL_INDEX_ERROR);
 }
 
 const CTiglPoint& PolyDataImpl::getPointOfPoly(unsigned int ipoint, unsigned int ipoly) const {
-	if(ipoly >= 0 && ipoly < getNPolygons()){
-		if (ipoint >= 0 && ipoint < getNPointsOfPoly(ipoly)){
-			int pointIndex = itCurrentSurface->polys[ipoly].getPointIndex(ipoint);
-			return itCurrentSurface->pPoints[pointIndex]->getPoint();
-		}
-		else
-			throw tigl::CTiglError("Illegal Point Index at PolyDataImpl::getPointOfPoly", TIGL_INDEX_ERROR);
-	}
-	else
-		throw tigl::CTiglError("Illegal Polygon Index at PolyDataImpl::getPointOfPoly", TIGL_INDEX_ERROR);
+    if(ipoly >= 0 && ipoly < getNPolygons()){
+        if (ipoint >= 0 && ipoint < getNPointsOfPoly(ipoly)){
+            int pointIndex = itCurrentSurface->polys[ipoly].getPointIndex(ipoint);
+            return itCurrentSurface->pPoints[pointIndex]->getPoint();
+        }
+        else
+            throw tigl::CTiglError("Illegal Point Index at PolyDataImpl::getPointOfPoly", TIGL_INDEX_ERROR);
+    }
+    else
+        throw tigl::CTiglError("Illegal Polygon Index at PolyDataImpl::getPointOfPoly", TIGL_INDEX_ERROR);
 }
 
 //--------------------------------------------------------------//
