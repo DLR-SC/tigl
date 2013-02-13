@@ -82,6 +82,33 @@ TEST(TiglPolyData, cube_export_vtk_standard)
 	poly.addPolygon(f6);
 
 	poly.writeVTK("vtk_cube_standard.vtp");
+
+	//check polygon data
+	ASSERT_EQ(6, poly.getNPolygons());
+
+	ASSERT_EQ(4, poly.getNPointsOfPoly(0));
+	ASSERT_NEAR(0., poly.getPointOfPoly(0,0).distance2(p1), 1e-10);
+	ASSERT_NEAR(0., poly.getPointOfPoly(1,0).distance2(p2), 1e-10);
+	ASSERT_NEAR(0., poly.getPointOfPoly(2,0).distance2(p3), 1e-10);
+	ASSERT_NEAR(0., poly.getPointOfPoly(3,0).distance2(p4), 1e-10);
+
+	ASSERT_EQ(4, poly.getNPointsOfPoly(1));
+	ASSERT_NEAR(0., poly.getPointOfPoly(0,1).distance2(p6), 1e-10);
+	ASSERT_NEAR(0., poly.getPointOfPoly(1,1).distance2(p5), 1e-10);
+	ASSERT_NEAR(0., poly.getPointOfPoly(2,1).distance2(p8), 1e-10);
+	ASSERT_NEAR(0., poly.getPointOfPoly(3,1).distance2(p7), 1e-10);
+
+	ASSERT_EQ(4, poly.getNPointsOfPoly(2));
+	ASSERT_NEAR(0., poly.getPointOfPoly(0,2).distance2(p5), 1e-10);
+	ASSERT_NEAR(0., poly.getPointOfPoly(1,2).distance2(p1), 1e-10);
+	ASSERT_NEAR(0., poly.getPointOfPoly(2,2).distance2(p4), 1e-10);
+	ASSERT_NEAR(0., poly.getPointOfPoly(3,2).distance2(p8), 1e-10);
+
+	ASSERT_EQ(4, poly.getNPointsOfPoly(3));
+	ASSERT_NEAR(0., poly.getPointOfPoly(0,3).distance2(p2), 1e-10);
+	ASSERT_NEAR(0., poly.getPointOfPoly(1,3).distance2(p6), 1e-10);
+	ASSERT_NEAR(0., poly.getPointOfPoly(2,3).distance2(p7), 1e-10);
+	ASSERT_NEAR(0., poly.getPointOfPoly(3,3).distance2(p3), 1e-10);
 }
 
 TEST(TiglPolyData, cube_export_vtk_withnormals)
