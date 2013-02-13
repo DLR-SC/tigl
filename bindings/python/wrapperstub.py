@@ -71,7 +71,7 @@ class Tigl(object):
             self._validateReturnValue(TiglReturnCode.TIGL_OPEN_FAILED) # raise a generic exception
         uuid = c_char_p(configuration)
         tiglReturn = self.TIGL.tiglOpenCPACSConfiguration(tixi._handle, uuid, byref(self._handle))
-        if tiglReturn != TiglReturnCode.SUCCESS:
+        if tiglReturn != TiglReturnCode.TIGL_SUCCESS:
             self._handle.value = -1
         self._validateReturnValue(tiglReturn, configuration)
     
