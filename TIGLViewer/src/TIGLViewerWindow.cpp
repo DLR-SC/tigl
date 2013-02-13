@@ -25,6 +25,7 @@
 #include <QtCore/QFileInfo>
 #include <QtCore/QString>
 #include <QShortcut>
+#include <QTimer>
 
 #include <BRepBuilderAPI_MakeVertex.hxx>
 #include <TopoDS_Vertex.hxx>
@@ -122,6 +123,16 @@ TIGLViewerWindow::TIGLViewerWindow()
     myOCC->setContext(myVC->getContext());
     Handle(AIS_InteractiveContext) context = myVC->getContext();
 
+    // we create a timer to workaround QFileSystemWatcher bug,
+    // which emits multiple signals in a few milliseconds. This caused
+    // TIGLViewer to also open a document many times.
+    // Now, when we get a signal, we start the timer and only after the
+    // timer times out, we reopen the cpacs config
+    openTimer = new QTimer(this);
+    openTimer->setSingleShot(true);
+    // the timeout of 200ms is a bit arbitrary but should be conservative enough
+    // to catch all events
+    openTimer->setInterval(200);
 
     //redirect everything to TIGL console, let error messages be printed in red
     stdoutStream = new QDebugStream(std::cout);
@@ -163,7 +174,7 @@ void TIGLViewerWindow::setInitialCpacsFileName(QString filename)
 
 void TIGLViewerWindow::setInitialControlFile(QString filename){
 	TIGLViewerControlFile cf;
-	if(cf.read(filename.toStdString().c_str()) == SUCCESS){
+	if(cf.read(filename.toStdString().c_str()) == CF_SUCCESS){
 		if(cf.showConsole == CF_TRUE){
 			console->setVisible(true);
 			showConsoleAction->setChecked(true);
@@ -251,7 +262,7 @@ void TIGLViewerWindow::openFile(const QString& fileName)
             updateMenus(cpacsConfiguration->getCpacsHandle());
             watcher = new QFileSystemWatcher();
             watcher->addPath(fileInfo.absoluteFilePath());
-            QObject::connect(watcher, SIGNAL(fileChanged(QString)), cpacsConfiguration, SLOT(updateConfiguration()));
+            QObject::connect(watcher, SIGNAL(fileChanged(QString)), openTimer, SLOT(start()));
         }
         else {
 
@@ -602,6 +613,7 @@ void TIGLViewerWindow::connectSignals()
     connect(consoleDockWidget, SIGNAL(visibilityChanged(bool)), showConsoleAction, SLOT(setChecked(bool)));
     connect(showWireframeAction, SIGNAL(toggled(bool)), myVC, SLOT(wireFrame(bool)));
 
+    connect(openTimer, SIGNAL(timeout()), cpacsConfiguration, SLOT(updateConfiguration()));
 
 	// CPACS Wing Actions
 	connect(drawWingProfilesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingProfiles()));
