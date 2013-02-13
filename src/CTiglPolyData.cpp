@@ -139,8 +139,8 @@ struct PolyIndexList{
     
     void repair();
     
-    int getNVert(){ return pindex.size();}
-    int getPointIndex(int i) { return pindex.at(i); }
+    int getNVert() const { return pindex.size();}
+    int getPointIndex(int i) const { return pindex.at(i); }
     
 private:
     std::vector<int> pindex;
@@ -169,6 +169,10 @@ public:
 
     void writeVTKPiece(TixiDocumentHandle handle, unsigned int iSurf);
     
+    unsigned int getNPolygons() const;
+    unsigned int getNPointsOfPolygon(unsigned int ipoly) const;
+    const CTiglPoint& getPointOfPolygon(unsigned int ipoint, unsigned int ipoly) const;
+
     double min_coord;
     double max_coord;
     bool has_normals;
@@ -370,10 +374,10 @@ void PolyDataImpl::writeVTK(TixiDocumentHandle handle){
 
     tixiCreateElement(handle, "/VTKFile", "PolyData");
 
-    std::vector<SurfaceImpl>::iterator it = _surfaces.begin();
+    std::vector<SurfaceImpl>::iterator surf_it = _surfaces.begin();
     unsigned int i = 1;
-    for(;it != _surfaces.end(); ++it, ++i){
-        it->writeVTKPiece(handle, i);
+    for(;surf_it  != _surfaces.end(); ++surf_it, ++i){
+        surf_it ->writeVTKPiece(handle, i);
     }
 }
 
@@ -387,27 +391,15 @@ unsigned int PolyDataImpl::getNSurfaces(){
 }
 
 unsigned int PolyDataImpl::getNPolygons() const{
-    return itCurrentSurface->polys.size();
+    return itCurrentSurface->getNPolygons();
 }
 
 unsigned int PolyDataImpl::getNPointsOfPoly(unsigned int ipoly) const{
-    if(ipoly >= 0 && ipoly < getNPolygons())
-        return itCurrentSurface->polys[ipoly].getNVert();
-    else
-        throw tigl::CTiglError("Illegal Polygon Index at PolyDataImpl::getNPointsOfPoly", TIGL_INDEX_ERROR);
+    return itCurrentSurface->getNPointsOfPolygon(ipoly);
 }
 
 const CTiglPoint& PolyDataImpl::getPointOfPoly(unsigned int ipoint, unsigned int ipoly) const {
-    if(ipoly >= 0 && ipoly < getNPolygons()){
-        if (ipoint >= 0 && ipoint < getNPointsOfPoly(ipoly)){
-            int pointIndex = itCurrentSurface->polys[ipoly].getPointIndex(ipoint);
-            return itCurrentSurface->pPoints[pointIndex]->getPoint();
-        }
-        else
-            throw tigl::CTiglError("Illegal Point Index at PolyDataImpl::getPointOfPoly", TIGL_INDEX_ERROR);
-    }
-    else
-        throw tigl::CTiglError("Illegal Polygon Index at PolyDataImpl::getPointOfPoly", TIGL_INDEX_ERROR);
+    return itCurrentSurface->getPointOfPolygon(ipoint, ipoly);
 }
 
 //--------------------------------------------------------------//
@@ -498,16 +490,14 @@ void SurfaceImpl::addPolygon(const CTiglPolygon & poly){
 // writes the polygon data of a surface (in vtk they call it piece)
 void SurfaceImpl::writeVTKPiece(TixiDocumentHandle handle, unsigned int iSurf){
     using namespace std;
-    if(pointlist.size() <= 0){
+    if(getNPolygons() <= 0){
         return;
     }
 
     // count number of vertices - this is not necessarily the number of points
-    std::vector<PolyIndexList>::iterator pit = polys.begin();
     int nvert = 0;;
-    for(; pit != polys.end(); ++pit){
-        pit->repair();
-        nvert += pit->getNVert();
+    for(unsigned int i = 0; i < getNPolygons(); ++i){
+        nvert += getNPointsOfPolygon(i);
     }
 
     if(nvert <= 0){
@@ -524,7 +514,7 @@ void SurfaceImpl::writeVTKPiece(TixiDocumentHandle handle, unsigned int iSurf){
     tixiAddIntegerAttribute(handle, piecepath, "NumberOfVerts",  0, "%d");
     tixiAddIntegerAttribute(handle, piecepath, "NumberOfLines",  0, "%d");
     tixiAddIntegerAttribute(handle, piecepath, "NumberOfStrips", 0, "%d");
-    tixiAddIntegerAttribute(handle, piecepath, "NumberOfPolys", polys.size(), "%d");
+    tixiAddIntegerAttribute(handle, piecepath, "NumberOfPolys", getNPolygons(), "%d");
 
     tixiCreateElement(handle, piecepath, "Points");
 
@@ -580,13 +570,13 @@ void SurfaceImpl::writeVTKPiece(TixiDocumentHandle handle, unsigned int iSurf){
     //polygons
     {
     tixiCreateElement(handle, piecepath, "Polys");
-    pit = polys.begin();
+    std::vector<PolyIndexList>::iterator il_iter = polys.begin();
     std::stringstream stream2;
     stream2 << std::endl <<   "        ";
-    for(; pit != polys.end(); ++pit){
+    for(; il_iter != polys.end(); ++il_iter){
         stream2 <<     "    ";
-        for(int j = 0; j < pit->getNVert(); ++j ){
-            stream2 << pit->getPointIndex(j)<< " ";
+        for(int j = 0; j < il_iter->getNVert(); ++j ){
+            stream2 << il_iter->getPointIndex(j)<< " ";
         }
         stream2  << std::endl <<  "        ";;
     }
@@ -642,6 +632,30 @@ void SurfaceImpl::writeVTKPiece(TixiDocumentHandle handle, unsigned int iSurf){
     tixiAddTextAttribute(handle,  tmpPath, "elements", "uID segmentIndex eta xsi isOnTop" );
     }
 
+}
+
+
+unsigned int SurfaceImpl::getNPolygons() const{
+    return polys.size();
+}
+unsigned int SurfaceImpl::getNPointsOfPolygon(unsigned int ipoly) const{
+    if(ipoly >= 0 && ipoly < getNPolygons())
+        return polys[ipoly].getNVert();
+    else
+        throw tigl::CTiglError("Illegal Polygon Index at SurfaceImpl::getNPointsOfPolygon", TIGL_INDEX_ERROR);
+}
+
+const CTiglPoint& SurfaceImpl::getPointOfPolygon(unsigned int ipoint, unsigned int ipoly) const{
+    if(ipoly >= 0 && ipoly < getNPolygons()){
+        if (ipoint >= 0 && ipoint < getNPointsOfPolygon(ipoly)){
+            int pointIndex = polys[ipoly].getPointIndex(ipoint);
+            return pPoints[pointIndex]->getPoint();
+        }
+        else
+            throw tigl::CTiglError("Illegal Point Index at SurfaceImpl::getPointOfPolygon", TIGL_INDEX_ERROR);
+    }
+    else
+        throw tigl::CTiglError("Illegal Polygon Index at SurfaceImpl::getPointOfPolygon", TIGL_INDEX_ERROR);
 }
 
 // --------------------------------------------------------------------------//
