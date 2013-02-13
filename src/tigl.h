@@ -1170,6 +1170,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSymmetry(TiglCPACSConfigurationHand
 * 										  character*n wingUID,
 * 										  integer returnCode)
 *
+* #PY:4,5#
 *
 * @param cpacsHandle     		(in)  : Handle for the CPACS configuration
 * @param componentSegmentUID    (in)  : UID of the componentSegment to search for
@@ -1200,7 +1201,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentFindSegment(TiglCPACSC
 * 										  				character*n segmentUID,
 * 										  				real segmentEta, real segmentXsi
 * 										  				integer returnCode)
-*
+* #PY:3,4,5,6#
 *
 * @param cpacsHandle     		(in)  : Handle for the CPACS configuration
 * @param componentSegmentUID    (in)  : UID of the componentSegment to search for
