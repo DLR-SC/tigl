@@ -13,7 +13,7 @@ if(QT4_FOUND)
 find_package(OpenGL REQUIRED)
 
 set( QT_USE_QTSCRIPT TRUE )
-include(${QT_USE_FILE})
+include(${QT_USE_FILE} ${GLOG_INCLUDE_DIR})
 add_definitions(${QT_DEFINITIONS})
 
 set(tv_src
@@ -139,6 +139,7 @@ target_link_libraries(${PROGNAME}
 	${QT_LIBRARIES} 
 	${OPENGL_LIBRARIES} 
 	${OpenCASCADE_LIBRARIES} 
+	${GLOG_LIBRARIES}
 )
 
 #--------------------------------------------------------------------------------

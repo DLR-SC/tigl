@@ -68,9 +68,13 @@ if(VLD_FOUND)
 endif()
 
 
+# find or build logger
+find_package( GLOG )
+
 add_subdirectory(src)
 add_subdirectory(TIGLViewer)
 add_subdirectory(bindings)
+
 
 #create gtests, override gtest standard setting
 option(TIGL_BUILD_TESTS "Build TIGL Testsuite" OFF)
