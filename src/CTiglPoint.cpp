@@ -43,7 +43,7 @@ namespace tigl {
 		z = aPoint.z;
 	}
 
-    CTiglPoint::CTiglPoint(const gp_Pnt &aPoint){
+    CTiglPoint::CTiglPoint(const gp_XYZ &aPoint){
         x = aPoint.X();
         y = aPoint.Y();
         z = aPoint.Z();

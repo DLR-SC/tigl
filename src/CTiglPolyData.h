@@ -40,7 +40,12 @@ public:
     unsigned int getNPoints() const;
 
     CTiglPoint& getPoint(unsigned int index);
+
+    //returns reference to point object
     const CTiglPoint& getPointConst(unsigned int index) const;
+
+    //returns reference to normal vector
+    const CTiglPoint& getNormConst(unsigned int index) const;
 
     // sets a metadata text, can be used for vtk export
     void setMetadata(const char *);
@@ -48,9 +53,12 @@ public:
     // returns metadata text
     const char * getMetadata() const;
 
+    void addNormal(const CTiglPoint&);
+
 private:
     std::string _metadata;
     std::vector<CTiglPoint> _points;
+    std::vector<CTiglPoint> _normals;
 };
 
 // @TODO: we should add also a normal vector for each point
@@ -76,6 +84,9 @@ public:
     // adds a polygon to the object
     void addPolygon(const class CTiglPolygon&);
     
+    // switch , if to store normal vectors
+    void enableNormals(bool);
+
     void writeVTK(const char * filename);
     void printVTK();
     
