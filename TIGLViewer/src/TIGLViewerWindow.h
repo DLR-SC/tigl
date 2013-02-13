@@ -114,6 +114,7 @@ private:
     class TIGLScriptEngine * scriptEngine;
     class TIGLViewerSettingsDialog * settingsDialog;
     class TIGLViewerSettings * tiglViewerSettings;
+    class QTimer * openTimer;
 
 };
 
