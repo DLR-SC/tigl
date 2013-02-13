@@ -42,6 +42,12 @@ FIND_LIBRARY(TIXI_LIBRARY NAMES
 )
 # MARK_AS_ADVANCED(TIXI_LIBRARY)
 
+# get tixi version
+if(EXISTS ${TIXI_INCLUDE_DIR}/tixi_version.h)
+  FILE(STRINGS "${TIXI_INCLUDE_DIR}/tixi_version.h" tixi_version_str REGEX "^#define[\t ]+TIXI_VERSION_STRING[\t ]+\".*\"")
+  STRING(REGEX REPLACE "^#define[\t ]+TIXI_VERSION_STRING[\t ]+\"([^\"]*)\".*" "\\1" TIXI_VERSION_STRING "${tixi_version_str}")
+endif()
+
 if(WIN32)
 FIND_PATH(TIXI_BINARY_DIR 
 	NAMES TIXI.dll
