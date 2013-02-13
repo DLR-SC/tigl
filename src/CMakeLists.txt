@@ -8,7 +8,7 @@ configure_file (
 source_group(Fuselage REGULAR_EXPRESSION "CCPACSFuselage")
 source_group(Wing REGULAR_EXPRESSION "CCPACSWing")
 
-include_directories(${OpenCASCADE_INCLUDE_DIR} ${TIXI_INCLUDE_DIRS} ${CMAKE_CURRENT_BINARY_DIR})
+include_directories(${OpenCASCADE_INCLUDE_DIR} ${TIXI_INCLUDE_DIRS} ${CMAKE_CURRENT_BINARY_DIR} ${GLOG_INCLUDE_DIR})
 
 file(GLOB TIGL_SRC
     "*.h"
@@ -21,7 +21,7 @@ endif(MSVC)
 
 # tigl dll/so library
 add_library(TIGL SHARED ${TIGL_SRC})
-target_link_libraries (TIGL ${OpenCASCADE_LIBRARIES} ${TIXI_LIBRARIES} ${VLD_LIBRARIES})
+target_link_libraries (TIGL ${OpenCASCADE_LIBRARIES} ${TIXI_LIBRARIES} ${VLD_LIBRARIES} ${GLOG_LIBRARIES})
 set_target_properties( TIGL PROPERTIES VERSION ${TIGL_VERSION})
 set_target_properties( TIGL PROPERTIES SOVERSION "${TIGL_VERSION_MAJOR}")
 

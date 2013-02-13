@@ -39,6 +39,7 @@
 #include "CTiglExportIges.h"
 #include "CTiglExportStl.h"
 #include "CTiglExportVtk.h"
+#include "CTiglLogger.h"
 
 #include "gp_Pnt.hxx"
 #include "TopoDS_Shape.hxx"
@@ -50,14 +51,17 @@
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglOpenCPACSConfiguration(TixiDocumentHandle tixiHandle, char* configurationUID, TiglCPACSConfigurationHandle* cpacsHandlePtr)
 {
+    // Initialize logger
+    tigl::CTiglLogger& Logger = tigl::CTiglLogger::GetLogger();
+
     if (cpacsHandlePtr == 0) {
-        std::cerr << "Error: Null pointer argument for cpacsHandlePtr in function call to tiglOpenCPACSConfiguration." << std::endl;
+        LOG(ERROR) << "Error: Null pointer argument for cpacsHandlePtr in function call to tiglOpenCPACSConfiguration." << std::endl;
         return TIGL_NULL_POINTER;
     }
 
 	/* check TIXI Version */
 	if( atof(tixiGetVersion()) < atof(tiglGetVersion()) ) {
-		std::cerr << "Incompatible TIXI Version in use with this TIGL" << std::endl;
+	    LOG(ERROR) << "Incompatible TIXI Version in use with this TIGL" << std::endl;
 		return TIGL_WRONG_TIXI_VERSION;
 	}
 
@@ -68,20 +72,20 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglOpenCPACSConfiguration(TixiDocumentHandle 
         if(tixiRet != SUCCESS){
             // NO CPACS Version Information in Header
             if(tixiRet == ELEMENT_PATH_NOT_UNIQUE)
-                std::cerr << "Warning: Multiple CPACS version entries found. Please verify CPACS file." << std::endl;
+                LOG(ERROR) << "Warning: Multiple CPACS version entries found. Please verify CPACS file." << std::endl;
             else if(tixiRet == ELEMENT_NOT_FOUND)
-                std::cerr << "Warning: No CPACS version information in file header. CPACS file seems to be too old." << std::endl;
+                LOG(ERROR) << "Warning: No CPACS version information in file header. CPACS file seems to be too old." << std::endl;
             else
-                std::cerr << "Error: reading in CPACS version," << std::endl;
+                LOG(ERROR) << "Error: reading in CPACS version," << std::endl;
             return TIGL_WRONG_CPACS_VERSION;
         }
         else {
             if (dcpacsVersion < (double) TIGL_VERSION_MAJOR){
-                std::cerr << "Error: too old CPACS dataset. CPACS version has to be at least " << (double) TIGL_VERSION_MAJOR << "!" << std::endl;
+                LOG(ERROR) << "Error: too old CPACS dataset. CPACS version has to be at least " << (double) TIGL_VERSION_MAJOR << "!" << std::endl;
                 return TIGL_WRONG_CPACS_VERSION;
             }
             else if (dcpacsVersion > atof(tiglGetVersion())) 
-                std::cout << "Warning: CPACS dataset version is higher than TIGL library version!" << std::endl;
+                LOG(INFO) << "Warning: CPACS dataset version is higher than TIGL library version!";
         }
     }
 
@@ -93,12 +97,12 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglOpenCPACSConfiguration(TixiDocumentHandle 
 
 		tixiRet = tixiGetNamedChildrenCount(tixiHandle, "/cpacs/vehicles/aircraft", "model", &sectionCount);
 		if (tixiRet != SUCCESS) {
-			std::cerr << "No configuration specified!" << std::endl;
+		    LOG(ERROR) << "No configuration specified!" << std::endl;
 			return TIGL_ERROR;
 		}
 		tixiGetTextAttribute(tixiHandle, "/cpacs/vehicles/aircraft/model", "uID", &configurationUID);
 		if (tixiRet != SUCCESS) {
-			std::cerr << "Problems reading configuration-uid!" << std::endl;
+		    LOG(ERROR) << "Problems reading configuration-uid!" << std::endl;
 			return TIGL_ERROR;
 		}
 	}
@@ -116,7 +120,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglOpenCPACSConfiguration(TixiDocumentHandle 
 		strcat(ConfigurationXPathPrt, "\"]");
 		int tixiReturn = tixiGetTextElement( tixiHandle, ConfigurationXPathPrt, &tmpString);
 		if(tixiReturn != 0) {
-			std::cerr << "Configuration '" << configurationUID << "' not found!" << std::endl;
+		    LOG(ERROR) << "Configuration '" << configurationUID << "' not found!" << std::endl;
 			return TIGL_ERROR;
 		}
 		free(ConfigurationXPathPrt);
@@ -134,17 +138,17 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglOpenCPACSConfiguration(TixiDocumentHandle 
     }
     catch (std::exception& ex) {
         delete config;
-        std::cerr << ex.what() << std::endl;
+        LOG(ERROR) << ex.what() << std::endl;
         return TIGL_OPEN_FAILED;
     }
     catch (tigl::CTiglError& ex) {
         delete config;
-        std::cerr << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError() << std::endl;
         return TIGL_OPEN_FAILED;
     }
     catch (...) {
         delete config;
-        std::cerr << "Caught an exception in tiglOpenCPACSConfiguration!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglOpenCPACSConfiguration!" << std::endl;
         return TIGL_OPEN_FAILED;
     }
 }
@@ -158,15 +162,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglCloseCPACSConfiguration(TiglCPACSConfigura
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
-        std::cerr << ex.what() << std::endl;
+        LOG(ERROR) << ex.what() << std::endl;
         return TIGL_CLOSE_FAILED;
     }
     catch (tigl::CTiglError& ex) {
-        std::cerr << ex.getError() << std::endl;
+        LOG(ERROR) << ex.getError() << std::endl;
         return TIGL_CLOSE_FAILED;
     }
     catch (...) {
-        std::cerr << "Caught an exception in tiglCloseCPACSConfiguration!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglCloseCPACSConfiguration!" << std::endl;
         return TIGL_CLOSE_FAILED;
     }
 }
