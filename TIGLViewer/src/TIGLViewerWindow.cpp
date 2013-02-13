@@ -43,6 +43,7 @@
 #include "TIGLScriptEngine.h"
 #include "CommandLineParameters.h"
 #include "TIGLViewerSettings.h"
+#include "TIGLViewerControlFile.h"
 
 void ShowOrigin ( Handle_AIS_InteractiveContext theContext );
 void AddVertex  ( double x, double y, double z, Handle_AIS_InteractiveContext theContext );
@@ -158,6 +159,21 @@ void TIGLViewerWindow::setInitialCpacsFileName(QString filename)
 {
 	cpacsFileName = filename;
     openFile(filename);
+}
+
+void TIGLViewerWindow::setInitialControlFile(QString filename){
+	TIGLViewerControlFile cf;
+	if(cf.read(filename.toStdString().c_str()) == CF_SUCCESS){
+		if(cf.showConsole == CF_TRUE){
+			console->setVisible(true);
+			showConsoleAction->setChecked(true);
+		}
+		else if(cf.showConsole == CF_FALSE){
+			console->setVisible(false);
+			showConsoleAction->setChecked(false);
+		}
+	}
+
 }
 
 
