@@ -22,7 +22,6 @@
 #ifndef VTKPOLYDATA_H
 #define VTKPOLYDATA_H
 
-#include <ostream>
 #include <vector>
 #include "CTiglPoint.h"
 
@@ -61,7 +60,6 @@ private:
     std::vector<CTiglPoint> _normals;
 };
 
-// @TODO: we should add also a normal vector for each point
 class CTiglPolyData{
 public:
     CTiglPolyData();
