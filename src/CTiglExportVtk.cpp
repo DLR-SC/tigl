@@ -53,6 +53,7 @@
 #include "TopoDS_Edge.hxx"
 #include "TopoDS_Wire.hxx"
 #include "TColgp_Array1OfPnt.hxx"
+#include "TColgp_Array1OfPnt2d.hxx"
 
 // creators
 #include "ShapeFix_Shape.hxx"
@@ -77,6 +78,7 @@
 #include "TopOpeBRepDS_DataStructure.hxx"
 #include "BRepBuilderAPI_MakeEdge.hxx"
 #include "GeomAPI_ProjectPointOnSurf.hxx"
+#include "BrepGProp_Face.hxx"
 
 #include "CTiglPolyData.h"
 
@@ -416,6 +418,12 @@ namespace tigl {
                         if (triangulation.IsNull())
                             continue;
 
+                        if(triangulation->HasUVNodes()){
+                            polyData.enableNormals(true);
+                        }
+
+
+
                         gp_Trsf nodeTransformation = location;
                         const TColgp_Array1OfPnt& nodes = triangulation->Nodes(); // get (face-local) list of nodes
 
@@ -432,22 +440,50 @@ namespace tigl {
                             CTiglPolygon polygon;
 
                             // determine unique point indices
-                            if ( face.Orientation() == TopAbs_FORWARD){
-                                polygon.addPoint(tpoint1);
-                                polygon.addPoint(tpoint2);
-                                polygon.addPoint(tpoint3);
+                            if ( face.Orientation() ==  TopAbs_FORWARD){
+                                polygon.addPoint(tpoint1.XYZ());
+                                polygon.addPoint(tpoint2.XYZ());
+                                polygon.addPoint(tpoint3.XYZ());
                             }
                             else {
-                                polygon.addPoint(tpoint1);
-                                polygon.addPoint(tpoint3);
-                                polygon.addPoint(tpoint2);
+                                polygon.addPoint(tpoint1.XYZ());
+                                polygon.addPoint(tpoint3.XYZ());
+                                polygon.addPoint(tpoint2.XYZ());
+                            }
+
+                            // calculate face normals
+                            if(triangulation->HasUVNodes()){
+                            	const TColgp_Array1OfPnt2d& uvnodes = triangulation->UVNodes();
+                            	BRepGProp_Face prop(face);
+
+                            	gp_Pnt2d uv1 = uvnodes(index1);
+                            	gp_Pnt2d uv2 = uvnodes(index2);
+                            	gp_Pnt2d uv3 = uvnodes(index3);
+
+                            	gp_Pnt pnt;
+                            	gp_Vec n1, n2, n3;
+                            	prop.Normal(uv1.X(),uv1.Y(),pnt,n1);
+                            	prop.Normal(uv2.X(),uv2.Y(),pnt,n2);
+                            	prop.Normal(uv3.X(),uv3.Y(),pnt,n3);
+
+                            	if(face.Orientation() == TopAbs_FORWARD){
+                            		polygon.addNormal(n1.XYZ());
+                            		polygon.addNormal(n2.XYZ());
+                            		polygon.addNormal(n3.XYZ());
+                            	}
+                            	else{
+                            		//n1 *= -1.; n2 *= -1; n3 *= -1;
+                            		polygon.addNormal(n1.XYZ());
+                            		polygon.addNormal(n3.XYZ());
+                            		polygon.addNormal(n2.XYZ());
+                            	}
                             }
 
                             polygon.setMetadata("unknown 0 0.0 0.0 0");
                             polyData.addPolygon(polygon);
 
                         } // for triangles
-                        polyData.createNewSurface();
+                        //polyData.createNewSurface();
                     } // for faces
                 } // for shells
                 if(component.GetComponentType() == TIGL_COMPONENT_FUSELAGE) break;

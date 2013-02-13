@@ -27,6 +27,7 @@
 #define CTIGLPOINT_H
 
 #include <climits>
+#include "gp_XYZ.hxx"
 #include "gp_Pnt.hxx"
 #include <iostream>
 
@@ -42,7 +43,7 @@ namespace tigl {
 		// Copy constructor
 		CTiglPoint(const CTiglPoint& aPoint);
 
-        CTiglPoint(const gp_Pnt& aPoint);
+        CTiglPoint(const gp_XYZ& aPoint);
 
 		// Assignment operator
 		CTiglPoint& operator=(const CTiglPoint& aPoint);
