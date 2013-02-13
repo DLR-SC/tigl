@@ -32,7 +32,7 @@
 class tiglExport : public ::testing::Test {
  protected:
   static void SetUpTestCase() {
-        char* filename = "TestData/CPACS_21_D150.xml";
+        const char* filename = "TestData/CPACS_21_D150.xml";
         ReturnCode tixiRet;
         TiglReturnCode tiglRet;
 
@@ -46,7 +46,7 @@ class tiglExport : public ::testing::Test {
   }
 
   static void TearDownTestCase() {
-        ASSERT_TRUE(tiglCloseCPACSConfiguration(tiglHandle) == SUCCESS);
+        ASSERT_TRUE(tiglCloseCPACSConfiguration(tiglHandle) == TIGL_SUCCESS);
         ASSERT_TRUE(tixiCloseDocument(tixiHandle) == SUCCESS);
         tiglHandle = -1;
         tixiHandle = -1;
@@ -79,13 +79,13 @@ TiglCPACSConfigurationHandle tiglExport::tiglHandle = 0;
 */
 TEST_F(tiglExport, export_meshed_wing_success)
 {
-    char* vtkWingFilename = "TestData/export/D150modelID_wing1.vtp";
-    char* vtkGeometryFilename = "TestData/export/D150modelID_geometry.vtp";
+    const char* vtkWingFilename = "TestData/export/D150modelID_wing1.vtp";
+    const char* vtkGeometryFilename = "TestData/export/D150modelID_geometry.vtp";
     ASSERT_TRUE(tiglExportMeshedWingVTKByIndex(tiglHandle, 1, vtkWingFilename, 0.01) == TIGL_SUCCESS);
 }
 
 TEST_F(tiglExport, export_meshed_fuselage_success)
 {
-    char* vtkFuselageFilename = "TestData/export/D150modelID_fuselage1.vtp";
+    const char* vtkFuselageFilename = "TestData/export/D150modelID_fuselage1.vtp";
     ASSERT_TRUE(tiglExportMeshedFuselageVTKSimpleByUID(tiglHandle, "D150_VAMP_FL1", vtkFuselageFilename, 0.1) == TIGL_SUCCESS);
 }

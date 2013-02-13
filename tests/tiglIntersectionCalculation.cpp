@@ -30,7 +30,7 @@
 class TiglIntersection : public ::testing::Test {
  protected:
   virtual void SetUp() {
-        char* filename = "TestData/CPACS_21_D150.xml";
+        const char* filename = "TestData/CPACS_21_D150.xml";
         ReturnCode tixiRet;
         TiglReturnCode tiglRet;
 
@@ -45,7 +45,7 @@ class TiglIntersection : public ::testing::Test {
   }
 
   virtual void TearDown() {
-        ASSERT_TRUE(tiglCloseCPACSConfiguration(tiglHandle) == SUCCESS);
+        ASSERT_TRUE(tiglCloseCPACSConfiguration(tiglHandle) == TIGL_SUCCESS);
         ASSERT_TRUE(tixiCloseDocument(tixiHandle) == SUCCESS);
         tiglHandle = -1;
         tixiHandle = -1;
