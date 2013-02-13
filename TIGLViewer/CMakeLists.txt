@@ -9,6 +9,17 @@ set(PROGNAME "TIGLViewer")
 #build only tiglviewer if qt was found
 if(QT4_FOUND)
 
+# required opencascade libraries
+set (TV_OCC_LIBS ${OCC_LIBS}
+	PTKernel TKOffset TKOpenGl
+	TKPShape TKSTEP
+	TKService TKShapeSchema  
+	TKV2d TKV3d TKVRML  
+)
+
+find_package( OpenCASCADE REQUIRED COMPONENTS ${TV_OCC_LIBS})
+
+
 # we need opengl in order to build tiglviewer
 find_package(OpenGL REQUIRED)
 
@@ -34,6 +45,7 @@ set(tv_src
     TIGLScriptEngine.cpp
     TiglViewerConsole.cpp
     TIGLViewerSettings.cpp
+    TIGLViewerControlFile.cpp
 )
 	
 # normal header files
@@ -43,6 +55,7 @@ set(tv_hdr
     ISession_Text.h
     TIGLViewer.h
     TIGLViewerSettings.h
+    TIGLViewerControlFile.h
 )
 
 # qobject header files that have to be moced
