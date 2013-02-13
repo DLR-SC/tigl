@@ -38,7 +38,7 @@ set (OCC_LIBS
 )
 
 find_package( OpenCASCADE REQUIRED COMPONENTS ${OCC_LIBS})
-find_package( TIXI REQUIRED)
+find_package( TIXI 2.0.3 REQUIRED)
 
 # code coverage analysis
 IF (CMAKE_BUILD_TYPE STREQUAL "Debug")
@@ -92,7 +92,13 @@ set(CPACK_RESOURCE_FILE_LICENSE ${PROJECT_SOURCE_DIR}/LICENSE.txt)
 set(CPACK_PACKAGE_INSTALL_REGISTRY_KEY "TIGL") 
 set(CPACK_NSIS_MUI_ICON ${PROJECT_SOURCE_DIR}/TIGLViewer/TIGLViewer.ico)
 set(CPACK_NSIS_MUI_UNIICON ${PROJECT_SOURCE_DIR}/TIGLViewer/TIGLViewer.ico)
-set(CPACK_PACKAGE_ICON  ${PROJECT_SOURCE_DIR}/TIGLViewer/gfx\\\\TIGLViewerNSIS.bmp)
+
+# set installer icon
+if(WIN32)
+    set(CPACK_PACKAGE_ICON  ${PROJECT_SOURCE_DIR}/TIGLViewer/gfx\\\\TIGLViewerNSIS.bmp)
+elseif(APPLE)
+    set(CPACK_PACKAGE_ICON  ${PROJECT_SOURCE_DIR}/TIGLViewer/gfx/TIGLViewer.icns)
+endif()
 
 # set generators
 if(CPACK_GENERATOR)	

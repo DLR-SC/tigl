@@ -10,6 +10,8 @@
 
 #include "TiglViewerConsole.h"
 
+#include <iostream>
+
 Console::Console(QWidget *parent) :
     QPlainTextEdit(parent)
 {
@@ -31,7 +33,7 @@ void Console::keyPressEvent(QKeyEvent *event)
 {
     if(isLocked)
         return;
-
+    
     if(event->key() >= 0x20 && event->key() <= 0x7e &&
        (event->modifiers() == Qt::NoModifier || event->modifiers() == Qt::ShiftModifier))
         QPlainTextEdit::keyPressEvent(event);
@@ -44,11 +46,12 @@ void Console::keyPressEvent(QKeyEvent *event)
     if(event->key() == Qt::Key_Return && event->modifiers() == Qt::NoModifier)
         onEnter();
 
-    if(event->key() == Qt::Key_Up && event->modifiers() == Qt::NoModifier)
+    if(event->key() == Qt::Key_Up)
         historyBack();
 
-    if(event->key() == Qt::Key_Down && event->modifiers() == Qt::NoModifier)
+    if(event->key() == Qt::Key_Down){
         historyForward();
+    }
 
     QString cmd = textCursor().block().text().mid(prompt.length());
     emit onChange(cmd);

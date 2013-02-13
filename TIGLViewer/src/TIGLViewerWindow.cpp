@@ -163,7 +163,7 @@ void TIGLViewerWindow::setInitialCpacsFileName(QString filename)
 
 void TIGLViewerWindow::setInitialControlFile(QString filename){
 	TIGLViewerControlFile cf;
-	if(cf.read(filename.toStdString().c_str()) == SUCCESS){
+	if(cf.read(filename.toStdString().c_str()) == CF_SUCCESS){
 		if(cf.showConsole == CF_TRUE){
 			console->setVisible(true);
 			showConsoleAction->setChecked(true);

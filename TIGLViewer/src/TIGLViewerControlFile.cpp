@@ -33,9 +33,9 @@ CF_ReturnCode TIGLViewerControlFile::read(const char * filename){
 	}
 
 	// read in console stuff
-	char * prefix = "/TIGLViewer/console";
+	const char * prefix = "/TIGLViewer/console";
 	int display = 1;
-	if(tixiGetBooleanAttribute(handle, prefix, "display", &display)==CF_SUCCESS){
+	if(tixiGetBooleanAttribute(handle, prefix, "display", &display)==SUCCESS){
 		if(display == 1)
 			showConsole = CF_TRUE;
 		else if (display == 0)
