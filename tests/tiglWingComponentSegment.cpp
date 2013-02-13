@@ -35,7 +35,7 @@
 class WingComponentSegment : public ::testing::Test {
  protected:
   static void SetUpTestCase() {
-        char* filename = "TestData/CPACS_21_D150.xml";
+        const char* filename = "TestData/CPACS_21_D150.xml";
         ReturnCode tixiRet;
         TiglReturnCode tiglRet;
 
@@ -49,7 +49,7 @@ class WingComponentSegment : public ::testing::Test {
   }
 
   static void TearDownTestCase() {
-        ASSERT_TRUE(tiglCloseCPACSConfiguration(tiglHandle) == SUCCESS);
+        ASSERT_TRUE(tiglCloseCPACSConfiguration(tiglHandle) == TIGL_SUCCESS);
         ASSERT_TRUE(tixiCloseDocument(tixiHandle) == SUCCESS);
         tiglHandle = -1;
         tixiHandle = -1;
@@ -66,7 +66,7 @@ class WingComponentSegment : public ::testing::Test {
 class WingComponentSegment2 : public ::testing::Test {
  protected:
   virtual void SetUp() {
-        char* filename = "TestData/CPACS_20_D250_10.xml";
+        const char* filename = "TestData/CPACS_20_D250_10.xml";
         ReturnCode tixiRet;
         TiglReturnCode tiglRet;
 
@@ -80,8 +80,8 @@ class WingComponentSegment2 : public ::testing::Test {
   }
 
   virtual void TearDown() {
-        ASSERT_EQ(SUCCESS, tiglCloseCPACSConfiguration(tiglHandle));
-        ASSERT_EQ(TIGL_SUCCESS, tixiCloseDocument(tixiHandle));
+        ASSERT_EQ(TIGL_SUCCESS, tiglCloseCPACSConfiguration(tiglHandle));
+        ASSERT_EQ(SUCCESS, tixiCloseDocument(tixiHandle));
         tiglHandle = -1;
         tixiHandle = -1;
   }
@@ -101,7 +101,7 @@ TiglCPACSConfigurationHandle WingComponentSegment::tiglHandle = 0;
 class WingComponentSegmentSimple : public ::testing::Test {
  protected:
   virtual void SetUp() {
-        char* filename = "TestData/simpletest.cpacs.xml";
+        const char* filename = "TestData/simpletest.cpacs.xml";
         ReturnCode tixiRet;
         TiglReturnCode tiglRet;
 
@@ -116,7 +116,7 @@ class WingComponentSegmentSimple : public ::testing::Test {
   }
 
   virtual void TearDown() {
-        ASSERT_TRUE(tiglCloseCPACSConfiguration(tiglHandle) == SUCCESS);
+        ASSERT_TRUE(tiglCloseCPACSConfiguration(tiglHandle) == TIGL_SUCCESS);
         ASSERT_TRUE(tixiCloseDocument(tixiHandle) == SUCCESS);
         tiglHandle = -1;
         tixiHandle = -1;
