@@ -84,6 +84,15 @@ public:
     // adds a polygon to the object
     void addPolygon(const class CTiglPolygon&);
     
+    // returns the number of polygons for the current surface
+    unsigned int getNPolygons() const;
+
+    // returns the number of points of the polygon
+    unsigned int getNPointsOfPoly(unsigned int ipoly) const;
+
+    // returns the coordinates of the ith point of a polygon
+    const CTiglPoint& getPointOfPoly(unsigned int iPoint, unsigned int iPoly) const;
+
     // switch , if to store normal vectors
     void enableNormals(bool);
 
