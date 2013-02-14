@@ -4,6 +4,8 @@
 #include "ITiglObjectiveFunction.h"
 #include "CTiglOptimizer.h"
 
+#include <cmath>
+
 using namespace tigl;
 
 #define SQR(x) ((x)*(x))
