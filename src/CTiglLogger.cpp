@@ -28,18 +28,23 @@
 namespace tigl {
 
 
-CTiglLogger::CTiglLogger()
+CTiglLogger::CTiglLogger(void)
 {
     initLogger();
 }
 
-CTiglLogger& CTiglLogger::GetLogger()
+CTiglLogger::~CTiglLogger(void)
+{
+    google::ShutdownGoogleLogging();
+}
+
+CTiglLogger& CTiglLogger::GetLogger(void)
 {
     static CTiglLogger instance;
     return instance;
 }
 
-void CTiglLogger::initLogger()
+void CTiglLogger::initLogger(void)
 {
     // Initialize Google's logging library.
     google::InitGoogleLogging("TIGL-log");

@@ -31,6 +31,7 @@
 #include "CCPACSWing.h"
 #include "CCPACSWingSegment.h"
 #include "CCPACSWingProfile.h"
+#include "CTiglLogger.h"
 
 #include "BRepOffsetAPI_ThruSections.hxx"
 #include "TopExp_Explorer.hxx"
@@ -244,7 +245,7 @@ namespace tigl {
 
 		// somethings goes wrong, we could not find the starting Segment.
 		if (!inComponentSection) {
-			 std::cerr << "Error: Could not find fromSectionElement in CCPACSWingComponentSegment::BuildLoft" << endl;
+		     LOG(ERROR) << "Error: Could not find fromSectionElement in CCPACSWingComponentSegment::BuildLoft" << endl;
 			 return;
 		}
 

@@ -23,6 +23,7 @@
 #include "CTiglPointTranslator.h"
 #include "tigl.h"
 #include "CTiglOptimizer.h"
+#include "CTiglLogger.h"
 
 #include <cassert>
 
@@ -135,7 +136,7 @@ void CTiglPointTranslator::SegmentProjection::getHessian(const double * x, doubl
 
 TiglReturnCode CTiglPointTranslator::translate(const CTiglPoint& p, double* eta, double * xsi){
     if(!eta || !xsi){
-        std::cerr << "Error in CTiglPointTranslator::translate(): eta and xsi may not be NULL Pointers!" << std::endl;
+        LOG(ERROR) << "Error in CTiglPointTranslator::translate(): eta and xsi may not be NULL Pointers!" << std::endl;
         return TIGL_NULL_POINTER;
     }
     double etaxsi[2];
@@ -158,7 +159,7 @@ TiglReturnCode CTiglPointTranslator::translate(const CTiglPoint& p, double* eta,
 // converts from eta-xsi to spatial coordinates
 TiglReturnCode CTiglPointTranslator::translate(double eta, double xsi, CTiglPoint* p) const{
     if(!p){
-        std::cerr << "Error in CTiglPointTranslator::translate(): x may not be a NULL Pointer!" << std::endl;
+        LOG(ERROR) << "Error in CTiglPointTranslator::translate(): x may not be a NULL Pointer!" << std::endl;
         return TIGL_NULL_POINTER;
     }
     
@@ -172,7 +173,7 @@ TiglReturnCode CTiglPointTranslator::translate(double eta, double xsi, CTiglPoin
 // projects the point x onto the plane and returns this point
 TiglReturnCode CTiglPointTranslator::project(const CTiglPoint& xx, CTiglPoint* pOnSurf){
     if(!pOnSurf){
-        std::cerr << "Error in CTiglPointTranslator::project(): p may not be a NULL Pointer!" << std::endl;
+        LOG(ERROR) << "Error in CTiglPointTranslator::project(): p may not be a NULL Pointer!" << std::endl;
         return TIGL_NULL_POINTER;
     }
     double etaxsi[2];

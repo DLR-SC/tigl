@@ -115,7 +115,6 @@ elseif(WIN32)
 else()
     set(CPACK_GENERATOR TGZ)
 endif()
->>>>>>> master
 
 # set path variable for installer
 set(CPACK_NSIS_MODIFY_PATH ON)

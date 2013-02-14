@@ -183,7 +183,7 @@ namespace tigl {
         //// TODO: we need an idea for the complete geometry component.
         //vtkWriter->Write(loft, myConfig.GetFuselage(1), const_cast<char*>(filename.c_str()), deflection, TIGL_VTK_SIMPLE);
         //ExportMeshedWingVTKSimpleByUID(filename, filename, deflection);
-		std::cerr << "tiglExportMeshedGeometryVTKSimple not yet implemented!!" << std::endl;
+        LOG(ERROR) << "tiglExportMeshedGeometryVTKSimple not yet implemented!!" << std::endl;
     }
 
     // constructor

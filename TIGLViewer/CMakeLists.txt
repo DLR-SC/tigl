@@ -106,7 +106,7 @@ if(OCC_VERSION_STRING VERSION_GREATER "6.4")
     add_definitions(-DOCC_BG)
 endif()
 
-include_directories( ${OpenCASCADE_INCLUDE_DIR} ${TIXI_INCLUDE_DIRS})
+include_directories( ${OpenCASCADE_INCLUDE_DIR} ${TIXI_INCLUDE_DIRS} ${GLOG_INCLUDE_DIR})
 include_directories( ${PROJECT_SOURCE_DIR}/src ${CMAKE_CURRENT_SOURCE_DIR}/src )
 
 # include path for ui files
