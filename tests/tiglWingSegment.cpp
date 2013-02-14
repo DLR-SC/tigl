@@ -35,7 +35,7 @@
 class WingSegment : public ::testing::Test {
  protected:
   static void SetUpTestCase() {
-        char* filename = "TestData/CPACS_21_D150.xml";
+        const char* filename = "TestData/CPACS_21_D150.xml";
         ReturnCode tixiRet;
         TiglReturnCode tiglRet;
 
@@ -49,7 +49,7 @@ class WingSegment : public ::testing::Test {
   }
 
   static void TearDownTestCase() {
-        ASSERT_TRUE(tiglCloseCPACSConfiguration(tiglHandle) == SUCCESS);
+        ASSERT_TRUE(tiglCloseCPACSConfiguration(tiglHandle) == TIGL_SUCCESS);
         ASSERT_TRUE(tixiCloseDocument(tixiHandle) == SUCCESS);
         tiglHandle = -1;
         tixiHandle = -1;
@@ -73,7 +73,7 @@ TiglCPACSConfigurationHandle WingSegment::tiglHandle = 0;
 class WingSegmentSimple : public ::testing::Test {
  protected:
   static void SetUpTestCase() {
-        char* filename = "TestData/simpletest.cpacs.xml";
+        const char* filename = "TestData/simpletest.cpacs.xml";
         ReturnCode tixiRet;
         TiglReturnCode tiglRet;
 
@@ -88,7 +88,7 @@ class WingSegmentSimple : public ::testing::Test {
   }
 
   static void TearDownTestCase() {
-        ASSERT_TRUE(tiglCloseCPACSConfiguration(tiglSimpleHandle) == SUCCESS);
+        ASSERT_TRUE(tiglCloseCPACSConfiguration(tiglSimpleHandle) == TIGL_SUCCESS);
         ASSERT_TRUE(tixiCloseDocument(tixiSimpleHandle) == SUCCESS);
         tiglSimpleHandle = -1;
         tixiSimpleHandle = -1;

@@ -33,7 +33,7 @@
 class tiglOpenCpacsConfiguration : public ::testing::Test {
  protected:
   virtual void SetUp() {
-        char* filename = "TestData/CPACS_21_D150.xml";
+        const char* filename = "TestData/CPACS_21_D150.xml";
         ReturnCode tixiRet;
 
         tiglHandle = -1;
@@ -96,7 +96,7 @@ TEST_F(tiglOpenCpacsConfiguration, open_without_uid)
 class TiglGetCPACSTixiHandle : public ::testing::Test {
  protected:
   virtual void SetUp() {
-        char* filename = "TestData/CPACS_21_D150.xml";
+        const char* filename = "TestData/CPACS_21_D150.xml";
         ReturnCode tixiRet;
         TiglReturnCode tiglRet;
 
@@ -110,7 +110,7 @@ class TiglGetCPACSTixiHandle : public ::testing::Test {
   }
 
   virtual void TearDown() {
-        ASSERT_TRUE(tiglCloseCPACSConfiguration(tiglHandle)== SUCCESS);
+        ASSERT_TRUE(tiglCloseCPACSConfiguration(tiglHandle)== TIGL_SUCCESS);
         ASSERT_TRUE(tixiCloseDocument(tixiHandle)== SUCCESS);
         tiglHandle = -1;
         tixiHandle = -1;
@@ -151,7 +151,7 @@ TEST_F(TiglGetCPACSTixiHandle, handle_success)
 class tiglCPACSConfigurationHandleValid : public ::testing::Test {
  protected:
   virtual void SetUp() {
-        char* filename = "TestData/CPACS_21_D150.xml";
+        const char* filename = "TestData/CPACS_21_D150.xml";
         ReturnCode tixiRet;
         TiglReturnCode tiglRet;
 
@@ -165,7 +165,7 @@ class tiglCPACSConfigurationHandleValid : public ::testing::Test {
   }
 
   virtual void TearDown() {
-        ASSERT_TRUE(tiglCloseCPACSConfiguration(tiglHandle) == SUCCESS);
+        ASSERT_TRUE(tiglCloseCPACSConfiguration(tiglHandle) == TIGL_SUCCESS);
         ASSERT_TRUE(tixiCloseDocument(tixiHandle) == SUCCESS);
         tiglHandle = -1;
         tixiHandle = -1;
