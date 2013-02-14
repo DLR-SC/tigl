@@ -419,7 +419,7 @@ namespace tigl {
                             continue;
 
                         if(triangulation->HasUVNodes()){
-                            polyData.enableNormals(true);
+                            polyData.currentObject().enableNormals(true);
                         }
 
 
@@ -480,7 +480,7 @@ namespace tigl {
                             }
 
                             polygon.setMetadata("unknown 0 0.0 0.0 0");
-                            polyData.addPolygon(polygon);
+                            polyData.currentObject().addPolygon(polygon);
 
                         } // for triangles
                         //polyData.createNewSurface();

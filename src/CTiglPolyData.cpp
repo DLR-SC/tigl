@@ -44,7 +44,6 @@ using namespace tigl;
 
 #define COMP_TOLERANCE 1.e-10
 
-namespace {
 
 struct TiglPointComparer;
 
@@ -153,28 +152,26 @@ private:
 };
 
 
-class SurfaceImpl {
+class ObjectImpl {
 public:
-    SurfaceImpl(){
+    ObjectImpl(){
         pointlist.clear();
         polys.clear();
         pPoints.clear();
-        min_coord = DBL_MAX;
-        max_coord = DBL_MIN;
         has_normals = false;
     }
-    void addPoint(const CTiglPoint &p, int polynum);
+
     void addPointNorm(const CTiglPoint &p, const CTiglPoint& norm, int polynum);
     void addPolygon(const CTiglPolygon&);
-
-    void writeVTKPiece(TixiDocumentHandle handle, unsigned int iSurf);
     
     unsigned int getNPolygons() const;
     unsigned int getNPointsOfPolygon(unsigned int ipoly) const;
-    const CTiglPoint& getPointOfPolygon(unsigned int ipoint, unsigned int ipoly) const;
 
-    double min_coord;
-    double max_coord;
+    const CTiglPoint& getVertexPoint(unsigned int iVertexIndex) const;
+    const CTiglPoint& getVertexNormal(unsigned int iVertexIndex) const;
+
+    unsigned int getVertexIndexOfPolygon(unsigned int ipoint, unsigned int ipoly) const;
+
     bool has_normals;
 
     // we use this container to store point data, it allows us to find
@@ -188,112 +185,335 @@ public:
     std::vector<PolyIndexList> polys;
 };
 
-} // anonymous namespace
 
-class PolyDataImpl{
-public:
-    PolyDataImpl(){
-        _surfaces.clear();
-        //create a default surface
-        _surfaces.push_back(SurfaceImpl());
-
-        itCurrentSurface = _surfaces.begin();
-    }
-
-    // creates a new surface, switches current surface to the new one
-    // we store the polygon data as different surfaces
-    // to allow hard edges
-    void createNewSurface();
-
-    // returns number of surfaces
-    unsigned int getNSurfaces();
-
-    void enableNormals(bool);
-
-    unsigned int getNPolygons() const;
-
-    unsigned int getNPointsOfPoly(unsigned int ipoly) const;
-
-    const CTiglPoint& getPointOfPoly(unsigned int iPoint, unsigned int iPoly) const;
-
-    // changes the current surface, we count from 1 to getNSurfaces
-    void switchSurface(unsigned int iSurf);
-
-    void addPoint(const CTiglPoint &p, int polynum);
-    void addPolygon(const CTiglPolygon&);
-
-    void writeVTK(TixiDocumentHandle handle);
-
-private:
-    std::vector<SurfaceImpl>::iterator itCurrentSurface;
-    std::vector<SurfaceImpl> _surfaces;
-};
 
 // -----------------------------------------------------------------------//
 
-
-CTiglPolyData::CTiglPolyData(): impl(new PolyDataImpl){
+CTiglPolyData::CTiglPolyData(){
+    _objects.clear();
+    // we want to have one object by default
+    _objects.push_back(new CTiglPolyObject());
+    itCurrentObj = _objects.begin();
 }
 
 CTiglPolyData::~CTiglPolyData(){
+    std::vector<CTiglPolyObject*>::iterator pObj_it = _objects.begin();
+    for(; pObj_it != _objects.end(); ++pObj_it){
+        delete *pObj_it;
+    }
+}
+
+CTiglPolyObject& CTiglPolyData::currentObject(){
+    return **itCurrentObj;
+}
+
+CTiglPolyObject& CTiglPolyData::createNewObject(){
+    _objects.push_back(new CTiglPolyObject());
+
+    itCurrentObj = _objects.end()-1;
+    return currentObject();
+}
+
+// changes the current surface, we count from 1 to getNSurfaces
+CTiglPolyObject& CTiglPolyData::switchObject(unsigned int iObject){
+    if(iObject >= 1 && iObject <= _objects.size()){
+        itCurrentObj = _objects.begin() + iObject -1;
+        return currentObject();
+    }
+    else {
+        throw tigl::CTiglError("Invalid surface index in CTiglPolyData::switchObject!", TIGL_INDEX_ERROR);
+    }
+}
+
+unsigned int CTiglPolyData::getNObjects(){
+    return _objects.size();
+}
+
+void CTiglPolyData::writeVTK(const char *filename){
+    TixiDocumentHandle handle;
+    createVTK(handle);
+    if(tixiSaveDocument(handle, filename)!= SUCCESS){
+        throw CTiglError("Error saving vtk file!");
+    }
+}
+
+void CTiglPolyData::createVTK(TixiDocumentHandle& handle){
+    tixiCreateDocument("VTKFile", &handle);
+    tixiAddTextAttribute(handle, "/VTKFile", "type", "PolyData");
+    tixiAddTextAttribute(handle, "/VTKFile", "version", "0.1");
+    tixiAddTextAttribute(handle, "/VTKFile", "byte_order", "LittleEndian");
+    tixiAddTextAttribute(handle, "/VTKFile", "compressor", "vtkZLibDataCompressor");
+
+    tixiCreateElement(handle, "/VTKFile", "PolyData");
+
+    for(unsigned int iobj = 1; iobj <= getNObjects(); ++iobj ){
+        writeVTKPiece(handle, iobj);
+    }
+}
+
+void setMinMax(const CTiglPoint& p, double* oldmin, double* oldmax){
+    if(p.x > *oldmax)
+        *oldmax = p.x;
+
+    if(p.y > *oldmax)
+        *oldmax = p.y;
+
+    if(p.z > *oldmax)
+        *oldmax = p.z;
+
+    if(p.x < *oldmin)
+        *oldmin = p.x;
+
+    if(p.y < *oldmin)
+        *oldmin = p.y;
+
+    if(p.z < *oldmin)
+        *oldmin = p.z;
+}
+
+// writes the polygon data of a surface (in vtk they call it piece)
+void CTiglPolyData::writeVTKPiece(TixiDocumentHandle& handle, unsigned int iObject){
+
+    CTiglPolyObject& co = switchObject(iObject);
+
+    if(co.getNPolygons() == 0){
+        return;
+    }
+
+    // count number of vertices - this is not necessarily the number of points
+    int nvert = 0;
+    for(unsigned int i = 0; i < co.getNPolygons(); ++i){
+        nvert += co.getNPointsOfPolygon(i);
+    }
+
+    if(nvert <= 0){
+        return;
+    }
+
+    // surface specific stuff
+    tixiCreateElement(handle, "/VTKFile/PolyData","Piece");
+
+    char piecepath[512];
+    snprintf(piecepath, 512, "/VTKFile/PolyData/Piece[%d]", iObject);
+
+    tixiAddIntegerAttribute(handle, piecepath, "NumberOfPoints", co.getNVertices(), "%d");
+    tixiAddIntegerAttribute(handle, piecepath, "NumberOfVerts",  0, "%d");
+    tixiAddIntegerAttribute(handle, piecepath, "NumberOfLines",  0, "%d");
+    tixiAddIntegerAttribute(handle, piecepath, "NumberOfStrips", 0, "%d");
+    tixiAddIntegerAttribute(handle, piecepath, "NumberOfPolys",  co.getNPolygons(), "%d");
+
+    tixiCreateElement(handle, piecepath, "Points");
+
+    //points
+    {
+    unsigned int nPoints = co.getNVertices();
+    std::stringstream stream1;
+    stream1 << std::endl <<   "         ";
+    double min_coord = DBL_MAX, max_coord = DBL_MIN;
+    for(unsigned int i = 0; i < nPoints; ++i){
+        const CTiglPoint& p = co.getVertexPoint(i);
+        setMinMax(p, &min_coord, &max_coord);
+        stream1 << "    " <<  p.x << " " << p.y << " " << p.z << std::endl;
+        stream1 << "         ";
+    }
+    char tmpPath[512];
+    snprintf(tmpPath, 512, "%s/Points", piecepath);
+    tixiAddTextElement(handle, tmpPath, "DataArray", stream1.str().c_str());
+    snprintf(tmpPath, 512,  "%s/DataArray", tmpPath);
+    tixiAddTextAttribute(handle, tmpPath, "type", "Float64");
+    tixiAddTextAttribute(handle, tmpPath, "Name", "Points");
+    tixiAddTextAttribute(handle, tmpPath, "NumberOfComponents", "3");
+    tixiAddTextAttribute(handle, tmpPath, "format", "ascii");
+    tixiAddDoubleAttribute(handle, tmpPath, "RangeMin", min_coord ,"%f");
+    tixiAddDoubleAttribute(handle, tmpPath, "RangeMax", max_coord ,"%f");
+    }
+
+    //normals
+    if(co.hasNormals()){
+        tixiCreateElement(handle, piecepath, "PointData");
+        char tmpPath[512];
+        snprintf(tmpPath, 512, "%s/PointData", piecepath);
+
+        tixiAddTextAttribute(handle, tmpPath, "Normals", "surf_normals");
+
+        std::stringstream stream;
+        double min_coord = DBL_MAX, max_coord = DBL_MIN;
+        stream << endl  << "        ";
+        for(unsigned int i=0; i < co.getNVertices(); ++i){
+             const CTiglPoint& n = co.getVertexNormal(i);
+             setMinMax(n, &min_coord, &max_coord);
+             stream << "    " << n.x << " " << n.y << " "  << n.z << endl;
+             stream <<  "        ";
+        }
+
+        tixiAddTextElement(handle, tmpPath, "DataArray", stream.str().c_str());
+        snprintf(tmpPath, 512, "%s/DataArray", tmpPath);
+        tixiAddTextAttribute(handle, tmpPath, "type", "Float64");
+        tixiAddTextAttribute(handle, tmpPath, "Name", "surf_normals");
+        tixiAddTextAttribute(handle, tmpPath, "NumberOfComponents", "3");
+        tixiAddTextAttribute(handle, tmpPath, "format", "ascii");
+        tixiAddDoubleAttribute(handle, tmpPath, "RangeMin", min_coord ,"%f");
+        tixiAddDoubleAttribute(handle, tmpPath, "RangeMax", max_coord ,"%f");
+    }
+
+    //polygons
+    {
+    tixiCreateElement(handle, piecepath, "Polys");
+    std::stringstream stream2;
+    stream2 << std::endl <<   "        ";
+    for(unsigned int iPoly = 0; iPoly < co.getNPolygons(); ++iPoly){
+        stream2 <<     "    ";
+        for(unsigned int jPoint = 0; jPoint < co.getNPointsOfPolygon(iPoly); ++jPoint ){
+            stream2 << co.getVertexIndexOfPolygon(jPoint, iPoly) << " ";
+        }
+        stream2  << std::endl <<  "        ";;
+    }
+
+    char tmpPath[512];
+    snprintf(tmpPath, 512, "%s/Polys", piecepath);
+    tixiAddTextElement(handle, tmpPath, "DataArray", stream2.str().c_str());
+    snprintf(tmpPath, 512, "%s/DataArray", tmpPath);
+    tixiAddTextAttribute(handle,tmpPath, "type", "Int32");
+    tixiAddTextAttribute(handle, tmpPath, "Name", "connectivity");
+    tixiAddTextAttribute(handle, tmpPath, "format", "ascii");
+    tixiAddIntegerAttribute(handle, tmpPath, "RangeMin", 0 ,"%d");
+    tixiAddIntegerAttribute(handle, tmpPath, "RangeMax", co.getNVertices()-1,"%d");
+    }
+
+    //offset
+    {
+    unsigned int next = 0;
+    std::stringstream stream3;
+    for (unsigned int i = 0; i < co.getNPolygons(); i ++)
+    {
+        if ((i % 10 == 0) && (i != (co.getNPolygons() - 1)))
+        {
+            stream3 << endl << "            ";
+        }
+        next += co.getNPointsOfPolygon(i);
+        stream3 << " " << next;
+    }
+    stream3 << endl << "        ";
+    char tmpPath[512];
+    snprintf(tmpPath, 512, "%s/Polys", piecepath);
+    tixiAddTextElement(handle, tmpPath, "DataArray", stream3.str().c_str());
+    snprintf(tmpPath, 512, "%s/DataArray[2]", tmpPath);
+    tixiAddTextAttribute(handle, tmpPath, "type", "Int32");
+    tixiAddTextAttribute(handle, tmpPath, "Name", "offsets");
+    tixiAddIntegerAttribute(handle, tmpPath, "RangeMin", co.getNPointsOfPolygon(0) ,"%d");
+    tixiAddIntegerAttribute(handle, tmpPath, "RangeMax", nvert,"%d");
+    }
+
+    // write metadata
+    {
+    std::stringstream stream4;
+    stream4 << endl  << "        ";
+    for (unsigned int i = 0; i < co.getNPolygons(); i ++){
+        stream4 << "    " << co.getPolyMetadata(i) << endl;
+        stream4 << "        ";
+    }
+    char tmpPath[512];
+    snprintf(tmpPath, 512, "%s/Polys", piecepath);
+    tixiAddTextElement(handle, tmpPath, "MetaData", stream4.str().c_str());
+    snprintf(tmpPath, 512, "%s/MetaData", tmpPath);
+    tixiAddTextAttribute(handle,  tmpPath, "elements", "uID segmentIndex eta xsi isOnTop" );
+    }
+
+}
+
+// --------------------------------------------------------------------------//
+
+void PolyIndexList::addPoint(int index){
+    // dont add same point twice
+    if(pindex.size() == 0 || pindex.back() != index){
+         pindex.push_back(index);
+    }
+}
+
+void PolyIndexList::repair(){
+    if(pindex.size() > 0 && pindex.front() == pindex.back()){
+        pindex.pop_back();
+    }
+    if(pindex.size() < 3){
+        std::cerr << "ERROR: polygon " << myid << " must contain at least 3 points!" << pindex.size()<< std::endl;
+        exit(1);
+    }
+}
+
+
+//--------------------------------------------------------------------------//
+
+CTiglPolyObject::CTiglPolyObject(){
+    impl = new ObjectImpl;
+}
+
+CTiglPolyObject::~CTiglPolyObject(){
     delete impl;
 }
 
-void CTiglPolyData::addPoint(const CTiglPoint &p, int id){
-    impl->addPoint(p, id);
+void CTiglPolyObject::addPoint(const CTiglPoint &p, int id){
+    //impl->addPoint(p,id);
 }
 
-void CTiglPolyData::printVTK(){
-    TixiDocumentHandle handle;
-        tixiCreateDocument("VTKFile", &handle);
-        impl->writeVTK(handle);
-
-        char * text = NULL;
-        tixiExportDocumentAsString(handle, &text);
-
-        cout << text << endl;
-
-        tixiCloseDocument(handle);
+void CTiglPolyObject::addPolygon(const CTiglPolygon & polygon){
+    impl->addPolygon(polygon);
 }
 
-void CTiglPolyData::writeVTK(const char * filename){
-    TixiDocumentHandle handle;
-    tixiCreateDocument("VTKFile", &handle);
-    impl->writeVTK(handle);
-
-    if(tixiSaveDocument(handle, (char*) filename)!= SUCCESS){
-        tixiCloseDocument(handle);
-        throw CTiglError("Error writing VTK file in CTiglPolyData::writeVTK", TIGL_ERROR);
-    }else
-        tixiCloseDocument(handle);
+unsigned int CTiglPolyObject::getNPointsOfPolygon(unsigned int ipoly) const {
+    return impl->getNPointsOfPolygon(ipoly);
 }
 
-void CTiglPolyData::addPolygon(const CTiglPolygon & p){
-    impl->addPolygon(p);
-}
-
-void CTiglPolyData::createNewSurface(){
-    impl->createNewSurface();
-}
-
-void CTiglPolyData::enableNormals(bool enable){
-    impl->enableNormals(enable);
-}
-
-unsigned int CTiglPolyData::getNPolygons() const{
+unsigned int CTiglPolyObject::getNPolygons() const{
     return impl->getNPolygons();
 }
 
-// returns the number of points of the polygon
-unsigned int CTiglPolyData::getNPointsOfPoly(unsigned int ipoly) const {
-    return impl->getNPointsOfPoly(ipoly);
+unsigned int CTiglPolyObject::getNVertices() const{
+    return impl->pPoints.size();
 }
 
-const CTiglPoint& CTiglPolyData::getPointOfPoly(unsigned int iPoint, unsigned int iPoly) const {
-    return impl->getPointOfPoly(iPoint,  iPoly);
+void CTiglPolyObject::enableNormals(bool normals_enabled){
+    impl->has_normals = normals_enabled;
 }
 
-//--------------------------------------------------------------------------//
+bool CTiglPolyObject::hasNormals() const {
+    return impl->has_normals;
+}
+
+unsigned int CTiglPolyObject::getVertexIndexOfPolygon(unsigned int iPoint, unsigned int iPoly) const {
+    if(iPoly < getNPolygons()){
+        if (iPoint >= 0 && iPoint < getNPointsOfPolygon(iPoly)){
+            return impl->polys[iPoly].getPointIndex(iPoint);
+        }
+        else
+            throw tigl::CTiglError("Illegal Point Index at CTiglPolyObject::getVertexIndexOfPolygon", TIGL_INDEX_ERROR);
+    }
+    else
+        throw tigl::CTiglError("Illegal Polygon Index at CTiglPolyObject::getVertexIndexOfPolygon", TIGL_INDEX_ERROR);
+}
+
+const CTiglPoint& CTiglPolyObject::getVertexNormal(unsigned int iVertexIndex) const {
+    if(iVertexIndex < getNVertices())
+        return impl->pPoints[iVertexIndex]->getNormal();
+    else
+        throw tigl::CTiglError("Illegal Vertex Index at CTiglPolyObject::getVertexNormal", TIGL_INDEX_ERROR);
+}
+
+const CTiglPoint& CTiglPolyObject::getVertexPoint(unsigned int iVertexIndex) const {
+    if(iVertexIndex < getNVertices())
+        return impl->pPoints[iVertexIndex]->getPoint();
+    else
+        throw tigl::CTiglError("Illegal Vertex Index at CTiglPolyObject::getVertexNormal", TIGL_INDEX_ERROR);
+}
+
+const char * CTiglPolyObject::getPolyMetadata(unsigned int iPoly) const {
+    if(iPoly < getNPolygons()){
+        return impl->polys[iPoly].getMetadata().c_str();
+    }
+    else
+        throw tigl::CTiglError("Illegal Polygon Index at CTiglPolyObject::getPolyMetadata", TIGL_INDEX_ERROR);
+}
+
+//---------------------------------------------------------------------------//
 
 CTiglPolygon::CTiglPolygon(){
     _metadata.clear();
@@ -333,124 +553,23 @@ const char * CTiglPolygon::getMetadata() const{
     return _metadata.c_str();
 }
 
-// ----------------------------------------------------------------------  //
-
-// changes the current surface, we count from 1 to getNSurfaces
-void PolyDataImpl::switchSurface(unsigned int iSurf){
-    if(iSurf >= 1 && iSurf <= _surfaces.size()){
-        itCurrentSurface = _surfaces.begin() + iSurf - 1;
-    }
-    else {
-        throw tigl::CTiglError("Invalid surface index in PolyDataImpl::switchSurface!", TIGL_INDEX_ERROR);
-    }
-}
-
-void PolyDataImpl::enableNormals(bool enable){
-    if(itCurrentSurface!=_surfaces.end())
-            itCurrentSurface->has_normals = enable;
-        else
-            throw tigl::CTiglError("Error: current surface is NULL in PolyDataImpl::enableNormals ", TIGL_NULL_POINTER);
-}
-
-void PolyDataImpl::addPoint(const CTiglPoint &p, int polynum){
-    if(itCurrentSurface!=_surfaces.end())
-        itCurrentSurface->addPoint(p, polynum);
-    else
-        throw tigl::CTiglError("Error: current surface is NULL in PolyDataImpl::addPoint ", TIGL_NULL_POINTER);
-}
-
-void PolyDataImpl::addPolygon(const CTiglPolygon& poly){
-    if(itCurrentSurface!=_surfaces.end())
-        itCurrentSurface->addPolygon(poly);
-    else
-        throw tigl::CTiglError("Error: current surface is NULL in PolyDataImpl::addPolygon ", TIGL_NULL_POINTER);
-}
-
-void PolyDataImpl::writeVTK(TixiDocumentHandle handle){
-    tixiAddTextAttribute(handle, "/VTKFile", "type", "PolyData");
-    tixiAddTextAttribute(handle, "/VTKFile", "version", "0.1");
-    tixiAddTextAttribute(handle, "/VTKFile", "byte_order", "LittleEndian");
-    tixiAddTextAttribute(handle, "/VTKFile", "compressor", "vtkZLibDataCompressor");
-
-    tixiCreateElement(handle, "/VTKFile", "PolyData");
-
-    std::vector<SurfaceImpl>::iterator surf_it = _surfaces.begin();
-    unsigned int i = 1;
-    for(;surf_it  != _surfaces.end(); ++surf_it, ++i){
-        surf_it ->writeVTKPiece(handle, i);
-    }
-}
-
-void PolyDataImpl::createNewSurface(){
-    _surfaces.push_back(SurfaceImpl());
-    itCurrentSurface = _surfaces.end()-1;
-}
-
-unsigned int PolyDataImpl::getNSurfaces(){
-    return _surfaces.size();
-}
-
-unsigned int PolyDataImpl::getNPolygons() const{
-    return itCurrentSurface->getNPolygons();
-}
-
-unsigned int PolyDataImpl::getNPointsOfPoly(unsigned int ipoly) const{
-    return itCurrentSurface->getNPointsOfPolygon(ipoly);
-}
-
-const CTiglPoint& PolyDataImpl::getPointOfPoly(unsigned int ipoint, unsigned int ipoly) const {
-    return itCurrentSurface->getPointOfPolygon(ipoint, ipoly);
-}
-
 //--------------------------------------------------------------//
 
-
-void SurfaceImpl::addPoint(const CTiglPoint& p, int polynum){
+void ObjectImpl::addPointNorm(const CTiglPoint& p, const CTiglPoint& n, int polynum){
     using namespace std;
-    CTiglPoint n(1,0,0);
-    //check if point is already in pointlist
-    int index = pointlist.size();
-    std::pair<PointMap::iterator,bool> ret;
-    ret = pointlist.insert(std::pair<PointImpl, int>( PointImpl(p,n),index));
-    index = ret.first->second;
-#ifndef NDEBUG
-    if(ret.second == false){
-        double dist = ret.first->first.dist2(p);
-        assert(pointlist.size() == 0 ||  dist < 1e-9);
-    }
-#endif
-    if(ret.second == true){
-        // a new point was inserted, we have to keep track
-        pPoints.push_back(&(ret.first->first));
-    }
 
-    if(polynum > (int) polys.size()){
-        polys.push_back(PolyIndexList(polynum));
-    }
-
-    assert(polynum == polys.size());
-    polys.at(polynum-1).addPoint(index);
-
-    double mmin, mmax;
-    p.getMinMax(mmin, mmax);
-    if(mmin < min_coord) min_coord = mmin;
-    if(mmax > max_coord) max_coord = mmax;
-}
-
-void SurfaceImpl::addPointNorm(const CTiglPoint& p, const CTiglPoint& n, int polynum){
-    using namespace std;
     //check if point is already in pointlist
     int index = pointlist.size();
     std::pair<PointMap::iterator,bool> ret;
 
     ret = pointlist.insert(std::pair<PointImpl, int>(PointImpl(p,n),index));
     index = ret.first->second;
-#ifndef NDEBUG
+/*#ifndef NDEBUG
     if(ret.second == false){
         double dist = ret.first->first.dist2(p);
         assert(pointlist.size() == 0 ||  dist < 1e-9);
     }
-#endif
+#endif*/
     if(ret.second == true){
         // a new point was inserted, we have to keep track
         pPoints.push_back(&(ret.first->first));
@@ -462,19 +581,15 @@ void SurfaceImpl::addPointNorm(const CTiglPoint& p, const CTiglPoint& n, int pol
     }
     assert(polynum == polys.size());
     polys.at(polynum-1).addPoint(index);
-
-    double mmin, mmax;
-    p.getMinMax(mmin, mmax);
-    if(mmin < min_coord) min_coord = mmin;
-    if(mmax > max_coord) max_coord = mmax;
 }
 
 
-void SurfaceImpl::addPolygon(const CTiglPolygon & poly){
+void ObjectImpl::addPolygon(const CTiglPolygon & poly){
     int polynum = polys.size() + 1;
     if(!has_normals){
         for(unsigned int i = 0 ; i < poly.getNPoints(); ++i){
-            addPoint(poly.getPointConst(i), polynum);
+            CTiglPoint n(1,0,0);
+            addPointNorm(poly.getPointConst(i), n, polynum);
         }
     }
     else {
@@ -487,194 +602,13 @@ void SurfaceImpl::addPolygon(const CTiglPolygon & poly){
 }
 
 
-// writes the polygon data of a surface (in vtk they call it piece)
-void SurfaceImpl::writeVTKPiece(TixiDocumentHandle handle, unsigned int iSurf){
-    using namespace std;
-    if(getNPolygons() <= 0){
-        return;
-    }
-
-    // count number of vertices - this is not necessarily the number of points
-    int nvert = 0;;
-    for(unsigned int i = 0; i < getNPolygons(); ++i){
-        nvert += getNPointsOfPolygon(i);
-    }
-
-    if(nvert <= 0){
-        return;
-    }
-
-    // surface specific stuff
-    tixiCreateElement(handle, "/VTKFile/PolyData","Piece");
-
-    char piecepath[512];
-    snprintf(piecepath, 512, "/VTKFile/PolyData/Piece[%d]", iSurf);
-
-    tixiAddIntegerAttribute(handle, piecepath, "NumberOfPoints", pPoints.size(), "%d");
-    tixiAddIntegerAttribute(handle, piecepath, "NumberOfVerts",  0, "%d");
-    tixiAddIntegerAttribute(handle, piecepath, "NumberOfLines",  0, "%d");
-    tixiAddIntegerAttribute(handle, piecepath, "NumberOfStrips", 0, "%d");
-    tixiAddIntegerAttribute(handle, piecepath, "NumberOfPolys", getNPolygons(), "%d");
-
-    tixiCreateElement(handle, piecepath, "Points");
-
-    //points
-    {
-    std::vector<const PointImpl*>::iterator tmpit = pPoints.begin();
-    std::stringstream stream1;
-    stream1 << std::endl <<   "         ";
-    for(; tmpit != pPoints.end(); ++tmpit){
-        const CTiglPoint& p = (*tmpit)->getPoint();
-        stream1 << "    " <<  p.x << " " << p.y << " " << p.z << std::endl;
-        stream1 << "         ";
-    }
-    char tmpPath[512];
-    snprintf(tmpPath, 512, "%s/Points", piecepath);
-    tixiAddTextElement(handle, tmpPath, "DataArray", stream1.str().c_str());
-    snprintf(tmpPath, 512,  "%s/DataArray", tmpPath);
-    tixiAddTextAttribute(handle, tmpPath, "type", "Float64");
-    tixiAddTextAttribute(handle, tmpPath, "Name", "Points");
-    tixiAddTextAttribute(handle, tmpPath, "NumberOfComponents", "3");
-    tixiAddTextAttribute(handle, tmpPath, "format", "ascii");
-    tixiAddDoubleAttribute(handle, tmpPath, "RangeMin", min_coord ,"%f");
-    tixiAddDoubleAttribute(handle, tmpPath, "RangeMax", max_coord ,"%f");
-    }
-
-    //normals
-    if(has_normals){
-        tixiCreateElement(handle, piecepath, "PointData");
-        char tmpPath[512];
-        snprintf(tmpPath, 512, "%s/PointData", piecepath);
-
-        tixiAddTextAttribute(handle, tmpPath, "Normals", "surf_normals");
-
-        stringstream stream;
-        stream << endl  << "        ";
-        std::vector<const PointImpl*>::iterator it = pPoints.begin();
-        for(; it != pPoints.end(); ++it){
-             const CTiglPoint& n = (*it)->getNormal();
-             stream << "    " << n.x << " " << n.y << " "  << n.z << endl;
-             stream <<  "        ";
-        }
-
-        tixiAddTextElement(handle, tmpPath, "DataArray", stream.str().c_str());
-        snprintf(tmpPath, 512, "%s/DataArray", tmpPath);
-        tixiAddTextAttribute(handle, tmpPath, "type", "Float64");
-        tixiAddTextAttribute(handle, tmpPath, "Name", "surf_normals");
-        tixiAddTextAttribute(handle, tmpPath, "NumberOfComponents", "3");
-        tixiAddTextAttribute(handle, tmpPath, "format", "ascii");
-        tixiAddDoubleAttribute(handle, tmpPath, "RangeMin", 0 ,"%f");
-        tixiAddDoubleAttribute(handle, tmpPath, "RangeMax", 1 ,"%f");
-    }
-
-    //polygons
-    {
-    tixiCreateElement(handle, piecepath, "Polys");
-    std::vector<PolyIndexList>::iterator il_iter = polys.begin();
-    std::stringstream stream2;
-    stream2 << std::endl <<   "        ";
-    for(; il_iter != polys.end(); ++il_iter){
-        stream2 <<     "    ";
-        for(int j = 0; j < il_iter->getNVert(); ++j ){
-            stream2 << il_iter->getPointIndex(j)<< " ";
-        }
-        stream2  << std::endl <<  "        ";;
-    }
-
-    char tmpPath[512];
-    snprintf(tmpPath, 512, "%s/Polys", piecepath);
-    tixiAddTextElement(handle, tmpPath, "DataArray", stream2.str().c_str());
-    snprintf(tmpPath, 512, "%s/DataArray", tmpPath);
-    tixiAddTextAttribute(handle,tmpPath, "type", "Int32");
-    tixiAddTextAttribute(handle, tmpPath, "Name", "connectivity");
-    tixiAddTextAttribute(handle, tmpPath, "format", "ascii");
-    tixiAddIntegerAttribute(handle, tmpPath, "RangeMin", 0 ,"%d");
-    tixiAddIntegerAttribute(handle, tmpPath, "RangeMax", (int)pointlist.size()-1,"%d");
-    }
-
-    //offset
-    {
-    int next = 0;
-    std::stringstream stream3;
-    for (unsigned int i = 0; i < polys.size(); i ++)
-    {
-        if ((i % 10 == 0) && (i != (polys.size() - 1)))
-        {
-            stream3 << endl << "            ";
-        }
-        int np = polys[i].getNVert();
-        next += np;
-        stream3 << " " << next;
-    }
-    stream3 << endl << "        ";
-    char tmpPath[512];
-    snprintf(tmpPath, 512, "%s/Polys", piecepath);
-    tixiAddTextElement(handle, tmpPath, "DataArray", stream3.str().c_str());
-    snprintf(tmpPath, 512, "%s/DataArray[2]", tmpPath);
-    tixiAddTextAttribute(handle, tmpPath, "type", "Int32");
-    tixiAddTextAttribute(handle, tmpPath, "Name", "offsets");
-    tixiAddIntegerAttribute(handle, tmpPath, "RangeMin", polys.front().getNVert() ,"%d");
-    tixiAddIntegerAttribute(handle, tmpPath, "RangeMax", nvert,"%d");
-    }
-
-    // write metadata
-    {
-    std::stringstream stream4;
-    stream4 << endl  << "        ";
-    for (unsigned int i = 0; i < polys.size(); i ++){
-        stream4 << "    " << polys.at(i).getMetadata() << endl;
-        stream4 << "        ";
-    }
-    char tmpPath[512];
-    snprintf(tmpPath, 512, "%s/Polys", piecepath);
-    tixiAddTextElement(handle, tmpPath, "MetaData", stream4.str().c_str());
-    snprintf(tmpPath, 512, "%s/MetaData", tmpPath);
-    tixiAddTextAttribute(handle,  tmpPath, "elements", "uID segmentIndex eta xsi isOnTop" );
-    }
-
-}
-
-
-unsigned int SurfaceImpl::getNPolygons() const{
+unsigned int ObjectImpl::getNPolygons() const{
     return polys.size();
 }
-unsigned int SurfaceImpl::getNPointsOfPolygon(unsigned int ipoly) const{
-    if(ipoly >= 0 && ipoly < getNPolygons())
+unsigned int ObjectImpl::getNPointsOfPolygon(unsigned int ipoly) const{
+    if(ipoly < getNPolygons())
         return polys[ipoly].getNVert();
     else
         throw tigl::CTiglError("Illegal Polygon Index at SurfaceImpl::getNPointsOfPolygon", TIGL_INDEX_ERROR);
 }
-
-const CTiglPoint& SurfaceImpl::getPointOfPolygon(unsigned int ipoint, unsigned int ipoly) const{
-    if(ipoly >= 0 && ipoly < getNPolygons()){
-        if (ipoint >= 0 && ipoint < getNPointsOfPolygon(ipoly)){
-            int pointIndex = polys[ipoly].getPointIndex(ipoint);
-            return pPoints[pointIndex]->getPoint();
-        }
-        else
-            throw tigl::CTiglError("Illegal Point Index at SurfaceImpl::getPointOfPolygon", TIGL_INDEX_ERROR);
-    }
-    else
-        throw tigl::CTiglError("Illegal Polygon Index at SurfaceImpl::getPointOfPolygon", TIGL_INDEX_ERROR);
-}
-
-// --------------------------------------------------------------------------//
-
-void PolyIndexList::addPoint(int index){
-    // dont add same point twice
-    if(pindex.size() == 0 || pindex.back() != index){
-         pindex.push_back(index);
-    }
-}
-
-void PolyIndexList::repair(){
-    if(pindex.size() > 0 && pindex.front() == pindex.back()){
-        pindex.pop_back();
-    }
-    if(pindex.size() < 3){
-        std::cerr << "ERROR: polygon " << myid << " must contain at least 3 points!" << pindex.size()<< std::endl;
-        exit(1);
-    }
-}
-
 
