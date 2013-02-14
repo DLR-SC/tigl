@@ -20,13 +20,33 @@
 
 #include "test.h"
 #include "tigl.h"
+#include "CTiglError.h"
 #include "CTiglPolyData.h"
 
 using namespace tigl;
 
+TEST(TiglPolyData, simple){
+    CTiglPolyData poly;
+
+    poly.createNewObject();
+    poly.createNewObject();
+    poly.createNewObject();
+    poly.createNewObject();
+
+    ASSERT_EQ(5, poly.getNObjects());
+
+    poly.createNewObject();
+
+    ASSERT_EQ(6, poly.getNObjects());
+
+    ASSERT_TRUE(!poly.currentObject().hasNormals());
+}
+
 TEST(TiglPolyData, cube_export_vtk_standard)
 {
     CTiglPolyData poly;
+    CTiglPolyObject& co = poly.currentObject();
+
     CTiglPoint p1(0, 0, 0);
     CTiglPoint p2(0, 1, 0);
     CTiglPoint p3(0, 1, 1);
@@ -42,78 +62,95 @@ TEST(TiglPolyData, cube_export_vtk_standard)
     f1.addPoint(p2);
     f1.addPoint(p3);
     f1.addPoint(p4);
-
-
-    poly.addPolygon(f1);
+    co.addPolygon(f1);
 
     CTiglPolygon f2;
     f2.addPoint(p6);
     f2.addPoint(p5);
     f2.addPoint(p8);
     f2.addPoint(p7);
-    poly.addPolygon(f2);
+    co.addPolygon(f2);
 
     CTiglPolygon f3;
     f3.addPoint(p5);
     f3.addPoint(p1);
     f3.addPoint(p4);
     f3.addPoint(p8);
-    poly.addPolygon(f3);
+    co.addPolygon(f3);
 
     CTiglPolygon f4;
     f4.addPoint(p2);
     f4.addPoint(p6);
     f4.addPoint(p7);
     f4.addPoint(p3);
-    poly.addPolygon(f4);
+    co.addPolygon(f4);
 
     CTiglPolygon f5;
     f5.addPoint(p4);
     f5.addPoint(p3);
     f5.addPoint(p7);
     f5.addPoint(p8);
-    poly.addPolygon(f5);
+    co.addPolygon(f5);
 
     CTiglPolygon f6;
     f6.addPoint(p5);
     f6.addPoint(p6);
     f6.addPoint(p2);
     f6.addPoint(p1);
-    poly.addPolygon(f6);
+    co.addPolygon(f6);
 
     poly.writeVTK("vtk_cube_standard.vtp");
 
     //check polygon data
-    ASSERT_EQ(6, poly.getNPolygons());
+    ASSERT_EQ(6, co.getNPolygons());
 
-    ASSERT_EQ(4, poly.getNPointsOfPoly(0));
-    ASSERT_NEAR(0., poly.getPointOfPoly(0,0).distance2(p1), 1e-10);
-    ASSERT_NEAR(0., poly.getPointOfPoly(1,0).distance2(p2), 1e-10);
-    ASSERT_NEAR(0., poly.getPointOfPoly(2,0).distance2(p3), 1e-10);
-    ASSERT_NEAR(0., poly.getPointOfPoly(3,0).distance2(p4), 1e-10);
+    unsigned int index1, index2, index3, index4;
+    ASSERT_EQ(4, co.getNPointsOfPolygon(0));
 
-    ASSERT_EQ(4, poly.getNPointsOfPoly(1));
-    ASSERT_NEAR(0., poly.getPointOfPoly(0,1).distance2(p6), 1e-10);
-    ASSERT_NEAR(0., poly.getPointOfPoly(1,1).distance2(p5), 1e-10);
-    ASSERT_NEAR(0., poly.getPointOfPoly(2,1).distance2(p8), 1e-10);
-    ASSERT_NEAR(0., poly.getPointOfPoly(3,1).distance2(p7), 1e-10);
+    index1 = co.getVertexIndexOfPolygon(0,0);
+    index2 = co.getVertexIndexOfPolygon(1,0);
+    index3 = co.getVertexIndexOfPolygon(2,0);
+    index4 = co.getVertexIndexOfPolygon(3,0);
+    ASSERT_NEAR(0., co.getVertexPoint(index1).distance2(p1), 1e-10);
+    ASSERT_NEAR(0., co.getVertexPoint(index2).distance2(p2), 1e-10);
+    ASSERT_NEAR(0., co.getVertexPoint(index3).distance2(p3), 1e-10);
+    ASSERT_NEAR(0., co.getVertexPoint(index4).distance2(p4), 1e-10);
 
-    ASSERT_EQ(4, poly.getNPointsOfPoly(2));
-    ASSERT_NEAR(0., poly.getPointOfPoly(0,2).distance2(p5), 1e-10);
-    ASSERT_NEAR(0., poly.getPointOfPoly(1,2).distance2(p1), 1e-10);
-    ASSERT_NEAR(0., poly.getPointOfPoly(2,2).distance2(p4), 1e-10);
-    ASSERT_NEAR(0., poly.getPointOfPoly(3,2).distance2(p8), 1e-10);
+    ASSERT_EQ(4, co.getNPointsOfPolygon(1));
+    index1 = co.getVertexIndexOfPolygon(0,1);
+    index2 = co.getVertexIndexOfPolygon(1,1);
+    index3 = co.getVertexIndexOfPolygon(2,1);
+    index4 = co.getVertexIndexOfPolygon(3,1);
+    ASSERT_NEAR(0., co.getVertexPoint(index1).distance2(p6), 1e-10);
+    ASSERT_NEAR(0., co.getVertexPoint(index2).distance2(p5), 1e-10);
+    ASSERT_NEAR(0., co.getVertexPoint(index3).distance2(p8), 1e-10);
+    ASSERT_NEAR(0., co.getVertexPoint(index4).distance2(p7), 1e-10);
 
-    ASSERT_EQ(4, poly.getNPointsOfPoly(3));
-    ASSERT_NEAR(0., poly.getPointOfPoly(0,3).distance2(p2), 1e-10);
-    ASSERT_NEAR(0., poly.getPointOfPoly(1,3).distance2(p6), 1e-10);
-    ASSERT_NEAR(0., poly.getPointOfPoly(2,3).distance2(p7), 1e-10);
-    ASSERT_NEAR(0., poly.getPointOfPoly(3,3).distance2(p3), 1e-10);
+    ASSERT_EQ(4, co.getNPointsOfPolygon(2));
+    index1 = co.getVertexIndexOfPolygon(0,2);
+    index2 = co.getVertexIndexOfPolygon(1,2);
+    index3 = co.getVertexIndexOfPolygon(2,2);
+    index4 = co.getVertexIndexOfPolygon(3,2);
+    ASSERT_NEAR(0., co.getVertexPoint(index1).distance2(p5), 1e-10);
+    ASSERT_NEAR(0., co.getVertexPoint(index2).distance2(p1), 1e-10);
+    ASSERT_NEAR(0., co.getVertexPoint(index3).distance2(p4), 1e-10);
+    ASSERT_NEAR(0., co.getVertexPoint(index4).distance2(p8), 1e-10);
+
+    ASSERT_EQ(4, co.getNPointsOfPolygon(3));
+    index1 = co.getVertexIndexOfPolygon(0,3);
+    index2 = co.getVertexIndexOfPolygon(1,3);
+    index3 = co.getVertexIndexOfPolygon(2,3);
+    index4 = co.getVertexIndexOfPolygon(3,3);
+    ASSERT_NEAR(0., co.getVertexPoint(index1).distance2(p2), 1e-10);
+    ASSERT_NEAR(0., co.getVertexPoint(index2).distance2(p6), 1e-10);
+    ASSERT_NEAR(0., co.getVertexPoint(index3).distance2(p7), 1e-10);
+    ASSERT_NEAR(0., co.getVertexPoint(index4).distance2(p3), 1e-10);
 }
 
 TEST(TiglPolyData, cube_export_vtk_withnormals)
 {
     CTiglPolyData poly;
+    CTiglPolyObject& co =  poly.currentObject();
     CTiglPoint p1(0, 0, 0);
     CTiglPoint p2(0, 1, 0);
     CTiglPoint p3(0, 1, 1);
@@ -124,7 +161,7 @@ TEST(TiglPolyData, cube_export_vtk_withnormals)
     CTiglPoint p8(-1, 0, 1);
 
     //face one
-    poly.enableNormals(true);
+    co.enableNormals(true);
     CTiglPolygon f1;
     f1.addPoint(p1);
     f1.addPoint(p2);
@@ -134,7 +171,7 @@ TEST(TiglPolyData, cube_export_vtk_withnormals)
     for (int i = 0; i < 4; ++i)
         f1.addNormal(CTiglPoint(1, 0, 0));
 
-    poly.addPolygon(f1);
+    co.addPolygon(f1);
 
     CTiglPolygon f2;
     f2.addPoint(p6);
@@ -145,7 +182,7 @@ TEST(TiglPolyData, cube_export_vtk_withnormals)
     for (int i = 0; i < 4; ++i)
         f2.addNormal(CTiglPoint(-1, 0, 0));
 
-    poly.addPolygon(f2);
+    co.addPolygon(f2);
 
     CTiglPolygon f3;
     f3.addPoint(p5);
@@ -156,7 +193,7 @@ TEST(TiglPolyData, cube_export_vtk_withnormals)
     for (int i = 0; i < 4; ++i)
         f3.addNormal(CTiglPoint(0, -1, 0));
 
-    poly.addPolygon(f3);
+    co.addPolygon(f3);
 
     CTiglPolygon f4;
     f4.addPoint(p2);
@@ -167,7 +204,7 @@ TEST(TiglPolyData, cube_export_vtk_withnormals)
     for (int i = 0; i < 4; ++i)
         f4.addNormal(CTiglPoint(0, 1, 0));
 
-    poly.addPolygon(f4);
+    co.addPolygon(f4);
 
     CTiglPolygon f5;
     f5.addPoint(p4);
@@ -178,7 +215,7 @@ TEST(TiglPolyData, cube_export_vtk_withnormals)
     for (int i = 0; i < 4; ++i)
         f5.addNormal(CTiglPoint(0, 0, 1));
 
-    poly.addPolygon(f5);
+    co.addPolygon(f5);
 
     CTiglPolygon f6;
     f6.addPoint(p5);
@@ -189,7 +226,7 @@ TEST(TiglPolyData, cube_export_vtk_withnormals)
     for (int i = 0; i < 4; ++i)
         f6.addNormal(CTiglPoint(0, 0, -1));
 
-    poly.addPolygon(f6);
+    co.addPolygon(f6);
 
     poly.writeVTK("vtk_cube+normals.vtp");
 }
@@ -197,6 +234,7 @@ TEST(TiglPolyData, cube_export_vtk_withnormals)
 TEST(TiglPolyData, cube_export_vtk_withpieces)
 {
     CTiglPolyData poly;
+    CTiglPolyObject * co = &poly.currentObject();
     CTiglPoint p1(0, 0, 0);
     CTiglPoint p2(0, 1, 0);
     CTiglPoint p3(0, 1, 1);
@@ -205,53 +243,54 @@ TEST(TiglPolyData, cube_export_vtk_withpieces)
     CTiglPoint p6(-1, 1, 0);
     CTiglPoint p7(-1, 1, 1);
     CTiglPoint p8(-1, 0, 1);
-
+    
     CTiglPolygon f1;
     f1.addPoint(p1);
     f1.addPoint(p2);
     f1.addPoint(p3);
     f1.addPoint(p4);
-    poly.addPolygon(f1);
+    co->addPolygon(f1);
 
-    poly.createNewSurface();
+    co = &poly.createNewObject();
+
     CTiglPolygon f2;
     f2.addPoint(p6);
     f2.addPoint(p5);
     f2.addPoint(p8);
     f2.addPoint(p7);
-    poly.addPolygon(f2);
+    co->addPolygon(f2);
 
-    poly.createNewSurface();
+    co = &poly.createNewObject();
     CTiglPolygon f3;
     f3.addPoint(p5);
     f3.addPoint(p1);
     f3.addPoint(p4);
     f3.addPoint(p8);
-    poly.addPolygon(f3);
+    co->addPolygon(f3);
 
-    poly.createNewSurface();
+    co = &poly.createNewObject();
     CTiglPolygon f4;
     f4.addPoint(p2);
     f4.addPoint(p6);
     f4.addPoint(p7);
     f4.addPoint(p3);
-    poly.addPolygon(f4);
+    co->addPolygon(f4);
 
-    poly.createNewSurface();
+    co = &poly.createNewObject();
     CTiglPolygon f5;
     f5.addPoint(p4);
     f5.addPoint(p3);
     f5.addPoint(p7);
     f5.addPoint(p8);
-    poly.addPolygon(f5);
+    co->addPolygon(f5);
 
-    poly.createNewSurface();
+    co = &poly.createNewObject();
     CTiglPolygon f6;
     f6.addPoint(p5);
     f6.addPoint(p6);
     f6.addPoint(p2);
     f6.addPoint(p1);
-    poly.addPolygon(f6);
+    co->addPolygon(f6);
 
     poly.writeVTK("vtk_cube+pieces.vtp");
 }
