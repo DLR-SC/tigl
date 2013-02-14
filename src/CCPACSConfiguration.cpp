@@ -84,7 +84,7 @@ namespace tigl {
 			transformAllComponents(uidManager.GetRootComponent());	
 		}
 		catch (tigl::CTiglError& ex) {
-			std::cerr << ex.getError() << std::endl;
+		    LOG(ERROR) << ex.getError() << std::endl;
 		}
 	}
 

@@ -35,12 +35,24 @@ namespace tigl {
     class CTiglLogger {
 
         public:
+            // Returns a reference to the only instance of this class
             static CTiglLogger& GetLogger(void);
-            void set_log_destination(const std::string& fileName);
+
+            // Destructor
+            ~CTiglLogger(void);
 
         private:
+            // Constructor
             CTiglLogger(void);
-            void initLogger();
+
+            // Logger Initialize with defaults
+            void initLogger(void);
+
+            // Copy constructor
+            CTiglLogger(const CTiglLogger& )                { /* Do nothing */ }
+
+            // Assignment operator
+            void operator=(const CTiglLogger& )             { /* Do nothing */ }
 
     };
 
