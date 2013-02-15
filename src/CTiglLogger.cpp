@@ -1,7 +1,7 @@
 /* 
 * Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
 *
-* Created: 2010-08-13 Markus Litz <Markus.Litz@dlr.de>
+* Created: 2013-02-13 Markus Litz <Markus.Litz@dlr.de>
 * Changed: $Id$ 
 *
 * Version: $Revision$
