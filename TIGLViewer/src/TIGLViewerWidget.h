@@ -195,6 +195,7 @@ private: // members
 	Qt::KeyboardModifiers			myKeyboardFlags;
 	Qt::MouseButton					myButtonFlags;
 	QCursor							myCrossCursor;
+	QColor							myBGColor;
 
 private: // methods
     void initialize();

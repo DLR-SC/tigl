@@ -100,6 +100,7 @@ void TIGLViewerWidget::initialize(){
     myDetection		  = AIS_SOD_Nothing;
     myKeyboardFlags   = Qt::NoModifier;
     myButtonFlags	  = Qt::NoButton;
+    myBGColor = QColor(255,235,163);
 
     // Needed to generate mouse events
     setMouseTracking( true );
@@ -206,7 +207,7 @@ void TIGLViewerWidget::initializeOCC(const Handle_AIS_InteractiveContext& aConte
 
 		myLayer   = new Visual3d_Layer (myViewer->Viewer(), Aspect_TOL_OVERLAY, Standard_True /*aSizeDependant*/);
 
-		setBackgroundColor(QColor(255,235,163));
+		setBackgroundColor(myBGColor);
 
 		emit initialized();
 	}
@@ -589,6 +590,7 @@ void TIGLViewerWidget::hiddenLineOn()
 }
 
 void TIGLViewerWidget::setBackgroundColor(const QColor& col){
+    myBGColor = col;
     if(!myView.IsNull()){
     Standard_Real R1 = col.red()/255.;
     Standard_Real G1 = col.green()/255.;
@@ -609,10 +611,6 @@ void TIGLViewerWidget::setBackgroundColor(const QColor& col){
     myView->SetBackgroundColor(Quantity_TOC_RGB,R1,G1,B1);
 #endif
     } 
-    else {
-        initializeOCC(myContext);
-        setBackgroundColor(col);
-    }
     redraw();
 }
 
