@@ -1,5 +1,5 @@
 /* 
-* Copyright (C) 2007-2011 German Aerospace Center (DLR/SC)
+* Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
 *
 * Created: 2010-08-13 Markus Litz <Markus.Litz@dlr.de>
 * Changed: $Id$ 
@@ -48,6 +48,8 @@ namespace tigl {
 
 		// Virtual Destructor
 		virtual ~CCPACSImportExport(void);
+
+		bool SaveStructuredIges(const std::string& filename);
 
 		// Save a sequence of shapes in IGES Format
 		static void SaveIGES(const Handle(TopTools_HSequenceOfShape)& aHSequenceOfShape, const std::string& filename);
