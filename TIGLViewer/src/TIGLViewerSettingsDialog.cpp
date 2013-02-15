@@ -18,6 +18,8 @@
 
 #include <QDialog>
 
+#include <QColorDialog>
+
 #include <TIGLViewerSettingsDialog.h>
 #include <TIGLViewerSettings.h>
 #include <cmath>
@@ -40,6 +42,7 @@ TIGLViewerSettingsDialog::TIGLViewerSettingsDialog(TIGLViewerSettings& settings,
 	connect(buttonBox, SIGNAL(accepted()), this, SLOT(onSettingsAccepted()));
 	connect(sliderTesselationAccuracy,   SIGNAL(valueChanged(int)), this, SLOT(onSliderTesselationChanged(int)));
 	connect(sliderTriangulationAccuracy, SIGNAL(valueChanged(int)), this, SLOT(onSliderTriangulationChanged(int)));
+	connect(buttonColorChoser, SIGNAL(clicked()), this, SLOT(onColorChoserPushed()));
 }
 
 double TIGLViewerSettingsDialog::calcTesselationAccu(int value){
@@ -70,6 +73,7 @@ double TIGLViewerSettingsDialog::calcTriangulationAccu(int value){
 void TIGLViewerSettingsDialog::onSettingsAccepted(){
 	_settings.setTesselationAccuracy(calcTesselationAccu(sliderTesselationAccuracy->value()));
 	_settings.setTriangulationAccuracy(calcTriangulationAccu(sliderTriangulationAccuracy->value()));
+	_settings.setBGColor(_bgcolor);
 }
 
 void TIGLViewerSettingsDialog::updateEntries(){
@@ -92,6 +96,9 @@ void TIGLViewerSettingsDialog::updateEntries(){
 
 	int triaVal = int (log(c/_settings.triangulationAccuracy())/mu);
 	sliderTriangulationAccuracy->setValue(triaVal);
+
+	_bgcolor = _settings.BGColor();
+	updateBGColorButton();
 }
 
 void TIGLViewerSettingsDialog::onSliderTesselationChanged(int val){
@@ -100,6 +107,19 @@ void TIGLViewerSettingsDialog::onSliderTesselationChanged(int val){
 
 void TIGLViewerSettingsDialog::onSliderTriangulationChanged(int val){
 	trianAccuEdit->setText(QString("%1").arg(val));
+}
+
+void TIGLViewerSettingsDialog::onColorChoserPushed(){
+	QColor col = QColorDialog::getColor(Qt::white, this);
+	if(col.isValid()) {
+		_bgcolor = col;
+		updateBGColorButton();
+	}
+}
+
+void TIGLViewerSettingsDialog::updateBGColorButton(){
+	QString qss = QString("background-color: %1").arg(_bgcolor.name());
+	buttonColorChoser->setStyleSheet(qss);
 }
 
 TIGLViewerSettingsDialog::~TIGLViewerSettingsDialog() {

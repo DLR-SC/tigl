@@ -89,6 +89,7 @@ private slots:
 	void statusMessage (const QString aMessage);
 	void loadSettings();
 	void saveSettings();
+	void changeSettings();
 
 private:
     void connectSignals();
