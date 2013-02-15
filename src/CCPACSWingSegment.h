@@ -162,6 +162,9 @@ namespace tigl {
 
 		// Returns the upper Surface of this Segment
 		Handle(Geom_Surface) GetUpperSurface();
+        
+        TopoDS_Shape& GetUpperShape();
+        TopoDS_Shape& GetLowerShape();
 
         // Returns an upper or lower point on the segment surface in
         // dependence of parameters eta and xsi, which range from 0.0 to 1.0.
