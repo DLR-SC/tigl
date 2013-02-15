@@ -19,6 +19,8 @@
 #ifndef TIGLVIEWERSETTINGS_H_
 #define TIGLVIEWERSETTINGS_H_
 
+#include <QColor>
+
 class TIGLViewerSettings {
 public:
 	TIGLViewerSettings();
@@ -27,15 +29,19 @@ public:
 
 	void setTesselationAccuracy(double);
 	void setTriangulationAccuracy(double);
+    void setBGColor(const QColor&);
 
 	double tesselationAccuracy() const;
 	double triangulationAccuracy() const;
+
+    const QColor& BGColor() const;
 
 	virtual ~TIGLViewerSettings();
 
 private:
 	double _tesselationAccuracy;
 	double _triangulationAccuracy;
+	QColor _bgcolor;
 };
 
 #endif /* TIGLVIEWERSETTINGS_H_ */
