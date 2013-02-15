@@ -110,7 +110,7 @@ void TIGLViewerSettingsDialog::onSliderTriangulationChanged(int val){
 }
 
 void TIGLViewerSettingsDialog::onColorChoserPushed(){
-	QColor col = QColorDialog::getColor(Qt::white, this);
+	QColor col = QColorDialog::getColor(_bgcolor, this);
 	if(col.isValid()) {
 		_bgcolor = col;
 		updateBGColorButton();
