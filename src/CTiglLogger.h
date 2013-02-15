@@ -20,7 +20,7 @@
  */
 /**
  * @file
- * @brief  Implementation of a TIGL point.
+ * @brief  Implementation of the TIGL Logger.
  */
 
 #ifndef CTIGLLOGGER_H
