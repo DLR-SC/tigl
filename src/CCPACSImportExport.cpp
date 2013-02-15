@@ -74,6 +74,14 @@ namespace tigl {
         CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         CTiglUIDManager& uidManager = config.GetUIDManager();
 
+        CTiglAbstractPhysicalComponent* rootComponent = uidManager.GetRootComponent();
+        if (rootComponent == NULL) {
+            LOG(ERROR) << "Error: No Root Component"
+            return false;
+        }
+
+
+
         return true;
     }
 

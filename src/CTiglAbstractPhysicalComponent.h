@@ -35,6 +35,8 @@
 #include "CTiglTransformation.h"
 #include "CTiglPoint.h"
 
+#include "TDF_Label.hxx"
+
 
 namespace tigl {
 
@@ -66,6 +68,10 @@ namespace tigl {
 
         // number of segments
         virtual int GetSegmentCount(void) = 0;
+
+        // builds data structure for a TDocStd_Application
+        // mostly used for export
+        virtual void ExportDataStructure(TDF_Label *rootLabel) = 0;
 
 		// Returns the segment for a given index
         virtual class CTiglAbstractSegment & GetSegment(const int index) = 0;
