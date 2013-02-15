@@ -466,6 +466,8 @@ void TIGLViewerDocument::drawWingProfiles()
     shape->SetColor(Quantity_NOC_WHITE);
     myAISContext->Display(shape, Standard_True);
 
+    return;
+
     // Leading/trailing edges
     gp_Pnt lePoint = profile.GetLEPoint();
     gp_Pnt tePoint = profile.GetTEPoint();
@@ -1275,6 +1277,25 @@ void TIGLViewerDocument::drawWingComponentSegment()
 		cerr << "Component segment \"" << wingUid.toStdString() << "\" not found" << endl;
 	}
 	QApplication::restoreOverrideCursor();
+}
+
+void TIGLViewerDocument::drawWingShells(){
+    QString wingUid = dlgGetWingSelection();
+    if(wingUid == "")
+        return;
+
+    myAISContext->EraseAll(Standard_False);
+    QApplication::setOverrideCursor( Qt::WaitCursor );
+
+    tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
+
+    for(int i = 1; i <=  wing.GetSegmentCount(); ++i){
+        tigl::CCPACSWingSegment& segment = dynamic_cast<tigl::CCPACSWingSegment&>(wing.GetSegment(i));
+        displayShape(segment.GetUpperShape(), Quantity_NOC_GREEN);
+        displayShape(segment.GetLowerShape(), Quantity_NOC_RED);
+    }
+
+    QApplication::restoreOverrideCursor();
 }
 
 /*

@@ -112,6 +112,7 @@
      <addaction name="drawWingSamplePointsAction"/>
      <addaction name="drawFusedWingAction"/>
      <addaction name="drawWingComponentSegmentAction"/>
+     <addaction name="drawWingShellAction"/>
     </widget>
     <widget class="QMenu" name="menuFuselages">
      <property name="title">
@@ -1035,6 +1036,11 @@
    </property>
    <property name="text">
     <string>Settings</string>
+   </property>
+  </action>
+  <action name="drawWingShellAction">
+   <property name="text">
+    <string>Show Wing Shells</string>
    </property>
   </action>
  </widget>
