@@ -84,6 +84,10 @@ namespace tigl {
 		// Get segment count
 		int GetComponentSegmentCount(void);
 
+        // builds data structure for a TDocStd_Application
+        // mostly used for export
+        void ExportDataStructure(TDF_Label *rootLabel);
+
 		// Returns the segment for a given index or uid
 		CTiglAbstractSegment & GetComponentSegment(const int index);
 		CTiglAbstractSegment & GetComponentSegment(std::string uid);

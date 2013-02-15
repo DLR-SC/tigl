@@ -33,6 +33,8 @@
 #include "tigl.h"
 #include "CTiglTransformation.h"
 
+#include "TDF_Label.hxx"
+
 class TopoDS_Shape;
 
 
@@ -62,6 +64,10 @@ namespace tigl {
 
 		// Returns the Geometric type of this component, e.g. Wing or Fuselage
 		virtual TiglGeometricComponentType GetComponentType(void) = 0;
+
+        // builds data structure for a TDocStd_Application
+        // mostly used for export
+        virtual void ExportDataStructure(TDF_Label *rootLabel) = 0;
 
     protected:
         // Resets the geometric component.

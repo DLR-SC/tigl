@@ -232,6 +232,12 @@ namespace tigl {
         return segments.GetSegmentCount();
     }
 
+    // Get segment count
+    void CCPACSWing::ExportDataStructure(TDF_Label *rootLabel)
+    {
+//        return segments.GetSegmentCount();
+    }
+
     // Returns the segment for a given index
     CTiglAbstractSegment & CCPACSWing::GetSegment(const int index)
     {

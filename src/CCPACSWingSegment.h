@@ -173,6 +173,10 @@ namespace tigl {
 
         TiglGeometricComponentType GetComponentType(){ return TIGL_COMPONENT_WINGSEGMENT | TIGL_COMPONENT_SEGMENT | TIGL_COMPONENT_LOGICAL; }
 
+        // builds data structure for a TDocStd_Application
+        // mostly used for export
+        void ExportDataStructure(TDF_Label *rootLabel);
+
     protected:
 		// Cleanup routine
 		void Cleanup(void);
