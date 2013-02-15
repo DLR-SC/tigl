@@ -1,4 +1,4 @@
-/* 
+/*
 * Copyright (C) 2007-2011 German Aerospace Center (DLR/SC)
 *
 * Created: 2010-08-13 Markus Litz <Markus.Litz@dlr.de>
@@ -71,6 +71,7 @@
 #include "BRepAdaptor_Surface.hxx"
 #include "GeomAdaptor_Surface.hxx"
 #include "GC_MakeLine.hxx"
+#include "BRepTools_WireExplorer.hxx"
 
 #include "Geom_BSplineCurve.hxx"
 #include "GeomAPI_PointsToBSpline.hxx"
@@ -661,7 +662,7 @@ namespace tigl {
 	}
 
 
-    double projectOnCurve(gp_Pnt p, Handle_Geom_BSplineCurve curve){
+    double projectOnCurve(gp_Pnt p, Handle_Geom_Curve curve){
         GeomAPI_ProjectPointOnCurve projector(p, curve);
         return projector.LowerDistanceParameter();
     }
@@ -711,11 +712,30 @@ namespace tigl {
             ol_edge = BRepBuilderAPI_MakeEdge(outercurve,outercurve->FirstParameter(), outerlep_par);
             ou_edge = BRepBuilderAPI_MakeEdge(outercurve,outerlep_par, outercurve->LastParameter());
         }
-        
-        BRepBuilderAPI_MakeWire wiu(iu_edge);
-        BRepBuilderAPI_MakeWire wil(il_edge);
-        BRepBuilderAPI_MakeWire wou(ou_edge);
-        BRepBuilderAPI_MakeWire wol(ol_edge);
+
+        BRepBuilderAPI_MakeWire wiu;
+        BRepBuilderAPI_MakeWire wil;
+        BRepBuilderAPI_MakeWire wou;
+        BRepBuilderAPI_MakeWire wol;
+
+        // This following code is not general and assumes, that the wire that closes the wing
+        // profile belongs to the lower surface - this is more or less the trailing edge.
+        // should we include the edge into upper or lower shell or should we handle it separately?
+        BRepTools_WireExplorer wireExplorer;
+        int nwire=0;
+        for ( wireExplorer.Init(GetInnerWire()); wireExplorer.More(); wireExplorer.Next(), nwire++){
+            // the first wire will be add trimmed later
+            if(nwire == 0) continue;
+            wil.Add(wireExplorer.Current());
+        }
+        nwire = 0;
+        for (wireExplorer.Init(GetOuterWire()); wireExplorer.More(); wireExplorer.Next(), nwire++){
+            // the first wire will be add trimmed later
+            if(nwire == 0) continue;
+            wol.Add(wireExplorer.Current());
+        }
+        wiu.Add(iu_edge); wil.Add(il_edge);
+        wou.Add(ou_edge); wol.Add(ol_edge);
         wiu.Build(); wil.Build();
         wou.Build(); wol.Build();
 
