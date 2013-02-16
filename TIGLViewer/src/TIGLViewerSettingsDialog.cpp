@@ -31,6 +31,7 @@
 #define WORST_TRIANGULATION 0.01
 #define BEST_TRIANGULATION 0.00005
 
+#define BTN_STYLE "#buttonColorChoser {background-color: %1; border: 1px solid black; border-radius: 5px;} #buttonColorChoser:hover {border: 1px solid white;}"
 
 TIGLViewerSettingsDialog::TIGLViewerSettingsDialog(TIGLViewerSettings& settings, QWidget *parent)
 : _settings(settings), QDialog(parent) {
@@ -118,7 +119,7 @@ void TIGLViewerSettingsDialog::onColorChoserPushed(){
 }
 
 void TIGLViewerSettingsDialog::updateBGColorButton(){
-	QString qss = QString("background-color: %1").arg(_bgcolor.name());
+	QString qss = QString(BTN_STYLE).arg(_bgcolor.name());
 	buttonColorChoser->setStyleSheet(qss);
 }
 
