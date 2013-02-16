@@ -21,6 +21,8 @@
 
 #include "ui_TIGLViewerSettingsDialog.h"
 
+#include <QColor>
+
 class TIGLViewerSettingsDialog : public QDialog, private Ui::TIGLViewerSettingsDialog{
     Q_OBJECT
 public:
@@ -35,12 +37,15 @@ private slots:
 	void onSettingsAccepted();
 	void onSliderTesselationChanged(int);
 	void onSliderTriangulationChanged(int);
+	void onColorChoserPushed();
 
 private:
 	double calcTesselationAccu(int value);
 	double calcTriangulationAccu(int value);
+	void updateBGColorButton();
 
 	class TIGLViewerSettings& _settings;
+	QColor _bgcolor;
 };
 
 #endif /* TIGLVIEWERSETTINGSDIALOG_H_ */
