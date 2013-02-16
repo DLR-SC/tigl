@@ -126,7 +126,7 @@ public slots:
     void selecting();
     void hiddenLineOn();
     void hiddenLineOff();
-	void background();
+    void setBackgroundColor(const QColor&);
 	void setBGImage(const QString&);
 	void viewFront();
     void viewBack();
@@ -195,6 +195,7 @@ private: // members
 	Qt::KeyboardModifiers			myKeyboardFlags;
 	Qt::MouseButton					myButtonFlags;
 	QCursor							myCrossCursor;
+	QColor							myBGColor;
 
 private: // methods
     void initialize();
