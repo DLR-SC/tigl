@@ -1305,7 +1305,8 @@ void TIGLViewerDocument::createShapeTriangulation(const TopoDS_Shape& shape, Top
     meshShape(shape, _settings.triangulationAccuracy());
     BRep_Builder builder;
     builder.MakeCompound(compound);
-
+    builder.Add(compound, shape);
+    
     TopExp_Explorer shellExplorer;
     TopExp_Explorer faceExplorer;
     for (shellExplorer.Init(shape, TopAbs_SHELL); shellExplorer.More(); shellExplorer.Next())
@@ -1332,16 +1333,6 @@ void TIGLViewerDocument::createShapeTriangulation(const TopoDS_Shape& shape, Top
                 gp_Pnt point1 = nodes(index1).Transformed(nodeTransformation);
                 gp_Pnt point2 = nodes(index2).Transformed(nodeTransformation);
                 gp_Pnt point3 = nodes(index3).Transformed(nodeTransformation);
-
-                BRepBuilderAPI_MakePolygon poly;
-                poly.Add(point1);
-                poly.Add(point2);
-                poly.Add(point3);
-                poly.Close();
-
-                TopoDS_Face triangleFace = BRepBuilderAPI_MakeFace(poly.Wire());
-                if(!triangleFace.IsNull())
-                    builder.Add(compound, triangleFace);
 
                 BRepBuilderAPI_MakeEdge edge1(point1, point2);
                 BRepBuilderAPI_MakeEdge edge2(point2, point3);
