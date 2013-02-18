@@ -19,11 +19,55 @@
  */
 
 #include "test.h"
+
 #include "tigl.h"
+#include "tixi.h"
+
 #include "CTiglError.h"
 #include "CTiglPolyData.h"
+#include "CCPACSConfigurationManager.h"
+#include "CCPACSConfiguration.h"
+#include "CTiglTriangularizer.h"
+
+#include <BRepMesh.hxx>
+#include <TopoDS_CompSolid.hxx>
 
 using namespace tigl;
+
+
+class TriangularizeShape : public ::testing::Test {
+ protected:
+  static void SetUpTestCase() {
+        const char* filename = "TestData/simpletest.cpacs.xml";
+        ReturnCode tixiRet;
+        TiglReturnCode tiglRet;
+
+        tiglHandle = -1;
+        tixiHandle = -1;
+        
+        tixiRet = tixiOpenDocument(filename, &tixiHandle);
+        ASSERT_TRUE (tixiRet == SUCCESS);
+        tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "Cpacs2Test", &tiglHandle);
+        ASSERT_TRUE(tiglRet == TIGL_SUCCESS);
+  }
+
+  static void TearDownTestCase() {
+        ASSERT_TRUE(tiglCloseCPACSConfiguration(tiglHandle) == TIGL_SUCCESS);
+        ASSERT_TRUE(tixiCloseDocument(tixiHandle) == SUCCESS);
+        tiglHandle = -1;
+        tixiHandle = -1;
+  }
+  
+  virtual void SetUp() {}
+  virtual void TearDown() {}
+  
+
+  static TixiDocumentHandle           tixiHandle;
+  static TiglCPACSConfigurationHandle tiglHandle;
+};
+
+TixiDocumentHandle TriangularizeShape::tixiHandle = 0;
+TiglCPACSConfigurationHandle TriangularizeShape::tiglHandle = 0;
 
 TEST(TiglPolyData, simple){
     CTiglPolyData poly;
@@ -293,4 +337,51 @@ TEST(TiglPolyData, cube_export_vtk_withpieces)
     co->addPolygon(f6);
 
     poly.writeVTK("vtk_cube+pieces.vtp");
+}
+
+TEST_F(TriangularizeShape, exportVTK_FusedWing){
+    tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
+    tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
+    tigl::CCPACSWing& wing = config.GetWing(1);
+    BRepMesh::Mesh(wing.GetLoft(), 0.001);
+    
+    bool exportError = false;
+    
+    tigl::CTiglTriangularizer t(wing.GetLoft());
+    try{
+        t.writeVTK("exported_fused_wing_simple.vtp");
+    }
+    catch (...){
+        exportError = true;
+    }
+    
+    ASSERT_TRUE(exportError == false);
+}
+
+TEST_F(TriangularizeShape, exportVTK_CompoundWing){
+    tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
+    tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
+    tigl::CCPACSWing& wing = config.GetWing(1);
+    
+    TopoDS_CompSolid compound;
+    BRep_Builder builder;
+    builder.MakeCompSolid(compound);
+    
+    for(int i = 1; i <= wing.GetSegmentCount(); ++i){
+        builder.Add(compound, wing.GetSegment(i).GetLoft());
+    }
+    
+    BRepMesh::Mesh(compound, 0.001);
+    
+    bool exportError = false;
+    
+    tigl::CTiglTriangularizer t(compound);
+    try{
+        t.writeVTK("exported_compund_wing_simple.vtp");
+    }
+    catch (...){
+        exportError = true;
+    }
+    
+    ASSERT_TRUE(exportError == false);
 }
