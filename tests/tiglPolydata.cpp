@@ -32,6 +32,8 @@
 #include <BRepMesh.hxx>
 #include <TopoDS_CompSolid.hxx>
 
+#include <ctime>
+
 using namespace tigl;
 
 
@@ -375,7 +377,12 @@ TEST_F(TriangularizeShape, exportVTK_CompoundWing){
     
     bool exportError = false;
     
+    clock_t start, stop;
+    start = clock();
     tigl::CTiglTriangularizer t(compound);
+    stop = clock();
+    std::cout << "Triangularization time [ms]: " << (stop-start)/(double)CLOCKS_PER_SEC * 1000. << std::endl;
+    std::cout << "Number of Polygons/Vertices: " << t.currentObject().getNPolygons() << "/" << t.currentObject().getNVertices()<<std::endl;
     try{
         t.writeVTK("exported_compund_wing_simple.vtp");
     }
