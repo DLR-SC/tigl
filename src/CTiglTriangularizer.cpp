@@ -43,69 +43,63 @@ int CTiglTriangularizer::triangularizeShape(const TopoDS_Shape& shape){
             if (triangulation.IsNull())
                 continue;
             
-            if(triangulation->HasUVNodes()){
-                currentObject().enableNormals(true);
-            }
-            
             gp_Trsf nodeTransformation = location;
-            const TColgp_Array1OfPnt& nodes = triangulation->Nodes(); // get (face-local) list of nodes
             
-            int index1, index2, index3;
+            unsigned int * indexBuffer = NULL;
+            unsigned int ilower = 0;
+            
+            if(triangulation->HasUVNodes()){
+                // we use the uv nodes to compute normal vectors for each point
+                
+                BRepGProp_Face prop(face);
+                currentObject().enableNormals(true);
+                
+                const TColgp_Array1OfPnt2d& uvnodes = triangulation->UVNodes(); // get (face-local) list of nodes
+                ilower = uvnodes.Lower();
+                
+                indexBuffer = new unsigned int [uvnodes.Upper()-uvnodes.Lower()+1];
+                unsigned int * pIndexBuf = indexBuffer;
+                for(int inode = uvnodes.Lower(); inode <= uvnodes.Upper(); ++inode){
+                    const gp_Pnt2d& uv_pnt = uvnodes(inode);
+                    gp_Pnt p; gp_Vec n;
+                    prop.Normal(uv_pnt.X(),uv_pnt.Y(),p,n);
+                    
+                    *pIndexBuf++ = currentObject().addPointNormal(p.XYZ(), n.XYZ());
+                }
+            } 
+            else {
+                // we cannot compute normals
+                
+                const TColgp_Array1OfPnt& nodes = triangulation->Nodes(); // get (face-local) list of nodes
+                ilower = nodes.Lower();
+                
+                indexBuffer = new unsigned int [nodes.Upper()-nodes.Lower()+1];
+                unsigned int * pIndexBuf = indexBuffer;
+                for(int inode = nodes.Lower(); inode <= nodes.Upper(); inode++){
+                    const gp_Pnt& p = nodes(inode).Transformed(nodeTransformation);
+                    *pIndexBuf++ = currentObject().addPointNormal(p.XYZ(), CTiglPoint(1,0,0));
+                }
+            }
+
+            
             const Poly_Array1OfTriangle& triangles = triangulation->Triangles();
             for (int j = triangles.Lower(); j <= triangles.Upper(); j++) // iterate over triangles in the array
             {
                 const Poly_Triangle& triangle = triangles(j);
-                triangle.Get(index1, index2, index3); // get indices into index1..3
-                const gp_Pnt tpoint1 = nodes(index1).Transformed(nodeTransformation);
-                const gp_Pnt tpoint2 = nodes(index2).Transformed(nodeTransformation);
-                const gp_Pnt tpoint3 = nodes(index3).Transformed(nodeTransformation);
+                int occindex1, occindex2, occindex3;
+                triangle.Get(occindex1, occindex2, occindex3); // get indices into index1..3
+                unsigned int index1, index2, index3;
+                index1 = indexBuffer[occindex1-ilower];
+                index2 = indexBuffer[occindex2-ilower];
+                index3 = indexBuffer[occindex3-ilower];
                 
-                CTiglPolygon polygon;
-                
-                // determine unique point indices
-                if ( face.Orientation() ==  TopAbs_FORWARD){
-                    polygon.addPoint(tpoint1.XYZ());
-                    polygon.addPoint(tpoint2.XYZ());
-                    polygon.addPoint(tpoint3.XYZ());
-                }
-                else {
-                    polygon.addPoint(tpoint1.XYZ());
-                    polygon.addPoint(tpoint3.XYZ());
-                    polygon.addPoint(tpoint2.XYZ());
-                }
-                
-                // calculate face normals
-                if(triangulation->HasUVNodes()){
-                    const TColgp_Array1OfPnt2d& uvnodes = triangulation->UVNodes();
-                    BRepGProp_Face prop(face);
-                    
-                    gp_Pnt2d uv1 = uvnodes(index1);
-                    gp_Pnt2d uv2 = uvnodes(index2);
-                    gp_Pnt2d uv3 = uvnodes(index3);
-                    
-                    gp_Pnt pnt;
-                    gp_Vec n1, n2, n3;
-                    prop.Normal(uv1.X(),uv1.Y(),pnt,n1);
-                    prop.Normal(uv2.X(),uv2.Y(),pnt,n2);
-                    prop.Normal(uv3.X(),uv3.Y(),pnt,n3);
-                    
-                    if(face.Orientation() == TopAbs_FORWARD){
-                        polygon.addNormal(n1.XYZ());
-                        polygon.addNormal(n2.XYZ());
-                        polygon.addNormal(n3.XYZ());
-                    }
-                    else{
-                        polygon.addNormal(n1.XYZ());
-                        polygon.addNormal(n3.XYZ());
-                        polygon.addNormal(n2.XYZ());
-                    }
-                }
-                
-                polygon.setMetadata("unknown 0 0.0 0.0 0");
-                currentObject().addPolygon(polygon);
+                if(face.Orientation() == TopAbs_FORWARD)
+                    currentObject().addTriangleByVertexIndex(index1, index2, index3);
+                else
+                    currentObject().addTriangleByVertexIndex(index1, index3, index2);
                 
             } // for triangles
-            //polyData.createNewSurface();
+            delete[] indexBuffer;
         } // for faces
         if(_useMultipleObjects) createNewObject();
     } // for shells
