@@ -162,6 +162,10 @@ public:
     }
 
     void addPointNorm(const CTiglPoint &p, const CTiglPoint& norm, int polynum);
+    unsigned int addPointNorm(const CTiglPoint &p, const CTiglPoint &norm);
+    
+    void addTriangleByVertexIndex(unsigned int i1, unsigned int i2, unsigned int i3 );
+    
     void addPolygon(const CTiglPolygon&);
     
     unsigned int getNPolygons() const;
@@ -451,12 +455,16 @@ CTiglPolyObject::~CTiglPolyObject(){
     delete impl;
 }
 
-void CTiglPolyObject::addPoint(const CTiglPoint &p, int id){
-    //impl->addPoint(p,id);
+unsigned int CTiglPolyObject::addPointNormal(const CTiglPoint &p, const CTiglPoint &n){
+    return impl->addPointNorm(p,n);
 }
 
 void CTiglPolyObject::addPolygon(const CTiglPolygon & polygon){
     impl->addPolygon(polygon);
+}
+
+void CTiglPolyObject::addTriangleByVertexIndex(unsigned int i1, unsigned int i2, unsigned int i3){
+    impl->addTriangleByVertexIndex(i1, i2, i3);
 }
 
 unsigned int CTiglPolyObject::getNPointsOfPolygon(unsigned int ipoly) const {
@@ -556,10 +564,21 @@ const char * CTiglPolygon::getMetadata() const{
 //--------------------------------------------------------------//
 
 void ObjectImpl::addPointNorm(const CTiglPoint& p, const CTiglPoint& n, int polynum){
+    unsigned int index = addPointNorm(p,n);
+
+    // now insert point into polygon list
+    if(polynum > (int) polys.size()){
+        polys.push_back(PolyIndexList(polynum));
+    }
+    assert(polynum == polys.size());
+    polys.at(polynum-1).addPoint(index);
+}
+
+unsigned int ObjectImpl::addPointNorm(const CTiglPoint& p, const CTiglPoint& n){
     using namespace std;
 
     //check if point is already in pointlist
-    int index = pointlist.size();
+    unsigned int index = pointlist.size();
     std::pair<PointMap::iterator,bool> ret;
 
     ret = pointlist.insert(std::pair<PointImpl, int>(PointImpl(p,n),index));
@@ -574,13 +593,18 @@ void ObjectImpl::addPointNorm(const CTiglPoint& p, const CTiglPoint& n, int poly
         // a new point was inserted, we have to keep track
         pPoints.push_back(&(ret.first->first));
     }
+    
+    return index;
+}
 
-    // now insert point into polygon list
-    if(polynum > (int) polys.size()){
-        polys.push_back(PolyIndexList(polynum));
-    }
-    assert(polynum == polys.size());
-    polys.at(polynum-1).addPoint(index);
+void ObjectImpl::addTriangleByVertexIndex(unsigned int i1, unsigned int i2, unsigned int i3 ){
+    unsigned int nPolys = polys.size();
+    polys.push_back(PolyIndexList(nPolys));
+    
+    std::vector<PolyIndexList>::iterator itLastPoly = polys.end()-1;
+    itLastPoly->addPoint(i1);
+    itLastPoly->addPoint(i2);
+    itLastPoly->addPoint(i3);
 }
 
 

@@ -66,8 +66,12 @@ public:
     CTiglPolyObject();
     ~CTiglPolyObject();
     
-    // adds a point to a polygon with a specific id
-    void addPoint(const class CTiglPoint& p, int id);
+    // adds a point and its normal vector to the global point list and returns its index in the list
+    unsigned int addPointNormal(const class CTiglPoint& p, const class CTiglPoint& n);
+    
+    // adds a triangle to the global polygon list. the corners are spcified with the vertex indices
+    // returns by addPointNormal or getVertexIndexOfPolygon
+    void addTriangleByVertexIndex(unsigned int i1, unsigned int i2, unsigned int i3 );
 
     // adds a polygon to the object
     void addPolygon(const class CTiglPolygon&);
