@@ -232,9 +232,9 @@ namespace tigl {
         return segments.GetSegmentCount();
     }
 
-    void CCPACSFuselage::ExportDataStructure(TDF_Label *rootLabel)
+    void CCPACSFuselage::ExportDataStructure(TDF_Label &rootLabel)
     {
-     //
+        CTiglAbstractPhysicalComponent::ExportDataStructure(rootLabel);
     }
 
     // Returns the segment for a given index

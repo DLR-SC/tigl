@@ -49,7 +49,7 @@ namespace tigl {
 		// Virtual Destructor
 		virtual ~CCPACSImportExport(void);
 
-		bool SaveStructuredIges(const std::string& filename);
+		bool SaveStructuredIges(TiglCPACSConfigurationHandle cpacsHandle, const std::string& filename);
 
 		// Save a sequence of shapes in IGES Format
 		static void SaveIGES(const Handle(TopTools_HSequenceOfShape)& aHSequenceOfShape, const std::string& filename);

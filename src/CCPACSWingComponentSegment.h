@@ -87,7 +87,7 @@ namespace tigl {
 
         // builds data structure for a TDocStd_Application
         // mostly used for export
-        void ExportDataStructure(TDF_Label *rootLabel);
+        void ExportDataStructure(TDF_Label &rootLabel);
 
     protected:
 		// Cleanup routine

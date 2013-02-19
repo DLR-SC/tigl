@@ -708,7 +708,7 @@ namespace tigl {
 
     // builds data structure for a TDocStd_Application
     // mostly used for export
-    void CCPACSFuselageSegment::ExportDataStructure(TDF_Label *rootLabel)
+    void CCPACSFuselageSegment::ExportDataStructure(TDF_Label &rootLabel)
     {
         //
     }
