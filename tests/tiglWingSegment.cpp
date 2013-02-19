@@ -686,10 +686,9 @@ TEST_F(WingSegmentSimple, trafo_Consistency){
     // we transform eta, xsi to x,y,z and perform the back transform
     // we check if we get the the same eta xsi as before
     int segIndex = 1;
-    double eta_start = 0.5;
-    double xsi_start = 0.5;
+    double eta_start = 0.2;
+    double xsi_start = 0.3;
     double x = 0., y = 0., z = 0.;
-    ASSERT_TRUE(tiglWingGetUpperPoint(tiglSimpleHandle, 1, segIndex, eta_start, xsi_start, &x, &y, &z) == TIGL_SUCCESS);
 
     // now we have do use the internal interface as we currently have no public api for this
     tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
@@ -697,11 +696,52 @@ TEST_F(WingSegmentSimple, trafo_Consistency){
     tigl::CCPACSWing& wing = config.GetWing(1);
     tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment&) wing.GetSegment(segIndex);
 
+    ASSERT_TRUE(tiglWingGetUpperPoint(tiglSimpleHandle, 1, segIndex, eta_start, xsi_start, &x, &y, &z) == TIGL_SUCCESS);
+
     gp_Pnt point(x,y,z);
-    double xsi_end = segment.GetXsi(point, true);
-    double eta_end = segment.GetEta(point, true);
+    double eta_end=0., xsi_end = 0.;
+    segment.GetEtaXsi(point, false, eta_end, xsi_end);
 
     ASSERT_NEAR(eta_end, eta_start, 1e-7);
     ASSERT_NEAR(xsi_end, xsi_start, 1e-7);
+
+    // lower wing surface
+    ASSERT_TRUE(tiglWingGetLowerPoint(tiglSimpleHandle, 1, segIndex, eta_start, xsi_start, &x, &y, &z) == TIGL_SUCCESS);
+    point = gp_Pnt(x,y,z);
+    segment.GetEtaXsi(point, false, eta_end, xsi_end);
+
+    ASSERT_NEAR(eta_end, eta_start, 1e-7);
+    ASSERT_NEAR(xsi_end, xsi_start, 1e-7);
+}
+
+TEST_F(WingSegmentSimple, getEtaXsi_Performance){
+    // we transform eta, xsi to x,y,z and perform the back transform
+    // we check if we get the the same eta xsi as before
+    int segIndex = 1;
+    double eta_start = 0.2;
+    double xsi_start = 0.3;
+    double x = 0., y = 0., z = 0.;
+
+    // now we have do use the internal interface as we currently have no public api for this
+    tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
+    tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglSimpleHandle);
+    tigl::CCPACSWing& wing = config.GetWing(1);
+    tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment&) wing.GetSegment(segIndex);
+
+    ASSERT_TRUE(tiglWingGetUpperPoint(tiglSimpleHandle, 1, segIndex, eta_start, xsi_start, &x, &y, &z) == TIGL_SUCCESS);
+
+    gp_Pnt point(x,y,z);
+    double eta_end=0., xsi_end = 0.;
+
+    // we do one cold start to create all faces, we don't count it
+    segment.GetEtaXsi(point, false, eta_end, xsi_end);
+
+    int nruns = 100000;
+    clock_t start = clock();
+    for(int i = 0; i < nruns; ++i){
+        segment.GetEtaXsi(point, false, eta_end, xsi_end);
+    }
+    clock_t stop = clock();
+    cout << "Elapsed time per projection [us]: " << double(stop-start)/(double)CLOCKS_PER_SEC/(double)nruns * 1.e6 << endl;
 }
 

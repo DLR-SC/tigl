@@ -140,6 +140,9 @@ namespace tigl {
         // Get information about a point beeing on upper/lower side with "GetIsOnTop"
         double GetXsi(gp_Pnt pnt, bool isUpper);
 
+        // projects a point unto the wing and returns its coordinates
+        void GetEtaXsi(gp_Pnt, bool isUpper, double& eta, double& xsi);
+
         // Returns the inner profile points as read from TIXI. The points are already transformed.
         std::vector<CTiglPoint*> GetRawInnerProfilePoints();
 
@@ -162,6 +165,9 @@ namespace tigl {
 
 		// Returns the upper Surface of this Segment
 		Handle(Geom_Surface) GetUpperSurface();
+
+		// Returns the cord face
+		Handle(Geom_Surface) GetCordFace();
         
         TopoDS_Shape& GetUpperShape();
         TopoDS_Shape& GetLowerShape();
@@ -209,6 +215,7 @@ namespace tigl {
 		TopoDS_Shape		 lowerShape;
 		Handle(Geom_Surface) upperSurface;
 		Handle(Geom_Surface) lowerSurface;
+		Handle(Geom_Surface) cordSurface;
 		bool                 surfacesAreValid;
 
 	};

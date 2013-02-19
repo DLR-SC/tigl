@@ -27,6 +27,7 @@
 #include <iostream>
 #include <string>
 #include <cassert>
+#include <cfloat>
 
 #include "CCPACSWingSegment.h"
 #include "CCPACSWing.h"
@@ -85,6 +86,7 @@
 #include "BRepExtrema_DistShapeShape.hxx"
 #include "GCPnts_AbscissaPoint.hxx"
 #include "BRepAdaptor_CompCurve.hxx"
+#include "BRepTools.hxx"
 
 #ifndef max
 #define max(a, b) (((a) > (b)) ? (a) : (b))
@@ -607,35 +609,29 @@ namespace tigl {
     // Returns eta as parametric distance from a given point on the surface
     double CCPACSWingSegment::GetEta(gp_Pnt pnt, bool isUpper)
     {
-        double eta = 0.0;
-        MakeSurfaces();
-        if(isUpper) {
-            ShapeAnalysis_Surface analysis(upperSurface);
-            const gp_Pnt2d uv = analysis.ValueOfUV(pnt, Precision::Confusion());
-            eta = uv.Y();
-        } else {
-            ShapeAnalysis_Surface analysis(lowerSurface);
-            const gp_Pnt2d uv = analysis.ValueOfUV(pnt, Precision::Confusion());
-            eta = uv.Y();
-        }
-        return(eta);
+        double eta = 0., xsi = 0.;
+        GetEtaXsi(pnt, isUpper, eta, xsi);
+        return eta;
     }
 
     // Returns xsi as parametric distance from a given point on the surface
     double CCPACSWingSegment::GetXsi(gp_Pnt pnt, bool isUpper)
     {
-        double xsi = 0.0;
+        double eta = 0., xsi = 0.;
+        GetEtaXsi(pnt, isUpper, eta, xsi);
+        return xsi;
+    }
+
+    // Returns xsi as parametric distance from a given point on the surface
+    void CCPACSWingSegment::GetEtaXsi(gp_Pnt pnt, bool isUpper, double& eta, double& xsi)
+    {
         MakeSurfaces();
-        if(isUpper) {
-            ShapeAnalysis_Surface analysis(upperSurface);
-            const gp_Pnt2d uv = analysis.ValueOfUV(pnt, Precision::Confusion());
-            xsi = uv.X();
-        } else {
-            ShapeAnalysis_Surface analysis(lowerSurface);
-            const gp_Pnt2d uv = analysis.ValueOfUV(pnt, Precision::Confusion());
-            xsi = uv.X();
+        GeomAPI_ProjectPointOnSurf Proj (pnt, cordSurface);
+        if(Proj.NbPoints() > 0)
+            Proj.LowerDistanceParameters(xsi,eta);
+        else {
+            throw CTiglError("Cannot determine eta, xsi coordinates for the projection point!");
         }
-        return(xsi);
     }
 
     // Returns if the given point is ont the Top of the wing or on the lower side.
@@ -681,6 +677,17 @@ namespace tigl {
         gp_Pnt inner_tep = GetChordPoint(0.0, 1.0);
         gp_Pnt outer_tep = GetChordPoint(1.0, 1.0);
         
+        //create the cord face
+        TopoDS_Edge leadingedge  = BRepBuilderAPI_MakeEdge(inner_lep, outer_lep);
+        TopoDS_Edge outercord    = BRepBuilderAPI_MakeEdge(outer_lep, outer_tep);
+        TopoDS_Edge trailingedge = BRepBuilderAPI_MakeEdge(outer_tep, inner_tep);
+        TopoDS_Edge innercord    = BRepBuilderAPI_MakeEdge(inner_tep, inner_lep);
+        TopoDS_Wire cordwire = BRepBuilderAPI_MakeWire(leadingedge, outercord, trailingedge, innercord);
+
+        const BRepLib_FindSurface findSurface(BRepBuilderAPI_MakeFace(cordwire).Face());
+        cordSurface = findSurface.Surface();
+
+
         gp_Pnt in_up = GetUpperPoint(0.0,0.5);
         gp_Pnt out_up = GetUpperPoint(1.0,0.5);
         
@@ -757,15 +764,39 @@ namespace tigl {
         
         upperShape = upperSections.Shape();
         lowerShape = lowerSections.Shape();
-        
+
         // Transform upper/lower shapes
         upperShape = wing->GetWingTransformation().Transform(upperShape);
         lowerShape = wing->GetWingTransformation().Transform(lowerShape);
 
-        const BRepLib_FindSurface findSurface(upperShape, /* tolerance */1.01);
-        upperSurface = findSurface.Surface();
-        const BRepLib_FindSurface findSurface2(lowerShape, /* tolerance */1.01);
-        lowerSurface = findSurface2.Surface();
+        // we select the largest face to be the upperface (we can not include the trailing edge)
+        TopExp_Explorer faceExplorer;
+        double maxArea = DBL_MIN;
+        for(faceExplorer.Init(upperShape, TopAbs_FACE); faceExplorer.More(); faceExplorer.Next()) {
+            const TopoDS_Face& face = TopoDS::Face(faceExplorer.Current());
+            GProp_GProps System;
+            BRepGProp::SurfaceProperties(face, System);
+            double surfaceArea = System.Mass();
+            if(surfaceArea > maxArea){
+                const BRepLib_FindSurface findSurface(face, /* tolerance */1.01);
+                upperSurface = findSurface.Surface();
+                maxArea = surfaceArea;
+            }
+        }
+
+        // we select the largest face to be the lowerface (we can not include the trailing edge)
+        maxArea = DBL_MIN;
+        for(faceExplorer.Init(lowerShape, TopAbs_FACE); faceExplorer.More(); faceExplorer.Next()) {
+            const TopoDS_Face& face = TopoDS::Face(faceExplorer.Current());
+            GProp_GProps System;
+            BRepGProp::SurfaceProperties(face, System);
+            double surfaceArea = System.Mass();
+            if(surfaceArea > maxArea){
+                const BRepLib_FindSurface findSurface(face, /* tolerance */1.01);
+                lowerSurface = findSurface.Surface();
+                maxArea = surfaceArea;
+            }
+        }
 
         surfacesAreValid = true;
     }
@@ -806,6 +837,15 @@ namespace tigl {
 			MakeSurfaces();
 		}
 		return upperSurface;
+	}
+
+	// Returns the cord face of this Segment
+	Handle(Geom_Surface) CCPACSWingSegment::GetCordFace()
+	{
+		if(!surfacesAreValid) {
+			MakeSurfaces();
+		}
+		return cordSurface;
 	}
 	
 	// Returns the upper wing shape of this Segment
