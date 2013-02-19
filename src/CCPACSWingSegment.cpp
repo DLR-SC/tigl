@@ -678,6 +678,9 @@ namespace tigl {
         gp_Pnt inner_lep = GetChordPoint(0.0, 0.0);
         gp_Pnt outer_lep = GetChordPoint(1.0, 0.0);
         
+        gp_Pnt inner_tep = GetChordPoint(0.0, 1.0);
+        gp_Pnt outer_tep = GetChordPoint(1.0, 1.0);
+        
         gp_Pnt in_up = GetUpperPoint(0.0,0.5);
         gp_Pnt out_up = GetUpperPoint(1.0,0.5);
         
@@ -718,22 +721,41 @@ namespace tigl {
         BRepBuilderAPI_MakeWire wou;
         BRepBuilderAPI_MakeWire wol;
 
-        // This following code is not general and assumes, that the wire that closes the wing
-        // profile belongs to the lower surface - this is more or less the trailing edge.
-        // should we include the edge into upper or lower shell or should we handle it separately?
-        BRepTools_WireExplorer wireExplorer;
-        int nwire=0;
-        for ( wireExplorer.Init(GetInnerWire()); wireExplorer.More(); wireExplorer.Next(), nwire++){
-            // the first wire will be add trimmed later
-            if(nwire == 0) continue;
-            wil.Add(wireExplorer.Current());
+        //check if we have to close upper and lower wing shells
+        gp_Pnt p_in_up, p_in_down;
+        if(inup_par < innerlep_par){
+            p_in_up = innercurve->StartPoint();
+            p_in_down = innercurve->EndPoint();
         }
-        nwire = 0;
-        for (wireExplorer.Init(GetOuterWire()); wireExplorer.More(); wireExplorer.Next(), nwire++){
-            // the first wire will be add trimmed later
-            if(nwire == 0) continue;
-            wol.Add(wireExplorer.Current());
+        else {
+            p_in_up = innercurve->EndPoint();
+            p_in_down = innercurve->StartPoint();
         }
+        
+        if(p_in_up.Distance(inner_tep) > Precision::Confusion())
+            wiu.Add(BRepBuilderAPI_MakeEdge(inner_tep,p_in_up));
+        
+        if(p_in_down.Distance(inner_tep) > Precision::Confusion())
+            wil.Add(BRepBuilderAPI_MakeEdge(inner_tep,p_in_down));
+        
+        
+        gp_Pnt p_out_up, p_out_down;
+        if(inup_par < innerlep_par){
+            p_out_up = outercurve->StartPoint();
+            p_out_down = outercurve->EndPoint();
+        }
+        else {
+            p_out_up = outercurve->EndPoint();
+            p_out_down = outercurve->StartPoint();
+        }
+        
+        if(p_out_up.Distance(outer_tep) > Precision::Confusion())
+            wou.Add(BRepBuilderAPI_MakeEdge(outer_tep,p_out_up));
+        
+        if(p_in_down.Distance(outer_tep) > Precision::Confusion())
+            wol.Add(BRepBuilderAPI_MakeEdge(outer_tep,p_out_down));
+        
+        
         wiu.Add(iu_edge); wil.Add(il_edge);
         wou.Add(ou_edge); wol.Add(ol_edge);
         wiu.Build(); wil.Build();

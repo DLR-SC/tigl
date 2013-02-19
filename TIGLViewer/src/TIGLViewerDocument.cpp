@@ -466,8 +466,6 @@ void TIGLViewerDocument::drawWingProfiles()
     shape->SetColor(Quantity_NOC_WHITE);
     myAISContext->Display(shape, Standard_True);
 
-    return;
-
     // Leading/trailing edges
     gp_Pnt lePoint = profile.GetLEPoint();
     gp_Pnt tePoint = profile.GetTEPoint();
