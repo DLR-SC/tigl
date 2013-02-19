@@ -693,61 +693,45 @@ namespace tigl {
         double inup_par  = projectOnCurve(in_up,  innercurve);
         double outup_par = projectOnCurve(out_up, outercurve);
         
-        TopoDS_Edge iu_edge;
-        TopoDS_Edge il_edge;
+        TopoDS_Edge iu_edge, il_edge;
+        gp_Pnt p_in_up, p_in_down;
         if(inup_par < innerlep_par){
             //wire goes from top to bottom
             iu_edge = BRepBuilderAPI_MakeEdge(innercurve,innercurve->FirstParameter(), innerlep_par);
             il_edge = BRepBuilderAPI_MakeEdge(innercurve,innerlep_par, innercurve->LastParameter());
+            p_in_up = innercurve->StartPoint();
+            p_in_down = innercurve->EndPoint();
         }
         else {
             //wire goes from bottom to top
             il_edge = BRepBuilderAPI_MakeEdge(innercurve,innercurve->FirstParameter(), innerlep_par);
             iu_edge = BRepBuilderAPI_MakeEdge(innercurve,innerlep_par, innercurve->LastParameter());
+            p_in_up = innercurve->EndPoint();
+            p_in_down = innercurve->StartPoint();
         }
-        TopoDS_Edge ou_edge;
-        TopoDS_Edge ol_edge;
+        TopoDS_Edge ou_edge, ol_edge;
+        gp_Pnt p_out_up, p_out_down;
         if(outup_par < outerlep_par){
             ou_edge = BRepBuilderAPI_MakeEdge(outercurve,outercurve->FirstParameter(), outerlep_par);
             ol_edge = BRepBuilderAPI_MakeEdge(outercurve,outerlep_par, outercurve->LastParameter());
+            p_out_up = outercurve->StartPoint();
+            p_out_down = outercurve->EndPoint();
         }
         else {
             ol_edge = BRepBuilderAPI_MakeEdge(outercurve,outercurve->FirstParameter(), outerlep_par);
             ou_edge = BRepBuilderAPI_MakeEdge(outercurve,outerlep_par, outercurve->LastParameter());
+            p_out_up = outercurve->EndPoint();
+            p_out_down = outercurve->StartPoint();
         }
 
-        BRepBuilderAPI_MakeWire wiu;
-        BRepBuilderAPI_MakeWire wil;
-        BRepBuilderAPI_MakeWire wou;
-        BRepBuilderAPI_MakeWire wol;
+        BRepBuilderAPI_MakeWire wiu, wil, wou, wol;
 
         //check if we have to close upper and lower wing shells
-        gp_Pnt p_in_up, p_in_down;
-        if(inup_par < innerlep_par){
-            p_in_up = innercurve->StartPoint();
-            p_in_down = innercurve->EndPoint();
-        }
-        else {
-            p_in_up = innercurve->EndPoint();
-            p_in_down = innercurve->StartPoint();
-        }
-        
         if(p_in_up.Distance(inner_tep) > Precision::Confusion())
             wiu.Add(BRepBuilderAPI_MakeEdge(inner_tep,p_in_up));
         
         if(p_in_down.Distance(inner_tep) > Precision::Confusion())
             wil.Add(BRepBuilderAPI_MakeEdge(inner_tep,p_in_down));
-        
-        
-        gp_Pnt p_out_up, p_out_down;
-        if(inup_par < innerlep_par){
-            p_out_up = outercurve->StartPoint();
-            p_out_down = outercurve->EndPoint();
-        }
-        else {
-            p_out_up = outercurve->EndPoint();
-            p_out_down = outercurve->StartPoint();
-        }
         
         if(p_out_up.Distance(outer_tep) > Precision::Confusion())
             wou.Add(BRepBuilderAPI_MakeEdge(outer_tep,p_out_up));
