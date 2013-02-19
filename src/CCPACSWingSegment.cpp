@@ -736,7 +736,7 @@ namespace tigl {
         if(p_out_up.Distance(outer_tep) > Precision::Confusion())
             wou.Add(BRepBuilderAPI_MakeEdge(outer_tep,p_out_up));
         
-        if(p_in_down.Distance(outer_tep) > Precision::Confusion())
+        if(p_out_down.Distance(outer_tep) > Precision::Confusion())
             wol.Add(BRepBuilderAPI_MakeEdge(outer_tep,p_out_down));
         
         
