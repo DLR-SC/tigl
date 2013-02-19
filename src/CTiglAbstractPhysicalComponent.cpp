@@ -26,6 +26,15 @@
 #include "CTiglAbstractPhysicalComponent.h"
 #include "CTiglError.h"
 
+#include "TDocStd_Document.hxx"
+#include "TCollection_ExtendedString.hxx"
+#include "TCollection_HAsciiString.hxx"
+#include "XCAFDoc_ShapeTool.hxx"
+#include "XCAFApp_Application.hxx"
+#include "XCAFDoc_DocumentTool.hxx"
+#include "TDataStd_Name.hxx"
+#include "TDataXtd_Shape.hxx"
+
 namespace tigl {
 
     CTiglAbstractPhysicalComponent::CTiglAbstractPhysicalComponent()
@@ -82,11 +91,19 @@ namespace tigl {
     }
 
 
-    void CTiglAbstractPhysicalComponent::ExportDataStructure(TDF_Label *rootLabel)
+    void CTiglAbstractPhysicalComponent::ExportDataStructure(TDF_Label &rootLabel)
     {
+        // This node
+        TDF_Label shapeLabel= TDF_TagSource::NewChild(rootLabel);
+        TDataXtd_Shape::Set(shapeLabel, GetLoft());
+        TDataStd_Name::Set(shapeLabel, TCollection_ExtendedString(GetUID().c_str(), 1));
+
+
+        // Other (sub)-components
         ChildContainerType::iterator it = childContainer.begin();
         for(; it != childContainer.end(); ++it){
-
+            CTiglAbstractPhysicalComponent * pChild = *it;
+            if(pChild) pChild->ExportDataStructure(rootLabel);
         }
     }
 

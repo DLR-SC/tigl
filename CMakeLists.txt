@@ -29,12 +29,12 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR})
 # required opencascade libraries
 set (OCC_LIBS 
 	TKBO TKBool	TKBRep  
-	TKernel  TKG2d
+	TKernel  TKG2d TKXDEIGES TKCAF
 	TKG3d TKGeomAlgo TKGeomBase  TKIGES
-	TKMath TKMesh TKOffset
-	TKShHealing 
-	TKSTL TKTopAlgo  
-	TKXSBase 
+	TKMath TKMesh TKOffset TKPCAF
+	TKShHealing TKLCAF TKTopAlgo TKXCAF
+	TKSTL TKTopAlgo  TKStdSchema
+	TKXSBase TKStdLSchema  TKSTEPBase 
 )
 
 find_package( OpenCASCADE REQUIRED COMPONENTS ${OCC_LIBS})

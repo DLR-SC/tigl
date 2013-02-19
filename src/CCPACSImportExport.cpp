@@ -40,7 +40,8 @@
 #include "XCAFApp_Application.hxx"
 #include "XCAFDoc_DocumentTool.hxx"
 #include "TDocStd_Document.hxx"
-
+#include "IGESControl_Controller.hxx"
+#include "IGESCAFControl_Writer.hxx"
 
 namespace tigl {
 
@@ -55,7 +56,7 @@ namespace tigl {
 	}
 
 
-    bool SaveStructuredIges(TiglCPACSConfigurationHandle cpacsHandle, const std::string& filename)
+    bool CCPACSImportExport::SaveStructuredIges(TiglCPACSConfigurationHandle cpacsHandle, const std::string& filename)
     {
         if( filename.empty()) {
             LOG(ERROR) << "Error: Empty filename in SaveStructuredIges.";
@@ -80,11 +81,13 @@ namespace tigl {
             return false;
         }
 
-        rootComponent->ExportDataStructure(&rootLabel);
+        rootComponent->ExportDataStructure(rootLabel);
 
 
-
-
+        IGESControl_Controller::Init();
+        IGESCAFControl_Writer writer;
+        writer.Transfer(hDoc);
+        writer.Write(filename.c_str());
 
         return true;
     }

@@ -233,9 +233,9 @@ namespace tigl {
     }
 
     // Get segment count
-    void CCPACSWing::ExportDataStructure(TDF_Label *rootLabel)
+    void CCPACSWing::ExportDataStructure(TDF_Label &rootLabel)
     {
-//        return segments.GetSegmentCount();
+        CTiglAbstractPhysicalComponent::ExportDataStructure(rootLabel);
     }
 
     // Returns the segment for a given index
