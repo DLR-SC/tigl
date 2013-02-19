@@ -76,9 +76,13 @@ namespace tigl {
 
         CTiglAbstractPhysicalComponent* rootComponent = uidManager.GetRootComponent();
         if (rootComponent == NULL) {
-            LOG(ERROR) << "Error: No Root Component"
+            LOG(ERROR) << "Error: No Root Component";
             return false;
         }
+
+        rootComponent->ExportDataStructure(&rootLabel);
+
+
 
 
 

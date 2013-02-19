@@ -28,57 +28,67 @@
 
 namespace tigl {
 
-CTiglAbstractPhysicalComponent::CTiglAbstractPhysicalComponent()
-    : CTiglAbstractGeometricComponent()
-{
-    childContainer.clear();
-}
-
-// Adds a child to this geometric component.
-void CTiglAbstractPhysicalComponent::AddChild(CTiglAbstractPhysicalComponent* componentPtr)
-{
-    if (componentPtr == 0) {
-        throw CTiglError("Error: Null pointer for component in CTiglAbstractGeometricComponent::AddChild", TIGL_NULL_POINTER);
+    CTiglAbstractPhysicalComponent::CTiglAbstractPhysicalComponent()
+        : CTiglAbstractGeometricComponent()
+    {
+        childContainer.clear();
     }
 
-    childContainer.push_back(componentPtr);
-}
+    // Adds a child to this geometric component.
+    void CTiglAbstractPhysicalComponent::AddChild(CTiglAbstractPhysicalComponent* componentPtr)
+    {
+        if (componentPtr == 0) {
+            throw CTiglError("Error: Null pointer for component in CTiglAbstractGeometricComponent::AddChild", TIGL_NULL_POINTER);
+        }
 
-// Returns a pointer to the list of children of a component.
-CTiglAbstractPhysicalComponent::ChildContainerType& CTiglAbstractPhysicalComponent::GetChildren(void)
-{
-    return childContainer;
-}
+        childContainer.push_back(componentPtr);
+    }
 
-// Resets the geometric component.
-void CTiglAbstractPhysicalComponent::Reset(void)
-{
-    CTiglAbstractGeometricComponent::Reset();
-    childContainer.clear();
-    SetParentUID("");
-}
+    // Returns a pointer to the list of children of a component.
+    CTiglAbstractPhysicalComponent::ChildContainerType& CTiglAbstractPhysicalComponent::GetChildren(void)
+    {
+        return childContainer;
+    }
 
-// Returns the parent unique id
-std::string& CTiglAbstractPhysicalComponent::GetParentUID(void)
-{
-    return parentUID;
-}
+    // Resets the geometric component.
+    void CTiglAbstractPhysicalComponent::Reset(void)
+    {
+        CTiglAbstractGeometricComponent::Reset();
+        childContainer.clear();
+        SetParentUID("");
+    }
 
-// Sets the parent uid.
-void CTiglAbstractPhysicalComponent::SetParentUID(const std::string& parentUID)
-{
-    this->parentUID = parentUID;
-}
+    // Returns the parent unique id
+    std::string& CTiglAbstractPhysicalComponent::GetParentUID(void)
+    {
+        return parentUID;
+    }
 
-void CTiglAbstractPhysicalComponent::SetSymmetryAxis(const std::string& axis){
-	CTiglAbstractGeometricComponent::SetSymmetryAxis(axis);
+    // Sets the parent uid.
+    void CTiglAbstractPhysicalComponent::SetParentUID(const std::string& parentUID)
+    {
+        this->parentUID = parentUID;
+    }
 
-	ChildContainerType::iterator it = childContainer.begin();
-	for(; it != childContainer.end(); ++it){
-		CTiglAbstractPhysicalComponent * pChild = *it;
-		if(pChild) pChild->SetSymmetryAxis(axis);
-	}
-}
+    void CTiglAbstractPhysicalComponent::SetSymmetryAxis(const std::string& axis)
+    {
+        CTiglAbstractGeometricComponent::SetSymmetryAxis(axis);
+
+        ChildContainerType::iterator it = childContainer.begin();
+        for(; it != childContainer.end(); ++it){
+            CTiglAbstractPhysicalComponent * pChild = *it;
+            if(pChild) pChild->SetSymmetryAxis(axis);
+        }
+    }
+
+
+    void CTiglAbstractPhysicalComponent::ExportDataStructure(TDF_Label *rootLabel)
+    {
+        ChildContainerType::iterator it = childContainer.begin();
+        for(; it != childContainer.end(); ++it){
+
+        }
+    }
 
 } // namespace tigl
 
