@@ -28,6 +28,7 @@
 
 #include <climits>
 #include "gp_Pnt.hxx"
+#include "gp_XYZ.hxx"
 #include <iostream>
 
 namespace tigl {
@@ -41,6 +42,8 @@ namespace tigl {
 
 		// Copy constructor
 		CTiglPoint(const CTiglPoint& aPoint);
+
+		CTiglPoint(const gp_XYZ& aPoint);
 
 		// Assignment operator
 		CTiglPoint& operator=(const CTiglPoint& aPoint);
