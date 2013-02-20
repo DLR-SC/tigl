@@ -92,6 +92,23 @@
 #define max(a, b) (((a) > (b)) ? (a) : (b))
 #endif
 
+namespace {
+    gp_Pnt transformProfilePoint(const tigl::CCPACSWingConnection& connection, const gp_Pnt& pointOnProfile){
+        gp_Pnt transformedPoint(pointOnProfile);
+
+         // Do section element transformation on points
+        transformedPoint = connection.GetSectionElementTransformation().Transform(transformedPoint);
+
+        // Do section transformations
+        transformedPoint = connection.GetSectionTransformation().Transform(transformedPoint);
+
+        // Do positioning transformations
+        transformedPoint = connection.GetPositioningTransformation().Transform(transformedPoint);
+
+        return transformedPoint;
+    }
+}
+
 namespace tigl {
 
 	// Constructor
@@ -464,23 +481,14 @@ namespace tigl {
             outerProfilePoint = outerProfile.GetLowerPoint(xsi);
         }
 
-        // Do section element transformation on points
-        innerProfilePoint = innerConnection.GetSectionElementTransformation().Transform(innerProfilePoint);
-        outerProfilePoint = outerConnection.GetSectionElementTransformation().Transform(outerProfilePoint);
-
-        // Do section transformations
-        innerProfilePoint = innerConnection.GetSectionTransformation().Transform(innerProfilePoint);
-        outerProfilePoint = outerConnection.GetSectionTransformation().Transform(outerProfilePoint);
-
-        // Do positioning transformations
-        innerProfilePoint = innerConnection.GetPositioningTransformation().Transform(innerProfilePoint);
-        outerProfilePoint = outerConnection.GetPositioningTransformation().Transform(outerProfilePoint);
+        innerProfilePoint = transformProfilePoint(innerConnection, innerProfilePoint);
+        outerProfilePoint = transformProfilePoint(outerConnection, outerProfilePoint);
 
         // Get point on wing segment in dependence of eta by linear interpolation
         Handle(Geom_TrimmedCurve) profileLine = GC_MakeSegment(innerProfilePoint, outerProfilePoint);
         Standard_Real firstParam = profileLine->FirstParameter();
         Standard_Real lastParam  = profileLine->LastParameter();
-        Standard_Real param = (lastParam - firstParam) * eta;
+        Standard_Real param = firstParam + (lastParam - firstParam) * eta;
         gp_Pnt profilePoint;
         profileLine->D0(param, profilePoint);
 
@@ -502,16 +510,8 @@ namespace tigl {
         gp_Pnt outerProfilePoint = outerProfile.GetChordPoint(xsi);
 
         // Do section element transformation on points
-        innerProfilePoint = innerConnection.GetSectionElementTransformation().Transform(innerProfilePoint);
-        outerProfilePoint = outerConnection.GetSectionElementTransformation().Transform(outerProfilePoint);
-
-        // Do section transformations
-        innerProfilePoint = innerConnection.GetSectionTransformation().Transform(innerProfilePoint);
-        outerProfilePoint = outerConnection.GetSectionTransformation().Transform(outerProfilePoint);
-
-        // Do positioning transformations
-        innerProfilePoint = innerConnection.GetPositioningTransformation().Transform(innerProfilePoint);
-        outerProfilePoint = outerConnection.GetPositioningTransformation().Transform(outerProfilePoint);
+        innerProfilePoint = transformProfilePoint(innerConnection, innerProfilePoint);
+        outerProfilePoint = transformProfilePoint(outerConnection, outerProfilePoint);
 
         // Get point on wing segment in dependence of eta by linear interpolation
         Handle(Geom_TrimmedCurve) profileLine = GC_MakeSegment(innerProfilePoint, outerProfilePoint);
@@ -626,36 +626,24 @@ namespace tigl {
     void CCPACSWingSegment::GetEtaXsi(gp_Pnt pnt, bool isUpper, double& eta, double& xsi)
     {
         MakeSurfaces();
-        GeomAPI_ProjectPointOnSurf Proj (pnt, cordSurface);
-        if(Proj.NbPoints() > 0)
-            Proj.LowerDistanceParameters(xsi,eta);
-        else {
-            throw CTiglError("Cannot determine eta, xsi coordinates for the projection point!");
-        }
+        CTiglPoint tmpPnt(pnt.XYZ());
+        if(cordSurface.translate(tmpPnt, &eta, &xsi) != TIGL_SUCCESS)
+            throw tigl::CTiglError("Cannot determine eta, xsi coordinates of current point in CCPACSWingSegment::GetEtaXsi!", TIGL_MATH_ERROR);
     }
 
     // Returns if the given point is ont the Top of the wing or on the lower side.
     bool CCPACSWingSegment::GetIsOnTop(gp_Pnt pnt)
     {
-		bool isUpperSide = false;
-		double tolerance = 0.03;
+		double tolerance = 0.03; // 3cm
 
 		MakeSurfaces();
 
-		// Note: a positive z-axis describe "up" according to wings in CPACS
-		gp_Pnt lowerBound = gp_Pnt(pnt.X(), pnt.Y(), pnt.Z() - tolerance);
-		gp_Pnt upperBound = gp_Pnt(pnt.X(), pnt.Y(), pnt.Z() + tolerance*2);
-
-		Handle(Geom_TrimmedCurve) line = GC_MakeSegment(lowerBound, upperBound);
-
-		GeomAPI_IntCS inCS;
-        inCS.Perform(line, upperSurface);
-        if((inCS.IsDone()) && (inCS.NbPoints() > 0) ) {
-            isUpperSide = true;
-        }
-
-        return isUpperSide;
-	}
+        GeomAPI_ProjectPointOnSurf Proj(pnt, upperSurface);
+        if(Proj.NbPoints() > 0 && Proj.LowerDistance() < tolerance)
+            return true;
+        else
+            return false;
+    }
 
 
     double projectOnCurve(gp_Pnt p, Handle_Geom_Curve curve){
@@ -677,19 +665,13 @@ namespace tigl {
         gp_Pnt inner_tep = GetChordPoint(0.0, 1.0);
         gp_Pnt outer_tep = GetChordPoint(1.0, 1.0);
         
-        //create the cord face
-        TopoDS_Edge leadingedge  = BRepBuilderAPI_MakeEdge(inner_lep, outer_lep);
-        TopoDS_Edge outercord    = BRepBuilderAPI_MakeEdge(outer_lep, outer_tep);
-        TopoDS_Edge trailingedge = BRepBuilderAPI_MakeEdge(outer_tep, inner_tep);
-        TopoDS_Edge innercord    = BRepBuilderAPI_MakeEdge(inner_tep, inner_lep);
-        TopoDS_Wire cordwire = BRepBuilderAPI_MakeWire(leadingedge, outercord, trailingedge, innercord);
-
-        const BRepLib_FindSurface findSurface(BRepBuilderAPI_MakeFace(cordwire).Face());
-        cordSurface = findSurface.Surface();
+        cordSurface.setQuadriangle(inner_lep.XYZ(), outer_lep.XYZ(), inner_tep.XYZ(), outer_tep.XYZ());
 
 
-        gp_Pnt in_up = GetUpperPoint(0.0,0.5);
-        gp_Pnt out_up = GetUpperPoint(1.0,0.5);
+        gp_Pnt in_up = innerConnection.GetProfile().GetUpperPoint(0.5);
+        gp_Pnt out_up = outerConnection.GetProfile().GetUpperPoint(0.5);
+        in_up  = transformProfilePoint(innerConnection, in_up);
+        out_up = transformProfilePoint(outerConnection, out_up);
         
         Handle_Geom_BSplineCurve innercurve = BRepAdaptor_CompCurve(GetInnerWire()).BSpline();
         Handle_Geom_BSplineCurve outercurve = BRepAdaptor_CompCurve(GetOuterWire()).BSpline();
@@ -837,15 +819,6 @@ namespace tigl {
 			MakeSurfaces();
 		}
 		return upperSurface;
-	}
-
-	// Returns the cord face of this Segment
-	Handle(Geom_Surface) CCPACSWingSegment::GetCordFace()
-	{
-		if(!surfacesAreValid) {
-			MakeSurfaces();
-		}
-		return cordSurface;
 	}
 	
 	// Returns the upper wing shape of this Segment

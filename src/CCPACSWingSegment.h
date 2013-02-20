@@ -32,6 +32,7 @@
 #include "CCPACSWingConnection.h"
 #include "CTiglPoint.h"
 #include "CTiglAbstractSegment.h"
+#include "CTiglPointTranslator.h"
 
 #include "TopoDS_Shape.hxx"
 #include "TopoDS_Wire.hxx"
@@ -165,9 +166,6 @@ namespace tigl {
 
 		// Returns the upper Surface of this Segment
 		Handle(Geom_Surface) GetUpperSurface();
-
-		// Returns the cord face
-		Handle(Geom_Surface) GetCordFace();
         
         TopoDS_Shape& GetUpperShape();
         TopoDS_Shape& GetLowerShape();
@@ -215,7 +213,7 @@ namespace tigl {
 		TopoDS_Shape		 lowerShape;
 		Handle(Geom_Surface) upperSurface;
 		Handle(Geom_Surface) lowerSurface;
-		Handle(Geom_Surface) cordSurface;
+		CTiglPointTranslator cordSurface;
 		bool                 surfacesAreValid;
 
 	};

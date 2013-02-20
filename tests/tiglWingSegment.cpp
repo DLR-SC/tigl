@@ -682,6 +682,59 @@ TEST_F(WingSegmentSimple, getChordPointInternal_accuracy)
     ASSERT_NEAR(point.Z(), 0., 1e-7);
 }
 
+TEST_F(WingSegmentSimple, getIsOnTop_success)
+{
+    // now we have do use the internal interface as we currently have no public api for this
+    tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
+    tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglSimpleHandle);
+    tigl::CCPACSWing& wing = config.GetWing(1);
+
+    tigl::CCPACSWingSegment& segment  = (tigl::CCPACSWingSegment&) wing.GetSegment(1);
+    tigl::CCPACSWingSegment& segment2 = (tigl::CCPACSWingSegment&) wing.GetSegment(2);
+    
+    double eta_start = 0.5, xsi_start = 0.5;
+    double x,y,z;
+    int segIndex = 2;
+    ASSERT_TRUE(tiglWingGetUpperPoint(tiglSimpleHandle, 1, segIndex, eta_start, xsi_start, &x, &y, &z) == TIGL_SUCCESS);
+
+    ASSERT_TRUE(segment2.GetIsOnTop(gp_Pnt(x,y,z)) == true) ;
+
+    ASSERT_TRUE(tiglWingGetLowerPoint(tiglSimpleHandle, 1, segIndex, eta_start, xsi_start, &x, &y, &z) == TIGL_SUCCESS);
+
+    ASSERT_TRUE(segment2.GetIsOnTop(gp_Pnt(x,y,z)) == false) ;
+}
+
+TEST_F(WingSegmentSimple, getIsOnTop_performance)
+{
+    // now we have do use the internal interface as we currently have no public api for this
+    tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
+    tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglSimpleHandle);
+    tigl::CCPACSWing& wing = config.GetWing(1);
+
+    tigl::CCPACSWingSegment& segment  = (tigl::CCPACSWingSegment&) wing.GetSegment(1);
+    tigl::CCPACSWingSegment& segment2 = (tigl::CCPACSWingSegment&) wing.GetSegment(2);
+    
+    double eta_start = 0.5, xsi_start = 0.5;
+    double x,y,z;
+    int segIndex = 2;
+    ASSERT_TRUE(tiglWingGetUpperPoint(tiglSimpleHandle, 1, segIndex, eta_start, xsi_start, &x, &y, &z) == TIGL_SUCCESS);
+
+    // cold run to create surfaces
+    segment2.GetIsOnTop(gp_Pnt(x,y,z));
+    
+    unsigned int nruns = 100;
+    clock_t start = clock();
+    bool isOnTop = true;
+    for(int i = 0; i < nruns; ++i)
+        isOnTop = isOnTop && segment2.GetIsOnTop(gp_Pnt(x,y,z));
+    clock_t stop = clock();
+
+    cout << "Runtime getIsOnTop [us]: " << double(stop-start)/double(CLOCKS_PER_SEC)/double(nruns)*1.e6 << endl;
+
+
+}
+
+
 TEST_F(WingSegmentSimple, trafo_Consistency){
     // we transform eta, xsi to x,y,z and perform the back transform
     // we check if we get the the same eta xsi as before
@@ -709,6 +762,18 @@ TEST_F(WingSegmentSimple, trafo_Consistency){
     ASSERT_TRUE(tiglWingGetLowerPoint(tiglSimpleHandle, 1, segIndex, eta_start, xsi_start, &x, &y, &z) == TIGL_SUCCESS);
     point = gp_Pnt(x,y,z);
     segment.GetEtaXsi(point, false, eta_end, xsi_end);
+
+    ASSERT_NEAR(eta_end, eta_start, 1e-7);
+    ASSERT_NEAR(xsi_end, xsi_start, 1e-7);
+
+    // second segment, more complex
+    eta_start = 0.3;
+    xsi_start = 0.7;
+    segIndex = 2;
+    tigl::CCPACSWingSegment& segment2 = (tigl::CCPACSWingSegment&) wing.GetSegment(segIndex);
+    ASSERT_TRUE(tiglWingGetLowerPoint(tiglSimpleHandle, 1, segIndex, eta_start, xsi_start, &x, &y, &z) == TIGL_SUCCESS);
+    point = gp_Pnt(x,y,z);
+    segment2.GetEtaXsi(point, false, eta_end, xsi_end);
 
     ASSERT_NEAR(eta_end, eta_start, 1e-7);
     ASSERT_NEAR(xsi_end, xsi_start, 1e-7);
