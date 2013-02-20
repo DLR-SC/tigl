@@ -28,7 +28,9 @@
 
 #include <string>
 #include <stdio.h>
+#pragma warning( disable : 4251 4355 )
 #include <glog/logging.h>
+#pragma warning(disable: 4275)
 
 namespace tigl {
 

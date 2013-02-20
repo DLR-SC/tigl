@@ -39,6 +39,7 @@ set (OCC_LIBS
 
 find_package( OpenCASCADE REQUIRED COMPONENTS ${OCC_LIBS})
 find_package( TIXI 2.0.3 REQUIRED)
+find_package( GLOG REQUIRED)
 
 # code coverage analysis
 IF (CMAKE_BUILD_TYPE STREQUAL "Debug")
@@ -63,9 +64,6 @@ if(VLD_FOUND)
 	endif(TIGL_USE_VLD)
 endif()
 
-
-# find or build logger
-find_package( GLOG )
 
 add_subdirectory(src)
 add_subdirectory(TIGLViewer)

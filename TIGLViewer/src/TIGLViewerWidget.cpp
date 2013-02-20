@@ -100,6 +100,7 @@ void TIGLViewerWidget::initialize(){
     myDetection		  = AIS_SOD_Nothing;
     myKeyboardFlags   = Qt::NoModifier;
     myButtonFlags	  = Qt::NoButton;
+    myBGColor = QColor(255,235,163);
 
     // Needed to generate mouse events
     setMouseTracking( true );
@@ -206,10 +207,7 @@ void TIGLViewerWidget::initializeOCC(const Handle_AIS_InteractiveContext& aConte
 
 		myLayer   = new Visual3d_Layer (myViewer->Viewer(), Aspect_TOL_OVERLAY, Standard_True /*aSizeDependant*/);
 
-#ifdef OCC_BG
-        myView->SetBgGradientColors ( Quantity_Color(1., 1., 1. , Quantity_TOC_RGB), Quantity_Color(0.2, 0.184, 0.128, Quantity_TOC_RGB), Aspect_GFM_VER, Standard_False);
-#endif
-
+		setBackgroundColor(myBGColor);
 
 		emit initialized();
 	}
@@ -591,44 +589,28 @@ void TIGLViewerWidget::hiddenLineOn()
 	}
 }
 
-void TIGLViewerWidget::background()
-{
-    QColor aColor ;
-    Standard_Real R1;
-    Standard_Real G1;
-    Standard_Real B1;
+void TIGLViewerWidget::setBackgroundColor(const QColor& col){
+    myBGColor = col;
+    if(!myView.IsNull()){
+    Standard_Real R1 = col.red()/255.;
+    Standard_Real G1 = col.green()/255.;
+    Standard_Real B1 = col.blue()/255.;
 #ifdef OCC_BG
-    Quantity_Color c1, c2;
-    myView->GradientBackgroundColors(c1,c2);
-    R1 = c1.Red(); G1 = c1.Green(); B1 = c1.Blue();
-#else
-    myView->BackgroundColor(Quantity_TOC_RGB,R1,G1,B1);
-#endif
-    aColor.setRgb(( int )R1*255, ( int )G1*255, ( int )B1*255);
+    // Disable provious gradient
+    myView->SetBgGradientColors ( Quantity_NOC_BLACK , Quantity_NOC_BLACK, Aspect_GFM_NONE, Standard_False);
 
-    QColor aRetColor = QColorDialog::getColor(aColor);
+    Standard_Real fu = 2.;
+    Standard_Real fd = 0.2;
 
-    if( aRetColor.isValid() )
-	{
-        R1 = aRetColor.red()/255.;
-        G1 = aRetColor.green()/255.;
-        B1 = aRetColor.blue()/255.;
-#ifdef OCC_BG
-        // Disable provious gradient
-        myView->SetBgGradientColors ( Quantity_NOC_BLACK , Quantity_NOC_BLACK, Aspect_GFM_NONE, Standard_False);
+    Quantity_Color up  (R1*fu > 1 ? 1. : R1*fu, G1*fu > 1 ? 1. : G1*fu, B1*fu > 1 ? 1. : B1*fu, Quantity_TOC_RGB);
+    Quantity_Color down(R1*fd > 1 ? 1. : R1*fd, G1*fd > 1 ? 1. : G1*fd, B1*fd > 1 ? 1. : B1*fd, Quantity_TOC_RGB);
 
-        float fu = 2;
-        float fd = 0.2;
-
-        Quantity_Color up  (R1*fu > 1 ? 1. : R1*fu, G1*fu > 1 ? 1. : G1*fu, B1*fu > 1 ? 1. : B1*fu, Quantity_TOC_RGB);
-        Quantity_Color down(R1*fd > 1 ? 1. : R1*fd, G1*fd > 1 ? 1. : G1*fd, B1*fd > 1 ? 1. : B1*fd, Quantity_TOC_RGB);
-
-        myView->SetBgGradientColors( up, down, Aspect_GFM_VER, Standard_False);
+    myView->SetBgGradientColors( up, down, Aspect_GFM_VER, Standard_False);
 
 #else
-        myView->SetBackgroundColor(Quantity_TOC_RGB,R1,G1,B1);
+    myView->SetBackgroundColor(Quantity_TOC_RGB,R1,G1,B1);
 #endif
-    }
+    } 
     redraw();
 }
 

@@ -322,6 +322,7 @@ void TIGLViewerWindow::loadSettings(){
 
     tiglViewerSettings->loadSettings();
     settingsDialog->updateEntries();
+    myOCC->setBackgroundColor(tiglViewerSettings->BGColor());
 }
 
 void TIGLViewerWindow::saveSettings(){
@@ -334,6 +335,11 @@ void TIGLViewerWindow::saveSettings(){
     settings.setValue("MainWindowState", saveState());
 
     tiglViewerSettings->storeSettings();
+}
+
+void TIGLViewerWindow::changeSettings(){
+    settingsDialog->exec();
+    myOCC->setBackgroundColor(tiglViewerSettings->BGColor());
 }
 
 
@@ -608,7 +614,6 @@ void TIGLViewerWindow::connectSignals()
     connect(viewResetAction, SIGNAL(triggered()), myOCC, SLOT(viewReset()));
     connect(viewZoomInAction, SIGNAL(triggered()), myOCC, SLOT(zoomIn()));
     connect(viewZoomOutAction, SIGNAL(triggered()), myOCC, SLOT(zoomOut()));
-    connect(backgroundAction, SIGNAL(triggered()), myOCC, SLOT(background()));
     connect(showConsoleAction, SIGNAL(toggled(bool)), consoleDockWidget, SLOT(setVisible(bool)));
     connect(consoleDockWidget, SIGNAL(visibilityChanged(bool)), showConsoleAction, SLOT(setChecked(bool)));
     connect(showWireframeAction, SIGNAL(toggled(bool)), myVC, SLOT(wireFrame(bool)));
@@ -623,6 +628,7 @@ void TIGLViewerWindow::connectSignals()
 	connect(drawWingSamplePointsAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingSamplePoints()));
 	connect(drawFusedWingAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFusedWing()));
 	connect(drawWingComponentSegmentAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingComponentSegment()));
+    connect(drawWingShellAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingShells()));
 
 
 	// CPACS Aircraft Actions
@@ -686,7 +692,7 @@ void TIGLViewerWindow::connectSignals()
     connect(console, SIGNAL(onChange(QString)), scriptEngine, SLOT(textChanged(QString)));
     connect(console, SIGNAL(onCommand(QString)), scriptEngine, SLOT(eval(QString)));
 
-    connect(settingsAction, SIGNAL(triggered()), settingsDialog, SLOT(show()));
+    connect(settingsAction, SIGNAL(triggered()), this, SLOT(changeSettings()));
 }
 
 void TIGLViewerWindow::createMenus()

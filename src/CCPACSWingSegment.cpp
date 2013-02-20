@@ -1,5 +1,10 @@
+<<<<<<< HEAD
 /* 
 * Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
+=======
+/*
+* Copyright (C) 2007-2011 German Aerospace Center (DLR/SC)
+>>>>>>> master
 *
 * Created: 2010-08-13 Markus Litz <Markus.Litz@dlr.de>
 * Changed: $Id$ 
@@ -71,6 +76,7 @@
 #include "BRepAdaptor_Surface.hxx"
 #include "GeomAdaptor_Surface.hxx"
 #include "GC_MakeLine.hxx"
+#include "BRepTools_WireExplorer.hxx"
 
 #include "Geom_BSplineCurve.hxx"
 #include "GeomAPI_PointsToBSpline.hxx"
@@ -80,6 +86,7 @@
 #include "GeomFill_FillingStyle.hxx"
 #include "Geom_BSplineSurface.hxx"
 #include "GeomAPI_ProjectPointOnSurf.hxx"
+#include "GeomAPI_ProjectPointOnCurve.hxx"
 #include "BRepExtrema_DistShapeShape.hxx"
 #include "GCPnts_AbscissaPoint.hxx"
 #include "BRepAdaptor_CompCurve.hxx"
@@ -660,64 +667,113 @@ namespace tigl {
 	}
 
 
+    double projectOnCurve(gp_Pnt p, Handle_Geom_Curve curve){
+        GeomAPI_ProjectPointOnCurve projector(p, curve);
+        return projector.LowerDistanceParameter();
+    }
 
+    // Builds upper/lower surfaces as shapes
+    // we split the wing profile into upper and lower wire.
+    // To do so, we have to determine, what is up
+    void CCPACSWingSegment::MakeSurfaces()
+    {
+        if(surfacesAreValid)
+            return;
+        
+        gp_Pnt inner_lep = GetChordPoint(0.0, 0.0);
+        gp_Pnt outer_lep = GetChordPoint(1.0, 0.0);
+        
+        gp_Pnt inner_tep = GetChordPoint(0.0, 1.0);
+        gp_Pnt outer_tep = GetChordPoint(1.0, 1.0);
+        
+        gp_Pnt in_up = GetUpperPoint(0.0,0.5);
+        gp_Pnt out_up = GetUpperPoint(1.0,0.5);
+        
+        Handle_Geom_BSplineCurve innercurve = BRepAdaptor_CompCurve(GetInnerWire()).BSpline();
+        Handle_Geom_BSplineCurve outercurve = BRepAdaptor_CompCurve(GetOuterWire()).BSpline();
+        
+        double innerlep_par = projectOnCurve(inner_lep, innercurve);
+        double outerlep_par = projectOnCurve(outer_lep, outercurve);
+        
+        double inup_par  = projectOnCurve(in_up,  innercurve);
+        double outup_par = projectOnCurve(out_up, outercurve);
+        
+        TopoDS_Edge iu_edge, il_edge;
+        gp_Pnt p_in_up, p_in_down;
+        if(inup_par < innerlep_par){
+            //wire goes from top to bottom
+            iu_edge = BRepBuilderAPI_MakeEdge(innercurve,innercurve->FirstParameter(), innerlep_par);
+            il_edge = BRepBuilderAPI_MakeEdge(innercurve,innerlep_par, innercurve->LastParameter());
+            p_in_up = innercurve->StartPoint();
+            p_in_down = innercurve->EndPoint();
+        }
+        else {
+            //wire goes from bottom to top
+            il_edge = BRepBuilderAPI_MakeEdge(innercurve,innercurve->FirstParameter(), innerlep_par);
+            iu_edge = BRepBuilderAPI_MakeEdge(innercurve,innerlep_par, innercurve->LastParameter());
+            p_in_up = innercurve->EndPoint();
+            p_in_down = innercurve->StartPoint();
+        }
+        TopoDS_Edge ou_edge, ol_edge;
+        gp_Pnt p_out_up, p_out_down;
+        if(outup_par < outerlep_par){
+            ou_edge = BRepBuilderAPI_MakeEdge(outercurve,outercurve->FirstParameter(), outerlep_par);
+            ol_edge = BRepBuilderAPI_MakeEdge(outercurve,outerlep_par, outercurve->LastParameter());
+            p_out_up = outercurve->StartPoint();
+            p_out_down = outercurve->EndPoint();
+        }
+        else {
+            ol_edge = BRepBuilderAPI_MakeEdge(outercurve,outercurve->FirstParameter(), outerlep_par);
+            ou_edge = BRepBuilderAPI_MakeEdge(outercurve,outerlep_par, outercurve->LastParameter());
+            p_out_up = outercurve->EndPoint();
+            p_out_down = outercurve->StartPoint();
+        }
 
-	// Builds upper/lower surfaces as shapes
-	void CCPACSWingSegment::MakeSurfaces()
-	{
-		if(surfacesAreValid)
-			return;
+        BRepBuilderAPI_MakeWire wiu, wil, wou, wol;
 
-		int numberOfWirePoints = 500;
-		double xsi = 0.0;
+        //check if we have to close upper and lower wing shells
+        if(p_in_up.Distance(inner_tep) > Precision::Confusion())
+            wiu.Add(BRepBuilderAPI_MakeEdge(inner_tep,p_in_up));
+        
+        if(p_in_down.Distance(inner_tep) > Precision::Confusion())
+            wil.Add(BRepBuilderAPI_MakeEdge(inner_tep,p_in_down));
+        
+        if(p_out_up.Distance(outer_tep) > Precision::Confusion())
+            wou.Add(BRepBuilderAPI_MakeEdge(outer_tep,p_out_up));
+        
+        if(p_out_down.Distance(outer_tep) > Precision::Confusion())
+            wol.Add(BRepBuilderAPI_MakeEdge(outer_tep,p_out_down));
+        
+        
+        wiu.Add(iu_edge); wil.Add(il_edge);
+        wou.Add(ou_edge); wol.Add(ol_edge);
+        wiu.Build(); wil.Build();
+        wou.Build(); wol.Build();
 
-		BRepBuilderAPI_MakePolygon upperMakePolygonOne,upperMakePolygonTwo;
-		BRepBuilderAPI_MakePolygon lowerMakePolygonOne,lowerMakePolygonTwo;
+        BRepOffsetAPI_ThruSections upperSections(Standard_False,Standard_True);
+        upperSections.AddWire(wiu.Wire());
+        upperSections.AddWire(wou.Wire());
+        upperSections.Build();
+        
+        BRepOffsetAPI_ThruSections lowerSections(Standard_False,Standard_True);
+        lowerSections.AddWire(wil.Wire());
+        lowerSections.AddWire(wol.Wire());
+        lowerSections.Build();
+        
+        upperShape = upperSections.Shape();
+        lowerShape = lowerSections.Shape();
+        
+        // Transform upper/lower shapes
+        upperShape = wing->GetWingTransformation().Transform(upperShape);
+        lowerShape = wing->GetWingTransformation().Transform(lowerShape);
 
-		for(int i = 1; i < numberOfWirePoints; i++) 
-		{
-			xsi = ((double)i/(double)numberOfWirePoints) * 1.0;
+        const BRepLib_FindSurface findSurface(upperShape, /* tolerance */1.01);
+        upperSurface = findSurface.Surface();
+        const BRepLib_FindSurface findSurface2(lowerShape, /* tolerance */1.01);
+        lowerSurface = findSurface2.Surface();
 
-			gp_Pnt p1 = GetUpperPoint(0.0, xsi);
-			gp_Pnt p2 = GetUpperPoint(1.0, xsi);
-            gp_Pnt p3 = GetLowerPoint(0.0, xsi);
-            gp_Pnt p4 = GetLowerPoint(1.0, xsi);
-
-			upperMakePolygonOne.Add(p1);
-			upperMakePolygonTwo.Add(p2);
-            lowerMakePolygonOne.Add(p3);
-            lowerMakePolygonTwo.Add(p4);
-		}
-
-		upperMakePolygonOne.Build();
-		upperMakePolygonTwo.Build();
-        lowerMakePolygonOne.Build();
-        lowerMakePolygonTwo.Build();
-
-		BRepOffsetAPI_ThruSections upperSections(Standard_False,Standard_True);
-		upperSections.AddWire(upperMakePolygonOne.Wire());
-		upperSections.AddWire(upperMakePolygonTwo.Wire());
-		upperSections.Build();
-
-		BRepOffsetAPI_ThruSections lowerSections(Standard_False,Standard_True);
-		lowerSections.AddWire(lowerMakePolygonOne.Wire());
-		lowerSections.AddWire(lowerMakePolygonTwo.Wire());
-		lowerSections.Build();
-
-		upperShape = upperSections.Shape();
-		lowerShape = lowerSections.Shape();
-
-		// Transform upper/lower shapes
-//		upperShape = wing->GetWingTransformation().Transform(upperShape);
-//		lowerShape = wing->GetWingTransformation().Transform(lowerShape);
-
-		const BRepLib_FindSurface findSurface(upperShape, /* tolerance */1.01);
-		upperSurface = findSurface.Surface();
-		const BRepLib_FindSurface findSurface2(lowerShape, /* tolerance */1.01);
-		lowerSurface = findSurface2.Surface();
-
-		surfacesAreValid = true;
-	}
+        surfacesAreValid = true;
+    }
 
 
 
@@ -755,6 +811,24 @@ namespace tigl {
 			MakeSurfaces();
 		}
 		return upperSurface;
+	}
+	
+	// Returns the upper wing shape of this Segment
+	TopoDS_Shape& CCPACSWingSegment::GetUpperShape()
+	{
+		if(!surfacesAreValid) {
+			MakeSurfaces();
+		}
+		return upperShape;
+	}
+
+	// Returns the lower wing shape of this Segment
+	TopoDS_Shape& CCPACSWingSegment::GetLowerShape()
+	{
+		if(!surfacesAreValid) {
+			MakeSurfaces();
+		}
+		return lowerShape;
 	}
 
     // builds data structure for a TDocStd_Application
