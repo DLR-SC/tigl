@@ -262,6 +262,7 @@ namespace tigl {
         // Iterate over all Segments
         for (int i=1; i <= segments.GetSegmentCount(); i++) {
             CCPACSFuselageSegment& segment = segments.GetSegment(i);
+            //TDF_Label& subLabel = segment.ExportDataStructure(myAssembly, newLabel);
         }
     }
 

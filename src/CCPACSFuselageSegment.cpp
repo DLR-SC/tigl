@@ -719,6 +719,10 @@ namespace tigl {
         TopExp_Explorer Ex1;
         int i = 0;
 
+//        gp_Trsf t0;
+//        TopLoc_Location location0(t0);
+//        myAssembly->AddComponent(label, subLabel, location0);
+
         Handle_XCAFDoc_ShapeTool newAssembly = XCAFDoc_DocumentTool::ShapeTool (label);
         TDF_Label subLabel = myAssembly->NewShape();
 
@@ -727,6 +731,16 @@ namespace tigl {
             subLabel = newAssembly->AddSubShape (label, Ex1.Current());
             TDataStd_Name::Set(label, "xxx"); //numName.c_str());
         }
+//        // This component
+//        TDF_Label aLabel = myAssembly->AddShape(GetLoft(), false);
+//        TDataStd_Name::Set (aLabel, GetUID().c_str());
+//
+//        // Other (sub)-components
+//        ChildContainerType::iterator it = childContainer.begin();
+//        for(; it != childContainer.end(); ++it){
+//            CTiglAbstractPhysicalComponent * pChild = *it;
+//            if(pChild) TDF_Label aLabel = pChild->ExportDataStructure(myAssembly);
+//        }
 
         return subLabel;
     }
