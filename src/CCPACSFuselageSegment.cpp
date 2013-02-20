@@ -71,6 +71,12 @@
 #include "BRepBuilderAPI_Transform.hxx"
 #include "ShapeAnalysis_Surface.hxx"
 #include "BRepLib_FindSurface.hxx"
+#include "XCAFDoc_ShapeTool.hxx"
+#include "XCAFApp_Application.hxx"
+#include "XCAFDoc_DocumentTool.hxx"
+#include "TDataStd_Name.hxx"
+#include "TDataXtd_Shape.hxx"
+
 
 #ifndef max
 #define max(a, b) (((a) > (b)) ? (a) : (b))
@@ -708,9 +714,21 @@ namespace tigl {
 
     // builds data structure for a TDocStd_Application
     // mostly used for export
-    void CCPACSFuselageSegment::ExportDataStructure(TDF_Label &rootLabel)
+    TDF_Label& CCPACSFuselageSegment::ExportDataStructure(Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label)
     {
-        //
+        TopExp_Explorer Ex1;
+        int i = 0;
+
+        Handle_XCAFDoc_ShapeTool newAssembly = XCAFDoc_DocumentTool::ShapeTool (label);
+        TDF_Label subLabel = myAssembly->NewShape();
+
+        for ( Ex1.Init(GetLoft(), TopAbs_FACE); Ex1.More(); Ex1.Next() )  {
+            //std::string numName = "Face_" + i;
+            subLabel = newAssembly->AddSubShape (label, Ex1.Current());
+            TDataStd_Name::Set(label, "xxx"); //numName.c_str());
+        }
+
+        return subLabel;
     }
 
 } // end namespace tigl

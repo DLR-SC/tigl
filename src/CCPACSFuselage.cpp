@@ -43,6 +43,11 @@
 #include "BRepBuilderAPI_MakeWire.hxx"
 #include "GC_MakeSegment.hxx"
 #include "BRepExtrema_DistShapeShape.hxx"
+#include "XCAFDoc_ShapeTool.hxx"
+#include "XCAFApp_Application.hxx"
+#include "XCAFDoc_DocumentTool.hxx"
+#include "TDataStd_Name.hxx"
+#include "TDataXtd_Shape.hxx"
 
 #define _USE_MATH_DEFINES
 #include <math.h>
@@ -232,9 +237,32 @@ namespace tigl {
         return segments.GetSegmentCount();
     }
 
-    void CCPACSFuselage::ExportDataStructure(TDF_Label &rootLabel)
+    TDF_Label& CCPACSFuselage::ExportDataStructure(Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label)
     {
-        CTiglAbstractPhysicalComponent::ExportDataStructure(rootLabel);
+        TDF_Label& newLabel = CTiglAbstractPhysicalComponent::ExportDataStructure(myAssembly, label);
+
+        // Export all segments
+        gp_Trsf t0;
+        TopLoc_Location location0(t0);
+
+        Handle(TDocStd_Document) doc;
+        Handle ( XCAFApp_Application ) anApp = XCAFApp_Application::GetApplication();
+        anApp->GetDocument(1, doc);
+
+
+        TDF_Label aLabel = myAssembly->AddShape(segments.GetSegment(12).GetLoft(), false);
+        TDataStd_Name::Set (aLabel, GetUID().c_str());
+
+        TDF_Label labelA02 = myAssembly->NewShape();
+        TDataStd_Name::Set(labelA02, "ASSEMBLY02");
+
+
+        TDF_Label component05 = myAssembly->AddComponent(labelA02, aLabel, location0);
+
+        // Iterate over all Segments
+        for (int i=1; i <= segments.GetSegmentCount(); i++) {
+            CCPACSFuselageSegment& segment = segments.GetSegment(i);
+        }
     }
 
     // Returns the segment for a given index

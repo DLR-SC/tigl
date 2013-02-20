@@ -91,20 +91,20 @@ namespace tigl {
     }
 
 
-    void CTiglAbstractPhysicalComponent::ExportDataStructure(TDF_Label &rootLabel)
+    TDF_Label& CTiglAbstractPhysicalComponent::ExportDataStructure(Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label)
     {
-        // This node
-        TDF_Label shapeLabel= TDF_TagSource::NewChild(rootLabel);
-        TDataXtd_Shape::Set(shapeLabel, GetLoft());
-        TDataStd_Name::Set(shapeLabel, TCollection_ExtendedString(GetUID().c_str(), 1));
-
+        // This component
+        TDF_Label aLabel = myAssembly->AddShape(GetLoft(), false);
+        TDataStd_Name::Set (aLabel, GetUID().c_str());
 
         // Other (sub)-components
         ChildContainerType::iterator it = childContainer.begin();
         for(; it != childContainer.end(); ++it){
             CTiglAbstractPhysicalComponent * pChild = *it;
-            if(pChild) pChild->ExportDataStructure(rootLabel);
+            if(pChild) TDF_Label newLabel = pChild->ExportDataStructure(myAssembly, aLabel);
         }
+
+        return aLabel;
     }
 
 } // namespace tigl
