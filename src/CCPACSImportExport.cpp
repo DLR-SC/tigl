@@ -65,9 +65,8 @@ namespace tigl {
 
         Handle(XCAFApp_Application) hApp = XCAFApp_Application::GetApplication();
         Handle(TDocStd_Document) hDoc;
-        hApp->NewDocument(TCollection_ExtendedString("MDTV-CAF"), hDoc);
+        hApp->NewDocument(TCollection_ExtendedString("MDTV-XCAF"), hDoc);
         Handle_XCAFDoc_ShapeTool hShapeTool = XCAFDoc_DocumentTool::ShapeTool(hDoc->Main());
-
         TDF_Label rootLabel= TDF_TagSource::NewChild(hDoc->Main());
 
 
@@ -81,7 +80,7 @@ namespace tigl {
             return false;
         }
 
-        rootComponent->ExportDataStructure(rootLabel);
+        rootComponent->ExportDataStructure(hShapeTool, rootLabel);
 
 
         IGESControl_Controller::Init();
