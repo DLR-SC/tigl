@@ -32,8 +32,11 @@
 #include "TopoDS_Wire.hxx"
 #include <vector>
 #include <string>
+#include <memory>
 
 namespace tigl {
+
+    class ITiglWireAlgorithm;
 
     class CCPACSFuselageProfile
     {
@@ -116,6 +119,7 @@ namespace tigl {
         TopoDS_Wire               wireOriginal;   /**< Original fuselage profile wire */
         TopoDS_Wire               wireClosed;     /**< Forced closed fuselage profile wire */
         double                    wireLength;     /**< Length of fuselage profile wire */
+        std::shared_ptr<ITiglWireAlgorithm> profileWireAlgo;
 
     };
 
