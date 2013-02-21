@@ -28,6 +28,7 @@
 
 #include <vector>
 #include <string>
+#include <memory>
 
 #include "tixi.h"
 #include "CTiglPoint.h"
@@ -37,6 +38,8 @@
 #include "Geom2d_TrimmedCurve.hxx"
 
 namespace tigl {
+
+    class ITiglWireAlgorithm;
 
     class CCPACSWingProfile
     {
@@ -149,6 +152,7 @@ namespace tigl {
         TopoDS_Wire               wireOriginal;   /**< Original wing profile wire */
         gp_Pnt                    lePoint;        /**< Leading edge point */
         gp_Pnt                    tePoint;        /**< Trailing edge point */
+        std::shared_ptr<ITiglWireAlgorithm>  profileWireAlgo;
 
     };
 

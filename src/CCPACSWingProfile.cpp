@@ -29,7 +29,7 @@
 
 #include "CCPACSWingProfile.h"
 #include "CTiglError.h"
-#include "CTiglAlgorithmManager.h"
+#include "CTiglLogger.h"
 #include "math.h"
 
 #include "gp_Pnt2d.hxx"
@@ -52,6 +52,8 @@
 #include "BRepBuilderAPI_MakeEdge.hxx"
 #include "BRepBuilderAPI_MakeWire.hxx"
 #include "ShapeFix_Wire.hxx"
+#include "CTiglInterpolateBsplineWire.h"
+#include "CTiglInterpolateLinearWire.h"
 
 namespace tigl {
 
@@ -60,6 +62,7 @@ namespace tigl {
         : ProfileXPath(path),
 		invalidated(true)
     {
+        profileWireAlgo = std::shared_ptr<ITiglWireAlgorithm>(new CTiglInterpolateBsplineWire);
         Cleanup();
     }
 
@@ -422,8 +425,16 @@ namespace tigl {
             points.push_back(coordinates[i]->Get_gp_Pnt());
 
         // Build wires from wing profile points.
-        CTiglAlgorithmManager& manager        = CTiglAlgorithmManager::GetInstance();
-        const ITiglWireAlgorithm& wireBuilder = manager.GetWireAlgorithm();
+        const ITiglWireAlgorithm& wireBuilder = *profileWireAlgo;
+
+        // CCPACSWingSegment::makeSurfaces cannot handle currently 
+        // wire with multiple edges. Thus we get problems if we have
+        // a linear interpolated wire consting of many edges.
+        if(dynamic_cast<const CTiglInterpolateLinearWire*>(&wireBuilder)){
+            LOG(ERROR) << "Linear Wing Profiles are currently not supported" << endl;
+            throw CTiglError("Linear Wing Profiles are currently not supported",TIGL_ERROR);
+        }
+
         TopoDS_Wire tempWireClosed   = wireBuilder.BuildWire(points, true);
         TopoDS_Wire tempWireOriginal = wireBuilder.BuildWire(points, false);
         if (tempWireClosed.IsNull() == Standard_True || tempWireOriginal.IsNull() == Standard_True)
@@ -452,8 +463,7 @@ namespace tigl {
         for (CCPACSCoordinateContainer::size_type i = 0; i < coordinates.size(); i++)
             points.push_back(coordinates[i]->Get_gp_Pnt());
 
-        CTiglAlgorithmManager& manager        = CTiglAlgorithmManager::GetInstance();
-        const ITiglWireAlgorithm& wireBuilder = manager.GetWireAlgorithm();
+        const ITiglWireAlgorithm& wireBuilder = *profileWireAlgo;
 
         lePoint = wireBuilder.GetPointWithMinX(points);
         lePoint = TransformPoint(lePoint);

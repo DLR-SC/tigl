@@ -25,7 +25,6 @@
 
 #include "CCPACSFuselageProfile.h"
 #include "CTiglError.h"
-#include "CTiglAlgorithmManager.h"
 #include "TopoDS.hxx"
 #include "gp_Pnt2d.hxx"
 #include "gp_Vec2d.hxx"
@@ -45,10 +44,12 @@
 #include "BRepTools_WireExplorer.hxx"
 #include "GeomAdaptor_Curve.hxx"
 #include "GCPnts_AbscissaPoint.hxx"
+#include "CTiglInterpolateBsplineWire.h"
 
 #include "math.h"
 #include <iostream>
 #include <sstream>
+
 
 #ifndef max
 #define max(a, b) (((a) > (b)) ? (a) : (b))
@@ -61,6 +62,7 @@ namespace tigl {
         : ProfileXPath(path),
 		invalidated(true)
     {
+        profileWireAlgo = std::shared_ptr<ITiglWireAlgorithm>(new CTiglInterpolateBsplineWire);
         Cleanup();
     }
 
@@ -292,8 +294,7 @@ namespace tigl {
             points.push_back(pEnd);
 
         // Build wire from fuselage profile points
-        CTiglAlgorithmManager& manager        = CTiglAlgorithmManager::GetInstance();
-        const ITiglWireAlgorithm& wireBuilder = manager.GetWireAlgorithm();
+        const ITiglWireAlgorithm& wireBuilder = *profileWireAlgo;
         const CTiglInterpolateBsplineWire * pSplineBuilder = dynamic_cast<const CTiglInterpolateBsplineWire*>(&wireBuilder);
         if(pSplineBuilder){
             const_cast<CTiglInterpolateBsplineWire*>(pSplineBuilder)->setEndpointContinuity(C1);
