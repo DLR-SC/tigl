@@ -32,7 +32,6 @@
 #include "CTiglIntersectionCalculation.h"
 #include "CCPACSConfiguration.h"
 #include "CCPACSConfigurationManager.h"
-#include "CTiglAlgorithmManager.h"
 #include "CTiglIntersectionCalculation.h"
 #include "CTiglUIDManager.h"
 #include "CCPACSWing.h"
@@ -224,31 +223,6 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglIsCPACSConfigurationHandleValid(TiglCPACSC
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglIsCPACSConfigurationHandleValid!" << std::endl;
         return TIGL_NOT_FOUND;
-    }
-}
-
-
-
-TIGL_COMMON_EXPORT TiglReturnCode tiglUseAlgorithm(TiglAlgorithmCode anAlgorithm)
-{
-    try {
-        tigl::CTiglAlgorithmManager& manager = tigl::CTiglAlgorithmManager::GetInstance();
-        manager.SetAlgorithm(anAlgorithm);
-        tigl::CCPACSConfigurationManager& configurations = tigl::CCPACSConfigurationManager::GetInstance();
-        configurations.Invalidate();
-        return TIGL_SUCCESS;
-    }
-    catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
-        return TIGL_ERROR;
-    }
-    catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
-        return ex.getCode();
-    }
-    catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglUseAlgorithm!" << std::endl;
-        return TIGL_ERROR;
     }
 }
 
