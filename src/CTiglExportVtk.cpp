@@ -81,6 +81,7 @@
 #include "BrepGProp_Face.hxx"
 
 #include "CTiglPolyData.h"
+#include "CTiglTriangularizer.h"
 
 namespace tigl {
 
@@ -101,11 +102,10 @@ namespace tigl {
     {
         //exportMode = TIGL_VTK_COMPLEX;
         CTiglAbstractPhysicalComponent & component = myConfig.GetWing(wingIndex);
-        TopoDS_Shape loft = component.GetLoft();
+        TopoDS_Shape& loft = component.GetLoft();
+        
+       LOG(ERROR) << "tiglExportMeshedWingByIndexVTK not yet implemented!!" << std::endl;
 
-        VtkWriter *vtkWriter = new VtkWriter(myConfig);
-        vtkWriter->Write(loft, component, const_cast<char*>(filename.c_str()), deflection, TIGL_VTK_COMPLEX);
-        delete vtkWriter;
     }
 
     // Exports a by UID selected wing, boolean fused and meshed, as STL file
@@ -114,9 +114,7 @@ namespace tigl {
         CTiglAbstractPhysicalComponent & component = myConfig.GetWing(wingUID);
         TopoDS_Shape loft = component.GetLoft();
 
-        VtkWriter *vtkWriter = new VtkWriter(myConfig);
-        vtkWriter->Write(loft, component, const_cast<char*>(filename.c_str()), deflection, TIGL_VTK_COMPLEX);
-        delete vtkWriter;
+       LOG(ERROR) << "tiglExportMeshedWingByUIDVTK not yet implemented!!" << std::endl;
     }
 
 
@@ -127,9 +125,7 @@ namespace tigl {
         CTiglAbstractPhysicalComponent & component = myConfig.GetFuselage(fuselageIndex);
         TopoDS_Shape loft = component.GetLoft();
 
-        VtkWriter *vtkWriter = new VtkWriter(myConfig);
-        vtkWriter->Write(loft, component, const_cast<char*>(filename.c_str()), deflection, TIGL_VTK_COMPLEX);
-        delete vtkWriter;
+        LOG(ERROR) << "tiglExportMeshedFuselageByIndexVTK not yet implemented!!" << std::endl;
     }
 
     // Exports a by UID selected fuselage, boolean fused and meshed, as VTK file
@@ -137,21 +133,15 @@ namespace tigl {
     {
         CTiglAbstractPhysicalComponent & component = myConfig.GetFuselage(fuselageUID);
         TopoDS_Shape loft = component.GetLoft();
-
-        VtkWriter *vtkWriter = new VtkWriter(myConfig);
-        vtkWriter->Write(loft, component, const_cast<char*>(filename.c_str()), deflection, TIGL_VTK_COMPLEX);
-        delete vtkWriter;
+        
+        LOG(ERROR) << "tiglExportMeshedFuselageByIndexUID not yet implemented!!" << std::endl;
     }
     
 
     // Exports a whole geometry, boolean fused and meshed, as VTK file
     void CTiglExportVtk::ExportMeshedGeometryVTK(const std::string& filename, const double deflection)
     {
-        //const TopoDS_Shape loft = myConfig.GetFusedAirplane();
-        //VtkWriter *vtkWriter = new VtkWriter(myConfig);
-		//// TODO: we need an idea for the complete geometry component.
-        //vtkWriter->Write(loft, myConfig.GetFuselage(1), const_cast<char*>(filename.c_str()), deflection, TIGL_VTK_COMPLEX);
-        ExportMeshedWingVTKByIndex(1, filename, deflection);
+        LOG(ERROR) << "tiglExportMeshedGeometryVTK not yet implemented!!" << std::endl;
     }
 
     /************* Simple ones *************************/
@@ -159,412 +149,176 @@ namespace tigl {
     void CTiglExportVtk::ExportMeshedWingVTKSimpleByUID(const std::string wingUID, const std::string& filename, const double deflection)
     {
         CTiglAbstractPhysicalComponent & component = myConfig.GetWing(wingUID);
-        TopoDS_Shape loft;
-
-        VtkWriter *vtkWriter = new VtkWriter(myConfig);
-        vtkWriter->Write(loft, component, const_cast<char*>(filename.c_str()), deflection, TIGL_VTK_SIMPLE);
-        delete vtkWriter;
+        TopoDS_Shape& loft = component.GetLoft();
+        BRepMesh::Mesh(loft, deflection);
+        
+        CTiglTriangularizer loftTrian(loft);
+        loftTrian.writeVTK(filename.c_str());
+    }
+    
+    /************* Simple ones *************************/
+    // Exports a by UID selected wing, boolean fused and meshed, as STL file
+    void CTiglExportVtk::ExportMeshedWingVTKSimpleByIndex(const int wingIndex, const std::string& filename, const double deflection)
+    {
+        const std::string& wingUID = myConfig.GetWing(wingIndex).GetUID();
+        ExportMeshedWingVTKSimpleByUID(wingUID, filename, deflection);
     }
 
     // Exports a by UID selected fuselage, boolean fused and meshed, as VTK file
     void CTiglExportVtk::ExportMeshedFuselageVTKSimpleByUID(const std::string fuselageUID, const std::string& filename, const double deflection)
     {
         CTiglAbstractPhysicalComponent & component = myConfig.GetFuselage(fuselageUID);
-        TopoDS_Shape loft;
-
-        VtkWriter *vtkWriter = new VtkWriter(myConfig);
-        vtkWriter->Write(loft, component, const_cast<char*>(filename.c_str()), deflection, TIGL_VTK_SIMPLE);
-        delete vtkWriter;
+        TopoDS_Shape& loft = component.GetLoft();
+        BRepMesh::Mesh(loft, deflection);
+        
+        CTiglTriangularizer loftTrian(loft);
+        loftTrian.writeVTK(filename.c_str());
+    }
+    
+    // Exports a by UID selected fuselage, boolean fused and meshed, as VTK file
+    void CTiglExportVtk::ExportMeshedFuselageVTKSimpleByIndex(const int fuselageIndex, const std::string& filename, const double deflection){
+        const std::string& fuselageUID = myConfig.GetFuselage(fuselageIndex).GetUID();
+        ExportMeshedFuselageVTKSimpleByUID(fuselageUID, filename, deflection);
     }
 
 
     // Exports a whole geometry, boolean fused and meshed, as VTK file
     void CTiglExportVtk::ExportMeshedGeometryVTKSimple(const std::string& filename, const double deflection)
     {
-        //const TopoDS_Shape loft = myConfig.GetFusedAirplane();
-        //VtkWriter *vtkWriter = new VtkWriter(myConfig);
-        //// TODO: we need an idea for the complete geometry component.
-        //vtkWriter->Write(loft, myConfig.GetFuselage(1), const_cast<char*>(filename.c_str()), deflection, TIGL_VTK_SIMPLE);
-        //ExportMeshedWingVTKSimpleByUID(filename, filename, deflection);
+
         LOG(ERROR) << "tiglExportMeshedGeometryVTKSimple not yet implemented!!" << std::endl;
     }
 
-    // constructor
-    VtkWriter::VtkWriter(CCPACSConfiguration& config)
-        :myConfig(config)
-    {
-        pointArray = NULL;
-        pointsMin = 0;
-        pointsMax = 0;
-    }
-    
-    // Write out the shape to a VTK file
-    void VtkWriter::Write(const TopoDS_Shape & shape, CTiglAbstractPhysicalComponent & component, const std::string& filename, const double deflection, VTK_EXPORT_MODE mode)
-    {
 
-        pointsMin = 0;
-        pointsMax = 0;
-        unsigned int points;
-		if(mode == TIGL_VTK_SIMPLE) {
-            points = SimpleTriangulation(shape, component, deflection);
-		}
-		else {
-            points = FindUniquePoints(shape, component, deflection);
-		}
+//    // Helper function to detect unique points in all triangles
+//    unsigned int VtkWriter::FindUniquePoints(const TopoDS_Shape & shape, CTiglAbstractPhysicalComponent & component, const double deflection) {
+//        TopExp_Explorer shellExplorer;
+//        TopExp_Explorer faceExplorer;
+//        TopOpeBRepDS_SurfaceExplorer surfaceExplorer;
+//        BRep_Builder builder;
+//        GProp_PGProps props;
+//        const int segmentCount = component.GetSegmentCount();
 
-        return;
+//        // the surfaces of our shape
+//        const BRepLib_FindSurface findSurface(shape, /* tolerance */1);
+//        const Handle(Geom_Surface) & surface = findSurface.Surface();
 
-        const unsigned int triangles = triangleList1.size();
-        ofstream file;
-        file.open(const_cast<char*>(filename.c_str()) , ios::out);
-        file << "<?xml version=\"1.0\"?>" << endl << "<VTKFile type=\"PolyData\" version=\"0.1\" byte_order=\"LittleEndian\" compressor=\"vtkZLibDataCompressor\">" << endl << "  <PolyData>" << endl;
-        file << "    <Piece NumberOfPoints=\"" << points << "\" NumberOfVerts=\"0\" NumberOfLines=\"0\" NumberOfStrips=\"0\" NumberOfPolys=\"" << triangles << "\">" << endl << "      <Points>" << endl;
-        file << "        <DataArray type=\"Float64\" Name=\"Points\" NumberOfComponents=\"3\" format=\"ascii\" RangeMin=\"" << pointsMin << "\" RangeMax=\"" << pointsMax << "\">" << endl;
-        for (unsigned int i = 0; i < points; i ++)
-        {
-            file << "          " << pointArray[i].X() << " " << pointArray[i].Y() << " " << pointArray[i].Z() << endl;
-        }
-        file << "        </DataArray>" << endl << "      </Points>" << endl << "      <Polys>" << endl << "        <DataArray type=\"Int32\" Name=\"connectivity\" format=\"ascii\" RangeMin=\"0\" RangeMax=\"" << points - 1 << "\">" << endl;
-        for (unsigned int i = 0; i < triangles; i ++)
-        {
-            file << "          " << triangleList1[i] << " "<< triangleList2[i] << " "<< triangleList3[i] << endl;
-        }
-        file << "        </DataArray>" << endl << "        <DataArray type=\"Int32\" Name=\"offsets\" format=\"ascii\" RangeMin=\"3\" RangeMax=\"" << (triangles * 3) << "\">" << endl << "         ";
-        int next = 3;
-        for (unsigned int i = 0; i < triangles; i ++)
-        {
-            file << " " << next;
-            if ((i % 6 == 0) && (i != (triangles - 1)))
-            {
-                file << endl << "         ";
-            }
-            next += 3;
-        }
-        file << endl << "        </DataArray>" << endl;
-		file << "        <MetaData elements=\"uID segmentIndex eta xsi isOnTop\">" << endl;
-        for (unsigned int i = 0; i < triangles; i ++)
-        {
-            file << "          \"" << triangleUID[i] << "\" " << triangleSegment[i] << " " << triangleEta[i] << " " << triangleXsi[i] << " " << triangleOnTop[i] << endl;
-        }
-        file << "        </MetaData>" << endl;
-		file << "      </Polys>" << endl << "    </Piece>" << endl << "  </PolyData>" << endl << "</VTKFile>" << endl;
-        file.close();
-        cout << "TIGL VTK export with " << points << " unique points and " << triangles << " triangles." << endl;
-        delete[] pointArray;
-        pointArray = NULL;
-    }
+//        // 1. mesh
+//        BRepTools::Clean(shape);
+//        BRepMesh::Mesh(shape, deflection);
 
+//        for (shellExplorer.Init(shape, TopAbs_SHELL); shellExplorer.More(); shellExplorer.Next()) {
+//            const TopoDS_Shell shell = TopoDS::Shell(shellExplorer.Current());
 
+//            for (faceExplorer.Init(shell, TopAbs_FACE); faceExplorer.More(); faceExplorer.Next()) {
+//                TopoDS_Face face = TopoDS::Face(faceExplorer.Current());
+//                TopLoc_Location location;
+//                const Handle(Poly_Triangulation) triangulation = BRep_Tool::Triangulation(face, location);
+//                if (triangulation.IsNull())
+//                    continue;
 
-    // Helper function to detect unique points in all triangles
-    unsigned int VtkWriter::FindUniquePoints(const TopoDS_Shape & shape, CTiglAbstractPhysicalComponent & component, const double deflection) {
-        TopExp_Explorer shellExplorer;
-        TopExp_Explorer faceExplorer;
-        TopOpeBRepDS_SurfaceExplorer surfaceExplorer;
-        BRep_Builder builder;
-        GProp_PGProps props;
-        const int segmentCount = component.GetSegmentCount();
+//                gp_Trsf nodeTransformation = location;
+//                const TColgp_Array1OfPnt& nodes = triangulation->Nodes(); // get (face-local) list of nodes
 
-        // the surfaces of our shape
-        const BRepLib_FindSurface findSurface(shape, /* tolerance */1);
-        const Handle(Geom_Surface) & surface = findSurface.Surface();
+//                int index1, index2, index3;
+//                const Poly_Array1OfTriangle& triangles = triangulation->Triangles();
+//                for (int j = triangles.Lower(); j <= triangles.Upper(); j++) // iterate over triangles in the array
+//                {
+//                    const Poly_Triangle& triangle = triangles(j);
+//                    triangle.Get(index1, index2, index3); // get indices into index1..3
+//                    const gp_Pnt tpoint1 = nodes(index1).Transformed(nodeTransformation);
+//                    const gp_Pnt tpoint2 = nodes(index2).Transformed(nodeTransformation);
+//                    const gp_Pnt tpoint3 = nodes(index3).Transformed(nodeTransformation);
 
-        // 1. mesh
-        BRepTools::Clean(shape);
-        BRepMesh::Mesh(shape, deflection);
+//                    // determine unique point indices
+//                    FindOrCreatePointIndex(triangleList1, tpoint1);
+//                    FindOrCreatePointIndex(triangleList2, tpoint2);
+//                    FindOrCreatePointIndex(triangleList3, tpoint3);
 
-        for (shellExplorer.Init(shape, TopAbs_SHELL); shellExplorer.More(); shellExplorer.Next()) {
-            const TopoDS_Shell shell = TopoDS::Shell(shellExplorer.Current());
+//                    // determine surface point of triangle center, normal vector and surface point of the normal on the wing segment, then eta and xi
+//                    TColgp_Array1OfPnt triangle1Array(0, 2);
+//                    triangle1Array(0) = tpoint1;
+//                    triangle1Array(1) = tpoint2;
+//                    triangle1Array(2) = tpoint3;
 
-            for (faceExplorer.Init(shell, TopAbs_FACE); faceExplorer.More(); faceExplorer.Next()) {
-                TopoDS_Face face = TopoDS::Face(faceExplorer.Current());
-                TopLoc_Location location;
-                const Handle(Poly_Triangulation) triangulation = BRep_Tool::Triangulation(face, location);
-                if (triangulation.IsNull())
-                    continue;
+//                    // 2. a. center of gravity of triangle, b. normal vector from inside -> outside
+//                    const gp_Pnt baryCenter = props.Barycentre(triangle1Array); // get center of triangle
+//                    const gp_Vec normal = FindNormal(tpoint1, tpoint2, tpoint3); // find normal vector
 
-                gp_Trsf nodeTransformation = location;
-                const TColgp_Array1OfPnt& nodes = triangulation->Nodes(); // get (face-local) list of nodes
+//                    // determine intersection of normal vector with fused geometry
+//                    const gp_Lin line(baryCenter, normal);
+//                    Geom_Line tempLine(line);
+//                    const Handle(Geom_Curve) & curve((const Handle(Geom_Curve) &) tempLine);
 
-                int index1, index2, index3;
-                const Poly_Array1OfTriangle& triangles = triangulation->Triangles();
-                for (int j = triangles.Lower(); j <= triangles.Upper(); j++) // iterate over triangles in the array
-                {
-                    const Poly_Triangle& triangle = triangles(j);
-                    triangle.Get(index1, index2, index3); // get indices into index1..3
-                    const gp_Pnt tpoint1 = nodes(index1).Transformed(nodeTransformation);
-                    const gp_Pnt tpoint2 = nodes(index2).Transformed(nodeTransformation);
-                    const gp_Pnt tpoint3 = nodes(index3).Transformed(nodeTransformation);
+//                    // 3. intersection with surface to find a "real" surface point.
+//                    GeomAPI_ProjectPointOnSurf project1(baryCenter, surface);
+//                    if (project1.IsDone()) {
+//                        int i = project1.NbPoints(); // else try next surface
 
-                    // determine unique point indices
-                    FindOrCreatePointIndex(triangleList1, tpoint1);
-                    FindOrCreatePointIndex(triangleList2, tpoint2);
-                    FindOrCreatePointIndex(triangleList3, tpoint3);
+//                        // find nearest intersection point (point on the correct side of the surface)
+//                        Standard_Real minimumDist = 1e8; // use an arbitrary high number...
+//                        Standard_Boolean found = Standard_False;
+//                        int foundShapeIndex = 0;
 
-                    // determine surface point of triangle center, normal vector and surface point of the normal on the wing segment, then eta and xi
-                    TColgp_Array1OfPnt triangle1Array(0, 2);
-                    triangle1Array(0) = tpoint1;
-                    triangle1Array(1) = tpoint2;
-                    triangle1Array(2) = tpoint3;
+//                        const BRepBuilderAPI_MakeVertex foundVertex(project1.NearestPoint());
+//                        for (int s = 1; s <= segmentCount; s++) // find segment belonging to the intersection point on the explored surface (may always be just one, but we don't know for sure)
+//                        {
+//                            CTiglAbstractSegment & segment = component.GetSegment(s);
+//                            TopoDS_Shape segmentLoft = segment.GetLoft(); // get 3d shape of the segment
 
-                    // 2. a. center of gravity of triangle, b. normal vector from inside -> outside
-                    const gp_Pnt baryCenter = props.Barycentre(triangle1Array); // get center of triangle
-                    const gp_Vec normal = FindNormal(tpoint1, tpoint2, tpoint3); // find normal vector
+//                            // 4. find minimum distance to determine the linked segment of the surface intersection
+//                            const BRepExtrema_DistShapeShape dist(segmentLoft, foundVertex);
+//                            if (dist.IsDone() && (dist.NbSolution() > 0)) {
+//                                for (int p = 0; p < dist.NbSolution(); p++) {
+//                                    const Standard_Real currentDist = dist.Value();
+//                                    if (currentDist < minimumDist) {
+//                                        minimumDist = currentDist;
+//                                        foundShapeIndex = s;
+//                                        found = Standard_True;
+//                                    }
+//                                }
+//                            }
+//                        }
+//                        if (found) // a minimum distance was found: we know the segment the intersecting point comes from! What we don't know is if we're on uppe or lower side, but currently we don't need this information for the projection
+//                        {
+//							// Gather metadata needed for VTK metadata-node
+//                            bool isUpperSide = true;
+//                            double eta = 0.0;
+//                            double xsi = 0.0;
+//							std::string uid = component.GetSegment(foundShapeIndex).GetUID();
 
-                    // determine intersection of normal vector with fused geometry
-                    const gp_Lin line(baryCenter, normal);
-                    Geom_Line tempLine(line);
-                    const Handle(Geom_Curve) & curve((const Handle(Geom_Curve) &) tempLine);
+//					        // Important: works only for wings because on fuselage there is not lower side (?)!
+//							if(component.GetComponentType() == TIGL_COMPONENT_WING)
+//							{
+//							    CCPACSWingSegment& wingSegment = (CCPACSWingSegment&)component.GetSegment(foundShapeIndex);
+//								isUpperSide = wingSegment.GetIsOnTop(project1.NearestPoint());
+//								eta = wingSegment.GetEta(project1.NearestPoint(), isUpperSide);
+//                                xsi = wingSegment.GetXsi(project1.NearestPoint(), isUpperSide);
+//							}
 
-                    // 3. intersection with surface to find a "real" surface point.
-                    GeomAPI_ProjectPointOnSurf project1(baryCenter, surface);
-                    if (project1.IsDone()) {
-                        int i = project1.NbPoints(); // else try next surface
+//							// set data
+//							triangleUID.push_back(uid);
+//                            triangleSegment.push_back(foundShapeIndex);
+//                            triangleOnTop.push_back(isUpperSide);
+//                            triangleEta.push_back(eta);
+//                            triangleXsi.push_back(xsi);
+//                        }
+//                    } // if surface intersect worked
+//                } // for triangles
+//            } // for faces
+//        } // for shells
 
-                        // find nearest intersection point (point on the correct side of the surface)
-                        Standard_Real minimumDist = 1e8; // use an arbitrary high number...
-                        Standard_Boolean found = Standard_False;
-                        int foundShapeIndex = 0;
-
-                        const BRepBuilderAPI_MakeVertex foundVertex(project1.NearestPoint());
-                        for (int s = 1; s <= segmentCount; s++) // find segment belonging to the intersection point on the explored surface (may always be just one, but we don't know for sure)
-                        {
-                            CTiglAbstractSegment & segment = component.GetSegment(s);
-                            TopoDS_Shape segmentLoft = segment.GetLoft(); // get 3d shape of the segment
-
-                            // 4. find minimum distance to determine the linked segment of the surface intersection
-                            const BRepExtrema_DistShapeShape dist(segmentLoft, foundVertex);
-                            if (dist.IsDone() && (dist.NbSolution() > 0)) {
-                                for (int p = 0; p < dist.NbSolution(); p++) {
-                                    const Standard_Real currentDist = dist.Value();
-                                    if (currentDist < minimumDist) {
-                                        minimumDist = currentDist;
-                                        foundShapeIndex = s;
-                                        found = Standard_True;
-                                    }
-                                }
-                            }
-                        }
-                        if (found) // a minimum distance was found: we know the segment the intersecting point comes from! What we don't know is if we're on uppe or lower side, but currently we don't need this information for the projection
-                        {
-							// Gather metadata needed for VTK metadata-node
-                            bool isUpperSide = true;
-                            double eta = 0.0;
-                            double xsi = 0.0;
-							std::string uid = component.GetSegment(foundShapeIndex).GetUID();
-
-					        // Important: works only for wings because on fuselage there is not lower side (?)!
-							if(component.GetComponentType() == TIGL_COMPONENT_WING)
-							{
-							    CCPACSWingSegment& wingSegment = (CCPACSWingSegment&)component.GetSegment(foundShapeIndex);
-								isUpperSide = wingSegment.GetIsOnTop(project1.NearestPoint());
-								eta = wingSegment.GetEta(project1.NearestPoint(), isUpperSide);
-                                xsi = wingSegment.GetXsi(project1.NearestPoint(), isUpperSide);
-							}
-
-							// set data
-							triangleUID.push_back(uid);
-                            triangleSegment.push_back(foundShapeIndex);
-                            triangleOnTop.push_back(isUpperSide);
-                            triangleEta.push_back(eta);
-                            triangleXsi.push_back(xsi);
-                        }
-                    } // if surface intersect worked
-                } // for triangles
-            } // for faces
-        } // for shells
-
-        // copy map to enumerated array
-        if(pointArray) delete[] pointArray;
-        pointArray = new gp_Pnt[pointMap.size()];
-        const unsigned int points = pointMap.size();
-        for (PointMapType::iterator it = pointMap.begin(); it != pointMap.end(); ++it) {
-			pointArray[(it->second)] = (it->first);// copy keys (points) to the array element of the value (index number)
-        }
-        pointMap.clear();
-        return points;
-    }
+//        // copy map to enumerated array
+//        if(pointArray) delete[] pointArray;
+//        pointArray = new gp_Pnt[pointMap.size()];
+//        const unsigned int points = pointMap.size();
+//        for (PointMapType::iterator it = pointMap.begin(); it != pointMap.end(); ++it) {
+//			pointArray[(it->second)] = (it->first);// copy keys (points) to the array element of the value (index number)
+//        }
+//        pointMap.clear();
+//        return points;
+//    }
 
 
-    unsigned int VtkWriter::SimpleTriangulation(const TopoDS_Shape & shape, CTiglAbstractPhysicalComponent & component, const double deflection) {
-            TopExp_Explorer shellExplorer;
-            TopExp_Explorer faceExplorer;
-
-            CTiglPolyData polyData;
-
-            const int segmentCount = component.GetSegmentCount();
-
-            for(int y=1; y <= segmentCount; y++ )
-            { 
-				TopoDS_Shape segmentLoft;
-
-                if( (component.GetComponentType() & TIGL_COMPONENT_WING) > 0) {
-                    CTiglAbstractSegment & segment = component.GetSegment(y);
-                    segmentLoft = segment.GetLoft(); // get 3d shape of the segment
-                }
-                if( (component.GetComponentType() & TIGL_COMPONENT_FUSELAGE) > 0) {
-                    segmentLoft = component.GetLoft();
-                }
-        		BRepTools::Clean(segmentLoft);
-                BRepMesh::Mesh(segmentLoft, deflection);
-
-                for (shellExplorer.Init(segmentLoft, TopAbs_SHELL); shellExplorer.More(); shellExplorer.Next()) {
-                    const TopoDS_Shell shell = TopoDS::Shell(shellExplorer.Current());
-
-                    for (faceExplorer.Init(shell, TopAbs_FACE); faceExplorer.More(); faceExplorer.Next()) {
-                        TopoDS_Face face = TopoDS::Face(faceExplorer.Current());
-                        TopLoc_Location location;
-                        const Handle(Poly_Triangulation) triangulation = BRep_Tool::Triangulation(face, location);
-                        if (triangulation.IsNull())
-                            continue;
-
-                        if(triangulation->HasUVNodes()){
-                            polyData.currentObject().enableNormals(true);
-                        }
-
-
-
-                        gp_Trsf nodeTransformation = location;
-                        const TColgp_Array1OfPnt& nodes = triangulation->Nodes(); // get (face-local) list of nodes
-
-                        int index1, index2, index3;
-                        const Poly_Array1OfTriangle& triangles = triangulation->Triangles();
-                        for (int j = triangles.Lower(); j <= triangles.Upper(); j++) // iterate over triangles in the array
-                        {
-                            const Poly_Triangle& triangle = triangles(j);
-                            triangle.Get(index1, index2, index3); // get indices into index1..3
-                            const gp_Pnt tpoint1 = nodes(index1).Transformed(nodeTransformation);
-                            const gp_Pnt tpoint2 = nodes(index2).Transformed(nodeTransformation);
-                            const gp_Pnt tpoint3 = nodes(index3).Transformed(nodeTransformation);
-
-                            CTiglPolygon polygon;
-
-                            // determine unique point indices
-                            if ( face.Orientation() ==  TopAbs_FORWARD){
-                                polygon.addPoint(tpoint1.XYZ());
-                                polygon.addPoint(tpoint2.XYZ());
-                                polygon.addPoint(tpoint3.XYZ());
-                            }
-                            else {
-                                polygon.addPoint(tpoint1.XYZ());
-                                polygon.addPoint(tpoint3.XYZ());
-                                polygon.addPoint(tpoint2.XYZ());
-                            }
-
-                            // calculate face normals
-                            if(triangulation->HasUVNodes()){
-                            	const TColgp_Array1OfPnt2d& uvnodes = triangulation->UVNodes();
-                            	BRepGProp_Face prop(face);
-
-                            	gp_Pnt2d uv1 = uvnodes(index1);
-                            	gp_Pnt2d uv2 = uvnodes(index2);
-                            	gp_Pnt2d uv3 = uvnodes(index3);
-
-                            	gp_Pnt pnt;
-                            	gp_Vec n1, n2, n3;
-                            	prop.Normal(uv1.X(),uv1.Y(),pnt,n1);
-                            	prop.Normal(uv2.X(),uv2.Y(),pnt,n2);
-                            	prop.Normal(uv3.X(),uv3.Y(),pnt,n3);
-
-                            	if(face.Orientation() == TopAbs_FORWARD){
-                            		polygon.addNormal(n1.XYZ());
-                            		polygon.addNormal(n2.XYZ());
-                            		polygon.addNormal(n3.XYZ());
-                            	}
-                            	else{
-                            		//n1 *= -1.; n2 *= -1; n3 *= -1;
-                            		polygon.addNormal(n1.XYZ());
-                            		polygon.addNormal(n3.XYZ());
-                            		polygon.addNormal(n2.XYZ());
-                            	}
-                            }
-
-                            polygon.setMetadata("unknown 0 0.0 0.0 0");
-                            polyData.currentObject().addPolygon(polygon);
-
-                        } // for triangles
-                        //polyData.createNewSurface();
-                    } // for faces
-                } // for shells
-                if(component.GetComponentType() == TIGL_COMPONENT_FUSELAGE) break;
-            } // loop over segments
-
-            // copy map to enumerated array
-            if(pointArray) delete[] pointArray;
-            pointArray = new gp_Pnt[pointMap.size()];
-            const unsigned int points = pointMap.size();
-            for (PointMapType::iterator it = pointMap.begin(); it != pointMap.end(); ++it) {
-                pointArray[(it->second)] = (it->first);// copy keys (points) to the array element of the value (index number)
-            }
-            pointMap.clear();
-
-            polyData.writeVTK("mytest.vtp");
-
-            return points;
-        }
-
-    void VtkWriter::FindOrCreatePointIndex(std::vector<unsigned int> & list, gp_Pnt point)
-    {
-		int existsAt = -1;
-		for (PointMapType::iterator it = pointMap.begin(); it != pointMap.end(); ++it) {
-			gp_Pnt pnt = (it->first);
-
-			if (pnt.IsEqual(point, 0.001)) {
-				existsAt = (it->second);
-				break;
-			}
-        }
-
-		if (existsAt != -1) {
-            list.push_back(existsAt);   // store existing index
-        } else {
-            unsigned int newIndex = pointMap.size();
-            pointMap.insert(std::pair<gp_Pnt,int>(point,newIndex)); // store a new point and the new index
-            list.push_back(newIndex);
-        }
-        SetMinValue(pointsMin, point);
-        SetMaxValue(pointsMax, point);
-    }
-
-
-
-    void VtkWriter::SetMinValue(double& old, const gp_Pnt& point)
-    {
-        const double x = point.X();
-        const double y = point.Y();
-        const double z = point.Z();
-        if (x < old) { old = x; }
-        if (y < old) { old = y; }
-        if (z < old) { old = z; }
-    }
-
-    void VtkWriter::SetMaxValue(double& old, const gp_Pnt& point)
-    {
-        const double x = point.X();
-        const double y = point.Y();
-        const double z = point.Z();
-        if (x > old) { old = x; }
-        if (y > old) { old = y; }
-        if (z > old) { old = z; }
-    }
-
-    gp_Vec VtkWriter::FindNormal(const gp_Pnt P1, const gp_Pnt P2, const gp_Pnt P3) // taken from http://www.opencascade.org/org/forum/thread_1778/
-    {
-        gp_Vec V1(P1,P2); // V1=(P1,P2)
-        gp_Vec V2(P2,P3); // V2=(P2,P3)
-        gp_Vec V3(P3,P1); // V3=(P3,P1)
-        if ((V1.SquareMagnitude() > Precision::Confusion())
-            && (V2.SquareMagnitude() > Precision::Confusion())
-            && (V3.SquareMagnitude() > Precision::Confusion()))
-        {
-            V1.Cross(V2); // V1 = Normal
-        }
-        return V1;
-    }
-
-    VtkWriter::~VtkWriter(){
-        if(pointArray) delete[] pointArray;
-        pointArray = NULL;
-    }
 
 } // end namespace tigl

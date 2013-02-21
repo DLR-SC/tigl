@@ -29,6 +29,7 @@
 #include <cassert>
 #include <vector>
 #include <map>
+#include <set>
 #include <utility>
 
 #include <fstream>
@@ -55,17 +56,34 @@ public:
     }
 
     PointImpl(const CTiglPoint& p, const CTiglPoint& n)
-    : p_(p), n_(n) {}
+    : p_(p), n_(n) {
+        realDataMap.clear();
+    }
 
     CTiglPoint& point(){ return p_; }
     CTiglPoint& normal(){ return n_; }
 
     const CTiglPoint& getPoint() const { return p_; }
     const CTiglPoint& getNormal()const { return n_; }
+    
+    void setRealData(const char * txt, double value){
+        realDataMap[txt] = value;
+    }
+    
+    double getRealData(const char * txt) const {
+        std::map<std::string, double>::const_iterator it=realDataMap.find(txt);
+        if(it != realDataMap.end()){
+            return it->second;
+        }
+        else 
+            return UNDEFINED_REAL;
+    }
 
 private:
     CTiglPoint p_;
     CTiglPoint n_;
+    
+    std::map<std::string, double> realDataMap;
 };
 
 typedef std::map<PointImpl, unsigned int, TiglPointComparer> PointMap;
@@ -138,6 +156,19 @@ struct PolyIndexList{
     
     void repair();
     
+    void setRealData(const char * txt, double value){
+        realDataMap[txt] = value;
+    }
+    
+    double getRealData(const char * txt) const {
+        std::map<std::string, double>::const_iterator it=realDataMap.find(txt);
+        if(it != realDataMap.end()){
+            return it->second;
+        }
+        else 
+            return UNDEFINED_REAL;
+    }
+    
     int getNVert() const { return pindex.size();}
     int getPointIndex(int i) const { return pindex.at(i); }
     
@@ -147,7 +178,8 @@ private:
     //each polygon should have it's own metadata
     std::string _metadata;
     
-private:
+    std::map<std::string, double> realDataMap;
+
     int myid;
 };
 
@@ -184,9 +216,12 @@ public:
 
     // this vector keeps track of the order of points, it complies with
     // the polygon indices
-    std::vector<const PointImpl*> pPoints;
+    std::vector<PointImpl*> pPoints;
 
     std::vector<PolyIndexList> polys;
+    
+    std::set<std::string> polyDataElems;
+    std::set<std::string> vertexDataElems;
 };
 
 
@@ -521,6 +556,52 @@ const char * CTiglPolyObject::getPolyMetadata(unsigned int iPoly) const {
         throw tigl::CTiglError("Illegal Polygon Index at CTiglPolyObject::getPolyMetadata", TIGL_INDEX_ERROR);
 }
 
+void CTiglPolyObject::setPolyMetadata(unsigned int iPoly, const char * txt){
+    if(iPoly < getNPolygons()){
+        impl->polys[iPoly].setMetadata(txt);
+    }
+    else
+        throw tigl::CTiglError("Illegal Polygon Index at CTiglPolyObject::setPolyMetadata", TIGL_INDEX_ERROR);
+}
+
+void CTiglPolyObject::setVertexDataReal(unsigned int iVertexIndex, const char *dataName, double value){
+    if(iVertexIndex < getNVertices()){
+        //insert into elems
+        impl->vertexDataElems.insert(dataName);
+        
+        impl->pPoints[iVertexIndex]->setRealData(dataName, value);
+    }
+    else
+        throw tigl::CTiglError("Illegal Vertex Index at CTiglPolyObject::setVertexDataReal", TIGL_INDEX_ERROR);
+}
+
+double CTiglPolyObject::getVertexDataReal(unsigned int iVertexIndex, const char *dataName) const{
+    if(iVertexIndex < getNVertices()){
+        return impl->pPoints[iVertexIndex]->getRealData(dataName);
+    }
+    else
+        throw tigl::CTiglError("Illegal Vertex Index at CTiglPolyObject::getVertexDataReal", TIGL_INDEX_ERROR);
+}
+
+void CTiglPolyObject::setPolyDataReal(unsigned int iPolyIndex, const char *dataName, double value){
+    if(iPolyIndex < getNPolygons()){
+        //insert into elems
+        impl->polyDataElems.insert(dataName);
+        
+        impl->polys[iPolyIndex].setRealData(dataName, value);
+    }
+    else
+        throw tigl::CTiglError("Illegal Polygon Index at CTiglPolyObject::setPolyDataReal", TIGL_INDEX_ERROR);
+}
+
+double CTiglPolyObject::getPolyDataReal(unsigned int iPolyIndex, const char *dataName) const{
+    if(iPolyIndex < getNPolygons()){
+        return impl->polys[iPolyIndex].getRealData(dataName);
+    }
+    else
+        throw tigl::CTiglError("Illegal Polygon Index at CTiglPolyObject::getPolyDataReal", TIGL_INDEX_ERROR);
+}
+
 //---------------------------------------------------------------------------//
 
 CTiglPolygon::CTiglPolygon(){
@@ -591,7 +672,8 @@ unsigned int ObjectImpl::addPointNorm(const CTiglPoint& p, const CTiglPoint& n){
 #endif*/
     if(ret.second == true){
         // a new point was inserted, we have to keep track
-        pPoints.push_back(&(ret.first->first));
+        PointImpl * ptmp = (PointImpl*)&ret.first->first;
+        pPoints.push_back(ptmp);
     }
     
     return index;

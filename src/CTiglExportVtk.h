@@ -26,47 +26,9 @@
 #ifndef CTIGLEXPORTVTK_H
 #define CTIGLEXPORTVTK_H
 
-#include <vector>
-#include <map>
-
-#include "CCPACSWings.h"
-#include "CCPACSWingProfile.h"
-#include "CCPACSFuselages.h"
-#include "CCPACSFuselageProfile.h"
-#include "ITiglGeometricComponent.h"
-
-#include "Precision.hxx"
-
+#include <string>
 
 namespace tigl {
-
-    // Comparer for gp_Pnts
-    struct gp_PntEquals
-    {
-        bool operator()(const gp_Pnt lhs, const gp_Pnt rhs) const
-        {
-			// old comparison made problems as if abs(lhs-rhs) < prec
-			// lhs < rhs and rhs < lhs will be true. The map container 
-			// doesnt like this!
-            // return !lhs.IsEqual(rhs, Precision::Confusion());   // must return "isLower"
-
-			// @todo following lines have to be tested
-			if(lhs.X() < rhs.X())
-				return true;
-			else if (lhs.X() == rhs.X()) {
-				if(lhs.Y() < rhs.Y())
-					return true;
-				else if(lhs.Y() == rhs.Y())
-					return lhs.Z() < rhs.Z();
-				else 
-					return false;
-			}
-			else
-				return false;
-        }
-    };
-
-	typedef std::map<gp_Pnt, unsigned int, gp_PntEquals> PointMapType;
 
 	enum VTK_EXPORT_MODE
         {
@@ -80,7 +42,7 @@ namespace tigl {
 
 	public:
 		// Constructor
-	    CTiglExportVtk(CCPACSConfiguration & config);
+	    CTiglExportVtk(class CCPACSConfiguration & config);
 
 		// Virtual Destructor
 		virtual ~CTiglExportVtk(void);
@@ -105,10 +67,14 @@ namespace tigl {
         // Exports a by UID selected wing, meshed, as VTK file
 		// No additional information are computed.
         void ExportMeshedWingVTKSimpleByUID(const std::string wingUID, const std::string& filename, const double deflection = 0.1);
+        
+        void ExportMeshedWingVTKSimpleByIndex(const int wingIndex, const std::string& filename, const double deflection = 0.1);
 
         // Exports a by UID selected fuselage, boolean fused and meshed, as VTK file.
 		// No additional information are computed.
         void ExportMeshedFuselageVTKSimpleByUID(const std::string fuselageUID, const std::string& filename, const double deflection = 0.1);
+        
+        void ExportMeshedFuselageVTKSimpleByIndex(const int fuselageIndex, const std::string& filename, const double deflection = 0.1);
 
         // Exports a whole geometry, boolean fused and meshed, as VTK file
 		// No additional information are computed.
@@ -116,56 +82,9 @@ namespace tigl {
 
 
     private:
-		CCPACSConfiguration & myConfig;       /**< TIGL configuration object */
+		class CCPACSConfiguration & myConfig;       /**< TIGL configuration object */
 
 	};
-
-
-    class VtkWriter
-    {
-
-
-    public:
-        // Constructor
-        VtkWriter(CCPACSConfiguration & config);
-
-        // No destructor needed
-        ~VtkWriter(void);
-
-        // Write out the triangulation into a XML-VTK polydata file (*.vtp)
-        void Write(const TopoDS_Shape & shape, class CTiglAbstractPhysicalComponent & component, const std::string& filename, const double deflection = 0.01, VTK_EXPORT_MODE mode = TIGL_VTK_SIMPLE);
-
-    private:
-        // Finds unique points and assign them to a segment
-        unsigned int FindUniquePoints(const TopoDS_Shape & shape, class CTiglAbstractPhysicalComponent & component, const double deflection);
-
-        // Build simple and fast triangulation
-        unsigned int SimpleTriangulation(const TopoDS_Shape & shape, class CTiglAbstractPhysicalComponent & component, const double deflection);
-
-
-        void FindOrCreatePointIndex(std::vector<unsigned int> & list, gp_Pnt point);
-        void SetMinValue(double& old, const gp_Pnt& point);
-        void SetMaxValue(double& old, const gp_Pnt& point);
-
-        // computes the normal vector of a triangle
-        gp_Vec FindNormal(const gp_Pnt P1, const gp_Pnt P2, const gp_Pnt P3);
-
-    private:
-		CCPACSConfiguration & myConfig;                         /**< TIGL configuration object                                                  */
-        gp_Pnt* pointArray;                                     /**< contains all points already added to a triangle                            */
-        PointMapType pointMap;								/**< contains a point index for all points added                                */
-        std::vector<unsigned int> triangleList1;          /**< contains point-references per triangle                                     */
-        std::vector<unsigned int> triangleList2;          /**< contains point-references per triangle                                     */
-        std::vector<unsigned int> triangleList3;          /**< contains point-references per triangle                                     */
-        std::vector<std::string> triangleUID;             /**< UIDs of the part the triangle belongs to                                   */
-        std::vector<unsigned int> triangleSegment;        /**< segment no. (1..) of the segment the triangle belongs to                   */
-        std::vector<double> triangleEta;                  /**< triangle eta of triangle (from root to tip 0..1)                           */
-        std::vector<double> triangleXsi;                  /**< triangle xsi of triangle (from leading edge to trailing edge 0..1)         */
-        std::vector<int> triangleOnTop;                  /**< indicates if the triangle is located on the top or the bottom of the wing  */
-        double pointsMin;                                       /**< contains lowest point value                                                */
-        double pointsMax;                                       /**< contains highest point value                                               */
-
-    };
 
 } // end namespace tigl
 
