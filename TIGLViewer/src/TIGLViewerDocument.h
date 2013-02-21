@@ -83,6 +83,7 @@ public slots:
 	void drawWingSamplePoints();
 	void drawFusedWing();
 	void drawWingComponentSegment();
+    void drawWingShells();
 
 	// Fuselage slots
 	void drawFuselageProfiles();
@@ -93,9 +94,6 @@ public slots:
 	void drawFusedFuselage();
 
 	// TIGL slots
-	void tiglInterpolateBsplineWire();
-	void tiglInterpolateLinearWire();
-	void tiglApproximateBsplineWireAction();
 	void exportAsIges();
 	void exportFusedAsIges();
 	void exportMeshedWingSTL();

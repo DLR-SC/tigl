@@ -124,13 +124,6 @@ void tiglIsCPACSConfigurationHandleValid_f(TiglCPACSConfigurationHandle* cpacsHa
 }
 
 
-void tiglUseAlgorithm_f(TiglAlgorithmCode* anAlgorithm,
-                        TiglReturnCode* returnCode)
-{
-    *returnCode = tiglUseAlgorithm(*anAlgorithm);
-}
-
-
 void tiglGetVersion_f(char *version, int stringLength)
 {
   char *cVersion = NULL;

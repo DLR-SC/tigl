@@ -18,6 +18,8 @@
 
 #include <QDialog>
 
+#include <QColorDialog>
+
 #include <TIGLViewerSettingsDialog.h>
 #include <TIGLViewerSettings.h>
 #include <cmath>
@@ -29,6 +31,7 @@
 #define WORST_TRIANGULATION 0.01
 #define BEST_TRIANGULATION 0.00005
 
+#define BTN_STYLE "#buttonColorChoser {background-color: %1; border: 1px solid black; border-radius: 5px;} #buttonColorChoser:hover {border: 1px solid white;}"
 
 TIGLViewerSettingsDialog::TIGLViewerSettingsDialog(TIGLViewerSettings& settings, QWidget *parent)
 : _settings(settings), QDialog(parent) {
@@ -40,6 +43,7 @@ TIGLViewerSettingsDialog::TIGLViewerSettingsDialog(TIGLViewerSettings& settings,
 	connect(buttonBox, SIGNAL(accepted()), this, SLOT(onSettingsAccepted()));
 	connect(sliderTesselationAccuracy,   SIGNAL(valueChanged(int)), this, SLOT(onSliderTesselationChanged(int)));
 	connect(sliderTriangulationAccuracy, SIGNAL(valueChanged(int)), this, SLOT(onSliderTriangulationChanged(int)));
+	connect(buttonColorChoser, SIGNAL(clicked()), this, SLOT(onColorChoserPushed()));
 }
 
 double TIGLViewerSettingsDialog::calcTesselationAccu(int value){
@@ -70,6 +74,7 @@ double TIGLViewerSettingsDialog::calcTriangulationAccu(int value){
 void TIGLViewerSettingsDialog::onSettingsAccepted(){
 	_settings.setTesselationAccuracy(calcTesselationAccu(sliderTesselationAccuracy->value()));
 	_settings.setTriangulationAccuracy(calcTriangulationAccu(sliderTriangulationAccuracy->value()));
+	_settings.setBGColor(_bgcolor);
 }
 
 void TIGLViewerSettingsDialog::updateEntries(){
@@ -92,6 +97,9 @@ void TIGLViewerSettingsDialog::updateEntries(){
 
 	int triaVal = int (log(c/_settings.triangulationAccuracy())/mu);
 	sliderTriangulationAccuracy->setValue(triaVal);
+
+	_bgcolor = _settings.BGColor();
+	updateBGColorButton();
 }
 
 void TIGLViewerSettingsDialog::onSliderTesselationChanged(int val){
@@ -100,6 +108,19 @@ void TIGLViewerSettingsDialog::onSliderTesselationChanged(int val){
 
 void TIGLViewerSettingsDialog::onSliderTriangulationChanged(int val){
 	trianAccuEdit->setText(QString("%1").arg(val));
+}
+
+void TIGLViewerSettingsDialog::onColorChoserPushed(){
+	QColor col = QColorDialog::getColor(_bgcolor, this);
+	if(col.isValid()) {
+		_bgcolor = col;
+		updateBGColorButton();
+	}
+}
+
+void TIGLViewerSettingsDialog::updateBGColorButton(){
+	QString qss = QString(BTN_STYLE).arg(_bgcolor.name());
+	buttonColorChoser->setStyleSheet(qss);
 }
 
 TIGLViewerSettingsDialog::~TIGLViewerSettingsDialog() {

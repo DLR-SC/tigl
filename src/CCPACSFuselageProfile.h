@@ -35,6 +35,10 @@
 
 namespace tigl {
 
+    class ITiglWireAlgorithm;
+
+    typedef ITiglWireAlgorithm* WireAlgoPointer;
+
     class CCPACSFuselageProfile
     {
 
@@ -116,6 +120,7 @@ namespace tigl {
         TopoDS_Wire               wireOriginal;   /**< Original fuselage profile wire */
         TopoDS_Wire               wireClosed;     /**< Forced closed fuselage profile wire */
         double                    wireLength;     /**< Length of fuselage profile wire */
+        WireAlgoPointer           profileWireAlgo;
 
     };
 
