@@ -92,7 +92,7 @@ namespace tigl {
 		}
 	}
 
-	// transform all components realtiv to their parents
+	// transform all components relative to their parents
     void CCPACSConfiguration::transformAllComponents(CTiglAbstractPhysicalComponent* parent)
     {
         CTiglAbstractPhysicalComponent::ChildContainerType& children = parent->GetChildren();

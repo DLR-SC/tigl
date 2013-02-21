@@ -27,7 +27,6 @@
 #include "CTiglLogger.h"
 #include "CCPACSConfigurationManager.h"
 
-
 #include <iostream>
 #include <sstream>
 #include <exception>
@@ -42,6 +41,7 @@
 #include "TDocStd_Document.hxx"
 #include "IGESControl_Controller.hxx"
 #include "IGESCAFControl_Writer.hxx"
+#include "TDataStd_Name.hxx"
 
 namespace tigl {
 
@@ -80,6 +80,7 @@ namespace tigl {
             return false;
         }
 
+        TDataStd_Name::Set (rootLabel, config.GetUID().c_str());
         rootComponent->ExportDataStructure(hShapeTool, rootLabel);
 
 
