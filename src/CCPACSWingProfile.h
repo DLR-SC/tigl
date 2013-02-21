@@ -29,11 +29,6 @@
 #include <vector>
 #include <string>
 #include <memory>
-#ifdef _MSC_VER 
-#include <memory>
-#else
-#include <tr1/memory>
-#endif
 
 #include "tixi.h"
 #include "CTiglPoint.h"
@@ -46,7 +41,7 @@ namespace tigl {
 
     class ITiglWireAlgorithm;
 
-    typedef std::tr1::shared_ptr<ITiglWireAlgorithm> WireAlgoPointer;
+    typedef ITiglWireAlgorithm* WireAlgoPointer;
 
     class CCPACSWingProfile
     {

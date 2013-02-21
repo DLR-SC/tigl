@@ -69,6 +69,7 @@ namespace tigl {
     // Destructor
     CCPACSFuselageProfile::~CCPACSFuselageProfile(void)
     {
+        delete profileWireAlgo;
         Cleanup();
     }
 

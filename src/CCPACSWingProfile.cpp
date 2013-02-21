@@ -69,6 +69,7 @@ namespace tigl {
     // Destructor
     CCPACSWingProfile::~CCPACSWingProfile(void)
     {
+        delete profileWireAlgo;
         Cleanup();
     }
 
