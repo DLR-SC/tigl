@@ -28,6 +28,8 @@
 
 class ObjectImpl;
 
+#define UNDEFINED_REAL 0.0
+
 namespace tigl {
 
 class CTiglPolygon{
@@ -66,8 +68,10 @@ public:
     CTiglPolyObject();
     ~CTiglPolyObject();
     
-    // adds a point and its normal vector to the global point list and returns its index in the list
-    unsigned int addPointNormal(const class CTiglPoint& p, const class CTiglPoint& n);
+    // switch , if to store normal vectors
+    void enableNormals(bool);
+
+    bool hasNormals() const;
     
     // adds a triangle to the global polygon list. the corners are spcified with the vertex indices
     // returns by addPointNormal or getVertexIndexOfPolygon
@@ -86,23 +90,33 @@ public:
 
     const char * getPolyMetadata(unsigned int iPoly) const;
 
-    void setPolyMetadata(const char *, unsigned int iPoly);
+    void setPolyMetadata(unsigned int iPoly, const char *);
 
     // returns the vertex index of the ith point of a polygon
     // to retrieve the actual point, call getPoint with this index
     unsigned int getVertexIndexOfPolygon(unsigned int iPoint, unsigned int iPoly) const;
+    
+    // each polygon has a list of data elements, this methods sets the value
+    void setPolyDataReal(unsigned int iPoly, const char * dataName, double value);
+    
+    double getPolyDataReal(unsigned int iPoly, const char * dataName) const;
 
+    //  ---------- Vertex specific methods -----------------
+    
+    // adds a point and its normal vector to the global point list and returns its index in the list
+    unsigned int addPointNormal(const class CTiglPoint& p, const class CTiglPoint& n);    
+    
     // returns the actual point, specified with the vertex index
     const CTiglPoint& getVertexPoint(unsigned int iVertexIndex) const;
-
+    
     // returns the normal vector, specified with vertex index
     const CTiglPoint& getVertexNormal(unsigned int iVertexIndex) const;
+    
+    // each vertex has a list of data elements, this methods sets the value
+    void setVertexDataReal(unsigned int iVertexIndex, const char * dataName, double value);
+    
+    double getVertexDataReal(unsigned int iVertexIndex, const char * dataName) const;
 
-
-    // switch , if to store normal vectors
-    void enableNormals(bool);
-
-    bool hasNormals() const;
 
 private:
     CTiglPolyObject& operator=(const CTiglPolyObject&);
