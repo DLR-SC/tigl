@@ -239,31 +239,31 @@ namespace tigl {
 
     TDF_Label& CCPACSFuselage::ExportDataStructure(Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label)
     {
-        TDF_Label& newLabel = CTiglAbstractPhysicalComponent::ExportDataStructure(myAssembly, label);
+        TDF_Label& fuselageLabel = CTiglAbstractPhysicalComponent::ExportDataStructure(myAssembly, label);
 
-        // Export all segments
-        gp_Trsf t0;
-        TopLoc_Location location0(t0);
+//        // Export all segments
+//        gp_Trsf t0;
+//        TopLoc_Location location0(t0);
+//        Handle(TDocStd_Document) doc;
+//        Handle ( XCAFApp_Application ) anApp = XCAFApp_Application::GetApplication();
+//        anApp->GetDocument(1, doc);
+//        TDF_Label aLabel = myAssembly->AddShape(segments.GetSegment(12).GetLoft(), false);
+//        TDataStd_Name::Set (aLabel, GetUID().c_str());
+//        TDF_Label labelA02 = myAssembly->NewShape();
+//        TDataStd_Name::Set(labelA02, "ASSEMBLY02");
+//        TDF_Label component05 = myAssembly->AddComponent(labelA02, aLabel, location0);
 
-        Handle(TDocStd_Document) doc;
-        Handle ( XCAFApp_Application ) anApp = XCAFApp_Application::GetApplication();
-        anApp->GetDocument(1, doc);
+        // All Segments
 
-
-        TDF_Label aLabel = myAssembly->AddShape(segments.GetSegment(12).GetLoft(), false);
-        TDataStd_Name::Set (aLabel, GetUID().c_str());
-
-        TDF_Label labelA02 = myAssembly->NewShape();
-        TDataStd_Name::Set(labelA02, "ASSEMBLY02");
-
-
-        TDF_Label component05 = myAssembly->AddComponent(labelA02, aLabel, location0);
-
-        // Iterate over all Segments
+        // Other (sub)-components
         for (int i=1; i <= segments.GetSegmentCount(); i++) {
             CCPACSFuselageSegment& segment = segments.GetSegment(i);
-            //TDF_Label& subLabel = segment.ExportDataStructure(myAssembly, newLabel);
+            TDF_Label fuselageSegmentLabel = myAssembly->AddShape(segment.GetLoft(), false);
+            TDataStd_Name::Set (fuselageSegmentLabel, segment.GetUID().c_str());
+            //TDF_Label& subSegmentLabel = segment.ExportDataStructure(myAssembly, fuselageSegmentLabel);
         }
+
+        return fuselageLabel;
     }
 
     // Returns the segment for a given index

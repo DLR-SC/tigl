@@ -37,6 +37,11 @@
 #include "BRepAlgoAPI_Cut.hxx"
 #include "Bnd_Box.hxx"
 #include "BRepBndLib.hxx"
+#include "XCAFDoc_ShapeTool.hxx"
+#include "XCAFApp_Application.hxx"
+#include "XCAFDoc_DocumentTool.hxx"
+#include "TDataStd_Name.hxx"
+#include "TDataXtd_Shape.hxx"
 
 namespace {
 	inline double max(double a, double b){
@@ -235,7 +240,17 @@ namespace tigl {
     // Get segment count
     TDF_Label& CCPACSWing::ExportDataStructure(Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label)
     {
-        TDF_Label& Label = CTiglAbstractPhysicalComponent::ExportDataStructure(myAssembly, label);
+        TDF_Label& wingLabel = CTiglAbstractPhysicalComponent::ExportDataStructure(myAssembly, label);
+
+        // Other (sub)-components
+        for (int i=1; i <= segments.GetSegmentCount(); i++) {
+            CCPACSWingSegment& segment = segments.GetSegment(i);
+            TDF_Label wingSegmentLabel = myAssembly->AddShape(segment.GetLoft(), false);
+            TDataStd_Name::Set (wingSegmentLabel, segment.GetUID().c_str());
+            //TDF_Label& subSegmentLabel = segment.ExportDataStructure(myAssembly, wingSegmentLabel);
+        }
+
+        return wingLabel;
     }
 
     // Returns the segment for a given index
