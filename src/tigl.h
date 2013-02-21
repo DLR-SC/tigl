@@ -325,25 +325,6 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglIsCPACSConfigurationHandleValid(TiglCPACSC
 
 
 /**
-* @brief Sets the algorithm for a calculation, i.e. instructs TIGL to use linear
-*        or BSpline interpolations between the points of a wing or fuselage profile.
-*
-*
-* <b>Fortran syntax:</b>
-*
-* tigl_use_algorithm(integer anAlgorithm, integer returnCode)
-* #PY:# no outputs
-*
-* @param anAlgorithm (in): Specifies the algorithm to use, see TiglAlgorithmCode
-*
-* @return
-*   - TIGL_SUCCESS if algorithm was set
-*   - TIGL_ERROR   if algorithm code is unknown
-*/
-TIGL_COMMON_EXPORT TiglReturnCode tiglUseAlgorithm(TiglAlgorithmCode anAlgorithm);
-
-
-/**
 	@brief Returns the version number of this TIGL version.
 
 	<b>Fortran syntax:</b>

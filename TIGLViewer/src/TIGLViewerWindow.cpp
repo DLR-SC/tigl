@@ -638,10 +638,6 @@ void TIGLViewerWindow::connectSignals()
 	connect(drawWingFuselageLineAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingFuselageIntersectionLine()));
 	connect(showFusedAirplaneTriangulation, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFusedAircraftTriangulation()));
 
-    /*drawWingFuselageIntersectionLineAction->setStatusTip(tr("Show Intersection Line Between Wing and Fuselage"));
-    connect(drawWingFuselageIntersectionLineAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingFuselageIntersectionLine()));*/
-
-
 	// CPACS Fuselage Actions
 	connect(drawFuselageProfilesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFuselageProfiles()));
 	connect(drawFuselageAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFuselage()));
@@ -649,18 +645,6 @@ void TIGLViewerWindow::connectSignals()
 	connect(drawFuselageSamplePointsAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFuselageSamplePoints()));
 	connect(drawFuselageSamplePointsAngleAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFuselageSamplePointsAngle()));
 	connect(drawFusedFuselageAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFusedFuselage()));
-
-	// TIGL Actions
-    /*tiglInterpolateBsplineWireAction->setStatusTip(tr("Use a BSpline interpolation between the points of a wire"));
-	connect(tiglInterpolateBsplineWireAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(tiglInterpolateBsplineWire()));
-
-	tiglInterpolateLinearWireAction = new QAction( tr("Use Linear Interpolation"), this );
-	tiglInterpolateLinearWireAction->setStatusTip(tr("Use a linear interpolation between the points of a wire"));
-	connect(tiglInterpolateLinearWireAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(tiglInterpolateLinearWire()));
-
-	tiglApproximateBsplineWireAction = new QAction( tr("Use BSpline Approximation"), this );
-	tiglApproximateBsplineWireAction->setStatusTip(tr("Use a BSpline approximation for the points of a wire"));
-    connect(tiglApproximateBsplineWireAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(tiglApproximateBsplineWireAction()));*/
 
 	// Export functions
 	connect(tiglExportFusedIgesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportFusedAsIges()));
@@ -700,13 +684,6 @@ void TIGLViewerWindow::createMenus()
     for (int i = 0; i < MaxRecentFiles; ++i)
         recentFileMenu->addAction(recentFileActions[i]);
     updateRecentFileActions();
-
-    // TIGL menu
-    //tiglMenu = menuBar()->addMenu( tr("&TIGL Methods") );
-    //tiglAlgorithmMenu = tiglMenu->addMenu( tr("Algorithm") );
-    //	tiglAlgorithmMenu->addAction( tiglInterpolateBsplineWireAction );
-    //	tiglAlgorithmMenu->addAction( tiglInterpolateLinearWireAction );
-    //	tiglAlgorithmMenu->addAction( tiglApproximateBsplineWireAction );
 }
 
 void TIGLViewerWindow::updateRecentFileActions()
