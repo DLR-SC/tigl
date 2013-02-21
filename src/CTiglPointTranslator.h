@@ -62,6 +62,8 @@ public:
     
     /// Converts from eta-xsi to spatial coordinates. Reentrant.
     TiglReturnCode translate(double eta, double xsi, CTiglPoint* p) const;
+
+    TiglReturnCode getNormal(double eta, double xsi, CTiglPoint* n) const;
     
     /// Projects the point p onto the plane and returns that point pOnSurf.
     /// The function is not reentrant. If you want to parallelize it, use 

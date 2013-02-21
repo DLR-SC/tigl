@@ -322,6 +322,7 @@ void TIGLViewerWindow::loadSettings(){
 
     tiglViewerSettings->loadSettings();
     settingsDialog->updateEntries();
+    myOCC->setBackgroundColor(tiglViewerSettings->BGColor());
 }
 
 void TIGLViewerWindow::saveSettings(){
@@ -334,6 +335,11 @@ void TIGLViewerWindow::saveSettings(){
     settings.setValue("MainWindowState", saveState());
 
     tiglViewerSettings->storeSettings();
+}
+
+void TIGLViewerWindow::changeSettings(){
+    settingsDialog->exec();
+    myOCC->setBackgroundColor(tiglViewerSettings->BGColor());
 }
 
 
@@ -608,7 +614,6 @@ void TIGLViewerWindow::connectSignals()
     connect(viewResetAction, SIGNAL(triggered()), myOCC, SLOT(viewReset()));
     connect(viewZoomInAction, SIGNAL(triggered()), myOCC, SLOT(zoomIn()));
     connect(viewZoomOutAction, SIGNAL(triggered()), myOCC, SLOT(zoomOut()));
-    connect(backgroundAction, SIGNAL(triggered()), myOCC, SLOT(background()));
     connect(showConsoleAction, SIGNAL(toggled(bool)), consoleDockWidget, SLOT(setVisible(bool)));
     connect(consoleDockWidget, SIGNAL(visibilityChanged(bool)), showConsoleAction, SLOT(setChecked(bool)));
     connect(showWireframeAction, SIGNAL(toggled(bool)), myVC, SLOT(wireFrame(bool)));
@@ -623,6 +628,7 @@ void TIGLViewerWindow::connectSignals()
 	connect(drawWingSamplePointsAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingSamplePoints()));
 	connect(drawFusedWingAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFusedWing()));
 	connect(drawWingComponentSegmentAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingComponentSegment()));
+    connect(drawWingShellAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingShells()));
 
 
 	// CPACS Aircraft Actions
@@ -632,10 +638,6 @@ void TIGLViewerWindow::connectSignals()
 	connect(drawWingFuselageLineAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingFuselageIntersectionLine()));
 	connect(showFusedAirplaneTriangulation, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFusedAircraftTriangulation()));
 
-    /*drawWingFuselageIntersectionLineAction->setStatusTip(tr("Show Intersection Line Between Wing and Fuselage"));
-    connect(drawWingFuselageIntersectionLineAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingFuselageIntersectionLine()));*/
-
-
 	// CPACS Fuselage Actions
 	connect(drawFuselageProfilesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFuselageProfiles()));
 	connect(drawFuselageAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFuselage()));
@@ -643,18 +645,6 @@ void TIGLViewerWindow::connectSignals()
 	connect(drawFuselageSamplePointsAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFuselageSamplePoints()));
 	connect(drawFuselageSamplePointsAngleAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFuselageSamplePointsAngle()));
 	connect(drawFusedFuselageAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFusedFuselage()));
-
-	// TIGL Actions
-    /*tiglInterpolateBsplineWireAction->setStatusTip(tr("Use a BSpline interpolation between the points of a wire"));
-	connect(tiglInterpolateBsplineWireAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(tiglInterpolateBsplineWire()));
-
-	tiglInterpolateLinearWireAction = new QAction( tr("Use Linear Interpolation"), this );
-	tiglInterpolateLinearWireAction->setStatusTip(tr("Use a linear interpolation between the points of a wire"));
-	connect(tiglInterpolateLinearWireAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(tiglInterpolateLinearWire()));
-
-	tiglApproximateBsplineWireAction = new QAction( tr("Use BSpline Approximation"), this );
-	tiglApproximateBsplineWireAction->setStatusTip(tr("Use a BSpline approximation for the points of a wire"));
-    connect(tiglApproximateBsplineWireAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(tiglApproximateBsplineWireAction()));*/
 
 	// Export functions
 	connect(tiglExportFusedIgesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportFusedAsIges()));
@@ -686,7 +676,7 @@ void TIGLViewerWindow::connectSignals()
     connect(console, SIGNAL(onChange(QString)), scriptEngine, SLOT(textChanged(QString)));
     connect(console, SIGNAL(onCommand(QString)), scriptEngine, SLOT(eval(QString)));
 
-    connect(settingsAction, SIGNAL(triggered()), settingsDialog, SLOT(show()));
+    connect(settingsAction, SIGNAL(triggered()), this, SLOT(changeSettings()));
 }
 
 void TIGLViewerWindow::createMenus()
@@ -694,13 +684,6 @@ void TIGLViewerWindow::createMenus()
     for (int i = 0; i < MaxRecentFiles; ++i)
         recentFileMenu->addAction(recentFileActions[i]);
     updateRecentFileActions();
-
-    // TIGL menu
-    //tiglMenu = menuBar()->addMenu( tr("&TIGL Methods") );
-    //tiglAlgorithmMenu = tiglMenu->addMenu( tr("Algorithm") );
-    //	tiglAlgorithmMenu->addAction( tiglInterpolateBsplineWireAction );
-    //	tiglAlgorithmMenu->addAction( tiglInterpolateLinearWireAction );
-    //	tiglAlgorithmMenu->addAction( tiglApproximateBsplineWireAction );
 }
 
 void TIGLViewerWindow::updateRecentFileActions()

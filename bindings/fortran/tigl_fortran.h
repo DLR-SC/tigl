@@ -64,7 +64,6 @@ extern "C" {
 #define tiglCloseCPACSConfiguration_f TIGL_CLOSE_CPACS_CONFIGURATION
 #define tiglGetCPACSTixiHandle_f TIGL_GET_CPACS_TIXI_HANDLE
 #define tiglIsCPACSConfigurationHandleValid_f TIGL_IS_CPACS_CONFIGURATION_HANDLE_VALID
-#define tiglUseAlgorithm_f TIGL_USE_ALGORITHM
 #define tiglGetVersion_f TIGL_GET_VERSION
 #define tiglExportIGES_f TIGL_EXPORT_IGES
 #define tiglExportFusedIGES_f TIGL_EXPORT_FUSED_WING_FUSELAGE_IGES
@@ -139,7 +138,6 @@ extern "C" {
 #define tiglCloseCPACSConfiguration_f FORTRAN_NAME(tigl_close_cpacs_configuration)
 #define tiglGetCPACSTixiHandle_f FORTRAN_NAME(tigl_get_cpacs_tixi_handle)
 #define tiglIsCPACSConfigurationHandleValid_f FORTRAN_NAME(tigl_is_cpacs_configuration_handle_valid)
-#define tiglUseAlgorithm_f FORTRAN_NAME(tigl_use_algorithm)
 #define tiglGetVersion_f FORTRAN_NAME(tigl_get_version)
 #define tiglExportIGES_f FORTRAN_NAME(tigl_export_iges)
 #define tiglExportFusedIGES_f FORTRAN_NAME(tigl_export_fused_wing_fuselage_iges)
@@ -226,9 +224,6 @@ void tiglGetCPACSTixiHandle_f(TiglCPACSConfigurationHandle* cpacsHandle,
 void tiglIsCPACSConfigurationHandleValid_f(TiglCPACSConfigurationHandle* cpacsHandle,
                                            TiglBoolean* isValidPtr,
                                            TiglReturnCode* returnCode);
-
-void tiglUseAlgorithm_f(TiglAlgorithmCode* anAlgorithm,
-                        TiglReturnCode* returnCode);
 
 void tiglGetVersion_f(char* version,
                       int stringLength );

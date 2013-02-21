@@ -43,11 +43,12 @@ namespace tigl {
 		z = aPoint.z;
 	}
 
-    CTiglPoint::CTiglPoint(const gp_XYZ &aPoint){
-        x = aPoint.X();
-        y = aPoint.Y();
-        z = aPoint.Z();
-    }
+	CTiglPoint::CTiglPoint(const gp_XYZ& aPoint)
+	{
+		x = aPoint.X();
+		y = aPoint.Y();
+		z = aPoint.Z();
+	}
 
 	// Assignment operator
 	CTiglPoint& CTiglPoint::operator=(const CTiglPoint& aPoint)

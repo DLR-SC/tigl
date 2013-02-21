@@ -39,6 +39,7 @@ set (OCC_LIBS
 
 find_package( OpenCASCADE REQUIRED COMPONENTS ${OCC_LIBS})
 find_package( TIXI 2.0.3 REQUIRED)
+find_package( GLOG REQUIRED)
 
 # code coverage analysis
 IF (CMAKE_BUILD_TYPE STREQUAL "Debug")
@@ -68,6 +69,7 @@ add_subdirectory(src)
 add_subdirectory(TIGLViewer)
 add_subdirectory(bindings)
 
+
 #create gtests, override gtest standard setting
 option(TIGL_BUILD_TESTS "Build TIGL Testsuite" OFF)
 
@@ -90,6 +92,7 @@ set(CPACK_PACKAGE_VERSION_MINOR ${TIGL_VERSION_MINOR})
 set(CPACK_PACKAGE_VERSION_PATCH ${TIGL_VERSION_PATCH})
 set(CPACK_RESOURCE_FILE_LICENSE ${PROJECT_SOURCE_DIR}/LICENSE.txt)
 set(CPACK_PACKAGE_INSTALL_REGISTRY_KEY "TIGL") 
+
 set(CPACK_NSIS_MUI_ICON ${PROJECT_SOURCE_DIR}/TIGLViewer/TIGLViewer.ico)
 set(CPACK_NSIS_MUI_UNIICON ${PROJECT_SOURCE_DIR}/TIGLViewer/TIGLViewer.ico)
 

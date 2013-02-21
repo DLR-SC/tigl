@@ -27,6 +27,7 @@
 
 #include "ITiglObjectiveFunction.h"
 #include "CTiglError.h"
+#include "CTiglLogger.h"
 
 #define C1    0.1
 #define BTFAC 0.5
@@ -68,7 +69,7 @@ inline double CTiglOptimizer::armijoBacktrack2d(const class ITiglObjectiveFuncti
         alpha *= BTFAC;
         if(iter++ > 20) {
             //normally we should not get here (except from pathological functions)
-            std::cerr << "Error: line search cannot find sufficient decrease, abort" << std::endl;
+            LOG(ERROR) << "Error: line search cannot find sufficient decrease, abort" << std::endl;
             alpha = 0.;
             of = of_init;
             break;
@@ -83,7 +84,7 @@ inline double CTiglOptimizer::armijoBacktrack2d(const class ITiglObjectiveFuncti
 TiglReturnCode CTiglOptimizer::optNewton2d(const class ITiglObjectiveFunction& f, double * x, double gradTol, double ofTol){
     
     if(f.getParameterCount() != 2) {
-        std::cerr << "Error: Determinant too small in CTiglPointTranslator::optimize!" << std::endl;
+        LOG(ERROR) << "Error: Determinant too small in CTiglPointTranslator::optimize!" << std::endl;
         return TIGL_MATH_ERROR;
     }
 
@@ -112,7 +113,7 @@ TiglReturnCode CTiglOptimizer::optNewton2d(const class ITiglObjectiveFunction& f
         // calculate determinant of hessian
         double det = TIGL_MATRIX2D(hess,2,0,0)*TIGL_MATRIX2D(hess,2,1,1) - TIGL_MATRIX2D(hess,2,0,1)*TIGL_MATRIX2D(hess,2,1,0);
         if ( fabs(det) < 1e-12 ){
-            std::cerr << "Error: Determinant too small in CTiglPointTranslator::optimize!" << std::endl;
+            LOG(ERROR) << "Error: Determinant too small in CTiglPointTranslator::optimize!" << std::endl;
             return TIGL_MATH_ERROR;
         }
 
@@ -140,7 +141,7 @@ TiglReturnCode CTiglOptimizer::optNewton2d(const class ITiglObjectiveFunction& f
         f.getGradientHessian(x, grad, hess);
 
 #ifdef DEBUG
-        std::cout << "Iter=" << iter+1 << " eta;xi=(" << x[0] << ";" << x[1] << ") f=" << of
+        LOG(DEBUG) << "Iter=" << iter+1 << " eta;xi=(" << x[0] << ";" << x[1] << ") f=" << of
                   << " norm(grad)=" << grad[0]*grad[0]+grad[1]*grad[1] <<  " alpha=" << alpha << std::endl;
 #endif
 
