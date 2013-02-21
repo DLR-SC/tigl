@@ -32,7 +32,7 @@
 #include "TopoDS_Wire.hxx"
 #include <vector>
 #include <string>
-#if defined(WIN32)
+#ifdef _MSC_VER 
 #include <memory>
 #else
 #include <tr1/memory>
@@ -42,12 +42,7 @@ namespace tigl {
 
     class ITiglWireAlgorithm;
 
-#if defined(WIN32)
-    typedef std::shared_ptr<ITiglWireAlgorithm> WireAlgoPointer;
-#else
     typedef std::tr1::shared_ptr<ITiglWireAlgorithm> WireAlgoPointer;
-#endif
-
 
     class CCPACSFuselageProfile
     {
