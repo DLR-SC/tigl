@@ -381,22 +381,6 @@ QString TIGLViewerDocument::dlgGetFuselageProfileSelection()
         return "";
 }
 
-void TIGLViewerDocument::tiglInterpolateBsplineWire()
-{
-	tiglUseAlgorithm(TIGL_INTERPOLATE_BSPLINE_WIRE);
-}
-
-void TIGLViewerDocument::tiglInterpolateLinearWire()
-{
-    tiglUseAlgorithm(TIGL_INTERPOLATE_LINEAR_WIRE);
-}
-
-void TIGLViewerDocument::tiglApproximateBsplineWireAction()
-{
-    tiglUseAlgorithm(TIGL_APPROXIMATE_BSPLINE_WIRE);
-}
-
-
 void TIGLViewerDocument::drawAllFuselagesAndWings( )
 {
 	// Draw all wings
