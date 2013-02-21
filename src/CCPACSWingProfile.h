@@ -29,7 +29,7 @@
 #include <vector>
 #include <string>
 #include <memory>
-#if defined(WIN32)
+#ifdef _MSC_VER 
 #include <memory>
 #else
 #include <tr1/memory>
@@ -46,11 +46,7 @@ namespace tigl {
 
     class ITiglWireAlgorithm;
 
-#if defined(WIN32)
-    typedef std::shared_ptr<ITiglWireAlgorithm> WireAlgoPointer;
-#else
     typedef std::tr1::shared_ptr<ITiglWireAlgorithm> WireAlgoPointer;
-#endif
 
     class CCPACSWingProfile
     {
