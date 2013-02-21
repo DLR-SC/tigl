@@ -69,15 +69,19 @@ namespace tigl {
 		wings.Invalidate();
         fuselages.Invalidate();
         fusedAirplane.Nullify();
+        configUID = "";
 	}
 
 	// Build up memory structure for whole CPACS file
 	void CCPACSConfiguration::ReadCPACS(char* configurationUID)
 	{
+	    if(!configurationUID) return;
+
 		header.ReadCPACS(tixiDocumentHandle);
 		wings.ReadCPACS(tixiDocumentHandle, configurationUID);
         fuselages.ReadCPACS(tixiDocumentHandle, configurationUID);
 
+        configUID = configurationUID;
 		// Now do parent <-> child transformations. Child should use the
 		// parent coordinate system as root. 
 		try {
@@ -289,5 +293,11 @@ namespace tigl {
 
     	return xmax-xmin;
     }
+
+    // Returns the uid manager
+        std::string CCPACSConfiguration::GetUID(void)
+        {
+            return configUID;
+        }
 
 } // end namespace tigl
