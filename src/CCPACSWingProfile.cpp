@@ -62,7 +62,7 @@ namespace tigl {
         : ProfileXPath(path),
 		invalidated(true)
     {
-        profileWireAlgo = std::shared_ptr<ITiglWireAlgorithm>(new CTiglInterpolateBsplineWire);
+        profileWireAlgo = WireAlgoPointer(new CTiglInterpolateBsplineWire);
         Cleanup();
     }
 

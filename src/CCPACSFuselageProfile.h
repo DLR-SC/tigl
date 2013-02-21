@@ -32,11 +32,22 @@
 #include "TopoDS_Wire.hxx"
 #include <vector>
 #include <string>
+#if defined(WIN32)
 #include <memory>
+#else
+#include <tr1/memory>
+#endif
 
 namespace tigl {
 
     class ITiglWireAlgorithm;
+
+#if defined(WIN32)
+    typedef std::shared_ptr<ITiglWireAlgorithm> WireAlgoPointer;
+#else
+    typedef std::tr1::shared_ptr<ITiglWireAlgorithm> WireAlgoPointer;
+#endif
+
 
     class CCPACSFuselageProfile
     {
@@ -119,7 +130,7 @@ namespace tigl {
         TopoDS_Wire               wireOriginal;   /**< Original fuselage profile wire */
         TopoDS_Wire               wireClosed;     /**< Forced closed fuselage profile wire */
         double                    wireLength;     /**< Length of fuselage profile wire */
-        std::shared_ptr<ITiglWireAlgorithm> profileWireAlgo;
+        WireAlgoPointer           profileWireAlgo;
 
     };
 

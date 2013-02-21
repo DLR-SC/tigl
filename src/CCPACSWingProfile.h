@@ -29,6 +29,11 @@
 #include <vector>
 #include <string>
 #include <memory>
+#if defined(WIN32)
+#include <memory>
+#else
+#include <tr1/memory>
+#endif
 
 #include "tixi.h"
 #include "CTiglPoint.h"
@@ -40,6 +45,12 @@
 namespace tigl {
 
     class ITiglWireAlgorithm;
+
+#if defined(WIN32)
+    typedef std::shared_ptr<ITiglWireAlgorithm> WireAlgoPointer;
+#else
+    typedef std::tr1::shared_ptr<ITiglWireAlgorithm> WireAlgoPointer;
+#endif
 
     class CCPACSWingProfile
     {
@@ -152,7 +163,7 @@ namespace tigl {
         TopoDS_Wire               wireOriginal;   /**< Original wing profile wire */
         gp_Pnt                    lePoint;        /**< Leading edge point */
         gp_Pnt                    tePoint;        /**< Trailing edge point */
-        std::shared_ptr<ITiglWireAlgorithm>  profileWireAlgo;
+        WireAlgoPointer           profileWireAlgo;
 
     };
 
