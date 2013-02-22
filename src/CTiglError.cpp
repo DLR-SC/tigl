@@ -24,6 +24,7 @@
 */
 
 #include "CTiglError.h"
+#include "CTiglLogger.h"
 
 namespace tigl {
 
@@ -32,6 +33,7 @@ namespace tigl {
 		: err(error)
 		, code(errorCode)
 	{
+	    LOG(ERROR) << "CTiglError: Node=>" << code << " : " << error;
 	}
 
 	// Destructor

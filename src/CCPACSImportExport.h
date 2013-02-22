@@ -20,7 +20,8 @@
 */
 /**
 * @file 
-* @brief  Class to manage geometry import and export. At this time only export will be supported.
+* @brief  Class to build up a OCC-XDE document structure which could be exported
+*           in different file types.
 */
 
 #ifndef CCPACSIMPORTEXPORT_H
@@ -28,9 +29,11 @@
 
 #include "tixi.h"
 #include "CTiglError.h"
+#include "CCPACSConfiguration.h"
 #include <string>
 
 #include "TopoDS_Shape.hxx"
+#include "Handle_TDocStd_Document.hxx"
 
 
 namespace tigl {
@@ -41,18 +44,19 @@ namespace tigl {
 		
 	public:
 		// Constructor
-		CCPACSImportExport();
+		CCPACSImportExport(CCPACSConfiguration& config);
 
 		// Virtual Destructor
 		virtual ~CCPACSImportExport(void);
 
-		bool SaveStructuredIges(TiglCPACSConfigurationHandle cpacsHandle, const std::string& filename);
+		Handle_TDocStd_Document buildXDEStructure();
 
 
 	protected:
 		
 
 	private:
+		CCPACSConfiguration&    myConfig;
 	};
 
 } // end namespace tigl
