@@ -2333,6 +2333,29 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportFusedWingFuselageIGES(TiglCPACSConfi
 
 
 /**
+* @brief Exports the geometry of a CPACS configuration to IGES format. In this version
+*        structure, names and metadata will also be exported as much as it is possible.
+*
+*
+* <b>Fortran syntax:</b>
+*
+* tigl_export_structured_iges(integer cpacsHandle, character*n filenamePtr, integer returnCode)
+* #PY:#
+*
+* @param cpacsHandle (in) : Handle for the CPACS configuration
+* @param filenamePtr (in) : Pointer to an IGES export file name
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_NULL_POINTER if filenamePtr is a null pointer
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglExportStructuredIGES(TiglCPACSConfigurationHandle cpacsHandle,
+                                                              char* filenamePtr);
+
+
+/**
 * @brief Exports the boolean fused geometry of a wing meshed to STL format.
 *
 *
