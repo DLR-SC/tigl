@@ -142,6 +142,17 @@ void tiglExportIGES_f(TiglCPACSConfigurationHandle* cpacsHandle,
   free(cString);
 }
 
+void tiglExportStructuredIGES_f(TiglCPACSConfigurationHandle* cpacsHandle,
+                                  char* filenamePtr,
+                                  TiglReturnCode* returnCode,
+                                  int lengthString1)
+{
+  char *cString;
+  cString = makeCString(filenamePtr, lengthString1);
+  *returnCode = tiglExportStructuredIGES(*cpacsHandle, cString);
+  free(cString);
+}
+
 
 void tiglExportFusedIGES_f(TiglCPACSConfigurationHandle* cpacsHandle,
                            char* filenamePtr,
