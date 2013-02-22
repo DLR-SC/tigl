@@ -25,20 +25,28 @@
 #include "CTiglPolyData.h"
 
 class TopoDS_Shape;
+class TopoDS_Face;
 
 namespace tigl {
+
+enum ComponentTraingMode {
+    NO_INFO,
+    SEGMENT_INFO
+};
 
 class CTiglTriangularizer : public CTiglPolyData
 {
 public:
     CTiglTriangularizer();
     CTiglTriangularizer(TopoDS_Shape&, bool useMultipleObjects = false);
-    CTiglTriangularizer(class CTiglAbstractPhysicalComponent&);
+    CTiglTriangularizer(class ITiglGeometricComponent& comp, ComponentTraingMode mode);
     
     void useMultipleObjects(bool);
     
 private:
+    int triangularizeComponent(class ITiglGeometricComponent &, ComponentTraingMode = NO_INFO);
     int triangularizeShape(const TopoDS_Shape &);
+    int triangularizeFace(const TopoDS_Face &, unsigned long* & vertexIndexList, unsigned long& nVertices, unsigned long& iPolyLow, unsigned long& iPolyUp);
     int computeVTKMetaData(class CCPACSWing&);
     
     bool _useMultipleObjects;

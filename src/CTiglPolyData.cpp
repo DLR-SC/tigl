@@ -193,20 +193,20 @@ public:
         has_normals = false;
     }
 
-    void addPointNorm(const CTiglPoint &p, const CTiglPoint& norm, int polynum);
-    unsigned int addPointNorm(const CTiglPoint &p, const CTiglPoint &norm);
+    void addPointNorm(const CTiglPoint &p, const CTiglPoint& norm, long polynum);
+    unsigned long addPointNorm(const CTiglPoint &p, const CTiglPoint &norm);
     
-    void addTriangleByVertexIndex(unsigned int i1, unsigned int i2, unsigned int i3 );
+    unsigned long addTriangleByVertexIndex(unsigned long i1, unsigned long i2, unsigned long i3 );
     
     void addPolygon(const CTiglPolygon&);
     
-    unsigned int getNPolygons() const;
-    unsigned int getNPointsOfPolygon(unsigned int ipoly) const;
+    unsigned long getNPolygons() const;
+    unsigned long getNPointsOfPolygon(unsigned long ipoly) const;
 
-    const CTiglPoint& getVertexPoint(unsigned int iVertexIndex) const;
-    const CTiglPoint& getVertexNormal(unsigned int iVertexIndex) const;
+    const CTiglPoint& getVertexPoint(unsigned long iVertexIndex) const;
+    const CTiglPoint& getVertexNormal(unsigned long iVertexIndex) const;
 
-    unsigned int getVertexIndexOfPolygon(unsigned int ipoint, unsigned int ipoly) const;
+    unsigned long getVertexIndexOfPolygon(unsigned long ipoint, unsigned long ipoly) const;
 
     bool has_normals;
 
@@ -442,6 +442,32 @@ void CTiglPolyData::writeVTKPiece(TixiDocumentHandle& handle, unsigned int iObje
     tixiAddIntegerAttribute(handle, tmpPath, "RangeMin", co.getNPointsOfPolygon(0) ,"%d");
     tixiAddIntegerAttribute(handle, tmpPath, "RangeMax", nvert,"%d");
     }
+    
+    // write cell data
+    if(currentObject().getNumberOfPolyRealData() > 0) {
+        tixiCreateElement(handle, piecepath, "CellData");
+        char tmpPath[512];
+        snprintf(tmpPath, 512, "%s/CellData", piecepath);
+        
+        for(unsigned int iData = 0; iData < currentObject().getNumberOfPolyRealData(); ++iData){
+            const char * dataField = currentObject().getPolyDataFieldName(iData);
+            std::stringstream stream;
+            for(unsigned long jPoly = 0; jPoly < currentObject().getNPolygons(); ++jPoly){
+                stream << currentObject().getPolyDataReal(jPoly, dataField) << " ";
+            }
+            tixiAddTextElement(handle, tmpPath, "DataArray", stream.str().c_str());
+            char path[512];
+            snprintf(path, 512, "%s/DataArray[%d]", tmpPath, iData+1);
+            tixiAddTextAttribute(handle, path, "type", "Float64");
+            tixiAddTextAttribute(handle, path, "Name", dataField);
+            tixiAddTextAttribute(handle, path, "NumberOfComponents", "1");
+            tixiAddTextAttribute(handle, path, "format", "ascii");
+            tixiAddDoubleAttribute(handle, path, "RangeMin", 0. ,"%f");
+            tixiAddDoubleAttribute(handle, path, "RangeMax", 1. ,"%f");
+            
+        }
+        
+    }
 
     // write metadata
     {
@@ -490,7 +516,7 @@ CTiglPolyObject::~CTiglPolyObject(){
     delete impl;
 }
 
-unsigned int CTiglPolyObject::addPointNormal(const CTiglPoint &p, const CTiglPoint &n){
+unsigned long CTiglPolyObject::addPointNormal(const CTiglPoint &p, const CTiglPoint &n){
     return impl->addPointNorm(p,n);
 }
 
@@ -498,19 +524,19 @@ void CTiglPolyObject::addPolygon(const CTiglPolygon & polygon){
     impl->addPolygon(polygon);
 }
 
-void CTiglPolyObject::addTriangleByVertexIndex(unsigned int i1, unsigned int i2, unsigned int i3){
-    impl->addTriangleByVertexIndex(i1, i2, i3);
+unsigned long CTiglPolyObject::addTriangleByVertexIndex(unsigned long i1, unsigned long i2, unsigned long i3){
+    return impl->addTriangleByVertexIndex(i1, i2, i3);
 }
 
-unsigned int CTiglPolyObject::getNPointsOfPolygon(unsigned int ipoly) const {
+unsigned long CTiglPolyObject::getNPointsOfPolygon(unsigned long ipoly) const {
     return impl->getNPointsOfPolygon(ipoly);
 }
 
-unsigned int CTiglPolyObject::getNPolygons() const{
+unsigned long CTiglPolyObject::getNPolygons() const{
     return impl->getNPolygons();
 }
 
-unsigned int CTiglPolyObject::getNVertices() const{
+unsigned long CTiglPolyObject::getNVertices() const{
     return impl->pPoints.size();
 }
 
@@ -522,7 +548,7 @@ bool CTiglPolyObject::hasNormals() const {
     return impl->has_normals;
 }
 
-unsigned int CTiglPolyObject::getVertexIndexOfPolygon(unsigned int iPoint, unsigned int iPoly) const {
+unsigned long CTiglPolyObject::getVertexIndexOfPolygon(unsigned long iPoint, unsigned long iPoly) const {
     if(iPoly < getNPolygons()){
         if (iPoint >= 0 && iPoint < getNPointsOfPolygon(iPoly)){
             return impl->polys[iPoly].getPointIndex(iPoint);
@@ -534,21 +560,21 @@ unsigned int CTiglPolyObject::getVertexIndexOfPolygon(unsigned int iPoint, unsig
         throw tigl::CTiglError("Illegal Polygon Index at CTiglPolyObject::getVertexIndexOfPolygon", TIGL_INDEX_ERROR);
 }
 
-const CTiglPoint& CTiglPolyObject::getVertexNormal(unsigned int iVertexIndex) const {
+const CTiglPoint& CTiglPolyObject::getVertexNormal(unsigned long iVertexIndex) const {
     if(iVertexIndex < getNVertices())
         return impl->pPoints[iVertexIndex]->getNormal();
     else
         throw tigl::CTiglError("Illegal Vertex Index at CTiglPolyObject::getVertexNormal", TIGL_INDEX_ERROR);
 }
 
-const CTiglPoint& CTiglPolyObject::getVertexPoint(unsigned int iVertexIndex) const {
+const CTiglPoint& CTiglPolyObject::getVertexPoint(unsigned long iVertexIndex) const {
     if(iVertexIndex < getNVertices())
         return impl->pPoints[iVertexIndex]->getPoint();
     else
         throw tigl::CTiglError("Illegal Vertex Index at CTiglPolyObject::getVertexNormal", TIGL_INDEX_ERROR);
 }
 
-const char * CTiglPolyObject::getPolyMetadata(unsigned int iPoly) const {
+const char * CTiglPolyObject::getPolyMetadata(unsigned long iPoly) const {
     if(iPoly < getNPolygons()){
         return impl->polys[iPoly].getMetadata().c_str();
     }
@@ -556,7 +582,7 @@ const char * CTiglPolyObject::getPolyMetadata(unsigned int iPoly) const {
         throw tigl::CTiglError("Illegal Polygon Index at CTiglPolyObject::getPolyMetadata", TIGL_INDEX_ERROR);
 }
 
-void CTiglPolyObject::setPolyMetadata(unsigned int iPoly, const char * txt){
+void CTiglPolyObject::setPolyMetadata(unsigned long iPoly, const char * txt){
     if(iPoly < getNPolygons()){
         impl->polys[iPoly].setMetadata(txt);
     }
@@ -564,7 +590,7 @@ void CTiglPolyObject::setPolyMetadata(unsigned int iPoly, const char * txt){
         throw tigl::CTiglError("Illegal Polygon Index at CTiglPolyObject::setPolyMetadata", TIGL_INDEX_ERROR);
 }
 
-void CTiglPolyObject::setVertexDataReal(unsigned int iVertexIndex, const char *dataName, double value){
+void CTiglPolyObject::setVertexDataReal(unsigned long iVertexIndex, const char *dataName, double value){
     if(iVertexIndex < getNVertices()){
         //insert into elems
         impl->vertexDataElems.insert(dataName);
@@ -575,7 +601,7 @@ void CTiglPolyObject::setVertexDataReal(unsigned int iVertexIndex, const char *d
         throw tigl::CTiglError("Illegal Vertex Index at CTiglPolyObject::setVertexDataReal", TIGL_INDEX_ERROR);
 }
 
-double CTiglPolyObject::getVertexDataReal(unsigned int iVertexIndex, const char *dataName) const{
+double CTiglPolyObject::getVertexDataReal(unsigned long iVertexIndex, const char *dataName) const{
     if(iVertexIndex < getNVertices()){
         return impl->pPoints[iVertexIndex]->getRealData(dataName);
     }
@@ -583,7 +609,7 @@ double CTiglPolyObject::getVertexDataReal(unsigned int iVertexIndex, const char 
         throw tigl::CTiglError("Illegal Vertex Index at CTiglPolyObject::getVertexDataReal", TIGL_INDEX_ERROR);
 }
 
-void CTiglPolyObject::setPolyDataReal(unsigned int iPolyIndex, const char *dataName, double value){
+void CTiglPolyObject::setPolyDataReal(unsigned long iPolyIndex, const char *dataName, double value){
     if(iPolyIndex < getNPolygons()){
         //insert into elems
         impl->polyDataElems.insert(dataName);
@@ -594,13 +620,31 @@ void CTiglPolyObject::setPolyDataReal(unsigned int iPolyIndex, const char *dataN
         throw tigl::CTiglError("Illegal Polygon Index at CTiglPolyObject::setPolyDataReal", TIGL_INDEX_ERROR);
 }
 
-double CTiglPolyObject::getPolyDataReal(unsigned int iPolyIndex, const char *dataName) const{
+double CTiglPolyObject::getPolyDataReal(unsigned long iPolyIndex, const char *dataName) const{
     if(iPolyIndex < getNPolygons()){
         return impl->polys[iPolyIndex].getRealData(dataName);
     }
     else
         throw tigl::CTiglError("Illegal Polygon Index at CTiglPolyObject::getPolyDataReal", TIGL_INDEX_ERROR);
 }
+
+// returns the number if different polygon data entries 
+unsigned int CTiglPolyObject::getNumberOfPolyRealData() const {
+    return impl->polyDataElems.size();
+}
+
+// retuns the  name of the ith data field (i = 0 .. getNumberPolyReadlData - 1)
+const char * CTiglPolyObject::getPolyDataFieldName(unsigned long iField) const {
+    if(iField < getNumberOfPolyRealData()){
+        std::set<std::string>::iterator it = impl->polyDataElems.begin();
+        for(unsigned long i = 0; i < iField; ++i)
+            it++;
+        return it->c_str();
+    }
+    else 
+        throw tigl::CTiglError("Illegal Data Field Index at CTiglPolyObject::getPolyDataFieldName", TIGL_INDEX_ERROR);
+}
+
 
 //---------------------------------------------------------------------------//
 
@@ -644,18 +688,18 @@ const char * CTiglPolygon::getMetadata() const{
 
 //--------------------------------------------------------------//
 
-void ObjectImpl::addPointNorm(const CTiglPoint& p, const CTiglPoint& n, int polynum){
-    unsigned int index = addPointNorm(p,n);
+void ObjectImpl::addPointNorm(const CTiglPoint& p, const CTiglPoint& n, long polynum){
+    unsigned long index = addPointNorm(p,n);
 
     // now insert point into polygon list
-    if(polynum > (int) polys.size()){
+    if(polynum > (long) polys.size()){
         polys.push_back(PolyIndexList(polynum));
     }
     assert(polynum == polys.size());
     polys.at(polynum-1).addPoint(index);
 }
 
-unsigned int ObjectImpl::addPointNorm(const CTiglPoint& p, const CTiglPoint& n){
+unsigned long ObjectImpl::addPointNorm(const CTiglPoint& p, const CTiglPoint& n){
     using namespace std;
 
     //check if point is already in pointlist
@@ -679,27 +723,29 @@ unsigned int ObjectImpl::addPointNorm(const CTiglPoint& p, const CTiglPoint& n){
     return index;
 }
 
-void ObjectImpl::addTriangleByVertexIndex(unsigned int i1, unsigned int i2, unsigned int i3 ){
-    unsigned int nPolys = polys.size();
+unsigned long ObjectImpl::addTriangleByVertexIndex(unsigned long i1, unsigned long i2, unsigned long i3 ){
+    unsigned long nPolys = polys.size();
     polys.push_back(PolyIndexList(nPolys));
     
     std::vector<PolyIndexList>::iterator itLastPoly = polys.end()-1;
     itLastPoly->addPoint(i1);
     itLastPoly->addPoint(i2);
     itLastPoly->addPoint(i3);
+    
+    return nPolys;
 }
 
 
 void ObjectImpl::addPolygon(const CTiglPolygon & poly){
-    int polynum = polys.size() + 1;
+    long polynum = polys.size() + 1;
     if(!has_normals){
-        for(unsigned int i = 0 ; i < poly.getNPoints(); ++i){
+        for(unsigned long i = 0 ; i < poly.getNPoints(); ++i){
             CTiglPoint n(1,0,0);
             addPointNorm(poly.getPointConst(i), n, polynum);
         }
     }
     else {
-        for(unsigned int i = 0 ; i < poly.getNPoints(); ++i){
+        for(unsigned long i = 0 ; i < poly.getNPoints(); ++i){
             addPointNorm(poly.getPointConst(i), poly.getNormConst(i), polynum);
         }
     }
@@ -708,10 +754,10 @@ void ObjectImpl::addPolygon(const CTiglPolygon & poly){
 }
 
 
-unsigned int ObjectImpl::getNPolygons() const{
+unsigned long ObjectImpl::getNPolygons() const{
     return polys.size();
 }
-unsigned int ObjectImpl::getNPointsOfPolygon(unsigned int ipoly) const{
+unsigned long ObjectImpl::getNPointsOfPolygon(unsigned long ipoly) const{
     if(ipoly < getNPolygons())
         return polys[ipoly].getNVert();
     else

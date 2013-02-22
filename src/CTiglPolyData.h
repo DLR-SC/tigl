@@ -74,48 +74,54 @@ public:
     bool hasNormals() const;
     
     // adds a triangle to the global polygon list. the corners are spcified with the vertex indices
-    // returns by addPointNormal or getVertexIndexOfPolygon
-    void addTriangleByVertexIndex(unsigned int i1, unsigned int i2, unsigned int i3 );
+    // returned by addPointNormal or getVertexIndexOfPolygon. Returns index of added Triangle
+    unsigned long addTriangleByVertexIndex(unsigned long i1, unsigned long i2, unsigned long i3 );
 
     // adds a polygon to the object
     void addPolygon(const class CTiglPolygon&);
     
-    unsigned int getNVertices() const;
+    unsigned long getNVertices() const;
 
     // returns the number of polygons for the current surface
-    unsigned int getNPolygons() const;
+    unsigned long getNPolygons() const;
 
     // returns the number of points of the polygon
-    unsigned int getNPointsOfPolygon(unsigned int iPoly) const;
+    unsigned long getNPointsOfPolygon(unsigned long iPoly) const;
 
-    const char * getPolyMetadata(unsigned int iPoly) const;
+    const char * getPolyMetadata(unsigned long iPoly) const;
 
-    void setPolyMetadata(unsigned int iPoly, const char *);
+    void setPolyMetadata(unsigned long iPoly, const char *);
 
     // returns the vertex index of the ith point of a polygon
     // to retrieve the actual point, call getPoint with this index
-    unsigned int getVertexIndexOfPolygon(unsigned int iPoint, unsigned int iPoly) const;
+    unsigned long getVertexIndexOfPolygon(unsigned long iPoint, unsigned long iPoly) const;
     
     // each polygon has a list of data elements, this methods sets the value
-    void setPolyDataReal(unsigned int iPoly, const char * dataName, double value);
+    void setPolyDataReal(unsigned long iPoly, const char * dataName, double value);
     
-    double getPolyDataReal(unsigned int iPoly, const char * dataName) const;
+    double getPolyDataReal(unsigned long iPoly, const char * dataName) const;
 
     //  ---------- Vertex specific methods -----------------
     
     // adds a point and its normal vector to the global point list and returns its index in the list
-    unsigned int addPointNormal(const class CTiglPoint& p, const class CTiglPoint& n);    
+    unsigned long addPointNormal(const class CTiglPoint& p, const class CTiglPoint& n);    
     
     // returns the actual point, specified with the vertex index
-    const CTiglPoint& getVertexPoint(unsigned int iVertexIndex) const;
+    const CTiglPoint& getVertexPoint(unsigned long iVertexIndex) const;
     
     // returns the normal vector, specified with vertex index
-    const CTiglPoint& getVertexNormal(unsigned int iVertexIndex) const;
+    const CTiglPoint& getVertexNormal(unsigned long iVertexIndex) const;
     
     // each vertex has a list of data elements, this methods sets the value
-    void setVertexDataReal(unsigned int iVertexIndex, const char * dataName, double value);
+    void setVertexDataReal(unsigned long iVertexIndex, const char * dataName, double value);
     
-    double getVertexDataReal(unsigned int iVertexIndex, const char * dataName) const;
+    double getVertexDataReal(unsigned long iVertexIndex, const char * dataName) const;
+    
+    // returns the number if different polygon data entries 
+    unsigned int getNumberOfPolyRealData() const;
+    
+    // retuns the  name of the ith data field (i = 0 .. getNumberPolyReadlData - 1)
+    const char * getPolyDataFieldName(unsigned long iField) const;
 
 
 private:
