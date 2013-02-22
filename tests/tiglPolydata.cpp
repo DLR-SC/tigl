@@ -145,8 +145,6 @@ TEST(TiglPolyData, cube_export_vtk_standard)
     f6.addPoint(p1);
     co.addPolygon(f6);
 
-    poly.writeVTK("vtk_cube_standard.vtp");
-
     //check polygon data
     ASSERT_EQ(6, co.getNPolygons());
 
@@ -191,6 +189,23 @@ TEST(TiglPolyData, cube_export_vtk_standard)
     ASSERT_NEAR(0., co.getVertexPoint(index2).distance2(p6), 1e-10);
     ASSERT_NEAR(0., co.getVertexPoint(index3).distance2(p7), 1e-10);
     ASSERT_NEAR(0., co.getVertexPoint(index4).distance2(p3), 1e-10);
+    
+    co.setPolyDataReal(0,"value",0);
+    co.setPolyDataReal(1,"value",1);
+    co.setPolyDataReal(2,"value",2);
+    co.setPolyDataReal(3,"value",3);
+    co.setPolyDataReal(4,"value",4);
+    co.setPolyDataReal(5,"value",5);
+    
+    poly.writeVTK("vtk_cube_standard.vtp");
+    
+    ASSERT_EQ(0, co.getPolyDataReal(0,"value"));
+    ASSERT_EQ(1, co.getPolyDataReal(1,"value"));
+    ASSERT_EQ(2, co.getPolyDataReal(2,"value"));
+    ASSERT_EQ(3, co.getPolyDataReal(3,"value"));
+    ASSERT_EQ(4, co.getPolyDataReal(4,"value"));
+    ASSERT_EQ(5, co.getPolyDataReal(5,"value"));
+    
 }
 
 TEST(TiglPolyData, cube_export_vtk_withnormals)
@@ -385,6 +400,34 @@ TEST_F(TriangularizeShape, exportVTK_CompoundWing){
     std::cout << "Number of Polygons/Vertices: " << t.currentObject().getNPolygons() << "/" << t.currentObject().getNVertices()<<std::endl;
     try{
         t.writeVTK("exported_compund_wing_simple.vtp");
+    }
+    catch (...){
+        exportError = true;
+    }
+    
+    ASSERT_TRUE(exportError == false);
+}
+
+TEST_F(TriangularizeShape, exportVTK_WingSegmentInfo)
+{
+    const char* vtkWingFilename = "TestData/export/simplewing_segmentinfo.vtp";
+    
+    tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
+    tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
+    tigl::CCPACSWing& wing = config.GetWing(1);
+
+    BRepMesh::Mesh(wing.GetLoft(), 0.0001);
+    bool exportError = false;
+    
+    clock_t start, stop;
+    start = clock();
+    tigl::CTiglTriangularizer trian(wing, SEGMENT_INFO);
+    
+    stop = clock();
+    std::cout << "Triangularization time [ms]: " << (stop-start)/(double)CLOCKS_PER_SEC * 1000. << std::endl;
+    std::cout << "Number of Polygons/Vertices: " << trian.currentObject().getNPolygons() << "/" << trian.currentObject().getNVertices()<<std::endl;
+    try{
+        trian.writeVTK(vtkWingFilename);
     }
     catch (...){
         exportError = true;

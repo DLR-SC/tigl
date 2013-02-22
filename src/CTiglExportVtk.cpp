@@ -100,21 +100,18 @@ namespace tigl {
     // Exports a by index selected wing, boolean fused and meshed, as STL file
     void CTiglExportVtk::ExportMeshedWingVTKByIndex(const int wingIndex, const std::string& filename, const double deflection)
     {
-        //exportMode = TIGL_VTK_COMPLEX;
-        CTiglAbstractPhysicalComponent & component = myConfig.GetWing(wingIndex);
-        TopoDS_Shape& loft = component.GetLoft();
-        
-       LOG(ERROR) << "tiglExportMeshedWingByIndexVTK not yet implemented!!" << std::endl;
-
+        const std::string& wingUID = myConfig.GetWing(wingIndex).GetUID();
+        ExportMeshedWingVTKByUID(wingUID, filename, deflection);
     }
 
     // Exports a by UID selected wing, boolean fused and meshed, as STL file
     void CTiglExportVtk::ExportMeshedWingVTKByUID(const std::string wingUID, const std::string& filename, const double deflection)
     {
-        CTiglAbstractPhysicalComponent & component = myConfig.GetWing(wingUID);
-        TopoDS_Shape loft = component.GetLoft();
-
-       LOG(ERROR) << "tiglExportMeshedWingByUIDVTK not yet implemented!!" << std::endl;
+        tigl::CCPACSWing& wing = myConfig.GetWing(wingUID);
+        BRepMesh::Mesh(wing.GetLoft(), deflection);
+        
+        CTiglTriangularizer wingTrian(wing, SEGMENT_INFO);
+        wingTrian.writeVTK(filename.c_str());
     }
 
 
