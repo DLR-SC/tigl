@@ -20,7 +20,7 @@
 */
 /**
 * @file 
-* @brief  Class to manage geometie import and export. At this time only export will be supported.
+* @brief  Class to manage geometry import and export. At this time only export will be supported.
 */
 
 #ifndef CCPACSIMPORTEXPORT_H
@@ -29,10 +29,7 @@
 #include "tixi.h"
 #include "CTiglError.h"
 #include <string>
-#include <vector>
-#include <climits>
 
-#include "TopTools_HSequenceOfShape.hxx"
 #include "TopoDS_Shape.hxx"
 
 
@@ -51,8 +48,6 @@ namespace tigl {
 
 		bool SaveStructuredIges(TiglCPACSConfigurationHandle cpacsHandle, const std::string& filename);
 
-		// Save a sequence of shapes in IGES Format
-		static void SaveIGES(const Handle(TopTools_HSequenceOfShape)& aHSequenceOfShape, const std::string& filename);
 
 	protected:
 		

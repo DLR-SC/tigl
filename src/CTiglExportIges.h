@@ -26,6 +26,7 @@
 #ifndef CTIGLEXPORTIGES_H
 #define CTIGLEXPORTIGES_H
 
+#include "TopTools_HSequenceOfShape.hxx"
 #include "CTiglUIDManager.h"
 #include "CCPACSHeader.h"
 #include "CCPACSWings.h"
@@ -53,6 +54,8 @@ namespace tigl {
         // Exports the whole configuration, boolean fused, as IGES file
         void ExportFusedIGES(const std::string& filename);
 
+        // Save a sequence of shapes in IGES Format
+        void ExportShapes(const Handle(TopTools_HSequenceOfShape)& aHSequenceOfShape, const std::string& filename);
 
     protected:
         
