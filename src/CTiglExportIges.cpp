@@ -125,4 +125,29 @@ namespace tigl {
             throw CTiglError("Error: Export fused shapes to IGES file failed in CTiglExportIges::ExportFusedIGES", TIGL_ERROR);
     }
 
+
+
+
+    // Save a sequence of shapes in IGES Format
+    void CTiglExportIges::ExportShapes(const Handle(TopTools_HSequenceOfShape)& aHSequenceOfShape, const std::string& filename)
+    {
+        IGESControl_Controller::Init();
+        IGESControl_Writer igesWriter;
+
+        Interface_Static::SetCVal("xstep.cascade.unit", "M");
+        Interface_Static::SetCVal("write.iges.unit", "M");
+        Interface_Static::SetIVal("write.iges.brep.mode", 0);
+        Interface_Static::SetCVal("write.iges.header.author", "TIGL");
+        Interface_Static::SetCVal("write.iges.header.company", "German Aerospace Center (DLR), SC");
+
+        for (Standard_Integer i=1;i<=aHSequenceOfShape->Length();i++)
+        {
+            igesWriter.AddShape (aHSequenceOfShape->Value(i));
+        }
+
+        igesWriter.ComputeModel();
+        if (igesWriter.Write(const_cast<char*>(filename.c_str())) != Standard_True)
+            throw CTiglError("Error: Export of shapes to IGES file failed in CCPACSImportExport::SaveIGES", TIGL_ERROR);
+    }
+
 } // end namespace tigl
