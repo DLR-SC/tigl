@@ -20,7 +20,8 @@
 */
 /**
 * @file 
-* @brief  Class to manage geometry import and export. At this time only export will be supported.
+* @brief  Class to build up a OCC-XDE document structure which could be exported
+*           in different file types.
 */
 
 #include "CCPACSImportExport.h"
@@ -31,8 +32,6 @@
 #include <sstream>
 #include <exception>
 
-#include "IGESControl_Controller.hxx"
-#include "IGESControl_Writer.hxx"
 #include "Interface_Static.hxx"
 #include "TCollection_ExtendedString.hxx"
 #include "XCAFDoc_ShapeTool.hxx"
@@ -46,7 +45,8 @@
 namespace tigl {
 
 	// Constructor
-	CCPACSImportExport::CCPACSImportExport()
+	CCPACSImportExport::CCPACSImportExport(CCPACSConfiguration& config)
+	:myConfig(config)
 	{
 	}
 
@@ -56,12 +56,8 @@ namespace tigl {
 	}
 
 
-    bool CCPACSImportExport::SaveStructuredIges(TiglCPACSConfigurationHandle cpacsHandle, const std::string& filename)
+	Handle_TDocStd_Document CCPACSImportExport::buildXDEStructure()
     {
-        if( filename.empty()) {
-            LOG(ERROR) << "Error: Empty filename in SaveStructuredIges.";
-            return false;
-        }
 
         Handle(XCAFApp_Application) hApp = XCAFApp_Application::GetApplication();
         Handle(TDocStd_Document) hDoc;
@@ -70,26 +66,19 @@ namespace tigl {
         TDF_Label rootLabel= TDF_TagSource::NewChild(hDoc->Main());
 
 
-        CCPACSConfigurationManager& manager = CCPACSConfigurationManager::GetInstance();
-        CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
-        CTiglUIDManager& uidManager = config.GetUIDManager();
+        CTiglUIDManager& uidManager = myConfig.GetUIDManager();
 
         CTiglAbstractPhysicalComponent* rootComponent = uidManager.GetRootComponent();
         if (rootComponent == NULL) {
             LOG(ERROR) << "Error: No Root Component";
-            return false;
+            return NULL;
         }
 
-        TDataStd_Name::Set (rootLabel, config.GetUID().c_str());
+        TDataStd_Name::Set (rootLabel, myConfig.GetUID().c_str());
         rootComponent->ExportDataStructure(hShapeTool, rootLabel);
 
 
-        IGESControl_Controller::Init();
-        IGESCAFControl_Writer writer;
-        writer.Transfer(hDoc);
-        writer.Write(filename.c_str());
-
-        return true;
+        return hDoc;
     }
 
 

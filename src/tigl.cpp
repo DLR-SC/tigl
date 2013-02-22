@@ -36,7 +36,6 @@
 #include "CTiglUIDManager.h"
 #include "CCPACSWing.h"
 #include "CTiglExportIges.h"
-#include "CCPACSImportExport.h"
 #include "CTiglExportStl.h"
 #include "CTiglExportVtk.h"
 #include "CTiglLogger.h"
@@ -2299,9 +2298,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportIGES(TiglCPACSConfigurationHandle cp
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CTiglExportIges exporter(config);
         std::string filename = filenamePtr;
-//        exporter.ExportIGES(filename);
-        tigl::CCPACSImportExport *ex = new tigl::CCPACSImportExport();
-        ex->SaveStructuredIges(cpacsHandle, filename);
+        //exporter.ExportIGES(filename);
+        exporter.ExportIgesWithCPACSMetadata(filename);
 
         return TIGL_SUCCESS;
     }
