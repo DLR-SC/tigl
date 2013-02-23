@@ -104,6 +104,8 @@ namespace tigl {
 
         // Step 3: translate the rotated wing into its position
         transformation.AddTranslation(translation.x, translation.y, translation.z);
+
+        backTransformation = transformation.Inverted();
     }
 
     // Update internal wing data
