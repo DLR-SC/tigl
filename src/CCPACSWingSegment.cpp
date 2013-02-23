@@ -93,7 +93,7 @@
 #endif
 
 namespace {
-    gp_Pnt transformProfilePoint(const tigl::CCPACSWingConnection& connection, const gp_Pnt& pointOnProfile){
+    gp_Pnt transformProfilePoint(const tigl::CTiglTransformation& wingTransform, const tigl::CCPACSWingConnection& connection, const gp_Pnt& pointOnProfile){
         gp_Pnt transformedPoint(pointOnProfile);
 
          // Do section element transformation on points
@@ -104,6 +104,8 @@ namespace {
 
         // Do positioning transformations
         transformedPoint = connection.GetPositioningTransformation().Transform(transformedPoint);
+        
+        transformedPoint = wingTransform.Transform(transformedPoint);
 
         return transformedPoint;
     }
@@ -216,6 +218,8 @@ namespace tigl {
 		// Do positioning transformations (positioning of sections)
 		innerShape = innerConnection.GetPositioningTransformation().Transform(innerShape);
 
+		innerShape= GetWing().GetTransformation().Transform(innerShape);
+
 		// Cast shapes to wires, see OpenCascade documentation
         if (innerShape.ShapeType() != TopAbs_WIRE) {
 			throw CTiglError("Error: Wrong shape type in CCPACSWingSegment::GetInnerWire, called from BuildLoft", TIGL_ERROR);
@@ -239,6 +243,8 @@ namespace tigl {
 		// Do positioning transformations (positioning of sections)
 		outerShape = outerConnection.GetPositioningTransformation().Transform(outerShape);
 
+		outerShape= GetWing().GetTransformation().Transform(outerShape);
+
 		// Cast shapes to wires, see OpenCascade documentation
         if (outerShape.ShapeType() != TopAbs_WIRE) {
 			throw CTiglError("Error: Wrong shape type in CCPACSWingSegment::GetOuterWire, called from BuildLoft", TIGL_ERROR);
@@ -261,9 +267,6 @@ namespace tigl {
         generator.CheckCompatibility(/* check (defaults to true) */ Standard_False);
 		generator.Build();
 		loft = generator.Shape();
-
-		// transform into global coordinate system
-		loft = GetWing().GetWingTransformation().Transform(loft);
 
 		Handle(ShapeFix_Shape) sfs = new ShapeFix_Shape;
 		sfs->Init ( loft );
@@ -481,8 +484,8 @@ namespace tigl {
             outerProfilePoint = outerProfile.GetLowerPoint(xsi);
         }
 
-        innerProfilePoint = transformProfilePoint(innerConnection, innerProfilePoint);
-        outerProfilePoint = transformProfilePoint(outerConnection, outerProfilePoint);
+        innerProfilePoint = transformProfilePoint(wing->GetTransformation(), innerConnection, innerProfilePoint);
+        outerProfilePoint = transformProfilePoint(wing->GetTransformation(), outerConnection, outerProfilePoint);
 
         // Get point on wing segment in dependence of eta by linear interpolation
         Handle(Geom_TrimmedCurve) profileLine = GC_MakeSegment(innerProfilePoint, outerProfilePoint);
@@ -510,8 +513,8 @@ namespace tigl {
         gp_Pnt outerProfilePoint = outerProfile.GetChordPoint(xsi);
 
         // Do section element transformation on points
-        innerProfilePoint = transformProfilePoint(innerConnection, innerProfilePoint);
-        outerProfilePoint = transformProfilePoint(outerConnection, outerProfilePoint);
+        innerProfilePoint = transformProfilePoint(wing->GetTransformation(), innerConnection, innerProfilePoint);
+        outerProfilePoint = transformProfilePoint(wing->GetTransformation(), outerConnection, outerProfilePoint);
 
         // Get point on wing segment in dependence of eta by linear interpolation
         Handle(Geom_TrimmedCurve) profileLine = GC_MakeSegment(innerProfilePoint, outerProfilePoint);
@@ -670,8 +673,8 @@ namespace tigl {
 
         gp_Pnt in_up = innerConnection.GetProfile().GetUpperPoint(0.5);
         gp_Pnt out_up = outerConnection.GetProfile().GetUpperPoint(0.5);
-        in_up  = transformProfilePoint(innerConnection, in_up);
-        out_up = transformProfilePoint(outerConnection, out_up);
+        in_up  = transformProfilePoint(wing->GetTransformation(), innerConnection, in_up);
+        out_up = transformProfilePoint(wing->GetTransformation(), outerConnection, out_up);
         
         Handle_Geom_BSplineCurve innercurve = BRepAdaptor_CompCurve(GetInnerWire()).BSpline();
         Handle_Geom_BSplineCurve outercurve = BRepAdaptor_CompCurve(GetOuterWire()).BSpline();
