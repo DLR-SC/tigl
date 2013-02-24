@@ -750,10 +750,6 @@ namespace tigl {
         upperShape = upperSections.Shape();
         lowerShape = lowerSections.Shape();
 
-        // Transform upper/lower shapes
-        upperShape = wing->GetWingTransformation().Transform(upperShape);
-        lowerShape = wing->GetWingTransformation().Transform(lowerShape);
-
         // we select the largest face to be the upperface (we can not include the trailing edge)
         TopExp_Explorer faceExplorer;
         double maxArea = DBL_MIN;
