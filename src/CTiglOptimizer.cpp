@@ -47,7 +47,7 @@ inline double CTiglOptimizer::armijoBacktrack2d(const class ITiglObjectiveFuncti
 {
     double slope = grad[0]*dir[0]+grad[1]*dir[1];
     // the hessian might not be positive definite
-    if(slope >= 0){
+    if(slope >= -1.e-15){
 #ifdef DEBUG
         std::cout << "Warning: Hessian not pos. definite. Switch back to gradient." << std::endl;
 #endif
@@ -129,10 +129,13 @@ TiglReturnCode CTiglOptimizer::optNewton2d(const class ITiglObjectiveFunction& f
         double dir[2];
         dir[0] = - TIGL_MATRIX2D(inv_hess,2,0,0) *grad[0] - TIGL_MATRIX2D(inv_hess,2,0,1) *grad[1];
         dir[1] = - TIGL_MATRIX2D(inv_hess,2,1,0) *grad[0] - TIGL_MATRIX2D(inv_hess,2,1,1) *grad[1];
-
+        
         double alpha = 1.;
         // we need a line search to ensure convergence, lets take backtracking approach
         alpha = armijoBacktrack2d(f,x, grad, dir, alpha, of);
+        if(alpha <= 0.){
+            return TIGL_MATH_ERROR;
+        }
 
         x[0] += alpha*dir[0];
         x[1] += alpha*dir[1];
@@ -141,7 +144,7 @@ TiglReturnCode CTiglOptimizer::optNewton2d(const class ITiglObjectiveFunction& f
         f.getGradientHessian(x, grad, hess);
 
 #ifdef DEBUG
-        LOG(DEBUG) << "Iter=" << iter+1 << " eta;xi=(" << x[0] << ";" << x[1] << ") f=" << of
+        LOG(INFO) << "Iter=" << iter+1 << " eta;xi=(" << x[0] << ";" << x[1] << ") f=" << of
                   << " norm(grad)=" << grad[0]*grad[0]+grad[1]*grad[1] <<  " alpha=" << alpha << std::endl;
 #endif
 
