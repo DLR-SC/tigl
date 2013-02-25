@@ -26,14 +26,7 @@
 #include "CTiglLogger.h"
 
 #include <cassert>
-
-// uncomment, if you want to see the function working
-//#define DEBUG
-
-
-#define C1    0.1
-#define BTFAC 0.5
-
+#include <iomanip>
 
 namespace tigl{
 
@@ -140,14 +133,29 @@ TiglReturnCode CTiglPointTranslator::translate(const CTiglPoint& p, double* eta,
         return TIGL_NULL_POINTER;
     }
     double etaxsi[2];
-    etaxsi[0] = 0; etaxsi[1] = 0;
-
+    //initial guess
+    etaxsi[0] = 0.5;
+    etaxsi[1] = 0.5;
+    
     assert(initialized);
 
     projector.setProjectionPoint(p);
 
-    TiglReturnCode ret = CTiglOptimizer::optNewton2d(projector, etaxsi, 1e-8, 1e-8);
+    TiglReturnCode ret = CTiglOptimizer::optNewton2d(projector, etaxsi, 1e-6, 1e-8);
     if (ret != TIGL_SUCCESS){
+        // show some debuggin info
+        CTiglPoint x1 = d;
+        CTiglPoint x2 = a + x1;
+        CTiglPoint x3 = b + x1;
+        CTiglPoint x4 = c + x2 + x3 - x1;
+        LOG(ERROR) << std::setprecision(20) << "Error in CTiglPointTranslator::translate: "
+                   << "p = " << p.x << "," << p.y << "," << p.z << endl
+                   << "  x1 = " << x1.x << "," << x1.y << "," << x1.z << endl
+                   << "  x2 = " << x2.x << "," << x2.y << "," << x2.z << endl
+                   << "  x3 = " << x3.x << "," << x3.y << "," << x3.z << endl
+                   << "  x4 = " << x4.x << "," << x4.y << "," << x4.z << endl;
+        *eta = etaxsi[0]; *xsi = etaxsi[1];
+        LOG(ERROR) << "  Resulting eta/xsi: " << *eta << "," << *xsi << endl;
         return ret;
     }
     else {
