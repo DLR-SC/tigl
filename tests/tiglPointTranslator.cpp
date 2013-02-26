@@ -227,4 +227,20 @@ TEST(TiglPointTranslator, performance){
     ASSERT_TRUE(true);
 }
 
+TEST(TiglPointTranslator, Bug1){
+    CTiglPoint x1(15.080271828981320681,6.3331944636655546077,-0.82588659024004418274);
+    CTiglPoint x2(20.620103026537961455,16.956343945599122947,-0.089370094291781887463);
+    CTiglPoint x3(18.836422557259382415,6.3331944636655546077,-0.95705426399850279662);
+    CTiglPoint x4(22.115034014736966839,16.956343945599122947,-0.14157423473675034842);
+
+    CTiglPoint p(21.344060867260836289,16.956343945599122947,-0.10327302824713803509);
+
+    double eta, xsi;
+
+    CTiglPointTranslator trans(x1, x2, x3, x4 );
+
+    ASSERT_EQ ( TIGL_SUCCESS,  trans.translate(p, &eta, &xsi) );
+    
+    cout << "Eta/Xsi: " << eta << "," << xsi << endl;
+}
 

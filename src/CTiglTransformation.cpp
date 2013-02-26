@@ -36,10 +36,36 @@ namespace tigl {
     {
         SetIdentity();
     }
+    
+    CTiglTransformation::CTiglTransformation(const gp_GTrsf& ocMatrix) 
+    {
+        SetIdentity();
+        
+        // Vectorial part
+        for(int i = 0; i < 3; ++i){
+            for(unsigned j = 0; j < 3; ++j){
+                m_matrix[i][j] = ocMatrix.Value(i+1,j+1);
+            }
+        }
+
+        // Translation part
+        m_matrix[0][3] = ocMatrix.Value(1,4);
+        m_matrix[1][3] = ocMatrix.Value(2,4);
+        m_matrix[2][3] = ocMatrix.Value(3,4);
+    }
 
     // Destructor
     CTiglTransformation::~CTiglTransformation(void)
     {
+    }
+    
+    CTiglTransformation& CTiglTransformation::operator=(const CTiglTransformation& mat){
+        for(unsigned int i = 0; i < 4; ++i){
+            for(unsigned int j = 0; j < 4; ++j){
+                m_matrix[i][j] = mat.m_matrix[i][j];
+            }
+        }
+        return *this;
     }
 
     void CTiglTransformation::SetIdentity(void)
@@ -389,6 +415,10 @@ namespace tigl {
 			}
 			cout << endl;
 		}
+	}
+
+	CTiglTransformation CTiglTransformation::Inverted() const{
+		return Get_gp_GTrsf().Inverted();
 	}
 
 } // end namespace tigl
