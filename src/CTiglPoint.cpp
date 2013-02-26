@@ -136,4 +136,17 @@ namespace tigl {
         return c;
     }
 
+    double CTiglPoint::distance2(const CTiglPoint &p) const {
+        return (x-p.x)*(x-p.x) + (y-p.y)*(y-p.y) + (z-p.z)*(z-p.z);
+    }
+
+    void CTiglPoint::getMinMax(double & min, double & max) const {
+        min = x;
+        if(y < min) min = y;
+        if(z < min) min = z;
+        max = x;
+        if(y > max) max = y;
+        if(z > max) max = z;
+    }
+
 } // end namespace tigl

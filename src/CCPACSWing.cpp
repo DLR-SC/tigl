@@ -104,6 +104,8 @@ namespace tigl {
 
         // Step 3: translate the rotated wing into its position
         transformation.AddTranslation(translation.x, translation.y, translation.z);
+
+        backTransformation = transformation.Inverted();
     }
 
     // Update internal wing data
@@ -338,15 +340,13 @@ namespace tigl {
     // Gets the upper point in absolute (world) coordinates for a given segment, eta, xsi
     gp_Pnt CCPACSWing::GetUpperPoint(int segmentIndex, double eta, double xsi)
     {
-        gp_Pnt pnt = ((CCPACSWingSegment &) GetSegment(segmentIndex)).GetUpperPoint(eta, xsi);
-        return GetWingTransformation().Transform(pnt);
+        return ((CCPACSWingSegment &) GetSegment(segmentIndex)).GetUpperPoint(eta, xsi);
     }
 
     // Gets the upper point in absolute (world) coordinates for a given segment, eta, xsi
     gp_Pnt CCPACSWing::GetLowerPoint(int segmentIndex, double eta, double xsi)
     {
-        gp_Pnt pnt = ((CCPACSWingSegment &) GetSegment(segmentIndex)).GetLowerPoint(eta, xsi);
-        return GetWingTransformation().Transform(pnt);
+        return  ((CCPACSWingSegment &) GetSegment(segmentIndex)).GetLowerPoint(eta, xsi);
     }
 
     // Returns the volume of this wing

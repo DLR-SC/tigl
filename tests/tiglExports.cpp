@@ -80,12 +80,20 @@ TiglCPACSConfigurationHandle tiglExport::tiglHandle = 0;
 TEST_F(tiglExport, export_meshed_wing_success)
 {
     const char* vtkWingFilename = "TestData/export/D150modelID_wing1.vtp";
-    const char* vtkGeometryFilename = "TestData/export/D150modelID_geometry.vtp";
     ASSERT_TRUE(tiglExportMeshedWingVTKByIndex(tiglHandle, 1, vtkWingFilename, 0.01) == TIGL_SUCCESS);
+}
+
+/**
+* Tests tiglWingGetProfileName with invalid CPACS handle.
+*/
+TEST_F(tiglExport, export_meshed_wing_simple_success)
+{
+    const char* vtkWingFilename = "TestData/export/D150modelID_wing1_simple.vtp";
+    ASSERT_TRUE(tiglExportMeshedWingVTKSimpleByUID(tiglHandle, "D150_VAMP_W1", vtkWingFilename, 0.01) == TIGL_SUCCESS);
 }
 
 TEST_F(tiglExport, export_meshed_fuselage_success)
 {
     const char* vtkFuselageFilename = "TestData/export/D150modelID_fuselage1.vtp";
-    ASSERT_TRUE(tiglExportMeshedFuselageVTKSimpleByUID(tiglHandle, "D150_VAMP_FL1", vtkFuselageFilename, 0.1) == TIGL_SUCCESS);
+    ASSERT_TRUE(tiglExportMeshedFuselageVTKSimpleByUID(tiglHandle, "D150_VAMP_FL1", vtkFuselageFilename, 0.03) == TIGL_SUCCESS);
 }

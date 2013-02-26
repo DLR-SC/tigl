@@ -22,13 +22,100 @@
 #
 
 from numpy import *
+from ms_optAlgs import *
 
-def ms_calcSegmentPoint(x1,x2,x3,x4, alpha, beta):
+import matplotlib as mpl
+from mpl_toolkits.mplot3d import Axes3D
+import matplotlib.pyplot as plt
 
-	a = -x1+x2;
-	b = -x1+x3;
-	c = x1-x2-x3+x4;
-	d = x1;
+class SegmentGeometry:
+	def __init__(self, p1, p2, p3, p4):
+		self.setPoints(p1, p2, p3, p4)
+		
+	def setPoints(self, p1, p2, p3, p4):
+                self.a = -p1+p2;
+                self.b = -p1+p3;
+                self.c = p1-p2-p3+p4;
+                self.d = p1;
 
-	return outer(a,alpha) + outer(b,beta) + outer(c,alpha*beta) + outer(d,ones(size(alpha)));
+                
+        def calcPoint(self, alpha, beta):
+            return outer(self.a,alpha) + outer(self.b,beta) + outer(self.c,alpha*beta) + outer(self.d,ones(size(alpha)));
+
+        # calculates the tangents in eta and xsi direction at the given point
+	def calcPointTangents(self, eta, xsi):
+            J = zeros((3,2))
+            J[:,0] = self.a + xsi*self.c
+            J[:,1] = self.b + eta*self.c
+            return J
+
+        def calcOF(self, eta, xsi, x):
+            p = self.calcPoint(eta,xsi);
+            p = p[:,0]
+            return dot(p-x,p-x)
+
+        def calcGradient(self, eta, xsi, x):
+            p = self.calcPoint(eta,xsi);
+            p = p[:,0]
+            J = self.calcPointTangents(eta,xsi);
+            grad = zeros(2);
+            grad[0] = 2*dot(J[:,0],p-x)
+            grad[1] = 2*dot(J[:,1],p-x)
+            return grad
+
+        def calcHessian(self, eta, xsi, x):
+            p = self.calcPoint(eta,xsi);
+            p = p[:,0]
+            J = self.calcPointTangents(eta,xsi);
+
+            H = zeros((2,2))
+            H[0,0] = 2*dot(J[:,0], J[:,0])
+            H[1,1] = 2*dot(J[:,1], J[:,1])
+            H[1,0] = 2*dot(J[:,1], J[:,0]) + 2*dot(p-x, self.c)
+            H[0,1] = H[1,0] 
+            
+            return H
+
+        def project(self, p):
+            eta = dot(self.a,p-self.d)/dot(self.a,self.a)
+            xsi = dot(self.b,p-self.d)/dot(self.b,self.b)
+            x = array([eta,xsi])
+            print 'initial guess: ', eta, xsi
+            of = lambda ex: self.calcOF(ex[0], ex[1], p)
+            ograd = lambda ex: self.calcGradient(ex[0], ex[1], p)
+            ohess = lambda ex: self.calcHessian(ex[0], ex[1], p)
+
+            fig2 = plt.figure();
+		
+	    X, Y = meshgrid(arange(-3, 4, 0.1), arange(-3, 4, 0.1))
+	    Z = zeros(X.shape);
+	
+	    for i in range(0,size(X,0)):
+                for j in range(0,size(X,1)):
+                    Z[i,j] = of([X[i,j], Y[i,j]])
+		
+	    plt.imshow(Z,origin='lower', extent=[-3, 4,-3,4], aspect=1./1.)
+	    plt.colorbar();	
+	    plt.contour(X,Y,Z)
+	    plt.title('Objective function')
+	    plt.xlabel('eta');
+	    plt.ylabel('xsi');
+
+            x_= ms_optNewton(of,ograd,ohess,x)
+
+	    eta = x_[0]; xsi = x_[1];
+	    return (eta, xsi)
+            
+
+        def draw(self, axis):
+	    for alpha in  arange(0,1.01,0.1):
+                P1 = self.calcPoint(alpha, 0.)
+                P2 = self.calcPoint(alpha, 1.)
+		axis.plot([P1[0,0], P2[0,0]], [P1[1,0], P2[1,0]], [P1[2,0], P2[2,0]],'g');
+				
+	    for beta in arange(0,1.01,0.1):
+                P1 = self.calcPoint(0, beta)
+                P2 = self.calcPoint(1, beta)
+		axis.plot([P1[0,0], P2[0,0]], [P1[1,0], P2[1,0]], [P1[2,0], P2[2,0]],'g');
+            
 
