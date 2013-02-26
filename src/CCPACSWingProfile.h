@@ -84,6 +84,8 @@ namespace tigl {
         // Returns ths wing upper and lower profile wire
         TopoDS_Wire GetUpperWire();
         TopoDS_Wire GetLowerWire();
+        
+        TopoDS_Wire GetFusedUpperLowerWire();
 
         // Returns the leading edge point of the wing profile wire. The leading edge point
         // is already transformed by the wing profile element transformation.
