@@ -80,7 +80,6 @@ TiglCPACSConfigurationHandle tiglExport::tiglHandle = 0;
 TEST_F(tiglExport, export_meshed_wing_success)
 {
     const char* vtkWingFilename = "TestData/export/D150modelID_wing1.vtp";
-    const char* vtkGeometryFilename = "TestData/export/D150modelID_geometry.vtp";
     ASSERT_TRUE(tiglExportMeshedWingVTKByIndex(tiglHandle, 1, vtkWingFilename, 0.01) == TIGL_SUCCESS);
 }
 
