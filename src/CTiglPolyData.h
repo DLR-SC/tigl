@@ -88,9 +88,17 @@ public:
     // returns the number of points of the polygon
     unsigned long getNPointsOfPolygon(unsigned long iPoly) const;
 
+    // states, if some metadata were set for this object
+    bool hasMetadata() const;
+    
     const char * getPolyMetadata(unsigned long iPoly) const;
 
     void setPolyMetadata(unsigned long iPoly, const char *);
+    
+    // sets a description of the elements stored in the metadata
+    void setMetadataElements(const char *);
+    
+    const char * getMetadataElements() const;
 
     // returns the vertex index of the ith point of a polygon
     // to retrieve the actual point, call getPoint with this index

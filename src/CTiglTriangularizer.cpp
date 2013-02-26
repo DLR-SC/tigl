@@ -125,7 +125,8 @@ int CTiglTriangularizer::triangularizeComponent(ITiglGeometricComponent& compone
                             break;
                         }
                     }
-                     cout << "iSegmentFound " << iSegmentFound << endl;
+
+                    currentObject().setMetadataElements("uID segmentIndex eta xsi isOnTop");
                     if(iSegmentFound > 0){
                         // determine if this face is an upper segment face
                         CCPACSWingSegment& segment = (CCPACSWingSegment&) wing.GetSegment(iSegmentFound);
@@ -150,7 +151,17 @@ int CTiglTriangularizer::triangularizeComponent(ITiglGeometricComponent& compone
                             segment.GetEtaXsi(baryCenter.Get_gp_Pnt(), false, eta, xsi);
                             currentObject().setPolyDataReal(iPoly, "eta", eta);
                             currentObject().setPolyDataReal(iPoly, "xsi", xsi);
+                            
+                            // create metadata string
+                            std::stringstream stream;
+                            stream << segment.GetUID() << " " << iSegmentFound << " " << eta << " " << xsi << " " << isUpperFace;
+                            currentObject().setPolyMetadata(iPoly, stream.str().c_str());
                         }
+                    }
+                }
+                else {
+                    for(unsigned int iPoly = iPolyLower; iPoly <= iPolyUpper; iPoly++){
+                        currentObject().setPolyMetadata(iPoly,"\"\" 0 0.0 0.0 0");
                     }
                 }
                 

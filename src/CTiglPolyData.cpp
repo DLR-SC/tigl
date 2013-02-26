@@ -191,6 +191,8 @@ public:
         polys.clear();
         pPoints.clear();
         has_normals = false;
+        has_metadata = false;
+        metaDataElements = "";
     }
 
     void addPointNorm(const CTiglPoint &p, const CTiglPoint& norm, long polynum);
@@ -209,6 +211,7 @@ public:
     unsigned long getVertexIndexOfPolygon(unsigned long ipoint, unsigned long ipoly) const;
 
     bool has_normals;
+    bool has_metadata;
 
     // we use this container to store point data, it allows us to find
     // efficiently a specific point in the list
@@ -222,6 +225,8 @@ public:
     
     std::set<std::string> polyDataElems;
     std::set<std::string> vertexDataElems;
+    
+    std::string metaDataElements;
 };
 
 
@@ -470,18 +475,18 @@ void CTiglPolyData::writeVTKPiece(TixiDocumentHandle& handle, unsigned int iObje
     }
 
     // write metadata
-    {
-    std::stringstream stream4;
-    stream4 << endl  << "        ";
-    for (unsigned int i = 0; i < co.getNPolygons(); i ++){
-        stream4 << "    " << co.getPolyMetadata(i) << endl;
-        stream4 << "        ";
-    }
-    char tmpPath[512];
-    snprintf(tmpPath, 512, "%s/Polys", piecepath);
-    tixiAddTextElement(handle, tmpPath, "MetaData", stream4.str().c_str());
-    snprintf(tmpPath, 512, "%s/MetaData", tmpPath);
-    tixiAddTextAttribute(handle,  tmpPath, "elements", "uID segmentIndex eta xsi isOnTop" );
+    if(currentObject().hasMetadata()){
+        std::stringstream stream4;
+        stream4 << endl  << "        ";
+        for (unsigned int i = 0; i < co.getNPolygons(); i ++){
+            stream4 << "    " << co.getPolyMetadata(i) << endl;
+            stream4 << "        ";
+        }
+        char tmpPath[512];
+        snprintf(tmpPath, 512, "%s/Polys", piecepath);
+        tixiAddTextElement(handle, tmpPath, "MetaData", stream4.str().c_str());
+        snprintf(tmpPath, 512, "%s/MetaData", tmpPath);
+        tixiAddTextAttribute(handle,  tmpPath, "elements", currentObject().getMetadataElements() );
     }
 
 }
@@ -574,6 +579,18 @@ const CTiglPoint& CTiglPolyObject::getVertexPoint(unsigned long iVertexIndex) co
         throw tigl::CTiglError("Illegal Vertex Index at CTiglPolyObject::getVertexNormal", TIGL_INDEX_ERROR);
 }
 
+bool CTiglPolyObject::hasMetadata() const {
+    return impl->has_metadata;
+}
+
+const char * CTiglPolyObject::getMetadataElements() const {
+    return impl->metaDataElements.c_str();
+}
+
+void CTiglPolyObject::setMetadataElements(const char * elems) {
+    impl->metaDataElements = elems;
+}
+
 const char * CTiglPolyObject::getPolyMetadata(unsigned long iPoly) const {
     if(iPoly < getNPolygons()){
         return impl->polys[iPoly].getMetadata().c_str();
@@ -585,6 +602,7 @@ const char * CTiglPolyObject::getPolyMetadata(unsigned long iPoly) const {
 void CTiglPolyObject::setPolyMetadata(unsigned long iPoly, const char * txt){
     if(iPoly < getNPolygons()){
         impl->polys[iPoly].setMetadata(txt);
+        impl->has_metadata = true;
     }
     else
         throw tigl::CTiglError("Illegal Polygon Index at CTiglPolyObject::setPolyMetadata", TIGL_INDEX_ERROR);
