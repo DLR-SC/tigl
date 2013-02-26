@@ -44,7 +44,9 @@
 #include "TopoDS_Edge.hxx"
 #include "GCE2d_MakeSegment.hxx"
 #include "BRep_Tool.hxx"
+#include "BRepAdaptor_CompCurve.hxx"
 #include "Geom2dAPI_InterCurveCurve.hxx"
+#include "GeomAPI_ProjectPointOnCurve.hxx"
 #include "GeomAPI.hxx"
 #include "gce_MakeDir.hxx"
 #include "gce_MakePln.hxx"
@@ -246,7 +248,6 @@ namespace tigl {
             return;
 
         BuildWires();
-        BuildLETEPoints();
         invalidated = false;
     }
 
@@ -255,6 +256,20 @@ namespace tigl {
     {
         Update();
         return (forceClosed ? wireClosed : wireOriginal);
+    }
+    
+    // Returns the wing profile upper wire
+    TopoDS_Wire CCPACSWingProfile::GetUpperWire()
+    {
+        Update();
+        return upperWire;
+    }
+    
+    // Returns the wing profile lower wire
+    TopoDS_Wire CCPACSWingProfile::GetLowerWire()
+    {
+        Update();
+        return lowerWire;
     }
 
     // Returns the leading edge point of the wing profile wire. The leading edge point
@@ -455,6 +470,55 @@ namespace tigl {
 
         wireClosed   = TopoDS::Wire(tempShapeClosed);
         wireOriginal = TopoDS::Wire(tempShapeOriginal);
+        
+        BuildLETEPoints();
+        invalidated = false;
+        
+        // now create upper and lower wires
+        gp_Pnt upperPoint = GetUpperPoint(0.5);
+        
+        Handle_Geom_BSplineCurve curve = BRepAdaptor_CompCurve(wireOriginal).BSpline();
+        double lep_par = GeomAPI_ProjectPointOnCurve(lePoint, curve).LowerDistanceParameter();
+        double upperPnt_par  = GeomAPI_ProjectPointOnCurve(upperPoint, curve).LowerDistanceParameter();
+        
+        TopoDS_Edge upper_edge, lower_edge;
+        gp_Pnt te_up, te_down;
+        if(upperPnt_par < lep_par){
+            //wire goes from top to bottom
+            upper_edge = BRepBuilderAPI_MakeEdge(curve,curve->FirstParameter(), lep_par);
+            lower_edge = BRepBuilderAPI_MakeEdge(curve,lep_par, curve->LastParameter());
+            te_up = curve->StartPoint();
+            te_down = curve->EndPoint();
+        }
+        else {
+            //wire goes from bottom to top
+            lower_edge = BRepBuilderAPI_MakeEdge(curve,curve->FirstParameter(), lep_par);
+            upper_edge = BRepBuilderAPI_MakeEdge(curve,lep_par, curve->LastParameter());
+            te_up = curve->EndPoint();
+            te_down = curve->StartPoint();
+        }
+
+        BRepBuilderAPI_MakeWire upperWireBuilder, lowerWireBuilder;
+        //check if we have to close upper and lower wing shells
+        if(te_up.Distance(tePoint) > Precision::Confusion())
+            upperWireBuilder.Add(BRepBuilderAPI_MakeEdge(tePoint,te_up));
+        
+        if(te_down.Distance(tePoint) > Precision::Confusion())
+            lowerWireBuilder.Add(BRepBuilderAPI_MakeEdge(tePoint,te_down));
+        
+        upperWireBuilder.Add(upper_edge); 
+        lowerWireBuilder.Add(lower_edge);
+        
+        upperWire = upperWireBuilder.Wire();
+        lowerWire = lowerWireBuilder.Wire();
+        
+        // rebuild closed wire
+        BRepBuilderAPI_MakeWire closedWireBuilder;
+        closedWireBuilder.Add(upperWire);
+        closedWireBuilder.Add(lowerWire);
+        
+        wireClosed = closedWireBuilder.Wire();
+
     }
 
     // Builds leading and trailing edge points of the wing profile wire.
