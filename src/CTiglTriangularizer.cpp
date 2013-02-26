@@ -154,18 +154,17 @@ int CTiglTriangularizer::triangularizeComponent(ITiglGeometricComponent& compone
                             
                             // create metadata string
                             std::stringstream stream;
-                            stream << segment.GetUID() << " " << iSegmentFound << " " << eta << " " << xsi << " " << isUpperFace;
+                            stream << "\"" << segment.GetUID() << "\" " << iSegmentFound << " " << eta << " " << xsi << " " << isUpperFace;
                             currentObject().setPolyMetadata(iPoly, stream.str().c_str());
                         }
                     }
-                }
-                else {
-                    for(unsigned int iPoly = iPolyLower; iPoly <= iPolyUpper; iPoly++){
-                        currentObject().setPolyMetadata(iPoly,"\"\" 0 0.0 0.0 0");
-                    }
-                }
-                
-            }
+                    else {
+                        for(unsigned int iPoly = iPolyLower; iPoly <= iPolyUpper; iPoly++){
+                            currentObject().setPolyMetadata(iPoly,"\"\" 0 0.0 0.0 0");
+                        }
+                    } // iSegmentFound
+                } // isWing
+            } // advanced mode
             
             if(vertexIndexList) delete[] vertexIndexList;
         } // for faces
