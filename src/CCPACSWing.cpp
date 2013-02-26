@@ -289,7 +289,7 @@ namespace tigl {
 
 			CCPACSWingProfile& startProfile = startConnection.GetProfile();
 
-			TopoDS_Wire startWire = startProfile.GetWire(true);
+			TopoDS_Wire startWire = startProfile.GetFusedUpperLowerWire();
 
 			// Do section element transformations
 			TopoDS_Shape startShape = startConnection.GetSectionElementTransformation().Transform(startWire);
@@ -311,7 +311,7 @@ namespace tigl {
 
 		CCPACSWingConnection& endConnection = segments.GetSegment(segments.GetSegmentCount()).GetOuterConnection();
 		CCPACSWingProfile& endProfile = endConnection.GetProfile();
-		TopoDS_Wire endWire = endProfile.GetWire(true);
+		TopoDS_Wire endWire = endProfile.GetFusedUpperLowerWire();
 		TopoDS_Shape endShape = endConnection.GetSectionElementTransformation().Transform(endWire);
 		endShape = endConnection.GetSectionTransformation().Transform(endShape);
 		endShape = endConnection.GetPositioningTransformation().Transform(endShape);

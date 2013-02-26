@@ -271,6 +271,19 @@ namespace tigl {
         Update();
         return lowerWire;
     }
+    
+    // Returns the wing profile lower and upper wire fused
+    TopoDS_Wire CCPACSWingProfile::GetFusedUpperLowerWire()
+    {
+        Update();
+        // rebuild closed wire
+        BRepBuilderAPI_MakeWire closedWireBuilder;
+        closedWireBuilder.Add(upperWire);
+        closedWireBuilder.Add(lowerWire);
+        
+        return closedWireBuilder.Wire();
+    }
+
 
     // Returns the leading edge point of the wing profile wire. The leading edge point
     // is already transformed by the wing profile transformation.
@@ -511,14 +524,6 @@ namespace tigl {
         
         upperWire = upperWireBuilder.Wire();
         lowerWire = lowerWireBuilder.Wire();
-        
-        // rebuild closed wire
-        BRepBuilderAPI_MakeWire closedWireBuilder;
-        closedWireBuilder.Add(upperWire);
-        closedWireBuilder.Add(lowerWire);
-        
-        wireClosed = closedWireBuilder.Wire();
-
     }
 
     // Builds leading and trailing edge points of the wing profile wire.
