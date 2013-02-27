@@ -67,6 +67,8 @@ endif()
 
 add_subdirectory(src)
 add_subdirectory(TIGLViewer)
+add_subdirectory(TIGLViewerExperiments/BasicGeometry)
+add_subdirectory(TIGLViewerExperiments/ReadVTK)
 add_subdirectory(bindings)
 
 
