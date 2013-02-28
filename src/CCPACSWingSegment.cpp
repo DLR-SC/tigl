@@ -32,6 +32,7 @@
 #include "CCPACSWingSegment.h"
 #include "CCPACSWing.h"
 #include "CCPACSWingProfile.h"
+#include "CTiglError.h"
 
 #include "BRepOffsetAPI_ThruSections.hxx"
 #include "TopExp_Explorer.hxx"
@@ -93,7 +94,7 @@
 #endif
 
 namespace {
-    gp_Pnt transformProfilePoint(const tigl::CCPACSWingConnection& connection, const gp_Pnt& pointOnProfile){
+    gp_Pnt transformProfilePoint(const tigl::CTiglTransformation& wingTransform, const tigl::CCPACSWingConnection& connection, const gp_Pnt& pointOnProfile){
         gp_Pnt transformedPoint(pointOnProfile);
 
          // Do section element transformation on points
@@ -104,8 +105,31 @@ namespace {
 
         // Do positioning transformations
         transformedPoint = connection.GetPositioningTransformation().Transform(transformedPoint);
+        
+        transformedPoint = wingTransform.Transform(transformedPoint);
 
         return transformedPoint;
+    }
+    
+    TopoDS_Wire transformProfileWire(const tigl::CTiglTransformation& wingTransform, const tigl::CCPACSWingConnection& connection, const TopoDS_Wire& wire){
+        TopoDS_Shape transformedWire(wire);
+
+         // Do section element transformation on points
+        transformedWire = connection.GetSectionElementTransformation().Transform(transformedWire);
+
+        // Do section transformations
+        transformedWire = connection.GetSectionTransformation().Transform(transformedWire);
+
+        // Do positioning transformations
+        transformedWire = connection.GetPositioningTransformation().Transform(transformedWire);
+        
+        transformedWire = wingTransform.Transform(transformedWire);
+        
+        // Cast shapes to wires, see OpenCascade documentation
+        if (transformedWire.ShapeType() != TopAbs_WIRE)
+            throw tigl::CTiglError("Error: Wrong shape type in CCPACSWingSegment::transformProfileWire", TIGL_ERROR);
+
+        return TopoDS::Wire(transformedWire);
     }
 }
 
@@ -204,47 +228,15 @@ namespace tigl {
     // helper function to get the inner transformed chord line wire
     TopoDS_Wire CCPACSWingSegment::GetInnerWire(void)
     {
-		CCPACSWingProfile & innerProfile = innerConnection.GetProfile();
-		TopoDS_Wire innerWire = innerProfile.GetWire(/* closed */ true);
-
-		// Do section element transformations
-		TopoDS_Shape innerShape = innerConnection.GetSectionElementTransformation().Transform(innerWire);
-
-		// Do section transformations
-		innerShape = innerConnection.GetSectionTransformation().Transform(innerShape);
-
-		// Do positioning transformations (positioning of sections)
-		innerShape = innerConnection.GetPositioningTransformation().Transform(innerShape);
-
-		// Cast shapes to wires, see OpenCascade documentation
-        if (innerShape.ShapeType() != TopAbs_WIRE) {
-			throw CTiglError("Error: Wrong shape type in CCPACSWingSegment::GetInnerWire, called from BuildLoft", TIGL_ERROR);
-        }
-		TopoDS_Wire returnWire = TopoDS::Wire(innerShape);
-        return returnWire;
+        CCPACSWingProfile & innerProfile = innerConnection.GetProfile();
+        return transformProfileWire(GetWing().GetTransformation(), innerConnection, innerProfile.GetFusedUpperLowerWire());
     }
 
     // helper function to get the outer transformed chord line wire
     TopoDS_Wire CCPACSWingSegment::GetOuterWire(void)
     {
-		CCPACSWingProfile & outerProfile = outerConnection.GetProfile();
-		TopoDS_Wire outerWire = outerProfile.GetWire(/* closed */ true);
-
-		// Do section element transformations
-		TopoDS_Shape outerShape = outerConnection.GetSectionElementTransformation().Transform(outerWire);
-
-		// Do section transformations
-		outerShape = outerConnection.GetSectionTransformation().Transform(outerShape);
-
-		// Do positioning transformations (positioning of sections)
-		outerShape = outerConnection.GetPositioningTransformation().Transform(outerShape);
-
-		// Cast shapes to wires, see OpenCascade documentation
-        if (outerShape.ShapeType() != TopAbs_WIRE) {
-			throw CTiglError("Error: Wrong shape type in CCPACSWingSegment::GetOuterWire, called from BuildLoft", TIGL_ERROR);
-        }
-		TopoDS_Wire returnWire = TopoDS::Wire(outerShape);
-        return returnWire;
+        CCPACSWingProfile & outerProfile = outerConnection.GetProfile();
+        return transformProfileWire(GetWing().GetTransformation(), outerConnection, outerProfile.GetFusedUpperLowerWire());
     }
 
 	// Builds the loft between the two segment sections
@@ -261,9 +253,6 @@ namespace tigl {
         generator.CheckCompatibility(/* check (defaults to true) */ Standard_False);
 		generator.Build();
 		loft = generator.Shape();
-
-		// transform into global coordinate system
-		loft = GetWing().GetWingTransformation().Transform(loft);
 
 		Handle(ShapeFix_Shape) sfs = new ShapeFix_Shape;
 		sfs->Init ( loft );
@@ -481,8 +470,8 @@ namespace tigl {
             outerProfilePoint = outerProfile.GetLowerPoint(xsi);
         }
 
-        innerProfilePoint = transformProfilePoint(innerConnection, innerProfilePoint);
-        outerProfilePoint = transformProfilePoint(outerConnection, outerProfilePoint);
+        innerProfilePoint = transformProfilePoint(wing->GetTransformation(), innerConnection, innerProfilePoint);
+        outerProfilePoint = transformProfilePoint(wing->GetTransformation(), outerConnection, outerProfilePoint);
 
         // Get point on wing segment in dependence of eta by linear interpolation
         Handle(Geom_TrimmedCurve) profileLine = GC_MakeSegment(innerProfilePoint, outerProfilePoint);
@@ -510,8 +499,8 @@ namespace tigl {
         gp_Pnt outerProfilePoint = outerProfile.GetChordPoint(xsi);
 
         // Do section element transformation on points
-        innerProfilePoint = transformProfilePoint(innerConnection, innerProfilePoint);
-        outerProfilePoint = transformProfilePoint(outerConnection, outerProfilePoint);
+        innerProfilePoint = transformProfilePoint(wing->GetTransformation(), innerConnection, innerProfilePoint);
+        outerProfilePoint = transformProfilePoint(wing->GetTransformation(), outerConnection, outerProfilePoint);
 
         // Get point on wing segment in dependence of eta by linear interpolation
         Handle(Geom_TrimmedCurve) profileLine = GC_MakeSegment(innerProfilePoint, outerProfilePoint);
@@ -645,12 +634,6 @@ namespace tigl {
             return false;
     }
 
-
-    double projectOnCurve(gp_Pnt p, Handle_Geom_Curve curve){
-        GeomAPI_ProjectPointOnCurve projector(p, curve);
-        return projector.LowerDistanceParameter();
-    }
-
     // Builds upper/lower surfaces as shapes
     // we split the wing profile into upper and lower wire.
     // To do so, we have to determine, what is up
@@ -667,89 +650,29 @@ namespace tigl {
         
         cordSurface.setQuadriangle(inner_lep.XYZ(), outer_lep.XYZ(), inner_tep.XYZ(), outer_tep.XYZ());
 
-
-        gp_Pnt in_up = innerConnection.GetProfile().GetUpperPoint(0.5);
-        gp_Pnt out_up = outerConnection.GetProfile().GetUpperPoint(0.5);
-        in_up  = transformProfilePoint(innerConnection, in_up);
-        out_up = transformProfilePoint(outerConnection, out_up);
+        TopoDS_Wire iu_wire = innerConnection.GetProfile().GetUpperWire();
+        TopoDS_Wire ou_wire = outerConnection.GetProfile().GetUpperWire();
+        TopoDS_Wire il_wire = innerConnection.GetProfile().GetLowerWire();
+        TopoDS_Wire ol_wire = outerConnection.GetProfile().GetLowerWire();
         
-        Handle_Geom_BSplineCurve innercurve = BRepAdaptor_CompCurve(GetInnerWire()).BSpline();
-        Handle_Geom_BSplineCurve outercurve = BRepAdaptor_CompCurve(GetOuterWire()).BSpline();
+        iu_wire = transformProfileWire(GetWing().GetTransformation(), innerConnection, iu_wire);
+        ou_wire = transformProfileWire(GetWing().GetTransformation(), outerConnection, ou_wire);
+        il_wire = transformProfileWire(GetWing().GetTransformation(), innerConnection, il_wire);
+        ol_wire = transformProfileWire(GetWing().GetTransformation(), outerConnection, ol_wire);
         
-        double innerlep_par = projectOnCurve(inner_lep, innercurve);
-        double outerlep_par = projectOnCurve(outer_lep, outercurve);
-        
-        double inup_par  = projectOnCurve(in_up,  innercurve);
-        double outup_par = projectOnCurve(out_up, outercurve);
-        
-        TopoDS_Edge iu_edge, il_edge;
-        gp_Pnt p_in_up, p_in_down;
-        if(inup_par < innerlep_par){
-            //wire goes from top to bottom
-            iu_edge = BRepBuilderAPI_MakeEdge(innercurve,innercurve->FirstParameter(), innerlep_par);
-            il_edge = BRepBuilderAPI_MakeEdge(innercurve,innerlep_par, innercurve->LastParameter());
-            p_in_up = innercurve->StartPoint();
-            p_in_down = innercurve->EndPoint();
-        }
-        else {
-            //wire goes from bottom to top
-            il_edge = BRepBuilderAPI_MakeEdge(innercurve,innercurve->FirstParameter(), innerlep_par);
-            iu_edge = BRepBuilderAPI_MakeEdge(innercurve,innerlep_par, innercurve->LastParameter());
-            p_in_up = innercurve->EndPoint();
-            p_in_down = innercurve->StartPoint();
-        }
-        TopoDS_Edge ou_edge, ol_edge;
-        gp_Pnt p_out_up, p_out_down;
-        if(outup_par < outerlep_par){
-            ou_edge = BRepBuilderAPI_MakeEdge(outercurve,outercurve->FirstParameter(), outerlep_par);
-            ol_edge = BRepBuilderAPI_MakeEdge(outercurve,outerlep_par, outercurve->LastParameter());
-            p_out_up = outercurve->StartPoint();
-            p_out_down = outercurve->EndPoint();
-        }
-        else {
-            ol_edge = BRepBuilderAPI_MakeEdge(outercurve,outercurve->FirstParameter(), outerlep_par);
-            ou_edge = BRepBuilderAPI_MakeEdge(outercurve,outerlep_par, outercurve->LastParameter());
-            p_out_up = outercurve->EndPoint();
-            p_out_down = outercurve->StartPoint();
-        }
-
-        BRepBuilderAPI_MakeWire wiu, wil, wou, wol;
-
-        //check if we have to close upper and lower wing shells
-        if(p_in_up.Distance(inner_tep) > Precision::Confusion())
-            wiu.Add(BRepBuilderAPI_MakeEdge(inner_tep,p_in_up));
-        
-        if(p_in_down.Distance(inner_tep) > Precision::Confusion())
-            wil.Add(BRepBuilderAPI_MakeEdge(inner_tep,p_in_down));
-        
-        if(p_out_up.Distance(outer_tep) > Precision::Confusion())
-            wou.Add(BRepBuilderAPI_MakeEdge(outer_tep,p_out_up));
-        
-        if(p_out_down.Distance(outer_tep) > Precision::Confusion())
-            wol.Add(BRepBuilderAPI_MakeEdge(outer_tep,p_out_down));
-        
-        
-        wiu.Add(iu_edge); wil.Add(il_edge);
-        wou.Add(ou_edge); wol.Add(ol_edge);
-        wiu.Build(); wil.Build();
-        wou.Build(); wol.Build();
 
         BRepOffsetAPI_ThruSections upperSections(Standard_False,Standard_True);
-        upperSections.AddWire(wiu.Wire());
-        upperSections.AddWire(wou.Wire());
+        upperSections.AddWire(iu_wire);
+        upperSections.AddWire(ou_wire);
         upperSections.Build();
         
         BRepOffsetAPI_ThruSections lowerSections(Standard_False,Standard_True);
-        lowerSections.AddWire(wil.Wire());
-        lowerSections.AddWire(wol.Wire());
+        lowerSections.AddWire(il_wire);
+        lowerSections.AddWire(ol_wire);
         lowerSections.Build();
         
         upperShape = upperSections.Shape();
         lowerShape = lowerSections.Shape();
-
-        // Transform upper/lower shapes
-        upperShape = wing->GetWingTransformation().Transform(upperShape);
-        lowerShape = wing->GetWingTransformation().Transform(lowerShape);
 
         // we select the largest face to be the upperface (we can not include the trailing edge)
         TopExp_Explorer faceExplorer;

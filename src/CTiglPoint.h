@@ -27,6 +27,7 @@
 #define CTIGLPOINT_H
 
 #include <climits>
+#include "gp_XYZ.hxx"
 #include "gp_Pnt.hxx"
 #include "gp_XYZ.hxx"
 #include <iostream>
@@ -83,6 +84,12 @@ namespace tigl {
 
 		// cross product
 		static CTiglPoint cross_prod(const CTiglPoint& a, const CTiglPoint& b);
+
+        // square distance to another point
+        double distance2(const CTiglPoint& point) const;
+
+        // returns minimum and maximum component
+        void getMinMax(double & min, double & max) const;
 
 	public:
 		double x;

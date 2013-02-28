@@ -18,7 +18,8 @@
 # @file componentSegmentExample.py
 # @brief Demonstrates the use of the segment and component segment geometry classes
 #
-
+import pkg_resources
+pkg_resources.require("matplotlib")
 from ms_componentSegmentGeom import *
 from ms_segmentGeometry import *
 
@@ -49,15 +50,17 @@ compSeg.drawPoint(ax, 0.9, 0.9)
 compSeg.drawPoint(ax, 0.6, 0.4)
 compSeg.drawPoint(ax, 0.6, 0.2)
 
+seg = SegmentGeometry(p1,p2,p3,p4)
+
 #plot iso eta and xsi lines in segment coordinates,
 for alpha in arange(0,1.01,0.1):
-	pp1 = ms_calcSegmentPoint(p1,p2,p3,p4,alpha,0);
-	pp2 = ms_calcSegmentPoint(p1,p2,p3,p4,alpha,1);
+	pp1 = seg.calcPoint(alpha,0);
+	pp2 = seg.calcPoint(alpha,1);
 	ax.plot([pp1[0,0], pp2[0,0]], [pp1[1,0], pp2[1,0]], [pp1[2,0], pp2[2,0]],'r');
 
 for beta in arange(0,1.01,0.1):
-	pp1 = ms_calcSegmentPoint(p1,p2,p3,p4,0,beta);
-	pp2 = ms_calcSegmentPoint(p1,p2,p3,p4,1,beta);
+	pp1 = seg.calcPoint(0,beta);
+	pp2 = seg.calcPoint(1,beta);
 	#ax.plot([pp1[0,0], pp2[0,0]], [pp1[1,0], pp2[1,0]], [pp1[2,0], pp2[2,0]],'r');
 
 # plot normals

@@ -28,6 +28,7 @@
 #include "CCPACSWing.h"
 #include "CCPACSConfiguration.h"
 #include "CTiglAbstractSegment.h"
+#include "CTiglError.h"
 
 #include "BRepOffsetAPI_ThruSections.hxx"
 #include "BRepAlgoAPI_Fuse.hxx"
@@ -47,6 +48,26 @@ namespace {
 	inline double max(double a, double b){
 		return a > b? a : b;
 	}
+    
+    TopoDS_Wire transformToWingCoords(const tigl::CCPACSWingConnection& wingConnection, const TopoDS_Wire& origWire) {
+        TopoDS_Shape resultWire(origWire);
+
+        // Do section element transformations
+        resultWire = wingConnection.GetSectionElementTransformation().Transform(resultWire);
+
+        // Do section transformations
+        resultWire = wingConnection.GetSectionTransformation().Transform(resultWire);
+
+        // Do positioning transformations (positioning of sections)
+        resultWire = wingConnection.GetPositioningTransformation().Transform(resultWire);
+
+        // Cast shapes to wires, see OpenCascade documentation
+        if (resultWire.ShapeType() != TopAbs_WIRE) {
+            throw tigl::CTiglError("Error: Wrong shape type in CCPACSWing::transformToAbsCoords", TIGL_ERROR);
+        }
+        
+        return TopoDS::Wire(resultWire);
+    }
 }
 
 
@@ -109,6 +130,8 @@ namespace tigl {
 
         // Step 3: translate the rotated wing into its position
         transformation.AddTranslation(translation.x, translation.y, translation.z);
+
+        backTransformation = transformation.Inverted();
     }
 
     // Update internal wing data
@@ -305,36 +328,14 @@ namespace tigl {
 
 		for (int i=1; i <= segments.GetSegmentCount(); i++) {
 			CCPACSWingConnection& startConnection = segments.GetSegment(i).GetInnerConnection();
-
 			CCPACSWingProfile& startProfile = startConnection.GetProfile();
-
-			TopoDS_Wire startWire = startProfile.GetWire(true);
-
-			// Do section element transformations
-			TopoDS_Shape startShape = startConnection.GetSectionElementTransformation().Transform(startWire);
-
-			// Do section transformations
-			startShape = startConnection.GetSectionTransformation().Transform(startShape);
-
-			// Do positioning transformations (positioning of sections)
-			startShape = startConnection.GetPositioningTransformation().Transform(startShape);
-
-			// Cast shapes to wires, see OpenCascade documentation
-			if (startShape.ShapeType() != TopAbs_WIRE) {
-				throw CTiglError("Error: Wrong shape type in CCPACSWing::BuildFusedSegments", TIGL_ERROR);
-			}
-			startWire = TopoDS::Wire(startShape);
-
+			TopoDS_Wire startWire = transformToWingCoords(startConnection, startProfile.GetWire(true));
 			generator.AddWire(startWire);
 		}
 
 		CCPACSWingConnection& endConnection = segments.GetSegment(segments.GetSegmentCount()).GetOuterConnection();
 		CCPACSWingProfile& endProfile = endConnection.GetProfile();
-		TopoDS_Wire endWire = endProfile.GetWire(true);
-		TopoDS_Shape endShape = endConnection.GetSectionElementTransformation().Transform(endWire);
-		endShape = endConnection.GetSectionTransformation().Transform(endShape);
-		endShape = endConnection.GetPositioningTransformation().Transform(endShape);
-		endWire = TopoDS::Wire(endShape);
+		TopoDS_Wire endWire = transformToWingCoords(endConnection,endProfile.GetWire(true));
 		generator.AddWire(endWire);
 
 		generator.CheckCompatibility(Standard_False);
@@ -359,15 +360,13 @@ namespace tigl {
     // Gets the upper point in absolute (world) coordinates for a given segment, eta, xsi
     gp_Pnt CCPACSWing::GetUpperPoint(int segmentIndex, double eta, double xsi)
     {
-        gp_Pnt pnt = ((CCPACSWingSegment &) GetSegment(segmentIndex)).GetUpperPoint(eta, xsi);
-        return GetWingTransformation().Transform(pnt);
+        return ((CCPACSWingSegment &) GetSegment(segmentIndex)).GetUpperPoint(eta, xsi);
     }
 
     // Gets the upper point in absolute (world) coordinates for a given segment, eta, xsi
     gp_Pnt CCPACSWing::GetLowerPoint(int segmentIndex, double eta, double xsi)
     {
-        gp_Pnt pnt = ((CCPACSWingSegment &) GetSegment(segmentIndex)).GetLowerPoint(eta, xsi);
-        return GetWingTransformation().Transform(pnt);
+        return  ((CCPACSWingSegment &) GetSegment(segmentIndex)).GetLowerPoint(eta, xsi);
     }
 
     // Returns the volume of this wing
