@@ -64,6 +64,9 @@ namespace tigl {
 
 		// Gets the loft between the two segment sections
         TopoDS_Shape& GetLoft(void);
+        
+        TopoDS_Shape GetInnerClosure();
+        TopoDS_Shape GetOuterClosure();
 
 		// Gets the upper point in relative wing coordinates for a given eta and xsi
 		gp_Pnt GetUpperPoint(double eta, double xsi);
