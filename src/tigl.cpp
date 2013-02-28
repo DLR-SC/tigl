@@ -36,6 +36,7 @@
 #include "CTiglUIDManager.h"
 #include "CCPACSWing.h"
 #include "CTiglExportIges.h"
+#include "CTiglExportStep.h"
 #include "CTiglExportStl.h"
 #include "CTiglExportVtk.h"
 #include "CTiglLogger.h"
@@ -2376,6 +2377,40 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportStructuredIGES(TiglCPACSConfiguratio
         return TIGL_ERROR;
     }
 }
+
+
+
+TIGL_COMMON_EXPORT TiglReturnCode tiglExportSTEP(TiglCPACSConfigurationHandle cpacsHandle, char* filenamePtr)
+{
+    if (filenamePtr == 0) {
+        LOG(ERROR) << "Error: Null pointer argument for filenamePtr";
+        LOG(ERROR) << "in function call to tiglExportSTEP." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+
+    try {
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+        tigl::CTiglExportStep exporter(config);
+        std::string filename = filenamePtr;
+        exporter.ExportStep(filename);
+        return TIGL_SUCCESS;
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglExportSTEP!" << std::endl;
+        return TIGL_ERROR;
+    }
+}
+
+
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedWingSTL(TiglCPACSConfigurationHandle cpacsHandle, int wingIndex,
                                                 char* filenamePtr, double deflection)

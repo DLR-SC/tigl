@@ -34,7 +34,7 @@ set (OCC_LIBS
 	TKMath TKMesh TKOffset TKPCAF
 	TKShHealing TKLCAF TKTopAlgo TKXCAF
 	TKSTL TKTopAlgo  TKStdSchema
-	TKXSBase TKStdLSchema  TKSTEPBase 
+	TKXSBase TKStdLSchema  TKSTEPBase TKXDESTEP
 )
 
 find_package( OpenCASCADE REQUIRED COMPONENTS ${OCC_LIBS})
