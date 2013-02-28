@@ -1,5 +1,5 @@
 /* 
-* Copyright (C) 2007-2011 German Aerospace Center (DLR/SC)
+* Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
 *
 * Created: 2010-08-13 Markus Litz <Markus.Litz@dlr.de>
 * Changed: $Id$ 
@@ -38,6 +38,11 @@
 #include "BRepAlgoAPI_Cut.hxx"
 #include "Bnd_Box.hxx"
 #include "BRepBndLib.hxx"
+#include "XCAFDoc_ShapeTool.hxx"
+#include "XCAFApp_Application.hxx"
+#include "XCAFDoc_DocumentTool.hxx"
+#include "TDataStd_Name.hxx"
+#include "TDataXtd_Shape.hxx"
 
 namespace {
 	inline double max(double a, double b){
@@ -253,6 +258,22 @@ namespace tigl {
     int CCPACSWing::GetSegmentCount(void)
     {
         return segments.GetSegmentCount();
+    }
+
+    // Get segment count
+    TDF_Label& CCPACSWing::ExportDataStructure(Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label)
+    {
+        TDF_Label& wingLabel = CTiglAbstractPhysicalComponent::ExportDataStructure(myAssembly, label);
+
+        // Other (sub)-components
+        for (int i=1; i <= segments.GetSegmentCount(); i++) {
+            CCPACSWingSegment& segment = segments.GetSegment(i);
+            TDF_Label wingSegmentLabel = myAssembly->AddShape(segment.GetLoft(), false);
+            TDataStd_Name::Set (wingSegmentLabel, segment.GetUID().c_str());
+            //TDF_Label& subSegmentLabel = segment.ExportDataStructure(myAssembly, wingSegmentLabel);
+        }
+
+        return wingLabel;
     }
 
     // Returns the segment for a given index

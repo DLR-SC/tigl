@@ -1,5 +1,5 @@
 /* 
-* Copyright (C) 2007-2011 German Aerospace Center (DLR/SC)
+* Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
 *
 * Created: 2010-08-13 Markus Litz <Markus.Litz@dlr.de>
 * Changed: $Id$ 
@@ -33,6 +33,9 @@
 #include "tigl.h"
 #include "CTiglTransformation.h"
 
+#include "TDF_Label.hxx"
+#include "Handle_XCAFDoc_ShapeTool.hxx"
+
 class TopoDS_Shape;
 
 
@@ -62,6 +65,10 @@ namespace tigl {
 
 		// Returns the Geometric type of this component, e.g. Wing or Fuselage
 		virtual TiglGeometricComponentType GetComponentType(void) = 0;
+
+        // builds data structure for a TDocStd_Application
+        // mostly used for export
+        virtual TDF_Label& ExportDataStructure(Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label) = 0;
 
     protected:
         // Resets the geometric component.

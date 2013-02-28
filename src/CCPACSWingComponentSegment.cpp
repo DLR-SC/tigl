@@ -1,5 +1,5 @@
 /* 
-* Copyright (C) 2007-2011 German Aerospace Center (DLR/SC)
+* Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
 *
 * Created: 2010-08-13 Markus Litz <Markus.Litz@dlr.de>
 * Changed: $Id$ 
@@ -514,5 +514,13 @@ namespace tigl {
 
 		return resultUID;
 	}
+
+
+    // builds data structure for a TDocStd_Application
+    // mostly used for export
+	TDF_Label& CCPACSWingComponentSegment::ExportDataStructure(Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label)
+    {
+        //
+    }
 
 } // end namespace tigl

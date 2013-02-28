@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2007-2011 German Aerospace Center (DLR/SC)
+* Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
 *
 * Created: 2010-08-13 Markus Litz <Markus.Litz@dlr.de>
 * Changed: $Id: TIGLViewerApplication.cpp 64 2011-08-02 13:54:09Z markus.litz $
