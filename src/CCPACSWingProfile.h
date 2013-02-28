@@ -80,6 +80,12 @@ namespace tigl {
 
         // Returns the wing profile wire.
         TopoDS_Wire GetWire(bool forceClosed = true);
+        
+        // Returns ths wing upper and lower profile wire
+        TopoDS_Wire GetUpperWire();
+        TopoDS_Wire GetLowerWire();
+        
+        TopoDS_Wire GetFusedUpperLowerWire();
 
         // Returns the leading edge point of the wing profile wire. The leading edge point
         // is already transformed by the wing profile element transformation.
@@ -152,6 +158,8 @@ namespace tigl {
         bool                      invalidated;    /**< Flag if element is invalid */
         TopoDS_Wire               wireClosed;     /**< Forced closed wing profile wire */
         TopoDS_Wire               wireOriginal;   /**< Original wing profile wire */
+        TopoDS_Wire               upperWire;      /**< wire of the upper wing profile */
+        TopoDS_Wire               lowerWire;      /**< wire of the lower wing profile */
         gp_Pnt                    lePoint;        /**< Leading edge point */
         gp_Pnt                    tePoint;        /**< Trailing edge point */
         WireAlgoPointer           profileWireAlgo;

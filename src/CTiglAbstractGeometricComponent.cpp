@@ -42,6 +42,7 @@ namespace tigl {
         SetUID("");
         mySymmetryAxis = TIGL_NO_SYMMETRY;
         transformation.SetIdentity();
+        backTransformation.SetIdentity();
         translation = CTiglPoint(0.,0.,0.);
         scaling     = CTiglPoint(1.,1.,1.);
         rotation    = CTiglPoint(0.,0.,0.);

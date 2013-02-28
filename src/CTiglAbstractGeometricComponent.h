@@ -79,6 +79,7 @@ namespace tigl {
         virtual void Reset(void);
 
         CTiglTransformation        transformation;
+        CTiglTransformation        backTransformation;
         CTiglPoint                 translation;
         CTiglPoint                 scaling;
         CTiglPoint                 rotation;

@@ -328,12 +328,9 @@ namespace tigl {
 			// if we found the outer section, break...
 			if( (segment.GetInnerSectionElementUID() == toElementUID) || (segment.GetOuterSectionElementUID() == toElementUID)) {
                 gp_Pnt pnt = segment.GetChordPoint(0,xsi);
-
-				pnt = wing->GetWingTransformation().Transform(pnt);
 				CPointContainer.push_back(pnt);
 
 				pnt = segment.GetChordPoint(1, xsi);
-				pnt = wing->GetWingTransformation().Transform(pnt);
 				CPointContainer.push_back(pnt);
 
 				i++;
@@ -349,7 +346,6 @@ namespace tigl {
 			if (!inComponentSection) continue;
 
 			gp_Pnt pnt = segment.GetChordPoint(0, xsi);
-			pnt = wing->GetWingTransformation().Transform(pnt);
 			CPointContainer.push_back(pnt);
 		}
 

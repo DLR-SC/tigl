@@ -39,9 +39,12 @@ namespace tigl {
 	public:
 		// Constructor
 		CTiglTransformation(void);
+		CTiglTransformation(const gp_GTrsf& ocMatrix);
 
 		// Virtual Destructor
 		virtual ~CTiglTransformation(void);
+		
+		CTiglTransformation& operator=(const CTiglTransformation&);
 
 		// Converts degree to radian, utility function
 		static double DegreeToRadian(double degree);
@@ -102,6 +105,9 @@ namespace tigl {
 		// Transforms a point with the current transformation matrix and
 		// returns the transformed point
 		gp_Pnt Transform(const gp_Pnt& point) const;
+		
+		// Returns the inverted Transformation
+		CTiglTransformation Inverted() const;
 
 		// Default copy constructor and assignment operator are correct
 		// since memberwise copy is enough for this class.
