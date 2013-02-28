@@ -1,5 +1,5 @@
 /* 
-* Copyright (C) 2007-2011 German Aerospace Center (DLR/SC)
+* Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
 *
 * Created: 2010-08-13 Markus Litz <Markus.Litz@dlr.de>
 * Changed: $Id$ 
@@ -69,15 +69,19 @@ namespace tigl {
 		wings.Invalidate();
         fuselages.Invalidate();
         fusedAirplane.Nullify();
+        configUID = "";
 	}
 
 	// Build up memory structure for whole CPACS file
 	void CCPACSConfiguration::ReadCPACS(char* configurationUID)
 	{
+	    if(!configurationUID) return;
+
 		header.ReadCPACS(tixiDocumentHandle);
 		wings.ReadCPACS(tixiDocumentHandle, configurationUID);
         fuselages.ReadCPACS(tixiDocumentHandle, configurationUID);
 
+        configUID = configurationUID;
 		// Now do parent <-> child transformations. Child should use the
 		// parent coordinate system as root. 
 		try {
@@ -88,7 +92,7 @@ namespace tigl {
 		}
 	}
 
-	// transform all components realtiv to their parents
+	// transform all components relative to their parents
     void CCPACSConfiguration::transformAllComponents(CTiglAbstractPhysicalComponent* parent)
     {
         CTiglAbstractPhysicalComponent::ChildContainerType& children = parent->GetChildren();
@@ -289,5 +293,11 @@ namespace tigl {
 
     	return xmax-xmin;
     }
+
+    // Returns the uid manager
+        std::string CCPACSConfiguration::GetUID(void)
+        {
+            return configUID;
+        }
 
 } // end namespace tigl
