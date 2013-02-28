@@ -1,5 +1,5 @@
 /* 
-* Copyright (C) 2007-2011 German Aerospace Center (DLR/SC)
+* Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
 *
 * Created: 2010-08-13 Markus Litz <Markus.Litz@dlr.de>
 * Changed: $Id$ 
@@ -142,6 +142,27 @@ void tiglExportIGES_f(TiglCPACSConfigurationHandle* cpacsHandle,
   free(cString);
 }
 
+void tiglExportStructuredIGES_f(TiglCPACSConfigurationHandle* cpacsHandle,
+                                  char* filenamePtr,
+                                  TiglReturnCode* returnCode,
+                                  int lengthString1)
+{
+  char *cString;
+  cString = makeCString(filenamePtr, lengthString1);
+  *returnCode = tiglExportStructuredIGES(*cpacsHandle, cString);
+  free(cString);
+}
+
+void tiglExportSTEP_f(TiglCPACSConfigurationHandle* cpacsHandle,
+                      char* filenamePtr,
+                      TiglReturnCode* returnCode,
+                      int lengthString1)
+{
+  char *cString;
+  cString = makeCString(filenamePtr, lengthString1);
+  *returnCode = tiglExportSTEP(*cpacsHandle, cString);
+  free(cString);
+}
 
 void tiglExportFusedIGES_f(TiglCPACSConfigurationHandle* cpacsHandle,
                            char* filenamePtr,
@@ -154,6 +175,16 @@ void tiglExportFusedIGES_f(TiglCPACSConfigurationHandle* cpacsHandle,
   free(cString);
 }
 
+void tiglExportStructuredSTEP_f(TiglCPACSConfigurationHandle* cpacsHandle,
+                                  char* filenamePtr,
+                                  TiglReturnCode* returnCode,
+                                  int lengthString1)
+{
+  char *cString;
+  cString = makeCString(filenamePtr, lengthString1);
+  *returnCode = tiglExportStructuredSTEP(*cpacsHandle, cString);
+  free(cString);
+}
 
 void tiglExportMeshedWingSTL_f(TiglCPACSConfigurationHandle* cpacsHandle,
 						   int* wingIndex,

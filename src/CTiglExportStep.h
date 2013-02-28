@@ -1,7 +1,7 @@
 /* 
 * Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
 *
-* Created: 2010-08-13 Markus Litz <Markus.Litz@dlr.de>
+* Created: 2013-02-28 Markus Litz <Markus.Litz@dlr.de>
 * Changed: $Id$ 
 *
 * Version: $Revision$
@@ -20,13 +20,12 @@
 */
 /**
 * @file
-* @brief  Export routines for CPACS configurations.
+* @brief  STEP-Export routines for CPACS configurations.
 */
 
-#ifndef CTIGLEXPORTIGES_H
-#define CTIGLEXPORTIGES_H
+#ifndef CTIGLEXPORTSTEP_H
+#define CTIGLEXPORTSTEP_H
 
-#include "TopTools_HSequenceOfShape.hxx"
 #include "CTiglUIDManager.h"
 #include "CCPACSHeader.h"
 #include "CCPACSWings.h"
@@ -34,31 +33,34 @@
 #include "CCPACSFuselages.h"
 #include "CCPACSFuselageProfile.h"
 
+#include "STEPCAFControl_Writer.hxx"
+#include "TopTools_HSequenceOfShape.hxx"
+
 class CCPACSConfiguration;
 
 namespace tigl {
 
-	class CTiglExportIges
+	class CTiglExportStep
 	{
 
 	public:
 		// Constructor
-		CTiglExportIges(CCPACSConfiguration& config);
+	    CTiglExportStep(CCPACSConfiguration& config);
 
 		// Virtual Destructor
-		virtual ~CTiglExportIges(void);
+		virtual ~CTiglExportStep(void);
 		
         // Exports the whole configuration as IGES file
-        void ExportIGES(const std::string& filename) const;
+        void ExportStep(const std::string& filename) const;
 
         // Exports the whole configuration, boolean fused, as IGES file
-        void ExportFusedIGES(const std::string& filename);
+        void ExportFusedStep(const std::string& filename);
 
         // Save a sequence of shapes in IGES Format
         void ExportShapes(const Handle(TopTools_HSequenceOfShape)& aHSequenceOfShape, const std::string& filename);
 
         // Saves as IGES, with cpacs metadata information in it
-        void ExportIgesWithCPACSMetadata(const std::string& filename);
+        void ExportStepWithCPACSMetadata(const std::string& filename);
 
 
     protected:
@@ -66,7 +68,7 @@ namespace tigl {
 
     private:
 		// Assignment operator
-		void operator=(const CTiglExportIges& ) { /* Do nothing */ }
+		void operator=(const CTiglExportStep& ) { /* Do nothing */ }
 
 	private:
 		CCPACSConfiguration&          myConfig;       /**< TIGL configuration object */
@@ -74,4 +76,4 @@ namespace tigl {
 
 } // end namespace tigl
 
-#endif // CTIGLEXPORTIGES_H
+#endif // CTIGLEXPORTSTEP_H
