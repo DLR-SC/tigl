@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2007-2011 German Aerospace Center (DLR/SC)
+* Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
 *
 * Created: 2010-08-13 Markus Litz <Markus.Litz@dlr.de>
 * Changed: $Id: TIGLViewerDocument.cpp 226 2012-10-23 19:18:29Z martinsiggel $
@@ -975,6 +975,53 @@ void TIGLViewerDocument::exportFusedAsIges()
 		}
 	}
 }
+
+void TIGLViewerDocument::exportAsStep()
+{
+    QString     fileName;
+    QString     fileType;
+    QFileInfo   fileInfo;
+
+    TIGLViewerInputOutput writer;
+
+    writeToStatusBar(tr("Saving as STEP file with TIGL..."));
+
+    fileName = QFileDialog::getSaveFileName(parent, tr("Save as..."), myLastFolder, tr("Export STEP(*.step *.stp)"));
+
+    if (!fileName.isEmpty())
+    {
+        QApplication::setOverrideCursor( Qt::WaitCursor );
+        TiglReturnCode err = tiglExportSTEP(m_cpacsHandle, qstringToCstring(fileName));
+        QApplication::restoreOverrideCursor();
+        if(err != TIGL_SUCCESS) {
+            displayError(QString("Error in function <u>tiglExportSTEP</u>. Error code: %1").arg(err), "TIGL Error");
+        }
+    }
+}
+
+void TIGLViewerDocument::exportAsStepWithMetaData()
+{
+    QString     fileName;
+    QString     fileType;
+    QFileInfo   fileInfo;
+
+    TIGLViewerInputOutput writer;
+
+    writeToStatusBar(tr("Saving as STEP file with CPACS MetaData TIGL..."));
+
+    fileName = QFileDialog::getSaveFileName(parent, tr("Save as..."), myLastFolder, tr("Export STEP(*.step *.stp)"));
+
+    if (!fileName.isEmpty())
+    {
+        QApplication::setOverrideCursor( Qt::WaitCursor );
+        TiglReturnCode err = tiglExportStructuredSTEP(m_cpacsHandle, qstringToCstring(fileName));
+        QApplication::restoreOverrideCursor();
+        if(err != TIGL_SUCCESS) {
+            displayError(QString("Error in function <u>tiglExportStructuredSTEP</u>. Error code: %1").arg(err), "TIGL Error");
+        }
+    }
+}
+
 
 void TIGLViewerDocument::exportMeshedWingSTL()
 {
