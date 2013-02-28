@@ -2355,6 +2355,35 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportStructuredIGES(TiglCPACSConfiguratio
                                                               char* filenamePtr);
 
 
+// ***************
+//       STEP
+// ***************
+
+/**
+* @brief Exports the geometry of a CPACS configuration to STEP format.
+*
+*
+* <b>Fortran syntax:</b>
+*
+* tigl_export_step(integer cpacsHandle, character*n filenamePtr, integer returnCode)
+* #PY:#
+*
+* @param cpacsHandle (in) : Handle for the CPACS configuration
+* @param filenamePtr (in) : Pointer to an STEP export file name
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_NULL_POINTER if filenamePtr is a null pointer
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglExportSTEP(TiglCPACSConfigurationHandle cpacsHandle,
+                                                 char* filenamePtr);
+
+
+// ***************
+//       STL
+// ***************
 /**
 * @brief Exports the boolean fused geometry of a wing meshed to STL format.
 *

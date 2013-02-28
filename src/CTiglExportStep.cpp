@@ -29,6 +29,7 @@
 
 #include "TopoDS_Shape.hxx"
 #include "STEPControl_Controller.hxx"
+#include "STEPCAFControl_Writer.hxx"
 #include "Standard_CString.hxx"
 #include "Interface_Static.hxx"
 #include "APIHeaderSection_MakeHeader.hxx"
