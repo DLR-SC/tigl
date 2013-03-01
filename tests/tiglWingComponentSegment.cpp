@@ -91,6 +91,33 @@ class WingComponentSegment2 : public ::testing::Test {
 };
 
 
+class WingComponentSegment3 : public ::testing::Test {
+ protected:
+  virtual void SetUp() {
+        const char* filename = "TestData/D150_v201.xml";
+        ReturnCode tixiRet;
+        TiglReturnCode tiglRet;
+
+        tiglHandle = -1;
+        tixiHandle = -1;
+        
+        tixiRet = tixiOpenDocument(filename, &tixiHandle);
+        ASSERT_EQ (SUCCESS, tixiRet);
+        tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "D150modelID", &tiglHandle);
+        ASSERT_EQ(TIGL_SUCCESS, tiglRet);
+  }
+
+  virtual void TearDown() {
+        ASSERT_EQ(TIGL_SUCCESS, tiglCloseCPACSConfiguration(tiglHandle));
+        ASSERT_EQ(SUCCESS, tixiCloseDocument(tixiHandle));
+        tiglHandle = -1;
+        tixiHandle = -1;
+  }
+
+  TixiDocumentHandle           tixiHandle;
+  TiglCPACSConfigurationHandle tiglHandle;
+};
+
 
 TixiDocumentHandle WingComponentSegment::tixiHandle = 0;
 TiglCPACSConfigurationHandle WingComponentSegment::tiglHandle = 0;
@@ -311,4 +338,15 @@ TEST_F(WingComponentSegmentSimple, tiglWingComponentSegmentPointGetSegmentEtaXsi
         ASSERT_NEAR(csXsi, 0.5, 1e-7);
         free(wingUID); wingUID = NULL;
         free(segmentUID); segmentUID = NULL;
+}
+
+TEST_F(WingComponentSegment3, tiglWingComponentSegmentPointGetSegmentEtaXsi_BUG1){
+    // now the tests
+    double sEta = 0., sXsi = 0.;
+    char *wingUID = NULL, *segmentUID = NULL;
+    TiglReturnCode ret = tiglWingComponentSegmentPointGetSegmentEtaXsi(tiglHandle, "D150_wing_CS", 0.0, 0.0, &wingUID, &segmentUID, &sEta, &sXsi);
+    ASSERT_EQ(TIGL_SUCCESS, ret);
+    ASSERT_STREQ("D150_wing_1ID", wingUID);
+    ASSERT_STREQ("D150_wing_1Segment2ID", segmentUID);
+    cout << "eta_s / xsi_s: " << sEta << "/" << sXsi << endl;
 }
