@@ -555,7 +555,7 @@ bool CTiglPolyObject::hasNormals() const {
 
 unsigned long CTiglPolyObject::getVertexIndexOfPolygon(unsigned long iPoint, unsigned long iPoly) const {
     if(iPoly < getNPolygons()){
-        if (iPoint >= 0 && iPoint < getNPointsOfPolygon(iPoly)){
+        if (iPoint < getNPointsOfPolygon(iPoly)){
             return impl->polys[iPoly].getPointIndex(iPoint);
         }
         else

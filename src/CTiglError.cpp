@@ -1,5 +1,5 @@
 /* 
-* Copyright (C) 2007-2011 German Aerospace Center (DLR/SC)
+* Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
 *
 * Created: 2010-08-13 Markus Litz <Markus.Litz@dlr.de>
 * Changed: $Id$ 
@@ -24,6 +24,7 @@
 */
 
 #include "CTiglError.h"
+#include "CTiglLogger.h"
 
 namespace tigl {
 
@@ -32,6 +33,7 @@ namespace tigl {
 		: err(error)
 		, code(errorCode)
 	{
+	    LOG(ERROR) << "CTiglError: Node=>" << code << " : " << error;
 	}
 
 	// Destructor

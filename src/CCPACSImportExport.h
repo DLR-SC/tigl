@@ -1,5 +1,5 @@
 /* 
-* Copyright (C) 2007-2011 German Aerospace Center (DLR/SC)
+* Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
 *
 * Created: 2010-08-13 Markus Litz <Markus.Litz@dlr.de>
 * Changed: $Id$ 
@@ -20,7 +20,8 @@
 */
 /**
 * @file 
-* @brief  Class to manage geometie import and export. At this time only export will be supported.
+* @brief  Class to build up a OCC-XDE document structure which could be exported
+*           in different file types.
 */
 
 #ifndef CCPACSIMPORTEXPORT_H
@@ -28,12 +29,11 @@
 
 #include "tixi.h"
 #include "CTiglError.h"
+#include "CCPACSConfiguration.h"
 #include <string>
-#include <vector>
-#include <climits>
 
-#include "TopTools_HSequenceOfShape.hxx"
 #include "TopoDS_Shape.hxx"
+#include "Handle_TDocStd_Document.hxx"
 
 
 namespace tigl {
@@ -44,18 +44,19 @@ namespace tigl {
 		
 	public:
 		// Constructor
-		CCPACSImportExport();
+		CCPACSImportExport(CCPACSConfiguration& config);
 
 		// Virtual Destructor
 		virtual ~CCPACSImportExport(void);
 
-		// Save a sequence of shapes in IGES Format
-		static void SaveIGES(const Handle(TopTools_HSequenceOfShape)& aHSequenceOfShape, const std::string& filename);
+		Handle_TDocStd_Document buildXDEStructure();
+
 
 	protected:
 		
 
 	private:
+		CCPACSConfiguration&    myConfig;
 	};
 
 } // end namespace tigl
