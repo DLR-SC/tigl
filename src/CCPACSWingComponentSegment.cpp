@@ -520,7 +520,8 @@ namespace tigl {
     // mostly used for export
 	TDF_Label& CCPACSWingComponentSegment::ExportDataStructure(Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label)
     {
-        //
+	    TDF_Label subLabel;
+	    return subLabel;
     }
 
 } // end namespace tigl
