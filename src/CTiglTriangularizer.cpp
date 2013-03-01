@@ -77,7 +77,7 @@ CTiglTriangularizer::CTiglTriangularizer(ITiglGeometricComponent& comp, Componen
 }
 
 bool isValidCoord(double c){
-    double tolerance = Precision::Confusion();
+    double tolerance = 2.e-4;
     if(c > -tolerance && c < 1+tolerance)
         return true;
     else 
