@@ -72,7 +72,7 @@ namespace tigl {
 
         // builds data structure for a TDocStd_Application
         // mostly used for export
-        virtual TDF_Label& ExportDataStructure(Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label) = 0;
+        virtual TDF_Label ExportDataStructure(Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label) = 0;
 
 		// Returns the segment for a given index
         virtual class CTiglAbstractSegment & GetSegment(const int index) = 0;
