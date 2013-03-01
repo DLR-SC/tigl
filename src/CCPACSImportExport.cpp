@@ -1,5 +1,5 @@
 /* 
-* Copyright (C) 2007-2011 German Aerospace Center (DLR/SC)
+* Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
 *
 * Created: 2010-08-13 Markus Litz <Markus.Litz@dlr.de>
 * Changed: $Id$ 
@@ -20,23 +20,33 @@
 */
 /**
 * @file 
-* @brief  Class to manage geometie import and export. At this time only export will be supported.
+* @brief  Class to build up a OCC-XDE document structure which could be exported
+*           in different file types.
 */
 
 #include "CCPACSImportExport.h"
+#include "CTiglLogger.h"
+#include "CCPACSConfigurationManager.h"
+
 #include <iostream>
 #include <sstream>
 #include <exception>
 
-#include "IGESControl_Controller.hxx"
-#include "IGESControl_Writer.hxx"
 #include "Interface_Static.hxx"
-
+#include "TCollection_ExtendedString.hxx"
+#include "XCAFDoc_ShapeTool.hxx"
+#include "XCAFApp_Application.hxx"
+#include "XCAFDoc_DocumentTool.hxx"
+#include "TDocStd_Document.hxx"
+#include "IGESControl_Controller.hxx"
+#include "IGESCAFControl_Writer.hxx"
+#include "TDataStd_Name.hxx"
 
 namespace tigl {
 
 	// Constructor
-	CCPACSImportExport::CCPACSImportExport()
+	CCPACSImportExport::CCPACSImportExport(CCPACSConfiguration& config)
+	:myConfig(config)
 	{
 	}
 
@@ -45,24 +55,33 @@ namespace tigl {
 	{
 	}
 
-	// Save a sequence of shapes in IGES Format
-	void CCPACSImportExport::SaveIGES(const Handle(TopTools_HSequenceOfShape)& aHSequenceOfShape, const std::string& filename)
-	{
-		IGESControl_Controller::Init();
-	    IGESControl_Writer igesWriter;
 
-        Interface_Static::SetIVal("write.iges.brep.mode", 0);
-        Interface_Static::SetCVal("write.iges.header.author", "TIGL");
-        Interface_Static::SetCVal("write.iges.header.company", "German Aerospace Center (DLR), SC");
+	Handle_TDocStd_Document CCPACSImportExport::buildXDEStructure()
+    {
 
-		for (Standard_Integer i=1;i<=aHSequenceOfShape->Length();i++)  
-		{
-			igesWriter.AddShape (aHSequenceOfShape->Value(i));
-		}
+        Handle(XCAFApp_Application) hApp = XCAFApp_Application::GetApplication();
+        Handle(TDocStd_Document) hDoc;
+        hApp->NewDocument(TCollection_ExtendedString("MDTV-XCAF"), hDoc);
+        Handle_XCAFDoc_ShapeTool hShapeTool = XCAFDoc_DocumentTool::ShapeTool(hDoc->Main());
+        TDF_Label rootLabel= TDF_TagSource::NewChild(hDoc->Main());
 
-		igesWriter.ComputeModel();
-		if (igesWriter.Write(const_cast<char*>(filename.c_str())) != Standard_True)
-            throw CTiglError("Error: Export of shapes to IGES file failed in CCPACSImportExport::SaveIGES", TIGL_ERROR);
-	}
+
+        CTiglUIDManager& uidManager = myConfig.GetUIDManager();
+
+        CTiglAbstractPhysicalComponent* rootComponent = uidManager.GetRootComponent();
+        if (rootComponent == NULL) {
+            LOG(ERROR) << "Error: No Root Component";
+            return NULL;
+        }
+
+        TDataStd_Name::Set (rootLabel, myConfig.GetUID().c_str());
+        rootComponent->ExportDataStructure(hShapeTool, rootLabel);
+
+
+        return hDoc;
+    }
+
+
+
 
 } // end namespace tigl

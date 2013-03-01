@@ -139,6 +139,9 @@
      </property>
      <addaction name="tiglExportIgesAction"/>
      <addaction name="tiglExportFusedIgesAction"/>
+     <addaction name="tiglExportStepAction"/>
+     <addaction name="tiglExportStepWithMetaDataAction"/>
+     <addaction name="tiglExportFusedStepAction"/>
      <addaction name="tiglExportMeshedWingSTL"/>
      <addaction name="tiglExportMeshedFuselageSTL"/>
      <addaction name="tiglExportMeshedWingVTK"/>
@@ -600,6 +603,22 @@
    </property>
    <property name="statusTip">
     <string>Export Fused Model as IGES.</string>
+   </property>
+  </action>
+    <action name="tiglExportStepAction">
+   <property name="text">
+    <string>Export Model as STEP</string>
+   </property>
+   <property name="statusTip">
+    <string>Export Model as STEP.</string>
+   </property>
+  </action>
+    <action name="tiglExportStepWithMetaDataAction">
+   <property name="text">
+    <string>Export Model as STEP with CPACS MetaData</string>
+   </property>
+   <property name="statusTip">
+    <string>Export Model as STEP.</string>
    </property>
   </action>
   <action name="tiglExportMeshedWingSTL">

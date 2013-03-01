@@ -1,5 +1,5 @@
-/*
-* Copyright (C) 2007-2011 German Aerospace Center (DLR/SC)
+/* 
+* Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
 *
 * Created: 2010-08-13 Markus Litz <Markus.Litz@dlr.de>
 * Changed: $Id$ 
@@ -237,6 +237,22 @@ namespace tigl {
     {
         CCPACSWingProfile & outerProfile = outerConnection.GetProfile();
         return transformProfileWire(GetWing().GetTransformation(), outerConnection, outerProfile.GetFusedUpperLowerWire());
+    }
+    
+    // helper function to get the inner closing of the wing segment
+    TopoDS_Shape CCPACSWingSegment::GetInnerClosure()
+    {
+        CCPACSWingProfile & innerProfile = innerConnection.GetProfile();
+        TopoDS_Wire wire = transformProfileWire(GetWing().GetTransformation(), innerConnection, innerProfile.GetWire(true));
+        return BRepBuilderAPI_MakeFace(wire).Face();
+    }
+    
+    // helper function to get the inner closing of the wing segment
+    TopoDS_Shape CCPACSWingSegment::GetOuterClosure()
+    {
+        CCPACSWingProfile & outerProfile = outerConnection.GetProfile();
+        TopoDS_Wire wire = transformProfileWire(GetWing().GetTransformation(), outerConnection, outerProfile.GetWire(true));
+        return BRepBuilderAPI_MakeFace(wire).Face();
     }
 
 	// Builds the loft between the two segment sections
@@ -761,5 +777,12 @@ namespace tigl {
 		}
 		return lowerShape;
 	}
+
+    // builds data structure for a TDocStd_Application
+    // mostly used for export
+	TDF_Label& CCPACSWingSegment::ExportDataStructure(Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label)
+    {
+        //
+    }
 
 } // end namespace tigl

@@ -1,5 +1,5 @@
 /* 
-* Copyright (C) 2007-2011 German Aerospace Center (DLR/SC)
+* Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
 *
 * Created: 2012-10-17 Martin Siggel <Martin.Siggel@dlr.de>
 * Changed: $Id$ 
