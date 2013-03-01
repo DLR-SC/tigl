@@ -68,7 +68,7 @@ namespace tigl {
 
         // builds data structure for a TDocStd_Application
         // mostly used for export
-        virtual TDF_Label& ExportDataStructure(Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label) = 0;
+        virtual TDF_Label ExportDataStructure(Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label) = 0;
 
     protected:
         // Resets the geometric component.

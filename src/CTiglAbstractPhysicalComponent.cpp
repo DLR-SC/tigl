@@ -91,7 +91,7 @@ namespace tigl {
     }
 
 
-    TDF_Label& CTiglAbstractPhysicalComponent::ExportDataStructure(Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label)
+    TDF_Label CTiglAbstractPhysicalComponent::ExportDataStructure(Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label)
     {
         // This component
         TDF_Label aLabel = myAssembly->AddShape(GetLoft(), false);

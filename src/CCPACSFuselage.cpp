@@ -237,9 +237,9 @@ namespace tigl {
         return segments.GetSegmentCount();
     }
 
-    TDF_Label& CCPACSFuselage::ExportDataStructure(Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label)
+    TDF_Label CCPACSFuselage::ExportDataStructure(Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label)
     {
-        TDF_Label& fuselageLabel = CTiglAbstractPhysicalComponent::ExportDataStructure(myAssembly, label);
+        TDF_Label fuselageLabel = CTiglAbstractPhysicalComponent::ExportDataStructure(myAssembly, label);
 
 //        // Export all segments
 //        gp_Trsf t0;
