@@ -68,7 +68,7 @@ namespace tigl {
         virtual ChildContainerType& GetChildren(void);
 
         // number of segments
-        virtual int GetSegmentCount(void) = 0;
+        virtual int GetSegmentCount(void) const = 0;
 
         // builds data structure for a TDocStd_Application
         // mostly used for export

@@ -73,7 +73,7 @@ namespace tigl {
 	}
 
 	// Gets total segment count
-	int CCPACSFuselageSegments::GetSegmentCount(void)
+	int CCPACSFuselageSegments::GetSegmentCount(void) const
 	{
 		return static_cast<int>(segments.size());
 	}

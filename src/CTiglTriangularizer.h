@@ -38,14 +38,15 @@ class CTiglTriangularizer : public CTiglPolyData
 {
 public:
     CTiglTriangularizer();
-    CTiglTriangularizer(TopoDS_Shape&, bool useMultipleObjects = false);
-    CTiglTriangularizer(class ITiglGeometricComponent& comp, ComponentTraingMode mode);
+    CTiglTriangularizer(TopoDS_Shape&, double deflection, bool useMultipleObjects = false);
+    CTiglTriangularizer(class ITiglGeometricComponent& comp, double deflection, ComponentTraingMode mode);
     
     void useMultipleObjects(bool);
     
 private:
-    int triangularizeComponent(class ITiglGeometricComponent &, ComponentTraingMode = NO_INFO);
-    int triangularizeShape(const TopoDS_Shape &);
+    int triangularizeComponent(class ITiglGeometricComponent &, double deflection, ComponentTraingMode = NO_INFO);
+    int triangularizeShape(const TopoDS_Shape &, double deflection);
+    int triangularizeWingFace(class CCPACSWing &wing, const TopoDS_Shape& shape, double deflection, ComponentTraingMode mode);
     int triangularizeFace(const TopoDS_Face &, unsigned long* & vertexIndexList, unsigned long& nVertices, unsigned long& iPolyLow, unsigned long& iPolyUp);
     int computeVTKMetaData(class CCPACSWing&);
     

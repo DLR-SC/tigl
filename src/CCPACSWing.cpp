@@ -78,7 +78,8 @@ namespace tigl {
         : segments(this)
     	, componentSegments(this)
         , configuration(config)
-		, rebuildFusedSegments(true)
+        , rebuildFusedSegments(true)
+        , rebuildFusedSegWEdge(true)
     {
         Cleanup();
     }
@@ -142,7 +143,8 @@ namespace tigl {
 
         BuildMatrix();
         invalidated = false;
-		rebuildFusedSegments = true;    // forces a rebuild of all segments with regards to the updated translation
+        rebuildFusedSegments = true;    // forces a rebuild of all segments with regards to the updated translation
+        rebuildFusedSegWEdge = true;
     }
 
     // Read CPACS wing element
@@ -255,7 +257,7 @@ namespace tigl {
     }
 
     // Get segment count
-    int CCPACSWing::GetSegmentCount(void)
+    int CCPACSWing::GetSegmentCount(void) const
     {
         return segments.GetSegmentCount();
     }
@@ -311,7 +313,7 @@ namespace tigl {
 	TopoDS_Shape & CCPACSWing::GetLoft(void)
 	{
 		if(rebuildFusedSegments) {
-			BuildFusedSegments();
+			fusedSegments = BuildFusedSegments(false);
 			// Transform by wing transformation
 		    fusedSegments = GetWingTransformation().Transform(fusedSegments);
 		}
@@ -319,9 +321,20 @@ namespace tigl {
 		return fusedSegments;
 	}
 
+    // Gets the loft of the whole wing with modeled leading edge.
+	TopoDS_Shape & CCPACSWing::GetLoftWithLeadingEdge(void)
+	{
+		if(rebuildFusedSegWEdge) {
+			fusedSegmentWithEdge = BuildFusedSegments(true);
+			// Transform by wing transformation
+			fusedSegmentWithEdge = GetWingTransformation().Transform(fusedSegmentWithEdge);
+		}
+		rebuildFusedSegWEdge = false;
+		return fusedSegmentWithEdge;
+	}
 
 	// Builds a fused shape of all wing segments
-	void CCPACSWing::BuildFusedSegments(void)
+	TopoDS_Shape CCPACSWing::BuildFusedSegments(bool splitWingInUpperAndLower)
 	{
 		//@todo: this probably works only if the wings does not split somewere
 		BRepOffsetAPI_ThruSections generator(Standard_True, Standard_True, Precision::Confusion() );
@@ -329,18 +342,26 @@ namespace tigl {
 		for (int i=1; i <= segments.GetSegmentCount(); i++) {
 			CCPACSWingConnection& startConnection = segments.GetSegment(i).GetInnerConnection();
 			CCPACSWingProfile& startProfile = startConnection.GetProfile();
-			TopoDS_Wire startWire = transformToWingCoords(startConnection, startProfile.GetWire(true));
+			TopoDS_Wire startWire;
+			if(!splitWingInUpperAndLower)
+				startWire = transformToWingCoords(startConnection, startProfile.GetWire(true));
+			else
+				startWire = transformToWingCoords(startConnection, startProfile.GetFusedUpperLowerWire());
 			generator.AddWire(startWire);
 		}
 
 		CCPACSWingConnection& endConnection = segments.GetSegment(segments.GetSegmentCount()).GetOuterConnection();
 		CCPACSWingProfile& endProfile = endConnection.GetProfile();
-		TopoDS_Wire endWire = transformToWingCoords(endConnection,endProfile.GetWire(true));
+		TopoDS_Wire endWire;
+		if(!splitWingInUpperAndLower)
+			endWire = transformToWingCoords(endConnection,endProfile.GetWire(true));
+		else
+			endWire = transformToWingCoords(endConnection,endProfile.GetFusedUpperLowerWire());
 		generator.AddWire(endWire);
 
 		generator.CheckCompatibility(Standard_False);
 		generator.Build();
-		fusedSegments = generator.Shape();
+		return generator.Shape();
 	}
 
 
