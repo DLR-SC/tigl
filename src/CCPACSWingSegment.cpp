@@ -242,16 +242,14 @@ namespace tigl {
     // helper function to get the inner closing of the wing segment
     TopoDS_Shape CCPACSWingSegment::GetInnerClosure()
     {
-        CCPACSWingProfile & innerProfile = innerConnection.GetProfile();
-        TopoDS_Wire wire = transformProfileWire(GetWing().GetTransformation(), innerConnection, innerProfile.GetWire(true));
+        TopoDS_Wire wire = GetInnerWire();
         return BRepBuilderAPI_MakeFace(wire).Face();
     }
     
     // helper function to get the inner closing of the wing segment
     TopoDS_Shape CCPACSWingSegment::GetOuterClosure()
     {
-        CCPACSWingProfile & outerProfile = outerConnection.GetProfile();
-        TopoDS_Wire wire = transformProfileWire(GetWing().GetTransformation(), outerConnection, outerProfile.GetWire(true));
+        TopoDS_Wire wire = GetOuterWire();
         return BRepBuilderAPI_MakeFace(wire).Face();
     }
 

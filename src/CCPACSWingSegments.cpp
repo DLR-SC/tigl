@@ -83,7 +83,7 @@ namespace tigl {
 	}
 
 	// Gets total segment count
-	int CCPACSWingSegments::GetSegmentCount(void)
+	int CCPACSWingSegments::GetSegmentCount(void) const
 	{
 		return static_cast<int>(segments.size());
 	}
