@@ -32,6 +32,7 @@
 #define TIGL_PATCHLEVEL          @TIGL_VERSION_PATCH@
 
 #define TIGL_VERSION_STRING      "@TIGL_VERSION@"
+#define TIGL_REVISION            "@TIGL_REVISION@"
 /*@}*/
 
 
