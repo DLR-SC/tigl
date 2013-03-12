@@ -47,11 +47,12 @@ class Tigl(object):
         
         if sys.platform == 'win32':
             self.TIGL = cdll.TIGL
+        elif sys.platform == "darwin":
+            self.TIGL = CDLL("libTIGL.dylib")
         else:
             self.TIGL = CDLL("libTIGL.so")
-        self.version = c_char_p()
-        self.version.value = self.TIGL.tiglGetVersion()
-        self.version = self.version.value
+        self.TIGL.tiglGetVersion.restype = c_char_p
+        self.version = self.TIGL.tiglGetVersion()
             
     def __del__(self):
         ''' The destructor cleans up the library '''
