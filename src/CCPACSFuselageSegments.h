@@ -60,7 +60,7 @@ namespace tigl {
 		CCPACSFuselageSegment& GetSegment(int index);
 
 		// Gets total segment count
-		int GetSegmentCount(void);
+		int GetSegmentCount(void) const;
 
 	protected:
 		// Cleanup routine

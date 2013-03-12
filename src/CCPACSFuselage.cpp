@@ -232,7 +232,7 @@ namespace tigl {
     }
 
     // Get segment count
-    int CCPACSFuselage::GetSegmentCount(void)
+    int CCPACSFuselage::GetSegmentCount(void) const
     {
         return segments.GetSegmentCount();
     }

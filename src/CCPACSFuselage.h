@@ -74,7 +74,7 @@ namespace tigl {
 		CCPACSFuselageSection& GetSection(int index) const;
 
         // Get segment count
-        int GetSegmentCount(void);
+        int GetSegmentCount(void) const;
 
         // builds data structure for a TDocStd_Application
         // mostly used for export

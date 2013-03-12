@@ -69,9 +69,7 @@ namespace tigl {
     void CTiglExportVtk::ExportMeshedWingVTKByUID(const std::string wingUID, const std::string& filename, const double deflection)
     {
         tigl::CCPACSWing& wing = myConfig.GetWing(wingUID);
-        BRepMesh::Mesh(wing.GetLoft(), deflection);
-        
-        CTiglTriangularizer wingTrian(wing, SEGMENT_INFO);
+        CTiglTriangularizer wingTrian(wing, deflection, SEGMENT_INFO);
         wingTrian.writeVTK(filename.c_str());
     }
 
@@ -108,9 +106,7 @@ namespace tigl {
     {
         CTiglAbstractPhysicalComponent & component = myConfig.GetWing(wingUID);
         TopoDS_Shape& loft = component.GetLoft();
-        BRepMesh::Mesh(loft, deflection);
-        
-        CTiglTriangularizer loftTrian(loft);
+        CTiglTriangularizer loftTrian(loft, deflection);
         loftTrian.writeVTK(filename.c_str());
     }
     
@@ -127,9 +123,7 @@ namespace tigl {
     {
         CTiglAbstractPhysicalComponent & component = myConfig.GetFuselage(fuselageUID);
         TopoDS_Shape& loft = component.GetLoft();
-        BRepMesh::Mesh(loft, deflection);
-        
-        CTiglTriangularizer loftTrian(loft);
+        CTiglTriangularizer loftTrian(loft, deflection);
         loftTrian.writeVTK(filename.c_str());
     }
     
