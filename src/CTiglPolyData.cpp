@@ -288,6 +288,11 @@ void CTiglPolyData::createVTK(TixiDocumentHandle& handle){
     tixiAddTextAttribute(handle, "/VTKFile", "byte_order", "LittleEndian");
     tixiAddTextAttribute(handle, "/VTKFile", "compressor", "vtkZLibDataCompressor");
 
+    std::stringstream stream;
+    stream << "tigl " << tiglGetVersion();
+    tixiCreateElement(handle, "/VTKFile","MetaData");
+    tixiAddTextAttribute(handle, "/VTKFile/MetaData", "creator", stream.str().c_str());
+    
     tixiCreateElement(handle, "/VTKFile", "PolyData");
 
     for(unsigned int iobj = 1; iobj <= getNObjects(); ++iobj ){
