@@ -24,6 +24,20 @@ set(CMAKE_LIBRARY_PATH "${CMAKE_LIBRARY_PATH}" ${TIGL_ADD_LIB_PATH})
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/contrib)
 include(GNUInstallDirs)
 
+OPTION(TIGL_NIGHTLY "Creates a nightly build of tigl (includes git sha into tigl version)s" OFF)
+mark_as_advanced(TIGL_NIGHTLY)
+if(TIGL_NIGHTLY)
+    message(STATUS "Nightly build enabled")
+
+    # get git revision for daily builds
+    include(GetGitRevisionDescription)
+    get_git_head_revision(REFSPEC HASHVAR)
+
+    if(NOT ${HASHVAR} STREQUAL "GITDIR-NOTFOUND")
+        set(TIGL_REVISION ${HASHVAR})
+    endif()
+endif(TIGL_NIGHTLY)
+
 set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR})
 
 # required opencascade libraries

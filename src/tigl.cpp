@@ -228,12 +228,21 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglIsCPACSConfigurationHandleValid(TiglCPACSC
 
 
 /**
-	gives the tigl version number
+* gives the tigl version number
 */
 TIGL_COMMON_EXPORT char* tiglGetVersion()
 {
-	static char version[] = TIGL_VERSION_STRING;
-	return version;
+    static char * version = NULL;
+    if(!version){
+        version = new char[512];
+        if(std::string(TIGL_REVISION).size() > 0){
+            sprintf(version, "%s rev%s", TIGL_VERSION_STRING, TIGL_REVISION);
+        }
+        else {
+            sprintf(version, "%s", TIGL_VERSION_STRING);
+        }
+    }
+    return version;
 }
 
 
