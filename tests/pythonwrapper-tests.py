@@ -97,16 +97,118 @@ class TestTiglApi(unittest.TestCase):
 		
 	def test_wingGetLowerPoint(self):
 		(x, y, z) = self.tigl.wingGetLowerPoint(1,1,0.5,0.5);
-
-	def test_exportMeshedWingVTKByIndex(self):
-		self.tigl.exportMeshedWingVTKByIndex(1, 'TestData/export/D150modelID_wing1_python.vtp', 0.01)
 		
+	def test_wingGetInnerConnectedSegmentCount(self):
+		segmentCount = self.tigl.wingGetInnerConnectedSegmentCount(1,1)
+		self.assertEqual(segmentCount,0)
+		
+	def test_wingGetOuterConnectedSegmentCount(self):
+		segmentCount = self.tigl.wingGetOuterConnectedSegmentCount(1,1)
+		self.assertEqual(segmentCount,1)
+
+	def test_wingGetInnerConnectedSegmentIndex(self):
+		try:
+			segIndex = self.tigl.wingGetInnerConnectedSegmentIndex(1,1,0)
+			self.assertEqual(True, False)
+		except TiglException as e:
+			self.assertEqual(e.code, TiglReturnCode.TIGL_INDEX_ERROR)
+	
+	def test_wingGetOuterConnectedSegmentIndex(self):
+		segIndex = self.tigl.wingGetOuterConnectedSegmentIndex(1,1,1)
+		self.assertEqual(segIndex,2)
+
+	def test_wingGetInnerSectionAndElementIndex(self):
+		(secindex, elementindex) = self.tigl.wingGetInnerSectionAndElementIndex(1,1)
+		self.assertEqual(secindex, 1)
+		self.assertEqual(elementindex,1)
+		
+	def test_wingGetOuterSectionAndElementIndex(self):
+		(secindex, elementindex) = self.tigl.wingGetOuterSectionAndElementIndex(1,1)
+		self.assertEqual(secindex, 2)
+		self.assertEqual(elementindex,1)
+	
+	def test_wingGetInnerSectionAndElementUID(self):
+		(secUID, elementUID) = self.tigl.wingGetInnerSectionAndElementUID(1,1)
+		self.assertEqual(secUID, 'D150_VAMP_W1_Sec1')
+		self.assertEqual(elementUID, 'D150_VAMP_W1_Sec1_Elem1')	
+
+	def test_wingGetOuterSectionAndElementUID(self):
+		(secUID, elementUID) = self.tigl.wingGetOuterSectionAndElementUID(1,1)
+		self.assertEqual(secUID, 'D150_VAMP_W1_Sec2')
+		self.assertEqual(elementUID, 'D150_VAMP_W1_Sec2_Elem1')		
+	
+	def test_wingGetProfileName(self):
+		profileName = self.tigl.wingGetProfileName(1,1,1)
+		self.assertEqual(profileName, 'NameD150_VAMP_W_SupCritProf1')
+		
+	def test_wingGetUID(self):
+		wingUID = self.tigl.wingGetUID(1)
+		self.assertEqual(wingUID, 'D150_VAMP_W1')
+	
+	def test_wingGetIndex(self):
+		wingIndex = self.tigl.wingGetIndex('D150_VAMP_W1')
+		self.assertEqual(wingIndex, 1)	
+		
+	def test_wingGetSegmentUID(self):
+		segmentUID = self.tigl.wingGetSegmentUID(1,1)
+		self.assertEqual(segmentUID, 'D150_VAMP_W1_Seg1')
+		
+	def test_wingGetSegmentIndex(self):
+		segmentIndex = self.tigl.wingGetSegmentIndex(1,'D150_VAMP_W1_Seg1')
+		self.assertEqual(segmentIndex, 1)
+		
+	def test_wingGetSectionUID(self):
+		sectionUID = self.tigl.wingGetSectionUID(1,1)
+		self.assertEqual(sectionUID, 'D150_VAMP_W1_Sec1')
+		
+	def test_wingGetSymmetry(self):
+		symm = self.tigl.wingGetSymmetry(1)
+		self.assertEqual(symm, TiglSymmetryAxis.TIGL_X_Z_PLANE)
+		
+	def test_wingComponentSegmentFindSegment(self):
+		(x, y, z) = self.tigl.wingGetUpperPoint(1,1,0.5,0.5);
+		(segUID, wingUID) = self.tigl.wingComponentSegmentFindSegment('D150_VAMP_W1_CompSeg1',x,y,z)
+		self.assertEqual(segUID, 'D150_VAMP_W1_Seg1')
+		self.assertEqual(wingUID, 'D150_VAMP_W1')
+
 	def test_wingComponentSegmentPointGetSegmentEtaXsi(self):
 		(wingUID, segmentUID, eta, xsi) = self.tigl.wingComponentSegmentPointGetSegmentEtaXsi('D150_VAMP_W1_CompSeg1', 0.0, 0.0)
 		self.assertEqual(wingUID, 'D150_VAMP_W1')
 		self.assertEqual(segmentUID, 'D150_VAMP_W1_Seg1')
 		self.assertAlmostEqual(eta, 0.0)
 		self.assertAlmostEqual(xsi, 0.0)
+		
+	def test_getFuselageCount(self):
+		fc = self.tigl.getFuselageCount()
+		self.assertEqual(fc,1)
+	
+	def test_fuselageGetSegmentCount(self):
+		sc = self.tigl.fuselageGetSegmentCount(1)
+		self.assertEqual(sc,59)
+		
+	def test_fuselageGetPoint(self):
+		for iseg in range(0,59):
+			(x,y,z) = self.tigl.fuselageGetPoint(1,iseg+1,0.5,0.5)
+		#check for illegal index
+		try:	
+			self.tigl.fuselageGetPoint(1,60,0.5,0.5)
+			self.assertEqual(False, True)
+		except TiglException as e:
+			self.assertEqual(e.code, TiglReturnCode.TIGL_INDEX_ERROR)
+	
+	def test_wingGetSurfaceArea(self):
+		area = self.tigl.wingGetSurfaceArea(1);
+		self.assertGreater(area, 125.)
+		self.assertLess(area, 135.)
+		
+	def test_wingGetReferenceArea(self):
+		area = self.tigl.wingGetReferenceArea(1);
+		self.assertGreater(area, 60.)
+		self.assertLess(area, 70.)
+
+	def test_exportMeshedWingVTKByIndex(self):
+		self.tigl.exportMeshedWingVTKByIndex(1, 'TestData/export/D150modelID_wing1_python.vtp', 0.01)
+		
 	
 # ----------------------------------------------------------------------- #		
 if __name__ == '__main__':
