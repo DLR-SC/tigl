@@ -44,6 +44,14 @@ class Tigl(object):
     def __init__(self):
         ''' The constructor initializes the TIGL library '''
         self._handle = c_int(-1)
+       
+        # We only support python2.5 - 3.0 now 
+        if sys.version_info>(3,0,0):
+            print("Python3 not supported in tiglWrapper.")
+            sys.exit()
+        elif sys.version_info<(2,5,0):
+            print("At least python 2.5 is needed from tiglWrapper.")
+            sys.exit()
         
         if sys.platform == 'win32':
             self.TIGL = cdll.TIGL
