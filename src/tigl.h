@@ -1383,7 +1383,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetPointAngle(TiglCPACSConfigurati
 *                                          integer segmentIndex,
 *                                          real eta,
 *                                          real alpha,
-*                                          real x_cs,
+*                                          real y_cs,
 *                                          real z_cs
 *                                          real pointXPtr,
 *                                          real pointYPtr,
