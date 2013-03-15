@@ -59,7 +59,7 @@ int main()
     pyramidBase->push_back(2);
     pyramidBase->push_back(1);
     pyramidBase->push_back(0);
-    pyramidGeometry->addPrimitiveSet(pyramidBase);
+    //pyramidGeometry->addPrimitiveSet(pyramidBase);
 
     //Repeat the same for each of the four sides. Again, vertices are
     //specified in counter-clockwise order.
@@ -76,21 +76,21 @@ int main()
     pyramidFaceTwo->push_back(1);
     pyramidFaceTwo->push_back(2);
     pyramidFaceTwo->push_back(4);
-    pyramidGeometry->addPrimitiveSet(pyramidFaceTwo);
+    //pyramidGeometry->addPrimitiveSet(pyramidFaceTwo);
 
     osg::DrawElementsUInt* pyramidFaceThree =
         new osg::DrawElementsUInt(osg::PrimitiveSet::TRIANGLES, 0);
     pyramidFaceThree->push_back(2);
     pyramidFaceThree->push_back(3);
     pyramidFaceThree->push_back(4);
-    pyramidGeometry->addPrimitiveSet(pyramidFaceThree);
+    //pyramidGeometry->addPrimitiveSet(pyramidFaceThree);
 
     osg::DrawElementsUInt* pyramidFaceFour =
         new osg::DrawElementsUInt(osg::PrimitiveSet::TRIANGLES, 0);
     pyramidFaceFour->push_back(3);
     pyramidFaceFour->push_back(0);
     pyramidFaceFour->push_back(4);
-    pyramidGeometry->addPrimitiveSet(pyramidFaceFour);
+    //pyramidGeometry->addPrimitiveSet(pyramidFaceFour);
 
     //Declare and load an array of Vec4 elements to store colors.
 
@@ -121,7 +121,7 @@ int main()
     // add the transform as a child of the root node and the
     // pyramid node as a child of the transform.
 
-    root->addChild(pyramidTwoXForm);
+    //root->addChild(pyramidTwoXForm);
     pyramidTwoXForm->addChild(pyramidGeode);
 
     // Declare and initialize a Vec3 instance to change the
@@ -134,7 +134,7 @@ int main()
     root->getOrCreateStateSet()->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
 
     //The final step is to set up and enter a simulation loop.
-
+	viewer.setUpViewInWindow(100,100,800,600,0);
     viewer.setSceneData( root );
     //viewer.run();
 
