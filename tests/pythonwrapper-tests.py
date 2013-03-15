@@ -196,6 +196,32 @@ class TestTiglApi(unittest.TestCase):
 		except TiglException as e:
 			self.assertEqual(e.code, TiglReturnCode.TIGL_INDEX_ERROR)
 	
+	def test_fuselageGetPointAngle(self):
+		wingIDX = 1
+		segIDX = 40
+		(x,y,z) = self.tigl.fuselageGetPointAngle(wingIDX, segIDX, 0.5, 90.0)
+		
+	def test_fuselageGetPointAngleTranslated(self):
+		fuselIDX = 1
+		segIDX = 40
+		ytrans = 0.1;
+		ztrans = -0.1;
+		(x,y,z) = self.tigl.fuselageGetPointAngleTranslated(fuselIDX, segIDX, 0.5, 90.0, ytrans, ztrans)
+		
+	def test_fuselageGetPointOnXPlane(self):
+		fuselIDX = 1
+		segIDX = 40
+		zpos = 0.7
+		(x,y,z) = self.tigl.fuselageGetPointOnXPlane(fuselIDX, segIDX,  0.5, zpos, 1)
+		self.assertAlmostEqual(zpos, z)
+	
+	def test_fuselageGetNumPointsOnXPlane(self):
+		fuselIDX = 1
+		segIDX = 40
+		zpos = 0.7
+		num = self.tigl.fuselageGetNumPointsOnXPlane(fuselIDX, segIDX,  0.5, zpos)
+		self.assertGreater(num, 0)
+	
 	def test_wingGetSurfaceArea(self):
 		area = self.tigl.wingGetSurfaceArea(1);
 		self.assertGreater(area, 125.)
