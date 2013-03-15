@@ -1,5 +1,5 @@
 /* 
-* Copyright (C) 2007-2011 German Aerospace Center (DLR/SC)
+* Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
 *
 * Created: 2010-08-13 Markus Litz <Markus.Litz@dlr.de>
 * Changed: $Id$ 
@@ -66,7 +66,10 @@ extern "C" {
 #define tiglIsCPACSConfigurationHandleValid_f TIGL_IS_CPACS_CONFIGURATION_HANDLE_VALID
 #define tiglGetVersion_f TIGL_GET_VERSION
 #define tiglExportIGES_f TIGL_EXPORT_IGES
+#define tiglExportStructuredIGES_f TIGL_EXPORT_STRUCTURED_IGES
 #define tiglExportFusedIGES_f TIGL_EXPORT_FUSED_WING_FUSELAGE_IGES
+#define tiglExportSTEP_f TIGL_EXPORT_STEP
+#define tiglExportStructuredSTEP_f TIGL_EXPORT_STRUCTURED_STEP
 #define tiglExportMeshedWingSTL_f TIGL_EXPORT_MESHED_WING_STL
 #define tiglExportMeshedFuselageSTL_f TIGL_EXPORT_MESHED_FUSELAGE_STL
 #define tiglExportMeshedGeometrySTL_f TIGL_EXPORT_MESHED_GEOMETRY_STL
@@ -140,6 +143,9 @@ extern "C" {
 #define tiglIsCPACSConfigurationHandleValid_f FORTRAN_NAME(tigl_is_cpacs_configuration_handle_valid)
 #define tiglGetVersion_f FORTRAN_NAME(tigl_get_version)
 #define tiglExportIGES_f FORTRAN_NAME(tigl_export_iges)
+#define tiglExportStructuredIGES_f FORTRAN_NAME(tigl_export_structured_iges)
+#define tiglExportSTEP_f FORTRAN_NAME(tigl_export_step)
+#define tiglExportStructuredSTEP_f FORTRAN_NAME(tigl_export_structured_step)
 #define tiglExportFusedIGES_f FORTRAN_NAME(tigl_export_fused_wing_fuselage_iges)
 #define tiglExportMeshedWingSTL_f FORTRAN_NAME(tigl_export_meshed_wing_stl)
 #define tiglExportMeshedFuselageSTL_f FORTRAN_NAME(tigl_export_meshed_fuselage_stl)
@@ -232,6 +238,21 @@ void tiglExportIGES_f(TiglCPACSConfigurationHandle* cpacsHandle,
                       char* filenamePtr,
                       TiglReturnCode* returnCode,
                       int lengthString1);
+
+void tiglExportStructuredIGES_f(TiglCPACSConfigurationHandle* cpacsHandle,
+                                char* filenamePtr,
+                                TiglReturnCode* returnCode,
+                                int lengthString1);
+
+void tiglExportSTEP_f(TiglCPACSConfigurationHandle* cpacsHandle,
+                      char* filenamePtr,
+                      TiglReturnCode* returnCode,
+                      int lengthString1);
+
+void tiglExportStructuredSTEP_f(TiglCPACSConfigurationHandle* cpacsHandle,
+                                char* filenamePtr,
+                                TiglReturnCode* returnCode,
+                                int lengthString1);
 
 void tiglExportFusedIGES_f(TiglCPACSConfigurationHandle* cpacsHandle,
 						   char* filenamePtr,

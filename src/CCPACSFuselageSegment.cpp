@@ -1,5 +1,5 @@
 /* 
-* Copyright (C) 2007-2011 German Aerospace Center (DLR/SC)
+* Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
 *
 * Created: 2010-08-13 Markus Litz <Markus.Litz@dlr.de>
 * Changed: $Id$ 
@@ -71,6 +71,12 @@
 #include "BRepBuilderAPI_Transform.hxx"
 #include "ShapeAnalysis_Surface.hxx"
 #include "BRepLib_FindSurface.hxx"
+#include "XCAFDoc_ShapeTool.hxx"
+#include "XCAFApp_Application.hxx"
+#include "XCAFDoc_DocumentTool.hxx"
+#include "TDataStd_Name.hxx"
+#include "TDataXtd_Shape.hxx"
+
 
 #ifndef max
 #define max(a, b) (((a) > (b)) ? (a) : (b))
@@ -702,6 +708,41 @@ namespace tigl {
         BRepGProp::LinearProperties(intersectionWire,System);
         myWireLength = System.Mass();
         return myWireLength;
+    }
+
+
+
+    // builds data structure for a TDocStd_Application
+    // mostly used for export
+    TDF_Label CCPACSFuselageSegment::ExportDataStructure(Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label)
+    {
+        TopExp_Explorer Ex1;
+        int i = 0;
+
+//        gp_Trsf t0;
+//        TopLoc_Location location0(t0);
+//        myAssembly->AddComponent(label, subLabel, location0);
+
+        Handle_XCAFDoc_ShapeTool newAssembly = XCAFDoc_DocumentTool::ShapeTool (label);
+        TDF_Label subLabel = myAssembly->NewShape();
+
+        for ( Ex1.Init(GetLoft(), TopAbs_FACE); Ex1.More(); Ex1.Next() )  {
+            //std::string numName = "Face_" + i;
+            subLabel = newAssembly->AddSubShape (label, Ex1.Current());
+            TDataStd_Name::Set(label, "xxx"); //numName.c_str());
+        }
+//        // This component
+//        TDF_Label aLabel = myAssembly->AddShape(GetLoft(), false);
+//        TDataStd_Name::Set (aLabel, GetUID().c_str());
+//
+//        // Other (sub)-components
+//        ChildContainerType::iterator it = childContainer.begin();
+//        for(; it != childContainer.end(); ++it){
+//            CTiglAbstractPhysicalComponent * pChild = *it;
+//            if(pChild) TDF_Label aLabel = pChild->ExportDataStructure(myAssembly);
+//        }
+
+        return subLabel;
     }
 
 } // end namespace tigl

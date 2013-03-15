@@ -360,11 +360,10 @@ TEST_F(TriangularizeShape, exportVTK_FusedWing){
     tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
     tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
     tigl::CCPACSWing& wing = config.GetWing(1);
-    BRepMesh::Mesh(wing.GetLoft(), 0.001);
     
     bool exportError = false;
     
-    tigl::CTiglTriangularizer t(wing.GetLoft());
+    tigl::CTiglTriangularizer t(wing.GetLoft(), 0.001);
     try{
         t.writeVTK("exported_fused_wing_simple.vtp");
     }
@@ -388,13 +387,11 @@ TEST_F(TriangularizeShape, exportVTK_CompoundWing){
         builder.Add(compound, wing.GetSegment(i).GetLoft());
     }
     
-    BRepMesh::Mesh(compound, 0.001);
-    
     bool exportError = false;
     
     clock_t start, stop;
     start = clock();
-    tigl::CTiglTriangularizer t(compound);
+    tigl::CTiglTriangularizer t(compound, 0.001);
     stop = clock();
     std::cout << "Triangularization time [ms]: " << (stop-start)/(double)CLOCKS_PER_SEC * 1000. << std::endl;
     std::cout << "Number of Polygons/Vertices: " << t.currentObject().getNPolygons() << "/" << t.currentObject().getNVertices()<<std::endl;
@@ -416,12 +413,11 @@ TEST_F(TriangularizeShape, exportVTK_WingSegmentInfo)
     tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
     tigl::CCPACSWing& wing = config.GetWing(1);
 
-    BRepMesh::Mesh(wing.GetLoft(), 0.0001);
     bool exportError = false;
     
     clock_t start, stop;
     start = clock();
-    tigl::CTiglTriangularizer trian(wing, SEGMENT_INFO);
+    tigl::CTiglTriangularizer trian(wing, 0.0001, SEGMENT_INFO);
     
     stop = clock();
     std::cout << "Triangularization time [ms]: " << (stop-start)/(double)CLOCKS_PER_SEC * 1000. << std::endl;

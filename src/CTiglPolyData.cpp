@@ -288,6 +288,11 @@ void CTiglPolyData::createVTK(TixiDocumentHandle& handle){
     tixiAddTextAttribute(handle, "/VTKFile", "byte_order", "LittleEndian");
     tixiAddTextAttribute(handle, "/VTKFile", "compressor", "vtkZLibDataCompressor");
 
+    std::stringstream stream;
+    stream << "tigl " << tiglGetVersion();
+    tixiCreateElement(handle, "/VTKFile","MetaData");
+    tixiAddTextAttribute(handle, "/VTKFile/MetaData", "creator", stream.str().c_str());
+    
     tixiCreateElement(handle, "/VTKFile", "PolyData");
 
     for(unsigned int iobj = 1; iobj <= getNObjects(); ++iobj ){
@@ -555,7 +560,7 @@ bool CTiglPolyObject::hasNormals() const {
 
 unsigned long CTiglPolyObject::getVertexIndexOfPolygon(unsigned long iPoint, unsigned long iPoly) const {
     if(iPoly < getNPolygons()){
-        if (iPoint >= 0 && iPoint < getNPointsOfPolygon(iPoly)){
+        if (iPoint < getNPointsOfPolygon(iPoly)){
             return impl->polys[iPoly].getPointIndex(iPoint);
         }
         else

@@ -1,5 +1,5 @@
 /* 
-* Copyright (C) 2007-2011 German Aerospace Center (DLR/SC)
+* Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
 *
 * Created: 2010-08-13 Markus Litz <Markus.Litz@dlr.de>
 * Changed: $Id$ 
@@ -75,7 +75,7 @@ namespace tigl {
 		CCPACSWingSection & GetSection(int index) const;
 
 		// Get segment count
-		int GetSegmentCount(void);
+		int GetSegmentCount(void) const;
 
 		// Returns the segment for a given index or uid
 		CTiglAbstractSegment & GetSegment(const int index);
@@ -83,6 +83,10 @@ namespace tigl {
 
 		// Get segment count
 		int GetComponentSegmentCount(void);
+
+        // builds data structure for a TDocStd_Application
+        // mostly used for export
+		TDF_Label ExportDataStructure(Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label);
 
 		// Returns the segment for a given index or uid
 		CTiglAbstractSegment & GetComponentSegment(const int index);
@@ -100,8 +104,9 @@ namespace tigl {
     	// Gets the upper point in absolute (world) coordinates for a given segment, eta, xsi
 	    gp_Pnt GetLowerPoint(int segmentIndex, double eta, double xsi);
 
-   		// Gets the loft of the whole wing.
-		TopoDS_Shape & GetLoft(void);
+        // Gets the loft of the whole wing.
+        TopoDS_Shape & GetLoft(void);
+        TopoDS_Shape & GetLoftWithLeadingEdge(void);
 
         // Gets the volume of this wing
         double GetVolume(void);
@@ -155,7 +160,7 @@ namespace tigl {
 		void Update(void);
 
 		// Adds all Segments of this wing to one shape
-		void BuildFusedSegments(void);
+		TopoDS_Shape BuildFusedSegments(bool splitWingInUpperAndLower);
 
 
     private:
@@ -172,9 +177,11 @@ namespace tigl {
 		CCPACSWingComponentSegments	componentSegments;     	/**< Wing ComponentSegments       */
 		CCPACSWingPositionings     	positionings;         	/**< Wing positionings   */
 		CCPACSConfiguration*       	configuration;        	/**< Parent configuration*/
-		TopoDS_Shape		       	fusedSegments;        	/**< All Segments in one shape */
+		TopoDS_Shape               	fusedSegments;        	/**< All Segments in one shape */
+		TopoDS_Shape               	fusedSegmentWithEdge; 	/**< All Segments in one shape plus modelled leading edge */ 
 		bool                       	invalidated;          	/**< Internal state flag */
 		bool                       	rebuildFusedSegments; 	/**< Indicates if segmentation fusing need rebuild */
+		bool                       	rebuildFusedSegWEdge; 	/**< Indicates if segmentation fusing need rebuild */
 		FusedElementsContainerType 	fusedElements;		 	/**< Stores already fused segments */
 		TopoDS_Compound			   	aCompound;
 		BRep_Builder			   	aBuilder;

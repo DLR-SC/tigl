@@ -1,5 +1,5 @@
 /* 
-* Copyright (C) 2007-2011 German Aerospace Center (DLR/SC)
+* Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
 *
 * Created: 2010-08-13 Markus Litz <Markus.Litz@dlr.de>
 * Changed: $Id$ 
@@ -99,16 +99,19 @@ namespace tigl {
         // Returns the uid manager
         CTiglUIDManager& GetUIDManager(void);
 
-		// Returns the bolean fused airplane as TopoDS_Shape
+		// Returns the boolean fused airplane as TopoDS_Shape
 		TopoDS_Shape& GetFusedAirplane(void);
 
 		// Returns the length of the airplane
 		double GetAirplaneLenth(void);
 
+		// Returns the UID of the loaded configuration.
+		std::string GetUID(void);
+
     protected:
         void OutputComponentTree(CTiglAbstractPhysicalComponent* parent);
 
-		// transform all components realtiv to their parents
+		// transform all components relative to their parents
         void transformAllComponents(CTiglAbstractPhysicalComponent* parent);
 
     private:
@@ -125,6 +128,7 @@ namespace tigl {
 		CCPACSFuselages              fuselages;            /**< Configuration fuselages element */
 		CTiglUIDManager              uidManager;           /**< Stores the unique ids of the components */
 		TopoDS_Shape				 fusedAirplane;		   /**< The complete airplaine as one fused shape */
+        std::string                  configUID;     /**< UID of the opened configuration   */
 	};
 
 } // end namespace tigl

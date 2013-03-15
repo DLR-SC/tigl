@@ -1,5 +1,5 @@
 /* 
-* Copyright (C) 2007-2011 German Aerospace Center (DLR/SC)
+* Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
 *
 * Created: 2010-08-13 Markus Litz <Markus.Litz@dlr.de>
 * Changed: $Id$ 
@@ -83,7 +83,7 @@ namespace tigl {
 	}
 
 	// Gets total segment count
-	int CCPACSWingSegments::GetSegmentCount(void)
+	int CCPACSWingSegments::GetSegmentCount(void) const
 	{
 		return static_cast<int>(segments.size());
 	}

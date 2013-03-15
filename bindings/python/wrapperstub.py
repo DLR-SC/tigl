@@ -1,5 +1,5 @@
 #############################################################################
-# Copyright (C) 2007-2011 German Aerospace Center (DLR/SC)
+# Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
 #
 # Created: 2010-08-13 Arne Bachmann <Arne.Bachmann@dlr.de>
 # Changed: $Id: dbms.h 4577 20xx-xx-xx 09:27:39Z litz_ma $ 
@@ -44,14 +44,23 @@ class Tigl(object):
     def __init__(self):
         ''' The constructor initializes the TIGL library '''
         self._handle = c_int(-1)
+       
+        # We only support python2.5 - 3.0 now 
+        if sys.version_info>(3,0,0):
+            print("Python3 not supported in tiglWrapper.")
+            sys.exit()
+        elif sys.version_info<(2,5,0):
+            print("At least python 2.5 is needed from tiglWrapper.")
+            sys.exit()
         
         if sys.platform == 'win32':
             self.TIGL = cdll.TIGL
+        elif sys.platform == "darwin":
+            self.TIGL = CDLL("libTIGL.dylib")
         else:
             self.TIGL = CDLL("libTIGL.so")
-        self.version = c_char_p()
-        self.version.value = self.TIGL.tiglGetVersion()
-        self.version = self.version.value
+        self.TIGL.tiglGetVersion.restype = c_char_p
+        self.version = self.TIGL.tiglGetVersion()
             
     def __del__(self):
         ''' The destructor cleans up the library '''

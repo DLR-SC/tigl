@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2007-2011 German Aerospace Center (DLR/SC)
+* Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
 *
 * Created: 2012-11-08 Martin Siggel <Martin.Siggel@dlr.de>
 * Changed: $Id$
@@ -26,59 +26,86 @@
 #include "CTiglAbstractPhysicalComponent.h"
 #include "CTiglError.h"
 
+#include "TDocStd_Document.hxx"
+#include "TCollection_ExtendedString.hxx"
+#include "TCollection_HAsciiString.hxx"
+#include "XCAFDoc_ShapeTool.hxx"
+#include "XCAFApp_Application.hxx"
+#include "XCAFDoc_DocumentTool.hxx"
+#include "TDataStd_Name.hxx"
+#include "TDataXtd_Shape.hxx"
+
 namespace tigl {
 
-CTiglAbstractPhysicalComponent::CTiglAbstractPhysicalComponent()
-    : CTiglAbstractGeometricComponent()
-{
-    childContainer.clear();
-}
-
-// Adds a child to this geometric component.
-void CTiglAbstractPhysicalComponent::AddChild(CTiglAbstractPhysicalComponent* componentPtr)
-{
-    if (componentPtr == 0) {
-        throw CTiglError("Error: Null pointer for component in CTiglAbstractGeometricComponent::AddChild", TIGL_NULL_POINTER);
+    CTiglAbstractPhysicalComponent::CTiglAbstractPhysicalComponent()
+        : CTiglAbstractGeometricComponent()
+    {
+        childContainer.clear();
     }
 
-    childContainer.push_back(componentPtr);
-}
+    // Adds a child to this geometric component.
+    void CTiglAbstractPhysicalComponent::AddChild(CTiglAbstractPhysicalComponent* componentPtr)
+    {
+        if (componentPtr == 0) {
+            throw CTiglError("Error: Null pointer for component in CTiglAbstractGeometricComponent::AddChild", TIGL_NULL_POINTER);
+        }
 
-// Returns a pointer to the list of children of a component.
-CTiglAbstractPhysicalComponent::ChildContainerType& CTiglAbstractPhysicalComponent::GetChildren(void)
-{
-    return childContainer;
-}
+        childContainer.push_back(componentPtr);
+    }
 
-// Resets the geometric component.
-void CTiglAbstractPhysicalComponent::Reset(void)
-{
-    CTiglAbstractGeometricComponent::Reset();
-    childContainer.clear();
-    SetParentUID("");
-}
+    // Returns a pointer to the list of children of a component.
+    CTiglAbstractPhysicalComponent::ChildContainerType& CTiglAbstractPhysicalComponent::GetChildren(void)
+    {
+        return childContainer;
+    }
 
-// Returns the parent unique id
-std::string& CTiglAbstractPhysicalComponent::GetParentUID(void)
-{
-    return parentUID;
-}
+    // Resets the geometric component.
+    void CTiglAbstractPhysicalComponent::Reset(void)
+    {
+        CTiglAbstractGeometricComponent::Reset();
+        childContainer.clear();
+        SetParentUID("");
+    }
 
-// Sets the parent uid.
-void CTiglAbstractPhysicalComponent::SetParentUID(const std::string& parentUID)
-{
-    this->parentUID = parentUID;
-}
+    // Returns the parent unique id
+    std::string& CTiglAbstractPhysicalComponent::GetParentUID(void)
+    {
+        return parentUID;
+    }
 
-void CTiglAbstractPhysicalComponent::SetSymmetryAxis(const std::string& axis){
-	CTiglAbstractGeometricComponent::SetSymmetryAxis(axis);
+    // Sets the parent uid.
+    void CTiglAbstractPhysicalComponent::SetParentUID(const std::string& parentUID)
+    {
+        this->parentUID = parentUID;
+    }
 
-	ChildContainerType::iterator it = childContainer.begin();
-	for(; it != childContainer.end(); ++it){
-		CTiglAbstractPhysicalComponent * pChild = *it;
-		if(pChild) pChild->SetSymmetryAxis(axis);
-	}
-}
+    void CTiglAbstractPhysicalComponent::SetSymmetryAxis(const std::string& axis)
+    {
+        CTiglAbstractGeometricComponent::SetSymmetryAxis(axis);
+
+        ChildContainerType::iterator it = childContainer.begin();
+        for(; it != childContainer.end(); ++it){
+            CTiglAbstractPhysicalComponent * pChild = *it;
+            if(pChild) pChild->SetSymmetryAxis(axis);
+        }
+    }
+
+
+    TDF_Label CTiglAbstractPhysicalComponent::ExportDataStructure(Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label)
+    {
+        // This component
+        TDF_Label aLabel = myAssembly->AddShape(GetLoft(), false);
+        TDataStd_Name::Set (aLabel, GetUID().c_str());
+
+        // Other (sub)-components
+        ChildContainerType::iterator it = childContainer.begin();
+        for(; it != childContainer.end(); ++it){
+            CTiglAbstractPhysicalComponent * pChild = *it;
+            if(pChild) TDF_Label newLabel = pChild->ExportDataStructure(myAssembly, aLabel);
+        }
+
+        return aLabel;
+    }
 
 } // namespace tigl
 

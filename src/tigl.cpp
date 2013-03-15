@@ -1,5 +1,5 @@
 /* 
-* Copyright (C) 2007-2011 German Aerospace Center (DLR/SC)
+* Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
 *
 * Created: 2010-08-13 Markus Litz <Markus.Litz@dlr.de>
 * Changed: $Id$ 
@@ -36,6 +36,7 @@
 #include "CTiglUIDManager.h"
 #include "CCPACSWing.h"
 #include "CTiglExportIges.h"
+#include "CTiglExportStep.h"
 #include "CTiglExportStl.h"
 #include "CTiglExportVtk.h"
 #include "CTiglLogger.h"
@@ -227,12 +228,21 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglIsCPACSConfigurationHandleValid(TiglCPACSC
 
 
 /**
-	gives the tigl version number
+* gives the tigl version number
 */
 TIGL_COMMON_EXPORT char* tiglGetVersion()
 {
-	static char version[] = TIGL_VERSION_STRING;
-	return version;
+    static char * version = NULL;
+    if(!version){
+        version = new char[512];
+        if(std::string(TIGL_REVISION).size() > 0){
+            sprintf(version, "%s rev%s", TIGL_VERSION_STRING, TIGL_REVISION);
+        }
+        else {
+            sprintf(version, "%s", TIGL_VERSION_STRING);
+        }
+    }
+    return version;
 }
 
 
@@ -2343,6 +2353,98 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportFusedWingFuselageIGES(TiglCPACSConfi
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglExportFusedWingFuselageIGES!" << std::endl;
+        return TIGL_ERROR;
+    }
+}
+
+TIGL_COMMON_EXPORT TiglReturnCode tiglExportStructuredIGES(TiglCPACSConfigurationHandle cpacsHandle, char* filenamePtr)
+{
+    if (filenamePtr == 0) {
+        LOG(ERROR) << "Error: Null pointer argument for filenamePtr";
+        LOG(ERROR) << "in function call to tiglExportStructuredIGES." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+
+    try {
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+        tigl::CTiglExportIges exporter(config);
+        std::string filename = filenamePtr;
+        exporter.ExportIgesWithCPACSMetadata(filename);
+        return TIGL_SUCCESS;
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglExportStructuredIGES!" << std::endl;
+        return TIGL_ERROR;
+    }
+}
+
+
+
+TIGL_COMMON_EXPORT TiglReturnCode tiglExportSTEP(TiglCPACSConfigurationHandle cpacsHandle, char* filenamePtr)
+{
+    if (filenamePtr == 0) {
+        LOG(ERROR) << "Error: Null pointer argument for filenamePtr";
+        LOG(ERROR) << "in function call to tiglExportSTEP." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+
+    try {
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+        tigl::CTiglExportStep exporter(config);
+        std::string filename = filenamePtr;
+        exporter.ExportStep(filename);
+        return TIGL_SUCCESS;
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglExportSTEP!" << std::endl;
+        return TIGL_ERROR;
+    }
+}
+
+TIGL_COMMON_EXPORT TiglReturnCode tiglExportStructuredSTEP(TiglCPACSConfigurationHandle cpacsHandle, char* filenamePtr)
+{
+    if (filenamePtr == 0) {
+        LOG(ERROR) << "Error: Null pointer argument for filenamePtr";
+        LOG(ERROR) << "in function call to tiglExportStructuredSTEP." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+
+    try {
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+        tigl::CTiglExportStep exporter(config);
+        std::string filename = filenamePtr;
+        exporter.ExportStepWithCPACSMetadata(filename);
+        return TIGL_SUCCESS;
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglExportStructuredSTEP!" << std::endl;
         return TIGL_ERROR;
     }
 }

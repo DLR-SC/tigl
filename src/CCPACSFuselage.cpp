@@ -1,5 +1,5 @@
 /* 
-* Copyright (C) 2007-2011 German Aerospace Center (DLR/SC)
+* Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
 *
 * Created: 2010-08-13 Markus Litz <Markus.Litz@dlr.de>
 * Changed: $Id$ 
@@ -43,6 +43,11 @@
 #include "BRepBuilderAPI_MakeWire.hxx"
 #include "GC_MakeSegment.hxx"
 #include "BRepExtrema_DistShapeShape.hxx"
+#include "XCAFDoc_ShapeTool.hxx"
+#include "XCAFApp_Application.hxx"
+#include "XCAFDoc_DocumentTool.hxx"
+#include "TDataStd_Name.hxx"
+#include "TDataXtd_Shape.hxx"
 
 #define _USE_MATH_DEFINES
 #include <math.h>
@@ -227,9 +232,38 @@ namespace tigl {
     }
 
     // Get segment count
-    int CCPACSFuselage::GetSegmentCount(void)
+    int CCPACSFuselage::GetSegmentCount(void) const
     {
         return segments.GetSegmentCount();
+    }
+
+    TDF_Label CCPACSFuselage::ExportDataStructure(Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label)
+    {
+        TDF_Label fuselageLabel = CTiglAbstractPhysicalComponent::ExportDataStructure(myAssembly, label);
+
+//        // Export all segments
+//        gp_Trsf t0;
+//        TopLoc_Location location0(t0);
+//        Handle(TDocStd_Document) doc;
+//        Handle ( XCAFApp_Application ) anApp = XCAFApp_Application::GetApplication();
+//        anApp->GetDocument(1, doc);
+//        TDF_Label aLabel = myAssembly->AddShape(segments.GetSegment(12).GetLoft(), false);
+//        TDataStd_Name::Set (aLabel, GetUID().c_str());
+//        TDF_Label labelA02 = myAssembly->NewShape();
+//        TDataStd_Name::Set(labelA02, "ASSEMBLY02");
+//        TDF_Label component05 = myAssembly->AddComponent(labelA02, aLabel, location0);
+
+        // All Segments
+
+        // Other (sub)-components
+        for (int i=1; i <= segments.GetSegmentCount(); i++) {
+            CCPACSFuselageSegment& segment = segments.GetSegment(i);
+            TDF_Label fuselageSegmentLabel = myAssembly->AddShape(segment.GetLoft(), false);
+            TDataStd_Name::Set (fuselageSegmentLabel, segment.GetUID().c_str());
+            //TDF_Label& subSegmentLabel = segment.ExportDataStructure(myAssembly, fuselageSegmentLabel);
+        }
+
+        return fuselageLabel;
     }
 
     // Returns the segment for a given index

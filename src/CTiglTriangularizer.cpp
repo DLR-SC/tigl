@@ -30,6 +30,8 @@
 #include <Poly_Triangulation.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepGProp_Face.hxx>
+#include <BRepMesh.hxx>
+#include <BRepTools.hxx>
 
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
@@ -44,13 +46,16 @@ CTiglTriangularizer::CTiglTriangularizer()
     useMultipleObjects(false);
 }
 
-CTiglTriangularizer::CTiglTriangularizer(TopoDS_Shape& shape, bool multipleObj) {
+CTiglTriangularizer::CTiglTriangularizer(TopoDS_Shape& shape, double deflection, bool multipleObj) {
     useMultipleObjects(multipleObj);
     
-    triangularizeShape(shape);
+    triangularizeShape(shape, deflection);
 }
 
-int CTiglTriangularizer::triangularizeShape(const TopoDS_Shape& shape){
+int CTiglTriangularizer::triangularizeShape(const TopoDS_Shape& shape, double deflection){
+    BRepTools::Clean (shape);
+    BRepMesh::Mesh(shape,deflection);
+    
     TopExp_Explorer shellExplorer;
     TopExp_Explorer faceExplorer;
     
@@ -70,106 +75,112 @@ int CTiglTriangularizer::triangularizeShape(const TopoDS_Shape& shape){
     return 0;
 }
 
-CTiglTriangularizer::CTiglTriangularizer(ITiglGeometricComponent& comp, ComponentTraingMode mode) {
+CTiglTriangularizer::CTiglTriangularizer(ITiglGeometricComponent& comp, double deflection, ComponentTraingMode mode) {
     useMultipleObjects(false);
     
-    triangularizeComponent(comp, mode);
+    triangularizeComponent(comp, deflection, mode);
 }
 
 bool isValidCoord(double c){
-    double tolerance = Precision::Confusion();
+    double tolerance = 2.e-4;
     if(c > -tolerance && c < 1+tolerance)
         return true;
     else 
         return false;
 }
 
-int CTiglTriangularizer::triangularizeComponent(ITiglGeometricComponent& component, ComponentTraingMode mode){
-    const TopoDS_Shape& shape = component.GetLoft();
+int CTiglTriangularizer::triangularizeComponent(ITiglGeometricComponent & component, double deflection, ComponentTraingMode mode){
+    if (component.GetComponentType() & TIGL_COMPONENT_WING){
+        CCPACSWing& wing = dynamic_cast<CCPACSWing&>(component);
+        if(int ret=triangularizeWingFace(wing, wing.GetLoftWithLeadingEdge(), deflection, mode)!=0){
+            return ret;
+        }
+    }
+    else {
+        TopoDS_Shape& shape = component.GetLoft();
+        return triangularizeShape(shape, deflection);
+    }
+    return TIGL_SUCCESS;
+}
+
+int CTiglTriangularizer::triangularizeWingFace(CCPACSWing &wing, const TopoDS_Shape& wingShape, double deflection, ComponentTraingMode mode){
+    BRepTools::Clean (wingShape);
+    BRepMesh::Mesh(wingShape, deflection);
     
-    TopExp_Explorer shellExplorer;
     TopExp_Explorer faceExplorer;
     
-    for (shellExplorer.Init(shape, TopAbs_SHELL); shellExplorer.More(); shellExplorer.Next()) {
-        const TopoDS_Shell shell = TopoDS::Shell(shellExplorer.Current());
-        
-        for (faceExplorer.Init(shell, TopAbs_FACE); faceExplorer.More(); faceExplorer.Next()) {
-            TopoDS_Face face = TopoDS::Face(faceExplorer.Current());
-            unsigned long * vertexIndexList = NULL;
-            unsigned long nVertices, iPolyLower, iPolyUpper;
-            triangularizeFace(face, vertexIndexList, nVertices, iPolyLower, iPolyUpper);
-            if(nVertices > 0 && vertexIndexList != NULL &&  mode ==  SEGMENT_INFO){
-                // compute a central point on the face
-                BRepGProp_Face prop(face);
-                Standard_Real umin, umax, vmin, vmax;
-                prop.Bounds(umin, umax, vmin, vmax);
-                
-                Standard_Real umean = 0.5*(umin+umax);
-                Standard_Real vmean = 0.5*(vmin+vmax);
-                
-                gp_Pnt centralP; gp_Vec n;
-                prop.Normal(umean,vmean,centralP,n);
-                
-                if(component.GetComponentType() & TIGL_COMPONENT_WING){
-                    
-                    // check to which segment this face belongs
-                    CCPACSWing& wing = dynamic_cast<CCPACSWing&>(component) ;
-                    int iSegmentFound = 0;
-                    for(int iSegment = 1 ; iSegment <= wing.GetSegmentCount(); ++iSegment){
-                        CCPACSWingSegment& segment = (CCPACSWingSegment&) wing.GetSegment(iSegment);
-                        double eta = 0., xsi = 0.;
-                        segment.GetEtaXsi(centralP, false, eta, xsi);
-                        
-                        if(isValidCoord(eta) && isValidCoord(xsi)){
-                            iSegmentFound = iSegment;
-                            break;
-                        }
-                    }
-
-                    currentObject().setMetadataElements("uID segmentIndex eta xsi isOnTop");
-                    if(iSegmentFound > 0){
-                        // determine if this face is an upper segment face
-                        CCPACSWingSegment& segment = (CCPACSWingSegment&) wing.GetSegment(iSegmentFound);
-                        
-                        // GetIsOnTop is very slow, therefore we do it only once per face 
-                        bool isUpperFace = segment.GetIsOnTop(centralP);
-                        
-                        for(unsigned int iPoly = iPolyLower; iPoly <= iPolyUpper; iPoly++){
-                            currentObject().setPolyDataReal(iPoly, "is_upper", (double) isUpperFace);
-                            currentObject().setPolyDataReal(iPoly, "segment_index", (double) iSegmentFound);
-                            
-                            unsigned long npoints = currentObject().getNPointsOfPolygon(iPoly);
-                            
-                            CTiglPoint baryCenter(0.,0.,0.);
-                            for(unsigned long jPoint = 0; jPoint < npoints; ++jPoint){
-                                unsigned long index = currentObject().getVertexIndexOfPolygon(jPoint, iPoly);
-                                baryCenter += currentObject().getVertexPoint(index);
-                            }
-                            baryCenter = baryCenter*(double)(1./(double)npoints);
-                            
-                            double eta = 0., xsi = 0.;
-                            segment.GetEtaXsi(baryCenter.Get_gp_Pnt(), false, eta, xsi);
-                            currentObject().setPolyDataReal(iPoly, "eta", eta);
-                            currentObject().setPolyDataReal(iPoly, "xsi", xsi);
-                            
-                            // create metadata string
-                            std::stringstream stream;
-                            stream << "\"" << segment.GetUID() << "\" " << iSegmentFound << " " << eta << " " << xsi << " " << isUpperFace;
-                            currentObject().setPolyMetadata(iPoly, stream.str().c_str());
-                        }
-                    }
-                    else {
-                        for(unsigned int iPoly = iPolyLower; iPoly <= iPolyUpper; iPoly++){
-                            currentObject().setPolyMetadata(iPoly,"\"\" 0 0.0 0.0 0");
-                        }
-                    } // iSegmentFound
-                } // isWing
-            } // advanced mode
+    for (faceExplorer.Init(wingShape, TopAbs_FACE); faceExplorer.More(); faceExplorer.Next()) {
+        TopoDS_Face face = TopoDS::Face(faceExplorer.Current());
+        unsigned long * vertexIndexList = NULL;
+        unsigned long nVertices, iPolyLower, iPolyUpper;
+        triangularizeFace(face, vertexIndexList, nVertices, iPolyLower, iPolyUpper);
+        if(nVertices > 0 && vertexIndexList != NULL &&  mode ==  SEGMENT_INFO){
+            // compute a central point on the face
+            BRepGProp_Face prop(face);
+            Standard_Real umin, umax, vmin, vmax;
+            prop.Bounds(umin, umax, vmin, vmax);
             
-            if(vertexIndexList) delete[] vertexIndexList;
-        } // for faces
+            Standard_Real umean = 0.5*(umin+umax);
+            Standard_Real vmean = 0.5*(vmin+vmax);
+            
+            gp_Pnt centralP; gp_Vec n;
+            prop.Normal(umean,vmean,centralP,n);
+            
+            // check to which segment this face belongs
+            int iSegmentFound = 0;
+            for(int iSegment = 1 ; iSegment <= wing.GetSegmentCount(); ++iSegment){
+                CCPACSWingSegment& segment = (CCPACSWingSegment&) wing.GetSegment(iSegment);
+                double eta = 0., xsi = 0.;
+                segment.GetEtaXsi(centralP, false, eta, xsi);
+                
+                if(isValidCoord(eta) && isValidCoord(xsi)){
+                    iSegmentFound = iSegment;
+                    break;
+                }
+            }
+            
+            currentObject().setMetadataElements("uID segmentIndex eta xsi isOnTop");
+            if(iSegmentFound > 0){
+                // determine if this face is an upper segment face
+                CCPACSWingSegment& segment = (CCPACSWingSegment&) wing.GetSegment(iSegmentFound);
+                
+                // GetIsOnTop is very slow, therefore we do it only once per face 
+                bool isUpperFace = segment.GetIsOnTop(centralP);
+                
+                for(unsigned int iPoly = iPolyLower; iPoly <= iPolyUpper; iPoly++){
+                    currentObject().setPolyDataReal(iPoly, "is_upper", (double) isUpperFace);
+                    currentObject().setPolyDataReal(iPoly, "segment_index", (double) iSegmentFound);
+                    
+                    unsigned long npoints = currentObject().getNPointsOfPolygon(iPoly);
+                    
+                    CTiglPoint baryCenter(0.,0.,0.);
+                    for(unsigned long jPoint = 0; jPoint < npoints; ++jPoint){
+                        unsigned long index = currentObject().getVertexIndexOfPolygon(jPoint, iPoly);
+                        baryCenter += currentObject().getVertexPoint(index);
+                    }
+                    baryCenter = baryCenter*(double)(1./(double)npoints);
+                    
+                    double eta = 0., xsi = 0.;
+                    segment.GetEtaXsi(baryCenter.Get_gp_Pnt(), false, eta, xsi);
+                    currentObject().setPolyDataReal(iPoly, "eta", eta);
+                    currentObject().setPolyDataReal(iPoly, "xsi", xsi);
+                    
+                    // create metadata string
+                    std::stringstream stream;
+                    stream << "\"" << segment.GetUID() << "\" " << iSegmentFound << " " << eta << " " << xsi << " " << isUpperFace;
+                    currentObject().setPolyMetadata(iPoly, stream.str().c_str());
+                }
+            }
+            else {
+                for(unsigned int iPoly = iPolyLower; iPoly <= iPolyUpper; iPoly++){
+                    currentObject().setPolyMetadata(iPoly,"\"\" 0 0.0 0.0 0");
+                }
+            } // iSegmentFound
+        } // advanced mode
+        
+        if(vertexIndexList) delete[] vertexIndexList;
+    } // for faces
         if(_useMultipleObjects) createNewObject();
-    } // for shells
     
     return 0;
 }

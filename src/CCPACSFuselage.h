@@ -1,5 +1,5 @@
 /* 
-* Copyright (C) 2007-2011 German Aerospace Center (DLR/SC)
+* Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
 *
 * Created: 2010-08-13 Markus Litz <Markus.Litz@dlr.de>
 * Changed: $Id$ 
@@ -74,7 +74,11 @@ namespace tigl {
 		CCPACSFuselageSection& GetSection(int index) const;
 
         // Get segment count
-        int GetSegmentCount(void);
+        int GetSegmentCount(void) const;
+
+        // builds data structure for a TDocStd_Application
+        // mostly used for export
+        TDF_Label ExportDataStructure(Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label);
 
         // Returns the segment for a given index
         CTiglAbstractSegment & GetSegment(const int index);
