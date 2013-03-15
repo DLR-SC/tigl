@@ -792,9 +792,10 @@ void TIGLViewerDocument::drawFuselageSamplePoints()
 
 void TIGLViewerDocument::drawFuselageSamplePointsAngle()
 {
+	// ask user defined angle
+	double angle = QInputDialog::getDouble(NULL, tr("Choose angle"), tr("Angle [°]:"), 45., 0., 360., 1);
+
 	int fuselageIndex = 1;
-	int segmentIndex = 15;
-	double angle = 45.0; // turn through 45 degrees
 	double x, y, z;
 
 	myAISContext->EraseAll(Standard_False);
@@ -810,20 +811,17 @@ void TIGLViewerDocument::drawFuselageSamplePointsAngle()
 		loft = fuselage.GetFuselageTransformation().Transform(loft);
 
 		displayShape(loft);
+
+		// Display the intersection point
+ 		tiglFuselageGetPointAngle(m_cpacsHandle,
+						fuselageIndex, i,
+						0.5, angle,
+						&x, &y, &z);
+
+		Handle(ISession_Point) aGraphicPoint = new ISession_Point(x, y, z);
+		myAISContext->Display(aGraphicPoint, Standard_False);
 	}
 
-	// Display the intersection point
-	tiglFuselageGetPointAngle(m_cpacsHandle,
-								fuselageIndex,
-								segmentIndex,
-								0.5,
-								angle,
-								&x,
-								&y,
-								&z);
-
-    Handle(ISession_Point) aGraphicPoint = new ISession_Point(x, y, z);
-	myAISContext->Display(aGraphicPoint, Standard_False);
 }
 
 

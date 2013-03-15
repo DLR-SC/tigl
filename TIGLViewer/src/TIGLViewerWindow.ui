@@ -569,13 +569,13 @@
   </action>
   <action name="drawFuselageSamplePointsAngleAction">
    <property name="text">
-    <string>Show Sample Fuselage point at 45°</string>
+    <string>Show Sample Fuselage point at Angle</string>
    </property>
    <property name="toolTip">
-    <string>Show sample point on a fuselage at 45° and eta = 0.5</string>
+    <string>Show sample point on a fuselage at user defined angle and eta = 0.5</string>
    </property>
    <property name="statusTip">
-    <string>Show sample point on a fuselage at 45° and eta = 0.5.</string>
+    <string>Show sample point on a fuselage at user defined angle and eta = 0.5</string>
    </property>
   </action>
   <action name="drawFusedFuselageAction">
@@ -605,7 +605,7 @@
     <string>Export Fused Model as IGES.</string>
    </property>
   </action>
-    <action name="tiglExportStepAction">
+  <action name="tiglExportStepAction">
    <property name="text">
     <string>Export Model as STEP</string>
    </property>
@@ -613,7 +613,7 @@
     <string>Export Model as STEP.</string>
    </property>
   </action>
-    <action name="tiglExportStepWithMetaDataAction">
+  <action name="tiglExportStepWithMetaDataAction">
    <property name="text">
     <string>Export Model as STEP with CPACS MetaData</string>
    </property>
