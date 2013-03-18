@@ -190,7 +190,7 @@ IF(WIN32)
   endif()
 
   # TKOpenGL is loaded as a plugin, hence we must manually install it
-  set( OCC_PLUGINS TKOpenGl.dll )
+  set( OCC_PLUGINS TKOpenGl.dll FWOSPlugin.dll)
   foreach( _plug ${OCC_PLUGINS} )
      set(OCC_PLUGINS_FULL ${OCC_PLUGINS_FULL} ${OpenCASCADE_DLL_DIRECTORY}/${_plug} )
   endforeach()

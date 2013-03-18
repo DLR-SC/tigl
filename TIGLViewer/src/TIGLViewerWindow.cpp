@@ -649,8 +649,9 @@ void TIGLViewerWindow::connectSignals()
 	// Export functions
 	connect(tiglExportFusedIgesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportFusedAsIges()));
 	connect(tiglExportIgesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportAsIges()));
-    connect(tiglExportStepWithMetaDataAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportAsStepWithMetaData()));
-    connect(tiglExportStepAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportAsStep()));
+	connect(tiglExportStructuredIgesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportAsStructuredIges()));
+	connect(tiglExportStepWithMetaDataAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportAsStepWithMetaData()));
+	connect(tiglExportStepAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportAsStep()));
 	connect(tiglExportMeshedWingSTL, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportMeshedWingSTL()));
 	connect(tiglExportMeshedFuselageSTL, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportMeshedFuselageSTL()));
 	connect(tiglExportMeshedWingVTK, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportMeshedWingVTK()));

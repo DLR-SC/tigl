@@ -977,6 +977,22 @@ void TIGLViewerDocument::exportFusedAsIges()
 	}
 }
 
+void TIGLViewerDocument::exportAsStructuredIges()
+{
+	writeToStatusBar(tr("Saving model as IGES file with CPACS metadata..."));
+
+	QString fileName = QFileDialog::getSaveFileName(parent, tr("Save as..."), myLastFolder, tr("Export IGES(*.iges *.igs)"));
+
+	if (!fileName.isEmpty()) {
+		QApplication::setOverrideCursor( Qt::WaitCursor );
+		TiglReturnCode err = tiglExportStructuredIGES(m_cpacsHandle, qstringToCstring(fileName));
+		QApplication::restoreOverrideCursor();
+		if(err != TIGL_SUCCESS) {
+			displayError(QString("Error in function <u>tiglExportStructuredIGES</u>. Error code: %1").arg(err), "TIGL Error");
+		}
+	}
+}
+
 void TIGLViewerDocument::exportAsStep()
 {
     QString     fileName;
