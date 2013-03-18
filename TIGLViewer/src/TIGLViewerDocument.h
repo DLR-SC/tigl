@@ -96,8 +96,9 @@ public slots:
 	// TIGL slots
 	void exportAsIges();
 	void exportFusedAsIges();
-    void exportAsStep();
-    void exportAsStepWithMetaData();
+	void exportAsStructuredIges();
+	void exportAsStep();
+	void exportAsStepWithMetaData();
 	void exportMeshedWingSTL();
 	void exportMeshedFuselageSTL();
 	void exportMeshedWingVTK();
