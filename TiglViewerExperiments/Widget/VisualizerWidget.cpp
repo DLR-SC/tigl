@@ -5,14 +5,17 @@
 #include "MaterialTemplate.h"
 #include <iostream>
 
+//VisualizerWidget is responsible for the visualization. GeometricVisObject and VirtualVisObjects are added here.
+
 VisualizerWidget::VisualizerWidget(QWidget* widget) : QWidget(widget)
 {
 		setThreadingModel(osgViewer::CompositeViewer::SingleThreaded);
 
 		root = new osg::Group();
 		vvo = new VirtualVisObject();
-		root->addChild(vvo);
 
+		root->addChild(vvo);
+		root->addChild(vvo->camera);
 
 		pickedNodes = new osg::Group();
 
@@ -22,7 +25,9 @@ VisualizerWidget::VisualizerWidget(QWidget* widget) : QWidget(widget)
 		_timer.start( 10 );
 	}
 
-QWidget* VisualizerWidget::addViewWidget(osg::Camera* camera){
+//Visualizer Widget contains 4 ViewWidgets with different perspectives of the scene
+
+QWidget* VisualizerWidget::addViewWidget(osg::Camera* camera, osg::Vec3 eye){
 		osgViewer::View* view = new osgViewer::View;
 		view->setCamera( camera );
 		addView( view );
@@ -30,8 +35,17 @@ QWidget* VisualizerWidget::addViewWidget(osg::Camera* camera){
 		view->setSceneData( root );
 		view->addEventHandler( new osgViewer::StatsHandler );
 		view->addEventHandler(new PickHandler());
-		view->addEventHandler(new SelectionBoxHandler());
-		view->setCameraManipulator( new osgGA::TrackballManipulator );
+		//view->addEventHandler(new SelectionBoxHandler());
+
+		osgGA::TrackballManipulator* tm = new osgGA::TrackballManipulator();
+
+		osg::Vec3 center(17.4f,8.5f, -1);//compute center here
+		osg::Vec3 relEye(eye.operator+(center));
+
+
+		tm->setHomePosition(eye, center, osg::Vec3(0,0,1));
+
+		view->setCameraManipulator( tm );
 		
 		osgQt::GraphicsWindowQt* gw = dynamic_cast<osgQt::GraphicsWindowQt*>( camera->getGraphicsContext() );
 		return gw ? gw->getGLWidget() : NULL;
@@ -63,12 +77,25 @@ osg::Camera* VisualizerWidget::createCamera( int x, int y, int w, int h, const s
 		return camera.release();
 	}
 
+//Adds GeometricVisObject to the scene. 
+
+/*void VisualizerWidget::addObject(tigl::CTiglPolyData& inputObject, char* objectName)
+{
+
+	osg::ref_ptr<GeometricVisObject> geode = new GeometricVisObject(inputObject, objectName);
+	root->addChild(geode.get());
+
+}*/
+
+//Adds GeometricVisObject read from a VTK-File
+
 void VisualizerWidget::addObject(char* filename, char* objectName)
 {
 	osg::ref_ptr<GeometricVisObject> geode = new GeometricVisObject(filename, objectName);
 	root->addChild(geode.get());
 
 }
+	
 	
 void VisualizerWidget::unpickNodes(){
 	for(unsigned int i = 0; i < this->pickedNodes->getNumChildren(); i++){
@@ -81,10 +108,10 @@ void VisualizerWidget::unpickNodes(){
 }
 
 void VisualizerWidget::setupGUI(){
-	QWidget* widget1 = addViewWidget( createCamera(0,0,100,100));
-	QWidget* widget2 = addViewWidget( createCamera(0,0,100,100));
-	QWidget* widget3 = addViewWidget( createCamera(0,0,100,100));
-	QWidget* widget4 = addViewWidget( createCamera(0,0,100,100));
+	QWidget* widget1 = addViewWidget( createCamera(0,0,100,100), osg::Vec3(50,0,0));
+	QWidget* widget2 = addViewWidget( createCamera(0,0,100,100), osg::Vec3(50,50,20));
+	QWidget* widget3 = addViewWidget( createCamera(0,0,100,100), osg::Vec3(0,0,30));
+	QWidget* widget4 = addViewWidget( createCamera(0,0,100,100), osg::Vec3(-50,-50,20));
 
 	grid = new QGridLayout(this);
 	grid->addWidget( widget1, 0, 0 );
@@ -95,12 +122,3 @@ void VisualizerWidget::setupGUI(){
 
 	
 }
-
-/*
-void VisualizerWidget::checkButtons(){
-	if(axisButton->isChecked()!=vvo->axesActive()) vvo->setAxes(axisButton->isChecked());
-	if(xyButton->isChecked()!=vvo->xyActive()) vvo->setXYGrid(xyButton->isChecked());
-	if(xzButton->isChecked()!=vvo->xzActive()) vvo->setXZGrid(xzButton->isChecked());
-	if(yzButton->isChecked()!=vvo->yzActive()) vvo->setYZGrid(yzButton->isChecked());
-	if(crossButton->isChecked()!=vvo->crossActive()) vvo->setCross(crossButton->isChecked());
-}*/

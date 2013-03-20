@@ -1,5 +1,4 @@
 #include "GeometricVisObject.h"
-#include "InputObject.h"
 #include "MaterialTemplate.h"
 #include <iostream>
 #include <time.h>
@@ -18,14 +17,14 @@
 GeometricVisObject::GeometricVisObject(char* filename, char* objectName)
 {
 	InputObject* inputObject = readVTK(filename);
-	create(inputObject);
+	createFromVTK(inputObject);
 
 	this->setName(objectName);
 	box = this->getBoundingBox();
 	std::cout<< box.center().x() << " "<<box.center().y() << " " << box.center().z() <<std::endl;
 }
 
-GeometricVisObject::GeometricVisObject(InputObject* inputObject, char* objectName)
+GeometricVisObject::GeometricVisObject(tigl::CTiglPolyData& inputObject, char* objectName)
 {
 	create(inputObject);
 	this->setName(objectName);
@@ -36,7 +35,7 @@ GeometricVisObject::~GeometricVisObject(void)
 {
 }
 
-void GeometricVisObject::create(InputObject* inputObject)
+void GeometricVisObject::createFromVTK(InputObject* inputObject)
 {	
 	osg::ref_ptr<osg::Geometry> geometry = new osg::Geometry();
 
@@ -45,12 +44,61 @@ void GeometricVisObject::create(InputObject* inputObject)
 	geometry->setVertexArray(inputObject->getVertices());
 	geometry->addPrimitiveSet(inputObject->getIndices());
 
+
 	this->addDrawable(geometry);
 	this->setPicked(false);
 
 	osgUtil::SmoothingVisitor sv;
 	sv.setCreaseAngle(osg::DegreesToRadians(80.0f));
 	this->accept(sv);
+}
+
+void GeometricVisObject::create(tigl::CTiglPolyData& polyData)
+{	
+	polyData.switchObject(1);
+	tigl::CTiglPolyObject& inputObject = polyData.currentObject();
+
+	osg::ref_ptr<osg::Geometry> geometry = new osg::Geometry();
+
+
+	this->getOrCreateStateSet()->setAttribute(MaterialTemplate::getMaterial(0));
+
+	osg::Vec3Array* vertices = new osg::Vec3Array();
+	osg::ref_ptr<osg::DrawElementsUInt> indices = new osg::DrawElementsUInt(osg::PrimitiveSet::TRIANGLES, inputObject.getNPolygons()*3);
+	osg::Vec3Array* normals = new osg::Vec3Array();
+
+
+	for(unsigned int i = 0; i < inputObject.getNVertices();i++){
+		tigl::CTiglPoint vertexPoint = inputObject.getVertexPoint(i);
+		tigl::CTiglPoint vertexNormal = inputObject.getVertexNormal(i);
+		osg::Vec3f normal(vertexNormal.x, vertexNormal.y, vertexNormal.z);
+		normal.normalize();
+		normals->push_back(normal);
+		vertices->push_back(osg::Vec3f(vertexPoint.x, vertexPoint.y, vertexPoint.z));
+
+	}
+
+	for(unsigned int iPoly = 0; iPoly < inputObject.getNPolygons(); iPoly++){
+		if(inputObject.getNPointsOfPolygon(iPoly) != 3){
+			std::cout << "Error: polygon has to be a triangle!" << std::endl;
+		}
+		for(unsigned int jPoint = 0; jPoint < inputObject.getNPointsOfPolygon(iPoly); jPoint++){
+			(*indices)[iPoly*3 + jPoint] = inputObject.getVertexIndexOfPolygon(jPoint, iPoly);
+		}
+	}
+
+	geometry->addPrimitiveSet(indices);
+	geometry->setVertexArray(vertices);
+	geometry->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
+	geometry->setNormalArray(normals);
+	geometry->setNormalIndices(geometry->getVertexIndices());
+
+	this->addDrawable(geometry);
+	
+	std::cout << this->getBoundingBox().center().x() <<" "<< this->getBoundingBox().center().y() << " "<< this->getBoundingBox().center().z() <<std::endl;
+
+
+	this->setPicked(false);
 }
 
 InputObject* GeometricVisObject::readVTK(char* xmlFilename)

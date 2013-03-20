@@ -21,11 +21,14 @@ macro( config_project PROGNAME LIBNAME )
 	target_link_libraries( ${PROGNAME} ${${LIBNAME}_LIBRARY} )
 endmacro()
 
-include_directories(${TIXI_INCLUDE_DIRS} ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
+include_directories(${PROJECT_SOURCE_DIR}/src ${OpenCASCADE_INCLUDE_DIR}  ${GLOG_INCLUDE_DIR} ${TIXI_INCLUDE_DIRS} ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 
 set(SOURCE_FILES
+	CrossNodeCallback.h
 	VisualizerWidget.cpp
 	VisualizerWidget.h
+	InputObject.h
+	InputObject.cpp
 	MainWindow.h
 	MainWindow.cpp 
 	main.cpp
@@ -37,9 +40,6 @@ set(SOURCE_FILES
 	PickHandler.h
 	VirtualVisObject.cpp
 	VirtualVisObject.h
-	VisObject.h
-	InputObject.cpp
-	InputObject.h
 	SelectionBoxHandler.cpp
 	SelectionBoxHandler.h
 )
@@ -51,7 +51,8 @@ QT4_WRAP_UI(HEADER_UI MainWindow.ui)
 add_executable(${PROGNAME} ${SOURCE_FILES} ${HEADER_MOC} ${HEADER_UI})
 target_link_libraries(${PROGNAME} 
 	${TIXI_LIBRARIES} 
-	${OCC_LIBS}
+	${OpenCASCADE_LIBRARIES} 
+	${GLOG_LIBRARIES}
 	TIGL_static
 )
 
@@ -65,13 +66,3 @@ config_project( ${PROGNAME} OSGVIEWER )
 config_project( ${PROGNAME} OSGGA )
 config_project( ${PROGNAME} OSGQT )
 config_project( ${PROGNAME} OSGDB )
-
-# required opencascade libraries
-set (TV_OCC_LIBS ${OCC_LIBS}
-	PTKernel TKOffset TKOpenGl
-	TKPShape TKSTEP
-	TKService TKShapeSchema  
-	TKV2d TKV3d TKVRML  
-)
-
-#find_package( OpenCASCADE REQUIRED COMPONENTS ${TV_OCC_LIBS})

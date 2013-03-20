@@ -177,7 +177,6 @@
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
-     <layout class="QGridLayout" name="gridLayout"/>
     </widget>
    </item>
   </layout>

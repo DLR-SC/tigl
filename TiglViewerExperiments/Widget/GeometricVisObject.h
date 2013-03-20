@@ -3,12 +3,13 @@
 
 #include <osg/Geode>
 #include "InputObject.h"
+#include "CTiglPolyData.h"
 
 class GeometricVisObject : public osg::Geode
 {
 public:
 	GeometricVisObject(char* filename, char* objectName);
-	GeometricVisObject(InputObject* inputOject, char* objectName);
+	GeometricVisObject(tigl::CTiglPolyData& polyData, char* objectName);
 	~GeometricVisObject(void);
 	void pick();
 	void unpick();
@@ -17,7 +18,8 @@ public:
 	void setPicked(bool v){this->picked = v;};
 
 private:
-	void create(InputObject* inputObject);
+	void create(tigl::CTiglPolyData& inputObject);
+	void createFromVTK(InputObject* inputObject);
 	InputObject* readVTK(char* filename);
 	int id;
 	bool picked;

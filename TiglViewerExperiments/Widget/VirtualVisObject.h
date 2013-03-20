@@ -3,6 +3,8 @@
 
 #include <osg/Group>
 #include <osg/Geode>
+#include <osg/MatrixTransform>
+#include <osg/PositionAttitudeTransform>
 
 class VirtualVisObject : public osg::Group
 {
@@ -31,13 +33,18 @@ public:
 	void setCross(bool active);
 	void setAxes(bool active);
 
+	osg::Camera* camera;
+
 
 private:
 	osg::ref_ptr<osg::Geode> axesGeode;
 	osg::ref_ptr<osg::Geode> crossGeode;
+	osg::ref_ptr<osg::MatrixTransform> crossMatrixTransform;
 	osg::ref_ptr<osg::Geode> xyGeode;
 	osg::ref_ptr<osg::Geode> xzGeode;
 	osg::ref_ptr<osg::Geode> yzGeode;
+
+	osg::ref_ptr<osg::PositionAttitudeTransform> hudAxesTransform;
 
 	void initXYGeode(int size, int unit);
 	void initXZGeode(int size, int unit);
