@@ -104,8 +104,8 @@ namespace tigl {
     // Exports a by UID selected wing, boolean fused and meshed, as STL file
     void CTiglExportVtk::ExportMeshedWingVTKSimpleByUID(const std::string wingUID, const std::string& filename, const double deflection)
     {
-        CTiglAbstractPhysicalComponent & component = myConfig.GetWing(wingUID);
-        TopoDS_Shape& loft = component.GetLoft();
+        CCPACSWing & component = dynamic_cast<CCPACSWing&>(myConfig.GetWing(wingUID));
+        TopoDS_Shape& loft = component.GetLoftWithLeadingEdge();
         CTiglTriangularizer loftTrian(loft, deflection);
         loftTrian.writeVTK(filename.c_str());
     }
