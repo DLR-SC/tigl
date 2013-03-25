@@ -22,6 +22,7 @@
 #include "CTiglPolyData.h"
 #include "CTiglPoint.h"
 #include "CTiglError.h"
+#include "CTiglLogger.h"
 #include "tigl.h"
 #include "tixi.h"
 
@@ -273,12 +274,42 @@ unsigned int CTiglPolyData::getNObjects(){
     return _objects.size();
 }
 
+unsigned long CTiglPolyData::getTotalPolygonCount(){
+    std::vector<CTiglPolyObject*>::iterator co = itCurrentObj;
+
+    unsigned long nPolys = 0;
+
+    for(unsigned int i = 1; i <= getNObjects(); ++i){
+        CTiglPolyObject& obj = switchObject(i);
+        nPolys += obj.getNPolygons();
+    }
+
+    itCurrentObj = co;
+    return nPolys;
+}
+
+unsigned long CTiglPolyData::getTotalVertexCount(){
+    std::vector<CTiglPolyObject*>::iterator co = itCurrentObj;
+
+    unsigned long nVertices = 0;
+
+    for(unsigned int i = 1; i <= getNObjects(); ++i){
+        CTiglPolyObject& obj = switchObject(i);
+        nVertices += obj.getNVertices();
+    }
+
+    itCurrentObj = co;
+    return nVertices;
+}
+
 void CTiglPolyData::writeVTK(const char *filename){
     TixiDocumentHandle handle;
     createVTK(handle);
     if(tixiSaveDocument(handle, filename)!= SUCCESS){
         throw CTiglError("Error saving vtk file!");
     }
+    LOG(INFO) << "VTK Export succeeded with " << getTotalPolygonCount()
+              << " polygons and " << getTotalVertexCount() << " vertices." << std::endl;
 }
 
 void CTiglPolyData::createVTK(TixiDocumentHandle& handle){
@@ -368,7 +399,7 @@ void CTiglPolyData::writeVTKPiece(TixiDocumentHandle& handle, unsigned int iObje
     char tmpPath[512];
     snprintf(tmpPath, 512, "%s/Points", piecepath);
     tixiAddTextElement(handle, tmpPath, "DataArray", stream1.str().c_str());
-    snprintf(tmpPath, 512,  "%s/DataArray", tmpPath);
+    snprintf(tmpPath, 512,  "%s/Points/DataArray", piecepath);
     tixiAddTextAttribute(handle, tmpPath, "type", "Float64");
     tixiAddTextAttribute(handle, tmpPath, "Name", "Points");
     tixiAddTextAttribute(handle, tmpPath, "NumberOfComponents", "3");
@@ -396,7 +427,7 @@ void CTiglPolyData::writeVTKPiece(TixiDocumentHandle& handle, unsigned int iObje
         }
 
         tixiAddTextElement(handle, tmpPath, "DataArray", stream.str().c_str());
-        snprintf(tmpPath, 512, "%s/DataArray", tmpPath);
+        snprintf(tmpPath, 512, "%s/PointData/DataArray", piecepath);
         tixiAddTextAttribute(handle, tmpPath, "type", "Float64");
         tixiAddTextAttribute(handle, tmpPath, "Name", "surf_normals");
         tixiAddTextAttribute(handle, tmpPath, "NumberOfComponents", "3");
@@ -421,7 +452,7 @@ void CTiglPolyData::writeVTKPiece(TixiDocumentHandle& handle, unsigned int iObje
     char tmpPath[512];
     snprintf(tmpPath, 512, "%s/Polys", piecepath);
     tixiAddTextElement(handle, tmpPath, "DataArray", stream2.str().c_str());
-    snprintf(tmpPath, 512, "%s/DataArray", tmpPath);
+    snprintf(tmpPath, 512, "%s/Polys/DataArray", piecepath);
     tixiAddTextAttribute(handle,tmpPath, "type", "Int32");
     tixiAddTextAttribute(handle, tmpPath, "Name", "connectivity");
     tixiAddTextAttribute(handle, tmpPath, "format", "ascii");
@@ -446,7 +477,7 @@ void CTiglPolyData::writeVTKPiece(TixiDocumentHandle& handle, unsigned int iObje
     char tmpPath[512];
     snprintf(tmpPath, 512, "%s/Polys", piecepath);
     tixiAddTextElement(handle, tmpPath, "DataArray", stream3.str().c_str());
-    snprintf(tmpPath, 512, "%s/DataArray[2]", tmpPath);
+    snprintf(tmpPath, 512, "%s/Polys/DataArray[2]", piecepath);
     tixiAddTextAttribute(handle, tmpPath, "type", "Int32");
     tixiAddTextAttribute(handle, tmpPath, "Name", "offsets");
     tixiAddIntegerAttribute(handle, tmpPath, "RangeMin", co.getNPointsOfPolygon(0) ,"%d");
@@ -490,7 +521,7 @@ void CTiglPolyData::writeVTKPiece(TixiDocumentHandle& handle, unsigned int iObje
         char tmpPath[512];
         snprintf(tmpPath, 512, "%s/Polys", piecepath);
         tixiAddTextElement(handle, tmpPath, "MetaData", stream4.str().c_str());
-        snprintf(tmpPath, 512, "%s/MetaData", tmpPath);
+        snprintf(tmpPath, 512, "%s/Polys/MetaData", piecepath);
         tixiAddTextAttribute(handle,  tmpPath, "elements", currentObject().getMetadataElements() );
     }
 
