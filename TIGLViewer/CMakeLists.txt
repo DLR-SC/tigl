@@ -201,7 +201,7 @@ INCLUDE(InstallRequiredSystemLibraries)
 
 	
 # set directories to look for dependencies
-set(DIRS ${TIXI_BINARY_DIR} ${OpenCASCADE_DLL_DIRECTORY}  ${OpenCASCADE_LINK_DIRECTORY} ${QT_BINARY_DIR} ${ADD_LIB_PATH})
+set(DIRS ${TIXI_BINARY_DIR} ${OpenCASCADE_DLL_DIRECTORY}  ${OpenCASCADE_LINK_DIRECTORY} ${QT_BINARY_DIR} ${TIGL_ADD_LIB_PATH})
 
 if (WIN32 OR APPLE)
   include(DeployQt4)
