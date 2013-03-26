@@ -146,6 +146,11 @@ public:
     // returns number of object
     unsigned int getNObjects();
 
+    // returns the total number of polygons, including all objects
+    unsigned long getTotalPolygonCount();
+    // returns the total number of vertices, including all objects
+    unsigned long getTotalVertexCount();
+
     // creates a new object, switches current object to the new one
     // we store the polygon data as different object
     // to allow hard edges

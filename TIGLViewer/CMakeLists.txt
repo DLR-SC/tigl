@@ -168,9 +168,9 @@ INSTALL(TARGETS ${PROGNAME}
     )
 
 
-set(APPS "\${CMAKE_INSTALL_PREFIX}/bin/${PROGNAME}")
+set(APPS "bin/${PROGNAME}")
 IF(APPLE)
-  set(APPS "\${CMAKE_INSTALL_PREFIX}/${PROGNAME}.app/Contents/MacOS/${PROGNAME}")
+  set(APPS "${PROGNAME}.app")
 
   # TKOpenGL is loaded as a plugin, hence we must manually install it
   INSTALL(FILES ${TKOpenGl_OCCLIB} DESTINATION ${PROGNAME}.app/Contents/MacOS/ COMPONENT viewer)
@@ -178,7 +178,7 @@ IF(APPLE)
   INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/gfx/${PROGNAME}.icns DESTINATION ${PROGNAME}.app/Contents/Resources/ COMPONENT viewer)
 ENDIF(APPLE)
 IF(WIN32)
-  set(APPS "\${CMAKE_INSTALL_PREFIX}/bin/${PROGNAME}.exe")
+  set(APPS "bin/${PROGNAME}.exe")
 
   # install runtime libs
   FILE(TO_CMAKE_PATH "$ENV{SYSTEMROOT}" SYSTEMROOT)
@@ -190,7 +190,7 @@ IF(WIN32)
   endif()
 
   # TKOpenGL is loaded as a plugin, hence we must manually install it
-  set( OCC_PLUGINS TKOpenGl.dll )
+  set( OCC_PLUGINS TKOpenGl.dll FWOSPlugin.dll)
   foreach( _plug ${OCC_PLUGINS} )
      set(OCC_PLUGINS_FULL ${OCC_PLUGINS_FULL} ${OpenCASCADE_DLL_DIRECTORY}/${_plug} )
   endforeach()
@@ -201,19 +201,11 @@ INCLUDE(InstallRequiredSystemLibraries)
 
 	
 # set directories to look for dependencies
-set(DIRS ${TIXI_BINARY_DIR} ${OpenCASCADE_DLL_DIRECTORY}  ${OpenCASCADE_LINK_DIRECTORY} ${QT_BINARY_DIR} ${ADD_LIB_PATH})
+set(DIRS ${TIXI_BINARY_DIR} ${OpenCASCADE_DLL_DIRECTORY}  ${OpenCASCADE_LINK_DIRECTORY} ${QT_BINARY_DIR} ${TIGL_ADD_LIB_PATH})
 
 if (WIN32 OR APPLE)
-  # Now the work of copying dependencies into the bundle/package
-  # The quotes are escaped and variables to use at install time have their $ escaped
-  # An alternative is the do a configure_file() on a script and use install(SCRIPT  ...).
-  INSTALL(CODE "
-    include(BundleUtilities)
-    set(BU_CHMOD_BUNDLE_ITEMS ON)
-    fixup_bundle(\"${APPS}\" \"${OCC_PLUGINS_FULL}\" \"${DIRS}\")
-    " COMPONENT viewer
-  )
-
+  include(DeployQt4)
+  INSTALL_QT4_EXECUTABLE(${APPS} "" "${OCC_PLUGINS_FULL}" "${DIRS}" "" "" viewer)
 endif()
 
 else(QT4_FOUND)

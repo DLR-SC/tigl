@@ -792,9 +792,13 @@ void TIGLViewerDocument::drawFuselageSamplePoints()
 
 void TIGLViewerDocument::drawFuselageSamplePointsAngle()
 {
+	// ask user defined angle
+	bool ok = false;
+	double angle = QInputDialog::getDouble(NULL, tr("Choose angle"), tr("Angle [°]:"), 45., 0., 360., 1, &ok);
+	if(!ok)
+		return;
+
 	int fuselageIndex = 1;
-	int segmentIndex = 15;
-	double angle = 45.0; // turn through 45 degrees
 	double x, y, z;
 
 	myAISContext->EraseAll(Standard_False);
@@ -810,20 +814,17 @@ void TIGLViewerDocument::drawFuselageSamplePointsAngle()
 		loft = fuselage.GetFuselageTransformation().Transform(loft);
 
 		displayShape(loft);
+
+		// Display the intersection point
+ 		tiglFuselageGetPointAngle(m_cpacsHandle,
+						fuselageIndex, i,
+						0.5, angle,
+						&x, &y, &z);
+
+		Handle(ISession_Point) aGraphicPoint = new ISession_Point(x, y, z);
+		myAISContext->Display(aGraphicPoint, Standard_False);
 	}
 
-	// Display the intersection point
-	tiglFuselageGetPointAngle(m_cpacsHandle,
-								fuselageIndex,
-								segmentIndex,
-								0.5,
-								angle,
-								&x,
-								&y,
-								&z);
-
-    Handle(ISession_Point) aGraphicPoint = new ISession_Point(x, y, z);
-	myAISContext->Display(aGraphicPoint, Standard_False);
 }
 
 
@@ -972,6 +973,22 @@ void TIGLViewerDocument::exportFusedAsIges()
 		QApplication::restoreOverrideCursor();
         if(err != TIGL_SUCCESS) {
 			displayError(QString("Error in function <u>tiglExportFusedWingFuselageIGES</u>. Error code: %1").arg(err), "TIGL Error");
+		}
+	}
+}
+
+void TIGLViewerDocument::exportAsStructuredIges()
+{
+	writeToStatusBar(tr("Saving model as IGES file with CPACS metadata..."));
+
+	QString fileName = QFileDialog::getSaveFileName(parent, tr("Save as..."), myLastFolder, tr("Export IGES(*.iges *.igs)"));
+
+	if (!fileName.isEmpty()) {
+		QApplication::setOverrideCursor( Qt::WaitCursor );
+		TiglReturnCode err = tiglExportStructuredIGES(m_cpacsHandle, qstringToCstring(fileName));
+		QApplication::restoreOverrideCursor();
+		if(err != TIGL_SUCCESS) {
+			displayError(QString("Error in function <u>tiglExportStructuredIGES</u>. Error code: %1").arg(err), "TIGL Error");
 		}
 	}
 }

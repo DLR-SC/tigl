@@ -131,25 +131,43 @@
    </widget>
    <widget class="QMenu" name="tiglMenu">
     <property name="title">
-     <string>&amp;TIGL Methods</string>
+     <string>&amp;TIGL Exports</string>
     </property>
-    <widget class="QMenu" name="tiglExportMenu">
+    <widget class="QMenu" name="menuExport_to_IGES">
      <property name="title">
-      <string>&amp;Export using TIGL</string>
+      <string>Export to IGES</string>
      </property>
      <addaction name="tiglExportIgesAction"/>
+     <addaction name="tiglExportStructuredIgesAction"/>
      <addaction name="tiglExportFusedIgesAction"/>
+    </widget>
+    <widget class="QMenu" name="menuExport_to_STEP">
+     <property name="title">
+      <string>Export to STEP</string>
+     </property>
      <addaction name="tiglExportStepAction"/>
      <addaction name="tiglExportStepWithMetaDataAction"/>
-     <addaction name="tiglExportFusedStepAction"/>
-     <addaction name="tiglExportMeshedWingSTL"/>
-     <addaction name="tiglExportMeshedFuselageSTL"/>
+    </widget>
+    <widget class="QMenu" name="menuExport_to_VTK">
+     <property name="title">
+      <string>Export to VTK</string>
+     </property>
      <addaction name="tiglExportMeshedWingVTK"/>
      <addaction name="tiglExportMeshedWingVTKsimple"/>
      <addaction name="tiglExportMeshedFuselageVTK"/>
      <addaction name="tiglExportMeshedFuselageVTKsimple"/>
     </widget>
-    <addaction name="tiglExportMenu"/>
+    <widget class="QMenu" name="menuExport_to_STL">
+     <property name="title">
+      <string>Export to STL</string>
+     </property>
+     <addaction name="tiglExportMeshedWingSTL"/>
+     <addaction name="tiglExportMeshedFuselageSTL"/>
+    </widget>
+    <addaction name="menuExport_to_IGES"/>
+    <addaction name="menuExport_to_VTK"/>
+    <addaction name="menuExport_to_STEP"/>
+    <addaction name="menuExport_to_STL"/>
    </widget>
    <widget class="QMenu" name="viewMenu">
     <property name="title">
@@ -569,13 +587,13 @@
   </action>
   <action name="drawFuselageSamplePointsAngleAction">
    <property name="text">
-    <string>Show Sample Fuselage point at 45°</string>
+    <string>Show Sample Fuselage point at Angle</string>
    </property>
    <property name="toolTip">
-    <string>Show sample point on a fuselage at 45° and eta = 0.5</string>
+    <string>Show sample point on a fuselage at user defined angle and eta = 0.5</string>
    </property>
    <property name="statusTip">
-    <string>Show sample point on a fuselage at 45° and eta = 0.5.</string>
+    <string>Show sample point on a fuselage at user defined angle and eta = 0.5</string>
    </property>
   </action>
   <action name="drawFusedFuselageAction">
@@ -605,7 +623,7 @@
     <string>Export Fused Model as IGES.</string>
    </property>
   </action>
-    <action name="tiglExportStepAction">
+  <action name="tiglExportStepAction">
    <property name="text">
     <string>Export Model as STEP</string>
    </property>
@@ -613,7 +631,7 @@
     <string>Export Model as STEP.</string>
    </property>
   </action>
-    <action name="tiglExportStepWithMetaDataAction">
+  <action name="tiglExportStepWithMetaDataAction">
    <property name="text">
     <string>Export Model as STEP with CPACS MetaData</string>
    </property>
@@ -1059,6 +1077,17 @@
   <action name="drawWingShellAction">
    <property name="text">
     <string>Show Wing Shells</string>
+   </property>
+  </action>
+  <action name="tiglExportStructuredIgesAction">
+   <property name="text">
+    <string>Export Model as structed IGES</string>
+   </property>
+   <property name="iconText">
+    <string>Export Model as IGES with CPACS metadata</string>
+   </property>
+   <property name="toolTip">
+    <string>Export Model as IGES with CPACS metadata</string>
    </property>
   </action>
  </widget>

@@ -38,8 +38,6 @@
 #include "CTiglAbstractSegment.h"
 
 #include "TopoDS_Shape.hxx"
-#include "TopoDS_Compound.hxx"
-#include "BRep_Builder.hxx"
 
 
 namespace tigl {
@@ -183,8 +181,6 @@ namespace tigl {
 		bool                       	rebuildFusedSegments; 	/**< Indicates if segmentation fusing need rebuild */
 		bool                       	rebuildFusedSegWEdge; 	/**< Indicates if segmentation fusing need rebuild */
 		FusedElementsContainerType 	fusedElements;		 	/**< Stores already fused segments */
-		TopoDS_Compound			   	aCompound;
-		BRep_Builder			   	aBuilder;
         double                     	myVolume;             	/**< Volume of this Wing                  */
 	};
 

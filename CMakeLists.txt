@@ -42,6 +42,7 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR})
 
 # required opencascade libraries
 set (OCC_LIBS 
+	FWOSPlugin
 	TKBO TKBool	TKBRep  
 	TKernel  TKG2d TKXDEIGES TKCAF
 	TKG3d TKGeomAlgo TKGeomBase  TKIGES
