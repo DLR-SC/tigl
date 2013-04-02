@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="de.dlr.tigl.tigl_android_test_2" default="help">
+    <property file="local.properties" />
+    <property file="build.properties" />
+    <property file="default.properties" />
+    <!-- Required pre-setup import -->
+    <import file="${sdk.dir}/tools/ant/pre_setup.xml" />
+    <setup />
+</project>
