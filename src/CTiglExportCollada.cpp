@@ -25,8 +25,6 @@ TODO:
 -translate rotate scale überprüfen
 -Material referenz fehlt (pong)
 
-- !!! change units !!! - collada has to know, that we use meters. else the objects are too small
-  if collada does not support units, we can just scale everything by a factor 100
 - extract col_id from filename (no absolute file path)
 - change, that multiple objects are stored as different collada objects
 
@@ -124,6 +122,10 @@ TiglReturnCode CTiglExportCollada::writeToDisc(CTiglPolyData& polyData, const ch
     tixiAddTextElement(handle, "/COLLADA/asset","created",  buffer);
     tixiAddTextElement(handle, "/COLLADA/asset","modified", buffer); 
     tixiAddTextElement(handle, "/COLLADA/asset","up_axis", "Z_UP");
+    
+    tixiCreateElement(handle, "/COLLADA/asset", "unit");
+    tixiAddTextAttribute(handle, "/COLLADA/asset/unit", "name", "meters");
+    tixiAddDoubleAttribute(handle, "/COLLADA/asset/unit", "meter", 1.0, "%f");
 
     // Body
     tixiCreateElement(handle,"/COLLADA","library_geometries");
