@@ -25,7 +25,11 @@ TODO:
 -translate rotate scale überprüfen
 -Material referenz fehlt (pong)
 
--UP_Axis = Z einfühgen <up_axis>Z_UP</up_axis> in Asset als letztes element
+- !!! change units !!! - collada has to know, that we use meters. else the objects are too small
+  if collada does not support units, we can just scale everything by a factor 100
+- extract col_id from filename (no absolute file path)
+- change, that multiple objects are stored as different collada objects
+
 */
 
 #include "CTiglExportCollada.h"
@@ -37,6 +41,11 @@ TODO:
 #include <cstdio>
 #include <ctime>
 #include <string>
+#include <cassert>
+
+#ifdef _MSC_VER
+    #define snprintf _snprintf
+#endif
 
 namespace tigl{
 
@@ -51,63 +60,53 @@ TiglReturnCode CTiglExportCollada::writeToDisc(CTiglPolyData& polyData, const ch
     char col_id[255];
     sprintf(col_id, "dummfile");
 
-    std::stringstream stream1;
-    std::stringstream stream2;
-    std::stringstream stream3;
+    std::stringstream stream_verts;
+    std::stringstream stream_normals;
+    std::stringstream stream_trians;
     unsigned long count_pos =0, count_norm =0, count_vert =0; // count Points, Normals, Verticies for COLLADA-schema arrays
 
-    ///*
-        for(int i = 1; i <= polyData.getNObjects(); ++i){
+        for(unsigned int i = 1; i <= polyData.getNObjects(); ++i){
             CTiglPolyObject& obj = polyData.switchObject(i);
 
             unsigned long nvert = obj.getNVertices();
             count_vert+=nvert;
-            for(int jvert = 0; jvert < nvert; ++jvert){
-                // write to vertex list and to normal list
+            for(unsigned long jvert = 0; jvert < nvert; ++jvert){
                 const CTiglPoint& v = obj.getVertexPoint(jvert);
                 const CTiglPoint& n = obj.getVertexNormal(jvert);
 
-                // write v.x, v.y ... with tixi , the same for normals nl
-
                 // VertexPoint
-                stream1 << "    " <<  v.x << " " << v.y << " " << v.z << std::endl;
-                stream1 << "         ";
+                stream_verts <<  v.x << " " << v.y << " " << v.z << " ";
 
                 // VertexNormals
-                stream2 << "    " <<  n.x << " " << n.y << " " << n.z << std::endl;
-                stream2 << "         ";
+                stream_normals <<  n.x << " " << n.y << " " << n.z << " ";
                 count_norm++;
                 count_pos++;
             }
 
             unsigned long ntria = obj.getNPolygons();
 
-            for(int jtria = 0; jtria < ntria; ++jtria){
-                // write to triange list
-                unsigned int npoints = obj.getNPointsOfPolygon(jtria);
-                if( npoints != 3){
-                    // display error message
-                    cout << "error npoints!=3";
-                }
+            for(unsigned long jtria = 0; jtria < ntria; ++jtria){
+                unsigned long npoints = obj.getNPointsOfPolygon(jtria);
+                assert( npoints == 3);
 
-                for(int kpoint = 0; kpoint < npoints; ++kpoint){
+                for(unsigned long kpoint = 0; kpoint < npoints; ++kpoint){
                     // get vertex index of polygon
                     unsigned long vindex = obj.getVertexIndexOfPolygon(kpoint, jtria);
 
                     // write vertex index into list of vertices and normals
-                    stream3 << "    " <<  vindex << " " << vindex << " ";
+                    stream_trians << vindex << " " << vindex << " ";
                     count_vert++;
                 }
             }
 
 
-        } //ende for
+        } //end for objects
 
 
 
-    // header für COLLADA
+    // COLLADA header
 
-    TixiDocumentHandle handle = -1;  //brauch ich wofür???
+    TixiDocumentHandle handle = -1;  
     tixiCreateDocument("COLLADA", &handle);
     tixiAddTextAttribute(handle, "/COLLADA", "xmlns", "http://www.collada.org/2008/03/COLLADASchema");
     tixiAddTextAttribute(handle, "/COLLADA", "version", "1.5.0");
@@ -123,12 +122,10 @@ TiglReturnCode CTiglExportCollada::writeToDisc(CTiglPolyData& polyData, const ch
     timeinfo = localtime (&rawtime);
     strftime (buffer,80,"%Y-%m-%dT%H:%S:%MZ",timeinfo);
     tixiAddTextElement(handle, "/COLLADA/asset","created",  buffer);
-    tixiAddTextElement(handle, "/COLLADA/asset","modified", buffer); // created und modified immer das selbe Datum???
+    tixiAddTextElement(handle, "/COLLADA/asset","modified", buffer); 
+    tixiAddTextElement(handle, "/COLLADA/asset","up_axis", "Z_UP");
 
-
-
-    // Body für COLLADA
-
+    // Body
     tixiCreateElement(handle,"/COLLADA","library_geometries");
 
     tixiCreateElement(handle,"/COLLADA/library_geometries", "geometry");
@@ -143,8 +140,8 @@ TiglReturnCode CTiglExportCollada::writeToDisc(CTiglPolyData& polyData, const ch
     tixiAddTextAttribute(handle, "/COLLADA/library_geometries/geometry/mesh/source", "id", tmpstr);
 
     /* ------ */
-    // Pos einfühgen - Werte in schleife
-    tixiAddTextElement(handle, "/COLLADA/library_geometries/geometry/mesh/source", "float_array", stream1.str().c_str());
+    // Vertices
+    tixiAddTextElement(handle, "/COLLADA/library_geometries/geometry/mesh/source", "float_array", stream_verts.str().c_str());
 
     tixiAddIntegerAttribute(handle, "/COLLADA/library_geometries/geometry/mesh/source/float_array", "count", count_pos*3, "%d"); // count(Pos)
     snprintf(tmpstr, 1024, "%s-Pos-array",col_id);
@@ -176,8 +173,8 @@ TiglReturnCode CTiglExportCollada::writeToDisc(CTiglPolyData& polyData, const ch
     tixiAddTextAttribute(handle, "/COLLADA/library_geometries/geometry/mesh/source[2]", "id", tmpstr);    //source[2] für das zweite Element mit dem Bezeichner source
 
     /* ------ */
-    // Normals einfügen - Werte in schleife
-    tixiAddTextElement(handle, "/COLLADA/library_geometries/geometry/mesh/source[2]", "float_array", stream2.str().c_str());
+    // Normals 
+    tixiAddTextElement(handle, "/COLLADA/library_geometries/geometry/mesh/source[2]", "float_array", stream_normals.str().c_str());
 
     tixiAddIntegerAttribute(handle, "/COLLADA/library_geometries/geometry/mesh/source[2]/float_array", "count", (count_norm*3), "%d");
     snprintf(tmpstr, 1024, "%s-normals-array",col_id);
@@ -230,8 +227,8 @@ TiglReturnCode CTiglExportCollada::writeToDisc(CTiglPolyData& polyData, const ch
     tixiAddTextAttribute(handle, "/COLLADA/library_geometries/geometry/mesh/triangles/input[2]","source",tmpstr);
 
     /* ------ */
-    // Vertices einfühgen, Werte in Schleifendurchlauf
-    tixiAddTextElement(handle, "/COLLADA/library_geometries/geometry/mesh//triangles", "p", stream3.str().c_str());
+    // Insert vertex data
+    tixiAddTextElement(handle, "/COLLADA/library_geometries/geometry/mesh//triangles", "p", stream_trians.str().c_str());
 
     tixiCreateElement(handle, "/COLLADA", "library_visual_scenes");
 
