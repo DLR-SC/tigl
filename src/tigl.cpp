@@ -49,12 +49,15 @@
 /* Public visible functions.                                                 */
 /*****************************************************************************/
 
-TIGL_COMMON_EXPORT TiglReturnCode tiglOpenCPACSConfiguration(TixiDocumentHandle tixiHandle, char* configurationUID, TiglCPACSConfigurationHandle* cpacsHandlePtr)
+TIGL_COMMON_EXPORT TiglReturnCode tiglOpenCPACSConfiguration(TixiDocumentHandle tixiHandle, const char* configurationUID_cstr, TiglCPACSConfigurationHandle* cpacsHandlePtr)
 {
     // Initialize logger
     tigl::CTiglLogger& Logger = tigl::CTiglLogger::GetLogger();
     LOG(INFO) << "TIGL-Logger initialized.";
 
+    std::string configurationUID;
+    if(configurationUID_cstr) configurationUID = configurationUID_cstr;
+    
     if (cpacsHandlePtr == 0) {
         LOG(ERROR) << "Error: Null pointer argument for cpacsHandlePtr in function call to tiglOpenCPACSConfiguration." << std::endl;
         return TIGL_NULL_POINTER;
@@ -92,7 +95,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglOpenCPACSConfiguration(TixiDocumentHandle 
 
 	/* check if there is only one configuration in the data set. Then we open this */
 	/* configuration automatically */
-	if (configurationUID == 0 || strcmp(configurationUID, "")==0) {
+	if (configurationUID == "") {
 		ReturnCode    tixiRet;
 		int sectionCount = 0;
 
@@ -101,11 +104,13 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglOpenCPACSConfiguration(TixiDocumentHandle 
 		    LOG(ERROR) << "No configuration specified!" << std::endl;
 			return TIGL_ERROR;
 		}
-		tixiGetTextAttribute(tixiHandle, "/cpacs/vehicles/aircraft/model", "uID", &configurationUID);
+		char * tmpConfUID = NULL;
+		tixiGetTextAttribute(tixiHandle, "/cpacs/vehicles/aircraft/model", "uID", &tmpConfUID);
 		if (tixiRet != SUCCESS) {
 		    LOG(ERROR) << "Problems reading configuration-uid!" << std::endl;
 			return TIGL_ERROR;
 		}
+		configurationUID = tmpConfUID;
 	}
 	else {
 		/* Check if configuration exists */
@@ -113,11 +118,11 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglOpenCPACSConfiguration(TixiDocumentHandle 
 		char *tmpString = NULL;
 		char *tmpString2 = NULL;
 
-		tixiUIDGetXPath(tixiHandle, configurationUID, &tmpString2);
+		tixiUIDGetXPath(tixiHandle, configurationUID.c_str(), &tmpString2);
 		ConfigurationXPathPrt = (char *) malloc(sizeof(char) * (strlen(tmpString2) + 50));
 		strcpy(ConfigurationXPathPrt, tmpString2);
 		strcat(ConfigurationXPathPrt, "[@uID=\"");
-		strcat(ConfigurationXPathPrt, configurationUID);
+		strcat(ConfigurationXPathPrt, configurationUID.c_str());
 		strcat(ConfigurationXPathPrt, "\"]");
 		int tixiReturn = tixiGetTextElement( tixiHandle, ConfigurationXPathPrt, &tmpString);
 		if(tixiReturn != 0) {
@@ -131,7 +136,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglOpenCPACSConfiguration(TixiDocumentHandle 
     try {
         config = new tigl::CCPACSConfiguration(tixiHandle);
         // Build CPACS memory structure
-		config->ReadCPACS(configurationUID);
+		config->ReadCPACS(configurationUID.c_str());
         // Store configuration in handle container
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         *cpacsHandlePtr = manager.AddConfiguration(config);
@@ -1118,7 +1123,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSymmetry(TiglCPACSConfigurationHand
 
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentFindSegment(TiglCPACSConfigurationHandle cpacsHandle,
-															 char *componentSegmentUID, double x, double y,
+															 const char *componentSegmentUID, double x, double y,
 															 double z, char** segmentUID, char** wingUID)
 {
 	if (segmentUID == 0) {
@@ -1176,7 +1181,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentFindSegment(TiglCPACSC
 
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentPointGetSegmentEtaXsi(TiglCPACSConfigurationHandle cpacsHandle,
-																		char *componentSegmentUID, double eta, double xsi,
+																		const char *componentSegmentUID, double eta, double xsi,
 																		char** wingUID, char** segmentUID,
 																		double *segmentEta, double *segmentXsi)
 {

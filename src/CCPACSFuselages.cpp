@@ -65,7 +65,7 @@ namespace tigl {
 	}
 
 	// Read CPACS fuselages element
-	void CCPACSFuselages::ReadCPACS(TixiDocumentHandle tixiHandle, char* configurationUID)
+	void CCPACSFuselages::ReadCPACS(TixiDocumentHandle tixiHandle, const char* configurationUID)
 	{
 		Cleanup();
 		char *fuselagesXPathPrt = NULL;

@@ -53,7 +53,7 @@ set (OCC_LIBS
 )
 
 find_package( OpenCASCADE REQUIRED COMPONENTS ${OCC_LIBS})
-find_package( TIXI 2.0.3 REQUIRED)
+find_package( TIXI 2.0.4 REQUIRED)
 find_package( GLOG REQUIRED)
 
 # code coverage analysis

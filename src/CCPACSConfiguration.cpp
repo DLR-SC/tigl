@@ -73,7 +73,7 @@ namespace tigl {
 	}
 
 	// Build up memory structure for whole CPACS file
-	void CCPACSConfiguration::ReadCPACS(char* configurationUID)
+	void CCPACSConfiguration::ReadCPACS(const char* configurationUID)
 	{
 	    if(!configurationUID) return;
 

@@ -53,7 +53,7 @@ namespace tigl {
 		void Invalidate(void);
 
 		// Read CPACS configuration
-		void ReadCPACS(char* configurationUID);
+		void ReadCPACS(const char* configurationUID);
 
 		// Returns the underlying tixi document handle used by a CPACS configuration
 		TixiDocumentHandle GetTixiDocumentHandle(void) const;
