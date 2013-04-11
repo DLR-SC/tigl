@@ -1155,6 +1155,32 @@ void TIGLViewerDocument::exportMeshedWingVTKsimple()
 }
 
 
+void TIGLViewerDocument::exportWingCollada()
+{
+	QString 	fileName;
+
+	QString wingUid = dlgGetWingSelection();
+	if(wingUid == "")
+		return;
+
+	writeToStatusBar(tr("Saving meshed Wing as Collada file with TIGL..."));
+
+	fileName = QFileDialog::getSaveFileName(parent, tr("Save as..."), myLastFolder, tr("Export Collada(*.dae)"));
+
+	if (!fileName.isEmpty())
+	{
+		QApplication::setOverrideCursor( Qt::WaitCursor );
+		tigl::CCPACSWing& wing = GetConfiguration().GetWing(qstringToCstring(wingUid));
+		double deflection = wing.GetWingspan()/2. * _settings.triangulationAccuracy();
+
+		TiglReturnCode err = tiglExportWingColladaByUID(m_cpacsHandle, wingUid.toStdString().c_str(), qstringToCstring(fileName), deflection);
+		QApplication::restoreOverrideCursor();
+        if(err != TIGL_SUCCESS) {
+			displayError(QString("Error in function <u>tiglExportWingColladaByUID</u>. Error code: %1").arg(err), "TIGL Error");
+		}
+	}
+}
+
 
 void TIGLViewerDocument::exportMeshedFuselageVTK()
 {
@@ -1203,6 +1229,27 @@ void TIGLViewerDocument::exportMeshedFuselageVTKsimple()
 		QApplication::restoreOverrideCursor();
         if(err != TIGL_SUCCESS) {
 			displayError(QString("Error in function <u>tiglExportMeshedFuselageVTKSimpleByUID</u>. Error code: %1").arg(err), "TIGL Error");
+		}
+	}
+}
+
+void TIGLViewerDocument::exportFuselageCollada()
+{
+	QString 	fileName;
+
+	QString fuselageUid = dlgGetFuselageSelection();
+
+	writeToStatusBar(tr("Saving meshed Fuselage as Collada file with TIGL..."));
+
+	fileName = QFileDialog::getSaveFileName(parent, tr("Save as..."), myLastFolder, tr("Export Collada(*.dae)"));
+
+	if (!fileName.isEmpty())
+	{
+		QApplication::setOverrideCursor( Qt::WaitCursor );
+		TiglReturnCode err = tiglExportFuselageColladaByUID(m_cpacsHandle, qstringToCstring(fuselageUid), qstringToCstring(fileName), 0.1);
+		QApplication::restoreOverrideCursor();
+        if(err != TIGL_SUCCESS) {
+			displayError(QString("Error in function <u>tiglExportFuselageColladaByUID</u>. Error code: %1").arg(err), "TIGL Error");
 		}
 	}
 }
