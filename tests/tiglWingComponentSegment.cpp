@@ -350,3 +350,26 @@ TEST_F(WingComponentSegment3, tiglWingComponentSegmentPointGetSegmentEtaXsi_BUG1
     ASSERT_STREQ("D150_wing_1Segment2ID", segmentUID);
     cout << "eta_s / xsi_s: " << sEta << "/" << sXsi << endl;
 }
+
+TEST(WingComponentSegment4, tiglWingComponentSegmentPointGetSegmentEtaXsi_BUG2){
+    TiglCPACSConfigurationHandle tiglHandle = -1;
+    TixiDocumentHandle tixiHandle = -1;
+    
+    const char* filename = "TestData/simple_rectangle_compseg.xml";
+    
+    ReturnCode tixiRet = tixiOpenDocument(filename, &tixiHandle);
+    ASSERT_TRUE (tixiRet == SUCCESS);
+    TiglReturnCode tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "D150modelID", &tiglHandle);
+    ASSERT_TRUE(tiglRet == TIGL_SUCCESS);
+    
+    double sEta = 0., sXsi = 0.;
+    char *wingUID = NULL, *segmentUID = NULL;
+    tiglRet = tiglWingComponentSegmentPointGetSegmentEtaXsi(tiglHandle, "D150_wing_CS", 0.5, 0.10142, &wingUID, &segmentUID, &sEta, &sXsi);
+    ASSERT_EQ(TIGL_SUCCESS, tiglRet);
+    ASSERT_STREQ("D150_wing_1Segment3ID", segmentUID);
+    ASSERT_NEAR(0.5, sEta, 0.0001);
+    
+    
+    tiglCloseCPACSConfiguration(tiglHandle);
+    tixiCloseDocument(tixiHandle);
+}
