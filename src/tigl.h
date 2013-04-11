@@ -2696,6 +2696,52 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedFuselageVTKSimpleByUID(const T
 TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedGeometryVTKSimple(const TiglCPACSConfigurationHandle cpacsHandle, const char* filenamePtr,
                                                             const double deflection);
 
+/**
+* @brief Exports the boolean fused geometry of a fuselage (selected by uid) meshed to Collada (*.dae) format.
+*
+* <b>Fortran syntax:</b>
+*
+* tigl_export_fuselage_collada_by_uid(integer cpacsHandle, character*n fuselageUID, character*n filenamePtr, integer returnCode, real deflection)
+* #PY:#
+*
+* @param cpacsHandle   (in) : Handle for the CPACS configuration
+* @param fuselageUID   (in) : UID of the Fuselage to export
+* @param filename      (in) : Filename of the resulting collada file. It should contain the .dae file name ending.
+* @param deflection    (in) : Maximum deflection of the triangulation from the real surface
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_NULL_POINTER if filename is a null pointer
+*   - TIGL_INDEX_ERROR if fuselageUID does not exists
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglExportFuselageColladaByUID(const TiglCPACSConfigurationHandle cpacsHandle, const char* fuselageUID, 
+                                                                 const char* filename, const double deflection);
+
+
+/**
+* @brief Exports the boolean fused geometry of a wing (selected by uid) meshed to Collada (*.dae) format.
+*
+* <b>Fortran syntax:</b>
+*
+* tigl_export_wing_collada_by_uid(integer cpacsHandle, character*n fuselageUID, character*n filenamePtr, integer returnCode, real deflection)
+* #PY:#
+*
+* @param cpacsHandle   (in) : Handle for the CPACS configuration
+* @param wingUID       (in) : UID of the Wing to export
+* @param filename      (in) : Filename of the resulting collada file. It should contain the .dae file name ending.
+* @param deflection    (in) : Maximum deflection of the triangulation from the real surface
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_NULL_POINTER if filename is a null pointer
+*   - TIGL_INDEX_ERROR if fuselageUID does not exists
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglExportWingColladaByUID(const TiglCPACSConfigurationHandle cpacsHandle, const char* wingUID, 
+                                                                 const char* filename, const double deflection);
 /*@}*/
 /*****************************************************************************************************/
 

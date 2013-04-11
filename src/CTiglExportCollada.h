@@ -21,15 +21,28 @@
 
 #include "tigl.h"
 
+#include <string>
+
+class TopoDS_Shape;
+
 namespace tigl {
 
 class CTiglExportCollada
 {
 public:
-    CTiglExportCollada();
+    CTiglExportCollada(class CCPACSConfiguration& config);
+    
+    /// some convenience helper functions
+    TiglReturnCode exportFuselage(const std::string& fuselageUID, const std::string& filename, const double deflection = 0.1);
+    TiglReturnCode exportWing    (const std::string& wingUID    , const std::string& filename, const double deflection = 0.1);
+    
+    TiglReturnCode exportShape(TopoDS_Shape& shape, const std::string& shapeID, const std::string& filename, const double deflection = 0.1);
 
-    /// Exports a polygon object to a collada file
-    static TiglReturnCode writeToDisc(class CTiglPolyData &polyData, const char * filename);
+    /// Exports a polygon object to a collada file, the true export code
+    static TiglReturnCode writeToDisc(class CTiglPolyData &polyData, const char * id, const char * filename);
+    
+private:
+    class CCPACSConfiguration& myconfig;
 };
 
 
