@@ -20,8 +20,6 @@
 /*
 TODO:
 -Bezeichnung (Box/Filname) korigieren
--count Point und Vertices einfühgen - teils fertig
--Eingefügte werte auf plausibilität prüfen
 -translate rotate scale überprüfen
 -Material referenz fehlt (pong)
 
@@ -56,7 +54,7 @@ CTiglExportCollada::CTiglExportCollada()
 TiglReturnCode CTiglExportCollada::writeToDisc(CTiglPolyData& polyData, const char * filename)  {
 
     char col_id[255];
-    sprintf(col_id, "dummfile");
+    sprintf(col_id, "dummyfile");
 
     std::stringstream stream_verts;
     std::stringstream stream_normals;
@@ -172,7 +170,7 @@ TiglReturnCode CTiglExportCollada::writeToDisc(CTiglPolyData& polyData, const ch
 
     tixiCreateElement(handle, "/COLLADA/library_geometries/geometry/mesh", "source");
     snprintf(tmpstr, 1024, "%s-normals",col_id);
-    tixiAddTextAttribute(handle, "/COLLADA/library_geometries/geometry/mesh/source[2]", "id", tmpstr);    //source[2] für das zweite Element mit dem Bezeichner source
+    tixiAddTextAttribute(handle, "/COLLADA/library_geometries/geometry/mesh/source[2]", "id", tmpstr);
 
     /* ------ */
     // Normals 
@@ -213,7 +211,7 @@ TiglReturnCode CTiglExportCollada::writeToDisc(CTiglPolyData& polyData, const ch
     tixiAddTextAttribute(handle, "/COLLADA/library_geometries/geometry/mesh/vertices/input","source",tmpstr);
 
     tixiCreateElement(handle, "/COLLADA/library_geometries/geometry/mesh", "triangles");
-    tixiAddIntegerAttribute(handle, "/COLLADA/library_geometries/geometry/mesh/triangles", "count", count_vert, "%d"); //AddInteger count dreiecke = ntria
+    tixiAddIntegerAttribute(handle, "/COLLADA/library_geometries/geometry/mesh/triangles", "count", count_vert, "%d");
     tixiAddTextAttribute(handle, "/COLLADA/library_geometries/geometry/mesh/triangles", "material", "WHITE");
 
     tixiCreateElement(handle, "/COLLADA/library_geometries/geometry/mesh/triangles","input");
@@ -263,7 +261,6 @@ TiglReturnCode CTiglExportCollada::writeToDisc(CTiglPolyData& polyData, const ch
 
 
 
-
     tixiSaveDocument(handle, filename);
 
     return TIGL_SUCCESS;
@@ -274,45 +271,3 @@ TiglReturnCode CTiglExportCollada::writeToDisc(CTiglPolyData& polyData, const ch
 
 
 } // namespace tigl
-
-
-// Backup von Matins Schleife
-/*
-    for(unsigned int i = 1; i < polyData.getNObjects(); ++i){
-        CTiglPolyObject& obj = polyData.switchObject(i);
-test1++;
-        unsigned long nvert = obj.getNVertices();
-        for(int jvert = 0; jvert < nvert; ++jvert){
-            // write to vertex list and to normal list
-            CTiglPoint& v = obj.getVertexPoint(jvert);
-            CTiglPoint& n = obj.getVertexNormal(jvert);
-
-            // write v.x, v.y ... with tixi , the same for normals nl
-            test++;
-            cout << "X " << v.x << "Y " << v.y << "X " << v.z << endl;
-            cout << "n.X " << n.x << "nY " << n.y << "nZ" << n.z << endl;
-
-        }
-
-
-        unsigned long ntria = obj.getNPolygons();
-        for(int jtria = 0; jtria < ntria; ++jtria){
-            // write to triange list
-            unsigned int npoints = obj.getNPointsOfPolygon(jtria);
-            if( npoints != 3){
-                // display error message
-                cout << "error npoints!=3";
-            }
-
-            for(int kpoint = 0; kpoint < npoints; ++kpoint){
-                // get vertex index of polygon
-                unsigned long vindex = obj.getVertexIndexOfPolygon(kpoint, jtria);
-
-                // write vertex index into list of vertices and normals
-                cout << vindex << endl;
-            }
-        }
-
-
-    } //ende for
-*/
