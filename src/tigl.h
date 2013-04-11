@@ -264,7 +264,7 @@ typedef enum TiglImportExportFormat TiglImportExportFormat;
 *   - TIGL_ERROR if some other kind of error occurred
 *   - TIGL_INVALID_UID is the UID does not exist or an error orrcured with this configuration
 */
-TIGL_COMMON_EXPORT TiglReturnCode tiglOpenCPACSConfiguration(TixiDocumentHandle tixiHandle, char* configurationUID, TiglCPACSConfigurationHandle* cpacsHandlePtr);
+TIGL_COMMON_EXPORT TiglReturnCode tiglOpenCPACSConfiguration(TixiDocumentHandle tixiHandle, const char* configurationUID, TiglCPACSConfigurationHandle* cpacsHandlePtr);
 
 /**
 * @brief Closes a CPACS configuration and cleans up all memory used by the configuration.
@@ -1166,7 +1166,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSymmetry(TiglCPACSConfigurationHand
 *   - TIGL_ERROR if some other error occurred
 */
 TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentFindSegment(TiglCPACSConfigurationHandle cpacsHandle,
-																 char *componentSegmentUID, double x, double y,
+																 const char *componentSegmentUID, double x, double y,
 																 double z, char** segmentUID, char** wingUID);
 
 /**
@@ -1200,7 +1200,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentFindSegment(TiglCPACSC
 *   - TIGL_ERROR if some other error occurred
 */
 TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentPointGetSegmentEtaXsi(TiglCPACSConfigurationHandle cpacsHandle,
-																		char *componentSegmentUID, double eta, double xsi,
+																		const char *componentSegmentUID, double eta, double xsi,
 																		char** wingUID, char** segmentUID,
 																		double *segmentEta, double *segmentXsi);
 

@@ -56,7 +56,7 @@ namespace tigl {
 		void Invalidate(void);
 
 		// Read CPACS fuselage elements
-		void ReadCPACS(TixiDocumentHandle tixiHandle, char* configurationUID);
+		void ReadCPACS(TixiDocumentHandle tixiHandle, const char* configurationUID);
 
 		// Returns the total count of fuselage profiles in this configuration
 		int GetProfileCount(void) const;

@@ -64,7 +64,7 @@ namespace tigl {
 	}
 
 	// Read CPACS wings element
-	void CCPACSWings::ReadCPACS(TixiDocumentHandle tixiHandle, char* configurationUID)
+	void CCPACSWings::ReadCPACS(TixiDocumentHandle tixiHandle, const char* configurationUID)
 	{
 		Cleanup();
 		char *wingXPathPrt = NULL;

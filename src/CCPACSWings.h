@@ -53,7 +53,7 @@ namespace tigl {
 		void Invalidate(void);
 
 		// Read CPACS wings elements
-		void ReadCPACS(TixiDocumentHandle tixiHandle, char* configurationUID);
+		void ReadCPACS(TixiDocumentHandle tixiHandle, const char* configurationUID);
 
 		// Returns the total count of wing profiles in this configuration
 		int GetProfileCount(void) const;
