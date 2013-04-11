@@ -658,6 +658,8 @@ void TIGLViewerWindow::connectSignals()
 	connect(tiglExportMeshedWingVTKsimple, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportMeshedWingVTKsimple()));
 	connect(tiglExportMeshedFuselageVTK, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportMeshedFuselageVTK()));
 	connect(tiglExportMeshedFuselageVTKsimple, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportMeshedFuselageVTKsimple()));
+	connect(tiglExportWingColladaAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportWingCollada()));
+	connect(tiglExportFuselageColladaAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportFuselageCollada()));
 
 	// The co-ordinates from the view
 	connect( myOCC, SIGNAL(mouseMoved(V3d_Coordinate,V3d_Coordinate,V3d_Coordinate)),

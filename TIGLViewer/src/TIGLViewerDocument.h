@@ -105,6 +105,8 @@ public slots:
 	void exportMeshedWingVTKsimple();
 	void exportMeshedFuselageVTK();
 	void exportMeshedFuselageVTKsimple();
+	void exportWingCollada();
+	void exportFuselageCollada();
 
 
 	// General slots
