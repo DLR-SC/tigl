@@ -248,6 +248,11 @@ int CTiglTriangularizer::triangularizeFace(const TopoDS_Face & face, unsigned lo
         index2 = indexBuffer[occindex2-ilower];
         index3 = indexBuffer[occindex3-ilower];
         
+        // @TODO: in some rare cases, 2 indices are the same
+        // which means, that we dont have a true triangle.
+        // This behaviour might break some export functions.
+        // What should we do?
+        
         unsigned int iPolyIndex = 0;
         
         if(face.Orientation() == TopAbs_FORWARD)

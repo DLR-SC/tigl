@@ -138,6 +138,20 @@ TEST_F(tiglExport, export_meshed_fuselage_success)
     ASSERT_TRUE(tiglExportMeshedFuselageVTKSimpleByUID(tiglHandle, "D150_VAMP_FL1", vtkFuselageFilename, 0.03) == TIGL_SUCCESS);
 }
 
+TEST_F(tiglExport, export_fuselage_collada_success){
+    const char* colladaFuselageFilename = "TestData/export/D150modelID_fuselage1.dae";
+    ASSERT_TRUE(tiglExportFuselageColladaByUID(tiglHandle, "D150_VAMP_FL1", colladaFuselageFilename, 0.01) == TIGL_SUCCESS);
+}
+
+TEST_F(tiglExport, export_wing_collada_success){
+    const char* colladaWing1Filename = "TestData/export/D150modelID_wing1.dae";
+    ASSERT_TRUE(tiglExportWingColladaByUID(tiglHandle, "D150_VAMP_W1", colladaWing1Filename, 0.001) == TIGL_SUCCESS);
+    const char* colladaWing2Filename = "TestData/export/D150modelID_wing2.dae";
+    ASSERT_TRUE(tiglExportWingColladaByUID(tiglHandle, "D150_VAMP_HL1", colladaWing2Filename, 0.001) == TIGL_SUCCESS);
+    const char* colladaWing3Filename = "TestData/export/D150modelID_wing3.dae";
+    ASSERT_TRUE(tiglExportWingColladaByUID(tiglHandle, "D150_VAMP_SL1", colladaWing3Filename, 0.001) == TIGL_SUCCESS);
+}
+
 TEST_F(tiglExportSimple, export_wing_collada)
 {
     tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
@@ -146,7 +160,7 @@ TEST_F(tiglExportSimple, export_wing_collada)
 
     tigl::CTiglTriangularizer t(wing.GetLoft(), 0.001);
 
-    TiglReturnCode ret = tigl::CTiglExportCollada::writeToDisc(t, "TestData/export/simpletest_wing.dae");
+    TiglReturnCode ret = tigl::CTiglExportCollada::writeToDisc(t, "simple_wing", "TestData/export/simpletest_wing.dae");
 
     ASSERT_EQ(TIGL_SUCCESS, ret);
 }

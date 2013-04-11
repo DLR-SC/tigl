@@ -31,6 +31,8 @@ TODO:
 #include "CTiglExportCollada.h"
 
 #include "CTiglPolyData.h"
+#include "CTiglTriangularizer.h"
+#include "CCPACSConfiguration.h"
 
 #include <tixi.h>
 
@@ -39,22 +41,41 @@ TODO:
 #include <string>
 #include <cassert>
 
+// OpenCASCADE
+#include <TopoDS_Shape.hxx>
+
 #ifdef _MSC_VER
     #define snprintf _snprintf
 #endif
 
 namespace tigl{
 
-CTiglExportCollada::CTiglExportCollada()
+CTiglExportCollada::CTiglExportCollada(CCPACSConfiguration& config) : myconfig(config)
 {
 }
 
 
+TiglReturnCode CTiglExportCollada::exportFuselage(const std::string& fuselageUID, const std::string &filename, const double deflection){
+    CTiglAbstractPhysicalComponent & component = myconfig.GetFuselage(fuselageUID);
+    TopoDS_Shape& loft = component.GetLoft();
+    
+    return exportShape(loft, fuselageUID, filename, deflection);
+}
 
-TiglReturnCode CTiglExportCollada::writeToDisc(CTiglPolyData& polyData, const char * filename)  {
+TiglReturnCode CTiglExportCollada::exportWing(const std::string& wingUID, const std::string &filename, const double deflection){
+    CTiglAbstractPhysicalComponent & component = myconfig.GetWing(wingUID);
+    TopoDS_Shape& loft = component.GetLoft();
+    
+    return exportShape(loft, wingUID, filename, deflection);
+}
 
-    char col_id[255];
-    sprintf(col_id, "dummyfile");
+TiglReturnCode CTiglExportCollada::exportShape(TopoDS_Shape& shape, const std::string& shapeID,  const std::string& filename, const double deflection){
+    // mesh 
+    CTiglTriangularizer t(shape, deflection, false);
+    return writeToDisc(t, shapeID.c_str(), filename.c_str());
+}
+
+TiglReturnCode CTiglExportCollada::writeToDisc(CTiglPolyData& polyData, const char* col_id, const char * filename)  {
 
     std::stringstream stream_verts;
     std::stringstream stream_normals;
@@ -84,6 +105,14 @@ TiglReturnCode CTiglExportCollada::writeToDisc(CTiglPolyData& polyData, const ch
             for(unsigned long jtria = 0; jtria < ntria; ++jtria){
                 unsigned long npoints = obj.getNPointsOfPolygon(jtria);
                 assert( npoints == 3);
+                // skip all polygons that aren't triangles
+                if(npoints < 3)
+                    // we currently dont export lines
+                    continue;
+                else if(npoints > 3){
+                    LOG(WARNING) << "Polygons with more than 3 vertices are currently not supported by CTiglExportCollada!" << endl;
+                    continue;
+                }
 
                 for(unsigned long kpoint = 0; kpoint < npoints; ++kpoint){
                     // get vertex index of polygon
@@ -91,8 +120,8 @@ TiglReturnCode CTiglExportCollada::writeToDisc(CTiglPolyData& polyData, const ch
 
                     // write vertex index into list of vertices and normals
                     stream_trians << vindex << " " << vindex << " ";
-                    count_vert++;
                 }
+                count_vert++;
             }
 
 

@@ -39,6 +39,7 @@
 #include "CTiglExportStep.h"
 #include "CTiglExportStl.h"
 #include "CTiglExportVtk.h"
+#include "CTiglExportCollada.h"
 #include "CTiglLogger.h"
 
 #include "gp_Pnt.hxx"
@@ -2847,6 +2848,72 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedFuselageVTKSimpleByUID(const T
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglExportMeshedFuselageVTKSimpleByUID!" << std::endl;
+        return TIGL_ERROR;
+    }
+}
+
+TIGL_COMMON_EXPORT TiglReturnCode tiglExportFuselageColladaByUID(const TiglCPACSConfigurationHandle cpacsHandle, const char* fuselageUID, const char* filenamePtr, const double deflection) {
+    if (filenamePtr == 0) {
+        LOG(ERROR) << "Error: Null pointer argument for filenamePtr";
+        LOG(ERROR) << "in function call to tiglExportFuselageColladaByUID." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+    if (fuselageUID == 0) {
+        LOG(ERROR) << "Error: Null pointer argument for fuselageUID";
+        LOG(ERROR) << "in function call to tiglExportFuselageColladaByUID." << std::endl;
+        return TIGL_INDEX_ERROR;
+    }
+
+    try {
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+        tigl::CTiglExportCollada exporter(config);
+        
+        return exporter.exportFuselage(fuselageUID, filenamePtr, deflection);
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglExportFuselageColladaByUID!" << std::endl;
+        return TIGL_ERROR;
+    }
+}
+
+TIGL_COMMON_EXPORT TiglReturnCode tiglExportWingColladaByUID(const TiglCPACSConfigurationHandle cpacsHandle, const char* wingUID, const char* filenamePtr, const double deflection) {
+    if (filenamePtr == 0) {
+        LOG(ERROR) << "Error: Null pointer argument for filenamePtr";
+        LOG(ERROR) << "in function call to tiglExportWingColladaByUID." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+    if (wingUID == 0) {
+        LOG(ERROR) << "Error: Null pointer argument for wingUID";
+        LOG(ERROR) << "in function call to tiglExportWingColladaByUID." << std::endl;
+        return TIGL_INDEX_ERROR;
+    }
+
+    try {
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+        tigl::CTiglExportCollada exporter(config);
+        
+        return exporter.exportWing(wingUID, filenamePtr, deflection);
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglExportWingColladaByUID!" << std::endl;
         return TIGL_ERROR;
     }
 }
