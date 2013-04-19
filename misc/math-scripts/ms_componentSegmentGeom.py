@@ -21,6 +21,7 @@
 
 from numpy import *
 from ms_optAlgs import *
+from ms_segmentGeometry import *
 
 import matplotlib as mpl
 from mpl_toolkits.mplot3d import Axes3D
@@ -58,19 +59,20 @@ class ComponentSegment:
 			etastop = etastart + item.calcProjectedLeadingEdgeLength(Elongation.No)/len_tot
 			item.setLeadingEdgeEtas(etastart, etastop)
 			etastart = etastop
-			
-	
+
+
 	def draw(self, axis):
 		for item in self.segments:
 			item.drawSegment(axis)
 			
-	def drawPoint(self, axis, eta, xsi):
+	def calcPoint(self, eta, xsi):
 		for item in self.segments:
 			if item.checkCoordValidity(eta,xsi) == True:
-				point = item.calcCSPoint(eta,xsi)
-				axis.plot([point[0]], [point[1]], [point[2]],'rx')
-				break
-				
+				return item.calcCSPoint(eta,xsi)
+
+	def drawPoint(self, axis, eta, xsi):
+		point = self.calcPoint(eta, xsi)
+		axis.plot([point[0]], [point[1]], [point[2]],'rx')
 
 
 class ComponentSegmentGeometry:
@@ -140,6 +142,7 @@ class ComponentSegmentGeometry:
 		etamax = etamin + (eta_out - eta_in)/(self.__eta2 - self.__eta1)
 		self.setEtaMinMax(etamin, etamax)
 
+	# only valid with calcsCSPoint (not calcCSPoint2/3)
 	def checkCoordValidity(self, eta, xsi):
 		if eta < self.__etamin or eta > self.__etamax or xsi < 0 or xsi > 1:
 			return False
@@ -181,6 +184,157 @@ class ComponentSegmentGeometry:
 		
 		return p
 
+	def calcCSPoint2(self, eta, xsi):
+		eta_ = (eta - self.__etamin)/(self.__etamax - self.__etamin)
+		
+		p = self.__p1p + (self.__p2p-self.__p1p)*(eta_);
+		
+		a = -self.__p1+self.__p2;
+		b = -self.__p1+self.__p3;
+		c =  self.__p1-self.__p2-self.__p3+self.__p4;
+		d =  self.__p1;
+		
+		n = array([0, -a[1], -a[2]])
+		
+		# calc some constants
+		a1 =  dot(p - d, n);
+		a2 = -dot(b, n);
+		a3 =  dot(a, n);
+		a4 =  dot(c, n);
+
+
+		# this calculates the intersection curve from the segment with a plane (normal vector n, point p2)
+		al = lambda beta:  (a1 + a2*beta)/(a3 + a4*beta);
+		# diff( eta(xi). xi), tangent in eta xsi space
+		alp = lambda beta: (a2*a3 - a1*a4)/((a3 + a4*beta)**2);
+
+		# 3d intersection curve, parametrized by beta [0,1]
+		cu = lambda beta: outer(a,al(beta)) + outer(b,beta) + outer(c,al(beta)*beta) + outer(d,ones(size(beta)));
+
+		# tangent in 3d space
+		cup = lambda beta: (outer(a,ones(size(beta))) + outer(c,beta))*outer(ones(3),alp(beta)) + outer(c,al(beta)) + outer(b,ones(size(beta)));
+
+		#norm of tangent curve
+		f =  lambda beta: sqrt(sum(cup(beta)**2.,0));
+
+		# we want to integrate int f(x)*dx, we do gaussian method
+
+		# substitution of f to range [-1,1]
+		g = lambda x,beta: beta/2.*f((x+1.)*beta/2.);
+		
+		# gauss x points 5th order, this is really some dark magic ;)
+		x = array([9.06179845938664e-01,
+				5.38469310105683e-01,
+				0.00000000000000e+00,
+				-5.38469310105683e-01,
+				-9.06179845938664e-01])
+		
+		# gauss weights
+		w = array([2.36926885056189e-01,
+				4.78628670499366e-01,
+				5.68888888888889e-01,
+				4.78628670499366e-01,
+				2.36926885056189e-01])
+		
+		# calculate total length of iso eta curve
+		ltot =  dot(g(x,1.),w);
+		
+		#now we use Newton Raphson to find beta, such that F(beta) == xi*ltot
+		F = lambda beta: dot(g(x,beta),w)/ltot - xsi
+		beta = xsi
+		diff = F(beta)
+		while abs(diff) > 1e-12:
+			dir = -diff/(f(beta)/ltot)
+			beta = beta + dir
+			diff = F(beta)
+			
+		return cu(beta)
+		
+		
+	# alternative implementation, where xsi resembles the relative coordinate
+	# between intersection point of the leading edge and the intersection point
+	# of the trailing edge. This intermediate point will then be projected onto
+	# the true intersection curve
+	def calcCSPoint3(self, eta, xsi):
+		debug = True
+		
+		eta_ = (eta - self.__etamin)/(self.__etamax - self.__etamin)
+		
+		p = self.__p1p + (self.__p2p-self.__p1p)*(eta_);
+		
+		
+		a = -self.__p1+self.__p2;
+		b = -self.__p1+self.__p3;
+		c =  self.__p1-self.__p2-self.__p3+self.__p4;
+		d =  self.__p1;
+		
+		n = array([0, -a[1], -a[2]])
+		
+		# calc some constants
+		a1 =  dot(p - d, n);
+		a2 = -dot(b, n);
+		a3 =  dot(a, n);
+		a4 =  dot(c, n);
+
+
+		# this calculates the intersection curve from the segment with a plane (normal vector n, point p2)
+		al = lambda beta:  (a1 + a2*beta)/(a3 + a4*beta);
+		# diff( eta(xi). xi), tangent in eta xsi space
+		alp = lambda beta: (a2*a3 - a1*a4)/((a3 + a4*beta)**2);
+
+		# 3d intersection curve, parametrized by beta [0,1]
+		cu = lambda beta: outer(a,al(beta)) + outer(b,beta) + outer(c,al(beta)*beta) + outer(d,ones(size(beta)));
+
+		# tangent in 3d space
+		cup = lambda beta: (outer(a,ones(size(beta))) + outer(c,beta))*outer(ones(3),alp(beta)) + outer(c,al(beta)) + outer(b,ones(size(beta)));
+
+		# calculate intersection with leading and trailing edge
+		pbeg = cu(0)[:,0]
+		pend = cu(1)[:,0]
+		reflen = linalg.norm(pbeg-pend);
+		
+		# go along this line
+		pact = (1-xsi)*pbeg + xsi*pend
+		
+		# project this point onto intersection curve i.e. find beta so that (cu(beta) - pact) * (pbeg-pend) == 0
+		# as cu(beta) is not linear, we try to find the solution with newton raphson method
+		f = lambda beta: dot(cu(beta)[:,0] - pact, pend - pbeg)/reflen
+		fp = lambda beta: dot(cup(beta)[:,0], pend - pbeg)/reflen
+		
+		beta =  xsi
+
+		diff = f(beta)
+		iter = 0;
+		if debug: print 'Iter:', iter, ' Error=', abs(diff), ' @ Beta=' , beta
+		while abs(diff) > 1e-12 and iter  < 20:
+			iter += 1
+			dir = -diff/(fp(beta))
+			# maybe we need a linesearch here...
+			beta = beta + dir
+			diff = f(beta)
+			if debug: print 'Iter:', iter, ' Error=', abs(diff), '@ Beta=' , beta
+		
+		if iter >= 20:
+			print "ERROR: could not project intersection curve onto line"
+			
+			if debug == True:
+				myb = linspace(-1.,1., 1000)
+				val = 0*myb
+				for i in range(len(myb)):
+					val[i] = f(myb[i]);
+				
+				fig = plt.figure()
+				ax2 = fig.gca()
+				ax2.plot(myb, val)
+		
+		# calculate result
+		point = cu(beta)
+		
+		# here we got for free our segment coordinates also, which are
+		# eta_s = al(beta), xsi_s = beta 
+		
+		return point
+		
 
 	# calculates the tangents in eta and xsi direction at the given point
 	def calcCSPointTangents(self, eta, xsi):
@@ -306,7 +460,57 @@ class ComponentSegmentGeometry:
 		
 		eta = x_[0]; xsi = x_[1];
 		return (eta, xsi)
+	
+	def projectOnCS3(self, p):
+		segment = SegmentGeometry(self.__p1, self.__p2, self.__p3, self.__p4)
+		# get the projection point on the, here we get some numerical uncertainty
+		# if we'd knew that p is already on the plane, we could directly use p 
+		alpha, beta = segment.projectOnSegment(p);
+		return self.convertAlphaBetaToEtaXsi(alpha, beta)
+		#return self.convertXYZtoEtaXsi(p[:,0])
+		
 
+		
+	def convertAlphaBetaToEtaXsi(self, alpha, beta):
+		segment = SegmentGeometry(self.__p1, self.__p2, self.__p3, self.__p4)
+		p_proj = segment.getPoint(alpha, beta)[:,0]
+		return self.convertXYZtoEtaXsi(p_proj)
+
+	# we must ensure that p_proj already lies on the segment, if unsure use projectOnCS3
+	def convertXYZtoEtaXsi(self, p_proj):
+		# project leading edge into the z-y plane
+		vProj = array([0, 1, 1])
+		n = vProj*(self.__p2p-self.__p1p)
+		
+		# calc eta koordinate of that point
+		eta = (dot(p_proj,n)*(self.__eta2 - self.__eta1) + dot(self.__p2,n)*self.__eta1 - dot(self.__p1,n)*self.__eta2) \
+				/ dot(self.__p2 - self.__p1, n);
+		
+		# intersection point of plane with leading edge
+		p_ = 1./(self.__eta2 - self.__eta1)*( (self.__eta2 - eta)*self.__p1 + (eta - self.__eta1)*self.__p2 )
+		
+		a = -self.__p1+self.__p2;
+		b = -self.__p1+self.__p3;
+		c =  self.__p1-self.__p2-self.__p3+self.__p4;
+		d =  self.__p1;
+		# calc some constants
+		a1 =  dot(p_ - d, n);
+		a2 = -dot(b, n);
+		a3 =  dot(a, n);
+		a4 =  dot(c, n);
+		
+		# this calculates the intersection curve from the segment with a plane (normal vector n, point p2)
+		al = lambda beta:  (a1 + a2*beta)/(a3 + a4*beta);
+		# 3d intersection curve, parametrized by beta [0,1]
+		cu = lambda beta: outer(a,al(beta)) + outer(b,beta) + outer(c,al(beta)*beta) + outer(d,ones(size(beta)));
+		
+		# now we have to find the xi coordinate, i.e. (pbeg + (pend-pbeg)*xi - p_proj)*(pbeg-pend) == 0
+		pbeg = cu(0)[:,0]
+		pend = cu(1)[:,0]
+		
+		xsi = dot(p_proj - pbeg, pbeg-pend)/dot(pend-pbeg, pbeg-pend);
+		
+		return eta, xsi
 
 	def calcCSIsoXsiLine(self, xsi, extentToGeometry = False):
 		etamin = self.__etamin
@@ -323,7 +527,7 @@ class ComponentSegmentGeometry:
 		return ([P1[0], P2[0]],  [P1[1], P2[1]], [P1[2], P2[2]] )
 
 
-	def calcCSIsoEtaLine(self, eta, extentToGeometry = False):
+	def calcCSIsoEtaLine(self, eta, extentToGeometry = False, npoints = 30):
 		eta_ = (eta - self.__etamin)/(self.__etamax - self.__etamin)
 	
 		# calculate bilinear vectors
@@ -358,9 +562,9 @@ class ComponentSegmentGeometry:
 		xsistop  = xsistop  if (eta_ >= self.__eta3) else (eta_ - self.__eta1)/(self.__eta3 - self.__eta1)
 	
 		if extentToGeometry:
-			xsi = linspace(0,1,30)
+			xsi = linspace(0,1,npoints)
 		else:
-			xsi = linspace(xsistart,xsistop,30)
+			xsi = linspace(xsistart,xsistop,npoints)
 		points = cu(xsi);
 	
 		X = points[0,:];
@@ -373,13 +577,17 @@ class ComponentSegmentGeometry:
 		start  = math.ceil (self.__etamin*10.)/10.
 		stop =   math.floor(self.__etamax*10.)/10.
 		
-		for alpha in linspace(start, stop, round((stop - start)/0.1 + 1.)):
+		alpha = start
+		while alpha <= stop:
 				X,Y,Z = self.calcCSIsoEtaLine(alpha, extentToGeometry)
-				axis.plot(X,Y,Z,'g');
+				axis.plot(X,Y,Z,'g')
+				alpha = alpha + 0.1
 				
-		for beta in arange(0,1.01,0.1):
+		beta = 0.0
+		while beta <= 1.0:
 			X,Y,Z = self.calcCSIsoXsiLine(beta, extentToGeometry)
 			axis.plot(X,Y,Z,'g');
+			beta = beta + 0.1
 			
 		lw = 2
 		axis.plot([self.__p1[0], self.__p2[0]], [self.__p1[1], self.__p2[1]], [self.__p1[2], self.__p2[2]],'b',linewidth=lw);

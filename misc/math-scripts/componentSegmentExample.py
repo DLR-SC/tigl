@@ -36,6 +36,7 @@ p5 = array([3.4, 9.0, 0.4])
 p6 = array([4.0, 9.5, 0.5])
 
 CS  = ComponentSegmentGeometry(p1, p2, p3, p4)
+SEG = SegmentGeometry(p1, p2, p3, p4)
 
 compSeg = ComponentSegment()
 compSeg.addSegment(p1, p2, p3, p4)
@@ -45,23 +46,17 @@ fig = plt.figure()
 ax = fig.gca(projection='3d')
 
 compSeg.draw(ax)
-compSeg.drawPoint(ax, 0.1, 0.1)
-compSeg.drawPoint(ax, 0.9, 0.9)
-compSeg.drawPoint(ax, 0.6, 0.4)
-compSeg.drawPoint(ax, 0.6, 0.2)
-
-seg = SegmentGeometry(p1,p2,p3,p4)
 
 #plot iso eta and xsi lines in segment coordinates,
 for alpha in arange(0,1.01,0.1):
-	pp1 = seg.calcPoint(alpha,0);
-	pp2 = seg.calcPoint(alpha,1);
+	pp1 = SEG.calcPoint(alpha,0);
+	pp2 = SEG.calcPoint(alpha,1);
 	ax.plot([pp1[0,0], pp2[0,0]], [pp1[1,0], pp2[1,0]], [pp1[2,0], pp2[2,0]],'r');
 
 for beta in arange(0,1.01,0.1):
-	pp1 = seg.calcPoint(0,beta);
-	pp2 = seg.calcPoint(1,beta);
-	#ax.plot([pp1[0,0], pp2[0,0]], [pp1[1,0], pp2[1,0]], [pp1[2,0], pp2[2,0]],'r');
+	pp1 = SEG.calcPoint(0,beta);
+	pp2 = SEG.calcPoint(1,beta);
+	ax.plot([pp1[0,0], pp2[0,0]], [pp1[1,0], pp2[1,0]], [pp1[2,0], pp2[2,0]],'r');
 
 # plot normals
 for beta in arange(0,1.01,0.1):
@@ -76,7 +71,7 @@ for beta in arange(0,1.01,0.1):
 	normal = CS.calcCSPointNormal( 0, beta)
 	pp1    = CS.calcCSPoint(0, beta)
 	pp2 = pp1 + normal*0.2;
-	ax.plot([pp1[0], pp2[0]], [pp1[1], pp2[1]], [pp1[2], pp2[2]],'m');
+	#ax.plot([pp1[0], pp2[0]], [pp1[1], pp2[1]], [pp1[2], pp2[2]],'m');
 
 ax.set_zlim([-1, 1])
 
