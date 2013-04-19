@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
+# Copyright (C) 2007-2011 German Aerospace Center (DLR/SC)
 #
 # Created: 2012-12-17 Martin Siggel <Martin.Siggel@dlr.de>
 #
@@ -18,104 +18,142 @@
 # @file ms_segmentGeometry.py
 # @brief Implementation of the segement geometry
 #
-# @todo Further implementation required
-#
 
-from numpy import *
-from ms_optAlgs import *
-
-import matplotlib as mpl
-from mpl_toolkits.mplot3d import Axes3D
-import matplotlib.pyplot as plt
+from numpy import array, outer, ones, size, dot, linalg, zeros, cross, transpose 
+from ms_optAlgs import ms_optNewton
 
 class SegmentGeometry:
 	def __init__(self, p1, p2, p3, p4):
 		self.setPoints(p1, p2, p3, p4)
 		
 	def setPoints(self, p1, p2, p3, p4):
-                self.a = -p1+p2;
-                self.b = -p1+p3;
-                self.c = p1-p2-p3+p4;
-                self.d = p1;
+		self.__a = -p1+p2;
+		self.__b = -p1+p3;
+		self.__c =  p1-p2-p3+p4;
+		self.__d =  p1;
 
-                
-        def calcPoint(self, alpha, beta):
-            return outer(self.a,alpha) + outer(self.b,beta) + outer(self.c,alpha*beta) + outer(self.d,ones(size(alpha)));
-
-        # calculates the tangents in eta and xsi direction at the given point
-	def calcPointTangents(self, eta, xsi):
-            J = zeros((3,2))
-            J[:,0] = self.a + xsi*self.c
-            J[:,1] = self.b + eta*self.c
-            return J
-
-        def calcOF(self, eta, xsi, x):
-            p = self.calcPoint(eta,xsi);
-            p = p[:,0]
-            return dot(p-x,p-x)
-
-        def calcGradient(self, eta, xsi, x):
-            p = self.calcPoint(eta,xsi);
-            p = p[:,0]
-            J = self.calcPointTangents(eta,xsi);
-            grad = zeros(2);
-            grad[0] = 2*dot(J[:,0],p-x)
-            grad[1] = 2*dot(J[:,1],p-x)
-            return grad
-
-        def calcHessian(self, eta, xsi, x):
-            p = self.calcPoint(eta,xsi);
-            p = p[:,0]
-            J = self.calcPointTangents(eta,xsi);
-
-            H = zeros((2,2))
-            H[0,0] = 2*dot(J[:,0], J[:,0])
-            H[1,1] = 2*dot(J[:,1], J[:,1])
-            H[1,0] = 2*dot(J[:,1], J[:,0]) + 2*dot(p-x, self.c)
-            H[0,1] = H[1,0] 
-            
-            return H
-
-        def project(self, p):
-            eta = dot(self.a,p-self.d)/dot(self.a,self.a)
-            xsi = dot(self.b,p-self.d)/dot(self.b,self.b)
-            x = array([eta,xsi])
-            print 'initial guess: ', eta, xsi
-            of = lambda ex: self.calcOF(ex[0], ex[1], p)
-            ograd = lambda ex: self.calcGradient(ex[0], ex[1], p)
-            ohess = lambda ex: self.calcHessian(ex[0], ex[1], p)
-
-            fig2 = plt.figure();
-		
-	    X, Y = meshgrid(arange(-3, 4, 0.1), arange(-3, 4, 0.1))
-	    Z = zeros(X.shape);
+	def getPoint(self, alpha, beta):
+		a = self.__a
+		b = self.__b
+		c = self.__c
+		d = self.__d
+		return outer(a,alpha) + outer(b,beta) + outer(c,alpha*beta) + outer(d,ones(size(alpha)));
 	
-	    for i in range(0,size(X,0)):
-                for j in range(0,size(X,1)):
-                    Z[i,j] = of([X[i,j], Y[i,j]])
+	# calculates the intersection of the leading edge with a given plane
+	def calcIntersectLE(self, p, n):
+		eta = dot(p-self.__d,n)/ dot(self.__a,n)
+		return self.getPoint(eta, 0.)
+
+		# calculates the intersection of the trailing edge with a given plane
+	def calcIntersectTE(self, p, n):
+		eta = dot(p-self.__d - self.__b,n)/ dot(self.__c + self.__a,n)
+		return self.getPoint(eta, 1.)
+	
+	# projects the point p on the cut of the segment with a plane (given by p, n)
+	def projectPointOnCut(self, p_proj, p, n):
+		debug = True
+
+		# some constants for the intersection calculation
+		a1 =  dot(p - self.__d, n);
+		a2 = -dot(self.__b, n);
+		a3 =  dot(self.__a, n);
+		a4 =  dot(self.__c, n);
+
+		# this calculates the intersection curve from the segment with a plane (normal vector n, point p2)
+		al = lambda beta:  (a1 + a2*beta)/(a3 + a4*beta);
+		# diff( eta(xi). xi), tangent in eta xsi space
+		alp = lambda beta: (a2*a3 - a1*a4)/((a3 + a4*beta)**2);
+
+		# 3d intersection curve, parameterized by beta [0,1]
+		cu = lambda beta: outer(self.__a,al(beta)) + outer(self.__b,beta) + outer(self.__c,al(beta)*beta) + outer(self.__d,ones(size(beta)));
+		# tangent in 3d space
+		cup = lambda beta: (outer(self.__a,ones(size(beta))) + outer(self.__c,beta))*outer(ones(3),alp(beta)) + outer(self.__c,al(beta)) + outer(self.__b,ones(size(beta)));
+
+		# calculate intersection points with leading and trailing edge of the segment
+		pbeg = cu(0)[:,0]
+		pend = cu(1)[:,0]
+		reflen = linalg.norm(pbeg-pend);
 		
-	    plt.imshow(Z,origin='lower', extent=[-3, 4,-3,4], aspect=1./1.)
-	    plt.colorbar();	
-	    plt.contour(X,Y,Z)
-	    plt.title('Objective function')
-	    plt.xlabel('eta');
-	    plt.ylabel('xsi');
+		# project this point onto intersection curve i.e. find beta so that (cu(beta) - pact) * (pbeg-pend) == 0
+		# as cu(beta) is not linear, we try to find the solution with Newton Raphson method
+		f = lambda beta: dot(cu(beta)[:,0] - p_proj[:,0], pend - pbeg)/reflen
+		fp = lambda beta: dot(cup(beta)[:,0], pend - pbeg)/reflen
+		
+		#initial guess
+		beta =  0.5
 
-            x_= ms_optNewton(of,ograd,ohess,x)
-
-	    eta = x_[0]; xsi = x_[1];
-	    return (eta, xsi)
-            
-
-        def draw(self, axis):
-	    for alpha in  arange(0,1.01,0.1):
-                P1 = self.calcPoint(alpha, 0.)
-                P2 = self.calcPoint(alpha, 1.)
-		axis.plot([P1[0,0], P2[0,0]], [P1[1,0], P2[1,0]], [P1[2,0], P2[2,0]],'g');
-				
-	    for beta in arange(0,1.01,0.1):
-                P1 = self.calcPoint(0, beta)
-                P2 = self.calcPoint(1, beta)
-		axis.plot([P1[0,0], P2[0,0]], [P1[1,0], P2[1,0]], [P1[2,0], P2[2,0]],'g');
-            
-
+		diff = f(beta)
+		iter = 0;
+		if debug: print 'Iter:', iter, ' Error=', abs(diff), ' @ Beta=' , beta
+		while abs(diff) > 1e-12 and iter  < 20:
+			iter += 1
+			dir = -diff/(fp(beta))
+			# maybe we need a line-search here...?
+			beta = beta + dir
+			diff = f(beta)
+			if debug: print 'Iter:', iter, ' Error=', abs(diff), '@ Beta=' , beta
+		
+		if iter >= 20:
+			print "ERROR: could not project intersection curve onto line"
+			# set illegal value 
+			beta = -1.
+		
+		
+		return (al(beta), beta)
+	
+	def getTangents(self, alpha, beta):
+		assert(size(alpha) == 1)
+		assert(size(beta) == 1)
+		
+		J = zeros((3,2))
+		J[:,0] = self.__a + beta*self.__c
+		J[:,1] = self.__b + alpha*self.__c
+		
+		return J
+		
+	def getNormal(self, alpha, beta):
+		J = self.getTangents(alpha, beta);
+		normal = cross(J[:,1],J[:,0])
+		return normal/linalg.norm(normal)
+		
+	# this function is NOT part of the segment API but is required for
+	# the projection algorithm 
+	def __calcHessian(self, alpha, beta, x):
+		assert(size(alpha) == 1)
+		assert(size(beta) == 1)
+		
+		hess = zeros((2,2));
+		p = self.getPoint(alpha, beta)
+		
+		hess[0,0] = 2.*dot(self.__a+beta *self.__c, self.__a+beta *self.__c);
+		hess[1,1] = 2.*dot(self.__b+alpha*self.__c, self.__b+alpha*self.__c);
+		hess[1,0] = 2.*dot(self.__b+alpha*self.__c, self.__a+beta*self.__c) + 2.*dot((p-x)[:,0], self.__c);
+		hess[0,1] = hess[1,0]
+		
+		return hess
+		
+		
+	def projectOnSegment(self, p):
+		of = lambda x: linalg.norm(self.getPoint(x[0], x[1]) - p)**2
+		ograd = lambda x: 2.*dot(transpose(self.getTangents(x[0], x[1])),self.getPoint(x[0], x[1]) - p)[:,0]
+		ohess = lambda x: self.__calcHessian(x[0],x[1], p)
+		# numerical gradient and hessian, just for error checking
+		# ograd_num = lambda x: ms_numGrad(of, x, 1e-8)
+		# ohess_num = lambda x: ms_numHess(ograd, x, 1e-8)
+		
+		# initial guess, could be improved but works
+		x = array([0., 0.]);
+		x = ms_optNewton(of, ograd, ohess, x)
+		
+		eta = x[0]
+		xsi = x[1]
+		
+		return eta,xsi
+	
+	@staticmethod
+	def isValid(eta, xsi): 
+		if eta >= 0. and eta <= 1. and xsi >= 0. and xsi <= 1.:
+			return True
+		else:
+			return False
+		
