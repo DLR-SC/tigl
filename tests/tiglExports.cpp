@@ -26,6 +26,12 @@
 #include "test.h" // Brings in the GTest framework
 #include "tigl.h"
 
+#include "CTiglTriangularizer.h"
+#include "CTiglExportCollada.h"
+#include "CCPACSConfigurationManager.h"
+#include "CCPACSConfiguration.h"
+#include "CCPACSWing.h"
+
 
 /******************************************************************************/
 
@@ -60,9 +66,43 @@ class tiglExport : public ::testing::Test {
   static TiglCPACSConfigurationHandle tiglHandle;
 };
 
-
 TixiDocumentHandle tiglExport::tixiHandle = 0;
 TiglCPACSConfigurationHandle tiglExport::tiglHandle = 0;
+
+class tiglExportSimple : public ::testing::Test {
+ protected:
+  static void SetUpTestCase() {
+        const char* filename = "TestData/simpletest.cpacs.xml";
+        ReturnCode tixiRet;
+        TiglReturnCode tiglRet;
+
+        tiglSimpleHandle = -1;
+        tixiSimpleHandle = -1;
+
+        tixiRet = tixiOpenDocument(filename, &tixiSimpleHandle);
+        ASSERT_TRUE (tixiRet == SUCCESS);
+        tiglRet = tiglOpenCPACSConfiguration(tixiSimpleHandle, "", &tiglSimpleHandle);
+        ASSERT_TRUE(tiglRet == TIGL_SUCCESS);
+  }
+
+  static void TearDownTestCase() {
+        ASSERT_TRUE(tiglCloseCPACSConfiguration(tiglSimpleHandle) == TIGL_SUCCESS);
+        ASSERT_TRUE(tixiCloseDocument(tixiSimpleHandle) == SUCCESS);
+        tiglSimpleHandle = -1;
+        tixiSimpleHandle = -1;
+  }
+
+  virtual void SetUp() {}
+  virtual void TearDown() {}
+
+
+  static TixiDocumentHandle           tixiSimpleHandle;
+  static TiglCPACSConfigurationHandle tiglSimpleHandle;
+};
+
+TixiDocumentHandle tiglExportSimple::tixiSimpleHandle = 0;
+TiglCPACSConfigurationHandle tiglExportSimple::tiglSimpleHandle = 0;
+
 
 
 /******************************************************************************/
@@ -96,4 +136,31 @@ TEST_F(tiglExport, export_meshed_fuselage_success)
 {
     const char* vtkFuselageFilename = "TestData/export/D150modelID_fuselage1.vtp";
     ASSERT_TRUE(tiglExportMeshedFuselageVTKSimpleByUID(tiglHandle, "D150_VAMP_FL1", vtkFuselageFilename, 0.03) == TIGL_SUCCESS);
+}
+
+TEST_F(tiglExport, export_fuselage_collada_success){
+    const char* colladaFuselageFilename = "TestData/export/D150modelID_fuselage1.dae";
+    ASSERT_TRUE(tiglExportFuselageColladaByUID(tiglHandle, "D150_VAMP_FL1", colladaFuselageFilename, 0.01) == TIGL_SUCCESS);
+}
+
+TEST_F(tiglExport, export_wing_collada_success){
+    const char* colladaWing1Filename = "TestData/export/D150modelID_wing1.dae";
+    ASSERT_TRUE(tiglExportWingColladaByUID(tiglHandle, "D150_VAMP_W1", colladaWing1Filename, 0.001) == TIGL_SUCCESS);
+    const char* colladaWing2Filename = "TestData/export/D150modelID_wing2.dae";
+    ASSERT_TRUE(tiglExportWingColladaByUID(tiglHandle, "D150_VAMP_HL1", colladaWing2Filename, 0.001) == TIGL_SUCCESS);
+    const char* colladaWing3Filename = "TestData/export/D150modelID_wing3.dae";
+    ASSERT_TRUE(tiglExportWingColladaByUID(tiglHandle, "D150_VAMP_SL1", colladaWing3Filename, 0.001) == TIGL_SUCCESS);
+}
+
+TEST_F(tiglExportSimple, export_wing_collada)
+{
+    tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
+    tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglSimpleHandle);
+    tigl::CCPACSWing& wing = config.GetWing(1);
+
+    tigl::CTiglTriangularizer t(wing.GetLoft(), 0.001);
+
+    TiglReturnCode ret = tigl::CTiglExportCollada::writeToDisc(t, "simple_wing", "TestData/export/simpletest_wing.dae");
+
+    ASSERT_EQ(TIGL_SUCCESS, ret);
 }

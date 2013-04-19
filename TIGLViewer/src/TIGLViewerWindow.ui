@@ -164,10 +164,18 @@
      <addaction name="tiglExportMeshedWingSTL"/>
      <addaction name="tiglExportMeshedFuselageSTL"/>
     </widget>
+    <widget class="QMenu" name="menuExport_to_Collada">
+     <property name="title">
+      <string>Export to Collada</string>
+     </property>
+     <addaction name="tiglExportWingColladaAction"/>
+     <addaction name="tiglExportFuselageColladaAction"/>
+    </widget>
     <addaction name="menuExport_to_IGES"/>
     <addaction name="menuExport_to_VTK"/>
     <addaction name="menuExport_to_STEP"/>
     <addaction name="menuExport_to_STL"/>
+    <addaction name="menuExport_to_Collada"/>
    </widget>
    <widget class="QMenu" name="viewMenu">
     <property name="title">
@@ -1088,6 +1096,16 @@
    </property>
    <property name="toolTip">
     <string>Export Model as IGES with CPACS metadata</string>
+   </property>
+  </action>
+  <action name="tiglExportWingColladaAction">
+   <property name="text">
+    <string>Export Wing</string>
+   </property>
+  </action>
+  <action name="tiglExportFuselageColladaAction">
+   <property name="text">
+    <string>Export Fuselage</string>
    </property>
   </action>
  </widget>
