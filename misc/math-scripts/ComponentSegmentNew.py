@@ -25,20 +25,38 @@ from Polygonzug import PolygonNormal, PolygonWRoundedEdges
 from ms_segmentGeometry import SegmentGeometry
 
 
-from numpy import size,  array
+from numpy import size,  array, dot
 
 class ComponentSegment:
     def __init__(self, le, te):
         assert(size(le,1) == size(te,1))
         assert(size(le,0) == size(te,0) == 3)
+        assert(size(le,1) >= 2)
         
         self.segments = {}
         nseg = size(le,1)-1
         for iseg in range(0,nseg):
             self.segments[iseg] = SegmentGeometry(le[:,iseg], le[:,iseg+1], te[:,iseg], te[:,iseg+1])
         
-        # project 
-        # todo, extend leading edge according to cpacs specs
+        # extend leading edge at wing tip 
+        n = le[:,nseg]-le[:,nseg-1]
+        n[0] = 0
+        tep = te[:,nseg]
+        alpha = dot(tep-le[:,nseg-1],n)/dot(le[:,nseg]-le[:,nseg-1],n)
+        if alpha > 1:
+        	P = le[:,nseg-1] + (le[:,nseg]-le[:,nseg-1])*alpha
+        	le[:,nseg] = P
+        	
+        # extend leading edge at inner wing
+        n = le[:,1]-le[:,0]
+        n[0] = 0
+        tep = te[:,0]
+        alpha = dot(tep-le[:,0],n)/dot(le[:,1]-le[:,0],n)
+        if alpha < 0:
+          	P = le[:,0] + (le[:,1]-le[:,0])*alpha
+        	le[:,0] = P      
+        
+        # project onto y-z plane
         self.le = PolygonWRoundedEdges(le[1:3,:])
         self.le.setRadius(0.01)
         self.te = PolygonNormal(te[1:3,:]) 
