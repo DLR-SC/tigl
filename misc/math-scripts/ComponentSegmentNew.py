@@ -20,6 +20,7 @@
 #
 
 import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
 
 from Polygonzug import PolygonNormal, PolygonWRoundedEdges
 from ms_segmentGeometry import SegmentGeometry
@@ -33,6 +34,9 @@ class ComponentSegment:
         assert(size(le,0) == size(te,0) == 3)
         assert(size(le,1) >= 2)
         
+        self.lepoints = le
+        self.tepoints = te
+        
         self.segments = {}
         nseg = size(le,1)-1
         for iseg in range(0,nseg):
@@ -44,17 +48,17 @@ class ComponentSegment:
         tep = te[:,nseg]
         alpha = dot(tep-le[:,nseg-1],n)/dot(le[:,nseg]-le[:,nseg-1],n)
         if alpha > 1:
-        	P = le[:,nseg-1] + (le[:,nseg]-le[:,nseg-1])*alpha
-        	le[:,nseg] = P
-        	
+            P = le[:,nseg-1] + (le[:,nseg]-le[:,nseg-1])*alpha
+            le[:,nseg] = P
+        
         # extend leading edge at inner wing
         n = le[:,1]-le[:,0]
         n[0] = 0
         tep = te[:,0]
         alpha = dot(tep-le[:,0],n)/dot(le[:,1]-le[:,0],n)
         if alpha < 0:
-          	P = le[:,0] + (le[:,1]-le[:,0])*alpha
-        	le[:,0] = P      
+            P = le[:,0] + (le[:,1]-le[:,0])*alpha
+            le[:,0] = P      
         
         # project onto y-z plane
         self.le = PolygonWRoundedEdges(le[1:3,:])
@@ -87,6 +91,15 @@ class ComponentSegment:
             
         
         raise NameError('Error determining segment index in ComponentSegment.calcPoint')
+        
+    def plot(self, axis):
+        nseg = size(self.lepoints, 1) - 1
+        style= 'b-'
+        axis.plot(self.lepoints[0,:], self.lepoints[1,:], self.lepoints[2,:], style)
+        axis.plot(self.tepoints[0,:], self.tepoints[1,:], self.tepoints[2,:], style)
+        axis.plot([self.lepoints[0,0], self.tepoints[0,0]], [self.lepoints[1,0], self.tepoints[1,0]], [self.lepoints[2,0], self.tepoints[2,0]], style)
+        axis.plot([self.lepoints[0,nseg], self.tepoints[0,nseg]], [self.lepoints[1,nseg], self.tepoints[1,nseg]], [self.lepoints[2,nseg], self.tepoints[2,nseg]], style)
+        
 
     
 
@@ -100,37 +113,15 @@ hk = array([[4, 3, 3, 3,3],
             [1, 2, 1, 2,3]])
 
 cs = ComponentSegment(vk, hk)
-P = cs.calcPoint(0.25*0.5, 0.25)
+P = cs.calcPoint(1.0, 0.0)
 print P
 
-points = vk[1:3,:]
-
-
-poly = PolygonNormal(points)
-
-
-
-pz = PolygonWRoundedEdges(points)
-pz.setRadius(0.2)
-
-# 2 edges defined by 3 points
-A = array([1, 1])
-B = array([4, 4])
-C = array([8, 2.5])
 
 fig = plt.figure()
-#fig.gca().plot([A[0], B[0], C[0]], [A[1], B[1], C[1]], 'r-')
+fig.gca(projection='3d')
 
-pz.plot(fig.gca())
-
-f = 0
-while f <= 1.000:
-    (P, N, iseg) = pz.calcPoint(f)
-    fig.gca().plot(P[0],P[1], 'kx')
-    fig.gca().plot([P[0], P[0]+ 0.15*N[0]],[P[1], P[1] + 0.15*N[1]], 'b')
-    f = f + 1./32.
-
-
+cs.plot(fig.gca())
+fig.gca().plot([P[0]], [P[1]], [P[2]], 'rx')
 
 
 plt.show()
