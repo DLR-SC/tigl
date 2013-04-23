@@ -373,3 +373,13 @@ TEST(WingComponentSegment4, tiglWingComponentSegmentPointGetSegmentEtaXsi_BUG2){
     tiglCloseCPACSConfiguration(tiglHandle);
     tixiCloseDocument(tixiHandle);
 }
+
+TEST_F(WingComponentSegment3, tiglWingComponentSegmentPointGetSegmentEtaXsi_BUG3){
+    double sEta = 0., sXsi = 0.;
+    char *wingUID = NULL, *segmentUID = NULL;
+    TiglReturnCode ret = tiglWingComponentSegmentPointGetSegmentEtaXsi(tiglHandle, "D150_VTP_CS", 0.0, 1.0, &wingUID, &segmentUID, &sEta, &sXsi);
+    ASSERT_EQ(TIGL_SUCCESS, ret);
+    //ASSERT_STREQ("D150_wing_1ID", wingUID);
+    //ASSERT_STREQ("D150_wing_1Segment2ID", segmentUID);
+    cout << "eta_s / xsi_s: " << sEta << "/" << sXsi << endl;
+}
