@@ -37,8 +37,7 @@ public:
 	Handle_V3d_Viewer&              getViewer();
 	Handle_AIS_InteractiveContext&  getContext();
 
-	Handle_V3d_Viewer createViewer(	const Standard_CString aDisplay,
-									const Standard_ExtString aName,
+	Handle_V3d_Viewer createViewer( const Standard_ExtString aName,
 									const Standard_CString aDomain,
 									const Standard_Real ViewSize );
 

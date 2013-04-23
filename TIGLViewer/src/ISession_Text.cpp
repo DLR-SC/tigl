@@ -12,20 +12,24 @@ static char THIS_FILE[]=__FILE__;
 IMPLEMENT_STANDARD_HANDLE(ISession_Text,AIS_InteractiveObject)
 IMPLEMENT_STANDARD_RTTIEXT(ISession_Text,AIS_InteractiveObject)
 
+#if 0
 #include <Graphic2d_Text.hxx>
 #include <Select2D_SensitiveBox.hxx>
 #include <Graphic2d_Segment.hxx>
-#include <OSD_Environment.hxx>
 #include <Graphic2d_View.hxx>
 #include <Graphic2d_Drawer.hxx>
 #include "PrsMgr_PresentationManager2d.hxx"
-#include "SelectMgr_Selection.hxx"
 #include "Graphic2d_Array1OfVertex.hxx"
 #include "Graphic2d_Polyline.hxx"
 #include "Graphic2d_Vertex.hxx"
 #include "Graphic2d_DisplayList.hxx"
-#include "Prs3d_Text.hxx"
-#include "Prs3d_Presentation.hxx"
+#endif
+
+#include <OSD_Environment.hxx>
+#include <SelectMgr_Selection.hxx>
+#include <Prs3d_Text.hxx>
+#include <Prs3d_Presentation.hxx>
+#include <gp_Pnt.hxx>
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -87,6 +91,7 @@ void ISession_Text::Compute(const Handle(Prs3d_Projector)& ,
  {
  }
 
+#if 0
 void ISession_Text::Compute(const Handle(PrsMgr_PresentationManager2d)& ,
                          const Handle(Graphic2d_GraphicObject)& aGrObj, 
                          const Standard_Integer /* unmode*/)
@@ -105,6 +110,7 @@ void ISession_Text::Compute(const Handle(PrsMgr_PresentationManager2d)& ,
   text->TextSize(MyWidth, MyHeight,anXoffset,anYoffset);
 
 }
+#endif
 
 void ISession_Text::ComputeSelection(const Handle(SelectMgr_Selection)& /*aSelection*/,
                       const Standard_Integer /*unMode*/)
