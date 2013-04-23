@@ -34,13 +34,13 @@ class ComponentSegment:
         assert(size(le,0) == size(te,0) == 3)
         assert(size(le,1) >= 2)
         
-        self.lepoints = le
-        self.tepoints = te
+        self.lepoints = le.copy()
+        self.tepoints = te.copy()
         
         self.segments = {}
         nseg = size(le,1)-1
         for iseg in range(0,nseg):
-            self.segments[iseg] = SegmentGeometry(le[:,iseg], le[:,iseg+1], te[:,iseg], te[:,iseg+1])
+            self.segments[iseg] = SegmentGeometry(self.lepoints[:,iseg], self.lepoints[:,iseg+1], self.tepoints[:,iseg], self.tepoints[:,iseg+1])
         
         # extend leading edge at wing tip 
         n = le[:,nseg]-le[:,nseg-1]
@@ -67,6 +67,7 @@ class ComponentSegment:
         
         
     def calcPoint(self, eta, xsi):
+        nseg = size(self.lepoints,1)-1
         pyz, nyz, iSegBegin = self.le.calcPoint(eta)
         P = array([0, pyz[0], pyz[1]])
         N = array([0, nyz[0], nyz[1]])
@@ -86,9 +87,14 @@ class ComponentSegment:
         # project point onto segment
         for iseg in  range(iSegBegin, iSegEnd+1):
             (alpha, beta) = self.segments[iseg].projectPointOnCut(PL, P,N)
+            
+            # in the last and first segment, alpha and beta dont have to be valid, due to the extension of the leading edge
             if SegmentGeometry.isValid(alpha, beta):
                 return self.segments[iseg].getPoint(alpha, beta)[:,0]
-            
+            elif iseg == 0 and alpha < 0.:
+                return self.segments[iseg].getPoint(alpha, beta)[:,0]
+            elif iseg == nseg-1 and alpha > 1.:
+                 return self.segments[iseg].getPoint(alpha, beta)[:,0]
         
         raise NameError('Error determining segment index in ComponentSegment.calcPoint')
         
@@ -101,19 +107,17 @@ class ComponentSegment:
         axis.plot([self.lepoints[0,nseg], self.tepoints[0,nseg]], [self.lepoints[1,nseg], self.tepoints[1,nseg]], [self.lepoints[2,nseg], self.tepoints[2,nseg]], style)
         
 
-    
 
+vk = array([[0.0,  2.0, 3.4],
+            [0.5,  5.4, 9.0], 
+            [0.0,  0.0, 0.4]])
 
-vk = array([[1, 0, 0, 0,0],
-            [1, 2, 3, 4,3], 
-            [1, 2, 1, 2,3]])
-
-hk = array([[4, 3, 3, 3,3],
-            [1, 2, 3, 4,3], 
-            [1, 2, 1, 2,3]])
+hk = array([[3.5, 3.5, 4.0],
+            [0.0, 6.4, 9.5], 
+            [0.0, 0.0, 0.5]])
 
 cs = ComponentSegment(vk, hk)
-P = cs.calcPoint(1.0, 0.0)
+P = cs.calcPoint(0.0, 1.0)
 print P
 
 

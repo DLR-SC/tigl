@@ -152,7 +152,8 @@ class SegmentGeometry:
 	
 	@staticmethod
 	def isValid(eta, xsi): 
-		if eta >= 0. and eta <= 1. and xsi >= 0. and xsi <= 1.:
+		eps = 1e-7
+		if eta >= -eps and eta <= 1.+eps and xsi >= -eps and xsi <= 1.+eps:
 			return True
 		else:
 			return False
