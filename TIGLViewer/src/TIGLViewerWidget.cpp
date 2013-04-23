@@ -18,6 +18,7 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
+#include "tigl_config.h"
 
 #include "TIGLViewerWidget.h"
 
@@ -161,7 +162,6 @@ void TIGLViewerWidget::initializeOCC(const Handle_AIS_InteractiveContext& aConte
     short hi = (short) ( windowHandle >> 16 );
 
 #if defined WNT
-	// rc = (Aspect_RenderingContext) wglGetCurrentContext();
     myWindow = new WNT_Window( Handle(Graphic3d_WNTGraphicDevice)
 							   ::DownCast( myContext->CurrentViewer()->Device() ) ,
 							   (int) hi, (int) lo );
