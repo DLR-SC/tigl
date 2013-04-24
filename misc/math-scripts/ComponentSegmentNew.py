@@ -23,12 +23,12 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 
 from Polygonzug import PolygonNormal, PolygonWRoundedEdges
-from ms_segmentGeometry import SegmentGeometry
+from ms_segmentGeometry import SegmentGeometry, SegmentMathError
 
 
-from numpy import size,  array, dot
+from numpy import size,  array, dot, arange, zeros, linspace
 
-class ComponentSegment:
+class ComponentSegment(object):
     def __init__(self, le, te):
         assert(size(le,1) == size(te,1))
         assert(size(le,0) == size(te,0) == 3)
@@ -86,7 +86,16 @@ class ComponentSegment:
             
         # project point onto segment
         for iseg in  range(iSegBegin, iSegEnd+1):
-            (alpha, beta) = self.segments[iseg].projectPointOnCut(PL, P,N)
+            try:
+                # @todo: , if the point does not lie on the current segment
+                # the projection might not converge (there may be not solution).
+                # this is not bad, but takes some time. Find a way to determine
+                # in advance on which segment the points lies. one way to do so
+                # is to project the segment edge on the intersection line and 
+                # determine the intersection parameter
+                (alpha, beta) = self.segments[iseg].projectPointOnCut(PL, P,N)
+            except SegmentMathError as err:
+                continue
             
             # in the last and first segment, alpha and beta dont have to be valid, due to the extension of the leading edge
             if SegmentGeometry.isValid(alpha, beta):
@@ -103,29 +112,49 @@ class ComponentSegment:
         style= 'b-'
         axis.plot(self.lepoints[0,:], self.lepoints[1,:], self.lepoints[2,:], style)
         axis.plot(self.tepoints[0,:], self.tepoints[1,:], self.tepoints[2,:], style)
-        axis.plot([self.lepoints[0,0], self.tepoints[0,0]], [self.lepoints[1,0], self.tepoints[1,0]], [self.lepoints[2,0], self.tepoints[2,0]], style)
-        axis.plot([self.lepoints[0,nseg], self.tepoints[0,nseg]], [self.lepoints[1,nseg], self.tepoints[1,nseg]], [self.lepoints[2,nseg], self.tepoints[2,nseg]], style)
+        for iseg in xrange(0,nseg+1):
+            axis.plot([self.lepoints[0,iseg], self.tepoints[0,iseg]], [self.lepoints[1,iseg], self.tepoints[1,iseg]], [self.lepoints[2,iseg], self.tepoints[2,iseg]], style)
+        
+        #calc iso-eta lines
+        for eta in arange(0.,1.01, 0.1):
+            xsis = linspace(0.,1.0, 20)
+            P = zeros((3,size(xsis)))
+            for i in xrange(0,size(xsis)):
+                P[:,i] = self.calcPoint(eta, xsis[i])
+           
+            axis.plot(P[0,:], P[1,:], P[2,:],'r')
+            
+        #calc iso-xsi lines
+        for xsi in arange(0.,1.01, 0.1):
+            etas = linspace(0.,1.0, 20)
+            P = zeros((3,size(etas)))
+            for i in xrange(0,size(etas)):
+                P[:,i] = self.calcPoint(etas[i], xsi)
+           
+            axis.plot(P[0,:], P[1,:], P[2,:],'r')
         
 
 
-vk = array([[0.0,  2.0, 3.4],
-            [0.5,  5.4, 9.0], 
-            [0.0,  0.0, 0.4]])
+vk = array([[ 0.0,  2.0, 3.4],
+            [ 0.5,  4.4, 9.0], 
+            [-0.3,  0.0, 0.4]])
 
 hk = array([[3.5, 3.5, 4.0],
             [0.0, 6.4, 9.5], 
             [0.0, 0.0, 0.5]])
 
 cs = ComponentSegment(vk, hk)
-P = cs.calcPoint(0.0, 1.0)
-print P
+
+#print P
 
 
 fig = plt.figure()
 fig.gca(projection='3d')
 
 cs.plot(fig.gca())
-fig.gca().plot([P[0]], [P[1]], [P[2]], 'rx')
+
+P = cs.calcPoint(0.5, 0.5)
+fig.gca().plot([P[0]], [P[1]], [P[2]], 'gx')
 
 
 plt.show()
