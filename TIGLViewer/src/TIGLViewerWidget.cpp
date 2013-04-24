@@ -26,19 +26,18 @@
 #include <cmath>
 #include <iostream>
 
-#if defined _WIN32 || defined __WIN32__
-  #include <WNT_Window.hxx>
-  #include <gl/GL.h>
-  #include <gl/GLU.h>
-#elif defined __APPLE_
-  #include <Cocoa_Window.hxx>
-  #include <OpenGL/gl.h>
-  #include <OpenGL/glu.h>
-#else
-  #include <Xw_Window.hxx>
-  #include <GL/gl.h>
-  #include <GL/glu.h>
-#endif
+#include <QtGui/QApplication>
+#include <QtGui/QBitmap>
+#include <QPainter>
+#include <QtGui/QInputEvent>
+#include <QtGui/QColorDialog>
+#include <QtGui/QPlastiqueStyle>
+#include <QRubberBand>
+#include <QMessageBox>
+#include <QInputDialog>
+
+#include "TIGLViewerInternal.h"
+#include "TIGLViewerDocument.h"
 
 #ifdef OCC_NEW_3DAPI
   #include <OpenGl_GraphicDriver.hxx>
@@ -52,18 +51,19 @@
   #endif
 #endif // OCC_NEW_3DAPI
 
-#include <QtGui/QApplication>
-#include <QtGui/QBitmap>
-#include <QtGui/QPainter>
-#include <QtGui/QInputEvent>
-#include <QtGui/QColorDialog>
-#include <QtGui/QPlastiqueStyle>
-#include <QRubberBand>
-#include <QMessageBox>
-#include <QInputDialog>
-
-#include "TIGLViewerInternal.h"
-#include "TIGLViewerDocument.h"
+#if defined _WIN32 || defined __WIN32__
+  #include <WNT_Window.hxx>
+  #include <gl/GL.h>
+  #include <gl/GLU.h>
+#elif defined __APPLE__
+  #include <Cocoa_Window.hxx>
+  #include <OpenGL/gl.h>
+  #include <OpenGL/glu.h>
+#else
+  #include <Xw_Window.hxx>
+  #include <GL/gl.h>
+  #include <GL/glu.h>
+#endif
 
 #include "Visual3d_Layer.hxx"
 #include "V3d_DirectionalLight.hxx"
@@ -175,7 +175,7 @@ void TIGLViewerWidget::initializeOCC(const Handle_AIS_InteractiveContext& aConte
     myWindow = new Cocoa_Window((NSView *)winId());
   #else
     Aspect_Handle windowHandle = (Aspect_Handle)winId();
-    myWindow = new Xw_Window(myContext->CurrentViewer()->Driver()->GetDisplayConnection()
+    myWindow = new Xw_Window(myContext->CurrentViewer()->Driver()->GetDisplayConnection(),
                              windowHandle);
   #endif
 #else // OCC_NEW_3DAPI
