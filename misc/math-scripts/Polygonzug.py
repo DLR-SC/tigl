@@ -26,7 +26,7 @@ def pol2cart(phi,r):
     y = r*sin(phi)
     return array([x, y])
 
-class PolygonWRoundedEdges:
+class PolygonWRoundedEdges(object):
     r = 0.3
     
     def __init__(self, points):
@@ -188,7 +188,7 @@ class PolygonWRoundedEdges:
             axis.plot(X,Y,'g') 
 
  
-class PolygonNormal:
+class PolygonNormal(object):
     def __init__(self, points):
         self.points = points
         self.calcInternalData()

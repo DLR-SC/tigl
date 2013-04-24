@@ -22,7 +22,10 @@
 from numpy import array, outer, ones, size, dot, linalg, zeros, cross, transpose 
 from ms_optAlgs import ms_optNewton
 
-class SegmentGeometry:
+class SegmentMathError(Exception):
+    pass
+
+class SegmentGeometry(object):
 	def __init__(self, p1, p2, p3, p4):
 		self.setPoints(p1, p2, p3, p4)
 		
@@ -51,7 +54,7 @@ class SegmentGeometry:
 	
 	# projects the point p on the cut of the segment with a plane (given by p, n)
 	def projectPointOnCut(self, p_proj, p, n):
-		debug = True
+		debug = False
 
 		# some constants for the intersection calculation
 		a1 =  dot(p - self.__d, n);
@@ -94,9 +97,7 @@ class SegmentGeometry:
 			if debug: print 'Iter:', iter, ' Error=', abs(diff), '@ Beta=' , beta
 		
 		if iter >= 20:
-			print "ERROR: could not project intersection curve onto line"
-			# set illegal value 
-			beta = -1.
+			raise SegmentMathError('Could not project intersection curve onto line')
 		
 		
 		return (al(beta), beta)
