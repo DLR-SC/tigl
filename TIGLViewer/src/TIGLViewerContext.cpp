@@ -18,11 +18,15 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
+#include "tigl_config.h"
 
 #include <qnamespace.h>
 #include "TIGLViewerContext.h"
 #include "TIGLViewerInternal.h"
 
+#ifdef OCC_NEW_3DAPI
+#include <OpenGl_GraphicDriver.hxx>
+#else
 #ifdef WNT
 #include <Graphic3d_WNTGraphicDevice.hxx>
 #else
@@ -31,12 +35,13 @@
 #endif
 #include <Graphic3d_GraphicDevice.hxx>
 #endif
+#endif
 
 TIGLViewerContext::TIGLViewerContext()
 {
 	// Create the OCC Viewers
 	TCollection_ExtendedString a3DName("Visual3D");
-	myViewer = createViewer( "DISPLAY", a3DName.ToExtString(), "", 1000.0 );
+	myViewer = createViewer( a3DName.ToExtString(), "", 1000.0 );
 	myViewer->Init();
 	myViewer->SetZBufferManagment(Standard_False);
 	myViewer->SetDefaultViewProj( V3d_Zpos );	// Top view
@@ -70,45 +75,43 @@ Handle_AIS_InteractiveContext& TIGLViewerContext::getContext()
 	return myContext; 
 }
 
-Handle_V3d_Viewer TIGLViewerContext::createViewer(	const Standard_CString aDisplay,
-													const Standard_ExtString aName,
+Handle_V3d_Viewer TIGLViewerContext::createViewer(	const Standard_ExtString aName,
 													const Standard_CString aDomain,
 													const Standard_Real ViewSize )
 {
+#ifdef OCC_NEW_3DAPI
+    static Handle(Graphic3d_GraphicDriver) deviceHandle;
+    if(deviceHandle.IsNull()){
+        deviceHandle = new OpenGl_GraphicDriver ("TKOpenGl");
+        deviceHandle->Begin (new Aspect_DisplayConnection());
+    }
+
+#else // OCC_NEW_3DAPI
 #ifndef WNT
-    static Handle(Graphic3d_GraphicDevice) defaultdevice;
+    static Handle(Graphic3d_GraphicDevice) deviceHandle;
 	
-    if( defaultdevice.IsNull() )
+    if( deviceHandle.IsNull() )
 	{
-		defaultdevice = new Graphic3d_GraphicDevice( getenv(aDisplay) );
+        deviceHandle = new Graphic3d_GraphicDevice( getenv("DISPLAY") );
 	}
-
-    return new V3d_Viewer(	defaultdevice,
-							aName,
-							aDomain,
-							ViewSize,
-							V3d_XposYnegZpos,
-							Quantity_NOC_BLACK,
-                    		V3d_ZBUFFER,
-							V3d_GOURAUD,
-							V3d_WAIT );
 #else
-    static Handle( Graphic3d_WNTGraphicDevice ) defaultdevice;
-    if( defaultdevice.IsNull() )
+    static Handle( Graphic3d_WNTGraphicDevice ) deviceHandle;
+    if( deviceHandle.IsNull() )
 	{
-        defaultdevice = new Graphic3d_WNTGraphicDevice();
+        deviceHandle = new Graphic3d_WNTGraphicDevice();
 	}
+#endif  // WNT
+#endif  // OCC_NEW_3DAPI
 
-    return new V3d_Viewer(	defaultdevice,
+	return new V3d_Viewer(	deviceHandle,
 							aName,
 							aDomain,
 							ViewSize,
 							V3d_XposYnegZpos,
 							Quantity_NOC_BLACK,
-                    		V3d_ZBUFFER,
+							V3d_ZBUFFER,
 							V3d_GOURAUD,
 							V3d_WAIT );
-#endif  // WNT
 }
 /*! 
 \brief	Deletes all objects.
