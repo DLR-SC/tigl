@@ -18,6 +18,7 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
+#include "tigl_config.h"
 
 #include "TIGLViewerWidget.h"
 
@@ -25,25 +26,9 @@
 #include <cmath>
 #include <iostream>
 
-#ifdef WIN32
-  #include <WNT_Window.hxx>
-  #include <Graphic3d_WNTGraphicDevice.hxx>
-  #include <gl/GL.h>
-  #include <gl/GLU.h>
-#elif defined __APPLE__
-  #include <OpenGL/gl.h>
-  #include <OpenGL/glu.h>
-  #include <Cocoa_Window.hxx>
-#else
-  #include <GL/gl.h>
-  #include <GL/glu.h>
-  #include <Xw_Window.hxx>
-  #include <Graphic3d_GraphicDevice.hxx>
-#endif
-
 #include <QtGui/QApplication>
 #include <QtGui/QBitmap>
-#include <QtGui/QPainter>
+#include <QPainter>
 #include <QtGui/QInputEvent>
 #include <QtGui/QColorDialog>
 #include <QtGui/QPlastiqueStyle>
@@ -53,6 +38,32 @@
 
 #include "TIGLViewerInternal.h"
 #include "TIGLViewerDocument.h"
+
+#ifdef OCC_NEW_3DAPI
+  #include <OpenGl_GraphicDriver.hxx>
+#else
+  #if defined _WIN32 || defined __WIN32__
+    #include <Graphic3d_WNTGraphicDevice.hxx>
+  #elif defined __APPLE__
+    // no more include required
+  #else
+    #include <Graphic3d_GraphicDevice.hxx>
+  #endif
+#endif // OCC_NEW_3DAPI
+
+#if defined _WIN32 || defined __WIN32__
+  #include <WNT_Window.hxx>
+  #include <gl/GL.h>
+  #include <gl/GLU.h>
+#elif defined __APPLE__
+  #include <Cocoa_Window.hxx>
+  #include <OpenGL/gl.h>
+  #include <OpenGL/glu.h>
+#else
+  #include <Xw_Window.hxx>
+  #include <GL/gl.h>
+  #include <GL/glu.h>
+#endif
 
 #include "Visual3d_Layer.hxx"
 #include "V3d_DirectionalLight.hxx"
@@ -156,26 +167,35 @@ void TIGLViewerWidget::initializeOCC(const Handle_AIS_InteractiveContext& aConte
 	myViewer  = myContext->CurrentViewer();
 	myView    = myViewer->CreateView();
 
-	int windowHandle = (int) winId();
-    short lo = (short)   windowHandle;
-    short hi = (short) ( windowHandle >> 16 );
-
-#if defined WNT
-	// rc = (Aspect_RenderingContext) wglGetCurrentContext();
+#ifdef OCC_NEW_3DAPI
+  #if defined _WIN32 || defined __WIN32__
+    myWindow = new WNT_Window(winId());
+    myWindow->SetFlags( WDF_NOERASEBKGRND );
+  #elif defined __APPLE__
+    myWindow = new Cocoa_Window((NSView *)winId());
+  #else
+    Aspect_Handle windowHandle = (Aspect_Handle)winId();
+    myWindow = new Xw_Window(myContext->CurrentViewer()->Driver()->GetDisplayConnection(),
+                             windowHandle);
+  #endif
+#else // OCC_NEW_3DAPI
+  int windowHandle = (int) winId();
+  short lo = (short)   windowHandle;
+  short hi = (short) ( windowHandle >> 16 );
+  #if defined _WIN32 || defined __WIN32__
     myWindow = new WNT_Window( Handle(Graphic3d_WNTGraphicDevice)
 							   ::DownCast( myContext->CurrentViewer()->Device() ) ,
 							   (int) hi, (int) lo );
 	// Turn off background erasing in OCC's window
 	myWindow->SetFlags( WDF_NOERASEBKGRND );
-#elif defined __APPLE__
-    myWindow = new Cocoa_Window(reinterpret_cast<NSView *>(winId()));
-#else
-	// rc = (Aspect_RenderingContext) glXGetCurrentContext(); // Untested!
-    myWindow = new Xw_Window( Handle(Graphic3d_GraphicDevice)
+  #elif defined __APPLE__
+    myWindow = new Cocoa_Window((NSView *)winId());
+  #else
+	myWindow = new Xw_Window( Handle(Graphic3d_GraphicDevice)
 									::DownCast( myContext->CurrentViewer()->Device() ),
 							  (int) hi, (int) lo, Xw_WQ_SAMEQUALITY, Quantity_NOC_BLACK );
-#endif // WNT
-	
+  #endif // WNT
+#endif // OCC_NEW_3DAPI
 	if (!myView.IsNull())
 	{
 		// Set my window (Hwnd) into the OCC view

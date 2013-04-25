@@ -14,7 +14,7 @@ set (TV_OCC_LIBS ${OCC_LIBS}
 	PTKernel TKOffset TKOpenGl
 	TKPShape TKSTEP
 	TKService TKShapeSchema  
-	TKV2d TKV3d TKVRML  
+	TKV3d TKVRML
 )
 
 find_package( OpenCASCADE REQUIRED COMPONENTS ${TV_OCC_LIBS})
@@ -98,16 +98,8 @@ QT4_ADD_RESOURCES( tv_rcrs src/TIGLViewer.qrc )
 
 add_definitions(-DCSFDB -DQOCC_STATIC)
 
-if(OCC_VERSION_STRING VERSION_GREATER "6.3")
-    add_definitions(-DOCC_PATCHED)
-endif()
-
-if(OCC_VERSION_STRING VERSION_GREATER "6.4")
-    add_definitions(-DOCC_BG)
-endif()
-
 include_directories( ${OpenCASCADE_INCLUDE_DIR} ${TIXI_INCLUDE_DIRS} ${GLOG_INCLUDE_DIR})
-include_directories( ${PROJECT_SOURCE_DIR}/src ${CMAKE_CURRENT_SOURCE_DIR}/src )
+include_directories( ${PROJECT_SOURCE_DIR}/src ${CMAKE_CURRENT_SOURCE_DIR}/src ${PROJECT_BINARY_DIR}/src)
 
 # include path for ui files
 include_directories( ${CMAKE_CURRENT_BINARY_DIR} )

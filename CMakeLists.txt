@@ -56,6 +56,8 @@ find_package( OpenCASCADE REQUIRED COMPONENTS ${OCC_LIBS})
 find_package( TIXI 2.0.4 REQUIRED)
 find_package( GLOG REQUIRED)
 
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/src/tigl_config.h.in ${CMAKE_CURRENT_BINARY_DIR}/src/tigl_config.h)
+
 # code coverage analysis
 IF (CMAKE_BUILD_TYPE STREQUAL "Debug")
 	OPTION(TIGL_ENABLE_COVERAGE "Enable GCov coverage analysis (defines a 'coverage' target and enforces static build of tigl)" OFF)

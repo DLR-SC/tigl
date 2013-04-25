@@ -26,10 +26,8 @@
 
 #if defined WNT
 #include <Handle_WNT_Window.hxx>
-#elif defined __APPLE__
-#include <Handle_Aspect_Window.hxx>
 #else
-#include <Handle_Xw_Window.hxx>
+#include <Handle_Aspect_Window.hxx>
 #endif
 
 #include "TIGLViewer.h"
@@ -163,10 +161,8 @@ private: // members
 
 #if defined WNT
     Handle_WNT_Window				myWindow;
-#elif defined __APPLE__
-    Handle_Aspect_Window            myWindow;
 #else
-    Handle_Xw_Window				myWindow;
+    Handle_Aspect_Window			myWindow;
 #endif // WNT
 
 	Handle_V3d_View                 myView;
