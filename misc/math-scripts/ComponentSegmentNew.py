@@ -22,7 +22,7 @@
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 
-from Polygonzug import PolygonNormal, PolygonWRoundedEdges
+import Polygonzug as PZ
 from ms_segmentGeometry import SegmentGeometry, SegmentMathError
 
 
@@ -61,9 +61,9 @@ class ComponentSegment(object):
             le[:,0] = P      
         
         # project onto y-z plane
-        self.le = PolygonWRoundedEdges(le[1:3,:])
+        self.le = PZ.PolygonWRoundedEdges(le[1:3,:])
         self.le.setRadius(0.01)
-        self.te = PolygonNormal(te[1:3,:]) 
+        self.te = PZ.PolygonNormal(te[1:3,:]) 
         
         
     def calcPoint(self, eta, xsi):
@@ -94,7 +94,7 @@ class ComponentSegment(object):
                 # is to project the segment edge on the intersection line and 
                 # determine the intersection parameter
                 (alpha, beta) = self.segments[iseg].projectPointOnCut(PL, P,N)
-            except SegmentMathError as err:
+            except SegmentMathError:
                 continue
             
             # in the last and first segment, alpha and beta dont have to be valid, due to the extension of the leading edge
@@ -107,7 +107,10 @@ class ComponentSegment(object):
         
         raise NameError('Error determining segment index in ComponentSegment.calcPoint')
         
-    def plot(self, axis):
+    def plot(self, axis=None):
+        if not axis:
+            axis = plt.gca(projection='3d')
+        
         nseg = size(self.lepoints, 1) - 1
         style= 'b-'
         axis.plot(self.lepoints[0,:], self.lepoints[1,:], self.lepoints[2,:], style)
@@ -132,6 +135,10 @@ class ComponentSegment(object):
                 P[:,i] = self.calcPoint(etas[i], xsi)
            
             axis.plot(P[0,:], P[1,:], P[2,:],'r')
+            
+        axis.set_xlabel('x [m]')
+        axis.set_ylabel('y [m]')
+        axis.set_zlabel('z [m]')
         
 
 
@@ -149,9 +156,8 @@ cs = ComponentSegment(vk, hk)
 
 
 fig = plt.figure()
-fig.gca(projection='3d')
 
-cs.plot(fig.gca())
+cs.plot()
 
 P = cs.calcPoint(0.5, 0.5)
 fig.gca().plot([P[0]], [P[1]], [P[2]], 'gx')
