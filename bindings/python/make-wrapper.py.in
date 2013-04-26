@@ -584,48 +584,55 @@ if __name__ == '__main__':
     print >> fd, stub % (createEnums(), createMethodStubs(defs))
     fd.close()
 
-    # Create distributions
-    import os
-    import functools
-    from distutils.core import setup
-    
-    s = functools.partial(setup,
-            name = 'tiglwrapper',
-            version = '2012-08',
-            py_modules = ['tiglwrapper'],
-            url = 'http://code.google.com/p/tigl/',
-            author = 'Arne Bachmann',
-            author_email = 'arne.bachmann.dlr@googlemail.com',
-            maintainer = 'DLR/SC',
-            license = 'http://www.apache.org/licenses/LICENSE-2.0',
-            description = 'Generated Python wrapper for the TIGL C library'
-        )
-    
-    upload = "--upload" in sys.argv # to Google code
+    req_version = (2,5)
+    cur_version = sys.version_info
 
-    # Source distribution
-    print "\nBuilding source distribution"
-    sys.argv = ['tiglwrapper.py', 'sdist'] # need an existing argv[0] here for some stupid reason
-    s()
+    if cur_version >= req_version:
+        # Create distributions
+        import os
+        import functools
+        from distutils.core import setup
+        
+        s = functools.partial(setup,
+                name = 'tiglwrapper',
+                version = '2012-08',
+                py_modules = ['tiglwrapper'],
+                url = 'http://code.google.com/p/tigl/',
+                author = 'Arne Bachmann',
+                author_email = 'arne.bachmann.dlr@googlemail.com',
+                maintainer = 'DLR/SC',
+                license = 'http://www.apache.org/licenses/LICENSE-2.0',
+                description = 'Generated Python wrapper for the TIGL C library'
+            )
+        
+        upload = "--upload" in sys.argv # to Google code
     
-    # Windows distribution
-    if 'win' in sys.platform:
-        print "\nBuilding windows binary distribution"
-        sys.argv = ['tiglwrapper.py', 'bdist_wininst']
+        # Source distribution
+        print "\nBuilding source distribution"
+        sys.argv = ['tiglwrapper.py', 'sdist'] # need an existing argv[0] here for some stupid reason
         s()
+        
+        # Windows distribution
+        if 'win' in sys.platform:
+            print "\nBuilding windows binary distribution"
+            sys.argv = ['tiglwrapper.py', 'bdist_wininst']
+            s()
+    
+        os.remove("MANIFEST")
+    
+        # Upload to google
+        if upload:
+            import getpass
+            import googlecode_upload
+            sys.stdout.write('Please enter your googlecode.com username: ')
+            sys.stdout.flush()
+            username = sys.stdin.readline().rstrip()
+            print 'Please enter your googlecode.com password (not the gmail password).'
+            password = getpass.getpass()
+            path = os.path.join(".", "dist/tiglwrapper-2012-08.win32.exe")
+            googlecode_upload.upload_find_auth(path, "tigl", "TIGL Python Wrapper Win32 Installer", user_name = username, password = password)
+            path = os.path.join(".", "dist/tiglwrapper-2012-08.zip")
+            googlecode_upload.upload_find_auth(path, "tigl", "TIGL Python Wrapper Source", user_name = username, password = password)
 
-    os.remove("MANIFEST")
-
-    # Upload to google
-    if upload:
-        import getpass
-        import googlecode_upload
-        sys.stdout.write('Please enter your googlecode.com username: ')
-        sys.stdout.flush()
-        username = sys.stdin.readline().rstrip()
-        print 'Please enter your googlecode.com password (not the gmail password).'
-        password = getpass.getpass()
-        path = os.path.join(".", "dist/tiglwrapper-2012-08.win32.exe")
-        googlecode_upload.upload_find_auth(path, "tigl", "TIGL Python Wrapper Win32 Installer", user_name = username, password = password)
-        path = os.path.join(".", "dist/tiglwrapper-2012-08.zip")
-        googlecode_upload.upload_find_auth(path, "tigl", "TIGL Python Wrapper Source", user_name = username, password = password)
+    else:
+        print 'Python packaging is disabled due to a too old python version (requires at least 2.5)'
