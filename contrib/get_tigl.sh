@@ -37,7 +37,6 @@ function printUsage {
     echo "usage: get_tigl.sh <distro> <arch>"
     echo
     echo "Valid distributions:"
-    echo "    SLE_11         Suse Linux Enterprise 11"
     echo "    SLE_11_SP1     Suse Linux Enterprise 11 SP1"
     echo "    SLE_11_SP2     Suse Linux Enterprise 11 SP2"
     echo "    openSUSE_11.4  openSUSE 11.4"
@@ -47,6 +46,7 @@ function printUsage {
     echo "    ubuntu_12.04   Ubuntu 12.04"
     echo "    ubuntu_12.10   Ubuntu 12.10"
     echo "    fedora_17      Fedora 17"
+    echo "    rhel_5         Red Hat Enterprise Linux 5"
     echo "    rhel_6         Red Hat Enterprise Linux 6"
     echo "    centos_6       CentOS 6"
     echo
@@ -96,15 +96,6 @@ function checkArguments {
             PACK_ARCH=x86_64
             LIBDIR=lib64
 	fi
-    elif [[ $tmp_dist == SLE_11 ]]; then
-    	DIST=SLE_11
-	PACK_TYPE=rpm
-	if [[  $tmp_arch == i386 ]]; then
-	    PACK_ARCH=i586
-        else
-            PACK_ARCH=x86_64
-            LIBDIR=lib64
-	fi
     elif [[ $tmp_dist == openSUSE_11.4 ]]; then
     	DIST=openSUSE_11.4
 	if [[  $tmp_arch == i386 ]]; then
@@ -133,6 +124,15 @@ function checkArguments {
 	fi
     elif [[ $tmp_dist == rhel_6 ]]; then
     	DIST=RedHat_RHEL-6
+	PACK_TYPE=rpm
+	if [[  $tmp_arch == i386 ]]; then
+	    PACK_ARCH=i686
+        else
+            PACK_ARCH=x86_64
+            LIBDIR=lib64
+	fi
+    elif [[ $tmp_dist == rhel_5 ]]; then
+    	DIST=RedHat_RHEL-5
 	PACK_TYPE=rpm
 	if [[  $tmp_arch == i386 ]]; then
 	    PACK_ARCH=i686
@@ -316,16 +316,18 @@ done
 mv usr/ $NAME
 cd $NAME
 
-#create start script for tiglviewer
-echo "#!/bin/bash" > tiglviewer.sh
-echo 'CURDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"' >> tiglviewer.sh
-echo 'export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$CURDIR/'$LIBDIR/ >> tiglviewer.sh
-if [[ $PACK_TYPE == deb ]]; then
-    echo 'export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$CURDIR/'$LIBDIR/$ARCH-linux-gnu/ >> tiglviewer.sh   
+if [[ $DIST != RedHat_RHEL-5 ]]; then 
+  #create start script for tiglviewer
+  echo "#!/bin/bash" > tiglviewer.sh
+  echo 'CURDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"' >> tiglviewer.sh
+  echo 'export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$CURDIR/'$LIBDIR/ >> tiglviewer.sh
+  if [[ $PACK_TYPE == deb ]]; then
+      echo 'export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$CURDIR/'$LIBDIR/$ARCH-linux-gnu/ >> tiglviewer.sh   
+  fi
+  echo 'export CSF_GraphicShr=$CURDIR/'$LIBDIR/libTKOpenGl.so.5 >> tiglviewer.sh
+  echo '$CURDIR/bin/TIGLViewer' >> tiglviewer.sh
+  chmod +x tiglviewer.sh
 fi
-echo 'export CSF_GraphicShr=$CURDIR/'$LIBDIR/libTKOpenGl.so.5 >> tiglviewer.sh
-echo '$CURDIR/bin/TIGLViewer' >> tiglviewer.sh
-chmod +x tiglviewer.sh
 
 cd ..
 
