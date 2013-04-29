@@ -794,7 +794,7 @@ void TIGLViewerDocument::drawFuselageSamplePointsAngle()
 {
 	// ask user defined angle
 	bool ok = false;
-	double angle = QInputDialog::getDouble(NULL, tr("Choose angle"), tr("Angle [°]:"), 45., 0., 360., 1, &ok);
+	double angle = QInputDialog::getDouble(NULL, tr("Choose angle"), tr("Angle [°]:"), 45., -360., 360., 1, &ok);
 	if(!ok)
 		return;
 
