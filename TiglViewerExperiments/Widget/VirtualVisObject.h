@@ -12,7 +12,6 @@ public:
 	VirtualVisObject()
 		{
 			setXYGrid(true);
-			setCross(true);
 			setAxes(true);
 
 		};
@@ -24,13 +23,11 @@ public:
 	bool xyActive(){return xy;};
 	bool xzActive(){return xz;};
 	bool yzActive(){return yz;};
-	bool crossActive(){return cross;};
 	bool axesActive(){return axes;};
 
 	void setXYGrid(bool active, int size=70, int unit=10);
 	void setXZGrid(bool active, int size=70, int unit=10);
 	void setYZGrid(bool active, int size=70, int unit=10);
-	void setCross(bool active);
 	void setAxes(bool active);
 
 	osg::Camera* camera;
@@ -38,8 +35,6 @@ public:
 
 private:
 	osg::ref_ptr<osg::Geode> axesGeode;
-	osg::ref_ptr<osg::Geode> crossGeode;
-	osg::ref_ptr<osg::MatrixTransform> crossMatrixTransform;
 	osg::ref_ptr<osg::Geode> xyGeode;
 	osg::ref_ptr<osg::Geode> xzGeode;
 	osg::ref_ptr<osg::Geode> yzGeode;
@@ -49,7 +44,6 @@ private:
 	void initXYGeode(int size, int unit);
 	void initXZGeode(int size, int unit);
 	void initYZGeode(int size, int unit);
-	void initCrossGeode();
 	void initAxesGeode();
 
 
@@ -57,7 +51,6 @@ private:
 	bool xy;
 	bool xz;
 	bool yz;
-	bool cross;
 	bool axes;
 };
 

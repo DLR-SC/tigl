@@ -6,7 +6,6 @@
 #include "tixi.h"
 
 #include <boost/algorithm/string/split.hpp>
-#include <boost/algorithm/string/constants.hpp>
 #include <boost/algorithm/string/classification.hpp>
 
 #include <osg/Geometry>

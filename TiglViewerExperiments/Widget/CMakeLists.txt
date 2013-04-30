@@ -7,12 +7,13 @@ find_package(osgQt)
 find_package(osgDB)
 
 
-find_package(Boost)
-
 set(PROGNAME "Widget")
 
-FIND_PACKAGE(Qt)
-INCLUDE_DIRECTORIES(${QT_INCLUDE_DIR})
+FIND_PACKAGE(Boost)
+
+FIND_PACKAGE(Qt4)
+include(${QT_USE_FILE})
+add_definitions(${QT_DEFINITIONS})
 
 
 
@@ -24,7 +25,13 @@ endmacro()
 include_directories(${PROJECT_SOURCE_DIR}/src ${OpenCASCADE_INCLUDE_DIR}  ${GLOG_INCLUDE_DIR} ${TIXI_INCLUDE_DIRS} ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 
 set(SOURCE_FILES
-	CrossNodeCallback.h
+	RenderingThread.h
+	AuxiliaryViewUpdater.h
+	AuxiliaryViewUpdater.cpp
+	crossnodegeode.h
+	crossnodegeode.cpp
+	CrossNode.h
+	CrossNode.cpp
 	VisualizerWidget.cpp
 	VisualizerWidget.h
 	InputObject.h
@@ -40,6 +47,8 @@ set(SOURCE_FILES
 	PickHandler.h
 	VirtualVisObject.cpp
 	VirtualVisObject.h
+	ViewInteractionsHandler.h
+	ViewInteractionsHandler.cpp
 	SelectionBoxHandler.cpp
 	SelectionBoxHandler.h
 )
