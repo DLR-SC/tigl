@@ -38,7 +38,7 @@ void Visualizer::start(){
 
 	osg::ref_ptr<osgGA::TrackballManipulator> tm = new osgGA::TrackballManipulator();
 
-	osg::Vec3d* tmEye = new osg::Vec3d(50,50,50);
+	osg::Vec3d* tmEye = new osg::Vec3d(0,50,50);
 	osg::Vec3d* tmCenter = new osg::Vec3d(0,0,0);
 	osg::Vec3d* tmUp = new osg::Vec3d(0,0,1);
 

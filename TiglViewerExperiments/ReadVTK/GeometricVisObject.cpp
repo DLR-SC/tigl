@@ -6,10 +6,6 @@
 
 #include "tixi.h"
 
-#include <boost/algorithm/string/split.hpp>
-#include <boost/algorithm/string/constants.hpp>
-#include <boost/algorithm/string/classification.hpp>
-
 #include <osg/Geometry>
 #include <osg/Material>
 #include <osgUtil/SmoothingVisitor>
@@ -75,37 +71,64 @@ InputObject* GeometricVisObject::readVTK(char* xmlFilename)
 	start = clock();
 
 
-	char * text = NULL;
-	tixiGetTextElement(handle, "/VTKFile/PolyData/Piece/Points/DataArray", &text);
+
 	
 	std::vector<std::string> SplitVecStrings;
 	std::vector<double> SplitVecDouble;
 	osg::Vec3Array *vertices = new osg::Vec3Array;
 
-	boost::algorithm::split( SplitVecStrings, text, boost::is_any_of(" \t\n"), boost::algorithm::token_compress_on );
+    char * text = NULL;
+    tixiGetTextElement(handle, "/VTKFile/PolyData/Piece/Points/DataArray", &text);
 
-	//Umwandlung von Strings in Double
-	for(unsigned int i = 1; i < SplitVecStrings.size()-1; ++i){
-		SplitVecDouble.push_back(atof(SplitVecStrings[i].data()));
-		//Nach jeweils 3 Umwandlungen als Vec3 in *vertices schreiben 
-		if(i%3 == 0){
-			vertices->push_back(osg::Vec3(SplitVecDouble[i-3], SplitVecDouble[i-2], SplitVecDouble[i-1]));
-		}
-	}
 
-	tixiGetTextElement(handle, "/VTKFile/PolyData/Piece/Polys/DataArray[1]", &text);
 
-	boost::algorithm::split( SplitVecStrings, text, boost::is_any_of(" \t\n"), boost::algorithm::token_compress_on );
+    char * textDummy = text;
+    const char *  ptr = strtok(textDummy, " \t\n");
+    int iVertexCounter = 0;
+    double x, y, z;
+    int iCoordinateCount = 0;
 
-	osg::ref_ptr<osg::DrawElementsUInt> indices = new osg::DrawElementsUInt(osg::PrimitiveSet::TRIANGLES,SplitVecStrings.size()-2);
-	//Umwandlung von Strings in Int
-	for(unsigned int i = 1; i < SplitVecStrings.size()-1; ++i){
-		(*indices)[i-1] = atoi(SplitVecStrings[i].data());
-	}
+
+    while(ptr != NULL){
+        float val = atof(ptr);
+        switch(iCoordinateCount){
+        case 0:
+            x = val;
+            iCoordinateCount++;
+            break;
+        case 1:
+            y = val;
+            iCoordinateCount++;
+            break;
+        case 2:
+            z = val;
+            //add to vertexlist
+            vertices->push_back(osg::Vec3(x,y,z));
+
+            iCoordinateCount = 0;
+            iVertexCounter++;
+            break;
+        default:
+            break;
+        }
+
+        ptr = strtok(NULL, " \t\n");
+    }
+
+    osg::ref_ptr<osg::DrawElementsUInt> indices2 = new osg::DrawElementsUInt(osg::PrimitiveSet::TRIANGLES);
+
+    tixiGetTextElement(handle, "/VTKFile/PolyData/Piece/Polys/DataArray[1]", &text);
+    char * polyptr = strtok(text, " \t\n");
+
+    while(polyptr != NULL)
+    {
+        indices2->push_back(atoi(polyptr));
+        polyptr = strtok(NULL, " \t\n");
+    }
 
 	
 
-	InputObject* inputObject = new InputObject(vertices, indices);
+	InputObject* inputObject = new InputObject(vertices, indices2);
 
 	tixiCloseDocument( handle );
 

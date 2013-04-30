@@ -5,13 +5,10 @@ find_package(osgViewer)
 find_package(osgGA)
 
 
-find_package(Boost)
-
-
 set(PROGNAME "ReadVTK")
 
 macro( config_project PROGNAME LIBNAME )
-	include_directories( ${${LIBNAME}_INCLUDE_DIR} ${Boost_INCLUDE_DIR})
+	include_directories( ${${LIBNAME}_INCLUDE_DIR})
 	target_link_libraries( ${PROGNAME} ${${LIBNAME}_LIBRARY} )
 endmacro()
 

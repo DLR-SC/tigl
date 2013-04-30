@@ -9,7 +9,7 @@ class VirtualVisObject : public VisObject
 public:
 	VirtualVisObject()
 		{
-			showXYGrid(50, 1);
+			showXYGrid(4, 2);
 			xy = true;
 			showCross();
 			cross = true;
