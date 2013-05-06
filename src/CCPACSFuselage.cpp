@@ -327,6 +327,8 @@ namespace tigl {
 		endWire = TopoDS::Wire(endShape);
 		generator.AddWire(endWire);
 		
+		generator.SetMaxDegree(2); //surfaces will be C1-continuous
+		generator.SetParType(Approx_Centripetal);
 		generator.CheckCompatibility(Standard_False);
 		generator.Build();
 		fusedSegments = generator.Shape();
