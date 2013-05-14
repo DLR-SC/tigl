@@ -60,7 +60,7 @@ CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/src/tigl_config.h.in ${CMAKE_CURRENT_
 
 # code coverage analysis
 IF (CMAKE_BUILD_TYPE STREQUAL "Debug")
-	OPTION(TIGL_ENABLE_COVERAGE "Enable GCov coverage analysis (defines a 'coverage' target and enforces static build of tigl)" OFF)
+	OPTION(TIGL_ENABLE_COVERAGE "Enable GCov coverage analysis (defines a 'coverage' target and enforces static build of tigl)" ON)
         IF(TIGL_ENABLE_COVERAGE)
 		
                 MESSAGE(STATUS "Coverage enabled")
