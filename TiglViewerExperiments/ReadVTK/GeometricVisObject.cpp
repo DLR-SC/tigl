@@ -2,7 +2,8 @@
 #include "InputObject.h"
 #include "MaterialTemplate.h"
 #include <iostream>
-#include <time.h>
+#include <ctime>
+#include <cstdlib>
 
 #include "tixi.h"
 

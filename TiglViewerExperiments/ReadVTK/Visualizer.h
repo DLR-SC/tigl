@@ -27,7 +27,7 @@ private:
 	osg::ref_ptr<VirtualVisObject> vvo;
 
 	
-	std::vector<osg::ref_ptr<osgViewer::View>> views;
+    std::vector<osg::ref_ptr<osgViewer::View> > views;
 };
 
 

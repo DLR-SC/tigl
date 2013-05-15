@@ -82,9 +82,9 @@ endif()
 
 add_subdirectory(src)
 add_subdirectory(TIGLViewer)
-add_subdirectory(TIGLViewerExperiments/BasicGeometry)
-add_subdirectory(TIGLViewerExperiments/ReadVTK)
-add_subdirectory(TIGLViewerExperiments/widget)
+add_subdirectory(TiglViewerExperiments/BasicGeometry)
+add_subdirectory(TiglViewerExperiments/ReadVTK)
+add_subdirectory(TiglViewerExperiments/Widget)
 add_subdirectory(bindings)
 
 

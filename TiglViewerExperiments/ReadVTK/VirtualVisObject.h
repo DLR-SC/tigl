@@ -1,7 +1,7 @@
 #ifndef VIRTUAL_VIS_OBJECT_H
 #define VIRTUAL_VIS_OBJECT_H
 
-#include "visobject.h"
+#include "VisObject.h"
 
 
 class VirtualVisObject : public VisObject

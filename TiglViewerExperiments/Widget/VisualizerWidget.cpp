@@ -44,16 +44,16 @@ VisualizerWidget::VisualizerWidget(QWidget* widget) : QWidget(widget)
         vvo = new VirtualVisObject();
 
         GroupWindow1->addChild(vvo);
-        GroupWindow1->addChild(vvo->camera);
+        //GroupWindow1->addChild(vvo->camera);
 
         GroupWindow2->addChild(vvo);
-        GroupWindow2->addChild(vvo->camera);
+        //GroupWindow2->addChild(vvo->camera);
 
         GroupWindow3->addChild(vvo);
-        GroupWindow3->addChild(vvo->camera);
+        //GroupWindow3->addChild(vvo->camera);
 
         GroupWindow4->addChild(vvo);
-        GroupWindow4->addChild(vvo->camera);
+        //GroupWindow4->addChild(vvo->camera);
 
         pickedNodes = new osg::Group();
 
@@ -214,7 +214,7 @@ void VisualizerWidget::addObject()
     if(tixiOpenDocument( "CPACS_21_D150.xml", &handle ) != SUCCESS){
         std::cout << "Error reading in plane" << std::endl;
     }
-    tiglOpenCPACSConfiguration(handle, "", &tiglHandle);
+    tiglOpenCPACSConfiguration(handle, "D150_VAMP", &tiglHandle);
 
     tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
     tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
@@ -259,15 +259,13 @@ void VisualizerWidget::setupGUI()
 {
 
     QWidget* widget0 =  addViewWidget( createCamera(0,0,100,100), osg::Vec3(150,150,150));
-    WidgetList[0] = widget0;
+    WidgetList.append(widget0);
     QWidget* widget1 = create2DView(createCamera(0,0,100,100),osg::Vec3(-150,0,0),1);
-    WidgetList[1] = widget1;
+    WidgetList.append(widget1);
     QWidget* widget2 = create2DView(createCamera(0,0,100,100),osg::Vec3(0,150,0),2);
-    WidgetList[2] = widget2;
+    WidgetList.append(widget2);
     QWidget* widget3 = create2DView(createCamera(0,0,100,100),osg::Vec3(0,0,150),3);
-    WidgetList[3] = widget3;
-
-
+    WidgetList.append(widget3);
 
 
 

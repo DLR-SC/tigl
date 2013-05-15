@@ -22,8 +22,8 @@ set(SOURCE_FILES
 	GeometricVisObject.h
 	PickHandler.cpp
 	PickHandler.h
-	virtualVisObject.cpp
-	virtualVisObject.h
+	VirtualVisObject.cpp
+	VirtualVisObject.h
 	Visualizer.cpp
 	Visualizer.h
 	VisObject.cpp
