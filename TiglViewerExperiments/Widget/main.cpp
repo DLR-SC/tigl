@@ -45,6 +45,9 @@ int main(int argc, char** argv){
     while (arguments.read("--CullThreadPerCameraDrawThreadPerContext")) threadingModel = osgViewer::ViewerBase::CullThreadPerCameraDrawThreadPerContext;*/
     
     QApplication app(argc, argv);
+    // we need to set us locale as we use "." for decimal point
+    setlocale(LC_NUMERIC, "C");
+
 	//VisualizerWidget* vis = new VisualizerWidget(NULL);
 	MainWindow * window = new MainWindow;
 
