@@ -21,9 +21,9 @@ IF(NOT GCOV_PATH)
         MESSAGE(FATAL_ERROR "gcov not found! Aborting...")
 ENDIF() # NOT GCOV_PATH
 
-IF(NOT CMAKE_COMPILER_IS_GNUCXX)
-        MESSAGE(FATAL_ERROR "Compiler is not GNU gcc! Aborting...")
-ENDIF() # NOT CMAKE_COMPILER_IS_GNUCXX
+IF(NOT CMAKE_COMPILER_IS_GNUCXX AND NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+        MESSAGE(FATAL_ERROR "Compiler is not GNU gcc or clang! Aborting...")
+ENDIF() # NOT CMAKE_COMPILER_IS_GNUCXX AND NOT CLANG
 
 IF ( NOT CMAKE_BUILD_TYPE STREQUAL "Debug" )
   MESSAGE( WARNING "Code coverage results with an optimised (non-Debug) build may be misleading" )
@@ -31,9 +31,16 @@ ENDIF() # NOT CMAKE_BUILD_TYPE STREQUAL "Debug"
 
 
 # Setup compiler options
-ADD_DEFINITIONS(-fprofile-arcs -ftest-coverage)
-LINK_LIBRARIES(gcov)
+IF(CMAKE_COMPILER_IS_GNUCXX)
+  ADD_DEFINITIONS(-fprofile-arcs -ftest-coverage)
+  LINK_LIBRARIES(gcov)
+ENDIF()
 
+IF("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+  ADD_DEFINITIONS("--coverage")
+  SET( CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} --coverage" )
+  SET (CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS_INIT} --coverage" )
+ENDIF()
 
 # Param _targetname     The name of new the custom make target
 # Param _testrunner     The name of the target which runs the tests
@@ -58,18 +65,18 @@ FUNCTION(SETUP_TARGET_FOR_COVERAGE _targetname _testrunner _outputname)
         ADD_CUSTOM_TARGET(${_targetname}
         
                 # Cleanup lcov
-                ${LCOV_PATH} --directory . --zerocounters
+                ${LCOV_PATH} --directory .. --zerocounters
 
                 # Run tests
                 COMMAND ${_testrunner} ${ARGV3}
 
                 # Capturing lcov counters and generating report
-                COMMAND ${LCOV_PATH} --directory . --capture --output-file ${_outputname}.info
-                COMMAND ${LCOV_PATH} --remove ${_outputname}.info 'tests/*' '/usr/*' --output-file ${_outputname}.info.cleaned
-                COMMAND ${GENHTML_PATH} -o ${_outputname} ${_outputname}.info.cleaned
+                COMMAND ${LCOV_PATH} --directory .. --capture --output-file ${_outputname}.info
+                COMMAND ${LCOV_PATH} --remove ${_outputname}.info 'tests/*' 'thirdparty/*' '/usr/*' --output-file ${_outputname}.info.cleaned
+                COMMAND ${GENHTML_PATH} -o ../${_outputname} ${_outputname}.info.cleaned
                 COMMAND ${CMAKE_COMMAND} -E remove ${_outputname}.info ${_outputname}.info.cleaned
 
-                WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+                WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/tests
                 COMMENT "Resetting code coverage counters to zero.\nProcessing code coverage counters and generating report."
         )
 
@@ -98,8 +105,8 @@ FUNCTION(SETUP_TARGET_FOR_COVERAGE_COBERTURA _targetname _testrunner _outputname
                 ${_testrunner} ${ARGV3}
 
                 # Running gcovr
-                COMMAND ${GCOVR_PATH} -x -r ${CMAKE_SOURCE_DIR} -e '${CMAKE_SOURCE_DIR}/tests/'  -o ${_outputname}.xml
-                WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+                COMMAND ${GCOVR_PATH} -x -r ${CMAKE_SOURCE_DIR} -e '${CMAKE_SOURCE_DIR}/tests/'  -o ../${_outputname}.xml
+                WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/tests
                 COMMENT "Running gcovr to produce Cobertura code coverage report."
         )
 

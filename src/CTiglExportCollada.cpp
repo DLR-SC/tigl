@@ -104,7 +104,6 @@ TiglReturnCode CTiglExportCollada::writeToDisc(CTiglPolyData& polyData, const ch
 
             for(unsigned long jtria = 0; jtria < ntria; ++jtria){
                 unsigned long npoints = obj.getNPointsOfPolygon(jtria);
-                assert( npoints == 3);
                 // skip all polygons that aren't triangles
                 if(npoints < 3)
                     // we currently dont export lines
