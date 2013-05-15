@@ -98,16 +98,19 @@ FUNCTION(SETUP_TARGET_FOR_COVERAGE_COBERTURA _targetname _testrunner _outputname
         IF(NOT GCOVR_PATH)
                 MESSAGE(FATAL_ERROR "gcovr not found! Aborting...")
         ENDIF() # NOT GCOVR_PATH
-
+        
         ADD_CUSTOM_TARGET(${_targetname}
-
                 # Run tests
-                ${_testrunner} ${ARGV3}
-
+                COMMAND ${_testrunner} ${ARGV3}
+                WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/tests/
+                COMMENT "Running coverage tests."
+        )
+        
+        ADD_CUSTOM_COMMAND(TARGET ${_targetname} POST_BUILD
                 # Running gcovr
-                COMMAND ${GCOVR_PATH} -x -r ${CMAKE_SOURCE_DIR} -e '${CMAKE_SOURCE_DIR}/tests/'  -o ../${_outputname}.xml
-                WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/tests
-                COMMENT "Running gcovr to produce Cobertura code coverage report."
+                COMMAND ${GCOVR_PATH} -x -r ${CMAKE_SOURCE_DIR} -e '${CMAKE_SOURCE_DIR}/tests/'  -o ${_outputname}.xml
+                WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+                COMMENT "Running gcovr to produce Cobertura code coverage report. ${_testrunner} ${ARGV3}"
         )
 
         # Show info where to find the report
