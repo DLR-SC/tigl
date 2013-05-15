@@ -42,15 +42,12 @@ namespace tigl {
 		virtual ~CCPACSHeader(void);
 
 		// Getter/Setter for member name
-		void SetName(const std::string& aName);
 		std::string GetName(void) const;
 
 		// Getter/Setter for member creator
-		void SetCreator(const std::string& aCreator);
 		std::string GetCreator(void) const;
 
 		// Getter/Setter for member timestamp
-		void SetTimestamp(const std::string& aTimestamp);
 		std::string GetTimestamp(void) const;
 
 		// Read CPACS header elements

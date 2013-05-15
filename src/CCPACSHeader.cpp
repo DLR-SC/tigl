@@ -41,32 +41,14 @@ namespace tigl {
 		Cleanup();
 	}
 
-	// Getter/Setter for member name
-	void CCPACSHeader::SetName(const std::string& aName) 
-	{
-		name = aName;
-	}
-
 	std::string CCPACSHeader::GetName(void) const
 	{
 		return name;
 	}
 
-	// Getter/Setter for member creator
-	void CCPACSHeader::SetCreator(const std::string& aCreator)
-	{
-		creator = aCreator;
-	}
-
 	std::string CCPACSHeader::GetCreator(void) const
 	{
 		return creator;
-	}
-
-	// Getter/Setter for member timestamp
-	void CCPACSHeader::SetTimestamp(const std::string& aTimestamp)
-	{
-		timestamp = aTimestamp;
 	}
 
 	std::string CCPACSHeader::GetTimestamp(void) const
