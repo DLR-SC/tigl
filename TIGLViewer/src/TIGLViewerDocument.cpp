@@ -1332,7 +1332,7 @@ void TIGLViewerDocument::drawWingFuselageIntersectionLine()
 							m_cpacsHandle,
 							qstringToCstring(fuselageUid),	//fuselage UID
 							qstringToCstring(wingUid),	//wing uid
-							1,	// wireID
+                            1,	// wireID
 							eta,
 							&x,
 							&y,

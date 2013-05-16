@@ -1,4 +1,4 @@
-/* 
+/*
 * Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
 *
 * Created: 2010-08-13 Markus Litz <Markus.Litz@dlr.de>
@@ -26,11 +26,16 @@
 #include "test.h" // Brings in the GTest framework
 #include "tigl.h"
 
+#include "CTiglIntersectionCalculation.h"
+#include "CCPACSConfiguration.h"
+#include "CCPACSConfigurationManager.h"
+#include "CCPACSWing.h"
+#include "CCPACSFuselage.h"
 
 class TiglIntersection : public ::testing::Test {
  protected:
   virtual void SetUp() {
-        const char* filename = "TestData/CPACS_21_D150.xml";
+        const char* filename = "TestData/simpletest.cpacs.xml";
         ReturnCode tixiRet;
         TiglReturnCode tiglRet;
 
@@ -40,7 +45,7 @@ class TiglIntersection : public ::testing::Test {
         tixiRet = tixiOpenDocument(filename, &tixiHandle);
         ASSERT_TRUE (tixiRet == SUCCESS);
 
-        tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "D150_VAMP", &tiglHandle);
+        tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "Cpacs2Test", &tiglHandle);
         ASSERT_TRUE(tiglRet == TIGL_SUCCESS);
   }
 
@@ -61,9 +66,23 @@ class TiglIntersection : public ::testing::Test {
 */
 TEST_F(TiglIntersection, tiglIntersection_FuselageWingIntersects)
 {
-	TiglBoolean returnValue;
+    tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
+    tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
+    tigl::CCPACSWing& wing = config.GetWing(1);
+    tigl::CCPACSFuselage& fuselage = config.GetFuselage(1);
 
-	// bisher keine TIGL function da!
+    TopoDS_Shape& wingShape = wing.GetLoft();
+    TopoDS_Shape& fuselageShape = fuselage.GetLoft();
+
+    tigl::CTiglIntersectionCalculation iCalc(fuselageShape, wingShape);
+    
+    ASSERT_EQ(1, iCalc.GetNumWires());
+    
+    // rough check of the leading edge
+    gp_Pnt point = iCalc.GetPoint(0.5,1);
+    ASSERT_NEAR(0.0, point.X(), 1e-3);
+    ASSERT_NEAR(0.5, point.Y(), 1e-3);
+    ASSERT_NEAR(0.0, point.Z(), 1e-2);
 }
 
 
