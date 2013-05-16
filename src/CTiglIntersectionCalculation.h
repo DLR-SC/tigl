@@ -65,6 +65,9 @@ namespace tigl {
 		// gives the number of wires of the intersection calculation
 		int GetNumWires();
 
+		// gives a reference to the computed wire
+		TopoDS_Wire& GetWire(int wireID);
+
 	protected:
 		// Computes the length of the intersection line
 		double ComputeWireLength(int wireID);
