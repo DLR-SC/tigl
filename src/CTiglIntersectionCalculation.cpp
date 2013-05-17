@@ -55,6 +55,7 @@
 #include "Handle_TopTools_HSequenceOfShape.hxx"
 #include "TopTools_HSequenceOfShape.hxx"
 #include "ShapeAnalysis_FreeBounds.hxx"
+#include "BRepBuilderAPI_MakeWire.hxx"
 
 #ifndef max
 #define max(a, b) (((a) > (b)) ? (a) : (b))
@@ -83,11 +84,11 @@ namespace tigl {
 		{
 			Edges->Append(TopoDS::Edge(myEdgeExplorer.Current()));
 			myEdgeExplorer.Next();
-			numWires++;
 		}
 
-		// connect edges to wires and save them to Wire-sequence
+		// connect all connected edges to wires and save them in container Edges again
 		ShapeAnalysis_FreeBounds::ConnectEdgesToWires(Edges, tolerance, false, Edges);
+		numWires = Edges->Length();
 
 		// filter duplicated wires
 		for (int wireID=1; wireID <= numWires; wireID++)
@@ -107,7 +108,7 @@ namespace tigl {
 				Wires.push_back(wire);
 			}
 		}
-		numWires = Wires.size() + 1;
+        numWires = Wires.size();
 	}
 
 	// Destructor
