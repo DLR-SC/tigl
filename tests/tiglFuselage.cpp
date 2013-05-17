@@ -26,13 +26,14 @@
 #include "test.h" // Brings in the GTest framework
 #include "tigl.h"
 
+#include <cmath>
 
 /******************************************************************************/
 
 class TiglFuselageHelper : public ::testing::Test {
  protected:
   static void SetUpTestCase() {
-        const char* filename = "TestData/CPACS_21_D150.xml";
+        const char* filename = "TestData/simpletest.cpacs.xml";
         ReturnCode tixiRet;
         TiglReturnCode tiglRet;
 
@@ -41,7 +42,7 @@ class TiglFuselageHelper : public ::testing::Test {
         
         tixiRet = tixiOpenDocument(filename, &tixiHandle);
         ASSERT_TRUE (tixiRet == SUCCESS);
-        tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "D150_VAMP", &tiglHandle);
+        tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "Cpacs2Test", &tiglHandle);
         ASSERT_TRUE(tiglRet == TIGL_SUCCESS);
   }
 
@@ -72,8 +73,9 @@ TiglCPACSConfigurationHandle TiglFuselageHelper::tiglHandle = 0;
 TEST_F(TiglFuselageHelper, tiglFuselageGetCircumference_success)
 {
     double circumferencePtr;
-    ASSERT_TRUE(tiglFuselageGetCircumference(tiglHandle, 1, 10, 0.5, &circumferencePtr) == TIGL_SUCCESS);
-    ASSERT_NEAR(circumferencePtr, 6.77885, 0.1);
+    ASSERT_TRUE(tiglFuselageGetCircumference(tiglHandle, 1, 1, 0.5, &circumferencePtr) == TIGL_SUCCESS);
+    // the profile is not really a circle, thats why we allow a large deviation of 3%l
+    ASSERT_NEAR(circumferencePtr, M_PI, M_PI*0.03);
 }
 
 
@@ -82,8 +84,7 @@ TEST_F(TiglFuselageHelper, tiglFuselageGetCircumference_success)
 */
 TEST_F(TiglFuselageHelper, tiglFuselageGetProfileName_nullPointer)
 {
-    double circumferencePtr;
-    ASSERT_TRUE(tiglFuselageGetCircumference(tiglHandle, 1, 10, 0.5, NULL) == TIGL_NULL_POINTER);
+    ASSERT_TRUE(tiglFuselageGetCircumference(tiglHandle, 1, 1, 0.5, NULL) == TIGL_NULL_POINTER);
 }
 
 
@@ -106,7 +107,14 @@ TEST_F(TiglFuselageHelper, tiglFuselageGetUID_success)
 {
     char* uid; 
     ASSERT_TRUE(tiglFuselageGetUID(tiglHandle, 1, &uid) == TIGL_SUCCESS);
-    ASSERT_STREQ(uid, "D150_VAMP_FL1");
+    ASSERT_STREQ(uid, "SimpleFuselage");
+}
+
+TEST_F(TiglFuselageHelper, tiglFuselageGetVolume){
+    double volume = 0.;
+    ASSERT_EQ(TIGL_SUCCESS, tiglFuselageGetVolume(tiglHandle, 1, &volume));
+    double theoVol = 0.5*0.5*M_PI * 2.; // only approximation
+    ASSERT_NEAR(theoVol, volume, theoVol*0.05);
 }
 
 
