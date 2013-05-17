@@ -56,6 +56,7 @@
 #include "CTiglPoint.h"
 #include "CTiglError.h"
 #include "TIGLViewerSettings.h"
+#include "CTiglIntersectionCalculation.h"
 
 #define max(a,b) ((a) > (b) ? (a) : (b))
 
@@ -76,6 +77,7 @@ TIGLViewerDocument::~TIGLViewerDocument( )
 void TIGLViewerDocument::writeToStatusBar(QString text)
 {
 	((TIGLViewerWindow*) parent)->statusBar()->showMessage(text);
+	qApp->processEvents();
 }
 
 void TIGLViewerDocument::displayError(QString text, QString header = NULL)
@@ -1323,27 +1325,37 @@ void TIGLViewerDocument::drawWingFuselageIntersectionLine()
 	if(fuselageUid == "")
 		return;
 
-	/* now calculate intersection and display single points */
-	for (double eta = 0.0; eta <= 1.0; eta += 0.1)
-	{
-		double x, y, z;
+	QApplication::setOverrideCursor( Qt::WaitCursor );
+	
+	tigl::CCPACSConfiguration& config =GetConfiguration();
+	tigl::CTiglUIDManager& uidManager = config.GetUIDManager();
 
-		TiglReturnCode res = tiglComponentIntersectionPoint(
-							m_cpacsHandle,
-							qstringToCstring(fuselageUid),	//fuselage UID
-							qstringToCstring(wingUid),	//wing uid
-                            1,	// wireID
-							eta,
-							&x,
-							&y,
-							&z);
+	writeToStatusBar(tr("Calculating fuselage..."));
+	TopoDS_Shape& compoundOne = uidManager.GetComponent(fuselageUid.toStdString())->GetLoft();
+	writeToStatusBar(tr("Calculating wing..."));
+	TopoDS_Shape& compoundTwo = uidManager.GetComponent(wingUid.toStdString())->GetLoft();
 
-        ISession_Point* aGraphicPoint = new ISession_Point(x, y, z);
-		myAISContext->Display(aGraphicPoint,Standard_False);
-        if(res != TIGL_SUCCESS) {
-			displayError(QString("Error in function <u>tiglComponentIntersectionPoint</u>. Error code: %1").arg(res), "TIGL Error");
-		}
+	writeToStatusBar(tr("Calculating intersection... This may take a while!"));
+	tigl::CTiglIntersectionCalculation Intersector(compoundOne, compoundTwo);
+
+	if (Intersector.GetCountIntersectionLines() <= 0) {
+		displayError(tr("Could not find any intersection between fuselage and wing"), "TIGL Error");
+		return;
 	}
+	// load first wire
+	int wireID = 1;
+	displayShape(Intersector.GetWire(wireID));
+
+	/* now calculate intersection and display single points */
+	for (double eta = 0.0; eta <= 1.0; eta += 0.025)
+	{
+		gp_Pnt point = Intersector.GetPoint(eta, wireID);
+
+		ISession_Point* aGraphicPoint = new ISession_Point(point);
+		myAISContext->Display(aGraphicPoint,Standard_False);
+	}
+	QApplication::restoreOverrideCursor();
+	writeToStatusBar("");
 }
 
 
