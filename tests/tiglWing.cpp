@@ -146,6 +146,17 @@ TEST_F(TiglWing, tiglWingGetSegmentUID_success)
 
 
 /**
+* Tests tiglWingGetSegmentUID 
+*/
+TEST_F(TiglWing, tiglWingGetSegmentUID_indexError)
+{
+    char* namePtr = 0;
+    ASSERT_TRUE(tiglWingGetSegmentUID(tiglHandle, 1, -1, &namePtr) == TIGL_INDEX_ERROR);
+}
+
+
+
+/**
 * Tests tiglWingGetSectionUID 
 */
 TEST_F(TiglWing, tiglWingGetSectionUID_success)
@@ -179,6 +190,12 @@ TEST_F(TiglWing, tiglWingGetIndex_wrongUID){
 TEST_F(TiglWing, tiglWingGetIndex_nullPtr){
     int wingIndex = 0;
     ASSERT_TRUE(tiglWingGetIndex(tiglHandle, NULL , &wingIndex) == TIGL_NULL_POINTER);
+}
+
+
+TEST_F(TiglWing, tiglWingGetIndex_indexNullPtr){
+    int wingIndex = 0;
+    ASSERT_TRUE(tiglWingGetIndex(tiglHandle, "D150_VAMP_SL1" , NULL) == TIGL_NULL_POINTER);
 }
 
 TEST_F(TiglWing, tiglWingGetIndex_wrongHandle){
