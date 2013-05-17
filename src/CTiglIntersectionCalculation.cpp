@@ -139,7 +139,7 @@ namespace tigl {
 			Standard_Real lastParam;
 			TopoDS_Edge edge = wireExplorer.Current();
 			Handle(Geom_Curve) curve = BRep_Tool::Curve(edge, firstParam, lastParam);
-			GeomAdaptor_Curve adaptorCurve(curve);
+			GeomAdaptor_Curve adaptorCurve(curve, firstParam, lastParam);
 			wireLength += GCPnts_AbscissaPoint::Length(adaptorCurve);
 		}
 		return(wireLength);
@@ -181,7 +181,7 @@ namespace tigl {
 
         // Length of current edge
         GeomAdaptor_Curve adaptorCurve;
-        adaptorCurve.Load(curve);
+        adaptorCurve.Load(curve, firstParam, lastParam);
         double currLength = GCPnts_AbscissaPoint::Length(adaptorCurve);
 
         // Length of complete wire up to now
@@ -195,7 +195,7 @@ namespace tigl {
             wireExplorer.Next();
 
             curve = BRep_Tool::Curve(edge, firstParam, lastParam);
-            adaptorCurve.Load(curve);
+            adaptorCurve.Load(curve, firstParam, lastParam);
 
             // Length of current edge
             currLength = GCPnts_AbscissaPoint::Length(adaptorCurve);
@@ -220,6 +220,13 @@ namespace tigl {
 	{
 		return( numWires );
 	}
+    
+    TopoDS_Wire& CTiglIntersectionCalculation::GetWire(int wireID){
+        if (wireID > numWires || wireID < 1){
+            throw CTiglError("Error: Invalid wireID in CTiglIntersectionCalculation::GetWire", TIGL_ERROR);
+        }
+        return Wires.at(wireID-1);
+    }
 
 } // end namespace tigl
 
