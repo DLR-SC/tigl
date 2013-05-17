@@ -118,3 +118,40 @@ TEST_F(TiglFuselageHelper, tiglFuselageGetVolume){
 }
 
 
+/**
+* Tests tiglFuselageGetSegmentUID with success
+*/
+TEST_F(TiglFuselageHelper, tiglFuselageGetSegmentUID_success)
+{
+    char* uid; 
+    ASSERT_TRUE(tiglFuselageGetSegmentUID(tiglHandle, 1, 1, &uid) == TIGL_SUCCESS);
+    ASSERT_STREQ(uid, "D150_VAMP_FL1_Seg1");
+}
+
+
+
+/**
+* Tests tiglFuselageGetSectionUID with success
+*/
+TEST_F(TiglFuselageHelper, tiglFuselageGetSectionUID_success)
+{
+    char* uid; 
+    ASSERT_TRUE(tiglFuselageGetSectionUID(tiglHandle, 1, 1, &uid) == TIGL_SUCCESS);
+    ASSERT_STREQ(uid, "D150_VAMP_FL1_Sec1");
+}
+
+
+
+/**
+* Tests tiglFuselageGetSymmetry with success
+*/
+TEST_F(TiglFuselageHelper, tiglFuselageGetSymmetry_noSymmetrySuccess)
+{
+    TiglSymmetryAxis axis;
+    ASSERT_TRUE(tiglFuselageGetSymmetry(tiglHandle, 1, &axis) == TIGL_SUCCESS);
+    ASSERT_TRUE(TIGL_NO_SYMMETRY == axis) << "Symmetry not correct. Was looking for TIGL_NO_SYMMETRY";
+}
+
+
+
+
