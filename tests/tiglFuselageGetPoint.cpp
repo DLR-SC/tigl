@@ -133,8 +133,18 @@ TEST_F(TiglFuselageGetPoint, nullPointerArgument)
 TEST_F(TiglFuselageGetPoint, success)
 {
     double x, y, z;
+    double accuracy = 1e-7;
+    
     ASSERT_TRUE(tiglFuselageGetPoint(tiglHandle, 1, 1, 0.0, 0.0, &x, &y, &z) == TIGL_SUCCESS);
+    ASSERT_NEAR(-0.5, x, accuracy);
+    
     ASSERT_TRUE(tiglFuselageGetPoint(tiglHandle, 1, 1, 0.5, 0.5, &x, &y, &z) == TIGL_SUCCESS);
+    ASSERT_NEAR( 0.0, x, accuracy);
+    
     ASSERT_TRUE(tiglFuselageGetPoint(tiglHandle, 1, 1, 1.0, 1.0, &x, &y, &z) == TIGL_SUCCESS);
+    ASSERT_NEAR( 0.5, x, accuracy);
+    
+    ASSERT_TRUE(tiglFuselageGetPoint(tiglHandle, 1, 2, 1.0, 1.0, &x, &y, &z) == TIGL_SUCCESS);
+    ASSERT_NEAR( 1.5, x, accuracy);
 }
 

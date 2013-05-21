@@ -130,6 +130,9 @@ namespace tigl {
 		UpdateNextPositioning(GetPositioning(1));
 	}
 
+
+    // @todo: This code is only working, if the first positions is basis for everything else
+    // and if its fromSectionUID is empty in CPACS. We should completely rewrite this code
     void CCPACSFuselagePositionings::UpdateNextPositioning(CCPACSFuselagePositioning& currPos)
     {
         CCPACSTransformationMapIterator iter = transformations.find(currPos.GetEndSectionIndex());
@@ -153,6 +156,14 @@ namespace tigl {
             if (currPos.GetEndSectionIndex() == nextPos.GetStartSectionIndex())
             {
                 nextPos.SetStartPoint(currPos.GetEndPoint());
+
+                // update first positioning, when there is no "fromSectionUID", then
+                // set innerPoint to origin.
+                if ( (i==1) && (nextPos.GetStartSectionIndex()==nextPos.GetEndSectionIndex()) ) {
+                    const CTiglPoint pnt = CTiglPoint(0.0, 0.0, 0.0);
+                    nextPos.SetStartPoint(pnt);
+                }
+                
                 UpdateNextPositioning(nextPos);
             }
         }

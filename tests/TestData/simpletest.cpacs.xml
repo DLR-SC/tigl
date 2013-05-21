@@ -38,7 +38,7 @@
                 <z>0.0</z>
               </rotation>
               <translation refType="absLocal">
-                <x>-0.5</x>
+                <x>0.0</x>
                 <y>0.0</y>
                 <z>0.0</z>
               </translation>
@@ -177,7 +177,7 @@
             <positionings>
               <positioning uID="D150_Fuselage_1Positioning1ID">
                 <name>D150_Fuselage_1Positioning1</name>
-                <length>0</length>
+                <length>-0.5</length>
                 <sweepAngle>90</sweepAngle>
                 <dihedralAngle>0</dihedralAngle>
                 <toSectionUID>D150_Fuselage_1Section1ID</toSectionUID>
@@ -230,7 +230,7 @@
                 <z>0</z>
               </rotation>
               <translation refType="absGlobal">
-                <x>0.5</x>
+                <x>0</x>
                 <y>0</y>
                 <z>0</z>
               </translation>
