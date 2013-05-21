@@ -53,7 +53,7 @@ namespace tigl {
 		CCPACSFuselageSectionElement& GetSectionElement(int index) const;
 		
 		// Get the UID of this FuselageSection
-		std::string GetUID(void) const;
+		const std::string &GetUID(void) const;
 
 		// Gets the section transformation
 		CTiglTransformation GetSectionTransformation(void) const;

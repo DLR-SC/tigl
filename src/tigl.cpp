@@ -1073,7 +1073,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSectionUID(TiglCPACSConfigurationHa
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSWing& wing = config.GetWing(wingIndex);
         tigl::CCPACSWingSection& section = wing.GetSection(sectionIndex);
-        *uidNamePtr = const_cast<char*>(section.GetUIDPtr());
+        *uidNamePtr = const_cast<char*>(section.GetUID().c_str());
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {

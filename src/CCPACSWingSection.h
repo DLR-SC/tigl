@@ -50,8 +50,7 @@ namespace tigl {
 		int GetSectionElementCount(void) const;
 
 		// Get the UID of this WingSection
-		std::string GetUID(void) const;
-		const char* GetUIDPtr(void) const;
+		const std::string& GetUID(void) const;
 
 		// Get element for a given index
 		CCPACSWingSectionElement& GetSectionElement(int index) const;

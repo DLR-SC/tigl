@@ -139,7 +139,7 @@ namespace tigl {
     }
 
 	// Get the UID of this FuselageSection
-	std::string CCPACSFuselageSection::GetUID(void) const
+	const std::string& CCPACSFuselageSection::GetUID(void) const
 	{
 		return uid;
 	}
