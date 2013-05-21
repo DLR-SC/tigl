@@ -139,15 +139,9 @@ namespace tigl {
     }
 
     // Get the UID of this WingSection
-    std::string CCPACSWingSection::GetUID(void) const
+    const std::string& CCPACSWingSection::GetUID(void) const
     {
         return uID;
-    }
-
-    // Get the UID of this WingSection
-    const char* CCPACSWingSection::GetUIDPtr(void) const
-    {
-        return uID.c_str();
     }
 
     // Get element for a given index

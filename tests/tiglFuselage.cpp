@@ -126,7 +126,7 @@ TEST_F(TiglFuselageHelper, tiglFuselageGetSegmentUID_success)
 {
     char* uid; 
     ASSERT_TRUE(tiglFuselageGetSegmentUID(tiglHandle, 1, 1, &uid) == TIGL_SUCCESS);
-    ASSERT_STREQ(uid, "D150_VAMP_FL1_Seg1");
+    ASSERT_STREQ(uid, "segmentD150_Fuselage_1Segment2ID");
 }
 
 
@@ -138,7 +138,7 @@ TEST_F(TiglFuselageHelper, tiglFuselageGetSectionUID_success)
 {
     char* uid; 
     ASSERT_TRUE(tiglFuselageGetSectionUID(tiglHandle, 1, 1, &uid) == TIGL_SUCCESS);
-    ASSERT_STREQ(uid, "D150_VAMP_FL1_Sec1");
+    ASSERT_STREQ(uid, "D150_Fuselage_1Section1ID");
 }
 
 
