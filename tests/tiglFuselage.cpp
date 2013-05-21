@@ -23,10 +23,11 @@
 * @brief Tests some fuselage fuctions like circumreference, volumen, etc...
 */
 
+#define _USE_MATH_DEFINES
+#include <cmath>
+
 #include "test.h" // Brings in the GTest framework
 #include "tigl.h"
-
-#include <cmath>
 
 /******************************************************************************/
 
