@@ -106,13 +106,15 @@
       <string>Wings</string>
      </property>
      <addaction name="drawWingsAction"/>
-     <addaction name="drawWingProfilesAction"/>
-     <addaction name="drawWingOverlayCPACSProfilePointsAction"/>
-     <addaction name="drawWingTriangulationAction"/>
-     <addaction name="drawWingSamplePointsAction"/>
      <addaction name="drawFusedWingAction"/>
-     <addaction name="drawWingComponentSegmentAction"/>
      <addaction name="drawWingShellAction"/>
+     <addaction name="drawWingComponentSegmentAction"/>
+     <addaction name="drawWingTriangulationAction"/>
+     <addaction name="drawWingProfilesAction"/>
+     <addaction name="separator"/>
+     <addaction name="drawWingSamplePointsAction"/>
+     <addaction name="drawWingOverlayCPACSProfilePointsAction"/>
+     <addaction name="drawWingCSPointAction"/>
     </widget>
     <widget class="QMenu" name="menuFuselages">
      <property name="title">
@@ -1106,6 +1108,11 @@
   <action name="tiglExportFuselageColladaAction">
    <property name="text">
     <string>Export Fuselage</string>
+   </property>
+  </action>
+  <action name="drawWingCSPointAction">
+   <property name="text">
+    <string>Show Wing Component Segment Point</string>
    </property>
   </action>
  </widget>

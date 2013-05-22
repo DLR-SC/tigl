@@ -628,6 +628,7 @@ void TIGLViewerWindow::connectSignals()
 	connect(drawWingSamplePointsAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingSamplePoints()));
 	connect(drawFusedWingAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFusedWing()));
 	connect(drawWingComponentSegmentAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingComponentSegment()));
+    connect(drawWingCSPointAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingComponentSegmentPoints()));
     connect(drawWingShellAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingShells()));
 
 

@@ -57,6 +57,7 @@
 #include "CTiglError.h"
 #include "TIGLViewerSettings.h"
 #include "CTiglIntersectionCalculation.h"
+#include "TIGLViewerEtaXsiDialog.h"
 
 #define max(a,b) ((a) > (b) ? (a) : (b))
 
@@ -1385,6 +1386,40 @@ void TIGLViewerDocument::drawWingComponentSegment()
 		cerr << "Component segment \"" << wingUid.toStdString() << "\" not found" << endl;
 	}
 	QApplication::restoreOverrideCursor();
+}
+
+void TIGLViewerDocument::drawWingComponentSegmentPoints()
+{
+    QString csUid = dlgGetWingComponentSegmentSelection();
+	if(csUid == "")
+		return;
+    
+    double eta, xsi;
+    if (EtaXsiDialog::getEtaXsi(parent, eta, xsi) != QDialog::Accepted)
+        return;
+        
+    //@todo: calculate x,y,z coordinates of point and display it
+    char * wingUID, * segmentUID;
+    double alpha, beta;
+    TiglReturnCode ret = tiglWingComponentSegmentPointGetSegmentEtaXsi(
+                getCpacsHandle(), 
+                csUid.toStdString().
+                c_str(), 
+                eta, xsi, 
+                &wingUID, 
+                &segmentUID, 
+                &alpha, &beta);
+    
+    if( ret == TIGL_SUCCESS){
+       tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUID);
+       tigl::CCPACSWingSegment& segment = dynamic_cast<tigl::CCPACSWingSegment&>(wing.GetSegment(segmentUID));
+       gp_Pnt point = segment.GetChordPoint(alpha, beta);
+       ISession_Point* aGraphicPoint = new ISession_Point(point);
+       myAISContext->Display(aGraphicPoint,Standard_True);
+    }
+    else {
+        displayError(QString("Error in <b>tiglWingComponentSegmentPointGetSegmentEtaXsi</b>. ReturnCode: %d").arg(ret), "Error");
+    }
 }
 
 void TIGLViewerDocument::drawWingShells(){
