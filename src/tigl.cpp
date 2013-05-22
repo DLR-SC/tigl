@@ -1003,9 +1003,9 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSegmentUID(TiglCPACSConfigurationHa
 }
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSegmentIndex(TiglCPACSConfigurationHandle cpacsHandle,
-                                                 int wingIndex,
                                                  const char * segmentUID,
-                                                 int * segmentIndex) {
+                                                 int * segmentIndex, 
+                                                 int * wingIndex) {
     if (segmentUID == 0) {
         LOG(ERROR) << "Error: Null pointer argument for segmentUID ";
         LOG(ERROR) << "in function call to tiglWingGetSegmentIndex." << std::endl;
@@ -1016,24 +1016,32 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSegmentIndex(TiglCPACSConfiguration
         LOG(ERROR) << "in function call to tiglWingGetSegmentIndex." << std::endl;
         return TIGL_NULL_POINTER;
     }
+    if (wingIndex == 0) {
+        LOG(ERROR) << "Error: Null pointer argument for wingIndex ";
+        LOG(ERROR) << "in function call to tiglWingGetSegmentIndex." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
 
     try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
-        tigl::CCPACSWing& wing = config.GetWing(wingIndex);
-
-        int nseg = wing.GetSegmentCount();
-        for(int i = 1; i <= nseg; ++i){
-            tigl::CTiglAbstractSegment& actSegment = wing.GetSegment(i);
-            if( actSegment.GetUID() == std::string(segmentUID)) {
-                *segmentIndex = i;
+        
+        for(int iWing = 1; iWing <= config.GetWingCount(); ++iWing){
+            tigl::CCPACSWing& wing = config.GetWing(iWing);
+            try{
+                int wingSegIndex = wing.GetSegment(segmentUID).GetSegmentIndex();
+                *segmentIndex = wingSegIndex;
+                *wingIndex = iWing;
                 return TIGL_SUCCESS;
+            }
+            catch (tigl::CTiglError&) {
+                continue;
             }
         }
 
-        LOG(ERROR) << "Error in tiglWingGetSegmentIndex: the wing with index=" << wingIndex << " has no segment with an UID="
-                  << segmentUID << "!" << std::endl;
+        LOG(ERROR) << "Error in tiglWingGetSegmentIndex: could not find a wing index with given uid \"" << segmentUID << "\".";
         *segmentIndex = -1;
+        *wingIndex = -1;
         return TIGL_UID_ERROR;
     }
     catch (std::exception& ex) {
