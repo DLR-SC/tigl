@@ -1179,7 +1179,61 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentFindSegment(TiglCPACSC
     }
 }
 
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetPoint(TiglCPACSConfigurationHandle cpacsHandle,
+                                                         const char *componentSegmentUID, double eta, double xsi,
+                                                         double * x, double * y, double * z){
+    if (!componentSegmentUID){
+        LOG(ERROR) << "Error: Null pointer argument for componentSegmentUID ";
+        LOG(ERROR) << "in function call to tiglWingComponentSegmentPointGetPoint." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+    
+    if (!x || !y || !z){
+        LOG(ERROR) << "Error: Null pointer argument for x, y, or z ";
+        LOG(ERROR) << "in function call to tiglWingComponentSegmentPointGetPoint." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+    
+    try {
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
 
+        // search for component segment
+        int nwings = config.GetWingCount();
+        for(int iwing = 1; iwing <= nwings; ++iwing){
+            tigl::CCPACSWing& wing = config.GetWing(iwing);
+            int ncompSegs = wing.GetComponentSegmentCount();
+            for (int jcompSeg = 1; jcompSeg <= ncompSegs; ++jcompSeg){
+                tigl::CCPACSWingComponentSegment & compSeg = (tigl::CCPACSWingComponentSegment &) wing.GetComponentSegment(jcompSeg);
+                if( compSeg.GetUID() == std::string(componentSegmentUID) ){
+                    //now do the calculations
+                    gp_Pnt pnt = compSeg.GetPoint(eta, xsi);
+                    *x = pnt.X();
+                    *y = pnt.Y();
+                    *z = pnt.Z();
+
+                    return TIGL_SUCCESS;
+                }
+            }
+        }
+
+        // the component segment was not found
+        LOG(ERROR) << "Error: Invalid uid in tiglWingComponentSegmentPointGetPoint" << std::endl;
+        return TIGL_UID_ERROR;
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglWingComponentSegmentPointGetPoint!" << std::endl;
+        return TIGL_ERROR;
+    }
+}
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentPointGetSegmentEtaXsi(TiglCPACSConfigurationHandle cpacsHandle,
 																		const char *componentSegmentUID, double eta, double xsi,

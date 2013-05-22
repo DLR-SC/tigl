@@ -340,6 +340,25 @@ TEST_F(WingComponentSegmentSimple, tiglWingComponentSegmentPointGetSegmentEtaXsi
         free(segmentUID); segmentUID = NULL;
 }
 
+TEST_F(WingComponentSegmentSimple, tiglWingComponentSegmentGetPoint_success){
+    double accuracy = 1e-7;
+    double x, y, z;
+    ASSERT_EQ(TIGL_SUCCESS, tiglWingComponentSegmentGetPoint(tiglHandle, "WING_CS1", 0.5, 0.0, &x, &y, &z));
+    ASSERT_NEAR(0.0, x, accuracy);
+    ASSERT_NEAR(1.0, y, accuracy);
+    ASSERT_NEAR(0.0, z, accuracy);
+    
+    ASSERT_EQ(TIGL_SUCCESS, tiglWingComponentSegmentGetPoint(tiglHandle, "WING_CS1", 0.75, 0.0, &x, &y, &z));
+    ASSERT_NEAR(0.25, x, accuracy);
+    ASSERT_NEAR(1.5, y, accuracy);
+    ASSERT_NEAR(0.0, z, accuracy);
+    
+    ASSERT_EQ(TIGL_SUCCESS, tiglWingComponentSegmentGetPoint(tiglHandle, "WING_CS1", 1.0, 0.0, &x, &y, &z));
+    ASSERT_NEAR(0.5, x, accuracy);
+    ASSERT_NEAR(2.0, y, accuracy);
+    ASSERT_NEAR(0.0, z, accuracy);
+}
+
 TEST_F(WingComponentSegment3, tiglWingComponentSegmentPointGetSegmentEtaXsi_BUG1){
     // now the tests
     double sEta = 0., sXsi = 0.;
@@ -383,3 +402,4 @@ TEST_F(WingComponentSegment3, DISABLED_tiglWingComponentSegmentPointGetSegmentEt
     //ASSERT_STREQ("D150_wing_1Segment2ID", segmentUID);
     cout << "eta_s / xsi_s: " << sEta << "/" << sXsi << endl;
 }
+

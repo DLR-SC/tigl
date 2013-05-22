@@ -1180,6 +1180,39 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentFindSegment(TiglCPACSC
 																 const char *componentSegmentUID, double x, double y,
 																 double z, char** segmentUID, char** wingUID);
 
+
+/**
+* @brief Returns x,y,z koordinates for a given eta and xsi on a componentSegment.
+*
+*
+* <b>Fortran syntax:</b>
+*
+* tigl_wing_component_segment_get_point(integer cpacsHandle,
+* 										  				character*n componentSegmentUID,
+* 														real eta, real xsi
+*														real x, real y, real z,
+* 										  				integer returnCode)
+* @cond
+* #PY:3,4,5#
+* @endcond
+*
+* @param cpacsHandle     		(in)  : Handle for the CPACS configuration
+* @param componentSegmentUID    (in)  : UID of the componentSegment to search for
+* @param eta, xsi 				(in)  : Eta and Xsi of the point of the componentSegment
+* @param x						(out) : X coordinate of the point on the corresponding segment.
+* @param y						(out) : Y coordinate of the point on the corresponding segment.
+* @param z						(out) : Z coordinate of the point on the corresponding segment.
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_UID_ERROR if the componentSegment does not exist
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetPoint(TiglCPACSConfigurationHandle cpacsHandle,
+                                                         const char *componentSegmentUID, double eta, double xsi,
+                                                         double * x, double * y, double * z);
+
 /**
 * @brief Returns eta, xsi, segmentUID and wingUID for a given eta and xsi on a componentSegment.
 *
