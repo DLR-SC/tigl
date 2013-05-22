@@ -1064,9 +1064,9 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSegmentUID(TiglCPACSConfigurationHa
 *
 @verbatim
    TiglReturnCode returnCode;
-   int segmentIndex;
-   returnCode = tiglWingGetSegmentIndex(cpacsHandle, wing, uidName, &segmentIndex);
-   printf("The Index of the segment of wing %d is %d\n", wing, segmentIndex);
+   int segmentIndex, wingIndex;
+   returnCode = tiglWingGetSegmentIndex(cpacsHandle, segmentUID, &segmentIndex, &wingIndex);
+   printf("The Index of the segment of wing %d is %d\n", wingIndex, segmentIndex);
 @endverbatim
 *
 *
