@@ -538,6 +538,23 @@ void tiglWingGetSymmetry_f(TiglCPACSConfigurationHandle *cpacsHandle,
         symmetryAxisPtr);
 }
 
+void tiglWingComponentSegmentGetPoint_f(TiglCPACSConfigurationHandle *cpacsHandle,
+                                        char * csUID_f,
+                                        double * eta,
+                                        double * xsi,
+                                        double * x,
+                                        double * y,
+                                        double * z,
+                                        TiglReturnCode* returnCode,
+                                        int lengthStringCsUID)
+{
+    char * csUID_c = makeCString(csUID_f, lengthStringCsUID);
+    
+    *returnCode = tiglWingComponentSegmentGetPoint(*cpacsHandle, csUID_c, *eta, *xsi, x, y, z);
+    
+    free(csUID_c);
+}
+
 
 
 //########################### GetPoint Functions #####################################

@@ -93,6 +93,7 @@ extern "C" {
 #define tiglWingGetSegmentIndex_f TIGL_WING_GET_SEGMENT_INDEX
 #define tiglWingGetSectionUID_f TIGL_WING_GET_SECTION_UID
 #define tiglWingGetSymmetry_f TIGL_WING_GET_SYMMETRY
+#define tiglWingComponentSegmentGetPoint_f TIGL_WING_COMPONENT_SEGMENT_GET_POINT
 #define tiglGetFuselageCount_f TIGL_GET_FUSELAGE_COUNT
 #define tiglFuselageGetSegmentCount_f TIGL_FUSELAGE_GET_SEGMENT_COUNT
 #define tiglFuselageGetPoint_f TIGL_FUSELAGE_GET_POINT
@@ -170,6 +171,7 @@ extern "C" {
 #define tiglWingGetSegmentIndex_f FORTRAN_NAME(tigl_wing_get_segment_index)
 #define tiglWingGetSectionUID_f FORTRAN_NAME(tigl_wing_get_section_uid)
 #define tiglWingGetSymmetry_f FORTRAN_NAME(tigl_wing_get_symmetry)
+#define tiglWingComponentSegmentGetPoint_f FORTRAN_NAME(tigl_wing_component_segment_get_point)
 #define tiglGetFuselageCount_f FORTRAN_NAME(tigl_get_fuselage_count)
 #define tiglFuselageGetSegmentCount_f FORTRAN_NAME(tigl_fuselage_get_segment_count)
 #define tiglFuselageGetPoint_f FORTRAN_NAME(tigl_fuselage_get_point)
