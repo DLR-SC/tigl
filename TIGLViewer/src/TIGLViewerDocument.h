@@ -83,6 +83,7 @@ public slots:
 	void drawWingSamplePoints();
 	void drawFusedWing();
 	void drawWingComponentSegment();
+	void drawWingComponentSegmentPoints();
     void drawWingShells();
 
 	// Fuselage slots

@@ -46,6 +46,7 @@ set(tv_src
     TiglViewerConsole.cpp
     TIGLViewerSettings.cpp
     TIGLViewerControlFile.cpp
+    TIGLViewerEtaXsiDialog.cpp
 )
 	
 # normal header files
@@ -73,11 +74,13 @@ set(tv_hdr_qobj
 	TIXIScriptProxy.h
 	TIGLScriptEngine.h
 	TiglViewerConsole.h
+	TIGLViewerEtaXsiDialog.h
 )
 
 set(tv_ui_comp
 	src/TIGLViewerWindow.ui
 	src/TIGLViewerSettingsDialog.ui
+	src/TIGLViewerEtaXsiDialog.ui
 )
 	
 foreach ( _fname ${tv_src})
