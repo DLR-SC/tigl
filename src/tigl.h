@@ -1056,9 +1056,9 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSegmentUID(TiglCPACSConfigurationHa
 *
 *
 * @param cpacsHandle     (in) : Handle for the CPACS configuration
-* @param wingIndex       (in) : The index of a wing, starting at 1
 * @param segmentUID      (in) : The uid of the wing
 * @param segmentIndexPtr (out) : The index of a segment, starting at 1
+* @param wingIndexPtr    (out) : The index of a wing, starting at 1
 *
 * Usage example:
 *
@@ -1079,9 +1079,9 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSegmentUID(TiglCPACSConfigurationHa
 *   - TIGL_ERROR if some other error occurred
 */
 TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSegmentIndex(TiglCPACSConfigurationHandle cpacsHandle,
-                                                 int wingIndex,
                                                  const char * segmentUID,
-                                                 int * segmentIndexPtr);
+                                                 int * segmentIndexPtr,
+                                                 int * wingIndexPtr);
 
 /**
 * @brief Returns the UID of a section of a wing. The string returned must not be

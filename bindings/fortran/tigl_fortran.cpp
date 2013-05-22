@@ -493,15 +493,15 @@ void tiglWingGetSegmentUID_f(TiglCPACSConfigurationHandle* cpacsHandle,
 }
 
 void tiglWingGetSegmentIndex(TiglCPACSConfigurationHandle* cpacsHandle,
-							int* wingIndex,
 							char* uidNamePtr,
                             int* segmentIndex,
+                            int* wingIndex,
                             TiglReturnCode* returnCode,
                             int lengthString1)
 {
 	char * namePtr = makeCString(uidNamePtr, lengthString1);
 
-	*returnCode = tiglWingGetSegmentIndex(*cpacsHandle, *wingIndex, namePtr, segmentIndex);
+	*returnCode = tiglWingGetSegmentIndex(*cpacsHandle, namePtr, segmentIndex, wingIndex);
 	free(namePtr);
 }
 
