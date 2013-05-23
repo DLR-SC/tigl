@@ -1,0 +1,44 @@
+# Matlab bindings for tigl
+# @author Martin Siggel
+
+find_package(MATLAB)
+find_package(PythonInterp)
+
+if(MATLAB_FOUND AND PYTHONINTERP_FOUND)
+
+message(STATUS "Found MATLAB. Create matlab bindings.")
+
+#run python to create the tiglmatlab.c
+add_custom_command(
+	OUTPUT tiglmatlab.c
+	DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/make_tigl_matlab.py ${PROJECT_SOURCE_DIR}/src/tigl.h
+	WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+	COMMAND ${PYTHON_EXECUTABLE}
+	ARGS ${CMAKE_CURRENT_SOURCE_DIR}/make_tigl_matlab.py
+)
+
+# c wrapper code
+set(TMAT_SRC tiglmatlab.c common.h)
+
+# add def for exports
+if(MSVC)
+  set(TMAT_SRC ${TMAT_SRC} exports.def)
+endif()
+
+include_directories(${PROJECT_SOURCE_DIR}/src ${MATLAB_INCLUDE_DIR} ${TIXI_INCLUDE_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
+
+add_library(tigl_matlab SHARED ${TMAT_SRC})
+target_link_libraries(tigl_matlab ${MATLAB_mat_LIBRARY} ${MATLAB_mx_LIBRARY} ${MATLAB_mex_LIBRARY} TIGL)
+set_target_properties(tigl_matlab PROPERTIES SUFFIX ${MATLAB_MEX_SUFFIX} PREFIX "")
+
+install(TARGETS tigl_matlab DESTINATION share/tigl/matlab
+	COMPONENT interfaces)
+	
+	
+file(GLOB MFILES ${CMAKE_CURRENT_BINARY_DIR}/*.m)
+	
+install(FILES ${MFILES} DESTINATION share/tigl/matlab
+		COMPONENT interfaces
+		)
+
+endif() # matlab found
