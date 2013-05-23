@@ -33,12 +33,11 @@ set_target_properties(tigl_matlab PROPERTIES SUFFIX ${MATLAB_MEX_SUFFIX} PREFIX 
 
 install(TARGETS tigl_matlab DESTINATION share/tigl/matlab
 	COMPONENT interfaces)
-	
-	
-file(GLOB MFILES ${CMAKE_CURRENT_BINARY_DIR}/*.m)
-	
-install(FILES ${MFILES} DESTINATION share/tigl/matlab
-		COMPONENT interfaces
-		)
+		
+install(
+    CODE "file( GLOB MFILES ${CMAKE_CURRENT_BINARY_DIR}/*.m )"
+    CODE "file( INSTALL \${MFILES} DESTINATION share/tigl/matlab )"
+	COMPONENT interfaces
+)
 
 endif() # matlab found
