@@ -36,7 +36,7 @@ install(TARGETS tigl_matlab DESTINATION share/tigl/matlab
 		
 install(
     CODE "file( GLOB MFILES ${CMAKE_CURRENT_BINARY_DIR}/*.m )"
-    CODE "file( INSTALL \${MFILES} DESTINATION share/tigl/matlab )"
+    CODE "file( INSTALL \${MFILES} DESTINATION \${CMAKE_INSTALL_PREFIX}/share/tigl/matlab )"
 	COMPONENT interfaces
 )
 
