@@ -26,7 +26,7 @@ import Polygonzug as PZ
 from ms_segmentGeometry import SegmentGeometry, SegmentMathError
 
 
-from numpy import size,  array, dot, arange, zeros, linspace
+from numpy import size,  array, dot, arange, zeros, linspace, linalg
 
 class ComponentSegment(object):
     def __init__(self, le, te):
@@ -69,14 +69,16 @@ class ComponentSegment(object):
     def calcPoint(self, eta, xsi):
         nseg = size(self.lepoints,1)-1
         pyz, nyz, iSegBegin = self.le.calcPoint(eta)
+        #print 'proj:', self.le.project(array([pyz[0], pyz[1]])), eta
+        
         P = array([0, pyz[0], pyz[1]])
         N = array([0, nyz[0], nyz[1]])
         
         # calculate intersection with leading edge of segment
-        PV = self.segments[iSegBegin].calcIntersectLE(P,N);
+        PV = self.segments[iSegBegin].calcIntersectLE(P,N)
         
         _ , _ , iSegEnd = self.te.calcPoint(eta)
-        PH = self.segments[iSegEnd].calcIntersectTE(P,N);
+        PH = self.segments[iSegEnd].calcIntersectTE(P,N)
         
         # calculate point on line between leading and trailing edge
         PL = PV + (PH-PV)*xsi        
@@ -106,6 +108,32 @@ class ComponentSegment(object):
                  return self.segments[iseg].getPoint(alpha, beta)[:,0]
         
         raise NameError('Error determining segment index in ComponentSegment.calcPoint')
+        
+    def project(self, point):
+        
+        # get the eta coordinate of the point
+        eta = self.le.project(point[1:3])
+        
+        # get point on the leading edge and normal vector
+        pyz, nyz, iSegBegin = self.le.calcPoint(eta)
+        _ , _ , iSegEnd     = self.te.calcPoint(eta)
+        P = array([0, pyz[0], pyz[1]])
+        N = array([0, nyz[0], nyz[1]])
+        
+        # calculate intersection with leading edge of segment
+        PV = self.segments[iSegBegin].calcIntersectLE(P,N)[:,0];
+        PH = self.segments[iSegEnd].calcIntersectTE(P,N)[:,0];    
+        
+        # now project point back on the line pv-ph
+        xsi = dot(point-PV, PH-PV)/(linalg.norm(PH-PV)**2)
+        return eta, xsi
+        
+        
+        
+        
+        
+        
+
         
     def plot(self, axis=None):
         if not axis:
@@ -151,7 +179,6 @@ hk = array([[3.5, 3.5, 4.0],
             [0.0, 0.0, 0.5]])
 
 cs = ComponentSegment(vk, hk)
-
 #print P
 
 
@@ -159,7 +186,9 @@ fig = plt.figure()
 
 cs.plot()
 
-P = cs.calcPoint(0.5, 0.5)
+P = cs.calcPoint(0.3, 0.7)
+(eta, xsi)  = cs.project(P)
+print 'eta,xsi:' , eta, xsi
 fig.gca().plot([P[0]], [P[1]], [P[2]], 'gx')
 
 

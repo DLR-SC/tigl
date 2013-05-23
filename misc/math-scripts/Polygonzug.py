@@ -27,10 +27,13 @@ def pol2cart(phi,r):
     return array([x, y])
 
 class PolygonWRoundedEdges(object):
-    r = 0.3
     
     def __init__(self, points):
         self.points = points
+        self.r = 0.3        
+        self.midpoints = None
+        self.alphasOfCircleCut = None
+        self.angles = None
         
         self.calcInternalData()
         
@@ -118,7 +121,8 @@ class PolygonWRoundedEdges(object):
 
     # calculates for a given eta the point on the polygon, the normal vector and the segment index
     def calcPoint(self, eta):
-        assert( eta >= 0 and eta <= 1)
+        eps = 1e-7
+        assert( eta > -eps and eta <= 1+eps)
         
         neta = size(self.etas);
         
@@ -130,6 +134,11 @@ class PolygonWRoundedEdges(object):
             if self.etas[i] >= eta:
                 ifound = i
                 break
+            
+        if eta > self.etas[neta-1]:
+            ifound = neta-1
+        elif eta < 0:
+            ifound = 1
         
         etastop = self.etas[ifound]
         etastart = self.etas[ifound-1]    
@@ -169,6 +178,42 @@ class PolygonWRoundedEdges(object):
 
             
         return (P,N, iseg)
+        
+    def project(self, point):
+        '''
+        Projects the point onto the polyline.
+        Returns line parameter eta of projection.
+        
+        If multiple projections are possiblie, the projection point
+        with the smallest distance to original point is used
+        '''
+        nlines = size(self.points,1)-1
+        
+        dists = [0.]*nlines
+        etas =  [0.]*nlines
+        for iseg in xrange(nlines):
+            # line segment
+            B = self.points[:,iseg+1]
+            A = self.points[:,iseg]
+            
+            # calc local alpha
+            alpha = dot(point-A, B-A)/(linalg.norm(B-A)**2)
+            
+            # calc dist
+            p_proj = A + (B-A)*alpha
+            dists[iseg] = linalg.norm(point-p_proj)            
+            
+            alpha1 = self.alphasOfCircleCut[0,iseg]
+            alpha2 = self.alphasOfCircleCut[1,iseg]
+            eta1   = self.etas[iseg*2]
+            eta2   = self.etas[iseg*2+1]
+            eta = (eta2-eta1)/(alpha2-alpha1)*(alpha-alpha1) + eta1
+            etas[iseg] = eta
+        
+        min_index = dists.index(min(dists))
+        return etas[min_index]
+            
+
             
         
     def plot(self, axis):
@@ -177,7 +222,7 @@ class PolygonWRoundedEdges(object):
         axis.hold(True)
         for i in arange(0,nlines):
             axis.plot([points[0,i], points[0,i+1]], [points[1,i], points[1,i+1]],'r')
-            
+        
         for i in arange(0, nlines-1):
             M = self.midpoints[:,i]
             axis.plot(M[0],M[1],'mx')
@@ -236,7 +281,12 @@ class PolygonNormal(object):
             if self.alphasOfCircleCut[i] >= eta:
                 ifound = i
                 break
-            
+        
+        if eta > self.alphasOfCircleCut[neta-1]:
+            ifound = neta-1
+        elif eta < 0:
+            ifound = 1        
+        
         A = self.points[:,ifound-1]
         B = self.points[:,ifound]
         
@@ -248,3 +298,26 @@ class PolygonNormal(object):
         N = (B-A)
         N = N/linalg.norm(N)
         return (P, N, ifound-1)
+
+if __name__ == '__main__':
+    # some tests
+    points = array ([[1., 2., 3.],
+                     [1., 1.001, 1.]])
+                     
+    poly = PolygonWRoundedEdges(points)
+
+    (p,n,seg) = poly.calcPoint(0.485)
+    print p
+    
+    print poly.project(array([1.5, 0.5]))
+    
+    eta = 0.345345
+    (p_, _, _) = poly.calcPoint(eta)
+    print poly.project(p_)
+    
+    import matplotlib.pyplot as plt
+    fig = plt.figure()
+    poly.plot(fig.gca())
+    plt.plot([p[0]], [p[1]], 'gx')
+    
+    plt.show()
