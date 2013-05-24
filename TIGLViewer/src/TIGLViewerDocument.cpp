@@ -61,6 +61,10 @@
 
 #define max(a,b) ((a) > (b) ? (a) : (b))
 
+#if MSVC
+#define strdup(str) _strdup((str))
+#endif
+
 TIGLViewerDocument::TIGLViewerDocument( QWidget *parentWidget, const Handle_AIS_InteractiveContext& ic, const TIGLViewerSettings& set )
 : _settings(set)
 {
