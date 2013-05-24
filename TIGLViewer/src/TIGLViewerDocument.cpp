@@ -61,7 +61,7 @@
 
 #define max(a,b) ((a) > (b) ? (a) : (b))
 
-#if MSVC
+#ifdef _MSC_VER
 #define strdup(str) _strdup((str))
 #endif
 
