@@ -211,16 +211,16 @@ TEST_F(TiglWing, tiglWingGetSegmentIndex_success){
     int segmentIndex = 0;
     int wingIndex = 0;
     ASSERT_EQ(TIGL_SUCCESS, tiglWingGetSegmentIndex(tiglHandle, "D150_VAMP_W1_Seg1", &segmentIndex, &wingIndex));
-    ASSERT_EQ(segmentIndex == 1);
-    ASSERT_EQ(wingIndex    == 1);
+    ASSERT_EQ(1, segmentIndex);
+    ASSERT_EQ(1, wingIndex);
 
-    ASSERT_EQ(TIGL_SUCCESS tiglWingGetSegmentIndex(tiglHandle, "D150_VAMP_W1_Seg2", &segmentIndex, &wingIndex) == TIGL_SUCCESS);
-    ASSERT_EQ(segmentIndex == 2);
-    ASSERT_EQ(wingIndex    == 1);
+    ASSERT_EQ(TIGL_SUCCESS, tiglWingGetSegmentIndex(tiglHandle, "D150_VAMP_W1_Seg2", &segmentIndex, &wingIndex));
+    ASSERT_EQ(2, segmentIndex);
+    ASSERT_EQ(1, wingIndex);
 
-    ASSERT_EQ(TIGL_SUCCESS, tiglWingGetSegmentIndex(tiglHandle, "D150_VAMP_W1_Seg3", &segmentIndex, &wingIndex) == TIGL_SUCCESS);
-    ASSERT_EQ(segmentIndex == 3);
-    ASSERT_EQ(wingIndex    == 1);
+    ASSERT_EQ(TIGL_SUCCESS, tiglWingGetSegmentIndex(tiglHandle, "D150_VAMP_W1_Seg3", &segmentIndex, &wingIndex));
+    ASSERT_EQ(3, segmentIndex);
+    ASSERT_EQ(1, wingIndex);
 }
 
 TEST_F(TiglWing, tiglWingGetSegmentIndex_wrongUID){
