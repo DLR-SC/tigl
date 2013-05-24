@@ -35,7 +35,9 @@ CTiglLogger::CTiglLogger(void)
 
 CTiglLogger::~CTiglLogger(void)
 {
+#ifdef GLOG_FOUND
     google::ShutdownGoogleLogging();
+#endif
 }
 
 CTiglLogger& CTiglLogger::GetLogger(void)
@@ -46,14 +48,36 @@ CTiglLogger& CTiglLogger::GetLogger(void)
 
 void CTiglLogger::initLogger(void)
 {
+#ifdef GLOG_FOUND
     // Initialize Google's logging library.
     google::InitGoogleLogging("TIGL-log");
 
     for (int severity = google::INFO; severity < google::NUM_SEVERITIES; severity++) {
       google::SetLogDestination(severity, "TIGL-log-");
     }
+#endif
 }
 
 
+#ifndef GLOG_FOUND
+
+DummyLogger_::DummyLogger_(){}
+DummyLogger_::~DummyLogger_(){
+    stream << std::endl;
+    std::cout << stream.str();
+}
+
+std::string getLogLevelString(LogLevelDummy_ level){
+    static const char* const buffer[] = {"ERROR", "WARNING", "INFO", "DEBUG", "DEBUG1", "DEBUG2", "DEBUG3", "DEBUG4"};
+    return buffer[level];
+}
+
+std::ostringstream& DummyLogger_::AppendToStream(LogLevelDummy_ level){
+    stream << " " <<  getLogLevelString(level) << ": ";
+    stream << std::string(level > DEBUG ? level - DEBUG : 0, '\t');
+    return stream;
+}
+
+#endif
 
 } // end namespace tigl
