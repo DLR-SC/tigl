@@ -188,94 +188,108 @@ namespace tigl {
 		Update();
 		return loft;
 	}
-
+    
+    std::vector<int> CCPACSWingComponentSegment::GetSegmentList(const std::string& fromElementUID, const std::string& toElementUID) const{
+        std::vector<int> path;
+        path = findPath(fromElementUID, toElementUID, path, true);
+        
+        if(path.size() == 0){
+            // could not find path from fromUID to toUID
+            // try the other way around
+            path = findPath(toElementUID, fromElementUID, path, true);
+        }
+        
+        if(path.size() == 0){
+            LOG(WARNING) << "Could not determine segment list to component segment from \"" 
+                         << GetFromElementUID() << "\" to \"" << GetToElementUID() << "\"!";
+        }
+        
+        return path;
+    }
+    
+    // Determines, which segments belong to the component segment
+    std::vector<int> CCPACSWingComponentSegment::findPath(const std::string& fromUID, const::std::string& toUID, const std::vector<int>& curPath, bool forward) const{
+        if( fromUID == toUID )
+            return curPath;
+        
+        // find all segments with InnerSectionUID == fromUID
+        std::vector<int> segList;
+        for(int i = 1; i <= wing->GetSegmentCount(); ++i){
+            CCPACSWingSegment& segment = (CCPACSWingSegment&) wing->GetSegment(i);
+            std::string startUID = forward ? segment.GetInnerSectionElementUID() : segment.GetOuterSectionElementUID();
+            if(startUID == fromUID)
+                segList.push_back(i);
+        }
+        
+        std::vector<int>::iterator segIt = segList.begin();
+        for(; segIt != segList.end(); ++segIt){
+            int iseg = *segIt;
+            CCPACSWingSegment& segment = (CCPACSWingSegment&) wing->GetSegment(iseg);
+            std::vector<int> newpath(curPath);
+            newpath.push_back(iseg);
+            std::string segEndUID = forward ? segment.GetOuterSectionElementUID() : segment.GetInnerSectionElementUID();
+            std::vector<int> result = findPath(segEndUID, toUID, newpath, forward);
+            if(result.size() != 0)
+                return result;
+        }
+        
+        // return empty list as path could not be found
+        std::vector<int> result;
+        return result;
+    }
 
 
 	// Builds the loft between the two segment sections
 	void CCPACSWingComponentSegment::BuildLoft(void)
 	{
 
-		BRepOffsetAPI_ThruSections generator(Standard_True, Standard_True, Precision::Confusion() );
-
-		int i;
-		bool inComponentSection = false;
-		int segmentCount = wing->GetSegmentCount();
-
-		for (i=1; i <= segmentCount; i++)
-		{
-			CCPACSWingSegment& segment = (CCPACSWingSegment&) wing->GetSegment(i);
-			std::string x = segment.GetInnerSectionElementUID();
-			
-			// if we found the outer section, break...
-			if(segment.GetInnerSectionElementUID() == toElementUID) {
-				i++;
-				break;
-			}
-
-			// Ok, we found the first segment of this componentSegment
-			if(segment.GetInnerSectionElementUID() == fromElementUID) {
-				inComponentSection = true;
-			}
-
-			// try next segment if this is not within the componentSegment
-			if (!inComponentSection) continue;
-			
-			CCPACSWingConnection& startConnection = segment.GetInnerConnection();
-
-			CCPACSWingProfile& startProfile = startConnection.GetProfile();
-			TopoDS_Wire startWire = startProfile.GetWire(true);
-
-			// Do section element transformations
-			TopoDS_Shape startShape = startConnection.GetSectionElementTransformation().Transform(startWire);
-
-			// Do section transformations
-			startShape = startConnection.GetSectionTransformation().Transform(startShape);
-
-			// Do positioning transformations (positioning of sections)
-			startShape = startConnection.GetPositioningTransformation().Transform(startShape);
-
-			// Cast shapes to wires, see OpenCascade documentation
-			if (startShape.ShapeType() != TopAbs_WIRE) {
-				throw CTiglError("Error: Wrong shape type in CCPACSWingComponentSegment::BuildLoft", TIGL_ERROR);
-			}
-			startWire = TopoDS::Wire(startShape);
-
-			generator.AddWire(startWire);
-		}
-
-		// somethings goes wrong, we could not find the starting Segment.
-		if (!inComponentSection) {
-		     LOG(ERROR) << "Error: Could not find fromSectionElement in CCPACSWingComponentSegment::BuildLoft" << endl;
-			 return;
-		}
-
-		CCPACSWingSegment& segment = (CCPACSWingSegment&) wing->GetSegment(--i);
-
-		if(segment.GetOuterSectionElementUID() == toElementUID) 
-		{
-			CCPACSWingConnection& endConnection = segment.GetOuterConnection();
-			CCPACSWingProfile& endProfile = endConnection.GetProfile();
-			TopoDS_Wire endWire = endProfile.GetWire(true);
-			TopoDS_Shape endShape = endConnection.GetSectionElementTransformation().Transform(endWire);
-			endShape = endConnection.GetSectionTransformation().Transform(endShape);
-			endShape = endConnection.GetPositioningTransformation().Transform(endShape);
-			endWire = TopoDS::Wire(endShape);
-			generator.AddWire(endWire);
-		} else if(segment.GetInnerSectionElementUID() == toElementUID) 
-		{
-			CCPACSWingConnection& endConnection = segment.GetInnerConnection();
-			CCPACSWingProfile& endProfile = endConnection.GetProfile();
-			TopoDS_Wire endWire = endProfile.GetWire(true);
-			TopoDS_Shape endShape = endConnection.GetSectionElementTransformation().Transform(endWire);
-			endShape = endConnection.GetSectionTransformation().Transform(endShape);
-			endShape = endConnection.GetPositioningTransformation().Transform(endShape);
-			endWire = TopoDS::Wire(endShape);
-			generator.AddWire(endWire);
-		} else 
-		{
-			// something goes wrong, we could not find the ending Segment.
-			throw CTiglError("Error: Could not find toSectionElement in CCPACSWingComponentSegment::BuildLoft", TIGL_ERROR);
-		}
+        BRepOffsetAPI_ThruSections generator(Standard_True, Standard_True, Precision::Confusion() );
+        
+        std::vector<int> segments = GetSegmentList(fromElementUID, toElementUID);
+        if(segments.size() == 0){
+            throw CTiglError("Error: Could not find segments in CCPACSWingComponentSegment::BuildLoft", TIGL_ERROR);
+        }
+        
+        for(std::vector<int>::iterator it=segments.begin(); it != segments.end(); ++it){
+            int iseg = *it;
+            CCPACSWingSegment& segment = (CCPACSWingSegment&) wing->GetSegment(iseg);
+            CCPACSWingConnection& startConnection = segment.GetInnerConnection();
+    
+            CCPACSWingProfile& startProfile = startConnection.GetProfile();
+            TopoDS_Wire startWire = startProfile.GetWire(true);
+    
+            // Do section element transformations
+            TopoDS_Shape startShape = startConnection.GetSectionElementTransformation().Transform(startWire);
+    
+            // Do section transformations
+            startShape = startConnection.GetSectionTransformation().Transform(startShape);
+    
+            // Do positioning transformations (positioning of sections)
+            startShape = startConnection.GetPositioningTransformation().Transform(startShape);
+    
+            // Cast shapes to wires, see OpenCascade documentation
+            if (startShape.ShapeType() != TopAbs_WIRE) {
+                throw CTiglError("Error: Wrong shape type in CCPACSWingComponentSegment::BuildLoft", TIGL_ERROR);
+            }
+            startWire = TopoDS::Wire(startShape);
+    
+            generator.AddWire(startWire);
+        }
+        {
+           // add outer wire
+            CCPACSWingSegment& segment = (CCPACSWingSegment&) wing->GetSegment(segments[segments.size()-1]);
+            CCPACSWingConnection& endConnection = segment.GetOuterConnection();
+            CCPACSWingProfile& endProfile = endConnection.GetProfile();
+            TopoDS_Wire endWire = endProfile.GetWire(true);
+            TopoDS_Shape endShape = endConnection.GetSectionElementTransformation().Transform(endWire);
+            endShape = endConnection.GetSectionTransformation().Transform(endShape);
+            endShape = endConnection.GetPositioningTransformation().Transform(endShape);
+            if (endShape.ShapeType() != TopAbs_WIRE) {
+                throw CTiglError("Error: Wrong shape type in CCPACSWingComponentSegment::BuildLoft", TIGL_ERROR);
+            }
+            endWire = TopoDS::Wire(endShape);
+            generator.AddWire(endWire);
+        }
 
 		generator.CheckCompatibility(Standard_False);
 		generator.Build();
@@ -467,13 +481,13 @@ namespace tigl {
 //
 
     // Gets the fromElementUID of this segment
-	const std::string & CCPACSWingComponentSegment::GetFromElementUID(void)
+	const std::string & CCPACSWingComponentSegment::GetFromElementUID(void) const
 	{
 		return fromElementUID;
 	}
 
 	// Gets the toElementUID of this segment
-	const std::string & CCPACSWingComponentSegment::GetToElementUID(void)
+	const std::string & CCPACSWingComponentSegment::GetToElementUID(void) const
 	{
 		return toElementUID;
 	}
@@ -482,9 +496,7 @@ namespace tigl {
 	// Returns null if the point is not an that wing!
 	const std::string CCPACSWingComponentSegment::findSegment(double x, double y, double z)
 	{
-		int i = 0;
 		std::string resultUID;
-		int segmentCount = wing->GetSegmentCount();
 		gp_Pnt pnt(x, y, z);
 
 		// Quick check if the point even is on this wing
@@ -496,18 +508,19 @@ namespace tigl {
 			return resultUID;
 		}
 
+		std::vector<int> segmentIndexList = GetSegmentList(fromElementUID, toElementUID);
+
 		// now discover the right segment
-		for (i=1; i <= segmentCount; i++)
-		{			
+		for (std::vector<int>::iterator segit = segmentIndexList.begin(); segit != segmentIndexList.end(); ++segit)
+		{
 			//Handle_Geom_Surface aSurf = wing->GetUpperSegmentSurface(i);
-			TopoDS_Shape segmentLoft = wing->GetSegment(i).GetLoft();
+			TopoDS_Shape segmentLoft = wing->GetSegment(*segit).GetLoft();
 
 			BRepClass3d_SolidClassifier classifier;
 			classifier.Load(segmentLoft);
 			classifier.Perform(pnt, 1.0e-3);
-			TopAbs_State aState=classifier.State();
 			if((classifier.State() == TopAbs_IN) || (classifier.State() == TopAbs_ON)){
-				resultUID = wing->GetSegment(i).GetUID();
+				resultUID = wing->GetSegment(*segit).GetUID();
 				break;
 			}
 		}
