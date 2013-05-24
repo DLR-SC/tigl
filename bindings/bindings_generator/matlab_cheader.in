@@ -1,0 +1,115 @@
+/* 
+* Copyright (C) 2007-2012 German Aerospace Center (DLR/SC)
+*
+* Created: 2012-08-13 Martin Siggel <martin.siggel@dlr.de>
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
+
+/* Visual Studio C macros */
+#ifdef _MSC_VER
+  #define _CRT_SECURE_NO_WARNINGS
+  #define snprintf _snprintf
+#endif
+
+#include <math.h>
+#include <matrix.h>
+#include <mex.h>
+
+#include <string.h>
+#include <stdio.h>
+
+#include "common.h"
+
+#if defined(WIN32)
+  #define MEX_EXPORT __declspec(dllexport)
+#endif
+
+/*
+ * helping function to convert matlab array into c-string 
+ */
+int mxToString(const mxArray * mxStr, char ** cstr){
+  size_t strLen = 0;
+
+       /* Input must be a string. */
+  if (mxIsChar(mxStr) != 1){
+    mexErrMsgTxt("Input must be a string.");
+    return 1;
+  }
+
+  /* Input must be a row vector. */
+  if (mxGetM(mxStr) > 1){
+    mexErrMsgTxt("Input must be a row vector.");
+    return 1;
+  }
+    
+  /* Get the length of the input string. */
+  strLen = mxGetNumberOfElements(mxStr) + 1;
+
+  /* Allocate memory for input and output strings. */
+  *cstr = (char*) mxCalloc(strLen, sizeof(char));
+
+  /* Copy the string data from prhs[0] into a C string 
+   * input_buf. */
+  return mxGetString(mxStr, *cstr, strLen);
+}
+
+mwSize mxGetArraySize(const mxArray * mxArr){
+    mwSize ndims =  mxGetNumberOfDimensions(mxArr);
+    mwSize idim;
+
+    mwSize totalSize = 1;
+    for(idim = 0; idim < ndims; ++idim){
+        totalSize *= mxGetDimensions(mxArr)[idim];
+    }
+    
+    return totalSize;
+}
+
+int mxToInt(const mxArray * mxArr){
+    double dv = *mxGetPr(mxArr);
+    if(!isinteger(dv))
+        mexWarnMsgTxt("Argument is not an integer\n");
+
+    return (int)dv;
+}
+
+void mxToIntArray(const mxArray * mxArr, int ** pIntArray){
+    mwSize i, totalSize;
+    totalSize = mxGetArraySize(mxArr);
+    
+    *pIntArray = (int*) mxMalloc(sizeof(int)*totalSize);
+    for(i = 0; i< totalSize; ++i){
+        (*pIntArray)[i] = (int)mxGetPr(mxArr)[i];
+    }
+}
+
+mxArray * iArrayToMx(const int * array, int size){
+    mxArray * out = mxCreateDoubleMatrix(1,size, mxREAL);
+    double * rawArray = mxGetPr(out);
+    int i;
+    for(i = 0; i < size; ++i)
+        rawArray[i] = (double) array[i];
+    
+    return out;
+}
+
+mxArray * dArrayToMx(const double * array, int size){
+    mxArray * out = mxCreateDoubleMatrix(1,size, mxREAL);
+    double *  rawArray = mxGetPr(out);
+    int i;
+    for(i = 0; i < size; ++i)
+        rawArray[i] = array[i];
+    
+    return out;
+}
