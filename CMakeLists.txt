@@ -54,7 +54,7 @@ set (OCC_LIBS
 
 find_package( OpenCASCADE REQUIRED COMPONENTS ${OCC_LIBS})
 find_package( TIXI 2.0.4 REQUIRED)
-find_package( GLOG REQUIRED)
+find_package( GLOG QUIET )
 
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/src/tigl_config.h.in ${CMAKE_CURRENT_BINARY_DIR}/src/tigl_config.h)
 
@@ -73,7 +73,7 @@ IF (CMAKE_BUILD_TYPE STREQUAL "Debug")
 ENDIF()
 
 # visual leak detector, useful for debugging under windows
-find_package( VLD )
+find_package( VLD QUIET )
 if(VLD_FOUND)
 	set(TIGL_USE_VLD False CACHE BOOL "Enable Visual Leak Detector.")
 	if(TIGL_USE_VLD)
