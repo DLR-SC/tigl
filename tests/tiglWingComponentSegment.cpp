@@ -359,6 +359,50 @@ TEST_F(WingComponentSegmentSimple, tiglWingComponentSegmentGetPoint_success){
     ASSERT_NEAR(0.0, z, accuracy);
 }
 
+TEST_F(WingComponentSegmentSimple, determine_segments){
+    int compseg = 1;
+    // now we have do use the internal interface as we currently have no public api for this
+    tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
+    tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
+    tigl::CCPACSWing& wing = config.GetWing(1);
+    tigl::CCPACSWingComponentSegment& segment = (tigl::CCPACSWingComponentSegment&) wing.GetComponentSegment(compseg);
+    
+    std::vector<int> list = segment.GetSegmentList(segment.GetFromElementUID(), segment.GetToElementUID());
+    ASSERT_EQ(2, list.size());
+    ASSERT_EQ(1, list.at(0));
+    ASSERT_EQ(2, list.at(1));
+    
+    list = segment.GetSegmentList(segment.GetToElementUID(), segment.GetFromElementUID());
+    ASSERT_EQ(2, list.size());
+    ASSERT_EQ(1, list.at(0));
+    ASSERT_EQ(2, list.at(1));
+    
+    list = segment.GetSegmentList("Cpacs2Test_Wing_Sec1_El1", "Cpacs2Test_Wing_Sec2_El1");
+    ASSERT_EQ(1, list.size());
+    ASSERT_EQ(1, list.at(0));
+    
+    list = segment.GetSegmentList("Cpacs2Test_Wing_Sec2_El1", "Cpacs2Test_Wing_Sec1_El1");
+    ASSERT_EQ(1, list.size());
+    ASSERT_EQ(1, list.at(0));
+    
+    list = segment.GetSegmentList("Cpacs2Test_Wing_Sec2_El1", "Cpacs2Test_Wing_Sec3_El1");
+    ASSERT_EQ(1, list.size());
+    ASSERT_EQ(2, list.at(0));
+    
+}
+
+TEST_F(WingComponentSegmentSimple, determine_segments_invalidUids){
+    int compseg = 1;
+    // now we have do use the internal interface as we currently have no public api for this
+    tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
+    tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
+    tigl::CCPACSWing& wing = config.GetWing(1);
+    tigl::CCPACSWingComponentSegment& segment = (tigl::CCPACSWingComponentSegment&) wing.GetComponentSegment(compseg);
+    
+    std::vector<int> list = segment.GetSegmentList("my_fake_UID", segment.GetFromElementUID());
+    ASSERT_EQ(0, list.size());
+}
+
 TEST_F(WingComponentSegment3, tiglWingComponentSegmentPointGetSegmentEtaXsi_BUG1){
     // now the tests
     double sEta = 0., sXsi = 0.;

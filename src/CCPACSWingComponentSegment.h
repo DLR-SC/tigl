@@ -74,10 +74,10 @@ namespace tigl {
         double GetSurfaceArea();
 
         // Gets the fromElementUID of this segment
-		const std::string & GetFromElementUID(void);
+		const std::string & GetFromElementUID(void) const;
 
 		// Gets the toElementUID of this segment
-		const std::string & GetToElementUID(void);
+		const std::string & GetToElementUID(void) const;
 
 		// Returns the segment to a given point on the componentSegment.
 		// Returns null if the point is not an that wing!
@@ -89,6 +89,8 @@ namespace tigl {
         // mostly used for export
         TDF_Label ExportDataStructure(Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label);
 
+        // returns a list of segments that belong to this component segment
+        std::vector<int> GetSegmentList(const std::string &fromElementUID, const std::string &toElementUID) const;
     protected:
 		// Cleanup routine
 		void Cleanup(void);
@@ -113,6 +115,8 @@ namespace tigl {
 
 		// Assignment operator
 		void operator=(const CCPACSWingComponentSegment& ) { /* Do nothing */ }
+
+        std::vector<int> findPath(const std::string& fromUid, const::std::string& toUID, const std::vector<int>& curPath, bool forward) const;
 
 
 	private:
