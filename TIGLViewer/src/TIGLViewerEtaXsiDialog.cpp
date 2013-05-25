@@ -24,6 +24,7 @@ EtaXsiDialog::EtaXsiDialog(QWidget *parent) :
     ui(new Ui::EtaXsiDialog)
 {
     ui->setupUi(this);
+    ui->etaSpinBox->selectAll();
 }
 
 EtaXsiDialog::~EtaXsiDialog()
