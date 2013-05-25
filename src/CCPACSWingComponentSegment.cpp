@@ -365,12 +365,15 @@ namespace tigl {
 
 
 		// make all point in 2d because its only a projection 
+		double x_mean = 0.;
 		for (unsigned int j = 0; j < CPointContainer.size(); j++)
 		{
 			gp_Pnt pnt = CPointContainer[j];
+			x_mean += pnt.X();
 			pnt = gp_Pnt(0, pnt.Y(), pnt.Z());
 			CPointContainer2d.push_back(pnt);
 		}
+		x_mean = x_mean / double(CPointContainer.size());
 
 
 		// build virtual ETA-line
@@ -400,8 +403,9 @@ namespace tigl {
 
 
 		// intersection line
-		Handle(Geom_TrimmedCurve) profileLine = GC_MakeSegment(etaPnt, gp_Pnt(1e9, 0, 0));
-		BRepBuilderAPI_MakeEdge ME(profileLine);     
+		gp_Pnt p1(etaPnt), p2(etaPnt);
+		p1.SetX(x_mean - 1e3); p2.SetX(x_mean + 1e3);
+		BRepBuilderAPI_MakeEdge ME(p1,p2);
 		TopoDS_Shape aCrv(ME.Edge());
 
 		//intersection point
