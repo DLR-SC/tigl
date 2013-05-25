@@ -144,7 +144,6 @@ namespace tigl {
         BuildMatrix();
         invalidated = false;
         rebuildFusedSegments = true;    // forces a rebuild of all segments with regards to the updated translation
-        rebuildFusedSegWEdge = true;
     }
 
     // Read CPACS wing element
@@ -415,6 +414,7 @@ namespace tigl {
         CTiglAbstractGeometricComponent::Translate(trans);
     	invalidated = true;
     	segments.Invalidate();
+    	componentSegments.Invalidate();
     	Update();
     }
     
