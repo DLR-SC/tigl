@@ -101,7 +101,7 @@ QT4_ADD_RESOURCES( tv_rcrs src/TIGLViewer.qrc )
 
 add_definitions(-DCSFDB -DQOCC_STATIC)
 
-include_directories( ${OpenCASCADE_INCLUDE_DIR} ${TIXI_INCLUDE_DIRS} ${GLOG_INCLUDE_DIR})
+include_directories( ${OpenCASCADE_INCLUDE_DIR} ${TIXI_INCLUDE_DIRS})
 include_directories( ${PROJECT_SOURCE_DIR}/src ${CMAKE_CURRENT_SOURCE_DIR}/src ${PROJECT_BINARY_DIR}/src)
 
 # include path for ui files
@@ -147,8 +147,12 @@ target_link_libraries(${PROGNAME}
 	${QT_LIBRARIES} 
 	${OPENGL_LIBRARIES} 
 	${OpenCASCADE_LIBRARIES} 
-	${GLOG_LIBRARIES}
 )
+
+if(GLOG_FOUND)
+  include_directories(${GLOG_INCLUDE_DIR})
+  target_link_libraries (${PROGNAME} ${GLOG_LIBRARIES})
+endif(GLOG_FOUND)
 
 #--------------------------------------------------------------------------------
 # Now the installation stuff below
