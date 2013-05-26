@@ -55,6 +55,9 @@ set (OCC_LIBS
 find_package( OpenCASCADE REQUIRED COMPONENTS ${OCC_LIBS})
 find_package( TIXI 2.0.4 REQUIRED)
 find_package( GLOG QUIET )
+if(NOT GLOG_FOUND)
+  message(STATUS "Google GLOG not found. Advanced logging disabled.")
+endif()
 
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/src/tigl_config.h.in ${CMAKE_CURRENT_BINARY_DIR}/src/tigl_config.h)
 
