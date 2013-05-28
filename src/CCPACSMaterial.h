@@ -36,7 +36,7 @@ public:
     // returns true, if the material could be read from CPACS file
     bool IsValid() const;
     
-    const std::string& GetUID();
+    const std::string& GetUID() const;
     void Cleanup();
 private:
     std::string uid;

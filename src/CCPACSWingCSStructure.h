@@ -30,6 +30,9 @@ public:
     
     void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& structureXPath);
     
+    CCPACSWingShell& GetLowerShell();
+    CCPACSWingShell& GetUpperShell();
+    
     void Cleanup();
     void Invalidate();
     bool IsValid() const;

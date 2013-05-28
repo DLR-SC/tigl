@@ -50,11 +50,14 @@ public:
     void SetTrailingEdgeInnerPoint(double eta, double xsi);
     void SetTrailingEdgeOuterPoint(double eta, double xsi);
     
+    CCPACSMaterial& GetMaterial();
+    
+private:
+    void reset();
+    
     // relative position of the cell in component segment coordinates
     double innerBorderEta1, innerBorderEta2, outerBorderEta1, outerBorderEta2 ;
     double leadingEdgeXsi1, leadingEdgeXsi2, trailingEdgeXsi1, trailingEdgeXsi2;
-private:
-    void reset();
     
     std::string uid;
     CCPACSMaterial material;

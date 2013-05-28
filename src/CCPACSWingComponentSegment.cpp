@@ -32,6 +32,7 @@
 #include "CCPACSWingSegment.h"
 #include "CCPACSWingProfile.h"
 #include "CTiglLogger.h"
+#include "CCPACSWingCell.h"
 
 #include "BRepOffsetAPI_ThruSections.hxx"
 #include "TopExp_Explorer.hxx"
@@ -547,6 +548,39 @@ namespace tigl {
     {
 	    TDF_Label subLabel;
 	    return subLabel;
+    }
+    
+    MaterialList CCPACSWingComponentSegment::GetMaterials(double eta, double xsi, StructureType type) {
+        MaterialList list;
+        
+        if (!structure.IsValid())
+            // return empty list
+            return list;
+        
+        if(type != UPPER_SHELL && type != LOWER_SHELL) {
+            LOG(WARNING) << "Cannot compute materials for inner structure in CCPACSWingComponentSegment::GetMaterials (not yet implemented)";
+            return list;
+        }
+        else {
+            CCPACSWingShell* shell = type == UPPER_SHELL? &structure.GetUpperShell() : &structure.GetLowerShell();
+            int ncells = shell->GetCellCount();
+            for (int i = 1; i <= ncells; ++i){
+                CCPACSWingCell& cell = shell->GetCell(i);
+                if (!cell.GetMaterial().IsValid())
+                    continue;
+                
+                if (cell.IsInside(eta,xsi)){
+                    list.push_back(&(cell.GetMaterial()));
+                }
+            }
+            
+            // add complete skin
+            if (shell->GetMaterial().IsValid()){
+                list.push_back(&(shell->GetMaterial()));
+            }
+        
+        }
+        return list;
     }
 
 } // end namespace tigl
