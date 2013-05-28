@@ -68,14 +68,14 @@ namespace tigl {
         virtual ChildContainerType& GetChildren(void);
 
         // number of segments
-        virtual int GetSegmentCount(void) const = 0;
+        //virtual int GetSegmentCount(void) const = 0;
 
         // builds data structure for a TDocStd_Application
         // mostly used for export
         virtual TDF_Label ExportDataStructure(Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label) = 0;
 
 		// Returns the segment for a given index
-        virtual class CTiglAbstractSegment & GetSegment(const int index) = 0;
+        //virtual class CTiglAbstractSegment & GetSegment(const int index) = 0;
 
         virtual void SetSymmetryAxis(const std::string& axis);
 

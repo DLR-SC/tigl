@@ -419,6 +419,42 @@
             		<name>Wing_CS1</name>
             		<fromElementUID>Cpacs2Test_Wing_Sec1_El1</fromElementUID>
             		<toElementUID>Cpacs2Test_Wing_Sec3_El1</toElementUID>
+            		<structure>
+            			<upperShell>
+            				<skin>
+            					<material>
+            						<materialUID>MySkinMat</materialUID>
+            						<thickness>0.0</thickness>
+            					</material>
+            				</skin>
+            				<cells>
+            					<cell uID="WING_CS1_CELL1">
+            						<skin>
+            							<material>
+            								<materialUID>MyCellMat</materialUID>
+            								<thickness>0.0</thickness>
+            							</material>
+            						</skin>
+            						<positioningLeadingEdge>
+            							<xsi1>0.8</xsi1>
+            							<xsi2>0.8</xsi2>
+            						</positioningLeadingEdge>
+            						<positioningTrailingEdge>
+            							<xsi1>1.0</xsi1>
+            							<xsi2>1.0</xsi2>
+            						</positioningTrailingEdge>
+            						<positioningInnerBorder>
+            							<eta1>0.0</eta1>
+            							<eta2>0.0</eta2>
+            						</positioningInnerBorder>
+            						<positioningOuterBorder>
+            							<eta1>0.5</eta1>
+            							<eta2>0.5</eta2>
+            						</positioningOuterBorder>
+            					</cell>
+            				</cells>
+            			</upperShell>
+            		</structure>
             	</componentSegment>
             </componentSegments>
           </wing>

@@ -30,6 +30,7 @@
 
 #include "tixi.h"
 #include "CCPACSWingConnection.h"
+#include "CCPACSWingCSStructure.h"
 #include "CTiglPoint.h"
 #include "CTiglAbstractSegment.h"
 
@@ -131,6 +132,7 @@ namespace tigl {
 		Handle(Geom_Surface) upperSurface;
 		Handle(Geom_Surface) lowerSurface;
 		bool                 surfacesAreValid;
+        CCPACSWingCSStructure structure;
 
 	};
 

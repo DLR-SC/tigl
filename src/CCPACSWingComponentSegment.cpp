@@ -124,6 +124,7 @@ namespace tigl {
         mySurfaceArea = 0.;
         surfacesAreValid = false;
         CTiglAbstractSegment::Cleanup();
+        structure.Cleanup();
 	}
 
 	// Update internal segment data
@@ -171,6 +172,13 @@ namespace tigl {
 		elementPath   = const_cast<char*>(tempString.c_str());
 		if (tixiGetTextElement(tixiHandle, elementPath, &ptrToElementUID) == SUCCESS)
 		    toElementUID = ptrToElementUID;
+        
+        // read structure
+        tempString = segmentXPath + "/structure";
+        elementPath   = const_cast<char*>(tempString.c_str());
+        if (tixiCheckElement(tixiHandle, elementPath) == SUCCESS){
+            structure.ReadCPACS(tixiHandle, elementPath);
+        }
 
 		Update();
 	}
