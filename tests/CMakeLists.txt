@@ -14,7 +14,6 @@ ADD_EXECUTABLE(${test_BIN} ${test_SRCS} )
 TARGET_LINK_LIBRARIES(${test_BIN} ${test_LIBS})
 
 if(GLOG_FOUND)
-  message(STATUS "HELLO")
   include_directories(${GLOG_INCLUDE_DIR})
   TARGET_LINK_LIBRARIES(${test_BIN} ${GLOG_LIBRARIES})
 endif(GLOG_FOUND)
