@@ -22,6 +22,8 @@
 #include <vector>
 #include "tixi.h"
 
+#include <string>
+
 namespace tigl {
 
 class CCPACSWingCell;
