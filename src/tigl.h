@@ -180,6 +180,7 @@ typedef unsigned int TiglGeometricComponentType;
 #define  TIGL_COMPONENT_WINGSEGMENT     64
 #define  TIGL_COMPONENT_FUSELSEGMENT    128
 #define  TIGL_COMPONENT_WINGCOMPSEGMENT 256
+#define  TIGL_COMPONENT_WINGSHELL       512
 
 
 
@@ -2864,23 +2865,23 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportWingColladaByUID(const TiglCPACSConf
 *
 * <b>Fortran syntax:</b>
 *
-* tigl_get_material_uid(integer cpacsHandle, character*n segmentUID, real eta, real xsi, character*n uidMaterialPtr)
+* tigl_get_material_uid(integer cpacsHandle, character*n compSegmentUID, real eta, real xsi, character*n uidMaterialPtr)
 *
 *
-* @param cpacsHandle (in) : Handle for the CPACS configuration
-* @param segmentUID  (in) : UID of the segment
-* @param eta         (in) : eta in the range 0.0 <= eta <= 1.0
-* @param xsi         (in) : xsi in the range 0.0 <= xsi <= 1.0
+* @param cpacsHandle     (in) : Handle for the CPACS configuration
+* @param compSegmentUID  (in) : UID of the component segment
+* @param eta             (in) : eta in the range 0.0 <= eta <= 1.0
+* @param xsi             (in) : xsi in the range 0.0 <= xsi <= 1.0
 * @param uidMaterialPtr (out): Pointer to the material uid at the given coordinate
 *
 * @return
 *   - TIGL_SUCCESS if no error occurred
 *   - TIGL_NOT_FOUND if no configuration was found for the given handle
 *   - TIGL_NULL_POINTER if filenamePtr is a null pointer
-*   - TIGL_INDEX_ERROR if segmentUID is invalid
+*   - TIGL_INDEX_ERROR if compSegmentUID is invalid
 *   - TIGL_ERROR if some other error occurred
 */
-TIGL_COMMON_EXPORT TiglReturnCode tiglGetMaterialUID(const TiglCPACSConfigurationHandle cpacsHandle, char* segmentUID,
+TIGL_COMMON_EXPORT TiglReturnCode tiglGetMaterialUID(const TiglCPACSConfigurationHandle cpacsHandle, char* compSegmentUID,
                                              double eta, double xsi, char** uidMaterialPtr);
 
 
