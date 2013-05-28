@@ -29,6 +29,7 @@
 #include "CCPACSConfigurationManager.h"
 #include "CCPACSWing.h"
 #include "CCPACSWingComponentSegment.h"
+#include "CCPACSMaterial.h"
 
 /******************************************************************************/
 
@@ -357,6 +358,30 @@ TEST_F(WingComponentSegmentSimple, tiglWingComponentSegmentGetPoint_success){
     ASSERT_NEAR(0.5, x, accuracy);
     ASSERT_NEAR(2.0, y, accuracy);
     ASSERT_NEAR(0.0, z, accuracy);
+}
+
+TEST_F(WingComponentSegmentSimple, GetMaterials){
+    int compseg = 1;
+    // now we have do use the internal interface as we currently have no public api for this
+    tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
+    tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
+    tigl::CCPACSWing& wing = config.GetWing(1);
+    tigl::CCPACSWingComponentSegment& segment = (tigl::CCPACSWingComponentSegment&) wing.GetComponentSegment(compseg);
+    
+    // test point in cell
+    tigl::MaterialList list = segment.GetMaterials(0.25, 0.9, tigl::UPPER_SHELL);
+    ASSERT_EQ(2, list.size());
+    ASSERT_STREQ("MyCellMat", list[0]->GetUID().c_str());
+    ASSERT_STREQ("MySkinMat", list[1]->GetUID().c_str());
+    
+    // test point outside cell
+    list = segment.GetMaterials(0.6, 0.9, tigl::UPPER_SHELL);
+    ASSERT_EQ(1, list.size());
+    ASSERT_STREQ("MySkinMat", list[0]->GetUID().c_str());
+    
+    // no materials defined for lower shell
+    list = segment.GetMaterials(0.6, 0.9, tigl::LOWER_SHELL);
+    ASSERT_EQ(0, list.size());
 }
 
 TEST_F(WingComponentSegmentSimple, determine_segments){

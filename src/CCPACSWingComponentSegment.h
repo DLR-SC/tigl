@@ -37,9 +37,17 @@
 #include "TopoDS_Shape.hxx"
 #include "TopoDS_Wire.hxx"
 #include "Geom_BSplineSurface.hxx"
-
+#include "CCPACSMaterial.h"
 
 namespace tigl {
+
+    typedef std::vector<const CCPACSMaterial*> MaterialList;
+
+    enum StructureType {
+        UPPER_SHELL,
+        LOWER_SHELL,
+        INNER_STRUCTURE
+    };
 
 	class CCPACSWing;
 
@@ -89,6 +97,8 @@ namespace tigl {
         // builds data structure for a TDocStd_Application
         // mostly used for export
         TDF_Label ExportDataStructure(Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label);
+        
+        MaterialList GetMaterials(double eta, double xsi, StructureType);
 
         // returns a list of segments that belong to this component segment
         std::vector<int> GetSegmentList(const std::string &fromElementUID, const std::string &toElementUID) const;

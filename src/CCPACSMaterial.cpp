@@ -75,7 +75,7 @@ bool CCPACSMaterial::IsValid() const
     return isvalid;
 }
 
-const std::string& CCPACSMaterial::GetUID()
+const std::string& CCPACSMaterial::GetUID() const
 {
     return uid;
 }

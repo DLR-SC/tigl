@@ -225,4 +225,8 @@ void CCPACSWingCell::GetTrailingEdgeOuterPoint(double* eta, double* xsi) const{
     *eta = outerBorderEta2;
 }
 
+CCPACSMaterial &CCPACSWingCell::GetMaterial(){
+    return material;
+}
+
 } // namespace tigl

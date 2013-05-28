@@ -33,6 +33,21 @@ void CCPACSWingShell::Reset()
     Invalidate();
 }
 
+int CCPACSWingShell::GetCellCount() const
+{
+    return cells.GetCellCount();
+}
+
+CCPACSWingCell& CCPACSWingShell::GetCell(int index)
+{
+    return cells.GetCell(index);
+}
+
+CCPACSMaterial& CCPACSWingShell::GetMaterial()
+{
+    return material;
+}
+
 void CCPACSWingShell::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string &shellXPath)
 {
     Reset();

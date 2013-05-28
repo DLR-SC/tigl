@@ -31,6 +31,10 @@ public:
     
     void Reset();
     
+    int GetCellCount() const;
+    CCPACSWingCell& GetCell(int index);
+    CCPACSMaterial& GetMaterial();
+    
     void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& shellXPath);
     void Invalidate();
     bool IsValid() const;

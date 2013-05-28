@@ -75,6 +75,18 @@ void CCPACSWingCells::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string
     }
 }
 
+int CCPACSWingCells::GetCellCount() const {
+    return cells.size();
+}
+
+CCPACSWingCell& CCPACSWingCells::GetCell(int index) const {
+    if(index < 1 || index > GetCellCount()){
+        throw CTiglError("Illegal index in CCPACSWingCells::GetCell", TIGL_INDEX_ERROR);
+    }
+    
+    return *cells.at(index-1);
+}
+
 
 
 } // namespace tigl

@@ -58,6 +58,14 @@ void CCPACSWingCSStructure::ReadCPACS(TixiDocumentHandle tixiHandle, const std::
     isvalid = true;
 }
 
+CCPACSWingShell& CCPACSWingCSStructure::GetLowerShell() {
+    return lowerShell;
+}
+
+CCPACSWingShell& CCPACSWingCSStructure::GetUpperShell() {
+    return upperShell;
+}
+
 void CCPACSWingCSStructure::Invalidate()
 {
     isvalid = false;
