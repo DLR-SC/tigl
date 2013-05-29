@@ -103,8 +103,8 @@ class MatlabGenerator(object):
             else:
                 #pass
                 print arg.name, arg.type
-                raise Exception('Conversion from "%s" to mx not yet implemented' \
-                    % (arg.name + '*'*arg.npointer))    
+                raise Exception('Conversion from "%s, %s" to mx not yet implemented' \
+                    % (arg.type + '*'*arg.npointer, arg.name))    
         else:
             if arg.type == 'double':
                 string += 'plhs[%d] = dArrayToMx(%s, _%s_size);\n' % (index, arg.name, arg.name)
@@ -193,9 +193,9 @@ class MatlabGenerator(object):
             for arg in outargs:
                 assert(arg.npointer > 0)
                 if arg.arrayinfos['is_array'] and not arg.arrayinfos['autoalloc']:
-                    string += 4*' ' + arg.rawtype + '*'*(arg.npointer) + ' ' + arg.name + ' = NULL'
+                    string += 4*' ' + arg.rawtype + '*'*(arg.raw_npointer) + ' ' + arg.name + ' = NULL'
                 else:
-                    string += 4*' ' + arg.rawtype + '*'*(arg.npointer-1) + ' ' + arg.name
+                    string += 4*' ' + arg.rawtype + '*'*(arg.raw_npointer-1) + ' ' + arg.name
                     if arg.npointer > 1:
                         string += ' = NULL'
                 string += ';\n'
@@ -215,7 +215,7 @@ class MatlabGenerator(object):
             
         if func.return_value.rawtype != 'void':
             string += 4*' '  + func.return_value.rawtype \
-                + '*'*func.return_value.npointer + ' ' + func.return_value.name
+                + '*'*func.return_value.raw_npointer + ' ' + func.return_value.name
             if func.return_value.npointer > 0:
                 string += ' = NULL'
             string += ';\n\n'

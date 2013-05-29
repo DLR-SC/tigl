@@ -384,6 +384,23 @@ TEST_F(WingComponentSegmentSimple, GetMaterials){
     ASSERT_EQ(0, list.size());
 }
 
+TEST_F(WingComponentSegmentSimple, GetMaterials_cinterface){
+    int nuids = 0;
+    const char **  uids;
+    ASSERT_EQ(TIGL_SUCCESS, tiglWingComponentSegmentGetMaterialUIDs(tiglHandle, "WING_CS1", 0.25, 0.9, &uids, &nuids));
+    ASSERT_EQ(2, nuids);
+    ASSERT_STREQ("MyCellMat", uids[0]);
+    ASSERT_STREQ("MySkinMat", uids[1]);
+    delete[] uids;
+}
+
+TEST_F(WingComponentSegmentSimple, GetMaterials_cinterface_nullptr){
+    int nuids = 0;
+    TiglStringList  uids;
+    ASSERT_EQ(TIGL_NULL_POINTER, tiglWingComponentSegmentGetMaterialUIDs(tiglHandle, "WING_CS1", 0.25, 0.9, NULL, &nuids));
+    ASSERT_EQ(TIGL_NULL_POINTER, tiglWingComponentSegmentGetMaterialUIDs(tiglHandle, "WING_CS1", 0.25, 0.9, &uids, NULL));
+}
+
 TEST_F(WingComponentSegmentSimple, determine_segments){
     int compseg = 1;
     // now we have do use the internal interface as we currently have no public api for this

@@ -1073,21 +1073,26 @@ void tiglExportMeshedGeometryVTKSimple_f(TiglCPACSConfigurationHandle* cpacsHand
 /*                    MATERIAL FUNCTIONS                                                             */
 /*****************************************************************************************************/
 
-void tiglGetMaterialUID_f(TiglCPACSConfigurationHandle* cpacsHandle,
+void tiglWingComponentSegmentGetMaterialUIDs_f(TiglCPACSConfigurationHandle* cpacsHandle,
                                char* uID,
                                double* eta,
                                double* xsi,
-                               char* materialUID,
+                               const char*** materialUIDs,
+                               int * nuids,
                                TiglReturnCode* returnCode,
                                int lengthString1)
 {
-  char *cString = NULL;
+  /*char *cString = NULL;
   char *matUID = NULL;
   cString = makeCString(uID, lengthString1);
   *returnCode = tiglGetMaterialUID(*cpacsHandle, cString, *eta, *xsi, &matUID);
   copyToFortranString(matUID, strlen(matUID), materialUID);
   free(cString);
-  free(matUID);
+  free(matUID);*/
+    
+  
+  //@todo: provide proper implementation. how to pass array of string to fortran???
+  *returnCode = TIGL_ERROR;
 }
 
 
