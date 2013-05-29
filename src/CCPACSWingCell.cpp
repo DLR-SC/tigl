@@ -57,33 +57,53 @@ void CCPACSWingCell::reset(){
 
 }
 
+bool CCPACSWingCell::IsConvex() const{
+    Point2D p1, p2, p3, p4;
+    
+    // calculate for all 4 edges the relative position of eta/xsi
+    GetTrailingEdgeInnerPoint(&p1.x, &p1.y);
+    GetTrailingEdgeOuterPoint(&p2.x, &p2.y);
+    GetLeadingEdgeOuterPoint (&p3.x, &p3.y);
+    GetLeadingEdgeInnerPoint (&p4.x, &p4.y);
+    
+    // trailing edge
+    bool s1 = sign(p3, p1, p2) > 0.;
+    // outer border
+    bool s2 = sign(p4, p2, p3) > 0.;
+    // leading edge
+    bool s3 = sign(p1, p3, p4) > 0.;
+    // inner border
+    bool s4 = sign(p2, p4, p1) > 0.;
+    
+    return (s1 == s2) && (s2 == s3) && (s3 == s4);
+}
+
 bool CCPACSWingCell::IsInside(double eta, double xsi) const{
-    Point2D p, p1, p2;
+    Point2D p, p1, p2, p3, p4;
     p.x = eta; p.y = xsi;
     
     // calculate for all 4 edges the relative position of eta/xsi
-
-    // trailing edge
     GetTrailingEdgeInnerPoint(&p1.x, &p1.y);
     GetTrailingEdgeOuterPoint(&p2.x, &p2.y);
-    bool s1 = sign(p, p1, p2) > 0.;
+    GetLeadingEdgeOuterPoint (&p3.x, &p3.y);
+    GetLeadingEdgeInnerPoint (&p4.x, &p4.y);
     
-    // outer border
-    GetTrailingEdgeOuterPoint(&p1.x, &p1.y);
-    GetLeadingEdgeOuterPoint (&p2.x, &p2.y);
-    bool s2 = sign(p, p1, p2) > 0.;
-    
-    // leading edge
-    GetLeadingEdgeOuterPoint(&p1.x, &p1.y);
-    GetLeadingEdgeInnerPoint(&p2.x, &p2.y);
-    bool s3 = sign(p, p1, p2) > 0.;
-    
-    // inner border
-    GetLeadingEdgeInnerPoint (&p1.x, &p1.y);
-    GetTrailingEdgeInnerPoint(&p2.x, &p2.y);
-    bool s4 = sign(p, p1, p2) > 0.;
-    
-    return (s1 == s2) && (s2 == s3) && (s3 == s4);
+    if (IsConvex()) {
+        // trailing edge
+        bool s1 = sign(p, p1, p2) > 0.;
+        // outer border
+        bool s2 = sign(p, p2, p3) > 0.;
+        // leading edge
+        bool s3 = sign(p, p3, p4) > 0.;
+        // inner border
+        bool s4 = sign(p, p4, p1) > 0.;
+        
+        // this only works if the quadriangle is convex
+        return (s1 == s2) && (s2 == s3) && (s3 == s4);
+    }
+    else {
+        throw CTiglError("Can not compute CCPACSWingCell::IsInside, cell is not convex.", TIGL_MATH_ERROR);
+    }
 }
 
 void CCPACSWingCell::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string &cellXPath){

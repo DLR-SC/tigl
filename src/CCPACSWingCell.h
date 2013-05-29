@@ -36,6 +36,9 @@ public:
     // determines if a given eta xsi koordinate is inside this cell
     bool IsInside(double eta, double xsi) const;
     
+    // determines if the cell defines a convex qudriangle or nor
+    bool IsConvex() const;
+    
     void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& cellXPath);
     
     // get corner coordinates of cell
@@ -51,7 +54,6 @@ public:
     void SetTrailingEdgeOuterPoint(double eta, double xsi);
     
     CCPACSMaterial& GetMaterial();
-    
 private:
     void reset();
     
