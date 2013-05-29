@@ -214,6 +214,8 @@ enum TiglImportExportFormat
 };
 
 
+typedef const char** TiglStringList;
+
 /**
  * @brief Definition of the TIGL version number.
  */
@@ -2860,19 +2862,20 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportWingColladaByUID(const TiglCPACSConf
 
 
 /**
-* @brief Returns the material UID of a given point on the surface.
+* @brief Returns the material UID of a given point on the wing component segment surface.
 *
 *
 * <b>Fortran syntax:</b>
 *
-* tigl_get_material_uid(integer cpacsHandle, character*n compSegmentUID, real eta, real xsi, character*n uidMaterialPtr)
+* tigl_wing_component_segment_get_material_uids(integer cpacsHandle, character*n compSegmentUID, real eta, real xsi, character*n uidMaterialPtr, integer nuids, integer returnCode)
 *
 *
 * @param cpacsHandle     (in) : Handle for the CPACS configuration
 * @param compSegmentUID  (in) : UID of the component segment
 * @param eta             (in) : eta in the range 0.0 <= eta <= 1.0
 * @param xsi             (in) : xsi in the range 0.0 <= xsi <= 1.0
-* @param uidMaterialPtr (out): Pointer to the material uid at the given coordinate
+* @param uids            (out): Array of material uids at the given coordinate
+* @param nuids           (out): Number of materials found at the given coordinate
 *
 * @return
 *   - TIGL_SUCCESS if no error occurred
@@ -2880,11 +2883,12 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportWingColladaByUID(const TiglCPACSConf
 *   - TIGL_NULL_POINTER if filenamePtr is a null pointer
 *   - TIGL_INDEX_ERROR if compSegmentUID is invalid
 *   - TIGL_ERROR if some other error occurred
+*
+* #annotate out: 4A(5)#
 */
-TIGL_COMMON_EXPORT TiglReturnCode tiglGetMaterialUID(const TiglCPACSConfigurationHandle cpacsHandle, char* compSegmentUID,
-                                             double eta, double xsi, char** uidMaterialPtr);
-
-
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetMaterialUIDs(TiglCPACSConfigurationHandle cpacsHandle,
+                                                         const char *componentSegmentUID, double eta, double xsi,
+                                                         TiglStringList* uids, int * nuids);
 
 
 /*@}*/
