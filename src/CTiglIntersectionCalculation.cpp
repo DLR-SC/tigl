@@ -25,6 +25,7 @@
 
 #include "CTiglIntersectionCalculation.h"
 #include "CTiglError.h"
+#include "tiglcommonfunctions.h"
 
 #include "GeomAPI_IntSS.hxx"
 #include "BRep_Tool.hxx"
@@ -124,29 +125,6 @@ namespace tigl {
 		return(numWires);
 	}
 
-
-    // Computes the length of the intersection line
-    double CTiglIntersectionCalculation::ComputeWireLength(int wireID)
-    {
-        double wireLength = 0.0;
-		TopoDS_Wire intersectionWire = (Wires[--wireID]);
-
-		// explore all edges of result wire
-		BRepTools_WireExplorer wireExplorer;
-		for (wireExplorer.Init(intersectionWire); wireExplorer.More(); wireExplorer.Next())       
-		{   
-			Standard_Real firstParam;
-			Standard_Real lastParam;
-			TopoDS_Edge edge = wireExplorer.Current();
-			Handle(Geom_Curve) curve = BRep_Tool::Curve(edge, firstParam, lastParam);
-			GeomAdaptor_Curve adaptorCurve(curve, firstParam, lastParam);
-			wireLength += GCPnts_AbscissaPoint::Length(adaptorCurve);
-		}
-		return(wireLength);
-    }
-
-
-
 	// Gets a point on the intersection line in dependence of a parameter zeta with
 	// 0.0 <= zeta <= 1.0. For zeta = 0.0 this is the line starting point,
 	// for zeta = 1.0 the last point on the intersection line.
@@ -163,56 +141,9 @@ namespace tigl {
         	throw CTiglError("Error: Unknown wireID in CTiglIntersectionCalculation::GetPoint", TIGL_ERROR);
         }
 
-		//TopoDS_Wire wire;
-        double length = ComputeWireLength(wireID) * zeta;
-		TopoDS_Wire intersectionWire = (Wires[--wireID]);
-
-        // Get the first edge of the wire
-		BRepTools_WireExplorer wireExplorer( intersectionWire );
-        if (!wireExplorer.More()) 
-        {
-            throw CTiglError("Error: Not enough edges found in CTiglIntersectionCalculation::GetPoint", TIGL_ERROR);
-        }
-        Standard_Real firstParam;
-        Standard_Real lastParam;
-        TopoDS_Edge edge = wireExplorer.Current();
-        wireExplorer.Next();
-        Handle(Geom_Curve) curve = BRep_Tool::Curve(edge, firstParam, lastParam);
-
-        // Length of current edge
-        GeomAdaptor_Curve adaptorCurve;
-        adaptorCurve.Load(curve, firstParam, lastParam);
-        double currLength = GCPnts_AbscissaPoint::Length(adaptorCurve);
-
-        // Length of complete wire up to now
-        double sumLength = currLength;
-
-        while (length > sumLength) 
-        {
-            if (!wireExplorer.More())
-                break;
-            edge = wireExplorer.Current();
-            wireExplorer.Next();
-
-            curve = BRep_Tool::Curve(edge, firstParam, lastParam);
-            adaptorCurve.Load(curve, firstParam, lastParam);
-
-            // Length of current edge
-            currLength = GCPnts_AbscissaPoint::Length(adaptorCurve);
-
-            // Length of complete wire up to now
-            sumLength += currLength;
-        }
-
-        // Distance of searched point from end point of current edge
-        double currEndDelta = max((sumLength - length), 0.0);
-
-        // Distance of searched point from start point of current edge
-        double currDist = max((currLength - currEndDelta), 0.0);
-
-        GCPnts_AbscissaPoint abscissaPoint(adaptorCurve, currDist, adaptorCurve.FirstParameter());
-        gp_Pnt point = adaptorCurve.Value(abscissaPoint.Parameter());
-		return (point);       
+        //TopoDS_Wire wire;
+        TopoDS_Wire& intersectionWire = (Wires[--wireID]);
+        return WireGetPoint(intersectionWire, zeta);
     }
 
 	// gives the number of wires of the intersection calculation

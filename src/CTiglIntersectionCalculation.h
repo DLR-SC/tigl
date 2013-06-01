@@ -68,11 +68,6 @@ namespace tigl {
 		// gives a reference to the computed wire
 		TopoDS_Wire& GetWire(int wireID);
 
-	protected:
-		// Computes the length of the intersection line
-		double ComputeWireLength(int wireID);
-
-
 	private:		
 		Standard_Real tolerance;
 		int numWires;							/* The number of intersection lines */
