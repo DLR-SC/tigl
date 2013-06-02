@@ -32,6 +32,7 @@
 #include "CCPACSWingSegment.h"
 #include "CCPACSWingProfile.h"
 #include "CTiglLogger.h"
+#include "tiglcommonfunctions.h"
 
 #include "BRepOffsetAPI_ThruSections.hxx"
 #include "TopExp_Explorer.hxx"
@@ -49,21 +50,12 @@
 #include "Geom_Surface.hxx"
 #include "Geom_Line.hxx"
 #include "gce_MakeLin.hxx"
-#include "IntCurvesFace_Intersector.hxx"
 #include "Precision.hxx"
-#include "TopLoc_Location.hxx"
-#include "Poly_Triangulation.hxx"
-#include "Poly_Array1OfTriangle.hxx"
-#include "BRep_Tool.hxx"
-#include "BRep_Builder.hxx"
 #include "BRepBuilderAPI_MakeEdge.hxx"
 #include "BRepBuilderAPI_MakeWire.hxx"
-#include "BRepBuilderAPI_MakeFace.hxx"
-#include "BRepMesh.hxx"
 #include "BRepTools.hxx"
 #include "BRepBndLib.hxx"
 #include "BRepGProp.hxx"
-#include "BRepBuilderAPI_MakePolygon.hxx"
 #include "Bnd_Box.hxx"
 #include "BRepLib_FindSurface.hxx"
 #include "ShapeAnalysis_Surface.hxx"
@@ -74,7 +66,6 @@
 #include "GC_MakeLine.hxx"
 #include "Geom_BSplineCurve.hxx"
 #include "GeomAPI_PointsToBSpline.hxx"
-#include "GeomAdaptor_HCurve.hxx"
 #include "GeomFill_SimpleBound.hxx"
 #include "GeomFill_BSplineCurves.hxx"
 #include "GeomFill_FillingStyle.hxx"
@@ -413,6 +404,56 @@ namespace tigl {
 		extrema.Perform();
 
 		return extrema.PointOnShape1(1);
+	}
+
+    void CCPACSWingComponentSegment::GetEtaXsiFromSegmentEtaXsi(const std::string& segmentUID, double seta, double sxsi, double& eta, double& xsi)
+    {
+        // search for ETA coordinate
+        std::vector<gp_Pnt> CPointContainer2d;
+        
+        if (seta < 0.0 || seta > 1.0)
+        {
+            throw CTiglError("Error: Parameter seta not in the range 0.0 <= seta <= 1.0 in CCPACSWingComponentSegment::GetPoint", TIGL_ERROR);
+        }
+        if (sxsi < 0.0 || sxsi > 1.0)
+        {
+            throw CTiglError("Error: Parameter sxsi not in the range 0.0 <= sxsi <= 1.0 in CCPACSWingComponentSegment::GetPoint", TIGL_ERROR);
+        }
+        
+        std::vector<int> seglist = GetSegmentList(fromElementUID, toElementUID);
+        // check that segment belongs to component segment
+        CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing->GetSegment(segmentUID);
+        std::vector<int>::iterator segit = std::find(seglist.begin(), seglist.end(), segment.GetSegmentIndex());
+        if (segit == seglist.end())
+            throw CTiglError("Error: segment does not belong to component segment in CCPACSWingComponentSegment::GetEtaXsiFromSegmentEtaXsi", TIGL_ERROR);
+        
+        for(segit = seglist.begin(); segit != seglist.end(); ++segit) {
+            int segindex = *segit;
+            tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing->GetSegment(segindex);
+            gp_Pnt pnt = segment.GetChordPoint(0.0,xsi);
+            pnt = gp_Pnt(0.0, pnt.Y(), pnt.Z());
+            CPointContainer2d.push_back(pnt);
+        }
+        if(seglist.size() > 0){
+            int segindex = seglist[seglist.size()-1];
+            tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing->GetSegment(segindex);
+            gp_Pnt pnt = segment.GetChordPoint(1.0,xsi);
+            pnt = gp_Pnt(0.0, pnt.Y(), pnt.Z());
+            CPointContainer2d.push_back(pnt);
+        }
+
+        // build virtual ETA-line
+        BRepBuilderAPI_MakeWire wireBuilder;
+        for (unsigned int j = 1; j < CPointContainer2d.size(); j++)
+        {
+            TopoDS_Edge edge = BRepBuilderAPI_MakeEdge(CPointContainer2d[j - 1], CPointContainer2d[j]);
+            wireBuilder.Add(edge);
+        }
+        TopoDS_Wire etaLinie = wireBuilder.Wire();
+
+        gp_Pnt point3d = segment.GetChordPoint(seta, sxsi);
+        xsi = sxsi;
+        eta = ProjectPointOnWire(etaLinie, point3d);
 	}
 
 

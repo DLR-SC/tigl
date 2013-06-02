@@ -66,6 +66,9 @@ namespace tigl {
 
 		// Gets a point in relative wing coordinates for a given eta and xsi
 		gp_Pnt GetPoint(double eta, double xsi);
+        
+        // Get the eta xsi coordinate from a segment point (given by seta, sxsi)
+        void GetEtaXsiFromSegmentEtaXsi(const std::string &segmentUID, double seta, double sxsi, double &eta, double &xsi);
 
         // Gets the volume of this segment
         double GetVolume();
