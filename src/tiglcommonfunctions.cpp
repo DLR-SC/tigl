@@ -53,10 +53,9 @@ Standard_Real GetWireLength(const TopoDS_Wire& wire)
 #endif
 }
 
-// Gets a point on the intersection line in dependence of a parameter zeta with
-// 0.0 <= zeta <= 1.0. For zeta = 0.0 this is the line starting point,
-// for zeta = 1.0 the last point on the intersection line.
-// numIntersecLine is the number of the Intersection line.
+// Gets a point on the wire line in dependence of a parameter alpha with
+// 0.0 <= alpha <= 1.0. For alpha = 0.0 this is the line starting point,
+// for alpha = 1.0 the last point on the intersection line.
 gp_Pnt WireGetPoint(const TopoDS_Wire& wire, double alpha)
 {
     if (alpha < 0.0 || alpha > 1.0)

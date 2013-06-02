@@ -403,6 +403,20 @@ TEST_F(WingComponentSegmentSimple, determine_segments_invalidUids){
     ASSERT_EQ(0, list.size());
 }
 
+TEST_F(WingComponentSegmentSimple, GetEtaXsiFromSegment){
+    int compseg = 1;
+    // now we have do use the internal interface as we currently have no public api for this
+    tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
+    tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
+    tigl::CCPACSWing& wing = config.GetWing(1);
+    tigl::CCPACSWingComponentSegment& segment = (tigl::CCPACSWingComponentSegment&) wing.GetComponentSegment(compseg);
+    
+    double eta, xsi;
+    segment.GetEtaXsiFromSegmentEtaXsi("Cpacs2Test_Wing_Seg_1_2", 0.5, 0.5, eta, xsi);
+    ASSERT_NEAR(0.25, eta, 1e-7);
+    ASSERT_NEAR(0.50, xsi, 1e-7);
+}
+
 TEST_F(WingComponentSegment3, tiglWingComponentSegmentPointGetSegmentEtaXsi_BUG1){
     // now the tests
     double sEta = 0., sXsi = 0.;
