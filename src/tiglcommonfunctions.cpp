@@ -125,7 +125,7 @@ gp_Pnt WireGetPoint2(const TopoDS_Wire& wire, double alpha)
 Standard_Real ProjectPointOnWire(const TopoDS_Wire& wire, gp_Pnt p){
     double smallestDist = DBL_MAX;
     double alpha  = 0.;
-    int edgeIndex = 0.;
+    int edgeIndex = 0;
     
     // find edge with closest dist to point p
     BRepTools_WireExplorer wireExplorer;

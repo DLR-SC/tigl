@@ -25,6 +25,7 @@
 
 #include <math.h>
 #include <iostream>
+#include <algorithm>
 #include <string>
 
 #include "CCPACSWingComponentSegment.h"
