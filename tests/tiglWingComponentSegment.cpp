@@ -417,6 +417,18 @@ TEST_F(WingComponentSegmentSimple, GetEtaXsiFromSegment){
     ASSERT_NEAR(0.50, xsi, 1e-7);
 }
 
+TEST_F(WingComponentSegmentSimple, tiglWingSegmentPointGetComponentSegmentEtaXsi_success){
+    double eta, xsi;
+    ASSERT_EQ(TIGL_SUCCESS, tiglWingSegmentPointGetComponentSegmentEtaXsi(tiglHandle, "Cpacs2Test_Wing_Seg_1_2", "WING_CS1", 0.5, 0.5, &eta, &xsi));
+    ASSERT_NEAR(0.25, eta, 1e-7);
+    ASSERT_NEAR(0.50, xsi, 1e-7);
+    
+    ASSERT_EQ(TIGL_SUCCESS, tiglWingSegmentPointGetComponentSegmentEtaXsi(tiglHandle, "Cpacs2Test_Wing_Seg_2_3", "WING_CS1", 0.5, 0.5, &eta, &xsi));
+    ASSERT_NEAR(0.75, eta, 1e-7);
+    ASSERT_NEAR(0.50, xsi, 1e-7);
+}
+
+
 TEST_F(WingComponentSegment3, tiglWingComponentSegmentPointGetSegmentEtaXsi_BUG1){
     // now the tests
     double sEta = 0., sXsi = 0.;

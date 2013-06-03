@@ -16,6 +16,11 @@
 * limitations under the License.
 */
 
+/**
+ * @brief This file implements some commonly used functions/algorithms on opencascade
+ * data structures.
+ */
+
 #include "tiglcommonfunctions.h"
 
 #include "CTiglError.h"

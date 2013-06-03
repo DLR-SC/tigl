@@ -1306,6 +1306,75 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentPointGetSegmentEtaXsi(
     }
 }
 
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingSegmentPointGetComponentSegmentEtaXsi(TiglCPACSConfigurationHandle cpacsHandle,
+                                                const char *segmentUID, const char * componentSegmentUID, 
+                                                double segmentEta, double segmentXsi,
+                                                double *eta, double *xsi){
+    
+    if (segmentUID == 0) {
+        LOG(ERROR) << "Error: Null pointer argument for segmentUID ";
+        LOG(ERROR) << "in function call to tiglWingSegmentPointGetComponentSegmentEtaXsi." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+
+    if (componentSegmentUID == 0) {
+        LOG(ERROR) << "Error: Null pointer argument for componentSegmentUID ";
+        LOG(ERROR) << "in function call to tiglWingSegmentPointGetComponentSegmentEtaXsi." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+    
+    if (eta == 0) {
+        LOG(ERROR) << "Error: Null pointer argument for eta ";
+        LOG(ERROR) << "in function call to tiglWingSegmentPointGetComponentSegmentEtaXsi." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+    
+    if (xsi == 0) {
+        LOG(ERROR) << "Error: Null pointer argument for xsi ";
+        LOG(ERROR) << "in function call to tiglWingSegmentPointGetComponentSegmentEtaXsi." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+    
+    try {
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+
+        // search for component segment
+        int nwings = config.GetWingCount();
+        for(int iwing = 1; iwing <= nwings; ++iwing){
+            tigl::CCPACSWing& wing = config.GetWing(iwing);
+            try {
+                tigl::CCPACSWingComponentSegment & compSeg = (tigl::CCPACSWingComponentSegment &) wing.GetComponentSegment(componentSegmentUID);
+                compSeg.GetEtaXsiFromSegmentEtaXsi(segmentUID, segmentEta, segmentXsi, *eta, *xsi);
+                return TIGL_SUCCESS;
+            }
+            catch (tigl::CTiglError& err){
+                if(err.getCode() == TIGL_UID_ERROR)
+                    continue;
+                else 
+                    throw err;
+            }
+            
+        }
+        
+        // the component segment was not found
+        LOG(ERROR) << "Error: Invalid component segment uid in tiglWingSegmentPointGetComponentSegmentEtaXsi" << std::endl;
+        return TIGL_UID_ERROR;
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglWingSegmentPointGetComponentSegmentEtaXsi!" << std::endl;
+        return TIGL_ERROR;
+    }
+}
+
 
 /**********************************************************************************************/
 
