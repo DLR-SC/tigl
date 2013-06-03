@@ -1242,13 +1242,48 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetPoint(TiglCPACSConf
 *   - TIGL_SUCCESS if no error occurred
 *   - TIGL_NOT_FOUND if no configuration was found for the given handle
 *   - TIGL_UID_ERROR if the componentSegment does not exist
-*   - TIGL_INDEX_ERROR if wingIndex is less or equal zero
 *   - TIGL_ERROR if some other error occurred
 */
 TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentPointGetSegmentEtaXsi(TiglCPACSConfigurationHandle cpacsHandle,
 																		const char *componentSegmentUID, double eta, double xsi,
 																		char** wingUID, char** segmentUID,
 																		double *segmentEta, double *segmentXsi);
+
+
+
+/**
+* @brief Returns eta, xsi coordinates of a componentSegment given segmentEta and segmentXsi on a wing segment.
+*
+*
+* <b>Fortran syntax:</b>
+*
+* tigl_wing_segment_point_get_component_segment_eta_xsi(integer cpacsHandle,
+* 														character*n segmentUID,
+* 														character*n componentSegmentUID,
+* 														real segmentEta, real segmentXsi
+* 														real eta, real xsi,
+* 														integer returnCode)
+* @cond
+* #PY:5,6#
+* @endcond
+*
+* @param cpacsHandle     		(in)  : Handle for the CPACS configuration
+* @param segmentUID             (in)  : UID of the wing segment to search for
+* @param componentSegmentUID    (in)  : UID of the associated componentSegment
+* @param segmentEta, segmentXsi (in)  : Eta and Xsi coordinates of the point on the wing segment
+* @param eta                    (out) : Eta of the point on the corresponding component segment.
+* @param xsi                    (out) : Xsi of the point on the corresponding component segment.
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_UID_ERROR if the segment or the component segment does not exist
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingSegmentPointGetComponentSegmentEtaXsi(TiglCPACSConfigurationHandle cpacsHandle,
+																		const char *segmentUID, const char * componentSegmentUID, 
+																		double segmentEta, double segmentXsi,
+																		double *eta, double *xsi);
 
 
 /*@}*/

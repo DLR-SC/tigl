@@ -431,14 +431,14 @@ namespace tigl {
         for(segit = seglist.begin(); segit != seglist.end(); ++segit) {
             int segindex = *segit;
             tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing->GetSegment(segindex);
-            gp_Pnt pnt = segment.GetChordPoint(0.0,xsi);
+            gp_Pnt pnt = segment.GetChordPoint(0.0,sxsi);
             pnt = gp_Pnt(0.0, pnt.Y(), pnt.Z());
             CPointContainer2d.push_back(pnt);
         }
         if(seglist.size() > 0){
             int segindex = seglist[seglist.size()-1];
             tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing->GetSegment(segindex);
-            gp_Pnt pnt = segment.GetChordPoint(1.0,xsi);
+            gp_Pnt pnt = segment.GetChordPoint(1.0,sxsi);
             pnt = gp_Pnt(0.0, pnt.Y(), pnt.Z());
             CPointContainer2d.push_back(pnt);
         }
