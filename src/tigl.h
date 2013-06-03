@@ -1264,7 +1264,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentPointGetSegmentEtaXsi(
 * 														real eta, real xsi,
 * 														integer returnCode)
 * @cond
-* #PY:5,6#
+* #PY:4,5#
 * @endcond
 *
 * @param cpacsHandle     		(in)  : Handle for the CPACS configuration
