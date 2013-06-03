@@ -157,7 +157,7 @@ class CHeaderFileParser(object):
                     continuing = False
                     
         # parse typedefs
-        typedef_pattern = re.compile('typedef\s+(?P<type>[\w\s]+)\s+(?P<name>\w+)\s*?;')
+        typedef_pattern = re.compile('typedef\s+(?P<type>[\w\s*]+)\s+(?P<name>\w+)\s*?;')
         for line in self.lines:
             match = typedef_pattern.search(line)
             if match:
@@ -261,10 +261,11 @@ class CFunctionArg(object):
     and constness of a function argument
     '''    
     
-    def __init__(self, string, typedeflist = None, enumlist = None, handle_str = None):
+    def __init__(self):
         self.type = ''
         self.rawtype = ''
         self.npointer = 0
+        self.raw_npointer = 0
         self.name = ''
         self.is_const   = False
         self.is_handle  = False
@@ -276,8 +277,6 @@ class CFunctionArg(object):
         # if arg is sizearg, store argument that is referenced by the sizearg
         self.size_ref     = 0
         
-        if len(string) > 0:
-            self.parse_arg(string, typedeflist, enumlist, handle_str)
         
     def parse_arg(self, string, typedeflist, enumlist, handle_str):
         ''' Parse the function argument.
@@ -291,57 +290,66 @@ class CFunctionArg(object):
              This is the place, if you want to add some automagical
              detection features
         '''
+
         regex = r'((?P<const>const)[\s]+)?(?P<type>[\w]+)[\s]*' + \
                 r'(?P<pointer>[\*]*)[\s]*(?P<name>[\w]+)?[\s]*'
         res = re.search(regex, string)
-         
+        
+        cst = res.group('const') + ' ' if res.group('const') else ''
+        pnt = res.group('pointer') if res.group('pointer') else ''
+        self.name = res.group('name')
+        self.rawtype   = res.group('type')
+        self.raw_npointer  = len(pnt)         
+        
+        thetype = cst + res.group('type') + pnt
+        
+        newstring = self.resolv_type(thetype, enums = enumlist, typedefs = typedeflist)
+        
+        regex = r'((?P<const>const)[\s]+)?(?P<type>[\w]+)[\s]*' + \
+                r'(?P<pointer>[\*]*)'
+        res = re.search(regex, newstring)
         
         self.is_const  = res.group('const') == 'const'
-        self.rawtype   = res.group('type')
-        self.npointer  = len(res.group('pointer'))
-        self.name      = res.group('name')
+        self.npointer  = len(res.group('pointer'))  
         self.is_handle = self.rawtype == handle_str
-        self.is_string = self.rawtype == 'char' and self.npointer > 0
+        self.type = res.group('type')        
+        self.is_string = self.type == 'char' and self.npointer > 0
         
         # reserved keywords and types that are not allowed as names
         keywords = ['const', 'while', 'for']
         
         # resolve type
-        self.type = self.resolv_type(self.rawtype, enums = enumlist, typedefs = typedeflist)
+        #self.type = self.resolv_type(self.rawtype, enums = enumlist, typedefs = typedeflist)
 
         
         if self.name in keywords:
             raise Exception('"%s" is an invalid argument name' % (self.name))
             
-            
+       
     def resolv_type(self, mytype, enums, typedefs):
         '''
         Tries to deduce the type of a arguments, in particular
         if the type is not native (typedef, enum)        
         '''        
         
+        regex = r'(?P<const>const\s)?(?P<name>[\w\s]+)(?P<pointer>[*]+)?'
+        
         basictypes    = ['int', 'long', 'float', 'double', 'char', 'void']
 
-        if mytype in basictypes:
+        match = re.search(regex, mytype)
+        name = match.group('name')
+        ptr = match.group('pointer') if match.group('pointer') else ''
+        cst = match.group('const') if match.group('const') else ''
+        
+        if match and name in basictypes:
             return mytype
-        
-        while True:
-            if mytype.startswith('enum'):
-                return 'int'
-            
-            if mytype in typedefs:
-                newtype = typedefs[mytype]
-                if newtype in basictypes:
-                    return newtype
-                if newtype == mytype:
-                    raise Exception('Recursive definition of type %s' % mytype)
-                else:
-                    mytype = newtype
-            else:
-                break
-        
-        
-        raise Exception('"%s" is not a valid type name' % (self.rawtype))
+        elif match and name.startswith('enum'):
+            return 'int'
+        elif match and name in typedefs:
+            return cst + self.resolv_type(typedefs[name], enums, typedefs) + ptr
+        else:
+            raise Exception('"%s" is not a valid type name' % (name))
+
              
 class CFunctionDec(object):
     def __init__(self):
@@ -365,7 +373,8 @@ class CFunctionDec(object):
         if not res:
             raise Exception('Cannot parse function declaration "%s"' % string)
         
-        self.return_value = CFunctionArg(res.group('retval'), typedeflist, enumlist, handle_str)
+        self.return_value = CFunctionArg()
+        self.return_value.parse_arg(res.group('retval'), typedeflist, enumlist, handle_str)
         self.return_value.name = 'ret'
         self.returns_error =  returncode_str == self.return_value.rawtype
         self.method_name  = res.group('name') 
@@ -378,7 +387,8 @@ class CFunctionDec(object):
         
         arg_str_list = arg_string.split(',')
         for index, arg_str in enumerate(arg_str_list):
-            arg = CFunctionArg(arg_str, typedeflist, enumlist, handle_str)
+            arg = CFunctionArg()
+            arg.parse_arg(arg_str, typedeflist, enumlist, handle_str)
                     
             if not arg.name:
                 arg.name = 'arg%d' % index
@@ -468,3 +478,20 @@ class CFunctionDec(object):
         self.uses_handle = annotation.uses_handle
         if not self.uses_handle and len(self.arguments) > 0:
             self.arguments[0].is_handle = False
+            
+if __name__ == '__main__':
+    arg = CFunctionArg()
+
+    typedefs = {'MyString': 'MyString3', 'MyString3': 'char*', 'ErrorCode': 'enum ErrorCode'}
+    enums = ['TYPE','ERRORCODE']    
+    
+    assert(arg.resolv_type('const char*',[],[]) == 'const char*')
+    assert(arg.resolv_type('MyString', [], typedefs) == 'char*')
+    assert(arg.resolv_type('const MyString*', [], typedefs) == 'const char**')
+    
+    assert(arg.resolv_type('ErrorCode', enums, typedefs) == 'int')
+    
+    #arg.resolv_type('const MyString2*', [], typedefs)
+    
+    
+    
