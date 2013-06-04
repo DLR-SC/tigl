@@ -1289,6 +1289,62 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingSegmentPointGetComponentSegmentEtaXsi(
 																		double *eta, double *xsi);
 
 
+/**
+* @brief Returns the number of segments belonging to a component segment
+*
+*
+* <b>Fortran syntax:</b>
+*
+* tigl_wing_component_segment_get_number_of_segments(integer cpacsHandle,
+* 													character*n componentSegmentUID,
+* 													integer nsegments,
+* 													integer returnCode)
+*
+* @param cpacsHandle     		(in)  : Handle for the CPACS configuration
+* @param componentSegmentUID    (in)  : UID of the componentSegment
+* @param nsegments              (out) : Number of segments belonging to the component segment
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_UID_ERROR if the component segment does not exist
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetNumberOfSegments(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                              const char * componentSegmentUID,
+                                                                              int * nsegments);
+
+/**
+* @brief Returns the segment UID of a segment belonging to a component segment. The segment is specified
+* with its index, which is in the 1...nsegments. The number of segments nsegments can be queried with
+* ::tiglWingComponentSegmentGetNumberOfSegments.
+*
+*
+* <b>Fortran syntax:</b>
+*
+* tigl_wing_component_segment_get_segment_uid(integer cpacsHandle,
+* 												character*n componentSegmentUID,
+* 												integer segmentIndex,
+* 												character*n segmentUID,
+* 												integer returnCode)
+*
+* @param cpacsHandle            (in)  : Handle for the CPACS configuration
+* @param componentSegmentUID    (in)  : UID of the componentSegment
+* @param segmentIndex           (in)  : Index of the segment (1 <= index <= nsegments)
+* @param segmentUID             (out) : UID of the segment
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_UID_ERROR if the component segment does not exist
+*   - TIGL_INDEX_ERROR if the segment index is invalid
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetSegmentUID(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                              const char * componentSegmentUID,
+                                                                              int  segmentIndex,
+                                                                              char ** segmentUID);
+
 /*@}*/
 /*****************************************************************************************************/
 
