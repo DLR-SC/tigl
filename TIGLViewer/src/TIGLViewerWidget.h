@@ -47,73 +47,73 @@ class Handle_Visual3d_Layer;
 
 class QOCC_DECLSPEC TIGLViewerWidget : public QWidget
 {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
 
-	enum CurrentAction3d {	CurAction3d_Undefined,
-							CurAction3d_Nothing, 
-							CurAction3d_Picking,
-							CurAction3d_DynamicZooming,
-							CurAction3d_WindowZooming, 
-							CurAction3d_DynamicPanning,
-							CurAction3d_GlobalPanning, 
-							CurAction3d_DynamicRotation };
+    enum CurrentAction3d {  CurAction3d_Undefined,
+                            CurAction3d_Nothing, 
+                            CurAction3d_Picking,
+                            CurAction3d_DynamicZooming,
+                            CurAction3d_WindowZooming, 
+                            CurAction3d_DynamicPanning,
+                            CurAction3d_GlobalPanning, 
+                            CurAction3d_DynamicRotation };
 /*
-	enum ViewAction {	ViewFitAllId, 
-						ViewFitAreaId, 
-						ViewZoomId, 
-						ViewPanId, 
-						ViewGlobalPanId,
-						ViewFrontId, 
-						ViewBackId, 
-						ViewTopId, 
-						ViewBottomId, 
-						ViewLeftId, 
-						ViewRightId,
-						ViewAxoId, 
-						ViewRotationId, 
-						ViewResetId, 
-						ViewHlrOffId, 
-						ViewHlrOnId };
+    enum ViewAction {   ViewFitAllId, 
+                        ViewFitAreaId, 
+                        ViewZoomId, 
+                        ViewPanId, 
+                        ViewGlobalPanId,
+                        ViewFrontId, 
+                        ViewBackId, 
+                        ViewTopId, 
+                        ViewBottomId, 
+                        ViewLeftId, 
+                        ViewRightId,
+                        ViewAxoId, 
+                        ViewRotationId, 
+                        ViewResetId, 
+                        ViewHlrOffId, 
+                        ViewHlrOnId };
 */
 public:
     TIGLViewerWidget(QWidget*);
 
-	TIGLViewerWidget( const Handle_AIS_InteractiveContext& aContext = NULL,
-					 QWidget *parent = NULL, 
-					 Qt::WindowFlags wflags = 0 );
+    TIGLViewerWidget( const Handle_AIS_InteractiveContext& aContext = NULL,
+                     QWidget *parent = NULL, 
+                     Qt::WindowFlags wflags = 0 );
 
     ~TIGLViewerWidget();
 
     void setContext(const Handle_AIS_InteractiveContext& aContext){ myContext = aContext; }
 
-	void initializeOCC(const Handle_AIS_InteractiveContext& aContext = NULL);
+    void initializeOCC(const Handle_AIS_InteractiveContext& aContext = NULL);
 
-	Handle_AIS_InteractiveContext	getContext( void ) { return myContext; }
-	Handle_V3d_View					getView( void )    { return myView; }
+    Handle_AIS_InteractiveContext    getContext( void ) { return myContext; }
+    Handle_V3d_View                    getView( void )    { return myView; }
 
-	//Overrides
-	QPaintEngine* paintEngine() const;
-	class QToolBar*	  myToolBar;
+    //Overrides
+    QPaintEngine* paintEngine() const;
+    class QToolBar*      myToolBar;
 
-	void redraw( bool isPainting = false );
+    void redraw( bool isPainting = false );
 
 signals:
 
-	void initialized();
-	void selectionChanged();
-	void mouseMoved   ( V3d_Coordinate X, V3d_Coordinate Y, V3d_Coordinate Z );
-	void pointClicked ( V3d_Coordinate X, V3d_Coordinate Y, V3d_Coordinate Z );
-	void sendStatus   ( const QString aMessage );
+    void initialized();
+    void selectionChanged();
+    void mouseMoved   ( V3d_Coordinate X, V3d_Coordinate Y, V3d_Coordinate Z );
+    void pointClicked ( V3d_Coordinate X, V3d_Coordinate Y, V3d_Coordinate Z );
+    void sendStatus   ( const QString aMessage );
 
-	void error ( int errorCode, QString& errorDescription );
+    void error ( int errorCode, QString& errorDescription );
 
 public slots:
 
-	void idle();
-	void fitExtents();
-	void fitAll();
+    void idle();
+    void fitExtents();
+    void fitAll();
     void fitArea();
     void zoom();
     void zoomIn();
@@ -125,19 +125,19 @@ public slots:
     void hiddenLineOn();
     void hiddenLineOff();
     void setBackgroundColor(const QColor&);
-	void setBGImage(const QString&);
-	void viewFront();
+    void setBGImage(const QString&);
+    void viewFront();
     void viewBack();
     void viewTop();
     void viewBottom();
     void viewLeft();
     void viewRight();
     void viewAxo();
-	void viewTopFront();
-	void viewGrid();
-	void viewReset();
-	void setReset();
-	void eraseSelected();
+    void viewTopFront();
+    void viewGrid();
+    void viewReset();
+    void setReset();
+    void eraseSelected();
     void setTransparency();
     void setTransparency(int);
     void setObjectsWireframe();
@@ -155,84 +155,84 @@ protected: // methods
     virtual void wheelEvent        ( QWheelEvent* e );
     virtual void keyPressEvent     ( QKeyEvent* e );
 
-	virtual void leaveEvent		   ( QEvent * );
+    virtual void leaveEvent           ( QEvent * );
 
 private: // members
 
 #if defined WNT
-    Handle_WNT_Window				myWindow;
+    Handle_WNT_Window               myWindow;
 #else
-    Handle_Aspect_Window			myWindow;
+    Handle_Aspect_Window            myWindow;
 #endif // WNT
 
-	Handle_V3d_View                 myView;
-	Handle_V3d_Viewer               myViewer;
-	Handle_AIS_InteractiveContext   myContext;
-	Handle_Visual3d_Layer           myLayer;
-					
-	Standard_Boolean				myViewResized;
-	Standard_Boolean				myViewInitialized;
+    Handle_V3d_View                 myView;
+    Handle_V3d_Viewer               myViewer;
+    Handle_AIS_InteractiveContext   myContext;
+    Handle_Visual3d_Layer           myLayer;
+                    
+    Standard_Boolean                myViewResized;
+    Standard_Boolean                myViewInitialized;
     CurrentAction3d                 myMode;
     Quantity_Factor                 myCurZoom;
-    Standard_Boolean				myGridSnap;
-	AIS_StatusOfDetection			myDetection;
+    Standard_Boolean                myGridSnap;
+    AIS_StatusOfDetection           myDetection;
 
-	V3d_Coordinate					myV3dX,   
-									myV3dY,   
-									myV3dZ;
-		
-	class QRubberBand*				myRubberBand;
-	QPoint							myStartPoint;
-	QPoint							myCurrentPoint;
-	
-	Standard_Real					myPrecision;
-	Standard_Real					myViewPrecision;
-	Standard_Boolean				myMapIsValid;
-	Qt::KeyboardModifiers			myKeyboardFlags;
-	Qt::MouseButton					myButtonFlags;
-	QCursor							myCrossCursor;
-	QColor							myBGColor;
+    V3d_Coordinate                  myV3dX,
+                                    myV3dY,
+                                    myV3dZ;
+        
+    class QRubberBand*              myRubberBand;
+    QPoint                          myStartPoint;
+    QPoint                          myCurrentPoint;
+    
+    Standard_Real                   myPrecision;
+    Standard_Real                   myViewPrecision;
+    Standard_Boolean                myMapIsValid;
+    Qt::KeyboardModifiers           myKeyboardFlags;
+    Qt::MouseButton                 myButtonFlags;
+    QCursor                         myCrossCursor;
+    QColor                          myBGColor;
 
 private: // methods
     void initialize();
 
-	void onLeftButtonDown  ( Qt::KeyboardModifiers nFlags, const QPoint point );
+    void onLeftButtonDown  ( Qt::KeyboardModifiers nFlags, const QPoint point );
     void onMiddleButtonDown( Qt::KeyboardModifiers nFlags, const QPoint point );
     void onRightButtonDown ( Qt::KeyboardModifiers nFlags, const QPoint point );
     void onLeftButtonUp    ( Qt::KeyboardModifiers nFlags, const QPoint point );
     void onMiddleButtonUp  ( Qt::KeyboardModifiers nFlags, const QPoint point );
     void onRightButtonUp   ( Qt::KeyboardModifiers nFlags, const QPoint point );
     
-	void onMouseMove  ( Qt::MouseButtons buttons, 
-						Qt::KeyboardModifiers nFlags, const QPoint point );
+    void onMouseMove  ( Qt::MouseButtons buttons, 
+                        Qt::KeyboardModifiers nFlags, const QPoint point );
 
-    AIS_StatusOfPick		dragEvent ( const QPoint startPoint, const QPoint endPoint, const bool multi = false );
-    AIS_StatusOfPick		inputEvent( const bool multi = false );
-    AIS_StatusOfDetection	moveEvent ( const QPoint point );
+    AIS_StatusOfPick        dragEvent ( const QPoint startPoint, const QPoint endPoint, const bool multi = false );
+    AIS_StatusOfPick        inputEvent( const bool multi = false );
+    AIS_StatusOfDetection    moveEvent ( const QPoint point );
     
     void setMode( const CurrentAction3d mode );
-	
-	Standard_Real precision( Standard_Real aReal );
-	Standard_Real viewPrecision( bool resized = false );
+    
+    Standard_Real precision( Standard_Real aReal );
+    Standard_Real viewPrecision( bool resized = false );
 
-	void drawRubberBand( const QPoint origin, const QPoint position );
-	void showRubberBand( void );
-	void hideRubberBand( void );
+    void drawRubberBand( const QPoint origin, const QPoint position );
+    void showRubberBand( void );
+    void hideRubberBand( void );
 
-	Standard_Boolean convertToPlane(const Standard_Integer Xs, 
-									const Standard_Integer Ys, 
-										  Standard_Real& X,
-										  Standard_Real& Y,
-										  Standard_Real& Z);
-										  
-	void paintOCC();
-	static int paintCallBack (Aspect_Drawable, 
-							  void*, 
-							  Aspect_GraphicCallbackStruct*);
+    Standard_Boolean convertToPlane(const Standard_Integer Xs, 
+                                    const Standard_Integer Ys, 
+                                          Standard_Real& X,
+                                          Standard_Real& Y,
+                                          Standard_Real& Z);
+                                          
+    void paintOCC();
+    static int paintCallBack (Aspect_Drawable, 
+                              void*, 
+                              Aspect_GraphicCallbackStruct*);
 
 public:
 
-	bool dump(Standard_CString theFile);
+    bool dump(Standard_CString theFile);
 
 };
 

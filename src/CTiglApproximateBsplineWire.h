@@ -33,42 +33,42 @@
 
 namespace tigl {
 
-	class CTiglApproximateBsplineWire : public ITiglWireAlgorithm
-	{
+    class CTiglApproximateBsplineWire : public ITiglWireAlgorithm
+    {
 
-	public:
-		// Constructor
-		CTiglApproximateBsplineWire(void);
+    public:
+        // Constructor
+        CTiglApproximateBsplineWire(void);
 
-		// Destructor
-		virtual ~CTiglApproximateBsplineWire(void);
+        // Destructor
+        virtual ~CTiglApproximateBsplineWire(void);
 
-		// Builds the wire from the given points
-		virtual TopoDS_Wire BuildWire(const CPointContainer& points, bool forceClosed = false) const;
+        // Builds the wire from the given points
+        virtual TopoDS_Wire BuildWire(const CPointContainer& points, bool forceClosed = false) const;
 
-		// Returns the algorithm code identifier for an algorithm
-		virtual TiglAlgorithmCode GetAlgorithmCode(void) const;
+        // Returns the algorithm code identifier for an algorithm
+        virtual TiglAlgorithmCode GetAlgorithmCode(void) const;
 
-		// Returns the point on the wire with the smallest x value
-		virtual gp_Pnt GetPointWithMinX(const CPointContainer& points) const;
+        // Returns the point on the wire with the smallest x value
+        virtual gp_Pnt GetPointWithMinX(const CPointContainer& points) const;
 
-		// Returns the point on the wire with the biggest x value
-		virtual gp_Pnt GetPointWithMaxX(const CPointContainer& points) const;
+        // Returns the point on the wire with the biggest x value
+        virtual gp_Pnt GetPointWithMaxX(const CPointContainer& points) const;
 
-		// Returns the point on the wire with the smallest y value
-		virtual gp_Pnt GetPointWithMinY(const CPointContainer& points) const;
+        // Returns the point on the wire with the smallest y value
+        virtual gp_Pnt GetPointWithMinY(const CPointContainer& points) const;
 
-		// Returns the point on the wire with the biggest y value
-		virtual gp_Pnt GetPointWithMaxY(const CPointContainer& points) const;
+        // Returns the point on the wire with the biggest y value
+        virtual gp_Pnt GetPointWithMaxY(const CPointContainer& points) const;
 
-	private:
-		// Copy constructor
-		CTiglApproximateBsplineWire(const CTiglApproximateBsplineWire& ) { /* Do nothing */ }
+    private:
+        // Copy constructor
+        CTiglApproximateBsplineWire(const CTiglApproximateBsplineWire& ) { /* Do nothing */ }
 
-		// Assignment operator
-		void operator=(const CTiglApproximateBsplineWire& ) { /* Do nothing */ }
+        // Assignment operator
+        void operator=(const CTiglApproximateBsplineWire& ) { /* Do nothing */ }
 
-	};
+    };
 
 } // end namespace tigl
 

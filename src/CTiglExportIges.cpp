@@ -54,7 +54,7 @@ namespace tigl {
     CTiglExportIges::~CTiglExportIges(void)
     {
     }
-	
+    
     
     // Exports the whole configuration as IGES file
     // All wing- and fuselage segments are exported as single bodys

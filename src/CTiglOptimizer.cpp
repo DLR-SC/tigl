@@ -154,7 +154,5 @@ TiglReturnCode CTiglOptimizer::optNewton2d(const class ITiglObjectiveFunction& f
     return TIGL_SUCCESS;
 }
 
-
-
 }
 

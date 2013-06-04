@@ -38,26 +38,26 @@
 
 namespace tigl {
 
-	class CCPACSImportExport
-	{
-	private:
-		
-	public:
-		// Constructor
-		CCPACSImportExport(CCPACSConfiguration& config);
+    class CCPACSImportExport
+    {
+    private:
+        
+    public:
+        // Constructor
+        CCPACSImportExport(CCPACSConfiguration& config);
 
-		// Virtual Destructor
-		virtual ~CCPACSImportExport(void);
+        // Virtual Destructor
+        virtual ~CCPACSImportExport(void);
 
-		Handle_TDocStd_Document buildXDEStructure();
+        Handle_TDocStd_Document buildXDEStructure();
 
 
-	protected:
-		
+    protected:
+        
 
-	private:
-		CCPACSConfiguration&    myConfig;
-	};
+    private:
+        CCPACSConfiguration&    myConfig;
+    };
 
 } // end namespace tigl
 

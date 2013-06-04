@@ -20,33 +20,33 @@
 #include <QSettings>
 
 TIGLViewerSettings::TIGLViewerSettings() {
-	_tesselationAccuracy = 0.0001;
-	_triangulationAccuracy = 0.0001;
-	_bgcolor = QColor(255,235,163);
+    _tesselationAccuracy = 0.0001;
+    _triangulationAccuracy = 0.0001;
+    _bgcolor = QColor(255,235,163);
 }
 
 void TIGLViewerSettings::setTesselationAccuracy(double accu){
-	_tesselationAccuracy = accu;
+    _tesselationAccuracy = accu;
 }
 
 void TIGLViewerSettings::setTriangulationAccuracy(double accu){
-	_triangulationAccuracy = accu;
+    _triangulationAccuracy = accu;
 }
 
 void TIGLViewerSettings::setBGColor(const QColor& col) {
-	_bgcolor = col;
+    _bgcolor = col;
 }
 
 double TIGLViewerSettings::tesselationAccuracy() const{
-	return _tesselationAccuracy;
+    return _tesselationAccuracy;
 }
 
 double TIGLViewerSettings::triangulationAccuracy() const{
-	return _triangulationAccuracy;
+    return _triangulationAccuracy;
 }
 
 const QColor& TIGLViewerSettings::BGColor() const{
-	return _bgcolor;
+    return _bgcolor;
 }
 
 void TIGLViewerSettings::loadSettings(){

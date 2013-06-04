@@ -88,56 +88,56 @@
 namespace tigl {
 
     
-	// Constructor
-	CCPACSFuselageSegment::CCPACSFuselageSegment(CCPACSFuselage* aFuselage, int aSegmentIndex)
+    // Constructor
+    CCPACSFuselageSegment::CCPACSFuselageSegment(CCPACSFuselage* aFuselage, int aSegmentIndex)
         : CTiglAbstractSegment(aSegmentIndex)
         , startConnection(this)
-		, endConnection(this)
-		, fuselage(aFuselage)
-	{
-		Cleanup();
-	}
+        , endConnection(this)
+        , fuselage(aFuselage)
+    {
+        Cleanup();
+    }
 
-	// Destructor
-	CCPACSFuselageSegment::~CCPACSFuselageSegment(void)
-	{
-		Cleanup();
-	}
+    // Destructor
+    CCPACSFuselageSegment::~CCPACSFuselageSegment(void)
+    {
+        Cleanup();
+    }
 
-	// Cleanup routine
-	void CCPACSFuselageSegment::Cleanup(void)
-	{
-		name = "";
+    // Cleanup routine
+    void CCPACSFuselageSegment::Cleanup(void)
+    {
+        name = "";
         myVolume      = 0.;
         mySurfaceArea = 0.;
         myWireLength  = 0.;
         CTiglAbstractSegment::Cleanup();
-	}
+    }
 
-	// Update internal segment data
-	void CCPACSFuselageSegment::Update(void)
-	{
-		if (!invalidated)
-			return;
+    // Update internal segment data
+    void CCPACSFuselageSegment::Update(void)
+    {
+        if (!invalidated)
+            return;
 
-		BuildLoft();
-		invalidated = false;
-	}
+        BuildLoft();
+        invalidated = false;
+    }
 
-	// Read CPACS segment elements
-	void CCPACSFuselageSegment::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& segmentXPath)
-	{
-		Cleanup();
+    // Read CPACS segment elements
+    void CCPACSFuselageSegment::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& segmentXPath)
+    {
+        Cleanup();
 
-		char*       elementPath;
-		std::string tempString;
+        char*       elementPath;
+        std::string tempString;
 
-		// Get subelement "name"
-		char* ptrName = NULL;
-		tempString    = segmentXPath + "/name";
-		elementPath   = const_cast<char*>(tempString.c_str());
-		if (tixiGetTextElement(tixiHandle, elementPath, &ptrName) == SUCCESS)
-		    name          = ptrName;
+        // Get subelement "name"
+        char* ptrName = NULL;
+        tempString    = segmentXPath + "/name";
+        elementPath   = const_cast<char*>(tempString.c_str());
+        if (tixiGetTextElement(tixiHandle, elementPath, &ptrName) == SUCCESS)
+            name          = ptrName;
 
         // Get attribute "uid"
         char* ptrUID = NULL;
@@ -146,22 +146,22 @@ namespace tigl {
         if (tixiGetTextAttribute(tixiHandle, const_cast<char*>(segmentXPath.c_str()), const_cast<char*>(tempString.c_str()), &ptrUID) == SUCCESS)
             SetUID(ptrUID);
 
-		// Start connection
-		tempString = segmentXPath + "/fromElementUID";
-		startConnection.ReadCPACS(tixiHandle, tempString);
+        // Start connection
+        tempString = segmentXPath + "/fromElementUID";
+        startConnection.ReadCPACS(tixiHandle, tempString);
 
-		// End connection
-		tempString = segmentXPath + "/toElementUID";
-		endConnection.ReadCPACS(tixiHandle, tempString);
+        // End connection
+        tempString = segmentXPath + "/toElementUID";
+        endConnection.ReadCPACS(tixiHandle, tempString);
 
-		Update();
-	}
+        Update();
+    }
 
-	// Returns the fuselage this segment belongs to
-	CCPACSFuselage& CCPACSFuselageSegment::GetFuselage(void) const
-	{
-		return *fuselage;
-	}
+    // Returns the fuselage this segment belongs to
+    CCPACSFuselage& CCPACSFuselageSegment::GetFuselage(void) const
+    {
+        return *fuselage;
+    }
 
     // Returns the segment index of this segment
     int CCPACSFuselageSegment::GetSegmentIndex(void) const
@@ -169,60 +169,60 @@ namespace tigl {
         return mySegmentIndex;
     }
 
-	// Gets the loft between the two segment sections
+    // Gets the loft between the two segment sections
     TopoDS_Shape& CCPACSFuselageSegment::GetLoft(void)
-	{
-		Update();
-		return loft;
-	}
+    {
+        Update();
+        return loft;
+    }
 
-	// Builds the loft between the two segment sections
-	void CCPACSFuselageSegment::BuildLoft(void)
-	{
-		CCPACSFuselageProfile& startProfile = startConnection.GetProfile();
-		CCPACSFuselageProfile& endProfile   = endConnection.GetProfile();
+    // Builds the loft between the two segment sections
+    void CCPACSFuselageSegment::BuildLoft(void)
+    {
+        CCPACSFuselageProfile& startProfile = startConnection.GetProfile();
+        CCPACSFuselageProfile& endProfile   = endConnection.GetProfile();
 
-		TopoDS_Wire startWire = startProfile.GetWire(true);
-		TopoDS_Wire endWire   = endProfile.GetWire(true);
+        TopoDS_Wire startWire = startProfile.GetWire(true);
+        TopoDS_Wire endWire   = endProfile.GetWire(true);
 
-		// Do section element transformations
-		TopoDS_Shape startShape = startConnection.GetSectionElementTransformation().Transform(startWire);
-		TopoDS_Shape endShape   = endConnection.GetSectionElementTransformation().Transform(endWire);
+        // Do section element transformations
+        TopoDS_Shape startShape = startConnection.GetSectionElementTransformation().Transform(startWire);
+        TopoDS_Shape endShape   = endConnection.GetSectionElementTransformation().Transform(endWire);
 
-		// Do section transformations
-		startShape = startConnection.GetSectionTransformation().Transform(startShape);
-		endShape   = endConnection.GetSectionTransformation().Transform(endShape);
+        // Do section transformations
+        startShape = startConnection.GetSectionTransformation().Transform(startShape);
+        endShape   = endConnection.GetSectionTransformation().Transform(endShape);
 
-		// Do positioning transformations (positioning of sections)
-		startShape = startConnection.GetPositioningTransformation().Transform(startShape);
-		endShape   = endConnection.GetPositioningTransformation().Transform(endShape);
+        // Do positioning transformations (positioning of sections)
+        startShape = startConnection.GetPositioningTransformation().Transform(startShape);
+        endShape   = endConnection.GetPositioningTransformation().Transform(endShape);
 
-		// Cast shapes to wires, see OpenCascade documentation
+        // Cast shapes to wires, see OpenCascade documentation
         if (startShape.ShapeType() != TopAbs_WIRE || endShape.ShapeType() != TopAbs_WIRE) {
-			throw CTiglError("Error: Wrong shape type in CCPACSFuselageSegment::BuildLoft", TIGL_ERROR);
+            throw CTiglError("Error: Wrong shape type in CCPACSFuselageSegment::BuildLoft", TIGL_ERROR);
         }
-		startWire = TopoDS::Wire(startShape);
-		endWire   = TopoDS::Wire(endShape);
+        startWire = TopoDS::Wire(startShape);
+        endWire   = TopoDS::Wire(endShape);
 
-		// Build loft
+        // Build loft
         //BRepOffsetAPI_ThruSections generator(Standard_False, Standard_False, Precision::Confusion());
         BRepOffsetAPI_ThruSections generator(Standard_True, Standard_False, Precision::Confusion());
-		generator.AddWire(startWire);
-		generator.AddWire(endWire);
+        generator.AddWire(startWire);
+        generator.AddWire(endWire);
         generator.CheckCompatibility(Standard_False);
-		generator.Build();
-		loft = generator.Shape();
+        generator.Build();
+        loft = generator.Shape();
 
         // Calculate volume
         GProp_GProps System;
         BRepGProp::VolumeProperties(loft, System);
         myVolume = System.Mass();
 
-		// Calculate surface area
+        // Calculate surface area
         GProp_GProps AreaSystem;
-		BRepGProp::SurfaceProperties(loft, AreaSystem);
+        BRepGProp::SurfaceProperties(loft, AreaSystem);
         mySurfaceArea = AreaSystem.Mass();
-	}
+    }
 
 
     // Returns the start section UID of this segment
@@ -273,17 +273,17 @@ namespace tigl {
         return endConnection.GetSectionElementIndex();
     }
 
-	// Returns the start section element index of this segment
-	CCPACSFuselageConnection& CCPACSFuselageSegment::GetStartConnection(void)
-	{
-		return( startConnection );
-	}
+    // Returns the start section element index of this segment
+    CCPACSFuselageConnection& CCPACSFuselageSegment::GetStartConnection(void)
+    {
+        return( startConnection );
+    }
 
-	// Returns the end section element index of this segment
-	CCPACSFuselageConnection& CCPACSFuselageSegment::GetEndConnection(void)
-	{
-		return( endConnection );
-	}
+    // Returns the end section element index of this segment
+    CCPACSFuselageConnection& CCPACSFuselageSegment::GetEndConnection(void)
+    {
+        return( endConnection );
+    }
 
     // Returns the volume of this segment
     double CCPACSFuselageSegment::GetVolume(void)
@@ -291,7 +291,7 @@ namespace tigl {
         return( myVolume );
     }
 
-	// Returns the surface area of this segment
+    // Returns the surface area of this segment
     double CCPACSFuselageSegment::GetSurfaceArea(void)
     {
         return( mySurfaceArea );
@@ -393,8 +393,8 @@ namespace tigl {
             throw CTiglError("Error: Parameter eta not in the range 0.0 <= eta <= 1.0 in CCPACSFuselageSegment::GetPoint", TIGL_ERROR);
         }
 
-		CCPACSFuselageProfile& startProfile = startConnection.GetProfile();
-		CCPACSFuselageProfile& endProfile   = endConnection.GetProfile();
+        CCPACSFuselageProfile& startProfile = startConnection.GetProfile();
+        CCPACSFuselageProfile& endProfile   = endConnection.GetProfile();
 
         gp_Pnt startProfilePoint = startProfile.GetPoint(zeta);
         gp_Pnt endProfilePoint   = endProfile.GetPoint(zeta);
@@ -534,7 +534,7 @@ namespace tigl {
     {
         // get eta-x-coordinate
         gp_Pnt tmpPoint = GetPoint(eta, 0.1);
-		//fuselage->GetFuselageTransformation().Transform(tmpPoint);
+        //fuselage->GetFuselageTransformation().Transform(tmpPoint);
 
         // Build cutting plane
         gp_Pnt p1(tmpPoint.X(), -1.0e7, -1.0e7);
@@ -663,22 +663,22 @@ namespace tigl {
         TopoDS_Compound compound;
         builder.MakeCompound(compound);
 
-		// get eta-y-coordinate
-		gp_Pnt tmpPoint = GetPoint(eta, 0.0);
+        // get eta-y-coordinate
+        gp_Pnt tmpPoint = GetPoint(eta, 0.0);
 
         // build a line
-		gp_Pnt initPoint(tmpPoint.X(), y_cs, z_cs);
+        gp_Pnt initPoint(tmpPoint.X(), y_cs, z_cs);
         gp_Pnt endPoint(tmpPoint.X(), y_cs,  z_cs + 500.0);
         BRepBuilderAPI_MakeEdge edge1(initPoint, endPoint);
         builder.Add(compound, edge1);
         TopoDS_Shape lineShape(compound);
 
-		// define the axis of symmetry
-		gp_Ax1 axis = gp_Ax1(gp_Pnt(tmpPoint.X(), y_cs, z_cs), gp_Dir(1,0,0)); 
+        // define the axis of symmetry
+        gp_Ax1 axis = gp_Ax1(gp_Pnt(tmpPoint.X(), y_cs, z_cs), gp_Dir(1,0,0)); 
 
         // now rotate line
         gp_Trsf myTrsf;
-		myTrsf.SetRotation(axis, alpha * M_PI / 180.);
+        myTrsf.SetRotation(axis, alpha * M_PI / 180.);
         BRepBuilderAPI_Transform xform(lineShape, myTrsf);
         lineShape = xform.Shape();
 
@@ -689,9 +689,9 @@ namespace tigl {
         distSS.LoadS2(lineShape);
         distSS.Perform();
 
-		int numberOfIntersections = distSS.NbSolution();
+        int numberOfIntersections = distSS.NbSolution();
         if(numberOfIntersections != 1) {
-        	return gp_Pnt(0.0, 0.0, 0.0);
+            return gp_Pnt(0.0, 0.0, 0.0);
         }
 
         return distSS.PointOnShape1(1);

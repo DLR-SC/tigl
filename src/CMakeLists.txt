@@ -38,18 +38,12 @@ install (TARGETS TIGL
 		 ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
 		 )
 		 
-install (EXPORT tigl-targets DESTINATION ${CMAKE_INSTALL_LIBDIR}/tigl)			 
+install (EXPORT tigl-targets DESTINATION ${CMAKE_INSTALL_LIBDIR}/tigl)
 		 
 install (FILES tigl.h ${CMAKE_CURRENT_BINARY_DIR}/tigl_version.h
 		 DESTINATION include
-		 COMPONENT headers)		 
+		 COMPONENT headers)
 
-# static lib for tiglviewer		 
+# static lib for tiglviewer 
 add_library(TIGL_static ${TIGL_SRC})
 
-
-
-
-		 
-
-		 

@@ -17,12 +17,12 @@ DEFINE_STANDARD_HANDLE(ISession_Point,AIS_InteractiveObject)
 class ISession_Point : public AIS_InteractiveObject  
 {
 public:
-	ISession_Point();
+    ISession_Point();
     ISession_Point(Standard_Real X,Standard_Real Y ,Standard_Real Z);
     ISession_Point(gp_Pnt2d& aPoint,Standard_Real Elevation = 0);
     ISession_Point(gp_Pnt& aPoint);
 
-	virtual ~ISession_Point();
+    virtual ~ISession_Point();
     DEFINE_STANDARD_RTTI(ISession_Point)
 
 private :

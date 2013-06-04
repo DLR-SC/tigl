@@ -39,59 +39,59 @@
 
 namespace tigl {
 
-	class CCPACSFuselage;
+    class CCPACSFuselage;
 
-	class CCPACSFuselageSegment : public CTiglAbstractSegment
-	{
+    class CCPACSFuselageSegment : public CTiglAbstractSegment
+    {
 
-	public:
-		// Constructor
-		CCPACSFuselageSegment(CCPACSFuselage* aFuselage, int aSegmentIndex);
+    public:
+        // Constructor
+        CCPACSFuselageSegment(CCPACSFuselage* aFuselage, int aSegmentIndex);
 
-		// Virtual Destructor
-		virtual ~CCPACSFuselageSegment(void);
+        // Virtual Destructor
+        virtual ~CCPACSFuselageSegment(void);
 
-		// Read CPACS segment elements
-		void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& segmentXPath);
+        // Read CPACS segment elements
+        void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& segmentXPath);
 
-		// Returns the fuselage this segment belongs to
-		CCPACSFuselage& GetFuselage(void) const;
+        // Returns the fuselage this segment belongs to
+        CCPACSFuselage& GetFuselage(void) const;
 
         // Returns the segment index of this segment
         int GetSegmentIndex(void) const;
 
-		// Gets the loft between the two segment sections
+        // Gets the loft between the two segment sections
         TopoDS_Shape& GetLoft(void);
 
         // Returns the start section UID of this segment
-		std::string GetStartSectionUID(void);
+        std::string GetStartSectionUID(void);
 
         // Returns the end section UID of this segment
-		std::string GetEndSectionUID(void);
+        std::string GetEndSectionUID(void);
 
         // Returns the start section index of this segment
-		int GetStartSectionIndex(void);
+        int GetStartSectionIndex(void);
 
         // Returns the end section index of this segment
-		int GetEndSectionIndex(void);
+        int GetEndSectionIndex(void);
 
-		// Returns the starting Segement Connection
-		CCPACSFuselageConnection& GetStartConnection(void);
+        // Returns the starting Segement Connection
+        CCPACSFuselageConnection& GetStartConnection(void);
 
-		// Return the end Segment Connection
-		CCPACSFuselageConnection& GetEndConnection(void);
+        // Return the end Segment Connection
+        CCPACSFuselageConnection& GetEndConnection(void);
 
         // Returns the start section element UID of this segment
-		std::string GetStartSectionElementUID(void);
+        std::string GetStartSectionElementUID(void);
 
         // Returns the end section element UID of this segment
-		std::string GetEndSectionElementUID(void);
+        std::string GetEndSectionElementUID(void);
 
         // Returns the start section element index of this segment
-		int GetStartSectionElementIndex(void);
+        int GetStartSectionElementIndex(void);
 
         // Returns the end section element index of this segment
-		int GetEndSectionElementIndex(void);
+        int GetEndSectionElementIndex(void);
 
         // Gets the count of segments connected to the start section of this segment
         int GetStartConnectedSegmentCount(void);
@@ -126,8 +126,8 @@ namespace tigl {
 
         // Gets the volume of this segment
         double GetVolume();
-		
-		// Gets the surface area of this segment
+        
+        // Gets the surface area of this segment
         double GetSurfaceArea();
 
         // Gets the wire on the loft at a given eta
@@ -149,31 +149,31 @@ namespace tigl {
         TDF_Label ExportDataStructure(Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label);
 
     protected:
-		// Cleanup routine
-		void Cleanup(void);
+        // Cleanup routine
+        void Cleanup(void);
 
-		// Update internal segment data
-		void Update(void);
+        // Update internal segment data
+        void Update(void);
 
-		// Builds the loft between the two segment sections
-		void BuildLoft(void);
+        // Builds the loft between the two segment sections
+        void BuildLoft(void);
 
     private:
-		// Copy constructor
-		CCPACSFuselageSegment(const CCPACSFuselageSegment& ) : startConnection(0), endConnection(0) { /* Do nothing */ }
+        // Copy constructor
+        CCPACSFuselageSegment(const CCPACSFuselageSegment& ) : startConnection(0), endConnection(0) { /* Do nothing */ }
 
-		// Assignment operator
-		void operator=(const CCPACSFuselageSegment& ) { /* Do nothing */ }
+        // Assignment operator
+        void operator=(const CCPACSFuselageSegment& ) { /* Do nothing */ }
 
-		std::string              name;                 /**< Segment name                            */
-		CCPACSFuselageConnection startConnection;      /**< Start segment connection                */
-		CCPACSFuselageConnection endConnection;        /**< End segment connection                  */
-		CCPACSFuselage*          fuselage;             /**< Parent fuselage                         */
+        std::string              name;                 /**< Segment name                            */
+        CCPACSFuselageConnection startConnection;      /**< Start segment connection                */
+        CCPACSFuselageConnection endConnection;        /**< End segment connection                  */
+        CCPACSFuselage*          fuselage;             /**< Parent fuselage                         */
         double                   myVolume;             /**< Volume of this segment                  */
         double                   mySurfaceArea;        /**< Surface Area of this segment            */
         double                   myWireLength;         /**< Wire length of this segment for a given zeta */
 
-	};
+    };
 
 } // end namespace tigl
 

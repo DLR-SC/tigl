@@ -35,7 +35,7 @@ DEFINE_STANDARD_HANDLE(ISession_Text,AIS_InteractiveObject)
 class ISession_Text : public AIS_InteractiveObject  
 {
 public:
-	ISession_Text();
+    ISession_Text();
 
     ISession_Text           (const TCollection_AsciiString& aText,
                              const Standard_Real            anX         = 0   ,
@@ -57,7 +57,7 @@ public:
                              const Standard_Integer         aFontIndex  = 1   ,
                              const Quantity_Factor          aScale      = 0.1   );
 
-	virtual ~ISession_Text();
+    virtual ~ISession_Text();
 
 inline   Standard_Integer        NbPossibleSelection() const;
 inline   TCollection_ExtendedString GetText() const;

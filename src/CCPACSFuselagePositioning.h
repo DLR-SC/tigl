@@ -34,66 +34,66 @@
 
 namespace tigl {
 
-	class CCPACSFuselagePositioning
-	{
+    class CCPACSFuselagePositioning
+    {
 
-	public:
-		// Constructor
-		CCPACSFuselagePositioning(void);
+    public:
+        // Constructor
+        CCPACSFuselagePositioning(void);
 
-		// Virtual Destructor
-		virtual ~CCPACSFuselagePositioning(void);
+        // Virtual Destructor
+        virtual ~CCPACSFuselagePositioning(void);
 
-		// Invalidates internal state
-		void Invalidate(void);
+        // Invalidates internal state
+        void Invalidate(void);
 
-		// Read CPACS segment elements
-		void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& positioningXPath);
+        // Read CPACS segment elements
+        void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& positioningXPath);
 
-		// Sets the positioning of the start point
-		void SetStartPoint(const CTiglPoint& aPoint);
+        // Sets the positioning of the start point
+        void SetStartPoint(const CTiglPoint& aPoint);
 
-		// Gets the positioning of the end point
-		CTiglPoint GetEndPoint(void);
+        // Gets the positioning of the end point
+        CTiglPoint GetEndPoint(void);
 
-		// Gets the end transformation of this positioning
-		CTiglTransformation GetEndTransformation(void);
+        // Gets the end transformation of this positioning
+        CTiglTransformation GetEndTransformation(void);
 
-		// Gets the section index of the end section of this positioning
-		std::string GetEndSectionIndex(void);
+        // Gets the section index of the end section of this positioning
+        std::string GetEndSectionIndex(void);
 
-		// Gets the section index of the start section of this positioning
-		std::string GetStartSectionIndex(void);
+        // Gets the section index of the start section of this positioning
+        std::string GetStartSectionIndex(void);
 
-	protected:
-		// Cleanup routine
-		void Cleanup(void);
+    protected:
+        // Cleanup routine
+        void Cleanup(void);
 
-		// Build transformation matrix for the positioning
-		void BuildMatrix(void);
+        // Build transformation matrix for the positioning
+        void BuildMatrix(void);
 
-		// Update internal positioning data
-		void Update(void);
+        // Update internal positioning data
+        void Update(void);
 
-	private:
-		// Copy constructor
-		CCPACSFuselagePositioning(const CCPACSFuselagePositioning& ) { /* Do nothing */ }
+    private:
+        // Copy constructor
+        CCPACSFuselagePositioning(const CCPACSFuselagePositioning& ) { /* Do nothing */ }
 
-		// Assignment operator
-		void operator=(const CCPACSFuselagePositioning& ) { /* Do nothing */ }
+        // Assignment operator
+        void operator=(const CCPACSFuselagePositioning& ) { /* Do nothing */ }
 
-	private:
-		double               length;               /**< Positioning length                      */
-		double               sweepangle;           /**< Positioning sweep angle                 */
-		double               dihedralangle;        /**< Positioning dihedral angle              */
-		CTiglPoint           startPoint;           /**< Positioning start point                 */
-		CTiglPoint           endPoint;             /**< Positioning end point                   */
-		CTiglTransformation  endTransformation;    /**< Transformation for the end section      */
-		std::string 		 startSection;         /**< uid of start section                    */
-		std::string          endSection;           /**< uid of end section                      */
-		bool                 invalidated;          /**< Internal state flag                     */
+    private:
+        double               length;               /**< Positioning length                      */
+        double               sweepangle;           /**< Positioning sweep angle                 */
+        double               dihedralangle;        /**< Positioning dihedral angle              */
+        CTiglPoint           startPoint;           /**< Positioning start point                 */
+        CTiglPoint           endPoint;             /**< Positioning end point                   */
+        CTiglTransformation  endTransformation;    /**< Transformation for the end section      */
+        std::string          startSection;         /**< uid of start section                    */
+        std::string          endSection;           /**< uid of end section                      */
+        bool                 invalidated;          /**< Internal state flag                     */
 
-	};
+    };
 
 } // end namespace tigl
 

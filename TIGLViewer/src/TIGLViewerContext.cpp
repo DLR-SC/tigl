@@ -39,24 +39,24 @@
 
 TIGLViewerContext::TIGLViewerContext()
 {
-	// Create the OCC Viewers
-	TCollection_ExtendedString a3DName("Visual3D");
-	myViewer = createViewer( a3DName.ToExtString(), "", 1000.0 );
-	myViewer->Init();
-	myViewer->SetZBufferManagment(Standard_False);
-	myViewer->SetDefaultViewProj( V3d_Zpos );	// Top view
- 	myContext = new AIS_InteractiveContext( myViewer );
+    // Create the OCC Viewers
+    TCollection_ExtendedString a3DName("Visual3D");
+    myViewer = createViewer( a3DName.ToExtString(), "", 1000.0 );
+    myViewer->Init();
+    myViewer->SetZBufferManagment(Standard_False);
+    myViewer->SetDefaultViewProj( V3d_Zpos );    // Top view
+     myContext = new AIS_InteractiveContext( myViewer );
 
-	myGridType       = Aspect_GT_Rectangular;
-	myGridMode       = Aspect_GDM_Lines;
-	myGridColor      = Quantity_NOC_RED4;
-	myGridTenthColor = Quantity_NOC_GRAY90;
+    myGridType       = Aspect_GT_Rectangular;
+    myGridMode       = Aspect_GDM_Lines;
+    myGridColor      = Quantity_NOC_RED4;
+    myGridTenthColor = Quantity_NOC_GRAY90;
 
-	myContext->SetHilightColor(Quantity_NOC_WHITE) ;
+    myContext->SetHilightColor(Quantity_NOC_WHITE) ;
 
-	setGridOffset (0.0);
-	gridXY();
-	gridOn();
+    setGridOffset (0.0);
+    gridXY();
+    gridOn();
 }
 
 
@@ -67,17 +67,17 @@ TIGLViewerContext::~TIGLViewerContext()
 
 Handle_V3d_Viewer& TIGLViewerContext::getViewer()
 { 
-	return myViewer; 
+    return myViewer; 
 }
 
 Handle_AIS_InteractiveContext& TIGLViewerContext::getContext()
 { 
-	return myContext; 
+    return myContext; 
 }
 
-Handle_V3d_Viewer TIGLViewerContext::createViewer(	const Standard_ExtString aName,
-													const Standard_CString aDomain,
-													const Standard_Real ViewSize )
+Handle_V3d_Viewer TIGLViewerContext::createViewer(    const Standard_ExtString aName,
+                                                    const Standard_CString aDomain,
+                                                    const Standard_Real ViewSize )
 {
 #ifdef OCC_NEW_3DAPI
     static Handle(Graphic3d_GraphicDriver) deviceHandle;
@@ -89,78 +89,78 @@ Handle_V3d_Viewer TIGLViewerContext::createViewer(	const Standard_ExtString aNam
 #else // OCC_NEW_3DAPI
 #ifndef WNT
     static Handle(Graphic3d_GraphicDevice) deviceHandle;
-	
+    
     if( deviceHandle.IsNull() )
-	{
+    {
         deviceHandle = new Graphic3d_GraphicDevice( getenv("DISPLAY") );
-	}
+    }
 #else
     static Handle( Graphic3d_WNTGraphicDevice ) deviceHandle;
     if( deviceHandle.IsNull() )
-	{
+    {
         deviceHandle = new Graphic3d_WNTGraphicDevice();
-	}
+    }
 #endif  // WNT
 #endif  // OCC_NEW_3DAPI
 
-	return new V3d_Viewer(	deviceHandle,
-							aName,
-							aDomain,
-							ViewSize,
-							V3d_XposYnegZpos,
-							Quantity_NOC_BLACK,
-							V3d_ZBUFFER,
-							V3d_GOURAUD,
-							V3d_WAIT );
+    return new V3d_Viewer(    deviceHandle,
+                            aName,
+                            aDomain,
+                            ViewSize,
+                            V3d_XposYnegZpos,
+                            Quantity_NOC_BLACK,
+                            V3d_ZBUFFER,
+                            V3d_GOURAUD,
+                            V3d_WAIT );
 }
 /*! 
-\brief	Deletes all objects.
+\brief    Deletes all objects.
 
-		This function deletes all dispayed objects from the AIS context.
-		No parameters.
+        This function deletes all dispayed objects from the AIS context.
+        No parameters.
 */
 void TIGLViewerContext::deleteAllObjects()
 {
-	AIS_ListOfInteractive aList;
-	myContext->DisplayedObjects( aList );
-	AIS_ListIteratorOfListOfInteractive aListIterator;
-	for ( aListIterator.Initialize( aList ); aListIterator.More(); aListIterator.Next() )
-	{
-		myContext->Remove( aListIterator.Value(), Standard_False);
-	}
+    AIS_ListOfInteractive aList;
+    myContext->DisplayedObjects( aList );
+    AIS_ListIteratorOfListOfInteractive aListIterator;
+    for ( aListIterator.Initialize( aList ); aListIterator.More(); aListIterator.Next() )
+    {
+        myContext->Remove( aListIterator.Value(), Standard_False);
+    }
 }
 /*! 
-\brief	Sets the privileged plane to the XY Axis.  
+\brief    Sets the privileged plane to the XY Axis.  
 */
 void TIGLViewerContext::gridXY  ( void )
 {
-	myGridColor      = Quantity_NOC_RED4;
-	myViewer->Grid()->SetColors( myGridColor, myGridTenthColor );
-	gp_Ax3 aPlane(gp_Pnt( 0., 0., 0. ),gp_Dir(0., 0., 1.));
-	myViewer->SetPrivilegedPlane( aPlane );
+    myGridColor      = Quantity_NOC_RED4;
+    myViewer->Grid()->SetColors( myGridColor, myGridTenthColor );
+    gp_Ax3 aPlane(gp_Pnt( 0., 0., 0. ),gp_Dir(0., 0., 1.));
+    myViewer->SetPrivilegedPlane( aPlane );
 }
 /*!
-\brief	Sets the privileged plane to the XZ Axis.
+\brief    Sets the privileged plane to the XZ Axis.
 
-		Note the negative direction of the Y axis.
-		This is corrrect for a right-handed co-ordinate set.
+          Note the negative direction of the Y axis.
+          This is corrrect for a right-handed co-ordinate set.
 */
 void TIGLViewerContext::gridXZ  ( void )
 {
-	myGridColor      = Quantity_NOC_BLUE4;
-	myViewer->Grid()->SetColors( myGridColor, myGridTenthColor );
-	gp_Ax3 aPlane( gp_Pnt(0., 0., 0.),gp_Dir(0., -1., 0.) );
-	myViewer->SetPrivilegedPlane( aPlane );
+    myGridColor      = Quantity_NOC_BLUE4;
+    myViewer->Grid()->SetColors( myGridColor, myGridTenthColor );
+    gp_Ax3 aPlane( gp_Pnt(0., 0., 0.),gp_Dir(0., -1., 0.) );
+    myViewer->SetPrivilegedPlane( aPlane );
 }
 /*! 
-\brief	Sets the privileged plane to the XY Axis.
+\brief    Sets the privileged plane to the XY Axis.
  */
 void TIGLViewerContext::gridYZ  ( void )
 {
-	myGridColor      = Quantity_NOC_GREEN4;
-	myViewer->Grid()->SetColors( myGridColor, myGridTenthColor );
-	gp_Ax3 aPlane( gp_Pnt( 0., 0., 0.), gp_Dir( 1., 0., 0. ) );
-	myViewer->SetPrivilegedPlane( aPlane );
+    myGridColor      = Quantity_NOC_GREEN4;
+    myViewer->Grid()->SetColors( myGridColor, myGridTenthColor );
+    gp_Ax3 aPlane( gp_Pnt( 0., 0., 0.), gp_Dir( 1., 0., 0. ) );
+    myViewer->SetPrivilegedPlane( aPlane );
 }
 
 /*!
@@ -174,40 +174,40 @@ void TIGLViewerContext::toggleGrid(bool gridIsOn){
 }
 
 /*!
-\brief	Turn the grid on.
+\brief    Turn the grid on.
  */
 void TIGLViewerContext::gridOn  ( void )
 {
-	myViewer->ActivateGrid( myGridType , myGridMode );
-	myViewer->SetGridEcho ( Standard_True );
+    myViewer->ActivateGrid( myGridType , myGridMode );
+    myViewer->SetGridEcho ( Standard_True );
 }
 
 /*! 
-\brief	Turn the grid off.
+\brief    Turn the grid off.
 */
 void TIGLViewerContext::gridOff ( void )
 {
-	myViewer->DeactivateGrid();
-	myViewer->SetGridEcho( Standard_False );
+    myViewer->DeactivateGrid();
+    myViewer->SetGridEcho( Standard_False );
 }
 
 /*!
-\brief	Select a rectangular grid
+\brief    Select a rectangular grid
 */
 void TIGLViewerContext::gridRect ( void )
 {
-	myGridType = Aspect_GT_Rectangular;
-	myViewer->ActivateGrid( myGridType , myGridMode );
-	myViewer->Grid()->SetColors( myGridColor, myGridTenthColor );
+    myGridType = Aspect_GT_Rectangular;
+    myViewer->ActivateGrid( myGridType , myGridMode );
+    myViewer->Grid()->SetColors( myGridColor, myGridTenthColor );
 }
 /*! 
-\brief	Select a circular grid.
+\brief    Select a circular grid.
 */
 void TIGLViewerContext::gridCirc ( void )
 {
-	myGridType = Aspect_GT_Circular;
-	myViewer->ActivateGrid( myGridType , myGridMode );
-	myViewer->Grid()->SetColors( myGridColor, myGridTenthColor );
+    myGridType = Aspect_GT_Circular;
+    myViewer->ActivateGrid( myGridType , myGridMode );
+    myViewer->Grid()->SetColors( myGridColor, myGridTenthColor );
 }
 
 /*!
@@ -225,15 +225,15 @@ void TIGLViewerContext::wireFrame(bool wireframe){
 
 void TIGLViewerContext::setGridOffset (Quantity_Length offset)
 {
-	Quantity_Length radius;
-	Quantity_Length xSize, ySize;
-	Quantity_Length oldOffset;
-	
-	myViewer->CircularGridGraphicValues( radius, oldOffset );
-	myViewer->SetCircularGridGraphicValues( radius, offset);
+    Quantity_Length radius;
+    Quantity_Length xSize, ySize;
+    Quantity_Length oldOffset;
+    
+    myViewer->CircularGridGraphicValues( radius, oldOffset );
+    myViewer->SetCircularGridGraphicValues( radius, offset);
 
-	myViewer->RectangularGridGraphicValues(xSize, ySize, oldOffset);
-	myViewer->SetRectangularGridGraphicValues(xSize, ySize, offset);
+    myViewer->RectangularGridGraphicValues(xSize, ySize, oldOffset);
+    myViewer->SetRectangularGridGraphicValues(xSize, ySize, offset);
 }
 
 

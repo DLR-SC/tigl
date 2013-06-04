@@ -42,7 +42,7 @@
 namespace tigl {
 
     class CTiglAbstractPhysicalComponent : public CTiglAbstractGeometricComponent
-	{
+    {
 
     public:
         // Container type to store a components children
@@ -74,7 +74,7 @@ namespace tigl {
         // mostly used for export
         virtual TDF_Label ExportDataStructure(Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label) = 0;
 
-		// Returns the segment for a given index
+        // Returns the segment for a given index
         //virtual class CTiglAbstractSegment & GetSegment(const int index) = 0;
 
         virtual void SetSymmetryAxis(const std::string& axis);
@@ -86,7 +86,7 @@ namespace tigl {
         ChildContainerType childContainer;
         std::string        parentUID;       /**< UID of the parent of this component */
 
-	};
+    };
 
 } // end namespace tigl
 

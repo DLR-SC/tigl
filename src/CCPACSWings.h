@@ -34,62 +34,62 @@
 
 namespace tigl {
 
-	class CCPACSConfiguration;
+    class CCPACSConfiguration;
 
-	class CCPACSWings
-	{
-	private:
-		// Typedef for a CCPACSWing container to store the wings of a configuration.
-		typedef std::vector<CCPACSWing*> CCPACSWingContainer;
+    class CCPACSWings
+    {
+    private:
+        // Typedef for a CCPACSWing container to store the wings of a configuration.
+        typedef std::vector<CCPACSWing*> CCPACSWingContainer;
 
-	public:
-		// Constructor
-		CCPACSWings(CCPACSConfiguration* config);
+    public:
+        // Constructor
+        CCPACSWings(CCPACSConfiguration* config);
 
-		// Virtual Destructor
-		virtual ~CCPACSWings(void);
+        // Virtual Destructor
+        virtual ~CCPACSWings(void);
 
-		// Invalidates internal state
-		void Invalidate(void);
+        // Invalidates internal state
+        void Invalidate(void);
 
-		// Read CPACS wings elements
-		void ReadCPACS(TixiDocumentHandle tixiHandle, const char* configurationUID);
+        // Read CPACS wings elements
+        void ReadCPACS(TixiDocumentHandle tixiHandle, const char* configurationUID);
 
-		// Returns the total count of wing profiles in this configuration
-		int GetProfileCount(void) const;
+        // Returns the total count of wing profiles in this configuration
+        int GetProfileCount(void) const;
 
-		// Returns the wing profile for a given uid.
-		CCPACSWingProfile& GetProfile(std::string uid) const;
+        // Returns the wing profile for a given uid.
+        CCPACSWingProfile& GetProfile(std::string uid) const;
 
-		// Returns the wing profile for a given index - TODO: depricated function!
-		CCPACSWingProfile& GetProfile(int index) const;
+        // Returns the wing profile for a given index - TODO: depricated function!
+        CCPACSWingProfile& GetProfile(int index) const;
 
-		// Returns the total count of wings in a configuration
-		int GetWingCount(void) const;
+        // Returns the total count of wings in a configuration
+        int GetWingCount(void) const;
 
-		// Returns the wing for a given index.
-		CCPACSWing& GetWing(int index) const;
+        // Returns the wing for a given index.
+        CCPACSWing& GetWing(int index) const;
 
         // Returns the wing for a given UID.
         CCPACSWing& GetWing(const std::string UID) const;
 
-	protected:
-		// Cleanup routine
-		void Cleanup(void);
+    protected:
+        // Cleanup routine
+        void Cleanup(void);
 
-	private:
-		// Copy constructor
-		CCPACSWings(const CCPACSWings& ) { /* Do nothing */ }
+    private:
+        // Copy constructor
+        CCPACSWings(const CCPACSWings& ) { /* Do nothing */ }
 
-		// Assignment operator
-		void operator=(const CCPACSWings& ) { /* Do nothing */ }
+        // Assignment operator
+        void operator=(const CCPACSWings& ) { /* Do nothing */ }
 
-	private:
-		CCPACSWingProfiles   profiles;      /**< Wing profile elements */
-		CCPACSWingContainer  wings;         /**< Wing elements */
-		CCPACSConfiguration* configuration; /**< Pointer to parent configuration */
+    private:
+        CCPACSWingProfiles   profiles;      /**< Wing profile elements */
+        CCPACSWingContainer  wings;         /**< Wing elements */
+        CCPACSConfiguration* configuration; /**< Pointer to parent configuration */
 
-	};
+    };
 
 } // end namespace tigl
 

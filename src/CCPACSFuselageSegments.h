@@ -34,50 +34,50 @@
 
 namespace tigl {
 
-	class CCPACSFuselage;
+    class CCPACSFuselage;
 
-	class CCPACSFuselageSegments
-	{
+    class CCPACSFuselageSegments
+    {
 
-	private:
-		// Typedef for a CCPACSFuselageSegment container to store the segments of a fuselage.
-		typedef std::vector<CCPACSFuselageSegment*> CCPACSFuselageSegmentContainer;
+    private:
+        // Typedef for a CCPACSFuselageSegment container to store the segments of a fuselage.
+        typedef std::vector<CCPACSFuselageSegment*> CCPACSFuselageSegmentContainer;
 
-	public:
-		// Constructor
-		CCPACSFuselageSegments(CCPACSFuselage* aFuselage);
+    public:
+        // Constructor
+        CCPACSFuselageSegments(CCPACSFuselage* aFuselage);
 
-		// Virtual Destructor
-		virtual ~CCPACSFuselageSegments(void);
+        // Virtual Destructor
+        virtual ~CCPACSFuselageSegments(void);
 
-		// Invalidates internal state
-		void Invalidate(void);
+        // Invalidates internal state
+        void Invalidate(void);
 
-		// Read CPACS segments element
-		void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& fuselageXPath);
+        // Read CPACS segments element
+        void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& fuselageXPath);
 
-		// Gets a segment by index. 
-		CCPACSFuselageSegment& GetSegment(int index);
+        // Gets a segment by index. 
+        CCPACSFuselageSegment& GetSegment(int index);
 
-		// Gets total segment count
-		int GetSegmentCount(void) const;
+        // Gets total segment count
+        int GetSegmentCount(void) const;
 
-	protected:
-		// Cleanup routine
-		void Cleanup(void);
+    protected:
+        // Cleanup routine
+        void Cleanup(void);
 
-	private:
-		// Copy constructor
-		CCPACSFuselageSegments(const CCPACSFuselageSegments& ) { /* Do nothing */ }
+    private:
+        // Copy constructor
+        CCPACSFuselageSegments(const CCPACSFuselageSegments& ) { /* Do nothing */ }
 
-		// Assignment operator
-		void operator=(const CCPACSFuselageSegments& ) { /* Do nothing */ }
+        // Assignment operator
+        void operator=(const CCPACSFuselageSegments& ) { /* Do nothing */ }
 
-	private:
-		CCPACSFuselageSegmentContainer segments; /**< Segment elements    */
-		CCPACSFuselage*                fuselage; /**< Parent fuselage     */
+    private:
+        CCPACSFuselageSegmentContainer segments; /**< Segment elements    */
+        CCPACSFuselage*                fuselage; /**< Parent fuselage     */
 
-	};
+    };
 
 } // end namespace tigl
 

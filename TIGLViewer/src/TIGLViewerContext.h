@@ -27,23 +27,23 @@
 class QOCC_DECLSPEC TIGLViewerContext : public QObject
 {
 
-	Q_OBJECT
+    Q_OBJECT
 
 public:
 
-	TIGLViewerContext();
+    TIGLViewerContext();
     ~TIGLViewerContext();
 
-	Handle_V3d_Viewer&              getViewer();
-	Handle_AIS_InteractiveContext&  getContext();
+    Handle_V3d_Viewer&              getViewer();
+    Handle_AIS_InteractiveContext&  getContext();
 
-	Handle_V3d_Viewer createViewer( const Standard_ExtString aName,
-									const Standard_CString aDomain,
-									const Standard_Real ViewSize );
+    Handle_V3d_Viewer createViewer( const Standard_ExtString aName,
+                                    const Standard_CString aDomain,
+                                    const Standard_Real ViewSize );
 
-	void deleteAllObjects();
+    void deleteAllObjects();
 
-	void setGridOffset (Quantity_Length offset);
+    void setGridOffset (Quantity_Length offset);
 
 public slots:
 
@@ -59,16 +59,16 @@ public slots:
 
 signals:
 
-	void error (int errorCode, QString& errorDescription);
+    void error (int errorCode, QString& errorDescription);
 
 private:
 
-	Handle_V3d_Viewer				myViewer;
-	Handle_AIS_InteractiveContext	myContext;
-	Aspect_GridType					myGridType;
-	Aspect_GridDrawMode				myGridMode;
-	Quantity_NameOfColor			myGridColor;
-	Quantity_NameOfColor			myGridTenthColor;
+    Handle_V3d_Viewer               myViewer;
+    Handle_AIS_InteractiveContext   myContext;
+    Aspect_GridType                 myGridType;
+    Aspect_GridDrawMode             myGridMode;
+    Quantity_NameOfColor            myGridColor;
+    Quantity_NameOfColor            myGridTenthColor;
 
 };
 

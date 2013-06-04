@@ -140,7 +140,7 @@ namespace tigl {
             name = ptrName;
 
         // Get attribue "uID"
-		char* ptrUID = NULL;
+        char* ptrUID = NULL;
         tempString   = "uID";
         elementPath  = const_cast<char*>(tempString.c_str());
         if (tixiGetTextAttribute(tixiHandle, const_cast<char*>(fuselageXPath.c_str()), const_cast<char*>(tempString.c_str()), &ptrUID) == SUCCESS)
@@ -284,55 +284,55 @@ namespace tigl {
         return fusedSegments;
     }
 
-	// Builds a fused shape of all fuselage segments
-	void CCPACSFuselage::BuildFusedSegments(void)
-	{
-		// Ne need a smooth fuselage by default
-		// @TODO: OpenCascade::ThruSections is currently buggy and crashes, if smooth lofting
-		// is performed. Therefore we swicth the 2. parameter to Standard_True (non smooth lofting).
-		// This has to be reverted, as soon as the bug is fixed!!!
-		BRepOffsetAPI_ThruSections generator(Standard_True, Standard_False, Precision::Confusion() );
+    // Builds a fused shape of all fuselage segments
+    void CCPACSFuselage::BuildFusedSegments(void)
+    {
+        // Ne need a smooth fuselage by default
+        // @TODO: OpenCascade::ThruSections is currently buggy and crashes, if smooth lofting
+        // is performed. Therefore we swicth the 2. parameter to Standard_True (non smooth lofting).
+        // This has to be reverted, as soon as the bug is fixed!!!
+        BRepOffsetAPI_ThruSections generator(Standard_True, Standard_False, Precision::Confusion() );
 
-		for (int i=1; i <= segments.GetSegmentCount(); i++) {
-			CCPACSFuselageConnection& startConnection = segments.GetSegment(i).GetStartConnection();
+        for (int i=1; i <= segments.GetSegmentCount(); i++) {
+            CCPACSFuselageConnection& startConnection = segments.GetSegment(i).GetStartConnection();
 
-			CCPACSFuselageProfile& startProfile = startConnection.GetProfile();
+            CCPACSFuselageProfile& startProfile = startConnection.GetProfile();
 
-			TopoDS_Wire startWire = startProfile.GetWire(true);
+            TopoDS_Wire startWire = startProfile.GetWire(true);
 
-			// Do section element transformations
-			TopoDS_Shape startShape = startConnection.GetSectionElementTransformation().Transform(startWire);
+            // Do section element transformations
+            TopoDS_Shape startShape = startConnection.GetSectionElementTransformation().Transform(startWire);
 
-			// Do section transformations
-			startShape = startConnection.GetSectionTransformation().Transform(startShape);
+            // Do section transformations
+            startShape = startConnection.GetSectionTransformation().Transform(startShape);
 
-			// Do positioning transformations (positioning of sections)
-			startShape = startConnection.GetPositioningTransformation().Transform(startShape);
+            // Do positioning transformations (positioning of sections)
+            startShape = startConnection.GetPositioningTransformation().Transform(startShape);
 
-			// Cast shapes to wires, see OpenCascade documentation
-			if (startShape.ShapeType() != TopAbs_WIRE) {
-				throw CTiglError("Error: Wrong shape type in CCPACSFuselage::BuildFusedSegments", TIGL_ERROR);
-			}
-			startWire = TopoDS::Wire(startShape);
+            // Cast shapes to wires, see OpenCascade documentation
+            if (startShape.ShapeType() != TopAbs_WIRE) {
+                throw CTiglError("Error: Wrong shape type in CCPACSFuselage::BuildFusedSegments", TIGL_ERROR);
+            }
+            startWire = TopoDS::Wire(startShape);
 
-			generator.AddWire(startWire);
-		}
+            generator.AddWire(startWire);
+        }
 
-		CCPACSFuselageConnection& endConnection = segments.GetSegment(segments.GetSegmentCount()).GetEndConnection();
-		CCPACSFuselageProfile& endProfile = endConnection.GetProfile();
-		TopoDS_Wire endWire = endProfile.GetWire(true);
-		TopoDS_Shape endShape = endConnection.GetSectionElementTransformation().Transform(endWire);
-		endShape = endConnection.GetSectionTransformation().Transform(endShape);
-		endShape = endConnection.GetPositioningTransformation().Transform(endShape);
-		endWire = TopoDS::Wire(endShape);
-		generator.AddWire(endWire);
-		
-		generator.SetMaxDegree(2); //surfaces will be C1-continuous
-		generator.SetParType(Approx_Centripetal);
-		generator.CheckCompatibility(Standard_False);
-		generator.Build();
-		fusedSegments = generator.Shape();
-	}
+        CCPACSFuselageConnection& endConnection = segments.GetSegment(segments.GetSegmentCount()).GetEndConnection();
+        CCPACSFuselageProfile& endProfile = endConnection.GetProfile();
+        TopoDS_Wire endWire = endProfile.GetWire(true);
+        TopoDS_Shape endShape = endConnection.GetSectionElementTransformation().Transform(endWire);
+        endShape = endConnection.GetSectionTransformation().Transform(endShape);
+        endShape = endConnection.GetPositioningTransformation().Transform(endShape);
+        endWire = TopoDS::Wire(endShape);
+        generator.AddWire(endWire);
+        
+        generator.SetMaxDegree(2); //surfaces will be C1-continuous
+        generator.SetParType(Approx_Centripetal);
+        generator.CheckCompatibility(Standard_False);
+        generator.Build();
+        fusedSegments = generator.Shape();
+    }
 
 
     // Gets the fuselage transformation
@@ -378,12 +378,12 @@ namespace tigl {
         return GetFuselageTransformation();
     }
 
-	// Sets the Transformation object
+    // Sets the Transformation object
     void CCPACSFuselage::Translate(CTiglPoint trans)
     {
         CTiglAbstractGeometricComponent::Translate(trans);
-    	invalidated = true;
-		Update();
+        invalidated = true;
+        Update();
     }
 
     // Returns the circumference of the segment "segmentIndex" at a given eta
@@ -391,67 +391,67 @@ namespace tigl {
     {
         return ((CCPACSFuselageSegment &) GetSegment(segmentIndex)).GetCircumference(eta);
     }
-	
-	// Returns the surface area of this fuselage
-	double CCPACSFuselage::GetSurfaceArea(void)
+    
+    // Returns the surface area of this fuselage
+    double CCPACSFuselage::GetSurfaceArea(void)
     {
         double myArea = 0.0;
         GetLoft();
         // Calculate surface area
         GProp_GProps System;
-		BRepGProp::SurfaceProperties(fusedSegments, System);
+        BRepGProp::SurfaceProperties(fusedSegments, System);
         myArea = System.Mass();
         return myArea;
     }
 
-	// Returns the point where the distance between the selected fuselage and the ground is at minimum.
-	// The Fuselage could be turned with a given angle at at given axis, specified by a point and a direction.
-	gp_Pnt CCPACSFuselage::GetMinumumDistanceToGround(gp_Ax1 RAxis, double angle)
-	{
+    // Returns the point where the distance between the selected fuselage and the ground is at minimum.
+    // The Fuselage could be turned with a given angle at at given axis, specified by a point and a direction.
+    gp_Pnt CCPACSFuselage::GetMinumumDistanceToGround(gp_Ax1 RAxis, double angle)
+    {
 
-		TopoDS_Shape fusedFuselage = GetLoft();
+        TopoDS_Shape fusedFuselage = GetLoft();
 
-		// now rotate the fuselage
-		gp_Trsf myTrsf;
-		myTrsf.SetRotation(RAxis, angle * M_PI / 180.);
-		BRepBuilderAPI_Transform xform(fusedFuselage, myTrsf);
-		fusedFuselage = xform.Shape();
+        // now rotate the fuselage
+        gp_Trsf myTrsf;
+        myTrsf.SetRotation(RAxis, angle * M_PI / 180.);
+        BRepBuilderAPI_Transform xform(fusedFuselage, myTrsf);
+        fusedFuselage = xform.Shape();
 
-		// build cutting plane for intersection
-		// We move the "ground" to "-1000" to be sure it is _under_ the fuselage
-		gp_Pnt p1(-1.0e7, -1.0e7, -1000);
-		gp_Pnt p2( 1.0e7, -1.0e7, -1000);
-		gp_Pnt p3( 1.0e7,  1.0e7, -1000);
-		gp_Pnt p4(-1.0e7,  1.0e7, -1000);
+        // build cutting plane for intersection
+        // We move the "ground" to "-1000" to be sure it is _under_ the fuselage
+        gp_Pnt p1(-1.0e7, -1.0e7, -1000);
+        gp_Pnt p2( 1.0e7, -1.0e7, -1000);
+        gp_Pnt p3( 1.0e7,  1.0e7, -1000);
+        gp_Pnt p4(-1.0e7,  1.0e7, -1000);
 
-		Handle(Geom_TrimmedCurve) shaft_line1 = GC_MakeSegment(p1,p2);
-		Handle(Geom_TrimmedCurve) shaft_line2 = GC_MakeSegment(p2,p3);
-		Handle(Geom_TrimmedCurve) shaft_line3 = GC_MakeSegment(p3,p4);
-		Handle(Geom_TrimmedCurve) shaft_line4 = GC_MakeSegment(p4,p1);
+        Handle(Geom_TrimmedCurve) shaft_line1 = GC_MakeSegment(p1,p2);
+        Handle(Geom_TrimmedCurve) shaft_line2 = GC_MakeSegment(p2,p3);
+        Handle(Geom_TrimmedCurve) shaft_line3 = GC_MakeSegment(p3,p4);
+        Handle(Geom_TrimmedCurve) shaft_line4 = GC_MakeSegment(p4,p1);
 
-		TopoDS_Edge shaft_edge1 = BRepBuilderAPI_MakeEdge(shaft_line1);
-		TopoDS_Edge shaft_edge2 = BRepBuilderAPI_MakeEdge(shaft_line2);
-		TopoDS_Edge shaft_edge3 = BRepBuilderAPI_MakeEdge(shaft_line3);
-		TopoDS_Edge shaft_edge4 = BRepBuilderAPI_MakeEdge(shaft_line4);
+        TopoDS_Edge shaft_edge1 = BRepBuilderAPI_MakeEdge(shaft_line1);
+        TopoDS_Edge shaft_edge2 = BRepBuilderAPI_MakeEdge(shaft_line2);
+        TopoDS_Edge shaft_edge3 = BRepBuilderAPI_MakeEdge(shaft_line3);
+        TopoDS_Edge shaft_edge4 = BRepBuilderAPI_MakeEdge(shaft_line4);
 
-		TopoDS_Wire shaft_wire = BRepBuilderAPI_MakeWire(shaft_edge1, shaft_edge2, shaft_edge3, shaft_edge4);
-		TopoDS_Face shaft_face = BRepBuilderAPI_MakeFace(shaft_wire);
+        TopoDS_Wire shaft_wire = BRepBuilderAPI_MakeWire(shaft_edge1, shaft_edge2, shaft_edge3, shaft_edge4);
+        TopoDS_Face shaft_face = BRepBuilderAPI_MakeFace(shaft_wire);
 
-		// calculate extrema
-		BRepExtrema_DistShapeShape extrema(fusedFuselage, shaft_face);
-		extrema.Perform();
+        // calculate extrema
+        BRepExtrema_DistShapeShape extrema(fusedFuselage, shaft_face);
+        extrema.Perform();
 
-		return extrema.PointOnShape1(1);
-	}
+        return extrema.PointOnShape1(1);
+    }
 
-	// sets the symmetry plane for all childs, segments and component segments
-	void CCPACSFuselage::SetSymmetryAxis(const std::string& axis){
-		CTiglAbstractGeometricComponent::SetSymmetryAxis(axis);
+    // sets the symmetry plane for all childs, segments and component segments
+    void CCPACSFuselage::SetSymmetryAxis(const std::string& axis){
+        CTiglAbstractGeometricComponent::SetSymmetryAxis(axis);
 
-		for(int i = 1; i <= segments.GetSegmentCount(); ++i){
-			CCPACSFuselageSegment& segment = segments.GetSegment(i);
-			segment.SetSymmetryAxis(axis);
-		}
-	}
+        for(int i = 1; i <= segments.GetSegmentCount(); ++i){
+            CCPACSFuselageSegment& segment = segments.GetSegment(i);
+            segment.SetSymmetryAxis(axis);
+        }
+    }
 
 } // end namespace tigl

@@ -34,44 +34,44 @@
 
 namespace tigl {
 
-	class CCPACSWingSections
-	{
+    class CCPACSWingSections
+    {
 
-	private:
-		// Typedef for a CCPACSWingSection container to store the sections of a wing.
-		typedef std::vector<CCPACSWingSection*> CCPACSWingSectionContainer;
+    private:
+        // Typedef for a CCPACSWingSection container to store the sections of a wing.
+        typedef std::vector<CCPACSWingSection*> CCPACSWingSectionContainer;
 
-	public:
-		// Constructor
-		CCPACSWingSections(void);
+    public:
+        // Constructor
+        CCPACSWingSections(void);
 
-		// Virtual Destructor
-		virtual ~CCPACSWingSections(void);
+        // Virtual Destructor
+        virtual ~CCPACSWingSections(void);
 
-		// Read CPACS wing sections element
-		void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& wingXPath);
+        // Read CPACS wing sections element
+        void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& wingXPath);
 
-		// Get section count
-		int GetSectionCount(void) const;
+        // Get section count
+        int GetSectionCount(void) const;
 
-		// Returns the section for a given index
-		CCPACSWingSection& GetSection(int index) const;
+        // Returns the section for a given index
+        CCPACSWingSection& GetSection(int index) const;
 
-	protected:
-		// Cleanup routine
-		void Cleanup(void);
+    protected:
+        // Cleanup routine
+        void Cleanup(void);
 
-	private:
-		// Copy constructor
-		CCPACSWingSections(const CCPACSWingSections& ) { /* Do nothing */ }
+    private:
+        // Copy constructor
+        CCPACSWingSections(const CCPACSWingSections& ) { /* Do nothing */ }
 
-		// Assignment operator
-		void operator=(const CCPACSWingSections& ) { /* Do nothing */ }
+        // Assignment operator
+        void operator=(const CCPACSWingSections& ) { /* Do nothing */ }
 
-	private:
-		CCPACSWingSectionContainer sections;       /**< Section elements */
+    private:
+        CCPACSWingSectionContainer sections;       /**< Section elements */
 
-	};
+    };
 
 } // end namespace tigl
 

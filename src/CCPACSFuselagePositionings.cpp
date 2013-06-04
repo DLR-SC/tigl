@@ -29,74 +29,74 @@
 
 namespace tigl {
 
-	// Constructor
-	CCPACSFuselagePositionings::CCPACSFuselagePositionings(void)
-		: positionings()
+    // Constructor
+    CCPACSFuselagePositionings::CCPACSFuselagePositionings(void)
+        : positionings()
         , transformations()
-		, invalidated(true)
-	{
-	}
+        , invalidated(true)
+    {
+    }
 
-	// Destructor
-	CCPACSFuselagePositionings::~CCPACSFuselagePositionings(void)
-	{
-		Cleanup();
-	}
+    // Destructor
+    CCPACSFuselagePositionings::~CCPACSFuselagePositionings(void)
+    {
+        Cleanup();
+    }
 
-	// Invalidates internal state
-	void CCPACSFuselagePositionings::Invalidate(void)
-	{
-		invalidated = true;
-		for (int i = 1; i <= GetPositioningCount(); i++)
+    // Invalidates internal state
+    void CCPACSFuselagePositionings::Invalidate(void)
+    {
+        invalidated = true;
+        for (int i = 1; i <= GetPositioningCount(); i++)
         {
-			GetPositioning(i).Invalidate();
-		}
+            GetPositioning(i).Invalidate();
+        }
         transformations.clear();
-	}
+    }
 
-	// Cleanup routine
-	void CCPACSFuselagePositionings::Cleanup(void)
-	{
-		for (CCPACSFuselagePositioningContainer::size_type i = 0; i < positionings.size(); i++)
+    // Cleanup routine
+    void CCPACSFuselagePositionings::Cleanup(void)
+    {
+        for (CCPACSFuselagePositioningContainer::size_type i = 0; i < positionings.size(); i++)
         {
-			delete positionings[i];
-		}
-		positionings.clear();
+            delete positionings[i];
+        }
+        positionings.clear();
         transformations.clear();
-		invalidated = true;
-	}
+        invalidated = true;
+    }
 
-	// Gets a positioning by index.
-	CCPACSFuselagePositioning& CCPACSFuselagePositionings::GetPositioning(int index) const
-	{
+    // Gets a positioning by index.
+    CCPACSFuselagePositioning& CCPACSFuselagePositionings::GetPositioning(int index) const
+    {
         index--;
-		if (index < 0 || index >= GetPositioningCount())
-			throw CTiglError("Error: Invalid index value in CCPACSFuselagePositionings::GetPositioning", TIGL_INDEX_ERROR);
-		return (*(positionings[index]));
-	}
+        if (index < 0 || index >= GetPositioningCount())
+            throw CTiglError("Error: Invalid index value in CCPACSFuselagePositionings::GetPositioning", TIGL_INDEX_ERROR);
+        return (*(positionings[index]));
+    }
 
-	// Gets total positioning count
-	int CCPACSFuselagePositionings::GetPositioningCount(void) const
-	{
-		return static_cast<int>(positionings.size());
-	}
+    // Gets total positioning count
+    int CCPACSFuselagePositionings::GetPositioningCount(void) const
+    {
+        return static_cast<int>(positionings.size());
+    }
 
-	// Returns the positioning matrix for a given section index
-	CTiglTransformation CCPACSFuselagePositionings::GetPositioningTransformation(std::string sectionIndex)
-	{
-		Update();
-		CCPACSTransformationMapIterator iter = transformations.find(sectionIndex);
-		if (iter == transformations.end())
-			throw CTiglError("Error: Invalid section index in CCPACSFuselagePositionings::GetPositioningTransformation", TIGL_NOT_FOUND);
+    // Returns the positioning matrix for a given section index
+    CTiglTransformation CCPACSFuselagePositionings::GetPositioningTransformation(std::string sectionIndex)
+    {
+        Update();
+        CCPACSTransformationMapIterator iter = transformations.find(sectionIndex);
+        if (iter == transformations.end())
+            throw CTiglError("Error: Invalid section index in CCPACSFuselagePositionings::GetPositioningTransformation", TIGL_NOT_FOUND);
 
-		return iter->second;
-	}
+        return iter->second;
+    }
 
-	// Update internal positionings structure
-	void CCPACSFuselagePositionings::Update(void)
-	{
-		if (!invalidated)
-			return;
+    // Update internal positionings structure
+    void CCPACSFuselagePositionings::Update(void)
+    {
+        if (!invalidated)
+            return;
 
   //      int i;
   //      int j;
@@ -125,10 +125,10 @@ namespace tigl {
   //          throw CTiglError("Error: No starting positioning found in CCPACSFuselagePositionings::Update", TIGL_NOT_FOUND);
   //      }
 
-		invalidated = false;
+        invalidated = false;
 
-		UpdateNextPositioning(GetPositioning(1));
-	}
+        UpdateNextPositioning(GetPositioning(1));
+    }
 
 
     // @todo: This code is only working, if the first positions is basis for everything else
@@ -169,36 +169,36 @@ namespace tigl {
         }
     }
 
-	// Read CPACS positionings element
-	void CCPACSFuselagePositionings::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& fuselageXPath)
-	{
-		Cleanup();
+    // Read CPACS positionings element
+    void CCPACSFuselagePositionings::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& fuselageXPath)
+    {
+        Cleanup();
 
-		ReturnCode    tixiRet;
-		int           positioningCount;
-		std::string   tempString;
-		char*         elementPath;
+        ReturnCode    tixiRet;
+        int           positioningCount;
+        std::string   tempString;
+        char*         elementPath;
 
-		/* Get positioning element count */
-		tempString  = fuselageXPath + "/positionings";
-		elementPath = const_cast<char*>(tempString.c_str());
-		tixiRet = tixiGetNamedChildrenCount(tixiHandle, elementPath, "positioning", &positioningCount);
-		if (tixiRet != SUCCESS)
-			throw CTiglError("XML error: tixiGetNamedChildrenCount failed in CCPACSFuselagePositionings::ReadCPACS", TIGL_XML_ERROR);
+        /* Get positioning element count */
+        tempString  = fuselageXPath + "/positionings";
+        elementPath = const_cast<char*>(tempString.c_str());
+        tixiRet = tixiGetNamedChildrenCount(tixiHandle, elementPath, "positioning", &positioningCount);
+        if (tixiRet != SUCCESS)
+            throw CTiglError("XML error: tixiGetNamedChildrenCount failed in CCPACSFuselagePositionings::ReadCPACS", TIGL_XML_ERROR);
 
-		// Loop over all positionings
-		for (int i = 1; i <= positioningCount; i++)
+        // Loop over all positionings
+        for (int i = 1; i <= positioningCount; i++)
         {
-			CCPACSFuselagePositioning* positioning = new CCPACSFuselagePositioning();
-			positionings.push_back(positioning);
+            CCPACSFuselagePositioning* positioning = new CCPACSFuselagePositioning();
+            positionings.push_back(positioning);
 
-			tempString = fuselageXPath + "/positionings/positioning[";
-			std::ostringstream xpath;
-			xpath << tempString << i << "]";
-			positioning->ReadCPACS(tixiHandle, xpath.str());
-		}
+            tempString = fuselageXPath + "/positionings/positioning[";
+            std::ostringstream xpath;
+            xpath << tempString << i << "]";
+            positioning->ReadCPACS(tixiHandle, xpath.str());
+        }
 
-		Update();
-	}
+        Update();
+    }
 
 } // end namespace tigl

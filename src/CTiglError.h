@@ -31,30 +31,30 @@
 
 namespace tigl {
 
-	class CTiglError
-	{
+    class CTiglError
+    {
 
-	public:
-		// Constructor
-		CTiglError(std::string error = "", TiglReturnCode errorCode = TIGL_ERROR) throw();
+    public:
+        // Constructor
+        CTiglError(std::string error = "", TiglReturnCode errorCode = TIGL_ERROR) throw();
 
-		// Destructor
-		virtual ~CTiglError(void) throw();
+        // Destructor
+        virtual ~CTiglError(void) throw();
 
-		// Default copy constructor and assignment operator are correct since
-		// memberwise copy is enough for this class.
+        // Default copy constructor and assignment operator are correct since
+        // memberwise copy is enough for this class.
 
-		// Returns the error string as C string (char*)
-		virtual const char* getError(void) const throw();
+        // Returns the error string as C string (char*)
+        virtual const char* getError(void) const throw();
 
-		// Returns the error code
-		virtual TiglReturnCode getCode(void) const throw();
+        // Returns the error code
+        virtual TiglReturnCode getCode(void) const throw();
 
-	private:
-		std::string	   err;
-		TiglReturnCode code;
-		
-	};
+    private:
+        std::string    err;
+        TiglReturnCode code;
+        
+    };
 
 } // end namespace tigl
 
