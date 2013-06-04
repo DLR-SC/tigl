@@ -27,60 +27,60 @@
 
 namespace tigl {
 
-	// Constructor
-	CCPACSHeader::CCPACSHeader(const std::string& aName, const std::string& aCreator, const std::string& aTimestamp)
-		: name(aName)
-		, creator(aCreator)
-		, timestamp(aTimestamp)
-	{
-	}
+    // Constructor
+    CCPACSHeader::CCPACSHeader(const std::string& aName, const std::string& aCreator, const std::string& aTimestamp)
+        : name(aName)
+        , creator(aCreator)
+        , timestamp(aTimestamp)
+    {
+    }
 
-	// Destructor
-	CCPACSHeader::~CCPACSHeader(void)
-	{
-		Cleanup();
-	}
+    // Destructor
+    CCPACSHeader::~CCPACSHeader(void)
+    {
+        Cleanup();
+    }
 
-	std::string CCPACSHeader::GetName(void) const
-	{
-		return name;
-	}
+    std::string CCPACSHeader::GetName(void) const
+    {
+        return name;
+    }
 
-	std::string CCPACSHeader::GetCreator(void) const
-	{
-		return creator;
-	}
+    std::string CCPACSHeader::GetCreator(void) const
+    {
+        return creator;
+    }
 
-	std::string CCPACSHeader::GetTimestamp(void) const
-	{
-		return timestamp;
-	}
+    std::string CCPACSHeader::GetTimestamp(void) const
+    {
+        return timestamp;
+    }
 
-	// Read CPACS header elements
-	void CCPACSHeader::ReadCPACS(TixiDocumentHandle tixiHandle)
-	{
-		Cleanup();
+    // Read CPACS header elements
+    void CCPACSHeader::ReadCPACS(TixiDocumentHandle tixiHandle)
+    {
+        Cleanup();
 
-		char* ptrName      = NULL;
-		char* ptrCreator   = NULL;
-		char* ptrTimestamp = NULL;
+        char* ptrName      = NULL;
+        char* ptrCreator   = NULL;
+        char* ptrTimestamp = NULL;
 
-		if (tixiGetTextElement(tixiHandle, "/cpacs/header/name",      &ptrName) == SUCCESS)
-		    name      = ptrName;
+        if (tixiGetTextElement(tixiHandle, "/cpacs/header/name",      &ptrName) == SUCCESS)
+            name      = ptrName;
 
-		if (tixiGetTextElement(tixiHandle, "/cpacs/header/creator",   &ptrCreator) == SUCCESS)
-		    creator   = ptrCreator;
+        if (tixiGetTextElement(tixiHandle, "/cpacs/header/creator",   &ptrCreator) == SUCCESS)
+            creator   = ptrCreator;
 
-		if (tixiGetTextElement(tixiHandle, "/cpacs/header/timestamp", &ptrTimestamp) == SUCCESS)
-		    timestamp = ptrTimestamp;
-	}
+        if (tixiGetTextElement(tixiHandle, "/cpacs/header/timestamp", &ptrTimestamp) == SUCCESS)
+            timestamp = ptrTimestamp;
+    }
 
-	// Cleanup routine
-	void CCPACSHeader::Cleanup(void)
-	{
-		name      = "";
-		creator   = "";
-		timestamp = "";
-	}
+    // Cleanup routine
+    void CCPACSHeader::Cleanup(void)
+    {
+        name      = "";
+        creator   = "";
+        timestamp = "";
+    }
 
 } // end namespace tigl

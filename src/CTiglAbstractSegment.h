@@ -33,9 +33,9 @@
 namespace tigl {
 
     class CTiglAbstractSegment : public CTiglAbstractGeometricComponent
-	{
+    {
 
-	public:
+    public:
         CTiglAbstractSegment(int segIndex);
 
         // Invalidates internal state
@@ -53,7 +53,7 @@ namespace tigl {
 
         CTiglAbstractSegment(){} /* do nothing */
 
-	};  // end class CTiglAbstractSegment
+    };  // end class CTiglAbstractSegment
 
 } // end namespace tigl
 

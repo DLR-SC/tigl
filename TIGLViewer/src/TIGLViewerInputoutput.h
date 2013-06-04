@@ -26,63 +26,63 @@
 
 class QOCC_DECLSPEC TIGLViewerInputOutput : public QObject
 {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
 
-    enum FileFormat{	FormatBREP, 
-						FormatIGES, 
-						FormatSTEP, 
-						FormatCSFDB, 
-						FormatVRML, 
-						FormatSTL	};
+    enum FileFormat{    FormatBREP, 
+                        FormatIGES, 
+                        FormatSTEP, 
+                        FormatCSFDB, 
+                        FormatVRML, 
+                        FormatSTL    };
 
     TIGLViewerInputOutput(void);
-	~TIGLViewerInputOutput(void);
+    ~TIGLViewerInputOutput(void);
 
-    bool							  importModel( const QString fileName, 
-												   const FileFormat format, 
-												   const Handle_AIS_InteractiveContext& ic );
+    bool                              importModel( const QString fileName, 
+                                                   const FileFormat format, 
+                                                   const Handle_AIS_InteractiveContext& ic );
 
     bool                              exportModel( const QString fileName, 
-												   const FileFormat format, 
-												   const Handle_AIS_InteractiveContext& ic);
+                                                   const FileFormat format, 
+                                                   const Handle_AIS_InteractiveContext& ic);
 
     QString                           info() const;
 
 signals:
 
-	void error (int errorCode, QString& errorDescription);
+    void error (int errorCode, QString& errorDescription);
 
 private:
 
     Handle_TopTools_HSequenceOfShape  importModel( const FileFormat format, 
-												   const QString& fileName);
+                                                   const QString& fileName);
     bool                              exportModel( const FileFormat format, 
-												   const QString&,
+                                                   const QString&,
                                                    const Handle_TopTools_HSequenceOfShape& );
-	
+    
     Handle_TopTools_HSequenceOfShape getShapes( const Handle_AIS_InteractiveContext& oc);
 
-	Handle_TopTools_HSequenceOfShape importBREP ( const QString& );
+    Handle_TopTools_HSequenceOfShape importBREP ( const QString& );
 
-	Handle_TopTools_HSequenceOfShape importIGES ( const QString& );
-	Handle_TopTools_HSequenceOfShape importSTL  ( const QString& );
-	Handle_TopTools_HSequenceOfShape importSTEP ( const QString& );
-	Handle_TopTools_HSequenceOfShape importCSFDB( const QString& );
+    Handle_TopTools_HSequenceOfShape importIGES ( const QString& );
+    Handle_TopTools_HSequenceOfShape importSTL  ( const QString& );
+    Handle_TopTools_HSequenceOfShape importSTEP ( const QString& );
+    Handle_TopTools_HSequenceOfShape importCSFDB( const QString& );
 
-	bool exportBREP ( const QString& fileName, const Handle_TopTools_HSequenceOfShape& shapes );
-	bool exportIGES ( const QString& fileName, const Handle_TopTools_HSequenceOfShape& shapes );
-	bool exportSTEP ( const QString& fileName, const Handle_TopTools_HSequenceOfShape& shapes );
-	bool exportCSFDB( const QString& fileName, const Handle_TopTools_HSequenceOfShape& shapes );
-	bool exportSTL  ( const QString& fileName, const Handle_TopTools_HSequenceOfShape& shapes );
-	bool exportVRML ( const QString& fileName, const Handle_TopTools_HSequenceOfShape& shapes );
+    bool exportBREP ( const QString& fileName, const Handle_TopTools_HSequenceOfShape& shapes );
+    bool exportIGES ( const QString& fileName, const Handle_TopTools_HSequenceOfShape& shapes );
+    bool exportSTEP ( const QString& fileName, const Handle_TopTools_HSequenceOfShape& shapes );
+    bool exportCSFDB( const QString& fileName, const Handle_TopTools_HSequenceOfShape& shapes );
+    bool exportSTL  ( const QString& fileName, const Handle_TopTools_HSequenceOfShape& shapes );
+    bool exportVRML ( const QString& fileName, const Handle_TopTools_HSequenceOfShape& shapes );
 
     bool checkFacetedBrep( const Handle_TopTools_HSequenceOfShape& );
 
-	// Attributes
-	
-	QString myInfo;
+    // Attributes
+    
+    QString myInfo;
 
 };
 

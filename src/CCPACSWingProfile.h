@@ -66,10 +66,10 @@ namespace tigl {
         // Gets the C pointer of the name string
         const char * GetNamePtr(void) const;
 
-		// Returns the description of the wing profile
+        // Returns the description of the wing profile
         std::string GetDescription(void) const;
 
-		// Returns the uid of the wing profile
+        // Returns the uid of the wing profile
         std::string GetUID(void) const;
 
         // Gets the C pointer of the UID string
@@ -152,8 +152,8 @@ namespace tigl {
     private:
         std::string               ProfileXPath;
         std::string               name;
-		std::string				  description;
-		std::string				  uid;
+        std::string               description;
+        std::string               uid;
         CCPACSCoordinateContainer coordinates;    /**< Coordinates of a wing profile element */
         bool                      invalidated;    /**< Flag if element is invalid */
         TopoDS_Wire               wireClosed;     /**< Forced closed wing profile wire */

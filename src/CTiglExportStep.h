@@ -40,16 +40,16 @@ class CCPACSConfiguration;
 
 namespace tigl {
 
-	class CTiglExportStep
-	{
+    class CTiglExportStep
+    {
 
-	public:
-		// Constructor
-	    CTiglExportStep(CCPACSConfiguration& config);
+    public:
+        // Constructor
+        CTiglExportStep(CCPACSConfiguration& config);
 
-		// Virtual Destructor
-		virtual ~CTiglExportStep(void);
-		
+        // Virtual Destructor
+        virtual ~CTiglExportStep(void);
+        
         // Exports the whole configuration as IGES file
         void ExportStep(const std::string& filename) const;
 
@@ -67,12 +67,12 @@ namespace tigl {
         
 
     private:
-		// Assignment operator
-		void operator=(const CTiglExportStep& ) { /* Do nothing */ }
+        // Assignment operator
+        void operator=(const CTiglExportStep& ) { /* Do nothing */ }
 
-	private:
-		CCPACSConfiguration&          myConfig;       /**< TIGL configuration object */
-	};
+    private:
+        CCPACSConfiguration&          myConfig;       /**< TIGL configuration object */
+    };
 
 } // end namespace tigl
 

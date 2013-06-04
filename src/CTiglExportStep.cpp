@@ -48,7 +48,7 @@ namespace tigl {
     CTiglExportStep::~CTiglExportStep(void)
     {
     }
-	
+    
     
     // Exports the whole configuration as STEP file
     // All wing- and fuselage segments are exported as single bodys
@@ -145,19 +145,19 @@ namespace tigl {
 
     // Saves as step, with cpacs metadata information in it
     void CTiglExportStep::ExportStepWithCPACSMetadata(const std::string& filename)
-       {
-           if( filename.empty()) {
-               LOG(ERROR) << "Error: Empty filename in ExportStepWithCPACSMetadata.";
-               return;
-           }
-
-           CCPACSImportExport generator(myConfig);
-           Handle(TDocStd_Document) hDoc = generator.buildXDEStructure();
-
-           STEPControl_Controller::Init();
-           STEPCAFControl_Writer writer;
-           writer.Transfer(hDoc, STEPControl_AsIs);
-           writer.Write(filename.c_str());
-       }
+    {
+        if( filename.empty()) {
+            LOG(ERROR) << "Error: Empty filename in ExportStepWithCPACSMetadata.";
+            return;
+        }
+        
+        CCPACSImportExport generator(myConfig);
+        Handle(TDocStd_Document) hDoc = generator.buildXDEStructure();
+        
+        STEPControl_Controller::Init();
+        STEPCAFControl_Writer writer;
+        writer.Transfer(hDoc, STEPControl_AsIs);
+        writer.Write(filename.c_str());
+    }
 
 } // end namespace tigl

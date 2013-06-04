@@ -82,51 +82,47 @@ TiglReturnCode CTiglExportCollada::writeToDisc(CTiglPolyData& polyData, const ch
     std::stringstream stream_trians;
     unsigned long count_pos =0, count_norm =0, count_vert =0; // count Points, Normals, Verticies for COLLADA-schema arrays
 
-        for(unsigned int i = 1; i <= polyData.getNObjects(); ++i){
-            CTiglPolyObject& obj = polyData.switchObject(i);
+    for(unsigned int i = 1; i <= polyData.getNObjects(); ++i){
+        CTiglPolyObject& obj = polyData.switchObject(i);
 
-            unsigned long nvert = obj.getNVertices();
-            count_vert+=nvert;
-            for(unsigned long jvert = 0; jvert < nvert; ++jvert){
-                const CTiglPoint& v = obj.getVertexPoint(jvert);
-                const CTiglPoint& n = obj.getVertexNormal(jvert);
+        unsigned long nvert = obj.getNVertices();
+        count_vert+=nvert;
+        for(unsigned long jvert = 0; jvert < nvert; ++jvert){
+            const CTiglPoint& v = obj.getVertexPoint(jvert);
+            const CTiglPoint& n = obj.getVertexNormal(jvert);
 
-                // VertexPoint
-                stream_verts <<  v.x << " " << v.y << " " << v.z << " ";
+            // VertexPoint
+            stream_verts <<  v.x << " " << v.y << " " << v.z << " ";
 
-                // VertexNormals
-                stream_normals <<  n.x << " " << n.y << " " << n.z << " ";
-                count_norm++;
-                count_pos++;
+            // VertexNormals
+            stream_normals <<  n.x << " " << n.y << " " << n.z << " ";
+            count_norm++;
+            count_pos++;
+        }
+
+        unsigned long ntria = obj.getNPolygons();
+
+        for(unsigned long jtria = 0; jtria < ntria; ++jtria){
+            unsigned long npoints = obj.getNPointsOfPolygon(jtria);
+            // skip all polygons that aren't triangles
+            if(npoints < 3)
+                // we currently dont export lines
+                continue;
+            else if(npoints > 3){
+                LOG(WARNING) << "Polygons with more than 3 vertices are currently not supported by CTiglExportCollada!" << endl;
+                continue;
             }
 
-            unsigned long ntria = obj.getNPolygons();
+            for(unsigned long kpoint = 0; kpoint < npoints; ++kpoint){
+                // get vertex index of polygon
+                unsigned long vindex = obj.getVertexIndexOfPolygon(kpoint, jtria);
 
-            for(unsigned long jtria = 0; jtria < ntria; ++jtria){
-                unsigned long npoints = obj.getNPointsOfPolygon(jtria);
-                // skip all polygons that aren't triangles
-                if(npoints < 3)
-                    // we currently dont export lines
-                    continue;
-                else if(npoints > 3){
-                    LOG(WARNING) << "Polygons with more than 3 vertices are currently not supported by CTiglExportCollada!" << endl;
-                    continue;
-                }
-
-                for(unsigned long kpoint = 0; kpoint < npoints; ++kpoint){
-                    // get vertex index of polygon
-                    unsigned long vindex = obj.getVertexIndexOfPolygon(kpoint, jtria);
-
-                    // write vertex index into list of vertices and normals
-                    stream_trians << vindex << " " << vindex << " ";
-                }
-                count_vert++;
+                // write vertex index into list of vertices and normals
+                stream_trians << vindex << " " << vindex << " ";
             }
-
-
-        } //end for objects
-
-
+            count_vert++;
+        }
+    } //end for objects
 
     // COLLADA header
 
@@ -287,15 +283,10 @@ TiglReturnCode CTiglExportCollada::writeToDisc(CTiglPolyData& polyData, const ch
     tixiAddTextAttribute(handle, "/COLLADA/library_visual_scenes/visual_scene/node/instance_geometry/bind_material/technique_common/instance_material","target", "#whiteMaterial");
     // #whiteMaterial = NULL, da nicht implementiert. Fehlt noch oben im Header-Bereich ... Pong, def collor usw.
 
-
-
     tixiSaveDocument(handle, filename);
 
     return TIGL_SUCCESS;
 }
-
-
-
 
 
 } // namespace tigl

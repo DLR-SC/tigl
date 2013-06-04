@@ -52,8 +52,8 @@ namespace tigl {
     // Builds the wire from the given points
     TopoDS_Wire CTiglApproximateBsplineWire::BuildWire(const CPointContainer& points, bool forceClosed) const
     {
-		if (points.size() < 2)
-			throw CTiglError("Error: To less points to build a wire in CTiglApproximateBsplineWire::BuildWire", TIGL_ERROR);
+        if (points.size() < 2)
+            throw CTiglError("Error: To less points to build a wire in CTiglApproximateBsplineWire::BuildWire", TIGL_ERROR);
 
         // If first and last point are identical always force wire closure independently of given forceClosed flag.
         if (points[0].Distance(points[points.size() - 1]) <= Precision::Confusion())
@@ -112,7 +112,7 @@ namespace tigl {
     {
         if (points.size() == 0)
         {
-			throw CTiglError("Error: To less points in CTiglInterpolateBsplineWire::GetPointWithMinX", TIGL_ERROR);
+            throw CTiglError("Error: To less points in CTiglInterpolateBsplineWire::GetPointWithMinX", TIGL_ERROR);
         }
 
         gp_Pnt minXPnt = points[0];
@@ -129,7 +129,7 @@ namespace tigl {
     {
         if (points.size() == 0)
         {
-			throw CTiglError("Error: To less points in CTiglInterpolateBsplineWire::GetPointWithMaxX", TIGL_ERROR);
+            throw CTiglError("Error: To less points in CTiglInterpolateBsplineWire::GetPointWithMaxX", TIGL_ERROR);
         }
 
         gp_Pnt maxXPnt = points[0];
@@ -146,7 +146,7 @@ namespace tigl {
     {
         if (points.size() == 0)
         {
-			throw CTiglError("Error: To less points in CTiglInterpolateBsplineWire::GetPointWithMinY", TIGL_ERROR);
+            throw CTiglError("Error: To less points in CTiglInterpolateBsplineWire::GetPointWithMinY", TIGL_ERROR);
         }
 
         gp_Pnt minYPnt = points[0];
@@ -163,7 +163,7 @@ namespace tigl {
     {
         if (points.size() == 0)
         {
-			throw CTiglError("Error: To less points in CTiglInterpolateBsplineWire::GetPointWithMaxY", TIGL_ERROR);
+            throw CTiglError("Error: To less points in CTiglInterpolateBsplineWire::GetPointWithMaxY", TIGL_ERROR);
         }
 
         gp_Pnt maxYPnt = points[0];

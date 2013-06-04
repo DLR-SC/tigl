@@ -811,6 +811,7 @@ void ObjectImpl::addPolygon(const CTiglPolygon & poly){
 unsigned long ObjectImpl::getNPolygons() const{
     return polys.size();
 }
+
 unsigned long ObjectImpl::getNPointsOfPolygon(unsigned long ipoly) const{
     if(ipoly < getNPolygons())
         return polys[ipoly].getNVert();

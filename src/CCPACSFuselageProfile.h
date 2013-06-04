@@ -112,9 +112,9 @@ namespace tigl {
 
     private:
         std::string               ProfileXPath;   /**< The XPath to this profile in cpacs */
-        std::string               name;			  /**< The Name of the profile */
-        std::string				  description;	  /**< The description of the profile */
-        std::string				  uid;			  /**< The UID of this profile */
+        std::string               name;              /**< The Name of the profile */
+        std::string                  description;      /**< The description of the profile */
+        std::string                  uid;              /**< The UID of this profile */
         CCPACSCoordinateContainer coordinates;    /**< Coordinates of a fuselage profile element */
         bool                      invalidated;    /**< Flag if element is invalid */
         TopoDS_Wire               wireOriginal;   /**< Original fuselage profile wire */

@@ -35,20 +35,20 @@
 namespace tigl {
 
     class CTiglAbstractGeometricComponent : public ITiglGeometricComponent
-	{
+    {
 
-	public:
+    public:
         // Constructor
         CTiglAbstractGeometricComponent(void);
 
         // Virtual Destructor
-		virtual ~CTiglAbstractGeometricComponent(void);
+        virtual ~CTiglAbstractGeometricComponent(void);
 
-   		// Gets the loft of a geometric component
-		virtual TopoDS_Shape& GetLoft(void) = 0;
+           // Gets the loft of a geometric component
+        virtual TopoDS_Shape& GetLoft(void) = 0;
 
-		// Get the loft mirrored at the mirror plane
-		virtual TopoDS_Shape GetMirroredLoft(void);
+        // Get the loft mirrored at the mirror plane
+        virtual TopoDS_Shape GetMirroredLoft(void);
 
         // Gets the component uid
         virtual const std::string& GetUID(void);
@@ -85,16 +85,16 @@ namespace tigl {
         CTiglPoint                 rotation;
 
     private:
-		// Copy constructor
-		CTiglAbstractGeometricComponent(const CTiglAbstractGeometricComponent& ) { /* Do nothing */ }
+        // Copy constructor
+        CTiglAbstractGeometricComponent(const CTiglAbstractGeometricComponent& ) { /* Do nothing */ }
 
-		// Assignment operator
-		void operator=(const CTiglAbstractGeometricComponent& ) { /* Do nothing */ }
+        // Assignment operator
+        void operator=(const CTiglAbstractGeometricComponent& ) { /* Do nothing */ }
 
     private:
         std::string        myUID;           /**< UID of this component               */
         TiglSymmetryAxis   mySymmetryAxis;  /**< SymmetryAxis of this component      */
-	};
+    };
 
 } // end namespace tigl
 

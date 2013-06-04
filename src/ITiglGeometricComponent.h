@@ -41,12 +41,12 @@ class TopoDS_Shape;
 
 namespace tigl {
 
-	class ITiglGeometricComponent
-	{
+    class ITiglGeometricComponent
+    {
 
-	public:
-   		// Gets the loft of a geometric component
-		virtual TopoDS_Shape & GetLoft(void) = 0;
+    public:
+           // Gets the loft of a geometric component
+        virtual TopoDS_Shape & GetLoft(void) = 0;
 
         // Returns the unique id of this component
         virtual const std::string& GetUID(void) = 0;
@@ -56,15 +56,15 @@ namespace tigl {
 
         // Get transformation object
         virtual CTiglTransformation GetTransformation(void) = 0;
-		
-		// Set transformation object
+        
+        // Set transformation object
         virtual void Translate(CTiglPoint trans) = 0;
 
         // Get component translation
         virtual CTiglPoint GetTranslation(void) = 0;
 
-		// Returns the Geometric type of this component, e.g. Wing or Fuselage
-		virtual TiglGeometricComponentType GetComponentType(void) = 0;
+        // Returns the Geometric type of this component, e.g. Wing or Fuselage
+        virtual TiglGeometricComponentType GetComponentType(void) = 0;
 
         // builds data structure for a TDocStd_Application
         // mostly used for export
@@ -73,8 +73,7 @@ namespace tigl {
     protected:
         // Resets the geometric component.
         virtual void Reset(void) = 0;
-
-	};
+    };
 
 } // end namespace tigl
 

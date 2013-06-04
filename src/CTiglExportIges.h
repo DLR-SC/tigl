@@ -38,16 +38,16 @@ class CCPACSConfiguration;
 
 namespace tigl {
 
-	class CTiglExportIges
-	{
+    class CTiglExportIges
+    {
 
-	public:
-		// Constructor
-		CTiglExportIges(CCPACSConfiguration& config);
+    public:
+        // Constructor
+        CTiglExportIges(CCPACSConfiguration& config);
 
-		// Virtual Destructor
-		virtual ~CTiglExportIges(void);
-		
+        // Virtual Destructor
+        virtual ~CTiglExportIges(void);
+        
         // Exports the whole configuration as IGES file
         void ExportIGES(const std::string& filename) const;
 
@@ -59,18 +59,16 @@ namespace tigl {
 
         // Saves as IGES, with cpacs metadata information in it
         void ExportIgesWithCPACSMetadata(const std::string& filename);
-
-
     protected:
         
 
     private:
-		// Assignment operator
-		void operator=(const CTiglExportIges& ) { /* Do nothing */ }
+        // Assignment operator
+        void operator=(const CTiglExportIges& ) { /* Do nothing */ }
 
-	private:
-		CCPACSConfiguration&          myConfig;       /**< TIGL configuration object */
-	};
+    private:
+        CCPACSConfiguration&          myConfig;       /**< TIGL configuration object */
+    };
 
 } // end namespace tigl
 

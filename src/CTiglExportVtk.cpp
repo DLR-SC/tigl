@@ -56,7 +56,7 @@ namespace tigl {
     CTiglExportVtk::~CTiglExportVtk(void)
     {
     }
-	
+    
     
     // Exports a by index selected wing, boolean fused and meshed, as STL file
     void CTiglExportVtk::ExportMeshedWingVTKByIndex(const int wingIndex, const std::string& filename, const double deflection)
@@ -137,7 +137,6 @@ namespace tigl {
     // Exports a whole geometry, boolean fused and meshed, as VTK file
     void CTiglExportVtk::ExportMeshedGeometryVTKSimple(const std::string& filename, const double deflection)
     {
-
         LOG(ERROR) << "tiglExportMeshedGeometryVTKSimple not yet implemented!!" << std::endl;
     }
 

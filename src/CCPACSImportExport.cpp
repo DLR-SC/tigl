@@ -44,19 +44,19 @@
 
 namespace tigl {
 
-	// Constructor
-	CCPACSImportExport::CCPACSImportExport(CCPACSConfiguration& config)
-	:myConfig(config)
-	{
-	}
+    // Constructor
+    CCPACSImportExport::CCPACSImportExport(CCPACSConfiguration& config)
+    :myConfig(config)
+    {
+    }
 
-	// Destructor
-	CCPACSImportExport::~CCPACSImportExport(void)
-	{
-	}
+    // Destructor
+    CCPACSImportExport::~CCPACSImportExport(void)
+    {
+    }
 
 
-	Handle_TDocStd_Document CCPACSImportExport::buildXDEStructure()
+    Handle_TDocStd_Document CCPACSImportExport::buildXDEStructure()
     {
 
         Handle(XCAFApp_Application) hApp = XCAFApp_Application::GetApplication();

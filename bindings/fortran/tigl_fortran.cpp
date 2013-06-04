@@ -94,7 +94,7 @@ static void copyToFortranString(const char *cString, int fortranStringLength, ch
 
 void tiglOpenCPACSConfiguration_f(TixiDocumentHandle* tixiHandle,
                                   TiglCPACSConfigurationHandle* cpacsHandlePtr,
-								  char* configurationUID,
+                                  char* configurationUID,
                                   TiglReturnCode* returnCode)
 {
     *returnCode = tiglOpenCPACSConfiguration(*tixiHandle, configurationUID, cpacsHandlePtr);
@@ -187,11 +187,11 @@ void tiglExportStructuredSTEP_f(TiglCPACSConfigurationHandle* cpacsHandle,
 }
 
 void tiglExportMeshedWingSTL_f(TiglCPACSConfigurationHandle* cpacsHandle,
-						   int* wingIndex,
-						   char* filenamePtr,
-						   double* deflection,
-					       TiglReturnCode* returnCode,
-						   int lengthString1)
+                           int* wingIndex,
+                           char* filenamePtr,
+                           double* deflection,
+                           TiglReturnCode* returnCode,
+                           int lengthString1)
 {
   char *cString;
   cString = makeCString(filenamePtr, lengthString1);
@@ -252,36 +252,36 @@ void tiglWingGetComponentSegmentCount_f(TiglCPACSConfigurationHandle* cpacsHandl
 }
 
 void tiglWingGetComponentSegmentUID_f(TiglCPACSConfigurationHandle* cpacsHandle,
-							int* wingIndex,
-							int* segmentIndex,
+                            int* wingIndex,
+                            int* segmentIndex,
                             char* uidNamePtr,
                             TiglReturnCode* returnCode,
                             int lengthString1)
 {
-	const char* namePtr = 0;
-	*returnCode = tiglWingGetComponentSegmentUID(*cpacsHandle, *wingIndex, *segmentIndex, &uidNamePtr);
-
-	if (*returnCode == TIGL_SUCCESS)
-	{
-		copyToFortranString(namePtr, lengthString1, uidNamePtr);
-		if ((size_t) lengthString1 < strlen(namePtr) + 1)
-		{
-			*returnCode = TIGL_STRING_TRUNCATED;
-		}
-	}
+    const char* namePtr = 0;
+    *returnCode = tiglWingGetComponentSegmentUID(*cpacsHandle, *wingIndex, *segmentIndex, &uidNamePtr);
+    
+    if (*returnCode == TIGL_SUCCESS)
+    {
+        copyToFortranString(namePtr, lengthString1, uidNamePtr);
+        if ((size_t) lengthString1 < strlen(namePtr) + 1)
+        {
+            *returnCode = TIGL_STRING_TRUNCATED;
+        }
+    }
 }
 
 void tiglWingGetComponentSegmentIndex(TiglCPACSConfigurationHandle* cpacsHandle,
-							int* wingIndex,
-							char* uidNamePtr,
+                            int* wingIndex,
+                            char* uidNamePtr,
                             int* segmentIndex,
                             TiglReturnCode* returnCode,
                             int lengthString1)
 {
-	char * namePtr = makeCString(uidNamePtr, lengthString1);
+    char * namePtr = makeCString(uidNamePtr, lengthString1);
 
-	*returnCode = tiglWingGetComponentSegmentIndex(*cpacsHandle, *wingIndex, namePtr, segmentIndex);
-	free(namePtr);
+    *returnCode = tiglWingGetComponentSegmentIndex(*cpacsHandle, *wingIndex, namePtr, segmentIndex);
+    free(namePtr);
 }
 
 void tiglWingGetUpperPoint_f(TiglCPACSConfigurationHandle* cpacsHandle,
@@ -442,22 +442,22 @@ void tiglWingGetProfileName_f(TiglCPACSConfigurationHandle* cpacsHandle,
 
 
 void tiglWingGetUID_f(TiglCPACSConfigurationHandle* cpacsHandle,
-							int* wingIndex,
+                            int* wingIndex,
                             char* uidNamePtr,
                             TiglReturnCode* returnCode,
                             int lengthString1)
 {
-	const char* namePtr = 0;
-	*returnCode = tiglWingGetUID(*cpacsHandle, *wingIndex, &uidNamePtr);
-
-	if (*returnCode == TIGL_SUCCESS)
-	{
-		copyToFortranString(namePtr, lengthString1, uidNamePtr);
-		if ((size_t) lengthString1 < strlen(namePtr) + 1)
-		{
-			*returnCode = TIGL_STRING_TRUNCATED;
-		}
-	}
+    const char* namePtr = 0;
+    *returnCode = tiglWingGetUID(*cpacsHandle, *wingIndex, &uidNamePtr);
+    
+    if (*returnCode == TIGL_SUCCESS)
+    {
+        copyToFortranString(namePtr, lengthString1, uidNamePtr);
+        if ((size_t) lengthString1 < strlen(namePtr) + 1)
+        {
+            *returnCode = TIGL_STRING_TRUNCATED;
+        }
+    }
 }
 
 void tiglWingGetIndex_f(TiglCPACSConfigurationHandle* cpacsHandle,
@@ -466,64 +466,64 @@ void tiglWingGetIndex_f(TiglCPACSConfigurationHandle* cpacsHandle,
                             TiglReturnCode* returnCode,
                             int lengthString1)
 {
-	char* namePtr = makeCString(uidNamePtr, lengthString1);
-	*returnCode = tiglWingGetIndex(*cpacsHandle, namePtr, wingIndex);
-	free(namePtr);
+    char* namePtr = makeCString(uidNamePtr, lengthString1);
+    *returnCode = tiglWingGetIndex(*cpacsHandle, namePtr, wingIndex);
+    free(namePtr);
 }
 
 
 void tiglWingGetSegmentUID_f(TiglCPACSConfigurationHandle* cpacsHandle,
-							int* wingIndex,
-							int* segmentIndex,
+                            int* wingIndex,
+                            int* segmentIndex,
                             char* uidNamePtr,
                             TiglReturnCode* returnCode,
                             int lengthString1)
 {
-	const char* namePtr = 0;
-	*returnCode = tiglWingGetSegmentUID(*cpacsHandle, *wingIndex, *segmentIndex, &uidNamePtr);
+    const char* namePtr = 0;
+    *returnCode = tiglWingGetSegmentUID(*cpacsHandle, *wingIndex, *segmentIndex, &uidNamePtr);
 
-	if (*returnCode == TIGL_SUCCESS)
-	{
-		copyToFortranString(namePtr, lengthString1, uidNamePtr);
-		if ((size_t) lengthString1 < strlen(namePtr) + 1)
-		{
-			*returnCode = TIGL_STRING_TRUNCATED;
-		}
-	}
+    if (*returnCode == TIGL_SUCCESS)
+    {
+        copyToFortranString(namePtr, lengthString1, uidNamePtr);
+        if ((size_t) lengthString1 < strlen(namePtr) + 1)
+        {
+            *returnCode = TIGL_STRING_TRUNCATED;
+        }
+    }
 }
 
 void tiglWingGetSegmentIndex(TiglCPACSConfigurationHandle* cpacsHandle,
-							char* uidNamePtr,
+                            char* uidNamePtr,
                             int* segmentIndex,
                             int* wingIndex,
                             TiglReturnCode* returnCode,
                             int lengthString1)
 {
-	char * namePtr = makeCString(uidNamePtr, lengthString1);
+    char * namePtr = makeCString(uidNamePtr, lengthString1);
 
-	*returnCode = tiglWingGetSegmentIndex(*cpacsHandle, namePtr, segmentIndex, wingIndex);
-	free(namePtr);
+    *returnCode = tiglWingGetSegmentIndex(*cpacsHandle, namePtr, segmentIndex, wingIndex);
+    free(namePtr);
 }
 
 
 void tiglWingGetSectionUID_f(TiglCPACSConfigurationHandle* cpacsHandle,
-							int* wingIndex,
-							int* sectionIndex,
+                            int* wingIndex,
+                            int* sectionIndex,
                             char* uidNamePtr,
                             TiglReturnCode* returnCode,
                             int lengthString1)
 {
-	const char* namePtr = 0;
-	*returnCode = tiglWingGetSectionUID(*cpacsHandle, *wingIndex, *sectionIndex, &uidNamePtr);
+    const char* namePtr = 0;
+    *returnCode = tiglWingGetSectionUID(*cpacsHandle, *wingIndex, *sectionIndex, &uidNamePtr);
 
-	if (*returnCode == TIGL_SUCCESS)
-	{
-		copyToFortranString(namePtr, lengthString1, uidNamePtr);
-		if ((size_t) lengthString1 < strlen(namePtr) + 1)
-		{
-			*returnCode = TIGL_STRING_TRUNCATED;
-		}
-	}
+    if (*returnCode == TIGL_SUCCESS)
+    {
+        copyToFortranString(namePtr, lengthString1, uidNamePtr);
+        if ((size_t) lengthString1 < strlen(namePtr) + 1)
+        {
+            *returnCode = TIGL_STRING_TRUNCATED;
+        }
+    }
 }
 
 
@@ -687,13 +687,13 @@ void tiglFuselageGetPointAngle_f(TiglCPACSConfigurationHandle* cpacsHandle,
                                 TiglReturnCode* returnCode)
 {
     *returnCode = tiglFuselageGetPointAngle(*cpacsHandle,
-											*fuselageIndex,
-											*segmentIndex,
-											*eta,
-											*alpha,
-											pointXPtr,
-											pointYPtr,
-											pointZPtr);
+                                            *fuselageIndex,
+                                            *segmentIndex,
+                                            *eta,
+                                            *alpha,
+                                            pointXPtr,
+                                            pointYPtr,
+                                            pointZPtr);
 }
 
 
@@ -1101,7 +1101,7 @@ void tiglWingComponentSegmentGetMaterialUIDs_f(TiglCPACSConfigurationHandle* cpa
 /*                     UTILITY FUNCTIONS                                                             */
 /*****************************************************************************************************/
 void tiglComponentGetHashCode(TiglCPACSConfigurationHandle* cpacsHandle,
-							   char* uID,
+                               char* uID,
                                int* hashCode,
                                TiglReturnCode* returnCode,
                                int lengthString1)
@@ -1115,83 +1115,83 @@ void tiglComponentGetHashCode(TiglCPACSConfigurationHandle* cpacsHandle,
 
 
 void tiglComponentIntersectionPoint_f(TiglCPACSConfigurationHandle* cpacsHandle,
-									 char*  componentUidOne,
-									 char*  componentUidTwo,
-									 int* lineID,
-									 double* eta,
-									 double* pointXPtr,
-									 double* pointYPtr,
-									 double* pointZPtr,
-									 TiglReturnCode* returnCode,
-									 int lengthString1,
-									 int lengthString2)
+                                     char*  componentUidOne,
+                                     char*  componentUidTwo,
+                                     int* lineID,
+                                     double* eta,
+                                     double* pointXPtr,
+                                     double* pointYPtr,
+                                     double* pointZPtr,
+                                     TiglReturnCode* returnCode,
+                                     int lengthString1,
+                                     int lengthString2)
 {
-	char *cStringOne = NULL;
-	char *cStringTwo = NULL;
-	cStringOne = makeCString(componentUidOne, lengthString1);
-	cStringTwo = makeCString(componentUidTwo, lengthString2);
-	*returnCode = tiglComponentIntersectionPoint(	*cpacsHandle,
-													cStringOne,
-													cStringTwo,
-													*lineID,
-													*eta,
-													pointXPtr,
-													pointYPtr,
-													pointZPtr);
+    char *cStringOne = NULL;
+    char *cStringTwo = NULL;
+    cStringOne = makeCString(componentUidOne, lengthString1);
+    cStringTwo = makeCString(componentUidTwo, lengthString2);
+    *returnCode = tiglComponentIntersectionPoint(    *cpacsHandle,
+                                                    cStringOne,
+                                                    cStringTwo,
+                                                    *lineID,
+                                                    *eta,
+                                                    pointXPtr,
+                                                    pointYPtr,
+                                                    pointZPtr);
 
 }
 
 
 void tiglComponentIntersectionLineCount_f(TiglCPACSConfigurationHandle* cpacsHandle,
-										char*  componentUidOne,
-										char*  componentUidTwo,
-										int*   numWires,
-										TiglReturnCode* returnCode,
-										int lengthString1,
-										int lengthString2)
+                                        char*  componentUidOne,
+                                        char*  componentUidTwo,
+                                        int*   numWires,
+                                        TiglReturnCode* returnCode,
+                                        int lengthString1,
+                                        int lengthString2)
 {
-	char *cStringOne = NULL;
-	char *cStringTwo = NULL;
-	cStringOne = makeCString(componentUidOne, lengthString1);
-	cStringTwo = makeCString(componentUidTwo, lengthString2);
-	*returnCode = tiglComponentIntersectionLineCount(*cpacsHandle,
-													cStringOne,
-													cStringTwo,
-													numWires);
+    char *cStringOne = NULL;
+    char *cStringTwo = NULL;
+    cStringOne = makeCString(componentUidOne, lengthString1);
+    cStringTwo = makeCString(componentUidTwo, lengthString2);
+    *returnCode = tiglComponentIntersectionLineCount(*cpacsHandle,
+                                                    cStringOne,
+                                                    cStringTwo,
+                                                    numWires);
 
 }
 
 
 void tiglFuselageGetMinumumDistanceToGround_f(TiglCPACSConfigurationHandle* cpacsHandle,
-											 char *fuselageUID,
-											 double* axisPntX,
-											 double* axisPntY,
-											 double* axisPntZ,
-											 double* axisDirX,
-											 double* axisDirY,
-											 double* axisDirZ,
-											 double* angle,
-											 double* pointXPtr,
-											 double* pointYPtr,
-											 double* pointZPtr,
-											 TiglReturnCode* returnCode,
-											 int lengthString1)
+                                             char *fuselageUID,
+                                             double* axisPntX,
+                                             double* axisPntY,
+                                             double* axisPntZ,
+                                             double* axisDirX,
+                                             double* axisDirY,
+                                             double* axisDirZ,
+                                             double* angle,
+                                             double* pointXPtr,
+                                             double* pointYPtr,
+                                             double* pointZPtr,
+                                             TiglReturnCode* returnCode,
+                                             int lengthString1)
 {
-	  char *cString = NULL;
-	  cString = makeCString(fuselageUID, lengthString1);
-	  *returnCode = tiglFuselageGetMinumumDistanceToGround(*cpacsHandle,
-			  	  	  	  	  	  	  	  	  	  	  	  	 cString,
-			  	  	  	  	  	  	  	  	  	  	  	  	 *axisPntX,
-			  	  	  	  	  	  	  	  	  	  	  	  	 *axisPntY,
-			  	  	  	  	  	  	  	  	  	  	  	  	 *axisPntZ,
-			  	  	  	  	  	  	  	  	  	  	  	  	 *axisDirX,
-															 *axisDirY,
-															 *axisDirZ,
-															 *angle,
-															 pointXPtr,
-															 pointYPtr,
-															 pointZPtr);
-	  free(cString);
+      char *cString = NULL;
+      cString = makeCString(fuselageUID, lengthString1);
+      *returnCode = tiglFuselageGetMinumumDistanceToGround(*cpacsHandle,
+                                                                                     cString,
+                                                                                     *axisPntX,
+                                                                                     *axisPntY,
+                                                                                     *axisPntZ,
+                                                                                     *axisDirX,
+                                                             *axisDirY,
+                                                             *axisDirZ,
+                                                             *angle,
+                                                             pointXPtr,
+                                                             pointYPtr,
+                                                             pointZPtr);
+      free(cString);
 }
 
 void tiglGetErrorString_f(TiglReturnCode code, char * strpointer, int lengthStr){

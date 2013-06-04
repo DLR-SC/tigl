@@ -31,45 +31,45 @@
 
 class TIGLScriptProxy :public QObject
 {
-        Q_OBJECT
-        
-             Q_PROPERTY( QString wingCount READ tiglGetWingCount() )
-        
-        private:
-                // Returns the CPACS configuration
-                tigl::CCPACSConfiguration& GetConfiguration(void) const;
-                TiglCPACSConfigurationHandle getTiglHandle(void);
-                char* qString2char(QString str);
-
-        public:
-                TIGLScriptProxy();
-                //~TIGLScriptProxy();
-                
-                static void registerClass(QScriptEngine *);
-        
-        public slots:
-                QStringList getMemberFunctions();
-                
-                // wrapped tigl functions
-                int tiglGetWingCount();
-                QString tiglGetVersion();
-                int tiglComponentGetHashCode (QString componentUID);
-                int tiglComponentIntersectionLineCount (QString componentUidOne, QString componentUidTwo);
-                void tiglExportFusedWingFuselageIGES (QString filenamePtr);
-                void tiglExportIGES (QString filenamePtr);
-                void tiglExportMeshedFuselageSTL(int fuselageIndex, QString filenamePtr, double deflection);
-                void tiglExportMeshedFuselageVTKByIndex (int fuselageIndex, QString filenamePtr, double deflection);
-                void tiglExportMeshedFuselageVTKByUID (QString fuselageUID, QString filenamePtr, double deflection);
-                double tiglFuselageGetCircumference (int fuselageIndex, int segmentIndex, double eta);
-                QString tiglFuselageGetPoint (int fuselageIndex, int segmentIndex, double eta, double zeta);
-                QString tiglFuselageGetSegmentUID (int fuselageIndex, int segmentIndex);
-                double tiglFuselageGetSegmentVolume (int fuselageIndex, int segmentIndex);
-                int tiglGetFuselageCount();
-
-        private:
-                QString m_fileName;
-                QStringList memberFunctions;
-                int m_cpacsHandle;
+    Q_OBJECT
+    
+    Q_PROPERTY( QString wingCount READ tiglGetWingCount() )
+    
+private:
+    // Returns the CPACS configuration
+    tigl::CCPACSConfiguration& GetConfiguration(void) const;
+    TiglCPACSConfigurationHandle getTiglHandle(void);
+    char* qString2char(QString str);
+    
+public:
+    TIGLScriptProxy();
+    //~TIGLScriptProxy();
+    
+    static void registerClass(QScriptEngine *);
+    
+public slots:
+    QStringList getMemberFunctions();
+    
+    // wrapped tigl functions
+    int tiglGetWingCount();
+    QString tiglGetVersion();
+    int tiglComponentGetHashCode (QString componentUID);
+    int tiglComponentIntersectionLineCount (QString componentUidOne, QString componentUidTwo);
+    void tiglExportFusedWingFuselageIGES (QString filenamePtr);
+    void tiglExportIGES (QString filenamePtr);
+    void tiglExportMeshedFuselageSTL(int fuselageIndex, QString filenamePtr, double deflection);
+    void tiglExportMeshedFuselageVTKByIndex (int fuselageIndex, QString filenamePtr, double deflection);
+    void tiglExportMeshedFuselageVTKByUID (QString fuselageUID, QString filenamePtr, double deflection);
+    double tiglFuselageGetCircumference (int fuselageIndex, int segmentIndex, double eta);
+    QString tiglFuselageGetPoint (int fuselageIndex, int segmentIndex, double eta, double zeta);
+    QString tiglFuselageGetSegmentUID (int fuselageIndex, int segmentIndex);
+    double tiglFuselageGetSegmentVolume (int fuselageIndex, int segmentIndex);
+    int tiglGetFuselageCount();
+    
+private:
+    QString m_fileName;
+    QStringList memberFunctions;
+    int m_cpacsHandle;
 
 };
 

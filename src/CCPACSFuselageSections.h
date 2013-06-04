@@ -34,44 +34,44 @@
 
 namespace tigl {
 
-	class CCPACSFuselageSections
-	{
+    class CCPACSFuselageSections
+    {
 
-	private:
-		// Typedef for a CCPACSFuselageSection container to store the sections of a fuselage.
-		typedef std::vector<CCPACSFuselageSection*> CCPACSFuselageSectionContainer;
+    private:
+        // Typedef for a CCPACSFuselageSection container to store the sections of a fuselage.
+        typedef std::vector<CCPACSFuselageSection*> CCPACSFuselageSectionContainer;
 
-	public:
-		// Constructor
-		CCPACSFuselageSections(void);
+    public:
+        // Constructor
+        CCPACSFuselageSections(void);
 
-		// Virtual Destructor
-		virtual ~CCPACSFuselageSections(void);
+        // Virtual Destructor
+        virtual ~CCPACSFuselageSections(void);
 
-		// Read CPACS fuselage sections element
-		void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& fuselageXPath);
+        // Read CPACS fuselage sections element
+        void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& fuselageXPath);
 
-		// Get section count
-		int GetSectionCount(void) const;
+        // Get section count
+        int GetSectionCount(void) const;
 
-		// Returns the section for a given index
-		CCPACSFuselageSection& GetSection(int index) const;
+        // Returns the section for a given index
+        CCPACSFuselageSection& GetSection(int index) const;
 
-	protected:
-		// Cleanup routine
-		void Cleanup(void);
+    protected:
+        // Cleanup routine
+        void Cleanup(void);
 
-	private:
-		// Copy constructor
-		CCPACSFuselageSections(const CCPACSFuselageSections& ) { /* Do nothing */ }
+    private:
+        // Copy constructor
+        CCPACSFuselageSections(const CCPACSFuselageSections& ) { /* Do nothing */ }
 
-		// Assignment operator
-		void operator=(const CCPACSFuselageSections& ) { /* Do nothing */ }
+        // Assignment operator
+        void operator=(const CCPACSFuselageSections& ) { /* Do nothing */ }
 
-	private:
-		CCPACSFuselageSectionContainer sections;       /**< Section elements */
+    private:
+        CCPACSFuselageSectionContainer sections;       /**< Section elements */
 
-	};
+    };
 
 } // end namespace tigl
 

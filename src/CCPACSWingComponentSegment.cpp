@@ -85,65 +85,65 @@
 
 namespace tigl {
 
-	// Constructor
-	CCPACSWingComponentSegment::CCPACSWingComponentSegment(CCPACSWing* aWing, int aSegmentIndex)
+    // Constructor
+    CCPACSWingComponentSegment::CCPACSWingComponentSegment(CCPACSWing* aWing, int aSegmentIndex)
         : CTiglAbstractSegment(aSegmentIndex)
         , wing(aWing)
         , surfacesAreValid(false)
-	{
+    {
         Cleanup();
-	}
+    }
 
-	// Destructor
-	CCPACSWingComponentSegment::~CCPACSWingComponentSegment(void)
-	{
-		Cleanup();
-	}
+    // Destructor
+    CCPACSWingComponentSegment::~CCPACSWingComponentSegment(void)
+    {
+        Cleanup();
+    }
 
-	// Invalidates internal state
-	void CCPACSWingComponentSegment::Invalidate(void)
-	{
-		invalidated = true;
-		surfacesAreValid = false;
-	}
+    // Invalidates internal state
+    void CCPACSWingComponentSegment::Invalidate(void)
+    {
+        invalidated = true;
+        surfacesAreValid = false;
+    }
 
-	// Cleanup routine
-	void CCPACSWingComponentSegment::Cleanup(void)
-	{
-		name = "";
-		fromElementUID = "";
-        toElementUID  = "";
-        myVolume      = 0.;
-        mySurfaceArea = 0.;
+    // Cleanup routine
+    void CCPACSWingComponentSegment::Cleanup(void)
+    {
+        name = "";
+        fromElementUID = "";
+        toElementUID   = "";
+        myVolume       = 0.;
+        mySurfaceArea  = 0.;
         surfacesAreValid = false;
         CTiglAbstractSegment::Cleanup();
         structure.Cleanup();
-	}
+    }
 
-	// Update internal segment data
-	void CCPACSWingComponentSegment::Update(void)
-	{
-		if (!invalidated)
-			return;
+    // Update internal segment data
+    void CCPACSWingComponentSegment::Update(void)
+    {
+        if (!invalidated)
+            return;
 
-		BuildLoft();
-		invalidated = false;
-	}
+        BuildLoft();
+        invalidated = false;
+    }
 
-	// Read CPACS segment elements
-	void CCPACSWingComponentSegment::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& segmentXPath)
-	{
-		//Cleanup();
+    // Read CPACS segment elements
+    void CCPACSWingComponentSegment::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& segmentXPath)
+    {
+        //Cleanup();
 
-		char*       elementPath;
-		std::string tempString;
+        char*       elementPath;
+        std::string tempString;
 
-		// Get subelement "name"
-		char* ptrName = NULL;
-		tempString    = segmentXPath + "/name";
-		elementPath   = const_cast<char*>(tempString.c_str());
-		if (tixiGetTextElement(tixiHandle, elementPath, &ptrName) == SUCCESS)
-		    name          = ptrName;
+        // Get subelement "name"
+        char* ptrName = NULL;
+        tempString    = segmentXPath + "/name";
+        elementPath   = const_cast<char*>(tempString.c_str());
+        if (tixiGetTextElement(tixiHandle, elementPath, &ptrName) == SUCCESS)
+            name          = ptrName;
 
         // Get attribute "uid"
         char* ptrUID = NULL;
@@ -152,19 +152,19 @@ namespace tigl {
         if (tixiGetTextAttribute(tixiHandle, const_cast<char*>(segmentXPath.c_str()), const_cast<char*>(tempString.c_str()), &ptrUID) == SUCCESS)
             SetUID(ptrUID);
 
-		// Get fromElementUID
+        // Get fromElementUID
         char* ptrFromElementUID = NULL;
-		tempString = segmentXPath + "/fromElementUID";
-		elementPath   = const_cast<char*>(tempString.c_str());
-		if (tixiGetTextElement(tixiHandle, elementPath, &ptrFromElementUID) == SUCCESS)
-		    fromElementUID = ptrFromElementUID;
+        tempString = segmentXPath + "/fromElementUID";
+        elementPath   = const_cast<char*>(tempString.c_str());
+        if (tixiGetTextElement(tixiHandle, elementPath, &ptrFromElementUID) == SUCCESS)
+            fromElementUID = ptrFromElementUID;
 
-		// Get toElementUID
-		char* ptrToElementUID = NULL;
-		tempString = segmentXPath + "/toElementUID";
-		elementPath   = const_cast<char*>(tempString.c_str());
-		if (tixiGetTextElement(tixiHandle, elementPath, &ptrToElementUID) == SUCCESS)
-		    toElementUID = ptrToElementUID;
+        // Get toElementUID
+        char* ptrToElementUID = NULL;
+        tempString = segmentXPath + "/toElementUID";
+        elementPath   = const_cast<char*>(tempString.c_str());
+        if (tixiGetTextElement(tixiHandle, elementPath, &ptrToElementUID) == SUCCESS)
+            toElementUID = ptrToElementUID;
         
         // read structure
         tempString = segmentXPath + "/structure";
@@ -173,22 +173,22 @@ namespace tigl {
             structure.ReadCPACS(tixiHandle, elementPath);
         }
 
-		Update();
-	}
+        Update();
+    }
 
-	// Returns the wing this segment belongs to
-	CCPACSWing& CCPACSWingComponentSegment::GetWing(void) const
-	{
-		return *wing;
-	}
+    // Returns the wing this segment belongs to
+    CCPACSWing& CCPACSWingComponentSegment::GetWing(void) const
+    {
+        return *wing;
+    }
 
 
-	// Gets the loft between the two segment sections
+    // Gets the loft between the two segment sections
     TopoDS_Shape& CCPACSWingComponentSegment::GetLoft(void)
-	{
-		Update();
-		return loft;
-	}
+    {
+        Update();
+        return loft;
+    }
     
     std::vector<int> CCPACSWingComponentSegment::GetSegmentList(const std::string& fromElementUID, const std::string& toElementUID) const{
         std::vector<int> path;
@@ -240,9 +240,9 @@ namespace tigl {
     }
 
 
-	// Builds the loft between the two segment sections
-	void CCPACSWingComponentSegment::BuildLoft(void)
-	{
+    // Builds the loft between the two segment sections
+    void CCPACSWingComponentSegment::BuildLoft(void)
+    {
 
         BRepOffsetAPI_ThruSections generator(Standard_True, Standard_True, Precision::Confusion() );
         
@@ -292,129 +292,129 @@ namespace tigl {
             generator.AddWire(endWire);
         }
 
-		generator.CheckCompatibility(Standard_False);
-		generator.Build();
-		loft = generator.Shape();
+        generator.CheckCompatibility(Standard_False);
+        generator.Build();
+        loft = generator.Shape();
 
-		// transform with wing transformation
-		loft = wing->GetWingTransformation().Transform(loft);
+        // transform with wing transformation
+        loft = wing->GetWingTransformation().Transform(loft);
 
-		BRepTools::Clean(loft);
+        BRepTools::Clean(loft);
 
-		Handle(ShapeFix_Shape) sfs = new ShapeFix_Shape;
-		sfs->Init ( loft );
-		sfs->Perform();
-		loft = sfs->Shape();
+        Handle(ShapeFix_Shape) sfs = new ShapeFix_Shape;
+        sfs->Init ( loft );
+        sfs->Perform();
+        loft = sfs->Shape();
 
-		// Calculate volume
-		GProp_GProps System;
-		BRepGProp::VolumeProperties(loft, System);
-		myVolume = System.Mass();
+        // Calculate volume
+        GProp_GProps System;
+        BRepGProp::VolumeProperties(loft, System);
+        myVolume = System.Mass();
 
-		// Calculate surface area
-		GProp_GProps AreaSystem;
-		BRepGProp::SurfaceProperties(loft, AreaSystem);
-		mySurfaceArea = AreaSystem.Mass();
-	}
-
-
-	// Gets a point in relative wing coordinates for a given eta and xsi
-	gp_Pnt CCPACSWingComponentSegment::GetPoint(double eta, double xsi)
-	{
-		// search for ETA coordinate
-		std::vector<gp_Pnt> CPointContainer;
-		std::vector<gp_Pnt> CPointContainer2d;
-		bool inComponentSection = false;
-
-		if (eta < 0.0 || eta > 1.0)
-		{
-			throw CTiglError("Error: Parameter eta not in the range 0.0 <= eta <= 1.0 in CCPACSWingComponentSegment::GetPoint", TIGL_ERROR);
-		}
-		if (xsi < 0.0 || xsi > 1.0)
-		{
-			throw CTiglError("Error: Parameter xsi not in the range 0.0 <= xsi <= 1.0 in CCPACSWingComponentSegment::GetPoint", TIGL_ERROR);
-		}
-
-		for (int i = 1; i <= wing->GetSegmentCount(); i++)
-		{
-			tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing->GetSegment(i);
+        // Calculate surface area
+        GProp_GProps AreaSystem;
+        BRepGProp::SurfaceProperties(loft, AreaSystem);
+        mySurfaceArea = AreaSystem.Mass();
+    }
 
 
-			// if we found the outer section, break...
-			if( (segment.GetInnerSectionElementUID() == toElementUID) || (segment.GetOuterSectionElementUID() == toElementUID)) {
+    // Gets a point in relative wing coordinates for a given eta and xsi
+    gp_Pnt CCPACSWingComponentSegment::GetPoint(double eta, double xsi)
+    {
+        // search for ETA coordinate
+        std::vector<gp_Pnt> CPointContainer;
+        std::vector<gp_Pnt> CPointContainer2d;
+        bool inComponentSection = false;
+
+        if (eta < 0.0 || eta > 1.0)
+        {
+            throw CTiglError("Error: Parameter eta not in the range 0.0 <= eta <= 1.0 in CCPACSWingComponentSegment::GetPoint", TIGL_ERROR);
+        }
+        if (xsi < 0.0 || xsi > 1.0)
+        {
+            throw CTiglError("Error: Parameter xsi not in the range 0.0 <= xsi <= 1.0 in CCPACSWingComponentSegment::GetPoint", TIGL_ERROR);
+        }
+
+        for (int i = 1; i <= wing->GetSegmentCount(); i++)
+        {
+            tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing->GetSegment(i);
+
+
+            // if we found the outer section, break...
+            if( (segment.GetInnerSectionElementUID() == toElementUID) || (segment.GetOuterSectionElementUID() == toElementUID)) {
                 gp_Pnt pnt = segment.GetChordPoint(0,xsi);
-				CPointContainer.push_back(pnt);
+                CPointContainer.push_back(pnt);
 
-				pnt = segment.GetChordPoint(1, xsi);
-				CPointContainer.push_back(pnt);
+                pnt = segment.GetChordPoint(1, xsi);
+                CPointContainer.push_back(pnt);
 
-				i++;
-				break;
-			}
+                i++;
+                break;
+            }
 
-			// Ok, we found the first segment of this componentSegment
-			if(segment.GetInnerSectionElementUID() == fromElementUID) {
-				inComponentSection = true;
-			}
+            // Ok, we found the first segment of this componentSegment
+            if(segment.GetInnerSectionElementUID() == fromElementUID) {
+                inComponentSection = true;
+            }
 
-			// try next segment if this is not within the componentSegment
-			if (!inComponentSection) continue;
+            // try next segment if this is not within the componentSegment
+            if (!inComponentSection) continue;
 
-			gp_Pnt pnt = segment.GetChordPoint(0, xsi);
-			CPointContainer.push_back(pnt);
-		}
-
-
-		// make all point in 2d because its only a projection 
-		double x_mean = 0.;
-		for (unsigned int j = 0; j < CPointContainer.size(); j++)
-		{
-			gp_Pnt pnt = CPointContainer[j];
-			x_mean += pnt.X();
-			pnt = gp_Pnt(0, pnt.Y(), pnt.Z());
-			CPointContainer2d.push_back(pnt);
-		}
-		x_mean = x_mean / double(CPointContainer.size());
+            gp_Pnt pnt = segment.GetChordPoint(0, xsi);
+            CPointContainer.push_back(pnt);
+        }
 
 
-		// build virtual ETA-line
-		BRepBuilderAPI_MakeWire wireBuilder;
-	   for (unsigned int j = 1; j < CPointContainer2d.size(); j++)
-	   {
-		   TopoDS_Edge edge = BRepBuilderAPI_MakeEdge(CPointContainer2d[j - 1], CPointContainer2d[j]);
-		   wireBuilder.Add(edge);
-	   }
-	   TopoDS_Wire etaLinie = wireBuilder.Wire();
-		
-		// build virtual XSI-line
-		BRepBuilderAPI_MakeWire wireBuilderXsi;
-	   for (unsigned int j = 1; j < CPointContainer.size(); j++)
-	   {
-		   TopoDS_Edge edge = BRepBuilderAPI_MakeEdge(CPointContainer[j - 1], CPointContainer[j]);
-		   wireBuilderXsi.Add(edge);
-	   }
-	   TopoDS_Wire xsiLinie = wireBuilderXsi.Wire();
-
-		// ETA 3D point
-		BRepAdaptor_CompCurve aCompoundCurve(etaLinie, Standard_True);
-		gp_Pnt etaPnt;
-		
-		Standard_Real len = GCPnts_AbscissaPoint::Length( aCompoundCurve );
-		aCompoundCurve.D0( len * eta, etaPnt );
+        // make all point in 2d because its only a projection 
+        double x_mean = 0.;
+        for (unsigned int j = 0; j < CPointContainer.size(); j++)
+        {
+            gp_Pnt pnt = CPointContainer[j];
+            x_mean += pnt.X();
+            pnt = gp_Pnt(0, pnt.Y(), pnt.Z());
+            CPointContainer2d.push_back(pnt);
+        }
+        x_mean = x_mean / double(CPointContainer.size());
 
 
-		// intersection line
-		gp_Pnt p1(etaPnt), p2(etaPnt);
-		p1.SetX(x_mean - 1e3); p2.SetX(x_mean + 1e3);
-		BRepBuilderAPI_MakeEdge ME(p1,p2);
-		TopoDS_Shape aCrv(ME.Edge());
+        // build virtual ETA-line
+        BRepBuilderAPI_MakeWire wireBuilder;
+       for (unsigned int j = 1; j < CPointContainer2d.size(); j++)
+       {
+           TopoDS_Edge edge = BRepBuilderAPI_MakeEdge(CPointContainer2d[j - 1], CPointContainer2d[j]);
+           wireBuilder.Add(edge);
+       }
+       TopoDS_Wire etaLinie = wireBuilder.Wire();
+        
+        // build virtual XSI-line
+        BRepBuilderAPI_MakeWire wireBuilderXsi;
+       for (unsigned int j = 1; j < CPointContainer.size(); j++)
+       {
+           TopoDS_Edge edge = BRepBuilderAPI_MakeEdge(CPointContainer[j - 1], CPointContainer[j]);
+           wireBuilderXsi.Add(edge);
+       }
+       TopoDS_Wire xsiLinie = wireBuilderXsi.Wire();
 
-		//intersection point
-		BRepExtrema_DistShapeShape extrema(xsiLinie, aCrv);
-		extrema.Perform();
+        // ETA 3D point
+        BRepAdaptor_CompCurve aCompoundCurve(etaLinie, Standard_True);
+        gp_Pnt etaPnt;
+        
+        Standard_Real len = GCPnts_AbscissaPoint::Length( aCompoundCurve );
+        aCompoundCurve.D0( len * eta, etaPnt );
 
-		return extrema.PointOnShape1(1);
-	}
+
+        // intersection line
+        gp_Pnt p1(etaPnt), p2(etaPnt);
+        p1.SetX(x_mean - 1e3); p2.SetX(x_mean + 1e3);
+        BRepBuilderAPI_MakeEdge ME(p1,p2);
+        TopoDS_Shape aCrv(ME.Edge());
+
+        //intersection point
+        BRepExtrema_DistShapeShape extrema(xsiLinie, aCrv);
+        extrema.Perform();
+
+        return extrema.PointOnShape1(1);
+    }
 
     void CCPACSWingComponentSegment::GetEtaXsiFromSegmentEtaXsi(const std::string& segmentUID, double seta, double sxsi, double& eta, double& xsi)
     {
@@ -464,7 +464,7 @@ namespace tigl {
         gp_Pnt point3d = segment.GetChordPoint(seta, sxsi);
         xsi = sxsi;
         eta = ProjectPointOnWire(etaLinie, point3d);
-	}
+    }
 
 
     // Returns the volume of this segment
@@ -474,7 +474,7 @@ namespace tigl {
         return( myVolume );
     }
 
-	// Returns the surface area of this segment
+    // Returns the surface area of this segment
     double CCPACSWingComponentSegment::GetSurfaceArea(void)
     {
         Update();
@@ -494,8 +494,8 @@ namespace tigl {
 //            throw CTiglError("Error: Parameter eta not in the range 0.0 <= eta <= 1.0 in CCPACSWingSegment::GetPoint", TIGL_ERROR);
 //        }
 //
-//		CCPACSWingProfile& innerProfile = innerConnection.GetProfile();
-//		CCPACSWingProfile& outerProfile = outerConnection.GetProfile();
+//        CCPACSWingProfile& innerProfile = innerConnection.GetProfile();
+//        CCPACSWingProfile& outerProfile = outerConnection.GetProfile();
 //
 //        // Compute points on wing profiles for the given xsi
 //        gp_Pnt innerProfilePoint;
@@ -531,65 +531,65 @@ namespace tigl {
 //        gp_Pnt profilePoint;
 //        profileLine->D0(param, profilePoint);
 //
-//		return profilePoint;
+//        return profilePoint;
 //    }
 //
 
     // Gets the fromElementUID of this segment
-	const std::string & CCPACSWingComponentSegment::GetFromElementUID(void) const
-	{
-		return fromElementUID;
-	}
+    const std::string & CCPACSWingComponentSegment::GetFromElementUID(void) const
+    {
+        return fromElementUID;
+    }
 
-	// Gets the toElementUID of this segment
-	const std::string & CCPACSWingComponentSegment::GetToElementUID(void) const
-	{
-		return toElementUID;
-	}
+    // Gets the toElementUID of this segment
+    const std::string & CCPACSWingComponentSegment::GetToElementUID(void) const
+    {
+        return toElementUID;
+    }
 
-	// Returns the segment to a given point on the componentSegment. 
-	// Returns null if the point is not an that wing!
-	const std::string CCPACSWingComponentSegment::findSegment(double x, double y, double z)
-	{
-		std::string resultUID;
-		gp_Pnt pnt(x, y, z);
+    // Returns the segment to a given point on the componentSegment. 
+    // Returns null if the point is not an that wing!
+    const std::string CCPACSWingComponentSegment::findSegment(double x, double y, double z)
+    {
+        std::string resultUID;
+        gp_Pnt pnt(x, y, z);
 
-		// Quick check if the point even is on this wing
-		BRepClass3d_SolidClassifier quickClassifier;
-		
-		quickClassifier.Load(wing->GetLoft());
-		quickClassifier.Perform(pnt, 1.0e-2);
-		if((quickClassifier.State() != TopAbs_IN) && (quickClassifier.State() != TopAbs_ON)){
-			return resultUID;
-		}
+        // Quick check if the point even is on this wing
+        BRepClass3d_SolidClassifier quickClassifier;
+        
+        quickClassifier.Load(wing->GetLoft());
+        quickClassifier.Perform(pnt, 1.0e-2);
+        if((quickClassifier.State() != TopAbs_IN) && (quickClassifier.State() != TopAbs_ON)){
+            return resultUID;
+        }
 
-		std::vector<int> segmentIndexList = GetSegmentList(fromElementUID, toElementUID);
+        std::vector<int> segmentIndexList = GetSegmentList(fromElementUID, toElementUID);
 
-		// now discover the right segment
-		for (std::vector<int>::iterator segit = segmentIndexList.begin(); segit != segmentIndexList.end(); ++segit)
-		{
-			//Handle_Geom_Surface aSurf = wing->GetUpperSegmentSurface(i);
-			TopoDS_Shape segmentLoft = wing->GetSegment(*segit).GetLoft();
+        // now discover the right segment
+        for (std::vector<int>::iterator segit = segmentIndexList.begin(); segit != segmentIndexList.end(); ++segit)
+        {
+            //Handle_Geom_Surface aSurf = wing->GetUpperSegmentSurface(i);
+            TopoDS_Shape segmentLoft = wing->GetSegment(*segit).GetLoft();
 
-			BRepClass3d_SolidClassifier classifier;
-			classifier.Load(segmentLoft);
-			classifier.Perform(pnt, 1.0e-3);
-			if((classifier.State() == TopAbs_IN) || (classifier.State() == TopAbs_ON)){
-				resultUID = wing->GetSegment(*segit).GetUID();
-				break;
-			}
-		}
+            BRepClass3d_SolidClassifier classifier;
+            classifier.Load(segmentLoft);
+            classifier.Perform(pnt, 1.0e-3);
+            if((classifier.State() == TopAbs_IN) || (classifier.State() == TopAbs_ON)){
+                resultUID = wing->GetSegment(*segit).GetUID();
+                break;
+            }
+        }
 
-		return resultUID;
-	}
+        return resultUID;
+    }
 
 
     // builds data structure for a TDocStd_Application
     // mostly used for export
-	TDF_Label CCPACSWingComponentSegment::ExportDataStructure(Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label)
+    TDF_Label CCPACSWingComponentSegment::ExportDataStructure(Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label)
     {
-	    TDF_Label subLabel;
-	    return subLabel;
+        TDF_Label subLabel;
+        return subLabel;
     }
     
     MaterialList CCPACSWingComponentSegment::GetMaterials(double eta, double xsi, StructureType type) {

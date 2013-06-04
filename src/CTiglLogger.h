@@ -68,30 +68,29 @@ namespace tigl {
 #endif // not GLOG_FOUND
 
 
-    class CTiglLogger {
+class CTiglLogger {
 
-        public:
-            // Returns a reference to the only instance of this class
-            static CTiglLogger& GetLogger(void);
+    public:
+        // Returns a reference to the only instance of this class
+        static CTiglLogger& GetLogger(void);
 
-            // Destructor
-            ~CTiglLogger(void);
+        // Destructor
+        ~CTiglLogger(void);
 
-        private:
-            // Constructor
-            CTiglLogger(void);
+    private:
+        // Constructor
+        CTiglLogger(void);
 
-            // Logger Initialize with defaults
-            void initLogger(void);
+        // Logger Initialize with defaults
+        void initLogger(void);
 
-            // Copy constructor
-            CTiglLogger(const CTiglLogger& )                { /* Do nothing */ }
+        // Copy constructor
+        CTiglLogger(const CTiglLogger& )                { /* Do nothing */ }
 
-            // Assignment operator
-            void operator=(const CTiglLogger& )             { /* Do nothing */ }
+        // Assignment operator
+        void operator=(const CTiglLogger& )             { /* Do nothing */ }
 
-    };
-
+};
 
 } // end namespace tigl
 

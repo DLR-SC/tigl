@@ -45,8 +45,8 @@ namespace tigl {
     void CCPACSFuselageSectionElement::Cleanup(void)
     {
         name         = "";
-		uid			 = "";
-		profileUID	 = "";
+        uid             = "";
+        profileUID     = "";
         profileIndex = -1;
         transformation.SetIdentity();
         translation = CTiglPoint(0.0, 0.0, 0.0);
@@ -95,18 +95,18 @@ namespace tigl {
             name          = ptrName;
 
         // Get subelement "profileUID"
-		char* ptrUID  = NULL;
+        char* ptrUID  = NULL;
         tempString    = elementXPath + "/profileUID";
         elementPath   = const_cast<char*>(tempString.c_str());
         if (tixiGetTextElement(tixiHandle, elementPath, &ptrUID) == SUCCESS)
-		    profileUID	  = ptrUID;
+            profileUID      = ptrUID;
 
-		// Get attribute "uID"
-		char* ptrMyUID  = NULL;
+        // Get attribute "uID"
+        char* ptrMyUID  = NULL;
         tempString    = elementXPath;
         elementPath   = const_cast<char*>(tempString.c_str());
         if (tixiGetTextAttribute(tixiHandle, elementPath, "uID", &ptrMyUID) == SUCCESS)
-		    uid	  = ptrMyUID;
+            uid      = ptrMyUID;
 
         // Get subelement "/transformation/translation"
         tempString  = elementXPath + "/transformation/translation";
@@ -139,22 +139,22 @@ namespace tigl {
     }
 
     // Returns the UID of the referenced fuselage profile
-	std::string CCPACSFuselageSectionElement::GetProfileIndex(void) const
+    std::string CCPACSFuselageSectionElement::GetProfileIndex(void) const
     {
         return profileUID;
     }
 
-	// Returns the UID of this FuselageSectionElement
-	std::string CCPACSFuselageSectionElement::GetUID(void) const
-	{
-		return uid;
-	}
+    // Returns the UID of this FuselageSectionElement
+    std::string CCPACSFuselageSectionElement::GetUID(void) const
+    {
+        return uid;
+    }
 
-	// Returns the uid of the profile of this element
-	std::string CCPACSFuselageSectionElement::GetProfileUID(void) const
-	{
-		return profileUID;
-	}
+    // Returns the uid of the profile of this element
+    std::string CCPACSFuselageSectionElement::GetProfileUID(void) const
+    {
+        return profileUID;
+    }
 
     // Gets the section element transformation
     CTiglTransformation CCPACSFuselageSectionElement::GetSectionElementTransformation(void) const

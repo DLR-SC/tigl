@@ -23,25 +23,25 @@
 
 class TIGLViewerSettings {
 public:
-	TIGLViewerSettings();
-	void loadSettings();
-	void storeSettings();
+    TIGLViewerSettings();
+    void loadSettings();
+    void storeSettings();
 
-	void setTesselationAccuracy(double);
-	void setTriangulationAccuracy(double);
+    void setTesselationAccuracy(double);
+    void setTriangulationAccuracy(double);
     void setBGColor(const QColor&);
 
-	double tesselationAccuracy() const;
-	double triangulationAccuracy() const;
+    double tesselationAccuracy() const;
+    double triangulationAccuracy() const;
 
     const QColor& BGColor() const;
 
-	virtual ~TIGLViewerSettings();
+    virtual ~TIGLViewerSettings();
 
 private:
-	double _tesselationAccuracy;
-	double _triangulationAccuracy;
-	QColor _bgcolor;
+    double _tesselationAccuracy;
+    double _triangulationAccuracy;
+    QColor _bgcolor;
 };
 
 #endif /* TIGLVIEWERSETTINGS_H_ */

@@ -39,7 +39,7 @@ void showHelp(QString);
 
 int main(int argc, char *argv[])
 {
-	TIGLViewerApplication app( argc, argv );
+    TIGLViewerApplication app( argc, argv );
     
 #ifdef __APPLE__
     if(!getenv("CSF_GraphicShr")){
@@ -52,29 +52,29 @@ int main(int argc, char *argv[])
     // we need to set us locale as we use "." for decimal point
     setlocale(LC_NUMERIC, "C");
 
-	int retval = parseArguments(app.arguments());
+    int retval = parseArguments(app.arguments());
     if (retval != 0) {
-		showHelp(app.arguments().at(0));
-		return retval;
-	}
+        showHelp(app.arguments().at(0));
+        return retval;
+    }
 
-	TIGLViewerWindow *window = new TIGLViewerWindow();
-	window->show();
+    TIGLViewerWindow *window = new TIGLViewerWindow();
+    window->show();
 
-	// if a filename is given, open the configuration
-	if(!PARAMS.initialFilename.isEmpty()) {
-		if(window->getMyOCC())
-			window->getMyOCC()->repaint();
-		window->setInitialCpacsFileName(PARAMS.initialFilename);
-	}
+    // if a filename is given, open the configuration
+    if(!PARAMS.initialFilename.isEmpty()) {
+        if(window->getMyOCC())
+            window->getMyOCC()->repaint();
+        window->setInitialCpacsFileName(PARAMS.initialFilename);
+    }
 
-	if(!PARAMS.controlFile.isEmpty()){
-		if(window->getMyOCC())
-			window->getMyOCC()->repaint();
-		window->setInitialControlFile(PARAMS.controlFile);
-	}
+    if(!PARAMS.controlFile.isEmpty()){
+        if(window->getMyOCC())
+            window->getMyOCC()->repaint();
+        window->setInitialControlFile(PARAMS.controlFile);
+    }
 
-	retval = app.exec();
+    retval = app.exec();
     window->hide();
     delete window;
     return retval;
@@ -85,17 +85,17 @@ int main(int argc, char *argv[])
  */
 void showHelp(QString appName)
 {
-	QString helpText = appName + " [--help] [--filename <filename>]\n\n";
-	helpText += "  --help                  	This help page\n";
-	helpText += "  --filename <filename>	Initial CPACS file to open and display.\n";
-	helpText += "  --modelUID <uid>         Initial model uid open and display.\n";
-	helpText += "  --windowtitle <title>	The titel of the TIGLViewer window.\n";
-	helpText += "  --controlFile <filename>	Name of the control file.\n";
-	helpText += "  --JediMode <on|off>      Makes you some kind of superhero like CPACS-Ninja.\n";
+    QString helpText = appName + " [--help] [--filename <filename>]\n\n";
+    helpText += "  --help                      This help page\n";
+    helpText += "  --filename <filename>    Initial CPACS file to open and display.\n";
+    helpText += "  --modelUID <uid>         Initial model uid open and display.\n";
+    helpText += "  --windowtitle <title>    The titel of the TIGLViewer window.\n";
+    helpText += "  --controlFile <filename>    Name of the control file.\n";
+    helpText += "  --JediMode <on|off>      Makes you some kind of superhero like CPACS-Ninja.\n";
 
-	QMessageBox::information(0, "TIGLViewer Argument Error",
-								 helpText,
-							     QMessageBox::Ok );
+    QMessageBox::information(0, "TIGLViewer Argument Error",
+                                 helpText,
+                                 QMessageBox::Ok );
 }
 
 /**
@@ -104,54 +104,54 @@ void showHelp(QString appName)
  */
 int parseArguments(QStringList argList)
 {
-	for(int i = 1; i < argList.size(); i++)
-	  {
-	    QString arg = argList.at(i);
-		if(arg.compare("--help") == 0)
-	    {
-			return -1;
-	    }
-		else if(arg.compare("--filename") == 0) {
-			if (i+1 >= argList.size()) {
-				cout << "missing filename" << endl;
-				return -1;
-			}
-			else {
-				PARAMS.initialFilename = argList.at(++i);
-			}
-	    }
-	    else if(arg.compare("--windowtitle") == 0) {
-			if (i+1 >= argList.size()) {
-				cout << "missing windowtitle" << endl;
-				PARAMS.windowTitle = "TIGLViewer";
-			}
-			else {
-				PARAMS.windowTitle = argList.at(++i);
-			}
-		}
-	    else if(arg.compare("--modelUID") == 0) {
-			if (i+1 >= argList.size()) {
-				cout << "missing modelUID" << endl;
-				PARAMS.modelUID = "";
-			}
-			else {
-				PARAMS.modelUID = argList.at(++i);
-			}
-		}
-	    else if(arg.compare("--controlFile") == 0) {
-			if (i+1 >= argList.size()) {
-				cout << "missing controlFile" << endl;
-				PARAMS.controlFile = "";
-			}
-			else {
-				PARAMS.controlFile = argList.at(++i);
-			}
-		}
-	    else /* when there is a string behind the executable, we assume its the filename */
-	    	PARAMS.initialFilename = arg;
-	  }
+    for(int i = 1; i < argList.size(); i++)
+    {
+        QString arg = argList.at(i);
+        if(arg.compare("--help") == 0)
+        {
+            return -1;
+        }
+        else if(arg.compare("--filename") == 0) {
+            if (i+1 >= argList.size()) {
+                cout << "missing filename" << endl;
+                return -1;
+            }
+            else {
+                PARAMS.initialFilename = argList.at(++i);
+            }
+        }
+        else if(arg.compare("--windowtitle") == 0) {
+            if (i+1 >= argList.size()) {
+                cout << "missing windowtitle" << endl;
+                PARAMS.windowTitle = "TIGLViewer";
+            }
+            else {
+                PARAMS.windowTitle = argList.at(++i);
+            }
+        }
+        else if(arg.compare("--modelUID") == 0) {
+            if (i+1 >= argList.size()) {
+                cout << "missing modelUID" << endl;
+                PARAMS.modelUID = "";
+            }
+            else {
+                PARAMS.modelUID = argList.at(++i);
+            }
+        }
+        else if(arg.compare("--controlFile") == 0) {
+            if (i+1 >= argList.size()) {
+                cout << "missing controlFile" << endl;
+                PARAMS.controlFile = "";
+            }
+            else {
+                PARAMS.controlFile = argList.at(++i);
+            }
+        }
+        else /* when there is a string behind the executable, we assume its the filename */
+            PARAMS.initialFilename = arg;
+    }
 
-	return 0;
+    return 0;
 }
 
 #ifdef WIN32
