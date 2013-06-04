@@ -433,6 +433,37 @@ TEST_F(WingComponentSegmentSimple, determine_segments){
     
 }
 
+TEST_F(WingComponentSegmentSimple, GetSegments){
+    int nsegments = 0;
+    ASSERT_EQ(TIGL_SUCCESS, tiglWingComponentSegmentGetNumberOfSegments(tiglHandle, "WING_CS1", &nsegments));
+    ASSERT_EQ(2, nsegments);
+    
+    char * seguid = NULL;
+    ASSERT_EQ(TIGL_SUCCESS, tiglWingComponentSegmentGetSegmentUID(tiglHandle, "WING_CS1", 1, &seguid));
+    ASSERT_STREQ("Cpacs2Test_Wing_Seg_1_2", seguid);
+    
+    ASSERT_EQ(TIGL_SUCCESS, tiglWingComponentSegmentGetSegmentUID(tiglHandle, "WING_CS1", 2, &seguid));
+    ASSERT_STREQ("Cpacs2Test_Wing_Seg_2_3", seguid);
+    
+    // invalid cs uid
+    ASSERT_EQ(TIGL_UID_ERROR, tiglWingComponentSegmentGetNumberOfSegments(tiglHandle, "INVALID_CS", &nsegments));
+    ASSERT_EQ(TIGL_UID_ERROR, tiglWingComponentSegmentGetSegmentUID(tiglHandle, "INVALID_CS", 2, &seguid));
+    
+    // invalid segment index
+    ASSERT_EQ(TIGL_INDEX_ERROR, tiglWingComponentSegmentGetSegmentUID(tiglHandle, "WING_CS1", 0, &seguid));
+    ASSERT_EQ(TIGL_INDEX_ERROR, tiglWingComponentSegmentGetSegmentUID(tiglHandle, "WING_CS1", 3, &seguid));
+    
+    // nullptr
+    ASSERT_EQ(TIGL_NULL_POINTER, tiglWingComponentSegmentGetNumberOfSegments(tiglHandle, NULL, &nsegments));
+    ASSERT_EQ(TIGL_NULL_POINTER, tiglWingComponentSegmentGetNumberOfSegments(tiglHandle, "WING_CS1", NULL));
+    ASSERT_EQ(TIGL_NULL_POINTER, tiglWingComponentSegmentGetSegmentUID(tiglHandle, NULL, 1, &seguid));
+    ASSERT_EQ(TIGL_NULL_POINTER, tiglWingComponentSegmentGetSegmentUID(tiglHandle, "WING_CS1", 1, NULL));
+    
+    // invalid handle
+    ASSERT_EQ(TIGL_NOT_FOUND, tiglWingComponentSegmentGetNumberOfSegments(-1, "WING_CS1", &nsegments));
+    ASSERT_EQ(TIGL_NOT_FOUND, tiglWingComponentSegmentGetSegmentUID(-1, "WING_CS1", 1, &seguid));
+}
+
 TEST_F(WingComponentSegmentSimple, determine_segments_invalidUids){
     int compseg = 1;
     // now we have do use the internal interface as we currently have no public api for this

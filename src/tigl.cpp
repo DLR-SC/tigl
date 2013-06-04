@@ -1375,6 +1375,122 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingSegmentPointGetComponentSegmentEtaXsi(
     }
 }
 
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetNumberOfSegments(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                              const char * componentSegmentUID,
+                                                                              int * nsegments){
+
+    if (componentSegmentUID == 0) {
+        LOG(ERROR) << "Error: Null pointer argument for componentSegmentUID ";
+        LOG(ERROR) << "in function call to tiglWingComponentSegmentGetNumberOfSegments." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+    
+    if (nsegments == 0) {
+        LOG(ERROR) << "Error: Null pointer argument for nsegments ";
+        LOG(ERROR) << "in function call to tiglWingComponentSegmentGetNumberOfSegments." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+    
+    try {
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+
+        // search for component segment
+        int nwings = config.GetWingCount();
+        for(int iwing = 1; iwing <= nwings; ++iwing){
+            tigl::CCPACSWing& wing = config.GetWing(iwing);
+            try {
+                tigl::CCPACSWingComponentSegment & compSeg = (tigl::CCPACSWingComponentSegment &) wing.GetComponentSegment(componentSegmentUID);
+                std::vector<int> list = compSeg.GetSegmentList(compSeg.GetFromElementUID(), compSeg.GetToElementUID());
+                *nsegments = list.size();
+                return TIGL_SUCCESS;
+            }
+            catch (tigl::CTiglError& err){
+                if(err.getCode() == TIGL_UID_ERROR)
+                    continue;
+                else 
+                    throw err;
+            }
+        }
+        // the component segment was not found
+        LOG(ERROR) << "Error: Invalid component segment uid in tiglWingComponentSegmentGetNumberOfSegments" << std::endl;
+        return TIGL_UID_ERROR;
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglWingComponentSegmentGetNumberOfSegments!" << std::endl;
+        return TIGL_ERROR;
+    }
+}
+
+
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetSegmentUID(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                              const char * componentSegmentUID,
+                                                                              int  segmentIndex,
+                                                                              char ** segmentUID) {
+    
+    if (componentSegmentUID == 0) {
+        LOG(ERROR) << "Error: Null pointer argument for componentSegmentUID ";
+        LOG(ERROR) << "in function call to tiglWingComponentSegmentGetSegmentUID." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+    
+    if (segmentUID == 0) {
+        LOG(ERROR) << "Error: Null pointer argument for nsegments ";
+        LOG(ERROR) << "in function call to tiglWingComponentSegmentGetSegmentUID." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+    
+    try {
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+
+        // search for component segment
+        int nwings = config.GetWingCount();
+        for(int iwing = 1; iwing <= nwings; ++iwing){
+            tigl::CCPACSWing& wing = config.GetWing(iwing);
+            try {
+                tigl::CCPACSWingComponentSegment & compSeg = (tigl::CCPACSWingComponentSegment &) wing.GetComponentSegment(componentSegmentUID);
+                std::vector<int> list = compSeg.GetSegmentList(compSeg.GetFromElementUID(), compSeg.GetToElementUID());
+                if(segmentIndex < 1 || segmentIndex > (int) list.size()){
+                    LOG(ERROR) << "Error: Invalid segment index in tiglWingComponentSegmentGetSegmentUID" << std::endl;
+                    return TIGL_INDEX_ERROR;
+                }
+                *segmentUID = const_cast<char*>(wing.GetSegment(list[segmentIndex-1]).GetUID().c_str());
+                
+                return TIGL_SUCCESS;
+            }
+            catch (tigl::CTiglError& err){
+                if(err.getCode() == TIGL_UID_ERROR)
+                    continue;
+                else 
+                    throw err;
+            }
+        }
+        // the component segment was not found
+        LOG(ERROR) << "Error: Invalid component segment uid in tiglWingComponentSegmentGetSegmentUID" << std::endl;
+        return TIGL_UID_ERROR;
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglWingComponentSegmentGetSegmentUID!" << std::endl;
+        return TIGL_ERROR;
+    }
+}
 
 /**********************************************************************************************/
 

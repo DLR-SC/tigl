@@ -80,7 +80,7 @@ namespace tigl {
 				return (CCPACSWingComponentSegment &) (*(componentSegments[i]));
 			}
 		}
-		throw CTiglError("Error: Invalid uid in CCPACSWingComponentSegments::GetComponentSegment", TIGL_INDEX_ERROR);
+		throw CTiglError("Error: Invalid uid in CCPACSWingComponentSegments::GetComponentSegment", TIGL_UID_ERROR);
 	}
 
 	// Gets total componentSegment count
