@@ -592,7 +592,7 @@ namespace tigl {
         return subLabel;
     }
     
-    MaterialList CCPACSWingComponentSegment::GetMaterials(double eta, double xsi, StructureType type) {
+    MaterialList CCPACSWingComponentSegment::GetMaterials(double eta, double xsi, TiglStructureType type) {
         MaterialList list;
         
         if (!structure.IsValid())
@@ -600,7 +600,7 @@ namespace tigl {
             return list;
         
         if(type != UPPER_SHELL && type != LOWER_SHELL) {
-            LOG(WARNING) << "Cannot compute materials for inner structure in CCPACSWingComponentSegment::GetMaterials (not yet implemented)";
+            LOG(ERROR) << "Cannot compute materials for inner structure in CCPACSWingComponentSegment::GetMaterials (not yet implemented)";
             return list;
         }
         else {

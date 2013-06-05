@@ -3209,7 +3209,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedGeometryVTKSimple(const TiglCP
 /*                     Material functions                                                            */
 /*****************************************************************************************************/
 TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetMaterialUIDs(TiglCPACSConfigurationHandle cpacsHandle,
-                                                                          const char *componentSegmentUID, 
+                                                                          const char *componentSegmentUID,
+                                                                          TiglStructureType structureType,
                                                                           double eta, double xsi,
                                                                           TiglStringList* uids, 
                                                                           int * nuids){
@@ -3243,7 +3244,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetMaterialUIDs(TiglCP
                 tigl::CCPACSWingComponentSegment & compSeg 
                         = (tigl::CCPACSWingComponentSegment&) wing.GetComponentSegment(componentSegmentUID);
                 //now do the calculations
-                tigl::MaterialList list = compSeg.GetMaterials(eta, xsi, tigl::UPPER_SHELL);
+                tigl::MaterialList list = compSeg.GetMaterials(eta, xsi, structureType);
 
                 // we alloc uids here, the array has to be freed by the user
                 *uids = new const char*[list.size()];

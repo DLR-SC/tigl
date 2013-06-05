@@ -43,7 +43,6 @@ namespace tigl {
 
         // Returns the segment index of this segment
         int GetSegmentIndex(void) const;
-
     protected:
         void Cleanup();
 
