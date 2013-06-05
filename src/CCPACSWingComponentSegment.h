@@ -43,12 +43,6 @@ namespace tigl {
 
     typedef std::vector<const CCPACSMaterial*> MaterialList;
 
-    enum StructureType {
-        UPPER_SHELL,
-        LOWER_SHELL,
-        INNER_STRUCTURE
-    };
-
     class CCPACSWing;
 
     class CCPACSWingComponentSegment : public CTiglAbstractSegment
@@ -101,7 +95,7 @@ namespace tigl {
         // mostly used for export
         TDF_Label ExportDataStructure(Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label);
         
-        MaterialList GetMaterials(double eta, double xsi, StructureType);
+        MaterialList GetMaterials(double eta, double xsi, TiglStructureType);
 
         // returns a list of segments that belong to this component segment
         std::vector<int> GetSegmentList(const std::string &fromElementUID, const std::string &toElementUID) const;

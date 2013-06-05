@@ -78,7 +78,7 @@ namespace tigl {
     private:
         std::string           name;           /**< Section name                          */
         std::string           profileUID;     /**< Profile index in wing profile library */
-        std::string              uID;              /**< UID of the WingSectionElement         */
+        std::string           uID;            /**< UID of the WingSectionElement         */
         CTiglTransformation   transformation; /**< Section element transformation        */
         CTiglPoint            translation;
         CTiglPoint            scaling;

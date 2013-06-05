@@ -159,7 +159,7 @@ typedef enum TiglSymmetryAxis TiglSymmetryAxis;
 */
 enum TiglAlgorithmCode
 {
-    TIGL_INTERPOLATE_LINEAR_WIRE  = 0,          /**< Use a linear interpolation between the points of a wire */
+    TIGL_INTERPOLATE_LINEAR_WIRE  = 0,         /**< Use a linear interpolation between the points of a wire */
     TIGL_INTERPOLATE_BSPLINE_WIRE = 1,         /**< Use a BSpline interpolation between the points of a wire */
     TIGL_APPROXIMATE_BSPLINE_WIRE = 2          /**< Use a BSpline approximation for the points of a wire */
 };
@@ -182,6 +182,14 @@ typedef unsigned int TiglGeometricComponentType;
 #define  TIGL_COMPONENT_WINGCOMPSEGMENT 256
 #define  TIGL_COMPONENT_WINGSHELL       512
 
+
+enum TiglStructureType {
+    UPPER_SHELL = 0,
+    LOWER_SHELL = 1,
+    INNER_STRUCTURE = 2
+};
+
+typedef enum TiglStructureType TiglStructureType;
 
 
 /**
@@ -212,7 +220,6 @@ enum TiglImportExportFormat
     TIGL_IMPORTEXPORT_STL  = 2,            /**< Use STL format for geometry import/export */
     TIGL_IMPORTEXPORT_VTK  = 3          /**< Use VTK (XML/VTP) format for geometry import/export */
 };
-
 
 typedef const char** TiglStringList;
 
@@ -2958,11 +2965,12 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportWingColladaByUID(const TiglCPACSConf
 *
 * <b>Fortran syntax:</b>
 *
-* tigl_wing_component_segment_get_material_uids(integer cpacsHandle, character*n compSegmentUID, real eta, real xsi, character*n uidMaterialPtr, integer nuids, integer returnCode)
+* tigl_wing_component_segment_get_material_uids(integer cpacsHandle, character*n compSegmentUID, integer structType, real eta, real xsi, character*n uidMaterialPtr, integer nuids, integer returnCode)
 *
 *
 * @param cpacsHandle     (in) : Handle for the CPACS configuration
 * @param compSegmentUID  (in) : UID of the component segment
+* @param structureType   (in) : Type of structure, where the materials are queried
 * @param eta             (in) : eta in the range 0.0 <= eta <= 1.0
 * @param xsi             (in) : xsi in the range 0.0 <= xsi <= 1.0
 * @param uids            (out): Array of material uids at the given coordinate
@@ -2975,10 +2983,12 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportWingColladaByUID(const TiglCPACSConf
 *   - TIGL_INDEX_ERROR if compSegmentUID is invalid
 *   - TIGL_ERROR if some other error occurred
 *
-* #annotate out: 4A(5)#
+* #annotate out: 5A(6)#
 */
 TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetMaterialUIDs(TiglCPACSConfigurationHandle cpacsHandle,
-                                                         const char *componentSegmentUID, double eta, double xsi,
+                                                         const char *componentSegmentUID,
+                                                         TiglStructureType structureType,
+                                                         double eta, double xsi,
                                                          TiglStringList* uids, int * nuids);
 
 
