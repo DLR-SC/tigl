@@ -130,10 +130,7 @@ int CTiglTriangularizer::triangularizeWingFace(CCPACSWing &wing, const TopoDS_Sh
             int iSegmentFound = 0;
             for(int iSegment = 1 ; iSegment <= wing.GetSegmentCount(); ++iSegment){
                 CCPACSWingSegment& segment = (CCPACSWingSegment&) wing.GetSegment(iSegment);
-                double eta = 0., xsi = 0.;
-                segment.GetEtaXsi(centralP, false, eta, xsi);
-                
-                if(isValidCoord(eta) && isValidCoord(xsi)){
+                if(segment.GetIsOn(centralP) == true){
                     iSegmentFound = iSegment;
                     break;
                 }

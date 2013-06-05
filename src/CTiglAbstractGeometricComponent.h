@@ -73,7 +73,13 @@ namespace tigl {
 
         // Set transformation object
         virtual void Translate(CTiglPoint trans);
-
+        
+        // return if pnt lies on the loft
+        bool GetIsOn(const gp_Pnt &pnt);
+        
+        // return if pnt lies on the mirrored loft
+        // if the loft as no symmetry, false is returned
+        bool GetIsOnMirrored(const gp_Pnt &pnt);
     protected:
         // Resets the geometric component.
         virtual void Reset(void);
