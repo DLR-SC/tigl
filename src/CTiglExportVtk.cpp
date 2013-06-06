@@ -97,7 +97,8 @@ namespace tigl {
     // Exports a whole geometry, boolean fused and meshed, as VTK file
     void CTiglExportVtk::ExportMeshedGeometryVTK(const std::string& filename, const double deflection)
     {
-        LOG(ERROR) << "tiglExportMeshedGeometryVTK not yet implemented!!" << std::endl;
+        
+        TopoDS_Shape loft = myConfig.GetFusedAirplane();
     }
 
     /************* Simple ones *************************/
