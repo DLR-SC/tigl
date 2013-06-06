@@ -65,7 +65,7 @@ namespace tigl {
         virtual void AddChild(CTiglAbstractPhysicalComponent* componentPtr);
 
         // Returns a pointer to the list of children of a component.
-        virtual ChildContainerType& GetChildren(void);
+        virtual ChildContainerType GetChildren(bool recursive);
 
         // number of segments
         //virtual int GetSegmentCount(void) const = 0;
