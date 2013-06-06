@@ -109,7 +109,7 @@ namespace tigl {
         std::string GetUID(void);
 
     protected:
-        void OutputComponentTree(CTiglAbstractPhysicalComponent* parent);
+        void BuildFusedPlane(CTiglAbstractPhysicalComponent* parent);
 
         // transform all components relative to their parents
         void transformAllComponents(CTiglAbstractPhysicalComponent* parent);
