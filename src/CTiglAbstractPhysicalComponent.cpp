@@ -54,9 +54,23 @@ namespace tigl {
     }
 
     // Returns a pointer to the list of children of a component.
-    CTiglAbstractPhysicalComponent::ChildContainerType& CTiglAbstractPhysicalComponent::GetChildren(void)
+    CTiglAbstractPhysicalComponent::ChildContainerType CTiglAbstractPhysicalComponent::GetChildren(bool recursive)
     {
-        return childContainer;
+        if(!recursive){
+            return childContainer;
+        }
+        else {
+            ChildContainerType allChildsWithChilds;
+            ChildContainerType::iterator childit;
+            for(childit = childContainer.begin(); childit != childContainer.end(); ++childit){
+                allChildsWithChilds.push_back(*childit);
+                ChildContainerType childsOfChild = (*childit)->GetChildren(true);
+                for(ChildContainerType::iterator childOfChildIt = childsOfChild.begin(); childOfChildIt != childsOfChild.end(); ++childOfChildIt){
+                    allChildsWithChilds.push_back(*childOfChildIt);
+                }
+            }
+            return allChildsWithChilds;
+        }
     }
 
     // Resets the geometric component.
