@@ -2395,6 +2395,57 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglComponentIntersectionPoint(TiglCPACSConfig
                                                          double* pointYPtr,
                                                          double* pointZPtr);
 
+/**
+* @brief Convienience function to returns a list of points on the intersection line of two geometric components. 
+* Often there are more that one intersection line, therefore you need to specify the line.
+*
+* Returns a point on the intersection line between a surface and a wing in dependence
+* of parameter eta which range from 0.0 to 1.0.
+* The point is returned in absolute world coordinates.
+*
+*
+* <b>Fortran syntax:</b>
+*
+* TiglReturnCode tigl_component_intersection_point(integer cpacsHandle,
+*                                                          integer fuselageIndex,
+*                                                          integer wingIndex,
+*                                                          real* etaArray,
+*                                                          integer numberOfPoints,
+*                                                          real* pointXPtr,
+*                                                          real* pointYPtr,
+*                                                          real* pointZPtr,
+*                                                          integer returnCode);
+* @cond
+* #PY:5,6,7#
+* #annotate in: 4A(5) out: 6AM(5), 7AM(5), 8AM(5)#
+* @endcond
+*
+* @param cpacsHandle          (in) : Handle for the CPACS configuration
+* @param componentUidOne      (in) : The UID of the first component
+* @param componentUidTwo      (in) : The UID of the second component
+* @param lineID               (in) : The index of the intersection wire, get wire number with "tiglComponentIntersectionLineCount"
+* @param etaArray             (in) : Array of eta values in the range 0.0 <= eta <= 1.0.
+* @param numberOfPoints       (in) : The number of points to calculate i.e. the size of the etaArray.
+* @param pointXArray          (out): Array of x-coordinates of the points in absolute world coordinates. The Array must be preallocated with the size numberOfPoints.
+* @param pointYArray          (out): Array of y-coordinates of the points in absolute world coordinates. The Array must be preallocated with the size numberOfPoints.
+* @param pointZArray          (out): Array of z-coordinates of the points in absolute world coordinates. The Array must be preallocated with the size numberOfPoints.
+*
+* @return
+*   - TIGL_SUCCESS if a point was found
+*   - TIGL_NOT_FOUND if no point was found or the cpacs handle is not valid
+*   - TIGL_NULL_POINTER if pointXPtr, pointYPtr or pointZPtr are null pointers
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglComponentIntersectionPoints(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                 char*  componentUidOne,
+                                                                 char*  componentUidTwo,
+                                                                 int lineID,
+                                                                 const double* etaArray,
+                                                                 int numberOfPoints,
+                                                                 double* pointXArray,
+                                                                 double* pointYArray,
+                                                                 double* pointZArray);
+
 
 /**
 * @brief Returns the number if intersection lines of two geometric components.

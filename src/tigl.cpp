@@ -2503,7 +2503,67 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglComponentIntersectionPoint(TiglCPACSConfig
     }
 }
 
+TIGL_COMMON_EXPORT TiglReturnCode tiglComponentIntersectionPoints(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                 char*  componentUidOne,
+                                                                 char*  componentUidTwo,
+                                                                 int lineID,
+                                                                 const double* etaArray,
+                                                                 int nPoints,
+                                                                 double* pointXArray,
+                                                                 double* pointYArray,
+                                                                 double* pointZArray)
+{
+    if (etaArray == 0) {
+        LOG(ERROR) << "Error: Null pointer argument for etaArray ";
+        LOG(ERROR) << "in function call to tiglComponentIntersectionPoints." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+    
+    if (pointXArray == 0 || pointYArray == 0 || pointZArray == 0) {
+        LOG(ERROR) << "Error: Null pointer argument for pointXArray, pointYArray or pointZArray ";
+        LOG(ERROR) << "in function call to tiglComponentIntersectionPoints." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
 
+    if ( (componentUidOne == 0) || (componentUidTwo == 0)) {
+        LOG(ERROR) << "Error: Null pointer argument for at least one given UID ";
+        LOG(ERROR) << "in function call to tiglComponentIntersectionPoints." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+
+
+    try {
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+
+        tigl::CTiglUIDManager& uidManager = config.GetUIDManager();
+
+        TopoDS_Shape compoundOne = uidManager.GetComponent(componentUidOne)->GetLoft();
+        TopoDS_Shape compoundTwo = uidManager.GetComponent(componentUidTwo)->GetLoft();
+
+        tigl::CTiglIntersectionCalculation Intersector(compoundOne, compoundTwo);
+        
+        for(int i = 0; i < nPoints; ++i){
+            gp_Pnt point = Intersector.GetPoint(etaArray[i], lineID);
+            pointXArray[i] = point.X();
+            pointYArray[i] = point.Y();
+            pointZArray[i] = point.Z();
+        }
+        return TIGL_SUCCESS;
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglComponentIntersectionPoints!" << std::endl;
+        return TIGL_ERROR;
+    }
+}
 
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglComponentIntersectionLineCount(TiglCPACSConfigurationHandle cpacsHandle,
