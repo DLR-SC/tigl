@@ -1,3 +1,61 @@
+Version 2.0.5
+---------------
+TiGL:
+- Symmetry modeling
+- Explicit modeling of the wing leading edge to improve tesselated output (no more leading edge bumps)
+- Explicit modeling of the wing upper and lower shape
+- The fuselage lofting now creates a smooth surface without hard edges (due to fixed OpenCASCADE bug)
+- Completely rewritten VTK export:
+	- Fixed lots of errors. 
+	- Large improvement of calculation times. 
+	- Provides wing segment metadata in a proper VTK-way, to allow visualization of these data in VTK viewers.
+	  Calculation and export of the proper normal vectors.
+- IGES and STEP export with CPACS metadata
+- Collada export for use in 3D rendering programs like Blender
+- MATLAB bindings for TiGL!
+- Added logging framework to write outputs into log files (google-glog)
+- Ported to OpenCASCADE 6.6.0
+	
+-New API functions:
+	- tiglWingComponentSegmentGetMaterialUIDs, to query materials on component segment
+	- tiglWingComponentSegmentGetPoint, to query cartesian point on the wing component segment (on chord surface)
+	- tiglWingSegmentPointGetComponentSegmentEtaXsi, to compute segment to component segment coordinates
+	- tiglWingComponentSegmentGetSegmentUID, queries the uids of the ith segment of the component segment
+	- tiglWingComponentSegmentGetNumberOfSegments, queries the number of segments belonging to a component segment
+	- tiglExportFuselageColladaByUID
+	- tiglExportWingColladaByUID
+	- tiglExportStructuredIGES
+	- tiglExportStructuredSTEP
+	- tiglConfigurationGetLength, returns the length of the airplane
+	- tiglWingGetSpan, returns the wing span
+	- tiglComponentIntersectionPoints (convenience function, vectorizes tiglComponentIntersectionPoint to improve speed)
+	
+-Changed API:
+	- Switched to const char * strings
+	- tiglWingGetSegmentIndex returns now also the wing index instead of asking for it
+	- Removed TiGL wire algorithms switching functions. Now a Bspline wire is used for each profile.
+	
+-Fixes:
+    - Intersection calculation used by tiglComponentIntersectionPoint
+	- Fixed incorrectly placed fuselage positionings
+	- Fixed tiglWingComponentSegmentFindSegment returning segments that don't belong to the component segment
+	- Workaround to buggy OpenCASCADE boolean fuse algorithms (which seems to be non-commutative). As a result, the fusing of the whole plane
+	  can be slower than before.
+	- Removed warning about missing component segments
+	
+TiGLViewer:
+- Display user defined component segment point
+- Improved speed of intersection calculation
+- Improved speed of shape triangulation
+- Display upper and lower shape of the wing
+- Display of the full model incorporating the symmetry properties of the CPACS components
+- Fixed detection, if CPACS file is changed while displayed in TiGLViewer
+- An optional control file can steer some basic settings like tesselation/triangulation accuracy (e.g. to tune speed of cpacs file opening)
+- STEP export
+- Settings Dialog (tesslation accuracy settings, background...)
+- New icon and color scheme
+
+
 Version 2.0.4
 ---------------
 - New API Functions: 
