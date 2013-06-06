@@ -95,7 +95,7 @@ namespace tigl {
     // transform all components relative to their parents
     void CCPACSConfiguration::transformAllComponents(CTiglAbstractPhysicalComponent* parent)
     {
-        CTiglAbstractPhysicalComponent::ChildContainerType& children = parent->GetChildren();
+        CTiglAbstractPhysicalComponent::ChildContainerType& children = parent->GetChildren(false);
         CTiglAbstractPhysicalComponent::ChildContainerType::iterator pIter;
         CTiglPoint parentTranslation = parent->GetTranslation();
         for (pIter = children.begin(); pIter != children.end(); pIter++) {
@@ -137,7 +137,7 @@ namespace tigl {
             }
         }
 
-        CTiglAbstractPhysicalComponent::ChildContainerType& children = parent->GetChildren();
+        CTiglAbstractPhysicalComponent::ChildContainerType& children = parent->GetChildren(false);
         CTiglAbstractPhysicalComponent::ChildContainerType::iterator pIter;
         for (pIter = children.begin(); pIter != children.end(); pIter++) {
             CTiglAbstractPhysicalComponent* child = *pIter;
