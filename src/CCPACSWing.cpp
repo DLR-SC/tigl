@@ -80,6 +80,7 @@ namespace tigl {
         , configuration(config)
         , rebuildFusedSegments(true)
         , rebuildFusedSegWEdge(true)
+        , rebuildShells(true)
     {
         Cleanup();
     }
@@ -144,6 +145,7 @@ namespace tigl {
         BuildMatrix();
         invalidated = false;
         rebuildFusedSegments = true;    // forces a rebuild of all segments with regards to the updated translation
+        rebuildShells = true;
     }
 
     // Read CPACS wing element
@@ -331,6 +333,32 @@ namespace tigl {
         rebuildFusedSegWEdge = false;
         return fusedSegmentWithEdge;
     }
+    
+    // Gets the loft of the whole wing.
+    TopoDS_Shape & CCPACSWing::GetUpperShape(void)
+    {
+        if(rebuildShells) {
+            BuildUpperLowerShells();
+            // Transform by wing transformation
+            upperShape = GetWingTransformation().Transform(upperShape);
+            lowerShape = GetWingTransformation().Transform(lowerShape);
+        }
+        rebuildShells = false;
+        return upperShape;
+    }
+    
+    // Gets the loft of the whole wing.
+    TopoDS_Shape & CCPACSWing::GetLowerShape(void)
+    {
+        if(rebuildShells) {
+            BuildUpperLowerShells();
+            // Transform by wing transformation
+            upperShape = GetWingTransformation().Transform(upperShape);
+            lowerShape = GetWingTransformation().Transform(lowerShape);
+        }
+        rebuildShells = false;
+        return lowerShape;
+    }
 
     // Builds a fused shape of all wing segments
     TopoDS_Shape CCPACSWing::BuildFusedSegments(bool splitWingInUpperAndLower)
@@ -360,7 +388,40 @@ namespace tigl {
 
         generator.CheckCompatibility(Standard_False);
         generator.Build();
+        
         return generator.Shape();
+    }
+    
+    // Builds a fused shape of all wing segments
+    void CCPACSWing::BuildUpperLowerShells()
+    {
+        //@todo: this probably works only if the wings does not split somewere
+        BRepOffsetAPI_ThruSections generatorUp(Standard_False, Standard_True, Precision::Confusion() );
+        BRepOffsetAPI_ThruSections generatorLow(Standard_False, Standard_True, Precision::Confusion() );
+
+        for (int i=1; i <= segments.GetSegmentCount(); i++) {
+            CCPACSWingConnection& startConnection = segments.GetSegment(i).GetInnerConnection();
+            CCPACSWingProfile& startProfile = startConnection.GetProfile();
+            TopoDS_Wire upperWire, lowerWire;
+            upperWire = transformToWingCoords(startConnection, startProfile.GetUpperWire());
+            lowerWire = transformToWingCoords(startConnection, startProfile.GetLowerWire());
+            generatorUp.AddWire(upperWire);
+            generatorLow.AddWire(lowerWire);
+        }
+
+        CCPACSWingConnection& endConnection = segments.GetSegment(segments.GetSegmentCount()).GetOuterConnection();
+        CCPACSWingProfile& endProfile = endConnection.GetProfile();
+        TopoDS_Wire endUpWire, endLowWire;
+
+        endUpWire = transformToWingCoords(endConnection, endProfile.GetUpperWire());
+        endLowWire = transformToWingCoords(endConnection, endProfile.GetLowerWire());
+
+        generatorUp.AddWire(endUpWire);
+        generatorLow.AddWire(endLowWire);
+        generatorLow.Build();
+        generatorUp.Build();
+        upperShape = generatorUp.Shape();
+        lowerShape = generatorLow.Shape();
     }
 
 
