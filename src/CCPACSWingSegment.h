@@ -180,13 +180,23 @@ namespace tigl {
         // edge on the outer wing profile. If fromUpper is true, a point
         // on the upper surface is returned, otherwise from the lower.
         gp_Pnt GetPoint(double eta, double xsi, bool fromUpper);
+        
+        // Returns an upper or lower point on the segment surface in
+        // dependence of parameters eta and xsi, which range from 0.0 to 1.0.
+        // For eta = 0.0, xsi = 0.0 point is equal to leading edge on the
+        // inner wing profile. For eta = 1.0, xsi = 1.0 point is equal to the trailing
+        // edge on the outer wing profile. If fromUpper is true, a point
+        // on the upper surface is returned, otherwise from the lower.
+        // From a point on the surface, the intersection of a rotated normal vector
+        // is computed with the upper or lower segment surface. The amount of 
+        // rotation is given by the parameters xangle, yangle, zangle
+        gp_Pnt GetPointAngles(double eta, double xsi, double xangle, double yangle, double zangle, bool fromUpper);
 
         TiglGeometricComponentType GetComponentType(){ return TIGL_COMPONENT_WINGSEGMENT | TIGL_COMPONENT_SEGMENT | TIGL_COMPONENT_LOGICAL; }
 
         // builds data structure for a TDocStd_Application
         // mostly used for export
         TDF_Label ExportDataStructure(Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label);
-
     protected:
         // Cleanup routine
         void Cleanup(void);

@@ -105,6 +105,9 @@ namespace tigl {
         // Gets the loft of the whole wing.
         TopoDS_Shape & GetLoft(void);
         TopoDS_Shape & GetLoftWithLeadingEdge(void);
+        
+        TopoDS_Shape & GetUpperShape();
+        TopoDS_Shape & GetLowerShape();
 
         // Gets the volume of this wing
         double GetVolume(void);
@@ -146,7 +149,6 @@ namespace tigl {
 
         virtual void SetSymmetryAxis(const std::string& axis);
 
-
     protected:
         // Cleanup routine
         void Cleanup(void);
@@ -159,6 +161,8 @@ namespace tigl {
 
         // Adds all Segments of this wing to one shape
         TopoDS_Shape BuildFusedSegments(bool splitWingInUpperAndLower);
+        
+        void BuildUpperLowerShells();
 
 
     private:
@@ -177,9 +181,12 @@ namespace tigl {
         CCPACSConfiguration*           configuration;            /**< Parent configuration*/
         TopoDS_Shape                   fusedSegments;            /**< All Segments in one shape */
         TopoDS_Shape                   fusedSegmentWithEdge;     /**< All Segments in one shape plus modelled leading edge */ 
+        TopoDS_Shape                   upperShape;
+        TopoDS_Shape                   lowerShape;
         bool                           invalidated;              /**< Internal state flag */
         bool                           rebuildFusedSegments;     /**< Indicates if segmentation fusing need rebuild */
         bool                           rebuildFusedSegWEdge;     /**< Indicates if segmentation fusing need rebuild */
+        bool                           rebuildShells;
         FusedElementsContainerType     fusedElements;             /**< Stores already fused segments */
         double                         myVolume;                 /**< Volume of this Wing                  */
     };

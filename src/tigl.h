@@ -613,6 +613,122 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetLowerPoint(TiglCPACSConfigurationHa
                                                 double* pointYPtr,
                                                 double* pointZPtr);
 
+
+/**
+* @brief Returns a point on the upper wing surface for a
+* a given wing and segment index. This function is different from tiglWingGetUpperPoint, as a point 
+* on the cord surface is calculated (given eta and xsi coordinates) and the normal vector at that 
+* point is rotated around the x, y, and z axis by the given angles. Finally, the intersection point 
+* of the rotated normal and the upper wing shell is computed. The point is returned in absolute world coordinates.
+*
+*
+* <b>Fortran syntax:</b>
+*
+* tigl_wing_get_upper_point_at_angle(integer cpacsHandle,
+*                           integer wingIndex,
+*                           integer segmentIndex,
+*                           real eta,
+*                           real xsi,
+*                           real xangle,
+*                           real yangle,
+*                           real zangle,
+*                           real pointXPtr,
+*                           real pointYPtr,
+*                           real pointZPtr,
+*                           integer returnCode)
+* @cond
+* #PY:7,8,9#
+* @endcond
+*
+* @param cpacsHandle  (in) : Handle for the CPACS configuration
+* @param wingIndex    (in) : The index of the wing, starting at 1
+* @param segmentIndex (in) : The index of the segment of the wing, starting at 1
+* @param eta          (in) : eta in the range 0.0 <= eta <= 1.0; eta = 0 for inner section , eta = 1 for outer section
+* @param xsi          (in) : xsi in the range 0.0 <= xsi <= 1.0; xsi = 0 for Leading Edge, xsi =  1 for Trailing Edge
+* @param xAngle       (in) : Angle of normal vector rotation around the x-Axis (in degrees)
+* @param yAngle       (in) : Angle of normal vector rotation around the y-Axis (in degrees)
+* @param zAngle       (in) : Angle of normal vector rotation around the z-Axis (in degrees)
+* @param pointXPtr    (out): Pointer to the x-coordinate of the point in absolute world coordinates
+* @param pointYPtr    (out): Pointer to the y-coordinate of the point in absolute world coordinates
+* @param pointZPtr    (out): Pointer to the z-coordinate of the point in absolute world coordinates
+*
+* @return
+*   - TIGL_SUCCESS if a point was found
+*   - TIGL_NOT_FOUND if no point was found or the cpacs handle is not valid
+*   - TIGL_INDEX_ERROR if wingIndex or segmentIndex are not valid
+*   - TIGL_NULL_POINTER if pointXPtr, pointYPtr or pointZPtr are null pointers
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetUpperPointAtAngle(TiglCPACSConfigurationHandle cpacsHandle,
+                                                int wingIndex,
+                                                int segmentIndex,
+                                                double eta,
+                                                double xsi,
+                                                double xangle,
+                                                double yangle,
+                                                double zangle,
+                                                double* pointXPtr,
+                                                double* pointYPtr,
+                                                double* pointZPtr);
+
+/**
+* @brief Returns a point on the lower wing surface for a
+* a given wing and segment index. This function is different from tiglWingGetLowerPoint, as a point 
+* on the cord surface is calculated (given eta and xsi coordinates) and the normal vector at that 
+* point is rotated around the x, y, and z axis by the given angles. Finally, the intersection point 
+* of the rotated normal and the lower wing shell is computed. The point is returned in absolute world coordinates.
+*
+*
+* <b>Fortran syntax:</b>
+*
+* tigl_wing_get_lower_point_at_angle(integer cpacsHandle,
+*                           integer wingIndex,
+*                           integer segmentIndex,
+*                           real eta,
+*                           real xsi,
+*                           real xangle,
+*                           real yangle,
+*                           real zangle,
+*                           real pointXPtr,
+*                           real pointYPtr,
+*                           real pointZPtr,
+*                           integer returnCode)
+* @cond
+* #PY:7,8,9#
+* @endcond
+*
+* @param cpacsHandle  (in) : Handle for the CPACS configuration
+* @param wingIndex    (in) : The index of the wing, starting at 1
+* @param segmentIndex (in) : The index of the segment of the wing, starting at 1
+* @param eta          (in) : eta in the range 0.0 <= eta <= 1.0; eta = 0 for inner section , eta = 1 for outer section
+* @param xsi          (in) : xsi in the range 0.0 <= xsi <= 1.0; xsi = 0 for Leading Edge, xsi =  1 for Trailing Edge
+* @param xAngle       (in) : Angle of normal vector rotation around the x-Axis (in degrees)
+* @param yAngle       (in) : Angle of normal vector rotation around the y-Axis (in degrees)
+* @param zAngle       (in) : Angle of normal vector rotation around the z-Axis (in degrees)
+* @param pointXPtr    (out): Pointer to the x-coordinate of the point in absolute world coordinates
+* @param pointYPtr    (out): Pointer to the y-coordinate of the point in absolute world coordinates
+* @param pointZPtr    (out): Pointer to the z-coordinate of the point in absolute world coordinates
+*
+* @return
+*   - TIGL_SUCCESS if a point was found
+*   - TIGL_NOT_FOUND if no point was found or the cpacs handle is not valid
+*   - TIGL_INDEX_ERROR if wingIndex or segmentIndex are not valid
+*   - TIGL_NULL_POINTER if pointXPtr, pointYPtr or pointZPtr are null pointers
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetLowerPointAtAngle(TiglCPACSConfigurationHandle cpacsHandle,
+                                                int wingIndex,
+                                                int segmentIndex,
+                                                double eta,
+                                                double xsi,
+                                                double xangle,
+                                                double yangle,
+                                                double zangle,
+                                                double* pointXPtr,
+                                                double* pointYPtr,
+                                                double* pointZPtr);
+
+
 /**
 * @brief Returns the count of wing segments connected to the inner section of a given segment.
 *
@@ -2416,7 +2532,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglComponentIntersectionPoint(TiglCPACSConfig
 *                                                          real* pointZPtr,
 *                                                          integer returnCode);
 * @cond
-* #PY:5,6,7#
+* #PY:5,6,7:4,4,4#
 * #annotate in: 4A(5) out: 6AM(5), 7AM(5), 8AM(5)#
 * @endcond
 *

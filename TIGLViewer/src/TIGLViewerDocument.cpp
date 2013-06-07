@@ -1359,6 +1359,7 @@ void TIGLViewerDocument::drawWingFuselageIntersectionLine()
         ISession_Point* aGraphicPoint = new ISession_Point(point);
         myAISContext->Display(aGraphicPoint,Standard_False);
     }
+    myAISContext->UpdateCurrentViewer();
     QApplication::restoreOverrideCursor();
     writeToStatusBar("");
 }
@@ -1452,12 +1453,8 @@ void TIGLViewerDocument::drawWingShells(){
     QApplication::setOverrideCursor( Qt::WaitCursor );
 
     tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
-
-    for(int i = 1; i <=  wing.GetSegmentCount(); ++i){
-        tigl::CCPACSWingSegment& segment = dynamic_cast<tigl::CCPACSWingSegment&>(wing.GetSegment(i));
-        displayShape(segment.GetUpperShape(), Quantity_NOC_GREEN);
-        displayShape(segment.GetLowerShape(), Quantity_NOC_RED);
-    }
+    displayShape(wing.GetUpperShape(), Quantity_NOC_GREEN);
+    displayShape(wing.GetLowerShape(), Quantity_NOC_RED);
 
     QApplication::restoreOverrideCursor();
 }

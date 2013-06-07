@@ -412,7 +412,6 @@ namespace tigl {
         //intersection point
         BRepExtrema_DistShapeShape extrema(xsiLinie, aCrv);
         extrema.Perform();
-
         return extrema.PointOnShape1(1);
     }
 

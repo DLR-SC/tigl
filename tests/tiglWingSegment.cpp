@@ -682,6 +682,42 @@ TEST_F(WingSegmentSimple, getChordPointInternal_accuracy)
     ASSERT_NEAR(point.Z(), 0., 1e-7);
 }
 
+/* Tests on simple geometry__________________________ */
+TEST_F(WingSegmentSimple, getPointAngle)
+{
+    // now we have do use the internal interface as we currently have no public api for this
+    tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
+    tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglSimpleHandle);
+    tigl::CCPACSWing& wing = config.GetWing(1);
+
+    tigl::CCPACSWingSegment& segment  = (tigl::CCPACSWingSegment&) wing.GetSegment(1);
+    
+    gp_Pnt point    = segment.GetPoint(0.5, 0.5, true);
+    gp_Pnt pointAng = segment.GetPointAngles(0.5, 0.5, 0., 0., 0., true);
+    ASSERT_NEAR(0.0, point.Distance(pointAng), 1e-7);
+    
+    pointAng = segment.GetPointAngles(0.5, 0.5, 0., 10., 0., true);
+    ASSERT_GT(pointAng.X(), point.X());
+    ASSERT_NEAR(point.Y(), pointAng.Y(), 1e-7);
+    
+    pointAng = segment.GetPointAngles(0.5, 0.5, 0., -10., 0., true);
+    ASSERT_LT(pointAng.X(), point.X());
+    ASSERT_NEAR(point.Y(), pointAng.Y(), 1e-7);
+    
+    pointAng = segment.GetPointAngles(0.5, 0.5, 10., 0., 0., true);
+    ASSERT_LT(pointAng.Y(), point.Y());
+    ASSERT_NEAR(point.X(), pointAng.X(), 1e-7);
+    
+    pointAng = segment.GetPointAngles(0.5, 0.5, -10., 0., 0., true);
+    ASSERT_GT(pointAng.Y(), point.Y());
+    ASSERT_NEAR(point.X(), pointAng.X(), 1e-7);
+    
+    // test at the end of a segment
+    pointAng = segment.GetPointAngles(1.0, 0.5, -45., 0., 0., true);
+    
+    ASSERT_THROW(segment.GetPointAngles(0.0, 0.5, 70., 0., 0., true), tigl::CTiglError);
+}
+
 TEST_F(WingSegmentSimple, getIsOnTop_success)
 {
     // now we have do use the internal interface as we currently have no public api for this
