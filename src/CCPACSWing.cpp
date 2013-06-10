@@ -314,7 +314,7 @@ namespace tigl {
     TopoDS_Shape & CCPACSWing::GetLoft(void)
     {
         if(rebuildFusedSegments) {
-            fusedSegments = BuildFusedSegments(false);
+            fusedSegments = BuildFusedSegments(true);
             // Transform by wing transformation
             fusedSegments = GetWingTransformation().Transform(fusedSegments);
         }
