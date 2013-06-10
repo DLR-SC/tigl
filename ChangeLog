@@ -6,6 +6,7 @@ TiGL:
 - Explicit modeling of the wing upper and lower shape
 - The fuselage lofting now creates a smooth surface without hard edges (due to fixed OpenCASCADE bug)
 - Completely rewritten VTK export:
+	- Full body export including wing segment metadata
 	- Fixed lots of errors. 
 	- Large improvement of calculation times. 
 	- Provides wing segment metadata in a proper VTK-way, to allow visualization of these data in VTK viewers.
@@ -29,6 +30,7 @@ TiGL:
 	- tiglConfigurationGetLength, returns the length of the airplane
 	- tiglWingGetSpan, returns the wing span
 	- tiglComponentIntersectionPoints (convenience function, vectorizes tiglComponentIntersectionPoint to improve speed)
+	- tiglExportMeshedGeometryVTKSimple and tiglExportMeshedGeometryVTKSimple (replaced dummy implementation)
 	
 -Changed API:
 	- Switched to const char * strings
