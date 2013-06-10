@@ -79,26 +79,25 @@ namespace tigl {
     void CTiglExportVtk::ExportMeshedFuselageVTKByIndex(const int fuselageIndex, const std::string& filename, const double deflection)
     {
         CTiglAbstractPhysicalComponent & component = myConfig.GetFuselage(fuselageIndex);
-        TopoDS_Shape loft = component.GetLoft();
-
-        LOG(ERROR) << "tiglExportMeshedFuselageByIndexVTK not yet implemented!!" << std::endl;
+        ExportMeshedFuselageVTKByUID(component.GetUID(), filename, deflection);
     }
 
     // Exports a by UID selected fuselage, boolean fused and meshed, as VTK file
     void CTiglExportVtk::ExportMeshedFuselageVTKByUID(const std::string fuselageUID, const std::string& filename, const double deflection)
     {
         CTiglAbstractPhysicalComponent & component = myConfig.GetFuselage(fuselageUID);
-        TopoDS_Shape loft = component.GetLoft();
+        TopoDS_Shape& loft = component.GetLoft();
         
-        LOG(ERROR) << "tiglExportMeshedFuselageByIndexUID not yet implemented!!" << std::endl;
+        CTiglTriangularizer trian(loft, deflection, false);
+        trian.writeVTK(filename.c_str());
     }
     
 
     // Exports a whole geometry, boolean fused and meshed, as VTK file
     void CTiglExportVtk::ExportMeshedGeometryVTK(const std::string& filename, const double deflection)
     {
-        
-        TopoDS_Shape loft = myConfig.GetFusedAirplane();
+        tigl::CTiglTriangularizer trian(myConfig, deflection, SEGMENT_INFO);
+        trian.writeVTK(filename.c_str());
     }
 
     /************* Simple ones *************************/
@@ -138,7 +137,8 @@ namespace tigl {
     // Exports a whole geometry, boolean fused and meshed, as VTK file
     void CTiglExportVtk::ExportMeshedGeometryVTKSimple(const std::string& filename, const double deflection)
     {
-        LOG(ERROR) << "tiglExportMeshedGeometryVTKSimple not yet implemented!!" << std::endl;
+        tigl::CTiglTriangularizer trian(myConfig, deflection, NO_INFO);
+        trian.writeVTK(filename.c_str());
     }
 
 } // end namespace tigl

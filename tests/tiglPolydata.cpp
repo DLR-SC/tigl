@@ -412,8 +412,6 @@ TEST_F(TriangularizeShape, exportVTK_WingSegmentInfo)
     tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
     tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
     tigl::CCPACSWing& wing = config.GetWing(1);
-
-    bool exportError = false;
     
     clock_t start, stop;
     start = clock();
@@ -422,12 +420,18 @@ TEST_F(TriangularizeShape, exportVTK_WingSegmentInfo)
     stop = clock();
     std::cout << "Triangularization time [ms]: " << (stop-start)/(double)CLOCKS_PER_SEC * 1000. << std::endl;
     std::cout << "Number of Polygons/Vertices: " << trian.currentObject().getNPolygons() << "/" << trian.currentObject().getNVertices()<<std::endl;
-    try{
-        trian.writeVTK(vtkWingFilename);
-    }
-    catch (...){
-        exportError = true;
-    }
+    ASSERT_NO_THROW(trian.writeVTK(vtkWingFilename));
+}
+
+TEST_F(TriangularizeShape, exportVTK_FullPlane_long)
+{
+    const char* vtkWingFilename = "TestData/export/simplewing_fusedplane.vtp";
     
-    ASSERT_TRUE(exportError == false);
+    tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
+    tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
+    
+    tigl::CTiglTriangularizer trian(config, 0.001, SEGMENT_INFO);
+    
+    std::cout << "Number of Polygons/Vertices: " << trian.currentObject().getNPolygons() << "/" << trian.currentObject().getNVertices()<<std::endl;
+    ASSERT_NO_THROW(trian.writeVTK(vtkWingFilename));
 }
