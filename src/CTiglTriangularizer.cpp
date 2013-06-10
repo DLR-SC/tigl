@@ -259,6 +259,8 @@ int CTiglTriangularizer::triangularizeFace(const TopoDS_Face & face, unsigned lo
             gp_Pnt p; gp_Vec n;
             prop.Normal(uv_pnt.X(),uv_pnt.Y(),p,n);
             n.Normalize();
+            if(face.Orientation() == TopAbs_INTERNAL)
+                n.Reverse();
             
             *pIndexBuf++ = currentObject().addPointNormal(p.XYZ(), n.XYZ());
         }
@@ -299,7 +301,7 @@ int CTiglTriangularizer::triangularizeFace(const TopoDS_Face & face, unsigned lo
         
         unsigned int iPolyIndex = 0;
         
-        if(face.Orientation() != TopAbs_REVERSED)
+        if(face.Orientation() != TopAbs_REVERSED && face.Orientation() != TopAbs_INTERNAL)
             iPolyIndex = currentObject().addTriangleByVertexIndex(index1, index2, index3);
         else
             iPolyIndex = currentObject().addTriangleByVertexIndex(index1, index3, index2);
