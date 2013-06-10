@@ -58,6 +58,7 @@
 #include "TIGLViewerSettings.h"
 #include "CTiglIntersectionCalculation.h"
 #include "TIGLViewerEtaXsiDialog.h"
+#include "CTiglExportVtk.h"
 
 #define max(a,b) ((a) > (b) ? (a) : (b))
 
@@ -1218,11 +1219,7 @@ void TIGLViewerDocument::exportMeshedFuselageVTK()
 
 void TIGLViewerDocument::exportMeshedFuselageVTKsimple()
 {
-    QString     fileName;
-    QString        fileType;
-    QFileInfo    fileInfo;
-    TIGLViewerInputOutput writer;
-
+    QString fileName;
     QString fuselageUid = dlgGetFuselageSelection();
 
     writeToStatusBar(tr("Saving meshed Fuselage as simple VTK file with TIGL..."));
@@ -1239,6 +1236,29 @@ void TIGLViewerDocument::exportMeshedFuselageVTKsimple()
         }
     }
 }
+
+void TIGLViewerDocument::exportMeshedConfigVTK()
+{
+    QString     fileName;
+    fileName = QFileDialog::getSaveFileName(parent, tr("Save as..."), myLastFolder, tr("Export VTK(*.vtp)"));
+
+    if (!fileName.isEmpty())
+    {
+        QApplication::setOverrideCursor( Qt::WaitCursor );
+        writeToStatusBar("Calculating fused airplane, this can take a while");
+        // calculating loft, is cached afterwards
+        GetConfiguration().GetFusedAirplane();
+        writeToStatusBar("Writing meshed vtk file");
+        tigl::CTiglExportVtk exporter(GetConfiguration());
+        
+        double deflection = GetConfiguration().GetAirplaneLenth() * _settings.triangulationAccuracy();
+        exporter.ExportMeshedGeometryVTK(fileName.toStdString(), deflection);
+        
+        writeToStatusBar("");
+        QApplication::restoreOverrideCursor();
+    }
+}
+
 
 void TIGLViewerDocument::exportFuselageCollada()
 {

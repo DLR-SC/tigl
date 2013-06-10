@@ -143,12 +143,13 @@ namespace tigl {
         // parent with childs
         if(children.size() > 0)
             fuseCount++;
-
-        TopoDS_Shape fusedChilds, tmpShape;
+        
+        // this somewhat complicated fusing is the only way, that the result of all tested planes was okay
+        TopoDS_Shape fusedChilds;
         for (pIter = children.begin(); pIter != children.end(); pIter++) {
             CTiglAbstractPhysicalComponent* child = *pIter;
             TopoDS_Shape fusedChild = child->GetLoft();
-            tmpShape = child->GetMirroredLoft();
+            TopoDS_Shape tmpShape = child->GetMirroredLoft();
             if(!tmpShape.IsNull() && calcFullModel) {
                 try{
                     fusedChild = BRepAlgoAPI_Fuse(fusedChild, tmpShape);
@@ -173,7 +174,7 @@ namespace tigl {
         
         //create root component
         TopoDS_Shape parentShape = parent->GetLoft();
-        tmpShape = parent->GetMirroredLoft();
+        TopoDS_Shape tmpShape = parent->GetMirroredLoft();
         if(!tmpShape.IsNull() && calcFullModel && (parent->GetComponentType()& TIGL_COMPONENT_WING)){
             try{
                 parentShape = BRepAlgoAPI_Fuse(parentShape, tmpShape);

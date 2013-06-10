@@ -18,6 +18,7 @@
 
 #include "CTiglTriangularizer.h"
 #include "ITiglGeometricComponent.h"
+#include "CTiglAbstractPhysicalComponent.h"
 #include "CCPACSWing.h"
 #include "CCPACSConfiguration.h"
 
@@ -39,6 +40,23 @@
 
 #include <TColgp_Array1OfPnt2d.hxx>
 #include <climits>
+
+namespace {
+gp_Pnt mirrorPoint(gp_Pnt pin, TiglSymmetryAxis axis){
+    gp_Pnt p(pin);
+
+    if(axis == TIGL_X_Y_PLANE){
+        p.SetZ(-p.Z());
+    }
+    else if(axis == TIGL_Y_Z_PLANE){
+        p.SetX(-p.X());
+    }
+    else if(axis == TIGL_X_Z_PLANE){
+        p.SetY(-p.Y());
+    }
+    return p;
+}
+}
 
 namespace tigl{
 
@@ -72,14 +90,17 @@ int CTiglTriangularizer::triangularizeShape(const TopoDS_Shape& shape){
     return 0;
 }
 
-CTiglTriangularizer::CTiglTriangularizer(CTiglAbstractGeometricComponent& comp, double deflection, ComponentTraingMode mode) {
+CTiglTriangularizer::CTiglTriangularizer(CTiglAbstractPhysicalComponent& comp, double deflection, ComponentTraingMode mode) {
     useMultipleObjects(false);
-    
-    triangularizeComponent(comp, deflection, mode);
+    LOG(INFO) << "Calculating fused plane";
+    triangularizeComponent(comp, false, comp.GetLoft(), deflection, mode);
 }
 
 CTiglTriangularizer::CTiglTriangularizer(CCPACSConfiguration &config, double deflection, ComponentTraingMode mode) {
     CTiglAbstractPhysicalComponent* pRoot =  config.GetUIDManager().GetRootComponent();
+    TopoDS_Shape& planeShape = config.GetFusedAirplane();
+    useMultipleObjects(false);
+    triangularizeComponent(*pRoot, true, planeShape, deflection, mode);
 }
 
 bool isValidCoord(double c){
@@ -90,64 +111,74 @@ bool isValidCoord(double c){
         return false;
 }
 
-int CTiglTriangularizer::triangularizeComponent(CTiglAbstractGeometricComponent & component, double deflection, ComponentTraingMode mode){
+int CTiglTriangularizer::triangularizeComponent(CTiglAbstractPhysicalComponent & component, bool include_childs, TopoDS_Shape& shape, double deflection, ComponentTraingMode mode){
     // create list of child components
+    CTiglAbstractPhysicalComponent::ChildContainerType allcomponents = component.GetChildren(true);
+    allcomponents.push_front(&component);
     
-    if (component.GetComponentType() & TIGL_COMPONENT_WING){
-        CCPACSWing& wing = dynamic_cast<CCPACSWing&>(component);
-        const TopoDS_Shape& wingShape = wing.GetLoft();
-        BRepTools::Clean (wingShape);
-        BRepMesh::Mesh(wingShape, deflection);
+    BRepTools::Clean (shape);
+    BRepMesh::Mesh(shape, deflection);
+    LOG(INFO) << "Done meshing";
+    
+    TopExp_Explorer faceExplorer;
+    for (faceExplorer.Init(shape, TopAbs_FACE); faceExplorer.More(); faceExplorer.Next()) {
+        TopoDS_Face face = TopoDS::Face(faceExplorer.Current());
+        unsigned long nVertices, iPolyLower, iPolyUpper;
+        triangularizeFace(face, nVertices, iPolyLower, iPolyUpper);
         
-        TopExp_Explorer faceExplorer;
-        
-        for (faceExplorer.Init(wingShape, TopAbs_FACE); faceExplorer.More(); faceExplorer.Next()) {
-            TopoDS_Face face = TopoDS::Face(faceExplorer.Current());
-            unsigned long nVertices, iPolyLower, iPolyUpper;
-            triangularizeFace(face, nVertices, iPolyLower, iPolyUpper);
+        // find to which segment the face belongs
+        if(nVertices > 0  &&  mode ==  SEGMENT_INFO){
+            // compute a central point on the face
+            BRepGProp_Face prop(face);
+            Standard_Real umin, umax, vmin, vmax;
+            prop.Bounds(umin, umax, vmin, vmax);
             
-            // find to which segment the face belongs
-            if(nVertices > 0  &&  mode ==  SEGMENT_INFO){
-                // compute a central point on the face
-                BRepGProp_Face prop(face);
-                Standard_Real umin, umax, vmin, vmax;
-                prop.Bounds(umin, umax, vmin, vmax);
-                
-                Standard_Real umean = 0.5*(umin+umax);
-                Standard_Real vmean = 0.5*(vmin+vmax);
-                
-                gp_Pnt centralP; gp_Vec n;
-                prop.Normal(umean,vmean,centralP,n);
-                
-                // check to which segment this face belongs
-                int iSegmentFound = 0;
-                for(int iSegment = 1 ; iSegment <= wing.GetSegmentCount(); ++iSegment){
-                    CCPACSWingSegment& segment = (CCPACSWingSegment&) wing.GetSegment(iSegment);
-                    if(segment.GetIsOn(centralP) == true){
-                        iSegmentFound = iSegment;
+            Standard_Real umean = 0.5*(umin+umax);
+            Standard_Real vmean = 0.5*(vmin+vmax);
+            
+            gp_Pnt centralP; gp_Vec n;
+            prop.Normal(umean,vmean,centralP,n);
+            
+            // search to which component the current face belongs to
+            bool found = false;
+            CTiglAbstractPhysicalComponent::ChildContainerType::iterator compit;
+            for (compit = allcomponents.begin(); compit != allcomponents.end(); ++compit){
+                CTiglAbstractPhysicalComponent& curcomp = *(*compit);
+                if (curcomp.GetComponentType() & TIGL_COMPONENT_WING){
+                    // check to which segment this face belongs
+                    CCPACSWing& wing = dynamic_cast<CCPACSWing&>(curcomp);
+                    int iSegmentFound = 0;
+                    bool pointOnMirroredShape = false;
+                    for(int iSegment = 1 ; iSegment <= wing.GetSegmentCount(); ++iSegment){
+                        CCPACSWingSegment& segment = (CCPACSWingSegment&) wing.GetSegment(iSegment);
+                        if(segment.GetIsOn(centralP) == true){
+                            iSegmentFound = iSegment;
+                            break;
+                        }
+                        else if(wing.GetSymmetryAxis() != TIGL_NO_SYMMETRY && segment.GetIsOnMirrored(centralP) == true){
+                            iSegmentFound = iSegment;
+                            pointOnMirroredShape = true;
+                            break;
+                        }
+                    }
+                    if (iSegmentFound > 0){
+                        CCPACSWingSegment& segment = (CCPACSWingSegment&) wing.GetSegment(iSegmentFound);
+                        annotateWingSegment(segment, centralP, pointOnMirroredShape, iPolyLower, iPolyUpper);
+                        found = true;
                         break;
                     }
+                } // is wing
+            } // for components
+            if ( !found ){
+                //make dummy annotation for non wing faces
+                for(unsigned int iPoly = iPolyLower; iPoly <= iPolyUpper; iPoly++){
+                    currentObject().setPolyMetadata(iPoly,"\"\" 0 0.0 0.0 0");
                 }
-                
-                currentObject().setMetadataElements("uID segmentIndex eta xsi isOnTop");
-                if (iSegmentFound > 0){
-                    CCPACSWingSegment& segment = (CCPACSWingSegment&) wing.GetSegment(iSegmentFound);
-                    annotateWingSegment(segment, centralP, iPolyLower, iPolyUpper);
-                }
-                else {
-                    for(unsigned int iPoly = iPolyLower; iPoly <= iPolyUpper; iPoly++){
-                        currentObject().setPolyMetadata(iPoly,"\"\" 0 0.0 0.0 0");
-                    }
-                } // iSegmentFound
-            } // advanced mode
-        } // for faces
-        if(_useMultipleObjects) createNewObject();
+            } // ! found
+        }
     }
-    else {
-        TopoDS_Shape& shape = component.GetLoft();
-        BRepMesh::Mesh(shape,deflection);
-        return triangularizeShape(shape);
-    }
+    if(_useMultipleObjects) createNewObject();
+
     return TIGL_SUCCESS;
 }
 
@@ -160,8 +191,10 @@ int CTiglTriangularizer::triangularizeComponent(CTiglAbstractGeometricComponent 
  * @param iPolyLower Lower index of the polygons to annotate.
  * @param iPolyUpper Upper index of the polygons to annotate.
  */
-void CTiglTriangularizer::annotateWingSegment(tigl::CCPACSWingSegment &segment, const gp_Pnt& pointOnSegmentFace, unsigned long iPolyLower, unsigned long iPolyUpper){
-
+void CTiglTriangularizer::annotateWingSegment(tigl::CCPACSWingSegment &segment, gp_Pnt pointOnSegmentFace, bool pointOnMirroredShape, unsigned long iPolyLower, unsigned long iPolyUpper){
+    if(pointOnMirroredShape)
+        pointOnSegmentFace = mirrorPoint(pointOnSegmentFace, segment.GetSymmetryAxis());
+    
     // GetIsOnTop is very slow, therefore we do it only once per face 
     bool isUpperFace = segment.GetIsOnTop(pointOnSegmentFace);
     
@@ -177,6 +210,8 @@ void CTiglTriangularizer::annotateWingSegment(tigl::CCPACSWingSegment &segment, 
             baryCenter += currentObject().getVertexPoint(index);
         }
         baryCenter = baryCenter*(double)(1./(double)npoints);
+        if(pointOnMirroredShape)
+            baryCenter = mirrorPoint(baryCenter.Get_gp_Pnt(), segment.GetSymmetryAxis()).XYZ();
         
         double eta = 0., xsi = 0.;
         segment.GetEtaXsi(baryCenter.Get_gp_Pnt(), false, eta, xsi);
@@ -185,7 +220,10 @@ void CTiglTriangularizer::annotateWingSegment(tigl::CCPACSWingSegment &segment, 
         
         // create metadata string
         std::stringstream stream;
-        stream << "\"" << segment.GetUID() << "\" " << segment.GetSegmentIndex() << " " << eta << " " << xsi << " " << isUpperFace;
+        std::string symm = "";
+        if(pointOnMirroredShape)
+            symm = "_sym";
+        stream << "\"" << segment.GetUID() << symm << "\" " << segment.GetSegmentIndex() << " " << eta << " " << xsi << " " << isUpperFace;
         currentObject().setPolyMetadata(iPoly, stream.str().c_str());
     }
 }
@@ -220,6 +258,7 @@ int CTiglTriangularizer::triangularizeFace(const TopoDS_Face & face, unsigned lo
             const gp_Pnt2d& uv_pnt = uvnodes(inode);
             gp_Pnt p; gp_Vec n;
             prop.Normal(uv_pnt.X(),uv_pnt.Y(),p,n);
+            n.Normalize();
             
             *pIndexBuf++ = currentObject().addPointNormal(p.XYZ(), n.XYZ());
         }
@@ -260,7 +299,7 @@ int CTiglTriangularizer::triangularizeFace(const TopoDS_Face & face, unsigned lo
         
         unsigned int iPolyIndex = 0;
         
-        if(face.Orientation() == TopAbs_FORWARD)
+        if(face.Orientation() != TopAbs_REVERSED)
             iPolyIndex = currentObject().addTriangleByVertexIndex(index1, index2, index3);
         else
             iPolyIndex = currentObject().addTriangleByVertexIndex(index1, index3, index2);
