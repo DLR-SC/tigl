@@ -20,8 +20,8 @@
 #include <QSettings>
 
 TIGLViewerSettings::TIGLViewerSettings() {
-    _tesselationAccuracy = 0.0001;
-    _triangulationAccuracy = 0.0001;
+    _tesselationAccuracy = 0.000316;
+    _triangulationAccuracy = 0.00070;
     _bgcolor = QColor(255,235,163);
 }
 
