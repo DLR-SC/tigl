@@ -14,6 +14,7 @@ TiGL:
 - IGES and STEP export with CPACS metadata
 - Collada export for use in 3D rendering programs like Blender
 - MATLAB bindings for TiGL!
+- Completeley rewritten python bindings (e.g. better support for arrays)
 - Added logging framework to write outputs into log files (google-glog)
 - Ported to OpenCASCADE 6.6.0
 	
