@@ -22,7 +22,7 @@ import unittest
 from tiglwrapper import *
 from tixiwrapper import *
 
-skipSlowFunctions = False # Saves you 14 minutes(if True), but leaves out 8 functions
+skipSlowFunctions = True # Saves you 14 minutes(if True), but leaves out 8 functions
 
 class TestSimpleCpacs(unittest.TestCase):
 
@@ -41,7 +41,7 @@ class TestSimpleCpacs(unittest.TestCase):
 		
 	def test_objectCount(self):
 		self.assertEqual(self.tigl.getWingCount(),1)
-		self.assertEqual(self.tigl.getFuselageCount(),0)
+		self.assertEqual(self.tigl.getFuselageCount(),1)
 		self.assertEqual(self.tigl.wingGetComponentSegmentCount(1),1)
 
 	########## Exports are faster in this class
@@ -50,8 +50,9 @@ class TestSimpleCpacs(unittest.TestCase):
 		self.tigl.exportIGES(filenamePtr)
 	
 	def test_exportFusedWingFuselageIGES(self):
-		filenamePtr = "TestData/export/export.igs"
-		self.tigl.exportFusedWingFuselageIGES(filenamePtr)
+		if not skipSlowFunctions:
+			filenamePtr = "TestData/export/export.igs"
+			self.tigl.exportFusedWingFuselageIGES(filenamePtr)
 			
 	def test_exportStructuredIGES(self):
 		filenamePtr = "TestData/export/export2.igs"
@@ -66,15 +67,17 @@ class TestSimpleCpacs(unittest.TestCase):
 		self.tigl.exportStructuredSTEP(filenamePtr)
 			
 	def test_exportMeshedWingSTL(self):
-		wingIndex = 1
-		filenamePtr = "TestData/export/export.stl"
-		deflection = 0.01
-		self.tigl.exportMeshedWingSTL(wingIndex, filenamePtr, deflection)
+		if not skipSlowFunctions:
+			wingIndex = 1
+			filenamePtr = "TestData/export/export.stl"
+			deflection = 0.01
+			self.tigl.exportMeshedWingSTL(wingIndex, filenamePtr, deflection)
 					
 	def test_exportMeshedGeometrySTL(self):
-		filenamePtr = "TestData/export/export3.stl"
-		deflection = 0.01
-		self.tigl.exportMeshedGeometrySTL(filenamePtr, deflection)
+		if not skipSlowFunctions:
+			filenamePtr = "TestData/export/export3.stl"
+			deflection = 0.01
+			self.tigl.exportMeshedGeometrySTL(filenamePtr, deflection)
 			
 	def test_exportMeshedWingVTKByUID(self):
 		wingUID = "Wing"
@@ -83,9 +86,10 @@ class TestSimpleCpacs(unittest.TestCase):
 		self.tigl.exportMeshedWingVTKByUID(wingUID, filenamePtr, deflection)
 			
 	def test_exportMeshedGeometryVTK(self):
-		filenamePtr = "TestData/export/export4.vtk"
-		deflection = 0.01
-		self.tigl.exportMeshedGeometryVTK(filenamePtr, deflection)
+		if not skipSlowFunctions:
+			filenamePtr = "TestData/export/export4.vtk"
+			deflection = 0.01
+			self.tigl.exportMeshedGeometryVTK(filenamePtr, deflection)
 			
 	def test_exportMeshedWingVTKSimpleByUID(self):
 		wingUID = "Wing"
@@ -94,9 +98,17 @@ class TestSimpleCpacs(unittest.TestCase):
 		self.tigl.exportMeshedWingVTKSimpleByUID(wingUID, filenamePtr, deflection)
 			
 	def test_exportMeshedGeometryVTKSimple(self):
-		filenamePtr = "TestData/export/export7.vtk"
-		deflection = 0.01
-		self.tigl.exportMeshedGeometryVTKSimple(filenamePtr, deflection)
+		if not skipSlowFunctions:
+			filenamePtr = "TestData/export/export7.vtk"
+			deflection = 0.01
+			self.tigl.exportMeshedGeometryVTKSimple(filenamePtr, deflection)
+			
+	def test_getMaterialUID(self):
+		compSegmentUID = "WING_CS1"
+		eta = 0.25
+		xsi = 0.9
+		materials = self.tigl.wingComponentSegmentGetMaterialUIDs(compSegmentUID, TiglStructureType.UPPER_SHELL, eta, xsi )
+		self.assertEqual(materials, ('MyCellMat', 'MySkinMat'))
 ######		
 		
 # ----------------------------------------------------------------------- #
@@ -211,8 +223,9 @@ class TestTiglApi(unittest.TestCase):
 		self.assertEqual(segmentUID, 'D150_VAMP_W1_Seg1')
 		
 	def test_wingGetSegmentIndex(self):
-		segmentIndex = self.tigl.wingGetSegmentIndex(1,'D150_VAMP_W1_Seg1')
+		segmentIndex, wingIndex = self.tigl.wingGetSegmentIndex('D150_VAMP_W1_Seg1')
 		self.assertEqual(segmentIndex, 1)
+		self.assertEqual(wingIndex, 1)
 		
 	def test_wingGetSectionUID(self):
 		sectionUID = self.tigl.wingGetSectionUID(1,1)
@@ -397,11 +410,6 @@ class TestTiglApi(unittest.TestCase):
 ##		componentUidTwo = self.tigl.wingGetUID(1)
 ##		ret = self.tigl.componentIntersectionLineCount(componentUidOne, componentUidTwo)
 		
-	def test_getMaterialUID(self):
-		segmentUID = "Cpacs2Test_Wing_Seg_1_2"
-		eta = 0
-		xsi = 0
-		ret = self.tigl.getMaterialUID(segmentUID, eta, xsi)
 			
 	def test_wingGetVolume(self):
 		wingIndex = 1 

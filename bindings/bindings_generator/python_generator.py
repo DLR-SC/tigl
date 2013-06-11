@@ -254,9 +254,12 @@ class PythonGenerator(object):
         for arg in oargs:
             if arg.is_handle:
                 continue
-            elif arg.arrayinfos['is_array'] and arg.npointer > 0 and arg.arrayinfos['autoalloc']:
+            elif arg.arrayinfos['is_array'] and arg.npointer > 0 and arg.arrayinfos['autoalloc'] and not arg.is_string:
                 tmp_str = '_c_%s = ctypes.POINTER(ctypes.c_%s)()' \
                     % (arg.name, arg.type)
+            elif arg.arrayinfos['is_array'] and arg.npointer > 0 and arg.arrayinfos['autoalloc'] and arg.is_string:
+                tmp_str = '_c_%s = ctypes.POINTER(ctypes.c_char_p)()' \
+                    % (arg.name)
             elif arg.arrayinfos['is_array'] and arg.npointer > 0 and not arg.arrayinfos['autoalloc'] and not arg.is_string:
                 if(len(arg.arrayinfos['arraysizes']) > 0):
                     tmp_str = '%s_len = 1 ' % arg.name
@@ -269,10 +272,10 @@ class PythonGenerator(object):
                     % (arg.name, arg.type, arg.name)
 
                     
-            elif arg.arrayinfos['is_array'] and arg.npointer > 0 and not arg.arrayinfos['autoalloc'] and arg.is_string:
+            elif arg.arrayinfos['is_array'] and arg.npointer > 0 and not arg.arrayinfos['autoalloc'] and not arg.is_string:
                 tmp_str = '_c_%s = (ctypes.c_char_p * %s_len)()' \
                     % (arg.name, arg.name)
-            elif arg.is_string:
+            elif arg.is_string and not arg.arrayinfos['is_array']:
                 tmp_str = '_c_%s = ctypes.c_char_p()' % (arg.name)
             elif not arg.arrayinfos['is_array'] and arg.npointer == 1:
                 tmp_str = '_c_%s = ctypes.c_%s()' % (arg.name, arg.type)

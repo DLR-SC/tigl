@@ -183,7 +183,8 @@ typedef unsigned int TiglGeometricComponentType;
 #define  TIGL_COMPONENT_WINGSHELL       512
 
 
-enum TiglStructureType {
+enum TiglStructureType 
+{
     UPPER_SHELL = 0,
     LOWER_SHELL = 1,
     INNER_STRUCTURE = 2
@@ -533,9 +534,6 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetComponentSegmentIndex(TiglCPACSConf
 *                           real pointYPtr,
 *                           real pointZPtr,
 *                           integer returnCode)
-* @cond
-* #PY:4,5,6#
-* @endcond
 *
 * @param cpacsHandle  (in) : Handle for the CPACS configuration
 * @param wingIndex    (in) : The index of the wing, starting at 1
@@ -584,9 +582,6 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetUpperPoint(TiglCPACSConfigurationHa
 *                           real pointYPtr,
 *                           real pointZPtr,
 *                           integer returnCode)
-* @cond
-* #PY:4,5,6#
-* @endcond
 *
 * @param cpacsHandle  (in) : Handle for the CPACS configuration
 * @param wingIndex    (in) : The index of the wing, starting at 1
@@ -636,9 +631,6 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetLowerPoint(TiglCPACSConfigurationHa
 *                           real pointYPtr,
 *                           real pointZPtr,
 *                           integer returnCode)
-* @cond
-* #PY:7,8,9#
-* @endcond
 *
 * @param cpacsHandle  (in) : Handle for the CPACS configuration
 * @param wingIndex    (in) : The index of the wing, starting at 1
@@ -693,9 +685,6 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetUpperPointAtAngle(TiglCPACSConfigur
 *                           real pointYPtr,
 *                           real pointZPtr,
 *                           integer returnCode)
-* @cond
-* #PY:7,8,9#
-* @endcond
 *
 * @param cpacsHandle  (in) : Handle for the CPACS configuration
 * @param wingIndex    (in) : The index of the wing, starting at 1
@@ -870,9 +859,6 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetOuterConnectedSegmentIndex(TiglCPAC
 *                                               integer sectionUIDPtr,
 *                                               integer elementUIDPtr,
 *                                               integer returnCode)
-* @cond
-* #PY:2,3#
-* @endcond
 *
 * @param cpacsHandle     (in) : Handle for the CPACS configuration
 * @param wingIndex       (in) : The index of a wing, starting at 1
@@ -904,9 +890,6 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetInnerSectionAndElementIndex(TiglCPA
 *                                               integer sectionIndexPtr,
 *                                               integer elementIndexPtr,
 *                                               integer returnCode)
-* @cond
-* #PY:2,3#
-* @endcond
 *
 * @param cpacsHandle     (in) : Handle for the CPACS configuration
 * @param wingIndex       (in) : The index of a wing, starting at 1
@@ -941,9 +924,6 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetOuterSectionAndElementIndex(TiglCPA
 *                                               character sectionUIDPtr,
 *                                               character elementUIDPtr,
 *                                               integer returnCode)
-* @cond
-* #PY:2,3#
-* @endcond
 *
 * @param cpacsHandle     (in) : Handle for the CPACS configuration
 * @param wingIndex       (in) : The index of a wing, starting at 1
@@ -977,9 +957,6 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetInnerSectionAndElementUID(TiglCPACS
 *                                               character sectionUIDPtr,
 *                                               character elementUIDPtr,
 *                                               integer returnCode)
-* @cond
-* #PY:2,3#
-* @endcond
 *
 * @param cpacsHandle     (in) : Handle for the CPACS configuration
 * @param wingIndex       (in) : The index of a wing, starting at 1
@@ -1288,7 +1265,6 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSymmetry(TiglCPACSConfigurationHand
 *                                           character*n segmentUID,
 *                                           character*n wingUID,
 *                                           integer returnCode)
-* @cond #PY:4,5# @endcond
 *
 * @param cpacsHandle             (in)  : Handle for the CPACS configuration
 * @param componentSegmentUID    (in)  : UID of the componentSegment to search for
@@ -1318,9 +1294,6 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentFindSegment(TiglCPACSC
 *                                                         real eta, real xsi
 *                                                        real x, real y, real z,
 *                                                           integer returnCode)
-* @cond
-* #PY:3,4,5#
-* @endcond
 *
 * @param cpacsHandle             (in)  : Handle for the CPACS configuration
 * @param componentSegmentUID    (in)  : UID of the componentSegment to search for
@@ -1352,9 +1325,6 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetPoint(TiglCPACSConf
 *                                                           character*n segmentUID,
 *                                                           real segmentEta, real segmentXsi
 *                                                           integer returnCode)
-* @cond
-* #PY:3,4,5,6#
-* @endcond
 *
 * @param cpacsHandle             (in)  : Handle for the CPACS configuration
 * @param componentSegmentUID    (in)  : UID of the componentSegment to search for
@@ -1389,9 +1359,6 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentPointGetSegmentEtaXsi(
 *                                                         real segmentEta, real segmentXsi
 *                                                         real eta, real xsi,
 *                                                         integer returnCode)
-* @cond
-* #PY:4,5#
-* @endcond
 *
 * @param cpacsHandle             (in)  : Handle for the CPACS configuration
 * @param segmentUID             (in)  : UID of the wing segment to search for
@@ -1548,9 +1515,6 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSegmentCount(TiglCPACSConfigura
 *                         real pointYPtr,
 *                         real pointZPtr,
 *                         integer returnCode)
-* @cond
-* #PY:4,5,6#
-* @endcond
 *
 * @param cpacsHandle   (in) : Handle for the CPACS configuration
 * @param fuselageIndex (in) : The index of the fuselage, starting at 1
@@ -1601,9 +1565,6 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetPoint(TiglCPACSConfigurationHan
 *                               real pointYPtr,
 *                               real pointZPtr,
 *                               integer returnCode)
-* @cond
-* #PY:4,5,6#
-* @endcond
 *
 * @param cpacsHandle   (in) : Handle for the CPACS configuration
 * @param fuselageIndex (in) : The index of the fuselage, starting at 1
@@ -1659,9 +1620,6 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetPointAngle(TiglCPACSConfigurati
 *                                          real pointYPtr,
 *                                          real pointZPtr,
 *                                          integer returnCode)
-* @cond
-* #PY:6,7,8#
-* @endcond
 *
 * @param cpacsHandle   (in) : Handle for the CPACS configuration
 * @param fuselageIndex (in) : The index of the fuselage, starting at 1
@@ -1717,9 +1675,6 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetPointAngleTranslated(TiglCPACSC
 *                                   real pointYPtr,
 *                                   real pointZPtr,
 *                                   integer returnCode)
-* @cond
-* #PY:5,6,7#
-* @endcond
 *
 * @param cpacsHandle   (in) : Handle for the CPACS configuration
 * @param fuselageIndex (in) : The index of the fuselage, starting at 1
@@ -1770,9 +1725,6 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetPointOnXPlane(TiglCPACSConfigur
 *                                   real pointYPtr,
 *                                   real pointZPtr,
 *                                   integer returnCode)
-* @cond
-* #PY:5,6,7#
-* @endcond
 *
 * @param cpacsHandle   (in) : Handle for the CPACS configuration
 * @param fuselageIndex (in) : The index of the fuselage, starting at 1
@@ -2065,9 +2017,6 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetEndConnectedSegmentIndex(TiglCP
 *                                                   character sectionUIDPtr,
 *                                                   character elementUIDPtr,
 *                                                   integer returnCode)
-* @cond
-* #PY:2,3#
-* @endcond
 *
 * @param cpacsHandle     (in) : Handle for the CPACS configuration
 * @param fuselageIndex   (in) : The index of a fuselage, starting at 1
@@ -2102,9 +2051,6 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetStartSectionAndElementUID(TiglC
 *                                                 character sectionUIDPtr,
 *                                                 character elementUIDPtr,
 *                                                 integer returnCode)
-* @cond
-* #PY:2,3#
-* @endcond
 *
 * @param cpacsHandle     (in) : Handle for the CPACS configuration
 * @param fuselageIndex   (in) : The index of a fuselage, starting at 1
@@ -2140,9 +2086,6 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetEndSectionAndElementUID(TiglCPA
 *                                                   integer sectionIndexPtr,
 *                                                   integer elementIndexPtr,
 *                                                   integer returnCode)
-* @cond
-* #PY:2,3#
-* @endcond
 *
 * @param cpacsHandle     (in) : Handle for the CPACS configuration
 * @param fuselageIndex   (in) : The index of a fuselage, starting at 1
@@ -2175,9 +2118,6 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetStartSectionAndElementIndex(Tig
 *                                                 integer sectionIndexPtr,
 *                                                 integer elementIndexPtr,
 *                                                 integer returnCode)
-* @cond
-* #PY:2,3#
-* @endcond
 *
 * @param cpacsHandle     (in) : Handle for the CPACS configuration
 * @param fuselageIndex   (in) : The index of a fuselage, starting at 1
@@ -2417,9 +2357,6 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSymmetry(TiglCPACSConfiguration
 *                                                 real pointXPtr,
 *                                                 real pointYPtr,
 *                                                 real pointZPtr)
-* @cond
-* #PY:8,9,10#
-* @endcond
 * @param cpacsHandle         (in) : Handle for the CPACS configuration
 * @param fuselageUID        (in) : The uid of the fuselage
 * @param axisPntX            (in) : X-coordinate of the point that specifies the axis of rotation
@@ -2483,9 +2420,6 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetMinumumDistanceToGround(TiglCPA
 *                                                          real* pointYPtr,
 *                                                          real* pointZPtr,
 *                                                          integer returnCode);
-* @cond
-* #PY:4,5,6#
-* @endcond
 *
 * @param cpacsHandle         (in) : Handle for the CPACS configuration
 * @param componentUidOne     (in) : The UID of the first component
@@ -2532,7 +2466,6 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglComponentIntersectionPoint(TiglCPACSConfig
 *                                                          real* pointZPtr,
 *                                                          integer returnCode);
 * @cond
-* #PY:5,6,7:4,4,4#
 * #annotate in: 4A(5) out: 6AM(5), 7AM(5), 8AM(5)#
 * @endcond
 *
@@ -2633,9 +2566,6 @@ VTK-Export: There a various different VTK exports functions in TIGL. All functio
 * <b>Fortran syntax:</b>
 *
 * tigl_export_iges(integer cpacsHandle, character*n filenamePtr, integer returnCode)
-* @cond
-* #PY:#
-* @endcond
 *
 * @param cpacsHandle (in) : Handle for the CPACS configuration
 * @param filenamePtr (in) : Pointer to an IGES export file name
@@ -2657,9 +2587,6 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportIGES(TiglCPACSConfigurationHandle cp
 * <b>Fortran syntax:</b>
 *
 * tigl_export_fused_wing_fuselage_iges(integer cpacsHandle, character*n filenamePtr, integer returnCode)
-* @cond
-* #PY:#
-* @endcond
 *
 * @param cpacsHandle (in) : Handle for the CPACS configuration
 * @param filenamePtr (in) : Pointer to an IGES export file name
@@ -2682,9 +2609,6 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportFusedWingFuselageIGES(TiglCPACSConfi
 * <b>Fortran syntax:</b>
 *
 * tigl_export_structured_iges(integer cpacsHandle, character*n filenamePtr, integer returnCode)
-* @cond
-* #PY:#
-* @endcond
 *
 * @param cpacsHandle (in) : Handle for the CPACS configuration
 * @param filenamePtr (in) : Pointer to an IGES export file name
@@ -2710,9 +2634,6 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportStructuredIGES(TiglCPACSConfiguratio
 * <b>Fortran syntax:</b>
 *
 * tigl_export_step(integer cpacsHandle, character*n filenamePtr, integer returnCode)
-* @cond
-* #PY:#
-* @endcond
 *
 * @param cpacsHandle (in) : Handle for the CPACS configuration
 * @param filenamePtr (in) : Pointer to an STEP export file name
@@ -2734,9 +2655,6 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportSTEP(TiglCPACSConfigurationHandle cp
 * <b>Fortran syntax:</b>
 *
 * tigl_export_structured_step(integer cpacsHandle, character*n filenamePtr, integer returnCode)
-* @cond
-* #PY:#
-* @endcond
 *
 * @param cpacsHandle (in) : Handle for the CPACS configuration
 * @param filenamePtr (in) : Pointer to an STEP export file name
@@ -2761,9 +2679,6 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportStructuredSTEP(TiglCPACSConfiguratio
 * <b>Fortran syntax:</b>
 *
 * tigl_export_meshed_wing_stl(integer cpacsHandle, int wingIndex, character*n filenamePtr, integer returnCode, real deflection)
-* @cond
-* #PY:#
-* @endcond
 *
 * @param cpacsHandle (in) : Handle for the CPACS configuration
 * @param wingIndex   (in) : Index of the Wing to export
@@ -2789,9 +2704,6 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedWingSTL(TiglCPACSConfiguration
 * <b>Fortran syntax:</b>
 *
 * tigl_export_meshed_fuselage_stl(integer cpacsHandle, int fuselageIndex, character*n filenamePtr, integer returnCode, real deflection)
-* @cond
-* #PY:#
-* @endcond
 *
 * @param cpacsHandle   (in) : Handle for the CPACS configuration
 * @param fuselageIndex (in) : Index of the Fuselage to export
@@ -2816,9 +2728,6 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedFuselageSTL(TiglCPACSConfigura
 * <b>Fortran syntax:</b>
 *
 * tigl_export_meshed_geometry_stl(integer cpacsHandle, character*n filenamePtr, integer returnCode, real deflection)
-* @cond
-* #PY:#
-* @endcond
 *
 * @param cpacsHandle (in) : Handle for the CPACS configuration
 * @param filenamePtr (in) : Pointer to an STL export file name
@@ -2841,9 +2750,6 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedGeometrySTL(TiglCPACSConfigura
 * <b>Fortran syntax:</b>
 *
 * tigl_export_meshed_wing_vtk_by_index(integer cpacsHandle, int wingIndex, character*n filenamePtr, integer returnCode, real deflection)
-* @cond
-* #PY:#
-* @endcond
 *
 * @param cpacsHandle (in) : Handle for the CPACS configuration
 * @param wingIndex   (in) : Index of the Wing to export
@@ -2869,9 +2775,6 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedWingVTKByIndex(const TiglCPACS
 * <b>Fortran syntax:</b>
 *
 * tigl_export_meshed_wing_vtk_by_uid(integer cpacsHandle, character*n wingUID, character*n filenamePtr, integer returnCode, real deflection)
-* @cond
-* #PY:#
-* @endcond
 *
 * @param cpacsHandle (in) : Handle for the CPACS configuration
 * @param wingUID     (in) : UID of the Wing to export
@@ -2897,9 +2800,6 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedWingVTKByUID(const TiglCPACSCo
 * <b>Fortran syntax:</b>
 *
 * tigl_export_meshed_fuselage_vtk_by_index(integer cpacsHandle, int fuselageIndex, character*n filenamePtr, integer returnCode, real deflection)
-* @cond
-* #PY:#
-* @endcond
 *
 * @param cpacsHandle   (in) : Handle for the CPACS configuration
 * @param fuselageIndex (in) : Index of the Fuselage to export
@@ -2924,9 +2824,6 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedFuselageVTKByIndex(const TiglC
 * <b>Fortran syntax:</b>
 *
 * tigl_export_meshed_fuselage_vtk_by_uid(integer cpacsHandle, character*n fuselageUID, character*n filenamePtr, integer returnCode, real deflection)
-* @cond
-* #PY:#
-* @endcond
 *
 * @param cpacsHandle   (in) : Handle for the CPACS configuration
 * @param fuselageUID   (in) : UID of the Fuselage to export
@@ -2951,9 +2848,6 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedFuselageVTKByUID(const TiglCPA
 * <b>Fortran syntax:</b>
 *
 * tigl_export_meshed_geometry_vtk(integer cpacsHandle, character*n filenamePtr, integer returnCode, real deflection)
-* @cond
-* #PY:#
-* @endcond
 *
 * @param cpacsHandle (in) : Handle for the CPACS configuration
 * @param filenamePtr (in) : Pointer to an VTK export file name (*.vtp = polygonal XML_VTK)
@@ -2982,9 +2876,6 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedGeometryVTK(const TiglCPACSCon
 * <b>Fortran syntax:</b>
 *
 * tigl_export_meshed_wing_vtk_simple_by_uid(integer cpacsHandle, character*n wingUID, character*n filenamePtr, integer returnCode, real deflection)
-* @cond
-* #PY:#
-* @endcond
 *
 * @param cpacsHandle (in) : Handle for the CPACS configuration
 * @param wingUID     (in) : UID of the Wing to export
@@ -3016,9 +2907,6 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedWingVTKSimpleByUID(const TiglC
 * <b>Fortran syntax:</b>
 *
 * tigl_export_meshed_fuselage_vtk_simple_by_uid(integer cpacsHandle, character*n fuselageUID, character*n filenamePtr, integer returnCode, real deflection)
-* @cond
-* #PY:#
-* @endcond
 *
 * @param cpacsHandle   (in) : Handle for the CPACS configuration
 * @param fuselageUID   (in) : UID of the Fuselage to export
@@ -3049,9 +2937,6 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedFuselageVTKSimpleByUID(const T
 * <b>Fortran syntax:</b>
 *
 * tigl_export_meshed_geometry_vtk_simple(integer cpacsHandle, character*n filenamePtr, integer returnCode, real deflection)
-* @cond
-* #PY:#
-* @endcond
 *
 * @param cpacsHandle (in) : Handle for the CPACS configuration
 * @param filenamePtr (in) : Pointer to an VTK export file name (*.vtp = polygonal XML_VTK)
@@ -3072,9 +2957,6 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedGeometryVTKSimple(const TiglCP
 * <b>Fortran syntax:</b>
 *
 * tigl_export_fuselage_collada_by_uid(integer cpacsHandle, character*n fuselageUID, character*n filenamePtr, integer returnCode, real deflection)
-* @cond
-* #PY:#
-* @endcond
 *
 * @param cpacsHandle   (in) : Handle for the CPACS configuration
 * @param fuselageUID   (in) : UID of the Fuselage to export
@@ -3098,9 +2980,6 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportFuselageColladaByUID(const TiglCPACS
 * <b>Fortran syntax:</b>
 *
 * tigl_export_wing_collada_by_uid(integer cpacsHandle, character*n fuselageUID, character*n filenamePtr, integer returnCode, real deflection)
-* @cond
-* #PY:#
-* @endcond
 *
 * @param cpacsHandle   (in) : Handle for the CPACS configuration
 * @param wingUID       (in) : UID of the Wing to export
