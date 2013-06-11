@@ -324,7 +324,7 @@ if [[ $DIST != RedHat_RHEL-5 ]]; then
   if [[ $PACK_TYPE == deb ]]; then
       echo 'export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$CURDIR/'$LIBDIR/$ARCH-linux-gnu/ >> tiglviewer.sh   
   fi
-  echo 'export CSF_GraphicShr=$CURDIR/'$LIBDIR/libTKOpenGl.so.5 >> tiglviewer.sh
+  echo 'export CSF_GraphicShr=$CURDIR/'$LIBDIR/libTKOpenGl.so.7 >> tiglviewer.sh
   echo '$CURDIR/bin/TIGLViewer' >> tiglviewer.sh
   chmod +x tiglviewer.sh
 fi
