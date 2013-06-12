@@ -656,9 +656,9 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetUpperPointAtAngle(TiglCPACSConfigur
                                                 int segmentIndex,
                                                 double eta,
                                                 double xsi,
-                                                double xangle,
-                                                double yangle,
-                                                double zangle,
+                                                double xAngle,
+                                                double yAngle,
+                                                double zAngle,
                                                 double* pointXPtr,
                                                 double* pointYPtr,
                                                 double* pointZPtr);
@@ -710,9 +710,9 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetLowerPointAtAngle(TiglCPACSConfigur
                                                 int segmentIndex,
                                                 double eta,
                                                 double xsi,
-                                                double xangle,
-                                                double yangle,
-                                                double zangle,
+                                                double xAngle,
+                                                double yAngle,
+                                                double zAngle,
                                                 double* pointXPtr,
                                                 double* pointYPtr,
                                                 double* pointZPtr);
@@ -3028,11 +3028,13 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportWingColladaByUID(const TiglCPACSConf
 *   - TIGL_NULL_POINTER if filenamePtr is a null pointer
 *   - TIGL_INDEX_ERROR if compSegmentUID is invalid
 *   - TIGL_ERROR if some other error occurred
-*
+* 
+* @cond
 * #annotate out: 5A(6)#
+* @endcond
 */
 TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetMaterialUIDs(TiglCPACSConfigurationHandle cpacsHandle,
-                                                         const char *componentSegmentUID,
+                                                         const char *compSegmentUID,
                                                          TiglStructureType structureType,
                                                          double eta, double xsi,
                                                          TiglStringList* uids, int * nuids);
