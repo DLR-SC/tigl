@@ -42,9 +42,9 @@ function printUsage {
     echo "    openSUSE_11.4  openSUSE 11.4"
     echo "    openSUSE_12.1  openSUSE 12.1"
     echo "    openSUSE_12.2  openSUSE 12.2"
-    echo "    ubuntu_11.10   Ubuntu 11.10"
     echo "    ubuntu_12.04   Ubuntu 12.04"
     echo "    ubuntu_12.10   Ubuntu 12.10"
+    echo "    ubuntu_13.04   Ubuntu 13.04"
     echo "    fedora_17      Fedora 17"
     echo "    rhel_5         Red Hat Enterprise Linux 5"
     echo "    rhel_6         Red Hat Enterprise Linux 6"
@@ -158,14 +158,6 @@ function checkArguments {
             PACK_ARCH=x86_64
             LIBDIR=lib64
 	fi
-    elif [[ $tmp_dist == ubuntu_11.10 ]]; then
-    	DIST=xUbuntu_11.10
-	PACK_TYPE=deb
-	if [[  $tmp_arch == i386 ]]; then
-	    PACK_ARCH=i386
-        else
-            PACK_ARCH=amd64
-	fi
     elif [[ $tmp_dist == ubuntu_12.04 ]]; then
     	DIST=xUbuntu_12.04
 	PACK_TYPE=deb
@@ -176,6 +168,14 @@ function checkArguments {
 	fi
     elif [[ $tmp_dist == ubuntu_12.10 ]]; then
     	DIST=xUbuntu_12.10
+	PACK_TYPE=deb
+	if [[  $tmp_arch == i386 ]]; then
+	    PACK_ARCH=i386
+        else
+            PACK_ARCH=amd64
+	fi
+    elif [[ $tmp_dist == ubuntu_13.04 ]]; then
+    	DIST=xUbuntu_13.04
 	PACK_TYPE=deb
 	if [[  $tmp_arch == i386 ]]; then
 	    PACK_ARCH=i386
@@ -230,12 +230,6 @@ if [[ $PACK_TYPE == rpm ]]; then
 	then
 		bin_file_list+=($file)
 	fi
-	
-	#ftgl
-	if [[ $file == libftgl2*.rpm ]] && [[ $file != libftgl2-32bit*.rpm ]] && [[ $file != *debuginfo* ]]
-	then
-		bin_file_list+=($file)
-	fi
 
 	#TIXI
 	if [[ $file == libTIXI2*.rpm ]]  && [[ $file != *debuginfo* ]]
@@ -258,12 +252,6 @@ elif [[ $PACK_TYPE == deb ]]; then
   for file in $filelist; do
 	#opencascade	
 	if [[ $file == liboce-*.deb ]] && [[ $file != liboce*dev* ]]
-	then
-		bin_file_list+=($file)
-	fi
-
-	#ftgl
-	if [[ $file == libftgl2*.deb ]]
 	then
 		bin_file_list+=($file)
 	fi
