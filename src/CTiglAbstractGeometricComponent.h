@@ -28,6 +28,7 @@
 
 #include <list>
 #include <string>
+#include <TopoDS_Shape.hxx>
 
 #include "ITiglGeometricComponent.h"
 
@@ -45,7 +46,7 @@ namespace tigl {
         virtual ~CTiglAbstractGeometricComponent(void);
 
            // Gets the loft of a geometric component
-        virtual TopoDS_Shape& GetLoft(void) = 0;
+        virtual TopoDS_Shape& GetLoft(void);
 
         // Get the loft mirrored at the mirror plane
         virtual TopoDS_Shape GetMirroredLoft(void);
@@ -83,12 +84,15 @@ namespace tigl {
     protected:
         // Resets the geometric component.
         virtual void Reset(void);
+        
+        virtual TopoDS_Shape BuildLoft(void) = 0;
 
         CTiglTransformation        transformation;
         CTiglTransformation        backTransformation;
         CTiglPoint                 translation;
         CTiglPoint                 scaling;
         CTiglPoint                 rotation;
+        TopoDS_Shape               loft;
 
     private:
         // Copy constructor

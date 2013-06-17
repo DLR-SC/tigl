@@ -123,11 +123,7 @@ namespace tigl {
     // Update internal segment data
     void CCPACSWingComponentSegment::Update(void)
     {
-        if (!invalidated)
-            return;
-
-        BuildLoft();
-        invalidated = false;
+        Invalidate();
     }
 
     // Read CPACS segment elements
@@ -182,13 +178,6 @@ namespace tigl {
         return *wing;
     }
 
-
-    // Gets the loft between the two segment sections
-    TopoDS_Shape& CCPACSWingComponentSegment::GetLoft(void)
-    {
-        Update();
-        return loft;
-    }
     
     std::vector<int> CCPACSWingComponentSegment::GetSegmentList(const std::string& fromElementUID, const std::string& toElementUID) const{
         std::vector<int> path;
@@ -241,7 +230,7 @@ namespace tigl {
 
 
     // Builds the loft between the two segment sections
-    void CCPACSWingComponentSegment::BuildLoft(void)
+    TopoDS_Shape CCPACSWingComponentSegment::BuildLoft(void)
     {
 
         BRepOffsetAPI_ThruSections generator(Standard_True, Standard_True, Precision::Confusion() );
@@ -294,7 +283,7 @@ namespace tigl {
 
         generator.CheckCompatibility(Standard_False);
         generator.Build();
-        loft = generator.Shape();
+        TopoDS_Shape loft = generator.Shape();
 
         // transform with wing transformation
         loft = wing->GetWingTransformation().Transform(loft);
@@ -315,6 +304,8 @@ namespace tigl {
         GProp_GProps AreaSystem;
         BRepGProp::SurfaceProperties(loft, AreaSystem);
         mySurfaceArea = AreaSystem.Mass();
+        
+        return loft;
     }
 
 
@@ -469,14 +460,14 @@ namespace tigl {
     // Returns the volume of this segment
     double CCPACSWingComponentSegment::GetVolume(void)
     {
-        Update();
+        GetLoft();
         return( myVolume );
     }
 
     // Returns the surface area of this segment
     double CCPACSWingComponentSegment::GetSurfaceArea(void)
     {
-        Update();
+        GetLoft();
         return( mySurfaceArea );
     }
 
