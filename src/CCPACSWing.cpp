@@ -310,25 +310,11 @@ namespace tigl {
     }
 
 
-    // Gets the loft of the whole wing.
-    TopoDS_Shape & CCPACSWing::GetLoft(void)
-    {
-        if(rebuildFusedSegments) {
-            fusedSegments = BuildFusedSegments(true);
-            // Transform by wing transformation
-            fusedSegments = GetWingTransformation().Transform(fusedSegments);
-        }
-        rebuildFusedSegments = false;
-        return fusedSegments;
-    }
-
     // Gets the loft of the whole wing with modeled leading edge.
     TopoDS_Shape & CCPACSWing::GetLoftWithLeadingEdge(void)
     {
         if(rebuildFusedSegWEdge) {
             fusedSegmentWithEdge = BuildFusedSegments(true);
-            // Transform by wing transformation
-            fusedSegmentWithEdge = GetWingTransformation().Transform(fusedSegmentWithEdge);
         }
         rebuildFusedSegWEdge = false;
         return fusedSegmentWithEdge;
@@ -339,9 +325,6 @@ namespace tigl {
     {
         if(rebuildShells) {
             BuildUpperLowerShells();
-            // Transform by wing transformation
-            upperShape = GetWingTransformation().Transform(upperShape);
-            lowerShape = GetWingTransformation().Transform(lowerShape);
         }
         rebuildShells = false;
         return upperShape;
@@ -352,12 +335,13 @@ namespace tigl {
     {
         if(rebuildShells) {
             BuildUpperLowerShells();
-            // Transform by wing transformation
-            upperShape = GetWingTransformation().Transform(upperShape);
-            lowerShape = GetWingTransformation().Transform(lowerShape);
         }
         rebuildShells = false;
         return lowerShape;
+    }
+    
+    TopoDS_Shape CCPACSWing::BuildLoft(){
+        return BuildFusedSegments(true);
     }
 
     // Builds a fused shape of all wing segments
@@ -389,7 +373,7 @@ namespace tigl {
         generator.CheckCompatibility(Standard_False);
         generator.Build();
         
-        return generator.Shape();
+        return GetWingTransformation().Transform(generator.Shape());
     }
     
     // Builds a fused shape of all wing segments
@@ -420,8 +404,8 @@ namespace tigl {
         generatorLow.AddWire(endLowWire);
         generatorLow.Build();
         generatorUp.Build();
-        upperShape = generatorUp.Shape();
-        lowerShape = generatorLow.Shape();
+        upperShape = GetWingTransformation().Transform(generatorUp.Shape());
+        lowerShape = GetWingTransformation().Transform(generatorLow.Shape());
     }
 
 
@@ -454,7 +438,7 @@ namespace tigl {
     double CCPACSWing::GetVolume(void)
     {
         double myVolume = 0.0;
-        GetLoft();
+        TopoDS_Shape& fusedSegments = GetLoft();
 
         // Calculate volume
         GProp_GProps System;
@@ -489,7 +473,7 @@ namespace tigl {
     double CCPACSWing::GetSurfaceArea(void)
     {
         double myArea = 0.0;
-        GetLoft();
+        TopoDS_Shape& fusedSegments = GetLoft();
 
         // Calculate surface area
         GProp_GProps System;

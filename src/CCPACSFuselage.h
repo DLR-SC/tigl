@@ -95,9 +95,6 @@ namespace tigl {
         // the point is the start point of the profile wire, for zeta = 1.0 the last profile wire point.
         gp_Pnt GetPoint(int segmentIndex, double eta, double zeta);
 
-           // Gets the loft of the whole fuselage.
-        TopoDS_Shape & GetLoft(void);
-
         // Gets the volume of this fuselage
         double GetVolume();
 
@@ -131,9 +128,9 @@ namespace tigl {
 
         // Update internal fuselage data
         void Update(void);
-
+        
         // Adds all segments of this fuselage to one shape
-        void BuildFusedSegments(void);
+        TopoDS_Shape BuildLoft(void);
 
     private:
         // Copy constructor
@@ -148,9 +145,6 @@ namespace tigl {
         CCPACSFuselageSegments     segments;             /**< Fuselage segments       */
         CCPACSFuselagePositionings positionings;         /**< Fuselage positionings   */
         CCPACSConfiguration*       configuration;        /**< Parent configuration    */
-        TopoDS_Shape               fusedSegments;        /**< All Segments in one shape */
-        bool                       invalidated;          /**< Internal state flag     */
-        bool                       rebuildFusedSegments; /**< Indicates if segmentation fusing need rebuild */
         FusedElementsContainerType fusedElements;        /**< Stores already fused segments */
 
         TopoDS_Compound            aCompound;

@@ -172,11 +172,7 @@ namespace tigl {
     // Update internal segment data
     void CCPACSWingSegment::Update(void)
     {
-        if (!invalidated)
-            return;
-
-        BuildLoft();
-        invalidated = false;
+        Invalidate();
     }
 
     // Read CPACS segment elements
@@ -218,13 +214,6 @@ namespace tigl {
         return *wing;
     }
 
-    // Gets the loft between the two segment sections
-    TopoDS_Shape& CCPACSWingSegment::GetLoft(void)
-    {
-        Update();
-        return loft;
-    }
-
     // helper function to get the inner transformed chord line wire
     TopoDS_Wire CCPACSWingSegment::GetInnerWire(void)
     {
@@ -254,7 +243,7 @@ namespace tigl {
     }
 
     // Builds the loft between the two segment sections
-    void CCPACSWingSegment::BuildLoft(void)
+    TopoDS_Shape CCPACSWingSegment::BuildLoft(void)
     {
         TopoDS_Wire innerWire = GetInnerWire();
         TopoDS_Wire outerWire = GetOuterWire();
@@ -266,7 +255,7 @@ namespace tigl {
         generator.AddWire(outerWire);
         generator.CheckCompatibility(/* check (defaults to true) */ Standard_False);
         generator.Build();
-        loft = generator.Shape();
+        TopoDS_Shape loft = generator.Shape();
 
         Handle(ShapeFix_Shape) sfs = new ShapeFix_Shape;
         sfs->Init ( loft );
@@ -282,6 +271,8 @@ namespace tigl {
         GProp_GProps AreaSystem;
         BRepGProp::SurfaceProperties(loft, AreaSystem);
         mySurfaceArea = AreaSystem.Mass();
+        
+        return loft;
     }
 
     // Gets the upper point in relative wing coordinates for a given eta and xsi

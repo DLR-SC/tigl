@@ -117,11 +117,7 @@ namespace tigl {
     // Update internal segment data
     void CCPACSFuselageSegment::Update(void)
     {
-        if (!invalidated)
-            return;
-
-        BuildLoft();
-        invalidated = false;
+        Invalidate();
     }
 
     // Read CPACS segment elements
@@ -169,15 +165,8 @@ namespace tigl {
         return mySegmentIndex;
     }
 
-    // Gets the loft between the two segment sections
-    TopoDS_Shape& CCPACSFuselageSegment::GetLoft(void)
-    {
-        Update();
-        return loft;
-    }
-
     // Builds the loft between the two segment sections
-    void CCPACSFuselageSegment::BuildLoft(void)
+    TopoDS_Shape CCPACSFuselageSegment::BuildLoft(void)
     {
         CCPACSFuselageProfile& startProfile = startConnection.GetProfile();
         CCPACSFuselageProfile& endProfile   = endConnection.GetProfile();
@@ -211,7 +200,7 @@ namespace tigl {
         generator.AddWire(endWire);
         generator.CheckCompatibility(Standard_False);
         generator.Build();
-        loft = generator.Shape();
+        TopoDS_Shape loft = generator.Shape();
 
         // Calculate volume
         GProp_GProps System;
@@ -222,6 +211,8 @@ namespace tigl {
         GProp_GProps AreaSystem;
         BRepGProp::SurfaceProperties(loft, AreaSystem);
         mySurfaceArea = AreaSystem.Mass();
+        
+        return loft;
     }
 
 
