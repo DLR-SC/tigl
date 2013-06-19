@@ -35,6 +35,7 @@
 #include "CCPACSFuselageProfile.h"
 #include "TopoDS_Compound.hxx"
 #include "BRep_Builder.hxx"
+#include "CTiglShapeCache.h"
 
 namespace tigl {
 
@@ -107,6 +108,8 @@ namespace tigl {
 
         // Returns the UID of the loaded configuration.
         std::string GetUID(void);
+        
+        CTiglShapeCache& GetShapeCache(void);
 
     protected:
         void BuildFusedPlane(CTiglAbstractPhysicalComponent* parent);
@@ -129,6 +132,7 @@ namespace tigl {
         CTiglUIDManager              uidManager;           /**< Stores the unique ids of the components */
         TopoDS_Shape                 fusedAirplane;        /**< The complete airplaine as one fused shape */
         std::string                  configUID;            /**< UID of the opened configuration   */
+        CTiglShapeCache              shapeCache;
     };
 
 } // end namespace tigl

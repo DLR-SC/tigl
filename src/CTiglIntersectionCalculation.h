@@ -42,13 +42,18 @@
 
 namespace tigl {
 
+    class CTiglShapeCache;
+
     class CTiglIntersectionCalculation
     {
 
     public:
         // Constructor
-        CTiglIntersectionCalculation( TopoDS_Shape compoundOne,
-                                      TopoDS_Shape compoundTwo );
+        CTiglIntersectionCalculation(CTiglShapeCache* cache, 
+                                     const std::string &idOne, 
+                                     const std::string &idTwo, 
+                                     TopoDS_Shape compoundOne,
+                                     TopoDS_Shape compoundTwo );
 
         // Destructor
         virtual ~CTiglIntersectionCalculation(void);
@@ -73,7 +78,6 @@ namespace tigl {
         int numWires;                           /* The number of intersection lines */
         TopoDS_Shape intersectionResult;        /* The full Intersection result */
         std::vector<TopoDS_Wire> Wires;         /* All intersection wires */
-        Handle(TopTools_HSequenceOfShape) Edges;/* All intersection edges */
         
     };
 
