@@ -74,7 +74,7 @@ TEST_F(TiglIntersection, tiglIntersection_FuselageWingIntersects)
     TopoDS_Shape& wingShape = wing.GetLoft();
     TopoDS_Shape& fuselageShape = fuselage.GetLoft();
 
-    tigl::CTiglIntersectionCalculation iCalc(fuselageShape, wingShape);
+    tigl::CTiglIntersectionCalculation iCalc(&config.GetShapeCache(), fuselage.GetUID(), wing.GetUID(), fuselageShape, wingShape);
     
     ASSERT_EQ(1, iCalc.GetNumWires());
     

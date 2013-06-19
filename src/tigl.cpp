@@ -2574,7 +2574,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglComponentIntersectionPoint(TiglCPACSConfig
         TopoDS_Shape compoundOne = uidManager.GetComponent(componentUidOne)->GetLoft();
         TopoDS_Shape compoundTwo = uidManager.GetComponent(componentUidTwo)->GetLoft();
 
-        tigl::CTiglIntersectionCalculation Intersector(compoundOne, compoundTwo);
+        tigl::CTiglIntersectionCalculation Intersector(&config.GetShapeCache(), componentUidOne, componentUidTwo, compoundOne, compoundTwo);
         gp_Pnt point = Intersector.GetPoint(eta, lineID);
         *pointXPtr = point.X();
         *pointYPtr = point.Y();
@@ -2633,7 +2633,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglComponentIntersectionPoints(TiglCPACSConfi
         TopoDS_Shape compoundOne = uidManager.GetComponent(componentUidOne)->GetLoft();
         TopoDS_Shape compoundTwo = uidManager.GetComponent(componentUidTwo)->GetLoft();
 
-        tigl::CTiglIntersectionCalculation Intersector(compoundOne, compoundTwo);
+        tigl::CTiglIntersectionCalculation Intersector(&config.GetShapeCache(), componentUidOne, componentUidTwo, compoundOne, compoundTwo);
         
         for(int i = 0; i < nPoints; ++i){
             gp_Pnt point = Intersector.GetPoint(etaArray[i], lineID);
@@ -2678,7 +2678,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglComponentIntersectionLineCount(TiglCPACSCo
         TopoDS_Shape compoundOne = uidManager.GetComponent(componentUidOne)->GetLoft();
         TopoDS_Shape compoundTwo = uidManager.GetComponent(componentUidTwo)->GetLoft();
 
-        tigl::CTiglIntersectionCalculation Intersector(compoundOne, compoundTwo);
+        tigl::CTiglIntersectionCalculation Intersector(&config.GetShapeCache(), componentUidOne, componentUidTwo, compoundOne, compoundTwo);
         *numWires = Intersector.GetNumWires();
         return TIGL_SUCCESS;
     }
