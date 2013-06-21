@@ -34,6 +34,7 @@ CTiglAbstractSegment::CTiglAbstractSegment(int segindex)
 }
 
 void CTiglAbstractSegment::Invalidate(void){
+    loft.Nullify();
     invalidated = true;
 }
 

@@ -1,3 +1,9 @@
+Version 2.0.x
+---------------
+TiGL:
+- Improved loading times
+- Improved speed of intersection calculations by caching and reusing results
+
 Version 2.0.5
 ---------------
 TiGL:

@@ -60,9 +60,6 @@ namespace tigl {
         // Returns the segment index of this segment
         int GetSegmentIndex(void) const;
 
-        // Gets the loft between the two segment sections
-        TopoDS_Shape& GetLoft(void);
-
         // Returns the start section UID of this segment
         std::string GetStartSectionUID(void);
 
@@ -156,7 +153,7 @@ namespace tigl {
         void Update(void);
 
         // Builds the loft between the two segment sections
-        void BuildLoft(void);
+        TopoDS_Shape BuildLoft(void);
 
     private:
         // Copy constructor

@@ -1361,7 +1361,7 @@ void TIGLViewerDocument::drawWingFuselageIntersectionLine()
     TopoDS_Shape& compoundTwo = uidManager.GetComponent(wingUid.toStdString())->GetLoft();
 
     writeToStatusBar(tr("Calculating intersection... This may take a while!"));
-    tigl::CTiglIntersectionCalculation Intersector(compoundOne, compoundTwo);
+    tigl::CTiglIntersectionCalculation Intersector(&config.GetShapeCache(),fuselageUid.toStdString(), wingUid.toStdString(), compoundOne, compoundTwo);
 
     if (Intersector.GetCountIntersectionLines() <= 0) {
         displayError(tr("Could not find any intersection between fuselage and wing"), "TIGL Error");

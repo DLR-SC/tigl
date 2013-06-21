@@ -59,7 +59,6 @@ namespace tigl {
     CCPACSFuselage::CCPACSFuselage(CCPACSConfiguration* config)
         : segments(this)
         , configuration(config)
-        , rebuildFusedSegments(true)
     {
         Cleanup();
     }
@@ -73,7 +72,7 @@ namespace tigl {
     // Invalidates internal state
     void CCPACSFuselage::Invalidate(void)
     {
-        invalidated = true;
+        loft.Nullify();
         segments.Invalidate();
         positionings.Invalidate();
     }
@@ -116,12 +115,8 @@ namespace tigl {
     // Update internal data
     void CCPACSFuselage::Update(void)
     {
-        if (!invalidated)
-            return;
-
+        Invalidate();
         BuildMatrix();
-        invalidated = false;
-        rebuildFusedSegments = true;
     }
 
     // Read CPACS fuselage element
@@ -272,20 +267,8 @@ namespace tigl {
         return (CTiglAbstractSegment &) segments.GetSegment(index);
     }
 
-    // Gets the loft of the whole fuselage.
-    TopoDS_Shape& CCPACSFuselage::GetLoft(void)
-    {
-        if (rebuildFusedSegments) {
-            BuildFusedSegments();
-            // Transform by fuselage transformation
-           fusedSegments = GetFuselageTransformation().Transform(fusedSegments);
-        }
-        rebuildFusedSegments = false;
-        return fusedSegments;
-    }
-
     // Builds a fused shape of all fuselage segments
-    void CCPACSFuselage::BuildFusedSegments(void)
+    TopoDS_Shape CCPACSFuselage::BuildLoft(void)
     {
         // Ne need a smooth fuselage by default
         // @TODO: OpenCascade::ThruSections is currently buggy and crashes, if smooth lofting
@@ -331,7 +314,7 @@ namespace tigl {
         generator.SetParType(Approx_Centripetal);
         generator.CheckCompatibility(Standard_False);
         generator.Build();
-        fusedSegments = generator.Shape();
+        return GetFuselageTransformation().Transform(generator.Shape());
     }
 
 
@@ -363,7 +346,7 @@ namespace tigl {
     double CCPACSFuselage::GetVolume(void)
     {
         double myVolume = 0.0;
-        GetLoft();
+        TopoDS_Shape& fusedSegments = GetLoft();
 
         // Calculate volume
         GProp_GProps System;
@@ -382,7 +365,6 @@ namespace tigl {
     void CCPACSFuselage::Translate(CTiglPoint trans)
     {
         CTiglAbstractGeometricComponent::Translate(trans);
-        invalidated = true;
         Update();
     }
 
@@ -396,7 +378,7 @@ namespace tigl {
     double CCPACSFuselage::GetSurfaceArea(void)
     {
         double myArea = 0.0;
-        GetLoft();
+        TopoDS_Shape& fusedSegments = GetLoft();
         // Calculate surface area
         GProp_GProps System;
         BRepGProp::SurfaceProperties(fusedSegments, System);
