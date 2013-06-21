@@ -71,7 +71,7 @@ void CTiglShapeCache::Clear(){
 void CTiglShapeCache::Remove(const std::string& id) {
     int nshapes = 0;
     while(true){
-        ShapeContainer::const_iterator it = shapeContainer.find(mangleID(id, nshapes));
+        ShapeContainer::iterator it = shapeContainer.find(mangleID(id, nshapes));
         if(it != shapeContainer.end()){
             nshapes++;
             shapeContainer.erase(it);
