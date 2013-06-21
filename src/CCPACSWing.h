@@ -102,8 +102,7 @@ namespace tigl {
         // Gets the upper point in absolute (world) coordinates for a given segment, eta, xsi
         gp_Pnt GetLowerPoint(int segmentIndex, double eta, double xsi);
 
-        // Gets the loft of the whole wing.
-        TopoDS_Shape & GetLoft(void);
+        // Gets the loft of the whole wing
         TopoDS_Shape & GetLoftWithLeadingEdge(void);
         
         TopoDS_Shape & GetUpperShape();
@@ -162,6 +161,8 @@ namespace tigl {
         // Adds all Segments of this wing to one shape
         TopoDS_Shape BuildFusedSegments(bool splitWingInUpperAndLower);
         
+        TopoDS_Shape BuildLoft(void);
+        
         void BuildUpperLowerShells();
 
 
@@ -179,7 +180,6 @@ namespace tigl {
         CCPACSWingComponentSegments    componentSegments;         /**< Wing ComponentSegments       */
         CCPACSWingPositionings         positionings;             /**< Wing positionings   */
         CCPACSConfiguration*           configuration;            /**< Parent configuration*/
-        TopoDS_Shape                   fusedSegments;            /**< All Segments in one shape */
         TopoDS_Shape                   fusedSegmentWithEdge;     /**< All Segments in one shape plus modelled leading edge */ 
         TopoDS_Shape                   upperShape;
         TopoDS_Shape                   lowerShape;

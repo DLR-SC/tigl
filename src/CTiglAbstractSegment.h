@@ -47,7 +47,6 @@ namespace tigl {
         void Cleanup();
 
         int                  mySegmentIndex;       /**< Index of this segment                   */
-        TopoDS_Shape         loft;                 /**< The loft between two sections           */
         bool                 invalidated;          /**< Internal state flag                     */
 
         CTiglAbstractSegment(){} /* do nothing */

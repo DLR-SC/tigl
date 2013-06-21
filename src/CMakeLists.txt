@@ -27,6 +27,10 @@ if(GLOG_FOUND)
   target_link_libraries (TIGL ${GLOG_LIBRARIES})
 endif(GLOG_FOUND)
 
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+  add_definitions(-DDEBUG)
+endif()
+
 target_link_libraries (TIGL ${OpenCASCADE_LIBRARIES} ${TIXI_LIBRARIES} ${VLD_LIBRARIES})
 set_target_properties( TIGL PROPERTIES VERSION ${TIGL_VERSION})
 set_target_properties( TIGL PROPERTIES SOVERSION "${TIGL_VERSION_MAJOR}")

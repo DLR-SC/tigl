@@ -25,6 +25,7 @@
 
 #include "CTiglAbstractGeometricComponent.h"
 #include "CTiglError.h"
+#include "CTiglLogger.h"
 
 #include <BRepBuilderAPI_Transform.hxx>
 #include "BRepClass3d_SolidClassifier.hxx"
@@ -109,6 +110,16 @@ namespace tigl {
         translation.x += trans.x;
         translation.y += trans.y;
         translation.z += trans.z;
+    }
+    
+    TopoDS_Shape& CTiglAbstractGeometricComponent::GetLoft(void){
+        if(loft.IsNull()){
+#ifdef DEBUG
+            LOG(INFO) << "Building loft " << GetUID();
+#endif
+            loft = BuildLoft();
+        }
+        return loft;
     }
 
     TopoDS_Shape CTiglAbstractGeometricComponent::GetMirroredLoft(void){

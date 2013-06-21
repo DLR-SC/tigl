@@ -61,9 +61,6 @@ namespace tigl {
 
         // Returns the wing this segment belongs to
         CCPACSWing& GetWing(void) const;
-
-        // Gets the loft between the two segment sections
-        TopoDS_Shape& GetLoft(void);
         
         TopoDS_Shape GetInnerClosure();
         TopoDS_Shape GetOuterClosure();
@@ -205,7 +202,7 @@ namespace tigl {
         void Update(void);
 
         // Builds the loft between the two segment sections
-        void BuildLoft(void);
+        TopoDS_Shape BuildLoft(void);
 
 
     private:

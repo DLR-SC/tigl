@@ -57,6 +57,7 @@
 #include "TopTools_HSequenceOfShape.hxx"
 #include "ShapeAnalysis_FreeBounds.hxx"
 #include "BRepBuilderAPI_MakeWire.hxx"
+#include "CTiglShapeCache.h"
 
 #ifndef max
 #define max(a, b) (((a) > (b)) ? (a) : (b))
@@ -65,51 +66,77 @@
 namespace tigl {
 
     // Constructor
-    CTiglIntersectionCalculation::CTiglIntersectionCalculation( TopoDS_Shape compoundOne,
+    CTiglIntersectionCalculation::CTiglIntersectionCalculation( CTiglShapeCache * cache,
+                                                                const std::string& idOne,
+                                                                const std::string& idTwo,
+                                                                TopoDS_Shape compoundOne,
                                                                 TopoDS_Shape compoundTwo)
         : tolerance(1.0e-7),
         numWires(0)
     {
-        Standard_Boolean PerformNow=Standard_False; 
-        BRepAlgoAPI_Section section(compoundOne, compoundTwo, PerformNow); 
-        section.ComputePCurveOn1(Standard_True); 
-        section.Approximation(Standard_True); 
-        section.Build(); 
-        intersectionResult = section.Shape();
-
-        TopExp_Explorer myEdgeExplorer (intersectionResult, TopAbs_EDGE);
-
-        Edges = new TopTools_HSequenceOfShape();
-
-        while (myEdgeExplorer.More())
-        {
-            Edges->Append(TopoDS::Edge(myEdgeExplorer.Current()));
-            myEdgeExplorer.Next();
+        // create some identification string to store intersection in cache
+        // it should not matter, if the arguments One and Two are interchanged
+        std::string id;
+        if(idOne.compare(idTwo))
+            id = idOne + "::" + idTwo;
+        else
+            id = idTwo + "::" + idOne;
+        
+        bool inCache = false;
+        if(cache){
+            // check, if result is already in cache
+            unsigned int nshapes = cache->GetNShapesOfType(id);
+            if(nshapes > 0){
+                inCache = true;
+                numWires = nshapes;
+                for(unsigned int i = 0; i < nshapes; ++i)
+                    Wires.push_back(TopoDS::Wire(cache->GetShape(id, i)));
+            }
         }
-
-        // connect all connected edges to wires and save them in container Edges again
-        ShapeAnalysis_FreeBounds::ConnectEdgesToWires(Edges, tolerance, false, Edges);
-        numWires = Edges->Length();
-
-        // filter duplicated wires
-        for (int wireID=1; wireID <= numWires; wireID++)
-        {
-            bool found = false;
-            TopoDS_Wire wire = TopoDS::Wire(Edges->Value(wireID));
-            for (std::vector<TopoDS_Wire>::size_type i = 0; i < Wires.size(); i++)
+        
+        if(!inCache){
+            Standard_Boolean PerformNow=Standard_False; 
+            BRepAlgoAPI_Section section(compoundOne, compoundTwo, PerformNow); 
+            section.ComputePCurveOn1(Standard_True); 
+            section.Approximation(Standard_True); 
+            section.Build(); 
+            intersectionResult = section.Shape();
+    
+            TopExp_Explorer myEdgeExplorer (intersectionResult, TopAbs_EDGE);
+    
+            Handle(TopTools_HSequenceOfShape) Edges = new TopTools_HSequenceOfShape();
+    
+            while (myEdgeExplorer.More())
             {
-                if (Wires[i].HashCode(200000) == wire.HashCode(200000))
+                Edges->Append(TopoDS::Edge(myEdgeExplorer.Current()));
+                myEdgeExplorer.Next();
+            }
+    
+            // connect all connected edges to wires and save them in container Edges again
+            ShapeAnalysis_FreeBounds::ConnectEdgesToWires(Edges, tolerance, false, Edges);
+            numWires = Edges->Length();
+    
+            // filter duplicated wires
+            for (int wireID=1; wireID <= numWires; wireID++)
+            {
+                bool found = false;
+                TopoDS_Wire wire = TopoDS::Wire(Edges->Value(wireID));
+                for (std::vector<TopoDS_Wire>::size_type i = 0; i < Wires.size(); i++)
                 {
-                        found = true;
+                    if (Wires[i].HashCode(200000) == wire.HashCode(200000))
+                    {
+                            found = true;
+                    }
+                }
+    
+                if(!found)
+                {
+                    Wires.push_back(wire);
+                    if(cache) cache->Insert(wire, id);
                 }
             }
-
-            if(!found)
-            {
-                Wires.push_back(wire);
-            }
+            numWires = Wires.size();
         }
-        numWires = Wires.size();
     }
 
     // Destructor

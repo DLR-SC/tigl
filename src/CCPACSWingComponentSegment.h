@@ -64,9 +64,6 @@ namespace tigl {
         // Returns the wing this segment belongs to
         CCPACSWing& GetWing(void) const;
 
-        // Gets the loft between the two segment sections
-        TopoDS_Shape& GetLoft(void);
-
         // Gets a point in relative wing coordinates for a given eta and xsi
         gp_Pnt GetPoint(double eta, double xsi);
         
@@ -107,7 +104,7 @@ namespace tigl {
         void Update(void);
 
         // Builds the loft between the two segment sections
-        void BuildLoft(void);
+        TopoDS_Shape BuildLoft(void);
 
         // Returns an upper or lower point on the segment surface in
         // dependence of parameters eta and xsi, which range from 0.0 to 1.0.

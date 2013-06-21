@@ -69,6 +69,7 @@ namespace tigl {
         wings.Invalidate();
         fuselages.Invalidate();
         fusedAirplane.Nullify();
+        shapeCache.Clear();
         configUID = "";
     }
 
@@ -336,6 +337,10 @@ namespace tigl {
     std::string CCPACSConfiguration::GetUID(void)
     {
         return configUID;
+    }
+    
+    CTiglShapeCache& CCPACSConfiguration::GetShapeCache() {
+        return shapeCache;
     }
 
 } // end namespace tigl
