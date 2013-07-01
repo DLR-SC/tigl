@@ -76,10 +76,10 @@ namespace tigl {
 
     private:
         // Copy constructor
-        CTiglUIDManager(const CTiglUIDManager& ) { /* Do nothing */ }
+        CTiglUIDManager(const CTiglUIDManager& );
 
         // Assignment operator
-        void operator=(const CTiglUIDManager& ) { /* Do nothing */ }
+        void operator=(const CTiglUIDManager& );
 
     private:
         UIDStoreContainerType           uidStore;

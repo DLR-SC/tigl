@@ -77,10 +77,10 @@ namespace tigl {
 
     private:
         // Copy constructor
-        CCPACSFuselagePositioning(const CCPACSFuselagePositioning& ) { /* Do nothing */ }
+        CCPACSFuselagePositioning(const CCPACSFuselagePositioning& );
 
         // Assignment operator
-        void operator=(const CCPACSFuselagePositioning& ) { /* Do nothing */ }
+        void operator=(const CCPACSFuselagePositioning& );
 
     private:
         double               length;               /**< Positioning length                      */

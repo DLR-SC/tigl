@@ -53,7 +53,7 @@
 TIGL_COMMON_EXPORT TiglReturnCode tiglOpenCPACSConfiguration(TixiDocumentHandle tixiHandle, const char* configurationUID_cstr, TiglCPACSConfigurationHandle* cpacsHandlePtr)
 {
     // Initialize logger
-    tigl::CTiglLogger& Logger = tigl::CTiglLogger::GetLogger();
+    tigl::CTiglLogger::GetLogger();
     LOG(INFO) << "TIGL-Logger initialized.";
 
     std::string configurationUID;
@@ -1444,7 +1444,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingSegmentPointGetComponentSegmentEtaXsi(
                 if(err.getCode() == TIGL_UID_ERROR)
                     continue;
                 else 
-                    throw err;
+                    throw;
             }
             
         }
@@ -1501,7 +1501,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetNumberOfSegments(Ti
                 if(err.getCode() == TIGL_UID_ERROR)
                     continue;
                 else 
-                    throw err;
+                    throw;
             }
         }
         // the component segment was not found
@@ -1563,7 +1563,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetSegmentUID(TiglCPAC
                 if(err.getCode() == TIGL_UID_ERROR)
                     continue;
                 else 
-                    throw err;
+                    throw;
             }
         }
         // the component segment was not found
@@ -2998,7 +2998,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedWingVTKByIndex(const TiglCPACS
         LOG(ERROR) << str << std::endl;
         return TIGL_ERROR;
     }
-    catch(std::string str)
+    catch(std::string& str)
     {
         LOG(ERROR) << str << std::endl;
         return TIGL_ERROR;
@@ -3048,7 +3048,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedWingVTKByUID(const TiglCPACSCo
         LOG(ERROR) << str << std::endl;
         return TIGL_ERROR;
     }
-    catch(std::string str)
+    catch(std::string& str)
     {
         LOG(ERROR) << str << std::endl;
         return TIGL_ERROR;
@@ -3206,7 +3206,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedWingVTKSimpleByUID(const TiglC
         LOG(ERROR) << str << std::endl;
         return TIGL_ERROR;
     }
-    catch(std::string str)
+    catch(std::string& str)
     {
         LOG(ERROR) << str << std::endl;
         return TIGL_ERROR;
@@ -3408,7 +3408,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetMaterialUIDs(TiglCP
             }
             catch(tigl::CTiglError& ex){
                 if(ex.getCode() != TIGL_UID_ERROR){
-                    throw ex;
+                    throw;
                 }
                 else
                     continue;

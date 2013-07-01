@@ -168,16 +168,16 @@ namespace tigl {
 
     private:
         // Copy constructor
-        CCPACSWing(const CCPACSWing & ) : CTiglAbstractPhysicalComponent(), segments(0), componentSegments(0) { /* Do nothing */ }
+        CCPACSWing(const CCPACSWing & );
 
         // Assignment operator
-        void operator=(const CCPACSWing & ) { /* Do nothing */ }
+        void operator=(const CCPACSWing & );
 
     private:
         std::string                    name;                     /**< Wing name           */
         CCPACSWingSections             sections;                 /**< Wing sections       */
         CCPACSWingSegments             segments;                 /**< Wing segments       */
-        CCPACSWingComponentSegments    componentSegments;         /**< Wing ComponentSegments       */
+        CCPACSWingComponentSegments    componentSegments;        /**< Wing ComponentSegments */
         CCPACSWingPositionings         positionings;             /**< Wing positionings   */
         CCPACSConfiguration*           configuration;            /**< Parent configuration*/
         TopoDS_Shape                   fusedSegmentWithEdge;     /**< All Segments in one shape plus modelled leading edge */ 
@@ -187,8 +187,8 @@ namespace tigl {
         bool                           rebuildFusedSegments;     /**< Indicates if segmentation fusing need rebuild */
         bool                           rebuildFusedSegWEdge;     /**< Indicates if segmentation fusing need rebuild */
         bool                           rebuildShells;
-        FusedElementsContainerType     fusedElements;             /**< Stores already fused segments */
-        double                         myVolume;                 /**< Volume of this Wing                  */
+        FusedElementsContainerType     fusedElements;            /**< Stores already fused segments */
+        double                         myVolume;                 /**< Volume of this Wing           */
     };
 
 } // end namespace tigl

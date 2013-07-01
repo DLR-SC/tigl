@@ -70,10 +70,10 @@ namespace tigl {
 
     private:
         // Copy constructor
-        CCPACSWingSectionElement(const CCPACSWingSectionElement& ) { /* Do nothing */ }
+        CCPACSWingSectionElement(const CCPACSWingSectionElement& );
 
         // Assignment operator
-        void operator=(const CCPACSWingSectionElement& ) { /* Do nothing */ }
+        void operator=(const CCPACSWingSectionElement& );
 
     private:
         std::string           name;           /**< Section name                          */

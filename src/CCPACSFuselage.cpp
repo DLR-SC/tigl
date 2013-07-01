@@ -195,7 +195,6 @@ namespace tigl {
         // Get symmetry axis attribute
         char* ptrSym = NULL;
         tempString   = "symmetry";
-        elementPath  = const_cast<char*>(tempString.c_str());
         if (tixiGetTextAttribute(tixiHandle, const_cast<char*>(fuselageXPath.c_str()), const_cast<char*>(tempString.c_str()), &ptrSym) == SUCCESS)
             SetSymmetryAxis(ptrSym);
 
@@ -345,13 +344,12 @@ namespace tigl {
     // Returns the volume of this fuselage
     double CCPACSFuselage::GetVolume(void)
     {
-        double myVolume = 0.0;
         TopoDS_Shape& fusedSegments = GetLoft();
 
         // Calculate volume
         GProp_GProps System;
         BRepGProp::VolumeProperties(fusedSegments, System);
-        myVolume = System.Mass();
+        double myVolume = System.Mass();
         return myVolume;
     }
 
@@ -377,12 +375,11 @@ namespace tigl {
     // Returns the surface area of this fuselage
     double CCPACSFuselage::GetSurfaceArea(void)
     {
-        double myArea = 0.0;
         TopoDS_Shape& fusedSegments = GetLoft();
         // Calculate surface area
         GProp_GProps System;
         BRepGProp::SurfaceProperties(fusedSegments, System);
-        myArea = System.Mass();
+        double myArea = System.Mass();
         return myArea;
     }
 

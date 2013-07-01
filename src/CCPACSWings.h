@@ -71,7 +71,7 @@ namespace tigl {
         CCPACSWing& GetWing(int index) const;
 
         // Returns the wing for a given UID.
-        CCPACSWing& GetWing(const std::string UID) const;
+        CCPACSWing& GetWing(const std::string& UID) const;
 
     protected:
         // Cleanup routine
@@ -79,10 +79,10 @@ namespace tigl {
 
     private:
         // Copy constructor
-        CCPACSWings(const CCPACSWings& ) { /* Do nothing */ }
+        CCPACSWings(const CCPACSWings& );
 
         // Assignment operator
-        void operator=(const CCPACSWings& ) { /* Do nothing */ }
+        void operator=(const CCPACSWings& );
 
     private:
         CCPACSWingProfiles   profiles;      /**< Wing profile elements */

@@ -73,10 +73,10 @@ namespace tigl {
 
     private:
         // Copy constructor
-        CTiglInterpolateBsplineWire(const CTiglInterpolateBsplineWire& ) { /* Do nothing */ }
+        CTiglInterpolateBsplineWire(const CTiglInterpolateBsplineWire& );
 
         // Assignment operator
-        void operator=(const CTiglInterpolateBsplineWire& )              { /* Do nothing */ }
+        void operator=(const CTiglInterpolateBsplineWire& );
 
         ETiglContinuity continuity;
 

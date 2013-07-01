@@ -75,9 +75,9 @@ namespace tigl {
         CCPACSWing& GetWing(int index) const;
 
         // Returns the wing for a given UID.
-        CCPACSWing& GetWing(const std::string UID) const;
+        CCPACSWing& GetWing(const std::string& UID) const;
 
-        TopoDS_Shape GetParentLoft(const std::string UID);
+        TopoDS_Shape GetParentLoft(const std::string& UID);
 
         // Returns the total count of fuselage profiles in this configuration
         int GetFuselageProfileCount(void) const;
@@ -119,10 +119,10 @@ namespace tigl {
 
     private:
         // Copy constructor
-        CCPACSConfiguration(const CCPACSConfiguration& ) : wings(0), fuselages(0) { /* Do nothing */ }
+        CCPACSConfiguration(const CCPACSConfiguration& );
 
         // Assignment operator
-        void operator=(const CCPACSConfiguration& ) { /* Do nothing */ }
+        void operator=(const CCPACSConfiguration& );
 
     private:
         TixiDocumentHandle           tixiDocumentHandle;   /**< Handle for internal TixiDocument */

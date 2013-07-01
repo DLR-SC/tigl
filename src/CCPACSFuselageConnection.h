@@ -78,10 +78,10 @@ namespace tigl {
 
     private:
         // Copy constructor
-        CCPACSFuselageConnection(const CCPACSFuselageConnection& ) : segment(0) { /* Do nothing */ }
+        CCPACSFuselageConnection(const CCPACSFuselageConnection& );
 
         // Assignment operator
-        void operator=(const CCPACSFuselageConnection& ) { /* Do nothing */ }
+        void operator=(const CCPACSFuselageConnection& );
 
     private:
         int                            sectionIndex; /**< Index in sections */

@@ -99,7 +99,7 @@ namespace tigl {
         CTiglAbstractGeometricComponent(const CTiglAbstractGeometricComponent& ) { /* Do nothing */ }
 
         // Assignment operator
-        void operator=(const CTiglAbstractGeometricComponent& ) { /* Do nothing */ }
+        void operator=(const CTiglAbstractGeometricComponent& );
 
     private:
         std::string        myUID;           /**< UID of this component               */

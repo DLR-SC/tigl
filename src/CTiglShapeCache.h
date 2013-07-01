@@ -37,7 +37,7 @@ public:
     CTiglShapeCache();
     
     /// Inserts a shape with the given id into the cache
-    void Insert(const TopoDS_Shape& shape, const std::string id);
+    void Insert(const TopoDS_Shape& shape, const std::string& id);
     
     /// Returns the shape with the given id and an optional number (if multiple shapes 
     /// with the same id were added). If the shape is not found, a nullshape/empty shape is returned

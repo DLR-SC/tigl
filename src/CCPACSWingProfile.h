@@ -144,10 +144,10 @@ namespace tigl {
 
     private:
         // Copy constructor
-        CCPACSWingProfile(const CCPACSWingProfile& )  { /* Do nothing */ }
+        CCPACSWingProfile(const CCPACSWingProfile& );
 
         // Assignment operator
-        void operator=(const CCPACSWingProfile& ) { /* Do nothing */ }
+        void operator=(const CCPACSWingProfile& );
 
     private:
         std::string               ProfileXPath;

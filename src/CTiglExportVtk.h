@@ -49,13 +49,13 @@ namespace tigl {
         void ExportMeshedWingVTKByIndex(const int wingIndex, const std::string& filename, const double deflection = 0.1);
 
         // Exports a by UID selected wing, boolean fused and meshed, as VTK file
-        void ExportMeshedWingVTKByUID(const std::string wingUID, const std::string& filename, const double deflection = 0.1);
+        void ExportMeshedWingVTKByUID(const std::string& wingUID, const std::string& filename, const double deflection = 0.1);
 
         // Exports a by index selected fuselage, boolean fused and meshed, as VTK file
         void ExportMeshedFuselageVTKByIndex(const int fuselageIndex, const std::string& filename, const double deflection = 0.1);
 
         // Exports a by UID selected fuselage, boolean fused and meshed, as VTK file
-        void ExportMeshedFuselageVTKByUID(const std::string fuselageUID, const std::string& filename, const double deflection = 0.1);
+        void ExportMeshedFuselageVTKByUID(const std::string& fuselageUID, const std::string& filename, const double deflection = 0.1);
 
         // Exports a whole geometry, boolean fused and meshed, as VTK file
         void ExportMeshedGeometryVTK(const std::string& filename, const double deflection = 0.1);
@@ -64,13 +64,13 @@ namespace tigl {
         // Simple exports without cpacs information
         // Exports a by UID selected wing, meshed, as VTK file
         // No additional information are computed.
-        void ExportMeshedWingVTKSimpleByUID(const std::string wingUID, const std::string& filename, const double deflection = 0.1);
+        void ExportMeshedWingVTKSimpleByUID(const std::string& wingUID, const std::string& filename, const double deflection = 0.1);
         
         void ExportMeshedWingVTKSimpleByIndex(const int wingIndex, const std::string& filename, const double deflection = 0.1);
 
         // Exports a by UID selected fuselage, boolean fused and meshed, as VTK file.
         // No additional information are computed.
-        void ExportMeshedFuselageVTKSimpleByUID(const std::string fuselageUID, const std::string& filename, const double deflection = 0.1);
+        void ExportMeshedFuselageVTKSimpleByUID(const std::string& fuselageUID, const std::string& filename, const double deflection = 0.1);
         
         void ExportMeshedFuselageVTKSimpleByIndex(const int fuselageIndex, const std::string& filename, const double deflection = 0.1);
 

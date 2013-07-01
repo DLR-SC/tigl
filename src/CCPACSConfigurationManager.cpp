@@ -110,7 +110,7 @@ namespace tigl {
     // Invalidates all configurations and forces recalculation of wires/points etc.
     void CCPACSConfigurationManager::Invalidate(void)
     {
-        for (CCPACSConfigConstIterator iter = configurations.begin(); iter != configurations.end(); iter++)
+        for (CCPACSConfigConstIterator iter = configurations.begin(); iter != configurations.end(); ++iter)
         {
             CCPACSConfiguration* config = iter->second;
             config->Invalidate();

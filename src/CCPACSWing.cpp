@@ -226,7 +226,6 @@ namespace tigl {
         // Get symmetry axis attribute, has to be done, when segments are build
         char* ptrSym = NULL;
         tempString   = "symmetry";
-        elementPath  = const_cast<char*>(tempString.c_str());
         if (tixiGetTextAttribute(tixiHandle, const_cast<char*>(wingXPath.c_str()), const_cast<char*>(tempString.c_str()), &ptrSym) == SUCCESS)
             SetSymmetryAxis(ptrSym);
 
@@ -437,13 +436,12 @@ namespace tigl {
     // Returns the volume of this wing
     double CCPACSWing::GetVolume(void)
     {
-        double myVolume = 0.0;
         TopoDS_Shape& fusedSegments = GetLoft();
 
         // Calculate volume
         GProp_GProps System;
         BRepGProp::VolumeProperties(fusedSegments, System);
-        myVolume = System.Mass();
+        double myVolume = System.Mass();
         return myVolume;
     }
 
@@ -472,13 +470,12 @@ namespace tigl {
     // Returns the surface area of this wing
     double CCPACSWing::GetSurfaceArea(void)
     {
-        double myArea = 0.0;
         TopoDS_Shape& fusedSegments = GetLoft();
 
         // Calculate surface area
         GProp_GProps System;
         BRepGProp::SurfaceProperties(fusedSegments, System);
-        myArea = System.Mass();
+        double myArea = System.Mass();
         return myArea;
     }
 
@@ -501,14 +498,13 @@ namespace tigl {
 
     double CCPACSWing::GetWettedArea(TopoDS_Shape parent)
     {
-        double wetArea = 0.0;
         TopoDS_Shape loft = GetLoft();
 
         TopoDS_Shape wettedLoft = BRepAlgoAPI_Cut(loft, parent); 
 
         GProp_GProps System;
         BRepGProp::SurfaceProperties(wettedLoft, System);
-        wetArea = System.Mass();
+        double wetArea = System.Mass();
         return wetArea;
     }
 

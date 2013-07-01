@@ -66,7 +66,7 @@ namespace tigl {
     }
 
     // Exports a by UID selected wing, boolean fused and meshed, as STL file
-    void CTiglExportVtk::ExportMeshedWingVTKByUID(const std::string wingUID, const std::string& filename, const double deflection)
+    void CTiglExportVtk::ExportMeshedWingVTKByUID(const std::string& wingUID, const std::string& filename, const double deflection)
     {
         tigl::CCPACSWing& wing = myConfig.GetWing(wingUID);
         CTiglTriangularizer wingTrian(wing, deflection, SEGMENT_INFO);
@@ -83,7 +83,7 @@ namespace tigl {
     }
 
     // Exports a by UID selected fuselage, boolean fused and meshed, as VTK file
-    void CTiglExportVtk::ExportMeshedFuselageVTKByUID(const std::string fuselageUID, const std::string& filename, const double deflection)
+    void CTiglExportVtk::ExportMeshedFuselageVTKByUID(const std::string& fuselageUID, const std::string& filename, const double deflection)
     {
         CTiglAbstractPhysicalComponent & component = myConfig.GetFuselage(fuselageUID);
         TopoDS_Shape& loft = component.GetLoft();
@@ -102,7 +102,7 @@ namespace tigl {
 
     /************* Simple ones *************************/
     // Exports a by UID selected wing, boolean fused and meshed, as STL file
-    void CTiglExportVtk::ExportMeshedWingVTKSimpleByUID(const std::string wingUID, const std::string& filename, const double deflection)
+    void CTiglExportVtk::ExportMeshedWingVTKSimpleByUID(const std::string& wingUID, const std::string& filename, const double deflection)
     {
         CCPACSWing & component = dynamic_cast<CCPACSWing&>(myConfig.GetWing(wingUID));
         TopoDS_Shape& loft = component.GetLoftWithLeadingEdge();
@@ -119,7 +119,7 @@ namespace tigl {
     }
 
     // Exports a by UID selected fuselage, boolean fused and meshed, as VTK file
-    void CTiglExportVtk::ExportMeshedFuselageVTKSimpleByUID(const std::string fuselageUID, const std::string& filename, const double deflection)
+    void CTiglExportVtk::ExportMeshedFuselageVTKSimpleByUID(const std::string& fuselageUID, const std::string& filename, const double deflection)
     {
         CTiglAbstractPhysicalComponent & component = myConfig.GetFuselage(fuselageUID);
         TopoDS_Shape& loft = component.GetLoft();

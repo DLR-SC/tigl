@@ -136,7 +136,7 @@ namespace tigl {
     }
 
     // Returns the wing for a given UID.
-    CCPACSWing& CCPACSWings::GetWing(const std::string UID) const
+    CCPACSWing& CCPACSWings::GetWing(const std::string& UID) const
     {
         for(int i=0; i < GetWingCount(); i++)
         {

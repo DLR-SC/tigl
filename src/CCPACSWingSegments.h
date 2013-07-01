@@ -69,10 +69,10 @@ namespace tigl {
 
     private:
         // Copy constructor
-        CCPACSWingSegments(const CCPACSWingSegments& ) { /* Do nothing */ }
+        CCPACSWingSegments(const CCPACSWingSegments& );
 
         // Assignment operator
-        void operator=(const CCPACSWingSegments& ) { /* Do nothing */ }
+        void operator=(const CCPACSWingSegments& );
 
     private:
         CCPACSWingSegmentContainer segments;       /**< Segment elements    */

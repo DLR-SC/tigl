@@ -80,10 +80,10 @@ namespace tigl {
 
     private:
         // Copy constructor
-        CCPACSWingPositionings(const CCPACSWingPositionings& ) { /* Do nothing */ }
+        CCPACSWingPositionings(const CCPACSWingPositionings& );
 
         // Assignment operator
-        void operator=(const CCPACSWingPositionings& ) { /* Do nothing */ }
+        void operator=(const CCPACSWingPositionings& );
 
     private:
         CCPACSWingPositioningContainer positionings;      /**< Positioning elements */

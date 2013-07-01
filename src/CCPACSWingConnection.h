@@ -79,10 +79,10 @@ namespace tigl {
 
     private:
         // Copy constructor
-        CCPACSWingConnection(const CCPACSWingConnection& ) : segment(0) { /* Do nothing */ }
+        CCPACSWingConnection(const CCPACSWingConnection& );
 
         // Assignment operator
-        void operator=(const CCPACSWingConnection& ) { /* Do nothing */ }
+        void operator=(const CCPACSWingConnection& );
 
     private:
         int                   sectionIndex;  /**< Index of the connection-sections */

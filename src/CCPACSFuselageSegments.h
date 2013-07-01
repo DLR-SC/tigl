@@ -68,10 +68,10 @@ namespace tigl {
 
     private:
         // Copy constructor
-        CCPACSFuselageSegments(const CCPACSFuselageSegments& ) { /* Do nothing */ }
+        CCPACSFuselageSegments(const CCPACSFuselageSegments& );
 
         // Assignment operator
-        void operator=(const CCPACSFuselageSegments& ) { /* Do nothing */ }
+        void operator=(const CCPACSFuselageSegments& );
 
     private:
         CCPACSFuselageSegmentContainer segments; /**< Segment elements    */

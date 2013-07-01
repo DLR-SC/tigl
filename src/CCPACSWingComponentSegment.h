@@ -116,18 +116,18 @@ namespace tigl {
 
     private:
         // Copy constructor
-        CCPACSWingComponentSegment(const CCPACSWingComponentSegment& )  { /* Do nothing */ }
+        CCPACSWingComponentSegment(const CCPACSWingComponentSegment& );
 
         // Assignment operator
-        void operator=(const CCPACSWingComponentSegment& ) { /* Do nothing */ }
+        void operator=(const CCPACSWingComponentSegment& );
 
         std::vector<int> findPath(const std::string& fromUid, const::std::string& toUID, const std::vector<int>& curPath, bool forward) const;
 
 
     private:
         std::string          name;                 /**< Segment name                            */
-        std::string          fromElementUID;       /**< Inner segment uid (root                    */
-        std::string          toElementUID;         /**< Outer segment uid (tip)                    */
+        std::string          fromElementUID;       /**< Inner segment uid (root                 */
+        std::string          toElementUID;         /**< Outer segment uid (tip)                 */
         CCPACSWing*          wing;                 /**< Parent wing                             */
         double               myVolume;             /**< Volume of this segment                  */
         double               mySurfaceArea;        /**< Surface area of this segment            */
