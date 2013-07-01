@@ -77,10 +77,10 @@ namespace tigl {
 
     private:
         // Copy constructor
-        CCPACSWingPositioning(const CCPACSWingPositioning& ) { /* Do nothing */ }
+        CCPACSWingPositioning(const CCPACSWingPositioning& );
 
         // Assignment operator
-        void operator=(const CCPACSWingPositioning& ) { /* Do nothing */ }
+        void operator=(const CCPACSWingPositioning& );
 
     private:
         double               length;               /**< Positioning length                      */
@@ -90,7 +90,7 @@ namespace tigl {
         CTiglPoint           outerPoint;           /**< Positioning outer point                 */
         CTiglTransformation  outerTransformation;  /**< Transformation for the outer section    */
         std::string          innerSection;         /**< UID of the inner section                */
-        std::string             outerSection;         /**< UID of the outer section                */
+        std::string          outerSection;         /**< UID of the outer section                */
         bool                 invalidated;          /**< Internal state flag                     */
 
     };

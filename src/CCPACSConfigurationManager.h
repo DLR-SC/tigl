@@ -69,10 +69,10 @@ namespace tigl {
         CCPACSConfigurationManager(void);
 
         // Copy constructor
-        CCPACSConfigurationManager(const CCPACSConfigurationManager& ) { /* Do nothing */ }
+        CCPACSConfigurationManager(const CCPACSConfigurationManager& );
 
         // Assignment operator
-        void operator=(const CCPACSConfigurationManager& )             { /* Do nothing */ }
+        void operator=(const CCPACSConfigurationManager& );
 
     private:
         CCPACSConfigContainer        configurations; // Container to store the configurations by a handle

@@ -99,7 +99,7 @@ namespace tigl {
         CTiglAbstractPhysicalComponent::ChildContainerType children = parent->GetChildren(false);
         CTiglAbstractPhysicalComponent::ChildContainerType::iterator pIter;
         CTiglPoint parentTranslation = parent->GetTranslation();
-        for (pIter = children.begin(); pIter != children.end(); pIter++) {
+        for (pIter = children.begin(); pIter != children.end(); ++pIter) {
             CTiglAbstractPhysicalComponent* child = *pIter;
             child->Translate(parentTranslation);
             transformAllComponents(child);
@@ -132,7 +132,7 @@ namespace tigl {
         // count number of fusing operations
         int fuseCount = 0, ifuse = 0;
         CTiglAbstractPhysicalComponent::ChildContainerType::iterator pIter;
-        for (pIter = children.begin(); pIter != children.end(); pIter++) {
+        for (pIter = children.begin(); pIter != children.end(); ++pIter) {
             CTiglAbstractPhysicalComponent* child = *pIter;
             if(child->GetSymmetryAxis()!= TIGL_NO_SYMMETRY && calcFullModel)
                 fuseCount++;
@@ -142,12 +142,12 @@ namespace tigl {
         if(parent->GetSymmetryAxis() != TIGL_NO_SYMMETRY && calcFullModel && (parent->GetComponentType()& TIGL_COMPONENT_WING))
             fuseCount++;
         // parent with childs
-        if(children.size() > 0)
+        if(!children.empty())
             fuseCount++;
         
         // this somewhat complicated fusing is the only way, that the result of all tested planes was okay
         TopoDS_Shape fusedChilds;
-        for (pIter = children.begin(); pIter != children.end(); pIter++) {
+        for (pIter = children.begin(); pIter != children.end(); ++pIter) {
             CTiglAbstractPhysicalComponent* child = *pIter;
             TopoDS_Shape fusedChild = child->GetLoft();
             TopoDS_Shape tmpShape = child->GetMirroredLoft();
@@ -236,12 +236,12 @@ namespace tigl {
         return wings.GetWing(index);
     }
     // Returns the wing for a given UID.
-    CCPACSWing& CCPACSConfiguration::GetWing(const std::string UID) const
+    CCPACSWing& CCPACSConfiguration::GetWing(const std::string& UID) const
     {
         return wings.GetWing(UID);
     }
 
-    TopoDS_Shape CCPACSConfiguration::GetParentLoft(const std::string UID)
+    TopoDS_Shape CCPACSConfiguration::GetParentLoft(const std::string& UID)
     {
         return uidManager.GetParentComponent(UID)->GetLoft();
     }

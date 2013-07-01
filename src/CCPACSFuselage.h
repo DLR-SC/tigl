@@ -134,10 +134,10 @@ namespace tigl {
 
     private:
         // Copy constructor
-        CCPACSFuselage(const CCPACSFuselage & ) : CTiglAbstractPhysicalComponent(), segments(0) { /* Do nothing */ }
+        CCPACSFuselage(const CCPACSFuselage & );
 
         // Assignment operator
-        void operator=(const CCPACSFuselage & ) { /* Do nothing */ }
+        void operator=(const CCPACSFuselage & );
 
     private:
         std::string                name;                 /**< Fuselage name           */

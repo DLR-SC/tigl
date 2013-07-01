@@ -72,7 +72,7 @@ namespace tigl {
         CCPACSFuselage& GetFuselage(int index) const;
 
         // Returns the fuselage for a given UID.
-        CCPACSFuselage& GetFuselage(const std::string UID) const;
+        CCPACSFuselage& GetFuselage(const std::string& UID) const;
 
     protected:
         // Cleanup routine
@@ -80,10 +80,10 @@ namespace tigl {
 
     private:
         // Copy constructor
-        CCPACSFuselages(const CCPACSFuselages& ) { /* Do nothing */ }
+        CCPACSFuselages(const CCPACSFuselages& );
 
         // Assignment operator
-        void operator=(const CCPACSFuselages& ) { /* Do nothing */ }
+        void operator=(const CCPACSFuselages& );
 
     private:
         CCPACSFuselageProfiles   profiles;      /**< Fuselage profile elements */

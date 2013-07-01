@@ -128,7 +128,7 @@ namespace tigl {
         UIDStoreContainerType::iterator pIter;
         int parentCnt = 0;
 
-        for (pIter = uidStore.begin(); pIter != uidStore.end(); pIter++) {
+        for (pIter = uidStore.begin(); pIter != uidStore.end(); ++pIter) {
             CTiglAbstractPhysicalComponent* component = pIter->second;
             if (component->GetParentUID().empty()) {
                 if (parentCnt != 0) {
@@ -150,7 +150,7 @@ namespace tigl {
     {
         UIDStoreContainerType::iterator pIter;
 
-        for (pIter = uidStore.begin(); pIter != uidStore.end(); pIter++) {
+        for (pIter = uidStore.begin(); pIter != uidStore.end(); ++pIter) {
             CTiglAbstractPhysicalComponent* component = pIter->second;
             if (!component->GetParentUID().empty()) {
                 CTiglAbstractPhysicalComponent* parent = GetComponent(component->GetParentUID());

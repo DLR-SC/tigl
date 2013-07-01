@@ -77,7 +77,6 @@ namespace tigl {
 
         // Test if we have to build a closed bspline curve from the remaining
         // points. This is true if the start and end point are very close to each other.
-        bool closedBspline = false;
         int pointCount  = static_cast<Standard_Integer>(usedPoints.size());
         gp_Pnt startPnt = usedPoints[0];
         gp_Pnt endPnt   = usedPoints[pointCount - 1];

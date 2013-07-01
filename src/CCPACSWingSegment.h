@@ -207,10 +207,10 @@ namespace tigl {
 
     private:
         // Copy constructor
-        CCPACSWingSegment(const CCPACSWingSegment& ) : innerConnection(0), outerConnection(0) { /* Do nothing */ }
+        CCPACSWingSegment(const CCPACSWingSegment& );
 
         // Assignment operator
-        void operator=(const CCPACSWingSegment& ) { /* Do nothing */ }
+        void operator=(const CCPACSWingSegment& );
 
         // Builds upper and lower surfaces
         void MakeSurfaces();

@@ -157,10 +157,10 @@ namespace tigl {
 
     private:
         // Copy constructor
-        CCPACSFuselageSegment(const CCPACSFuselageSegment& ) : startConnection(0), endConnection(0) { /* Do nothing */ }
+        CCPACSFuselageSegment(const CCPACSFuselageSegment& );
 
         // Assignment operator
-        void operator=(const CCPACSFuselageSegment& ) { /* Do nothing */ }
+        void operator=(const CCPACSFuselageSegment& );
 
         std::string              name;                 /**< Segment name                            */
         CCPACSFuselageConnection startConnection;      /**< Start segment connection                */

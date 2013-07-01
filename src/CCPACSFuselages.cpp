@@ -138,7 +138,7 @@ namespace tigl {
     }
 
     // Returns the fuselage for a given index.
-    CCPACSFuselage& CCPACSFuselages::GetFuselage(std::string UID) const
+    CCPACSFuselage& CCPACSFuselages::GetFuselage(const std::string& UID) const
     {
         for(int i=0; i < GetFuselageCount(); i++)
         {

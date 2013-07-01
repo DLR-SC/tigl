@@ -98,7 +98,6 @@ namespace tigl {
     // Returns the fuselage profile for a given uid.
     CCPACSFuselageProfile& CCPACSFuselageProfiles::GetProfile(std::string uid) const
     {
-        CCPACSFuselageProfileContainer::iterator it;
         return (*profiles.find(uid)->second);
     }
 

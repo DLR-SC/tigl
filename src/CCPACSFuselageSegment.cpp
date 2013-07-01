@@ -138,7 +138,6 @@ namespace tigl {
         // Get attribute "uid"
         char* ptrUID = NULL;
         tempString   = "uID";
-        elementPath  = const_cast<char*>(tempString.c_str());
         if (tixiGetTextAttribute(tixiHandle, const_cast<char*>(segmentXPath.c_str()), const_cast<char*>(tempString.c_str()), &ptrUID) == SUCCESS)
             SetUID(ptrUID);
 

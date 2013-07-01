@@ -53,7 +53,7 @@ public:
     CCPACSWingCell& GetCell(int index) const;
     
     // Returns the wing cell for a given UID.
-    CCPACSWingCell& GetCell(const std::string UID) const;
+    CCPACSWingCell& GetCell(const std::string& UID) const;
     
 protected:
     // Cleanup routine

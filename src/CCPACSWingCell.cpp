@@ -70,7 +70,7 @@ CCPACSWingCell::CCPACSWingCell()
 
 void CCPACSWingCell::reset(){
     innerBorderEta1 = 0.;
-    innerBorderEta1 = 0.;
+    innerBorderEta2 = 0.;
     outerBorderEta1 = 0.;
     outerBorderEta2 = 0.;
     leadingEdgeXsi1 = 0.;

@@ -59,8 +59,6 @@ namespace tigl {
     // Invalidates internal state
     void CCPACSWingProfiles::Invalidate(void)
     {
-        std::string myUID = "";
-
         CCPACSWingProfileContainer::iterator p;
         for(p = profiles.begin(); p!=profiles.end(); ++p)
         {
@@ -108,7 +106,6 @@ namespace tigl {
     // Returns the wing profile for a given uid.
     CCPACSWingProfile& CCPACSWingProfiles::GetProfile(std::string uid) const
     {
-        CCPACSWingProfileContainer::iterator it;
         return (*profiles.find(uid)->second);
     }
 

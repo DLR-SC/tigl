@@ -33,7 +33,7 @@ CTiglShapeCache::CTiglShapeCache() {
     Reset();
 }
 
-void CTiglShapeCache::Insert(const TopoDS_Shape &shape, const std::string id){
+void CTiglShapeCache::Insert(const TopoDS_Shape &shape, const std::string &id){
     int nshapes = GetNShapesOfType(id);
     shapeContainer[mangleID(id,nshapes)] = shape;
 }

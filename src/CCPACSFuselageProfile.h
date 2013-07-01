@@ -102,10 +102,10 @@ namespace tigl {
 
     private:
         // Copy constructor
-        CCPACSFuselageProfile(const CCPACSFuselageProfile& )  { /* Do nothing */ }
+        CCPACSFuselageProfile(const CCPACSFuselageProfile& );
 
         // Assignment operator
-        void operator=(const CCPACSFuselageProfile& ) { /* Do nothing */ }
+        void operator=(const CCPACSFuselageProfile& );
 
         // Checks is two point are the same, or nearly the same.
         bool checkSamePoints(gp_Pnt pointA, gp_Pnt pointB);
