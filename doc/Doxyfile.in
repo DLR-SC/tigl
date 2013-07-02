@@ -4,7 +4,7 @@
 # Project related configuration options
 #---------------------------------------------------------------------------
 DOXYFILE_ENCODING      = UTF-8
-PROJECT_NAME           = TIGL
+PROJECT_NAME           = TiGL
 PROJECT_NUMBER         = @TIGL_VERSION@
 OUTPUT_DIRECTORY       = doc
 CREATE_SUBDIRS         = NO
@@ -130,13 +130,11 @@ HTML_FILE_EXTENSION    =
 HTML_HEADER            = 
 HTML_FOOTER            = doc/footer.html
 HTML_STYLESHEET        = 
-GENERATE_HTMLHELP      = YES
 GENERATE_DOCSET        = NO
 DOCSET_FEEDNAME        = "Doxygen generated docs"
 DOCSET_BUNDLE_ID       = org.doxygen.Project
 HTML_DYNAMIC_SECTIONS  = YES
-CHM_FILE               = 
-HHC_LOCATION           = 
+CHM_INDEX_ENCODING     = UTF-8
 GENERATE_CHI           = NO
 BINARY_TOC             = YES
 TOC_EXPAND             = YES
