@@ -1472,7 +1472,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetSegmentIntersection
                                                                                  const char* segmentUID,
                                                                                  double csEta1, double csXsi1,
                                                                                  double csEta2, double csXsi2,
-                                                                                 double * segmentEta, double * segmentXsi) {
+                                                                                 double   segmentEta, 
+                                                                                 double * segmentXsi) {
     if (segmentUID == 0) {
         LOG(ERROR) << "Error: Null pointer argument for segmentUID ";
         LOG(ERROR) << "in function call to tiglWingComponentSegmentGetSegmentIntersection." << std::endl;
@@ -1481,12 +1482,6 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetSegmentIntersection
 
     if (componentSegmentUID == 0) {
         LOG(ERROR) << "Error: Null pointer argument for componentSegmentUID ";
-        LOG(ERROR) << "in function call to tiglWingComponentSegmentGetSegmentIntersection." << std::endl;
-        return TIGL_NULL_POINTER;
-    }
-    
-    if (segmentEta == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for segmentEta ";
         LOG(ERROR) << "in function call to tiglWingComponentSegmentGetSegmentIntersection." << std::endl;
         return TIGL_NULL_POINTER;
     }
@@ -1507,7 +1502,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetSegmentIntersection
             tigl::CCPACSWing& wing = config.GetWing(iwing);
             try {
                 tigl::CCPACSWingComponentSegment & compSeg = (tigl::CCPACSWingComponentSegment &) wing.GetComponentSegment(componentSegmentUID);
-                compSeg.GetSegmentIntersection(segmentUID, csEta1, csXsi1, csEta2, csXsi2, *segmentEta, *segmentXsi);
+                compSeg.GetSegmentIntersection(segmentUID, csEta1, csXsi1, csEta2, csXsi2, segmentEta, *segmentXsi);
                 return TIGL_SUCCESS;
             }
             catch (tigl::CTiglError& err){

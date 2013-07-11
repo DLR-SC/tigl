@@ -255,7 +255,7 @@ namespace tigl {
         return wireBuilder.Wire();
     }
     
-    void CCPACSWingComponentSegment::GetSegmentIntersection(const std::string& segmentUID, double csEta1, double csXsi1, double csEta2, double csXsi2, double &eta, double &xsi){
+    void CCPACSWingComponentSegment::GetSegmentIntersection(const std::string& segmentUID, double csEta1, double csXsi1, double csEta2, double csXsi2, double eta, double &xsi){
         // number of component segment point samples per line
         int NSTEPS = 11;
         
@@ -294,8 +294,8 @@ namespace tigl {
             TopoDS_Wire csLine = wireBuilder.Wire();
         
             // create segments outer chord line
-            gp_Pnt leadingPoint  = segment.GetChordPoint(1.,0.);
-            gp_Pnt trailingPoint = segment.GetChordPoint(1.,1.);
+            gp_Pnt leadingPoint  = segment.GetChordPoint(eta, 0.);
+            gp_Pnt trailingPoint = segment.GetChordPoint(eta, 1.);
             
             TopoDS_Wire outerChord = BRepBuilderAPI_MakeWire(BRepBuilderAPI_MakeEdge(leadingPoint,trailingPoint));
             
@@ -333,7 +333,11 @@ namespace tigl {
         
         if(hasIntersected) {
             // now check if we found an intersection
-            segment.GetEtaXsi(result, false, eta, xsi);
+            double etaTmp;
+            segment.GetEtaXsi(result, false, etaTmp, xsi);
+            // check that etaTmp coordinate is correct
+            if(fabs(etaTmp - eta) > 1e-6)
+                throw CTiglError("Error determining proper eta, xsi coordinates in CCPACSWingComponentSegment::GetSegmentIntersection.", TIGL_MATH_ERROR);
         }
         else {
             throw CTiglError("Component segment line does not intersect outer segment border in CCPACSWingComponentSegment::GetSegmentIntersection.", TIGL_MATH_ERROR);

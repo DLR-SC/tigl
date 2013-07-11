@@ -100,8 +100,9 @@ namespace tigl {
         // creates an (iso) component segment line 
         TopoDS_Wire GetCSLine(double eta1, double xsi1, double eta2, double xsi2, int NSTEPS=101);
         
-        // calucluates
-        void GetSegmentIntersection(const std::string& segmentUID, double csEta1, double csXsi1, double csEta2, double csXsi2, double& eta, double& xsi);
+        // calculates the intersection of a segment iso eta line with a component segment line (defined by its start and end point)
+        // returns the xsi coordinate of the intersection
+        void GetSegmentIntersection(const std::string& segmentUID, double csEta1, double csXsi1, double csEta2, double csXsi2, double eta, double& xsi);
     protected:
         // Cleanup routine
         void Cleanup(void);
