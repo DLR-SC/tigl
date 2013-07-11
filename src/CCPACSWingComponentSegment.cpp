@@ -34,6 +34,7 @@
 #include "CCPACSWingProfile.h"
 #include "CTiglLogger.h"
 #include "CCPACSWingCell.h"
+#include "CTiglApproximateBsplineWire.h"
 #include "tiglcommonfunctions.h"
 
 #include "BRepOffsetAPI_ThruSections.hxx"
@@ -77,11 +78,22 @@
 #include "BRepAdaptor_CompCurve.hxx"
 #include "BRepExtrema_DistShapeShape.hxx"
 #include "GCPnts_AbscissaPoint.hxx"
+#include "TColgp_Array1OfPnt.hxx"
 
 
 #ifndef max
 #define max(a, b) (((a) > (b)) ? (a) : (b))
 #endif
+
+namespace {
+bool inBetween(const gp_Pnt& p, const gp_Pnt& p1, const gp_Pnt& p2){
+    bool inx = (p1.X() <= p.X() && p.X() <= p2.X()) || (p2.X() <= p.X() && p.X() <= p1.X());
+    bool iny = (p1.Y() <= p.Y() && p.Y() <= p2.Y()) || (p2.Y() <= p.Y() && p.Y() <= p1.Y());
+    bool inz = (p1.Z() <= p.Z() && p.Z() <= p2.Z()) || (p2.Z() <= p.Z() && p.Z() <= p1.Z());
+    
+    return inx && iny && inz;
+}
+}
 
 namespace tigl {
 
@@ -227,7 +239,111 @@ namespace tigl {
         std::vector<int> result;
         return result;
     }
+    
+    TopoDS_Wire CCPACSWingComponentSegment::GetCSLine(double eta1, double xsi1, double eta2, double xsi2, int NSTEPS) {
+        BRepBuilderAPI_MakeWire wireBuilder;
+        
+        gp_Pnt  old_point = GetPoint(eta1,xsi1);
+        for(int istep = 1; istep < NSTEPS; ++istep){
+            double eta = eta1 + (double) istep/(double) (NSTEPS-1) * (eta2-eta1);
+            double xsi = xsi1 + (double) istep/(double) (NSTEPS-1) * (xsi2-xsi1);
+            gp_Pnt point = GetPoint(eta,xsi);
+            TopoDS_Edge edge = BRepBuilderAPI_MakeEdge(old_point, point);
+            wireBuilder.Add(edge);
+            old_point = point;
+        }
+        return wireBuilder.Wire();
+    }
+    
+    void CCPACSWingComponentSegment::GetSegmentIntersection(const std::string& segmentUID, double csEta1, double csXsi1, double csEta2, double csXsi2, double &eta, double &xsi){
+        // number of component segment point samples per line
+        int NSTEPS = 11;
+        
+        CCPACSWingSegment& segment = (CCPACSWingSegment&) wing->GetSegment(segmentUID);
+        bool hasIntersected = false;
+        
+        // we do an iterative procedure to find the segment intersection
+        // by trying to find out, what the exact intersection of the component
+        // segment with the segment is
+        int iter = 0;
+        int maxiter = 10;
+        gp_Pnt result(0,0,0);
+        gp_Pnt oldresult(100,0,0);
+        
+        while (result.Distance(oldresult) > 1e-6 && iter < maxiter){
+            oldresult = result;
+            
+            double deta = (csEta2-csEta1)/double(NSTEPS-1);
+            double dxsi = (csXsi2-csXsi1)/double(NSTEPS-1);
+        
+            std::vector<gp_Pnt> points;
+            for(int istep = 0; istep < NSTEPS; ++istep){
+                double eta = csEta1 + (double) istep * deta;
+                double xsi = csXsi1 + (double) istep * dxsi;
+                gp_Pnt point = GetPoint(eta,xsi);
+                points.push_back(point);
+            }
+            
+            BRepBuilderAPI_MakeWire wireBuilder;
+            for(int istep = 0; istep < NSTEPS-1; ++istep){
+                TopoDS_Edge edge = BRepBuilderAPI_MakeEdge(points[istep], points[istep+1]);
+                wireBuilder.Add(edge);
+            }
+            
+            //return wireGen.BuildWire(container,false);
+            TopoDS_Wire csLine = wireBuilder.Wire();
+        
+            // create segments outer chord line
+            gp_Pnt leadingPoint  = segment.GetChordPoint(1.,0.);
+            gp_Pnt trailingPoint = segment.GetChordPoint(1.,1.);
+            
+            TopoDS_Wire outerChord = BRepBuilderAPI_MakeWire(BRepBuilderAPI_MakeEdge(leadingPoint,trailingPoint));
+            
+            BRepExtrema_DistShapeShape extrema(csLine, outerChord);
+            extrema.Perform();
+            
+            double dist = 0;
+            if (extrema.IsDone() && extrema.NbSolution() > 0) {
+                gp_Pnt p1 = extrema.PointOnShape1(1);
+                gp_Pnt p2 = extrema.PointOnShape2(1);
+                dist = p1.Distance(p2);
+                result = p2;
+                // check if the lines were really intersecting (1cm accuracy should be enough)
+                if(dist < 1e-2)
+                    hasIntersected = true;
+            }
 
+            
+            // now lets check in between which points the intersection lies
+            int ifound = 0;
+            for(int i = 0; i < NSTEPS-1; ++i){
+                if(inBetween(result, points[i], points[i+1])){
+                    ifound = i;
+                    break;
+                }
+            }
+            
+            // calculate new search field
+            csEta2 = csEta1 + deta*(ifound + 1);
+            csEta1 = csEta1 + deta*(ifound);
+            csXsi2 = csXsi1 + dxsi*(ifound + 1);
+            csXsi1 = csXsi1 + dxsi*(ifound);
+            ++iter;
+        }
+        
+        if(hasIntersected) {
+            // now check if we found an intersection
+            segment.GetEtaXsi(result, false, eta, xsi);
+        }
+        else {
+            throw CTiglError("Component segment line does not intersect outer segment border in CCPACSWingComponentSegment::GetSegmentIntersection.", TIGL_MATH_ERROR);
+        }
+        
+        // test if eta,xsi is valid
+        if(segment.GetChordPoint(eta,xsi).Distance(result) > 1e-6){
+            throw CTiglError("Error determining proper eta, xsi coordinates in CCPACSWingComponentSegment::GetSegmentIntersection.", TIGL_MATH_ERROR);
+        }
+    }
 
     // Builds the loft between the two segment sections
     TopoDS_Shape CCPACSWingComponentSegment::BuildLoft(void)
