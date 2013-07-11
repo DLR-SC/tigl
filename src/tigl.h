@@ -1380,15 +1380,16 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingSegmentPointGetComponentSegmentEtaXsi(
 
 
 /**
-* @brief Computes the intersection of a line (defined by component segment coordinates) with the outer cord line
-* of a specified wing segment.
+* @brief Computes the intersection of a line (defined by component segment coordinates) with an iso-eta line on a
+* specified wing segment.
 *
 * @param cpacsHandle            (in)  : Handle for the CPACS configuration
 * @param componentSegmentUID    (in)  : UID of the componentSegment
 * @param segmentUID             (in)  : UID of the segment, the intersection should be calculated with
-* @param csEta1, csEta2         (out) : Start and end eta coordinates of the intersection line (given as component segment coordinates)
-* @param csXsi1, csXsi2         (out) : Start and end xsi coordinates of the intersection line (given as component segment coordinates)
-* @param segmentEta, segmentXsi (out) : Eta and Xsi coordinates of the intersection point on the wing segment (eta should be always 1)
+* @param csEta1, csEta2         (in)  : Start and end eta coordinates of the intersection line (given as component segment coordinates)
+* @param csXsi1, csXsi2         (in)  : Start and end xsi coordinates of the intersection line (given as component segment coordinates)
+* @param segmentEta             (in)  : Eta coordinate of the iso-eta segment intersection line
+* @param segmentXsi             (out) : Xsi coordinate of the intersection point on the wing segment (eta should be always 1)
 *
 * @return
 *   - TIGL_SUCCESS if no error occurred
@@ -1402,7 +1403,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetSegmentIntersection
                                                                                  const char* segmentUID,
                                                                                  double csEta1, double csXsi1,
                                                                                  double csEta2, double csXsi2,
-                                                                                 double * segmentEta, double * segmentXsi);
+                                                                                 double segmentEta, 
+                                                                                 double* segmentXsi);
 
 /**
 * @brief Returns the number of segments belonging to a component segment
