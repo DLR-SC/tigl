@@ -1467,6 +1467,75 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingSegmentPointGetComponentSegmentEtaXsi(
     }
 }
 
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetSegmentIntersection(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                                 const char* componentSegmentUID,
+                                                                                 const char* segmentUID,
+                                                                                 double csEta1, double csXsi1,
+                                                                                 double csEta2, double csXsi2,
+                                                                                 double * segmentEta, double * segmentXsi) {
+    if (segmentUID == 0) {
+        LOG(ERROR) << "Error: Null pointer argument for segmentUID ";
+        LOG(ERROR) << "in function call to tiglWingComponentSegmentGetSegmentIntersection." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+
+    if (componentSegmentUID == 0) {
+        LOG(ERROR) << "Error: Null pointer argument for componentSegmentUID ";
+        LOG(ERROR) << "in function call to tiglWingComponentSegmentGetSegmentIntersection." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+    
+    if (segmentEta == 0) {
+        LOG(ERROR) << "Error: Null pointer argument for segmentEta ";
+        LOG(ERROR) << "in function call to tiglWingComponentSegmentGetSegmentIntersection." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+    
+    if (segmentXsi == 0) {
+        LOG(ERROR) << "Error: Null pointer argument for segmentXsi ";
+        LOG(ERROR) << "in function call to tiglWingComponentSegmentGetSegmentIntersection." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+    
+    try {
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+        
+        // search for component segment
+        int nwings = config.GetWingCount();
+        for(int iwing = 1; iwing <= nwings; ++iwing){
+            tigl::CCPACSWing& wing = config.GetWing(iwing);
+            try {
+                tigl::CCPACSWingComponentSegment & compSeg = (tigl::CCPACSWingComponentSegment &) wing.GetComponentSegment(componentSegmentUID);
+                compSeg.GetSegmentIntersection(segmentUID, csEta1, csXsi1, csEta2, csXsi2, *segmentEta, *segmentXsi);
+                return TIGL_SUCCESS;
+            }
+            catch (tigl::CTiglError& err){
+                if(err.getCode() == TIGL_UID_ERROR)
+                    continue;
+                else 
+                    throw;
+            }
+        }
+        
+        // the component segment was not found
+        LOG(ERROR) << "Error: Invalid component segment uid in tiglWingComponentSegmentGetSegmentIntersection" << std::endl;
+        return TIGL_UID_ERROR;
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an unknown exception in tiglWingComponentSegmentGetSegmentIntersection!" << std::endl;
+        return TIGL_ERROR;
+    }
+}
+
 TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetNumberOfSegments(TiglCPACSConfigurationHandle cpacsHandle,
                                                                               const char * componentSegmentUID,
                                                                               int * nsegments){

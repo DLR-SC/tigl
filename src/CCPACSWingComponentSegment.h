@@ -96,6 +96,12 @@ namespace tigl {
 
         // returns a list of segments that belong to this component segment
         std::vector<int> GetSegmentList(const std::string &fromElementUID, const std::string &toElementUID) const;
+        
+        // creates an (iso) component segment line 
+        TopoDS_Wire GetCSLine(double eta1, double xsi1, double eta2, double xsi2, int NSTEPS=101);
+        
+        // calucluates
+        void GetSegmentIntersection(const std::string& segmentUID, double csEta1, double csXsi1, double csEta2, double csXsi2, double& eta, double& xsi);
     protected:
         // Cleanup routine
         void Cleanup(void);
