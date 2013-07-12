@@ -52,9 +52,13 @@ void CTiglLogger::initLogger(void)
     // Initialize Google's logging library.
     google::InitGoogleLogging("TIGL-log");
 
-    for (int severity = google::INFO; severity < google::NUM_SEVERITIES; severity++) {
-      google::SetLogDestination(severity, "TIGL-log-");
+    // this is a workaround described in https://code.google.com/p/google-glog/issues/detail?id=41
+    // to avoid different log files for each severity. The info log file already contains
+    // all log informations also from the higher severity levels
+    for (int severity = google::WARNING; severity < google::NUM_SEVERITIES; severity++) {
+        google::SetLogDestination(severity, "");
     }
+    google::SetLogDestination(google::INFO, "TIGL-log-");
 #endif
 }
 
