@@ -1389,7 +1389,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingSegmentPointGetComponentSegmentEtaXsi(
 * @param[in]  csEta1, csEta2          Start and end eta coordinates of the intersection line (given as component segment coordinates)
 * @param[in]  csXsi1, csXsi2          Start and end xsi coordinates of the intersection line (given as component segment coordinates)
 * @param[in]  segmentEta              Eta coordinate of the iso-eta segment intersection line
-* @param[out] segmentXsi              Xsi coordinate of the intersection point on the wing segment (eta should be always 1)
+* @param[out] segmentXsi              Xsi coordinate of the intersection point on the wing segment
 *
 * @return
 *   - TIGL_SUCCESS if no error occurred
@@ -2464,8 +2464,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetMinumumDistanceToGround(TiglCPA
 *   - TIGL_ERROR if some other error occurred
 */
 TIGL_COMMON_EXPORT TiglReturnCode tiglComponentIntersectionPoint(TiglCPACSConfigurationHandle cpacsHandle,
-                                                         char*  componentUidOne,
-                                                         char*  componentUidTwo,
+                                                         const char*  componentUidOne,
+                                                         const char*  componentUidTwo,
                                                          int lineID,
                                                          double eta,
                                                          double* pointXPtr,
@@ -2513,8 +2513,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglComponentIntersectionPoint(TiglCPACSConfig
 *   - TIGL_ERROR if some other error occurred
 */
 TIGL_COMMON_EXPORT TiglReturnCode tiglComponentIntersectionPoints(TiglCPACSConfigurationHandle cpacsHandle,
-                                                                 char*  componentUidOne,
-                                                                 char*  componentUidTwo,
+                                                                 const char*  componentUidOne,
+                                                                 const char*  componentUidTwo,
                                                                  int lineID,
                                                                  const double* etaArray,
                                                                  int numberOfPoints,
@@ -2545,8 +2545,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglComponentIntersectionPoints(TiglCPACSConfi
 *   - TIGL_ERROR if some other error occurred
 */
 TIGL_COMMON_EXPORT TiglReturnCode tiglComponentIntersectionLineCount(TiglCPACSConfigurationHandle cpacsHandle,
-                                                            char*  componentUidOne,
-                                                            char*  componentUidTwo,
+                                                            const char*  componentUidOne,
+                                                            const char*  componentUidTwo,
                                                             int*   numWires);
 
 
@@ -2604,7 +2604,7 @@ VTK-Export: There a various different VTK exports functions in TIGL. All functio
 *   - TIGL_ERROR if some other error occurred
 */
 TIGL_COMMON_EXPORT TiglReturnCode tiglExportIGES(TiglCPACSConfigurationHandle cpacsHandle,
-                                         char* filenamePtr);
+                                         const char* filenamePtr);
 
 
 /**
@@ -2625,7 +2625,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportIGES(TiglCPACSConfigurationHandle cp
 *   - TIGL_ERROR if some other error occurred
 */
 TIGL_COMMON_EXPORT TiglReturnCode tiglExportFusedWingFuselageIGES(TiglCPACSConfigurationHandle cpacsHandle,
-                                                          char* filenamePtr);
+                                                          const char* filenamePtr);
 
 
 /**
@@ -2647,7 +2647,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportFusedWingFuselageIGES(TiglCPACSConfi
 *   - TIGL_ERROR if some other error occurred
 */
 TIGL_COMMON_EXPORT TiglReturnCode tiglExportStructuredIGES(TiglCPACSConfigurationHandle cpacsHandle,
-                                                              char* filenamePtr);
+                                                              const char* filenamePtr);
 
 
 // ***************
@@ -2672,7 +2672,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportStructuredIGES(TiglCPACSConfiguratio
 *   - TIGL_ERROR if some other error occurred
 */
 TIGL_COMMON_EXPORT TiglReturnCode tiglExportSTEP(TiglCPACSConfigurationHandle cpacsHandle,
-                                                 char* filenamePtr);
+                                                 const char* filenamePtr);
 
 /**
 * @brief Exports the geometry of a CPACS configuration to STEP format. In this version
@@ -2693,7 +2693,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportSTEP(TiglCPACSConfigurationHandle cp
 *   - TIGL_ERROR if some other error occurred
 */
 TIGL_COMMON_EXPORT TiglReturnCode tiglExportStructuredSTEP(TiglCPACSConfigurationHandle cpacsHandle,
-                                                              char* filenamePtr);
+                                                              const char* filenamePtr);
 
 
 // ***************
@@ -2720,7 +2720,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportStructuredSTEP(TiglCPACSConfiguratio
 *   - TIGL_ERROR if some other error occurred
 */
 TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedWingSTL(TiglCPACSConfigurationHandle cpacsHandle, int wingIndex,
-                                                  char* filenamePtr, double deflection); 
+                                                  const char* filenamePtr, double deflection); 
 
 
 
@@ -2745,7 +2745,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedWingSTL(TiglCPACSConfiguration
 *   - TIGL_ERROR if some other error occurred
 */
 TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedFuselageSTL(TiglCPACSConfigurationHandle cpacsHandle, int fuselageIndex,
-                                                      char* filenamePtr, double deflection);
+                                                      const char* filenamePtr, double deflection);
 
 
 /**
@@ -2766,7 +2766,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedFuselageSTL(TiglCPACSConfigura
 *   - TIGL_NULL_POINTER if filenamePtr is a null pointer
 *   - TIGL_ERROR if some other error occurred
 */
-TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedGeometrySTL(TiglCPACSConfigurationHandle cpacsHandle, char* filenamePtr,
+TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedGeometrySTL(TiglCPACSConfigurationHandle cpacsHandle, const char* filenamePtr,
                                                       double deflection);
 
 
@@ -2816,7 +2816,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedWingVTKByIndex(const TiglCPACS
 *   - TIGL_ERROR if some other error occurred
 */
 TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedWingVTKByUID(const TiglCPACSConfigurationHandle cpacsHandle, const char* wingUID,
-                                                       const char* filenamePtr, const double deflection);
+                                                       const char* filenamePtr, double deflection);
 
 
 
@@ -2841,7 +2841,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedWingVTKByUID(const TiglCPACSCo
 *   - TIGL_ERROR if some other error occurred
 */
 TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedFuselageVTKByIndex(const TiglCPACSConfigurationHandle cpacsHandle, const int fuselageIndex,
-                                                             const char* filenamePtr, const double deflection);
+                                                             const char* filenamePtr, double deflection);
 
 
 /**
@@ -2865,7 +2865,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedFuselageVTKByIndex(const TiglC
 *   - TIGL_ERROR if some other error occurred
 */
 TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedFuselageVTKByUID(const TiglCPACSConfigurationHandle cpacsHandle, const char* fuselageUID,
-                                                           const char* filenamePtr, const double deflection);
+                                                           const char* filenamePtr, double deflection);
 
 
 /**
@@ -2887,7 +2887,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedFuselageVTKByUID(const TiglCPA
 *   - TIGL_ERROR if some other error occurred
 */
 TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedGeometryVTK(const TiglCPACSConfigurationHandle cpacsHandle, const char* filenamePtr,
-                                                      const double deflection);
+                                                      double deflection);
 
 
 
@@ -2917,7 +2917,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedGeometryVTK(const TiglCPACSCon
 *   - TIGL_ERROR if some other error occurred
 */
 TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedWingVTKSimpleByUID(const TiglCPACSConfigurationHandle cpacsHandle, const char* wingUID,
-                                                             const char* filenamePtr, const double deflection);
+                                                             const char* filenamePtr, double deflection);
 
 
 
@@ -2948,7 +2948,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedWingVTKSimpleByUID(const TiglC
 *   - TIGL_ERROR if some other error occurred
 */
 TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedFuselageVTKSimpleByUID(const TiglCPACSConfigurationHandle cpacsHandle, const char* fuselageUID,
-                                                                 const char* filenamePtr, const double deflection);
+                                                                 const char* filenamePtr, double deflection);
 
 
 
@@ -2976,7 +2976,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedFuselageVTKSimpleByUID(const T
 *   - TIGL_ERROR if some other error occurred
 */
 TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedGeometryVTKSimple(const TiglCPACSConfigurationHandle cpacsHandle, const char* filenamePtr,
-                                                            const double deflection);
+                                                            double deflection);
 
 /**
 * @brief Exports the boolean fused geometry of a fuselage (selected by uid) meshed to Collada (*.dae) format.
@@ -2998,7 +2998,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedGeometryVTKSimple(const TiglCP
 *   - TIGL_ERROR if some other error occurred
 */
 TIGL_COMMON_EXPORT TiglReturnCode tiglExportFuselageColladaByUID(const TiglCPACSConfigurationHandle cpacsHandle, const char* fuselageUID, 
-                                                                 const char* filename, const double deflection);
+                                                                 const char* filename, double deflection);
 
 
 /**
@@ -3021,7 +3021,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportFuselageColladaByUID(const TiglCPACS
 *   - TIGL_ERROR if some other error occurred
 */
 TIGL_COMMON_EXPORT TiglReturnCode tiglExportWingColladaByUID(const TiglCPACSConfigurationHandle cpacsHandle, const char* wingUID, 
-                                                                 const char* filename, const double deflection);
+                                                                 const char* filename, double deflection);
 /*@}*/
 /*****************************************************************************************************/
 
@@ -3386,7 +3386,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetWettedArea(TiglCPACSConfigurationHa
 *   - TIGL_ERROR if some other error occurred
 */
 TIGL_COMMON_EXPORT TiglReturnCode tiglComponentGetHashCode(TiglCPACSConfigurationHandle cpacsHandle,
-                                                   char* componentUID,
+                                                   const char* componentUID,
                                                    int* hashCodePtr);
 
 
