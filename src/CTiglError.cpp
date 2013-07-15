@@ -33,7 +33,7 @@ namespace tigl {
         : err(error)
         , code(errorCode)
     {
-        LOG(ERROR) << "CTiglError: Node=>" << code << " : " << error;
+        DLOG(ERROR) << "CTiglError: ErrorCode=" << code << " : " << error;
     }
 
     // Destructor

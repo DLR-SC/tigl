@@ -53,6 +53,8 @@ namespace tigl {
         if (level > LOG_MAX_LEVEL) ;\
         else tigl::DummyLogger_().AppendToStream(level)
 
+    #define DLOG LOG
+
     class DummyLogger_
     {
     public:
