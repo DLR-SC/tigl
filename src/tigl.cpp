@@ -2608,8 +2608,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetMinumumDistanceToGround(TiglCPA
 
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglComponentIntersectionPoint(TiglCPACSConfigurationHandle cpacsHandle,
-                                                                 char*  componentUidOne,
-                                                                 char*  componentUidTwo,
+                                                                 const char*  componentUidOne,
+                                                                 const char*  componentUidTwo,
                                                                  int lineID,
                                                                  double eta,
                                                                  double* pointXPtr,
@@ -2660,8 +2660,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglComponentIntersectionPoint(TiglCPACSConfig
 }
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglComponentIntersectionPoints(TiglCPACSConfigurationHandle cpacsHandle,
-                                                                 char*  componentUidOne,
-                                                                 char*  componentUidTwo,
+                                                                 const char *componentUidOne,
+                                                                 const char *componentUidTwo,
                                                                  int lineID,
                                                                  const double* etaArray,
                                                                  int nPoints,
@@ -2723,8 +2723,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglComponentIntersectionPoints(TiglCPACSConfi
 
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglComponentIntersectionLineCount(TiglCPACSConfigurationHandle cpacsHandle,
-                                                                     char*  componentUidOne,
-                                                                     char*  componentUidTwo,
+                                                                     const char *componentUidOne,
+                                                                     const char *componentUidTwo,
                                                                      int* numWires)
 {
     if ( (componentUidOne == 0) || (componentUidTwo == 0)) {
@@ -2764,7 +2764,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglComponentIntersectionLineCount(TiglCPACSCo
 /*                         Export Functions                                                          */
 /*****************************************************************************************************/
 
-TIGL_COMMON_EXPORT TiglReturnCode tiglExportIGES(TiglCPACSConfigurationHandle cpacsHandle, char* filenamePtr)
+TIGL_COMMON_EXPORT TiglReturnCode tiglExportIGES(TiglCPACSConfigurationHandle cpacsHandle, const char *filenamePtr)
 {
     if (filenamePtr == 0) {
         LOG(ERROR) << "Error: Null pointer argument for filenamePtr";
@@ -2796,7 +2796,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportIGES(TiglCPACSConfigurationHandle cp
 
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglExportFusedWingFuselageIGES(TiglCPACSConfigurationHandle cpacsHandle,
-                                                                  char* filenamePtr)
+                                                                  const char *filenamePtr)
 {
     if (filenamePtr == 0) {
         LOG(ERROR) << "Error: Null pointer argument for filenamePtr";
@@ -2826,7 +2826,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportFusedWingFuselageIGES(TiglCPACSConfi
     }
 }
 
-TIGL_COMMON_EXPORT TiglReturnCode tiglExportStructuredIGES(TiglCPACSConfigurationHandle cpacsHandle, char* filenamePtr)
+TIGL_COMMON_EXPORT TiglReturnCode tiglExportStructuredIGES(TiglCPACSConfigurationHandle cpacsHandle, const char *filenamePtr)
 {
     if (filenamePtr == 0) {
         LOG(ERROR) << "Error: Null pointer argument for filenamePtr";
@@ -2858,7 +2858,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportStructuredIGES(TiglCPACSConfiguratio
 
 
 
-TIGL_COMMON_EXPORT TiglReturnCode tiglExportSTEP(TiglCPACSConfigurationHandle cpacsHandle, char* filenamePtr)
+TIGL_COMMON_EXPORT TiglReturnCode tiglExportSTEP(TiglCPACSConfigurationHandle cpacsHandle, const char* filenamePtr)
 {
     if (filenamePtr == 0) {
         LOG(ERROR) << "Error: Null pointer argument for filenamePtr";
@@ -2888,7 +2888,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportSTEP(TiglCPACSConfigurationHandle cp
     }
 }
 
-TIGL_COMMON_EXPORT TiglReturnCode tiglExportStructuredSTEP(TiglCPACSConfigurationHandle cpacsHandle, char* filenamePtr)
+TIGL_COMMON_EXPORT TiglReturnCode tiglExportStructuredSTEP(TiglCPACSConfigurationHandle cpacsHandle, const char *filenamePtr)
 {
     if (filenamePtr == 0) {
         LOG(ERROR) << "Error: Null pointer argument for filenamePtr";
@@ -2920,7 +2920,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportStructuredSTEP(TiglCPACSConfiguratio
 
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedWingSTL(TiglCPACSConfigurationHandle cpacsHandle, int wingIndex,
-                                                          char* filenamePtr, double deflection)
+                                                          const char *filenamePtr, double deflection)
 {
     if (filenamePtr == 0) {
         LOG(ERROR) << "Error: Null pointer argument for filenamePtr";
@@ -2957,7 +2957,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedWingSTL(TiglCPACSConfiguration
 
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedFuselageSTL(TiglCPACSConfigurationHandle cpacsHandle, int fuselageIndex,
-                                                              char* filenamePtr, double deflection)
+                                                              const char* filenamePtr, double deflection)
 {
     if (filenamePtr == 0) {
         LOG(ERROR) << "Error: Null pointer argument for filenamePtr";
@@ -2994,7 +2994,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedFuselageSTL(TiglCPACSConfigura
 
 
 
-TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedGeometrySTL(TiglCPACSConfigurationHandle cpacsHandle, char* filenamePtr, double deflection)
+TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedGeometrySTL(TiglCPACSConfigurationHandle cpacsHandle, const char *filenamePtr, double deflection)
 {
     if (filenamePtr == 0) {
         LOG(ERROR) << "Error: Null pointer argument for filenamePtr";
@@ -3076,7 +3076,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedWingVTKByIndex(const TiglCPACS
 
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedWingVTKByUID(const TiglCPACSConfigurationHandle cpacsHandle, const char* wingUID,
-                                                               const char* filenamePtr, const double deflection)
+                                                               const char* filenamePtr, double deflection)
 {
     if (filenamePtr == 0) {
         LOG(ERROR) << "Error: Null pointer argument for filenamePtr";
@@ -3126,7 +3126,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedWingVTKByUID(const TiglCPACSCo
 
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedFuselageVTKByIndex(const TiglCPACSConfigurationHandle cpacsHandle, const int fuselageIndex,
-                                                                     const char* filenamePtr, const double deflection)
+                                                                     const char* filenamePtr, double deflection)
 {
     if (filenamePtr == 0) {
         LOG(ERROR) << "Error: Null pointer argument for filenamePtr";
@@ -3163,7 +3163,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedFuselageVTKByIndex(const TiglC
 
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedFuselageVTKByUID(const TiglCPACSConfigurationHandle cpacsHandle, const char* fuselageUID,
-                                                                   const char* filenamePtr, const double deflection)
+                                                                   const char* filenamePtr, double deflection)
 {
     if (filenamePtr == 0) {
         LOG(ERROR) << "Error: Null pointer argument for filenamePtr";
@@ -3200,7 +3200,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedFuselageVTKByUID(const TiglCPA
 
 
 
-TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedGeometryVTK(const TiglCPACSConfigurationHandle cpacsHandle, const char* filenamePtr, const double deflection)
+TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedGeometryVTK(const TiglCPACSConfigurationHandle cpacsHandle, const char* filenamePtr, double deflection)
 {
     if (filenamePtr == 0) {
         LOG(ERROR) << "Error: Null pointer argument for filenamePtr";
@@ -3234,7 +3234,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedGeometryVTK(const TiglCPACSCon
 
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedWingVTKSimpleByUID(const TiglCPACSConfigurationHandle cpacsHandle, const char* wingUID,
-                                                                     const char* filenamePtr, const double deflection)
+                                                                     const char* filenamePtr, double deflection)
 {
     if (filenamePtr == 0) {
         LOG(ERROR) << "Error: Null pointer argument for filenamePtr";
@@ -3285,7 +3285,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedWingVTKSimpleByUID(const TiglC
 
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedFuselageVTKSimpleByUID(const TiglCPACSConfigurationHandle cpacsHandle, const char* fuselageUID,
-                                                                         const char* filenamePtr, const double deflection)
+                                                                         const char* filenamePtr, double deflection)
 {
     if (filenamePtr == 0) {
         LOG(ERROR) << "Error: Null pointer argument for filenamePtr";
@@ -3320,7 +3320,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedFuselageVTKSimpleByUID(const T
     }
 }
 
-TIGL_COMMON_EXPORT TiglReturnCode tiglExportFuselageColladaByUID(const TiglCPACSConfigurationHandle cpacsHandle, const char* fuselageUID, const char* filenamePtr, const double deflection) {
+TIGL_COMMON_EXPORT TiglReturnCode tiglExportFuselageColladaByUID(const TiglCPACSConfigurationHandle cpacsHandle, const char* fuselageUID, const char* filenamePtr, double deflection) {
     if (filenamePtr == 0) {
         LOG(ERROR) << "Error: Null pointer argument for filenamePtr";
         LOG(ERROR) << "in function call to tiglExportFuselageColladaByUID." << std::endl;
@@ -3353,7 +3353,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportFuselageColladaByUID(const TiglCPACS
     }
 }
 
-TIGL_COMMON_EXPORT TiglReturnCode tiglExportWingColladaByUID(const TiglCPACSConfigurationHandle cpacsHandle, const char* wingUID, const char* filenamePtr, const double deflection) {
+TIGL_COMMON_EXPORT TiglReturnCode tiglExportWingColladaByUID(const TiglCPACSConfigurationHandle cpacsHandle, const char* wingUID, const char* filenamePtr, double deflection) {
     if (filenamePtr == 0) {
         LOG(ERROR) << "Error: Null pointer argument for filenamePtr";
         LOG(ERROR) << "in function call to tiglExportWingColladaByUID." << std::endl;
@@ -3388,7 +3388,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportWingColladaByUID(const TiglCPACSConf
 
 
 
-TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedGeometryVTKSimple(const TiglCPACSConfigurationHandle cpacsHandle, const char* filenamePtr, const double deflection)
+TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedGeometryVTKSimple(const TiglCPACSConfigurationHandle cpacsHandle, const char* filenamePtr, double deflection)
 {
     if (filenamePtr == 0) {
         LOG(ERROR) << "Error: Null pointer argument for filenamePtr";
@@ -3858,7 +3858,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetWettedArea(TiglCPACSConfigurationHa
 
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglComponentGetHashCode(TiglCPACSConfigurationHandle cpacsHandle,
-                                                           char* componentUID,
+                                                           const char* componentUID,
                                                            int* hashCodePtr)
 {
     if (componentUID == 0) {
