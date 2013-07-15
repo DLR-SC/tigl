@@ -613,16 +613,15 @@ namespace tigl {
     }
 
 
+    // TODO: remove this function if favour of Standard GetEta
     double CCPACSWingSegment::GetEta(gp_Pnt pnt, double xsi)
     {
         // Build virtual eta line.
         // eta is in x = 0
         gp_Pnt pnt0 = GetChordPoint(0, xsi);
-        pnt0 = wing->GetWingTransformation().Transform(pnt0);        
         pnt0 = gp_Pnt(0, pnt0.Y(), pnt0.Z());
 
         gp_Pnt pnt1 = GetChordPoint(1, xsi);
-        pnt1 = wing->GetWingTransformation().Transform(pnt1);
         pnt1 = gp_Pnt(0, pnt1.Y(), pnt1.Z());
 
         BRepBuilderAPI_MakeWire etaWireBuilder;
