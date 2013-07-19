@@ -43,11 +43,6 @@ namespace tigl {
     CTiglExportIges::CTiglExportIges(CCPACSConfiguration& config)
     :myConfig(config)
     {
-        Interface_Static::SetCVal("xstep.cascade.unit", "M");
-        Interface_Static::SetCVal("write.iges.unit", "M");
-        Interface_Static::SetIVal("write.iges.brep.mode", 0);
-        Interface_Static::SetCVal("write.iges.header.author", "TIGL");
-        Interface_Static::SetCVal("write.iges.header.company", "German Aerospace Center (DLR), SC");
     }
 
     // Destructor
@@ -55,6 +50,14 @@ namespace tigl {
     {
     }
     
+    void CTiglExportIges::SetTranslationParamters() const
+    {
+        Interface_Static::SetCVal("xstep.cascade.unit", "M");
+        Interface_Static::SetCVal("write.iges.unit", "M");
+        Interface_Static::SetIVal("write.iges.brep.mode", 0);
+        Interface_Static::SetCVal("write.iges.header.author", "TiGL");
+        Interface_Static::SetCVal("write.iges.header.company", "German Aerospace Center (DLR), SC");
+    }
     
     // Exports the whole configuration as IGES file
     // All wing- and fuselage segments are exported as single bodys
@@ -63,6 +66,7 @@ namespace tigl {
         IGESControl_Controller::Init();
 
         IGESControl_Writer igesWriter;
+        SetTranslationParamters();
         igesWriter.Model()->ApplyStatic(); // apply set parameters
 
         if( filename.empty()) {
@@ -121,6 +125,7 @@ namespace tigl {
         }
 
         IGESControl_Writer igesWriter;
+        SetTranslationParamters();
         igesWriter.Model()->ApplyStatic(); // apply set parameters
 
         igesWriter.AddShape(fusedAirplane);
@@ -139,6 +144,8 @@ namespace tigl {
     {
         IGESControl_Controller::Init();
         IGESControl_Writer igesWriter;
+        SetTranslationParamters();
+        igesWriter.Model()->ApplyStatic(); // apply set parameters
 
         if( filename.empty()) {
            LOG(ERROR) << "Error: Empty filename in ExportShapes.";
@@ -169,6 +176,9 @@ namespace tigl {
 
            IGESControl_Controller::Init();
            IGESCAFControl_Writer writer;
+           SetTranslationParamters();
+           writer.Model()->ApplyStatic(); // apply set parameters
+           
            writer.Transfer(hDoc);
            writer.Write(filename.c_str());
        }

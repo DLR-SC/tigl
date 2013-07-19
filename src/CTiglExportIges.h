@@ -68,6 +68,7 @@ namespace tigl {
 
     private:
         CCPACSConfiguration&          myConfig;       /**< TIGL configuration object */
+        void SetTranslationParamters() const;
     };
 
 } // end namespace tigl
