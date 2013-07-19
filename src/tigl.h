@@ -2722,6 +2722,29 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportStructuredSTEP(TiglCPACSConfiguratio
 TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedWingSTL(TiglCPACSConfigurationHandle cpacsHandle, int wingIndex,
                                                   const char* filenamePtr, double deflection); 
 
+/**
+* @brief Exports the boolean fused geometry of a wing meshed to STL format.
+*
+*
+* <b>Fortran syntax:</b>
+*
+* tigl_export_meshed_wing_by_uid(integer cpacsHandle, character*n wingUID, character*n filenamePtr, integer returnCode, real deflection)
+*
+* @param[in]  cpacsHandle Handle for the CPACS configuration
+* @param[in]  wingUID     UID of the Wing to export
+* @param[in]  filenamePtr Pointer to an STL export file name
+* @param[in]  deflection  Maximum deflection of the triangulation from the real surface
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_NULL_POINTER if filenamePtr is a null pointer
+*   - TIGL_INDEX_ERROR if wingIndex is less or equal zero
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedWingSTLByUID(TiglCPACSConfigurationHandle cpacsHandle, const char* wingUID,
+                                                  const char* filenamePtr, double deflection); 
+
 
 
 /**
@@ -2747,6 +2770,29 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedWingSTL(TiglCPACSConfiguration
 TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedFuselageSTL(TiglCPACSConfigurationHandle cpacsHandle, int fuselageIndex,
                                                       const char* filenamePtr, double deflection);
 
+
+/**
+* @brief Exports the boolean fused geometry of a fuselage meshed to STL format.
+*
+*
+* <b>Fortran syntax:</b>
+*
+* tigl_export_meshed_fuselage_stl_by_uid(integer cpacsHandle, character*n fuselageUID, character*n filenamePtr, integer returnCode, real deflection)
+*
+* @param[in]  cpacsHandle   Handle for the CPACS configuration
+* @param[in]  fuselageUID   UID of the Fuselage to export
+* @param[in]  filenamePtr   Pointer to an STL export file name
+* @param[in]  deflection    Maximum deflection of the triangulation from the real surface
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_NULL_POINTER if filenamePtr is a null pointer
+*   - TIGL_INDEX_ERROR if fuselageIndex is less or equal zero
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedFuselageSTLByUID(TiglCPACSConfigurationHandle cpacsHandle, const char* fuselageUID,
+                                                      const char* filenamePtr, double deflection);
 
 /**
 * @brief Exports the boolean fused geometry of the whole configuration meshed to STL format.
