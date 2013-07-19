@@ -1051,13 +1051,10 @@ void TIGLViewerDocument::exportAsStepWithMetaData()
 void TIGLViewerDocument::exportMeshedWingSTL()
 {
     QString     fileName;
-    QString        fileType;
-    QFileInfo    fileInfo;
-    TIGLViewerInputOutput writer;
 
-    /*QString wingUid = dlgGetWingSelection(); 
+    QString wingUid = dlgGetWingSelection();
     if(wingUid == "")
-        return;*/
+        return;
 
     writeToStatusBar(tr("Saving meshed Wing as STL file with TIGL..."));
 
@@ -1066,10 +1063,12 @@ void TIGLViewerDocument::exportMeshedWingSTL()
     if (!fileName.isEmpty())
     {
         QApplication::setOverrideCursor( Qt::WaitCursor );
-        TiglReturnCode err = tiglExportMeshedWingSTL(m_cpacsHandle, 1 /* wingUid.toStdString().c_str() */, qstringToCstring(fileName), 0.01);
+        tigl::CCPACSWing& wing = GetConfiguration().GetWing(qstringToCstring(wingUid));
+        double deflection = wing.GetWingspan()/2. * _settings.triangulationAccuracy();
+        TiglReturnCode err = tiglExportMeshedWingSTLByUID(m_cpacsHandle, qstringToCstring(wingUid), qstringToCstring(fileName), deflection);
         QApplication::restoreOverrideCursor();
         if(err != TIGL_SUCCESS) {
-            displayError(QString("Error in function <u>tiglExportMeshedWingSTL</u>. Error code: %1").arg(err), "TIGL Error");
+            displayError(QString("Error in function <u>tiglExportMeshedWingSTLByUID</u>. Error code: %1").arg(err), "TIGL Error");
         }
     }
 }
@@ -1079,13 +1078,10 @@ void TIGLViewerDocument::exportMeshedWingSTL()
 void TIGLViewerDocument::exportMeshedFuselageSTL()
 {
     QString     fileName;
-    QString        fileType;
-    QFileInfo    fileInfo;
-    TIGLViewerInputOutput writer;
 
-    /*QString fuselageUid = dlgGetFuselageSelection(); 
+    QString fuselageUid = dlgGetFuselageSelection(); 
     if(fuselageUid == "")
-        return;*/
+        return;
 
     writeToStatusBar(tr("Saving meshed Fuselage as STL file with TIGL..."));
 
@@ -1094,10 +1090,10 @@ void TIGLViewerDocument::exportMeshedFuselageSTL()
     if (!fileName.isEmpty())
     {
         QApplication::setOverrideCursor( Qt::WaitCursor );
-        TiglReturnCode err = tiglExportMeshedFuselageSTL(m_cpacsHandle, 1 /*fuselageUid*/, qstringToCstring(fileName), 0.01);
+        TiglReturnCode err = tiglExportMeshedFuselageSTLByUID(m_cpacsHandle, qstringToCstring(fuselageUid), qstringToCstring(fileName), 0.01);
         QApplication::restoreOverrideCursor();
         if(err != TIGL_SUCCESS) {
-            displayError(QString("Error in function <u>tiglExportMeshedFuselageSTL</u>. Error code: %1").arg(err), "TIGL Error");
+            displayError(QString("Error in function <u>tiglExportMeshedFuselageSTLByUID</u>. Error code: %1").arg(err), "TIGL Error");
         }
     }
 }
@@ -1106,9 +1102,6 @@ void TIGLViewerDocument::exportMeshedFuselageSTL()
 void TIGLViewerDocument::exportMeshedWingVTK()
 {
     QString     fileName;
-    QString        fileType;
-    QFileInfo    fileInfo;
-    TIGLViewerInputOutput writer;
 
     QString wingUid = dlgGetWingSelection();
     if(wingUid == "")

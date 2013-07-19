@@ -2955,6 +2955,51 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedWingSTL(TiglCPACSConfiguration
     }
 }
 
+TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedWingSTLByUID(TiglCPACSConfigurationHandle cpacsHandle, const char* wingUID,
+                                                          const char *filenamePtr, double deflection)
+{
+    if (filenamePtr == 0) {
+        LOG(ERROR) << "Error: Null pointer argument for filenamePtr"
+                   << "in function call to tiglExportMeshedWingSTLByUID." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+    if (wingUID == 0) {
+        LOG(ERROR) << "Error: Null pointer argument for wingUID"
+                   << "in function call to tiglExportMeshedWingSTLByUID." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+
+    try {
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+        tigl::CTiglExportStl exporter(config);
+        std::string filename = filenamePtr;
+        for(int iWing = 1; iWing <= config.GetWingCount(); ++iWing){
+            tigl::CCPACSWing& wing = config.GetWing(iWing);
+            if (wing.GetUID() == wingUID){
+                exporter.ExportMeshedWingSTL(iWing, filename, deflection);
+                return TIGL_SUCCESS;
+            }
+        }
+        
+        LOG(ERROR) << "Wing with UID " << wingUID << " not found"
+                   << "in function call to tiglExportMeshedWingSTLByUID." << std::endl;
+        return TIGL_UID_ERROR;
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglExportMeshedWingSTLByUID!" << std::endl;
+        return TIGL_ERROR;
+    }
+}
+
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedFuselageSTL(TiglCPACSConfigurationHandle cpacsHandle, int fuselageIndex,
                                                               const char* filenamePtr, double deflection)
@@ -2992,6 +3037,52 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedFuselageSTL(TiglCPACSConfigura
     }
 }
 
+
+TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedFuselageSTLByUID(TiglCPACSConfigurationHandle cpacsHandle, const char* fuselageUID,
+                                                              const char* filenamePtr, double deflection)
+{
+    if (filenamePtr == 0) {
+        LOG(ERROR) << "Null pointer argument for filenamePtr"
+                   << "in function call to tiglExportMeshedFuselageSTLByUID." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+    if (fuselageUID == 0) {
+        LOG(ERROR) << "Null pointer argument for fuselageUID"
+                   << "in function call to tiglExportMeshedFuselageSTLByUID." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+
+    try {
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+        tigl::CTiglExportStl exporter(config);
+        std::string filename = filenamePtr;
+        
+        for(int ifusel = 1; ifusel <= config.GetFuselageCount(); ++ifusel){
+            tigl::CCPACSFuselage& fuselage = config.GetFuselage(ifusel);
+            if (fuselage.GetUID() == fuselageUID){
+                exporter.ExportMeshedFuselageSTL(ifusel, filename, deflection);
+                return TIGL_SUCCESS;
+            }
+        }
+        
+        LOG(ERROR) << "Fuselage with UID " << fuselageUID << " not found"
+                   << "in function call to tiglExportMeshedFuselageSTLByUID." << std::endl;
+        return TIGL_UID_ERROR;
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglExportMeshedFuselageSTLByUID!" << std::endl;
+        return TIGL_ERROR;
+    }
+}
 
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedGeometrySTL(TiglCPACSConfigurationHandle cpacsHandle, const char *filenamePtr, double deflection)
