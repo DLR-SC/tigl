@@ -32,7 +32,7 @@
 #include "CCPACSWingConnection.h"
 #include "CTiglPoint.h"
 #include "CTiglAbstractSegment.h"
-#include "CTiglPointTranslator.h"
+#include "math/CTiglPointTranslator.h"
 
 #include "TopoDS_Shape.hxx"
 #include "TopoDS_Wire.hxx"
