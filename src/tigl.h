@@ -3453,6 +3453,12 @@ TIGL_COMMON_EXPORT const char * tiglGetErrorString(TiglReturnCode errorCode);
 /**
 * @brief Returns the length of the plane
 *
+* The calculation of the airplane lenght is realized as follows:
+*
+* All part of the configuration (currently all wing and fuselage segments) are put
+* into a bounding box. The length of the plane is returned as the length of the box
+* in x-direction.
+*
 * <b>Fortran syntax:</b>
 *
 * tigl_configuration_get_length(real length, integer return_code)
@@ -3465,7 +3471,16 @@ TIGL_COMMON_EXPORT const char * tiglGetErrorString(TiglReturnCode errorCode);
 TIGL_COMMON_EXPORT TiglReturnCode tiglConfigurationGetLength(TiglCPACSConfigurationHandle cpacsHandle, double * pLength);
 
 /**
-* @brief Returns the span of a wing
+* @brief Returns the span of a wing. 
+*
+* The calculation of the wing span is realized as follows:
+*
+* * If the wing is mirrored at a symmetry plane (like the main wing), the wing body and its mirrored counterpart are computed
+* and are put in a bounding box. The lenght of the box in a spcific space dimension is returned as the wing span depending
+* on the symmetry plane (y direction for x-z planes, z direction for x-y planes, x direction for y-z symmetry planes).
+*
+* * If not symmetry plane is defined (e.g. for the fins), the largest dimension of the bounding box around the wing body
+* is returned.
 *
 * <b>Fortran syntax:</b>
 *
