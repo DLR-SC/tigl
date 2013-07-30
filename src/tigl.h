@@ -3476,10 +3476,10 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglConfigurationGetLength(TiglCPACSConfigurat
 * The calculation of the wing span is realized as follows:
 *
 * * If the wing is mirrored at a symmetry plane (like the main wing), the wing body and its mirrored counterpart are computed
-* and are put in a bounding box. The lenght of the box in a spcific space dimension is returned as the wing span depending
+* and are put into a bounding box. The length of the box in a specific space dimension is returned as the wing span depending
 * on the symmetry plane (y direction for x-z planes, z direction for x-y planes, x direction for y-z symmetry planes).
 *
-* * If not symmetry plane is defined (e.g. for the fins), the largest dimension of the bounding box around the wing body
+* * If no symmetry plane is defined (e.g. for the fins), the largest dimension of the bounding box around the wing
 * is returned.
 *
 * <b>Fortran syntax:</b>

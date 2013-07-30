@@ -31,7 +31,9 @@ CCPACSMaterial::CCPACSMaterial()
 void CCPACSMaterial::Cleanup(){
     uid = "UID_NOTSET";
     thickness = -1.;
+    thicknessScaling = 1.;
     isvalid = false;
+    is_composite = false;
 }
 
 void CCPACSMaterial::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string &materialXPath){
@@ -43,14 +45,19 @@ void CCPACSMaterial::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string 
         return;
     }
     
+    // test whether composite or normal material
     std::string tempstring = materialXPath + "/materialUID";
     char * matUID = NULL;
     if (tixiGetTextElement(tixiHandle, tempstring.c_str(), &matUID) == SUCCESS){
         uid = matUID;
+        is_composite = false;
+    }
+    else if (tixiGetTextElement(tixiHandle, std::string(materialXPath + "/compositeUID").c_str(), &matUID) == SUCCESS){
+        uid = matUID;
+        is_composite = true;
     }
     else {
-        LOG(ERROR) << "Material UID not specified in " << materialXPath;
-        throw CTiglError("Material UID not specified in " + materialXPath, TIGL_ERROR);
+        throw CTiglError("Neither Material UID nor Composite UID  specified in " + materialXPath, TIGL_ERROR);
     }
     
     // get thickness (not mandatory)
@@ -59,8 +66,16 @@ void CCPACSMaterial::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string 
        if(tixiGetDoubleElement(tixiHandle, tempstring.c_str(), &thickness) != SUCCESS)
            LOG(ERROR) << "Invalid material thickness in " << materialXPath;
     }
-    else
-        LOG(INFO) << "Thickness of Material " << materialXPath << " not set.";
+    else if(tixiCheckElement(tixiHandle, std::string(materialXPath + "/thicknessScaling").c_str())== SUCCESS){
+       if(tixiGetDoubleElement(tixiHandle, std::string(materialXPath + "/thicknessScaling").c_str(), &thicknessScaling) != SUCCESS)
+           LOG(ERROR) << "Invalid composite thickness scaling in " << materialXPath;
+    }
+    else {
+        if(!isComposite())
+            LOG(INFO) << "Thickness of Material " << materialXPath << " not set.";
+        else
+            LOG(INFO) << "Thickness scaling of Composite Material " << materialXPath << " not set.";
+    }
     
     isvalid = true;
 }
@@ -68,6 +83,11 @@ void CCPACSMaterial::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string 
 void CCPACSMaterial::Invalidate()
 {
     isvalid = false;
+}
+
+bool CCPACSMaterial::isComposite() const
+{
+    return is_composite;
 }
 
 bool CCPACSMaterial::IsValid() const
