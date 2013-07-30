@@ -36,13 +36,17 @@ public:
     // returns true, if the material could be read from CPACS file
     bool IsValid() const;
     
+    bool isComposite() const;
+    
     const std::string& GetUID() const;
     void Cleanup();
 private:
     std::string uid;
     double thickness;
+    double thicknessScaling;
     
     bool isvalid;
+    bool is_composite; // whether the material is a composite
 };
 
 } // namespace tigl
