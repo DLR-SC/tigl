@@ -325,9 +325,9 @@ namespace tigl {
     }
 
     // Get the positioning transformation for a given section index
-    CTiglTransformation CCPACSFuselage::GetPositioningTransformation(std::string index)
+    CTiglTransformation CCPACSFuselage::GetPositioningTransformation(const std::string &sectionUID)
     {
-        return positionings.GetPositioningTransformation(index);
+        return positionings.GetPositioningTransformation(sectionUID);
     }
 
     // Gets a point on the given fuselage segment in dependence of a parameters eta and zeta with

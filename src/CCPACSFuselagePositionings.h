@@ -76,7 +76,7 @@ namespace tigl {
         void Update(void);
 
         // Update connected positionings by recursion
-        void UpdateNextPositioning(CCPACSFuselagePositioning& currPos);
+        void UpdateNextPositioning(int positioningIndex, int rec_depth);
 
     private:
         // Copy constructor

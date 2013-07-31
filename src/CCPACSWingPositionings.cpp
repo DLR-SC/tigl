@@ -86,9 +86,15 @@ namespace tigl {
     {
         Update();
         CCPACSTransformationMapIterator iter = transformations.find(sectionIndex);
-        if (iter == transformations.end())
-            throw CTiglError("Error: Invalid section index in CCPACSWingPositionings::GetPositioningTransformation", TIGL_NOT_FOUND);
-
+        
+        // check, if section has positioning definition, if not
+        // return Zero-Transformation
+        if (iter == transformations.end()){
+            CTiglTransformation zeroTrans;
+            zeroTrans.SetIdentity();
+            return zeroTrans;
+        }
+       
         return iter->second;
     }
 
@@ -97,52 +103,25 @@ namespace tigl {
     {
         if (!invalidated)
             return;
-//
-//        int i;
-//        int j;
-//        bool start_found = false;
-//        // TODO: find starting position! 
-//        for (i = 1; i <= GetPositioningCount(); i++)
-//        {
-//            CCPACSWingPositioning& currPos = GetPositioning(i);
-//            for (j = 1; j <= GetPositioningCount(); j++)
-//            {
-//                CCPACSWingPositioning& nextPos = GetPositioning(j);
-//                if (currPos.GetInnerSectionIndex() == nextPos.GetOuterSectionIndex()) {
-//                    break;
-//                }
-//            }
-//            if (j > GetPositioningCount())
-//            {
-//                // Found a starting positioning
-//                start_found = true;
-//                // Set transformation for inner section of first positioning to identity transformation
-//                transformations[currPos.GetInnerSectionIndex()] = CTiglTransformation();
-//                transformations[currPos.GetInnerSectionIndex()].SetIdentity();
-//                UpdateNextPositioning(currPos);
-//            }
-//        }
-//        if (!start_found)
-//        {
-//            throw CTiglError("Error: No starting positioning found in CCPACSWingPositionings::Update", TIGL_NOT_FOUND);
-//        }
-//        transformations.find(GetPositioning(1).GetInnerSectionIndex())->second = CTiglTransformation();
-//        transformations.find(GetPositioning(1).GetInnerSectionIndex())->second.SetIdentity();
-        UpdateNextPositioning(GetPositioning(1));
+        
+        // reset all position base points
+        for (int ipos = 1; ipos <= GetPositioningCount(); ++ipos){
+            GetPositioning(ipos).SetInnerPoint(CTiglPoint(0,0,0));
+        }
+        
+        for (int ipos = 1; ipos <= GetPositioningCount(); ++ipos)
+            UpdateNextPositioning(ipos, 0);
 
         invalidated = false;
     }
 
-    void CCPACSWingPositionings::UpdateNextPositioning(CCPACSWingPositioning& currPos)
+    void CCPACSWingPositionings::UpdateNextPositioning(int positioningIndex, int rec_depth)
     {
-        CCPACSTransformationMapIterator iter = transformations.find(currPos.GetOuterSectionIndex());
-        if (iter != transformations.end())
-        {
-            // The outer section transformation is already stored in the section transformation
-            // map, so we can (and must) return immediately. Otherwise we would run in an endless
-            // recursive loop.
-            return;
+        if (rec_depth > 1000) {
+            throw CTiglError("Recursive definition of wing positionings");
         }
+        
+        CCPACSWingPositioning& currPos = GetPositioning(positioningIndex);
 
         // Store the transformation of the outer section of the current positioning in a map.
         // Note: Internally we use 0-based indices, but in the CPACS file the indices are 1-based.
@@ -153,17 +132,10 @@ namespace tigl {
         for (int i = 1; i <= GetPositioningCount(); i++)
         {
             CCPACSWingPositioning& nextPos = GetPositioning(i);
-            if (currPos.GetOuterSectionIndex() == nextPos.GetInnerSectionIndex())
+            if (currPos.GetOuterSectionIndex() == nextPos.GetInnerSectionIndex() && i != positioningIndex)
             {
                 nextPos.SetInnerPoint(currPos.GetOuterPoint());
-
-                // update first positioning, when there is no "fromSectionUID", then
-                // set innerPoint to origin.
-                if ( (i==1) && (nextPos.GetInnerSectionIndex()=="") ) {
-                    const CTiglPoint pnt = CTiglPoint(0.0, 0.0, 0.0);
-                    nextPos.SetInnerPoint(pnt);
-                }
-                UpdateNextPositioning(nextPos);
+                UpdateNextPositioning(i, rec_depth + 1);
             }
         }
     }

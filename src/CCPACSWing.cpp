@@ -416,9 +416,9 @@ namespace tigl {
     }
 
     // Get the positioning transformation for a given section-uid
-    CTiglTransformation CCPACSWing::GetPositioningTransformation(std::string index)
+    CTiglTransformation CCPACSWing::GetPositioningTransformation(std::string sectionUID)
     {
-        return positionings.GetPositioningTransformation(index);
+        return positionings.GetPositioningTransformation(sectionUID);
     }
 
     // Gets the upper point in absolute (world) coordinates for a given segment, eta, xsi

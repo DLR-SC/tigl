@@ -28,6 +28,7 @@
 #include "CTiglError.h"
 #include "gp_Pnt.hxx"
 #include <iostream>
+#include <sstream>
 
 namespace tigl {
 
@@ -165,8 +166,11 @@ namespace tigl {
         char*         ptrOuterSection = NULL;
         tempString  = positioningXPath + "/toSectionUID";
         elementPath = const_cast<char*>(tempString.c_str());
-        if (tixiGetTextElement(tixiHandle, elementPath, &ptrOuterSection) != SUCCESS)
-            throw CTiglError("Error: Can't read element <toSectionUID/> in CCPACSFuselagePositioning:ReadCPACS", TIGL_XML_ERROR);
+        if (tixiGetTextElement(tixiHandle, elementPath, &ptrOuterSection) != SUCCESS){
+            std::stringstream stream;
+            stream << "Error: Can't read element" << tempString << "in CCPACSFuselagePositioning:ReadCPACS";
+            throw CTiglError(stream.str(), TIGL_XML_ERROR);
+        }
         endSection = ptrOuterSection;
 
         // Get subelement "fromSectionUID"
@@ -178,7 +182,7 @@ namespace tigl {
         {
             startSection = ptrInnerSection;
         } else {
-            startSection = endSection;
+            startSection = "";
         }
 
         Update();
