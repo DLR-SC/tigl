@@ -87,7 +87,7 @@ namespace tigl {
         CTiglTransformation GetFuselageTransformation(void);
 
         // Get the positioning transformation for a given section index
-        CTiglTransformation GetPositioningTransformation(std::string index);
+        CTiglTransformation GetPositioningTransformation(const std::string& sectionUID);
 
         // Gets a point on the given fuselage segment in dependence of a parameters eta and zeta with
         // 0.0 <= eta <= 1.0 and 0.0 <= zeta <= 1.0. For eta = 0.0 the point lies on the start

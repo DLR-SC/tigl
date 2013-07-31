@@ -94,7 +94,7 @@ namespace tigl {
         CTiglTransformation GetWingTransformation(void);
 
         // Get the positioning transformation for a given section uid
-        CTiglTransformation GetPositioningTransformation(std::string index);
+        CTiglTransformation GetPositioningTransformation(std::string sectionUID);
 
         // Gets the upper point in absolute (world) coordinates for a given segment, eta, xsi
         gp_Pnt GetUpperPoint(int segmentIndex, double eta, double xsi);
