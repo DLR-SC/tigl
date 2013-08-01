@@ -105,25 +105,50 @@ namespace tigl {
 
         invalidated = false;
         
+        // test if positionings are defined recursively
+        for (int ipos = 1; ipos <= GetPositioningCount(); ++ipos){
+            TestRecursiveDefinition(ipos,0);
+        }
+        
         // reset all position base points
         for (int ipos = 1; ipos <= GetPositioningCount(); ++ipos){
             GetPositioning(ipos).SetStartPoint(CTiglPoint(0,0,0));
         }
         
-        for (int ipos = 1; ipos <= GetPositioningCount(); ++ipos)
-            UpdateNextPositioning(ipos, 0);
+        // find out root nodes
+        std::vector<int> rootNodes;
+        for (int ipos = 1; ipos <= GetPositioningCount(); ++ipos){
+            CCPACSFuselagePositioning& actPos = GetPositioning(ipos);
+            if(actPos.GetStartSectionIndex() == "")
+                rootNodes.push_back(ipos);
+        }
+        
+        for (std::vector<int>::iterator it = rootNodes.begin(); it != rootNodes.end(); it++)
+            UpdateNextPositioning(*it);
+    }
+    
+    void CCPACSFuselagePositionings::TestRecursiveDefinition(int positioningIndex, int rec_depth) {
+        if (rec_depth > 1000) {
+            throw CTiglError("Recursive definition of fuselage positionings");
+        }
+        
+        CCPACSFuselagePositioning& currPos = GetPositioning(positioningIndex);
+        for (int i = 1; i <= GetPositioningCount(); i++)
+        {
+            CCPACSFuselagePositioning& nextPos = GetPositioning(i);
+            if (currPos.GetEndSectionIndex() == nextPos.GetStartSectionIndex() && positioningIndex != i)
+            {
+                TestRecursiveDefinition(i, rec_depth + 1);
+            }
+        }
     }
 
 
     // @todo: This code is only working, if the first positions is basis for everything else
     // and if its fromSectionUID is empty in CPACS. We should completely rewrite this code
-    void CCPACSFuselagePositionings::UpdateNextPositioning(int positioningIndex, int rec_depth)
+    void CCPACSFuselagePositionings::UpdateNextPositioning(int positioningIndex)
     {
         CCPACSFuselagePositioning& currPos = GetPositioning(positioningIndex);
-        
-        if (rec_depth > 1000) {
-            throw CTiglError("Recursive definition of fuselage positionings");
-        }
 
         // Store the transformation of the end section of the current positioning in a map.
         // Note: Internally we use 0-based indices, but in the CPACS file the indices are 1-based.
@@ -141,7 +166,7 @@ namespace tigl {
             if (currPos.GetEndSectionIndex() == nextPos.GetStartSectionIndex() && positioningIndex != i)
             {
                 nextPos.SetStartPoint(currPos.GetEndPoint());
-                UpdateNextPositioning(i, rec_depth + 1);
+                UpdateNextPositioning(i);
             }
         }
     }
