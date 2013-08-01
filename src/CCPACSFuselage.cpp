@@ -115,7 +115,6 @@ namespace tigl {
     // Update internal data
     void CCPACSFuselage::Update(void)
     {
-        Invalidate();
         BuildMatrix();
     }
 
@@ -320,7 +319,6 @@ namespace tigl {
     // Gets the fuselage transformation
     CTiglTransformation CCPACSFuselage::GetFuselageTransformation(void)
     {
-        Update();
         return transformation;
     }
 

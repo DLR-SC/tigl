@@ -76,7 +76,10 @@ namespace tigl {
         void Update(void);
 
         // Update connected positionings by recursion
-        void UpdateNextPositioning(int positioningIndex, int rec_depth);
+        void UpdateNextPositioning(int positioningIndex);
+        
+        // Checks, whether positionins are defined recursively (which is not allowed)
+        void TestRecursiveDefinition(int positioningIndex, int rec_depth);
 
     private:
         // Copy constructor
