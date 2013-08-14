@@ -2,12 +2,17 @@
 # author: Martin Siggel
 
 # set up QT
-find_package(Qt4)	
+
+OPTION(TIGL_VIEWER "Builds the TiGL Viewer program (requires OpenGL and Qt4)" ON)
 
 set(PROGNAME "TIGLViewer")
 
+
+if(TIGL_VIEWER)
+
+find_package(Qt4)
 #build only tiglviewer if qt was found
-if(QT4_FOUND)
+if(QT4_FOUND)	
 
 # required opencascade libraries
 set (TV_OCC_LIBS ${OCC_LIBS}
@@ -207,6 +212,10 @@ if (WIN32 OR APPLE)
   INSTALL_QT4_EXECUTABLE(${APPS} "" "${OCC_PLUGINS_FULL}" "${DIRS}" "" "" viewer)
 endif()
 
-else(QT4_FOUND)
+else (QT4_FOUND)
 message(STATUS "No qt4 was found. TIGLViewer will not be build!")
 endif(QT4_FOUND)
+
+endif(TIGL_VIEWER)
+
+
