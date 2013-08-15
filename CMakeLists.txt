@@ -56,6 +56,8 @@ OPTION(TIGL_USE_XCAF "Enables more export functionality (but requires XCAF, whic
 
 if(TIGL_USE_XCAF)
     set(OCC_LIBS ${OCC_LIBS} TKCAF TKXCAF TKLCAF TKPCAF TKXDEIGES TKXDESTEP TKStdSchema)
+else()
+    message("XCAF disabled. IGES and STEP export with CPACS metadata will not be avaible.")
 endif()
 
 find_package( OpenCASCADE REQUIRED COMPONENTS ${OCC_LIBS})
