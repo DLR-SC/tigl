@@ -83,19 +83,6 @@ int main(int argc, char* argv[])
     }
 
     /**
-    Set the wire algorithm to be used in interpolations. By default this is the
-    bspline interpolation algorithm. The algorithm is used globally for all
-    open CPACS configurations.
-    */
-    tiglReturn = tiglUseAlgorithm(TIGL_INTERPOLATE_BSPLINE_WIRE);
-    if (tiglReturn != TIGL_SUCCESS) 
-    {
-        tixiCloseDocument(tixiHandle);
-        fprintf(stdout, "\nError: tiglUseAlgorithm failed\n");
-        exit(1);
-    }
-
-    /**
     * Output some CPACS statistics.
     */
     fprintf(stdout, "\nFile %s:\n", filename);
