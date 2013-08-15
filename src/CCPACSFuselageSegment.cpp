@@ -71,11 +71,14 @@
 #include "BRepBuilderAPI_Transform.hxx"
 #include "ShapeAnalysis_Surface.hxx"
 #include "BRepLib_FindSurface.hxx"
+
+#ifdef TIGL_USE_XCAF
 #include "XCAFDoc_ShapeTool.hxx"
 #include "XCAFApp_Application.hxx"
 #include "XCAFDoc_DocumentTool.hxx"
 #include "TDataStd_Name.hxx"
 #include "TDataXtd_Shape.hxx"
+#endif
 
 
 #ifndef max
@@ -701,7 +704,7 @@ namespace tigl {
     }
 
 
-
+#ifdef TIGL_USE_XCAF
     // builds data structure for a TDocStd_Application
     // mostly used for export
     TDF_Label CCPACSFuselageSegment::ExportDataStructure(Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label)
@@ -734,5 +737,6 @@ namespace tigl {
 
         return subLabel;
     }
+#endif
 
 } // end namespace tigl

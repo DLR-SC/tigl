@@ -816,6 +816,7 @@ namespace tigl {
         return lowerShape;
     }
 
+#ifdef TIGL_USE_XCAF
     // builds data structure for a TDocStd_Application
     // mostly used for export
     TDF_Label CCPACSWingSegment::ExportDataStructure(Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label)
@@ -823,5 +824,6 @@ namespace tigl {
         TDF_Label subLabel;
         return subLabel;
     }
+#endif
 
 } // end namespace tigl

@@ -29,7 +29,10 @@
 
 #include "TopoDS_Shape.hxx"
 #include "STEPControl_Controller.hxx"
+#ifdef TIGL_USE_XCAF
 #include "STEPCAFControl_Writer.hxx"
+#endif
+#include "STEPControl_Writer.hxx"
 #include "Standard_CString.hxx"
 #include "Interface_Static.hxx"
 #include "APIHeaderSection_MakeHeader.hxx"
@@ -142,7 +145,7 @@ namespace tigl {
             throw CTiglError("Error: Export of shapes to STEP file failed in CTiglExportStep::ExportShapes", TIGL_ERROR);
     }
 
-
+#ifdef TIGL_USE_XCAF
     // Saves as step, with cpacs metadata information in it
     void CTiglExportStep::ExportStepWithCPACSMetadata(const std::string& filename)
     {
@@ -159,5 +162,6 @@ namespace tigl {
         writer.Transfer(hDoc, STEPControl_AsIs);
         writer.Write(filename.c_str());
     }
+#endif
 
 } // end namespace tigl

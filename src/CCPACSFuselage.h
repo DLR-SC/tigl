@@ -28,6 +28,7 @@
 
 #include <string>
 
+#include "tigl_config.h"
 #include "tixi.h"
 #include "CTiglTransformation.h"
 #include "CCPACSFuselageSections.h"
@@ -76,9 +77,11 @@ namespace tigl {
         // Get segment count
         int GetSegmentCount(void) const;
 
+#ifdef TIGL_USE_XCAF
         // builds data structure for a TDocStd_Application
         // mostly used for export
         TDF_Label ExportDataStructure(Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label);
+#endif
 
         // Returns the segment for a given index
         CTiglAbstractSegment & GetSegment(const int index);

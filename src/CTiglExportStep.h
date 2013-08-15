@@ -33,7 +33,9 @@
 #include "CCPACSFuselages.h"
 #include "CCPACSFuselageProfile.h"
 
+#ifdef TIGL_USE_XCAF
 #include "STEPCAFControl_Writer.hxx"
+#endif
 #include "TopTools_HSequenceOfShape.hxx"
 
 class CCPACSConfiguration;
@@ -59,8 +61,10 @@ namespace tigl {
         // Save a sequence of shapes in IGES Format
         void ExportShapes(const Handle(TopTools_HSequenceOfShape)& aHSequenceOfShape, const std::string& filename);
 
+#ifdef TIGL_USE_XCAF // this feature requires xcaf
         // Saves as IGES, with cpacs metadata information in it
         void ExportStepWithCPACSMetadata(const std::string& filename);
+#endif
 
 
     protected:

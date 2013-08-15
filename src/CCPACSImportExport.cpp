@@ -32,6 +32,7 @@
 #include <sstream>
 #include <exception>
 
+#ifdef TIGL_USE_XCAF
 #include "Interface_Static.hxx"
 #include "TCollection_ExtendedString.hxx"
 #include "XCAFDoc_ShapeTool.hxx"
@@ -41,6 +42,7 @@
 #include "IGESControl_Controller.hxx"
 #include "IGESCAFControl_Writer.hxx"
 #include "TDataStd_Name.hxx"
+#endif
 
 namespace tigl {
 
@@ -55,7 +57,7 @@ namespace tigl {
     {
     }
 
-
+#ifdef TIGL_USE_XCAF
     Handle_TDocStd_Document CCPACSImportExport::buildXDEStructure()
     {
 
@@ -80,6 +82,7 @@ namespace tigl {
 
         return hDoc;
     }
+#endif
 
 
 

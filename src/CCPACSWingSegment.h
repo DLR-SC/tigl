@@ -28,6 +28,7 @@
 
 #include <string>
 
+#include "tigl_config.h"
 #include "tixi.h"
 #include "CCPACSWingConnection.h"
 #include "CTiglPoint.h"
@@ -191,9 +192,11 @@ namespace tigl {
 
         TiglGeometricComponentType GetComponentType(){ return TIGL_COMPONENT_WINGSEGMENT | TIGL_COMPONENT_SEGMENT | TIGL_COMPONENT_LOGICAL; }
 
+#ifdef TIGL_USE_XCAF
         // builds data structure for a TDocStd_Application
         // mostly used for export
         TDF_Label ExportDataStructure(Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label);
+#endif
     protected:
         // Cleanup routine
         void Cleanup(void);
