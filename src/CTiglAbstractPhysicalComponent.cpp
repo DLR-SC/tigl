@@ -26,11 +26,11 @@
 #include "CTiglAbstractPhysicalComponent.h"
 #include "CTiglError.h"
 
-#include "TDocStd_Document.hxx"
 #include "TCollection_ExtendedString.hxx"
 #include "TCollection_HAsciiString.hxx"
 
 #ifdef TIGL_USE_XCAF
+#include "TDocStd_Document.hxx"
 #include "XCAFDoc_ShapeTool.hxx"
 #include "XCAFApp_Application.hxx"
 #include "XCAFDoc_DocumentTool.hxx"
