@@ -42,20 +42,20 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR})
 
 # required opencascade libraries
 set (OCC_LIBS 
-	FWOSPlugin
-	TKBO TKBool	TKBRep  
-        TKernel  TKG2d TKCAF
-	TKG3d TKGeomAlgo TKGeomBase  TKIGES
-	TKMath TKMesh TKOffset TKPCAF
-        TKShHealing TKLCAF TKTopAlgo
-	TKSTL TKTopAlgo  TKStdSchema
+        FWOSPlugin
+        TKBO TKBool TKBRep
+        TKernel TKG2d
+        TKG3d TKGeomAlgo TKGeomBase  TKIGES
+        TKMath TKMesh TKOffset
+        TKShHealing  TKTopAlgo
+        TKSTL TKTopAlgo
         TKXSBase TKStdLSchema  TKSTEPBase  TKSTEP
 )
 
 OPTION(TIGL_USE_XCAF "Enables more export functionality (but requires XCAF, which itself requires OCCT Visualization)" ON)
 
 if(TIGL_USE_XCAF)
-    set(OCC_LIBS ${OCC_LIBS} TKXCAF TKXDEIGES TKXDESTEP)
+    set(OCC_LIBS ${OCC_LIBS} TKCAF TKXCAF TKLCAF TKPCAF TKXDEIGES TKXDESTEP TKStdSchema)
 endif()
 
 find_package( OpenCASCADE REQUIRED COMPONENTS ${OCC_LIBS})
@@ -69,9 +69,8 @@ CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/src/tigl_config.h.in ${CMAKE_CURRENT_
 
 # code coverage analysis
 IF (CMAKE_BUILD_TYPE STREQUAL "Debug")
-	OPTION(TIGL_ENABLE_COVERAGE "Enable GCov coverage analysis (defines a 'coverage' target and enforces static build of tigl)" ON)
+        OPTION(TIGL_ENABLE_COVERAGE "Enable GCov coverage analysis (defines a 'coverage' target and enforces static build of tigl)" ON)
         IF(TIGL_ENABLE_COVERAGE)
-		
                 MESSAGE(STATUS "Coverage enabled")
                 INCLUDE(CodeCoverage)
                 SETUP_TARGET_FOR_COVERAGE(coverage ${PROJECT_NAME}-unittests coverageReport)
