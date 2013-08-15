@@ -29,11 +29,15 @@
 #include "TDocStd_Document.hxx"
 #include "TCollection_ExtendedString.hxx"
 #include "TCollection_HAsciiString.hxx"
+
+#ifdef TIGL_USE_XCAF
 #include "XCAFDoc_ShapeTool.hxx"
 #include "XCAFApp_Application.hxx"
 #include "XCAFDoc_DocumentTool.hxx"
 #include "TDataStd_Name.hxx"
 #include "TDataXtd_Shape.hxx"
+#endif
+
 
 namespace tigl {
 
@@ -105,6 +109,7 @@ namespace tigl {
     }
 
 
+#ifdef TIGL_USE_XCAF
     TDF_Label CTiglAbstractPhysicalComponent::ExportDataStructure(Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label)
     {
         // This component
@@ -120,6 +125,7 @@ namespace tigl {
 
         return aLabel;
     }
+#endif
 
 } // namespace tigl
 

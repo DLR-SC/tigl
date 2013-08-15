@@ -23,6 +23,8 @@
 #cmakedefine OCC_BG
 #cmakedefine OCC_NEW_3DAPI
 
+#cmakedefine TIGL_USE_XCAF
+
 #cmakedefine GLOG_FOUND
 
 #endif // CONFIG_H

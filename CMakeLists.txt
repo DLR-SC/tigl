@@ -44,13 +44,19 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR})
 set (OCC_LIBS 
 	FWOSPlugin
 	TKBO TKBool	TKBRep  
-	TKernel  TKG2d TKXDEIGES TKCAF
+        TKernel  TKG2d TKCAF
 	TKG3d TKGeomAlgo TKGeomBase  TKIGES
 	TKMath TKMesh TKOffset TKPCAF
-	TKShHealing TKLCAF TKTopAlgo TKXCAF
+        TKShHealing TKLCAF TKTopAlgo
 	TKSTL TKTopAlgo  TKStdSchema
-	TKXSBase TKStdLSchema  TKSTEPBase TKXDESTEP TKSTEP
+        TKXSBase TKStdLSchema  TKSTEPBase  TKSTEP
 )
+
+OPTION(TIGL_USE_XCAF "Enables more export functionality (but requires XCAF, which itself requires OCCT Visualization)" ON)
+
+if(TIGL_USE_XCAF)
+    set(OCC_LIBS ${OCC_LIBS} TKXCAF TKXDEIGES TKXDESTEP)
+endif()
 
 find_package( OpenCASCADE REQUIRED COMPONENTS ${OCC_LIBS})
 find_package( TIXI 2.0.4 REQUIRED)
@@ -76,6 +82,7 @@ IF (CMAKE_BUILD_TYPE STREQUAL "Debug")
 ENDIF()
 
 # visual leak detector, useful for debugging under windows
+if(WIN32)
 find_package( VLD QUIET )
 if(VLD_FOUND)
 	set(TIGL_USE_VLD False CACHE BOOL "Enable Visual Leak Detector.")
@@ -83,7 +90,8 @@ if(VLD_FOUND)
 		add_definitions(-DHAVE_VLD=1)
 		include_directories(${VLD_INCLUDE_DIRS})
 	endif(TIGL_USE_VLD)
-endif()
+endif(VLD_FOUND)
+endif(WIN32)
 
 
 add_subdirectory(src)

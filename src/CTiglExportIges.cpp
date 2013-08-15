@@ -163,6 +163,7 @@ namespace tigl {
     }
 
 
+#ifdef TIGL_USE_XCAF
     // Saves as iges, with cpacs metadata information in it
     void CTiglExportIges::ExportIgesWithCPACSMetadata(const std::string& filename)
        {
@@ -182,5 +183,6 @@ namespace tigl {
            writer.Transfer(hDoc);
            writer.Write(filename.c_str());
        }
+#endif
 
 } // end namespace tigl

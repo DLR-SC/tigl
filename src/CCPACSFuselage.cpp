@@ -25,6 +25,8 @@
 
 #include <iostream>
 
+#include "tigl_config.h"
+
 #include "CCPACSFuselage.h"
 #include "CCPACSFuselageSegment.h"
 #include "CCPACSConfiguration.h"
@@ -43,11 +45,14 @@
 #include "BRepBuilderAPI_MakeWire.hxx"
 #include "GC_MakeSegment.hxx"
 #include "BRepExtrema_DistShapeShape.hxx"
+
+#ifdef TIGL_USE_XCAF
 #include "XCAFDoc_ShapeTool.hxx"
 #include "XCAFApp_Application.hxx"
 #include "XCAFDoc_DocumentTool.hxx"
 #include "TDataStd_Name.hxx"
 #include "TDataXtd_Shape.hxx"
+#endif
 
 #define _USE_MATH_DEFINES
 #include <math.h>
@@ -230,6 +235,7 @@ namespace tigl {
         return segments.GetSegmentCount();
     }
 
+#ifdef TIGL_USE_XCAF
     TDF_Label CCPACSFuselage::ExportDataStructure(Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label)
     {
         TDF_Label fuselageLabel = CTiglAbstractPhysicalComponent::ExportDataStructure(myAssembly, label);
@@ -258,6 +264,7 @@ namespace tigl {
 
         return fuselageLabel;
     }
+#endif
 
     // Returns the segment for a given index
     CTiglAbstractSegment & CCPACSFuselage::GetSegment(const int index)

@@ -28,6 +28,7 @@
 
 #include "tigl.h"
 #include "tigl_version.h"
+#include "tigl_config.h"
 #include "CTiglError.h"
 #include "CTiglIntersectionCalculation.h"
 #include "CCPACSConfiguration.h"
@@ -2828,6 +2829,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportFusedWingFuselageIGES(TiglCPACSConfi
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglExportStructuredIGES(TiglCPACSConfigurationHandle cpacsHandle, const char *filenamePtr)
 {
+#ifdef TIGL_USE_XCAF
     if (filenamePtr == 0) {
         LOG(ERROR) << "Error: Null pointer argument for filenamePtr";
         LOG(ERROR) << "in function call to tiglExportStructuredIGES." << std::endl;
@@ -2854,6 +2856,10 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportStructuredIGES(TiglCPACSConfiguratio
         LOG(ERROR) << "Caught an exception in tiglExportStructuredIGES!" << std::endl;
         return TIGL_ERROR;
     }
+#else
+    LOG(ERROR) << "In order to use tiglExportStructuredIGES, TiGL has to be compiled with the XCAF framework." << std::endl;
+    return TIGL_ERROR;
+#endif
 }
 
 
@@ -2890,6 +2896,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportSTEP(TiglCPACSConfigurationHandle cp
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglExportStructuredSTEP(TiglCPACSConfigurationHandle cpacsHandle, const char *filenamePtr)
 {
+#ifdef TIGL_USE_XCAF
     if (filenamePtr == 0) {
         LOG(ERROR) << "Error: Null pointer argument for filenamePtr";
         LOG(ERROR) << "in function call to tiglExportStructuredSTEP." << std::endl;
@@ -2916,6 +2923,10 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportStructuredSTEP(TiglCPACSConfiguratio
         LOG(ERROR) << "Caught an exception in tiglExportStructuredSTEP!" << std::endl;
         return TIGL_ERROR;
     }
+#else
+    LOG(ERROR) << "In order to use tiglExportStructuredSTEP, TiGL has to be compiled with the XCAF framework." << std::endl;
+    return TIGL_ERROR;
+#endif
 }
 
 

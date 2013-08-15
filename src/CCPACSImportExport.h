@@ -27,13 +27,16 @@
 #ifndef CCPACSIMPORTEXPORT_H
 #define CCPACSIMPORTEXPORT_H
 
+#include "tigl_config.h"
 #include "tixi.h"
 #include "CTiglError.h"
 #include "CCPACSConfiguration.h"
 #include <string>
 
 #include "TopoDS_Shape.hxx"
+#ifdef TIGL_USE_XCAF
 #include "Handle_TDocStd_Document.hxx"
+#endif
 
 
 namespace tigl {
@@ -49,7 +52,9 @@ namespace tigl {
         // Virtual Destructor
         virtual ~CCPACSImportExport(void);
 
+#ifdef TIGL_USE_XCAF
         Handle_TDocStd_Document buildXDEStructure();
+#endif
 
 
     protected:
