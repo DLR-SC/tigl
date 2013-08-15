@@ -96,6 +96,7 @@ endif(WIN32)
 add_subdirectory(src)
 add_subdirectory(TIGLViewer)
 add_subdirectory(bindings)
+add_subdirectory(examples/TIGLDemo)
 
 
 #create gtests, override gtest standard setting
