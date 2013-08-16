@@ -76,6 +76,7 @@ namespace tigl {
 
     private:
         CCPACSConfiguration&          myConfig;       /**< TIGL configuration object */
+        void AddFacesOfShape(const TopoDS_Shape &shape, class STEPControl_Writer &writer) const;
     };
 
 } // end namespace tigl
