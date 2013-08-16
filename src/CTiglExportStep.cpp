@@ -37,7 +37,9 @@
 #include "Interface_Static.hxx"
 #include "APIHeaderSection_MakeHeader.hxx"
 #include "STEPControl_StepModelType.hxx"
+#include "TopExp_Explorer.hxx"
 
+#define STEP_WRITEMODE STEPControl_AsIs
 
 namespace tigl {
 
@@ -52,6 +54,16 @@ namespace tigl {
     {
     }
     
+    void CTiglExportStep::AddFacesOfShape(const TopoDS_Shape& shape, STEPControl_Writer& writer) const {
+        TopExp_Explorer faceExplorer;
+        for (faceExplorer.Init(shape, TopAbs_FACE); faceExplorer.More(); faceExplorer.Next()) {
+            const TopoDS_Face& currentFace = TopoDS::Face(faceExplorer.Current());
+            int ret = writer.Transfer(currentFace, STEP_WRITEMODE);
+            if (ret > IFSelect_RetDone)
+                throw CTiglError("Error: Export to STEP file failed in CTiglExportStep. Could not translate face to step entity,", TIGL_ERROR);
+        }
+    }
+
     
     // Exports the whole configuration as STEP file
     // All wing- and fuselage segments are exported as single bodys
@@ -74,8 +86,8 @@ namespace tigl {
             {
                 CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(i);
                 TopoDS_Shape loft = segment.GetLoft();
+                AddFacesOfShape(loft, stepWriter);
 
-                stepWriter.Transfer(loft, STEPControl_AsIs);
             }
         }
 
@@ -92,7 +104,7 @@ namespace tigl {
                 // Transform loft by fuselage transformation => absolute world coordinates
                 loft = fuselage.GetFuselageTransformation().Transform(loft);
 
-                stepWriter.Transfer(loft, STEPControl_AsIs);
+                AddFacesOfShape(loft, stepWriter);
             }
         }
 
@@ -115,7 +127,7 @@ namespace tigl {
            return;
         }
 
-        stepWriter.Transfer(fusedAirplane, STEPControl_AsIs);
+        AddFacesOfShape(fusedAirplane, stepWriter);
 
         // Write STEP file
         if (stepWriter.Write(const_cast<char*>(filename.c_str())) != Standard_True)
@@ -138,7 +150,7 @@ namespace tigl {
 
         for (Standard_Integer i=1;i<=aHSequenceOfShape->Length();i++)
         {
-            stepWriter.Transfer(aHSequenceOfShape->Value(i), STEPControl_AsIs);
+            AddFacesOfShape(aHSequenceOfShape->Value(i), stepWriter);
         }
 
         if (stepWriter.Write(const_cast<char*>(filename.c_str())) != Standard_True)
@@ -159,7 +171,7 @@ namespace tigl {
         
         STEPControl_Controller::Init();
         STEPCAFControl_Writer writer;
-        writer.Transfer(hDoc, STEPControl_AsIs);
+        writer.Transfer(hDoc, STEP_WRITEMODE);
         writer.Write(filename.c_str());
     }
 #endif
