@@ -96,7 +96,7 @@ namespace tigl {
     // Exports a whole geometry, boolean fused and meshed, as VTK file
     void CTiglExportVtk::ExportMeshedGeometryVTK(const std::string& filename, const double deflection)
     {
-        tigl::CTiglTriangularizer trian(myConfig, deflection, SEGMENT_INFO);
+        tigl::CTiglTriangularizer trian(myConfig, true, deflection, SEGMENT_INFO);
         trian.writeVTK(filename.c_str());
     }
 
@@ -137,7 +137,14 @@ namespace tigl {
     // Exports a whole geometry, boolean fused and meshed, as VTK file
     void CTiglExportVtk::ExportMeshedGeometryVTKSimple(const std::string& filename, const double deflection)
     {
-        tigl::CTiglTriangularizer trian(myConfig, deflection, NO_INFO);
+        tigl::CTiglTriangularizer trian(myConfig, true, deflection, NO_INFO);
+        trian.writeVTK(filename.c_str());
+    }
+
+    // Exports a whole geometry, not fused and meshed, as VTK file
+    void CTiglExportVtk::ExportMeshedGeometryVTKNoFuse(const std::string& filename, const double deflection)
+    {
+        tigl::CTiglTriangularizer trian(myConfig, false, deflection, NO_INFO);
         trian.writeVTK(filename.c_str());
     }
 
