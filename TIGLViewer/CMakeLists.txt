@@ -15,13 +15,12 @@ find_package(Qt4)
 if(QT4_FOUND)	
 
 # required opencascade libraries
-set (TV_OCC_LIBS ${OCC_LIBS}
-	PTKernel TKOffset TKOpenGl
-	TKPShape TKSTEP
-	TKService TKShapeSchema  
-	TKV3d TKVRML
+set (TV_OCC_LIBS 
+	TKOpenGl 
+	TKVRML TKShapeSchema TKPShape TKCDF PTKernel ${OCC_VISU_LIBS} ${OCC_LIBS}
 )
 
+set(OpenCASCADE_LIBRARIES "")
 find_package( OpenCASCADE REQUIRED COMPONENTS ${TV_OCC_LIBS})
 
 
