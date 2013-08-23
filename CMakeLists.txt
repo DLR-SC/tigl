@@ -41,21 +41,25 @@ endif(TIGL_NIGHTLY)
 set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR})
 
 # required opencascade libraries
+# please don't change the order of libraries as this can cause linking problems
 set (OCC_LIBS 
-        FWOSPlugin
-        TKBO TKBool TKBRep
-        TKernel TKG2d
-        TKG3d TKGeomAlgo TKGeomBase  TKIGES
-        TKMath TKMesh TKOffset
-        TKShHealing  TKTopAlgo
-        TKSTL TKTopAlgo
-        TKXSBase TKStdLSchema  TKSTEPBase  TKSTEP
+        TKIGES TKSTL TKSTEP 
+        TKSTEPAttr TKOffset TKMesh 
+        TKSTEP209 TKFillet TKSTEPBase 
+        TKBool TKXSBase TKShHealing 
+        TKBO TKPrim TKTopAlgo 
+        TKGeomAlgo TKBRep TKGeomBase
+        TKG3d TKG2d TKMath TKernel
+)
+
+set (OCC_VISU_LIBS
+	TKV3d TKMesh TKHLR TKService
 )
 
 OPTION(TIGL_USE_XCAF "Enables more export functionality (but requires XCAF, which itself requires OCCT Visualization)" ON)
 
 if(TIGL_USE_XCAF)
-    set(OCC_LIBS ${OCC_LIBS} TKCAF TKXCAF TKLCAF TKPCAF TKXDEIGES TKXDESTEP TKStdSchema)
+    set(OCC_LIBS TKXDEIGES TKXDESTEP TKPCAF TKXCAF TKCAF ${OCC_VISU_LIBS} TKPShape PTKernel TKLCAF TKCDF   TKStdSchema ${OCC_LIBS})
 else()
     message("XCAF disabled. IGES and STEP export with CPACS metadata will not be avaible.")
 endif()
