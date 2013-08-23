@@ -96,11 +96,45 @@ CTiglTriangularizer::CTiglTriangularizer(CTiglAbstractPhysicalComponent& comp, d
     triangularizeComponent(comp, false, comp.GetLoft(), deflection, mode);
 }
 
-CTiglTriangularizer::CTiglTriangularizer(CCPACSConfiguration &config, double deflection, ComponentTraingMode mode) {
-    CTiglAbstractPhysicalComponent* pRoot =  config.GetUIDManager().GetRootComponent();
-    TopoDS_Shape& planeShape = config.GetFusedAirplane();
-    useMultipleObjects(false);
-    triangularizeComponent(*pRoot, true, planeShape, deflection, mode);
+CTiglTriangularizer::CTiglTriangularizer(CCPACSConfiguration &config, bool fuseShapes, double deflection, ComponentTraingMode mode) {
+    if(fuseShapes){
+        CTiglAbstractPhysicalComponent* pRoot =  config.GetUIDManager().GetRootComponent();
+        TopoDS_Shape& planeShape = config.GetFusedAirplane();
+        useMultipleObjects(false);
+        triangularizeComponent(*pRoot, true, planeShape, deflection, mode);
+    }
+    else {
+        useMultipleObjects(false);
+        for(int iWing = 1; iWing <= config.GetWingCount(); ++iWing){
+            CCPACSWing& wing = config.GetWing(iWing);
+
+            TopoDS_Shape& wshape = wing.GetLoft();
+            BRepMesh::Mesh(wshape,deflection);
+            triangularizeShape(wshape);
+
+            if(wing.GetSymmetryAxis() == TIGL_NO_SYMMETRY)
+                continue;
+
+            TopoDS_Shape wshape_m = wing.GetMirroredLoft();
+            BRepMesh::Mesh(wshape_m,deflection);
+            triangularizeShape(wshape_m);
+        }
+
+        for(int iFuselage = 1; iFuselage <= config.GetFuselageCount(); ++iFuselage){
+            CCPACSFuselage& fuselage = config.GetFuselage(iFuselage);
+
+            TopoDS_Shape& wshape = fuselage.GetLoft();
+            BRepMesh::Mesh(wshape,deflection);
+            triangularizeShape(wshape);
+
+            if(fuselage.GetSymmetryAxis() == TIGL_NO_SYMMETRY)
+                continue;
+
+            TopoDS_Shape wshape_m = fuselage.GetMirroredLoft();
+            BRepMesh::Mesh(wshape_m,deflection);
+            triangularizeShape(wshape_m);
+        }
+    }
 }
 
 bool isValidCoord(double c){

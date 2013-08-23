@@ -41,7 +41,7 @@ public:
     CTiglTriangularizer();
     CTiglTriangularizer(TopoDS_Shape&, double deflection, bool useMultipleObjects = false);
     CTiglTriangularizer(class CTiglAbstractPhysicalComponent &comp, double deflection, ComponentTraingMode mode);
-    CTiglTriangularizer(class CCPACSConfiguration& config, double deflection, ComponentTraingMode mode);
+    CTiglTriangularizer(class CCPACSConfiguration& config, bool fuseShapes, double deflection, ComponentTraingMode mode);
     
     void useMultipleObjects(bool);
     

@@ -454,9 +454,7 @@ void TIGLViewerDocument::drawWingProfiles()
 
     tigl::CCPACSWingProfile& profile = GetConfiguration().GetWingProfile(wingProfile.toStdString());
     TopoDS_Wire wire        = profile.GetWire(true);
-    Handle(AIS_Shape) shape = new AIS_Shape(wire);
-    shape->SetColor(Quantity_NOC_WHITE);
-    myAISContext->Display(shape, Standard_True);
+    displayShape(wire,Quantity_NOC_WHITE);
 
     // Leading/trailing edges
     gp_Pnt lePoint = profile.GetLEPoint();
@@ -471,7 +469,6 @@ void TIGLViewerDocument::drawWingProfiles()
     text.str("");
 
     gp_Lin gpline = gce_MakeLin(lePoint, tePoint);
-    // Handle(Geom_Line) geomLine = new Geom_Line(gpline); // unlimited line, which can be used in intersection calcs
 
     // Lets make a limited line for display reasons
     Standard_Real length = lePoint.Distance(tePoint);
@@ -479,9 +476,7 @@ void TIGLViewerDocument::drawWingProfiles()
     {
         Handle(Geom_TrimmedCurve) trimmedLine = GC_MakeSegment(gpline, -length * 0.2, length * 1.2);
         TopoDS_Edge le_te_edge = BRepBuilderAPI_MakeEdge(trimmedLine);
-        Handle(AIS_Shape) lineShape = new AIS_Shape(le_te_edge);
-        lineShape->SetColor(Quantity_NOC_GOLD /*Quantity_NOC_WHITE*/);
-        myAISContext->Display(lineShape, Standard_True);
+        displayShape(le_te_edge, Quantity_NOC_GOLD);
     }
 
     if(profile.GetCoordinateContainer().size() < 15) {
@@ -1252,6 +1247,24 @@ void TIGLViewerDocument::exportMeshedConfigVTK()
     }
 }
 
+void TIGLViewerDocument::exportMeshedConfigVTKNoFuse()
+{
+    QString     fileName;
+    fileName = QFileDialog::getSaveFileName(parent, tr("Save as..."), myLastFolder, tr("Export VTK(*.vtp)"));
+
+    if (!fileName.isEmpty())
+    {
+        QApplication::setOverrideCursor( Qt::WaitCursor );
+        writeToStatusBar("Writing meshed vtk file");
+        tigl::CTiglExportVtk exporter(GetConfiguration());
+
+        double deflection = GetConfiguration().GetAirplaneLenth() * _settings.triangulationAccuracy();
+        exporter.ExportMeshedGeometryVTKNoFuse(fileName.toStdString(), deflection);
+
+        writeToStatusBar("");
+        QApplication::restoreOverrideCursor();
+    }
+}
 
 void TIGLViewerDocument::exportFuselageCollada()
 {
@@ -1266,7 +1279,8 @@ void TIGLViewerDocument::exportFuselageCollada()
     if (!fileName.isEmpty())
     {
         QApplication::setOverrideCursor( Qt::WaitCursor );
-        TiglReturnCode err = tiglExportFuselageColladaByUID(m_cpacsHandle, qstringToCstring(fuselageUid), qstringToCstring(fileName), 0.1);
+        double deflection = GetConfiguration().GetAirplaneLenth() * _settings.triangulationAccuracy();
+        TiglReturnCode err = tiglExportFuselageColladaByUID(m_cpacsHandle, qstringToCstring(fuselageUid), qstringToCstring(fileName), deflection);
         QApplication::restoreOverrideCursor();
         if(err != TIGL_SUCCESS) {
             displayError(QString("Error in function <u>tiglExportFuselageColladaByUID</u>. Error code: %1").arg(err), "TIGL Error");
