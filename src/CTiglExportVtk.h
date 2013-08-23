@@ -78,6 +78,8 @@ namespace tigl {
         // No additional information are computed.
         void ExportMeshedGeometryVTKSimple(const std::string& filename, const double deflection = 0.1);
 
+         void ExportMeshedGeometryVTKNoFuse(const std::string& filename, const double deflection = 0.1);
+
 
     private:
         class CCPACSConfiguration & myConfig;       /**< TIGL configuration object */

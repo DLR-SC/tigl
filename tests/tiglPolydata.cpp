@@ -430,7 +430,7 @@ TEST_F(TriangularizeShape, exportVTK_FullPlane_long)
     tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
     tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
     
-    tigl::CTiglTriangularizer trian(config, 0.001, SEGMENT_INFO);
+    tigl::CTiglTriangularizer trian(config, true, 0.001, SEGMENT_INFO);
     
     std::cout << "Number of Polygons/Vertices: " << trian.currentObject().getNPolygons() << "/" << trian.currentObject().getNVertices()<<std::endl;
     ASSERT_NO_THROW(trian.writeVTK(vtkWingFilename));
