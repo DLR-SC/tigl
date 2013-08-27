@@ -174,7 +174,7 @@ TEST(TiglFuselageGetPointBugs, getPointAngle)
 */
 TEST(TiglFuselageGetPointBugs, getPointAngleTranslated)
 {
-    const char* filename = "TestData/CPACS_20_D150.xml";
+    const char* filename = "TestData/D150_v201.xml";
 
     TiglCPACSConfigurationHandle tiglHandle = -1;
     TixiDocumentHandle tixiHandle = -1;
