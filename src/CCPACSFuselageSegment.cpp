@@ -656,10 +656,22 @@ namespace tigl {
         // get eta-y-coordinate
         gp_Pnt tmpPoint = GetPoint(eta, 0.0);
 
+        // get outer wire
+        TopoDS_Shape intersectionWire = getWireOnLoft(eta);
+
+        // compute approximate cross section of fuselage wire
+        Bnd_Box boundingBox;
+        BRepBndLib::Add(intersectionWire, boundingBox);
+        Standard_Real xmin, xmax, ymin, ymax, zmin, zmax;
+        boundingBox.Get(xmin, ymin, zmin, xmax, ymax, zmax);
+        double xw = xmax - xmin;
+        double yw = ymax - ymin;
+        double zw = zmax - zmin;
+
+        double cross_section = max(xw, max(yw, zw));
+
         // This defines a length of a line intersecting with the fuselage
-        // it should be always larger than the fuselage's cross section
-        // However: A too large value makes the OCCT intersection algorithm unstable
-        double length = 50.;
+        double length = cross_section * 2.;
         double angle = alpha/180. * M_PI;
         // build a line
         gp_Pnt initPoint(tmpPoint.X(), y_cs, z_cs);
@@ -668,8 +680,7 @@ namespace tigl {
         BRepBuilderAPI_MakeEdge edge1(initPoint, endPoint);
         TopoDS_Shape lineShape = edge1.Shape();
 
-        // get outer wire and calculate intersection point
-        TopoDS_Shape intersectionWire = getWireOnLoft(eta);
+        // calculate intersection point
         BRepExtrema_DistShapeShape distSS;
         distSS.LoadS1(intersectionWire);
         distSS.LoadS2(lineShape);
