@@ -24,6 +24,7 @@
 */
 #include <iostream>
 
+#include "CTiglLogger.h"
 #include "CCPACSFuselageSegment.h"
 #include "CCPACSFuselage.h"
 #include "CCPACSFuselageProfile.h"
@@ -683,11 +684,22 @@ namespace tigl {
         distSS.Perform();
 
         int numberOfIntersections = distSS.NbSolution();
-        if(numberOfIntersections != 1) {
-            return gp_Pnt(0.0, 0.0, 0.0);
+        if(numberOfIntersections > 1) {
+            gp_Pnt p1 = distSS.PointOnShape1(1);
+            for (int iSol = 1; iSol <= distSS.NbSolution(); ++iSol){
+                if (p1.Distance(distSS.PointOnShape1(1)) > 1e-7){
+                    LOG(WARNING) << "Multiple intersection points found in CCPACSFuselageSegment::GetPointAngle. Only the first is returned." << std::endl;
+                    break;
+                }
+            }
+            return p1;
         }
-
-        return distSS.PointOnShape1(1);
+        else if(numberOfIntersections <= 0) {
+            LOG(ERROR) << "No solution found in CCPACSFuselageSegment::GetPointAngle. Return (0,0,0) instead." << std::endl;
+            return gp_Pnt(0., 0., 0.);
+        }
+        else
+            return distSS.PointOnShape1(1);
     }
 
 
