@@ -653,28 +653,20 @@ namespace tigl {
     // but in most cases x_cs and z_cs will be zero get the get center line of the profile.
     gp_Pnt CCPACSFuselageSegment::GetPointAngle(double eta, double alpha, double y_cs, double z_cs)
     {
-        BRep_Builder builder;
-        TopoDS_Compound compound;
-        builder.MakeCompound(compound);
-
         // get eta-y-coordinate
         gp_Pnt tmpPoint = GetPoint(eta, 0.0);
 
+        // This defines a length of a line intersecting with the fuselage
+        // it should be always larger than the fuselage's cross section
+        // However: A too large value makes the OCCT intersection algorithm unstable
+        double length = 50.;
+        double angle = alpha/180. * M_PI;
         // build a line
         gp_Pnt initPoint(tmpPoint.X(), y_cs, z_cs);
-        gp_Pnt endPoint(tmpPoint.X(), y_cs,  z_cs + 500.0);
+        gp_Pnt endPoint (tmpPoint.X(), y_cs - length*sin(angle),  z_cs + length*cos(angle));
+
         BRepBuilderAPI_MakeEdge edge1(initPoint, endPoint);
-        builder.Add(compound, edge1);
-        TopoDS_Shape lineShape(compound);
-
-        // define the axis of symmetry
-        gp_Ax1 axis = gp_Ax1(gp_Pnt(tmpPoint.X(), y_cs, z_cs), gp_Dir(1,0,0)); 
-
-        // now rotate line
-        gp_Trsf myTrsf;
-        myTrsf.SetRotation(axis, alpha * M_PI / 180.);
-        BRepBuilderAPI_Transform xform(lineShape, myTrsf);
-        lineShape = xform.Shape();
+        TopoDS_Shape lineShape = edge1.Shape();
 
         // get outer wire and calculate intersection point
         TopoDS_Shape intersectionWire = getWireOnLoft(eta);
