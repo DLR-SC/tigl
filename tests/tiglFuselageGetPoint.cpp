@@ -148,3 +148,23 @@ TEST_F(TiglFuselageGetPoint, success)
     ASSERT_NEAR( 1.5, x, accuracy);
 }
 
+/**
+* Testing a bug in getPointAtAngle.
+*/
+TEST(TiglFuselageGetPointBugs, getPointAngleAtAngle)
+{
+    const char* filename = "TestData/CPACS_21_D150.xml";
+
+    TiglCPACSConfigurationHandle tiglHandle = -1;
+    TixiDocumentHandle tixiHandle = -1;
+
+    ReturnCode tixiRet = tixiOpenDocument(filename, &tixiHandle);
+    ASSERT_TRUE (tixiRet == SUCCESS);
+    TiglReturnCode tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "", &tiglHandle);
+    ASSERT_TRUE(tiglRet == TIGL_SUCCESS);
+
+    double x, y, z;
+
+    ASSERT_EQ(TIGL_SUCCESS, tiglFuselageGetPointAngle(tiglHandle, 1, 24, 0.5, 0.0, &x, &y, &z));
+}
+

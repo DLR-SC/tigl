@@ -25,6 +25,7 @@
 
 #include <iostream>
 #include <exception>
+#include <cstdlib>
 
 #include "tigl.h"
 #include "tigl_version.h"
@@ -46,6 +47,18 @@
 #include "gp_Pnt.hxx"
 #include "TopoDS_Shape.hxx"
 
+/*****************************************************************************/
+/* Private functions.                                                 */
+/*****************************************************************************/
+
+static char * version = NULL;
+
+void tiglCleanup(void){
+    if(version){
+        delete[] version;
+    }
+    version = NULL;
+}
 
 /*****************************************************************************/
 /* Public visible functions.                                                 */
@@ -53,6 +66,8 @@
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglOpenCPACSConfiguration(TixiDocumentHandle tixiHandle, const char* configurationUID_cstr, TiglCPACSConfigurationHandle* cpacsHandlePtr)
 {
+    atexit(tiglCleanup);
+
     // Initialize logger
     tigl::CTiglLogger::GetLogger();
     LOG(INFO) << "TIGL-Logger initialized.";
@@ -239,7 +254,6 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglIsCPACSConfigurationHandleValid(TiglCPACSC
 */
 TIGL_COMMON_EXPORT char* tiglGetVersion()
 {
-    static char * version = NULL;
     if(!version){
         version = new char[512];
         if(std::string(TIGL_REVISION).size() > 0){
