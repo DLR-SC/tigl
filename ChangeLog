@@ -1,8 +1,25 @@
-Version 2.0.x
+Version 2.0.6
 ---------------
 TiGL:
 - Improved loading times
 - Improved speed of intersection calculations by caching and reusing results
+- Switched to faces instead of solids in STEP Export 
+- Switched to const char * API
+- Prepared TiGL for Android (currently working but still experimental)
+
+-New API functions:
+	- tiglExportMeshedWingSTLByUID and tiglExportMeshedFuselageSTLByUID for STL export (Hello 3D printing!)
+	- tiglWingComponentSegmentGetSegmentIntersection
+
+-Fixes:
+	- Fixed tiglFuselageGetPointAngle and tiglFuselageGetPointAngleTranslated giving wrong results (issues 89 and 92)
+	- TiGL required positionings for all fuselage segments, this is now fixed (issue 57)
+	- Fixed error when opening CPACS files with composite materials
+	- Fixed wrong units in iges export (issue 78)
+	- Silenced Error messages that weren't errors
+	- Fixed different errors in tiglWingComponentSegmentPointGetSegmentEtaXsi
+	- Fixed duplicate log files
+	
 
 Version 2.0.5
 ---------------
