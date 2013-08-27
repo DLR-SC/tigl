@@ -231,6 +231,12 @@ if [[ $PACK_TYPE == rpm ]]; then
 		bin_file_list+=($file)
 	fi
 
+	#google-glog	
+	if [[ $file == libglog*.rpm ]] && [[ $file != *debuginfo* ]]
+	then
+		bin_file_list+=($file)
+	fi
+
 	#TIXI
 	if [[ $file == libTIXI2*.rpm ]]  && [[ $file != *debuginfo* ]]
 	then
@@ -252,6 +258,12 @@ elif [[ $PACK_TYPE == deb ]]; then
   for file in $filelist; do
 	#opencascade	
 	if [[ $file == liboce-*.deb ]] && [[ $file != liboce*dev* ]]
+	then
+		bin_file_list+=($file)
+	fi
+
+	#google-glog	
+	if [[ $file == libgoogle-glog*.deb ]] && [[ $file != libgoogle-glog*dev* ]]
 	then
 		bin_file_list+=($file)
 	fi
