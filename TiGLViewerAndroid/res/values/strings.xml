@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="hello">Hello World, TabSample!</string>
+    <string name="app_name">Tigl Viewer</string>
+
+	<string-array name = "camera_list" >
+	    <item >Prespective View</item>
+	    <item >Top View</item>
+	    <item >Side View</item>
+	    <item >Front View</item>
+	</string-array>
+
+</resources>
