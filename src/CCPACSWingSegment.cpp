@@ -135,95 +135,83 @@ namespace {
 
 namespace tigl {
 
-	// Constructor
-	CCPACSWingSegment::CCPACSWingSegment(CCPACSWing* aWing, int aSegmentIndex)
+    // Constructor
+    CCPACSWingSegment::CCPACSWingSegment(CCPACSWing* aWing, int aSegmentIndex)
         : CTiglAbstractSegment(aSegmentIndex)
         , innerConnection(this)
-		, outerConnection(this)
-		, wing(aWing)
+        , outerConnection(this)
+        , wing(aWing)
         , surfacesAreValid(false)
-	{
-		Cleanup();
-	}
+    {
+        Cleanup();
+    }
 
-	// Destructor
-	CCPACSWingSegment::~CCPACSWingSegment(void)
-	{
-		Cleanup();
-	}
+    // Destructor
+    CCPACSWingSegment::~CCPACSWingSegment(void)
+    {
+        Cleanup();
+    }
 
-	// Invalidates internal state
-	void CCPACSWingSegment::Invalidate(void)
-	{
+    // Invalidates internal state
+    void CCPACSWingSegment::Invalidate(void)
+    {
         CTiglAbstractSegment::Invalidate();
-		surfacesAreValid = false;
-	}
+        surfacesAreValid = false;
+    }
 
-	// Cleanup routine
-	void CCPACSWingSegment::Cleanup(void)
-	{
-		name = "";
+    // Cleanup routine
+    void CCPACSWingSegment::Cleanup(void)
+    {
+        name = "";
         upperShape.Nullify();
         lowerShape.Nullify();
         surfacesAreValid = false;
         CTiglAbstractSegment::Cleanup();
-	}
+    }
 
-	// Update internal segment data
-	void CCPACSWingSegment::Update(void)
-	{
-		if (!invalidated)
-			return;
+    // Update internal segment data
+    void CCPACSWingSegment::Update(void)
+    {
+        Invalidate();
+    }
 
-		BuildLoft();
-		invalidated = false;
-	}
+    // Read CPACS segment elements
+    void CCPACSWingSegment::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& segmentXPath)
+    {
+        Cleanup();
 
-	// Read CPACS segment elements
-	void CCPACSWingSegment::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& segmentXPath)
-	{
-		Cleanup();
+        char*       elementPath;
+        std::string tempString;
 
-		char*       elementPath;
-		std::string tempString;
-
-		// Get subelement "name"
-		char* ptrName = NULL;
-		tempString    = segmentXPath + "/name";
-		elementPath   = const_cast<char*>(tempString.c_str());
-		if (tixiGetTextElement(tixiHandle, elementPath, &ptrName) == SUCCESS)
-		    name          = ptrName;
+        // Get subelement "name"
+        char* ptrName = NULL;
+        tempString    = segmentXPath + "/name";
+        elementPath   = const_cast<char*>(tempString.c_str());
+        if (tixiGetTextElement(tixiHandle, elementPath, &ptrName) == SUCCESS)
+            name          = ptrName;
 
         // Get attribute "uid"
         char* ptrUID = NULL;
         tempString   = "uID";
-        elementPath  = const_cast<char*>(tempString.c_str());
         if (tixiGetTextAttribute(tixiHandle, const_cast<char*>(segmentXPath.c_str()), const_cast<char*>(tempString.c_str()), &ptrUID) == SUCCESS)
             SetUID(ptrUID);
 
-		// Inner connection
-		tempString = segmentXPath + "/fromElementUID";
-		innerConnection.ReadCPACS(tixiHandle, tempString);
+        // Inner connection
+        tempString = segmentXPath + "/fromElementUID";
+        innerConnection.ReadCPACS(tixiHandle, tempString);
 
-		// Inner connection
-		tempString = segmentXPath + "/toElementUID";
-		outerConnection.ReadCPACS(tixiHandle, tempString);
+        // Inner connection
+        tempString = segmentXPath + "/toElementUID";
+        outerConnection.ReadCPACS(tixiHandle, tempString);
 
-		Update();
-	}
+        Update();
+    }
 
-	// Returns the wing this segment belongs to
-	CCPACSWing& CCPACSWingSegment::GetWing(void) const
-	{
-		return *wing;
-	}
-
-	// Gets the loft between the two segment sections
-    TopoDS_Shape& CCPACSWingSegment::GetLoft(void)
-	{
-		Update();
-		return loft;
-	}
+    // Returns the wing this segment belongs to
+    CCPACSWing& CCPACSWingSegment::GetWing(void) const
+    {
+        return *wing;
+    }
 
     // helper function to get the inner transformed chord line wire
     TopoDS_Wire CCPACSWingSegment::GetInnerWire(void)
@@ -253,48 +241,50 @@ namespace tigl {
         return BRepBuilderAPI_MakeFace(wire).Face();
     }
 
-	// Builds the loft between the two segment sections
-	void CCPACSWingSegment::BuildLoft(void)
-	{
+    // Builds the loft between the two segment sections
+    TopoDS_Shape CCPACSWingSegment::BuildLoft(void)
+    {
         TopoDS_Wire innerWire = GetInnerWire();
         TopoDS_Wire outerWire = GetOuterWire();
 
-		// Build loft
+        // Build loft
         //BRepOffsetAPI_ThruSections generator(Standard_False, Standard_False, Precision::Confusion());
         BRepOffsetAPI_ThruSections generator(/* is solid (else shell) */ Standard_True, /* ruled (else smoothed out) */ Standard_False, Precision::Confusion());
-		generator.AddWire(innerWire);
-		generator.AddWire(outerWire);
+        generator.AddWire(innerWire);
+        generator.AddWire(outerWire);
         generator.CheckCompatibility(/* check (defaults to true) */ Standard_False);
-		generator.Build();
-		loft = generator.Shape();
+        generator.Build();
+        TopoDS_Shape loft = generator.Shape();
 
-		Handle(ShapeFix_Shape) sfs = new ShapeFix_Shape;
-		sfs->Init ( loft );
-		sfs->Perform();
-		loft = sfs->Shape();
+        Handle(ShapeFix_Shape) sfs = new ShapeFix_Shape;
+        sfs->Init ( loft );
+        sfs->Perform();
+        loft = sfs->Shape();
 
         // Calculate volume
         GProp_GProps System;
         BRepGProp::VolumeProperties(loft, System);
         myVolume = System.Mass();
 
-		// Calculate surface area
+        // Calculate surface area
         GProp_GProps AreaSystem;
-		BRepGProp::SurfaceProperties(loft, AreaSystem);
+        BRepGProp::SurfaceProperties(loft, AreaSystem);
         mySurfaceArea = AreaSystem.Mass();
-	}
+        
+        return loft;
+    }
 
-	// Gets the upper point in relative wing coordinates for a given eta and xsi
-	gp_Pnt CCPACSWingSegment::GetUpperPoint(double eta, double xsi)
-	{
+    // Gets the upper point in relative wing coordinates for a given eta and xsi
+    gp_Pnt CCPACSWingSegment::GetUpperPoint(double eta, double xsi)
+    {
         return GetPoint(eta, xsi, true);
-	}
+    }
 
     // Gets the lower point in relative wing coordinates for a given eta and xsi
     gp_Pnt CCPACSWingSegment::GetLowerPoint(double eta, double xsi)
-	{
+    {
         return GetPoint(eta, xsi, false);
-	}
+    }
 
     // Returns the inner section UID of this segment
     std::string CCPACSWingSegment::GetInnerSectionUID(void)
@@ -344,17 +334,17 @@ namespace tigl {
         return outerConnection.GetSectionElementIndex();
     }
 
-	// Returns the start section element index of this segment
-	CCPACSWingConnection& CCPACSWingSegment::GetInnerConnection(void)
-	{
-		return( innerConnection );
-	}
+    // Returns the start section element index of this segment
+    CCPACSWingConnection& CCPACSWingSegment::GetInnerConnection(void)
+    {
+        return( innerConnection );
+    }
 
-	// Returns the end section element index of this segment
-	CCPACSWingConnection& CCPACSWingSegment::GetOuterConnection(void)
-	{
-		return( outerConnection );
-	}
+    // Returns the end section element index of this segment
+    CCPACSWingConnection& CCPACSWingSegment::GetOuterConnection(void)
+    {
+        return( outerConnection );
+    }
 
     // Returns the volume of this segment
     double CCPACSWingSegment::GetVolume(void)
@@ -363,7 +353,7 @@ namespace tigl {
         return( myVolume );
     }
 
-	// Returns the surface area of this segment
+    // Returns the surface area of this segment
     double CCPACSWingSegment::GetSurfaceArea(void)
     {
         Update();
@@ -467,8 +457,8 @@ namespace tigl {
             throw CTiglError("Error: Parameter eta not in the range 0.0 <= eta <= 1.0 in CCPACSWingSegment::GetPoint", TIGL_ERROR);
         }
 
-		CCPACSWingProfile& innerProfile = innerConnection.GetProfile();
-		CCPACSWingProfile& outerProfile = outerConnection.GetProfile();
+        CCPACSWingProfile& innerProfile = innerConnection.GetProfile();
+        CCPACSWingProfile& outerProfile = outerConnection.GetProfile();
 
         // Compute points on wing profiles for the given xsi
         gp_Pnt innerProfilePoint;
@@ -495,7 +485,59 @@ namespace tigl {
         gp_Pnt profilePoint;
         profileLine->D0(param, profilePoint);
 
-		return profilePoint;
+        return profilePoint;
+    }
+    
+    gp_Pnt CCPACSWingSegment::GetPointAngles(double eta, double xsi, double xangle, double yangle, double zangle, bool fromUpper)
+    {
+        if (eta < 0.0 || eta > 1.0)
+        {
+            throw CTiglError("Error: Parameter eta not in the range 0.0 <= eta <= 1.0 in CCPACSWingSegment::GetPoint", TIGL_ERROR);
+        }
+
+        if(!surfacesAreValid) {
+            MakeSurfaces();
+        }
+        
+        CTiglPoint tiglPoint, tiglNormal;
+        cordSurface.translate(eta, xsi, &tiglPoint);
+        cordSurface.getNormal(eta,xsi, &tiglNormal);
+        
+        // calc vector
+        CTiglTransformation trafo;
+        trafo.AddRotationX(xangle);
+        trafo.AddRotationY(yangle);
+        trafo.AddRotationZ(zangle);
+        
+        gp_Vec normalVec(trafo.Transform(tiglNormal.Get_gp_Pnt()).XYZ());
+        normalVec.Normalize();
+        
+        gp_Pnt start(tiglPoint.Get_gp_Pnt().XYZ() + 1e3*normalVec.XYZ());
+        gp_Pnt stop (tiglPoint.Get_gp_Pnt().XYZ() - 1e3*normalVec.XYZ());
+        
+        BRepBuilderAPI_MakeWire wireBuilder;
+        TopoDS_Edge normalEdge = BRepBuilderAPI_MakeEdge(start, stop);
+        wireBuilder.Add(normalEdge);
+        TopoDS_Wire normalWire = wireBuilder.Wire();
+        
+        BRepExtrema_DistShapeShape extrema;
+        extrema.LoadS1(normalWire);
+        if(fromUpper)
+            extrema.LoadS2(wing->GetUpperShape());
+        else 
+            extrema.LoadS2(wing->GetLowerShape());
+
+        extrema.Perform();
+        if (!extrema.IsDone())
+            throw CTiglError("Could not calculate intersection of line with wing shell in CCPACSWingSegment::GetPointAngles", TIGL_NOT_FOUND);
+        
+        gp_Pnt p1 = extrema.PointOnShape1(1);
+        gp_Pnt p2 = extrema.PointOnShape2(1);
+        
+        if (p1.Distance(p2) > 1e-7)
+            throw CTiglError("Could not calculate intersection of line with wing shell in CCPACSWingSegment::GetPointAngles", TIGL_NOT_FOUND);
+        
+        return p2;
     }
 
     gp_Pnt CCPACSWingSegment::GetChordPoint(double eta, double xsi)
@@ -505,8 +547,8 @@ namespace tigl {
             throw CTiglError("Error: Parameter eta not in the range 0.0 <= eta <= 1.0 in CCPACSWingSegment::GetPoint", TIGL_ERROR);
         }
 
-		CCPACSWingProfile& innerProfile = innerConnection.GetProfile();
-		CCPACSWingProfile& outerProfile = outerConnection.GetProfile();
+        CCPACSWingProfile& innerProfile = innerConnection.GetProfile();
+        CCPACSWingProfile& outerProfile = outerConnection.GetProfile();
 
         // Compute points on wing profiles for the given xsi
         gp_Pnt innerProfilePoint = innerProfile.GetChordPoint(xsi);
@@ -524,7 +566,7 @@ namespace tigl {
         gp_Pnt profilePoint;
         profileLine->D0(param, profilePoint);
 
-		return profilePoint;
+        return profilePoint;
     }
 
     // Returns the inner profile points as read from TIXI. The points are already transformed.
@@ -532,17 +574,17 @@ namespace tigl {
     {
         CCPACSWingProfile& innerProfile = innerConnection.GetProfile();
         std::vector<CTiglPoint*> points = innerProfile.GetCoordinateContainer();
-		std::vector<CTiglPoint*> pointsTransformed;
+        std::vector<CTiglPoint*> pointsTransformed;
         for (std::vector<tigl::CTiglPoint*>::size_type i = 0; i < points.size(); i++) {
-			
-			gp_Pnt pnt = points[i]->Get_gp_Pnt();
+            
+            gp_Pnt pnt = points[i]->Get_gp_Pnt();
 
             pnt = innerConnection.GetSectionElementTransformation().Transform(pnt);
             pnt = innerConnection.GetSectionTransformation().Transform(pnt);
             pnt = innerConnection.GetPositioningTransformation().Transform(pnt);
 
-			CTiglPoint *tiglPoint = new CTiglPoint(pnt.X(), pnt.Y(), pnt.Z());
-			pointsTransformed.push_back(tiglPoint);
+            CTiglPoint *tiglPoint = new CTiglPoint(pnt.X(), pnt.Y(), pnt.Z());
+            pointsTransformed.push_back(tiglPoint);
 
         }
         return pointsTransformed;
@@ -554,59 +596,58 @@ namespace tigl {
     {
         CCPACSWingProfile& outerProfile = outerConnection.GetProfile();
         std::vector<CTiglPoint*> points = outerProfile.GetCoordinateContainer();
-		std::vector<CTiglPoint*> pointsTransformed;
+        std::vector<CTiglPoint*> pointsTransformed;
         for (std::vector<tigl::CTiglPoint*>::size_type i = 0; i < points.size(); i++) {
-			
-			gp_Pnt pnt = points[i]->Get_gp_Pnt();
+            
+            gp_Pnt pnt = points[i]->Get_gp_Pnt();
 
             pnt = outerConnection.GetSectionElementTransformation().Transform(pnt);
             pnt = outerConnection.GetSectionTransformation().Transform(pnt);
             pnt = outerConnection.GetPositioningTransformation().Transform(pnt);
 
-			CTiglPoint *tiglPoint = new CTiglPoint(pnt.X(), pnt.Y(), pnt.Z());
-			pointsTransformed.push_back(tiglPoint);
+            CTiglPoint *tiglPoint = new CTiglPoint(pnt.X(), pnt.Y(), pnt.Z());
+            pointsTransformed.push_back(tiglPoint);
 
         }
         return pointsTransformed;
     }
 
 
-	double CCPACSWingSegment::GetEta(gp_Pnt pnt, double xsi)
+    // TODO: remove this function if favour of Standard GetEta
+    double CCPACSWingSegment::GetEta(gp_Pnt pnt, double xsi)
     {
-		// Build virtual eta line.
-		// eta is in x = 0
-		gp_Pnt pnt0 = GetChordPoint(0, xsi);
-		pnt0 = wing->GetWingTransformation().Transform(pnt0);		
-		pnt0 = gp_Pnt(0, pnt0.Y(), pnt0.Z());
+        // Build virtual eta line.
+        // eta is in x = 0
+        gp_Pnt pnt0 = GetChordPoint(0, xsi);
+        pnt0 = gp_Pnt(0, pnt0.Y(), pnt0.Z());
 
-		gp_Pnt pnt1 = GetChordPoint(1, xsi);
-		pnt1 = wing->GetWingTransformation().Transform(pnt1);
-		pnt1 = gp_Pnt(0, pnt1.Y(), pnt1.Z());
+        gp_Pnt pnt1 = GetChordPoint(1, xsi);
+        pnt1 = gp_Pnt(0, pnt1.Y(), pnt1.Z());
 
-		BRepBuilderAPI_MakeWire etaWireBuilder;
-		TopoDS_Edge etaEdge = BRepBuilderAPI_MakeEdge(pnt0, pnt1);
-		etaWireBuilder.Add(etaEdge);
-		TopoDS_Wire etaLine = etaWireBuilder.Wire();
-		
-		// intersection line
-		Handle(Geom_TrimmedCurve) profileLine = GC_MakeSegment(pnt, gp_Pnt(-1e9, 0, 0));
-		BRepBuilderAPI_MakeEdge ME(profileLine);     
-		TopoDS_Shape aCrv(ME.Edge());
-		
-		// now find intersection point
-		BRepExtrema_DistShapeShape extrema(etaLine, aCrv);
-		extrema.Perform();
-		gp_Pnt intersectionPoint = extrema.PointOnShape1(1);
+        BRepBuilderAPI_MakeWire etaWireBuilder;
+        TopoDS_Edge etaEdge = BRepBuilderAPI_MakeEdge(pnt0, pnt1);
+        etaWireBuilder.Add(etaEdge);
+        TopoDS_Wire etaLine = etaWireBuilder.Wire();
+        
+        // intersection line
+        Handle(Geom_TrimmedCurve) profileLine = GC_MakeSegment(pnt, gp_Pnt(-1e9, 0, 0));
+        BRepBuilderAPI_MakeEdge ME(profileLine);     
+        TopoDS_Shape aCrv(ME.Edge());
+        
+        // now find intersection point
+        BRepExtrema_DistShapeShape extrema(etaLine, aCrv);
+        extrema.Perform();
+        gp_Pnt intersectionPoint = extrema.PointOnShape1(1);
 
-		//length of the eta line
-		Standard_Real len1 = pnt0.Distance(pnt1);
-		// now the small line, a fraction of the original eta line
-		Standard_Real len2 = pnt0.Distance(intersectionPoint);
+        //length of the eta line
+        Standard_Real len1 = pnt0.Distance(pnt1);
+        // now the small line, a fraction of the original eta line
+        Standard_Real len2 = pnt0.Distance(intersectionPoint);
 
-		assert(len1 != 0.);
+        assert(len1 != 0.);
 
-		return len2/len1;
-	}
+        return len2/len1;
+    }
 
 
     // Returns eta as parametric distance from a given point on the surface
@@ -637,9 +678,9 @@ namespace tigl {
     // Returns if the given point is ont the Top of the wing or on the lower side.
     bool CCPACSWingSegment::GetIsOnTop(gp_Pnt pnt)
     {
-		double tolerance = 0.03; // 3cm
+        double tolerance = 0.03; // 3cm
 
-		MakeSurfaces();
+        MakeSurfaces();
 
         GeomAPI_ProjectPointOnSurf Proj(pnt, upperSurface);
         if(Proj.NbPoints() > 0 && Proj.LowerDistance() < tolerance)
@@ -722,66 +763,67 @@ namespace tigl {
 
 
 
-	// Returns the reference area of this wing.
-	// Here, we always take the reference wing area to be that of the trapezoidal portion of the wing projected into the centerline.
-	// The leading and trailing edge chord extensions are not included in this definition and for some airplanes, such as Boeing's Blended
-	// Wing Body, the difference can be almost a factor of two between the "real" wing area and the "trap area". Some companies use reference
-	// wing areas that include portions of the chord extensions, and in some studies, even tail area is included as part of the reference area.
-	// For simplicity, we use the trapezoidal area here.
-	double CCPACSWingSegment::GetReferenceArea()
-	{
-		double refArea = 0.0;
-		MakeSurfaces();
+    // Returns the reference area of this wing.
+    // Here, we always take the reference wing area to be that of the trapezoidal portion of the wing projected into the centerline.
+    // The leading and trailing edge chord extensions are not included in this definition and for some airplanes, such as Boeing's Blended
+    // Wing Body, the difference can be almost a factor of two between the "real" wing area and the "trap area". Some companies use reference
+    // wing areas that include portions of the chord extensions, and in some studies, even tail area is included as part of the reference area.
+    // For simplicity, we use the trapezoidal area here.
+    double CCPACSWingSegment::GetReferenceArea()
+    {
+        MakeSurfaces();
 
-		// Calculate surface area
-		GProp_GProps System;
-		BRepGProp::SurfaceProperties(upperShape, System);
-		refArea = System.Mass();
-		return refArea;
-	}
+        // Calculate surface area
+        GProp_GProps System;
+        BRepGProp::SurfaceProperties(upperShape, System);
+        double refArea = System.Mass();
+        return refArea;
+    }
 
-	// Returns the lower Surface of this Segment
-	Handle(Geom_Surface) CCPACSWingSegment::GetLowerSurface()
-	{
-		if(!surfacesAreValid) {
-			MakeSurfaces();
-		}
-		return lowerSurface;
-	}
+    // Returns the lower Surface of this Segment
+    Handle(Geom_Surface) CCPACSWingSegment::GetLowerSurface()
+    {
+        if(!surfacesAreValid) {
+            MakeSurfaces();
+        }
+        return lowerSurface;
+    }
 
-	// Returns the upper Surface of this Segment
-	Handle(Geom_Surface) CCPACSWingSegment::GetUpperSurface()
-	{
-		if(!surfacesAreValid) {
-			MakeSurfaces();
-		}
-		return upperSurface;
-	}
-	
-	// Returns the upper wing shape of this Segment
-	TopoDS_Shape& CCPACSWingSegment::GetUpperShape()
-	{
-		if(!surfacesAreValid) {
-			MakeSurfaces();
-		}
-		return upperShape;
-	}
+    // Returns the upper Surface of this Segment
+    Handle(Geom_Surface) CCPACSWingSegment::GetUpperSurface()
+    {
+        if(!surfacesAreValid) {
+            MakeSurfaces();
+        }
+        return upperSurface;
+    }
+    
+    // Returns the upper wing shape of this Segment
+    TopoDS_Shape& CCPACSWingSegment::GetUpperShape()
+    {
+        if(!surfacesAreValid) {
+            MakeSurfaces();
+        }
+        return upperShape;
+    }
 
-	// Returns the lower wing shape of this Segment
-	TopoDS_Shape& CCPACSWingSegment::GetLowerShape()
-	{
-		if(!surfacesAreValid) {
-			MakeSurfaces();
-		}
-		return lowerShape;
-	}
+    // Returns the lower wing shape of this Segment
+    TopoDS_Shape& CCPACSWingSegment::GetLowerShape()
+    {
+        if(!surfacesAreValid) {
+            MakeSurfaces();
+        }
+        return lowerShape;
+    }
 
+#ifdef TIGL_USE_XCAF
     // builds data structure for a TDocStd_Application
     // mostly used for export
-	TDF_Label CCPACSWingSegment::ExportDataStructure(Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label)
+    TDF_Label CCPACSWingSegment::ExportDataStructure(Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label)
     {
         TDF_Label subLabel;
         return subLabel;
     }
+#endif
 
 } // end namespace tigl

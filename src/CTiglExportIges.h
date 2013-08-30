@@ -26,6 +26,7 @@
 #ifndef CTIGLEXPORTIGES_H
 #define CTIGLEXPORTIGES_H
 
+#include "tigl_config.h"
 #include "TopTools_HSequenceOfShape.hxx"
 #include "CTiglUIDManager.h"
 #include "CCPACSHeader.h"
@@ -38,16 +39,16 @@ class CCPACSConfiguration;
 
 namespace tigl {
 
-	class CTiglExportIges
-	{
+    class CTiglExportIges
+    {
 
-	public:
-		// Constructor
-		CTiglExportIges(CCPACSConfiguration& config);
+    public:
+        // Constructor
+        CTiglExportIges(CCPACSConfiguration& config);
 
-		// Virtual Destructor
-		virtual ~CTiglExportIges(void);
-		
+        // Virtual Destructor
+        virtual ~CTiglExportIges(void);
+        
         // Exports the whole configuration as IGES file
         void ExportIGES(const std::string& filename) const;
 
@@ -57,20 +58,21 @@ namespace tigl {
         // Save a sequence of shapes in IGES Format
         void ExportShapes(const Handle(TopTools_HSequenceOfShape)& aHSequenceOfShape, const std::string& filename);
 
+#ifdef TIGL_USE_XCAF
         // Saves as IGES, with cpacs metadata information in it
         void ExportIgesWithCPACSMetadata(const std::string& filename);
-
-
+#endif
     protected:
         
 
     private:
-		// Assignment operator
-		void operator=(const CTiglExportIges& ) { /* Do nothing */ }
+        // Assignment operator
+        void operator=(const CTiglExportIges& ) { /* Do nothing */ }
 
-	private:
-		CCPACSConfiguration&          myConfig;       /**< TIGL configuration object */
-	};
+    private:
+        CCPACSConfiguration&          myConfig;       /**< TIGL configuration object */
+        void SetTranslationParamters() const;
+    };
 
 } // end namespace tigl
 

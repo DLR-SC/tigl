@@ -25,8 +25,10 @@
 
 #include "CTiglAbstractGeometricComponent.h"
 #include "CTiglError.h"
+#include "CTiglLogger.h"
 
 #include <BRepBuilderAPI_Transform.hxx>
+#include "BRepClass3d_SolidClassifier.hxx"
 
 namespace tigl {
 
@@ -109,6 +111,16 @@ namespace tigl {
         translation.y += trans.y;
         translation.z += trans.z;
     }
+    
+    TopoDS_Shape& CTiglAbstractGeometricComponent::GetLoft(void){
+        if(loft.IsNull()){
+#ifdef DEBUG
+            LOG(INFO) << "Building loft " << GetUID();
+#endif
+            loft = BuildLoft();
+        }
+        return loft;
+    }
 
     TopoDS_Shape CTiglAbstractGeometricComponent::GetMirroredLoft(void){
         if(mySymmetryAxis == TIGL_NO_SYMMETRY){
@@ -133,6 +145,39 @@ namespace tigl {
         BRepBuilderAPI_Transform myBRepTransformation(GetLoft(), theTransformation);
 
         return myBRepTransformation.Shape();
+    }
+    
+    bool CTiglAbstractGeometricComponent::GetIsOn(const gp_Pnt& pnt){
+        TopoDS_Shape& segmentLoft = GetLoft();
+        double tolerance = 0.03; // 3cm
+    
+        BRepClass3d_SolidClassifier classifier;
+        classifier.Load(segmentLoft);
+        classifier.Perform(pnt, tolerance);
+        if((classifier.State() == TopAbs_IN) || (classifier.State() == TopAbs_ON)){
+            return true;
+        }
+        else
+            return false;
+    }
+    
+    bool CTiglAbstractGeometricComponent::GetIsOnMirrored(const gp_Pnt& pnt){
+        if(mySymmetryAxis == TIGL_NO_SYMMETRY){
+            return false;
+        }
+
+        gp_Pnt mirroredPnt(pnt);
+        if(mySymmetryAxis == TIGL_X_Z_PLANE){
+            mirroredPnt.SetY(-mirroredPnt.Y());
+        }
+        else if(mySymmetryAxis == TIGL_X_Y_PLANE){
+            mirroredPnt.SetZ(-mirroredPnt.Z());
+        }
+        else if(mySymmetryAxis == TIGL_Y_Z_PLANE){
+            mirroredPnt.SetX(-mirroredPnt.X());
+        }
+        
+        return GetIsOn(mirroredPnt);
     }
 
 } // end namespace tigl

@@ -25,6 +25,7 @@
 
 #include "CTiglIntersectionCalculation.h"
 #include "CTiglError.h"
+#include "tiglcommonfunctions.h"
 
 #include "GeomAPI_IntSS.hxx"
 #include "BRep_Tool.hxx"
@@ -55,6 +56,8 @@
 #include "Handle_TopTools_HSequenceOfShape.hxx"
 #include "TopTools_HSequenceOfShape.hxx"
 #include "ShapeAnalysis_FreeBounds.hxx"
+#include "BRepBuilderAPI_MakeWire.hxx"
+#include "CTiglShapeCache.h"
 
 #ifndef max
 #define max(a, b) (((a) > (b)) ? (a) : (b))
@@ -62,94 +65,97 @@
 
 namespace tigl {
 
-	// Constructor
-	CTiglIntersectionCalculation::CTiglIntersectionCalculation( TopoDS_Shape compoundOne,
-																TopoDS_Shape compoundTwo)
-		: tolerance(1.0e-7),
-		numWires(0)
-	{
-		Standard_Boolean PerformNow=Standard_False; 
-		BRepAlgoAPI_Section section(compoundOne, compoundTwo, PerformNow); 
-		section.ComputePCurveOn1(Standard_True); 
-		section.Approximation(Standard_True); 
-		section.Build(); 
-		intersectionResult = section.Shape();
-
-		TopExp_Explorer myEdgeExplorer (intersectionResult, TopAbs_EDGE);
-
-		Edges = new TopTools_HSequenceOfShape();
-
-		while (myEdgeExplorer.More())
-		{
-			Edges->Append(TopoDS::Edge(myEdgeExplorer.Current()));
-			myEdgeExplorer.Next();
-			numWires++;
-		}
-
-		// connect edges to wires and save them to Wire-sequence
-		ShapeAnalysis_FreeBounds::ConnectEdgesToWires(Edges, tolerance, false, Edges);
-
-		// filter duplicated wires
-		for (int wireID=1; wireID <= numWires; wireID++)
-		{
-			bool found = false;
-			TopoDS_Wire wire = TopoDS::Wire(Edges->Value(wireID));
-			for (std::vector<TopoDS_Wire>::size_type i = 0; i < Wires.size(); i++)
-			{
-				if (Wires[i].HashCode(200000) == wire.HashCode(200000))
-				{
-						found = true;
-				}
-			}
-
-			if(!found)
-			{
-				Wires.push_back(wire);
-			}
-		}
-		numWires = Wires.size() + 1;
-	}
-
-	// Destructor
-	CTiglIntersectionCalculation::~CTiglIntersectionCalculation( void )
-	{
-		Wires.clear();
-	}
-
-
-	// returns total number of intersection lines
-	int CTiglIntersectionCalculation::GetCountIntersectionLines(void)
-	{
-		return(numWires);
-	}
-
-
-    // Computes the length of the intersection line
-    double CTiglIntersectionCalculation::ComputeWireLength(int wireID)
+    // Constructor
+    CTiglIntersectionCalculation::CTiglIntersectionCalculation( CTiglShapeCache * cache,
+                                                                const std::string& idOne,
+                                                                const std::string& idTwo,
+                                                                TopoDS_Shape compoundOne,
+                                                                TopoDS_Shape compoundTwo)
+        : tolerance(1.0e-7),
+        numWires(0)
     {
-        double wireLength = 0.0;
-		TopoDS_Wire intersectionWire = (Wires[--wireID]);
+        // create some identification string to store intersection in cache
+        // it should not matter, if the arguments One and Two are interchanged
+        std::string id;
+        if(idOne.compare(idTwo))
+            id = idOne + "::" + idTwo;
+        else
+            id = idTwo + "::" + idOne;
+        
+        bool inCache = false;
+        if(cache){
+            // check, if result is already in cache
+            unsigned int nshapes = cache->GetNShapesOfType(id);
+            if(nshapes > 0){
+                inCache = true;
+                numWires = nshapes;
+                for(unsigned int i = 0; i < nshapes; ++i)
+                    Wires.push_back(TopoDS::Wire(cache->GetShape(id, i)));
+            }
+        }
+        
+        if(!inCache){
+            Standard_Boolean PerformNow=Standard_False; 
+            BRepAlgoAPI_Section section(compoundOne, compoundTwo, PerformNow); 
+            section.ComputePCurveOn1(Standard_True); 
+            section.Approximation(Standard_True); 
+            section.Build(); 
+            intersectionResult = section.Shape();
+    
+            TopExp_Explorer myEdgeExplorer (intersectionResult, TopAbs_EDGE);
+    
+            Handle(TopTools_HSequenceOfShape) Edges = new TopTools_HSequenceOfShape();
+    
+            while (myEdgeExplorer.More())
+            {
+                Edges->Append(TopoDS::Edge(myEdgeExplorer.Current()));
+                myEdgeExplorer.Next();
+            }
+    
+            // connect all connected edges to wires and save them in container Edges again
+            ShapeAnalysis_FreeBounds::ConnectEdgesToWires(Edges, tolerance, false, Edges);
+            numWires = Edges->Length();
+    
+            // filter duplicated wires
+            for (int wireID=1; wireID <= numWires; wireID++)
+            {
+                bool found = false;
+                TopoDS_Wire wire = TopoDS::Wire(Edges->Value(wireID));
+                for (std::vector<TopoDS_Wire>::size_type i = 0; i < Wires.size(); i++)
+                {
+                    if (Wires[i].HashCode(200000) == wire.HashCode(200000))
+                    {
+                            found = true;
+                    }
+                }
+    
+                if(!found)
+                {
+                    Wires.push_back(wire);
+                    if(cache) cache->Insert(wire, id);
+                }
+            }
+            numWires = Wires.size();
+        }
+    }
 
-		// explore all edges of result wire
-		BRepTools_WireExplorer wireExplorer;
-		for (wireExplorer.Init(intersectionWire); wireExplorer.More(); wireExplorer.Next())       
-		{   
-			Standard_Real firstParam;
-			Standard_Real lastParam;
-			TopoDS_Edge edge = wireExplorer.Current();
-			Handle(Geom_Curve) curve = BRep_Tool::Curve(edge, firstParam, lastParam);
-			GeomAdaptor_Curve adaptorCurve(curve);
-			wireLength += GCPnts_AbscissaPoint::Length(adaptorCurve);
-		}
-		return(wireLength);
+    // Destructor
+    CTiglIntersectionCalculation::~CTiglIntersectionCalculation( void )
+    {
+        Wires.clear();
     }
 
 
+    // returns total number of intersection lines
+    int CTiglIntersectionCalculation::GetCountIntersectionLines(void)
+    {
+        return(numWires);
+    }
 
-	// Gets a point on the intersection line in dependence of a parameter zeta with
-	// 0.0 <= zeta <= 1.0. For zeta = 0.0 this is the line starting point,
-	// for zeta = 1.0 the last point on the intersection line.
-	// numIntersecLine is the number of the Intersection line.
+    // Gets a point on the intersection line in dependence of a parameter zeta with
+    // 0.0 <= zeta <= 1.0. For zeta = 0.0 this is the line starting point,
+    // for zeta = 1.0 the last point on the intersection line.
+    // numIntersecLine is the number of the Intersection line.
     gp_Pnt CTiglIntersectionCalculation::GetPoint(double zeta, int wireID = 1)
     {
         if (zeta < 0.0 || zeta > 1.0) 
@@ -159,66 +165,26 @@ namespace tigl {
 
         if (wireID > numWires)
         {
-        	throw CTiglError("Error: Unknown wireID in CTiglIntersectionCalculation::GetPoint", TIGL_ERROR);
+            throw CTiglError("Error: Unknown wireID in CTiglIntersectionCalculation::GetPoint", TIGL_ERROR);
         }
 
-		//TopoDS_Wire wire;
-        double length = ComputeWireLength(wireID) * zeta;
-		TopoDS_Wire intersectionWire = (Wires[--wireID]);
-
-        // Get the first edge of the wire
-		BRepTools_WireExplorer wireExplorer( intersectionWire );
-        if (!wireExplorer.More()) 
-        {
-            throw CTiglError("Error: Not enough edges found in CTiglIntersectionCalculation::GetPoint", TIGL_ERROR);
-        }
-        Standard_Real firstParam;
-        Standard_Real lastParam;
-        TopoDS_Edge edge = wireExplorer.Current();
-        wireExplorer.Next();
-        Handle(Geom_Curve) curve = BRep_Tool::Curve(edge, firstParam, lastParam);
-
-        // Length of current edge
-        GeomAdaptor_Curve adaptorCurve;
-        adaptorCurve.Load(curve);
-        double currLength = GCPnts_AbscissaPoint::Length(adaptorCurve);
-
-        // Length of complete wire up to now
-        double sumLength = currLength;
-
-        while (length > sumLength) 
-        {
-            if (!wireExplorer.More())
-                break;
-            edge = wireExplorer.Current();
-            wireExplorer.Next();
-
-            curve = BRep_Tool::Curve(edge, firstParam, lastParam);
-            adaptorCurve.Load(curve);
-
-            // Length of current edge
-            currLength = GCPnts_AbscissaPoint::Length(adaptorCurve);
-
-            // Length of complete wire up to now
-            sumLength += currLength;
-        }
-
-        // Distance of searched point from end point of current edge
-        double currEndDelta = max((sumLength - length), 0.0);
-
-        // Distance of searched point from start point of current edge
-        double currDist = max((currLength - currEndDelta), 0.0);
-
-        GCPnts_AbscissaPoint abscissaPoint(adaptorCurve, currDist, adaptorCurve.FirstParameter());
-        gp_Pnt point = adaptorCurve.Value(abscissaPoint.Parameter());
-		return (point);       
+        //TopoDS_Wire wire;
+        TopoDS_Wire& intersectionWire = (Wires[--wireID]);
+        return WireGetPoint(intersectionWire, zeta);
     }
 
-	// gives the number of wires of the intersection calculation
-	int CTiglIntersectionCalculation::GetNumWires()
-	{
-		return( numWires );
-	}
+    // gives the number of wires of the intersection calculation
+    int CTiglIntersectionCalculation::GetNumWires()
+    {
+        return( numWires );
+    }
+    
+    TopoDS_Wire& CTiglIntersectionCalculation::GetWire(int wireID){
+        if (wireID > numWires || wireID < 1){
+            throw CTiglError("Error: Invalid wireID in CTiglIntersectionCalculation::GetWire", TIGL_ERROR);
+        }
+        return Wires.at(wireID-1);
+    }
 
 } // end namespace tigl
 

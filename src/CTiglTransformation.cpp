@@ -100,7 +100,7 @@ namespace tigl {
     void CTiglTransformation::PostMultiply(const CTiglTransformation& aTrans)
     {
         double tmp_matrix[4][4];
-		int row;
+        int row;
 
         for (row = 0; row < 4; row++)
         {
@@ -129,7 +129,7 @@ namespace tigl {
     void CTiglTransformation::PreMultiply(const CTiglTransformation& aTrans)
     {
         double tmp_matrix[4][4];
-		int row;
+        int row;
 
         for (row = 0; row < 4; row++)
         {
@@ -407,18 +407,18 @@ namespace tigl {
         return gp_Pnt(transformed.X(), transformed.Y(), transformed.Z());
     }
 
-	void CTiglTransformation::printTransformMatrix()
-	{
-		for(int i = 0; i < 4; ++i){
-			for(int j = 0; j < 4; ++j){
-				cout << m_matrix[i][j] << "\t";
-			}
-			cout << endl;
-		}
-	}
+    void CTiglTransformation::printTransformMatrix()
+    {
+        for(int i = 0; i < 4; ++i){
+            for(int j = 0; j < 4; ++j){
+                cout << m_matrix[i][j] << "\t";
+            }
+            cout << endl;
+        }
+    }
 
-	CTiglTransformation CTiglTransformation::Inverted() const{
-		return Get_gp_GTrsf().Inverted();
-	}
+    CTiglTransformation CTiglTransformation::Inverted() const{
+        return Get_gp_GTrsf().Inverted();
+    }
 
 } // end namespace tigl

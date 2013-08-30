@@ -22,7 +22,7 @@
 
 #include "test.h"
 #include "tigl.h"
-#include "CTiglPointTranslator.h"
+#include "math/CTiglPointTranslator.h"
 #include <ctime>
 #include <cstdio>
 #include "Precision.hxx"

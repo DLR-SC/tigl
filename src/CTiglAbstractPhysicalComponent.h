@@ -31,18 +31,21 @@
 #include <string>
 
 #include "tigl.h"
+#include "tigl_config.h"
 #include "CTiglAbstractGeometricComponent.h"
 #include "CTiglTransformation.h"
 #include "CTiglPoint.h"
 
+#ifdef TIGL_USE_XCAF
 #include "TDF_Label.hxx"
 #include "Handle_XCAFDoc_ShapeTool.hxx"
+#endif
 
 
 namespace tigl {
 
     class CTiglAbstractPhysicalComponent : public CTiglAbstractGeometricComponent
-	{
+    {
 
     public:
         // Container type to store a components children
@@ -65,17 +68,19 @@ namespace tigl {
         virtual void AddChild(CTiglAbstractPhysicalComponent* componentPtr);
 
         // Returns a pointer to the list of children of a component.
-        virtual ChildContainerType& GetChildren(void);
+        virtual ChildContainerType GetChildren(bool recursive);
 
         // number of segments
-        virtual int GetSegmentCount(void) const = 0;
+        //virtual int GetSegmentCount(void) const = 0;
 
         // builds data structure for a TDocStd_Application
         // mostly used for export
+#ifdef TIGL_USE_XCAF
         virtual TDF_Label ExportDataStructure(Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label) = 0;
+#endif
 
-		// Returns the segment for a given index
-        virtual class CTiglAbstractSegment & GetSegment(const int index) = 0;
+        // Returns the segment for a given index
+        //virtual class CTiglAbstractSegment & GetSegment(const int index) = 0;
 
         virtual void SetSymmetryAxis(const std::string& axis);
 
@@ -86,7 +91,7 @@ namespace tigl {
         ChildContainerType childContainer;
         std::string        parentUID;       /**< UID of the parent of this component */
 
-	};
+    };
 
 } // end namespace tigl
 

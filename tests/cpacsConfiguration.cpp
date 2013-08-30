@@ -10,7 +10,7 @@
 * you may not use this file except in compliance with the License.
 * You may obtain a copy of the License at
 *
-* Â  Â  http://www.apache.org/licenses/LICENSE-2.0
+* Â  Â  http://www.apache.org/licenses/LICENSE-2.0
 *
 * Unless required by applicable law or agreed to in writing, software
 * distributed under the License is distributed on an "AS IS" BASIS,
@@ -97,7 +97,6 @@ class TiglGetCPACSTixiHandle : public ::testing::Test {
  protected:
   virtual void SetUp() {
         const char* filename = "TestData/CPACS_21_D150.xml";
-        ReturnCode tixiRet;
         TiglReturnCode tiglRet;
 
         tiglHandle = -1;
@@ -152,7 +151,6 @@ class tiglCPACSConfigurationHandleValid : public ::testing::Test {
  protected:
   virtual void SetUp() {
         const char* filename = "TestData/CPACS_21_D150.xml";
-        ReturnCode tixiRet;
         TiglReturnCode tiglRet;
 
         tiglHandle = -1;

@@ -31,13 +31,13 @@
 class QOCC_DECLSPEC TIGLViewerApplication : public QApplication
 {
 
-	Q_OBJECT
+    Q_OBJECT
 
 public:
 
-	TIGLViewerApplication( int &argc, char **argv, int = QT_VERSION );
+    TIGLViewerApplication( int &argc, char **argv, int = QT_VERSION );
     ~TIGLViewerApplication( );
-	
+    
 private:
 
 };

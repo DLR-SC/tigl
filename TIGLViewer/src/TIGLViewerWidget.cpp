@@ -18,6 +18,7 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
+#include "tigl_config.h"
 
 #include "TIGLViewerWidget.h"
 
@@ -25,25 +26,9 @@
 #include <cmath>
 #include <iostream>
 
-#ifdef WIN32
-  #include <WNT_Window.hxx>
-  #include <Graphic3d_WNTGraphicDevice.hxx>
-  #include <gl/GL.h>
-  #include <gl/GLU.h>
-#elif defined __APPLE__
-  #include <OpenGL/gl.h>
-  #include <OpenGL/glu.h>
-  #include <Cocoa_Window.hxx>
-#else
-  #include <GL/gl.h>
-  #include <GL/glu.h>
-  #include <Xw_Window.hxx>
-  #include <Graphic3d_GraphicDevice.hxx>
-#endif
-
 #include <QtGui/QApplication>
 #include <QtGui/QBitmap>
-#include <QtGui/QPainter>
+#include <QPainter>
 #include <QtGui/QInputEvent>
 #include <QtGui/QColorDialog>
 #include <QtGui/QPlastiqueStyle>
@@ -53,6 +38,32 @@
 
 #include "TIGLViewerInternal.h"
 #include "TIGLViewerDocument.h"
+
+#ifdef OCC_NEW_3DAPI
+  #include <OpenGl_GraphicDriver.hxx>
+#else
+  #if defined _WIN32 || defined __WIN32__
+    #include <Graphic3d_WNTGraphicDevice.hxx>
+  #elif defined __APPLE__
+    // no more include required
+  #else
+    #include <Graphic3d_GraphicDevice.hxx>
+  #endif
+#endif // OCC_NEW_3DAPI
+
+#if defined _WIN32 || defined __WIN32__
+  #include <WNT_Window.hxx>
+  #include <gl/GL.h>
+  #include <gl/GLU.h>
+#elif defined __APPLE__
+  #include <Cocoa_Window.hxx>
+  #include <OpenGL/gl.h>
+  #include <OpenGL/glu.h>
+#else
+  #include <Xw_Window.hxx>
+  #include <GL/gl.h>
+  #include <GL/glu.h>
+#endif
 
 #include "Visual3d_Layer.hxx"
 #include "V3d_DirectionalLight.hxx"
@@ -67,21 +78,21 @@ TIGLViewerWidget::TIGLViewerWidget(QWidget * parent)
 }
 
 TIGLViewerWidget::TIGLViewerWidget( const Handle_AIS_InteractiveContext& aContext,
-								QWidget *parent, 
+                                QWidget *parent, 
                                 Qt::WindowFlags f ) :
-	myView            ( NULL ),
+    myView            ( NULL ),
     myViewer          ( NULL ),
     myLayer           ( NULL ),
-    myViewResized	  ( Standard_False ),
+    myViewResized      ( Standard_False ),
     myViewInitialized ( Standard_False ),
-	myMode			  ( CurAction3d_Undefined ),
-	myGridSnap        ( Standard_False ),
-    myDetection		  ( AIS_SOD_Nothing ),
+    myMode              ( CurAction3d_Undefined ),
+    myGridSnap        ( Standard_False ),
+    myDetection          ( AIS_SOD_Nothing ),
     myRubberBand      ( NULL ),
-	myPrecision		  ( 0.001 ),
-	myViewPrecision   ( 0.0 ),
-	myKeyboardFlags   ( Qt::NoModifier ),
-	myButtonFlags	  ( Qt::NoButton ){
+    myPrecision          ( 0.001 ),
+    myViewPrecision   ( 0.0 ),
+    myKeyboardFlags   ( Qt::NoModifier ),
+    myButtonFlags      ( Qt::NoButton ){
     initialize();
     myContext = aContext;
 }
@@ -91,15 +102,15 @@ void TIGLViewerWidget::initialize(){
     myViewer          = NULL;
     myLayer           = NULL;
     myRubberBand      = NULL;
-    myMode			  = CurAction3d_Undefined;
+    myMode              = CurAction3d_Undefined;
     myGridSnap        = Standard_False;
-    myViewResized	  = Standard_False;
+    myViewResized      = Standard_False;
     myViewInitialized = Standard_False;
-    myPrecision		  = 0.001;
+    myPrecision          = 0.001;
     myViewPrecision   = 0.0;
-    myDetection		  = AIS_SOD_Nothing;
+    myDetection          = AIS_SOD_Nothing;
     myKeyboardFlags   = Qt::NoModifier;
-    myButtonFlags	  = Qt::NoButton;
+    myButtonFlags      = Qt::NoButton;
     myBGColor = QColor(255,235,163);
 
     // Needed to generate mouse events
@@ -142,275 +153,284 @@ void TIGLViewerWidget::initialize(){
 
 TIGLViewerWidget::~TIGLViewerWidget()
 {
-	if ( myRubberBand )
-	{
-		delete myRubberBand;
-	}
+    if ( myRubberBand )
+    {
+        delete myRubberBand;
+    }
 }
 
 
 void TIGLViewerWidget::initializeOCC(const Handle_AIS_InteractiveContext& aContext)
 {
-	Aspect_RenderingContext rc = 0;
-	myContext = aContext;
-	myViewer  = myContext->CurrentViewer();
-	myView    = myViewer->CreateView();
+    Aspect_RenderingContext rc = 0;
+    myContext = aContext;
+    myViewer  = myContext->CurrentViewer();
+    myView    = myViewer->CreateView();
 
-	int windowHandle = (int) winId();
+#ifdef OCC_NEW_3DAPI
+  #if defined _WIN32 || defined __WIN32__
+    myWindow = new WNT_Window(winId());
+    myWindow->SetFlags( WDF_NOERASEBKGRND );
+  #elif defined __APPLE__
+    myWindow = new Cocoa_Window((NSView *)winId());
+  #else
+    Aspect_Handle windowHandle = (Aspect_Handle)winId();
+    myWindow = new Xw_Window(myContext->CurrentViewer()->Driver()->GetDisplayConnection(),
+                             windowHandle);
+  #endif
+#else // OCC_NEW_3DAPI
+    int windowHandle = (int) winId();
     short lo = (short)   windowHandle;
     short hi = (short) ( windowHandle >> 16 );
-
-#if defined WNT
-	// rc = (Aspect_RenderingContext) wglGetCurrentContext();
+  #if defined _WIN32 || defined __WIN32__
     myWindow = new WNT_Window( Handle(Graphic3d_WNTGraphicDevice)
-							   ::DownCast( myContext->CurrentViewer()->Device() ) ,
-							   (int) hi, (int) lo );
-	// Turn off background erasing in OCC's window
-	myWindow->SetFlags( WDF_NOERASEBKGRND );
-#elif defined __APPLE__
-    myWindow = new Cocoa_Window(reinterpret_cast<NSView *>(winId()));
-#else
-	// rc = (Aspect_RenderingContext) glXGetCurrentContext(); // Untested!
+                               ::DownCast( myContext->CurrentViewer()->Device() ) ,
+                               (int) hi, (int) lo );
+    // Turn off background erasing in OCC's window
+    myWindow->SetFlags( WDF_NOERASEBKGRND );
+  #elif defined __APPLE__
+    myWindow = new Cocoa_Window((NSView *)winId());
+  #else
     myWindow = new Xw_Window( Handle(Graphic3d_GraphicDevice)
-									::DownCast( myContext->CurrentViewer()->Device() ),
-							  (int) hi, (int) lo, Xw_WQ_SAMEQUALITY, Quantity_NOC_BLACK );
-#endif // WNT
-	
-	if (!myView.IsNull())
-	{
-		// Set my window (Hwnd) into the OCC view
-	    myView->SetWindow( myWindow, rc , paintCallBack, this  );
-		// Set up axes (Trihedron) in lower left corner.
-		myView->SetScale( 2 );			// Choose a "nicer" initial scale
+                                    ::DownCast( myContext->CurrentViewer()->Device() ),
+                              (int) hi, (int) lo, Xw_WQ_SAMEQUALITY, Quantity_NOC_BLACK );
+  #endif // WNT
+#endif // OCC_NEW_3DAPI
+    if (!myView.IsNull())
+    {
+        // Set my window (Hwnd) into the OCC view
+        myView->SetWindow( myWindow, rc , paintCallBack, this  );
+        // Set up axes (Trihedron) in lower left corner.
+        myView->SetScale( 2 );            // Choose a "nicer" initial scale
 
-		// Set up axes (Trihedron) in lower left corner.
+        // Set up axes (Trihedron) in lower left corner.
 #ifdef OCC_PATCHED
-		myView->TriedronDisplay( Aspect_TOTP_LEFT_LOWER, Quantity_NOC_WHITE, 0.1, V3d_ZBUFFER );
+        myView->TriedronDisplay( Aspect_TOTP_LEFT_LOWER, Quantity_NOC_WHITE, 0.1, V3d_ZBUFFER );
 #else
-		myView->TriedronDisplay( Aspect_TOTP_LEFT_LOWER, Quantity_NOC_WHITE, 0.1, V3d_WIREFRAME );
+        myView->TriedronDisplay( Aspect_TOTP_LEFT_LOWER, Quantity_NOC_WHITE, 0.1, V3d_WIREFRAME );
 #endif
         //myView->SetAntialiasingOn();
 
-		//myView->ColorScaleDisplay();
+        //myView->ColorScaleDisplay();
 
-		// Map the window
-		if (!myWindow->IsMapped())
-		{
-			myWindow->Map();
-		}
-		// Force a redraw to the new window on next paint event
-		myViewResized = Standard_True;
-		// Set default cursor as a cross
-		setMode( CurAction3d_Nothing );
-		// This is to signal any connected slots that the view is ready.
-		myViewInitialized = Standard_True;
+        // Map the window
+        if (!myWindow->IsMapped())
+        {
+            myWindow->Map();
+        }
+        // Force a redraw to the new window on next paint event
+        myViewResized = Standard_True;
+        // Set default cursor as a cross
+        setMode( CurAction3d_Nothing );
+        // This is to signal any connected slots that the view is ready.
+        myViewInitialized = Standard_True;
 
-		myLayer   = new Visual3d_Layer (myViewer->Viewer(), Aspect_TOL_OVERLAY, Standard_True /*aSizeDependant*/);
+        myLayer   = new Visual3d_Layer (myViewer->Viewer(), Aspect_TOL_OVERLAY, Standard_True /*aSizeDependant*/);
 
-		setBackgroundColor(myBGColor);
+        setBackgroundColor(myBGColor);
 
-		emit initialized();
-	}
+        emit initialized();
+    }
 }
 
 
 QPaintEngine* TIGLViewerWidget::paintEngine() const
 {
-	return NULL;
+    return NULL;
 }
 
 
 void TIGLViewerWidget::paintEvent ( QPaintEvent * /* e */)
 {
-	if ( !myViewInitialized )
-	{
-		if ( winId() )
-		{
-			initializeOCC( myContext );
-		}
-	}
-	if ( !myViewer.IsNull() )
-	{
-		redraw( true );	
-	}
+    if ( !myViewInitialized )
+    {
+        if ( winId() )
+        {
+            initializeOCC( myContext );
+        }
+    }
+    if ( !myViewer.IsNull() )
+    {
+        redraw( true );    
+    }
 }
 
 
 
 void TIGLViewerWidget::resizeEvent ( QResizeEvent * /* e */ )
 {
-	myViewResized = Standard_True;
-}	
+    myViewResized = Standard_True;
+}    
 
 
 void TIGLViewerWidget::mousePressEvent( QMouseEvent* e )
 {
-	myButtonFlags = e->button();
+    myButtonFlags = e->button();
 
-	// Cache the keyboard flags for the whole gesture
-	myKeyboardFlags = e->modifiers();
+    // Cache the keyboard flags for the whole gesture
+    myKeyboardFlags = e->modifiers();
 
-	// The button mappings can be used as a mask. This code prevents conflicts
-	// when more than one button pressed simultaneously.
-	if ( e->button() & Qt::LeftButton )
-	{
-		onLeftButtonDown  ( myKeyboardFlags, e->pos() );
-	}
-	else if ( e->button() & Qt::RightButton )
-	{
-		onRightButtonDown ( myKeyboardFlags, e->pos() );
-	}
-	else if ( e->button() & Qt::MidButton )
-	{
-		onMiddleButtonDown( myKeyboardFlags, e->pos() );
-	}
+    // The button mappings can be used as a mask. This code prevents conflicts
+    // when more than one button pressed simultaneously.
+    if ( e->button() & Qt::LeftButton )
+    {
+        onLeftButtonDown  ( myKeyboardFlags, e->pos() );
+    }
+    else if ( e->button() & Qt::RightButton )
+    {
+        onRightButtonDown ( myKeyboardFlags, e->pos() );
+    }
+    else if ( e->button() & Qt::MidButton )
+    {
+        onMiddleButtonDown( myKeyboardFlags, e->pos() );
+    }
 }
 
 
 
 void TIGLViewerWidget::mouseReleaseEvent(QMouseEvent* e)
 {
-	myButtonFlags = Qt::NoButton;
-	redraw();							// Clears up screen when menu selected but not used.
-	hideRubberBand();
-	if ( e->button() & Qt::LeftButton )
-	{
-		onLeftButtonUp  ( myKeyboardFlags, e->pos() );
-	}
-	else if ( e->button() & Qt::RightButton )
-	{
-		onRightButtonUp ( myKeyboardFlags, e->pos() );
-	}
-	else if ( e->button() & Qt::MidButton )
-	{
-		onMiddleButtonUp( myKeyboardFlags, e->pos() );
-	}
+    myButtonFlags = Qt::NoButton;
+    redraw();                            // Clears up screen when menu selected but not used.
+    hideRubberBand();
+    if ( e->button() & Qt::LeftButton )
+    {
+        onLeftButtonUp  ( myKeyboardFlags, e->pos() );
+    }
+    else if ( e->button() & Qt::RightButton )
+    {
+        onRightButtonUp ( myKeyboardFlags, e->pos() );
+    }
+    else if ( e->button() & Qt::MidButton )
+    {
+        onMiddleButtonUp( myKeyboardFlags, e->pos() );
+    }
 }
 
 
 
 void TIGLViewerWidget::mouseMoveEvent(QMouseEvent* e)
 {
-	Standard_Real X, Y, Z;
-	
-	myCurrentPoint = e->pos();
-	//Check if the grid is active and that we're snapping to it
-	if( myContext->CurrentViewer()->Grid()->IsActive() && myGridSnap )
-	{
-		myView->ConvertToGrid( myCurrentPoint.x(),
-							   myCurrentPoint.y(),
-							   myV3dX,
-							   myV3dY,
-							   myV3dZ );
-		emit mouseMoved( myV3dX, myV3dY, myV3dZ );
-	}
-	else //	this is the standard case
-	{
-		if (convertToPlane( myCurrentPoint.x(),
-							myCurrentPoint.y(),
-							X, Y, Z ) )
-		{
-			myV3dX = precision( X );
-			myV3dY = precision( Y );
-			myV3dZ = precision( Z );
-			emit mouseMoved( myV3dX, myV3dY, myV3dZ );
-		}
-		else
-		{
-			emit sendStatus ( tr("Indeterminate Point") );
-		}
-	}
+    Standard_Real X, Y, Z;
+    
+    myCurrentPoint = e->pos();
+    //Check if the grid is active and that we're snapping to it
+    if( myContext->CurrentViewer()->Grid()->IsActive() && myGridSnap )
+    {
+        myView->ConvertToGrid( myCurrentPoint.x(),
+                               myCurrentPoint.y(),
+                               myV3dX,
+                               myV3dY,
+                               myV3dZ );
+        emit mouseMoved( myV3dX, myV3dY, myV3dZ );
+    }
+    else //    this is the standard case
+    {
+        if (convertToPlane( myCurrentPoint.x(),
+                            myCurrentPoint.y(),
+                            X, Y, Z ) )
+        {
+            myV3dX = precision( X );
+            myV3dY = precision( Y );
+            myV3dZ = precision( Z );
+            emit mouseMoved( myV3dX, myV3dY, myV3dZ );
+        }
+        else
+        {
+            emit sendStatus ( tr("Indeterminate Point") );
+        }
+    }
 
-	onMouseMove( e->buttons(), myKeyboardFlags, e->pos() );
+    onMouseMove( e->buttons(), myKeyboardFlags, e->pos() );
 }
 
 
 
 void TIGLViewerWidget::leaveEvent ( QEvent* /* e */ )
 {
-	myButtonFlags = Qt::NoButton;
+    myButtonFlags = Qt::NoButton;
 }
 
 
 void TIGLViewerWidget::wheelEvent ( QWheelEvent* e )
 {
-	if ( !myView.IsNull() )
-	{
-		Standard_Real currentScale = myView->Scale();
-		if (e->delta() > 0)
-		{
+    if ( !myView.IsNull() )
+    {
+        Standard_Real currentScale = myView->Scale();
+        if (e->delta() > 0)
+        {
             currentScale *= TIGLVIEWER_ZOOM_STEP; // +10%
-		}
-		else
-		{
+        }
+        else
+        {
             currentScale /= TIGLVIEWER_ZOOM_STEP; // -10%
-		}
-		myView->SetScale( currentScale );
-	}
-	else
-	{
-		e->ignore();
-	}
+        }
+        myView->SetScale( currentScale );
+    }
+    else
+    {
+        e->ignore();
+    }
 }
 
 void TIGLViewerWidget::keyPressEvent(QKeyEvent* e){
-	if(e->key() == Qt::Key_Delete){
-		eraseSelected();
-	}
-	else
-		QWidget::keyPressEvent(e);
+    if(e->key() == Qt::Key_Delete){
+        eraseSelected();
+    }
+    else
+        QWidget::keyPressEvent(e);
 }
 
 
 void TIGLViewerWidget::idle( )
 {
-	setMode( CurAction3d_Nothing );
+    setMode( CurAction3d_Nothing );
 }
 
 
 void TIGLViewerWidget::redraw( bool isPainting )
 {
-	if ( !myView.IsNull() )					// Defensive test.
-	{
-		if ( myViewResized )
-		{
-			myView->MustBeResized();
-			viewPrecision( true );
-		}
-		else
-		{	
-			// Don't repaint if we are already redrawing
-			// elsewhere due to a keypress or mouse gesture
-			if ( !isPainting || ( isPainting && myButtonFlags == Qt::NoButton ) )	
-			{												
-				myView->Redraw();
-			}
-		}
-	}
-	myViewResized = Standard_False;
+    if ( !myView.IsNull() )                    // Defensive test.
+    {
+        if ( myViewResized )
+        {
+            myView->MustBeResized();
+            viewPrecision( true );
+        }
+        else
+        {    
+            // Don't repaint if we are already redrawing
+            // elsewhere due to a keypress or mouse gesture
+            if ( !isPainting || ( isPainting && myButtonFlags == Qt::NoButton ) )    
+            {                                                
+                myView->Redraw();
+            }
+        }
+    }
+    myViewResized = Standard_False;
 }
 
 
 
 void TIGLViewerWidget::fitExtents( void )
 {
-	if (!myView.IsNull())
-	{
-		myView->FitAll();
-		viewPrecision( true );
-	}
+    if (!myView.IsNull())
+    {
+        myView->FitAll();
+        viewPrecision( true );
+    }
 }
 
 
 
 void TIGLViewerWidget::fitAll( void )
 {
-	if (!myView.IsNull())
-	{
-		myView->ZFitAll();
-		myView->FitAll();
-		viewPrecision( true );
-	}
+    if (!myView.IsNull())
+    {
+        myView->ZFitAll();
+        myView->FitAll();
+        viewPrecision( true );
+    }
 }
 
 
@@ -462,131 +482,131 @@ void TIGLViewerWidget::selecting( void )
 
 void TIGLViewerWidget::globalPan()
 {
-	if (!myView.IsNull())
-	{
-		// save the current zoom value
-		myCurZoom = myView->Scale();
-		// Do a Global Zoom
-		myView->FitAll();
-		viewPrecision( true );
-		// Set the mode
-		setMode( CurAction3d_GlobalPanning );
-	}
+    if (!myView.IsNull())
+    {
+        // save the current zoom value
+        myCurZoom = myView->Scale();
+        // Do a Global Zoom
+        myView->FitAll();
+        viewPrecision( true );
+        // Set the mode
+        setMode( CurAction3d_GlobalPanning );
+    }
 }
 
 
 
 void TIGLViewerWidget::viewGrid()
 {
-	if(!myView.IsNull())
-	{
-		myView->SetFront();
-	}
+    if(!myView.IsNull())
+    {
+        myView->SetFront();
+    }
 }
 
 
 
 void TIGLViewerWidget::viewFront()
 {
-	if(!myView.IsNull())
-	{
+    if(!myView.IsNull())
+    {
         myView->SetProj( V3d_Xneg );
-	}
+    }
 }
 
 
 void TIGLViewerWidget::viewBack()
 {
-	if(!myView.IsNull())
-	{
+    if(!myView.IsNull())
+    {
         myView->SetProj( V3d_Xpos );
-	}
+    }
 }
 
 
 
 void TIGLViewerWidget::viewTop()
 {
-	if(!myView.IsNull())
-	{
-	    myView->SetProj( V3d_Zpos );
-	}
+    if(!myView.IsNull())
+    {
+        myView->SetProj( V3d_Zpos );
+    }
 }
 
 
 
 void TIGLViewerWidget::viewBottom()
 {
-	if(!myView.IsNull())
-	{
-	    myView->SetProj( V3d_Zneg );
-	}
+    if(!myView.IsNull())
+    {
+        myView->SetProj( V3d_Zneg );
+    }
 }
 
 
 void TIGLViewerWidget::viewLeft()
 {
-	if(!myView.IsNull())
-	{
+    if(!myView.IsNull())
+    {
         myView->SetProj( V3d_Yneg );
-	}
+    }
 }
 
 
 void TIGLViewerWidget::viewRight()
 {
-	if(!myView.IsNull())
-	{
+    if(!myView.IsNull())
+    {
         myView->SetProj( V3d_Ypos );
-	}
+    }
 }
 
 
 
 void TIGLViewerWidget::viewAxo()
 {
-	if(!myView.IsNull())
-	{
-	    myView->SetProj( V3d_XnegYnegZpos );
-	}
+    if(!myView.IsNull())
+    {
+        myView->SetProj( V3d_XnegYnegZpos );
+    }
 }
 
 
 void TIGLViewerWidget::viewTopFront()
 {
-	if(!myView.IsNull())
-	{
-		myView->SetProj( V3d_YnegZpos );
-	}
+    if(!myView.IsNull())
+    {
+        myView->SetProj( V3d_YnegZpos );
+    }
 }
 
 
 void TIGLViewerWidget::viewReset()
 {
-	if(!myView.IsNull())
-	{
-	    myView->Reset();
-	}
+    if(!myView.IsNull())
+    {
+        myView->Reset();
+    }
 }
 
 void TIGLViewerWidget::hiddenLineOff()
 {
-	if(!myView.IsNull())
-	{
-	    QApplication::setOverrideCursor( Qt::WaitCursor );
-		myView->SetComputedMode( Standard_False );
-		QApplication::restoreOverrideCursor();
-	}
+    if(!myView.IsNull())
+    {
+        QApplication::setOverrideCursor( Qt::WaitCursor );
+        myView->SetComputedMode( Standard_False );
+        QApplication::restoreOverrideCursor();
+    }
 }
 
 void TIGLViewerWidget::hiddenLineOn()
 {
-	if(!myView.IsNull())
-	{
-	    QApplication::setOverrideCursor( Qt::WaitCursor );
-		myView->SetComputedMode( Standard_True );
-		QApplication::restoreOverrideCursor();
-	}
+    if(!myView.IsNull())
+    {
+        QApplication::setOverrideCursor( Qt::WaitCursor );
+        myView->SetComputedMode( Standard_True );
+        QApplication::restoreOverrideCursor();
+    }
 }
 
 void TIGLViewerWidget::setBackgroundColor(const QColor& col){
@@ -616,11 +636,11 @@ void TIGLViewerWidget::setBackgroundColor(const QColor& col){
 
 void TIGLViewerWidget::setReset ()
 {
-	if(!myView.IsNull())
-	{
-		myView->SetViewOrientationDefault() ;
-		viewPrecision( true );
-	}
+    if(!myView.IsNull())
+    {
+        myView->SetViewOrientationDefault() ;
+        viewPrecision( true );
+    }
 }
 
 void TIGLViewerWidget::setBGImage(const QString& filename){
@@ -747,26 +767,26 @@ void TIGLViewerWidget::onLeftButtonDown(  Qt::KeyboardModifiers nFlags, const QP
     myStartPoint = point;
     if ( nFlags & CASCADESHORTCUTKEY )
     {
-		setMode( CurAction3d_DynamicZooming );
+        setMode( CurAction3d_DynamicZooming );
     }
     else
     {
         switch ( myMode )
         {
             case CurAction3d_Nothing:
-				break;
+                break;
 
-			case CurAction3d_Picking:
-				break;
+            case CurAction3d_Picking:
+                break;
 
             case CurAction3d_DynamicZooming:
-				break;
+                break;
 
             case CurAction3d_WindowZooming:
-				break;
+                break;
 
             case CurAction3d_DynamicPanning:
-				break;
+                break;
 
             case CurAction3d_GlobalPanning:
                 break;
@@ -776,7 +796,7 @@ void TIGLViewerWidget::onLeftButtonDown(  Qt::KeyboardModifiers nFlags, const QP
                 break;
 
             default:
-	            Standard_Failure::Raise( "Incompatible Current Mode" );
+                Standard_Failure::Raise( "Incompatible Current Mode" );
                 break;
         }
     }
@@ -785,27 +805,27 @@ void TIGLViewerWidget::onLeftButtonDown(  Qt::KeyboardModifiers nFlags, const QP
 
 void TIGLViewerWidget::onMiddleButtonDown(  Qt::KeyboardModifiers nFlags, const QPoint point )
 {
-	myStartPoint = point;
+    myStartPoint = point;
     if ( nFlags & CASCADESHORTCUTKEY )
-	{
-		setMode( CurAction3d_DynamicPanning );
-	}
-	else
-	{
-		setMode( CurAction3d_DynamicRotation );
-		myView->StartRotation( myStartPoint.x(), myStartPoint.y() );
-	}
+    {
+        setMode( CurAction3d_DynamicPanning );
+    }
+    else
+    {
+        setMode( CurAction3d_DynamicRotation );
+        myView->StartRotation( myStartPoint.x(), myStartPoint.y() );
+    }
 }
 
 
 
 void TIGLViewerWidget::onRightButtonDown(  Qt::KeyboardModifiers nFlags, const QPoint point )
 {
-	myStartPoint = point;
+    myStartPoint = point;
 //    if ( nFlags & CASCADESHORTCUTKEY )
 //    {
-//		setMode( CurAction3d_DynamicRotation );
-//		myView->StartRotation( point.x(), point.y() );
+//        setMode( CurAction3d_DynamicRotation );
+//        myView->StartRotation( point.x(), point.y() );
 //    }
 //    else
 //    {
@@ -817,60 +837,60 @@ void TIGLViewerWidget::onRightButtonDown(  Qt::KeyboardModifiers nFlags, const Q
 
 void TIGLViewerWidget::onLeftButtonUp(  Qt::KeyboardModifiers nFlags, const QPoint point )
 {
-	myCurrentPoint = point;
-	if ( nFlags & CASCADESHORTCUTKEY )
+    myCurrentPoint = point;
+    if ( nFlags & CASCADESHORTCUTKEY )
     {
-		// Deactivates dynamic zooming
-		setMode( CurAction3d_Nothing );
-	}
-	else
-	{
-		switch( myMode )
-		{
-			case CurAction3d_Nothing:
-				if ( myCurrentPoint == myStartPoint )
-				{
-					inputEvent( nFlags & MULTISELECTIONKEY );
-				}
-				else
-				{
-					dragEvent( myStartPoint,
-						       myCurrentPoint,
-							   nFlags & MULTISELECTIONKEY );
-				}
-				break;
+        // Deactivates dynamic zooming
+        setMode( CurAction3d_Nothing );
+    }
+    else
+    {
+        switch( myMode )
+        {
+            case CurAction3d_Nothing:
+                if ( myCurrentPoint == myStartPoint )
+                {
+                    inputEvent( nFlags & MULTISELECTIONKEY );
+                }
+                else
+                {
+                    dragEvent( myStartPoint,
+                               myCurrentPoint,
+                               nFlags & MULTISELECTIONKEY );
+                }
+                break;
 
-			case CurAction3d_DynamicZooming:
-				viewPrecision( true );
-				break;
+            case CurAction3d_DynamicZooming:
+                viewPrecision( true );
+                break;
 
-			case CurAction3d_WindowZooming:
-				if ( (abs( myCurrentPoint.x() - myStartPoint.x() ) > ValZWMin ) ||
-					 (abs( myCurrentPoint.y() - myStartPoint.y() ) > ValZWMin ) )
-				{
-					myView->WindowFitAll( myStartPoint.x(),
-										  myStartPoint.y(),
-										  myCurrentPoint.x(),
-										  myCurrentPoint.y() );
-				}
-				viewPrecision( true );
-				break;
+            case CurAction3d_WindowZooming:
+                if ( (abs( myCurrentPoint.x() - myStartPoint.x() ) > ValZWMin ) ||
+                     (abs( myCurrentPoint.y() - myStartPoint.y() ) > ValZWMin ) )
+                {
+                    myView->WindowFitAll( myStartPoint.x(),
+                                          myStartPoint.y(),
+                                          myCurrentPoint.x(),
+                                          myCurrentPoint.y() );
+                }
+                viewPrecision( true );
+                break;
 
-			case CurAction3d_DynamicPanning:
-				break;
+            case CurAction3d_DynamicPanning:
+                break;
 
-			case CurAction3d_GlobalPanning :
-				myView->Place( myCurrentPoint.x(), myCurrentPoint.y(), myCurZoom );
-				break;
+            case CurAction3d_GlobalPanning :
+                myView->Place( myCurrentPoint.x(), myCurrentPoint.y(), myCurZoom );
+                break;
 
-			case CurAction3d_DynamicRotation:
-				break;
+            case CurAction3d_DynamicRotation:
+                break;
 
-			default:
-				Standard_Failure::Raise(" Incompatible Current Mode ");
-				break;
-		}
-	}
+            default:
+                Standard_Failure::Raise(" Incompatible Current Mode ");
+                break;
+        }
+    }
     emit selectionChanged();
 }
 
@@ -885,73 +905,73 @@ void TIGLViewerWidget::onMiddleButtonUp(  Qt::KeyboardModifiers /* nFlags */, co
 
 void TIGLViewerWidget::onRightButtonUp(  Qt::KeyboardModifiers nFlags, const QPoint point )
 {
-	myCurrentPoint = point;
-	if ( nFlags & CASCADESHORTCUTKEY )
+    myCurrentPoint = point;
+    if ( nFlags & CASCADESHORTCUTKEY )
     {
-		setMode( CurAction3d_Nothing );
-	}
-	else
-	{
-		if ( myMode == CurAction3d_Nothing )
-		{
-//			emit popupMenu ( this, point );
-		}
-		else
-		{
-			setMode( CurAction3d_Nothing );
-		}
-	}
+        setMode( CurAction3d_Nothing );
+    }
+    else
+    {
+        if ( myMode == CurAction3d_Nothing )
+        {
+//            emit popupMenu ( this, point );
+        }
+        else
+        {
+            setMode( CurAction3d_Nothing );
+        }
+    }
 }
 
 
 void TIGLViewerWidget::onMouseMove( Qt::MouseButtons buttons,
-								   Qt::KeyboardModifiers nFlags,
-								   const QPoint point )
+                                   Qt::KeyboardModifiers nFlags,
+                                   const QPoint point )
 {
-	myCurrentPoint = point;
+    myCurrentPoint = point;
 
-	if ( buttons & Qt::LeftButton  || buttons & Qt::RightButton || buttons & Qt::MidButton )
-	{
-		switch ( myMode )
-		{
-			case CurAction3d_Nothing:
-				drawRubberBand ( myStartPoint, myCurrentPoint );
-				dragEvent( myStartPoint, myCurrentPoint, nFlags & MULTISELECTIONKEY );
-				break;
+    if ( buttons & Qt::LeftButton  || buttons & Qt::RightButton || buttons & Qt::MidButton )
+    {
+        switch ( myMode )
+        {
+            case CurAction3d_Nothing:
+                drawRubberBand ( myStartPoint, myCurrentPoint );
+                dragEvent( myStartPoint, myCurrentPoint, nFlags & MULTISELECTIONKEY );
+                break;
 
-			case CurAction3d_DynamicZooming:
-				myView->Zoom(	myStartPoint.x(),
-								myStartPoint.y(),
-								myCurrentPoint.x(),
-								myCurrentPoint.y() );
-				viewPrecision( true );
-				myStartPoint = myCurrentPoint;
-				break;
+            case CurAction3d_DynamicZooming:
+                myView->Zoom(    myStartPoint.x(),
+                                myStartPoint.y(),
+                                myCurrentPoint.x(),
+                                myCurrentPoint.y() );
+                viewPrecision( true );
+                myStartPoint = myCurrentPoint;
+                break;
 
-			case CurAction3d_WindowZooming:
-				drawRubberBand ( myStartPoint, myCurrentPoint );
-				break;
+            case CurAction3d_WindowZooming:
+                drawRubberBand ( myStartPoint, myCurrentPoint );
+                break;
 
-			case CurAction3d_DynamicPanning:
-				myView->Pan( myCurrentPoint.x() - myStartPoint.x(),
-						     myStartPoint.y() - myCurrentPoint.y() );
-				myStartPoint = myCurrentPoint;
-				break;
+            case CurAction3d_DynamicPanning:
+                myView->Pan( myCurrentPoint.x() - myStartPoint.x(),
+                             myStartPoint.y() - myCurrentPoint.y() );
+                myStartPoint = myCurrentPoint;
+                break;
 
-			case CurAction3d_GlobalPanning:
-				break;
+            case CurAction3d_GlobalPanning:
+                break;
 
-			case CurAction3d_DynamicRotation:
-				myView->Rotation( myCurrentPoint.x(), myCurrentPoint.y() );
-				break;
+            case CurAction3d_DynamicRotation:
+                myView->Rotation( myCurrentPoint.x(), myCurrentPoint.y() );
+                break;
 
-			default:
-				Standard_Failure::Raise( "Incompatible Current Mode" );
-				break;
-		}
-	}
-	else
-	{
+            default:
+                Standard_Failure::Raise( "Incompatible Current Mode" );
+                break;
+        }
+    }
+    else
+    {
         moveEvent( myCurrentPoint );
     }
 }
@@ -959,56 +979,56 @@ void TIGLViewerWidget::onMouseMove( Qt::MouseButtons buttons,
 
 AIS_StatusOfDetection TIGLViewerWidget::moveEvent( QPoint point )
 {
-	AIS_StatusOfDetection status;
-	status = myContext->MoveTo( point.x(), point.y(), myView );
-	return status;
+    AIS_StatusOfDetection status;
+    status = myContext->MoveTo( point.x(), point.y(), myView );
+    return status;
 }
 
 
 
 AIS_StatusOfPick TIGLViewerWidget::dragEvent( const QPoint startPoint, const QPoint endPoint, const bool multi )
 {
-	using namespace std;
-	AIS_StatusOfPick pick = AIS_SOP_NothingSelected;
-	if (multi)
-	{
-		pick = myContext->ShiftSelect( min (startPoint.x(), endPoint.x()),
-									   min (startPoint.y(), endPoint.y()),
-									   max (startPoint.x(), endPoint.x()),
-									   max (startPoint.y(), endPoint.y()),
-									   myView );
-	}
-	else
-	{
-		pick = myContext->Select( min (startPoint.x(), endPoint.x()),
-								  min (startPoint.y(), endPoint.y()),
-								  max (startPoint.x(), endPoint.x()),
-								  max (startPoint.y(), endPoint.y()),
-								  myView );
-	}
+    using namespace std;
+    AIS_StatusOfPick pick = AIS_SOP_NothingSelected;
+    if (multi)
+    {
+        pick = myContext->ShiftSelect( min (startPoint.x(), endPoint.x()),
+                                       min (startPoint.y(), endPoint.y()),
+                                       max (startPoint.x(), endPoint.x()),
+                                       max (startPoint.y(), endPoint.y()),
+                                       myView );
+    }
+    else
+    {
+        pick = myContext->Select( min (startPoint.x(), endPoint.x()),
+                                  min (startPoint.y(), endPoint.y()),
+                                  max (startPoint.x(), endPoint.x()),
+                                  max (startPoint.y(), endPoint.y()),
+                                  myView );
+    }
     emit selectionChanged();
-	return pick;
+    return pick;
 }
 
 
 
 AIS_StatusOfPick TIGLViewerWidget::inputEvent( bool multi )
 {
-	AIS_StatusOfPick pick = AIS_SOP_NothingSelected;
+    AIS_StatusOfPick pick = AIS_SOP_NothingSelected;
 
-	if (multi)
-	{
-		pick = myContext->ShiftSelect();
-	}
-	else
-	{
-	    pick = myContext->Select();
-	}
-	if ( pick != AIS_SOP_NothingSelected )
-	{
-		emit selectionChanged();
-	}
-	return pick;
+    if (multi)
+    {
+        pick = myContext->ShiftSelect();
+    }
+    else
+    {
+        pick = myContext->Select();
+    }
+    if ( pick != AIS_SOP_NothingSelected )
+    {
+        emit selectionChanged();
+    }
+    return pick;
 }
 
 bool TIGLViewerWidget::dump(Standard_CString theFile)
@@ -1021,124 +1041,124 @@ bool TIGLViewerWidget::dump(Standard_CString theFile)
 
 void TIGLViewerWidget::setMode( const CurrentAction3d mode )
 {
-	if ( mode != myMode )
-	{
-		switch( mode )
-		{
-			case CurAction3d_DynamicPanning:
-				setCursor( Qt::SizeAllCursor );
-				break;
-			case CurAction3d_DynamicZooming:
-				setCursor( Qt::PointingHandCursor );
-				break;
-			case CurAction3d_DynamicRotation:
-				setCursor( Qt::CrossCursor );
-				break;
-			case CurAction3d_GlobalPanning:
-				setCursor( Qt::CrossCursor );
-				break;
-			case CurAction3d_WindowZooming:
-				setCursor( Qt::PointingHandCursor );
-				break;
-			case CurAction3d_Nothing:
-				//setCursor( myCrossCursor );
-				setCursor( Qt::CrossCursor );
-				break;
-			default:
-				setCursor( Qt::ArrowCursor );
-				break;
-		}
-		myMode = mode;
-	}
+    if ( mode != myMode )
+    {
+        switch( mode )
+        {
+            case CurAction3d_DynamicPanning:
+                setCursor( Qt::SizeAllCursor );
+                break;
+            case CurAction3d_DynamicZooming:
+                setCursor( Qt::PointingHandCursor );
+                break;
+            case CurAction3d_DynamicRotation:
+                setCursor( Qt::CrossCursor );
+                break;
+            case CurAction3d_GlobalPanning:
+                setCursor( Qt::CrossCursor );
+                break;
+            case CurAction3d_WindowZooming:
+                setCursor( Qt::PointingHandCursor );
+                break;
+            case CurAction3d_Nothing:
+                //setCursor( myCrossCursor );
+                setCursor( Qt::CrossCursor );
+                break;
+            default:
+                setCursor( Qt::ArrowCursor );
+                break;
+        }
+        myMode = mode;
+    }
 }
 
 
 
 Standard_Real TIGLViewerWidget::precision( Standard_Real aReal )
 {
-	using namespace std;
-	Standard_Real preciseReal;
-	Standard_Real thePrecision = max (myPrecision, viewPrecision());
-	
-	if ( myPrecision != 0.0 )
-	{
-		preciseReal =  SIGN(aReal) * floor((std::abs(aReal) + thePrecision * 0.5) / thePrecision) * thePrecision;
-	}
-	else
-	{
-		preciseReal = aReal;
-	}
-	return preciseReal;
+    using namespace std;
+    Standard_Real preciseReal;
+    Standard_Real thePrecision = max (myPrecision, viewPrecision());
+    
+    if ( myPrecision != 0.0 )
+    {
+        preciseReal =  SIGN(aReal) * floor((std::abs(aReal) + thePrecision * 0.5) / thePrecision) * thePrecision;
+    }
+    else
+    {
+        preciseReal = aReal;
+    }
+    return preciseReal;
 }
 
 
 Standard_Boolean TIGLViewerWidget::convertToPlane(const Standard_Integer Xs,
-											     const Standard_Integer Ys,
-												 Standard_Real& X,
-												 Standard_Real& Y,
-												 Standard_Real& Z)
+                                                 const Standard_Integer Ys,
+                                                 Standard_Real& X,
+                                                 Standard_Real& Y,
+                                                 Standard_Real& Z)
 {
-	Standard_Real Xv, Yv, Zv;
-	Standard_Real Vx, Vy, Vz;
-	gp_Pln aPlane(myView->Viewer()->PrivilegedPlane());
+    Standard_Real Xv, Yv, Zv;
+    Standard_Real Vx, Vy, Vz;
+    gp_Pln aPlane(myView->Viewer()->PrivilegedPlane());
 
 #ifdef OCC_PATCHED
-	myView->Convert( Xs, Ys, Xv, Yv, Zv ); 
+    myView->Convert( Xs, Ys, Xv, Yv, Zv ); 
 #else
-	// The + 1 overcomes a fault in OCC, in "OpenGl_togl_unproject_raster.c",
-	// which transforms the Y axis ordinate. The function uses the height of the
-	// window, not the Y maximum which is (height - 1).
-	myView->Convert( Xs, Ys + 1, Xv, Yv, Zv ); 
+    // The + 1 overcomes a fault in OCC, in "OpenGl_togl_unproject_raster.c",
+    // which transforms the Y axis ordinate. The function uses the height of the
+    // window, not the Y maximum which is (height - 1).
+    myView->Convert( Xs, Ys + 1, Xv, Yv, Zv ); 
 #endif 
 
-	myView->Proj( Vx, Vy, Vz );
-	gp_Lin aLine(gp_Pnt(Xv, Yv, Zv), gp_Dir(Vx, Vy, Vz));
-	IntAna_IntConicQuad theIntersection( aLine, aPlane, Precision::Angular() );
-	if (theIntersection.IsDone())
-	{
-		if (!theIntersection.IsParallel())
-		{
-			if (theIntersection.NbPoints() > 0)
-			{
-				gp_Pnt theSolution(theIntersection.Point(1));
-				X = theSolution.X();
-				Y = theSolution.Y();
-				Z = theSolution.Z();
-				return Standard_True;
-			}
-		}
-	}
-	return Standard_False;
+    myView->Proj( Vx, Vy, Vz );
+    gp_Lin aLine(gp_Pnt(Xv, Yv, Zv), gp_Dir(Vx, Vy, Vz));
+    IntAna_IntConicQuad theIntersection( aLine, aPlane, Precision::Angular() );
+    if (theIntersection.IsDone())
+    {
+        if (!theIntersection.IsParallel())
+        {
+            if (theIntersection.NbPoints() > 0)
+            {
+                gp_Pnt theSolution(theIntersection.Point(1));
+                X = theSolution.X();
+                Y = theSolution.Y();
+                Z = theSolution.Z();
+                return Standard_True;
+            }
+        }
+    }
+    return Standard_False;
 }
 
 
 void TIGLViewerWidget::drawRubberBand( const QPoint origin, const QPoint position )
 {
-	if ( myRubberBand )
-	{
-		redraw();
-		hideRubberBand();
-		myRubberBand->setGeometry( QRect( origin, position ).normalized() );
-		showRubberBand();
-	}
+    if ( myRubberBand )
+    {
+        redraw();
+        hideRubberBand();
+        myRubberBand->setGeometry( QRect( origin, position ).normalized() );
+        showRubberBand();
+    }
 }
 
 
 void TIGLViewerWidget::showRubberBand( void )
 {
-	if ( myRubberBand )
-	{
-		myRubberBand->show();
-	}
+    if ( myRubberBand )
+    {
+        myRubberBand->show();
+    }
 }
 
 
 void TIGLViewerWidget::hideRubberBand( void )
 {
-	if ( myRubberBand )
-	{
-		myRubberBand->hide();
-	}
+    if ( myRubberBand )
+    {
+        myRubberBand->hide();
+    }
 }
 
 
@@ -1159,33 +1179,33 @@ int TIGLViewerWidget::paintCallBack (Aspect_Drawable /* drawable */,
 void TIGLViewerWidget::paintOCC( void )
 {
 #ifndef OCC_BG
-	glDisable( GL_LIGHTING ); 
-	glMatrixMode( GL_MODELVIEW );
-	glPushMatrix();
-	glLoadIdentity();
+    glDisable( GL_LIGHTING ); 
+    glMatrixMode( GL_MODELVIEW );
+    glPushMatrix();
+    glLoadIdentity();
     glMatrixMode( GL_PROJECTION );
-	glPushMatrix();
+    glPushMatrix();
     glLoadIdentity();
 
-	GLfloat left   = -1.0f;
-	GLfloat right  =  1.0f;
-	GLfloat bottom = -1.0f;
-	GLfloat top    =  1.0f;
-	GLfloat depth  =  1.0f;
+    GLfloat left   = -1.0f;
+    GLfloat right  =  1.0f;
+    GLfloat bottom = -1.0f;
+    GLfloat top    =  1.0f;
+    GLfloat depth  =  1.0f;
 
     glOrtho( left, right, bottom, top, 1.0, -1.0 );
     glEnable(GL_BLEND);
     glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_COLOR);
 
 #ifndef OCC_PATCHED
-	glEnable(GL_BLEND);
-	if (myView->ColorScaleIsDisplayed())
-	{
-		// Not needed on patched OCC 6.2 versions, but is the lowest
-		// common denominator working code on collaborators OpenGL
-		// graphics cards.
-		glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_COLOR);
-	}
+    glEnable(GL_BLEND);
+    if (myView->ColorScaleIsDisplayed())
+    {
+        // Not needed on patched OCC 6.2 versions, but is the lowest
+        // common denominator working code on collaborators OpenGL
+        // graphics cards.
+        glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_COLOR);
+    }
 #endif
 
     // purple gradient background
@@ -1200,9 +1220,9 @@ void TIGLViewerWidget::paintOCC( void )
     }
     glEnd();
 
-	glPopMatrix();
-	glMatrixMode( GL_MODELVIEW );
-	glPopMatrix();
+    glPopMatrix();
+    glMatrixMode( GL_MODELVIEW );
+    glPopMatrix();
 #endif
 }
 
@@ -1210,24 +1230,24 @@ void TIGLViewerWidget::paintOCC( void )
 Standard_Real TIGLViewerWidget::viewPrecision( bool resized )
 {
 
-	Standard_Real X1, Y1, Z1;
-	Standard_Real X2, Y2, Z2;
+    Standard_Real X1, Y1, Z1;
+    Standard_Real X2, Y2, Z2;
 
-	if (resized || myViewPrecision == 0.0)
-	{
-		myView->Convert( 0, 0, X1, Y1, Z1 ); 
-		myView->Convert( 1, 0, X2, Y2, Z2 ); 
-		Standard_Real pixWidth = X2 - X1;
-		if ( pixWidth != 0.0 )
-		{
-			// Return the precision as the next highest decade above the pixel width
-			myViewPrecision = std::pow (10.0, std::floor(std::log10( pixWidth ) + 1.0));
-		}
-		else
-		{
-			// Return the user precision if window not defined
-			myViewPrecision = myPrecision; 
-		}
-	}
-	return myViewPrecision;
+    if (resized || myViewPrecision == 0.0)
+    {
+        myView->Convert( 0, 0, X1, Y1, Z1 ); 
+        myView->Convert( 1, 0, X2, Y2, Z2 ); 
+        Standard_Real pixWidth = X2 - X1;
+        if ( pixWidth != 0.0 )
+        {
+            // Return the precision as the next highest decade above the pixel width
+            myViewPrecision = std::pow (10.0, std::floor(std::log10( pixWidth ) + 1.0));
+        }
+        else
+        {
+            // Return the user precision if window not defined
+            myViewPrecision = myPrecision; 
+        }
+    }
+    return myViewPrecision;
 }

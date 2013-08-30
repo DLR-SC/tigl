@@ -89,6 +89,7 @@
 #include <gp_Pln.hxx>
 #include <gp_Lin.hxx>
 #include <gp_Dir.hxx>
+#if 0
 #include <Graphic2d_Array1OfVertex.hxx>
 #include <Graphic2d_Buffer.hxx>
 #include <Graphic2d_CircleMarker.hxx>
@@ -101,6 +102,17 @@
 #include <Graphic2d_Text.hxx>
 #include <Graphic2d_Vertex.hxx>
 #include <Graphic2d_View.hxx>
+#include <PrsMgr_PresentationManager2d.hxx>
+#include <Select2D_SensitiveArc.hxx>
+#include <Select2D_SensitiveBox.hxx>
+#include <Select2D_SensitiveEntity.hxx>
+#include <Select2D_SensitiveSegment.hxx>
+#include <StdSelect_SensitiveText2d.hxx>
+#include <StdSelect_TextProjector2d.hxx>
+#include <StdSelect_ViewerSelector2d.hxx>
+#include <V2d_View.hxx>
+#include <V2d_Viewer.hxx>
+#endif
 #include <Graphic3d_AspectMarker3d.hxx>
 #include <Graphic3d_NameOfMaterial.hxx>
 #include <MMgt_TShared.hxx>
@@ -110,17 +122,12 @@
 #include <Prs3d_LineAspect.hxx>
 #include <Prs3d_Projector.hxx>
 #include <Prs3d_Text.hxx>
-#include <PrsMgr_PresentationManager2d.hxx>
 #include <Quantity_Factor.hxx>
 #include <Quantity_Length.hxx>
 #include <Quantity_NameOfColor.hxx>
 #include <Quantity_PhysicalQuantity.hxx>
 #include <Quantity_PlaneAngle.hxx>
 #include <Quantity_TypeOfColor.hxx>
-#include <Select2D_SensitiveArc.hxx>
-#include <Select2D_SensitiveBox.hxx>
-#include <Select2D_SensitiveEntity.hxx>
-#include <Select2D_SensitiveSegment.hxx>
 #include <SelectBasics_BasicTool.hxx>
 #include <SelectBasics_ListOfBox2d.hxx>
 #include <SelectMgr_EntityOwner.hxx>
@@ -140,9 +147,6 @@
 #include <StdPrs_Curve.hxx>
 #include <StdPrs_Point.hxx>
 #include <StdPrs_PoleCurve.hxx>
-#include <StdSelect_SensitiveText2d.hxx>
-#include <StdSelect_TextProjector2d.hxx>
-#include <StdSelect_ViewerSelector2d.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
 #include <TColgp_HArray1OfPnt2d.hxx>
@@ -162,8 +166,6 @@
 #include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <TopTools_HSequenceOfShape.hxx>
 #include <UnitsAPI.hxx>
-#include <V2d_View.hxx>
-#include <V2d_Viewer.hxx>
 #include <V3d_ColorScale.hxx>
 #include <V3d_RectangularGrid.hxx>
 #include <V3d_View.hxx>

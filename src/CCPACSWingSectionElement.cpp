@@ -45,7 +45,7 @@ namespace tigl {
     void CCPACSWingSectionElement::Cleanup(void)
     {
         name         = "";
-        profileUID	 = "";
+        profileUID     = "";
         uID          = "";
         transformation.SetIdentity();
         translation = CTiglPoint(0.0, 0.0, 0.0);
@@ -94,18 +94,18 @@ namespace tigl {
             name          = ptrName;
 
         // Get subelement "profileUID"
-		char* ptrUID  = NULL;
+        char* ptrUID  = NULL;
         tempString    = elementXPath + "/airfoilUID";
         elementPath   = const_cast<char*>(tempString.c_str());
         if (tixiGetTextElement(tixiHandle, elementPath, &ptrUID) == SUCCESS)
-		    profileUID	  = ptrUID;
+            profileUID      = ptrUID;
 
-		// Get attribute "uID"
-		char* ptrMyUID  = NULL;
+        // Get attribute "uID"
+        char* ptrMyUID  = NULL;
         tempString    = elementXPath;
         elementPath   = const_cast<char*>(tempString.c_str());
         if (tixiGetTextAttribute(tixiHandle, elementPath, "uID", &ptrMyUID) == SUCCESS)
-		    uID	  = ptrMyUID;
+            uID      = ptrMyUID;
 
         // Get subelement "/transformation/translation"
         tempString  = elementXPath + "/transformation/translation";
@@ -138,22 +138,22 @@ namespace tigl {
     }
 
     // Returns the UID of the referenced wing profile
-	std::string CCPACSWingSectionElement::GetProfileIndex(void) const
+    std::string CCPACSWingSectionElement::GetProfileIndex(void) const
     {
         return profileUID;
     }
 
-	// Returns the UID of this WingSectionElement
-	std::string CCPACSWingSectionElement::GetUID(void) const
-	{
-		return uID;
-	}
+    // Returns the UID of this WingSectionElement
+    std::string CCPACSWingSectionElement::GetUID(void) const
+    {
+        return uID;
+    }
 
-	// Returns the uid of the profile of this element
-	std::string CCPACSWingSectionElement::GetProfileUID(void) const
-	{
-		return profileUID;
-	}
+    // Returns the uid of the profile of this element
+    std::string CCPACSWingSectionElement::GetProfileUID(void) const
+    {
+        return profileUID;
+    }
 
     // Gets the section element transformation
     CTiglTransformation CCPACSWingSectionElement::GetSectionElementTransformation(void) const

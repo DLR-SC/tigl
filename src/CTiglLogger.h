@@ -26,38 +26,73 @@
 #ifndef CTIGLLOGGER_H
 #define CTIGLLOGGER_H
 
+#include "tigl_config.h"
+
 #include <string>
 #include <stdio.h>
+#ifdef GLOG_FOUND
 #pragma warning( disable : 4251 4355 )
 #include <glog/logging.h>
 #pragma warning(disable: 4275)
+#else
+// dummy logger implementation
+#include <iostream>
+#include <sstream>
+enum LogLevelDummy_ {ERROR, WARNING, INFO, DEBUG, DEBUG1, DEBUG2, DEBUG3, DEBUG4};
+#endif
 
 namespace tigl {
 
-    class CTiglLogger {
+#ifndef GLOG_FOUND
+    //dummy implementation if glog is not available
+    #ifndef LOG_MAX_LEVEL
+    #define LOG_MAX_LEVEL DEBUG4
+    #endif
 
-        public:
-            // Returns a reference to the only instance of this class
-            static CTiglLogger& GetLogger(void);
+    #define LOG(level) \
+        if (level > LOG_MAX_LEVEL) ;\
+        else tigl::DummyLogger_().AppendToStream(level)
 
-            // Destructor
-            ~CTiglLogger(void);
+    #define DLOG LOG
 
-        private:
-            // Constructor
-            CTiglLogger(void);
-
-            // Logger Initialize with defaults
-            void initLogger(void);
-
-            // Copy constructor
-            CTiglLogger(const CTiglLogger& )                { /* Do nothing */ }
-
-            // Assignment operator
-            void operator=(const CTiglLogger& )             { /* Do nothing */ }
-
+    class DummyLogger_
+    {
+    public:
+        DummyLogger_();
+        virtual ~DummyLogger_();
+        std::ostringstream& AppendToStream(LogLevelDummy_ level = INFO);
+    protected:
+        std::ostringstream stream;
+    private:
+        DummyLogger_(const DummyLogger_&);
+        DummyLogger_& operator =(const DummyLogger_&);
     };
+#endif // not GLOG_FOUND
 
+
+class CTiglLogger {
+
+    public:
+        // Returns a reference to the only instance of this class
+        static CTiglLogger& GetLogger(void);
+
+        // Destructor
+        ~CTiglLogger(void);
+
+    private:
+        // Constructor
+        CTiglLogger(void);
+
+        // Logger Initialize with defaults
+        void initLogger(void);
+
+        // Copy constructor
+        CTiglLogger(const CTiglLogger& )                { /* Do nothing */ }
+
+        // Assignment operator
+        void operator=(const CTiglLogger& )             { /* Do nothing */ }
+
+};
 
 } // end namespace tigl
 

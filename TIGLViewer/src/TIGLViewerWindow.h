@@ -44,19 +44,19 @@ public:
 
     TIGLViewerWindow();
     virtual ~TIGLViewerWindow();
-	Handle_AIS_InteractiveContext& getContext() { return myVC->getContext(); };
+    Handle_AIS_InteractiveContext& getContext() { return myVC->getContext(); };
 
-	void setInitialCpacsFileName(QString filename);
+    void setInitialCpacsFileName(QString filename);
 
-	void setInitialControlFile(QString filename);
+    void setInitialControlFile(QString filename);
 
-	// Returns the Open CASCADE Widget and Context.
-	TIGLViewerWidget* getMyOCC();
+    // Returns the Open CASCADE Widget and Context.
+    TIGLViewerWidget* getMyOCC();
 
-	class TIGLViewerSettings& getSettings();
+    class TIGLViewerSettings& getSettings();
 
-	// Displays a simple dialog for error messages
-	void displayErrorMessage (const QString aMessage, QString aHeader);
+    // Displays a simple dialog for error messages
+    void displayErrorMessage (const QString aMessage, QString aHeader);
 
 protected:
      void contextMenuEvent(QContextMenuEvent *event);
@@ -72,7 +72,7 @@ private slots:
     void closeConfiguration();
     void save();
     void print();
-	void setBackgroundImage();
+    void setBackgroundImage();
     void undo();
     void redo();
     void cut();
@@ -80,16 +80,16 @@ private slots:
     void paste();
     void about();
     void aboutQt();
-	void xyzPosition (V3d_Coordinate X,
-					  V3d_Coordinate Y,
-					  V3d_Coordinate Z);
-	void addPoint (V3d_Coordinate X,
-				   V3d_Coordinate Y,
-				   V3d_Coordinate Z);
-	void statusMessage (const QString aMessage);
-	void loadSettings();
-	void saveSettings();
-	void changeSettings();
+    void xyzPosition (V3d_Coordinate X,
+                      V3d_Coordinate Y,
+                      V3d_Coordinate Z);
+    void addPoint (V3d_Coordinate X,
+                   V3d_Coordinate Y,
+                   V3d_Coordinate Z);
+    void statusMessage (const QString aMessage);
+    void loadSettings();
+    void saveSettings();
+    void changeSettings();
 
 private:
     void connectSignals();
@@ -102,15 +102,15 @@ private:
 
     QAction *recentFileActions[MaxRecentFiles];
 
-	// The OpenCASCADE context;
-	TIGLViewerContext*  	myVC;
+    // The OpenCASCADE context;
+    TIGLViewerContext*      myVC;
 
-	QString 				myLastFolder;
+    QString                 myLastFolder;
 
-	class TIGLViewerDocument*	cpacsConfiguration;
-	QString cpacsFileName;
-	QString controlFileName;
-	QFileSystemWatcher *watcher;
+    class TIGLViewerDocument* cpacsConfiguration;
+    QString cpacsFileName;
+    QString controlFileName;
+    QFileSystemWatcher *watcher;
     class QDebugStream * stdoutStream, * errorStream;
     class TIGLScriptEngine * scriptEngine;
     class TIGLViewerSettingsDialog * settingsDialog;

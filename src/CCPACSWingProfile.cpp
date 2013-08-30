@@ -62,7 +62,7 @@ namespace tigl {
     // Constructor
     CCPACSWingProfile::CCPACSWingProfile(const std::string& path)
         : ProfileXPath(path),
-		invalidated(true)
+        invalidated(true)
     {
         profileWireAlgo = WireAlgoPointer(new CTiglInterpolateBsplineWire);
         Cleanup();
@@ -79,8 +79,8 @@ namespace tigl {
     void CCPACSWingProfile::Cleanup(void)
     {
         name = "";
-		description = "";
-		uid = "";
+        description = "";
+        uid = "";
 
         for (CCPACSCoordinateContainer::size_type i = 0; i < coordinates.size(); i++)
         {
@@ -94,108 +94,108 @@ namespace tigl {
     void CCPACSWingProfile::ReadCPACS(TixiDocumentHandle tixiHandle)
     {
         Cleanup();
-		std::string namePath = ProfileXPath + "/name";
-		std::string describtionPath = ProfileXPath + "/description";
-		std::string elementPath = ProfileXPath + "/pointList";
+        std::string namePath = ProfileXPath + "/name";
+        std::string describtionPath = ProfileXPath + "/description";
+        std::string elementPath = ProfileXPath + "/pointList";
 
         try
         {
             // Get profiles "uid"
             char* ptrUID = NULL;
-			if (tixiGetTextAttribute(tixiHandle, const_cast<char*>(ProfileXPath.c_str()), "uID", &ptrUID) == SUCCESS)
+            if (tixiGetTextAttribute(tixiHandle, const_cast<char*>(ProfileXPath.c_str()), "uID", &ptrUID) == SUCCESS)
                 uid = ptrUID;
 
             // Get subelement "name"
             char* ptrName = NULL;
-			if (tixiGetTextElement(tixiHandle, const_cast<char*>(namePath.c_str()), &ptrName) == SUCCESS)
+            if (tixiGetTextElement(tixiHandle, const_cast<char*>(namePath.c_str()), &ptrName) == SUCCESS)
                 name = ptrName;
 
             // Get subelement "description"
-			char* ptrDescription = NULL;
-			if (tixiGetTextElement(tixiHandle, const_cast<char*>(describtionPath.c_str()), &ptrDescription) == SUCCESS)
+            char* ptrDescription = NULL;
+            if (tixiGetTextElement(tixiHandle, const_cast<char*>(describtionPath.c_str()), &ptrDescription) == SUCCESS)
                 description = ptrDescription;
 
             /* Get point count */
             int   pointCount;
-			if (tixiGetNamedChildrenCount(tixiHandle, const_cast<char*>(elementPath.c_str()), "point", &pointCount) != SUCCESS) {
-				throw CTiglError("Error: tixiGetNamedChildrenCount failed in CCPACSWingProfile::ReadCPACS", TIGL_XML_ERROR);
-			}
+            if (tixiGetNamedChildrenCount(tixiHandle, const_cast<char*>(elementPath.c_str()), "point", &pointCount) != SUCCESS) {
+                throw CTiglError("Error: tixiGetNamedChildrenCount failed in CCPACSWingProfile::ReadCPACS", TIGL_XML_ERROR);
+            }
 
-			if (pointCount > 2)
-			{
-				// Loop over all points
-				for (int i = 1; i <= pointCount; i++)
-				{
-					CTiglPoint* point = new CTiglPoint(0.0, 0.0, 0.0);
-					coordinates.push_back(point);
+            if (pointCount > 2)
+            {
+                // Loop over all points
+                for (int i = 1; i <= pointCount; i++)
+                {
+                    CTiglPoint* point = new CTiglPoint(0.0, 0.0, 0.0);
+                    coordinates.push_back(point);
 
-					std::ostringstream xpath;
-					xpath << elementPath.c_str() << "/point[" << i << "]";
-					std::string x = xpath.str();
-					char * ptrPathChar = const_cast<char*>(x.c_str());
+                    std::ostringstream xpath;
+                    xpath << elementPath.c_str() << "/point[" << i << "]";
+                    std::string x = xpath.str();
+                    char * ptrPathChar = const_cast<char*>(x.c_str());
 
-					if (tixiGetPoint(tixiHandle, ptrPathChar, &(point->x), &(point->y), &(point->z)) != SUCCESS) {
-						throw CTiglError("Error: XML error while reading <point/> in CCPACSWingProfile::ReadCPACS", TIGL_XML_ERROR);
-					}
-				}
-			}
-			else // read in vector based point list
-			{
-				// create xXpath
-				std::ostringstream xpath;
-				xpath << elementPath.c_str() << "/x";
-				std::string xXpath = xpath.str();
+                    if (tixiGetPoint(tixiHandle, ptrPathChar, &(point->x), &(point->y), &(point->z)) != SUCCESS) {
+                        throw CTiglError("Error: XML error while reading <point/> in CCPACSWingProfile::ReadCPACS", TIGL_XML_ERROR);
+                    }
+                }
+            }
+            else // read in vector based point list
+            {
+                // create xXpath
+                std::ostringstream xpath;
+                xpath << elementPath.c_str() << "/x";
+                std::string xXpath = xpath.str();
 
-				// create yXpath
-				std::ostringstream ypath;
-				ypath << elementPath.c_str() << "/y";
-				std::string yXpath = ypath.str();
+                // create yXpath
+                std::ostringstream ypath;
+                ypath << elementPath.c_str() << "/y";
+                std::string yXpath = ypath.str();
 
-				// create zXpath
-				std::ostringstream zpath;
-				zpath << elementPath.c_str() << "/z";
-				std::string zXpath = zpath.str();
+                // create zXpath
+                std::ostringstream zpath;
+                zpath << elementPath.c_str() << "/z";
+                std::string zXpath = zpath.str();
 
-				// check the number of elements in all three vectors. It has to be the same, otherwise cancel
-				int countX;
-				int countY;
-				int countZ;
-				if (tixiGetVectorSize(tixiHandle, const_cast<char*>(xXpath.c_str()), &countX) != SUCCESS){
-					throw CTiglError("Error: XML error while reading point vector <x> in CCPACSWingProfile::ReadCPACS", TIGL_XML_ERROR);
-				}
-				if (tixiGetVectorSize(tixiHandle, const_cast<char*>(yXpath.c_str()), &countY) != SUCCESS){
-					throw CTiglError("Error: XML error while reading point vector <y> in CCPACSWingProfile::ReadCPACS", TIGL_XML_ERROR);
-				}
-				if (tixiGetVectorSize(tixiHandle, const_cast<char*>(zXpath.c_str()), &countZ) != SUCCESS){
-					throw CTiglError("Error: XML error while reading point vector <z> in CCPACSWingProfile::ReadCPACS", TIGL_XML_ERROR);
-				}
+                // check the number of elements in all three vectors. It has to be the same, otherwise cancel
+                int countX;
+                int countY;
+                int countZ;
+                if (tixiGetVectorSize(tixiHandle, const_cast<char*>(xXpath.c_str()), &countX) != SUCCESS){
+                    throw CTiglError("Error: XML error while reading point vector <x> in CCPACSWingProfile::ReadCPACS", TIGL_XML_ERROR);
+                }
+                if (tixiGetVectorSize(tixiHandle, const_cast<char*>(yXpath.c_str()), &countY) != SUCCESS){
+                    throw CTiglError("Error: XML error while reading point vector <y> in CCPACSWingProfile::ReadCPACS", TIGL_XML_ERROR);
+                }
+                if (tixiGetVectorSize(tixiHandle, const_cast<char*>(zXpath.c_str()), &countZ) != SUCCESS){
+                    throw CTiglError("Error: XML error while reading point vector <z> in CCPACSWingProfile::ReadCPACS", TIGL_XML_ERROR);
+                }
 
-				if (countX != countY || countX != countZ || countY != countZ) {
-					throw CTiglError("Error: Vector size for profile points are not eqal in CCPACSWingProfile::ReadCPACS", TIGL_XML_ERROR);
-				}
+                if (countX != countY || countX != countZ || countY != countZ) {
+                    throw CTiglError("Error: Vector size for profile points are not eqal in CCPACSWingProfile::ReadCPACS", TIGL_XML_ERROR);
+                }
 
-				// read in vectors, vectors are allocated and freed by tixi
-				double *xCoordinates = NULL;
-				double *yCoordinates = NULL;
-				double *zCoordinates = NULL;
+                // read in vectors, vectors are allocated and freed by tixi
+                double *xCoordinates = NULL;
+                double *yCoordinates = NULL;
+                double *zCoordinates = NULL;
 
-				if (tixiGetFloatVector(tixiHandle, const_cast<char*>(xXpath.c_str()), &xCoordinates, countX) != SUCCESS) {
-					throw CTiglError("Error: XML error while reading point vector <x> in CCPACSWingProfile::ReadCPACS", TIGL_XML_ERROR);
-				}
-				if (tixiGetFloatVector(tixiHandle, const_cast<char*>(yXpath.c_str()), &yCoordinates, countY) != SUCCESS) {
-					throw CTiglError("Error: XML error while reading point vector <y> in CCPACSWingProfile::ReadCPACS", TIGL_XML_ERROR);
-				}
-				if (tixiGetFloatVector(tixiHandle, const_cast<char*>(zXpath.c_str()), &zCoordinates, countZ) != SUCCESS) {
-					throw CTiglError("Error: XML error while reading point vector <z> in CCPACSWingProfile::ReadCPACS", TIGL_XML_ERROR);
-				}
+                if (tixiGetFloatVector(tixiHandle, const_cast<char*>(xXpath.c_str()), &xCoordinates, countX) != SUCCESS) {
+                    throw CTiglError("Error: XML error while reading point vector <x> in CCPACSWingProfile::ReadCPACS", TIGL_XML_ERROR);
+                }
+                if (tixiGetFloatVector(tixiHandle, const_cast<char*>(yXpath.c_str()), &yCoordinates, countY) != SUCCESS) {
+                    throw CTiglError("Error: XML error while reading point vector <y> in CCPACSWingProfile::ReadCPACS", TIGL_XML_ERROR);
+                }
+                if (tixiGetFloatVector(tixiHandle, const_cast<char*>(zXpath.c_str()), &zCoordinates, countZ) != SUCCESS) {
+                    throw CTiglError("Error: XML error while reading point vector <z> in CCPACSWingProfile::ReadCPACS", TIGL_XML_ERROR);
+                }
 
-				// Loop over all points in the vector
-				for (int i = 0; i < countX; i++)
-				{
-					CTiglPoint* point = new CTiglPoint(xCoordinates[i], yCoordinates[i], zCoordinates[i]);
-					coordinates.push_back(point);
-				}
-			}
+                // Loop over all points in the vector
+                for (int i = 0; i < countX; i++)
+                {
+                    CTiglPoint* point = new CTiglPoint(xCoordinates[i], yCoordinates[i], zCoordinates[i]);
+                    coordinates.push_back(point);
+                }
+            }
 
         }
         catch (...)
@@ -218,13 +218,13 @@ namespace tigl {
         return name.c_str();
     }
 
-	// Returns the describtion of the wing profile
+    // Returns the describtion of the wing profile
     std::string CCPACSWingProfile::GetDescription(void) const
     {
         return description;
     }
 
-	// Returns the UID of the wing profile
+    // Returns the UID of the wing profile
     std::string CCPACSWingProfile::GetUID(void) const
     {
         return uid;
@@ -469,7 +469,7 @@ namespace tigl {
         if (tempWireClosed.IsNull() == Standard_True || tempWireOriginal.IsNull() == Standard_True)
             throw CTiglError("Error: TopoDS_Wire is null in CCPACSWingProfile::BuildWire", TIGL_ERROR);
 
-		//@todo: do we really want to remove all y information? this has to be a bug
+        //@todo: do we really want to remove all y information? this has to be a bug
         // Apply wing profile transformation to wires
         CTiglTransformation transformation;
         transformation.AddProjectionOnXZPlane();

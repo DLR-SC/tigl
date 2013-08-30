@@ -146,6 +146,17 @@ TEST_F(TiglWing, tiglWingGetSegmentUID_success)
 
 
 /**
+* Tests tiglWingGetSegmentUID 
+*/
+TEST_F(TiglWing, tiglWingGetSegmentUID_indexError)
+{
+    char* namePtr = 0;
+    ASSERT_TRUE(tiglWingGetSegmentUID(tiglHandle, 1, -1, &namePtr) == TIGL_INDEX_ERROR);
+}
+
+
+
+/**
 * Tests tiglWingGetSectionUID 
 */
 TEST_F(TiglWing, tiglWingGetSectionUID_success)
@@ -181,6 +192,12 @@ TEST_F(TiglWing, tiglWingGetIndex_nullPtr){
     ASSERT_TRUE(tiglWingGetIndex(tiglHandle, NULL , &wingIndex) == TIGL_NULL_POINTER);
 }
 
+
+TEST_F(TiglWing, tiglWingGetIndex_indexNullPtr){
+    int wingIndex = 0;
+    ASSERT_TRUE(tiglWingGetIndex(tiglHandle, "D150_VAMP_SL1" , NULL) == TIGL_NULL_POINTER);
+}
+
 TEST_F(TiglWing, tiglWingGetIndex_wrongHandle){
     TiglCPACSConfigurationHandle myWrongHandle = -1234;
     int wingIndex = 0;
@@ -192,34 +209,38 @@ TEST_F(TiglWing, tiglWingGetIndex_wrongHandle){
 */
 TEST_F(TiglWing, tiglWingGetSegmentIndex_success){
     int segmentIndex = 0;
-    ASSERT_TRUE(tiglWingGetSegmentIndex(tiglHandle, 1, "D150_VAMP_W1_Seg1", &segmentIndex) == TIGL_SUCCESS);
-    ASSERT_TRUE(segmentIndex == 1);
+    int wingIndex = 0;
+    ASSERT_EQ(TIGL_SUCCESS, tiglWingGetSegmentIndex(tiglHandle, "D150_VAMP_W1_Seg1", &segmentIndex, &wingIndex));
+    ASSERT_EQ(1, segmentIndex);
+    ASSERT_EQ(1, wingIndex);
 
-    ASSERT_TRUE(tiglWingGetSegmentIndex(tiglHandle, 1, "D150_VAMP_W1_Seg2", &segmentIndex) == TIGL_SUCCESS);
-    ASSERT_TRUE(segmentIndex == 2);
+    ASSERT_EQ(TIGL_SUCCESS, tiglWingGetSegmentIndex(tiglHandle, "D150_VAMP_W1_Seg2", &segmentIndex, &wingIndex));
+    ASSERT_EQ(2, segmentIndex);
+    ASSERT_EQ(1, wingIndex);
 
-    ASSERT_TRUE(tiglWingGetSegmentIndex(tiglHandle, 1, "D150_VAMP_W1_Seg3", &segmentIndex) == TIGL_SUCCESS);
-    ASSERT_TRUE(segmentIndex == 3);
+    ASSERT_EQ(TIGL_SUCCESS, tiglWingGetSegmentIndex(tiglHandle, "D150_VAMP_W1_Seg3", &segmentIndex, &wingIndex));
+    ASSERT_EQ(3, segmentIndex);
+    ASSERT_EQ(1, wingIndex);
 }
 
 TEST_F(TiglWing, tiglWingGetSegmentIndex_wrongUID){
     int segmentIndex = 0;
-    ASSERT_TRUE(tiglWingGetSegmentIndex(tiglHandle, 1, "invalid_seg_name", &segmentIndex) == TIGL_UID_ERROR);
+    int wingIndex    = 0;
+    ASSERT_TRUE(tiglWingGetSegmentIndex(tiglHandle, "invalid_seg_name", &segmentIndex, &wingIndex) == TIGL_UID_ERROR);
 }
 
 TEST_F(TiglWing, tiglWingGetSegmentIndex_nullPtr){
     int segmentIndex = 0;
-    ASSERT_TRUE(tiglWingGetSegmentIndex(tiglHandle, 1, NULL, &segmentIndex) == TIGL_NULL_POINTER);
-}
-
-TEST_F(TiglWing, tiglWingGetSegmentIndex_wrongWing){
-    int segmentIndex = 0;
-    ASSERT_TRUE(tiglWingGetSegmentIndex(tiglHandle, -1, "D150_VAMP_W1_Seg1", &segmentIndex) == TIGL_INDEX_ERROR);
+    int wingIndex = 0;
+    ASSERT_TRUE(tiglWingGetSegmentIndex(tiglHandle, NULL, &segmentIndex, &wingIndex) == TIGL_NULL_POINTER);
+    ASSERT_TRUE(tiglWingGetSegmentIndex(tiglHandle, "D150_VAMP_W1_Seg1", NULL, &wingIndex) == TIGL_NULL_POINTER);
+    ASSERT_TRUE(tiglWingGetSegmentIndex(tiglHandle, "D150_VAMP_W1_Seg1", &segmentIndex, NULL) == TIGL_NULL_POINTER);
 }
 
 TEST_F(TiglWing, tiglWingGetSegmentIndex_wrongHandle){
     TiglCPACSConfigurationHandle myWrongHandle = -1234;
     int segmentIndex = 0;
-    ASSERT_TRUE(tiglWingGetSegmentIndex(myWrongHandle, -1, "D150_VAMP_W1_Seg1", &segmentIndex) == TIGL_NOT_FOUND);
+    int wingIndex = 0;
+    ASSERT_TRUE(tiglWingGetSegmentIndex(myWrongHandle, "D150_VAMP_W1_Seg1", &segmentIndex, &wingIndex) == TIGL_NOT_FOUND);
 }
 

@@ -31,27 +31,27 @@
 
 class TIGLScriptEngine :public QObject
 {
-        Q_OBJECT
-     
-        public:
-                TIGLScriptEngine();
-                //~TIGLScriptEngine();
-                void openFile(QString fileName);
-        
-        public slots:
-                void textChanged(QString line);
-                void eval(QString commandLine);
-                
-        signals:
-                void printResults(QString text);
-
-        private:
-                QScriptEngine engine;
-                TIGLScriptProxy *tiglScriptProxy;
-                TIXIScriptProxy *tixiScriptProxy;
-                QString script;
-                QString prefixString;
-                void displayHelp();
+    Q_OBJECT
+    
+public:
+    TIGLScriptEngine();
+    //~TIGLScriptEngine();
+    void openFile(QString fileName);
+    
+public slots:
+    void textChanged(QString line);
+    void eval(QString commandLine);
+    
+signals:
+    void printResults(QString text);
+    
+private:
+    QScriptEngine engine;
+    TIGLScriptProxy *tiglScriptProxy;
+    TIXIScriptProxy *tixiScriptProxy;
+    QString script;
+    QString prefixString;
+    void displayHelp();
 };
 
 

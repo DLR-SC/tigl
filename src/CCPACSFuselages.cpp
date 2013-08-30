@@ -31,114 +31,114 @@
 
 namespace tigl {
 
-	// Constructor
-	CCPACSFuselages::CCPACSFuselages(CCPACSConfiguration* config)
-		: configuration(config)
-	{
-		Cleanup();
-	}
+    // Constructor
+    CCPACSFuselages::CCPACSFuselages(CCPACSConfiguration* config)
+        : configuration(config)
+    {
+        Cleanup();
+    }
 
-	// Destructor
-	CCPACSFuselages::~CCPACSFuselages(void)
-	{
-		Cleanup();
-	}
+    // Destructor
+    CCPACSFuselages::~CCPACSFuselages(void)
+    {
+        Cleanup();
+    }
 
-	// Invalidates internal state
-	void CCPACSFuselages::Invalidate(void)
-	{
-		profiles.Invalidate();
-		for (int i = 1; i <= GetFuselageCount(); i++)
-		{
-			GetFuselage(i).Invalidate();
-		}
-	}
-
-	// Cleanup routine
-	void CCPACSFuselages::Cleanup(void)
-	{
-		for (CCPACSFuselageContainer::size_type i = 0; i < fuselages.size(); i++)
+    // Invalidates internal state
+    void CCPACSFuselages::Invalidate(void)
+    {
+        profiles.Invalidate();
+        for (int i = 1; i <= GetFuselageCount(); i++)
         {
-			delete fuselages[i];
-		}
-		fuselages.clear();
-	}
+            GetFuselage(i).Invalidate();
+        }
+    }
 
-	// Read CPACS fuselages element
-	void CCPACSFuselages::ReadCPACS(TixiDocumentHandle tixiHandle, char* configurationUID)
-	{
-		Cleanup();
-		char *fuselagesXPathPrt = NULL;
-		char *tmpString = NULL;
+    // Cleanup routine
+    void CCPACSFuselages::Cleanup(void)
+    {
+        for (CCPACSFuselageContainer::size_type i = 0; i < fuselages.size(); i++)
+        {
+            delete fuselages[i];
+        }
+        fuselages.clear();
+    }
 
-		if (tixiUIDGetXPath(tixiHandle, configurationUID, &tmpString) != SUCCESS)
+    // Read CPACS fuselages element
+    void CCPACSFuselages::ReadCPACS(TixiDocumentHandle tixiHandle, const char* configurationUID)
+    {
+        Cleanup();
+        char *fuselagesXPathPrt = NULL;
+        char *tmpString = NULL;
+
+        if (tixiUIDGetXPath(tixiHandle, configurationUID, &tmpString) != SUCCESS)
             throw CTiglError("XML error: tixiUIDGetXPath failed in CCPACSFuselages::ReadCPACS", TIGL_XML_ERROR);
 
-		fuselagesXPathPrt = (char *) malloc(sizeof(char) * (strlen(tmpString) + 50));
-		strcpy(fuselagesXPathPrt, tmpString);
-		strcat(fuselagesXPathPrt, "[@uID=\"");
-		strcat(fuselagesXPathPrt, configurationUID);
-		strcat(fuselagesXPathPrt, "\"]/fuselages");
-	
-		// Read fuselage profiles
-		profiles.ReadCPACS(tixiHandle);
+        fuselagesXPathPrt = (char *) malloc(sizeof(char) * (strlen(tmpString) + 50));
+        strcpy(fuselagesXPathPrt, tmpString);
+        strcat(fuselagesXPathPrt, "[@uID=\"");
+        strcat(fuselagesXPathPrt, configurationUID);
+        strcat(fuselagesXPathPrt, "\"]/fuselages");
+    
+        // Read fuselage profiles
+        profiles.ReadCPACS(tixiHandle);
 
-		if (tixiCheckElement(tixiHandle, fuselagesXPathPrt) != SUCCESS){
-			free(fuselagesXPathPrt);
-			return;
-		}
-		/* Get fuselage element count */
-		int fuselageCount;
-		if (tixiGetNamedChildrenCount(tixiHandle, fuselagesXPathPrt, "fuselage", &fuselageCount) != SUCCESS)
-			throw CTiglError("XML error: tixiGetNamedChildrenCount failed in CCPACSFuselages::ReadCPACS", TIGL_XML_ERROR);
+        if (tixiCheckElement(tixiHandle, fuselagesXPathPrt) != SUCCESS){
+            free(fuselagesXPathPrt);
+            return;
+        }
+        /* Get fuselage element count */
+        int fuselageCount;
+        if (tixiGetNamedChildrenCount(tixiHandle, fuselagesXPathPrt, "fuselage", &fuselageCount) != SUCCESS)
+            throw CTiglError("XML error: tixiGetNamedChildrenCount failed in CCPACSFuselages::ReadCPACS", TIGL_XML_ERROR);
 
-		// Loop over all fuselages
-		for (int i = 1; i <= fuselageCount; i++) {
-			CCPACSFuselage* fuselage = new CCPACSFuselage(configuration);
-			fuselages.push_back(fuselage);
+        // Loop over all fuselages
+        for (int i = 1; i <= fuselageCount; i++) {
+            CCPACSFuselage* fuselage = new CCPACSFuselage(configuration);
+            fuselages.push_back(fuselage);
 
-			std::ostringstream xpath;
-			xpath << fuselagesXPathPrt << "/fuselage[" << i << "]";
-			fuselage->ReadCPACS(tixiHandle, xpath.str());
-		}
-		free(fuselagesXPathPrt);
-	}
+            std::ostringstream xpath;
+            xpath << fuselagesXPathPrt << "/fuselage[" << i << "]";
+            fuselage->ReadCPACS(tixiHandle, xpath.str());
+        }
+        free(fuselagesXPathPrt);
+    }
 
-	// Returns the total count of fuselage profiles in this configuration
-	int CCPACSFuselages::GetProfileCount(void) const
-	{
-		return profiles.GetProfileCount();
-	}
+    // Returns the total count of fuselage profiles in this configuration
+    int CCPACSFuselages::GetProfileCount(void) const
+    {
+        return profiles.GetProfileCount();
+    }
 
-	// Returns the fuselage profile for a given index.
-	CCPACSFuselageProfile& CCPACSFuselages::GetProfile(int index) const
-	{
-		return profiles.GetProfile(index);
-	}
+    // Returns the fuselage profile for a given index.
+    CCPACSFuselageProfile& CCPACSFuselages::GetProfile(int index) const
+    {
+        return profiles.GetProfile(index);
+    }
 
-	// Returns the fuselage profile for a given uid.
-	CCPACSFuselageProfile& CCPACSFuselages::GetProfile(std::string uid) const
-	{
-		return profiles.GetProfile(uid);
-	}
+    // Returns the fuselage profile for a given uid.
+    CCPACSFuselageProfile& CCPACSFuselages::GetProfile(std::string uid) const
+    {
+        return profiles.GetProfile(uid);
+    }
 
-	// Returns the total count of fuselages in a configuration
-	int CCPACSFuselages::GetFuselageCount(void) const
-	{
-		return (static_cast<int>(fuselages.size()));
-	}
+    // Returns the total count of fuselages in a configuration
+    int CCPACSFuselages::GetFuselageCount(void) const
+    {
+        return (static_cast<int>(fuselages.size()));
+    }
 
-	// Returns the fuselage for a given index.
-	CCPACSFuselage& CCPACSFuselages::GetFuselage(int index) const
-	{
+    // Returns the fuselage for a given index.
+    CCPACSFuselage& CCPACSFuselages::GetFuselage(int index) const
+    {
         index--;
-		if (index < 0 || index >= GetFuselageCount())
-			throw CTiglError("Error: Invalid index in CCPACSFuselages::GetFuselage", TIGL_INDEX_ERROR);
-		return (*fuselages[index]);
-	}
+        if (index < 0 || index >= GetFuselageCount())
+            throw CTiglError("Error: Invalid index in CCPACSFuselages::GetFuselage", TIGL_INDEX_ERROR);
+        return (*fuselages[index]);
+    }
 
-	// Returns the fuselage for a given index.
-    CCPACSFuselage& CCPACSFuselages::GetFuselage(std::string UID) const
+    // Returns the fuselage for a given index.
+    CCPACSFuselage& CCPACSFuselages::GetFuselage(const std::string& UID) const
     {
         for(int i=0; i < GetFuselageCount(); i++)
         {
@@ -149,7 +149,7 @@ namespace tigl {
         }
 
         // UID not there
-            throw CTiglError("Error: Invalid index in CCPACSFuselages::GetFuselage", TIGL_INDEX_ERROR);
+        throw CTiglError("Error: Invalid index in CCPACSFuselages::GetFuselage", TIGL_INDEX_ERROR);
     }
 
 

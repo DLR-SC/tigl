@@ -35,92 +35,92 @@
 
 TIGLViewerSettingsDialog::TIGLViewerSettingsDialog(TIGLViewerSettings& settings, QWidget *parent)
 : _settings(settings), QDialog(parent) {
-	setupUi(this);
+    setupUi(this);
 
-	tessAccuEdit->setText (QString("%1").arg(sliderTesselationAccuracy->value()));
-	trianAccuEdit->setText(QString("%1").arg(sliderTriangulationAccuracy->value()));
+    tessAccuEdit->setText (QString("%1").arg(sliderTesselationAccuracy->value()));
+    trianAccuEdit->setText(QString("%1").arg(sliderTriangulationAccuracy->value()));
 
-	connect(buttonBox, SIGNAL(accepted()), this, SLOT(onSettingsAccepted()));
-	connect(sliderTesselationAccuracy,   SIGNAL(valueChanged(int)), this, SLOT(onSliderTesselationChanged(int)));
-	connect(sliderTriangulationAccuracy, SIGNAL(valueChanged(int)), this, SLOT(onSliderTriangulationChanged(int)));
-	connect(buttonColorChoser, SIGNAL(clicked()), this, SLOT(onColorChoserPushed()));
+    connect(buttonBox, SIGNAL(accepted()), this, SLOT(onSettingsAccepted()));
+    connect(sliderTesselationAccuracy,   SIGNAL(valueChanged(int)), this, SLOT(onSliderTesselationChanged(int)));
+    connect(sliderTriangulationAccuracy, SIGNAL(valueChanged(int)), this, SLOT(onSliderTriangulationChanged(int)));
+    connect(buttonColorChoser, SIGNAL(clicked()), this, SLOT(onColorChoserPushed()));
 }
 
 double TIGLViewerSettingsDialog::calcTesselationAccu(int value){
-	// calculate tesselation accuracy, slider range is from 0 ... 10
-	// we map it onto 0.1 to 0.00001 - logarithmic slider
-	double dmax = WORST_TESSELATION, dmin = BEST_TESSELATION;
-	int imin = sliderTesselationAccuracy->minimum(), imax = sliderTesselationAccuracy->maximum();
+    // calculate tesselation accuracy, slider range is from 0 ... 10
+    // we map it onto 0.1 to 0.00001 - logarithmic slider
+    double dmax = WORST_TESSELATION, dmin = BEST_TESSELATION;
+    int imin = sliderTesselationAccuracy->minimum(), imax = sliderTesselationAccuracy->maximum();
 
-	double mu = log(dmax/dmin)/double(imax-imin);
-	double c  = dmax / exp(-mu * (double)imin);
+    double mu = log(dmax/dmin)/double(imax-imin);
+    double c  = dmax / exp(-mu * (double)imin);
 
-	return c * exp(-mu * (double)value);
+    return c * exp(-mu * (double)value);
 }
 
 double TIGLViewerSettingsDialog::calcTriangulationAccu(int value){
-	// calculate triangulation accuracy, slider range is from 0 ... 10
-	// we map it onto 0.1 to 0.00001 - logarithmic slider
-	double dmax = WORST_TRIANGULATION, dmin = BEST_TRIANGULATION;
-	int imin = sliderTriangulationAccuracy->minimum(), imax = sliderTriangulationAccuracy->maximum();
+    // calculate triangulation accuracy, slider range is from 0 ... 10
+    // we map it onto 0.1 to 0.00001 - logarithmic slider
+    double dmax = WORST_TRIANGULATION, dmin = BEST_TRIANGULATION;
+    int imin = sliderTriangulationAccuracy->minimum(), imax = sliderTriangulationAccuracy->maximum();
 
-	double mu = log(dmax/dmin)/double(imax-imin);
-	double c  = dmax / exp(-mu * (double)imin);
+    double mu = log(dmax/dmin)/double(imax-imin);
+    double c  = dmax / exp(-mu * (double)imin);
 
-	return c * exp(-mu * (double)value);
+    return c * exp(-mu * (double)value);
 }
 
 
 void TIGLViewerSettingsDialog::onSettingsAccepted(){
-	_settings.setTesselationAccuracy(calcTesselationAccu(sliderTesselationAccuracy->value()));
-	_settings.setTriangulationAccuracy(calcTriangulationAccu(sliderTriangulationAccuracy->value()));
-	_settings.setBGColor(_bgcolor);
+    _settings.setTesselationAccuracy(calcTesselationAccu(sliderTesselationAccuracy->value()));
+    _settings.setTriangulationAccuracy(calcTriangulationAccu(sliderTriangulationAccuracy->value()));
+    _settings.setBGColor(_bgcolor);
 }
 
 void TIGLViewerSettingsDialog::updateEntries(){
-	// calculate tesselation accuracy, slider range is from 0 ... 10
-	// we map it onto 0.1 to 0.00001 - logarithmic slider
-	double dmax = WORST_TESSELATION, dmin = BEST_TESSELATION;
-	int imin = sliderTesselationAccuracy->minimum(), imax = sliderTesselationAccuracy->maximum();
+    // calculate tesselation accuracy, slider range is from 0 ... 10
+    // we map it onto 0.1 to 0.00001 - logarithmic slider
+    double dmax = WORST_TESSELATION, dmin = BEST_TESSELATION;
+    int imin = sliderTesselationAccuracy->minimum(), imax = sliderTesselationAccuracy->maximum();
 
-	double mu = log(dmax/dmin)/double(imax-imin);
-	double c  = dmax / exp(-mu * (double)imin);
+    double mu = log(dmax/dmin)/double(imax-imin);
+    double c  = dmax / exp(-mu * (double)imin);
 
-	int tessVal = int (log(c/_settings.tesselationAccuracy())/mu);
-	sliderTesselationAccuracy->setValue(tessVal);
+    int tessVal = int (log(c/_settings.tesselationAccuracy())/mu);
+    sliderTesselationAccuracy->setValue(tessVal);
 
-	dmax = WORST_TRIANGULATION, dmin = BEST_TRIANGULATION;
-	imin = sliderTriangulationAccuracy->minimum(), imax = sliderTriangulationAccuracy->maximum();
+    dmax = WORST_TRIANGULATION, dmin = BEST_TRIANGULATION;
+    imin = sliderTriangulationAccuracy->minimum(), imax = sliderTriangulationAccuracy->maximum();
 
-	mu = log(dmax/dmin)/double(imax-imin);
-	c  = dmax / exp(-mu * (double)imin);
+    mu = log(dmax/dmin)/double(imax-imin);
+    c  = dmax / exp(-mu * (double)imin);
 
-	int triaVal = int (log(c/_settings.triangulationAccuracy())/mu);
-	sliderTriangulationAccuracy->setValue(triaVal);
+    int triaVal = int (log(c/_settings.triangulationAccuracy())/mu);
+    sliderTriangulationAccuracy->setValue(triaVal);
 
-	_bgcolor = _settings.BGColor();
-	updateBGColorButton();
+    _bgcolor = _settings.BGColor();
+    updateBGColorButton();
 }
 
 void TIGLViewerSettingsDialog::onSliderTesselationChanged(int val){
-	tessAccuEdit->setText(QString("%1").arg(val));
+    tessAccuEdit->setText(QString("%1").arg(val));
 }
 
 void TIGLViewerSettingsDialog::onSliderTriangulationChanged(int val){
-	trianAccuEdit->setText(QString("%1").arg(val));
+    trianAccuEdit->setText(QString("%1").arg(val));
 }
 
 void TIGLViewerSettingsDialog::onColorChoserPushed(){
-	QColor col = QColorDialog::getColor(_bgcolor, this);
-	if(col.isValid()) {
-		_bgcolor = col;
-		updateBGColorButton();
-	}
+    QColor col = QColorDialog::getColor(_bgcolor, this);
+    if(col.isValid()) {
+        _bgcolor = col;
+        updateBGColorButton();
+    }
 }
 
 void TIGLViewerSettingsDialog::updateBGColorButton(){
-	QString qss = QString(BTN_STYLE).arg(_bgcolor.name());
-	buttonColorChoser->setStyleSheet(qss);
+    QString qss = QString(BTN_STYLE).arg(_bgcolor.name());
+    buttonColorChoser->setStyleSheet(qss);
 }
 
 TIGLViewerSettingsDialog::~TIGLViewerSettingsDialog() {

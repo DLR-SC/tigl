@@ -32,7 +32,7 @@
 class TiglFuselageGetPoint : public ::testing::Test {
  protected:
   static void SetUpTestCase() {
-        const char* filename = "TestData/CPACS_21_D150.xml";
+        const char* filename = "TestData/simpletest.cpacs.xml";
         ReturnCode tixiRet;
         TiglReturnCode tiglRet;
 
@@ -41,7 +41,7 @@ class TiglFuselageGetPoint : public ::testing::Test {
         
         tixiRet = tixiOpenDocument(filename, &tixiHandle);
         ASSERT_TRUE (tixiRet == SUCCESS);
-        tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "D150_VAMP", &tiglHandle);
+        tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "Cpacs2Test", &tiglHandle);
         ASSERT_TRUE(tiglRet == TIGL_SUCCESS);
   }
 
@@ -133,8 +133,65 @@ TEST_F(TiglFuselageGetPoint, nullPointerArgument)
 TEST_F(TiglFuselageGetPoint, success)
 {
     double x, y, z;
+    double accuracy = 1e-7;
+    
     ASSERT_TRUE(tiglFuselageGetPoint(tiglHandle, 1, 1, 0.0, 0.0, &x, &y, &z) == TIGL_SUCCESS);
+    ASSERT_NEAR(-0.5, x, accuracy);
+    
     ASSERT_TRUE(tiglFuselageGetPoint(tiglHandle, 1, 1, 0.5, 0.5, &x, &y, &z) == TIGL_SUCCESS);
+    ASSERT_NEAR( 0.0, x, accuracy);
+    
     ASSERT_TRUE(tiglFuselageGetPoint(tiglHandle, 1, 1, 1.0, 1.0, &x, &y, &z) == TIGL_SUCCESS);
+    ASSERT_NEAR( 0.5, x, accuracy);
+    
+    ASSERT_TRUE(tiglFuselageGetPoint(tiglHandle, 1, 2, 1.0, 1.0, &x, &y, &z) == TIGL_SUCCESS);
+    ASSERT_NEAR( 1.5, x, accuracy);
+}
+
+/**
+* Testing a bug in getPointAtAngle.
+*/
+TEST(TiglFuselageGetPointBugs, getPointAngle)
+{
+    const char* filename = "TestData/CPACS_21_D150.xml";
+
+    TiglCPACSConfigurationHandle tiglHandle = -1;
+    TixiDocumentHandle tixiHandle = -1;
+
+    ReturnCode tixiRet = tixiOpenDocument(filename, &tixiHandle);
+    ASSERT_TRUE (tixiRet == SUCCESS);
+    TiglReturnCode tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "", &tiglHandle);
+    ASSERT_TRUE(tiglRet == TIGL_SUCCESS);
+
+    double x, y, z;
+
+    ASSERT_EQ(TIGL_SUCCESS, tiglFuselageGetPointAngle(tiglHandle, 1, 24, 0.5, 0.0, &x, &y, &z));
+}
+
+/**
+* Testing a bug in getPointAtAngle that provokes an unstable OCCT algorithm if not
+* used correctly
+*/
+TEST(TiglFuselageGetPointBugs, getPointAngleTranslated)
+{
+    const char* filename = "TestData/D150_v201.xml";
+
+    TiglCPACSConfigurationHandle tiglHandle = -1;
+    TixiDocumentHandle tixiHandle = -1;
+
+    ReturnCode tixiRet = tixiOpenDocument(filename, &tixiHandle);
+    ASSERT_TRUE (tixiRet == SUCCESS);
+    TiglReturnCode tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "", &tiglHandle);
+    ASSERT_TRUE(tiglRet == TIGL_SUCCESS);
+
+    double x, y, z;
+
+    // this always worked
+    ASSERT_EQ(TIGL_SUCCESS, tiglFuselageGetPointAngleTranslated(tiglHandle, 1, 29, 0.5,  8.1795,  0.19097, 0.027451, &x, &y, &z));
+    ASSERT_NEAR(-0.088553, y, 1e-5);
+
+    // this was buggy
+    ASSERT_EQ(TIGL_SUCCESS, tiglFuselageGetPointAngleTranslated(tiglHandle, 1, 29, 0.5, -8.1795, -0.19097, 0.027451, &x, &y, &z));
+    ASSERT_NEAR(0.088553, y, 1e-5);
 }
 

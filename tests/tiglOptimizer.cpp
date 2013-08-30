@@ -1,8 +1,8 @@
 #include "test.h"
 #include "tigl.h"
 
-#include "ITiglObjectiveFunction.h"
-#include "CTiglOptimizer.h"
+#include "math/ITiglObjectiveFunction.h"
+#include "math/CTiglOptimizer.h"
 
 #include <cmath>
 

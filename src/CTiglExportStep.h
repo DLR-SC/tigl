@@ -33,23 +33,25 @@
 #include "CCPACSFuselages.h"
 #include "CCPACSFuselageProfile.h"
 
+#ifdef TIGL_USE_XCAF
 #include "STEPCAFControl_Writer.hxx"
+#endif
 #include "TopTools_HSequenceOfShape.hxx"
 
 class CCPACSConfiguration;
 
 namespace tigl {
 
-	class CTiglExportStep
-	{
+    class CTiglExportStep
+    {
 
-	public:
-		// Constructor
-	    CTiglExportStep(CCPACSConfiguration& config);
+    public:
+        // Constructor
+        CTiglExportStep(CCPACSConfiguration& config);
 
-		// Virtual Destructor
-		virtual ~CTiglExportStep(void);
-		
+        // Virtual Destructor
+        virtual ~CTiglExportStep(void);
+        
         // Exports the whole configuration as IGES file
         void ExportStep(const std::string& filename) const;
 
@@ -59,20 +61,23 @@ namespace tigl {
         // Save a sequence of shapes in IGES Format
         void ExportShapes(const Handle(TopTools_HSequenceOfShape)& aHSequenceOfShape, const std::string& filename);
 
+#ifdef TIGL_USE_XCAF // this feature requires xcaf
         // Saves as IGES, with cpacs metadata information in it
         void ExportStepWithCPACSMetadata(const std::string& filename);
+#endif
 
 
     protected:
         
 
     private:
-		// Assignment operator
-		void operator=(const CTiglExportStep& ) { /* Do nothing */ }
+        // Assignment operator
+        void operator=(const CTiglExportStep& ) { /* Do nothing */ }
 
-	private:
-		CCPACSConfiguration&          myConfig;       /**< TIGL configuration object */
-	};
+    private:
+        CCPACSConfiguration&          myConfig;       /**< TIGL configuration object */
+        void AddFacesOfShape(const TopoDS_Shape &shape, class STEPControl_Writer &writer) const;
+    };
 
 } // end namespace tigl
 
