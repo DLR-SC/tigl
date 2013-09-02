@@ -43,37 +43,22 @@ int GeometricVisObject::readTiglPolydata(tigl::CTiglPolyData& polyData)
 			continue;
 		}
 		// else
-		unsigned long index0 = inputObject.getVertexIndexOfPolygon(0, iPoly);
-		unsigned long index1 = inputObject.getVertexIndexOfPolygon(1, iPoly);
-		unsigned long index2 = inputObject.getVertexIndexOfPolygon(2, iPoly);
 
-		tigl::CTiglPoint vertexPoint0  = inputObject.getVertexPoint (index0);
-		tigl::CTiglPoint vertexPoint1  = inputObject.getVertexPoint (index1);
-		tigl::CTiglPoint vertexPoint2  = inputObject.getVertexPoint (index2);
+		for(int vindex = 0; vindex < 3; vindex++){
+			unsigned long index = inputObject.getVertexIndexOfPolygon(vindex, iPoly);
 
-		tigl::CTiglPoint vertexNormal0 = inputObject.getVertexNormal(index0);
-		tigl::CTiglPoint vertexNormal1 = inputObject.getVertexNormal(index1);
-		tigl::CTiglPoint vertexNormal2 = inputObject.getVertexNormal(index2);
+			tigl::CTiglPoint vertexPoint  = inputObject.getVertexPoint (index);
+			tigl::CTiglPoint vertexNormal = inputObject.getVertexNormal(index);
 
-		osg::Vec3f vertex0(vertexPoint0.x,  vertexPoint0.y,  vertexPoint0.z );
-		osg::Vec3f vertex1(vertexPoint1.x,  vertexPoint1.y,  vertexPoint1.z );
-		osg::Vec3f vertex2(vertexPoint2.x,  vertexPoint2.y,  vertexPoint2.z );
+			osg::Vec3f vertex(vertexPoint.x,  vertexPoint.y,  vertexPoint.z );
+			osg::Vec3f normal(vertexNormal.x, vertexNormal.y, vertexNormal.z);
 
-		osg::Vec3f normal0(vertexNormal0.x, vertexNormal0.y, vertexNormal0.z);
-		osg::Vec3f normal1(vertexNormal1.x, vertexNormal1.y, vertexNormal1.z);
-		osg::Vec3f normal2(vertexNormal2.x, vertexNormal2.y, vertexNormal2.z);
+			// scale normals to unit length
+			normal.normalize();
 
-		// scale normals to unit length
-		normal0.normalize();
-		normal1.normalize();
-		normal2.normalize();
-
-		vertices->push_back(vertex0);
-		vertices->push_back(vertex1);
-		vertices->push_back(vertex2);
-		normals ->push_back(normal0);
-		normals ->push_back(normal1);
-		normals ->push_back(normal2);
+			vertices->push_back(vertex);
+			normals ->push_back(normal);
+		}
 
 	}
 
@@ -85,6 +70,8 @@ int GeometricVisObject::readTiglPolydata(tigl::CTiglPolyData& polyData)
 	geometry->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
 
 	this->addDrawable(geometry.get());
+
+	this->getOrCreateStateSet()->setAttribute(MaterialTemplate::getMaterial(0));
 
 	//this->setPicked(false);
 
@@ -164,8 +151,7 @@ int GeometricVisObject::readVTK(const char* xmlFilename)
 	noOfGVO++;
 	osg::ref_ptr<osg::Geometry> geometry = new osg::Geometry();
 
-
-	//this->getOrCreateStateSet()->setAttribute(MaterialTemplate::getMaterial(0));
+	this->getOrCreateStateSet()->setAttribute(MaterialTemplate::getMaterial(0));
 	geometry->setVertexArray(vertices);
 	geometry->addPrimitiveSet(indices.get());
 

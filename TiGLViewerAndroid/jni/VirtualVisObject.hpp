@@ -26,7 +26,7 @@ public:
 	bool yzActive(){return yz;};
 	bool axesActive(){return axes;};
 
-	void setXYGrid(bool active, int size=70, int unit=10);
+	void setXYGrid(bool active, int size=500, int unit=10);
 	void setXZGrid(bool active, int size=70, int unit=10);
 	void setYZGrid(bool active, int size=70, int unit=10);
 	void setAxes(bool active);

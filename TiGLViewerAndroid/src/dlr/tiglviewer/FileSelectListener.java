@@ -15,9 +15,9 @@ public class FileSelectListener implements OnItemSelectedListener {
 	 
 	
 	 if(parent.getItemAtPosition(pos).toString().contains("xml"))
-	 osgNativeLib.addObjectFromCPACS("/sdcard/Wingfile/" + parent.getItemAtPosition(pos).toString());
+		 osgNativeLib.addObjectFromCPACS("/sdcard/Tiglviewer/" + parent.getItemAtPosition(pos).toString());
 	 else if(parent.getItemAtPosition(pos).toString().contains("vtp"))
-		 osgNativeLib.addObjectFromVTK("/sdcard/Wingfile/" + parent.getItemAtPosition(pos).toString());
+		 osgNativeLib.addObjectFromVTK("/sdcard/Tiglviewer/" + parent.getItemAtPosition(pos).toString());
 	 
 	 Toast.makeText(parent.getContext(), 
 				"File : " + parent.getItemAtPosition(pos).toString() + " has been Loaded",

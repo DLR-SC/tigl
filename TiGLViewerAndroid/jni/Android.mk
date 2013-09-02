@@ -4,10 +4,10 @@ include $(CLEAR_VARS)
 
 LOCAL_MODULE    := osgNativeLib
 ### Main Install dir
-OSG_ANDROID_DIR	:= D:/src/osgAndroidLibs/install_3_2/usr/local
+OSG_ANDROID_DIR	:= /Users/martin/Documents/Code/OpenSceneGraph-3.2.0/build-android/install
 LIBDIR 			:= -L $(OSG_ANDROID_DIR)/obj/local/armeabi
 
-TIGL_LIBS := -L D:/src/TiglLibs -lTIGL_static \
+TIGL_LIBS := -L /Users/martin/Documents/Code/tigl/misc/tigl-android/lib -lTIGL_static \
 	-lTKIGES -lTKSTL -lTKSTEP \
 	-lTKSTEPAttr -lTKOffset -lTKMesh \
 	-lTKSTEP209 -lTKFillet -lTKSTEPBase \
@@ -17,7 +17,7 @@ TIGL_LIBS := -L D:/src/TiglLibs -lTIGL_static \
 	-lTKG3d -lTKG2d -lTKMath -lTKernel \
 	-lTIXI_static -lcurl -lxslt -lxml2
 	
-TIGL_INCLUDES := D:/src/TiglLibs/tigl_src/src D:/src/TiglLibs/oce
+TIGL_INCLUDES := ../../src /Users/martin/Documents/Code/oce-install/include/oce/
 
 
 ifeq ($(TARGET_ARCH_ABI),armeabi-v7a)

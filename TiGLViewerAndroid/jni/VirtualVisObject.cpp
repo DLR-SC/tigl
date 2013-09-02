@@ -55,34 +55,56 @@ void VirtualVisObject::setAxes(bool active){
 void VirtualVisObject::initXYGeode(int size, int unit){
 
 	xyGeode = new osg::Geode();
-	osg::Geometry* linesX = new osg::Geometry();
+	osg::Geometry* lines      = new osg::Geometry();
+	osg::Geometry* lines_wide = new osg::Geometry;
 
 	osg::Vec3Array* vertices = new osg::Vec3Array();
-	for(int i = 0; i < size/unit+1; i++){
-		vertices->push_back(osg::Vec3(-size,i*unit,0));
-		vertices->push_back(osg::Vec3(size,i*unit,0));
-		vertices->push_back(osg::Vec3(-size,-i*unit,0));
-		vertices->push_back(osg::Vec3(size,-i*unit,0));
+	osg::Vec3Array* vertices_wide = new osg::Vec3Array();
+	for(int i = 0; i <= size; i+=unit){
+		if(i % (10*unit) != 0){
+			vertices->push_back(osg::Vec3(-size,i,0));
+			vertices->push_back(osg::Vec3(size,i,0));
+			vertices->push_back(osg::Vec3(-size,-i,0));
+			vertices->push_back(osg::Vec3(size,-i,0));
+
+			vertices->push_back(osg::Vec3( i,-size,0));
+			vertices->push_back(osg::Vec3( i, size,0));
+			vertices->push_back(osg::Vec3(-i,-size,0));
+			vertices->push_back(osg::Vec3(-i, size,0));
+		}
+		else {
+			vertices_wide->push_back(osg::Vec3(-size, i,0));
+			vertices_wide->push_back(osg::Vec3( size, i,0));
+			vertices_wide->push_back(osg::Vec3(-size,-i,0));
+			vertices_wide->push_back(osg::Vec3( size,-i,0));
+
+			vertices_wide->push_back(osg::Vec3( i,-size,0));
+			vertices_wide->push_back(osg::Vec3( i, size,0));
+			vertices_wide->push_back(osg::Vec3(-i,-size,0));
+			vertices_wide->push_back(osg::Vec3(-i, size,0));
+		}
 	}
 
-	linesX->setVertexArray(vertices);
-	linesX->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::LINES,0,vertices->size()));
+	lines->setVertexArray(vertices);
+	lines_wide->setVertexArray(vertices_wide);
+	lines->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::LINES,0,vertices->size()));
+	lines_wide->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::LINES,0,vertices_wide->size()));
 
-	osg::Geometry* linesY = new osg::Geometry();
+	osg::Vec4Array* colors = new osg::Vec4Array;
+	colors->push_back(osg::Vec4(1.0f, 0.0f, 0.0f, 1.0f) ); //red
+	osg::Vec4Array* color_white = new osg::Vec4Array;
+	color_white->push_back(osg::Vec4(1.0f, 1.0f, 1.0f, 1.0f) ); //white
 
-	vertices = new osg::Vec3Array();
-	for(int i = 0; i < size/unit+1; i++){
-		vertices->push_back(osg::Vec3(i*unit,-size,0));
-		vertices->push_back(osg::Vec3(i*unit,size,0));
-		vertices->push_back(osg::Vec3(-i*unit, -size,0));
-		vertices->push_back(osg::Vec3(-i*unit,size,0));
-	}
+	lines->setColorArray(colors);
+	lines_wide->setColorArray(color_white);
 
-	linesY->setVertexArray(vertices);
-	linesY->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::LINES,0,vertices->size()));
+	lines->setColorBinding(osg::Geometry::BIND_OVERALL);
+	lines_wide->setColorBinding(osg::Geometry::BIND_OVERALL);
 
-	xyGeode->addDrawable(linesX);
-	xyGeode->addDrawable(linesY);
+	xyGeode->addDrawable(lines);
+	xyGeode->addDrawable(lines_wide);
+	osg::StateSet* stateset = xyGeode->getOrCreateStateSet();
+	stateset->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
 }
 
 void VirtualVisObject::initXZGeode(int size,int unit){
@@ -161,14 +183,22 @@ void VirtualVisObject::initAxesGeode(){
 
 	
 
-	osg::ref_ptr<osg::Cylinder> xAxis = new osg::Cylinder(osg::Vec3(0,0,0), 0.05f, 100.0f);
+	osg::ref_ptr<osg::Cylinder> xAxis = new osg::Cylinder(osg::Vec3(0,0,0), 0.05f, 300.0f);
 	xAxis->setRotation(osg::Quat(osg::PI_2, osg::Vec3(0,1,0)));
 	osg::ref_ptr<osg::Cylinder> yAxis = new osg::Cylinder(osg::Vec3(0,0,0), 0.05f, 100.0f);
 	yAxis->setRotation(osg::Quat(osg::PI_2, osg::Vec3(1,0,0)));
 	osg::ref_ptr<osg::Cylinder> zAxis = new osg::Cylinder(osg::Vec3(0,0,0), 0.05f, 100.0f);
 
-	axesGeode->addDrawable(new osg::ShapeDrawable(xAxis.get()));
-	axesGeode->addDrawable(new osg::ShapeDrawable(yAxis.get()));
-	axesGeode->addDrawable(new osg::ShapeDrawable(zAxis.get()));
+	osg::ShapeDrawable * xax = new osg::ShapeDrawable(xAxis.get());
+	osg::ShapeDrawable * yax = new osg::ShapeDrawable(yAxis.get());
+	osg::ShapeDrawable * zax = new osg::ShapeDrawable(zAxis.get());
+
+	osg::Vec4Array* colors = new osg::Vec4Array;
+	colors->push_back(osg::Vec4(1.0f, 0.0f, 0.0f, 1.0f) ); //index 0 red
+	xax->setColor(osg::Vec4(1.0f, 0.0f, 0.0f, 1.0f));
+
+	axesGeode->addDrawable(xax);
+	axesGeode->addDrawable(yax);
+	axesGeode->addDrawable(zax);
 
 }

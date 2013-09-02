@@ -103,7 +103,7 @@ public void loadFilesAndAddThemToSpinner()
 	fileSpinner = (Spinner) findViewById(R.id.spinner2);	   	
     fileList = new ArrayList<String>();   
     
-    file = new File(Environment.getExternalStorageDirectory(), "Wingfile");
+    file = new File(Environment.getExternalStorageDirectory(), "Tiglviewer");
     if (!file.exists()) {
     	file.mkdirs();
 		Log.e(TAG," making directory because it didnot exist");

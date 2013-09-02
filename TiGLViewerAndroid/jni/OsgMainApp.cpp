@@ -26,8 +26,8 @@ OsgMainApp::OsgMainApp(){
 
 }
 OsgMainApp::~OsgMainApp(){
-
 }
+    
 void OsgMainApp::addCross(osg::ref_ptr<CrossNode>& crossnode,osg::ref_ptr<osgViewer::Viewer> view , osg::Group* group ,
 						  int x, int y, int w, int h)
 {
@@ -67,6 +67,7 @@ void OsgMainApp::initOsgWindow(int x,int y,int width,int height){
 	    soleViewer->setUpViewerAsEmbeddedInWindow(x,y,width,height);
 	    soleViewer->getEventQueue()->setMouseInputRange(x,y,x+width,y+height);
 	    soleViewer->getCamera()->setClearColor( osg::Vec4(98/255. * 1.1 , 166/255. * 1.1 , 1.0 , 1.0) );
+        soleViewer->getCamera()->setProjectionMatrixAsPerspective(20.0, width/(double)height, 10, 1000);
 
 	    tm = new osgGA::TrackballManipulator();
 	    tm->setHomePosition(osg::Vec3(-HOME_POS,-HOME_POS,HOME_POS), osg::Vec3(20,0,0), osg::Vec3(0,0,1));
@@ -82,21 +83,25 @@ void OsgMainApp::initOsgWindow(int x,int y,int width,int height){
 	    // root_4 = new osg::Group();
 
 	    // cviewer->setThreadingModel(osgViewer::CompositeViewer::SingleThreaded);
-
-	    soleViewer->setCameraManipulator(tm);
-	    soleViewer->realize();
-	    addCross(crossnode1,soleViewer, root_1.get() , x , y , width/3, height/3);
-	    soleViewer->setSceneData(root_1.get());
-
-    	_state = root_1->getOrCreateStateSet();
+        
+        _state = root_1->getOrCreateStateSet();
 
 
 	    _state->setMode(GL_LIGHTING, osg::StateAttribute::ON);
 	 	_state->setMode(GL_DEPTH_TEST, osg::StateAttribute::ON);
 	 	_state->setMode(GL_CULL_FACE, osg::StateAttribute::ON);
+	 	_state->setMode(GL_COLOR_MATERIAL, osg::StateAttribute::ON);
 
+        soleViewer->addEventHandler(new osgViewer::StatsHandler);
+        soleViewer->addEventHandler(new osgGA::StateSetManipulator(soleViewer->getCamera()->getOrCreateStateSet()));
+        soleViewer->addEventHandler(new osgViewer::ThreadingHandler);
+        soleViewer->addEventHandler(new osgViewer::LODScaleHandler);
+        
+	    soleViewer->setCameraManipulator(tm);
+	    soleViewer->realize();
+	    addCross(crossnode1,soleViewer, root_1.get() , x , y , width/3, height/3);
+	    soleViewer->setSceneData(root_1.get());
 
-	 	soleViewer->addEventHandler(new osgViewer::StatsHandler);
 
 	    // cviewer->addView(createView(x,height/2,width/2,height/2,_gwe,1));
 	    // cviewer->addView(createView(x,y,width/2,height/2,_gwe,2));
@@ -105,6 +110,7 @@ void OsgMainApp::initOsgWindow(int x,int y,int width,int height){
 
 
 	    vvo = new VirtualVisObject();
+	    vvo->setAxes(false);
 	    root_1->addChild(vvo->main.get());
 
 
@@ -284,7 +290,6 @@ void OsgMainApp::addObjectFromCPACS(std::string filepath)
 	    		}
 	    	}
 	    }
-
 }
 void OsgMainApp::removeObjects()
 {
@@ -312,7 +317,7 @@ void OsgMainApp::currentCamera()
 		else if(viewSelected == 2)
 		{
 			osgGA::TrackballManipulator* tm1 = new osgGA::TrackballManipulator();
-			tm1->setHomePosition(osg::Vec3(20,HOME_POS,0), osg::Vec3(20,0,0), osg::Vec3(0,0,1));
+			tm1->setHomePosition(osg::Vec3(20,-HOME_POS,0), osg::Vec3(20,0,0), osg::Vec3(0,0,1));
 			soleViewer->setCameraManipulator(tm1);
 
 			viewSelected = -1;
