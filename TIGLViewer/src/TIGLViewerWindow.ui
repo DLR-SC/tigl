@@ -100,6 +100,7 @@
      <addaction name="drawFusedAircraftAction"/>
      <addaction name="showFusedAirplaneTriangulation"/>
      <addaction name="drawWingFuselageLineAction"/>
+     <addaction name="drawFarFieldAction"/>
     </widget>
     <widget class="QMenu" name="menuWings">
      <property name="title">
@@ -1125,6 +1126,14 @@
   <action name="tiglExportMeshedConfigVTKNoFuse">
    <property name="text">
     <string>Export Configuration VTK (not fused)</string>
+   </property>
+  </action>
+  <action name="drawFarFieldAction">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Draw Far Field</string>
    </property>
   </action>
  </widget>

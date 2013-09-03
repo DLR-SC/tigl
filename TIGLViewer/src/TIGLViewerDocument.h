@@ -74,6 +74,7 @@ public slots:
     void drawFusedAircraft();
     void drawFusedAircraftTriangulation();
     void drawWingFuselageIntersectionLine();
+    void drawFarField();
 
     // Wing slots
     void drawWingProfiles();

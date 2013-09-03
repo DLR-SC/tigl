@@ -81,6 +81,7 @@ namespace tigl {
         header.ReadCPACS(tixiDocumentHandle);
         wings.ReadCPACS(tixiDocumentHandle, configurationUID);
         fuselages.ReadCPACS(tixiDocumentHandle, configurationUID);
+        farField.ReadCPACS(tixiDocumentHandle);
 
         configUID = configurationUID;
         // Now do parent <-> child transformations. Child should use the
@@ -274,6 +275,11 @@ namespace tigl {
     CCPACSFuselage& CCPACSConfiguration::GetFuselage(int index) const
     {
         return fuselages.GetFuselage(index);
+    }
+
+    CCPACSFarField& CCPACSConfiguration::GetFarField()
+    {
+        return farField;
     }
 
     // Returns the fuselage for a given UID.

@@ -638,6 +638,7 @@ void TIGLViewerWindow::connectSignals()
     connect(drawFusedAircraftAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFusedAircraft()));
     connect(drawWingFuselageLineAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingFuselageIntersectionLine()));
     connect(showFusedAirplaneTriangulation, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFusedAircraftTriangulation()));
+    connect(drawFarFieldAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFarField()));
 
     // CPACS Fuselage Actions
     connect(drawFuselageProfilesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFuselageProfiles()));
@@ -727,6 +728,16 @@ void TIGLViewerWindow::updateMenus(TiglCPACSConfigurationHandle hand){
     menuAircraft->setEnabled(nWings > 0 || nFuselages > 0);
 
     closeAction->setEnabled(hand > 0);
+
+    bool hasFarField = false;
+    try {
+        if(hand > 0) {
+            tigl::CCPACSConfiguration& config = tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(hand);
+            hasFarField = config.GetFarField().GetFieldType() != tigl::NONE;
+        }
+    }
+    catch(tigl::CTiglError& ){}
+    drawFarFieldAction->setEnabled(hasFarField);
 }
 
 void TIGLViewerWindow::closeEvent(QCloseEvent*) {
