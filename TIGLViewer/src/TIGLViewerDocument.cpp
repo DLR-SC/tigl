@@ -50,6 +50,7 @@
 // TIGLViewer includes
 #include "TIGLViewerInternal.h"
 #include "CCPACSConfigurationManager.h"
+#include "CCPACSFarField.h"
 #include "TIGLViewerInputoutput.h"
 #include "ISession_Point.h"
 #include "ISession_Text.h"
@@ -1484,6 +1485,17 @@ void TIGLViewerDocument::drawWingShells(){
     displayShape(wing.GetLowerShape(), Quantity_NOC_RED);
 
     QApplication::restoreOverrideCursor();
+}
+
+void TIGLViewerDocument::drawFarField(){
+    tigl::CCPACSFarField& farField = GetConfiguration().GetFarField();
+    if(farField.GetFieldType() != tigl::NONE){
+        Handle(AIS_Shape) shape = new AIS_Shape(farField.GetLoft());
+        shape->SetMaterial(Graphic3d_NOM_PEWTER);
+        shape->SetTransparency(0.6);
+        myAISContext->Display(shape, Standard_True);
+        myOCC->fitAll();
+    }
 }
 
 /*
