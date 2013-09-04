@@ -100,7 +100,7 @@ Visualizer::Visualizer(int posX, int posY, int width, int height)
     root->addChild(addBGNode(down, up));
 
 	pickedNodes = new osg::Group();
-	pickedNodes->getOrCreateStateSet()->setAttribute(MaterialTemplate::getMaterial(1));
+    pickedNodes->getOrCreateStateSet()->setAttribute(MaterialTemplate::getMaterial(SELECTED));
 }
 
 

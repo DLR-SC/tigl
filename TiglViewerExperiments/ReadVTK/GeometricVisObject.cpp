@@ -40,7 +40,7 @@ void GeometricVisObject::create(InputObject* inputObject)
 	osg::ref_ptr<osg::Geometry> geometry = new osg::Geometry();
 
 
-	this->getOrCreateStateSet()->setAttribute(MaterialTemplate::getMaterial(0));
+    this->getOrCreateStateSet()->setAttribute(MaterialTemplate::getMaterial(UNSELECTED));
 	geometry->setVertexArray(inputObject->getVertices());
 	geometry->addPrimitiveSet(inputObject->getIndices());
 
@@ -140,11 +140,11 @@ InputObject* GeometricVisObject::readVTK(char* xmlFilename)
 }
 
 void GeometricVisObject::pick(){
-	this->getOrCreateStateSet()->setAttribute(MaterialTemplate::getMaterial(1));
+    this->getOrCreateStateSet()->setAttribute(MaterialTemplate::getMaterial(SELECTED));
 	this->setPicked(true);
 }
 
 void GeometricVisObject::unpick(){
-	this->getOrCreateStateSet()->setAttribute(MaterialTemplate::getMaterial(0));
+    this->getOrCreateStateSet()->setAttribute(MaterialTemplate::getMaterial(UNSELECTED));
 	this->setPicked(false);
 }
