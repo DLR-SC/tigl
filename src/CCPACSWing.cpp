@@ -586,5 +586,30 @@ namespace tigl {
     }
 
 
+    // Calculates the segment coordinates from global (x,y,z) coordinates
+    // Returns the segment index of the according segment
+    // If x,y,z does not belong to any segment, -1 is returned
+    int CCPACSWing::GetSegmentEtaXsi(const gp_Pnt& point, double& eta, double& xsi){
+        // search the segment
+        int segmentFound = -1;
+        for(int iSeg = 1; iSeg <= GetSegmentCount(); ++iSeg) {
+            CCPACSWingSegment& segment = (CCPACSWingSegment&) GetSegment(iSeg);
+            if (segment.GetIsOn(point) == true){
+                segmentFound = iSeg;
+                break;
+            }
+        }
+
+        if(segmentFound <= 0) {
+            return -1;
+        }
+
+        CCPACSWingSegment& segment = (CCPACSWingSegment&) GetSegment(segmentFound);
+        segment.GetEtaXsi(point, true, eta, xsi);
+
+        return segmentFound;
+    }
+
+
 
 } // end namespace tigl
