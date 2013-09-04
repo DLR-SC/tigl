@@ -24,13 +24,16 @@ set(SOURCE_FILES
 	PickHandler.h
 	VirtualVisObject.cpp
 	VirtualVisObject.h
-	Visualizer.cpp
+        Visualizer.cpp
 	Visualizer.h
 	VisObject.cpp
 	VisObject.h
 	InputObject.cpp
 	InputObject.h
-
+        CrossNode.cpp
+        CrossNode.h
+        crossnodegeode.cpp
+        crossnodegeode.h
 )
 
 add_executable(${PROGNAME} ${SOURCE_FILES})

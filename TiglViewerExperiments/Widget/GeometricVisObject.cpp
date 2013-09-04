@@ -90,7 +90,6 @@ void GeometricVisObject::create(tigl::CTiglPolyData& polyData)
 	geometry->setVertexArray(vertices);
 	geometry->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
 	geometry->setNormalArray(normals);
-	geometry->setNormalIndices(geometry->getVertexIndices());
 
 	this->addDrawable(geometry);
 	

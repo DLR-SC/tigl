@@ -11,7 +11,7 @@ set(PROGNAME "Widget")
 
 FIND_PACKAGE(Boost)
 
-FIND_PACKAGE(Qt4)
+FIND_PACKAGE(Qt4 4.4.3 REQUIRED QtCore QtGui QtOpengl)
 include(${QT_USE_FILE})
 add_definitions(${QT_DEFINITIONS})
 
@@ -22,7 +22,7 @@ macro( config_project PROGNAME LIBNAME )
 	target_link_libraries( ${PROGNAME} ${${LIBNAME}_LIBRARY} )
 endmacro()
 
-include_directories(${PROJECT_SOURCE_DIR}/src ${OpenCASCADE_INCLUDE_DIR}  ${GLOG_INCLUDE_DIR} ${TIXI_INCLUDE_DIRS} ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
+include_directories(${PROJECT_SOURCE_DIR}/src ${OpenCASCADE_INCLUDE_DIR}  ${GLOG_INCLUDE_DIR} ${TIXI_INCLUDE_DIRS} ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${PROJECT_BINARY_DIR}/src)
 
 set(SOURCE_FILES
 	RenderingThread.h

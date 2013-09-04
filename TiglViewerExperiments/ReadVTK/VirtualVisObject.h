@@ -1,36 +1,57 @@
 #ifndef VIRTUAL_VIS_OBJECT_H
 #define VIRTUAL_VIS_OBJECT_H
 
-#include "VisObject.h"
+#include <osg/Group>
+#include <osg/Geode>
+#include <osg/MatrixTransform>
+#include <osg/PositionAttitudeTransform>
 
-
-class VirtualVisObject : public VisObject
+class VirtualVisObject : public osg::Group
 {
 public:
+	osg::ref_ptr<osg::Group> main;
 	VirtualVisObject()
 		{
-			showXYGrid(4, 2);
-			xy = true;
-			showCross();
-			cross = true;
-			showAxes();
-			axes = true;
-
+			main = new osg::Group();
+			setXYGrid(true);
+			setAxes(true);
 		};
+
+	void initGeodes();
+
 	bool isPickable(){return false;};
 
-private:
-	void showXYGrid(int size, int unit);
-	void showXZGrid(int size, int unit);
-	void showYZGrid(int size, int unit);
+	bool xyActive(){return xy;};
+	bool xzActive(){return xz;};
+	bool yzActive(){return yz;};
+	bool axesActive(){return axes;};
 
-	void showCross();
-	void showAxes();
+	void setXYGrid(bool active, int size=500, int unit=10);
+	void setXZGrid(bool active, int size=70, int unit=10);
+	void setYZGrid(bool active, int size=70, int unit=10);
+	void setAxes(bool active);
+
+	osg::Camera* camera;
+
+
+private:
+	osg::ref_ptr<osg::Geode> axesGeode;
+	osg::ref_ptr<osg::Geode> xyGeode;
+	osg::ref_ptr<osg::Geode> xzGeode;
+	osg::ref_ptr<osg::Geode> yzGeode;
+
+	osg::ref_ptr<osg::PositionAttitudeTransform> hudAxesTransform;
+
+	void initXYGeode(int size, int unit);
+	void initXZGeode(int size, int unit);
+	void initYZGeode(int size, int unit);
+	void initAxesGeode();
+
+
 
 	bool xy;
 	bool xz;
 	bool yz;
-	bool cross;
 	bool axes;
 };
 

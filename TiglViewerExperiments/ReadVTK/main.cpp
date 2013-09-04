@@ -6,7 +6,7 @@
 int main(){
 	Visualizer* vis = new Visualizer(100,100,800,600);
 	vis->addObject("wing4.vtp", "wing4");
-	//vis->addObject("f19-2.vtp", "f-19");
+    vis->addObject("f19-2.vtp", "f-19");
 
 	vis->start();
 	for(unsigned int i  = 0 ; i < vis->getPickedNodes()->getNumChildren() ; i++)
