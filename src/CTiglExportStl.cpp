@@ -83,7 +83,4 @@ namespace tigl {
         StlWriter->Write(loft, const_cast<char*>(filename.c_str()));
     }
 
-
-
-
 } // end namespace tigl

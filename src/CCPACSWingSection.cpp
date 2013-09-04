@@ -45,7 +45,7 @@ namespace tigl {
     void CCPACSWingSection::Cleanup(void)
     {
         name = "";
-		uID  = "";
+        uID  = "";
         transformation.SetIdentity();
         translation = CTiglPoint(0.0, 0.0, 0.0);
         scaling     = CTiglPoint(1.0, 1.0, 1.0);
@@ -58,7 +58,7 @@ namespace tigl {
         transformation.SetIdentity();
 
         // scale normalized coordinates relative to (0,0,0)
-		transformation.AddScaling(scaling.x, scaling.y, scaling.z);
+        transformation.AddScaling(scaling.x, scaling.y, scaling.z);
 
         // rotate wing profile elements around their local reference points
         transformation.AddRotationZ(rotation.z);
@@ -68,7 +68,7 @@ namespace tigl {
         transformation.AddRotationX(rotation.x);
 
         // move local reference point to (0,0,0)
-		transformation.AddTranslation(translation.x, translation.y, translation.z);
+        transformation.AddTranslation(translation.x, translation.y, translation.z);
     }
 
     // Update internal section data
@@ -92,12 +92,12 @@ namespace tigl {
         if (tixiGetTextElement(tixiHandle, elementPath, &ptrName) == SUCCESS)
             name          = ptrName;
 
-		// Get attribute "uID"
-		char* ptrUID = NULL;
+        // Get attribute "uID"
+        char* ptrUID = NULL;
         tempString    = sectionXPath;
         elementPath   = const_cast<char*>(tempString.c_str());
         if (tixiGetTextAttribute(tixiHandle, elementPath, "uID", &ptrUID) == SUCCESS)
-		    uID          = ptrUID;
+            uID          = ptrUID;
 
         // Get subelement "/transformation/translation"
         tempString  = sectionXPath + "/transformation/translation";
@@ -139,15 +139,9 @@ namespace tigl {
     }
 
     // Get the UID of this WingSection
-    std::string CCPACSWingSection::GetUID(void) const
+    const std::string& CCPACSWingSection::GetUID(void) const
     {
         return uID;
-    }
-
-    // Get the UID of this WingSection
-    const char* CCPACSWingSection::GetUIDPtr(void) const
-    {
-        return uID.c_str();
     }
 
     // Get element for a given index

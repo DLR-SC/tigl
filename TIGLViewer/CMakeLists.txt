@@ -2,21 +2,25 @@
 # author: Martin Siggel
 
 # set up QT
-find_package(Qt4)	
+
+OPTION(TIGL_VIEWER "Builds the TiGL Viewer program (requires OpenGL and Qt4)" ON)
 
 set(PROGNAME "TIGLViewer")
 
+
+if(TIGL_VIEWER)
+
+find_package(Qt4)
 #build only tiglviewer if qt was found
-if(QT4_FOUND)
+if(QT4_FOUND)	
 
 # required opencascade libraries
-set (TV_OCC_LIBS ${OCC_LIBS}
-	PTKernel TKOffset TKOpenGl
-	TKPShape TKSTEP
-	TKService TKShapeSchema  
-	TKV2d TKV3d TKVRML  
+set (TV_OCC_LIBS 
+	TKOpenGl 
+	TKVRML TKShapeSchema TKPShape TKCDF PTKernel ${OCC_VISU_LIBS} ${OCC_LIBS}
 )
 
+set(OpenCASCADE_LIBRARIES "")
 find_package( OpenCASCADE REQUIRED COMPONENTS ${TV_OCC_LIBS})
 
 
@@ -46,6 +50,7 @@ set(tv_src
     TiglViewerConsole.cpp
     TIGLViewerSettings.cpp
     TIGLViewerControlFile.cpp
+    TIGLViewerEtaXsiDialog.cpp
 )
 	
 # normal header files
@@ -73,11 +78,13 @@ set(tv_hdr_qobj
 	TIXIScriptProxy.h
 	TIGLScriptEngine.h
 	TiglViewerConsole.h
+	TIGLViewerEtaXsiDialog.h
 )
 
 set(tv_ui_comp
 	src/TIGLViewerWindow.ui
 	src/TIGLViewerSettingsDialog.ui
+	src/TIGLViewerEtaXsiDialog.ui
 )
 	
 foreach ( _fname ${tv_src})
@@ -98,16 +105,8 @@ QT4_ADD_RESOURCES( tv_rcrs src/TIGLViewer.qrc )
 
 add_definitions(-DCSFDB -DQOCC_STATIC)
 
-if(OCC_VERSION_STRING VERSION_GREATER "6.3")
-    add_definitions(-DOCC_PATCHED)
-endif()
-
-if(OCC_VERSION_STRING VERSION_GREATER "6.4")
-    add_definitions(-DOCC_BG)
-endif()
-
-include_directories( ${OpenCASCADE_INCLUDE_DIR} ${TIXI_INCLUDE_DIRS} ${GLOG_INCLUDE_DIR})
-include_directories( ${PROJECT_SOURCE_DIR}/src ${CMAKE_CURRENT_SOURCE_DIR}/src )
+include_directories( ${OpenCASCADE_INCLUDE_DIR} ${TIXI_INCLUDE_DIRS})
+include_directories( ${PROJECT_SOURCE_DIR}/src ${CMAKE_CURRENT_SOURCE_DIR}/src ${PROJECT_BINARY_DIR}/src)
 
 # include path for ui files
 include_directories( ${CMAKE_CURRENT_BINARY_DIR} )
@@ -152,8 +151,12 @@ target_link_libraries(${PROGNAME}
 	${QT_LIBRARIES} 
 	${OPENGL_LIBRARIES} 
 	${OpenCASCADE_LIBRARIES} 
-	${GLOG_LIBRARIES}
 )
+
+if(GLOG_FOUND)
+  include_directories(${GLOG_INCLUDE_DIR})
+  target_link_libraries (${PROGNAME} ${GLOG_LIBRARIES})
+endif(GLOG_FOUND)
 
 #--------------------------------------------------------------------------------
 # Now the installation stuff below
@@ -208,6 +211,10 @@ if (WIN32 OR APPLE)
   INSTALL_QT4_EXECUTABLE(${APPS} "" "${OCC_PLUGINS_FULL}" "${DIRS}" "" "" viewer)
 endif()
 
-else(QT4_FOUND)
+else (QT4_FOUND)
 message(STATUS "No qt4 was found. TIGLViewer will not be build!")
 endif(QT4_FOUND)
+
+endif(TIGL_VIEWER)
+
+

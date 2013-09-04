@@ -30,7 +30,7 @@
 #include "TIGLViewerApplication.h"
 
 TIGLViewerApplication::TIGLViewerApplication(int &argc, char **argv, int _internal ) :
-	QApplication (argc, argv, _internal)
+    QApplication (argc, argv, _internal)
 {
 }
 

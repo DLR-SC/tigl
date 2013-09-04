@@ -94,8 +94,8 @@ TiglReturnCode CTiglOptimizer::optNewton2d(const class ITiglObjectiveFunction& f
     double of = f.getFunctionValue(x);
     double of_old = 2.*of;
 
-#ifdef DEBUG
-    std::cout << "Initial guess eta=" << x[0] << " xsi=" << x[1] << " f=" << of << std::endl;
+#ifdef DEBUG_
+    LOG(INFO) << "Initial guess eta=" << x[0] << " xsi=" << x[1] << " f=" << of;
 #endif
 
     f.getGradientHessian(x, grad, hess);
@@ -153,8 +153,6 @@ TiglReturnCode CTiglOptimizer::optNewton2d(const class ITiglObjectiveFunction& f
 
     return TIGL_SUCCESS;
 }
-
-
 
 }
 

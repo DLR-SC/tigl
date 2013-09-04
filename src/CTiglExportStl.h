@@ -36,15 +36,15 @@
 
 namespace tigl {
 
-	class CTiglExportStl
-	{
+    class CTiglExportStl
+    {
 
-	public:
-		// Constructor
-	    CTiglExportStl(CCPACSConfiguration& config);
+    public:
+        // Constructor
+        CTiglExportStl(CCPACSConfiguration& config);
 
         // Empty destructor
-		~CTiglExportStl(void) { /* empty */}
+        ~CTiglExportStl(void) { /* empty */}
 
         // Exports a selected wing, boolean fused and meshed, as STL file
         void ExportMeshedWingSTL(int wingIndex, const std::string& filename, double deflection = 0.1);
@@ -56,15 +56,14 @@ namespace tigl {
         void ExportMeshedGeometrySTL(const std::string& filename, double deflection = 0.1);
 
     protected:
-        
 
     private:
-		// Assignment operator
-		void operator=(const CTiglExportStl& ) { /* Do nothing */ }
+        // Assignment operator
+        void operator=(const CTiglExportStl& ) { /* Do nothing */ }
 
-	private:
-		CCPACSConfiguration & myConfig;       /**< TIGL configuration object */
-	};
+    private:
+        CCPACSConfiguration & myConfig;       /**< TIGL configuration object */
+    };
 
 } // end namespace tigl
 

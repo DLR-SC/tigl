@@ -20,26 +20,26 @@
 #define TIGLVIEWERCONTROLFILE_H_
 
 enum CF_ReturnCode{
-	CF_SUCCESS,
-	CF_FILE_NOT_FOUND,
-	CF_ERROR
+    CF_SUCCESS,
+    CF_FILE_NOT_FOUND,
+    CF_ERROR
 };
 
 enum CF_BOOL_STATUS{
-	CF_TRUE,
-	CF_FALSE,
-	UNDEFINED
+    CF_TRUE,
+    CF_FALSE,
+    UNDEFINED
 };
 
 class TIGLViewerControlFile {
 public:
-	TIGLViewerControlFile();
+    TIGLViewerControlFile();
 
-	CF_ReturnCode read(const char *);
+    CF_ReturnCode read(const char *);
 
-	virtual ~TIGLViewerControlFile();
+    virtual ~TIGLViewerControlFile();
 
-	CF_BOOL_STATUS showConsole;
+    CF_BOOL_STATUS showConsole;
 };
 
 #endif /* TIGLVIEWERCONTROLFILE_H_ */

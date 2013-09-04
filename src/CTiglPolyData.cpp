@@ -51,9 +51,9 @@ struct TiglPointComparer;
 
 class PointImpl {
 public:
-    PointImpl(){
-        p_ = CTiglPoint(0,0,0);
-        n_ = CTiglPoint(1,0,0);
+    PointImpl() : 
+        p_(CTiglPoint(0,0,0)),
+        n_(CTiglPoint(1,0,0)) {
     }
 
     PointImpl(const CTiglPoint& p, const CTiglPoint& n)
@@ -140,9 +140,8 @@ struct TiglPointComparer
 
 //class to store a polygon by its point indices
 struct PolyIndexList{
-    PolyIndexList(int num){
+    PolyIndexList(int num) : _metadata(""){
         myid = num;
-        _metadata = "";
     }
 
     void setMetadata(const std::string& str){
@@ -692,7 +691,7 @@ const char * CTiglPolyObject::getPolyDataFieldName(unsigned long iField) const {
     if(iField < getNumberOfPolyRealData()){
         std::set<std::string>::iterator it = impl->polyDataElems.begin();
         for(unsigned long i = 0; i < iField; ++i)
-            it++;
+            ++it;
         return it->c_str();
     }
     else 
@@ -803,7 +802,7 @@ void ObjectImpl::addPolygon(const CTiglPolygon & poly){
             addPointNorm(poly.getPointConst(i), poly.getNormConst(i), polynum);
         }
     }
-    assert(polynum = polys.size());
+    assert(polynum == polys.size());
     polys.at(polynum-1).setMetadata(poly.getMetadata());
 }
 
@@ -811,6 +810,7 @@ void ObjectImpl::addPolygon(const CTiglPolygon & poly){
 unsigned long ObjectImpl::getNPolygons() const{
     return polys.size();
 }
+
 unsigned long ObjectImpl::getNPointsOfPolygon(unsigned long ipoly) const{
     if(ipoly < getNPolygons())
         return polys[ipoly].getNVert();

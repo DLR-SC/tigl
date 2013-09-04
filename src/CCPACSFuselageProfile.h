@@ -102,19 +102,19 @@ namespace tigl {
 
     private:
         // Copy constructor
-        CCPACSFuselageProfile(const CCPACSFuselageProfile& )  { /* Do nothing */ }
+        CCPACSFuselageProfile(const CCPACSFuselageProfile& );
 
         // Assignment operator
-        void operator=(const CCPACSFuselageProfile& ) { /* Do nothing */ }
+        void operator=(const CCPACSFuselageProfile& );
 
         // Checks is two point are the same, or nearly the same.
         bool checkSamePoints(gp_Pnt pointA, gp_Pnt pointB);
 
     private:
         std::string               ProfileXPath;   /**< The XPath to this profile in cpacs */
-        std::string               name;			  /**< The Name of the profile */
-        std::string				  description;	  /**< The description of the profile */
-        std::string				  uid;			  /**< The UID of this profile */
+        std::string               name;              /**< The Name of the profile */
+        std::string                  description;      /**< The description of the profile */
+        std::string                  uid;              /**< The UID of this profile */
         CCPACSCoordinateContainer coordinates;    /**< Coordinates of a fuselage profile element */
         bool                      invalidated;    /**< Flag if element is invalid */
         TopoDS_Wire               wireOriginal;   /**< Original fuselage profile wire */

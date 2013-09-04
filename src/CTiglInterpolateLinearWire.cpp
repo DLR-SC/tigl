@@ -36,21 +36,21 @@
 
 namespace tigl {
 
-	// Constructor
-	CTiglInterpolateLinearWire::CTiglInterpolateLinearWire()
-	{
-	}
+    // Constructor
+    CTiglInterpolateLinearWire::CTiglInterpolateLinearWire()
+    {
+    }
 
-	// Destructor
-	CTiglInterpolateLinearWire::~CTiglInterpolateLinearWire(void)
-	{
-	}
+    // Destructor
+    CTiglInterpolateLinearWire::~CTiglInterpolateLinearWire(void)
+    {
+    }
 
-	// Builds the wire from the given points
-	TopoDS_Wire CTiglInterpolateLinearWire::BuildWire(const CPointContainer& points, bool forceClosed) const
-	{
-		if (points.size() < 2)
-			throw CTiglError("Error: To less points to build a wire in CTiglInterpolateLinearWire::BuildWire", TIGL_ERROR);
+    // Builds the wire from the given points
+    TopoDS_Wire CTiglInterpolateLinearWire::BuildWire(const CPointContainer& points, bool forceClosed) const
+    {
+        if (points.size() < 2)
+            throw CTiglError("Error: To less points to build a wire in CTiglInterpolateLinearWire::BuildWire", TIGL_ERROR);
 
         // If first and last point are identical always force wire closure independently of given forceClosed flag.
         if (points[0].Distance(points[points.size() - 1]) <= Precision::Confusion())
@@ -60,14 +60,14 @@ namespace tigl {
         gp_Pnt prevPnt = points[0];
         CPointContainer usedPoints;
         usedPoints.push_back(prevPnt);
-		for (CPointContainer::size_type i = 1; i < points.size(); i++) 
-		{
+        for (CPointContainer::size_type i = 1; i < points.size(); i++) 
+        {
             gp_Pnt nextPnt = points[i];
             if (prevPnt.Distance(nextPnt) <= Precision::Confusion())
                 continue;
             usedPoints.push_back(nextPnt);
             prevPnt = nextPnt;
-		}
+        }
 
         // Find an end point of the wire, which is not to close to the
         // wire start point.
@@ -84,13 +84,13 @@ namespace tigl {
         if (pointCount < 2)
             throw CTiglError("Error: To less points to close wire in CTiglInterpolateLinearWire::BuildWire", TIGL_ERROR);
 
-		BRepBuilderAPI_MakeWire wireBuilder;
+        BRepBuilderAPI_MakeWire wireBuilder;
         for (int j = 1; j < pointCount; j++)
         {
             TopoDS_Edge edge = BRepBuilderAPI_MakeEdge(usedPoints[j - 1], usedPoints[j]);
             wireBuilder.Add(edge);
-    		if (wireBuilder.IsDone() != Standard_True)
-			    throw CTiglError("Error: Wire construction failed in CTiglInterpolateLinearWire::BuildWire", TIGL_ERROR);
+            if (wireBuilder.IsDone() != Standard_True)
+                throw CTiglError("Error: Wire construction failed in CTiglInterpolateLinearWire::BuildWire", TIGL_ERROR);
         }
 
         TopoDS_Wire wire = wireBuilder.Wire();
@@ -104,81 +104,81 @@ namespace tigl {
         }
 
         return wire;
-	}
+    }
 
-	// Returns the algorithm code identifier for an algorithm
-	TiglAlgorithmCode CTiglInterpolateLinearWire::GetAlgorithmCode(void) const
-	{
-		return TIGL_INTERPOLATE_LINEAR_WIRE;
-	}
+    // Returns the algorithm code identifier for an algorithm
+    TiglAlgorithmCode CTiglInterpolateLinearWire::GetAlgorithmCode(void) const
+    {
+        return TIGL_INTERPOLATE_LINEAR_WIRE;
+    }
 
-	// Returns the point on the wire with the smallest x value
-	gp_Pnt CTiglInterpolateLinearWire::GetPointWithMinX(const CPointContainer& points) const
-	{
+    // Returns the point on the wire with the smallest x value
+    gp_Pnt CTiglInterpolateLinearWire::GetPointWithMinX(const CPointContainer& points) const
+    {
         if (points.size() == 0)
         {
-			throw CTiglError("Error: To less points in CTiglInterpolateBsplineWire::GetPointWithMinX", TIGL_ERROR);
+            throw CTiglError("Error: To less points in CTiglInterpolateBsplineWire::GetPointWithMinX", TIGL_ERROR);
         }
 
-		gp_Pnt minXPnt = points[0];
-		for (CPointContainer::size_type i = 0; i < points.size(); i++)
-		{
-			if (points[i].X() < minXPnt.X())
-				minXPnt = points[i];
-		}
-		return minXPnt;
-	}
+        gp_Pnt minXPnt = points[0];
+        for (CPointContainer::size_type i = 0; i < points.size(); i++)
+        {
+            if (points[i].X() < minXPnt.X())
+                minXPnt = points[i];
+        }
+        return minXPnt;
+    }
 
-	// Returns the point on the wire with the biggest x value
-	gp_Pnt CTiglInterpolateLinearWire::GetPointWithMaxX(const CPointContainer& points) const
-	{
+    // Returns the point on the wire with the biggest x value
+    gp_Pnt CTiglInterpolateLinearWire::GetPointWithMaxX(const CPointContainer& points) const
+    {
         if (points.size() == 0)
         {
-			throw CTiglError("Error: To less points in CTiglInterpolateBsplineWire::GetPointWithMaxX", TIGL_ERROR);
+            throw CTiglError("Error: To less points in CTiglInterpolateBsplineWire::GetPointWithMaxX", TIGL_ERROR);
         }
 
-		gp_Pnt maxXPnt = points[0];
-		for (CPointContainer::size_type i = 0; i < points.size(); i++)
-		{
-			if (points[i].X() > maxXPnt.X())
-				maxXPnt = points[i];
-		}
-		return maxXPnt;
-	}
+        gp_Pnt maxXPnt = points[0];
+        for (CPointContainer::size_type i = 0; i < points.size(); i++)
+        {
+            if (points[i].X() > maxXPnt.X())
+                maxXPnt = points[i];
+        }
+        return maxXPnt;
+    }
 
-	// Returns the point on the wire with the smallest y value
-	gp_Pnt CTiglInterpolateLinearWire::GetPointWithMinY(const CPointContainer& points) const
-	{
+    // Returns the point on the wire with the smallest y value
+    gp_Pnt CTiglInterpolateLinearWire::GetPointWithMinY(const CPointContainer& points) const
+    {
         if (points.size() == 0)
         {
-			throw CTiglError("Error: To less points in CTiglInterpolateBsplineWire::GetPointWithMinY", TIGL_ERROR);
+            throw CTiglError("Error: To less points in CTiglInterpolateBsplineWire::GetPointWithMinY", TIGL_ERROR);
         }
 
-		gp_Pnt minYPnt = points[0];
-		for (CPointContainer::size_type i = 0; i < points.size(); i++)
-		{
-			if (points[i].Y() < minYPnt.Y())
-				minYPnt = points[i];
-		}
-		return minYPnt;
-	}
+        gp_Pnt minYPnt = points[0];
+        for (CPointContainer::size_type i = 0; i < points.size(); i++)
+        {
+            if (points[i].Y() < minYPnt.Y())
+                minYPnt = points[i];
+        }
+        return minYPnt;
+    }
 
-	// Returns the point on the wire with the biggest y value
-	gp_Pnt CTiglInterpolateLinearWire::GetPointWithMaxY(const CPointContainer& points) const
-	{
+    // Returns the point on the wire with the biggest y value
+    gp_Pnt CTiglInterpolateLinearWire::GetPointWithMaxY(const CPointContainer& points) const
+    {
         if (points.size() == 0)
         {
-			throw CTiglError("Error: To less points in CTiglInterpolateBsplineWire::GetPointWithMaxY", TIGL_ERROR);
+            throw CTiglError("Error: To less points in CTiglInterpolateBsplineWire::GetPointWithMaxY", TIGL_ERROR);
         }
 
-		gp_Pnt maxYPnt = points[0];
-		for (CPointContainer::size_type i = 0; i < points.size(); i++)
-		{
-			if (points[i].Y() > maxYPnt.Y())
-				maxYPnt = points[i];
-		}
-		return maxYPnt;
-	}
+        gp_Pnt maxYPnt = points[0];
+        for (CPointContainer::size_type i = 0; i < points.size(); i++)
+        {
+            if (points[i].Y() > maxYPnt.Y())
+                maxYPnt = points[i];
+        }
+        return maxYPnt;
+    }
 
 
 } // end namespace tigl

@@ -33,30 +33,30 @@
 
 namespace tigl {
 
-	// Constructor
-	CCPACSWingConnection::CCPACSWingConnection(CCPACSWingSegment* aSegment)
-		: segment(aSegment)
-	{
-		Cleanup();
-	}
+    // Constructor
+    CCPACSWingConnection::CCPACSWingConnection(CCPACSWingSegment* aSegment)
+        : segment(aSegment)
+    {
+        Cleanup();
+    }
 
-	// Destructor
-	CCPACSWingConnection::~CCPACSWingConnection(void)
-	{
-		Cleanup();
-	}
+    // Destructor
+    CCPACSWingConnection::~CCPACSWingConnection(void)
+    {
+        Cleanup();
+    }
 
-	// Cleanup routine
-	void CCPACSWingConnection::Cleanup(void)
-	{
-		sectionUID = "";
-		elementUID = "";
-		sectionIndex = -1;
-		elementIndex = -1;
-	}
+    // Cleanup routine
+    void CCPACSWingConnection::Cleanup(void)
+    {
+        sectionUID = "";
+        elementUID = "";
+        sectionIndex = -1;
+        elementIndex = -1;
+    }
 
     // Returns the section UID of this connection
-	std::string CCPACSWingConnection::GetSectionUID(void) const
+    std::string CCPACSWingConnection::GetSectionUID(void) const
     {
         return sectionUID;
     }
@@ -68,7 +68,7 @@ namespace tigl {
     }
 
     // Returns the section index of this connection
-	int CCPACSWingConnection::GetSectionIndex(void) const
+    int CCPACSWingConnection::GetSectionIndex(void) const
     {
         return sectionIndex;
     }
@@ -79,95 +79,95 @@ namespace tigl {
         return elementIndex;
     }
 
-	// Returns the wing profile referenced by this connection
-	CCPACSWingProfile& CCPACSWingConnection::GetProfile(void) const
-	{
-		CCPACSWing& wing = segment->GetWing();
-		std::string profileUID;
+    // Returns the wing profile referenced by this connection
+    CCPACSWingProfile& CCPACSWingConnection::GetProfile(void) const
+    {
+        CCPACSWing& wing = segment->GetWing();
+        std::string profileUID;
 
-		for(int i=1; i <= wing.GetSectionCount(); i++) {
-			CCPACSWingSection& section = wing.GetSection(i);
-			for(int j=1; j <= section.GetSectionElementCount(); j++) {
-				if (section.GetSectionElement(j).GetUID() == elementUID ) {
-					CCPACSWingSectionElement& element = section.GetSectionElement(j);
-					profileUID = element.GetProfileIndex();
-				}
-			}
-		}
-		CCPACSConfiguration& config = wing.GetConfiguration();
+        for(int i=1; i <= wing.GetSectionCount(); i++) {
+            CCPACSWingSection& section = wing.GetSection(i);
+            for(int j=1; j <= section.GetSectionElementCount(); j++) {
+                if (section.GetSectionElement(j).GetUID() == elementUID ) {
+                    CCPACSWingSectionElement& element = section.GetSectionElement(j);
+                    profileUID = element.GetProfileIndex();
+                }
+            }
+        }
+        CCPACSConfiguration& config = wing.GetConfiguration();
 
-		return (config.GetWingProfile(profileUID));
-	}
+        return (config.GetWingProfile(profileUID));
+    }
 
-	// Returns the positioning transformation (segment transformation) for the referenced section
-	CTiglTransformation CCPACSWingConnection::GetPositioningTransformation(void) const
-	{
-		return (segment->GetWing().GetPositioningTransformation(sectionUID));
-	}
+    // Returns the positioning transformation (segment transformation) for the referenced section
+    CTiglTransformation CCPACSWingConnection::GetPositioningTransformation(void) const
+    {
+        return (segment->GetWing().GetPositioningTransformation(sectionUID));
+    }
 
-	// Returns the section matrix referenced by this connection
-	CTiglTransformation CCPACSWingConnection::GetSectionTransformation(void) const
-	{
-		CCPACSWing& wing           = segment->GetWing();
-		CTiglTransformation	transformation;
+    // Returns the section matrix referenced by this connection
+    CTiglTransformation CCPACSWingConnection::GetSectionTransformation(void) const
+    {
+        CCPACSWing& wing           = segment->GetWing();
+        CTiglTransformation    transformation;
 
-		for (int i = 1; i <= wing.GetSectionCount(); i++) {
-			CCPACSWingSection& section = wing.GetSection(i);
-			for (int j = 1; j <= section.GetSectionElementCount(); j++) {
-				if (section.GetSectionElement(j).GetUID() == elementUID) {
-					transformation = section.GetSectionTransformation();
-				}
-			}
-		}
-		return transformation;
-	}
+        for (int i = 1; i <= wing.GetSectionCount(); i++) {
+            CCPACSWingSection& section = wing.GetSection(i);
+            for (int j = 1; j <= section.GetSectionElementCount(); j++) {
+                if (section.GetSectionElement(j).GetUID() == elementUID) {
+                    transformation = section.GetSectionTransformation();
+                }
+            }
+        }
+        return transformation;
+    }
 
-	// Returns the section element matrix referenced by this connection
-	CTiglTransformation CCPACSWingConnection::GetSectionElementTransformation(void) const
-	{
-		CCPACSWing& wing = segment->GetWing();
-		CTiglTransformation transformation;
+    // Returns the section element matrix referenced by this connection
+    CTiglTransformation CCPACSWingConnection::GetSectionElementTransformation(void) const
+    {
+        CCPACSWing& wing = segment->GetWing();
+        CTiglTransformation transformation;
 
-		for (int i = 1; i <= wing.GetSectionCount(); i++) {
-			CCPACSWingSection& section = wing.GetSection(i);
-			for (int j = 1; j <= section.GetSectionElementCount(); j++) {
-				if (section.GetSectionElement(j).GetUID() == elementUID) {
-					CCPACSWingSectionElement& element = section.GetSectionElement(j);
-					transformation = element.GetSectionElementTransformation();
-				}
-			}
-		}
-		return transformation;
-	}
+        for (int i = 1; i <= wing.GetSectionCount(); i++) {
+            CCPACSWingSection& section = wing.GetSection(i);
+            for (int j = 1; j <= section.GetSectionElementCount(); j++) {
+                if (section.GetSectionElement(j).GetUID() == elementUID) {
+                    CCPACSWingSectionElement& element = section.GetSectionElement(j);
+                    transformation = element.GetSectionElementTransformation();
+                }
+            }
+        }
+        return transformation;
+    }
 
-	// Read CPACS section elements
-	void CCPACSWingConnection::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& connectionXPath)
-	{
-		Cleanup();
+    // Read CPACS section elements
+    void CCPACSWingConnection::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& connectionXPath)
+    {
+        Cleanup();
 
-		char*       elementPath;
-		std::string tempString;
+        char*       elementPath;
+        std::string tempString;
 
-		// Get subelement "element"
-		char*			ptrElementUID = NULL;
-		tempString    = connectionXPath;
-		elementPath   = const_cast<char*>(tempString.c_str());
-		if (tixiGetTextElement(tixiHandle, elementPath, &ptrElementUID) != SUCCESS)
-			throw CTiglError("Error: Can't read element <elementUID/> in CCPACSWingConnection::ReadCPACS", TIGL_XML_ERROR);
-		elementUID = ptrElementUID;
+        // Get subelement "element"
+        char*            ptrElementUID = NULL;
+        tempString    = connectionXPath;
+        elementPath   = const_cast<char*>(tempString.c_str());
+        if (tixiGetTextElement(tixiHandle, elementPath, &ptrElementUID) != SUCCESS)
+            throw CTiglError("Error: Can't read element <elementUID/> in CCPACSWingConnection::ReadCPACS", TIGL_XML_ERROR);
+        elementUID = ptrElementUID;
 
-		// find the corresponding section to this segment
-		CCPACSWing& wing = segment->GetWing();
-		for(int i=1; i <= wing.GetSectionCount(); i++) {
-			CCPACSWingSection& section        = wing.GetSection(i);
-			for(int j=1; j <= section.GetSectionElementCount(); j++) {
-				if(section.GetSectionElement(j).GetUID() == elementUID ) {
-					sectionUID = section.GetUID();
-					sectionIndex = i;
-					elementIndex = j;
-				}
-			}
-		}
-	}
+        // find the corresponding section to this segment
+        CCPACSWing& wing = segment->GetWing();
+        for(int i=1; i <= wing.GetSectionCount(); i++) {
+            CCPACSWingSection& section        = wing.GetSection(i);
+            for(int j=1; j <= section.GetSectionElementCount(); j++) {
+                if(section.GetSectionElement(j).GetUID() == elementUID ) {
+                    sectionUID = section.GetUID();
+                    sectionIndex = i;
+                    elementIndex = j;
+                }
+            }
+        }
+    }
 
 } // end namespace tigl

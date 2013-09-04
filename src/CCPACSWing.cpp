@@ -38,16 +38,19 @@
 #include "BRepAlgoAPI_Cut.hxx"
 #include "Bnd_Box.hxx"
 #include "BRepBndLib.hxx"
+
+#ifdef TIGL_USE_XCAF
 #include "XCAFDoc_ShapeTool.hxx"
 #include "XCAFApp_Application.hxx"
 #include "XCAFDoc_DocumentTool.hxx"
 #include "TDataStd_Name.hxx"
 #include "TDataXtd_Shape.hxx"
+#endif
 
 namespace {
-	inline double max(double a, double b){
-		return a > b? a : b;
-	}
+    inline double max(double a, double b){
+        return a > b? a : b;
+    }
     
     TopoDS_Wire transformToWingCoords(const tigl::CCPACSWingConnection& wingConnection, const TopoDS_Wire& origWire) {
         TopoDS_Shape resultWire(origWire);
@@ -76,10 +79,11 @@ namespace tigl {
     // Constructor
     CCPACSWing::CCPACSWing(CCPACSConfiguration* config)
         : segments(this)
-    	, componentSegments(this)
+        , componentSegments(this)
         , configuration(config)
         , rebuildFusedSegments(true)
         , rebuildFusedSegWEdge(true)
+        , rebuildShells(true)
     {
         Cleanup();
     }
@@ -144,7 +148,7 @@ namespace tigl {
         BuildMatrix();
         invalidated = false;
         rebuildFusedSegments = true;    // forces a rebuild of all segments with regards to the updated translation
-        rebuildFusedSegWEdge = true;
+        rebuildShells = true;
     }
 
     // Read CPACS wing element
@@ -217,7 +221,7 @@ namespace tigl {
         segments.ReadCPACS(tixiHandle, wingXPath);
 
         // Get subelement "componentSegments"
-		componentSegments.ReadCPACS(tixiHandle, wingXPath);
+        componentSegments.ReadCPACS(tixiHandle, wingXPath);
 
         // Register ourself at the unique id manager
         configuration->GetUIDManager().AddUID(ptrUID, this);
@@ -225,7 +229,6 @@ namespace tigl {
         // Get symmetry axis attribute, has to be done, when segments are build
         char* ptrSym = NULL;
         tempString   = "symmetry";
-        elementPath  = const_cast<char*>(tempString.c_str());
         if (tixiGetTextAttribute(tixiHandle, const_cast<char*>(wingXPath.c_str()), const_cast<char*>(tempString.c_str()), &ptrSym) == SUCCESS)
             SetSymmetryAxis(ptrSym);
 
@@ -262,6 +265,7 @@ namespace tigl {
         return segments.GetSegmentCount();
     }
 
+#ifdef TIGL_USE_XCAF
     // Get segment count
     TDF_Label CCPACSWing::ExportDataStructure(Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label)
     {
@@ -277,6 +281,7 @@ namespace tigl {
 
         return wingLabel;
     }
+#endif
 
     // Returns the segment for a given index
     CTiglAbstractSegment & CCPACSWing::GetSegment(const int index)
@@ -284,16 +289,16 @@ namespace tigl {
         return (CTiglAbstractSegment &) segments.GetSegment(index);
     }
 
-	// Returns the segment for a given uid
+    // Returns the segment for a given uid
     CTiglAbstractSegment & CCPACSWing::GetSegment(std::string uid)
     {
         return (CTiglAbstractSegment &) segments.GetSegment(uid);
     }
 
-	 // Get componentSegment count
+     // Get componentSegment count
     int CCPACSWing::GetComponentSegmentCount(void)
     {
-		return componentSegments.GetComponentSegmentCount();
+        return componentSegments.GetComponentSegmentCount();
     }
 
     // Returns the segment for a given index
@@ -309,60 +314,103 @@ namespace tigl {
     }
 
 
-    // Gets the loft of the whole wing.
-	TopoDS_Shape & CCPACSWing::GetLoft(void)
-	{
-		if(rebuildFusedSegments) {
-			fusedSegments = BuildFusedSegments(false);
-			// Transform by wing transformation
-		    fusedSegments = GetWingTransformation().Transform(fusedSegments);
-		}
-		rebuildFusedSegments = false;
-		return fusedSegments;
-	}
-
     // Gets the loft of the whole wing with modeled leading edge.
-	TopoDS_Shape & CCPACSWing::GetLoftWithLeadingEdge(void)
-	{
-		if(rebuildFusedSegWEdge) {
-			fusedSegmentWithEdge = BuildFusedSegments(true);
-			// Transform by wing transformation
-			fusedSegmentWithEdge = GetWingTransformation().Transform(fusedSegmentWithEdge);
-		}
-		rebuildFusedSegWEdge = false;
-		return fusedSegmentWithEdge;
-	}
+    TopoDS_Shape & CCPACSWing::GetLoftWithLeadingEdge(void)
+    {
+        if(rebuildFusedSegWEdge) {
+            fusedSegmentWithEdge = BuildFusedSegments(true);
+        }
+        rebuildFusedSegWEdge = false;
+        return fusedSegmentWithEdge;
+    }
+    
+    // Gets the loft of the whole wing.
+    TopoDS_Shape & CCPACSWing::GetUpperShape(void)
+    {
+        if(rebuildShells) {
+            BuildUpperLowerShells();
+        }
+        rebuildShells = false;
+        return upperShape;
+    }
+    
+    // Gets the loft of the whole wing.
+    TopoDS_Shape & CCPACSWing::GetLowerShape(void)
+    {
+        if(rebuildShells) {
+            BuildUpperLowerShells();
+        }
+        rebuildShells = false;
+        return lowerShape;
+    }
+    
+    TopoDS_Shape CCPACSWing::BuildLoft(){
+        return BuildFusedSegments(true);
+    }
 
-	// Builds a fused shape of all wing segments
-	TopoDS_Shape CCPACSWing::BuildFusedSegments(bool splitWingInUpperAndLower)
-	{
-		//@todo: this probably works only if the wings does not split somewere
-		BRepOffsetAPI_ThruSections generator(Standard_True, Standard_True, Precision::Confusion() );
+    // Builds a fused shape of all wing segments
+    TopoDS_Shape CCPACSWing::BuildFusedSegments(bool splitWingInUpperAndLower)
+    {
+        //@todo: this probably works only if the wings does not split somewere
+        BRepOffsetAPI_ThruSections generator(Standard_True, Standard_True, Precision::Confusion() );
 
-		for (int i=1; i <= segments.GetSegmentCount(); i++) {
-			CCPACSWingConnection& startConnection = segments.GetSegment(i).GetInnerConnection();
-			CCPACSWingProfile& startProfile = startConnection.GetProfile();
-			TopoDS_Wire startWire;
-			if(!splitWingInUpperAndLower)
-				startWire = transformToWingCoords(startConnection, startProfile.GetWire(true));
-			else
-				startWire = transformToWingCoords(startConnection, startProfile.GetFusedUpperLowerWire());
-			generator.AddWire(startWire);
-		}
+        for (int i=1; i <= segments.GetSegmentCount(); i++) {
+            CCPACSWingConnection& startConnection = segments.GetSegment(i).GetInnerConnection();
+            CCPACSWingProfile& startProfile = startConnection.GetProfile();
+            TopoDS_Wire startWire;
+            if(!splitWingInUpperAndLower)
+                startWire = transformToWingCoords(startConnection, startProfile.GetWire(true));
+            else
+                startWire = transformToWingCoords(startConnection, startProfile.GetFusedUpperLowerWire());
+            generator.AddWire(startWire);
+        }
 
-		CCPACSWingConnection& endConnection = segments.GetSegment(segments.GetSegmentCount()).GetOuterConnection();
-		CCPACSWingProfile& endProfile = endConnection.GetProfile();
-		TopoDS_Wire endWire;
-		if(!splitWingInUpperAndLower)
-			endWire = transformToWingCoords(endConnection,endProfile.GetWire(true));
-		else
-			endWire = transformToWingCoords(endConnection,endProfile.GetFusedUpperLowerWire());
-		generator.AddWire(endWire);
+        CCPACSWingConnection& endConnection = segments.GetSegment(segments.GetSegmentCount()).GetOuterConnection();
+        CCPACSWingProfile& endProfile = endConnection.GetProfile();
+        TopoDS_Wire endWire;
+        if(!splitWingInUpperAndLower)
+            endWire = transformToWingCoords(endConnection,endProfile.GetWire(true));
+        else
+            endWire = transformToWingCoords(endConnection,endProfile.GetFusedUpperLowerWire());
+        generator.AddWire(endWire);
 
-		generator.CheckCompatibility(Standard_False);
-		generator.Build();
-		return generator.Shape();
-	}
+        generator.CheckCompatibility(Standard_False);
+        generator.Build();
+        
+        return GetWingTransformation().Transform(generator.Shape());
+    }
+    
+    // Builds a fused shape of all wing segments
+    void CCPACSWing::BuildUpperLowerShells()
+    {
+        //@todo: this probably works only if the wings does not split somewere
+        BRepOffsetAPI_ThruSections generatorUp(Standard_False, Standard_True, Precision::Confusion() );
+        BRepOffsetAPI_ThruSections generatorLow(Standard_False, Standard_True, Precision::Confusion() );
+
+        for (int i=1; i <= segments.GetSegmentCount(); i++) {
+            CCPACSWingConnection& startConnection = segments.GetSegment(i).GetInnerConnection();
+            CCPACSWingProfile& startProfile = startConnection.GetProfile();
+            TopoDS_Wire upperWire, lowerWire;
+            upperWire = transformToWingCoords(startConnection, startProfile.GetUpperWire());
+            lowerWire = transformToWingCoords(startConnection, startProfile.GetLowerWire());
+            generatorUp.AddWire(upperWire);
+            generatorLow.AddWire(lowerWire);
+        }
+
+        CCPACSWingConnection& endConnection = segments.GetSegment(segments.GetSegmentCount()).GetOuterConnection();
+        CCPACSWingProfile& endProfile = endConnection.GetProfile();
+        TopoDS_Wire endUpWire, endLowWire;
+
+        endUpWire = transformToWingCoords(endConnection, endProfile.GetUpperWire());
+        endLowWire = transformToWingCoords(endConnection, endProfile.GetLowerWire());
+
+        generatorUp.AddWire(endUpWire);
+        generatorLow.AddWire(endLowWire);
+        generatorLow.Build();
+        generatorUp.Build();
+        upperShape = GetWingTransformation().Transform(generatorUp.Shape());
+        lowerShape = GetWingTransformation().Transform(generatorLow.Shape());
+    }
 
 
     // Gets the wing transformation (original wing implementation, but see GetTransformation)
@@ -373,9 +421,9 @@ namespace tigl {
     }
 
     // Get the positioning transformation for a given section-uid
-    CTiglTransformation CCPACSWing::GetPositioningTransformation(std::string index)
+    CTiglTransformation CCPACSWing::GetPositioningTransformation(std::string sectionUID)
     {
-        return positionings.GetPositioningTransformation(index);
+        return positionings.GetPositioningTransformation(sectionUID);
     }
 
     // Gets the upper point in absolute (world) coordinates for a given segment, eta, xsi
@@ -393,13 +441,12 @@ namespace tigl {
     // Returns the volume of this wing
     double CCPACSWing::GetVolume(void)
     {
-        double myVolume = 0.0;
-        GetLoft();
+        TopoDS_Shape& fusedSegments = GetLoft();
 
         // Calculate volume
         GProp_GProps System;
         BRepGProp::VolumeProperties(fusedSegments, System);
-        myVolume = System.Mass();
+        double myVolume = System.Mass();
         return myVolume;
     }
 
@@ -409,135 +456,159 @@ namespace tigl {
         return GetWingTransformation();
     }
 
-	// Sets the Transformation object
+    // Sets the Transformation object
     void CCPACSWing::Translate(CTiglPoint trans)
     {
         CTiglAbstractGeometricComponent::Translate(trans);
-    	invalidated = true;
-    	segments.Invalidate();
-    	Update();
+        invalidated = true;
+        segments.Invalidate();
+        componentSegments.Invalidate();
+        Update();
     }
     
     // Get Translation
     CTiglPoint CCPACSWing::GetTranslation(void)
     {
-    	return translation;
+        return translation;
     }
 
-	// Returns the surface area of this wing
-	double CCPACSWing::GetSurfaceArea(void)
+    // Returns the surface area of this wing
+    double CCPACSWing::GetSurfaceArea(void)
     {
-        double myArea = 0.0;
-        GetLoft();
+        TopoDS_Shape& fusedSegments = GetLoft();
 
         // Calculate surface area
         GProp_GProps System;
-		BRepGProp::SurfaceProperties(fusedSegments, System);
-        myArea = System.Mass();
+        BRepGProp::SurfaceProperties(fusedSegments, System);
+        double myArea = System.Mass();
         return myArea;
-	}
+    }
 
-	// Returns the reference area of this wing.
-	// Here, we always take the reference wing area to be that of the trapezoidal portion of the wing projected into the centerline.
-	// The leading and trailing edge chord extensions are not included in this definition and for some airplanes, such as Boeing's Blended
-	// Wing Body, the difference can be almost a factor of two between the "real" wing area and the "trap area". Some companies use reference
-	// wing areas that include portions of the chord extensions, and in some studies, even tail area is included as part of the reference area.
-	// For simplicity, we use the trapezoidal area here.
-	double CCPACSWing::GetReferenceArea()
-	{
-		double refArea = 0.0;
+    // Returns the reference area of this wing.
+    // Here, we always take the reference wing area to be that of the trapezoidal portion of the wing projected into the centerline.
+    // The leading and trailing edge chord extensions are not included in this definition and for some airplanes, such as Boeing's Blended
+    // Wing Body, the difference can be almost a factor of two between the "real" wing area and the "trap area". Some companies use reference
+    // wing areas that include portions of the chord extensions, and in some studies, even tail area is included as part of the reference area.
+    // For simplicity, we use the trapezoidal area here.
+    double CCPACSWing::GetReferenceArea()
+    {
+        double refArea = 0.0;
 
-		for (int i=1; i <= segments.GetSegmentCount(); i++) {
-			refArea += segments.GetSegment(i).GetReferenceArea();
-		}
-		return refArea;
-	}
+        for (int i=1; i <= segments.GetSegmentCount(); i++) {
+            refArea += segments.GetSegment(i).GetReferenceArea();
+        }
+        return refArea;
+    }
 
 
-	double CCPACSWing::GetWettedArea(TopoDS_Shape parent)
-	{
-		double wetArea = 0.0;
-		TopoDS_Shape loft = GetLoft();
+    double CCPACSWing::GetWettedArea(TopoDS_Shape parent)
+    {
+        TopoDS_Shape loft = GetLoft();
 
-		TopoDS_Shape wettedLoft = BRepAlgoAPI_Cut(loft, parent); 
+        TopoDS_Shape wettedLoft = BRepAlgoAPI_Cut(loft, parent); 
 
-		GProp_GProps System;
-		BRepGProp::SurfaceProperties(wettedLoft, System);
-        wetArea = System.Mass();
-		return wetArea;
-	}
+        GProp_GProps System;
+        BRepGProp::SurfaceProperties(wettedLoft, System);
+        double wetArea = System.Mass();
+        return wetArea;
+    }
 
-	
-	// Returns the lower Surface of a Segment
-	Handle(Geom_Surface) CCPACSWing::GetLowerSegmentSurface(int index)
-	{
-		return segments.GetSegment(index).GetLowerSurface();
-	}
+    
+    // Returns the lower Surface of a Segment
+    Handle(Geom_Surface) CCPACSWing::GetLowerSegmentSurface(int index)
+    {
+        return segments.GetSegment(index).GetLowerSurface();
+    }
 
-	// Returns the upper Surface of a Segment
-	Handle(Geom_Surface) CCPACSWing::GetUpperSegmentSurface(int index)
-	{
-		return segments.GetSegment(index).GetUpperSurface();
-	}
+    // Returns the upper Surface of a Segment
+    Handle(Geom_Surface) CCPACSWing::GetUpperSegmentSurface(int index)
+    {
+        return segments.GetSegment(index).GetUpperSurface();
+    }
 
-	// sets the symmetry plane for all childs, segments and component segments
-	void CCPACSWing::SetSymmetryAxis(const std::string& axis){
-		CTiglAbstractGeometricComponent::SetSymmetryAxis(axis);
+    // sets the symmetry plane for all childs, segments and component segments
+    void CCPACSWing::SetSymmetryAxis(const std::string& axis){
+        CTiglAbstractGeometricComponent::SetSymmetryAxis(axis);
 
-		for(int i = 1; i <= segments.GetSegmentCount(); ++i){
-			CCPACSWingSegment& segment = segments.GetSegment(i);
-			segment.SetSymmetryAxis(axis);
-		}
+        for(int i = 1; i <= segments.GetSegmentCount(); ++i){
+            CCPACSWingSegment& segment = segments.GetSegment(i);
+            segment.SetSymmetryAxis(axis);
+        }
 
-		for(int i = 1; i <= componentSegments.GetComponentSegmentCount(); ++i){
-			CCPACSWingComponentSegment& compSeg = componentSegments.GetComponentSegment(i);
-			compSeg.SetSymmetryAxis(axis);
-		}
-	}
+        for(int i = 1; i <= componentSegments.GetComponentSegmentCount(); ++i){
+            CCPACSWingComponentSegment& compSeg = componentSegments.GetComponentSegment(i);
+            compSeg.SetSymmetryAxis(axis);
+        }
+    }
 
-	double CCPACSWing::GetWingspan() {
-		Bnd_Box boundingBox;
-		if (GetSymmetryAxis() == TIGL_NO_SYMMETRY) {
-			for (int i = 1; i <= GetSegmentCount(); ++i) {
-				TopoDS_Shape& segmentShape = GetSegment(i).GetLoft();
-				BRepBndLib::Add(segmentShape, boundingBox);
-			}
+    double CCPACSWing::GetWingspan() {
+        Bnd_Box boundingBox;
+        if (GetSymmetryAxis() == TIGL_NO_SYMMETRY) {
+            for (int i = 1; i <= GetSegmentCount(); ++i) {
+                TopoDS_Shape& segmentShape = GetSegment(i).GetLoft();
+                BRepBndLib::Add(segmentShape, boundingBox);
+            }
 
-			Standard_Real xmin, xmax, ymin, ymax, zmin, zmax;
-			boundingBox.Get(xmin, ymin, zmin, xmax, ymax, zmax);
-			double xw = xmax - xmin;
-			double yw = ymax - ymin;
-			double zw = zmax - zmin;
+            Standard_Real xmin, xmax, ymin, ymax, zmin, zmax;
+            boundingBox.Get(xmin, ymin, zmin, xmax, ymax, zmax);
+            double xw = xmax - xmin;
+            double yw = ymax - ymin;
+            double zw = zmax - zmin;
 
-			return max(xw, max(yw, zw));
-		}
-		else {
-			for (int i = 1; i <= GetSegmentCount(); ++i) {
-				CTiglAbstractSegment& segment = GetSegment(i);
-				TopoDS_Shape& segmentShape = segment.GetLoft();
-				BRepBndLib::Add(segmentShape, boundingBox);
-				TopoDS_Shape segmentMirroredShape = segment.GetMirroredLoft();
-				BRepBndLib::Add(segmentMirroredShape, boundingBox);
-			}
+            return max(xw, max(yw, zw));
+        }
+        else {
+            for (int i = 1; i <= GetSegmentCount(); ++i) {
+                CTiglAbstractSegment& segment = GetSegment(i);
+                TopoDS_Shape& segmentShape = segment.GetLoft();
+                BRepBndLib::Add(segmentShape, boundingBox);
+                TopoDS_Shape segmentMirroredShape = segment.GetMirroredLoft();
+                BRepBndLib::Add(segmentMirroredShape, boundingBox);
+            }
 
-			Standard_Real xmin, xmax, ymin, ymax, zmin, zmax;
-			boundingBox.Get(xmin, ymin, zmin, xmax, ymax, zmax);
+            Standard_Real xmin, xmax, ymin, ymax, zmin, zmax;
+            boundingBox.Get(xmin, ymin, zmin, xmax, ymax, zmax);
 
-			switch (GetSymmetryAxis()){
-			case TIGL_X_Y_PLANE:
-				return zmax-zmin;
-				break;
-			case TIGL_X_Z_PLANE:
-				return ymax-ymin;
-				break;
-			case TIGL_Y_Z_PLANE:
-				return xmax-ymin;
-				break;
-			default:
-				return ymax-ymin;
-			}
-		}
-	}
+            switch (GetSymmetryAxis()){
+            case TIGL_X_Y_PLANE:
+                return zmax-zmin;
+                break;
+            case TIGL_X_Z_PLANE:
+                return ymax-ymin;
+                break;
+            case TIGL_Y_Z_PLANE:
+                return xmax-ymin;
+                break;
+            default:
+                return ymax-ymin;
+            }
+        }
+    }
+
+
+    // Calculates the segment coordinates from global (x,y,z) coordinates
+    // Returns the segment index of the according segment
+    // If x,y,z does not belong to any segment, -1 is returned
+    int CCPACSWing::GetSegmentEtaXsi(const gp_Pnt& point, double& eta, double& xsi){
+        // search the segment
+        int segmentFound = -1;
+        for(int iSeg = 1; iSeg <= GetSegmentCount(); ++iSeg) {
+            CCPACSWingSegment& segment = (CCPACSWingSegment&) GetSegment(iSeg);
+            if (segment.GetIsOn(point) == true){
+                segmentFound = iSeg;
+                break;
+            }
+        }
+
+        if(segmentFound <= 0) {
+            return -1;
+        }
+
+        CCPACSWingSegment& segment = (CCPACSWingSegment&) GetSegment(segmentFound);
+        segment.GetEtaXsi(point, true, eta, xsi);
+
+        return segmentFound;
+    }
 
 
 

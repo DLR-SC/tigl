@@ -32,6 +32,7 @@
 #include <sstream>
 #include <exception>
 
+#ifdef TIGL_USE_XCAF
 #include "Interface_Static.hxx"
 #include "TCollection_ExtendedString.hxx"
 #include "XCAFDoc_ShapeTool.hxx"
@@ -41,22 +42,23 @@
 #include "IGESControl_Controller.hxx"
 #include "IGESCAFControl_Writer.hxx"
 #include "TDataStd_Name.hxx"
+#endif
 
 namespace tigl {
 
-	// Constructor
-	CCPACSImportExport::CCPACSImportExport(CCPACSConfiguration& config)
-	:myConfig(config)
-	{
-	}
+    // Constructor
+    CCPACSImportExport::CCPACSImportExport(CCPACSConfiguration& config)
+    :myConfig(config)
+    {
+    }
 
-	// Destructor
-	CCPACSImportExport::~CCPACSImportExport(void)
-	{
-	}
+    // Destructor
+    CCPACSImportExport::~CCPACSImportExport(void)
+    {
+    }
 
-
-	Handle_TDocStd_Document CCPACSImportExport::buildXDEStructure()
+#ifdef TIGL_USE_XCAF
+    Handle_TDocStd_Document CCPACSImportExport::buildXDEStructure()
     {
 
         Handle(XCAFApp_Application) hApp = XCAFApp_Application::GetApplication();
@@ -80,6 +82,7 @@ namespace tigl {
 
         return hDoc;
     }
+#endif
 
 
 

@@ -1,4 +1,5 @@
 #! /usr/bin/env python
+# -*- coding: cp1252 -*-
 #############################################################################
 # Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
 #
@@ -8,7 +9,7 @@
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
+# http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -21,11 +22,13 @@ import unittest
 from tiglwrapper import *
 from tixiwrapper import *
 
+skipSlowFunctions = True # Saves you 14 minutes(if True), but leaves out 8 functions
+
 class TestSimpleCpacs(unittest.TestCase):
 
 	def setUp(self):
-		self.tigl = Tigl()
 		self.tixi = Tixi()
+		self.tigl = Tigl()
 		self.tixi.open('TestData/simpletest.cpacs.xml')
 		self.tigl.open(self.tixi, '')
 		
@@ -38,9 +41,75 @@ class TestSimpleCpacs(unittest.TestCase):
 		
 	def test_objectCount(self):
 		self.assertEqual(self.tigl.getWingCount(),1)
-		self.assertEqual(self.tigl.getFuselageCount(),0)
+		self.assertEqual(self.tigl.getFuselageCount(),1)
 		self.assertEqual(self.tigl.wingGetComponentSegmentCount(1),1)
+
+	########## Exports are faster in this class
+	def test_exportIGES(self):
+		filenamePtr = "TestData/export/export0.igs"
+		self.tigl.exportIGES(filenamePtr)
+	
+	def test_exportFusedWingFuselageIGES(self):
+		if not skipSlowFunctions:
+			filenamePtr = "TestData/export/export.igs"
+			self.tigl.exportFusedWingFuselageIGES(filenamePtr)
+			
+	def test_exportStructuredIGES(self):
+		filenamePtr = "TestData/export/export2.igs"
+		self.tigl.exportStructuredIGES(filenamePtr)
 		
+	def test_exportSTEP(self):
+		filenamePtr = 'TestData/export/export.step'
+		self.tigl.exportSTEP(filenamePtr)
+			
+	def test_exportStructuredSTEP(self):
+		filenamePtr = "TestData/export/export2.step"
+		self.tigl.exportStructuredSTEP(filenamePtr)
+			
+	def test_exportMeshedWingSTL(self):
+		if not skipSlowFunctions:
+			wingIndex = 1
+			filenamePtr = "TestData/export/export.stl"
+			deflection = 0.01
+			self.tigl.exportMeshedWingSTL(wingIndex, filenamePtr, deflection)
+					
+	def test_exportMeshedGeometrySTL(self):
+		if not skipSlowFunctions:
+			filenamePtr = "TestData/export/export3.stl"
+			deflection = 0.01
+			self.tigl.exportMeshedGeometrySTL(filenamePtr, deflection)
+			
+	def test_exportMeshedWingVTKByUID(self):
+		wingUID = "Wing"
+		filenamePtr ="TestData/export/export.vtk"
+		deflection = 0.01
+		self.tigl.exportMeshedWingVTKByUID(wingUID, filenamePtr, deflection)
+			
+	def test_exportMeshedGeometryVTK(self):
+		if not skipSlowFunctions:
+			filenamePtr = "TestData/export/export4.vtk"
+			deflection = 0.01
+			self.tigl.exportMeshedGeometryVTK(filenamePtr, deflection)
+			
+	def test_exportMeshedWingVTKSimpleByUID(self):
+		wingUID = "Wing"
+		filenamePtr = "TestData/export/export5.vtk"
+		deflection = 0.01
+		self.tigl.exportMeshedWingVTKSimpleByUID(wingUID, filenamePtr, deflection)
+			
+	def test_exportMeshedGeometryVTKSimple(self):
+		if not skipSlowFunctions:
+			filenamePtr = "TestData/export/export7.vtk"
+			deflection = 0.01
+			self.tigl.exportMeshedGeometryVTKSimple(filenamePtr, deflection)
+			
+	def test_getMaterialUID(self):
+		compSegmentUID = "WING_CS1"
+		eta = 0.25
+		xsi = 0.9
+		materials = self.tigl.wingComponentSegmentGetMaterialUIDs(compSegmentUID, TiglStructureType.UPPER_SHELL, eta, xsi )
+		self.assertEqual(materials, ('MyCellMat', 'MySkinMat'))
+######		
 		
 # ----------------------------------------------------------------------- #
 # The following tests should only check, if the python api is correct.
@@ -154,8 +223,9 @@ class TestTiglApi(unittest.TestCase):
 		self.assertEqual(segmentUID, 'D150_VAMP_W1_Seg1')
 		
 	def test_wingGetSegmentIndex(self):
-		segmentIndex = self.tigl.wingGetSegmentIndex(1,'D150_VAMP_W1_Seg1')
+		segmentIndex, wingIndex = self.tigl.wingGetSegmentIndex('D150_VAMP_W1_Seg1')
 		self.assertEqual(segmentIndex, 1)
+		self.assertEqual(wingIndex, 1)
 		
 	def test_wingGetSectionUID(self):
 		sectionUID = self.tigl.wingGetSectionUID(1,1)
@@ -221,7 +291,179 @@ class TestTiglApi(unittest.TestCase):
 		zpos = 0.7
 		num = self.tigl.fuselageGetNumPointsOnXPlane(fuselIDX, segIDX,  0.5, zpos)
 		self.assertGreater(num, 0)
+
+	def test_fuselageGetPointOnYPlane(self):
+		fuselIDY = 1
+		segIDY = 40
+		zpos = 0.7
+		(x,y,z) = self.tigl.fuselageGetPointOnYPlane(fuselIDY, segIDY,  0.5, zpos, 1)
+		self.assertAlmostEqual(zpos, z)
 	
+	def test_fuselageGetNumPointsOnYPlane(self):
+		fuselIDY = 1
+		segIDY = 40
+		zpos = 0.7
+		num = self.tigl.fuselageGetNumPointsOnYPlane(fuselIDY, segIDY,  0.5, zpos)
+		self.assertGreater(num, 0)
+		
+############################ ANFANG
+	def test_fuselageGetCircumference(self):
+		fuselageIndex = 1
+		segmentIndex = 1
+		eta = 0.5
+		ret = self.tigl.fuselageGetCircumference(fuselageIndex, segmentIndex, eta)
+		self.assertEqual(isinstance(ret, float),True)
+			
+	def test_fuselageGetStartConnectedSegmentCount(self):
+		fuselageIndex = 1
+		segmentIndex = 1 
+		ret = self.tigl.fuselageGetStartConnectedSegmentCount(fuselageIndex, segmentIndex)
+		self.assertEqual(ret,0)
+			
+	def test_fuselageGetEndConnectedSegmentCount(self):
+		fuselageIndex = 1
+		segmentIndex = 1
+		ret = self.tigl.fuselageGetEndConnectedSegmentCount(fuselageIndex, segmentIndex)
+		self.assertEqual(ret,1)
+			
+	def test_fuselageGetStartConnectedSegmentIndex(self):
+		fuselageIndex = 1
+		segmentIndex = 2
+		n = 1
+		ret = self.tigl.fuselageGetStartConnectedSegmentIndex(fuselageIndex, segmentIndex, n)
+		self.assertEqual(ret,1)
+			
+	def test_fuselageGetEndConnectedSegmentIndex(self):
+		fuselageIndex = 1
+		segmentIndex = 1
+		n = 1
+		ret = self.tigl.fuselageGetEndConnectedSegmentIndex(fuselageIndex, segmentIndex, n)
+		self.assertEqual(ret,2)
+			
+	def test_fuselageGetStartSectionAndElementUID(self):
+		fuselageIndex = 1
+		segmentIndex = 1
+		n = 1
+		ret = self.tigl.fuselageGetStartSectionAndElementUID(fuselageIndex, segmentIndex)
+		self.assertEqual(ret,('D150_VAMP_FL1_Sec1', 'D150_VAMP_FL1_Sec1_Elem1'))
+			
+	def test_fuselageGetEndSectionAndElementUID(self):
+		fuselageIndex = 1
+		segmentIndex = 1
+		ret = self.tigl.fuselageGetEndSectionAndElementUID(fuselageIndex, segmentIndex)
+		self.assertEqual(ret,('D150_VAMP_FL1_Sec2', 'D150_VAMP_FL1_Sec2_Elem1'))
+			
+	def test_fuselageGetStartSectionAndElementIndex(self):
+		fuselageIndex = 1
+		segmentIndex = 2
+		ret = self.tigl.fuselageGetStartSectionAndElementIndex(fuselageIndex, segmentIndex)
+		self.assertEqual(ret,(2,1))
+			
+	def test_fuselageGetEndSectionAndElementIndex(self):
+		fuselageIndex = 1
+		segmentIndex = 1
+		ret = self.tigl.fuselageGetEndSectionAndElementIndex(fuselageIndex, segmentIndex)
+		self.assertEqual(ret,(2,1))
+			
+	def test_fuselageGetProfileName(self):
+		fuselageIndex = 1
+		sectionIndex = 1
+		elementIndex = 1 
+		ret = self.tigl.fuselageGetProfileName(fuselageIndex, sectionIndex, elementIndex)
+		self.assertEqual(ret,"Circle")
+			
+	def test_fuselageGetUID(self):
+		fuselageIndex = 1
+		ret = self.tigl.fuselageGetUID(fuselageIndex)
+		self.assertEqual(ret,'D150_VAMP_FL1')
+			
+	def test_fuselageGetSegmentUID(self):
+		fuselageIndex = 1
+		segmentIndex = 1
+		ret = self.tigl.fuselageGetSegmentUID(fuselageIndex, segmentIndex)
+		self.assertEqual(ret,'D150_VAMP_FL1_Seg1')
+			
+	def test_fuselageGetSectionUID(self):
+		fuselageIndex = 1
+		sectionIndex = 1
+		ret = self.tigl.fuselageGetSectionUID(fuselageIndex, sectionIndex)
+		self.assertEqual(isinstance(ret,str),True)
+			
+	def test_fuselageGetSymmetry(self):
+		fuselageIndex = 1
+		ret = self.tigl.fuselageGetSymmetry(fuselageIndex)
+		self.assertEqual(ret,0)
+			
+## Raises TiglException: TIGL_ERROR (1) (both give the same Error)			
+##	def test_componentIntersectionPoint(self):
+##		print("IntersectionPoint")
+##		componentUidOne = self.tigl.fuselageGetUID(1)
+##		componentUidTwo = self.tigl.wingGetUID(1)
+##		lineID = 1
+##		eta = 0.5
+##		ret = self.tigl.componentIntersectionPoint(componentUidOne, componentUidTwo, lineID, eta)
+##		self.assertEqual((len(ret)==3),True)
+##			
+##	def test_componentIntersectionLineCount(self):
+##		print("IntersectionLine")
+##		componentUidOne = self.tigl.fuselageGetUID(1)
+##		componentUidTwo = self.tigl.wingGetUID(1)
+##		ret = self.tigl.componentIntersectionLineCount(componentUidOne, componentUidTwo)
+		
+			
+	def test_wingGetVolume(self):
+		wingIndex = 1 
+		ret = self.tigl.wingGetVolume(wingIndex)
+		self.assertEqual(isinstance(ret,float),True)
+			
+	def test_wingGetSegmentVolume(self):
+		wingIndex = 1
+		segmentIndex = 1
+		ret = self.tigl.wingGetSegmentVolume(wingIndex, segmentIndex)
+		self.assertEqual(isinstance(ret,float),True)
+			
+	def test_fuselageGetSegmentVolume(self):
+		fuselageIndex = 1
+		segmentIndex = 1
+		ret = self.tigl.fuselageGetSegmentVolume(fuselageIndex, segmentIndex)
+		self.assertEqual(isinstance(ret,float),True)
+			
+	def test_wingGetSurfaceArea(self):
+		wingIndex = 1
+		ret = self.tigl.wingGetSurfaceArea(wingIndex)
+		self.assertEqual(isinstance(ret,float),True)
+			
+	def test_wingGetSegmentSurfaceArea(self):
+		wingIndex = 1
+		segmentIndex = 1
+		ret = self.tigl.wingGetSegmentSurfaceArea(wingIndex, segmentIndex)
+		self.assertEqual(isinstance(ret,float),True)			
+
+	def test_fuselageGetSegmentSurfaceArea(self):
+		fuselageIndex = 1
+		segmentIndex = 1
+		ret = self.tigl.fuselageGetSegmentSurfaceArea(fuselageIndex, segmentIndex)
+		self.assertEqual(isinstance(ret,float),True)
+			
+	def test_wingGetReferenceArea(self):
+		wingIndex = 1
+		ret = self.tigl.wingGetReferenceArea(wingIndex)
+		self.assertEqual(isinstance(ret,float),True)
+			
+	def test_componentGetHashCode(self):
+		componentUID = self.tigl.wingGetUID(1)
+		ret = self.tigl.componentGetHashCode(componentUID)
+		self.assertEqual(isinstance(ret,int),True)
+					
+	def test_configurationGetLength(self):
+		ret = self.tigl.configurationGetLength()
+		self.assertEqual(isinstance(ret,float),True)
+			
+	def test_wingGetSpan(self):
+		wingUID = self.tigl.wingGetUID(1)
+		ret = self.tigl.wingGetSpan(wingUID)
+		self.assertEqual(isinstance(ret,float),True)
+		
 	def test_wingGetSurfaceArea(self):
 		area = self.tigl.wingGetSurfaceArea(1);
 		self.assertGreater(area, 125.)
@@ -234,8 +476,63 @@ class TestTiglApi(unittest.TestCase):
 
 	def test_exportMeshedWingVTKByIndex(self):
 		self.tigl.exportMeshedWingVTKByIndex(1, 'TestData/export/D150modelID_wing1_python.vtp', 0.01)
+
+###### SLOW Function, basically fuselage based due to complex fuselage geometry
+	def test_MergedTests(self):
+		if skipSlowFunctions:
+			return
+		print "Slow Functions (14min)",
 		
-	
+		#exportMeshedFuselageSTL
+		fuselageIndex = 1
+		filenamePtr = "TestData/export/export2.stl"
+		deflection = 0.01
+		self.tigl.exportMeshedFuselageSTL(fuselageIndex, filenamePtr, deflection)
+
+		# Fuselage VTK by Index
+		fuselageIndex = 1
+		filenamePtr = "TestData/export/export2.vtk"
+		deflection = 0.01
+		self.tigl.exportMeshedFuselageVTKByIndex(fuselageIndex, filenamePtr, deflection)
+
+		# Fuselage VTk by UID
+		fuselageUID = "D150_VAMP_FL1"
+		filenamePtr = "TestData/export/export3.vtk"
+		deflection = 0.01
+		self.tigl.exportMeshedFuselageVTKByUID(fuselageUID, filenamePtr, deflection)
+
+		# Fuselage Simple-VTK by UID	
+		fuselageUID = "D150_VAMP_FL1"
+		filenamePtr ="TestData/export/export6.vtk"
+		deflection = 0.01
+		self.tigl.exportMeshedFuselageVTKSimpleByUID(fuselageUID, filenamePtr, deflection)
+
+		# Distance to ground
+		fuselageUID = self.tigl.fuselageGetUID(1)
+		axisPntX = 0
+		axisPntY = 0
+		axisPntZ = 10
+		axisDirX = 0
+		axisDirY = 0
+		axisDirZ = 1
+		angle = 0
+		ret = self.tigl.fuselageGetMinumumDistanceToGround(fuselageUID, axisPntX, axisPntY, axisPntZ, axisDirX, axisDirY, axisDirZ, angle)
+
+		# Volume 
+		ret = self.tigl.fuselageGetVolume(fuselageIndex)
+		self.assertEqual(isinstance(ret,float),True)
+
+		# Wetted Area
+		print "50%",
+		wingUID = self.tigl.wingGetUID(1)
+		ret = self.tigl.wingGetWettedArea(wingUID)
+		self.assertEqual(isinstance(ret,float),True)
+
+		# Fuselage Surface Area
+		fuselageIndex = 1
+		ret = self.tigl.fuselageGetSurfaceArea(fuselageIndex)
+		self.assertEqual(isinstance(ret,float),True)
+		print "100%"
 # ----------------------------------------------------------------------- #		
 if __name__ == '__main__':
 	unittest.main()

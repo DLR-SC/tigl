@@ -33,16 +33,16 @@
 
 class QOCC_DECLSPEC TIGLViewerDocument : public QObject
 {
-	Q_OBJECT
+    Q_OBJECT
 
-	#define CPACS_XPATH_AIRCRAFT 			"/cpacs/vehicles/aircraft"
-	#define CPACS_XPATH_ROTORCRAFT 			"/cpacs/vehicles/rotorcraft"
-	#define CPACS_XPATH_AIRCRAFT_MODEL 		"/cpacs/vehicles/aircraft/model"
-	#define CPACS_XPATH_ROTORCRAFT_MODEL 	"/cpacs/vehicles/rotorcraft/model"
+    #define CPACS_XPATH_AIRCRAFT             "/cpacs/vehicles/aircraft"
+    #define CPACS_XPATH_ROTORCRAFT             "/cpacs/vehicles/rotorcraft"
+    #define CPACS_XPATH_AIRCRAFT_MODEL         "/cpacs/vehicles/aircraft/model"
+    #define CPACS_XPATH_ROTORCRAFT_MODEL     "/cpacs/vehicles/rotorcraft/model"
 
 public:
 
-	TIGLViewerDocument( QWidget *parentWidget, const Handle_AIS_InteractiveContext& ic, const class TIGLViewerSettings& set );
+    TIGLViewerDocument( QWidget *parentWidget, const Handle_AIS_InteractiveContext& ic, const class TIGLViewerSettings& set );
     ~TIGLViewerDocument( );
 
     TiglReturnCode openCpacsConfiguration(const QString fileName);
@@ -52,91 +52,97 @@ public:
     // a small helper when we just want to display a shape
     Handle(AIS_Shape) displayShape(const TopoDS_Shape& shape, Quantity_Color col = Quantity_NOC_ShapeCol);
 
-	// Draws a point
-	void DisplayPoint(gp_Pnt& aPoint,
-						const char* aText,
-						Standard_Boolean UpdateViewer,
-						Standard_Real anXoffset,
-						Standard_Real anYoffset,
-						Standard_Real aZoffset,
-						Standard_Real TextScale);
+    // Draws a point
+    void DisplayPoint(gp_Pnt& aPoint,
+                        const char* aText,
+                        Standard_Boolean UpdateViewer,
+                        Standard_Real anXoffset,
+                        Standard_Real anYoffset,
+                        Standard_Real aZoffset,
+                        Standard_Real TextScale);
 
     // Returns the CPACS configuration
-	tigl::CCPACSConfiguration& GetConfiguration(void) const;
+    tigl::CCPACSConfiguration& GetConfiguration(void) const;
 
 signals:
     void documentUpdated(TiglCPACSConfigurationHandle);
 
 public slots:
-	// Aircraft slots
-	void drawAllFuselagesAndWings();
-	void drawAllFuselagesAndWingsSurfacePoints();
-	void drawFusedAircraft();
-	void drawFusedAircraftTriangulation();
-	void drawWingFuselageIntersectionLine();
+    // Aircraft slots
+    void drawAllFuselagesAndWings();
+    void drawAllFuselagesAndWingsSurfacePoints();
+    void drawFusedAircraft();
+    void drawFusedAircraftTriangulation();
+    void drawWingFuselageIntersectionLine();
+    void drawFarField();
 
-	// Wing slots
-	void drawWingProfiles();
-	void drawWing();
-	void drawWingOverlayProfilePoints();
-	void drawWingTriangulation();
-	void drawWingSamplePoints();
-	void drawFusedWing();
-	void drawWingComponentSegment();
+    // Wing slots
+    void drawWingProfiles();
+    void drawWing();
+    void drawWingOverlayProfilePoints();
+    void drawWingTriangulation();
+    void drawWingSamplePoints();
+    void drawFusedWing();
+    void drawWingComponentSegment();
+    void drawWingComponentSegmentPoints();
     void drawWingShells();
 
-	// Fuselage slots
-	void drawFuselageProfiles();
-	void drawFuselage();
-	void drawFuselageTriangulation();
-	void drawFuselageSamplePoints();
-	void drawFuselageSamplePointsAngle();
-	void drawFusedFuselage();
+    // Fuselage slots
+    void drawFuselageProfiles();
+    void drawFuselage();
+    void drawFuselageTriangulation();
+    void drawFuselageSamplePoints();
+    void drawFuselageSamplePointsAngle();
+    void drawFusedFuselage();
 
-	// TIGL slots
-	void exportAsIges();
-	void exportFusedAsIges();
-	void exportAsStructuredIges();
-	void exportAsStep();
-	void exportAsStepWithMetaData();
-	void exportMeshedWingSTL();
-	void exportMeshedFuselageSTL();
-	void exportMeshedWingVTK();
-	void exportMeshedWingVTKsimple();
-	void exportMeshedFuselageVTK();
-	void exportMeshedFuselageVTKsimple();
+    // TIGL slots
+    void exportAsIges();
+    void exportFusedAsIges();
+    void exportAsStructuredIges();
+    void exportAsStep();
+    void exportAsStepWithMetaData();
+    void exportMeshedWingSTL();
+    void exportMeshedFuselageSTL();
+    void exportMeshedWingVTK();
+    void exportMeshedWingVTKsimple();
+    void exportMeshedFuselageVTK();
+    void exportMeshedFuselageVTKsimple();
+    void exportMeshedConfigVTK();
+    void exportMeshedConfigVTKNoFuse();
+    void exportWingCollada();
+    void exportFuselageCollada();
 
 
-	// General slots
-	void updateConfiguration();
+    // General slots
+    void updateConfiguration();
 
 private slots:
 
-	// Wing selection dialogs
-	QString dlgGetWingSelection();
-	QString dlgGetWingComponentSegmentSelection();
-	QString dlgGetWingProfileSelection();
+    // Wing selection dialogs
+    QString dlgGetWingSelection();
+    QString dlgGetWingComponentSegmentSelection();
+    QString dlgGetWingProfileSelection();
 
 
-	// Fuselage selection dialogs
-	QString dlgGetFuselageSelection();
-	QString dlgGetFuselageProfileSelection();
+    // Fuselage selection dialogs
+    QString dlgGetFuselageSelection();
+    QString dlgGetFuselageProfileSelection();
 
 
 private: 
-    TiglCPACSConfigurationHandle 			m_cpacsHandle;
-    const TIGLViewerSettings&				_settings;
-    QWidget* 								parent;
-    Handle_AIS_InteractiveContext			myAISContext;
-    class TIGLViewerWidget* 				myOCC;
-    QString 								loadedConfigurationFileName;
+    TiglCPACSConfigurationHandle            m_cpacsHandle;
+    const TIGLViewerSettings&               _settings;
+    QWidget*                                parent;
+    Handle_AIS_InteractiveContext           myAISContext;
+    class TIGLViewerWidget*                 myOCC;
+    QString                                 loadedConfigurationFileName;
 
     void writeToStatusBar(QString text);
     void displayError(QString text, QString header);
     QString myLastFolder; // TODO: synchronize with TIGLViewerWindow
     char* qstringToCstring(QString text);
     void createShapeTriangulation(const class TopoDS_Shape& shape, class TopoDS_Compound& compound);
-	
+    
 };
 
 #endif // TIGLVIEWERDOCUMENT_H

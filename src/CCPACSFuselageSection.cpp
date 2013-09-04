@@ -92,12 +92,12 @@ namespace tigl {
         if (tixiGetTextElement(tixiHandle, elementPath, &ptrName) == SUCCESS)
             name          = ptrName;
 
-		// Get attribute "uID"
-		char* ptrUID  = NULL;
+        // Get attribute "uID"
+        char* ptrUID  = NULL;
         tempString    = sectionXPath;
         elementPath   = const_cast<char*>(tempString.c_str());
         if (tixiGetTextAttribute(tixiHandle, elementPath, "uID", &ptrUID) == SUCCESS)
-		uid           = ptrUID;
+        uid           = ptrUID;
 
         // Get subelement "/transformation/translation"
         tempString  = sectionXPath + "/transformation/translation";
@@ -138,11 +138,11 @@ namespace tigl {
         return elements.GetSectionElementCount();
     }
 
-	// Get the UID of this FuselageSection
-	std::string CCPACSFuselageSection::GetUID(void) const
-	{
-		return uid;
-	}
+    // Get the UID of this FuselageSection
+    const std::string& CCPACSFuselageSection::GetUID(void) const
+    {
+        return uid;
+    }
 
     // Get element for a given index
     CCPACSFuselageSectionElement& CCPACSFuselageSection::GetSectionElement(int index) const

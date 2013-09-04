@@ -33,103 +33,111 @@
 #include "CCPACSWingProfile.h"
 #include "CCPACSFuselages.h"
 #include "CCPACSFuselageProfile.h"
+#include "CCPACSFarField.h"
 #include "TopoDS_Compound.hxx"
 #include "BRep_Builder.hxx"
+#include "CTiglShapeCache.h"
 
 namespace tigl {
 
-	class CCPACSConfiguration
-	{
+    class CCPACSConfiguration
+    {
 
-	public:
-		// Constructor
-		CCPACSConfiguration(TixiDocumentHandle tixiHandle);
+    public:
+        // Constructor
+        CCPACSConfiguration(TixiDocumentHandle tixiHandle);
 
-		// Virtual Destructor
-		virtual ~CCPACSConfiguration(void);
+        // Virtual Destructor
+        virtual ~CCPACSConfiguration(void);
 
-		// Invalidates the internal state of the configuration and forces
-		// recalculation of wires, lofts etc.
-		void Invalidate(void);
+        // Invalidates the internal state of the configuration and forces
+        // recalculation of wires, lofts etc.
+        void Invalidate(void);
 
-		// Read CPACS configuration
-		void ReadCPACS(char* configurationUID);
+        // Read CPACS configuration
+        void ReadCPACS(const char* configurationUID);
 
-		// Returns the underlying tixi document handle used by a CPACS configuration
-		TixiDocumentHandle GetTixiDocumentHandle(void) const;
+        // Returns the underlying tixi document handle used by a CPACS configuration
+        TixiDocumentHandle GetTixiDocumentHandle(void) const;
 
-		// Returns the total count of wing profiles in this configuration
-		int GetWingProfileCount(void) const;
+        // Returns the total count of wing profiles in this configuration
+        int GetWingProfileCount(void) const;
 
-		// Returns the wing profile for a given index - TODO: depricated!
-		CCPACSWingProfile& GetWingProfile(int index) const;
+        // Returns the wing profile for a given index - TODO: depricated!
+        CCPACSWingProfile& GetWingProfile(int index) const;
 
-		// Returns the wing profile for a given uid.
-		CCPACSWingProfile& GetWingProfile(std::string uid) const;
+        // Returns the wing profile for a given uid.
+        CCPACSWingProfile& GetWingProfile(std::string uid) const;
 
-		// Returns the total count of wings in a configuration
-		int GetWingCount(void) const;
+        // Returns the total count of wings in a configuration
+        int GetWingCount(void) const;
 
-		// Returns the wing for a given index.
-		CCPACSWing& GetWing(int index) const;
+        // Returns the wing for a given index.
+        CCPACSWing& GetWing(int index) const;
 
         // Returns the wing for a given UID.
-        CCPACSWing& GetWing(const std::string UID) const;
+        CCPACSWing& GetWing(const std::string& UID) const;
 
-        TopoDS_Shape GetParentLoft(const std::string UID);
+        TopoDS_Shape GetParentLoft(const std::string& UID);
 
-		// Returns the total count of fuselage profiles in this configuration
-		int GetFuselageProfileCount(void) const;
+        // Returns the total count of fuselage profiles in this configuration
+        int GetFuselageProfileCount(void) const;
 
-		// Returns the fuselage profile for a given index.
-		CCPACSFuselageProfile& GetFuselageProfile(int index) const;
+        // Returns the fuselage profile for a given index.
+        CCPACSFuselageProfile& GetFuselageProfile(int index) const;
 
-		// Returns the fuselage profile for a given uid.
-	    CCPACSFuselageProfile& GetFuselageProfile(std::string uid) const;
+        // Returns the fuselage profile for a given uid.
+        CCPACSFuselageProfile& GetFuselageProfile(std::string uid) const;
 
-		// Returns the total count of fuselages in a configuration
-		int GetFuselageCount(void) const;
+        // Returns the total count of fuselages in a configuration
+        int GetFuselageCount(void) const;
 
-		// Returns the fuselage for a given index.
-		CCPACSFuselage& GetFuselage(int index) const;
+        // Returns the fuselage for a given index.
+        CCPACSFuselage& GetFuselage(int index) const;
 
         // Returns the fuselage for a given UID.
         CCPACSFuselage& GetFuselage(std::string UID) const;
 
+        CCPACSFarField& GetFarField();
+
         // Returns the uid manager
         CTiglUIDManager& GetUIDManager(void);
 
-		// Returns the boolean fused airplane as TopoDS_Shape
-		TopoDS_Shape& GetFusedAirplane(void);
+        // Returns the boolean fused airplane as TopoDS_Shape
+        TopoDS_Shape& GetFusedAirplane(void);
 
-		// Returns the length of the airplane
-		double GetAirplaneLenth(void);
+        // Returns the length of the airplane
+        double GetAirplaneLenth(void);
 
-		// Returns the UID of the loaded configuration.
-		std::string GetUID(void);
+        // Returns the UID of the loaded configuration.
+        std::string GetUID(void);
+        
+        CTiglShapeCache& GetShapeCache(void);
 
     protected:
-        void OutputComponentTree(CTiglAbstractPhysicalComponent* parent);
+        void BuildFusedPlane(CTiglAbstractPhysicalComponent* parent);
 
-		// transform all components relative to their parents
+        // transform all components relative to their parents
         void transformAllComponents(CTiglAbstractPhysicalComponent* parent);
 
     private:
-		// Copy constructor
-		CCPACSConfiguration(const CCPACSConfiguration& ) : wings(0), fuselages(0) { /* Do nothing */ }
+        // Copy constructor
+        CCPACSConfiguration(const CCPACSConfiguration& );
 
-		// Assignment operator
-		void operator=(const CCPACSConfiguration& ) { /* Do nothing */ }
+        // Assignment operator
+        void operator=(const CCPACSConfiguration& );
 
-	private:
-		TixiDocumentHandle           tixiDocumentHandle;   /**< Handle for internal TixiDocument */
-		CCPACSHeader                 header;               /**< Configuration header element */
-		CCPACSWings                  wings;                /**< Configuration wings element */
-		CCPACSFuselages              fuselages;            /**< Configuration fuselages element */
-		CTiglUIDManager              uidManager;           /**< Stores the unique ids of the components */
-		TopoDS_Shape				 fusedAirplane;		   /**< The complete airplaine as one fused shape */
-        std::string                  configUID;     /**< UID of the opened configuration   */
-	};
+    private:
+        TixiDocumentHandle           tixiDocumentHandle;   /**< Handle for internal TixiDocument */
+        CCPACSHeader                 header;               /**< Configuration header element */
+        CCPACSWings                  wings;                /**< Configuration wings element */
+        CCPACSFuselages              fuselages;            /**< Configuration fuselages element */
+        CCPACSFarField               farField;             /**< Far field configuration for CFD tools */
+        CTiglUIDManager              uidManager;           /**< Stores the unique ids of the components */
+        TopoDS_Shape                 fusedAirplane;        /**< The complete airplaine as one fused shape */
+        std::string                  configUID;            /**< UID of the opened configuration   */
+        CTiglShapeCache              shapeCache;
+    };
 
 } // end namespace tigl
 

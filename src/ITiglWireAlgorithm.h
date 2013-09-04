@@ -34,35 +34,35 @@
 
 namespace tigl {
 
-	class ITiglWireAlgorithm
-	{
+    class ITiglWireAlgorithm
+    {
 
-	public:
-		// Typedef for a container to store the points to build a wire.
-		typedef std::vector<gp_Pnt> CPointContainer;
+    public:
+        // Typedef for a container to store the points to build a wire.
+        typedef std::vector<gp_Pnt> CPointContainer;
 
-	public:
-		// Builds the wire from the given points
-		virtual TopoDS_Wire BuildWire(const CPointContainer& points, bool forceClosed = false) const = 0;
+    public:
+        // Builds the wire from the given points
+        virtual TopoDS_Wire BuildWire(const CPointContainer& points, bool forceClosed = false) const = 0;
 
-		// Returns the algorithm code identifier for an algorithm
-		virtual TiglAlgorithmCode GetAlgorithmCode(void) const = 0;
+        // Returns the algorithm code identifier for an algorithm
+        virtual TiglAlgorithmCode GetAlgorithmCode(void) const = 0;
 
-		// Returns the point on the wire with the smallest x value
-		virtual gp_Pnt GetPointWithMinX(const CPointContainer& points) const = 0;
+        // Returns the point on the wire with the smallest x value
+        virtual gp_Pnt GetPointWithMinX(const CPointContainer& points) const = 0;
 
-		// Returns the point on the wire with the biggest x value
-		virtual gp_Pnt GetPointWithMaxX(const CPointContainer& points) const = 0;
+        // Returns the point on the wire with the biggest x value
+        virtual gp_Pnt GetPointWithMaxX(const CPointContainer& points) const = 0;
 
-		// Returns the point on the wire with the smallest y value
-		virtual gp_Pnt GetPointWithMinY(const CPointContainer& points) const = 0;
+        // Returns the point on the wire with the smallest y value
+        virtual gp_Pnt GetPointWithMinY(const CPointContainer& points) const = 0;
 
-		// Returns the point on the wire with the biggest y value
-		virtual gp_Pnt GetPointWithMaxY(const CPointContainer& points) const = 0;
+        // Returns the point on the wire with the biggest y value
+        virtual gp_Pnt GetPointWithMaxY(const CPointContainer& points) const = 0;
 
-		// Destructor
-		virtual ~ITiglWireAlgorithm(void) { /* Do nothing */ }
-	};
+        // Destructor
+        virtual ~ITiglWireAlgorithm(void) { /* Do nothing */ }
+    };
 
 } // end namespace tigl
 

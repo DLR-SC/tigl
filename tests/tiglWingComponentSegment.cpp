@@ -29,6 +29,7 @@
 #include "CCPACSConfigurationManager.h"
 #include "CCPACSWing.h"
 #include "CCPACSWingComponentSegment.h"
+#include "CCPACSMaterial.h"
 
 /******************************************************************************/
 
@@ -340,6 +341,215 @@ TEST_F(WingComponentSegmentSimple, tiglWingComponentSegmentPointGetSegmentEtaXsi
         free(segmentUID); segmentUID = NULL;
 }
 
+TEST_F(WingComponentSegmentSimple, tiglWingComponentSegmentGetPoint_success){
+    double accuracy = 1e-7;
+    double x, y, z;
+    ASSERT_EQ(TIGL_SUCCESS, tiglWingComponentSegmentGetPoint(tiglHandle, "WING_CS1", 0.5, 0.0, &x, &y, &z));
+    ASSERT_NEAR(0.0, x, accuracy);
+    ASSERT_NEAR(1.0, y, accuracy);
+    ASSERT_NEAR(0.0, z, accuracy);
+    
+    ASSERT_EQ(TIGL_SUCCESS, tiglWingComponentSegmentGetPoint(tiglHandle, "WING_CS1", 0.75, 0.0, &x, &y, &z));
+    ASSERT_NEAR(0.25, x, accuracy);
+    ASSERT_NEAR(1.5, y, accuracy);
+    ASSERT_NEAR(0.0, z, accuracy);
+    
+    ASSERT_EQ(TIGL_SUCCESS, tiglWingComponentSegmentGetPoint(tiglHandle, "WING_CS1", 1.0, 0.0, &x, &y, &z));
+    ASSERT_NEAR(0.5, x, accuracy);
+    ASSERT_NEAR(2.0, y, accuracy);
+    ASSERT_NEAR(0.0, z, accuracy);
+}
+
+TEST_F(WingComponentSegmentSimple, GetMaterials){
+    int compseg = 1;
+    // now we have do use the internal interface as we currently have no public api for this
+    tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
+    tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
+    tigl::CCPACSWing& wing = config.GetWing(1);
+    tigl::CCPACSWingComponentSegment& segment = (tigl::CCPACSWingComponentSegment&) wing.GetComponentSegment(compseg);
+    
+    // test point in cell
+    tigl::MaterialList list = segment.GetMaterials(0.25, 0.9, UPPER_SHELL);
+    ASSERT_EQ(2, list.size());
+    ASSERT_STREQ("MyCellMat", list[0]->GetUID().c_str());
+    ASSERT_STREQ("MySkinMat", list[1]->GetUID().c_str());
+    
+    // test point outside cell
+    list = segment.GetMaterials(0.6, 0.9, UPPER_SHELL);
+    ASSERT_EQ(1, list.size());
+    ASSERT_STREQ("MySkinMat", list[0]->GetUID().c_str());
+    
+    // no materials defined for lower shell
+    list = segment.GetMaterials(0.6, 0.9, LOWER_SHELL);
+    ASSERT_EQ(0, list.size());
+}
+
+TEST_F(WingComponentSegmentSimple, GetMaterials_cinterface){
+    int nuids = 0;
+    const char **  uids;
+    ASSERT_EQ(TIGL_SUCCESS, tiglWingComponentSegmentGetMaterialUIDs(tiglHandle, "WING_CS1", UPPER_SHELL, 0.25, 0.9, &uids, &nuids));
+    ASSERT_EQ(2, nuids);
+    ASSERT_STREQ("MyCellMat", uids[0]);
+    ASSERT_STREQ("MySkinMat", uids[1]);
+    delete[] uids;
+}
+
+TEST_F(WingComponentSegmentSimple, GetMaterials_cinterface_nullptr){
+    int nuids = 0;
+    TiglStringList  uids;
+    ASSERT_EQ(TIGL_NULL_POINTER, tiglWingComponentSegmentGetMaterialUIDs(tiglHandle, "WING_CS1", UPPER_SHELL, 0.25, 0.9, NULL, &nuids));
+    ASSERT_EQ(TIGL_NULL_POINTER, tiglWingComponentSegmentGetMaterialUIDs(tiglHandle, "WING_CS1", UPPER_SHELL, 0.25, 0.9, &uids, NULL));
+}
+
+TEST_F(WingComponentSegmentSimple, determine_segments){
+    int compseg = 1;
+    // now we have do use the internal interface as we currently have no public api for this
+    tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
+    tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
+    tigl::CCPACSWing& wing = config.GetWing(1);
+    tigl::CCPACSWingComponentSegment& segment = (tigl::CCPACSWingComponentSegment&) wing.GetComponentSegment(compseg);
+    
+    std::vector<int> list = segment.GetSegmentList(segment.GetFromElementUID(), segment.GetToElementUID());
+    ASSERT_EQ(2, list.size());
+    ASSERT_EQ(1, list.at(0));
+    ASSERT_EQ(2, list.at(1));
+    
+    list = segment.GetSegmentList(segment.GetToElementUID(), segment.GetFromElementUID());
+    ASSERT_EQ(2, list.size());
+    ASSERT_EQ(1, list.at(0));
+    ASSERT_EQ(2, list.at(1));
+    
+    list = segment.GetSegmentList("Cpacs2Test_Wing_Sec1_El1", "Cpacs2Test_Wing_Sec2_El1");
+    ASSERT_EQ(1, list.size());
+    ASSERT_EQ(1, list.at(0));
+    
+    list = segment.GetSegmentList("Cpacs2Test_Wing_Sec2_El1", "Cpacs2Test_Wing_Sec1_El1");
+    ASSERT_EQ(1, list.size());
+    ASSERT_EQ(1, list.at(0));
+    
+    list = segment.GetSegmentList("Cpacs2Test_Wing_Sec2_El1", "Cpacs2Test_Wing_Sec3_El1");
+    ASSERT_EQ(1, list.size());
+    ASSERT_EQ(2, list.at(0));
+    
+}
+
+TEST_F(WingComponentSegmentSimple, GetSegments){
+    int nsegments = 0;
+    ASSERT_EQ(TIGL_SUCCESS, tiglWingComponentSegmentGetNumberOfSegments(tiglHandle, "WING_CS1", &nsegments));
+    ASSERT_EQ(2, nsegments);
+    
+    char * seguid = NULL;
+    ASSERT_EQ(TIGL_SUCCESS, tiglWingComponentSegmentGetSegmentUID(tiglHandle, "WING_CS1", 1, &seguid));
+    ASSERT_STREQ("Cpacs2Test_Wing_Seg_1_2", seguid);
+    
+    ASSERT_EQ(TIGL_SUCCESS, tiglWingComponentSegmentGetSegmentUID(tiglHandle, "WING_CS1", 2, &seguid));
+    ASSERT_STREQ("Cpacs2Test_Wing_Seg_2_3", seguid);
+    
+    // invalid cs uid
+    ASSERT_EQ(TIGL_UID_ERROR, tiglWingComponentSegmentGetNumberOfSegments(tiglHandle, "INVALID_CS", &nsegments));
+    ASSERT_EQ(TIGL_UID_ERROR, tiglWingComponentSegmentGetSegmentUID(tiglHandle, "INVALID_CS", 2, &seguid));
+    
+    // invalid segment index
+    ASSERT_EQ(TIGL_INDEX_ERROR, tiglWingComponentSegmentGetSegmentUID(tiglHandle, "WING_CS1", 0, &seguid));
+    ASSERT_EQ(TIGL_INDEX_ERROR, tiglWingComponentSegmentGetSegmentUID(tiglHandle, "WING_CS1", 3, &seguid));
+    
+    // nullptr
+    ASSERT_EQ(TIGL_NULL_POINTER, tiglWingComponentSegmentGetNumberOfSegments(tiglHandle, NULL, &nsegments));
+    ASSERT_EQ(TIGL_NULL_POINTER, tiglWingComponentSegmentGetNumberOfSegments(tiglHandle, "WING_CS1", NULL));
+    ASSERT_EQ(TIGL_NULL_POINTER, tiglWingComponentSegmentGetSegmentUID(tiglHandle, NULL, 1, &seguid));
+    ASSERT_EQ(TIGL_NULL_POINTER, tiglWingComponentSegmentGetSegmentUID(tiglHandle, "WING_CS1", 1, NULL));
+    
+    // invalid handle
+    ASSERT_EQ(TIGL_NOT_FOUND, tiglWingComponentSegmentGetNumberOfSegments(-1, "WING_CS1", &nsegments));
+    ASSERT_EQ(TIGL_NOT_FOUND, tiglWingComponentSegmentGetSegmentUID(-1, "WING_CS1", 1, &seguid));
+}
+
+TEST_F(WingComponentSegmentSimple, determine_segments_invalidUids){
+    int compseg = 1;
+    // now we have do use the internal interface as we currently have no public api for this
+    tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
+    tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
+    tigl::CCPACSWing& wing = config.GetWing(1);
+    tigl::CCPACSWingComponentSegment& segment = (tigl::CCPACSWingComponentSegment&) wing.GetComponentSegment(compseg);
+    
+    std::vector<int> list = segment.GetSegmentList("my_fake_UID", segment.GetFromElementUID());
+    ASSERT_EQ(0, list.size());
+}
+
+TEST_F(WingComponentSegmentSimple, GetEtaXsiFromSegment){
+    int compseg = 1;
+    // now we have do use the internal interface as we currently have no public api for this
+    tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
+    tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
+    tigl::CCPACSWing& wing = config.GetWing(1);
+    tigl::CCPACSWingComponentSegment& segment = (tigl::CCPACSWingComponentSegment&) wing.GetComponentSegment(compseg);
+    
+    double eta, xsi;
+    segment.GetEtaXsiFromSegmentEtaXsi("Cpacs2Test_Wing_Seg_1_2", 0.5, 0.5, eta, xsi);
+    ASSERT_NEAR(0.25, eta, 1e-7);
+    ASSERT_NEAR(0.50, xsi, 1e-7);
+}
+
+TEST_F(WingComponentSegmentSimple, tiglWingSegmentPointGetComponentSegmentEtaXsi_success){
+    double eta, xsi;
+    ASSERT_EQ(TIGL_SUCCESS, tiglWingSegmentPointGetComponentSegmentEtaXsi(tiglHandle, "Cpacs2Test_Wing_Seg_1_2", "WING_CS1", 0.5, 0.5, &eta, &xsi));
+    ASSERT_NEAR(0.25, eta, 1e-7);
+    ASSERT_NEAR(0.50, xsi, 1e-7);
+    
+    ASSERT_EQ(TIGL_SUCCESS, tiglWingSegmentPointGetComponentSegmentEtaXsi(tiglHandle, "Cpacs2Test_Wing_Seg_2_3", "WING_CS1", 0.5, 0.5, &eta, &xsi));
+    ASSERT_NEAR(0.75, eta, 1e-7);
+    ASSERT_NEAR(0.50, xsi, 1e-7);
+}
+
+TEST_F(WingComponentSegmentSimple, GetSegmentIntersection){
+    tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
+    tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
+    tigl::CCPACSWing& wing = config.GetWing(1);
+    tigl::CCPACSWingComponentSegment& compSegment = (tigl::CCPACSWingComponentSegment&) wing.GetComponentSegment(1);
+    
+    double eta = 1.;
+    double xsi = 0;
+    compSegment.GetSegmentIntersection("Cpacs2Test_Wing_Seg_1_2", 0.1, 0.1, 0.9, 0.1, eta, xsi);
+    ASSERT_NEAR(0.1, xsi, 1e-6);
+    
+    compSegment.GetSegmentIntersection("Cpacs2Test_Wing_Seg_1_2", 0.1, 0.1, 0.8, 0.1, eta, xsi);
+    ASSERT_NEAR(0.1, xsi, 1e-6);
+    
+    compSegment.GetSegmentIntersection("Cpacs2Test_Wing_Seg_1_2", 0.0, 0.0, 1.0, 1.0, eta, xsi);
+    ASSERT_NEAR(0.5, xsi, 1e-6);
+    
+    compSegment.GetSegmentIntersection("Cpacs2Test_Wing_Seg_1_2", 0.0, 0.0, 1.0, 1.0, 0.0, xsi);
+    ASSERT_NEAR(0.0, xsi, 1e-6);
+    
+    ASSERT_THROW(compSegment.GetSegmentIntersection("Cpacs2Test_Wing_Seg_2_3", 0.1, 0.1, 0.9, 0.1, eta, xsi), tigl::CTiglError);
+}
+
+TEST_F(WingComponentSegmentSimple, GetSegmentIntersection_cinterface){
+    double xsi;
+    TiglReturnCode ret;
+    ret = tiglWingComponentSegmentGetSegmentIntersection(tiglHandle, "WING_CS1", "Cpacs2Test_Wing_Seg_1_2", 0.1, 0.1, 0.9, 0.1, 1.0, &xsi);
+    ASSERT_EQ(TIGL_SUCCESS, ret);
+    ASSERT_NEAR(0.1, xsi, 1e-6);
+    
+    ret = tiglWingComponentSegmentGetSegmentIntersection(tiglHandle, "WING_CS1","Cpacs2Test_Wing_Seg_2_3", 0.1, 0.1, 0.9, 0.1, 1.0, &xsi);
+    ASSERT_EQ(TIGL_MATH_ERROR, ret);
+    
+    ret = tiglWingComponentSegmentGetSegmentIntersection(tiglHandle, "","Cpacs2Test_Wing_Seg_1_2", 0.1, 0.1, 0.9, 0.1, 1.0, &xsi);
+    ASSERT_EQ(TIGL_UID_ERROR, ret);
+    
+    ret = tiglWingComponentSegmentGetSegmentIntersection(tiglHandle, "WING_CS1", "", 0.1, 0.1, 0.9, 0.1, 1.0, &xsi);
+    ASSERT_EQ(TIGL_UID_ERROR, ret);
+    
+    ret = tiglWingComponentSegmentGetSegmentIntersection(tiglHandle, NULL, "Cpacs2Test_Wing_Seg_1_2", 0.1, 0.1, 0.9, 0.1, 1.0, &xsi);
+    ASSERT_EQ(TIGL_NULL_POINTER, ret);
+    
+    ret = tiglWingComponentSegmentGetSegmentIntersection(tiglHandle, "WING_CS1", NULL, 0.1, 0.1, 0.9, 0.1, 1.0, &xsi);
+    ASSERT_EQ(TIGL_NULL_POINTER, ret);
+    
+    ret = tiglWingComponentSegmentGetSegmentIntersection(tiglHandle, "WING_CS1", "Cpacs2Test_Wing_Seg_1_2", 0.1, 0.1, 0.9, 0.1, 1.0, NULL);
+    ASSERT_EQ(TIGL_NULL_POINTER, ret);
+}
+
 TEST_F(WingComponentSegment3, tiglWingComponentSegmentPointGetSegmentEtaXsi_BUG1){
     // now the tests
     double sEta = 0., sXsi = 0.;
@@ -350,3 +560,48 @@ TEST_F(WingComponentSegment3, tiglWingComponentSegmentPointGetSegmentEtaXsi_BUG1
     ASSERT_STREQ("D150_wing_1Segment2ID", segmentUID);
     cout << "eta_s / xsi_s: " << sEta << "/" << sXsi << endl;
 }
+
+TEST(WingComponentSegment4, tiglWingComponentSegmentPointGetSegmentEtaXsi_BUG2){
+    TiglCPACSConfigurationHandle tiglHandle = -1;
+    TixiDocumentHandle tixiHandle = -1;
+    
+    const char* filename = "TestData/simple_rectangle_compseg.xml";
+    
+    ReturnCode tixiRet = tixiOpenDocument(filename, &tixiHandle);
+    ASSERT_TRUE (tixiRet == SUCCESS);
+    TiglReturnCode tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "D150modelID", &tiglHandle);
+    ASSERT_TRUE(tiglRet == TIGL_SUCCESS);
+    
+    double sEta = 0., sXsi = 0.;
+    char *wingUID = NULL, *segmentUID = NULL;
+    tiglRet = tiglWingComponentSegmentPointGetSegmentEtaXsi(tiglHandle, "D150_wing_CS", 0.5, 0.10142, &wingUID, &segmentUID, &sEta, &sXsi);
+    ASSERT_EQ(TIGL_SUCCESS, tiglRet);
+    ASSERT_STREQ("D150_wing_1Segment3ID", segmentUID);
+    ASSERT_NEAR(0.5, sEta, 0.0001);
+    
+    
+    tiglCloseCPACSConfiguration(tiglHandle);
+    tixiCloseDocument(tixiHandle);
+}
+
+TEST_F(WingComponentSegment3, tiglWingComponentSegmentPointGetSegmentEtaXsi_BUG3){
+    double sEta = 0., sXsi = 0.;
+    char *wingUID = NULL, *segmentUID = NULL;
+    TiglReturnCode ret = tiglWingComponentSegmentPointGetSegmentEtaXsi(tiglHandle, "D150_VTP_CS", 0.0, 1.0, &wingUID, &segmentUID, &sEta, &sXsi);
+    ASSERT_EQ(TIGL_SUCCESS, ret);
+    ASSERT_STREQ("D150_VTP_1ID", wingUID);
+    ASSERT_STREQ("D150_VTP_1Segment2ID", segmentUID);
+
+    ASSERT_NEAR(0.0, sEta, 0.0001);
+    ASSERT_NEAR(1.0, sXsi, 0.0001);
+}
+
+TEST_F(WingComponentSegment, tiglWingComponentSegmentPointGetSegmentEtaXsi_BUG4){
+    double sEta = 0., sXsi = 0.;
+    char *wingUID = NULL, *segmentUID = NULL;
+    TiglReturnCode tiglRet = tiglWingComponentSegmentPointGetSegmentEtaXsi(tiglHandle, "D150_VAMP_SL1_CompSeg1", 0.95, 0.714, &wingUID, &segmentUID, &sEta, &sXsi);
+    ASSERT_EQ(TIGL_SUCCESS, tiglRet);
+    ASSERT_NEAR(0.95,  sEta, 1e-6);
+    ASSERT_NEAR(0.714, sXsi, 1e-6);
+}
+

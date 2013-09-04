@@ -36,61 +36,61 @@
 
 namespace tigl {
 
-	class CCPACSConfiguration;
+    class CCPACSConfiguration;
 
-	class CCPACSFuselages
-	{
+    class CCPACSFuselages
+    {
 
-	private:
-		// Typedef for a CCPACSFuselage container to store the fuselages of a configuration.
-		typedef std::vector<CCPACSFuselage*> CCPACSFuselageContainer;
+    private:
+        // Typedef for a CCPACSFuselage container to store the fuselages of a configuration.
+        typedef std::vector<CCPACSFuselage*> CCPACSFuselageContainer;
 
-	public:
-		// Constructor
-		CCPACSFuselages(CCPACSConfiguration* config);
+    public:
+        // Constructor
+        CCPACSFuselages(CCPACSConfiguration* config);
 
-		// Virtual Destructor
-		virtual ~CCPACSFuselages(void);
+        // Virtual Destructor
+        virtual ~CCPACSFuselages(void);
 
-		// Invalidates internal state
-		void Invalidate(void);
+        // Invalidates internal state
+        void Invalidate(void);
 
-		// Read CPACS fuselage elements
-		void ReadCPACS(TixiDocumentHandle tixiHandle, char* configurationUID);
+        // Read CPACS fuselage elements
+        void ReadCPACS(TixiDocumentHandle tixiHandle, const char* configurationUID);
 
-		// Returns the total count of fuselage profiles in this configuration
-		int GetProfileCount(void) const;
+        // Returns the total count of fuselage profiles in this configuration
+        int GetProfileCount(void) const;
 
-		// Returns the fuselage profile for a given index.
-		CCPACSFuselageProfile& GetProfile(int index) const;
-		CCPACSFuselageProfile& GetProfile(std::string uid) const;
+        // Returns the fuselage profile for a given index.
+        CCPACSFuselageProfile& GetProfile(int index) const;
+        CCPACSFuselageProfile& GetProfile(std::string uid) const;
 
-		// Returns the total count of fuselages in a configuration
-		int GetFuselageCount(void) const;
+        // Returns the total count of fuselages in a configuration
+        int GetFuselageCount(void) const;
 
-		// Returns the fuselage for a given index.
-		CCPACSFuselage& GetFuselage(int index) const;
+        // Returns the fuselage for a given index.
+        CCPACSFuselage& GetFuselage(int index) const;
 
         // Returns the fuselage for a given UID.
-        CCPACSFuselage& GetFuselage(const std::string UID) const;
+        CCPACSFuselage& GetFuselage(const std::string& UID) const;
 
-	protected:
-		// Cleanup routine
-		void Cleanup(void);
+    protected:
+        // Cleanup routine
+        void Cleanup(void);
 
-	private:
-		// Copy constructor
-		CCPACSFuselages(const CCPACSFuselages& ) { /* Do nothing */ }
+    private:
+        // Copy constructor
+        CCPACSFuselages(const CCPACSFuselages& );
 
-		// Assignment operator
-		void operator=(const CCPACSFuselages& ) { /* Do nothing */ }
+        // Assignment operator
+        void operator=(const CCPACSFuselages& );
 
-	private:
-		CCPACSFuselageProfiles   profiles;      /**< Fuselage profile elements */
-		CCPACSFuselageContainer  fuselages;     /**< Fuselage elements */
-		CCPACSConfiguration*     configuration; /**< Pointer to parent configuration */
+    private:
+        CCPACSFuselageProfiles   profiles;      /**< Fuselage profile elements */
+        CCPACSFuselageContainer  fuselages;     /**< Fuselage elements */
+        CCPACSConfiguration*     configuration; /**< Pointer to parent configuration */
 
-	};
+    };
 
 } // end namespace tigl
 

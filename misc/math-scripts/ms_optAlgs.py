@@ -18,8 +18,8 @@
 # @file ms_optAlgs.py
 # @brief Implementation of some basic optimization algorithms
 #
-import pkg_resources
-pkg_resources.require("matplotlib")
+#import pkg_resources
+#pkg_resources.require("matplotlib")
 from numpy import *
 import matplotlib.pyplot as plt
 

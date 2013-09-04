@@ -27,39 +27,39 @@
 
 namespace tigl {
 
-	// Constructor
-	CTiglPoint::CTiglPoint(double xval, double yval, double zval)
-		: x(xval)
-		, y(yval)
-		, z(zval)
-	{
-	}
+    // Constructor
+    CTiglPoint::CTiglPoint(double xval, double yval, double zval)
+        : x(xval)
+        , y(yval)
+        , z(zval)
+    {
+    }
 
-	// Copy constructor
-	CTiglPoint::CTiglPoint(const CTiglPoint& aPoint)
-	{
-		x = aPoint.x;
-		y = aPoint.y;
-		z = aPoint.z;
-	}
+    // Copy constructor
+    CTiglPoint::CTiglPoint(const CTiglPoint& aPoint)
+    {
+        x = aPoint.x;
+        y = aPoint.y;
+        z = aPoint.z;
+    }
 
-	CTiglPoint::CTiglPoint(const gp_XYZ& aPoint)
-	{
-		x = aPoint.X();
-		y = aPoint.Y();
-		z = aPoint.Z();
-	}
+    CTiglPoint::CTiglPoint(const gp_XYZ& aPoint)
+    {
+        x = aPoint.X();
+        y = aPoint.Y();
+        z = aPoint.Z();
+    }
 
-	// Assignment operator
-	CTiglPoint& CTiglPoint::operator=(const CTiglPoint& aPoint)
-	{
-		if (&aPoint != this) {
-			x = aPoint.x;
-			y = aPoint.y;
-			z = aPoint.z;
-		}
-		return *this;
-	}
+    // Assignment operator
+    CTiglPoint& CTiglPoint::operator=(const CTiglPoint& aPoint)
+    {
+        if (&aPoint != this) {
+            x = aPoint.x;
+            y = aPoint.y;
+            z = aPoint.z;
+        }
+        return *this;
+    }
 
     CTiglPoint CTiglPoint::operator+(const CTiglPoint& aPoint) const{
         CTiglPoint p;
@@ -107,22 +107,22 @@ namespace tigl {
         return sqrt(x*x + y*y + z*z);
     }
 
-	// Destructor
-	CTiglPoint::~CTiglPoint(void)
-	{
-	}
+    // Destructor
+    CTiglPoint::~CTiglPoint(void)
+    {
+    }
 
-	// Convert a CTiglPoint to a OpenCascade gp_Pnt
-	gp_Pnt CTiglPoint::Get_gp_Pnt(void) const
-	{
-		return gp_Pnt(x, y, z);
-	}
+    // Convert a CTiglPoint to a OpenCascade gp_Pnt
+    gp_Pnt CTiglPoint::Get_gp_Pnt(void) const
+    {
+        return gp_Pnt(x, y, z);
+    }
 
-	// Dump internal point data
-	void CTiglPoint::Dump(std::ostream& aStream) const 
-	{
-		aStream << "CTiglPoint: (" << x << ", " << y << ", " << z << ")";
-	}
+    // Dump internal point data
+    void CTiglPoint::Dump(std::ostream& aStream) const 
+    {
+        aStream << "CTiglPoint: (" << x << ", " << y << ", " << z << ")";
+    }
 
     double CTiglPoint::inner_prod(const CTiglPoint& a, const CTiglPoint& b) {
         return a.x*b.x + a.y*b.y + a.z*b.z;

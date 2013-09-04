@@ -22,29 +22,29 @@
 #include <iostream>
 
 TIGLViewerControlFile::TIGLViewerControlFile() {
-	showConsole = UNDEFINED;
+    showConsole = UNDEFINED;
 }
 
 CF_ReturnCode TIGLViewerControlFile::read(const char * filename){
-	TixiDocumentHandle handle;
-	if(tixiOpenDocument((char*)filename, &handle)!=SUCCESS){
-		std::cerr << "Error: control file \"" << filename << "\" could not be openend" << std::endl;
-		return CF_FILE_NOT_FOUND;
-	}
+    TixiDocumentHandle handle;
+    if(tixiOpenDocument((char*)filename, &handle)!=SUCCESS){
+        std::cerr << "Error: control file \"" << filename << "\" could not be openend" << std::endl;
+        return CF_FILE_NOT_FOUND;
+    }
 
-	// read in console stuff
-	const char * prefix = "/TIGLViewer/console";
-	int display = 1;
-	if(tixiGetBooleanAttribute(handle, prefix, "display", &display)==SUCCESS){
-		if(display == 1)
-			showConsole = CF_TRUE;
-		else if (display == 0)
-			showConsole = CF_FALSE;
-		else
-			showConsole = UNDEFINED;
-	}
+    // read in console stuff
+    const char * prefix = "/TIGLViewer/console";
+    int display = 1;
+    if(tixiGetBooleanAttribute(handle, prefix, "display", &display)==SUCCESS){
+        if(display == 1)
+            showConsole = CF_TRUE;
+        else if (display == 0)
+            showConsole = CF_FALSE;
+        else
+            showConsole = UNDEFINED;
+    }
 
-	return CF_SUCCESS;
+    return CF_SUCCESS;
 }
 
 TIGLViewerControlFile::~TIGLViewerControlFile() {

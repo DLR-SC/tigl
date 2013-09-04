@@ -10,7 +10,7 @@
 * you may not use this file except in compliance with the License.
 * You may obtain a copy of the License at
 *
-* Â  Â  http://www.apache.org/licenses/LICENSE-2.0
+* Â  Â  http://www.apache.org/licenses/LICENSE-2.0
 *
 * Unless required by applicable law or agreed to in writing, software
 * distributed under the License is distributed on an "AS IS" BASIS,
@@ -42,19 +42,19 @@ char* TIXIScriptProxy::qString2char(QString str)
 
 void TIXIScriptProxy::registerClass(QScriptEngine* engine)
 {
-        if (!engine)
-                return ;
-        
-        QScriptValue ctor = engine->newFunction(TIXIScriptProxyConstructor);
-        QScriptValue metaObject = engine->newQMetaObject(&QObject::staticMetaObject, ctor);
-        engine->globalObject().setProperty("TIXI", metaObject);
+    if (!engine)
+        return ;
+    
+    QScriptValue ctor = engine->newFunction(TIXIScriptProxyConstructor);
+    QScriptValue metaObject = engine->newQMetaObject(&QObject::staticMetaObject, ctor);
+    engine->globalObject().setProperty("TIXI", metaObject);
 }
 
 QScriptValue TIXIScriptProxyConstructor(QScriptContext * context, QScriptEngine * engine)
 {
-        QString fileName = context->argument(0).toString();
-        TIXIScriptProxy *TIXI = new TIXIScriptProxy();//, parent);
-        return engine->newQObject(TIXI, QScriptEngine::ScriptOwnership);
+    QString fileName = context->argument(0).toString();
+    TIXIScriptProxy *TIXI = new TIXIScriptProxy();//, parent);
+    return engine->newQObject(TIXI, QScriptEngine::ScriptOwnership);
 }
 
 QStringList TIXIScriptProxy::getMemberFunctions()

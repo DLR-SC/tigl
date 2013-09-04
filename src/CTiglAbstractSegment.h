@@ -33,9 +33,9 @@
 namespace tigl {
 
     class CTiglAbstractSegment : public CTiglAbstractGeometricComponent
-	{
+    {
 
-	public:
+    public:
         CTiglAbstractSegment(int segIndex);
 
         // Invalidates internal state
@@ -43,17 +43,15 @@ namespace tigl {
 
         // Returns the segment index of this segment
         int GetSegmentIndex(void) const;
-
     protected:
         void Cleanup();
 
         int                  mySegmentIndex;       /**< Index of this segment                   */
-        TopoDS_Shape         loft;                 /**< The loft between two sections           */
         bool                 invalidated;          /**< Internal state flag                     */
 
         CTiglAbstractSegment(){} /* do nothing */
 
-	};  // end class CTiglAbstractSegment
+    };  // end class CTiglAbstractSegment
 
 } // end namespace tigl
 

@@ -100,19 +100,22 @@
      <addaction name="drawFusedAircraftAction"/>
      <addaction name="showFusedAirplaneTriangulation"/>
      <addaction name="drawWingFuselageLineAction"/>
+     <addaction name="drawFarFieldAction"/>
     </widget>
     <widget class="QMenu" name="menuWings">
      <property name="title">
       <string>Wings</string>
      </property>
      <addaction name="drawWingsAction"/>
-     <addaction name="drawWingProfilesAction"/>
-     <addaction name="drawWingOverlayCPACSProfilePointsAction"/>
-     <addaction name="drawWingTriangulationAction"/>
-     <addaction name="drawWingSamplePointsAction"/>
      <addaction name="drawFusedWingAction"/>
-     <addaction name="drawWingComponentSegmentAction"/>
      <addaction name="drawWingShellAction"/>
+     <addaction name="drawWingComponentSegmentAction"/>
+     <addaction name="drawWingTriangulationAction"/>
+     <addaction name="drawWingProfilesAction"/>
+     <addaction name="separator"/>
+     <addaction name="drawWingSamplePointsAction"/>
+     <addaction name="drawWingOverlayCPACSProfilePointsAction"/>
+     <addaction name="drawWingCSPointAction"/>
     </widget>
     <widget class="QMenu" name="menuFuselages">
      <property name="title">
@@ -156,6 +159,8 @@
      <addaction name="tiglExportMeshedWingVTKsimple"/>
      <addaction name="tiglExportMeshedFuselageVTK"/>
      <addaction name="tiglExportMeshedFuselageVTKsimple"/>
+     <addaction name="tiglExportMeshedConfigVTKNoFuse"/>
+     <addaction name="tiglExportMeshedConfigVTK"/>
     </widget>
     <widget class="QMenu" name="menuExport_to_STL">
      <property name="title">
@@ -164,10 +169,18 @@
      <addaction name="tiglExportMeshedWingSTL"/>
      <addaction name="tiglExportMeshedFuselageSTL"/>
     </widget>
+    <widget class="QMenu" name="menuExport_to_Collada">
+     <property name="title">
+      <string>Export to Collada</string>
+     </property>
+     <addaction name="tiglExportWingColladaAction"/>
+     <addaction name="tiglExportFuselageColladaAction"/>
+    </widget>
     <addaction name="menuExport_to_IGES"/>
     <addaction name="menuExport_to_VTK"/>
     <addaction name="menuExport_to_STEP"/>
     <addaction name="menuExport_to_STL"/>
+    <addaction name="menuExport_to_Collada"/>
    </widget>
    <widget class="QMenu" name="viewMenu">
     <property name="title">
@@ -467,7 +480,7 @@
   </action>
   <action name="drawFusedAircraftAction">
    <property name="text">
-    <string>Show the complete Aircraft fused</string>
+    <string>Show the complete Aircraft fused (slow)</string>
    </property>
    <property name="statusTip">
     <string>Show the complete Aircraft fused</string>
@@ -1041,7 +1054,7 @@
   </action>
   <action name="showFusedAirplaneTriangulation">
    <property name="text">
-    <string>Show fused Airplane Triangulation</string>
+    <string>Show fused Airplane Triangulation (slow)</string>
    </property>
   </action>
   <action name="closeAction">
@@ -1088,6 +1101,39 @@
    </property>
    <property name="toolTip">
     <string>Export Model as IGES with CPACS metadata</string>
+   </property>
+  </action>
+  <action name="tiglExportWingColladaAction">
+   <property name="text">
+    <string>Export Wing</string>
+   </property>
+  </action>
+  <action name="tiglExportFuselageColladaAction">
+   <property name="text">
+    <string>Export Fuselage</string>
+   </property>
+  </action>
+  <action name="drawWingCSPointAction">
+   <property name="text">
+    <string>Show Wing Component Segment Point</string>
+   </property>
+  </action>
+  <action name="tiglExportMeshedConfigVTK">
+   <property name="text">
+    <string>Export fused Configuration VTK (slow)</string>
+   </property>
+  </action>
+  <action name="tiglExportMeshedConfigVTKNoFuse">
+   <property name="text">
+    <string>Export Configuration VTK (not fused)</string>
+   </property>
+  </action>
+  <action name="drawFarFieldAction">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Draw Far Field</string>
    </property>
   </action>
  </widget>

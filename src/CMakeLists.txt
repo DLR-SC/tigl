@@ -8,9 +8,9 @@ configure_file (
 source_group(Fuselage REGULAR_EXPRESSION "CCPACSFuselage")
 source_group(Wing REGULAR_EXPRESSION "CCPACSWing")
 
-include_directories(${OpenCASCADE_INCLUDE_DIR} ${TIXI_INCLUDE_DIRS} ${CMAKE_CURRENT_BINARY_DIR} ${GLOG_INCLUDE_DIR})
+include_directories(${OpenCASCADE_INCLUDE_DIR} ${TIXI_INCLUDE_DIRS} ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
 
-file(GLOB TIGL_SRC
+file(GLOB_RECURSE TIGL_SRC
     "*.h"
     "*.cpp"
 )
@@ -21,7 +21,17 @@ endif(MSVC)
 
 # tigl dll/so library
 add_library(TIGL SHARED ${TIGL_SRC})
-target_link_libraries (TIGL ${OpenCASCADE_LIBRARIES} ${TIXI_LIBRARIES} ${VLD_LIBRARIES} ${GLOG_LIBRARIES})
+
+if(GLOG_FOUND)
+  include_directories(${GLOG_INCLUDE_DIR})
+  target_link_libraries (TIGL ${GLOG_LIBRARIES})
+endif(GLOG_FOUND)
+
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+  add_definitions(-DDEBUG)
+endif()
+
+target_link_libraries (TIGL ${OpenCASCADE_LIBRARIES} ${TIXI_LIBRARIES} ${VLD_LIBRARIES})
 set_target_properties( TIGL PROPERTIES VERSION ${TIGL_VERSION})
 set_target_properties( TIGL PROPERTIES SOVERSION "${TIGL_VERSION_MAJOR}")
 
@@ -32,18 +42,12 @@ install (TARGETS TIGL
 		 ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
 		 )
 		 
-install (EXPORT tigl-targets DESTINATION ${CMAKE_INSTALL_LIBDIR}/tigl)			 
+install (EXPORT tigl-targets DESTINATION ${CMAKE_INSTALL_LIBDIR}/tigl)
 		 
 install (FILES tigl.h ${CMAKE_CURRENT_BINARY_DIR}/tigl_version.h
 		 DESTINATION include
-		 COMPONENT headers)		 
+		 COMPONENT headers)
 
-# static lib for tiglviewer		 
+# static lib for tiglviewer 
 add_library(TIGL_static ${TIGL_SRC})
 
-
-
-
-		 
-
-		 

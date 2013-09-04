@@ -9,29 +9,33 @@
 #include <AIS_InteractiveObject.hxx>
 
 #include <TCollection_AsciiString.hxx>
+#include <TCollection_ExtendedString.hxx>
 #include <Aspect_TypeOfText.hxx>
 #include <Standard_Real.hxx>
 #include <Standard_Integer.hxx>
 #include <Quantity_Factor.hxx>
 #include <Quantity_PlaneAngle.hxx>
-#include <Handle_PrsMgr_PresentationManager2d.hxx>
-#include <Handle_Graphic2d_GraphicObject.hxx>
 #include <Handle_SelectMgr_Selection.hxx>
 #include <Standard_OStream.hxx>
 #include <Standard_IStream.hxx>
 #include <Standard_CString.hxx>
 #include <SelectMgr_SelectableObject.hxx>
 
-class TCollection_AsciiString;
+#if 0
+#include <Handle_PrsMgr_PresentationManager2d.hxx>
+#include <Handle_Graphic2d_GraphicObject.hxx>
 class PrsMgr_PresentationManager2d;
 class Graphic2d_GraphicObject;
+#endif
+
+class TCollection_AsciiString;
 class SelectMgr_Selection;
 
 DEFINE_STANDARD_HANDLE(ISession_Text,AIS_InteractiveObject)
 class ISession_Text : public AIS_InteractiveObject  
 {
 public:
-	ISession_Text();
+    ISession_Text();
 
     ISession_Text           (const TCollection_AsciiString& aText,
                              const Standard_Real            anX         = 0   ,
@@ -53,11 +57,11 @@ public:
                              const Standard_Integer         aFontIndex  = 1   ,
                              const Quantity_Factor          aScale      = 0.1   );
 
-	virtual ~ISession_Text();
+    virtual ~ISession_Text();
 
 inline   Standard_Integer        NbPossibleSelection() const;
-inline   TCollection_AsciiString GetText() const;
-inline   void                    SetText(const TCollection_AsciiString& atext) ;
+inline   TCollection_ExtendedString GetText() const;
+inline   void                    SetText(const TCollection_ExtendedString& atext) ;
 inline   void                    GetCoord(Standard_Real& X, Standard_Real& Y, Standard_Real& Z) const ;
 inline   void                    SetCoord(const Standard_Real X, const Standard_Real Y, const Standard_Real Z=0);
 inline   Aspect_TypeOfText       GetTypeOfText() const;
@@ -97,16 +101,18 @@ void Compute          (const Handle(PrsMgr_PresentationManager3d)& aPresentation
                        const Standard_Integer aMode);
 void Compute          (const Handle(Prs3d_Projector)& aProjector,
                        const Handle(Prs3d_Presentation)& aPresentation);
+#if 0
 void Compute          (const Handle(PrsMgr_PresentationManager2d)& aPresentationManager,
                        const Handle(Graphic2d_GraphicObject)& aGrObj,
                        const Standard_Integer unMode = 0) ;
+#endif
 void ComputeSelection (const Handle(SelectMgr_Selection)& aSelection,
                        const Standard_Integer unMode) ;
 
 
  // Fields PRIVATE
  //
-TCollection_AsciiString MyText       ; 
+TCollection_ExtendedString MyText    ; 
 Standard_Real           MyX          ;
 Standard_Real           MyY          ;
 Standard_Real           MyZ          ;
@@ -125,10 +131,10 @@ Standard_Real           MyHeight     ;
  inline Standard_Integer ISession_Text::NbPossibleSelection() const 
 { return 1; }
 
-inline TCollection_AsciiString ISession_Text::GetText() const 
+inline TCollection_ExtendedString ISession_Text::GetText() const 
 {  return MyText ; }
 
-inline void ISession_Text::SetText(const TCollection_AsciiString& atext)
+inline void ISession_Text::SetText(const TCollection_ExtendedString& atext)
 {  MyText = atext; }
 
 inline void ISession_Text::GetCoord(Standard_Real& X, Standard_Real& Y, Standard_Real& Z) const 

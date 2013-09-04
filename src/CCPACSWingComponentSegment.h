@@ -28,76 +28,93 @@
 
 #include <string>
 
+#include "tigl_config.h"
 #include "tixi.h"
 #include "CCPACSWingConnection.h"
+#include "CCPACSWingCSStructure.h"
 #include "CTiglPoint.h"
 #include "CTiglAbstractSegment.h"
 
 #include "TopoDS_Shape.hxx"
 #include "TopoDS_Wire.hxx"
 #include "Geom_BSplineSurface.hxx"
-
+#include "CCPACSMaterial.h"
 
 namespace tigl {
 
-	class CCPACSWing;
+    typedef std::vector<const CCPACSMaterial*> MaterialList;
 
-	class CCPACSWingComponentSegment : public CTiglAbstractSegment
-	{
+    class CCPACSWing;
 
-	public:
-		// Constructor
-		CCPACSWingComponentSegment(CCPACSWing* aWing, int aSegmentIndex);
+    class CCPACSWingComponentSegment : public CTiglAbstractSegment
+    {
 
-		// Virtual Destructor
-		virtual ~CCPACSWingComponentSegment(void);
+    public:
+        // Constructor
+        CCPACSWingComponentSegment(CCPACSWing* aWing, int aSegmentIndex);
 
-		// Invalidates internal state
-		void Invalidate(void);
+        // Virtual Destructor
+        virtual ~CCPACSWingComponentSegment(void);
 
-		// Read CPACS segment elements
-		void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string & segmentXPath);
+        // Invalidates internal state
+        void Invalidate(void);
 
-		// Returns the wing this segment belongs to
-		CCPACSWing& GetWing(void) const;
+        // Read CPACS segment elements
+        void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string & segmentXPath);
 
-		// Gets the loft between the two segment sections
-		TopoDS_Shape& GetLoft(void);
+        // Returns the wing this segment belongs to
+        CCPACSWing& GetWing(void) const;
 
-		// Gets a point in relative wing coordinates for a given eta and xsi
-		gp_Pnt GetPoint(double eta, double xsi);
+        // Gets a point in relative wing coordinates for a given eta and xsi
+        gp_Pnt GetPoint(double eta, double xsi);
+        
+        // Get the eta xsi coordinate from a segment point (given by seta, sxsi)
+        void GetEtaXsiFromSegmentEtaXsi(const std::string &segmentUID, double seta, double sxsi, double &eta, double &xsi);
 
         // Gets the volume of this segment
         double GetVolume();
 
-		// Gets the surface area of this segment
+        // Gets the surface area of this segment
         double GetSurfaceArea();
 
         // Gets the fromElementUID of this segment
-		const std::string & GetFromElementUID(void);
+        const std::string & GetFromElementUID(void) const;
 
-		// Gets the toElementUID of this segment
-		const std::string & GetToElementUID(void);
+        // Gets the toElementUID of this segment
+        const std::string & GetToElementUID(void) const;
 
-		// Returns the segment to a given point on the componentSegment.
-		// Returns null if the point is not an that wing!
-		const std::string findSegment(double x, double y, double z);
+        // Returns the segment to a given point on the componentSegment.
+        // Returns null if the point is not an that wing!
+        const std::string findSegment(double x, double y, double z);
 
         TiglGeometricComponentType GetComponentType(){ return TIGL_COMPONENT_WINGCOMPSEGMENT | TIGL_COMPONENT_SEGMENT | TIGL_COMPONENT_LOGICAL; }
 
+#ifdef TIGL_USE_XCAF
         // builds data structure for a TDocStd_Application
         // mostly used for export
         TDF_Label ExportDataStructure(Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label);
+#endif
+        
+        MaterialList GetMaterials(double eta, double xsi, TiglStructureType);
 
+        // returns a list of segments that belong to this component segment
+        std::vector<int> GetSegmentList(const std::string &fromElementUID, const std::string &toElementUID) const;
+        
+        // creates an (iso) component segment line 
+        TopoDS_Wire GetCSLine(double eta1, double xsi1, double eta2, double xsi2, int NSTEPS=101);
+        
+        // calculates the intersection of a segment iso eta line with a component segment line (defined by its start and end point)
+        // returns the xsi coordinate of the intersection
+        void GetSegmentIntersection(const std::string& segmentUID, double csEta1, double csXsi1, double csEta2, double csXsi2, double eta, double& xsi);
     protected:
-		// Cleanup routine
-		void Cleanup(void);
+        // Cleanup routine
+        void Cleanup(void);
 
-		// Update internal segment data
-		void Update(void);
+        // Update internal segment data
+        void Update(void);
 
-		// Builds the loft between the two segment sections
-		void BuildLoft(void);
+        // Builds the loft between the two segment sections
+        TopoDS_Shape BuildLoft(void);
 
         // Returns an upper or lower point on the segment surface in
         // dependence of parameters eta and xsi, which range from 0.0 to 1.0.
@@ -105,30 +122,33 @@ namespace tigl {
         // inner wing profile. For eta = 1.0, xsi = 1.0 point is equal to the trailing
         // edge on the outer wing profile. If fromUpper is true, a point
         // on the upper surface is returned, otherwise from the lower.
-//		gp_Pnt GetPoint(double eta, double xsi, bool fromUpper);
+//        gp_Pnt GetPoint(double eta, double xsi, bool fromUpper);
 
     private:
-		// Copy constructor
-		CCPACSWingComponentSegment(const CCPACSWingComponentSegment& )  { /* Do nothing */ }
+        // Copy constructor
+        CCPACSWingComponentSegment(const CCPACSWingComponentSegment& );
 
-		// Assignment operator
-		void operator=(const CCPACSWingComponentSegment& ) { /* Do nothing */ }
+        // Assignment operator
+        void operator=(const CCPACSWingComponentSegment& );
+
+        std::vector<int> findPath(const std::string& fromUid, const::std::string& toUID, const std::vector<int>& curPath, bool forward) const;
 
 
-	private:
-		std::string          name;                 /**< Segment name                            */
-		std::string          fromElementUID;       /**< Inner segment uid (root			        */
-		std::string          toElementUID;         /**< Outer segment uid (tip)			        */
-		CCPACSWing*          wing;                 /**< Parent wing                             */
+    private:
+        std::string          name;                 /**< Segment name                            */
+        std::string          fromElementUID;       /**< Inner segment uid (root                 */
+        std::string          toElementUID;         /**< Outer segment uid (tip)                 */
+        CCPACSWing*          wing;                 /**< Parent wing                             */
         double               myVolume;             /**< Volume of this segment                  */
         double               mySurfaceArea;        /**< Surface area of this segment            */
-		TopoDS_Shape		 upperShape;		   /**< Upper shape of this componentSegment	*/
-		TopoDS_Shape		 lowerShape;		   /**< Lower shape of this componentSegment	*/
-		Handle(Geom_Surface) upperSurface;
-		Handle(Geom_Surface) lowerSurface;
-		bool                 surfacesAreValid;
+        TopoDS_Shape         upperShape;           /**< Upper shape of this componentSegment    */
+        TopoDS_Shape         lowerShape;           /**< Lower shape of this componentSegment    */
+        Handle(Geom_Surface) upperSurface;
+        Handle(Geom_Surface) lowerSurface;
+        bool                 surfacesAreValid;
+        CCPACSWingCSStructure structure;
 
-	};
+    };
 
 } // end namespace tigl
 

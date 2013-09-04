@@ -14,7 +14,7 @@
 				<name>VAMP_D150</name>
 				<description>VAMP_D150 model</description>
 				<fuselages xsi:type="fuselagesType">
-					<fuselage symmetry="x-z-plane" uID="D150_VAMP_FL1" xsi:type="fuselageType">
+					<fuselage uID="D150_VAMP_FL1" xsi:type="fuselageType">
 						<name>Name Rumpf</name>
 						<description>Beschreibung Rumpf</description>
 						<transformation xsi:type="transformationType">

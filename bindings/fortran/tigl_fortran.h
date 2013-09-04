@@ -49,13 +49,13 @@ extern "C" {
 #endif
 
 #if defined G77_LINUX || defined G77_IRIX || defined G77_MINGW || defined G77
-	#define FORTRAN_NAME(a) a##__
+    #define FORTRAN_NAME(a) a##__
 #elif defined F90_HPUX
-	#define FORTRAN_NAME(a) a
+    #define FORTRAN_NAME(a) a
 #elif defined F90_IRIX || defined GFORTRAN
-	#define FORTRAN_NAME(a) a##_
+    #define FORTRAN_NAME(a) a##_
 #else
-	#define FORTRAN_NAME(a) a
+    #define FORTRAN_NAME(a) a
 #endif
 
 #ifdef IFORT_WIN32
@@ -93,6 +93,7 @@ extern "C" {
 #define tiglWingGetSegmentIndex_f TIGL_WING_GET_SEGMENT_INDEX
 #define tiglWingGetSectionUID_f TIGL_WING_GET_SECTION_UID
 #define tiglWingGetSymmetry_f TIGL_WING_GET_SYMMETRY
+#define tiglWingComponentSegmentGetPoint_f TIGL_WING_COMPONENT_SEGMENT_GET_POINT
 #define tiglGetFuselageCount_f TIGL_GET_FUSELAGE_COUNT
 #define tiglFuselageGetSegmentCount_f TIGL_FUSELAGE_GET_SEGMENT_COUNT
 #define tiglFuselageGetPoint_f TIGL_FUSELAGE_GET_POINT
@@ -127,7 +128,7 @@ extern "C" {
 #define tiglExportMeshedWingVTKSimpleByUID_f TIGL_EXPORT_MESHED_WING_VTK_SIMPLE_BY_UID
 #define tiglExportMeshedFuselageVTKSimpleByUID_f TIGL_EXPORT_MESHED_FUSELAGE_VTK_SIMPLE_BY_UID
 #define tiglExportMeshedGeometryVTKSimpleByUID_f TIGL_EXPORT_MESHED_GEOMETRY_VTK_SIMPLE_BY_UID
-#define tiglGetMaterialUID_f TIGL_GET_MATERIAL_UID
+#define tiglWingComponentSegmentGetMaterialUIDs_f TIGL_WING_COMPONENT_SEGMENT_GET_MATERIAL_UIDS
 #define tiglComponentGetHashCode_f TIGL_COMPONENT_GET_HASH_CODE
 #define tiglComponentIntersectionPoint_f TIGL_COMPONENT_INTERSECTION_POINT
 #define tiglComponentIntersectionLineCount_f TIGL_COMPONENT_INTERSECTION_LINE_COUNT
@@ -170,6 +171,7 @@ extern "C" {
 #define tiglWingGetSegmentIndex_f FORTRAN_NAME(tigl_wing_get_segment_index)
 #define tiglWingGetSectionUID_f FORTRAN_NAME(tigl_wing_get_section_uid)
 #define tiglWingGetSymmetry_f FORTRAN_NAME(tigl_wing_get_symmetry)
+#define tiglWingComponentSegmentGetPoint_f FORTRAN_NAME(tigl_wing_component_segment_get_point)
 #define tiglGetFuselageCount_f FORTRAN_NAME(tigl_get_fuselage_count)
 #define tiglFuselageGetSegmentCount_f FORTRAN_NAME(tigl_fuselage_get_segment_count)
 #define tiglFuselageGetPoint_f FORTRAN_NAME(tigl_fuselage_get_point)
@@ -204,7 +206,7 @@ extern "C" {
 #define tiglExportMeshedWingVTKSimpleByUID_f FORTRAN_NAME(tigl_export_meshed_wing_vtk_simple_by_uid)
 #define tiglExportMeshedFuselageVTKSimpleByUID_f FORTRAN_NAME(tigl_export_meshed_fuselage_vtk_simple_by_uid)
 #define tiglExportMeshedGeometryVTKSimpleByUID_f FORTRAN_NAME(tigl_export_meshed_geometry_vtk_simple_by_uid)
-#define tiglGetMaterialUID_f FORTRAN_NAME(tigl_get_material_uid)
+#define tiglWingComponentSegmentGetMaterialUIDs_f FORTRAN_NAME(tigl_wing_component_segment_get_material_uids)
 #define tiglComponentGetHashCode_f FORTRAN_NAME(tigl_component_get_hash_code)
 #define tiglComponentIntersectionPoint_f FORTRAN_NAME(tigl_component_intersection_point)
 #define tiglComponentIntersectionLineCount_f FORTRAN_NAME(tigl_component_intersection_line_count)
@@ -217,7 +219,7 @@ extern "C" {
 
 void tiglOpenCPACSConfiguration_f(TixiDocumentHandle* tixiHandle,
                                   TiglCPACSConfigurationHandle* cpacsHandlePtr,
-								  char* configurationUID,
+                                  char* configurationUID,
                                   TiglReturnCode* returnCode);
 
 void tiglCloseCPACSConfiguration_f(TiglCPACSConfigurationHandle* cpacsHandle,
@@ -255,16 +257,16 @@ void tiglExportStructuredSTEP_f(TiglCPACSConfigurationHandle* cpacsHandle,
                                 int lengthString1);
 
 void tiglExportFusedIGES_f(TiglCPACSConfigurationHandle* cpacsHandle,
-						   char* filenamePtr,
-					       TiglReturnCode* returnCode,
-						   int lengthString1);
+                           char* filenamePtr,
+                           TiglReturnCode* returnCode,
+                           int lengthString1);
 
 void tiglExportMeshedWingSTL_f(TiglCPACSConfigurationHandle* cpacsHandle,
-						   int* wingIndex,
-						   char* filenamePtr,
-						   double* deflection,
-					       TiglReturnCode* returnCode,
-						   int lengthString1);
+                           int* wingIndex,
+                           char* filenamePtr,
+                           double* deflection,
+                           TiglReturnCode* returnCode,
+                           int lengthString1);
 
 void tiglExportMeshedFuselageSTL_f(TiglCPACSConfigurationHandle* cpacsHandle,
                            int* fuselageIndex,
@@ -357,21 +359,21 @@ void tiglWingGetProfileName_f(TiglCPACSConfigurationHandle* cpacsHandle,
                               int lengthString1);
 
 void tiglWingGetUID_f(TiglCPACSConfigurationHandle* cpacsHandle,
-							int* wingIndex,
+                            int* wingIndex,
                             char* uidNamePtr,
                             TiglReturnCode* returnCode,
                             int lengthString1);
 
 void tiglWingGetSegmentUID_f(TiglCPACSConfigurationHandle* cpacsHandle,
-							int* wingIndex,
-							int* segmentIndex,
+                            int* wingIndex,
+                            int* segmentIndex,
                             char* uidNamePtr,
                             TiglReturnCode* returnCode,
                             int lengthString1);
 
 void tiglWingGetSectionUID_f(TiglCPACSConfigurationHandle* cpacsHandle,
-							int* wingIndex,
-							int* sectionIndex,
+                            int* wingIndex,
+                            int* sectionIndex,
                             char* uidNamePtr,
                             TiglReturnCode* returnCode,
                             int lengthString1);
@@ -583,9 +585,9 @@ void tiglWingGetReferenceArea_f(TiglCPACSConfigurationHandle *cpacsHandle,
                                  TiglReturnCode* returnCode);
 
  void tiglWingGetWettedArea_f(TiglCPACSConfigurationHandle *cpacsHandle,
-								  char *wingUID,
-								  double *referenceAreaPtr,
-								  TiglReturnCode* returnCode);
+                                  char *wingUID,
+                                  double *referenceAreaPtr,
+                                  TiglReturnCode* returnCode);
 
 /*****************************************************************************************************/
 /*                    VTK EXPORT                                                                     */
@@ -667,7 +669,7 @@ void tiglGetMaterialUID_f(TiglCPACSConfigurationHandle* cpacsHandle,
 /*                     UTILITY FUNCTIONS                                                             */
 /*****************************************************************************************************/
 void tiglComponentGetHashCode_f(TiglCPACSConfigurationHandle* cpacsHandle,
-							   char* uID,
+                               char* uID,
                                int* hashCode,
                                TiglReturnCode* returnCode,
                                int lengthString1);
@@ -675,41 +677,41 @@ void tiglComponentGetHashCode_f(TiglCPACSConfigurationHandle* cpacsHandle,
 
 
 void tiglComponentIntersectionPoint_f(TiglCPACSConfigurationHandle* cpacsHandle,
-									 char*  componentUidOne,
-									 char*  componentUidTwo,
-									 int* lineID,
-									 double* eta,
-									 double* pointXPtr,
-									 double* pointYPtr,
-									 double* pointZPtr,
-									 TiglReturnCode* returnCode,
-									 int lengthString1,
-									 int lengthString2);
+                                     char*  componentUidOne,
+                                     char*  componentUidTwo,
+                                     int* lineID,
+                                     double* eta,
+                                     double* pointXPtr,
+                                     double* pointYPtr,
+                                     double* pointZPtr,
+                                     TiglReturnCode* returnCode,
+                                     int lengthString1,
+                                     int lengthString2);
 
 
 void tiglComponentIntersectionLineCount_f(TiglCPACSConfigurationHandle* cpacsHandle,
-										char*  componentUidOne,
-										char*  componentUidTwo,
-										int*   numWires,
-										TiglReturnCode* returnCode,
-										int lengthString1,
-										int lengthString2);
+                                        char*  componentUidOne,
+                                        char*  componentUidTwo,
+                                        int*   numWires,
+                                        TiglReturnCode* returnCode,
+                                        int lengthString1,
+                                        int lengthString2);
 
 
 void tiglFuselageGetMinumumDistanceToGround_f(TiglCPACSConfigurationHandle* cpacsHandle,
-											 char *fuselageUID,
-											 double* axisPntX,
-											 double* axisPntY,
-											 double* axisPntZ,
-											 double* axisDirX,
-											 double* axisDirY,
-											 double* axisDirZ,
-											 double* angle,
-											 double* pointXPtr,
-											 double* pointYPtr,
-											 double* pointZPtr,
-											 TiglReturnCode* returnCode,
-											 int lengthString1);
+                                             char *fuselageUID,
+                                             double* axisPntX,
+                                             double* axisPntY,
+                                             double* axisPntZ,
+                                             double* axisDirX,
+                                             double* axisDirY,
+                                             double* axisDirZ,
+                                             double* angle,
+                                             double* pointXPtr,
+                                             double* pointYPtr,
+                                             double* pointZPtr,
+                                             TiglReturnCode* returnCode,
+                                             int lengthString1);
 
 
 
