@@ -8,4 +8,4 @@ APP_PLATFORM 	:= android-7
 APP_STL 		:= gnustl_shared
 APP_CPPFLAGS 	:= -fexceptions -frtti
 APP_ABI 		:= armeabi armeabi-v7a
-APP_MODULES     := osgNativeLib
+APP_MODULES     := tiglviewer-native

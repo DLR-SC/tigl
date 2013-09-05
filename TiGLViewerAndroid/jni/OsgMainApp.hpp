@@ -57,7 +57,7 @@
 //Self headers
 #include "OsgAndroidNotifyHandler.hpp"
 #include "VirtualVisObject.hpp"
-#include "CrossNode.h"
+#include "TiglViewerHUD.h"
 
 
 //Static plugins Macro
@@ -93,7 +93,7 @@ private:
 	//osg::ref_ptr<osg::Group> root_2;
 	//osg::ref_ptr<osg::Group> root_3;
 	//osg::ref_ptr<osg::Group> root_4;
-	osg::ref_ptr<CrossNode> crossnode1;
+	osg::ref_ptr<TiglViewerHUD> crossnode1;
 	//osg::ref_ptr<CrossNode> crossnode2;
 	//osg::ref_ptr<CrossNode> crossnode3;
 	//osg::ref_ptr<CrossNode> crossnode4;
@@ -117,8 +117,7 @@ private:
     std::vector<Model> _vModelsToDelete;
 
    // osgViewer::View* createView(int x, int y, int height, int width , osgViewer::GraphicsWindowEmbedded* _gwe , int id);
-    void addCross(osg::ref_ptr<CrossNode> &crossnode, osg::ref_ptr<osgViewer::Viewer> view, osg::Group *group ,
-    			  int x, int y , int w, int h);
+    osg::Node* addCross(osg::ref_ptr<osgViewer::View> view, int x, int y, int w, int h);
 public:
     OsgMainApp();
     ~OsgMainApp();

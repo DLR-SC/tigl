@@ -5,6 +5,9 @@
 #include <cstdlib>
 
 #include "tixi.h"
+#include "ITiglGeometricComponent.h"
+#include "CTiglTriangularizer.h"
+#include <TopoDS_Shape.hxx>
 
 #include <osg/Geometry>
 #include <osg/Material>
@@ -23,9 +26,9 @@ GeometricVisObject::~GeometricVisObject(void)
 }
 
 
-int GeometricVisObject::readTiglPolydata(tigl::CTiglPolyData& polyData)
+int GeometricVisObject::fromShape(TopoDS_Shape& loft, double deflection)
 {
-
+	tigl::CTiglTriangularizer polyData(loft, deflection);
 
 	polyData.switchObject(1);
 	tigl::CTiglPolyObject& inputObject = polyData.currentObject();

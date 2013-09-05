@@ -5,7 +5,7 @@ public class osgNativeLib {
 	
 	static {
 		System.loadLibrary("gnustl_shared");
-        System.loadLibrary("osgNativeLib");
+        System.loadLibrary("tiglviewer-native");
     }
 
    /**

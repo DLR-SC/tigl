@@ -2,12 +2,12 @@ LOCAL_PATH := $(call my-dir)
 
 include $(CLEAR_VARS)
 
-LOCAL_MODULE    := osgNativeLib
+LOCAL_MODULE    := tiglviewer-native
 ### Main Install dir
-OSG_ANDROID_DIR	:= /Users/martin/Documents/Code/OpenSceneGraph-3.2.0/build-android/install
+OSG_ANDROID_DIR	:= d:\local\osg-android
 LIBDIR 			:= -L $(OSG_ANDROID_DIR)/obj/local/armeabi
 
-TIGL_LIBS := -L /Users/martin/Documents/Code/tigl/misc/tigl-android/lib/static -lTIGL_static \
+TIGL_LIBS := -L ../../misc/tigl-android/lib/static -lTIGL_static \
 	-lTKIGES -lTKSTL -lTKSTEP \
 	-lTKSTEPAttr -lTKOffset -lTKMesh \
 	-lTKSTEP209 -lTKFillet -lTKSTEPBase \
@@ -17,7 +17,7 @@ TIGL_LIBS := -L /Users/martin/Documents/Code/tigl/misc/tigl-android/lib/static -
 	-lTKG3d -lTKG2d -lTKMath -lTKernel \
 	-lTIXI_static -lcurl -lxslt -lxml2
 	
-TIGL_INCLUDES := ../../src /Users/martin/Documents/Code/oce-install/include/oce/
+TIGL_INCLUDES := ../../src D:\local\occt-android\include
 
 
 ifeq ($(TARGET_ARCH_ABI),armeabi-v7a)
@@ -31,7 +31,7 @@ LOCAL_CFLAGS    := -Werror -fno-short-enums
 LOCAL_CPPFLAGS  := -DOSG_LIBRARY_STATIC 
 
 LOCAL_LDLIBS    := -llog -lGLESv1_CM -ldl -lz $(TIGL_LIBS)
-LOCAL_SRC_FILES := osgNativeLib.cpp OsgMainApp.cpp OsgAndroidNotifyHandler.cpp AuxiliaryViewUpdater.cpp CrossNode.cpp crossnodegeode.cpp  VisObject.cpp  MaterialTemplate.cpp VirtualVisObject.cpp GeometricVisObject.cpp 
+LOCAL_SRC_FILES := osgNativeLib.cpp OsgMainApp.cpp OsgAndroidNotifyHandler.cpp AuxiliaryViewUpdater.cpp TiglViewerHUD.cpp TiglViewerBackground.cpp VisObject.cpp  MaterialTemplate.cpp VirtualVisObject.cpp GeometricVisObject.cpp 
 LOCAL_LDFLAGS   :=   $(LIBDIR) \
 -losgdb_osg \
 -losgdb_deprecated_osgviewer \

@@ -3,7 +3,7 @@
 
 #include <osg/Geode>
 #include "VisObject.h"
-#include "CTiglPolyData.h"
+#include <TopoDS_Shape.hxx>
 
 class GeometricVisObject : public VisObject
 {
@@ -16,7 +16,7 @@ public:
 	//void unpick();
 
 	int readVTK(const char* filename);
-	int readTiglPolydata(tigl::CTiglPolyData& inputObject);
+	int fromShape(TopoDS_Shape& loft, double deflection);
 
 	int getId(){return id;};
 	bool isPickable(){return false;};
