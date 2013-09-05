@@ -444,6 +444,52 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetLowerPointAtAngle(TiglCPACSConfigur
     }
 }
 
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSegmentEtaXsi(TiglCPACSConfigurationHandle cpacsHandle,
+                         int wingIndex,
+                         double pointX,
+                         double pointY,
+                         double pointZ,
+                         int* segmentIndex,
+                         double* eta,
+                         double* xsi,
+                         int* isOnTop)
+{
+    if (eta == NULL || xsi == NULL || isOnTop == NULL) {
+        LOG(ERROR) << "Error: Null pointer argument for eta, xsi or isOnTop ";
+        LOG(ERROR) << "in function call to tiglWingGetSegmentEtaXsi." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+
+    try {
+        tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration & config = manager.GetConfiguration(cpacsHandle);
+        tigl::CCPACSWing& wing = config.GetWing(wingIndex);
+        bool onTop = false;
+        *segmentIndex = wing.GetSegmentEtaXsi(gp_Pnt(pointX, pointY, pointZ),*eta, *xsi, onTop);
+        if (*segmentIndex <= 0) {
+            return TIGL_NOT_FOUND;
+        }
+        *isOnTop = onTop;
+
+        return TIGL_SUCCESS;
+    }
+    catch (std::exception& ex)
+    {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex)
+    {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...)
+    {
+        LOG(ERROR) << "Caught an unknown exception in tiglWingGetSegmentEtaXsi" << std::endl;
+        return TIGL_ERROR;
+    }
+}
+
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglGetWingCount(TiglCPACSConfigurationHandle cpacsHandle, int* wingCountPtr)
 {
