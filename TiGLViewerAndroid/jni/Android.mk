@@ -7,7 +7,7 @@ LOCAL_MODULE    := osgNativeLib
 OSG_ANDROID_DIR	:= /Users/martin/Documents/Code/OpenSceneGraph-3.2.0/build-android/install
 LIBDIR 			:= -L $(OSG_ANDROID_DIR)/obj/local/armeabi
 
-TIGL_LIBS := -L /Users/martin/Documents/Code/tigl/misc/tigl-android/lib -lTIGL_static \
+TIGL_LIBS := -L /Users/martin/Documents/Code/tigl/misc/tigl-android/lib/static -lTIGL_static \
 	-lTKIGES -lTKSTL -lTKSTEP \
 	-lTKSTEPAttr -lTKOffset -lTKMesh \
 	-lTKSTEP209 -lTKFillet -lTKSTEPBase \

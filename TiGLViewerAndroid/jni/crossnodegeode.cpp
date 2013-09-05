@@ -6,6 +6,7 @@
 #include <iostream>
 #include <osg/MatrixTransform>
 #include <osg/PositionAttitudeTransform>
+#include "MaterialTemplate.h"
 
 
 CrossNodeGeode::CrossNodeGeode(){}
@@ -17,8 +18,6 @@ osg::MatrixTransform* CrossNodeGeode::initNodeGeode()
 
     osg::Vec4Array* colors = new osg::Vec4Array();
     colors->push_back(osg::Vec4(1.0f,0.0f,0.0f,1.0f));
-
-    osg::ref_ptr<osg::Geode> crossGeode = new osg::Geode();
 
     osg::Cylinder* xCylinder = new osg::Cylinder(osg::Vec3(objectX+0.25,objectY,objectZ), 0.07f, 0.6f);
     xCylinder->setRotation(osg::Quat(osg::PI_2, osg::Vec3(0,0.5f,0)));
@@ -50,19 +49,36 @@ osg::MatrixTransform* CrossNodeGeode::initNodeGeode()
     osg::ShapeDrawable* zO = new osg::ShapeDrawable(zCone);
     zO->setColor(osg::Vec4(0.0,0.0,1.0,1.0));
 
-    crossGeode->addDrawable(new osg::ShapeDrawable(new osg::Sphere(osg::Vec3(objectX,objectY,objectZ), 0.10f)));
-    crossGeode->addDrawable(xC);
-    crossGeode->addDrawable(yC);
-    crossGeode->addDrawable(zC);
-    crossGeode->addDrawable(xO);
-    crossGeode->addDrawable(yO);
-    crossGeode->addDrawable(zO);
+    // apply materials for correct lighting
+    osg::Geode * xArrowGeode = new osg::Geode;
+    xArrowGeode->addDrawable(xC);
+    xArrowGeode->addDrawable(xO);
+    xArrowGeode->getOrCreateStateSet()->setAttribute(MaterialTemplate::getMaterial(RED));
+
+    osg::Geode * yArrowGeode = new osg::Geode;
+    yArrowGeode->addDrawable(yC);
+    yArrowGeode->addDrawable(yO);
+    yArrowGeode->getOrCreateStateSet()->setAttribute(MaterialTemplate::getMaterial(GREEN));
+
+    osg::Geode * zArrowGeode = new osg::Geode;
+    zArrowGeode->addDrawable(zC);
+    zArrowGeode->addDrawable(zO);
+    zArrowGeode->getOrCreateStateSet()->setAttribute(MaterialTemplate::getMaterial(BLUE));
+
+
+
+    osg::Geode* centerBallGeode = new osg::Geode();
+    centerBallGeode->addDrawable(new osg::ShapeDrawable(new osg::Sphere(osg::Vec3(objectX,objectY,objectZ), 0.10f)));
+    centerBallGeode->getOrCreateStateSet()->setAttribute(MaterialTemplate::getMaterial(WHITE));
 
     osg::ref_ptr<osg::MatrixTransform> output = new osg::MatrixTransform;
-    output->addChild(crossGeode.get());
+    output->addChild(centerBallGeode);
+    output->addChild(xArrowGeode);
+    output->addChild(yArrowGeode);
+    output->addChild(zArrowGeode);
 
     osg::StateSet* stateset = output->getOrCreateStateSet();
-    stateset->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
+    stateset->setMode(GL_LIGHTING,osg::StateAttribute::ON);
 
     return output.release();
 }

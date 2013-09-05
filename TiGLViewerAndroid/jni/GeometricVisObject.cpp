@@ -71,7 +71,7 @@ int GeometricVisObject::readTiglPolydata(tigl::CTiglPolyData& polyData)
 
 	this->addDrawable(geometry.get());
 
-	this->getOrCreateStateSet()->setAttribute(MaterialTemplate::getMaterial(0));
+	this->getOrCreateStateSet()->setAttribute(MaterialTemplate::getMaterial(UNSELECTED));
 
 	//this->setPicked(false);
 
@@ -151,7 +151,7 @@ int GeometricVisObject::readVTK(const char* xmlFilename)
 	noOfGVO++;
 	osg::ref_ptr<osg::Geometry> geometry = new osg::Geometry();
 
-	this->getOrCreateStateSet()->setAttribute(MaterialTemplate::getMaterial(0));
+	this->getOrCreateStateSet()->setAttribute(MaterialTemplate::getMaterial(UNSELECTED));
 	geometry->setVertexArray(vertices);
 	geometry->addPrimitiveSet(indices.get());
 
