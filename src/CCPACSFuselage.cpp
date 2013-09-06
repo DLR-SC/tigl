@@ -257,7 +257,8 @@ namespace tigl {
         // Other (sub)-components
         for (int i=1; i <= segments.GetSegmentCount(); i++) {
             CCPACSFuselageSegment& segment = segments.GetSegment(i);
-            TDF_Label fuselageSegmentLabel = myAssembly->AddShape(segment.GetLoft(), false);
+            TopoDS_Shape loft = GetFuselageTransformation().Transform(segment.GetLoft());
+            TDF_Label fuselageSegmentLabel = myAssembly->AddShape(loft, false);
             TDataStd_Name::Set (fuselageSegmentLabel, segment.GetUID().c_str());
             //TDF_Label& subSegmentLabel = segment.ExportDataStructure(myAssembly, fuselageSegmentLabel);
         }
