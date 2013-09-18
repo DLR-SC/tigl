@@ -28,6 +28,8 @@ private:
 
 	
     std::vector<osg::ref_ptr<osgViewer::View> > views;
+    osg::Node* addCross(osg::ref_ptr<osgViewer::View> view,
+                              int x, int y, int w, int h);
 };
 
 

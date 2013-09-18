@@ -12,7 +12,5 @@ int main(){
 	for(unsigned int i  = 0 ; i < vis->getPickedNodes()->getNumChildren() ; i++)
 		std::cout << "das ist Picked: " << vis->getPickedNodes()->getChild(i)->getName()<< std::endl;
 
-	std::getchar();
-
 	return 0;
 }

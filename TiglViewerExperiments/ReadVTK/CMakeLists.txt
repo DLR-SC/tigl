@@ -3,6 +3,7 @@ find_package(osg)
 find_package(osgUtil)
 find_package(osgViewer)
 find_package(osgGA)
+find_package(osgText)
 
 
 set(PROGNAME "ReadVTK")
@@ -26,14 +27,10 @@ set(SOURCE_FILES
 	VirtualVisObject.h
         Visualizer.cpp
 	Visualizer.h
-	VisObject.cpp
-	VisObject.h
-	InputObject.cpp
-	InputObject.h
-        CrossNode.cpp
-        CrossNode.h
-        crossnodegeode.cpp
-        crossnodegeode.h
+	TiglViewerHUD.cpp
+	TiglViewerHUD.h
+	TiglViewerBackground.cpp
+	TiglViewerBackground.h
 )
 
 add_executable(${PROGNAME} ${SOURCE_FILES})
@@ -46,6 +43,7 @@ config_project( ${PROGNAME} OSG )
 config_project( ${PROGNAME} OSGUTIL )
 config_project( ${PROGNAME} OSGVIEWER )
 config_project( ${PROGNAME} OSGGA )
+config_project( ${PROGNAME} OSGTEXT )
 
 # required opencascade libraries
 set (TV_OCC_LIBS ${OCC_LIBS}
