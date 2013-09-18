@@ -846,3 +846,25 @@ TEST_F(WingSegmentSimple, getEtaXsi_Performance){
     cout << "Elapsed time per projection [us]: " << double(stop-start)/(double)CLOCKS_PER_SEC/(double)nruns * 1.e6 << endl;
 }
 
+// @todo: test of failures, outliers etc...
+TEST_F(WingSegmentSimple, wingGetEtaXsi){
+    double x = 0., y = 0., z = 0.;
+    ASSERT_TRUE(tiglWingGetUpperPoint(tiglSimpleHandle, 1, 1, 0.5, 0.5, &x, &y, &z) == TIGL_SUCCESS);
+
+    int segindex = 0, isOnTop = 0;
+    double eta = 0., xsi = 0.;
+    ASSERT_EQ(TIGL_SUCCESS, tiglWingGetSegmentEtaXsi(tiglSimpleHandle,1, x,y,z, &segindex, &eta, &xsi, &isOnTop));
+    ASSERT_EQ(1, segindex);
+    ASSERT_EQ(1, isOnTop);
+    ASSERT_NEAR(0.5, eta, 1e-7);
+    ASSERT_NEAR(0.5, xsi, 1e-7);
+
+    eta = 0.; xsi = 0.;
+    ASSERT_TRUE(tiglWingGetLowerPoint(tiglSimpleHandle, 1, 1, 0.5, 0.5, &x, &y, &z) == TIGL_SUCCESS);
+    ASSERT_EQ(TIGL_SUCCESS, tiglWingGetSegmentEtaXsi(tiglSimpleHandle,1, x,y,z, &segindex, &eta, &xsi, &isOnTop));
+    ASSERT_EQ(1, segindex);
+    ASSERT_EQ(0, isOnTop);
+    ASSERT_NEAR(0.5, eta, 1e-7);
+    ASSERT_NEAR(0.5, xsi, 1e-7);
+}
+
