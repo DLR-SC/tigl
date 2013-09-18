@@ -267,9 +267,9 @@ namespace tigl {
 
 #ifdef TIGL_USE_XCAF
     // Get segment count
-    TDF_Label CCPACSWing::ExportDataStructure(Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label)
+    TDF_Label CCPACSWing::ExportDataStructure(CCPACSConfiguration &config, Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label)
     {
-        TDF_Label wingLabel = CTiglAbstractPhysicalComponent::ExportDataStructure(myAssembly, label);
+        TDF_Label wingLabel = CTiglAbstractPhysicalComponent::ExportDataStructure(config, myAssembly, label);
 
         // Other (sub)-components
         for (int i=1; i <= segments.GetSegmentCount(); i++) {

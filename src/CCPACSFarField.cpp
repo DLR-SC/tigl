@@ -1,6 +1,7 @@
 #include "CCPACSFarField.h"
 #include "CTiglError.h"
 #include "CTiglLogger.h"
+#include "CCPACSConfiguration.h"
 
 #include <string>
 #include <cmath>
@@ -129,7 +130,7 @@ TiglGeometricComponentType CCPACSFarField::GetComponentType(void) {
 #ifdef TIGL_USE_XCAF
 // builds data structure for a TDocStd_Application
 // mostly used for export
-TDF_Label CCPACSFarField::ExportDataStructure(Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label)
+TDF_Label CCPACSFarField::ExportDataStructure(CCPACSConfiguration&, Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label)
 {
     TopExp_Explorer faceExplorer;
 
