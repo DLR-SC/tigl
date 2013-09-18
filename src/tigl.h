@@ -717,6 +717,36 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetLowerPointAtAngle(TiglCPACSConfigur
                                                 double* pointYPtr,
                                                 double* pointZPtr);
 
+/**
+* @brief Inverse function to tiglWingGetLowerPoint and tiglWingGetLowerPoint. Calculates to a point (x,y,z)
+* in global coordinates the wing segment coordinates and the wing segment index.
+*
+* @param[in]  cpacsHandle  Handle for the CPACS configuration
+* @param[in]  wingIndex    The index of the wing, starting at 1
+* @param[in]  pointX       X-Coordinate of the global point
+* @param[in]  pointY       Y-Coordinate of the global point
+* @param[in]  pointZ       Z-Coordinate of the global point
+* @param[out] segmentIndex The index of the segment of the wing, starting at 1
+* @param[out] eta          Eta value in segment coordinates
+* @param[out] xsi          Xsi value in segment coordinates
+* @param[out] isOnTop      isOnTop is 1, if the point lies on the upper wing face, else 0.
+*
+* @return
+*   - TIGL_SUCCESS if a solution was found
+*   - TIGL_NOT_FOUND if the point does not lie on the wing
+*   - TIGL_INDEX_ERROR if wingIndex is not valid
+*   - TIGL_NULL_POINTER if eta, xsi or isOnTop are null pointers
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSegmentEtaXsi(TiglCPACSConfigurationHandle cpacsHandle,
+                         int wingIndex,
+                         double pointX,
+                         double pointY,
+                         double pointZ,
+                         int* segmentIndex,
+                         double* eta,
+                         double* xsi,
+                         int* isOnTop);
 
 /**
 * @brief Returns the count of wing segments connected to the inner section of a given segment.

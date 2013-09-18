@@ -143,7 +143,7 @@ namespace tigl {
         // Calculates the segment coordinates from global (x,y,z) coordinates
         // Returns the segment index of the according segment
         // If x,y,z does not belong to any segment, -1 is returned
-        int GetSegmentEtaXsi(const gp_Pnt& xyz, double& eta, double& xsi);
+        int GetSegmentEtaXsi(const gp_Pnt& xyz, double& eta, double& xsi, bool &onTop);
 
         // Returns the Component Type TIGL_COMPONENT_WING.
         TiglGeometricComponentType GetComponentType(void) {return TIGL_COMPONENT_WING | TIGL_COMPONENT_PHYSICAL;}
