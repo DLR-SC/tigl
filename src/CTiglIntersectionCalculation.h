@@ -73,11 +73,15 @@ namespace tigl {
         // gives a reference to the computed wire
         TopoDS_Wire& GetWire(int wireID);
 
+        // returns id string for intersection wire
+        std::string GetIDString(int wireID);
+
     private:        
         Standard_Real tolerance;
         int numWires;                           /* The number of intersection lines */
         TopoDS_Shape intersectionResult;        /* The full Intersection result */
         std::vector<TopoDS_Wire> Wires;         /* All intersection wires */
+        std::string id;                         /* identifcation string of the intersection */
         
     };
 

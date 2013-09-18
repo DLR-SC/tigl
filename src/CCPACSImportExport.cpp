@@ -77,7 +77,7 @@ namespace tigl {
         }
 
         TDataStd_Name::Set (rootLabel, myConfig.GetUID().c_str());
-        rootComponent->ExportDataStructure(hShapeTool, rootLabel);
+        rootComponent->ExportDataStructure(myConfig, hShapeTool, rootLabel);
 
 
         return hDoc;

@@ -59,6 +59,8 @@
 #include "BRepBuilderAPI_MakeWire.hxx"
 #include "CTiglShapeCache.h"
 
+#include <sstream>
+
 #ifndef max
 #define max(a, b) (((a) > (b)) ? (a) : (b))
 #endif
@@ -76,7 +78,6 @@ namespace tigl {
     {
         // create some identification string to store intersection in cache
         // it should not matter, if the arguments One and Two are interchanged
-        std::string id;
         if(idOne.compare(idTwo))
             id = idOne + "::" + idTwo;
         else
@@ -178,7 +179,13 @@ namespace tigl {
     {
         return( numWires );
     }
-    
+
+    std::string CTiglIntersectionCalculation::GetIDString(int wireID) {
+        std::stringstream stream;
+        stream << "Intersect_" << id << "_" << wireID;
+        return stream.str();
+    }
+
     TopoDS_Wire& CTiglIntersectionCalculation::GetWire(int wireID){
         if (wireID > numWires || wireID < 1){
             throw CTiglError("Error: Invalid wireID in CTiglIntersectionCalculation::GetWire", TIGL_ERROR);

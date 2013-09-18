@@ -25,6 +25,8 @@
 
 #include "CTiglAbstractPhysicalComponent.h"
 #include "CTiglError.h"
+#include "CTiglIntersectionCalculation.h"
+#include "CCPACSConfiguration.h"
 
 #include "TCollection_ExtendedString.hxx"
 #include "TCollection_HAsciiString.hxx"
@@ -110,17 +112,32 @@ namespace tigl {
 
 
 #ifdef TIGL_USE_XCAF
-    TDF_Label CTiglAbstractPhysicalComponent::ExportDataStructure(Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label)
+    TDF_Label CTiglAbstractPhysicalComponent::ExportDataStructure(CCPACSConfiguration &config, Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label)
     {
         // This component
         TDF_Label aLabel = myAssembly->AddShape(GetLoft(), false);
         TDataStd_Name::Set (aLabel, GetUID().c_str());
 
+        // intersection lines with childs
         // Other (sub)-components
         ChildContainerType::iterator it = childContainer.begin();
         for(; it != childContainer.end(); ++it){
             CTiglAbstractPhysicalComponent * pChild = *it;
-            if(pChild) TDF_Label newLabel = pChild->ExportDataStructure(myAssembly, aLabel);
+            if(pChild) {
+                CTiglIntersectionCalculation intersector(&(config.GetShapeCache()), GetUID(), pChild->GetUID(), GetLoft(), pChild->GetLoft());
+                for(int i = 1; i <= intersector.GetNumWires(); ++i) {
+                    TopoDS_Wire& wire = intersector.GetWire(i);
+                    TDF_Label wireLabel = myAssembly->AddShape(wire, false);
+                    TDataStd_Name::Set (wireLabel, intersector.GetIDString(i).c_str());
+                }
+            }
+        }
+
+        // Other (sub)-components
+        it = childContainer.begin();
+        for(; it != childContainer.end(); ++it){
+            CTiglAbstractPhysicalComponent * pChild = *it;
+            if(pChild) TDF_Label newLabel = pChild->ExportDataStructure(config, myAssembly, aLabel);
         }
 
         return aLabel;
