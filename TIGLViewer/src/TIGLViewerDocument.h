@@ -100,6 +100,7 @@ public slots:
     void exportFusedAsIges();
     void exportAsStructuredIges();
     void exportAsStep();
+    void exportAsStepFused();
     void exportAsStepWithMetaData();
     void exportMeshedWingSTL();
     void exportMeshedFuselageSTL();

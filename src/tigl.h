@@ -2705,6 +2705,29 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportSTEP(TiglCPACSConfigurationHandle cp
                                                  const char* filenamePtr);
 
 /**
+* @brief Exports the fused/trimmed geometry of a CPACS configuration to STEP format.
+*
+* In order to fuse the geometry, boolean operations are performed. Depending on the
+* complexity of the configuration, the fusing can take several minutes.
+*
+* <b>Fortran syntax:</b>
+*
+* tigl_export_fused_step(integer cpacsHandle, character*n filenamePtr, integer returnCode)
+*
+* @param[in]  cpacsHandle Handle for the CPACS configuration
+* @param[in]  filenamePtr Pointer to an STEP export file name
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_NULL_POINTER if filenamePtr is a null pointer
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglExportFusedSTEP(TiglCPACSConfigurationHandle cpacsHandle,
+                                                 const char* filenamePtr);
+
+
+/**
 * @brief Exports the geometry of a CPACS configuration to STEP format. In this version
 *        structure, names and metadata will also be exported as much as it is possible.
 *

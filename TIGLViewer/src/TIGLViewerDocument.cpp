@@ -1020,6 +1020,25 @@ void TIGLViewerDocument::exportAsStep()
     }
 }
 
+void TIGLViewerDocument::exportAsStepFused()
+{
+    QString     fileName;
+
+    writeToStatusBar(tr("Saving as STEP file with TIGL. This can take a while. Please wait..."));
+
+    fileName = QFileDialog::getSaveFileName(parent, tr("Save as..."), myLastFolder, tr("Export STEP(*.step *.stp)"));
+
+    if (!fileName.isEmpty())
+    {
+        QApplication::setOverrideCursor( Qt::WaitCursor );
+        TiglReturnCode err = tiglExportFusedSTEP(m_cpacsHandle, qstringToCstring(fileName));
+        QApplication::restoreOverrideCursor();
+        if(err != TIGL_SUCCESS) {
+            displayError(QString("Error in function <u>tiglExportFusedSTEP</u>. Error code: %1").arg(err), "TIGL Error");
+        }
+    }
+}
+
 void TIGLViewerDocument::exportAsStepWithMetaData()
 {
     QString     fileName;
