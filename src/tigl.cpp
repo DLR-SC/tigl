@@ -2954,6 +2954,36 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportSTEP(TiglCPACSConfigurationHandle cp
     }
 }
 
+TIGL_COMMON_EXPORT TiglReturnCode tiglExportFusedSTEP(TiglCPACSConfigurationHandle cpacsHandle, const char* filenamePtr)
+{
+    if (filenamePtr == 0) {
+        LOG(ERROR) << "Error: Null pointer argument for filenamePtr";
+        LOG(ERROR) << "in function call to tiglExportFusedSTEP." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+
+    try {
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+        tigl::CTiglExportStep exporter(config);
+        std::string filename = filenamePtr;
+        exporter.ExportFusedStep(filename);
+        return TIGL_SUCCESS;
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglExportFusedSTEP!" << std::endl;
+        return TIGL_ERROR;
+    }
+}
+
 TIGL_COMMON_EXPORT TiglReturnCode tiglExportStructuredSTEP(TiglCPACSConfigurationHandle cpacsHandle, const char *filenamePtr)
 {
 #ifdef TIGL_USE_XCAF

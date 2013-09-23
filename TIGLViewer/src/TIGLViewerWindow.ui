@@ -149,6 +149,7 @@
       <string>Export to STEP</string>
      </property>
      <addaction name="tiglExportStepAction"/>
+     <addaction name="tiglExportFusedStepAction"/>
      <addaction name="tiglExportStepWithMetaDataAction"/>
     </widget>
     <widget class="QMenu" name="menuExport_to_VTK">
@@ -1134,6 +1135,11 @@
    </property>
    <property name="text">
     <string>Draw Far Field</string>
+   </property>
+  </action>
+  <action name="tiglExportFusedStepAction">
+   <property name="text">
+    <string>Export fused/trimmed Model as STEP</string>
    </property>
   </action>
  </widget>
