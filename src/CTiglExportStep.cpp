@@ -48,6 +48,7 @@ namespace tigl {
     CTiglExportStep::CTiglExportStep(CCPACSConfiguration& config)
     :myConfig(config)
     {
+        SetExportMode(AS_FACES);
     }
 
     // Destructor
@@ -56,13 +57,24 @@ namespace tigl {
     }
     
     void CTiglExportStep::AddFacesOfShape(const TopoDS_Shape& shape, STEPControl_Writer& writer) const {
-        TopExp_Explorer faceExplorer;
-        for (faceExplorer.Init(shape, TopAbs_FACE); faceExplorer.More(); faceExplorer.Next()) {
-            const TopoDS_Face& currentFace = TopoDS::Face(faceExplorer.Current());
-            int ret = writer.Transfer(currentFace, STEP_WRITEMODE);
-            if (ret > IFSelect_RetDone)
-                throw CTiglError("Error: Export to STEP file failed in CTiglExportStep. Could not translate face to step entity,", TIGL_ERROR);
+        if (exportMode == AS_FACES) {
+            TopExp_Explorer faceExplorer;
+            for (faceExplorer.Init(shape, TopAbs_FACE); faceExplorer.More(); faceExplorer.Next()) {
+                const TopoDS_Face& currentFace = TopoDS::Face(faceExplorer.Current());
+                int ret = writer.Transfer(currentFace, STEP_WRITEMODE);
+                if (ret > IFSelect_RetDone)
+                    throw CTiglError("Error: Export to STEP file failed in CTiglExportStep. Could not translate face to step entity,", TIGL_ERROR);
+            }
         }
+        else {
+            int ret = writer.Transfer(shape, STEP_WRITEMODE);
+            if (ret > IFSelect_RetDone)
+                throw CTiglError("Error: Export to STEP file failed in CTiglExportStep. Could not translate shape to step entity,", TIGL_ERROR);
+        }
+    }
+
+    void CTiglExportStep::SetExportMode(TiglStepExportMode mode) {
+        exportMode = mode;
     }
 
     
