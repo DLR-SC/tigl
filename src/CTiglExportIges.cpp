@@ -34,6 +34,7 @@
 #include "IGESData_IGESModel.hxx"
 #include "IGESCAFControl_Writer.hxx"
 #include "Interface_Static.hxx"
+#include "BRepAlgoAPI_Cut.hxx"
 
 
 
@@ -105,6 +106,10 @@ namespace tigl {
             }
         }
 
+        if (myConfig.GetFarField().GetFieldType() != NONE) {
+            igesWriter.AddShape(myConfig.GetFarField().GetLoft());
+        }
+
         // Write IGES file
         igesWriter.ComputeModel();
         if (igesWriter.Write(const_cast<char*>(filename.c_str())) != Standard_True)
@@ -127,6 +132,21 @@ namespace tigl {
         IGESControl_Writer igesWriter;
         SetTranslationParamters();
         igesWriter.Model()->ApplyStatic(); // apply set parameters
+
+
+        // if we have a far field, do boolean subtract of plane from far-field
+        if (myConfig.GetFarField().GetFieldType() != NONE) {
+            try {
+                LOG(INFO) << "Trimming plane with far field...";
+                TopoDS_Shape& farField = myConfig.GetFarField().GetLoft();
+                fusedAirplane = BRepAlgoAPI_Cut(farField, fusedAirplane);
+                LOG(INFO) << "Done trimming.";
+            }
+            catch(Standard_ConstructionError& err) {
+                LOG(ERROR) << "OpenCascade error: " << err.GetMessageString();
+                LOG(ERROR) << "Can not trim plane with far field. Far field will not be part of IGES export.";
+            }
+        }
 
         igesWriter.AddShape(fusedAirplane);
 
