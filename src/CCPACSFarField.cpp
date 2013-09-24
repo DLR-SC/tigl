@@ -32,6 +32,7 @@ void CCPACSFarField::init() {
     fieldType = NONE;
     fieldSize = 0.;
     loft.Nullify();
+    SetUID("FarField");
 }
 
 TiglFarFieldType CCPACSFarField::GetFieldType(){
@@ -132,19 +133,20 @@ TiglGeometricComponentType CCPACSFarField::GetComponentType(void) {
 // mostly used for export
 TDF_Label CCPACSFarField::ExportDataStructure(CCPACSConfiguration&, Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label)
 {
+    // add faces of current shape
     TopExp_Explorer faceExplorer;
-
-    Handle_XCAFDoc_ShapeTool newAssembly = XCAFDoc_DocumentTool::ShapeTool (label);
-    TDF_Label subLabel = myAssembly->NewShape();
-
-    int i = 0;
+    int iface = 1;
     for (faceExplorer.Init(GetLoft(), TopAbs_FACE); faceExplorer.More(); faceExplorer.Next()) {
-        std::string numName = "Farfield_Face_" + i++;
-        subLabel = newAssembly->AddSubShape (label, faceExplorer.Current());
-        TDataStd_Name::Set(label, numName.c_str());
+        const TopoDS_Face& currentFace = TopoDS::Face(faceExplorer.Current());
+
+        TDF_Label aLabel = myAssembly->AddShape(currentFace, false);
+        std::stringstream stream;
+        stream << GetUID() << "_face" << iface++;
+        TDataStd_Name::Set (aLabel, stream.str().c_str());
+
     }
 
-    return subLabel;
+    return label;
 }
 #endif
 
