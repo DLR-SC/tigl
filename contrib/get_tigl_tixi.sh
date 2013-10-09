@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #
 # Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
 #
@@ -238,7 +238,7 @@ if [[ $PACK_TYPE == rpm ]]; then
 	fi
 
 	#TIXI
-	if [[ $file == libTIXI2*.rpm ]]  && [[ $file != *debuginfo* ]]
+	if [[ $file == libTIXI2*.rpm ]]  || [[ $file == tixi-*.rpm ]] && [[ $file != *debuginfo* ]]
 	then
 		bin_file_list+=($file)
 	fi
