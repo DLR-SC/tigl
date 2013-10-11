@@ -147,8 +147,8 @@ enum TiglSymmetryAxis
 *
 *   - TIGL_NO_SYMMETRY
 *   - TIGL_X_Y_PLANE
-*    - TIGL_X_Z_PLANE
-*    - TIGL_Y_Z_PLANE
+*   - TIGL_X_Z_PLANE
+*   - TIGL_Y_Z_PLANE
 *
 */
 typedef enum TiglSymmetryAxis TiglSymmetryAxis;
@@ -192,6 +192,15 @@ enum TiglStructureType
 
 typedef enum TiglStructureType TiglStructureType;
 
+
+enum TiglContinuity
+{
+    C0 = 0,
+    C1 = 1,
+    C2 = 2
+};
+
+typedef enum TiglContinuity TiglContinuity;
 
 /**
 * @brief Typedef for possible algorithm types used in calculations.

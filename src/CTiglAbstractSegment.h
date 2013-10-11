@@ -43,11 +43,15 @@ namespace tigl {
 
         // Returns the segment index of this segment
         int GetSegmentIndex(void) const;
+
+        // Returns the continuityof the connection to the next segment
+        TiglContinuity GetContinuity() const;
     protected:
         void Cleanup();
 
         int                  mySegmentIndex;       /**< Index of this segment                   */
         bool                 invalidated;          /**< Internal state flag                     */
+        TiglContinuity       continuity;           /**< Continuity of the connection to the next segment */
 
         CTiglAbstractSegment(){} /* do nothing */
 
