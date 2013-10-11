@@ -29,7 +29,7 @@
 namespace tigl{
 
 CTiglAbstractSegment::CTiglAbstractSegment(int segindex)
-    : mySegmentIndex(segindex), invalidated(true)
+    : mySegmentIndex(segindex), invalidated(true), continuity(C0)
 {
 }
 
@@ -47,6 +47,10 @@ void CTiglAbstractSegment::Cleanup(void){
 // Returns the segment index of this segment
 int CTiglAbstractSegment::GetSegmentIndex(void) const{
     return mySegmentIndex;
+}
+
+TiglContinuity CTiglAbstractSegment::GetContinuity() const {
+    return continuity;
 }
 
 }

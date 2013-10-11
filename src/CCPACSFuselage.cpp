@@ -276,11 +276,17 @@ namespace tigl {
     // Builds a fused shape of all fuselage segments
     TopoDS_Shape CCPACSFuselage::BuildLoft(void)
     {
+        // Get Continuity of first segment
+        // TODO: adapt lofting to have multiple different continuities
+        TiglContinuity cont = segments.GetSegment(1).GetContinuity();
+        Standard_Boolean ruled = cont == C0? true : false;
+
+
         // Ne need a smooth fuselage by default
         // @TODO: OpenCascade::ThruSections is currently buggy and crashes, if smooth lofting
         // is performed. Therefore we swicth the 2. parameter to Standard_True (non smooth lofting).
         // This has to be reverted, as soon as the bug is fixed!!!
-        BRepOffsetAPI_ThruSections generator(Standard_True, Standard_False, Precision::Confusion() );
+        BRepOffsetAPI_ThruSections generator(Standard_True, ruled, Precision::Confusion() );
 
         for (int i=1; i <= segments.GetSegmentCount(); i++) {
             CCPACSFuselageConnection& startConnection = segments.GetSegment(i).GetStartConnection();
