@@ -39,6 +39,7 @@
 #include "TopTools_HSequenceOfShape.hxx"
 
 class CCPACSConfiguration;
+class STEPControl_Writer;
 
 namespace tigl {
 
@@ -84,7 +85,7 @@ namespace tigl {
     private:
         CCPACSConfiguration&          myConfig;       /**< TIGL configuration object */
         TiglStepExportMode            exportMode;     /**< Mode how to export solids */
-        void AddFacesOfShape(const TopoDS_Shape &shape, class STEPControl_Writer &writer) const;
+        void AddFacesOfShape(const TopoDS_Shape &shape, STEPControl_Writer &writer) const;
     };
 
 } // end namespace tigl
