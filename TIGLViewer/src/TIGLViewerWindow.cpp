@@ -205,11 +205,12 @@ void TIGLViewerWindow::open()
                                                   tr("Open File"),
                                                 myLastFolder,
                                                 tr( "CPACS (*.xml);;"
-                                                    "Other drawing types (*.brep *.rle *.igs *iges *.stp *.step);;"
+                                                    "Other drawing types (*.brep *.rle *.igs *iges *.stp *.step *.mesh);;"
                                                     "BREP (*.brep *.rle);;"
                                                     "STEP (*.step *.stp);;"
                                                     "IGES (*.iges *.igs);;"
-                                                    "STL  (*.stl)" ) );
+                                                    "STL  (*.stl);;"
+                                                    "Hotsose Mesh (*.mesh)") );
     openFile(fileName);
 }
 
@@ -281,6 +282,10 @@ void TIGLViewerWindow::openFile(const QString& fileName)
             if (fileType.toLower() == tr("stl"))
             {
                 format = TIGLViewerInputOutput::FormatSTL;
+            }
+            if (fileType.toLower() == tr("mesh"))
+            {
+                format = TIGLViewerInputOutput::FormatMESH;
             }
 
             reader.importModel ( fileInfo.absoluteFilePath(), format, myOCC->getContext() );

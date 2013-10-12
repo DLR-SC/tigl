@@ -23,6 +23,9 @@
 
 #include "TIGLViewerInternal.h"
 #include "TIGLViewerInputoutput.h"
+#include <BRepBuilderAPI_MakePolygon.hxx>
+#include <BRepBuilderAPI_MakeFace.hxx>
+#include <CTiglPolyDataTools.h>
 
 TIGLViewerInputOutput::TIGLViewerInputOutput(void)
 {
@@ -78,6 +81,9 @@ Handle_TopTools_HSequenceOfShape TIGLViewerInputOutput::importModel( const FileF
             break;
         case FormatCSFDB:
             shapes = importCSFDB( file );
+            break;
+        case FormatMESH:
+            shapes = importMESH( file );
             break;
         default:
             // To Do - Error message here?
@@ -203,6 +209,23 @@ Handle_TopTools_HSequenceOfShape TIGLViewerInputOutput::importSTL( const QString
         aSequence = new TopTools_HSequenceOfShape();
         aSequence->Append(aShape);
     }
+
+    return aSequence;
+}
+
+Handle_TopTools_HSequenceOfShape TIGLViewerInputOutput::importMESH( const QString& file )
+{
+    Handle_TopTools_HSequenceOfShape aSequence = NULL;
+
+    CHotsoseMeshReader meshReader;
+    tigl::CTiglPolyData mesh;
+    if (meshReader.readFromFile(file.toStdString().c_str(), mesh) != SUCCESS){
+        return aSequence;
+    }
+    aSequence = new TopTools_HSequenceOfShape();
+
+    TopoDS_Shape shape = tigl::CTiglPolyDataTools::MakeTopoDS(mesh);
+    aSequence->Append(shape);
 
     return aSequence;
 }

@@ -51,6 +51,7 @@ set(tv_src
     TIGLViewerSettings.cpp
     TIGLViewerControlFile.cpp
     TIGLViewerEtaXsiDialog.cpp
+    CHotsoseMeshReader.cpp
 )
 	
 # normal header files
@@ -61,6 +62,7 @@ set(tv_hdr
     TIGLViewer.h
     TIGLViewerSettings.h
     TIGLViewerControlFile.h
+    CHotsoseMeshReader.h
 )
 
 # qobject header files that have to be moced
