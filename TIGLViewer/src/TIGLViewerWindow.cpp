@@ -168,7 +168,7 @@ TIGLViewerWindow::~TIGLViewerWindow(){
 
 void TIGLViewerWindow::setInitialCpacsFileName(QString filename)
 {
-    cpacsFileName = filename;
+    currentFile = filename;
     openFile(filename);
 }
 
@@ -261,9 +261,6 @@ void TIGLViewerWindow::openFile(const QString& fileName)
                 return;
 
             updateMenus(cpacsConfiguration->getCpacsHandle());
-            watcher = new QFileSystemWatcher();
-            watcher->addPath(fileInfo.absoluteFilePath());
-            QObject::connect(watcher, SIGNAL(fileChanged(QString)), openTimer, SLOT(start()));
         }
         else {
 
@@ -290,6 +287,9 @@ void TIGLViewerWindow::openFile(const QString& fileName)
 
             reader.importModel ( fileInfo.absoluteFilePath(), format, myOCC->getContext() );
         }
+        watcher = new QFileSystemWatcher();
+        watcher->addPath(fileInfo.absoluteFilePath());
+        QObject::connect(watcher, SIGNAL(fileChanged(QString)), openTimer, SLOT(start()));
     }
     myLastFolder = fileInfo.absolutePath();
     setCurrentFile(fileName);
@@ -298,9 +298,26 @@ void TIGLViewerWindow::openFile(const QString& fileName)
     myOCC->fitAll();
 }
 
+void TIGLViewerWindow::reopenFile(){
+    QString      fileType;
+    QFileInfo    fileInfo;
+
+    fileInfo.setFile(currentFile);
+    fileType = fileInfo.suffix();
+
+    if (fileType.toLower() == tr("xml")){
+        cpacsConfiguration->updateConfiguration();
+    }
+    else {
+        myVC->getContext()->EraseAll(Standard_False);
+        openFile(currentFile);
+    }
+}
+
 void TIGLViewerWindow::setCurrentFile(const QString &fileName)
 {
     setWindowFilePath(fileName);
+    currentFile = fileName;
 
     QSettings settings("DLR SC-VK","TIGLViewer");
     QStringList files = settings.value("recentFileList").toStringList();
@@ -623,7 +640,7 @@ void TIGLViewerWindow::connectSignals()
     connect(consoleDockWidget, SIGNAL(visibilityChanged(bool)), showConsoleAction, SLOT(setChecked(bool)));
     connect(showWireframeAction, SIGNAL(toggled(bool)), myVC, SLOT(wireFrame(bool)));
 
-    connect(openTimer, SIGNAL(timeout()), cpacsConfiguration, SLOT(updateConfiguration()));
+    connect(openTimer, SIGNAL(timeout()), this, SLOT(reopenFile()));
 
     // CPACS Wing Actions
     connect(drawWingProfilesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingProfiles()));
