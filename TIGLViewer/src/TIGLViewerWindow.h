@@ -67,6 +67,7 @@ public slots:
 private slots:
     void newFile();
     void open();
+    void reopenFile();
     void openScript();
     void openRecentFile();
     void closeConfiguration();
@@ -108,7 +109,7 @@ private:
     QString                 myLastFolder;
 
     class TIGLViewerDocument* cpacsConfiguration;
-    QString cpacsFileName;
+    QString currentFile;
     QString controlFileName;
     QFileSystemWatcher *watcher;
     class QDebugStream * stdoutStream, * errorStream;
