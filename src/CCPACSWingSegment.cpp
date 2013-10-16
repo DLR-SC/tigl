@@ -33,6 +33,7 @@
 #include "CCPACSWing.h"
 #include "CCPACSWingProfile.h"
 #include "CTiglError.h"
+#include "tiglcommonfunctions.h"
 
 #include "BRepOffsetAPI_ThruSections.hxx"
 #include "TopExp_Explorer.hxx"
@@ -203,6 +204,15 @@ namespace tigl {
         // Inner connection
         tempString = segmentXPath + "/toElementUID";
         outerConnection.ReadCPACS(tixiHandle, tempString);
+
+        // check that the profiles are consistent
+        if (GetNumberOfEdges(GetInnerWire()) !=
+            GetNumberOfEdges(GetOuterWire()))
+        {
+            throw CTiglError("The wing profiles in segment " + GetUID() + " are not consistent. "
+                             "All profiles must have either a trailing edge or not. "
+                             "Mixing different profile types is not allowed.");
+        }
 
         Update();
     }

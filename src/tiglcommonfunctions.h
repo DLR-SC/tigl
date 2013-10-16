@@ -21,6 +21,7 @@
 
 #include "Standard.hxx"
 #include "gp_Pnt.hxx"
+#include "TopoDS_Shape.hxx"
 
 Standard_Real GetWireLength(const class TopoDS_Wire& wire);
 
@@ -31,5 +32,8 @@ gp_Pnt WireGetPoint2(const TopoDS_Wire& wire, double alpha);
 
 // calculates the alpha value for a given point on a wire
 Standard_Real ProjectPointOnWire(const TopoDS_Wire& wire, gp_Pnt p);
+
+// returns the number of edges of the current shape
+unsigned int GetNumberOfEdges(const TopoDS_Shape& shape);
 
 #endif // TIGLCOMMONFUNCTIONS_H
