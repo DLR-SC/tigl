@@ -21,6 +21,10 @@
 /**
 * @file
 * @brief  Implementation of CPACS wing profile handling routines.
+*
+* The wing profile is defined by a list of points. The list starts at the
+* trailing edge moves around the leading edge and goes back to the trailing
+* edge. Currently it is assumed, that profile moves alomg the x,z plane.
 */
 
 #ifndef CCPACSWINGPROFILE_H
@@ -119,9 +123,6 @@ namespace tigl {
     protected:
         // Cleanup routine
         void Cleanup(void);
-
-        // Transforms a point by the wing profile transformation
-        gp_Pnt TransformPoint(const gp_Pnt& aPoint) const;
 
         // Update the internal state, i.g. recalculates wire and le, te points
         void Update(void);

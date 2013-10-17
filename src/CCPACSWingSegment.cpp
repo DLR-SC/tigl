@@ -209,7 +209,9 @@ namespace tigl {
         if (GetNumberOfEdges(GetInnerWire()) !=
             GetNumberOfEdges(GetOuterWire()))
         {
-            throw CTiglError("The wing profiles in segment " + GetUID() + " are not consistent. "
+            throw CTiglError("The wing profiles " + innerConnection.GetProfile().GetUID() +
+                             " and " + outerConnection.GetProfile().GetUID() +
+                             " in segment " + GetUID() + " are not consistent. "
                              "All profiles must have either a trailing edge or not. "
                              "Mixing different profile types is not allowed.");
         }
