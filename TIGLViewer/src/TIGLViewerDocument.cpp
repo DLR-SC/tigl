@@ -492,7 +492,7 @@ void TIGLViewerDocument::drawWingProfiles()
     }
     else {
       // Draw some points on the wing profile
-      for (double xsi = 0.0; xsi <= 1.0; xsi = xsi + 0.2)
+      for (double xsi = 0.1; xsi <= 0.9; xsi = xsi + 0.2)
       {
         try {
             gp_Pnt chordPoint = profile.GetChordPoint(xsi);
@@ -528,6 +528,9 @@ void TIGLViewerDocument::drawWingProfiles()
         }
       }
     }
+
+    myOCC->viewLeft();
+    myOCC->fitAll();
 }
 
 void TIGLViewerDocument::drawWingOverlayProfilePoints()
