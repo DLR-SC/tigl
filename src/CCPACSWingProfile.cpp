@@ -514,7 +514,7 @@ namespace tigl {
         BRepBuilderAPI_MakeWire upperWireBuilder, lowerWireBuilder;
         //check if we have to close upper and lower wing shells
         if(te_up.Distance(te_down) > Precision::Confusion()){
-            upperWireBuilder.Add(BRepBuilderAPI_MakeEdge(te_up,te_down));
+            lowerWireBuilder.Add(BRepBuilderAPI_MakeEdge(te_up,te_down));
         }
 
         upperWireBuilder.Add(upper_edge); 
