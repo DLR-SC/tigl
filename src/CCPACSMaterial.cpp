@@ -100,4 +100,9 @@ const std::string& CCPACSMaterial::GetUID() const
     return uid;
 }
 
+double CCPACSMaterial::GetThickness() const
+{
+    return thickness;
+}
+
 } // namespace tigl

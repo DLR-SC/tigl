@@ -370,9 +370,8 @@ TEST_F(WingComponentSegmentSimple, GetMaterials){
     
     // test point in cell
     tigl::MaterialList list = segment.GetMaterials(0.25, 0.9, UPPER_SHELL);
-    ASSERT_EQ(2, list.size());
+    ASSERT_EQ(1, list.size());
     ASSERT_STREQ("MyCellMat", list[0]->GetUID().c_str());
-    ASSERT_STREQ("MySkinMat", list[1]->GetUID().c_str());
     
     // test point outside cell
     list = segment.GetMaterials(0.6, 0.9, UPPER_SHELL);
@@ -385,20 +384,28 @@ TEST_F(WingComponentSegmentSimple, GetMaterials){
 }
 
 TEST_F(WingComponentSegmentSimple, GetMaterials_cinterface){
-    int nuids = 0;
-    const char **  uids;
-    ASSERT_EQ(TIGL_SUCCESS, tiglWingComponentSegmentGetMaterialUIDs(tiglHandle, "WING_CS1", UPPER_SHELL, 0.25, 0.9, &uids, &nuids));
-    ASSERT_EQ(2, nuids);
-    ASSERT_STREQ("MyCellMat", uids[0]);
-    ASSERT_STREQ("MySkinMat", uids[1]);
-    delete[] uids;
+    char *  uid = NULL;
+    int matcount = 0;
+    double thickness = -1;
+
+    ASSERT_EQ(TIGL_SUCCESS, tiglWingComponentSegmentGetMaterialCount(tiglHandle, "WING_CS1", UPPER_SHELL, 0.25, 0.9, &matcount));
+    ASSERT_EQ(1, matcount);
+
+    ASSERT_EQ(TIGL_SUCCESS, tiglWingComponentSegmentGetMaterialUID(tiglHandle, "WING_CS1", UPPER_SHELL, 0.25, 0.9, 1, &uid));
+    ASSERT_STREQ("MyCellMat", uid);
+
+    ASSERT_EQ(TIGL_SUCCESS, tiglWingComponentSegmentGetMaterialThickness(tiglHandle, "WING_CS1", UPPER_SHELL, 0.25, 0.9, 1, &thickness));
+    ASSERT_NEAR(0.0, thickness, 1e-10);
 }
 
 TEST_F(WingComponentSegmentSimple, GetMaterials_cinterface_nullptr){
-    int nuids = 0;
-    TiglStringList  uids;
-    ASSERT_EQ(TIGL_NULL_POINTER, tiglWingComponentSegmentGetMaterialUIDs(tiglHandle, "WING_CS1", UPPER_SHELL, 0.25, 0.9, NULL, &nuids));
-    ASSERT_EQ(TIGL_NULL_POINTER, tiglWingComponentSegmentGetMaterialUIDs(tiglHandle, "WING_CS1", UPPER_SHELL, 0.25, 0.9, &uids, NULL));
+    int ncount = 0;
+    char * uid = NULL;
+    ASSERT_EQ(TIGL_NULL_POINTER, tiglWingComponentSegmentGetMaterialUID(tiglHandle, NULL, UPPER_SHELL, 0.25, 0.9, 1, &uid));
+
+
+    ASSERT_EQ(TIGL_NULL_POINTER, tiglWingComponentSegmentGetMaterialCount(tiglHandle, "WING_CS1", UPPER_SHELL, 0.25, 0.9, NULL));
+    ASSERT_EQ(TIGL_NULL_POINTER, tiglWingComponentSegmentGetMaterialCount(tiglHandle, NULL, UPPER_SHELL, 0.25, 0.9, &ncount));
 }
 
 TEST_F(WingComponentSegmentSimple, determine_segments){

@@ -728,8 +728,8 @@ namespace tigl {
                 }
             }
             
-            // add complete skin
-            if (shell->GetMaterial().IsValid()){
+            // add complete skin, only if no cells are defined
+            if (list.empty() && shell->GetMaterial().IsValid()){
                 list.push_back(&(shell->GetMaterial()));
             }
         

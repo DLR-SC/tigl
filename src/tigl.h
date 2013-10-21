@@ -3135,18 +3135,22 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportWingColladaByUID(const TiglCPACSConf
 
 /**
   \defgroup Material Material functions
-    Functions to query material information of wings/fuselages.
+    Functions to query material information of wings/fuselages. Materials are currently ony implemented for the wing component segment.
+    Here, materials for the lower and upper wing surface can be queried, which can be a material for the whole skin/surface
+    or a material defined inside a wing cell. A wing cell material overwrites the global skin material, i.e. if the whole
+    wing skin material is aluminum and the trailing edge is made of radar absorbing material, only the absorbing material
+    is returned by the querying functions.
  */
 /*@{*/
 
 
 /**
-* @brief Returns the material UID of a given point on the wing component segment surface.
+* @brief Returns the number of materials defined at a point on the wing component segment surface.
 *
 *
 * <b>Fortran syntax:</b>
 *
-* tigl_wing_component_segment_get_material_uids(integer cpacsHandle, character*n compSegmentUID, integer structType, real eta, real xsi, character*n uidMaterialPtr, integer nuids, integer returnCode)
+* tigl_wing_component_segment_get_material_count(integer cpacsHandle, character*n compSegmentUID, integer structType, real eta, real xsi, integer matIndex, character*n materialUID, integer returnCode)
 *
 *
 * @param[in]  cpacsHandle     Handle for the CPACS configuration
@@ -3154,25 +3158,86 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportWingColladaByUID(const TiglCPACSConf
 * @param[in]  structureType   Type of structure, where the materials are queried
 * @param[in]  eta             eta in the range 0.0 <= eta <= 1.0
 * @param[in]  xsi             xsi in the range 0.0 <= xsi <= 1.0
-* @param[out] uids            Array of material uids at the given coordinate
-* @param[out] nuids           Number of materials found at the given coordinate
+* @param[out] materialCount   Number of materials defined at the given coordinate
 *
 * @return
 *   - TIGL_SUCCESS if no error occurred
 *   - TIGL_NOT_FOUND if no configuration was found for the given handle
-*   - TIGL_NULL_POINTER if filenamePtr is a null pointer
-*   - TIGL_INDEX_ERROR if compSegmentUID is invalid
+*   - TIGL_NULL_POINTER if compSegmentUID or materialCount is a null pointer
+*   - TIGL_INDEX_ERROR if compSegmentUID or materialIndex is invalid
 *   - TIGL_ERROR if some other error occurred
-* 
-* @cond
-* #annotate out: 5A(6)#
-* @endcond
 */
-TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetMaterialUIDs(TiglCPACSConfigurationHandle cpacsHandle,
-                                                         const char *compSegmentUID,
-                                                         TiglStructureType structureType,
-                                                         double eta, double xsi,
-                                                         TiglStringList* uids, int * nuids);
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetMaterialCount(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                          const char *componentSegmentUID,
+                                                                          TiglStructureType structureType,
+                                                                          double eta, double xsi,
+                                                                          int * materialCount);
+
+/**
+* @brief Returns one of the material UIDs of a given point on the wing component segment surface.
+* The number of materials on that point has to be first queried using ::tiglWingComponentSegmentGetMaterialCount.
+*
+*
+* <b>Fortran syntax:</b>
+*
+* tigl_wing_component_segment_get_material_uid(integer cpacsHandle, character*n compSegmentUID, integer structType, real eta, real xsi, integer matIndex, character*n materialUID, integer returnCode)
+*
+*
+* @param[in]  cpacsHandle     Handle for the CPACS configuration
+* @param[in]  compSegmentUID  UID of the component segment
+* @param[in]  structureType   Type of structure, where the materials are queried
+* @param[in]  eta             eta in the range 0.0 <= eta <= 1.0
+* @param[in]  xsi             xsi in the range 0.0 <= xsi <= 1.0
+* @param[in]  materialIndex   Index of the material to query (1 <= index <= materialCount)
+* @param[out] uid             Material uid at the given coordinate
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_NULL_POINTER if compSegmentUID is a null pointer
+*   - TIGL_INDEX_ERROR if compSegmentUID or materialIndex is invalid
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetMaterialUID(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                          const char *componentSegmentUID,
+                                                                          TiglStructureType structureType,
+                                                                          double eta, double xsi,
+                                                                          int materialIndex,
+                                                                          char ** uid);
+
+/**
+* @brief Returns one of the material thicknesses of a given point on the wing component segment surface.
+* The number of materials on that point has to be first queried using ::tiglWingComponentSegmentGetMaterialCount.
+*
+*
+* <b>Fortran syntax:</b>
+*
+* tigl_wing_component_segment_get_material_thickness(integer cpacsHandle, character*n compSegmentUID, integer structType, real eta, real xsi, integer matIndex, real thickness, integer returnCode)
+*
+*
+* @param[in]  cpacsHandle     Handle for the CPACS configuration
+* @param[in]  compSegmentUID  UID of the component segment
+* @param[in]  structureType   Type of structure, where the materials are queried
+* @param[in]  eta             eta in the range 0.0 <= eta <= 1.0
+* @param[in]  xsi             xsi in the range 0.0 <= xsi <= 1.0
+* @param[in]  materialIndex   Index of the material to query (1 <= index <= materialCount)
+* @param[out] thickness       Material thickness at the given coordinate. If no thickness is defined, thickness gets a negative value and TIGL_UNINITIALIZED is returned.
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_NULL_POINTER if compSegmentUID or thickness is a null pointer
+*   - TIGL_INDEX_ERROR if compSegmentUID or materialIndex is invalid
+*   - TIGL_UNINITIALIZED if no thickness is defined for the material
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetMaterialThickness(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                          const char *componentSegmentUID,
+                                                                          TiglStructureType structureType,
+                                                                          double eta, double xsi,
+                                                                          int materialIndex,
+                                                                          double * thickness);
+
 
 
 /*@}*/
