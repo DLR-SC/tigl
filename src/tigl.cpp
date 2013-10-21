@@ -3616,30 +3616,23 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedGeometryVTKSimple(const TiglCP
 /*****************************************************************************************************/
 /*                     Material functions                                                            */
 /*****************************************************************************************************/
-TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetMaterialUIDs(TiglCPACSConfigurationHandle cpacsHandle,
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetMaterialCount(TiglCPACSConfigurationHandle cpacsHandle,
                                                                           const char *componentSegmentUID,
                                                                           TiglStructureType structureType,
                                                                           double eta, double xsi,
-                                                                          TiglStringList* uids, 
-                                                                          int * nuids){
+                                                                          int * materialCount) {
     if (!componentSegmentUID){
         LOG(ERROR) << "Error: Null pointer argument for componentSegmentUID ";
-        LOG(ERROR) << "in function call to tiglWingComponentSegmentGetMaterialUIDs." << std::endl;
+        LOG(ERROR) << "in function call to tiglWingComponentSegmentGetMaterialCount." << std::endl;
         return TIGL_NULL_POINTER;
     }
-    
-    if (!uids){
-        LOG(ERROR) << "Error: Null pointer argument for uids ";
-        LOG(ERROR) << "in function call to tiglWingComponentSegmentGetMaterialUIDs." << std::endl;
+
+    if (!materialCount){
+        LOG(ERROR) << "Error: Null pointer argument for materialCount ";
+        LOG(ERROR) << "in function call to tiglWingComponentSegmentGetMaterialCount." << std::endl;
         return TIGL_NULL_POINTER;
     }
-    
-    if (!nuids){
-        LOG(ERROR) << "Error: Null pointer argument for nuids ";
-        LOG(ERROR) << "in function call to tiglWingComponentSegmentGetMaterialUIDs." << std::endl;
-        return TIGL_NULL_POINTER;
-    }
-    
+
     try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
@@ -3649,17 +3642,12 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetMaterialUIDs(TiglCP
         for(int iwing = 1; iwing <= nwings; ++iwing){
             tigl::CCPACSWing& wing = config.GetWing(iwing);
             try {
-                tigl::CCPACSWingComponentSegment & compSeg 
+                tigl::CCPACSWingComponentSegment & compSeg
                         = (tigl::CCPACSWingComponentSegment&) wing.GetComponentSegment(componentSegmentUID);
                 //now do the calculations
                 tigl::MaterialList list = compSeg.GetMaterials(eta, xsi, structureType);
 
-                // we alloc uids here, the array has to be freed by the user
-                *uids = new const char*[list.size()];
-                for(unsigned int imat = 0; imat < list.size(); ++imat)
-                    (*uids)[imat] = list[imat]->GetUID().c_str();
-
-                *nuids = list.size();
+                *materialCount = list.size();
                 return TIGL_SUCCESS;
             }
             catch(tigl::CTiglError& ex){
@@ -3671,7 +3659,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetMaterialUIDs(TiglCP
             }
         }
         // the component segment was not found
-        LOG(ERROR) << "Error: Invalid uid in tiglWingComponentSegmentGetMaterialUIDs" << std::endl;
+        LOG(ERROR) << "Error: Invalid uid in tiglWingComponentSegmentGetMaterialCount" << std::endl;
         return TIGL_UID_ERROR;
     }
     catch (std::exception& ex) {
@@ -3683,11 +3671,161 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetMaterialUIDs(TiglCP
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglWingComponentSegmentGetMaterialUIDs!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglWingComponentSegmentGetMaterialCount!" << std::endl;
         return TIGL_ERROR;
     }
 }
 
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetMaterialUID(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                          const char *componentSegmentUID,
+                                                                          TiglStructureType structureType,
+                                                                          double eta, double xsi,
+                                                                          int materialIndex,
+                                                                          char ** uid) {
+    if (!componentSegmentUID){
+        LOG(ERROR) << "Error: Null pointer argument for componentSegmentUID "
+                   << "in function call to tiglWingComponentSegmentGetMaterialUID.";
+        return TIGL_NULL_POINTER;
+    }
+
+    if (!uid){
+        LOG(ERROR) << "Error: Null pointer argument for uid "
+                   << "in function call to tiglWingComponentSegmentGetMaterialUID.";
+        return TIGL_NULL_POINTER;
+    }
+
+    try {
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+
+        // search for component segment
+        int nwings = config.GetWingCount();
+        for(int iwing = 1; iwing <= nwings; ++iwing){
+            tigl::CCPACSWing& wing = config.GetWing(iwing);
+            try {
+                tigl::CCPACSWingComponentSegment & compSeg
+                        = (tigl::CCPACSWingComponentSegment&) wing.GetComponentSegment(componentSegmentUID);
+                //now do the calculations
+                tigl::MaterialList list = compSeg.GetMaterials(eta, xsi, structureType);
+
+                // 1 <= index  <= ncount
+                unsigned int matindex = (unsigned int) materialIndex;
+                if (matindex < 1 || matindex > list.size()){
+                    LOG(ERROR) << "Invalid material index in tiglWingComponentSegmentGetMaterialUID";
+                    return TIGL_INDEX_ERROR;
+                }
+
+                const tigl::CCPACSMaterial* material = list.at(materialIndex-1);
+                if(!material) {
+                    return TIGL_ERROR;
+                }
+                *uid = (char*)material->GetUID().c_str();
+
+                return TIGL_SUCCESS;
+            }
+            catch(tigl::CTiglError& ex){
+                if(ex.getCode() != TIGL_UID_ERROR){
+                    throw;
+                }
+                else
+                    continue;
+            }
+        }
+        // the component segment was not found
+        LOG(ERROR) << "Error: Invalid uid in tiglWingComponentSegmentGetMaterialUID" << std::endl;
+        return TIGL_UID_ERROR;
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglWingComponentSegmentGetMaterialUID!" << std::endl;
+        return TIGL_ERROR;
+    }
+}
+
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetMaterialThickness(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                          const char *componentSegmentUID,
+                                                                          TiglStructureType structureType,
+                                                                          double eta, double xsi,
+                                                                          int materialIndex,
+                                                                          double * thickness){
+    if (!componentSegmentUID){
+        LOG(ERROR) << "Error: Null pointer argument for componentSegmentUID "
+                   << "in function call to tiglWingComponentSegmentGetMaterialThickness.";
+        return TIGL_NULL_POINTER;
+    }
+
+    if (!thickness){
+        LOG(ERROR) << "Error: Null pointer argument for thickness "
+                   << "in function call to tiglWingComponentSegmentGetMaterialThickness.";
+        return TIGL_NULL_POINTER;
+    }
+
+    try {
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+
+        // search for component segment
+        int nwings = config.GetWingCount();
+        for(int iwing = 1; iwing <= nwings; ++iwing){
+            tigl::CCPACSWing& wing = config.GetWing(iwing);
+            try {
+                tigl::CCPACSWingComponentSegment & compSeg
+                        = (tigl::CCPACSWingComponentSegment&) wing.GetComponentSegment(componentSegmentUID);
+                //now do the calculations
+                tigl::MaterialList list = compSeg.GetMaterials(eta, xsi, structureType);
+
+                // 1 <= index  <= ncount
+                unsigned int matindex = (unsigned int) materialIndex;
+                if (matindex < 1 || matindex > list.size()){
+                    LOG(ERROR) << "Invalid material index in tiglWingComponentSegmentGetMaterialThickness";
+                    return TIGL_INDEX_ERROR;
+                }
+
+                const tigl::CCPACSMaterial* material = list.at(materialIndex-1);
+                if(!material) {
+                    return TIGL_ERROR;
+                }
+                *thickness = material->GetThickness();
+
+                if (*thickness < 0) {
+                    return TIGL_UNINITIALIZED;
+                }
+                else {
+                    return TIGL_SUCCESS;
+                }
+            }
+            catch(tigl::CTiglError& ex){
+                if(ex.getCode() != TIGL_UID_ERROR){
+                    throw;
+                }
+                else
+                    continue;
+            }
+        }
+        // the component segment was not found
+        LOG(ERROR) << "Error: Invalid uid in tiglWingComponentSegmentGetMaterialThickness" << std::endl;
+        return TIGL_UID_ERROR;
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglWingComponentSegmentGetMaterialThickness!" << std::endl;
+        return TIGL_ERROR;
+    }
+}
 
 /*****************************************************************************************************/
 /*                     Volume calculations                                                           */
