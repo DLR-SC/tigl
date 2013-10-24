@@ -26,7 +26,7 @@
 #include <BRepBuilderAPI_MakePolygon.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <CTiglPolyDataTools.h>
-#include <AIS_Triangulation.hxx>
+#include <TIGLAISTriangulation.h>
 #include <TColStd_HArray1OfInteger.hxx>
 #include <Poly_Triangulation.hxx>
 
@@ -82,8 +82,7 @@ bool TIGLViewerInputOutput::importTriangulation( const QString fileName,
     else {
         return false;
     }
-    Handle(AIS_Triangulation) shape = new AIS_Triangulation(triangulation);
-    shape->SetDisplayMode(0);
+    Handle(TIGLAISTriangulation) shape = new TIGLAISTriangulation(triangulation);
     shape->SetMaterial(Graphic3d_NOM_METALIZED);
     // alpha , blue, green, red
     Standard_Integer color = (0 << 24)
@@ -95,7 +94,9 @@ bool TIGLViewerInputOutput::importTriangulation( const QString fileName,
         colors->SetValue(i, color);
     }
     shape->SetColors(colors);
-    ic->Display(shape,Standard_True);
+    shape->SetDisplayMode(AIS_Shaded);
+    ic->Display(shape,Standard_False);
+    ic->UpdateCurrentViewer();
 
     return true;
 }
@@ -257,7 +258,7 @@ Handle_TopTools_HSequenceOfShape TIGLViewerInputOutput::importMESH( const QStrin
 
     CHotsoseMeshReader meshReader;
     tigl::CTiglPolyData mesh;
-    if (meshReader.readFromFile(file.toStdString().c_str(), mesh) != SUCCESS){
+    if (meshReader.readFromFile(file.toStdString().c_str(), mesh) != TIGL_SUCCESS){
         return aSequence;
     }
     aSequence = new TopTools_HSequenceOfShape();

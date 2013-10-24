@@ -52,6 +52,7 @@ set(tv_src
     TIGLViewerControlFile.cpp
     TIGLViewerEtaXsiDialog.cpp
     CHotsoseMeshReader.cpp
+    TIGLAISTriangulation.cpp
 )
 	
 # normal header files
@@ -62,6 +63,7 @@ set(tv_hdr
     TIGLViewer.h
     TIGLViewerSettings.h
     TIGLViewerControlFile.h
+    TIGLAISTriangulation.h
     CHotsoseMeshReader.h
 )
 
