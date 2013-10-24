@@ -21,6 +21,7 @@
 
 
 #include <TopoDS_Shape.hxx>
+#include <Handle_Poly_Triangulation.hxx>
 #include <CTiglPolyData.h>
 
 namespace tigl {
@@ -31,6 +32,8 @@ public:
     CTiglPolyDataTools();
 
     static TopoDS_Shape MakeTopoDS(CTiglPolyData& mesh);
+
+    static Handle(Poly_Triangulation) MakePoly_Triangulation(CTiglPolyData& mesh);
 };
 
 } // namespace tigl
