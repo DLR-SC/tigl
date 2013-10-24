@@ -45,6 +45,10 @@ public:
                                                    const FileFormat format, 
                                                    const Handle_AIS_InteractiveContext& ic );
 
+    bool                      importTriangulation( const QString fileName,
+                                        const FileFormat format,
+                                        const Handle_AIS_InteractiveContext& ic );
+
     bool                              exportModel( const QString fileName, 
                                                    const FileFormat format, 
                                                    const Handle_AIS_InteractiveContext& ic);

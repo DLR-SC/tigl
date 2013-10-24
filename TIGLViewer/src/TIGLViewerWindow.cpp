@@ -246,6 +246,7 @@ void TIGLViewerWindow::openFile(const QString& fileName)
 
     TIGLViewerInputOutput::FileFormat format;
     TIGLViewerInputOutput reader;
+    bool triangulation = false;
 
     statusBar()->showMessage(tr("Invoked File|Open"));
 
@@ -283,9 +284,14 @@ void TIGLViewerWindow::openFile(const QString& fileName)
             if (fileType.toLower() == tr("mesh"))
             {
                 format = TIGLViewerInputOutput::FormatMESH;
+                triangulation = true;
             }
-
-            reader.importModel ( fileInfo.absoluteFilePath(), format, myOCC->getContext() );
+            if (triangulation) {
+                reader.importTriangulation( fileInfo.absoluteFilePath(), format, myOCC->getContext() );
+            }
+            else {
+                reader.importModel ( fileInfo.absoluteFilePath(), format, myOCC->getContext() );
+            }
         }
         watcher = new QFileSystemWatcher();
         watcher->addPath(fileInfo.absoluteFilePath());

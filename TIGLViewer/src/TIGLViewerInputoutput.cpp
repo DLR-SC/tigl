@@ -26,6 +26,9 @@
 #include <BRepBuilderAPI_MakePolygon.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <CTiglPolyDataTools.h>
+#include <AIS_Triangulation.hxx>
+#include <TColStd_HArray1OfInteger.hxx>
+#include <Poly_Triangulation.hxx>
 
 TIGLViewerInputOutput::TIGLViewerInputOutput(void)
 {
@@ -61,6 +64,41 @@ bool TIGLViewerInputOutput::importModel( const QString fileName,
     return true;
 }
 
+bool TIGLViewerInputOutput::importTriangulation( const QString fileName,
+                                    const FileFormat format,
+                                    const Handle_AIS_InteractiveContext& ic )
+{
+    Handle(Poly_Triangulation) triangulation;
+    triangulation.Nullify();
+
+    if (format == FormatMESH) {
+        CHotsoseMeshReader meshReader;
+        tigl::CTiglPolyData mesh;
+        if (meshReader.readFromFile(fileName.toStdString().c_str(), mesh) != SUCCESS){
+            return false;
+        }
+        triangulation = tigl::CTiglPolyDataTools::MakePoly_Triangulation(mesh);
+    }
+    else {
+        return false;
+    }
+    Handle(AIS_Triangulation) shape = new AIS_Triangulation(triangulation);
+    shape->SetDisplayMode(0);
+    shape->SetMaterial(Graphic3d_NOM_METALIZED);
+    // alpha , blue, green, red
+    Standard_Integer color = (0 << 24)
+                           + (20 << 16)
+                           + (20 << 8)
+                           +  20;
+    Handle(TColStd_HArray1OfInteger) colors = new TColStd_HArray1OfInteger(1,triangulation->NbNodes());
+    for (Standard_Integer i = colors->Lower(); i <= colors->Upper(); ++i) {
+        colors->SetValue(i, color);
+    }
+    shape->SetColors(colors);
+    ic->Display(shape,Standard_True);
+
+    return true;
+}
 Handle_TopTools_HSequenceOfShape TIGLViewerInputOutput::importModel( const FileFormat format, const QString& file )
 {
     Handle_TopTools_HSequenceOfShape shapes;
