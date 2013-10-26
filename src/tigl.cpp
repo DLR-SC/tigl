@@ -42,7 +42,7 @@
 #include "CTiglExportStl.h"
 #include "CTiglExportVtk.h"
 #include "CTiglExportCollada.h"
-#include "CTiglLogger.h"
+#include "CTiglLogging.h"
 
 #include "gp_Pnt.hxx"
 #include "TopoDS_Shape.hxx"
@@ -69,7 +69,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglOpenCPACSConfiguration(TixiDocumentHandle 
     atexit(tiglCleanup);
 
     // Initialize logger
-    tigl::CTiglLogger::GetLogger();
+    tigl::CTiglLogging::Instance();
     LOG(INFO) << "TIGL-Logger initialized.";
 
     std::string configurationUID;
@@ -105,8 +105,9 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglOpenCPACSConfiguration(TixiDocumentHandle 
                 LOG(ERROR) << "Error: too old CPACS dataset. CPACS version has to be at least " << (double) TIGL_VERSION_MAJOR << "!" << std::endl;
                 return TIGL_WRONG_CPACS_VERSION;
             }
-            else if (dcpacsVersion > atof(tiglGetVersion())) 
+            else if (dcpacsVersion > atof(tiglGetVersion())) {
                 LOG(INFO) << "Warning: CPACS dataset version is higher than TIGL library version!";
+            }
         }
     }
 

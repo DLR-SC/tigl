@@ -24,7 +24,7 @@
 */
 #include <iostream>
 
-#include "CTiglLogger.h"
+#include "CTiglLogging.h"
 #include "CCPACSFuselageSegment.h"
 #include "CCPACSFuselage.h"
 #include "CCPACSFuselageProfile.h"

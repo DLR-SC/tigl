@@ -22,7 +22,7 @@
 
 #include "CCPACSWingCell.h"
 #include "CTiglError.h"
-#include "CTiglLogger.h"
+#include "CTiglLogging.h"
 
 namespace tigl {
 

@@ -32,7 +32,7 @@
 #include "CCPACSWing.h"
 #include "CCPACSWingSegment.h"
 #include "CCPACSWingProfile.h"
-#include "CTiglLogger.h"
+#include "CTiglLogging.h"
 #include "CCPACSWingCell.h"
 #include "CTiglApproximateBsplineWire.h"
 #include "tiglcommonfunctions.h"

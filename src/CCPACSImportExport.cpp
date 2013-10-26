@@ -25,7 +25,7 @@
 */
 
 #include "CCPACSImportExport.h"
-#include "CTiglLogger.h"
+#include "CTiglLogging.h"
 #include "CCPACSConfigurationManager.h"
 
 #include <iostream>

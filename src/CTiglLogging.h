@@ -23,8 +23,8 @@
  * @brief  Implementation of the TIGL Logger.
  */
 
-#ifndef CTIGLLOGGER_H
-#define CTIGLLOGGER_H
+#ifndef CTIGLLOGGING_H
+#define CTIGLLOGGING_H
 
 #include "tigl_config.h"
 
@@ -38,7 +38,7 @@
 // dummy logger implementation
 #include <iostream>
 #include <sstream>
-enum LogLevelDummy_ {ERROR, WARNING, INFO, DEBUG, DEBUG1, DEBUG2, DEBUG3, DEBUG4};
+enum LogLevelDummy_ {_ERROR, _WARNING, _INFO, _DEBUG, _DEBUG1, _DEBUG2, _DEBUG3, _DEBUG4};
 #endif
 
 namespace tigl {
@@ -46,12 +46,15 @@ namespace tigl {
 #ifndef GLOG_FOUND
     //dummy implementation if glog is not available
     #ifndef LOG_MAX_LEVEL
-    #define LOG_MAX_LEVEL DEBUG4
+    #define LOG_MAX_LEVEL _DEBUG4
     #endif
 
+    //macro that extracts the filename of the current file
+    #define CUR_FILE (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__)
+
     #define LOG(level) \
-        if (level > LOG_MAX_LEVEL) ;\
-        else tigl::DummyLogger_().AppendToStream(level)
+        if (_ ## level > LOG_MAX_LEVEL) ;\
+    else tigl::DummyLogger_().AppendToStream(_ ## level, CUR_FILE, __LINE__) 
 
     #define DLOG LOG
 
@@ -60,7 +63,7 @@ namespace tigl {
     public:
         DummyLogger_();
         virtual ~DummyLogger_();
-        std::ostringstream& AppendToStream(LogLevelDummy_ level = INFO);
+        std::ostringstream& AppendToStream(LogLevelDummy_ level, const char *file, int line);
     protected:
         std::ostringstream stream;
     private:
@@ -70,30 +73,36 @@ namespace tigl {
 #endif // not GLOG_FOUND
 
 
-class CTiglLogger {
+class CTiglLogging {
 
     public:
         // Returns a reference to the only instance of this class
-        static CTiglLogger& GetLogger(void);
+        static CTiglLogging& Instance(void);
+        
+        // allows installing a custom log sink/receiver
+        void SetLogger(class ITiglLogger*);
+        class ITiglLogger* GetLogger();
 
         // Destructor
-        ~CTiglLogger(void);
+        ~CTiglLogging(void);
 
     private:
         // Constructor
-        CTiglLogger(void);
+        CTiglLogging(void);
 
         // Logger Initialize with defaults
         void initLogger(void);
 
         // Copy constructor
-        CTiglLogger(const CTiglLogger& )                { /* Do nothing */ }
+        CTiglLogging(const CTiglLogging& )                { /* Do nothing */ }
 
         // Assignment operator
-        void operator=(const CTiglLogger& )             { /* Do nothing */ }
+        void operator=(const CTiglLogging& )             { /* Do nothing */ }
+        
+        class ITiglLogger* _myLogger;
 
 };
 
 } // end namespace tigl
 
-#endif // CTIGLLOGGER_H
+#endif // CTIGLLOGGING_H

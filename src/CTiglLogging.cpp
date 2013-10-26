@@ -23,30 +23,36 @@
 * @brief  Implementation of a simple TIGL Logger.
 */
 
-#include "CTiglLogger.h"
+#include "CTiglLogging.h"
+#include "ITiglLogger.h"
 
 namespace tigl {
 
 
-CTiglLogger::CTiglLogger(void)
+CTiglLogging::CTiglLogging(void)
 {
     initLogger();
+    _myLogger = NULL;
 }
 
-CTiglLogger::~CTiglLogger(void)
+CTiglLogging::~CTiglLogging(void)
 {
 #ifdef GLOG_FOUND
     google::ShutdownGoogleLogging();
 #endif
 }
 
-CTiglLogger& CTiglLogger::GetLogger(void)
+ITiglLogger* CTiglLogging::GetLogger() {
+    return _myLogger;
+}
+
+CTiglLogging& CTiglLogging::Instance(void)
 {
-    static CTiglLogger instance;
+    static CTiglLogging instance;
     return instance;
 }
 
-void CTiglLogger::initLogger(void)
+void CTiglLogging::initLogger(void)
 {
 #ifdef GLOG_FOUND
     // Initialize Google's logging library.
@@ -67,8 +73,13 @@ void CTiglLogger::initLogger(void)
 
 DummyLogger_::DummyLogger_(){}
 DummyLogger_::~DummyLogger_(){
-    stream << std::endl;
-    std::cout << stream.str();
+    tigl::ITiglLogger* logger = CTiglLogging::Instance().GetLogger();
+    if(logger) {
+        logger->LogMessage(stream.str().c_str());
+    }
+    else {
+        printf("%s\n", stream.str().c_str());
+    }
 }
 
 std::string getLogLevelString(LogLevelDummy_ level){
@@ -76,9 +87,9 @@ std::string getLogLevelString(LogLevelDummy_ level){
     return buffer[level];
 }
 
-std::ostringstream& DummyLogger_::AppendToStream(LogLevelDummy_ level){
-    stream << " " <<  getLogLevelString(level) << ": ";
-    stream << std::string(level > DEBUG ? level - DEBUG : 0, '\t');
+std::ostringstream& DummyLogger_::AppendToStream(LogLevelDummy_ level, const char* file, int line){
+    stream << " " <<  getLogLevelString(level) << " " << file << ":" << line  << "] ";
+    stream << std::string(level > _DEBUG ? level - _DEBUG : 0, '\t');
     return stream;
 }
 

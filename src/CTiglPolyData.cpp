@@ -22,7 +22,7 @@
 #include "CTiglPolyData.h"
 #include "CTiglPoint.h"
 #include "CTiglError.h"
-#include "CTiglLogger.h"
+#include "CTiglLogging.h"
 #include "tigl.h"
 #include "tixi.h"
 

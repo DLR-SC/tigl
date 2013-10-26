@@ -19,7 +19,7 @@
 #include "CCPACSMaterial.h"
 
 #include "CTiglError.h"
-#include "CTiglLogger.h"
+#include "CTiglLogging.h"
 
 namespace tigl {
 
@@ -63,12 +63,14 @@ void CCPACSMaterial::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string 
     // get thickness (not mandatory)
     tempstring = materialXPath + "/thickness";
     if(tixiCheckElement(tixiHandle, tempstring.c_str())== SUCCESS){
-       if(tixiGetDoubleElement(tixiHandle, tempstring.c_str(), &thickness) != SUCCESS)
+       if(tixiGetDoubleElement(tixiHandle, tempstring.c_str(), &thickness) != SUCCESS) {
            LOG(ERROR) << "Invalid material thickness in " << materialXPath;
+       }
     }
     else if(tixiCheckElement(tixiHandle, std::string(materialXPath + "/thicknessScaling").c_str())== SUCCESS){
-       if(tixiGetDoubleElement(tixiHandle, std::string(materialXPath + "/thicknessScaling").c_str(), &thicknessScaling) != SUCCESS)
+       if(tixiGetDoubleElement(tixiHandle, std::string(materialXPath + "/thicknessScaling").c_str(), &thicknessScaling) != SUCCESS) {
            LOG(ERROR) << "Invalid composite thickness scaling in " << materialXPath;
+       }
     }
     else {
         if(!isComposite())

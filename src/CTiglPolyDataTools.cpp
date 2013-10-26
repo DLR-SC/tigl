@@ -17,7 +17,7 @@
 */
 
 #include "CTiglPolyDataTools.h"
-#include "CTiglLogger.h"
+#include "CTiglLogging.h"
 
 // OCCT includes
 #include <BRep_Builder.hxx>
