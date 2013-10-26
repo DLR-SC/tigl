@@ -27,7 +27,7 @@
 
 #include "ITiglObjectiveFunction.h"
 #include "CTiglError.h"
-#include "CTiglLogger.h"
+#include "CTiglLogging.h"
 
 #define C1    0.1
 #define BTFAC 0.5

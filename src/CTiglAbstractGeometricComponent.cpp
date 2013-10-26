@@ -25,7 +25,7 @@
 
 #include "CTiglAbstractGeometricComponent.h"
 #include "CTiglError.h"
-#include "CTiglLogger.h"
+#include "CTiglLogging.h"
 
 // OCCT defines
 #include <BRepBuilderAPI_Transform.hxx>

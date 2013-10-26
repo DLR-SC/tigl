@@ -21,7 +21,7 @@
 #include "tixi.h"
 
 #include "CTiglError.h"
-#include "CTiglLogger.h"
+#include "CTiglLogging.h"
 
 #include <cmath>
 

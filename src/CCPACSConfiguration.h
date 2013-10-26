@@ -27,7 +27,7 @@
 #define CCPACSCONFIGURATION_H
 
 #include "CTiglUIDManager.h"
-#include "CTiglLogger.h"
+#include "CTiglLogging.h"
 #include "CCPACSHeader.h"
 #include "CCPACSWings.h"
 #include "CCPACSWingProfile.h"

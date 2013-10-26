@@ -23,7 +23,7 @@
 #include <QString>
 #include <QStringList>
 
-#include "CTiglLogger.h"
+#include "CTiglLogging.h"
 
 CHotsoseMeshReader::CHotsoseMeshReader()
 {
