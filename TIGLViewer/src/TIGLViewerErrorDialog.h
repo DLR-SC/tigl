@@ -39,12 +39,14 @@ public:
     ~TIGLViewerErrorDialog();
 
 private slots:
+    void toggleDetails();
     void setDetailsVisible(bool);
     void readjustSize();
 
 private:
     Ui::TIGLViewerErrorDialog *ui;
     QPushButton* detailsButton;
+    bool detailsVisible;
 };
 
 #endif // TIGLVIEWERERRORDIALOG_H
