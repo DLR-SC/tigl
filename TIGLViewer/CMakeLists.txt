@@ -10,7 +10,7 @@ set(PROGNAME "TIGLViewer")
 
 if(TIGL_VIEWER)
 
-find_package(Qt4)
+find_package(Qt4 4.4.3)
 #build only tiglviewer if qt was found
 if(QT4_FOUND)	
 
@@ -53,6 +53,8 @@ set(tv_src
     TIGLViewerEtaXsiDialog.cpp
     CHotsoseMeshReader.cpp
     TIGLAISTriangulation.cpp
+    TIGLViewerErrorDialog.cpp
+    TIGLViewerLogHistory.cpp
 )
 	
 # normal header files
@@ -65,6 +67,7 @@ set(tv_hdr
     TIGLViewerControlFile.h
     TIGLAISTriangulation.h
     CHotsoseMeshReader.h
+    TIGLViewerLogHistory.h
 )
 
 # qobject header files that have to be moced
@@ -83,12 +86,14 @@ set(tv_hdr_qobj
 	TIGLScriptEngine.h
 	TiglViewerConsole.h
 	TIGLViewerEtaXsiDialog.h
+	TIGLViewerErrorDialog.h
 )
 
 set(tv_ui_comp
 	src/TIGLViewerWindow.ui
 	src/TIGLViewerSettingsDialog.ui
 	src/TIGLViewerEtaXsiDialog.ui
+	src/TIGLViewerErrorDialog.ui
 )
 	
 foreach ( _fname ${tv_src})

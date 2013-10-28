@@ -156,7 +156,7 @@ TiglReturnCode TIGLViewerDocument::openCpacsConfiguration(const QString fileName
     {
         tixiCloseDocument(tixiHandle);
         m_cpacsHandle = -1;
-        displayError(QString("Error in function <u>tiglOpenCPACSConfiguration</u>. Error code: %1").arg(tiglRet), "TIGL Error");
+        displayError(QString("<u>tiglOpenCPACSConfiguration</u> returned %1").arg(tiglGetErrorString(tiglRet)), "Error while reading in CPACS configuration");
         return tiglRet;
     }
     drawAllFuselagesAndWings();
