@@ -27,7 +27,7 @@ class CTiglConsoleLogger : public ITiglLogger
 {
 public:
     virtual ~CTiglConsoleLogger() {}
-    virtual void LogMessage(const char * message);
+    virtual void LogMessage(TiglLogLevel, const char * message);
 };
 
 }

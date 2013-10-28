@@ -46,6 +46,10 @@ ITiglLogger* CTiglLogging::GetLogger() {
     return _myLogger;
 }
 
+void CTiglLogging::SetLogger(ITiglLogger * logger) {
+    _myLogger = logger;
+}
+
 CTiglLogging& CTiglLogging::Instance(void)
 {
     static CTiglLogging instance;
@@ -75,21 +79,23 @@ DummyLogger_::DummyLogger_(){}
 DummyLogger_::~DummyLogger_(){
     tigl::ITiglLogger* logger = CTiglLogging::Instance().GetLogger();
     if(logger) {
-        logger->LogMessage(stream.str().c_str());
+        logger->LogMessage(_lastLevel, stream.str().c_str());
     }
     else {
         printf("%s\n", stream.str().c_str());
     }
 }
 
-std::string getLogLevelString(LogLevelDummy_ level){
+std::string getLogLevelString(TiglLogLevel level){
     static const char* const buffer[] = {"ERROR", "WARNING", "INFO", "DEBUG", "DEBUG1", "DEBUG2", "DEBUG3", "DEBUG4"};
     return buffer[level];
 }
 
-std::ostringstream& DummyLogger_::AppendToStream(LogLevelDummy_ level, const char* file, int line){
+std::ostringstream& DummyLogger_::AppendToStream(TiglLogLevel level, const char* file, int line){
+    _lastLevel = level;
+    
     stream << " " <<  getLogLevelString(level) << " " << file << ":" << line  << "] ";
-    stream << std::string(level > _DEBUG ? level - _DEBUG : 0, '\t');
+    stream << std::string(level > TILOG_DEBUG ? level - TILOG_DEBUG : 0, '\t');
     return stream;
 }
 

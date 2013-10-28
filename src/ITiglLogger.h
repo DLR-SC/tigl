@@ -19,13 +19,15 @@
 #ifndef ITIGLLOGGER_H
 #define ITIGLLOGGER_H
 
+#include "TiglLoggerDefinitions.h"
+
 namespace tigl {
 
 class ITiglLogger
 {
 public:
     virtual ~ITiglLogger() {}
-    virtual void LogMessage(const char * message) = 0;
+    virtual void LogMessage(TiglLogLevel, const char * message) = 0;
 };
 
 }

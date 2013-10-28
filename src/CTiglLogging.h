@@ -38,7 +38,7 @@
 // dummy logger implementation
 #include <iostream>
 #include <sstream>
-enum LogLevelDummy_ {_ERROR, _WARNING, _INFO, _DEBUG, _DEBUG1, _DEBUG2, _DEBUG3, _DEBUG4};
+#include "TiglLoggerDefinitions.h"
 #endif
 
 namespace tigl {
@@ -46,15 +46,23 @@ namespace tigl {
 #ifndef GLOG_FOUND
     //dummy implementation if glog is not available
     #ifndef LOG_MAX_LEVEL
-    #define LOG_MAX_LEVEL _DEBUG4
+    #define LOG_MAX_LEVEL TILOG_DEBUG4
     #endif
 
     //macro that extracts the filename of the current file
-    #define CUR_FILE (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__)
+  #if defined _WIN32 || defined __WIN32__
+    #define _CUR_FILE_ (strrchr(__FILE__, '\\') ? strrchr(__FILE__, '\\') + 1 : __FILE__)
+  #else
+    #define _CUR_FILE_ (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__)
+  #endif
 
+    /**
+     * This macros can be used like streams e.g.: LOG(ERROR) << "that is an error";
+     * Following log levels are supported: ERROR, WARNING, INFO, DEBUG, DEBUG1, DEBUG2, DEBUG3, DEBUG4
+     */
     #define LOG(level) \
-        if (_ ## level > LOG_MAX_LEVEL) ;\
-    else tigl::DummyLogger_().AppendToStream(_ ## level, CUR_FILE, __LINE__) 
+        if (TILOG_ ## level > LOG_MAX_LEVEL) ;\
+    else tigl::DummyLogger_().AppendToStream(TILOG_ ## level, _CUR_FILE_, __LINE__) 
 
     #define DLOG LOG
 
@@ -63,12 +71,14 @@ namespace tigl {
     public:
         DummyLogger_();
         virtual ~DummyLogger_();
-        std::ostringstream& AppendToStream(LogLevelDummy_ level, const char *file, int line);
+        std::ostringstream& AppendToStream(TiglLogLevel level, const char *file, int line);
     protected:
         std::ostringstream stream;
     private:
         DummyLogger_(const DummyLogger_&);
         DummyLogger_& operator =(const DummyLogger_&);
+        
+        TiglLogLevel _lastLevel;
     };
 #endif // not GLOG_FOUND
 
