@@ -20,7 +20,7 @@
 
 #include <iostream>
 
-void tigl::CTiglConsoleLogger::LogMessage(const char *message)
+void tigl::CTiglConsoleLogger::LogMessage(TiglLogLevel, const char *message)
 {
     std::cout << message << std::endl;
 }
