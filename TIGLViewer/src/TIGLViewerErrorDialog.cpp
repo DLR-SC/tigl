@@ -38,11 +38,14 @@ TIGLViewerErrorDialog::TIGLViewerErrorDialog(QWidget *parent) :
     ui->iconLabel->setPixmap(errorIcon.pixmap(iconSize, iconSize));
 
     detailsButton = new QPushButton("Show details", this);
-    detailsButton->setCheckable(true);
     ui->buttonBox->addButton(detailsButton, QDialogButtonBox::ActionRole);
 
+    ui->buttonBox->button(QDialogButtonBox::Close)->setFocus();
+    
     setDetailsVisible(false);
-    QObject::connect(detailsButton, SIGNAL(toggled(bool)), this, SLOT(setDetailsVisible(bool)));
+    layout()->setSizeConstraint(QLayout::SetFixedSize);
+    
+    QObject::connect(detailsButton, SIGNAL(clicked()), this, SLOT(toggleDetails()));
 }
 
 void TIGLViewerErrorDialog::setMessage(const QString &msg){
@@ -53,25 +56,24 @@ void TIGLViewerErrorDialog::setDetailsText(const QString &text){
     ui->logBrowser->setText(text);
 }
 
+void TIGLViewerErrorDialog::toggleDetails() {
+    detailsVisible = !detailsVisible;
+    setDetailsVisible(detailsVisible);
+}
+
 void TIGLViewerErrorDialog::setDetailsVisible(bool visible){
-    ui->errorLogLabel->setVisible(visible);
-    ui->logBrowser->setVisible(visible);
+    detailsVisible = visible;
+    ui->groupBox->setVisible(visible);
+    if(visible) {
+        detailsButton->setText("Hide details");
+    }
+    else {
+        detailsButton->setText("Show details");
+    }
     this->readjustSize();
 }
 
 void TIGLViewerErrorDialog::readjustSize(){
-    int totalHeight = 0;
-    totalHeight += ui->buttonBox->sizeHint().height();
-    totalHeight += max(ui->errorMessageLabel->sizeHint().height(), ui->iconLabel->sizeHint().height());
-
-    if(! ui->logBrowser->isHidden()){
-        totalHeight += ui->errorLogLabel->size().height();
-        totalHeight += ui->logBrowser->size().height();
-    }
-
-    setMaximumHeight(totalHeight);
-    setMinimumWidth(size().width());
-    adjustSize();
 }
 
 TIGLViewerErrorDialog::~TIGLViewerErrorDialog()

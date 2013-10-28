@@ -101,7 +101,7 @@ std::ostringstream& DummyLogger_::AppendToStream(TiglLogLevel level, const char*
     time (&rawtime);
     struct tm *timeinfo = localtime (&rawtime);
     char buffer [80];
-    strftime (buffer,80,"%m/%d %H:%S:%M",timeinfo);
+    strftime (buffer,80,"%m/%d %H:%M:%S",timeinfo);
     stream << buffer << " ";
 
     stream << file << ":" << line  << "] ";
