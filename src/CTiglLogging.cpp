@@ -25,6 +25,7 @@
 
 #include "CTiglLogging.h"
 #include "ITiglLogger.h"
+#include <ctime>
 
 namespace tigl {
 
@@ -87,14 +88,23 @@ DummyLogger_::~DummyLogger_(){
 }
 
 std::string getLogLevelString(TiglLogLevel level){
-    static const char* const buffer[] = {"ERROR", "WARNING", "INFO", "DEBUG", "DEBUG1", "DEBUG2", "DEBUG3", "DEBUG4"};
-    return buffer[level];
+    return LogLevelStrings[level];
 }
 
 std::ostringstream& DummyLogger_::AppendToStream(TiglLogLevel level, const char* file, int line){
     _lastLevel = level;
     
-    stream << " " <<  getLogLevelString(level) << " " << file << ":" << line  << "] ";
+    stream <<  getLogLevelString(level) << " ";
+
+    // timestamp
+    time_t rawtime;
+    time (&rawtime);
+    struct tm *timeinfo = localtime (&rawtime);
+    char buffer [80];
+    strftime (buffer,80,"%m/%d %H:%S:%M",timeinfo);
+    stream << buffer << " ";
+
+    stream << file << ":" << line  << "] ";
     stream << std::string(level > TILOG_DEBUG ? level - TILOG_DEBUG : 0, '\t');
     return stream;
 }

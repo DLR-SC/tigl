@@ -2,16 +2,22 @@
 <ui version="4.0">
  <class>TIGLViewerErrorDialog</class>
  <widget class="QDialog" name="TIGLViewerErrorDialog">
+  <property name="windowModality">
+   <enum>Qt::WindowModal</enum>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>450</width>
-    <height>321</height>
+    <width>404</width>
+    <height>294</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Error</string>
+  </property>
+  <property name="modal">
+   <bool>true</bool>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -28,10 +34,7 @@
         </sizepolicy>
        </property>
        <property name="text">
-        <string/>
-       </property>
-       <property name="pixmap">
-        <pixmap>../gfx/tigl_error.png</pixmap>
+        <string>ICON</string>
        </property>
        <property name="scaledContents">
         <bool>false</bool>
@@ -63,7 +66,7 @@
         <string>TextLabel TextLabel TextLabel TextLabel TextLabel TextLabel asdfadsf asdf sdaf asfd dasfaf sadf fa asfd a TextLabel  fdas f adf asdf f dsafaf asfsd adf aTextLabel </string>
        </property>
        <property name="textFormat">
-        <enum>Qt::PlainText</enum>
+        <enum>Qt::RichText</enum>
        </property>
        <property name="scaledContents">
         <bool>false</bool>
@@ -82,6 +85,16 @@
     </layout>
    </item>
    <item>
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Close</set>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="QLabel" name="errorLogLabel">
      <property name="text">
       <string>Error log:</string>
@@ -90,22 +103,18 @@
    </item>
    <item>
     <widget class="QTextBrowser" name="logBrowser">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>200</height>
+      </size>
+     </property>
      <property name="html">
       <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Lucida Grande'; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Close|QDialogButtonBox::Reset</set>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
     </widget>
    </item>

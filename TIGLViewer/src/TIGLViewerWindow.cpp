@@ -45,6 +45,8 @@
 #include "CommandLineParameters.h"
 #include "TIGLViewerSettings.h"
 #include "TIGLViewerControlFile.h"
+#include "TIGLViewerErrorDialog.h"
+#include "TIGLViewerLogHistory.h"
 
 void ShowOrigin ( Handle_AIS_InteractiveContext theContext );
 void AddVertex  ( double x, double y, double z, Handle_AIS_InteractiveContext theContext );
@@ -576,14 +578,11 @@ void TIGLViewerWindow::statusMessage (const QString aMessage)
 
 void TIGLViewerWindow::displayErrorMessage (const QString aMessage, QString aHeader = "TIGL Error")
 {
-    QMessageBox::StandardButton reply;
-    reply = QMessageBox::information(this, aHeader, aMessage);
-    if (reply == QMessageBox::Ok) {
-        // Ok pressed
-    }
-    else {
-        // Escape pressed
-    }
+    TIGLViewerErrorDialog dialog(this);
+    dialog.setMessage(QString("<b>%1</b><br /><br />%2").arg(aHeader).arg(aMessage));
+    dialog.setWindowTitle("Error");
+    dialog.setDetailsText(TIGLViewerLogHistory::Instance().GetAllMessages());
+    dialog.exec();
 }
 
 void TIGLViewerWindow::connectSignals()
