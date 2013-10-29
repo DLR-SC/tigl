@@ -74,7 +74,7 @@ bool TIGLViewerInputOutput::importTriangulation( const QString fileName,
     if (format == FormatMESH) {
         CHotsoseMeshReader meshReader;
         tigl::CTiglPolyData mesh;
-        if (meshReader.readFromFile(fileName.toStdString().c_str(), mesh) != SUCCESS){
+        if (meshReader.readFromFile(fileName.toStdString().c_str(), mesh) != TIGL_SUCCESS){
             return false;
         }
         triangulation = tigl::CTiglPolyDataTools::MakePoly_Triangulation(mesh);

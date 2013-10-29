@@ -38,6 +38,7 @@
 // dummy logger implementation
 #include <iostream>
 #include <sstream>
+#include <cstring>
 #include "TiglLoggerDefinitions.h"
 #endif
 
