@@ -56,6 +56,7 @@ set(tv_src
     TIGLViewerErrorDialog.cpp
     TIGLViewerLogHistory.cpp
     TIGLViewerLogRedirection.cpp
+    TIGLViewerLoggerHTMLDecorator.cpp
 )
 	
 # normal header files
@@ -69,6 +70,7 @@ set(tv_hdr
     TIGLAISTriangulation.h
     CHotsoseMeshReader.h
     TIGLViewerLogHistory.h
+    TIGLViewerLoggerHTMLDecorator.h
 )
 
 # qobject header files that have to be moced

@@ -22,31 +22,44 @@
 
 #include <cstdio>
 #include <ctime>
+#include <iostream>
 
 namespace tigl {
 
-CTiglFileLogger::CTiglFileLogger(FILE * file, bool addHeader) : logFileStream(file), mutex(new CMutex)
+CTiglFileLogger::CTiglFileLogger(FILE * file) : logFileStream(file), mutex(new CMutex)
 {
     if(!logFileStream) {
         throw CTiglError("Null pointer for argument file in CTiglLogFile", TIGL_NULL_POINTER);
     }
-
-    if(addHeader) {
-        // timestamp
-        time_t rawtime;
-        time (&rawtime);
-        struct tm *timeinfo = localtime (&rawtime);
-        char buffer [160];
-        strftime (buffer,160,"TiGL log file created at: %y/%m/%d %H:%M:%S",timeinfo);
-
-        fprintf(logFileStream, "%s\n", buffer);
-    }
+    
+    fileOpened = false;
 }
 
+CTiglFileLogger::CTiglFileLogger(const char* filename) :  mutex(new CMutex)
+{
+
+    logFileStream = fopen(filename,"w");
+    if(!logFileStream) {
+        throw CTiglError("Null pointer for argument file in CTiglLogFile", TIGL_NULL_POINTER);
+    }
+    fileOpened = true;
+
+    // timestamp
+    time_t rawtime;
+    time (&rawtime);
+    struct tm *timeinfo = localtime (&rawtime);
+    char buffer [160];
+    strftime (buffer,160,"TiGL log file created at: %y/%m/%d %H:%M:%S",timeinfo);
+    
+    fprintf(logFileStream, "%s\n", buffer);
+}
 
 CTiglFileLogger::~CTiglFileLogger(){
     if(mutex){
         delete mutex;
+    }
+    if(fileOpened) {
+        fclose(logFileStream);
     }
 }
 

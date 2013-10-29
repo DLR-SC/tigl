@@ -100,6 +100,8 @@ class CTiglLogging {
         // Returns a reference to the only instance of this class
         static CTiglLogging& Instance(void);
         
+        void LogToFile(const char* filename);
+        
         // allows installing a custom log sink/receiver
         // The logger becomes property of this class
         // Therefore the logger should not be deleted

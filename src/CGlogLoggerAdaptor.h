@@ -37,6 +37,10 @@ class CMutex;
 class CGlogLoggerAdaptor : public google::base::Logger
 {
 public:
+    // The logger becomes property of 
+    // this class. Therefore one must
+    // not manually delete a logger 
+    // after inserting it into this class.
     CGlogLoggerAdaptor(ITiglLogger*);
     
     virtual ~CGlogLoggerAdaptor();
