@@ -40,12 +40,12 @@ public:
     CGlogLoggerAdaptor(ITiglLogger*);
     
     virtual ~CGlogLoggerAdaptor();
-  
+
     virtual void Write(bool force_flush,
                        time_t timestamp,
                        const char* message,
-                       int message_len) = 0;
-  
+                       int message_len);
+
     // Flush any buffered messages
     virtual void Flush();
 

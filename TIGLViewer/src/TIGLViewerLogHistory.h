@@ -34,8 +34,7 @@ public:
         QString      msg;
         TiglLogLevel level;
     };
-
-    static TIGLViewerLogHistory& Instance();
+    TIGLViewerLogHistory();
 
     virtual ~TIGLViewerLogHistory() {}
     virtual void LogMessage(TiglLogLevel, const char * message);
@@ -46,7 +45,6 @@ public:
 
 
 protected:
-    TIGLViewerLogHistory();
     TIGLViewerLogHistory(const TIGLViewerLogHistory&);
     TIGLViewerLogHistory& operator = (const TIGLViewerLogHistory&);
 

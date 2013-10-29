@@ -25,7 +25,15 @@
 
 #include "CTiglLogging.h"
 #include "ITiglLogger.h"
+#include "CGlogLoggerAdaptor.h"
 #include <ctime>
+
+//macro that extracts the filename of the current file
+#if defined _WIN32 || defined __WIN32__
+#define BASENAME(MYFILE) (strrchr((MYFILE), '\\') ? strrchr((MYFILE), '\\') + 1 : (MYFILE))
+#else
+#define BASENAME(MYFILE) (strrchr((MYFILE), '/') ? strrchr((MYFILE), '/') + 1 : (MYFILE))
+#endif
 
 namespace tigl {
 
@@ -41,6 +49,9 @@ CTiglLogging::~CTiglLogging(void)
 #ifdef GLOG_FOUND
     google::ShutdownGoogleLogging();
 #endif
+    if(_myLogger){
+        delete _myLogger;
+    }
 }
 
 ITiglLogger* CTiglLogging::GetLogger() {
@@ -48,7 +59,20 @@ ITiglLogger* CTiglLogging::GetLogger() {
 }
 
 void CTiglLogging::SetLogger(ITiglLogger * logger) {
+    if(_myLogger) {
+        delete _myLogger;
+    }
+
     _myLogger = logger;
+#ifdef GLOG_FOUND
+    if(!_myLogger){
+        return;
+    }
+
+    CGlogLoggerAdaptor* adaptor = new CGlogLoggerAdaptor(logger);
+    // pipe EVERYTHING from glog to the logger
+    google::base::SetLogger(google::INFO, adaptor);
+#endif
 }
 
 CTiglLogging& CTiglLogging::Instance(void)
@@ -104,9 +128,43 @@ std::ostringstream& DummyLogger_::AppendToStream(TiglLogLevel level, const char*
     strftime (buffer,80,"%m/%d %H:%M:%S",timeinfo);
     stream << buffer << " ";
 
-    stream << file << ":" << line  << "] ";
+    stream << BASENAME(file) << ":" << line  << "] ";
     stream << std::string(level > TILOG_DEBUG ? level - TILOG_DEBUG : 0, '\t');
     return stream;
+}
+
+DebugStream_::DebugStream_(){}
+DebugStream_::~DebugStream_(){
+#ifdef DEBUG
+    tigl::ITiglLogger* logger = CTiglLogging::Instance().GetLogger();
+    if(logger) {
+        logger->LogMessage(_lastLevel, stream.str().c_str());
+    }
+    else {
+        printf("%s\n", stream.str().c_str());
+    }
+#endif
+}
+
+std::ostringstream& DebugStream_::AppendToStream(TiglLogLevel level, const char* file, int line){
+#ifdef DEBUG
+    _lastLevel = level;
+
+    stream <<  getLogLevelString(level) << "-DEBUG ";
+
+    // timestamp
+    time_t rawtime;
+    time (&rawtime);
+    struct tm *timeinfo = localtime (&rawtime);
+    char buffer [80];
+    strftime (buffer,80,"%m/%d %H:%M:%S",timeinfo);
+    stream << buffer << " ";
+
+    stream << BASENAME(file) << ":" << line  << "] ";
+    stream << std::string(level > TILOG_DEBUG ? level - TILOG_DEBUG : 0, '\t');
+#endif
+    return stream;
+
 }
 
 #endif

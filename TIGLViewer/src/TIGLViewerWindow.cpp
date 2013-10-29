@@ -47,6 +47,8 @@
 #include "TIGLViewerControlFile.h"
 #include "TIGLViewerErrorDialog.h"
 #include "TIGLViewerLogHistory.h"
+#include "TIGLViewerLogRedirection.h"
+#include "CTiglLogSplitter.h"
 
 void ShowOrigin ( Handle_AIS_InteractiveContext theContext );
 void AddVertex  ( double x, double y, double z, Handle_AIS_InteractiveContext theContext );
@@ -140,6 +142,17 @@ TIGLViewerWindow::TIGLViewerWindow()
     stdoutStream = new QDebugStream(std::cout);
     errorStream  = new QDebugStream(std::cerr);
     errorStream->setMarkup("<b><font color=\"red\">","</font></b>");
+
+    // insert two loggers, one for the log history and one for the console
+    tigl::CTiglLogSplitter * splitter = new tigl::CTiglLogSplitter;
+    logHistory = new TIGLViewerLogHistory;
+    splitter->AddLogger(logHistory, TILOG_WARNING);
+
+    logDirect = new TIGLViewerLogRedirection;
+    splitter->AddLogger(logDirect, TILOG_DEBUG4);
+
+    // register logger at tigl
+    tigl::CTiglLogging::Instance().SetLogger(splitter);
 
     QPalette p = console->palette();
     p.setColor(QPalette::Base, Qt::black);
@@ -581,7 +594,7 @@ void TIGLViewerWindow::displayErrorMessage (const QString aMessage, QString aHea
     TIGLViewerErrorDialog dialog(this);
     dialog.setMessage(QString("<b>%1</b><br /><br />%2").arg(aHeader).arg(aMessage));
     dialog.setWindowTitle("Error");
-    dialog.setDetailsText(TIGLViewerLogHistory::Instance().GetAllMessages());
+    dialog.setDetailsText(logHistory->GetAllMessages());
     dialog.exec();
 }
 
@@ -708,6 +721,8 @@ void TIGLViewerWindow::connectSignals()
 
     connect(stdoutStream, SIGNAL(sendString(QString)), console, SLOT(output(QString)));
     connect(errorStream , SIGNAL(sendString(QString)), console, SLOT(output(QString)));
+
+    connect(logDirect, SIGNAL(newMessage(QString)), console, SLOT(output(QString)));
 
     connect(scriptEngine, SIGNAL(printResults(QString)), console, SLOT(output(QString)));
     connect(console, SIGNAL(onChange(QString)), scriptEngine, SLOT(textChanged(QString)));
