@@ -49,6 +49,7 @@
 #include "TIGLViewerLogHistory.h"
 #include "TIGLViewerLogRedirection.h"
 #include "CTiglLogSplitter.h"
+#include "TIGLViewerLoggerHTMLDecorator.h"
 
 void ShowOrigin ( Handle_AIS_InteractiveContext theContext );
 void AddVertex  ( double x, double y, double z, Handle_AIS_InteractiveContext theContext );
@@ -149,7 +150,7 @@ TIGLViewerWindow::TIGLViewerWindow()
     splitter->AddLogger(logHistory, TILOG_WARNING);
 
     logDirect = new TIGLViewerLogRedirection;
-    splitter->AddLogger(logDirect, TILOG_DEBUG4);
+    splitter->AddLogger(new TIGLViewerLoggerHTMLDecorator(logDirect), TILOG_DEBUG4);
 
     // register logger at tigl
     tigl::CTiglLogging::Instance().SetLogger(splitter);

@@ -70,13 +70,12 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglOpenCPACSConfiguration(TixiDocumentHandle 
 
     // Initialize logger
     tigl::CTiglLogging::Instance();
-    LOG(INFO) << "TIGL-Logger initialized.";
 
     std::string configurationUID;
     if(configurationUID_cstr) configurationUID = configurationUID_cstr;
     
     if (cpacsHandlePtr == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for cpacsHandlePtr in function call to tiglOpenCPACSConfiguration." << std::endl;
+        LOG(ERROR) << "Null pointer argument for cpacsHandlePtr in function call to tiglOpenCPACSConfiguration." << std::endl;
         return TIGL_NULL_POINTER;
     }
 
@@ -93,20 +92,20 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglOpenCPACSConfiguration(TixiDocumentHandle 
         if(tixiRet != SUCCESS){
             // NO CPACS Version Information in Header
             if(tixiRet == ELEMENT_PATH_NOT_UNIQUE)
-                LOG(ERROR) << "Warning: Multiple CPACS version entries found. Please verify CPACS file." << std::endl;
+                LOG(ERROR) << "Multiple CPACS version entries found. Please verify CPACS file." << std::endl;
             else if(tixiRet == ELEMENT_NOT_FOUND)
-                LOG(ERROR) << "Warning: No CPACS version information in file header. CPACS file seems to be too old." << std::endl;
+                LOG(ERROR) << "No CPACS version information in file header. CPACS file seems to be too old." << std::endl;
             else
-                LOG(ERROR) << "Error: reading in CPACS version," << std::endl;
+                LOG(ERROR) << "Cannot read CPACS version," << std::endl;
             return TIGL_WRONG_CPACS_VERSION;
         }
         else {
             if (dcpacsVersion < (double) TIGL_VERSION_MAJOR){
-                LOG(ERROR) << "Error: too old CPACS dataset. CPACS version has to be at least " << (double) TIGL_VERSION_MAJOR << "!" << std::endl;
+                LOG(ERROR) << "Too old CPACS dataset. CPACS version has to be at least " << (double) TIGL_VERSION_MAJOR << "!" << std::endl;
                 return TIGL_WRONG_CPACS_VERSION;
             }
             else if (dcpacsVersion > atof(tiglGetVersion())) {
-                LOG(INFO) << "Warning: CPACS dataset version is higher than TIGL library version!";
+                LOG(WARNING) << "CPACS dataset version is higher than TIGL library version!";
             }
         }
     }

@@ -16,29 +16,20 @@
 * limitations under the License.
 */
 
-#ifndef CTIGLFILELOGGER_H
-#define CTIGLFILELOGGER_H
+#ifndef TIGLVIEWERLOGGERHTMLDECORATOR_H
+#define TIGLVIEWERLOGGERHTMLDECORATOR_H
 
 #include "ITiglLogger.h"
-#include <cstdio>
 
-namespace tigl {
-
-class CTiglFileLogger : public ITiglLogger
+class TIGLViewerLoggerHTMLDecorator : public tigl::ITiglLogger
 {
 public:
-    CTiglFileLogger(const char* filename);
-    CTiglFileLogger(FILE * file);
-    virtual ~CTiglFileLogger();
-
+    TIGLViewerLoggerHTMLDecorator(ITiglLogger*);
+    
+    virtual ~TIGLViewerLoggerHTMLDecorator();
     virtual void LogMessage(TiglLogLevel, const char * message);
-
 private:
-    FILE * logFileStream;
-    bool fileOpened;
-    class CMutex* mutex;
+    ITiglLogger* _mylogger;
 };
 
-} // namespace tigl
-
-#endif // CTIGLFILELOGGER_H
+#endif // TIGLVIEWERLOGGERHTMLDECORATOR_H

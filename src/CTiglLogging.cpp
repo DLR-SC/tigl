@@ -26,7 +26,11 @@
 #include "CTiglLogging.h"
 #include "ITiglLogger.h"
 #include "CGlogLoggerAdaptor.h"
+#include "CTiglFileLogger.h"
+#include "CTiglLogSplitter.h"
+#include "CTiglConsoleLogger.h"
 #include <ctime>
+#include <string>
 
 //macro that extracts the filename of the current file
 #if defined _WIN32 || defined __WIN32__
@@ -86,14 +90,31 @@ void CTiglLogging::initLogger(void)
 #ifdef GLOG_FOUND
     // Initialize Google's logging library.
     google::InitGoogleLogging("TIGL-log");
+#endif
+}
 
+void CTiglLogging::LogToFile(const char* prefix) {
+#ifdef GLOG_FOUND
     // this is a workaround described in https://code.google.com/p/google-glog/issues/detail?id=41
     // to avoid different log files for each severity. The info log file already contains
     // all log informations also from the higher severity levels
     for (int severity = google::WARNING; severity < google::NUM_SEVERITIES; severity++) {
         google::SetLogDestination(severity, "");
     }
-    google::SetLogDestination(google::INFO, "TIGL-log-");
+    google::SetLogDestination(google::INFO, prefix);
+#else
+    time_t rawtime;
+    time (&rawtime);
+    struct tm *timeinfo = localtime (&rawtime);
+    char buffer [80];
+    strftime (buffer,80,"%y-%m-%d-%H-%M-%S",timeinfo);
+    std::string filename = std::string(prefix) + buffer+ ".log";
+    
+    CTiglLogSplitter* splitter = new CTiglLogSplitter;
+    splitter->AddLogger(new CTiglFileLogger(filename.c_str()), TILOG_DEBUG4);
+    splitter->AddLogger(new CTiglConsoleLogger, TILOG_ERROR);
+    
+    SetLogger(splitter);
 #endif
 }
 

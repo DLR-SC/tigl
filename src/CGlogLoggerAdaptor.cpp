@@ -37,6 +37,9 @@ CGlogLoggerAdaptor::~CGlogLoggerAdaptor() {
         delete _mutex;
         _mutex = NULL;
     }
+    if(_mylogger) {
+        delete _mylogger;
+        _mylogger = NULL;
 }
 
 void CGlogLoggerAdaptor::Write(bool force_flush,
