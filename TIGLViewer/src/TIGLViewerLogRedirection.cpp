@@ -1,10 +1,7 @@
 /*
 * Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
 *
-* Created: 2010-08-13 Markus Litz <Markus.Litz@dlr.de>
-* Changed: $Id: TIGLViewerApplication.cpp 64 2011-08-02 13:54:09Z markus.litz $
-*
-* Version: $Revision: 64 $
+* Created: 2013-10-29 Martin Siggel <Martin.Siggel@dlr.de>
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -19,24 +16,15 @@
 * limitations under the License.
 */
 
-#include <QtCore/QEvent>
-#include <QtCore/QDataStream>
-#include <QtGui/QCursor>
-#include <QtCore/QWaitCondition>
-#include <QtCore/QMutex>
-#include <QtCore/QThread>
+#include "TIGLViewerLogRedirection.h"
 
-#include "CTiglLogging.h"
+#include <QString>
+#include <QApplication>
 
-#include "TIGLViewerInternal.h"
-#include "TIGLViewerApplication.h"
-
-TIGLViewerApplication::TIGLViewerApplication(int &argc, char **argv, int _internal ) :
-    QApplication (argc, argv, _internal)
-{
+TIGLViewerLogRedirection::TIGLViewerLogRedirection() {
 }
 
-TIGLViewerApplication::~TIGLViewerApplication()
-{
+void TIGLViewerLogRedirection::LogMessage(TiglLogLevel, const char * message) {
+    emit newMessage(QString(message));
+    QCoreApplication::processEvents();
 }
-

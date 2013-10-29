@@ -113,6 +113,8 @@ private:
     QString controlFileName;
     QFileSystemWatcher *watcher;
     class QDebugStream * stdoutStream, * errorStream;
+    class TIGLViewerLogHistory* logHistory;
+    class TIGLViewerLogRedirection* logDirect;
     class TIGLScriptEngine * scriptEngine;
     class TIGLViewerSettingsDialog * settingsDialog;
     class TIGLViewerSettings * tiglViewerSettings;

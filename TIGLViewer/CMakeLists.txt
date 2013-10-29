@@ -55,6 +55,7 @@ set(tv_src
     TIGLAISTriangulation.cpp
     TIGLViewerErrorDialog.cpp
     TIGLViewerLogHistory.cpp
+    TIGLViewerLogRedirection.cpp
 )
 	
 # normal header files
@@ -87,6 +88,7 @@ set(tv_hdr_qobj
 	TiglViewerConsole.h
 	TIGLViewerEtaXsiDialog.h
 	TIGLViewerErrorDialog.h
+	TIGLViewerLogRedirection.h
 )
 
 set(tv_ui_comp

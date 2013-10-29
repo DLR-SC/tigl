@@ -50,22 +50,17 @@ namespace tigl {
     #define LOG_MAX_LEVEL TILOG_DEBUG4
     #endif
 
-    //macro that extracts the filename of the current file
-  #if defined _WIN32 || defined __WIN32__
-    #define _CUR_FILE_ (strrchr(__FILE__, '\\') ? strrchr(__FILE__, '\\') + 1 : __FILE__)
-  #else
-    #define _CUR_FILE_ (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__)
-  #endif
-
     /**
      * This macros can be used like streams e.g.: LOG(ERROR) << "that is an error";
      * Following log levels are supported: ERROR, WARNING, INFO, DEBUG, DEBUG1, DEBUG2, DEBUG3, DEBUG4
      */
     #define LOG(level) \
         if (TILOG_ ## level > LOG_MAX_LEVEL) ;\
-    else tigl::DummyLogger_().AppendToStream(TILOG_ ## level, _CUR_FILE_, __LINE__) 
+    else tigl::DummyLogger_().AppendToStream(TILOG_ ## level, __FILE__, __LINE__)
 
-    #define DLOG LOG
+#define DLOG(level) \
+        if (TILOG_ ## level > LOG_MAX_LEVEL) ;\
+    else tigl::DebugStream_().AppendToStream(TILOG_ ## level, __FILE__, __LINE__)
 
     class DummyLogger_
     {
@@ -81,6 +76,21 @@ namespace tigl {
         
         TiglLogLevel _lastLevel;
     };
+
+    class DebugStream_
+    {
+    public:
+        DebugStream_();
+        virtual ~DebugStream_();
+        std::ostringstream& AppendToStream(TiglLogLevel level, const char *file, int line);
+    protected:
+        std::ostringstream stream;
+    private:
+        DebugStream_(const DebugStream_&);
+        DebugStream_& operator =(const DebugStream_&);
+
+        TiglLogLevel _lastLevel;
+    };
 #endif // not GLOG_FOUND
 
 
@@ -91,6 +101,9 @@ class CTiglLogging {
         static CTiglLogging& Instance(void);
         
         // allows installing a custom log sink/receiver
+        // The logger becomes property of this class
+        // Therefore the logger should not be deleted
+        // manually.
         void SetLogger(class ITiglLogger*);
         class ITiglLogger* GetLogger();
 

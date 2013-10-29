@@ -22,7 +22,8 @@
 
 #ifdef GLOG_FOUND
 
-#define LOGGER_DEBUG
+// uncomment to enable debugging messages
+//#define LOGGER_DEBUG
 
 namespace tigl {
 
@@ -51,7 +52,20 @@ void CGlogLoggerAdaptor::Write(bool force_flush,
         char * msg = new char[sizeof(char)*(message_len+3)];
         strncpy(msg, message, message_len);
         msg[message_len-1] = '\0';
-        _mylogger->LogMessage(msg);
+
+        //TODO: determine log level
+        TiglLogLevel level = TILOG_INFO;
+        if (msg[0] == 'I') {
+            level = TILOG_INFO;
+        }
+        else if (msg[0] == 'E') {
+            level = TILOG_ERROR;
+        }
+        else if (msg[0] == 'W') {
+            level = TILOG_WARNING;
+        }
+
+        _mylogger->LogMessage(level, msg);
         delete[] msg;
         if(_mutex) _mutex->unlock();
     }

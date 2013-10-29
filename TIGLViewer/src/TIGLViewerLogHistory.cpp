@@ -22,11 +22,6 @@ TIGLViewerLogHistory::TIGLViewerLogHistory()
 {
 }
 
-TIGLViewerLogHistory &TIGLViewerLogHistory::Instance()
-{
-    static TIGLViewerLogHistory _hist;
-    return _hist;
-}
 
 const TIGLViewerLogHistory::HistoryLogEntry& TIGLViewerLogHistory::GetMessage(unsigned int index) const {
     return _history.at(index);
