@@ -154,10 +154,3 @@ int parseArguments(QStringList argList)
     return 0;
 }
 
-#ifdef WIN32
-#include <windows.h>
-int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow )
-{
-    return main( nCmdShow, &lpCmdLine ); 
-}
-#endif

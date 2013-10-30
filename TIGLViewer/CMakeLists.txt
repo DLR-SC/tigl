@@ -28,6 +28,7 @@ find_package( OpenCASCADE REQUIRED COMPONENTS ${TV_OCC_LIBS})
 find_package(OpenGL REQUIRED)
 
 set( QT_USE_QTSCRIPT TRUE )
+set( QT_USE_QTMAIN   TRUE )
 include(${QT_USE_FILE} ${GLOG_INCLUDE_DIR})
 add_definitions(${QT_DEFINITIONS})
 
@@ -131,7 +132,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
 
 if(WIN32)
   # comment this line if you want to see an additional console window
-  #set(TYPE WIN32)
+  set(TYPE WIN32)
 
   # add program icon
   set(tv_icon_rc src/TIGLViewer.rc)
