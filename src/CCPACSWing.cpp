@@ -586,6 +586,118 @@ namespace tigl {
     }
 
 
+    /**
+     * This function calculates location of the quarter of mean aerodynamic chord,
+     * and gives the chord lenght as well. It uses the classical method that can
+     * be applied to trapozaidal wings. This method is used for each segment.
+     * The values are found by taking into account of sweep and dihedral.
+     * But the effect of insidance angle is neglected. These values should coincide
+     * with the values found with tornado tool.
+     */
+    void  CCPACSWing::GetWingMAC(double& mac_chord, double& mac_x, double& mac_y, double& mac_z) {
+        double A_sum = 0.;
+        double cc_mac_sum=0.;
+        gp_XYZ cc_mac_sum_p(0., 0., 0.);
+
+        for (int i = 1; i <= segments.GetSegmentCount(); ++i) {
+            CCPACSWingSegment& segment = (CCPACSWingSegment&) GetSegment(i);
+            gp_Pnt innerLeadingPoint   = segment.GetChordPoint(0, 0.);
+            gp_Pnt innerTrailingPoint  = segment.GetChordPoint(0, 1.);
+            gp_Pnt outerLeadingPoint   = segment.GetChordPoint(1, 0.);
+            gp_Pnt innterTrailingPoint = segment.GetChordPoint(1, 1.);
+
+            double distance  = innerLeadingPoint.Distance(innerTrailingPoint);
+            double distance2 = outerLeadingPoint.Distance(innterTrailingPoint);
+
+            // points projected to the x == 0 plane
+            gp_Pnt point1= gp_Pnt(0.0, innerLeadingPoint.Y(), innerLeadingPoint.Z());
+            gp_Pnt point2= gp_Pnt(0.0, outerLeadingPoint.Y(), outerLeadingPoint.Z());
+            gp_Pnt point3= gp_Pnt(0.0, innerTrailingPoint.Y(), innerTrailingPoint.Z());
+            gp_Pnt point4= gp_Pnt(0.0, innterTrailingPoint.Y(), innterTrailingPoint.Z());
+
+            double len1 = point1.Distance(point2);
+            double len2 = point3.Distance(point4);
+            double len3 = outerLeadingPoint.Y()  - innerLeadingPoint.Y();
+            double len4 = innterTrailingPoint.Y()- innerTrailingPoint.Y();
+
+            double lenght  =(len1+len2)/2.;
+            double lenght2 =(len3+len4)/2.;
+
+            double T = distance2/distance;
+
+            double b_mac =lenght*(2*distance2+distance)/(3*(distance2+distance));
+            double c_mac =distance-(distance-distance2)/lenght*b_mac;
+
+            gp_Pnt quarterchord  = segment.GetChordPoint(0, 0.25);
+            gp_Pnt quarterchord2 = segment.GetChordPoint(1, 0.25);
+
+            double sw_tan   = (quarterchord2.X()-quarterchord.X())/lenght;
+            double dihe_sin = (quarterchord2.Z()-quarterchord.Z())/lenght;
+            double dihe_cos = lenght2/lenght;
+
+            gp_XYZ seg_mac_p;
+            seg_mac_p.SetX(0.25*distance - 0.25*c_mac + b_mac*sw_tan);
+            seg_mac_p.SetY(dihe_cos*b_mac);
+            seg_mac_p.SetZ(dihe_sin*b_mac);
+            seg_mac_p.Add(innerLeadingPoint.XYZ());
+
+            double A =((1. + T)*distance*lenght/2.);
+
+            A_sum += A;
+            cc_mac_sum_p += seg_mac_p.Multiplied(A);
+            cc_mac_sum   += c_mac*A;
+        }
+
+        // compute mac position and chord
+        mac_x     = cc_mac_sum_p.X()/A_sum;
+        mac_y     = cc_mac_sum_p.Y()/A_sum;
+        mac_z     = cc_mac_sum_p.Z()/A_sum;
+        mac_chord = cc_mac_sum/A_sum;
+    }
+
+
+    /**
+     * This function calculates the reference area of the wing by taking projection
+     * to x-y plane. The previous reference area function take the reference wing
+     * area to be that of the trapezoidal portion of the wing projected into the centerline.
+     */
+    double CCPACSWing::GetReferenceArea2(){
+        double refArea2 = 0.0;
+
+        for (int i=1; i <= segments.GetSegmentCount(); i++) {
+            CCPACSWingSegment& segment = (CCPACSWingSegment&) GetSegment(i);
+            gp_Pnt leadingPoint   = segment.GetChordPoint(0, 0.);
+            gp_Pnt trailingPoint  = segment.GetChordPoint(0, 1.);
+            gp_Pnt leadingPoint2  = segment.GetChordPoint(1, 0.);
+            gp_Pnt trailingPoint2 = segment.GetChordPoint(1, 1.);
+
+            gp_Pnt leadingPointProj  = gp_Pnt(leadingPoint.X(), leadingPoint.Y(), 0.0);
+            gp_Pnt trailingPointProj = gp_Pnt(trailingPoint.X(), trailingPoint.Y(), 0.0);
+            gp_Pnt leadingPoint2Proj = gp_Pnt(leadingPoint2.X(), leadingPoint2.Y(), 0.0);
+            gp_Pnt trailingPoint2Proj= gp_Pnt(trailingPoint2.X(), trailingPoint2.Y(), 0.0);
+
+            double distance  = leadingPoint.Distance(trailingPoint);
+            double distance2 = leadingPoint2.Distance(trailingPoint2);
+            double distance3 = leadingPointProj.Distance(trailingPointProj);
+            double distance4 = leadingPoint2Proj.Distance(trailingPoint2Proj);
+
+            gp_Vec p1(leadingPoint, trailingPoint);
+            gp_Vec p2(leadingPoint, trailingPoint2);
+            double A = 0.5 * p1.CrossMagnitude(p2);
+            A *=(distance+distance2)/distance;
+
+            p1 = gp_Vec(leadingPointProj, trailingPointProj);
+            p2 = gp_Vec(leadingPointProj, trailingPoint2Proj);
+            double A_tra=0.5*p1.CrossMagnitude(p2);
+            A_tra *= (distance+distance4)/distance3;
+
+            refArea2 += segments.GetSegment(i).GetReferenceArea()*A_tra/A;
+
+        }
+        return refArea2;
+    }
+
+
     // Calculates the segment coordinates from global (x,y,z) coordinates
     // Returns the segment index of the according segment
     // If x,y,z does not belong to any segment, -1 is returned

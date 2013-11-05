@@ -781,12 +781,27 @@ namespace tigl {
     // For simplicity, we use the trapezoidal area here.
     double CCPACSWingSegment::GetReferenceArea()
     {
-        MakeSurfaces();
+        gp_Pnt innerLeadingPoint  = GetChordPoint(0, 0.);
+        gp_Pnt innerTrailingPoint = GetChordPoint(0, 1.);
+        gp_Pnt outerLeadingPoint  = GetChordPoint(1, 0.);
+        gp_Pnt outerTrailingPoint = GetChordPoint(1, 1.);
 
-        // Calculate surface area
-        GProp_GProps System;
-        BRepGProp::SurfaceProperties(upperShape, System);
-        double refArea = System.Mass();
+        double distance  = innerLeadingPoint.Distance(innerTrailingPoint);
+        double distance2 = outerLeadingPoint.Distance(outerTrailingPoint);
+
+        double T = distance2/distance;
+
+        // project into x=0 plane
+        gp_Pnt innerLepProj = gp_Pnt(0.0, innerLeadingPoint.Y(),  innerLeadingPoint.Z());
+        gp_Pnt outerLepProj = gp_Pnt(0.0, outerLeadingPoint.Y(),  outerLeadingPoint.Z());
+        gp_Pnt innerTepProj = gp_Pnt(0.0, innerTrailingPoint.Y(), innerTrailingPoint.Z());
+        gp_Pnt outerTepProj = gp_Pnt(0.0, outerTrailingPoint.Y(), outerTrailingPoint.Z());
+
+        double len1 = innerLepProj.Distance(outerLepProj);
+        double len2 = innerTepProj.Distance(outerTepProj);
+
+        double lenght  = (len1+len2)/2.;
+        double refArea = ((T + 1.) * distance*lenght/2.);
         return refArea;
     }
 

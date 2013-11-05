@@ -3433,6 +3433,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSegmentSurfaceArea(TiglCPACSCon
 */
 TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetReferenceArea(TiglCPACSConfigurationHandle cpacsHandle, int wingIndex,
                                                                                 double *referenceAreaPtr);
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetReferenceArea2(TiglCPACSConfigurationHandle cpacsHandle, int wingIndex,
+                                                                                double *referenceAreaPtr2);
 
 
 /**
@@ -3555,6 +3557,16 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglConfigurationGetLength(TiglCPACSConfigurat
 * @returns Error code
 */
 TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSpan(TiglCPACSConfigurationHandle cpacsHandle, const char* wingUID, double * pSpan);
+
+
+
+//     This function calculates location of the quarter of mean aerodynamic chord, and gives the chord lenght as well.
+//     It uses the classical method that can be applied to trapozaidal wings. This method is used for each segment.
+//     The values are found by taking into account of sweep and dihedral. But the effect of insidance angle is neglected.
+//     These values should coinside with the values found with tornado tool.
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetMAC(TiglCPACSConfigurationHandle cpacsHandle, const char* wingUID, double *mac_chord, double *mac_x, double *mac_y, double *mac_z);
+
+
 
 /*@}*/ // end of doxygen group
 

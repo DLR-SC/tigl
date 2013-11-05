@@ -65,6 +65,42 @@ class TiglWing : public ::testing::Test {
 TixiDocumentHandle TiglWing::tixiHandle = 0;
 TiglCPACSConfigurationHandle TiglWing::tiglHandle = 0;
 
+
+class WingSimple : public ::testing::Test {
+ protected:
+  static void SetUpTestCase() {
+        const char* filename = "TestData/simpletest.cpacs.xml";
+        ReturnCode tixiRet;
+        TiglReturnCode tiglRet;
+
+        tiglSimpleWingHandle = -1;
+        tixiSimpleWingHandle = -1;
+
+        tixiRet = tixiOpenDocument(filename, &tixiSimpleWingHandle);
+        ASSERT_TRUE (tixiRet == SUCCESS);
+
+        tiglRet = tiglOpenCPACSConfiguration(tixiSimpleWingHandle, "Cpacs2Test", &tiglSimpleWingHandle);
+        ASSERT_TRUE(tiglRet == TIGL_SUCCESS);
+  }
+
+  static void TearDownTestCase() {
+        ASSERT_TRUE(tiglCloseCPACSConfiguration(tiglSimpleWingHandle) == TIGL_SUCCESS);
+        ASSERT_TRUE(tixiCloseDocument(tixiSimpleWingHandle) == SUCCESS);
+        tiglSimpleWingHandle = -1;
+        tixiSimpleWingHandle = -1;
+  }
+
+  virtual void SetUp() {}
+  virtual void TearDown() {}
+
+
+  static TixiDocumentHandle           tixiSimpleWingHandle;
+  static TiglCPACSConfigurationHandle tiglSimpleWingHandle;
+};
+
+TixiDocumentHandle WingSimple::tixiSimpleWingHandle = 0;
+TiglCPACSConfigurationHandle WingSimple::tiglSimpleWingHandle = 0;
+
 /******************************************************************************/
 
 /**
@@ -244,3 +280,22 @@ TEST_F(TiglWing, tiglWingGetSegmentIndex_wrongHandle){
     ASSERT_TRUE(tiglWingGetSegmentIndex(myWrongHandle, "D150_VAMP_W1_Seg1", &segmentIndex, &wingIndex) == TIGL_NOT_FOUND);
 }
 
+
+TEST_F(WingSimple, wingGetMAC_success){
+    double  c_1, x_1, y_1, z_1;
+    tiglWingGetMAC(tiglSimpleWingHandle, "Wing", &c_1, &x_1, &y_1, &z_1);
+    ASSERT_NEAR(19./21., c_1, 1e-7);
+}
+
+TEST_F(WingSimple, wingGetReferenceArea_success){
+    double ref = 0.;
+    tiglWingGetReferenceArea(tiglSimpleWingHandle, 1, &ref);
+    ASSERT_NEAR(1.75, ref, 1e-7);
+
+}
+
+TEST_F(WingSimple, wingGetReferenceArea2_success){
+    double ref2 = 0.;
+    tiglWingGetReferenceArea2(tiglSimpleWingHandle, 1, &ref2);
+    ASSERT_NEAR(1.75, ref2, 1e-7);
+}
