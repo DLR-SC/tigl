@@ -4010,6 +4010,87 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetReferenceArea(TiglCPACSConfiguratio
 }
 
 
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetReferenceArea2(TiglCPACSConfigurationHandle cpacsHandle, int wingIndex,
+                                                           double *referenceAreaPtr2)
+{
+    if (wingIndex < 1) {
+        LOG(ERROR) << "Error: Wing index index is less than zero ";
+        LOG(ERROR) << "in function call to tiglWingGetReferenceArea." << std::endl;
+        return TIGL_INDEX_ERROR;
+    }
+
+    try {
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+        tigl::CCPACSWing& wing = config.GetWing(wingIndex);
+        *referenceAreaPtr2 = wing.GetReferenceArea2();
+        return TIGL_SUCCESS;
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglWingGetReferenceArea!" << std::endl;
+        return TIGL_ERROR;
+    }
+}
+
+
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetMAC(TiglCPACSConfigurationHandle cpacsHandle, const char* wingUID, double *mac_chord, double *mac_x, double *mac_y, double *mac_z){
+
+
+    if (wingUID == NULL) {
+        LOG(ERROR) << "Argument wingUID is NULL in tiglWingGetMAC!";
+        return TIGL_NULL_POINTER;
+    }
+
+    if (!mac_chord) {
+        LOG(ERROR) << "Argument mac_chord is NULL in tiglWingGetMAC!";
+        return TIGL_NULL_POINTER;
+    }
+
+    if (!mac_x) {
+        LOG(ERROR) << "Argument mac_x is NULL in tiglWingGetMAC!";
+        return TIGL_NULL_POINTER;
+    }
+
+    if (!mac_y) {
+        LOG(ERROR) << "Argument mac_y is NULL in tiglWingGetMAC!";
+        return TIGL_NULL_POINTER;
+    }
+
+    if (!mac_z) {
+        LOG(ERROR) << "Argument mac_z is NULL in tiglWingGetMAC!";
+        return TIGL_NULL_POINTER;
+    }
+
+    try {
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+        tigl::CCPACSWing& wing = config.GetWing(wingUID);
+        wing.GetWingMAC( *mac_chord,  *mac_x,  *mac_y,  *mac_z);
+        return TIGL_SUCCESS;
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglConfigurationGetLength!" << std::endl;
+        return TIGL_ERROR;
+    }
+}
+
+
 TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetWettedArea(TiglCPACSConfigurationHandle cpacsHandle, char* wingUID,
                                                         double *wettedAreaPtr)
 {
@@ -4040,7 +4121,6 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetWettedArea(TiglCPACSConfigurationHa
         return TIGL_ERROR;
     }
 }
-
 
 
 
@@ -4154,3 +4234,5 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSpan(TiglCPACSConfigurationHandle c
         return TIGL_ERROR;
     }
 }
+
+

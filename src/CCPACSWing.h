@@ -134,11 +134,15 @@ namespace tigl {
         // For simplicity, we use the trapezoidal area here.
         double GetReferenceArea();
 
+        double GetReferenceArea2();
         // Returns wetted Area
         double GetWettedArea(TopoDS_Shape parent);
 
         // Returns the wingspan of the wing
         double GetWingspan(void);
+
+        // Returns the mean aerodynamic chord of the wing
+        void  GetWingMAC(double& mac_chord, double& mac_x, double& mac_y, double& mac_z);
 
         // Calculates the segment coordinates from global (x,y,z) coordinates
         // Returns the segment index of the according segment
