@@ -30,6 +30,7 @@
 #include "CTiglLogSplitter.h"
 #include "CTiglConsoleLogger.h"
 #include <ctime>
+#include <cstring>
 #include <string>
 
 //macro that extracts the filename of the current file
@@ -93,7 +94,7 @@ void CTiglLogging::initLogger(void)
 #endif
 }
 
-void CTiglLogging::LogToFile(const char* prefix) {
+void CTiglLogging::LogToFile(const char* prefix, bool errorsOnConsole) {
 #ifdef GLOG_FOUND
     // this is a workaround described in https://code.google.com/p/google-glog/issues/detail?id=41
     // to avoid different log files for each severity. The info log file already contains
@@ -107,16 +108,29 @@ void CTiglLogging::LogToFile(const char* prefix) {
     time (&rawtime);
     struct tm *timeinfo = localtime (&rawtime);
     char buffer [80];
-    strftime (buffer,80,"%y-%m-%d-%H-%M-%S",timeinfo);
+    strftime (buffer,80,"%y%m%d-%H%M%S",timeinfo);
     std::string filename = std::string(prefix) + buffer+ ".log";
     
     CTiglLogSplitter* splitter = new CTiglLogSplitter;
     splitter->AddLogger(new CTiglFileLogger(filename.c_str()), TILOG_DEBUG4);
-    splitter->AddLogger(new CTiglConsoleLogger, TILOG_ERROR);
+    if(errorsOnConsole) {
+        splitter->AddLogger(new CTiglConsoleLogger, TILOG_ERROR);
+    }
     
     SetLogger(splitter);
 #endif
 }
+
+void CTiglLogging::LogToConsole() {
+#ifdef GLOG_FOUND
+    google::LogToStderr();
+#else
+
+    ITiglLogger * consoleLogger = new CTiglConsoleLogger;
+    SetLogger(consoleLogger);
+#endif
+}
+
 
 
 #ifndef GLOG_FOUND

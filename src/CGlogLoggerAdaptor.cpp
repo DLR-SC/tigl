@@ -40,6 +40,7 @@ CGlogLoggerAdaptor::~CGlogLoggerAdaptor() {
     if(_mylogger) {
         delete _mylogger;
         _mylogger = NULL;
+    }
 }
 
 void CGlogLoggerAdaptor::Write(bool force_flush,

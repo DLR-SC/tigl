@@ -32,6 +32,7 @@ extern "C" {
 #define TIGL_H
 
 #include "tixi.h"
+#include <stdio.h>
 
 #if defined(WIN32)
   #if defined (TIGL_EXPORTS)
@@ -3168,7 +3169,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportWingColladaByUID(const TiglCPACSConf
 *   - TIGL_ERROR if some other error occurred
 */
 TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetMaterialCount(TiglCPACSConfigurationHandle cpacsHandle,
-                                                                          const char *componentSegmentUID,
+                                                                          const char *compSegmentUID,
                                                                           TiglStructureType structureType,
                                                                           double eta, double xsi,
                                                                           int * materialCount);
@@ -3199,7 +3200,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetMaterialCount(TiglC
 *   - TIGL_ERROR if some other error occurred
 */
 TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetMaterialUID(TiglCPACSConfigurationHandle cpacsHandle,
-                                                                          const char *componentSegmentUID,
+                                                                          const char *compSegmentUID,
                                                                           TiglStructureType structureType,
                                                                           double eta, double xsi,
                                                                           int materialIndex,
@@ -3232,7 +3233,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetMaterialUID(TiglCPA
 *   - TIGL_ERROR if some other error occurred
 */
 TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetMaterialThickness(TiglCPACSConfigurationHandle cpacsHandle,
-                                                                          const char *componentSegmentUID,
+                                                                          const char *compSegmentUID,
                                                                           TiglStructureType structureType,
                                                                           double eta, double xsi,
                                                                           int materialIndex,
@@ -3522,6 +3523,65 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetReferenceArea(TiglCPACSConfiguratio
 TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetWettedArea(TiglCPACSConfigurationHandle cpacsHandle, char* wingUID,
                                                                                 double *wettedAreaPtr);
 
+/*@}*/
+/*****************************************************************************************************/
+/**
+  \defgroup LoggingFunctions Logging functions.
+    Functions for modifying the logging behaviour of tigl
+ */
+/*@{*/
+
+/**
+* @brief Sets up the tigl logging mechanism to send all log messages into a file. Only error messages are
+* still printed on the standard out (console).
+*
+* <b>Fortran syntax:</b>
+*
+* tigl_log_to_file(character filePrefix)
+*
+* @param[in]  filePrefix Prefix of the filename to be created. The filename consists of the prefix, a date and time string and the ending ".log".
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_OPEN_FAILED if file can not be opened for writing
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglLogToFile(const char* filePrefix);
+
+/**
+* @brief Sets up the tigl logging mechanism to send all log messages into a file. Only error messages are
+* still printed on the standard out (console). In contrast to ::tiglLogToFile, the messages are appended
+* to an already opened file that might be a logging file of the executing program.
+*
+* <b>Fortran syntax:</b>
+*
+* This function is and will be not available for Fortran due to incompatible file I/O!
+*
+* @param[in]  fp File pointer to an already opened file.
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NULL_POINTER if fp is NULL , i.e. not opened for writing.
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglLogToFileStream(FILE * fp);
+
+/**
+* @brief Sets up the tigl logging mechanism to send all log messages to the console
+* (standard out). If a log file is currently opened by TiGL it will be closed. This
+* is the default logging mechanism of TIGL.
+*
+* <b>Fortran syntax:</b>
+*
+* tigl_log_to_console()
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglLogToConsole();
+
+/*@}*/ // end of doxygen group
 
 /*@}*/
 /*****************************************************************************************************/

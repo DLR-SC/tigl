@@ -4292,3 +4292,36 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSpan(TiglCPACSConfigurationHandle c
         return TIGL_ERROR;
     }
 }
+
+/*****************************************************************************/
+/* Logging functions.                                                        */
+/*****************************************************************************/
+TiglReturnCode tiglLogToFile(const char *filePrefix) {
+    tigl::CTiglLogging& logger = tigl::CTiglLogging::Instance();
+    if(filePrefix == NULL) {
+        LOG(ERROR) << "Error: argument filePrefix is NULL in tiglLogToFile!";
+        return TIGL_NULL_POINTER;
+    }
+
+    try {
+        logger.LogToFile(filePrefix);
+    }
+    catch (tigl::CTiglError& err) {
+        return err.getCode();
+    }
+
+    return TIGL_SUCCESS;
+}
+
+TiglReturnCode tiglLogToConsole() {
+    tigl::CTiglLogging& logger = tigl::CTiglLogging::Instance();
+
+    try {
+        logger.LogToConsole();
+    }
+    catch (tigl::CTiglError& err) {
+        return err.getCode();
+    }
+
+    return TIGL_SUCCESS;
+}

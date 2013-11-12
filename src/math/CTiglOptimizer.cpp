@@ -49,7 +49,7 @@ inline double CTiglOptimizer::armijoBacktrack2d(const class ITiglObjectiveFuncti
     // the hessian might not be positive definite
     if(slope >= -1.e-15){
 #ifdef DEBUG
-        std::cout << "Warning: Hessian not pos. definite. Switch back to gradient." << std::endl;
+        LOG(WARNING) << "Warning: Hessian not pos. definite. Switch back to gradient.";
 #endif
         dir[0] = -grad[0];
         dir[1] = -grad[1];
