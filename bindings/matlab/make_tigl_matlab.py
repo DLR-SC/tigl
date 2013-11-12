@@ -13,7 +13,7 @@ import bindings_generator.matlab_generator as MG
 import bindings_generator.cheader_parser   as CP
 
 
-blacklist = []
+blacklist = ['tiglLogToFileStream']
 
 if __name__ == '__main__':
     # parse the file    
@@ -24,6 +24,7 @@ if __name__ == '__main__':
     parser.returncode_str  ='TiglReturnCode'
     parser.decoration = 'TIGL_COMMON_EXPORT'
     parser.add_alias('TixiDocumentHandle', 'int')
+    parser.add_alias('FILE','void')
     parser.parse_header_file(tiglpath + '/src/tigl.h')
     
     # create the wrapper

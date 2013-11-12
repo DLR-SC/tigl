@@ -40,7 +40,7 @@ CTiglFileLogger::CTiglFileLogger(const char* filename) :  mutex(new CMutex)
 
     logFileStream = fopen(filename,"w");
     if(!logFileStream) {
-        throw CTiglError("Null pointer for argument file in CTiglLogFile", TIGL_NULL_POINTER);
+        throw CTiglError("Log file can not be created CTiglLogFile", TIGL_OPEN_FAILED);
     }
     fileOpened = true;
 
