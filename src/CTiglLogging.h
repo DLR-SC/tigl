@@ -100,8 +100,10 @@ class CTiglLogging {
         // Returns a reference to the only instance of this class
         static CTiglLogging& Instance(void);
         
-        // two convenience function that insert the appropriate loggers
+        // convenience functions that insert the appropriate loggers
         void LogToFile(const char* filePrefix, bool errorsOnConsole=true);
+        void SetLogFileEnding(const char* ending);
+        void SetTimeIdInFilenameEnabled(bool enabled);
         void LogToConsole();
         
         // allows installing a custom log sink/receiver
@@ -128,6 +130,8 @@ class CTiglLogging {
         void operator=(const CTiglLogging& )             { /* Do nothing */ }
         
         class ITiglLogger* _myLogger;
+        std::string        _fileEnding;
+        bool               _timeIdInFilename;
 
 };
 

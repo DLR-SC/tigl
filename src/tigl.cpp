@@ -4313,6 +4313,36 @@ TiglReturnCode tiglLogToFile(const char *filePrefix) {
     return TIGL_SUCCESS;
 }
 
+TiglReturnCode tiglLogSetFileEnding(const char *ending) {
+    tigl::CTiglLogging& logger = tigl::CTiglLogging::Instance();
+    if(ending == NULL) {
+        LOG(ERROR) << "Error: argument ending is NULL in tiglLogSetFileEnding!";
+        return TIGL_NULL_POINTER;
+    }
+
+    try {
+        logger.SetLogFileEnding(ending);
+    }
+    catch (tigl::CTiglError& err) {
+        return err.getCode();
+    }
+
+    return TIGL_SUCCESS;
+}
+
+TiglReturnCode tiglLogSetTimeInFilenameEnabled(TiglBoolean enabled) {
+    tigl::CTiglLogging& logger = tigl::CTiglLogging::Instance();
+
+    try {
+        logger.SetTimeIdInFilenameEnabled(enabled > 0);
+    }
+    catch (tigl::CTiglError& err) {
+        return err.getCode();
+    }
+
+    return TIGL_SUCCESS;
+}
+
 TiglReturnCode tiglLogToConsole() {
     tigl::CTiglLogging& logger = tigl::CTiglLogging::Instance();
 
