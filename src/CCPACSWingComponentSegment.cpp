@@ -335,6 +335,22 @@ namespace tigl {
             // now check if we found an intersection
             double etaTmp;
             segment.GetEtaXsi(result, false, etaTmp, xsi);
+            // by design, result is inside the segment
+            // However due to numerics, eta and xsi might
+            // be a bit larger than 1 or smaller than 0
+            if(etaTmp > 1.) {
+                etaTmp = 1.;
+            }
+            else if(etaTmp < 0) {
+                etaTmp = 0.;
+            }
+            if(xsi > 1.) {
+                xsi = 1.;
+            }
+            else if(xsi < 0) {
+                xsi = 0.;
+            }
+
             // check that etaTmp coordinate is correct
             if(fabs(etaTmp - eta) > 1e-6)
                 throw CTiglError("Error determining proper eta, xsi coordinates in CCPACSWingComponentSegment::GetSegmentIntersection.", TIGL_MATH_ERROR);
