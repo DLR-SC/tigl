@@ -49,7 +49,7 @@ inline double CTiglOptimizer::armijoBacktrack2d(const class ITiglObjectiveFuncti
     // the hessian might not be positive definite
     if(slope >= -1.e-15){
 #ifdef DEBUG
-        LOG(WARNING) << "Warning: Hessian not pos. definite. Switch back to gradient.";
+        DLOG(WARNING) << "Warning: Hessian not pos. definite. Switch back to gradient.";
 #endif
         dir[0] = -grad[0];
         dir[1] = -grad[1];
@@ -144,8 +144,8 @@ TiglReturnCode CTiglOptimizer::optNewton2d(const class ITiglObjectiveFunction& f
         f.getGradientHessian(x, grad, hess);
 
 #ifdef DEBUG
-        LOG(INFO) << "Iter=" << iter+1 << " eta;xi=(" << x[0] << ";" << x[1] << ") f=" << of
-                  << " norm(grad)=" << grad[0]*grad[0]+grad[1]*grad[1] <<  " alpha=" << alpha << std::endl;
+        DLOG(INFO) << "Iter=" << iter+1 << " eta;xi=(" << x[0] << ";" << x[1] << ") f=" << of
+                   << " norm(grad)=" << grad[0]*grad[0]+grad[1]*grad[1] <<  " alpha=" << alpha << std::endl;
 #endif
 
         iter++;
