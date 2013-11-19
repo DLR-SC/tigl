@@ -37,6 +37,9 @@ if(DOXYGEN_FOUND)
 			WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/doc/latex/		
 			COMMAND ${LATEX}
 			ARGS ${PROJECT_BINARY_DIR}/doc/latex/refman.tex
+		    # run latex twice to get references right (normal use case of latex, don't ask why)
+			COMMAND ${LATEX}
+			ARGS ${PROJECT_BINARY_DIR}/doc/latex/refman.tex
 			COMMAND ${CMAKE_COMMAND}
 			ARGS -E copy ${PROJECT_BINARY_DIR}/doc/latex/refman.pdf ${PROJECT_BINARY_DIR}/doc/tiglRef.pdf
 		)
