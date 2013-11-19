@@ -1,0 +1,4173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<cpacs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="cpacs_schema.xsd">
+  <header>
+    <name>Export from</name>
+    <creator>VAMPzero</creator>
+    <timestamp>2010-12-31T12:00:00</timestamp>
+    <cpacsVersion>2.0</cpacsVersion>
+    <version>0.9</version>
+  </header>
+  <vehicles>
+    <aircraft>
+      <model uID="A330modelID">
+        <name>A330_VAMPzero</name>
+        <fuselages>
+          <fuselage uID="fuselage">
+            <name>fuselage</name>
+            <description>fuselage</description>
+            <transformation>
+              <scaling>
+                <x>1.0</x>
+                <y>1.0</y>
+                <z>1.0</z>
+              </scaling>
+              <rotation>
+                <x>0.0</x>
+                <y>0.0</y>
+                <z>0.0</z>
+              </rotation>
+              <translation refType="absGlobal">
+                <x>0.0</x>
+                <y>0.0</y>
+                <z>0.0</z>
+              </translation>
+            </transformation>
+            <sections>
+              <section uID="fuselage_Sec1">
+                <name>fuselage_Sec1</name>
+                <description>fuselage_Sec1</description>
+                <transformation>
+                  <scaling>
+                    <x>1.0</x>
+                    <y>1.0</y>
+                    <z>1.0</z>
+                  </scaling>
+                  <rotation>
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>-0.9857592</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="fuselage_Sec1_Elem1">
+                    <name>fuselage_Sec1_Elem1</name>
+                    <description>fuselage_Sec1_Element1</description>
+                    <profileUID isLink="True">Circle</profileUID>
+                    <transformation>
+                      <scaling>
+                        <x>1.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="fuselage_Sec2">
+                <name>fuselage_Sec2</name>
+                <description>fuselage_Sec2</description>
+                <transformation>
+                  <scaling>
+                    <x>1.0</x>
+                    <y>1.0</y>
+                    <z>1.0</z>
+                  </scaling>
+                  <rotation>
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>-1.0100112</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="fuselage_Sec2_Elem1">
+                    <name>fuselage_Sec2_Elem1</name>
+                    <description>fuselage_Sec2_Element1</description>
+                    <profileUID isLink="True">Circle</profileUID>
+                    <transformation>
+                      <scaling>
+                        <x>1.0</x>
+                        <y>0.4540764</y>
+                        <z>0.371676</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="fuselage_Sec3">
+                <name>fuselage_Sec3</name>
+                <description>fuselage_Sec3</description>
+                <transformation>
+                  <scaling>
+                    <x>1.0</x>
+                    <y>1.0</y>
+                    <z>1.0</z>
+                  </scaling>
+                  <rotation>
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>-0.9987876</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="fuselage_Sec3_Elem1">
+                    <name>fuselage_Sec3_Elem1</name>
+                    <description>fuselage_Sec3_Element1</description>
+                    <profileUID isLink="True">Circle</profileUID>
+                    <transformation>
+                      <scaling>
+                        <x>1.0</x>
+                        <y>0.6910692</y>
+                        <z>0.5880264</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="fuselage_Sec4">
+                <name>fuselage_Sec4</name>
+                <description>fuselage_Sec4</description>
+                <transformation>
+                  <scaling>
+                    <x>1.0</x>
+                    <y>1.0</y>
+                    <z>1.0</z>
+                  </scaling>
+                  <rotation>
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>-0.9929784</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="fuselage_Sec4_Elem1">
+                    <name>fuselage_Sec4_Elem1</name>
+                    <description>fuselage_Sec4_Element1</description>
+                    <profileUID isLink="True">Circle</profileUID>
+                    <transformation>
+                      <scaling>
+                        <x>1.0</x>
+                        <y>0.8381604</y>
+                        <z>0.7447056</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="fuselage_Sec5">
+                <name>fuselage_Sec5</name>
+                <description>fuselage_Sec5</description>
+                <transformation>
+                  <scaling>
+                    <x>1.0</x>
+                    <y>1.0</y>
+                    <z>1.0</z>
+                  </scaling>
+                  <rotation>
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>-0.9792732</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="fuselage_Sec5_Elem1">
+                    <name>fuselage_Sec5_Elem1</name>
+                    <description>fuselage_Sec5_Element1</description>
+                    <profileUID isLink="True">Circle</profileUID>
+                    <transformation>
+                      <scaling>
+                        <x>1.0</x>
+                        <y>0.9894816</y>
+                        <z>0.9073632</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="fuselage_Sec6">
+                <name>fuselage_Sec6</name>
+                <description>fuselage_Sec6</description>
+                <transformation>
+                  <scaling>
+                    <x>1.0</x>
+                    <y>1.0</y>
+                    <z>1.0</z>
+                  </scaling>
+                  <rotation>
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>-0.9715464</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="fuselage_Sec6_Elem1">
+                    <name>fuselage_Sec6_Elem1</name>
+                    <description>fuselage_Sec6_Element1</description>
+                    <profileUID isLink="True">Circle</profileUID>
+                    <transformation>
+                      <scaling>
+                        <x>1.0</x>
+                        <y>1.0551876</y>
+                        <z>0.9715464</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="fuselage_Sec7">
+                <name>fuselage_Sec7</name>
+                <description>fuselage_Sec7</description>
+                <transformation>
+                  <scaling>
+                    <x>1.0</x>
+                    <y>1.0</y>
+                    <z>1.0</z>
+                  </scaling>
+                  <rotation>
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>-0.9665832</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="fuselage_Sec7_Elem1">
+                    <name>fuselage_Sec7_Elem1</name>
+                    <description>fuselage_Sec7_Element1</description>
+                    <profileUID isLink="True">Circle</profileUID>
+                    <transformation>
+                      <scaling>
+                        <x>1.0</x>
+                        <y>1.1379828</y>
+                        <z>1.0490964</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="fuselage_Sec8">
+                <name>fuselage_Sec8</name>
+                <description>fuselage_Sec8</description>
+                <transformation>
+                  <scaling>
+                    <x>1.0</x>
+                    <y>1.0</y>
+                    <z>1.0</z>
+                  </scaling>
+                  <rotation>
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>-0.9521448</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="fuselage_Sec8_Elem1">
+                    <name>fuselage_Sec8_Elem1</name>
+                    <description>fuselage_Sec8_Element1</description>
+                    <profileUID isLink="True">Circle</profileUID>
+                    <transformation>
+                      <scaling>
+                        <x>1.0</x>
+                        <y>1.2607656</y>
+                        <z>1.1644908</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="fuselage_Sec9">
+                <name>fuselage_Sec9</name>
+                <description>fuselage_Sec9</description>
+                <transformation>
+                  <scaling>
+                    <x>1.0</x>
+                    <y>1.0</y>
+                    <z>1.0</z>
+                  </scaling>
+                  <rotation>
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>-0.9405264</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="fuselage_Sec9_Elem1">
+                    <name>fuselage_Sec9_Elem1</name>
+                    <description>fuselage_Sec9_Element1</description>
+                    <profileUID isLink="True">Circle</profileUID>
+                    <transformation>
+                      <scaling>
+                        <x>1.0</x>
+                        <y>1.3735656</y>
+                        <z>1.2709176</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="fuselage_Sec10">
+                <name>fuselage_Sec10</name>
+                <description>fuselage_Sec10</description>
+                <transformation>
+                  <scaling>
+                    <x>1.0</x>
+                    <y>1.0</y>
+                    <z>1.0</z>
+                  </scaling>
+                  <rotation>
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>-0.9296976</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="fuselage_Sec10_Elem1">
+                    <name>fuselage_Sec10_Elem1</name>
+                    <description>fuselage_Sec10_Element1</description>
+                    <profileUID isLink="True">Circle</profileUID>
+                    <transformation>
+                      <scaling>
+                        <x>1.0</x>
+                        <y>1.5092076</y>
+                        <z>1.3818564</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="fuselage_Sec11">
+                <name>fuselage_Sec11</name>
+                <description>fuselage_Sec11</description>
+                <transformation>
+                  <scaling>
+                    <x>1.0</x>
+                    <y>1.0</y>
+                    <z>1.0</z>
+                  </scaling>
+                  <rotation>
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>-0.907476</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="fuselage_Sec11_Elem1">
+                    <name>fuselage_Sec11_Elem1</name>
+                    <description>fuselage_Sec11_Element1</description>
+                    <profileUID isLink="True">Circle</profileUID>
+                    <transformation>
+                      <scaling>
+                        <x>1.0</x>
+                        <y>1.6506024</y>
+                        <z>1.4808384</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="fuselage_Sec12">
+                <name>fuselage_Sec12</name>
+                <description>fuselage_Sec12</description>
+                <transformation>
+                  <scaling>
+                    <x>1.0</x>
+                    <y>1.0</y>
+                    <z>1.0</z>
+                  </scaling>
+                  <rotation>
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>-0.8475228</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="fuselage_Sec12_Elem1">
+                    <name>fuselage_Sec12_Elem1</name>
+                    <description>fuselage_Sec12_Element1</description>
+                    <profileUID isLink="True">Circle</profileUID>
+                    <transformation>
+                      <scaling>
+                        <x>1.0</x>
+                        <y>1.7333976</y>
+                        <z>1.5945972</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="fuselage_Sec13">
+                <name>fuselage_Sec13</name>
+                <description>fuselage_Sec13</description>
+                <transformation>
+                  <scaling>
+                    <x>1.0</x>
+                    <y>1.0</y>
+                    <z>1.0</z>
+                  </scaling>
+                  <rotation>
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>-0.7861032</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="fuselage_Sec13_Elem1">
+                    <name>fuselage_Sec13_Elem1</name>
+                    <description>fuselage_Sec13_Element1</description>
+                    <profileUID isLink="True">Circle</profileUID>
+                    <transformation>
+                      <scaling>
+                        <x>1.0</x>
+                        <y>1.827642</y>
+                        <z>1.7112888</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="fuselage_Sec14">
+                <name>fuselage_Sec14</name>
+                <description>fuselage_Sec14</description>
+                <transformation>
+                  <scaling>
+                    <x>1.0</x>
+                    <y>1.0</y>
+                    <z>1.0</z>
+                  </scaling>
+                  <rotation>
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>-0.6806352</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="fuselage_Sec14_Elem1">
+                    <name>fuselage_Sec14_Elem1</name>
+                    <description>fuselage_Sec14_Element1</description>
+                    <profileUID isLink="True">Circle</profileUID>
+                    <transformation>
+                      <scaling>
+                        <x>1.0</x>
+                        <y>1.9218864</y>
+                        <z>1.8656556</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="fuselage_Sec15">
+                <name>fuselage_Sec15</name>
+                <description>fuselage_Sec15</description>
+                <transformation>
+                  <scaling>
+                    <x>1.0</x>
+                    <y>1.0</y>
+                    <z>1.0</z>
+                  </scaling>
+                  <rotation>
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>-0.5991372</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="fuselage_Sec15_Elem1">
+                    <name>fuselage_Sec15_Elem1</name>
+                    <description>fuselage_Sec15_Element1</description>
+                    <profileUID isLink="True">Circle</profileUID>
+                    <transformation>
+                      <scaling>
+                        <x>1.0</x>
+                        <y>1.9989852</y>
+                        <z>1.9935144</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="fuselage_Sec16">
+                <name>fuselage_Sec16</name>
+                <description>fuselage_Sec16</description>
+                <transformation>
+                  <scaling>
+                    <x>1.0</x>
+                    <y>1.0</y>
+                    <z>1.0</z>
+                  </scaling>
+                  <rotation>
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>-0.51606</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="fuselage_Sec16_Elem1">
+                    <name>fuselage_Sec16_Elem1</name>
+                    <description>fuselage_Sec16_Element1</description>
+                    <profileUID isLink="True">Circle</profileUID>
+                    <transformation>
+                      <scaling>
+                        <x>1.0</x>
+                        <y>2.076084</y>
+                        <z>2.1256032</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="fuselage_Sec17">
+                <name>fuselage_Sec17</name>
+                <description>fuselage_Sec17</description>
+                <transformation>
+                  <scaling>
+                    <x>1.0</x>
+                    <y>1.0</y>
+                    <z>1.0</z>
+                  </scaling>
+                  <rotation>
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>-0.438228</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="fuselage_Sec17_Elem1">
+                    <name>fuselage_Sec17_Elem1</name>
+                    <description>fuselage_Sec17_Element1</description>
+                    <profileUID isLink="True">Circle</profileUID>
+                    <transformation>
+                      <scaling>
+                        <x>1.0</x>
+                        <y>2.164632</y>
+                        <z>2.2463556</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="fuselage_Sec18">
+                <name>fuselage_Sec18</name>
+                <description>fuselage_Sec18</description>
+                <transformation>
+                  <scaling>
+                    <x>1.0</x>
+                    <y>1.0</y>
+                    <z>1.0</z>
+                  </scaling>
+                  <rotation>
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>-0.360396</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="fuselage_Sec18_Elem1">
+                    <name>fuselage_Sec18_Elem1</name>
+                    <description>fuselage_Sec18_Element1</description>
+                    <profileUID isLink="True">Circle</profileUID>
+                    <transformation>
+                      <scaling>
+                        <x>1.0</x>
+                        <y>2.2702692</y>
+                        <z>2.3779932</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="fuselage_Sec19">
+                <name>fuselage_Sec19</name>
+                <description>fuselage_Sec19</description>
+                <transformation>
+                  <scaling>
+                    <x>1.0</x>
+                    <y>1.0</y>
+                    <z>1.0</z>
+                  </scaling>
+                  <rotation>
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>-0.294408</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="fuselage_Sec19_Elem1">
+                    <name>fuselage_Sec19_Elem1</name>
+                    <description>fuselage_Sec19_Element1</description>
+                    <profileUID isLink="True">Circle</profileUID>
+                    <transformation>
+                      <scaling>
+                        <x>1.0</x>
+                        <y>2.3887656</y>
+                        <z>2.505006</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="fuselage_Sec20">
+                <name>fuselage_Sec20</name>
+                <description>fuselage_Sec20</description>
+                <transformation>
+                  <scaling>
+                    <x>1.0</x>
+                    <y>1.0</y>
+                    <z>1.0</z>
+                  </scaling>
+                  <rotation>
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>-0.2415612</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="fuselage_Sec20_Elem1">
+                    <name>fuselage_Sec20_Elem1</name>
+                    <description>fuselage_Sec20_Element1</description>
+                    <profileUID isLink="True">Circle</profileUID>
+                    <transformation>
+                      <scaling>
+                        <x>1.0</x>
+                        <y>2.5130148</y>
+                        <z>2.6117712</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="fuselage_Sec21">
+                <name>fuselage_Sec21</name>
+                <description>fuselage_Sec21</description>
+                <transformation>
+                  <scaling>
+                    <x>1.0</x>
+                    <y>1.0</y>
+                    <z>1.0</z>
+                  </scaling>
+                  <rotation>
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>-0.1986972</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="fuselage_Sec21_Elem1">
+                    <name>fuselage_Sec21_Elem1</name>
+                    <description>fuselage_Sec21_Element1</description>
+                    <profileUID isLink="True">Circle</profileUID>
+                    <transformation>
+                      <scaling>
+                        <x>1.0</x>
+                        <y>2.6015628</y>
+                        <z>2.6849784</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="fuselage_Sec22">
+                <name>fuselage_Sec22</name>
+                <description>fuselage_Sec22</description>
+                <transformation>
+                  <scaling>
+                    <x>1.0</x>
+                    <y>1.0</y>
+                    <z>1.0</z>
+                  </scaling>
+                  <rotation>
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>-0.1689744</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="fuselage_Sec22_Elem1">
+                    <name>fuselage_Sec22_Elem1</name>
+                    <description>fuselage_Sec22_Element1</description>
+                    <profileUID isLink="True">Circle</profileUID>
+                    <transformation>
+                      <scaling>
+                        <x>1.0</x>
+                        <y>2.684358</y>
+                        <z>2.7264324</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="fuselage_Sec23">
+                <name>fuselage_Sec23</name>
+                <description>fuselage_Sec23</description>
+                <transformation>
+                  <scaling>
+                    <x>1.0</x>
+                    <y>1.0</y>
+                    <z>1.0</z>
+                  </scaling>
+                  <rotation>
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>-0.1422972</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="fuselage_Sec23_Elem1">
+                    <name>fuselage_Sec23_Elem1</name>
+                    <description>fuselage_Sec23_Element1</description>
+                    <profileUID isLink="True">Circle</profileUID>
+                    <transformation>
+                      <scaling>
+                        <x>1.0</x>
+                        <y>2.7600468</y>
+                        <z>2.777418</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="fuselage_Sec24">
+                <name>fuselage_Sec24</name>
+                <description>fuselage_Sec24</description>
+                <transformation>
+                  <scaling>
+                    <x>1.0</x>
+                    <y>1.0</y>
+                    <z>1.0</z>
+                  </scaling>
+                  <rotation>
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>-0.1322016</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="fuselage_Sec24_Elem1">
+                    <name>fuselage_Sec24_Elem1</name>
+                    <description>fuselage_Sec24_Element1</description>
+                    <profileUID isLink="True">Circle</profileUID>
+                    <transformation>
+                      <scaling>
+                        <x>1.0</x>
+                        <y>2.8028544</y>
+                        <z>2.799978</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="fuselage_Sec25">
+                <name>fuselage_Sec25</name>
+                <description>fuselage_Sec25</description>
+                <transformation>
+                  <scaling>
+                    <x>1.0</x>
+                    <y>1.0</y>
+                    <z>1.0</z>
+                  </scaling>
+                  <rotation>
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>-0.1270692</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="fuselage_Sec25_Elem1">
+                    <name>fuselage_Sec25_Elem1</name>
+                    <description>fuselage_Sec25_Element1</description>
+                    <profileUID isLink="True">Circle</profileUID>
+                    <transformation>
+                      <scaling>
+                        <x>1.0</x>
+                        <y>2.82</y>
+                        <z>2.8113708</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="fuselage_Sec26">
+                <name>fuselage_Sec26</name>
+                <description>fuselage_Sec26</description>
+                <transformation>
+                  <scaling>
+                    <x>1.0</x>
+                    <y>1.0</y>
+                    <z>1.0</z>
+                  </scaling>
+                  <rotation>
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>-0.1270128</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="fuselage_Sec26_Elem1">
+                    <name>fuselage_Sec26_Elem1</name>
+                    <description>fuselage_Sec26_Element1</description>
+                    <profileUID isLink="True">Circle</profileUID>
+                    <transformation>
+                      <scaling>
+                        <x>1.0</x>
+                        <y>2.82</y>
+                        <z>2.8168416</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="fuselage_Sec27">
+                <name>fuselage_Sec27</name>
+                <description>fuselage_Sec27</description>
+                <transformation>
+                  <scaling>
+                    <x>1.0</x>
+                    <y>1.0</y>
+                    <z>1.0</z>
+                  </scaling>
+                  <rotation>
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>-0.1300584</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="fuselage_Sec27_Elem1">
+                    <name>fuselage_Sec27_Elem1</name>
+                    <description>fuselage_Sec27_Element1</description>
+                    <profileUID isLink="True">Circle</profileUID>
+                    <transformation>
+                      <scaling>
+                        <x>1.0</x>
+                        <y>2.82</y>
+                        <z>2.82</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="fuselage_Sec28">
+                <name>fuselage_Sec28</name>
+                <description>fuselage_Sec28</description>
+                <transformation>
+                  <scaling>
+                    <x>1.0</x>
+                    <y>1.0</y>
+                    <z>1.0</z>
+                  </scaling>
+                  <rotation>
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>-0.1300584</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="fuselage_Sec28_Elem1">
+                    <name>fuselage_Sec28_Elem1</name>
+                    <description>fuselage_Sec28_Element1</description>
+                    <profileUID isLink="True">Circle</profileUID>
+                    <transformation>
+                      <scaling>
+                        <x>1.0</x>
+                        <y>2.82</y>
+                        <z>2.82</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="fuselage_Sec29">
+                <name>fuselage_Sec29</name>
+                <description>fuselage_Sec29</description>
+                <transformation>
+                  <scaling>
+                    <x>1.0</x>
+                    <y>1.0</y>
+                    <z>1.0</z>
+                  </scaling>
+                  <rotation>
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>-0.1300584</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="fuselage_Sec29_Elem1">
+                    <name>fuselage_Sec29_Elem1</name>
+                    <description>fuselage_Sec29_Element1</description>
+                    <profileUID isLink="True">Circle</profileUID>
+                    <transformation>
+                      <scaling>
+                        <x>1.0</x>
+                        <y>2.82</y>
+                        <z>2.82</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="fuselage_Sec30">
+                <name>fuselage_Sec30</name>
+                <description>fuselage_Sec30</description>
+                <transformation>
+                  <scaling>
+                    <x>1.0</x>
+                    <y>1.0</y>
+                    <z>1.0</z>
+                  </scaling>
+                  <rotation>
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>-0.1300584</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="fuselage_Sec30_Elem1">
+                    <name>fuselage_Sec30_Elem1</name>
+                    <description>fuselage_Sec30_Element1</description>
+                    <profileUID isLink="True">Circle</profileUID>
+                    <transformation>
+                      <scaling>
+                        <x>1.0</x>
+                        <y>2.82</y>
+                        <z>2.82</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="fuselage_Sec31">
+                <name>fuselage_Sec31</name>
+                <description>fuselage_Sec31</description>
+                <transformation>
+                  <scaling>
+                    <x>1.0</x>
+                    <y>1.0</y>
+                    <z>1.0</z>
+                  </scaling>
+                  <rotation>
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>-0.1300584</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="fuselage_Sec31_Elem1">
+                    <name>fuselage_Sec31_Elem1</name>
+                    <description>fuselage_Sec31_Element1</description>
+                    <profileUID isLink="True">Circle</profileUID>
+                    <transformation>
+                      <scaling>
+                        <x>1.0</x>
+                        <y>2.82</y>
+                        <z>2.82</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="fuselage_Sec32">
+                <name>fuselage_Sec32</name>
+                <description>fuselage_Sec32</description>
+                <transformation>
+                  <scaling>
+                    <x>1.0</x>
+                    <y>1.0</y>
+                    <z>1.0</z>
+                  </scaling>
+                  <rotation>
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>-0.1300584</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="fuselage_Sec32_Elem1">
+                    <name>fuselage_Sec32_Elem1</name>
+                    <description>fuselage_Sec32_Element1</description>
+                    <profileUID isLink="True">Circle</profileUID>
+                    <transformation>
+                      <scaling>
+                        <x>1.0</x>
+                        <y>2.82</y>
+                        <z>2.82</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="fuselage_Sec33">
+                <name>fuselage_Sec33</name>
+                <description>fuselage_Sec33</description>
+                <transformation>
+                  <scaling>
+                    <x>1.0</x>
+                    <y>1.0</y>
+                    <z>1.0</z>
+                  </scaling>
+                  <rotation>
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>-0.1301148</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="fuselage_Sec33_Elem1">
+                    <name>fuselage_Sec33_Elem1</name>
+                    <description>fuselage_Sec33_Element1</description>
+                    <profileUID isLink="True">Circle</profileUID>
+                    <transformation>
+                      <scaling>
+                        <x>1.0</x>
+                        <y>2.82</y>
+                        <z>2.82</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="fuselage_Sec34">
+                <name>fuselage_Sec34</name>
+                <description>fuselage_Sec34</description>
+                <transformation>
+                  <scaling>
+                    <x>1.0</x>
+                    <y>1.0</y>
+                    <z>1.0</z>
+                  </scaling>
+                  <rotation>
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>-0.1276332</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="fuselage_Sec34_Elem1">
+                    <name>fuselage_Sec34_Elem1</name>
+                    <description>fuselage_Sec34_Element1</description>
+                    <profileUID isLink="True">Circle</profileUID>
+                    <transformation>
+                      <scaling>
+                        <x>1.0</x>
+                        <y>2.82</y>
+                        <z>2.8175748</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="fuselage_Sec35">
+                <name>fuselage_Sec35</name>
+                <description>fuselage_Sec35</description>
+                <transformation>
+                  <scaling>
+                    <x>1.0</x>
+                    <y>1.0</y>
+                    <z>1.0</z>
+                  </scaling>
+                  <rotation>
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>-0.1138716</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="fuselage_Sec35_Elem1">
+                    <name>fuselage_Sec35_Elem1</name>
+                    <description>fuselage_Sec35_Element1</description>
+                    <profileUID isLink="True">Circle</profileUID>
+                    <transformation>
+                      <scaling>
+                        <x>1.0</x>
+                        <y>2.82</y>
+                        <z>2.8038132</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="fuselage_Sec36">
+                <name>fuselage_Sec36</name>
+                <description>fuselage_Sec36</description>
+                <transformation>
+                  <scaling>
+                    <x>1.0</x>
+                    <y>1.0</y>
+                    <z>1.0</z>
+                  </scaling>
+                  <rotation>
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>-0.091368</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="fuselage_Sec36_Elem1">
+                    <name>fuselage_Sec36_Elem1</name>
+                    <description>fuselage_Sec36_Element1</description>
+                    <profileUID isLink="True">Circle</profileUID>
+                    <transformation>
+                      <scaling>
+                        <x>1.0</x>
+                        <y>2.82</y>
+                        <z>2.7813096</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="fuselage_Sec37">
+                <name>fuselage_Sec37</name>
+                <description>fuselage_Sec37</description>
+                <transformation>
+                  <scaling>
+                    <x>1.0</x>
+                    <y>1.0</y>
+                    <z>1.0</z>
+                  </scaling>
+                  <rotation>
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>-0.0600096</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="fuselage_Sec37_Elem1">
+                    <name>fuselage_Sec37_Elem1</name>
+                    <description>fuselage_Sec37_Element1</description>
+                    <profileUID isLink="True">Circle</profileUID>
+                    <transformation>
+                      <scaling>
+                        <x>1.0</x>
+                        <y>2.82</y>
+                        <z>2.7499512</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="fuselage_Sec38">
+                <name>fuselage_Sec38</name>
+                <description>fuselage_Sec38</description>
+                <transformation>
+                  <scaling>
+                    <x>1.0</x>
+                    <y>1.0</y>
+                    <z>1.0</z>
+                  </scaling>
+                  <rotation>
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>-0.0207552</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="fuselage_Sec38_Elem1">
+                    <name>fuselage_Sec38_Elem1</name>
+                    <description>fuselage_Sec38_Element1</description>
+                    <profileUID isLink="True">Circle</profileUID>
+                    <transformation>
+                      <scaling>
+                        <x>1.0</x>
+                        <y>2.82</y>
+                        <z>2.7106968</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="fuselage_Sec39">
+                <name>fuselage_Sec39</name>
+                <description>fuselage_Sec39</description>
+                <transformation>
+                  <scaling>
+                    <x>1.0</x>
+                    <y>1.0</y>
+                    <z>1.0</z>
+                  </scaling>
+                  <rotation>
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.0235752</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="fuselage_Sec39_Elem1">
+                    <name>fuselage_Sec39_Elem1</name>
+                    <description>fuselage_Sec39_Element1</description>
+                    <profileUID isLink="True">Circle</profileUID>
+                    <transformation>
+                      <scaling>
+                        <x>1.0</x>
+                        <y>2.8171236</y>
+                        <z>2.6627004</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="fuselage_Sec40">
+                <name>fuselage_Sec40</name>
+                <description>fuselage_Sec40</description>
+                <transformation>
+                  <scaling>
+                    <x>1.0</x>
+                    <y>1.0</y>
+                    <z>1.0</z>
+                  </scaling>
+                  <rotation>
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.072756</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="fuselage_Sec40_Elem1">
+                    <name>fuselage_Sec40_Elem1</name>
+                    <description>fuselage_Sec40_Element1</description>
+                    <profileUID isLink="True">Circle</profileUID>
+                    <transformation>
+                      <scaling>
+                        <x>1.0</x>
+                        <y>2.798568</y>
+                        <z>2.6068644</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="fuselage_Sec41">
+                <name>fuselage_Sec41</name>
+                <description>fuselage_Sec41</description>
+                <transformation>
+                  <scaling>
+                    <x>1.0</x>
+                    <y>1.0</y>
+                    <z>1.0</z>
+                  </scaling>
+                  <rotation>
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.125772</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="fuselage_Sec41_Elem1">
+                    <name>fuselage_Sec41_Elem1</name>
+                    <description>fuselage_Sec41_Element1</description>
+                    <profileUID isLink="True">Circle</profileUID>
+                    <transformation>
+                      <scaling>
+                        <x>1.0</x>
+                        <y>2.752884</y>
+                        <z>2.5434708</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="fuselage_Sec42">
+                <name>fuselage_Sec42</name>
+                <description>fuselage_Sec42</description>
+                <transformation>
+                  <scaling>
+                    <x>1.0</x>
+                    <y>1.0</y>
+                    <z>1.0</z>
+                  </scaling>
+                  <rotation>
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.1884324</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="fuselage_Sec42_Elem1">
+                    <name>fuselage_Sec42_Elem1</name>
+                    <description>fuselage_Sec42_Element1</description>
+                    <profileUID isLink="True">Circle</profileUID>
+                    <transformation>
+                      <scaling>
+                        <x>1.0</x>
+                        <y>2.693946</y>
+                        <z>2.4664848</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="fuselage_Sec43">
+                <name>fuselage_Sec43</name>
+                <description>fuselage_Sec43</description>
+                <transformation>
+                  <scaling>
+                    <x>1.0</x>
+                    <y>1.0</y>
+                    <z>1.0</z>
+                  </scaling>
+                  <rotation>
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.2550408</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="fuselage_Sec43_Elem1">
+                    <name>fuselage_Sec43_Elem1</name>
+                    <description>fuselage_Sec43_Element1</description>
+                    <profileUID isLink="True">Circle</profileUID>
+                    <transformation>
+                      <scaling>
+                        <x>1.0</x>
+                        <y>2.5945692</y>
+                        <z>2.3834076</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="fuselage_Sec44">
+                <name>fuselage_Sec44</name>
+                <description>fuselage_Sec44</description>
+                <transformation>
+                  <scaling>
+                    <x>1.0</x>
+                    <y>1.0</y>
+                    <z>1.0</z>
+                  </scaling>
+                  <rotation>
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.375906</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="fuselage_Sec44_Elem1">
+                    <name>fuselage_Sec44_Elem1</name>
+                    <description>fuselage_Sec44_Element1</description>
+                    <profileUID isLink="True">Circle</profileUID>
+                    <transformation>
+                      <scaling>
+                        <x>1.0</x>
+                        <y>2.3735376</y>
+                        <z>2.228646</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="fuselage_Sec45">
+                <name>fuselage_Sec45</name>
+                <description>fuselage_Sec45</description>
+                <transformation>
+                  <scaling>
+                    <x>1.0</x>
+                    <y>1.0</y>
+                    <z>1.0</z>
+                  </scaling>
+                  <rotation>
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.4432476</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="fuselage_Sec45_Elem1">
+                    <name>fuselage_Sec45_Elem1</name>
+                    <description>fuselage_Sec45_Element1</description>
+                    <profileUID isLink="True">Circle</profileUID>
+                    <transformation>
+                      <scaling>
+                        <x>1.0</x>
+                        <y>2.2610196</y>
+                        <z>2.1398724</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="fuselage_Sec46">
+                <name>fuselage_Sec46</name>
+                <description>fuselage_Sec46</description>
+                <transformation>
+                  <scaling>
+                    <x>1.0</x>
+                    <y>1.0</y>
+                    <z>1.0</z>
+                  </scaling>
+                  <rotation>
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.5212488</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="fuselage_Sec46_Elem1">
+                    <name>fuselage_Sec46_Elem1</name>
+                    <description>fuselage_Sec46_Element1</description>
+                    <profileUID isLink="True">Circle</profileUID>
+                    <transformation>
+                      <scaling>
+                        <x>1.0</x>
+                        <y>2.0988132</y>
+                        <z>2.0330508</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="fuselage_Sec47">
+                <name>fuselage_Sec47</name>
+                <description>fuselage_Sec47</description>
+                <transformation>
+                  <scaling>
+                    <x>1.0</x>
+                    <y>1.0</y>
+                    <z>1.0</z>
+                  </scaling>
+                  <rotation>
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.5702604</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="fuselage_Sec47_Elem1">
+                    <name>fuselage_Sec47_Elem1</name>
+                    <description>fuselage_Sec47_Element1</description>
+                    <profileUID isLink="True">Circle</profileUID>
+                    <transformation>
+                      <scaling>
+                        <x>1.0</x>
+                        <y>1.9942476</y>
+                        <z>1.9649196</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="fuselage_Sec48">
+                <name>fuselage_Sec48</name>
+                <description>fuselage_Sec48</description>
+                <transformation>
+                  <scaling>
+                    <x>1.0</x>
+                    <y>1.0</y>
+                    <z>1.0</z>
+                  </scaling>
+                  <rotation>
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.6312288</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="fuselage_Sec48_Elem1">
+                    <name>fuselage_Sec48_Elem1</name>
+                    <description>fuselage_Sec48_Element1</description>
+                    <profileUID isLink="True">Circle</profileUID>
+                    <transformation>
+                      <scaling>
+                        <x>1.0</x>
+                        <y>1.8547704</y>
+                        <z>1.878684</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="fuselage_Sec49">
+                <name>fuselage_Sec49</name>
+                <description>fuselage_Sec49</description>
+                <transformation>
+                  <scaling>
+                    <x>1.0</x>
+                    <y>1.0</y>
+                    <z>1.0</z>
+                  </scaling>
+                  <rotation>
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.6857676</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="fuselage_Sec49_Elem1">
+                    <name>fuselage_Sec49_Elem1</name>
+                    <description>fuselage_Sec49_Element1</description>
+                    <profileUID isLink="True">Circle</profileUID>
+                    <transformation>
+                      <scaling>
+                        <x>1.0</x>
+                        <y>1.7207076</y>
+                        <z>1.8001188</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="fuselage_Sec50">
+                <name>fuselage_Sec50</name>
+                <description>fuselage_Sec50</description>
+                <transformation>
+                  <scaling>
+                    <x>1.0</x>
+                    <y>1.0</y>
+                    <z>1.0</z>
+                  </scaling>
+                  <rotation>
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.740814</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="fuselage_Sec50_Elem1">
+                    <name>fuselage_Sec50_Elem1</name>
+                    <description>fuselage_Sec50_Element1</description>
+                    <profileUID isLink="True">Circle</profileUID>
+                    <transformation>
+                      <scaling>
+                        <x>1.0</x>
+                        <y>1.6063284</y>
+                        <z>1.719636</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="fuselage_Sec51">
+                <name>fuselage_Sec51</name>
+                <description>fuselage_Sec51</description>
+                <transformation>
+                  <scaling>
+                    <x>1.0</x>
+                    <y>1.0</y>
+                    <z>1.0</z>
+                  </scaling>
+                  <rotation>
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.797778</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="fuselage_Sec51_Elem1">
+                    <name>fuselage_Sec51_Elem1</name>
+                    <description>fuselage_Sec51_Element1</description>
+                    <profileUID isLink="True">Circle</profileUID>
+                    <transformation>
+                      <scaling>
+                        <x>1.0</x>
+                        <y>1.4753676</y>
+                        <z>1.63419</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="fuselage_Sec52">
+                <name>fuselage_Sec52</name>
+                <description>fuselage_Sec52</description>
+                <transformation>
+                  <scaling>
+                    <x>1.0</x>
+                    <y>1.0</y>
+                    <z>1.0</z>
+                  </scaling>
+                  <rotation>
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.8549676</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="fuselage_Sec52_Elem1">
+                    <name>fuselage_Sec52_Elem1</name>
+                    <description>fuselage_Sec52_Element1</description>
+                    <profileUID isLink="True">Circle</profileUID>
+                    <transformation>
+                      <scaling>
+                        <x>1.0</x>
+                        <y>1.3597476</y>
+                        <z>1.546206</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="fuselage_Sec53">
+                <name>fuselage_Sec53</name>
+                <description>fuselage_Sec53</description>
+                <transformation>
+                  <scaling>
+                    <x>1.0</x>
+                    <y>1.0</y>
+                    <z>1.0</z>
+                  </scaling>
+                  <rotation>
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.9244524</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="fuselage_Sec53_Elem1">
+                    <name>fuselage_Sec53_Elem1</name>
+                    <description>fuselage_Sec53_Element1</description>
+                    <profileUID isLink="True">Circle</profileUID>
+                    <transformation>
+                      <scaling>
+                        <x>1.0</x>
+                        <y>1.285638</y>
+                        <z>1.442712</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="fuselage_Sec54">
+                <name>fuselage_Sec54</name>
+                <description>fuselage_Sec54</description>
+                <transformation>
+                  <scaling>
+                    <x>1.0</x>
+                    <y>1.0</y>
+                    <z>1.0</z>
+                  </scaling>
+                  <rotation>
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>1.0190352</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="fuselage_Sec54_Elem1">
+                    <name>fuselage_Sec54_Elem1</name>
+                    <description>fuselage_Sec54_Element1</description>
+                    <profileUID isLink="True">Circle</profileUID>
+                    <transformation>
+                      <scaling>
+                        <x>1.0</x>
+                        <y>1.1779704</y>
+                        <z>1.2490908</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="fuselage_Sec55">
+                <name>fuselage_Sec55</name>
+                <description>fuselage_Sec55</description>
+                <transformation>
+                  <scaling>
+                    <x>1.0</x>
+                    <y>1.0</y>
+                    <z>1.0</z>
+                  </scaling>
+                  <rotation>
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>1.1241648</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="fuselage_Sec55_Elem1">
+                    <name>fuselage_Sec55_Elem1</name>
+                    <description>fuselage_Sec55_Element1</description>
+                    <profileUID isLink="True">Circle</profileUID>
+                    <transformation>
+                      <scaling>
+                        <x>1.0</x>
+                        <y>1.036632</y>
+                        <z>0.9795552</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="fuselage_Sec56">
+                <name>fuselage_Sec56</name>
+                <description>fuselage_Sec56</description>
+                <transformation>
+                  <scaling>
+                    <x>1.0</x>
+                    <y>1.0</y>
+                    <z>1.0</z>
+                  </scaling>
+                  <rotation>
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>1.1823696</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="fuselage_Sec56_Elem1">
+                    <name>fuselage_Sec56_Elem1</name>
+                    <description>fuselage_Sec56_Element1</description>
+                    <profileUID isLink="True">Circle</profileUID>
+                    <transformation>
+                      <scaling>
+                        <x>1.0</x>
+                        <y>0.981642</y>
+                        <z>0.8227632</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="fuselage_Sec57">
+                <name>fuselage_Sec57</name>
+                <description>fuselage_Sec57</description>
+                <transformation>
+                  <scaling>
+                    <x>1.0</x>
+                    <y>1.0</y>
+                    <z>1.0</z>
+                  </scaling>
+                  <rotation>
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>1.2483576</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="fuselage_Sec57_Elem1">
+                    <name>fuselage_Sec57_Elem1</name>
+                    <description>fuselage_Sec57_Element1</description>
+                    <profileUID isLink="True">Circle</profileUID>
+                    <transformation>
+                      <scaling>
+                        <x>1.0</x>
+                        <y>0.8638224</y>
+                        <z>0.658188</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="fuselage_Sec58">
+                <name>fuselage_Sec58</name>
+                <description>fuselage_Sec58</description>
+                <transformation>
+                  <scaling>
+                    <x>1.0</x>
+                    <y>1.0</y>
+                    <z>1.0</z>
+                  </scaling>
+                  <rotation>
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>1.2779676</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="fuselage_Sec58_Elem1">
+                    <name>fuselage_Sec58_Elem1</name>
+                    <description>fuselage_Sec58_Element1</description>
+                    <profileUID isLink="True">Circle</profileUID>
+                    <transformation>
+                      <scaling>
+                        <x>1.0</x>
+                        <y>0.7538988</y>
+                        <z>0.5629284</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="fuselage_Sec59">
+                <name>fuselage_Sec59</name>
+                <description>fuselage_Sec59</description>
+                <transformation>
+                  <scaling>
+                    <x>1.0</x>
+                    <y>1.0</y>
+                    <z>1.0</z>
+                  </scaling>
+                  <rotation>
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>1.2964104</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="fuselage_Sec59_Elem1">
+                    <name>fuselage_Sec59_Elem1</name>
+                    <description>fuselage_Sec59_Element1</description>
+                    <profileUID isLink="True">Circle</profileUID>
+                    <transformation>
+                      <scaling>
+                        <x>1.0</x>
+                        <y>0.5354616</y>
+                        <z>0.4786668</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="fuselage_Sec60">
+                <name>fuselage_Sec60</name>
+                <description>fuselage_Sec60</description>
+                <transformation>
+                  <scaling>
+                    <x>1.0</x>
+                    <y>1.0</y>
+                    <z>1.0</z>
+                  </scaling>
+                  <rotation>
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>1.3144584</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="fuselage_Sec60_Elem1">
+                    <name>fuselage_Sec60_Elem1</name>
+                    <description>fuselage_Sec60_Element1</description>
+                    <profileUID isLink="True">Circle</profileUID>
+                    <transformation>
+                      <scaling>
+                        <x>1.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+            </sections>
+            <positionings>
+              <positioning uID="fuselage_Pos1">
+                <name>fuselage_Position1</name>
+                <length>0.0</length>
+                <sweepAngle>90.0</sweepAngle>
+                <dihedralAngle>0.0</dihedralAngle>
+                <toSectionUID isLink="True">fuselage_Sec1</toSectionUID>
+              </positioning>
+              <positioning uID="fuselage_Pos2">
+                <name>fuselage_Position2</name>
+                <length>0.08859312</length>
+                <sweepAngle>90.0</sweepAngle>
+                <dihedralAngle>0.0</dihedralAngle>
+                <fromSectionUID isLink="True">fuselage_Sec1</fromSectionUID>
+                <toSectionUID isLink="True">fuselage_Sec2</toSectionUID>
+              </positioning>
+              <positioning uID="fuselage_Pos3">
+                <name>fuselage_Position3</name>
+                <length>0.1326105</length>
+                <sweepAngle>90.0</sweepAngle>
+                <dihedralAngle>0.0</dihedralAngle>
+                <fromSectionUID isLink="True">fuselage_Sec2</fromSectionUID>
+                <toSectionUID isLink="True">fuselage_Sec3</toSectionUID>
+              </positioning>
+              <positioning uID="fuselage_Pos4">
+                <name>fuselage_Position4</name>
+                <length>0.1321452</length>
+                <sweepAngle>90.0</sweepAngle>
+                <dihedralAngle>0.0</dihedralAngle>
+                <fromSectionUID isLink="True">fuselage_Sec3</fromSectionUID>
+                <toSectionUID isLink="True">fuselage_Sec4</toSectionUID>
+              </positioning>
+              <positioning uID="fuselage_Pos5">
+                <name>fuselage_Position5</name>
+                <length>0.16629822</length>
+                <sweepAngle>90.0</sweepAngle>
+                <dihedralAngle>0.0</dihedralAngle>
+                <fromSectionUID isLink="True">fuselage_Sec4</fromSectionUID>
+                <toSectionUID isLink="True">fuselage_Sec5</toSectionUID>
+              </positioning>
+              <positioning uID="fuselage_Pos6">
+                <name>fuselage_Position6</name>
+                <length>0.07714674</length>
+                <sweepAngle>90.0</sweepAngle>
+                <dihedralAngle>0.0</dihedralAngle>
+                <fromSectionUID isLink="True">fuselage_Sec5</fromSectionUID>
+                <toSectionUID isLink="True">fuselage_Sec6</toSectionUID>
+              </positioning>
+              <positioning uID="fuselage_Pos7">
+                <name>fuselage_Position7</name>
+                <length>0.11064834</length>
+                <sweepAngle>90.0</sweepAngle>
+                <dihedralAngle>0.0</dihedralAngle>
+                <fromSectionUID isLink="True">fuselage_Sec6</fromSectionUID>
+                <toSectionUID isLink="True">fuselage_Sec7</toSectionUID>
+              </positioning>
+              <positioning uID="fuselage_Pos8">
+                <name>fuselage_Position8</name>
+                <length>0.18779508</length>
+                <sweepAngle>90.0</sweepAngle>
+                <dihedralAngle>0.0</dihedralAngle>
+                <fromSectionUID isLink="True">fuselage_Sec7</fromSectionUID>
+                <toSectionUID isLink="True">fuselage_Sec8</toSectionUID>
+              </positioning>
+              <positioning uID="fuselage_Pos9">
+                <name>fuselage_Position9</name>
+                <length>0.2098503</length>
+                <sweepAngle>90.0</sweepAngle>
+                <dihedralAngle>0.0</dihedralAngle>
+                <fromSectionUID isLink="True">fuselage_Sec8</fromSectionUID>
+                <toSectionUID isLink="True">fuselage_Sec9</toSectionUID>
+              </positioning>
+              <positioning uID="fuselage_Pos10">
+                <name>fuselage_Position10</name>
+                <length>0.24363108</length>
+                <sweepAngle>90.0</sweepAngle>
+                <dihedralAngle>0.0</dihedralAngle>
+                <fromSectionUID isLink="True">fuselage_Sec9</fromSectionUID>
+                <toSectionUID isLink="True">fuselage_Sec10</toSectionUID>
+              </positioning>
+              <positioning uID="fuselage_Pos11">
+                <name>fuselage_Position11</name>
+                <length>0.28122732</length>
+                <sweepAngle>90.0</sweepAngle>
+                <dihedralAngle>0.0</dihedralAngle>
+                <fromSectionUID isLink="True">fuselage_Sec10</fromSectionUID>
+                <toSectionUID isLink="True">fuselage_Sec11</toSectionUID>
+              </positioning>
+              <positioning uID="fuselage_Pos12">
+                <name>fuselage_Position12</name>
+                <length>0.20491812</length>
+                <sweepAngle>90.0</sweepAngle>
+                <dihedralAngle>0.0</dihedralAngle>
+                <fromSectionUID isLink="True">fuselage_Sec11</fromSectionUID>
+                <toSectionUID isLink="True">fuselage_Sec12</toSectionUID>
+              </positioning>
+              <positioning uID="fuselage_Pos13">
+                <name>fuselage_Position13</name>
+                <length>0.23209164</length>
+                <sweepAngle>90.0</sweepAngle>
+                <dihedralAngle>0.0</dihedralAngle>
+                <fromSectionUID isLink="True">fuselage_Sec12</fromSectionUID>
+                <toSectionUID isLink="True">fuselage_Sec13</toSectionUID>
+              </positioning>
+              <positioning uID="fuselage_Pos14">
+                <name>fuselage_Position14</name>
+                <length>0.26484876</length>
+                <sweepAngle>90.0</sweepAngle>
+                <dihedralAngle>0.0</dihedralAngle>
+                <fromSectionUID isLink="True">fuselage_Sec13</fromSectionUID>
+                <toSectionUID isLink="True">fuselage_Sec14</toSectionUID>
+              </positioning>
+              <positioning uID="fuselage_Pos15">
+                <name>fuselage_Position15</name>
+                <length>0.23209164</length>
+                <sweepAngle>90.0</sweepAngle>
+                <dihedralAngle>0.0</dihedralAngle>
+                <fromSectionUID isLink="True">fuselage_Sec14</fromSectionUID>
+                <toSectionUID isLink="True">fuselage_Sec15</toSectionUID>
+              </positioning>
+              <positioning uID="fuselage_Pos16">
+                <name>fuselage_Position16</name>
+                <length>0.26559324</length>
+                <sweepAngle>90.0</sweepAngle>
+                <dihedralAngle>0.0</dihedralAngle>
+                <fromSectionUID isLink="True">fuselage_Sec15</fromSectionUID>
+                <toSectionUID isLink="True">fuselage_Sec16</toSectionUID>
+              </positioning>
+              <positioning uID="fuselage_Pos17">
+                <name>fuselage_Position17</name>
+                <length>0.32049864</length>
+                <sweepAngle>90.0</sweepAngle>
+                <dihedralAngle>0.0</dihedralAngle>
+                <fromSectionUID isLink="True">fuselage_Sec16</fromSectionUID>
+                <toSectionUID isLink="True">fuselage_Sec17</toSectionUID>
+              </positioning>
+              <positioning uID="fuselage_Pos18">
+                <name>fuselage_Position18</name>
+                <length>0.43142616</length>
+                <sweepAngle>90.0</sweepAngle>
+                <dihedralAngle>0.0</dihedralAngle>
+                <fromSectionUID isLink="True">fuselage_Sec17</fromSectionUID>
+                <toSectionUID isLink="True">fuselage_Sec18</toSectionUID>
+              </positioning>
+              <positioning uID="fuselage_Pos19">
+                <name>fuselage_Position19</name>
+                <length>0.55249722</length>
+                <sweepAngle>90.0</sweepAngle>
+                <dihedralAngle>0.0</dihedralAngle>
+                <fromSectionUID isLink="True">fuselage_Sec18</fromSectionUID>
+                <toSectionUID isLink="True">fuselage_Sec19</toSectionUID>
+              </positioning>
+              <positioning uID="fuselage_Pos20">
+                <name>fuselage_Position20</name>
+                <length>0.62973702</length>
+                <sweepAngle>90.0</sweepAngle>
+                <dihedralAngle>0.0</dihedralAngle>
+                <fromSectionUID isLink="True">fuselage_Sec19</fromSectionUID>
+                <toSectionUID isLink="True">fuselage_Sec20</toSectionUID>
+              </positioning>
+              <positioning uID="fuselage_Pos21">
+                <name>fuselage_Position21</name>
+                <length>0.62973702</length>
+                <sweepAngle>90.0</sweepAngle>
+                <dihedralAngle>0.0</dihedralAngle>
+                <fromSectionUID isLink="True">fuselage_Sec20</fromSectionUID>
+                <toSectionUID isLink="True">fuselage_Sec21</toSectionUID>
+              </positioning>
+              <positioning uID="fuselage_Pos22">
+                <name>fuselage_Position22</name>
+                <length>0.70762824</length>
+                <sweepAngle>90.0</sweepAngle>
+                <dihedralAngle>0.0</dihedralAngle>
+                <fromSectionUID isLink="True">fuselage_Sec21</fromSectionUID>
+                <toSectionUID isLink="True">fuselage_Sec22</toSectionUID>
+              </positioning>
+              <positioning uID="fuselage_Pos23">
+                <name>fuselage_Position23</name>
+                <length>0.91747854</length>
+                <sweepAngle>90.0</sweepAngle>
+                <dihedralAngle>0.0</dihedralAngle>
+                <fromSectionUID isLink="True">fuselage_Sec22</fromSectionUID>
+                <toSectionUID isLink="True">fuselage_Sec23</toSectionUID>
+              </positioning>
+              <positioning uID="fuselage_Pos24">
+                <name>fuselage_Position24</name>
+                <length>0.7509942</length>
+                <sweepAngle>90.0</sweepAngle>
+                <dihedralAngle>0.0</dihedralAngle>
+                <fromSectionUID isLink="True">fuselage_Sec23</fromSectionUID>
+                <toSectionUID isLink="True">fuselage_Sec24</toSectionUID>
+              </positioning>
+              <positioning uID="fuselage_Pos25">
+                <name>fuselage_Position25</name>
+                <length>0.49777794</length>
+                <sweepAngle>90.0</sweepAngle>
+                <dihedralAngle>0.0</dihedralAngle>
+                <fromSectionUID isLink="True">fuselage_Sec24</fromSectionUID>
+                <toSectionUID isLink="True">fuselage_Sec25</toSectionUID>
+              </positioning>
+              <positioning uID="fuselage_Pos26">
+                <name>fuselage_Position26</name>
+                <length>0.54179532</length>
+                <sweepAngle>90.0</sweepAngle>
+                <dihedralAngle>0.0</dihedralAngle>
+                <fromSectionUID isLink="True">fuselage_Sec25</fromSectionUID>
+                <toSectionUID isLink="True">fuselage_Sec26</toSectionUID>
+              </positioning>
+              <positioning uID="fuselage_Pos27">
+                <name>fuselage_Position27</name>
+                <length>0.4969404</length>
+                <sweepAngle>90.0</sweepAngle>
+                <dihedralAngle>0.0</dihedralAngle>
+                <fromSectionUID isLink="True">fuselage_Sec26</fromSectionUID>
+                <toSectionUID isLink="True">fuselage_Sec27</toSectionUID>
+              </positioning>
+              <positioning uID="fuselage_Pos28">
+                <name>fuselage_Position28</name>
+                <length>5.6928</length>
+                <sweepAngle>90.0</sweepAngle>
+                <dihedralAngle>0.0</dihedralAngle>
+                <fromSectionUID isLink="True">fuselage_Sec27</fromSectionUID>
+                <toSectionUID isLink="True">fuselage_Sec28</toSectionUID>
+              </positioning>
+              <positioning uID="fuselage_Pos29">
+                <name>fuselage_Position29</name>
+                <length>5.6928</length>
+                <sweepAngle>90.0</sweepAngle>
+                <dihedralAngle>0.0</dihedralAngle>
+                <fromSectionUID isLink="True">fuselage_Sec28</fromSectionUID>
+                <toSectionUID isLink="True">fuselage_Sec29</toSectionUID>
+              </positioning>
+              <positioning uID="fuselage_Pos30">
+                <name>fuselage_Position30</name>
+                <length>5.6928</length>
+                <sweepAngle>90.0</sweepAngle>
+                <dihedralAngle>0.0</dihedralAngle>
+                <fromSectionUID isLink="True">fuselage_Sec29</fromSectionUID>
+                <toSectionUID isLink="True">fuselage_Sec30</toSectionUID>
+              </positioning>
+              <positioning uID="fuselage_Pos31">
+                <name>fuselage_Position31</name>
+                <length>5.6928</length>
+                <sweepAngle>90.0</sweepAngle>
+                <dihedralAngle>0.0</dihedralAngle>
+                <fromSectionUID isLink="True">fuselage_Sec30</fromSectionUID>
+                <toSectionUID isLink="True">fuselage_Sec31</toSectionUID>
+              </positioning>
+              <positioning uID="fuselage_Pos32">
+                <name>fuselage_Position32</name>
+                <length>5.6928</length>
+                <sweepAngle>90.0</sweepAngle>
+                <dihedralAngle>0.0</dihedralAngle>
+                <fromSectionUID isLink="True">fuselage_Sec31</fromSectionUID>
+                <toSectionUID isLink="True">fuselage_Sec32</toSectionUID>
+              </positioning>
+              <positioning uID="fuselage_Pos33">
+                <name>fuselage_Position33</name>
+                <length>1.168608</length>
+                <sweepAngle>90.0</sweepAngle>
+                <dihedralAngle>0.0</dihedralAngle>
+                <fromSectionUID isLink="True">fuselage_Sec32</fromSectionUID>
+                <toSectionUID isLink="True">fuselage_Sec33</toSectionUID>
+              </positioning>
+              <positioning uID="fuselage_Pos34">
+                <name>fuselage_Position34</name>
+                <length>0.7226814</length>
+                <sweepAngle>90.0</sweepAngle>
+                <dihedralAngle>0.0</dihedralAngle>
+                <fromSectionUID isLink="True">fuselage_Sec33</fromSectionUID>
+                <toSectionUID isLink="True">fuselage_Sec34</toSectionUID>
+              </positioning>
+              <positioning uID="fuselage_Pos35">
+                <name>fuselage_Position35</name>
+                <length>0.7240632</length>
+                <sweepAngle>90.0</sweepAngle>
+                <dihedralAngle>0.0</dihedralAngle>
+                <fromSectionUID isLink="True">fuselage_Sec34</fromSectionUID>
+                <toSectionUID isLink="True">fuselage_Sec35</toSectionUID>
+              </positioning>
+              <positioning uID="fuselage_Pos36">
+                <name>fuselage_Position36</name>
+                <length>0.722484</length>
+                <sweepAngle>90.0</sweepAngle>
+                <dihedralAngle>0.0</dihedralAngle>
+                <fromSectionUID isLink="True">fuselage_Sec35</fromSectionUID>
+                <toSectionUID isLink="True">fuselage_Sec36</toSectionUID>
+              </positioning>
+              <positioning uID="fuselage_Pos37">
+                <name>fuselage_Position37</name>
+                <length>0.7226814</length>
+                <sweepAngle>90.0</sweepAngle>
+                <dihedralAngle>0.0</dihedralAngle>
+                <fromSectionUID isLink="True">fuselage_Sec36</fromSectionUID>
+                <toSectionUID isLink="True">fuselage_Sec37</toSectionUID>
+              </positioning>
+              <positioning uID="fuselage_Pos38">
+                <name>fuselage_Position38</name>
+                <length>0.7240632</length>
+                <sweepAngle>90.0</sweepAngle>
+                <dihedralAngle>0.0</dihedralAngle>
+                <fromSectionUID isLink="True">fuselage_Sec37</fromSectionUID>
+                <toSectionUID isLink="True">fuselage_Sec38</toSectionUID>
+              </positioning>
+              <positioning uID="fuselage_Pos39">
+                <name>fuselage_Position39</name>
+                <length>0.722484</length>
+                <sweepAngle>90.0</sweepAngle>
+                <dihedralAngle>0.0</dihedralAngle>
+                <fromSectionUID isLink="True">fuselage_Sec38</fromSectionUID>
+                <toSectionUID isLink="True">fuselage_Sec39</toSectionUID>
+              </positioning>
+              <positioning uID="fuselage_Pos40">
+                <name>fuselage_Position40</name>
+                <length>0.7240632</length>
+                <sweepAngle>90.0</sweepAngle>
+                <dihedralAngle>0.0</dihedralAngle>
+                <fromSectionUID isLink="True">fuselage_Sec39</fromSectionUID>
+                <toSectionUID isLink="True">fuselage_Sec40</toSectionUID>
+              </positioning>
+              <positioning uID="fuselage_Pos41">
+                <name>fuselage_Position41</name>
+                <length>0.7226814</length>
+                <sweepAngle>90.0</sweepAngle>
+                <dihedralAngle>0.0</dihedralAngle>
+                <fromSectionUID isLink="True">fuselage_Sec40</fromSectionUID>
+                <toSectionUID isLink="True">fuselage_Sec41</toSectionUID>
+              </positioning>
+              <positioning uID="fuselage_Pos42">
+                <name>fuselage_Position42</name>
+                <length>0.7917714</length>
+                <sweepAngle>90.0</sweepAngle>
+                <dihedralAngle>0.0</dihedralAngle>
+                <fromSectionUID isLink="True">fuselage_Sec41</fromSectionUID>
+                <toSectionUID isLink="True">fuselage_Sec42</toSectionUID>
+              </positioning>
+              <positioning uID="fuselage_Pos43">
+                <name>fuselage_Position43</name>
+                <length>0.9190944</length>
+                <sweepAngle>90.0</sweepAngle>
+                <dihedralAngle>0.0</dihedralAngle>
+                <fromSectionUID isLink="True">fuselage_Sec42</fromSectionUID>
+                <toSectionUID isLink="True">fuselage_Sec43</toSectionUID>
+              </positioning>
+              <positioning uID="fuselage_Pos44">
+                <name>fuselage_Position44</name>
+                <length>1.2596094</length>
+                <sweepAngle>90.0</sweepAngle>
+                <dihedralAngle>0.0</dihedralAngle>
+                <fromSectionUID isLink="True">fuselage_Sec43</fromSectionUID>
+                <toSectionUID isLink="True">fuselage_Sec44</toSectionUID>
+              </positioning>
+              <positioning uID="fuselage_Pos45">
+                <name>fuselage_Position45</name>
+                <length>0.6453006</length>
+                <sweepAngle>90.0</sweepAngle>
+                <dihedralAngle>0.0</dihedralAngle>
+                <fromSectionUID isLink="True">fuselage_Sec44</fromSectionUID>
+                <toSectionUID isLink="True">fuselage_Sec45</toSectionUID>
+              </positioning>
+              <positioning uID="fuselage_Pos46">
+                <name>fuselage_Position46</name>
+                <length>0.8040102</length>
+                <sweepAngle>90.0</sweepAngle>
+                <dihedralAngle>0.0</dihedralAngle>
+                <fromSectionUID isLink="True">fuselage_Sec45</fromSectionUID>
+                <toSectionUID isLink="True">fuselage_Sec46</toSectionUID>
+              </positioning>
+              <positioning uID="fuselage_Pos47">
+                <name>fuselage_Position47</name>
+                <length>0.4960662</length>
+                <sweepAngle>90.0</sweepAngle>
+                <dihedralAngle>0.0</dihedralAngle>
+                <fromSectionUID isLink="True">fuselage_Sec46</fromSectionUID>
+                <toSectionUID isLink="True">fuselage_Sec47</toSectionUID>
+              </positioning>
+              <positioning uID="fuselage_Pos48">
+                <name>fuselage_Position48</name>
+                <length>0.6115452</length>
+                <sweepAngle>90.0</sweepAngle>
+                <dihedralAngle>0.0</dihedralAngle>
+                <fromSectionUID isLink="True">fuselage_Sec47</fromSectionUID>
+                <toSectionUID isLink="True">fuselage_Sec48</toSectionUID>
+              </positioning>
+              <positioning uID="fuselage_Pos49">
+                <name>fuselage_Position49</name>
+                <length>0.5422578</length>
+                <sweepAngle>90.0</sweepAngle>
+                <dihedralAngle>0.0</dihedralAngle>
+                <fromSectionUID isLink="True">fuselage_Sec48</fromSectionUID>
+                <toSectionUID isLink="True">fuselage_Sec49</toSectionUID>
+              </positioning>
+              <positioning uID="fuselage_Pos50">
+                <name>fuselage_Position50</name>
+                <length>0.5424552</length>
+                <sweepAngle>90.0</sweepAngle>
+                <dihedralAngle>0.0</dihedralAngle>
+                <fromSectionUID isLink="True">fuselage_Sec49</fromSectionUID>
+                <toSectionUID isLink="True">fuselage_Sec50</toSectionUID>
+              </positioning>
+              <positioning uID="fuselage_Pos51">
+                <name>fuselage_Position51</name>
+                <length>0.5598264</length>
+                <sweepAngle>90.0</sweepAngle>
+                <dihedralAngle>0.0</dihedralAngle>
+                <fromSectionUID isLink="True">fuselage_Sec50</fromSectionUID>
+                <toSectionUID isLink="True">fuselage_Sec51</toSectionUID>
+              </positioning>
+              <positioning uID="fuselage_Pos52">
+                <name>fuselage_Position52</name>
+                <length>0.5600238</length>
+                <sweepAngle>90.0</sweepAngle>
+                <dihedralAngle>0.0</dihedralAngle>
+                <fromSectionUID isLink="True">fuselage_Sec51</fromSectionUID>
+                <toSectionUID isLink="True">fuselage_Sec52</toSectionUID>
+              </positioning>
+              <positioning uID="fuselage_Pos53">
+                <name>fuselage_Position53</name>
+                <length>0.5598264</length>
+                <sweepAngle>90.0</sweepAngle>
+                <dihedralAngle>0.0</dihedralAngle>
+                <fromSectionUID isLink="True">fuselage_Sec52</fromSectionUID>
+                <toSectionUID isLink="True">fuselage_Sec53</toSectionUID>
+              </positioning>
+              <positioning uID="fuselage_Pos54">
+                <name>fuselage_Position54</name>
+                <length>1.0237164</length>
+                <sweepAngle>90.0</sweepAngle>
+                <dihedralAngle>0.0</dihedralAngle>
+                <fromSectionUID isLink="True">fuselage_Sec53</fromSectionUID>
+                <toSectionUID isLink="True">fuselage_Sec54</toSectionUID>
+              </positioning>
+              <positioning uID="fuselage_Pos55">
+                <name>fuselage_Position55</name>
+                <length>1.3557432</length>
+                <sweepAngle>90.0</sweepAngle>
+                <dihedralAngle>0.0</dihedralAngle>
+                <fromSectionUID isLink="True">fuselage_Sec54</fromSectionUID>
+                <toSectionUID isLink="True">fuselage_Sec55</toSectionUID>
+              </positioning>
+              <positioning uID="fuselage_Pos56">
+                <name>fuselage_Position56</name>
+                <length>0.6778716</length>
+                <sweepAngle>90.0</sweepAngle>
+                <dihedralAngle>0.0</dihedralAngle>
+                <fromSectionUID isLink="True">fuselage_Sec55</fromSectionUID>
+                <toSectionUID isLink="True">fuselage_Sec56</toSectionUID>
+              </positioning>
+              <positioning uID="fuselage_Pos57">
+                <name>fuselage_Position57</name>
+                <length>0.6778716</length>
+                <sweepAngle>90.0</sweepAngle>
+                <dihedralAngle>0.0</dihedralAngle>
+                <fromSectionUID isLink="True">fuselage_Sec56</fromSectionUID>
+                <toSectionUID isLink="True">fuselage_Sec57</toSectionUID>
+              </positioning>
+              <positioning uID="fuselage_Pos58">
+                <name>fuselage_Position58</name>
+                <length>0.3389358</length>
+                <sweepAngle>90.0</sweepAngle>
+                <dihedralAngle>0.0</dihedralAngle>
+                <fromSectionUID isLink="True">fuselage_Sec57</fromSectionUID>
+                <toSectionUID isLink="True">fuselage_Sec58</toSectionUID>
+              </positioning>
+              <positioning uID="fuselage_Pos59">
+                <name>fuselage_Position59</name>
+                <length>0.4192776</length>
+                <sweepAngle>90.0</sweepAngle>
+                <dihedralAngle>0.0</dihedralAngle>
+                <fromSectionUID isLink="True">fuselage_Sec58</fromSectionUID>
+                <toSectionUID isLink="True">fuselage_Sec59</toSectionUID>
+              </positioning>
+              <positioning uID="fuselage_Pos60">
+                <name>fuselage_Position60</name>
+                <length>0.000986999999999</length>
+                <sweepAngle>90.0</sweepAngle>
+                <dihedralAngle>0.0</dihedralAngle>
+                <fromSectionUID isLink="True">fuselage_Sec59</fromSectionUID>
+                <toSectionUID isLink="True">fuselage_Sec60</toSectionUID>
+              </positioning>
+            </positionings>
+            <segments>
+              <segment uID="fuselage_Seg1">
+                <name>fuselage_Seg1</name>
+                <description>fuselage_Seg1</description>
+                <fromElementUID isLink="True">fuselage_Sec1_Elem1</fromElementUID>
+                <toElementUID isLink="True">fuselage_Sec2_Elem1</toElementUID>
+              </segment>
+              <segment uID="fuselage_Seg2">
+                <name>fuselage_Seg2</name>
+                <description>fuselage_Seg2</description>
+                <fromElementUID isLink="True">fuselage_Sec2_Elem1</fromElementUID>
+                <toElementUID isLink="True">fuselage_Sec3_Elem1</toElementUID>
+              </segment>
+              <segment uID="fuselage_Seg3">
+                <name>fuselage_Seg3</name>
+                <description>fuselage_Seg3</description>
+                <fromElementUID isLink="True">fuselage_Sec3_Elem1</fromElementUID>
+                <toElementUID isLink="True">fuselage_Sec4_Elem1</toElementUID>
+              </segment>
+              <segment uID="fuselage_Seg4">
+                <name>fuselage_Seg4</name>
+                <description>fuselage_Seg4</description>
+                <fromElementUID isLink="True">fuselage_Sec4_Elem1</fromElementUID>
+                <toElementUID isLink="True">fuselage_Sec5_Elem1</toElementUID>
+              </segment>
+              <segment uID="fuselage_Seg5">
+                <name>fuselage_Seg5</name>
+                <description>fuselage_Seg5</description>
+                <fromElementUID isLink="True">fuselage_Sec5_Elem1</fromElementUID>
+                <toElementUID isLink="True">fuselage_Sec6_Elem1</toElementUID>
+              </segment>
+              <segment uID="fuselage_Seg6">
+                <name>fuselage_Seg6</name>
+                <description>fuselage_Seg6</description>
+                <fromElementUID isLink="True">fuselage_Sec6_Elem1</fromElementUID>
+                <toElementUID isLink="True">fuselage_Sec7_Elem1</toElementUID>
+              </segment>
+              <segment uID="fuselage_Seg7">
+                <name>fuselage_Seg7</name>
+                <description>fuselage_Seg7</description>
+                <fromElementUID isLink="True">fuselage_Sec7_Elem1</fromElementUID>
+                <toElementUID isLink="True">fuselage_Sec8_Elem1</toElementUID>
+              </segment>
+              <segment uID="fuselage_Seg8">
+                <name>fuselage_Seg8</name>
+                <description>fuselage_Seg8</description>
+                <fromElementUID isLink="True">fuselage_Sec8_Elem1</fromElementUID>
+                <toElementUID isLink="True">fuselage_Sec9_Elem1</toElementUID>
+              </segment>
+              <segment uID="fuselage_Seg9">
+                <name>fuselage_Seg9</name>
+                <description>fuselage_Seg9</description>
+                <fromElementUID isLink="True">fuselage_Sec9_Elem1</fromElementUID>
+                <toElementUID isLink="True">fuselage_Sec10_Elem1</toElementUID>
+              </segment>
+              <segment uID="fuselage_Seg10">
+                <name>fuselage_Seg10</name>
+                <description>fuselage_Seg10</description>
+                <fromElementUID isLink="True">fuselage_Sec10_Elem1</fromElementUID>
+                <toElementUID isLink="True">fuselage_Sec11_Elem1</toElementUID>
+              </segment>
+              <segment uID="fuselage_Seg11">
+                <name>fuselage_Seg11</name>
+                <description>fuselage_Seg11</description>
+                <fromElementUID isLink="True">fuselage_Sec11_Elem1</fromElementUID>
+                <toElementUID isLink="True">fuselage_Sec12_Elem1</toElementUID>
+              </segment>
+              <segment uID="fuselage_Seg12">
+                <name>fuselage_Seg12</name>
+                <description>fuselage_Seg12</description>
+                <fromElementUID isLink="True">fuselage_Sec12_Elem1</fromElementUID>
+                <toElementUID isLink="True">fuselage_Sec13_Elem1</toElementUID>
+              </segment>
+              <segment uID="fuselage_Seg13">
+                <name>fuselage_Seg13</name>
+                <description>fuselage_Seg13</description>
+                <fromElementUID isLink="True">fuselage_Sec13_Elem1</fromElementUID>
+                <toElementUID isLink="True">fuselage_Sec14_Elem1</toElementUID>
+              </segment>
+              <segment uID="fuselage_Seg14">
+                <name>fuselage_Seg14</name>
+                <description>fuselage_Seg14</description>
+                <fromElementUID isLink="True">fuselage_Sec14_Elem1</fromElementUID>
+                <toElementUID isLink="True">fuselage_Sec15_Elem1</toElementUID>
+              </segment>
+              <segment uID="fuselage_Seg15">
+                <name>fuselage_Seg15</name>
+                <description>fuselage_Seg15</description>
+                <fromElementUID isLink="True">fuselage_Sec15_Elem1</fromElementUID>
+                <toElementUID isLink="True">fuselage_Sec16_Elem1</toElementUID>
+              </segment>
+              <segment uID="fuselage_Seg16">
+                <name>fuselage_Seg16</name>
+                <description>fuselage_Seg16</description>
+                <fromElementUID isLink="True">fuselage_Sec16_Elem1</fromElementUID>
+                <toElementUID isLink="True">fuselage_Sec17_Elem1</toElementUID>
+              </segment>
+              <segment uID="fuselage_Seg17">
+                <name>fuselage_Seg17</name>
+                <description>fuselage_Seg17</description>
+                <fromElementUID isLink="True">fuselage_Sec17_Elem1</fromElementUID>
+                <toElementUID isLink="True">fuselage_Sec18_Elem1</toElementUID>
+              </segment>
+              <segment uID="fuselage_Seg18">
+                <name>fuselage_Seg18</name>
+                <description>fuselage_Seg18</description>
+                <fromElementUID isLink="True">fuselage_Sec18_Elem1</fromElementUID>
+                <toElementUID isLink="True">fuselage_Sec19_Elem1</toElementUID>
+              </segment>
+              <segment uID="fuselage_Seg19">
+                <name>fuselage_Seg19</name>
+                <description>fuselage_Seg19</description>
+                <fromElementUID isLink="True">fuselage_Sec19_Elem1</fromElementUID>
+                <toElementUID isLink="True">fuselage_Sec20_Elem1</toElementUID>
+              </segment>
+              <segment uID="fuselage_Seg20">
+                <name>fuselage_Seg20</name>
+                <description>fuselage_Seg20</description>
+                <fromElementUID isLink="True">fuselage_Sec20_Elem1</fromElementUID>
+                <toElementUID isLink="True">fuselage_Sec21_Elem1</toElementUID>
+              </segment>
+              <segment uID="fuselage_Seg21">
+                <name>fuselage_Seg21</name>
+                <description>fuselage_Seg21</description>
+                <fromElementUID isLink="True">fuselage_Sec21_Elem1</fromElementUID>
+                <toElementUID isLink="True">fuselage_Sec22_Elem1</toElementUID>
+              </segment>
+              <segment uID="fuselage_Seg22">
+                <name>fuselage_Seg22</name>
+                <description>fuselage_Seg22</description>
+                <fromElementUID isLink="True">fuselage_Sec22_Elem1</fromElementUID>
+                <toElementUID isLink="True">fuselage_Sec23_Elem1</toElementUID>
+              </segment>
+              <segment uID="fuselage_Seg23">
+                <name>fuselage_Seg23</name>
+                <description>fuselage_Seg23</description>
+                <fromElementUID isLink="True">fuselage_Sec23_Elem1</fromElementUID>
+                <toElementUID isLink="True">fuselage_Sec24_Elem1</toElementUID>
+              </segment>
+              <segment uID="fuselage_Seg24">
+                <name>fuselage_Seg24</name>
+                <description>fuselage_Seg24</description>
+                <fromElementUID isLink="True">fuselage_Sec24_Elem1</fromElementUID>
+                <toElementUID isLink="True">fuselage_Sec25_Elem1</toElementUID>
+              </segment>
+              <segment uID="fuselage_Seg25">
+                <name>fuselage_Seg25</name>
+                <description>fuselage_Seg25</description>
+                <fromElementUID isLink="True">fuselage_Sec25_Elem1</fromElementUID>
+                <toElementUID isLink="True">fuselage_Sec26_Elem1</toElementUID>
+              </segment>
+              <segment uID="fuselage_Seg26">
+                <name>fuselage_Seg26</name>
+                <description>fuselage_Seg26</description>
+                <fromElementUID isLink="True">fuselage_Sec26_Elem1</fromElementUID>
+                <toElementUID isLink="True">fuselage_Sec27_Elem1</toElementUID>
+              </segment>
+              <segment uID="fuselage_Seg27">
+                <name>fuselage_Seg27</name>
+                <description>fuselage_Seg27</description>
+                <fromElementUID isLink="True">fuselage_Sec27_Elem1</fromElementUID>
+                <toElementUID isLink="True">fuselage_Sec28_Elem1</toElementUID>
+              </segment>
+              <segment uID="fuselage_Seg28">
+                <name>fuselage_Seg28</name>
+                <description>fuselage_Seg28</description>
+                <fromElementUID isLink="True">fuselage_Sec28_Elem1</fromElementUID>
+                <toElementUID isLink="True">fuselage_Sec29_Elem1</toElementUID>
+              </segment>
+              <segment uID="fuselage_Seg29">
+                <name>fuselage_Seg29</name>
+                <description>fuselage_Seg29</description>
+                <fromElementUID isLink="True">fuselage_Sec29_Elem1</fromElementUID>
+                <toElementUID isLink="True">fuselage_Sec30_Elem1</toElementUID>
+              </segment>
+              <segment uID="fuselage_Seg30">
+                <name>fuselage_Seg30</name>
+                <description>fuselage_Seg30</description>
+                <fromElementUID isLink="True">fuselage_Sec30_Elem1</fromElementUID>
+                <toElementUID isLink="True">fuselage_Sec31_Elem1</toElementUID>
+              </segment>
+              <segment uID="fuselage_Seg31">
+                <name>fuselage_Seg31</name>
+                <description>fuselage_Seg31</description>
+                <fromElementUID isLink="True">fuselage_Sec31_Elem1</fromElementUID>
+                <toElementUID isLink="True">fuselage_Sec32_Elem1</toElementUID>
+              </segment>
+              <segment uID="fuselage_Seg32">
+                <name>fuselage_Seg32</name>
+                <description>fuselage_Seg32</description>
+                <fromElementUID isLink="True">fuselage_Sec32_Elem1</fromElementUID>
+                <toElementUID isLink="True">fuselage_Sec33_Elem1</toElementUID>
+              </segment>
+              <segment uID="fuselage_Seg33">
+                <name>fuselage_Seg33</name>
+                <description>fuselage_Seg33</description>
+                <fromElementUID isLink="True">fuselage_Sec33_Elem1</fromElementUID>
+                <toElementUID isLink="True">fuselage_Sec34_Elem1</toElementUID>
+              </segment>
+              <segment uID="fuselage_Seg34">
+                <name>fuselage_Seg34</name>
+                <description>fuselage_Seg34</description>
+                <fromElementUID isLink="True">fuselage_Sec34_Elem1</fromElementUID>
+                <toElementUID isLink="True">fuselage_Sec35_Elem1</toElementUID>
+              </segment>
+              <segment uID="fuselage_Seg35">
+                <name>fuselage_Seg35</name>
+                <description>fuselage_Seg35</description>
+                <fromElementUID isLink="True">fuselage_Sec35_Elem1</fromElementUID>
+                <toElementUID isLink="True">fuselage_Sec36_Elem1</toElementUID>
+              </segment>
+              <segment uID="fuselage_Seg36">
+                <name>fuselage_Seg36</name>
+                <description>fuselage_Seg36</description>
+                <fromElementUID isLink="True">fuselage_Sec36_Elem1</fromElementUID>
+                <toElementUID isLink="True">fuselage_Sec37_Elem1</toElementUID>
+              </segment>
+              <segment uID="fuselage_Seg37">
+                <name>fuselage_Seg37</name>
+                <description>fuselage_Seg37</description>
+                <fromElementUID isLink="True">fuselage_Sec37_Elem1</fromElementUID>
+                <toElementUID isLink="True">fuselage_Sec38_Elem1</toElementUID>
+              </segment>
+              <segment uID="fuselage_Seg38">
+                <name>fuselage_Seg38</name>
+                <description>fuselage_Seg38</description>
+                <fromElementUID isLink="True">fuselage_Sec38_Elem1</fromElementUID>
+                <toElementUID isLink="True">fuselage_Sec39_Elem1</toElementUID>
+              </segment>
+              <segment uID="fuselage_Seg39">
+                <name>fuselage_Seg39</name>
+                <description>fuselage_Seg39</description>
+                <fromElementUID isLink="True">fuselage_Sec39_Elem1</fromElementUID>
+                <toElementUID isLink="True">fuselage_Sec40_Elem1</toElementUID>
+              </segment>
+              <segment uID="fuselage_Seg40">
+                <name>fuselage_Seg40</name>
+                <description>fuselage_Seg40</description>
+                <fromElementUID isLink="True">fuselage_Sec40_Elem1</fromElementUID>
+                <toElementUID isLink="True">fuselage_Sec41_Elem1</toElementUID>
+              </segment>
+              <segment uID="fuselage_Seg41">
+                <name>fuselage_Seg41</name>
+                <description>fuselage_Seg41</description>
+                <fromElementUID isLink="True">fuselage_Sec41_Elem1</fromElementUID>
+                <toElementUID isLink="True">fuselage_Sec42_Elem1</toElementUID>
+              </segment>
+              <segment uID="fuselage_Seg42">
+                <name>fuselage_Seg42</name>
+                <description>fuselage_Seg42</description>
+                <fromElementUID isLink="True">fuselage_Sec42_Elem1</fromElementUID>
+                <toElementUID isLink="True">fuselage_Sec43_Elem1</toElementUID>
+              </segment>
+              <segment uID="fuselage_Seg43">
+                <name>fuselage_Seg43</name>
+                <description>fuselage_Seg43</description>
+                <fromElementUID isLink="True">fuselage_Sec43_Elem1</fromElementUID>
+                <toElementUID isLink="True">fuselage_Sec44_Elem1</toElementUID>
+              </segment>
+              <segment uID="fuselage_Seg44">
+                <name>fuselage_Seg44</name>
+                <description>fuselage_Seg44</description>
+                <fromElementUID isLink="True">fuselage_Sec44_Elem1</fromElementUID>
+                <toElementUID isLink="True">fuselage_Sec45_Elem1</toElementUID>
+              </segment>
+              <segment uID="fuselage_Seg45">
+                <name>fuselage_Seg45</name>
+                <description>fuselage_Seg45</description>
+                <fromElementUID isLink="True">fuselage_Sec45_Elem1</fromElementUID>
+                <toElementUID isLink="True">fuselage_Sec46_Elem1</toElementUID>
+              </segment>
+              <segment uID="fuselage_Seg46">
+                <name>fuselage_Seg46</name>
+                <description>fuselage_Seg46</description>
+                <fromElementUID isLink="True">fuselage_Sec46_Elem1</fromElementUID>
+                <toElementUID isLink="True">fuselage_Sec47_Elem1</toElementUID>
+              </segment>
+              <segment uID="fuselage_Seg47">
+                <name>fuselage_Seg47</name>
+                <description>fuselage_Seg47</description>
+                <fromElementUID isLink="True">fuselage_Sec47_Elem1</fromElementUID>
+                <toElementUID isLink="True">fuselage_Sec48_Elem1</toElementUID>
+              </segment>
+              <segment uID="fuselage_Seg48">
+                <name>fuselage_Seg48</name>
+                <description>fuselage_Seg48</description>
+                <fromElementUID isLink="True">fuselage_Sec48_Elem1</fromElementUID>
+                <toElementUID isLink="True">fuselage_Sec49_Elem1</toElementUID>
+              </segment>
+              <segment uID="fuselage_Seg49">
+                <name>fuselage_Seg49</name>
+                <description>fuselage_Seg49</description>
+                <fromElementUID isLink="True">fuselage_Sec49_Elem1</fromElementUID>
+                <toElementUID isLink="True">fuselage_Sec50_Elem1</toElementUID>
+              </segment>
+              <segment uID="fuselage_Seg50">
+                <name>fuselage_Seg50</name>
+                <description>fuselage_Seg50</description>
+                <fromElementUID isLink="True">fuselage_Sec50_Elem1</fromElementUID>
+                <toElementUID isLink="True">fuselage_Sec51_Elem1</toElementUID>
+              </segment>
+              <segment uID="fuselage_Seg51">
+                <name>fuselage_Seg51</name>
+                <description>fuselage_Seg51</description>
+                <fromElementUID isLink="True">fuselage_Sec51_Elem1</fromElementUID>
+                <toElementUID isLink="True">fuselage_Sec52_Elem1</toElementUID>
+              </segment>
+              <segment uID="fuselage_Seg52">
+                <name>fuselage_Seg52</name>
+                <description>fuselage_Seg52</description>
+                <fromElementUID isLink="True">fuselage_Sec52_Elem1</fromElementUID>
+                <toElementUID isLink="True">fuselage_Sec53_Elem1</toElementUID>
+              </segment>
+              <segment uID="fuselage_Seg53">
+                <name>fuselage_Seg53</name>
+                <description>fuselage_Seg53</description>
+                <fromElementUID isLink="True">fuselage_Sec53_Elem1</fromElementUID>
+                <toElementUID isLink="True">fuselage_Sec54_Elem1</toElementUID>
+              </segment>
+              <segment uID="fuselage_Seg54">
+                <name>fuselage_Seg54</name>
+                <description>fuselage_Seg54</description>
+                <fromElementUID isLink="True">fuselage_Sec54_Elem1</fromElementUID>
+                <toElementUID isLink="True">fuselage_Sec55_Elem1</toElementUID>
+              </segment>
+              <segment uID="fuselage_Seg55">
+                <name>fuselage_Seg55</name>
+                <description>fuselage_Seg55</description>
+                <fromElementUID isLink="True">fuselage_Sec55_Elem1</fromElementUID>
+                <toElementUID isLink="True">fuselage_Sec56_Elem1</toElementUID>
+              </segment>
+              <segment uID="fuselage_Seg56">
+                <name>fuselage_Seg56</name>
+                <description>fuselage_Seg56</description>
+                <fromElementUID isLink="True">fuselage_Sec56_Elem1</fromElementUID>
+                <toElementUID isLink="True">fuselage_Sec57_Elem1</toElementUID>
+              </segment>
+              <segment uID="fuselage_Seg57">
+                <name>fuselage_Seg57</name>
+                <description>fuselage_Seg57</description>
+                <fromElementUID isLink="True">fuselage_Sec57_Elem1</fromElementUID>
+                <toElementUID isLink="True">fuselage_Sec58_Elem1</toElementUID>
+              </segment>
+              <segment uID="fuselage_Seg58">
+                <name>fuselage_Seg58</name>
+                <description>fuselage_Seg58</description>
+                <fromElementUID isLink="True">fuselage_Sec58_Elem1</fromElementUID>
+                <toElementUID isLink="True">fuselage_Sec59_Elem1</toElementUID>
+              </segment>
+              <segment uID="fuselage_Seg59">
+                <name>fuselage_Seg59</name>
+                <description>fuselage_Seg59</description>
+                <fromElementUID isLink="True">fuselage_Sec59_Elem1</fromElementUID>
+                <toElementUID isLink="True">fuselage_Sec60_Elem1</toElementUID>
+              </segment>
+            </segments>
+          </fuselage>
+        </fuselages>
+        <wings>
+          <wing symmetry="x-z-plane" uID="htp">
+            <name>htp</name>
+            <description>htp</description>
+            <parentUID isLink="True">fuselage</parentUID>
+            <transformation>
+              <scaling>
+                <x>1.0</x>
+                <y>1.0</y>
+                <z>1.0</z>
+              </scaling>
+              <rotation>
+                <x>0.0</x>
+                <y>0.0</y>
+                <z>0.0</z>
+              </rotation>
+              <translation refType="absGlobal">
+                <x>49.7</x>
+                <y>0.0</y>
+                <z>1.41</z>
+              </translation>
+            </transformation>
+            <sections>
+              <section uID="htp_Sec1">
+                <name>htp_Sec1</name>
+                <description>htp_Sec1</description>
+                <transformation>
+                  <scaling>
+                    <x>5.0178638167</x>
+                    <y>1.0</y>
+                    <z>5.0178638167</z>
+                  </scaling>
+                  <rotation>
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="htp_Sec1_Elem1">
+                    <name>htp_Sec1_Elem1</name>
+                    <description>htp_Sec1_Element1</description>
+                    <airfoilUID isLink="True">NACA0009</airfoilUID>
+                    <transformation>
+                      <scaling>
+                        <x>1.0</x>
+                        <y>1.0</y>
+                        <z>1.11111111111</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="htp_Sec2">
+                <name>htp_Sec2</name>
+                <description>htp_Sec2</description>
+                <transformation>
+                  <scaling>
+                    <x>1.89675252271</x>
+                    <y>1.0</y>
+                    <z>1.89675252271</z>
+                  </scaling>
+                  <rotation>
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="htp_Sec2_Elem1">
+                    <name>htp_Sec2_Elem1</name>
+                    <description>htp_Sec2_Element1</description>
+                    <airfoilUID isLink="True">NACA0009</airfoilUID>
+                    <transformation>
+                      <scaling>
+                        <x>1.0</x>
+                        <y>1.0</y>
+                        <z>1.11111111111</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+            </sections>
+            <positionings>
+              <positioning uID="htp_Pos1">
+                <name>htp</name>
+                <length>0.0</length>
+                <sweepAngle>0.0</sweepAngle>
+                <dihedralAngle>0.0</dihedralAngle>
+                <toSectionUID isLink="True">htp_Sec1</toSectionUID>
+              </positioning>
+              <positioning uID="htp_Pos2">
+                <name>htp</name>
+                <length>11.9650179611</length>
+                <sweepAngle>39.9872288495</sweepAngle>
+                <dihedralAngle>2.0</dihedralAngle>
+                <fromSectionUID isLink="True">htp_Sec1</fromSectionUID>
+                <toSectionUID isLink="True">htp_Sec2</toSectionUID>
+              </positioning>
+            </positionings>
+            <segments>
+              <segment uID="htp_Seg1">
+                <name>htp_Seg1</name>
+                <description>htp_Seg1</description>
+                <fromElementUID isLink="True">htp_Sec1_Elem1</fromElementUID>
+                <toElementUID isLink="True">htp_Sec2_Elem1</toElementUID>
+              </segment>
+            </segments>
+            <componentSegments>
+              <componentSegment uID="htp_Cseg">
+                <name>htp_CSeg</name>
+                <description>htp_CSeg</description>
+                <fromElementUID isLink="True">htp_Sec1_Elem1</fromElementUID>
+                <toElementUID isLink="True">htp_Sec2_Elem1</toElementUID>
+              </componentSegment>
+            </componentSegments>
+          </wing>
+          <wing uID="vtp">
+            <name>vtp</name>
+            <description>vtp</description>
+            <parentUID isLink="True">fuselage</parentUID>
+            <transformation>
+              <scaling>
+                <x>1.0</x>
+                <y>1.0</y>
+                <z>1.0</z>
+              </scaling>
+              <rotation>
+                <x>90.0</x>
+                <y>0.0</y>
+                <z>0.0</z>
+              </rotation>
+              <translation refType="absGlobal">
+                <x>53.8389464504</x>
+                <y>0.0</y>
+                <z>2.82</z>
+              </translation>
+            </transformation>
+            <sections>
+              <section uID="vtp_Sec1">
+                <name>vtp_Sec1</name>
+                <description>vtp_Sec1</description>
+                <transformation>
+                  <scaling>
+                    <x>3.67105354957</x>
+                    <y>1.0</y>
+                    <z>3.67105354957</z>
+                  </scaling>
+                  <rotation>
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="vtp_Sec1_Elem1">
+                    <name>vtp_Sec1_Elem1</name>
+                    <description>vtp_Sec1_Element1</description>
+                    <airfoilUID isLink="True">NACA0009</airfoilUID>
+                    <transformation>
+                      <scaling>
+                        <x>1.0</x>
+                        <y>1.0</y>
+                        <z>1.11111111111</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="vtp_Sec2">
+                <name>vtp_Sec2</name>
+                <description>vtp_Sec2</description>
+                <transformation>
+                  <scaling>
+                    <x>1.45740825918</x>
+                    <y>1.0</y>
+                    <z>1.45740825918</z>
+                  </scaling>
+                  <rotation>
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="vtp_Sec2_Elem1">
+                    <name>vtp_Sec2_Elem1</name>
+                    <description>vtp_Sec2_Element1</description>
+                    <airfoilUID isLink="True">NACA0009</airfoilUID>
+                    <transformation>
+                      <scaling>
+                        <x>1.0</x>
+                        <y>1.0</y>
+                        <z>1.11111111111</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+            </sections>
+            <positionings>
+              <positioning uID="vtp_Pos1">
+                <name>vtp</name>
+                <length>0.0</length>
+                <sweepAngle>0.0</sweepAngle>
+                <dihedralAngle>0.0</dihedralAngle>
+                <toSectionUID isLink="True">vtp_Sec1</toSectionUID>
+              </positioning>
+              <positioning uID="vtp_Pos2">
+                <name>vtp</name>
+                <length>12.2598535926</length>
+                <sweepAngle>47.9553664596</sweepAngle>
+                <dihedralAngle>2.0</dihedralAngle>
+                <fromSectionUID isLink="True">vtp_Sec1</fromSectionUID>
+                <toSectionUID isLink="True">vtp_Sec2</toSectionUID>
+              </positioning>
+            </positionings>
+            <segments>
+              <segment uID="vtp_Seg1">
+                <name>vtp_Seg1</name>
+                <description>vtp_Seg1</description>
+                <fromElementUID isLink="True">vtp_Sec1_Elem1</fromElementUID>
+                <toElementUID isLink="True">vtp_Sec2_Elem1</toElementUID>
+              </segment>
+            </segments>
+            <componentSegments>
+              <componentSegment uID="vtp_Cseg">
+                <name>vtp_CSeg</name>
+                <description>vtp_CSeg</description>
+                <fromElementUID isLink="True">vtp_Sec1_Elem1</fromElementUID>
+                <toElementUID isLink="True">vtp_Sec2_Elem1</toElementUID>
+              </componentSegment>
+            </componentSegments>
+          </wing>
+          <wing symmetry="x-z-plane" uID="wing">
+            <name>wing</name>
+            <description>wing</description>
+            <parentUID isLink="True">fuselage</parentUID>
+            <transformation>
+              <scaling>
+                <x>1.0</x>
+                <y>1.0</y>
+                <z>1.0</z>
+              </scaling>
+              <rotation>
+                <x>0.0</x>
+                <y>0.0</y>
+                <z>0.0</z>
+              </rotation>
+              <translation refType="absGlobal">
+                <x>19.61</x>
+                <y>0.0</y>
+                <z>-2.18890953982</z>
+              </translation>
+            </transformation>
+            <sections>
+              <section uID="wing_Sec1">
+                <name>wing_Sec1</name>
+                <description>wing_Sec1</description>
+                <transformation>
+                  <scaling>
+                    <x>11.1819918065</x>
+                    <y>1.0</y>
+                    <z>11.1819918065</z>
+                  </scaling>
+                  <rotation>
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="wing_Sec1_Elem1">
+                    <name>wing_Sec1_Elem1</name>
+                    <description>wing_Sec1_Element1</description>
+                    <airfoilUID isLink="True">NACA653218</airfoilUID>
+                    <transformation>
+                      <scaling>
+                        <x>1.0</x>
+                        <y>1.0</y>
+                        <z>0.802469135802</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="wing_Sec2">
+                <name>wing_Sec2</name>
+                <description>wing_Sec2</description>
+                <transformation>
+                  <scaling>
+                    <x>11.1819918065</x>
+                    <y>1.0</y>
+                    <z>11.1819918065</z>
+                  </scaling>
+                  <rotation>
+                    <x>0.0</x>
+                    <y>0.294784198868</y>
+                    <z>0.0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="wing_Sec2_Elem1">
+                    <name>wing_Sec2_Elem1</name>
+                    <description>wing_Sec2_Element1</description>
+                    <airfoilUID isLink="True">NACA653218</airfoilUID>
+                    <transformation>
+                      <scaling>
+                        <x>1.0</x>
+                        <y>1.0</y>
+                        <z>0.802469135802</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="wing_Sec3">
+                <name>wing_Sec3</name>
+                <description>wing_Sec3</description>
+                <transformation>
+                  <scaling>
+                    <x>5.87247001009</x>
+                    <y>1.0</y>
+                    <z>5.87247001009</z>
+                  </scaling>
+                  <rotation>
+                    <x>0.0</x>
+                    <y>1.75</y>
+                    <z>0.0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="wing_Sec3_Elem1">
+                    <name>wing_Sec3_Elem1</name>
+                    <description>wing_Sec3_Element1</description>
+                    <airfoilUID isLink="True">NACA653218</airfoilUID>
+                    <transformation>
+                      <scaling>
+                        <x>1.0</x>
+                        <y>1.0</y>
+                        <z>0.641975308642</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+              <section uID="wing_Sec4">
+                <name>wing_Sec4</name>
+                <description>wing_Sec4</description>
+                <transformation>
+                  <scaling>
+                    <x>2.62776807452</x>
+                    <y>1.0</y>
+                    <z>2.62776807452</z>
+                  </scaling>
+                  <rotation>
+                    <x>0.0</x>
+                    <y>5.0</y>
+                    <z>0.0</z>
+                  </rotation>
+                  <translation refType="absGlobal">
+                    <x>0.0</x>
+                    <y>0.0</y>
+                    <z>0.0</z>
+                  </translation>
+                </transformation>
+                <elements>
+                  <element uID="wing_Sec4_Elem1">
+                    <name>wing_Sec4_Elem1</name>
+                    <description>wing_Sec4_Element1</description>
+                    <airfoilUID isLink="True">NACA653218</airfoilUID>
+                    <transformation>
+                      <scaling>
+                        <x>1.0</x>
+                        <y>1.0</y>
+                        <z>0.641975308642</z>
+                      </scaling>
+                      <rotation>
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </rotation>
+                      <translation refType="absGlobal">
+                        <x>0.0</x>
+                        <y>0.0</y>
+                        <z>0.0</z>
+                      </translation>
+                    </transformation>
+                  </element>
+                </elements>
+              </section>
+            </sections>
+            <positionings>
+              <positioning uID="wing_Pos1">
+                <name>wing</name>
+                <length>0.0</length>
+                <sweepAngle>0.0</sweepAngle>
+                <dihedralAngle>0.0</dihedralAngle>
+                <toSectionUID isLink="True">wing_Sec1</toSectionUID>
+              </positioning>
+              <positioning uID="wing_Pos2">
+                <name>wing</name>
+                <length>1.77794123257</length>
+                <sweepAngle>0.0</sweepAngle>
+                <dihedralAngle>0.0</dihedralAngle>
+                <fromSectionUID isLink="True">wing_Sec1</fromSectionUID>
+                <toSectionUID isLink="True">wing_Sec2</toSectionUID>
+              </positioning>
+              <positioning uID="wing_Pos3">
+                <name>wing</name>
+                <length>10.6522595004</length>
+                <sweepAngle>34.4673875066</sweepAngle>
+                <dihedralAngle>2.0</dihedralAngle>
+                <fromSectionUID isLink="True">wing_Sec2</fromSectionUID>
+                <toSectionUID isLink="True">wing_Sec3</toSectionUID>
+              </positioning>
+              <positioning uID="wing_Pos4">
+                <name>wing</name>
+                <length>23.7901783018</length>
+                <sweepAngle>34.4673875066</sweepAngle>
+                <dihedralAngle>2.0</dihedralAngle>
+                <fromSectionUID isLink="True">wing_Sec3</fromSectionUID>
+                <toSectionUID isLink="True">wing_Sec4</toSectionUID>
+              </positioning>
+            </positionings>
+            <segments>
+              <segment uID="wing_Seg1">
+                <name>wing_Seg1</name>
+                <description>wing_Seg1</description>
+                <fromElementUID isLink="True">wing_Sec1_Elem1</fromElementUID>
+                <toElementUID isLink="True">wing_Sec2_Elem1</toElementUID>
+              </segment>
+              <segment uID="wing_Seg2">
+                <name>wing_Seg2</name>
+                <description>wing_Seg2</description>
+                <fromElementUID isLink="True">wing_Sec2_Elem1</fromElementUID>
+                <toElementUID isLink="True">wing_Sec3_Elem1</toElementUID>
+              </segment>
+              <segment uID="wing_Seg3">
+                <name>wing_Seg3</name>
+                <description>wing_Seg3</description>
+                <fromElementUID isLink="True">wing_Sec3_Elem1</fromElementUID>
+                <toElementUID isLink="True">wing_Sec4_Elem1</toElementUID>
+              </segment>
+            </segments>
+            <componentSegments>
+              <componentSegment uID="wing_Cseg">
+                <name>wing_CSeg</name>
+                <description>wing_CSeg</description>
+                <fromElementUID isLink="True">wing_Sec1_Elem1</fromElementUID>
+                <toElementUID isLink="True">wing_Sec4_Elem1</toElementUID>
+              </componentSegment>
+            </componentSegments>
+          </wing>
+        </wings>
+      </model>
+    </aircraft>
+    <profiles>
+      <fuselageProfiles>
+        <fuselageProfile uID="Circle">
+          <name>Circle Profile</name>
+          <description>Profile generated automatically by VAMPzero cpacs-export</description>
+          <pointList>
+            <x mapType="vector">0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0</x>
+            <y mapType="vector">1.0;0.9969173337;0.9876883406;0.9723699204;0.9510565163;0.9238795325;0.8910065242;0.8526401644;0.8090169944;0.7604059656;0.7071067812;0.6494480483;0.5877852523;0.5224985647;0.4539904997;0.3826834324;0.3090169944;0.2334453639;0.156434465;0.0784590957;0.0;-0.0784590957;-0.156434465;-0.2334453639;-0.3090169944;-0.3826834324;-0.4539904997;-0.5224985647;-0.5877852523;-0.6494480483;-0.7071067812;-0.7604059656;-0.8090169944;-0.8526401644;-0.8910065242;-0.9238795325;-0.9510565163;-0.9723699204;-0.9876883406;-0.9969173337;-1.0;-0.9969173337;-0.9876883406;-0.9723699204;-0.9510565163;-0.9238795325;-0.8910065242;-0.8526401644;-0.8090169944;-0.7604059656;-0.7071067812;-0.6494480483;-0.5877852523;-0.5224985647;-0.4539904997;-0.3826834324;-0.3090169944;-0.2334453639;-0.156434465;-0.0784590957;-0.0;0.0784590957;0.156434465;0.2334453639;0.3090169944;0.3826834324;0.4539904997;0.5224985647;0.5877852523;0.6494480483;0.7071067812;0.7604059656;0.8090169944;0.8526401644;0.8910065242;0.9238795325;0.9510565163;0.9723699204;0.9876883406;0.9969173337;1.0</y>
+            <z mapType="vector">0.0;0.0784590957;0.156434465;0.2334453639;0.3090169944;0.3826834324;0.4539904997;0.5224985647;0.5877852523;0.6494480483;0.7071067812;0.7604059656;0.8090169944;0.8526401644;0.8910065242;0.9238795325;0.9510565163;0.9723699204;0.9876883406;0.9969173337;1.0;0.9969173337;0.9876883406;0.9723699204;0.9510565163;0.9238795325;0.8910065242;0.8526401644;0.8090169944;0.7604059656;0.7071067812;0.6494480483;0.5877852523;0.5224985647;0.4539904997;0.3826834324;0.3090169944;0.2334453639;0.156434465;0.0784590957;0.0;-0.0784590957;-0.156434465;-0.2334453639;-0.3090169944;-0.3826834324;-0.4539904997;-0.5224985647;-0.5877852523;-0.6494480483;-0.7071067812;-0.7604059656;-0.8090169944;-0.8526401644;-0.8910065242;-0.9238795325;-0.9510565163;-0.9723699204;-0.9876883406;-0.9969173337;-1.0;-0.9969173337;-0.9876883406;-0.9723699204;-0.9510565163;-0.9238795325;-0.8910065242;-0.8526401644;-0.8090169944;-0.7604059656;-0.7071067812;-0.6494480483;-0.5877852523;-0.5224985647;-0.4539904997;-0.3826834324;-0.3090169944;-0.2334453639;-0.156434465;-0.0784590957;-0.0</z>
+          </pointList>
+        </fuselageProfile>
+      </fuselageProfiles>
+      <wingAirfoils>
+        <wingAirfoil uID="NACA0009">
+          <name>NACA0009 Airfoil</name>
+          <description>Profile generated automatically by VAMPzero cpacs-export</description>
+          <pointList>
+            <x mapType="vector">1.0;0.95;0.9;0.8;0.7;0.6;0.5;0.4;0.3;0.25;0.2;0.15;0.1;0.075;0.05;0.025;0.0125;0.005;0.0;0.005;0.0125;0.025;0.05;0.075;0.1;0.15;0.2;0.25;0.3;0.4;0.5;0.6;0.7;0.8;0.9;0.95;1.0</x>
+            <y mapType="vector">0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0</y>
+            <z mapType="vector">0.00095;0.00605;0.01086;0.01967;0.02748;0.03423;0.03971;0.04352;0.04501;0.04456;0.04303;0.04009;0.03512;0.0315;0.02666;0.01961;0.0142;0.0089;0.0;-0.0089;-0.0142;-0.01961;-0.02666;-0.0315;-0.03512;-0.04009;-0.04303;-0.04456;-0.04501;-0.04352;-0.03971;-0.03423;-0.02748;-0.01967;-0.01086;-0.00605;-0.00095</z>
+          </pointList>
+        </wingAirfoil>
+        <wingAirfoil uID="NACA653218">
+          <name>NACA653218 Airfoil</name>
+          <description>Profile generated automatically by VAMPzero cpacs-export</description>
+          <pointList>
+            <x mapType="vector">1.0;0.95023;0.90046;0.85063;0.80074;0.75077;0.70073;0.65065;0.60047;0.55026;0.5;0.44972;0.39942;0.34912;0.29884;0.24858;0.19835;0.14818;0.09809;0.07311;0.04819;0.0234;0.0111;0.00625;0.00388;0.0;0.00612;0.00875;0.0139;0.0266;0.05181;0.07689;0.10191;0.15182;0.20165;0.25142;0.30116;0.35088;0.40058;0.45028;0.5;0.54974;0.59953;0.64937;0.69927;0.74923;0.79926;0.84937;0.89954;0.94977;1.0</x>
+            <y mapType="vector">0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0</y>
+            <z mapType="vector">0.0;0.00805;0.01835;0.02967;0.04133;0.0529;0.06398;0.07425;0.08338;0.09103;0.09671;0.09996;0.1007;0.09916;0.09566;0.09023;0.0827;0.07276;0.05971;0.05153;0.04178;0.02932;0.02116;0.01673;0.01382;0.0;-0.01282;-0.01533;-0.01902;-0.0256;-0.03546;-0.04305;-0.04937;-0.0593;-0.06676;-0.07233;-0.07622;-0.07856;-0.07928;-0.07806;-0.07465;-0.06913;-0.06196;-0.05365;-0.04454;-0.035;-0.02541;-0.01621;-0.00801;-0.00173;0.0</z>
+          </pointList>
+        </wingAirfoil>
+      </wingAirfoils>
+    </profiles>
+  </vehicles>
+</cpacs>

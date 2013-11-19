@@ -612,3 +612,25 @@ TEST_F(WingComponentSegment, tiglWingComponentSegmentPointGetSegmentEtaXsi_BUG4)
     ASSERT_NEAR(0.714, sXsi, 1e-6);
 }
 
+TEST(WingComponentSegment5, GetSegmentIntersection_BUG) {
+    const char* filename = "TestData/CS_SegIntersectionBUG.xml";
+    ReturnCode tixiRet;
+    TiglReturnCode tiglRet;
+
+    TiglCPACSConfigurationHandle tiglHandle = -1;
+    TixiDocumentHandle tixiHandle = -1;
+
+    tixiRet = tixiOpenDocument(filename, &tixiHandle);
+    ASSERT_EQ (SUCCESS, tixiRet);
+    tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "", &tiglHandle);
+    ASSERT_EQ(TIGL_SUCCESS, tiglRet);
+
+    double xsi = 0;
+    tiglRet = tiglWingComponentSegmentGetSegmentIntersection(tiglHandle, "wing_Cseg", "wing_Seg2", 0.0589568, 1., 0.35, 1., 1., &xsi);
+    ASSERT_EQ(TIGL_SUCCESS, tiglRet);
+    ASSERT_NEAR(1.0, xsi, 1e-6);
+
+    ASSERT_EQ(TIGL_SUCCESS, tiglCloseCPACSConfiguration(tiglHandle));
+    ASSERT_EQ(SUCCESS, tixiCloseDocument(tixiHandle));
+}
+
