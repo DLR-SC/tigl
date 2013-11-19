@@ -133,7 +133,7 @@ TopoDS_Shape CCPACSFarField::BuildLoft(void){
                                     fieldSize*2., fieldSize, fieldSize*2.).Shape();
         break;
     case HALF_SPHERE:
-        shape = BRepPrimAPI_MakeSphere(axis, fieldSize, M_PI).Shape();
+        shape = BRepPrimAPI_MakeSphere(gp_Ax2(center, gp_Dir(0,1,0)), fieldSize, 0., M_PI_2).Shape();
         break;
     default:
         shape.Nullify();
