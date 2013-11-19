@@ -3537,16 +3537,56 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetWettedArea(TiglCPACSConfigurationHa
 *
 * <b>Fortran syntax:</b>
 *
-* tigl_log_to_file(character filePrefix)
+* tigl_log_to_file(character*n filePrefix)
 *
 * @param[in]  filePrefix Prefix of the filename to be created. The filename consists of the prefix, a date and time string and the ending ".log".
 *
 * @return
 *   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NULL_POINTER if filePrefix is NULL
 *   - TIGL_OPEN_FAILED if file can not be opened for writing
 *   - TIGL_ERROR if some other error occurred
 */
 TIGL_COMMON_EXPORT TiglReturnCode tiglLogToFile(const char* filePrefix);
+
+/**
+* @brief Sets the file ending for logging files. Default is "log".
+*
+* This function has to be called before ::tiglLogToFile to have the
+* desired effect.
+*
+* <b>Fortran syntax:</b>
+*
+* tigl_log_set_file_ending(character*n ending)
+*
+* @param[in]  ending File ending of the logging file. Default is "log".
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NULL_POINTER if ending is NULL
+*   - TIGL_ERROR if some error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglLogSetFileEnding(const char* ending);
+
+/**
+* @brief Enables or disables appending a unique date/time identifier inside
+* the log file name (behind the file prefix). By default, the time indentifier
+* is enabled.
+*
+* This function has to be called before ::tiglLogToFile to have the
+* desired effect.
+*
+* <b>Fortran syntax:</b>
+*
+* tigl_log_set_data_in_filename_enabled(logical enabled)
+*
+* @param[in]  enabled Set to true, if time identifier should be enabled.
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_ERROR if some error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglLogSetTimeInFilenameEnabled(TiglBoolean enabled);
 
 /**
 * @brief Sets up the tigl logging mechanism to send all log messages into a file. Only error messages are

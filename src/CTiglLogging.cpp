@@ -47,6 +47,8 @@ CTiglLogging::CTiglLogging(void)
 {
     initLogger();
     _myLogger = NULL;
+    _fileEnding = "log";
+    _timeIdInFilename = true;
 }
 
 CTiglLogging::~CTiglLogging(void)
@@ -95,21 +97,18 @@ void CTiglLogging::initLogger(void)
 }
 
 void CTiglLogging::LogToFile(const char* prefix, bool errorsOnConsole) {
-#ifdef GLOG_FOUND
-    // this is a workaround described in https://code.google.com/p/google-glog/issues/detail?id=41
-    // to avoid different log files for each severity. The info log file already contains
-    // all log informations also from the higher severity levels
-    for (int severity = google::WARNING; severity < google::NUM_SEVERITIES; severity++) {
-        google::SetLogDestination(severity, "");
-    }
-    google::SetLogDestination(google::INFO, prefix);
-#else
     time_t rawtime;
     time (&rawtime);
     struct tm *timeinfo = localtime (&rawtime);
     char buffer [80];
-    strftime (buffer,80,"%y%m%d-%H%M%S",timeinfo);
-    std::string filename = std::string(prefix) + buffer+ ".log";
+    if(_timeIdInFilename) {
+        strftime (buffer,80,"%y%m%d-%H%M%S",timeinfo);
+    }
+
+    else {
+        strcpy(buffer, "");
+    }
+    std::string filename = std::string(prefix) + buffer+ "." + _fileEnding;
     
     CTiglLogSplitter* splitter = new CTiglLogSplitter;
     splitter->AddLogger(new CTiglFileLogger(filename.c_str()), TILOG_DEBUG4);
@@ -118,7 +117,14 @@ void CTiglLogging::LogToFile(const char* prefix, bool errorsOnConsole) {
     }
     
     SetLogger(splitter);
-#endif
+}
+
+void CTiglLogging::SetLogFileEnding(const char* ending) {
+    _fileEnding = ending;
+}
+
+void CTiglLogging::SetTimeIdInFilenameEnabled(bool enabled) {
+    _timeIdInFilename = enabled;
 }
 
 void CTiglLogging::LogToConsole() {

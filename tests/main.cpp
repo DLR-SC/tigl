@@ -11,6 +11,7 @@
 
 int main(int argc, char **argv) {
   ::testing::InitGoogleTest(&argc, argv);
+  tigl::CTiglLogging::Instance().SetTimeIdInFilenameEnabled(false);
   // disable any console logging
   tigl::CTiglLogging::Instance().LogToFile("tigltest", false);
   return RUN_ALL_TESTS();
