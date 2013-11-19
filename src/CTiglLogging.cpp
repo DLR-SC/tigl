@@ -144,11 +144,15 @@ void CTiglLogging::LogToConsole() {
 DummyLogger_::DummyLogger_(){}
 DummyLogger_::~DummyLogger_(){
     tigl::ITiglLogger* logger = CTiglLogging::Instance().GetLogger();
+    std::string msg = stream.str();
+    if(msg[msg.size()-1] == '\n') {
+        msg.pop_back();
+    }
     if(logger) {
-        logger->LogMessage(_lastLevel, stream.str().c_str());
+        logger->LogMessage(_lastLevel, msg.c_str());
     }
     else {
-        printf("%s\n", stream.str().c_str());
+        printf("%s\n", msg.c_str());
     }
 }
 
@@ -178,11 +182,15 @@ DebugStream_::DebugStream_(){}
 DebugStream_::~DebugStream_(){
 #ifdef DEBUG
     tigl::ITiglLogger* logger = CTiglLogging::Instance().GetLogger();
+    std::string msg = stream.str();
+    if(msg[msg.size()-1] == '\n') {
+        msg.pop_back();
+    }
     if(logger) {
-        logger->LogMessage(_lastLevel, stream.str().c_str());
+        logger->LogMessage(_lastLevel, msg.c_str());
     }
     else {
-        printf("%s\n", stream.str().c_str());
+        printf("%s\n", msg.c_str());
     }
 #endif
 }

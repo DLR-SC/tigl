@@ -116,7 +116,6 @@ TopoDS_Shape CCPACSFarField::BuildLoft(void){
     TopoDS_Shape shape;
     shape.Nullify();
     gp_Pnt center(0,0,0);
-    gp_Ax2 axis(center, gp_Dir(0,0,1));
 
     switch(fieldType){
     case NONE:
