@@ -40,6 +40,7 @@ public:
     virtual ~TIGLViewerControlFile();
 
     CF_BOOL_STATUS showConsole;
+    CF_BOOL_STATUS showToolbars;
 };
 
 #endif /* TIGLVIEWERCONTROLFILE_H_ */
