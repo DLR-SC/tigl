@@ -199,6 +199,14 @@ void TIGLViewerWindow::setInitialControlFile(QString filename){
             console->setVisible(false);
             showConsoleAction->setChecked(false);
         }
+        if(cf.showToolbars == CF_TRUE){
+            toolBar->setVisible(true);
+            toolBarView->setVisible(true);
+        }
+        else if(cf.showToolbars == CF_FALSE){
+            toolBar->setVisible(false);
+            toolBarView->setVisible(false);
+        }
     }
 
 }
