@@ -13,7 +13,7 @@ import bindings_generator.matlab_generator as MG
 import bindings_generator.cheader_parser   as CP
 
 
-blacklist = ['tiglLogToFileStream']
+blacklist = ['tiglLogToFileStreamEnabled']
 
 if __name__ == '__main__':
     # parse the file    
