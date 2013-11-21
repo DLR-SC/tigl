@@ -3535,6 +3535,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetWettedArea(TiglCPACSConfigurationHa
 * @brief Sets up the tigl logging mechanism to send all log messages into a file. Only error messages are
 * still printed on the standard out (console).
 *
+* Typically this function has to be called before opening any cpacs configuration.
+*
 * <b>Fortran syntax:</b>
 *
 * tigl_log_to_file(character*n filePrefix)
@@ -3592,6 +3594,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglLogSetTimeInFilenameEnabled(TiglBoolean en
 * @brief Sets up the tigl logging mechanism to send all log messages into a file. Only error messages are
 * still printed on the standard out (console). In contrast to ::tiglLogToFile, the messages are appended
 * to an already opened file that might be a logging file of the executing program.
+*
+* Typically this function has to be called before opening any cpacs configuration.
 *
 * <b>Fortran syntax:</b>
 *
