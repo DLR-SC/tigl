@@ -22,7 +22,8 @@
 #include <iostream>
 
 TIGLViewerControlFile::TIGLViewerControlFile() {
-    showConsole = UNDEFINED;
+    showConsole  = UNDEFINED;
+    showToolbars = UNDEFINED;
 }
 
 CF_ReturnCode TIGLViewerControlFile::read(const char * filename){
