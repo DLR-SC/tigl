@@ -1,3 +1,35 @@
+Version 2.0.7
+---------------
+TiGL:
+- Implementation of far fields
+- More work on STEP and IGES export. The geometry is now exported as faces instead of solids in the STEP export.
+- Verification of airfoils during CPACS loading, this fixes twisted wing segments for some CPACS files
+- Improved modelling of leading and trailing edge
+- New Logging Framework
+
+-New API functions:
+	- tiglWingGetSegmentEtaXsi, to transform global x,y,z coordinates into wing segment coordinates
+	- tiglExportFusedSTEP, exports the trimmed/fused geometry as a step file
+	- tiglWingComponentSegmentGetMaterialUID, to get the material UID at a point of the component segment
+	- tiglWingComponentSegmentGetMaterialThickness, to get the material thickness at a point of the component segment
+	- tiglWingComponentSegmentGetMaterialCount, to get the number of materials defined at a point of the component segment
+	- tiglLogSetFileEnding, tiglLogSetTimeInFilenameEnabled, tiglLogToFileDisabled,
+	  tiglLogToFileEnabled, tiglLogToFileStreamEnabled, to modify logging settings
+
+-Changed API:
+	- replaced tiglWingComponentSegmentGetMaterialUIDs with 
+	  tiglWingComponentSegmentGetMaterialUID and tiglWingComponentSegmentGetMaterialCount
+
+-Fixes:
+	- fixed a bug in tiglWingComponentSegmentGetSegmentIntersection
+
+TiGLViewer:
+- Loading of HOTSOSE mesh files
+- Auto-reload of non-CPACS files
+- Improved display of airfoils
+- Improved error dialogs
+
+
 Version 2.0.6
 ---------------
 TiGL:
