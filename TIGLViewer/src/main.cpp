@@ -61,17 +61,17 @@ int main(int argc, char *argv[])
     TIGLViewerWindow *window = new TIGLViewerWindow();
     window->show();
 
+    if(!PARAMS.controlFile.isEmpty()){
+        if(window->getMyOCC())
+            window->getMyOCC()->repaint();
+        window->setInitialControlFile(PARAMS.controlFile);
+    }
+
     // if a filename is given, open the configuration
     if(!PARAMS.initialFilename.isEmpty()) {
         if(window->getMyOCC())
             window->getMyOCC()->repaint();
         window->setInitialCpacsFileName(PARAMS.initialFilename);
-    }
-
-    if(!PARAMS.controlFile.isEmpty()){
-        if(window->getMyOCC())
-            window->getMyOCC()->repaint();
-        window->setInitialControlFile(PARAMS.controlFile);
     }
 
     retval = app.exec();
