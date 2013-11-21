@@ -3588,7 +3588,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglLogToFileDisabled();
 /**
 * @brief Sets the file ending for logging files. Default is "log".
 *
-* This function has to be called before ::tiglLogToFile to have the
+* This function has to be called before ::tiglLogToFileEnabled to have the
 * desired effect.
 *
 * <b>Fortran syntax:</b>
@@ -3609,7 +3609,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglLogSetFileEnding(const char* ending);
 * the log file name (behind the file prefix). By default, the time indentifier
 * is enabled.
 *
-* This function has to be called before ::tiglLogToFile to have the
+* This function has to be called before ::tiglLogToFileEnabled to have the
 * desired effect.
 *
 * <b>Fortran syntax:</b>
