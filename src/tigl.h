@@ -3532,14 +3532,14 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetWettedArea(TiglCPACSConfigurationHa
 /*@{*/
 
 /**
-* @brief Sets up the tigl logging mechanism to send all log messages into a file. Only error messages are
-* still printed on the standard out (console).
+* @brief Sets up the tigl logging mechanism to send all log messages into a file. Critical error messages are
+* printed on the standard out (console) as well.
 *
 * Typically this function has to be called before opening any cpacs configuration.
 *
 * <b>Fortran syntax:</b>
 *
-* tigl_log_to_file(character*n filePrefix)
+* tigl_log_to_file_enabled(character*n filePrefix)
 *
 * @param[in]  filePrefix Prefix of the filename to be created. The filename consists of the prefix, a date and time string and the ending ".log".
 *
@@ -3549,7 +3549,41 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetWettedArea(TiglCPACSConfigurationHa
 *   - TIGL_OPEN_FAILED if file can not be opened for writing
 *   - TIGL_ERROR if some other error occurred
 */
-TIGL_COMMON_EXPORT TiglReturnCode tiglLogToFile(const char* filePrefix);
+TIGL_COMMON_EXPORT TiglReturnCode tiglLogToFileEnabled(const char* filePrefix);
+
+/**
+* @brief Sets up the tigl logging mechanism to send all log messages into a file. Critical error messages are
+* printed on the standard out (console) as well. In contrast to ::tiglLogToFile, the messages are appended
+* to an already opened file that might be a logging file of the executing program.
+*
+* Typically this function has to be called before opening any cpacs configuration.
+*
+* <b>Fortran syntax:</b>
+*
+* This function is and will be not available for Fortran due to incompatible file I/O!
+*
+* @param[in]  fp File pointer to an already opened file.
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NULL_POINTER if fp is NULL , i.e. not opened for writing.
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglLogToFileStreamEnabled(FILE * fp);
+
+/**
+* @brief Disabled file logging. If a log file is currently opened by TiGL it will be closed. The log messages
+* are printed to console. This is the default logging mechanism of TIGL.
+*
+* <b>Fortran syntax:</b>
+*
+* tigl_log_to_file_disabled()
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglLogToFileDisabled();
 
 /**
 * @brief Sets the file ending for logging files. Default is "log".
@@ -3589,41 +3623,6 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglLogSetFileEnding(const char* ending);
 *   - TIGL_ERROR if some error occurred
 */
 TIGL_COMMON_EXPORT TiglReturnCode tiglLogSetTimeInFilenameEnabled(TiglBoolean enabled);
-
-/**
-* @brief Sets up the tigl logging mechanism to send all log messages into a file. Only error messages are
-* still printed on the standard out (console). In contrast to ::tiglLogToFile, the messages are appended
-* to an already opened file that might be a logging file of the executing program.
-*
-* Typically this function has to be called before opening any cpacs configuration.
-*
-* <b>Fortran syntax:</b>
-*
-* This function is and will be not available for Fortran due to incompatible file I/O!
-*
-* @param[in]  fp File pointer to an already opened file.
-*
-* @return
-*   - TIGL_SUCCESS if no error occurred
-*   - TIGL_NULL_POINTER if fp is NULL , i.e. not opened for writing.
-*   - TIGL_ERROR if some other error occurred
-*/
-TIGL_COMMON_EXPORT TiglReturnCode tiglLogToFileStream(FILE * fp);
-
-/**
-* @brief Sets up the tigl logging mechanism to send all log messages to the console
-* (standard out). If a log file is currently opened by TiGL it will be closed. This
-* is the default logging mechanism of TIGL.
-*
-* <b>Fortran syntax:</b>
-*
-* tigl_log_to_console()
-*
-* @return
-*   - TIGL_SUCCESS if no error occurred
-*   - TIGL_ERROR if some other error occurred
-*/
-TIGL_COMMON_EXPORT TiglReturnCode tiglLogToConsole();
 
 /*@}*/ // end of doxygen group
 

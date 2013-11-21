@@ -58,7 +58,7 @@ postconstr = '''
 self.version = self.getVersion()
 '''
 
-blacklist = ['tiglCloseCPACSConfiguration', 'tiglLogToFileStream']
+blacklist = ['tiglCloseCPACSConfiguration', 'tiglLogToFileStreamEnabled']
 
 if __name__ == '__main__':
     # parse the file

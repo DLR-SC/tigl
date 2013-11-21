@@ -119,6 +119,17 @@ void CTiglLogging::LogToFile(const char* prefix, bool errorsOnConsole) {
     SetLogger(splitter);
 }
 
+void CTiglLogging::LogToStream(FILE * fp, bool errorsOnConsole) {
+
+    CTiglLogSplitter* splitter = new CTiglLogSplitter;
+    splitter->AddLogger(new CTiglFileLogger(fp), TILOG_DEBUG4);
+    if(errorsOnConsole) {
+        splitter->AddLogger(new CTiglConsoleLogger, TILOG_ERROR);
+    }
+
+    SetLogger(splitter);
+}
+
 void CTiglLogging::SetLogFileEnding(const char* ending) {
     _fileEnding = ending;
 }

@@ -102,6 +102,7 @@ class CTiglLogging {
         
         // convenience functions that insert the appropriate loggers
         void LogToFile(const char* filePrefix, bool errorsOnConsole=true);
+        void LogToStream(FILE * fp, bool errorsOnConsole=true);
         void SetLogFileEnding(const char* ending);
         void SetTimeIdInFilenameEnabled(bool enabled);
         void LogToConsole();

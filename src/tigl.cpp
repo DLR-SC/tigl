@@ -4296,10 +4296,10 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSpan(TiglCPACSConfigurationHandle c
 /*****************************************************************************/
 /* Logging functions.                                                        */
 /*****************************************************************************/
-TiglReturnCode tiglLogToFile(const char *filePrefix) {
+TiglReturnCode tiglLogToFileEnabled(const char *filePrefix) {
     tigl::CTiglLogging& logger = tigl::CTiglLogging::Instance();
     if(filePrefix == NULL) {
-        LOG(ERROR) << "Error: argument filePrefix is NULL in tiglLogToFile!";
+        LOG(ERROR) << "Error: argument filePrefix is NULL in tiglLogToFileEnabled!";
         return TIGL_NULL_POINTER;
     }
 
@@ -4312,6 +4312,24 @@ TiglReturnCode tiglLogToFile(const char *filePrefix) {
 
     return TIGL_SUCCESS;
 }
+
+TiglReturnCode tiglLogToFileStreamEnabled(FILE * fp) {
+    tigl::CTiglLogging& logger = tigl::CTiglLogging::Instance();
+    if(fp == NULL) {
+        LOG(ERROR) << "Error: argument fp is NULL in tiglLogToFileStreamEnabled!";
+        return TIGL_NULL_POINTER;
+    }
+
+    try {
+        logger.LogToStream(fp);
+    }
+    catch (tigl::CTiglError& err) {
+        return err.getCode();
+    }
+
+    return TIGL_SUCCESS;
+}
+
 
 TiglReturnCode tiglLogSetFileEnding(const char *ending) {
     tigl::CTiglLogging& logger = tigl::CTiglLogging::Instance();
@@ -4343,7 +4361,7 @@ TiglReturnCode tiglLogSetTimeInFilenameEnabled(TiglBoolean enabled) {
     return TIGL_SUCCESS;
 }
 
-TiglReturnCode tiglLogToConsole() {
+TiglReturnCode tiglLogToFileDisabled() {
     tigl::CTiglLogging& logger = tigl::CTiglLogging::Instance();
 
     try {
