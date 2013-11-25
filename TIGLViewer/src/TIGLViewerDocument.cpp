@@ -801,7 +801,7 @@ void TIGLViewerDocument::drawFuselageSamplePointsAngle()
 {
     // ask user defined angle
     bool ok = false;
-    double angle = QInputDialog::getDouble(NULL, tr("Choose angle"), tr("Angle [°]:"), 45., -360., 360., 1, &ok);
+    double angle = QInputDialog::getDouble(NULL, tr("Choose angle"), tr("Angle [degree]:"), 45., -360., 360., 1, &ok);
     if(!ok)
         return;
 
@@ -1311,6 +1311,46 @@ void TIGLViewerDocument::exportFuselageCollada()
     }
 }
 
+
+void TIGLViewerDocument::exportWingBRep() {
+    QString wingUid = dlgGetWingSelection();
+    if(wingUid == "")
+        return;
+
+    writeToStatusBar(tr("Saving Wing as BRep file..."));
+
+    QString fileName = QFileDialog::getSaveFileName(parent, tr("Save as..."), myLastFolder, tr("Export BRep(*.brep)"));
+
+    if (!fileName.isEmpty())
+    {
+        QApplication::setOverrideCursor( Qt::WaitCursor );
+        tigl::ITiglGeometricComponent& wing = GetConfiguration().GetWing(wingUid.toStdString());
+        TopoDS_Shape& loft = wing.GetLoft();
+        BRepTools::Write(loft, fileName.toStdString().c_str());
+        QApplication::restoreOverrideCursor();
+
+    }
+}
+
+void TIGLViewerDocument::exportFuselageBRep() {
+    QString fuselageUid = dlgGetFuselageSelection();
+    if(fuselageUid == "")
+        return;
+
+    writeToStatusBar(tr("Saving Fuselage as BRep file..."));
+
+    QString fileName = QFileDialog::getSaveFileName(parent, tr("Save as..."), myLastFolder, tr("Export BRep(*.brep)"));
+
+    if (!fileName.isEmpty())
+    {
+        QApplication::setOverrideCursor( Qt::WaitCursor );
+        tigl::ITiglGeometricComponent& fuselage = GetConfiguration().GetFuselage(fuselageUid.toStdString());
+        TopoDS_Shape& loft = fuselage.GetLoft();
+        BRepTools::Write(loft, fileName.toStdString().c_str());
+        QApplication::restoreOverrideCursor();
+
+    }
+}
 
 void TIGLViewerDocument::drawFusedFuselage()
 {
