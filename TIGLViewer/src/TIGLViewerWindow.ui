@@ -52,7 +52,7 @@
      <x>0</x>
      <y>0</y>
      <width>783</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="fileMenu">
@@ -177,11 +177,19 @@
      <addaction name="tiglExportWingColladaAction"/>
      <addaction name="tiglExportFuselageColladaAction"/>
     </widget>
+    <widget class="QMenu" name="menuExport_to_BRep">
+     <property name="title">
+      <string>Export to BRep</string>
+     </property>
+     <addaction name="tiglExportWingBRepAction"/>
+     <addaction name="tiglExportFuselageBRepAction"/>
+    </widget>
     <addaction name="menuExport_to_IGES"/>
     <addaction name="menuExport_to_VTK"/>
     <addaction name="menuExport_to_STEP"/>
     <addaction name="menuExport_to_STL"/>
     <addaction name="menuExport_to_Collada"/>
+    <addaction name="menuExport_to_BRep"/>
    </widget>
    <widget class="QMenu" name="viewMenu">
     <property name="title">
@@ -1140,6 +1148,16 @@
   <action name="tiglExportFusedStepAction">
    <property name="text">
     <string>Export fused/trimmed Model as STEP</string>
+   </property>
+  </action>
+  <action name="tiglExportWingBRepAction">
+   <property name="text">
+    <string>Export Wing</string>
+   </property>
+  </action>
+  <action name="tiglExportFuselageBRepAction">
+   <property name="text">
+    <string>Export Fuselage</string>
    </property>
   </action>
  </widget>
