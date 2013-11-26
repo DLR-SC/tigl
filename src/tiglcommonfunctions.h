@@ -36,4 +36,6 @@ Standard_Real ProjectPointOnWire(const TopoDS_Wire& wire, gp_Pnt p);
 // returns the number of edges of the current shape
 unsigned int GetNumberOfEdges(const TopoDS_Shape& shape);
 
+// returns the central point of the face
+gp_Pnt GetCentralFacePoint(const class TopoDS_Face& face);
 #endif // TIGLCOMMONFUNCTIONS_H

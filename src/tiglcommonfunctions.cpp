@@ -26,6 +26,7 @@
 #include "CTiglError.h"
 
 #include "Geom_Curve.hxx"
+#include "Geom_Surface.hxx"
 #include "BRep_Tool.hxx"
 #include "BRepTools_WireExplorer.hxx"
 #include "TopExp_Explorer.hxx"
@@ -36,6 +37,7 @@
 #include "BRepBuilderAPI_MakeWire.hxx"
 #include "BRepBuilderAPI_MakeEdge.hxx"
 #include "GeomAPI_ProjectPointOnCurve.hxx"
+#include "BRepTools.hxx"
 
 Standard_Real GetWireLength(const TopoDS_Wire& wire)
 {
@@ -177,6 +179,23 @@ Standard_Real ProjectPointOnWire(const TopoDS_Wire& wire, gp_Pnt p){
     
     // return relative coordinate
     return partLength/GetWireLength(wire);
+}
+
+gp_Pnt GetCentralFacePoint(const TopoDS_Face& face)
+{
+    // compute point on face
+    Standard_Real umin, umax, vmin, vmax;
+
+    gp_Pnt p;
+
+    Handle_Geom_Surface surface = BRep_Tool::Surface(face);
+    BRepTools::UVBounds(face, umin, umax, vmin, vmax);
+    Standard_Real umean = 0.5*(umin+umax);
+    Standard_Real vmean = 0.5*(vmin+vmax);
+
+    surface->D0(umean, vmean, p);
+
+    return p;
 }
 
 

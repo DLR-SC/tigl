@@ -8,15 +8,22 @@ configure_file (
 source_group(Fuselage REGULAR_EXPRESSION "CCPACSFuselage")
 source_group(Wing REGULAR_EXPRESSION "CCPACSWing")
 
-include_directories(${OpenCASCADE_INCLUDE_DIR} ${TIXI_INCLUDE_DIRS} ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
+include_directories(${OpenCASCADE_INCLUDE_DIR}
+                    ${TIXI_INCLUDE_DIRS}
+                    ${CMAKE_CURRENT_BINARY_DIR}
+                    ${CMAKE_CURRENT_SOURCE_DIR}
+                    ${CMAKE_CURRENT_SOURCE_DIR}/boolean_operations
+)
 
 file(GLOB_RECURSE TIGL_SRC
     "*.h"
+    "*.hxx"
     "*.cpp"
+    "*.cxx"
 )
 
 if(MSVC)
-    add_definitions(-D_CRT_SECURE_NO_WARNINGS=1)
+    add_definitions(-D_CRT_SECURE_NO_WARNINGS=1 /wd4355)
 endif(MSVC)
 
 # tigl dll/so library
