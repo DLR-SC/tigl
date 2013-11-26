@@ -26,6 +26,7 @@
 #include <TopoDS.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Solid.hxx>
+#include <TopExp.hxx>
 
 #include <BRepBuilderAPI_Sewing.hxx>
 #include <BRepBuilderAPI_MakeSolid.hxx>
@@ -167,8 +168,13 @@ void CFuseShapes::DoFuse()
     shellMaker.Perform();
 
     // make a solid out of the face collection
-    TopoDS_Shape shell = shellMaker.SewedShape();
-    TopoDS_Shape solid = BRepBuilderAPI_MakeSolid(TopoDS::Shell(shell)).Solid();
+    TopTools_IndexedMapOfShape map;
+    TopExp::MapShapes(shellMaker.SewedShape(), TopAbs_SHELL, map);
+    BRepBuilderAPI_MakeSolid solidMaker;
+    for(int ishell = 1; ishell <= map.Extent(); ++ishell) {
+        solidMaker.Add(TopoDS::Shell(map(ishell)));
+    }
+    TopoDS_Shape solid = solidMaker.Solid();
 
     // map names to result
     CNamedShape result(solid, "BOP_FUSE");
