@@ -163,7 +163,12 @@ DummyLogger_::~DummyLogger_(){
         logger->LogMessage(_lastLevel, msg.c_str());
     }
     else {
-        printf("%s\n", msg.c_str());
+        if(_lastLevel == TILOG_WARNING || _lastLevel == TILOG_ERROR){
+            fprintf(stderr, "%s\n", msg.c_str());
+        }
+        else {
+            fprintf(stdout, "%s\n", msg.c_str());
+        }
     }
 }
 
@@ -201,7 +206,12 @@ DebugStream_::~DebugStream_(){
         logger->LogMessage(_lastLevel, msg.c_str());
     }
     else {
-        printf("%s\n", msg.c_str());
+        if(_lastLevel == TILOG_WARNING || _lastLevel == TILOG_ERROR){
+            fprintf(stderr, "%s\n", msg.c_str());
+        }
+        else {
+            fprintf(stdout, "%s\n", msg.c_str());
+        }
     }
 #endif
 }
