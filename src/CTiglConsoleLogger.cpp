@@ -20,7 +20,12 @@
 
 #include <iostream>
 
-void tigl::CTiglConsoleLogger::LogMessage(TiglLogLevel, const char *message)
+void tigl::CTiglConsoleLogger::LogMessage(TiglLogLevel level, const char *message)
 {
-    std::cout << message << std::endl;
+    if(level == TILOG_ERROR || level == TILOG_WARNING) {
+        std::cerr << message << std::endl;
+    }
+    else {
+        std::cout << message << std::endl;
+    }
 }
