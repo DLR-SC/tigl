@@ -38,6 +38,7 @@
 #include <BRepBuilderAPI_Sewing.hxx>
 #include <BRepBuilderAPI_MakeSolid.hxx>
 
+#include <vector>
 
 CMergeShapes::CMergeShapes(const CNamedShape &shape, const CNamedShape &tool)
     : _source(shape), _tool(tool)
@@ -62,6 +63,8 @@ void CMergeShapes::Perform()
     if(!_hasPerformed) {
         CNamedShape& s1 = _source;
         CNamedShape& s2 = _tool;
+        std::vector<TopoDS_Shape> v1, v2;
+
 
         // check input shapes
         if(s1.Shape().IsNull() && !s2.Shape().IsNull()) {
@@ -98,9 +101,16 @@ void CMergeShapes::Perform()
             gp_Pnt p2 = GetCentralFacePoint(f2);
 
             if(p1.Distance(p2) > Precision::Confusion()){
-                sewer.Add(f1);
-                sewer.Add(f2);
+                v1.push_back(f1);
+                v2.push_back(f2);
             }
+        }
+        std::vector<TopoDS_Shape>::const_iterator it;
+        for(it = v1.begin(); it != v1.end(); ++it){
+            sewer.Add(*it);
+        }
+        for(it = v2.begin(); it != v2.end(); ++it){
+            sewer.Add(*it);
         }
 
         sewer.Perform();
@@ -123,6 +133,3 @@ const CNamedShape &CMergeShapes::NamedShape()
     Perform();
     return _resultshape;
 }
-
-
-
