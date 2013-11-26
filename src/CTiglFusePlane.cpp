@@ -33,6 +33,7 @@ CTiglFusePlane::CTiglFusePlane(CCPACSConfiguration& config)
     : _myconfig(config)
 {
     _mymode = HALF_PLANE;
+    _hasPerformed = false;
 }
 
 void CTiglFusePlane::SetResultMode(TiglFuseResultMode mode)
@@ -40,8 +41,18 @@ void CTiglFusePlane::SetResultMode(TiglFuseResultMode mode)
     _mymode = mode;
 }
 
+const CNamedShape &CTiglFusePlane::NamedShape()
+{
+    Perform();
+    return _result;
+}
+
 void CTiglFusePlane::Perform()
 {
+    if(_hasPerformed) {
+        return;
+    }
+
     CTiglUIDManager& uidManager = _myconfig.GetUIDManager();
     CTiglAbstractPhysicalComponent* rootComponent = uidManager.GetRootComponent();
     if(!rootComponent) {
@@ -56,9 +67,24 @@ void CTiglFusePlane::Perform()
     CNamedShape rootMerged = CMergeShapes(rootShape, rootShapeMirr);
 
     CTiglAbstractPhysicalComponent::ChildContainerType childs = rootComponent->GetChildren(false);
-    for(unsigned int ichild = 0; ichild < childs.size(); ++ichild) {
+    CTiglAbstractPhysicalComponent::ChildContainerType::iterator childIt;
 
+    ListCNamedShape childShapes;
+    for(childIt = childs.begin(); childIt != childs.end(); ++childIt) {
+        CTiglAbstractPhysicalComponent* child = *childIt;
+        if(!child) {
+            continue;
+        }
+
+        CNamedShape childShape    (child->GetLoft()        , child->GetUID().c_str());
+        CNamedShape childShapeMirr(child->GetMirroredLoft(), child->GetUID().c_str());
+
+        CNamedShape childMerged = CMergeShapes(childShape, childShapeMirr);
+        childShapes.push_back(childMerged);
     }
+    CFuseShapes fuser(rootMerged, childShapes);
+    _result = fuser.NamedShape();
+    _hasPerformed = true;
 
 }
 
