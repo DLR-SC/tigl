@@ -42,6 +42,8 @@
 #include "BRepTools.hxx"
 #include <BRepBndLib.hxx>
 #include <Bnd_Box.hxx>
+#include "CTiglFusePlane.h"
+#include "CNamedShape.h"
 
 #include <cfloat>
 
@@ -113,8 +115,8 @@ namespace tigl {
     TopoDS_Shape& CCPACSConfiguration::GetFusedAirplane(void)
     {
         if(fusedAirplane.IsNull()){
-            CTiglAbstractPhysicalComponent* rootComponent = uidManager.GetRootComponent();
-            BuildFusedPlane(rootComponent);
+            CTiglFusePlane fuser(*this);
+            fusedAirplane = fuser.NamedShape().Shape();
         }
         return(fusedAirplane);
     }
