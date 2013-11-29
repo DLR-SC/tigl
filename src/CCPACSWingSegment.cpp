@@ -212,7 +212,7 @@ namespace tigl {
             throw CTiglError("The wing profiles " + innerConnection.GetProfile().GetUID() +
                              " and " + outerConnection.GetProfile().GetUID() +
                              " in segment " + GetUID() + " are not consistent. "
-                             "All profiles must have either a trailing edge or not. "
+                             "All profiles must either have a sharp or a blunt trailing edge. "
                              "Mixing different profile types is not allowed.");
         }
 
