@@ -114,9 +114,16 @@ void CMergeShapes::Perform()
         }
 
         sewer.Perform();
-        TopoDS_Shape shell = sewer.SewedShape();
-        TopoDS_Shape solid = BRepBuilderAPI_MakeSolid(TopoDS::Shell(shell)).Solid();
+        // create solid of out sewed shape
+        TopTools_IndexedMapOfShape map;
+        TopExp::MapShapes(sewer.SewedShape(), TopAbs_SHELL, map);
+        BRepBuilderAPI_MakeSolid solidMaker;
+        for(int ishell = 1; ishell <= map.Extent(); ++ishell) {
+            solidMaker.Add(TopoDS::Shell(map(ishell)));
+        }
+        TopoDS_Shape solid = solidMaker.Solid();
 
+        // map names to shape
         CNamedShape result(solid, "SEW_FUSE");
         BRepSewingToBRepBuilderShapeAdapter adapter(sewer);
         CBooleanOperTools::MapFaceNamesAfterBOP(adapter, s1, result);
