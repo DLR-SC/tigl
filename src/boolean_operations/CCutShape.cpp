@@ -23,8 +23,11 @@
 #include <BOPAlgo_PaveFiller.hxx>
 #include <BRepAlgoAPI_Cut.hxx>
 
-
 #include "CBooleanOperTools.h"
+#include "CTrimShape.h"
+#include "CMergeShapes.h"
+
+#define USE_OWN_ALGO
 
 CCutShape::CCutShape(const CNamedShape &shape, const CNamedShape &cuttingTool)
     : _dsfiller(NULL), _source(shape), _tool(cuttingTool)
@@ -72,6 +75,16 @@ void CCutShape::Perform()
 {
     if(!_hasPerformed) {
         PrepareFiller();
+#ifdef USE_OWN_ALGO
+        CTrimShape trim1(_source, _tool, *_dsfiller, EXCLUDE);
+        CNamedShape shape1 = trim1.NamedShape();
+
+        CTrimShape trim2(_tool, _source, *_dsfiller, INCLUDE);
+        CNamedShape shape2 = trim2.NamedShape();
+
+        _resultshape = CMergeShapes(shape1, shape2);
+#else
+        // use opencascade cutting routine (might be buggy)
         BRepAlgoAPI_Cut cutter(_source.Shape(), _tool.Shape(), *_dsfiller, Standard_True);
 
         TopoDS_Shape cuttedShape = cutter.Shape();
@@ -79,6 +92,7 @@ void CCutShape::Perform()
         _resultshape = CNamedShape(cuttedShape, _source.Name());
         CBooleanOperTools::MapFaceNamesAfterBOP(cutter, _source, _resultshape);
         CBooleanOperTools::MapFaceNamesAfterBOP(cutter, _tool,   _resultshape);
+#endif
 
         _hasPerformed = true;
     }

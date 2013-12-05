@@ -39,6 +39,15 @@
 #include "GeomAPI_ProjectPointOnCurve.hxx"
 #include "BRepTools.hxx"
 
+#include <Geom2d_Curve.hxx>
+#include <Geom2d_Line.hxx>
+#include <Geom2d_TrimmedCurve.hxx>
+#include <Geom2dAPI_InterCurveCurve.hxx>
+
+#include <vector>
+#include <algorithm>
+#include <cassert>
+
 Standard_Real GetWireLength(const TopoDS_Wire& wire)
 {
 #if 0
@@ -192,6 +201,38 @@ gp_Pnt GetCentralFacePoint(const TopoDS_Face& face)
     BRepTools::UVBounds(face, umin, umax, vmin, vmax);
     Standard_Real umean = 0.5*(umin+umax);
     Standard_Real vmean = 0.5*(vmin+vmax);
+
+
+    // compute intersection of u-iso line with face boundaries
+    Handle_Geom2d_Curve uiso = new Geom2d_Line(
+                gp_Pnt2d(umean,0.),
+                gp_Dir2d(0., 1.)
+                );
+
+    TopExp_Explorer exp (face,TopAbs_EDGE);
+    std::vector<double> intersections;
+    for(; exp.More(); exp.Next()) {
+        TopoDS_Edge edge = TopoDS::Edge(exp.Current());
+        Standard_Real first, last;
+
+        // Get geomteric curve from edge
+        Handle_Geom2d_Curve hcurve = BRep_Tool::CurveOnSurface(edge, face, first, last);
+        hcurve = new Geom2d_TrimmedCurve(hcurve, first, last);
+
+        Geom2dAPI_InterCurveCurve intersector(uiso, hcurve);
+        for(int ipoint = 0; ipoint < intersector.NbPoints(); ++ipoint) {
+            gp_Pnt2d p = intersector.Point(ipoint+1);
+            intersections.push_back(p.Y());
+        }
+    }
+
+    // normally we should have at least two intersections
+    // also the number of sections should be even - else something is really strange
+    assert(intersections.size() % 2 == 0);
+    if(intersections.size() >= 2) {
+        std::sort(intersections.begin(), intersections.end());
+        vmean = (intersections.at(0) + intersections.at(1))/2.;
+    }
 
     surface->D0(umean, vmean, p);
 
