@@ -106,7 +106,13 @@ namespace tigl {
     // Returns the wing profile for a given uid.
     CCPACSWingProfile& CCPACSWingProfiles::GetProfile(std::string uid) const
     {
-        return (*profiles.find(uid)->second);
+        CCPACSWingProfileContainer::const_iterator it = profiles.find(uid);
+        if(it != profiles.end() && it->second) {
+            return *(it->second);
+        }
+        else {
+            throw CTiglError("Wing profile \"" + uid + "\" not found in CPACS file!", TIGL_UID_ERROR);
+        }
     }
 
     // Returns the wing profile for a given index - TODO: depricated function!
