@@ -90,19 +90,28 @@ void CMergeShapes::Perform()
         TopExp::MapShapes(s1.Shape(), TopAbs_FACE, m1);
         TopExp::MapShapes(s2.Shape(), TopAbs_FACE, m2);
 
-        assert(m1.Extent() == m2.Extent());
+        std::vector<gp_Pnt> pointsOn1, pointsOn2;
+
 
         // remove common faces
         for(int iface = 1; iface <= m1.Extent(); ++iface){
-            const TopoDS_Face& f1 = TopoDS::Face(m1(iface));
-            const TopoDS_Face& f2 = TopoDS::Face(m2(iface));
+            const TopoDS_Face& face = TopoDS::Face(m1(iface));
+            pointsOn1.push_back(GetCentralFacePoint(face));
 
-            gp_Pnt p1 = GetCentralFacePoint(f1);
-            gp_Pnt p2 = GetCentralFacePoint(f2);
+        }
+        for(int iface = 1; iface <= m2.Extent(); ++iface){
+            const TopoDS_Face& face = TopoDS::Face(m2(iface));
+            pointsOn2.push_back(GetCentralFacePoint(face));
 
-            if(p1.Distance(p2) > Precision::Confusion()){
-                v1.push_back(f1);
-                v2.push_back(f2);
+        }
+        for(int iface = 0; iface < (int)pointsOn1.size(); ++iface){
+            gp_Pnt p1 = pointsOn1[iface];
+            for(int jface = 0; jface < (int)pointsOn2.size(); ++jface) {
+                gp_Pnt p2 = pointsOn2[jface];
+                if(p1.Distance(p2) > Precision::Confusion()) {
+                    v1.push_back(m1(iface+1));
+                    v2.push_back(m2(jface+1));
+                }
             }
         }
         std::vector<TopoDS_Shape>::const_iterator it;

@@ -20,6 +20,7 @@
 
 #include "CBooleanOperTools.h"
 #include "CTrimShape.h"
+#include "BRepSewingToBRepBuilderShapeAdapter.h"
 
 #include <cassert>
 
@@ -133,7 +134,7 @@ void CFuseShapes::DoFuse()
         // calculate intersection
         // Todo: make a new BOP out of this
         TopoDS_Shape intersection = BRepAlgoAPI_Section(_trimmedParent.Shape(), child.Shape(), DSFill);
-        _intersections.push_back(CNamedShape(intersection, std::string("INT_" + std::string(_parent.Name()) + "_" + child.Name()).c_str()));
+        _intersections.push_back(CNamedShape(intersection, std::string("INT" + std::string(_parent.Name()) + child.Name()).c_str()));
 
 #ifdef DEBUG_BOP
         stop = clock();
@@ -168,21 +169,33 @@ void CFuseShapes::DoFuse()
     shellMaker.Perform();
 
     // make a solid out of the face collection
-    TopTools_IndexedMapOfShape map;
-    TopExp::MapShapes(shellMaker.SewedShape(), TopAbs_SHELL, map);
-    BRepBuilderAPI_MakeSolid solidMaker;
-    for(int ishell = 1; ishell <= map.Extent(); ++ishell) {
-        solidMaker.Add(TopoDS::Shell(map(ishell)));
-    }
-    TopoDS_Shape solid = solidMaker.Solid();
+    TopoDS_Shape shell = shellMaker.SewedShape();
 
-    // map names to result
-    CNamedShape result(solid, "BOP_FUSE");
+
+    BRepSewingToBRepBuilderShapeAdapter sewerAdapter(shellMaker);
+
+    // map names to shell
+    CNamedShape resultShell(shell, "BOP_FUSE");
     for(childIter = _trimmedChilds.begin(); childIter != _trimmedChilds.end(); ++childIter) {
-        CBooleanOperTools::AppendNamesToShape(*childIter, result);
+        CNamedShape tmpshape(*childIter);
+        tmpshape.SetShape(shellMaker.ModifiedSubShape(childIter->Shape()));
+        CBooleanOperTools::MapFaceNamesAfterBOP(sewerAdapter, tmpshape, resultShell);
     }
-    CBooleanOperTools::AppendNamesToShape(_trimmedParent, result);
+    CNamedShape tmpshape(_trimmedParent);
+    tmpshape.SetShape(shellMaker.ModifiedSubShape(_trimmedParent.Shape()));
+    CBooleanOperTools::MapFaceNamesAfterBOP(sewerAdapter, tmpshape, resultShell);
 
+    // map names to solid
+    BRepBuilderAPI_MakeSolid solidmaker;
+    TopTools_IndexedMapOfShape shellMap;
+    TopExp::MapShapes(resultShell.Shape(), TopAbs_SHELL, shellMap);
+    for(int ishell = 1; ishell <= shellMap.Extent(); ++ishell) {
+        const TopoDS_Shell& shell = TopoDS::Shell(shellMap(ishell));
+        solidmaker.Add(shell);
+    }
+
+    CNamedShape result(solidmaker.Solid(), resultShell.Name());
+    CBooleanOperTools::MapFaceNamesAfterBOP(solidmaker, resultShell, result);
 
     _resultshape = result;
 }
