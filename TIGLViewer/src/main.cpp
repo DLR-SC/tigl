@@ -49,8 +49,10 @@ int main(int argc, char *argv[])
     }
 #endif
 
+#ifdef __linux__
     // we need to set us locale as we use "." for decimal point
-    setlocale(LC_NUMERIC, "C");
+    putenv("LC_NUMERIC=C");
+#endif
 
     int retval = parseArguments(app.arguments());
     if (retval != 0) {
