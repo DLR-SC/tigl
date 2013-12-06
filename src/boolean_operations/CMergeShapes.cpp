@@ -105,15 +105,33 @@ void CMergeShapes::Perform()
 
         }
         for(int iface = 0; iface < (int)pointsOn1.size(); ++iface){
+            bool issame = false;
             gp_Pnt p1 = pointsOn1[iface];
             for(int jface = 0; jface < (int)pointsOn2.size(); ++jface) {
                 gp_Pnt p2 = pointsOn2[jface];
-                if(p1.Distance(p2) > Precision::Confusion()) {
-                    v1.push_back(m1(iface+1));
-                    v2.push_back(m2(jface+1));
+                if(p1.Distance(p2) < Precision::Confusion()) {
+                    issame = true;
                 }
             }
+            if(!issame) {
+                v1.push_back(m1(iface+1));
+            }
         }
+
+        for(int iface = 0; iface < (int)pointsOn2.size(); ++iface){
+            bool issame = false;
+            gp_Pnt p2 = pointsOn2[iface];
+            for(int jface = 0; jface < (int)pointsOn1.size(); ++jface) {
+                gp_Pnt p1 = pointsOn1[jface];
+                if(p1.Distance(p2) < Precision::Confusion()) {
+                    issame = true;
+                }
+            }
+            if(!issame) {
+                v2.push_back(m2(iface+1));
+            }
+        }
+
         std::vector<TopoDS_Shape>::const_iterator it;
         for(it = v1.begin(); it != v1.end(); ++it){
             sewer.Add(*it);
