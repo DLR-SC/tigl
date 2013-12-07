@@ -24,6 +24,7 @@
 #include "tiglcommonfunctions.h"
 
 #include <cassert>
+#include <string>
 
 #include <BOPAlgo_PaveFiller.hxx>
 #include <BOPCol_ListOfShape.hxx>
@@ -44,8 +45,34 @@
 
 #include <Geom_Surface.hxx>
 #include <BRepBuilderAPI_MakeShape.hxx>
+#include <BRepBuilderAPI_MakeVertex.hxx>
 
 namespace {
+
+static unsigned int itrim = 0;
+
+
+// Writes shape and its central face points into brep file (for debugging purposes)
+void WriteDebugShape(const TopoDS_Shape& shape, const char * name) {
+    TopoDS_Compound c;
+    BRep_Builder b;
+    b.MakeCompound(c);
+
+    b.Add(c, shape);
+
+    TopTools_IndexedMapOfShape map;
+    TopExp::MapShapes(shape,   TopAbs_FACE, map);
+    for(int i = 1; i <= map.Extent(); ++i) {
+        const TopoDS_Face& face = TopoDS::Face(map(i));
+        gp_Pnt p = GetCentralFacePoint(face);
+        b.Add(c, BRepBuilderAPI_MakeVertex(p));
+    }
+
+    std::stringstream str;
+    str << "trim_" << itrim << "_" << name << ".brep";
+
+    BRepTools::Write(c, str.str().c_str());
+}
 
 TopoDS_Shape GetFacesNotInShape(BRepBuilderAPI_MakeShape& bop, const TopoDS_Shape& originalShape, const TopoDS_Shape& splittedShape, const TopoDS_Shape& shapeToExInclude, TrimOperation op){
 
@@ -170,6 +197,13 @@ void CTrimShape::PrepareFiller(){
 void CTrimShape::Perform()
 {
     if(!_hasPerformed) {
+        bool debug = (getenv("TIGL_DEBUG_BOP") != NULL);
+
+        if(debug) {
+            WriteDebugShape(_source.Shape(), "source");
+            WriteDebugShape(_tool.Shape(), "tool");
+        }
+
         PrepareFiller();
         GEOMAlgo_Splitter splitter;
         BOPBuilderShapeToBRepBuilderShapeAdapter splitAdapter(splitter);
@@ -177,11 +211,20 @@ void CTrimShape::Perform()
         splitter.AddTool(_tool.Shape());
         splitter.PerformWithFiller(*_dsfiller);
 
+        if(debug) {
+            WriteDebugShape(splitter.Shape(), "split");
+        }
+
         TopoDS_Shape trimmedShape = GetFacesNotInShape(splitAdapter, _source.Shape(), splitter.Shape(), _tool.Shape(), _operation);
         _resultshape = CNamedShape(trimmedShape, _source.Name());
         CBooleanOperTools::MapFaceNamesAfterBOP(splitAdapter, _source, _resultshape);
         CBooleanOperTools::MapFaceNamesAfterBOP(splitAdapter, _tool,   _resultshape);
 
+        if(debug) {
+            WriteDebugShape(_resultshape.Shape(), "result");
+        }
+
+        itrim++;
         _hasPerformed = true;
     }
 }
