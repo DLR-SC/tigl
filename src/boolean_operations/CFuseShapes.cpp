@@ -40,7 +40,7 @@
 //#define DEBUG_BOP
 
 CFuseShapes::CFuseShapes(const PNamedShape parent, const ListCNamedShape &childs)
-    : _resultshape(NULL)
+    : _resultshape()
 {
     Clear();
     _parent = parent;
@@ -93,10 +93,10 @@ void CFuseShapes::Clear()
     _hasPerformed = false;
     _intersections.clear();
     _trimmedChilds.clear();
-    _trimmedParent = NULL;
-    _parent = NULL;
+    _trimmedParent.reset();
+    _parent.reset();
     _childs.clear();
-    _resultshape = NULL;
+    _resultshape.reset();
 
 }
 

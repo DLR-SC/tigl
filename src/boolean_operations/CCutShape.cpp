@@ -30,14 +30,14 @@
 #define USE_OWN_ALGO
 
 CCutShape::CCutShape(const PNamedShape shape, const PNamedShape cuttingTool)
-    : _dsfiller(NULL), _source(shape), _tool(cuttingTool), _resultshape(NULL)
+    : _dsfiller(NULL), _source(shape), _tool(cuttingTool), _resultshape()
 {
     _fillerAllocated = false;
     _hasPerformed = false;
 }
 
 CCutShape::CCutShape(const PNamedShape shape, const PNamedShape cuttingTool, const BOPAlgo_PaveFiller & filler)
-    : _source(shape), _tool(cuttingTool), _resultshape(NULL)
+    : _source(shape), _tool(cuttingTool), _resultshape()
 {
     _fillerAllocated = false;
     _hasPerformed = false;
@@ -79,7 +79,7 @@ void CCutShape::Perform()
 {
     if(!_hasPerformed) {
         if(!_tool || !_source) {
-           _resultshape = NULL;
+           _resultshape.reset();
             return;
         }
 
