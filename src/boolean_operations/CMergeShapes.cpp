@@ -68,7 +68,7 @@ void CMergeShapes::Perform()
 
         // check input shapes
         if(!s1 && !s2) {
-            _resultshape = NULL;
+            _resultshape.reset();
             _hasPerformed = true;
             return;
         }
@@ -96,7 +96,7 @@ void CMergeShapes::Perform()
             return;
         }
         else if(s1->Shape().IsNull() && s2->Shape().IsNull()) {
-            _resultshape = NULL;
+            _resultshape.reset();
             _hasPerformed = true;
             return;
         }

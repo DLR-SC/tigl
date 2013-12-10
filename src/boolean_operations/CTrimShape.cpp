@@ -154,14 +154,14 @@ TopoDS_Shape GetFacesNotInShape(BRepBuilderAPI_MakeShape& bop, const TopoDS_Shap
 }
 
 CTrimShape::CTrimShape(const PNamedShape shape, const PNamedShape trimmingTool, TrimOperation op)
-    : _dsfiller(NULL), _source(shape), _tool(trimmingTool), _resultshape(NULL), _operation(op)
+    : _dsfiller(NULL), _source(shape), _tool(trimmingTool), _resultshape(), _operation(op)
 {
     _fillerAllocated = false;
     _hasPerformed = false;
 }
 
 CTrimShape::CTrimShape(const PNamedShape shape, const PNamedShape trimmingTool, const BOPAlgo_PaveFiller & filler, TrimOperation op)
-    : _source(shape), _tool(trimmingTool), _resultshape(NULL), _operation(op)
+    : _source(shape), _tool(trimmingTool), _resultshape(), _operation(op)
 {
     _fillerAllocated = false;
     _hasPerformed = false;
