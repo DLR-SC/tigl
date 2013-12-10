@@ -39,12 +39,12 @@ public:
     // sets mode for plane generation, by default a half plane is created
     void SetResultMode(TiglFuseResultMode mode);
 
-    const CNamedShape& NamedShape();
+    const PNamedShape NamedShape();
 
 private:
     void Perform();
 
-    CNamedShape _result;
+    PNamedShape _result;
     CCPACSConfiguration& _myconfig;
     TiglFuseResultMode _mymode;
     bool _hasPerformed;

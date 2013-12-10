@@ -22,6 +22,7 @@
 #include "GEOMAlgo_Splitter.hxx"
 #include "BOPBuilderShapeToBRepBuilderShapeAdapter.h"
 #include "tiglcommonfunctions.h"
+#include "CTiglError.h"
 
 #include <cassert>
 #include <string>
@@ -152,15 +153,15 @@ TopoDS_Shape GetFacesNotInShape(BRepBuilderAPI_MakeShape& bop, const TopoDS_Shap
 }
 }
 
-CTrimShape::CTrimShape(const CNamedShape &shape, const CNamedShape &trimmingTool, TrimOperation op)
-    : _dsfiller(NULL), _source(shape), _tool(trimmingTool), _operation(op)
+CTrimShape::CTrimShape(const PNamedShape shape, const PNamedShape trimmingTool, TrimOperation op)
+    : _dsfiller(NULL), _source(shape), _tool(trimmingTool), _resultshape(NULL), _operation(op)
 {
     _fillerAllocated = false;
     _hasPerformed = false;
 }
 
-CTrimShape::CTrimShape(const CNamedShape &shape, const CNamedShape &trimmingTool, const BOPAlgo_PaveFiller & filler, TrimOperation op)
-    : _source(shape), _tool(trimmingTool), _operation(op)
+CTrimShape::CTrimShape(const PNamedShape shape, const PNamedShape trimmingTool, const BOPAlgo_PaveFiller & filler, TrimOperation op)
+    : _source(shape), _tool(trimmingTool), _resultshape(NULL), _operation(op)
 {
     _fillerAllocated = false;
     _hasPerformed = false;
@@ -175,16 +176,20 @@ CTrimShape::~CTrimShape()
     }
 }
 
-CTrimShape::operator CNamedShape()
+CTrimShape::operator PNamedShape()
 {
     return NamedShape();
 }
 
 void CTrimShape::PrepareFiller(){
+    if(!_tool || !_source) {
+        return;
+    }
+
     if(!_dsfiller) {
         BOPCol_ListOfShape aLS;
-        aLS.Append(_tool.Shape());
-        aLS.Append(_source.Shape());
+        aLS.Append(_tool->Shape());
+        aLS.Append(_source->Shape());
 
         _dsfiller = new BOPAlgo_PaveFiller;
         _fillerAllocated = true;
@@ -197,31 +202,39 @@ void CTrimShape::PrepareFiller(){
 void CTrimShape::Perform()
 {
     if(!_hasPerformed) {
+        if(!_source) {
+            throw tigl::CTiglError("Null pointer for source argument in CTrimShape", TIGL_NULL_POINTER);
+        }
+
+        if(!_tool) {
+            throw tigl::CTiglError("Null pointer for tool argument in CTrimShape", TIGL_NULL_POINTER);
+        }
+
         bool debug = (getenv("TIGL_DEBUG_BOP") != NULL);
 
         if(debug) {
-            WriteDebugShape(_source.Shape(), "source");
-            WriteDebugShape(_tool.Shape(), "tool");
+            WriteDebugShape(_source->Shape(), "source");
+            WriteDebugShape(_tool->Shape(), "tool");
         }
 
         PrepareFiller();
         GEOMAlgo_Splitter splitter;
         BOPBuilderShapeToBRepBuilderShapeAdapter splitAdapter(splitter);
-        splitter.AddArgument(_source.Shape());
-        splitter.AddTool(_tool.Shape());
+        splitter.AddArgument(_source->Shape());
+        splitter.AddTool(_tool->Shape());
         splitter.PerformWithFiller(*_dsfiller);
 
         if(debug) {
             WriteDebugShape(splitter.Shape(), "split");
         }
 
-        TopoDS_Shape trimmedShape = GetFacesNotInShape(splitAdapter, _source.Shape(), splitter.Shape(), _tool.Shape(), _operation);
-        _resultshape = CNamedShape(trimmedShape, _source.Name());
-        CBooleanOperTools::MapFaceNamesAfterBOP(splitAdapter, _source, _resultshape);
-        CBooleanOperTools::MapFaceNamesAfterBOP(splitAdapter, _tool,   _resultshape);
+        TopoDS_Shape trimmedShape = GetFacesNotInShape(splitAdapter, _source->Shape(), splitter.Shape(), _tool->Shape(), _operation);
+        _resultshape = PNamedShape(new CNamedShape(trimmedShape, _source->Name()));
+        CBooleanOperTools::MapFaceNamesAfterBOP(splitAdapter, *_source, *_resultshape);
+        CBooleanOperTools::MapFaceNamesAfterBOP(splitAdapter, *_tool,   *_resultshape);
 
         if(debug) {
-            WriteDebugShape(_resultshape.Shape(), "result");
+            WriteDebugShape(_resultshape->Shape(), "result");
         }
 
         itrim++;
@@ -229,7 +242,7 @@ void CTrimShape::Perform()
     }
 }
 
-const CNamedShape &CTrimShape::NamedShape()
+const PNamedShape CTrimShape::NamedShape()
 {
     Perform();
     return _resultshape;

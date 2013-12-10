@@ -40,7 +40,7 @@
 
 #include <vector>
 
-CMergeShapes::CMergeShapes(const CNamedShape &shape, const CNamedShape &tool)
+CMergeShapes::CMergeShapes(const PNamedShape shape, const PNamedShape tool)
     : _source(shape), _tool(tool)
 {
     _hasPerformed = false;
@@ -52,7 +52,7 @@ CMergeShapes::~CMergeShapes()
 {
 }
 
-CMergeShapes::operator CNamedShape()
+CMergeShapes::operator PNamedShape()
 {
     return NamedShape();
 }
@@ -61,24 +61,42 @@ CMergeShapes::operator CNamedShape()
 void CMergeShapes::Perform()
 {
     if(!_hasPerformed) {
-        CNamedShape& s1 = _source;
-        CNamedShape& s2 = _tool;
+        PNamedShape s1 = _source;
+        PNamedShape s2 = _tool;
         std::vector<TopoDS_Shape> v1, v2;
 
 
         // check input shapes
-        if(s1.Shape().IsNull() && !s2.Shape().IsNull()) {
+        if(!s1 && !s2) {
+            _resultshape = NULL;
+            _hasPerformed = true;
+            return;
+        }
+
+        if(!s1 && s2 && !s2->Shape().IsNull()) {
             _resultshape = s2;
             _hasPerformed = true;
             return;
         }
-        else if(!s1.Shape().IsNull() && s2.Shape().IsNull()) {
+
+        if(!s2 && s1 && !s1->Shape().IsNull()) {
             _resultshape = s1;
             _hasPerformed = true;
             return;
         }
-        else if(s1.Shape().IsNull() && s2.Shape().IsNull()) {
-            _resultshape = CNamedShape();
+
+        if(s1->Shape().IsNull() && !s2->Shape().IsNull()) {
+            _resultshape = s2;
+            _hasPerformed = true;
+            return;
+        }
+        else if(!s1->Shape().IsNull() && s2->Shape().IsNull()) {
+            _resultshape = s1;
+            _hasPerformed = true;
+            return;
+        }
+        else if(s1->Shape().IsNull() && s2->Shape().IsNull()) {
+            _resultshape = NULL;
             _hasPerformed = true;
             return;
         }
@@ -87,8 +105,8 @@ void CMergeShapes::Perform()
         BRepBuilderAPI_Sewing sewer;
 
         TopTools_IndexedMapOfShape m1, m2;
-        TopExp::MapShapes(s1.Shape(), TopAbs_FACE, m1);
-        TopExp::MapShapes(s2.Shape(), TopAbs_FACE, m2);
+        TopExp::MapShapes(s1->Shape(), TopAbs_FACE, m1);
+        TopExp::MapShapes(s2->Shape(), TopAbs_FACE, m2);
 
         std::vector<gp_Pnt> pointsOn1, pointsOn2;
 
@@ -151,10 +169,10 @@ void CMergeShapes::Perform()
         TopoDS_Shape solid = solidMaker.Solid();
 
         // map names to shape
-        CNamedShape result(solid, "SEW_FUSE");
+        PNamedShape result(new CNamedShape(solid, "SEW_FUSE"));
         BRepSewingToBRepBuilderShapeAdapter adapter(sewer);
-        CBooleanOperTools::MapFaceNamesAfterBOP(adapter, s1, result);
-        CBooleanOperTools::MapFaceNamesAfterBOP(adapter, s2, result);
+        CBooleanOperTools::MapFaceNamesAfterBOP(adapter, *s1, *result);
+        CBooleanOperTools::MapFaceNamesAfterBOP(adapter, *s2, *result);
 
         _resultshape = result;
 
@@ -162,7 +180,7 @@ void CMergeShapes::Perform()
     }
 }
 
-const CNamedShape &CMergeShapes::NamedShape()
+const PNamedShape CMergeShapes::NamedShape()
 {
     Perform();
     return _resultshape;

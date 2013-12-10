@@ -228,7 +228,7 @@ gp_Pnt GetCentralFacePoint(const TopoDS_Face& face)
 
     // normally we should have at least two intersections
     // also the number of sections should be even - else something is really strange
-    assert(intersections.size() % 2 == 0);
+    //assert(intersections.size() % 2 == 0);
     if(intersections.size() >= 2) {
         std::sort(intersections.begin(), intersections.end());
         vmean = (intersections.at(0) + intersections.at(1))/2.;

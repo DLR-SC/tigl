@@ -18,6 +18,7 @@
 
 #include "CFuseShapes.h"
 
+#include "CTiglError.h"
 #include "CBooleanOperTools.h"
 #include "CTrimShape.h"
 #include "BRepSewingToBRepBuilderShapeAdapter.h"
@@ -38,7 +39,8 @@
 
 //#define DEBUG_BOP
 
-CFuseShapes::CFuseShapes(const CNamedShape &parent, const ListCNamedShape &childs)
+CFuseShapes::CFuseShapes(const PNamedShape parent, const ListCNamedShape &childs)
+    : _resultshape(NULL)
 {
     Clear();
     _parent = parent;
@@ -47,16 +49,15 @@ CFuseShapes::CFuseShapes(const CNamedShape &parent, const ListCNamedShape &child
 
 CFuseShapes::~CFuseShapes()
 {
-    Clear();
 }
 
-const CNamedShape &CFuseShapes::NamedShape()
+const PNamedShape CFuseShapes::NamedShape()
 {
     Perform();
     return _resultshape;
 }
 
-CFuseShapes::operator CNamedShape()
+CFuseShapes::operator PNamedShape()
 {
     return NamedShape();
 }
@@ -73,7 +74,7 @@ const ListCNamedShape &CFuseShapes::TrimmedChilds()
     return _trimmedChilds;
 }
 
-const CNamedShape &CFuseShapes::TrimmedParent()
+const PNamedShape CFuseShapes::TrimmedParent()
 {
     Perform();
     return _trimmedParent;
@@ -92,16 +93,20 @@ void CFuseShapes::Clear()
     _hasPerformed = false;
     _intersections.clear();
     _trimmedChilds.clear();
-    _trimmedParent.Clear();
-    _parent.Clear();
+    _trimmedParent = NULL;
+    _parent = NULL;
     _childs.clear();
-    _resultshape.Clear();
+    _resultshape = NULL;
 
 }
 
 /// This is the actual fusing
 void CFuseShapes::DoFuse()
 {
+    if (!_parent) {
+        throw tigl::CTiglError("Null pointer for parent shape in CFuseShapes", TIGL_NULL_POINTER);
+    }
+
     BRepBuilderAPI_Sewing shellMaker;
 
     _trimmedChilds.clear();
@@ -111,17 +116,20 @@ void CFuseShapes::DoFuse()
     TrimOperation parentTrim = EXCLUDE;
 
     // trim the childs with the parent and vice versa
-    _trimmedParent = _parent.DeepCopy();
+    _trimmedParent = _parent->DeepCopy();
     for (childIter = _childs.begin(); childIter != _childs.end(); ++childIter) {
-        const CNamedShape& child = *childIter;
+        const PNamedShape child = *childIter;
+        if(!child) {
+            continue;
+        }
 
 #ifdef DEBUG_BOP
         clock_t start, stop;
         start = clock();
 #endif
         BOPCol_ListOfShape aLS;
-        aLS.Append(_trimmedParent.Shape());
-        aLS.Append(child.Shape());
+        aLS.Append(_trimmedParent->Shape());
+        aLS.Append(child->Shape());
         BOPAlgo_PaveFiller DSFill;
         DSFill.SetArguments(aLS);
         DSFill.Perform();
@@ -133,8 +141,9 @@ void CFuseShapes::DoFuse()
 #endif
         // calculate intersection
         // Todo: make a new BOP out of this
-        TopoDS_Shape intersection = BRepAlgoAPI_Section(_trimmedParent.Shape(), child.Shape(), DSFill);
-        _intersections.push_back(CNamedShape(intersection, std::string("INT" + std::string(_parent.Name()) + child.Name()).c_str()));
+        TopoDS_Shape intersection = BRepAlgoAPI_Section(_trimmedParent->Shape(), child->Shape(), DSFill);
+        PNamedShape intersectionShape(new CNamedShape(intersection, std::string("INT" + std::string(_parent->Name()) + child->Name()).c_str()));
+        _intersections.push_back(intersectionShape);
 
 #ifdef DEBUG_BOP
         stop = clock();
@@ -150,7 +159,7 @@ void CFuseShapes::DoFuse()
 
         start = clock();
 #endif
-        CNamedShape trimmedChild = CTrimShape(child, _parent, DSFill, childTrim);
+        PNamedShape trimmedChild = CTrimShape(child, _parent, DSFill, childTrim);
         _trimmedChilds.push_back(trimmedChild);
 
 #ifdef DEBUG_BOP
@@ -161,11 +170,11 @@ void CFuseShapes::DoFuse()
 
     // add trimmed child faces to result
     for (childIter = _trimmedChilds.begin(); childIter != _trimmedChilds.end(); ++childIter) {
-        shellMaker.Add(childIter->Shape());
+        shellMaker.Add((*childIter)->Shape());
     }
 
     // add trimmed parent faces to result
-    shellMaker.Add(_trimmedParent.Shape());
+    shellMaker.Add(_trimmedParent->Shape());
     shellMaker.Perform();
 
     // make a solid out of the face collection
@@ -177,12 +186,13 @@ void CFuseShapes::DoFuse()
     // map names to shell
     CNamedShape resultShell(shell, "BOP_FUSE");
     for(childIter = _trimmedChilds.begin(); childIter != _trimmedChilds.end(); ++childIter) {
-        CNamedShape tmpshape(*childIter);
-        tmpshape.SetShape(shellMaker.ModifiedSubShape(childIter->Shape()));
+        const PNamedShape child = *childIter;
+        CNamedShape tmpshape(*child);
+        tmpshape.SetShape(shellMaker.ModifiedSubShape(child->Shape()));
         CBooleanOperTools::MapFaceNamesAfterBOP(sewerAdapter, tmpshape, resultShell);
     }
-    CNamedShape tmpshape(_trimmedParent);
-    tmpshape.SetShape(shellMaker.ModifiedSubShape(_trimmedParent.Shape()));
+    CNamedShape tmpshape(*_trimmedParent);
+    tmpshape.SetShape(shellMaker.ModifiedSubShape(_trimmedParent->Shape()));
     CBooleanOperTools::MapFaceNamesAfterBOP(sewerAdapter, tmpshape, resultShell);
 
     // map names to solid
@@ -194,8 +204,8 @@ void CFuseShapes::DoFuse()
         solidmaker.Add(shell);
     }
 
-    CNamedShape result(solidmaker.Solid(), resultShell.Name());
-    CBooleanOperTools::MapFaceNamesAfterBOP(solidmaker, resultShell, result);
+    PNamedShape result(new CNamedShape(solidmaker.Solid(), resultShell.Name()));
+    CBooleanOperTools::MapFaceNamesAfterBOP(solidmaker, resultShell, *result);
 
     _resultshape = result;
 }

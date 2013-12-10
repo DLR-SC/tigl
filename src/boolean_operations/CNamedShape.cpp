@@ -50,10 +50,10 @@ CNamedShape& CNamedShape::operator= (const CNamedShape& ns)
     return *this;
 }
 
-CNamedShape CNamedShape::DeepCopy() const
+PNamedShape CNamedShape::DeepCopy() const
 {
-    CNamedShape shape(*this);
-    shape._myshape = BRepBuilderAPI_Copy(_myshape);
+    PNamedShape shape(new CNamedShape(*this));
+    shape->_myshape = BRepBuilderAPI_Copy(_myshape);
 
     return shape;
 }
@@ -118,5 +118,8 @@ void CNamedShape::MakeFaceNamesFromName()
     for(unsigned int i = 0; i < GetFaceCount(); ++i) {
         _myfacenames.push_back(_myname);
     }
+}
+
+CNamedShape::~CNamedShape(){
 }
 
