@@ -32,14 +32,14 @@ class CTrimShape
 {
 public:
     // the trimming tool must be a solid!
-    CTrimShape(const CNamedShape& shape, const CNamedShape& trimmingTool, TrimOperation = EXCLUDE);
-    CTrimShape(const CNamedShape& shape, const CNamedShape& trimmingTool, const BOPAlgo_PaveFiller&, TrimOperation = EXCLUDE);
+    CTrimShape(const PNamedShape shape, const PNamedShape trimmingTool, TrimOperation = EXCLUDE);
+    CTrimShape(const PNamedShape shape, const PNamedShape trimmingTool, const BOPAlgo_PaveFiller&, TrimOperation = EXCLUDE);
     virtual ~CTrimShape();
 
-    operator CNamedShape ();
+    operator PNamedShape ();
 
     void Perform();
-    const CNamedShape& NamedShape();
+    const PNamedShape NamedShape();
 
 protected:
     void PrepareFiller();
@@ -47,7 +47,7 @@ protected:
     bool _hasPerformed;
     TrimOperation _operation;
 
-    CNamedShape _resultshape, _tool, _source;
+    PNamedShape _resultshape, _tool, _source;
     BOPAlgo_PaveFiller* _dsfiller;
     bool _fillerAllocated;
 

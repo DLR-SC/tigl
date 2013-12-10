@@ -27,21 +27,21 @@ class CCutShape
 {
 public:
     // the trimming tool must be a solid!
-    CCutShape(const CNamedShape& shape, const CNamedShape& cuttingTool);
-    CCutShape(const CNamedShape& shape, const CNamedShape& cuttingTool, const BOPAlgo_PaveFiller&);
+    CCutShape(const PNamedShape shape, const PNamedShape cuttingTool);
+    CCutShape(const PNamedShape shape, const PNamedShape cuttingTool, const BOPAlgo_PaveFiller&);
     virtual ~CCutShape();
 
-    operator CNamedShape ();
+    operator PNamedShape ();
 
     void Perform();
-    const CNamedShape& NamedShape();
+    const PNamedShape NamedShape();
 
 protected:
     void PrepareFiller();
 
     bool _hasPerformed;
 
-    CNamedShape _resultshape, _tool, _source;
+    PNamedShape _resultshape, _tool, _source;
     BOPAlgo_PaveFiller* _dsfiller;
     bool _fillerAllocated;
 

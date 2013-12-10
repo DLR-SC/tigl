@@ -29,15 +29,15 @@
 
 #define USE_OWN_ALGO
 
-CCutShape::CCutShape(const CNamedShape &shape, const CNamedShape &cuttingTool)
-    : _dsfiller(NULL), _source(shape), _tool(cuttingTool)
+CCutShape::CCutShape(const PNamedShape shape, const PNamedShape cuttingTool)
+    : _dsfiller(NULL), _source(shape), _tool(cuttingTool), _resultshape(NULL)
 {
     _fillerAllocated = false;
     _hasPerformed = false;
 }
 
-CCutShape::CCutShape(const CNamedShape &shape, const CNamedShape &cuttingTool, const BOPAlgo_PaveFiller & filler)
-    : _source(shape), _tool(cuttingTool)
+CCutShape::CCutShape(const PNamedShape shape, const PNamedShape cuttingTool, const BOPAlgo_PaveFiller & filler)
+    : _source(shape), _tool(cuttingTool), _resultshape(NULL)
 {
     _fillerAllocated = false;
     _hasPerformed = false;
@@ -52,16 +52,20 @@ CCutShape::~CCutShape()
     }
 }
 
-CCutShape::operator CNamedShape()
+CCutShape::operator PNamedShape()
 {
     return NamedShape();
 }
 
 void CCutShape::PrepareFiller(){
+    if(!_tool || !_source) {
+        return;
+    }
+
     if(!_dsfiller) {
         BOPCol_ListOfShape aLS;
-        aLS.Append(_tool.Shape());
-        aLS.Append(_source.Shape());
+        aLS.Append(_tool->Shape());
+        aLS.Append(_source->Shape());
 
         _dsfiller = new BOPAlgo_PaveFiller;
         _fillerAllocated = true;
@@ -74,31 +78,36 @@ void CCutShape::PrepareFiller(){
 void CCutShape::Perform()
 {
     if(!_hasPerformed) {
+        if(!_tool || !_source) {
+           _resultshape = NULL;
+            return;
+        }
+
         PrepareFiller();
 #ifdef USE_OWN_ALGO
         CTrimShape trim1(_source, _tool, *_dsfiller, EXCLUDE);
-        CNamedShape shape1 = trim1.NamedShape();
+        PNamedShape shape1 = trim1.NamedShape();
 
         CTrimShape trim2(_tool, _source, *_dsfiller, INCLUDE);
-        CNamedShape shape2 = trim2.NamedShape();
+        PNamedShape shape2 = trim2.NamedShape();
 
         _resultshape = CMergeShapes(shape1, shape2);
 #else
         // use opencascade cutting routine (might be buggy)
-        BRepAlgoAPI_Cut cutter(_source.Shape(), _tool.Shape(), *_dsfiller, Standard_True);
+        BRepAlgoAPI_Cut cutter(_source->Shape(), _tool->Shape(), *_dsfiller, Standard_True);
 
         TopoDS_Shape cuttedShape = cutter.Shape();
 
-        _resultshape = CNamedShape(cuttedShape, _source.Name());
-        CBooleanOperTools::MapFaceNamesAfterBOP(cutter, _source, _resultshape);
-        CBooleanOperTools::MapFaceNamesAfterBOP(cutter, _tool,   _resultshape);
+        _resultshape = PNamedShape(new CNamedShape(cuttedShape, _source->Name()));
+        CBooleanOperTools::MapFaceNamesAfterBOP(cutter, *_source, *_resultshape);
+        CBooleanOperTools::MapFaceNamesAfterBOP(cutter, *_tool,   *_resultshape);
 #endif
 
         _hasPerformed = true;
     }
 }
 
-const CNamedShape &CCutShape::NamedShape()
+const PNamedShape CCutShape::NamedShape()
 {
     Perform();
     return _resultshape;

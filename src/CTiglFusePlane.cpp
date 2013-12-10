@@ -41,7 +41,7 @@ void CTiglFusePlane::SetResultMode(TiglFuseResultMode mode)
     _mymode = mode;
 }
 
-const CNamedShape &CTiglFusePlane::NamedShape()
+const PNamedShape CTiglFusePlane::NamedShape()
 {
     Perform();
     return _result;
@@ -61,10 +61,10 @@ void CTiglFusePlane::Perform()
     }
 
     std::string rootName = rootComponent->GetUID();
-    CNamedShape rootShape    (rootComponent->GetLoft()        , rootName.c_str());
-    CNamedShape rootShapeMirr(rootComponent->GetMirroredLoft(), rootName.c_str());
+    PNamedShape rootShape    (new CNamedShape(rootComponent->GetLoft()        , rootName.c_str()));
+    PNamedShape rootShapeMirr(new CNamedShape(rootComponent->GetMirroredLoft(), rootName.c_str()));
 
-    CNamedShape rootMerged = CMergeShapes(rootShape, rootShapeMirr);
+    PNamedShape rootMerged = CMergeShapes(rootShape, rootShapeMirr);
 
     CTiglAbstractPhysicalComponent::ChildContainerType childs = rootComponent->GetChildren(false);
     CTiglAbstractPhysicalComponent::ChildContainerType::iterator childIt;
@@ -76,10 +76,10 @@ void CTiglFusePlane::Perform()
             continue;
         }
 
-        CNamedShape childShape    (child->GetLoft()        , child->GetUID().c_str());
-        CNamedShape childShapeMirr(child->GetMirroredLoft(), child->GetUID().c_str());
+        PNamedShape childShape    (new CNamedShape(child->GetLoft()        , child->GetUID().c_str()));
+        PNamedShape childShapeMirr(new CNamedShape(child->GetMirroredLoft(), child->GetUID().c_str()));
 
-        CNamedShape childMerged = CMergeShapes(childShape, childShapeMirr);
+        PNamedShape childMerged = CMergeShapes(childShape, childShapeMirr);
         childShapes.push_back(childMerged);
     }
     CFuseShapes fuser(rootMerged, childShapes);

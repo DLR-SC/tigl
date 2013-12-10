@@ -7,18 +7,18 @@ class CMergeShapes
 {
 public:
     // merges shapes with adjacent faces
-    CMergeShapes(const CNamedShape& shape, const CNamedShape& tool);
+    CMergeShapes(const PNamedShape shape, const PNamedShape tool);
     virtual ~CMergeShapes();
 
-    operator CNamedShape ();
+    operator PNamedShape ();
 
     void Perform();
-    const CNamedShape& NamedShape();
+    const PNamedShape NamedShape();
 
 protected:
     bool _hasPerformed;
 
-    CNamedShape _resultshape, _tool, _source;
+    PNamedShape _resultshape, _tool, _source;
 };
 
 #endif // CMERGESHAPES_H

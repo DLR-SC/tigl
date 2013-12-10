@@ -19,11 +19,16 @@
 #ifndef CNAMEDSHAPE_H
 #define CNAMEDSHAPE_H
 
+#include "CSharedPtr.h"
+
 #include <string>
 #include <vector>
 #include <TopoDS_Shape.hxx>
 
+class CNamedShape;
+
 typedef std::vector<std::string> StringList;
+typedef CSharedPtr<CNamedShape> PNamedShape;
 
 class CNamedShape
 {
@@ -32,9 +37,10 @@ public:
     CNamedShape(const TopoDS_Shape& shape, const char* shapeName);
     CNamedShape(const CNamedShape&);
     CNamedShape &operator= (const CNamedShape&);
+    ~CNamedShape();
 
     // creates a true copy, i.e. it duplicates the underlying shape
-    CNamedShape DeepCopy() const;
+    PNamedShape DeepCopy() const;
 
     void Clear();
 

@@ -116,7 +116,7 @@ namespace tigl {
     {
         if(fusedAirplane.IsNull()){
             CTiglFusePlane fuser(*this);
-            fusedAirplane = fuser.NamedShape().Shape();
+            fusedAirplane = fuser.NamedShape()->Shape();
         }
         return(fusedAirplane);
     }
