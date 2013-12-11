@@ -44,9 +44,20 @@
 #include <Geom2d_TrimmedCurve.hxx>
 #include <Geom2dAPI_InterCurveCurve.hxx>
 
-#include <vector>
+#include <list>
 #include <algorithm>
 #include <cassert>
+
+namespace {
+    struct IsSame {
+        IsSame(double tolerance) : _tol(tolerance) {}
+        bool operator() (double first, double second) {
+            return (fabs(first-second)<_tol);
+        }
+
+        double _tol;
+    };
+} // anonymous namespace
 
 Standard_Real GetWireLength(const TopoDS_Wire& wire)
 {
@@ -210,7 +221,7 @@ gp_Pnt GetCentralFacePoint(const TopoDS_Face& face)
                 );
 
     TopExp_Explorer exp (face,TopAbs_EDGE);
-    std::vector<double> intersections;
+    std::list<double> intersections;
     for(; exp.More(); exp.Next()) {
         TopoDS_Edge edge = TopoDS::Edge(exp.Current());
         Standard_Real first, last;
@@ -226,12 +237,19 @@ gp_Pnt GetCentralFacePoint(const TopoDS_Face& face)
         }
     }
 
+    // remove duplicate solutions defined by tolerance
+    double tolerance = 1e-5;
+    intersections.sort();
+    intersections.unique(IsSame((vmax-vmin)*tolerance));
+
     // normally we should have at least two intersections
     // also the number of sections should be even - else something is really strange
     //assert(intersections.size() % 2 == 0);
     if(intersections.size() >= 2) {
-        std::sort(intersections.begin(), intersections.end());
-        vmean = (intersections.at(0) + intersections.at(1))/2.;
+        std::list<double>::iterator it = intersections.begin();
+        double int1 = *it++;
+        double int2 = *it;
+        vmean = (int1 + int2)/2.;
     }
 
     surface->D0(umean, vmean, p);
