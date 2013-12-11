@@ -292,7 +292,8 @@ int CTiglTriangularizer::triangularizeFace(const TopoDS_Face & face, unsigned lo
             const gp_Pnt2d& uv_pnt = uvnodes(inode);
             gp_Pnt p; gp_Vec n;
             prop.Normal(uv_pnt.X(),uv_pnt.Y(),p,n);
-            n.Normalize();
+            if(n.SquareMagnitude() > 0.)
+                n.Normalize();
             if(face.Orientation() == TopAbs_INTERNAL)
                 n.Reverse();
             
