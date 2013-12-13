@@ -40,22 +40,19 @@
 
 #include "TopoDS_Wire.hxx"
 #include "Geom2d_TrimmedCurve.hxx"
+//#include "ITiglWingProfileAlgo.h"
 
 namespace tigl {
 
-    class ITiglWireAlgorithm;
 
-    typedef ITiglWireAlgorithm* WireAlgoPointer;
+    class ITiglWingProfileAlgo;
+    typedef ITiglWingProfileAlgo* ProfileAlgoPointer;
 
     class CCPACSWingProfile
     {
 
-    private:
-        // Typedef for a container to store the coordinates of a wing profile element.
-        typedef std::vector<CTiglPoint*> CCPACSCoordinateContainer;
-
     public:
-        // Constructor
+        // Algo
         CCPACSWingProfile(const std::string& aFilename);
 
         // Virtual Destructor
@@ -155,15 +152,8 @@ namespace tigl {
         std::string               name;
         std::string               description;
         std::string               uid;
-        CCPACSCoordinateContainer coordinates;    /**< Coordinates of a wing profile element */
         bool                      invalidated;    /**< Flag if element is invalid */
-        TopoDS_Wire               wireClosed;     /**< Forced closed wing profile wire */
-        TopoDS_Wire               wireOriginal;   /**< Original wing profile wire */
-        TopoDS_Wire               upperWire;      /**< wire of the upper wing profile */
-        TopoDS_Wire               lowerWire;      /**< wire of the lower wing profile */
-        gp_Pnt                    lePoint;        /**< Leading edge point */
-        gp_Pnt                    tePoint;        /**< Trailing edge point */
-        WireAlgoPointer           profileWireAlgo;
+        ProfileAlgoPointer        profileAlgo;
 
     };
 
