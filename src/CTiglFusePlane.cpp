@@ -27,6 +27,39 @@
 
 #include <string>
 
+namespace {
+std::string MakeShortName(tigl::CCPACSConfiguration& config, tigl::CTiglAbstractPhysicalComponent& comp){
+    if (comp.GetComponentType() & TIGL_COMPONENT_FUSELAGE) {
+        unsigned int index = 0;
+        for(int i = 1; i <= config.GetFuselageCount(); ++i) {
+            tigl::CCPACSFuselage& f = config.GetFuselage(i);
+            if(comp.GetUID() == f.GetUID()) {
+                index = i;
+                break;
+            }
+        }
+        std::stringstream str;
+        str << "F" << index;
+        return str.str();
+    }
+    else if (comp.GetComponentType() & TIGL_COMPONENT_WING) {
+        unsigned int index = 0;
+        for(int i = 1; i <= config.GetWingCount(); ++i) {
+            tigl::CCPACSWing& f = config.GetWing(i);
+            if(comp.GetUID() == f.GetUID()) {
+                index = i;
+                break;
+            }
+        }
+        std::stringstream str;
+        str << "W" << index;
+        return str.str();
+    }
+
+    return "UNKNOWN";
+}
+}
+
 namespace tigl {
 
 CTiglFusePlane::CTiglFusePlane(CCPACSConfiguration& config)
@@ -61,8 +94,12 @@ void CTiglFusePlane::Perform()
     }
 
     std::string rootName = rootComponent->GetUID();
+    std::string rootShortName = MakeShortName(_myconfig, *rootComponent);
     PNamedShape rootShape    (new CNamedShape(rootComponent->GetLoft()        , rootName.c_str()));
     PNamedShape rootShapeMirr(new CNamedShape(rootComponent->GetMirroredLoft(), rootName.c_str()));
+    rootShape->SetShortName(rootShortName.c_str());
+    rootShortName += "M";
+    rootShapeMirr->SetShortName(rootShortName.c_str());
 
     PNamedShape rootMerged = CMergeShapes(rootShape, rootShapeMirr);
 
@@ -75,9 +112,12 @@ void CTiglFusePlane::Perform()
         if(!child) {
             continue;
         }
-
         PNamedShape childShape    (new CNamedShape(child->GetLoft()        , child->GetUID().c_str()));
         PNamedShape childShapeMirr(new CNamedShape(child->GetMirroredLoft(), child->GetUID().c_str()));
+        std::string childShortName = MakeShortName(_myconfig, *child);
+        childShape->SetShortName(childShortName.c_str());
+        childShortName += "M";
+        childShapeMirr->SetShortName(childShortName.c_str());
 
         PNamedShape childMerged = CMergeShapes(childShape, childShapeMirr);
         childShapes.push_back(childMerged);

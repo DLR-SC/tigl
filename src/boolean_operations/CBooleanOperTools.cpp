@@ -30,28 +30,13 @@
 
 #include <BRepBuilderAPI_MakeShape.hxx>
 
-namespace {
-StringList CreateNameList(const TopoDS_Shape& shape, const std::string& shapeName){
-    StringList names;
-
-    TopTools_IndexedMapOfShape map;
-    TopExp::MapShapes(shape, TopAbs_FACE, map);
-    for(int i = 1; i <= map.Extent(); ++i){
-        names.push_back(shapeName);
-    }
-    return names;
-}
-
-}
-
-
 // finds out for each face of the splitted result, what the name of the parent face was
-void CBooleanOperTools::MapFaceNamesAfterBOP(BRepBuilderAPI_MakeShape& bop, const CNamedShape& source, CNamedShape& result) {
+void CBooleanOperTools::MapFaceNamesAfterBOP(BRepBuilderAPI_MakeShape& bop, const PNamedShape source, PNamedShape result) {
     TopTools_IndexedMapOfShape shapeMapSplit;
-    TopExp::MapShapes(result.Shape(),   TopAbs_FACE, shapeMapSplit);
+    TopExp::MapShapes(result->Shape(),   TopAbs_FACE, shapeMapSplit);
 
     TopTools_IndexedMapOfShape sourceMap;
-    TopExp::MapShapes(source.Shape(),   TopAbs_FACE, sourceMap);
+    TopExp::MapShapes(source->Shape(),   TopAbs_FACE, sourceMap);
 
     // find newly created from source
     for(int iface = 1; iface <= sourceMap.Extent(); ++iface) {
@@ -62,7 +47,9 @@ void CBooleanOperTools::MapFaceNamesAfterBOP(BRepBuilderAPI_MakeShape& bop, cons
             unsigned int index = shapeMapSplit.FindIndex(it.Value());
 
             if(index > 0) {
-                result.SetFaceTraits(index-1, source.GetFaceTraits(iface-1));
+                CFaceTraits traits = CFaceTraits::DerivedFromShape(source, iface-1);
+                result->SetFaceTraits(index-1, traits);
+
             }
         }
     }
@@ -76,16 +63,17 @@ void CBooleanOperTools::MapFaceNamesAfterBOP(BRepBuilderAPI_MakeShape& bop, cons
  * can be found in the source shape. If so, it applies the name of
  * the source face to the target face
  */
-void CBooleanOperTools::AppendNamesToShape(const CNamedShape& source, CNamedShape& target){
+void CBooleanOperTools::AppendNamesToShape(const PNamedShape source, PNamedShape target){
     TopTools_IndexedMapOfShape targetMap, sourceMap;
-    TopExp::MapShapes(target.Shape(),   TopAbs_FACE, targetMap);
-    TopExp::MapShapes(source.Shape(),   TopAbs_FACE, sourceMap);
+    TopExp::MapShapes(target->Shape(),   TopAbs_FACE, targetMap);
+    TopExp::MapShapes(source->Shape(),   TopAbs_FACE, sourceMap);
 
     for(int iface = 1; iface <= sourceMap.Extent(); ++iface) {
         const TopoDS_Face& face =  TopoDS::Face(sourceMap(iface));
         unsigned int index = targetMap.FindIndex(face);
         if(index > 0){
-            target.SetFaceTraits(index-1, source.GetFaceTraits(iface-1));
+            CFaceTraits traits = CFaceTraits::DerivedFromShape(source, iface-1);
+            target->SetFaceTraits(index-1, traits);
         }
     }
 }

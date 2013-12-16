@@ -171,8 +171,8 @@ void CMergeShapes::Perform()
         // map names to shape
         PNamedShape result(new CNamedShape(solid, "SEW_FUSE"));
         BRepSewingToBRepBuilderShapeAdapter adapter(sewer);
-        CBooleanOperTools::MapFaceNamesAfterBOP(adapter, *s1, *result);
-        CBooleanOperTools::MapFaceNamesAfterBOP(adapter, *s2, *result);
+        CBooleanOperTools::MapFaceNamesAfterBOP(adapter, s1, result);
+        CBooleanOperTools::MapFaceNamesAfterBOP(adapter, s2, result);
 
         _resultshape = result;
 

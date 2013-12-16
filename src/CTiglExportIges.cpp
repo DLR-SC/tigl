@@ -60,7 +60,13 @@ void RegisterShape(Handle(XCAFDoc_ShapeTool) myAssembly, const CNamedShape& shap
             TopoDS_Face face = TopoDS::Face(faceMap(iface));
             TDF_Label faceLabel = myAssembly->NewShape();
             myAssembly->SetShape(faceLabel, face);
-            TDataStd_Name::Set(faceLabel, shape.GetFaceTraits(iface-1).Name());
+            std::string name = shape.ShortName();
+            PNamedShape origin = shape.GetFaceTraits(iface-1).Origin();
+            if(origin){
+                name = origin->ShortName();
+            }
+
+            TDataStd_Name::Set(faceLabel, name.c_str());
         }
     }
     else {
