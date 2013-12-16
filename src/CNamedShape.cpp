@@ -32,6 +32,7 @@ CNamedShape::CNamedShape()
 CNamedShape::CNamedShape(const TopoDS_Shape &shape, const char *shapeName)
     : _myshape(shape), _myname(shapeName)
 {
+    SetShortName(shapeName);
     InitFaceTraits();
 }
 
@@ -45,6 +46,7 @@ CNamedShape& CNamedShape::operator= (const CNamedShape& ns)
 {
     _myshape = ns._myshape;
     _myname  = ns._myname;
+    _myshortName = ns._myshortName;
     _myfaceTraits = ns._myfaceTraits;
 
     return *this;
@@ -62,6 +64,7 @@ void CNamedShape::Clear()
 {
     _myshape.Nullify();
     _myname = "UNKNOWN";
+    _myshortName = "UNKNOWN";
     _myfaceTraits.clear();
 }
 
@@ -71,6 +74,10 @@ const TopoDS_Shape& CNamedShape::Shape() const{
 
 const char* CNamedShape::Name()  const {
     return _myname.c_str();
+}
+
+const char* CNamedShape::ShortName()  const {
+    return _myshortName.c_str();
 }
 
 unsigned int CNamedShape::GetFaceCount() const
@@ -88,6 +95,15 @@ void CNamedShape::SetShape(const TopoDS_Shape& shape)
 void CNamedShape::SetName(const char * name)
 {
     _myname = name;
+}
+
+
+void CNamedShape::SetShortName(const char* name) {
+    std::string sname = name;
+    if(sname.size() > 8) {
+        sname = sname.substr(0,8);
+    }
+    _myshortName = sname;
 }
 
 void CNamedShape::InitFaceTraits()
@@ -139,5 +155,12 @@ const PNamedShape CFaceTraits::Origin() const {
     return _origin;
 }
 
+CFaceTraits CFaceTraits::DerivedFromShape(PNamedShape origin, unsigned int iface) {
+    CFaceTraits traits = origin->GetFaceTraits(iface);
+    if(!traits.Origin()) {
+        traits.SetOrigin(origin);
+    }
+    return traits;
+}
 
 

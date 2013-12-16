@@ -46,6 +46,8 @@ public:
     
     const PNamedShape Origin() const;
     void SetOrigin(const PNamedShape);
+
+    static CFaceTraits DerivedFromShape(PNamedShape origin, unsigned int iface);
     
     const char* Name() const;
     void SetName(const char* );
@@ -77,6 +79,7 @@ public:
     // getters
     const TopoDS_Shape& Shape() const;
     const char*         Name()  const;
+    const char*         ShortName() const;
 
     unsigned int GetFaceCount() const;
     const CFaceTraits& GetFaceTraits(int iFace) const;
@@ -84,6 +87,7 @@ public:
     // setters
     void SetShape(const TopoDS_Shape&);
     void SetName(const char*);
+    void SetShortName(const char*);
     void SetFaceTraits(int iFace, const CFaceTraits& traits);
 
 protected:
@@ -91,6 +95,7 @@ protected:
 
     TopoDS_Shape  _myshape;
     std::string   _myname;
+    std::string   _myshortName;
     FaceList      _myfaceTraits;
 };
 

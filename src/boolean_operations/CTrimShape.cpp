@@ -230,8 +230,8 @@ void CTrimShape::Perform()
 
         TopoDS_Shape trimmedShape = GetFacesNotInShape(splitAdapter, _source->Shape(), splitter.Shape(), _tool->Shape(), _operation);
         _resultshape = PNamedShape(new CNamedShape(trimmedShape, _source->Name()));
-        CBooleanOperTools::MapFaceNamesAfterBOP(splitAdapter, *_source, *_resultshape);
-        CBooleanOperTools::MapFaceNamesAfterBOP(splitAdapter, *_tool,   *_resultshape);
+        CBooleanOperTools::MapFaceNamesAfterBOP(splitAdapter, _source, _resultshape);
+        CBooleanOperTools::MapFaceNamesAfterBOP(splitAdapter, _tool,   _resultshape);
 
         if(debug) {
             WriteDebugShape(_resultshape->Shape(), "result");
