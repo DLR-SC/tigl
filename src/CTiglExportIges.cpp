@@ -26,8 +26,10 @@
 #include "CTiglExportIges.h"
 #include "CCPACSImportExport.h"
 #include "CCPACSConfiguration.h"
+#include "CNamedShape.h"
 
 #include "TopoDS_Shape.hxx"
+#include "TopoDS_Edge.hxx"
 #include "Standard_CString.hxx"
 #include "IGESControl_Controller.hxx"
 #include "IGESControl_Writer.hxx"
@@ -35,8 +37,51 @@
 #include "IGESCAFControl_Writer.hxx"
 #include "Interface_Static.hxx"
 #include "BRepAlgoAPI_Cut.hxx"
+#include "ShapeAnalysis_FreeBounds.hxx"
 
+#include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopTools_IndexedMapOfShape.hxx>
+#include <TopTools_HSequenceOfShape.hxx>
 
+#include <TDocStd_Document.hxx>
+#include <TDF_Label.hxx>
+#include <TDataStd_Name.hxx>
+#include <XCAFApp_Application.hxx>
+#include <XCAFDoc_DocumentTool.hxx>
+#include <XCAFDoc_ShapeTool.hxx>
+
+namespace {
+void RegisterShape(Handle(XCAFDoc_ShapeTool) myAssembly, const CNamedShape& shape) {
+    TopTools_IndexedMapOfShape faceMap;
+    TopExp::MapShapes(shape.Shape(),   TopAbs_FACE, faceMap);
+    if(faceMap.Extent() > 0) {
+        for(int iface = 1; iface <= faceMap.Extent(); ++iface) {
+            TopoDS_Face face = TopoDS::Face(faceMap(iface));
+            TDF_Label faceLabel = myAssembly->NewShape();
+            myAssembly->SetShape(faceLabel, face);
+            TDataStd_Name::Set(faceLabel, shape.GetFaceTraits(iface-1).Name());
+        }
+    }
+    else {
+        // no faces, export edges as wires
+        Handle(TopTools_HSequenceOfShape) Edges = new TopTools_HSequenceOfShape();
+        TopExp_Explorer myEdgeExplorer (shape.Shape(), TopAbs_EDGE);
+        while (myEdgeExplorer.More())
+        {
+            Edges->Append(TopoDS::Edge(myEdgeExplorer.Current()));
+            myEdgeExplorer.Next();
+        }
+        ShapeAnalysis_FreeBounds::ConnectEdgesToWires(Edges, 1e-7, false, Edges);
+        for(int iwire = 1; iwire <= Edges->Length(); ++iwire) {
+            TDF_Label wireLabel = myAssembly->NewShape();
+            myAssembly->SetShape(wireLabel, Edges->Value(iwire));
+            TDataStd_Name::Set(wireLabel, shape.Name());
+        }
+    }
+}
+
+}
 
 namespace tigl {
 
@@ -120,38 +165,33 @@ namespace tigl {
     // Exports the whole configuration as one fused part to an IGES file
     void CTiglExportIges::ExportFusedIGES(const std::string& filename)
     {
-        TopoDS_Shape fusedAirplane = myConfig.GetFusedAirplane();
-
-        IGESControl_Controller::Init();
-
         if( filename.empty()) {
            LOG(ERROR) << "Error: Empty filename in ExportFusedIGES.";
            return;
         }
 
-        IGESControl_Writer igesWriter;
-        SetTranslationParamters();
-        igesWriter.Model()->ApplyStatic(); // apply set parameters
-
-
-        // if we have a far field, do boolean subtract of plane from far-field
-        if (myConfig.GetFarField().GetFieldType() != NONE) {
-            try {
-                LOG(INFO) << "Trimming plane with far field...";
-                TopoDS_Shape& farField = myConfig.GetFarField().GetLoft();
-                fusedAirplane = BRepAlgoAPI_Cut(farField, fusedAirplane);
-                LOG(INFO) << "Done trimming.";
-            }
-            catch(Standard_ConstructionError& err) {
-                LOG(ERROR) << "OpenCascade error: " << err.GetMessageString();
-                LOG(ERROR) << "Can not trim plane with far field. Far field will not be part of IGES export.";
-            }
+        PNamedShape fusedAirplane = myConfig.GetFusedAirplane();
+        if(!fusedAirplane) {
+            throw CTiglError("Error computing fused airplane.", TIGL_NULL_POINTER);
         }
 
-        igesWriter.AddShape(fusedAirplane);
+        // create the xde document
+        Handle(XCAFApp_Application) hApp = XCAFApp_Application::GetApplication();
+        Handle(TDocStd_Document) hDoc;
+        hApp->NewDocument("MDTV-XCAF", hDoc);
+        Handle(XCAFDoc_ShapeTool) myAssembly = XCAFDoc_DocumentTool::ShapeTool(hDoc->Main());
 
-        // Write IGES file
-        igesWriter.ComputeModel();
+        IGESControl_Controller::Init();
+
+        RegisterShape(myAssembly, *fusedAirplane);
+
+        SetTranslationParamters();
+        IGESCAFControl_Writer igesWriter;
+        igesWriter.Model()->ApplyStatic(); // apply set parameters
+        if (igesWriter.Transfer(hDoc) == Standard_False) {
+            throw CTiglError("Cannot export fused airplane as IGES", TIGL_ERROR);
+        }
+
         if (igesWriter.Write(const_cast<char*>(filename.c_str())) != Standard_True)
             throw CTiglError("Error: Export fused shapes to IGES file failed in CTiglExportIges::ExportFusedIGES", TIGL_ERROR);
     }

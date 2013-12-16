@@ -76,7 +76,7 @@ namespace tigl {
     // Exports a whole geometry, boolean fused and meshed, as STL file
     void CTiglExportStl::ExportMeshedGeometrySTL(const std::string& filename, double deflection)
     {
-        TopoDS_Shape loft = myConfig.GetFusedAirplane();
+        TopoDS_Shape loft = myConfig.GetFusedAirplane()->Shape();
 
         BRepMesh::Mesh(loft, deflection);
         StlAPI_Writer *StlWriter = new StlAPI_Writer();

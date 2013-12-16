@@ -26,10 +26,40 @@
 #include <TopoDS_Shape.hxx>
 
 class CNamedShape;
+class CFaceTraits;
 
 typedef std::vector<std::string> StringList;
+typedef std::vector<CFaceTraits> FaceList;
 typedef CSharedPtr<CNamedShape> PNamedShape;
 
+/**
+ * @brief The CFaceTraits class stores face metadata like
+ * a reference to the shape where the face was originally created
+ * in and its name.
+ */
+class CFaceTraits {
+public:
+    CFaceTraits();
+    
+    unsigned int Index() const;
+    void SetIndex(unsigned int);
+    
+    const PNamedShape Origin() const;
+    void SetOrigin(const PNamedShape);
+    
+    const char* Name() const;
+    void SetName(const char* );
+    
+private:
+    PNamedShape  _origin;        /** Pointer to the original shape where this face was created */
+    unsigned int _indexInOrigin; /** Index of face in original shape */
+    std::string   _faceName;     /** Name of the face */
+};
+
+/**
+ * @brief The CNamedShape class stores a TopoDS_Shape and additional
+ * metadata to origin of faces, names and history
+ */
 class CNamedShape
 {
 public:
@@ -48,25 +78,20 @@ public:
     const TopoDS_Shape& Shape() const;
     const char*         Name()  const;
 
-    const StringList& FaceNames() const;
-
-
-    const char* GetFaceName(int iFace) const;
     unsigned int GetFaceCount() const;
-
+    const CFaceTraits& GetFaceTraits(int iFace) const;
+    
     // setters
-    void SetFaceName(int iFace, const char* faceName);
-    void SetFaceNames(const StringList&);
-
     void SetShape(const TopoDS_Shape&);
     void SetName(const char*);
+    void SetFaceTraits(int iFace, const CFaceTraits& traits);
 
 protected:
-    void MakeFaceNamesFromName();
+    void InitFaceTraits();
 
     TopoDS_Shape  _myshape;
     std::string   _myname;
-    StringList    _myfacenames;
+    FaceList      _myfaceTraits;
 };
 
 #endif // CNAMEDSHAPE_H

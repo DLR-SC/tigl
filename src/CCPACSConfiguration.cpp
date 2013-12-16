@@ -70,7 +70,7 @@ namespace tigl {
     {
         wings.Invalidate();
         fuselages.Invalidate();
-        fusedAirplane.Nullify();
+        fusedAirplane.reset();
         shapeCache.Clear();
         configUID = "";
     }
@@ -112,11 +112,11 @@ namespace tigl {
 
 
     // Returns the boolean fused airplane as TopoDS_Shape
-    TopoDS_Shape& CCPACSConfiguration::GetFusedAirplane(void)
+    PNamedShape CCPACSConfiguration::GetFusedAirplane(void)
     {
-        if(fusedAirplane.IsNull()){
+        if(! fusedAirplane){
             CTiglFusePlane fuser(*this);
-            fusedAirplane = fuser.NamedShape()->Shape();
+            fusedAirplane = fuser.NamedShape();
         }
         return(fusedAirplane);
     }
@@ -192,7 +192,8 @@ namespace tigl {
         // fuse childs with root
         if(!fusedChilds.IsNull()){
             try{
-                fusedAirplane = BRepAlgoAPI_Fuse(parentShape, fusedChilds);
+                TopoDS_Shape result = BRepAlgoAPI_Fuse(parentShape, fusedChilds);
+                fusedAirplane = PNamedShape(new CNamedShape(result, "FusedPlane"));
                 LOG(INFO) << (++ifuse)/(double)fuseCount * 100. << "% ";
             }
             catch(...){
@@ -200,7 +201,7 @@ namespace tigl {
             }
         }
         else
-            fusedAirplane = parentShape;
+            fusedAirplane = PNamedShape(new CNamedShape(parentShape, "FusedPlane"));
     }
 
     // Returns the underlying tixi document handle used by a CPACS configuration

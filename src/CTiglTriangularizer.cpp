@@ -99,7 +99,7 @@ CTiglTriangularizer::CTiglTriangularizer(CTiglAbstractPhysicalComponent& comp, d
 CTiglTriangularizer::CTiglTriangularizer(CCPACSConfiguration &config, bool fuseShapes, double deflection, ComponentTraingMode mode) {
     if(fuseShapes){
         CTiglAbstractPhysicalComponent* pRoot =  config.GetUIDManager().GetRootComponent();
-        TopoDS_Shape& planeShape = config.GetFusedAirplane();
+        TopoDS_Shape planeShape = config.GetFusedAirplane()->Shape();
         useMultipleObjects(false);
         triangularizeComponent(*pRoot, true, planeShape, deflection, mode);
     }
