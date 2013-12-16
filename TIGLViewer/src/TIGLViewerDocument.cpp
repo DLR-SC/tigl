@@ -60,6 +60,8 @@
 #include "CTiglIntersectionCalculation.h"
 #include "TIGLViewerEtaXsiDialog.h"
 #include "CTiglExportVtk.h"
+#include "CCPACSWingProfilePointList.h"
+#include "CTiglPoint.h"
 
 #define max(a,b) ((a) > (b) ? (a) : (b))
 
@@ -480,17 +482,33 @@ void TIGLViewerDocument::drawWingProfiles()
         displayShape(le_te_edge, Quantity_NOC_GOLD);
     }
 
-    if(profile.GetCoordinateContainer().size() < 15) {
-        for(unsigned int i = 0; i < profile.GetCoordinateContainer().size(); ++i){
-            tigl::CTiglPoint * p = profile.GetCoordinateContainer().at(i);
+    // check if profile is a point list and get the point list
+    bool fewPoints=false;
+    std::vector<tigl::CTiglPoint*> fewPointList;
+    if(profile.GetProfileType()==tigl::POINT_LIST)
+    {
+        tigl::ProfileAlgoPointer profilePointer = profile.GetProfileAlgo();
+        tigl::CCPACSWingProfilePointList* profilePointList = dynamic_cast<tigl::CCPACSWingProfilePointList*> (profilePointer.get());
+        if (profilePointList)
+        {
+            fewPointList = profilePointList->GetCoordinateContainer();
+            fewPoints=true;
+        }
+    }
+    // display points in case of a few points in the point list
+    if (fewPoints && fewPointList.size() < 15)
+    {
+        for(unsigned int i = 0; i<fewPointList.size(); ++i)
+        {
+            tigl::CTiglPoint * p = fewPointList.at(i);
             std::stringstream str;
             str << i << ": (" << p->x << ", " << p->y << ", " << p->z << ")";
             gp_Pnt pnt = p->Get_gp_Pnt();
             DisplayPoint(pnt, str.str().c_str(), Standard_False, 0., 0., 0., 6.);
         }
-
     }
-    else {
+    else
+    {
       // Draw some points on the wing profile
       for (double xsi = 0.1; xsi <= 0.9; xsi = xsi + 0.2)
       {
@@ -543,23 +561,82 @@ void TIGLViewerDocument::drawWingOverlayProfilePoints()
 
     for (int i = 1; i <= wing.GetSegmentCount(); i++)
     {
-        // Draw inner profile points
+        // Get segment
         tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(i);
-        std::vector<tigl::CTiglPoint*> innerPoints = segment.GetRawInnerProfilePoints();
-        for (std::vector<tigl::CTiglPoint*>::size_type i = 0; i < innerPoints.size(); i++)
+        // Get inner profile
+        tigl::CCPACSWingConnection& innerConnection = segment.GetInnerConnection();
+        tigl::CCPACSWingProfile& innerProfile = innerConnection.GetProfile();
+        // check if inner profile is a point list
+        if (innerProfile.GetProfileType()==tigl::POINT_LIST)
         {
-            gp_Pnt pnt = innerPoints[i]->Get_gp_Pnt();
-            pnt = wing.GetWingTransformation().Transform(pnt);
-            DisplayPoint(pnt, "", Standard_False, 0.0, 0.0, 0.0, 2.0);
+            // casting to profile point list
+            tigl::ProfileAlgoPointer innerProfilePointer = innerProfile.GetProfileAlgo();
+            tigl::CCPACSWingProfilePointList* innerProfilePointList = dynamic_cast<tigl::CCPACSWingProfilePointList*> (innerProfilePointer.get());
+            // check if casting to profile list was successful
+            if (innerProfilePointList)
+            {
+                // get points and transform them
+                std::vector<tigl::CTiglPoint*> points = innerProfilePointList->GetCoordinateContainer();
+                std::vector<tigl::CTiglPoint*> innerPoints;
+                for (std::vector<tigl::CTiglPoint*>::size_type i = 0; i < points.size(); i++)
+                {
+
+                    gp_Pnt pnt = points[i]->Get_gp_Pnt();
+
+                    pnt = innerConnection.GetSectionElementTransformation().Transform(pnt);
+                    pnt = innerConnection.GetSectionTransformation().Transform(pnt);
+                    pnt = innerConnection.GetPositioningTransformation().Transform(pnt);
+
+                    tigl::CTiglPoint *tiglPoint = new tigl::CTiglPoint(pnt.X(), pnt.Y(), pnt.Z());
+                    innerPoints.push_back(tiglPoint);
+                }
+
+                // Draw inner profile points
+                for (std::vector<tigl::CTiglPoint*>::size_type i = 0; i < innerPoints.size(); i++)
+                {
+                    gp_Pnt pnt = innerPoints[i]->Get_gp_Pnt();
+                    pnt = wing.GetWingTransformation().Transform(pnt);
+                    DisplayPoint(pnt, "", Standard_False, 0.0, 0.0, 0.0, 2.0);
+                }
+            }
         }
 
-        // Draw outer profile points
-        std::vector<tigl::CTiglPoint*> outerPoints = segment.GetRawOuterProfilePoints();
-        for (std::vector<tigl::CTiglPoint*>::size_type i = 0; i < outerPoints.size(); i++)
+        // Get outer profile
+        tigl::CCPACSWingConnection& outerConnection = segment.GetOuterConnection();
+        tigl::CCPACSWingProfile& outerProfile = outerConnection.GetProfile();
+        // check if outer profile is a point list
+        if (outerProfile.GetProfileType()==tigl::POINT_LIST)
         {
-            gp_Pnt pnt = outerPoints[i]->Get_gp_Pnt();
-            pnt = wing.GetWingTransformation().Transform(pnt);
-            DisplayPoint(pnt, "", Standard_False, 0.0, 0.0, 0.0, 2.0);
+            // casting to profile point list
+            tigl::ProfileAlgoPointer outerProfilePointer = outerProfile.GetProfileAlgo();
+            tigl::CCPACSWingProfilePointList* outerProfilePointList = dynamic_cast<tigl::CCPACSWingProfilePointList*> (outerProfilePointer.get());
+            // check if casting to profile list was successful
+            if (outerProfilePointList)
+            {
+                // get points and transform them
+                std::vector<tigl::CTiglPoint*> points = outerProfilePointList->GetCoordinateContainer();
+                std::vector<tigl::CTiglPoint*> outerPoints;
+                for (std::vector<tigl::CTiglPoint*>::size_type i = 0; i < points.size(); i++)
+                {
+
+                    gp_Pnt pnt = points[i]->Get_gp_Pnt();
+
+                    pnt = outerConnection.GetSectionElementTransformation().Transform(pnt);
+                    pnt = outerConnection.GetSectionTransformation().Transform(pnt);
+                    pnt = outerConnection.GetPositioningTransformation().Transform(pnt);
+
+                    tigl::CTiglPoint *tiglPoint = new tigl::CTiglPoint(pnt.X(), pnt.Y(), pnt.Z());
+                    outerPoints.push_back(tiglPoint);
+                }
+
+                // Draw outer profile points
+                for (std::vector<tigl::CTiglPoint*>::size_type i = 0; i < outerPoints.size(); i++)
+                {
+                    gp_Pnt pnt = outerPoints[i]->Get_gp_Pnt();
+                    pnt = wing.GetWingTransformation().Transform(pnt);
+                    DisplayPoint(pnt, "", Standard_False, 0.0, 0.0, 0.0, 2.0);
+                }
+            }
         }
     }
 }
