@@ -48,7 +48,7 @@ namespace tigl
         virtual std::vector<CTiglPoint*> GetCoordinateContainer()  = 0;
 
         // Builds the wing profile wires.
-        virtual void BuildWires(gp_Pnt & upperPoint)  = 0;
+        virtual void BuildWires()  = 0;
 
         // Builds leading and trailing edge points of the wing profile wire.
         virtual void BuildLETEPoints(void) = 0;

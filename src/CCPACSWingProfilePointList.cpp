@@ -35,6 +35,7 @@
 #include "gp_Vec2d.hxx"
 #include "gp_Dir2d.hxx"
 #include "gp_Pln.hxx"
+#include "Bnd_Box.hxx"
 #include "Geom2d_Line.hxx"
 #include "Geom2d_TrimmedCurve.hxx"
 #include "TopoDS.hxx"
@@ -52,6 +53,7 @@
 #include "BRepTools_WireExplorer.hxx"
 #include "BRepBuilderAPI_MakeEdge.hxx"
 #include "BRepBuilderAPI_MakeWire.hxx"
+#include "BRepBndLib.hxx"
 #include "ShapeFix_Wire.hxx"
 #include "CTiglInterpolateBsplineWire.h"
 #include "CTiglInterpolateLinearWire.h"
@@ -180,7 +182,7 @@ namespace tigl {
 
     // Builds the wing profile wire. The returned wire is already transformed by the
     // wing profile element transformation.
-    void CCPACSWingProfilePointList::BuildWires(gp_Pnt& upperPoint)
+    void CCPACSWingProfilePointList::BuildWires()
     {
         ITiglWireAlgorithm::CPointContainer points;
         for (CCPACSCoordinateContainer::size_type i = 0; i < coordinates.size(); i++)
@@ -218,31 +220,53 @@ namespace tigl {
         wireOriginal = TopoDS::Wire(tempShapeOriginal);
         
         BuildLETEPoints();
-        
+
+        // Create upper and lower wires
+        // Get BSpline curve
         Handle_Geom_BSplineCurve curve = BRepAdaptor_CompCurve(wireOriginal).BSpline();
+        // Get Leading edge parameter on curve
         double lep_par = GeomAPI_ProjectPointOnCurve(lePoint, curve).LowerDistanceParameter();
-        double upperPnt_par  = GeomAPI_ProjectPointOnCurve(upperPoint, curve).LowerDistanceParameter();
         
-        TopoDS_Edge upper_edge, lower_edge;
+        // upper and lower edges
+        TopoDS_Edge edge1, edge2;
+        edge1 = BRepBuilderAPI_MakeEdge(curve,curve->FirstParameter(), lep_par);
+        edge2 = BRepBuilderAPI_MakeEdge(curve,lep_par, curve->LastParameter());
+
+        // Get maximal z-values of both edges via bounding box
+        Bnd_Box boundingBox1;
+        Bnd_Box boundingBox2;
+        Standard_Real xmin, ymin, zmin, xmax, ymax, zmax1, zmax2;
+        BRepBndLib::Add(edge1, boundingBox1);
+        BRepBndLib::Add(edge2, boundingBox2);
+        boundingBox1.Get(xmin, ymin, zmin, xmax, ymax, zmax1);
+        boundingBox2.Get(xmin, ymin, zmin, xmax, ymax, zmax2);
+
+
+        // Trailing edge points
         gp_Pnt te_up, te_down;
-        if(upperPnt_par < lep_par){
+        // Find out which edge is on top and asign upper and lower edge
+        TopoDS_Edge lower_edge, upper_edge;
+        if(zmax2<zmax1)
+        {
             //wire goes from top to bottom
-            upper_edge = BRepBuilderAPI_MakeEdge(curve,curve->FirstParameter(), lep_par);
-            lower_edge = BRepBuilderAPI_MakeEdge(curve,lep_par, curve->LastParameter());
+            upper_edge = edge1;
+            lower_edge = edge2;
             te_up = curve->StartPoint();
             te_down = curve->EndPoint();
         }
         else {
             //wire goes from bottom to top
-            lower_edge = BRepBuilderAPI_MakeEdge(curve,curve->FirstParameter(), lep_par);
-            upper_edge = BRepBuilderAPI_MakeEdge(curve,lep_par, curve->LastParameter());
+            lower_edge = edge1;
+            upper_edge = edge2;
             te_up = curve->EndPoint();
             te_down = curve->StartPoint();
         }
-
+        // Wire builder
         BRepBuilderAPI_MakeWire upperWireBuilder, lowerWireBuilder;
+
         //check if we have to close upper and lower wing shells
-        if(te_up.Distance(te_down) > Precision::Confusion()){
+        if(te_up.Distance(te_down) > Precision::Confusion())
+        {
             lowerWireBuilder.Add(BRepBuilderAPI_MakeEdge(te_up,te_down));
         }
 

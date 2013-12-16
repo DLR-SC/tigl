@@ -72,7 +72,6 @@ namespace tigl {
     // Destructor
     CCPACSWingProfile::~CCPACSWingProfile(void)
     {
-        delete profileAlgo;
         Cleanup();
     }
 
@@ -83,7 +82,10 @@ namespace tigl {
         description = "";
         uid = "";
 
-        profileAlgo->Cleanup();
+        if(profileAlgo)
+        {
+            profileAlgo->Cleanup();
+        }
 
         Invalidate();
     }
@@ -104,12 +106,14 @@ namespace tigl {
             {
                 profileAlgo=ProfileAlgoPointer(new CCPACSWingProfilePointList(pointListPath));
                 profileAlgo->ProfileDataXPath=pointListPath;
+                profileType=pointList;
             }
             else if (tixiCheckElement(tixiHandle, const_cast<char*>(cst2DPath.c_str())) == SUCCESS) 
             {
                 throw CTiglError("Error: cst2D not yet implemented in CCPACSWingProfile::CCPACSWingProfile", TIGL_XML_ERROR);
                 //profileAlgo=ProfileAlgoPointer(new CCPACSWingProfileCST(cst2DPath));
                 //profileAlgo->ProfileDataXPath=cst2DPath;
+                //profileType=cst;
             }
             else
             {
@@ -182,10 +186,8 @@ namespace tigl {
         if (!invalidated)
             return;
 
-        // get upper point for BuildWires()
-        gp_Pnt upperPoint = GetUpperPoint(0.5);
         // build wires
-        profileAlgo->BuildWires(upperPoint);
+        profileAlgo->BuildWires();
         invalidated = false;
     }
 
@@ -387,10 +389,8 @@ namespace tigl {
     // wing profile element transformation.
     void CCPACSWingProfile::BuildWires(void)
     {
-        // get upper point for BuildWires()
-        gp_Pnt upperPoint = GetUpperPoint(0.5);
         // build wires
-        profileAlgo->BuildWires(upperPoint);
+        profileAlgo->BuildWires();
     }
 
     // Builds leading and trailing edge points of the wing profile wire.

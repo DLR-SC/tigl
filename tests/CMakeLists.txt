@@ -18,6 +18,9 @@ if(GLOG_FOUND)
   TARGET_LINK_LIBRARIES(${test_BIN} ${GLOG_LIBRARIES})
 endif(GLOG_FOUND)
 
+# boost
+include_directories(${PROJECT_SOURCE_DIR}/thirdparty/boost_1_55_0)
+
 ADD_CUSTOM_TARGET(check ${test_BIN} --gtest_output=xml DEPENDS ${test_BIN} COMMENT "Executing unit tests..." VERBATIM SOURCES ${test_SRCS})
 ADD_CUSTOM_TARGET(test DEPENDS check)
 
