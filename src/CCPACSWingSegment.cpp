@@ -581,50 +581,6 @@ namespace tigl {
         return profilePoint;
     }
 
-    // Returns the inner profile points as read from TIXI. The points are already transformed.
-    std::vector<CTiglPoint*> CCPACSWingSegment::GetRawInnerProfilePoints()
-    {
-        CCPACSWingProfile& innerProfile = innerConnection.GetProfile();
-        std::vector<CTiglPoint*> points = innerProfile.GetCoordinateContainer();
-        std::vector<CTiglPoint*> pointsTransformed;
-        for (std::vector<tigl::CTiglPoint*>::size_type i = 0; i < points.size(); i++) {
-            
-            gp_Pnt pnt = points[i]->Get_gp_Pnt();
-
-            pnt = innerConnection.GetSectionElementTransformation().Transform(pnt);
-            pnt = innerConnection.GetSectionTransformation().Transform(pnt);
-            pnt = innerConnection.GetPositioningTransformation().Transform(pnt);
-
-            CTiglPoint *tiglPoint = new CTiglPoint(pnt.X(), pnt.Y(), pnt.Z());
-            pointsTransformed.push_back(tiglPoint);
-
-        }
-        return pointsTransformed;
-    }
-
-
-    // Returns the outer profile points as read from TIXI. The points are already transformed.
-    std::vector<CTiglPoint*> CCPACSWingSegment::GetRawOuterProfilePoints()
-    {
-        CCPACSWingProfile& outerProfile = outerConnection.GetProfile();
-        std::vector<CTiglPoint*> points = outerProfile.GetCoordinateContainer();
-        std::vector<CTiglPoint*> pointsTransformed;
-        for (std::vector<tigl::CTiglPoint*>::size_type i = 0; i < points.size(); i++) {
-            
-            gp_Pnt pnt = points[i]->Get_gp_Pnt();
-
-            pnt = outerConnection.GetSectionElementTransformation().Transform(pnt);
-            pnt = outerConnection.GetSectionTransformation().Transform(pnt);
-            pnt = outerConnection.GetPositioningTransformation().Transform(pnt);
-
-            CTiglPoint *tiglPoint = new CTiglPoint(pnt.X(), pnt.Y(), pnt.Z());
-            pointsTransformed.push_back(tiglPoint);
-
-        }
-        return pointsTransformed;
-    }
-
-
     // TODO: remove this function if favour of Standard GetEta
     double CCPACSWingSegment::GetEta(gp_Pnt pnt, double xsi)
     {

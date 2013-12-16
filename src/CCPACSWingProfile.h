@@ -50,7 +50,7 @@ namespace tigl {
 
     typedef CSharedPtr<ITiglWingProfileAlgo> ProfileAlgoPointer;
 
-    enum ProfileAlgoType {pointList, cst};
+    enum ProfileAlgoType {POINT_LIST, CST};
 
 
     class CCPACSWingProfile
@@ -119,8 +119,10 @@ namespace tigl {
         // point is equal to trailing edge.
         gp_Pnt GetLowerPoint(double xsi);
 
-        // Returns the profile points as read from TIXI.
-        std::vector<CTiglPoint*> GetCoordinateContainer();
+        // get profile algorithm type
+        ProfileAlgoType GetProfileType(void) const;
+        // get pointer to profile algorithm
+        ProfileAlgoPointer GetProfileAlgo(void) const;
 
     protected:
         // Cleanup routine
@@ -144,6 +146,7 @@ namespace tigl {
 
         // Helper function to determine the chord line between leading and trailing edge in the profile plane
         Handle(Geom2d_TrimmedCurve) GetChordLine();
+
 
     private:
         // Copy constructor

@@ -34,13 +34,15 @@
 #include <string>
 #include <memory>
 
+#include "ITiglWingProfileAlgo.h"
+
 #include "tixi.h"
 #include "CTiglPoint.h"
 #include "CTiglTransformation.h"
 
 #include "TopoDS_Wire.hxx"
 #include "Geom2d_TrimmedCurve.hxx"
-//#include "ITiglWingProfileAlgo.h"
+
 
 namespace tigl 
 {
