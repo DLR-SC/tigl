@@ -34,9 +34,9 @@
 #include "CCPACSFuselages.h"
 #include "CCPACSFuselageProfile.h"
 #include "CCPACSFarField.h"
-#include "TopoDS_Compound.hxx"
 #include "BRep_Builder.hxx"
 #include "CTiglShapeCache.h"
+#include "CNamedShape.h"
 
 namespace tigl {
 
@@ -104,7 +104,7 @@ namespace tigl {
         CTiglUIDManager& GetUIDManager(void);
 
         // Returns the boolean fused airplane as TopoDS_Shape
-        TopoDS_Shape& GetFusedAirplane(void);
+        PNamedShape GetFusedAirplane(void);
 
         // Returns the length of the airplane
         double GetAirplaneLenth(void);
@@ -134,7 +134,7 @@ namespace tigl {
         CCPACSFuselages              fuselages;            /**< Configuration fuselages element */
         CCPACSFarField               farField;             /**< Far field configuration for CFD tools */
         CTiglUIDManager              uidManager;           /**< Stores the unique ids of the components */
-        TopoDS_Shape                 fusedAirplane;        /**< The complete airplaine as one fused shape */
+        PNamedShape                  fusedAirplane;        /**< The complete airplaine as one fused shape */
         std::string                  configUID;            /**< UID of the opened configuration   */
         CTiglShapeCache              shapeCache;
     };

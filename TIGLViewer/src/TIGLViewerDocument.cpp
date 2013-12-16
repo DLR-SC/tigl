@@ -1385,7 +1385,7 @@ void TIGLViewerDocument::drawFusedAircraft()
 {
     QApplication::setOverrideCursor( Qt::WaitCursor );
     try {
-        TopoDS_Shape& airplane = GetConfiguration().GetFusedAirplane();
+        TopoDS_Shape airplane = GetConfiguration().GetFusedAirplane()->Shape();
         myAISContext->EraseAll(Standard_False);
         displayShape(airplane);
     }
@@ -1401,7 +1401,7 @@ void TIGLViewerDocument::drawFusedAircraft()
 void TIGLViewerDocument::drawFusedAircraftTriangulation()
 {
     QApplication::setOverrideCursor( Qt::WaitCursor );
-    TopoDS_Shape& airplane = GetConfiguration().GetFusedAirplane();
+    TopoDS_Shape airplane = GetConfiguration().GetFusedAirplane()->Shape();
     myAISContext->EraseAll(Standard_False);
     TopoDS_Compound triangulation;
     createShapeTriangulation(airplane, triangulation);

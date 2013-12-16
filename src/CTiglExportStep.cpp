@@ -134,7 +134,7 @@ namespace tigl {
     // Exports the whole configuration as one fused part to an STEP file
     void CTiglExportStep::ExportFusedStep(const std::string& filename)
     {
-        TopoDS_Shape fusedAirplane = myConfig.GetFusedAirplane();
+        TopoDS_Shape fusedAirplane = myConfig.GetFusedAirplane()->Shape();
 
         STEPControl_Controller::Init();
         STEPControl_Writer            stepWriter;
