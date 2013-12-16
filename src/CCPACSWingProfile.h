@@ -32,7 +32,6 @@
 
 #include <vector>
 #include <string>
-#include <memory>
 
 #include "tixi.h"
 #include "CTiglPoint.h"
@@ -40,13 +39,19 @@
 
 #include "TopoDS_Wire.hxx"
 #include "Geom2d_TrimmedCurve.hxx"
-//#include "ITiglWingProfileAlgo.h"
+
+#include "CSharedPtr.h"
+
 
 namespace tigl {
 
 
     class ITiglWingProfileAlgo;
-    typedef ITiglWingProfileAlgo* ProfileAlgoPointer;
+
+    typedef CSharedPtr<ITiglWingProfileAlgo> ProfileAlgoPointer;
+
+    enum ProfileAlgoType {pointList, cst};
+
 
     class CCPACSWingProfile
     {
@@ -154,6 +159,7 @@ namespace tigl {
         std::string               uid;
         bool                      invalidated;    /**< Flag if element is invalid */
         ProfileAlgoPointer        profileAlgo;
+        ProfileAlgoType           profileType;
 
     };
 
