@@ -20,7 +20,7 @@
 */
 /**
 * @file 
-* @brief  Definition of the interface which encapsulates different wing profile algorithms (constructors). 
+* @brief  Definition of the interface which encapsulates different wing profile algorithms (point list, CST profile, etc.).
 */
 
 #ifndef ITIGLWINGPROFILEALGO_H
@@ -45,7 +45,7 @@ namespace tigl
 
 
         // Returns the profile points as read from TIXI.
-        virtual std::vector<CTiglPoint*> GetCoordinateContainer()  = 0;
+        virtual std::vector<CTiglPoint*> GetCoordinateContainer() const = 0;
 
         // Builds the wing profile wires.
         virtual void BuildWires()  = 0;

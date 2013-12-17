@@ -120,7 +120,7 @@ namespace tigl {
         gp_Pnt GetLowerPoint(double xsi);
 
         // get profile algorithm type
-        ProfileAlgoType GetProfileType(void) const;
+        ProfileAlgoType GetProfileAlgoType(void) const;
         // get pointer to profile algorithm
         ProfileAlgoPointer GetProfileAlgo(void) const;
 
@@ -156,13 +156,13 @@ namespace tigl {
         void operator=(const CCPACSWingProfile& );
 
     private:
-        std::string               ProfileXPath;
-        std::string               name;
-        std::string               description;
-        std::string               uid;
+        std::string               ProfileXPath;   /**< CPACS path to wing profile */
+        std::string               name;           /**< CPACS wing profile name */
+        std::string               description;    /**< CPACS wing profile description */
+        std::string               uid;            /**< CPACS wing profile UID */
         bool                      invalidated;    /**< Flag if element is invalid */
-        ProfileAlgoPointer        profileAlgo;
-        ProfileAlgoType           profileType;
+        ProfileAlgoPointer        profileAlgo;    /**< Pointer to wing profile algorithm (pointList, CST, etc.) */
+        ProfileAlgoType           profileAlgoType;    /**< Wing profile algorithm type (pointList, CST, etc.) */
 
     };
 

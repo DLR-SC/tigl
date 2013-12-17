@@ -106,14 +106,14 @@ namespace tigl {
             {
                 profileAlgo=ProfileAlgoPointer(new CCPACSWingProfilePointList(pointListPath));
                 profileAlgo->ProfileDataXPath=pointListPath;
-                profileType=POINT_LIST;
+                profileAlgoType=POINT_LIST;
             }
             else if (tixiCheckElement(tixiHandle, const_cast<char*>(cst2DPath.c_str())) == SUCCESS) 
             {
                 throw CTiglError("Error: cst2D not yet implemented in CCPACSWingProfile::CCPACSWingProfile", TIGL_XML_ERROR);
                 //profileAlgo=ProfileAlgoPointer(new CCPACSWingProfileCST(cst2DPath));
                 //profileAlgo->ProfileDataXPath=cst2DPath;
-                //profileType=CST;
+                //profileAlgoType=CST;
             }
             else
             {
@@ -400,9 +400,9 @@ namespace tigl {
     }
 
     // get profile algorithm type
-    ProfileAlgoType CCPACSWingProfile::GetProfileType(void) const
+    ProfileAlgoType CCPACSWingProfile::GetProfileAlgoType(void) const
     {
-        return profileType;
+        return profileAlgoType;
     }
 
     // get pointer to profile algorithm

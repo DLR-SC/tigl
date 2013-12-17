@@ -485,7 +485,7 @@ void TIGLViewerDocument::drawWingProfiles()
     // check if profile is a point list and get the point list
     bool fewPoints=false;
     std::vector<tigl::CTiglPoint*> fewPointList;
-    if(profile.GetProfileType()==tigl::POINT_LIST)
+    if(profile.GetProfileAlgoType()==tigl::POINT_LIST)
     {
         tigl::ProfileAlgoPointer profilePointer = profile.GetProfileAlgo();
         tigl::CCPACSWingProfilePointList* profilePointList = dynamic_cast<tigl::CCPACSWingProfilePointList*> (profilePointer.get());
@@ -567,7 +567,7 @@ void TIGLViewerDocument::drawWingOverlayProfilePoints()
         tigl::CCPACSWingConnection& innerConnection = segment.GetInnerConnection();
         tigl::CCPACSWingProfile& innerProfile = innerConnection.GetProfile();
         // check if inner profile is a point list
-        if (innerProfile.GetProfileType()==tigl::POINT_LIST)
+        if (innerProfile.GetProfileAlgoType()==tigl::POINT_LIST)
         {
             // casting to profile point list
             tigl::ProfileAlgoPointer innerProfilePointer = innerProfile.GetProfileAlgo();
@@ -605,7 +605,7 @@ void TIGLViewerDocument::drawWingOverlayProfilePoints()
         tigl::CCPACSWingConnection& outerConnection = segment.GetOuterConnection();
         tigl::CCPACSWingProfile& outerProfile = outerConnection.GetProfile();
         // check if outer profile is a point list
-        if (outerProfile.GetProfileType()==tigl::POINT_LIST)
+        if (outerProfile.GetProfileAlgoType()==tigl::POINT_LIST)
         {
             // casting to profile point list
             tigl::ProfileAlgoPointer outerProfilePointer = outerProfile.GetProfileAlgo();

@@ -20,7 +20,7 @@
 */
 /**
 * @file
-* @brief  Implementation of CPACS wing profile handling routines.
+* @brief  Implementation of CPACS wing profile as a point list.
 *
 * The wing profile is defined by a list of points. The list starts at the
 * trailing edge moves around the leading edge and goes back to the trailing
@@ -71,7 +71,7 @@ namespace tigl
         void ReadCPACS(TixiDocumentHandle tixiHandle);
 
         // Returns the profile points as read from TIXI.
-        std::vector<CTiglPoint*> GetCoordinateContainer();
+        std::vector<CTiglPoint*> GetCoordinateContainer() const;
 
         // Builds the wing profile wires.
         void BuildWires();
@@ -88,7 +88,7 @@ namespace tigl
 
         private:
         CCPACSCoordinateContainer coordinates;    /**< Coordinates of a wing profile element */
-        WireAlgoPointer           profileWireAlgo;
+        WireAlgoPointer           profileWireAlgo;/**< Pointer to wire algorithm (e.g. CTiglInterpolateBsplineWire) */
     };
 
 } // end namespace tigl
