@@ -20,7 +20,7 @@
 */
 /**
 * @file
-* @brief  Implementation of CPACS point list wing profile routines.
+* @brief  Implementation of CPACS wing profile as a point list.
 */
 
 #include <iostream>
@@ -310,7 +310,7 @@ namespace tigl {
         tePoint.SetY(0.);
     }
     // Returns the profile points as read from TIXI.
-    std::vector<CTiglPoint*> CCPACSWingProfilePointList::GetCoordinateContainer()
+    std::vector<CTiglPoint*> CCPACSWingProfilePointList::GetCoordinateContainer() const
     {
         std::vector<CTiglPoint*> newPointVector;
         for (CCPACSCoordinateContainer::size_type i = 0; i < coordinates.size(); i++)
