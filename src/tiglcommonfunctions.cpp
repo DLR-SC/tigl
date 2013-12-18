@@ -24,16 +24,20 @@
 #include "tiglcommonfunctions.h"
 
 #include "CTiglError.h"
+#include "CNamedShape.h"
 
 #include "Geom_Curve.hxx"
 #include "Geom_Surface.hxx"
 #include "BRep_Tool.hxx"
 #include "BRepTools_WireExplorer.hxx"
 #include "TopExp_Explorer.hxx"
+#include "TopExp.hxx"
 #include "TopoDS.hxx"
+#include "TopTools_IndexedMapOfShape.hxx"
 #include "GeomAdaptor_Curve.hxx"
 #include "BRepAdaptor_CompCurve.hxx"
 #include "GCPnts_AbscissaPoint.hxx"
+#include "BRep_Builder.hxx"
 #include "BRepBuilderAPI_MakeWire.hxx"
 #include "BRepBuilderAPI_MakeEdge.hxx"
 #include "GeomAPI_ProjectPointOnCurve.hxx"
@@ -255,6 +259,37 @@ gp_Pnt GetCentralFacePoint(const TopoDS_Face& face)
     surface->D0(umean, vmean, p);
 
     return p;
+}
+
+ShapeMap MapFacesToShapeGroups(const PNamedShape shape){
+    ShapeMap map;
+    if(!shape) {
+        return map;
+    }
+
+    BRep_Builder b;
+    TopTools_IndexedMapOfShape faceMap;
+    TopExp::MapShapes(shape->Shape(),   TopAbs_FACE, faceMap);
+    for(int iface = 1; iface <= faceMap.Extent(); ++iface) {
+        TopoDS_Face face = TopoDS::Face(faceMap(iface));
+        std::string name = shape->ShortName();
+        PNamedShape origin = shape->GetFaceTraits(iface-1).Origin();
+        if(origin){
+            name = origin->ShortName();
+        }
+        ShapeMap::iterator it = map.find(name);
+        if(it == map.end()) {
+            TopoDS_Compound c;
+            b.MakeCompound(c);
+            b.Add(c, face);
+            map[name] = c;
+        }
+        else {
+            TopoDS_Shape& c = it->second;
+            b.Add(c, face);
+        }
+    }
+    return map;
 }
 
 

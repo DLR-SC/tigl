@@ -18,6 +18,7 @@
 
 #include "CFuseShapes.h"
 
+#include "CNamedShape.h"
 #include "CTiglError.h"
 #include "CBooleanOperTools.h"
 #include "CTrimShape.h"

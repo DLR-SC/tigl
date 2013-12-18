@@ -34,6 +34,7 @@
 #include "CCPACSWingProfile.h"
 #include "CCPACSFuselages.h"
 #include "CCPACSFuselageProfile.h"
+#include "PNamedShape.h"
 
 class CCPACSConfiguration;
 
@@ -43,6 +44,12 @@ namespace tigl {
     {
 
     public:
+        enum IgesOCAFStoreType {
+            WHOLE_SHAPE,           /** Inserts the shape as it is into IGES. All faces will be named correctly but they will not be grouped by name */
+            NAMED_COMPOUNDS,       /** Collects all faces with the same origin into compounds. All faces are named correctly */
+            FACES                  /** Exports each face as its own group. The group name and the face name are identical    */
+        };
+
         // Constructor
         CTiglExportIges(CCPACSConfiguration& config);
 
@@ -58,12 +65,17 @@ namespace tigl {
         // Save a sequence of shapes in IGES Format
         void ExportShapes(const Handle(TopTools_HSequenceOfShape)& aHSequenceOfShape, const std::string& filename);
 
+        // Sets the type of storing shapes to iges
+        void SetOCAFStoreType(IgesOCAFStoreType type);
+
 #ifdef TIGL_USE_XCAF
         // Saves as IGES, with cpacs metadata information in it
         void ExportIgesWithCPACSMetadata(const std::string& filename);
 #endif
     protected:
-        
+#ifdef TIGL_USE_XCAF
+        void GroupAndInsertShapeToCAF(Handle_XCAFDoc_ShapeTool myAssembly, const PNamedShape shape);
+#endif
 
     private:
         // Assignment operator
@@ -71,6 +83,7 @@ namespace tigl {
 
     private:
         CCPACSConfiguration&          myConfig;       /**< TIGL configuration object */
+        IgesOCAFStoreType             myStoreType;    /**< Type specifying how to translate shapes into an OCAF document */
         void SetTranslationParamters() const;
     };
 

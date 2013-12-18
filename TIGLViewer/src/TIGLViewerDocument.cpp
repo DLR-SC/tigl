@@ -60,6 +60,7 @@
 #include "CTiglIntersectionCalculation.h"
 #include "TIGLViewerEtaXsiDialog.h"
 #include "CTiglExportVtk.h"
+#include "tiglcommonfunctions.h"
 
 #define max(a,b) ((a) > (b) ? (a) : (b))
 
@@ -1385,9 +1386,22 @@ void TIGLViewerDocument::drawFusedAircraft()
 {
     QApplication::setOverrideCursor( Qt::WaitCursor );
     try {
-        TopoDS_Shape airplane = GetConfiguration().GetFusedAirplane()->Shape();
+        PNamedShape airplane = GetConfiguration().GetFusedAirplane();
         myAISContext->EraseAll(Standard_False);
-        displayShape(airplane);
+        ShapeMap map = MapFacesToShapeGroups(airplane);
+        ShapeMap::iterator it;
+        int icol = 0;
+        Quantity_NameOfColor colors[] = {Quantity_NOC_BLUE4,
+                                         Quantity_NOC_RED,
+                                         Quantity_NOC_GREEN,
+                                         Quantity_NOC_MAGENTA1,
+                                         Quantity_NOC_AZURE,
+                                         Quantity_NOC_FIREBRICK};
+        int ncolors = sizeof(colors)/sizeof(Quantity_NameOfColor);
+        for(it = map.begin(); it != map.end(); ++it) {
+            if(icol >= ncolors) icol = 0;
+            displayShape(it->second, colors[icol++]);
+        }
     }
     catch(tigl::CTiglError & error){
         std::cerr << error.getError() << std::endl;

@@ -1,7 +1,7 @@
 #ifndef CMERGESHAPES_H
 #define CMERGESHAPES_H
 
-#include "CNamedShape.h"
+#include "PNamedShape.h"
 
 class CMergeShapes
 {

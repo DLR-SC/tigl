@@ -19,7 +19,7 @@
 #ifndef CFUSESHAPES_H
 #define CFUSESHAPES_H
 
-#include "CNamedShape.h"
+#include "PNamedShape.h"
 #include <vector>
 
 typedef std::vector<PNamedShape> ListCNamedShape;

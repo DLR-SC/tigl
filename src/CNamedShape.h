@@ -20,17 +20,16 @@
 #define CNAMEDSHAPE_H
 
 #include "CSharedPtr.h"
+#include "PNamedShape.h"
 
 #include <string>
 #include <vector>
 #include <TopoDS_Shape.hxx>
 
-class CNamedShape;
 class CFaceTraits;
 
 typedef std::vector<std::string> StringList;
 typedef std::vector<CFaceTraits> FaceList;
-typedef CSharedPtr<CNamedShape> PNamedShape;
 
 /**
  * @brief The CFaceTraits class stores face metadata like

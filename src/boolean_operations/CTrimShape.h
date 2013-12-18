@@ -19,7 +19,7 @@
 #ifndef CTRIMSHAPE_H
 #define CTRIMSHAPE_H
 
-#include "CNamedShape.h"
+#include "PNamedShape.h"
 
 class BOPAlgo_PaveFiller;
 

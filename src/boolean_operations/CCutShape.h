@@ -19,7 +19,7 @@
 #ifndef CCUTSHAPE_H
 #define CCUTSHAPE_H
 
-#include "CNamedShape.h"
+#include "PNamedShape.h"
 
 class BOPAlgo_PaveFiller;
 

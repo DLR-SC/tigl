@@ -1,4 +1,4 @@
-/* 
+/*
 * Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
 *
 * Created: 2010-08-13 Markus Litz <Markus.Litz@dlr.de>
@@ -27,6 +27,7 @@
 #include "CCPACSImportExport.h"
 #include "CCPACSConfiguration.h"
 #include "CNamedShape.h"
+#include "tiglcommonfunctions.h"
 
 #include "TopoDS_Shape.hxx"
 #include "TopoDS_Edge.hxx"
@@ -34,7 +35,6 @@
 #include "IGESControl_Controller.hxx"
 #include "IGESControl_Writer.hxx"
 #include "IGESData_IGESModel.hxx"
-#include "IGESCAFControl_Writer.hxx"
 #include "Interface_Static.hxx"
 #include "BRepAlgoAPI_Cut.hxx"
 #include "ShapeAnalysis_FreeBounds.hxx"
@@ -42,52 +42,57 @@
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
-#include <TopTools_HSequenceOfShape.hxx>
 
+// IGES export
+#include <TransferBRep_ShapeMapper.hxx>
+#include <Transfer_FinderProcess.hxx>
+#include <TransferBRep.hxx>
+#include <IGESData_IGESEntity.hxx>
+
+#ifdef TIGL_USE_XCAF
+// OCAF
 #include <TDocStd_Document.hxx>
 #include <TDF_Label.hxx>
 #include <TDataStd_Name.hxx>
+// XCAF, TODO: Get rid of xcaf
 #include <XCAFApp_Application.hxx>
 #include <XCAFDoc_DocumentTool.hxx>
 #include <XCAFDoc_ShapeTool.hxx>
+#include "IGESCAFControl_Writer.hxx"
+#endif
+
+#include <map>
 
 namespace {
-void RegisterShape(Handle(XCAFDoc_ShapeTool) myAssembly, const CNamedShape& shape) {
-    TopTools_IndexedMapOfShape faceMap;
-    TopExp::MapShapes(shape.Shape(),   TopAbs_FACE, faceMap);
-    if(faceMap.Extent() > 0) {
+
+    /**
+     * @brief WriteIGESFaceNames takes the names of each face and writes it into the IGES model.
+     */
+    void WriteIGESFaceNames(Handle_Transfer_FinderProcess FP, const PNamedShape shape) {
+        if(!shape) {
+            return;
+        }
+
+        TopTools_IndexedMapOfShape faceMap;
+        TopExp::MapShapes(shape->Shape(),   TopAbs_FACE, faceMap);
         for(int iface = 1; iface <= faceMap.Extent(); ++iface) {
             TopoDS_Face face = TopoDS::Face(faceMap(iface));
-            TDF_Label faceLabel = myAssembly->NewShape();
-            myAssembly->SetShape(faceLabel, face);
-            std::string name = shape.ShortName();
-            PNamedShape origin = shape.GetFaceTraits(iface-1).Origin();
-            if(origin){
+            std::string name = shape->ShortName();
+            PNamedShape origin = shape->GetFaceTraits(iface-1).Origin();
+            if (origin) {
                 name = origin->ShortName();
             }
-
-            TDataStd_Name::Set(faceLabel, name.c_str());
+            // set face name
+            Handle(IGESData_IGESEntity) entity;
+            Handle(TransferBRep_ShapeMapper) mapper = TransferBRep::ShapeMapper ( FP, face );
+            if ( FP->FindTypedTransient ( mapper, STANDARD_TYPE(IGESData_IGESEntity), entity ) ) {
+                Handle(TCollection_HAsciiString) str = new TCollection_HAsciiString(name.c_str());
+                entity->SetLabel(str);
+            }
         }
     }
-    else {
-        // no faces, export edges as wires
-        Handle(TopTools_HSequenceOfShape) Edges = new TopTools_HSequenceOfShape();
-        TopExp_Explorer myEdgeExplorer (shape.Shape(), TopAbs_EDGE);
-        while (myEdgeExplorer.More())
-        {
-            Edges->Append(TopoDS::Edge(myEdgeExplorer.Current()));
-            myEdgeExplorer.Next();
-        }
-        ShapeAnalysis_FreeBounds::ConnectEdgesToWires(Edges, 1e-7, false, Edges);
-        for(int iwire = 1; iwire <= Edges->Length(); ++iwire) {
-            TDF_Label wireLabel = myAssembly->NewShape();
-            myAssembly->SetShape(wireLabel, Edges->Value(iwire));
-            TDataStd_Name::Set(wireLabel, shape.Name());
-        }
-    }
-}
 
-}
+} //namespace
 
 namespace tigl {
 
@@ -95,6 +100,7 @@ namespace tigl {
     CTiglExportIges::CTiglExportIges(CCPACSConfiguration& config)
     :myConfig(config)
     {
+        myStoreType = NAMED_COMPOUNDS;
     }
 
     // Destructor
@@ -106,7 +112,7 @@ namespace tigl {
     {
         Interface_Static::SetCVal("xstep.cascade.unit", "M");
         Interface_Static::SetCVal("write.iges.unit", "M");
-        Interface_Static::SetIVal("write.iges.brep.mode", 0);
+        Interface_Static::SetIVal("write.iges.brep.mode", 1);
         Interface_Static::SetCVal("write.iges.header.author", "TiGL");
         Interface_Static::SetCVal("write.iges.header.company", "German Aerospace Center (DLR), SC");
     }
@@ -171,32 +177,39 @@ namespace tigl {
     // Exports the whole configuration as one fused part to an IGES file
     void CTiglExportIges::ExportFusedIGES(const std::string& filename)
     {
-        if( filename.empty()) {
+        if (filename.empty()) {
            LOG(ERROR) << "Error: Empty filename in ExportFusedIGES.";
            return;
         }
 
         PNamedShape fusedAirplane = myConfig.GetFusedAirplane();
-        if(!fusedAirplane) {
+        if (!fusedAirplane) {
             throw CTiglError("Error computing fused airplane.", TIGL_NULL_POINTER);
         }
 
+        IGESControl_Controller::Init();
+        SetTranslationParamters();
+#ifdef TIGL_USE_XCAF
         // create the xde document
         Handle(XCAFApp_Application) hApp = XCAFApp_Application::GetApplication();
         Handle(TDocStd_Document) hDoc;
         hApp->NewDocument("MDTV-XCAF", hDoc);
         Handle(XCAFDoc_ShapeTool) myAssembly = XCAFDoc_DocumentTool::ShapeTool(hDoc->Main());
 
-        IGESControl_Controller::Init();
-
-        RegisterShape(myAssembly, *fusedAirplane);
-
-        SetTranslationParamters();
         IGESCAFControl_Writer igesWriter;
+        GroupAndInsertShapeToCAF(myAssembly, fusedAirplane);
+
         igesWriter.Model()->ApplyStatic(); // apply set parameters
         if (igesWriter.Transfer(hDoc) == Standard_False) {
             throw CTiglError("Cannot export fused airplane as IGES", TIGL_ERROR);
         }
+#else
+        IGESControl_Writer igesWriter;
+        igesWriter.Model()->ApplyStatic();
+        igesWriter.AddShape(fusedAirplane->Shape());
+#endif
+
+        WriteIGESFaceNames(igesWriter.TransferProcess(), fusedAirplane);
 
         if (igesWriter.Write(const_cast<char*>(filename.c_str())) != Standard_True)
             throw CTiglError("Error: Export fused shapes to IGES file failed in CTiglExportIges::ExportFusedIGES", TIGL_ERROR);
@@ -228,6 +241,9 @@ namespace tigl {
             throw CTiglError("Error: Export of shapes to IGES file failed in CCPACSImportExport::SaveIGES", TIGL_ERROR);
     }
 
+    void CTiglExportIges::SetOCAFStoreType(IgesOCAFStoreType type){
+        myStoreType = type;
+    }
 
 #ifdef TIGL_USE_XCAF
     // Saves as iges, with cpacs metadata information in it
@@ -249,6 +265,64 @@ namespace tigl {
            writer.Transfer(hDoc);
            writer.Write(filename.c_str());
        }
+
+
+
+    void CTiglExportIges::GroupAndInsertShapeToCAF(Handle(XCAFDoc_ShapeTool) myAssembly, const PNamedShape shape) {
+        if(!shape) {
+            return;
+        }
+
+        TopTools_IndexedMapOfShape faceMap;
+        TopExp::MapShapes(shape->Shape(),   TopAbs_FACE, faceMap);
+        if(faceMap.Extent() > 0) {
+            if (myStoreType == WHOLE_SHAPE){
+                TDF_Label shapeLabel = myAssembly->NewShape();
+                myAssembly->SetShape(shapeLabel, shape->Shape());
+                TDataStd_Name::Set(shapeLabel, shape->Name());
+            }
+            else if (myStoreType == NAMED_COMPOUNDS){
+                // create compounds with the same name as origin
+                ShapeMap map =  MapFacesToShapeGroups(shape);
+                // add compounds to document
+                ShapeMap::iterator it = map.begin();
+                for (; it != map.end(); ++it){
+                    TDF_Label faceLabel = myAssembly->NewShape();
+                    myAssembly->SetShape(faceLabel, it->second);
+                    TDataStd_Name::Set(faceLabel, it->first.c_str());
+                }
+            }
+            else if (myStoreType == FACES) {
+                for (int iface = 1; iface <= faceMap.Extent(); ++iface) {
+                    TopoDS_Face face = TopoDS::Face(faceMap(iface));
+                    std::string name = shape->ShortName();
+                    PNamedShape origin = shape->GetFaceTraits(iface-1).Origin();
+                    if(origin){
+                        name = origin->ShortName();
+                    }
+                    TDF_Label faceLabel = myAssembly->NewShape();
+                    myAssembly->SetShape(faceLabel, face);
+                    TDataStd_Name::Set(faceLabel, name.c_str());
+                }
+            }
+        }
+        else {
+            // no faces, export edges as wires
+            Handle(TopTools_HSequenceOfShape) Edges = new TopTools_HSequenceOfShape();
+            TopExp_Explorer myEdgeExplorer (shape->Shape(), TopAbs_EDGE);
+            while (myEdgeExplorer.More()) {
+                Edges->Append(TopoDS::Edge(myEdgeExplorer.Current()));
+                myEdgeExplorer.Next();
+            }
+            ShapeAnalysis_FreeBounds::ConnectEdgesToWires(Edges, 1e-7, false, Edges);
+            for (int iwire = 1; iwire <= Edges->Length(); ++iwire) {
+                TDF_Label wireLabel = myAssembly->NewShape();
+                myAssembly->SetShape(wireLabel, Edges->Value(iwire));
+                TDataStd_Name::Set(wireLabel, shape->Name());
+            }
+        }
+    }
+
 #endif
 
 } // end namespace tigl

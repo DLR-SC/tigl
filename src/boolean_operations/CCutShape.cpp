@@ -26,6 +26,7 @@
 #include "CBooleanOperTools.h"
 #include "CTrimShape.h"
 #include "CMergeShapes.h"
+#include "CNamedShape.h"
 
 #define USE_OWN_ALGO
 
