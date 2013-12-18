@@ -27,6 +27,7 @@
 #define ITIGLWINGPROFILEALGO_H
 
 #include <vector>
+#include <string>
 #include "tixi.h"
 #include "tigl.h"
 #include "CTiglPoint.h"
@@ -43,9 +44,8 @@ namespace tigl
         // Returns the algorithm code identifier for an algorithm
         virtual void ReadCPACS(TixiDocumentHandle tixiHandle)  = 0;
 
-
-        // Returns the profile points as read from TIXI.
-        virtual std::vector<CTiglPoint*> GetCoordinateContainer() const = 0;
+        // Returns points on profile.
+        virtual std::vector<CTiglPoint*> GetSamplePoints() const = 0;
 
         // Builds the wing profile wires.
         virtual void BuildWires()  = 0;
@@ -53,14 +53,26 @@ namespace tigl
         // Builds leading and trailing edge points of the wing profile wire.
         virtual void BuildLETEPoints(void) = 0;
 
-        public:
-        std::string               ProfileDataXPath;   /**< CPACS path to profile data (pointList or cst2D) */
-        TopoDS_Wire               wireClosed;     /**< Forced closed wing profile wire */
-        TopoDS_Wire               wireOriginal;   /**< Original wing profile wire */
-        TopoDS_Wire               upperWire;      /**< wire of the upper wing profile */
-        TopoDS_Wire               lowerWire;      /**< wire of the lower wing profile */
-        gp_Pnt                    lePoint;        /**< Leading edge point */
-        gp_Pnt                    tePoint;        /**< Trailing edge point */
+        // get profiles CPACS XML path
+        virtual const std::string & GetProfileDataXPath() = 0;
+
+        // get original wing profile wire
+        virtual const TopoDS_Wire & GetWireOriginal() = 0;
+        
+        // get forced closed wing profile wire
+        virtual const TopoDS_Wire & GetWireClosed() = 0;
+        
+        // get upper wing profile wire
+        virtual const TopoDS_Wire & GetUpperWire() = 0;
+
+        // get lower wing profile wire
+        virtual const TopoDS_Wire & GetLowerWire() = 0;
+
+        // get leading edge point();
+        virtual const gp_Pnt & GetLEPoint() = 0;
+        
+        // get trailing edge point();
+        virtual const gp_Pnt & GetTEPoint() = 0;
     };
 
 } // end namespace tigl

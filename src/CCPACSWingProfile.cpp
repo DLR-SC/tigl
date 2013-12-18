@@ -57,9 +57,11 @@
 #include "CTiglInterpolateLinearWire.h"
 #include "ITiglWingProfileAlgo.h"
 #include "CCPACSWingProfile.h"
+#include "CCPACSWingProfileFactory.h"
 #include "CCPACSWingProfilePointList.h"
 
-namespace tigl {
+namespace tigl 
+{
 
     // Constructor
     CCPACSWingProfile::CCPACSWingProfile(const std::string& path)
@@ -96,45 +98,28 @@ namespace tigl {
         Cleanup();
         std::string namePath = ProfileXPath + "/name";
         std::string describtionPath = ProfileXPath + "/description";
-        std::string pointListPath = ProfileXPath + "/pointList";
-        std::string cst2DPath = ProfileXPath + "/cst2D";
 
         try
         {
-            // Get profile algorithm
-            if (tixiCheckElement(tixiHandle, const_cast<char*>(pointListPath.c_str())) == SUCCESS) 
-            {
-                profileAlgo=ProfileAlgoPointer(new CCPACSWingProfilePointList(pointListPath));
-                profileAlgo->ProfileDataXPath=pointListPath;
-                profileAlgoType=POINT_LIST;
-            }
-            else if (tixiCheckElement(tixiHandle, const_cast<char*>(cst2DPath.c_str())) == SUCCESS) 
-            {
-                throw CTiglError("Error: cst2D not yet implemented in CCPACSWingProfile::CCPACSWingProfile", TIGL_XML_ERROR);
-                //profileAlgo=ProfileAlgoPointer(new CCPACSWingProfileCST(cst2DPath));
-                //profileAlgo->ProfileDataXPath=cst2DPath;
-                //profileAlgoType=CST;
-            }
-            else
-            {
-                throw CTiglError("Error: CCPACSWingProfile::CCPACSWingProfile: unable to find pointList or CST data", TIGL_XML_ERROR);
-            }
-
             // Get profiles "uid"
             char* ptrUID = NULL;
-            if (tixiGetTextAttribute(tixiHandle, const_cast<char*>(ProfileXPath.c_str()), "uID", &ptrUID) == SUCCESS)
+            if (tixiGetTextAttribute(tixiHandle, ProfileXPath.c_str(), "uID", &ptrUID) == SUCCESS)
                 uid = ptrUID;
 
             // Get subelement "name"
             char* ptrName = NULL;
-            if (tixiGetTextElement(tixiHandle, const_cast<char*>(namePath.c_str()), &ptrName) == SUCCESS)
+            if (tixiGetTextElement(tixiHandle, namePath.c_str(), &ptrName) == SUCCESS)
                 name = ptrName;
 
             // Get subelement "description"
             char* ptrDescription = NULL;
-            if (tixiGetTextElement(tixiHandle, const_cast<char*>(describtionPath.c_str()), &ptrDescription) == SUCCESS)
+            if (tixiGetTextElement(tixiHandle, describtionPath.c_str(), &ptrDescription) == SUCCESS)
                 description = ptrDescription;
 
+            // create wing profile algorithm via factory
+            CCPACSWingProfileFactory factory;
+            profileAlgo=factory.createProfileAlgo(tixiHandle, ProfileXPath);
+            // read in wing profile data
             profileAlgo->ReadCPACS(tixiHandle);
         }
         catch (...)
@@ -195,21 +180,21 @@ namespace tigl {
     TopoDS_Wire CCPACSWingProfile::GetWire(bool forceClosed)
     {
         Update();
-        return (forceClosed ? profileAlgo->wireClosed : profileAlgo->wireOriginal);
+        return (forceClosed ? profileAlgo->GetWireClosed() : profileAlgo->GetWireOriginal());
     }
     
     // Returns the wing profile upper wire
     TopoDS_Wire CCPACSWingProfile::GetUpperWire()
     {
         Update();
-        return profileAlgo->upperWire;
+        return profileAlgo->GetUpperWire();
     }
     
     // Returns the wing profile lower wire
     TopoDS_Wire CCPACSWingProfile::GetLowerWire()
     {
         Update();
-        return profileAlgo->lowerWire;
+        return profileAlgo->GetLowerWire();
     }
     
     // Returns the wing profile lower and upper wire fused
@@ -218,8 +203,8 @@ namespace tigl {
         Update();
         // rebuild closed wire
         BRepBuilderAPI_MakeWire closedWireBuilder;
-        closedWireBuilder.Add(profileAlgo->upperWire);
-        closedWireBuilder.Add(profileAlgo->lowerWire);
+        closedWireBuilder.Add(profileAlgo->GetUpperWire());
+        closedWireBuilder.Add(profileAlgo->GetLowerWire());
         
         return closedWireBuilder.Wire();
     }
@@ -230,7 +215,7 @@ namespace tigl {
     gp_Pnt CCPACSWingProfile::GetLEPoint(void)
     {
         Update();
-        return profileAlgo->lePoint;
+        return profileAlgo->GetLEPoint();
     }
 
     // Returns the trailing edge point of the wing profile wire. The trailing edge point
@@ -238,7 +223,7 @@ namespace tigl {
     gp_Pnt CCPACSWingProfile::GetTEPoint(void)
     {
         Update();
-        return profileAlgo->tePoint;
+        return profileAlgo->GetTEPoint();
     }
 
     // Returns a point on the chord line between leading and trailing
@@ -397,12 +382,6 @@ namespace tigl {
     void CCPACSWingProfile::BuildLETEPoints(void)
     {
         profileAlgo->BuildLETEPoints();
-    }
-
-    // get profile algorithm type
-    ProfileAlgoType CCPACSWingProfile::GetProfileAlgoType(void) const
-    {
-        return profileAlgoType;
     }
 
     // get pointer to profile algorithm
