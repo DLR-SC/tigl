@@ -1294,7 +1294,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSymmetry(TiglCPACSConfigurationHand
 
 
 /**
-* @brief Returns the segmentUID and wingUID for a given point on a componentSegment. The returned strings have to be freed by the user.
+* @brief Returns the segmentUID and wingUID for a given point on a componentSegment. The must not be freed by the user anymore.
 *
 *
 * <b>Fortran syntax:</b>

@@ -343,7 +343,7 @@ namespace tigl {
     }
 
     // Returns the uid manager
-    std::string CCPACSConfiguration::GetUID(void)
+    const std::string& CCPACSConfiguration::GetUID(void) const
     {
         return configUID;
     }

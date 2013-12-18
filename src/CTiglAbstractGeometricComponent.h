@@ -52,7 +52,7 @@ namespace tigl {
         virtual TopoDS_Shape GetMirroredLoft(void);
 
         // Gets the component uid
-        virtual const std::string& GetUID(void);
+        virtual const std::string& GetUID(void) const;
 
         // Sets the component uid
         virtual void SetUID(const std::string& uid);

@@ -675,9 +675,9 @@ namespace tigl {
 
     // Returns the segment to a given point on the componentSegment. 
     // Returns null if the point is not an that wing!
-    const std::string CCPACSWingComponentSegment::findSegment(double x, double y, double z)
+    const CTiglAbstractSegment* CCPACSWingComponentSegment::findSegment(double x, double y, double z)
     {
-        std::string resultUID;
+        CTiglAbstractSegment* result = NULL;
         gp_Pnt pnt(x, y, z);
 
         // Quick check if the point even is on this wing
@@ -686,7 +686,7 @@ namespace tigl {
         quickClassifier.Load(wing->GetLoft());
         quickClassifier.Perform(pnt, 1.0e-2);
         if((quickClassifier.State() != TopAbs_IN) && (quickClassifier.State() != TopAbs_ON)){
-            return resultUID;
+            return NULL;
         }
 
         std::vector<int> segmentIndexList = GetSegmentList(fromElementUID, toElementUID);
@@ -701,12 +701,12 @@ namespace tigl {
             classifier.Load(segmentLoft);
             classifier.Perform(pnt, 1.0e-3);
             if((classifier.State() == TopAbs_IN) || (classifier.State() == TopAbs_ON)){
-                resultUID = wing->GetSegment(*segit).GetUID();
+                result = &(wing->GetSegment(*segit));
                 break;
             }
         }
 
-        return resultUID;
+        return result;
     }
 
 

@@ -207,32 +207,21 @@ namespace tigl {
     }
 
     // Returns the name of the wing profile
-    std::string CCPACSWingProfile::GetName(void) const
+    const std::string& CCPACSWingProfile::GetName(void) const
     {
         return name;
     }
 
-    // Returns the name of the wing profile
-    const char * CCPACSWingProfile::GetNamePtr(void) const
-    {
-        return name.c_str();
-    }
-
     // Returns the describtion of the wing profile
-    std::string CCPACSWingProfile::GetDescription(void) const
+    const std::string& CCPACSWingProfile::GetDescription(void) const
     {
         return description;
     }
 
     // Returns the UID of the wing profile
-    std::string CCPACSWingProfile::GetUID(void) const
+    const std::string& CCPACSWingProfile::GetUID(void) const
     {
         return uid;
-    }
-
-    const char * CCPACSWingProfile::GetUIDPtr(void) const
-    {
-        return uid.c_str();
     }
 
     // Invalidates internal wing profile state
