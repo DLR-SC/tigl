@@ -110,7 +110,7 @@ namespace tigl {
         double GetAirplaneLenth(void);
 
         // Returns the UID of the loaded configuration.
-        std::string GetUID(void);
+        const std::string& GetUID(void) const;
         
         CTiglShapeCache& GetShapeCache(void);
 

@@ -57,13 +57,13 @@ namespace tigl {
         void ReadCPACS(TixiDocumentHandle tixiHandle);
 
         // Returns the filename of the fuselage profile file
-        std::string GetFileName(void) const;
+        const std::string& GetFileName(void) const;
 
         // Returns the name of the fuselage profile
-        std::string GetName(void) const;
+        const std::string &GetName(void) const;
 
         // Returns the UID of the fuselage profile
-        std::string GetUID(void) const;
+        const std::string& GetUID(void) const;
 
         // Invalidates internal fuselage profile state
         void Invalidate(void);
@@ -71,9 +71,6 @@ namespace tigl {
         // Returns the fuselage profile wire. The wire is already transformed by the
         // fuselage profile element transformation.
         TopoDS_Wire GetWire(bool forceClosed = false);
-
-        // Get length of fuselage profile wire
-        double GetWireLength(void);
 
         // Gets a point on the fuselage profile wire in dependence of a parameter zeta with
         // 0.0 <= zeta <= 1.0. For zeta = 0.0 this is the wire start point,
@@ -96,9 +93,6 @@ namespace tigl {
         // Builds the fuselage profile wires. The wires are already transformed by the
         // fuselage profile transformation.
         void BuildWires(void);
-
-        // Computes the length of the fuselage profile wire
-        void ComputeWireLength(void);
 
     private:
         // Copy constructor

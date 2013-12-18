@@ -255,6 +255,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglIsCPACSConfigurationHandleValid(TiglCPACSC
 TIGL_COMMON_EXPORT char* tiglGetVersion()
 {
     if(!version){
+        atexit(tiglCleanup);
         version = new char[512];
         if(std::string(TIGL_REVISION).size() > 0){
             sprintf(version, "%s rev%s", TIGL_VERSION_STRING, TIGL_REVISION);
@@ -1013,7 +1014,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetProfileName(TiglCPACSConfigurationH
         std::string profileUID = element.GetProfileIndex();
         tigl::CCPACSWingProfile& profile = config.GetWingProfile(profileUID);
 
-        *profileNamePtr = const_cast<char*>(profile.GetNamePtr());
+        *profileNamePtr = const_cast<char*>(profile.GetName().c_str());
 
         return TIGL_SUCCESS;
     }
@@ -1312,15 +1313,16 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentFindSegment(TiglCPACSC
             for(int componentSegment = 1; componentSegment <= wing.GetComponentSegmentCount(); componentSegment++) {
                 tigl::CCPACSWingComponentSegment& cs = (tigl::CCPACSWingComponentSegment&) wing.GetComponentSegment(componentSegment);
                 if( cs.GetUID() == componentSegmentUID) {
-                    std::string wUID = wing.GetUID();
-                    *wingUID = (char *) malloc(strlen(wUID.c_str()) * sizeof(char) + 1);
-                    strcpy(*wingUID, const_cast<char*>(wUID.c_str()));
+                    *wingUID = const_cast<char*>(wing.GetUID().c_str());
 
-                    std::string smUID = cs.findSegment(x, y, z);
-                    *segmentUID = (char *) malloc(strlen(smUID.c_str()) * sizeof(char) + 1);
-                    strcpy(*segmentUID, const_cast<char*>(smUID.c_str()));
-
-                    return TIGL_SUCCESS;
+                    const tigl::CTiglAbstractSegment* segment = cs.findSegment(x, y, z);
+                    if (!segment) {
+                        return TIGL_NOT_FOUND;
+                    }
+                    else {
+                        *segmentUID = const_cast<char*>(segment->GetUID().c_str());
+                        return TIGL_SUCCESS;
+                    }
                 }
             }
         }
@@ -2439,9 +2441,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetProfileName(TiglCPACSConfigurat
         std::string profileUID = element.GetProfileIndex();
         tigl::CCPACSFuselageProfile& profile = config.GetFuselageProfile(profileUID);
 
-        *profileNamePtr = (char *) malloc(profile.GetName().length() * sizeof(char) + 1);
-        strcpy(*profileNamePtr, profile.GetName().c_str());
-
+        *profileNamePtr = const_cast<char*>(profile.GetName().c_str());
+        
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {

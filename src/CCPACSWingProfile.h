@@ -65,19 +65,13 @@ namespace tigl {
         void ReadCPACS(TixiDocumentHandle tixiHandle);
 
         // Returns the name of the wing profile
-        std::string GetName(void) const;
-
-        // Gets the C pointer of the name string
-        const char * GetNamePtr(void) const;
+        const std::string& GetName(void) const;
 
         // Returns the description of the wing profile
-        std::string GetDescription(void) const;
+        const std::string& GetDescription(void) const;
 
         // Returns the uid of the wing profile
-        std::string GetUID(void) const;
-
-        // Gets the C pointer of the UID string
-        const char * GetUIDPtr(void) const;
+        const std::string& GetUID(void) const;
 
         // Invalidates internal wing profile state
         void Invalidate(void);
