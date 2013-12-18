@@ -48,9 +48,7 @@ void CBooleanOperTools::MapFaceNamesAfterBOP(BRepBuilderAPI_MakeShape& bop, cons
             unsigned int index = shapeMapSplit.FindIndex(it.Value());
 
             if(index > 0) {
-                CFaceTraits traits = CFaceTraits::DerivedFromShape(source, iface-1);
-                result->SetFaceTraits(index-1, traits);
-
+                result->FaceTraits(index-1).SetDerivedFromShape(source, iface-1);
             }
         }
     }
@@ -73,8 +71,7 @@ void CBooleanOperTools::AppendNamesToShape(const PNamedShape source, PNamedShape
         const TopoDS_Face& face =  TopoDS::Face(sourceMap(iface));
         unsigned int index = targetMap.FindIndex(face);
         if(index > 0){
-            CFaceTraits traits = CFaceTraits::DerivedFromShape(source, iface-1);
-            target->SetFaceTraits(index-1, traits);
+            target->FaceTraits(index-1).SetDerivedFromShape(source, iface-1);
         }
     }
 }
