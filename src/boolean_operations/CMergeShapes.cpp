@@ -23,6 +23,7 @@
 #include "CBooleanOperTools.h"
 #include "BRepSewingToBRepBuilderShapeAdapter.h"
 #include "tiglcommonfunctions.h"
+#include "CNamedShape.h"
 
 #include <cassert>
 #include <TopExp.hxx>

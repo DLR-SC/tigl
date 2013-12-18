@@ -19,7 +19,7 @@
 #ifndef CBOOLEANOPERTOOLS_H
 #define CBOOLEANOPERTOOLS_H
 
-#include "CNamedShape.h"
+#include "PNamedShape.h"
 
 class BRepBuilderAPI_MakeShape;
 

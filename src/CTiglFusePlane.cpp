@@ -124,6 +124,10 @@ void CTiglFusePlane::Perform()
     }
     CFuseShapes fuser(rootMerged, childShapes);
     _result = fuser.NamedShape();
+    if(_result) {
+        _result->SetName(_myconfig.GetUID().c_str());
+        _result->SetShortName("AIRCRAFT");
+    }
     _hasPerformed = true;
 
 }

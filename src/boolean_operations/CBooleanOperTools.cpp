@@ -17,6 +17,7 @@
 */
 
 #include "CBooleanOperTools.h"
+#include "CNamedShape.h"
 
 #include <cassert>
 

@@ -23,6 +23,7 @@
 #include "BOPBuilderShapeToBRepBuilderShapeAdapter.h"
 #include "tiglcommonfunctions.h"
 #include "CTiglError.h"
+#include "CNamedShape.h"
 
 #include <cassert>
 #include <string>
