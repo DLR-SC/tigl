@@ -46,7 +46,8 @@ public:
     const PNamedShape Origin() const;
     void SetOrigin(const PNamedShape);
 
-    static CFaceTraits DerivedFromShape(PNamedShape origin, unsigned int iface);
+    // Sets the traits, that it is derived by the iface-th trait of the origin shape
+    void SetDerivedFromShape(PNamedShape origin, unsigned int iface);
     
     const char* Name() const;
     void SetName(const char* );
@@ -82,6 +83,7 @@ public:
 
     unsigned int GetFaceCount() const;
     const CFaceTraits& GetFaceTraits(int iFace) const;
+    CFaceTraits& FaceTraits(int iFace);
     
     // setters
     void SetShape(const TopoDS_Shape&);

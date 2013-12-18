@@ -120,6 +120,10 @@ const CFaceTraits& CNamedShape::GetFaceTraits(int iFace) const {
     return _myfaceTraits.at(iFace);
 }
 
+CFaceTraits& CNamedShape::FaceTraits(int iFace) {
+    return  _myfaceTraits.at(iFace);
+}
+
 void CNamedShape::SetFaceTraits(int iFace, const CFaceTraits &traits) {
     _myfaceTraits.at(iFace) = traits;
 }
@@ -155,12 +159,11 @@ const PNamedShape CFaceTraits::Origin() const {
     return _origin;
 }
 
-CFaceTraits CFaceTraits::DerivedFromShape(PNamedShape origin, unsigned int iface) {
-    CFaceTraits traits = origin->GetFaceTraits(iface);
-    if(!traits.Origin()) {
-        traits.SetOrigin(origin);
+void CFaceTraits::SetDerivedFromShape(PNamedShape origin, unsigned int iface) {
+    *this = origin->GetFaceTraits(iface);
+    if(!Origin()) {
+        SetOrigin(origin);
     }
-    return traits;
 }
 
 
