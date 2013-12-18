@@ -50,9 +50,6 @@ namespace tigl {
 
     typedef CSharedPtr<ITiglWingProfileAlgo> ProfileAlgoPointer;
 
-    enum ProfileAlgoType {POINT_LIST, CST};
-
-
     class CCPACSWingProfile
     {
 
@@ -120,8 +117,6 @@ namespace tigl {
         gp_Pnt GetLowerPoint(double xsi);
 
         // get profile algorithm type
-        ProfileAlgoType GetProfileAlgoType(void) const;
-        // get pointer to profile algorithm
         ProfileAlgoPointer GetProfileAlgo(void) const;
 
     protected:
@@ -162,8 +157,6 @@ namespace tigl {
         std::string               uid;            /**< CPACS wing profile UID */
         bool                      invalidated;    /**< Flag if element is invalid */
         ProfileAlgoPointer        profileAlgo;    /**< Pointer to wing profile algorithm (pointList, CST, etc.) */
-        ProfileAlgoType           profileAlgoType;    /**< Wing profile algorithm type (pointList, CST, etc.) */
-
     };
 
 } // end namespace tigl

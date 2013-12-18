@@ -93,7 +93,7 @@ namespace tigl {
         {
             /* Get point count */
             int   pointCount;
-            if (tixiGetNamedChildrenCount(tixiHandle, const_cast<char*>(ProfileDataXPath.c_str()), "point", &pointCount) != SUCCESS) {
+            if (tixiGetNamedChildrenCount(tixiHandle, ProfileDataXPath.c_str(), "point", &pointCount) != SUCCESS) {
                 throw CTiglError("Error: tixiGetNamedChildrenCount failed in CCPACSWingProfilePointList::ReadCPACS", TIGL_XML_ERROR);
             }
 
@@ -136,13 +136,13 @@ namespace tigl {
                 int countX;
                 int countY;
                 int countZ;
-                if (tixiGetVectorSize(tixiHandle, const_cast<char*>(xXpath.c_str()), &countX) != SUCCESS){
+                if (tixiGetVectorSize(tixiHandle, xXpath.c_str(), &countX) != SUCCESS){
                     throw CTiglError("Error: XML error while reading point vector <x> in CCPACSWingProfilePointList::ReadCPACS", TIGL_XML_ERROR);
                 }
-                if (tixiGetVectorSize(tixiHandle, const_cast<char*>(yXpath.c_str()), &countY) != SUCCESS){
+                if (tixiGetVectorSize(tixiHandle, yXpath.c_str(), &countY) != SUCCESS){
                     throw CTiglError("Error: XML error while reading point vector <y> in CCPACSWingProfilePointList::ReadCPACS", TIGL_XML_ERROR);
                 }
-                if (tixiGetVectorSize(tixiHandle, const_cast<char*>(zXpath.c_str()), &countZ) != SUCCESS){
+                if (tixiGetVectorSize(tixiHandle, zXpath.c_str(), &countZ) != SUCCESS){
                     throw CTiglError("Error: XML error while reading point vector <z> in CCPACSWingProfilePointList::ReadCPACS", TIGL_XML_ERROR);
                 }
 
@@ -155,13 +155,13 @@ namespace tigl {
                 double *yCoordinates = NULL;
                 double *zCoordinates = NULL;
 
-                if (tixiGetFloatVector(tixiHandle, const_cast<char*>(xXpath.c_str()), &xCoordinates, countX) != SUCCESS) {
+                if (tixiGetFloatVector(tixiHandle, xXpath.c_str(), &xCoordinates, countX) != SUCCESS) {
                     throw CTiglError("Error: XML error while reading point vector <x> in CCPACSWingProfilePointList::ReadCPACS", TIGL_XML_ERROR);
                 }
-                if (tixiGetFloatVector(tixiHandle, const_cast<char*>(yXpath.c_str()), &yCoordinates, countY) != SUCCESS) {
+                if (tixiGetFloatVector(tixiHandle, yXpath.c_str(), &yCoordinates, countY) != SUCCESS) {
                     throw CTiglError("Error: XML error while reading point vector <y> in CCPACSWingProfilePointList::ReadCPACS", TIGL_XML_ERROR);
                 }
-                if (tixiGetFloatVector(tixiHandle, const_cast<char*>(zXpath.c_str()), &zCoordinates, countZ) != SUCCESS) {
+                if (tixiGetFloatVector(tixiHandle, zXpath.c_str(), &zCoordinates, countZ) != SUCCESS) {
                     throw CTiglError("Error: XML error while reading point vector <z> in CCPACSWingProfilePointList::ReadCPACS", TIGL_XML_ERROR);
                 }
 
@@ -310,7 +310,7 @@ namespace tigl {
         tePoint.SetY(0.);
     }
     // Returns the profile points as read from TIXI.
-    std::vector<CTiglPoint*> CCPACSWingProfilePointList::GetCoordinateContainer() const
+    std::vector<CTiglPoint*> CCPACSWingProfilePointList::GetSamplePoints() const
     {
         std::vector<CTiglPoint*> newPointVector;
         for (CCPACSCoordinateContainer::size_type i = 0; i < coordinates.size(); i++)
@@ -323,6 +323,47 @@ namespace tigl {
         return newPointVector;
     }
 
+    // get profiles CPACS XML path
+    const std::string & CCPACSWingProfilePointList::GetProfileDataXPath()
+    {
+        return ProfileDataXPath;
+    }
+
+    // get original wing profile wire
+    const TopoDS_Wire & CCPACSWingProfilePointList::GetWireOriginal()
+    {
+        return wireOriginal;
+    }
+        
+    // get forced closed wing profile wire
+    const TopoDS_Wire & CCPACSWingProfilePointList::GetWireClosed()
+    {
+        return wireClosed;
+    }
+        
+    // get upper wing profile wire
+    const TopoDS_Wire & CCPACSWingProfilePointList::GetUpperWire()
+    {
+        return upperWire;
+    }
+            
+    // get lower wing profile wire
+    const TopoDS_Wire & CCPACSWingProfilePointList::GetLowerWire()
+    {
+        return lowerWire;
+    }
+
+    // get leading edge point();
+    const gp_Pnt & CCPACSWingProfilePointList::GetLEPoint()
+    {
+        return lePoint;
+    }
+        
+    // get trailing edge point();
+    const gp_Pnt & CCPACSWingProfilePointList::GetTEPoint()
+    {
+        return tePoint;
+    }
 
 
 } // end namespace tigl
