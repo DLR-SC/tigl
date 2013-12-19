@@ -59,8 +59,10 @@
 #include "TIGLViewerSettings.h"
 #include "CTiglIntersectionCalculation.h"
 #include "TIGLViewerEtaXsiDialog.h"
+#include "TIGLViewerFuseDialog.h"
 #include "CTiglExportVtk.h"
 #include "tiglcommonfunctions.h"
+#include "CTiglFusePlane.h"
 
 #define max(a,b) ((a) > (b) ? (a) : (b))
 
@@ -1259,7 +1261,12 @@ void TIGLViewerDocument::exportMeshedConfigVTK()
         QApplication::setOverrideCursor( Qt::WaitCursor );
         writeToStatusBar("Calculating fused airplane, this can take a while");
         // calculating loft, is cached afterwards
-        GetConfiguration().GetFusedAirplane();
+        tigl::PTiglFusePlane fuser = GetConfiguration().AircraftFusingAlgo();
+        if(fuser) {
+            // invoke fusing algo
+            fuser->SetResultMode(tigl::FULL_PLANE);
+            fuser->NamedShape();
+        }
         writeToStatusBar("Writing meshed vtk file");
         tigl::CTiglExportVtk exporter(GetConfiguration());
         
@@ -1384,10 +1391,40 @@ void TIGLViewerDocument::drawFusedWing()
 
 void TIGLViewerDocument::drawFusedAircraft()
 {
+    FuseDialog dialog(parent);
+    if(dialog.exec() != QDialog::Accepted) {
+        return;
+    }
+
+    tigl::TiglFuseResultMode mode = tigl::HALF_PLANE;
+    // make option
+    if(!dialog.TrimWithFarField()      && !dialog.UseSymmetries()) {
+        mode = tigl::HALF_PLANE;
+    }
+    else if(!dialog.TrimWithFarField() && dialog.UseSymmetries()) {
+        mode = tigl::FULL_PLANE;
+    }
+    else if(dialog.TrimWithFarField()  && !dialog.UseSymmetries()) {
+        mode = tigl::HALF_PLANE_TRIMMED_FF;
+    }
+    else if(dialog.TrimWithFarField()  && dialog.UseSymmetries()) {
+        mode = tigl::FULL_PLANE_TRIMMED_FF;
+    }
+
+
     QApplication::setOverrideCursor( Qt::WaitCursor );
     try {
-        PNamedShape airplane = GetConfiguration().GetFusedAirplane();
+        tigl::PTiglFusePlane fuser = GetConfiguration().AircraftFusingAlgo();
+        fuser->SetResultMode(mode);
+        PNamedShape airplane = fuser->NamedShape();
+        if (!airplane) {
+            displayError("Error computing fused aircraft");
+            return;
+        }
+
         myAISContext->EraseAll(Standard_False);
+
+
         ShapeMap map = MapFacesToShapeGroups(airplane);
         ShapeMap::iterator it;
         int icol = 0;
@@ -1402,6 +1439,14 @@ void TIGLViewerDocument::drawFusedAircraft()
             if(icol >= ncolors) icol = 0;
             displayShape(it->second, colors[icol++]);
         }
+
+        const ListPNamedShape& ints = fuser->Intersections();
+        ListPNamedShape::const_iterator it2 = ints.begin();
+        for(; it2 != ints.end(); ++it2) {
+            if(*it2) {
+                displayShape((*it2)->Shape(), Quantity_NOC_WHITE);
+            }
+        }
     }
     catch(tigl::CTiglError & error){
         std::cerr << error.getError() << std::endl;
@@ -1415,7 +1460,7 @@ void TIGLViewerDocument::drawFusedAircraft()
 void TIGLViewerDocument::drawFusedAircraftTriangulation()
 {
     QApplication::setOverrideCursor( Qt::WaitCursor );
-    TopoDS_Shape airplane = GetConfiguration().GetFusedAirplane()->Shape();
+    TopoDS_Shape airplane = GetConfiguration().AircraftFusingAlgo()->NamedShape()->Shape();
     myAISContext->EraseAll(Standard_False);
     TopoDS_Compound triangulation;
     createShapeTriangulation(airplane, triangulation);

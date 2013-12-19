@@ -40,7 +40,7 @@
 
 //#define DEBUG_BOP
 
-CFuseShapes::CFuseShapes(const PNamedShape parent, const ListCNamedShape &childs)
+CFuseShapes::CFuseShapes(const PNamedShape parent, const ListPNamedShape &childs)
     : _resultshape()
 {
     Clear();
@@ -63,13 +63,13 @@ CFuseShapes::operator PNamedShape()
     return NamedShape();
 }
 
-const ListCNamedShape &CFuseShapes::Intersections()
+const ListPNamedShape &CFuseShapes::Intersections()
 {
     Perform();
     return _intersections;
 }
 
-const ListCNamedShape &CFuseShapes::TrimmedChilds()
+const ListPNamedShape &CFuseShapes::TrimmedChilds()
 {
     Perform();
     return _trimmedChilds;
@@ -111,7 +111,7 @@ void CFuseShapes::DoFuse()
     BRepBuilderAPI_Sewing shellMaker;
 
     _trimmedChilds.clear();
-    ListCNamedShape::const_iterator childIter;
+    ListPNamedShape::const_iterator childIter;
 
     TrimOperation childTrim  = EXCLUDE;
     TrimOperation parentTrim = EXCLUDE;

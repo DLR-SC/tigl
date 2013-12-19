@@ -28,6 +28,7 @@
 #include "CCPACSConfiguration.h"
 #include "CNamedShape.h"
 #include "tiglcommonfunctions.h"
+#include "CTiglFusePlane.h"
 
 #include "TopoDS_Shape.hxx"
 #include "TopoDS_Edge.hxx"
@@ -62,6 +63,7 @@
 #endif
 
 #include <map>
+#include <cassert>
 
 namespace {
 
@@ -188,7 +190,11 @@ namespace tigl {
            return;
         }
 
-        PNamedShape fusedAirplane = myConfig.GetFusedAirplane();
+        PTiglFusePlane fuser = myConfig.AircraftFusingAlgo();
+        fuser->SetResultMode(HALF_PLANE);
+        assert(fuser);
+
+        PNamedShape fusedAirplane = fuser->NamedShape();
         if (!fusedAirplane) {
             throw CTiglError("Error computing fused airplane.", TIGL_NULL_POINTER);
         }

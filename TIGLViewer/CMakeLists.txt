@@ -58,6 +58,7 @@ set(tv_src
     TIGLViewerLogHistory.cpp
     TIGLViewerLogRedirection.cpp
     TIGLViewerLoggerHTMLDecorator.cpp
+    TIGLViewerFuseDialog.cpp
 )
 	
 # normal header files
@@ -92,6 +93,7 @@ set(tv_hdr_qobj
 	TIGLViewerEtaXsiDialog.h
 	TIGLViewerErrorDialog.h
 	TIGLViewerLogRedirection.h
+	TIGLViewerFuseDialog.h
 )
 
 set(tv_ui_comp
@@ -99,6 +101,7 @@ set(tv_ui_comp
 	src/TIGLViewerSettingsDialog.ui
 	src/TIGLViewerEtaXsiDialog.ui
 	src/TIGLViewerErrorDialog.ui
+	src/TIGLViewerFuseDialog.ui
 )
 	
 foreach ( _fname ${tv_src})
