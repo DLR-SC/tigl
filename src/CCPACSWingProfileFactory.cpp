@@ -24,6 +24,7 @@
 #include "CCPACSWingProfile.h"
 #include "CCPACSWingProfileFactory.h"
 #include "CCPACSWingProfilePointList.h"
+#include "CCPACSWingProfileCST.h"
 
 
 namespace tigl 
@@ -37,13 +38,11 @@ namespace tigl
         {
             return ProfileAlgoPointer(new CCPACSWingProfilePointList(ProfileXPath + "/pointList"));
         }
-        /*
         // Check if profile is given as a CST curve
         else if (tixiCheckElement(tixiHandle, std::string(ProfileXPath + "/cst2D").c_str()) == SUCCESS)
         {
             return ProfileAlgoPointer(new CCPACSWingProfileCST(ProfileXPath + "/cst2D"));
         }
-        */
         else
         {
             throw CTiglError("Error: CCPACSWingProfileFactory::CreateProfileAlgo: Unable to find valid profile data", TIGL_XML_ERROR);
