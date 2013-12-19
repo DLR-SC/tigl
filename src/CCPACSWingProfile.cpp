@@ -390,5 +390,4 @@ namespace tigl
         return profileAlgo;
     }
 
-
 } // end namespace tigl
