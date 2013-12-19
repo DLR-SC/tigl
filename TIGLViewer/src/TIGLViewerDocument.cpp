@@ -456,7 +456,7 @@ void TIGLViewerDocument::drawWingProfiles()
     myAISContext->EraseAll(Standard_False);
 
     tigl::CCPACSWingProfile& profile = GetConfiguration().GetWingProfile(wingProfile.toStdString());
-    TopoDS_Wire wire        = profile.GetWire(true);
+    TopoDS_Wire wire        = profile.GetWire();
     displayShape(wire,Quantity_NOC_WHITE);
 
     // Leading/trailing edges
@@ -618,7 +618,7 @@ void TIGLViewerDocument::drawFuselageProfiles()
     myAISContext->EraseAll(Standard_False);
 
     tigl::CCPACSFuselageProfile& profile = GetConfiguration().GetFuselageProfile(fuselageProfile.toStdString());
-    TopoDS_Wire wire        = profile.GetWire(true);
+    TopoDS_Wire wire        = profile.GetWire();
     Handle(AIS_Shape) shape = new AIS_Shape(wire);
     shape->SetColor(Quantity_NOC_WHITE);
     myAISContext->Display(shape, Standard_True);

@@ -55,9 +55,6 @@ namespace tigl
         // get profiles CPACS XML path
         virtual const std::string & GetProfileDataXPath() = 0;
 
-        // get original wing profile wire
-        virtual const TopoDS_Wire & GetWireOriginal() = 0;
-        
         // get forced closed wing profile wire
         virtual const TopoDS_Wire & GetWireClosed() = 0;
         

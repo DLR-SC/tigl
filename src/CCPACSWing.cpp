@@ -359,7 +359,7 @@ namespace tigl {
             CCPACSWingProfile& startProfile = startConnection.GetProfile();
             TopoDS_Wire startWire;
             if(!splitWingInUpperAndLower)
-                startWire = transformToWingCoords(startConnection, startProfile.GetWire(true));
+                startWire = transformToWingCoords(startConnection, startProfile.GetWire());
             else
                 startWire = transformToWingCoords(startConnection, startProfile.GetFusedUpperLowerWire());
             generator.AddWire(startWire);
@@ -369,7 +369,7 @@ namespace tigl {
         CCPACSWingProfile& endProfile = endConnection.GetProfile();
         TopoDS_Wire endWire;
         if(!splitWingInUpperAndLower)
-            endWire = transformToWingCoords(endConnection,endProfile.GetWire(true));
+            endWire = transformToWingCoords(endConnection,endProfile.GetWire());
         else
             endWire = transformToWingCoords(endConnection,endProfile.GetFusedUpperLowerWire());
         generator.AddWire(endWire);
