@@ -327,37 +327,37 @@ namespace tigl
     }
 
     // get profiles CPACS XML path
-    const std::string & CCPACSWingProfileCST::GetProfileDataXPath()
+    const std::string & CCPACSWingProfileCST::GetProfileDataXPath() const
     {
         return ProfileDataXPath;
     }
 
     // get forced closed wing profile wire
-    const TopoDS_Wire & CCPACSWingProfileCST::GetWireClosed()
+    const TopoDS_Wire & CCPACSWingProfileCST::GetWireClosed() const
     {
         return wireClosed;
     }
         
     // get upper wing profile wire
-    const TopoDS_Wire & CCPACSWingProfileCST::GetUpperWire()
+    const TopoDS_Wire & CCPACSWingProfileCST::GetUpperWire() const
     {
         return upperWire;
     }
             
     // get lower wing profile wire
-    const TopoDS_Wire & CCPACSWingProfileCST::GetLowerWire()
+    const TopoDS_Wire & CCPACSWingProfileCST::GetLowerWire() const
     {
         return lowerWire;
     }
 
     // get leading edge point();
-    const gp_Pnt & CCPACSWingProfileCST::GetLEPoint()
+    const gp_Pnt & CCPACSWingProfileCST::GetLEPoint() const
     {
         return lePoint;
     }
         
     // get trailing edge point();
-    const gp_Pnt & CCPACSWingProfileCST::GetTEPoint()
+    const gp_Pnt & CCPACSWingProfileCST::GetTEPoint() const
     {
         return tePoint;
     }

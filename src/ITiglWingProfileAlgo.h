@@ -47,28 +47,28 @@ namespace tigl
         virtual std::vector<CTiglPoint*> GetSamplePoints() const = 0;
 
         // Builds the wing profile wires.
-        virtual void BuildWires()  = 0;
+        virtual void BuildWires() = 0;
 
         // Builds leading and trailing edge points of the wing profile wire.
         virtual void BuildLETEPoints(void) = 0;
 
         // get profiles CPACS XML path
-        virtual const std::string & GetProfileDataXPath() = 0;
+        virtual const std::string & GetProfileDataXPath() const = 0;
 
         // get forced closed wing profile wire
-        virtual const TopoDS_Wire & GetWireClosed() = 0;
+        virtual const TopoDS_Wire & GetWireClosed() const = 0;
         
         // get upper wing profile wire
-        virtual const TopoDS_Wire & GetUpperWire() = 0;
+        virtual const TopoDS_Wire & GetUpperWire() const = 0;
 
         // get lower wing profile wire
-        virtual const TopoDS_Wire & GetLowerWire() = 0;
+        virtual const TopoDS_Wire & GetLowerWire() const = 0;
 
         // get leading edge point();
-        virtual const gp_Pnt & GetLEPoint() = 0;
+        virtual const gp_Pnt & GetLEPoint() const = 0;
         
         // get trailing edge point();
-        virtual const gp_Pnt & GetTEPoint() = 0;
+        virtual const gp_Pnt & GetTEPoint() const = 0;
     };
 
 } // end namespace tigl

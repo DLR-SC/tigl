@@ -62,22 +62,22 @@ namespace tigl
         void BuildLETEPoints(void);
 
         // get profiles CPACS XML path
-        const std::string & GetProfileDataXPath();
+        const std::string & GetProfileDataXPath() const;
 
         // get forced closed wing profile wire
-        const TopoDS_Wire & GetWireClosed();
+        const TopoDS_Wire & GetWireClosed() const;
 
         // get upper wing profile wire
-        const TopoDS_Wire & GetUpperWire();
+        const TopoDS_Wire & GetUpperWire() const;
 
         // get lower wing profile wire
-        const TopoDS_Wire & GetLowerWire();
+        const TopoDS_Wire & GetLowerWire() const;
 
         // get leading edge point();
-        const gp_Pnt & GetLEPoint();
+        const gp_Pnt & GetLEPoint() const;
 
         // get trailing edge point();
-        const gp_Pnt & GetTEPoint();
+        const gp_Pnt & GetTEPoint() const;
 
     private:
         // Copy constructor
