@@ -21,6 +21,7 @@
 #include "CTiglAbstractPhysicalComponent.h"
 #include "CCPACSWing.h"
 #include "CCPACSConfiguration.h"
+#include "CTiglFusePlane.h"
 
 #include <TopoDS.hxx>
 #include <TopoDS_Shape.hxx>
@@ -99,7 +100,15 @@ CTiglTriangularizer::CTiglTriangularizer(CTiglAbstractPhysicalComponent& comp, d
 CTiglTriangularizer::CTiglTriangularizer(CCPACSConfiguration &config, bool fuseShapes, double deflection, ComponentTraingMode mode) {
     if(fuseShapes){
         CTiglAbstractPhysicalComponent* pRoot =  config.GetUIDManager().GetRootComponent();
-        TopoDS_Shape planeShape = config.GetFusedAirplane()->Shape();
+
+        PTiglFusePlane fuser = config.AircraftFusingAlgo();
+        fuser->SetResultMode(FULL_PLANE);
+        if(!fuser->NamedShape()) {
+            throw CTiglError("Error computing fused aircraft in CTiglTriangularizer", TIGL_ERROR);
+        }
+
+        TopoDS_Shape planeShape = fuser->NamedShape()->Shape();
+
         useMultipleObjects(false);
         triangularizeComponent(*pRoot, true, planeShape, deflection, mode);
     }

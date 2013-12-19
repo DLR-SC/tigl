@@ -66,12 +66,15 @@ CTiglFusePlane::CTiglFusePlane(CCPACSConfiguration& config)
     : _myconfig(config)
 {
     _mymode = HALF_PLANE;
-    _hasPerformed = false;
+    Invalidate();
 }
 
 void CTiglFusePlane::SetResultMode(TiglFuseResultMode mode)
 {
-    _mymode = mode;
+    if(mode != _mymode) {
+        Invalidate();
+        _mymode = mode;
+    }
 }
 
 const PNamedShape CTiglFusePlane::NamedShape()
@@ -80,6 +83,29 @@ const PNamedShape CTiglFusePlane::NamedShape()
     return _result;
 }
 
+const ListPNamedShape& CTiglFusePlane::SubShapes() {
+    Perform();
+    return _subShapes;
+}
+
+
+const ListPNamedShape& CTiglFusePlane::Intersections() {
+    Perform();
+    return _intersections;
+}
+
+void CTiglFusePlane::Invalidate()
+{
+    _hasPerformed = false;
+    _subShapes.clear();
+    _intersections.clear();
+    _result.reset();
+}
+
+/**
+ * @todo: it would be nice if this algorithm would support
+ * some progress bar interface
+ */
 void CTiglFusePlane::Perform()
 {
     if(_hasPerformed) {
@@ -96,34 +122,57 @@ void CTiglFusePlane::Perform()
     std::string rootName = rootComponent->GetUID();
     std::string rootShortName = MakeShortName(_myconfig, *rootComponent);
     PNamedShape rootShape    (new CNamedShape(rootComponent->GetLoft()        , rootName.c_str()));
-    PNamedShape rootShapeMirr(new CNamedShape(rootComponent->GetMirroredLoft(), rootName.c_str()));
     rootShape->SetShortName(rootShortName.c_str());
-    rootShortName += "M";
-    rootShapeMirr->SetShortName(rootShortName.c_str());
 
-    PNamedShape rootMerged = CMergeShapes(rootShape, rootShapeMirr);
+    if(_mymode == FULL_PLANE || _mymode == FULL_PLANE_TRIMMED_FF) {
+        PNamedShape rootShapeMirr(new CNamedShape(rootComponent->GetMirroredLoft(), rootName.c_str()));
+        rootShortName += "M";
+        rootShapeMirr->SetShortName(rootShortName.c_str());
+        rootShape = CMergeShapes(rootShape, rootShapeMirr);
+    }
 
     CTiglAbstractPhysicalComponent::ChildContainerType childs = rootComponent->GetChildren(false);
     CTiglAbstractPhysicalComponent::ChildContainerType::iterator childIt;
 
-    ListCNamedShape childShapes;
+    ListPNamedShape childShapes;
     for(childIt = childs.begin(); childIt != childs.end(); ++childIt) {
         CTiglAbstractPhysicalComponent* child = *childIt;
         if(!child) {
             continue;
         }
-        PNamedShape childShape    (new CNamedShape(child->GetLoft()        , child->GetUID().c_str()));
-        PNamedShape childShapeMirr(new CNamedShape(child->GetMirroredLoft(), child->GetUID().c_str()));
-        std::string childShortName = MakeShortName(_myconfig, *child);
-        childShape->SetShortName(childShortName.c_str());
-        childShortName += "M";
-        childShapeMirr->SetShortName(childShortName.c_str());
 
-        PNamedShape childMerged = CMergeShapes(childShape, childShapeMirr);
-        childShapes.push_back(childMerged);
+        std::string childShortName = MakeShortName(_myconfig, *child);
+        PNamedShape childShape    (new CNamedShape(child->GetLoft()        , child->GetUID().c_str()));
+        childShape->SetShortName(childShortName.c_str());
+
+        if(_mymode == FULL_PLANE || _mymode == FULL_PLANE_TRIMMED_FF) {
+            PNamedShape childShapeMirr(new CNamedShape(child->GetMirroredLoft(), child->GetUID().c_str()));
+            childShortName += "M";
+            childShapeMirr->SetShortName(childShortName.c_str());
+            childShape = CMergeShapes(childShape, childShapeMirr);
+        }
+        childShapes.push_back(childShape);
     }
-    CFuseShapes fuser(rootMerged, childShapes);
+    CFuseShapes fuser(rootShape, childShapes);
     _result = fuser.NamedShape();
+
+    // insert trimmed shapes from fusing
+    if (fuser.TrimmedParent()) {
+        _subShapes.push_back(fuser.TrimmedParent());
+    }
+    ListPNamedShape::const_iterator it = fuser.TrimmedChilds().begin();
+    for(; it != fuser.TrimmedChilds().end(); it++) {
+        if(*it) {
+            _subShapes.push_back(*it);
+        }
+    }
+    it = fuser.Intersections().begin();
+    for(; it != fuser.Intersections().end(); it++) {
+        if(*it) {
+            _intersections.push_back(*it);
+        }
+    }
+
     if(_result) {
         _result->SetName(_myconfig.GetUID().c_str());
         _result->SetShortName("AIRCRAFT");

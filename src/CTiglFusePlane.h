@@ -20,6 +20,7 @@
 #define CTIGLFUSEPLANE_H
 
 #include "CNamedShape.h"
+#include "ListPNamedShape.h"
 
 namespace tigl {
 
@@ -28,7 +29,9 @@ class CTiglAbstractPhysicalComponent;
 
 enum TiglFuseResultMode{
     HALF_PLANE = 0,
-    FULL_PLANE = 1
+    FULL_PLANE = 1,
+    HALF_PLANE_TRIMMED_FF = 2,
+    FULL_PLANE_TRIMMED_FF = 3
 };
 
 class CTiglFusePlane
@@ -40,13 +43,18 @@ public:
     void SetResultMode(TiglFuseResultMode mode);
 
     const PNamedShape NamedShape();
+    const ListPNamedShape& SubShapes();
+    const ListPNamedShape& Intersections();
 
 private:
+    void Invalidate();
     void Perform();
 
-    PNamedShape _result;
-    CCPACSConfiguration& _myconfig;
-    TiglFuseResultMode _mymode;
+    PNamedShape          _result;         /**< contains the result of the fusing operation >**/
+    ListPNamedShape      _subShapes;      /**< contains the subshapes of the result after fusing >**/
+    ListPNamedShape      _intersections;  /**< contains the shape shape intersections >**/
+    CCPACSConfiguration& _myconfig;       /**< Ref to CPACS config >**/
+    TiglFuseResultMode    _mymode;
     bool _hasPerformed;
 };
 

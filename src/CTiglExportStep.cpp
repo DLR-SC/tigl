@@ -26,6 +26,7 @@
 #include "CTiglExportStep.h"
 #include "CCPACSImportExport.h"
 #include "CCPACSConfiguration.h"
+#include "CTiglFusePlane.h"
 
 #include "TopoDS_Shape.hxx"
 #include "STEPControl_Controller.hxx"
@@ -39,6 +40,8 @@
 #include "STEPControl_StepModelType.hxx"
 #include "TopExp_Explorer.hxx"
 #include "BRepAlgoAPI_Cut.hxx"
+
+#include <cassert>
 
 #define STEP_WRITEMODE STEPControl_AsIs
 
@@ -134,7 +137,14 @@ namespace tigl {
     // Exports the whole configuration as one fused part to an STEP file
     void CTiglExportStep::ExportFusedStep(const std::string& filename)
     {
-        TopoDS_Shape fusedAirplane = myConfig.GetFusedAirplane()->Shape();
+        PTiglFusePlane fuser = myConfig.AircraftFusingAlgo();
+        fuser->SetResultMode(HALF_PLANE);
+        assert(fuser);
+        if (!fuser->NamedShape()) {
+            throw CTiglError("Cannot compute fused aircraft in CTiglExportStep::ExportFusedStep", TIGL_ERROR);
+        }
+
+        TopoDS_Shape fusedAirplane = fuser->NamedShape()->Shape();
 
         STEPControl_Controller::Init();
         STEPControl_Writer            stepWriter;

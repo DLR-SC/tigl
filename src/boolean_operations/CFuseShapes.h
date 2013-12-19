@@ -20,9 +20,7 @@
 #define CFUSESHAPES_H
 
 #include "PNamedShape.h"
-#include <vector>
-
-typedef std::vector<PNamedShape> ListCNamedShape;
+#include "ListPNamedShape.h"
 
 /**
  * @brief CFuseShapes Implement a fuse, where the childs are fused with the parent
@@ -38,15 +36,15 @@ class CFuseShapes
 {
 public:
     // all shapes must be solids!!!
-    CFuseShapes(const PNamedShape parent, const ListCNamedShape& childs);
+    CFuseShapes(const PNamedShape parent, const ListPNamedShape& childs);
     virtual ~CFuseShapes();
 
     // returns result of fusing operation
     operator PNamedShape ();
     const    PNamedShape NamedShape();
 
-    const ListCNamedShape& Intersections();
-    const ListCNamedShape& TrimmedChilds();
+    const ListPNamedShape& Intersections();
+    const ListPNamedShape& TrimmedChilds();
     const PNamedShape   TrimmedParent();
 
     void Perform();
@@ -59,6 +57,6 @@ protected:
     bool _hasPerformed;
 
     PNamedShape _resultshape, _parent, _trimmedParent;
-    ListCNamedShape _childs, _trimmedChilds, _intersections;
+    ListPNamedShape _childs, _trimmedChilds, _intersections;
 };
 #endif // CFUSESHAPES_H

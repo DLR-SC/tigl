@@ -34,8 +34,9 @@
 #include "StlAPI_Writer.hxx"
 #include "Interface_Static.hxx"
 #include "StlAPI.hxx"
+#include "CTiglFusePlane.h"
 
-
+#include <cassert>
 
 namespace tigl {
 
@@ -76,7 +77,17 @@ namespace tigl {
     // Exports a whole geometry, boolean fused and meshed, as STL file
     void CTiglExportStl::ExportMeshedGeometrySTL(const std::string& filename, double deflection)
     {
-        TopoDS_Shape loft = myConfig.GetFusedAirplane()->Shape();
+        PTiglFusePlane fuser = myConfig.AircraftFusingAlgo();
+        assert(fuser != NULL);
+        fuser->SetResultMode(FULL_PLANE);
+
+        // get/compute shape
+        PNamedShape ac = fuser->NamedShape();
+        if (!ac) {
+            throw CTiglError("Error computing fused geometry in CTiglExportStl::ExportMeshedGeometrySTL", TIGL_ERROR);
+        }
+
+        TopoDS_Shape loft = ac->Shape();
 
         BRepMesh::Mesh(loft, deflection);
         StlAPI_Writer *StlWriter = new StlAPI_Writer();
