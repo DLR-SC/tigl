@@ -948,7 +948,7 @@ void TIGLViewerDocument::exportAsIges()
 
     writeToStatusBar(tr("Saving as IGES file with TIGL..."));
 
-    fileName = QFileDialog::getSaveFileName(parent, tr("Save as..."), myLastFolder, tr("Export IGES(*.iges *.igs)"));
+    fileName = QFileDialog::getSaveFileName(parent, tr("Save as..."), myLastFolder, tr("Export IGES(*.igs)"));
 
     if (!fileName.isEmpty())
     {
@@ -972,7 +972,7 @@ void TIGLViewerDocument::exportFusedAsIges()
 
     writeToStatusBar(tr("Saving fused model as IGES file with TIGL..."));
 
-    fileName = QFileDialog::getSaveFileName(parent, tr("Save as..."), myLastFolder, tr("Export IGES(*.iges *.igs)"));
+    fileName = QFileDialog::getSaveFileName(parent, tr("Save as..."), myLastFolder, tr("Export IGES(*.igs)"));
 
     if (!fileName.isEmpty())
     {
@@ -989,7 +989,7 @@ void TIGLViewerDocument::exportAsStructuredIges()
 {
     writeToStatusBar(tr("Saving model as IGES file with CPACS metadata..."));
 
-    QString fileName = QFileDialog::getSaveFileName(parent, tr("Save as..."), myLastFolder, tr("Export IGES(*.iges *.igs)"));
+    QString fileName = QFileDialog::getSaveFileName(parent, tr("Save as..."), myLastFolder, tr("Export IGES(*.igs)"));
 
     if (!fileName.isEmpty()) {
         QApplication::setOverrideCursor( Qt::WaitCursor );

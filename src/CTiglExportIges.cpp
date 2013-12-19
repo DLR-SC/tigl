@@ -112,7 +112,13 @@ namespace tigl {
     {
         Interface_Static::SetCVal("xstep.cascade.unit", "M");
         Interface_Static::SetCVal("write.iges.unit", "M");
-        Interface_Static::SetIVal("write.iges.brep.mode", 1);
+        /*
+         * BRep entities in IGES are experimental and untested.
+         * They allow to specify things like shells and solids.
+         * It seems, that CATIA does not support these entities.
+         * Hence we stay the compatible way.
+         */
+        Interface_Static::SetIVal("write.iges.brep.mode", 0);
         Interface_Static::SetCVal("write.iges.header.author", "TiGL");
         Interface_Static::SetCVal("write.iges.header.company", "German Aerospace Center (DLR), SC");
     }
