@@ -34,7 +34,6 @@
 
 namespace tigl 
 {
-
     class ITiglWingProfileAlgo
     {
         public:

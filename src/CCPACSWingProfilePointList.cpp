@@ -61,7 +61,8 @@
 #include "ITiglWingProfileAlgo.h"
 #include "CCPACSWingProfilePointList.h"
 
-namespace tigl {
+namespace tigl 
+{
 
     // Constructor
     CCPACSWingProfilePointList::CCPACSWingProfilePointList(const std::string& path)
@@ -117,20 +118,9 @@ namespace tigl {
             }
             else // read in vector based point list
             {
-                // create xXpath
-                std::ostringstream xpath;
-                xpath << ProfileDataXPath.c_str() << "/x";
-                std::string xXpath = xpath.str();
-
-                // create yXpath
-                std::ostringstream ypath;
-                ypath << ProfileDataXPath.c_str() << "/y";
-                std::string yXpath = ypath.str();
-
-                // create zXpath
-                std::ostringstream zpath;
-                zpath << ProfileDataXPath.c_str() << "/z";
-                std::string zXpath = zpath.str();
+                std::string xXpath = ProfileDataXPath +"/x";
+                std::string yXpath = ProfileDataXPath +"/y";
+                std::string zXpath = ProfileDataXPath +"/z";
 
                 // check the number of elements in all three vectors. It has to be the same, otherwise cancel
                 int countX;

@@ -43,8 +43,8 @@
 #include "CSharedPtr.h"
 
 
-namespace tigl {
-
+namespace tigl 
+{
 
     class ITiglWingProfileAlgo;
 
