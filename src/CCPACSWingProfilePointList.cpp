@@ -190,8 +190,7 @@ namespace tigl
         }
 
         TopoDS_Wire tempWireClosed   = wireBuilder.BuildWire(points, true);
-        TopoDS_Wire tempWireOriginal = wireBuilder.BuildWire(points, false);
-        if (tempWireClosed.IsNull() == Standard_True || tempWireOriginal.IsNull() == Standard_True)
+        if (tempWireClosed.IsNull() == Standard_True)
             throw CTiglError("Error: TopoDS_Wire is null in CCPACSWingProfilePointList::BuildWire", TIGL_ERROR);
 
         //@todo: do we really want to remove all y information? this has to be a bug
@@ -200,20 +199,18 @@ namespace tigl
         transformation.AddProjectionOnXZPlane();
 
         TopoDS_Shape tempShapeClosed   = transformation.Transform(tempWireClosed);
-        TopoDS_Shape tempShapeOriginal = transformation.Transform(tempWireOriginal);
 
         // Cast shapes to wires, see OpenCascade documentation
-        if (tempShapeClosed.ShapeType() != TopAbs_WIRE || tempShapeOriginal.ShapeType() != TopAbs_WIRE)
+        if (tempShapeClosed.ShapeType() != TopAbs_WIRE)
             throw CTiglError("Error: Wrong shape type in CCPACSWingProfilePointList::BuildWire", TIGL_ERROR);
 
         wireClosed   = TopoDS::Wire(tempShapeClosed);
-        wireOriginal = TopoDS::Wire(tempShapeOriginal);
         
         BuildLETEPoints();
 
         // Create upper and lower wires
         // Get BSpline curve
-        Handle_Geom_BSplineCurve curve = BRepAdaptor_CompCurve(wireOriginal).BSpline();
+        Handle_Geom_BSplineCurve curve = BRepAdaptor_CompCurve(wireClosed).BSpline();
         // Get Leading edge parameter on curve
         double lep_par = GeomAPI_ProjectPointOnCurve(lePoint, curve).LowerDistanceParameter();
         
@@ -319,12 +316,6 @@ namespace tigl
         return ProfileDataXPath;
     }
 
-    // get original wing profile wire
-    const TopoDS_Wire & CCPACSWingProfilePointList::GetWireOriginal()
-    {
-        return wireOriginal;
-    }
-        
     // get forced closed wing profile wire
     const TopoDS_Wire & CCPACSWingProfilePointList::GetWireClosed()
     {

@@ -82,10 +82,7 @@ namespace tigl
         // get profiles CPACS XML path
         const std::string & GetProfileDataXPath();
 
-        // get original wing profile wire
-        const TopoDS_Wire & GetWireOriginal();
-
-        // get forced closed wing profile wire
+        // get closed wing profile wire
         const TopoDS_Wire & GetWireClosed();
 
         // get upper wing profile wire
@@ -113,7 +110,6 @@ namespace tigl
 
         std::string               ProfileDataXPath;   /**< CPACS path to profile data (pointList or cst2D) */
         TopoDS_Wire               wireClosed;     /**< Forced closed wing profile wire */
-        TopoDS_Wire               wireOriginal;   /**< Original wing profile wire */
         TopoDS_Wire               upperWire;      /**< wire of the upper wing profile */
         TopoDS_Wire               lowerWire;      /**< wire of the lower wing profile */
         gp_Pnt                    lePoint;        /**< Leading edge point */

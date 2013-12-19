@@ -82,7 +82,7 @@ namespace tigl
         void Invalidate(void);
 
         // Returns the wing profile wire.
-        TopoDS_Wire GetWire(bool forceClosed = true);
+        TopoDS_Wire GetWire();
         
         // Returns ths wing upper and lower profile wire
         TopoDS_Wire GetUpperWire();

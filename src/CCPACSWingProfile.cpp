@@ -177,10 +177,10 @@ namespace tigl
     }
 
     // Returns the wing profile wire
-    TopoDS_Wire CCPACSWingProfile::GetWire(bool forceClosed)
+    TopoDS_Wire CCPACSWingProfile::GetWire()
     {
         Update();
-        return (forceClosed ? profileAlgo->GetWireClosed() : profileAlgo->GetWireOriginal());
+        return profileAlgo->GetWireClosed();
     }
     
     // Returns the wing profile upper wire
@@ -304,7 +304,7 @@ namespace tigl
         // Loop over all edges of the wing profile curve and try to find intersection points
         std::vector<gp_Pnt2d> ipnts2d;
         BRepTools_WireExplorer wireExplorer;
-        for (wireExplorer.Init(GetWire(true)); wireExplorer.More(); wireExplorer.Next())
+        for (wireExplorer.Init(GetWire()); wireExplorer.More(); wireExplorer.Next())
         {
             const TopoDS_Edge& edge = wireExplorer.Current();
             Standard_Real firstParam;
