@@ -2595,14 +2595,44 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglComponentIntersectionLineCount(TiglCPACSCo
 
 /**
   \defgroup Export Export Functions
-    Functions for export of wings/fuselages.
+            Functions for export of wings/fuselages.
 
 
-VTK-Export: There a various different VTK exports functions in TIGL. All functions starting with 'tiglExportVTK[Fuselage|Wing]...' are exporting
+       # VTK-Export #
+            There a various different VTK exports functions in TIGL. All functions starting with 'tiglExportVTK[Fuselage|Wing]...' are exporting
             a special triangulation with no duplicated points into a VTK file formated in XML (file extension .vtp) with some custom
             informations added to the file.
 
-            The custom metadata is added to an own xml node is looks like the following example:
+            In addition to the triangulated geometry, additional data are written to the VTK file. These data currently include:
+            - uID: The UID of the fuselage or wing component segment on which the triangle exists.
+            - segmentIndex: The segmentIndex of the fuselage or wing component segment on which the triangle exists. Kind of redundant to the UID.
+            - eta/xsi: The parameters in the surface parametrical space of the triangle.
+            - isOnTop: Flag that indicates whether the triangle is on the top of the wing or not. Please see the cpacs documentation how "up"
+                       is defined for wings.
+
+            Please note that at this time these information are only valid for wings!
+
+            There are two ways, how these additional data are attached to the VTK file. The first is the official VTK way to declare additional
+            data for each polygon/triangle. For each data entry, a \<DataArray\> tag is added under the xpath
+            @verbatim
+            /VTKFile/PolyData/Piece/CellData
+            @endverbatim
+
+            Each CellData contains a vector(list) of values, each of them corresponding the data of one triangle. For example the data
+            entry for the wing segment eta coordinates for 4 triangles looks like.
+            @verbatim
+            <DataArray type="Float64" Name="eta" NumberOfComponents="1"
+                format="ascii" RangeMin="0.000000" RangeMax="1.000000">
+                    0.25 0.5 0.75 1.0
+            </DataArray>
+            @endverbatim
+
+            The second way these data are stored is by using the "MetaData" mechanism of VTK. Here, a \<MetaData\> tag is added under the xpath
+            @verbatim
+            /VTKFile/PolyData/Piece/Polys
+            @endverbatim
+
+            A typical exported MetaData tag looks like the following:
             @verbatim
             <MetaData elements="uID segmentIndex eta xsi isOnTop">
               "rootToInnerkink" 1 3.18702 0.551342 0
@@ -2613,14 +2643,7 @@ VTK-Export: There a various different VTK exports functions in TIGL. All functio
             @endverbatim
 
             The 'elements' attribute indicates the number and the names of the additional information tags as a whitespace separated list. In
-            this example you could see 5 information fields with the name:
-            - uID: The UID of the fuselage or wing component segment on which the triangle exists.
-            - segmentIndex: The segmentIndex of the fuselage or wing component segment on which the triangle exists. Kind of redundant to the UID.
-            - eta/xsi: The parameters in the surface parametrical space of the triangle.
-            - isOnTop: Flag that indicates whether the triangle is on the top of the wing or not. Please see the cpacs documentation how "up"
-                       is defined for wings.
-
-            Please note that at this time these information are only valid for wings!
+            this example you could see 5 information fields with the name.
  */
 
 /*@{*/
@@ -2628,6 +2651,8 @@ VTK-Export: There a various different VTK exports functions in TIGL. All functio
 
 /**
 * @brief Exports the geometry of a CPACS configuration to IGES format.
+*
+* To maintain compatibility with CATIA, the file suffix should be ".igs".
 *
 *
 * <b>Fortran syntax:</b>
@@ -2650,6 +2675,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportIGES(TiglCPACSConfigurationHandle cp
 /**
 * @brief Exports the boolean fused geometry of a CPACS configuration to IGES format.
 *
+* To maintain compatibility with CATIA, the file suffix should be ".igs".
 *
 * <b>Fortran syntax:</b>
 *
@@ -2672,6 +2698,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportFusedWingFuselageIGES(TiglCPACSConfi
 * @brief Exports the geometry of a CPACS configuration to IGES format. In this version
 *        structure, names and metadata will also be exported as much as it is possible.
 *
+* To maintain compatibility with CATIA, the file suffix should be ".igs".
 *
 * <b>Fortran syntax:</b>
 *
@@ -3553,7 +3580,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglLogToFileEnabled(const char* filePrefix);
 
 /**
 * @brief Sets up the tigl logging mechanism to send all log messages into a file. Critical error messages are
-* printed on the standard out (console) as well. In contrast to ::tiglLogToFile, the messages are appended
+* printed on the standard out (console) as well. In contrast to ::tiglLogToFileEnabled, the messages are appended
 * to an already opened file that might be a logging file of the executing program.
 *
 * Typically this function has to be called before opening any cpacs configuration.
