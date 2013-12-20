@@ -40,17 +40,13 @@ namespace tigl
         // Clean up 
         virtual void Cleanup(void)  = 0;
 
+        virtual void Update(void)   = 0;
+
         // Returns the algorithm code identifier for an algorithm
         virtual void ReadCPACS(TixiDocumentHandle tixiHandle)  = 0;
 
         // Returns points on profile.
         virtual std::vector<CTiglPoint*> GetSamplePoints() const = 0;
-
-        // Builds the wing profile wires.
-        virtual void BuildWires() = 0;
-
-        // Builds leading and trailing edge points of the wing profile wire.
-        virtual void BuildLETEPoints(void) = 0;
 
         // get profiles CPACS XML path
         virtual const std::string & GetProfileDataXPath() const = 0;

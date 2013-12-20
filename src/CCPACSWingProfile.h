@@ -126,12 +126,6 @@ namespace tigl
         // Update the internal state, i.g. recalculates wire and le, te points
         void Update(void);
 
-        // Builds the wing profile wires.
-        void BuildWires(void);
-
-        // Builds leading and trailing edge points
-        void BuildLETEPoints(void);
-
         // Returns an upper or lower point on the wing profile in
         // dependence of parameter xsi, which ranges from 0.0 to 1.0.
         // For xsi = 0.0 point is equal to leading edge, for xsi = 1.0

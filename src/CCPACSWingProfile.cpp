@@ -172,7 +172,7 @@ namespace tigl
             return;
 
         // build wires
-        profileAlgo->BuildWires();
+        profileAlgo->Update();
         invalidated = false;
     }
 
@@ -368,20 +368,6 @@ namespace tigl
 
         Handle(Geom2d_TrimmedCurve) chordLine = GCE2d_MakeSegment(le2d, te2d);
         return chordLine;
-    }
-
-    // Builds the wing profile wire. The returned wire is already transformed by the
-    // wing profile element transformation.
-    void CCPACSWingProfile::BuildWires(void)
-    {
-        // build wires
-        profileAlgo->BuildWires();
-    }
-
-    // Builds leading and trailing edge points of the wing profile wire.
-    void CCPACSWingProfile::BuildLETEPoints(void)
-    {
-        profileAlgo->BuildLETEPoints();
     }
 
     // get pointer to profile algorithm

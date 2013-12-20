@@ -23,6 +23,8 @@
 * geometry representation method.
 */
 
+#include "ITiglWingProfileAlgo.h"
+
 #ifndef CCPACSWINGPROFILECST_H
 #define CCPACSWINGPROFILECST_H
 
@@ -46,17 +48,14 @@ namespace tigl
         // Cleanup routine
         void Cleanup(void);
 
+        // Update of wire points ...
+        void Update(void);
+
         // Read CPACS wing profile file
         void ReadCPACS(TixiDocumentHandle tixiHandle);
 
         // Returns the profile points as read from TIXI.
         std::vector<CTiglPoint*> GetSamplePoints() const;
-
-        // Builds the wing profile wires.
-        void BuildWires();
-
-        // Builds leading and trailing edge points of the wing profile wire.
-        void BuildLETEPoints(void);
 
         // get profiles CPACS XML path
         const std::string & GetProfileDataXPath() const;
@@ -75,6 +74,13 @@ namespace tigl
 
         // get trailing edge point();
         const gp_Pnt & GetTEPoint() const;
+
+    protected:
+        // Builds the wing profile wires.
+        void BuildWires();
+
+        // Builds leading and trailing edge points of the wing profile wire.
+        void BuildLETEPoints(void);
 
     private:
         // Copy constructor

@@ -87,6 +87,11 @@ namespace tigl
         coordinates.clear();
     }
 
+    void CCPACSWingProfilePointList::Update(void)
+    {
+        BuildWires();
+    }
+
     // Read wing profile file
     void CCPACSWingProfilePointList::ReadCPACS(TixiDocumentHandle tixiHandle)
     {
