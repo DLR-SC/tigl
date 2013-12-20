@@ -17,7 +17,6 @@
 					<wing symmetry="x-z-plane" uID="CSTExample_W1" xsi:type="wingType">
 						<name>D150_wing_1</name>
 						<description>Wing</description>
-						<parentUID>CSTExample_FL1</parentUID>
 						<transformation xsi:type="transformationType">
 							<scaling xsi:type="pointType">
 								<x>1.0</x>
