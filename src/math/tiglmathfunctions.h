@@ -62,6 +62,11 @@ double bernstein_poly(int i, int n, double x);
 */
 double bernstein_poly_deriv(int k, int i, int n, double x);
 
+/**
+ * @brief Computes the nth derivative of x^k
+ */
+double pow_deriv(double x, double k, int n);
+
 } // namespace tigl
 
 #endif // TIGLMATHFUNCTIONS_H

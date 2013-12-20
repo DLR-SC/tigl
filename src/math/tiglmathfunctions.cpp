@@ -20,6 +20,7 @@
 
 #include <cassert>
 #include <algorithm>
+#include <cmath>
 
 namespace tigl {
 
@@ -103,6 +104,29 @@ double bernstein_poly_deriv(int k, int i, int n, double x) {
         result += pow_int(-1., j + k) * binom(k, j) * bernstein_poly(i - j, n - k, x);
     result *= factorial(n)/factorial(n-k);
     return result;
+}
+
+// computes the nth derivative of x^k
+double pow_deriv(double x, double k, int n) {
+    assert(n >= 0);
+
+    if (n == 0) {
+        return pow(x,k);
+    }
+
+    double eps = 1e-15;
+
+    // check if k is a natural number. if yes, we have to return 0 if n > k
+    if ( fabs(k - int(k)) < eps && n > k) {
+        return 0.;
+    }
+    else {
+        double fact = 1.;
+        for (int i = 0; i < n; ++i){
+            fact *= (k-i);
+        }
+        return fact * pow(x, k - (double)n);
+    }
 }
 
 } // namespace tigl

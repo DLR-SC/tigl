@@ -57,8 +57,9 @@
 #include "CTiglInterpolateLinearWire.h"
 #include "ITiglWingProfileAlgo.h"
 #include "CCPACSWingProfileCST.h"
+#include <GeomAPI_Interpolate.hxx>
+#include <TColgp_HArray1OfPnt.hxx>
 #include <algorithm>
-
 namespace tigl
 {
     // helper function to read in tixi vector
@@ -90,11 +91,13 @@ namespace tigl
         return res;
     }
 
-    // CST curve
+    // CST curve and its derivative
+    // class function
     double class_function(const double& N1, const double& N2, const double& x)
     {
         return pow(x,N1) * pow(1-x,N2);
     }
+    // shape function
     double shape_function(const std::vector<double>& B, const double& x)
     {
         double ret = 0.;
@@ -105,33 +108,65 @@ namespace tigl
         }
         return ret;
     }
-    double cstcurve(const double& x, const double& N1, const double& N2, const std::vector<double>& B)
+    // CST curve
+    double cstcurve(const double& N1, const double& N2, const std::vector<double>& B, const double& x)
     {
             return class_function(N1, N2, x) * shape_function(B, x);
     }
+    // n-th derivative of class function
+    double class_function_deriv(const double& N1, const double& N2, const int& n, const double& x)
+    {
+        double res = 0.;
+        for(size_t i = 0; i <= n; i++)
+        {
+            res += tigl::binom(n,i)
+                 * tigl::pow_deriv(x,N1,i)
+                 * tigl::pow_deriv(1-x, N2, n-i)
+                 * tigl::pow_int(-1., n-i);
+        }
+        return res;
+    }
+    // n-th derivative of the shape function
+    double shape_function_deriv(const std::vector<double>& B, const int& n, const double& x)
+    {
+        double ret = 0.;
+        int order = B.size()-1;
+        int i = 0;
+        for (std::vector<double>::const_iterator bIT = B.begin(); bIT != B.end(); ++bIT, ++i) {
+            ret += *bIT * tigl::bernstein_poly_deriv(n, i, order, x);
+        }
+        return ret;
+    }
+    // n-th derivative of the CST curve
+    double cstcurve_deriv(const double& N1, const double& N2, const std::vector<double>& B, const int& n, const double& x)
+    {
+        double res = 0.;
+        for (size_t i= 0; i<= n; i++) 
+        {
+            res += tigl::binom(n,i)
+                 * class_function_deriv(N1, N2, i, x)
+                 * shape_function_deriv(B, n-i, x);
+        }
+        return res;
+    }
+}
 
-
+namespace tigl
+{
     // Constructor
     CCPACSWingProfileCST::CCPACSWingProfileCST(const std::string& path)
     {
         ProfileDataXPath=path;
-        profileWireAlgo = WireAlgoPointer(new CTiglInterpolateBsplineWire);
     }
 
     // Destructor
     CCPACSWingProfileCST::~CCPACSWingProfileCST(void)
     {
-        delete profileWireAlgo;
     }
 
     // Cleanup routine
     void CCPACSWingProfileCST::Cleanup(void)
     {
-        for (CCPACSCoordinateContainer::size_type i = 0; i < coordinates.size(); i++)
-        {
-            delete coordinates[i];
-        }
-        coordinates.clear();
         for (CCPACSCoordinateContainer::size_type i = 0; i < upperCoordinates.size(); i++)
         {
             delete upperCoordinates[i];
@@ -142,6 +177,7 @@ namespace tigl
             delete lowerCoordinates[i];
         }
         lowerCoordinates.clear();
+        coordinates.clear();
 
         psi.clear();
         upperB.clear();
@@ -158,7 +194,7 @@ namespace tigl
         upperN2=readTixiDouble(tixiHandle, ProfileDataXPath, "/upperN2", "CCPACSWingProfileCST::ReadCPACS"); 
         lowerN1=readTixiDouble(tixiHandle, ProfileDataXPath, "/lowerN1", "CCPACSWingProfileCST::ReadCPACS"); 
         lowerN2=readTixiDouble(tixiHandle, ProfileDataXPath, "/lowerN2", "CCPACSWingProfileCST::ReadCPACS"); 
-
+        
         // create sample points on the wing profile with x-coordinate given by psi
         // make sure, that psi has 0.0 at beginning and 1.0 at end and is bounded by 0.0 and 1.0
         if (psi.size()<=2)
@@ -196,13 +232,12 @@ namespace tigl
             }
         }
         // get upper and lower sample points
-        CTiglPoint* point;
         for (size_t i = 0; i<psi.size(); i++)
         {
-            point = new CTiglPoint(psi[i], 0.0, cstcurve(psi[i], upperN1, upperN2, upperB));
-            upperCoordinates.push_back(point);
-            point = new CTiglPoint(psi[i], 0.0, -cstcurve(psi[i], lowerN1, lowerN2, lowerB));
-            lowerCoordinates.push_back(point);
+            CTiglPoint* point1 = new CTiglPoint(psi[i], 0.0, cstcurve(upperN1, upperN2, upperB, psi[i]));
+            upperCoordinates.push_back(point1);
+            CTiglPoint* point2 = new CTiglPoint(psi[i], 0.0, -cstcurve(lowerN1, lowerN2, lowerB, psi[i]));
+            lowerCoordinates.push_back(point2);
         }
 
         // Loop forwards over lower CST points (leave out last point)
@@ -215,102 +250,128 @@ namespace tigl
         {
             coordinates.push_back(lowerCoordinates[i]);
         }
-        ofstream out;
-        out.open("cst.dat");
-        for (size_t i = 0; i < coordinates.size(); i++)
-        {
-            out <<  coordinates[i]->x << "\t" << coordinates[i]->z << endl;
-        }
-        out.close();
     }
 
     // Builds the wing profile wire. The returned wire is already transformed by the
     // wing profile element transformation.
     void CCPACSWingProfileCST::BuildWires()
     {
-        // Set wire algorithm
-        const ITiglWireAlgorithm& wireBuilder = *profileWireAlgo;
-
-        // CCPACSWingSegment::makeSurfaces cannot handle currently 
-        // wire with multiple edges. Thus we get problems if we have
-        // a linear interpolated wire consting of many edges.
-        if(dynamic_cast<const CTiglInterpolateLinearWire*>(&wireBuilder))
-        {
-            LOG(ERROR) << "Linear Wing Profiles are currently not supported" << endl;
-            throw CTiglError("Linear Wing Profiles are currently not supported",TIGL_ERROR);
-        }
-
-        // Build closed wire
-        ITiglWireAlgorithm::CPointContainer points;
-        for (size_t i = 0; i < coordinates.size(); i++)
-        {
-            points.push_back(coordinates[i]->Get_gp_Pnt());
-        }
-
-        wireClosed   = wireBuilder.BuildWire(points, true);
-        if (wireClosed.IsNull() == Standard_True)
-        {
-            throw CTiglError("Error: TopoDS_Wire wireClosed is null in CCPACSWingProfileCST::BuildWire", TIGL_ERROR);
-        }
-        
-        /*
-        // direct building of upper and lower wires needs continuous derivative across the leading and trailing 
-        // edge points. -> Need to modify profileWireAlgo
         // Build upper wire
+        // Copy points
         ITiglWireAlgorithm::CPointContainer upperPoints;
         for (size_t i = 0; i < upperCoordinates.size(); i++)
         {
             upperPoints.push_back(upperCoordinates[i]->Get_gp_Pnt());
         }
-        upperWire   = wireBuilder.BuildWire(upperPoints, false);
+        Handle(TColgp_HArray1OfPnt) hUpperPoints = new TColgp_HArray1OfPnt(1, upperPoints.size());
+        for (size_t i = 0; i < upperPoints.size(); i++)
+        {
+            hUpperPoints->SetValue(i + 1, upperPoints[i]);
+        }
+
+        // set the tangency conditions
+        gp_Vec t1, t2;
+        if (upperN1 < 1.)
+        {
+            t1 = gp_Vec(0.0, 0.0, 1.0);
+        }
+        else 
+        {
+            t1 = gp_Vec(1.0, 0.0, cstcurve_deriv(upperN1, upperN2, upperB, 1, 0.0));
+        }
+
+        if (upperN2 < 1.) 
+        {
+            t2 = gp_Vec(0.0, 0.0, 1.0);
+        }
+        else 
+        {
+            t2 = gp_Vec(1.0, 0.0, cstcurve_deriv(upperN1, upperN2, upperB, 1, 1.0));
+        }
+
+        // interpolate
+        GeomAPI_Interpolate upperInter(hUpperPoints, Standard_False, 1e-6);
+        upperInter.Load(t1,t2, Standard_False);
+        upperInter.Perform();
+        Handle(Geom_BSplineCurve) hUpperCurve = upperInter.Curve();
+
+        TopoDS_Edge upperEdge = BRepBuilderAPI_MakeEdge(hUpperCurve);
+        BRepBuilderAPI_MakeWire upperWireBuilder(upperEdge);
+        if (!upperWireBuilder.IsDone())
+        { 
+            throw CTiglError("Error: Upper wire construction failed in CCPACSWingProfileCST::BuildWires", TIGL_ERROR);
+        }
+
+        upperWire = upperWireBuilder.Wire();
         if (upperWire.IsNull() == Standard_True)
         {
-            throw CTiglError("Error: TopoDS_Wire upperWire is null in CCPACSWingProfileCST::BuildWire", TIGL_ERROR);
+            throw CTiglError("Error: TopoDS_Wire upperWire is null in CCPACSWingProfileCST::BuildWires", TIGL_ERROR);
         }
 
         // Build lower wire
+        // Copy points
         ITiglWireAlgorithm::CPointContainer lowerPoints;
         for (size_t i = 0; i < lowerCoordinates.size(); i++)
         {
             lowerPoints.push_back(lowerCoordinates[i]->Get_gp_Pnt());
         }
-        lowerWire   = wireBuilder.BuildWire(lowerPoints, false);
+        Handle(TColgp_HArray1OfPnt) hLowerPoints = new TColgp_HArray1OfPnt(1, lowerPoints.size());
+        for (size_t i = 0; i < lowerPoints.size(); i++)
+        {
+            hLowerPoints->SetValue(i + 1, lowerPoints[i]);
+        }
+
+        // set the tangency conditions
+        if (lowerN1 < 1.)
+        {
+            t1 = gp_Vec(0.0, 0.0, -1.0);
+        }
+        else 
+        {
+            t1 = gp_Vec(1.0, 0.0, -cstcurve_deriv(lowerN1, lowerN2, lowerB, 1, 0.0));
+        }
+
+        if (lowerN2 < 1.) 
+        {
+            t2 = gp_Vec(0.0, 0.0, -1.0);
+        }
+        else 
+        {
+            t2 = gp_Vec(1.0, 0.0, -cstcurve_deriv(lowerN1, lowerN2, lowerB, 1, 1.0));
+        }
+
+        // interpolate
+        GeomAPI_Interpolate lowerInter(hLowerPoints, Standard_False, 1e-6);
+        lowerInter.Load(t1,t2, Standard_False);
+        lowerInter.Perform();
+        Handle(Geom_BSplineCurve) hLowerCurve = lowerInter.Curve();
+
+        TopoDS_Edge lowerEdge = BRepBuilderAPI_MakeEdge(hLowerCurve);
+        BRepBuilderAPI_MakeWire lowerWireBuilder(lowerEdge);
+        if (!lowerWireBuilder.IsDone())
+        { 
+            throw CTiglError("Error: Lower wire construction failed in CCPACSWingProfileCST::BuildWires", TIGL_ERROR);
+        }
+
+        lowerWire = lowerWireBuilder.Wire();
         if (lowerWire.IsNull() == Standard_True)
         {
-            throw CTiglError("Error: TopoDS_Wire lowerWire is null in CCPACSWingProfileCST::BuildWire", TIGL_ERROR);
+            throw CTiglError("Error: TopoDS_Wire lowerWire is null in CCPACSWingProfileCST::BuildWires", TIGL_ERROR);
         }
-        */
 
-        // indirect building of upper and lower wires
-        // Get BSpline curve
-        Handle_Geom_BSplineCurve curve = BRepAdaptor_CompCurve(wireClosed).BSpline();
-        // Get Leading edge parameter on curve
-        double lep_par = GeomAPI_ProjectPointOnCurve(lePoint, curve).LowerDistanceParameter();
-        
-        // upper and lower edges
-        TopoDS_Edge upperEdge, lowerEdge;
-        upperEdge = BRepBuilderAPI_MakeEdge(curve,curve->FirstParameter(), lep_par);
-        lowerEdge = BRepBuilderAPI_MakeEdge(curve,lep_par, curve->LastParameter());
+        // Build closed wire
+        BRepBuilderAPI_MakeWire closedWireBuilder(upperEdge,lowerEdge);
+        if (!closedWireBuilder.IsDone())
+        { 
+            throw CTiglError("Error: Closed wire construction failed in CCPACSWingProfileCST::BuildWires", TIGL_ERROR);
+        }
 
-        // Leading/trailing edge points
-        gp_Pnt te_up = curve->StartPoint();
-        gp_Pnt te_down = curve->EndPoint();
-
-        // Wire builder
-        BRepBuilderAPI_MakeWire upperWireBuilder, lowerWireBuilder;
-
-        //check if we have to close upper and lower wing shells
-        if(te_up.Distance(te_down) > Precision::Confusion())
+        wireClosed = closedWireBuilder.Wire();
+        if (wireClosed.IsNull() == Standard_True)
         {
-            lowerWireBuilder.Add(BRepBuilderAPI_MakeEdge(te_up,te_down));
+            throw CTiglError("Error: TopoDS_Wire closedWire is null in CCPACSWingProfileCST::BuildWires", TIGL_ERROR);
         }
-
-        upperWireBuilder.Add(upperEdge); 
-        lowerWireBuilder.Add(lowerEdge);
         
-        upperWire = upperWireBuilder.Wire();
-        lowerWire = lowerWireBuilder.Wire();
-
     }
 
     // Builds leading and trailing edge points of the wing profile wire.
