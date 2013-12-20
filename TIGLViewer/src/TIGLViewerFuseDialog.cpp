@@ -31,6 +31,8 @@ FuseDialog::FuseDialog(QWidget *parent) :
 
     ui->mirrorCheckBox->setChecked(_useSymmetries);
     ui->trimFFCheckBox->setChecked(_trimWithFF);
+
+    resize(minimumSizeHint());
 }
 
 FuseDialog::~FuseDialog()
