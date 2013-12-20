@@ -184,6 +184,12 @@ namespace tigl
         lowerB.clear();
     }
 
+    void CCPACSWingProfileCST::Update(void)
+    {
+        BuildLETEPoints();
+        BuildWires();
+    }
+
     // Read wing profile file
     void CCPACSWingProfileCST::ReadCPACS(TixiDocumentHandle tixiHandle)
     {
