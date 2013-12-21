@@ -357,21 +357,15 @@ namespace tigl {
         for (int i=1; i <= segments.GetSegmentCount(); i++) {
             CCPACSWingConnection& startConnection = segments.GetSegment(i).GetInnerConnection();
             CCPACSWingProfile& startProfile = startConnection.GetProfile();
-            TopoDS_Wire startWire;
-            if(!splitWingInUpperAndLower)
-                startWire = transformToWingCoords(startConnection, startProfile.GetWire());
-            else
-                startWire = transformToWingCoords(startConnection, startProfile.GetFusedUpperLowerWire());
+            TopoDS_Wire startWire = transformToWingCoords(startConnection, startProfile.GetWire());
+
             generator.AddWire(startWire);
         }
 
         CCPACSWingConnection& endConnection = segments.GetSegment(segments.GetSegmentCount()).GetOuterConnection();
         CCPACSWingProfile& endProfile = endConnection.GetProfile();
-        TopoDS_Wire endWire;
-        if(!splitWingInUpperAndLower)
-            endWire = transformToWingCoords(endConnection,endProfile.GetWire());
-        else
-            endWire = transformToWingCoords(endConnection,endProfile.GetFusedUpperLowerWire());
+        TopoDS_Wire endWire = transformToWingCoords(endConnection,endProfile.GetWire());
+
         generator.AddWire(endWire);
 
         generator.CheckCompatibility(Standard_False);
