@@ -175,13 +175,6 @@ namespace tigl
         profileAlgo->Update();
         invalidated = false;
     }
-
-    // Returns the wing profile wire
-    TopoDS_Wire CCPACSWingProfile::GetWire()
-    {
-        Update();
-        return profileAlgo->GetWireClosed();
-    }
     
     // Returns the wing profile upper wire
     TopoDS_Wire CCPACSWingProfile::GetUpperWire()
@@ -198,7 +191,7 @@ namespace tigl
     }
     
     // Returns the wing profile lower and upper wire fused
-    TopoDS_Wire CCPACSWingProfile::GetFusedUpperLowerWire()
+    TopoDS_Wire CCPACSWingProfile::GetWire()
     {
         Update();
         // rebuild closed wire

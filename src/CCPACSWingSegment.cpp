@@ -229,14 +229,14 @@ namespace tigl {
     TopoDS_Wire CCPACSWingSegment::GetInnerWire(void)
     {
         CCPACSWingProfile & innerProfile = innerConnection.GetProfile();
-        return transformProfileWire(GetWing().GetTransformation(), innerConnection, innerProfile.GetFusedUpperLowerWire());
+        return transformProfileWire(GetWing().GetTransformation(), innerConnection, innerProfile.GetWire());
     }
 
     // helper function to get the outer transformed chord line wire
     TopoDS_Wire CCPACSWingSegment::GetOuterWire(void)
     {
         CCPACSWingProfile & outerProfile = outerConnection.GetProfile();
-        return transformProfileWire(GetWing().GetTransformation(), outerConnection, outerProfile.GetFusedUpperLowerWire());
+        return transformProfileWire(GetWing().GetTransformation(), outerConnection, outerProfile.GetWire());
     }
     
     // helper function to get the inner closing of the wing segment
