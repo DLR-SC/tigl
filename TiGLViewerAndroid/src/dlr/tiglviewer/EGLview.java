@@ -15,13 +15,11 @@ package dlr.tiglviewer;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import android.app.Dialog;
 import android.content.Context;
 import android.graphics.PixelFormat;
 import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.*;
 
 import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLConfig;

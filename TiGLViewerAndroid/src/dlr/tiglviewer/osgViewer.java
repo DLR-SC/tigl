@@ -76,6 +76,7 @@ public class osgViewer extends Activity implements View.OnTouchListener {
     
     @Override protected void onCreate(Bundle icicle) {
         super.onCreate(icicle);
+        osgNativeLib.setAssetMgr(getAssets());
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
             WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -271,6 +272,8 @@ public boolean onTouch(View v, MotionEvent event) {
     	    		{
     	    			osgNativeLib.mouseButtonReleaseEvent(event.getX(0), event.getY(0), 2 , 1);
     	    		}
+    				break;
+    			default:
     				break;
     			}
     			mode = moveTypes.ZOOM;

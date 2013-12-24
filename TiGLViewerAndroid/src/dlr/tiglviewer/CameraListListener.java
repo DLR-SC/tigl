@@ -3,7 +3,7 @@ package dlr.tiglviewer;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
-import android.widget.Toast;
+
  
 public class CameraListListener implements OnItemSelectedListener {
  

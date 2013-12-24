@@ -8,7 +8,11 @@
 #include <osg/ShapeDrawable>
 #include <osg/Geode>
 #include <osg/LightSource>
+#include <osgText/Text>
+#include <osgText/Font>
 
+#include "ResourceManager.h"
+#include "OsgMainApp.hpp"
 
 TiglViewerHUD::TiglViewerHUD(){
 	init();
@@ -112,6 +116,25 @@ osg::MatrixTransform* TiglViewerHUD::createCoordinateCross()
     osg::ShapeDrawable* zO = new osg::ShapeDrawable(zCone);
     zO->setColor(osg::Vec4(0.0,0.0,1.0,1.0));
 
+    // load font from file
+    osg::ref_ptr<osgText::Font> font = ResourceManager::OpenFontFile("arial.ttf");
+
+    osg::ref_ptr<osgText::Text> xText = new osgText::Text;
+    xText->setPosition(osg::Vec3(objectX + 0.95,objectY,objectZ));
+    xText->setAlignment(osgText::Text::CENTER_CENTER);
+    xText->setText("X");
+    xText->setFont(font);
+    xText->setCharacterSize(0.3);
+    xText->setAxisAlignment(osgText::Text::SCREEN);
+
+    osg::ref_ptr<osgText::Text> yText = new osgText::Text(*xText);
+    yText->setPosition(osg::Vec3(objectX,objectY + 0.95,objectZ));
+    yText->setText("Y");
+
+    osg::ref_ptr<osgText::Text> zText = new osgText::Text(*xText);
+    zText->setPosition(osg::Vec3(objectX,objectY,objectZ + 0.95));
+    zText->setText("Z");
+
     // apply materials for correct lighting
     osg::Geode * xArrowGeode = new osg::Geode;
     xArrowGeode->addDrawable(xC);
@@ -134,6 +157,10 @@ osg::MatrixTransform* TiglViewerHUD::createCoordinateCross()
     centerBallGeode->addDrawable(new osg::ShapeDrawable(new osg::Sphere(osg::Vec3(objectX,objectY,objectZ), 0.10f)));
     centerBallGeode->getOrCreateStateSet()->setAttribute(MaterialTemplate::getMaterial(WHITE));
 
+    centerBallGeode->addDrawable(xText);
+    centerBallGeode->addDrawable(yText);
+    centerBallGeode->addDrawable(zText);
+
     osg::ref_ptr<osg::MatrixTransform> output = new osg::MatrixTransform;
     output->addChild(centerBallGeode);
     output->addChild(xArrowGeode);
@@ -142,6 +169,7 @@ osg::MatrixTransform* TiglViewerHUD::createCoordinateCross()
 
     osg::StateSet* stateset = output->getOrCreateStateSet();
     stateset->setMode(GL_LIGHTING,osg::StateAttribute::ON);
+
 
     return output.release();
 }

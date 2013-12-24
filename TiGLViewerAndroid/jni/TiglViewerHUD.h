@@ -1,3 +1,5 @@
+#ifndef TIGLVIEWER_HUD_H
+#define TIGLVIEWER_HUD_H
 
 
 #include <osg/MatrixTransform>
@@ -33,3 +35,5 @@ private:
     osg::MatrixTransform * createCoordinateCross();
 
 };
+
+#endif // TIGLVIEWER_HUD_H

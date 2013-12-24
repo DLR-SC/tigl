@@ -10,6 +10,7 @@
 
 //Android log
 #include <android/log.h>
+#include <android/asset_manager.h>
 #include <iostream>
 #include <cstdlib>
 #include <math.h>
@@ -60,16 +61,13 @@
 #include "TiglViewerHUD.h"
 
 
-//Static plugins Macro
-//USE_OSGPLUGIN(ive)
 USE_OSGPLUGIN(osg)
 USE_OSGPLUGIN(osg2)
+USE_OSGPLUGIN(freetype)
 
 //Static DOTOSG
 USE_DOTOSGWRAPPER_LIBRARY(osg)
 USE_DOTOSGWRAPPER_LIBRARY(osgViewer)
-
-
 
 #define  LOG_TAG    "osgNativeLib"
 #define  LOGI(...)  __android_log_print(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
@@ -82,6 +80,32 @@ struct Model{
 
 class OsgMainApp
 {
+
+public:
+    static OsgMainApp& Instance();
+
+    ~OsgMainApp();
+
+    void init();
+
+    void setAssetManager(AAssetManager* mgr);
+    AAssetManager * getAssetManager();
+
+    //Initialization function
+    void initOsgWindow(int x,int y,int width,int height);
+    //Draw
+
+    void draw();
+    //Events
+    void currentCamera();
+    void addObjectFromVTK(std::string filepath);
+    void addObjectFromCPACS(std::string filepath);
+    void removeObjects();
+    void changeCamera(int view);
+    void mouseButtonPressEvent(float x,float y,int button , int view);
+    void mouseButtonReleaseEvent(float x,float y,int button , int view);
+    void mouseMoveEvent(float x,float y, int view);
+
 private:
 	/*
 	 * * Commented code is used for adding multiple views in the same viewer
@@ -110,7 +134,9 @@ private:
     int viewSelected;
     float screenHeight;
     float screenWidth;
+
     OsgAndroidNotifyHandler *_notifyHandler;
+    AAssetManager*           _assetManager;
 
     std::vector<Model> _vModels;
     std::vector<Model> _vModelsToLoad;
@@ -118,24 +144,7 @@ private:
 
    // osgViewer::View* createView(int x, int y, int height, int width , osgViewer::GraphicsWindowEmbedded* _gwe , int id);
     osg::Node* addCross(osg::ref_ptr<osgViewer::View> view, int x, int y, int w, int h);
-public:
     OsgMainApp();
-    ~OsgMainApp();
-
-    //Initialization function
-    void initOsgWindow(int x,int y,int width,int height);
-    //Draw
-
-    void draw();
-    //Events
-    void currentCamera();
-    void addObjectFromVTK(std::string filepath);
-    void addObjectFromCPACS(std::string filepath);
-    void removeObjects();
-    void changeCamera(int view);
-    void mouseButtonPressEvent(float x,float y,int button , int view);
-    void mouseButtonReleaseEvent(float x,float y,int button , int view);
-    void mouseMoveEvent(float x,float y, int view);
 
 };
 

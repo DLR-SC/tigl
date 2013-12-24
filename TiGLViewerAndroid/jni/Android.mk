@@ -30,8 +30,8 @@ LOCAL_C_INCLUDES:= $(OSG_ANDROID_DIR)/include $(TIGL_INCLUDES)
 LOCAL_CFLAGS    := -Werror -fno-short-enums
 LOCAL_CPPFLAGS  := -DOSG_LIBRARY_STATIC 
 
-LOCAL_LDLIBS    := -llog -lGLESv1_CM -ldl -lz $(TIGL_LIBS)
-LOCAL_SRC_FILES := osgNativeLib.cpp OsgMainApp.cpp OsgAndroidNotifyHandler.cpp AuxiliaryViewUpdater.cpp TiglViewerHUD.cpp TiglViewerBackground.cpp VisObject.cpp  MaterialTemplate.cpp VirtualVisObject.cpp GeometricVisObject.cpp 
+LOCAL_LDLIBS    := -llog -landroid -lGLESv1_CM -ldl -lz $(TIGL_LIBS)
+LOCAL_SRC_FILES := osgNativeLib.cpp ResourceManager.cpp OsgMainApp.cpp OsgAndroidNotifyHandler.cpp AuxiliaryViewUpdater.cpp TiglViewerHUD.cpp TiglViewerBackground.cpp VisObject.cpp  MaterialTemplate.cpp VirtualVisObject.cpp GeometricVisObject.cpp 
 LOCAL_LDFLAGS   :=   $(LIBDIR) \
 -losgdb_osg \
 -losgdb_deprecated_osgviewer \
@@ -44,6 +44,8 @@ LOCAL_LDFLAGS   :=   $(LIBDIR) \
 -losgText \
 -losgUtil \
 -losg \
--lOpenThreads
+-lOpenThreads \
+-losgdb_freetype \
+-lft2
 
 include $(BUILD_SHARED_LIBRARY)

@@ -1,15 +1,16 @@
 #include <string.h>
 #include <jni.h>
 #include <android/log.h>
+#include <android/asset_manager.h>
+#include <android/asset_manager_jni.h>
 
 #include <iostream>
 
 #include "OsgMainApp.hpp"
 
-OsgMainApp mainApp;
-
 extern "C" {
     JNIEXPORT void JNICALL Java_dlr_tiglviewer_osgNativeLib_init(JNIEnv * env, jobject obj, jint width, jint height);
+    JNIEXPORT void JNICALL Java_dlr_tiglviewer_osgNativeLib_setAssetMgr(JNIEnv * env, jobject obj, jobject mgr);
     JNIEXPORT void JNICALL Java_dlr_tiglviewer_osgNativeLib_step(JNIEnv * env, jobject obj);
     JNIEXPORT void JNICALL Java_dlr_tiglviewer_osgNativeLib_addObjectFromVTK(JNIEnv * env, jobject obj, jstring filepath);
     JNIEXPORT void JNICALL Java_dlr_tiglviewer_osgNativeLib_addObjectFromCPACS(JNIEnv * env, jobject obj, jstring filepath);
@@ -21,40 +22,46 @@ extern "C" {
 };
 
 
-JNIEXPORT void JNICALL Java_dlr_tiglviewer_osgNativeLib_init(JNIEnv * env, jobject obj, jint width, jint height){
-    mainApp.initOsgWindow(0,0,width,height);
+JNIEXPORT void JNICALL Java_dlr_tiglviewer_osgNativeLib_setAssetMgr(JNIEnv * env, jobject obj, jobject mgr){
+	AAssetManager* manager = AAssetManager_fromJava(env, mgr);
+	OsgMainApp::Instance().setAssetManager(manager);
 }
+
+JNIEXPORT void JNICALL Java_dlr_tiglviewer_osgNativeLib_init(JNIEnv * env, jobject obj, jint width, jint height){
+    OsgMainApp::Instance().initOsgWindow(0,0,width,height);
+}
+
 JNIEXPORT void JNICALL Java_dlr_tiglviewer_osgNativeLib_step(JNIEnv * env, jobject obj){
-	mainApp.draw();
+	OsgMainApp::Instance().draw();
 }
 JNIEXPORT void JNICALL Java_dlr_tiglviewer_osgNativeLib_changeCamera(JNIEnv * env, jobject obj, jint view)
 {
-	mainApp.changeCamera(view);
+	OsgMainApp::Instance().changeCamera(view);
 }
 JNIEXPORT void JNICALL Java_dlr_tiglviewer_osgNativeLib_addObjectFromVTK(JNIEnv * env, jobject obj, jstring filepath)
 {
 	 const char *nativeAddress = env->GetStringUTFChars(filepath, NULL);
-	 mainApp.addObjectFromVTK(std::string(nativeAddress));
+	 OsgMainApp::Instance().addObjectFromVTK(std::string(nativeAddress));
 	 env->ReleaseStringUTFChars(filepath, nativeAddress);
 }
 JNIEXPORT void JNICALL Java_dlr_tiglviewer_osgNativeLib_addObjectFromCPACS(JNIEnv * env, jobject obj, jstring filepath)
 {
 	const char *nativeAddress = env->GetStringUTFChars(filepath, NULL);
-	mainApp.addObjectFromCPACS(std::string(nativeAddress));
+	OsgMainApp::Instance().addObjectFromCPACS(std::string(nativeAddress));
 	env->ReleaseStringUTFChars(filepath, nativeAddress);
 	}
 JNIEXPORT void JNICALL Java_dlr_tiglviewer_osgNativeLib_removeObjects(JNIEnv * env, jobject obj)
 {
-	mainApp.removeObjects();
+	OsgMainApp::Instance().removeObjects();
 	}
 
 JNIEXPORT void JNICALL Java_dlr_tiglviewer_osgNativeLib_mouseButtonPressEvent(JNIEnv * env, jobject obj, jfloat x, jfloat y, jint button, jint view){
-    mainApp.mouseButtonPressEvent(x,y,button, view);
+	OsgMainApp::Instance().mouseButtonPressEvent(x,y,button, view);
 }
 JNIEXPORT void JNICALL Java_dlr_tiglviewer_osgNativeLib_mouseButtonReleaseEvent(JNIEnv * env, jobject obj, jfloat x, jfloat y, jint button , jint view){
-    mainApp.mouseButtonReleaseEvent(x,y,button,view);
+	OsgMainApp::Instance().mouseButtonReleaseEvent(x,y,button,view);
 }
 JNIEXPORT void JNICALL Java_dlr_tiglviewer_osgNativeLib_mouseMoveEvent(JNIEnv * env, jobject obj, jfloat x, jfloat y , jint view){
-    mainApp.mouseMoveEvent(x,y,view);
+	OsgMainApp::Instance().mouseMoveEvent(x,y,view);
 }
 

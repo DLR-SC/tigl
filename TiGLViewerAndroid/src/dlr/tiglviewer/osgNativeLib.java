@@ -1,5 +1,7 @@
 package dlr.tiglviewer;
 
+import android.content.res.AssetManager;
+
 
 public class osgNativeLib {
 	
@@ -13,6 +15,7 @@ public class osgNativeLib {
     * @param height the current view height
     */
     public static native void 		init(int width, int height);
+    public static native void 		setAssetMgr(AssetManager mgr);
     public static native void 		step();
     public static native void		addObjectFromVTK(String filepath);
     public static native void 		addObjectFromCPACS(String filepath);

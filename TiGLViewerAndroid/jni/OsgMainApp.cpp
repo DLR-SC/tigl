@@ -16,13 +16,23 @@
 #define HOME_POS 80
 
 
+OsgMainApp& OsgMainApp::Instance() {
+	static OsgMainApp _instance;
+	return _instance;
+}
+
 OsgMainApp::OsgMainApp(){
+	init();
+}
+
+void OsgMainApp::init(){
 
     _lodScale = 1.0f;
     _prevFrame = 0;
 
     _initialized = false;
     _clean_scene = false;
+    _assetManager = NULL;
 
 }
 OsgMainApp::~OsgMainApp(){
@@ -38,6 +48,14 @@ osg::Node* OsgMainApp::addCross(osg::ref_ptr<osgViewer::View> view,
     HUD->setMainCamera(view->getCamera());
 
     return HUD;
+}
+
+void OsgMainApp::setAssetManager(AAssetManager* mgr) {
+	_assetManager = mgr;
+}
+
+AAssetManager* OsgMainApp::getAssetManager() {
+	return _assetManager;
 }
 
 void OsgMainApp::initOsgWindow(int x,int y,int width,int height){
