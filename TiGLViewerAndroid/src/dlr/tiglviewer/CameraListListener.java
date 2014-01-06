@@ -14,26 +14,26 @@ public class CameraListListener implements OnItemSelectedListener {
 	if(parent.getItemAtPosition(pos).toString().equals("Prespective View"))
 	{
 		choice = 0;
-		osgNativeLib.changeCamera(choice);
+		TiGLViewerNativeLib.changeCamera(choice);
 
 	}
 	
 	else if(parent.getItemAtPosition(pos).toString().equals("Top View"))
 	{	
 		choice = 1;
-		osgNativeLib.changeCamera(choice);
+		TiGLViewerNativeLib.changeCamera(choice);
 
 	}
 	else if(parent.getItemAtPosition(pos).toString().equals("Side View"))
 	{
 		choice = 2;
-		osgNativeLib.changeCamera(choice);
+		TiGLViewerNativeLib.changeCamera(choice);
 
 	}
 	else if(parent.getItemAtPosition(pos).toString().equals("Front View"))
 	{	
 		choice = 3;
-		osgNativeLib.changeCamera(choice);
+		TiGLViewerNativeLib.changeCamera(choice);
 
 	}
 		

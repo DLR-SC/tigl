@@ -62,7 +62,7 @@ public class TiGLViewer extends Activity implements View.OnTouchListener {
 	
 	int backgroundColor;
 	
-	private static final String TAG = "OSG Activity";
+	private static final String TAG = "TiGLViewer";
 	
     EGLview mView;
     Button AboutButton;
@@ -76,7 +76,7 @@ public class TiGLViewer extends Activity implements View.OnTouchListener {
     
     @Override protected void onCreate(Bundle icicle) {
         super.onCreate(icicle);
-        osgNativeLib.setAssetMgr(getAssets());
+        TiGLViewerNativeLib.setAssetMgr(getAssets());
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
             WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -169,7 +169,7 @@ OnClickListener uiListenserCloseFile = new OnClickListener() {
 	@Override
 	public void onClick(View v) {
 		
-		osgNativeLib.removeObjects();
+		TiGLViewerNativeLib.removeObjects();
 		
 	}
 };
@@ -192,14 +192,14 @@ public boolean onTouch(View v, MotionEvent event) {
 	    		mode = moveTypes.DRAG;
 	    		
 	    		
-	    		osgNativeLib.mouseMoveEvent(event.getX(0), event.getY(0) , 1);
+	    		TiGLViewerNativeLib.mouseMoveEvent(event.getX(0), event.getY(0) , 1);
 	    		if(navMode==navType.SECONDARY)
 	    		{
-	    			osgNativeLib.mouseButtonPressEvent(event.getX(0), event.getY(0), 2 , 1);
+	    			TiGLViewerNativeLib.mouseButtonPressEvent(event.getX(0), event.getY(0), 2 , 1);
 	    		}
 	    		else
 	    		{
-	    			osgNativeLib.mouseButtonPressEvent(event.getX(0), event.getY(0), 1 , 1);
+	    			TiGLViewerNativeLib.mouseButtonPressEvent(event.getX(0), event.getY(0), 1 , 1);
 	    		}
 	    		oneFingerOrigin.x=event.getX(0);
 	    		oneFingerOrigin.y=event.getY(0);
@@ -209,14 +209,14 @@ public boolean onTouch(View v, MotionEvent event) {
     			
     			switch(mode){
     			case DRAG:
-    				osgNativeLib.mouseMoveEvent(event.getX(0), event.getY(0) , 1);
+    				TiGLViewerNativeLib.mouseMoveEvent(event.getX(0), event.getY(0) , 1);
     				if(navMode==navType.SECONDARY)
     	    		{
-    	    			osgNativeLib.mouseButtonReleaseEvent(event.getX(0), event.getY(0), 2 , 1);
+    	    			TiGLViewerNativeLib.mouseButtonReleaseEvent(event.getX(0), event.getY(0), 2 , 1);
     	    		}
     	    		else
     	    		{
-    	    			osgNativeLib.mouseButtonReleaseEvent(event.getX(0), event.getY(0), 1 , 1);
+    	    			TiGLViewerNativeLib.mouseButtonReleaseEvent(event.getX(0), event.getY(0), 1 , 1);
     	    		}
     				break;
     			default :
@@ -227,7 +227,7 @@ public boolean onTouch(View v, MotionEvent event) {
     		case MotionEvent.ACTION_MOVE:
     			
     			
-    			osgNativeLib.mouseMoveEvent(event.getX(0), event.getY(0) , 1);
+    			TiGLViewerNativeLib.mouseMoveEvent(event.getX(0), event.getY(0) , 1);
     			
     			oneFingerOrigin.x=event.getX(0);
 	    		oneFingerOrigin.y=event.getY(0);
@@ -240,11 +240,11 @@ public boolean onTouch(View v, MotionEvent event) {
     			case DRAG:
     				if(navMode==navType.SECONDARY)
     	    		{
-    	    			osgNativeLib.mouseButtonReleaseEvent(event.getX(0), event.getY(0), 2 , 1);
+    	    			TiGLViewerNativeLib.mouseButtonReleaseEvent(event.getX(0), event.getY(0), 2 , 1);
     	    		}
     	    		else
     	    		{
-    	    			osgNativeLib.mouseButtonReleaseEvent(event.getX(0), event.getY(0), 1 , 1);
+    	    			TiGLViewerNativeLib.mouseButtonReleaseEvent(event.getX(0), event.getY(0), 1 , 1);
     	    		}
     				break;
     			default :
@@ -265,11 +265,11 @@ public boolean onTouch(View v, MotionEvent event) {
     			case DRAG:
     				if(navMode==navType.PRINCIPAL)
     	    		{
-    	    			osgNativeLib.mouseButtonReleaseEvent(event.getX(0), event.getY(0), 1 , 1);
+    	    			TiGLViewerNativeLib.mouseButtonReleaseEvent(event.getX(0), event.getY(0), 1 , 1);
     	    		}
     	    		else
     	    		{
-    	    			osgNativeLib.mouseButtonReleaseEvent(event.getX(0), event.getY(0), 2 , 1);
+    	    			TiGLViewerNativeLib.mouseButtonReleaseEvent(event.getX(0), event.getY(0), 2 , 1);
     	    		}
     				break;
     			default:
@@ -282,9 +282,9 @@ public boolean onTouch(View v, MotionEvent event) {
     			oneFingerOrigin.x=event.getX(0);
 	    		oneFingerOrigin.y=event.getY(0);
     			
-    			osgNativeLib.mouseMoveEvent(oneFingerOrigin.x,oneFingerOrigin.y , 1);
-    			osgNativeLib.mouseButtonPressEvent(oneFingerOrigin.x,oneFingerOrigin.y, 3 , 1);
-    			osgNativeLib.mouseMoveEvent(oneFingerOrigin.x,oneFingerOrigin.y , 1);
+    			TiGLViewerNativeLib.mouseMoveEvent(oneFingerOrigin.x,oneFingerOrigin.y , 1);
+    			TiGLViewerNativeLib.mouseButtonPressEvent(oneFingerOrigin.x,oneFingerOrigin.y, 3 , 1);
+    			TiGLViewerNativeLib.mouseMoveEvent(oneFingerOrigin.x,oneFingerOrigin.y , 1);
     			
     		case MotionEvent.ACTION_MOVE:
     			float distance = sqrDistance(event);
@@ -293,17 +293,17 @@ public boolean onTouch(View v, MotionEvent event) {
     			
     			if(result>1||result<-1){
     	    		oneFingerOrigin.y=oneFingerOrigin.y+result;
-    				osgNativeLib.mouseMoveEvent(oneFingerOrigin.x,oneFingerOrigin.y , 1);
+    				TiGLViewerNativeLib.mouseMoveEvent(oneFingerOrigin.x,oneFingerOrigin.y , 1);
     			}
     			
     			break;
     		case MotionEvent.ACTION_POINTER_UP:
     			mode =moveTypes.NONE;
-    			osgNativeLib.mouseButtonReleaseEvent(oneFingerOrigin.x,oneFingerOrigin.y, 3 , 1);
+    			TiGLViewerNativeLib.mouseButtonReleaseEvent(oneFingerOrigin.x,oneFingerOrigin.y, 3 , 1);
     			break;
     		case MotionEvent.ACTION_UP:
     			mode =moveTypes.NONE;
-    			osgNativeLib.mouseButtonReleaseEvent(oneFingerOrigin.x,oneFingerOrigin.y, 3 , 1);
+    			TiGLViewerNativeLib.mouseButtonReleaseEvent(oneFingerOrigin.x,oneFingerOrigin.y, 3 , 1);
     			break;
     		default :
     			Log.e(TAG,"2 point Action not captured");
@@ -316,9 +316,9 @@ public boolean onTouch(View v, MotionEvent event) {
     			
 	    		mode = moveTypes.DRAG;
 	    		
-	    		osgNativeLib.mouseMoveEvent(event.getX(0), event.getY(0) , 1);
+	    		TiGLViewerNativeLib.mouseMoveEvent(event.getX(0), event.getY(0) , 1);
 	    		if(navMode==navType.PRINCIPAL)
-	    			osgNativeLib.mouseButtonPressEvent(event.getX(0), event.getY(0), 1 , 1);
+	    			TiGLViewerNativeLib.mouseButtonPressEvent(event.getX(0), event.getY(0), 1 , 1);
 	    		else
 	    			//osgNativeLib.mouseButtonPressEvent(event.getX(0), event.getY(0), 2);
 	    		
@@ -328,9 +328,9 @@ public boolean onTouch(View v, MotionEvent event) {
     		case MotionEvent.ACTION_CANCEL:
     			switch(mode){
     			case DRAG:
-    				osgNativeLib.mouseMoveEvent(event.getX(0), event.getY(0) , 1);
+    				TiGLViewerNativeLib.mouseMoveEvent(event.getX(0), event.getY(0) , 1);
     				if(navMode==navType.PRINCIPAL)
-    					osgNativeLib.mouseButtonReleaseEvent(event.getX(0), event.getY(0), 1 , 1);
+    					TiGLViewerNativeLib.mouseButtonReleaseEvent(event.getX(0), event.getY(0), 1 , 1);
     				else
     					//osgNativeLib.mouseButtonReleaseEvent(event.getX(0), event.getY(0), 2);
     				break;
@@ -341,7 +341,7 @@ public boolean onTouch(View v, MotionEvent event) {
     			break;
     		case MotionEvent.ACTION_MOVE:
     			
-    			osgNativeLib.mouseMoveEvent(event.getX(0), event.getY(0) , 1);
+    			TiGLViewerNativeLib.mouseMoveEvent(event.getX(0), event.getY(0) , 1);
     			
     			oneFingerOrigin.x=event.getX(0);
 	    		oneFingerOrigin.y=event.getY(0);
@@ -351,7 +351,7 @@ public boolean onTouch(View v, MotionEvent event) {
     			switch(mode){
     			case DRAG:
     				if(navMode==navType.PRINCIPAL)
-    					osgNativeLib.mouseButtonReleaseEvent(event.getX(0), event.getY(0), 1 , 1);
+    					TiGLViewerNativeLib.mouseButtonReleaseEvent(event.getX(0), event.getY(0), 1 , 1);
     				else
     					//osgNativeLib.mouseButtonReleaseEvent(event.getX(0), event.getY(0), 2);
     				break;

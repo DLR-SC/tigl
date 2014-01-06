@@ -1,9 +1,8 @@
 package dlr.tiglviewer;
-
 import android.content.res.AssetManager;
 
 
-public class osgNativeLib {
+public class TiGLViewerNativeLib {
 	
 	static {
 		System.loadLibrary("gnustl_shared");

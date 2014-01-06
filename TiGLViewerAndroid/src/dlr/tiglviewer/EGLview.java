@@ -310,11 +310,11 @@ public class EGLview extends GLSurfaceView {
 	
 	private static class Renderer implements GLSurfaceView.Renderer {
 	    public void onDrawFrame(GL10 gl) {
-	        osgNativeLib.step();
+	        TiGLViewerNativeLib.step();
 	    }
 	
 	    public void onSurfaceChanged(GL10 gl, int width, int height) {
-	        osgNativeLib.init(width, height);
+	        TiGLViewerNativeLib.init(width, height);
 	    }
 	
 	    public void onSurfaceCreated(GL10 gl, EGLConfig config) {
