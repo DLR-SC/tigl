@@ -44,7 +44,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class osgViewer extends Activity implements View.OnTouchListener {
+public class TiGLViewer extends Activity implements View.OnTouchListener {
 
 	enum moveTypes { NONE , DRAG, MDRAG, ZOOM ,ACTUALIZE}
 	enum navType { PRINCIPAL , SECONDARY }
@@ -137,7 +137,7 @@ OnClickListener uiListenerAbout = new OnClickListener() {
 	public void onClick(View v) {
 	
 		AboutButton.setClickable(false);
-     	LayoutInflater inflater = (LayoutInflater)osgViewer.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+     	LayoutInflater inflater = (LayoutInflater)TiGLViewer.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
      	pw = new PopupWindow(inflater.inflate(R.layout.about, null, false), 400, 400, false);
 		pw.setTouchable(true);
 		pw.setOutsideTouchable(true);
