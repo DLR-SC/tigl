@@ -225,6 +225,9 @@
 // specific VRML
 #include <VrmlAPI_Writer.hxx>
 
+// specific MESH
+#include "CHotsoseMeshReader.h"
+
 // The OpenCASCADE includes...
 #include <AIS_InteractiveContext.hxx>
 

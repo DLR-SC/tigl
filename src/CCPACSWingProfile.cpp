@@ -29,7 +29,7 @@
 
 #include "CCPACSWingProfile.h"
 #include "CTiglError.h"
-#include "CTiglLogger.h"
+#include "CTiglLogging.h"
 #include "math.h"
 
 #include "gp_Pnt2d.hxx"
@@ -513,12 +513,10 @@ namespace tigl {
 
         BRepBuilderAPI_MakeWire upperWireBuilder, lowerWireBuilder;
         //check if we have to close upper and lower wing shells
-        if(te_up.Distance(tePoint) > Precision::Confusion())
-            upperWireBuilder.Add(BRepBuilderAPI_MakeEdge(tePoint,te_up));
-        
-        if(te_down.Distance(tePoint) > Precision::Confusion())
-            lowerWireBuilder.Add(BRepBuilderAPI_MakeEdge(tePoint,te_down));
-        
+        if(te_up.Distance(te_down) > Precision::Confusion()){
+            lowerWireBuilder.Add(BRepBuilderAPI_MakeEdge(te_up,te_down));
+        }
+
         upperWireBuilder.Add(upper_edge); 
         lowerWireBuilder.Add(lower_edge);
         
@@ -529,33 +527,34 @@ namespace tigl {
     // Builds leading and trailing edge points of the wing profile wire.
     void CCPACSWingProfile::BuildLETEPoints(void)
     {
-        ITiglWireAlgorithm::CPointContainer points;
-        for (CCPACSCoordinateContainer::size_type i = 0; i < coordinates.size(); i++)
-            points.push_back(coordinates[i]->Get_gp_Pnt());
+        // compute TE point
+        gp_Pnt firstPnt = coordinates[0]->Get_gp_Pnt();
+        gp_Pnt lastPnt  = coordinates[coordinates.size() - 1]->Get_gp_Pnt();
+        if( fabs(firstPnt.X() - lastPnt.X()) < Precision::Confusion()){
+            double x = (firstPnt.X() + lastPnt.X())/2.;
+            double y = (firstPnt.Y() + lastPnt.Y())/2.;
+            double z = (firstPnt.Z() + lastPnt.Z())/2.;
+            tePoint = gp_Pnt(x,y,z);
+        }
+        else if(firstPnt.X() > lastPnt.X()) {
+            tePoint = firstPnt;
+        }
+        else {
+            tePoint = lastPnt;
+        }
 
-        const ITiglWireAlgorithm& wireBuilder = *profileWireAlgo;
-
-        lePoint = wireBuilder.GetPointWithMinX(points);
-        lePoint = TransformPoint(lePoint);
-
-        gp_Pnt firstPnt = points[0];
-        gp_Pnt lastPnt  = points[points.size() - 1];
-        double x = wireBuilder.GetPointWithMaxX(points).X();
-        double y = (firstPnt.Y() + lastPnt.Y()) / 2.0;
-        tePoint = TransformPoint(gp_Pnt(x, y, 0.0));
-    }
-
-    // Transforms a point by the wing profile transformation
-    gp_Pnt CCPACSWingProfile::TransformPoint(const gp_Pnt& aPoint) const
-    {
-        CTiglTransformation transformation;
-        transformation.AddProjectionOnXYPlane();
-        // Rotate 90.0 degree around x axis to move x-y plane into x-z plane
-        transformation.AddRotationX(90.0);
-        // Set all y values to 0
-        transformation.AddProjectionOnXZPlane();
-
-        return transformation.Transform(aPoint);
+        // find the point with the max dist to TE point
+        lePoint = tePoint;
+        CCPACSCoordinateContainer::iterator pit = coordinates.begin();
+        for(; pit != coordinates.end(); ++pit) {
+            gp_Pnt point = (*pit)->Get_gp_Pnt();
+            if(tePoint.Distance(point) > tePoint.Distance(lePoint)) {
+                lePoint = point;
+            }
+        }
+        // project into x-z plane
+        lePoint.SetY(0.);
+        tePoint.SetY(0.);
     }
 
     // Returns the profile points as read from TIXI.

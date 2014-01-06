@@ -74,6 +74,7 @@ public slots:
     void drawFusedAircraft();
     void drawFusedAircraftTriangulation();
     void drawWingFuselageIntersectionLine();
+    void drawFarField();
 
     // Wing slots
     void drawWingProfiles();
@@ -99,6 +100,7 @@ public slots:
     void exportFusedAsIges();
     void exportAsStructuredIges();
     void exportAsStep();
+    void exportAsStepFused();
     void exportAsStepWithMetaData();
     void exportMeshedWingSTL();
     void exportMeshedFuselageSTL();
@@ -110,6 +112,8 @@ public slots:
     void exportMeshedConfigVTKNoFuse();
     void exportWingCollada();
     void exportFuselageCollada();
+    void exportWingBRep();
+    void exportFuselageBRep();
 
 
     // General slots

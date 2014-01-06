@@ -13,6 +13,9 @@
 
 # ${OpenCASCADE_FOUND} is cached, so once OCC is found this block shouldn't have to run again
 IF( NOT OpenCASCADE_FOUND )
+	
+	set(CASROOT $ENV{CASROOT} CACHE PATH "Additional include path for package search")
+
     # 32 bit or 64 bit?
     IF( CMAKE_SIZEOF_VOID_P EQUAL 4 )
       IF( _firsttime STREQUAL TRUE )
@@ -31,21 +34,21 @@ IF( NOT OpenCASCADE_FOUND )
     ENDIF( CMAKE_SIZEOF_VOID_P EQUAL 4 )
 
   IF(UNIX)
-    set( _incsearchpath /usr/include/opencascade /usr/include/oce /opt/occ/inc $ENV{CASROOT}/inc $ENV{CASROOT}/include/oce)
+    set( _incsearchpath /usr/include/opencascade /usr/include/oce /opt/occ/inc ${CASROOT}/inc ${CASROOT}/include/oce)
     if (APPLE)
       set( _testlibname libTKernel.dylib )
     else (APPLE)
       set( _testlibname libTKernel.so )
     endif (APPLE)
-    set( _libsearchpath /usr/lib64 /usr/lib /opt/occ/lib $ENV{CASROOT}/lib64 $ENV{CASROOT}/lib )
+    set( _libsearchpath /usr/lib64 /usr/lib /opt/occ/lib ${CASROOT}/lib64 ${CASROOT}/lib )
   ELSE(UNIX)
     IF (WIN32)
       # MESSAGE("************ FindOpenCASCADE.cmake has not been tried on windows and may or may not work! *************")
-      set( _incsearchpath $ENV{CASROOT}\\inc $ENV{CASROOT}\\include\\oce)
+      set( _incsearchpath ${CASROOT}\\inc ${CASROOT}\\include\\oce)
       set( _testlibname TKernel.lib )
 	  set( _testdllname TKernel.dll )
-      set( _libsearchpath $ENV{CASROOT}\\win32\\lib $ENV{CASROOT}\\win${BITS}\\lib $ENV{CASROOT}\\win${BITS}\\vc9\\lib $ENV{CASROOT}\\win${BITS}\\vc10\\lib C:\\OpenCASCADE6.3.0\\ros\\win32\\lib )
-	  set( _dllsearchpath $ENV{CASROOT}\\win32\\bin $ENV{CASROOT}\\win${BITS}\\bin $ENV{CASROOT}\\win${BITS}\\vc9\\bin $ENV{CASROOT}\\win${BITS}\\vc10\\bin C:\\OpenCASCADE6.3.0\\ros\\win32\\bin )
+      set( _libsearchpath ${CASROOT}\\win32\\lib ${CASROOT}\\win${BITS}\\lib ${CASROOT}\\win${BITS}\\vc9\\lib ${CASROOT}\\win${BITS}\\vc10\\lib C:\\OpenCASCADE6.3.0\\ros\\win32\\lib )
+	  set( _dllsearchpath ${CASROOT}\\win32\\bin ${CASROOT}\\win${BITS}\\bin ${CASROOT}\\win${BITS}\\vc9\\bin ${CASROOT}\\win${BITS}\\vc10\\bin C:\\OpenCASCADE6.3.0\\ros\\win32\\bin )
     ELSE(WIN32)
       message( FATAL_ERROR "Unknown system! Exiting." )
     ENDIF (WIN32)

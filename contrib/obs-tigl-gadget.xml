@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <Module>
     <ModulePrefs title="OBS Tigl" height="300" />
-    <Content type="url" href="http://software.opensuse.org/download/package.iframe?project=home:martinsiggel&amp;package=tigl" />
+    <Content type="url" href="https://software.opensuse.org/download/package.iframe?project=home:martinsiggel&amp;package=tigl" />
 </Module>

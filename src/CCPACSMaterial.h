@@ -39,6 +39,8 @@ public:
     bool isComposite() const;
     
     const std::string& GetUID() const;
+    double GetThickness() const;
+
     void Cleanup();
 private:
     std::string uid;

@@ -267,9 +267,9 @@ namespace tigl {
 
 #ifdef TIGL_USE_XCAF
     // Get segment count
-    TDF_Label CCPACSWing::ExportDataStructure(Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label)
+    TDF_Label CCPACSWing::ExportDataStructure(CCPACSConfiguration &config, Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label)
     {
-        TDF_Label wingLabel = CTiglAbstractPhysicalComponent::ExportDataStructure(myAssembly, label);
+        TDF_Label wingLabel = CTiglAbstractPhysicalComponent::ExportDataStructure(config, myAssembly, label);
 
         // Other (sub)-components
         for (int i=1; i <= segments.GetSegmentCount(); i++) {
@@ -583,6 +583,34 @@ namespace tigl {
                 return ymax-ymin;
             }
         }
+    }
+
+
+    // Calculates the segment coordinates from global (x,y,z) coordinates
+    // Returns the segment index of the according segment
+    // If x,y,z does not belong to any segment, -1 is returned
+    int CCPACSWing::GetSegmentEtaXsi(const gp_Pnt& point, double& eta, double& xsi, bool& onTop){
+        // search the segment
+        int segmentFound = -1;
+        for(int iSeg = 1; iSeg <= GetSegmentCount(); ++iSeg) {
+            CCPACSWingSegment& segment = (CCPACSWingSegment&) GetSegment(iSeg);
+            if (segment.GetIsOn(point) == true){
+                segmentFound = iSeg;
+                break;
+            }
+        }
+
+        if(segmentFound <= 0) {
+            return -1;
+        }
+
+        CCPACSWingSegment& segment = (CCPACSWingSegment&) GetSegment(segmentFound);
+        segment.GetEtaXsi(point, true, eta, xsi);
+
+        // TODO: do we need that here?
+        onTop = segment.GetIsOnTop(point);
+
+        return segmentFound;
     }
 
 

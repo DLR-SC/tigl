@@ -32,7 +32,7 @@
 #include "CCPACSWing.h"
 #include "CCPACSWingSegment.h"
 #include "CCPACSWingProfile.h"
-#include "CTiglLogger.h"
+#include "CTiglLogging.h"
 #include "CCPACSWingCell.h"
 #include "CTiglApproximateBsplineWire.h"
 #include "tiglcommonfunctions.h"
@@ -335,6 +335,22 @@ namespace tigl {
             // now check if we found an intersection
             double etaTmp;
             segment.GetEtaXsi(result, false, etaTmp, xsi);
+            // by design, result is inside the segment
+            // However due to numerics, eta and xsi might
+            // be a bit larger than 1 or smaller than 0
+            if(etaTmp > 1.) {
+                etaTmp = 1.;
+            }
+            else if(etaTmp < 0) {
+                etaTmp = 0.;
+            }
+            if(xsi > 1.) {
+                xsi = 1.;
+            }
+            else if(xsi < 0) {
+                xsi = 0.;
+            }
+
             // check that etaTmp coordinate is correct
             if(fabs(etaTmp - eta) > 1e-6)
                 throw CTiglError("Error determining proper eta, xsi coordinates in CCPACSWingComponentSegment::GetSegmentIntersection.", TIGL_MATH_ERROR);
@@ -697,7 +713,7 @@ namespace tigl {
 #ifdef TIGL_USE_XCAF
     // builds data structure for a TDocStd_Application
     // mostly used for export
-    TDF_Label CCPACSWingComponentSegment::ExportDataStructure(Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label)
+    TDF_Label CCPACSWingComponentSegment::ExportDataStructure(CCPACSConfiguration&, Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label)
     {
         TDF_Label subLabel;
         return subLabel;
@@ -728,8 +744,8 @@ namespace tigl {
                 }
             }
             
-            // add complete skin
-            if (shell->GetMaterial().IsValid()){
+            // add complete skin, only if no cells are defined
+            if (list.empty() && shell->GetMaterial().IsValid()){
                 list.push_back(&(shell->GetMaterial()));
             }
         

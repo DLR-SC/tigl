@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #
 # Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
 #
@@ -39,12 +39,13 @@ function printUsage {
     echo "Valid distributions:"
     echo "    SLE_11_SP1     Suse Linux Enterprise 11 SP1"
     echo "    SLE_11_SP2     Suse Linux Enterprise 11 SP2"
-    echo "    openSUSE_11.4  openSUSE 11.4"
     echo "    openSUSE_12.1  openSUSE 12.1"
     echo "    openSUSE_12.2  openSUSE 12.2"
+    echo "    openSUSE_13.1  openSUSE 13.1"
     echo "    ubuntu_12.04   Ubuntu 12.04"
     echo "    ubuntu_12.10   Ubuntu 12.10"
     echo "    ubuntu_13.04   Ubuntu 13.04"
+    echo "    ubuntu_13.10   Ubuntu 13.10"
     echo "    fedora_17      Fedora 17"
     echo "    rhel_5         Red Hat Enterprise Linux 5"
     echo "    rhel_6         Red Hat Enterprise Linux 6"
@@ -96,14 +97,6 @@ function checkArguments {
             PACK_ARCH=x86_64
             LIBDIR=lib64
 	fi
-    elif [[ $tmp_dist == openSUSE_11.4 ]]; then
-    	DIST=openSUSE_11.4
-	if [[  $tmp_arch == i386 ]]; then
-	    PACK_ARCH=i586
-        else
-            PACK_ARCH=x86_64
-            LIBDIR=lib64
-	fi
     elif [[ $tmp_dist == openSUSE_12.1 ]]; then
     	DIST=openSUSE_12.1
 	PACK_TYPE=rpm
@@ -113,7 +106,7 @@ function checkArguments {
             PACK_ARCH=x86_64
             LIBDIR=lib64
 	fi
-    elif [[ $tmp_dist == openSUSE_12.3 ]]; then
+    elif [[ $tmp_dist == openSUSE_12.2 ]]; then
     	DIST=openSUSE_12.2
 	PACK_TYPE=rpm
 	if [[  $tmp_arch == i386 ]]; then
@@ -122,6 +115,15 @@ function checkArguments {
             PACK_ARCH=x86_64
             LIBDIR=lib64
 	fi
+    elif [[ $tmp_dist == openSUSE_13.1 ]]; then
+        DIST=openSUSE_13.1
+        PACK_TYPE=rpm
+        if [[  $tmp_arch == i386 ]]; then
+            PACK_ARCH=i586
+        else
+            PACK_ARCH=x86_64
+            LIBDIR=lib64
+        fi
     elif [[ $tmp_dist == rhel_6 ]]; then
     	DIST=RedHat_RHEL-6
 	PACK_TYPE=rpm
@@ -182,6 +184,14 @@ function checkArguments {
         else
             PACK_ARCH=amd64
 	fi
+    elif [[ $tmp_dist == ubuntu_13.10 ]]; then
+        DIST=xUbuntu_13.10
+        PACK_TYPE=deb
+        if [[  $tmp_arch == i386 ]]; then
+            PACK_ARCH=i386
+        else
+            PACK_ARCH=amd64
+        fi
     else
 	echo "Error: Unsupported distribution:" $1
 	echo
@@ -231,14 +241,8 @@ if [[ $PACK_TYPE == rpm ]]; then
 		bin_file_list+=($file)
 	fi
 
-	#google-glog	
-	if [[ $file == libglog*.rpm ]] && [[ $file != *debuginfo* ]]
-	then
-		bin_file_list+=($file)
-	fi
-
 	#TIXI
-	if [[ $file == libTIXI2*.rpm ]]  && [[ $file != *debuginfo* ]]
+	if [[ $file == libTIXI2*.rpm ]]  || [[ $file == tixi-*.rpm ]] && [[ $file != *debuginfo* ]]
 	then
 		bin_file_list+=($file)
 	fi
@@ -258,12 +262,6 @@ elif [[ $PACK_TYPE == deb ]]; then
   for file in $filelist; do
 	#opencascade	
 	if [[ $file == liboce-*.deb ]] && [[ $file != liboce*dev* ]]
-	then
-		bin_file_list+=($file)
-	fi
-
-	#google-glog	
-	if [[ $file == libgoogle-glog*.deb ]] && [[ $file != libgoogle-glog*dev* ]]
 	then
 		bin_file_list+=($file)
 	fi

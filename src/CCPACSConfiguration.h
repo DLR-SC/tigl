@@ -27,12 +27,13 @@
 #define CCPACSCONFIGURATION_H
 
 #include "CTiglUIDManager.h"
-#include "CTiglLogger.h"
+#include "CTiglLogging.h"
 #include "CCPACSHeader.h"
 #include "CCPACSWings.h"
 #include "CCPACSWingProfile.h"
 #include "CCPACSFuselages.h"
 #include "CCPACSFuselageProfile.h"
+#include "CCPACSFarField.h"
 #include "TopoDS_Compound.hxx"
 #include "BRep_Builder.hxx"
 #include "CTiglShapeCache.h"
@@ -97,6 +98,8 @@ namespace tigl {
         // Returns the fuselage for a given UID.
         CCPACSFuselage& GetFuselage(std::string UID) const;
 
+        CCPACSFarField& GetFarField();
+
         // Returns the uid manager
         CTiglUIDManager& GetUIDManager(void);
 
@@ -129,6 +132,7 @@ namespace tigl {
         CCPACSHeader                 header;               /**< Configuration header element */
         CCPACSWings                  wings;                /**< Configuration wings element */
         CCPACSFuselages              fuselages;            /**< Configuration fuselages element */
+        CCPACSFarField               farField;             /**< Far field configuration for CFD tools */
         CTiglUIDManager              uidManager;           /**< Stores the unique ids of the components */
         TopoDS_Shape                 fusedAirplane;        /**< The complete airplaine as one fused shape */
         std::string                  configUID;            /**< UID of the opened configuration   */

@@ -25,10 +25,13 @@
 
 #include "CTiglAbstractGeometricComponent.h"
 #include "CTiglError.h"
-#include "CTiglLogger.h"
+#include "CTiglLogging.h"
 
+// OCCT defines
 #include <BRepBuilderAPI_Transform.hxx>
-#include "BRepClass3d_SolidClassifier.hxx"
+#include <BRepClass3d_SolidClassifier.hxx>
+#include <Bnd_Box.hxx>
+#include <BRepBndLib.hxx>
 
 namespace tigl {
 
@@ -149,6 +152,20 @@ namespace tigl {
     
     bool CTiglAbstractGeometricComponent::GetIsOn(const gp_Pnt& pnt){
         TopoDS_Shape& segmentLoft = GetLoft();
+
+        // fast check with bounding box
+        Bnd_Box boundingBox;
+        BRepBndLib::Add(segmentLoft, boundingBox);
+
+        Standard_Real xmin, xmax, ymin, ymax, zmin, zmax;
+        boundingBox.Get(xmin, ymin, zmin, xmax, ymax, zmax);
+
+        if (pnt.X() < xmin || pnt.X() > xmax ||
+            pnt.Y() < ymin || pnt.Y() > ymax ||
+            pnt.Z() < zmin || pnt.Z() > zmax) {
+            return false;
+        }
+
         double tolerance = 0.03; // 3cm
     
         BRepClass3d_SolidClassifier classifier;

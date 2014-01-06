@@ -58,7 +58,7 @@ postconstr = '''
 self.version = self.getVersion()
 '''
 
-blacklist = ['tiglCloseCPACSConfiguration']
+blacklist = ['tiglCloseCPACSConfiguration', 'tiglLogToFileStreamEnabled']
 
 if __name__ == '__main__':
     # parse the file
@@ -66,6 +66,7 @@ if __name__ == '__main__':
     parser = CP.CHeaderFileParser()
     parser.decoration = 'TIGL_COMMON_EXPORT'
     parser.add_alias('TixiDocumentHandle','int')
+    parser.add_alias('FILE','void')
     
     # set the handle string that the parser can identify the handles
     parser.handle_str = 'TiglCPACSConfigurationHandle'

@@ -77,12 +77,6 @@ TEST_F(TiglIntersection, tiglIntersection_FuselageWingIntersects)
     tigl::CTiglIntersectionCalculation iCalc(&config.GetShapeCache(), fuselage.GetUID(), wing.GetUID(), fuselageShape, wingShape);
     
     ASSERT_EQ(1, iCalc.GetNumWires());
-    
-    // rough check of the leading edge
-    gp_Pnt point = iCalc.GetPoint(0.5,1);
-    ASSERT_NEAR(0.0, point.X(), 1e-3);
-    ASSERT_NEAR(0.5, point.Y(), 1e-3);
-    ASSERT_NEAR(0.0, point.Z(), 1e-2);
 }
 
 

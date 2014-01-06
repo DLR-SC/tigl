@@ -23,7 +23,7 @@
 #include "CTiglPointTranslator.h"
 #include "tigl.h"
 #include "CTiglOptimizer.h"
-#include "CTiglLogger.h"
+#include "CTiglLogging.h"
 
 #include <cassert>
 #include <iomanip>

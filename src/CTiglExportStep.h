@@ -43,6 +43,11 @@ class STEPControl_Writer;
 
 namespace tigl {
 
+    enum TiglStepExportMode {
+        AS_FACES,
+        AS_SOLIDS
+    };
+
     class CTiglExportStep
     {
 
@@ -52,6 +57,8 @@ namespace tigl {
 
         // Virtual Destructor
         virtual ~CTiglExportStep(void);
+
+        void SetExportMode(TiglStepExportMode mode);
         
         // Exports the whole configuration as IGES file
         void ExportStep(const std::string& filename) const;
@@ -77,6 +84,7 @@ namespace tigl {
 
     private:
         CCPACSConfiguration&          myConfig;       /**< TIGL configuration object */
+        TiglStepExportMode            exportMode;     /**< Mode how to export solids */
         void AddFacesOfShape(const TopoDS_Shape &shape, STEPControl_Writer &writer) const;
     };
 

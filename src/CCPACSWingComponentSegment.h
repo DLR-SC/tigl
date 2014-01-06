@@ -92,7 +92,7 @@ namespace tigl {
 #ifdef TIGL_USE_XCAF
         // builds data structure for a TDocStd_Application
         // mostly used for export
-        TDF_Label ExportDataStructure(Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label);
+        TDF_Label ExportDataStructure(class CCPACSConfiguration &, Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label);
 #endif
         
         MaterialList GetMaterials(double eta, double xsi, TiglStructureType);

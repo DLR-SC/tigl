@@ -28,6 +28,7 @@
 #include "Geom_Curve.hxx"
 #include "BRep_Tool.hxx"
 #include "BRepTools_WireExplorer.hxx"
+#include "TopExp_Explorer.hxx"
 #include "TopoDS.hxx"
 #include "GeomAdaptor_Curve.hxx"
 #include "BRepAdaptor_CompCurve.hxx"
@@ -56,6 +57,16 @@ Standard_Real GetWireLength(const TopoDS_Wire& wire)
     BRepAdaptor_CompCurve aCompoundCurve(wire, Standard_True);
     return GCPnts_AbscissaPoint::Length( aCompoundCurve );
 #endif
+}
+
+unsigned int GetNumberOfEdges(const TopoDS_Shape& shape){
+    TopExp_Explorer edgeExpl(shape, TopAbs_EDGE);
+    unsigned int iEdges = 0;
+    for(;edgeExpl.More(); edgeExpl.Next()) {
+        iEdges++;
+    }
+
+    return iEdges;
 }
 
 // Gets a point on the wire line in dependence of a parameter alpha with

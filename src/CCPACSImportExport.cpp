@@ -25,7 +25,7 @@
 */
 
 #include "CCPACSImportExport.h"
-#include "CTiglLogger.h"
+#include "CTiglLogging.h"
 #include "CCPACSConfigurationManager.h"
 
 #include <iostream>
@@ -77,8 +77,12 @@ namespace tigl {
         }
 
         TDataStd_Name::Set (rootLabel, myConfig.GetUID().c_str());
-        rootComponent->ExportDataStructure(hShapeTool, rootLabel);
+        rootComponent->ExportDataStructure(myConfig, hShapeTool, rootLabel);
 
+        // add far field to root label
+        if (myConfig.GetFarField().GetFieldType() != NONE) {
+            myConfig.GetFarField().ExportDataStructure(myConfig, hShapeTool, rootLabel);
+        }
 
         return hDoc;
     }

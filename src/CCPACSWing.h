@@ -86,7 +86,7 @@ namespace tigl {
 #ifdef TIGL_USE_XCAF
         // builds data structure for a TDocStd_Application
         // mostly used for export
-        TDF_Label ExportDataStructure(Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label);
+        TDF_Label ExportDataStructure(CCPACSConfiguration& config, Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label);
 #endif
 
         // Returns the segment for a given index or uid
@@ -139,6 +139,11 @@ namespace tigl {
 
         // Returns the wingspan of the wing
         double GetWingspan(void);
+
+        // Calculates the segment coordinates from global (x,y,z) coordinates
+        // Returns the segment index of the according segment
+        // If x,y,z does not belong to any segment, -1 is returned
+        int GetSegmentEtaXsi(const gp_Pnt& xyz, double& eta, double& xsi, bool &onTop);
 
         // Returns the Component Type TIGL_COMPONENT_WING.
         TiglGeometricComponentType GetComponentType(void) {return TIGL_COMPONENT_WING | TIGL_COMPONENT_PHYSICAL;}
