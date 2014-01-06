@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="Hello">TIGL Test!</string>
-    <string name="app_name">TIGL-Android Demo app</string>
-    <string name="error">Test TIGL!</string>
-</resources>

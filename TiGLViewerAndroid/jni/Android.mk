@@ -14,11 +14,9 @@ OCCLIBS := TKIGES TKSTL TKSTEP \
 include $(CLEAR_VARS)
 
 LOCAL_MODULE    := TIGL_static
-### Main Install dir
-include $(LOCAL_PATH)/Directories.mk
 	
 TIGL_INCLUDES := $(LOCAL_PATH)/../../src
-LOCAL_STATIC_LIBRARIES := $(OCCLIBS)
+LOCAL_STATIC_LIBRARIES := $(OCCLIBS) TIXI_static
 
 
 ### Add all source file names to be included in lib separated by a whitespace 
@@ -39,29 +37,20 @@ include $(CLEAR_VARS)
 
 LOCAL_MODULE    := tiglviewer-native
 
-TIGL_LIBS := -L $(LOCAL_PATH)/../../misc/tigl-android/lib/static  \
-	-lTIXI_static -lcurl -lxslt -lxml2
-
-OSGLIBDIR 			:= $(OSG_ANDROID_DIR)/obj/local/armeabi
-ifeq ($(TARGET_ARCH_ABI),armeabi-v7a)
-	#LOCAL_ARM_NEON 	:= true
-	OSGLIBDIR 			:= $(OSG_ANDROID_DIR)/obj/local/armeabi-v7a 
-endif
-
-OSG_LIBS := -L $(OSGLIBDIR) -losgdb_osg \
--losgdb_deprecated_osgviewer \
--losgdb_deprecated_osg \
--losgdb_serializers_osg \
--losgdb_deprecated_osgtext \
--losgViewer \
--losgGA \
--losgDB \
--losgText \
--losgUtil \
--losg \
--lOpenThreads \
--losgdb_freetype \
--lft2
+OSG_LIBS := osgdb_osg \
+    osgdb_deprecated_osgviewer \
+    osgdb_deprecated_osg \
+    osgdb_serializers_osg \
+    osgdb_deprecated_osgtext \
+    osgViewer \
+    osgGA \
+    osgDB \
+    osgText \
+    osgUtil \
+    osg \
+    OpenThreads \
+    osgdb_freetype \
+    ft2
 
 
 ### Add all source file names to be included in lib separated by a whitespace 
@@ -69,12 +58,14 @@ LOCAL_C_INCLUDES:= $(OSG_ANDROID_DIR)/include
 LOCAL_CFLAGS    := -Werror -fno-short-enums
 LOCAL_CPPFLAGS  := -DOSG_LIBRARY_STATIC 
 
-LOCAL_STATIC_LIBRARIES := TIGL_static $(OCCLIBS)
+LOCAL_STATIC_LIBRARIES := TIGL_static TIXI_static $(OCCLIBS) $(OSG_LIBS)
 
-LOCAL_LDLIBS    := -llog -landroid -lGLESv1_CM -ldl -lz $(TIGL_LIBS) $(OSG_LIBS)
+LOCAL_LDLIBS    := -llog -landroid -lGLESv1_CM -ldl -lz 
 FILE_LIST := $(wildcard $(LOCAL_PATH)/*.cpp)
 LOCAL_SRC_FILES := $(FILE_LIST:$(LOCAL_PATH)/%=%)
 
 include $(BUILD_SHARED_LIBRARY)
 
 $(call import-module,oce)
+$(call import-module,tixi)
+$(call import-module,osg)
