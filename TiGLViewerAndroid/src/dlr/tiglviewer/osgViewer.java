@@ -178,7 +178,6 @@ OnClickListener uiListenserCloseFile = new OnClickListener() {
     
 	@Override
 public boolean onTouch(View v, MotionEvent event) { 
-		long time_arrival = event.getEventTime();
     	int n_points = event.getPointerCount();
     	int action = event.getAction() & MotionEvent.ACTION_MASK;
     	

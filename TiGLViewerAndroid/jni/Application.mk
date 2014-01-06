@@ -7,5 +7,5 @@ APP_OPTIM := release
 APP_PLATFORM 	:= android-9
 APP_STL 		:= gnustl_shared
 APP_CPPFLAGS 	:= -fexceptions -frtti
-APP_ABI 		:= armeabi armeabi-v7a
-APP_MODULES     := tiglviewer-native
+APP_ABI 		:= armeabi-v7a
+APP_MODULES     := TIGL_static tiglviewer-native

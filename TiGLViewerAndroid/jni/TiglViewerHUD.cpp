@@ -117,23 +117,23 @@ osg::MatrixTransform* TiglViewerHUD::createCoordinateCross()
     zO->setColor(osg::Vec4(0.0,0.0,1.0,1.0));
 
     // load font from file
-    osg::ref_ptr<osgText::Font> font = ResourceManager::OpenFontFile("arial.ttf");
+    osg::ref_ptr<osgText::Font> font = ResourceManager::OpenFontFile("DroidSans.ttf");
 
     osg::ref_ptr<osgText::Text> xText = new osgText::Text;
     xText->setPosition(osg::Vec3(objectX + 0.95,objectY,objectZ));
     xText->setAlignment(osgText::Text::CENTER_CENTER);
-    xText->setText("X");
+    xText->setText("x");
     xText->setFont(font);
     xText->setCharacterSize(0.3);
     xText->setAxisAlignment(osgText::Text::SCREEN);
 
     osg::ref_ptr<osgText::Text> yText = new osgText::Text(*xText);
     yText->setPosition(osg::Vec3(objectX,objectY + 0.95,objectZ));
-    yText->setText("Y");
+    yText->setText("y");
 
     osg::ref_ptr<osgText::Text> zText = new osgText::Text(*xText);
     zText->setPosition(osg::Vec3(objectX,objectY,objectZ + 0.95));
-    zText->setText("Z");
+    zText->setText("z");
 
     // apply materials for correct lighting
     osg::Geode * xArrowGeode = new osg::Geode;

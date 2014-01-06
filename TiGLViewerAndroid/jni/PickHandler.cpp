@@ -2,10 +2,10 @@
 #include <osgUtil/LineSegmentIntersector>
 #include <iostream>
 #include "GeometricVisObject.h"
-#include "Visualizer.h"
+//#include "Visualizer.h"
 #include "MaterialTemplate.h"
 
-
+/*
 int PickHandler::hitCount = 0;
 
 
@@ -53,4 +53,4 @@ void PickHandler::pick(osgViewer::View* view, const osgGA::GUIEventAdapter& ea, 
 			std::cout<< hitCount <<"Hit:"<<hit->nodePath.back()->getName()<<std::endl;
 		}
 	}
-}
+}*/
