@@ -15,13 +15,18 @@ set(TIGL_VERSION_MINOR 0)
 set(TIGL_VERSION_PATCH 7)
 set(TIGL_VERSION "${TIGL_VERSION_MAJOR}.${TIGL_VERSION_MINOR}.${TIGL_VERSION_PATCH}")
 
+set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/contrib)
+
+OPTION(TIGL_ANDROID "Creates the tiglviewer android app" OFF)
+
+if(NOT TIGL_ANDROID)
+
 set(TIGL_ADD_INCLUDE_PATH "" CACHE PATH "Additional include path for package search")
 set(TIGL_ADD_LIB_PATH "" CACHE PATH     "Additional library path for package search")
 
 set(CMAKE_INCLUDE_PATH "${CMAKE_INCLUDE_PATH}" ${TIGL_ADD_INCLUDE_PATH})
 set(CMAKE_LIBRARY_PATH "${CMAKE_LIBRARY_PATH}" ${TIGL_ADD_LIB_PATH})
 
-set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/contrib)
 include(GNUInstallDirs)
 
 OPTION(TIGL_NIGHTLY "Creates a nightly build of tigl (includes git sha into tigl version)" OFF)
@@ -75,8 +80,6 @@ if(TIGL_USE_GLOG)
     endif()
 endif(TIGL_USE_GLOG)
 
-CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/src/tigl_config.h.in ${CMAKE_CURRENT_BINARY_DIR}/src/tigl_config.h)
-
 # code coverage analysis
 IF (CMAKE_BUILD_TYPE STREQUAL "Debug")
         OPTION(TIGL_ENABLE_COVERAGE "Enable GCov coverage analysis (defines a 'coverage' target and enforces static build of tigl)" ON)
@@ -119,6 +122,54 @@ if(TIGL_BUILD_TESTS)
   add_subdirectory (${gtest_SOURCE_DIR})
   add_subdirectory(tests)
 endif(TIGL_BUILD_TESTS)
+
+
+else(NOT TIGL_ANDROID)
+   message("Build TiGLViewerApp")
+   
+   find_package(AndroidNDK REQUIRED)
+
+   set(TIGL_USE_XCAF FALSE)
+   set(GLOG_FOUND FALSE)
+
+   include(android-tools)
+
+   find_ndk_mod(osg)
+   find_ndk_mod(oce)
+   find_ndk_mod(tixi)
+   find_ndk_mod(curl)
+   find_ndk_mod(libxml2)
+   find_ndk_mod(libxslt)
+
+
+   if (NOT "${PROJECT_SOURCE_DIR}" STREQUAL "${PROJECT_BINARY_DIR}")
+       message(FATAL_ERROR "Out of source build not supported for android build")
+   endif()
+
+   configure_file (
+     "${CMAKE_CURRENT_SOURCE_DIR}/src/tigl_version.h.in"
+     "${CMAKE_CURRENT_SOURCE_DIR}/src/tigl_version.h"
+   )
+   
+   ADD_CUSTOM_COMMAND(
+        OUTPUT    tiglviewer-native
+        DEPENDS   ${CMAKE_SOURCE_DIR}/TiGLViewerAndroid/jni/Android.mk
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/TiGLViewerAndroid/
+        COMMAND   "${ANDROID_NDK}/ndk-build"
+        ARGS      -j 8 
+   )
+
+   ADD_CUSTOM_TARGET(
+          TiGLViewerApp ALL 
+          DEPENDS tiglviewer-native
+   )
+
+   message("The TiGLViewer app can now be build using \"make\"")
+
+
+endif(NOT TIGL_ANDROID)
+
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/src/tigl_config.h.in ${CMAKE_CURRENT_BINARY_DIR}/src/tigl_config.h)
 
 include(createDoc)
 
