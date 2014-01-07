@@ -6,12 +6,12 @@
 class PickHandler : public osgGA::GUIEventHandler
 {
 public:
-	static int hitCount;
-	PickHandler(){};
-	~PickHandler(){};
-	bool handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa);
+    static int hitCount;
+    PickHandler(){};
+    ~PickHandler(){};
+    bool handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa);
 private:
-	virtual void pick(osgViewer::View* view, const osgGA::GUIEventAdapter& ea, bool add);
+    virtual void pick(osgViewer::View* view, const osgGA::GUIEventAdapter& ea, bool add);
 
 
 };

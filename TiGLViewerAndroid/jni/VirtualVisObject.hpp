@@ -9,50 +9,48 @@
 class VirtualVisObject : public osg::Group
 {
 public:
-	osg::ref_ptr<osg::Group> main;
-	VirtualVisObject()
-		{
-			main = new osg::Group();
-			setXYGrid(true);
-			setAxes(true);
-		};
+    osg::ref_ptr<osg::Group> main;
+    VirtualVisObject()
+    {
+        main = new osg::Group();
+        setXYGrid(true);
+        setAxes(true);
+    };
 
-	void initGeodes();
+    void initGeodes();
 
-	bool isPickable(){return false;};
+    bool isPickable(){return false;};
 
-	bool xyActive(){return xy;};
-	bool xzActive(){return xz;};
-	bool yzActive(){return yz;};
-	bool axesActive(){return axes;};
+    bool xyActive(){return xy;};
+    bool xzActive(){return xz;};
+    bool yzActive(){return yz;};
+    bool axesActive(){return axes;};
 
-	void setXYGrid(bool active, int size=500, int unit=10);
-	void setXZGrid(bool active, int size=70, int unit=10);
-	void setYZGrid(bool active, int size=70, int unit=10);
-	void setAxes(bool active);
+    void setXYGrid(bool active, int size=500, int unit=10);
+    void setXZGrid(bool active, int size=70, int unit=10);
+    void setYZGrid(bool active, int size=70, int unit=10);
+    void setAxes(bool active);
 
-	osg::Camera* camera;
+    osg::Camera* camera;
 
 
 private:
-	osg::ref_ptr<osg::Geode> axesGeode;
-	osg::ref_ptr<osg::Geode> xyGeode;
-	osg::ref_ptr<osg::Geode> xzGeode;
-	osg::ref_ptr<osg::Geode> yzGeode;
+    osg::ref_ptr<osg::Geode> axesGeode;
+    osg::ref_ptr<osg::Geode> xyGeode;
+    osg::ref_ptr<osg::Geode> xzGeode;
+    osg::ref_ptr<osg::Geode> yzGeode;
 
-	osg::ref_ptr<osg::PositionAttitudeTransform> hudAxesTransform;
+    osg::ref_ptr<osg::PositionAttitudeTransform> hudAxesTransform;
 
-	void initXYGeode(int size, int unit);
-	void initXZGeode(int size, int unit);
-	void initYZGeode(int size, int unit);
-	void initAxesGeode();
+    void initXYGeode(int size, int unit);
+    void initXZGeode(int size, int unit);
+    void initYZGeode(int size, int unit);
+    void initAxesGeode();
 
-
-
-	bool xy;
-	bool xz;
-	bool yz;
-	bool axes;
+    bool xy;
+    bool xz;
+    bool yz;
+    bool axes;
 };
 
 #endif

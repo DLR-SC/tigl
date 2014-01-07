@@ -12,28 +12,28 @@
 #include <sstream>
 #include <istream>
 
-ResourceManager::ResourceManager() {
-	// TODO Auto-generated constructor stub
-
+ResourceManager::ResourceManager()
+{
 }
 
-osg::ref_ptr<osgText::Font> ResourceManager::OpenFontFile(const char * filename) {
-	AAssetManager* mgr = OsgMainApp::Instance().getAssetManager();
-	AAsset * asset = AAssetManager_open(mgr, filename, AASSET_MODE_UNKNOWN);
-	std::stringstream str;
-	if(asset) {
-		char c;
-		while(AAsset_read(asset, &c, 1) > 0) {
-			str << c;
-		}
-		AAsset_close(asset);
-	}
+osg::ref_ptr<osgText::Font> ResourceManager::OpenFontFile(const char * filename)
+{
+    AAssetManager* mgr = OsgMainApp::Instance().getAssetManager();
+    AAsset * asset = AAssetManager_open(mgr, filename, AASSET_MODE_UNKNOWN);
+    std::stringstream str;
+    if(asset) {
+        char c;
+        while(AAsset_read(asset, &c, 1) > 0) {
+            str << c;
+        }
+        AAsset_close(asset);
+    }
 
     osg::ref_ptr<osgText::Font> font = osgText::readRefFontStream(str);
-	return font;
+    return font;
 }
 
-ResourceManager::~ResourceManager() {
-	// TODO Auto-generated destructor stub
+ResourceManager::~ResourceManager()
+{
 }
 

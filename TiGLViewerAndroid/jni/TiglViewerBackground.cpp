@@ -11,7 +11,8 @@
 #include <osg/Depth>
 #include <osg/Geode>
 
-TiglViewerBackground::TiglViewerBackground() {
+TiglViewerBackground::TiglViewerBackground()
+{
     setCullingActive( false );
     setClearMask( 0 );
     setAllowEventFocus( false );
@@ -25,13 +26,14 @@ TiglViewerBackground::TiglViewerBackground() {
 
 }
 
-TiglViewerBackground::~TiglViewerBackground() {
-	// TODO Auto-generated destructor stub
+TiglViewerBackground::~TiglViewerBackground()
+{
 }
 
-void TiglViewerBackground::makeGradient(const osg::Vec4& downCol, const osg::Vec4& upCol){
-	unsigned int nChilds = getNumChildren();
-	removeChildren(0,nChilds);
+void TiglViewerBackground::makeGradient(const osg::Vec4& downCol, const osg::Vec4& upCol)
+{
+    unsigned int nChilds = getNumChildren();
+    removeChildren(0,nChilds);
 
     osg::Vec3Array *vertices = new osg::Vec3Array;
     vertices->push_back(osg::Vec3(0,0,0));
@@ -59,17 +61,18 @@ void TiglViewerBackground::makeGradient(const osg::Vec4& downCol, const osg::Vec
     addChild(bgnode);
 }
 
-void TiglViewerBackground::makeGradient(const osg::Vec4& col) {
-	double R1 = col.r();
-	double G1 = col.g();
-	double B1 = col.b();
-	double alpha = col.a();
+void TiglViewerBackground::makeGradient(const osg::Vec4& col)
+{
+    double R1 = col.r();
+    double G1 = col.g();
+    double B1 = col.b();
+    double alpha = col.a();
 
-	double fu = 2.;
-	double fd = 0.2;
+    double fu = 2.;
+    double fd = 0.2;
 
-	osg::Vec4 up  (R1*fu > 1 ? 1. : R1*fu, G1*fu > 1 ? 1. : G1*fu, B1*fu > 1 ? 1. : B1*fu, alpha);
-	osg::Vec4 down(R1*fd > 1 ? 1. : R1*fd, G1*fd > 1 ? 1. : G1*fd, B1*fd > 1 ? 1. : B1*fd, alpha);
+    osg::Vec4 up  (R1*fu > 1 ? 1. : R1*fu, G1*fu > 1 ? 1. : G1*fu, B1*fu > 1 ? 1. : B1*fu, alpha);
+    osg::Vec4 down(R1*fd > 1 ? 1. : R1*fd, G1*fd > 1 ? 1. : G1*fd, B1*fd > 1 ? 1. : B1*fd, alpha);
 
-	makeGradient(down, up);
+    makeGradient(down, up);
 }

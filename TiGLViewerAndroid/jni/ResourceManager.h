@@ -14,11 +14,11 @@
 
 class ResourceManager {
 public:
-	ResourceManager();
+    ResourceManager();
 
-	static osg::ref_ptr<osgText::Font> OpenFontFile(const char * filename);
+    static osg::ref_ptr<osgText::Font> OpenFontFile(const char * filename);
 
-	virtual ~ResourceManager();
+    virtual ~ResourceManager();
 };
 
 #endif /* RESOURCEMANAGER_H_ */

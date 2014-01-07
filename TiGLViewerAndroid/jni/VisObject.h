@@ -6,8 +6,7 @@
 class VisObject : public osg::Geode
 {
 public:
-	virtual bool isPickable() = 0;
-
+    virtual bool isPickable() = 0;
 
 };
 

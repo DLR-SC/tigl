@@ -14,18 +14,25 @@
 #include "ResourceManager.h"
 #include "OsgMainApp.hpp"
 
-TiglViewerHUD::TiglViewerHUD(){
-	init();
-}
-TiglViewerHUD::TiglViewerHUD(const TiglViewerHUD &copy, osg::CopyOp copyop):
-    osg::Camera(copy, copyop),
-    _coordinateCross(copy._coordinateCross),
-    _mainCamera(copy._mainCamera){}
-TiglViewerHUD::~TiglViewerHUD(){
-	init();
+TiglViewerHUD::TiglViewerHUD()
+{
+    init();
 }
 
-void TiglViewerHUD::init(){
+TiglViewerHUD::TiglViewerHUD(const TiglViewerHUD &copy, osg::CopyOp copyop) :
+    osg::Camera(copy, copyop),
+    _coordinateCross(copy._coordinateCross),
+    _mainCamera(copy._mainCamera)
+{
+}
+
+TiglViewerHUD::~TiglViewerHUD()
+{
+    init();
+}
+
+void TiglViewerHUD::init()
+{
     setProjectionMatrix(osg::Matrixd::ortho2D(-1.5, 1.5, -1.5, 1.5));
     setRenderOrder( osg::Camera::POST_RENDER, 1);
     setClearMask( GL_DEPTH_BUFFER_BIT );
@@ -34,8 +41,7 @@ void TiglViewerHUD::init(){
     setName("HUD");
 
     // TODO: check if this is necessary
-    getOrCreateStateSet()->setMode( GL_BLEND,
-             osg::StateAttribute::ON );
+    getOrCreateStateSet()->setMode( GL_BLEND, osg::StateAttribute::ON );
 
     osg::LightSource* lightSource = new osg::LightSource;
     lightSource->getLight()->setPosition(osg::Vec4d( 0.0f, 0.0f, 5.f, 1.0f )); // point light
@@ -44,33 +50,33 @@ void TiglViewerHUD::init(){
 
 void TiglViewerHUD::traverse(osg::NodeVisitor &nv)
 {
-	// apply camera rotation to the coordinate cross
-	if ( _mainCamera.valid() &&  _coordinateCross.valid() && nv.getVisitorType()==osg::NodeVisitor::CULL_VISITOR )
-	{
-		osg::Vec3 trans, scale;
-		osg::Quat rot, orient;
-		_mainCamera->getViewMatrix().decompose(trans, rot, scale, orient);
+    // apply camera rotation to the coordinate cross
+    if ( _mainCamera.valid() &&  _coordinateCross.valid() && nv.getVisitorType()==osg::NodeVisitor::CULL_VISITOR ) {
+        osg::Vec3 trans, scale;
+        osg::Quat rot, orient;
+        _mainCamera->getViewMatrix().decompose(trans, rot, scale, orient);
 
-		osg::Matrix rot_mat(rot);
+        osg::Matrix rot_mat(rot);
 
-		// the -10 moves the cross a bit back to prevent culling at the view plane
-		rot_mat.postMult(osg::Matrix::translate(-0.5,-0.5,-10));
+        // the -10 moves the cross a bit back to prevent culling at the view plane
+        rot_mat.postMult(osg::Matrix::translate(-0.5,-0.5,-10));
 
-		_coordinateCross->setMatrix(rot_mat);
+        _coordinateCross->setMatrix(rot_mat);
 
-		_coordinateCross->accept( nv );
-	}
+        _coordinateCross->accept( nv );
+    }
 
-	osg::Camera::traverse( nv );
+    osg::Camera::traverse( nv );
 }
 
-void TiglViewerHUD::setCoordinateCrossEnabled(bool enabled){
-	if(enabled) {
-		_coordinateCross = createCoordinateCross();
-	}
-	else {
-		_coordinateCross = NULL;
-	}
+void TiglViewerHUD::setCoordinateCrossEnabled(bool enabled)
+{
+    if (enabled) {
+        _coordinateCross = createCoordinateCross();
+    }
+    else {
+        _coordinateCross = NULL;
+    }
 }
 
 

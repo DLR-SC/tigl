@@ -12,10 +12,10 @@ public:
     bool handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa);
 
 protected:
-double _distance;
-float _offsetX, _offsetY;
-float _lastDragX, _lastDragY;
-int count;
+    double _distance;
+    float _offsetX, _offsetY;
+    float _lastDragX, _lastDragY;
+    int count;
 };
 
 #endif // AUXILIARYVIEWUPDATER_H
