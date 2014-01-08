@@ -1,6 +1,3 @@
-set(TIGL_USE_XCAF FALSE)
-set(GLOG_FOUND FALSE)
-
 include(android-tools)
 
 find_ndk_mod(osg)

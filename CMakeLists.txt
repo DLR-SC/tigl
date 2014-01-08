@@ -9,7 +9,7 @@ if(NOT DEFINED CMAKE_BUILD_TYPE)
     "MinSizeRel" "RelWithDebInfo")
 endif()
 
-project (TIGL)
+project (TIGL NONE)
 set(TIGL_VERSION_MAJOR 2)
 set(TIGL_VERSION_MINOR 0)
 set(TIGL_VERSION_PATCH 7)
@@ -20,7 +20,7 @@ set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/contrib)
 OPTION(TIGL_ANDROID "Creates the tiglviewer android app" OFF)
 
 if(NOT TIGL_ANDROID)
-
+enable_language(C CXX)
 set(TIGL_ADD_INCLUDE_PATH "" CACHE PATH "Additional include path for package search")
 set(TIGL_ADD_LIB_PATH "" CACHE PATH     "Additional library path for package search")
 
@@ -126,6 +126,9 @@ endif(TIGL_BUILD_TESTS)
 
 else(NOT TIGL_ANDROID)
    message("Build TiGLViewerApp")
+   
+   set(TIGL_USE_XCAF FALSE)
+   set(GLOG_FOUND FALSE)
    
    find_package(AndroidNDK REQUIRED)
    find_package(AndroidSDK REQUIRED)
