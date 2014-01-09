@@ -11,7 +11,7 @@
 
     <application android:label="@string/app_name" android:icon="@drawable/icontigl" android:theme="@android:style/Theme.Holo" android:allowBackup="true">
         <activity android:name=".TiGLViewer"
-                  android:label="@string/app_name" android:screenOrientation="landscape"> <!--  Force screen to landscape -->
+                  android:label="@string/app_name" android:screenOrientation="sensorLandscape"> <!--  Force screen to landscape -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
