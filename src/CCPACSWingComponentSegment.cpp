@@ -38,48 +38,26 @@
 #include "tiglcommonfunctions.h"
 
 #include "BRepOffsetAPI_ThruSections.hxx"
-#include "TopExp_Explorer.hxx"
-#include "TopAbs_ShapeEnum.hxx"
-#include "TopoDS.hxx"
 #include "TopoDS_Edge.hxx"
 #include "TopoDS_Face.hxx"
-#include "TopoDS_Shell.hxx"
 #include "TopoDS_Wire.hxx"
-#include "gp_Trsf.hxx"
-#include "gp_Lin.hxx"
-#include "Geom_TrimmedCurve.hxx"
-#include "GC_MakeSegment.hxx"
 #include "GeomAPI_IntCS.hxx"
-#include "Geom_Surface.hxx"
-#include "Geom_Line.hxx"
-#include "gce_MakeLin.hxx"
+#include "Geom_Plane.hxx"
+#include "gp_Pln.hxx"
+//#include "Geom_Surface.hxx"
 #include "Precision.hxx"
 #include "BRepBuilderAPI_MakeEdge.hxx"
+#include "BRepBuilderAPI_MakeFace.hxx"
 #include "BRepBuilderAPI_MakeWire.hxx"
 #include "BRepTools.hxx"
-#include "BRepBndLib.hxx"
 #include "BRepGProp.hxx"
-#include "Bnd_Box.hxx"
-#include "BRepLib_FindSurface.hxx"
-#include "ShapeAnalysis_Surface.hxx"
 #include "GProp_GProps.hxx"
 #include "ShapeFix_Shape.hxx"
-#include "BRepAdaptor_Surface.hxx"
-#include "GeomAdaptor_Surface.hxx"
-#include "GC_MakeLine.hxx"
 #include "Geom_BSplineCurve.hxx"
 #include "GeomAPI_PointsToBSpline.hxx"
-#include "GeomFill_SimpleBound.hxx"
-#include "GeomFill_BSplineCurves.hxx"
-#include "GeomFill_FillingStyle.hxx"
-#include "Geom_BSplineSurface.hxx"
-#include "GeomAPI_ProjectPointOnSurf.hxx"
 #include "BRepClass3d_SolidClassifier.hxx"
-#include "BRepAdaptor_CompCurve.hxx"
 #include "BRepExtrema_DistShapeShape.hxx"
-#include "GCPnts_AbscissaPoint.hxx"
 #include "TColgp_Array1OfPnt.hxx"
-
 
 #ifndef max
 #define max(a, b) (((a) > (b)) ? (a) : (b))
@@ -449,9 +427,7 @@ namespace tigl {
     gp_Pnt CCPACSWingComponentSegment::GetPoint(double eta, double xsi)
     {
         // search for ETA coordinate
-        std::vector<gp_Pnt> CPointContainer;
-        std::vector<gp_Pnt> CPointContainer2d;
-        bool inComponentSection = false;
+        std::vector<gp_Pnt> LEPointsProjected;
 
         if (eta < 0.0 || eta > 1.0)
         {
@@ -462,84 +438,75 @@ namespace tigl {
             throw CTiglError("Error: Parameter xsi not in the range 0.0 <= xsi <= 1.0 in CCPACSWingComponentSegment::GetPoint", TIGL_ERROR);
         }
 
-        for (int i = 1; i <= wing->GetSegmentCount(); i++)
-        {
-            tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing->GetSegment(i);
+        // add inner sections of each segment
+        std::vector<int> segmentIndices = GetSegmentList(fromElementUID, toElementUID);
+        TColgp_Array1OfPnt xsiPoints(1,segmentIndices.size()+1);
 
+        std::vector<int>::iterator segIndexIt = segmentIndices.begin();
+        int pointIndex = 1;
+        for(; segIndexIt != segmentIndices.end(); ++segIndexIt) {
+            tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing->GetSegment(*segIndexIt);
 
-            // if we found the outer section, break...
-            if( (segment.GetInnerSectionElementUID() == toElementUID) || (segment.GetOuterSectionElementUID() == toElementUID)) {
-                gp_Pnt pnt = segment.GetChordPoint(0,xsi);
-                CPointContainer.push_back(pnt);
+            // build iso xsi line
+            gp_Pnt p = segment.GetChordPoint(0,xsi);
+            xsiPoints.SetValue(pointIndex, p);
+            gp_Pnt lep = segment.GetChordPoint(0.,0.);
 
-                pnt = segment.GetChordPoint(1, xsi);
-                CPointContainer.push_back(pnt);
+            // build leading edge projected to x=0 plane
+            gp_Pnt lep_proj(0., lep.Y(), lep.Z());
+            LEPointsProjected.push_back(lep_proj);
 
-                i++;
+            if (segIndexIt == segmentIndices.end()-1) {
+                // add outer section of last segment
+                gp_Pnt p = segment.GetChordPoint(1., xsi);
+                xsiPoints.SetValue(pointIndex+1, p);
+
+                gp_Pnt lep = segment.GetChordPoint(1., 0.);
+                gp_Pnt lep_proj(0., lep.Y(), lep.Z());
+                LEPointsProjected.push_back(lep_proj);
+                // the break should not be necessary here, since the loop is
                 break;
             }
-
-            // Ok, we found the first segment of this componentSegment
-            if(segment.GetInnerSectionElementUID() == fromElementUID) {
-                inComponentSection = true;
-            }
-
-            // try next segment if this is not within the componentSegment
-            if (!inComponentSection) continue;
-
-            gp_Pnt pnt = segment.GetChordPoint(0, xsi);
-            CPointContainer.push_back(pnt);
+            pointIndex++;
         }
 
-
-        // make all point in 2d because its only a projection 
-        double x_mean = 0.;
-        for (unsigned int j = 0; j < CPointContainer.size(); j++)
-        {
-            gp_Pnt pnt = CPointContainer[j];
-            x_mean += pnt.X();
-            pnt = gp_Pnt(0, pnt.Y(), pnt.Z());
-            CPointContainer2d.push_back(pnt);
-        }
-        x_mean = x_mean / double(CPointContainer.size());
+        // create iso xsi line as linear interpolation between xsi points
+        GeomAPI_PointsToBSpline linearInterpolation(xsiPoints, 1, 1, GeomAbs_C0, Precision::Confusion());
+        Handle_Geom_Curve xsiCurve = linearInterpolation.Curve();
 
 
-        // build virtual ETA-line
+        // build projected leading edge wire
         BRepBuilderAPI_MakeWire wireBuilder;
-       for (unsigned int j = 1; j < CPointContainer2d.size(); j++)
-       {
-           TopoDS_Edge edge = BRepBuilderAPI_MakeEdge(CPointContainer2d[j - 1], CPointContainer2d[j]);
-           wireBuilder.Add(edge);
-       }
-       TopoDS_Wire etaLinie = wireBuilder.Wire();
-        
-        // build virtual XSI-line
-        BRepBuilderAPI_MakeWire wireBuilderXsi;
-       for (unsigned int j = 1; j < CPointContainer.size(); j++)
-       {
-           TopoDS_Edge edge = BRepBuilderAPI_MakeEdge(CPointContainer[j - 1], CPointContainer[j]);
-           wireBuilderXsi.Add(edge);
-       }
-       TopoDS_Wire xsiLinie = wireBuilderXsi.Wire();
+        for (unsigned int j = 1; j < LEPointsProjected.size(); j++)
+        {
+            TopoDS_Edge edge = BRepBuilderAPI_MakeEdge(LEPointsProjected[j - 1], LEPointsProjected[j]);
+            wireBuilder.Add(edge);
+        }
+        TopoDS_Wire leProj = wireBuilder.Wire();
 
-        // ETA 3D point
-        BRepAdaptor_CompCurve aCompoundCurve(etaLinie, Standard_True);
-        gp_Pnt etaPnt;
-        
-        Standard_Real len = GCPnts_AbscissaPoint::Length( aCompoundCurve );
-        aCompoundCurve.D0( len * eta, etaPnt );
+        // compute eta point and normal on the projected LE
+        gp_Pnt etaPnt; gp_Vec etaNormal;
+        WireGetPointNormal2(leProj, eta, etaPnt, etaNormal);
 
+        // plane normal to projected leading edge
+        gp_Pln gpPlane(etaPnt, gp_Dir(etaNormal.XYZ()));
+        Handle_Geom_Surface plane = new Geom_Plane(gpPlane);
 
-        // intersection line
-        gp_Pnt p1(etaPnt), p2(etaPnt);
-        p1.SetX(x_mean - 1e3); p2.SetX(x_mean + 1e3);
-        BRepBuilderAPI_MakeEdge ME(p1,p2);
-        TopoDS_Shape aCrv(ME.Edge());
-
-        //intersection point
-        BRepExtrema_DistShapeShape extrema(xsiLinie, aCrv);
-        extrema.Perform();
-        return extrema.PointOnShape1(1);
+        // compute intersection of plane with iso-xsi line
+        GeomAPI_IntCS Intersector(xsiCurve, plane);
+        if(Intersector.IsDone() && Intersector.NbPoints() > 0) {
+            gp_Pnt p = Intersector.Point(1);
+            return p;
+        }
+        else {
+            // Fallback mode, if they are not intersecting
+            // we don't need it, if we make leading/trailing edge longer
+            TopoDS_Shape xsiWire = BRepBuilderAPI_MakeEdge(xsiCurve);
+            TopoDS_Shape etaFace = BRepBuilderAPI_MakeFace(gpPlane);
+            BRepExtrema_DistShapeShape extrema(xsiWire, etaFace);
+            extrema.Perform();
+            return extrema.PointOnShape1(1);
+        }
     }
 
     void CCPACSWingComponentSegment::GetEtaXsiFromSegmentEtaXsi(const std::string& segmentUID, double seta, double sxsi, double& eta, double& xsi)
@@ -577,6 +544,8 @@ namespace tigl {
             pnt = gp_Pnt(0.0, pnt.Y(), pnt.Z());
             CPointContainer2d.push_back(pnt);
         }
+
+        //TODO: This algorithm is not valid anymore!!!!!!!!!!!!
 
         // build virtual ETA-line
         BRepBuilderAPI_MakeWire wireBuilder;

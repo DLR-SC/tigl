@@ -21,14 +21,17 @@
 
 #include "Standard.hxx"
 #include "gp_Pnt.hxx"
+#include "gp_Vec.hxx"
 #include "TopoDS_Shape.hxx"
 
 Standard_Real GetWireLength(const class TopoDS_Wire& wire);
 
 // returns a point on the wire (0 <= alpha <= 1)
 gp_Pnt WireGetPoint(const TopoDS_Wire& wire, double alpha);
+void WireGetPointNormal(const TopoDS_Wire& wire, double alpha, gp_Pnt& point, gp_Vec& normal);
 
 gp_Pnt WireGetPoint2(const TopoDS_Wire& wire, double alpha);
+void WireGetPointNormal2(const TopoDS_Wire& wire, double alpha, gp_Pnt& point, gp_Vec& normal);
 
 // calculates the alpha value for a given point on a wire
 Standard_Real ProjectPointOnWire(const TopoDS_Wire& wire, gp_Pnt p);
