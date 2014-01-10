@@ -20,6 +20,7 @@
 #ifndef TIGLMATHFUNCTIONS_H
 #define TIGLMATHFUNCTIONS_H
 
+#include<vector>
 
 namespace tigl {
 
@@ -66,6 +67,48 @@ double bernstein_poly_deriv(int k, int i, int n, double x);
  * @brief Computes the nth derivative of x^k
  */
 double pow_deriv(double x, double k, int n);
+
+/** @brief defines the class function
+ * C(psi) = psi^N1 * (1-psi)^N2
+ * for a CST air profile curve
+ */
+double class_function(const double& N1, const double& N2, const double& x);
+
+/** @brief defines the derivative of the class function
+ * C(psi) = psi^N1 * (1-psi)^N2
+ * for a CST air profile curve
+ */
+double class_function_deriv(const double& N1, const double& N2, const int& n, const double& x);
+
+/** @brief defines the shape function
+ * S(psi)=sum_i=1^N B_i * P_i^n(psi)
+ * for a CST air profile curve. The P_i^n are the Bernstein polynomials.
+ */
+double shape_function(const std::vector<double>& B, const double& x);
+
+/** @brief defines the derivative of the shape function
+ * S(psi)=sum_i=1^N B_i * P_i^n(psi)
+ * for a CST air profile curve. The P_i^n are the Bernstein polynomials.
+ */
+double shape_function_deriv(const std::vector<double>& B, const int& n, const double& x);
+
+/** @brief defines the CST air profile curve according to
+ * "CST" Universal Paramteric Geometry Representation Method
+ * with Applications to Supersonic Aircraft, B.M. Kulfan 2007
+ * 
+ * CST(psi)=C(psi)*S(psi)
+ *
+ * N1, N2 are the paramters of the class function C(psi) = psi^N1 * (1-psi)^N2
+ * B is the vector of coefficients for the bernstein polynomials P_i^n(psi) 
+ * inside the shape function S(psi)=sum_i=1^N B_i * p_i^n(psi)
+ * The order of the Bernstein polynomials N is defined by the length of the B vector
+ */
+double cstcurve(const double& N1, const double& N2, const std::vector<double>& B, const double& x);
+
+/** @brief defines the derivative of the CST air profile curve 
+ * CST(psi)=C(psi)*S(psi)
+ */
+double cstcurve_deriv(const double& N1, const double& N2, const std::vector<double>& B, const int& n, const double& x);
 
 } // namespace tigl
 

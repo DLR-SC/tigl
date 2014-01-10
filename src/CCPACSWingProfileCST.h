@@ -30,7 +30,6 @@
 
 namespace tigl
 {
-
     class CCPACSWingProfileCST : public ITiglWingProfileAlgo
     {
 
