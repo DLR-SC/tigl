@@ -1489,49 +1489,50 @@ void TIGLViewerDocument::drawWingComponentSegmentPoints()
     if(csUid == "")
         return;
     
-    double eta, xsi;
-    if (EtaXsiDialog::getEtaXsi(parent, eta, xsi) != QDialog::Accepted)
-        return;
-    
-    // here are two alternative methods to determine the 3d point of the CS
+    double eta = 0.5, xsi = 0.5;
+
+    while(EtaXsiDialog::getEtaXsi(parent, eta, xsi) == QDialog::Accepted) {
+
+        // here are two alternative methods to determine the 3d point of the CS
 #if 0
-    // A more indirect method, good to debug errors in CCPACSWingComponentSegment::findSegment
-    char * wingUID, * segmentUID;
-    double alpha, beta;
-    TiglReturnCode ret = tiglWingComponentSegmentPointGetSegmentEtaXsi(
-                getCpacsHandle(), 
-                csUid.toStdString().c_str(), 
-                eta, xsi, 
-                &wingUID, 
-                &segmentUID, 
-                &alpha, &beta);
-    
-    if (ret == TIGL_SUCCESS){
-       tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUID);
-       tigl::CCPACSWingSegment& segment = dynamic_cast<tigl::CCPACSWingSegment&>(wing.GetSegment(segmentUID));
-       gp_Pnt point = segment.GetChordPoint(alpha, beta);
-       ISession_Point* aGraphicPoint = new ISession_Point(point);
-       myAISContext->Display(aGraphicPoint,Standard_True);
-    }
-    else {
-        displayError(QString("Error in <b>tiglWingComponentSegmentPointGetSegmentEtaXsi</b>. ReturnCode: %1").arg(ret), "Error");
-    }
+        // A more indirect method, good to debug errors in CCPACSWingComponentSegment::findSegment
+        char * wingUID, * segmentUID;
+        double alpha, beta;
+        TiglReturnCode ret = tiglWingComponentSegmentPointGetSegmentEtaXsi(
+                    getCpacsHandle(),
+                    csUid.toStdString().c_str(),
+                    eta, xsi,
+                    &wingUID,
+                    &segmentUID,
+                    &alpha, &beta);
+
+        if (ret == TIGL_SUCCESS){
+            tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUID);
+            tigl::CCPACSWingSegment& segment = dynamic_cast<tigl::CCPACSWingSegment&>(wing.GetSegment(segmentUID));
+            gp_Pnt point = segment.GetChordPoint(alpha, beta);
+            ISession_Point* aGraphicPoint = new ISession_Point(point);
+            myAISContext->Display(aGraphicPoint,Standard_True);
+        }
+        else {
+            displayError(QString("Error in <b>tiglWingComponentSegmentPointGetSegmentEtaXsi</b>. ReturnCode: %1").arg(ret), "Error");
+        }
 #else
-    double x,y,z;
-    TiglReturnCode ret = tiglWingComponentSegmentGetPoint(
-                getCpacsHandle(), 
-                csUid.toStdString().c_str(), 
-                eta, xsi, 
-                &x, &y, &z);
-    if (ret == TIGL_SUCCESS){
-        gp_Pnt point(x,y,z);
-        ISession_Point* aGraphicPoint = new ISession_Point(point);
-        myAISContext->Display(aGraphicPoint,Standard_True);
-    }
-    else {
-        displayError(QString("Error in <b>tiglWingComponentSegmentPointGetPoint</b>. ReturnCode: %1").arg(ret), "Error");
-    }
+        double x,y,z;
+        TiglReturnCode ret = tiglWingComponentSegmentGetPoint(
+                    getCpacsHandle(),
+                    csUid.toStdString().c_str(),
+                    eta, xsi,
+                    &x, &y, &z);
+        if (ret == TIGL_SUCCESS){
+            gp_Pnt point(x,y,z);
+            ISession_Point* aGraphicPoint = new ISession_Point(point);
+            myAISContext->Display(aGraphicPoint,Standard_True);
+        }
+        else {
+            displayError(QString("Error in <b>tiglWingComponentSegmentPointGetPoint</b>. ReturnCode: %1").arg(ret), "Error");
+        }
 #endif
+    }
 }
 
 void TIGLViewerDocument::drawWingShells(){
