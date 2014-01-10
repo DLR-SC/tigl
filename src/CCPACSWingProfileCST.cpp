@@ -90,69 +90,6 @@ namespace tigl
         }
         return res;
     }
-
-    // CST curve and its derivative
-    // class function
-    double class_function(const double& N1, const double& N2, const double& x)
-    {
-        return pow(x,N1) * pow(1-x,N2);
-    }
-    // shape function
-    double shape_function(const std::vector<double>& B, const double& x)
-    {
-        double ret = 0.;
-        int order = B.size()-1;
-        int i = 0;
-        for (std::vector<double>::const_iterator bIT = B.begin(); bIT != B.end(); ++bIT, ++i) {
-            ret += *bIT * bernstein_poly(i, order, x);
-        }
-        return ret;
-    }
-    // CST curve
-    double cstcurve(const double& N1, const double& N2, const std::vector<double>& B, const double& x)
-    {
-            return class_function(N1, N2, x) * shape_function(B, x);
-    }
-    // n-th derivative of class function
-    double class_function_deriv(const double& N1, const double& N2, const int& n, const double& x)
-    {
-        double res = 0.;
-        for(size_t i = 0; i <= n; i++)
-        {
-            res += tigl::binom(n,i)
-                 * tigl::pow_deriv(x,N1,i)
-                 * tigl::pow_deriv(1-x, N2, n-i)
-                 * tigl::pow_int(-1., n-i);
-        }
-        return res;
-    }
-    // n-th derivative of the shape function
-    double shape_function_deriv(const std::vector<double>& B, const int& n, const double& x)
-    {
-        double ret = 0.;
-        int order = B.size()-1;
-        int i = 0;
-        for (std::vector<double>::const_iterator bIT = B.begin(); bIT != B.end(); ++bIT, ++i) {
-            ret += *bIT * tigl::bernstein_poly_deriv(n, i, order, x);
-        }
-        return ret;
-    }
-    // n-th derivative of the CST curve
-    double cstcurve_deriv(const double& N1, const double& N2, const std::vector<double>& B, const int& n, const double& x)
-    {
-        double res = 0.;
-        for (size_t i= 0; i<= n; i++) 
-        {
-            res += tigl::binom(n,i)
-                 * class_function_deriv(N1, N2, i, x)
-                 * shape_function_deriv(B, n-i, x);
-        }
-        return res;
-    }
-}
-
-namespace tigl
-{
     // Constructor
     CCPACSWingProfileCST::CCPACSWingProfileCST(const std::string& path)
     {
