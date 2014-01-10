@@ -65,11 +65,12 @@
 
 namespace {
 bool inBetween(const gp_Pnt& p, const gp_Pnt& p1, const gp_Pnt& p2){
-    bool inx = (p1.X() <= p.X() && p.X() <= p2.X()) || (p2.X() <= p.X() && p.X() <= p1.X());
-    bool iny = (p1.Y() <= p.Y() && p.Y() <= p2.Y()) || (p2.Y() <= p.Y() && p.Y() <= p1.Y());
-    bool inz = (p1.Z() <= p.Z() && p.Z() <= p2.Z()) || (p2.Z() <= p.Z() && p.Z() <= p1.Z());
-    
-    return inx && iny && inz;
+    gp_Vec b(p1, p2);
+    gp_Vec v1(p, p1);
+    gp_Vec v2(p, p2);
+
+    double res = (b*v1)*(b*v2);
+    return res <= 0.;
 }
 }
 
