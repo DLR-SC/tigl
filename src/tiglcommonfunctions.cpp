@@ -190,4 +190,9 @@ Standard_Real ProjectPointOnWire(const TopoDS_Wire& wire, gp_Pnt p){
     return partLength/GetWireLength(wire);
 }
 
+// projects a point onto the line (lineStart<->lineStop) and returns the projection parameter
+Standard_Real ProjectPointOnLine(gp_Pnt p, gp_Pnt lineStart, gp_Pnt lineStop) {
+    return gp_Vec(lineStart, p) * gp_Vec(lineStart, lineStop) / gp_Vec(lineStart, lineStop).SquareMagnitude();
+}
+
 
