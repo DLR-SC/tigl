@@ -101,11 +101,12 @@ class CTiglLogging {
         static CTiglLogging& Instance(void);
         
         // convenience functions that insert the appropriate loggers
-        void LogToFile(const char* filePrefix, bool errorsOnConsole=true);
-        void LogToStream(FILE * fp, bool errorsOnConsole=true);
+        void LogToFile(const char* filePrefix);
+        void LogToStream(FILE * fp);
         void SetLogFileEnding(const char* ending);
         void SetTimeIdInFilenameEnabled(bool enabled);
         void LogToConsole();
+        void SetConsoleVerbosity(TiglLogLevel vlevel);
         
         // allows installing a custom log sink/receiver
         // The logger becomes property of this class
@@ -133,6 +134,7 @@ class CTiglLogging {
         class ITiglLogger* _myLogger;
         std::string        _fileEnding;
         bool               _timeIdInFilename;
+        TiglLogLevel       _consoleVerbosity;
 
 };
 

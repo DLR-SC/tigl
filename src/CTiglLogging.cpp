@@ -49,6 +49,7 @@ CTiglLogging::CTiglLogging(void)
     _myLogger = NULL;
     _fileEnding = "log";
     _timeIdInFilename = true;
+    _consoleVerbosity = TILOG_ERROR;
 }
 
 CTiglLogging::~CTiglLogging(void)
@@ -96,7 +97,7 @@ void CTiglLogging::initLogger(void)
 #endif
 }
 
-void CTiglLogging::LogToFile(const char* prefix, bool errorsOnConsole) {
+void CTiglLogging::LogToFile(const char* prefix) {
     time_t rawtime;
     time (&rawtime);
     struct tm *timeinfo = localtime (&rawtime);
@@ -111,22 +112,16 @@ void CTiglLogging::LogToFile(const char* prefix, bool errorsOnConsole) {
     std::string filename = std::string(prefix) + buffer+ "." + _fileEnding;
     
     CTiglLogSplitter* splitter = new CTiglLogSplitter;
-    splitter->AddLogger(new CTiglFileLogger(filename.c_str()), TILOG_DEBUG4);
-    if(errorsOnConsole) {
-        splitter->AddLogger(new CTiglConsoleLogger, TILOG_ERROR);
-    }
-    
+    splitter->AddLogger(new CTiglFileLogger(filename.c_str()));
+    splitter->AddLogger(new CTiglConsoleLogger);
     SetLogger(splitter);
 }
 
-void CTiglLogging::LogToStream(FILE * fp, bool errorsOnConsole) {
+void CTiglLogging::LogToStream(FILE * fp) {
 
     CTiglLogSplitter* splitter = new CTiglLogSplitter;
-    splitter->AddLogger(new CTiglFileLogger(fp), TILOG_DEBUG4);
-    if(errorsOnConsole) {
-        splitter->AddLogger(new CTiglConsoleLogger, TILOG_ERROR);
-    }
-
+    splitter->AddLogger(new CTiglFileLogger(fp));
+    splitter->AddLogger(new CTiglConsoleLogger);
     SetLogger(splitter);
 }
 
@@ -138,17 +133,20 @@ void CTiglLogging::SetTimeIdInFilenameEnabled(bool enabled) {
     _timeIdInFilename = enabled;
 }
 
+void CTiglLogging::SetConsoleVerbosity(TiglLogLevel vlevel) {
+    _consoleVerbosity=vlevel;
+}
+
 void CTiglLogging::LogToConsole() {
 #ifdef GLOG_FOUND
     google::LogToStderr();
 #else
 
     ITiglLogger * consoleLogger = new CTiglConsoleLogger;
+    consoleLogger->SetVerbosity(_consoleVerbosity);
     SetLogger(consoleLogger);
 #endif
 }
-
-
 
 #ifndef GLOG_FOUND
 

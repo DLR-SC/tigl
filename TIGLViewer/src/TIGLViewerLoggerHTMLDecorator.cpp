@@ -50,3 +50,6 @@ void TIGLViewerLoggerHTMLDecorator::LogMessage(TiglLogLevel level, const char * 
     newmsg = "<i>" + newmsg + "</i>";
     _mylogger->LogMessage(level, newmsg.c_str());
 }
+void TIGLViewerLoggerHTMLDecorator::SetVerbosity(TiglLogLevel vlevel)
+{
+}

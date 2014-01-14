@@ -34,6 +34,10 @@ public:
 
     virtual ~TIGLViewerLogRedirection() {}
     virtual void LogMessage(TiglLogLevel, const char * message);
+    virtual void SetVerbosity(TiglLogLevel);
+
+private:
+    TiglLogLevel verbosity;
 
 signals:
     void newMessage(class QString);
