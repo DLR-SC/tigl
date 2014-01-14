@@ -162,3 +162,11 @@ TEST_F(WingCSTProfile, tiglWingCSTProfile_approximation)
     }
     ASSERT_NEAR(0.0, devmax, 5E-5);
 }
+/**
+* Tests success of VTK export for wing with CST profiles 
+*/
+TEST_F(WingCSTProfile, tiglWingCSTProfile_VTK_export)
+{
+    const char* vtkWingFilename = "TestData/export/CPACS_21_CST_simple_wing1.vtp";
+    ASSERT_TRUE(tiglExportMeshedWingVTKSimpleByUID(tiglHandle, "CSTExample_W1", vtkWingFilename, 0.01) == TIGL_SUCCESS);
+}
