@@ -20,7 +20,7 @@
 #define CTIGLLOGSPLITTER_H
 
 #include "ITiglLogger.h"
-#include <list>
+#include <vector>
 
 namespace tigl {
 
@@ -30,30 +30,16 @@ public:
     CTiglLogSplitter();
     virtual ~CTiglLogSplitter();
 
-    // class specific functions
-
-    // Adds a logger to the splitter. Only messages with
-    // a log level < maxlevel are transferred to the logger
-    // The logger becomes property of this class
-    // Therefore the logger should not be deleted
-    // manually.
-    void AddLogger(ITiglLogger*, TiglLogLevel maxlevel);
+    // Adds a logger to the splitter
+    void AddLogger(ITiglLogger*);
 
     // override from ITiglLogger
     virtual void LogMessage(TiglLogLevel, const char * message);
+    virtual void SetVerbosity(TiglLogLevel);
 
 private:
-    class LoggerEntry {
-    public:
-        LoggerEntry(ITiglLogger* log, TiglLogLevel lev)
-            : logger(log), level(lev) {}
-
-        ITiglLogger* logger;
-        TiglLogLevel level;
-    };
-
-    typedef std::list<LoggerEntry> Loggerlist;
-    Loggerlist _loggers;
+    std::vector<ITiglLogger*> _loggers;
+    TiglLogLevel verbosity;
 };
 
 } // namespace tigl

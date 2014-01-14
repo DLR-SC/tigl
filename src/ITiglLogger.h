@@ -28,6 +28,7 @@ class ITiglLogger
 public:
     virtual ~ITiglLogger() {}
     virtual void LogMessage(TiglLogLevel, const char * message) = 0;
+    virtual void SetVerbosity(TiglLogLevel) = 0;
 };
 
 }

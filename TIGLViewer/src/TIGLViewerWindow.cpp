@@ -146,10 +146,12 @@ TIGLViewerWindow::TIGLViewerWindow()
     // insert two loggers, one for the log history and one for the console
     tigl::CTiglLogSplitter * splitter = new tigl::CTiglLogSplitter;
     logHistory = new TIGLViewerLogHistory;
-    splitter->AddLogger(logHistory, TILOG_WARNING);
+    logHistory->SetVerbosity(TILOG_WARNING);
+    splitter->AddLogger(logHistory);
 
     logDirect = new TIGLViewerLogRedirection;
-    splitter->AddLogger(new TIGLViewerLoggerHTMLDecorator(logDirect), TILOG_DEBUG4);
+    logDirect->SetVerbosity(TILOG_DEBUG4);
+    splitter->AddLogger(new TIGLViewerLoggerHTMLDecorator(logDirect));
 
     // register logger at tigl
     tigl::CTiglLogging::Instance().SetLogger(splitter);

@@ -28,6 +28,7 @@ public:
     
     virtual ~TIGLViewerLoggerHTMLDecorator();
     virtual void LogMessage(TiglLogLevel, const char * message);
+    virtual void SetVerbosity(TiglLogLevel);
 private:
     ITiglLogger* _mylogger;
 };
