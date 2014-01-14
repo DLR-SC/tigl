@@ -30,6 +30,7 @@
 #include "tigl.h"
 #include "tigl_version.h"
 #include "tigl_config.h"
+#include "tigl_error_strings.h"
 #include "CTiglError.h"
 #include "CTiglIntersectionCalculation.h"
 #include "CCPACSConfiguration.h"

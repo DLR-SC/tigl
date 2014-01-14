@@ -52,6 +52,8 @@ extern "C" {
  \ingroup Enums
  Definition of possible error return codes of some functions.
  */
+
+/* If these values are changed, please also modify tigl_error_strings.h */
 enum TiglReturnCode
 {
     TIGL_SUCCESS             = 0,
@@ -68,23 +70,6 @@ enum TiglReturnCode
     TIGL_WRONG_CPACS_VERSION = 11,
     TIGL_UNINITIALIZED       = 12,
     TIGL_MATH_ERROR          = 13
-};
-
-const static char * TiglErrorStrings[] = { 
-    "TIGL_SUCCESS", 
-    "TIGL_ERROR", 
-    "TIGL_NULL_POINTER" ,
-    "TIGL_NOT_FOUND",
-    "TIGL_XML_ERROR",
-    "TIGL_OPEN_FAILED",
-    "TIGL_CLOSE_FAILED",
-    "TIGL_INDEX_ERROR",
-    "TIGL_STRING_TRUNCATED",
-    "TIGL_WRONG_TIXI_VERSION",
-    "TIGL_UID_ERROR",
-    "TIGL_WRONG_CPACS_VERSION",
-    "TIGL_UNINITIALIZED",
-    "TIGL_MATH_ERROR"
 };
 
 /**
