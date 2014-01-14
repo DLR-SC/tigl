@@ -133,6 +133,8 @@ namespace tigl {
 
         std::vector<int> findPath(const std::string& fromUid, const::std::string& toUID, const std::vector<int>& curPath, bool forward) const;
 
+        void UpdateProjectedLeadingEdge();
+
 
     private:
         std::string          name;                 /**< Segment name                            */
@@ -143,6 +145,7 @@ namespace tigl {
         double               mySurfaceArea;        /**< Surface area of this segment            */
         TopoDS_Shape         upperShape;           /**< Upper shape of this componentSegment    */
         TopoDS_Shape         lowerShape;           /**< Lower shape of this componentSegment    */
+        TopoDS_Wire          projLeadingEdge;      /**< (Extended) Leading edge projected into y-z plane */
         Handle(Geom_Surface) upperSurface;
         Handle(Geom_Surface) lowerSurface;
         bool                 surfacesAreValid;

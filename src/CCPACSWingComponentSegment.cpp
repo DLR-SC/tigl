@@ -45,6 +45,7 @@
 #include "Geom_Plane.hxx"
 #include "gp_Pln.hxx"
 //#include "Geom_Surface.hxx"
+#include "GeomLib.hxx"
 #include "Precision.hxx"
 #include "BRepBuilderAPI_MakeEdge.hxx"
 #include "BRepBuilderAPI_MakeFace.hxx"
@@ -96,6 +97,7 @@ namespace tigl {
     {
         invalidated = true;
         surfacesAreValid = false;
+        projLeadingEdge.Nullify();
     }
 
     // Cleanup routine
@@ -109,6 +111,7 @@ namespace tigl {
         surfacesAreValid = false;
         CTiglAbstractSegment::Cleanup();
         structure.Cleanup();
+        projLeadingEdge.Nullify();
     }
 
     // Update internal segment data
@@ -423,34 +426,27 @@ namespace tigl {
         return loft;
     }
 
-
-    // Gets a point in relative wing coordinates for a given eta and xsi
-    gp_Pnt CCPACSWingComponentSegment::GetPoint(double eta, double xsi)
+    void CCPACSWingComponentSegment::UpdateProjectedLeadingEdge()
     {
-        // search for ETA coordinate
-        std::vector<gp_Pnt> LEPointsProjected;
-
-        if (eta < 0.0 || eta > 1.0)
-        {
-            throw CTiglError("Error: Parameter eta not in the range 0.0 <= eta <= 1.0 in CCPACSWingComponentSegment::GetPoint", TIGL_ERROR);
-        }
-        if (xsi < 0.0 || xsi > 1.0)
-        {
-            throw CTiglError("Error: Parameter xsi not in the range 0.0 <= xsi <= 1.0 in CCPACSWingComponentSegment::GetPoint", TIGL_ERROR);
+        if ( !projLeadingEdge.IsNull() ) {
+            return;
         }
 
         // add inner sections of each segment
         std::vector<int> segmentIndices = GetSegmentList(fromElementUID, toElementUID);
-        TColgp_Array1OfPnt xsiPoints(1,segmentIndices.size()+1);
 
+        if (segmentIndices.size() < 1) {
+            std::stringstream str;
+            str << "Wing component " << GetUID() << " does not contain any segments (CCPACSWingComponentSegment::updateProjectedLeadingEdge)!";
+            throw CTiglError(str.str(), TIGL_ERROR);
+        }
+        std::vector<gp_Pnt> LEPointsProjected;
         std::vector<int>::iterator segIndexIt = segmentIndices.begin();
         int pointIndex = 1;
         for(; segIndexIt != segmentIndices.end(); ++segIndexIt) {
             tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing->GetSegment(*segIndexIt);
 
             // build iso xsi line
-            gp_Pnt p = segment.GetChordPoint(0,xsi);
-            xsiPoints.SetValue(pointIndex, p);
             gp_Pnt lep = segment.GetChordPoint(0.,0.);
 
             // build leading edge projected to x=0 plane
@@ -459,9 +455,6 @@ namespace tigl {
 
             if (segIndexIt == segmentIndices.end()-1) {
                 // add outer section of last segment
-                gp_Pnt p = segment.GetChordPoint(1., xsi);
-                xsiPoints.SetValue(pointIndex+1, p);
-
                 gp_Pnt lep = segment.GetChordPoint(1., 0.);
                 gp_Pnt lep_proj(0., lep.Y(), lep.Z());
                 LEPointsProjected.push_back(lep_proj);
@@ -471,10 +464,35 @@ namespace tigl {
             pointIndex++;
         }
 
-        // create iso xsi line as linear interpolation between xsi points
-        GeomAPI_PointsToBSpline linearInterpolation(xsiPoints, 1, 1, GeomAbs_C0, Precision::Confusion());
-        Handle_Geom_Curve xsiCurve = linearInterpolation.Curve();
+        // check if we have to extend the leading edge at wing tip
+        int nPoints = LEPointsProjected.size();
+        tigl::CCPACSWingSegment& outerSegment = (tigl::CCPACSWingSegment&) wing->GetSegment(segmentIndices[segmentIndices.size()-1]);
+        tigl::CCPACSWingSegment& innerSegment = (tigl::CCPACSWingSegment&) wing->GetSegment(segmentIndices[0]);
 
+        // project outer point of trailing edge on leading edge
+        gp_Pnt pOuterTrailingEdge = outerSegment.GetChordPoint(1.0, 1.0);
+        Standard_Real uout = ProjectPointOnLine(pOuterTrailingEdge, LEPointsProjected[nPoints-2], LEPointsProjected[nPoints-1]);
+
+
+        // project outer point of trailing edge on leading edge
+        gp_Pnt pInnerTrailingEdge = innerSegment.GetChordPoint(0.0, 1.0);
+        Standard_Real uin = ProjectPointOnLine(pInnerTrailingEdge, LEPointsProjected[0], LEPointsProjected[1]);
+
+        gp_Pnt outnew =  LEPointsProjected[nPoints-1];
+        if (uout > 1.0) {
+            // extend outer leading edge
+            outnew = LEPointsProjected[nPoints-2].XYZ()*(1. - uout) + LEPointsProjected[nPoints-1].XYZ()*uout;
+        }
+
+        gp_Pnt innew  = LEPointsProjected[0];
+        if (uin < 0.0) {
+            // extend inner leading edge
+            innew  = LEPointsProjected[0].XYZ()*(1. - uin) + LEPointsProjected[1].XYZ()*uin;
+        }
+
+        // set new leading edge points
+        LEPointsProjected[nPoints-1] = outnew;
+        LEPointsProjected[0]         = innew;
 
         // build projected leading edge wire
         BRepBuilderAPI_MakeWire wireBuilder;
@@ -483,11 +501,69 @@ namespace tigl {
             TopoDS_Edge edge = BRepBuilderAPI_MakeEdge(LEPointsProjected[j - 1], LEPointsProjected[j]);
             wireBuilder.Add(edge);
         }
-        TopoDS_Wire leProj = wireBuilder.Wire();
+        projLeadingEdge = wireBuilder.Wire();
+    }
+
+
+    // Gets a point in relative wing coordinates for a given eta and xsi
+    gp_Pnt CCPACSWingComponentSegment::GetPoint(double eta, double xsi)
+    {
+        // search for ETA coordinate
+        if (eta < 0.0 || eta > 1.0)
+        {
+            throw CTiglError("Error: Parameter eta not in the range 0.0 <= eta <= 1.0 in CCPACSWingComponentSegment::GetPoint", TIGL_ERROR);
+        }
+        if (xsi < 0.0 || xsi > 1.0)
+        {
+            throw CTiglError("Error: Parameter xsi not in the range 0.0 <= xsi <= 1.0 in CCPACSWingComponentSegment::GetPoint", TIGL_ERROR);
+        }
+
+        UpdateProjectedLeadingEdge();
+
+        std::vector<int> segmentIndices = GetSegmentList(fromElementUID, toElementUID);
+        if (segmentIndices.size() < 1) {
+            std::stringstream str;
+            str << "Wing component " << GetUID() << " does not contain any segments (CCPACSWingComponentSegment::GetPoint)!";
+            throw CTiglError(str.str(), TIGL_ERROR);
+        }
+
+        // build up iso xsi line control points
+        TColgp_Array1OfPnt xsiPoints(1,segmentIndices.size()+1);
+        std::vector<int>::iterator segIndexIt = segmentIndices.begin();
+        int pointIndex = 1;
+        for(; segIndexIt != segmentIndices.end(); ++segIndexIt) {
+            tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing->GetSegment(*segIndexIt);
+
+            // build iso xsi line
+            gp_Pnt p = segment.GetChordPoint(0,xsi);
+            xsiPoints.SetValue(pointIndex, p);
+            if (segIndexIt == segmentIndices.end()-1) {
+                // add outer section of last segment
+                gp_Pnt p = segment.GetChordPoint(1., xsi);
+                xsiPoints.SetValue(pointIndex+1, p);
+                // the break should not be necessary here, since the loop is
+                break;
+            }
+            pointIndex++;
+        }
+
+        double wingLenApprox = GetWireLength(projLeadingEdge);
+
+        // create iso xsi line as linear interpolation between xsi points
+        GeomAPI_PointsToBSpline linearInterpolation(xsiPoints, 1, 1, GeomAbs_C0, Precision::Confusion());
+        Handle_Geom_BoundedCurve xsiCurve = linearInterpolation.Curve();
+
+        // extend iso xsi line, so that we can still intersect it
+        // even if we have twisted sections
+        gp_Pnt p; gp_Vec v;
+        xsiCurve->D1(xsiCurve->LastParameter(), p, v);
+        GeomLib::ExtendCurveToPoint(xsiCurve, p.XYZ() + v.Normalized().XYZ()*wingLenApprox, 1, true);
+        xsiCurve->D1(xsiCurve->FirstParameter(), p, v);
+        GeomLib::ExtendCurveToPoint(xsiCurve, p.XYZ() - v.Normalized().XYZ()*wingLenApprox, 1, false);
 
         // compute eta point and normal on the projected LE
         gp_Pnt etaPnt; gp_Vec etaNormal;
-        WireGetPointNormal2(leProj, eta, etaPnt, etaNormal);
+        WireGetPointNormal2(projLeadingEdge, eta, etaPnt, etaNormal);
 
         // plane normal to projected leading edge
         gp_Pln gpPlane(etaPnt, gp_Dir(etaNormal.XYZ()));
@@ -513,7 +589,6 @@ namespace tigl {
     void CCPACSWingComponentSegment::GetEtaXsiFromSegmentEtaXsi(const std::string& segmentUID, double seta, double sxsi, double& eta, double& xsi)
     {
         // search for ETA coordinate
-        std::vector<gp_Pnt> CPointContainer2d;
         
         if (seta < 0.0 || seta > 1.0)
         {
@@ -530,36 +605,12 @@ namespace tigl {
         std::vector<int>::iterator segit = std::find(seglist.begin(), seglist.end(), segment.GetSegmentIndex());
         if (segit == seglist.end())
             throw CTiglError("Error: segment does not belong to component segment in CCPACSWingComponentSegment::GetEtaXsiFromSegmentEtaXsi", TIGL_ERROR);
-        
-        for(segit = seglist.begin(); segit != seglist.end(); ++segit) {
-            int segindex = *segit;
-            tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing->GetSegment(segindex);
-            gp_Pnt pnt = segment.GetChordPoint(0.0, 0.0);
-            pnt = gp_Pnt(0.0, pnt.Y(), pnt.Z());
-            CPointContainer2d.push_back(pnt);
-        }
-        if(seglist.size() > 0){
-            int segindex = seglist[seglist.size()-1];
-            tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing->GetSegment(segindex);
-            gp_Pnt pnt = segment.GetChordPoint(1.0, 0.0);
-            pnt = gp_Pnt(0.0, pnt.Y(), pnt.Z());
-            CPointContainer2d.push_back(pnt);
-        }
-
-        //TODO: This algorithm is not valid anymore!!!!!!!!!!!!
-
-        // build virtual ETA-line
-        BRepBuilderAPI_MakeWire wireBuilder;
-        for (unsigned int j = 1; j < CPointContainer2d.size(); j++)
-        {
-            TopoDS_Edge edge = BRepBuilderAPI_MakeEdge(CPointContainer2d[j - 1], CPointContainer2d[j]);
-            wireBuilder.Add(edge);
-        }
-        TopoDS_Wire etaLinie = wireBuilder.Wire();
 
         gp_Pnt point3d = segment.GetChordPoint(seta, sxsi);
         xsi = sxsi;
-        eta = ProjectPointOnWire(etaLinie, point3d);
+
+        UpdateProjectedLeadingEdge();
+        eta = ProjectPointOnWire(projLeadingEdge, point3d);
     }
 
 
