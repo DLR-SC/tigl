@@ -18,8 +18,7 @@
 
 #ifndef ITIGLLOGGER_H
 #define ITIGLLOGGER_H
-
-#include "TiglLoggerDefinitions.h"
+#include "tigl.h"
 
 namespace tigl {
 

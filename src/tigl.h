@@ -109,6 +109,40 @@ typedef enum TiglReturnCode TiglReturnCode;
 
 /**
  \ingroup Enums
+ Definition of possible logging levels
+*/
+enum TiglLogLevel {
+    TILOG_SILENT   =0, 
+    TILOG_ERROR    =1, 
+    TILOG_WARNING  =2, 
+    TILOG_INFO     =3, 
+    TILOG_DEBUG    =4,
+    TILOG_DEBUG1   =5,
+    TILOG_DEBUG2   =6,
+    TILOG_DEBUG3   =7,
+    TILOG_DEBUG4   =8
+};
+
+/**
+* @brief Definition of logging levels
+*
+* Possible values are:
+*
+* - TILOG_SILENT
+* - TILOG_ERROR
+* - TILOG_WARNING
+* - TILOG_INFO
+* - TILOG_DEBUG
+* - TILOG_DEBUG1
+* - TILOG_DEBUG2
+* - TILOG_DEBUG3
+* - TILOG_DEBUG4
+*
+*/
+typedef enum TiglLogLevel TiglLogLevel;
+
+/**
+ \ingroup Enums
   Definition of boolean values used in TIGL.
 */
 enum TiglBoolean
@@ -3623,6 +3657,21 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglLogSetFileEnding(const char* ending);
 *   - TIGL_ERROR if some error occurred
 */
 TIGL_COMMON_EXPORT TiglReturnCode tiglLogSetTimeInFilenameEnabled(TiglBoolean enabled);
+
+/**
+* @brief Set the verbosity/logging level for the console logging
+*
+* <b>Fortran syntax:</b>
+*
+* tigl_log_set_verbosity(TiglLogLevel level)
+*
+* @param[in]  logging level
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_ERROR if some error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglLogSetVerbosity(TiglLogLevel level);
 
 /*@}*/ // end of doxygen group
 

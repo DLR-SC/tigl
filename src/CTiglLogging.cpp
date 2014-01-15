@@ -40,6 +40,8 @@
 #define BASENAME(MYFILE) (strrchr((MYFILE), '/') ? strrchr((MYFILE), '/') + 1 : (MYFILE))
 #endif
 
+static const char* const LogLevelStrings[] = {"SLT", "ERR", "WRN", "INF", "DBG", "DBG1", "DBG2", "DBG3 ", "DBG4"};
+
 namespace tigl {
 
 
@@ -50,6 +52,12 @@ CTiglLogging::CTiglLogging(void)
     _fileEnding = "log";
     _timeIdInFilename = true;
     _consoleVerbosity = TILOG_ERROR;
+    // set logger to console logger
+    ITiglLogger * consoleLogger = new CTiglConsoleLogger;
+    consoleLogger->SetVerbosity(_consoleVerbosity);
+    SetLogger(consoleLogger);
+    // set _consoleLogger variable
+    _consoleLogger=_myLogger;
 }
 
 CTiglLogging::~CTiglLogging(void)
@@ -111,18 +119,28 @@ void CTiglLogging::LogToFile(const char* prefix) {
     }
     std::string filename = std::string(prefix) + buffer+ "." + _fileEnding;
     
+    // add file and console logger to splitter
     CTiglLogSplitter* splitter = new CTiglLogSplitter;
     splitter->AddLogger(new CTiglFileLogger(filename.c_str()));
-    splitter->AddLogger(new CTiglConsoleLogger);
+    ITiglLogger * consoleLogger = new CTiglConsoleLogger;
+    consoleLogger->SetVerbosity(_consoleVerbosity);
+    splitter->AddLogger(consoleLogger);
     SetLogger(splitter);
+    // set _consoleLogger variable
+    _consoleLogger=consoleLogger;
 }
 
 void CTiglLogging::LogToStream(FILE * fp) {
 
+    // add file and console logger to splitter
     CTiglLogSplitter* splitter = new CTiglLogSplitter;
     splitter->AddLogger(new CTiglFileLogger(fp));
-    splitter->AddLogger(new CTiglConsoleLogger);
+    ITiglLogger * consoleLogger = new CTiglConsoleLogger;
+    consoleLogger->SetVerbosity(_consoleVerbosity);
+    splitter->AddLogger(consoleLogger);
     SetLogger(splitter);
+    // set _consoleLogger variable
+    _consoleLogger=consoleLogger;
 }
 
 void CTiglLogging::SetLogFileEnding(const char* ending) {
@@ -135,6 +153,7 @@ void CTiglLogging::SetTimeIdInFilenameEnabled(bool enabled) {
 
 void CTiglLogging::SetConsoleVerbosity(TiglLogLevel vlevel) {
     _consoleVerbosity=vlevel;
+    _consoleLogger->SetVerbosity(_consoleVerbosity);
 }
 
 void CTiglLogging::LogToConsole() {
@@ -145,6 +164,8 @@ void CTiglLogging::LogToConsole() {
     ITiglLogger * consoleLogger = new CTiglConsoleLogger;
     consoleLogger->SetVerbosity(_consoleVerbosity);
     SetLogger(consoleLogger);
+    // set _consoleLogger variable
+    _consoleLogger=consoleLogger;
 #endif
 }
 

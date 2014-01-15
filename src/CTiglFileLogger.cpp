@@ -19,7 +19,6 @@
 #include "CTiglFileLogger.h"
 #include "CTiglError.h"
 #include "CMutex.h"
-#include "TiglLoggerDefinitions.h"
 
 #include <cstdio>
 #include <ctime>
