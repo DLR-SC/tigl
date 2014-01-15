@@ -16,7 +16,7 @@ file(GLOB_RECURSE TIGL_SRC
 )
 
 if(MSVC)
-    add_definitions(-D_CRT_SECURE_NO_WARNINGS=1)
+    add_definitions(-D_CRT_SECURE_NO_WARNINGS=1 /wd4355 )
 endif(MSVC)
 
 # tigl dll/so library
