@@ -459,9 +459,6 @@ void TIGLViewerWindow::setBackgroundImage()
     QString        fileType;
     QFileInfo    fileInfo;
 
-    TIGLViewerInputOutput::FileFormat format;
-    TIGLViewerInputOutput reader;
-
     statusBar()->showMessage(tr("Invoked File|Load Background Image"));
 
     fileName = QFileDialog::getOpenFileName (    this,
