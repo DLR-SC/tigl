@@ -27,6 +27,7 @@
 #define CTIGLLOGGING_H
 
 #include "tigl_config.h"
+#include "tigl.h"
 
 #include <string>
 #include <stdio.h>
@@ -39,7 +40,6 @@
 #include <iostream>
 #include <sstream>
 #include <cstring>
-#include "TiglLoggerDefinitions.h"
 #endif
 
 namespace tigl {
@@ -49,13 +49,16 @@ namespace tigl {
     #ifndef LOG_MAX_LEVEL
     #define LOG_MAX_LEVEL TILOG_DEBUG4
     #endif
+    #ifndef LOG_MIN_LEVEL
+    #define LOG_MIN_LEVEL TILOG_SILENT
+    #endif
 
     /**
      * This macros can be used like streams e.g.: LOG(ERROR) << "that is an error";
      * Following log levels are supported: ERROR, WARNING, INFO, DEBUG, DEBUG1, DEBUG2, DEBUG3, DEBUG4
      */
     #define LOG(level) \
-        if (TILOG_ ## level > LOG_MAX_LEVEL) ;\
+        if (TILOG_ ## level > LOG_MAX_LEVEL || TILOG_ ## level <= LOG_MIN_LEVEL) ;\
     else tigl::DummyLogger_().AppendToStream(TILOG_ ## level, __FILE__, __LINE__)
 
 #define DLOG(level) \
@@ -135,6 +138,7 @@ class CTiglLogging {
         std::string        _fileEnding;
         bool               _timeIdInFilename;
         TiglLogLevel       _consoleVerbosity;
+        class ITiglLogger* _consoleLogger;
 
 };
 

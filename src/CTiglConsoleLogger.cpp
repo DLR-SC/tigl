@@ -16,7 +16,6 @@
 * limitations under the License.
 */
 
-#include "TiglLoggerDefinitions.h"
 #include "CTiglConsoleLogger.h"
 
 #include <iostream>
