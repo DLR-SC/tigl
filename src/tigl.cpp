@@ -1619,8 +1619,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetNumberOfSegments(Ti
             tigl::CCPACSWing& wing = config.GetWing(iwing);
             try {
                 tigl::CCPACSWingComponentSegment & compSeg = (tigl::CCPACSWingComponentSegment &) wing.GetComponentSegment(componentSegmentUID);
-                std::vector<int> list = compSeg.GetSegmentList(compSeg.GetFromElementUID(), compSeg.GetToElementUID());
-                *nsegments = list.size();
+                tigl::SegmentList& segments = compSeg.GetSegmentList();
+                *nsegments = segments.size();
                 return TIGL_SUCCESS;
             }
             catch (tigl::CTiglError& err){
@@ -1676,12 +1676,12 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetSegmentUID(TiglCPAC
             tigl::CCPACSWing& wing = config.GetWing(iwing);
             try {
                 tigl::CCPACSWingComponentSegment & compSeg = (tigl::CCPACSWingComponentSegment &) wing.GetComponentSegment(componentSegmentUID);
-                std::vector<int> list = compSeg.GetSegmentList(compSeg.GetFromElementUID(), compSeg.GetToElementUID());
-                if(segmentIndex < 1 || segmentIndex > (int) list.size()){
+                tigl::SegmentList& segments = compSeg.GetSegmentList();
+                if(segmentIndex < 1 || segmentIndex > (int) segments.size()){
                     LOG(ERROR) << "Error: Invalid segment index in tiglWingComponentSegmentGetSegmentUID" << std::endl;
                     return TIGL_INDEX_ERROR;
                 }
-                *segmentUID = const_cast<char*>(wing.GetSegment(list[segmentIndex-1]).GetUID().c_str());
+                *segmentUID = const_cast<char*>(segments[segmentIndex-1]->GetUID().c_str());
                 
                 return TIGL_SUCCESS;
             }
