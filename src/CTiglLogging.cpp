@@ -40,7 +40,7 @@
 #define BASENAME(MYFILE) (strrchr((MYFILE), '/') ? strrchr((MYFILE), '/') + 1 : (MYFILE))
 #endif
 
-static const char* const LogLevelStrings[] = {"SLT", "ERR", "WRN", "INF", "DBG", "DBG1", "DBG2", "DBG3 ", "DBG4"};
+static const char* const LogLevelStrings[] = {"SLT", "ERR", "WRN", "INF", "DBG", "DBG1", "DBG2", "DBG3", "DBG4"};
 
 namespace tigl {
 
