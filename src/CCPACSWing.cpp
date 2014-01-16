@@ -484,18 +484,14 @@ namespace tigl {
         return myArea;
     }
 
-    // Returns the reference area of this wing.
-    // Here, we always take the reference wing area to be that of the trapezoidal portion of the wing projected into the centerline.
-    // The leading and trailing edge chord extensions are not included in this definition and for some airplanes, such as Boeing's Blended
-    // Wing Body, the difference can be almost a factor of two between the "real" wing area and the "trap area". Some companies use reference
-    // wing areas that include portions of the chord extensions, and in some studies, even tail area is included as part of the reference area.
-    // For simplicity, we use the trapezoidal area here.
-    double CCPACSWing::GetReferenceArea()
+    // Returns the reference area of the wing by taking account the quadrilateral portions
+    // of each wing segment by projecting the wing segments into the plane defined by the user
+    double CCPACSWing::GetReferenceArea(TiglSymmetryAxis symPlane)
     {
         double refArea = 0.0;
 
         for (int i=1; i <= segments.GetSegmentCount(); i++) {
-            refArea += segments.GetSegment(i).GetReferenceArea();
+            refArea += segments.GetSegment(i).GetReferenceArea(symPlane);
         }
         return refArea;
     }
@@ -653,48 +649,6 @@ namespace tigl {
         mac_y     = cc_mac_sum_p.Y()/A_sum;
         mac_z     = cc_mac_sum_p.Z()/A_sum;
         mac_chord = cc_mac_sum/A_sum;
-    }
-
-
-    /**
-     * This function calculates the reference area of the wing by taking projection
-     * to x-y plane. The previous reference area function take the reference wing
-     * area to be that of the trapezoidal portion of the wing projected into the centerline.
-     */
-    double CCPACSWing::GetReferenceArea2(){
-        double refArea2 = 0.0;
-
-        for (int i=1; i <= segments.GetSegmentCount(); i++) {
-            CCPACSWingSegment& segment = (CCPACSWingSegment&) GetSegment(i);
-            gp_Pnt leadingPoint   = segment.GetChordPoint(0, 0.);
-            gp_Pnt trailingPoint  = segment.GetChordPoint(0, 1.);
-            gp_Pnt leadingPoint2  = segment.GetChordPoint(1, 0.);
-            gp_Pnt trailingPoint2 = segment.GetChordPoint(1, 1.);
-
-            gp_Pnt leadingPointProj  = gp_Pnt(leadingPoint.X(), leadingPoint.Y(), 0.0);
-            gp_Pnt trailingPointProj = gp_Pnt(trailingPoint.X(), trailingPoint.Y(), 0.0);
-            gp_Pnt leadingPoint2Proj = gp_Pnt(leadingPoint2.X(), leadingPoint2.Y(), 0.0);
-            gp_Pnt trailingPoint2Proj= gp_Pnt(trailingPoint2.X(), trailingPoint2.Y(), 0.0);
-
-            double distance  = leadingPoint.Distance(trailingPoint);
-            double distance2 = leadingPoint2.Distance(trailingPoint2);
-            double distance3 = leadingPointProj.Distance(trailingPointProj);
-            double distance4 = leadingPoint2Proj.Distance(trailingPoint2Proj);
-
-            gp_Vec p1(leadingPoint, trailingPoint);
-            gp_Vec p2(leadingPoint, trailingPoint2);
-            double A = 0.5 * p1.CrossMagnitude(p2);
-            A *=(distance+distance2)/distance;
-
-            p1 = gp_Vec(leadingPointProj, trailingPointProj);
-            p2 = gp_Vec(leadingPointProj, trailingPoint2Proj);
-            double A_tra=0.5*p1.CrossMagnitude(p2);
-            A_tra *= (distance+distance4)/distance3;
-
-            refArea2 += segments.GetSegment(i).GetReferenceArea()*A_tra/A;
-
-        }
-        return refArea2;
     }
 
 

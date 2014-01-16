@@ -3980,50 +3980,26 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSegmentSurfaceArea(TiglCPACSCon
 
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetReferenceArea(TiglCPACSConfigurationHandle cpacsHandle, int wingIndex,
+                                                           TiglSymmetryAxis symPlane,
                                                            double *referenceAreaPtr)
 {
     if (wingIndex < 1) {
-        LOG(ERROR) << "Error: Wing index index is less than zero ";
-        LOG(ERROR) << "in function call to tiglWingGetReferenceArea." << std::endl;
+        LOG(ERROR) << "Error: Wing index index is less than zero "
+                   << "in function call to tiglWingGetReferenceArea.";
         return TIGL_INDEX_ERROR;
+    }
+
+    if (symPlane < TIGL_NO_SYMMETRY || symPlane > TIGL_Y_Z_PLANE) {
+        LOG(ERROR) << "Error: invalid symmetry "
+                   << "in function call to tiglWingGetReferenceArea.";
+        return TIGL_ERROR;
     }
 
     try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSWing& wing = config.GetWing(wingIndex);
-        *referenceAreaPtr = wing.GetReferenceArea();
-        return TIGL_SUCCESS;
-    }
-    catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
-        return TIGL_ERROR;
-    }
-    catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
-        return ex.getCode();
-    }
-    catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglWingGetReferenceArea!" << std::endl;
-        return TIGL_ERROR;
-    }
-}
-
-
-TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetReferenceArea2(TiglCPACSConfigurationHandle cpacsHandle, int wingIndex,
-                                                           double *referenceAreaPtr2)
-{
-    if (wingIndex < 1) {
-        LOG(ERROR) << "Error: Wing index index is less than zero ";
-        LOG(ERROR) << "in function call to tiglWingGetReferenceArea." << std::endl;
-        return TIGL_INDEX_ERROR;
-    }
-
-    try {
-        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
-        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
-        tigl::CCPACSWing& wing = config.GetWing(wingIndex);
-        *referenceAreaPtr2 = wing.GetReferenceArea2();
+        *referenceAreaPtr = wing.GetReferenceArea(symPlane);
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {

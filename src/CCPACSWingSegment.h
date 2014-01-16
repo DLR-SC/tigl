@@ -154,13 +154,9 @@ namespace tigl {
         // Returns if the given point is ont the Top of the wing or on the lower side.
         bool GetIsOnTop(gp_Pnt pnt);
 
-        // Returns the reference area of this wing.
-        // Here, we always take the reference wing area to be that of the trapezoidal portion of the wing projected into the centerline.
-        // The leading and trailing edge chord extensions are not included in this definition and for some airplanes, such as Boeing's Blended
-        // Wing Body, the difference can be almost a factor of two between the "real" wing area and the "trap area". Some companies use reference
-        // wing areas that include portions of the chord extensions, and in some studies, even tail area is included as part of the reference area.
-        // For simplicity, we use the trapezoidal area here.
-        double GetReferenceArea();
+        // Returns the reference area of the quadrilateral portion of the wing segment
+        // by projecting the wing segment into the plane defined by the user
+        double GetReferenceArea(TiglSymmetryAxis symPlane);
 
         // Returns the lower Surface of this Segment
         Handle(Geom_Surface) GetLowerSurface();

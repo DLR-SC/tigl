@@ -23,6 +23,8 @@
 
 namespace tigl {
 
+class CTiglPoint;
+
 /**
  * @brief Computes the binomial coefficient (n,k)
  */
@@ -61,6 +63,11 @@ double bernstein_poly(int i, int n, double x);
  *@param x Value the polynom should be evaluated at (normally 0 <= x <= 1, but not necessarily)
 */
 double bernstein_poly_deriv(int k, int i, int n, double x);
+
+/**
+ * @brief Calculated the area of a quadrilateral defined by the 4 corner points A,B,C,D
+ */
+double quadrilateral_area(const CTiglPoint& A, const CTiglPoint& B, const CTiglPoint& C, const CTiglPoint& D);
 
 } // namespace tigl
 

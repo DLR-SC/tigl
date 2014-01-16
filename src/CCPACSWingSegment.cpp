@@ -34,6 +34,7 @@
 #include "CCPACSWingProfile.h"
 #include "CTiglError.h"
 #include "tiglcommonfunctions.h"
+#include "math/tiglmathfunctions.h"
 
 #include "BRepOffsetAPI_ThruSections.hxx"
 #include "TopExp_Explorer.hxx"
@@ -773,36 +774,43 @@ namespace tigl {
 
 
 
-    // Returns the reference area of this wing.
-    // Here, we always take the reference wing area to be that of the trapezoidal portion of the wing projected into the centerline.
-    // The leading and trailing edge chord extensions are not included in this definition and for some airplanes, such as Boeing's Blended
-    // Wing Body, the difference can be almost a factor of two between the "real" wing area and the "trap area". Some companies use reference
-    // wing areas that include portions of the chord extensions, and in some studies, even tail area is included as part of the reference area.
-    // For simplicity, we use the trapezoidal area here.
-    double CCPACSWingSegment::GetReferenceArea()
+    // Returns the reference area of the quadrilateral portion of the wing segment
+    // by projecting the wing segment into the plane defined by the user
+    double CCPACSWingSegment::GetReferenceArea(TiglSymmetryAxis symPlane)
     {
-        gp_Pnt innerLeadingPoint  = GetChordPoint(0, 0.);
-        gp_Pnt innerTrailingPoint = GetChordPoint(0, 1.);
-        gp_Pnt outerLeadingPoint  = GetChordPoint(1, 0.);
-        gp_Pnt outerTrailingPoint = GetChordPoint(1, 1.);
+        CTiglPoint innerLepProj(GetChordPoint(0, 0.).XYZ());
+        CTiglPoint outerLepProj(GetChordPoint(0, 1.).XYZ());
+        CTiglPoint innerTepProj(GetChordPoint(1, 0.).XYZ());
+        CTiglPoint outerTepProj(GetChordPoint(1, 1.).XYZ());
 
-        double distance  = innerLeadingPoint.Distance(innerTrailingPoint);
-        double distance2 = outerLeadingPoint.Distance(outerTrailingPoint);
+        // project into plane
+        switch (symPlane) {
+        case TIGL_X_Y_PLANE:
+            innerLepProj.z = 0.;
+            outerLepProj.z = 0.;
+            innerTepProj.z = 0.;
+            outerTepProj.z = 0.;
+            break;
 
-        double T = distance2/distance;
+        case TIGL_X_Z_PLANE:
+            innerLepProj.y = 0.;
+            outerLepProj.y = 0.;
+            innerTepProj.y = 0.;
+            outerTepProj.y = 0.;
+            break;
 
-        // project into x=0 plane
-        gp_Pnt innerLepProj = gp_Pnt(0.0, innerLeadingPoint.Y(),  innerLeadingPoint.Z());
-        gp_Pnt outerLepProj = gp_Pnt(0.0, outerLeadingPoint.Y(),  outerLeadingPoint.Z());
-        gp_Pnt innerTepProj = gp_Pnt(0.0, innerTrailingPoint.Y(), innerTrailingPoint.Z());
-        gp_Pnt outerTepProj = gp_Pnt(0.0, outerTrailingPoint.Y(), outerTrailingPoint.Z());
+        case TIGL_Y_Z_PLANE:
+            innerLepProj.x = 0.;
+            outerLepProj.x = 0.;
+            innerTepProj.x = 0.;
+            outerTepProj.x = 0.;
+            break;
+        default:
+            // don't project
+            break;
+        }
 
-        double len1 = innerLepProj.Distance(outerLepProj);
-        double len2 = innerTepProj.Distance(outerTepProj);
-
-        double lenght  = (len1+len2)/2.;
-        double refArea = ((T + 1.) * distance*lenght/2.);
-        return refArea;
+        return quadrilateral_area(innerTepProj, outerTepProj, outerLepProj, innerLepProj);
     }
 
     // Returns the lower Surface of this Segment
