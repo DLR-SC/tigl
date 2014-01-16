@@ -19,6 +19,8 @@
 #include "test.h"
 #include "math/tiglmathfunctions.h"
 
+#include "CTiglPoint.h"
+
 TEST(TiglMath, factorial){
     ASSERT_EQ(1, tigl::factorial(0));
     ASSERT_EQ(1, tigl::factorial(1));
@@ -70,4 +72,40 @@ TEST(TiglMath, BernsteinPoly) {
     ASSERT_NEAR(1.0, tigl::bernstein_poly(4,4,1.), 1e-7);
     
     ASSERT_NEAR(0.375, tigl::bernstein_poly(2,4,0.5), 1e-7);
+}
+
+TEST(TiglMath, QuadrilateralArea) {
+    // set square with side length 3
+    using tigl::CTiglPoint;
+    CTiglPoint A(0,0,0);
+    CTiglPoint B(3,0,0);
+    CTiglPoint C(3,3,0);
+    CTiglPoint D(0,3,0);
+    ASSERT_NEAR(9., tigl::quadrilateral_area(A,B,C,D), 1e-7);
+
+    // rectangle
+    C.y = 1.5;
+    D.y = 1.5;
+    ASSERT_NEAR(4.5, tigl::quadrilateral_area(A,B,C,D), 1e-7);
+
+    // trapezoid
+    A = CTiglPoint(0,0,0);
+    B = CTiglPoint(4,0,0);
+    C = CTiglPoint(3,1,0);
+    D = CTiglPoint(2,1,0);
+    ASSERT_NEAR(2.5, tigl::quadrilateral_area(A,B,C,D), 1e-7);
+
+    // parallelogram
+    A = CTiglPoint(0,0,0);
+    B = CTiglPoint(4,0,0);
+    C = CTiglPoint(5,2,0);
+    D = CTiglPoint(1,2,0);
+    ASSERT_NEAR(8., tigl::quadrilateral_area(A,B,C,D), 1e-7);
+
+    // triangle
+    A = CTiglPoint(0,0,0);
+    B = CTiglPoint(4,0,0);
+    C = CTiglPoint(2,2,0);
+    D = CTiglPoint(0,0,0);
+    ASSERT_NEAR(4., tigl::quadrilateral_area(A,B,C,D), 1e-7);
 }

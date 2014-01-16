@@ -34,6 +34,7 @@
 #include "CCPACSWingProfile.h"
 #include "CTiglError.h"
 #include "tiglcommonfunctions.h"
+#include "math/tiglmathfunctions.h"
 
 #include "BRepOffsetAPI_ThruSections.hxx"
 #include "TopExp_Explorer.hxx"
@@ -775,21 +776,43 @@ namespace tigl {
 
 
 
-    // Returns the reference area of this wing.
-    // Here, we always take the reference wing area to be that of the trapezoidal portion of the wing projected into the centerline.
-    // The leading and trailing edge chord extensions are not included in this definition and for some airplanes, such as Boeing's Blended
-    // Wing Body, the difference can be almost a factor of two between the "real" wing area and the "trap area". Some companies use reference
-    // wing areas that include portions of the chord extensions, and in some studies, even tail area is included as part of the reference area.
-    // For simplicity, we use the trapezoidal area here.
-    double CCPACSWingSegment::GetReferenceArea()
+    // Returns the reference area of the quadrilateral portion of the wing segment
+    // by projecting the wing segment into the plane defined by the user
+    double CCPACSWingSegment::GetReferenceArea(TiglSymmetryAxis symPlane)
     {
-        MakeSurfaces();
+        CTiglPoint innerLepProj(GetChordPoint(0, 0.).XYZ());
+        CTiglPoint outerLepProj(GetChordPoint(0, 1.).XYZ());
+        CTiglPoint innerTepProj(GetChordPoint(1, 0.).XYZ());
+        CTiglPoint outerTepProj(GetChordPoint(1, 1.).XYZ());
 
-        // Calculate surface area
-        GProp_GProps System;
-        BRepGProp::SurfaceProperties(upperShape, System);
-        double refArea = System.Mass();
-        return refArea;
+        // project into plane
+        switch (symPlane) {
+        case TIGL_X_Y_PLANE:
+            innerLepProj.z = 0.;
+            outerLepProj.z = 0.;
+            innerTepProj.z = 0.;
+            outerTepProj.z = 0.;
+            break;
+
+        case TIGL_X_Z_PLANE:
+            innerLepProj.y = 0.;
+            outerLepProj.y = 0.;
+            innerTepProj.y = 0.;
+            outerTepProj.y = 0.;
+            break;
+
+        case TIGL_Y_Z_PLANE:
+            innerLepProj.x = 0.;
+            outerLepProj.x = 0.;
+            innerTepProj.x = 0.;
+            outerTepProj.x = 0.;
+            break;
+        default:
+            // don't project
+            break;
+        }
+
+        return quadrilateral_area(innerTepProj, outerTepProj, outerLepProj, innerLepProj);
     }
 
     // Returns the lower Surface of this Segment
