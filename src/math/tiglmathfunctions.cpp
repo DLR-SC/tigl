@@ -21,6 +21,10 @@
 #include <cassert>
 #include <algorithm>
 
+#include <CTiglPoint.h>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
+
 namespace tigl {
 
 /**
@@ -103,6 +107,16 @@ double bernstein_poly_deriv(int k, int i, int n, double x) {
         result += pow_int(-1., j + k) * binom(k, j) * bernstein_poly(i - j, n - k, x);
     result *= factorial(n)/factorial(n-k);
     return result;
+}
+
+/**
+ * @brief Calculated the area of a quadrilateral defined by the 4 corner points A,B,C,D
+ */
+double quadrilateral_area(const CTiglPoint& A, const CTiglPoint& B, const CTiglPoint& C, const CTiglPoint& D) {
+    gp_Vec AC(A.Get_gp_Pnt(),C.Get_gp_Pnt());
+    gp_Vec BD(B.Get_gp_Pnt(),D.Get_gp_Pnt());
+
+    return 0.5 * AC.CrossMagnitude(BD);
 }
 
 } // namespace tigl
