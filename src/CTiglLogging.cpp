@@ -48,12 +48,11 @@ namespace tigl {
 CTiglLogging::CTiglLogging(void)
 {
     initLogger();
-    _myLogger = NULL;
     _fileEnding = "log";
     _timeIdInFilename = true;
     _consoleVerbosity = TILOG_ERROR;
     // set logger to console logger
-    ITiglLogger * consoleLogger = new CTiglConsoleLogger;
+    PTiglLogger consoleLogger(new CTiglConsoleLogger);
     consoleLogger->SetVerbosity(_consoleVerbosity);
     SetLogger(consoleLogger);
     // set _consoleLogger variable
@@ -65,21 +64,16 @@ CTiglLogging::~CTiglLogging(void)
 #ifdef GLOG_FOUND
     google::ShutdownGoogleLogging();
 #endif
-    if(_myLogger){
-        delete _myLogger;
-    }
 }
 
-ITiglLogger* CTiglLogging::GetLogger() {
+PTiglLogger CTiglLogging::GetLogger() {
     return _myLogger;
 }
 
-void CTiglLogging::SetLogger(ITiglLogger * logger) {
-    if(_myLogger) {
-        delete _myLogger;
-    }
+void CTiglLogging::SetLogger(PTiglLogger logger) {
 
     _myLogger = logger;
+    _consoleLogger.reset();
 #ifdef GLOG_FOUND
     if(!_myLogger){
         return;
@@ -120,9 +114,10 @@ void CTiglLogging::LogToFile(const char* prefix) {
     std::string filename = std::string(prefix) + buffer+ "." + _fileEnding;
     
     // add file and console logger to splitter
-    CTiglLogSplitter* splitter = new CTiglLogSplitter;
-    splitter->AddLogger(new CTiglFileLogger(filename.c_str()));
-    ITiglLogger * consoleLogger = new CTiglConsoleLogger;
+    CSharedPtr<CTiglLogSplitter> splitter (new CTiglLogSplitter);
+    PTiglLogger fileLogger (new CTiglFileLogger(filename.c_str()));
+    splitter->AddLogger(fileLogger);
+    PTiglLogger consoleLogger (new CTiglConsoleLogger);
     consoleLogger->SetVerbosity(_consoleVerbosity);
     splitter->AddLogger(consoleLogger);
     SetLogger(splitter);
@@ -133,9 +128,10 @@ void CTiglLogging::LogToFile(const char* prefix) {
 void CTiglLogging::LogToStream(FILE * fp) {
 
     // add file and console logger to splitter
-    CTiglLogSplitter* splitter = new CTiglLogSplitter;
-    splitter->AddLogger(new CTiglFileLogger(fp));
-    ITiglLogger * consoleLogger = new CTiglConsoleLogger;
+    CSharedPtr<CTiglLogSplitter> splitter (new CTiglLogSplitter);
+    PTiglLogger fileLogger (new CTiglFileLogger(fp));
+    splitter->AddLogger(fileLogger);
+    PTiglLogger consoleLogger (new CTiglConsoleLogger);
     consoleLogger->SetVerbosity(_consoleVerbosity);
     splitter->AddLogger(consoleLogger);
     SetLogger(splitter);
@@ -161,7 +157,7 @@ void CTiglLogging::LogToConsole() {
     google::LogToStderr();
 #else
 
-    ITiglLogger * consoleLogger = new CTiglConsoleLogger;
+    PTiglLogger consoleLogger (new CTiglConsoleLogger);
     consoleLogger->SetVerbosity(_consoleVerbosity);
     SetLogger(consoleLogger);
     // set _consoleLogger variable
@@ -173,7 +169,7 @@ void CTiglLogging::LogToConsole() {
 
 DummyLogger_::DummyLogger_(){}
 DummyLogger_::~DummyLogger_(){
-    tigl::ITiglLogger* logger = CTiglLogging::Instance().GetLogger();
+    tigl::PTiglLogger logger = CTiglLogging::Instance().GetLogger();
     std::string msg = stream.str();
     if(msg.size() > 0 && msg[msg.size()-1] == '\n') {
         msg.resize(msg.size() - 1);
@@ -216,7 +212,7 @@ std::ostringstream& DummyLogger_::AppendToStream(TiglLogLevel level, const char*
 DebugStream_::DebugStream_(){}
 DebugStream_::~DebugStream_(){
 #ifdef DEBUG
-    tigl::ITiglLogger* logger = CTiglLogging::Instance().GetLogger();
+    tigl::LoggerPointer logger = CTiglLogging::Instance().GetLogger();
     std::string msg = stream.str();
     if(msg.size() > 0 && msg[msg.size()-1] == '\n') {
         msg.resize(msg.size() - 1);
