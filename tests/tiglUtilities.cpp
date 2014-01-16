@@ -23,6 +23,7 @@
 #include "test.h"
 #include "tigl.h"
 #include "tiglcommonfunctions.h"
+#include "CTiglLogging.h"
 
 #include "BRepBuilderAPI_MakeWire.hxx"
 #include "BRepBuilderAPI_MakeEdge.hxx"
@@ -107,4 +108,15 @@ TEST(Misc, GetErrorString){
     ASSERT_STREQ("TIGL_UNKNOWN_ERROR", tiglGetErrorString((TiglReturnCode)100));
 }
 
-
+TEST(Misc, getLogLevelString){
+    //check valid log levels
+    ASSERT_STREQ("SLT" , tigl::getLogLevelString( TILOG_SILENT).c_str());
+    ASSERT_STREQ("ERR" , tigl::getLogLevelString(  TILOG_ERROR).c_str());
+    ASSERT_STREQ("WRN" , tigl::getLogLevelString(TILOG_WARNING).c_str());
+    ASSERT_STREQ("INF" , tigl::getLogLevelString(   TILOG_INFO).c_str());
+    ASSERT_STREQ("DBG" , tigl::getLogLevelString(  TILOG_DEBUG).c_str());
+    ASSERT_STREQ("DBG1", tigl::getLogLevelString( TILOG_DEBUG1).c_str());
+    ASSERT_STREQ("DBG2", tigl::getLogLevelString( TILOG_DEBUG2).c_str());
+    ASSERT_STREQ("DBG3", tigl::getLogLevelString( TILOG_DEBUG3).c_str());
+    ASSERT_STREQ("DBG4", tigl::getLogLevelString( TILOG_DEBUG4).c_str());
+}

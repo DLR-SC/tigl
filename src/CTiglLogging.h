@@ -146,6 +146,9 @@ class CTiglLogging {
 
 };
 
+// get log level string (for testing purposes)
+std::string getLogLevelString(TiglLogLevel level);
+
 } // end namespace tigl
 
 #endif // CTIGLLOGGING_H
