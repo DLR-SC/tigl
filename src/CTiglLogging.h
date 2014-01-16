@@ -28,6 +28,7 @@
 
 #include "tigl_config.h"
 #include "tigl.h"
+#include "CSharedPtr.h"
 
 #include <string>
 #include <stdio.h>
@@ -61,7 +62,7 @@ namespace tigl {
         if (TILOG_ ## level > LOG_MAX_LEVEL || TILOG_ ## level <= LOG_MIN_LEVEL) ;\
     else tigl::DummyLogger_().AppendToStream(TILOG_ ## level, __FILE__, __LINE__)
 
-#define DLOG(level) \
+    #define DLOG(level) \
         if (TILOG_ ## level > LOG_MAX_LEVEL) ;\
     else tigl::DebugStream_().AppendToStream(TILOG_ ## level, __FILE__, __LINE__)
 
@@ -96,6 +97,9 @@ namespace tigl {
     };
 #endif // not GLOG_FOUND
 
+// define smart pointer to logger
+class ITiglLogger;
+typedef CSharedPtr<ITiglLogger> PTiglLogger;
 
 class CTiglLogging {
 
@@ -115,8 +119,8 @@ class CTiglLogging {
         // The logger becomes property of this class
         // Therefore the logger should not be deleted
         // manually.
-        void SetLogger(class ITiglLogger*);
-        class ITiglLogger* GetLogger();
+        void SetLogger(PTiglLogger);
+        PTiglLogger GetLogger();
 
         // Destructor
         ~CTiglLogging(void);
@@ -134,11 +138,11 @@ class CTiglLogging {
         // Assignment operator
         void operator=(const CTiglLogging& )             { /* Do nothing */ }
         
-        class ITiglLogger* _myLogger;
+        PTiglLogger      _myLogger;
         std::string        _fileEnding;
         bool               _timeIdInFilename;
         TiglLogLevel       _consoleVerbosity;
-        class ITiglLogger* _consoleLogger;
+        PTiglLogger      _consoleLogger;
 
 };
 

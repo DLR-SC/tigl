@@ -8,14 +8,10 @@ CTiglLogSplitter::CTiglLogSplitter() : verbosity(TILOG_DEBUG4)
 
 CTiglLogSplitter::~CTiglLogSplitter()
 {
-    for(std::vector<ITiglLogger*>::iterator it = _loggers.begin(); it != _loggers.end(); ++it) 
-    {
-        delete *it;
-    }
 }
 
 
-void CTiglLogSplitter::AddLogger(ITiglLogger* logger) 
+void CTiglLogSplitter::AddLogger(PTiglLogger logger) 
 {
     if(logger) 
     {
@@ -28,7 +24,7 @@ void CTiglLogSplitter::LogMessage(TiglLogLevel level, const char * message)
 {
     if (level<=verbosity)
     {
-        for(std::vector<ITiglLogger*>::iterator it = _loggers.begin(); it != _loggers.end(); ++it) 
+        for(std::vector<PTiglLogger>::iterator it = _loggers.begin(); it != _loggers.end(); ++it) 
         {
             if(!*it)
             {
