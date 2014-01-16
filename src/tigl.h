@@ -3303,7 +3303,9 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSegmentVolume(TiglCPACSConfigur
 /*@{*/
 
 /**
-* @brief Returns the surface area of the wing.
+* @brief Returns the surface area of the wing. Currently, the area includes also the faces
+* on the wing symmetry plane (in case of a symmetric wing). In coming releases, these faces will
+* not belong anymore to the surface area calculation.
 *
 *
 * <b>Fortran syntax:</b>
@@ -3326,7 +3328,10 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSurfaceArea(TiglCPACSConfigurationH
 
 
 /**
-* @brief Returns the surface area of the fuselage.
+* @brief Returns the surface area of the fuselage. Currently, the area includes also the faces
+* on the fuselage symmetry plane (in case of a symmetric wing). This is in particular a problem
+* for fuselages, where only one half side is defined in CPACS. In future releases, these faces will
+* not belong anymore to the surface area calculation.
 *
 *
 * <b>Fortran syntax:</b>
@@ -3410,11 +3415,9 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSegmentSurfaceArea(TiglCPACSCon
 /**
 * @brief Returns the reference area of the wing.
 *
-* Here, we always take the reference wing area to be that of the trapezoidal portion of the wing projected into the centerline.
-* The leading and trailing edge chord extensions are not included in this definition and for some airplanes, such as Boeing's Blended
-* Wing Body, the difference can be almost a factor of two between the "real" wing area and the "trap area". Some companies use reference
-* wing areas that include portions of the chord extensions, and in some studies, even tail area is included as part of the reference area.
-* For simplicity, we use the trapezoidal area here.
+* The reference area of the wing is calculated by taking account the quadrilateral portions
+* of each wing segment by projecting the wing segments into the plane defined by the user.
+* If projection should be avoided, use TIGL_NO_SYMMETRY as symPlane argument.
 *
 * <b>Fortran syntax:</b>
 *
@@ -3423,6 +3426,12 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSegmentSurfaceArea(TiglCPACSCon
 *
 * @param[in]  cpacsHandle       Handle for the CPACS configuration
 * @param[in]  wingIndex         Index of the Wing to calculate the area, starting at 1
+* @param[in]  symPlane          Plane on which the wing is projected for calculating the refarea. Values can be:
+*                                  - TIGL_NO_SYMMETRY, the wing is not projected but its true 3D area is calculated
+*                                  - TIGL_X_Y_PLANE, the wing is projected onto the x-y plane (use for e.g. main wings and HTPs)
+*                                  - TIGL_X_Z_PLANE, the wing is projected onto the x-z plane (use for e.g. VTPs)
+*                                  - TIGL_Y_Z_PLANE, the wing is projected onto the y-z plane
+*
 * @param[out] referenceAreaPtr  The refence area of the wing
 *
 * @return
@@ -3431,11 +3440,9 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSegmentSurfaceArea(TiglCPACSCon
 *   - TIGL_INDEX_ERROR if wingIndex is less or equal zero
 *   - TIGL_ERROR if some other error occurred
 */
-TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetReferenceArea(TiglCPACSConfigurationHandle cpacsHandle, int wingIndex,
-                                                                                double *referenceAreaPtr);
-TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetReferenceArea2(TiglCPACSConfigurationHandle cpacsHandle, int wingIndex,
-                                                                                double *referenceAreaPtr2);
-
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetReferenceArea(TiglCPACSConfigurationHandle cpacsHandle,
+                                                           int wingIndex, TiglSymmetryAxis symPlane,
+                                                           double *referenceAreaPtr);
 
 /**
 * @brief Returns the wetted area of the wing.

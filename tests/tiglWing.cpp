@@ -289,13 +289,7 @@ TEST_F(WingSimple, wingGetMAC_success){
 
 TEST_F(WingSimple, wingGetReferenceArea_success){
     double ref = 0.;
-    tiglWingGetReferenceArea(tiglSimpleWingHandle, 1, &ref);
+    tiglWingGetReferenceArea(tiglSimpleWingHandle, 1, TIGL_X_Y_PLANE, &ref);
     ASSERT_NEAR(1.75, ref, 1e-7);
 
-}
-
-TEST_F(WingSimple, wingGetReferenceArea2_success){
-    double ref2 = 0.;
-    tiglWingGetReferenceArea2(tiglSimpleWingHandle, 1, &ref2);
-    ASSERT_NEAR(1.75, ref2, 1e-7);
 }
