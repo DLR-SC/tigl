@@ -1,3 +1,28 @@
+Version 2.1.0
+---------------
+TIGL:
+- Support for parametric CST wing profiles
+- Logging improvements. The console verbosity can now be set independent of file logging.
+
+-Changed API:
+	- Added argument for tiglWingGetReferenceArea to define the projection plane for reference area calculations
+
+-New API functions:
+	- tiglWingGetMAC, computes the mead aerodynamic chord length and position (thanks to Arda!)
+
+-Fixes:
+	- Fixed crash in case of missing wing and fuselage profiles
+	- Fixed accuracy errors in tiglWingSegmentPointGetComponentSegmentEtaXsi and tiglWingComponentSegmentPointGetSegmentEtaXsi
+	- Fixed a warning when including tigl.h
+	- Fixed numerical bug tiglWingComponentSegmentGetSegmentIntersection
+
+TiGLViewer:
+- Improved dialog for displaying wing component segment points
+- Added BRep export
+- Fixed crash on some Linux systems with strange LANG settings
+- Added dialog showing log history in case of an error
+
+
 Version 2.0.7
 ---------------
 TiGL:
