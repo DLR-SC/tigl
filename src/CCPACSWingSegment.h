@@ -145,12 +145,6 @@ namespace tigl {
         // projects a point unto the wing and returns its coordinates
         void GetEtaXsi(gp_Pnt, bool isUpper, double& eta, double& xsi);
 
-        // Returns the inner profile points as read from TIXI. The points are already transformed.
-        std::vector<CTiglPoint*> GetRawInnerProfilePoints();
-
-        // Returns the outer profile points as read from TIXI. The points are already transformed.
-        std::vector<CTiglPoint*> GetRawOuterProfilePoints();
-
         // Returns if the given point is ont the Top of the wing or on the lower side.
         bool GetIsOnTop(gp_Pnt pnt);
 

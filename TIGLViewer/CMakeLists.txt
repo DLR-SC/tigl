@@ -122,6 +122,9 @@ add_definitions(-DCSFDB -DQOCC_STATIC)
 include_directories( ${OpenCASCADE_INCLUDE_DIR} ${TIXI_INCLUDE_DIRS})
 include_directories( ${PROJECT_SOURCE_DIR}/src ${CMAKE_CURRENT_SOURCE_DIR}/src ${PROJECT_BINARY_DIR}/src)
 
+# boost
+include_directories(${PROJECT_SOURCE_DIR}/thirdparty/boost_1_55_0)
+
 # include path for ui files
 include_directories( ${CMAKE_CURRENT_BINARY_DIR} )
 

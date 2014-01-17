@@ -60,6 +60,8 @@
 #include "CTiglIntersectionCalculation.h"
 #include "TIGLViewerEtaXsiDialog.h"
 #include "CTiglExportVtk.h"
+#include "CCPACSWingProfilePointList.h"
+#include "CTiglPoint.h"
 
 #define max(a,b) ((a) > (b) ? (a) : (b))
 
@@ -454,7 +456,7 @@ void TIGLViewerDocument::drawWingProfiles()
     myAISContext->EraseAll(Standard_False);
 
     tigl::CCPACSWingProfile& profile = GetConfiguration().GetWingProfile(wingProfile.toStdString());
-    TopoDS_Wire wire        = profile.GetWire(true);
+    TopoDS_Wire wire        = profile.GetWire();
     displayShape(wire,Quantity_NOC_WHITE);
 
     // Leading/trailing edges
@@ -480,17 +482,21 @@ void TIGLViewerDocument::drawWingProfiles()
         displayShape(le_te_edge, Quantity_NOC_GOLD);
     }
 
-    if(profile.GetCoordinateContainer().size() < 15) {
-        for(unsigned int i = 0; i < profile.GetCoordinateContainer().size(); ++i){
-            tigl::CTiglPoint * p = profile.GetCoordinateContainer().at(i);
+    // display points in case of a few sample points
+    std::vector<tigl::CTiglPoint*> fewPointList=profile.GetProfileAlgo()->GetSamplePoints();
+    if (fewPointList.size() < 15)
+    {
+        for(unsigned int i = 0; i<fewPointList.size(); ++i)
+        {
+            tigl::CTiglPoint * p = fewPointList.at(i);
             std::stringstream str;
             str << i << ": (" << p->x << ", " << p->y << ", " << p->z << ")";
             gp_Pnt pnt = p->Get_gp_Pnt();
             DisplayPoint(pnt, str.str().c_str(), Standard_False, 0., 0., 0., 6.);
         }
-
     }
-    else {
+    else
+    {
       // Draw some points on the wing profile
       for (double xsi = 0.1; xsi <= 0.9; xsi = xsi + 0.2)
       {
@@ -543,9 +549,28 @@ void TIGLViewerDocument::drawWingOverlayProfilePoints()
 
     for (int i = 1; i <= wing.GetSegmentCount(); i++)
     {
-        // Draw inner profile points
+        // Get segment
         tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(i);
-        std::vector<tigl::CTiglPoint*> innerPoints = segment.GetRawInnerProfilePoints();
+        // Get inner profile point list
+        tigl::CCPACSWingConnection& innerConnection = segment.GetInnerConnection();
+        tigl::CCPACSWingProfile& innerProfile = innerConnection.GetProfile();
+        std::vector<tigl::CTiglPoint*> innerProfilePointList=innerProfile.GetProfileAlgo()->GetSamplePoints();
+        // get points and transform them
+        std::vector<tigl::CTiglPoint*> innerPoints;
+        for (std::vector<tigl::CTiglPoint*>::size_type i = 0; i < innerProfilePointList.size(); i++)
+        {
+
+            gp_Pnt pnt = innerProfilePointList[i]->Get_gp_Pnt();
+
+            pnt = innerConnection.GetSectionElementTransformation().Transform(pnt);
+            pnt = innerConnection.GetSectionTransformation().Transform(pnt);
+            pnt = innerConnection.GetPositioningTransformation().Transform(pnt);
+
+            tigl::CTiglPoint *tiglPoint = new tigl::CTiglPoint(pnt.X(), pnt.Y(), pnt.Z());
+            innerPoints.push_back(tiglPoint);
+        }
+
+        // Draw inner profile points
         for (std::vector<tigl::CTiglPoint*>::size_type i = 0; i < innerPoints.size(); i++)
         {
             gp_Pnt pnt = innerPoints[i]->Get_gp_Pnt();
@@ -553,8 +578,26 @@ void TIGLViewerDocument::drawWingOverlayProfilePoints()
             DisplayPoint(pnt, "", Standard_False, 0.0, 0.0, 0.0, 2.0);
         }
 
+        // Get outer profile point list
+        tigl::CCPACSWingConnection& outerConnection = segment.GetOuterConnection();
+        tigl::CCPACSWingProfile& outerProfile = outerConnection.GetProfile();
+        std::vector<tigl::CTiglPoint*> outerProfilePointList=outerProfile.GetProfileAlgo()->GetSamplePoints();
+        // get points and transform them
+        std::vector<tigl::CTiglPoint*> outerPoints;
+        for (std::vector<tigl::CTiglPoint*>::size_type i = 0; i < outerProfilePointList.size(); i++)
+        {
+
+            gp_Pnt pnt = outerProfilePointList[i]->Get_gp_Pnt();
+
+            pnt = outerConnection.GetSectionElementTransformation().Transform(pnt);
+            pnt = outerConnection.GetSectionTransformation().Transform(pnt);
+            pnt = outerConnection.GetPositioningTransformation().Transform(pnt);
+
+            tigl::CTiglPoint *tiglPoint = new tigl::CTiglPoint(pnt.X(), pnt.Y(), pnt.Z());
+            outerPoints.push_back(tiglPoint);
+        }
+
         // Draw outer profile points
-        std::vector<tigl::CTiglPoint*> outerPoints = segment.GetRawOuterProfilePoints();
         for (std::vector<tigl::CTiglPoint*>::size_type i = 0; i < outerPoints.size(); i++)
         {
             gp_Pnt pnt = outerPoints[i]->Get_gp_Pnt();
@@ -575,7 +618,7 @@ void TIGLViewerDocument::drawFuselageProfiles()
     myAISContext->EraseAll(Standard_False);
 
     tigl::CCPACSFuselageProfile& profile = GetConfiguration().GetFuselageProfile(fuselageProfile.toStdString());
-    TopoDS_Wire wire        = profile.GetWire(true);
+    TopoDS_Wire wire        = profile.GetWire();
     Handle(AIS_Shape) shape = new AIS_Shape(wire);
     shape->SetColor(Quantity_NOC_WHITE);
     myAISContext->Display(shape, Standard_True);

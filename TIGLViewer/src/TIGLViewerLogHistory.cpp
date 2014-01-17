@@ -18,8 +18,7 @@
 
 #include "TIGLViewerLogHistory.h"
 
-TIGLViewerLogHistory::TIGLViewerLogHistory()
-{
+TIGLViewerLogHistory::TIGLViewerLogHistory() : verbosity(TILOG_DEBUG4) {
 }
 
 
@@ -33,7 +32,10 @@ unsigned int TIGLViewerLogHistory::GetMessageCount() const {
 }
 
 void TIGLViewerLogHistory::LogMessage(TiglLogLevel level, const char * message) {
-    _history.append(HistoryLogEntry(level, message));
+    if (level<=verbosity)
+    {
+        _history.append(HistoryLogEntry(level, message));
+    }
 }
 
 QString TIGLViewerLogHistory::GetAllMessages() const
@@ -46,4 +48,9 @@ QString TIGLViewerLogHistory::GetAllMessages() const
         msgs += entry.msg+ "\n\n";
     }
     return msgs;
+}
+
+void TIGLViewerLogHistory::SetVerbosity(TiglLogLevel vlevel)
+{
+    verbosity=vlevel;
 }

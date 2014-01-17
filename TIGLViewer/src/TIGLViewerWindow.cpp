@@ -144,12 +144,15 @@ TIGLViewerWindow::TIGLViewerWindow()
     errorStream->setMarkup("<b><font color=\"red\">","</font></b>");
 
     // insert two loggers, one for the log history and one for the console
-    tigl::CTiglLogSplitter * splitter = new tigl::CTiglLogSplitter;
-    logHistory = new TIGLViewerLogHistory;
-    splitter->AddLogger(logHistory, TILOG_WARNING);
+    CSharedPtr<tigl::CTiglLogSplitter> splitter(new tigl::CTiglLogSplitter);
+    logHistory = CSharedPtr<TIGLViewerLogHistory>(new TIGLViewerLogHistory);
+    logHistory->SetVerbosity(TILOG_DEBUG4);
+    splitter->AddLogger(logHistory);
 
-    logDirect = new TIGLViewerLogRedirection;
-    splitter->AddLogger(new TIGLViewerLoggerHTMLDecorator(logDirect), TILOG_DEBUG4);
+    logDirect = CSharedPtr<TIGLViewerLogRedirection>(new TIGLViewerLogRedirection);
+    logDirect->SetVerbosity(TILOG_WARNING);
+    CSharedPtr<TIGLViewerLoggerHTMLDecorator> logHTMLDecorator(new TIGLViewerLoggerHTMLDecorator(logDirect));
+    splitter->AddLogger(logHTMLDecorator);
 
     // register logger at tigl
     tigl::CTiglLogging::Instance().SetLogger(splitter);
@@ -729,7 +732,7 @@ void TIGLViewerWindow::connectSignals()
     connect(stdoutStream, SIGNAL(sendString(QString)), console, SLOT(output(QString)));
     connect(errorStream , SIGNAL(sendString(QString)), console, SLOT(output(QString)));
 
-    connect(logDirect, SIGNAL(newMessage(QString)), console, SLOT(output(QString)));
+    connect(logDirect.get(), SIGNAL(newMessage(QString)), console, SLOT(output(QString)));
 
     connect(scriptEngine, SIGNAL(printResults(QString)), console, SLOT(output(QString)));
     connect(console, SIGNAL(onChange(QString)), scriptEngine, SLOT(textChanged(QString)));

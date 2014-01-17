@@ -18,8 +18,7 @@
 
 #ifndef ITIGLLOGGER_H
 #define ITIGLLOGGER_H
-
-#include "TiglLoggerDefinitions.h"
+#include "tigl.h"
 
 namespace tigl {
 
@@ -28,6 +27,7 @@ class ITiglLogger
 public:
     virtual ~ITiglLogger() {}
     virtual void LogMessage(TiglLogLevel, const char * message) = 0;
+    virtual void SetVerbosity(TiglLogLevel) = 0;
 };
 
 }

@@ -19,12 +19,18 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
+// include files and other standard functionality
+#cmakedefine HAVE_STDSHARED_PTR
+
+// opencascade configurations
 #cmakedefine OCC_PATCHED
 #cmakedefine OCC_BG
 #cmakedefine OCC_NEW_3DAPI
 
-#cmakedefine TIGL_USE_XCAF
-
+// optional libraries
 #cmakedefine GLOG_FOUND
+
+// tigl switches
+#cmakedefine TIGL_USE_XCAF
 
 #endif // CONFIG_H

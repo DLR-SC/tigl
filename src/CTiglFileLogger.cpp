@@ -26,7 +26,7 @@
 
 namespace tigl {
 
-CTiglFileLogger::CTiglFileLogger(FILE * file) : logFileStream(file), mutex(new CMutex)
+CTiglFileLogger::CTiglFileLogger(FILE * file) : logFileStream(file), mutex(new CMutex), verbosity(TILOG_DEBUG4)
 {
     if(!logFileStream) {
         throw CTiglError("Null pointer for argument file in CTiglLogFile", TIGL_NULL_POINTER);
@@ -35,7 +35,7 @@ CTiglFileLogger::CTiglFileLogger(FILE * file) : logFileStream(file), mutex(new C
     fileOpened = false;
 }
 
-CTiglFileLogger::CTiglFileLogger(const char* filename) :  mutex(new CMutex)
+CTiglFileLogger::CTiglFileLogger(const char* filename) :  mutex(new CMutex) , verbosity(TILOG_DEBUG4)
 {
 
     logFileStream = fopen(filename,"w");
@@ -63,13 +63,21 @@ CTiglFileLogger::~CTiglFileLogger(){
     }
 }
 
-void CTiglFileLogger::LogMessage(TiglLogLevel, const char *message)
+void CTiglFileLogger::LogMessage(TiglLogLevel level, const char *message)
 {
-    if(logFileStream){
-        mutex->lock();
-        fprintf(logFileStream, "%s\n", message);
-        mutex->unlock();
+    if (level<=verbosity)
+    {
+        if(logFileStream)
+        {
+            mutex->lock();
+            fprintf(logFileStream, "%s\n", message);
+            mutex->unlock();
+        }
     }
+}
+void CTiglFileLogger::SetVerbosity(TiglLogLevel vlevel)
+{
+    verbosity=vlevel;
 }
 
 } // namespace tigl
