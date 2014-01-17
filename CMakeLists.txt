@@ -65,7 +65,7 @@ else()
 endif()
 
 find_package( OpenCASCADE REQUIRED COMPONENTS ${OCC_LIBS})
-find_package( TIXI 2.0.4 REQUIRED)
+find_package( TIXI 2.1.0 REQUIRED)
 
 OPTION(TIGL_USE_GLOG "Enables advanced logging (requires google glog)" OFF)
 if(TIGL_USE_GLOG)
