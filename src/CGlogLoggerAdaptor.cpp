@@ -27,20 +27,12 @@
 
 namespace tigl {
 
-CGlogLoggerAdaptor::CGlogLoggerAdaptor(ITiglLogger *logger) : _mutex(new CMutex)
+CGlogLoggerAdaptor::CGlogLoggerAdaptor(PTiglLogger logger) : _mutex(new CMutex)
 {
     _mylogger = logger;
 }
 
 CGlogLoggerAdaptor::~CGlogLoggerAdaptor() {
-    if(_mutex) {
-        delete _mutex;
-        _mutex = NULL;
-    }
-    if(_mylogger) {
-        delete _mylogger;
-        _mylogger = NULL;
-    }
 }
 
 void CGlogLoggerAdaptor::Write(bool force_flush,

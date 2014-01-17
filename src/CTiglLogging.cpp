@@ -149,7 +149,10 @@ void CTiglLogging::SetTimeIdInFilenameEnabled(bool enabled) {
 
 void CTiglLogging::SetConsoleVerbosity(TiglLogLevel vlevel) {
     _consoleVerbosity=vlevel;
-    _consoleLogger->SetVerbosity(_consoleVerbosity);
+    if (_consoleLogger)
+    {
+        _consoleLogger->SetVerbosity(_consoleVerbosity);
+    }
 }
 
 void CTiglLogging::LogToConsole() {
@@ -163,6 +166,10 @@ void CTiglLogging::LogToConsole() {
     // set _consoleLogger variable
     _consoleLogger=consoleLogger;
 #endif
+}
+
+std::string getLogLevelString(TiglLogLevel level){
+    return LogLevelStrings[level];
 }
 
 #ifndef GLOG_FOUND
@@ -187,9 +194,6 @@ DummyLogger_::~DummyLogger_(){
     }
 }
 
-std::string getLogLevelString(TiglLogLevel level){
-    return LogLevelStrings[level];
-}
 
 std::ostringstream& DummyLogger_::AppendToStream(TiglLogLevel level, const char* file, int line){
     _lastLevel = level;
