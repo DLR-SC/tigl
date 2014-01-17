@@ -24,6 +24,7 @@
 #ifdef GLOG_FOUND
 
 #include <glog/logging.h>
+#include <CTiglLogging.h>
 
 namespace tigl {
 
@@ -41,7 +42,7 @@ public:
     // this class. Therefore one must
     // not manually delete a logger 
     // after inserting it into this class.
-    CGlogLoggerAdaptor(ITiglLogger*);
+    CGlogLoggerAdaptor(PTiglLogger);
     
     virtual ~CGlogLoggerAdaptor();
 
@@ -56,8 +57,8 @@ public:
     virtual google::uint32 LogSize();
 
 private:
-    ITiglLogger* _mylogger;
-    CMutex* _mutex;
+    PTiglLogger _mylogger;
+    CSharedPtr<CMutex> _mutex;
 };
 
 } // namespace tigl
