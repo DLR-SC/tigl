@@ -161,7 +161,7 @@ double class_function(const double& N1, const double& N2, const double& x)
 double class_function_deriv(const double& N1, const double& N2, const int& n, const double& x)
 {
     double res = 0.;
-    for(size_t i = 0; i <= n; i++)
+    for(int i = 0; i <= n; i++)
     {
         res += tigl::binom(n,i)
              * tigl::pow_deriv(x,N1,i)
@@ -219,7 +219,7 @@ double cstcurve(const double& N1, const double& N2, const std::vector<double>& B
 double cstcurve_deriv(const double& N1, const double& N2, const std::vector<double>& B, const int& n, const double& x)
 {
     double res = 0.;
-    for (size_t i= 0; i<= n; i++) 
+    for (int i= 0; i<= n; i++)
     {
         res += tigl::binom(n,i)
              * class_function_deriv(N1, N2, i, x)

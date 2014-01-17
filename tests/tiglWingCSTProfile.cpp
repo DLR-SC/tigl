@@ -118,14 +118,14 @@ protected:
 TEST_F(WingCSTProfile, tiglWingCSTProfile_samplePoints)
 {
     // project sample points on curve and check distance
-    for (int i = 0; i < psi.size(); ++i)
+    for (unsigned int i = 0; i < psi.size(); ++i)
     {
         gp_Pnt samplePoint(Standard_Real(psi[i]), Standard_Real(0.0), Standard_Real(tigl::cstcurve(upperN1, upperN2, upperB, psi[i])));
         GeomAPI_ProjectPointOnCurve projection(samplePoint, upperCurve);
         gp_Pnt projectedPoint=projection.NearestPoint();
         outputXY(i, samplePoint.X(), samplePoint.Z(), "./TestData/analysis/tiglWingCSTProfile_samplePoints_cst.dat");
         outputXY(i, projectedPoint.X(), projectedPoint.Z(), "./TestData/analysis/tiglWingCSTProfile_samplePoints_bspline.dat");
-        ASSERT_TRUE(bool(samplePoint.IsEqual(projectedPoint,1E-10)));
+        ASSERT_NEAR(0., samplePoint.Distance(projectedPoint), 1e-10);
     }  
 }
 
@@ -146,7 +146,7 @@ TEST_F(WingCSTProfile, tiglWingCSTProfile_approximation)
     {
         x.push_back(double(i)/1000.0);
     }
-    for (int i = 0; i < x.size(); ++i)
+    for (unsigned int i = 0; i < x.size(); ++i)
     {
         gp_Pnt samplePoint(Standard_Real(x[i]), Standard_Real(0.0), Standard_Real(tigl::cstcurve(upperN1, upperN2, upperB, x[i])));
         GeomAPI_ProjectPointOnCurve projection(samplePoint, upperCurve);
