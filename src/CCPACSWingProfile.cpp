@@ -117,8 +117,7 @@ namespace tigl
                 description = ptrDescription;
 
             // create wing profile algorithm via factory
-            CCPACSWingProfileFactory factory;
-            profileAlgo=factory.createProfileAlgo(tixiHandle, ProfileXPath);
+            profileAlgo=CCPACSWingProfileFactory::createProfileAlgo(tixiHandle, ProfileXPath);
             // read in wing profile data
             profileAlgo->ReadCPACS(tixiHandle);
         }
