@@ -27,6 +27,7 @@ ADD_CUSTOM_TARGET(test DEPENDS check)
 #execute_process(COMMAND ${CMAKE_PROGRAM} -E copy_if_different ${PROJECT_SOURCE_DIR}/tests/TestData tests/Testdata)
 file(COPY ${PROJECT_SOURCE_DIR}/tests/TestData DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/pythonwrapper-tests.py DESTINATION ${PROJECT_BINARY_DIR}/tests)
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/test_logging.py DESTINATION ${PROJECT_BINARY_DIR}/tests)
 
 #create directory to avoid crash in unit tests
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/TestData/export)
