@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<cpacs xsi:noNamespaceSchemaLocation="cpacs_schema.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<cpacs xsi:noNamespaceSchemaLocation="CPACS_21_Schema.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<header xsi:type="headerType">
 		<name>VAMP D150 CPACS 2.0</name>
 		<description>D150_reference_VAMP, outer geometry reshapedP2C'ed from PrADO A320-200, CPACS 2.0</description>
@@ -4141,13 +4141,13 @@
 											<name>D150_VAMP_W1_CompSeg1_innerFlap</name>
 											<description>Inner flap of the D150</description>
 											<parentUID>D150_VAMP_W1_CompSeg1</parentUID>
-											<outerShape xsi:type="controlSurfaceOuterShapeType">
-												<innerBorder xsi:type="controlSurfaceBorderType">
+											<outerShape xsi:type="controlSurfaceOuterShapeTrailingEdgeType">
+												<innerBorder xsi:type="controlSurfaceBorderTrailingEdgeType">
 													<etaLE>0.1103</etaLE>
 													<etaTE>0.1103</etaTE>
 													<xsiLE>0.812922199791</xsiLE>
 												</innerBorder>
-												<outerBorder xsi:type="controlSurfaceBorderType">
+												<outerBorder xsi:type="controlSurfaceBorderTrailingEdgeType">
 													<etaLE>0.325678045564</etaLE>
 													<etaTE>0.325678045564</etaTE>
 													<xsiLE>0.7195</xsiLE>
@@ -4196,13 +4196,13 @@
 											<name>D150_VAMP_W1_CompSeg1_outerFlap</name>
 											<description>Outer flap of the D150</description>
 											<parentUID>D150_VAMP_W1_CompSeg1</parentUID>
-											<outerShape xsi:type="controlSurfaceOuterShapeType">
-												<innerBorder xsi:type="controlSurfaceBorderType">
+											<outerShape xsi:type="controlSurfaceOuterShapeTrailingEdgeType">
+												<innerBorder xsi:type="controlSurfaceBorderTrailingEdgeType">
 													<etaLE>0.325678045564</etaLE>
 													<etaTE>0.325678045564</etaTE>
 													<xsiLE>0.7195</xsiLE>
 												</innerBorder>
-												<outerBorder xsi:type="controlSurfaceBorderType">
+												<outerBorder xsi:type="controlSurfaceBorderTrailingEdgeType">
 													<etaLE>0.758901647576</etaLE>
 													<etaTE>0.758901647576</etaTE>
 													<xsiLE>0.705129411765</xsiLE>
@@ -4251,13 +4251,13 @@
 											<name>D150_VAMP_W1_CompSeg1_aileron</name>
 											<description>All speed aileron of the D150</description>
 											<parentUID>D150_VAMP_W1_CompSeg1</parentUID>
-											<outerShape xsi:type="controlSurfaceOuterShapeType">
-												<innerBorder xsi:type="controlSurfaceBorderType">
+											<outerShape xsi:type="controlSurfaceOuterShapeTrailingEdgeType">
+												<innerBorder xsi:type="controlSurfaceBorderTrailingEdgeType">
 													<etaLE>0.770741298811</etaLE>
 													<etaTE>0.770741298811</etaTE>
 													<xsiLE>0.702208610401</xsiLE>
 												</innerBorder>
-												<outerBorder xsi:type="controlSurfaceBorderType">
+												<outerBorder xsi:type="controlSurfaceBorderTrailingEdgeType">
 													<etaLE>0.956946722781</etaLE>
 													<etaTE>0.956946722781</etaTE>
 													<xsiLE>0.712</xsiLE>
@@ -4318,15 +4318,16 @@
 									</trailingEdgeDevices>
 									<spoilers xsi:type="spoilersType">
 										<spoiler uID="D150_VAMP_W1_CompSeg1_Spoiler4" xsi:type="spoilerType">
+											<name>D150_VAMP_W1_CompSeg1_Spoiler4</name>
 											<parentUID>D150_VAMP_W1_CompSeg1</parentUID>
-											<outerShape xsi:type="controlSurfaceOuterShapeType">
-												<innerBorder xsi:type="controlSurfaceBorderType">
+											<outerShape xsi:type="controlSurfaceOuterShapeSpoilerType">
+												<innerBorder xsi:type="controlSurfaceBorderSpoilerType">
 													<etaLE>0.192607873362</etaLE>
 													<etaTE>0.192607873362</etaTE>
 													<xsiLE>0.762</xsiLE>
 													<xsiTE>0.884364145907</xsiTE>
 												</innerBorder>
-												<outerBorder xsi:type="controlSurfaceBorderType">
+												<outerBorder xsi:type="controlSurfaceBorderSpoilerType">
 													<etaLE>0.317569827187</etaLE>
 													<etaTE>0.317569827187</etaTE>
 													<xsiLE>0.67</xsiLE>
@@ -4373,15 +4374,16 @@
 											</path>
 										</spoiler>
 										<spoiler uID="D150_VAMP_W1_CompSeg1_Spoiler5" xsi:type="spoilerType">
+											<name>D150_VAMP_W1_CompSeg1_Spoiler5</name>
 											<parentUID>D150_VAMP_W1_CompSeg1</parentUID>
-											<outerShape xsi:type="controlSurfaceOuterShapeType">
-												<innerBorder xsi:type="controlSurfaceBorderType">
+											<outerShape xsi:type="controlSurfaceOuterShapeSpoilerType">
+												<innerBorder xsi:type="controlSurfaceBorderSpoilerType">
 													<etaLE>0.358506169444</etaLE>
 													<etaTE>0.343109563352</etaTE>
 													<xsiLE>0.666</xsiLE>
 													<xsiTE>0.881762535113</xsiTE>
 												</innerBorder>
-												<outerBorder xsi:type="controlSurfaceBorderType">
+												<outerBorder xsi:type="controlSurfaceBorderSpoilerType">
 													<etaLE>0.4597890041</etaLE>
 													<etaTE>0.444392398009</etaTE>
 													<xsiLE>0.658</xsiLE>
@@ -4428,15 +4430,16 @@
 											</path>
 										</spoiler>
 										<spoiler uID="D150_VAMP_W1_CompSeg1_Spoiler6" xsi:type="spoilerType">
+											<name>D150_VAMP_W1_CompSeg1_Spoiler6</name>
 											<parentUID>D150_VAMP_W1_CompSeg1</parentUID>
-											<outerShape xsi:type="controlSurfaceOuterShapeType">
-												<innerBorder xsi:type="controlSurfaceBorderType">
+											<outerShape xsi:type="controlSurfaceOuterShapeSpoilerType">
+												<innerBorder xsi:type="controlSurfaceBorderSpoilerType">
 													<etaLE>0.4597890041</etaLE>
 													<etaTE>0.444402161074</etaTE>
 													<xsiLE>0.658</xsiLE>
 													<xsiTE>0.895559316985</xsiTE>
 												</innerBorder>
-												<outerBorder xsi:type="controlSurfaceBorderType">
+												<outerBorder xsi:type="controlSurfaceBorderSpoilerType">
 													<etaLE>0.560964205564</etaLE>
 													<etaTE>0.545577362537</etaTE>
 													<xsiLE>0.646</xsiLE>
@@ -4483,15 +4486,16 @@
 											</path>
 										</spoiler>
 										<spoiler uID="D150_VAMP_W1_CompSeg1_Spoiler7" xsi:type="spoilerType">
+											<name>D150_VAMP_W1_CompSeg1_Spoiler7</name>
 											<parentUID>D150_VAMP_W1_CompSeg1</parentUID>
-											<outerShape xsi:type="controlSurfaceOuterShapeType">
-												<innerBorder xsi:type="controlSurfaceBorderType">
+											<outerShape xsi:type="controlSurfaceOuterShapeSpoilerType">
+												<innerBorder xsi:type="controlSurfaceBorderSpoilerType">
 													<etaLE>0.564085568162</etaLE>
 													<etaTE>0.548671512762</etaTE>
 													<xsiLE>0.649</xsiLE>
 													<xsiTE>0.914793226618</xsiTE>
 												</innerBorder>
-												<outerBorder xsi:type="controlSurfaceBorderType">
+												<outerBorder xsi:type="controlSurfaceBorderSpoilerType">
 													<etaLE>0.654497450321</etaLE>
 													<etaTE>0.639083394921</etaTE>
 													<xsiLE>0.642</xsiLE>
@@ -4538,15 +4542,16 @@
 											</path>
 										</spoiler>
 										<spoiler uID="D150_VAMP_W1_CompSeg1_Spoiler8" xsi:type="spoilerType">
+											<name>D150_VAMP_W1_CompSeg1_Spoiler8</name>
 											<parentUID>D150_VAMP_W1_CompSeg1</parentUID>
-											<outerShape xsi:type="controlSurfaceOuterShapeType">
-												<innerBorder xsi:type="controlSurfaceBorderType">
+											<outerShape xsi:type="controlSurfaceOuterShapeSpoilerType">
+												<innerBorder xsi:type="controlSurfaceBorderSpoilerType">
 													<etaLE>0.654497450321</etaLE>
 													<etaTE>0.639089684845</etaTE>
 													<xsiLE>0.642</xsiLE>
 													<xsiTE>0.937596882428</xsiTE>
 												</innerBorder>
-												<outerBorder xsi:type="controlSurfaceBorderType">
+												<outerBorder xsi:type="controlSurfaceBorderSpoilerType">
 													<etaLE>0.745985664411</etaLE>
 													<etaTE>0.730577898934</etaTE>
 													<xsiLE>0.6315</xsiLE>
@@ -4747,13 +4752,13 @@
 											<name>D150_VAMP_HL1_CompSeg1_elevator</name>
 											<description>Elevator of D150</description>
 											<parentUID>D150_VAMP_HL1_CompSeg1</parentUID>
-											<outerShape xsi:type="controlSurfaceOuterShapeType">
-												<innerBorder xsi:type="controlSurfaceBorderType">
+											<outerShape xsi:type="controlSurfaceOuterShapeTrailingEdgeType">
+												<innerBorder xsi:type="controlSurfaceBorderTrailingEdgeType">
 													<etaLE>0.16</etaLE>
 													<etaTE>0.169254920137</etaTE>
 													<xsiLE>0.577506142506</xsiLE>
 												</innerBorder>
-												<outerBorder xsi:type="controlSurfaceBorderType">
+												<outerBorder xsi:type="controlSurfaceBorderTrailingEdgeType">
 													<etaLE>0.95</etaLE>
 													<etaTE>0.95</etaTE>
 													<xsiLE>0.64</xsiLE>
@@ -4966,13 +4971,13 @@
 											<name>D150_VAMP_SL1_CompSeg1_rudder</name>
 											<description>Rudder of D150</description>
 											<parentUID>D150_VAMP_SL1_CompSeg1</parentUID>
-											<outerShape xsi:type="controlSurfaceOuterShapeType">
-												<innerBorder xsi:type="controlSurfaceBorderType">
+											<outerShape xsi:type="controlSurfaceOuterShapeTrailingEdgeType">
+												<innerBorder xsi:type="controlSurfaceBorderTrailingEdgeType">
 													<etaLE>0.01</etaLE>
 													<etaTE>0.01</etaTE>
 													<xsiLE>0.6875</xsiLE>
 												</innerBorder>
-												<outerBorder xsi:type="controlSurfaceBorderType">
+												<outerBorder xsi:type="controlSurfaceBorderTrailingEdgeType">
 													<etaLE>0.95</etaLE>
 													<etaTE>0.95</etaTE>
 													<xsiLE>0.714</xsiLE>

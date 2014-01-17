@@ -4431,3 +4431,16 @@ TiglReturnCode tiglLogToFileDisabled() {
 
     return TIGL_SUCCESS;
 }
+
+TiglReturnCode tiglLogSetVerbosity(TiglLogLevel consoleVerbosity) {
+    tigl::CTiglLogging& logger = tigl::CTiglLogging::Instance();
+
+    try {
+        logger.SetConsoleVerbosity(consoleVerbosity);
+    }
+    catch (tigl::CTiglError& err) {
+        return err.getCode();
+    }
+
+    return TIGL_SUCCESS;
+}

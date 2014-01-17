@@ -75,6 +75,12 @@ if(TIGL_USE_GLOG)
     endif()
 endif(TIGL_USE_GLOG)
 
+# check for include files and other functions
+INCLUDE(CheckCXXSourceCompiles)
+SET(SRC1 "#include <memory>\nint main(){\n std::shared_ptr<int> a(new int)\;\n return 0\;\n}\n")
+CHECK_CXX_SOURCE_COMPILES(${SRC1} HAVE_STDSHARED_PTR)
+
+
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/src/tigl_config.h.in ${CMAKE_CURRENT_BINARY_DIR}/src/tigl_config.h)
 
 # code coverage analysis

@@ -27,6 +27,8 @@
 #define CTIGLLOGGING_H
 
 #include "tigl_config.h"
+#include "tigl.h"
+#include "CSharedPtr.h"
 
 #include <string>
 #include <stdio.h>
@@ -39,7 +41,6 @@
 #include <iostream>
 #include <sstream>
 #include <cstring>
-#include "TiglLoggerDefinitions.h"
 #endif
 
 namespace tigl {
@@ -49,16 +50,19 @@ namespace tigl {
     #ifndef LOG_MAX_LEVEL
     #define LOG_MAX_LEVEL TILOG_DEBUG4
     #endif
+    #ifndef LOG_MIN_LEVEL
+    #define LOG_MIN_LEVEL TILOG_SILENT
+    #endif
 
     /**
      * This macros can be used like streams e.g.: LOG(ERROR) << "that is an error";
      * Following log levels are supported: ERROR, WARNING, INFO, DEBUG, DEBUG1, DEBUG2, DEBUG3, DEBUG4
      */
     #define LOG(level) \
-        if (TILOG_ ## level > LOG_MAX_LEVEL) ;\
+        if (TILOG_ ## level > LOG_MAX_LEVEL || TILOG_ ## level <= LOG_MIN_LEVEL) ;\
     else tigl::DummyLogger_().AppendToStream(TILOG_ ## level, __FILE__, __LINE__)
 
-#define DLOG(level) \
+    #define DLOG(level) \
         if (TILOG_ ## level > LOG_MAX_LEVEL) ;\
     else tigl::DebugStream_().AppendToStream(TILOG_ ## level, __FILE__, __LINE__)
 
@@ -93,6 +97,9 @@ namespace tigl {
     };
 #endif // not GLOG_FOUND
 
+// define smart pointer to logger
+class ITiglLogger;
+typedef CSharedPtr<ITiglLogger> PTiglLogger;
 
 class CTiglLogging {
 
@@ -101,18 +108,19 @@ class CTiglLogging {
         static CTiglLogging& Instance(void);
         
         // convenience functions that insert the appropriate loggers
-        void LogToFile(const char* filePrefix, bool errorsOnConsole=true);
-        void LogToStream(FILE * fp, bool errorsOnConsole=true);
+        void LogToFile(const char* filePrefix);
+        void LogToStream(FILE * fp);
         void SetLogFileEnding(const char* ending);
         void SetTimeIdInFilenameEnabled(bool enabled);
         void LogToConsole();
+        void SetConsoleVerbosity(TiglLogLevel vlevel);
         
         // allows installing a custom log sink/receiver
         // The logger becomes property of this class
         // Therefore the logger should not be deleted
         // manually.
-        void SetLogger(class ITiglLogger*);
-        class ITiglLogger* GetLogger();
+        void SetLogger(PTiglLogger);
+        PTiglLogger GetLogger();
 
         // Destructor
         ~CTiglLogging(void);
@@ -130,11 +138,16 @@ class CTiglLogging {
         // Assignment operator
         void operator=(const CTiglLogging& )             { /* Do nothing */ }
         
-        class ITiglLogger* _myLogger;
+        PTiglLogger      _myLogger;
         std::string        _fileEnding;
         bool               _timeIdInFilename;
+        TiglLogLevel       _consoleVerbosity;
+        PTiglLogger      _consoleLogger;
 
 };
+
+// get log level string (for testing purposes)
+std::string getLogLevelString(TiglLogLevel level);
 
 } // end namespace tigl
 
