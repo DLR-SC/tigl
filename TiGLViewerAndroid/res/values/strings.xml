@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="hello">Hello World, TabSample!</string>
-    <string name="app_name">Tigl Viewer</string>
-
-	<string-array name = "camera_list" >
-	    <item >Prespective View</item>
-	    <item >Top View</item>
-	    <item >Side View</item>
-	    <item >Front View</item>
-	</string-array>
-
+    <string name="app_name">TiGL Viewer</string>
+    <string name="text_copyright">Copyright&#169; 2007&#8211;2014 German Aerospace Center(DLR/SC)</string>
+    <string name="view">View</string>
+    <string-array name="view_mode">
+        <item>Perspective</item>
+        <item>Top</item>
+        <item>Side</item>
+        <item>Front</item>
+    </string-array>
+    <string name="delete_button">Delete all objects</string>
+    <string name="action_about">About the app</string>
+    <string name="dummy_content">Dummy text</string>
+    <string name="drawer_open">Open drawer</string>
+    <string name="drawer_close">Close drawer</string>
 </resources>

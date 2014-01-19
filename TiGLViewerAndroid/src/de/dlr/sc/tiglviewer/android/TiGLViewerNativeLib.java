@@ -1,4 +1,4 @@
-package dlr.tiglviewer;
+package de.dlr.sc.tiglviewer.android;
 import android.content.res.AssetManager;
 
 
@@ -14,6 +14,7 @@ public class TiGLViewerNativeLib {
     * @param height the current view height
     */
     public static native void       init(int width, int height);
+    public static native void       createScene();
     public static native void       setAssetMgr(AssetManager mgr);
     public static native void       step();
     public static native void       addObjectFromVTK(String filepath);

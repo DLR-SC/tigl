@@ -19,6 +19,11 @@ ResourceManager::ResourceManager()
 osg::ref_ptr<osgText::Font> ResourceManager::OpenFontFile(const char * filename)
 {
     AAssetManager* mgr = OsgMainApp::Instance().getAssetManager();
+    if(!mgr) {
+    	osg::notify(osg::FATAL) << "Asset manager not yet defined. Cannot load font file" << std::endl;
+    	return NULL;
+    }
+
     AAsset * asset = AAssetManager_open(mgr, filename, AASSET_MODE_UNKNOWN);
     std::stringstream str;
     if(asset) {
@@ -28,7 +33,6 @@ osg::ref_ptr<osgText::Font> ResourceManager::OpenFontFile(const char * filename)
         }
         AAsset_close(asset);
     }
-
     osg::ref_ptr<osgText::Font> font = osgText::readRefFontStream(str);
     return font;
 }

@@ -92,8 +92,9 @@ public:
     AAssetManager * getAssetManager();
 
     //Initialization function
-    void initOsgWindow(int x,int y,int width,int height);
+    void initOsgWindow(int x,int y, int width, int height);
     //Draw
+    void createScene();
 
     void draw();
     //Events
@@ -121,9 +122,9 @@ private:
 	//osg::ref_ptr<CrossNode> crossnode2;
 	//osg::ref_ptr<CrossNode> crossnode3;
 	//osg::ref_ptr<CrossNode> crossnode4;
-	osg::ref_ptr<VirtualVisObject> vvo;
+	osg::ref_ptr<VirtualVisObject> _coordinateGrid;
 	osg::ref_ptr<osg::StateSet> _state;
-	osgGA::TrackballManipulator* tm;
+	osg::ref_ptr<osgGA::TrackballManipulator> tm;
 
     float _lodScale;
     unsigned int _prevFrame;
@@ -143,7 +144,7 @@ private:
     std::vector<Model> _vModelsToDelete;
 
    // osgViewer::View* createView(int x, int y, int height, int width , osgViewer::GraphicsWindowEmbedded* _gwe , int id);
-    osg::Node* addCross(osg::ref_ptr<osgViewer::View> view, int x, int y, int w, int h);
+    osg::Node* addCross(osg::ref_ptr<osgViewer::View> view, int x, int y, int size);
     OsgMainApp();
 
 };

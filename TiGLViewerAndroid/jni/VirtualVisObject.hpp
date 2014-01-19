@@ -9,12 +9,10 @@
 class VirtualVisObject : public osg::Group
 {
 public:
-    osg::ref_ptr<osg::Group> main;
     VirtualVisObject()
     {
-        main = new osg::Group();
         setXYGrid(true);
-        setAxes(true);
+        setMainAxesEnabled(true);
     };
 
     void initGeodes();
@@ -29,9 +27,9 @@ public:
     void setXYGrid(bool active, int size=500, int unit=10);
     void setXZGrid(bool active, int size=70, int unit=10);
     void setYZGrid(bool active, int size=70, int unit=10);
-    void setAxes(bool active);
+    void setMainAxesEnabled(bool active);
 
-    osg::Camera* camera;
+    //osg::Camera* camera;
 
 
 private:

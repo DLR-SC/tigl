@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" 
+      xmlns:yourapp="http://schemas.android.com/apk/res-auto">
+    <!-- Search, should appear as action button -->
+    <!-- Settings, should always be in the overflow -->
+    <item android:id="@+id/action_delete"
+          android:title="@string/delete_button"
+          android:icon="@drawable/abc_ic_clear"
+          yourapp:showAsAction="always" />
+    <!-- 
+    <item
+        android:id="@+id/action_settings"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="@string/settings_button"/>
+    -->
+    <item
+        android:id="@+id/action_about"
+        android:showAsAction="never"
+        android:title="@string/action_about"/>
+</menu>

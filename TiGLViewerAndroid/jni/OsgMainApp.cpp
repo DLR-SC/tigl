@@ -33,16 +33,21 @@ void OsgMainApp::init(){
     _initialized = false;
     _clean_scene = false;
     _assetManager = NULL;
+    soleViewer = NULL;
+
+    _notifyHandler = new OsgAndroidNotifyHandler();
+    _notifyHandler->setTag("Osg Viewer");
+    osg::setNotifyHandler(_notifyHandler);
 
 }
 OsgMainApp::~OsgMainApp(){
 }
     
 osg::Node* OsgMainApp::addCross(osg::ref_ptr<osgViewer::View> view,
-                          int x, int y, int w, int h)
+                          int x, int y, int size)
 {
     TiglViewerHUD * HUD = new TiglViewerHUD();
-    HUD->setViewport(y,y,h,h);
+    HUD->setViewport(x,y,size, size);
 
     HUD->setCoordinateCrossEnabled(true);
     HUD->setMainCamera(view->getCamera());
@@ -60,19 +65,22 @@ AAssetManager* OsgMainApp::getAssetManager() {
 
 void OsgMainApp::initOsgWindow(int x,int y,int width,int height)
 {
-    __android_log_write(ANDROID_LOG_ERROR, "OSGANDROID",
-            "Initializing geometry");
+    screenHeight = (float)height;
+    screenWidth  = (float)width;
+    osg::notify(osg::ALWAYS) << "initIsgWindow  called";
 
-    _notifyHandler = new OsgAndroidNotifyHandler();
-    _notifyHandler->setTag("Osg Viewer");
-    osg::setNotifyHandler(_notifyHandler);
+    if(soleViewer) {
+    	// the window changed (resize)
+    	soleViewer->setUpViewerAsEmbeddedInWindow(x,y,width,height);
+    	osg::notify(osg::ALWAYS) << "just resizsing ";
+    	return;
+    }
 
-
-    screenHeight = height * 1.0;
-    screenWidth = width * 1.0;
+    osg::notify(osg::ALWAYS) << "create viewer";
 
     soleViewer = new osgViewer::Viewer();
     soleViewer->setUpViewerAsEmbeddedInWindow(x,y,width,height);
+
     soleViewer->getEventQueue()->setMouseInputRange(x,y,x+width,y+height);
     //soleViewer->getCamera()->setClearColor( osg::Vec4(98/255. * 1.1 , 166/255. * 1.1 , 1.0 , 0.0) );
     soleViewer->getCamera()->setClearColor( osg::Vec4(0,0,0,0) );
@@ -85,21 +93,6 @@ void OsgMainApp::initOsgWindow(int x,int y,int width,int height)
     // cviewer = new osgViewer::CompositeViewer();
     //osgViewer::GraphicsWindowEmbedded* _gwe = new osgViewer::GraphicsWindowEmbedded(x,y,width,height);
 
-    root_1 = new osg::Group();
-
-    // root_2 = new osg::Group();
-    // root_3 = new osg::Group();
-    // root_4 = new osg::Group();
-
-    // cviewer->setThreadingModel(osgViewer::CompositeViewer::SingleThreaded);
-
-    _state = root_1->getOrCreateStateSet();
-
-
-    _state->setMode(GL_LIGHTING, osg::StateAttribute::ON);
-    _state->setMode(GL_DEPTH_TEST, osg::StateAttribute::ON);
-    _state->setMode(GL_CULL_FACE, osg::StateAttribute::ON);
-
     soleViewer->addEventHandler(new osgViewer::StatsHandler);
     soleViewer->addEventHandler(new osgGA::StateSetManipulator(soleViewer->getCamera()->getOrCreateStateSet()));
     soleViewer->addEventHandler(new osgViewer::ThreadingHandler);
@@ -107,32 +100,66 @@ void OsgMainApp::initOsgWindow(int x,int y,int width,int height)
 
     soleViewer->setCameraManipulator(tm);
     soleViewer->realize();
-    osgViewer::Viewer::Views views;
-    soleViewer->getViews(views);
-    soleViewer->setSceneData(root_1.get());
 
-
-    // cviewer->addView(createView(x,height/2,width/2,height/2,_gwe,1));
-    // cviewer->addView(createView(x,y,width/2,height/2,_gwe,2));
-    // cviewer->addView(createView(width/2,y,width/2,height/2,_gwe,4));
-    // cviewer->addView(createView(width/2,height/2,width/2,height/2,_gwe,3));
-
-    root_1->addChild(addCross(views[0],x,y,width/3, height/3));
-
-    vvo = new VirtualVisObject();
-    vvo->setAxes(false);
-    root_1->addChild(vvo->main.get());
-
-    TiglViewerBackground * bg = new TiglViewerBackground;
-    bg->makeGradient(osg::Vec4(0.6, 0.6, 1., 1.));
-    //bg->makeGradient(osg::Vec4(1., 235/255., 163/255., 1.));
-    root_1->addChild(bg);
-
-    // root_2->addChild(vvo->main.get());
-    // root_3->addChild(vvo->main.get());
-    // root_4->addChild(vvo->main.get());
+    createScene();
 
     _initialized = true;
+}
+
+void OsgMainApp::createScene() {
+	osg::notify(osg::ALWAYS) << "createScene called";
+	if(!soleViewer) {
+		osg::notify(osg::FATAL) << "Cannot create scene, no viewer created!!!";
+		return;
+	}
+
+	root_1 = new osg::Group();
+	// root_2 = new osg::Group();
+	// root_3 = new osg::Group();
+	// root_4 = new osg::Group();
+
+	// cviewer->setThreadingModel(osgViewer::CompositeViewer::SingleThreaded);
+
+	_state = root_1->getOrCreateStateSet();
+	_state->setMode(GL_LIGHTING, osg::StateAttribute::ON);
+	_state->setMode(GL_DEPTH_TEST, osg::StateAttribute::ON);
+	_state->setMode(GL_CULL_FACE, osg::StateAttribute::ON);
+
+
+	// cviewer->addView(createView(x,height/2,width/2,height/2,_gwe,1));
+	// cviewer->addView(createView(x,y,width/2,height/2,_gwe,2));
+	// cviewer->addView(createView(width/2,y,width/2,height/2,_gwe,4));
+	// cviewer->addView(createView(width/2,height/2,width/2,height/2,_gwe,3));
+
+
+	osgViewer::Viewer::Views views;
+	soleViewer->getViews(views);
+	osgViewer::ViewerBase::Contexts contexts;
+	soleViewer->getContexts(contexts);
+	if(contexts.size() > 0) {
+		osg::notify(osg::ALWAYS) << "Number of contexts: " << contexts.size();
+		const osg::GraphicsContext::Traits* t = contexts[0]->getTraits();
+		int size = t->width > t->height ? t->height : t->width;
+		size /= 3;
+		root_1->addChild(addCross(views[0],t->x,t->y,size));
+	}
+	else {
+		root_1->addChild(addCross(views[0],0,0,40));
+	}
+
+	_coordinateGrid = new VirtualVisObject();
+	_coordinateGrid->setMainAxesEnabled(false);
+	root_1->addChild(_coordinateGrid);
+	// root_2->addChild(vvo->main.get());
+	// root_3->addChild(vvo->main.get());
+	// root_4->addChild(vvo->main.get());
+
+	// add background as gradient
+	osg::ref_ptr<TiglViewerBackground>  bg = new TiglViewerBackground;
+	bg->makeGradient(osg::Vec4(0.6, 0.6, 1., 1.));
+	root_1->addChild(bg);
+
+	soleViewer->setSceneData(root_1.get());
 }
 
 /*

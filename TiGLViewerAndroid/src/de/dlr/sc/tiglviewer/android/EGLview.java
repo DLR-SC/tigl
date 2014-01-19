@@ -1,5 +1,5 @@
 
-package dlr.tiglviewer;
+package de.dlr.sc.tiglviewer.android;
 /*
  * Copyright (C) 2008 The Android Open Source Project
  *
@@ -26,6 +26,8 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.egl.EGLContext;
 import javax.microedition.khronos.egl.EGLDisplay;
 import javax.microedition.khronos.opengles.GL10;
+
+
 /**
  * A simple GLSurfaceView sub-class that demonstrate how to perform
  * OpenGL ES 1.0 rendering into a GL Surface. Note the following important
@@ -46,15 +48,15 @@ import javax.microedition.khronos.opengles.GL10;
  */
 public class EGLview extends GLSurfaceView {
     private static String TAG = "EGLview";
-    private static final boolean DEBUG = false;
+    private static final boolean DEBUG = true;
     
     public EGLview(Context context) {
         super(context);
-        init(false, 16, 8);
+        init(true, 24, 8);
     }
     public EGLview(Context context, AttributeSet attrs) {
         super(context,attrs);
-        init(false, 16, 8);
+        init(true, 24, 8);
     }
     
     

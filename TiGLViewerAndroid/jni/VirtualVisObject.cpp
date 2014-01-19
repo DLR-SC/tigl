@@ -10,9 +10,9 @@ void VirtualVisObject::setXYGrid(bool active, int size, int unit)
     if(!xyGeode) initXYGeode(size, unit);
 
     if(active)
-        main->addChild(xyGeode.get());
+        addChild(xyGeode.get());
     else
-        main->removeChild(xyGeode.get());
+        removeChild(xyGeode.get());
 
     xy = active;
 }
@@ -22,9 +22,9 @@ void VirtualVisObject::setXZGrid(bool active, int size, int unit)
     if(!xzGeode) initXZGeode(size, unit);
 
     if(active)
-        main->addChild(xzGeode.get());
+        addChild(xzGeode.get());
     else
-        main->removeChild(xzGeode.get());
+        removeChild(xzGeode.get());
 
     xz = active;
 }
@@ -35,22 +35,22 @@ void VirtualVisObject::setYZGrid(bool active, int size, int unit)
     if(!yzGeode) initYZGeode(size, unit);
 
     if(active)
-        main->addChild(yzGeode.get());
+        addChild(yzGeode.get());
     else
-        main->removeChild(yzGeode.get());
+        removeChild(yzGeode.get());
 
     yz=active;
 }
 
 
-void VirtualVisObject::setAxes(bool active)
+void VirtualVisObject::setMainAxesEnabled(bool active)
 {
     if(!axesGeode) initAxesGeode();
 
     if(active)
-        main->addChild(axesGeode.get());
+        addChild(axesGeode.get());
     else
-        main->removeChild(axesGeode.get());
+        removeChild(axesGeode.get());
 
     axes = active;
 }
