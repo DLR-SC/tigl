@@ -39,6 +39,7 @@
 #include "TopoDS_Wire.hxx"
 #include "Geom_BSplineSurface.hxx"
 #include "CCPACSMaterial.h"
+#include "CCPACSControlSurfaces.h"
 
 namespace tigl {
 
@@ -76,6 +77,9 @@ namespace tigl {
 
         // Gets the surface area of this segment
         double GetSurfaceArea();
+
+        // gets the controlSurfaces
+        CCPACSControlSurfaces& getControlSurfaces();
 
         // Gets the fromElementUID of this segment
         const std::string & GetFromElementUID(void) const;
@@ -150,6 +154,7 @@ namespace tigl {
         Handle(Geom_Surface) lowerSurface;
         bool                 surfacesAreValid;
         CCPACSWingCSStructure structure;
+        CCPACSControlSurfaces controlSurfaces;
 
     };
 

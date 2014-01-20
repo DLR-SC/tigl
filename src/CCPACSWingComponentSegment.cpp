@@ -28,6 +28,7 @@
 #include <algorithm>
 #include <string>
 
+#include "CCPACSControlSurfaces.h"
 #include "CCPACSWingComponentSegment.h"
 #include "CCPACSWing.h"
 #include "CCPACSWingSegment.h"
@@ -162,6 +163,14 @@ namespace tigl {
         if (tixiCheckElement(tixiHandle, elementPath) == SUCCESS){
             structure.ReadCPACS(tixiHandle, elementPath);
         }
+
+        // read controlSurfaces
+        tempString = segmentXPath + "/controlSurfaces";
+        elementPath = const_cast<char*>(tempString.c_str());
+        if (tixiCheckElement(tixiHandle,elementPath) == SUCCESS) {
+            controlSurfaces.ReadCPACS(tixiHandle, elementPath);
+        }
+
 
         Update();
     }
@@ -626,6 +635,11 @@ namespace tigl {
     {
         GetLoft();
         return( mySurfaceArea );
+    }
+
+    CCPACSControlSurfaces& CCPACSWingComponentSegment::getControlSurfaces()
+    {
+        return controlSurfaces;
     }
 
 //    // Returns an upper or lower point on the segment surface in
