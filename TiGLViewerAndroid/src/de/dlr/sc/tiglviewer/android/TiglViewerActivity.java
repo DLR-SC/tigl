@@ -68,7 +68,7 @@ public class TiglViewerActivity extends ActionBarActivity implements OnNavigatio
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, 
                              WindowManager.LayoutParams.FLAG_FULLSCREEN);
         
-        supportRequestWindowFeature(Window.FEATURE_PROGRESS);
+        //supportRequestWindowFeature(Window.FEATURE_PROGRESS);
         supportRequestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setContentView(R.layout.activity_main);
 
