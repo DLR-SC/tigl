@@ -143,6 +143,8 @@ DISABLE_INDEX          = NO
 ENUM_VALUES_PER_LINE   = 4
 GENERATE_TREEVIEW      = YES
 TREEVIEW_WIDTH         = 250
+SEARCHENGINE           = YES
+SERVER_BASED_SEARCH    = NO
 #---------------------------------------------------------------------------
 # configuration options related to the LaTeX output
 #---------------------------------------------------------------------------
@@ -240,7 +242,3 @@ DOT_TRANSPARENT        = NO
 DOT_MULTI_TARGETS      = NO
 GENERATE_LEGEND        = YES
 DOT_CLEANUP            = YES
-#---------------------------------------------------------------------------
-# Configuration::additions related to the search engine   
-#---------------------------------------------------------------------------
-SEARCHENGINE           = NO

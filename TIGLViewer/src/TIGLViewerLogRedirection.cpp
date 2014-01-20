@@ -21,10 +21,18 @@
 #include <QString>
 #include <QApplication>
 
-TIGLViewerLogRedirection::TIGLViewerLogRedirection() {
+TIGLViewerLogRedirection::TIGLViewerLogRedirection() : verbosity(TILOG_DEBUG4) {
 }
 
-void TIGLViewerLogRedirection::LogMessage(TiglLogLevel, const char * message) {
-    emit newMessage(QString(message));
-    QCoreApplication::processEvents();
+void TIGLViewerLogRedirection::LogMessage(TiglLogLevel level, const char * message) {
+    if (level<=verbosity)
+    {
+        emit newMessage(QString(message));
+        QCoreApplication::processEvents();
+    }
+}
+
+void TIGLViewerLogRedirection::SetVerbosity(TiglLogLevel vlevel)
+{
+    verbosity=vlevel;
 }

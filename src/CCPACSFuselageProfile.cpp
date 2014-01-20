@@ -141,20 +141,9 @@ namespace tigl {
             }
             else // read in vector based point list
             {
-                // create xXpath
-                std::ostringstream xpath;
-                xpath << elementPath.c_str() << "/x";
-                std::string xXpath = xpath.str();
-
-                // create yXpath
-                std::ostringstream ypath;
-                ypath << elementPath.c_str() << "/y";
-                std::string yXpath = ypath.str();
-
-                // create zXpath
-                std::ostringstream zpath;
-                zpath << elementPath.c_str() << "/z";
-                std::string zXpath = zpath.str();
+                std::string xXpath = elementPath + "/x";
+                std::string yXpath = elementPath + "/y";
+                std::string zXpath = elementPath + "/z";
 
                 // check the number of elements in all three vectors. It has to be the same, otherwise cancel
                 int countX;

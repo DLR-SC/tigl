@@ -1619,8 +1619,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetNumberOfSegments(Ti
             tigl::CCPACSWing& wing = config.GetWing(iwing);
             try {
                 tigl::CCPACSWingComponentSegment & compSeg = (tigl::CCPACSWingComponentSegment &) wing.GetComponentSegment(componentSegmentUID);
-                std::vector<int> list = compSeg.GetSegmentList(compSeg.GetFromElementUID(), compSeg.GetToElementUID());
-                *nsegments = list.size();
+                tigl::SegmentList& segments = compSeg.GetSegmentList();
+                *nsegments = segments.size();
                 return TIGL_SUCCESS;
             }
             catch (tigl::CTiglError& err){
@@ -1676,12 +1676,12 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetSegmentUID(TiglCPAC
             tigl::CCPACSWing& wing = config.GetWing(iwing);
             try {
                 tigl::CCPACSWingComponentSegment & compSeg = (tigl::CCPACSWingComponentSegment &) wing.GetComponentSegment(componentSegmentUID);
-                std::vector<int> list = compSeg.GetSegmentList(compSeg.GetFromElementUID(), compSeg.GetToElementUID());
-                if(segmentIndex < 1 || segmentIndex > (int) list.size()){
+                tigl::SegmentList& segments = compSeg.GetSegmentList();
+                if(segmentIndex < 1 || segmentIndex > (int) segments.size()){
                     LOG(ERROR) << "Error: Invalid segment index in tiglWingComponentSegmentGetSegmentUID" << std::endl;
                     return TIGL_INDEX_ERROR;
                 }
-                *segmentUID = const_cast<char*>(wing.GetSegment(list[segmentIndex-1]).GetUID().c_str());
+                *segmentUID = const_cast<char*>(segments[segmentIndex-1]->GetUID().c_str());
                 
                 return TIGL_SUCCESS;
             }
@@ -4119,19 +4119,26 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSegmentSurfaceArea(TiglCPACSCon
 
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetReferenceArea(TiglCPACSConfigurationHandle cpacsHandle, int wingIndex,
+                                                           TiglSymmetryAxis symPlane,
                                                            double *referenceAreaPtr)
 {
     if (wingIndex < 1) {
-        LOG(ERROR) << "Error: Wing index index is less than zero ";
-        LOG(ERROR) << "in function call to tiglWingGetReferenceArea." << std::endl;
+        LOG(ERROR) << "Error: Wing index index is less than zero "
+                   << "in function call to tiglWingGetReferenceArea.";
         return TIGL_INDEX_ERROR;
+    }
+
+    if (symPlane < TIGL_NO_SYMMETRY || symPlane > TIGL_Y_Z_PLANE) {
+        LOG(ERROR) << "Error: invalid symmetry "
+                   << "in function call to tiglWingGetReferenceArea.";
+        return TIGL_ERROR;
     }
 
     try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSWing& wing = config.GetWing(wingIndex);
-        *referenceAreaPtr = wing.GetReferenceArea();
+        *referenceAreaPtr = wing.GetReferenceArea(symPlane);
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
@@ -4144,6 +4151,56 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetReferenceArea(TiglCPACSConfiguratio
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglWingGetReferenceArea!" << std::endl;
+        return TIGL_ERROR;
+    }
+}
+
+
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetMAC(TiglCPACSConfigurationHandle cpacsHandle, const char* wingUID, double *mac_chord, double *mac_x, double *mac_y, double *mac_z){
+
+
+    if (wingUID == NULL) {
+        LOG(ERROR) << "Argument wingUID is NULL in tiglWingGetMAC!";
+        return TIGL_NULL_POINTER;
+    }
+
+    if (!mac_chord) {
+        LOG(ERROR) << "Argument mac_chord is NULL in tiglWingGetMAC!";
+        return TIGL_NULL_POINTER;
+    }
+
+    if (!mac_x) {
+        LOG(ERROR) << "Argument mac_x is NULL in tiglWingGetMAC!";
+        return TIGL_NULL_POINTER;
+    }
+
+    if (!mac_y) {
+        LOG(ERROR) << "Argument mac_y is NULL in tiglWingGetMAC!";
+        return TIGL_NULL_POINTER;
+    }
+
+    if (!mac_z) {
+        LOG(ERROR) << "Argument mac_z is NULL in tiglWingGetMAC!";
+        return TIGL_NULL_POINTER;
+    }
+
+    try {
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+        tigl::CCPACSWing& wing = config.GetWing(wingUID);
+        wing.GetWingMAC( *mac_chord,  *mac_x,  *mac_y,  *mac_z);
+        return TIGL_SUCCESS;
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglConfigurationGetLength!" << std::endl;
         return TIGL_ERROR;
     }
 }
@@ -4367,6 +4424,19 @@ TiglReturnCode tiglLogToFileDisabled() {
 
     try {
         logger.LogToConsole();
+    }
+    catch (tigl::CTiglError& err) {
+        return err.getCode();
+    }
+
+    return TIGL_SUCCESS;
+}
+
+TiglReturnCode tiglLogSetVerbosity(TiglLogLevel consoleVerbosity) {
+    tigl::CTiglLogging& logger = tigl::CTiglLogging::Instance();
+
+    try {
+        logger.SetConsoleVerbosity(consoleVerbosity);
     }
     catch (tigl::CTiglError& err) {
         return err.getCode();

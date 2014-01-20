@@ -94,6 +94,40 @@ typedef enum TiglReturnCode TiglReturnCode;
 
 /**
  \ingroup Enums
+ Definition of possible logging levels
+*/
+enum TiglLogLevel {
+    TILOG_SILENT   =0, 
+    TILOG_ERROR    =1, 
+    TILOG_WARNING  =2, 
+    TILOG_INFO     =3, 
+    TILOG_DEBUG    =4,
+    TILOG_DEBUG1   =5,
+    TILOG_DEBUG2   =6,
+    TILOG_DEBUG3   =7,
+    TILOG_DEBUG4   =8
+};
+
+/**
+* @brief Definition of logging levels
+*
+* Possible values are:
+*
+* - TILOG_SILENT
+* - TILOG_ERROR
+* - TILOG_WARNING
+* - TILOG_INFO
+* - TILOG_DEBUG
+* - TILOG_DEBUG1
+* - TILOG_DEBUG2
+* - TILOG_DEBUG3
+* - TILOG_DEBUG4
+*
+*/
+typedef enum TiglLogLevel TiglLogLevel;
+
+/**
+ \ingroup Enums
   Definition of boolean values used in TIGL.
 */
 enum TiglBoolean
@@ -3381,7 +3415,9 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSegmentVolume(TiglCPACSConfigur
 /*@{*/
 
 /**
-* @brief Returns the surface area of the wing.
+* @brief Returns the surface area of the wing. Currently, the area includes also the faces
+* on the wing symmetry plane (in case of a symmetric wing). In coming releases, these faces will
+* not belong anymore to the surface area calculation.
 *
 *
 * <b>Fortran syntax:</b>
@@ -3404,7 +3440,10 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSurfaceArea(TiglCPACSConfigurationH
 
 
 /**
-* @brief Returns the surface area of the fuselage.
+* @brief Returns the surface area of the fuselage. Currently, the area includes also the faces
+* on the fuselage symmetry plane (in case of a symmetric wing). This is in particular a problem
+* for fuselages, where only one half side is defined in CPACS. In future releases, these faces will
+* not belong anymore to the surface area calculation.
 *
 *
 * <b>Fortran syntax:</b>
@@ -3488,11 +3527,9 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSegmentSurfaceArea(TiglCPACSCon
 /**
 * @brief Returns the reference area of the wing.
 *
-* Here, we always take the reference wing area to be that of the trapezoidal portion of the wing projected into the centerline.
-* The leading and trailing edge chord extensions are not included in this definition and for some airplanes, such as Boeing's Blended
-* Wing Body, the difference can be almost a factor of two between the "real" wing area and the "trap area". Some companies use reference
-* wing areas that include portions of the chord extensions, and in some studies, even tail area is included as part of the reference area.
-* For simplicity, we use the trapezoidal area here.
+* The reference area of the wing is calculated by taking account the quadrilateral portions
+* of each wing segment by projecting the wing segments into the plane defined by the user.
+* If projection should be avoided, use TIGL_NO_SYMMETRY as symPlane argument.
 *
 * <b>Fortran syntax:</b>
 *
@@ -3501,6 +3538,12 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSegmentSurfaceArea(TiglCPACSCon
 *
 * @param[in]  cpacsHandle       Handle for the CPACS configuration
 * @param[in]  wingIndex         Index of the Wing to calculate the area, starting at 1
+* @param[in]  symPlane          Plane on which the wing is projected for calculating the refarea. Values can be:
+*                                  - TIGL_NO_SYMMETRY, the wing is not projected but its true 3D area is calculated
+*                                  - TIGL_X_Y_PLANE, the wing is projected onto the x-y plane (use for e.g. main wings and HTPs)
+*                                  - TIGL_X_Z_PLANE, the wing is projected onto the x-z plane (use for e.g. VTPs)
+*                                  - TIGL_Y_Z_PLANE, the wing is projected onto the y-z plane
+*
 * @param[out] referenceAreaPtr  The refence area of the wing
 *
 * @return
@@ -3509,9 +3552,9 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSegmentSurfaceArea(TiglCPACSCon
 *   - TIGL_INDEX_ERROR if wingIndex is less or equal zero
 *   - TIGL_ERROR if some other error occurred
 */
-TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetReferenceArea(TiglCPACSConfigurationHandle cpacsHandle, int wingIndex,
-                                                                                double *referenceAreaPtr);
-
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetReferenceArea(TiglCPACSConfigurationHandle cpacsHandle,
+                                                           int wingIndex, TiglSymmetryAxis symPlane,
+                                                           double *referenceAreaPtr);
 
 /**
 * @brief Returns the wetted area of the wing.
@@ -3636,6 +3679,21 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglLogSetFileEnding(const char* ending);
 */
 TIGL_COMMON_EXPORT TiglReturnCode tiglLogSetTimeInFilenameEnabled(TiglBoolean enabled);
 
+/**
+* @brief Set the verbosity/logging level for the console logging
+*
+* <b>Fortran syntax:</b>
+*
+* tigl_log_set_verbosity(TiglLogLevel level)
+*
+* @param[in]  logging level
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_ERROR if some error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglLogSetVerbosity(TiglLogLevel level);
+
 /*@}*/ // end of doxygen group
 
 /*@}*/
@@ -3735,6 +3793,16 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglConfigurationGetLength(TiglCPACSConfigurat
 * @returns Error code
 */
 TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSpan(TiglCPACSConfigurationHandle cpacsHandle, const char* wingUID, double * pSpan);
+
+
+
+//     This function calculates location of the quarter of mean aerodynamic chord, and gives the chord lenght as well.
+//     It uses the classical method that can be applied to trapozaidal wings. This method is used for each segment.
+//     The values are found by taking into account of sweep and dihedral. But the effect of insidance angle is neglected.
+//     These values should coinside with the values found with tornado tool.
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetMAC(TiglCPACSConfigurationHandle cpacsHandle, const char* wingUID, double *mac_chord, double *mac_x, double *mac_y, double *mac_z);
+
+
 
 /*@}*/ // end of doxygen group
 

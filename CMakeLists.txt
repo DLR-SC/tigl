@@ -11,8 +11,8 @@ endif()
 
 project (TIGL)
 set(TIGL_VERSION_MAJOR 2)
-set(TIGL_VERSION_MINOR 0)
-set(TIGL_VERSION_PATCH 7)
+set(TIGL_VERSION_MINOR 1)
+set(TIGL_VERSION_PATCH 0)
 set(TIGL_VERSION "${TIGL_VERSION_MAJOR}.${TIGL_VERSION_MINOR}.${TIGL_VERSION_PATCH}")
 
 set(TIGL_ADD_INCLUDE_PATH "" CACHE PATH "Additional include path for package search")
@@ -65,7 +65,7 @@ else()
 endif()
 
 find_package( OpenCASCADE REQUIRED COMPONENTS ${OCC_LIBS})
-find_package( TIXI 2.0.4 REQUIRED)
+find_package( TIXI 2.1.0 REQUIRED)
 
 OPTION(TIGL_USE_GLOG "Enables advanced logging (requires google glog)" OFF)
 if(TIGL_USE_GLOG)
@@ -74,6 +74,12 @@ if(TIGL_USE_GLOG)
       message(STATUS "Google GLOG not found. Advanced logging disabled.")
     endif()
 endif(TIGL_USE_GLOG)
+
+# check for include files and other functions
+INCLUDE(CheckCXXSourceCompiles)
+SET(SRC1 "#include <memory>\nint main(){\n std::shared_ptr<int> a(new int)\;\n return 0\;\n}\n")
+CHECK_CXX_SOURCE_COMPILES(${SRC1} HAVE_STDSHARED_PTR)
+
 
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/src/tigl_config.h.in ${CMAKE_CURRENT_BINARY_DIR}/src/tigl_config.h)
 
