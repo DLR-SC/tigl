@@ -17,6 +17,14 @@ IF(NOT ANDROID_SDK)
     )
 ENDIF()
 
+IF(NOT ANDROID_SDK)
+    FIND_PATH(ANDROID_SDK tools/android.bat
+        $ENV{ANDROID_SDK_HOME}
+        $ENV{ANDROID_HOME}
+        NO_DEFAULT_PATH
+    )
+ENDIF()
+
 include(FindPackageHandleStandardArgs)
 FIND_PACKAGE_HANDLE_STANDARD_ARGS (AndroidSDK  DEFAULT_MSG   ANDROID_SDK)
 

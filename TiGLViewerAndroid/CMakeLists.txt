@@ -39,23 +39,23 @@ configure_file (
 
 if(NOT WIN32)
     ADD_CUSTOM_COMMAND(
-        OUTPUT    TiGLViewer.apk
+        OUTPUT    build/apk/TiGLViewerAndroid.apk
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
         COMMAND   "${CMAKE_CURRENT_SOURCE_DIR}/gradlew"
         ARGS      "${TASK}" 
     )
     else()
     ADD_CUSTOM_COMMAND(
-        OUTPUT    TiGLViewer.apk
+        OUTPUT    build/apk/TiGLViewerAndroid.apk
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-        COMMAND   "${CMAKE_CURRENT_SOURCE_DIR}/gradle.bat"
+        COMMAND   "${CMAKE_CURRENT_SOURCE_DIR}/gradlew.bat"
         ARGS      "${TASK}" 
     )
 endif()
 
 ADD_CUSTOM_TARGET(
   TiGLViewerApp ALL 
-  DEPENDS TiGLViewer.apk
+  DEPENDS build/apk/TiGLViewerAndroid.apk
 )
 
 message("The TiGLViewer app can now be build using \"make\"")

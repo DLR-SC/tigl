@@ -49,7 +49,11 @@ android {
         def hasNdk = false;
         if (System.env.ANDROID_NDK_HOME != null) {
             hasNdk = true;
-            ndkBuild = new File(System.env.ANDROID_NDK_HOME, 'ndk-build')
+            if (System.properties['os.name'].toLowerCase().contains('windows')) {
+                ndkBuild = new File(System.env.ANDROID_NDK_HOME, 'ndk-build.cmd')
+            } else {
+                ndkBuild = new File(System.env.ANDROID_NDK_HOME, 'ndk-build')
+            }
         }
 
         doFirst {
@@ -70,7 +74,11 @@ android {
         def hasNdk = false;
         if (System.env.ANDROID_NDK_HOME != null) {
             hasNdk = true;
-            ndkBuild = new File(System.env.ANDROID_NDK_HOME, 'ndk-build')
+            if (System.properties['os.name'].toLowerCase().contains('windows')) {
+                ndkBuild = new File(System.env.ANDROID_NDK_HOME, 'ndk-build.cmd')
+            } else {
+                ndkBuild = new File(System.env.ANDROID_NDK_HOME, 'ndk-build')
+            }      
         }
 
         commandLine ndkBuild, "clean", "-j1"
