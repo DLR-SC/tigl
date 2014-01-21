@@ -11,7 +11,7 @@ FIND_PATH(ANDROID_SDK tools/android
 
 IF(NOT ANDROID_SDK)
     FIND_PATH(ANDROID_SDK tools/android
-        $ENV{ANDROID_SDK}
+        $ENV{ANDROID_SDK_HOME}
         $ENV{ANDROID_HOME}
         NO_DEFAULT_PATH
     )

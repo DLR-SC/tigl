@@ -8,3 +8,4 @@
 # For customization when using a Version Control System, please read the
 # header note.
 sdk.dir=@ANDROID_SDK@
+ndk.dir=@ANDROID_NDK@

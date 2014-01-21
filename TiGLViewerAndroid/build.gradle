@@ -14,40 +14,83 @@ repositories {
 }
 
 android {
-        compileSdkVersion 19
-        buildToolsVersion "19.0.0"
-        
-        sourceSets {
-                main {
-                        manifest {
-                                srcFile 'AndroidManifest.xml'
-                        }
-                        java {
-                                srcDir 'src'
-                        }
-                        res {
-                                srcDir 'res'
-                        }
-                        assets {
-                                srcDir 'assets'
-                        }
-                        resources {
-                                srcDir 'src'
-                        }
-                        aidl {
-                                srcDir 'src'
-                        }
-                        
-                        jniLibs.srcDir 'libs'
-                }
-        }
+
+    compileSdkVersion 19
+    buildToolsVersion "19.0.0"
+
+    sourceSets {
+            main {
+                    manifest {
+                            srcFile 'AndroidManifest.xml'
+                    }
+                    java {
+                            srcDir 'src'
+                    }
+                    res {
+                            srcDir 'res'
+                    }
+                    assets {
+                            srcDir 'assets'
+                    }
+                    resources {
+                            srcDir 'src'
+                    }
+                    aidl {
+                            srcDir 'src'
+                    }
+                    
+                    jniLibs.srcDir 'libs'
+            }
+    }
           
-	task ndkBuild(type: Exec) {
-    	commandLine 'ndk-build', '-j', Runtime.runtime.availableProcessors()
-	}
+    // the defines how to trigger ndk-build to create tiglviewer-native.so
+    task ndkBuild(type: Exec) {
+        def ndkBuild;
+        def hasNdk = false;
+        if (System.env.ANDROID_NDK_HOME != null) {
+            hasNdk = true;
+            ndkBuild = new File(System.env.ANDROID_NDK_HOME, 'ndk-build')
+        }
+
+        doFirst {
+            if (!hasNdk) {
+                logger.error('##################')
+                logger.error("Failed NDK build")
+                logger.error('Reason: Reason: ANDROID_NDK_HOME not set.')
+                logger.error('##################')
+            }
+            assert hasNdk : "ANDROID_NDK_HOME not set."
+        }
+
+        commandLine ndkBuild, '-j', Runtime.runtime.availableProcessors()
+    }
+
+    task cleanNative(type: Exec) {
+        def ndkBuild;
+        def hasNdk = false;
+        if (System.env.ANDROID_NDK_HOME != null) {
+            hasNdk = true;
+            ndkBuild = new File(System.env.ANDROID_NDK_HOME, 'ndk-build')
+        }
+
+        commandLine ndkBuild, "clean", "-j1"
+
+        doFirst {
+            if (!hasNdk) {
+                logger.error('##################')
+                logger.error("Failed NDK build")
+                logger.error('Reason: Reason: ANDROID_NDK_HOME not set.')
+                logger.error('##################')
+            }
+            assert hasNdk : "ANDROID_NDK_HOME not set."
+        }
+    }
+
     tasks.withType(Compile) {
         compileTask -> compileTask.dependsOn ndkBuild
     }
+
+    clean.dependsOn 'cleanNative'
 }
 
 dependencies {

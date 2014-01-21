@@ -15,8 +15,10 @@ endif()
 
 IF(CMAKE_BUILD_TYPE MATCHES Debug)
   SET(MODE "debug")
+  SET(TASK "assembleDebug")
 ELSE()
   SET(MODE "release")
+  SET(TASK "assembleRelease")
 ENDIF()
 
 
@@ -35,24 +37,25 @@ configure_file (
   "${CMAKE_CURRENT_SOURCE_DIR}/jni/Application.mk"
 )
 
-ADD_CUSTOM_COMMAND(
-  OUTPUT    tiglviewer-native
-  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-  COMMAND   "${ANDROID_NDK}/ndk-build"
-  ARGS      -j 8 
-)
-
-ADD_CUSTOM_COMMAND(
-  OUTPUT    ${CMAKE_CURRENT_BINARY_DIR}/bin/TiGLViewer-${MODE}.apk
-  DEPENDS   tiglviewer-native
-  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-  COMMAND   "${ANT_EXECUTABLE}"
-  ARGS      "${MODE}" 
-)
+if(NOT WIN32)
+    ADD_CUSTOM_COMMAND(
+        OUTPUT    TiGLViewer.apk
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+        COMMAND   "${CMAKE_CURRENT_SOURCE_DIR}/gradlew"
+        ARGS      "${TASK}" 
+    )
+    else()
+    ADD_CUSTOM_COMMAND(
+        OUTPUT    TiGLViewer.apk
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+        COMMAND   "${CMAKE_CURRENT_SOURCE_DIR}/gradle.bat"
+        ARGS      "${TASK}" 
+    )
+endif()
 
 ADD_CUSTOM_TARGET(
   TiGLViewerApp ALL 
-  DEPENDS bin/TiGLViewer-${MODE}.apk
+  DEPENDS TiGLViewer.apk
 )
 
 message("The TiGLViewer app can now be build using \"make\"")
