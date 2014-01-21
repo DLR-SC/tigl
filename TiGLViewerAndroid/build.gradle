@@ -1,0 +1,56 @@
+buildscript {
+        repositories {
+                mavenCentral()
+        }
+        dependencies {
+                classpath 'com.android.tools.build:gradle:0.7.3+'
+        }
+}
+
+apply plugin: 'android'
+
+repositories {
+    mavenCentral()
+}
+
+android {
+        compileSdkVersion 19
+        buildToolsVersion "19.0.0"
+        
+        sourceSets {
+                main {
+                        manifest {
+                                srcFile 'AndroidManifest.xml'
+                        }
+                        java {
+                                srcDir 'src'
+                        }
+                        res {
+                                srcDir 'res'
+                        }
+                        assets {
+                                srcDir 'assets'
+                        }
+                        resources {
+                                srcDir 'src'
+                        }
+                        aidl {
+                                srcDir 'src'
+                        }
+                        
+                        jniLibs.srcDir 'libs'
+                }
+        }
+          
+	task ndkBuild(type: Exec) {
+    	commandLine 'ndk-build', '-j', Runtime.runtime.availableProcessors()
+	}
+    tasks.withType(Compile) {
+        compileTask -> compileTask.dependsOn ndkBuild
+    }
+}
+
+dependencies {
+    compile 'com.android.support:support-v4:18.0.0'
+    compile 'com.android.support:appcompat-v7:18.0.+'
+}
