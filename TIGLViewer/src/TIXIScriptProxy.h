@@ -29,7 +29,7 @@
 
 #include "tixi.h"
 
-class TIXIScriptProxy :public QObject
+class TIXIScriptProxy : public QObject
 {
     Q_OBJECT
     

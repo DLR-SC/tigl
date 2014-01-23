@@ -23,9 +23,11 @@
 #include "tixi.h"
 #include "tigl_config.h"
 
-namespace tigl {
+namespace tigl
+{
 
-enum TiglFarFieldType {
+enum TiglFarFieldType
+{
     NONE,
     HALF_SPHERE,
     FULL_SPHERE,

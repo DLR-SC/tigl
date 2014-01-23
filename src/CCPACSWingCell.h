@@ -24,7 +24,8 @@
 #include "tixi.h"
 #include "CCPACSMaterial.h"
 
-namespace tigl {
+namespace tigl
+{
 
 class CCPACSWingCell
 {

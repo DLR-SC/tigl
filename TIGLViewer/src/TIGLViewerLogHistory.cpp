@@ -18,22 +18,23 @@
 
 #include "TIGLViewerLogHistory.h"
 
-TIGLViewerLogHistory::TIGLViewerLogHistory() : verbosity(TILOG_DEBUG4) {
-}
+TIGLViewerLogHistory::TIGLViewerLogHistory() : verbosity(TILOG_DEBUG4) {}
 
 
-const TIGLViewerLogHistory::HistoryLogEntry& TIGLViewerLogHistory::GetMessage(unsigned int index) const {
+const TIGLViewerLogHistory::HistoryLogEntry& TIGLViewerLogHistory::GetMessage(unsigned int index) const
+{
     return _history.at(index);
 }
 
 
-unsigned int TIGLViewerLogHistory::GetMessageCount() const {
+unsigned int TIGLViewerLogHistory::GetMessageCount() const
+{
     return _history.size();
 }
 
-void TIGLViewerLogHistory::LogMessage(TiglLogLevel level, const char * message) {
-    if (level<=verbosity)
-    {
+void TIGLViewerLogHistory::LogMessage(TiglLogLevel level, const char * message)
+{
+    if (level<=verbosity) {
         _history.append(HistoryLogEntry(level, message));
     }
 }
@@ -43,7 +44,7 @@ QString TIGLViewerLogHistory::GetAllMessages() const
     QString msgs = "";
     QListIterator<HistoryLogEntry> msgIt(_history);
     msgIt.toBack();
-    while(msgIt.hasPrevious()){
+    while (msgIt.hasPrevious()) {
         const HistoryLogEntry& entry = msgIt.previous();
         msgs += entry.msg+ "\n\n";
     }

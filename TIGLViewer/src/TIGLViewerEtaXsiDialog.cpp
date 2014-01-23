@@ -32,22 +32,25 @@ EtaXsiDialog::~EtaXsiDialog()
     delete ui;
 }
 
-int EtaXsiDialog::getEtaXsi(QWidget *parent, double &eta, double &xsi){
+int EtaXsiDialog::getEtaXsi(QWidget *parent, double &eta, double &xsi)
+{
     EtaXsiDialog dialog(parent);
     dialog.ui->etaSpinBox->setValue(eta);
     dialog.ui->xsiSpinBox->setValue(xsi);
     int ok = dialog.exec();
     
-    if(ok == QDialog::Accepted){
+    if (ok == QDialog::Accepted) {
         eta = dialog.getEta();
         xsi = dialog.getXsi();
     }
     return ok;
 }
 
-double EtaXsiDialog::getEta() const {
+double EtaXsiDialog::getEta() const
+{
     return ui->etaSpinBox->value();
 }
-double EtaXsiDialog::getXsi() const {
+double EtaXsiDialog::getXsi() const
+{
     return ui->xsiSpinBox->value();
 }

@@ -31,45 +31,46 @@
 #include <string>
 #include <vector>
 
-namespace tigl {
+namespace tigl
+{
 
-    class CCPACSWingSectionElements
-    {
-    private:
-        // Typedef for a CCPACSWingSectionElement container to store the profiles of a section.
-        typedef std::vector<CCPACSWingSectionElement*> CCPACSWingSectionElementContainer;
+class CCPACSWingSectionElements
+{
+private:
+    // Typedef for a CCPACSWingSectionElement container to store the profiles of a section.
+    typedef std::vector<CCPACSWingSectionElement*> CCPACSWingSectionElementContainer;
 
-    public:
-        // Constructor
-        CCPACSWingSectionElements(void);
+public:
+    // Constructor
+    CCPACSWingSectionElements(void);
 
-        // Virtual Destructor
-        virtual ~CCPACSWingSectionElements(void);
+    // Virtual Destructor
+    virtual ~CCPACSWingSectionElements(void);
 
-        // Read CPACS section elements
-        void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& sectionXPath);
+    // Read CPACS section elements
+    void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& sectionXPath);
 
-        // Get element count for this section
-        int GetSectionElementCount(void) const;
+    // Get element count for this section
+    int GetSectionElementCount(void) const;
 
-        // Get element for a given index
-        CCPACSWingSectionElement& GetSectionElement(int index) const;
+    // Get element for a given index
+    CCPACSWingSectionElement& GetSectionElement(int index) const;
 
-    protected:
-        // Cleanup routine
-        void Cleanup(void);
+protected:
+    // Cleanup routine
+    void Cleanup(void);
 
-    private:
-        // Copy constructor
-        CCPACSWingSectionElements(const CCPACSWingSectionElements& ) { /* Do nothing */ }
+private:
+    // Copy constructor
+    CCPACSWingSectionElements(const CCPACSWingSectionElements& ) { /* Do nothing */ }
 
-        // Assignment operator
-        void operator=(const CCPACSWingSectionElements& ) { /* Do nothing */ }
+    // Assignment operator
+    void operator=(const CCPACSWingSectionElements& ) { /* Do nothing */ }
 
-    private:
-        CCPACSWingSectionElementContainer elements; /**< Section elements */
+private:
+    CCPACSWingSectionElementContainer elements; /**< Section elements */
 
-    };
+};
 
 } // end namespace tigl
 
