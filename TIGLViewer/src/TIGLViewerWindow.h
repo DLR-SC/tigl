@@ -26,6 +26,7 @@
 
 #include "TIGLViewerContext.h"
 #include "tigl.h"
+#include "CSharedPtr.h"
 
 #include "ui_TIGLViewerWindow.h"
 
@@ -34,6 +35,8 @@ class QLabel;
 class QMenu;
 class QFileSystemWatcher;
 class QShortcut;
+class TIGLViewerLogHistory;
+class TIGLViewerLogRedirection;
 
 class TIGLViewerWindow : public QMainWindow, private Ui::TIGLViewerWindow
 {
@@ -113,8 +116,8 @@ private:
     QString controlFileName;
     QFileSystemWatcher *watcher;
     class QDebugStream * stdoutStream, * errorStream;
-    class TIGLViewerLogHistory* logHistory;
-    class TIGLViewerLogRedirection* logDirect;
+    CSharedPtr<TIGLViewerLogHistory> logHistory;
+    CSharedPtr<TIGLViewerLogRedirection> logDirect;
     class TIGLScriptEngine * scriptEngine;
     class TIGLViewerSettingsDialog * settingsDialog;
     class TIGLViewerSettings * tiglViewerSettings;

@@ -26,8 +26,12 @@ namespace tigl {
 class CTiglConsoleLogger : public ITiglLogger
 {
 public:
+    CTiglConsoleLogger();
     virtual ~CTiglConsoleLogger() {}
     virtual void LogMessage(TiglLogLevel, const char * message);
+    virtual void SetVerbosity(TiglLogLevel);
+private:
+    TiglLogLevel verbosity;
 };
 
 }

@@ -16,7 +16,7 @@ file(GLOB_RECURSE TIGL_SRC
 )
 
 if(MSVC)
-    add_definitions(-D_CRT_SECURE_NO_WARNINGS=1)
+    add_definitions(-D_CRT_SECURE_NO_WARNINGS=1 /wd4355 )
 endif(MSVC)
 
 # tigl dll/so library
@@ -26,6 +26,9 @@ if(GLOG_FOUND)
   include_directories(${GLOG_INCLUDE_DIR})
   target_link_libraries (TIGL ${GLOG_LIBRARIES})
 endif(GLOG_FOUND)
+
+# boost
+include_directories(${PROJECT_SOURCE_DIR}/thirdparty/boost_1_55_0)
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
   add_definitions(-DDEBUG)

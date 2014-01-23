@@ -221,7 +221,7 @@ set (_MATLAB_LIBRARY_NAMES    mex mx mat)
        find_library (
          MATLAB_${_MATLAB_LIB}_LIBRARY
            NAMES "${_MATLAB_LIB}"
-           PATHS "${MATLAB_LIB_DIR}"g
+           PATHS "${MATLAB_LIB_DIR}"
            HINTS ENV LD_LIBRARY_PATH
            DOC   "MATLAB ${_MATLAB_LIB} link library."
            NO_CMAKE_SYSTEM_PATH

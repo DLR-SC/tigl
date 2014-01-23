@@ -38,6 +38,7 @@ public:
 
     virtual ~TIGLViewerLogHistory() {}
     virtual void LogMessage(TiglLogLevel, const char * message);
+    virtual void SetVerbosity(TiglLogLevel);
 
     QString GetAllMessages() const;
     const HistoryLogEntry& GetMessage(unsigned int) const;
@@ -50,6 +51,7 @@ protected:
 
 private:
     QList<HistoryLogEntry> _history;
+    TiglLogLevel verbosity;
 };
 
 #endif // TIGLVIEWERLOGHISTORY_H

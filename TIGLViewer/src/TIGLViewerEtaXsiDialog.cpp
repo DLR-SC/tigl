@@ -34,6 +34,8 @@ EtaXsiDialog::~EtaXsiDialog()
 
 int EtaXsiDialog::getEtaXsi(QWidget *parent, double &eta, double &xsi){
     EtaXsiDialog dialog(parent);
+    dialog.ui->etaSpinBox->setValue(eta);
+    dialog.ui->xsiSpinBox->setValue(xsi);
     int ok = dialog.exec();
     
     if(ok == QDialog::Accepted){

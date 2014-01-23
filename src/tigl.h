@@ -52,6 +52,8 @@ extern "C" {
  \ingroup Enums
  Definition of possible error return codes of some functions.
  */
+
+/* If these values are changed, please also modify tigl_error_strings.h */
 enum TiglReturnCode
 {
     TIGL_SUCCESS             = 0,
@@ -68,23 +70,6 @@ enum TiglReturnCode
     TIGL_WRONG_CPACS_VERSION = 11,
     TIGL_UNINITIALIZED       = 12,
     TIGL_MATH_ERROR          = 13
-};
-
-const static char * TiglErrorStrings[] = { 
-    "TIGL_SUCCESS", 
-    "TIGL_ERROR", 
-    "TIGL_NULL_POINTER" ,
-    "TIGL_NOT_FOUND",
-    "TIGL_XML_ERROR",
-    "TIGL_OPEN_FAILED",
-    "TIGL_CLOSE_FAILED",
-    "TIGL_INDEX_ERROR",
-    "TIGL_STRING_TRUNCATED",
-    "TIGL_WRONG_TIXI_VERSION",
-    "TIGL_UID_ERROR",
-    "TIGL_WRONG_CPACS_VERSION",
-    "TIGL_UNINITIALIZED",
-    "TIGL_MATH_ERROR"
 };
 
 /**
@@ -106,6 +91,40 @@ const static char * TiglErrorStrings[] = {
 *
 */
 typedef enum TiglReturnCode TiglReturnCode;
+
+/**
+ \ingroup Enums
+ Definition of possible logging levels
+*/
+enum TiglLogLevel {
+    TILOG_SILENT   =0, 
+    TILOG_ERROR    =1, 
+    TILOG_WARNING  =2, 
+    TILOG_INFO     =3, 
+    TILOG_DEBUG    =4,
+    TILOG_DEBUG1   =5,
+    TILOG_DEBUG2   =6,
+    TILOG_DEBUG3   =7,
+    TILOG_DEBUG4   =8
+};
+
+/**
+* @brief Definition of logging levels
+*
+* Possible values are:
+*
+* - TILOG_SILENT
+* - TILOG_ERROR
+* - TILOG_WARNING
+* - TILOG_INFO
+* - TILOG_DEBUG
+* - TILOG_DEBUG1
+* - TILOG_DEBUG2
+* - TILOG_DEBUG3
+* - TILOG_DEBUG4
+*
+*/
+typedef enum TiglLogLevel TiglLogLevel;
 
 /**
  \ingroup Enums
@@ -2595,14 +2614,44 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglComponentIntersectionLineCount(TiglCPACSCo
 
 /**
   \defgroup Export Export Functions
-    Functions for export of wings/fuselages.
+            Functions for export of wings/fuselages.
 
 
-VTK-Export: There a various different VTK exports functions in TIGL. All functions starting with 'tiglExportVTK[Fuselage|Wing]...' are exporting
+       # VTK-Export #
+            There a various different VTK exports functions in TIGL. All functions starting with 'tiglExportVTK[Fuselage|Wing]...' are exporting
             a special triangulation with no duplicated points into a VTK file formated in XML (file extension .vtp) with some custom
             informations added to the file.
 
-            The custom metadata is added to an own xml node is looks like the following example:
+            In addition to the triangulated geometry, additional data are written to the VTK file. These data currently include:
+            - uID: The UID of the fuselage or wing component segment on which the triangle exists.
+            - segmentIndex: The segmentIndex of the fuselage or wing component segment on which the triangle exists. Kind of redundant to the UID.
+            - eta/xsi: The parameters in the surface parametrical space of the triangle.
+            - isOnTop: Flag that indicates whether the triangle is on the top of the wing or not. Please see the cpacs documentation how "up"
+                       is defined for wings.
+
+            Please note that at this time these information are only valid for wings!
+
+            There are two ways, how these additional data are attached to the VTK file. The first is the official VTK way to declare additional
+            data for each polygon/triangle. For each data entry, a \<DataArray\> tag is added under the xpath
+            @verbatim
+            /VTKFile/PolyData/Piece/CellData
+            @endverbatim
+
+            Each CellData contains a vector(list) of values, each of them corresponding the data of one triangle. For example the data
+            entry for the wing segment eta coordinates for 4 triangles looks like.
+            @verbatim
+            <DataArray type="Float64" Name="eta" NumberOfComponents="1"
+                format="ascii" RangeMin="0.000000" RangeMax="1.000000">
+                    0.25 0.5 0.75 1.0
+            </DataArray>
+            @endverbatim
+
+            The second way these data are stored is by using the "MetaData" mechanism of VTK. Here, a \<MetaData\> tag is added under the xpath
+            @verbatim
+            /VTKFile/PolyData/Piece/Polys
+            @endverbatim
+
+            A typical exported MetaData tag looks like the following:
             @verbatim
             <MetaData elements="uID segmentIndex eta xsi isOnTop">
               "rootToInnerkink" 1 3.18702 0.551342 0
@@ -2613,14 +2662,7 @@ VTK-Export: There a various different VTK exports functions in TIGL. All functio
             @endverbatim
 
             The 'elements' attribute indicates the number and the names of the additional information tags as a whitespace separated list. In
-            this example you could see 5 information fields with the name:
-            - uID: The UID of the fuselage or wing component segment on which the triangle exists.
-            - segmentIndex: The segmentIndex of the fuselage or wing component segment on which the triangle exists. Kind of redundant to the UID.
-            - eta/xsi: The parameters in the surface parametrical space of the triangle.
-            - isOnTop: Flag that indicates whether the triangle is on the top of the wing or not. Please see the cpacs documentation how "up"
-                       is defined for wings.
-
-            Please note that at this time these information are only valid for wings!
+            this example you could see 5 information fields with the name.
  */
 
 /*@{*/
@@ -2628,6 +2670,8 @@ VTK-Export: There a various different VTK exports functions in TIGL. All functio
 
 /**
 * @brief Exports the geometry of a CPACS configuration to IGES format.
+*
+* To maintain compatibility with CATIA, the file suffix should be ".igs".
 *
 *
 * <b>Fortran syntax:</b>
@@ -2650,6 +2694,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportIGES(TiglCPACSConfigurationHandle cp
 /**
 * @brief Exports the boolean fused geometry of a CPACS configuration to IGES format.
 *
+* To maintain compatibility with CATIA, the file suffix should be ".igs".
 *
 * <b>Fortran syntax:</b>
 *
@@ -2672,6 +2717,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportFusedWingFuselageIGES(TiglCPACSConfi
 * @brief Exports the geometry of a CPACS configuration to IGES format. In this version
 *        structure, names and metadata will also be exported as much as it is possible.
 *
+* To maintain compatibility with CATIA, the file suffix should be ".igs".
 *
 * <b>Fortran syntax:</b>
 *
@@ -3369,7 +3415,9 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSegmentVolume(TiglCPACSConfigur
 /*@{*/
 
 /**
-* @brief Returns the surface area of the wing.
+* @brief Returns the surface area of the wing. Currently, the area includes also the faces
+* on the wing symmetry plane (in case of a symmetric wing). In coming releases, these faces will
+* not belong anymore to the surface area calculation.
 *
 *
 * <b>Fortran syntax:</b>
@@ -3392,7 +3440,10 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSurfaceArea(TiglCPACSConfigurationH
 
 
 /**
-* @brief Returns the surface area of the fuselage.
+* @brief Returns the surface area of the fuselage. Currently, the area includes also the faces
+* on the fuselage symmetry plane (in case of a symmetric wing). This is in particular a problem
+* for fuselages, where only one half side is defined in CPACS. In future releases, these faces will
+* not belong anymore to the surface area calculation.
 *
 *
 * <b>Fortran syntax:</b>
@@ -3476,11 +3527,9 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSegmentSurfaceArea(TiglCPACSCon
 /**
 * @brief Returns the reference area of the wing.
 *
-* Here, we always take the reference wing area to be that of the trapezoidal portion of the wing projected into the centerline.
-* The leading and trailing edge chord extensions are not included in this definition and for some airplanes, such as Boeing's Blended
-* Wing Body, the difference can be almost a factor of two between the "real" wing area and the "trap area". Some companies use reference
-* wing areas that include portions of the chord extensions, and in some studies, even tail area is included as part of the reference area.
-* For simplicity, we use the trapezoidal area here.
+* The reference area of the wing is calculated by taking account the quadrilateral portions
+* of each wing segment by projecting the wing segments into the plane defined by the user.
+* If projection should be avoided, use TIGL_NO_SYMMETRY as symPlane argument.
 *
 * <b>Fortran syntax:</b>
 *
@@ -3489,6 +3538,12 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSegmentSurfaceArea(TiglCPACSCon
 *
 * @param[in]  cpacsHandle       Handle for the CPACS configuration
 * @param[in]  wingIndex         Index of the Wing to calculate the area, starting at 1
+* @param[in]  symPlane          Plane on which the wing is projected for calculating the refarea. Values can be:
+*                                  - TIGL_NO_SYMMETRY, the wing is not projected but its true 3D area is calculated
+*                                  - TIGL_X_Y_PLANE, the wing is projected onto the x-y plane (use for e.g. main wings and HTPs)
+*                                  - TIGL_X_Z_PLANE, the wing is projected onto the x-z plane (use for e.g. VTPs)
+*                                  - TIGL_Y_Z_PLANE, the wing is projected onto the y-z plane
+*
 * @param[out] referenceAreaPtr  The refence area of the wing
 *
 * @return
@@ -3497,9 +3552,9 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSegmentSurfaceArea(TiglCPACSCon
 *   - TIGL_INDEX_ERROR if wingIndex is less or equal zero
 *   - TIGL_ERROR if some other error occurred
 */
-TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetReferenceArea(TiglCPACSConfigurationHandle cpacsHandle, int wingIndex,
-                                                                                double *referenceAreaPtr);
-
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetReferenceArea(TiglCPACSConfigurationHandle cpacsHandle,
+                                                           int wingIndex, TiglSymmetryAxis symPlane,
+                                                           double *referenceAreaPtr);
 
 /**
 * @brief Returns the wetted area of the wing.
@@ -3553,7 +3608,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglLogToFileEnabled(const char* filePrefix);
 
 /**
 * @brief Sets up the tigl logging mechanism to send all log messages into a file. Critical error messages are
-* printed on the standard out (console) as well. In contrast to ::tiglLogToFile, the messages are appended
+* printed on the standard out (console) as well. In contrast to ::tiglLogToFileEnabled, the messages are appended
 * to an already opened file that might be a logging file of the executing program.
 *
 * Typically this function has to be called before opening any cpacs configuration.
@@ -3623,6 +3678,21 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglLogSetFileEnding(const char* ending);
 *   - TIGL_ERROR if some error occurred
 */
 TIGL_COMMON_EXPORT TiglReturnCode tiglLogSetTimeInFilenameEnabled(TiglBoolean enabled);
+
+/**
+* @brief Set the verbosity/logging level for the console logging
+*
+* <b>Fortran syntax:</b>
+*
+* tigl_log_set_verbosity(TiglLogLevel level)
+*
+* @param[in]  logging level
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_ERROR if some error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglLogSetVerbosity(TiglLogLevel level);
 
 /*@}*/ // end of doxygen group
 
@@ -3723,6 +3793,16 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglConfigurationGetLength(TiglCPACSConfigurat
 * @returns Error code
 */
 TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSpan(TiglCPACSConfigurationHandle cpacsHandle, const char* wingUID, double * pSpan);
+
+
+
+//     This function calculates location of the quarter of mean aerodynamic chord, and gives the chord lenght as well.
+//     It uses the classical method that can be applied to trapozaidal wings. This method is used for each segment.
+//     The values are found by taking into account of sweep and dihedral. But the effect of insidance angle is neglected.
+//     These values should coinside with the values found with tornado tool.
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetMAC(TiglCPACSConfigurationHandle cpacsHandle, const char* wingUID, double *mac_chord, double *mac_x, double *mac_y, double *mac_z);
+
+
 
 /*@}*/ // end of doxygen group
 
