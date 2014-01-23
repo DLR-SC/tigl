@@ -24,7 +24,8 @@
 
 #include <string>
 
-namespace tigl {
+namespace tigl
+{
 
 class CCPACSWingCell;
 

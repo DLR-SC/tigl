@@ -26,6 +26,8 @@
 #include "CTiglExportStep.h"
 #include "CCPACSImportExport.h"
 #include "CCPACSConfiguration.h"
+#include "CCPACSFuselageSegment.h"
+#include "CCPACSWingSegment.h"
 
 #include "TopoDS_Shape.hxx"
 #include "STEPControl_Controller.hxx"

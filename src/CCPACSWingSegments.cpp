@@ -29,6 +29,9 @@
 
 #include "CCPACSWingSegments.h"
 
+#include "CCPACSWingSegment.h"
+#include "CTiglError.h"
+
 namespace tigl {
 
     // Constructor

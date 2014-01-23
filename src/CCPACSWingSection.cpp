@@ -27,133 +27,136 @@
 #include "CTiglError.h"
 #include <iostream>
 
-namespace tigl {
+namespace tigl
+{
 
-    // Constructor
-    CCPACSWingSection::CCPACSWingSection()
-    {
-        Cleanup();
+// Constructor
+CCPACSWingSection::CCPACSWingSection()
+{
+    Cleanup();
+}
+
+// Destructor
+CCPACSWingSection::~CCPACSWingSection(void)
+{
+    Cleanup();
+}
+
+// Cleanup routine
+void CCPACSWingSection::Cleanup(void)
+{
+    name = "";
+    uID  = "";
+    transformation.SetIdentity();
+    translation = CTiglPoint(0.0, 0.0, 0.0);
+    scaling     = CTiglPoint(1.0, 1.0, 1.0);
+    rotation    = CTiglPoint(0.0, 0.0, 0.0);
+}
+
+// Build transformation matrix for the section
+void CCPACSWingSection::BuildMatrix(void)
+{
+    transformation.SetIdentity();
+
+    // scale normalized coordinates relative to (0,0,0)
+    transformation.AddScaling(scaling.x, scaling.y, scaling.z);
+
+    // rotate wing profile elements around their local reference points
+    transformation.AddRotationZ(rotation.z);
+    // rotate section by angle of incidence
+    transformation.AddRotationY(rotation.y);
+    // rotate section according to wing profile roll
+    transformation.AddRotationX(rotation.x);
+
+    // move local reference point to (0,0,0)
+    transformation.AddTranslation(translation.x, translation.y, translation.z);
+}
+
+// Update internal section data
+void CCPACSWingSection::Update(void)
+{
+    BuildMatrix();
+}
+
+// Read CPACS section elements
+void CCPACSWingSection::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& sectionXPath)
+{
+    Cleanup();
+
+    char*       elementPath;
+    std::string tempString;
+
+    // Get subelement "name"
+    char* ptrName = NULL;
+    tempString    = sectionXPath + "/name";
+    elementPath   = const_cast<char*>(tempString.c_str());
+    if (tixiGetTextElement(tixiHandle, elementPath, &ptrName) == SUCCESS) {
+        name = ptrName;
     }
 
-    // Destructor
-    CCPACSWingSection::~CCPACSWingSection(void)
-    {
-        Cleanup();
+    // Get attribute "uID"
+    char* ptrUID = NULL;
+    tempString    = sectionXPath;
+    elementPath   = const_cast<char*>(tempString.c_str());
+    if (tixiGetTextAttribute(tixiHandle, elementPath, "uID", &ptrUID) == SUCCESS) {
+        uID = ptrUID;
     }
 
-    // Cleanup routine
-    void CCPACSWingSection::Cleanup(void)
-    {
-        name = "";
-        uID  = "";
-        transformation.SetIdentity();
-        translation = CTiglPoint(0.0, 0.0, 0.0);
-        scaling     = CTiglPoint(1.0, 1.0, 1.0);
-        rotation    = CTiglPoint(0.0, 0.0, 0.0);
-    }
-
-    // Build transformation matrix for the section
-    void CCPACSWingSection::BuildMatrix(void)
-    {
-        transformation.SetIdentity();
-
-        // scale normalized coordinates relative to (0,0,0)
-        transformation.AddScaling(scaling.x, scaling.y, scaling.z);
-
-        // rotate wing profile elements around their local reference points
-        transformation.AddRotationZ(rotation.z);
-        // rotate section by angle of incidence
-        transformation.AddRotationY(rotation.y);
-        // rotate section according to wing profile roll
-        transformation.AddRotationX(rotation.x);
-
-        // move local reference point to (0,0,0)
-        transformation.AddTranslation(translation.x, translation.y, translation.z);
-    }
-
-    // Update internal section data
-    void CCPACSWingSection::Update(void)
-    {
-        BuildMatrix();
-    }
-
-    // Read CPACS section elements
-    void CCPACSWingSection::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& sectionXPath)
-    {
-        Cleanup();
-
-        char*       elementPath;
-        std::string tempString;
-
-        // Get subelement "name"
-        char* ptrName = NULL;
-        tempString    = sectionXPath + "/name";
-        elementPath   = const_cast<char*>(tempString.c_str());
-        if (tixiGetTextElement(tixiHandle, elementPath, &ptrName) == SUCCESS)
-            name          = ptrName;
-
-        // Get attribute "uID"
-        char* ptrUID = NULL;
-        tempString    = sectionXPath;
-        elementPath   = const_cast<char*>(tempString.c_str());
-        if (tixiGetTextAttribute(tixiHandle, elementPath, "uID", &ptrUID) == SUCCESS)
-            uID          = ptrUID;
-
-        // Get subelement "/transformation/translation"
-        tempString  = sectionXPath + "/transformation/translation";
-        elementPath = const_cast<char*>(tempString.c_str());
-        if (tixiCheckElement(tixiHandle, elementPath) == SUCCESS) {
-            if (tixiGetPoint(tixiHandle, elementPath, &(translation.x), &(translation.y), &(translation.z)) != SUCCESS) {
-                throw CTiglError("Error: XML error while reading <translation/> in CCPACSWingSection::ReadCPACS", TIGL_XML_ERROR);
-            }
+    // Get subelement "/transformation/translation"
+    tempString  = sectionXPath + "/transformation/translation";
+    elementPath = const_cast<char*>(tempString.c_str());
+    if (tixiCheckElement(tixiHandle, elementPath) == SUCCESS) {
+        if (tixiGetPoint(tixiHandle, elementPath, &(translation.x), &(translation.y), &(translation.z)) != SUCCESS) {
+            throw CTiglError("Error: XML error while reading <translation/> in CCPACSWingSection::ReadCPACS", TIGL_XML_ERROR);
         }
+    }
 
-        // Get subelement "/transformation/scaling"
-        tempString  = sectionXPath + "/transformation/scaling";
-        elementPath = const_cast<char*>(tempString.c_str());
-        if (tixiCheckElement(tixiHandle, elementPath) == SUCCESS) {
-            if (tixiGetPoint(tixiHandle, elementPath, &(scaling.x), &(scaling.y), &(scaling.z)) != SUCCESS) {
-                throw CTiglError("Error: XML error while reading <scaling/> in CCPACSWingSection::ReadCPACS", TIGL_XML_ERROR);
-            }
+    // Get subelement "/transformation/scaling"
+    tempString  = sectionXPath + "/transformation/scaling";
+    elementPath = const_cast<char*>(tempString.c_str());
+    if (tixiCheckElement(tixiHandle, elementPath) == SUCCESS) {
+        if (tixiGetPoint(tixiHandle, elementPath, &(scaling.x), &(scaling.y), &(scaling.z)) != SUCCESS) {
+            throw CTiglError("Error: XML error while reading <scaling/> in CCPACSWingSection::ReadCPACS", TIGL_XML_ERROR);
         }
+    }
 
-        // Get subelement "/transformation/rotation"
-        tempString  = sectionXPath + "/transformation/rotation";
-        elementPath = const_cast<char*>(tempString.c_str());
-        if (tixiCheckElement(tixiHandle, elementPath) == SUCCESS) {
-            if (tixiGetPoint(tixiHandle, elementPath, &(rotation.x), &(rotation.y), &(rotation.z)) != SUCCESS) {
-                throw CTiglError("Error: XML error while reading <rotation/> in CCPACSWingSection::ReadCPACS", TIGL_XML_ERROR);
-            }
+    // Get subelement "/transformation/rotation"
+    tempString  = sectionXPath + "/transformation/rotation";
+    elementPath = const_cast<char*>(tempString.c_str());
+    if (tixiCheckElement(tixiHandle, elementPath) == SUCCESS) {
+        if (tixiGetPoint(tixiHandle, elementPath, &(rotation.x), &(rotation.y), &(rotation.z)) != SUCCESS) {
+            throw CTiglError("Error: XML error while reading <rotation/> in CCPACSWingSection::ReadCPACS", TIGL_XML_ERROR);
         }
-
-        // Get subelement "elements", which means the section elements
-        elements.ReadCPACS(tixiHandle, sectionXPath);
-
-        Update();
     }
 
-    // Get profile count for this section
-    int CCPACSWingSection::GetSectionElementCount(void) const
-    {
-        return elements.GetSectionElementCount();
-    }
+    // Get subelement "elements", which means the section elements
+    elements.ReadCPACS(tixiHandle, sectionXPath);
 
-    // Get the UID of this WingSection
-    const std::string& CCPACSWingSection::GetUID(void) const
-    {
-        return uID;
-    }
+    Update();
+}
 
-    // Get element for a given index
-    CCPACSWingSectionElement& CCPACSWingSection::GetSectionElement(int index) const
-    {
-        return elements.GetSectionElement(index);
-    }
+// Get profile count for this section
+int CCPACSWingSection::GetSectionElementCount(void) const
+{
+    return elements.GetSectionElementCount();
+}
 
-    // Gets the section transformation
-    CTiglTransformation CCPACSWingSection::GetSectionTransformation(void) const
-    {
-        return transformation;
-    }
+// Get the UID of this WingSection
+const std::string& CCPACSWingSection::GetUID(void) const
+{
+    return uID;
+}
+
+// Get element for a given index
+CCPACSWingSectionElement& CCPACSWingSection::GetSectionElement(int index) const
+{
+    return elements.GetSectionElement(index);
+}
+
+// Gets the section transformation
+CTiglTransformation CCPACSWingSection::GetSectionTransformation(void) const
+{
+    return transformation;
+}
 
 } // end namespace tigl

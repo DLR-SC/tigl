@@ -21,7 +21,8 @@
 
 #include "CCPACSWingShell.h"
 
-namespace tigl {
+namespace tigl
+{
 
 class CCPACSWingCSStructure
 {

@@ -1,3 +1,21 @@
+/* 
+* Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
+*
+* Created: 2012-12-18 Martin Siggel <Martin.Siggel@dlr.de>
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
+
 #include "test.h"
 #include "tigl.h"
 
@@ -10,11 +28,13 @@ using namespace tigl;
 
 #define SQR(x) ((x)*(x))
 
-namespace {
+namespace
+{
     inline double MAX(double a, double b){ return a>b? a : b;}
 }
 
-    class Rosenbrock2d : public tigl::ITiglObjectiveFunction {
+class Rosenbrock2d : public tigl::ITiglObjectiveFunction
+{
 public:
     int getParameterCount() const { return 2; }
 
@@ -27,14 +47,16 @@ public:
 };
 
 
-double Rosenbrock2d::getFunctionValue(const double * x) const{
+double Rosenbrock2d::getFunctionValue(const double * x) const
+{
     const double& x1 = x[0];
     const double& x2 = x[1];
 
     return SQR(1-x1) + 100. * SQR(x2-SQR(x1));
 }
 
-void Rosenbrock2d::getGradient(const double * x, double * dx) const{
+void Rosenbrock2d::getGradient(const double * x, double * dx) const
+{
     const double& x1 = x[0];
     const double& x2 = x[1];
 
@@ -42,7 +64,8 @@ void Rosenbrock2d::getGradient(const double * x, double * dx) const{
     dx[1] = 200. * (x2-SQR(x1));
 }
 
-void Rosenbrock2d::getHessian(const double * x, double * H) const{
+void Rosenbrock2d::getHessian(const double * x, double * H) const
+{
     const double& x1 = x[0];
     const double& x2 = x[1];
 
