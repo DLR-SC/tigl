@@ -18,6 +18,9 @@
 
 #include "test.h"
 #include "math/tiglmathfunctions.h"
+#include<vector>
+
+#include "CTiglPoint.h"
 
 TEST(TiglMath, factorial){
     ASSERT_EQ(1, tigl::factorial(0));
@@ -70,4 +73,76 @@ TEST(TiglMath, BernsteinPoly) {
     ASSERT_NEAR(1.0, tigl::bernstein_poly(4,4,1.), 1e-7);
     
     ASSERT_NEAR(0.375, tigl::bernstein_poly(2,4,0.5), 1e-7);
+}
+
+TEST(TiglMath, QuadrilateralArea) {
+    // set square with side length 3
+    using tigl::CTiglPoint;
+    CTiglPoint A(0,0,0);
+    CTiglPoint B(3,0,0);
+    CTiglPoint C(3,3,0);
+    CTiglPoint D(0,3,0);
+    ASSERT_NEAR(9., tigl::quadrilateral_area(A,B,C,D), 1e-7);
+
+    // rectangle
+    C.y = 1.5;
+    D.y = 1.5;
+    ASSERT_NEAR(4.5, tigl::quadrilateral_area(A,B,C,D), 1e-7);
+
+    // trapezoid
+    A = CTiglPoint(0,0,0);
+    B = CTiglPoint(4,0,0);
+    C = CTiglPoint(3,1,0);
+    D = CTiglPoint(2,1,0);
+    ASSERT_NEAR(2.5, tigl::quadrilateral_area(A,B,C,D), 1e-7);
+
+    // parallelogram
+    A = CTiglPoint(0,0,0);
+    B = CTiglPoint(4,0,0);
+    C = CTiglPoint(5,2,0);
+    D = CTiglPoint(1,2,0);
+    ASSERT_NEAR(8., tigl::quadrilateral_area(A,B,C,D), 1e-7);
+
+    // triangle
+    A = CTiglPoint(0,0,0);
+    B = CTiglPoint(4,0,0);
+    C = CTiglPoint(2,2,0);
+    D = CTiglPoint(0,0,0);
+    ASSERT_NEAR(4., tigl::quadrilateral_area(A,B,C,D), 1e-7);
+}
+
+TEST(TiglMath, CSTCurve) 
+{
+    // Sample coefficients for shape function
+    std::vector<double> Br;
+    Br.push_back(0.4);
+    Br.push_back(1.0);
+    Br.push_back(0.8);
+    Br.push_back(10.2);
+    
+    // Constant sample coefficients for shape function
+    std::vector<double> B1(10,1.0);
+    // Sample exponents for class function
+    double N1=0.1;
+    double N2=0.5;
+
+    // check that shape function is constant for B constant
+    ASSERT_NEAR(1.0, tigl::shape_function(B1, 0.0), 1e-7);
+    ASSERT_NEAR(1.0, tigl::shape_function(B1, 0.5), 1e-7);
+    ASSERT_NEAR(1.0, tigl::shape_function(B1, 1.0), 1e-7);
+
+    // check cst curve at some points
+    ASSERT_NEAR(0.0, tigl::cstcurve(N1, N2, Br, 0.0), 1e-7);
+    ASSERT_NEAR(0.568964089203402, tigl::cstcurve(N1, N2, Br, 0.2), 1e-7);
+    ASSERT_NEAR(2.325867218509732, tigl::cstcurve(N1, N2, Br, 0.75), 1e-7);
+    ASSERT_NEAR(0.0, tigl::cstcurve(N1, N2, Br, 1.0), 1e-7);
+
+    // Sample exponents >1 for derivative 
+    N1=1.1;
+    N2=4.5;
+    // check 1st derivative of cst curve at some points
+    ASSERT_NEAR(0.0, tigl::cstcurve_deriv(N1, N2, Br, 1, 0.0), 1e-7);
+    ASSERT_NEAR(0.0, tigl::cstcurve_deriv(N1, N2, Br, 1, 1.0), 1e-7);
+    // check 1st derivative of cst curve at maximum of cstcurve (found numerically)
+    ASSERT_NEAR(0.0, tigl::cstcurve_deriv(N1, N2, Br, 1, 0.322954559162619), 1e-7);
 }

@@ -11,8 +11,8 @@ endif()
 
 project (TIGL)
 set(TIGL_VERSION_MAJOR 2)
-set(TIGL_VERSION_MINOR 0)
-set(TIGL_VERSION_PATCH 7)
+set(TIGL_VERSION_MINOR 1)
+set(TIGL_VERSION_PATCH 0)
 set(TIGL_VERSION "${TIGL_VERSION_MAJOR}.${TIGL_VERSION_MINOR}.${TIGL_VERSION_PATCH}")
 
 set(TIGL_ADD_INCLUDE_PATH "" CACHE PATH "Additional include path for package search")
@@ -65,7 +65,7 @@ else()
 endif()
 
 find_package( OpenCASCADE 6.6.0 REQUIRED COMPONENTS ${OCC_LIBS})
-find_package( TIXI 2.0.4 REQUIRED)
+find_package( TIXI 2.1.0 REQUIRED)
 
 OPTION(TIGL_USE_GLOG "Enables advanced logging (requires google glog)" OFF)
 if(TIGL_USE_GLOG)
