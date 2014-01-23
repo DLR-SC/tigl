@@ -20,12 +20,24 @@ if(GLOG_FOUND)
   TARGET_LINK_LIBRARIES(${test_BIN} ${GLOG_LIBRARIES})
 endif(GLOG_FOUND)
 
+# boost
+include_directories(${PROJECT_SOURCE_DIR}/thirdparty/boost_1_55_0)
+
 ADD_CUSTOM_TARGET(check ${test_BIN} --gtest_output=xml DEPENDS ${test_BIN} COMMENT "Executing unit tests..." VERBATIM SOURCES ${test_SRCS})
 ADD_CUSTOM_TARGET(test DEPENDS check)
 
 #execute_process(COMMAND ${CMAKE_PROGRAM} -E copy_if_different ${PROJECT_SOURCE_DIR}/tests/TestData tests/Testdata)
 file(COPY ${PROJECT_SOURCE_DIR}/tests/TestData DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/pythonwrapper-tests.py DESTINATION ${PROJECT_BINARY_DIR}/tests)
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/test_logging.py DESTINATION ${PROJECT_BINARY_DIR}/tests)
 
 #create directory to avoid crash in unit tests
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/TestData/export)
+file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/TestData/analysis)
+
+get_filename_component(TIXI_LIB_PATH ${TIXI_LIBRARY} PATH)
+configure_file (
+  "${CMAKE_CURRENT_SOURCE_DIR}/runtests.sh.in"
+  "${CMAKE_CURRENT_BINARY_DIR}/runtests.sh"
+)
+

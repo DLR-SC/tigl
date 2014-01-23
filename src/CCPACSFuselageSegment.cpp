@@ -161,7 +161,6 @@ namespace tigl {
         if (tixiGetTextElement(tixiHandle, elementPath, &ptrCont) == SUCCESS)
         {
             if (strcmp(ptrCont, "C0") == 0) {
-                std::cout << "C0" << std::endl;
                 continuity = C0;
             }
             else if (strcmp(ptrCont, "C1") == 0) {

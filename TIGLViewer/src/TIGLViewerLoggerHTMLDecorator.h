@@ -20,16 +20,18 @@
 #define TIGLVIEWERLOGGERHTMLDECORATOR_H
 
 #include "ITiglLogger.h"
+#include "CSharedPtr.h"
 
 class TIGLViewerLoggerHTMLDecorator : public tigl::ITiglLogger
 {
 public:
-    TIGLViewerLoggerHTMLDecorator(ITiglLogger*);
+    TIGLViewerLoggerHTMLDecorator(CSharedPtr<ITiglLogger>);
     
     virtual ~TIGLViewerLoggerHTMLDecorator();
     virtual void LogMessage(TiglLogLevel, const char * message);
+    virtual void SetVerbosity(TiglLogLevel);
 private:
-    ITiglLogger* _mylogger;
+    CSharedPtr<ITiglLogger> _mylogger;
 };
 
 #endif // TIGLVIEWERLOGGERHTMLDECORATOR_H

@@ -32,11 +32,13 @@ public:
     virtual ~CTiglFileLogger();
 
     virtual void LogMessage(TiglLogLevel, const char * message);
+    virtual void SetVerbosity(TiglLogLevel);
 
 private:
     FILE * logFileStream;
     bool fileOpened;
     class CMutex* mutex;
+    TiglLogLevel verbosity;
 };
 
 } // namespace tigl

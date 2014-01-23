@@ -32,7 +32,6 @@
 
 #include <vector>
 #include <string>
-#include <memory>
 
 #include "tixi.h"
 #include "CTiglPoint.h"
@@ -41,21 +40,21 @@
 #include "TopoDS_Wire.hxx"
 #include "Geom2d_TrimmedCurve.hxx"
 
-namespace tigl {
+#include "CSharedPtr.h"
 
-    class ITiglWireAlgorithm;
 
-    typedef ITiglWireAlgorithm* WireAlgoPointer;
+namespace tigl 
+{
+
+    class ITiglWingProfileAlgo;
+
+    typedef CSharedPtr<ITiglWingProfileAlgo> ProfileAlgoPointer;
 
     class CCPACSWingProfile
     {
 
-    private:
-        // Typedef for a container to store the coordinates of a wing profile element.
-        typedef std::vector<CTiglPoint*> CCPACSCoordinateContainer;
-
     public:
-        // Constructor
+        // Algo
         CCPACSWingProfile(const std::string& aFilename);
 
         // Virtual Destructor
@@ -77,13 +76,11 @@ namespace tigl {
         void Invalidate(void);
 
         // Returns the wing profile wire.
-        TopoDS_Wire GetWire(bool forceClosed = true);
+        TopoDS_Wire GetWire();
         
         // Returns ths wing upper and lower profile wire
         TopoDS_Wire GetUpperWire();
         TopoDS_Wire GetLowerWire();
-        
-        TopoDS_Wire GetFusedUpperLowerWire();
 
         // Returns the leading edge point of the wing profile wire. The leading edge point
         // is already transformed by the wing profile element transformation.
@@ -111,8 +108,8 @@ namespace tigl {
         // point is equal to trailing edge.
         gp_Pnt GetLowerPoint(double xsi);
 
-        // Returns the profile points as read from TIXI.
-        std::vector<CTiglPoint*> GetCoordinateContainer();
+        // get profile algorithm type
+        ProfileAlgoPointer GetProfileAlgo(void) const;
 
     protected:
         // Cleanup routine
@@ -120,12 +117,6 @@ namespace tigl {
 
         // Update the internal state, i.g. recalculates wire and le, te points
         void Update(void);
-
-        // Builds the wing profile wires.
-        void BuildWires(void);
-
-        // Builds leading and trailing edge points
-        void BuildLETEPoints(void);
 
         // Returns an upper or lower point on the wing profile in
         // dependence of parameter xsi, which ranges from 0.0 to 1.0.
@@ -137,6 +128,7 @@ namespace tigl {
         // Helper function to determine the chord line between leading and trailing edge in the profile plane
         Handle(Geom2d_TrimmedCurve) GetChordLine();
 
+
     private:
         // Copy constructor
         CCPACSWingProfile(const CCPACSWingProfile& );
@@ -145,20 +137,12 @@ namespace tigl {
         void operator=(const CCPACSWingProfile& );
 
     private:
-        std::string               ProfileXPath;
-        std::string               name;
-        std::string               description;
-        std::string               uid;
-        CCPACSCoordinateContainer coordinates;    /**< Coordinates of a wing profile element */
+        std::string               ProfileXPath;   /**< CPACS path to wing profile */
+        std::string               name;           /**< CPACS wing profile name */
+        std::string               description;    /**< CPACS wing profile description */
+        std::string               uid;            /**< CPACS wing profile UID */
         bool                      invalidated;    /**< Flag if element is invalid */
-        TopoDS_Wire               wireClosed;     /**< Forced closed wing profile wire */
-        TopoDS_Wire               wireOriginal;   /**< Original wing profile wire */
-        TopoDS_Wire               upperWire;      /**< wire of the upper wing profile */
-        TopoDS_Wire               lowerWire;      /**< wire of the lower wing profile */
-        gp_Pnt                    lePoint;        /**< Leading edge point */
-        gp_Pnt                    tePoint;        /**< Trailing edge point */
-        WireAlgoPointer           profileWireAlgo;
-
+        ProfileAlgoPointer        profileAlgo;    /**< Pointer to wing profile algorithm (pointList, CST, etc.) */
     };
 
 } // end namespace tigl

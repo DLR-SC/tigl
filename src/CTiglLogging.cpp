@@ -40,15 +40,23 @@
 #define BASENAME(MYFILE) (strrchr((MYFILE), '/') ? strrchr((MYFILE), '/') + 1 : (MYFILE))
 #endif
 
+static const char* const LogLevelStrings[] = {"SLT", "ERR", "WRN", "INF", "DBG", "DBG1", "DBG2", "DBG3", "DBG4"};
+
 namespace tigl {
 
 
 CTiglLogging::CTiglLogging(void)
 {
     initLogger();
-    _myLogger = NULL;
     _fileEnding = "log";
     _timeIdInFilename = true;
+    _consoleVerbosity = TILOG_ERROR;
+    // set logger to console logger
+    PTiglLogger consoleLogger(new CTiglConsoleLogger);
+    consoleLogger->SetVerbosity(_consoleVerbosity);
+    SetLogger(consoleLogger);
+    // set _consoleLogger variable
+    _consoleLogger=_myLogger;
 }
 
 CTiglLogging::~CTiglLogging(void)
@@ -56,21 +64,16 @@ CTiglLogging::~CTiglLogging(void)
 #ifdef GLOG_FOUND
     google::ShutdownGoogleLogging();
 #endif
-    if(_myLogger){
-        delete _myLogger;
-    }
 }
 
-ITiglLogger* CTiglLogging::GetLogger() {
+PTiglLogger CTiglLogging::GetLogger() {
     return _myLogger;
 }
 
-void CTiglLogging::SetLogger(ITiglLogger * logger) {
-    if(_myLogger) {
-        delete _myLogger;
-    }
+void CTiglLogging::SetLogger(PTiglLogger logger) {
 
     _myLogger = logger;
+    _consoleLogger.reset();
 #ifdef GLOG_FOUND
     if(!_myLogger){
         return;
@@ -96,7 +99,7 @@ void CTiglLogging::initLogger(void)
 #endif
 }
 
-void CTiglLogging::LogToFile(const char* prefix, bool errorsOnConsole) {
+void CTiglLogging::LogToFile(const char* prefix) {
     time_t rawtime;
     time (&rawtime);
     struct tm *timeinfo = localtime (&rawtime);
@@ -110,24 +113,30 @@ void CTiglLogging::LogToFile(const char* prefix, bool errorsOnConsole) {
     }
     std::string filename = std::string(prefix) + buffer+ "." + _fileEnding;
     
-    CTiglLogSplitter* splitter = new CTiglLogSplitter;
-    splitter->AddLogger(new CTiglFileLogger(filename.c_str()), TILOG_DEBUG4);
-    if(errorsOnConsole) {
-        splitter->AddLogger(new CTiglConsoleLogger, TILOG_ERROR);
-    }
-    
+    // add file and console logger to splitter
+    CSharedPtr<CTiglLogSplitter> splitter (new CTiglLogSplitter);
+    PTiglLogger fileLogger (new CTiglFileLogger(filename.c_str()));
+    splitter->AddLogger(fileLogger);
+    PTiglLogger consoleLogger (new CTiglConsoleLogger);
+    consoleLogger->SetVerbosity(_consoleVerbosity);
+    splitter->AddLogger(consoleLogger);
     SetLogger(splitter);
+    // set _consoleLogger variable
+    _consoleLogger=consoleLogger;
 }
 
-void CTiglLogging::LogToStream(FILE * fp, bool errorsOnConsole) {
+void CTiglLogging::LogToStream(FILE * fp) {
 
-    CTiglLogSplitter* splitter = new CTiglLogSplitter;
-    splitter->AddLogger(new CTiglFileLogger(fp), TILOG_DEBUG4);
-    if(errorsOnConsole) {
-        splitter->AddLogger(new CTiglConsoleLogger, TILOG_ERROR);
-    }
-
+    // add file and console logger to splitter
+    CSharedPtr<CTiglLogSplitter> splitter (new CTiglLogSplitter);
+    PTiglLogger fileLogger (new CTiglFileLogger(fp));
+    splitter->AddLogger(fileLogger);
+    PTiglLogger consoleLogger (new CTiglConsoleLogger);
+    consoleLogger->SetVerbosity(_consoleVerbosity);
+    splitter->AddLogger(consoleLogger);
     SetLogger(splitter);
+    // set _consoleLogger variable
+    _consoleLogger=consoleLogger;
 }
 
 void CTiglLogging::SetLogFileEnding(const char* ending) {
@@ -138,23 +147,36 @@ void CTiglLogging::SetTimeIdInFilenameEnabled(bool enabled) {
     _timeIdInFilename = enabled;
 }
 
+void CTiglLogging::SetConsoleVerbosity(TiglLogLevel vlevel) {
+    _consoleVerbosity=vlevel;
+    if (_consoleLogger)
+    {
+        _consoleLogger->SetVerbosity(_consoleVerbosity);
+    }
+}
+
 void CTiglLogging::LogToConsole() {
 #ifdef GLOG_FOUND
     google::LogToStderr();
 #else
 
-    ITiglLogger * consoleLogger = new CTiglConsoleLogger;
+    PTiglLogger consoleLogger (new CTiglConsoleLogger);
+    consoleLogger->SetVerbosity(_consoleVerbosity);
     SetLogger(consoleLogger);
+    // set _consoleLogger variable
+    _consoleLogger=consoleLogger;
 #endif
 }
 
-
+std::string getLogLevelString(TiglLogLevel level){
+    return LogLevelStrings[level];
+}
 
 #ifndef GLOG_FOUND
 
 DummyLogger_::DummyLogger_(){}
 DummyLogger_::~DummyLogger_(){
-    tigl::ITiglLogger* logger = CTiglLogging::Instance().GetLogger();
+    tigl::PTiglLogger logger = CTiglLogging::Instance().GetLogger();
     std::string msg = stream.str();
     if(msg.size() > 0 && msg[msg.size()-1] == '\n') {
         msg.resize(msg.size() - 1);
@@ -172,9 +194,6 @@ DummyLogger_::~DummyLogger_(){
     }
 }
 
-std::string getLogLevelString(TiglLogLevel level){
-    return LogLevelStrings[level];
-}
 
 std::ostringstream& DummyLogger_::AppendToStream(TiglLogLevel level, const char* file, int line){
     _lastLevel = level;
@@ -197,7 +216,7 @@ std::ostringstream& DummyLogger_::AppendToStream(TiglLogLevel level, const char*
 DebugStream_::DebugStream_(){}
 DebugStream_::~DebugStream_(){
 #ifdef DEBUG
-    tigl::ITiglLogger* logger = CTiglLogging::Instance().GetLogger();
+    tigl::PTiglLogger logger = CTiglLogging::Instance().GetLogger();
     std::string msg = stream.str();
     if(msg.size() > 0 && msg[msg.size()-1] == '\n') {
         msg.resize(msg.size() - 1);
