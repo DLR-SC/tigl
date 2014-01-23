@@ -15,7 +15,7 @@ include $(CLEAR_VARS)
 
 LOCAL_MODULE    := TIGL_static
 	
-TIGL_INCLUDES := $(LOCAL_PATH)/../../src
+TIGL_INCLUDES := $(LOCAL_PATH)/../../src  $(LOCAL_PATH)/../../thirdparty/boost_1_55_0
 LOCAL_STATIC_LIBRARIES := $(OCCLIBS) TIXI_static
 
 

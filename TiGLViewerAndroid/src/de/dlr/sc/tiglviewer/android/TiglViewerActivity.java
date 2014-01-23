@@ -318,7 +318,7 @@ public class TiglViewerActivity extends ActionBarActivity implements OnNavigatio
 					   "Visit the TiGL project page at http://code.google.com/p/tigl/");
 			Linkify.addLinks(tv, Linkify.WEB_URLS);
 			tv = (TextView) findViewById(R.id.tigl_version);
-			tv.setText("v2.0.7");
+			tv.setText("v2.1.0");
 		}
 	}
 
