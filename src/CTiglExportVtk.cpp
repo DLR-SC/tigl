@@ -26,7 +26,7 @@
 // standard libraries
 #include <iostream>
 
-#include "CTiglLogger.h"
+#include "CTiglLogging.h"
 #include "CTiglExportVtk.h"
 #include "CCPACSConfiguration.h"
 #include "CTiglAbstractPhysicalComponent.h"

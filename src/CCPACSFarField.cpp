@@ -1,6 +1,25 @@
+/* 
+* Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
+*
+* Created: 2013-09-03 Martin Siggel <Martin.Siggel@dlr.de>
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
+
 #include "CCPACSFarField.h"
 #include "CTiglError.h"
-#include "CTiglLogger.h"
+#include "CTiglLogging.h"
+#include "CCPACSConfiguration.h"
 
 #include <string>
 #include <cmath>
@@ -31,6 +50,7 @@ void CCPACSFarField::init() {
     fieldType = NONE;
     fieldSize = 0.;
     loft.Nullify();
+    SetUID("FarField");
 }
 
 TiglFarFieldType CCPACSFarField::GetFieldType(){
@@ -96,7 +116,6 @@ TopoDS_Shape CCPACSFarField::BuildLoft(void){
     TopoDS_Shape shape;
     shape.Nullify();
     gp_Pnt center(0,0,0);
-    gp_Ax2 axis(center, gp_Dir(0,0,1));
 
     switch(fieldType){
     case NONE:
@@ -113,7 +132,7 @@ TopoDS_Shape CCPACSFarField::BuildLoft(void){
                                     fieldSize*2., fieldSize, fieldSize*2.).Shape();
         break;
     case HALF_SPHERE:
-        shape = BRepPrimAPI_MakeSphere(axis, fieldSize, M_PI).Shape();
+        shape = BRepPrimAPI_MakeSphere(gp_Ax2(center, gp_Dir(0,1,0)), fieldSize, 0., M_PI_2).Shape();
         break;
     default:
         shape.Nullify();
@@ -129,21 +148,22 @@ TiglGeometricComponentType CCPACSFarField::GetComponentType(void) {
 #ifdef TIGL_USE_XCAF
 // builds data structure for a TDocStd_Application
 // mostly used for export
-TDF_Label CCPACSFarField::ExportDataStructure(Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label)
+TDF_Label CCPACSFarField::ExportDataStructure(CCPACSConfiguration&, Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label)
 {
+    // add faces of current shape
     TopExp_Explorer faceExplorer;
-
-    Handle_XCAFDoc_ShapeTool newAssembly = XCAFDoc_DocumentTool::ShapeTool (label);
-    TDF_Label subLabel = myAssembly->NewShape();
-
-    int i = 0;
+    int iface = 1;
     for (faceExplorer.Init(GetLoft(), TopAbs_FACE); faceExplorer.More(); faceExplorer.Next()) {
-        std::string numName = "Farfield_Face_" + i++;
-        subLabel = newAssembly->AddSubShape (label, faceExplorer.Current());
-        TDataStd_Name::Set(label, numName.c_str());
+        const TopoDS_Face& currentFace = TopoDS::Face(faceExplorer.Current());
+
+        TDF_Label aLabel = myAssembly->AddShape(currentFace, false);
+        std::stringstream stream;
+        stream << GetUID() << "_face" << iface++;
+        TDataStd_Name::Set (aLabel, stream.str().c_str());
+
     }
 
-    return subLabel;
+    return label;
 }
 #endif
 

@@ -33,6 +33,8 @@
 #include "CCPACSWing.h"
 #include "CCPACSWingProfile.h"
 #include "CTiglError.h"
+#include "tiglcommonfunctions.h"
+#include "math/tiglmathfunctions.h"
 
 #include "BRepOffsetAPI_ThruSections.hxx"
 #include "TopExp_Explorer.hxx"
@@ -204,6 +206,17 @@ namespace tigl {
         tempString = segmentXPath + "/toElementUID";
         outerConnection.ReadCPACS(tixiHandle, tempString);
 
+        // check that the profiles are consistent
+        if (GetNumberOfEdges(GetInnerWire()) !=
+            GetNumberOfEdges(GetOuterWire()))
+        {
+            throw CTiglError("The wing profiles " + innerConnection.GetProfile().GetUID() +
+                             " and " + outerConnection.GetProfile().GetUID() +
+                             " in segment " + GetUID() + " are not consistent. "
+                             "All profiles must have either a trailing edge or not. "
+                             "Mixing different profile types is not allowed.");
+        }
+
         Update();
     }
 
@@ -217,14 +230,14 @@ namespace tigl {
     TopoDS_Wire CCPACSWingSegment::GetInnerWire(void)
     {
         CCPACSWingProfile & innerProfile = innerConnection.GetProfile();
-        return transformProfileWire(GetWing().GetTransformation(), innerConnection, innerProfile.GetFusedUpperLowerWire());
+        return transformProfileWire(GetWing().GetTransformation(), innerConnection, innerProfile.GetWire());
     }
 
     // helper function to get the outer transformed chord line wire
     TopoDS_Wire CCPACSWingSegment::GetOuterWire(void)
     {
         CCPACSWingProfile & outerProfile = outerConnection.GetProfile();
-        return transformProfileWire(GetWing().GetTransformation(), outerConnection, outerProfile.GetFusedUpperLowerWire());
+        return transformProfileWire(GetWing().GetTransformation(), outerConnection, outerProfile.GetWire());
     }
     
     // helper function to get the inner closing of the wing segment
@@ -569,50 +582,6 @@ namespace tigl {
         return profilePoint;
     }
 
-    // Returns the inner profile points as read from TIXI. The points are already transformed.
-    std::vector<CTiglPoint*> CCPACSWingSegment::GetRawInnerProfilePoints()
-    {
-        CCPACSWingProfile& innerProfile = innerConnection.GetProfile();
-        std::vector<CTiglPoint*> points = innerProfile.GetCoordinateContainer();
-        std::vector<CTiglPoint*> pointsTransformed;
-        for (std::vector<tigl::CTiglPoint*>::size_type i = 0; i < points.size(); i++) {
-            
-            gp_Pnt pnt = points[i]->Get_gp_Pnt();
-
-            pnt = innerConnection.GetSectionElementTransformation().Transform(pnt);
-            pnt = innerConnection.GetSectionTransformation().Transform(pnt);
-            pnt = innerConnection.GetPositioningTransformation().Transform(pnt);
-
-            CTiglPoint *tiglPoint = new CTiglPoint(pnt.X(), pnt.Y(), pnt.Z());
-            pointsTransformed.push_back(tiglPoint);
-
-        }
-        return pointsTransformed;
-    }
-
-
-    // Returns the outer profile points as read from TIXI. The points are already transformed.
-    std::vector<CTiglPoint*> CCPACSWingSegment::GetRawOuterProfilePoints()
-    {
-        CCPACSWingProfile& outerProfile = outerConnection.GetProfile();
-        std::vector<CTiglPoint*> points = outerProfile.GetCoordinateContainer();
-        std::vector<CTiglPoint*> pointsTransformed;
-        for (std::vector<tigl::CTiglPoint*>::size_type i = 0; i < points.size(); i++) {
-            
-            gp_Pnt pnt = points[i]->Get_gp_Pnt();
-
-            pnt = outerConnection.GetSectionElementTransformation().Transform(pnt);
-            pnt = outerConnection.GetSectionTransformation().Transform(pnt);
-            pnt = outerConnection.GetPositioningTransformation().Transform(pnt);
-
-            CTiglPoint *tiglPoint = new CTiglPoint(pnt.X(), pnt.Y(), pnt.Z());
-            pointsTransformed.push_back(tiglPoint);
-
-        }
-        return pointsTransformed;
-    }
-
-
     // TODO: remove this function if favour of Standard GetEta
     double CCPACSWingSegment::GetEta(gp_Pnt pnt, double xsi)
     {
@@ -763,21 +732,43 @@ namespace tigl {
 
 
 
-    // Returns the reference area of this wing.
-    // Here, we always take the reference wing area to be that of the trapezoidal portion of the wing projected into the centerline.
-    // The leading and trailing edge chord extensions are not included in this definition and for some airplanes, such as Boeing's Blended
-    // Wing Body, the difference can be almost a factor of two between the "real" wing area and the "trap area". Some companies use reference
-    // wing areas that include portions of the chord extensions, and in some studies, even tail area is included as part of the reference area.
-    // For simplicity, we use the trapezoidal area here.
-    double CCPACSWingSegment::GetReferenceArea()
+    // Returns the reference area of the quadrilateral portion of the wing segment
+    // by projecting the wing segment into the plane defined by the user
+    double CCPACSWingSegment::GetReferenceArea(TiglSymmetryAxis symPlane)
     {
-        MakeSurfaces();
+        CTiglPoint innerLepProj(GetChordPoint(0, 0.).XYZ());
+        CTiglPoint outerLepProj(GetChordPoint(0, 1.).XYZ());
+        CTiglPoint innerTepProj(GetChordPoint(1, 0.).XYZ());
+        CTiglPoint outerTepProj(GetChordPoint(1, 1.).XYZ());
 
-        // Calculate surface area
-        GProp_GProps System;
-        BRepGProp::SurfaceProperties(upperShape, System);
-        double refArea = System.Mass();
-        return refArea;
+        // project into plane
+        switch (symPlane) {
+        case TIGL_X_Y_PLANE:
+            innerLepProj.z = 0.;
+            outerLepProj.z = 0.;
+            innerTepProj.z = 0.;
+            outerTepProj.z = 0.;
+            break;
+
+        case TIGL_X_Z_PLANE:
+            innerLepProj.y = 0.;
+            outerLepProj.y = 0.;
+            innerTepProj.y = 0.;
+            outerTepProj.y = 0.;
+            break;
+
+        case TIGL_Y_Z_PLANE:
+            innerLepProj.x = 0.;
+            outerLepProj.x = 0.;
+            innerTepProj.x = 0.;
+            outerTepProj.x = 0.;
+            break;
+        default:
+            // don't project
+            break;
+        }
+
+        return quadrilateral_area(innerTepProj, outerTepProj, outerLepProj, innerLepProj);
     }
 
     // Returns the lower Surface of this Segment
@@ -819,7 +810,7 @@ namespace tigl {
 #ifdef TIGL_USE_XCAF
     // builds data structure for a TDocStd_Application
     // mostly used for export
-    TDF_Label CCPACSWingSegment::ExportDataStructure(Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label)
+    TDF_Label CCPACSWingSegment::ExportDataStructure(CCPACSConfiguration&, Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label)
     {
         TDF_Label subLabel;
         return subLabel;

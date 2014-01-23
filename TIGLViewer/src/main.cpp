@@ -49,8 +49,12 @@ int main(int argc, char *argv[])
     }
 #endif
 
+#if defined __linux__
     // we need to set us locale as we use "." for decimal point
+    putenv("LC_NUMERIC=C");
+#elif defined __APPLE__
     setlocale(LC_NUMERIC, "C");
+#endif
 
     int retval = parseArguments(app.arguments());
     if (retval != 0) {
@@ -61,17 +65,17 @@ int main(int argc, char *argv[])
     TIGLViewerWindow *window = new TIGLViewerWindow();
     window->show();
 
+    if(!PARAMS.controlFile.isEmpty()){
+        if(window->getMyOCC())
+            window->getMyOCC()->repaint();
+        window->setInitialControlFile(PARAMS.controlFile);
+    }
+
     // if a filename is given, open the configuration
     if(!PARAMS.initialFilename.isEmpty()) {
         if(window->getMyOCC())
             window->getMyOCC()->repaint();
         window->setInitialCpacsFileName(PARAMS.initialFilename);
-    }
-
-    if(!PARAMS.controlFile.isEmpty()){
-        if(window->getMyOCC())
-            window->getMyOCC()->repaint();
-        window->setInitialControlFile(PARAMS.controlFile);
     }
 
     retval = app.exec();
@@ -154,10 +158,3 @@ int parseArguments(QStringList argList)
     return 0;
 }
 
-#ifdef WIN32
-#include <windows.h>
-int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow )
-{
-    return main( nCmdShow, &lpCmdLine ); 
-}
-#endif

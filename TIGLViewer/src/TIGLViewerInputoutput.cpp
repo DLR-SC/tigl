@@ -23,6 +23,12 @@
 
 #include "TIGLViewerInternal.h"
 #include "TIGLViewerInputoutput.h"
+#include <BRepBuilderAPI_MakePolygon.hxx>
+#include <BRepBuilderAPI_MakeFace.hxx>
+#include <CTiglPolyDataTools.h>
+#include <TIGLAISTriangulation.h>
+#include <TColStd_HArray1OfInteger.hxx>
+#include <Poly_Triangulation.hxx>
 
 TIGLViewerInputOutput::TIGLViewerInputOutput(void)
 {
@@ -58,6 +64,42 @@ bool TIGLViewerInputOutput::importModel( const QString fileName,
     return true;
 }
 
+bool TIGLViewerInputOutput::importTriangulation( const QString fileName,
+                                    const FileFormat format,
+                                    const Handle_AIS_InteractiveContext& ic )
+{
+    Handle(Poly_Triangulation) triangulation;
+    triangulation.Nullify();
+
+    if (format == FormatMESH) {
+        CHotsoseMeshReader meshReader;
+        tigl::CTiglPolyData mesh;
+        if (meshReader.readFromFile(fileName.toStdString().c_str(), mesh) != TIGL_SUCCESS){
+            return false;
+        }
+        triangulation = tigl::CTiglPolyDataTools::MakePoly_Triangulation(mesh);
+    }
+    else {
+        return false;
+    }
+    Handle(TIGLAISTriangulation) shape = new TIGLAISTriangulation(triangulation);
+    shape->SetMaterial(Graphic3d_NOM_METALIZED);
+    // alpha , blue, green, red
+    Standard_Integer color = (0 << 24)
+                           + (20 << 16)
+                           + (20 << 8)
+                           +  20;
+    Handle(TColStd_HArray1OfInteger) colors = new TColStd_HArray1OfInteger(1,triangulation->NbNodes());
+    for (Standard_Integer i = colors->Lower(); i <= colors->Upper(); ++i) {
+        colors->SetValue(i, color);
+    }
+    shape->SetColors(colors);
+    shape->SetDisplayMode(AIS_Shaded);
+    ic->Display(shape,Standard_False);
+    ic->UpdateCurrentViewer();
+
+    return true;
+}
 Handle_TopTools_HSequenceOfShape TIGLViewerInputOutput::importModel( const FileFormat format, const QString& file )
 {
     Handle_TopTools_HSequenceOfShape shapes;
@@ -78,6 +120,9 @@ Handle_TopTools_HSequenceOfShape TIGLViewerInputOutput::importModel( const FileF
             break;
         case FormatCSFDB:
             shapes = importCSFDB( file );
+            break;
+        case FormatMESH:
+            shapes = importMESH( file );
             break;
         default:
             // To Do - Error message here?
@@ -203,6 +248,23 @@ Handle_TopTools_HSequenceOfShape TIGLViewerInputOutput::importSTL( const QString
         aSequence = new TopTools_HSequenceOfShape();
         aSequence->Append(aShape);
     }
+
+    return aSequence;
+}
+
+Handle_TopTools_HSequenceOfShape TIGLViewerInputOutput::importMESH( const QString& file )
+{
+    Handle_TopTools_HSequenceOfShape aSequence = NULL;
+
+    CHotsoseMeshReader meshReader;
+    tigl::CTiglPolyData mesh;
+    if (meshReader.readFromFile(file.toStdString().c_str(), mesh) != TIGL_SUCCESS){
+        return aSequence;
+    }
+    aSequence = new TopTools_HSequenceOfShape();
+
+    TopoDS_Shape shape = tigl::CTiglPolyDataTools::MakeTopoDS(mesh);
+    aSequence->Append(shape);
 
     return aSequence;
 }

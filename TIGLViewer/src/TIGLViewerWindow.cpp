@@ -33,7 +33,6 @@
 #include <AIS_Shape.hxx>
 #include <AIS_InteractiveContext.hxx>
 #include <Aspect_RectangularGrid.hxx>
-#include <V3d_View.hxx>
 #include <Standard_Version.hxx>
 
 #include "TIGLViewerWindow.h"
@@ -45,6 +44,11 @@
 #include "CommandLineParameters.h"
 #include "TIGLViewerSettings.h"
 #include "TIGLViewerControlFile.h"
+#include "TIGLViewerErrorDialog.h"
+#include "TIGLViewerLogHistory.h"
+#include "TIGLViewerLogRedirection.h"
+#include "CTiglLogSplitter.h"
+#include "TIGLViewerLoggerHTMLDecorator.h"
 
 void ShowOrigin ( Handle_AIS_InteractiveContext theContext );
 void AddVertex  ( double x, double y, double z, Handle_AIS_InteractiveContext theContext );
@@ -139,6 +143,20 @@ TIGLViewerWindow::TIGLViewerWindow()
     errorStream  = new QDebugStream(std::cerr);
     errorStream->setMarkup("<b><font color=\"red\">","</font></b>");
 
+    // insert two loggers, one for the log history and one for the console
+    CSharedPtr<tigl::CTiglLogSplitter> splitter(new tigl::CTiglLogSplitter);
+    logHistory = CSharedPtr<TIGLViewerLogHistory>(new TIGLViewerLogHistory);
+    logHistory->SetVerbosity(TILOG_DEBUG4);
+    splitter->AddLogger(logHistory);
+
+    logDirect = CSharedPtr<TIGLViewerLogRedirection>(new TIGLViewerLogRedirection);
+    logDirect->SetVerbosity(TILOG_WARNING);
+    CSharedPtr<TIGLViewerLoggerHTMLDecorator> logHTMLDecorator(new TIGLViewerLoggerHTMLDecorator(logDirect));
+    splitter->AddLogger(logHTMLDecorator);
+
+    // register logger at tigl
+    tigl::CTiglLogging::Instance().SetLogger(splitter);
+
     QPalette p = console->palette();
     p.setColor(QPalette::Base, Qt::black);
     console->setPalette(p);
@@ -168,7 +186,7 @@ TIGLViewerWindow::~TIGLViewerWindow(){
 
 void TIGLViewerWindow::setInitialCpacsFileName(QString filename)
 {
-    cpacsFileName = filename;
+    currentFile = filename;
     openFile(filename);
 }
 
@@ -182,6 +200,14 @@ void TIGLViewerWindow::setInitialControlFile(QString filename){
         else if(cf.showConsole == CF_FALSE){
             console->setVisible(false);
             showConsoleAction->setChecked(false);
+        }
+        if(cf.showToolbars == CF_TRUE){
+            toolBar->setVisible(true);
+            toolBarView->setVisible(true);
+        }
+        else if(cf.showToolbars == CF_FALSE){
+            toolBar->setVisible(false);
+            toolBarView->setVisible(false);
         }
     }
 
@@ -205,11 +231,12 @@ void TIGLViewerWindow::open()
                                                   tr("Open File"),
                                                 myLastFolder,
                                                 tr( "CPACS (*.xml);;"
-                                                    "Other drawing types (*.brep *.rle *.igs *iges *.stp *.step);;"
+                                                    "Other drawing types (*.brep *.rle *.igs *iges *.stp *.step *.mesh);;"
                                                     "BREP (*.brep *.rle);;"
                                                     "STEP (*.step *.stp);;"
                                                     "IGES (*.iges *.igs);;"
-                                                    "STL  (*.stl)" ) );
+                                                    "STL  (*.stl);;"
+                                                    "Hotsose Mesh (*.mesh)") );
     openFile(fileName);
 }
 
@@ -245,6 +272,7 @@ void TIGLViewerWindow::openFile(const QString& fileName)
 
     TIGLViewerInputOutput::FileFormat format;
     TIGLViewerInputOutput reader;
+    bool triangulation = false;
 
     statusBar()->showMessage(tr("Invoked File|Open"));
 
@@ -260,9 +288,6 @@ void TIGLViewerWindow::openFile(const QString& fileName)
                 return;
 
             updateMenus(cpacsConfiguration->getCpacsHandle());
-            watcher = new QFileSystemWatcher();
-            watcher->addPath(fileInfo.absoluteFilePath());
-            QObject::connect(watcher, SIGNAL(fileChanged(QString)), openTimer, SLOT(start()));
         }
         else {
 
@@ -282,9 +307,21 @@ void TIGLViewerWindow::openFile(const QString& fileName)
             {
                 format = TIGLViewerInputOutput::FormatSTL;
             }
-
-            reader.importModel ( fileInfo.absoluteFilePath(), format, myOCC->getContext() );
+            if (fileType.toLower() == tr("mesh"))
+            {
+                format = TIGLViewerInputOutput::FormatMESH;
+                triangulation = true;
+            }
+            if (triangulation) {
+                reader.importTriangulation( fileInfo.absoluteFilePath(), format, myOCC->getContext() );
+            }
+            else {
+                reader.importModel ( fileInfo.absoluteFilePath(), format, myOCC->getContext() );
+            }
         }
+        watcher = new QFileSystemWatcher();
+        watcher->addPath(fileInfo.absoluteFilePath());
+        QObject::connect(watcher, SIGNAL(fileChanged(QString)), openTimer, SLOT(start()));
     }
     myLastFolder = fileInfo.absolutePath();
     setCurrentFile(fileName);
@@ -293,9 +330,26 @@ void TIGLViewerWindow::openFile(const QString& fileName)
     myOCC->fitAll();
 }
 
+void TIGLViewerWindow::reopenFile(){
+    QString      fileType;
+    QFileInfo    fileInfo;
+
+    fileInfo.setFile(currentFile);
+    fileType = fileInfo.suffix();
+
+    if (fileType.toLower() == tr("xml")){
+        cpacsConfiguration->updateConfiguration();
+    }
+    else {
+        myVC->getContext()->EraseAll(Standard_False);
+        openFile(currentFile);
+    }
+}
+
 void TIGLViewerWindow::setCurrentFile(const QString &fileName)
 {
     setWindowFilePath(fileName);
+    currentFile = fileName;
 
     QSettings settings("DLR SC-VK","TIGLViewer");
     QStringList files = settings.value("recentFileList").toStringList();
@@ -407,9 +461,6 @@ void TIGLViewerWindow::setBackgroundImage()
     QString        fileName;
     QString        fileType;
     QFileInfo    fileInfo;
-
-    TIGLViewerInputOutput::FileFormat format;
-    TIGLViewerInputOutput reader;
 
     statusBar()->showMessage(tr("Invoked File|Load Background Image"));
 
@@ -548,14 +599,11 @@ void TIGLViewerWindow::statusMessage (const QString aMessage)
 
 void TIGLViewerWindow::displayErrorMessage (const QString aMessage, QString aHeader = "TIGL Error")
 {
-    QMessageBox::StandardButton reply;
-    reply = QMessageBox::information(this, aHeader, aMessage);
-    if (reply == QMessageBox::Ok) {
-        // Ok pressed
-    }
-    else {
-        // Escape pressed
-    }
+    TIGLViewerErrorDialog dialog(this);
+    dialog.setMessage(QString("<b>%1</b><br /><br />%2").arg(aHeader).arg(aMessage));
+    dialog.setWindowTitle("Error");
+    dialog.setDetailsText(logHistory->GetAllMessages());
+    dialog.exec();
 }
 
 void TIGLViewerWindow::connectSignals()
@@ -618,7 +666,7 @@ void TIGLViewerWindow::connectSignals()
     connect(consoleDockWidget, SIGNAL(visibilityChanged(bool)), showConsoleAction, SLOT(setChecked(bool)));
     connect(showWireframeAction, SIGNAL(toggled(bool)), myVC, SLOT(wireFrame(bool)));
 
-    connect(openTimer, SIGNAL(timeout()), cpacsConfiguration, SLOT(updateConfiguration()));
+    connect(openTimer, SIGNAL(timeout()), this, SLOT(reopenFile()));
 
     // CPACS Wing Actions
     connect(drawWingProfilesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingProfiles()));
@@ -653,6 +701,7 @@ void TIGLViewerWindow::connectSignals()
     connect(tiglExportIgesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportAsIges()));
     connect(tiglExportStructuredIgesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportAsStructuredIges()));
     connect(tiglExportStepWithMetaDataAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportAsStepWithMetaData()));
+    connect(tiglExportFusedStepAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportAsStepFused()));
     connect(tiglExportStepAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportAsStep()));
     connect(tiglExportMeshedWingSTL, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportMeshedWingSTL()));
     connect(tiglExportMeshedFuselageSTL, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportMeshedFuselageSTL()));
@@ -664,6 +713,8 @@ void TIGLViewerWindow::connectSignals()
     connect(tiglExportMeshedFuselageVTKsimple, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportMeshedFuselageVTKsimple()));
     connect(tiglExportWingColladaAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportWingCollada()));
     connect(tiglExportFuselageColladaAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportFuselageCollada()));
+    connect(tiglExportFuselageBRepAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportFuselageBRep()));
+    connect(tiglExportWingBRepAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportWingBRep()));
 
     // The co-ordinates from the view
     connect( myOCC, SIGNAL(mouseMoved(V3d_Coordinate,V3d_Coordinate,V3d_Coordinate)),
@@ -680,6 +731,8 @@ void TIGLViewerWindow::connectSignals()
 
     connect(stdoutStream, SIGNAL(sendString(QString)), console, SLOT(output(QString)));
     connect(errorStream , SIGNAL(sendString(QString)), console, SLOT(output(QString)));
+
+    connect(logDirect.get(), SIGNAL(newMessage(QString)), console, SLOT(output(QString)));
 
     connect(scriptEngine, SIGNAL(printResults(QString)), console, SLOT(output(QString)));
     connect(console, SIGNAL(onChange(QString)), scriptEngine, SLOT(textChanged(QString)));

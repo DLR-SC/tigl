@@ -86,7 +86,7 @@ namespace tigl {
 #ifdef TIGL_USE_XCAF
         // builds data structure for a TDocStd_Application
         // mostly used for export
-        TDF_Label ExportDataStructure(Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label);
+        TDF_Label ExportDataStructure(CCPACSConfiguration& config, Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label);
 #endif
 
         // Returns the segment for a given index or uid
@@ -126,13 +126,9 @@ namespace tigl {
         // Gets the surfade area of this wing
         double GetSurfaceArea();
 
-        // Returns the reference area of this wing.
-        // Here, we always take the reference wing area to be that of the trapezoidal portion of the wing projected into the centerline.
-        // The leading and trailing edge chord extensions are not included in this definition and for some airplanes, such as Boeing's Blended
-        // Wing Body, the difference can be almost a factor of two between the "real" wing area and the "trap area". Some companies use reference
-        // wing areas that include portions of the chord extensions, and in some studies, even tail area is included as part of the reference area.
-        // For simplicity, we use the trapezoidal area here.
-        double GetReferenceArea();
+        // Returns the reference area of the wing by taking account the drilateral portions
+        // of each wing segment by projecting the wing segments into the plane defined by the user
+        double GetReferenceArea(TiglSymmetryAxis symPlane);
 
         // Returns wetted Area
         double GetWettedArea(TopoDS_Shape parent);
@@ -140,10 +136,13 @@ namespace tigl {
         // Returns the wingspan of the wing
         double GetWingspan(void);
 
+        // Returns the mean aerodynamic chord of the wing
+        void  GetWingMAC(double& mac_chord, double& mac_x, double& mac_y, double& mac_z);
+
         // Calculates the segment coordinates from global (x,y,z) coordinates
         // Returns the segment index of the according segment
         // If x,y,z does not belong to any segment, -1 is returned
-        int GetSegmentEtaXsi(const gp_Pnt& xyz, double& eta, double& xsi);
+        int GetSegmentEtaXsi(const gp_Pnt& xyz, double& eta, double& xsi, bool &onTop);
 
         // Returns the Component Type TIGL_COMPONENT_WING.
         TiglGeometricComponentType GetComponentType(void) {return TIGL_COMPONENT_WING | TIGL_COMPONENT_PHYSICAL;}

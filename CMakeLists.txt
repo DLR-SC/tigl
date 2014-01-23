@@ -11,8 +11,8 @@ endif()
 
 project (TIGL)
 set(TIGL_VERSION_MAJOR 2)
-set(TIGL_VERSION_MINOR 0)
-set(TIGL_VERSION_PATCH 6)
+set(TIGL_VERSION_MINOR 1)
+set(TIGL_VERSION_PATCH 0)
 set(TIGL_VERSION "${TIGL_VERSION_MAJOR}.${TIGL_VERSION_MINOR}.${TIGL_VERSION_PATCH}")
 
 set(TIGL_ADD_INCLUDE_PATH "" CACHE PATH "Additional include path for package search")
@@ -65,11 +65,21 @@ else()
 endif()
 
 find_package( OpenCASCADE REQUIRED COMPONENTS ${OCC_LIBS})
-find_package( TIXI 2.0.4 REQUIRED)
-find_package( GLOG QUIET )
-if(NOT GLOG_FOUND)
-  message(STATUS "Google GLOG not found. Advanced logging disabled.")
-endif()
+find_package( TIXI 2.1.0 REQUIRED)
+
+OPTION(TIGL_USE_GLOG "Enables advanced logging (requires google glog)" OFF)
+if(TIGL_USE_GLOG)
+    find_package( GLOG REQUIRED )
+    if(NOT GLOG_FOUND)
+      message(STATUS "Google GLOG not found. Advanced logging disabled.")
+    endif()
+endif(TIGL_USE_GLOG)
+
+# check for include files and other functions
+INCLUDE(CheckCXXSourceCompiles)
+SET(SRC1 "#include <memory>\nint main(){\n std::shared_ptr<int> a(new int)\;\n return 0\;\n}\n")
+CHECK_CXX_SOURCE_COMPILES(${SRC1} HAVE_STDSHARED_PTR)
+
 
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/src/tigl_config.h.in ${CMAKE_CURRENT_BINARY_DIR}/src/tigl_config.h)
 
@@ -88,14 +98,14 @@ ENDIF()
 
 # visual leak detector, useful for debugging under windows
 if(WIN32)
-find_package( VLD QUIET )
-if(VLD_FOUND)
-	set(TIGL_USE_VLD False CACHE BOOL "Enable Visual Leak Detector.")
-	if(TIGL_USE_VLD)
-		add_definitions(-DHAVE_VLD=1)
-		include_directories(${VLD_INCLUDE_DIRS})
-	endif(TIGL_USE_VLD)
-endif(VLD_FOUND)
+    if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+        OPTION(TIGL_USE_VLD "Enable Visual Leak Detector." OFF)
+        if(TIGL_USE_VLD)
+            find_package( VLD REQUIRED )
+            add_definitions(-DHAVE_VLD=1)
+            include_directories(${VLD_INCLUDE_DIRS})
+        endif(TIGL_USE_VLD)
+    endif(CMAKE_BUILD_TYPE STREQUAL "Debug")
 endif(WIN32)
 
 

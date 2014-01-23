@@ -30,6 +30,7 @@
 #include "tigl.h"
 #include "tigl_version.h"
 #include "tigl_config.h"
+#include "tigl_error_strings.h"
 #include "CTiglError.h"
 #include "CTiglIntersectionCalculation.h"
 #include "CCPACSConfiguration.h"
@@ -42,7 +43,7 @@
 #include "CTiglExportStl.h"
 #include "CTiglExportVtk.h"
 #include "CTiglExportCollada.h"
-#include "CTiglLogger.h"
+#include "CTiglLogging.h"
 
 #include "gp_Pnt.hxx"
 #include "TopoDS_Shape.hxx"
@@ -69,14 +70,13 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglOpenCPACSConfiguration(TixiDocumentHandle 
     atexit(tiglCleanup);
 
     // Initialize logger
-    tigl::CTiglLogger::GetLogger();
-    LOG(INFO) << "TIGL-Logger initialized.";
+    tigl::CTiglLogging::Instance();
 
     std::string configurationUID;
     if(configurationUID_cstr) configurationUID = configurationUID_cstr;
     
     if (cpacsHandlePtr == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for cpacsHandlePtr in function call to tiglOpenCPACSConfiguration." << std::endl;
+        LOG(ERROR) << "Null pointer argument for cpacsHandlePtr in function call to tiglOpenCPACSConfiguration." << std::endl;
         return TIGL_NULL_POINTER;
     }
 
@@ -93,20 +93,21 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglOpenCPACSConfiguration(TixiDocumentHandle 
         if(tixiRet != SUCCESS){
             // NO CPACS Version Information in Header
             if(tixiRet == ELEMENT_PATH_NOT_UNIQUE)
-                LOG(ERROR) << "Warning: Multiple CPACS version entries found. Please verify CPACS file." << std::endl;
+                LOG(ERROR) << "Multiple CPACS version entries found. Please verify CPACS file." << std::endl;
             else if(tixiRet == ELEMENT_NOT_FOUND)
-                LOG(ERROR) << "Warning: No CPACS version information in file header. CPACS file seems to be too old." << std::endl;
+                LOG(ERROR) << "No CPACS version information in file header. CPACS file seems to be too old." << std::endl;
             else
-                LOG(ERROR) << "Error: reading in CPACS version," << std::endl;
+                LOG(ERROR) << "Cannot read CPACS version," << std::endl;
             return TIGL_WRONG_CPACS_VERSION;
         }
         else {
             if (dcpacsVersion < (double) TIGL_VERSION_MAJOR){
-                LOG(ERROR) << "Error: too old CPACS dataset. CPACS version has to be at least " << (double) TIGL_VERSION_MAJOR << "!" << std::endl;
+                LOG(ERROR) << "Too old CPACS dataset. CPACS version has to be at least " << (double) TIGL_VERSION_MAJOR << "!" << std::endl;
                 return TIGL_WRONG_CPACS_VERSION;
             }
-            else if (dcpacsVersion > atof(tiglGetVersion())) 
-                LOG(INFO) << "Warning: CPACS dataset version is higher than TIGL library version!";
+            else if (dcpacsVersion > atof(tiglGetVersion())) {
+                LOG(WARNING) << "CPACS dataset version is higher than TIGL library version!";
+            }
         }
     }
 
@@ -440,6 +441,52 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetLowerPointAtAngle(TiglCPACSConfigur
     catch (...)
     {
         LOG(ERROR) << "Caught an unknown exception in tiglWingGetLowerPointAtAngle" << std::endl;
+        return TIGL_ERROR;
+    }
+}
+
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSegmentEtaXsi(TiglCPACSConfigurationHandle cpacsHandle,
+                         int wingIndex,
+                         double pointX,
+                         double pointY,
+                         double pointZ,
+                         int* segmentIndex,
+                         double* eta,
+                         double* xsi,
+                         int* isOnTop)
+{
+    if (eta == NULL || xsi == NULL || isOnTop == NULL) {
+        LOG(ERROR) << "Error: Null pointer argument for eta, xsi or isOnTop ";
+        LOG(ERROR) << "in function call to tiglWingGetSegmentEtaXsi." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+
+    try {
+        tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration & config = manager.GetConfiguration(cpacsHandle);
+        tigl::CCPACSWing& wing = config.GetWing(wingIndex);
+        bool onTop = false;
+        *segmentIndex = wing.GetSegmentEtaXsi(gp_Pnt(pointX, pointY, pointZ),*eta, *xsi, onTop);
+        if (*segmentIndex <= 0) {
+            return TIGL_NOT_FOUND;
+        }
+        *isOnTop = onTop;
+
+        return TIGL_SUCCESS;
+    }
+    catch (std::exception& ex)
+    {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex)
+    {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...)
+    {
+        LOG(ERROR) << "Caught an unknown exception in tiglWingGetSegmentEtaXsi" << std::endl;
         return TIGL_ERROR;
     }
 }
@@ -1572,8 +1619,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetNumberOfSegments(Ti
             tigl::CCPACSWing& wing = config.GetWing(iwing);
             try {
                 tigl::CCPACSWingComponentSegment & compSeg = (tigl::CCPACSWingComponentSegment &) wing.GetComponentSegment(componentSegmentUID);
-                std::vector<int> list = compSeg.GetSegmentList(compSeg.GetFromElementUID(), compSeg.GetToElementUID());
-                *nsegments = list.size();
+                tigl::SegmentList& segments = compSeg.GetSegmentList();
+                *nsegments = segments.size();
                 return TIGL_SUCCESS;
             }
             catch (tigl::CTiglError& err){
@@ -1629,12 +1676,12 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetSegmentUID(TiglCPAC
             tigl::CCPACSWing& wing = config.GetWing(iwing);
             try {
                 tigl::CCPACSWingComponentSegment & compSeg = (tigl::CCPACSWingComponentSegment &) wing.GetComponentSegment(componentSegmentUID);
-                std::vector<int> list = compSeg.GetSegmentList(compSeg.GetFromElementUID(), compSeg.GetToElementUID());
-                if(segmentIndex < 1 || segmentIndex > (int) list.size()){
+                tigl::SegmentList& segments = compSeg.GetSegmentList();
+                if(segmentIndex < 1 || segmentIndex > (int) segments.size()){
                     LOG(ERROR) << "Error: Invalid segment index in tiglWingComponentSegmentGetSegmentUID" << std::endl;
                     return TIGL_INDEX_ERROR;
                 }
-                *segmentUID = const_cast<char*>(wing.GetSegment(list[segmentIndex-1]).GetUID().c_str());
+                *segmentUID = const_cast<char*>(segments[segmentIndex-1]->GetUID().c_str());
                 
                 return TIGL_SUCCESS;
             }
@@ -2908,6 +2955,36 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportSTEP(TiglCPACSConfigurationHandle cp
     }
 }
 
+TIGL_COMMON_EXPORT TiglReturnCode tiglExportFusedSTEP(TiglCPACSConfigurationHandle cpacsHandle, const char* filenamePtr)
+{
+    if (filenamePtr == 0) {
+        LOG(ERROR) << "Error: Null pointer argument for filenamePtr";
+        LOG(ERROR) << "in function call to tiglExportFusedSTEP." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+
+    try {
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+        tigl::CTiglExportStep exporter(config);
+        std::string filename = filenamePtr;
+        exporter.ExportFusedStep(filename);
+        return TIGL_SUCCESS;
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglExportFusedSTEP!" << std::endl;
+        return TIGL_ERROR;
+    }
+}
+
 TIGL_COMMON_EXPORT TiglReturnCode tiglExportStructuredSTEP(TiglCPACSConfigurationHandle cpacsHandle, const char *filenamePtr)
 {
 #ifdef TIGL_USE_XCAF
@@ -3540,30 +3617,23 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedGeometryVTKSimple(const TiglCP
 /*****************************************************************************************************/
 /*                     Material functions                                                            */
 /*****************************************************************************************************/
-TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetMaterialUIDs(TiglCPACSConfigurationHandle cpacsHandle,
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetMaterialCount(TiglCPACSConfigurationHandle cpacsHandle,
                                                                           const char *componentSegmentUID,
                                                                           TiglStructureType structureType,
                                                                           double eta, double xsi,
-                                                                          TiglStringList* uids, 
-                                                                          int * nuids){
+                                                                          int * materialCount) {
     if (!componentSegmentUID){
         LOG(ERROR) << "Error: Null pointer argument for componentSegmentUID ";
-        LOG(ERROR) << "in function call to tiglWingComponentSegmentGetMaterialUIDs." << std::endl;
+        LOG(ERROR) << "in function call to tiglWingComponentSegmentGetMaterialCount." << std::endl;
         return TIGL_NULL_POINTER;
     }
-    
-    if (!uids){
-        LOG(ERROR) << "Error: Null pointer argument for uids ";
-        LOG(ERROR) << "in function call to tiglWingComponentSegmentGetMaterialUIDs." << std::endl;
+
+    if (!materialCount){
+        LOG(ERROR) << "Error: Null pointer argument for materialCount ";
+        LOG(ERROR) << "in function call to tiglWingComponentSegmentGetMaterialCount." << std::endl;
         return TIGL_NULL_POINTER;
     }
-    
-    if (!nuids){
-        LOG(ERROR) << "Error: Null pointer argument for nuids ";
-        LOG(ERROR) << "in function call to tiglWingComponentSegmentGetMaterialUIDs." << std::endl;
-        return TIGL_NULL_POINTER;
-    }
-    
+
     try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
@@ -3573,17 +3643,12 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetMaterialUIDs(TiglCP
         for(int iwing = 1; iwing <= nwings; ++iwing){
             tigl::CCPACSWing& wing = config.GetWing(iwing);
             try {
-                tigl::CCPACSWingComponentSegment & compSeg 
+                tigl::CCPACSWingComponentSegment & compSeg
                         = (tigl::CCPACSWingComponentSegment&) wing.GetComponentSegment(componentSegmentUID);
                 //now do the calculations
                 tigl::MaterialList list = compSeg.GetMaterials(eta, xsi, structureType);
 
-                // we alloc uids here, the array has to be freed by the user
-                *uids = new const char*[list.size()];
-                for(unsigned int imat = 0; imat < list.size(); ++imat)
-                    (*uids)[imat] = list[imat]->GetUID().c_str();
-
-                *nuids = list.size();
+                *materialCount = list.size();
                 return TIGL_SUCCESS;
             }
             catch(tigl::CTiglError& ex){
@@ -3595,7 +3660,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetMaterialUIDs(TiglCP
             }
         }
         // the component segment was not found
-        LOG(ERROR) << "Error: Invalid uid in tiglWingComponentSegmentGetMaterialUIDs" << std::endl;
+        LOG(ERROR) << "Error: Invalid uid in tiglWingComponentSegmentGetMaterialCount" << std::endl;
         return TIGL_UID_ERROR;
     }
     catch (std::exception& ex) {
@@ -3607,11 +3672,161 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetMaterialUIDs(TiglCP
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglWingComponentSegmentGetMaterialUIDs!" << std::endl;
+        LOG(ERROR) << "Caught an exception in tiglWingComponentSegmentGetMaterialCount!" << std::endl;
         return TIGL_ERROR;
     }
 }
 
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetMaterialUID(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                          const char *componentSegmentUID,
+                                                                          TiglStructureType structureType,
+                                                                          double eta, double xsi,
+                                                                          int materialIndex,
+                                                                          char ** uid) {
+    if (!componentSegmentUID){
+        LOG(ERROR) << "Error: Null pointer argument for componentSegmentUID "
+                   << "in function call to tiglWingComponentSegmentGetMaterialUID.";
+        return TIGL_NULL_POINTER;
+    }
+
+    if (!uid){
+        LOG(ERROR) << "Error: Null pointer argument for uid "
+                   << "in function call to tiglWingComponentSegmentGetMaterialUID.";
+        return TIGL_NULL_POINTER;
+    }
+
+    try {
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+
+        // search for component segment
+        int nwings = config.GetWingCount();
+        for(int iwing = 1; iwing <= nwings; ++iwing){
+            tigl::CCPACSWing& wing = config.GetWing(iwing);
+            try {
+                tigl::CCPACSWingComponentSegment & compSeg
+                        = (tigl::CCPACSWingComponentSegment&) wing.GetComponentSegment(componentSegmentUID);
+                //now do the calculations
+                tigl::MaterialList list = compSeg.GetMaterials(eta, xsi, structureType);
+
+                // 1 <= index  <= ncount
+                unsigned int matindex = (unsigned int) materialIndex;
+                if (matindex < 1 || matindex > list.size()){
+                    LOG(ERROR) << "Invalid material index in tiglWingComponentSegmentGetMaterialUID";
+                    return TIGL_INDEX_ERROR;
+                }
+
+                const tigl::CCPACSMaterial* material = list.at(materialIndex-1);
+                if(!material) {
+                    return TIGL_ERROR;
+                }
+                *uid = (char*)material->GetUID().c_str();
+
+                return TIGL_SUCCESS;
+            }
+            catch(tigl::CTiglError& ex){
+                if(ex.getCode() != TIGL_UID_ERROR){
+                    throw;
+                }
+                else
+                    continue;
+            }
+        }
+        // the component segment was not found
+        LOG(ERROR) << "Error: Invalid uid in tiglWingComponentSegmentGetMaterialUID" << std::endl;
+        return TIGL_UID_ERROR;
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglWingComponentSegmentGetMaterialUID!" << std::endl;
+        return TIGL_ERROR;
+    }
+}
+
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetMaterialThickness(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                          const char *componentSegmentUID,
+                                                                          TiglStructureType structureType,
+                                                                          double eta, double xsi,
+                                                                          int materialIndex,
+                                                                          double * thickness){
+    if (!componentSegmentUID){
+        LOG(ERROR) << "Error: Null pointer argument for componentSegmentUID "
+                   << "in function call to tiglWingComponentSegmentGetMaterialThickness.";
+        return TIGL_NULL_POINTER;
+    }
+
+    if (!thickness){
+        LOG(ERROR) << "Error: Null pointer argument for thickness "
+                   << "in function call to tiglWingComponentSegmentGetMaterialThickness.";
+        return TIGL_NULL_POINTER;
+    }
+
+    try {
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+
+        // search for component segment
+        int nwings = config.GetWingCount();
+        for(int iwing = 1; iwing <= nwings; ++iwing){
+            tigl::CCPACSWing& wing = config.GetWing(iwing);
+            try {
+                tigl::CCPACSWingComponentSegment & compSeg
+                        = (tigl::CCPACSWingComponentSegment&) wing.GetComponentSegment(componentSegmentUID);
+                //now do the calculations
+                tigl::MaterialList list = compSeg.GetMaterials(eta, xsi, structureType);
+
+                // 1 <= index  <= ncount
+                unsigned int matindex = (unsigned int) materialIndex;
+                if (matindex < 1 || matindex > list.size()){
+                    LOG(ERROR) << "Invalid material index in tiglWingComponentSegmentGetMaterialThickness";
+                    return TIGL_INDEX_ERROR;
+                }
+
+                const tigl::CCPACSMaterial* material = list.at(materialIndex-1);
+                if(!material) {
+                    return TIGL_ERROR;
+                }
+                *thickness = material->GetThickness();
+
+                if (*thickness < 0) {
+                    return TIGL_UNINITIALIZED;
+                }
+                else {
+                    return TIGL_SUCCESS;
+                }
+            }
+            catch(tigl::CTiglError& ex){
+                if(ex.getCode() != TIGL_UID_ERROR){
+                    throw;
+                }
+                else
+                    continue;
+            }
+        }
+        // the component segment was not found
+        LOG(ERROR) << "Error: Invalid uid in tiglWingComponentSegmentGetMaterialThickness" << std::endl;
+        return TIGL_UID_ERROR;
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglWingComponentSegmentGetMaterialThickness!" << std::endl;
+        return TIGL_ERROR;
+    }
+}
 
 /*****************************************************************************************************/
 /*                     Volume calculations                                                           */
@@ -3904,19 +4119,26 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSegmentSurfaceArea(TiglCPACSCon
 
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetReferenceArea(TiglCPACSConfigurationHandle cpacsHandle, int wingIndex,
+                                                           TiglSymmetryAxis symPlane,
                                                            double *referenceAreaPtr)
 {
     if (wingIndex < 1) {
-        LOG(ERROR) << "Error: Wing index index is less than zero ";
-        LOG(ERROR) << "in function call to tiglWingGetReferenceArea." << std::endl;
+        LOG(ERROR) << "Error: Wing index index is less than zero "
+                   << "in function call to tiglWingGetReferenceArea.";
         return TIGL_INDEX_ERROR;
+    }
+
+    if (symPlane < TIGL_NO_SYMMETRY || symPlane > TIGL_Y_Z_PLANE) {
+        LOG(ERROR) << "Error: invalid symmetry "
+                   << "in function call to tiglWingGetReferenceArea.";
+        return TIGL_ERROR;
     }
 
     try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSWing& wing = config.GetWing(wingIndex);
-        *referenceAreaPtr = wing.GetReferenceArea();
+        *referenceAreaPtr = wing.GetReferenceArea(symPlane);
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
@@ -3929,6 +4151,56 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetReferenceArea(TiglCPACSConfiguratio
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglWingGetReferenceArea!" << std::endl;
+        return TIGL_ERROR;
+    }
+}
+
+
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetMAC(TiglCPACSConfigurationHandle cpacsHandle, const char* wingUID, double *mac_chord, double *mac_x, double *mac_y, double *mac_z){
+
+
+    if (wingUID == NULL) {
+        LOG(ERROR) << "Argument wingUID is NULL in tiglWingGetMAC!";
+        return TIGL_NULL_POINTER;
+    }
+
+    if (!mac_chord) {
+        LOG(ERROR) << "Argument mac_chord is NULL in tiglWingGetMAC!";
+        return TIGL_NULL_POINTER;
+    }
+
+    if (!mac_x) {
+        LOG(ERROR) << "Argument mac_x is NULL in tiglWingGetMAC!";
+        return TIGL_NULL_POINTER;
+    }
+
+    if (!mac_y) {
+        LOG(ERROR) << "Argument mac_y is NULL in tiglWingGetMAC!";
+        return TIGL_NULL_POINTER;
+    }
+
+    if (!mac_z) {
+        LOG(ERROR) << "Argument mac_z is NULL in tiglWingGetMAC!";
+        return TIGL_NULL_POINTER;
+    }
+
+    try {
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+        tigl::CCPACSWing& wing = config.GetWing(wingUID);
+        wing.GetWingMAC( *mac_chord,  *mac_x,  *mac_y,  *mac_z);
+        return TIGL_SUCCESS;
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglConfigurationGetLength!" << std::endl;
         return TIGL_ERROR;
     }
 }
@@ -4077,4 +4349,98 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSpan(TiglCPACSConfigurationHandle c
         LOG(ERROR) << "Caught an exception in tiglConfigurationGetLength!" << std::endl;
         return TIGL_ERROR;
     }
+}
+
+/*****************************************************************************/
+/* Logging functions.                                                        */
+/*****************************************************************************/
+TiglReturnCode tiglLogToFileEnabled(const char *filePrefix) {
+    tigl::CTiglLogging& logger = tigl::CTiglLogging::Instance();
+    if(filePrefix == NULL) {
+        LOG(ERROR) << "Error: argument filePrefix is NULL in tiglLogToFileEnabled!";
+        return TIGL_NULL_POINTER;
+    }
+
+    try {
+        logger.LogToFile(filePrefix);
+    }
+    catch (tigl::CTiglError& err) {
+        return err.getCode();
+    }
+
+    return TIGL_SUCCESS;
+}
+
+TiglReturnCode tiglLogToFileStreamEnabled(FILE * fp) {
+    tigl::CTiglLogging& logger = tigl::CTiglLogging::Instance();
+    if(fp == NULL) {
+        LOG(ERROR) << "Error: argument fp is NULL in tiglLogToFileStreamEnabled!";
+        return TIGL_NULL_POINTER;
+    }
+
+    try {
+        logger.LogToStream(fp);
+    }
+    catch (tigl::CTiglError& err) {
+        return err.getCode();
+    }
+
+    return TIGL_SUCCESS;
+}
+
+
+TiglReturnCode tiglLogSetFileEnding(const char *ending) {
+    tigl::CTiglLogging& logger = tigl::CTiglLogging::Instance();
+    if(ending == NULL) {
+        LOG(ERROR) << "Error: argument ending is NULL in tiglLogSetFileEnding!";
+        return TIGL_NULL_POINTER;
+    }
+
+    try {
+        logger.SetLogFileEnding(ending);
+    }
+    catch (tigl::CTiglError& err) {
+        return err.getCode();
+    }
+
+    return TIGL_SUCCESS;
+}
+
+TiglReturnCode tiglLogSetTimeInFilenameEnabled(TiglBoolean enabled) {
+    tigl::CTiglLogging& logger = tigl::CTiglLogging::Instance();
+
+    try {
+        logger.SetTimeIdInFilenameEnabled(enabled > 0);
+    }
+    catch (tigl::CTiglError& err) {
+        return err.getCode();
+    }
+
+    return TIGL_SUCCESS;
+}
+
+TiglReturnCode tiglLogToFileDisabled() {
+    tigl::CTiglLogging& logger = tigl::CTiglLogging::Instance();
+
+    try {
+        logger.LogToConsole();
+    }
+    catch (tigl::CTiglError& err) {
+        return err.getCode();
+    }
+
+    return TIGL_SUCCESS;
+}
+
+TiglReturnCode tiglLogSetVerbosity(TiglLogLevel consoleVerbosity) {
+    tigl::CTiglLogging& logger = tigl::CTiglLogging::Instance();
+
+    try {
+        logger.SetConsoleVerbosity(consoleVerbosity);
+    }
+    catch (tigl::CTiglError& err) {
+        return err.getCode();
+    }
+
+    return TIGL_SUCCESS;
 }

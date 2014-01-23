@@ -22,7 +22,8 @@
 #include <iostream>
 
 TIGLViewerControlFile::TIGLViewerControlFile() {
-    showConsole = UNDEFINED;
+    showConsole  = UNDEFINED;
+    showToolbars = UNDEFINED;
 }
 
 CF_ReturnCode TIGLViewerControlFile::read(const char * filename){
@@ -42,6 +43,17 @@ CF_ReturnCode TIGLViewerControlFile::read(const char * filename){
             showConsole = CF_FALSE;
         else
             showConsole = UNDEFINED;
+    }
+
+    const char * prefix2 = "/TIGLViewer/toolbars";
+    display = 1;
+    if(tixiGetBooleanAttribute(handle, prefix2, "display", &display)==SUCCESS){
+        if(display == 1)
+            showToolbars = CF_TRUE;
+        else if (display == 0)
+            showToolbars = CF_FALSE;
+        else
+            showToolbars = UNDEFINED;
     }
 
     return CF_SUCCESS;

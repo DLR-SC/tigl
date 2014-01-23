@@ -28,6 +28,7 @@
 #include "Geom_Curve.hxx"
 #include "BRep_Tool.hxx"
 #include "BRepTools_WireExplorer.hxx"
+#include "TopExp_Explorer.hxx"
 #include "TopoDS.hxx"
 #include "GeomAdaptor_Curve.hxx"
 #include "BRepAdaptor_CompCurve.hxx"
@@ -58,10 +59,27 @@ Standard_Real GetWireLength(const TopoDS_Wire& wire)
 #endif
 }
 
+unsigned int GetNumberOfEdges(const TopoDS_Shape& shape){
+    TopExp_Explorer edgeExpl(shape, TopAbs_EDGE);
+    unsigned int iEdges = 0;
+    for(;edgeExpl.More(); edgeExpl.Next()) {
+        iEdges++;
+    }
+
+    return iEdges;
+}
+
 // Gets a point on the wire line in dependence of a parameter alpha with
 // 0.0 <= alpha <= 1.0. For alpha = 0.0 this is the line starting point,
 // for alpha = 1.0 the last point on the intersection line.
-gp_Pnt WireGetPoint(const TopoDS_Wire& wire, double alpha)
+gp_Pnt WireGetPoint(const TopoDS_Wire &wire, double alpha)
+{
+    gp_Pnt point; gp_Vec normal;
+    WireGetPointNormal(wire, alpha, point, normal);
+    return point;
+}
+
+void WireGetPointNormal(const TopoDS_Wire& wire, double alpha, gp_Pnt& point, gp_Vec& normal)
 {
     if (alpha < 0.0 || alpha > 1.0)
         throw tigl::CTiglError("Error: Parameter alpha not in the range 0.0 <= alpha <= 1.0 in WireGetPoint", TIGL_ERROR);
@@ -111,20 +129,24 @@ gp_Pnt WireGetPoint(const TopoDS_Wire& wire, double alpha)
     double currDist = std::max((currLength - currEndDelta), 0.0);
 
     GCPnts_AbscissaPoint abscissaPoint(adaptorCurve, currDist, adaptorCurve.FirstParameter());
-    gp_Pnt point = adaptorCurve.Value(abscissaPoint.Parameter());
-    return (point); 
+    adaptorCurve.D1(abscissaPoint.Parameter(), point, normal);
 }
 
 
-gp_Pnt WireGetPoint2(const TopoDS_Wire& wire, double alpha)
+gp_Pnt WireGetPoint2(const TopoDS_Wire &wire, double alpha)
+{
+    gp_Pnt point; gp_Vec normal;
+    WireGetPointNormal2(wire, alpha, point, normal);
+    return point;
+}
+
+void WireGetPointNormal2(const TopoDS_Wire& wire, double alpha, gp_Pnt& point, gp_Vec& normal)
 {
     // ETA 3D point
     BRepAdaptor_CompCurve aCompoundCurve(wire, Standard_True);
-    gp_Pnt etaPnt;
     
     Standard_Real len =  GCPnts_AbscissaPoint::Length( aCompoundCurve );
-    aCompoundCurve.D0( len * alpha, etaPnt );
-    return etaPnt;
+    aCompoundCurve.D1( len * alpha, point, normal );
 }
 
 Standard_Real ProjectPointOnWire(const TopoDS_Wire& wire, gp_Pnt p){
@@ -166,6 +188,11 @@ Standard_Real ProjectPointOnWire(const TopoDS_Wire& wire, gp_Pnt p){
     
     // return relative coordinate
     return partLength/GetWireLength(wire);
+}
+
+// projects a point onto the line (lineStart<->lineStop) and returns the projection parameter
+Standard_Real ProjectPointOnLine(gp_Pnt p, gp_Pnt lineStart, gp_Pnt lineStop) {
+    return gp_Vec(lineStart, p) * gp_Vec(lineStart, lineStop) / gp_Vec(lineStart, lineStop).SquareMagnitude();
 }
 
 

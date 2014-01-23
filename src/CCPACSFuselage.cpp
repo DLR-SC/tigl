@@ -236,9 +236,9 @@ namespace tigl {
     }
 
 #ifdef TIGL_USE_XCAF
-    TDF_Label CCPACSFuselage::ExportDataStructure(Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label)
+    TDF_Label CCPACSFuselage::ExportDataStructure(CCPACSConfiguration& config, Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label)
     {
-        TDF_Label fuselageLabel = CTiglAbstractPhysicalComponent::ExportDataStructure(myAssembly, label);
+        TDF_Label fuselageLabel = CTiglAbstractPhysicalComponent::ExportDataStructure(config, myAssembly, label);
 
 //        // Export all segments
 //        gp_Trsf t0;
@@ -257,7 +257,8 @@ namespace tigl {
         // Other (sub)-components
         for (int i=1; i <= segments.GetSegmentCount(); i++) {
             CCPACSFuselageSegment& segment = segments.GetSegment(i);
-            TDF_Label fuselageSegmentLabel = myAssembly->AddShape(segment.GetLoft(), false);
+            TopoDS_Shape loft = GetFuselageTransformation().Transform(segment.GetLoft());
+            TDF_Label fuselageSegmentLabel = myAssembly->AddShape(loft, false);
             TDataStd_Name::Set (fuselageSegmentLabel, segment.GetUID().c_str());
             //TDF_Label& subSegmentLabel = segment.ExportDataStructure(myAssembly, fuselageSegmentLabel);
         }
@@ -275,11 +276,17 @@ namespace tigl {
     // Builds a fused shape of all fuselage segments
     TopoDS_Shape CCPACSFuselage::BuildLoft(void)
     {
+        // Get Continuity of first segment
+        // TODO: adapt lofting to have multiple different continuities
+        TiglContinuity cont = segments.GetSegment(1).GetContinuity();
+        Standard_Boolean ruled = cont == C0? true : false;
+
+
         // Ne need a smooth fuselage by default
         // @TODO: OpenCascade::ThruSections is currently buggy and crashes, if smooth lofting
         // is performed. Therefore we swicth the 2. parameter to Standard_True (non smooth lofting).
         // This has to be reverted, as soon as the bug is fixed!!!
-        BRepOffsetAPI_ThruSections generator(Standard_True, Standard_False, Precision::Confusion() );
+        BRepOffsetAPI_ThruSections generator(Standard_True, ruled, Precision::Confusion() );
 
         for (int i=1; i <= segments.GetSegmentCount(); i++) {
             CCPACSFuselageConnection& startConnection = segments.GetSegment(i).GetStartConnection();

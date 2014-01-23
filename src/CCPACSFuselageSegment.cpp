@@ -24,7 +24,7 @@
 */
 #include <iostream>
 
-#include "CTiglLogger.h"
+#include "CTiglLogging.h"
 #include "CCPACSFuselageSegment.h"
 #include "CCPACSFuselage.h"
 #include "CCPACSFuselageProfile.h"
@@ -115,6 +115,7 @@ namespace tigl {
         myVolume      = 0.;
         mySurfaceArea = 0.;
         myWireLength  = 0.;
+        continuity    = C2;
         CTiglAbstractSegment::Cleanup();
     }
 
@@ -152,6 +153,33 @@ namespace tigl {
         // End connection
         tempString = segmentXPath + "/toElementUID";
         endConnection.ReadCPACS(tixiHandle, tempString);
+
+        // Continuity
+        tempString = segmentXPath + "/continuity";
+        elementPath   = const_cast<char*>(tempString.c_str());
+        char* ptrCont = NULL;
+        if (tixiGetTextElement(tixiHandle, elementPath, &ptrCont) == SUCCESS)
+        {
+            if (strcmp(ptrCont, "C0") == 0) {
+                continuity = C0;
+            }
+            else if (strcmp(ptrCont, "C1") == 0) {
+                std::cout << "C1" << std::endl;
+                continuity = C1;
+            }
+            else if (strcmp(ptrCont, "C2") == 0) {
+                std::cout << "C2" << std::endl;
+                continuity = C2;
+            }
+            else {
+                LOG(ERROR) << "Invalid continuity specifier " << ptrCont << " for UID " << GetUID();
+                continuity = C2;
+            }
+        }
+        else
+        {
+            continuity = C2;
+        }
 
         Update();
     }
@@ -722,7 +750,7 @@ namespace tigl {
 #ifdef TIGL_USE_XCAF
     // builds data structure for a TDocStd_Application
     // mostly used for export
-    TDF_Label CCPACSFuselageSegment::ExportDataStructure(Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label)
+    TDF_Label CCPACSFuselageSegment::ExportDataStructure(CCPACSConfiguration&, Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label)
     {
         TopExp_Explorer Ex1;
         int i = 0;

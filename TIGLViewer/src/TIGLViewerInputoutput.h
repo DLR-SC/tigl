@@ -10,7 +10,7 @@
 * you may not use this file except in compliance with the License.
 * You may obtain a copy of the License at
 *
-*     http://www.apache.org/licenses/LICENSE-2.0
+*     http://www.apache.org/licenses/LICENSE-2.0
 *
 * Unless required by applicable law or agreed to in writing, software
 * distributed under the License is distributed on an "AS IS" BASIS,
@@ -35,7 +35,8 @@ public:
                         FormatSTEP, 
                         FormatCSFDB, 
                         FormatVRML, 
-                        FormatSTL    };
+                        FormatSTL,
+                        FormatMESH};
 
     TIGLViewerInputOutput(void);
     ~TIGLViewerInputOutput(void);
@@ -43,6 +44,10 @@ public:
     bool                              importModel( const QString fileName, 
                                                    const FileFormat format, 
                                                    const Handle_AIS_InteractiveContext& ic );
+
+    bool                      importTriangulation( const QString fileName,
+                                        const FileFormat format,
+                                        const Handle_AIS_InteractiveContext& ic );
 
     bool                              exportModel( const QString fileName, 
                                                    const FileFormat format, 
@@ -70,6 +75,7 @@ private:
     Handle_TopTools_HSequenceOfShape importSTL  ( const QString& );
     Handle_TopTools_HSequenceOfShape importSTEP ( const QString& );
     Handle_TopTools_HSequenceOfShape importCSFDB( const QString& );
+    Handle_TopTools_HSequenceOfShape importMESH ( const QString& );
 
     bool exportBREP ( const QString& fileName, const Handle_TopTools_HSequenceOfShape& shapes );
     bool exportIGES ( const QString& fileName, const Handle_TopTools_HSequenceOfShape& shapes );

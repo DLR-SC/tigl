@@ -42,7 +42,10 @@
 
 namespace tigl {
 
-    typedef std::vector<const CCPACSMaterial*> MaterialList;
+    class CCPACSWingSegment;
+
+    typedef std::vector<const CCPACSMaterial*>    MaterialList;
+    typedef std::vector<CCPACSWingSegment*>       SegmentList;
 
     class CCPACSWing;
 
@@ -92,13 +95,13 @@ namespace tigl {
 #ifdef TIGL_USE_XCAF
         // builds data structure for a TDocStd_Application
         // mostly used for export
-        TDF_Label ExportDataStructure(Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label);
+        TDF_Label ExportDataStructure(class CCPACSConfiguration &, Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label);
 #endif
         
         MaterialList GetMaterials(double eta, double xsi, TiglStructureType);
 
         // returns a list of segments that belong to this component segment
-        std::vector<int> GetSegmentList(const std::string &fromElementUID, const std::string &toElementUID) const;
+        SegmentList& GetSegmentList();
         
         // creates an (iso) component segment line 
         TopoDS_Wire GetCSLine(double eta1, double xsi1, double eta2, double xsi2, int NSTEPS=101);
@@ -133,6 +136,8 @@ namespace tigl {
 
         std::vector<int> findPath(const std::string& fromUid, const::std::string& toUID, const std::vector<int>& curPath, bool forward) const;
 
+        void UpdateProjectedLeadingEdge();
+
 
     private:
         std::string          name;                 /**< Segment name                            */
@@ -143,6 +148,8 @@ namespace tigl {
         double               mySurfaceArea;        /**< Surface area of this segment            */
         TopoDS_Shape         upperShape;           /**< Upper shape of this componentSegment    */
         TopoDS_Shape         lowerShape;           /**< Lower shape of this componentSegment    */
+        TopoDS_Wire          projLeadingEdge;      /**< (Extended) Leading edge projected into y-z plane */
+        SegmentList          wingSegments;         /**< List of segments belonging to the component segment */
         Handle(Geom_Surface) upperSurface;
         Handle(Geom_Surface) lowerSurface;
         bool                 surfacesAreValid;
