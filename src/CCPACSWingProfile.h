@@ -34,116 +34,115 @@
 #include <string>
 
 #include "tixi.h"
-#include "CTiglPoint.h"
-#include "CTiglTransformation.h"
-
 #include "TopoDS_Wire.hxx"
-#include "Geom2d_TrimmedCurve.hxx"
-
 #include "CSharedPtr.h"
+
+#include <gp_Pnt.hxx>
+#include <Handle_Geom2d_TrimmedCurve.hxx>
 
 
 namespace tigl 
 {
 
-    class ITiglWingProfileAlgo;
+class ITiglWingProfileAlgo;
 
-    typedef CSharedPtr<ITiglWingProfileAlgo> ProfileAlgoPointer;
+typedef CSharedPtr<ITiglWingProfileAlgo> ProfileAlgoPointer;
 
-    class CCPACSWingProfile
-    {
+class CCPACSWingProfile
+{
 
-    public:
-        // Algo
-        CCPACSWingProfile(const std::string& aFilename);
+public:
+    // Algo
+    CCPACSWingProfile(const std::string& aFilename);
 
-        // Virtual Destructor
-        virtual ~CCPACSWingProfile(void);
+    // Virtual Destructor
+    virtual ~CCPACSWingProfile(void);
 
-        // Read CPACS wing profile file
-        void ReadCPACS(TixiDocumentHandle tixiHandle);
+    // Read CPACS wing profile file
+    void ReadCPACS(TixiDocumentHandle tixiHandle);
 
-        // Returns the name of the wing profile
-        const std::string& GetName(void) const;
+    // Returns the name of the wing profile
+    const std::string& GetName(void) const;
 
-        // Returns the description of the wing profile
-        const std::string& GetDescription(void) const;
+    // Returns the description of the wing profile
+    const std::string& GetDescription(void) const;
 
-        // Returns the uid of the wing profile
-        const std::string& GetUID(void) const;
+    // Returns the uid of the wing profile
+    const std::string& GetUID(void) const;
 
-        // Invalidates internal wing profile state
-        void Invalidate(void);
+    // Invalidates internal wing profile state
+    void Invalidate(void);
 
-        // Returns the wing profile wire.
-        TopoDS_Wire GetWire();
+    // Returns the wing profile wire.
+    TopoDS_Wire GetWire();
         
-        // Returns ths wing upper and lower profile wire
-        TopoDS_Wire GetUpperWire();
-        TopoDS_Wire GetLowerWire();
+    // Returns ths wing upper and lower profile wire
+    TopoDS_Wire GetUpperWire();
+    TopoDS_Wire GetLowerWire();
 
-        // Returns the leading edge point of the wing profile wire. The leading edge point
-        // is already transformed by the wing profile element transformation.
-        gp_Pnt GetLEPoint(void);
+    // Returns the leading edge point of the wing profile wire. The leading edge point
+    // is already transformed by the wing profile element transformation.
+    gp_Pnt GetLEPoint(void);
 
-        // Returns the trailing edge point of the wing profile wire. The trailing edge point
-        // is already transformed by the wing profile element transformation.
-        gp_Pnt GetTEPoint(void);
+    // Returns the trailing edge point of the wing profile wire. The trailing edge point
+    // is already transformed by the wing profile element transformation.
+    gp_Pnt GetTEPoint(void);
 
-        // Returns a point on the chord line between leading and trailing
-        // edge as function of parameter xsi, which ranges from 0.0 to 1.0.
-        // For xsi = 0.0 chord point is equal to leading edge, for xsi = 1.0
-        // chord point is equal to trailing edge.
-        gp_Pnt GetChordPoint(double xsi);
+    // Returns a point on the chord line between leading and trailing
+    // edge as function of parameter xsi, which ranges from 0.0 to 1.0.
+    // For xsi = 0.0 chord point is equal to leading edge, for xsi = 1.0
+    // chord point is equal to trailing edge.
+    gp_Pnt GetChordPoint(double xsi);
 
-        // Returns a point on the upper wing profile as function of
-        // parameter xsi, which ranges from 0.0 to 1.0.
-        // For xsi = 0.0 point is equal to leading edge, for xsi = 1.0
-        // point is equal to trailing edge.
-        gp_Pnt GetUpperPoint(double xsi);
+    // Returns a point on the upper wing profile as function of
+    // parameter xsi, which ranges from 0.0 to 1.0.
+    // For xsi = 0.0 point is equal to leading edge, for xsi = 1.0
+    // point is equal to trailing edge.
+    gp_Pnt GetUpperPoint(double xsi);
 
-        // Returns a point on the lower wing profile as function of
-        // parameter xsi, which ranges from 0.0 to 1.0.
-        // For xsi = 0.0 point is equal to leading edge, for xsi = 1.0
-        // point is equal to trailing edge.
-        gp_Pnt GetLowerPoint(double xsi);
+    // Returns a point on the lower wing profile as function of
+    // parameter xsi, which ranges from 0.0 to 1.0.
+    // For xsi = 0.0 point is equal to leading edge, for xsi = 1.0
+    // point is equal to trailing edge.
+    gp_Pnt GetLowerPoint(double xsi);
 
-        // get profile algorithm type
-        ProfileAlgoPointer GetProfileAlgo(void) const;
+    // get profile algorithm type
+    ProfileAlgoPointer GetProfileAlgo(void) const;
 
-    protected:
-        // Cleanup routine
-        void Cleanup(void);
+protected:
+    // Cleanup routine
+    void Cleanup(void);
 
-        // Update the internal state, i.g. recalculates wire and le, te points
-        void Update(void);
+    // Update the internal state, i.g. recalculates wire and le, te points
+    void Update(void);
 
-        // Returns an upper or lower point on the wing profile in
-        // dependence of parameter xsi, which ranges from 0.0 to 1.0.
-        // For xsi = 0.0 point is equal to leading edge, for xsi = 1.0
-        // point is equal to trailing edge. If fromUpper is true, a point
-        // on the upper profile is returned, otherwise from the lower.
-        gp_Pnt GetPoint(double xsi, bool fromUpper);
+    // Returns an upper or lower point on the wing profile in
+    // dependence of parameter xsi, which ranges from 0.0 to 1.0.
+    // For xsi = 0.0 point is equal to leading edge, for xsi = 1.0
+    // point is equal to trailing edge. If fromUpper is true, a point
+    // on the upper profile is returned, otherwise from the lower.
+    gp_Pnt GetPoint(double xsi, bool fromUpper);
 
-        // Helper function to determine the chord line between leading and trailing edge in the profile plane
-        Handle(Geom2d_TrimmedCurve) GetChordLine();
+    // Helper function to determine the chord line between leading and trailing edge in the profile plane
+    Handle(Geom2d_TrimmedCurve) GetChordLine();
 
 
-    private:
-        // Copy constructor
-        CCPACSWingProfile(const CCPACSWingProfile& );
+private:
+    // Copy constructor
+    CCPACSWingProfile(const CCPACSWingProfile& );
 
-        // Assignment operator
-        void operator=(const CCPACSWingProfile& );
+    // Assignment operator
+    void operator=(const CCPACSWingProfile& );
 
-    private:
-        std::string               ProfileXPath;   /**< CPACS path to wing profile */
-        std::string               name;           /**< CPACS wing profile name */
-        std::string               description;    /**< CPACS wing profile description */
-        std::string               uid;            /**< CPACS wing profile UID */
-        bool                      invalidated;    /**< Flag if element is invalid */
-        ProfileAlgoPointer        profileAlgo;    /**< Pointer to wing profile algorithm (pointList, CST, etc.) */
-    };
+private:
+    std::string               ProfileXPath;   /**< CPACS path to wing profile */
+    std::string               name;           /**< CPACS wing profile name */
+    std::string               description;    /**< CPACS wing profile description */
+    std::string               uid;            /**< CPACS wing profile UID */
+    bool                      invalidated;    /**< Flag if element is invalid */
+    ProfileAlgoPointer        profileAlgo;    /**< Pointer to wing profile algorithm (pointList, CST, etc.) */
+
+}; // class CCPACSWingProfile
 
 } // end namespace tigl
 

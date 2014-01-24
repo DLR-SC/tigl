@@ -33,64 +33,65 @@
 #include <vector>
 #include <map>
 
-namespace tigl {
+namespace tigl
+{
 
-    class CCPACSWingPositionings
-    {
+class CCPACSWingPositionings
+{
 
-    private:
-        // Typedef for a CCPACSWingPositioning container to store the positionings.
-        typedef std::vector<CCPACSWingPositioning*> CCPACSWingPositioningContainer;
+private:
+    // Typedef for a CCPACSWingPositioning container to store the positionings.
+    typedef std::vector<CCPACSWingPositioning*> CCPACSWingPositioningContainer;
 
-        // Typedef for a CTiglTransformation map to store multiple transformations by a section-uid.
-        typedef std::map<std::string, CTiglTransformation> CCPACSTransformationMap;
-        typedef CCPACSTransformationMap::iterator  CCPACSTransformationMapIterator;
+    // Typedef for a CTiglTransformation map to store multiple transformations by a section-uid.
+    typedef std::map<std::string, CTiglTransformation> CCPACSTransformationMap;
+    typedef CCPACSTransformationMap::iterator  CCPACSTransformationMapIterator;
 
-    public:
-        // Constructor
-        CCPACSWingPositionings(void);
+public:
+    // Constructor
+    CCPACSWingPositionings(void);
 
-        // Virtual Destructor
-        virtual ~CCPACSWingPositionings(void);
+    // Virtual Destructor
+    virtual ~CCPACSWingPositionings(void);
 
-        // Read CPACS positionings element
-        void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& wingXPath);
+    // Read CPACS positionings element
+    void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& wingXPath);
 
-        // Invalidates internal state
-        void Invalidate(void);
+    // Invalidates internal state
+    void Invalidate(void);
 
-        // Gets a positioning by index.
-        CCPACSWingPositioning& GetPositioning(int index) const;
+    // Gets a positioning by index.
+    CCPACSWingPositioning& GetPositioning(int index) const;
 
-        // Gets total positioning count
-        int GetPositioningCount(void) const;
+    // Gets total positioning count
+    int GetPositioningCount(void) const;
 
-        // Returns the positioning matrix for a given section-uid
-        CTiglTransformation GetPositioningTransformation(std::string sectionIndex);
+    // Returns the positioning matrix for a given section-uid
+    CTiglTransformation GetPositioningTransformation(std::string sectionIndex);
 
-    protected:
-        // Cleanup routine
-        void Cleanup(void);
+protected:
+    // Cleanup routine
+    void Cleanup(void);
 
-        // Update internal positioning structure
-        void Update(void);
+    // Update internal positioning structure
+    void Update(void);
 
-        // Update connected positionings recursive
-        void UpdateNextPositioning(int positioningIndex, int rec_depth);
+    // Update connected positionings recursive
+    void UpdateNextPositioning(int positioningIndex, int rec_depth);
 
-    private:
-        // Copy constructor
-        CCPACSWingPositionings(const CCPACSWingPositionings& );
+private:
+    // Copy constructor
+    CCPACSWingPositionings(const CCPACSWingPositionings& );
 
-        // Assignment operator
-        void operator=(const CCPACSWingPositionings& );
+    // Assignment operator
+    void operator=(const CCPACSWingPositionings& );
 
-    private:
-        CCPACSWingPositioningContainer positionings;      /**< Positioning elements */
-        CCPACSTransformationMap        transformations;   /**< Map of transformations */
-        bool                           invalidated;       /**< Internal state flag  */
+private:
+    CCPACSWingPositioningContainer positionings;      /**< Positioning elements */
+    CCPACSTransformationMap        transformations;   /**< Map of transformations */
+    bool                           invalidated;       /**< Internal state flag  */
 
-    };
+};
 
 } // end namespace tigl
 

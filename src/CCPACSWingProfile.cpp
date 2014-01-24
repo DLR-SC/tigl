@@ -63,298 +63,295 @@
 namespace tigl 
 {
 
-    // Constructor
-    CCPACSWingProfile::CCPACSWingProfile(const std::string& path)
-        : ProfileXPath(path),
-        invalidated(true)
-    {
-        Cleanup();
+// Constructor
+CCPACSWingProfile::CCPACSWingProfile(const std::string& path)
+    : ProfileXPath(path),
+    invalidated(true)
+{
+    Cleanup();
+}
+
+// Destructor
+CCPACSWingProfile::~CCPACSWingProfile(void)
+{
+    Cleanup();
+}
+
+// Cleanup routine
+void CCPACSWingProfile::Cleanup(void)
+{
+    name = "";
+    description = "";
+    uid = "";
+
+    if (profileAlgo) {
+        profileAlgo->Cleanup();
     }
 
-    // Destructor
-    CCPACSWingProfile::~CCPACSWingProfile(void)
-    {
-        Cleanup();
-    }
+    Invalidate();
+}
 
-    // Cleanup routine
-    void CCPACSWingProfile::Cleanup(void)
-    {
-        name = "";
-        description = "";
-        uid = "";
+// Read wing profile file
+void CCPACSWingProfile::ReadCPACS(TixiDocumentHandle tixiHandle)
+{
+    Cleanup();
+    std::string namePath = ProfileXPath + "/name";
+    std::string describtionPath = ProfileXPath + "/description";
 
-        if(profileAlgo)
-        {
-            profileAlgo->Cleanup();
+    try {
+        // Get profiles "uid"
+        char* ptrUID = NULL;
+        if (tixiGetTextAttribute(tixiHandle, ProfileXPath.c_str(), "uID", &ptrUID) == SUCCESS) {
+            uid = ptrUID;
         }
 
-        Invalidate();
-    }
-
-    // Read wing profile file
-    void CCPACSWingProfile::ReadCPACS(TixiDocumentHandle tixiHandle)
-    {
-        Cleanup();
-        std::string namePath = ProfileXPath + "/name";
-        std::string describtionPath = ProfileXPath + "/description";
-
-        try
-        {
-            // Get profiles "uid"
-            char* ptrUID = NULL;
-            if (tixiGetTextAttribute(tixiHandle, ProfileXPath.c_str(), "uID", &ptrUID) == SUCCESS)
-                uid = ptrUID;
-
-            // Get subelement "name"
-            char* ptrName = NULL;
-            if (tixiGetTextElement(tixiHandle, namePath.c_str(), &ptrName) == SUCCESS)
-                name = ptrName;
-
-            // Get subelement "description"
-            char* ptrDescription = NULL;
-            if (tixiGetTextElement(tixiHandle, describtionPath.c_str(), &ptrDescription) == SUCCESS)
-                description = ptrDescription;
-
-            // create wing profile algorithm via factory
-            profileAlgo=CCPACSWingProfileFactory::createProfileAlgo(tixiHandle, ProfileXPath);
-            // read in wing profile data
-            profileAlgo->ReadCPACS(tixiHandle);
-        }
-        catch (...)
-        {
-            throw;
+        // Get subelement "name"
+        char* ptrName = NULL;
+        if (tixiGetTextElement(tixiHandle, namePath.c_str(), &ptrName) == SUCCESS) {
+            name = ptrName;
         }
 
-        Update();
+        // Get subelement "description"
+        char* ptrDescription = NULL;
+        if (tixiGetTextElement(tixiHandle, describtionPath.c_str(), &ptrDescription) == SUCCESS) {
+            description = ptrDescription;
+        }
+
+        // create wing profile algorithm via factory
+        profileAlgo=CCPACSWingProfileFactory::createProfileAlgo(tixiHandle, ProfileXPath);
+        // read in wing profile data
+        profileAlgo->ReadCPACS(tixiHandle);
+    }
+    catch (...) {
+        throw;
     }
 
-    // Returns the name of the wing profile
-    const std::string& CCPACSWingProfile::GetName(void) const
-    {
-        return name;
+    Update();
+}
+
+// Returns the name of the wing profile
+const std::string& CCPACSWingProfile::GetName(void) const
+{
+    return name;
+}
+
+// Returns the describtion of the wing profile
+const std::string& CCPACSWingProfile::GetDescription(void) const
+{
+    return description;
+}
+
+// Returns the UID of the wing profile
+const std::string& CCPACSWingProfile::GetUID(void) const
+{
+    return uid;
+}
+
+// Invalidates internal wing profile state
+void CCPACSWingProfile::Invalidate(void)
+{
+    invalidated = true;
+}
+
+// Update the internal state, i.g. recalculates wire and le, te points
+void CCPACSWingProfile::Update(void)
+{
+    if (!invalidated) {
+        return;
     }
 
-    // Returns the describtion of the wing profile
-    const std::string& CCPACSWingProfile::GetDescription(void) const
-    {
-        return description;
-    }
-
-    // Returns the UID of the wing profile
-    const std::string& CCPACSWingProfile::GetUID(void) const
-    {
-        return uid;
-    }
-
-    // Invalidates internal wing profile state
-    void CCPACSWingProfile::Invalidate(void)
-    {
-        invalidated = true;
-    }
-
-    // Update the internal state, i.g. recalculates wire and le, te points
-    void CCPACSWingProfile::Update(void)
-    {
-        if (!invalidated)
-            return;
-
-        // build wires
-        profileAlgo->Update();
-        invalidated = false;
-    }
+    // build wires
+    profileAlgo->Update();
+    invalidated = false;
+}
     
-    // Returns the wing profile upper wire
-    TopoDS_Wire CCPACSWingProfile::GetUpperWire()
-    {
-        Update();
-        return profileAlgo->GetUpperWire();
-    }
+// Returns the wing profile upper wire
+TopoDS_Wire CCPACSWingProfile::GetUpperWire()
+{
+    Update();
+    return profileAlgo->GetUpperWire();
+}
     
-    // Returns the wing profile lower wire
-    TopoDS_Wire CCPACSWingProfile::GetLowerWire()
-    {
-        Update();
-        return profileAlgo->GetLowerWire();
-    }
+// Returns the wing profile lower wire
+TopoDS_Wire CCPACSWingProfile::GetLowerWire()
+{
+    Update();
+    return profileAlgo->GetLowerWire();
+}
     
-    // Returns the wing profile lower and upper wire fused
-    TopoDS_Wire CCPACSWingProfile::GetWire()
-    {
-        Update();
-        // rebuild closed wire
-        BRepBuilderAPI_MakeWire closedWireBuilder;
-        closedWireBuilder.Add(profileAlgo->GetUpperWire());
-        closedWireBuilder.Add(profileAlgo->GetLowerWire());
+// Returns the wing profile lower and upper wire fused
+TopoDS_Wire CCPACSWingProfile::GetWire()
+{
+    Update();
+    // rebuild closed wire
+    BRepBuilderAPI_MakeWire closedWireBuilder;
+    closedWireBuilder.Add(profileAlgo->GetUpperWire());
+    closedWireBuilder.Add(profileAlgo->GetLowerWire());
         
-        return closedWireBuilder.Wire();
+    return closedWireBuilder.Wire();
+}
+
+
+// Returns the leading edge point of the wing profile wire. The leading edge point
+// is already transformed by the wing profile transformation.
+gp_Pnt CCPACSWingProfile::GetLEPoint(void)
+{
+    Update();
+    return profileAlgo->GetLEPoint();
+}
+
+// Returns the trailing edge point of the wing profile wire. The trailing edge point
+// is already transformed by the wing profile transformation.
+gp_Pnt CCPACSWingProfile::GetTEPoint(void)
+{
+    Update();
+    return profileAlgo->GetTEPoint();
+}
+
+// Returns a point on the chord line between leading and trailing
+// edge as function of parameter xsi, which ranges from 0.0 to 1.0.
+// For xsi = 0.0 chord point is equal to leading edge, for xsi = 1.0
+// chord point is equal to trailing edge.
+gp_Pnt CCPACSWingProfile::GetChordPoint(double xsi)
+{
+    if (xsi < 0.0 || xsi > 1.0) {
+        throw CTiglError("Error: Parameter xsi not in the range 0.0 <= xsi <= 1.0 in CCPACSWingProfile::GetChordPoint", TIGL_ERROR);
     }
 
+    Handle(Geom2d_TrimmedCurve) chordLine = GetChordLine();
+    Standard_Real firstParam = chordLine->FirstParameter();
+    Standard_Real lastParam  = chordLine->LastParameter();
+    Standard_Real param = (lastParam - firstParam) * xsi;
 
-    // Returns the leading edge point of the wing profile wire. The leading edge point
-    // is already transformed by the wing profile transformation.
-    gp_Pnt CCPACSWingProfile::GetLEPoint(void)
-    {
-        Update();
-        return profileAlgo->GetLEPoint();
+    gp_Pnt2d chordPoint2d;
+    chordLine->D0(param, chordPoint2d);
+    return gp_Pnt(chordPoint2d.X(), 0.0, chordPoint2d.Y());
+}
+
+// Returns a point on the upper wing profile as function of
+// parameter xsi, which ranges from 0.0 to 1.0.
+// For xsi = 0.0 point is equal to leading edge, for xsi = 1.0
+// point is equal to trailing edge.
+gp_Pnt CCPACSWingProfile::GetUpperPoint(double xsi)
+{
+    return GetPoint(xsi, true);
+}
+
+// Returns a point on the lower wing profile as function of
+// parameter xsi, which ranges from 0.0 to 1.0.
+// For xsi = 0.0 point is equal to leading edge, for xsi = 1.0
+// point is equal to trailing edge.
+gp_Pnt CCPACSWingProfile::GetLowerPoint(double xsi)
+{
+    return GetPoint(xsi, false);
+}
+
+// Returns an upper or lower point on the wing profile in
+// dependence of parameter xsi, which ranges from 0.0 to 1.0.
+// For xsi = 0.0 point is equal to leading edge, for xsi = 1.0
+// point is equal to trailing edge. If fromUpper is true, a point
+// on the upper profile is returned, otherwise from the lower.
+gp_Pnt CCPACSWingProfile::GetPoint(double xsi, bool fromUpper)
+{
+    Update();
+
+    if (xsi < 0.0 || xsi > 1.0) {
+        throw CTiglError("Error: Parameter xsi not in the range 0.0 <= xsi <= 1.0 in CCPACSWingProfile::GetPoint", TIGL_ERROR);
     }
 
-    // Returns the trailing edge point of the wing profile wire. The trailing edge point
-    // is already transformed by the wing profile transformation.
-    gp_Pnt CCPACSWingProfile::GetTEPoint(void)
-    {
-        Update();
-        return profileAlgo->GetTEPoint();
+    if (xsi < Precision::Confusion()) {
+        return GetLEPoint();
+    }
+    if ((1.0 - xsi) < Precision::Confusion()) {
+        return GetTEPoint();
     }
 
-    // Returns a point on the chord line between leading and trailing
-    // edge as function of parameter xsi, which ranges from 0.0 to 1.0.
-    // For xsi = 0.0 chord point is equal to leading edge, for xsi = 1.0
-    // chord point is equal to trailing edge.
-    gp_Pnt CCPACSWingProfile::GetChordPoint(double xsi)
-    {
-        if (xsi < 0.0 || xsi > 1.0)
-        {
-            throw CTiglError("Error: Parameter xsi not in the range 0.0 <= xsi <= 1.0 in CCPACSWingProfile::GetChordPoint", TIGL_ERROR);
+    gp_Pnt   chordPoint3d = GetChordPoint(xsi);
+    gp_Pnt2d chordPoint2d(chordPoint3d.X(), chordPoint3d.Z());
+
+    gp_Pnt le3d = GetLEPoint();
+    gp_Pnt te3d = GetTEPoint();
+    gp_Pnt2d le2d(le3d.X(), le3d.Z());
+    gp_Pnt2d te2d(te3d.X(), te3d.Z());
+
+    // Normal vector on chord line
+    gp_Vec2d normalVec2d(-(le2d.Y() - te2d.Y()), (le2d.X() - te2d.X()));
+
+    // Compute 2d line normal to chord line
+    Handle(Geom2d_Line) line2d = new Geom2d_Line(chordPoint2d, gp_Dir2d(normalVec2d));
+
+    // Define xz-plane for curve projection
+    gp_Pln xzPlane = gce_MakePln(gp_Pnt(0.0, 0.0, 0.0), gp_Pnt(1.0, 0.0, 0.0), gp_Pnt(0.0, 0.0, 1.0));
+
+    // Loop over all edges of the wing profile curve and try to find intersection points
+    std::vector<gp_Pnt2d> ipnts2d;
+    BRepTools_WireExplorer wireExplorer;
+    for (wireExplorer.Init(GetWire()); wireExplorer.More(); wireExplorer.Next()) {
+        const TopoDS_Edge& edge = wireExplorer.Current();
+        Standard_Real firstParam;
+        Standard_Real lastParam;
+        Handle(Geom_Curve) curve3d = BRep_Tool::Curve(edge, firstParam, lastParam);
+        // Convert 3d curve to 2d curve lying in the xz-plane
+        Handle(Geom2d_Curve) curve2d = GeomAPI::To2d(curve3d, xzPlane);
+        // Check if there are intersection points between line2d and curve2d
+        Geom2dAPI_InterCurveCurve intersection(line2d, curve2d);
+        for (int n = 1; n <= intersection.NbPoints(); n++) {
+            ipnts2d.push_back(intersection.Point(n));
         }
-
-        Handle(Geom2d_TrimmedCurve) chordLine = GetChordLine();
-        Standard_Real firstParam = chordLine->FirstParameter();
-        Standard_Real lastParam  = chordLine->LastParameter();
-        Standard_Real param = (lastParam - firstParam) * xsi;
-
-        gp_Pnt2d chordPoint2d;
-        chordLine->D0(param, chordPoint2d);
-        return gp_Pnt(chordPoint2d.X(), 0.0, chordPoint2d.Y());
     }
-
-    // Returns a point on the upper wing profile as function of
-    // parameter xsi, which ranges from 0.0 to 1.0.
-    // For xsi = 0.0 point is equal to leading edge, for xsi = 1.0
-    // point is equal to trailing edge.
-    gp_Pnt CCPACSWingProfile::GetUpperPoint(double xsi)
-    {
-        return GetPoint(xsi, true);
-    }
-
-    // Returns a point on the lower wing profile as function of
-    // parameter xsi, which ranges from 0.0 to 1.0.
-    // For xsi = 0.0 point is equal to leading edge, for xsi = 1.0
-    // point is equal to trailing edge.
-    gp_Pnt CCPACSWingProfile::GetLowerPoint(double xsi)
-    {
-        return GetPoint(xsi, false);
-    }
-
-    // Returns an upper or lower point on the wing profile in
-    // dependence of parameter xsi, which ranges from 0.0 to 1.0.
-    // For xsi = 0.0 point is equal to leading edge, for xsi = 1.0
-    // point is equal to trailing edge. If fromUpper is true, a point
-    // on the upper profile is returned, otherwise from the lower.
-    gp_Pnt CCPACSWingProfile::GetPoint(double xsi, bool fromUpper)
-    {
-        Update();
-
-        if (xsi < 0.0 || xsi > 1.0)
-        {
-            throw CTiglError("Error: Parameter xsi not in the range 0.0 <= xsi <= 1.0 in CCPACSWingProfile::GetPoint", TIGL_ERROR);
+    if (ipnts2d.size() == 1) {
+        // There is only one intesection point with the wire
+        gp_Pnt2d ipnt2d = ipnts2d[0];
+        gp_Pnt ipnt3d(ipnt2d.X(), 0.0, ipnt2d.Y());
+        if (fabs(ipnt2d.Y() - chordPoint2d.Y()) < Precision::Confusion()) {
+            return ipnt3d;
         }
-
-        if (xsi < Precision::Confusion())
-            return GetLEPoint();
-        if ((1.0 - xsi) < Precision::Confusion())
-            return GetTEPoint();
-
-        gp_Pnt   chordPoint3d = GetChordPoint(xsi);
-        gp_Pnt2d chordPoint2d(chordPoint3d.X(), chordPoint3d.Z());
-
-        gp_Pnt le3d = GetLEPoint();
-        gp_Pnt te3d = GetTEPoint();
-        gp_Pnt2d le2d(le3d.X(), le3d.Z());
-        gp_Pnt2d te2d(te3d.X(), te3d.Z());
-
-        // Normal vector on chord line
-        gp_Vec2d normalVec2d(-(le2d.Y() - te2d.Y()), (le2d.X() - te2d.X()));
-
-        // Compute 2d line normal to chord line
-        Handle(Geom2d_Line) line2d = new Geom2d_Line(chordPoint2d, gp_Dir2d(normalVec2d));
-
-        // Define xz-plane for curve projection
-        gp_Pln xzPlane = gce_MakePln(gp_Pnt(0.0, 0.0, 0.0), gp_Pnt(1.0, 0.0, 0.0), gp_Pnt(0.0, 0.0, 1.0));
-
-        // Loop over all edges of the wing profile curve and try to find intersection points
-        std::vector<gp_Pnt2d> ipnts2d;
-        BRepTools_WireExplorer wireExplorer;
-        for (wireExplorer.Init(GetWire()); wireExplorer.More(); wireExplorer.Next())
-        {
-            const TopoDS_Edge& edge = wireExplorer.Current();
-            Standard_Real firstParam;
-            Standard_Real lastParam;
-            Handle(Geom_Curve) curve3d = BRep_Tool::Curve(edge, firstParam, lastParam);
-            // Convert 3d curve to 2d curve lying in the xz-plane
-            Handle(Geom2d_Curve) curve2d = GeomAPI::To2d(curve3d, xzPlane);
-            // Check if there are intersection points between line2d and curve2d
-            Geom2dAPI_InterCurveCurve intersection(line2d, curve2d);
-            for (int n = 1; n <= intersection.NbPoints(); n++)
-            {
-                ipnts2d.push_back(intersection.Point(n));
+        if ((fromUpper && ipnt2d.Y() > chordPoint2d.Y()) || (!fromUpper && ipnt2d.Y() < chordPoint2d.Y())) {
+            return ipnt3d;
+        }
+    }
+    else if (ipnts2d.size() > 1) {
+        // There are one or more intersection points with the wire. Find the
+        // points with the minimum and maximum y-values.
+        gp_Pnt2d minYPnt2d = ipnts2d[0];
+        gp_Pnt2d maxYPnt2d = minYPnt2d;
+        for (std::vector<gp_Pnt2d>::size_type i = 1; i < ipnts2d.size(); i++) {
+            gp_Pnt2d currPnt2d = ipnts2d[i];
+            if (currPnt2d.Y() < minYPnt2d.Y()) {
+                minYPnt2d = currPnt2d;
+            }
+            if (currPnt2d.Y() > maxYPnt2d.Y()) {
+                maxYPnt2d = currPnt2d;
             }
         }
-        if (ipnts2d.size() == 1)
-        {
-            // There is only one intesection point with the wire
-            gp_Pnt2d ipnt2d = ipnts2d[0];
-            gp_Pnt ipnt3d(ipnt2d.X(), 0.0, ipnt2d.Y());
-            if (fabs(ipnt2d.Y() - chordPoint2d.Y()) < Precision::Confusion())
-                return ipnt3d;
-            if ((fromUpper && ipnt2d.Y() > chordPoint2d.Y()) || (!fromUpper && ipnt2d.Y() < chordPoint2d.Y()))
-            {
-                return ipnt3d;
-            }
+        gp_Pnt maxYPnt3d(maxYPnt2d.X(), 0.0, maxYPnt2d.Y());
+        gp_Pnt minYPnt3d(minYPnt2d.X(), 0.0, minYPnt2d.Y());
+        if (fromUpper) {
+            return maxYPnt3d;
         }
-        else if (ipnts2d.size() > 1)
-        {
-            // There are one or more intersection points with the wire. Find the
-            // points with the minimum and maximum y-values.
-            gp_Pnt2d minYPnt2d = ipnts2d[0];
-            gp_Pnt2d maxYPnt2d = minYPnt2d;
-            for (std::vector<gp_Pnt2d>::size_type i = 1; i < ipnts2d.size(); i++)
-            {
-                gp_Pnt2d currPnt2d = ipnts2d[i];
-                if (currPnt2d.Y() < minYPnt2d.Y())
-                    minYPnt2d = currPnt2d;
-                if (currPnt2d.Y() > maxYPnt2d.Y())
-                    maxYPnt2d = currPnt2d;
-            }
-            gp_Pnt maxYPnt3d(maxYPnt2d.X(), 0.0, maxYPnt2d.Y());
-            gp_Pnt minYPnt3d(minYPnt2d.X(), 0.0, minYPnt2d.Y());
-            if (fromUpper)
-            {
-                return maxYPnt3d;
-            }
-            return minYPnt3d;
-        }
-        throw CTiglError("Error: No intersection point found in CCPACSWingProfile::GetPoint", TIGL_NOT_FOUND);
+        return minYPnt3d;
     }
+    throw CTiglError("Error: No intersection point found in CCPACSWingProfile::GetPoint", TIGL_NOT_FOUND);
+}
 
-    // Helper function to determine the chord line between leading and trailing edge in the profile plane
-    Handle(Geom2d_TrimmedCurve) CCPACSWingProfile::GetChordLine()
-    {
-        Update();
-        gp_Pnt le3d = GetLEPoint();
-        gp_Pnt te3d = GetTEPoint();
+// Helper function to determine the chord line between leading and trailing edge in the profile plane
+Handle(Geom2d_TrimmedCurve) CCPACSWingProfile::GetChordLine()
+{
+    Update();
+    gp_Pnt le3d = GetLEPoint();
+    gp_Pnt te3d = GetTEPoint();
 
-        gp_Pnt2d le2d(le3d.X(), le3d.Z());  // create point in profile-plane (omitting Y coordinate)
-        gp_Pnt2d te2d(te3d.X(), te3d.Z());
+    gp_Pnt2d le2d(le3d.X(), le3d.Z());  // create point in profile-plane (omitting Y coordinate)
+    gp_Pnt2d te2d(te3d.X(), te3d.Z());
 
-        Handle(Geom2d_TrimmedCurve) chordLine = GCE2d_MakeSegment(le2d, te2d);
-        return chordLine;
-    }
+    Handle(Geom2d_TrimmedCurve) chordLine = GCE2d_MakeSegment(le2d, te2d);
+    return chordLine;
+}
 
-    // get pointer to profile algorithm
-    ProfileAlgoPointer CCPACSWingProfile::GetProfileAlgo(void) const
-    {
-        return profileAlgo;
-    }
+// get pointer to profile algorithm
+ProfileAlgoPointer CCPACSWingProfile::GetProfileAlgo(void) const
+{
+    return profileAlgo;
+}
 
 } // end namespace tigl
