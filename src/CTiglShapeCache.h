@@ -16,6 +16,11 @@
 * limitations under the License.
 */
 
+/**
+ * @brief The CTiglShapeCache class acts as a storage for all kinds of intermediate 
+ * shape results in order to improve speed of reoccurent calculations.
+ */
+
 #ifndef CTIGLSHAPECACHE_H
 #define CTIGLSHAPECACHE_H
 
@@ -23,12 +28,9 @@
 #include <string>
 #include <TopoDS_Shape.hxx>
 
-namespace tigl {
+namespace tigl 
+{
 
-/**
- * @brief The CTiglShapeCache class acts as a storage for all kinds of intermediate 
- * shape results in order to improve speed of reoccurent calculations.
- */
 class CTiglShapeCache
 {
 public:

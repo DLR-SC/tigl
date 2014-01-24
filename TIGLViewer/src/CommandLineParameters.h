@@ -23,7 +23,8 @@
 
 #include <QString>
 
-struct CommandLineParameters {
+struct CommandLineParameters 
+{
     QString initialFilename;
     QString windowTitle;
     QString modelUID;

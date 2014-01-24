@@ -42,7 +42,7 @@ int main(int argc, char *argv[])
     TIGLViewerApplication app( argc, argv );
     
 #ifdef __APPLE__
-    if(!getenv("CSF_GraphicShr")){
+    if (!getenv("CSF_GraphicShr")){
         static char env[64];
         strcpy(env,"CSF_GraphicShr=@executable_path/libTKOpenGl.dylib");
         putenv(env);
@@ -65,16 +65,18 @@ int main(int argc, char *argv[])
     TIGLViewerWindow *window = new TIGLViewerWindow();
     window->show();
 
-    if(!PARAMS.controlFile.isEmpty()){
-        if(window->getMyOCC())
+    if (!PARAMS.controlFile.isEmpty()){
+        if (window->getMyOCC()) {
             window->getMyOCC()->repaint();
+        }
         window->setInitialControlFile(PARAMS.controlFile);
     }
 
     // if a filename is given, open the configuration
-    if(!PARAMS.initialFilename.isEmpty()) {
-        if(window->getMyOCC())
+    if (!PARAMS.initialFilename.isEmpty()) {
+        if (window->getMyOCC()) {
             window->getMyOCC()->repaint();
+        }
         window->setInitialCpacsFileName(PARAMS.initialFilename);
     }
 
@@ -108,14 +110,12 @@ void showHelp(QString appName)
  */
 int parseArguments(QStringList argList)
 {
-    for(int i = 1; i < argList.size(); i++)
-    {
+    for (int i = 1; i < argList.size(); i++) {
         QString arg = argList.at(i);
-        if(arg.compare("--help") == 0)
-        {
+        if (arg.compare("--help") == 0) {
             return -1;
         }
-        else if(arg.compare("--filename") == 0) {
+        else if (arg.compare("--filename") == 0) {
             if (i+1 >= argList.size()) {
                 cout << "missing filename" << endl;
                 return -1;
@@ -124,7 +124,7 @@ int parseArguments(QStringList argList)
                 PARAMS.initialFilename = argList.at(++i);
             }
         }
-        else if(arg.compare("--windowtitle") == 0) {
+        else if (arg.compare("--windowtitle") == 0) {
             if (i+1 >= argList.size()) {
                 cout << "missing windowtitle" << endl;
                 PARAMS.windowTitle = "TIGLViewer";
@@ -133,7 +133,7 @@ int parseArguments(QStringList argList)
                 PARAMS.windowTitle = argList.at(++i);
             }
         }
-        else if(arg.compare("--modelUID") == 0) {
+        else if (arg.compare("--modelUID") == 0) {
             if (i+1 >= argList.size()) {
                 cout << "missing modelUID" << endl;
                 PARAMS.modelUID = "";
@@ -142,7 +142,7 @@ int parseArguments(QStringList argList)
                 PARAMS.modelUID = argList.at(++i);
             }
         }
-        else if(arg.compare("--controlFile") == 0) {
+        else if (arg.compare("--controlFile") == 0) {
             if (i+1 >= argList.size()) {
                 cout << "missing controlFile" << endl;
                 PARAMS.controlFile = "";
@@ -151,8 +151,10 @@ int parseArguments(QStringList argList)
                 PARAMS.controlFile = argList.at(++i);
             }
         }
-        else /* when there is a string behind the executable, we assume its the filename */
+        /* when there is a string behind the executable, we assume its the filename */
+        else {
             PARAMS.initialFilename = arg;
+        }
     }
 
     return 0;

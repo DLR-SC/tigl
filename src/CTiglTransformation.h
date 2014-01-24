@@ -31,94 +31,95 @@
 #include "gp_Pnt.hxx"
 #include "TopoDS.hxx"
 
-namespace tigl {
+namespace tigl 
+{
 
-    class CTiglTransformation
-    {
+class CTiglTransformation
+{
 
-    public:
-        // Constructor
-        CTiglTransformation(void);
-        CTiglTransformation(const gp_GTrsf& ocMatrix);
+public:
+    // Constructor
+    CTiglTransformation(void);
+    CTiglTransformation(const gp_GTrsf& ocMatrix);
 
-        // Virtual Destructor
-        virtual ~CTiglTransformation(void);
-        
-        CTiglTransformation& operator=(const CTiglTransformation&);
-
-        // Converts degree to radian, utility function
-        static double DegreeToRadian(double degree);
-
-        // Converts radian to degree, utility function
-        static double RadianToDegree(double radian);
-
-        // Sets matrix to identity matrix
-        void SetIdentity(void);
-
-        // Sets a value of the transformation matrix by row/col
-        void SetValue(int row, int col, double value);
-
-        // Returns the current transformation as gp_GTrsf object
-        gp_GTrsf Get_gp_GTrsf(void) const;
-
-        // Post multiply this matrix with another matrix and stores 
-        // the result in this matrix
-        void PostMultiply(const CTiglTransformation& aTrans);
-
-        // Pre multiply this matrix with another matrix and stores 
-        // The result in this matrix
-        void PreMultiply(const CTiglTransformation& aTrans);
-
-        // Adds a translation to the matrix
-        void AddTranslation(double tx, double ty, double tz);
-
-        // Adds a scaling transformation to the matrix
-        void AddScaling(double sx, double sy, double sz);
-
-        // Adds a rotation around the x,y,z axis to the matrix
-        void AddRotationX(double degreeX);
-        void AddRotationY(double degreeY);
-        void AddRotationZ(double degreeZ);
-
-        // Adds projection on xy plane by setting the z coordinate to 0
-        void AddProjectionOnXYPlane(void);
-
-        // Adds projection on xz plane by setting the y coordinate to 0
-        void AddProjectionOnXZPlane(void);
-
-        // Adds projection on yz plane by setting the x coordinate to 0
-        void AddProjectionOnYZPlane(void);
-
-        // Adds mirroring at xy plane
-        void AddMirroringAtXYPlane(void);
-
-        // Adds mirroring at xz plane
-        void AddMirroringAtXZPlane(void);
-
-        // Adds mirroring at yz plane
-        void AddMirroringAtYZPlane(void);
-
-        // Transforms a shape with the current transformation matrix and
-        // returns the transformed shape
-        TopoDS_Shape Transform(const TopoDS_Shape& shape) const;
-
-        // Transforms a point with the current transformation matrix and
-        // returns the transformed point
-        gp_Pnt Transform(const gp_Pnt& point) const;
-        
-        // Returns the inverted Transformation
-        CTiglTransformation Inverted() const;
-
-        // Default copy constructor and assignment operator are correct
-        // since memberwise copy is enough for this class.
-
-        // for debug purposes
-        void printTransformMatrix();
-
-    private:
-        double m_matrix[4][4];
+    // Virtual Destructor
+    virtual ~CTiglTransformation(void);
     
-    };
+    CTiglTransformation& operator=(const CTiglTransformation&);
+
+    // Converts degree to radian, utility function
+    static double DegreeToRadian(double degree);
+
+    // Converts radian to degree, utility function
+    static double RadianToDegree(double radian);
+
+    // Sets matrix to identity matrix
+    void SetIdentity(void);
+
+    // Sets a value of the transformation matrix by row/col
+    void SetValue(int row, int col, double value);
+
+    // Returns the current transformation as gp_GTrsf object
+    gp_GTrsf Get_gp_GTrsf(void) const;
+
+    // Post multiply this matrix with another matrix and stores 
+    // the result in this matrix
+    void PostMultiply(const CTiglTransformation& aTrans);
+
+    // Pre multiply this matrix with another matrix and stores 
+    // The result in this matrix
+    void PreMultiply(const CTiglTransformation& aTrans);
+
+    // Adds a translation to the matrix
+    void AddTranslation(double tx, double ty, double tz);
+
+    // Adds a scaling transformation to the matrix
+    void AddScaling(double sx, double sy, double sz);
+
+    // Adds a rotation around the x,y,z axis to the matrix
+    void AddRotationX(double degreeX);
+    void AddRotationY(double degreeY);
+    void AddRotationZ(double degreeZ);
+
+    // Adds projection on xy plane by setting the z coordinate to 0
+    void AddProjectionOnXYPlane(void);
+
+    // Adds projection on xz plane by setting the y coordinate to 0
+    void AddProjectionOnXZPlane(void);
+
+    // Adds projection on yz plane by setting the x coordinate to 0
+    void AddProjectionOnYZPlane(void);
+
+    // Adds mirroring at xy plane
+    void AddMirroringAtXYPlane(void);
+
+    // Adds mirroring at xz plane
+    void AddMirroringAtXZPlane(void);
+
+    // Adds mirroring at yz plane
+    void AddMirroringAtYZPlane(void);
+
+    // Transforms a shape with the current transformation matrix and
+    // returns the transformed shape
+    TopoDS_Shape Transform(const TopoDS_Shape& shape) const;
+
+    // Transforms a point with the current transformation matrix and
+    // returns the transformed point
+    gp_Pnt Transform(const gp_Pnt& point) const;
+    
+    // Returns the inverted Transformation
+    CTiglTransformation Inverted() const;
+
+    // Default copy constructor and assignment operator are correct
+    // since memberwise copy is enough for this class.
+
+    // for debug purposes
+    void printTransformMatrix();
+
+private:
+    double m_matrix[4][4];
+
+};
 
 } // end namespace tigl
 

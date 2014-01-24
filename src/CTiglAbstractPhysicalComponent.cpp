@@ -42,116 +42,121 @@
 #endif
 
 
-namespace tigl {
+namespace tigl 
+{
 
-    CTiglAbstractPhysicalComponent::CTiglAbstractPhysicalComponent()
-        : CTiglAbstractGeometricComponent()
-    {
-        childContainer.clear();
+CTiglAbstractPhysicalComponent::CTiglAbstractPhysicalComponent()
+    : CTiglAbstractGeometricComponent()
+{
+    childContainer.clear();
+}
+
+// Adds a child to this geometric component.
+void CTiglAbstractPhysicalComponent::AddChild(CTiglAbstractPhysicalComponent* componentPtr)
+{
+    if (componentPtr == 0) {
+        throw CTiglError("Error: Null pointer for component in CTiglAbstractGeometricComponent::AddChild", TIGL_NULL_POINTER);
     }
 
-    // Adds a child to this geometric component.
-    void CTiglAbstractPhysicalComponent::AddChild(CTiglAbstractPhysicalComponent* componentPtr)
-    {
-        if (componentPtr == 0) {
-            throw CTiglError("Error: Null pointer for component in CTiglAbstractGeometricComponent::AddChild", TIGL_NULL_POINTER);
-        }
+    childContainer.push_back(componentPtr);
+}
 
-        childContainer.push_back(componentPtr);
+// Returns a pointer to the list of children of a component.
+CTiglAbstractPhysicalComponent::ChildContainerType CTiglAbstractPhysicalComponent::GetChildren(bool recursive)
+{
+    if (!recursive) {
+        return childContainer;
     }
-
-    // Returns a pointer to the list of children of a component.
-    CTiglAbstractPhysicalComponent::ChildContainerType CTiglAbstractPhysicalComponent::GetChildren(bool recursive)
-    {
-        if(!recursive){
-            return childContainer;
-        }
-        else {
-            ChildContainerType allChildsWithChilds;
-            ChildContainerType::iterator childit;
-            for(childit = childContainer.begin(); childit != childContainer.end(); ++childit){
-                allChildsWithChilds.push_back(*childit);
-                ChildContainerType childsOfChild = (*childit)->GetChildren(true);
-                for(ChildContainerType::iterator childOfChildIt = childsOfChild.begin(); childOfChildIt != childsOfChild.end(); ++childOfChildIt){
-                    allChildsWithChilds.push_back(*childOfChildIt);
-                }
+    else {
+        ChildContainerType allChildsWithChilds;
+        ChildContainerType::iterator childit;
+        for (childit = childContainer.begin(); childit != childContainer.end(); ++childit) {
+            allChildsWithChilds.push_back(*childit);
+            ChildContainerType childsOfChild = (*childit)->GetChildren(true);
+            for (ChildContainerType::iterator childOfChildIt = childsOfChild.begin(); childOfChildIt != childsOfChild.end(); ++childOfChildIt) {
+                allChildsWithChilds.push_back(*childOfChildIt);
             }
-            return allChildsWithChilds;
+        }
+        return allChildsWithChilds;
+    }
+}
+
+// Resets the geometric component.
+void CTiglAbstractPhysicalComponent::Reset(void)
+{
+    CTiglAbstractGeometricComponent::Reset();
+    childContainer.clear();
+    SetParentUID("");
+}
+
+// Returns the parent unique id
+std::string& CTiglAbstractPhysicalComponent::GetParentUID(void)
+{
+    return parentUID;
+}
+
+// Sets the parent uid.
+void CTiglAbstractPhysicalComponent::SetParentUID(const std::string& parentUID)
+{
+    this->parentUID = parentUID;
+}
+
+void CTiglAbstractPhysicalComponent::SetSymmetryAxis(const std::string& axis)
+{
+    CTiglAbstractGeometricComponent::SetSymmetryAxis(axis);
+
+    ChildContainerType::iterator it = childContainer.begin();
+    for (; it != childContainer.end(); ++it) {
+        CTiglAbstractPhysicalComponent * pChild = *it;
+        if (pChild) {
+            pChild->SetSymmetryAxis(axis);
         }
     }
-
-    // Resets the geometric component.
-    void CTiglAbstractPhysicalComponent::Reset(void)
-    {
-        CTiglAbstractGeometricComponent::Reset();
-        childContainer.clear();
-        SetParentUID("");
-    }
-
-    // Returns the parent unique id
-    std::string& CTiglAbstractPhysicalComponent::GetParentUID(void)
-    {
-        return parentUID;
-    }
-
-    // Sets the parent uid.
-    void CTiglAbstractPhysicalComponent::SetParentUID(const std::string& parentUID)
-    {
-        this->parentUID = parentUID;
-    }
-
-    void CTiglAbstractPhysicalComponent::SetSymmetryAxis(const std::string& axis)
-    {
-        CTiglAbstractGeometricComponent::SetSymmetryAxis(axis);
-
-        ChildContainerType::iterator it = childContainer.begin();
-        for(; it != childContainer.end(); ++it){
-            CTiglAbstractPhysicalComponent * pChild = *it;
-            if(pChild) pChild->SetSymmetryAxis(axis);
-        }
-    }
+}
 
 
 #ifdef TIGL_USE_XCAF
-    TDF_Label CTiglAbstractPhysicalComponent::ExportDataStructure(CCPACSConfiguration &config, Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label)
-    {
-        // add faces of current shape
-        TopExp_Explorer faceExplorer;
-        int iface = 1;
-        for (faceExplorer.Init(GetLoft(), TopAbs_FACE); faceExplorer.More(); faceExplorer.Next()) {
-            const TopoDS_Face& currentFace = TopoDS::Face(faceExplorer.Current());
+TDF_Label CTiglAbstractPhysicalComponent::ExportDataStructure(CCPACSConfiguration &config, Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label)
+{
+    // add faces of current shape
+    TopExp_Explorer faceExplorer;
+    int iface = 1;
+    for (faceExplorer.Init(GetLoft(), TopAbs_FACE); faceExplorer.More(); faceExplorer.Next()) {
+        const TopoDS_Face& currentFace = TopoDS::Face(faceExplorer.Current());
 
-            TDF_Label aLabel = myAssembly->AddShape(currentFace, false);
-            std::stringstream stream;
-            stream << GetUID() << "_face" << iface++;
-            TDataStd_Name::Set (aLabel, stream.str().c_str());
+        TDF_Label aLabel = myAssembly->AddShape(currentFace, false);
+        std::stringstream stream;
+        stream << GetUID() << "_face" << iface++;
+        TDataStd_Name::Set (aLabel, stream.str().c_str());
 
-        }
+    }
 
-        // intersection lines with childs
-        // Other (sub)-components
-        ChildContainerType::iterator it = childContainer.begin();
-        for(; it != childContainer.end(); ++it){
-            CTiglAbstractPhysicalComponent * pChild = *it;
-            if(pChild) {
-                CTiglIntersectionCalculation intersector(&(config.GetShapeCache()), GetUID(), pChild->GetUID(), GetLoft(), pChild->GetLoft());
-                for(int i = 1; i <= intersector.GetNumWires(); ++i) {
-                    TopoDS_Wire& wire = intersector.GetWire(i);
-                    TDF_Label wireLabel = myAssembly->AddShape(wire, false);
-                    TDataStd_Name::Set (wireLabel, intersector.GetIDString(i).c_str());
-                }
+    // intersection lines with childs
+    // Other (sub)-components
+    ChildContainerType::iterator it = childContainer.begin();
+    for (; it != childContainer.end(); ++it) {
+        CTiglAbstractPhysicalComponent * pChild = *it;
+        if (pChild) {
+            CTiglIntersectionCalculation intersector(&(config.GetShapeCache()), GetUID(), pChild->GetUID(), GetLoft(), pChild->GetLoft());
+            for (int i = 1; i <= intersector.GetNumWires(); ++i) {
+                TopoDS_Wire& wire = intersector.GetWire(i);
+                TDF_Label wireLabel = myAssembly->AddShape(wire, false);
+                TDataStd_Name::Set (wireLabel, intersector.GetIDString(i).c_str());
             }
         }
-
-        // Other (sub)-components
-        it = childContainer.begin();
-        for(; it != childContainer.end(); ++it){
-            CTiglAbstractPhysicalComponent * pChild = *it;
-            if(pChild) TDF_Label newLabel = pChild->ExportDataStructure(config, myAssembly, label);
-        }
-
-        return label;
     }
+
+    // Other (sub)-components
+    it = childContainer.begin();
+    for (; it != childContainer.end(); ++it) {
+        CTiglAbstractPhysicalComponent * pChild = *it;
+        if (pChild) {
+            TDF_Label newLabel = pChild->ExportDataStructure(config, myAssembly, label);
+        }
+    }
+
+    return label;
+}
 #endif
 
 } // namespace tigl

@@ -19,7 +19,8 @@
 #ifndef CMUTEX_H
 #define CMUTEX_H
 
-namespace tigl{
+namespace tigl
+{
 
 /**
  * @brief Implements a platform indepent Mutex object

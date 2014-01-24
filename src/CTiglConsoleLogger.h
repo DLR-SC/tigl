@@ -21,7 +21,8 @@
 
 #include "ITiglLogger.h"
 
-namespace tigl {
+namespace tigl 
+{
 
 class CTiglConsoleLogger : public ITiglLogger
 {

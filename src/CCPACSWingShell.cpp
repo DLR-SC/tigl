@@ -21,9 +21,11 @@
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 
-namespace tigl {
+namespace tigl 
+{
 
-CCPACSWingShell::CCPACSWingShell(){
+CCPACSWingShell::CCPACSWingShell() 
+{
     Reset();
 }
 
@@ -53,21 +55,21 @@ void CCPACSWingShell::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string
     Reset();
     
     // check path
-    if( tixiCheckElement(tixiHandle, shellXPath.c_str()) != SUCCESS){
+    if ( tixiCheckElement(tixiHandle, shellXPath.c_str()) != SUCCESS) {
         LOG(ERROR) << "Wing Shell " << shellXPath << " not found in CPACS file!" << std::endl;
         return;
     }
     
     // read cell data
     std::string cellpath = shellXPath + "/cells";
-    if(tixiCheckElement(tixiHandle, cellpath.c_str()) == SUCCESS){
+    if (tixiCheckElement(tixiHandle, cellpath.c_str()) == SUCCESS) {
         cells.ReadCPACS(tixiHandle, cellpath.c_str());
     }
     
     // read material
     std::string materialString;
     materialString = shellXPath + "/skin/material";
-    if( tixiCheckElement(tixiHandle, materialString.c_str()) == SUCCESS){
+    if ( tixiCheckElement(tixiHandle, materialString.c_str()) == SUCCESS) {
         material.ReadCPACS(tixiHandle, materialString.c_str());
     }
     else {

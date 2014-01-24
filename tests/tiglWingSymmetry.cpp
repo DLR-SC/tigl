@@ -30,35 +30,38 @@
 
 /******************************************************************************/
 
-class TiglWingSymmetry : public ::testing::Test {
- protected:
-  static void SetUpTestCase() {
+class TiglWingSymmetry : public ::testing::Test 
+{
+protected:
+    static void SetUpTestCase() 
+    {
         const char* filename = "TestData/CPACS_21_D150.xml";
         ReturnCode tixiRet;
         TiglReturnCode tiglRet;
 
         tiglHandle = -1;
         tixiHandle = -1;
-        
+
         tixiRet = tixiOpenDocument(filename, &tixiHandle);
         ASSERT_TRUE (tixiRet == SUCCESS);
         tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "D150_VAMP", &tiglHandle);
         ASSERT_TRUE(tiglRet == TIGL_SUCCESS);
-  }
+    }
 
-  static void TearDownTestCase() {
+    static void TearDownTestCase() 
+    {
         ASSERT_TRUE(tiglCloseCPACSConfiguration(tiglHandle) == TIGL_SUCCESS);
         ASSERT_TRUE(tixiCloseDocument(tixiHandle) == SUCCESS);
         tiglHandle = -1;
         tixiHandle = -1;
-  }
-  
-  virtual void SetUp() {}
-  virtual void TearDown() {}
-  
+    }
 
-  static TixiDocumentHandle           tixiHandle;
-  static TiglCPACSConfigurationHandle tiglHandle;
+    virtual void SetUp() {}
+    virtual void TearDown() {}
+
+
+    static TixiDocumentHandle           tixiHandle;
+    static TiglCPACSConfigurationHandle tiglHandle;
 };
 
 

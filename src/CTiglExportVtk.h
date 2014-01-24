@@ -28,63 +28,64 @@
 
 #include <string>
 
-namespace tigl {
+namespace tigl 
+{
 
-    enum VTK_EXPORT_MODE
-        {
-        TIGL_VTK_SIMPLE = 0,
-        TIGL_VTK_COMPLEX  = 1
-        };
-
-    class CTiglExportVtk
+enum VTK_EXPORT_MODE
     {
-    public:
-        // Constructor
-        CTiglExportVtk(class CCPACSConfiguration & config);
-
-        // Virtual Destructor
-        virtual ~CTiglExportVtk(void);
-
-        // Exports a by index selected wing, boolean fused and meshed, as VTK file
-        void ExportMeshedWingVTKByIndex(const int wingIndex, const std::string& filename, const double deflection = 0.1);
-
-        // Exports a by UID selected wing, boolean fused and meshed, as VTK file
-        void ExportMeshedWingVTKByUID(const std::string& wingUID, const std::string& filename, const double deflection = 0.1);
-
-        // Exports a by index selected fuselage, boolean fused and meshed, as VTK file
-        void ExportMeshedFuselageVTKByIndex(const int fuselageIndex, const std::string& filename, const double deflection = 0.1);
-
-        // Exports a by UID selected fuselage, boolean fused and meshed, as VTK file
-        void ExportMeshedFuselageVTKByUID(const std::string& fuselageUID, const std::string& filename, const double deflection = 0.1);
-
-        // Exports a whole geometry, boolean fused and meshed, as VTK file
-        void ExportMeshedGeometryVTK(const std::string& filename, const double deflection = 0.1);
-
-
-        // Simple exports without cpacs information
-        // Exports a by UID selected wing, meshed, as VTK file
-        // No additional information are computed.
-        void ExportMeshedWingVTKSimpleByUID(const std::string& wingUID, const std::string& filename, const double deflection = 0.1);
-        
-        void ExportMeshedWingVTKSimpleByIndex(const int wingIndex, const std::string& filename, const double deflection = 0.1);
-
-        // Exports a by UID selected fuselage, boolean fused and meshed, as VTK file.
-        // No additional information are computed.
-        void ExportMeshedFuselageVTKSimpleByUID(const std::string& fuselageUID, const std::string& filename, const double deflection = 0.1);
-        
-        void ExportMeshedFuselageVTKSimpleByIndex(const int fuselageIndex, const std::string& filename, const double deflection = 0.1);
-
-        // Exports a whole geometry, boolean fused and meshed, as VTK file
-        // No additional information are computed.
-        void ExportMeshedGeometryVTKSimple(const std::string& filename, const double deflection = 0.1);
-
-         void ExportMeshedGeometryVTKNoFuse(const std::string& filename, const double deflection = 0.1);
-
-
-    private:
-        class CCPACSConfiguration & myConfig;       /**< TIGL configuration object */
-
+    TIGL_VTK_SIMPLE = 0,
+    TIGL_VTK_COMPLEX  = 1
     };
+
+class CTiglExportVtk
+{
+public:
+    // Constructor
+    CTiglExportVtk(class CCPACSConfiguration & config);
+
+    // Virtual Destructor
+    virtual ~CTiglExportVtk(void);
+
+    // Exports a by index selected wing, boolean fused and meshed, as VTK file
+    void ExportMeshedWingVTKByIndex(const int wingIndex, const std::string& filename, const double deflection = 0.1);
+
+    // Exports a by UID selected wing, boolean fused and meshed, as VTK file
+    void ExportMeshedWingVTKByUID(const std::string& wingUID, const std::string& filename, const double deflection = 0.1);
+
+    // Exports a by index selected fuselage, boolean fused and meshed, as VTK file
+    void ExportMeshedFuselageVTKByIndex(const int fuselageIndex, const std::string& filename, const double deflection = 0.1);
+
+    // Exports a by UID selected fuselage, boolean fused and meshed, as VTK file
+    void ExportMeshedFuselageVTKByUID(const std::string& fuselageUID, const std::string& filename, const double deflection = 0.1);
+
+    // Exports a whole geometry, boolean fused and meshed, as VTK file
+    void ExportMeshedGeometryVTK(const std::string& filename, const double deflection = 0.1);
+
+
+    // Simple exports without cpacs information
+    // Exports a by UID selected wing, meshed, as VTK file
+    // No additional information are computed.
+    void ExportMeshedWingVTKSimpleByUID(const std::string& wingUID, const std::string& filename, const double deflection = 0.1);
+    
+    void ExportMeshedWingVTKSimpleByIndex(const int wingIndex, const std::string& filename, const double deflection = 0.1);
+
+    // Exports a by UID selected fuselage, boolean fused and meshed, as VTK file.
+    // No additional information are computed.
+    void ExportMeshedFuselageVTKSimpleByUID(const std::string& fuselageUID, const std::string& filename, const double deflection = 0.1);
+    
+    void ExportMeshedFuselageVTKSimpleByIndex(const int fuselageIndex, const std::string& filename, const double deflection = 0.1);
+
+    // Exports a whole geometry, boolean fused and meshed, as VTK file
+    // No additional information are computed.
+    void ExportMeshedGeometryVTKSimple(const std::string& filename, const double deflection = 0.1);
+
+     void ExportMeshedGeometryVTKNoFuse(const std::string& filename, const double deflection = 0.1);
+
+
+private:
+    class CCPACSConfiguration & myConfig;       /**< TIGL configuration object */
+
+};
 
 } // end namespace tigl
 

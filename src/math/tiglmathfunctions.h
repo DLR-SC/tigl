@@ -22,7 +22,8 @@
 
 #include<vector>
 
-namespace tigl {
+namespace tigl 
+{
 
 class CTiglPoint;
 

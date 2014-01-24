@@ -33,52 +33,51 @@
 #include "CCPACSWingSegment.h"
 #include "CTiglError.h"
 
-namespace tigl {
+namespace tigl 
+{
 
-    class CCPACSWing;
+class CCPACSWing;
 
-    class CCPACSWingSegments
-    {
-    private:
-        // Typedef for a CCPACSWingSegment container to store the segments of a wing.
-        typedef std::vector<CCPACSWingSegment*> CCPACSWingSegmentContainer;
+class CCPACSWingSegments
+{
+public:
+    // Constructor
+    CCPACSWingSegments(CCPACSWing* aWing);
 
-    public:
-        // Constructor
-        CCPACSWingSegments(CCPACSWing* aWing);
+    // Virtual Destructor
+    virtual ~CCPACSWingSegments(void);
 
-        // Virtual Destructor
-        virtual ~CCPACSWingSegments(void);
+    // Invalidates internal state
+    void Invalidate(void);
 
-        // Invalidates internal state
-        void Invalidate(void);
+    // Read CPACS segments element
+    void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& wingXPath);
 
-        // Read CPACS segments element
-        void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& wingXPath);
+    // Gets a segment by index or UID.
+    CCPACSWingSegment & GetSegment(const int index);
+    CCPACSWingSegment & GetSegment(const std::string& segmentUID);
 
-        // Gets a segment by index or UID.
-        CCPACSWingSegment & GetSegment(const int index);
-        CCPACSWingSegment & GetSegment(const std::string& segmentUID);
+    // Gets total segment count
+    int GetSegmentCount(void) const;
 
-        // Gets total segment count
-        int GetSegmentCount(void) const;
+protected:
+    // Cleanup routine
+    void Cleanup(void);
 
-    protected:
-        // Cleanup routine
-        void Cleanup(void);
+private:
+    // Typedef for a CCPACSWingSegment container to store the segments of a wing.
+    typedef std::vector<CCPACSWingSegment*> CCPACSWingSegmentContainer;
 
-    private:
-        // Copy constructor
-        CCPACSWingSegments(const CCPACSWingSegments& );
+    // Copy constructor
+    CCPACSWingSegments(const CCPACSWingSegments& );
 
-        // Assignment operator
-        void operator=(const CCPACSWingSegments& );
+    // Assignment operator
+    void operator=(const CCPACSWingSegments& );
 
-    private:
-        CCPACSWingSegmentContainer segments;       /**< Segment elements    */
-        CCPACSWing*                wing;           /**< Parent wing         */
+    CCPACSWingSegmentContainer segments;       /**< Segment elements    */
+    CCPACSWing*                wing;           /**< Parent wing         */
 
-    };
+};
 
 } // end namespace tigl
 

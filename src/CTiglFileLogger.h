@@ -22,7 +22,8 @@
 #include "ITiglLogger.h"
 #include <cstdio>
 
-namespace tigl {
+namespace tigl 
+{
 
 class CTiglFileLogger : public ITiglLogger
 {
