@@ -29,7 +29,8 @@
 #include "BRepBuilderAPI_MakeEdge.hxx"
 #include "gp_Circ.hxx"
 
-TEST(Misc, WireGetPoint){
+TEST(Misc, WireGetPoint)
+{
     gp_Pnt p1(0.,0.,0.);
     gp_Pnt p2(1.,0.,0.);
     gp_Pnt p3(1.,3.,0.);
@@ -60,7 +61,8 @@ TEST(Misc, WireGetPoint){
     ASSERT_NEAR(1.0 , ProjectPointOnWire(wireBuilder.Wire(), p3_), 1e-7);
 }
 
-TEST(Misc, GetPointOnCirc){
+TEST(Misc, GetPointOnCirc)
+{
     // add a half circle
     BRepBuilderAPI_MakeWire wireBuilder(BRepBuilderAPI_MakeEdge(gp_Circ(gp::XOY() ,1.), -M_PI/2, M_PI/2));
     // add a line
@@ -87,7 +89,8 @@ TEST(Misc, GetPointOnCirc){
     ASSERT_NEAR(1.00, ProjectPointOnWire(wire, p5), 1e-7);
 }
 
-TEST(Misc, GetErrorString){
+TEST(Misc, GetErrorString)
+{
     //check valid error codes
     ASSERT_STREQ("TIGL_SUCCESS", tiglGetErrorString(TIGL_SUCCESS));
     ASSERT_STREQ("TIGL_ERROR", tiglGetErrorString(TIGL_ERROR));
@@ -108,7 +111,8 @@ TEST(Misc, GetErrorString){
     ASSERT_STREQ("TIGL_UNKNOWN_ERROR", tiglGetErrorString((TiglReturnCode)100));
 }
 
-TEST(Misc, getLogLevelString){
+TEST(Misc, getLogLevelString)
+{
     //check valid log levels
     ASSERT_STREQ("SLT" , tigl::getLogLevelString( TILOG_SILENT).c_str());
     ASSERT_STREQ("ERR" , tigl::getLogLevelString(  TILOG_ERROR).c_str());

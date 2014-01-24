@@ -40,50 +40,51 @@
 #include "ShapeAnalysis_FreeBounds.hxx"
 
 
-namespace tigl {
+namespace tigl 
+{
 
-    class CTiglShapeCache;
+class CTiglShapeCache;
 
-    class CTiglIntersectionCalculation
-    {
+class CTiglIntersectionCalculation
+{
 
-    public:
-        // Constructor
-        CTiglIntersectionCalculation(CTiglShapeCache* cache, 
-                                     const std::string &idOne, 
-                                     const std::string &idTwo, 
-                                     TopoDS_Shape compoundOne,
-                                     TopoDS_Shape compoundTwo );
+public:
+    // Constructor
+    CTiglIntersectionCalculation(CTiglShapeCache* cache, 
+                                 const std::string &idOne, 
+                                 const std::string &idTwo, 
+                                 TopoDS_Shape compoundOne,
+                                 TopoDS_Shape compoundTwo );
 
-        // Destructor
-        virtual ~CTiglIntersectionCalculation(void);
+    // Destructor
+    virtual ~CTiglIntersectionCalculation(void);
 
-        // returns total number of intersection lines
-        int GetCountIntersectionLines(void);
+    // returns total number of intersection lines
+    int GetCountIntersectionLines(void);
 
-        // Gets a point on the intersection line in dependence of a parameter zeta with
-        // 0.0 <= zeta <= 1.0. For zeta = 0.0 this is the line starting point,
-        // for zeta = 1.0 the last point on the intersection line.
-        // numIntersecLine is the number of the Intersection line.
-        gp_Pnt GetPoint(double zeta, int wireID);
+    // Gets a point on the intersection line in dependence of a parameter zeta with
+    // 0.0 <= zeta <= 1.0. For zeta = 0.0 this is the line starting point,
+    // for zeta = 1.0 the last point on the intersection line.
+    // numIntersecLine is the number of the Intersection line.
+    gp_Pnt GetPoint(double zeta, int wireID);
 
-        // gives the number of wires of the intersection calculation
-        int GetNumWires();
+    // gives the number of wires of the intersection calculation
+    int GetNumWires();
 
-        // gives a reference to the computed wire
-        TopoDS_Wire& GetWire(int wireID);
+    // gives a reference to the computed wire
+    TopoDS_Wire& GetWire(int wireID);
 
-        // returns id string for intersection wire
-        std::string GetIDString(int wireID);
+    // returns id string for intersection wire
+    std::string GetIDString(int wireID);
 
-    private:        
-        Standard_Real tolerance;
-        int numWires;                           /* The number of intersection lines */
-        TopoDS_Shape intersectionResult;        /* The full Intersection result */
-        std::vector<TopoDS_Wire> Wires;         /* All intersection wires */
-        std::string id;                         /* identifcation string of the intersection */
-        
-    };
+private:        
+    Standard_Real tolerance;
+    int numWires;                           /* The number of intersection lines */
+    TopoDS_Shape intersectionResult;        /* The full Intersection result */
+    std::vector<TopoDS_Wire> Wires;         /* All intersection wires */
+    std::string id;                         /* identifcation string of the intersection */
+    
+};
 
 } // end namespace tigl
 

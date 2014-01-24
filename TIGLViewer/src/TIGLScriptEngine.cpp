@@ -45,8 +45,7 @@ void TIGLScriptEngine::openFile(QString fileName)
 {
     QString script;
     QFile file(fileName);
-    if (file.open(QIODevice::ReadOnly | QIODevice::Text))
-    {
+    if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         while (!file.atEnd()) {
             script += file.readLine() + "\n";
         }
@@ -72,7 +71,7 @@ void TIGLScriptEngine::eval(QString commandLine)
 
     val = engine.evaluate(commandLine);
     QString result = val.toString();
-    if(result == "undefined") {
+    if (result == "undefined") {
         result = "done";
     }
 

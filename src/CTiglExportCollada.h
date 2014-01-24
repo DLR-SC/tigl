@@ -25,7 +25,8 @@
 
 class TopoDS_Shape;
 
-namespace tigl {
+namespace tigl 
+{
 
 class CTiglExportCollada
 {
@@ -46,6 +47,6 @@ private:
 };
 
 
-}
+} // end namespace tigl
 
 #endif // CTIGLEXPORTCOLLADA_H

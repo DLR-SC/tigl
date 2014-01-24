@@ -26,7 +26,8 @@
 #include "CTiglAbstractSegment.h"
 #include "TopoDS_Shape.hxx"
 
-namespace tigl{
+namespace tigl
+{
 
 CTiglAbstractSegment::CTiglAbstractSegment(int segindex)
     : mySegmentIndex(segindex), invalidated(true), continuity(C0)
@@ -53,4 +54,4 @@ TiglContinuity CTiglAbstractSegment::GetContinuity() const {
     return continuity;
 }
 
-}
+} // end namespace tigl

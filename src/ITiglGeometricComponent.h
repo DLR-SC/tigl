@@ -42,43 +42,44 @@
 class TopoDS_Shape;
 
 
-namespace tigl {
+namespace tigl 
+{
 
-    class ITiglGeometricComponent
-    {
+class ITiglGeometricComponent
+{
 
-    public:
-           // Gets the loft of a geometric component
-        virtual TopoDS_Shape & GetLoft(void) = 0;
+public:
+       // Gets the loft of a geometric component
+    virtual TopoDS_Shape & GetLoft(void) = 0;
 
-        // Returns the unique id of this component
-        virtual const std::string& GetUID(void) = 0;
+    // Returns the unique id of this component
+    virtual const std::string& GetUID(void) = 0;
 
-        // Sets the unique id of this component
-        virtual void SetUID(const std::string&) = 0;
+    // Sets the unique id of this component
+    virtual void SetUID(const std::string&) = 0;
 
-        // Get transformation object
-        virtual CTiglTransformation GetTransformation(void) = 0;
-        
-        // Set transformation object
-        virtual void Translate(CTiglPoint trans) = 0;
+    // Get transformation object
+    virtual CTiglTransformation GetTransformation(void) = 0;
+    
+    // Set transformation object
+    virtual void Translate(CTiglPoint trans) = 0;
 
-        // Get component translation
-        virtual CTiglPoint GetTranslation(void) = 0;
+    // Get component translation
+    virtual CTiglPoint GetTranslation(void) = 0;
 
-        // Returns the Geometric type of this component, e.g. Wing or Fuselage
-        virtual TiglGeometricComponentType GetComponentType(void) = 0;
+    // Returns the Geometric type of this component, e.g. Wing or Fuselage
+    virtual TiglGeometricComponentType GetComponentType(void) = 0;
 
 #ifdef TIGL_USE_XCAF
-        // builds data structure for a TDocStd_Application
-        // mostly used for export
-        virtual TDF_Label ExportDataStructure(class CCPACSConfiguration&, Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label) = 0;
+    // builds data structure for a TDocStd_Application
+    // mostly used for export
+    virtual TDF_Label ExportDataStructure(class CCPACSConfiguration&, Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label) = 0;
 #endif
 
-    protected:
-        // Resets the geometric component.
-        virtual void Reset(void) = 0;
-    };
+protected:
+    // Resets the geometric component.
+    virtual void Reset(void) = 0;
+};
 
 } // end namespace tigl
 

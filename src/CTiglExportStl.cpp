@@ -37,50 +37,51 @@
 
 
 
-namespace tigl {
+namespace tigl 
+{
 
-    // Constructor
-    CTiglExportStl::CTiglExportStl(CCPACSConfiguration& config)
-    :myConfig(config)
-    {
-    }
-
-    
-    // Exports a selected wing, boolean fused and meshed, as STL file
-    void CTiglExportStl::ExportMeshedWingSTL(int wingIndex, const std::string& filename, double deflection)
-    {
-        CCPACSWing& wing = myConfig.GetWing(wingIndex);
-        TopoDS_Shape loft = wing.GetLoft();
-
-        BRepMesh::Mesh(loft, deflection);
-        StlAPI_Writer *StlWriter = new StlAPI_Writer();
-        StlWriter->Write(loft, const_cast<char*>(filename.c_str()));
-    }
+// Constructor
+CTiglExportStl::CTiglExportStl(CCPACSConfiguration& config)
+:myConfig(config)
+{
+}
 
 
-    // Exports a selected fuselage, boolean fused and meshed, as STL file
-    void CTiglExportStl::ExportMeshedFuselageSTL(int fuselageIndex, const std::string& filename, double deflection)
-    {
-        CCPACSFuselage& fuselage = myConfig.GetFuselage(fuselageIndex);
-        TopoDS_Shape loft = fuselage.GetLoft();
+// Exports a selected wing, boolean fused and meshed, as STL file
+void CTiglExportStl::ExportMeshedWingSTL(int wingIndex, const std::string& filename, double deflection)
+{
+    CCPACSWing& wing = myConfig.GetWing(wingIndex);
+    TopoDS_Shape loft = wing.GetLoft();
 
-        // Transform loft by fuselage transformation => absolute world coordinates
-        loft = fuselage.GetFuselageTransformation().Transform(loft);
-
-        BRepMesh::Mesh(loft, deflection);
-        StlAPI_Writer *StlWriter = new StlAPI_Writer();
-        StlWriter->Write(loft, const_cast<char*>(filename.c_str()));
-    }
+    BRepMesh::Mesh(loft, deflection);
+    StlAPI_Writer *StlWriter = new StlAPI_Writer();
+    StlWriter->Write(loft, const_cast<char*>(filename.c_str()));
+}
 
 
-    // Exports a whole geometry, boolean fused and meshed, as STL file
-    void CTiglExportStl::ExportMeshedGeometrySTL(const std::string& filename, double deflection)
-    {
-        TopoDS_Shape loft = myConfig.GetFusedAirplane();
+// Exports a selected fuselage, boolean fused and meshed, as STL file
+void CTiglExportStl::ExportMeshedFuselageSTL(int fuselageIndex, const std::string& filename, double deflection)
+{
+    CCPACSFuselage& fuselage = myConfig.GetFuselage(fuselageIndex);
+    TopoDS_Shape loft = fuselage.GetLoft();
 
-        BRepMesh::Mesh(loft, deflection);
-        StlAPI_Writer *StlWriter = new StlAPI_Writer();
-        StlWriter->Write(loft, const_cast<char*>(filename.c_str()));
-    }
+    // Transform loft by fuselage transformation => absolute world coordinates
+    loft = fuselage.GetFuselageTransformation().Transform(loft);
+
+    BRepMesh::Mesh(loft, deflection);
+    StlAPI_Writer *StlWriter = new StlAPI_Writer();
+    StlWriter->Write(loft, const_cast<char*>(filename.c_str()));
+}
+
+
+// Exports a whole geometry, boolean fused and meshed, as STL file
+void CTiglExportStl::ExportMeshedGeometrySTL(const std::string& filename, double deflection)
+{
+    TopoDS_Shape loft = myConfig.GetFusedAirplane();
+
+    BRepMesh::Mesh(loft, deflection);
+    StlAPI_Writer *StlWriter = new StlAPI_Writer();
+    StlWriter->Write(loft, const_cast<char*>(filename.c_str()));
+}
 
 } // end namespace tigl

@@ -38,171 +38,170 @@
 
 
 
-namespace tigl {
+namespace tigl 
+{
 
-    // Constructor
-    CTiglExportIges::CTiglExportIges(CCPACSConfiguration& config)
-    :myConfig(config)
-    {
+// Constructor
+CTiglExportIges::CTiglExportIges(CCPACSConfiguration& config)
+:myConfig(config)
+{
+}
+
+// Destructor
+CTiglExportIges::~CTiglExportIges(void)
+{
+}
+
+void CTiglExportIges::SetTranslationParamters() const
+{
+    Interface_Static::SetCVal("xstep.cascade.unit", "M");
+    Interface_Static::SetCVal("write.iges.unit", "M");
+    Interface_Static::SetIVal("write.iges.brep.mode", 0);
+    Interface_Static::SetCVal("write.iges.header.author", "TiGL");
+    Interface_Static::SetCVal("write.iges.header.company", "German Aerospace Center (DLR), SC");
+}
+
+// Exports the whole configuration as IGES file
+// All wing- and fuselage segments are exported as single bodys
+void CTiglExportIges::ExportIGES(const std::string& filename) const
+{
+    IGESControl_Controller::Init();
+
+    IGESControl_Writer igesWriter;
+    SetTranslationParamters();
+    igesWriter.Model()->ApplyStatic(); // apply set parameters
+
+    if ( filename.empty()) {
+       LOG(ERROR) << "Error: Empty filename in ExportFusedIGES.";
+       return;
     }
 
-    // Destructor
-    CTiglExportIges::~CTiglExportIges(void)
-    {
-    }
-    
-    void CTiglExportIges::SetTranslationParamters() const
-    {
-        Interface_Static::SetCVal("xstep.cascade.unit", "M");
-        Interface_Static::SetCVal("write.iges.unit", "M");
-        Interface_Static::SetIVal("write.iges.brep.mode", 0);
-        Interface_Static::SetCVal("write.iges.header.author", "TiGL");
-        Interface_Static::SetCVal("write.iges.header.company", "German Aerospace Center (DLR), SC");
-    }
-    
-    // Exports the whole configuration as IGES file
-    // All wing- and fuselage segments are exported as single bodys
-    void CTiglExportIges::ExportIGES(const std::string& filename) const
-    {
-        IGESControl_Controller::Init();
+    // Export all wings of the configuration
+    for (int w = 1; w <= myConfig.GetWingCount(); w++) {
+        CCPACSWing& wing = myConfig.GetWing(w);
 
-        IGESControl_Writer igesWriter;
-        SetTranslationParamters();
-        igesWriter.Model()->ApplyStatic(); // apply set parameters
+        for (int i = 1; i <= wing.GetSegmentCount(); i++) {
+            CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(i);
+            TopoDS_Shape loft = segment.GetLoft();
 
-        if( filename.empty()) {
-           LOG(ERROR) << "Error: Empty filename in ExportFusedIGES.";
-           return;
+            igesWriter.AddShape(loft);
         }
-
-        // Export all wings of the configuration
-        for (int w = 1; w <= myConfig.GetWingCount(); w++)
-        {
-            CCPACSWing& wing = myConfig.GetWing(w);
-
-            for (int i = 1; i <= wing.GetSegmentCount(); i++)
-            {
-                CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(i);
-                TopoDS_Shape loft = segment.GetLoft();
-
-                igesWriter.AddShape(loft);
-            }
-        }
-
-        // Export all fuselages of the configuration
-        for (int f = 1; f <= myConfig.GetFuselageCount(); f++)
-        {
-            CCPACSFuselage& fuselage = myConfig.GetFuselage(f);
-
-            for (int i = 1; i <= fuselage.GetSegmentCount(); i++)
-            {
-                CCPACSFuselageSegment& segment = (tigl::CCPACSFuselageSegment &) fuselage.GetSegment(i);
-                TopoDS_Shape loft = segment.GetLoft();
-
-                // Transform loft by fuselage transformation => absolute world coordinates
-                loft = fuselage.GetFuselageTransformation().Transform(loft);
-
-                igesWriter.AddShape(loft);
-            }
-        }
-
-        if (myConfig.GetFarField().GetFieldType() != NONE) {
-            igesWriter.AddShape(myConfig.GetFarField().GetLoft());
-        }
-
-        // Write IGES file
-        igesWriter.ComputeModel();
-        if (igesWriter.Write(const_cast<char*>(filename.c_str())) != Standard_True)
-            throw CTiglError("Error: Export to IGES file failed in CTiglExportIges::ExportIGES", TIGL_ERROR);
     }
 
+    // Export all fuselages of the configuration
+    for (int f = 1; f <= myConfig.GetFuselageCount(); f++) {
+        CCPACSFuselage& fuselage = myConfig.GetFuselage(f);
 
-    // Exports the whole configuration as one fused part to an IGES file
-    void CTiglExportIges::ExportFusedIGES(const std::string& filename)
-    {
-        TopoDS_Shape fusedAirplane = myConfig.GetFusedAirplane();
+        for (int i = 1; i <= fuselage.GetSegmentCount(); i++) {
+            CCPACSFuselageSegment& segment = (tigl::CCPACSFuselageSegment &) fuselage.GetSegment(i);
+            TopoDS_Shape loft = segment.GetLoft();
 
-        IGESControl_Controller::Init();
+            // Transform loft by fuselage transformation => absolute world coordinates
+            loft = fuselage.GetFuselageTransformation().Transform(loft);
 
-        if( filename.empty()) {
-           LOG(ERROR) << "Error: Empty filename in ExportFusedIGES.";
-           return;
+            igesWriter.AddShape(loft);
         }
-
-        IGESControl_Writer igesWriter;
-        SetTranslationParamters();
-        igesWriter.Model()->ApplyStatic(); // apply set parameters
-
-
-        // if we have a far field, do boolean subtract of plane from far-field
-        if (myConfig.GetFarField().GetFieldType() != NONE) {
-            try {
-                LOG(INFO) << "Trimming plane with far field...";
-                TopoDS_Shape& farField = myConfig.GetFarField().GetLoft();
-                fusedAirplane = BRepAlgoAPI_Cut(farField, fusedAirplane);
-                LOG(INFO) << "Done trimming.";
-            }
-            catch(Standard_ConstructionError& err) {
-                LOG(ERROR) << "OpenCascade error: " << err.GetMessageString();
-                LOG(ERROR) << "Can not trim plane with far field. Far field will not be part of IGES export.";
-            }
-        }
-
-        igesWriter.AddShape(fusedAirplane);
-
-        // Write IGES file
-        igesWriter.ComputeModel();
-        if (igesWriter.Write(const_cast<char*>(filename.c_str())) != Standard_True)
-            throw CTiglError("Error: Export fused shapes to IGES file failed in CTiglExportIges::ExportFusedIGES", TIGL_ERROR);
     }
 
-
-
-
-    // Save a sequence of shapes in IGES Format
-    void CTiglExportIges::ExportShapes(const Handle(TopTools_HSequenceOfShape)& aHSequenceOfShape, const std::string& filename)
-    {
-        IGESControl_Controller::Init();
-        IGESControl_Writer igesWriter;
-        SetTranslationParamters();
-        igesWriter.Model()->ApplyStatic(); // apply set parameters
-
-        if( filename.empty()) {
-           LOG(ERROR) << "Error: Empty filename in ExportShapes.";
-           return;
-        }
-
-        for (Standard_Integer i=1;i<=aHSequenceOfShape->Length();i++)
-        {
-            igesWriter.AddShape (aHSequenceOfShape->Value(i));
-        }
-
-        igesWriter.ComputeModel();
-        if (igesWriter.Write(const_cast<char*>(filename.c_str())) != Standard_True)
-            throw CTiglError("Error: Export of shapes to IGES file failed in CCPACSImportExport::SaveIGES", TIGL_ERROR);
+    if (myConfig.GetFarField().GetFieldType() != NONE) {
+        igesWriter.AddShape(myConfig.GetFarField().GetLoft());
     }
+
+    // Write IGES file
+    igesWriter.ComputeModel();
+    if (igesWriter.Write(const_cast<char*>(filename.c_str())) != Standard_True) {
+        throw CTiglError("Error: Export to IGES file failed in CTiglExportIges::ExportIGES", TIGL_ERROR);
+    }
+}
+
+
+// Exports the whole configuration as one fused part to an IGES file
+void CTiglExportIges::ExportFusedIGES(const std::string& filename)
+{
+    TopoDS_Shape fusedAirplane = myConfig.GetFusedAirplane();
+
+    IGESControl_Controller::Init();
+
+    if ( filename.empty()) {
+       LOG(ERROR) << "Error: Empty filename in ExportFusedIGES.";
+       return;
+    }
+
+    IGESControl_Writer igesWriter;
+    SetTranslationParamters();
+    igesWriter.Model()->ApplyStatic(); // apply set parameters
+
+
+    // if we have a far field, do boolean subtract of plane from far-field
+    if (myConfig.GetFarField().GetFieldType() != NONE) {
+        try {
+            LOG(INFO) << "Trimming plane with far field...";
+            TopoDS_Shape& farField = myConfig.GetFarField().GetLoft();
+            fusedAirplane = BRepAlgoAPI_Cut(farField, fusedAirplane);
+            LOG(INFO) << "Done trimming.";
+        }
+        catch(Standard_ConstructionError& err) {
+            LOG(ERROR) << "OpenCascade error: " << err.GetMessageString();
+            LOG(ERROR) << "Can not trim plane with far field. Far field will not be part of IGES export.";
+        }
+    }
+
+    igesWriter.AddShape(fusedAirplane);
+
+    // Write IGES file
+    igesWriter.ComputeModel();
+    if (igesWriter.Write(const_cast<char*>(filename.c_str())) != Standard_True) {
+        throw CTiglError("Error: Export fused shapes to IGES file failed in CTiglExportIges::ExportFusedIGES", TIGL_ERROR);
+    }
+}
+
+
+
+
+// Save a sequence of shapes in IGES Format
+void CTiglExportIges::ExportShapes(const Handle(TopTools_HSequenceOfShape)& aHSequenceOfShape, const std::string& filename)
+{
+    IGESControl_Controller::Init();
+    IGESControl_Writer igesWriter;
+    SetTranslationParamters();
+    igesWriter.Model()->ApplyStatic(); // apply set parameters
+
+    if ( filename.empty()) {
+       LOG(ERROR) << "Error: Empty filename in ExportShapes.";
+       return;
+    }
+
+    for (Standard_Integer i=1;i<=aHSequenceOfShape->Length();i++) {
+        igesWriter.AddShape (aHSequenceOfShape->Value(i));
+    }
+
+    igesWriter.ComputeModel();
+    if (igesWriter.Write(const_cast<char*>(filename.c_str())) != Standard_True) {
+        throw CTiglError("Error: Export of shapes to IGES file failed in CCPACSImportExport::SaveIGES", TIGL_ERROR);
+    }
+}
 
 
 #ifdef TIGL_USE_XCAF
-    // Saves as iges, with cpacs metadata information in it
-    void CTiglExportIges::ExportIgesWithCPACSMetadata(const std::string& filename)
-       {
-           if( filename.empty()) {
-               LOG(ERROR) << "Error: Empty filename in ExportIgesWithCPACSMetadata.";
-               return;
-           }
-
-           CCPACSImportExport generator(myConfig);
-           Handle(TDocStd_Document) hDoc = generator.buildXDEStructure();
-
-           IGESControl_Controller::Init();
-           IGESCAFControl_Writer writer;
-           SetTranslationParamters();
-           writer.Model()->ApplyStatic(); // apply set parameters
-           
-           writer.Transfer(hDoc);
-           writer.Write(filename.c_str());
+// Saves as iges, with cpacs metadata information in it
+void CTiglExportIges::ExportIgesWithCPACSMetadata(const std::string& filename)
+   {
+       if ( filename.empty()) {
+           LOG(ERROR) << "Error: Empty filename in ExportIgesWithCPACSMetadata.";
+           return;
        }
+
+       CCPACSImportExport generator(myConfig);
+       Handle(TDocStd_Document) hDoc = generator.buildXDEStructure();
+
+       IGESControl_Controller::Init();
+       IGESCAFControl_Writer writer;
+       SetTranslationParamters();
+       writer.Model()->ApplyStatic(); // apply set parameters
+       
+       writer.Transfer(hDoc);
+       writer.Write(filename.c_str());
+   }
 #endif
 
 } // end namespace tigl

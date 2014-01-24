@@ -20,7 +20,8 @@
 #define ITIGLLOGGER_H
 #include "tigl.h"
 
-namespace tigl {
+namespace tigl 
+{
 
 class ITiglLogger
 {

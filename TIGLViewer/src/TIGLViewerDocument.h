@@ -54,12 +54,12 @@ public:
 
     // Draws a point
     void DisplayPoint(gp_Pnt& aPoint,
-                        const char* aText,
-                        Standard_Boolean UpdateViewer,
-                        Standard_Real anXoffset,
-                        Standard_Real anYoffset,
-                        Standard_Real aZoffset,
-                        Standard_Real TextScale);
+                      const char* aText,
+                      Standard_Boolean UpdateViewer,
+                      Standard_Real anXoffset,
+                      Standard_Real anYoffset,
+                      Standard_Real aZoffset,
+                      Standard_Real TextScale);
 
     // Returns the CPACS configuration
     tigl::CCPACSConfiguration& GetConfiguration(void) const;
