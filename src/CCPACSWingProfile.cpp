@@ -37,6 +37,7 @@
 #include "gp_Pln.hxx"
 #include "Geom2d_Line.hxx"
 #include "Geom2d_TrimmedCurve.hxx"
+#include "Geom_TrimmedCurve.hxx"
 #include "TopoDS.hxx"
 #include "TopExp_Explorer.hxx"
 #include "TopAbs_ShapeEnum.hxx"
@@ -296,12 +297,23 @@ namespace tigl
         // Loop over all edges of the wing profile curve and try to find intersection points
         std::vector<gp_Pnt2d> ipnts2d;
         BRepTools_WireExplorer wireExplorer;
-        for (wireExplorer.Init(GetWire()); wireExplorer.More(); wireExplorer.Next())
-        {
+        switch (fromUpper) {
+        case true:
+            wireExplorer.Init(GetUpperWire());
+            break;
+        case false:
+            wireExplorer.Init(GetLowerWire());
+            break;
+        }
+
+        for (; wireExplorer.More(); wireExplorer.Next()) {
             const TopoDS_Edge& edge = wireExplorer.Current();
             Standard_Real firstParam;
             Standard_Real lastParam;
+            // get curve and trim it - trimming is important, else it will be infinite
             Handle(Geom_Curve) curve3d = BRep_Tool::Curve(edge, firstParam, lastParam);
+            curve3d = new Geom_TrimmedCurve(curve3d, firstParam, lastParam);
+
             // Convert 3d curve to 2d curve lying in the xz-plane
             Handle(Geom2d_Curve) curve2d = GeomAPI::To2d(curve3d, xzPlane);
             // Check if there are intersection points between line2d and curve2d
