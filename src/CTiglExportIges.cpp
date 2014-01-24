@@ -24,8 +24,12 @@
 */
 
 #include "CTiglExportIges.h"
+
 #include "CCPACSImportExport.h"
 #include "CCPACSConfiguration.h"
+#include "CCPACSFuselageSegment.h"
+#include "CCPACSWingSegment.h"
+#include "CTiglError.h"
 
 #include "TopoDS_Shape.hxx"
 #include "Standard_CString.hxx"

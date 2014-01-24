@@ -23,14 +23,16 @@
 #ifndef CCPACSWINGPROFILEFACTORY_H
 #define CCPACSWINGPROFILEFACTORY_H
 #include <string>
-#include "tigl.h"
+#include "tixi.h"
 
 namespace tigl 
 {
-    class CCPACSWingProfileFactory
-    {
-        public:
-        static ProfileAlgoPointer createProfileAlgo(TixiDocumentHandle tixiHandle, std::string & ProfileXPath);
-    };
+
+class CCPACSWingProfileFactory
+{
+public:
+    static ProfileAlgoPointer createProfileAlgo(TixiDocumentHandle tixiHandle, std::string & ProfileXPath);
+};
+
 }
 # endif // CCPACSWINGPROFILEFACTORY_H

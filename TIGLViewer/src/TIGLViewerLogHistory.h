@@ -27,7 +27,8 @@
 class TIGLViewerLogHistory : public tigl::ITiglLogger
 {
 public:
-    class HistoryLogEntry {
+    class HistoryLogEntry
+    {
     public:
         HistoryLogEntry(TiglLogLevel l, QString m) : msg(m), level(l) {}
 

@@ -30,13 +30,12 @@
 #include <vector>
 
 #include "tixi.h"
-#include "CCPACSWingSegment.h"
-#include "CTiglError.h"
 
 namespace tigl 
 {
 
 class CCPACSWing;
+class CCPACSWingSegment;
 
 class CCPACSWingSegments
 {

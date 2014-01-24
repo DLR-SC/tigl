@@ -32,9 +32,11 @@
 #include "CCPACSWing.h"
 #include "CCPACSFuselage.h"
 
-class TiglIntersection : public ::testing::Test {
- protected:
-  virtual void SetUp() {
+class TiglIntersectionCalculation : public ::testing::Test
+{
+protected:
+    virtual void SetUp()
+    {
         const char* filename = "TestData/simpletest.cpacs.xml";
         ReturnCode tixiRet;
         TiglReturnCode tiglRet;
@@ -47,14 +49,15 @@ class TiglIntersection : public ::testing::Test {
 
         tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "Cpacs2Test", &tiglHandle);
         ASSERT_TRUE(tiglRet == TIGL_SUCCESS);
-  }
+    }
 
-  virtual void TearDown() {
+    virtual void TearDown()
+    {
         ASSERT_TRUE(tiglCloseCPACSConfiguration(tiglHandle) == TIGL_SUCCESS);
         ASSERT_TRUE(tixiCloseDocument(tixiHandle) == SUCCESS);
         tiglHandle = -1;
         tixiHandle = -1;
-  }
+    }
 
     TixiDocumentHandle           tixiHandle;
     TiglCPACSConfigurationHandle tiglHandle;
@@ -64,7 +67,7 @@ class TiglIntersection : public ::testing::Test {
 /**
 * Tests 
 */
-TEST_F(TiglIntersection, tiglIntersection_FuselageWingIntersects)
+TEST_F(TiglIntersectionCalculation, tiglIntersection_FuselageWingIntersects)
 {
     tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
     tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
@@ -75,7 +78,7 @@ TEST_F(TiglIntersection, tiglIntersection_FuselageWingIntersects)
     TopoDS_Shape& fuselageShape = fuselage.GetLoft();
 
     tigl::CTiglIntersectionCalculation iCalc(&config.GetShapeCache(), fuselage.GetUID(), wing.GetUID(), fuselageShape, wingShape);
-    
+
     ASSERT_EQ(1, iCalc.GetNumWires());
 }
 

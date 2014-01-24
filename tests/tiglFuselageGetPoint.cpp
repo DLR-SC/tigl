@@ -29,9 +29,11 @@
 
 /******************************************************************************/
 
-class TiglFuselageGetPoint : public ::testing::Test {
- protected:
-  static void SetUpTestCase() {
+class TiglFuselageGetPoint : public ::testing::Test
+{
+protected:
+    static void SetUpTestCase()
+    {
         const char* filename = "TestData/simpletest.cpacs.xml";
         ReturnCode tixiRet;
         TiglReturnCode tiglRet;
@@ -43,21 +45,22 @@ class TiglFuselageGetPoint : public ::testing::Test {
         ASSERT_TRUE (tixiRet == SUCCESS);
         tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "Cpacs2Test", &tiglHandle);
         ASSERT_TRUE(tiglRet == TIGL_SUCCESS);
-  }
+    }
 
-  static void TearDownTestCase() {
+    static void TearDownTestCase()
+    {
         ASSERT_TRUE(tiglCloseCPACSConfiguration(tiglHandle) == TIGL_SUCCESS);
         ASSERT_TRUE(tixiCloseDocument(tixiHandle) == SUCCESS);
         tiglHandle = -1;
         tixiHandle = -1;
-  }
-  
-  virtual void SetUp() {}
-  virtual void TearDown() {}
-  
+    }
 
-  static TixiDocumentHandle           tixiHandle;
-  static TiglCPACSConfigurationHandle tiglHandle;
+    virtual void SetUp() {}
+    virtual void TearDown() {}
+
+
+    static TixiDocumentHandle           tixiHandle;
+    static TiglCPACSConfigurationHandle tiglHandle;
 };
 
 
@@ -68,8 +71,7 @@ TiglCPACSConfigurationHandle TiglFuselageGetPoint::tiglHandle = 0;
 * Tests tiglFuselageGetPoint with invalid CPACS handle.
 */
 TEST_F(TiglFuselageGetPoint, invalidHandle)
-{
-    std::cout << "Start test" << std::endl;
+{   
     double x, y, z;
     ASSERT_TRUE(tiglFuselageGetPoint(-1, 1, 1, 0.0, 0.0, &x, &y, &z) == TIGL_NOT_FOUND);
     ASSERT_TRUE(tiglFuselageGetPoint(-2, 1, 1, 0.0, 0.0, &x, &y, &z) == TIGL_NOT_FOUND);

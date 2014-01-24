@@ -37,9 +37,11 @@
 using namespace tigl;
 
 
-class TriangularizeShape : public ::testing::Test {
- protected:
-  static void SetUpTestCase() {
+class TriangularizeShape : public ::testing::Test
+{
+protected:
+    static void SetUpTestCase()
+    {
         const char* filename = "TestData/simpletest.cpacs.xml";
         ReturnCode tixiRet;
         TiglReturnCode tiglRet;
@@ -51,27 +53,29 @@ class TriangularizeShape : public ::testing::Test {
         ASSERT_TRUE (tixiRet == SUCCESS);
         tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "Cpacs2Test", &tiglHandle);
         ASSERT_TRUE(tiglRet == TIGL_SUCCESS);
-  }
+    }
 
-  static void TearDownTestCase() {
+    static void TearDownTestCase()
+    {
         ASSERT_TRUE(tiglCloseCPACSConfiguration(tiglHandle) == TIGL_SUCCESS);
         ASSERT_TRUE(tixiCloseDocument(tixiHandle) == SUCCESS);
         tiglHandle = -1;
         tixiHandle = -1;
-  }
-  
-  virtual void SetUp() {}
-  virtual void TearDown() {}
-  
+    }
 
-  static TixiDocumentHandle           tixiHandle;
-  static TiglCPACSConfigurationHandle tiglHandle;
+    virtual void SetUp() {}
+    virtual void TearDown() {}
+
+
+    static TixiDocumentHandle           tixiHandle;
+    static TiglCPACSConfigurationHandle tiglHandle;
 };
 
 TixiDocumentHandle TriangularizeShape::tixiHandle = 0;
 TiglCPACSConfigurationHandle TriangularizeShape::tiglHandle = 0;
 
-TEST(TiglPolyData, simple){
+TEST(TiglPolyData, simple)
+{
     CTiglPolyData poly;
 
     poly.createNewObject();
@@ -229,8 +233,9 @@ TEST(TiglPolyData, cube_export_vtk_withnormals)
     f1.addPoint(p3);
     f1.addPoint(p4);
 
-    for (int i = 0; i < 4; ++i)
+    for (int i = 0; i < 4; ++i) {
         f1.addNormal(CTiglPoint(1, 0, 0));
+    }
 
     co.addPolygon(f1);
 
@@ -240,8 +245,9 @@ TEST(TiglPolyData, cube_export_vtk_withnormals)
     f2.addPoint(p8);
     f2.addPoint(p7);
 
-    for (int i = 0; i < 4; ++i)
+    for (int i = 0; i < 4; ++i) {
         f2.addNormal(CTiglPoint(-1, 0, 0));
+    }
 
     co.addPolygon(f2);
 
@@ -251,8 +257,9 @@ TEST(TiglPolyData, cube_export_vtk_withnormals)
     f3.addPoint(p4);
     f3.addPoint(p8);
 
-    for (int i = 0; i < 4; ++i)
+    for (int i = 0; i < 4; ++i) {
         f3.addNormal(CTiglPoint(0, -1, 0));
+    }
 
     co.addPolygon(f3);
 
@@ -262,8 +269,9 @@ TEST(TiglPolyData, cube_export_vtk_withnormals)
     f4.addPoint(p7);
     f4.addPoint(p3);
 
-    for (int i = 0; i < 4; ++i)
+    for (int i = 0; i < 4; ++i) {
         f4.addNormal(CTiglPoint(0, 1, 0));
+    }
 
     co.addPolygon(f4);
 
@@ -273,8 +281,9 @@ TEST(TiglPolyData, cube_export_vtk_withnormals)
     f5.addPoint(p7);
     f5.addPoint(p8);
 
-    for (int i = 0; i < 4; ++i)
+    for (int i = 0; i < 4; ++i) {
         f5.addNormal(CTiglPoint(0, 0, 1));
+    }
 
     co.addPolygon(f5);
 
@@ -356,67 +365,69 @@ TEST(TiglPolyData, cube_export_vtk_withpieces)
     poly.writeVTK("vtk_cube+pieces.vtp");
 }
 
-TEST_F(TriangularizeShape, exportVTK_FusedWing){
+TEST_F(TriangularizeShape, exportVTK_FusedWing)
+{
     tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
     tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
     tigl::CCPACSWing& wing = config.GetWing(1);
-    
+
     bool exportError = false;
-    
+
     tigl::CTiglTriangularizer t(wing.GetLoft(), 0.001);
-    try{
+    try {
         t.writeVTK("exported_fused_wing_simple.vtp");
     }
-    catch (...){
+    catch (...) {
         exportError = true;
     }
-    
+
     ASSERT_TRUE(exportError == false);
 }
 
-TEST_F(TriangularizeShape, exportVTK_CompoundWing){
+TEST_F(TriangularizeShape, exportVTK_CompoundWing)
+{
     tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
     tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
     tigl::CCPACSWing& wing = config.GetWing(1);
-    
+
     TopoDS_CompSolid compound;
     BRep_Builder builder;
     builder.MakeCompSolid(compound);
-    
-    for(int i = 1; i <= wing.GetSegmentCount(); ++i){
+
+    for (int i = 1; i <= wing.GetSegmentCount(); ++i) {
         builder.Add(compound, wing.GetSegment(i).GetLoft());
     }
-    
+
     bool exportError = false;
-    
+
     clock_t start, stop;
     start = clock();
     tigl::CTiglTriangularizer t(compound, 0.001);
     stop = clock();
     std::cout << "Triangularization time [ms]: " << (stop-start)/(double)CLOCKS_PER_SEC * 1000. << std::endl;
     std::cout << "Number of Polygons/Vertices: " << t.currentObject().getNPolygons() << "/" << t.currentObject().getNVertices()<<std::endl;
-    try{
+    try {
         t.writeVTK("exported_compund_wing_simple.vtp");
     }
-    catch (...){
+    catch (...) {
         exportError = true;
     }
-    
+
     ASSERT_TRUE(exportError == false);
 }
 
 TEST_F(TriangularizeShape, exportVTK_WingSegmentInfo)
 {
     const char* vtkWingFilename = "TestData/export/simplewing_segmentinfo.vtp";
-    
+
     tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
     tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
     tigl::CCPACSWing& wing = config.GetWing(1);
-    
+
     clock_t start, stop;
     start = clock();
     tigl::CTiglTriangularizer trian(wing, 0.0001, SEGMENT_INFO);
-    
+
     stop = clock();
     std::cout << "Triangularization time [ms]: " << (stop-start)/(double)CLOCKS_PER_SEC * 1000. << std::endl;
     std::cout << "Number of Polygons/Vertices: " << trian.currentObject().getNPolygons() << "/" << trian.currentObject().getNVertices()<<std::endl;
@@ -426,12 +437,12 @@ TEST_F(TriangularizeShape, exportVTK_WingSegmentInfo)
 TEST_F(TriangularizeShape, exportVTK_FullPlane_long)
 {
     const char* vtkWingFilename = "TestData/export/simplewing_fusedplane.vtp";
-    
+
     tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
     tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
     
     tigl::CTiglTriangularizer trian(config, true, 0.001, SEGMENT_INFO);
-    
+
     std::cout << "Number of Polygons/Vertices: " << trian.currentObject().getNPolygons() << "/" << trian.currentObject().getNVertices()<<std::endl;
     ASSERT_NO_THROW(trian.writeVTK(vtkWingFilename));
 }
