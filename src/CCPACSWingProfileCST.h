@@ -30,82 +30,82 @@
 
 namespace tigl
 {
-    class CCPACSWingProfileCST : public ITiglWingProfileAlgo
-    {
+class CCPACSWingProfileCST : public ITiglWingProfileAlgo
+{
 
-    private:
-        // Typedef for a container to store the coordinates of a wing profile element.
-        typedef std::vector<CTiglPoint*> CCPACSCoordinateContainer;
+private:
+    // Typedef for a container to store the coordinates of a wing profile element.
+    typedef std::vector<CTiglPoint*> CCPACSCoordinateContainer;
 
-    public:
-        // Constructor
-        CCPACSWingProfileCST(const std::string& aFilename);
+public:
+    // Constructor
+    CCPACSWingProfileCST(const std::string& aFilename);
 
-        // Destructor
-        ~CCPACSWingProfileCST(void);
+    // Destructor
+    ~CCPACSWingProfileCST(void);
 
-        // Cleanup routine
-        void Cleanup(void);
+    // Cleanup routine
+    void Cleanup(void);
 
-        // Update of wire points ...
-        void Update(void);
+    // Update of wire points ...
+    void Update(void);
 
-        // Read CPACS wing profile file
-        void ReadCPACS(TixiDocumentHandle tixiHandle);
+    // Read CPACS wing profile file
+    void ReadCPACS(TixiDocumentHandle tixiHandle);
 
-        // Returns the profile points as read from TIXI.
-        std::vector<CTiglPoint*> GetSamplePoints() const;
+    // Returns the profile points as read from TIXI.
+    std::vector<CTiglPoint*> GetSamplePoints() const;
 
-        // get profiles CPACS XML path
-        const std::string & GetProfileDataXPath() const;
+    // get profiles CPACS XML path
+    const std::string & GetProfileDataXPath() const;
 
-        // get forced closed wing profile wire
-        const TopoDS_Wire & GetWireClosed() const;
+    // get forced closed wing profile wire
+    const TopoDS_Wire & GetWireClosed() const;
 
-        // get upper wing profile wire
-        const TopoDS_Wire & GetUpperWire() const;
+    // get upper wing profile wire
+    const TopoDS_Wire & GetUpperWire() const;
 
-        // get lower wing profile wire
-        const TopoDS_Wire & GetLowerWire() const;
+    // get lower wing profile wire
+    const TopoDS_Wire & GetLowerWire() const;
 
-        // get leading edge point();
-        const gp_Pnt & GetLEPoint() const;
+    // get leading edge point();
+    const gp_Pnt & GetLEPoint() const;
 
-        // get trailing edge point();
-        const gp_Pnt & GetTEPoint() const;
+    // get trailing edge point();
+    const gp_Pnt & GetTEPoint() const;
 
-    protected:
-        // Builds the wing profile wires.
-        void BuildWires();
+protected:
+    // Builds the wing profile wires.
+    void BuildWires();
 
-        // Builds leading and trailing edge points of the wing profile wire.
-        void BuildLETEPoints(void);
+    // Builds leading and trailing edge points of the wing profile wire.
+    void BuildLETEPoints(void);
 
-    private:
-        // Copy constructor
-        CCPACSWingProfileCST(const CCPACSWingProfileCST& );
+private:
+    // Copy constructor
+    CCPACSWingProfileCST(const CCPACSWingProfileCST& );
 
-        // Assignment operator
-        void operator=(const CCPACSWingProfileCST& );
+    // Assignment operator
+    void operator=(const CCPACSWingProfileCST& );
 
-    private:
-        CCPACSCoordinateContainer coordinates;        /**< Coordinates of a wing profile element */
-        CCPACSCoordinateContainer upperCoordinates;        /**< Coordinates of the upper part of the wing profile*/
-        CCPACSCoordinateContainer lowerCoordinates;        /**< Coordinates of the upper part of the wing profile*/
-        std::string               ProfileDataXPath;   /**< CPACS path to profile data (pointList or cst2D) */
-        TopoDS_Wire               wireClosed;         /**< Forced closed wing profile wire */
-        TopoDS_Wire               upperWire;          /**< wire of the upper wing profile */
-        TopoDS_Wire               lowerWire;          /**< wire of the lower wing profile */
-        gp_Pnt                    lePoint;            /**< Leading edge point */
-        gp_Pnt                    tePoint;            /**< Trailing edge point */
-        std::vector<double>        psi;                /**<sample points on CST curve */
-        double                    upperN1;            /**<CST parameter N1 */
-        double                    upperN2;            /**<CST parameter N2 */
-        std::vector<double>        upperB;             /**<CST parameter B */
-        double                    lowerN1;            /**<CST parameter N1 */
-        double                    lowerN2;            /**<CST parameter N2 */
-        std::vector<double>        lowerB;             /**<CST parameter B */
-    };
+private:
+    CCPACSCoordinateContainer coordinates;        /**< Coordinates of a wing profile element */
+    CCPACSCoordinateContainer upperCoordinates;        /**< Coordinates of the upper part of the wing profile*/
+    CCPACSCoordinateContainer lowerCoordinates;        /**< Coordinates of the upper part of the wing profile*/
+    std::string               ProfileDataXPath;   /**< CPACS path to profile data (pointList or cst2D) */
+    TopoDS_Wire               wireClosed;         /**< Forced closed wing profile wire */
+    TopoDS_Wire               upperWire;          /**< wire of the upper wing profile */
+    TopoDS_Wire               lowerWire;          /**< wire of the lower wing profile */
+    gp_Pnt                    lePoint;            /**< Leading edge point */
+    gp_Pnt                    tePoint;            /**< Trailing edge point */
+    std::vector<double>        psi;                /**<sample points on CST curve */
+    double                    upperN1;            /**<CST parameter N1 */
+    double                    upperN2;            /**<CST parameter N2 */
+    std::vector<double>        upperB;             /**<CST parameter B */
+    double                    lowerN1;            /**<CST parameter N1 */
+    double                    lowerN2;            /**<CST parameter N2 */
+    std::vector<double>        lowerB;             /**<CST parameter B */
+};
 
 } // end namespace tigl
 

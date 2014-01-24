@@ -21,7 +21,8 @@
 
 #include <QColor>
 
-class TIGLViewerSettings {
+class TIGLViewerSettings
+{
 public:
     TIGLViewerSettings();
     void loadSettings();

@@ -39,30 +39,31 @@
 #endif
 
 
-namespace tigl {
+namespace tigl
+{
 
-    class CCPACSImportExport
-    {
-    private:
+class CCPACSImportExport
+{
+private:
         
-    public:
-        // Constructor
-        CCPACSImportExport(CCPACSConfiguration& config);
+public:
+    // Constructor
+    CCPACSImportExport(CCPACSConfiguration& config);
 
-        // Virtual Destructor
-        virtual ~CCPACSImportExport(void);
+    // Virtual Destructor
+    virtual ~CCPACSImportExport(void);
 
 #ifdef TIGL_USE_XCAF
-        Handle_TDocStd_Document buildXDEStructure();
+    Handle_TDocStd_Document buildXDEStructure();
 #endif
 
 
-    protected:
+protected:
         
 
-    private:
-        CCPACSConfiguration&    myConfig;
-    };
+private:
+    CCPACSConfiguration&    myConfig;
+};
 
 } // end namespace tigl
 

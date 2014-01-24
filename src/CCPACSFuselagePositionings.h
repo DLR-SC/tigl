@@ -33,67 +33,68 @@
 #include <vector>
 #include <map>
 
-namespace tigl {
+namespace tigl
+{
 
-    class CCPACSFuselagePositionings
-    {
+class CCPACSFuselagePositionings
+{
 
-    private:
-        // Typedef for a CCPACSFuselagePositioning container to store the positionings.
-        typedef std::vector<CCPACSFuselagePositioning*> CCPACSFuselagePositioningContainer;
+private:
+    // Typedef for a CCPACSFuselagePositioning container to store the positionings.
+    typedef std::vector<CCPACSFuselagePositioning*> CCPACSFuselagePositioningContainer;
 
-        // Typedef for a CTiglTransformation map to store multiple transformations by a section index.
-        typedef std::map<std::string, CTiglTransformation> CCPACSTransformationMap;
-        typedef CCPACSTransformationMap::iterator  CCPACSTransformationMapIterator;
+    // Typedef for a CTiglTransformation map to store multiple transformations by a section index.
+    typedef std::map<std::string, CTiglTransformation> CCPACSTransformationMap;
+    typedef CCPACSTransformationMap::iterator  CCPACSTransformationMapIterator;
 
-    public:
-        // Constructor
-        CCPACSFuselagePositionings(void);
+public:
+    // Constructor
+    CCPACSFuselagePositionings(void);
 
-        // Virtual Destructor
-        virtual ~CCPACSFuselagePositionings(void);
+    // Virtual Destructor
+    virtual ~CCPACSFuselagePositionings(void);
 
-        // Read CPACS positionings element
-        void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& fuselageXPath);
+    // Read CPACS positionings element
+    void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& fuselageXPath);
 
-        // Invalidates internal state
-        void Invalidate(void);
+    // Invalidates internal state
+    void Invalidate(void);
 
-        // Gets a positioning by index.
-        CCPACSFuselagePositioning& GetPositioning(int index) const;
+    // Gets a positioning by index.
+    CCPACSFuselagePositioning& GetPositioning(int index) const;
 
-        // Gets total positioning count
-        int GetPositioningCount(void) const;
+    // Gets total positioning count
+    int GetPositioningCount(void) const;
 
-        // Returns the positioning matrix for a given section index
-        CTiglTransformation GetPositioningTransformation(std::string sectionIndex);
+    // Returns the positioning matrix for a given section index
+    CTiglTransformation GetPositioningTransformation(std::string sectionIndex);
 
-    protected:
-        // Cleanup routine
-        void Cleanup(void);
+protected:
+    // Cleanup routine
+    void Cleanup(void);
 
-        // Update internal positioning structure
-        void Update(void);
+    // Update internal positioning structure
+    void Update(void);
 
-        // Update connected positionings by recursion
-        void UpdateNextPositioning(int positioningIndex);
+    // Update connected positionings by recursion
+    void UpdateNextPositioning(int positioningIndex);
         
-        // Checks, whether positionins are defined recursively (which is not allowed)
-        void TestRecursiveDefinition(int positioningIndex, int rec_depth);
+    // Checks, whether positionins are defined recursively (which is not allowed)
+    void TestRecursiveDefinition(int positioningIndex, int rec_depth);
 
-    private:
-        // Copy constructor
-        CCPACSFuselagePositionings(const CCPACSFuselagePositionings& );
+private:
+    // Copy constructor
+    CCPACSFuselagePositionings(const CCPACSFuselagePositionings& );
 
-        // Assignment operator
-        void operator=(const CCPACSFuselagePositionings& );
+    // Assignment operator
+    void operator=(const CCPACSFuselagePositionings& );
 
-    private:
-        CCPACSFuselagePositioningContainer positionings;    /**< Positioning elements */
-        CCPACSTransformationMap            transformations; /**< Map of transformations */
-        bool                               invalidated;     /**< Internal state flag  */
+private:
+    CCPACSFuselagePositioningContainer positionings;    /**< Positioning elements */
+    CCPACSTransformationMap            transformations; /**< Map of transformations */
+    bool                               invalidated;     /**< Internal state flag  */
 
-    };
+};
 
 } // end namespace tigl
 

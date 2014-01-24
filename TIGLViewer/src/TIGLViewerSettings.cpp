@@ -19,37 +19,45 @@
 #include <TIGLViewerSettings.h>
 #include <QSettings>
 
-TIGLViewerSettings::TIGLViewerSettings() {
+TIGLViewerSettings::TIGLViewerSettings()
+{
     _tesselationAccuracy = 0.000316;
     _triangulationAccuracy = 0.00070;
     _bgcolor = QColor(255,235,163);
 }
 
-void TIGLViewerSettings::setTesselationAccuracy(double accu){
+void TIGLViewerSettings::setTesselationAccuracy(double accu)
+{
     _tesselationAccuracy = accu;
 }
 
-void TIGLViewerSettings::setTriangulationAccuracy(double accu){
+void TIGLViewerSettings::setTriangulationAccuracy(double accu)
+{
     _triangulationAccuracy = accu;
 }
 
-void TIGLViewerSettings::setBGColor(const QColor& col) {
+void TIGLViewerSettings::setBGColor(const QColor& col)
+{
     _bgcolor = col;
 }
 
-double TIGLViewerSettings::tesselationAccuracy() const{
+double TIGLViewerSettings::tesselationAccuracy() const
+{
     return _tesselationAccuracy;
 }
 
-double TIGLViewerSettings::triangulationAccuracy() const{
+double TIGLViewerSettings::triangulationAccuracy() const
+{
     return _triangulationAccuracy;
 }
 
-const QColor& TIGLViewerSettings::BGColor() const{
+const QColor& TIGLViewerSettings::BGColor() const
+{
     return _bgcolor;
 }
 
-void TIGLViewerSettings::loadSettings(){
+void TIGLViewerSettings::loadSettings()
+{
     QSettings settings("DLR SC-VK","TIGLViewer");
 
     _tesselationAccuracy   = settings.value("tesselation_accuracy"  , tesselationAccuracy()).toDouble();
@@ -57,7 +65,8 @@ void TIGLViewerSettings::loadSettings(){
     _bgcolor = settings.value("background_color", BGColor()).value<QColor>();
 }
 
-void TIGLViewerSettings::storeSettings(){
+void TIGLViewerSettings::storeSettings()
+{
     QSettings settings("DLR SC-VK","TIGLViewer");
 
     settings.setValue("tesselation_accuracy"  , tesselationAccuracy());
@@ -65,5 +74,4 @@ void TIGLViewerSettings::storeSettings(){
     settings.setValue("background_color", BGColor());
 }
 
-TIGLViewerSettings::~TIGLViewerSettings() {
-}
+TIGLViewerSettings::~TIGLViewerSettings() {}

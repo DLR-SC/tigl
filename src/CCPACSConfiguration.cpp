@@ -24,6 +24,10 @@
 */
 
 #include "CCPACSConfiguration.h"
+
+#include "CCPACSFuselageSegment.h"
+#include "CCPACSWingSegment.h"
+
 #include "TopoDS_Shape.hxx"
 #include "Standard_CString.hxx"
 #include "BRepOffsetAPI_ThruSections.hxx"
@@ -47,226 +51,227 @@
 
 #include <cfloat>
 
-namespace tigl {
+namespace tigl
+{
 
-    // Constructor
-    CCPACSConfiguration::CCPACSConfiguration(TixiDocumentHandle tixiHandle)
-        : tixiDocumentHandle(tixiHandle)
-        , header()
-        , wings(this)
-        , fuselages(this)
-        , uidManager()
-    {
+// Constructor
+CCPACSConfiguration::CCPACSConfiguration(TixiDocumentHandle tixiHandle)
+    : tixiDocumentHandle(tixiHandle)
+    , header()
+    , wings(this)
+    , fuselages(this)
+    , uidManager()
+{
+}
+
+// Destructor
+CCPACSConfiguration::~CCPACSConfiguration(void)
+{
+}
+
+// Invalidates the internal state of the configuration and forces
+// recalculation of wires, lofts etc.
+void CCPACSConfiguration::Invalidate(void)
+{
+    wings.Invalidate();
+    fuselages.Invalidate();
+    aircraftFuser.reset();
+    shapeCache.Clear();
+    configUID = "";
+}
+
+// Build up memory structure for whole CPACS file
+void CCPACSConfiguration::ReadCPACS(const char* configurationUID)
+{
+    if (!configurationUID) {
+        return;
     }
 
-    // Destructor
-    CCPACSConfiguration::~CCPACSConfiguration(void)
-    {
+    header.ReadCPACS(tixiDocumentHandle);
+    wings.ReadCPACS(tixiDocumentHandle, configurationUID);
+    fuselages.ReadCPACS(tixiDocumentHandle, configurationUID);
+    farField.ReadCPACS(tixiDocumentHandle);
+
+    configUID = configurationUID;
+    // Now do parent <-> child transformations. Child should use the
+    // parent coordinate system as root. 
+    try {
+        transformAllComponents(uidManager.GetRootComponent());    
     }
-
-    // Invalidates the internal state of the configuration and forces
-    // recalculation of wires, lofts etc.
-    void CCPACSConfiguration::Invalidate(void)
-    {
-        wings.Invalidate();
-        fuselages.Invalidate();
-        aircraftFuser.reset();
-        shapeCache.Clear();
-        configUID = "";
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
     }
+}
 
-    // Build up memory structure for whole CPACS file
-    void CCPACSConfiguration::ReadCPACS(const char* configurationUID)
-    {
-        if(!configurationUID) return;
+// transform all components relative to their parents
+void CCPACSConfiguration::transformAllComponents(CTiglAbstractPhysicalComponent* parent)
+{
+    CTiglAbstractPhysicalComponent::ChildContainerType children = parent->GetChildren(false);
+    CTiglAbstractPhysicalComponent::ChildContainerType::iterator pIter;
+    CTiglPoint parentTranslation = parent->GetTranslation();
+    for (pIter = children.begin(); pIter != children.end(); ++pIter) {
+        CTiglAbstractPhysicalComponent* child = *pIter;
+        child->Translate(parentTranslation);
+        transformAllComponents(child);
 
-        header.ReadCPACS(tixiDocumentHandle);
-        wings.ReadCPACS(tixiDocumentHandle, configurationUID);
-        fuselages.ReadCPACS(tixiDocumentHandle, configurationUID);
-        farField.ReadCPACS(tixiDocumentHandle);
-
-        configUID = configurationUID;
-        // Now do parent <-> child transformations. Child should use the
-        // parent coordinate system as root. 
-        try {
-            transformAllComponents(uidManager.GetRootComponent());    
-        }
-        catch (tigl::CTiglError& ex) {
-            LOG(ERROR) << ex.getError() << std::endl;
-        }
     }
+}
 
-    // transform all components relative to their parents
-    void CCPACSConfiguration::transformAllComponents(CTiglAbstractPhysicalComponent* parent)
-    {
-        CTiglAbstractPhysicalComponent::ChildContainerType children = parent->GetChildren(false);
-        CTiglAbstractPhysicalComponent::ChildContainerType::iterator pIter;
-        CTiglPoint parentTranslation = parent->GetTranslation();
-        for (pIter = children.begin(); pIter != children.end(); ++pIter) {
-            CTiglAbstractPhysicalComponent* child = *pIter;
-            child->Translate(parentTranslation);
-            transformAllComponents(child);
-            
-        }
+
+// Returns the boolean fused airplane as TopoDS_Shape
+PTiglFusePlane CCPACSConfiguration::AircraftFusingAlgo(void)
+{
+    if(! aircraftFuser){
+        aircraftFuser = PTiglFusePlane(new CTiglFusePlane(*this));
     }
+    return aircraftFuser;
+}
 
 
-    // Returns the boolean fused airplane as TopoDS_Shape
-    PTiglFusePlane CCPACSConfiguration::AircraftFusingAlgo(void)
-    {
-        if(! aircraftFuser){
-            aircraftFuser = PTiglFusePlane(new CTiglFusePlane(*this));
-        }
-        return aircraftFuser;
-    }
+// Returns the underlying tixi document handle used by a CPACS configuration
+TixiDocumentHandle CCPACSConfiguration::GetTixiDocumentHandle(void) const
+{
+    return tixiDocumentHandle;
+}
 
+// Returns the total count of wing profiles in this configuration
+int CCPACSConfiguration::GetWingProfileCount(void) const
+{
+    return wings.GetProfileCount();
+}
 
-    // Returns the underlying tixi document handle used by a CPACS configuration
-    TixiDocumentHandle CCPACSConfiguration::GetTixiDocumentHandle(void) const
-    {
-        return tixiDocumentHandle;
-    }
+// Returns the wing profile for a given uid.
+CCPACSWingProfile& CCPACSConfiguration::GetWingProfile(std::string uid) const
+{
+    return wings.GetProfile(uid);
+}
 
-    // Returns the total count of wing profiles in this configuration
-    int CCPACSConfiguration::GetWingProfileCount(void) const
-    {
-        return wings.GetProfileCount();
-    }
+// Returns the wing profile for a given index - TODO: depricated function!
+CCPACSWingProfile& CCPACSConfiguration::GetWingProfile(int index) const
+{
+    return wings.GetProfile(index);
+}
 
-    // Returns the wing profile for a given uid.
-    CCPACSWingProfile& CCPACSConfiguration::GetWingProfile(std::string uid) const
-    {
-        return wings.GetProfile(uid);
-    }
+// Returns the total count of wings in a configuration
+int CCPACSConfiguration::GetWingCount(void) const
+{
+    return wings.GetWingCount();
+}
 
-    // Returns the wing profile for a given index - TODO: depricated function!
-    CCPACSWingProfile& CCPACSConfiguration::GetWingProfile(int index) const
-    {
-        return wings.GetProfile(index);
-    }
+// Returns the wing for a given index.
+CCPACSWing& CCPACSConfiguration::GetWing(int index) const
+{
+    return wings.GetWing(index);
+}
+// Returns the wing for a given UID.
+CCPACSWing& CCPACSConfiguration::GetWing(const std::string& UID) const
+{
+    return wings.GetWing(UID);
+}
 
-    // Returns the total count of wings in a configuration
-    int CCPACSConfiguration::GetWingCount(void) const
-    {
-        return wings.GetWingCount();
-    }
+TopoDS_Shape CCPACSConfiguration::GetParentLoft(const std::string& UID)
+{
+    return uidManager.GetParentComponent(UID)->GetLoft();
+}
 
-    // Returns the wing for a given index.
-    CCPACSWing& CCPACSConfiguration::GetWing(int index) const
-    {
-        return wings.GetWing(index);
-    }
-    // Returns the wing for a given UID.
-    CCPACSWing& CCPACSConfiguration::GetWing(const std::string& UID) const
-    {
-        return wings.GetWing(UID);
-    }
+// Returns the total count of fuselage profiles in this configuration
+int CCPACSConfiguration::GetFuselageProfileCount(void) const
+{
+    return fuselages.GetProfileCount();
+}
 
-    TopoDS_Shape CCPACSConfiguration::GetParentLoft(const std::string& UID)
-    {
-        return uidManager.GetParentComponent(UID)->GetLoft();
-    }
+// Returns the fuselage profile for a given index.
+CCPACSFuselageProfile& CCPACSConfiguration::GetFuselageProfile(int index) const
+{
+    return fuselages.GetProfile(index);
+}
 
-    // Returns the total count of fuselage profiles in this configuration
-    int CCPACSConfiguration::GetFuselageProfileCount(void) const
-    {
-        return fuselages.GetProfileCount();
-    }
+// Returns the fuselage profile for a given uid.
+CCPACSFuselageProfile& CCPACSConfiguration::GetFuselageProfile(std::string uid) const
+{
+    return fuselages.GetProfile(uid);
+}
 
-    // Returns the fuselage profile for a given index.
-    CCPACSFuselageProfile& CCPACSConfiguration::GetFuselageProfile(int index) const
-    {
-        return fuselages.GetProfile(index);
-    }
+// Returns the total count of fuselages in a configuration
+int CCPACSConfiguration::GetFuselageCount(void) const
+{
+    return fuselages.GetFuselageCount();
+}
 
-    // Returns the fuselage profile for a given uid.
-    CCPACSFuselageProfile& CCPACSConfiguration::GetFuselageProfile(std::string uid) const
-    {
-        return fuselages.GetProfile(uid);
-    }
+// Returns the fuselage for a given index.
+CCPACSFuselage& CCPACSConfiguration::GetFuselage(int index) const
+{
+    return fuselages.GetFuselage(index);
+}
 
-    // Returns the total count of fuselages in a configuration
-    int CCPACSConfiguration::GetFuselageCount(void) const
-    {
-        return fuselages.GetFuselageCount();
-    }
+CCPACSFarField& CCPACSConfiguration::GetFarField()
+{
+    return farField;
+}
 
-    // Returns the fuselage for a given index.
-    CCPACSFuselage& CCPACSConfiguration::GetFuselage(int index) const
-    {
-        return fuselages.GetFuselage(index);
-    }
+// Returns the fuselage for a given UID.
+CCPACSFuselage& CCPACSConfiguration::GetFuselage(const std::string UID) const
+{
+    return fuselages.GetFuselage(UID);
+}
 
-    CCPACSFarField& CCPACSConfiguration::GetFarField()
-    {
-        return farField;
-    }
+// Returns the uid manager
+CTiglUIDManager& CCPACSConfiguration::GetUIDManager(void)
+{
+    return uidManager;
+}
 
-    // Returns the fuselage for a given UID.
-    CCPACSFuselage& CCPACSConfiguration::GetFuselage(const std::string UID) const
-    {
-        return fuselages.GetFuselage(UID);
-    }
+double CCPACSConfiguration::GetAirplaneLenth(void)
+{
+    Bnd_Box boundingBox;
 
-    // Returns the uid manager
-    CTiglUIDManager& CCPACSConfiguration::GetUIDManager(void)
-    {
-        return uidManager;
-    }
+    // Draw all wings
+    for (int w = 1; w <= GetWingCount(); w++) {
+        tigl::CCPACSWing& wing = GetWing(w);
 
-    double CCPACSConfiguration::GetAirplaneLenth(void){
-        Bnd_Box boundingBox;
+        for (int i = 1; i <= wing.GetSegmentCount(); i++) {
+            tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(i);
+            BRepBndLib::Add(segment.GetLoft(), boundingBox);
 
-        // Draw all wings
-        for (int w = 1; w <= GetWingCount(); w++)
-        {
-            tigl::CCPACSWing& wing = GetWing(w);
-
-            for (int i = 1; i <= wing.GetSegmentCount(); i++)
-            {
-                tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(i);
-                BRepBndLib::Add(segment.GetLoft(), boundingBox);
-
-            }
-
-            if(wing.GetSymmetryAxis() == TIGL_NO_SYMMETRY)
-                continue;
-
-            for (int i = 1; i <= wing.GetSegmentCount(); i++)
-            {
-                tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(i);
-                BRepBndLib::Add(segment.GetLoft(), boundingBox);
-            }
         }
 
-        for (int f = 1; f <= GetFuselageCount(); f++)
-        {
-            tigl::CCPACSFuselage& fuselage = GetFuselage(f);
-
-            for (int i = 1; i <= fuselage.GetSegmentCount(); i++)
-            {
-                tigl::CCPACSFuselageSegment& segment = (tigl::CCPACSFuselageSegment &) fuselage.GetSegment(i);
-                TopoDS_Shape loft = segment.GetLoft();
-
-                // Transform by fuselage transformation
-                loft = fuselage.GetFuselageTransformation().Transform(loft);
-                BRepBndLib::Add(segment.GetLoft(), boundingBox);
-            }
+        if (wing.GetSymmetryAxis() == TIGL_NO_SYMMETRY) {
+            continue;
         }
-        Standard_Real xmin, xmax, ymin, ymax, zmin, zmax;
-        boundingBox.Get(xmin, ymin, zmin, xmax, ymax, zmax);
 
-        return xmax-xmin;
+        for (int i = 1; i <= wing.GetSegmentCount(); i++) {
+            tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(i);
+            BRepBndLib::Add(segment.GetLoft(), boundingBox);
+        }
     }
 
-    // Returns the uid manager
-    const std::string& CCPACSConfiguration::GetUID(void) const
-    {
-        return configUID;
+    for (int f = 1; f <= GetFuselageCount(); f++) {
+        tigl::CCPACSFuselage& fuselage = GetFuselage(f);
+
+        for (int i = 1; i <= fuselage.GetSegmentCount(); i++) {
+            tigl::CCPACSFuselageSegment& segment = (tigl::CCPACSFuselageSegment &) fuselage.GetSegment(i);
+            TopoDS_Shape loft = segment.GetLoft();
+
+            // Transform by fuselage transformation
+            loft = fuselage.GetFuselageTransformation().Transform(loft);
+            BRepBndLib::Add(segment.GetLoft(), boundingBox);
+        }
     }
+    Standard_Real xmin, xmax, ymin, ymax, zmin, zmax;
+    boundingBox.Get(xmin, ymin, zmin, xmax, ymax, zmax);
+
+    return xmax-xmin;
+}
+
+// Returns the uid manager
+const std::string& CCPACSConfiguration::GetUID(void) const
+{
+    return configUID;
+}
     
-    CTiglShapeCache& CCPACSConfiguration::GetShapeCache() {
-        return shapeCache;
-    }
+CTiglShapeCache& CCPACSConfiguration::GetShapeCache()
+{
+    return shapeCache;
+}
 
 } // end namespace tigl

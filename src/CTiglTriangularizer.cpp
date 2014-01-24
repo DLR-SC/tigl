@@ -20,6 +20,7 @@
 #include "ITiglGeometricComponent.h"
 #include "CTiglAbstractPhysicalComponent.h"
 #include "CCPACSWing.h"
+#include "CCPACSWingSegment.h"
 #include "CCPACSConfiguration.h"
 #include "CTiglFusePlane.h"
 

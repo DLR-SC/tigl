@@ -30,30 +30,33 @@ class QOCC_DECLSPEC TIGLViewerInputOutput : public QObject
 
 public:
 
-    enum FileFormat{    FormatBREP, 
-                        FormatIGES, 
-                        FormatSTEP, 
-                        FormatCSFDB, 
-                        FormatVRML, 
-                        FormatSTL,
-                        FormatMESH};
+    enum FileFormat
+    {
+        FormatBREP, 
+        FormatIGES, 
+        FormatSTEP, 
+        FormatCSFDB, 
+        FormatVRML, 
+        FormatSTL,
+        FormatMESH
+    };
 
     TIGLViewerInputOutput(void);
     ~TIGLViewerInputOutput(void);
 
-    bool                              importModel( const QString fileName, 
-                                                   const FileFormat format, 
-                                                   const Handle_AIS_InteractiveContext& ic );
+    bool importModel( const QString fileName, 
+                      const FileFormat format, 
+                      const Handle_AIS_InteractiveContext& ic );
 
-    bool                      importTriangulation( const QString fileName,
-                                        const FileFormat format,
-                                        const Handle_AIS_InteractiveContext& ic );
+    bool importTriangulation( const QString fileName,
+                              const FileFormat format,
+                              const Handle_AIS_InteractiveContext& ic );
 
-    bool                              exportModel( const QString fileName, 
-                                                   const FileFormat format, 
-                                                   const Handle_AIS_InteractiveContext& ic);
+    bool exportModel( const QString fileName, 
+                      const FileFormat format, 
+                      const Handle_AIS_InteractiveContext& ic);
 
-    QString                           info() const;
+    QString info() const;
 
 signals:
 

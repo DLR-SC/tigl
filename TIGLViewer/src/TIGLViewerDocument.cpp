@@ -64,6 +64,8 @@
 #include "tiglcommonfunctions.h"
 #include "CTiglFusePlane.h"
 #include "CCPACSWingProfilePointList.h"
+#include "CCPACSWingSegment.h"
+#include "CCPACSFuselageSegment.h"
 #include "CTiglPoint.h"
 
 #define max(a,b) ((a) > (b) ? (a) : (b))
