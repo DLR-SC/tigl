@@ -21,8 +21,9 @@
 
 #include <QDialog>
 
-namespace Ui {
-class EtaXsiDialog;
+namespace Ui
+{
+    class EtaXsiDialog;
 }
 
 class EtaXsiDialog : public QDialog

@@ -37,31 +37,35 @@
 #include <TDataXtd_Shape.hxx>
 #endif
 
-namespace tigl {
+namespace tigl
+{
 
-CCPACSFarField::CCPACSFarField() {
+CCPACSFarField::CCPACSFarField()
+{
     init();
 }
 
-CCPACSFarField::~CCPACSFarField() {
-}
+CCPACSFarField::~CCPACSFarField() {}
 
-void CCPACSFarField::init() {
+void CCPACSFarField::init()
+{
     fieldType = NONE;
     fieldSize = 0.;
     loft.Nullify();
     SetUID("FarField");
 }
 
-TiglFarFieldType CCPACSFarField::GetFieldType(){
+TiglFarFieldType CCPACSFarField::GetFieldType()
+{
     return fieldType;
 }
 
-void CCPACSFarField::ReadCPACS(TixiDocumentHandle tixiHandle) {
+void CCPACSFarField::ReadCPACS(TixiDocumentHandle tixiHandle)
+{
     init();
 
     std::string prefix = "/cpacs/toolspecific/cFD/farField";
-    if(tixiCheckElement(tixiHandle, prefix.c_str()) != SUCCESS) {
+    if (tixiCheckElement(tixiHandle, prefix.c_str()) != SUCCESS) {
         LOG(INFO) << "No far-field defined.";
         fieldType = NONE;
         return;
@@ -112,7 +116,8 @@ void CCPACSFarField::ReadCPACS(TixiDocumentHandle tixiHandle) {
     }
 }
 
-TopoDS_Shape CCPACSFarField::BuildLoft(void){
+TopoDS_Shape CCPACSFarField::BuildLoft(void)
+{
     TopoDS_Shape shape;
     shape.Nullify();
     gp_Pnt center(0,0,0);
@@ -141,7 +146,8 @@ TopoDS_Shape CCPACSFarField::BuildLoft(void){
     return shape;
 }
 
-TiglGeometricComponentType CCPACSFarField::GetComponentType(void) {
+TiglGeometricComponentType CCPACSFarField::GetComponentType(void)
+{
     return TIGL_COMPONENT_LOGICAL;
 }
 

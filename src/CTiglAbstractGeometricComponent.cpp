@@ -172,6 +172,7 @@ bool CTiglAbstractGeometricComponent::GetIsOn(const gp_Pnt& pnt)
     if (pnt.X() < xmin || pnt.X() > xmax ||
         pnt.Y() < ymin || pnt.Y() > ymax ||
         pnt.Z() < zmin || pnt.Z() > zmax) {
+
         return false;
     }
 

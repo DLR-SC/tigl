@@ -2,9 +2,6 @@
 * Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
 *
 * Created: 2013-05-13 Markus Litz <Markus.Litz@dlr.de>
-* Changed: $Id$ 
-*
-* Version: $Revision$
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -18,6 +15,7 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
+
 /**
 * @file
 * @brief Tests some fuselage fuctions like circumreference, volumen, etc...
@@ -31,9 +29,11 @@
 
 /******************************************************************************/
 
-class TiglFuselageHelper : public ::testing::Test {
- protected:
-  static void SetUpTestCase() {
+class TiglFuselageHelper : public ::testing::Test
+{
+protected:
+    static void SetUpTestCase()
+    {
         const char* filename = "TestData/simpletest.cpacs.xml";
         ReturnCode tixiRet;
         TiglReturnCode tiglRet;
@@ -45,21 +45,22 @@ class TiglFuselageHelper : public ::testing::Test {
         ASSERT_TRUE (tixiRet == SUCCESS);
         tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "Cpacs2Test", &tiglHandle);
         ASSERT_TRUE(tiglRet == TIGL_SUCCESS);
-  }
+    }
 
-  static void TearDownTestCase() {
+    static void TearDownTestCase()
+    {
         ASSERT_TRUE(tiglCloseCPACSConfiguration(tiglHandle) == TIGL_SUCCESS);
         ASSERT_TRUE(tixiCloseDocument(tixiHandle) == SUCCESS);
         tiglHandle = -1;
         tixiHandle = -1;
-  }
-  
-  virtual void SetUp() {}
-  virtual void TearDown() {}
-  
+    }
 
-  static TixiDocumentHandle           tixiHandle;
-  static TiglCPACSConfigurationHandle tiglHandle;
+    virtual void SetUp() {}
+    virtual void TearDown() {}
+
+
+    static TixiDocumentHandle           tixiHandle;
+    static TiglCPACSConfigurationHandle tiglHandle;
 };
 
 
@@ -111,7 +112,8 @@ TEST_F(TiglFuselageHelper, tiglFuselageGetUID_success)
     ASSERT_STREQ(uid, "SimpleFuselage");
 }
 
-TEST_F(TiglFuselageHelper, tiglFuselageGetVolume){
+TEST_F(TiglFuselageHelper, tiglFuselageGetVolume)
+{
     double volume = 0.;
     ASSERT_EQ(TIGL_SUCCESS, tiglFuselageGetVolume(tiglHandle, 1, &volume));
     double theoVol = 0.5*0.5*M_PI * 2.; // only approximation

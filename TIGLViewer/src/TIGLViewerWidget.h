@@ -39,7 +39,7 @@
 /** The key for shortcut ( use to activate dynamic rotation, panning ) */
 #define CASCADESHORTCUTKEY Qt::ControlModifier 
 
-#define ValZWMin 1 /** For elastic bean selection */
+#define VALZWMIN 1 /** For elastic bean selection */
 
 class Handle_AIS_InteractiveContext;
 class Handle_V3d_View;
@@ -51,14 +51,17 @@ class QOCC_DECLSPEC TIGLViewerWidget : public QWidget
 
 public:
 
-    enum CurrentAction3d {  CurAction3d_Undefined,
-                            CurAction3d_Nothing, 
-                            CurAction3d_Picking,
-                            CurAction3d_DynamicZooming,
-                            CurAction3d_WindowZooming, 
-                            CurAction3d_DynamicPanning,
-                            CurAction3d_GlobalPanning, 
-                            CurAction3d_DynamicRotation };
+    enum CurrentAction3d
+    {
+        CurAction3d_Undefined,
+        CurAction3d_Nothing,
+        CurAction3d_Picking,
+        CurAction3d_DynamicZooming,
+        CurAction3d_WindowZooming,
+        CurAction3d_DynamicPanning,
+        CurAction3d_GlobalPanning,
+        CurAction3d_DynamicRotation
+    };
 /*
     enum ViewAction {   ViewFitAllId, 
                         ViewFitAreaId, 
@@ -81,8 +84,8 @@ public:
     TIGLViewerWidget(QWidget*);
 
     TIGLViewerWidget( const Handle_AIS_InteractiveContext& aContext = NULL,
-                     QWidget *parent = NULL, 
-                     Qt::WindowFlags wflags = 0 );
+                      QWidget *parent = NULL, 
+                      Qt::WindowFlags wflags = 0 );
 
     ~TIGLViewerWidget();
 
@@ -91,11 +94,11 @@ public:
     void initializeOCC(const Handle_AIS_InteractiveContext& aContext = NULL);
 
     Handle_AIS_InteractiveContext    getContext( void ) { return myContext; }
-    Handle_V3d_View                    getView( void )    { return myView; }
+    Handle_V3d_View                  getView( void )    { return myView; }
 
     //Overrides
-    QPaintEngine* paintEngine() const;
-    class QToolBar*      myToolBar;
+    QPaintEngine*   paintEngine() const;
+    class QToolBar* myToolBar;
 
     void redraw( bool isPainting = false );
 
@@ -219,11 +222,11 @@ private: // methods
     void showRubberBand( void );
     void hideRubberBand( void );
 
-    Standard_Boolean convertToPlane(const Standard_Integer Xs, 
-                                    const Standard_Integer Ys, 
-                                          Standard_Real& X,
-                                          Standard_Real& Y,
-                                          Standard_Real& Z);
+    Standard_Boolean convertToPlane(Standard_Integer Xs, 
+                                    Standard_Integer Ys, 
+                                    Standard_Real& X,
+                                    Standard_Real& Y,
+                                    Standard_Real& Z);
                                           
     void paintOCC();
     static int paintCallBack (Aspect_Drawable, 

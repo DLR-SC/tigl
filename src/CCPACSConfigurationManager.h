@@ -31,54 +31,55 @@
 #include "CCPACSConfiguration.h"
 #include <map>
 
-namespace tigl {
+namespace tigl
+{
 
-    class CCPACSConfigurationManager
-    {
+class CCPACSConfigurationManager
+{
 
-    private:
-        // Typedef for a CCPACSConfiguration container to store multiple CPACS configurations by a handle.
-        typedef std::map<TiglCPACSConfigurationHandle, CCPACSConfiguration*> CCPACSConfigContainer;
-        typedef CCPACSConfigContainer::iterator                              CCPACSConfigIterator;
-        typedef CCPACSConfigContainer::const_iterator                        CCPACSConfigConstIterator;
+private:
+    // Typedef for a CCPACSConfiguration container to store multiple CPACS configurations by a handle.
+    typedef std::map<TiglCPACSConfigurationHandle, CCPACSConfiguration*> CCPACSConfigContainer;
+    typedef CCPACSConfigContainer::iterator                              CCPACSConfigIterator;
+    typedef CCPACSConfigContainer::const_iterator                        CCPACSConfigConstIterator;
 
-    public:
-        // Returns a reference to the only instance of this class
-        static CCPACSConfigurationManager& GetInstance(void);
+public:
+    // Returns a reference to the only instance of this class
+    static CCPACSConfigurationManager& GetInstance(void);
 
-        // Adds a configuration to the configuration container and returns a handle for it.
-        TiglCPACSConfigurationHandle AddConfiguration(CCPACSConfiguration* config);
+    // Adds a configuration to the configuration container and returns a handle for it.
+    TiglCPACSConfigurationHandle AddConfiguration(CCPACSConfiguration* config);
 
-        // Removes and deletes a configuration from the configuration container
-        void DeleteConfiguration(TiglCPACSConfigurationHandle handle);
+    // Removes and deletes a configuration from the configuration container
+    void DeleteConfiguration(TiglCPACSConfigurationHandle handle);
 
-        // Returns the configuration for a given handle
-        CCPACSConfiguration& GetConfiguration(TiglCPACSConfigurationHandle handle) const;
+    // Returns the configuration for a given handle
+    CCPACSConfiguration& GetConfiguration(TiglCPACSConfigurationHandle handle) const;
 
-        // Tests if a given configuration handle is valid
-        bool IsValid(TiglCPACSConfigurationHandle handle) const;
+    // Tests if a given configuration handle is valid
+    bool IsValid(TiglCPACSConfigurationHandle handle) const;
 
-        // Invalidates all configurations and forces recalculation of wires/points etc.
-        void Invalidate(void);
+    // Invalidates all configurations and forces recalculation of wires/points etc.
+    void Invalidate(void);
 
-        // Destructor
-        ~CCPACSConfigurationManager(void);
+    // Destructor
+    ~CCPACSConfigurationManager(void);
 
-    private:
-        // Constructor
-        CCPACSConfigurationManager(void);
+private:
+    // Constructor
+    CCPACSConfigurationManager(void);
 
-        // Copy constructor
-        CCPACSConfigurationManager(const CCPACSConfigurationManager& );
+    // Copy constructor
+    CCPACSConfigurationManager(const CCPACSConfigurationManager& );
 
-        // Assignment operator
-        void operator=(const CCPACSConfigurationManager& );
+    // Assignment operator
+    void operator=(const CCPACSConfigurationManager& );
 
-    private:
-        CCPACSConfigContainer        configurations; // Container to store the configurations by a handle
-        TiglCPACSConfigurationHandle handleCounter;  // Used to generate new handles
+private:
+    CCPACSConfigContainer        configurations; // Container to store the configurations by a handle
+    TiglCPACSConfigurationHandle handleCounter;  // Used to generate new handles
 
-    };
+};
 
 } // end namespace tigl
 

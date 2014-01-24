@@ -228,7 +228,7 @@ DebugStream_::DebugStream_(){}
 DebugStream_::~DebugStream_() 
 {
 #ifdef DEBUG
-    tigl::LoggerPointer logger = CTiglLogging::Instance().GetLogger();
+    tigl::PTiglLogger logger = CTiglLogging::Instance().GetLogger();
     std::string msg = stream.str();
     if (msg.size() > 0 && msg[msg.size()-1] == '\n') {
         msg.resize(msg.size() - 1);
