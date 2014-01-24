@@ -31,9 +31,11 @@
 #include "tigl.h"
 #include "ITiglObjectiveFunction.h"
 
-namespace tigl {
+namespace tigl 
+{
 
-class CTiglPointTranslator{
+class CTiglPointTranslator
+{
 public:
     CTiglPointTranslator();
 
@@ -71,10 +73,12 @@ public:
     TiglReturnCode project(const CTiglPoint& p, CTiglPoint* pOnSurf);
 
 private:
-    class SegmentProjection : public tigl::ITiglObjectiveFunction {
+    class SegmentProjection : public tigl::ITiglObjectiveFunction 
+    {
     public:
         SegmentProjection(CTiglPointTranslator& t, CTiglPoint & a, CTiglPoint& b, CTiglPoint& c, CTiglPoint& d) 
-          : ITiglObjectiveFunction(), _t(t), _a(a), _b(b), _c(c), _d(d), _x(0,0,0) {
+          : ITiglObjectiveFunction(), _t(t), _a(a), _b(b), _c(c), _d(d), _x(0,0,0) 
+        {
         }
 
         virtual ~SegmentProjection(void){}

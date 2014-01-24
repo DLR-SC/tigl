@@ -19,74 +19,91 @@
 #include "CTiglShapeCache.h"
 #include <sstream>
 
-namespace {
-std::string mangleID(const std::string & id, unsigned int number){
-    std::stringstream stream;
-    stream << id << "::" << number;
-    return stream.str();
-}
+namespace 
+{
+    std::string mangleID(const std::string & id, unsigned int number)
+    {
+        std::stringstream stream;
+        stream << id << "::" << number;
+        return stream.str();
+    }
 }
 
-namespace tigl {
+namespace tigl 
+{
 
-CTiglShapeCache::CTiglShapeCache() {
+CTiglShapeCache::CTiglShapeCache() 
+{
     Reset();
 }
 
-void CTiglShapeCache::Insert(const TopoDS_Shape &shape, const std::string &id){
+void CTiglShapeCache::Insert(const TopoDS_Shape &shape, const std::string &id)
+{
     int nshapes = GetNShapesOfType(id);
     shapeContainer[mangleID(id,nshapes)] = shape;
 }
 
-TopoDS_Shape& CTiglShapeCache::GetShape(const std::string &id, unsigned int inumber) {
+TopoDS_Shape& CTiglShapeCache::GetShape(const std::string &id, unsigned int inumber) 
+{
     ShapeContainer::iterator it = shapeContainer.find(mangleID(id, inumber));
-    if(it == shapeContainer.end())
+    if (it == shapeContainer.end()) {
         return nullShape;
-    else
+    }
+    else {
         return it->second;
+    }
 }
 
-unsigned int CTiglShapeCache::GetNShapesOfType(const std::string &id) const {
+unsigned int CTiglShapeCache::GetNShapesOfType(const std::string &id) const 
+{
     int nshapes = 0;
     while(true){
         ShapeContainer::const_iterator it = shapeContainer.find(mangleID(id, nshapes));
-        if(it != shapeContainer.end())
+        if (it != shapeContainer.end()) {
             nshapes++;
-        else
+        }
+        else {
             break;
+        }
     }
     
     return nshapes;
 }
 
-unsigned int CTiglShapeCache::GetNShape() const {
+unsigned int CTiglShapeCache::GetNShape() const 
+{
     return shapeContainer.size();
 }
 
 
-void CTiglShapeCache::Clear(){
+void CTiglShapeCache::Clear()
+{
     shapeContainer.clear();
 }
 
-void CTiglShapeCache::Remove(const std::string& id) {
+void CTiglShapeCache::Remove(const std::string& id) 
+{
     int nshapes = 0;
     while(true){
         ShapeContainer::iterator it = shapeContainer.find(mangleID(id, nshapes));
-        if(it != shapeContainer.end()){
+        if (it != shapeContainer.end()) {
             nshapes++;
             shapeContainer.erase(it);
         }
-        else
+        else {
             break;
+        }
     }
 }
 
-void CTiglShapeCache::Reset() {
+void CTiglShapeCache::Reset() 
+{
     nullShape.Nullify();
     Clear();
 }
 
-CTiglShapeCache::ShapeContainer& CTiglShapeCache::GetContainer() {
+CTiglShapeCache::ShapeContainer& CTiglShapeCache::GetContainer() 
+{
     return shapeContainer;
 }
 

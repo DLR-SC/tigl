@@ -24,9 +24,11 @@
     #include <pthread.h>
 #endif
 
-namespace tigl {
+namespace tigl 
+{
 
-struct CMutex::CMutex_Impl{
+struct CMutex::CMutex_Impl
+{
 #if defined (_MSC_VER)
     CRITICAL_SECTION mutex;
 #else
@@ -34,7 +36,8 @@ struct CMutex::CMutex_Impl{
 #endif
 };
 
-CMutex::CMutex() : pimpl_(new CMutex_Impl){
+CMutex::CMutex() : pimpl_(new CMutex_Impl)
+{
 #if defined (_MSC_VER)
     InitializeCriticalSection(&pimpl_->mutex);
 #else
@@ -42,7 +45,8 @@ CMutex::CMutex() : pimpl_(new CMutex_Impl){
 #endif
 }
 
-int CMutex::lock(){
+int CMutex::lock()
+{
 #if defined (_MSC_VER)
     EnterCriticalSection(&pimpl_->mutex);
     return 0;
@@ -51,7 +55,8 @@ int CMutex::lock(){
 #endif
 }
 
-int CMutex::unlock(){
+int CMutex::unlock()
+{
 #if defined (_MSC_VER)
     LeaveCriticalSection(&pimpl_->mutex);
     return 0;
@@ -60,7 +65,8 @@ int CMutex::unlock(){
 #endif
 }
 
-CMutex::~CMutex(){
+CMutex::~CMutex()
+{
 #if defined (_MSC_VER)
     DeleteCriticalSection(&pimpl_->mutex);
 #else

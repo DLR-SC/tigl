@@ -19,10 +19,13 @@
 #include "TIGLViewerErrorDialog.h"
 #include "ui_TIGLViewerErrorDialog.h"
 
-namespace {
-inline int max(int a, int b){
-    return a > b? a : b;
-}
+namespace
+{
+
+    inline int max(int a, int b)
+    {
+        return a > b? a : b;
+    }
 
 }
 
@@ -48,23 +51,27 @@ TIGLViewerErrorDialog::TIGLViewerErrorDialog(QWidget *parent) :
     QObject::connect(detailsButton, SIGNAL(clicked()), this, SLOT(toggleDetails()));
 }
 
-void TIGLViewerErrorDialog::setMessage(const QString &msg){
+void TIGLViewerErrorDialog::setMessage(const QString &msg)
+{
     ui->errorMessageLabel->setText(msg);
 }
 
-void TIGLViewerErrorDialog::setDetailsText(const QString &text){
+void TIGLViewerErrorDialog::setDetailsText(const QString &text)
+{
     ui->logBrowser->setText(text);
 }
 
-void TIGLViewerErrorDialog::toggleDetails() {
+void TIGLViewerErrorDialog::toggleDetails()
+{
     detailsVisible = !detailsVisible;
     setDetailsVisible(detailsVisible);
 }
 
-void TIGLViewerErrorDialog::setDetailsVisible(bool visible){
+void TIGLViewerErrorDialog::setDetailsVisible(bool visible)
+{
     detailsVisible = visible;
     ui->groupBox->setVisible(visible);
-    if(visible) {
+    if (visible) {
         detailsButton->setText("Hide details");
     }
     else {
@@ -73,8 +80,7 @@ void TIGLViewerErrorDialog::setDetailsVisible(bool visible){
     this->readjustSize();
 }
 
-void TIGLViewerErrorDialog::readjustSize(){
-}
+void TIGLViewerErrorDialog::readjustSize(){}
 
 TIGLViewerErrorDialog::~TIGLViewerErrorDialog()
 {

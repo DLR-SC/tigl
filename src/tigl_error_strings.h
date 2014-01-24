@@ -19,7 +19,8 @@
 #ifndef TIGL_ERROR_STRINGS_H
 #define TIGL_ERROR_STRINGS_H
 
-const static char * TiglErrorStrings[] = {
+const static char * TiglErrorStrings[] = 
+{
     "TIGL_SUCCESS",
     "TIGL_ERROR",
     "TIGL_NULL_POINTER" ,

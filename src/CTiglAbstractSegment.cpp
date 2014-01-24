@@ -26,31 +26,36 @@
 #include "CTiglAbstractSegment.h"
 #include "TopoDS_Shape.hxx"
 
-namespace tigl{
+namespace tigl
+{
 
 CTiglAbstractSegment::CTiglAbstractSegment(int segindex)
     : mySegmentIndex(segindex), invalidated(true), continuity(C0)
 {
 }
 
-void CTiglAbstractSegment::Invalidate(void){
+void CTiglAbstractSegment::Invalidate(void)
+{
     loft.Nullify();
     invalidated = true;
 }
 
-void CTiglAbstractSegment::Cleanup(void){
+void CTiglAbstractSegment::Cleanup(void)
+{
     CTiglAbstractGeometricComponent::Reset();
     Invalidate();
     SetUID("");
 }
 
 // Returns the segment index of this segment
-int CTiglAbstractSegment::GetSegmentIndex(void) const{
+int CTiglAbstractSegment::GetSegmentIndex(void) const
+{
     return mySegmentIndex;
 }
 
-TiglContinuity CTiglAbstractSegment::GetContinuity() const {
+TiglContinuity CTiglAbstractSegment::GetContinuity() const 
+{
     return continuity;
 }
 
-}
+} // end namespace tigl

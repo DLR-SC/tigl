@@ -1,8 +1,21 @@
+/*
+* Copyright (C) 2007-2012 German Aerospace Center (DLR/SC)
+*
+* Created: 2012-11-20 Martin Siggel <martin.siggel@dlr.de>
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
 /**
- * Implementation of a console window
- *
- * Credits go to Petr Trofimov, https://github.com/ptrofimov/RedisConsole
- *//**
  * Implementation of a console window
  *
  * Credits go to Petr Trofimov, https://github.com/ptrofimov/RedisConsole
@@ -31,25 +44,32 @@ Console::Console(QWidget *parent) :
 
 void Console::keyPressEvent(QKeyEvent *event)
 {
-    if(isLocked)
+    if (isLocked) {
         return;
+    }
     
-    if(event->key() >= 0x20 && event->key() <= 0x7e &&
-       (event->modifiers() == Qt::NoModifier || event->modifiers() == Qt::ShiftModifier))
-        QPlainTextEdit::keyPressEvent(event);
+    if (event->key() >= 0x20 && event->key() <= 0x7e &&
+        (event->modifiers() == Qt::NoModifier || event->modifiers() == Qt::ShiftModifier)) {
 
-    if(event->key() == Qt::Key_Backspace &&
-       event->modifiers() == Qt::NoModifier &&
-       textCursor().position() - textCursor().block().position() > prompt.length())
         QPlainTextEdit::keyPressEvent(event);
+    }
 
-    if(event->key() == Qt::Key_Return && event->modifiers() == Qt::NoModifier)
+    if (event->key() == Qt::Key_Backspace &&
+        event->modifiers() == Qt::NoModifier &&
+        textCursor().position() - textCursor().block().position() > prompt.length()) {
+
+        QPlainTextEdit::keyPressEvent(event);
+    }
+
+    if (event->key() == Qt::Key_Return && event->modifiers() == Qt::NoModifier) {
         onEnter();
+    }
 
-    if(event->key() == Qt::Key_Up)
+    if (event->key() == Qt::Key_Up) {
         historyBack();
+    }
 
-    if(event->key() == Qt::Key_Down){
+    if (event->key() == Qt::Key_Down) {
         historyForward();
     }
 
@@ -68,7 +88,7 @@ void Console::contextMenuEvent(QContextMenuEvent *){}
 
 void Console::onEnter()
 {
-    if(textCursor().position() - textCursor().block().position() == prompt.length()){
+    if (textCursor().position() - textCursor().block().position() == prompt.length()) {
         insertPrompt();
         return;
     }
@@ -88,8 +108,9 @@ void Console::output(QString s)
 
 void Console::insertPrompt(bool insertNewBlock)
 {
-    if(insertNewBlock)
-    textCursor().insertBlock();
+    if (insertNewBlock) {
+        textCursor().insertBlock();
+    }
     QTextCharFormat format;
     format.setForeground(Qt::green);
     textCursor().setBlockCharFormat(format);
@@ -111,8 +132,9 @@ void Console::historyAdd(QString cmd)
 
 void Console::historyBack()
 {
-    if(!historyPos)
-    return;
+    if (!historyPos) {
+        return;
+    }
     QTextCursor cursor = textCursor();
     cursor.movePosition(QTextCursor::StartOfBlock);
     cursor.movePosition(QTextCursor::EndOfBlock, QTextCursor::KeepAnchor);
@@ -124,16 +146,19 @@ void Console::historyBack()
 
 void Console::historyForward()
 {
-    if(historyPos == history->length())
-    return;
+    if (historyPos == history->length()) {
+        return;
+    }
     QTextCursor cursor = textCursor();
     cursor.movePosition(QTextCursor::StartOfBlock);
     cursor.movePosition(QTextCursor::EndOfBlock, QTextCursor::KeepAnchor);
     cursor.removeSelectedText();
-    if(historyPos == history->length() - 1)
-    cursor.insertText(prompt);
-    else
-    cursor.insertText(prompt + history->at(historyPos + 1));
+    if (historyPos == history->length() - 1) {
+        cursor.insertText(prompt);
+    }
+    else {
+        cursor.insertText(prompt + history->at(historyPos + 1));
+    }
     setTextCursor(cursor);
     historyPos++;
 }

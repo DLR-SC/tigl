@@ -53,8 +53,8 @@ TiglReturnCode CHotsoseMeshReader::readFromFile(const char * filename, tigl::CTi
         std::vector<std::string> list;
         trim(line);
         split(list, line, boost::is_any_of("\t "), token_compress_on);
-        if (list.size() == 4){
-            // parse polygon number
+        if (list.size() == 4) {
+           // parse polygon number
             int pnr = boost::lexical_cast<int>(list.at(0));
             if (pnr != lastnr && poly->getNPoints() > 0) {
                 mesh.currentObject().addPolygon(*poly);

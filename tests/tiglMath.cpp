@@ -18,11 +18,12 @@
 
 #include "test.h"
 #include "math/tiglmathfunctions.h"
-#include<vector>
+#include <vector>
 
 #include "CTiglPoint.h"
 
-TEST(TiglMath, factorial){
+TEST(TiglMath, factorial)
+{
     ASSERT_EQ(1, tigl::factorial(0));
     ASSERT_EQ(1, tigl::factorial(1));
     ASSERT_EQ(2, tigl::factorial(2));
@@ -30,7 +31,8 @@ TEST(TiglMath, factorial){
     ASSERT_EQ(24, tigl::factorial(4));
 }
 
-TEST(TiglMath, binom) {
+TEST(TiglMath, binom)
+{
     ASSERT_EQ(1, tigl::binom(0,0));
     
     ASSERT_EQ(1, tigl::binom(3, 0));
@@ -57,7 +59,8 @@ TEST(TiglMath, binom) {
     ASSERT_EQ(330, tigl::binom(11, 4));
 }
 
-TEST(TiglMath, BernsteinPoly) {
+TEST(TiglMath, BernsteinPoly)
+{
     ASSERT_NEAR(1.0, tigl::bernstein_poly(0,1,0.0), 1e-7);
     ASSERT_NEAR(0.5, tigl::bernstein_poly(0,1,0.5), 1e-7);
     ASSERT_NEAR(0.0, tigl::bernstein_poly(0,1,1.0), 1e-7);
@@ -75,7 +78,8 @@ TEST(TiglMath, BernsteinPoly) {
     ASSERT_NEAR(0.375, tigl::bernstein_poly(2,4,0.5), 1e-7);
 }
 
-TEST(TiglMath, QuadrilateralArea) {
+TEST(TiglMath, QuadrilateralArea)
+{
     // set square with side length 3
     using tigl::CTiglPoint;
     CTiglPoint A(0,0,0);
@@ -111,7 +115,7 @@ TEST(TiglMath, QuadrilateralArea) {
     ASSERT_NEAR(4., tigl::quadrilateral_area(A,B,C,D), 1e-7);
 }
 
-TEST(TiglMath, CSTCurve) 
+TEST(TiglMath, CSTCurve)
 {
     // Sample coefficients for shape function
     std::vector<double> Br;

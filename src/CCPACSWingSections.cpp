@@ -27,72 +27,74 @@
 #include <iostream>
 #include <sstream>
 
-namespace tigl {
+namespace tigl
+{
 
-    // Constructor
-    CCPACSWingSections::CCPACSWingSections(void)
-    {
-        Cleanup();
+// Constructor
+CCPACSWingSections::CCPACSWingSections(void)
+{
+    Cleanup();
+}
+
+// Destructor
+CCPACSWingSections::~CCPACSWingSections(void)
+{
+    Cleanup();
+}
+
+// Cleanup routine
+void CCPACSWingSections::Cleanup(void)
+{
+    for (CCPACSWingSectionContainer::size_type i = 0; i < sections.size(); i++) {
+        delete sections[i];
+    }
+    sections.clear();
+}
+
+// Read CPACS wing sections element
+void CCPACSWingSections::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& wingXPath)
+{
+    Cleanup();
+
+    ReturnCode    tixiRet;
+    int           sectionCount;
+    std::string   tempString;
+    char*         elementPath;
+
+    /* Get section element count */
+    tempString  = wingXPath + "/sections";
+    elementPath = const_cast<char*>(tempString.c_str());
+    tixiRet = tixiGetNamedChildrenCount(tixiHandle, elementPath, "section", &sectionCount);
+    if (tixiRet != SUCCESS) {
+        throw CTiglError("XML error: tixiGetNamedChildrenCount failed in CCPACSWingSections::ReadCPACS", TIGL_XML_ERROR);
     }
 
-    // Destructor
-    CCPACSWingSections::~CCPACSWingSections(void)
-    {
-        Cleanup();
+    // Loop over all sections
+    for (int i = 1; i <= sectionCount; i++) {
+        CCPACSWingSection* section = new CCPACSWingSection();
+        sections.push_back(section);
+
+        tempString = wingXPath + "/sections/section[";
+        std::ostringstream xpath;
+        xpath << tempString << i << "]";
+        section->ReadCPACS(tixiHandle, xpath.str());
     }
+}
 
-    // Cleanup routine
-    void CCPACSWingSections::Cleanup(void)
-    {
-        for (CCPACSWingSectionContainer::size_type i = 0; i < sections.size(); i++) {
-            delete sections[i];
-        }
-        sections.clear();
+// Get section count
+int CCPACSWingSections::GetSectionCount(void) const
+{
+    return static_cast<int>(sections.size());
+}
+
+// Returns the section for a given index
+CCPACSWingSection& CCPACSWingSections::GetSection(int index) const
+{
+    index--;
+    if (index < 0 || index >= GetSectionCount()) {
+        throw CTiglError("Error: Invalid index in CCPACSWingSections::GetSection", TIGL_INDEX_ERROR);
     }
-
-    // Read CPACS wing sections element
-    void CCPACSWingSections::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& wingXPath)
-    {
-        Cleanup();
-
-        ReturnCode    tixiRet;
-        int           sectionCount;
-        std::string   tempString;
-        char*         elementPath;
-
-        /* Get section element count */
-        tempString  = wingXPath + "/sections";
-        elementPath = const_cast<char*>(tempString.c_str());
-        tixiRet = tixiGetNamedChildrenCount(tixiHandle, elementPath, "section", &sectionCount);
-        if (tixiRet != SUCCESS) {
-            throw CTiglError("XML error: tixiGetNamedChildrenCount failed in CCPACSWingSections::ReadCPACS", TIGL_XML_ERROR);
-        }
-
-        // Loop over all sections
-        for (int i = 1; i <= sectionCount; i++) {
-            CCPACSWingSection* section = new CCPACSWingSection();
-            sections.push_back(section);
-
-            tempString = wingXPath + "/sections/section[";
-            std::ostringstream xpath;
-            xpath << tempString << i << "]";
-            section->ReadCPACS(tixiHandle, xpath.str());
-        }
-    }
-
-    // Get section count
-    int CCPACSWingSections::GetSectionCount(void) const
-    {
-        return static_cast<int>(sections.size());
-    }
-
-    // Returns the section for a given index
-    CCPACSWingSection& CCPACSWingSections::GetSection(int index) const
-    {
-        index--;
-        if (index < 0 || index >= GetSectionCount())
-            throw CTiglError("Error: Invalid index in CCPACSWingSections::GetSection", TIGL_INDEX_ERROR);
-        return (*sections[index]);
-    }
+    return (*sections[index]);
+}
 
 } // end namespace tigl

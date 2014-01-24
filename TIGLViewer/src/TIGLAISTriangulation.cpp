@@ -42,36 +42,43 @@
 IMPLEMENT_STANDARD_HANDLE(TIGLAISTriangulation, AIS_InteractiveObject)
 IMPLEMENT_STANDARD_RTTIEXT(TIGLAISTriangulation, AIS_InteractiveObject)
 
-namespace {
-    inline double max(double a, double b) {
+namespace 
+{
+    inline double max(double a, double b) 
+    {
         return a>b? a : b;
     }
     
-    inline double min(double a, double b) {
+    inline double min(double a, double b) 
+    {
         return a<b? a : b;
     }
 }
 
 TIGLAISTriangulation::TIGLAISTriangulation(const Handle(Poly_Triangulation)& Triangulation)
 {
-  myTriangulation = Triangulation;
-  myNbNodes       = Triangulation->NbNodes();
-  myNbTriangles   = Triangulation->NbTriangles();
-  myFlagColor     = 0;
-  minx = miny = minz = DBL_MAX;
-  maxx = maxy = maxz = DBL_MIN;
-  
-  const TColgp_Array1OfPnt& nodes = Triangulation->Nodes();
-  for (int i = nodes.Lower(); i <= nodes.Upper(); ++i) {
-      const gp_Pnt& p = nodes.Value(i);
-      minx = min(minx, p.X());
-      miny = min(miny, p.Y());
-      minz = min(minz, p.Z());
-      
-      maxx = max(maxx, p.X());
-      maxy = max(maxy, p.Y());
-      maxz = max(maxz, p.Z());
-  }
+    myTriangulation = Triangulation;
+    myNbNodes       = Triangulation->NbNodes();
+    myNbTriangles   = Triangulation->NbTriangles();
+    myFlagColor     = 0;
+    minx = DBL_MAX; 
+    miny = DBL_MAX; 
+    minz = DBL_MAX;
+    maxx = DBL_MIN; 
+    maxy = DBL_MIN; 
+    maxz = DBL_MIN;
+    
+    const TColgp_Array1OfPnt& nodes = Triangulation->Nodes();
+    for (int i = nodes.Lower(); i <= nodes.Upper(); ++i) {
+        const gp_Pnt& p = nodes.Value(i);
+        minx = min(minx, p.X());
+        miny = min(miny, p.Y());
+        minz = min(minz, p.Z());
+        
+        maxx = max(maxx, p.X());
+        maxy = max(maxy, p.Y());
+        maxz = max(maxz, p.Z());
+    }
 }
 
 //=======================================================================
@@ -79,119 +86,107 @@ TIGLAISTriangulation::TIGLAISTriangulation(const Handle(Poly_Triangulation)& Tri
 //purpose  :
 //=======================================================================
 void TIGLAISTriangulation::Compute(const Handle(PrsMgr_PresentationManager3d)& aPresentationManager,
-                                const Handle(Prs3d_Presentation)& aPresentation,
-                                const Standard_Integer aMode)
+                                   const Handle(Prs3d_Presentation)& aPresentation,
+                                   const Standard_Integer aMode)
 {
     aPresentation->Clear();
     Handle(Graphic3d_Group) TheGroup = Prs3d_Root::CurrentGroup(aPresentation);
     TheGroup->Clear();
 
-  switch (aMode) 
-  {
-    case 1:
-    {
-      Handle(Graphic3d_AspectFillArea3d) aspect = myDrawer->ShadingAspect()->Aspect();
-      Standard_Real ambient = aspect->FrontMaterial().Ambient();
-      
-      const TColgp_Array1OfPnt& nodes = myTriangulation->Nodes();             //Nodes
-      const Poly_Array1OfTriangle& triangles = myTriangulation->Triangles();  //Triangle
+    switch (aMode) {
+        case 1: {
+            Handle(Graphic3d_AspectFillArea3d) aspect = myDrawer->ShadingAspect()->Aspect();
+            Standard_Real ambient = aspect->FrontMaterial().Ambient();
 
-      Standard_Boolean hasVNormals = myTriangulation->HasNormals();
-      Standard_Boolean hasVColors  = (myFlagColor == 1);
+            const TColgp_Array1OfPnt& nodes = myTriangulation->Nodes();             //Nodes
+            const Poly_Array1OfTriangle& triangles = myTriangulation->Triangles();  //Triangle
 
-      Handle(Graphic3d_ArrayOfTriangles) anArray =
-         new Graphic3d_ArrayOfTriangles ( myNbNodes,        //maxVertexs
-                                          myNbTriangles * 3,//maxEdges
-                                          hasVNormals,      //hasVNormals
-                                          hasVColors,       //hasVColors
-                                          Standard_False,   //hasTexels
-                                          Standard_True     //hasEdgeInfos
-                                         );
+            Standard_Boolean hasVNormals = myTriangulation->HasNormals();
+            Standard_Boolean hasVColors  = (myFlagColor == 1);
 
-      Standard_Integer i;
-      Standard_Integer j;
+            Handle(Graphic3d_ArrayOfTriangles) anArray =
+                new Graphic3d_ArrayOfTriangles ( myNbNodes,        //maxVertexs
+                        myNbTriangles * 3,//maxEdges
+                        hasVNormals,      //hasVNormals
+                        hasVColors,       //hasVColors
+                        Standard_False,   //hasTexels
+                        Standard_True     //hasEdgeInfos
+                        );
 
-      if (hasVNormals)
-      {
-        const TShort_Array1OfShortReal& normals = myTriangulation->Normals();
-        if (hasVColors)
-        {
-          const TColStd_Array1OfInteger& colors = myColor->Array1();
-          for ( i = nodes.Lower(); i <= nodes.Upper(); i++ )
-          {
-            j = (i - nodes.Lower()) * 3;
-            anArray->AddVertex(nodes(i), AttenuateColor(colors(i), ambient));
-            anArray->SetVertexNormal(i, normals(j+1), normals(j+2), normals(j+3));
-          }
+            Standard_Integer i;
+            Standard_Integer j;
+
+            if (hasVNormals) {
+                const TShort_Array1OfShortReal& normals = myTriangulation->Normals();
+                if (hasVColors) {
+                    const TColStd_Array1OfInteger& colors = myColor->Array1();
+                    for ( i = nodes.Lower(); i <= nodes.Upper(); i++ ) {
+                        j = (i - nodes.Lower()) * 3;
+                        anArray->AddVertex(nodes(i), AttenuateColor(colors(i), ambient));
+                        anArray->SetVertexNormal(i, normals(j+1), normals(j+2), normals(j+3));
+                    }
+                }
+                // !hasVColors
+                else {
+                    for ( i = nodes.Lower(); i <= nodes.Upper(); i++ ) {
+                        j = (i - nodes.Lower()) * 3;
+                        anArray->AddVertex(nodes(i));
+                        anArray->SetVertexNormal(i, normals(j+1), normals(j+2), normals(j+3));
+                    }
+                }
+            }
+            // !hasVNormals
+            else {
+                if (hasVColors) {
+                    const TColStd_Array1OfInteger& colors = myColor->Array1();
+                    for ( i = nodes.Lower(); i <= nodes.Upper(); i++ ) {
+                        anArray->AddVertex(nodes(i), AttenuateColor(colors(i), ambient));
+                    }
+                }
+                // !hasVColors
+                else {
+                    for ( i = nodes.Lower(); i <= nodes.Upper(); i++ ) {
+                        anArray->AddVertex(nodes(i));
+                    }
+                }
+            }
+
+            Standard_Integer indexTriangle[3] = {0,0,0};
+            for ( i = triangles.Lower(); i<= triangles.Upper(); i++ ) {
+                triangles(i).Get(indexTriangle[0], indexTriangle[1], indexTriangle[2]);
+                anArray->AddEdge(indexTriangle[0]);
+                anArray->AddEdge(indexTriangle[1]);
+                anArray->AddEdge(indexTriangle[2]);
+            }
+            TheGroup->SetPrimitivesAspect(aspect);
+            TheGroup->AddPrimitiveArray(anArray);
+            break;
         }
-        else // !hasVColors
-        {
-          for ( i = nodes.Lower(); i <= nodes.Upper(); i++ )
-          {
-            j = (i - nodes.Lower()) * 3;
-            anArray->AddVertex(nodes(i));
-            anArray->SetVertexNormal(i, normals(j+1), normals(j+2), normals(j+3));
-          }
+        case 0: {
+            const TColgp_Array1OfPnt& nodes = myTriangulation->Nodes();
+            const Poly_Array1OfTriangle& triangles = myTriangulation->Triangles();
+            Handle_Graphic3d_AspectLine3d aspect = myDrawer->WireAspect()->Aspect();
+     
+            Handle(Graphic3d_ArrayOfPrimitives) segments =  new Graphic3d_ArrayOfSegments(nodes.Length(),triangles.Length()*6);
+            for (Standard_Integer i = nodes.Lower(); i <= nodes.Upper(); i++ ) {
+                segments->AddVertex(nodes(i));
+            }
+     
+            Standard_Integer indexTriangle[3] = {0,0,0};
+            for (Standard_Integer i = triangles.Lower(); i<= triangles.Upper(); i++ ) {
+                triangles(i).Get(indexTriangle[0], indexTriangle[1], indexTriangle[2]);
+                segments->AddEdge(indexTriangle[0]);
+                segments->AddEdge(indexTriangle[1]);
+                segments->AddEdge(indexTriangle[1]);
+                segments->AddEdge(indexTriangle[2]);
+                segments->AddEdge(indexTriangle[2]);
+                segments->AddEdge(indexTriangle[0]);
+            }
+     
+            TheGroup->SetPrimitivesAspect(aspect);
+            TheGroup->AddPrimitiveArray(segments);
         }
-      }
-      else // !hasVNormals
-      {
-        if (hasVColors)
-        {
-          const TColStd_Array1OfInteger& colors = myColor->Array1();
-          for ( i = nodes.Lower(); i <= nodes.Upper(); i++ )
-          {
-            anArray->AddVertex(nodes(i), AttenuateColor(colors(i), ambient));
-          }
-        }
-        else // !hasVColors
-        {
-          for ( i = nodes.Lower(); i <= nodes.Upper(); i++ )
-          {
-            anArray->AddVertex(nodes(i));
-          }
-        }
-      }
-
-      Standard_Integer indexTriangle[3] = {0,0,0};
-      for ( i = triangles.Lower(); i<= triangles.Upper(); i++ ) {
-        triangles(i).Get(indexTriangle[0], indexTriangle[1], indexTriangle[2]);
-        anArray->AddEdge(indexTriangle[0]);
-        anArray->AddEdge(indexTriangle[1]);
-        anArray->AddEdge(indexTriangle[2]);
-      }
-      TheGroup->SetPrimitivesAspect(aspect);
-      TheGroup->AddPrimitiveArray(anArray);
-      break;
-      }
-    case 0:
-    {
-      const TColgp_Array1OfPnt& nodes = myTriangulation->Nodes();
-      const Poly_Array1OfTriangle& triangles = myTriangulation->Triangles();
-      Handle_Graphic3d_AspectLine3d aspect = myDrawer->WireAspect()->Aspect();
-      
-      Handle(Graphic3d_ArrayOfPrimitives) segments =  new Graphic3d_ArrayOfSegments(nodes.Length(),triangles.Length()*6);
-      for (Standard_Integer i = nodes.Lower(); i <= nodes.Upper(); i++ )
-      {
-        segments->AddVertex(nodes(i));
-      }
-      
-      Standard_Integer indexTriangle[3] = {0,0,0};
-      for (Standard_Integer i = triangles.Lower(); i<= triangles.Upper(); i++ ) {
-        triangles(i).Get(indexTriangle[0], indexTriangle[1], indexTriangle[2]);
-        segments->AddEdge(indexTriangle[0]);
-        segments->AddEdge(indexTriangle[1]);
-        segments->AddEdge(indexTriangle[1]);
-        segments->AddEdge(indexTriangle[2]);
-        segments->AddEdge(indexTriangle[2]);
-        segments->AddEdge(indexTriangle[0]);
-      }
-      
-      TheGroup->SetPrimitivesAspect(aspect);
-      TheGroup->AddPrimitiveArray(segments);
     }
-      
-  }
 }
 
 //=======================================================================
@@ -199,14 +194,13 @@ void TIGLAISTriangulation::Compute(const Handle(PrsMgr_PresentationManager3d)& a
 //purpose  : 
 //=======================================================================
 void TIGLAISTriangulation::ComputeSelection(const Handle(SelectMgr_Selection)& aSelection,
-                                         const Standard_Integer /*aMode*/)
+                                            const Standard_Integer /*aMode*/)
 {
     Handle(SelectMgr_EntityOwner) eown = new SelectMgr_EntityOwner(this,0);
 
     TopLoc_Location loc;
-    Handle_Select3D_SensitiveTriangulation aSensitiveTria 
-            = new Select3D_SensitiveTriangulation(eown, myTriangulation, loc);
-        aSelection->Add(aSensitiveTria);
+    Handle_Select3D_SensitiveTriangulation aSensitiveTria = new Select3D_SensitiveTriangulation(eown, myTriangulation, loc);
+    aSelection->Add(aSensitiveTria);
 }
 
 //=======================================================================
@@ -217,8 +211,8 @@ void TIGLAISTriangulation::ComputeSelection(const Handle(SelectMgr_Selection)& a
 //=======================================================================
 void TIGLAISTriangulation::SetColors(const Handle(TColStd_HArray1OfInteger)& aColor)
 {
-  myFlagColor = 1;
-  myColor = aColor;
+    myFlagColor = 1;
+    myColor = aColor;
 }
 
 //=======================================================================
@@ -230,7 +224,7 @@ void TIGLAISTriangulation::SetColors(const Handle(TColStd_HArray1OfInteger)& aCo
 
 Handle(TColStd_HArray1OfInteger) TIGLAISTriangulation::GetColors() const
 {
-  return myColor;
+    return myColor;
 }
 
 
@@ -240,15 +234,16 @@ Handle(TColStd_HArray1OfInteger) TIGLAISTriangulation::GetColors() const
 //=======================================================================
 void TIGLAISTriangulation::SetTriangulation(const Handle(Poly_Triangulation)& aTriangulation)
 {
-  myTriangulation = aTriangulation;
+    myTriangulation = aTriangulation;
 }
 
 //=======================================================================
 //function : GetTriangulation
 //purpose  : 
 //=======================================================================
-Handle(Poly_Triangulation) TIGLAISTriangulation::GetTriangulation() const{
-  return myTriangulation;
+Handle(Poly_Triangulation) TIGLAISTriangulation::GetTriangulation() const
+{
+    return myTriangulation;
 }
 
 //=======================================================================
@@ -261,34 +256,34 @@ Handle(Poly_Triangulation) TIGLAISTriangulation::GetTriangulation() const{
 //=======================================================================
 
 Standard_Integer TIGLAISTriangulation::AttenuateColor( const Standard_Integer aColor,
-                                                    const Standard_Real aComposition)
+                                                       const Standard_Real aComposition)
 {
-  Standard_Integer  red,
-                    green,
-                    blue,
-                    alpha;
+    Standard_Integer  red,
+                      green,
+                      blue,
+                      alpha;
 
-  alpha = aColor&0xff000000;
-  alpha >>= 24;
+    alpha = aColor&0xff000000;
+    alpha >>= 24;
 
-  blue = aColor&0x00ff0000;
-  blue >>= 16;
+    blue = aColor&0x00ff0000;
+    blue >>= 16;
 
-  green = aColor&0x0000ff00;
-  green >>= 8;
+    green = aColor&0x0000ff00;
+    green >>= 8;
 
-  red = aColor&0x000000ff;
-  red >>= 0; 
+    red = aColor&0x000000ff;
+    red >>= 0; 
 
-  red   = (Standard_Integer)(aComposition * red);
-  green = (Standard_Integer)(aComposition * green);
-  blue  = (Standard_Integer)(aComposition * blue);
+    red   = (Standard_Integer)(aComposition * red);
+    green = (Standard_Integer)(aComposition * green);
+    blue  = (Standard_Integer)(aComposition * blue);
 
-  Standard_Integer  color;
-  color = red;
-  color += green << 8;
-  color += blue  << 16; 
-  color += alpha << 24;
-  return color;
+    Standard_Integer  color;
+    color = red;
+    color += green << 8;
+    color += blue  << 16; 
+    color += alpha << 24;
+    return color;
 }
 

@@ -24,7 +24,8 @@
 
 #define TIGL_MATRIX2D(A,n,i,j) ((A)[(i) + (j)*(n)])
 
-namespace tigl {
+namespace tigl 
+{
 
 class ITiglObjectiveFunction
 {

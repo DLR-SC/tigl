@@ -31,149 +31,148 @@
 #include "tigl_config.h"
 #include "tixi.h"
 #include "CCPACSFuselageConnection.h"
-#include "CTiglTransformation.h"
-#include "CTiglPoint.h"
 #include "CTiglAbstractSegment.h"
 
 #include "TopoDS_Shape.hxx"
 
 
-namespace tigl {
+namespace tigl
+{
 
-    class CCPACSFuselage;
+class CCPACSFuselage;
 
-    class CCPACSFuselageSegment : public CTiglAbstractSegment
-    {
+class CCPACSFuselageSegment : public CTiglAbstractSegment
+{
 
-    public:
-        // Constructor
-        CCPACSFuselageSegment(CCPACSFuselage* aFuselage, int aSegmentIndex);
+public:
+    // Constructor
+    CCPACSFuselageSegment(CCPACSFuselage* aFuselage, int aSegmentIndex);
 
-        // Virtual Destructor
-        virtual ~CCPACSFuselageSegment(void);
+    // Virtual Destructor
+    virtual ~CCPACSFuselageSegment(void);
 
-        // Read CPACS segment elements
-        void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& segmentXPath);
+    // Read CPACS segment elements
+    void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& segmentXPath);
 
-        // Returns the fuselage this segment belongs to
-        CCPACSFuselage& GetFuselage(void) const;
+    // Returns the fuselage this segment belongs to
+    CCPACSFuselage& GetFuselage(void) const;
 
-        // Returns the segment index of this segment
-        int GetSegmentIndex(void) const;
+    // Returns the segment index of this segment
+    int GetSegmentIndex(void) const;
 
-        // Returns the start section UID of this segment
-        std::string GetStartSectionUID(void);
+    // Returns the start section UID of this segment
+    std::string GetStartSectionUID(void);
 
-        // Returns the end section UID of this segment
-        std::string GetEndSectionUID(void);
+    // Returns the end section UID of this segment
+    std::string GetEndSectionUID(void);
 
-        // Returns the start section index of this segment
-        int GetStartSectionIndex(void);
+    // Returns the start section index of this segment
+    int GetStartSectionIndex(void);
 
-        // Returns the end section index of this segment
-        int GetEndSectionIndex(void);
+    // Returns the end section index of this segment
+    int GetEndSectionIndex(void);
 
-        // Returns the starting Segement Connection
-        CCPACSFuselageConnection& GetStartConnection(void);
+    // Returns the starting Segement Connection
+    CCPACSFuselageConnection& GetStartConnection(void);
 
-        // Return the end Segment Connection
-        CCPACSFuselageConnection& GetEndConnection(void);
+    // Return the end Segment Connection
+    CCPACSFuselageConnection& GetEndConnection(void);
 
-        // Returns the start section element UID of this segment
-        std::string GetStartSectionElementUID(void);
+    // Returns the start section element UID of this segment
+    std::string GetStartSectionElementUID(void);
 
-        // Returns the end section element UID of this segment
-        std::string GetEndSectionElementUID(void);
+    // Returns the end section element UID of this segment
+    std::string GetEndSectionElementUID(void);
 
-        // Returns the start section element index of this segment
-        int GetStartSectionElementIndex(void);
+    // Returns the start section element index of this segment
+    int GetStartSectionElementIndex(void);
 
-        // Returns the end section element index of this segment
-        int GetEndSectionElementIndex(void);
+    // Returns the end section element index of this segment
+    int GetEndSectionElementIndex(void);
 
-        // Gets the count of segments connected to the start section of this segment
-        int GetStartConnectedSegmentCount(void);
+    // Gets the count of segments connected to the start section of this segment
+    int GetStartConnectedSegmentCount(void);
 
-        // Gets the count of segments connected to the end section of this segment
-        int GetEndConnectedSegmentCount(void);
+    // Gets the count of segments connected to the end section of this segment
+    int GetEndConnectedSegmentCount(void);
 
-        // Gets the index (number) of the n-th segment connected to the start section
-        // of this segment. n starts at 1.
-        int GetStartConnectedSegmentIndex(int n);
+    // Gets the index (number) of the n-th segment connected to the start section
+    // of this segment. n starts at 1.
+    int GetStartConnectedSegmentIndex(int n);
 
-        // Gets the index (number) of the n-th segment connected to the end section
-        // of this segment. n starts at 1.
-        int GetEndConnectedSegmentIndex(int n);
+    // Gets the index (number) of the n-th segment connected to the end section
+    // of this segment. n starts at 1.
+    int GetEndConnectedSegmentIndex(int n);
 
-        // Gets a point on the fuselage segment in dependence of parameters eta and zeta with
-        // 0.0 <= eta <= 1.0 and 0.0 <= zeta <= 1.0. For eta = 0.0 the point lies on the start
-        // profile of the segment, for eta = 1.0 on the end profile of the segment. For zeta = 0.0
-        // the point is the start point of the profile wire, for zeta = 1.0 the last profile wire point.
-        gp_Pnt GetPoint(double eta, double zeta);
+    // Gets a point on the fuselage segment in dependence of parameters eta and zeta with
+    // 0.0 <= eta <= 1.0 and 0.0 <= zeta <= 1.0. For eta = 0.0 the point lies on the start
+    // profile of the segment, for eta = 1.0 on the end profile of the segment. For zeta = 0.0
+    // the point is the start point of the profile wire, for zeta = 1.0 the last profile wire point.
+    gp_Pnt GetPoint(double eta, double zeta);
 
-        int GetNumPointsOnYPlane(double eta, double ypos);
-        gp_Pnt GetPointOnYPlane(double eta, double ypos, int pointIndex);
+    int GetNumPointsOnYPlane(double eta, double ypos);
+    gp_Pnt GetPointOnYPlane(double eta, double ypos, int pointIndex);
 
-        int GetNumPointsOnXPlane(double eta, double xpos);
-        gp_Pnt GetPointOnXPlane(double eta, double xpos, int pointIndex);
+    int GetNumPointsOnXPlane(double eta, double xpos);
+    gp_Pnt GetPointOnXPlane(double eta, double xpos, int pointIndex);
 
-        // Gets a point on the fuselage segment in dependence of an angle alpha (degree).
-        // The origin of the angle could be set via the parameters y_cs and z_cs,
-        // but in most cases y_cs and z_cs will be zero get the get center line of the profile.
-        gp_Pnt GetPointAngle(double eta, double alpha, double y_cs, double z_cs);
+    // Gets a point on the fuselage segment in dependence of an angle alpha (degree).
+    // The origin of the angle could be set via the parameters y_cs and z_cs,
+    // but in most cases y_cs and z_cs will be zero get the get center line of the profile.
+    gp_Pnt GetPointAngle(double eta, double alpha, double y_cs, double z_cs);
 
-        // Gets the volume of this segment
-        double GetVolume();
+    // Gets the volume of this segment
+    double GetVolume();
         
-        // Gets the surface area of this segment
-        double GetSurfaceArea();
+    // Gets the surface area of this segment
+    double GetSurfaceArea();
 
-        // Gets the wire on the loft at a given eta
-        TopoDS_Shape getWireOnLoft(double eta);
+    // Gets the wire on the loft at a given eta
+    TopoDS_Shape getWireOnLoft(double eta);
 
-        // Returns the circumference if the segment at a given eta
-        double GetCircumference(const double eta);
+    // Returns the circumference if the segment at a given eta
+    double GetCircumference(const double eta);
 
-        // Returns the inner profile points as read from TIXI. The points are already transformed.
-        std::vector<CTiglPoint*> GetRawStartProfilePoints();
+    // Returns the inner profile points as read from TIXI. The points are already transformed.
+    std::vector<CTiglPoint*> GetRawStartProfilePoints();
 
-        // Returns the outer profile points as read from TIXI. The points are already transformed.
-        std::vector<CTiglPoint*> GetRawEndProfilePoints();
+    // Returns the outer profile points as read from TIXI. The points are already transformed.
+    std::vector<CTiglPoint*> GetRawEndProfilePoints();
 
-        TiglGeometricComponentType GetComponentType(){return TIGL_COMPONENT_FUSELSEGMENT | TIGL_COMPONENT_SEGMENT | TIGL_COMPONENT_LOGICAL;}
+    TiglGeometricComponentType GetComponentType(){return TIGL_COMPONENT_FUSELSEGMENT | TIGL_COMPONENT_SEGMENT | TIGL_COMPONENT_LOGICAL;}
 
 #ifdef TIGL_USE_XCAF
-        // builds data structure for a TDocStd_Application
-        // mostly used for export
-        TDF_Label ExportDataStructure(class CCPACSConfiguration &, Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label);
+    // builds data structure for a TDocStd_Application
+    // mostly used for export
+    TDF_Label ExportDataStructure(class CCPACSConfiguration &, Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label);
 #endif
 
-    protected:
-        // Cleanup routine
-        void Cleanup(void);
+protected:
+    // Cleanup routine
+    void Cleanup(void);
 
-        // Update internal segment data
-        void Update(void);
+    // Update internal segment data
+    void Update(void);
 
-        // Builds the loft between the two segment sections
-        TopoDS_Shape BuildLoft(void);
+    // Builds the loft between the two segment sections
+    TopoDS_Shape BuildLoft(void);
 
-    private:
-        // Copy constructor
-        CCPACSFuselageSegment(const CCPACSFuselageSegment& );
+private:
+    // Copy constructor
+    CCPACSFuselageSegment(const CCPACSFuselageSegment& );
 
-        // Assignment operator
-        void operator=(const CCPACSFuselageSegment& );
+    // Assignment operator
+    void operator=(const CCPACSFuselageSegment& );
 
-        std::string              name;                 /**< Segment name                            */
-        CCPACSFuselageConnection startConnection;      /**< Start segment connection                */
-        CCPACSFuselageConnection endConnection;        /**< End segment connection                  */
-        CCPACSFuselage*          fuselage;             /**< Parent fuselage                         */
-        double                   myVolume;             /**< Volume of this segment                  */
-        double                   mySurfaceArea;        /**< Surface Area of this segment            */
-        double                   myWireLength;         /**< Wire length of this segment for a given zeta */
+    std::string              name;                 /**< Segment name                            */
+    CCPACSFuselageConnection startConnection;      /**< Start segment connection                */
+    CCPACSFuselageConnection endConnection;        /**< End segment connection                  */
+    CCPACSFuselage*          fuselage;             /**< Parent fuselage                         */
+    double                   myVolume;             /**< Volume of this segment                  */
+    double                   mySurfaceArea;        /**< Surface Area of this segment            */
+    double                   myWireLength;         /**< Wire length of this segment for a given zeta */
 
-    };
+};
 
 } // end namespace tigl
 
