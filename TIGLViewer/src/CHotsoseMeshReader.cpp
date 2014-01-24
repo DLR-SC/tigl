@@ -29,7 +29,8 @@ CHotsoseMeshReader::CHotsoseMeshReader()
 {
 }
 
-TiglReturnCode CHotsoseMeshReader::readFromFile(const char * filename, tigl::CTiglPolyData& mesh){
+TiglReturnCode CHotsoseMeshReader::readFromFile(const char * filename, tigl::CTiglPolyData& mesh)
+{
     mesh.currentObject().enableNormals(false);
 
     QFile file(filename);
@@ -49,7 +50,7 @@ TiglReturnCode CHotsoseMeshReader::readFromFile(const char * filename, tigl::CTi
         line = in.readLine();
 
         QStringList list = line.split(" ", QString::SkipEmptyParts);
-        if(list.size() == 4){
+        if (list.size() == 4) {
             // parse polygon number
             int pnr = list.at(0).toInt();
             if (pnr != lastnr && poly->getNPoints() > 0){

@@ -37,42 +37,40 @@
 
 class CCPACSConfiguration;
 
-namespace tigl {
+namespace tigl 
+{
 
-    class CTiglExportIges
-    {
+class CTiglExportIges
+{
 
-    public:
-        // Constructor
-        CTiglExportIges(CCPACSConfiguration& config);
+public:
+    // Constructor
+    CTiglExportIges(CCPACSConfiguration& config);
 
-        // Virtual Destructor
-        virtual ~CTiglExportIges(void);
-        
-        // Exports the whole configuration as IGES file
-        void ExportIGES(const std::string& filename) const;
+    // Virtual Destructor
+    virtual ~CTiglExportIges(void);
+    
+    // Exports the whole configuration as IGES file
+    void ExportIGES(const std::string& filename) const;
 
-        // Exports the whole configuration, boolean fused, as IGES file
-        void ExportFusedIGES(const std::string& filename);
+    // Exports the whole configuration, boolean fused, as IGES file
+    void ExportFusedIGES(const std::string& filename);
 
-        // Save a sequence of shapes in IGES Format
-        void ExportShapes(const Handle(TopTools_HSequenceOfShape)& aHSequenceOfShape, const std::string& filename);
+    // Save a sequence of shapes in IGES Format
+    void ExportShapes(const Handle(TopTools_HSequenceOfShape)& aHSequenceOfShape, const std::string& filename);
 
 #ifdef TIGL_USE_XCAF
-        // Saves as IGES, with cpacs metadata information in it
-        void ExportIgesWithCPACSMetadata(const std::string& filename);
+    // Saves as IGES, with cpacs metadata information in it
+    void ExportIgesWithCPACSMetadata(const std::string& filename);
 #endif
-    protected:
-        
+    
+private:
+    // Assignment operator
+    void operator=(const CTiglExportIges& ) { /* Do nothing */ }
 
-    private:
-        // Assignment operator
-        void operator=(const CTiglExportIges& ) { /* Do nothing */ }
-
-    private:
-        CCPACSConfiguration&          myConfig;       /**< TIGL configuration object */
-        void SetTranslationParamters() const;
-    };
+    CCPACSConfiguration&          myConfig;       /**< TIGL configuration object */
+    void SetTranslationParamters() const;
+};
 
 } // end namespace tigl
 

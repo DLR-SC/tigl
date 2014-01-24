@@ -30,9 +30,11 @@ class ObjectImpl;
 
 #define UNDEFINED_REAL 0.0
 
-namespace tigl {
+namespace tigl 
+{
 
-class CTiglPolygon{
+class CTiglPolygon
+{
 public:
     CTiglPolygon();
 
@@ -63,7 +65,8 @@ private:
     std::vector<CTiglPoint> _normals;
 };
 
-class CTiglPolyObject{
+class CTiglPolyObject
+{
 public:
     CTiglPolyObject();
     ~CTiglPolyObject();
@@ -138,7 +141,8 @@ private:
     ObjectImpl * impl;
 };
 
-class CTiglPolyData {
+class CTiglPolyData 
+{
 public:
     CTiglPolyData();
     ~CTiglPolyData();
@@ -172,6 +176,6 @@ private:
     std::vector<CTiglPolyObject*>::iterator itCurrentObj;
 };
 
-}
+} // end namespace tigl
 
 #endif // VTKPOLYDATA_H

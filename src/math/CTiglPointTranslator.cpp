@@ -28,25 +28,31 @@
 #include <cassert>
 #include <iomanip>
 
-namespace tigl{
+namespace tigl
+{
 
-namespace {
+namespace 
+{
     inline double max(double a, double b) { return a > b ? a : b; }
 }
 
-void CTiglPointTranslator::SegmentProjection::setProjectionPoint(const CTiglPoint& p){
+void CTiglPointTranslator::SegmentProjection::setProjectionPoint(const CTiglPoint& p)
+{
     _x = p;
 }
 
-CTiglPointTranslator::CTiglPointTranslator() : projector(*this, a,b,c,d){ 
+CTiglPointTranslator::CTiglPointTranslator() : projector(*this, a,b,c,d)
+{ 
     initialized = false;
 }
 
-CTiglPointTranslator::CTiglPointTranslator(const CTiglPoint& x1, const CTiglPoint& x2, const CTiglPoint& x3, const CTiglPoint& x4) : projector(*this, a,b,c,d) {
+CTiglPointTranslator::CTiglPointTranslator(const CTiglPoint& x1, const CTiglPoint& x2, const CTiglPoint& x3, const CTiglPoint& x4) : projector(*this, a,b,c,d) 
+{
     setQuadriangle(x1, x2, x3, x4);
 }
 
-void CTiglPointTranslator::setQuadriangle(const CTiglPoint& x1, const CTiglPoint& x2, const CTiglPoint& x3, const CTiglPoint& x4){
+void CTiglPointTranslator::setQuadriangle(const CTiglPoint& x1, const CTiglPoint& x2, const CTiglPoint& x3, const CTiglPoint& x4)
+{
     a = x2-x1;
     b = x3-x1;
     c = x1-x2-x3+x4;
@@ -56,7 +62,8 @@ void CTiglPointTranslator::setQuadriangle(const CTiglPoint& x1, const CTiglPoint
 }
 
 // Vector between point x and a point on the plane defined by (x1,x2,x3,x4);
-void CTiglPointTranslator::calcPoint(double alpha, double beta, CTiglPoint& p) const{
+void CTiglPointTranslator::calcPoint(double alpha, double beta, CTiglPoint& p) const
+{
     p.x = alpha*a.x + beta*b.x + alpha*beta*c.x + d.x;
     p.y = alpha*a.y + beta*b.y + alpha*beta*c.y + d.y;
     p.z = alpha*a.z + beta*b.z + alpha*beta*c.z + d.z;
@@ -66,7 +73,8 @@ void CTiglPointTranslator::calcPoint(double alpha, double beta, CTiglPoint& p) c
 // This defines our minimization problem. The objective function
 // measures the vector p(eta,xsi) (distance of x and a point 
 // in the plane defined by x1, x2, x3, x4. 
-double CTiglPointTranslator::SegmentProjection::getFunctionValue(const double * x) const{
+double CTiglPointTranslator::SegmentProjection::getFunctionValue(const double * x) const
+{
     CTiglPoint p;
     _t.translate(x[0], x[1], &p);
     p -= _x;
@@ -76,7 +84,8 @@ double CTiglPointTranslator::SegmentProjection::getFunctionValue(const double * 
 
 
 // calculate gradient and hessian of our minimization problem
-void CTiglPointTranslator::SegmentProjection::getGradientHessian(const double * x, double * grad, double * hess) const{
+void CTiglPointTranslator::SegmentProjection::getGradientHessian(const double * x, double * grad, double * hess) const
+{
     CTiglPoint p;
     _t.translate(x[0], x[1], &p);
     p -= _x;
@@ -96,7 +105,8 @@ void CTiglPointTranslator::SegmentProjection::getGradientHessian(const double * 
     TIGL_MATRIX2D(hess,2,1,0) = TIGL_MATRIX2D(hess,2,0,1);
 }
 
-void CTiglPointTranslator::SegmentProjection::getGradient(const double * x, double * grad) const{
+void CTiglPointTranslator::SegmentProjection::getGradient(const double * x, double * grad) const
+{
     CTiglPoint p;
     _t.translate(x[0], x[1], &p);
     p -= _x;
@@ -111,7 +121,8 @@ void CTiglPointTranslator::SegmentProjection::getGradient(const double * x, doub
     grad[1] = 2.*CTiglPoint::inner_prod(p, bca);
 }
 
-void CTiglPointTranslator::SegmentProjection::getHessian(const double * x, double * hess) const{
+void CTiglPointTranslator::SegmentProjection::getHessian(const double * x, double * hess) const
+{
     CTiglPoint p;
     _t.translate(x[0], x[1], &p);
     p -= _x;
@@ -127,8 +138,9 @@ void CTiglPointTranslator::SegmentProjection::getHessian(const double * x, doubl
     TIGL_MATRIX2D(hess,2,0,1) = 2.*CTiglPoint::inner_prod(bca, acb) + 2.*CTiglPoint::inner_prod(p, _c);
 }
 
-TiglReturnCode CTiglPointTranslator::translate(const CTiglPoint& p, double* eta, double * xsi){
-    if(!eta || !xsi){
+TiglReturnCode CTiglPointTranslator::translate(const CTiglPoint& p, double* eta, double * xsi)
+{
+    if (!eta || !xsi) {
         LOG(ERROR) << "Error in CTiglPointTranslator::translate(): eta and xsi may not be NULL Pointers!" << std::endl;
         return TIGL_NULL_POINTER;
     }
@@ -165,8 +177,9 @@ TiglReturnCode CTiglPointTranslator::translate(const CTiglPoint& p, double* eta,
 } 
 
 // converts from eta-xsi to spatial coordinates
-TiglReturnCode CTiglPointTranslator::translate(double eta, double xsi, CTiglPoint* p) const{
-    if(!p){
+TiglReturnCode CTiglPointTranslator::translate(double eta, double xsi, CTiglPoint* p) const
+{
+    if (!p) {
         LOG(ERROR) << "Error in CTiglPointTranslator::translate(): p may not be a NULL Pointer!" << std::endl;
         return TIGL_NULL_POINTER;
     }
@@ -179,8 +192,9 @@ TiglReturnCode CTiglPointTranslator::translate(double eta, double xsi, CTiglPoin
 }
 
 // converts from eta-xsi to spatial coordinates
-TiglReturnCode CTiglPointTranslator::getNormal(double eta, double xsi, CTiglPoint* n) const{
-    if(!n){
+TiglReturnCode CTiglPointTranslator::getNormal(double eta, double xsi, CTiglPoint* n) const
+{
+    if (!n) {
         LOG(ERROR) << "Error in CTiglPointTranslator::getNormal(): n may not be a NULL Pointer!" << std::endl;
         return TIGL_NULL_POINTER;
     }
@@ -197,8 +211,9 @@ TiglReturnCode CTiglPointTranslator::getNormal(double eta, double xsi, CTiglPoin
 
     
 // projects the point x onto the plane and returns this point
-TiglReturnCode CTiglPointTranslator::project(const CTiglPoint& xx, CTiglPoint* pOnSurf){
-    if(!pOnSurf){
+TiglReturnCode CTiglPointTranslator::project(const CTiglPoint& xx, CTiglPoint* pOnSurf)
+{
+    if (!pOnSurf) {
         LOG(ERROR) << "Error in CTiglPointTranslator::project(): p may not be a NULL Pointer!" << std::endl;
         return TIGL_NULL_POINTER;
     }

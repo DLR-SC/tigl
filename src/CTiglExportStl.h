@@ -34,36 +34,36 @@
 #include "CCPACSFuselageProfile.h"
 
 
-namespace tigl {
+namespace tigl 
+{
 
-    class CTiglExportStl
-    {
+class CTiglExportStl
+{
 
-    public:
-        // Constructor
-        CTiglExportStl(CCPACSConfiguration& config);
+public:
+    // Constructor
+    CTiglExportStl(CCPACSConfiguration& config);
 
-        // Empty destructor
-        ~CTiglExportStl(void) { /* empty */}
+    // Empty destructor
+    ~CTiglExportStl(void) { /* empty */}
 
-        // Exports a selected wing, boolean fused and meshed, as STL file
-        void ExportMeshedWingSTL(int wingIndex, const std::string& filename, double deflection = 0.1);
+    // Exports a selected wing, boolean fused and meshed, as STL file
+    void ExportMeshedWingSTL(int wingIndex, const std::string& filename, double deflection = 0.1);
 
-        // Exports a selected fuselage, boolean fused and meshed, as STL file
-        void ExportMeshedFuselageSTL(int fuselageIndex, const std::string& filename, double deflection = 0.1);
+    // Exports a selected fuselage, boolean fused and meshed, as STL file
+    void ExportMeshedFuselageSTL(int fuselageIndex, const std::string& filename, double deflection = 0.1);
 
-        // Exports a whole geometry, boolean fused and meshed, as STL file
-        void ExportMeshedGeometrySTL(const std::string& filename, double deflection = 0.1);
+    // Exports a whole geometry, boolean fused and meshed, as STL file
+    void ExportMeshedGeometrySTL(const std::string& filename, double deflection = 0.1);
 
-    protected:
+protected:
 
-    private:
-        // Assignment operator
-        void operator=(const CTiglExportStl& ) { /* Do nothing */ }
+private:
+    // Assignment operator
+    void operator=(const CTiglExportStl& ) { /* Do nothing */ }
 
-    private:
-        CCPACSConfiguration & myConfig;       /**< TIGL configuration object */
-    };
+    CCPACSConfiguration & myConfig;       /**< TIGL configuration object */
+};
 
 } // end namespace tigl
 

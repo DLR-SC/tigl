@@ -22,7 +22,8 @@
 #include "ITiglObjectiveFunction.h"
 #include "CTiglError.h"
 
-namespace tigl {
+namespace tigl 
+{
 
 ITiglObjectiveFunction::ITiglObjectiveFunction(void)
 {
@@ -34,29 +35,35 @@ ITiglObjectiveFunction::~ITiglObjectiveFunction(void)
 {
 }
 
-void ITiglObjectiveFunction::setNumericalStepSize(double h) {
-    if( h <= 0)
+void ITiglObjectiveFunction::setNumericalStepSize(double h) 
+{
+    if ( h <= 0) {
         throw CTiglError("Error: Step size for finite differences must be larger than zero!");
+    }
 
     this->h = h;
 }
 
 // by default, we calculate the gradient with finite differences if no gradient is given
-void ITiglObjectiveFunction::getGradient(const double * x, double * dx) const {
+void ITiglObjectiveFunction::getGradient(const double * x, double * dx) const 
+{
     getNumericalGradient(x,dx);
 }
 
-void ITiglObjectiveFunction::getNumericalGradient(const double * x, double * dx) const {
-    if(!dx)
+void ITiglObjectiveFunction::getNumericalGradient(const double * x, double * dx) const 
+{
+    if (!dx) {
         throw CTiglError("Error: gradient argument must not be a zero pointer in  ITiglObjectiveFunction::getNumericalGradient!");
+    }
 
     double curOf = getFunctionValue(x);
     double * xnew = new double[getParameterCount()];
 
-    for(int i = 0; i < getParameterCount(); ++i)
+    for (int i = 0; i < getParameterCount(); ++i) {
         xnew[i] = x[i];
+    }
 
-    for(int i = 0; i < getParameterCount(); ++i){
+    for (int i = 0; i < getParameterCount(); ++i) {
         xnew[i] = x[i] + h;
 
         double ofi = getFunctionValue(xnew);
@@ -69,15 +76,18 @@ void ITiglObjectiveFunction::getNumericalGradient(const double * x, double * dx)
 }
 
 // by default, we calculate the hessian matrix with finite differences if no gradient is given
-void ITiglObjectiveFunction::getHessian(const double * x, double * H) const {
+void ITiglObjectiveFunction::getHessian(const double * x, double * H) const 
+{
     getNumericalHessian(x,H);
 }
 
 // calculates the numerical hessian based on gradient calls. this is not very accurate but
 // should suffice for the moment.
-void ITiglObjectiveFunction::getNumericalHessian(const double * x, double * H) const {
-    if(!H)
+void ITiglObjectiveFunction::getNumericalHessian(const double * x, double * H) const 
+{
+    if (!H) {
         throw CTiglError("Error: hessian argument must not be a zero pointer in  ITiglObjectiveFunction::getNumericalHessian!");
+    }
 
     int n = getParameterCount();
 
@@ -88,14 +98,15 @@ void ITiglObjectiveFunction::getNumericalHessian(const double * x, double * H) c
     double * xnew  = new double[n];
     double * dxnew = new double[n];
 
-    for(int i = 0; i <n; ++i)
+    for (int i = 0; i <n; ++i) {
         xnew[i] = x[i];
+    }
 
-    for(int i = 0; i < n; ++i){
+    for (int i = 0; i < n; ++i) {
         xnew[i] = x[i] + h;
 
         getGradient(xnew, dxnew);
-        for(int j = 0; j < n; ++j){
+        for (int j = 0; j < n; ++j) {
             TIGL_MATRIX2D(H,n,i,j) = (dxnew[j]-dxcur[j])/h;
         }
 
@@ -109,7 +120,8 @@ void ITiglObjectiveFunction::getNumericalHessian(const double * x, double * H) c
 }
 
 
-void ITiglObjectiveFunction::getGradientHessian(const double * x, double * dx, double * H) const {
+void ITiglObjectiveFunction::getGradientHessian(const double * x, double * dx, double * H) const 
+{
     getGradient(x,dx);
     getHessian(x,H);
 }

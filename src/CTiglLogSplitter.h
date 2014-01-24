@@ -23,7 +23,8 @@
 #include "CTiglLogging.h"
 #include <vector>
 
-namespace tigl {
+namespace tigl 
+{
 
 class CTiglLogSplitter : public ITiglLogger
 {

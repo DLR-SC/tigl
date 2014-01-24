@@ -19,19 +19,22 @@
 #ifndef TIGLVIEWERCONTROLFILE_H_
 #define TIGLVIEWERCONTROLFILE_H_
 
-enum CF_ReturnCode{
+enum CF_ReturnCode
+{
     CF_SUCCESS,
     CF_FILE_NOT_FOUND,
     CF_ERROR
 };
 
-enum CF_BOOL_STATUS{
+enum CF_BOOL_STATUS
+{
     CF_TRUE,
     CF_FALSE,
     UNDEFINED
 };
 
-class TIGLViewerControlFile {
+class TIGLViewerControlFile 
+{
 public:
     TIGLViewerControlFile();
 

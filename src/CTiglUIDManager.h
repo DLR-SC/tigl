@@ -30,63 +30,61 @@
 #include <map>
 #include <string>
 
-namespace tigl {
+namespace tigl 
+{
 
-    class CTiglUIDManager
-    {
+class CTiglUIDManager
+{
+public:
+    // Constructor
+    CTiglUIDManager(void);
 
-    private:
-        typedef std::map<const std::string, CTiglAbstractPhysicalComponent*> UIDStoreContainerType;
+    // Function to add a UID and a geometric component to the uid store.
+    void AddUID(const std::string& uid, CTiglAbstractPhysicalComponent* componentPtr);
 
-    public:
-        // Constructor
-        CTiglUIDManager(void);
+    // Checks if a UID already exists. 
+    bool HasUID(const std::string& uid) const;
 
-        // Function to add a UID and a geometric component to the uid store.
-        void AddUID(const std::string& uid, CTiglAbstractPhysicalComponent* componentPtr);
+    // Returns a pointer to the geometric component for the given unique id.
+    CTiglAbstractPhysicalComponent* GetComponent(const std::string& uid);
 
-        // Checks if a UID already exists. 
-        bool HasUID(const std::string& uid) const;
+    // Returns the parent component for a component or a null pointer
+    // if there is no parent.
+    CTiglAbstractPhysicalComponent* GetParentComponent(const std::string& uid);
 
-        // Returns a pointer to the geometric component for the given unique id.
-        CTiglAbstractPhysicalComponent* GetComponent(const std::string& uid);
+    // Returns the root component of the geometric topology.
+    CTiglAbstractPhysicalComponent* GetRootComponent(void);
 
-        // Returns the parent component for a component or a null pointer
-        // if there is no parent.
-        CTiglAbstractPhysicalComponent* GetParentComponent(const std::string& uid);
+    // Clears the uid store
+    void Clear(void);
 
-        // Returns the root component of the geometric topology.
-        CTiglAbstractPhysicalComponent* GetRootComponent(void);
+    // Virtual Destructor
+    virtual ~CTiglUIDManager(void);
 
-        // Clears the uid store
-        void Clear(void);
+protected:
+       // Update internal UID manager data.
+    void Update(void);
 
-        // Virtual Destructor
-        virtual ~CTiglUIDManager(void);
+    // Returns the root component of the geometric topology.
+    void FindRootComponent(void);
 
-    protected:
-           // Update internal UID manager data.
-        void Update(void);
+    // Builds the parent child relationships.
+    void BuildParentChildTree(void);
 
-        // Returns the root component of the geometric topology.
-        void FindRootComponent(void);
+private:
+    typedef std::map<const std::string, CTiglAbstractPhysicalComponent*> UIDStoreContainerType;
 
-        // Builds the parent child relationships.
-        void BuildParentChildTree(void);
+    // Copy constructor
+    CTiglUIDManager(const CTiglUIDManager& );
 
-    private:
-        // Copy constructor
-        CTiglUIDManager(const CTiglUIDManager& );
+    // Assignment operator
+    void operator=(const CTiglUIDManager& );
 
-        // Assignment operator
-        void operator=(const CTiglUIDManager& );
+    UIDStoreContainerType           uidStore;
+    bool                            invalidated;          /**< Internal state flag */
+    CTiglAbstractPhysicalComponent* rootComponent;        /**< Ptr to the root component of the component tree */
 
-    private:
-        UIDStoreContainerType           uidStore;
-        bool                            invalidated;          /**< Internal state flag */
-        CTiglAbstractPhysicalComponent* rootComponent;        /**< Ptr to the root component of the component tree */
-
-    };
+};
 
 } // end namespace tigl
 

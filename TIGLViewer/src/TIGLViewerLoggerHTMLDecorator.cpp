@@ -20,15 +20,13 @@
 #include <string>
 
 TIGLViewerLoggerHTMLDecorator::TIGLViewerLoggerHTMLDecorator(CSharedPtr<tigl::ITiglLogger> logger) 
-    : _mylogger(logger)
+    : _mylogger(logger) {}
+
+TIGLViewerLoggerHTMLDecorator::~TIGLViewerLoggerHTMLDecorator() {}
+
+void TIGLViewerLoggerHTMLDecorator::LogMessage(TiglLogLevel level, const char * message)
 {
-}
-
-TIGLViewerLoggerHTMLDecorator::~TIGLViewerLoggerHTMLDecorator() {
-}
-
-void TIGLViewerLoggerHTMLDecorator::LogMessage(TiglLogLevel level, const char * message){
-    if(!_mylogger){
+    if (!_mylogger) {
         return;
     }
     
@@ -47,6 +45,5 @@ void TIGLViewerLoggerHTMLDecorator::LogMessage(TiglLogLevel level, const char * 
     newmsg = "<i>" + newmsg + "</i>";
     _mylogger->LogMessage(level, newmsg.c_str());
 }
-void TIGLViewerLoggerHTMLDecorator::SetVerbosity(TiglLogLevel vlevel)
-{
-}
+
+void TIGLViewerLoggerHTMLDecorator::SetVerbosity(TiglLogLevel vlevel) {}

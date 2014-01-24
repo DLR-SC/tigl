@@ -23,7 +23,8 @@
 
 #include <QColor>
 
-class TIGLViewerSettingsDialog : public QDialog, private Ui::TIGLViewerSettingsDialog{
+class TIGLViewerSettingsDialog : public QDialog, private Ui::TIGLViewerSettingsDialog
+{
     Q_OBJECT
 public:
     TIGLViewerSettingsDialog(class TIGLViewerSettings&, class QWidget *parent=NULL);

@@ -24,7 +24,8 @@
 #include <Handle_Poly_Triangulation.hxx>
 #include <CTiglPolyData.h>
 
-namespace tigl {
+namespace tigl 
+{
 
 class CTiglPolyDataTools
 {

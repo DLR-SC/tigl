@@ -59,10 +59,11 @@ Standard_Real GetWireLength(const TopoDS_Wire& wire)
 #endif
 }
 
-unsigned int GetNumberOfEdges(const TopoDS_Shape& shape){
+unsigned int GetNumberOfEdges(const TopoDS_Shape& shape)
+{
     TopExp_Explorer edgeExpl(shape, TopAbs_EDGE);
     unsigned int iEdges = 0;
-    for(;edgeExpl.More(); edgeExpl.Next()) {
+    for (;edgeExpl.More(); edgeExpl.Next()) {
         iEdges++;
     }
 
@@ -81,16 +82,18 @@ gp_Pnt WireGetPoint(const TopoDS_Wire &wire, double alpha)
 
 void WireGetPointNormal(const TopoDS_Wire& wire, double alpha, gp_Pnt& point, gp_Vec& normal)
 {
-    if (alpha < 0.0 || alpha > 1.0)
+    if (alpha < 0.0 || alpha > 1.0) {
         throw tigl::CTiglError("Error: Parameter alpha not in the range 0.0 <= alpha <= 1.0 in WireGetPoint", TIGL_ERROR);
+    }
 
     //TopoDS_Wire wire;
     double length = GetWireLength(wire) * alpha;
 
     // Get the first edge of the wire
     BRepTools_WireExplorer wireExplorer( wire );
-    if (!wireExplorer.More())
+    if (!wireExplorer.More()) {
         throw tigl::CTiglError("Error: Not enough edges found in CTiglIntersectionCalculation::GetPoint", TIGL_ERROR);
+    }
 
     Standard_Real firstParam, lastParam;
     TopoDS_Edge edge = wireExplorer.Current();
@@ -106,8 +109,9 @@ void WireGetPointNormal(const TopoDS_Wire& wire, double alpha, gp_Pnt& point, gp
     double sumLength = currLength;
 
     while (length > sumLength) {
-        if (!wireExplorer.More())
+        if (!wireExplorer.More()) {
             break;
+        }
         
         edge = wireExplorer.Current();
         wireExplorer.Next();
@@ -149,7 +153,8 @@ void WireGetPointNormal2(const TopoDS_Wire& wire, double alpha, gp_Pnt& point, g
     aCompoundCurve.D1( len * alpha, point, normal );
 }
 
-Standard_Real ProjectPointOnWire(const TopoDS_Wire& wire, gp_Pnt p){
+Standard_Real ProjectPointOnWire(const TopoDS_Wire& wire, gp_Pnt p)
+{
     double smallestDist = DBL_MAX;
     double alpha  = 0.;
     int edgeIndex = 0;
@@ -163,7 +168,7 @@ Standard_Real ProjectPointOnWire(const TopoDS_Wire& wire, gp_Pnt p){
         Handle(Geom_Curve) curve = BRep_Tool::Curve(edge, firstParam, lastParam);
         
         GeomAPI_ProjectPointOnCurve proj(p, curve, firstParam, lastParam);
-        if(proj.NbPoints() > 0 && proj.LowerDistance() < smallestDist){
+        if (proj.NbPoints() > 0 && proj.LowerDistance() < smallestDist) {
             smallestDist = proj.LowerDistance();
             edgeIndex = iwire;
             alpha = proj.LowerDistanceParameter();
@@ -179,8 +184,9 @@ Standard_Real ProjectPointOnWire(const TopoDS_Wire& wire, gp_Pnt p){
         TopoDS_Edge edge = wireExplorer.Current();
         Handle(Geom_Curve) curve = BRep_Tool::Curve(edge, firstParam, lastParam);
         GeomAdaptor_Curve adaptorCurve(curve, firstParam, lastParam);
-        if (iwire == edgeIndex)
+        if (iwire == edgeIndex) {
             lastParam = alpha;
+        }
         
         partLength += GCPnts_AbscissaPoint::Length(adaptorCurve, firstParam, lastParam);
         wireExplorer.Next();
@@ -191,7 +197,8 @@ Standard_Real ProjectPointOnWire(const TopoDS_Wire& wire, gp_Pnt p){
 }
 
 // projects a point onto the line (lineStart<->lineStop) and returns the projection parameter
-Standard_Real ProjectPointOnLine(gp_Pnt p, gp_Pnt lineStart, gp_Pnt lineStop) {
+Standard_Real ProjectPointOnLine(gp_Pnt p, gp_Pnt lineStart, gp_Pnt lineStop) 
+{
     return gp_Vec(lineStart, p) * gp_Vec(lineStart, lineStop) / gp_Vec(lineStart, lineStop).SquareMagnitude();
 }
 

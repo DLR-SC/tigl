@@ -23,9 +23,11 @@
 #include "tigl.h"
 
 
-namespace tigl{
+namespace tigl
+{
 
-class CTiglOptimizer {
+class CTiglOptimizer 
+{
 public:
     /**
     * @brief Optimizes the objective function f. 

@@ -28,63 +28,69 @@
 
 /******************************************************************************/
 
-class WingGetPoint : public ::testing::Test {
- protected:
-  static void SetUpTestCase() {
+class WingGetPoint : public ::testing::Test 
+{
+protected:
+    static void SetUpTestCase() 
+    {
         const char* filename = "TestData/CPACS_21_D150.xml";
         ReturnCode tixiRet;
         TiglReturnCode tiglRet;
 
         tiglHandle = -1;
         tixiHandle = -1;
-        
+
         tixiRet = tixiOpenDocument(filename, &tixiHandle);
         ASSERT_TRUE (tixiRet == SUCCESS);
         tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "D150_VAMP", &tiglHandle);
         ASSERT_TRUE(tiglRet == TIGL_SUCCESS);
-  }
+    }
 
-  static void TearDownTestCase() {
+    static void TearDownTestCase() 
+    {
         ASSERT_TRUE(tiglCloseCPACSConfiguration(tiglHandle) == TIGL_SUCCESS);
         ASSERT_TRUE(tixiCloseDocument(tixiHandle) == SUCCESS);
         tiglHandle = -1;
         tixiHandle = -1;
-  }
-  
-  virtual void SetUp() {}
-  virtual void TearDown() {}
-  
+    }
 
-  static TixiDocumentHandle           tixiHandle;
-  static TiglCPACSConfigurationHandle tiglHandle;
+    virtual void SetUp() {}
+    virtual void TearDown() {}
+
+
+    static TixiDocumentHandle           tixiHandle;
+    static TiglCPACSConfigurationHandle tiglHandle;
 };
 
-class WingGetPointSimple : public ::testing::Test {
- protected:
-  virtual void SetUp() {
+class WingGetPointSimple : public ::testing::Test 
+{
+protected:
+    virtual void SetUp() 
+    {
         const char* filename = "TestData/simpletest.cpacs.xml";
         ReturnCode tixiRet;
         TiglReturnCode tiglRet;
 
         tiglHandle = -1;
         tixiHandle = -1;
-        
+
         tixiRet = tixiOpenDocument(filename, &tixiHandle);
         ASSERT_TRUE (tixiRet == SUCCESS);
 
         tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "Cpacs2Test", &tiglHandle);
         ASSERT_TRUE(tiglRet == TIGL_SUCCESS);
-  }
+    }
 
-  virtual void TearDown() {
+    virtual void TearDown() 
+    {
         ASSERT_TRUE(tiglCloseCPACSConfiguration(tiglHandle) == TIGL_SUCCESS);
         ASSERT_TRUE(tixiCloseDocument(tixiHandle) == SUCCESS);
         tiglHandle = -1;
         tixiHandle = -1;
-  }
+    }
 
-  TixiDocumentHandle           tixiHandle;
-  TiglCPACSConfigurationHandle tiglHandle;
+    TixiDocumentHandle           tixiHandle;
+    TiglCPACSConfigurationHandle tiglHandle;
 };
 
 
@@ -238,10 +244,10 @@ TEST_F(WingGetPoint, tiglWingGetLowerPoint_success)
     ASSERT_TRUE(tiglWingGetLowerPoint(tiglHandle, 1, 1, 1.0, 1.0, &x, &y, &z) == TIGL_SUCCESS);
 }
 
-TEST_F(WingGetPointSimple, checkCamberLine){
-
+TEST_F(WingGetPointSimple, checkCamberLine)
+{
     //inner wing profile
-    for(double xsi = 0; xsi <= 1.0; xsi += 0.001){
+    for (double xsi = 0; xsi <= 1.0; xsi += 0.001) {
         double xl,yl, zl;
         ASSERT_TRUE(tiglWingGetLowerPoint(tiglHandle, 1, 1, 0.0, xsi, &xl, &yl, &zl) == TIGL_SUCCESS);
 
@@ -252,7 +258,7 @@ TEST_F(WingGetPointSimple, checkCamberLine){
     }
 
     // outer wing profile
-    for(double xsi = 0; xsi <= 1.0; xsi += 0.001){
+    for (double xsi = 0; xsi <= 1.0; xsi += 0.001) {
         double xl,yl, zl;
         ASSERT_TRUE(tiglWingGetLowerPoint(tiglHandle, 1, 1, 1.0, xsi, &xl, &yl, &zl) == TIGL_SUCCESS);
 
@@ -263,7 +269,7 @@ TEST_F(WingGetPointSimple, checkCamberLine){
     }
 
     // middle wing profile
-    for(double xsi = 0; xsi <= 1.0; xsi += 0.001){
+    for (double xsi = 0; xsi <= 1.0; xsi += 0.001) {
         double xl,yl, zl;
         ASSERT_TRUE(tiglWingGetLowerPoint(tiglHandle, 1, 1, 0.5, xsi, &xl, &yl, &zl) == TIGL_SUCCESS);
 
@@ -274,7 +280,7 @@ TEST_F(WingGetPointSimple, checkCamberLine){
     }
 
     // middle wing profile, segment 2
-    for(double xsi = 0; xsi <= 1.0; xsi += 0.001){
+    for (double xsi = 0; xsi <= 1.0; xsi += 0.001) {
         double xl,yl, zl;
         ASSERT_TRUE(tiglWingGetLowerPoint(tiglHandle, 1, 2, 0.5, xsi, &xl, &yl, &zl) == TIGL_SUCCESS);
 

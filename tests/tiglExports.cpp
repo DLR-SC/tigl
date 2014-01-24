@@ -35,9 +35,11 @@
 
 /******************************************************************************/
 
-class tiglExport : public ::testing::Test {
- protected:
-  static void SetUpTestCase() {
+class tiglExport : public ::testing::Test
+{
+protected:
+    static void SetUpTestCase()
+    {
         const char* filename = "TestData/CPACS_21_D150.xml";
         ReturnCode tixiRet;
         TiglReturnCode tiglRet;
@@ -49,29 +51,32 @@ class tiglExport : public ::testing::Test {
         ASSERT_TRUE (tixiRet == SUCCESS);
         tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "D150_VAMP", &tiglHandle);
         ASSERT_TRUE(tiglRet == TIGL_SUCCESS);
-  }
+    }
 
-  static void TearDownTestCase() {
+    static void TearDownTestCase()
+    {
         ASSERT_TRUE(tiglCloseCPACSConfiguration(tiglHandle) == TIGL_SUCCESS);
         ASSERT_TRUE(tixiCloseDocument(tixiHandle) == SUCCESS);
         tiglHandle = -1;
         tixiHandle = -1;
-  }
-  
-  virtual void SetUp() {}
-  virtual void TearDown() {}
-  
+    }
 
-  static TixiDocumentHandle           tixiHandle;
-  static TiglCPACSConfigurationHandle tiglHandle;
+    virtual void SetUp() {}
+    virtual void TearDown() {}
+
+
+    static TixiDocumentHandle           tixiHandle;
+    static TiglCPACSConfigurationHandle tiglHandle;
 };
 
 TixiDocumentHandle tiglExport::tixiHandle = 0;
 TiglCPACSConfigurationHandle tiglExport::tiglHandle = 0;
 
-class tiglExportSimple : public ::testing::Test {
- protected:
-  static void SetUpTestCase() {
+class tiglExportSimple : public ::testing::Test
+{
+protected:
+    static void SetUpTestCase()
+    {
         const char* filename = "TestData/simpletest.cpacs.xml";
         ReturnCode tixiRet;
         TiglReturnCode tiglRet;
@@ -83,21 +88,22 @@ class tiglExportSimple : public ::testing::Test {
         ASSERT_TRUE (tixiRet == SUCCESS);
         tiglRet = tiglOpenCPACSConfiguration(tixiSimpleHandle, "", &tiglSimpleHandle);
         ASSERT_TRUE(tiglRet == TIGL_SUCCESS);
-  }
+    }
 
-  static void TearDownTestCase() {
+    static void TearDownTestCase()
+    {
         ASSERT_TRUE(tiglCloseCPACSConfiguration(tiglSimpleHandle) == TIGL_SUCCESS);
         ASSERT_TRUE(tixiCloseDocument(tixiSimpleHandle) == SUCCESS);
         tiglSimpleHandle = -1;
         tixiSimpleHandle = -1;
-  }
+    }
 
-  virtual void SetUp() {}
-  virtual void TearDown() {}
+    virtual void SetUp() {}
+    virtual void TearDown() {}
 
 
-  static TixiDocumentHandle           tixiSimpleHandle;
-  static TiglCPACSConfigurationHandle tiglSimpleHandle;
+    static TixiDocumentHandle           tixiSimpleHandle;
+    static TiglCPACSConfigurationHandle tiglSimpleHandle;
 };
 
 TixiDocumentHandle tiglExportSimple::tixiSimpleHandle = 0;
@@ -138,12 +144,14 @@ TEST_F(tiglExport, export_meshed_fuselage_success)
     ASSERT_TRUE(tiglExportMeshedFuselageVTKSimpleByUID(tiglHandle, "D150_VAMP_FL1", vtkFuselageFilename, 0.03) == TIGL_SUCCESS);
 }
 
-TEST_F(tiglExport, export_fuselage_collada_success){
+TEST_F(tiglExport, export_fuselage_collada_success)
+{
     const char* colladaFuselageFilename = "TestData/export/D150modelID_fuselage1.dae";
     ASSERT_TRUE(tiglExportFuselageColladaByUID(tiglHandle, "D150_VAMP_FL1", colladaFuselageFilename, 0.01) == TIGL_SUCCESS);
 }
 
-TEST_F(tiglExport, export_wing_collada_success){
+TEST_F(tiglExport, export_wing_collada_success)
+{
     const char* colladaWing1Filename = "TestData/export/D150modelID_wing1.dae";
     ASSERT_TRUE(tiglExportWingColladaByUID(tiglHandle, "D150_VAMP_W1", colladaWing1Filename, 0.001) == TIGL_SUCCESS);
     const char* colladaWing2Filename = "TestData/export/D150modelID_wing2.dae";

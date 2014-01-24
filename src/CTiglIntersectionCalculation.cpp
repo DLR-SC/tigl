@@ -65,133 +65,134 @@
 #define max(a, b) (((a) > (b)) ? (a) : (b))
 #endif
 
-namespace tigl {
+namespace tigl 
+{
 
-    // Constructor
-    CTiglIntersectionCalculation::CTiglIntersectionCalculation( CTiglShapeCache * cache,
-                                                                const std::string& idOne,
-                                                                const std::string& idTwo,
-                                                                TopoDS_Shape compoundOne,
-                                                                TopoDS_Shape compoundTwo)
-        : tolerance(1.0e-7),
-        numWires(0)
-    {
-        // create some identification string to store intersection in cache
-        // it should not matter, if the arguments One and Two are interchanged
-        if(idOne.compare(idTwo))
-            id = idOne + "::" + idTwo;
-        else
-            id = idTwo + "::" + idOne;
-        
-        bool inCache = false;
-        if(cache){
-            // check, if result is already in cache
-            unsigned int nshapes = cache->GetNShapesOfType(id);
-            if(nshapes > 0){
-                inCache = true;
-                numWires = nshapes;
-                for(unsigned int i = 0; i < nshapes; ++i)
-                    Wires.push_back(TopoDS::Wire(cache->GetShape(id, i)));
+// Constructor
+CTiglIntersectionCalculation::CTiglIntersectionCalculation( CTiglShapeCache * cache,
+                                                            const std::string& idOne,
+                                                            const std::string& idTwo,
+                                                            TopoDS_Shape compoundOne,
+                                                            TopoDS_Shape compoundTwo)
+    : tolerance(1.0e-7),
+    numWires(0)
+{
+    // create some identification string to store intersection in cache
+    // it should not matter, if the arguments One and Two are interchanged
+    if (idOne.compare(idTwo)) {
+        id = idOne + "::" + idTwo;
+    }
+    else {
+        id = idTwo + "::" + idOne;
+    }
+    
+    bool inCache = false;
+    if (cache) {
+        // check, if result is already in cache
+        unsigned int nshapes = cache->GetNShapesOfType(id);
+        if (nshapes > 0) {
+            inCache = true;
+            numWires = nshapes;
+            for (unsigned int i = 0; i < nshapes; ++i) {
+                Wires.push_back(TopoDS::Wire(cache->GetShape(id, i)));
             }
         }
-        
-        if(!inCache){
-            Standard_Boolean PerformNow=Standard_False; 
-            BRepAlgoAPI_Section section(compoundOne, compoundTwo, PerformNow); 
-            section.ComputePCurveOn1(Standard_True); 
-            section.Approximation(Standard_True); 
-            section.Build(); 
-            intersectionResult = section.Shape();
+    }
     
-            TopExp_Explorer myEdgeExplorer (intersectionResult, TopAbs_EDGE);
-    
-            Handle(TopTools_HSequenceOfShape) Edges = new TopTools_HSequenceOfShape();
-    
-            while (myEdgeExplorer.More())
-            {
-                Edges->Append(TopoDS::Edge(myEdgeExplorer.Current()));
-                myEdgeExplorer.Next();
-            }
-    
-            // connect all connected edges to wires and save them in container Edges again
-            ShapeAnalysis_FreeBounds::ConnectEdgesToWires(Edges, tolerance, false, Edges);
-            numWires = Edges->Length();
-    
-            // filter duplicated wires
-            for (int wireID=1; wireID <= numWires; wireID++)
-            {
-                bool found = false;
-                TopoDS_Wire wire = TopoDS::Wire(Edges->Value(wireID));
-                for (std::vector<TopoDS_Wire>::size_type i = 0; i < Wires.size(); i++)
-                {
-                    if (Wires[i].HashCode(200000) == wire.HashCode(200000))
-                    {
-                            found = true;
-                    }
-                }
-    
-                if(!found)
-                {
-                    Wires.push_back(wire);
-                    if(cache) cache->Insert(wire, id);
+    if (!inCache) {
+        Standard_Boolean PerformNow=Standard_False; 
+        BRepAlgoAPI_Section section(compoundOne, compoundTwo, PerformNow); 
+        section.ComputePCurveOn1(Standard_True); 
+        section.Approximation(Standard_True); 
+        section.Build(); 
+        intersectionResult = section.Shape();
+
+        TopExp_Explorer myEdgeExplorer (intersectionResult, TopAbs_EDGE);
+
+        Handle(TopTools_HSequenceOfShape) Edges = new TopTools_HSequenceOfShape();
+
+        while (myEdgeExplorer.More()) {
+            Edges->Append(TopoDS::Edge(myEdgeExplorer.Current()));
+            myEdgeExplorer.Next();
+        }
+
+        // connect all connected edges to wires and save them in container Edges again
+        ShapeAnalysis_FreeBounds::ConnectEdgesToWires(Edges, tolerance, false, Edges);
+        numWires = Edges->Length();
+
+        // filter duplicated wires
+        for (int wireID=1; wireID <= numWires; wireID++) {
+            bool found = false;
+            TopoDS_Wire wire = TopoDS::Wire(Edges->Value(wireID));
+            for (std::vector<TopoDS_Wire>::size_type i = 0; i < Wires.size(); i++) {
+                if (Wires[i].HashCode(200000) == wire.HashCode(200000)) {
+                        found = true;
                 }
             }
-            numWires = Wires.size();
+
+            if (!found) {
+                Wires.push_back(wire);
+                if (cache) {
+                    cache->Insert(wire, id);
+                }
+            }
         }
+        numWires = Wires.size();
+    }
+}
+
+// Destructor
+CTiglIntersectionCalculation::~CTiglIntersectionCalculation( void )
+{
+    Wires.clear();
+}
+
+
+// returns total number of intersection lines
+int CTiglIntersectionCalculation::GetCountIntersectionLines(void)
+{
+    return(numWires);
+}
+
+// Gets a point on the intersection line in dependence of a parameter zeta with
+// 0.0 <= zeta <= 1.0. For zeta = 0.0 this is the line starting point,
+// for zeta = 1.0 the last point on the intersection line.
+// numIntersecLine is the number of the Intersection line.
+gp_Pnt CTiglIntersectionCalculation::GetPoint(double zeta, int wireID = 1)
+{
+    if (zeta < 0.0 || zeta > 1.0) {
+        throw CTiglError("Error: Parameter zeta not in the range 0.0 <= zeta <= 1.0 in CTiglIntersectionCalculation::GetPoint", TIGL_ERROR);
     }
 
-    // Destructor
-    CTiglIntersectionCalculation::~CTiglIntersectionCalculation( void )
-    {
-        Wires.clear();
+    if (wireID > numWires) {
+        throw CTiglError("Error: Unknown wireID in CTiglIntersectionCalculation::GetPoint", TIGL_ERROR);
     }
 
+    //TopoDS_Wire wire;
+    TopoDS_Wire& intersectionWire = (Wires[--wireID]);
+    return WireGetPoint(intersectionWire, zeta);
+}
 
-    // returns total number of intersection lines
-    int CTiglIntersectionCalculation::GetCountIntersectionLines(void)
-    {
-        return(numWires);
+// gives the number of wires of the intersection calculation
+int CTiglIntersectionCalculation::GetNumWires()
+{
+    return( numWires );
+}
+
+std::string CTiglIntersectionCalculation::GetIDString(int wireID) 
+{
+    std::stringstream stream;
+    stream << "Intersect_" << id << "_" << wireID;
+    return stream.str();
+}
+
+TopoDS_Wire& CTiglIntersectionCalculation::GetWire(int wireID)
+{
+    if (wireID > numWires || wireID < 1){
+        throw CTiglError("Error: Invalid wireID in CTiglIntersectionCalculation::GetWire", TIGL_ERROR);
     }
-
-    // Gets a point on the intersection line in dependence of a parameter zeta with
-    // 0.0 <= zeta <= 1.0. For zeta = 0.0 this is the line starting point,
-    // for zeta = 1.0 the last point on the intersection line.
-    // numIntersecLine is the number of the Intersection line.
-    gp_Pnt CTiglIntersectionCalculation::GetPoint(double zeta, int wireID = 1)
-    {
-        if (zeta < 0.0 || zeta > 1.0) 
-        {
-            throw CTiglError("Error: Parameter zeta not in the range 0.0 <= zeta <= 1.0 in CTiglIntersectionCalculation::GetPoint", TIGL_ERROR);
-        }
-
-        if (wireID > numWires)
-        {
-            throw CTiglError("Error: Unknown wireID in CTiglIntersectionCalculation::GetPoint", TIGL_ERROR);
-        }
-
-        //TopoDS_Wire wire;
-        TopoDS_Wire& intersectionWire = (Wires[--wireID]);
-        return WireGetPoint(intersectionWire, zeta);
-    }
-
-    // gives the number of wires of the intersection calculation
-    int CTiglIntersectionCalculation::GetNumWires()
-    {
-        return( numWires );
-    }
-
-    std::string CTiglIntersectionCalculation::GetIDString(int wireID) {
-        std::stringstream stream;
-        stream << "Intersect_" << id << "_" << wireID;
-        return stream.str();
-    }
-
-    TopoDS_Wire& CTiglIntersectionCalculation::GetWire(int wireID){
-        if (wireID > numWires || wireID < 1){
-            throw CTiglError("Error: Invalid wireID in CTiglIntersectionCalculation::GetWire", TIGL_ERROR);
-        }
-        return Wires.at(wireID-1);
-    }
+    return Wires.at(wireID-1);
+}
 
 } // end namespace tigl
 

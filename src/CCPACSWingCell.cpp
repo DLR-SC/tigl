@@ -25,20 +25,27 @@
 
 #include <cmath>
 
-namespace WingCellInternal {
+namespace tigl
+{
 
-    struct Point2D{
+namespace WingCellInternal
+{
+
+    struct Point2D
+    {
         double x;
         double y;
     };
     
     // calculates crossproduct (p1-p3)x(p2-p3) (only "z"-value)
-    double sign(Point2D p1, Point2D p2, Point2D p3){
+    double sign(Point2D p1, Point2D p2, Point2D p3)
+    {
       return (p1.x - p3.x) * (p2.y - p3.y) - (p2.x - p3.x) * (p1.y - p3.y);
     }
     
     // calculates the area of a triangle
-    double area(Point2D p1, Point2D p2, Point2D p3){
+    double area(Point2D p1, Point2D p2, Point2D p3)
+    {
         double area = 0.;
         area += p1.x*(p2.y - p3.y);
         area += p2.x*(p3.y - p1.y);
@@ -48,7 +55,8 @@ namespace WingCellInternal {
     }
     
     // checks if point p is in triangle p1-p2-p3
-    bool is_in_trian(Point2D p, Point2D p1, Point2D p2, Point2D p3){
+    bool is_in_trian(Point2D p, Point2D p1, Point2D p2, Point2D p3)
+    {
         bool s1 = sign(p, p1, p2) > 0.;
         // outer border
         bool s2 = sign(p, p2, p3) > 0.;
@@ -60,15 +68,14 @@ namespace WingCellInternal {
 
 using namespace WingCellInternal;
 
-namespace tigl {
-
 CCPACSWingCell::CCPACSWingCell()
 {
     reset();
 }
 
 
-void CCPACSWingCell::reset(){
+void CCPACSWingCell::reset()
+{
     innerBorderEta1 = 0.;
     innerBorderEta2 = 0.;
     outerBorderEta1 = 0.;
@@ -82,7 +89,8 @@ void CCPACSWingCell::reset(){
 
 }
 
-bool CCPACSWingCell::IsConvex() const{
+bool CCPACSWingCell::IsConvex() const
+{
     Point2D p1, p2, p3, p4;
     
     // calculate for all 4 edges the relative position of eta/xsi
@@ -103,7 +111,8 @@ bool CCPACSWingCell::IsConvex() const{
     return (s1 == s2) && (s2 == s3) && (s3 == s4);
 }
 
-bool CCPACSWingCell::IsInside(double eta, double xsi) const{
+bool CCPACSWingCell::IsInside(double eta, double xsi) const
+{
     Point2D p, p1, p2, p3, p4;
     p.x = eta; p.y = xsi;
 
@@ -136,17 +145,17 @@ bool CCPACSWingCell::IsInside(double eta, double xsi) const{
         
         // get main winding, if 3 positive one negative -> 3, else 1
         int  iwind = (w1 + w2 + w3 + w4);
-        if (iwind != 1 && iwind != 3){
+        if (iwind != 1 && iwind != 3) {
             throw CTiglError("Error in Quadriangle Winding calculation in CCPACSWingCell::IsInside.", TIGL_MATH_ERROR);
         }
         
         bool winding = (iwind == 3);
         
         // determine point with w[i] != winding
-        if (w1 != winding || w3 != winding){
+        if (w1 != winding || w3 != winding) {
             return is_in_trian(p, p1, p3, p4) || is_in_trian(p, p1, p2, p3);
         }
-        else if (w2 != winding || w4 != winding){
+        else if (w2 != winding || w4 != winding) {
             return is_in_trian(p, p2, p1, p4) || is_in_trian(p, p2, p4, p3);
         }
         else {
@@ -155,9 +164,10 @@ bool CCPACSWingCell::IsInside(double eta, double xsi) const{
     }
 }
 
-void CCPACSWingCell::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string &cellXPath){
+void CCPACSWingCell::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string &cellXPath)
+{
     // check path
-    if( tixiCheckElement(tixiHandle, cellXPath.c_str()) != SUCCESS){
+    if ( tixiCheckElement(tixiHandle, cellXPath.c_str()) != SUCCESS) {
         LOG(ERROR) << "Wing Cell " << cellXPath << " not found in CPACS file!" << std::endl;
         return;
     }
@@ -166,78 +176,87 @@ void CCPACSWingCell::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string 
     
     // Get UID
     char * nameStr = NULL;
-    if ( tixiGetTextAttribute(tixiHandle, cellXPath.c_str(), "uID", &nameStr) != SUCCESS )
+    if ( tixiGetTextAttribute(tixiHandle, cellXPath.c_str(), "uID", &nameStr) != SUCCESS ) {
         throw tigl::CTiglError("No UID given for wing cell " + cellXPath + "!", TIGL_UID_ERROR);
+    }
     
     double iBE1, iBE2, oBE1, oBE2, lEX1, lEX2, tEX1, tEX2;
     
     // get postionings of cell
     std::string positioningString;
     positioningString = cellXPath + "/positioningLeadingEdge/sparUID";
-    if( tixiCheckElement(tixiHandle, positioningString.c_str()) == SUCCESS){
+    if ( tixiCheckElement(tixiHandle, positioningString.c_str()) == SUCCESS) {
         LOG(WARNING) << "In " << cellXPath << ": Cell positiongs via spars is currently not supported by TiGL. Please use eta/xsi definitions.";
         lEX1 = 0.; lEX2 = 0.;
     }
     else {
         positioningString = cellXPath + "/positioningLeadingEdge/xsi1";
-        if( tixiGetDoubleElement(tixiHandle, positioningString.c_str(), &lEX1) != SUCCESS)
+        if ( tixiGetDoubleElement(tixiHandle, positioningString.c_str(), &lEX1) != SUCCESS) {
             throw tigl::CTiglError("No leading edge xsi1 positioning given for wing cell " + cellXPath + "!", TIGL_ERROR);
+        }
         
         positioningString = cellXPath + "/positioningLeadingEdge/xsi2";
-        if( tixiGetDoubleElement(tixiHandle, positioningString.c_str(), &lEX2) != SUCCESS)
+        if ( tixiGetDoubleElement(tixiHandle, positioningString.c_str(), &lEX2) != SUCCESS) {
             throw tigl::CTiglError("No leading edge xsi2 positioning given for wing cell " + cellXPath + "!", TIGL_ERROR);
+        }
     }
 
     positioningString = cellXPath + "/positioningTrailingEdge/sparUID";
-    if( tixiCheckElement(tixiHandle, positioningString.c_str()) == SUCCESS){
+    if ( tixiCheckElement(tixiHandle, positioningString.c_str()) == SUCCESS) {
         LOG(WARNING) << "In " << cellXPath << ": Cell positiongs via spars is currently not supported by TiGL. Please use eta/xsi definitions.";
         tEX1 = 0.; tEX2 = 0.;
     }
     else {
         positioningString = cellXPath + "/positioningTrailingEdge/xsi1";
-        if( tixiGetDoubleElement(tixiHandle, positioningString.c_str(), &tEX1) != SUCCESS)
+        if ( tixiGetDoubleElement(tixiHandle, positioningString.c_str(), &tEX1) != SUCCESS) {
             throw tigl::CTiglError("No leading edge xsi1 positioning given for wing cell " + cellXPath + "!", TIGL_ERROR);
+        }
         
         positioningString = cellXPath + "/positioningTrailingEdge/xsi2";
-        if( tixiGetDoubleElement(tixiHandle, positioningString.c_str(), &tEX2) != SUCCESS)
+        if ( tixiGetDoubleElement(tixiHandle, positioningString.c_str(), &tEX2) != SUCCESS) {
             throw tigl::CTiglError("No leading edge xsi1 positioning given for wing cell " + cellXPath + "!", TIGL_ERROR);
+        }
         
     }
     
     positioningString = cellXPath + "/positioningInnerBorder/ribDefinitionUID";
-    if( tixiCheckElement(tixiHandle, positioningString.c_str()) == SUCCESS){
+    if ( tixiCheckElement(tixiHandle, positioningString.c_str()) == SUCCESS) {
         LOG(WARNING) << "In " << cellXPath << ": Cell positiongs via ribs is currently not supported by TiGL. Please use eta/xsi definitions.";
         iBE1 = 0.; iBE2 = 0.;
     }
     else {
         positioningString = cellXPath + "/positioningInnerBorder/eta1";
-        if( tixiGetDoubleElement(tixiHandle, positioningString.c_str(), &iBE1) != SUCCESS)
+        if ( tixiGetDoubleElement(tixiHandle, positioningString.c_str(), &iBE1) != SUCCESS) {
             throw tigl::CTiglError("No inner border eta1 positioning given for wing cell " + cellXPath + "!", TIGL_ERROR);
+        }
         
         positioningString = cellXPath + "/positioningInnerBorder/eta2";
-        if( tixiGetDoubleElement(tixiHandle, positioningString.c_str(), &iBE2) != SUCCESS)
+        if ( tixiGetDoubleElement(tixiHandle, positioningString.c_str(), &iBE2) != SUCCESS) {
             throw tigl::CTiglError("No inner border eta2 positioning given for wing cell " + cellXPath + "!", TIGL_ERROR);
+        }
     }
     
     positioningString = cellXPath + "/positioningOuterBorder/ribDefinitionUID";
-    if( tixiCheckElement(tixiHandle, positioningString.c_str()) == SUCCESS){
+    if ( tixiCheckElement(tixiHandle, positioningString.c_str()) == SUCCESS) {
         LOG(WARNING) << "In " << cellXPath << ": Cell positiongs via ribs is currently not supported by TiGL. Please use eta/xsi definitions.";
         oBE1 = 0.; oBE2 = 0.;
     }
     else {
         positioningString = cellXPath + "/positioningOuterBorder/eta1";
-        if( tixiGetDoubleElement(tixiHandle, positioningString.c_str(), &oBE1) != SUCCESS)
+        if ( tixiGetDoubleElement(tixiHandle, positioningString.c_str(), &oBE1) != SUCCESS) {
             throw tigl::CTiglError("No outer border eta1 positioning given for wing cell " + cellXPath + "!", TIGL_ERROR);
+        }
         
         positioningString = cellXPath + "/positioningOuterBorder/eta2";
-        if( tixiGetDoubleElement(tixiHandle, positioningString.c_str(), &oBE2) != SUCCESS)
+        if ( tixiGetDoubleElement(tixiHandle, positioningString.c_str(), &oBE2) != SUCCESS) {
             throw tigl::CTiglError("No outer border eta2 positioning given for wing cell " + cellXPath + "!", TIGL_ERROR);
+        }
     }
     
     // read material
     std::string materialString;
     materialString = cellXPath + "/skin/material";
-    if( tixiCheckElement(tixiHandle, materialString.c_str()) == SUCCESS){
+    if ( tixiCheckElement(tixiHandle, materialString.c_str()) == SUCCESS) {
         material.ReadCPACS(tixiHandle, materialString.c_str());
     }
     else {
@@ -258,47 +277,56 @@ void CCPACSWingCell::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string 
     trailingEdgeXsi2 = tEX2;
 }
 
-void CCPACSWingCell::SetLeadingEdgeInnerPoint(double eta, double xsi){
+void CCPACSWingCell::SetLeadingEdgeInnerPoint(double eta, double xsi)
+{
     leadingEdgeXsi1 = xsi;
     innerBorderEta1 = eta;
 }
 
-void CCPACSWingCell::SetLeadingEdgeOuterPoint(double eta, double xsi){
+void CCPACSWingCell::SetLeadingEdgeOuterPoint(double eta, double xsi)
+{
     leadingEdgeXsi2 = xsi;
     outerBorderEta1 = eta;
 }
 
-void CCPACSWingCell::SetTrailingEdgeInnerPoint(double eta, double xsi){
+void CCPACSWingCell::SetTrailingEdgeInnerPoint(double eta, double xsi)
+{
     trailingEdgeXsi1 = xsi;
     innerBorderEta2 = eta;
 }
 
-void CCPACSWingCell::SetTrailingEdgeOuterPoint(double eta, double xsi){
+void CCPACSWingCell::SetTrailingEdgeOuterPoint(double eta, double xsi)
+{
     trailingEdgeXsi2 = xsi;
     outerBorderEta2 = eta;
 }
 
-void CCPACSWingCell::GetLeadingEdgeInnerPoint(double* eta, double* xsi) const{
+void CCPACSWingCell::GetLeadingEdgeInnerPoint(double* eta, double* xsi) const
+{
     *xsi = leadingEdgeXsi1;
     *eta = innerBorderEta1;
 }
 
-void CCPACSWingCell::GetLeadingEdgeOuterPoint(double* eta, double* xsi) const{
+void CCPACSWingCell::GetLeadingEdgeOuterPoint(double* eta, double* xsi) const
+{
     *xsi = leadingEdgeXsi2;
     *eta = outerBorderEta1;
 }
 
-void CCPACSWingCell::GetTrailingEdgeInnerPoint(double* eta, double* xsi) const{
+void CCPACSWingCell::GetTrailingEdgeInnerPoint(double* eta, double* xsi) const
+{
     *xsi = trailingEdgeXsi1;
     *eta = innerBorderEta2;
 }
 
-void CCPACSWingCell::GetTrailingEdgeOuterPoint(double* eta, double* xsi) const{
+void CCPACSWingCell::GetTrailingEdgeOuterPoint(double* eta, double* xsi) const
+{
     *xsi = trailingEdgeXsi2;
     *eta = outerBorderEta2;
 }
 
-CCPACSMaterial &CCPACSWingCell::GetMaterial(){
+CCPACSMaterial &CCPACSWingCell::GetMaterial()
+{
     return material;
 }
 

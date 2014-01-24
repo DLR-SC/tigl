@@ -22,7 +22,8 @@
 #include <iostream>
 #include "tixi.h"
 
-namespace tigl {
+namespace tigl
+{
 
 class CCPACSMaterial
 {
