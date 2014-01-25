@@ -25,26 +25,31 @@
 // uncomment to enable debugging messages
 //#define LOGGER_DEBUG
 
-namespace tigl {
+namespace tigl 
+{
 
 CGlogLoggerAdaptor::CGlogLoggerAdaptor(PTiglLogger logger) : _mutex(new CMutex)
 {
     _mylogger = logger;
 }
 
-CGlogLoggerAdaptor::~CGlogLoggerAdaptor() {
+CGlogLoggerAdaptor::~CGlogLoggerAdaptor() 
+{
 }
 
 void CGlogLoggerAdaptor::Write(bool force_flush,
-                   time_t /* timestamp */,
-                   const char* message,
-                   int message_len) {
+                               time_t /* timestamp */,
+                               tconst char* message,
+                               tint message_len) 
+{
 #ifdef LOGGER_DEBUG
     printf("CGlogLoggerAdaptor::Write called. force_flush=%d\n", force_flush);
 #endif
     
-    if(_mylogger && message_len > 0) {
-        if(_mutex) _mutex->lock();
+    if (_mylogger && message_len > 0) {
+        if (_mutex) {
+            _mutex->lock();
+        }
         char * msg = new char[sizeof(char)*(message_len+3)];
         strncpy(msg, message, message_len);
         msg[message_len-1] = '\0';
@@ -63,18 +68,22 @@ void CGlogLoggerAdaptor::Write(bool force_flush,
 
         _mylogger->LogMessage(level, msg);
         delete[] msg;
-        if(_mutex) _mutex->unlock();
+        if (_mutex) {
+            _mutex->unlock();
+        }
     }
 }
 
 // Flush any buffered messages
-void CGlogLoggerAdaptor::Flush() {
+void CGlogLoggerAdaptor::Flush() 
+{
 #ifdef LOGGER_DEBUG
     printf("CGlogLoggerAdaptor::Flush called.\n");
 #endif
 }
 
-google::uint32 CGlogLoggerAdaptor::LogSize() {
+google::uint32 CGlogLoggerAdaptor::LogSize() 
+{
 #ifdef LOGGER_DEBUG
     printf("CGlogLoggerAdaptor::LogSize called.\n");
 #endif

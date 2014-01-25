@@ -181,6 +181,7 @@ void CCPACSFuselagePositioning::ReadCPACS(TixiDocumentHandle tixiHandle, const s
     elementPath = const_cast<char*>(tempString.c_str());
     if (tixiCheckElement(tixiHandle, elementPath) == SUCCESS &&
         tixiGetTextElement(tixiHandle, elementPath, &ptrInnerSection) == SUCCESS ) {
+
         startSection = ptrInnerSection;
     }
     else {

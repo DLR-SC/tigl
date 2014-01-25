@@ -42,56 +42,55 @@
 #endif
 
 
-namespace tigl {
+namespace tigl 
+{
 
-    class CTiglAbstractPhysicalComponent : public CTiglAbstractGeometricComponent
-    {
+class CTiglAbstractPhysicalComponent : public CTiglAbstractGeometricComponent
+{
 
-    public:
-        // Container type to store a components children
-        typedef std::list<CTiglAbstractPhysicalComponent*> ChildContainerType;
+public:
+    // Container type to store a components children
+    typedef std::list<CTiglAbstractPhysicalComponent*> ChildContainerType;
 
-    protected:
-        // Define a std::map to store the indices of already fused segments
-        typedef std::map<int, int> FusedElementsContainerType;
+    CTiglAbstractPhysicalComponent();
 
-    public:
-        CTiglAbstractPhysicalComponent();
+    // Returns the parent unique id
+    virtual std::string& GetParentUID(void);
 
-        // Returns the parent unique id
-        virtual std::string& GetParentUID(void);
+    // Sets the parent uid.
+    virtual void SetParentUID(const std::string& parentUID);
 
-        // Sets the parent uid.
-        virtual void SetParentUID(const std::string& parentUID);
+    // Adds a child to this geometric component.
+    virtual void AddChild(CTiglAbstractPhysicalComponent* componentPtr);
 
-        // Adds a child to this geometric component.
-        virtual void AddChild(CTiglAbstractPhysicalComponent* componentPtr);
+    // Returns a pointer to the list of children of a component.
+    virtual ChildContainerType GetChildren(bool recursive);
 
-        // Returns a pointer to the list of children of a component.
-        virtual ChildContainerType GetChildren(bool recursive);
+    // number of segments
+    //virtual int GetSegmentCount(void) const = 0;
 
-        // number of segments
-        //virtual int GetSegmentCount(void) const = 0;
-
-        // builds data structure for a TDocStd_Application
-        // mostly used for export
+    // builds data structure for a TDocStd_Application
+    // mostly used for export
 #ifdef TIGL_USE_XCAF
-        virtual TDF_Label ExportDataStructure(class CCPACSConfiguration& config, Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label);
+    virtual TDF_Label ExportDataStructure(class CCPACSConfiguration& config, Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label);
 #endif
 
-        // Returns the segment for a given index
-        //virtual class CTiglAbstractSegment & GetSegment(const int index) = 0;
+    // Returns the segment for a given index
+    //virtual class CTiglAbstractSegment & GetSegment(const int index) = 0;
 
-        virtual void SetSymmetryAxis(const std::string& axis);
+    virtual void SetSymmetryAxis(const std::string& axis);
 
-    protected:
-        // Resets the geometric component.
-        virtual void Reset(void);
+protected:
+    // Define a std::map to store the indices of already fused segments
+    typedef std::map<int, int> FusedElementsContainerType;
 
-        ChildContainerType childContainer;
-        std::string        parentUID;       /**< UID of the parent of this component */
+    // Resets the geometric component.
+    virtual void Reset(void);
 
-    };
+    ChildContainerType childContainer;
+    std::string        parentUID;       /**< UID of the parent of this component */
+
+};
 
 } // end namespace tigl
 

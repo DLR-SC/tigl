@@ -28,9 +28,11 @@
 class TopoDS_Shape;
 class TopoDS_Face;
 
-namespace tigl {
+namespace tigl 
+{
 
-enum ComponentTraingMode {
+enum ComponentTraingMode 
+{
     NO_INFO,
     SEGMENT_INFO
 };

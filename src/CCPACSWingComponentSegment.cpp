@@ -780,7 +780,7 @@ MaterialList CCPACSWingComponentSegment::GetMaterials(double eta, double xsi, Ti
         return list;
     }
     else {
-        CCPACSWingShell* shell = type == UPPER_SHELL? &structure.GetUpperShell() : &structure.GetLowerShell();
+        CCPACSWingShell* shell = (type == UPPER_SHELL? &structure.GetUpperShell() : &structure.GetLowerShell());
         int ncells = shell->GetCellCount();
         for (int i = 1; i <= ncells; ++i){
             CCPACSWingCell& cell = shell->GetCell(i);

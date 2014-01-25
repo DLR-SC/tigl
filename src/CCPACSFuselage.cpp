@@ -154,6 +154,7 @@ void CCPACSFuselage::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string&
     elementPath        = const_cast<char*>(tempString.c_str());
     if (tixiCheckElement(tixiHandle, elementPath) == SUCCESS  && 
         tixiGetTextElement(tixiHandle, elementPath, &ptrParentUID) == SUCCESS ) {
+
         SetParentUID(ptrParentUID);
     }
 
@@ -282,7 +283,7 @@ TopoDS_Shape CCPACSFuselage::BuildLoft(void)
     // Get Continuity of first segment
     // TODO: adapt lofting to have multiple different continuities
     TiglContinuity cont = segments.GetSegment(1).GetContinuity();
-    Standard_Boolean ruled = cont == C0? true : false;
+    Standard_Boolean ruled = (cont == C0? true : false);
 
 
     // Ne need a smooth fuselage by default

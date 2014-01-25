@@ -48,46 +48,51 @@ TODO:
     #define snprintf _snprintf
 #endif
 
-namespace tigl{
+namespace tigl
+{
 
 CTiglExportCollada::CTiglExportCollada(CCPACSConfiguration& config) : myconfig(config)
 {
 }
 
 
-TiglReturnCode CTiglExportCollada::exportFuselage(const std::string& fuselageUID, const std::string &filename, const double deflection){
+TiglReturnCode CTiglExportCollada::exportFuselage(const std::string& fuselageUID, const std::string &filename, const double deflection)
+{
     CTiglAbstractPhysicalComponent & component = myconfig.GetFuselage(fuselageUID);
     TopoDS_Shape& loft = component.GetLoft();
     
     return exportShape(loft, fuselageUID, filename, deflection);
 }
 
-TiglReturnCode CTiglExportCollada::exportWing(const std::string& wingUID, const std::string &filename, const double deflection){
+TiglReturnCode CTiglExportCollada::exportWing(const std::string& wingUID, const std::string &filename, const double deflection)
+{
     CTiglAbstractPhysicalComponent & component = myconfig.GetWing(wingUID);
     TopoDS_Shape& loft = component.GetLoft();
     
     return exportShape(loft, wingUID, filename, deflection);
 }
 
-TiglReturnCode CTiglExportCollada::exportShape(TopoDS_Shape& shape, const std::string& shapeID,  const std::string& filename, const double deflection){
+TiglReturnCode CTiglExportCollada::exportShape(TopoDS_Shape& shape, const std::string& shapeID,  const std::string& filename, const double deflection)
+{
     // mesh 
     CTiglTriangularizer t(shape, deflection, false);
     return writeToDisc(t, shapeID.c_str(), filename.c_str());
 }
 
-TiglReturnCode CTiglExportCollada::writeToDisc(CTiglPolyData& polyData, const char* col_id, const char * filename)  {
+TiglReturnCode CTiglExportCollada::writeToDisc(CTiglPolyData& polyData, const char* col_id, const char * filename)  
+{
 
     std::stringstream stream_verts;
     std::stringstream stream_normals;
     std::stringstream stream_trians;
     unsigned long count_pos =0, count_norm =0, count_vert =0; // count Points, Normals, Verticies for COLLADA-schema arrays
 
-    for(unsigned int i = 1; i <= polyData.getNObjects(); ++i){
+    for (unsigned int i = 1; i <= polyData.getNObjects(); ++i) {
         CTiglPolyObject& obj = polyData.switchObject(i);
 
         unsigned long nvert = obj.getNVertices();
         count_vert+=nvert;
-        for(unsigned long jvert = 0; jvert < nvert; ++jvert){
+        for (unsigned long jvert = 0; jvert < nvert; ++jvert) {
             const CTiglPoint& v = obj.getVertexPoint(jvert);
             const CTiglPoint& n = obj.getVertexNormal(jvert);
 
@@ -102,18 +107,19 @@ TiglReturnCode CTiglExportCollada::writeToDisc(CTiglPolyData& polyData, const ch
 
         unsigned long ntria = obj.getNPolygons();
 
-        for(unsigned long jtria = 0; jtria < ntria; ++jtria){
+        for (unsigned long jtria = 0; jtria < ntria; ++jtria) {
             unsigned long npoints = obj.getNPointsOfPolygon(jtria);
             // skip all polygons that aren't triangles
-            if(npoints < 3)
+            if (npoints < 3) {
                 // we currently dont export lines
                 continue;
-            else if(npoints > 3){
+            }
+            else if (npoints > 3) {
                 LOG(WARNING) << "Polygons with more than 3 vertices are currently not supported by CTiglExportCollada!" << endl;
                 continue;
             }
 
-            for(unsigned long kpoint = 0; kpoint < npoints; ++kpoint){
+            for (unsigned long kpoint = 0; kpoint < npoints; ++kpoint) {
                 // get vertex index of polygon
                 unsigned long vindex = obj.getVertexIndexOfPolygon(kpoint, jtria);
 
@@ -287,6 +293,5 @@ TiglReturnCode CTiglExportCollada::writeToDisc(CTiglPolyData& polyData, const ch
 
     return TIGL_SUCCESS;
 }
-
 
 } // namespace tigl

@@ -48,8 +48,9 @@ char* TIGLScriptProxy::qString2char(QString str)
 
 void TIGLScriptProxy::registerClass(QScriptEngine* engine)
 {
-        if (!engine)
-                return ;
+        if (!engine) {
+            return;
+        }
         
         QScriptValue ctor = engine->newFunction(TIGLScriptProxyConstructor);
         QScriptValue metaObject = engine->newQMetaObject(&QObject::staticMetaObject, ctor);

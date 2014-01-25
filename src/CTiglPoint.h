@@ -32,70 +32,70 @@
 #include "gp_XYZ.hxx"
 #include <iostream>
 
-namespace tigl {
+namespace tigl 
+{
 
-    class CTiglPoint
-    {
+class CTiglPoint
+{
 
-    public:
-        // Constructor
-        CTiglPoint(double xval = 0.0, double yval = 0.0, double zval = 0.0);
+public:
+    // Constructor
+    CTiglPoint(double xval = 0.0, double yval = 0.0, double zval = 0.0);
 
-        // Copy constructor
-        CTiglPoint(const CTiglPoint& aPoint);
+    // Copy constructor
+    CTiglPoint(const CTiglPoint& aPoint);
 
-        CTiglPoint(const gp_XYZ& aPoint);
+    CTiglPoint(const gp_XYZ& aPoint);
 
-        // Assignment operator
-        CTiglPoint& operator=(const CTiglPoint& aPoint);
+    // Assignment operator
+    CTiglPoint& operator=(const CTiglPoint& aPoint);
 
-        // Addition of points
-        CTiglPoint operator+(const CTiglPoint& aPoint) const;
+    // Addition of points
+    CTiglPoint operator+(const CTiglPoint& aPoint) const;
 
-        // Addition of a point
-        CTiglPoint& operator+=(const CTiglPoint& aPoint);
+    // Addition of a point
+    CTiglPoint& operator+=(const CTiglPoint& aPoint);
 
-        // Subtraction of points
-        CTiglPoint operator-(const CTiglPoint& aPoint) const;
+    // Subtraction of points
+    CTiglPoint operator-(const CTiglPoint& aPoint) const;
 
-        // Subtraction of a point
-        CTiglPoint& operator-=(const CTiglPoint& aPoint);
+    // Subtraction of a point
+    CTiglPoint& operator-=(const CTiglPoint& aPoint);
 
-        // Scaling of points
-        CTiglPoint operator*(double) const;
+    // Scaling of points
+    CTiglPoint operator*(double) const;
 
-        // returns a'*a
-        double norm2Sqr() const;
+    // returns a'*a
+    double norm2Sqr() const;
 
-        // returns the length of the vector
-        double norm2() const;
+    // returns the length of the vector
+    double norm2() const;
 
-        // Virtual Destructor
-        virtual ~CTiglPoint(void);
+    // Virtual Destructor
+    virtual ~CTiglPoint(void);
 
-        // Convert a CTiglPoint to a OpenCascade gp_Pnt
-        gp_Pnt Get_gp_Pnt(void) const;
+    // Convert a CTiglPoint to a OpenCascade gp_Pnt
+    gp_Pnt Get_gp_Pnt(void) const;
 
-        // Dump internal point data
-        void Dump(std::ostream& aStream) const;
+    // Dump internal point data
+    void Dump(std::ostream& aStream) const;
 
-        // scalar product
-        static double inner_prod(const CTiglPoint& aPoint, const CTiglPoint& bPoint);
+    // scalar product
+    static double inner_prod(const CTiglPoint& aPoint, const CTiglPoint& bPoint);
 
-        // cross product
-        static CTiglPoint cross_prod(const CTiglPoint& a, const CTiglPoint& b);
+    // cross product
+    static CTiglPoint cross_prod(const CTiglPoint& a, const CTiglPoint& b);
 
-        // square distance to another point
-        double distance2(const CTiglPoint& point) const;
+    // square distance to another point
+    double distance2(const CTiglPoint& point) const;
 
-        // returns minimum and maximum component
-        void getMinMax(double & min, double & max) const;
+    // returns minimum and maximum component
+    void getMinMax(double & min, double & max) const;
 
-    public:
-        double x;
-        double y;
-        double z;
-    };
+    double x;
+    double y;
+    double z;
+};
 
 } // end namespace tigl
 

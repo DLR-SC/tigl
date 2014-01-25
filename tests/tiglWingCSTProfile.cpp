@@ -88,12 +88,10 @@ protected:
     void outputXY(const int & i, const double& x, const double&y, const std::string& filename)
     {
         ofstream out;
-        if (i>0)
-        {
+        if (i>0) {
             out.open(filename.c_str(), ios::app);
         }
-        else 
-        {
+        else {
             out.open(filename.c_str());
         }
         out << setprecision(17) << std::scientific  << x << "\t" << y << endl;
@@ -118,8 +116,7 @@ protected:
 TEST_F(WingCSTProfile, tiglWingCSTProfile_samplePoints)
 {
     // project sample points on curve and check distance
-    for (unsigned int i = 0; i < psi.size(); ++i)
-    {
+    for (unsigned int i = 0; i < psi.size(); ++i) {
         gp_Pnt samplePoint(Standard_Real(psi[i]), Standard_Real(0.0), Standard_Real(tigl::cstcurve(upperN1, upperN2, upperB, psi[i])));
         GeomAPI_ProjectPointOnCurve projection(samplePoint, upperCurve);
         gp_Pnt projectedPoint=projection.NearestPoint();
@@ -138,16 +135,13 @@ TEST_F(WingCSTProfile, tiglWingCSTProfile_approximation)
     double devmax=0.0;
     // project sample points on curve and calculate distance
     std::vector<double> x;
-    for (int i = 0; i < 100; ++i)
-    {
+    for (int i = 0; i < 100; ++i) {
         x.push_back(double(i)/1000.0);
     }
-    for (int i = 100; i <= 1000; i=i+10)
-    {
+    for (int i = 100; i <= 1000; i=i+10) {
         x.push_back(double(i)/1000.0);
     }
-    for (unsigned int i = 0; i < x.size(); ++i)
-    {
+    for (unsigned int i = 0; i < x.size(); ++i) {
         gp_Pnt samplePoint(Standard_Real(x[i]), Standard_Real(0.0), Standard_Real(tigl::cstcurve(upperN1, upperN2, upperB, x[i])));
         GeomAPI_ProjectPointOnCurve projection(samplePoint, upperCurve);
         gp_Pnt projectedPoint=projection.NearestPoint();
