@@ -5,6 +5,7 @@
 
 #include <sstream>
 #include <tigl.h>
+#include <CTiglLogging.h>
 #include <CCPACSConfigurationManager.h>
 #include <CCPACSConfiguration.h>
 #include <CCPACSWing.h>
@@ -35,9 +36,13 @@ void OsgMainApp::init(){
     _assetManager = NULL;
     soleViewer = NULL;
 
+    // pipe osg and tigl message to android
     _notifyHandler = new OsgAndroidNotifyHandler();
-    _notifyHandler->setTag("Osg Viewer");
+    _notifyHandler->setTag("TiGL Viewer");
     osg::setNotifyHandler(_notifyHandler);
+    _logAdapter = CSharedPtr<TiglAndroidLogger>(new TiglAndroidLogger);
+    _logAdapter->SetTag("TiGL Viewer");
+    tigl::CTiglLogging::Instance().SetLogger(_logAdapter);
 
 }
 OsgMainApp::~OsgMainApp(){

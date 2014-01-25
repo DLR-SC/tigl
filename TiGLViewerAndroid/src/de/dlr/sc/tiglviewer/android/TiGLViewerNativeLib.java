@@ -33,5 +33,6 @@ public class TiGLViewerNativeLib {
     public static native void       loadObject(String address,String name);
     public static native void       unLoadObject(int number);
     public static native String[]   getObjectNames();
-
+    public static native String     tiglGetVersion();
 }
+

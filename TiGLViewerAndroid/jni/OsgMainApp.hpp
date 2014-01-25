@@ -18,6 +18,9 @@
 //Standard libraries
 #include <string>
 
+#include "CSharedPtr.h"
+#include "TiglAndroidLogger.h"
+
 //osg
 #include <osg/GL>
 #include <osg/GLExtensions>
@@ -138,6 +141,7 @@ private:
 
     OsgAndroidNotifyHandler *_notifyHandler;
     AAssetManager*           _assetManager;
+    CSharedPtr<TiglAndroidLogger> _logAdapter;
 
     std::vector<Model> _vModels;
     std::vector<Model> _vModelsToLoad;
