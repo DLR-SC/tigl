@@ -25,7 +25,8 @@
 #include <TopoDS_Shape.hxx>
 #include <gp_Trsf.hxx>
 
-TEST(ShapeCache, GetNShapes){
+TEST(ShapeCache, GetNShapes)
+{
     tigl::CTiglShapeCache cache;
     TopoDS_Shape shape;
     
@@ -52,7 +53,8 @@ TEST(ShapeCache, GetNShapes){
     ASSERT_EQ(0, cache.GetNShapesOfType("blubb"));
 }
 
-TEST(ShapeCache, Insert){
+TEST(ShapeCache, Insert)
+{
     tigl::CTiglShapeCache cache;
     TopoDS_Shape shape;
     
@@ -67,7 +69,8 @@ TEST(ShapeCache, Insert){
     ASSERT_EQ(1, cache.GetNShapesOfType("flubb"));
 }
 
-TEST(ShapeCache, Remove){
+TEST(ShapeCache, Remove)
+{
     tigl::CTiglShapeCache cache;
     TopoDS_Shape shape;
     
@@ -89,7 +92,8 @@ TEST(ShapeCache, Remove){
     ASSERT_EQ(0, cache.GetNShape());
 }
 
-TEST(ShapeCache, Get){
+TEST(ShapeCache, Get)
+{
     tigl::CTiglShapeCache cache;
     
     // create 3 different shapes

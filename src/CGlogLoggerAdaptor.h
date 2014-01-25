@@ -26,7 +26,8 @@
 #include <glog/logging.h>
 #include <CTiglLogging.h>
 
-namespace tigl {
+namespace tigl 
+{
 
 class ITiglLogger;
 class CMutex;

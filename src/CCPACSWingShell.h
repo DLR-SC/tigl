@@ -22,7 +22,8 @@
 #include "CCPACSWingCells.h"
 #include "CCPACSMaterial.h"
 
-namespace tigl {
+namespace tigl 
+{
 
 class CCPACSWingShell 
 {

@@ -42,7 +42,8 @@
 
 static const char* const LogLevelStrings[] = {"SLT", "ERR", "WRN", "INF", "DBG", "DBG1", "DBG2", "DBG3", "DBG4"};
 
-namespace tigl {
+namespace tigl 
+{
 
 
 CTiglLogging::CTiglLogging(void)
@@ -66,16 +67,18 @@ CTiglLogging::~CTiglLogging(void)
 #endif
 }
 
-PTiglLogger CTiglLogging::GetLogger() {
+PTiglLogger CTiglLogging::GetLogger() 
+{
     return _myLogger;
 }
 
-void CTiglLogging::SetLogger(PTiglLogger logger) {
+void CTiglLogging::SetLogger(PTiglLogger logger) 
+{
 
     _myLogger = logger;
     _consoleLogger.reset();
 #ifdef GLOG_FOUND
-    if(!_myLogger){
+    if (!_myLogger) {
         return;
     }
 
@@ -99,12 +102,13 @@ void CTiglLogging::initLogger(void)
 #endif
 }
 
-void CTiglLogging::LogToFile(const char* prefix) {
+void CTiglLogging::LogToFile(const char* prefix) 
+{
     time_t rawtime;
     time (&rawtime);
     struct tm *timeinfo = localtime (&rawtime);
     char buffer [80];
-    if(_timeIdInFilename) {
+    if (_timeIdInFilename) {
         strftime (buffer,80,"%y%m%d-%H%M%S",timeinfo);
     }
 
@@ -125,7 +129,8 @@ void CTiglLogging::LogToFile(const char* prefix) {
     _consoleLogger=consoleLogger;
 }
 
-void CTiglLogging::LogToStream(FILE * fp) {
+void CTiglLogging::LogToStream(FILE * fp) 
+{
 
     // add file and console logger to splitter
     CSharedPtr<CTiglLogSplitter> splitter (new CTiglLogSplitter);
@@ -139,23 +144,26 @@ void CTiglLogging::LogToStream(FILE * fp) {
     _consoleLogger=consoleLogger;
 }
 
-void CTiglLogging::SetLogFileEnding(const char* ending) {
+void CTiglLogging::SetLogFileEnding(const char* ending) 
+{
     _fileEnding = ending;
 }
 
-void CTiglLogging::SetTimeIdInFilenameEnabled(bool enabled) {
+void CTiglLogging::SetTimeIdInFilenameEnabled(bool enabled) 
+{
     _timeIdInFilename = enabled;
 }
 
-void CTiglLogging::SetConsoleVerbosity(TiglLogLevel vlevel) {
+void CTiglLogging::SetConsoleVerbosity(TiglLogLevel vlevel) 
+{
     _consoleVerbosity=vlevel;
-    if (_consoleLogger)
-    {
+    if (_consoleLogger) {
         _consoleLogger->SetVerbosity(_consoleVerbosity);
     }
 }
 
-void CTiglLogging::LogToConsole() {
+void CTiglLogging::LogToConsole() 
+{
 #ifdef GLOG_FOUND
     google::LogToStderr();
 #else
@@ -168,24 +176,26 @@ void CTiglLogging::LogToConsole() {
 #endif
 }
 
-std::string getLogLevelString(TiglLogLevel level){
+std::string getLogLevelString(TiglLogLevel level)
+{
     return LogLevelStrings[level];
 }
 
 #ifndef GLOG_FOUND
 
 DummyLogger_::DummyLogger_(){}
-DummyLogger_::~DummyLogger_(){
+DummyLogger_::~DummyLogger_()
+{
     tigl::PTiglLogger logger = CTiglLogging::Instance().GetLogger();
     std::string msg = stream.str();
-    if(msg.size() > 0 && msg[msg.size()-1] == '\n') {
+    if (msg.size() > 0 && msg[msg.size()-1] == '\n') {
         msg.resize(msg.size() - 1);
     }
-    if(logger) {
+    if (logger) {
         logger->LogMessage(_lastLevel, msg.c_str());
     }
     else {
-        if(_lastLevel == TILOG_WARNING || _lastLevel == TILOG_ERROR){
+        if (_lastLevel == TILOG_WARNING || _lastLevel == TILOG_ERROR) {
             fprintf(stderr, "%s\n", msg.c_str());
         }
         else {
@@ -195,7 +205,8 @@ DummyLogger_::~DummyLogger_(){
 }
 
 
-std::ostringstream& DummyLogger_::AppendToStream(TiglLogLevel level, const char* file, int line){
+std::ostringstream& DummyLogger_::AppendToStream(TiglLogLevel level, const char* file, int line) 
+{
     _lastLevel = level;
     
     stream <<  getLogLevelString(level) << " ";
@@ -214,18 +225,19 @@ std::ostringstream& DummyLogger_::AppendToStream(TiglLogLevel level, const char*
 }
 
 DebugStream_::DebugStream_(){}
-DebugStream_::~DebugStream_(){
+DebugStream_::~DebugStream_() 
+{
 #ifdef DEBUG
     tigl::PTiglLogger logger = CTiglLogging::Instance().GetLogger();
     std::string msg = stream.str();
-    if(msg.size() > 0 && msg[msg.size()-1] == '\n') {
+    if (msg.size() > 0 && msg[msg.size()-1] == '\n') {
         msg.resize(msg.size() - 1);
     }
-    if(logger) {
+    if (logger) {
         logger->LogMessage(_lastLevel, msg.c_str());
     }
     else {
-        if(_lastLevel == TILOG_WARNING || _lastLevel == TILOG_ERROR){
+        if (_lastLevel == TILOG_WARNING || _lastLevel == TILOG_ERROR) {
             fprintf(stderr, "%s\n", msg.c_str());
         }
         else {
@@ -235,7 +247,8 @@ DebugStream_::~DebugStream_(){
 #endif
 }
 
-std::ostringstream& DebugStream_::AppendToStream(TiglLogLevel level, const char* file, int line){
+std::ostringstream& DebugStream_::AppendToStream(TiglLogLevel level, const char* file, int line) 
+{
 #ifdef DEBUG
     _lastLevel = level;
 

@@ -34,35 +34,35 @@
 
 namespace tigl 
 {
-    class ITiglWingProfileAlgo
-    {
-        public:
-        // Clean up 
-        virtual void Cleanup(void)  = 0;
+class ITiglWingProfileAlgo
+{
+public:
+    // Clean up 
+    virtual void Cleanup(void)  = 0;
 
-        virtual void Update(void)   = 0;
+    virtual void Update(void)   = 0;
 
-        // Returns the algorithm code identifier for an algorithm
-        virtual void ReadCPACS(TixiDocumentHandle tixiHandle)  = 0;
+    // Returns the algorithm code identifier for an algorithm
+    virtual void ReadCPACS(TixiDocumentHandle tixiHandle)  = 0;
 
-        // Returns points on profile.
-        virtual std::vector<CTiglPoint*> GetSamplePoints() const = 0;
+    // Returns points on profile.
+    virtual std::vector<CTiglPoint*> GetSamplePoints() const = 0;
 
-        // get profiles CPACS XML path
-        virtual const std::string & GetProfileDataXPath() const = 0;
+    // get profiles CPACS XML path
+    virtual const std::string & GetProfileDataXPath() const = 0;
 
-        // get upper wing profile wire
-        virtual const TopoDS_Wire & GetUpperWire() const = 0;
+    // get upper wing profile wire
+    virtual const TopoDS_Wire & GetUpperWire() const = 0;
 
-        // get lower wing profile wire
-        virtual const TopoDS_Wire & GetLowerWire() const = 0;
+    // get lower wing profile wire
+    virtual const TopoDS_Wire & GetLowerWire() const = 0;
 
-        // get leading edge point();
-        virtual const gp_Pnt & GetLEPoint() const = 0;
-        
-        // get trailing edge point();
-        virtual const gp_Pnt & GetTEPoint() const = 0;
-    };
+    // get leading edge point();
+    virtual const gp_Pnt & GetLEPoint() const = 0;
+    
+    // get trailing edge point();
+    virtual const gp_Pnt & GetTEPoint() const = 0;
+};
 
 } // end namespace tigl
 

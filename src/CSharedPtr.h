@@ -1,7 +1,7 @@
-/*
+/* 
 * Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
 *
-* Created: 2013-12-19 Martin Siggel <Martin.Siggel@dlr.de>
+* Created: 2013-12-10 Martin Siggel <Martin.Siggel@dlr.de>
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.

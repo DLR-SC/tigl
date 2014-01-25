@@ -26,31 +26,32 @@
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 
-namespace tigl {
+namespace tigl 
+{
 
-    // Constructor
-    CTiglError::CTiglError(std::string error, TiglReturnCode errorCode) throw()
-        : err(error)
-        , code(errorCode)
-    {
-        DLOG(ERROR) << "CTiglError: ErrorCode=" << code << " : " << error;
-    }
+// Constructor
+CTiglError::CTiglError(std::string error, TiglReturnCode errorCode) throw()
+    : err(error)
+    , code(errorCode)
+{
+    DLOG(ERROR) << "CTiglError: ErrorCode=" << code << " : " << error;
+}
 
-    // Destructor
-    CTiglError::~CTiglError(void) throw()
-    {
-    }
+// Destructor
+CTiglError::~CTiglError(void) throw()
+{
+}
 
-    // Returns the error string as C string (char*)
-    const char* CTiglError::getError(void) const throw() 
-    { 
-        return err.c_str(); 
-    }
+// Returns the error string as C string (char*)
+const char* CTiglError::getError(void) const throw() 
+{ 
+    return err.c_str(); 
+}
 
-    // Returns the error code
-    TiglReturnCode CTiglError::getCode(void) const throw() 
-    { 
-        return code; 
-    }
+// Returns the error code
+TiglReturnCode CTiglError::getCode(void) const throw() 
+{ 
+    return code; 
+}
 
 } // end namespace tigl

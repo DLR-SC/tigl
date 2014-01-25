@@ -75,13 +75,13 @@ Handle_AIS_InteractiveContext& TIGLViewerContext::getContext()
     return myContext; 
 }
 
-Handle_V3d_Viewer TIGLViewerContext::createViewer(    const Standard_ExtString aName,
-                                                    const Standard_CString aDomain,
-                                                    const Standard_Real ViewSize )
+Handle_V3d_Viewer TIGLViewerContext::createViewer( const Standard_ExtString aName,
+                                                   const Standard_CString aDomain,
+                                                   const Standard_Real ViewSize )
 {
 #ifdef OCC_NEW_3DAPI
     static Handle(Graphic3d_GraphicDriver) deviceHandle;
-    if(deviceHandle.IsNull()){
+    if (deviceHandle.IsNull()) {
         deviceHandle = new OpenGl_GraphicDriver ("TKOpenGl");
         deviceHandle->Begin (new Aspect_DisplayConnection());
     }
@@ -90,14 +90,12 @@ Handle_V3d_Viewer TIGLViewerContext::createViewer(    const Standard_ExtString a
 #ifndef WNT
     static Handle(Graphic3d_GraphicDevice) deviceHandle;
     
-    if( deviceHandle.IsNull() )
-    {
+    if ( deviceHandle.IsNull() ) {
         deviceHandle = new Graphic3d_GraphicDevice( getenv("DISPLAY") );
     }
 #else
     static Handle( Graphic3d_WNTGraphicDevice ) deviceHandle;
-    if( deviceHandle.IsNull() )
-    {
+    if ( deviceHandle.IsNull() ) {
         deviceHandle = new Graphic3d_WNTGraphicDevice();
     }
 #endif  // WNT
@@ -124,8 +122,7 @@ void TIGLViewerContext::deleteAllObjects()
     AIS_ListOfInteractive aList;
     myContext->DisplayedObjects( aList );
     AIS_ListIteratorOfListOfInteractive aListIterator;
-    for ( aListIterator.Initialize( aList ); aListIterator.More(); aListIterator.Next() )
-    {
+    for ( aListIterator.Initialize( aList ); aListIterator.More(); aListIterator.Next() ) {
         myContext->Remove( aListIterator.Value(), Standard_False);
     }
 }
@@ -166,11 +163,14 @@ void TIGLViewerContext::gridYZ  ( void )
 /*!
  * \brief Toggles the grid on and off
  */
-void TIGLViewerContext::toggleGrid(bool gridIsOn){
-    if(gridIsOn)
+void TIGLViewerContext::toggleGrid(bool gridIsOn) 
+{
+    if (gridIsOn) {
         gridOn();
-    else
+    }
+    else {
         gridOff();
+    }
 }
 
 /*!
@@ -214,12 +214,15 @@ void TIGLViewerContext::gridCirc ( void )
  * \brief Toggles wireframe view.
  * \param wireframe True, if wireframes should be printed
  */
-void TIGLViewerContext::wireFrame(bool wireframe){
-    if(!myContext.IsNull()){
-        if(wireframe)
+void TIGLViewerContext::wireFrame(bool wireframe) 
+{
+    if (!myContext.IsNull()){
+        if (wireframe) {
             myContext->SetDisplayMode(AIS_WireFrame);
-        else
+        }
+        else {
             myContext->SetDisplayMode(AIS_Shaded);
+        }
     }
 }
 

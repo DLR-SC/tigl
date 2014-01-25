@@ -47,7 +47,8 @@
 
 #define STEP_WRITEMODE STEPControl_AsIs
 
-namespace tigl {
+namespace tigl 
+{
 
 // Constructor
 CTiglExportStep::CTiglExportStep(CCPACSConfiguration& config)
@@ -61,7 +62,8 @@ CTiglExportStep::~CTiglExportStep(void)
 {
 }
 
-void CTiglExportStep::AddFacesOfShape(const TopoDS_Shape& shape, STEPControl_Writer& writer) const {
+void CTiglExportStep::AddFacesOfShape(const TopoDS_Shape& shape, STEPControl_Writer& writer) const 
+{
     if (exportMode == AS_FACES) {
         TopExp_Explorer faceExplorer;
         for (faceExplorer.Init(shape, TopAbs_FACE); faceExplorer.More(); faceExplorer.Next()) {
@@ -80,7 +82,7 @@ void CTiglExportStep::AddFacesOfShape(const TopoDS_Shape& shape, STEPControl_Wri
     }
 }
 
-void CTiglExportStep::SetExportMode(TiglStepExportMode mode)
+void CTiglExportStep::SetExportMode(TiglStepExportMode mode) 
 {
     exportMode = mode;
 }
@@ -93,7 +95,7 @@ void CTiglExportStep::ExportStep(const std::string& filename) const
     STEPControl_Controller::Init();
     STEPControl_Writer            stepWriter;
 
-    if( filename.empty()) {
+    if ( filename.empty()) {
        LOG(ERROR) << "Error: Empty filename in ExportStep.";
        return;
     }
@@ -106,7 +108,6 @@ void CTiglExportStep::ExportStep(const std::string& filename) const
             CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(i);
             TopoDS_Shape loft = segment.GetLoft();
             AddFacesOfShape(loft, stepWriter);
-
         }
     }
 
@@ -196,22 +197,23 @@ void CTiglExportStep::ExportShapes(const Handle(TopTools_HSequenceOfShape)& aHSe
         AddFacesOfShape(aHSequenceOfShape->Value(i), stepWriter);
     }
 
-    if (stepWriter.Write(const_cast<char*>(filename.c_str())) != Standard_True)
+    if (stepWriter.Write(const_cast<char*>(filename.c_str())) != Standard_True) {
         throw CTiglError("Error: Export of shapes to STEP file failed in CTiglExportStep::ExportShapes", TIGL_ERROR);
+    }
 }
 
 #ifdef TIGL_USE_XCAF
 // Saves as step, with cpacs metadata information in it
 void CTiglExportStep::ExportStepWithCPACSMetadata(const std::string& filename)
 {
-    if( filename.empty()) {
+    if ( filename.empty()) {
         LOG(ERROR) << "Error: Empty filename in ExportStepWithCPACSMetadata.";
         return;
     }
-
+    
     CCPACSImportExport generator(myConfig);
     Handle(TDocStd_Document) hDoc = generator.buildXDEStructure();
-
+    
     STEPControl_Controller::Init();
     STEPCAFControl_Writer writer;
     writer.Transfer(hDoc, STEP_WRITEMODE);

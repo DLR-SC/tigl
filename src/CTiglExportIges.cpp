@@ -69,19 +69,21 @@
 #include <map>
 #include <cassert>
 
-namespace {
+namespace
+{
 
     /**
      * @brief WriteIGESFaceNames takes the names of each face and writes it into the IGES model.
      */
-    void WriteIGESFaceNames(Handle_Transfer_FinderProcess FP, const PNamedShape shape) {
-        if(!shape) {
+    void WriteIGESFaceNames(Handle_Transfer_FinderProcess FP, const PNamedShape shape)
+    {
+        if (!shape) {
             return;
         }
 
         TopTools_IndexedMapOfShape faceMap;
         TopExp::MapShapes(shape->Shape(),   TopAbs_FACE, faceMap);
-        for(int iface = 1; iface <= faceMap.Extent(); ++iface) {
+        for (int iface = 1; iface <= faceMap.Extent(); ++iface) {
             TopoDS_Face face = TopoDS::Face(faceMap(iface));
             std::string name = shape->ShortName();
             PNamedShape origin = shape->GetFaceTraits(iface-1).Origin();
@@ -100,11 +102,12 @@ namespace {
 
 } //namespace
 
-namespace tigl {
+namespace tigl
+{
 
 // Constructor
 CTiglExportIges::CTiglExportIges(CCPACSConfiguration& config)
-:myConfig(config)
+    : myConfig(config)
 {
     myStoreType = NAMED_COMPOUNDS;
 }
@@ -250,8 +253,9 @@ void CTiglExportIges::ExportShapes(const Handle(TopTools_HSequenceOfShape)& aHSe
     }
 
     igesWriter.ComputeModel();
-    if (igesWriter.Write(const_cast<char*>(filename.c_str())) != Standard_True)
+    if (igesWriter.Write(const_cast<char*>(filename.c_str())) != Standard_True) {
         throw CTiglError("Error: Export of shapes to IGES file failed in CCPACSImportExport::SaveIGES", TIGL_ERROR);
+    }
 }
 
 void CTiglExportIges::SetOCAFStoreType(IgesOCAFStoreType type)
@@ -263,28 +267,28 @@ void CTiglExportIges::SetOCAFStoreType(IgesOCAFStoreType type)
 // Saves as iges, with cpacs metadata information in it
 void CTiglExportIges::ExportIgesWithCPACSMetadata(const std::string& filename)
 {
-       if( filename.empty()) {
-           LOG(ERROR) << "Error: Empty filename in ExportIgesWithCPACSMetadata.";
-           return;
-       }
+    if ( filename.empty()) {
+        LOG(ERROR) << "Error: Empty filename in ExportIgesWithCPACSMetadata.";
+        return;
+    }
 
-       CCPACSImportExport generator(myConfig);
-       Handle(TDocStd_Document) hDoc = generator.buildXDEStructure();
+    CCPACSImportExport generator(myConfig);
+    Handle(TDocStd_Document) hDoc = generator.buildXDEStructure();
 
-       IGESControl_Controller::Init();
-       IGESCAFControl_Writer writer;
-       SetTranslationParamters();
-       writer.Model()->ApplyStatic(); // apply set parameters
+    IGESControl_Controller::Init();
+    IGESCAFControl_Writer writer;
+    SetTranslationParamters();
+    writer.Model()->ApplyStatic(); // apply set parameters
 
-       writer.Transfer(hDoc);
-       writer.Write(filename.c_str());
-   }
+    writer.Transfer(hDoc);
+    writer.Write(filename.c_str());
+}
 
 
 
 void CTiglExportIges::GroupAndInsertShapeToCAF(Handle(XCAFDoc_ShapeTool) myAssembly, const PNamedShape shape)
 {
-    if(!shape) {
+    if (!shape) {
         return;
     }
 
@@ -312,7 +316,7 @@ void CTiglExportIges::GroupAndInsertShapeToCAF(Handle(XCAFDoc_ShapeTool) myAssem
                 TopoDS_Face face = TopoDS::Face(faceMap(iface));
                 std::string name = shape->ShortName();
                 PNamedShape origin = shape->GetFaceTraits(iface-1).Origin();
-                if(origin){
+                if (origin){
                     name = origin->ShortName();
                 }
                 TDF_Label faceLabel = myAssembly->NewShape();
