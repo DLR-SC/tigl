@@ -118,7 +118,7 @@ namespace tigl
                 description = ptrDescription;
 
             // create wing profile algorithm via factory
-            profileAlgo=CCPACSWingProfileFactory::createProfileAlgo(tixiHandle, ProfileXPath);
+            profileAlgo=CCPACSWingProfileFactory::createProfileAlgo(tixiHandle, *this, ProfileXPath);
             // read in wing profile data
             profileAlgo->ReadCPACS(tixiHandle);
         }
@@ -297,13 +297,11 @@ namespace tigl
         // Loop over all edges of the wing profile curve and try to find intersection points
         std::vector<gp_Pnt2d> ipnts2d;
         BRepTools_WireExplorer wireExplorer;
-        switch (fromUpper) {
-        case true:
+        if (fromUpper) {
             wireExplorer.Init(GetUpperWire());
-            break;
-        case false:
+        }
+        else {
             wireExplorer.Init(GetLowerWire());
-            break;
         }
 
         for (; wireExplorer.More(); wireExplorer.Next()) {

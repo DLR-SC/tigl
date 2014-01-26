@@ -26,18 +26,24 @@
 #include <iostream>
 #include <sstream>
 #include <vector>
+#include <algorithm>
 
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "math.h"
+#include "CCPACSWingProfile.h"
 
 #include "gp_Pnt2d.hxx"
 #include "gp_Vec2d.hxx"
+#include "gp_Vec.hxx"
 #include "gp_Dir2d.hxx"
 #include "gp_Pln.hxx"
 #include "Bnd_Box.hxx"
 #include "Geom2d_Line.hxx"
 #include "Geom2d_TrimmedCurve.hxx"
+#include "Geom_TrimmedCurve.hxx"
+#include "GeomAPI_IntCS.hxx"
+#include "Geom_Plane.hxx"
 #include "TopoDS.hxx"
 #include "TopExp_Explorer.hxx"
 #include "TopAbs_ShapeEnum.hxx"
@@ -65,7 +71,8 @@ namespace tigl
 {
 
     // Constructor
-    CCPACSWingProfilePointList::CCPACSWingProfilePointList(const std::string& path)
+    CCPACSWingProfilePointList::CCPACSWingProfilePointList(const CCPACSWingProfile& profile, const std::string& path)
+        : profileRef(profile)
     {
         ProfileDataXPath=path;
         profileWireAlgo = WireAlgoPointer(new CTiglInterpolateBsplineWire);
@@ -195,7 +202,7 @@ namespace tigl
         }
 
         TopoDS_Wire tempWireClosed   = wireBuilder.BuildWire(points, true);
-        if (tempWireClosed.IsNull() == Standard_True)
+        if (tempWireClosed.IsNull())
             throw CTiglError("Error: TopoDS_Wire is null in CCPACSWingProfilePointList::BuildWire", TIGL_ERROR);
 
         //@todo: do we really want to remove all y information? this has to be a bug
@@ -218,11 +225,51 @@ namespace tigl
         Handle_Geom_BSplineCurve curve = BRepAdaptor_CompCurve(wireClosed).BSpline();
         // Get Leading edge parameter on curve
         double lep_par = GeomAPI_ProjectPointOnCurve(lePoint, curve).LowerDistanceParameter();
+
+        // upper and lower curve, we don't know yet which is what
+        Handle(Geom_TrimmedCurve) curve1 = new Geom_TrimmedCurve(curve, curve->FirstParameter(), lep_par);
+        Handle(Geom_TrimmedCurve) curve2 = new Geom_TrimmedCurve(curve, lep_par, curve->LastParameter());
+
+        gp_Pnt firstPnt = curve1->StartPoint();
+        gp_Pnt lastPnt  = curve2->EndPoint();
+
+        // Trim upper and lower curve to make sure, that the trailing edge
+        // is perpendicular to the chord line
+        double tolerance = 1e-3;
+        gp_Pln plane(tePoint,gp_Vec(lePoint, tePoint));
+        GeomAPI_IntCS int1(curve1, new Geom_Plane(plane));
+        if (int1.IsDone() && int1.NbPoints() > 0) {
+            Standard_Real u,v,w;
+            int1.Parameters(1, u, v, w);
+            if ( w > curve1->FirstParameter() + Precision::Confusion() && w < curve1->LastParameter() ) {
+                double relDist = curve1->Value(w).Distance(firstPnt) / tePoint.Distance(lePoint);
+                if (relDist > tolerance) {
+                    LOG(WARNING) << "Trimming profile " << profileRef.GetUID()
+                                 << " to avoid skewed trailing edge."
+                                 << " Curve is trimmed about " << relDist*100. << " %.";
+                }
+                curve1 = new Geom_TrimmedCurve(curve1, w, curve1->LastParameter());
+            }
+        }
+        GeomAPI_IntCS int2(curve2, new Geom_Plane(plane));
+        if (int2.IsDone() && int2.NbPoints() > 0) {
+            Standard_Real u,v,w;
+            int2.Parameters(1, u, v, w);
+            if ( w < curve2->LastParameter() - Precision::Confusion() && w > curve2->FirstParameter() ) {
+                double relDist = curve2->Value(w).Distance(lastPnt) / tePoint.Distance(lePoint);
+                if (relDist > tolerance) {
+                    LOG(WARNING) << "Trimming profile " << profileRef.GetUID()
+                                 << " to avoid skewed trailing edge."
+                                 << " Curve is trimmed about " << relDist*100. << " %.";
+                }
+                curve2 = new Geom_TrimmedCurve(curve2, curve2->FirstParameter(), w);
+            }
+        }
         
         // upper and lower edges
         TopoDS_Edge edge1, edge2;
-        edge1 = BRepBuilderAPI_MakeEdge(curve,curve->FirstParameter(), lep_par);
-        edge2 = BRepBuilderAPI_MakeEdge(curve,lep_par, curve->LastParameter());
+        edge1 = BRepBuilderAPI_MakeEdge(curve1);
+        edge2 = BRepBuilderAPI_MakeEdge(curve2);
 
         // Get maximal z-values of both edges via bounding box
         Bnd_Box boundingBox1;
@@ -243,15 +290,15 @@ namespace tigl
             //wire goes from top to bottom
             upper_edge = edge1;
             lower_edge = edge2;
-            te_up = curve->StartPoint();
-            te_down = curve->EndPoint();
+            te_up = curve1->StartPoint();
+            te_down = curve2->EndPoint();
         }
         else {
             //wire goes from bottom to top
             lower_edge = edge1;
             upper_edge = edge2;
-            te_up = curve->EndPoint();
-            te_down = curve->StartPoint();
+            te_up = curve2->EndPoint();
+            te_down = curve1->StartPoint();
         }
         // Wire builder
         BRepBuilderAPI_MakeWire upperWireBuilder, lowerWireBuilder;
@@ -270,23 +317,20 @@ namespace tigl
     }
 
     // Builds leading and trailing edge points of the wing profile wire.
+    // The trailing edge point is defined at the center between first and
+    // last defined Point. The leading edge point is defined as the point
+    // which is located farmost from the trailing edge point.
+    // Finally, we correct the trailing edge to make sure, that the GetPoint
+    // functions work correctly.
     void CCPACSWingProfilePointList::BuildLETEPoints(void)
     {
         // compute TE point
         gp_Pnt firstPnt = coordinates[0]->Get_gp_Pnt();
         gp_Pnt lastPnt  = coordinates[coordinates.size() - 1]->Get_gp_Pnt();
-        if( fabs(firstPnt.X() - lastPnt.X()) < Precision::Confusion()){
-            double x = (firstPnt.X() + lastPnt.X())/2.;
-            double y = (firstPnt.Y() + lastPnt.Y())/2.;
-            double z = (firstPnt.Z() + lastPnt.Z())/2.;
-            tePoint = gp_Pnt(x,y,z);
-        }
-        else if(firstPnt.X() > lastPnt.X()) {
-            tePoint = firstPnt;
-        }
-        else {
-            tePoint = lastPnt;
-        }
+        double x = (firstPnt.X() + lastPnt.X())/2.;
+        double y = (firstPnt.Y() + lastPnt.Y())/2.;
+        double z = (firstPnt.Z() + lastPnt.Z())/2.;
+        tePoint = gp_Pnt(x,y,z);
 
         // find the point with the max dist to TE point
         lePoint = tePoint;
@@ -300,6 +344,16 @@ namespace tigl
         // project into x-z plane
         lePoint.SetY(0.);
         tePoint.SetY(0.);
+
+        // shorten chord at te, that upper and lower
+        // profile are reachable through cord
+        gp_Vec vchord(lePoint, tePoint);
+        gp_Vec vfirst(lePoint, firstPnt);
+        gp_Vec vlast (lePoint, lastPnt);
+        double alphaFirst = vfirst * vchord / vchord.SquareMagnitude();
+        double alphaLast  = vlast  * vchord / vchord.SquareMagnitude();
+        double alphamin = std::min(alphaFirst, alphaLast);
+        tePoint = lePoint.XYZ() + alphamin*(vchord.XYZ());
     }
     // Returns the profile points as read from TIXI.
     std::vector<CTiglPoint*> CCPACSWingProfilePointList::GetSamplePoints() const

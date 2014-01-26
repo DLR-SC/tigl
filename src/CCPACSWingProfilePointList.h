@@ -47,6 +47,7 @@
 namespace tigl 
 {
 
+    class CCPACSWingProfile;
     class ITiglWireAlgorithm;
     typedef ITiglWireAlgorithm* WireAlgoPointer;
 
@@ -59,7 +60,7 @@ namespace tigl
 
     public:
         // Constructor
-        CCPACSWingProfilePointList(const std::string& aFilename);
+        CCPACSWingProfilePointList(const CCPACSWingProfile& profile, const std::string& cpacsPath);
 
         // Destructor
         ~CCPACSWingProfilePointList(void);
@@ -111,6 +112,7 @@ namespace tigl
     private:
         CCPACSCoordinateContainer coordinates;    /**< Coordinates of a wing profile element */
         WireAlgoPointer           profileWireAlgo;/**< Pointer to wire algorithm (e.g. CTiglInterpolateBsplineWire) */
+        const CCPACSWingProfile&  profileRef;     /**< Reference to the wing profile */
 
         std::string               ProfileDataXPath;   /**< CPACS path to profile data (pointList or cst2D) */
         TopoDS_Wire               wireClosed;     /**< Forced closed wing profile wire */
