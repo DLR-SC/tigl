@@ -30,6 +30,8 @@
 
 namespace tigl
 {
+    class CCPACSWingProfile;
+
     class CCPACSWingProfileCST : public ITiglWingProfileAlgo
     {
 
@@ -39,7 +41,7 @@ namespace tigl
 
     public:
         // Constructor
-        CCPACSWingProfileCST(const std::string& aFilename);
+        CCPACSWingProfileCST(const CCPACSWingProfile&, const std::string& cpacsPath);
 
         // Destructor
         ~CCPACSWingProfileCST(void);
