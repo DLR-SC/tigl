@@ -20,7 +20,7 @@
 
 #include <iostream>
 
-tigl::CTiglConsoleLogger::CTiglConsoleLogger() : verbosity(TILOG_ERROR)
+tigl::CTiglConsoleLogger::CTiglConsoleLogger() : verbosity(TILOG_WARNING)
 {                                            
 }
 void tigl::CTiglConsoleLogger::LogMessage(TiglLogLevel level, const char *message)
