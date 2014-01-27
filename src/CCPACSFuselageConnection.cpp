@@ -55,13 +55,13 @@ namespace tigl {
     }
 
     // Returns the section index of this connection
-    std::string CCPACSFuselageConnection::GetSectionUID(void) const
+    const std::string& CCPACSFuselageConnection::GetSectionUID(void) const
     {
         return sectionUID;
     }
 
     // Returns the section element index of this connection
-    std::string CCPACSFuselageConnection::GetSectionElementUID(void) const
+    const std::string& CCPACSFuselageConnection::GetSectionElementUID(void) const
     {
         return elementUID;
     }

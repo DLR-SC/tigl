@@ -248,13 +248,13 @@ namespace tigl {
 
 
     // Returns the start section UID of this segment
-    std::string CCPACSFuselageSegment::GetStartSectionUID(void)
+    const std::string& CCPACSFuselageSegment::GetStartSectionUID(void)
     {
         return startConnection.GetSectionUID();
     }
 
     // Returns the end section UID of this segment
-    std::string CCPACSFuselageSegment::GetEndSectionUID(void)
+    const std::string& CCPACSFuselageSegment::GetEndSectionUID(void)
     {
         return endConnection.GetSectionUID();
     }
@@ -272,13 +272,13 @@ namespace tigl {
     }
 
     // Returns the start section element UID of this segment
-    std::string CCPACSFuselageSegment::GetStartSectionElementUID(void)
+    const std::string& CCPACSFuselageSegment::GetStartSectionElementUID(void)
     {
         return startConnection.GetSectionElementUID();
     }
 
     // Returns the end section element UID of this segment
-    std::string CCPACSFuselageSegment::GetEndSectionElementUID(void)
+    const std::string& CCPACSFuselageSegment::GetEndSectionElementUID(void)
     {
         return endConnection.GetSectionElementUID();
     }

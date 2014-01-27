@@ -56,13 +56,13 @@ namespace tigl {
     }
 
     // Returns the section UID of this connection
-    std::string CCPACSWingConnection::GetSectionUID(void) const
+    const std::string& CCPACSWingConnection::GetSectionUID(void) const
     {
         return sectionUID;
     }
 
     // Returns the section element UID of this connection
-    std::string CCPACSWingConnection::GetSectionElementUID(void) const
+    const std::string& CCPACSWingConnection::GetSectionElementUID(void) const
     {
         return elementUID;
     }

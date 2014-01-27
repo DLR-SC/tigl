@@ -300,25 +300,25 @@ namespace tigl {
     }
 
     // Returns the inner section UID of this segment
-    std::string CCPACSWingSegment::GetInnerSectionUID(void)
+    const std::string& CCPACSWingSegment::GetInnerSectionUID(void)
     {
         return innerConnection.GetSectionUID();
     }
 
     // Returns the outer section UID of this segment
-    std::string CCPACSWingSegment::GetOuterSectionUID(void)
+    const std::string& CCPACSWingSegment::GetOuterSectionUID(void)
     {
         return outerConnection.GetSectionUID();
     }
 
     // Returns the inner section element UID of this segment
-    std::string CCPACSWingSegment::GetInnerSectionElementUID(void)
+    const std::string& CCPACSWingSegment::GetInnerSectionElementUID(void)
     {
         return innerConnection.GetSectionElementUID();
     }
 
     // Returns the outer section element UID of this segment
-    std::string CCPACSWingSegment::GetOuterSectionElementUID(void)
+    const std::string& CCPACSWingSegment::GetOuterSectionElementUID(void)
     {
         return outerConnection.GetSectionElementUID();
     }
