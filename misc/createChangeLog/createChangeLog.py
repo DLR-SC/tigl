@@ -108,7 +108,7 @@ def decorate(logs):
                 tiglwords.append(word)
         new_line = line
         for tword in tiglwords:
-            new_line = new_line.replace(' ' + tword + ' ', ' `' + tword + '` ')
+            new_line = new_line.replace(' ' + tword + ' ', ' ``' + tword + '`` ')
         logs_decorated.append(new_line)
     logs = logs_decorated
     return logs
