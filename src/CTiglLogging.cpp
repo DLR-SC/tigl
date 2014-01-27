@@ -50,7 +50,7 @@ CTiglLogging::CTiglLogging(void)
     initLogger();
     _fileEnding = "log";
     _timeIdInFilename = true;
-    _consoleVerbosity = TILOG_ERROR;
+    _consoleVerbosity = TILOG_WARNING;
     // set logger to console logger
     PTiglLogger consoleLogger(new CTiglConsoleLogger);
     consoleLogger->SetVerbosity(_consoleVerbosity);
