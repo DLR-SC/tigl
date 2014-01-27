@@ -235,7 +235,7 @@ namespace tigl
 
         // Trim upper and lower curve to make sure, that the trailing edge
         // is perpendicular to the chord line
-        double tolerance = 1e-3;
+        double tolerance = 1e-4;
         gp_Pln plane(tePoint,gp_Vec(lePoint, tePoint));
         GeomAPI_IntCS int1(curve1, new Geom_Plane(plane));
         if (int1.IsDone() && int1.NbPoints() > 0) {
@@ -244,9 +244,10 @@ namespace tigl
             if ( w > curve1->FirstParameter() + Precision::Confusion() && w < curve1->LastParameter() ) {
                 double relDist = curve1->Value(w).Distance(firstPnt) / tePoint.Distance(lePoint);
                 if (relDist > tolerance) {
-                    LOG(WARNING) << "Trimming profile " << profileRef.GetUID()
-                                 << " to avoid skewed trailing edge."
-                                 << " Curve is trimmed about " << relDist*100. << " %.";
+                    LOG(WARNING) << "The wing profile " << profileRef.GetUID() << " will be trimmed"
+                                 << " to avoid a skewed trailing edge."
+                                 << " It is trimmed about " << relDist*100. << " % w.r.t. the chord length."
+                                 << " Please correct the wing profile!";
                 }
                 curve1 = new Geom_TrimmedCurve(curve1, w, curve1->LastParameter());
             }
@@ -258,9 +259,10 @@ namespace tigl
             if ( w < curve2->LastParameter() - Precision::Confusion() && w > curve2->FirstParameter() ) {
                 double relDist = curve2->Value(w).Distance(lastPnt) / tePoint.Distance(lePoint);
                 if (relDist > tolerance) {
-                    LOG(WARNING) << "Trimming profile " << profileRef.GetUID()
-                                 << " to avoid skewed trailing edge."
-                                 << " Curve is trimmed about " << relDist*100. << " %.";
+                    LOG(WARNING) << "The wing profile " << profileRef.GetUID() << " will be trimmed"
+                                 << " to avoid a skewed trailing edge."
+                                 << " It is trimmed about " << relDist*100. << " % w.r.t. the chord length."
+                                 << " Please correct the wing profile!";
                 }
                 curve2 = new Geom_TrimmedCurve(curve2, curve2->FirstParameter(), w);
             }
