@@ -89,7 +89,7 @@ def isCategoryWord(word, buzzwords, prefixes=[], suffixes=[], contains=[]):
 
 def isCategoryLine(line, operator, buzzwords, prefixes=[], suffixes=[], contains=[]):
     boolCont = []
-    for word in line:
+    for word in line.split():
         boolCont.append(isCategoryWord(word, buzzwords, prefixes, suffixes, contains))
     return operator(boolCont)
 
