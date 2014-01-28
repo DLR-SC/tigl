@@ -1,3 +1,34 @@
+Version 2.1.1
+-------------
+Released: 28/01/2014
+
+    - Changed API:
+        - In previous TiGL version, some strings had to be freed manually after calling some functions. 
+          These strings must not be freed anymore. Following functions are affected:
+
+            - ``tiglWingGetOuterSectionAndElementIndex``
+            - ``tiglWingGetInnerSectionAndElementUID``
+            - ``tiglFuselageGetStartSectionAndElementUID``
+            - ``tiglFuselageGetEndSectionAndElementUID``
+            - ``tiglWingComponentSegmentPointGetSegmentEtaXsi`` 
+            - ``tiglWingComponentSegmentFindSegment``
+
+         - Changed return value of ``tiglWingComponentSegmentFindSegment``: In case the given point is 
+           located more than 1 cm away from any segment, TIGL_NOT_FOUND is returned.
+         - Changed return value of ``tiglWingComponentSegmentPointGetSegmentEtaXsi``: If the given point 
+           lies outside any segment so that the transformation can not be executed, TIGL_MATH_ERROR is returned.
+
+
+    - General changes:
+        - Changed console logging to include errors and warnings by default
+        - Wing profiles are automatically trimmed at their trailing edge to ensure, that the trailing edge is 
+          always perpendicular to the chord line. This is required by the ``wingGetUpperPoint`` and ``wingGetLowerPoint`` functions.
+
+    - Fixes:
+        - Fixed a bug in ``tiglWingGetUpperPoint`` and ``tiglWingGetLowerPoint`` in which some points could not be calculated
+        - Fixed two memory leaks
+
+
 Version 2.1.0
 -------------
 Released: 17/01/2014
@@ -267,11 +298,11 @@ Version 2.0
         - Some XPath have changed in CPACS 2.0, for example "sweepangle" is now "sweepAngle". TIGL is taking care of these changes.
 
     - New API Functions:
-            - ``tiglFuselageGetSymmetry`` and ``tiglWingGetSymmetry`` for querying symmetry information
-            - ``tiglWingGetReferenceArea`` gives the reference area of a wing
-            - ``tiglWingComponentSegmentFindSegment`` returns the segmentUID and wingUID for a given point on a componentSegment
-            - ``tiglWingGetWettedArea`` a new function for caluclating wetted area of a wing
-            - ``tiglWingComponentSegmentPointGetSegmentEtaXsireturns`` eta, xsi, segmentUID and wingUID for a given eta and xsi on 
+        - ``tiglFuselageGetSymmetry`` and ``tiglWingGetSymmetry`` for querying symmetry information
+        - ``tiglWingGetReferenceArea`` gives the reference area of a wing
+        - ``tiglWingComponentSegmentFindSegment`` returns the segmentUID and wingUID for a given point on a componentSegment
+        - ``tiglWingGetWettedArea`` a new function for caluclating wetted area of a wing
+        - ``tiglWingComponentSegmentPointGetSegmentEtaXsireturns`` eta, xsi, segmentUID and wingUID for a given eta and xsi on 
               a componentSegment
     
     - TiGLViewer:
