@@ -144,6 +144,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglOpenCPACSConfiguration(TixiDocumentHandle 
         strcat(ConfigurationXPathPrt, "\"]");
         int tixiReturn = tixiGetTextElement( tixiHandle, ConfigurationXPathPrt, &tmpString);
         if(tixiReturn != 0) {
+            free(ConfigurationXPathPrt);
             LOG(ERROR) << "Configuration '" << configurationUID << "' not found!" << std::endl;
             return TIGL_ERROR;
         }
@@ -1300,10 +1301,6 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentFindSegment(TiglCPACSC
             for(int componentSegment = 1; componentSegment <= wing.GetComponentSegmentCount(); componentSegment++) {
                 tigl::CCPACSWingComponentSegment& cs = (tigl::CCPACSWingComponentSegment&) wing.GetComponentSegment(componentSegment);
                 if( cs.GetUID() == componentSegmentUID) {
-                    std::string wUID = wing.GetUID();
-                    *wingUID = (char *) malloc(strlen(wUID.c_str()) * sizeof(char) + 1);
-                    strcpy(*wingUID, const_cast<char*>(wUID.c_str()));
-
                     gp_Pnt nearestPointOnSegment;
                     const tigl::CTiglAbstractSegment* segment =  cs.findSegment(x, y, z, nearestPointOnSegment);
                     if (!segment) {
@@ -1314,6 +1311,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentFindSegment(TiglCPACSC
                     }
 
                     *segmentUID = (char*) segment->GetUID().c_str();
+                    *wingUID    = (char*) wing.GetUID().c_str();
 
                     return TIGL_SUCCESS;
                 }
@@ -2437,8 +2435,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetProfileName(TiglCPACSConfigurat
         std::string profileUID = element.GetProfileIndex();
         tigl::CCPACSFuselageProfile& profile = config.GetFuselageProfile(profileUID);
 
-        *profileNamePtr = (char *) malloc(profile.GetName().length() * sizeof(char) + 1);
-        strcpy(*profileNamePtr, profile.GetName().c_str());
+        *profileNamePtr = (char *) profile.GetName().c_str();
 
         return TIGL_SUCCESS;
     }

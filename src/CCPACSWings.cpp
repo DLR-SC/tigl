@@ -82,13 +82,17 @@ namespace tigl {
         // Read wing profiles
         profiles.ReadCPACS(tixiHandle);
 
-        if (tixiCheckElement(tixiHandle, wingXPathPrt) != SUCCESS)
+        if (tixiCheckElement(tixiHandle, wingXPathPrt) != SUCCESS) {
+            free(wingXPathPrt);
             return;
+        }
 
         /* Get wing element count */
         int wingCount;
-        if (tixiGetNamedChildrenCount(tixiHandle, wingXPathPrt, "wing", &wingCount) != SUCCESS)
+        if (tixiGetNamedChildrenCount(tixiHandle, wingXPathPrt, "wing", &wingCount) != SUCCESS) {
+            free(wingXPathPrt);
             throw CTiglError("XML error: tixiGetNamedChildrenCount failed in CCPACSWings::ReadCPACS", TIGL_XML_ERROR);
+        }
 
         // Loop over all wings
         for (int i = 1; i <= wingCount; i++) {
