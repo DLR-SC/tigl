@@ -138,6 +138,13 @@ if(DOXYGEN_FOUND)
 	      !insertmacro MUI_STARTMENU_GETFOLDER Application $MUI_TEMP
 	      Delete \\\"$SMPROGRAMS\\\\$MUI_TEMP\\\\TIGL-Guide.lnk\\\"
 	    ")
+	    SET(CPACK_NSIS_CREATE_ICONS_EXTRA ${CPACK_NSIS_CREATE_ICONS_EXTRA} "
+          CreateShortCut \\\"$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\TIGL-ChangeLog.lnk\\\" \\\"$INSTDIR\\\\share\\\\doc\\\\tigl\\\\changeLog.pdf\\\"
+	    ")
+	    SET(CPACK_NSIS_DELETE_ICONS_EXTRA ${CPACK_NSIS_DELETE_ICONS_EXTRA} "
+	      !insertmacro MUI_STARTMENU_GETFOLDER Application $MUI_TEMP
+          Delete \\\"$SMPROGRAMS\\\\$MUI_TEMP\\\\TIGL-ChangeLog.lnk\\\"
+	    ")
 		
 		
 	else()
