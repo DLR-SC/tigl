@@ -326,12 +326,7 @@ namespace tigl
             // There is only one intesection point with the wire
             gp_Pnt2d ipnt2d = ipnts2d[0];
             gp_Pnt ipnt3d(ipnt2d.X(), 0.0, ipnt2d.Y());
-            if (fabs(ipnt2d.Y() - chordPoint2d.Y()) < Precision::Confusion())
-                return ipnt3d;
-            if ((fromUpper && ipnt2d.Y() > chordPoint2d.Y()) || (!fromUpper && ipnt2d.Y() < chordPoint2d.Y()))
-            {
-                return ipnt3d;
-            }
+            return ipnt3d;
         }
         else if (ipnts2d.size() > 1)
         {
