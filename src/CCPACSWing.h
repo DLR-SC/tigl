@@ -1,8 +1,8 @@
-/* 
+/*
 * Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
 *
 * Created: 2010-08-13 Markus Litz <Markus.Litz@dlr.de>
-* Changed: $Id$ 
+* Changed: $Id$
 *
 * Version: $Revision$
 *
@@ -80,6 +80,12 @@ namespace tigl {
         CTiglAbstractSegment & GetSegment(const int index);
         CTiglAbstractSegment & GetSegment(std::string uid);
 
+        // Return the WingComponentSegment for a given index
+        CCPACSWingComponentSegment& GetWingComponentSegment(int index);
+
+        // Return the number of WingComponentSegments
+        int GetWingComponentSegmentCount();
+
         // Get segment count
         int GetComponentSegmentCount(void);
 
@@ -107,7 +113,7 @@ namespace tigl {
 
         // Gets the loft of the whole wing
         TopoDS_Shape & GetLoftWithLeadingEdge(void);
-        
+
         TopoDS_Shape & GetUpperShape();
         TopoDS_Shape & GetLowerShape();
 
@@ -116,7 +122,7 @@ namespace tigl {
 
         // Get the Transformation object
         CTiglTransformation GetTransformation(void);
-        
+
         // Sets a Transformation object
         void Translate(CTiglPoint trans);
 
@@ -167,9 +173,9 @@ namespace tigl {
 
         // Adds all Segments of this wing to one shape
         TopoDS_Shape BuildFusedSegments(bool splitWingInUpperAndLower);
-        
+
         TopoDS_Shape BuildLoft(void);
-        
+
         void BuildUpperLowerShells();
 
 
@@ -187,7 +193,7 @@ namespace tigl {
         CCPACSWingComponentSegments    componentSegments;        /**< Wing ComponentSegments */
         CCPACSWingPositionings         positionings;             /**< Wing positionings   */
         CCPACSConfiguration*           configuration;            /**< Parent configuration*/
-        TopoDS_Shape                   fusedSegmentWithEdge;     /**< All Segments in one shape plus modelled leading edge */ 
+        TopoDS_Shape                   fusedSegmentWithEdge;     /**< All Segments in one shape plus modelled leading edge */
         TopoDS_Shape                   upperShape;
         TopoDS_Shape                   lowerShape;
         bool                           invalidated;              /**< Internal state flag */

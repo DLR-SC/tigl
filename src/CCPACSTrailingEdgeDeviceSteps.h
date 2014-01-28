@@ -23,40 +23,43 @@
  * @brief  Implementation of ..
  */
 
-#ifndef CCPACSTrailingEdgeDevices_H
-#define CCPACSTrailingEdgeDevices_H
+#ifndef CCPACSTrailingEdgeDeviceSteps_H
+#define CCPACSTrailingEdgeDeviceSteps_H
 
 #include <string>
 #include <vector>
 
 #include "tixi.h"
 #include "CTiglError.h"
-#include "CCPACSTrailingEdgeDevice.h"
+#include "CCPACSTrailingEdgeDeviceStep.h"
 
-namespace tigl {
+namespace tigl
+{
 
-class CCPACSTrailingEdgeDevices
+class CCPACSTrailingEdgeDeviceSteps
 {
 
 private:
+    typedef std::vector<CCPACSTrailingEdgeDeviceStep*> trailingEdgeDeviceStepContainer;
+    trailingEdgeDeviceStepContainer trailingEdgeDeviceSteps;
 
-    typedef std::vector<CCPACSTrailingEdgeDevice*> trailingEdgeDeviceContainer;
-    trailingEdgeDeviceContainer trailingEdgeDevices;
+
+public:
+    CCPACSTrailingEdgeDeviceSteps();
+    ~CCPACSTrailingEdgeDeviceSteps();
+
+    void ReadCPACS(TixiDocumentHandle tixiHandle,
+            const std::string & TrailingEdgeDeviceStepsXPath);
+
 
     void Cleanup();
 
-public:
+    CCPACSTrailingEdgeDeviceStep& getTrailingEdgeDeviceStepByID( int id );
+    int getTrailingEdgeDeviceStepCount();
 
-    CCPACSTrailingEdgeDevices();
 
-    void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string & trailingEdgeDevicesXPath);
-
-    CCPACSTrailingEdgeDevice& getTrailingEdgeDeviceByID( int id );
-    int getTrailingEdgeDeviceCount();
-
-    ~CCPACSTrailingEdgeDevices();
 };
 
 } // end namespace tigl
 
-#endif // CCPACSTrailingEdgeDevices_H
+#endif // CCPACSTrailingEdgeDeviceSteps_H

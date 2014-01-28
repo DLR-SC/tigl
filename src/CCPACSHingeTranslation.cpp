@@ -27,63 +27,59 @@
 #include <sstream>
 #include <exception>
 
-#include "CCPACSBorder.h"
+#include "CCPACSHingeTranslation.h"
 
 namespace tigl
 {
 
-CCPACSBorder::CCPACSBorder()
+CCPACSHingeTranslation::CCPACSHingeTranslation()
 {
-    xsiType = "";
-    xsiLE = -1;
-    xsiTE = -1;
-    etaLE = -1;
-    etaTE = -1;
+    x = 0;
+    y = 0;
+    z = 0;
 }
 
-// Read CPACS Border element
-void CCPACSBorder::ReadCPACS(TixiDocumentHandle tixiHandle,
-        const std::string& BorderXPath)
+// Read CPACS HingeTranslation element
+void CCPACSHingeTranslation::ReadCPACS(TixiDocumentHandle tixiHandle,
+        const std::string& HingeTranslationXPath)
 {
     char* elementPath;
     std::string tempString;
 
     // getting subelements
-    tempString = BorderXPath + "/etaLE";
+    tempString = HingeTranslationXPath + "/x";
     elementPath = const_cast<char*>(tempString.c_str());
-    if (tixiGetDoubleElement(tixiHandle, elementPath, &etaLE) != SUCCESS) {
-        // couldnt read etaLE
+    if (tixiGetDoubleElement(tixiHandle, elementPath, &x) != SUCCESS) {
     }
 
-    tempString = BorderXPath + "/etaTE";
+
+    tempString = HingeTranslationXPath + "/y";
     elementPath = const_cast<char*>(tempString.c_str());
-    if (tixiGetDoubleElement(tixiHandle, elementPath, &etaTE) != SUCCESS) {
-        etaTE = etaLE;
+
+    if (tixiCheckElement(tixiHandle, elementPath) == SUCCESS) {
+        if (tixiGetDoubleElement(tixiHandle, elementPath, &y) != SUCCESS) {
+            // outer Translations dont have a Y coordinate
+        }
     }
 
-    tempString = BorderXPath + "/xsiLE";
+
+    tempString = HingeTranslationXPath + "/z";
     elementPath = const_cast<char*>(tempString.c_str());
-    if (tixiGetDoubleElement(tixiHandle, elementPath, &xsiLE) != SUCCESS) {
-        // couldnt read xsiLE
+    if (tixiGetDoubleElement(tixiHandle, elementPath, &z) != SUCCESS) {
     }
-
 }
 
-double CCPACSBorder::getEtaLE()
+double CCPACSHingeTranslation::getX()
 {
-    return etaLE;
+    return x;
 }
-double CCPACSBorder::getEtaTE()
+double CCPACSHingeTranslation::getY()
 {
-    return etaTE;
+    return y;
 }
-double CCPACSBorder::getXsiLE()
+double CCPACSHingeTranslation::getZ()
 {
-    return xsiLE;
-}
-double CCPACSBorder::getXsiTE()
-{
-    return xsiTE;
+    return z;
 }
 
 }

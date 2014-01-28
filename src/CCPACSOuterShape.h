@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
  *
  * Created: 2010-08-13 Markus Litz <Markus.Litz@dlr.de>
@@ -32,6 +32,9 @@
 #include "tixi.h"
 #include "CTiglError.h"
 #include "CCPACSBorder.h"
+
+
+#include "TopoDS_Face.hxx"
 
 namespace tigl
 {

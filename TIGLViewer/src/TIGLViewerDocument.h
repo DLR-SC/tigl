@@ -86,6 +86,7 @@ public slots:
     void drawWingComponentSegment();
     void drawWingComponentSegmentPoints();
     void drawWingShells();
+    void drawWingFlaps();
 
     // Fuselage slots
     void drawFuselageProfiles();
@@ -132,7 +133,7 @@ private slots:
     QString dlgGetFuselageProfileSelection();
 
 
-private: 
+private:
     TiglCPACSConfigurationHandle            m_cpacsHandle;
     const TIGLViewerSettings&               _settings;
     QWidget*                                parent;
@@ -145,7 +146,7 @@ private:
     QString myLastFolder; // TODO: synchronize with TIGLViewerWindow
     char* qstringToCstring(QString text);
     void createShapeTriangulation(const class TopoDS_Shape& shape, class TopoDS_Compound& compound);
-    
+
 };
 
 #endif // TIGLVIEWERDOCUMENT_H

@@ -27,63 +27,45 @@
 #include <sstream>
 #include <exception>
 
-#include "CCPACSBorder.h"
+#include "CCPACSTrailingEdgeDevicePathHingePoint.h"
 
 namespace tigl
 {
 
-CCPACSBorder::CCPACSBorder()
+CCPACSTrailingEdgeDevicePathHingePoint::CCPACSTrailingEdgeDevicePathHingePoint()
 {
-    xsiType = "";
-    xsiLE = -1;
-    xsiTE = -1;
-    etaLE = -1;
-    etaTE = -1;
+    xsi = -1;
+    relHeight = -1;
 }
 
-// Read CPACS Border element
-void CCPACSBorder::ReadCPACS(TixiDocumentHandle tixiHandle,
-        const std::string& BorderXPath)
+// Read CPACS TrailingEdgeDevicePathHingePoint element
+void CCPACSTrailingEdgeDevicePathHingePoint::ReadCPACS(TixiDocumentHandle tixiHandle,
+        const std::string& TrailingEdgeDevicePathHingePointXPath)
 {
     char* elementPath;
     std::string tempString;
 
     // getting subelements
-    tempString = BorderXPath + "/etaLE";
+    tempString = TrailingEdgeDevicePathHingePointXPath + "/hingeXsi";
     elementPath = const_cast<char*>(tempString.c_str());
-    if (tixiGetDoubleElement(tixiHandle, elementPath, &etaLE) != SUCCESS) {
-        // couldnt read etaLE
+    if (tixiGetDoubleElement(tixiHandle, elementPath, &xsi) != SUCCESS) {
+        // couldnt read xsi valu
     }
 
-    tempString = BorderXPath + "/etaTE";
+    tempString = TrailingEdgeDevicePathHingePointXPath + "/hingeRelHeight";
     elementPath = const_cast<char*>(tempString.c_str());
-    if (tixiGetDoubleElement(tixiHandle, elementPath, &etaTE) != SUCCESS) {
-        etaTE = etaLE;
+    if (tixiGetDoubleElement(tixiHandle, elementPath, &relHeight) != SUCCESS) {
+        // couldnt read relHeight
     }
-
-    tempString = BorderXPath + "/xsiLE";
-    elementPath = const_cast<char*>(tempString.c_str());
-    if (tixiGetDoubleElement(tixiHandle, elementPath, &xsiLE) != SUCCESS) {
-        // couldnt read xsiLE
-    }
-
 }
 
-double CCPACSBorder::getEtaLE()
+double CCPACSTrailingEdgeDevicePathHingePoint::getRelHeight()
 {
-    return etaLE;
+    return relHeight;
 }
-double CCPACSBorder::getEtaTE()
+double CCPACSTrailingEdgeDevicePathHingePoint::getXsi()
 {
-    return etaTE;
-}
-double CCPACSBorder::getXsiLE()
-{
-    return xsiLE;
-}
-double CCPACSBorder::getXsiTE()
-{
-    return xsiTE;
+    return xsi;
 }
 
 }

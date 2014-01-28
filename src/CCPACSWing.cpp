@@ -1,8 +1,8 @@
-/* 
+/*
 * Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
 *
 * Created: 2010-08-13 Markus Litz <Markus.Litz@dlr.de>
-* Changed: $Id$ 
+* Changed: $Id$
 *
 * Version: $Revision$
 *
@@ -51,7 +51,7 @@ namespace {
     inline double max(double a, double b){
         return a > b? a : b;
     }
-    
+
     TopoDS_Wire transformToWingCoords(const tigl::CCPACSWingConnection& wingConnection, const TopoDS_Wire& origWire) {
         TopoDS_Shape resultWire(origWire);
 
@@ -68,7 +68,7 @@ namespace {
         if (resultWire.ShapeType() != TopAbs_WIRE) {
             throw tigl::CTiglError("Error: Wrong shape type in CCPACSWing::transformToAbsCoords", TIGL_ERROR);
         }
-        
+
         return TopoDS::Wire(resultWire);
     }
 }
@@ -295,8 +295,18 @@ namespace tigl {
         return (CTiglAbstractSegment &) segments.GetSegment(uid);
     }
 
+    // Return the WingComponentSegment for a given index
+    CCPACSWingComponentSegment& CCPACSWing::GetWingComponentSegment(int index)
+    {
+        return componentSegments.GetComponentSegment(index);
+    }
+
+    int CCPACSWing::GetWingComponentSegmentCount() {
+        return componentSegments.GetComponentSegmentCount();
+    }
+
      // Get componentSegment count
-    int CCPACSWing::GetComponentSegmentCount(void)
+    int CCPACSWing::GetComponentSegmentCount()
     {
         return componentSegments.GetComponentSegmentCount();
     }
@@ -323,7 +333,7 @@ namespace tigl {
         rebuildFusedSegWEdge = false;
         return fusedSegmentWithEdge;
     }
-    
+
     // Gets the loft of the whole wing.
     TopoDS_Shape & CCPACSWing::GetUpperShape(void)
     {
@@ -333,7 +343,7 @@ namespace tigl {
         rebuildShells = false;
         return upperShape;
     }
-    
+
     // Gets the loft of the whole wing.
     TopoDS_Shape & CCPACSWing::GetLowerShape(void)
     {
@@ -343,7 +353,7 @@ namespace tigl {
         rebuildShells = false;
         return lowerShape;
     }
-    
+
     TopoDS_Shape CCPACSWing::BuildLoft(){
         return BuildFusedSegments(true);
     }
@@ -370,10 +380,10 @@ namespace tigl {
 
         generator.CheckCompatibility(Standard_False);
         generator.Build();
-        
+
         return GetWingTransformation().Transform(generator.Shape());
     }
-    
+
     // Builds a fused shape of all wing segments
     void CCPACSWing::BuildUpperLowerShells()
     {
@@ -459,7 +469,7 @@ namespace tigl {
         componentSegments.Invalidate();
         Update();
     }
-    
+
     // Get Translation
     CTiglPoint CCPACSWing::GetTranslation(void)
     {
@@ -495,7 +505,7 @@ namespace tigl {
     {
         TopoDS_Shape loft = GetLoft();
 
-        TopoDS_Shape wettedLoft = BRepAlgoAPI_Cut(loft, parent); 
+        TopoDS_Shape wettedLoft = BRepAlgoAPI_Cut(loft, parent);
 
         GProp_GProps System;
         BRepGProp::SurfaceProperties(wettedLoft, System);
@@ -503,7 +513,7 @@ namespace tigl {
         return wetArea;
     }
 
-    
+
     // Returns the lower Surface of a Segment
     Handle(Geom_Surface) CCPACSWing::GetLowerSegmentSurface(int index)
     {

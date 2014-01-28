@@ -12,12 +12,12 @@ if(TIGL_VIEWER)
 
 find_package(Qt4 4.4.3)
 #build only tiglviewer if qt was found
-if(QT4_FOUND)	
+if(QT4_FOUND)
 
 # required opencascade libraries
-set (TV_OCC_LIBS 
-	TKOpenGl 
-	TKVRML TKShapeSchema TKPShape TKCDF PTKernel ${OCC_VISU_LIBS} ${OCC_LIBS}
+set (TV_OCC_LIBS
+    TKOpenGl
+    TKVRML TKShapeSchema TKPShape TKCDF PTKernel ${OCC_VISU_LIBS} ${OCC_LIBS}
 )
 
 set(OpenCASCADE_LIBRARIES "")
@@ -58,8 +58,9 @@ set(tv_src
     TIGLViewerLogHistory.cpp
     TIGLViewerLogRedirection.cpp
     TIGLViewerLoggerHTMLDecorator.cpp
+    TIGLViewerSelectWingAndFlapStatusDialog.cpp
 )
-	
+
 # normal header files
 set(tv_hdr
     CommandLineParameters.h
@@ -76,31 +77,33 @@ set(tv_hdr
 
 # qobject header files that have to be moced
 set(tv_hdr_qobj
-	TIGLDebugStream.h
-	TIGLViewerApplication.h
-	TIGLViewerContext.h
-	TIGLViewerDocument.h
-	TIGLViewerInputoutput.h
-	TIGLViewerInputoutput.h
-	TIGLViewerWidget.h
-	TIGLViewerWindow.h
-	TIGLViewerSettingsDialog.h
-	TIGLScriptProxy.h
-	TIXIScriptProxy.h
-	TIGLScriptEngine.h
-	TiglViewerConsole.h
-	TIGLViewerEtaXsiDialog.h
-	TIGLViewerErrorDialog.h
-	TIGLViewerLogRedirection.h
+    TIGLDebugStream.h
+    TIGLViewerApplication.h
+    TIGLViewerContext.h
+    TIGLViewerDocument.h
+    TIGLViewerInputoutput.h
+    TIGLViewerInputoutput.h
+    TIGLViewerWidget.h
+    TIGLViewerWindow.h
+    TIGLViewerSettingsDialog.h
+    TIGLScriptProxy.h
+    TIXIScriptProxy.h
+    TIGLScriptEngine.h
+    TiglViewerConsole.h
+    TIGLViewerEtaXsiDialog.h
+    TIGLViewerErrorDialog.h
+    TIGLViewerLogRedirection.h
+    TIGLViewerSelectWingAndFlapStatusDialog.h
 )
 
 set(tv_ui_comp
-	src/TIGLViewerWindow.ui
-	src/TIGLViewerSettingsDialog.ui
-	src/TIGLViewerEtaXsiDialog.ui
-	src/TIGLViewerErrorDialog.ui
+    src/TIGLViewerWindow.ui
+    src/TIGLViewerSettingsDialog.ui
+    src/TIGLViewerEtaXsiDialog.ui
+    src/TIGLViewerErrorDialog.ui
+    src/TIGLViewerSelectWingAndFlapStatusDialog.ui
 )
-	
+
 foreach ( _fname ${tv_src})
    set(tv_src_comp ${tv_src_comp} src/${_fname})
 endforeach()
@@ -153,21 +156,21 @@ if(APPLE)
 endif()
 
 add_executable(${PROGNAME} ${TYPE}
-		${tv_src_comp} 
-		${tv_hdr_MOC} 
- 		${tv_hdr_qobj_comp}        
-		${tv_hdr_comp} 
-		${tv_ui_comp}
-		${tv_rcrs}
-		${tv_icon_rc}
+        ${tv_src_comp}
+        ${tv_hdr_MOC}
+        ${tv_hdr_qobj_comp}
+        ${tv_hdr_comp}
+        ${tv_ui_comp}
+        ${tv_rcrs}
+        ${tv_icon_rc}
 )
 
-target_link_libraries(${PROGNAME} 
-	TIGL_static
-	${TIXI_LIBRARIES} 
-	${QT_LIBRARIES} 
-	${OPENGL_LIBRARIES} 
-	${OpenCASCADE_LIBRARIES} 
+target_link_libraries(${PROGNAME}
+    TIGL_static
+    ${TIXI_LIBRARIES}
+    ${QT_LIBRARIES}
+    ${OPENGL_LIBRARIES}
+    ${OpenCASCADE_LIBRARIES}
 )
 
 if(GLOG_FOUND)
@@ -182,7 +185,7 @@ endif(GLOG_FOUND)
 #--------------------------------------------------------------------------------
 # Install the TIGLViewer application, on Apple, the bundle is at the root of the
 # install tree, and on other platforms it'll go into the bin directory.
-INSTALL(TARGETS ${PROGNAME} 
+INSTALL(TARGETS ${PROGNAME}
     BUNDLE DESTINATION . COMPONENT viewer
     RUNTIME DESTINATION bin COMPONENT viewer
     )
@@ -219,7 +222,7 @@ ENDIF(WIN32)
 
 INCLUDE(InstallRequiredSystemLibraries)
 
-	
+
 # set directories to look for dependencies
 set(DIRS ${TIXI_BINARY_DIR} ${OpenCASCADE_DLL_DIRECTORY}  ${OpenCASCADE_LINK_DIRECTORY} ${QT_BINARY_DIR} ${TIGL_ADD_LIB_PATH})
 

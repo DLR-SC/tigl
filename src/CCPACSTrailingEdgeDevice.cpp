@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
  *
  * Created: 2010-08-13 Markus Litz <Markus.Litz@dlr.de>
@@ -42,7 +42,7 @@ void CCPACSTrailingEdgeDevice::ReadCPACS(TixiDocumentHandle tixiHandle, const st
     char*       elementPath;
     std::string tempString;
 
-    // Get subelement "outerShape"
+    // Get sublement "outerShape"
     char* ptrName = NULL;
     tempString    = trailingEdgeDeviceXPath + "/outerShape";
     elementPath   = const_cast<char*>(tempString.c_str());
@@ -50,12 +50,24 @@ void CCPACSTrailingEdgeDevice::ReadCPACS(TixiDocumentHandle tixiHandle, const st
     {
         outerShape.ReadCPACS(tixiHandle, elementPath);
     }
+
+    tempString = trailingEdgeDeviceXPath + "/path";
+    elementPath = const_cast<char*>(tempString.c_str());
+    if (tixiCheckElement(tixiHandle, elementPath) == SUCCESS) {
+        path.ReadCPACS(tixiHandle, elementPath);
+    }
+
 }
 
 
 CCPACSOuterShape CCPACSTrailingEdgeDevice::getOuterShape()
 {
     return outerShape;
+}
+
+CCPACSTrailingEdgeDevicePath CCPACSTrailingEdgeDevice::getMovementPath()
+{
+    return path;
 }
 
 }

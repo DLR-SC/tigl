@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
  *
  * Created: 2010-08-13 Markus Litz <Markus.Litz@dlr.de>
@@ -29,6 +29,13 @@
 
 #include "CCPACSOuterShape.h"
 
+#include <BRepBuilderAPI_MakeEdge.hxx>
+#include <Poly_Triangulation.hxx>
+#include <BRepBuilderAPI_MakeFace.hxx>
+#include <GC_MakeSegment.hxx>
+#include <BRepBuilderAPI_MakeWire.hxx>
+
+
 namespace tigl
 {
 
@@ -54,7 +61,7 @@ void CCPACSOuterShape::ReadCPACS(TixiDocumentHandle tixiHandle,
     }
 
     // Get innerBorder
-    tempString = outerShapeXPath + "/innerrBorder";
+    tempString = outerShapeXPath + "/innerBorder";
     elementPath = const_cast<char*>(tempString.c_str());
     if (tixiGetTextElement(tixiHandle, elementPath, &ptrName) == SUCCESS) {
         innerBorder.ReadCPACS(tixiHandle, elementPath);

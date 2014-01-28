@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
  *
  * Created: 2010-08-13 Markus Litz <Markus.Litz@dlr.de>
@@ -60,7 +60,7 @@ void CCPACSTrailingEdgeDevices::ReadCPACS(TixiDocumentHandle tixiHandle,
     std::string tempString;
     char* elementPath;
 
-    /* Get trailingEdgeDevice element count */
+    // Get trailingEdgeDevice element count
     tempString = trailingEdgeDevicesXPath + "/trailingEdgeDevices";
     elementPath = const_cast<char*>(tempString.c_str());
     tixiRet = tixiGetNamedChildrenCount(tixiHandle, elementPath,
@@ -84,10 +84,15 @@ void CCPACSTrailingEdgeDevices::ReadCPACS(TixiDocumentHandle tixiHandle,
     }
 }
 
-CCPACSTrailingEdgeDevice* CCPACSTrailingEdgeDevices::getTrailingEdgeDeviceByID(
+CCPACSTrailingEdgeDevice& CCPACSTrailingEdgeDevices::getTrailingEdgeDeviceByID(
         int id)
 {
-    return trailingEdgeDevices[id];
+    return *trailingEdgeDevices[id-1];
+}
+
+int CCPACSTrailingEdgeDevices::getTrailingEdgeDeviceCount()
+{
+    return trailingEdgeDevices.size();
 }
 
 } // end namespace tigl

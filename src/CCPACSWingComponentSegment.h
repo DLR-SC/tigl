@@ -1,8 +1,8 @@
-/* 
+/*
 * Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
 *
 * Created: 2010-08-13 Markus Litz <Markus.Litz@dlr.de>
-* Changed: $Id$ 
+* Changed: $Id$
 *
 * Version: $Revision$
 *
@@ -71,7 +71,7 @@ namespace tigl {
 
         // Gets a point in relative wing coordinates for a given eta and xsi
         gp_Pnt GetPoint(double eta, double xsi);
-        
+
         // Get the eta xsi coordinate from a segment point (given by seta, sxsi)
         void GetEtaXsiFromSegmentEtaXsi(const std::string &segmentUID, double seta, double sxsi, double &eta, double &xsi);
 
@@ -96,20 +96,23 @@ namespace tigl {
 
         TiglGeometricComponentType GetComponentType(){ return TIGL_COMPONENT_WINGCOMPSEGMENT | TIGL_COMPONENT_SEGMENT | TIGL_COMPONENT_LOGICAL; }
 
+        TopoDS_Face getControlSurfaceTrailingEdgeOuterShapeFace(int trailingEdgeDeviceID);
+
+
 #ifdef TIGL_USE_XCAF
         // builds data structure for a TDocStd_Application
         // mostly used for export
         TDF_Label ExportDataStructure(class CCPACSConfiguration &, Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label);
 #endif
-        
+
         MaterialList GetMaterials(double eta, double xsi, TiglStructureType);
 
         // returns a list of segments that belong to this component segment
         SegmentList& GetSegmentList();
-        
-        // creates an (iso) component segment line 
+
+        // creates an (iso) component segment line
         TopoDS_Wire GetCSLine(double eta1, double xsi1, double eta2, double xsi2, int NSTEPS=101);
-        
+
         // calculates the intersection of a segment iso eta line with a component segment line (defined by its start and end point)
         // returns the xsi coordinate of the intersection
         void GetSegmentIntersection(const std::string& segmentUID, double csEta1, double csXsi1, double csEta2, double csXsi2, double eta, double& xsi);

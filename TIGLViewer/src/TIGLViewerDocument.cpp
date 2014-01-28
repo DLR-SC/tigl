@@ -46,6 +46,14 @@
 #include <gce_MakeLin.hxx>
 #include <GC_MakeSegment.hxx>
 #include <BRepBndLib.hxx>
+#include <BRepPrimAPI_MakeBox.hxx>
+#include <BRepBuilderAPI_MakeWire.hxx>
+#include <BRepAlgo_Fuse.hxx>
+#include <BRepAlgo_Cut.hxx>
+#include <BRepAlgo_Common.hxx>
+#include <BRepBuilderAPI_Transform.hxx>
+#include <BRepPrimAPI_MakePrism.hxx>
+#include <gce_MakeRotation.hxx>
 
 // TIGLViewer includes
 #include "TIGLViewerInternal.h"
@@ -62,6 +70,11 @@
 #include "CTiglExportVtk.h"
 #include "CCPACSWingProfilePointList.h"
 #include "CTiglPoint.h"
+#include "CCPACSBorder.h"
+#include "CCPACSControlSurfaces.h"
+#include "CCPACSTrailingEdgeDevice.h"
+#include "CCPACSWingComponentSegment.h"
+#include "TIGLViewerSelectWingAndFlapStatusDialog.h"
 
 #define max(a,b) ((a) > (b) ? (a) : (b))
 
@@ -669,6 +682,141 @@ void TIGLViewerDocument::drawWing()
     }
 }
 
+void TIGLViewerDocument::drawWingFlaps()
+{
+
+/*
+    QStringList wings;
+    bool ok;
+    // Initialize wing list
+    tigl::CCPACSConfiguration& config = GetConfiguration();
+    int wingCount = config.GetWingCount();
+    for (int i = 1; i <= wingCount; i++)
+    {
+        tigl::CCPACSWing& wing = config.GetWing(i);
+        std::string name = wing.GetUID();
+        if (name == "") name = "Unknown wing";
+        wings << name.c_str();
+    }
+    QString choice = QInputDialog::getItem(parent, tr("Select Wing"), tr("Available Wings:"), wings, 0, false, &ok);
+    if (!ok) {
+        return;
+    }
+*/
+
+    TIGLViewerSelectWingAndFlapStatusDialog dialog(0);
+    dialog.exec();
+
+    myAISContext->EraseAll();
+    for ( int i = GetConfiguration().GetWingCount(); i > 0; i-- ) {
+        tigl::CCPACSWing& wing = GetConfiguration().GetWing(i);
+        TopoDS_Shape wingShape = GetConfiguration().GetWing(i).GetLoft();
+        for ( int j = GetConfiguration().GetWing(i).GetWingComponentSegmentCount(); j > 0; j-- ) {
+            TopoDS_Shape allFlapsPerWing;
+            tigl::CCPACSWingComponentSegment* componentSegment = &GetConfiguration().GetWing(i).GetWingComponentSegment(j);
+            tigl::CCPACSControlSurfaces controlSurfaces = GetConfiguration().GetWing(i).GetWingComponentSegment(j).getControlSurfaces();
+            for ( int k = controlSurfaces.getTrailingEdgeDevices()->getTrailingEdgeDeviceCount(); k > 0; k-- ) {
+                tigl::CCPACSTrailingEdgeDevice trailingEdgeDevice = controlSurfaces.getTrailingEdgeDevices()->getTrailingEdgeDeviceByID(k);
+                tigl::CCPACSBorder outerBorder = trailingEdgeDevice.getOuterShape().getOuterBorder();
+
+                gp_Pnt point1 = componentSegment->GetPoint(outerBorder.getEtaLE(),outerBorder.getXsiLE());
+                gp_Pnt point2 = componentSegment->GetPoint(outerBorder.getEtaTE(),1.0f);
+
+                tigl::CCPACSBorder innerBorder = trailingEdgeDevice.getOuterShape().getInnerBorder();
+
+                gp_Pnt point3 = componentSegment->GetPoint(innerBorder.getEtaLE(),innerBorder.getXsiLE());
+                gp_Pnt point4 = componentSegment->GetPoint(innerBorder.getEtaTE(),1.0f);
+
+                TopoDS_Face face = componentSegment->getControlSurfaceTrailingEdgeOuterShapeFace(k);
+
+                double yTrans = 0;
+                double zTrans = 1;
+                if ( std::abs(point1.Y() - point2.Y()) < 0.001 &&
+                     std::abs(point2.Y() - point3.Y()) < 0.001 &&
+                     std::abs(point3.Y() - point4.Y()) < 0.001 &&
+                     std::abs(point4.Y() - point1.Y()) < 0.001 ) {
+                    zTrans = 0;
+                    yTrans = 1;
+                }
+
+                gp_Pnt hingePoint1;
+                gp_Pnt hingePoint2;
+
+                for ( int borderCounter = 0; borderCounter < 2; borderCounter++) {
+                    tigl::CCPACSBorder border;
+                    double hingeXsi;
+                    if (borderCounter == 0) {
+                        border = outerBorder;
+                        hingeXsi = trailingEdgeDevice.getMovementPath().getOuterHingePoint().getXsi();
+                    }
+                    else {
+                        border = innerBorder;
+                        hingeXsi = trailingEdgeDevice.getMovementPath().getInnerHingePoint().getXsi();
+                    }
+
+                    double borderEtaLE = border.getEtaLE();
+                    double borderEtaTE = border.getEtaTE();
+                    double hingeEta = -1;
+
+                    if ( std::abs(borderEtaLE - borderEtaTE) < 0.0001 ) {
+                        hingeEta = (borderEtaTE + borderEtaLE)/2;
+                    }
+                    else {
+                        double m = ( border.getXsiLE() - 1 ) /( borderEtaLE - borderEtaTE );
+                        double x = borderEtaLE;
+                        double y = 1;
+                        double b = - ( ( m * x) / (y));
+                        hingeEta = ( y - b ) / m;
+                    }
+
+                    if (borderCounter == 0) {
+                        hingePoint1 = componentSegment->GetPoint(hingeEta,hingeXsi);
+                    }
+                    else {
+                        hingePoint2 = componentSegment->GetPoint(hingeEta,hingeXsi);
+                    }
+                }
+
+                gp_Dir rv(hingePoint2.X() - hingePoint1.X(), hingePoint2.Y() - hingePoint1.Y(), hingePoint2.Z() - hingePoint1.Z());
+                gp_Lin test(hingePoint1,rv);
+                gp_Trsf trans = gce_MakeRotation(test,-0.4f);
+
+                gp_Vec vec(0,yTrans,zTrans);
+                gp_Vec vec1(0,-yTrans,-zTrans);
+
+                TopoDS_Shape shape = BRepPrimAPI_MakePrism(face,2*vec);
+                gp_Trsf trans2;
+                trans2.SetTranslation(-vec);
+                shape = BRepBuilderAPI_Transform(shape, trans2);
+
+                TopoDS_Shape fusedShape = shape;
+
+                //displayShape(shape);
+
+
+                if (!allFlapsPerWing.IsNull()) {
+                    allFlapsPerWing = BRepAlgo_Fuse(allFlapsPerWing,fusedShape);
+                }
+                else {
+                    allFlapsPerWing = fusedShape;
+                }
+
+                TopoDS_Shape flap = BRepAlgo_Common(wing.GetLoft(),fusedShape);
+                BRepBuilderAPI_Transform form(flap,trans);
+                flap = form.Shape();
+                displayShape(flap);
+
+            }
+            for (int z = 1; z <= wing.GetSegmentCount(); z++) {
+                tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(z);
+                wingShape = segment.GetLoft();
+                wingShape = BRepAlgo_Cut(wingShape,allFlapsPerWing);
+                displayShape(wingShape);
+            }
+        }
+    }
+
+}
 
 
 void TIGLViewerDocument::drawFuselage()
@@ -712,7 +860,7 @@ void TIGLViewerDocument::drawWingTriangulation()
 
     TopoDS_Compound compound;
     createShapeTriangulation(fusedWing, compound);
-    
+
     displayShape(compound);
     QApplication::restoreOverrideCursor();
 }
@@ -1140,7 +1288,7 @@ void TIGLViewerDocument::exportMeshedFuselageSTL()
 {
     QString     fileName;
 
-    QString fuselageUid = dlgGetFuselageSelection(); 
+    QString fuselageUid = dlgGetFuselageSelection();
     if(fuselageUid == "")
         return;
 
@@ -1304,10 +1452,10 @@ void TIGLViewerDocument::exportMeshedConfigVTK()
         GetConfiguration().GetFusedAirplane();
         writeToStatusBar("Writing meshed vtk file");
         tigl::CTiglExportVtk exporter(GetConfiguration());
-        
+
         double deflection = GetConfiguration().GetAirplaneLenth() * _settings.triangulationAccuracy();
         exporter.ExportMeshedGeometryVTK(fileName.toStdString(), deflection);
-        
+
         writeToStatusBar("");
         QApplication::restoreOverrideCursor();
     }
@@ -1464,7 +1612,7 @@ void TIGLViewerDocument::drawWingFuselageIntersectionLine()
         return;
 
     QApplication::setOverrideCursor( Qt::WaitCursor );
-    
+
     tigl::CCPACSConfiguration& config =GetConfiguration();
     tigl::CTiglUIDManager& uidManager = config.GetUIDManager();
 
@@ -1531,7 +1679,7 @@ void TIGLViewerDocument::drawWingComponentSegmentPoints()
     QString csUid = dlgGetWingComponentSegmentSelection();
     if(csUid == "")
         return;
-    
+
     double eta = 0.5, xsi = 0.5;
 
     while(EtaXsiDialog::getEtaXsi(parent, eta, xsi) == QDialog::Accepted) {
@@ -1612,7 +1760,7 @@ void TIGLViewerDocument::createShapeTriangulation(const TopoDS_Shape& shape, Top
     BRep_Builder builder;
     builder.MakeCompound(compound);
     builder.Add(compound, shape);
-    
+
     TopExp_Explorer shellExplorer;
     TopExp_Explorer faceExplorer;
     for (shellExplorer.Init(shape, TopAbs_SHELL); shellExplorer.More(); shellExplorer.Next())
