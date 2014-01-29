@@ -197,19 +197,19 @@ void CCPACSFuselageProfile::ReadCPACS(TixiDocumentHandle tixiHandle)
 }
 
 // Returns the filename of the fuselage profile file
-std::string CCPACSFuselageProfile::GetFileName(void) const
+const std::string& CCPACSFuselageProfile::GetFileName(void) const
 {
     return ProfileXPath;
 }
 
 // Returns the name of the fuselage profile
-std::string CCPACSFuselageProfile::GetName(void) const
+const std::string& CCPACSFuselageProfile::GetName(void) const
 {
     return name;
 }
 
 // Returns the UID of the fuselage profile
-std::string CCPACSFuselageProfile::GetUID(void) const
+const std::string& CCPACSFuselageProfile::GetUID(void) const
 {
     return uid;
 }

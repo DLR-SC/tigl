@@ -46,7 +46,90 @@
 
 \title{TiGL -- Latest Changes} \maketitle
 
-\section{Version 2.1.0}
+\section{Version 2.1.1}\label{version-2.1.1}
+
+Released: 28/01/2014
+
+\begin{quote}
+\begin{itemize}
+\item
+  Changed API:
+
+  \begin{quote}
+  \begin{itemize}
+  \item
+    In previous TiGL version, some strings had to be freed manually
+    after calling some functions. These strings must not be freed
+    anymore. Following functions are affected:
+
+    \begin{quote}
+    \begin{itemize}
+    \itemsep1pt\parskip0pt\parsep0pt
+    \item
+      \texttt{tiglWingGetOuterSectionAndElementIndex}
+    \item
+      \texttt{tiglWingGetInnerSectionAndElementUID}
+    \item
+      \texttt{tiglFuselageGetStartSectionAndElementUID}
+    \item
+      \texttt{tiglFuselageGetEndSectionAndElementUID}
+    \item
+      \texttt{tiglWingComponentSegmentPointGetSegmentEtaXsi}
+    \item
+      \texttt{tiglWingComponentSegmentFindSegment}
+    \end{itemize}
+    \end{quote}
+  \end{itemize}
+
+  \begin{quote}
+  \begin{itemize}
+  \itemsep1pt\parskip0pt\parsep0pt
+  \item
+    Changed return value of
+    \texttt{tiglWingComponentSegmentFindSegment}: In case the given
+    point is located more than 1 cm away from any segment,
+    TIGL\_NOT\_FOUND is returned.
+  \item
+    Changed return value of
+    \texttt{tiglWingComponentSegmentPointGetSegmentEtaXsi}: If the given
+    point lies outside any segment so that the transformation can not be
+    executed, TIGL\_MATH\_ERROR is returned.
+  \end{itemize}
+  \end{quote}
+  \end{quote}
+\item
+  General changes:
+
+  \begin{quote}
+  \begin{itemize}
+  \itemsep1pt\parskip0pt\parsep0pt
+  \item
+    Changed console logging to include errors and warnings by default
+  \item
+    Wing profiles are automatically trimmed at their trailing edge to
+    ensure, that the trailing edge is always perpendicular to the chord
+    line. This is required by the \texttt{wingGetUpperPoint} and
+    \texttt{wingGetLowerPoint} functions.
+  \end{itemize}
+  \end{quote}
+\item
+  Fixes:
+
+  \begin{quote}
+  \begin{itemize}
+  \itemsep1pt\parskip0pt\parsep0pt
+  \item
+    Fixed a bug in \texttt{tiglWingGetUpperPoint} and
+    \texttt{tiglWingGetLowerPoint} in which some points could not be
+    calculated
+  \item
+    Fixed two memory leaks
+  \end{itemize}
+  \end{quote}
+\end{itemize}
+\end{quote}
+
+\section{Version 2.1.0}\label{version-2.1.0}
 
 Released: 17/01/2014
 
@@ -125,7 +208,7 @@ Released: 17/01/2014
 \end{itemize}
 \end{quote}
 
-\section{Version 2.0.7}
+\section{Version 2.0.7}\label{version-2.0.7}
 
 Released: 21/11/2013
 
@@ -221,7 +304,7 @@ Released: 21/11/2013
 \end{itemize}
 \end{quote}
 
-\section{Version 2.0.6}
+\section{Version 2.0.6}\label{version-2.0.6}
 
 Released: 27/08/2013
 
@@ -289,7 +372,7 @@ Released: 27/08/2013
 \end{itemize}
 \end{quote}
 
-\section{Version 2.0.5}
+\section{Version 2.0.5}\label{version-2.0.5}
 
 Released: 11/06/2013
 
@@ -460,7 +543,7 @@ Released: 11/06/2013
 \end{itemize}
 \end{quote}
 
-\section{Version 2.0.4}
+\section{Version 2.0.4}\label{version-2.0.4}
 
 Released: 17/01/2013
 
@@ -538,7 +621,7 @@ Released: 17/01/2013
 \end{itemize}
 \end{quote}
 
-\section{Version 2.0.3}
+\section{Version 2.0.3}\label{version-2.0.3}
 
 Released: 17/01/2013
 
@@ -625,7 +708,7 @@ Released: 17/01/2013
 \end{itemize}
 \end{quote}
 
-\section{Version 2.0.2}
+\section{Version 2.0.2}\label{version-2.0.2}
 
 Released: 16/10/2012
 
@@ -666,7 +749,7 @@ Released: 16/10/2012
 \end{itemize}
 \end{quote}
 
-\section{Version 2.0.1}
+\section{Version 2.0.1}\label{version-2.0.1}
 
 Released: 02/10/2012
 
@@ -717,7 +800,7 @@ Released: 02/10/2012
 \end{itemize}
 \end{quote}
 
-\section{Version 2.0}
+\section{Version 2.0}\label{version-2.0}
 
 \begin{quote}
 \begin{itemize}
@@ -749,7 +832,6 @@ Released: 02/10/2012
 
   \begin{quote}
   \begin{itemize}
-  \itemsep1pt\parskip0pt\parsep0pt
   \item
     \texttt{tiglFuselageGetSymmetry} and \texttt{tiglWingGetSymmetry}
     for querying symmetry information
@@ -762,9 +844,11 @@ Released: 02/10/2012
     \texttt{tiglWingGetWettedArea} a new function for caluclating wetted
     area of a wing
   \item
-    \texttt{tiglWingComponentSegmentPointGetSegmentEtaXsireturns} eta,
-    xsi, segmentUID and wingUID for a given eta and xsi on a
-    componentSegment
+    \begin{description}
+    \item[\texttt{tiglWingComponentSegmentPointGetSegmentEtaXsireturns}
+    eta, xsi, segmentUID and wingUID for a given eta and xsi on]
+    a componentSegment
+    \end{description}
   \end{itemize}
   \end{quote}
 \item
@@ -783,7 +867,7 @@ Released: 02/10/2012
 \end{itemize}
 \end{quote}
 
-\section{Version 1.0}
+\section{Version 1.0}\label{version-1.0}
 
 Released: 31/08/2011
 
@@ -842,7 +926,7 @@ Released: 31/08/2011
 \end{itemize}
 \end{quote}
 
-\section{Version 0.9}
+\section{Version 0.9}\label{version-0.9}
 
 Released: 29/04/2011
 

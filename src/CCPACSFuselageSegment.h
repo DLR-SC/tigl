@@ -61,10 +61,10 @@ public:
     int GetSegmentIndex(void) const;
 
     // Returns the start section UID of this segment
-    std::string GetStartSectionUID(void);
+    const std::string& GetStartSectionUID(void);
 
     // Returns the end section UID of this segment
-    std::string GetEndSectionUID(void);
+    const std::string& GetEndSectionUID(void);
 
     // Returns the start section index of this segment
     int GetStartSectionIndex(void);
@@ -79,10 +79,10 @@ public:
     CCPACSFuselageConnection& GetEndConnection(void);
 
     // Returns the start section element UID of this segment
-    std::string GetStartSectionElementUID(void);
+    const std::string& GetStartSectionElementUID(void);
 
     // Returns the end section element UID of this segment
-    std::string GetEndSectionElementUID(void);
+    const std::string& GetEndSectionElementUID(void);
 
     // Returns the start section element index of this segment
     int GetStartSectionElementIndex(void);

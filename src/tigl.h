@@ -96,17 +96,17 @@ typedef enum TiglReturnCode TiglReturnCode;
  \ingroup Enums
  Definition of possible logging levels
 */
-enum TiglLogLevel 
+enum TiglLogLevel
 {
-    TILOG_SILENT   =0, 
-    TILOG_ERROR    =1, 
-    TILOG_WARNING  =2, 
-    TILOG_INFO     =3, 
-    TILOG_DEBUG    =4,
-    TILOG_DEBUG1   =5,
-    TILOG_DEBUG2   =6,
-    TILOG_DEBUG3   =7,
-    TILOG_DEBUG4   =8
+    TILOG_SILENT   =0, /*!< No messages are printed. TiGL is completely silent, even in case of errors. */
+    TILOG_ERROR    =1, /*!< Only error messages are printed. */
+    TILOG_WARNING  =2, /*!< Only errors and warnings are printed on console. This is the default log level of TiGL. */
+    TILOG_INFO     =3, /*!< In addition to TILOG_WANING, also informative messages are printed. */
+    TILOG_DEBUG    =4, /*!< Also debug messages are printed. Enable this if you want to track down potential errors in TiGL. */
+    TILOG_DEBUG1   =5, /*!< This level is only interesting for TiGL developers */
+    TILOG_DEBUG2   =6, /*!< This level is only interesting for TiGL developers */
+    TILOG_DEBUG3   =7, /*!< This level is only interesting for TiGL developers */
+    TILOG_DEBUG4   =8  /*!< This level is only interesting for TiGL developers */
 };
 
 /**
@@ -973,8 +973,9 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetOuterSectionAndElementIndex(TiglCPA
 
 /**
 * @brief Returns the section UID and section element UID of the inner side of a given wing segment.
-*        The memory necessary for the two UIDs is allocated by this function and has to be freed
-*         by the user.
+*
+* <b>Important change:</b> The memory necessary for the two UIDs must not be freed
+* by the user anymore.
 *
 * <b>Fortran syntax:</b>
 *
@@ -1006,8 +1007,9 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetInnerSectionAndElementUID(TiglCPACS
       
 /**
 * @brief Returns the section UID and section element UID of the outer side of a given wing segment.
-*        The memory necessary for the two UIDs is allocated by this function and has to be freed
-*         by the user.
+*
+* <b>Important change:</b> The memory necessary for the two UIDs must not be freed
+* by the user anymore.
 *
 * <b>Fortran syntax:</b>
 *
@@ -1315,7 +1317,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSymmetry(TiglCPACSConfigurationHand
 
 
 /**
-* @brief Returns the segmentUID and wingUID for a given point on a componentSegment. The returned strings have to be freed by the user.
+* @brief Returns the segmentUID and wingUID for a given point on a componentSegment.
 *
 *
 * <b>Fortran syntax:</b>
@@ -1330,12 +1332,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSymmetry(TiglCPACSConfigurationHand
 * @param[in]  cpacsHandle             Handle for the CPACS configuration
 * @param[in]  componentSegmentUID     UID of the componentSegment to search for
 * @param[in]  x, y, z                 Coordinates of the point of the componentSegment
-* @param[out] segmentUID              UID of the segment that fits to the given point and componentSegment
+* @param[out] segmentUID              UID of the segment that fits to the given point and componentSegment.
+*                                     In contrast to old releases, the returned string <b>must not be freed </b>by the user!
 * @param[out] wingUID                 UID of the wing that fits to the given point and componentSegment
+*                                     In contrast to old releases, the returned string <b>must not be freed </b>by the user!
 *
 * @return
 *   - TIGL_SUCCESS if no error occurred
 *   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_NOT_FOUND if the point does not lie on the wing component segment within 1cm tolerance.
 *   - TIGL_INDEX_ERROR if wingIndex is less or equal zero
 *   - TIGL_ERROR if some other error occurred
 */
@@ -1379,6 +1384,10 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetPoint(TiglCPACSConf
 /**
 * @brief Returns eta, xsi, segmentUID and wingUID for a given eta and xsi on a componentSegment.
 *
+* If the given component segment point deviates more than 1 cm from any segment, the function returns
+* ::TIGL_MATH_ERROR. If the point is outside any segment but deviates less than 1 cm from a segment,
+* the point is first projected onto the segment. Then, this point is transformed into segment coordinates.
+* In this case, a warning is generated to inform the user, that he can fix his setup.
 *
 * <b>Fortran syntax:</b>
 *
@@ -1393,8 +1402,10 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetPoint(TiglCPACSConf
 * @param[in]  cpacsHandle             Handle for the CPACS configuration
 * @param[in]  componentSegmentUID     UID of the componentSegment to search for
 * @param[in]  eta, xsi                Eta and Xsi of the point of the componentSegment
-* @param[out] wingUID                 UID of the wing that fits to the given point and componentSegment. The returned string has to be freed by the user.
-* @param[out] segmentUID              UID of the segment that fits to the given point and componentSegment. The returned string has to be freed by the user.
+* @param[out] wingUID                 UID of the wing that fits to the given point and componentSegment.
+*                                     In contrast to old releases, the returned string <b>must not be freed </b>by the user!
+* @param[out] segmentUID              UID of the segment that fits to the given point and componentSegment.
+*                                     In contrast to old releases, the returned string <b>must not be freed </b>by the user!
 * @param[out] segmentEta              Eta of the point on the corresponding segment.
 * @param[out] segmentXsi              Xsi of the point on the corresponding segment.
 *
@@ -1402,6 +1413,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetPoint(TiglCPACSConf
 *   - TIGL_SUCCESS if no error occurred
 *   - TIGL_NOT_FOUND if no configuration was found for the given handle
 *   - TIGL_UID_ERROR if the componentSegment does not exist
+*   - TIGL_MATH_ERROR if the given wing component segment point can not be transformed into a segment point.
+*                     This might happen, if the component segment contains twisted section.
 *   - TIGL_ERROR if some other error occurred
 */
 TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentPointGetSegmentEtaXsi(TiglCPACSConfigurationHandle cpacsHandle,
@@ -2099,8 +2112,9 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetEndConnectedSegmentIndex(TiglCP
 
 /**
 * @brief Returns the section UID and section element UID of the start side of a given fuselage segment.
-*        The memory necessary for the two UIDs is allocated by this function and has to be freed
-*         by the user.
+*
+* <b>Important change:</b> The memory necessary for the two UIDs must not to be freed
+* by the user anymore.
 *
 * <b>Fortran syntax:</b>
 *
@@ -2133,8 +2147,9 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetStartSectionAndElementUID(TiglC
 
 /**
 * @brief Returns the section UID and section element UID of the end side of a given fuselage segment.
-*        The memory necessary for the two UIDs is allocated by this function and has to be freed
-*         by the user.
+*
+* <b>Important change:</b> The memory necessary for the two UIDs must not to be freed
+* by the user anymore.
 *
 * <b>Fortran syntax:</b>
 *
@@ -3623,15 +3638,21 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetWettedArea(TiglCPACSConfigurationHa
 /*****************************************************************************************************/
 /**
   \defgroup LoggingFunctions Logging functions.
-    Functions for modifying the logging behaviour of tigl
+    The following functions are used to customize the behaviour how messages are handled by TiGL. By default,
+    only error messages and warnings are printed to the console.
+
+    In addition, TiGL can be told to write message into a log file using the function
+    ::tiglLogToFileEnabled and ::tiglLogToFileStreamEnabled. By enabling file logging, other log messages than
+    errors and warnings can be inspected. File logging is disabled by default.
+
+    In order to change the verbosity of the TiGL messages printed on console, use ::tiglLogSetVerbosity.
  */
 /*@{*/
 
 /**
-* @brief Sets up the tigl logging mechanism to send all log messages into a file. Critical error messages are
-* printed on the standard out (console) as well.
+* @brief Sets up the tigl logging mechanism to send all log messages into a file.
 *
-* Typically this function has to be called before opening any cpacs configuration.
+* Typically this function has to be called before opening any cpacs configuration. The console logging mechanism remains untouched.
 *
 * <b>Fortran syntax:</b>
 *
@@ -3648,9 +3669,11 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetWettedArea(TiglCPACSConfigurationHa
 TIGL_COMMON_EXPORT TiglReturnCode tiglLogToFileEnabled(const char* filePrefix);
 
 /**
-* @brief Sets up the tigl logging mechanism to send all log messages into a file. Critical error messages are
-* printed on the standard out (console) as well. In contrast to ::tiglLogToFileEnabled, the messages are appended
-* to an already opened file that might be a logging file of the executing program.
+* @brief Sets up the tigl logging mechanism to send all log messages into an already opened file.
+*
+* In contrast to ::tiglLogToFileEnabled, the messages are appended
+* to an already opened file. This file might be an already opened logging file set
+* up by another library or program. The console logging mechanism remains untouched.
 *
 * Typically this function has to be called before opening any cpacs configuration.
 *
@@ -3721,13 +3744,16 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglLogSetFileEnding(const char* ending);
 TIGL_COMMON_EXPORT TiglReturnCode tiglLogSetTimeInFilenameEnabled(TiglBoolean enabled);
 
 /**
-* @brief Set the verbosity/logging level for the console logging
+* @brief Set the console verbosity level.
+*
+* This function shall be used change, what kind of logging information is displayed
+* on the console. By default, only errors and warnings are printed on console.
 *
 * <b>Fortran syntax:</b>
 *
 * tigl_log_set_verbosity(TiglLogLevel level)
 *
-* @param[in]  logging level
+* @param[in]  level Verbosity level for console messages.
 *
 * @return
 *   - TIGL_SUCCESS if no error occurred
