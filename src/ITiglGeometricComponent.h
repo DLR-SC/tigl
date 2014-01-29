@@ -53,7 +53,7 @@ public:
     virtual TopoDS_Shape & GetLoft(void) = 0;
 
     // Returns the unique id of this component
-    virtual const std::string& GetUID(void) = 0;
+    virtual const std::string& GetUID(void) const = 0;
 
     // Sets the unique id of this component
     virtual void SetUID(const std::string&) = 0;

@@ -61,7 +61,7 @@ CTiglAbstractGeometricComponent::~CTiglAbstractGeometricComponent(void)
 }
 
 // Gets the component uid
-const std::string &CTiglAbstractGeometricComponent::GetUID(void)
+const std::string &CTiglAbstractGeometricComponent::GetUID(void) const
 {
     return myUID;
 }

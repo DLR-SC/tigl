@@ -23,9 +23,10 @@
 namespace tigl
 {
 
-CTiglConsoleLogger::CTiglConsoleLogger() : verbosity(TILOG_ERROR)
+CTiglConsoleLogger::CTiglConsoleLogger() : verbosity(TILOG_WARNING)
 {                                            
 }
+
 void CTiglConsoleLogger::LogMessage(TiglLogLevel level, const char *message)
 {
     if (level<=verbosity) {

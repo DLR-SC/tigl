@@ -31,20 +31,21 @@ namespace tigl
 {
 
 // Create profile algo
-ProfileAlgoPointer CCPACSWingProfileFactory::createProfileAlgo(TixiDocumentHandle tixiHandle, std::string & ProfileXPath)
+ProfileAlgoPointer CCPACSWingProfileFactory::createProfileAlgo(TixiDocumentHandle tixiHandle, CCPACSWingProfile& profile, std::string & ProfileXPath)
 {
     // Get profile algorithm
     // Check if profile is given as a point list
     if (tixiCheckElement(tixiHandle, std::string(ProfileXPath + "/pointList").c_str()) == SUCCESS) {
-        return ProfileAlgoPointer(new CCPACSWingProfilePointList(ProfileXPath + "/pointList"));
+        return ProfileAlgoPointer(new CCPACSWingProfilePointList(profile, ProfileXPath + "/pointList"));
     }
     // Check if profile is given as a CST curve
     else if (tixiCheckElement(tixiHandle, std::string(ProfileXPath + "/cst2D").c_str()) == SUCCESS) {
-        return ProfileAlgoPointer(new CCPACSWingProfileCST(ProfileXPath + "/cst2D"));
+        return ProfileAlgoPointer(new CCPACSWingProfileCST(profile, ProfileXPath + "/cst2D"));
     }
     else {
         throw CTiglError("Error: CCPACSWingProfileFactory::CreateProfileAlgo: Unable to find valid profile data", TIGL_XML_ERROR);
     }
 }
+
 
 } // namespace tigl

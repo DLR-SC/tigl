@@ -30,6 +30,8 @@
 
 namespace tigl
 {
+class CCPACSWingProfile;
+
 class CCPACSWingProfileCST : public ITiglWingProfileAlgo
 {
 
@@ -39,7 +41,7 @@ private:
 
 public:
     // Constructor
-    CCPACSWingProfileCST(const std::string& aFilename);
+    CCPACSWingProfileCST(const CCPACSWingProfile&, const std::string& aFilename);
 
     // Destructor
     ~CCPACSWingProfileCST(void);
@@ -90,21 +92,21 @@ private:
 
 private:
     CCPACSCoordinateContainer coordinates;        /**< Coordinates of a wing profile element */
-    CCPACSCoordinateContainer upperCoordinates;        /**< Coordinates of the upper part of the wing profile*/
-    CCPACSCoordinateContainer lowerCoordinates;        /**< Coordinates of the upper part of the wing profile*/
+    CCPACSCoordinateContainer upperCoordinates;   /**< Coordinates of the upper part of the wing profile*/
+    CCPACSCoordinateContainer lowerCoordinates;   /**< Coordinates of the upper part of the wing profile*/
     std::string               ProfileDataXPath;   /**< CPACS path to profile data (pointList or cst2D) */
     TopoDS_Wire               wireClosed;         /**< Forced closed wing profile wire */
     TopoDS_Wire               upperWire;          /**< wire of the upper wing profile */
     TopoDS_Wire               lowerWire;          /**< wire of the lower wing profile */
     gp_Pnt                    lePoint;            /**< Leading edge point */
     gp_Pnt                    tePoint;            /**< Trailing edge point */
-    std::vector<double>        psi;                /**<sample points on CST curve */
-    double                    upperN1;            /**<CST parameter N1 */
-    double                    upperN2;            /**<CST parameter N2 */
-    std::vector<double>        upperB;             /**<CST parameter B */
-    double                    lowerN1;            /**<CST parameter N1 */
-    double                    lowerN2;            /**<CST parameter N2 */
-    std::vector<double>        lowerB;             /**<CST parameter B */
+    std::vector<double>        psi;               /**< sample points on CST curve */
+    double                    upperN1;            /**< CST parameter N1 */
+    double                    upperN2;            /**< CST parameter N2 */
+    std::vector<double>        upperB;            /**< CST parameter B */
+    double                    lowerN1;            /**< CST parameter N1 */
+    double                    lowerN2;            /**< CST parameter N2 */
+    std::vector<double>        lowerB;            /**< CST parameter B */
 };
 
 } // end namespace tigl

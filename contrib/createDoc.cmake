@@ -123,8 +123,8 @@ if(DOXYGEN_FOUND)
 				COMPONENT docu
 				OPTIONAL)
 
-		# create start menu entries
-		SET(CPACK_NSIS_CREATE_ICONS_EXTRA ${CPACK_NSIS_CREATE_ICONS_EXTRA} "
+	    # create start menu entries
+	    SET(CPACK_NSIS_CREATE_ICONS_EXTRA ${CPACK_NSIS_CREATE_ICONS_EXTRA} "
 	      CreateShortCut \\\"$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\TIGL-Reference.lnk\\\" \\\"$INSTDIR\\\\share\\\\doc\\\\tigl\\\\tiglRef.pdf\\\"
 	    ")
 	    SET(CPACK_NSIS_DELETE_ICONS_EXTRA ${CPACK_NSIS_DELETE_ICONS_EXTRA} "

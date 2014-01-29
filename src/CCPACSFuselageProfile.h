@@ -60,13 +60,13 @@ public:
     void ReadCPACS(TixiDocumentHandle tixiHandle);
 
     // Returns the filename of the fuselage profile file
-    std::string GetFileName(void) const;
+    const std::string& GetFileName(void) const;
 
     // Returns the name of the fuselage profile
-    std::string GetName(void) const;
+    const std::string& GetName(void) const;
 
     // Returns the UID of the fuselage profile
-    std::string GetUID(void) const;
+    const std::string& GetUID(void) const;
 
     // Invalidates internal fuselage profile state
     void Invalidate(void);

@@ -83,12 +83,14 @@ void CCPACSWings::ReadCPACS(TixiDocumentHandle tixiHandle, const char* configura
     profiles.ReadCPACS(tixiHandle);
 
     if (tixiCheckElement(tixiHandle, wingXPathPrt) != SUCCESS) {
+        free(wingXPathPrt);
         return;
     }
 
     /* Get wing element count */
     int wingCount;
     if (tixiGetNamedChildrenCount(tixiHandle, wingXPathPrt, "wing", &wingCount) != SUCCESS) {
+        free(wingXPathPrt);
         throw CTiglError("XML error: tixiGetNamedChildrenCount failed in CCPACSWings::ReadCPACS", TIGL_XML_ERROR);
     }
 

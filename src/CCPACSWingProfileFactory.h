@@ -27,11 +27,12 @@
 
 namespace tigl 
 {
+class CCPACSWingProfile;
 
 class CCPACSWingProfileFactory
 {
 public:
-    static ProfileAlgoPointer createProfileAlgo(TixiDocumentHandle tixiHandle, std::string & ProfileXPath);
+    static ProfileAlgoPointer createProfileAlgo(TixiDocumentHandle tixiHandle, CCPACSWingProfile& profile, std::string & ProfileXPath);
 };
 
 }

@@ -154,6 +154,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglOpenCPACSConfiguration(TixiDocumentHandle 
         strcat(ConfigurationXPathPrt, "\"]");
         int tixiReturn = tixiGetTextElement( tixiHandle, ConfigurationXPathPrt, &tmpString);
         if (tixiReturn != 0) {
+            free(ConfigurationXPathPrt);
             LOG(ERROR) << "Configuration '" << configurationUID << "' not found!" << std::endl;
             return TIGL_ERROR;
         }
@@ -900,8 +901,6 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetInnerSectionAndElementUID(TiglCPACS
                                                                        char** sectionUIDPtr,
                                                                        char** elementUIDPtr)
 {
-    std::string sectionIndexUID;
-    std::string elementIndexUID;
 
     if (wingIndex < 1 || segmentIndex < 1) {
         LOG(ERROR) << "Error: Wing or segment index index in less than zero ";
@@ -915,13 +914,9 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetInnerSectionAndElementUID(TiglCPACS
         tigl::CCPACSWing& wing = config.GetWing(wingIndex);
         tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(segmentIndex);
 
-        sectionIndexUID = segment.GetInnerSectionUID();
-        *sectionUIDPtr = (char *) malloc(strlen(sectionIndexUID.c_str()) * sizeof(char) + 1);
-        strcpy(*sectionUIDPtr, const_cast<char*>(sectionIndexUID.c_str()));
+        *sectionUIDPtr = (char *) segment.GetInnerSectionUID().c_str();
 
-        elementIndexUID = segment.GetInnerSectionElementUID();
-        *elementUIDPtr = (char *) malloc(strlen(elementIndexUID.c_str()) * sizeof(char) + 1);
-        strcpy(*elementUIDPtr, const_cast<char*>(elementIndexUID.c_str()));
+        *elementUIDPtr = (char *) segment.GetInnerSectionElementUID().c_str();
 
         return TIGL_SUCCESS;
     }
@@ -946,8 +941,6 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetOuterSectionAndElementUID(TiglCPACS
                                                                        char** sectionUIDPtr,
                                                                        char** elementUIDPtr)
 {
-    std::string sectionIndexUID;
-    std::string elementIndexUID;
 
     if (wingIndex < 1 || segmentIndex < 1) {
         LOG(ERROR) << "Error: Wing or segment index index in less than zero ";
@@ -961,13 +954,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetOuterSectionAndElementUID(TiglCPACS
         tigl::CCPACSWing& wing = config.GetWing(wingIndex);
         tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(segmentIndex);
 
-        sectionIndexUID = segment.GetOuterSectionUID();
-        *sectionUIDPtr = (char *) malloc(strlen(sectionIndexUID.c_str()) * sizeof(char) + 1);
-        strcpy(*sectionUIDPtr, const_cast<char*>(sectionIndexUID.c_str()));
-
-        elementIndexUID = segment.GetOuterSectionElementUID();
-        *elementUIDPtr = (char *) malloc(strlen(elementIndexUID.c_str()) * sizeof(char) + 1);
-        strcpy(*elementUIDPtr, const_cast<char*>(elementIndexUID.c_str()));
+        *sectionUIDPtr = (char *) segment.GetOuterSectionUID().c_str();
+        *elementUIDPtr = (char *) segment.GetOuterSectionElementUID().c_str();
 
         return TIGL_SUCCESS;
     }
@@ -1314,13 +1302,17 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentFindSegment(TiglCPACSC
             for (int componentSegment = 1; componentSegment <= wing.GetComponentSegmentCount(); componentSegment++) {
                 tigl::CCPACSWingComponentSegment& cs = (tigl::CCPACSWingComponentSegment&) wing.GetComponentSegment(componentSegment);
                 if ( cs.GetUID() == componentSegmentUID) {
-                    std::string wUID = wing.GetUID();
-                    *wingUID = (char *) malloc(strlen(wUID.c_str()) * sizeof(char) + 1);
-                    strcpy(*wingUID, const_cast<char*>(wUID.c_str()));
+                    gp_Pnt nearestPointOnSegment;
+                    const tigl::CTiglAbstractSegment* segment =  cs.findSegment(x, y, z, nearestPointOnSegment);
+                    if (!segment) {
+                        // point does not lie on component segment
+                        LOG(ERROR) << "Given point does not lie on component segment within 1cm tolerance."
+                                   << " Diviation is " << nearestPointOnSegment.Distance(gp_Pnt(x,y,z))*1000. << " mm.";
+                        return TIGL_NOT_FOUND;
+                    }
 
-                    std::string smUID = cs.findSegment(x, y, z);
-                    *segmentUID = (char *) malloc(strlen(smUID.c_str()) * sizeof(char) + 1);
-                    strcpy(*segmentUID, const_cast<char*>(smUID.c_str()));
+                    *segmentUID = (char*) segment->GetUID().c_str();
+                    *wingUID    = (char*) wing.GetUID().c_str();
 
                     return TIGL_SUCCESS;
                 }
@@ -1432,12 +1424,28 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentPointGetSegmentEtaXsi(
                     gp_Pnt pnt = compSeg.GetPoint(eta, xsi);
                     *segmentXsi = xsi;
 
-                    tiglWingComponentSegmentFindSegment(cpacsHandle, componentSegmentUID,
-                            pnt.X(), pnt.Y(), pnt.Z(),
-                            segmentUID, wingUID);
 
-                    tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment&) wing.GetSegment(*segmentUID);
-                    *segmentEta = segment.GetEta(pnt, xsi);
+                    gp_Pnt nearestPoint;
+                    tigl::CCPACSWingSegment* segment = (tigl::CCPACSWingSegment*) compSeg.findSegment(pnt.X(), pnt.Y(), pnt.Z(), nearestPoint);
+                    double deviation = nearestPoint.Distance(pnt);
+                    if (!segment) {
+                        LOG(ERROR) << "Given point does not lie on component segment within 1cm tolerance."
+                                   << " The actual diviation is " << deviation*1000. << " mm.";
+                        return TIGL_MATH_ERROR;
+                    }
+                    // warn if cs point is more than 1mm outside from segment
+                    if ( deviation > 1e-3) {
+                        LOG(WARNING) << "Given point is located more than 1mm from the wing component segment body."
+                                     << " The actual diviation is " << deviation*1000.  << " mm."
+                                     << " The point will be projected onto the wing segment.";
+                        segment->GetEtaXsi(nearestPoint, true, *segmentEta, *segmentXsi);
+                    }
+                    else {
+                        *segmentEta = segment->GetEta(pnt, *segmentXsi);
+                    }
+
+                    *segmentUID = (char*) segment->GetUID().c_str();
+                    *wingUID    = (char*) wing.GetUID().c_str();
 
                     return TIGL_SUCCESS;
                 }
@@ -2255,8 +2263,6 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetStartSectionAndElementUID(TiglC
                                                                            char** sectionUIDPtr,
                                                                            char** elementUIDPtr)
 {
-    std::string sectionIndexUID;
-    std::string elementIndexUID;
 
     if (fuselageIndex < 1 || segmentIndex < 1) {
         LOG(ERROR) << "Error: fuselageIndex or segmentIndex argument is less than one ";
@@ -2270,13 +2276,9 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetStartSectionAndElementUID(TiglC
         tigl::CCPACSFuselage& fuselage = config.GetFuselage(fuselageIndex);
         tigl::CCPACSFuselageSegment& segment = (tigl::CCPACSFuselageSegment &) fuselage.GetSegment(segmentIndex);
 
-        sectionIndexUID = segment.GetStartSectionUID();
-        *sectionUIDPtr = (char *) malloc(strlen(sectionIndexUID.c_str()) * sizeof(char) + 1);
-        strcpy(*sectionUIDPtr, const_cast<char*>(sectionIndexUID.c_str()));
+        *sectionUIDPtr = (char *) segment.GetStartSectionUID().c_str();
 
-        elementIndexUID = segment.GetStartSectionElementUID();
-        *elementUIDPtr = (char *) malloc(strlen(elementIndexUID.c_str()) * sizeof(char) + 1);
-        strcpy(*elementUIDPtr, const_cast<char*>(elementIndexUID.c_str()));
+        *elementUIDPtr = (char *)segment.GetStartSectionElementUID().c_str();
 
         return TIGL_SUCCESS;
     }
@@ -2302,8 +2304,6 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetEndSectionAndElementUID(TiglCPA
                                                                          char** sectionUIDPtr,
                                                                          char** elementUIDPtr)
 {
-    std::string sectionIndexUID;
-    std::string elementIndexUID;
 
     if (fuselageIndex < 1 || segmentIndex < 1) {
         LOG(ERROR) << "Error: fuselageIndex or segmentIndex argument less than one ";
@@ -2317,13 +2317,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetEndSectionAndElementUID(TiglCPA
         tigl::CCPACSFuselage& fuselage = config.GetFuselage(fuselageIndex);
         tigl::CCPACSFuselageSegment& segment = (tigl::CCPACSFuselageSegment &) fuselage.GetSegment(segmentIndex);
 
-        sectionIndexUID = segment.GetEndSectionUID();
-        *sectionUIDPtr = (char *) malloc(strlen(sectionIndexUID.c_str()) * sizeof(char) + 1);
-        strcpy(*sectionUIDPtr, const_cast<char*>(sectionIndexUID.c_str()));
-
-        elementIndexUID = segment.GetEndSectionElementUID();
-        *elementUIDPtr = (char *) malloc(strlen(elementIndexUID.c_str()) * sizeof(char) + 1);
-        strcpy(*elementUIDPtr, const_cast<char*>(elementIndexUID.c_str()));
+        *sectionUIDPtr = (char *) segment.GetEndSectionUID().c_str();
+        *elementUIDPtr = (char *) segment.GetEndSectionElementUID().c_str();
 
         return TIGL_SUCCESS;
     }
@@ -2454,8 +2449,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetProfileName(TiglCPACSConfigurat
         std::string profileUID = element.GetProfileIndex();
         tigl::CCPACSFuselageProfile& profile = config.GetFuselageProfile(profileUID);
 
-        *profileNamePtr = (char *) malloc(profile.GetName().length() * sizeof(char) + 1);
-        strcpy(*profileNamePtr, profile.GetName().c_str());
+        *profileNamePtr = (char *) profile.GetName().c_str();
 
         return TIGL_SUCCESS;
     }

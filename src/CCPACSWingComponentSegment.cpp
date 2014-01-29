@@ -50,6 +50,7 @@
 #include "BRepBuilderAPI_MakeEdge.hxx"
 #include "BRepBuilderAPI_MakeFace.hxx"
 #include "BRepBuilderAPI_MakeWire.hxx"
+#include "BRepBuilderAPI_MakeVertex.hxx"
 #include "BRepTools.hxx"
 #include "BRepGProp.hxx"
 #include "GProp_GProps.hxx"
@@ -723,37 +724,47 @@ const std::string & CCPACSWingComponentSegment::GetToElementUID(void) const
 
 // Returns the segment to a given point on the componentSegment. 
 // Returns null if the point is not an that wing!
-const std::string CCPACSWingComponentSegment::findSegment(double x, double y, double z)
+const CTiglAbstractSegment* CCPACSWingComponentSegment::findSegment(double x, double y, double z, gp_Pnt& nearestPoint)
 {
-    std::string resultUID;
+    CTiglAbstractSegment* result = NULL;
     gp_Pnt pnt(x, y, z);
 
-    // Quick check if the point even is on this wing
-    BRepClass3d_SolidClassifier quickClassifier;
-        
-    quickClassifier.Load(wing->GetLoft());
-    quickClassifier.Perform(pnt, 1.0e-2);
-    if ((quickClassifier.State() != TopAbs_IN) && (quickClassifier.State() != TopAbs_ON)) {
-        return resultUID;
+    // first check if pnt lies on component segment shape with 1cm tolerance
+    TopoDS_Vertex v = BRepBuilderAPI_MakeVertex(pnt);
+    BRepExtrema_DistShapeShape extrema(GetLoft(), v);
+    if (extrema.IsDone() && extrema.NbSolution() > 0) {
+        nearestPoint = extrema.PointOnShape1(1);
+        double currentDist = nearestPoint.Distance(pnt);
+        if (currentDist > 1.e-2) {
+            return NULL;
+        }
+    }
+    else {
+        return NULL;
     }
 
     SegmentList& segments = GetSegmentList();
 
-    // now discover the right segment
+    double minDist = DBL_MAX;
+    // now discover to which segment the point belongs
     for (SegmentList::iterator segit = segments.begin(); segit != segments.end(); ++segit) {
         //Handle_Geom_Surface aSurf = wing->GetUpperSegmentSurface(i);
         TopoDS_Shape segmentLoft = (*segit)->GetLoft();
 
-        BRepClass3d_SolidClassifier classifier;
-        classifier.Load(segmentLoft);
-        classifier.Perform(pnt, 1.0e-3);
-        if ((classifier.State() == TopAbs_IN) || (classifier.State() == TopAbs_ON)) {
-            resultUID = (*segit)->GetUID();
-            break;
+        BRepExtrema_DistShapeShape extrema(segmentLoft, v);
+        extrema.Perform();
+        if (extrema.IsDone() && extrema.NbSolution() > 0) {
+            gp_Pnt currentPoint = extrema.PointOnShape1(1);
+            double currentDist = currentPoint.Distance(pnt);
+            if (currentDist < minDist) {
+                minDist   = currentDist;
+                nearestPoint = currentPoint;
+                result = *segit;
+            }
         }
     }
 
-    return resultUID;
+    return result;
 }
 
 

@@ -749,6 +749,18 @@ void TIGLViewerDocument::drawWingSamplePoints()
     }
 
     tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
+    int wingIndex = 0;
+    for (int i = 1; i <= GetConfiguration().GetWingCount(); ++i) {
+        tigl::CCPACSWing& curWing = GetConfiguration().GetWing(i);
+        if (wingUid.toStdString() == curWing.GetUID()) {
+            wingIndex = i;
+            break;
+        }
+    }
+
+    if (wingIndex <= 0) {
+        return;
+    }
 
     myAISContext->EraseAll(Standard_False);
 
@@ -766,7 +778,7 @@ void TIGLViewerDocument::drawWingSamplePoints()
             for (double xsi = 0.0; xsi <= 1.0; xsi += 0.1) {
                 double x, y, z;
                 tiglWingGetUpperPoint(m_cpacsHandle,
-                                      1,    // TODO: we need to implement that function to use UID instead of index!
+                                      wingIndex,
                                       segmentIndex,
                                       eta,
                                       xsi,
@@ -778,7 +790,7 @@ void TIGLViewerDocument::drawWingSamplePoints()
                 myAISContext->Display(aGraphicPoint, Standard_False);
 
                 tiglWingGetLowerPoint(m_cpacsHandle,
-                                      1,    // TODO: we need to implement that function to use UID instead of index!
+                                      wingIndex,
                                       segmentIndex,
                                       eta,
                                       xsi,
