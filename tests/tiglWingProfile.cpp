@@ -40,3 +40,20 @@ TEST(WingProfileBugs, getPoint1)
     ASSERT_LE(p.Z(), 1.0);
     ASSERT_NEAR(0.0, p.Y(), 1e-7);
 }
+
+TEST(WingProfileBugs, Bug2) {
+    TixiDocumentHandle tixiHandle;
+    ASSERT_EQ(SUCCESS, tixiOpenDocument("TestData/WingProfileBug1.xml", &tixiHandle));
+
+    TiglCPACSConfigurationHandle tiglHandle;
+    ASSERT_EQ(TIGL_SUCCESS, tiglOpenCPACSConfiguration(tixiHandle, "", &tiglHandle));
+
+    tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
+    tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
+
+    tigl::CCPACSWingProfile& profile = config.GetWingProfile("NACA653218");
+    gp_Pnt p = profile.GetLowerPoint(0.97994);
+    ASSERT_NEAR(0.97994, p.X(), 1e-5);
+    ASSERT_LE(p.Z(), 1.0);
+    ASSERT_NEAR(0.0, p.Y(), 1e-7);
+}
