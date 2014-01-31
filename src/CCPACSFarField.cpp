@@ -122,7 +122,7 @@ TopoDS_Shape CCPACSFarField::BuildLoft(void)
     shape.Nullify();
     gp_Pnt center(0,0,0);
 
-    switch(fieldType){
+    switch (fieldType) {
     case NONE:
         return shape;
     case FULL_SPHERE:
