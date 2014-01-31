@@ -95,7 +95,7 @@ namespace
 } // anonymous namespace
 
 // Constructor
-CCPACSWingProfileCST::CCPACSWingProfileCST(const std::string& path)
+CCPACSWingProfileCST::CCPACSWingProfileCST(const CCPACSWingProfile&, const std::string& path)
 {
     ProfileDataXPath=path;
 }

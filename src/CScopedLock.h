@@ -1,7 +1,7 @@
-/*
+/* 
 * Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
 *
-* Created: 2013-10-29 Martin Siggel <Martin.Siggel@dlr.de>
+* Created: 2014-01-30 Martin Siggel <Martin.Siggel@dlr.de>
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -16,35 +16,24 @@
 * limitations under the License.
 */
 
-#ifndef CTIGLFILELOGGER_H
-#define CTIGLFILELOGGER_H
+#ifndef CSCOPEDLOCK_H
+#define CSCOPEDLOCK_H
 
-#include "ITiglLogger.h"
-#include <cstdio>
-#include <CSharedPtr.h>
-
-namespace tigl 
+namespace tigl
 {
 
 class CMutex;
 
-class CTiglFileLogger : public ITiglLogger
+class CScopedLock
 {
 public:
-    CTiglFileLogger(const char* filename);
-    CTiglFileLogger(FILE * file);
-    virtual ~CTiglFileLogger();
-
-    virtual void LogMessage(TiglLogLevel, const char * message);
-    virtual void SetVerbosity(TiglLogLevel);
+    CScopedLock(CMutex &);
+    ~CScopedLock();
 
 private:
-    FILE * logFileStream;
-    bool fileOpened;
-    CSharedPtr<CMutex> mutex;
-    TiglLogLevel verbosity;
+    CMutex& _mutex;
 };
 
 } // namespace tigl
 
-#endif // CTIGLFILELOGGER_H
+#endif // CSCOPEDLOCK_H

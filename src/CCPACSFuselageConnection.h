@@ -50,10 +50,10 @@ public:
     void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& connectionXPath);
 
     // Returns the section UID of this connection
-    std::string GetSectionUID(void) const;
+    const std::string& GetSectionUID(void) const;
 
     // Returns the section element UID of this connection
-    std::string GetSectionElementUID(void) const;
+    const std::string& GetSectionElementUID(void) const;
 
     // Returns the section index of this connection
     int GetSectionIndex(void) const;

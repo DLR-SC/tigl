@@ -569,20 +569,14 @@ TEST_F(WingSegment, tiglWingGetInnerSectionAndElementUID_success)
     ASSERT_TRUE(tiglWingGetInnerSectionAndElementUID(tiglHandle, 1, 1, &sectionUID, &elementUID) == TIGL_SUCCESS);
     ASSERT_TRUE(strcmp(sectionUID, "D150_VAMP_W1_Sec1") == 0);
     ASSERT_TRUE(strcmp(elementUID, "D150_VAMP_W1_Sec1_Elem1") == 0);
-    free(sectionUID);
-    free(elementUID);
     
     ASSERT_TRUE(tiglWingGetInnerSectionAndElementUID(tiglHandle, 1, 2, &sectionUID, &elementUID) == TIGL_SUCCESS);
     ASSERT_TRUE(strcmp(sectionUID, "D150_VAMP_W1_Sec2") == 0);
     ASSERT_TRUE(strcmp(elementUID, "D150_VAMP_W1_Sec2_Elem1") == 0);
-    free(sectionUID);
-    free(elementUID);
 
     ASSERT_TRUE(tiglWingGetInnerSectionAndElementUID(tiglHandle, 1, 3, &sectionUID, &elementUID) == TIGL_SUCCESS);
     ASSERT_TRUE(strcmp(sectionUID, "D150_VAMP_W1_Sec3") == 0);
     ASSERT_TRUE(strcmp(elementUID, "D150_VAMP_W1_Sec3_Elem1") == 0);
-    free(sectionUID);
-    free(elementUID);
 }
 
 /***************************************************************************************************/
@@ -627,20 +621,14 @@ TEST_F(WingSegment, tiglWingGetOuterSectionAndElementUID_success)
     ASSERT_TRUE(tiglWingGetOuterSectionAndElementUID(tiglHandle, 1, 1, &sectionUID, &elementUID) == TIGL_SUCCESS);
     ASSERT_TRUE(strcmp(sectionUID, "D150_VAMP_W1_Sec2") == 0);
     ASSERT_TRUE(strcmp(elementUID, "D150_VAMP_W1_Sec2_Elem1") == 0);
-    free(sectionUID);
-    free(elementUID);
 
     ASSERT_TRUE(tiglWingGetOuterSectionAndElementUID(tiglHandle, 1, 2, &sectionUID, &elementUID) == TIGL_SUCCESS);
     ASSERT_TRUE(strcmp(sectionUID, "D150_VAMP_W1_Sec3") == 0);
     ASSERT_TRUE(strcmp(elementUID, "D150_VAMP_W1_Sec3_Elem1") == 0);
-    free(sectionUID);
-    free(elementUID);
-    
+
     ASSERT_TRUE(tiglWingGetOuterSectionAndElementUID(tiglHandle, 1, 3, &sectionUID, &elementUID) == TIGL_SUCCESS);
     ASSERT_TRUE(strcmp(sectionUID, "D150_VAMP_W1_Sec4") == 0);
     ASSERT_TRUE(strcmp(elementUID, "D150_VAMP_W1_Sec4_Elem1") == 0);
-    free(sectionUID);
-    free(elementUID);
 }
 
 /* Tests on simple geometry__________________________ */
