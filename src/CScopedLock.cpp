@@ -1,7 +1,7 @@
 /* 
 * Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
 *
-* Created: 2013-10-26 Martin Siggel <Martin.Siggel@dlr.de>
+* Created: 2014-01-30 Martin Siggel <Martin.Siggel@dlr.de>
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -16,32 +16,21 @@
 * limitations under the License.
 */
 
-#include "CTiglConsoleLogger.h"
-
-#include <iostream>
+#include "CScopedLock.h"
+#include "CMutex.h"
 
 namespace tigl
 {
 
-CTiglConsoleLogger::CTiglConsoleLogger() : verbosity(TILOG_WARNING)
-{                                            
-}
-
-void CTiglConsoleLogger::LogMessage(TiglLogLevel level, const char *message)
+CScopedLock::CScopedLock(CMutex& m)
+    : _mutex(m)
 {
-    if (level<=verbosity) {
-        if (level == TILOG_ERROR || level == TILOG_WARNING) {
-            fprintf(stderr, "%s\n", message);
-        }
-        else {
-            fprintf(stdout, "%s\n", message);
-        }
-    }
+    _mutex.lock();
 }
 
-void CTiglConsoleLogger::SetVerbosity(TiglLogLevel vlevel)
+CScopedLock::~CScopedLock()
 {
-    verbosity=vlevel;
+    _mutex.unlock();
 }
 
-} // end namespace tigl
+}

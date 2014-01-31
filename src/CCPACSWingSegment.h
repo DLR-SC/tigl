@@ -77,16 +77,16 @@ public:
     gp_Pnt GetChordPoint(double eta, double xsi);
 
     // Returns the inner section UID of this segment
-    std::string GetInnerSectionUID(void);
+    const std::string& GetInnerSectionUID(void);
 
     // Returns the outer section UID of this segment
-    std::string GetOuterSectionUID(void);
+    const std::string& GetOuterSectionUID(void);
 
     // Returns the inner section element UID of this segment
-    std::string GetInnerSectionElementUID(void);
+    const std::string& GetInnerSectionElementUID(void);
 
     // Returns the outer section element UID of this segment
-    std::string GetOuterSectionElementUID(void);
+    const std::string& GetOuterSectionElementUID(void);
 
     // Returns the inner section index of this segment
     int GetInnerSectionIndex(void);

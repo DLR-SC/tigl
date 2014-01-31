@@ -19,6 +19,7 @@
 #include "CTiglFileLogger.h"
 #include "CTiglError.h"
 #include "CMutex.h"
+#include "CScopedLock.h"
 
 #include <cstdio>
 #include <ctime>
@@ -57,9 +58,6 @@ CTiglFileLogger::CTiglFileLogger(const char* filename) :  mutex(new CMutex) , ve
 
 CTiglFileLogger::~CTiglFileLogger()
 {
-    if (mutex){
-        delete mutex;
-    }
     if (fileOpened) {
         fclose(logFileStream);
     }
@@ -69,9 +67,8 @@ void CTiglFileLogger::LogMessage(TiglLogLevel level, const char *message)
 {
     if (level<=verbosity) {
         if (logFileStream) {
-            mutex->lock();
+            CScopedLock lock(*mutex);
             fprintf(logFileStream, "%s\n", message);
-            mutex->unlock();
         }
     }
 }
