@@ -39,17 +39,18 @@
 /*
  * helping function to convert matlab array into c-string 
  */
-int mxToString(const mxArray * mxStr, char ** cstr){
+int mxToString(const mxArray * mxStr, char ** cstr)
+{
   size_t strLen = 0;
 
        /* Input must be a string. */
-  if (mxIsChar(mxStr) != 1){
+  if (mxIsChar(mxStr) != 1) {
     mexErrMsgTxt("Input must be a string.");
     return 1;
   }
 
   /* Input must be a row vector. */
-  if (mxGetM(mxStr) > 1){
+  if (mxGetM(mxStr) > 1) {
     mexErrMsgTxt("Input must be a row vector.");
     return 1;
   }
@@ -65,19 +66,21 @@ int mxToString(const mxArray * mxStr, char ** cstr){
   return mxGetString(mxStr, *cstr, strLen);
 }
 
-mwSize mxGetArraySize(const mxArray * mxArr){
+mwSize mxGetArraySize(const mxArray * mxArr)
+{
     mwSize ndims =  mxGetNumberOfDimensions(mxArr);
     mwSize idim;
 
     mwSize totalSize = 1;
-    for(idim = 0; idim < ndims; ++idim){
+    for (idim = 0; idim < ndims; ++idim) {
         totalSize *= mxGetDimensions(mxArr)[idim];
     }
     
     return totalSize;
 }
 
-int mxToInt(const mxArray * mxArr){
+int mxToInt(const mxArray * mxArr)
+{
     double dv = *mxGetPr(mxArr);
     if(!isinteger(dv))
         mexWarnMsgTxt("Argument is not an integer\n");
@@ -85,32 +88,37 @@ int mxToInt(const mxArray * mxArr){
     return (int)dv;
 }
 
-void mxToIntArray(const mxArray * mxArr, int ** pIntArray){
+void mxToIntArray(const mxArray * mxArr, int ** pIntArray)
+{
     mwSize i, totalSize;
     totalSize = mxGetArraySize(mxArr);
     
     *pIntArray = (int*) mxMalloc(sizeof(int)*totalSize);
-    for(i = 0; i< totalSize; ++i){
+    for (i = 0; i< totalSize; ++i) {
         (*pIntArray)[i] = (int)mxGetPr(mxArr)[i];
     }
 }
 
-mxArray * iArrayToMx(const int * array, int size){
+mxArray * iArrayToMx(const int * array, int size)
+{
     mxArray * out = mxCreateDoubleMatrix(1,size, mxREAL);
     double * rawArray = mxGetPr(out);
     int i;
-    for(i = 0; i < size; ++i)
+    for (i = 0; i < size; ++i) {
         rawArray[i] = (double) array[i];
+    }
     
     return out;
 }
 
-mxArray * dArrayToMx(const double * array, int size){
+mxArray * dArrayToMx(const double * array, int size)
+{
     mxArray * out = mxCreateDoubleMatrix(1,size, mxREAL);
     double *  rawArray = mxGetPr(out);
     int i;
-    for(i = 0; i < size; ++i)
+    for (i = 0; i < size; ++i) {
         rawArray[i] = array[i];
+    }
     
     return out;
 }
