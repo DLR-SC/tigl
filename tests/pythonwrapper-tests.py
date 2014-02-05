@@ -108,9 +108,9 @@ class TestSimpleCpacs(unittest.TestCase):
         compSegmentUID = "WING_CS1"
         eta = 0.25
         xsi = 0.9
-		nmaterials = self.tigl.wingComponentSegmentGetMaterialCount(compSegmentUID, TiglStructureType.UPPER_SHELL, eta, xsi )
-		self.assertEqual(nmaterials, 1)
-		
+        nmaterials = self.tigl.wingComponentSegmentGetMaterialCount(compSegmentUID, TiglStructureType.UPPER_SHELL, eta, xsi )
+        self.assertEqual(nmaterials, 1)
+
         material = self.tigl.wingComponentSegmentGetMaterialUIDs(compSegmentUID, TiglStructureType.UPPER_SHELL, eta, xsi, 1)
         self.assertEqual(material, 'MyCellMat')
 ######      
@@ -184,6 +184,7 @@ class TestTiglApi(unittest.TestCase):
     def setUp(self):
         self.tigl = Tigl()
         self.tixi = Tixi()
+        self.tigl.logSetVerbosity(TiglLogLevel.TILOG_SILENT)
         self.tixi.open('TestData/CPACS_21_D150.xml')
         self.tigl.open(self.tixi, 'D150_VAMP')
     
@@ -311,6 +312,11 @@ class TestTiglApi(unittest.TestCase):
         (wingUID, segmentUID, eta, xsi) = self.tigl.wingComponentSegmentPointGetSegmentEtaXsi('D150_VAMP_W1_CompSeg1', 0.0, 0.0)
         self.assertEqual(wingUID, 'D150_VAMP_W1')
         self.assertEqual(segmentUID, 'D150_VAMP_W1_Seg1')
+        self.assertAlmostEqual(eta, 0.0)
+        self.assertAlmostEqual(xsi, 0.0)
+
+    def test_wingSegmentPointGetComponentSegmentEtaXsi(self):
+        (eta, xsi) = self.tigl.wingSegmentPointGetComponentSegmentEtaXsi('D150_VAMP_W1_Seg1', 'D150_VAMP_W1_CompSeg1', 0.0, 0.0)
         self.assertAlmostEqual(eta, 0.0)
         self.assertAlmostEqual(xsi, 0.0)
         
@@ -511,11 +517,6 @@ class TestTiglApi(unittest.TestCase):
         ret = self.tigl.fuselageGetSegmentSurfaceArea(fuselageIndex, segmentIndex)
         self.assertEqual(isinstance(ret,float),True)
             
-    def test_wingGetReferenceArea(self):
-        wingIndex = 1
-        ret = self.tigl.wingGetReferenceArea(wingIndex)
-        self.assertEqual(isinstance(ret,float),True)
-            
     def test_componentGetHashCode(self):
         componentUID = self.tigl.wingGetUID(1)
         ret = self.tigl.componentGetHashCode(componentUID)
@@ -536,7 +537,7 @@ class TestTiglApi(unittest.TestCase):
         self.assertLess(area, 135.)
         
     def test_wingGetReferenceArea(self):
-        area = self.tigl.wingGetReferenceArea(1);
+        area = self.tigl.wingGetReferenceArea(1, TiglSymmetryAxis.TIGL_X_Y_PLANE);
         self.assertGreater(area, 60.)
         self.assertLess(area, 70.)
 
