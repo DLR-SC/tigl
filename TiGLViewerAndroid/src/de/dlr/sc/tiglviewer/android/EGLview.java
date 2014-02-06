@@ -52,11 +52,11 @@ public class EGLview extends GLSurfaceView {
     
     public EGLview(Context context) {
         super(context);
-        init(true, 24, 8);
+        init(false, 16, 8);
     }
     public EGLview(Context context, AttributeSet attrs) {
         super(context,attrs);
-        init(true, 24, 8);
+        init(false, 16, 8);
     }
     
     

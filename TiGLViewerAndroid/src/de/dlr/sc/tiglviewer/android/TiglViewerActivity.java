@@ -71,6 +71,7 @@ public class TiglViewerActivity extends ActionBarActivity implements OnNavigatio
         //supportRequestWindowFeature(Window.FEATURE_PROGRESS);
         supportRequestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setContentView(R.layout.activity_main);
+        setSupportProgressBarIndeterminateVisibility(false);
 
         mTitle = mDrawerTitle = getTitle();
 
@@ -194,6 +195,15 @@ public class TiglViewerActivity extends ActionBarActivity implements OnNavigatio
             mDrawerLayout.closeDrawer(mDrawerList);
         }
     }
+    
+    private void openFile(String filename) {
+		if(filename.contains("xml")) {
+			TiGLViewerNativeLib.addObjectFromCPACS(filename);
+		}
+		else if(filename.contains("vtp")) {
+			TiGLViewerNativeLib.addObjectFromVTK(filename);
+		}
+    }
 
     // is called when item in drawer is selected
     private void selectItem(int position) {
@@ -211,15 +221,10 @@ public class TiglViewerActivity extends ActionBarActivity implements OnNavigatio
 		final String filename = Environment.getExternalStorageDirectory().getPath() + "/Tiglviewer/" + file;
 		setSupportProgressBarIndeterminateVisibility(true);
 		Thread thread = new Thread() {
-			public void run() {
-				if(filename.contains("xml")) {
-					TiGLViewerNativeLib.addObjectFromCPACS(filename);
-				}
-				else if(filename.contains("vtp")) {
-					TiGLViewerNativeLib.addObjectFromVTK(filename);
-				}
+			public void run() {				
+				openFile(filename);
 				
-				// make success dialog appear
+				// make success dialog appear and stop the progress bar
 				Runnable r=new Runnable() {
 					@Override
 					public void run() {
