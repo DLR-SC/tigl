@@ -1,5 +1,7 @@
 # TIGL Library
 
+find_package(Threads REQUIRED)
+
 configure_file (
   "${CMAKE_CURRENT_SOURCE_DIR}/tigl_version.h.in"
   "${CMAKE_CURRENT_BINARY_DIR}/tigl_version.h"
@@ -34,7 +36,12 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
   add_definitions(-DDEBUG)
 endif()
 
-target_link_libraries (TIGL ${OpenCASCADE_LIBRARIES} ${TIXI_LIBRARIES} ${VLD_LIBRARIES})
+set(TIGL_LIBRARIES ${OpenCASCADE_LIBRARIES} ${TIXI_LIBRARIES} ${VLD_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
+if(NOT WIN32)
+  set(TIGL_LIBRARIES  ${TIGL_LIBRARIES} rt)
+endif(NOT WIN32)
+
+target_link_libraries (TIGL ${TIGL_LIBRARIES})
 set_target_properties( TIGL PROPERTIES VERSION ${TIGL_VERSION})
 set_target_properties( TIGL PROPERTIES SOVERSION "${TIGL_VERSION_MAJOR}")
 
@@ -53,4 +60,5 @@ install (FILES tigl.h ${CMAKE_CURRENT_BINARY_DIR}/tigl_version.h
 
 # static lib for tiglviewer 
 add_library(TIGL_static ${TIGL_SRC})
-
+# this does no actual linking but keeps track of the dependencies
+target_link_libraries (TIGL_static ${TIGL_LIBRARIES})
