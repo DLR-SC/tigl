@@ -23,6 +23,7 @@
 * geometry representation method.
 */
 
+#include "tigl_internal.h"
 #include "ITiglWingProfileAlgo.h"
 
 #ifndef CCPACSWINGPROFILECST_H
@@ -41,40 +42,40 @@ private:
 
 public:
     // Constructor
-    CCPACSWingProfileCST(const CCPACSWingProfile&, const std::string& aFilename);
+    TIGL_EXPORT CCPACSWingProfileCST(const CCPACSWingProfile&, const std::string& aFilename);
 
     // Destructor
-    ~CCPACSWingProfileCST(void);
+    TIGL_EXPORT ~CCPACSWingProfileCST(void);
 
     // Cleanup routine
-    void Cleanup(void);
+    TIGL_EXPORT void Cleanup(void);
 
     // Update of wire points ...
-    void Update(void);
+    TIGL_EXPORT void Update(void);
 
     // Read CPACS wing profile file
-    void ReadCPACS(TixiDocumentHandle tixiHandle);
+    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle);
 
     // Returns the profile points as read from TIXI.
-    std::vector<CTiglPoint*> GetSamplePoints() const;
+    TIGL_EXPORT std::vector<CTiglPoint*> GetSamplePoints() const;
 
     // get profiles CPACS XML path
-    const std::string & GetProfileDataXPath() const;
+    TIGL_EXPORT const std::string & GetProfileDataXPath() const;
 
     // get forced closed wing profile wire
-    const TopoDS_Wire & GetWireClosed() const;
+    TIGL_EXPORT const TopoDS_Wire & GetWireClosed() const;
 
     // get upper wing profile wire
-    const TopoDS_Wire & GetUpperWire() const;
+    TIGL_EXPORT const TopoDS_Wire & GetUpperWire() const;
 
     // get lower wing profile wire
-    const TopoDS_Wire & GetLowerWire() const;
+    TIGL_EXPORT const TopoDS_Wire & GetLowerWire() const;
 
     // get leading edge point();
-    const gp_Pnt & GetLEPoint() const;
+    TIGL_EXPORT const gp_Pnt & GetLEPoint() const;
 
     // get trailing edge point();
-    const gp_Pnt & GetTEPoint() const;
+    TIGL_EXPORT const gp_Pnt & GetTEPoint() const;
 
 protected:
     // Builds the wing profile wires.

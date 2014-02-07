@@ -34,6 +34,7 @@
 #include <string>
 
 #include "tixi.h"
+#include "tigl_internal.h"
 #include "TopoDS_Wire.hxx"
 #include "CSharedPtr.h"
 
@@ -53,67 +54,67 @@ class CCPACSWingProfile
 
 public:
     // Algo
-    CCPACSWingProfile(const std::string& aFilename);
+    TIGL_EXPORT CCPACSWingProfile(const std::string& aFilename);
 
     // Virtual Destructor
-    virtual ~CCPACSWingProfile(void);
+    TIGL_EXPORT virtual ~CCPACSWingProfile(void);
 
     // Read CPACS wing profile file
-    void ReadCPACS(TixiDocumentHandle tixiHandle);
+    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle);
 
     // Returns the name of the wing profile
-    std::string GetName(void) const;
+    TIGL_EXPORT std::string GetName(void) const;
 
     // Gets the C pointer of the name string
-    const char * GetNamePtr(void) const;
+    TIGL_EXPORT const char * GetNamePtr(void) const;
 
     // Returns the description of the wing profile
-    std::string GetDescription(void) const;
+    TIGL_EXPORT std::string GetDescription(void) const;
 
     // Returns the uid of the wing profile
-    std::string GetUID(void) const;
+    TIGL_EXPORT std::string GetUID(void) const;
 
     // Gets the C pointer of the UID string
-    const char * GetUIDPtr(void) const;
+    TIGL_EXPORT const char * GetUIDPtr(void) const;
 
     // Invalidates internal wing profile state
-    void Invalidate(void);
+    TIGL_EXPORT void Invalidate(void);
 
     // Returns the wing profile wire.
-    TopoDS_Wire GetWire();
+    TIGL_EXPORT TopoDS_Wire GetWire();
         
     // Returns ths wing upper and lower profile wire
-    TopoDS_Wire GetUpperWire();
+    TIGL_EXPORT TopoDS_Wire GetUpperWire();
     TopoDS_Wire GetLowerWire();
 
     // Returns the leading edge point of the wing profile wire. The leading edge point
     // is already transformed by the wing profile element transformation.
-    gp_Pnt GetLEPoint(void);
+    TIGL_EXPORT gp_Pnt GetLEPoint(void);
 
     // Returns the trailing edge point of the wing profile wire. The trailing edge point
     // is already transformed by the wing profile element transformation.
-    gp_Pnt GetTEPoint(void);
+    TIGL_EXPORT gp_Pnt GetTEPoint(void);
 
     // Returns a point on the chord line between leading and trailing
     // edge as function of parameter xsi, which ranges from 0.0 to 1.0.
     // For xsi = 0.0 chord point is equal to leading edge, for xsi = 1.0
     // chord point is equal to trailing edge.
-    gp_Pnt GetChordPoint(double xsi);
+    TIGL_EXPORT gp_Pnt GetChordPoint(double xsi);
 
     // Returns a point on the upper wing profile as function of
     // parameter xsi, which ranges from 0.0 to 1.0.
     // For xsi = 0.0 point is equal to leading edge, for xsi = 1.0
     // point is equal to trailing edge.
-    gp_Pnt GetUpperPoint(double xsi);
+    TIGL_EXPORT gp_Pnt GetUpperPoint(double xsi);
 
     // Returns a point on the lower wing profile as function of
     // parameter xsi, which ranges from 0.0 to 1.0.
     // For xsi = 0.0 point is equal to leading edge, for xsi = 1.0
     // point is equal to trailing edge.
-    gp_Pnt GetLowerPoint(double xsi);
+    TIGL_EXPORT gp_Pnt GetLowerPoint(double xsi);
 
     // get profile algorithm type
-    ProfileAlgoPointer GetProfileAlgo(void) const;
+    TIGL_EXPORT ProfileAlgoPointer GetProfileAlgo(void) const;
 
 protected:
     // Cleanup routine

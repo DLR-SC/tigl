@@ -28,6 +28,7 @@
 
 #include <string>
 #include "tigl.h"
+#include "tigl_internal.h"
 #include "CTiglAbstractGeometricComponent.h"
 
 namespace tigl 
@@ -37,16 +38,16 @@ class CTiglAbstractSegment : public CTiglAbstractGeometricComponent
 {
 
 public:
-    CTiglAbstractSegment(int segIndex);
+    TIGL_EXPORT CTiglAbstractSegment(int segIndex);
 
     // Invalidates internal state
-    void Invalidate(void);
+    TIGL_EXPORT void Invalidate(void);
 
     // Returns the segment index of this segment
-    int GetSegmentIndex(void) const;
+    TIGL_EXPORT int GetSegmentIndex(void) const;
 
     // Returns the continuityof the connection to the next segment
-    TiglContinuity GetContinuity() const;
+    TIGL_EXPORT TiglContinuity GetContinuity() const;
 protected:
     void Cleanup();
 

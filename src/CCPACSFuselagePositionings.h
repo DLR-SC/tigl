@@ -26,6 +26,7 @@
 #ifndef CCPACSFUSELAGEPOSITIONINGS_H
 #define CCPACSFUSELAGEPOSITIONINGS_H
 
+#include "tigl_internal.h"
 #include "tixi.h"
 #include "CCPACSFuselagePositioning.h"
 #include "CTiglError.h"
@@ -49,25 +50,25 @@ private:
 
 public:
     // Constructor
-    CCPACSFuselagePositionings(void);
+    TIGL_EXPORT CCPACSFuselagePositionings(void);
 
     // Virtual Destructor
-    virtual ~CCPACSFuselagePositionings(void);
+    TIGL_EXPORT virtual ~CCPACSFuselagePositionings(void);
 
     // Read CPACS positionings element
-    void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& fuselageXPath);
+    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& fuselageXPath);
 
     // Invalidates internal state
-    void Invalidate(void);
+    TIGL_EXPORT void Invalidate(void);
 
     // Gets a positioning by index.
-    CCPACSFuselagePositioning& GetPositioning(int index) const;
+    TIGL_EXPORT CCPACSFuselagePositioning& GetPositioning(int index) const;
 
     // Gets total positioning count
-    int GetPositioningCount(void) const;
+    TIGL_EXPORT int GetPositioningCount(void) const;
 
     // Returns the positioning matrix for a given section index
-    CTiglTransformation GetPositioningTransformation(std::string sectionIndex);
+    TIGL_EXPORT CTiglTransformation GetPositioningTransformation(std::string sectionIndex);
 
 protected:
     // Cleanup routine

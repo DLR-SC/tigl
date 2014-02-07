@@ -28,6 +28,7 @@
 #define CCPACSCONFIGURATIONMANAGER_H
 
 #include "tigl.h"
+#include "tigl_internal.h"
 #include "CCPACSConfiguration.h"
 #include <map>
 
@@ -45,25 +46,25 @@ private:
 
 public:
     // Returns a reference to the only instance of this class
-    static CCPACSConfigurationManager& GetInstance(void);
+    TIGL_EXPORT static CCPACSConfigurationManager& GetInstance(void);
 
     // Adds a configuration to the configuration container and returns a handle for it.
-    TiglCPACSConfigurationHandle AddConfiguration(CCPACSConfiguration* config);
+    TIGL_EXPORT TiglCPACSConfigurationHandle AddConfiguration(CCPACSConfiguration* config);
 
     // Removes and deletes a configuration from the configuration container
-    void DeleteConfiguration(TiglCPACSConfigurationHandle handle);
+    TIGL_EXPORT void DeleteConfiguration(TiglCPACSConfigurationHandle handle);
 
     // Returns the configuration for a given handle
-    CCPACSConfiguration& GetConfiguration(TiglCPACSConfigurationHandle handle) const;
+    TIGL_EXPORT CCPACSConfiguration& GetConfiguration(TiglCPACSConfigurationHandle handle) const;
 
     // Tests if a given configuration handle is valid
-    bool IsValid(TiglCPACSConfigurationHandle handle) const;
+    TIGL_EXPORT bool IsValid(TiglCPACSConfigurationHandle handle) const;
 
     // Invalidates all configurations and forces recalculation of wires/points etc.
-    void Invalidate(void);
+    TIGL_EXPORT void Invalidate(void);
 
     // Destructor
-    ~CCPACSConfigurationManager(void);
+    TIGL_EXPORT ~CCPACSConfigurationManager(void);
 
 private:
     // Constructor

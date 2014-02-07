@@ -16,6 +16,7 @@
 * limitations under the License.
 */
 
+#include "tiglmathfunctions.h"
 #include "CTiglError.h"
 
 #include <cassert>

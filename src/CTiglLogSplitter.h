@@ -19,6 +19,7 @@
 #ifndef CTIGLLOGSPLITTER_H
 #define CTIGLLOGSPLITTER_H
 
+#include "tigl_internal.h"
 #include "ITiglLogger.h"
 #include "CTiglLogging.h"
 #include <vector>
@@ -29,15 +30,15 @@ namespace tigl
 class CTiglLogSplitter : public ITiglLogger
 {
 public:
-    CTiglLogSplitter();
-    virtual ~CTiglLogSplitter();
+    TIGL_EXPORT CTiglLogSplitter();
+    TIGL_EXPORT virtual ~CTiglLogSplitter();
 
     // Adds a logger to the splitter
-    void AddLogger(PTiglLogger);
+    TIGL_EXPORT void AddLogger(PTiglLogger);
 
     // override from ITiglLogger
-    virtual void LogMessage(TiglLogLevel, const char * message);
-    virtual void SetVerbosity(TiglLogLevel);
+    TIGL_EXPORT virtual void LogMessage(TiglLogLevel, const char * message);
+    TIGL_EXPORT virtual void SetVerbosity(TiglLogLevel);
 
 private:
     std::vector<PTiglLogger> _loggers;

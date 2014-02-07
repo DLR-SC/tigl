@@ -24,6 +24,7 @@
 #define CCPACSWINGPROFILEFACTORY_H
 #include <string>
 #include "tixi.h"
+#include "tigl_internal.h"
 
 namespace tigl 
 {
@@ -32,7 +33,7 @@ class CCPACSWingProfile;
 class CCPACSWingProfileFactory
 {
 public:
-    static ProfileAlgoPointer createProfileAlgo(TixiDocumentHandle tixiHandle, CCPACSWingProfile& profile, std::string & ProfileXPath);
+    TIGL_EXPORT static ProfileAlgoPointer createProfileAlgo(TixiDocumentHandle tixiHandle, CCPACSWingProfile& profile, std::string & ProfileXPath);
 };
 
 }

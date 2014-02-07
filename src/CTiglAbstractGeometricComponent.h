@@ -26,6 +26,8 @@
 #ifndef CTIGLABSTRACTGEOMETRICCOMPONENT_H
 #define CTIGLABSTRACTGEOMETRICCOMPONENT_H
 
+#include "tigl_internal.h"
+
 #include <list>
 #include <string>
 #include <TopoDS_Shape.hxx>
@@ -41,47 +43,47 @@ class CTiglAbstractGeometricComponent : public ITiglGeometricComponent
 
 public:
     // Constructor
-    CTiglAbstractGeometricComponent(void);
+    TIGL_EXPORT CTiglAbstractGeometricComponent(void);
 
     // Virtual Destructor
-    virtual ~CTiglAbstractGeometricComponent(void);
+    TIGL_EXPORT virtual ~CTiglAbstractGeometricComponent(void);
 
        // Gets the loft of a geometric component
-    virtual TopoDS_Shape& GetLoft(void);
+    TIGL_EXPORT virtual TopoDS_Shape& GetLoft(void);
 
     // Get the loft mirrored at the mirror plane
-    virtual TopoDS_Shape GetMirroredLoft(void);
+    TIGL_EXPORT virtual TopoDS_Shape GetMirroredLoft(void);
 
     // Gets the component uid
-    virtual const std::string& GetUID(void) const;
+    TIGL_EXPORT virtual const std::string& GetUID(void) const;
 
     // Sets the component uid
-    virtual void SetUID(const std::string& uid);
+    TIGL_EXPORT virtual void SetUID(const std::string& uid);
 
     // Gets symmetry axis
-    virtual TiglSymmetryAxis GetSymmetryAxis(void);
+    TIGL_EXPORT virtual TiglSymmetryAxis GetSymmetryAxis(void);
 
     // Sets symmetry axis
-    virtual void SetSymmetryAxis(const std::string& axis);
+    TIGL_EXPORT virtual void SetSymmetryAxis(const std::string& axis);
 
     // Returns a unique Hashcode for a specific geometric component
-    int GetComponentHashCode(void);
+    TIGL_EXPORT int GetComponentHashCode(void);
 
     // Get transformation object
-    virtual CTiglTransformation GetTransformation(void);
+    TIGL_EXPORT virtual CTiglTransformation GetTransformation(void);
 
     // Get component translation
-    virtual CTiglPoint GetTranslation(void);
+    TIGL_EXPORT virtual CTiglPoint GetTranslation(void);
 
     // Set transformation object
-    virtual void Translate(CTiglPoint trans);
+    TIGL_EXPORT virtual void Translate(CTiglPoint trans);
     
     // return if pnt lies on the loft
-    bool GetIsOn(const gp_Pnt &pnt);
+    TIGL_EXPORT bool GetIsOn(const gp_Pnt &pnt);
     
     // return if pnt lies on the mirrored loft
     // if the loft as no symmetry, false is returned
-    bool GetIsOnMirrored(const gp_Pnt &pnt);
+    TIGL_EXPORT bool GetIsOnMirrored(const gp_Pnt &pnt);
 protected:
     // Resets the geometric component.
     virtual void Reset(void);

@@ -27,6 +27,7 @@
 #define CTIGLEXPORTIGES_H
 
 #include "tigl_config.h"
+#include "tigl_internal.h"
 #include "TopTools_HSequenceOfShape.hxx"
 #include "CTiglUIDManager.h"
 #include "CCPACSHeader.h"
@@ -45,23 +46,23 @@ class CTiglExportIges
 
 public:
     // Constructor
-    CTiglExportIges(CCPACSConfiguration& config);
+    TIGL_EXPORT CTiglExportIges(CCPACSConfiguration& config);
 
     // Virtual Destructor
-    virtual ~CTiglExportIges(void);
+    TIGL_EXPORT virtual ~CTiglExportIges(void);
     
     // Exports the whole configuration as IGES file
-    void ExportIGES(const std::string& filename) const;
+    TIGL_EXPORT void ExportIGES(const std::string& filename) const;
 
     // Exports the whole configuration, boolean fused, as IGES file
-    void ExportFusedIGES(const std::string& filename);
+    TIGL_EXPORT void ExportFusedIGES(const std::string& filename);
 
     // Save a sequence of shapes in IGES Format
-    void ExportShapes(const Handle(TopTools_HSequenceOfShape)& aHSequenceOfShape, const std::string& filename);
+    TIGL_EXPORT void ExportShapes(const Handle(TopTools_HSequenceOfShape)& aHSequenceOfShape, const std::string& filename);
 
 #ifdef TIGL_USE_XCAF
     // Saves as IGES, with cpacs metadata information in it
-    void ExportIgesWithCPACSMetadata(const std::string& filename);
+    TIGL_EXPORT void ExportIgesWithCPACSMetadata(const std::string& filename);
 #endif
     
 private:

@@ -27,6 +27,7 @@
 #define CCPACSWINGPOSITIONING_H
 
 #include "tixi.h"
+#include "tigl_internal.h"
 #include "CTiglTransformation.h"
 #include "CTiglPoint.h"
 #include <string>
@@ -40,31 +41,31 @@ class CCPACSWingPositioning
 
 public:
     // Constructor
-    CCPACSWingPositioning(void);
+    TIGL_EXPORT CCPACSWingPositioning(void);
 
     // Virtual Destructor
-    virtual ~CCPACSWingPositioning(void);
+    TIGL_EXPORT virtual ~CCPACSWingPositioning(void);
 
     // Invalidates internal state
-    void Invalidate(void);
+    TIGL_EXPORT void Invalidate(void);
 
     // Read CPACS segment elements
-    void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& positioningXPath);
+    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& positioningXPath);
 
     // Sets the positioning of the inner point
-    void SetInnerPoint(const CTiglPoint& aPoint);
+    TIGL_EXPORT void SetInnerPoint(const CTiglPoint& aPoint);
 
     // Gets the positioning of the outer point
-    CTiglPoint GetOuterPoint(void);
+    TIGL_EXPORT CTiglPoint GetOuterPoint(void);
 
     // Gets the outer transformation of this positioning
-    CTiglTransformation GetOuterTransformation(void);
+    TIGL_EXPORT CTiglTransformation GetOuterTransformation(void);
 
     // Gets the section-uid of the outer section of this positioning
-    std::string GetOuterSectionIndex(void);
+    TIGL_EXPORT std::string GetOuterSectionIndex(void);
 
     // Gets the section-uid of the inner section of this positioning
-    std::string GetInnerSectionIndex(void);
+    TIGL_EXPORT std::string GetInnerSectionIndex(void);
 
 protected:
     // Cleanup routine
