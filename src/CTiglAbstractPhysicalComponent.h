@@ -31,6 +31,7 @@
 #include <string>
 
 #include "tigl.h"
+#include "tigl_internal.h"
 #include "tigl_config.h"
 #include "CTiglAbstractGeometricComponent.h"
 #include "CTiglTransformation.h"
@@ -52,22 +53,19 @@ public:
     // Container type to store a components children
     typedef std::list<CTiglAbstractPhysicalComponent*> ChildContainerType;
 
-    CTiglAbstractPhysicalComponent();
+    TIGL_EXPORT CTiglAbstractPhysicalComponent();
 
     // Returns the parent unique id
-    virtual std::string& GetParentUID(void);
+    TIGL_EXPORT virtual std::string& GetParentUID(void);
 
     // Sets the parent uid.
-    virtual void SetParentUID(const std::string& parentUID);
+    TIGL_EXPORT virtual void SetParentUID(const std::string& parentUID);
 
     // Adds a child to this geometric component.
-    virtual void AddChild(CTiglAbstractPhysicalComponent* componentPtr);
+    TIGL_EXPORT virtual void AddChild(CTiglAbstractPhysicalComponent* componentPtr);
 
     // Returns a pointer to the list of children of a component.
-    virtual ChildContainerType GetChildren(bool recursive);
-
-    // number of segments
-    //virtual int GetSegmentCount(void) const = 0;
+    TIGL_EXPORT virtual ChildContainerType GetChildren(bool recursive);
 
     // builds data structure for a TDocStd_Application
     // mostly used for export
@@ -75,10 +73,7 @@ public:
     virtual TDF_Label ExportDataStructure(class CCPACSConfiguration& config, Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label);
 #endif
 
-    // Returns the segment for a given index
-    //virtual class CTiglAbstractSegment & GetSegment(const int index) = 0;
-
-    virtual void SetSymmetryAxis(const std::string& axis);
+    TIGL_EXPORT virtual void SetSymmetryAxis(const std::string& axis);
 
 protected:
     // Define a std::map to store the indices of already fused segments

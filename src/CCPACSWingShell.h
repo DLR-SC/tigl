@@ -19,26 +19,27 @@
 #ifndef CCPACSWINGSHELL_H
 #define CCPACSWINGSHELL_H
 
+#include "tigl_internal.h"
 #include "CCPACSWingCells.h"
 #include "CCPACSMaterial.h"
 
 namespace tigl 
 {
 
-class CCPACSWingShell 
+class CCPACSWingShell
 {
 public:
-    CCPACSWingShell();
+    TIGL_EXPORT CCPACSWingShell();
     
-    void Reset();
+    TIGL_EXPORT void Reset();
     
-    int GetCellCount() const;
-    CCPACSWingCell& GetCell(int index);
-    CCPACSMaterial& GetMaterial();
+    TIGL_EXPORT int GetCellCount() const;
+    TIGL_EXPORT CCPACSWingCell& GetCell(int index);
+    TIGL_EXPORT CCPACSMaterial& GetMaterial();
     
-    void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& shellXPath);
-    void Invalidate();
-    bool IsValid() const;
+    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& shellXPath);
+    TIGL_EXPORT void Invalidate();
+    TIGL_EXPORT bool IsValid() const;
 private:
     CCPACSWingCells cells;
     CCPACSMaterial material;

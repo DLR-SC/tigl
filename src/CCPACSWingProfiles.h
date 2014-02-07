@@ -26,6 +26,7 @@
 #ifndef CCPACSWINGPROFILES_H
 #define CCPACSWINGPROFILES_H
 
+#include "tigl_internal.h"
 #include "tixi.h"
 #include "CCPACSWingProfile.h"
 #include <string>
@@ -43,25 +44,25 @@ private:
 
 public:
     // Constructor
-    CCPACSWingProfiles(void);
+    TIGL_EXPORT CCPACSWingProfiles(void);
 
     // Virtual Destructor
-    virtual ~CCPACSWingProfiles(void);
+    TIGL_EXPORT virtual ~CCPACSWingProfiles(void);
 
     // Read CPACS wing profiles
-    void ReadCPACS(TixiDocumentHandle tixiHandle);
+    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle);
 
     // Returns the total count of wing profiles in this configuration
-    int GetProfileCount(void) const;
+    TIGL_EXPORT int GetProfileCount(void) const;
 
     // Returns the wing profile for a given index or uid.
-    CCPACSWingProfile& GetProfile(std::string uid) const;
+    TIGL_EXPORT CCPACSWingProfile& GetProfile(std::string uid) const;
 
     // Returns the wing profile for a given index or uid - TODO: depricated!
-    CCPACSWingProfile& GetProfile(int index) const;
+    TIGL_EXPORT CCPACSWingProfile& GetProfile(int index) const;
 
     // Invalidates internal state
-    void Invalidate(void);
+    TIGL_EXPORT void Invalidate(void);
 
 protected:
     // Cleanup routine

@@ -29,6 +29,7 @@
 #include <string>
 
 #include "tigl_config.h"
+#include "tigl_internal.h"
 #include "tixi.h"
 #include "CCPACSWingConnection.h"
 #include "CCPACSWingCSStructure.h"
@@ -55,43 +56,43 @@ class CCPACSWingComponentSegment : public CTiglAbstractSegment
 
 public:
     // Constructor
-    CCPACSWingComponentSegment(CCPACSWing* aWing, int aSegmentIndex);
+    TIGL_EXPORT CCPACSWingComponentSegment(CCPACSWing* aWing, int aSegmentIndex);
 
     // Virtual Destructor
-    virtual ~CCPACSWingComponentSegment(void);
+    TIGL_EXPORT virtual ~CCPACSWingComponentSegment(void);
 
     // Invalidates internal state
-    void Invalidate(void);
+    TIGL_EXPORT void Invalidate(void);
 
     // Read CPACS segment elements
-    void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string & segmentXPath);
+    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string & segmentXPath);
 
     // Returns the wing this segment belongs to
-    CCPACSWing& GetWing(void) const;
+    TIGL_EXPORT CCPACSWing& GetWing(void) const;
 
     // Gets a point in relative wing coordinates for a given eta and xsi
-    gp_Pnt GetPoint(double eta, double xsi);
+    TIGL_EXPORT gp_Pnt GetPoint(double eta, double xsi);
         
     // Get the eta xsi coordinate from a segment point (given by seta, sxsi)
-    void GetEtaXsiFromSegmentEtaXsi(const std::string &segmentUID, double seta, double sxsi, double &eta, double &xsi);
+    TIGL_EXPORT void GetEtaXsiFromSegmentEtaXsi(const std::string &segmentUID, double seta, double sxsi, double &eta, double &xsi);
 
     // Gets the volume of this segment
-    double GetVolume();
+    TIGL_EXPORT double GetVolume();
 
     // Gets the surface area of this segment
-    double GetSurfaceArea();
+    TIGL_EXPORT double GetSurfaceArea();
 
     // Gets the fromElementUID of this segment
-    const std::string & GetFromElementUID(void) const;
+    TIGL_EXPORT const std::string & GetFromElementUID(void) const;
 
     // Gets the toElementUID of this segment
-    const std::string & GetToElementUID(void) const;
+    TIGL_EXPORT const std::string & GetToElementUID(void) const;
 
     // Returns the segment to a given point on the componentSegment and the nearest point projected onto the loft.
     // Returns null if the point is not an that wing, i.e. deviates more than 1 cm from the wing
-    const CTiglAbstractSegment* findSegment(double x, double y, double z, gp_Pnt& nearestPoint);
+    TIGL_EXPORT const CTiglAbstractSegment* findSegment(double x, double y, double z, gp_Pnt& nearestPoint);
 
-    TiglGeometricComponentType GetComponentType(){ return TIGL_COMPONENT_WINGCOMPSEGMENT | TIGL_COMPONENT_SEGMENT | TIGL_COMPONENT_LOGICAL; }
+    TIGL_EXPORT TiglGeometricComponentType GetComponentType(){ return TIGL_COMPONENT_WINGCOMPSEGMENT | TIGL_COMPONENT_SEGMENT | TIGL_COMPONENT_LOGICAL; }
 
 #ifdef TIGL_USE_XCAF
     // builds data structure for a TDocStd_Application
@@ -99,17 +100,17 @@ public:
     TDF_Label ExportDataStructure(class CCPACSConfiguration &, Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label);
 #endif
         
-    MaterialList GetMaterials(double eta, double xsi, TiglStructureType);
+    TIGL_EXPORT MaterialList GetMaterials(double eta, double xsi, TiglStructureType);
 
     // returns a list of segments that belong to this component segment
-    SegmentList& GetSegmentList();
+    TIGL_EXPORT SegmentList& GetSegmentList();
         
     // creates an (iso) component segment line 
-    TopoDS_Wire GetCSLine(double eta1, double xsi1, double eta2, double xsi2, int NSTEPS=101);
+    TIGL_EXPORT TopoDS_Wire GetCSLine(double eta1, double xsi1, double eta2, double xsi2, int NSTEPS=101);
         
     // calculates the intersection of a segment iso eta line with a component segment line (defined by its start and end point)
     // returns the xsi coordinate of the intersection
-    void GetSegmentIntersection(const std::string& segmentUID, double csEta1, double csXsi1, double csEta2, double csXsi2, double eta, double& xsi);
+    TIGL_EXPORT void GetSegmentIntersection(const std::string& segmentUID, double csEta1, double csXsi1, double csEta2, double csXsi2, double eta, double& xsi);
 protected:
     // Cleanup routine
     void Cleanup(void);

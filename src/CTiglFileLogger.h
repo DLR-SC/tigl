@@ -19,6 +19,7 @@
 #ifndef CTIGLFILELOGGER_H
 #define CTIGLFILELOGGER_H
 
+#include "tigl_internal.h"
 #include "ITiglLogger.h"
 #include <cstdio>
 #include <CSharedPtr.h>
@@ -31,12 +32,12 @@ class CMutex;
 class CTiglFileLogger : public ITiglLogger
 {
 public:
-    CTiglFileLogger(const char* filename);
-    CTiglFileLogger(FILE * file);
-    virtual ~CTiglFileLogger();
+    TIGL_EXPORT CTiglFileLogger(const char* filename);
+    TIGL_EXPORT CTiglFileLogger(FILE * file);
+    TIGL_EXPORT virtual ~CTiglFileLogger();
 
-    virtual void LogMessage(TiglLogLevel, const char * message);
-    virtual void SetVerbosity(TiglLogLevel);
+    TIGL_EXPORT virtual void LogMessage(TiglLogLevel, const char * message);
+    TIGL_EXPORT virtual void SetVerbosity(TiglLogLevel);
 
 private:
     FILE * logFileStream;

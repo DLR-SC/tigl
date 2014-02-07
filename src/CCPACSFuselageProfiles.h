@@ -26,6 +26,7 @@
 #ifndef CCPACSFUSELAGEPROFILES_H
 #define CCPACSFUSELAGEPROFILES_H
 
+#include "tigl_internal.h"
 #include "tixi.h"
 #include "CCPACSFuselageProfile.h"
 #include <string>
@@ -43,25 +44,25 @@ private:
 
 public:
     // Constructor
-    CCPACSFuselageProfiles(void);
+    TIGL_EXPORT CCPACSFuselageProfiles(void);
 
     // Virtual Destructor
-    virtual ~CCPACSFuselageProfiles(void);
+    TIGL_EXPORT virtual ~CCPACSFuselageProfiles(void);
 
     // Read CPACS fuselage profiles
-    void ReadCPACS(TixiDocumentHandle tixiHandle);
+    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle);
 
     // Returns the total count of fuselage profiles in this configuration
-    int GetProfileCount(void) const;
+    TIGL_EXPORT int GetProfileCount(void) const;
 
     // Returns the fuselage profile for a given index.
-    CCPACSFuselageProfile& GetProfile(int index) const;
+    TIGL_EXPORT CCPACSFuselageProfile& GetProfile(int index) const;
 
     // Returns the fuselage profile for a given uid.
-    CCPACSFuselageProfile& GetProfile(std::string uid) const;
+    TIGL_EXPORT CCPACSFuselageProfile& GetProfile(std::string uid) const;
 
     // Invalidates internal state
-    void Invalidate(void);
+    TIGL_EXPORT void Invalidate(void);
 
 protected:
     // Cleanup routine

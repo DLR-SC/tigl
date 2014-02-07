@@ -26,6 +26,7 @@
 #ifndef CCPACSWINGSECTIONS_H
 #define CCPACSWINGSECTIONS_H
 
+#include "tigl_internal.h"
 #include "tixi.h"
 #include "CCPACSWingSection.h"
 #include "CTiglError.h"
@@ -44,19 +45,19 @@ private:
 
 public:
     // Constructor
-    CCPACSWingSections(void);
+    TIGL_EXPORT CCPACSWingSections(void);
 
     // Virtual Destructor
-    virtual ~CCPACSWingSections(void);
+    TIGL_EXPORT virtual ~CCPACSWingSections(void);
 
     // Read CPACS wing sections element
-    void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& wingXPath);
+    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& wingXPath);
 
     // Get section count
-    int GetSectionCount(void) const;
+    TIGL_EXPORT int GetSectionCount(void) const;
 
     // Returns the section for a given index
-    CCPACSWingSection& GetSection(int index) const;
+    TIGL_EXPORT CCPACSWingSection& GetSection(int index) const;
 
 protected:
     // Cleanup routine

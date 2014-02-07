@@ -26,6 +26,8 @@
 #ifndef CCPACSCONFIGURATION_H
 #define CCPACSCONFIGURATION_H
 
+#include "tigl_internal.h"
+
 #include "CTiglUIDManager.h"
 #include "CTiglLogging.h"
 #include "CCPACSHeader.h"
@@ -46,74 +48,74 @@ class CCPACSConfiguration
 
 public:
     // Constructor
-    CCPACSConfiguration(TixiDocumentHandle tixiHandle);
+    TIGL_EXPORT CCPACSConfiguration(TixiDocumentHandle tixiHandle);
 
     // Virtual Destructor
-    virtual ~CCPACSConfiguration(void);
+    TIGL_EXPORT virtual ~CCPACSConfiguration(void);
 
     // Invalidates the internal state of the configuration and forces
     // recalculation of wires, lofts etc.
-    void Invalidate(void);
+    TIGL_EXPORT void Invalidate(void);
 
     // Read CPACS configuration
-    void ReadCPACS(const char* configurationUID);
+    TIGL_EXPORT void ReadCPACS(const char* configurationUID);
 
     // Returns the underlying tixi document handle used by a CPACS configuration
-    TixiDocumentHandle GetTixiDocumentHandle(void) const;
+    TIGL_EXPORT TixiDocumentHandle GetTixiDocumentHandle(void) const;
 
     // Returns the total count of wing profiles in this configuration
-    int GetWingProfileCount(void) const;
+    TIGL_EXPORT int GetWingProfileCount(void) const;
 
     // Returns the wing profile for a given index - TODO: depricated!
-    CCPACSWingProfile& GetWingProfile(int index) const;
+    TIGL_EXPORT CCPACSWingProfile& GetWingProfile(int index) const;
 
     // Returns the wing profile for a given uid.
-    CCPACSWingProfile& GetWingProfile(std::string uid) const;
+    TIGL_EXPORT CCPACSWingProfile& GetWingProfile(std::string uid) const;
 
     // Returns the total count of wings in a configuration
-    int GetWingCount(void) const;
+    TIGL_EXPORT int GetWingCount(void) const;
 
     // Returns the wing for a given index.
-    CCPACSWing& GetWing(int index) const;
+    TIGL_EXPORT CCPACSWing& GetWing(int index) const;
 
     // Returns the wing for a given UID.
-    CCPACSWing& GetWing(const std::string& UID) const;
+    TIGL_EXPORT CCPACSWing& GetWing(const std::string& UID) const;
 
-    TopoDS_Shape GetParentLoft(const std::string& UID);
+    TIGL_EXPORT TopoDS_Shape GetParentLoft(const std::string& UID);
 
     // Returns the total count of fuselage profiles in this configuration
-    int GetFuselageProfileCount(void) const;
+    TIGL_EXPORT int GetFuselageProfileCount(void) const;
 
     // Returns the fuselage profile for a given index.
-    CCPACSFuselageProfile& GetFuselageProfile(int index) const;
+    TIGL_EXPORT CCPACSFuselageProfile& GetFuselageProfile(int index) const;
 
     // Returns the fuselage profile for a given uid.
-    CCPACSFuselageProfile& GetFuselageProfile(std::string uid) const;
+    TIGL_EXPORT CCPACSFuselageProfile& GetFuselageProfile(std::string uid) const;
 
     // Returns the total count of fuselages in a configuration
-    int GetFuselageCount(void) const;
+    TIGL_EXPORT int GetFuselageCount(void) const;
 
     // Returns the fuselage for a given index.
-    CCPACSFuselage& GetFuselage(int index) const;
+    TIGL_EXPORT CCPACSFuselage& GetFuselage(int index) const;
 
     // Returns the fuselage for a given UID.
-    CCPACSFuselage& GetFuselage(std::string UID) const;
+    TIGL_EXPORT CCPACSFuselage& GetFuselage(std::string UID) const;
 
-    CCPACSFarField& GetFarField();
+    TIGL_EXPORT CCPACSFarField& GetFarField();
 
     // Returns the uid manager
-    CTiglUIDManager& GetUIDManager(void);
+    TIGL_EXPORT CTiglUIDManager& GetUIDManager(void);
 
     // Returns the boolean fused airplane as TopoDS_Shape
-    TopoDS_Shape& GetFusedAirplane(void);
+    TIGL_EXPORT TopoDS_Shape& GetFusedAirplane(void);
 
     // Returns the length of the airplane
-    double GetAirplaneLenth(void);
+    TIGL_EXPORT double GetAirplaneLenth(void);
 
     // Returns the UID of the loaded configuration.
-    std::string GetUID(void);
+    TIGL_EXPORT std::string GetUID(void);
         
-    CTiglShapeCache& GetShapeCache(void);
+    TIGL_EXPORT CTiglShapeCache& GetShapeCache(void);
 
 protected:
     void BuildFusedPlane(CTiglAbstractPhysicalComponent* parent);

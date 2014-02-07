@@ -27,6 +27,7 @@
 #define CTIGLINTERSECTIONCALCULATION
 
 #include "tigl.h"
+#include "tigl_internal.h"
 #include "CCPACSHeader.h"
 #include "CCPACSWings.h"
 #include "CCPACSWingProfile.h"
@@ -50,32 +51,32 @@ class CTiglIntersectionCalculation
 
 public:
     // Constructor
-    CTiglIntersectionCalculation(CTiglShapeCache* cache, 
+    TIGL_EXPORT CTiglIntersectionCalculation(CTiglShapeCache* cache,
                                  const std::string &idOne, 
                                  const std::string &idTwo, 
                                  TopoDS_Shape compoundOne,
                                  TopoDS_Shape compoundTwo );
 
     // Destructor
-    virtual ~CTiglIntersectionCalculation(void);
+    TIGL_EXPORT virtual ~CTiglIntersectionCalculation(void);
 
     // returns total number of intersection lines
-    int GetCountIntersectionLines(void);
+    TIGL_EXPORT int GetCountIntersectionLines(void);
 
     // Gets a point on the intersection line in dependence of a parameter zeta with
     // 0.0 <= zeta <= 1.0. For zeta = 0.0 this is the line starting point,
     // for zeta = 1.0 the last point on the intersection line.
     // numIntersecLine is the number of the Intersection line.
-    gp_Pnt GetPoint(double zeta, int wireID);
+    TIGL_EXPORT gp_Pnt GetPoint(double zeta, int wireID);
 
     // gives the number of wires of the intersection calculation
-    int GetNumWires();
+    TIGL_EXPORT int GetNumWires();
 
     // gives a reference to the computed wire
-    TopoDS_Wire& GetWire(int wireID);
+    TIGL_EXPORT TopoDS_Wire& GetWire(int wireID);
 
     // returns id string for intersection wire
-    std::string GetIDString(int wireID);
+    TIGL_EXPORT std::string GetIDString(int wireID);
 
 private:        
     Standard_Real tolerance;

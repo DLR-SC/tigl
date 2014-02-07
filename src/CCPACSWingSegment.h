@@ -29,6 +29,7 @@
 #include <string>
 
 #include "tigl_config.h"
+#include "tigl_internal.h"
 #include "tixi.h"
 #include "CCPACSWingConnection.h"
 #include "CTiglPoint.h"
@@ -50,118 +51,118 @@ class CCPACSWingSegment : public CTiglAbstractSegment
 
 public:
     // Constructor
-    CCPACSWingSegment(CCPACSWing* aWing, int aSegmentIndex);
+    TIGL_EXPORT CCPACSWingSegment(CCPACSWing* aWing, int aSegmentIndex);
 
     // Virtual Destructor
-    virtual ~CCPACSWingSegment(void);
+    TIGL_EXPORT virtual ~CCPACSWingSegment(void);
 
     // Invalidates internal state
-    void Invalidate(void);
+    TIGL_EXPORT void Invalidate(void);
 
     // Read CPACS segment elements
-    void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string & segmentXPath);
+    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string & segmentXPath);
 
     // Returns the wing this segment belongs to
-    CCPACSWing& GetWing(void) const;
+    TIGL_EXPORT CCPACSWing& GetWing(void) const;
     
-    TopoDS_Shape GetInnerClosure();
-    TopoDS_Shape GetOuterClosure();
+    TIGL_EXPORT TopoDS_Shape GetInnerClosure();
+    TIGL_EXPORT TopoDS_Shape GetOuterClosure();
 
     // Gets the upper point in relative wing coordinates for a given eta and xsi
-    gp_Pnt GetUpperPoint(double eta, double xsi);
+    TIGL_EXPORT gp_Pnt GetUpperPoint(double eta, double xsi);
 
     // Gets the lower point in relative wing coordinates for a given eta and xsi
-    gp_Pnt GetLowerPoint(double eta, double xsi);
+    TIGL_EXPORT gp_Pnt GetLowerPoint(double eta, double xsi);
 
     // Gets the point on the wing chord surface in relative wing coordinates for a given eta and xsi
-    gp_Pnt GetChordPoint(double eta, double xsi);
+    TIGL_EXPORT gp_Pnt GetChordPoint(double eta, double xsi);
 
     // Returns the inner section UID of this segment
-    const std::string& GetInnerSectionUID(void);
+    TIGL_EXPORT const std::string& GetInnerSectionUID(void);
 
     // Returns the outer section UID of this segment
-    const std::string& GetOuterSectionUID(void);
+    TIGL_EXPORT const std::string& GetOuterSectionUID(void);
 
     // Returns the inner section element UID of this segment
-    const std::string& GetInnerSectionElementUID(void);
+    TIGL_EXPORT const std::string& GetInnerSectionElementUID(void);
 
     // Returns the outer section element UID of this segment
-    const std::string& GetOuterSectionElementUID(void);
+    TIGL_EXPORT const std::string& GetOuterSectionElementUID(void);
 
     // Returns the inner section index of this segment
-    int GetInnerSectionIndex(void);
+    TIGL_EXPORT int GetInnerSectionIndex(void);
 
     // Returns the outer section index of this segment
-    int GetOuterSectionIndex(void);
+    TIGL_EXPORT int GetOuterSectionIndex(void);
 
     // Returns the inner section element index of this segment
-    int GetInnerSectionElementIndex(void);
+    TIGL_EXPORT int GetInnerSectionElementIndex(void);
 
     // Returns the outer section element index of this segment
-    int GetOuterSectionElementIndex(void);
+    TIGL_EXPORT int GetOuterSectionElementIndex(void);
 
     // Returns the starting(inner) Segment Connection
-    CCPACSWingConnection& GetInnerConnection(void);
+    TIGL_EXPORT CCPACSWingConnection& GetInnerConnection(void);
 
     // Return the end(outer) Segment Connection
-    CCPACSWingConnection& GetOuterConnection(void);
+    TIGL_EXPORT CCPACSWingConnection& GetOuterConnection(void);
 
     // Gets the count of segments connected to the inner section of this segment
-    int GetInnerConnectedSegmentCount(void);
+    TIGL_EXPORT int GetInnerConnectedSegmentCount(void);
 
     // Gets the count of segments connected to the outer section of this segment
-    int GetOuterConnectedSegmentCount(void);
+    TIGL_EXPORT int GetOuterConnectedSegmentCount(void);
 
     // Gets the index (number) of the n-th segment connected to the inner section
     // of this segment. n starts at 1.
-    int GetInnerConnectedSegmentIndex(int n);
+    TIGL_EXPORT int GetInnerConnectedSegmentIndex(int n);
 
     // Gets the index (number) of the n-th segment connected to the outer section
     // of this segment. n starts at 1.
-    int GetOuterConnectedSegmentIndex(int n);
+    TIGL_EXPORT int GetOuterConnectedSegmentIndex(int n);
 
     // Gets the volume of this segment
-    double GetVolume();
+    TIGL_EXPORT double GetVolume();
 
     // Gets the surface area of this segment
-    double GetSurfaceArea();
+    TIGL_EXPORT double GetSurfaceArea();
 
     // helper function to get the inner transformed chord line wire, used in GetLoft and when determining triangulation midpoints projection on segments in VtkExport
-    TopoDS_Wire GetInnerWire(void);
+    TIGL_EXPORT TopoDS_Wire GetInnerWire(void);
 
     // helper function to get the outer transformed chord line wire, used in GetLoft and when determining triangulation midpoints projection on segments in VtkExport
-    TopoDS_Wire GetOuterWire(void);
+    TIGL_EXPORT TopoDS_Wire GetOuterWire(void);
 
     // Returns eta as parametric distance from a given point on the surface
     // Get information about a point beeing on upper/lower side with "GetIsOnTop"
-    double GetEta(gp_Pnt pnt, bool isUpper);
+    TIGL_EXPORT double GetEta(gp_Pnt pnt, bool isUpper);
     
     // calculates eta from a given XSI and 
-    double GetEta(gp_Pnt pnt, double xsi);
+    TIGL_EXPORT double GetEta(gp_Pnt pnt, double xsi);
 
     // Returns zeta as parametric distance from a given point on the surface
     // Get information about a point beeing on upper/lower side with "GetIsOnTop"
-    double GetXsi(gp_Pnt pnt, bool isUpper);
+    TIGL_EXPORT double GetXsi(gp_Pnt pnt, bool isUpper);
 
     // projects a point unto the wing and returns its coordinates
-    void GetEtaXsi(gp_Pnt pnt, bool isUpper, double& eta, double& xsi);
+    TIGL_EXPORT void GetEtaXsi(gp_Pnt pnt, bool isUpper, double& eta, double& xsi);
 
 
     // Returns if the given point is ont the Top of the wing or on the lower side.
-    bool GetIsOnTop(gp_Pnt pnt);
+    TIGL_EXPORT bool GetIsOnTop(gp_Pnt pnt);
 
     // Returns the reference area of the quadrilateral portion of the wing segment
     // by projecting the wing segment into the plane defined by the user
-    double GetReferenceArea(TiglSymmetryAxis symPlane);
+    TIGL_EXPORT double GetReferenceArea(TiglSymmetryAxis symPlane);
 
     // Returns the lower Surface of this Segment
-    Handle(Geom_Surface) GetLowerSurface();
+    TIGL_EXPORT Handle(Geom_Surface) GetLowerSurface();
 
     // Returns the upper Surface of this Segment
-    Handle(Geom_Surface) GetUpperSurface();
+    TIGL_EXPORT Handle(Geom_Surface) GetUpperSurface();
     
-    TopoDS_Shape& GetUpperShape();
-    TopoDS_Shape& GetLowerShape();
+    TIGL_EXPORT TopoDS_Shape& GetUpperShape();
+    TIGL_EXPORT TopoDS_Shape& GetLowerShape();
 
     // Returns an upper or lower point on the segment surface in
     // dependence of parameters eta and xsi, which range from 0.0 to 1.0.
@@ -169,7 +170,7 @@ public:
     // inner wing profile. For eta = 1.0, xsi = 1.0 point is equal to the trailing
     // edge on the outer wing profile. If fromUpper is true, a point
     // on the upper surface is returned, otherwise from the lower.
-    gp_Pnt GetPoint(double eta, double xsi, bool fromUpper);
+    TIGL_EXPORT gp_Pnt GetPoint(double eta, double xsi, bool fromUpper);
     
     // Returns an upper or lower point on the segment surface in
     // dependence of parameters eta and xsi, which range from 0.0 to 1.0.
@@ -180,9 +181,9 @@ public:
     // From a point on the surface, the intersection of a rotated normal vector
     // is computed with the upper or lower segment surface. The amount of 
     // rotation is given by the parameters xangle, yangle, zangle
-    gp_Pnt GetPointAngles(double eta, double xsi, double xangle, double yangle, double zangle, bool fromUpper);
+    TIGL_EXPORT gp_Pnt GetPointAngles(double eta, double xsi, double xangle, double yangle, double zangle, bool fromUpper);
 
-    TiglGeometricComponentType GetComponentType(){ return TIGL_COMPONENT_WINGSEGMENT | TIGL_COMPONENT_SEGMENT | TIGL_COMPONENT_LOGICAL; }
+    TIGL_EXPORT TiglGeometricComponentType GetComponentType(){ return TIGL_COMPONENT_WINGSEGMENT | TIGL_COMPONENT_SEGMENT | TIGL_COMPONENT_LOGICAL; }
 
 #ifdef TIGL_USE_XCAF
     // builds data structure for a TDocStd_Application

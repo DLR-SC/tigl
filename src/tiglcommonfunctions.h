@@ -19,27 +19,28 @@
 #ifndef TIGLCOMMONFUNCTIONS_H
 #define TIGLCOMMONFUNCTIONS_H
 
+#include "tigl_internal.h"
 #include "Standard.hxx"
 #include "gp_Pnt.hxx"
 #include "gp_Vec.hxx"
 #include "TopoDS_Shape.hxx"
 
-Standard_Real GetWireLength(const class TopoDS_Wire& wire);
+TIGL_EXPORT Standard_Real GetWireLength(const class TopoDS_Wire& wire);
 
 // returns a point on the wire (0 <= alpha <= 1)
-gp_Pnt WireGetPoint(const TopoDS_Wire& wire, double alpha);
-void WireGetPointNormal(const TopoDS_Wire& wire, double alpha, gp_Pnt& point, gp_Vec& normal);
+TIGL_EXPORT gp_Pnt WireGetPoint(const TopoDS_Wire& wire, double alpha);
+TIGL_EXPORT void WireGetPointNormal(const TopoDS_Wire& wire, double alpha, gp_Pnt& point, gp_Vec& normal);
 
-gp_Pnt WireGetPoint2(const TopoDS_Wire& wire, double alpha);
-void WireGetPointNormal2(const TopoDS_Wire& wire, double alpha, gp_Pnt& point, gp_Vec& normal);
+TIGL_EXPORT gp_Pnt WireGetPoint2(const TopoDS_Wire& wire, double alpha);
+TIGL_EXPORT void WireGetPointNormal2(const TopoDS_Wire& wire, double alpha, gp_Pnt& point, gp_Vec& normal);
 
 // calculates the alpha value for a given point on a wire
-Standard_Real ProjectPointOnWire(const TopoDS_Wire& wire, gp_Pnt p);
+TIGL_EXPORT Standard_Real ProjectPointOnWire(const TopoDS_Wire& wire, gp_Pnt p);
 
 // projects a point onto the line (lineStart<->lineStop) and returns the projection parameter
-Standard_Real ProjectPointOnLine(gp_Pnt p, gp_Pnt lineStart, gp_Pnt lineStop);
+TIGL_EXPORT Standard_Real ProjectPointOnLine(gp_Pnt p, gp_Pnt lineStart, gp_Pnt lineStop);
 
 // returns the number of edges of the current shape
-unsigned int GetNumberOfEdges(const TopoDS_Shape& shape);
+TIGL_EXPORT unsigned int GetNumberOfEdges(const TopoDS_Shape& shape);
 
 #endif // TIGLCOMMONFUNCTIONS_H

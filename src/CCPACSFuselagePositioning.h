@@ -27,6 +27,7 @@
 #define CCPACSFUSELAGEPOSITIONING_H
 
 #include "tixi.h"
+#include "tigl_internal.h"
 #include "CTiglTransformation.h"
 #include "CTiglPoint.h"
 #include <string>
@@ -40,31 +41,31 @@ class CCPACSFuselagePositioning
 
 public:
     // Constructor
-    CCPACSFuselagePositioning(void);
+    TIGL_EXPORT CCPACSFuselagePositioning(void);
 
     // Virtual Destructor
-    virtual ~CCPACSFuselagePositioning(void);
+    TIGL_EXPORT virtual ~CCPACSFuselagePositioning(void);
 
     // Invalidates internal state
-    void Invalidate(void);
+    TIGL_EXPORT void Invalidate(void);
 
     // Read CPACS segment elements
-    void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& positioningXPath);
+    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& positioningXPath);
 
     // Sets the positioning of the start point
-    void SetStartPoint(const CTiglPoint& aPoint);
+    TIGL_EXPORT void SetStartPoint(const CTiglPoint& aPoint);
 
     // Gets the positioning of the end point
-    CTiglPoint GetEndPoint(void);
+    TIGL_EXPORT CTiglPoint GetEndPoint(void);
 
     // Gets the end transformation of this positioning
-    CTiglTransformation GetEndTransformation(void);
+    TIGL_EXPORT CTiglTransformation GetEndTransformation(void);
 
     // Gets the section index of the end section of this positioning
-    std::string GetEndSectionIndex(void);
+    TIGL_EXPORT std::string GetEndSectionIndex(void);
 
     // Gets the section index of the start section of this positioning
-    std::string GetStartSectionIndex(void);
+    TIGL_EXPORT std::string GetStartSectionIndex(void);
 
 protected:
     // Cleanup routine
