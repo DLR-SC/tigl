@@ -57,9 +57,18 @@ set (OCC_VISU_LIBS
 )
 
 OPTION(TIGL_USE_XCAF "Enables more export functionality (but requires XCAF, which itself requires OCCT Visualization)" ON)
+OPTION(TIGL_XCAF_WO_VISU "Check, if you have a patched OCCT in which XCAF does not require visualization" OFF)
+mark_as_advanced(TIGL_XCAF_WO_VISU)
+
+# TKStdSchema TKPCAF TKPShape PTKernel 
 
 if(TIGL_USE_XCAF)
-    set(OCC_LIBS TKXDEIGES TKXDESTEP TKPCAF TKXCAF TKCAF ${OCC_VISU_LIBS} TKPShape PTKernel TKLCAF TKCDF   TKStdSchema ${OCC_LIBS})
+    set(XCAF_LIBS TKXDEIGES TKXDESTEP TKXCAF TKCAF TKLCAF TKCDF)
+    if(NOT TIGL_XCAF_WO_VISU)
+        set(XCAF_LIBS ${XCAF_LIBS} ${OCC_VISU_LIBS} TKStdSchema TKPCAF TKPShape PTKernel)
+    endif()
+
+    set(OCC_LIBS ${XCAF_LIBS} ${OCC_LIBS})
 else()
     message("XCAF disabled. IGES and STEP export with CPACS metadata will not be avaible.")
 endif()
