@@ -20,43 +20,43 @@
 * @brief  Implementation of CPACS guide curves handling routines
 */
 
-#ifndef CCPACSGUIDECURVES_H
-#define CCPACSGUIDECURVES_H
+#ifndef CCPACSGUIDECURVEPROFILES_H
+#define CCPACSGUIDECURVEPROFILES_H
 
 #include "tigl_internal.h"
 #include "tixi.h"
 #include "CSharedPtr.h"
-#include "CCPACSGuideCurve.h"
+#include "CCPACSGuideCurveProfile.h"
 #include <string>
 #include <map>
 
 namespace tigl
 {
 
-typedef CSharedPtr<CCPACSGuideCurve> PCCPACSGuideCurve;
+typedef CSharedPtr<CCPACSGuideCurveProfile> PCCPACSGuideCurveProfile;
 
-class CCPACSGuideCurves
+class CCPACSGuideCurveProfiles
 {
 
 private:
     // Typedef for a container to store the guide curves.
-    typedef std::map<std::string, PCCPACSGuideCurve> CCPACSGuideCurveContainer;
+    typedef std::map<std::string, PCCPACSGuideCurveProfile> CCPACSGuideCurveProfileContainer;
 
 public:
     // Constructor
-    TIGL_EXPORT CCPACSGuideCurves(void);
+    TIGL_EXPORT CCPACSGuideCurveProfiles(void);
 
     // Virtual Destructor
-    TIGL_EXPORT virtual ~CCPACSGuideCurves(void);
+    TIGL_EXPORT virtual ~CCPACSGuideCurveProfiles(void);
 
     // Read CPACS guide curves
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle);
 
     // Returns the total count of guide curves in this configuration
-    TIGL_EXPORT int GetGuideCurveCount(void) const;
+    TIGL_EXPORT int GetGuideCurveProfileCount(void) const;
 
     // Returns the guide curve for a given uid.
-    TIGL_EXPORT CCPACSGuideCurve& GetGuideCurve(std::string uid) const;
+    TIGL_EXPORT CCPACSGuideCurveProfile& GetGuideCurveProfile(std::string uid) const;
 
 protected:
     // Cleanup routine
@@ -64,16 +64,16 @@ protected:
 
 private:
     // Copy constructor
-    CCPACSGuideCurves(const CCPACSGuideCurves& ) { /* Do nothing */ }
+    CCPACSGuideCurveProfiles(const CCPACSGuideCurveProfiles& ) { /* Do nothing */ }
 
     // Assignment operator
-    void operator=(const CCPACSGuideCurves& ) { /* Do nothing */ }
+    void operator=(const CCPACSGuideCurveProfiles& ) { /* Do nothing */ }
 
 private:
-    CCPACSGuideCurveContainer guideCurves;     // All guide curves
+    CCPACSGuideCurveProfileContainer guideCurves;     // All guide curves
 
 };
 
 } // end namespace tigl
 
-#endif // CCPACSGUIDECURVES_H
+#endif // CCPACSGUIDECURVEPROFILES_H

@@ -31,7 +31,7 @@
 #include "GeomAPI_ProjectPointOnCurve.hxx"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
-#include "CCPACSGuideCurves.h"
+#include "CCPACSGuideCurveProfiles.h"
 
 /******************************************************************************/
 
@@ -101,25 +101,25 @@ protected:
 /******************************************************************************/
 
 /**
-* Tests CCPACSGuideCurve class
+* Tests CCPACSGuideCurveProfile class
 */
-TEST_F(FuselageGuideCurve, tiglFuselageGuideCurve_CCPACSGuideCurve)
+TEST_F(FuselageGuideCurve, tiglFuselageGuideCurveProfile_CCPACSGuideCurveProfile)
 {
-    tigl::CCPACSGuideCurve guideCurve("/cpacs/vehicles/profiles/guideCurveProfiles/guideCurveProfile[2]");
+    tigl::CCPACSGuideCurveProfile guideCurve("/cpacs/vehicles/profiles/guideCurveProfiles/guideCurveProfile[2]");
     guideCurve.ReadCPACS(tixiHandle);
     ASSERT_EQ(guideCurve.GetUID(), "GuideCurveModel_Fuselage_GuideCurveProfile_Middle_NonLinear");
     ASSERT_EQ(guideCurve.GetName(), "NonLinear Middle Guide Curve Profile for GuideCurveModel - Fuselage");
     ASSERT_EQ(guideCurve.GetFileName(), "/cpacs/vehicles/profiles/guideCurveProfiles/guideCurveProfile[2]");
 }
 /**
-* Tests CCPACSGuideCurves class
+* Tests CCPACSGuideCurveProfiles class
 */
-TEST_F(FuselageGuideCurve, tiglFuselageGuideCurve_CCPACSGuideCurves)
+TEST_F(FuselageGuideCurve, tiglFuselageGuideCurveProfile_CCPACSGuideCurveProfiles)
 {
-    tigl::CCPACSGuideCurves guideCurves;
+    tigl::CCPACSGuideCurveProfiles guideCurves;
     guideCurves.ReadCPACS(tixiHandle);
-    ASSERT_EQ(guideCurves.GetGuideCurveCount(), 9);
-    tigl::CCPACSGuideCurve& guideCurve = guideCurves.GetGuideCurve("GuideCurveModel_Fuselage_GuideCurveProfile_Middle_NonLinear");
+    ASSERT_EQ(guideCurves.GetGuideCurveProfileCount(), 9);
+    tigl::CCPACSGuideCurveProfile& guideCurve = guideCurves.GetGuideCurveProfile("GuideCurveModel_Fuselage_GuideCurveProfile_Middle_NonLinear");
     ASSERT_EQ(guideCurve.GetUID(), "GuideCurveModel_Fuselage_GuideCurveProfile_Middle_NonLinear");
     ASSERT_EQ(guideCurve.GetName(), "NonLinear Middle Guide Curve Profile for GuideCurveModel - Fuselage");
     ASSERT_EQ(guideCurve.GetFileName(), "/cpacs/vehicles/profiles/guideCurveProfiles/guideCurveProfile[2]");

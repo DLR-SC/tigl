@@ -20,7 +20,7 @@
 * @brief  Implementation of CPACS guide curves handling routines
 */
 
-#include "CCPACSGuideCurves.h"
+#include "CCPACSGuideCurveProfiles.h"
 #include "CTiglError.h"
 #include "CTiglPoint.h"
 #include "CTiglLogging.h"
@@ -32,36 +32,36 @@ namespace tigl
 {
 
 // Constructor
-CCPACSGuideCurves::CCPACSGuideCurves(void)
+CCPACSGuideCurveProfiles::CCPACSGuideCurveProfiles(void)
 {
     Cleanup();
 }
 
 // Destructor
-CCPACSGuideCurves::~CCPACSGuideCurves(void)
+CCPACSGuideCurveProfiles::~CCPACSGuideCurveProfiles(void)
 {
     Cleanup();
 }
 
 // Cleanup routine
-void CCPACSGuideCurves::Cleanup(void)
+void CCPACSGuideCurveProfiles::Cleanup(void)
 {
     guideCurves.clear();
 }
 
 // Read CPACS guide curves
-void CCPACSGuideCurves::ReadCPACS(TixiDocumentHandle tixiHandle)
+void CCPACSGuideCurveProfiles::ReadCPACS(TixiDocumentHandle tixiHandle)
 {
     Cleanup();
 
     if (tixiCheckElement(tixiHandle, "/cpacs/vehicles/profiles/guideCurveProfiles") != SUCCESS) {
-        throw CTiglError("Error: tixiGetNamedChildrenCount failed in CCPACSGuideCurves::ReadCPACS", TIGL_XML_ERROR);
+        throw CTiglError("Error: tixiGetNamedChildrenCount failed in CCPACSGuideCurveProfiles::ReadCPACS", TIGL_XML_ERROR);
     }
 
     // Get element count
     int elementCount;
     if (tixiGetNamedChildrenCount(tixiHandle, "/cpacs/vehicles/profiles/guideCurveProfiles", "guideCurveProfile", &elementCount) != SUCCESS) {
-        throw CTiglError("Error: tixiGetNamedChildrenCount failed in CCPACSGuideCurves::ReadCPACS", TIGL_XML_ERROR);
+        throw CTiglError("Error: tixiGetNamedChildrenCount failed in CCPACSGuideCurveProfiles::ReadCPACS", TIGL_XML_ERROR);
     }
 
     // Loop over all <guideCurve> elements
@@ -69,22 +69,22 @@ void CCPACSGuideCurves::ReadCPACS(TixiDocumentHandle tixiHandle)
         std::ostringstream xpath;
         xpath << "/cpacs/vehicles/profiles/guideCurveProfiles/guideCurveProfile[" << i << "]";
 
-        PCCPACSGuideCurve guideCurve(new CCPACSGuideCurve(xpath.str()));
+        PCCPACSGuideCurveProfile guideCurve(new CCPACSGuideCurveProfile(xpath.str()));
         guideCurve->ReadCPACS(tixiHandle);
         guideCurves[guideCurve->GetUID()] = guideCurve;
     }
 }
 
 // Returns the total count of guide curves in this configuration
-int CCPACSGuideCurves::GetGuideCurveCount(void) const
+int CCPACSGuideCurveProfiles::GetGuideCurveProfileCount(void) const
 {
     return (static_cast<int>(guideCurves.size()));
 }
 
 // Returns the guide curve for a given uid.
-CCPACSGuideCurve& CCPACSGuideCurves::GetGuideCurve(std::string uid) const
+CCPACSGuideCurveProfile& CCPACSGuideCurveProfiles::GetGuideCurveProfile(std::string uid) const
 {
-    CCPACSGuideCurveContainer::const_iterator it = guideCurves.find(uid);
+    CCPACSGuideCurveProfileContainer::const_iterator it = guideCurves.find(uid);
     if (it != guideCurves.end() && it->second) {
         return *(it->second);
     }
