@@ -27,6 +27,7 @@
 #ifndef CTIGLINTERPOLATELINEARWIRE_H
 #define CTIGLINTERPOLATELINEARWIRE_H
 
+#include "tigl_internal.h"
 #include "ITiglWireAlgorithm.h"
 
 namespace tigl 
@@ -37,28 +38,28 @@ class CTiglInterpolateLinearWire : public ITiglWireAlgorithm
 
 public:
     // Constructor
-    CTiglInterpolateLinearWire(void);
+    TIGL_EXPORT CTiglInterpolateLinearWire(void);
 
     // Destructor
-    virtual ~CTiglInterpolateLinearWire(void);
+    TIGL_EXPORT virtual ~CTiglInterpolateLinearWire(void);
 
     // Builds the wire from the given points
-    virtual TopoDS_Wire BuildWire(const CPointContainer& points, bool forceClosed = false) const;
+    TIGL_EXPORT virtual TopoDS_Wire BuildWire(const CPointContainer& points, bool forceClosed = false) const;
 
     // Returns the algorithm code identifier for an algorithm
-    virtual TiglAlgorithmCode GetAlgorithmCode(void) const;
+    TIGL_EXPORT virtual TiglAlgorithmCode GetAlgorithmCode(void) const;
 
     // Returns the point on the wire with the smallest x value
-    virtual gp_Pnt GetPointWithMinX(const CPointContainer& points) const;
+    TIGL_EXPORT virtual gp_Pnt GetPointWithMinX(const CPointContainer& points) const;
 
     // Returns the point on the wire with the biggest x value
-    virtual gp_Pnt GetPointWithMaxX(const CPointContainer& points) const;
+    TIGL_EXPORT virtual gp_Pnt GetPointWithMaxX(const CPointContainer& points) const;
 
     // Returns the point on the wire with the smallest y value
-    virtual gp_Pnt GetPointWithMinY(const CPointContainer& points) const;
+    TIGL_EXPORT virtual gp_Pnt GetPointWithMinY(const CPointContainer& points) const;
 
     // Returns the point on the wire with the biggest y value
-    virtual gp_Pnt GetPointWithMaxY(const CPointContainer& points) const;
+    TIGL_EXPORT virtual gp_Pnt GetPointWithMaxY(const CPointContainer& points) const;
 
 private:
     // Copy constructor

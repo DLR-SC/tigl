@@ -19,6 +19,8 @@
 #ifndef CMUTEX_H
 #define CMUTEX_H
 
+#include "tigl_internal.h"
+
 namespace tigl
 {
 
@@ -33,10 +35,10 @@ namespace tigl
 class CMutex
 {
 public:
-    CMutex();
-    int lock();
-    int unlock();
-    virtual ~CMutex();
+    TIGL_EXPORT CMutex();
+    TIGL_EXPORT int lock();
+    TIGL_EXPORT int unlock();
+    TIGL_EXPORT virtual ~CMutex();
 private:
     struct CMutex_Impl;
     CMutex_Impl * pimpl_;

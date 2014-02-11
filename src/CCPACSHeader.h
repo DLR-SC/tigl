@@ -27,6 +27,7 @@
 #define CCPACSHEADER_H
 
 #include <string>
+#include "tigl_internal.h"
 #include "tixi.h"
 
 namespace tigl
@@ -37,22 +38,22 @@ class CCPACSHeader
 
 public:
     // Constructor
-    CCPACSHeader(const std::string& aName = "", const std::string& aCreator = "", const std::string& aTimestamp = "");
+    TIGL_EXPORT CCPACSHeader(const std::string& aName = "", const std::string& aCreator = "", const std::string& aTimestamp = "");
 
     // Virtual Destructor
-    virtual ~CCPACSHeader(void);
+    TIGL_EXPORT virtual ~CCPACSHeader(void);
 
     // Getter/Setter for member name
-    std::string GetName(void) const;
+    TIGL_EXPORT std::string GetName(void) const;
 
     // Getter/Setter for member creator
-    std::string GetCreator(void) const;
+    TIGL_EXPORT std::string GetCreator(void) const;
 
     // Getter/Setter for member timestamp
-    std::string GetTimestamp(void) const;
+    TIGL_EXPORT std::string GetTimestamp(void) const;
 
     // Read CPACS header elements
-    void ReadCPACS(TixiDocumentHandle tixiHandle);
+    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle);
 
 protected:
     // Cleanup routine

@@ -28,6 +28,7 @@
 
 #include <string>
 
+#include "tigl_internal.h"
 #include "tigl_config.h"
 #include "tixi.h"
 #include "CCPACSFuselageConnection.h"
@@ -46,100 +47,100 @@ class CCPACSFuselageSegment : public CTiglAbstractSegment
 
 public:
     // Constructor
-    CCPACSFuselageSegment(CCPACSFuselage* aFuselage, int aSegmentIndex);
+    TIGL_EXPORT CCPACSFuselageSegment(CCPACSFuselage* aFuselage, int aSegmentIndex);
 
     // Virtual Destructor
-    virtual ~CCPACSFuselageSegment(void);
+    TIGL_EXPORT virtual ~CCPACSFuselageSegment(void);
 
     // Read CPACS segment elements
-    void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& segmentXPath);
+    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& segmentXPath);
 
     // Returns the fuselage this segment belongs to
-    CCPACSFuselage& GetFuselage(void) const;
+    TIGL_EXPORT CCPACSFuselage& GetFuselage(void) const;
 
     // Returns the segment index of this segment
-    int GetSegmentIndex(void) const;
+    TIGL_EXPORT int GetSegmentIndex(void) const;
 
     // Returns the start section UID of this segment
-    const std::string& GetStartSectionUID(void);
+    TIGL_EXPORT const std::string& GetStartSectionUID(void);
 
     // Returns the end section UID of this segment
-    const std::string& GetEndSectionUID(void);
+    TIGL_EXPORT const std::string& GetEndSectionUID(void);
 
     // Returns the start section index of this segment
-    int GetStartSectionIndex(void);
+    TIGL_EXPORT int GetStartSectionIndex(void);
 
     // Returns the end section index of this segment
-    int GetEndSectionIndex(void);
+    TIGL_EXPORT int GetEndSectionIndex(void);
 
     // Returns the starting Segement Connection
-    CCPACSFuselageConnection& GetStartConnection(void);
+    TIGL_EXPORT CCPACSFuselageConnection& GetStartConnection(void);
 
     // Return the end Segment Connection
-    CCPACSFuselageConnection& GetEndConnection(void);
+    TIGL_EXPORT CCPACSFuselageConnection& GetEndConnection(void);
 
     // Returns the start section element UID of this segment
-    const std::string& GetStartSectionElementUID(void);
+    TIGL_EXPORT const std::string& GetStartSectionElementUID(void);
 
     // Returns the end section element UID of this segment
-    const std::string& GetEndSectionElementUID(void);
+    TIGL_EXPORT const std::string& GetEndSectionElementUID(void);
 
     // Returns the start section element index of this segment
-    int GetStartSectionElementIndex(void);
+    TIGL_EXPORT int GetStartSectionElementIndex(void);
 
     // Returns the end section element index of this segment
-    int GetEndSectionElementIndex(void);
+    TIGL_EXPORT int GetEndSectionElementIndex(void);
 
     // Gets the count of segments connected to the start section of this segment
-    int GetStartConnectedSegmentCount(void);
+    TIGL_EXPORT int GetStartConnectedSegmentCount(void);
 
     // Gets the count of segments connected to the end section of this segment
-    int GetEndConnectedSegmentCount(void);
+    TIGL_EXPORT int GetEndConnectedSegmentCount(void);
 
     // Gets the index (number) of the n-th segment connected to the start section
     // of this segment. n starts at 1.
-    int GetStartConnectedSegmentIndex(int n);
+    TIGL_EXPORT int GetStartConnectedSegmentIndex(int n);
 
     // Gets the index (number) of the n-th segment connected to the end section
     // of this segment. n starts at 1.
-    int GetEndConnectedSegmentIndex(int n);
+    TIGL_EXPORT int GetEndConnectedSegmentIndex(int n);
 
     // Gets a point on the fuselage segment in dependence of parameters eta and zeta with
     // 0.0 <= eta <= 1.0 and 0.0 <= zeta <= 1.0. For eta = 0.0 the point lies on the start
     // profile of the segment, for eta = 1.0 on the end profile of the segment. For zeta = 0.0
     // the point is the start point of the profile wire, for zeta = 1.0 the last profile wire point.
-    gp_Pnt GetPoint(double eta, double zeta);
+    TIGL_EXPORT gp_Pnt GetPoint(double eta, double zeta);
 
-    int GetNumPointsOnYPlane(double eta, double ypos);
-    gp_Pnt GetPointOnYPlane(double eta, double ypos, int pointIndex);
+    TIGL_EXPORT int GetNumPointsOnYPlane(double eta, double ypos);
+    TIGL_EXPORT gp_Pnt GetPointOnYPlane(double eta, double ypos, int pointIndex);
 
-    int GetNumPointsOnXPlane(double eta, double xpos);
-    gp_Pnt GetPointOnXPlane(double eta, double xpos, int pointIndex);
+    TIGL_EXPORT int GetNumPointsOnXPlane(double eta, double xpos);
+    TIGL_EXPORT gp_Pnt GetPointOnXPlane(double eta, double xpos, int pointIndex);
 
     // Gets a point on the fuselage segment in dependence of an angle alpha (degree).
     // The origin of the angle could be set via the parameters y_cs and z_cs,
     // but in most cases y_cs and z_cs will be zero get the get center line of the profile.
-    gp_Pnt GetPointAngle(double eta, double alpha, double y_cs, double z_cs);
+    TIGL_EXPORT gp_Pnt GetPointAngle(double eta, double alpha, double y_cs, double z_cs);
 
     // Gets the volume of this segment
-    double GetVolume();
+    TIGL_EXPORT double GetVolume();
         
     // Gets the surface area of this segment
-    double GetSurfaceArea();
+    TIGL_EXPORT double GetSurfaceArea();
 
     // Gets the wire on the loft at a given eta
-    TopoDS_Shape getWireOnLoft(double eta);
+    TIGL_EXPORT TopoDS_Shape getWireOnLoft(double eta);
 
     // Returns the circumference if the segment at a given eta
-    double GetCircumference(const double eta);
+    TIGL_EXPORT double GetCircumference(const double eta);
 
     // Returns the inner profile points as read from TIXI. The points are already transformed.
-    std::vector<CTiglPoint*> GetRawStartProfilePoints();
+    TIGL_EXPORT std::vector<CTiglPoint*> GetRawStartProfilePoints();
 
     // Returns the outer profile points as read from TIXI. The points are already transformed.
-    std::vector<CTiglPoint*> GetRawEndProfilePoints();
+    TIGL_EXPORT std::vector<CTiglPoint*> GetRawEndProfilePoints();
 
-    TiglGeometricComponentType GetComponentType(){return TIGL_COMPONENT_FUSELSEGMENT | TIGL_COMPONENT_SEGMENT | TIGL_COMPONENT_LOGICAL;}
+    TIGL_EXPORT TiglGeometricComponentType GetComponentType(){return TIGL_COMPONENT_FUSELSEGMENT | TIGL_COMPONENT_SEGMENT | TIGL_COMPONENT_LOGICAL;}
 
 #ifdef TIGL_USE_XCAF
     // builds data structure for a TDocStd_Application

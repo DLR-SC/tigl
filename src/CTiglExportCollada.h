@@ -20,6 +20,7 @@
 #define CTIGLEXPORTCOLLADA_H
 
 #include "tigl.h"
+#include "tigl_internal.h"
 
 #include <string>
 
@@ -31,16 +32,16 @@ namespace tigl
 class CTiglExportCollada
 {
 public:
-    CTiglExportCollada(class CCPACSConfiguration& config);
+    TIGL_EXPORT CTiglExportCollada(class CCPACSConfiguration& config);
     
     /// some convenience helper functions
-    TiglReturnCode exportFuselage(const std::string& fuselageUID, const std::string& filename, const double deflection = 0.1);
-    TiglReturnCode exportWing    (const std::string& wingUID    , const std::string& filename, const double deflection = 0.1);
+    TIGL_EXPORT TiglReturnCode exportFuselage(const std::string& fuselageUID, const std::string& filename, const double deflection = 0.1);
+    TIGL_EXPORT TiglReturnCode exportWing    (const std::string& wingUID    , const std::string& filename, const double deflection = 0.1);
     
-    TiglReturnCode exportShape(TopoDS_Shape& shape, const std::string& shapeID, const std::string& filename, const double deflection = 0.1);
+    TIGL_EXPORT TiglReturnCode exportShape(TopoDS_Shape& shape, const std::string& shapeID, const std::string& filename, const double deflection = 0.1);
 
     /// Exports a polygon object to a collada file, the true export code
-    static TiglReturnCode writeToDisc(class CTiglPolyData &polyData, const char * id, const char * filename);
+    TIGL_EXPORT static TiglReturnCode writeToDisc(class CTiglPolyData &polyData, const char * id, const char * filename);
     
 private:
     class CCPACSConfiguration& myconfig;

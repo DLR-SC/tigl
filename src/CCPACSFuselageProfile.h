@@ -26,6 +26,7 @@
 #ifndef CCPACSFUSELAGEPROFILE_H
 #define CCPACSFUSELAGEPROFILE_H
 
+#include "tigl_internal.h"
 #include "tixi.h"
 #include "TopoDS_Wire.hxx"
 
@@ -51,37 +52,37 @@ private:
 
 public:
     // Constructor
-    CCPACSFuselageProfile(const std::string& path);
+    TIGL_EXPORT CCPACSFuselageProfile(const std::string& path);
 
     // Virtual Destructor
-    virtual ~CCPACSFuselageProfile(void);
+    TIGL_EXPORT virtual ~CCPACSFuselageProfile(void);
 
     // Read CPACS fuselage profile file
-    void ReadCPACS(TixiDocumentHandle tixiHandle);
+    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle);
 
     // Returns the filename of the fuselage profile file
-    const std::string& GetFileName(void) const;
+    TIGL_EXPORT const std::string& GetFileName(void) const;
 
     // Returns the name of the fuselage profile
-    const std::string& GetName(void) const;
+    TIGL_EXPORT const std::string& GetName(void) const;
 
     // Returns the UID of the fuselage profile
-    const std::string& GetUID(void) const;
+    TIGL_EXPORT const std::string& GetUID(void) const;
 
     // Invalidates internal fuselage profile state
-    void Invalidate(void);
+    TIGL_EXPORT void Invalidate(void);
 
     // Returns the fuselage profile wire. The wire is already transformed by the
     // fuselage profile element transformation.
-    TopoDS_Wire GetWire(bool forceClosed = false);
+    TIGL_EXPORT TopoDS_Wire GetWire(bool forceClosed = false);
 
     // Gets a point on the fuselage profile wire in dependence of a parameter zeta with
     // 0.0 <= zeta <= 1.0. For zeta = 0.0 this is the wire start point,
     // for zeta = 1.0 the last wire point.
-    gp_Pnt GetPoint(double zeta);
+    TIGL_EXPORT gp_Pnt GetPoint(double zeta);
 
     // Returns the profile points as read from TIXI.
-    std::vector<CTiglPoint*> GetCoordinateContainer();
+    TIGL_EXPORT std::vector<CTiglPoint*> GetCoordinateContainer();
 
 protected:
     // Cleanup routine

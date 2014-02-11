@@ -30,12 +30,6 @@ namespace tigl
 
 namespace WingCellInternal
 {
-
-    struct Point2D
-    {
-        double x;
-        double y;
-    };
     
     // calculates crossproduct (p1-p3)x(p2-p3) (only "z"-value)
     double sign(Point2D p1, Point2D p2, Point2D p3)

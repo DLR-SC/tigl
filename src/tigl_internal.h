@@ -1,7 +1,7 @@
-/* 
+/*
 * Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
 *
-* Created: 2014-01-30 Martin Siggel <Martin.Siggel@dlr.de>
+* Created: 2014-02-07 Martin Siggel <Martin.Siggel@dlr.de>
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -16,26 +16,17 @@
 * limitations under the License.
 */
 
-#ifndef CSCOPEDLOCK_H
-#define CSCOPEDLOCK_H
+#ifndef TIGL_INTERNAL_H
+#define TIGL_INTERNAL_H
 
-#include "tigl_internal.h"
+#if defined(WIN32)
+  #if defined (TIGL_EXPORTS)
+    #define TIGL_EXPORT __declspec (dllexport)
+  #else
+    #define TIGL_EXPORT
+  #endif
+#else
+    #define TIGL_EXPORT
+#endif
 
-namespace tigl
-{
-
-class CMutex;
-
-class CScopedLock
-{
-public:
-    TIGL_EXPORT CScopedLock(CMutex &);
-    TIGL_EXPORT ~CScopedLock();
-
-private:
-    CMutex& _mutex;
-};
-
-} // namespace tigl
-
-#endif // CSCOPEDLOCK_H
+#endif // TIGL_INTERNAL_H

@@ -26,6 +26,7 @@
 #ifndef CTIGLEXPORTSTL_H
 #define CTIGLEXPORTSTL_H
 
+#include "tigl_internal.h"
 #include "CTiglUIDManager.h"
 #include "CCPACSHeader.h"
 #include "CCPACSWings.h"
@@ -42,19 +43,19 @@ class CTiglExportStl
 
 public:
     // Constructor
-    CTiglExportStl(CCPACSConfiguration& config);
+    TIGL_EXPORT CTiglExportStl(CCPACSConfiguration& config);
 
     // Empty destructor
-    ~CTiglExportStl(void) { /* empty */}
+    TIGL_EXPORT ~CTiglExportStl(void) { /* empty */}
 
     // Exports a selected wing, boolean fused and meshed, as STL file
-    void ExportMeshedWingSTL(int wingIndex, const std::string& filename, double deflection = 0.1);
+    TIGL_EXPORT void ExportMeshedWingSTL(int wingIndex, const std::string& filename, double deflection = 0.1);
 
     // Exports a selected fuselage, boolean fused and meshed, as STL file
-    void ExportMeshedFuselageSTL(int fuselageIndex, const std::string& filename, double deflection = 0.1);
+    TIGL_EXPORT void ExportMeshedFuselageSTL(int fuselageIndex, const std::string& filename, double deflection = 0.1);
 
     // Exports a whole geometry, boolean fused and meshed, as STL file
-    void ExportMeshedGeometrySTL(const std::string& filename, double deflection = 0.1);
+    TIGL_EXPORT void ExportMeshedGeometrySTL(const std::string& filename, double deflection = 0.1);
 
 protected:
 
