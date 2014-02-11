@@ -50,9 +50,9 @@ TIGL_EXPORT Standard_Real ProjectPointOnLine(gp_Pnt p, gp_Pnt lineStart, gp_Pnt 
 TIGL_EXPORT unsigned int GetNumberOfEdges(const TopoDS_Shape& shape);
 
 // returns the central point of the face
-gp_Pnt GetCentralFacePoint(const class TopoDS_Face& face);
+TIGL_EXPORT gp_Pnt GetCentralFacePoint(const class TopoDS_Face& face);
 
 // puts all faces with the same origin to one TopoDS_Compound
 // Maps all compounds with its name in the map
-ShapeMap MapFacesToShapeGroups(const PNamedShape shape);
+TIGL_EXPORT ShapeMap MapFacesToShapeGroups(const PNamedShape shape);
 #endif // TIGLCOMMONFUNCTIONS_H

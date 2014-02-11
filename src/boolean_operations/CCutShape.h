@@ -20,6 +20,7 @@
 #define CCUTSHAPE_H
 
 #include "PNamedShape.h"
+#include "tigl_internal.h"
 
 class BOPAlgo_PaveFiller;
 
@@ -27,14 +28,14 @@ class CCutShape
 {
 public:
     // the trimming tool must be a solid!
-    CCutShape(const PNamedShape shape, const PNamedShape cuttingTool);
-    CCutShape(const PNamedShape shape, const PNamedShape cuttingTool, const BOPAlgo_PaveFiller&);
-    virtual ~CCutShape();
+    TIGL_EXPORT CCutShape(const PNamedShape shape, const PNamedShape cuttingTool);
+    TIGL_EXPORT CCutShape(const PNamedShape shape, const PNamedShape cuttingTool, const BOPAlgo_PaveFiller&);
+    TIGL_EXPORT virtual ~CCutShape();
 
-    operator PNamedShape ();
+    TIGL_EXPORT operator PNamedShape ();
 
-    void Perform();
-    const PNamedShape NamedShape();
+    TIGL_EXPORT void Perform();
+    TIGL_EXPORT const PNamedShape NamedShape();
 
 protected:
     void PrepareFiller();

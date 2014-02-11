@@ -121,7 +121,7 @@ void CCPACSConfiguration::transformAllComponents(CTiglAbstractPhysicalComponent*
 // Returns the boolean fused airplane as TopoDS_Shape
 PTiglFusePlane CCPACSConfiguration::AircraftFusingAlgo(void)
 {
-    if(! aircraftFuser){
+    if (! aircraftFuser) {
         aircraftFuser = PTiglFusePlane(new CTiglFusePlane(*this));
     }
     return aircraftFuser;

@@ -20,20 +20,21 @@
 #define BOPBUILDERSHAPETOBREPBUILDERSHAPEADAPTER_H
 
 #include <BRepBuilderAPI_MakeShape.hxx>
+#include "tigl_internal.h"
 
 class BOPAlgo_BuilderShape;
 
 class BOPBuilderShapeToBRepBuilderShapeAdapter : public BRepBuilderAPI_MakeShape
 {
 public:
-    BOPBuilderShapeToBRepBuilderShapeAdapter(BOPAlgo_BuilderShape& adaptee);
+    TIGL_EXPORT BOPBuilderShapeToBRepBuilderShapeAdapter(BOPAlgo_BuilderShape& adaptee);
 
-    const TopoDS_Shape& Shape() const;
-    operator TopoDS_Shape() const;
+    TIGL_EXPORT const TopoDS_Shape& Shape() const;
+    TIGL_EXPORT operator TopoDS_Shape() const;
 
-    virtual const TopTools_ListOfShape& Generated(const TopoDS_Shape& S) ;
-    virtual const TopTools_ListOfShape& Modified(const TopoDS_Shape& S) ;
-    virtual  Standard_Boolean IsDeleted(const TopoDS_Shape& S) ;
+    TIGL_EXPORT virtual const TopTools_ListOfShape& Generated(const TopoDS_Shape& S) ;
+    TIGL_EXPORT virtual const TopTools_ListOfShape& Modified(const TopoDS_Shape& S) ;
+    TIGL_EXPORT virtual  Standard_Boolean IsDeleted(const TopoDS_Shape& S) ;
 
 private:
     BOPAlgo_BuilderShape& _adaptee;

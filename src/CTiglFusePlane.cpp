@@ -27,40 +27,43 @@
 
 #include <string>
 
-namespace {
-std::string MakeShortName(tigl::CCPACSConfiguration& config, tigl::CTiglAbstractPhysicalComponent& comp){
-    if (comp.GetComponentType() & TIGL_COMPONENT_FUSELAGE) {
-        unsigned int index = 0;
-        for(int i = 1; i <= config.GetFuselageCount(); ++i) {
-            tigl::CCPACSFuselage& f = config.GetFuselage(i);
-            if(comp.GetUID() == f.GetUID()) {
-                index = i;
-                break;
+namespace
+{
+    std::string MakeShortName(tigl::CCPACSConfiguration& config, tigl::CTiglAbstractPhysicalComponent& comp)
+    {
+        if (comp.GetComponentType() & TIGL_COMPONENT_FUSELAGE) {
+            unsigned int index = 0;
+            for (int i = 1; i <= config.GetFuselageCount(); ++i) {
+                tigl::CCPACSFuselage& f = config.GetFuselage(i);
+                if (comp.GetUID() == f.GetUID()) {
+                    index = i;
+                    break;
+                }
             }
+            std::stringstream str;
+            str << "F" << index;
+            return str.str();
         }
-        std::stringstream str;
-        str << "F" << index;
-        return str.str();
-    }
-    else if (comp.GetComponentType() & TIGL_COMPONENT_WING) {
-        unsigned int index = 0;
-        for(int i = 1; i <= config.GetWingCount(); ++i) {
-            tigl::CCPACSWing& f = config.GetWing(i);
-            if(comp.GetUID() == f.GetUID()) {
-                index = i;
-                break;
+        else if (comp.GetComponentType() & TIGL_COMPONENT_WING) {
+            unsigned int index = 0;
+            for (int i = 1; i <= config.GetWingCount(); ++i) {
+                tigl::CCPACSWing& f = config.GetWing(i);
+                if (comp.GetUID() == f.GetUID()) {
+                    index = i;
+                    break;
+                }
             }
+            std::stringstream str;
+            str << "W" << index;
+            return str.str();
         }
-        std::stringstream str;
-        str << "W" << index;
-        return str.str();
+
+        return "UNKNOWN";
     }
-
-    return "UNKNOWN";
-}
 }
 
-namespace tigl {
+namespace tigl
+{
 
 CTiglFusePlane::CTiglFusePlane(CCPACSConfiguration& config)
     : _myconfig(config)
@@ -71,7 +74,7 @@ CTiglFusePlane::CTiglFusePlane(CCPACSConfiguration& config)
 
 void CTiglFusePlane::SetResultMode(TiglFuseResultMode mode)
 {
-    if(mode != _mymode) {
+    if (mode != _mymode) {
         Invalidate();
         _mymode = mode;
     }
@@ -83,13 +86,15 @@ const PNamedShape CTiglFusePlane::NamedShape()
     return _result;
 }
 
-const ListPNamedShape& CTiglFusePlane::SubShapes() {
+const ListPNamedShape& CTiglFusePlane::SubShapes()
+{
     Perform();
     return _subShapes;
 }
 
 
-const ListPNamedShape& CTiglFusePlane::Intersections() {
+const ListPNamedShape& CTiglFusePlane::Intersections()
+{
     Perform();
     return _intersections;
 }
@@ -108,13 +113,13 @@ void CTiglFusePlane::Invalidate()
  */
 void CTiglFusePlane::Perform()
 {
-    if(_hasPerformed) {
+    if (_hasPerformed) {
         return;
     }
 
     CTiglUIDManager& uidManager = _myconfig.GetUIDManager();
     CTiglAbstractPhysicalComponent* rootComponent = uidManager.GetRootComponent();
-    if(!rootComponent) {
+    if (!rootComponent) {
         LOG(ERROR) << "Root component of plane not found. Cannot create fused plane.";
         return;
     }
@@ -124,7 +129,7 @@ void CTiglFusePlane::Perform()
     PNamedShape rootShape    (new CNamedShape(rootComponent->GetLoft()        , rootName.c_str()));
     rootShape->SetShortName(rootShortName.c_str());
 
-    if(_mymode == FULL_PLANE || _mymode == FULL_PLANE_TRIMMED_FF) {
+    if (_mymode == FULL_PLANE || _mymode == FULL_PLANE_TRIMMED_FF) {
         PNamedShape rootShapeMirr(new CNamedShape(rootComponent->GetMirroredLoft(), rootName.c_str()));
         rootShortName += "M";
         rootShapeMirr->SetShortName(rootShortName.c_str());
@@ -135,9 +140,9 @@ void CTiglFusePlane::Perform()
     CTiglAbstractPhysicalComponent::ChildContainerType::iterator childIt;
 
     ListPNamedShape childShapes;
-    for(childIt = childs.begin(); childIt != childs.end(); ++childIt) {
+    for (childIt = childs.begin(); childIt != childs.end(); ++childIt) {
         CTiglAbstractPhysicalComponent* child = *childIt;
-        if(!child) {
+        if (!child) {
             continue;
         }
 
@@ -145,7 +150,7 @@ void CTiglFusePlane::Perform()
         PNamedShape childShape    (new CNamedShape(child->GetLoft()        , child->GetUID().c_str()));
         childShape->SetShortName(childShortName.c_str());
 
-        if(_mymode == FULL_PLANE || _mymode == FULL_PLANE_TRIMMED_FF) {
+        if (_mymode == FULL_PLANE || _mymode == FULL_PLANE_TRIMMED_FF) {
             PNamedShape childShapeMirr(new CNamedShape(child->GetMirroredLoft(), child->GetUID().c_str()));
             childShortName += "M";
             childShapeMirr->SetShortName(childShortName.c_str());
@@ -161,19 +166,19 @@ void CTiglFusePlane::Perform()
         _subShapes.push_back(fuser.TrimmedParent());
     }
     ListPNamedShape::const_iterator it = fuser.TrimmedChilds().begin();
-    for(; it != fuser.TrimmedChilds().end(); it++) {
-        if(*it) {
+    for (; it != fuser.TrimmedChilds().end(); it++) {
+        if (*it) {
             _subShapes.push_back(*it);
         }
     }
     it = fuser.Intersections().begin();
-    for(; it != fuser.Intersections().end(); it++) {
-        if(*it) {
+    for (; it != fuser.Intersections().end(); it++) {
+        if (*it) {
             _intersections.push_back(*it);
         }
     }
 
-    if(_result) {
+    if (_result) {
         _result->SetName(_myconfig.GetUID().c_str());
         _result->SetShortName("AIRCRAFT");
     }

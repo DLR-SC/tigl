@@ -83,7 +83,7 @@ const PNamedShape CFuseShapes::TrimmedParent()
 
 void CFuseShapes::Perform()
 {
-    if(!_hasPerformed) {
+    if (!_hasPerformed) {
         DoFuse();
         _hasPerformed = true;
     }
@@ -120,7 +120,7 @@ void CFuseShapes::DoFuse()
     _trimmedParent = _parent->DeepCopy();
     for (childIter = _childs.begin(); childIter != _childs.end(); ++childIter) {
         const PNamedShape child = *childIter;
-        if(!child) {
+        if (!child) {
             continue;
         }
 
@@ -186,7 +186,7 @@ void CFuseShapes::DoFuse()
 
     // map names to shell
     PNamedShape resultShell(new CNamedShape(shell, "BOP_FUSE"));
-    for(childIter = _trimmedChilds.begin(); childIter != _trimmedChilds.end(); ++childIter) {
+    for (childIter = _trimmedChilds.begin(); childIter != _trimmedChilds.end(); ++childIter) {
         const PNamedShape child = *childIter;
         PNamedShape tmpshape(new CNamedShape(*child));
         tmpshape->SetShape(shellMaker.ModifiedSubShape(child->Shape()));
@@ -200,7 +200,7 @@ void CFuseShapes::DoFuse()
     BRepBuilderAPI_MakeSolid solidmaker;
     TopTools_IndexedMapOfShape shellMap;
     TopExp::MapShapes(resultShell->Shape(), TopAbs_SHELL, shellMap);
-    for(int ishell = 1; ishell <= shellMap.Extent(); ++ishell) {
+    for (int ishell = 1; ishell <= shellMap.Extent(); ++ishell) {
         const TopoDS_Shell& shell = TopoDS::Shell(shellMap(ishell));
         solidmaker.Add(shell);
     }

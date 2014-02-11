@@ -22,12 +22,14 @@
 #include "CNamedShape.h"
 #include "ListPNamedShape.h"
 
-namespace tigl {
+namespace tigl
+{
 
 class CCPACSConfiguration;
 class CTiglAbstractPhysicalComponent;
 
-enum TiglFuseResultMode{
+enum TiglFuseResultMode
+{
     HALF_PLANE = 0,
     FULL_PLANE = 1,
     HALF_PLANE_TRIMMED_FF = 2,
@@ -37,14 +39,14 @@ enum TiglFuseResultMode{
 class CTiglFusePlane
 {
 public:
-    CTiglFusePlane(CCPACSConfiguration& config);
+    TIGL_EXPORT CTiglFusePlane(CCPACSConfiguration& config);
 
     // sets mode for plane generation, by default a half plane is created
-    void SetResultMode(TiglFuseResultMode mode);
+    TIGL_EXPORT void SetResultMode(TiglFuseResultMode mode);
 
-    const PNamedShape NamedShape();
-    const ListPNamedShape& SubShapes();
-    const ListPNamedShape& Intersections();
+    TIGL_EXPORT const PNamedShape NamedShape();
+    TIGL_EXPORT const ListPNamedShape& SubShapes();
+    TIGL_EXPORT const ListPNamedShape& Intersections();
 
 private:
     void Invalidate();

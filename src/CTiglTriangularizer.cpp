@@ -113,7 +113,7 @@ CTiglTriangularizer::CTiglTriangularizer(CCPACSConfiguration &config, bool fuseS
 
         PTiglFusePlane fuser = config.AircraftFusingAlgo();
         fuser->SetResultMode(FULL_PLANE);
-        if(!fuser->NamedShape()) {
+        if (!fuser->NamedShape()) {
             throw CTiglError("Error computing fused aircraft in CTiglTriangularizer", TIGL_ERROR);
         }
 
@@ -325,8 +325,9 @@ int CTiglTriangularizer::triangularizeFace(const TopoDS_Face & face, unsigned lo
             const gp_Pnt2d& uv_pnt = uvnodes(inode);
             gp_Pnt p; gp_Vec n;
             prop.Normal(uv_pnt.X(),uv_pnt.Y(),p,n);
-            if(n.SquareMagnitude() > 0.)
+            if (n.SquareMagnitude() > 0.) {
                 n.Normalize();
+            }
             if (face.Orientation() == TopAbs_INTERNAL) {
                 n.Reverse();
             } 

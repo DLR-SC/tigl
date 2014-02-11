@@ -22,23 +22,27 @@
 #include <TopExp.hxx>
 
 BRepSewingToBRepBuilderShapeAdapter::BRepSewingToBRepBuilderShapeAdapter(BRepBuilderAPI_Sewing& adaptee)
-    : _adaptee(adaptee) {
+    : _adaptee(adaptee)
+{
 }
 
-const TopoDS_Shape &BRepSewingToBRepBuilderShapeAdapter::Shape() const {
+const TopoDS_Shape &BRepSewingToBRepBuilderShapeAdapter::Shape() const
+{
     return _adaptee.SewedShape();
 }
 
-BRepSewingToBRepBuilderShapeAdapter::operator TopoDS_Shape() const {
+BRepSewingToBRepBuilderShapeAdapter::operator TopoDS_Shape() const
+{
     return Shape();
 }
 
-const TopTools_ListOfShape& BRepSewingToBRepBuilderShapeAdapter::Modified(const TopoDS_Shape &S) {
+const TopTools_ListOfShape& BRepSewingToBRepBuilderShapeAdapter::Modified(const TopoDS_Shape &S)
+{
     _modified.Clear();
     TopoDS_Shape modshape = _adaptee.Modified(S);
     TopTools_IndexedMapOfShape map;
     TopExp::MapShapes(modshape, TopAbs_FACE, map);
-    for(int iface = 1; iface <= map.Extent(); ++iface) {
+    for (int iface = 1; iface <= map.Extent(); ++iface) {
         _modified.Append(map(iface));
     }
 

@@ -21,6 +21,7 @@
 
 #include "PNamedShape.h"
 #include "ListPNamedShape.h"
+#include "tigl_internal.h"
 
 /**
  * @brief CFuseShapes Implement a fuse, where the childs are fused with the parent
@@ -36,18 +37,18 @@ class CFuseShapes
 {
 public:
     // all shapes must be solids!!!
-    CFuseShapes(const PNamedShape parent, const ListPNamedShape& childs);
-    virtual ~CFuseShapes();
+    TIGL_EXPORT CFuseShapes(const PNamedShape parent, const ListPNamedShape& childs);
+    TIGL_EXPORT virtual ~CFuseShapes();
 
     // returns result of fusing operation
-    operator PNamedShape ();
-    const    PNamedShape NamedShape();
+    TIGL_EXPORT operator PNamedShape ();
+    TIGL_EXPORT const    PNamedShape NamedShape();
 
-    const ListPNamedShape& Intersections();
-    const ListPNamedShape& TrimmedChilds();
-    const PNamedShape   TrimmedParent();
+    TIGL_EXPORT const ListPNamedShape& Intersections();
+    TIGL_EXPORT const ListPNamedShape& TrimmedChilds();
+    TIGL_EXPORT const PNamedShape   TrimmedParent();
 
-    void Perform();
+    TIGL_EXPORT void Perform();
 
 
 protected:
