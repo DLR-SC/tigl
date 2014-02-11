@@ -28,6 +28,7 @@
 #define CCPACSIMPORTEXPORT_H
 
 #include "tigl_config.h"
+#include "tigl_internal.h"
 #include "tixi.h"
 #include "CTiglError.h"
 #include "CCPACSConfiguration.h"
@@ -48,10 +49,10 @@ private:
         
 public:
     // Constructor
-    CCPACSImportExport(CCPACSConfiguration& config);
+    TIGL_EXPORT CCPACSImportExport(CCPACSConfiguration& config);
 
     // Virtual Destructor
-    virtual ~CCPACSImportExport(void);
+    TIGL_EXPORT virtual ~CCPACSImportExport(void);
 
 #ifdef TIGL_USE_XCAF
     Handle_TDocStd_Document buildXDEStructure();

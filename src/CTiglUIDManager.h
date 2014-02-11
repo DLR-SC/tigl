@@ -26,6 +26,7 @@
 #ifndef CTIGLUIDMANAGER_H
 #define CTIGLUIDMANAGER_H
 
+#include "tigl_internal.h"
 #include "CTiglAbstractPhysicalComponent.h"
 #include <map>
 #include <string>
@@ -37,29 +38,29 @@ class CTiglUIDManager
 {
 public:
     // Constructor
-    CTiglUIDManager(void);
+    TIGL_EXPORT CTiglUIDManager(void);
 
     // Function to add a UID and a geometric component to the uid store.
-    void AddUID(const std::string& uid, CTiglAbstractPhysicalComponent* componentPtr);
+    TIGL_EXPORT void AddUID(const std::string& uid, CTiglAbstractPhysicalComponent* componentPtr);
 
     // Checks if a UID already exists. 
-    bool HasUID(const std::string& uid) const;
+    TIGL_EXPORT bool HasUID(const std::string& uid) const;
 
     // Returns a pointer to the geometric component for the given unique id.
-    CTiglAbstractPhysicalComponent* GetComponent(const std::string& uid);
+    TIGL_EXPORT CTiglAbstractPhysicalComponent* GetComponent(const std::string& uid);
 
     // Returns the parent component for a component or a null pointer
     // if there is no parent.
-    CTiglAbstractPhysicalComponent* GetParentComponent(const std::string& uid);
+    TIGL_EXPORT CTiglAbstractPhysicalComponent* GetParentComponent(const std::string& uid);
 
     // Returns the root component of the geometric topology.
-    CTiglAbstractPhysicalComponent* GetRootComponent(void);
+    TIGL_EXPORT CTiglAbstractPhysicalComponent* GetRootComponent(void);
 
     // Clears the uid store
-    void Clear(void);
+    TIGL_EXPORT void Clear(void);
 
     // Virtual Destructor
-    virtual ~CTiglUIDManager(void);
+    TIGL_EXPORT virtual ~CTiglUIDManager(void);
 
 protected:
        // Update internal UID manager data.

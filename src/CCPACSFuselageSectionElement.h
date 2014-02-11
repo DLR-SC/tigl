@@ -26,6 +26,7 @@
 #ifndef CCPACSFUSELAGESECTIONELEMENT_H
 #define CCPACSFUSELAGESECTIONELEMENT_H
 
+#include "tigl_internal.h"
 #include "tixi.h"
 #include "CTiglTransformation.h"
 #include "CTiglPoint.h"
@@ -39,25 +40,25 @@ class CCPACSFuselageSectionElement
 
 public:
     // Constructor
-    CCPACSFuselageSectionElement();
+    TIGL_EXPORT CCPACSFuselageSectionElement();
 
     // Virtual Destructor
-    virtual ~CCPACSFuselageSectionElement(void);
+    TIGL_EXPORT virtual ~CCPACSFuselageSectionElement(void);
 
     // Read CPACS section element
-    void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& elementXPath);
+    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& elementXPath);
 
     // Returns the UID of the referenced wing profile
-    std::string GetProfileIndex(void) const;
+    TIGL_EXPORT std::string GetProfileIndex(void) const;
 
     // Returns the UID of the WingSectionElement
-    std::string GetUID(void) const;
+    TIGL_EXPORT std::string GetUID(void) const;
 
     // Returns the UID of the profile of this element
-    std::string GetProfileUID(void) const;
+    TIGL_EXPORT std::string GetProfileUID(void) const;
 
     // Gets the section element transformation
-    CTiglTransformation GetSectionElementTransformation(void) const;
+    TIGL_EXPORT CTiglTransformation GetSectionElementTransformation(void) const;
 
 protected:
     // Cleanup routine

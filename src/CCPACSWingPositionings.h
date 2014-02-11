@@ -27,6 +27,7 @@
 #define CCPACSWINGPOSITIONINGS_H
 
 #include "tixi.h"
+#include "tigl_internal.h"
 #include "CCPACSWingPositioning.h"
 #include "CTiglError.h"
 #include <string>
@@ -49,25 +50,25 @@ private:
 
 public:
     // Constructor
-    CCPACSWingPositionings(void);
+    TIGL_EXPORT CCPACSWingPositionings(void);
 
     // Virtual Destructor
-    virtual ~CCPACSWingPositionings(void);
+    TIGL_EXPORT virtual ~CCPACSWingPositionings(void);
 
     // Read CPACS positionings element
-    void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& wingXPath);
+    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& wingXPath);
 
     // Invalidates internal state
-    void Invalidate(void);
+    TIGL_EXPORT void Invalidate(void);
 
     // Gets a positioning by index.
-    CCPACSWingPositioning& GetPositioning(int index) const;
+    TIGL_EXPORT CCPACSWingPositioning& GetPositioning(int index) const;
 
     // Gets total positioning count
-    int GetPositioningCount(void) const;
+    TIGL_EXPORT int GetPositioningCount(void) const;
 
     // Returns the positioning matrix for a given section-uid
-    CTiglTransformation GetPositioningTransformation(std::string sectionIndex);
+    TIGL_EXPORT CTiglTransformation GetPositioningTransformation(std::string sectionIndex);
 
 protected:
     // Cleanup routine

@@ -26,6 +26,7 @@
 #ifndef CCPACSWINGSECTION_H
 #define CCPACSWINGSECTION_H
 
+#include "tigl_internal.h"
 #include "tixi.h"
 #include "CCPACSWingSectionElements.h"
 #include "CTiglTransformation.h"
@@ -39,25 +40,25 @@ class CCPACSWingSection
 
 public:
     // Constructor
-    CCPACSWingSection();
+    TIGL_EXPORT CCPACSWingSection();
 
     // Virtual Destructor
-    virtual ~CCPACSWingSection(void);
+    TIGL_EXPORT virtual ~CCPACSWingSection(void);
 
     // Read CPACS section elements
-    void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& sectionXPath);
+    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& sectionXPath);
 
     // Get element count for this section
-    int GetSectionElementCount(void) const;
+    TIGL_EXPORT int GetSectionElementCount(void) const;
 
     // Get the UID of this WingSection
-    const std::string& GetUID(void) const;
+    TIGL_EXPORT const std::string& GetUID(void) const;
 
     // Get element for a given index
-    CCPACSWingSectionElement& GetSectionElement(int index) const;
+    TIGL_EXPORT CCPACSWingSectionElement& GetSectionElement(int index) const;
 
     // Gets the section transformation
-    CTiglTransformation GetSectionTransformation(void) const;
+    TIGL_EXPORT CTiglTransformation GetSectionTransformation(void) const;
 
 protected:
     // Cleanup routine

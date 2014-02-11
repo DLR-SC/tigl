@@ -22,6 +22,7 @@
 #include <iostream>
 
 #include "tixi.h"
+#include "tigl_internal.h"
 #include "CCPACSMaterial.h"
 
 namespace tigl
@@ -30,31 +31,31 @@ namespace tigl
 class CCPACSWingCell
 {
 public:
-    CCPACSWingCell();
+    TIGL_EXPORT CCPACSWingCell();
     
-    const std::string& GetUID() const;
+    TIGL_EXPORT const std::string& GetUID() const;
     
     // determines if a given eta xsi koordinate is inside this cell
-    bool IsInside(double eta, double xsi) const;
+    TIGL_EXPORT bool IsInside(double eta, double xsi) const;
     
     // determines if the cell defines a convex qudriangle or nor
-    bool IsConvex() const;
+    TIGL_EXPORT bool IsConvex() const;
     
-    void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& cellXPath);
+    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& cellXPath);
     
     // get corner coordinates of cell
-    void GetLeadingEdgeInnerPoint (double* eta, double* xsi) const;
-    void GetLeadingEdgeOuterPoint (double* eta, double* xsi) const;
-    void GetTrailingEdgeInnerPoint(double* eta, double* xsi) const;
-    void GetTrailingEdgeOuterPoint(double* eta, double* xsi) const;
+    TIGL_EXPORT void GetLeadingEdgeInnerPoint (double* eta, double* xsi) const;
+    TIGL_EXPORT void GetLeadingEdgeOuterPoint (double* eta, double* xsi) const;
+    TIGL_EXPORT void GetTrailingEdgeInnerPoint(double* eta, double* xsi) const;
+    TIGL_EXPORT void GetTrailingEdgeOuterPoint(double* eta, double* xsi) const;
     
     // sets corner coordinates of cell
-    void SetLeadingEdgeInnerPoint (double eta, double xsi);
-    void SetLeadingEdgeOuterPoint (double eta, double xsi);
-    void SetTrailingEdgeInnerPoint(double eta, double xsi);
-    void SetTrailingEdgeOuterPoint(double eta, double xsi);
+    TIGL_EXPORT void SetLeadingEdgeInnerPoint (double eta, double xsi);
+    TIGL_EXPORT void SetLeadingEdgeOuterPoint (double eta, double xsi);
+    TIGL_EXPORT void SetTrailingEdgeInnerPoint(double eta, double xsi);
+    TIGL_EXPORT void SetTrailingEdgeOuterPoint(double eta, double xsi);
     
-    CCPACSMaterial& GetMaterial();
+    TIGL_EXPORT CCPACSMaterial& GetMaterial();
 private:
     void reset();
     
@@ -65,6 +66,25 @@ private:
     std::string uid;
     CCPACSMaterial material;
 };
+
+namespace WingCellInternal
+{
+
+    struct Point2D
+    {
+        double x;
+        double y;
+    };
+
+    // calculates crossproduct (p1-p3)x(p2-p3) (only "z"-value)
+    TIGL_EXPORT double sign(Point2D p1, Point2D p2, Point2D p3);
+
+    // calculates the area of a triangle
+    TIGL_EXPORT double area(Point2D p1, Point2D p2, Point2D p3);
+
+    // checks if point p is in triangle p1-p2-p3
+    TIGL_EXPORT bool is_in_trian(Point2D p, Point2D p1, Point2D p2, Point2D p3);
+}
 
 } // namespace tigl
 

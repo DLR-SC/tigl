@@ -29,6 +29,7 @@
 #include <string>
 
 #include "tixi.h"
+#include "tigl_internal.h"
 #include "CCPACSWingProfile.h"
 #include "CTiglTransformation.h"
 
@@ -42,37 +43,37 @@ class CCPACSWingConnection
 
 public:
     // Constructor
-    CCPACSWingConnection(CCPACSWingSegment* aSegment);
+    TIGL_EXPORT CCPACSWingConnection(CCPACSWingSegment* aSegment);
 
     // Virtual Destructor
-    virtual ~CCPACSWingConnection(void);
+    TIGL_EXPORT virtual ~CCPACSWingConnection(void);
 
     // Read CPACS connection element
-    void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& connectionXPath);
+    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& connectionXPath);
 
     // Returns the section uid of this connection
-    const std::string& GetSectionUID(void) const;
+    TIGL_EXPORT const std::string& GetSectionUID(void) const;
 
     // Returns the section element uid of this connection
-    const std::string& GetSectionElementUID(void) const;
+    TIGL_EXPORT const std::string& GetSectionElementUID(void) const;
 
     // Returns the section index of this connection
-    int GetSectionIndex(void) const;
+    TIGL_EXPORT int GetSectionIndex(void) const;
 
     // Returns the section element index of this connection
-    int GetSectionElementIndex(void) const;
+    TIGL_EXPORT int GetSectionElementIndex(void) const;
 
     // Returns the wing profile referenced by this connection
-    CCPACSWingProfile& GetProfile(void) const;
+    TIGL_EXPORT CCPACSWingProfile& GetProfile(void) const;
 
     // Returns the positioning transformation (segment transformation) for the referenced section
-    CTiglTransformation GetPositioningTransformation(void) const;
+    TIGL_EXPORT CTiglTransformation GetPositioningTransformation(void) const;
 
     // Returns the section matrix referenced by this connection
-    CTiglTransformation GetSectionTransformation(void) const;
+    TIGL_EXPORT CTiglTransformation GetSectionTransformation(void) const;
 
     // Returns the section element matrix referenced by this connection
-    CTiglTransformation GetSectionElementTransformation(void) const;
+    TIGL_EXPORT CTiglTransformation GetSectionElementTransformation(void) const;
 
 protected:
     // Cleanup routine

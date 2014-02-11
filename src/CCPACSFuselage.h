@@ -29,6 +29,7 @@
 #include <string>
 
 #include "tigl_config.h"
+#include "tigl_internal.h"
 #include "tixi.h"
 #include "CTiglTransformation.h"
 #include "CCPACSFuselageSections.h"
@@ -52,31 +53,31 @@ class CCPACSFuselage : public CTiglAbstractPhysicalComponent
 
 public:
     // Constructor
-    CCPACSFuselage(CCPACSConfiguration* config);
+    TIGL_EXPORT CCPACSFuselage(CCPACSConfiguration* config);
 
     // Virtual Destructor
-    virtual ~CCPACSFuselage(void);
+    TIGL_EXPORT virtual ~CCPACSFuselage(void);
 
     // Invalidates internal state
-    void Invalidate(void);
+    TIGL_EXPORT void Invalidate(void);
 
     // Read CPACS fuselage elements
-    void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& fuselageXPath);
+    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& fuselageXPath);
 
     // Returns the name of the fuselage
-    std::string GetName(void) const;
+    TIGL_EXPORT std::string GetName(void) const;
 
     // Returns the parent configuration
-    CCPACSConfiguration & GetConfiguration(void) const;
+    TIGL_EXPORT CCPACSConfiguration & GetConfiguration(void) const;
 
     // Get section count
-    int GetSectionCount(void) const;
+    TIGL_EXPORT int GetSectionCount(void) const;
 
     // Returns the section for a given index
-    CCPACSFuselageSection& GetSection(int index) const;
+    TIGL_EXPORT CCPACSFuselageSection& GetSection(int index) const;
 
     // Get segment count
-    int GetSegmentCount(void) const;
+    TIGL_EXPORT int GetSegmentCount(void) const;
 
 #ifdef TIGL_USE_XCAF
     // builds data structure for a TDocStd_Application
@@ -85,43 +86,43 @@ public:
 #endif
 
     // Returns the segment for a given index
-    CTiglAbstractSegment & GetSegment(const int index);
+    TIGL_EXPORT CTiglAbstractSegment & GetSegment(const int index);
 
     // Gets the fuselage transformation
-    CTiglTransformation GetFuselageTransformation(void);
+    TIGL_EXPORT CTiglTransformation GetFuselageTransformation(void);
 
     // Get the positioning transformation for a given section index
-    CTiglTransformation GetPositioningTransformation(const std::string& sectionUID);
+    TIGL_EXPORT CTiglTransformation GetPositioningTransformation(const std::string& sectionUID);
 
     // Gets a point on the given fuselage segment in dependence of a parameters eta and zeta with
     // 0.0 <= eta <= 1.0 and 0.0 <= zeta <= 1.0. For eta = 0.0 the point lies on the start
     // profile of the segment, for eta = 1.0 on the end profile of the segment. For zeta = 0.0
     // the point is the start point of the profile wire, for zeta = 1.0 the last profile wire point.
-    gp_Pnt GetPoint(int segmentIndex, double eta, double zeta);
+    TIGL_EXPORT gp_Pnt GetPoint(int segmentIndex, double eta, double zeta);
 
     // Gets the volume of this fuselage
-    double GetVolume();
+    TIGL_EXPORT double GetVolume();
 
     // get the Transformation object
-    CTiglTransformation GetTransformation(void);
+    TIGL_EXPORT CTiglTransformation GetTransformation(void);
 
     // sets a Transformation object
-    void Translate(CTiglPoint trans);
+    TIGL_EXPORT void Translate(CTiglPoint trans);
 
     // Gets the surfade area of this wing
-    double GetSurfaceArea();
+    TIGL_EXPORT double GetSurfaceArea();
 
     // Returns the circumference of the segment "segmentIndex" at a given eta
-    double GetCircumference(int segmentIndex, double eta);
+    TIGL_EXPORT double GetCircumference(int segmentIndex, double eta);
 
     // Returns the Component Type TIGL_COMPONENT_FUSELAGE
-    TiglGeometricComponentType GetComponentType(void) {return TIGL_COMPONENT_FUSELAGE | TIGL_COMPONENT_PHYSICAL;}
+    TIGL_EXPORT TiglGeometricComponentType GetComponentType(void) {return TIGL_COMPONENT_FUSELAGE | TIGL_COMPONENT_PHYSICAL;}
 
     // Returns the point where the distance between the selected fuselage and the ground is at minimum.
     // The Fuselage could be turned with a given angle at at given axis, specified by a point and a direction.
-    gp_Pnt GetMinumumDistanceToGround(gp_Ax1 RAxis, double angle);
+    TIGL_EXPORT gp_Pnt GetMinumumDistanceToGround(gp_Ax1 RAxis, double angle);
 
-    void SetSymmetryAxis(const std::string& axis);
+    TIGL_EXPORT void SetSymmetryAxis(const std::string& axis);
 
 protected:
     // Cleanup routine

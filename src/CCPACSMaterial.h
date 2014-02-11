@@ -21,6 +21,7 @@
 
 #include <iostream>
 #include "tixi.h"
+#include "tigl_internal.h"
 
 namespace tigl
 {
@@ -28,21 +29,21 @@ namespace tigl
 class CCPACSMaterial
 {
 public:
-    CCPACSMaterial();
+    TIGL_EXPORT CCPACSMaterial();
     
-    void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string &materialXPath);
+    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string &materialXPath);
     
-    void Invalidate();
+    TIGL_EXPORT void Invalidate();
     
     // returns true, if the material could be read from CPACS file
-    bool IsValid() const;
+    TIGL_EXPORT bool IsValid() const;
     
-    bool isComposite() const;
+    TIGL_EXPORT bool isComposite() const;
     
-    const std::string& GetUID() const;
-    double GetThickness() const;
+    TIGL_EXPORT const std::string& GetUID() const;
+    TIGL_EXPORT double GetThickness() const;
 
-    void Cleanup();
+    TIGL_EXPORT void Cleanup();
 private:
     std::string uid;
     double thickness;

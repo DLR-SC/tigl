@@ -26,6 +26,7 @@
 #ifndef CCPACSFUSELAGES_H
 #define CCPACSFUSELAGES_H
 
+#include "tigl_internal.h"
 #include <vector>
 
 #include "tixi.h"
@@ -48,32 +49,32 @@ private:
 
 public:
     // Constructor
-    CCPACSFuselages(CCPACSConfiguration* config);
+    TIGL_EXPORT CCPACSFuselages(CCPACSConfiguration* config);
 
     // Virtual Destructor
-    virtual ~CCPACSFuselages(void);
+    TIGL_EXPORT virtual ~CCPACSFuselages(void);
 
     // Invalidates internal state
-    void Invalidate(void);
+    TIGL_EXPORT void Invalidate(void);
 
     // Read CPACS fuselage elements
-    void ReadCPACS(TixiDocumentHandle tixiHandle, const char* configurationUID);
+    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const char* configurationUID);
 
     // Returns the total count of fuselage profiles in this configuration
-    int GetProfileCount(void) const;
+    TIGL_EXPORT int GetProfileCount(void) const;
 
     // Returns the fuselage profile for a given index.
-    CCPACSFuselageProfile& GetProfile(int index) const;
-    CCPACSFuselageProfile& GetProfile(std::string uid) const;
+    TIGL_EXPORT CCPACSFuselageProfile& GetProfile(int index) const;
+    TIGL_EXPORT CCPACSFuselageProfile& GetProfile(std::string uid) const;
 
     // Returns the total count of fuselages in a configuration
-    int GetFuselageCount(void) const;
+    TIGL_EXPORT int GetFuselageCount(void) const;
 
     // Returns the fuselage for a given index.
-    CCPACSFuselage& GetFuselage(int index) const;
+    TIGL_EXPORT CCPACSFuselage& GetFuselage(int index) const;
 
     // Returns the fuselage for a given UID.
-    CCPACSFuselage& GetFuselage(const std::string& UID) const;
+    TIGL_EXPORT CCPACSFuselage& GetFuselage(const std::string& UID) const;
 
 protected:
     // Cleanup routine

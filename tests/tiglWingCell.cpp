@@ -20,23 +20,6 @@
 
 #include "CCPACSWingCell.h"
 
-//forward declation of internal stuff
-namespace tigl 
-{ 
-
-    namespace WingCellInternal 
-    {
-        struct Point2D
-        {
-            double x;
-            double y;
-        };
-        double sign(Point2D p1, Point2D p2, Point2D p3);
-        double area(Point2D p1, Point2D p2, Point2D p3);
-    }
-
-}
-
 using namespace tigl;
 
 TEST(WingCell, IsInner)

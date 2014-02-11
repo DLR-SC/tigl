@@ -26,6 +26,7 @@
 #ifndef CCPACSFUSELAGESEGMENTS_H
 #define CCPACSFUSELAGESEGMENTS_H
 
+#include "tigl_internal.h"
 #include "tixi.h"
 
 #include <string>
@@ -46,22 +47,22 @@ private:
 
 public:
     // Constructor
-    CCPACSFuselageSegments(CCPACSFuselage* aFuselage);
+    TIGL_EXPORT CCPACSFuselageSegments(CCPACSFuselage* aFuselage);
 
     // Virtual Destructor
-    virtual ~CCPACSFuselageSegments(void);
+    TIGL_EXPORT virtual ~CCPACSFuselageSegments(void);
 
     // Invalidates internal state
-    void Invalidate(void);
+    TIGL_EXPORT void Invalidate(void);
 
     // Read CPACS segments element
-    void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& fuselageXPath);
+    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& fuselageXPath);
 
     // Gets a segment by index. 
-    CCPACSFuselageSegment& GetSegment(int index);
+    TIGL_EXPORT CCPACSFuselageSegment& GetSegment(int index);
 
     // Gets total segment count
-    int GetSegmentCount(void) const;
+    TIGL_EXPORT int GetSegmentCount(void) const;
 
 protected:
     // Cleanup routine

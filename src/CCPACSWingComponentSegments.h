@@ -30,6 +30,7 @@
 #include <vector>
 
 #include "tixi.h"
+#include "tigl_internal.h"
 #include "CCPACSWingComponentSegment.h"
 #include "CTiglError.h"
 
@@ -46,23 +47,23 @@ private:
 
 public:
     // Constructor
-    CCPACSWingComponentSegments(CCPACSWing* aWing);
+    TIGL_EXPORT CCPACSWingComponentSegments(CCPACSWing* aWing);
 
     // Virtual Destructor
-    virtual ~CCPACSWingComponentSegments(void);
+    TIGL_EXPORT virtual ~CCPACSWingComponentSegments(void);
 
     // Invalidates internal state
-    void Invalidate(void);
+    TIGL_EXPORT void Invalidate(void);
 
     // Read CPACS segments element
-    void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& wingXPath);
+    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& wingXPath);
 
     // Gets a segment by index. 
-    CCPACSWingComponentSegment & GetComponentSegment(const int index);
-    CCPACSWingComponentSegment & GetComponentSegment(const std::string& componentSegmentUID);
+    TIGL_EXPORT CCPACSWingComponentSegment & GetComponentSegment(const int index);
+    TIGL_EXPORT CCPACSWingComponentSegment & GetComponentSegment(const std::string& componentSegmentUID);
 
     // Gets total segment count
-    int GetComponentSegmentCount(void);
+    TIGL_EXPORT int GetComponentSegmentCount(void);
 
 protected:
     // Cleanup routine

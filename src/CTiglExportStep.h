@@ -26,6 +26,7 @@
 #ifndef CTIGLEXPORTSTEP_H
 #define CTIGLEXPORTSTEP_H
 
+#include "tigl_internal.h"
 #include "CTiglUIDManager.h"
 #include "CCPACSHeader.h"
 #include "CCPACSWings.h"
@@ -55,25 +56,25 @@ class CTiglExportStep
 
 public:
     // Constructor
-    CTiglExportStep(CCPACSConfiguration& config);
+    TIGL_EXPORT CTiglExportStep(CCPACSConfiguration& config);
 
     // Virtual Destructor
-    virtual ~CTiglExportStep(void);
+    TIGL_EXPORT virtual ~CTiglExportStep(void);
 
-    void SetExportMode(TiglStepExportMode mode);
+    TIGL_EXPORT void SetExportMode(TiglStepExportMode mode);
     
     // Exports the whole configuration as IGES file
-    void ExportStep(const std::string& filename) const;
+    TIGL_EXPORT void ExportStep(const std::string& filename) const;
 
     // Exports the whole configuration, boolean fused, as IGES file
-    void ExportFusedStep(const std::string& filename);
+    TIGL_EXPORT void ExportFusedStep(const std::string& filename);
 
     // Save a sequence of shapes in IGES Format
-    void ExportShapes(const Handle(TopTools_HSequenceOfShape)& aHSequenceOfShape, const std::string& filename);
+    TIGL_EXPORT void ExportShapes(const Handle(TopTools_HSequenceOfShape)& aHSequenceOfShape, const std::string& filename);
 
 #ifdef TIGL_USE_XCAF // this feature requires xcaf
     // Saves as IGES, with cpacs metadata information in it
-    void ExportStepWithCPACSMetadata(const std::string& filename);
+    TIGL_EXPORT void ExportStepWithCPACSMetadata(const std::string& filename);
 #endif
 
 protected:
