@@ -21,8 +21,9 @@
 
 #include <QDialog>
 
-namespace Ui {
-class FuseDialog;
+namespace Ui
+{
+    class FuseDialog;
 }
 
 class FuseDialog : public QDialog

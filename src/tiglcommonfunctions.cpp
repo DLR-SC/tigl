@@ -52,10 +52,13 @@
 #include <algorithm>
 #include <cassert>
 
-namespace {
-    struct IsSame {
+namespace
+{
+    struct IsSame
+    {
         IsSame(double tolerance) : _tol(tolerance) {}
-        bool operator() (double first, double second) {
+        bool operator() (double first, double second)
+        {
             return (fabs(first-second)<_tol);
         }
 
@@ -243,7 +246,7 @@ gp_Pnt GetCentralFacePoint(const TopoDS_Face& face)
 
     TopExp_Explorer exp (face,TopAbs_EDGE);
     std::list<double> intersections;
-    for(; exp.More(); exp.Next()) {
+    for (; exp.More(); exp.Next()) {
         TopoDS_Edge edge = TopoDS::Edge(exp.Current());
         Standard_Real first, last;
 
@@ -252,7 +255,7 @@ gp_Pnt GetCentralFacePoint(const TopoDS_Face& face)
         hcurve = new Geom2d_TrimmedCurve(hcurve, first, last);
 
         Geom2dAPI_InterCurveCurve intersector(uiso, hcurve);
-        for(int ipoint = 0; ipoint < intersector.NbPoints(); ++ipoint) {
+        for (int ipoint = 0; ipoint < intersector.NbPoints(); ++ipoint) {
             gp_Pnt2d p = intersector.Point(ipoint+1);
             intersections.push_back(p.Y());
         }
@@ -266,7 +269,7 @@ gp_Pnt GetCentralFacePoint(const TopoDS_Face& face)
     // normally we should have at least two intersections
     // also the number of sections should be even - else something is really strange
     //assert(intersections.size() % 2 == 0);
-    if(intersections.size() >= 2) {
+    if (intersections.size() >= 2) {
         std::list<double>::iterator it = intersections.begin();
         double int1 = *it++;
         double int2 = *it;
@@ -278,24 +281,25 @@ gp_Pnt GetCentralFacePoint(const TopoDS_Face& face)
     return p;
 }
 
-ShapeMap MapFacesToShapeGroups(const PNamedShape shape){
+ShapeMap MapFacesToShapeGroups(const PNamedShape shape)
+{
     ShapeMap map;
-    if(!shape) {
+    if (!shape) {
         return map;
     }
 
     BRep_Builder b;
     TopTools_IndexedMapOfShape faceMap;
     TopExp::MapShapes(shape->Shape(),   TopAbs_FACE, faceMap);
-    for(int iface = 1; iface <= faceMap.Extent(); ++iface) {
+    for (int iface = 1; iface <= faceMap.Extent(); ++iface) {
         TopoDS_Face face = TopoDS::Face(faceMap(iface));
         std::string name = shape->ShortName();
         PNamedShape origin = shape->GetFaceTraits(iface-1).Origin();
-        if(origin){
+        if (origin){
             name = origin->ShortName();
         }
         ShapeMap::iterator it = map.find(name);
-        if(it == map.end()) {
+        if (it == map.end()) {
             TopoDS_Compound c;
             b.MakeCompound(c);
             b.Add(c, face);

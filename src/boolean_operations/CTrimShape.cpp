@@ -49,110 +49,115 @@
 #include <BRepBuilderAPI_MakeShape.hxx>
 #include <BRepBuilderAPI_MakeVertex.hxx>
 
-namespace {
+namespace
+{
 
-static unsigned int itrim = 0;
+    static unsigned int itrim = 0;
 
 
-// Writes shape and its central face points into brep file (for debugging purposes)
-void WriteDebugShape(const TopoDS_Shape& shape, const char * name) {
-    TopoDS_Compound c;
-    BRep_Builder b;
-    b.MakeCompound(c);
+    // Writes shape and its central face points into brep file (for debugging purposes)
+    void WriteDebugShape(const TopoDS_Shape& shape, const char * name)
+    {
+        TopoDS_Compound c;
+        BRep_Builder b;
+        b.MakeCompound(c);
 
-    b.Add(c, shape);
+        b.Add(c, shape);
 
-    TopTools_IndexedMapOfShape map;
-    TopExp::MapShapes(shape,   TopAbs_FACE, map);
-    for(int i = 1; i <= map.Extent(); ++i) {
-        const TopoDS_Face& face = TopoDS::Face(map(i));
-        gp_Pnt p = GetCentralFacePoint(face);
-        b.Add(c, BRepBuilderAPI_MakeVertex(p));
+        TopTools_IndexedMapOfShape map;
+        TopExp::MapShapes(shape,   TopAbs_FACE, map);
+        for (int i = 1; i <= map.Extent(); ++i) {
+            const TopoDS_Face& face = TopoDS::Face(map(i));
+            gp_Pnt p = GetCentralFacePoint(face);
+            b.Add(c, BRepBuilderAPI_MakeVertex(p));
+        }
+
+        std::stringstream str;
+        str << "trim_" << itrim << "_" << name << ".brep";
+
+        BRepTools::Write(c, str.str().c_str());
     }
 
-    std::stringstream str;
-    str << "trim_" << itrim << "_" << name << ".brep";
+    TopoDS_Shape GetFacesNotInShape(BRepBuilderAPI_MakeShape& bop, const TopoDS_Shape& originalShape, const TopoDS_Shape& splittedShape, const TopoDS_Shape& shapeToExInclude, TrimOperation op)
+    {
 
-    BRepTools::Write(c, str.str().c_str());
-}
+        TopoDS_Compound compound;
+        BRep_Builder compoundmaker;
+        compoundmaker.MakeCompound(compound);
 
-TopoDS_Shape GetFacesNotInShape(BRepBuilderAPI_MakeShape& bop, const TopoDS_Shape& originalShape, const TopoDS_Shape& splittedShape, const TopoDS_Shape& shapeToExInclude, TrimOperation op){
+        // add splitted faces to compound
+        TopTools_IndexedMapOfShape originMap;
+        TopExp::MapShapes(originalShape,   TopAbs_FACE, originMap);
+        for (int i = 1; i <= originMap.Extent(); ++i) {
+            const TopoDS_Face& face = TopoDS::Face(originMap(i));
+            const TopTools_ListOfShape& splits = bop.Modified(face);
+            TopTools_ListIteratorOfListOfShape it;
+            for (it.Initialize(splits); it.More(); it.Next()) {
+                // check if face is inside
+                TopoDS_Face splitface = TopoDS::Face(it.Value());
+                gp_Pnt p = GetCentralFacePoint(splitface);
 
-    TopoDS_Compound compound;
-    BRep_Builder compoundmaker;
-    compoundmaker.MakeCompound(compound);
-
-    // add splitted faces to compound
-    TopTools_IndexedMapOfShape originMap;
-    TopExp::MapShapes(originalShape,   TopAbs_FACE, originMap);
-    for(int i = 1; i <= originMap.Extent(); ++i) {
-        const TopoDS_Face& face = TopoDS::Face(originMap(i));
-        const TopTools_ListOfShape& splits = bop.Modified(face);
-        TopTools_ListIteratorOfListOfShape it;
-        for(it.Initialize(splits); it.More(); it.Next()) {
-            // check if face is inside
-            TopoDS_Face splitface = TopoDS::Face(it.Value());
-            gp_Pnt p = GetCentralFacePoint(splitface);
-
-            // check if point is in shapeToExclude
-            BRepClass3d_SolidClassifier classifier;
-            classifier.Load(shapeToExInclude);
-            classifier.Perform(p, Precision::Confusion());
+                // check if point is in shapeToExclude
+                BRepClass3d_SolidClassifier classifier;
+                classifier.Load(shapeToExInclude);
+                classifier.Perform(p, Precision::Confusion());
 
 
-            switch (op) {
-            case EXCLUDE:
-                if (classifier.State() != TopAbs_IN && classifier.State() != TopAbs_ON) {
-                    compoundmaker.Add(compound, splitface);
+                switch (op) {
+                case EXCLUDE:
+                    if (classifier.State() != TopAbs_IN && classifier.State() != TopAbs_ON) {
+                        compoundmaker.Add(compound, splitface);
+                    }
+                    break;
+                case INCLUDE:
+                    if (classifier.State() == TopAbs_IN) {
+                        compoundmaker.Add(compound, splitface);
+                    }
+                    break;
+                default:
+                    printf("illegal operation\n");
                 }
-                break;
-            case INCLUDE:
-                if (classifier.State() == TopAbs_IN)
-                    compoundmaker.Add(compound, splitface);
-                break;
-            default:
-                printf("illegal operation\n");
             }
         }
-    }
 
-    // add remaining faces of original shape
-    TopTools_IndexedMapOfShape splitMap;
-    TopExp::MapShapes(splittedShape,   TopAbs_FACE, splitMap);
-    for(int i = 1; i <= splitMap.Extent(); ++i) {
-        const TopoDS_Face& face = TopoDS::Face(splitMap(i));
-        // check if faces is from original shape
-        Standard_Integer index = originMap.FindIndex(face);
-        if(index > 0) {
-            const TopoDS_Face& originalFace = TopoDS::Face(originMap.FindKey(index));
-            gp_Pnt p = GetCentralFacePoint(originalFace);
+        // add remaining faces of original shape
+        TopTools_IndexedMapOfShape splitMap;
+        TopExp::MapShapes(splittedShape,   TopAbs_FACE, splitMap);
+        for (int i = 1; i <= splitMap.Extent(); ++i) {
+            const TopoDS_Face& face = TopoDS::Face(splitMap(i));
+            // check if faces is from original shape
+            Standard_Integer index = originMap.FindIndex(face);
+            if (index > 0) {
+                const TopoDS_Face& originalFace = TopoDS::Face(originMap.FindKey(index));
+                gp_Pnt p = GetCentralFacePoint(originalFace);
 
-            // check if point is in shapeToExclude
-            BRepClass3d_SolidClassifier classifier;
-            classifier.Load(shapeToExInclude);
-            classifier.Perform(p, Precision::Confusion());
+                // check if point is in shapeToExclude
+                BRepClass3d_SolidClassifier classifier;
+                classifier.Load(shapeToExInclude);
+                classifier.Perform(p, Precision::Confusion());
 
 
-            switch (op) {
-            case EXCLUDE:
-                if (classifier.State() != TopAbs_IN && classifier.State() != TopAbs_ON) {
-                    compoundmaker.Add(compound, originalFace);
+                switch (op) {
+                case EXCLUDE:
+                    if (classifier.State() != TopAbs_IN && classifier.State() != TopAbs_ON) {
+                        compoundmaker.Add(compound, originalFace);
+                    }
+                    break;
+                case INCLUDE:
+                    if (classifier.State() == TopAbs_IN) {
+                        compoundmaker.Add(compound, originalFace);
+                    }
+                    break;
+                default:
+                    printf("illegal operation\n");
                 }
-                break;
-            case INCLUDE:
-                if (classifier.State() == TopAbs_IN)
-                    compoundmaker.Add(compound, originalFace);
-                break;
-            default:
-                printf("illegal operation\n");
             }
         }
+
+
+        return compound;
     }
-
-
-    return compound;
-}
-}
+} // namespace
 
 CTrimShape::CTrimShape(const PNamedShape shape, const PNamedShape trimmingTool, TrimOperation op)
     : _dsfiller(NULL), _source(shape), _tool(trimmingTool), _resultshape(), _operation(op)
@@ -171,7 +176,7 @@ CTrimShape::CTrimShape(const PNamedShape shape, const PNamedShape trimmingTool, 
 
 CTrimShape::~CTrimShape()
 {
-    if(_fillerAllocated && _dsfiller) {
+    if (_fillerAllocated && _dsfiller) {
         delete _dsfiller;
         _dsfiller = NULL;
     }
@@ -182,12 +187,13 @@ CTrimShape::operator PNamedShape()
     return NamedShape();
 }
 
-void CTrimShape::PrepareFiller(){
-    if(!_tool || !_source) {
+void CTrimShape::PrepareFiller()
+{
+    if (!_tool || !_source) {
         return;
     }
 
-    if(!_dsfiller) {
+    if (!_dsfiller) {
         BOPCol_ListOfShape aLS;
         aLS.Append(_tool->Shape());
         aLS.Append(_source->Shape());
@@ -202,18 +208,18 @@ void CTrimShape::PrepareFiller(){
 
 void CTrimShape::Perform()
 {
-    if(!_hasPerformed) {
-        if(!_source) {
+    if (!_hasPerformed) {
+        if (!_source) {
             throw tigl::CTiglError("Null pointer for source argument in CTrimShape", TIGL_NULL_POINTER);
         }
 
-        if(!_tool) {
+        if (!_tool) {
             throw tigl::CTiglError("Null pointer for tool argument in CTrimShape", TIGL_NULL_POINTER);
         }
 
         bool debug = (getenv("TIGL_DEBUG_BOP") != NULL);
 
-        if(debug) {
+        if (debug) {
             WriteDebugShape(_source->Shape(), "source");
             WriteDebugShape(_tool->Shape(), "tool");
         }
@@ -225,7 +231,7 @@ void CTrimShape::Perform()
         splitter.AddTool(_tool->Shape());
         splitter.PerformWithFiller(*_dsfiller);
 
-        if(debug) {
+        if (debug) {
             WriteDebugShape(splitter.Shape(), "split");
         }
 
@@ -234,7 +240,7 @@ void CTrimShape::Perform()
         CBooleanOperTools::MapFaceNamesAfterBOP(splitAdapter, _source, _resultshape);
         CBooleanOperTools::MapFaceNamesAfterBOP(splitAdapter, _tool,   _resultshape);
 
-        if(debug) {
+        if (debug) {
             WriteDebugShape(_resultshape->Shape(), "result");
         }
 

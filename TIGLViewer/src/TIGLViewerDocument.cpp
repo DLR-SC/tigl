@@ -1296,7 +1296,7 @@ void TIGLViewerDocument::exportMeshedConfigVTK()
         writeToStatusBar("Calculating fused airplane, this can take a while");
         // calculating loft, is cached afterwards
         tigl::PTiglFusePlane fuser = GetConfiguration().AircraftFusingAlgo();
-        if(fuser) {
+        if (fuser) {
             // invoke fusing algo
             fuser->SetResultMode(tigl::FULL_PLANE);
             fuser->NamedShape();
@@ -1428,22 +1428,22 @@ void TIGLViewerDocument::drawFusedWing()
 void TIGLViewerDocument::drawFusedAircraft()
 {
     FuseDialog dialog(parent);
-    if(dialog.exec() != QDialog::Accepted) {
+    if (dialog.exec() != QDialog::Accepted) {
         return;
     }
 
     tigl::TiglFuseResultMode mode = tigl::HALF_PLANE;
     // make option
-    if(!dialog.TrimWithFarField()      && !dialog.UseSymmetries()) {
+    if (!dialog.TrimWithFarField()     && !dialog.UseSymmetries()) {
         mode = tigl::HALF_PLANE;
     }
-    else if(!dialog.TrimWithFarField() && dialog.UseSymmetries()) {
+    else if (!dialog.TrimWithFarField() && dialog.UseSymmetries()) {
         mode = tigl::FULL_PLANE;
     }
-    else if(dialog.TrimWithFarField()  && !dialog.UseSymmetries()) {
+    else if (dialog.TrimWithFarField()  && !dialog.UseSymmetries()) {
         mode = tigl::HALF_PLANE_TRIMMED_FF;
     }
-    else if(dialog.TrimWithFarField()  && dialog.UseSymmetries()) {
+    else if (dialog.TrimWithFarField()  && dialog.UseSymmetries()) {
         mode = tigl::FULL_PLANE_TRIMMED_FF;
     }
 
@@ -1471,15 +1471,17 @@ void TIGLViewerDocument::drawFusedAircraft()
                                          Quantity_NOC_AZURE,
                                          Quantity_NOC_FIREBRICK};
         int ncolors = sizeof(colors)/sizeof(Quantity_NameOfColor);
-        for(it = map.begin(); it != map.end(); ++it) {
-            if(icol >= ncolors) icol = 0;
+        for (it = map.begin(); it != map.end(); ++it) {
+            if (icol >= ncolors) {
+                icol = 0;
+            }
             displayShape(it->second, colors[icol++]);
         }
 
         const ListPNamedShape& ints = fuser->Intersections();
         ListPNamedShape::const_iterator it2 = ints.begin();
-        for(; it2 != ints.end(); ++it2) {
-            if(*it2) {
+        for (; it2 != ints.end(); ++it2) {
+            if (*it2) {
                 displayShape((*it2)->Shape(), Quantity_NOC_WHITE);
             }
         }

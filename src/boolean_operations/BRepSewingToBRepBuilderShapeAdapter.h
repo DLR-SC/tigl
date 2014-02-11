@@ -20,18 +20,19 @@
 #define BREPSEWINGTOBREPBUILDERSHAPEADAPTER_H
 
 #include <BRepBuilderAPI_MakeShape.hxx>
+#include "tigl_internal.h"
 
 class BRepBuilderAPI_Sewing;
 
 class BRepSewingToBRepBuilderShapeAdapter : public BRepBuilderAPI_MakeShape
 {
 public:
-    BRepSewingToBRepBuilderShapeAdapter(BRepBuilderAPI_Sewing& adaptee);
+    TIGL_EXPORT BRepSewingToBRepBuilderShapeAdapter(BRepBuilderAPI_Sewing& adaptee);
 
-    const TopoDS_Shape& Shape() const;
-    operator TopoDS_Shape() const;
+    TIGL_EXPORT const TopoDS_Shape& Shape() const;
+    TIGL_EXPORT operator TopoDS_Shape() const;
 
-    virtual const TopTools_ListOfShape& Modified(const TopoDS_Shape& S) ;
+    TIGL_EXPORT virtual const TopTools_ListOfShape& Modified(const TopoDS_Shape& S) ;
 
 private:
     BRepBuilderAPI_Sewing& _adaptee;

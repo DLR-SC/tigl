@@ -32,7 +32,8 @@
 #include <BRepBuilderAPI_MakeShape.hxx>
 
 // finds out for each face of the splitted result, what the name of the parent face was
-void CBooleanOperTools::MapFaceNamesAfterBOP(BRepBuilderAPI_MakeShape& bop, const PNamedShape source, PNamedShape result) {
+void CBooleanOperTools::MapFaceNamesAfterBOP(BRepBuilderAPI_MakeShape& bop, const PNamedShape source, PNamedShape result)
+{
     TopTools_IndexedMapOfShape shapeMapSplit;
     TopExp::MapShapes(result->Shape(),   TopAbs_FACE, shapeMapSplit);
 
@@ -40,14 +41,14 @@ void CBooleanOperTools::MapFaceNamesAfterBOP(BRepBuilderAPI_MakeShape& bop, cons
     TopExp::MapShapes(source->Shape(),   TopAbs_FACE, sourceMap);
 
     // find newly created from source
-    for(int iface = 1; iface <= sourceMap.Extent(); ++iface) {
+    for (int iface = 1; iface <= sourceMap.Extent(); ++iface) {
         const TopoDS_Face& face =  TopoDS::Face(sourceMap(iface));
         const TopTools_ListOfShape& splits = bop.Modified(face);
         TopTools_ListIteratorOfListOfShape it;
-        for(it.Initialize(splits); it.More(); it.Next()) {
+        for (it.Initialize(splits); it.More(); it.Next()) {
             unsigned int index = shapeMapSplit.FindIndex(it.Value());
 
-            if(index > 0) {
+            if (index > 0) {
                 result->FaceTraits(index-1).SetDerivedFromShape(source, iface-1);
             }
         }
@@ -62,15 +63,16 @@ void CBooleanOperTools::MapFaceNamesAfterBOP(BRepBuilderAPI_MakeShape& bop, cons
  * can be found in the source shape. If so, it applies the name of
  * the source face to the target face
  */
-void CBooleanOperTools::AppendNamesToShape(const PNamedShape source, PNamedShape target){
+void CBooleanOperTools::AppendNamesToShape(const PNamedShape source, PNamedShape target)
+{
     TopTools_IndexedMapOfShape targetMap, sourceMap;
     TopExp::MapShapes(target->Shape(),   TopAbs_FACE, targetMap);
     TopExp::MapShapes(source->Shape(),   TopAbs_FACE, sourceMap);
 
-    for(int iface = 1; iface <= sourceMap.Extent(); ++iface) {
+    for (int iface = 1; iface <= sourceMap.Extent(); ++iface) {
         const TopoDS_Face& face =  TopoDS::Face(sourceMap(iface));
         unsigned int index = targetMap.FindIndex(face);
-        if(index > 0){
+        if (index > 0) {
             target->FaceTraits(index-1).SetDerivedFromShape(source, iface-1);
         }
     }

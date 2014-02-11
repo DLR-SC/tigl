@@ -19,6 +19,7 @@
 #ifndef CNAMEDSHAPE_H
 #define CNAMEDSHAPE_H
 
+#include "tigl_internal.h"
 #include "CSharedPtr.h"
 #include "PNamedShape.h"
 
@@ -36,21 +37,22 @@ typedef std::vector<CFaceTraits> FaceList;
  * a reference to the shape where the face was originally created
  * in and its name.
  */
-class CFaceTraits {
+class CFaceTraits
+{
 public:
-    CFaceTraits();
+    TIGL_EXPORT CFaceTraits();
     
-    unsigned int Index() const;
-    void SetIndex(unsigned int);
+    TIGL_EXPORT unsigned int Index() const;
+    TIGL_EXPORT void SetIndex(unsigned int);
     
-    const PNamedShape Origin() const;
-    void SetOrigin(const PNamedShape);
+    TIGL_EXPORT const PNamedShape Origin() const;
+    TIGL_EXPORT void SetOrigin(const PNamedShape);
 
     // Sets the traits, that it is derived by the iface-th trait of the origin shape
-    void SetDerivedFromShape(PNamedShape origin, unsigned int iface);
+    TIGL_EXPORT void SetDerivedFromShape(PNamedShape origin, unsigned int iface);
     
-    const char* Name() const;
-    void SetName(const char* );
+    TIGL_EXPORT const char* Name() const;
+    TIGL_EXPORT void SetName(const char* );
     
 private:
     PNamedShape  _origin;        /** Pointer to the original shape where this face was created */
@@ -65,31 +67,31 @@ private:
 class CNamedShape
 {
 public:
-    CNamedShape();
-    CNamedShape(const TopoDS_Shape& shape, const char* shapeName);
-    CNamedShape(const CNamedShape&);
-    CNamedShape &operator= (const CNamedShape&);
-    ~CNamedShape();
+    TIGL_EXPORT CNamedShape();
+    TIGL_EXPORT CNamedShape(const TopoDS_Shape& shape, const char* shapeName);
+    TIGL_EXPORT CNamedShape(const CNamedShape&);
+    TIGL_EXPORT CNamedShape &operator= (const CNamedShape&);
+    TIGL_EXPORT ~CNamedShape();
 
     // creates a true copy, i.e. it duplicates the underlying shape
-    PNamedShape DeepCopy() const;
+    TIGL_EXPORT PNamedShape DeepCopy() const;
 
-    void Clear();
+    TIGL_EXPORT void Clear();
 
     // getters
-    const TopoDS_Shape& Shape() const;
-    const char*         Name()  const;
-    const char*         ShortName() const;
+    TIGL_EXPORT const TopoDS_Shape& Shape() const;
+    TIGL_EXPORT const char*         Name()  const;
+    TIGL_EXPORT const char*         ShortName() const;
 
-    unsigned int GetFaceCount() const;
-    const CFaceTraits& GetFaceTraits(int iFace) const;
-    CFaceTraits& FaceTraits(int iFace);
+    TIGL_EXPORT unsigned int GetFaceCount() const;
+    TIGL_EXPORT const CFaceTraits& GetFaceTraits(int iFace) const;
+    TIGL_EXPORT CFaceTraits& FaceTraits(int iFace);
     
     // setters
-    void SetShape(const TopoDS_Shape&);
-    void SetName(const char*);
-    void SetShortName(const char*);
-    void SetFaceTraits(int iFace, const CFaceTraits& traits);
+    TIGL_EXPORT void SetShape(const TopoDS_Shape&);
+    TIGL_EXPORT void SetName(const char*);
+    TIGL_EXPORT void SetShortName(const char*);
+    TIGL_EXPORT void SetFaceTraits(int iFace, const CFaceTraits& traits);
 
 protected:
     void InitFaceTraits();

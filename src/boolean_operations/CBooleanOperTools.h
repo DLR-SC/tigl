@@ -20,6 +20,7 @@
 #define CBOOLEANOPERTOOLS_H
 
 #include "PNamedShape.h"
+#include "tigl_internal.h"
 
 class BRepBuilderAPI_MakeShape;
 
@@ -29,13 +30,13 @@ class CBooleanOperTools
 public:
     /// maps the face names of source to the facenames of
     /// the resultShape as a result of a boolean operation bop
-    static void MapFaceNamesAfterBOP(BRepBuilderAPI_MakeShape& bop, const PNamedShape source, PNamedShape result);
+    TIGL_EXPORT static void MapFaceNamesAfterBOP(BRepBuilderAPI_MakeShape& bop, const PNamedShape source, PNamedShape result);
 
 
      /// AppendNamesToShape searches for each target face, if it
      /// can be found in the source shape. If so, it applies the name of
      /// the source face to the target face
-    static void AppendNamesToShape(const PNamedShape source, PNamedShape target);
+    TIGL_EXPORT static void AppendNamesToShape(const PNamedShape source, PNamedShape target);
 };
 
 #endif // CBOOLEANOPERTOOLS_H

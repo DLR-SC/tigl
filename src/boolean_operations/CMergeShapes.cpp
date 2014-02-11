@@ -1,5 +1,3 @@
-#include "CMergeShapes.h"
-
 /*
 * Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
 *
@@ -61,42 +59,42 @@ CMergeShapes::operator PNamedShape()
 
 void CMergeShapes::Perform()
 {
-    if(!_hasPerformed) {
+    if (!_hasPerformed) {
         PNamedShape s1 = _source;
         PNamedShape s2 = _tool;
         std::vector<TopoDS_Shape> v1, v2;
 
 
         // check input shapes
-        if(!s1 && !s2) {
+        if (!s1 && !s2) {
             _resultshape.reset();
             _hasPerformed = true;
             return;
         }
 
-        if(!s1 && s2 && !s2->Shape().IsNull()) {
+        if (!s1 && s2 && !s2->Shape().IsNull()) {
             _resultshape = s2;
             _hasPerformed = true;
             return;
         }
 
-        if(!s2 && s1 && !s1->Shape().IsNull()) {
+        if (!s2 && s1 && !s1->Shape().IsNull()) {
             _resultshape = s1;
             _hasPerformed = true;
             return;
         }
 
-        if(s1->Shape().IsNull() && !s2->Shape().IsNull()) {
+        if (s1->Shape().IsNull() && !s2->Shape().IsNull()) {
             _resultshape = s2;
             _hasPerformed = true;
             return;
         }
-        else if(!s1->Shape().IsNull() && s2->Shape().IsNull()) {
+        else if (!s1->Shape().IsNull() && s2->Shape().IsNull()) {
             _resultshape = s1;
             _hasPerformed = true;
             return;
         }
-        else if(s1->Shape().IsNull() && s2->Shape().IsNull()) {
+        else if (s1->Shape().IsNull() && s2->Shape().IsNull()) {
             _resultshape.reset();
             _hasPerformed = true;
             return;
@@ -113,49 +111,49 @@ void CMergeShapes::Perform()
 
 
         // remove common faces
-        for(int iface = 1; iface <= m1.Extent(); ++iface){
+        for (int iface = 1; iface <= m1.Extent(); ++iface){
             const TopoDS_Face& face = TopoDS::Face(m1(iface));
             pointsOn1.push_back(GetCentralFacePoint(face));
 
         }
-        for(int iface = 1; iface <= m2.Extent(); ++iface){
+        for (int iface = 1; iface <= m2.Extent(); ++iface){
             const TopoDS_Face& face = TopoDS::Face(m2(iface));
             pointsOn2.push_back(GetCentralFacePoint(face));
 
         }
-        for(int iface = 0; iface < (int)pointsOn1.size(); ++iface){
+        for (int iface = 0; iface < (int)pointsOn1.size(); ++iface){
             bool issame = false;
             gp_Pnt p1 = pointsOn1[iface];
-            for(int jface = 0; jface < (int)pointsOn2.size(); ++jface) {
+            for (int jface = 0; jface < (int)pointsOn2.size(); ++jface) {
                 gp_Pnt p2 = pointsOn2[jface];
-                if(p1.Distance(p2) < Precision::Confusion()) {
+                if (p1.Distance(p2) < Precision::Confusion()) {
                     issame = true;
                 }
             }
-            if(!issame) {
+            if (!issame) {
                 v1.push_back(m1(iface+1));
             }
         }
 
-        for(int iface = 0; iface < (int)pointsOn2.size(); ++iface){
+        for (int iface = 0; iface < (int)pointsOn2.size(); ++iface){
             bool issame = false;
             gp_Pnt p2 = pointsOn2[iface];
-            for(int jface = 0; jface < (int)pointsOn1.size(); ++jface) {
+            for (int jface = 0; jface < (int)pointsOn1.size(); ++jface) {
                 gp_Pnt p1 = pointsOn1[jface];
-                if(p1.Distance(p2) < Precision::Confusion()) {
+                if (p1.Distance(p2) < Precision::Confusion()) {
                     issame = true;
                 }
             }
-            if(!issame) {
+            if (!issame) {
                 v2.push_back(m2(iface+1));
             }
         }
 
         std::vector<TopoDS_Shape>::const_iterator it;
-        for(it = v1.begin(); it != v1.end(); ++it){
+        for (it = v1.begin(); it != v1.end(); ++it){
             sewer.Add(*it);
         }
-        for(it = v2.begin(); it != v2.end(); ++it){
+        for (it = v2.begin(); it != v2.end(); ++it){
             sewer.Add(*it);
         }
 
@@ -164,7 +162,7 @@ void CMergeShapes::Perform()
         TopTools_IndexedMapOfShape map;
         TopExp::MapShapes(sewer.SewedShape(), TopAbs_SHELL, map);
         BRepBuilderAPI_MakeSolid solidMaker;
-        for(int ishell = 1; ishell <= map.Extent(); ++ishell) {
+        for (int ishell = 1; ishell <= map.Extent(); ++ishell) {
             solidMaker.Add(TopoDS::Shell(map(ishell)));
         }
         TopoDS_Shape solid = solidMaker.Solid();

@@ -27,6 +27,8 @@
 #ifndef GEOMAlgo_Splitter_HeaderFile
 #define GEOMAlgo_Splitter_HeaderFile
 
+#include "tigl_internal.h"
+
 #include <Standard.hxx>
 #include <Standard_Macro.hxx>
 #include <Standard_Boolean.hxx>
@@ -49,50 +51,50 @@
 //=======================================================================
 class GEOMAlgo_Splitter : public BOPAlgo_Builder
 {
- public:
+public:
   
-  Standard_EXPORT
+  TIGL_EXPORT
     GEOMAlgo_Splitter();
 
-  Standard_EXPORT
+  TIGL_EXPORT
     GEOMAlgo_Splitter(const Handle(NCollection_BaseAllocator)& theAllocator);
   
-  Standard_EXPORT
+  TIGL_EXPORT
     virtual ~GEOMAlgo_Splitter();
 
-  Standard_EXPORT
+  TIGL_EXPORT
     void AddTool(const TopoDS_Shape& theShape);
 
-  Standard_EXPORT
+  TIGL_EXPORT
     const BOPCol_ListOfShape& Tools()const;
 
-  Standard_EXPORT
+  TIGL_EXPORT
     void SetLimit(const TopAbs_ShapeEnum aLimit);
 
-  Standard_EXPORT
+  TIGL_EXPORT
     TopAbs_ShapeEnum Limit()const;
 
-  Standard_EXPORT
+  TIGL_EXPORT
     void SetLimitMode(const Standard_Integer aMode);
 
-  Standard_EXPORT
+  TIGL_EXPORT
     Standard_Integer LimitMode()const;
 
-  Standard_EXPORT
+  TIGL_EXPORT
     virtual void Clear();
 
  protected:
-  Standard_EXPORT
+  TIGL_EXPORT
     virtual void BuildResult(const TopAbs_ShapeEnum theType);
 
-  Standard_EXPORT
+  TIGL_EXPORT
     virtual void PostTreat();
   
  protected:
-  BOPCol_ListOfShape myTools; 
-  BOPCol_MapOfShape myMapTools;        
-  TopAbs_ShapeEnum myLimit;   
-  Standard_Integer myLimitMode;  
+  BOPCol_ListOfShape myTools;
+  BOPCol_MapOfShape myMapTools;
+  TopAbs_ShapeEnum myLimit;
+  Standard_Integer myLimitMode;
 };
 
 #endif

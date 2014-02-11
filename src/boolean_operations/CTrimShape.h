@@ -20,10 +20,12 @@
 #define CTRIMSHAPE_H
 
 #include "PNamedShape.h"
+#include "tigl_internal.h"
 
 class BOPAlgo_PaveFiller;
 
-enum TrimOperation {
+enum TrimOperation
+{
     EXCLUDE = 0,
     INCLUDE = 1
 };
@@ -32,14 +34,14 @@ class CTrimShape
 {
 public:
     // the trimming tool must be a solid!
-    CTrimShape(const PNamedShape shape, const PNamedShape trimmingTool, TrimOperation = EXCLUDE);
-    CTrimShape(const PNamedShape shape, const PNamedShape trimmingTool, const BOPAlgo_PaveFiller&, TrimOperation = EXCLUDE);
-    virtual ~CTrimShape();
+    TIGL_EXPORT CTrimShape(const PNamedShape shape, const PNamedShape trimmingTool, TrimOperation = EXCLUDE);
+    TIGL_EXPORT CTrimShape(const PNamedShape shape, const PNamedShape trimmingTool, const BOPAlgo_PaveFiller&, TrimOperation = EXCLUDE);
+    TIGL_EXPORT virtual ~CTrimShape();
 
-    operator PNamedShape ();
+    TIGL_EXPORT operator PNamedShape ();
 
-    void Perform();
-    const PNamedShape NamedShape();
+    TIGL_EXPORT void Perform();
+    TIGL_EXPORT const PNamedShape NamedShape();
 
 protected:
     void PrepareFiller();

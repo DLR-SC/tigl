@@ -131,7 +131,7 @@ void CTiglExportStep::ExportStep(const std::string& filename) const
     }
 
     // Write STEP file
-    if (stepWriter.Write(const_cast<char*>(filename.c_str())) != Standard_True) {
+    if (stepWriter.Write(const_cast<char*>(filename.c_str())) > IFSelect_RetDone) {
         throw CTiglError("Error: Export to STEP file failed in CTiglExportStep::ExportSTEP", TIGL_ERROR);
     }
 }
@@ -174,7 +174,7 @@ void CTiglExportStep::ExportFusedStep(const std::string& filename)
     AddFacesOfShape(fusedAirplane, stepWriter);
 
     // Write STEP file
-    if (stepWriter.Write(const_cast<char*>(filename.c_str())) != Standard_True) {
+    if (stepWriter.Write(const_cast<char*>(filename.c_str())) > IFSelect_RetDone) {
         throw CTiglError("Error: Export fused shapes to STEP file failed in CTiglExportStep::ExportFusedStep", TIGL_ERROR);
     }
 }
@@ -197,7 +197,7 @@ void CTiglExportStep::ExportShapes(const Handle(TopTools_HSequenceOfShape)& aHSe
         AddFacesOfShape(aHSequenceOfShape->Value(i), stepWriter);
     }
 
-    if (stepWriter.Write(const_cast<char*>(filename.c_str())) != Standard_True) {
+    if (stepWriter.Write(const_cast<char*>(filename.c_str())) > IFSelect_RetDone) {
         throw CTiglError("Error: Export of shapes to STEP file failed in CTiglExportStep::ExportShapes", TIGL_ERROR);
     }
 }

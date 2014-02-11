@@ -68,15 +68,18 @@ void CNamedShape::Clear()
     _myfaceTraits.clear();
 }
 
-const TopoDS_Shape& CNamedShape::Shape() const{
+const TopoDS_Shape& CNamedShape::Shape() const
+{
     return _myshape;
 }
 
-const char* CNamedShape::Name()  const {
+const char* CNamedShape::Name() const
+{
     return _myname.c_str();
 }
 
-const char* CNamedShape::ShortName()  const {
+const char* CNamedShape::ShortName()  const
+{
     return _myshortName.c_str();
 }
 
@@ -98,9 +101,10 @@ void CNamedShape::SetName(const char * name)
 }
 
 
-void CNamedShape::SetShortName(const char* name) {
+void CNamedShape::SetShortName(const char* name)
+{
     std::string sname = name;
-    if(sname.size() > 8) {
+    if (sname.size() > 8) {
         sname = sname.substr(0,8);
     }
     _myshortName = sname;
@@ -109,59 +113,70 @@ void CNamedShape::SetShortName(const char* name) {
 void CNamedShape::InitFaceTraits()
 {
     _myfaceTraits.clear();
-    for(unsigned int i = 0; i < GetFaceCount(); ++i) {
+    for (unsigned int i = 0; i < GetFaceCount(); ++i) {
         CFaceTraits traits;
         traits.SetName(Name());
         _myfaceTraits.push_back(traits);
     }
 }
 
-const CFaceTraits& CNamedShape::GetFaceTraits(int iFace) const {
+const CFaceTraits& CNamedShape::GetFaceTraits(int iFace) const
+{
     return _myfaceTraits.at(iFace);
 }
 
-CFaceTraits& CNamedShape::FaceTraits(int iFace) {
+CFaceTraits& CNamedShape::FaceTraits(int iFace)
+{
     return  _myfaceTraits.at(iFace);
 }
 
-void CNamedShape::SetFaceTraits(int iFace, const CFaceTraits &traits) {
+void CNamedShape::SetFaceTraits(int iFace, const CFaceTraits &traits)
+{
     _myfaceTraits.at(iFace) = traits;
 }
 
-CNamedShape::~CNamedShape(){
+CNamedShape::~CNamedShape()
+{
 }
 
 CFaceTraits::CFaceTraits()
     : _origin(), _indexInOrigin(0), _faceName("")
 {}
 
-void CFaceTraits::SetName(const char* name) {
+void CFaceTraits::SetName(const char* name)
+{
     _faceName = name;
 }
 
-const char* CFaceTraits::Name() const {
+const char* CFaceTraits::Name() const
+{
     return _faceName.c_str();
 }
 
-void CFaceTraits::SetIndex(unsigned int index) {
+void CFaceTraits::SetIndex(unsigned int index)
+{
     _indexInOrigin = index;
 }
 
-unsigned int CFaceTraits::Index() const {
+unsigned int CFaceTraits::Index() const
+{
     return _indexInOrigin;
 }
 
-void CFaceTraits::SetOrigin(const PNamedShape origin) {
+void CFaceTraits::SetOrigin(const PNamedShape origin)
+{
     _origin = origin;
 }
 
-const PNamedShape CFaceTraits::Origin() const {
+const PNamedShape CFaceTraits::Origin() const
+{
     return _origin;
 }
 
-void CFaceTraits::SetDerivedFromShape(PNamedShape origin, unsigned int iface) {
+void CFaceTraits::SetDerivedFromShape(PNamedShape origin, unsigned int iface)
+{
     *this = origin->GetFaceTraits(iface);
-    if(!Origin()) {
+    if (!Origin()) {
         SetOrigin(origin);
     }
 }

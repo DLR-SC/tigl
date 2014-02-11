@@ -47,7 +47,7 @@ CCutShape::CCutShape(const PNamedShape shape, const PNamedShape cuttingTool, con
 
 CCutShape::~CCutShape()
 {
-    if(_fillerAllocated && _dsfiller) {
+    if (_fillerAllocated && _dsfiller) {
         delete _dsfiller;
         _dsfiller = NULL;
     }
@@ -58,12 +58,13 @@ CCutShape::operator PNamedShape()
     return NamedShape();
 }
 
-void CCutShape::PrepareFiller(){
-    if(!_tool || !_source) {
+void CCutShape::PrepareFiller()
+{
+    if (!_tool || !_source) {
         return;
     }
 
-    if(!_dsfiller) {
+    if (!_dsfiller) {
         BOPCol_ListOfShape aLS;
         aLS.Append(_tool->Shape());
         aLS.Append(_source->Shape());
@@ -78,8 +79,8 @@ void CCutShape::PrepareFiller(){
 
 void CCutShape::Perform()
 {
-    if(!_hasPerformed) {
-        if(!_tool || !_source) {
+    if (!_hasPerformed) {
+        if (!_tool || !_source) {
            _resultshape.reset();
             return;
         }
