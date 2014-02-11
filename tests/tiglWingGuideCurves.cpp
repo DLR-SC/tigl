@@ -31,7 +31,7 @@
 #include "GeomAPI_ProjectPointOnCurve.hxx"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
-#include "CCPACSGuideCurves.h"
+#include "CCPACSGuideCurveProfiles.h"
 
 /******************************************************************************/
 
@@ -103,7 +103,7 @@ protected:
 /**
 * Tests if data was read in correctly
 */
-TEST_F(WingGuideCurve, tiglWingGuideCurve_readData)
+TEST_F(WingGuideCurve, tiglWingGuideCurveProfile_readData)
 {
     double x;
     double y;
@@ -117,25 +117,25 @@ TEST_F(WingGuideCurve, tiglWingGuideCurve_readData)
 }
 
 /**
-* Tests CCPACSGuideCurve class
+* Tests CCPACSGuideCurveProfile class
 */
-TEST_F(WingGuideCurve, tiglWingGuideCurve_CCPACSGuideCurve)
+TEST_F(WingGuideCurve, tiglWingGuideCurveProfile_CCPACSGuideCurveProfile)
 {
-    tigl::CCPACSGuideCurve guideCurve("/cpacs/vehicles/profiles/guideCurveProfiles/guideCurveProfile[7]");
+    tigl::CCPACSGuideCurveProfile guideCurve("/cpacs/vehicles/profiles/guideCurveProfiles/guideCurveProfile[7]");
     guideCurve.ReadCPACS(tixiHandle);
     ASSERT_EQ(guideCurve.GetUID(), "GuideCurveModel_Wing_GuideCurveProfile_LeadingEdge_NonLinear");
     ASSERT_EQ(guideCurve.GetName(), "NonLinear Leading Edge Guide Curve Profile for GuideCurveModel - Wing");
     ASSERT_EQ(guideCurve.GetFileName(), "/cpacs/vehicles/profiles/guideCurveProfiles/guideCurveProfile[7]");
 }
 /**
-* Tests CCPACSGuideCurves class
+* Tests CCPACSGuideCurveProfiles class
 */
-TEST_F(WingGuideCurve, tiglWingGuideCurve_CCPACSGuideCurves)
+TEST_F(WingGuideCurve, tiglWingGuideCurveProfile_CCPACSGuideCurveProfiles)
 {
-    tigl::CCPACSGuideCurves guideCurves;
+    tigl::CCPACSGuideCurveProfiles guideCurves;
     guideCurves.ReadCPACS(tixiHandle);
-    ASSERT_EQ(guideCurves.GetGuideCurveCount(), 9);
-    tigl::CCPACSGuideCurve& guideCurve = guideCurves.GetGuideCurve("GuideCurveModel_Wing_GuideCurveProfile_LeadingEdge_NonLinear");
+    ASSERT_EQ(guideCurves.GetGuideCurveProfileCount(), 9);
+    tigl::CCPACSGuideCurveProfile& guideCurve = guideCurves.GetGuideCurveProfile("GuideCurveModel_Wing_GuideCurveProfile_LeadingEdge_NonLinear");
     ASSERT_EQ(guideCurve.GetUID(), "GuideCurveModel_Wing_GuideCurveProfile_LeadingEdge_NonLinear");
     ASSERT_EQ(guideCurve.GetName(), "NonLinear Leading Edge Guide Curve Profile for GuideCurveModel - Wing");
     ASSERT_EQ(guideCurve.GetFileName(), "/cpacs/vehicles/profiles/guideCurveProfiles/guideCurveProfile[7]");

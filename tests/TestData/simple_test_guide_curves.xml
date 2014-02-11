@@ -437,15 +437,15 @@
 					</pointList>
 				</fuselageProfile>
 				<fuselageProfile uID="GuideCurveModel_Fuselage_Sec2_El1_Pro">
-					<name>Profile for GuideCurveModel - Fuselage Section 6 Main Element</name>
-					<description>Profile for GuideCurveModel - Fuselage Section 6 Main Element</description>
+					<name>Profile for GuideCurveModel - Fuselage Section 2 Main Element</name>
+					<description>Profile for GuideCurveModel - Fuselage Section 2 Main Element</description>
 					<pointList>
 						<x mapType="vector">0;0;0;0;0;0;0;0;0</x><y mapType="vector">0;.203368322;.371572413;.475528258;.497260948;.433012702;.293892626;.103955845;0</y><z mapType="vector">-.5;-.456772729;-.334565303;-.154508497;.052264232;.25;.404508497;.4890738;.4890738</z>
 					</pointList>
 				</fuselageProfile>
 				<fuselageProfile uID="GuideCurveModel_Fuselage_Sec3_El1_Pro">
-					<name>Profile for GuideCurveModel - Fuselage Section 9 Main Element</name>
-					<description>Profile for GuideCurveModel - Fuselage Section 9 Main Element</description>
+					<name>Profile for GuideCurveModel - Fuselage Section 3 Main Element</name>
+					<description>Profile for GuideCurveModel - Fuselage Section 3 Main Element</description>
 					<pointList>
 						<x mapType="vector">0;0;0;0;0;0;0;0;0</x><y mapType="vector">0;.223860653;.432603294;.466631663;.499998888;.450157118;.311391445;.111113597;0</y><z mapType="vector">-.5;-.494434471;-.437105114;-.218786464;.001054491;.21762024;.391197352;.487497455;.487497455</z>
 					</pointList>
