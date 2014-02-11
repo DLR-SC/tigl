@@ -1,0 +1,544 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<cpacs NS0:noNamespaceSchemaLocation="http://cpacs.googlecode.com/files/CPACS_21_Schema.xsd" xmlns:NS0="http://www.w3.org/2001/XMLSchema-instance">
+	<header>
+		<name>GuideCurveModel Test</name>
+		<description>Simple Test Model for Guide Curve Unit Testing</description>
+		<creator>Tobias Stollenwerk</creator>
+		<timestamp>2014-02-10T14:28:00</timestamp>
+		<version>1.0</version>
+		<cpacsVersion>2.1</cpacsVersion>
+	</header>
+	<vehicles>
+		<aircraft>
+			<model uID="GuideCurveModel">
+				<name>GuideCurveModel</name>
+				<fuselages>
+					<fuselage uID="Fuselage" symmetry="x-z-plane">
+						<name>Fuselage</name>
+						<description>This fuselage has been generated using CATIA2CPACS.</description>
+						<transformation>
+							<scaling>
+								<x>1</x><y>1</y><z>1</z>
+							</scaling>
+							<rotation>
+								<x>0</x><y>0</y><z>0</z>
+							</rotation>
+							<translation refType="absGlobal">
+								<x>0</x><y>0</y><z>0</z>
+							</translation>
+						</transformation>
+						<sections>
+							<section uID="GuideCurveModel_Fuselage_Sec1">
+								<name>GuideCurveModel - Fuselage Section 1</name>
+								<description>GuideCurveModel - Fuselage Section 1</description>
+								<transformation>
+									<scaling>
+										<x>1</x><y>1</y><z>1</z>
+									</scaling>
+									<rotation>
+										<x>0</x><y>0</y><z>0</z>
+									</rotation>
+									<translation refType="absLocal">
+										<x>0</x><y>0</y><z>0</z>
+									</translation>
+								</transformation>
+								<elements>
+									<element uID="GuideCurveModel_Fuselage_Sec1_El1">
+										<name>GuideCurveModel - Fuselage Section 1 Main Element</name>
+										<description>GuideCurveModel - Fuselage Section 1 Main Element</description>
+										<profileUID>GuideCurveModel_Fuselage_Sec1_El1_Pro</profileUID>
+										<transformation>
+											<scaling>
+												<x>1</x><y>1</y><z>1</z>
+											</scaling>
+											<rotation>
+												<x>0</x><y>0</y><z>0</z>
+											</rotation>
+											<translation refType="absLocal">
+												<x>0</x><y>0</y><z>0.0</z>
+											</translation>
+										</transformation>
+									</element>
+								</elements>
+							</section>
+							<section uID="GuideCurveModel_Fuselage_Sec2">
+								<name>GuideCurveModel - Fuselage Section 6</name>
+								<description>GuideCurveModel - Fuselage Section 6</description>
+								<transformation>
+									<scaling>
+										<x>1</x><y>2</y><z>1</z>
+									</scaling>
+									<rotation>
+										<x>0</x><y>0</y><z>0</z>
+									</rotation>
+									<translation refType="absLocal">
+										<x>0</x><y>0</y><z>0</z>
+									</translation>
+								</transformation>
+								<elements>
+									<element uID="GuideCurveModel_Fuselage_Sec2_El1">
+										<name>GuideCurveModel - Fuselage Section 6 Main Element</name>
+										<description>GuideCurveModel - Fuselage Section 6 Main Element</description>
+										<profileUID>GuideCurveModel_Fuselage_Sec2_El1_Pro</profileUID>
+										<transformation>
+											<scaling>
+												<x>1</x><y>1</y><z>1</z>
+											</scaling>
+											<rotation>
+												<x>0</x><y>0</y><z>0</z>
+											</rotation>
+											<translation refType="absLocal">
+												<x>0</x><y>0</y><z>0</z>
+											</translation>
+										</transformation>
+									</element>
+								</elements>
+							</section>
+							<section uID="GuideCurveModel_Fuselage_Sec3">
+								<name>GuideCurveModel - Fuselage Section 9</name>
+								<description>GuideCurveModel - Fuselage Section 9</description>
+								<transformation>
+									<scaling>
+										<x>1</x><y>1</y><z>1</z>
+									</scaling>
+									<rotation>
+										<x>0</x><y>0</y><z>0</z>
+									</rotation>
+									<translation refType="absLocal">
+										<x>0</x><y>0</y><z>0</z>
+									</translation>
+								</transformation>
+								<elements>
+									<element uID="GuideCurveModel_Fuselage_Sec3_El1">
+										<name>GuideCurveModel - Fuselage Section 9 Main Element</name>
+										<description>GuideCurveModel - Fuselage Section 9 Main Element</description>
+										<profileUID>GuideCurveModel_Fuselage_Sec3_El1_Pro</profileUID>
+										<transformation>
+											<scaling>
+												<x>1</x><y>1</y><z>1</z>
+											</scaling>
+											<rotation>
+												<x>0</x><y>0</y><z>0</z>
+											</rotation>
+											<translation refType="absLocal">
+												<x>0</x><y>0</y><z>0</z>
+											</translation>
+										</transformation>
+									</element>
+								</elements>
+							</section>
+						</sections>
+						<positionings>
+							<positioning uID="LamAiR_Jig_Shape_Fuselage_Sec1_Positioning">
+								<name>GuideCurveModel - Fuselage Section 1 Positioning</name>
+								<description>GuideCurveModel - Fuselage Section 1 Positioning</description>
+								<length>-10</length>
+								<sweepAngle>90</sweepAngle>
+								<dihedralAngle>0</dihedralAngle>
+								<toSectionUID>GuideCurveModel_Fuselage_Sec1</toSectionUID>
+							</positioning>
+							<positioning uID="LamAiR_Jig_Shape_Fuselage_Sec2_Positioning">
+								<name>GuideCurveModel - Fuselage Section 6 Positioning</name>
+								<description>GuideCurveModel - Fuselage Section 6 Positioning</description>
+								<length>10</length>
+								<sweepAngle>90</sweepAngle>
+								<dihedralAngle>0</dihedralAngle>
+								<fromSectionUID>GuideCurveModel_Fuselage_Sec1</fromSectionUID>
+								<toSectionUID>GuideCurveModel_Fuselage_Sec2</toSectionUID>
+							</positioning>
+							<positioning uID="LamAiR_Jig_Shape_Fuselage_Sec3_Positioning">
+								<name>GuideCurveModel - Fuselage Section 9 Positioning</name>
+								<description>GuideCurveModel - Fuselage Section 9 Positioning</description>
+								<length>10</length>
+								<sweepAngle>90</sweepAngle>
+								<dihedralAngle>0</dihedralAngle>
+								<fromSectionUID>GuideCurveModel_Fuselage_Sec2</fromSectionUID>
+								<toSectionUID>GuideCurveModel_Fuselage_Sec3</toSectionUID>
+							</positioning>
+						</positionings>
+						<segments>
+							<segment uID="GuideCurveModel_Fuselage_Seg_1_6">
+								<name>Segment from GuideCurveModel - Fuselage Section 1 Main Element to GuideCurveModel - Fuselage Section 6 Main Element</name>
+								<description>Segment from GuideCurveModel - Fuselage Section 1 Main Element to GuideCurveModel - Fuselage Section 6 Main Element</description>
+								<fromElementUID>GuideCurveModel_Fuselage_Sec1_El1</fromElementUID>
+								<toElementUID>GuideCurveModel_Fuselage_Sec2_El1</toElementUID>
+								<guideCurves>
+									<guideCurve uID="GuideCurveModel_Fuselage_Seg_1_6_GuideCurve_Lower">
+										<name>Lower GuideCurve from GuideCurveModel - Fuselage Section 1 Main Element to GuideCurveModel - Fuselage Section 6 Main Element </name>
+										<description>Lower GuideCurve from GuideCurveModel - Fuselage Section 1 Main Element to GuideCurveModel - Fuselage Section 6 Main Element </description>
+										<guideCurveProfileUID>GuideCurveModel_Fuselage_GuideCurveProfile_Lower_Linear</guideCurveProfileUID>
+										<fromRelativeCircumference>0.0</fromRelativeCircumference>
+										<toRelativeCircumference>0.0</toRelativeCircumference>
+									</guideCurve>
+									<guideCurve uID="GuideCurveModel_Fuselage_Seg_1_6_GuideCurve_Middle">
+										<name>Middle GuideCurve from GuideCurveModel - Fuselage Section 1 Main Element to GuideCurveModel - Fuselage Section 6 Main Element </name>
+										<description>Middle GuideCurve from GuideCurveModel - Fuselage Section 1 Main Element to GuideCurveModel - Fuselage Section 6 Main Element </description>
+										<guideCurveProfileUID>GuideCurveModel_Fuselage_GuideCurveProfile_Middle_NonLinear</guideCurveProfileUID>
+										<fromRelativeCircumference>0.5</fromRelativeCircumference>
+										<toRelativeCircumference>0.5</toRelativeCircumference>
+									</guideCurve>
+									<guideCurve uID="GuideCurveModel_Fuselage_Seg_1_6_GuideCurve_Upper">
+										<name>Upper GuideCurve from GuideCurveModel - Fuselage Section 1 Main Element to GuideCurveModel - Fuselage Section 6 Main Element </name>
+										<description>Upper GuideCurve from GuideCurveModel - Fuselage Section 1 Main Element to GuideCurveModel - Fuselage Section 6 Main Element </description>
+										<guideCurveProfileUID>GuideCurveModel_Fuselage_GuideCurveProfile_Upper_Linear</guideCurveProfileUID>
+										<fromRelativeCircumference>1.0</fromRelativeCircumference>
+										<toRelativeCircumference>1.0</toRelativeCircumference>
+									</guideCurve>
+								</guideCurves>
+							</segment>
+							<segment uID="GuideCurveModel_Fuselage_Seg_6_9">
+								<name>Segment from GuideCurveModel - Fuselage Section 6 Main Element to GuideCurveModel - Fuselage Section 9 Main Element</name>
+								<description>Segment from GuideCurveModel - Fuselage Section 6 Main Element to GuideCurveModel - Fuselage Section 9 Main Element</description>
+								<fromElementUID>GuideCurveModel_Fuselage_Sec2_El1</fromElementUID>
+								<toElementUID>GuideCurveModel_Fuselage_Sec3_El1</toElementUID>
+								<guideCurves>
+									<guideCurve uID="GuideCurveModel_Fuselage_Seg_6_9_GuideCurve_Lower">
+										<name>Lower GuideCurve from GuideCurveModel - Fuselage Section 6 Main Element to GuideCurveModel - Fuselage Section 9 Main Element </name>
+										<description>Lower GuideCurve from GuideCurveModel - Fuselage Section 6 Main Element to GuideCurveModel - Fuselage Section 9 Main Element </description>
+										<guideCurveProfileUID>GuideCurveModel_Fuselage_GuideCurveProfile_Lower_Linear</guideCurveProfileUID>
+										<fromGuideCurveUID>GuideCurveModel_Fuselage_Seg_1_6_GuideCurve_Lower</fromGuideCurveUID>
+										<toRelativeCircumference>0.0</toRelativeCircumference>
+									</guideCurve>
+									<guideCurve uID="GuideCurveModel_Fuselage_Seg_6_9_GuideCurve_Middle">
+										<name>Middle GuideCurve from GuideCurveModel - Fuselage Section 6 Main Element to GuideCurveModel - Fuselage Section 9 Main Element </name>
+										<description>Middle GuideCurve from GuideCurveModel - Fuselage Section 6 Main Element to GuideCurveModel - Fuselage Section 9 Main Element </description>
+										<guideCurveProfileUID>GuideCurveModel_Fuselage_GuideCurveProfile_Middle_NonLinear</guideCurveProfileUID>
+										<fromGuideCurveUID>GuideCurveModel_Fuselage_Seg_1_6_GuideCurve_Middle</fromGuideCurveUID>
+										<toRelativeCircumference>0.5</toRelativeCircumference>
+									</guideCurve>
+									<guideCurve uID="GuideCurveModel_Fuselage_Seg_6_9_GuideCurve_Upper">
+										<name>Upper GuideCurve from GuideCurveModel - Fuselage Section 6 Main Element to GuideCurveModel - Fuselage Section 9 Main Element </name>
+										<description>Upper GuideCurve from GuideCurveModel - Fuselage Section 6 Main Element to GuideCurveModel - Fuselage Section 9 Main Element </description>
+										<guideCurveProfileUID>GuideCurveModel_Fuselage_GuideCurveProfile_Upper_Linear</guideCurveProfileUID>
+										<fromGuideCurveUID>GuideCurveModel_Fuselage_Seg_1_6_GuideCurve_Upper</fromGuideCurveUID>
+										<toRelativeCircumference>1.0</toRelativeCircumference>
+									</guideCurve>
+								</guideCurves>
+							</segment>
+						</segments>
+					</fuselage>
+				</fuselages>
+				<wings>
+					<wing uID="Wing" symmetry="x-z-plane">
+						<name>Wing</name>
+						<description>This wing has been generated using CATIA2CPACS.</description>
+						<parentUID>Fuselage</parentUID>
+						<transformation>
+							<scaling>
+								<x>1</x><y>1</y><z>1</z>
+							</scaling>
+							<rotation>
+								<x>0</x><y>0</y><z>0</z>
+							</rotation>
+							<translation refType="absGlobal">
+								<x>0</x><y>0</y><z>0</z>
+							</translation>
+						</transformation>
+						<sections>
+							<section uID="GuideCurveModel_Wing_Sec1">
+								<name>GuideCurveModel - Wing Section 1</name>
+								<description>GuideCurveModel - Wing Section 1</description>
+								<transformation>
+									<scaling>
+										<x>2</x><y>2</y><z>2</z>
+									</scaling>
+									<rotation>
+										<x>0</x><y>0</y><z>0</z>
+									</rotation>
+									<translation refType="absLocal">
+										<x>0</x><y>0</y><z>0</z>
+									</translation>
+								</transformation>
+								<elements>
+									<element uID="GuideCurveModel_Wing_Sec1_El1">
+										<name>GuideCurveModel - Wing Section 1 Main Element</name>
+										<description>GuideCurveModel - Wing Section 1 Main Element</description>
+										<airfoilUID>GuideCurveModel_Wing_Sec1_El1_Pro</airfoilUID>
+										<transformation>
+											<scaling>
+												<x>1</x><y>1</y><z>1</z>
+											</scaling>
+											<rotation>
+												<x>0</x><y>0</y><z>0</z>
+											</rotation>
+											<translation refType="absLocal">
+												<x>0</x><y>0</y><z>0</z>
+											</translation>
+										</transformation>
+									</element>
+								</elements>
+							</section>
+							<section uID="GuideCurveModel_Wing_Sec2">
+								<name>GuideCurveModel - Wing Section 2</name>
+								<description>GuideCurveModel - Wing Section 2</description>
+								<transformation>
+									<scaling>
+										<x>2</x><y>2</y><z>2</z>
+									</scaling>
+									<rotation>
+										<x>0</x><y>0</y><z>0</z>
+									</rotation>
+									<translation refType="absLocal">
+										<x>0</x><y>0</y><z>0</z>
+									</translation>
+								</transformation>
+								<elements>
+									<element uID="GuideCurveModel_Wing_Sec2_El1">
+										<name>GuideCurveModel - Wing Section 2 Main Element</name>
+										<description>GuideCurveModel - Wing Section 2 Main Element</description>
+										<airfoilUID>GuideCurveModel_Wing_Sec2_El1_Pro</airfoilUID>
+										<transformation>
+											<scaling>
+												<x>1</x><y>1</y><z>1</z>
+											</scaling>
+											<rotation>
+												<x>0</x><y>0</y><z>0</z>
+											</rotation>
+											<translation refType="absLocal">
+												<x>0</x><y>0</y><z>0</z>
+											</translation>
+										</transformation>
+									</element>
+								</elements>
+							</section>
+							<section uID="GuideCurveModel_Wing_Sec3">
+								<name>GuideCurveModel - Wing Section 3</name>
+								<description>GuideCurveModel - Wing Section 3</description>
+								<transformation>
+									<scaling>
+										<x>1</x><y>1</y><z>1</z>
+									</scaling>
+									<rotation>
+										<x>0</x><y>0</y><z>0</z>
+									</rotation>
+									<translation refType="absLocal">
+										<x>0</x><y>0</y><z>0</z>
+									</translation>
+								</transformation>
+								<elements>
+									<element uID="GuideCurveModel_Wing_Sec3_El1">
+										<name>GuideCurveModel - Wing Section 3 Main Element</name>
+										<description>GuideCurveModel - Wing Section 3 Main Element</description>
+										<airfoilUID>GuideCurveModel_Wing_Sec3_El1_Pro</airfoilUID>
+										<transformation>
+											<scaling>
+												<x>1</x><y>1</y><z>1</z>
+											</scaling>
+											<rotation>
+												<x>0</x><y>0</y><z>0</z>
+											</rotation>
+											<translation refType="absLocal">
+												<x>0</x><y>0</y><z>0</z>
+											</translation>
+										</transformation>
+									</element>
+								</elements>
+							</section>
+						</sections>
+						<positionings>
+							<positioning uID="LamAiR_Jig_Shape_Wing_Sec1_Positioning">
+								<name>GuideCurveModel - Wing Section 1 Positioning</name>
+								<description>GuideCurveModel - Wing Section 1 Positioning</description>
+								<length>0</length>
+								<sweepAngle>0</sweepAngle>
+								<dihedralAngle>0</dihedralAngle>
+								<toSectionUID>GuideCurveModel_Wing_Sec1</toSectionUID>
+							</positioning>
+							<positioning uID="LamAiR_Jig_Shape_Wing_Sec2_Positioning">
+								<name>GuideCurveModel - Wing Section 2 Positioning</name>
+								<description>GuideCurveModel - Wing Section 2 Positioning</description>
+								<length>5</length>
+								<sweepAngle>0</sweepAngle>
+								<dihedralAngle>0</dihedralAngle>
+								<fromSectionUID>GuideCurveModel_Wing_Sec1</fromSectionUID>
+								<toSectionUID>GuideCurveModel_Wing_Sec2</toSectionUID>
+							</positioning>
+							<positioning uID="LamAiR_Jig_Shape_Wing_Sec3_Positioning">
+								<name>GuideCurveModel - Wing Section 3 Positioning</name>
+								<description>GuideCurveModel - Wing Section 3 Positioning</description>
+								<length>7</length>
+								<sweepAngle>0</sweepAngle>
+								<dihedralAngle>0</dihedralAngle>
+								<fromSectionUID>GuideCurveModel_Wing_Sec2</fromSectionUID>
+								<toSectionUID>GuideCurveModel_Wing_Sec3</toSectionUID>
+							</positioning>
+						</positionings>
+						<segments>
+							<segment uID="GuideCurveModel_Wing_Seg_1_2">
+								<name>Segment from GuideCurveModel - Wing Section 1 Main Element to GuideCurveModel - Wing Section 2 Main Element</name>
+								<description>Segment from GuideCurveModel - Wing Section 1 Main Element to GuideCurveModel - Wing Section 2 Main Element</description>
+								<fromElementUID>GuideCurveModel_Wing_Sec1_El1</fromElementUID>
+								<toElementUID>GuideCurveModel_Wing_Sec2_El1</toElementUID>
+								<guideCurves>
+									<guideCurve uID="GuideCurveModel_Wing_Seg_1_2_GuideCurve_TrailingEdgeLower">
+										<name>Lower Trailing Edge GuideCurve from GuideCurveModel - Wing Section 1 Main Element to GuideCurveModel - Wing Section 2 Main Element </name>
+										<description>Lower Trailing Edge GuideCurve from GuideCurveModel - Wing Section 1 Main Element to GuideCurveModel - Wing Section 2 Main Element </description>
+										<guideCurveProfileUID>GuideCurveModel_Wing_GuideCurveProfile_TrailingEdgeLower_Linear</guideCurveProfileUID>
+										<fromRelativeCircumference>-1.0</fromRelativeCircumference>
+										<toRelativeCircumference>-1.0</toRelativeCircumference>
+									</guideCurve>
+									<guideCurve uID="GuideCurveModel_Wing_Seg_1_2_GuideCurve_LeadingEdge_Nonlinear">
+										<name>Leading Edge GuideCurve from GuideCurveModel - Wing Section 1 Main Element to GuideCurveModel - Wing Section 2 Main Element </name>
+										<description>Leading Edge GuideCurve from GuideCurveModel - Wing Section 1 Main Element to GuideCurveModel - Wing Section 2 Main Element </description>
+										<guideCurveProfileUID>GuideCurveModel_Wing_GuideCurveProfile_LeadingEdge_Linear</guideCurveProfileUID>
+										<fromRelativeCircumference>0.0</fromRelativeCircumference>
+										<toRelativeCircumference>0.0</toRelativeCircumference>
+									</guideCurve>
+									<guideCurve uID="GuideCurveModel_Wing_Seg_1_2_GuideCurve_TrailingEdgeUpper">
+										<name>Upper Trailing Edge GuideCurve from GuideCurveModel - Wing Section 1 Main Element to GuideCurveModel - Wing Section 2 Main Element </name>
+										<description>Upper Trailing Edge GuideCurve from GuideCurveModel - Wing Section 1 Main Element to GuideCurveModel - Wing Section 2 Main Element </description>
+										<guideCurveProfileUID>GuideCurveModel_Wing_GuideCurveProfile_TrailingEdgeUpper_Linear</guideCurveProfileUID>
+										<fromRelativeCircumference>1.0</fromRelativeCircumference>
+										<toRelativeCircumference>1.0</toRelativeCircumference>
+									</guideCurve>
+								</guideCurves>
+							</segment>
+							<segment uID="GuideCurveModel_Wing_Seg_2_3">
+								<name>Segment from GuideCurveModel - Wing Section 2 Main Element to GuideCurveModel - Wing Section 3 Main Element</name>
+								<description>Segment from GuideCurveModel - Wing Section 2 Main Element to GuideCurveModel - Wing Section 3 Main Element</description>
+								<fromElementUID>GuideCurveModel_Wing_Sec2_El1</fromElementUID>
+								<toElementUID>GuideCurveModel_Wing_Sec3_El1</toElementUID>
+								<guideCurves>
+									<guideCurve uID="GuideCurveModel_Wing_Seg_2_3_GuideCurve_TrailingEdgeLower">
+										<name>Lower Trailing Edge GuideCurve from GuideCurveModel - Wing Section 2 Main Element to GuideCurveModel - Wing Section 3 Main Element </name>
+										<description>Lower Trailing Edge GuideCurve from GuideCurveModel - Wing Section 2 Main Element to GuideCurveModel - Wing Section 3 Main Element </description>
+										<guideCurveProfileUID>GuideCurveModel_Wing_GuideCurveProfile_TrailingEdgeLower_Linear</guideCurveProfileUID>
+										<fromGuideCurveUID>GuideCurveModel_Wing_Seg_1_2_GuideCurve_TrailingEdgeLower</fromGuideCurveUID>
+										<toRelativeCircumference>-1.0</toRelativeCircumference>
+									</guideCurve>
+									<guideCurve uID="GuideCurveModel_Wing_Seg_2_3_GuideCurve_LeadingEdge">
+										<name>Leading Edge GuideCurve from GuideCurveModel - Wing Section 2 Main Element to GuideCurveModel - Wing Section 3 Main Element </name>
+										<description>Leading Edge GuideCurve from GuideCurveModel - Wing Section 2 Main Element to GuideCurveModel - Wing Section 3 Main Element </description>
+										<guideCurveProfileUID>GuideCurveModel_Wing_GuideCurveProfile_LeadingEdge_Linear</guideCurveProfileUID>
+										<fromGuideCurveUID>GuideCurveModel_Wing_Seg_1_2_GuideCurve_LeadingEdge</fromGuideCurveUID>
+										<toRelativeCircumference>0.0</toRelativeCircumference>
+									</guideCurve>
+									<guideCurve uID="GuideCurveModel_Wing_Seg_2_3_GuideCurve_TrailingEdgeUpper">
+										<name>Upper Trailing Edge GuideCurve from GuideCurveModel - Wing Section 2 Main Element to GuideCurveModel - Wing Section 3 Main Element </name>
+										<description>Upper Trailing Edge GuideCurve from GuideCurveModel - Wing Section 2 Main Element to GuideCurveModel - Wing Section 3 Main Element </description>
+										<guideCurveProfileUID>GuideCurveModel_Wing_GuideCurveProfile_TrailingEdgeUpper_Linear</guideCurveProfileUID>
+										<fromGuideCurveUID>GuideCurveModel_Wing_Seg_1_2_GuideCurve_TrailingEdgeUpper</fromGuideCurveUID>
+										<toRelativeCircumference>1.0</toRelativeCircumference>
+									</guideCurve>
+								</guideCurves>
+							</segment>
+						</segments>
+					</wing>
+				</wings>
+			</model>
+		</aircraft>
+		<profiles>
+			<fuselageProfiles>
+				<fuselageProfile uID="GuideCurveModel_Fuselage_Sec1_El1_Pro">
+					<name>Profile for GuideCurveModel - Fuselage Section 1 Main Element</name>
+					<description>Profile for GuideCurveModel - Fuselage Section 1 Main Element</description>
+					<pointList>
+						<x mapType="vector">0;0;0;0;0;0;0;0;0</x><y mapType="vector">0;.185491806;.35626474;.479010208;.489889709;.409680501;.268925281;.093308678;0</y><z mapType="vector">-.49986153;-.469383093;-.373141043;-.196198942;.038553032;.253059694;.40897711;.489190971;.489190971</z>
+					</pointList>
+				</fuselageProfile>
+				<fuselageProfile uID="GuideCurveModel_Fuselage_Sec2_El1_Pro">
+					<name>Profile for GuideCurveModel - Fuselage Section 6 Main Element</name>
+					<description>Profile for GuideCurveModel - Fuselage Section 6 Main Element</description>
+					<pointList>
+						<x mapType="vector">0;0;0;0;0;0;0;0;0</x><y mapType="vector">0;.203368322;.371572413;.475528258;.497260948;.433012702;.293892626;.103955845;0</y><z mapType="vector">-.5;-.456772729;-.334565303;-.154508497;.052264232;.25;.404508497;.4890738;.4890738</z>
+					</pointList>
+				</fuselageProfile>
+				<fuselageProfile uID="GuideCurveModel_Fuselage_Sec3_El1_Pro">
+					<name>Profile for GuideCurveModel - Fuselage Section 9 Main Element</name>
+					<description>Profile for GuideCurveModel - Fuselage Section 9 Main Element</description>
+					<pointList>
+						<x mapType="vector">0;0;0;0;0;0;0;0;0</x><y mapType="vector">0;.223860653;.432603294;.466631663;.499998888;.450157118;.311391445;.111113597;0</y><z mapType="vector">-.5;-.494434471;-.437105114;-.218786464;.001054491;.21762024;.391197352;.487497455;.487497455</z>
+					</pointList>
+				</fuselageProfile>
+			</fuselageProfiles>
+			<wingAirfoils>
+				<wingAirfoil uID="GuideCurveModel_Wing_Sec1_El1_Pro">
+					<name>Profile for GuideCurveModel - Wing Section 1 Main Element</name>
+					<description>Profile for GuideCurveModel - Wing Section 1 Main Element</description>
+					<pointList>
+						<x mapType="vector">.9999784;.968197388;.936349495;.904498754;.872660752;.84086439;.809165804;.777645373;.746369023;.715327073;.684414824;.653483715;.622409173;.59111906;.559609072;.527933591;.496162223;.464342346;.432498701;.400647422;.368800249;.336965189;.305148159;.273355754;.241594009;.209870517;.178197675;.146592625;.115081309;.083709634;.052577631;.022177734;0;.023262645;.053669824;.084769499;.116134169;.147647044;.179256233;.210921895;.242623663;.274356232;.306115173;.337894939;.369696476;.4015238;.433375739;.465267654;.497209966;.52916707;.56111429;.593048555;.624956577;.656807267;.688555686;.720154156;.751577886;.782831714;.813937486;.844909731;.875819929;.906731848;.937735348;.96884951;1.0000216</x><y mapType="vector">0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0</y><z mapType="vector">-.002501412;-.000514511;-.000066798;-.0002723;-.00118397;-.003037171;-.006133111;-.010694648;-.016709644;-.023842525;-.031521748;-.039124261;-.046113721;-.052058933;-.056696263;-.060026157;-.062272019;-.063681794;-.064384418;-.064427803;-.063891726;-.062868004;-.061383465;-.059441838;-.057050692;-.054196812;-.050827075;-.046874166;-.042233362;-.036731081;-.030013513;-.020616799;0;.019568135;.029342082;.036687505;.042814443;.048130166;.05284177;.057158942;.061202889;.06499762;.068565072;.071942056;.075106683;.078000774;.080609248;.082660055;.083617993;.083440607;.08259259;.081348039;.079559524;.076948121;.07330212;.068528372;.062711588;.056040221;.048707905;.040829923;.032710837;.024598326;.016844694;.00954676;.002501412</z>
+					</pointList>
+				</wingAirfoil>
+				<wingAirfoil uID="GuideCurveModel_Wing_Sec2_El1_Pro">
+					<name>Profile for GuideCurveModel - Wing Section 2 Main Element</name>
+					<description>Profile for GuideCurveModel - Wing Section 2 Main Element</description>
+					<pointList>
+						<x mapType="vector">.9999784;.968197367;.936349494;.904498765;.872660738;.840864376;.809165819;.777645367;.746368991;.715327071;.684414772;.65348374;.62240919;.591119061;.559609062;.527933678;.496162246;.46434231;.432498733;.400647404;.368800354;.336965189;.305148172;.273355781;.24159402;.209870542;.178197756;.146592645;.115081404;.083709644;.052577646;.022177748;0;.023262651;.053669828;.0847695;.116134159;.147647051;.179256214;.210921894;.24262364;.274356223;.306115158;.337894927;.369696505;.401523834;.433375785;.46526771;.497210025;.529167135;.561114345;.593048616;.624956639;.656807329;.688555755;.720154271;.751577946;.782831781;.813937535;.844909748;.875819947;.906731858;.937735354;.968849524;1.0000216</x><y mapType="vector">0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0</y><z mapType="vector">-.002501412;-.000514511;-.000066798;-.0002723;-.00118397;-.003037173;-.006133109;-.010694649;-.016709651;-.023842525;-.031521761;-.039124255;-.046113718;-.052058933;-.056696264;-.06002615;-.062272017;-.063681796;-.064384417;-.064427803;-.063891728;-.062868004;-.061383466;-.05944184;-.057050693;-.054196814;-.050827085;-.046874169;-.042233377;-.036731083;-.030013517;-.020616805;0;.019568138;.029342083;.036687505;.042814441;.048130167;.052841767;.057158942;.061202886;.064997619;.06856507;.071942054;.075106685;.078000777;.080609251;.082660058;.083617993;.083440606;.082592589;.081348037;.07955952;.076948115;.073302111;.068528353;.062711576;.056040206;.048707893;.040829919;.032710832;.024598324;.016844692;.009546757;.002501412</z>
+					</pointList>
+				</wingAirfoil>
+				<wingAirfoil uID="GuideCurveModel_Wing_Sec3_El1_Pro">
+					<name>Profile for GuideCurveModel - Wing Section 3 Main Element</name>
+					<description>Profile for GuideCurveModel - Wing Section 3 Main Element</description>
+					<pointList>
+						<x mapType="vector">.999851578;.968039143;.936177736;.904314883;.872465608;.840659991;.808951527;.777410979;.746092896;.714993762;.684014686;.65302541;.62191676;.590608298;.559093432;.527413535;.4956381;.463810265;.431955665;.400092311;.368232203;.336381778;.304547381;.272735012;.240950676;.2092025;.177501201;.145862793;.114307239;.082878724;.051711741;.021424522;0;.022903833;.053256402;.084419135;.115844866;.147404387;.179046191;.21073717;.242463441;.274222935;.306012642;.337825584;.369660445;.401515177;.433379877;.465260026;.497185083;.529144368;.561101576;.593046485;.624963297;.656807769;.688530163;.720082563;.751451757;.782675973;.81378631;.844816215;.875815697;.90681823;.937864125;.968965994;1.000148422</x><y mapType="vector">0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0</y><z mapType="vector">-.002140202;-.000482161;-.000110754;-.00031965;-.001258205;-.003160358;-.006281171;-.01079114;-.01665283;-.023588038;-.031045184;-.038459679;-.045352771;-.051267717;-.055956001;-.059359662;-.06171882;-.063219381;-.063969922;-.064045154;-.063563915;-.06264123;-.061273928;-.059464512;-.057216086;-.054504823;-.051292771;-.047510877;-.043092768;-.037850839;-.031244357;-.021478684;0;.020093419;.030022417;.037109729;.042937473;.047994646;.052510868;.056668801;.060548718;.064145648;.067465906;.070556655;.073411467;.076036012;.078536956;.080829517;.082347325;.082674739;.082109508;.081050979;.079356768;.076630322;.072733635;.06764003;.061514187;.054685344;.047354317;.039689092;.031901468;.024126026;.016525909;.009158087;.002140202</z>
+					</pointList>
+				</wingAirfoil>
+			</wingAirfoils>
+			<guideCurveProfiles>
+				<guideCurveProfile uID="GuideCurveModel_Fuselage_GuideCurveProfile_Lower_Linear">
+					<name>Linear Lower Guide Curve Profile for GuideCurveModel - Fuselage</name>
+					<description>Linear Lower Guide Curve Profile for GuideCurveModel - Fuselage</description>
+					<pointList>
+						<x mapType="vector">0.0;0.0;0.0</x><y mapType="vector">0.1;0.5;0.9</y><z mapType="vector">0.0;0.0;0.0</z>
+					</pointList>
+				</guideCurveProfile>
+				<guideCurveProfile uID="GuideCurveModel_Fuselage_GuideCurveProfile_Middle_NonLinear">
+					<name>NonLinear Middle Guide Curve Profile for GuideCurveModel - Fuselage</name>
+					<description>NonLinear Middle Guide Curve Profile for GuideCurveModel - Fuselage</description>
+					<pointList>
+						<x mapType="vector">0.5;0.5;0.5;0.5;0.5;0.5;0.5;0.5;0.5</x><y mapType="vector">0.1;0.2;0.3;0.4;0.5;0.6;0.7;0.8;0.9</y><z mapType="vector">0.0;0.001;0.003;0.009;0.008;0.007;0.006;0.002;0.0</z>
+					</pointList>
+				</guideCurveProfile>
+				<guideCurveProfile uID="GuideCurveModel_Fuselage_GuideCurveProfile_Upper_Linear">
+					<name>Linear Upper Guide Curve Profile for GuideCurveModel - Fuselage</name>
+					<description>Linear Upper Guide Curve Profile for GuideCurveModel - Fuselage</description>
+					<pointList>
+						<x mapType="vector">1.0;1.0;1.0</x><y mapType="vector">0.1;0.5;0.9</y><z mapType="vector">0.0;0.0;0.0</z>
+					</pointList>
+				</guideCurveProfile>
+				<guideCurveProfile uID="GuideCurveModel_Wing_GuideCurveProfile_TrailingEdgeLower_Linear">
+					<name>Linear Lower Trailing Edge Guide Curve Profile for GuideCurveModel - Wing</name>
+					<description>Linear Lower Trailing Edge Guide Curve Profile for GuideCurveModel - Wing</description>
+					<pointList>
+						<x mapType="vector">-1.0;-1.0;-1.0</x><y mapType="vector">0.1;0.5;0.9</y><z mapType="vector">0.0;0.0;0.0</z>
+					</pointList>
+				</guideCurveProfile>
+				<guideCurveProfile uID="GuideCurveModel_Wing_GuideCurveProfile_TrailingEdgeLower_NonLinear">
+					<name>Linear Lower Trailing Edge Guide Curve Profile for GuideCurveModel - Wing</name>
+					<description>Linear Lower Trailing Edge Guide Curve Profile for GuideCurveModel - Wing</description>
+					<pointList>
+						<x mapType="vector">-1.001;-1.01;-1.001</x><y mapType="vector">0.1;0.5;0.9</y><z mapType="vector">0.0;0.0;0.0</z>
+					</pointList>
+				</guideCurveProfile>
+				<guideCurveProfile uID="GuideCurveModel_Wing_GuideCurveProfile_LeadingEdge_Linear">
+					<name>Linear Leading Edge Guide Curve Profile for GuideCurveModel - Wing</name>
+					<description>Linear Leading Edge Guide Curve Profile for GuideCurveModel - Wing</description>
+					<pointList>
+						<x mapType="vector">0.0;0.0;0.0</x><y mapType="vector">0.1;0.5;0.9</y><z mapType="vector">0.0;0.0;0.0</z>
+					</pointList>
+				</guideCurveProfile>
+				<guideCurveProfile uID="GuideCurveModel_Wing_GuideCurveProfile_LeadingEdge_NonLinear">
+					<name>NonLinear Leading Edge Guide Curve Profile for GuideCurveModel - Wing</name>
+					<description>NonLinear Leading Edge Guide Curve Profile for GuideCurveModel - Wing</description>
+					<pointList>
+						<x mapType="vector">0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0</x><y mapType="vector">0.1;0.2;0.3;0.4;0.5;0.6;0.7;0.8;0.9</y><z mapType="vector">0.0;0.001;0.003;0.009;0.008;0.007;0.006;0.002;0.0</z>
+					</pointList>
+				</guideCurveProfile>
+				<guideCurveProfile uID="GuideCurveModel_Wing_GuideCurveProfile_TrailingEdgeUpper_Linear">
+					<name>Linear Upper Trailing Edge Guide Curve Profile for GuideCurveModel - Wing</name>
+					<description>Linear Upper Trailing Edge Guide Curve Profile for GuideCurveModel - Wing</description>
+					<pointList>
+						<x mapType="vector">1.0;1.0;1.0</x><y mapType="vector">0.1;0.5;0.9</y><z mapType="vector">0.0;0.0;0.0</z>
+					</pointList>
+				</guideCurveProfile>
+				<guideCurveProfile uID="GuideCurveModel_Wing_GuideCurveProfile_TrailingEdgeUpper_NonLinear">
+					<name>Linear Upper Trailing Edge Guide Curve Profile for GuideCurveModel - Wing</name>
+					<description>Linear Upper Trailing Edge Guide Curve Profile for GuideCurveModel - Wing</description>
+					<pointList>
+						<x mapType="vector">1.001;1.01;1.001</x><y mapType="vector">0.1;0.5;0.9</y><z mapType="vector">0.0;0.0;0.0</z>
+					</pointList>
+				</guideCurveProfile>
+			</guideCurveProfiles>
+		    </profiles>
+	</vehicles>
+</cpacs>
