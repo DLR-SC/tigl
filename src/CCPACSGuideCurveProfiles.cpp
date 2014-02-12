@@ -17,7 +17,7 @@
 */
 /**
 * @file
-* @brief  Implementation of CPACS guide curves handling routines
+* @brief  Implementation of CPACS guide curve profiles handling routines
 */
 
 #include "CCPACSGuideCurveProfiles.h"

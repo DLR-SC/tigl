@@ -71,6 +71,9 @@ public:
     // get lower wing profile wire
     TIGL_EXPORT const TopoDS_Wire & GetLowerWire() const;
 
+    // get trailing edge
+    TIGL_EXPORT const TopoDS_Wire & GetTrailingEdge() const;
+
     // get leading edge point();
     TIGL_EXPORT const gp_Pnt & GetLEPoint() const;
 
@@ -99,6 +102,7 @@ private:
     TopoDS_Wire               wireClosed;         /**< Forced closed wing profile wire */
     TopoDS_Wire               upperWire;          /**< wire of the upper wing profile */
     TopoDS_Wire               lowerWire;          /**< wire of the lower wing profile */
+    TopoDS_Wire               trailingEdge;       /**< wire of the trailing edge */
     gp_Pnt                    lePoint;            /**< Leading edge point */
     gp_Pnt                    tePoint;            /**< Trailing edge point */
     std::vector<double>        psi;               /**< sample points on CST curve */

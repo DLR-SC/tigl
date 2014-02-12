@@ -302,7 +302,11 @@ void CCPACSWingProfilePointList::BuildWires()
 
     //check if we have to close upper and lower wing shells
     if (te_up.Distance(te_down) > Precision::Confusion()) {
-        lowerWireBuilder.Add(BRepBuilderAPI_MakeEdge(te_up,te_down));
+        const TopoDS_Edge& e =  BRepBuilderAPI_MakeEdge(te_up,te_down);
+        trailingEdge = BRepBuilderAPI_MakeWire(e);
+    }
+    else {
+        trailingEdge.Nullify();
     }
 
     upperWireBuilder.Add(upper_edge);
@@ -380,6 +384,12 @@ const TopoDS_Wire & CCPACSWingProfilePointList::GetUpperWire() const
 const TopoDS_Wire & CCPACSWingProfilePointList::GetLowerWire() const
 {
     return lowerWire;
+}
+
+// get trailing edge
+const TopoDS_Wire & CCPACSWingProfilePointList::GetTrailingEdge() const 
+{
+    return trailingEdge;
 }
 
 // get leading edge point();

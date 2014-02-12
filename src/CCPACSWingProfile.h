@@ -85,7 +85,8 @@ public:
         
     // Returns ths wing upper and lower profile wire
     TIGL_EXPORT TopoDS_Wire GetUpperWire();
-    TopoDS_Wire GetLowerWire();
+    TIGL_EXPORT TopoDS_Wire GetLowerWire();
+    TIGL_EXPORT TopoDS_Wire GetTrailingEdge();
 
     // Returns the leading edge point of the wing profile wire. The leading edge point
     // is already transformed by the wing profile element transformation.
