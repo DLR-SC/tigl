@@ -17,7 +17,7 @@
 */
 /**
 * @file
-* @brief  Implementation of a CPACS guide curve
+* @brief  Implementation of a CPACS guide curve profile
 */
 
 #ifndef CCPACSGUIDECURVEPROFILE_H

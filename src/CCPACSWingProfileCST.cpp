@@ -98,6 +98,7 @@ namespace
 CCPACSWingProfileCST::CCPACSWingProfileCST(const CCPACSWingProfile&, const std::string& path)
 {
     ProfileDataXPath=path;
+    trailingEdge.Nullify();
 }
 
 // Destructor
@@ -121,6 +122,7 @@ void CCPACSWingProfileCST::Cleanup(void)
     psi.clear();
     upperB.clear();
     lowerB.clear();
+    trailingEdge.Nullify();
 }
 
 void CCPACSWingProfileCST::Update(void)
@@ -327,6 +329,12 @@ const TopoDS_Wire & CCPACSWingProfileCST::GetUpperWire() const
 const TopoDS_Wire & CCPACSWingProfileCST::GetLowerWire() const
 {
     return lowerWire;
+}
+
+// get trailing edge
+const TopoDS_Wire & CCPACSWingProfileCST::GetTrailingEdge() const 
+{
+    return trailingEdge;
 }
 
 // get leading edge point();
