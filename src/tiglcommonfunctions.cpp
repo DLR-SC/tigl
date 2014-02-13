@@ -76,11 +76,11 @@ unsigned int GetNumberOfEdges(const TopoDS_Shape& shape)
 gp_Pnt WireGetPoint(const TopoDS_Wire &wire, double alpha)
 {
     gp_Pnt point; gp_Vec normal;
-    WireGetPointNormal(wire, alpha, point, normal);
+    WireGetPointTangent(wire, alpha, point, normal);
     return point;
 }
 
-void WireGetPointNormal(const TopoDS_Wire& wire, double alpha, gp_Pnt& point, gp_Vec& normal)
+void WireGetPointTangent(const TopoDS_Wire& wire, double alpha, gp_Pnt& point, gp_Vec& normal)
 {
     if (alpha < 0.0 || alpha > 1.0) {
         throw tigl::CTiglError("Error: Parameter alpha not in the range 0.0 <= alpha <= 1.0 in WireGetPoint", TIGL_ERROR);
@@ -140,11 +140,11 @@ void WireGetPointNormal(const TopoDS_Wire& wire, double alpha, gp_Pnt& point, gp
 gp_Pnt WireGetPoint2(const TopoDS_Wire &wire, double alpha)
 {
     gp_Pnt point; gp_Vec normal;
-    WireGetPointNormal2(wire, alpha, point, normal);
+    WireGetPointTangent2(wire, alpha, point, normal);
     return point;
 }
 
-void WireGetPointNormal2(const TopoDS_Wire& wire, double alpha, gp_Pnt& point, gp_Vec& normal)
+void WireGetPointTangent2(const TopoDS_Wire& wire, double alpha, gp_Pnt& point, gp_Vec& normal)
 {
     // ETA 3D point
     BRepAdaptor_CompCurve aCompoundCurve(wire, Standard_True);
