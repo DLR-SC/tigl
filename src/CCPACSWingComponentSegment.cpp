@@ -587,7 +587,7 @@ gp_Pnt CCPACSWingComponentSegment::GetPoint(double eta, double xsi)
 
     // compute eta point and normal on the projected LE
     gp_Pnt etaPnt; gp_Vec etaNormal;
-    WireGetPointNormal2(projLeadingEdge, eta, etaPnt, etaNormal);
+    WireGetPointTangent2(projLeadingEdge, eta, etaPnt, etaNormal);
 
     // plane normal to projected leading edge
     gp_Pln gpPlane(etaPnt, gp_Dir(etaNormal.XYZ()));
