@@ -59,7 +59,6 @@
 #include "ITiglWingProfileAlgo.h"
 #include "CCPACSWingProfile.h"
 #include "CCPACSWingProfileFactory.h"
-#include "CCPACSWingProfilePointList.h"
 
 namespace tigl 
 {
@@ -119,7 +118,7 @@ void CCPACSWingProfile::ReadCPACS(TixiDocumentHandle tixiHandle)
         }
 
         // create wing profile algorithm via factory
-        profileAlgo=CCPACSWingProfileFactory::createProfileAlgo(tixiHandle, *this, ProfileXPath);
+        profileAlgo=CCPACSWingProfileFactory::Instance().CreateProfileAlgo(tixiHandle, *this, ProfileXPath);
         // read in wing profile data
         profileAlgo->ReadCPACS(tixiHandle);
     }
@@ -366,7 +365,7 @@ Handle(Geom2d_TrimmedCurve) CCPACSWingProfile::GetChordLine()
 }
 
 // get pointer to profile algorithm
-ProfileAlgoPointer CCPACSWingProfile::GetProfileAlgo(void) const
+PTiglWingProfileAlgo CCPACSWingProfile::GetProfileAlgo(void) const
 {
     return profileAlgo;
 }

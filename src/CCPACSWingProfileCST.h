@@ -26,6 +26,8 @@
 #include "tigl_internal.h"
 #include "ITiglWingProfileAlgo.h"
 
+#include <vector>
+
 #ifndef CCPACSWINGPROFILECST_H
 #define CCPACSWINGPROFILECST_H
 
@@ -46,6 +48,8 @@ public:
 
     // Destructor
     TIGL_EXPORT ~CCPACSWingProfileCST(void);
+
+    TIGL_EXPORT static std::string CPACSID();
 
     // Cleanup routine
     TIGL_EXPORT void Cleanup(void);
@@ -101,13 +105,13 @@ private:
     TopoDS_Wire               lowerWire;          /**< wire of the lower wing profile */
     gp_Pnt                    lePoint;            /**< Leading edge point */
     gp_Pnt                    tePoint;            /**< Trailing edge point */
-    std::vector<double>        psi;               /**< sample points on CST curve */
+    std::vector<double>       psi;                /**< sample points on CST curve */
     double                    upperN1;            /**< CST parameter N1 */
     double                    upperN2;            /**< CST parameter N2 */
-    std::vector<double>        upperB;            /**< CST parameter B */
+    std::vector<double>       upperB;             /**< CST parameter B */
     double                    lowerN1;            /**< CST parameter N1 */
     double                    lowerN2;            /**< CST parameter N2 */
-    std::vector<double>        lowerB;            /**< CST parameter B */
+    std::vector<double>       lowerB;             /**< CST parameter B */
 };
 
 } // end namespace tigl
