@@ -36,7 +36,7 @@
 #include "tixi.h"
 #include "tigl_internal.h"
 #include "TopoDS_Wire.hxx"
-#include "CSharedPtr.h"
+#include "PTiglWingProfileAlgo.h"
 
 #include <gp_Pnt.hxx>
 #include <Handle_Geom2d_TrimmedCurve.hxx>
@@ -44,10 +44,6 @@
 
 namespace tigl 
 {
-
-class ITiglWingProfileAlgo;
-
-typedef CSharedPtr<ITiglWingProfileAlgo> ProfileAlgoPointer;
 
 class CCPACSWingProfile
 {
@@ -114,7 +110,7 @@ public:
     TIGL_EXPORT gp_Pnt GetLowerPoint(double xsi);
 
     // get profile algorithm type
-    TIGL_EXPORT ProfileAlgoPointer GetProfileAlgo(void) const;
+    TIGL_EXPORT PTiglWingProfileAlgo GetProfileAlgo(void) const;
 
 protected:
     // Cleanup routine
@@ -147,7 +143,7 @@ private:
     std::string               description;    /**< CPACS wing profile description */
     std::string               uid;            /**< CPACS wing profile UID */
     bool                      invalidated;    /**< Flag if element is invalid */
-    ProfileAlgoPointer        profileAlgo;    /**< Pointer to wing profile algorithm (pointList, CST, etc.) */
+    PTiglWingProfileAlgo      profileAlgo;    /**< Pointer to wing profile algorithm (pointList, CST, etc.) */
 
 }; // class CCPACSWingProfile
 

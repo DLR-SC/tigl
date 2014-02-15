@@ -31,6 +31,7 @@
 #include "tigl_version.h"
 #include "tigl_config.h"
 #include "tigl_error_strings.h"
+#include "CTiglTypeRegistry.h"
 #include "CTiglError.h"
 #include "CTiglIntersectionCalculation.h"
 #include "CCPACSConfiguration.h"
@@ -76,6 +77,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglOpenCPACSConfiguration(TixiDocumentHandle 
 
     // Initialize logger
     tigl::CTiglLogging::Instance();
+    // Register dynamic tigl types
+    tigl::CTiglTypeRegistry::Init();
 
     std::string configurationUID;
     if (configurationUID_cstr) {
