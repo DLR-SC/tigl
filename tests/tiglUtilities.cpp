@@ -81,6 +81,12 @@ TEST(Misc, GetPointOnCirc)
     ASSERT_NEAR(0.0, p3.Distance(WireGetPoint(wire,0.50)), 1e-7);
     ASSERT_NEAR(0.0, p4.Distance(WireGetPoint(wire,0.75)), 1e-7);
     ASSERT_NEAR(0.0, p5.Distance(WireGetPoint(wire,1.00)), 1e-7);
+
+    ASSERT_NEAR(0.0, p1.Distance(WireGetPoint2(wire,0.00)), 1e-7);
+    ASSERT_NEAR(0.0, p2.Distance(WireGetPoint2(wire,0.25)), 1e-7);
+    ASSERT_NEAR(0.0, p3.Distance(WireGetPoint2(wire,0.50)), 1e-7);
+    ASSERT_NEAR(0.0, p4.Distance(WireGetPoint2(wire,0.75)), 1e-7);
+    ASSERT_NEAR(0.0, p5.Distance(WireGetPoint2(wire,1.00)), 1e-7);
     
     ASSERT_NEAR(0.00, ProjectPointOnWire(wire, p1), 1e-7);
     ASSERT_NEAR(0.25, ProjectPointOnWire(wire, p2), 1e-7);

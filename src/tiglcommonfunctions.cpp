@@ -32,6 +32,7 @@
 #include "TopoDS.hxx"
 #include "GeomAdaptor_Curve.hxx"
 #include "BRepAdaptor_CompCurve.hxx"
+#include "BRepAdaptor_Curve.hxx"
 #include "GCPnts_AbscissaPoint.hxx"
 #include "BRepBuilderAPI_MakeWire.hxx"
 #include "BRepBuilderAPI_MakeEdge.hxx"
@@ -150,7 +151,14 @@ void WireGetPointTangent2(const TopoDS_Wire& wire, double alpha, gp_Pnt& point, 
     BRepAdaptor_CompCurve aCompoundCurve(wire, Standard_True);
     
     Standard_Real len =  GCPnts_AbscissaPoint::Length( aCompoundCurve );
-    aCompoundCurve.D1( len * alpha, point, normal );
+    GCPnts_AbscissaPoint algo(aCompoundCurve, len*alpha, aCompoundCurve.FirstParameter());
+    if (algo.IsDone()) {
+        double par = algo.Parameter();
+        aCompoundCurve.D1( par, point, normal );
+    }
+    else {
+        throw tigl::CTiglError("WireGetPointTangent2: Cannot compute point in curve.", TIGL_MATH_ERROR);
+    }
 }
 
 Standard_Real ProjectPointOnWire(const TopoDS_Wire& wire, gp_Pnt p)
@@ -201,5 +209,3 @@ Standard_Real ProjectPointOnLine(gp_Pnt p, gp_Pnt lineStart, gp_Pnt lineStop)
 {
     return gp_Vec(lineStart, p) * gp_Vec(lineStart, lineStop) / gp_Vec(lineStart, lineStop).SquareMagnitude();
 }
-
-
