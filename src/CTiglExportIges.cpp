@@ -258,7 +258,7 @@ void CTiglExportIges::ExportShapes(const Handle(TopTools_HSequenceOfShape)& aHSe
     }
 }
 
-void CTiglExportIges::SetOCAFStoreType(CAFStoreType type)
+void CTiglExportIges::SetOCAFStoreType(ShapeStoreType type)
 {
     myStoreType = type;
 }

@@ -20,6 +20,7 @@
 #define TIGLCOMMONFUNCTIONS_H
 
 #include "tigl_internal.h"
+#include "CCPACSImportExport.h"
 #include "Standard.hxx"
 #include "gp_Pnt.hxx"
 #include "gp_Vec.hxx"
@@ -58,14 +59,7 @@ TIGL_EXPORT ShapeMap MapFacesToShapeGroups(const PNamedShape shape);
 
 #ifdef TIGL_USE_XCAF
 #include "Handle_XCAFDoc_ShapeTool.hxx"
-enum CAFStoreType
-{
-    WHOLE_SHAPE,           /** Inserts the shape as it is into IGES. All faces will be named correctly but they will not be grouped by name */
-    NAMED_COMPOUNDS,       /** Collects all faces with the same origin into compounds. All faces are named correctly */
-    FACES                  /** Exports each face as its own group. The group name and the face name are identical    */
-};
-
-void GroupAndInsertShapeToCAF(Handle_XCAFDoc_ShapeTool myAssembly, const PNamedShape shape, CAFStoreType);
+void GroupAndInsertShapeToCAF(Handle_XCAFDoc_ShapeTool myAssembly, const PNamedShape shape, tigl::ShapeStoreType);
 #endif
 
 #endif // TIGLCOMMONFUNCTIONS_H
