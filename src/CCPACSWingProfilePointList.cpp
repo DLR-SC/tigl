@@ -165,7 +165,7 @@ void CCPACSWingProfilePointList::ReadCPACS(TixiDocumentHandle tixiHandle)
         if (maxZIndex==-1 || minZIndex==-1 || maxZIndex==minZIndex) {
             throw CTiglError("Error: CCPACSWingProfilePointList::ReadCPACS: Unable to separate upper and lower wing profile from point list", TIGL_XML_ERROR);
         }
-        // force order of points to run through the upper profile first and then through the lower profile
+        // force order of points to run through the lower profile first and then through the upper profile
         if (minZIndex>maxZIndex) {
             LOG(WARNING) << "The point list order in wing profile " << profileRef.GetUID() <<  " is reversed in order to run through lower part first" << endl;
             std::reverse(coordinates.begin(), coordinates.end());
@@ -223,81 +223,58 @@ void CCPACSWingProfilePointList::BuildWires()
     // Get Leading edge parameter on curve
     double lep_par = GeomAPI_ProjectPointOnCurve(lePoint, curve).LowerDistanceParameter();
 
-    // upper and lower curve, we don't know yet which is what
-    Handle(Geom_TrimmedCurve) curve1 = new Geom_TrimmedCurve(curve, curve->FirstParameter(), lep_par);
-    Handle(Geom_TrimmedCurve) curve2 = new Geom_TrimmedCurve(curve, lep_par, curve->LastParameter());
+    // upper and lower curve
+    Handle(Geom_TrimmedCurve) lowerCurve = new Geom_TrimmedCurve(curve, curve->FirstParameter(), lep_par);
+    Handle(Geom_TrimmedCurve) upperCurve = new Geom_TrimmedCurve(curve, lep_par, curve->LastParameter());
 
-    gp_Pnt firstPnt = curve1->StartPoint();
-    gp_Pnt lastPnt  = curve2->EndPoint();
+    gp_Pnt firstPnt = lowerCurve->StartPoint();
+    gp_Pnt lastPnt  = upperCurve->EndPoint();
 
     // Trim upper and lower curve to make sure, that the trailing edge
     // is perpendicular to the chord line
     double tolerance = 1e-4;
     gp_Pln plane(tePoint,gp_Vec(lePoint, tePoint));
-    GeomAPI_IntCS int1(curve1, new Geom_Plane(plane));
+    GeomAPI_IntCS int1(lowerCurve, new Geom_Plane(plane));
     if (int1.IsDone() && int1.NbPoints() > 0) {
         Standard_Real u,v,w;
         int1.Parameters(1, u, v, w);
-        if ( w > curve1->FirstParameter() + Precision::Confusion() && w < curve1->LastParameter() ) {
-            double relDist = curve1->Value(w).Distance(firstPnt) / tePoint.Distance(lePoint);
+        if ( w > lowerCurve->FirstParameter() + Precision::Confusion() && w < lowerCurve->LastParameter() ) {
+            double relDist = lowerCurve->Value(w).Distance(firstPnt) / tePoint.Distance(lePoint);
             if (relDist > tolerance) {
                 LOG(WARNING) << "The wing profile " << profileRef.GetUID() << " will be trimmed"
                              << " to avoid a skewed trailing edge."
-                             << " It is trimmed about " << relDist*100. << " % w.r.t. the chord length."
+                             << " The lower part is trimmed about " << relDist*100. << " % w.r.t. the chord length."
                              << " Please correct the wing profile!";
             }
-            curve1 = new Geom_TrimmedCurve(curve1, w, curve1->LastParameter());
+            lowerCurve = new Geom_TrimmedCurve(lowerCurve, w, lowerCurve->LastParameter());
         }
     }
-    GeomAPI_IntCS int2(curve2, new Geom_Plane(plane));
+    GeomAPI_IntCS int2(upperCurve, new Geom_Plane(plane));
     if (int2.IsDone() && int2.NbPoints() > 0) {
         Standard_Real u,v,w;
         int2.Parameters(1, u, v, w);
-        if ( w < curve2->LastParameter() - Precision::Confusion() && w > curve2->FirstParameter() ) {
-            double relDist = curve2->Value(w).Distance(lastPnt) / tePoint.Distance(lePoint);
+        if ( w < upperCurve->LastParameter() - Precision::Confusion() && w > upperCurve->FirstParameter() ) {
+            double relDist = upperCurve->Value(w).Distance(lastPnt) / tePoint.Distance(lePoint);
             if (relDist > tolerance) {
                 LOG(WARNING) << "The wing profile " << profileRef.GetUID() << " will be trimmed"
                              << " to avoid a skewed trailing edge."
-                             << " It is trimmed about " << relDist*100. << " % w.r.t. the chord length."
+                             << " The upper part is trimmed about " << relDist*100. << " % w.r.t. the chord length."
                              << " Please correct the wing profile!";
             }
-            curve2 = new Geom_TrimmedCurve(curve2, curve2->FirstParameter(), w);
+            upperCurve = new Geom_TrimmedCurve(upperCurve, upperCurve->FirstParameter(), w);
         }
     }
 
     // upper and lower edges
-    TopoDS_Edge edge1, edge2;
-    edge1 = BRepBuilderAPI_MakeEdge(curve1);
-    edge2 = BRepBuilderAPI_MakeEdge(curve2);
-
-    // Get maximal z-values of both edges via bounding box
-    Bnd_Box boundingBox1;
-    Bnd_Box boundingBox2;
-    Standard_Real xmin, ymin, zmin, xmax, ymax, zmax1, zmax2;
-    BRepBndLib::Add(edge1, boundingBox1);
-    BRepBndLib::Add(edge2, boundingBox2);
-    boundingBox1.Get(xmin, ymin, zmin, xmax, ymax, zmax1);
-    boundingBox2.Get(xmin, ymin, zmin, xmax, ymax, zmax2);
-
+    TopoDS_Edge lowerEdge, upperEdge;
+    lowerEdge = BRepBuilderAPI_MakeEdge(lowerCurve);
+    upperEdge = BRepBuilderAPI_MakeEdge(upperCurve);
 
     // Trailing edge points
     gp_Pnt te_up, te_down;
-    // Find out which edge is on top and asign upper and lower edge
-    TopoDS_Edge lower_edge, upper_edge;
-    if (zmax2 < zmax1) {
-        //wire goes from top to bottom
-        upper_edge = edge1;
-        lower_edge = edge2;
-        te_up = curve1->StartPoint();
-        te_down = curve2->EndPoint();
-    }
-    else {
-        //wire goes from bottom to top
-        lower_edge = edge1;
-        upper_edge = edge2;
-        te_up = curve2->EndPoint();
-        te_down = curve1->StartPoint();
-    }
+    te_up = upperCurve->EndPoint();
+    te_down = lowerCurve->StartPoint();
+
     // Wire builder
     BRepBuilderAPI_MakeWire upperWireBuilder, lowerWireBuilder;
 
@@ -310,8 +287,8 @@ void CCPACSWingProfilePointList::BuildWires()
         trailingEdge.Nullify();
     }
 
-    upperWireBuilder.Add(upper_edge);
-    lowerWireBuilder.Add(lower_edge);
+    upperWireBuilder.Add(upperEdge);
+    lowerWireBuilder.Add(lowerEdge);
 
     upperWire = upperWireBuilder.Wire();
     lowerWire = lowerWireBuilder.Wire();
