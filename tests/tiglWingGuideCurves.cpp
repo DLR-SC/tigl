@@ -1,4 +1,4 @@
-/* 
+/*
 * Copyright (C) 2007-2014 German Aerospace Center (DLR/SC)
 *
 * Created: 2014-02-10 Tobias Stollenwerk <Tobias.Stollenwerk@dlr.de>
@@ -22,23 +22,28 @@
 
 #include "test.h" // Brings in the GTest framework
 #include "tigl.h"
+#include "testUtils.h"
 #include "CCPACSConfigurationManager.h"
 #include "BRep_Tool.hxx"
+#include "BRepBuilderAPI_MakeWire.hxx"
 #include "BRepTools_WireExplorer.hxx"
 #include "Geom_Curve.hxx"
 #include "gp_Pnt.hxx"
-#include "gp_Pnt.hxx"
+#include "gp_Vec.hxx"
 #include "GeomAPI_ProjectPointOnCurve.hxx"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
+#include "CCPACSGuideCurveProfile.h"
 #include "CCPACSGuideCurveProfiles.h"
+#include "CCPACSWingProfileGetPointAlgo.h"
+#include "tiglcommonfunctions.h"
 
 /******************************************************************************/
 
-class WingGuideCurve : public ::testing::Test 
+class WingGuideCurve : public ::testing::Test
 {
 protected:
-    virtual void SetUp() 
+    virtual void SetUp()
     {
         const char* filename = "TestData/simple_test_guide_curves.xml";
         ReturnCode tixiRet;
@@ -46,16 +51,11 @@ protected:
 
         tiglHandle = -1;
         tixiHandle = -1;
-        
+
         tixiRet = tixiOpenDocument(filename, &tixiHandle);
         ASSERT_TRUE (tixiRet == SUCCESS);
         tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "GuideCurveModel", &tiglHandle);
         ASSERT_TRUE(tiglRet == TIGL_SUCCESS);
-
-        // read configuration
-        tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
-        tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
-        Standard_Real u1, u2;
 
         // get guide curve
         //tigl::CCPACSGuideCurve & guideCurve = config.GetGuideCurve("GuideCurveModel_Wing_Sec1_El1_Pro");
@@ -67,27 +67,13 @@ protected:
         gamma=std::vector<double>(tempz, tempz + sizeof(tempz) / sizeof(tempz[0]) );
     }
 
-    void TearDown() 
+    void TearDown()
     {
         ASSERT_TRUE(tiglCloseCPACSConfiguration(tiglHandle) == TIGL_SUCCESS);
         ASSERT_TRUE(tixiCloseDocument(tixiHandle) == SUCCESS);
         tiglHandle = -1;
         tixiHandle = -1;
     }
-
-    // save x-y data
-    void outputXY(const int & i, const double& x, const double&y, const std::string& filename)
-    {
-        ofstream out;
-        if (i>0) {
-            out.open(filename.c_str(), ios::app);
-        }
-        else {
-            out.open(filename.c_str());
-        }
-        out << setprecision(17) << std::scientific  << x << "\t" << y << endl;
-        out.close();
-    } 
 
     TixiDocumentHandle           tixiHandle;
     TiglCPACSConfigurationHandle tiglHandle;
@@ -103,6 +89,7 @@ protected:
 /**
 * Tests if data was read in correctly
 */
+/*
 TEST_F(WingGuideCurve, tiglWingGuideCurveProfile_readData)
 {
     double x;
@@ -115,11 +102,12 @@ TEST_F(WingGuideCurve, tiglWingGuideCurveProfile_readData)
         ASSERT_NEAR(y, 5*0.1*i, 1E-10);
     }
 }
+*/
 
 /**
 * Tests CCPACSGuideCurveProfile class
 */
-TEST_F(WingGuideCurve, tiglWingGuideCurveProfile_CCPACSGuideCurveProfile)
+TEST_F(WingGuideCurve, tiglWingGuideCurve_CCPACSGuideCurveProfile)
 {
     tigl::CCPACSGuideCurveProfile guideCurve("/cpacs/vehicles/profiles/guideCurveProfiles/guideCurveProfile[7]");
     guideCurve.ReadCPACS(tixiHandle);
@@ -127,10 +115,11 @@ TEST_F(WingGuideCurve, tiglWingGuideCurveProfile_CCPACSGuideCurveProfile)
     ASSERT_EQ(guideCurve.GetName(), "NonLinear Leading Edge Guide Curve Profile for GuideCurveModel - Wing");
     ASSERT_EQ(guideCurve.GetFileName(), "/cpacs/vehicles/profiles/guideCurveProfiles/guideCurveProfile[7]");
 }
+
 /**
 * Tests CCPACSGuideCurveProfiles class
 */
-TEST_F(WingGuideCurve, tiglWingGuideCurveProfile_CCPACSGuideCurveProfiles)
+TEST_F(WingGuideCurve, tiglWingGuideCurve_CCPACSGuideCurveProfiles)
 {
     tigl::CCPACSGuideCurveProfiles guideCurves;
     guideCurves.ReadCPACS(tixiHandle);
@@ -140,6 +129,62 @@ TEST_F(WingGuideCurve, tiglWingGuideCurveProfile_CCPACSGuideCurveProfiles)
     ASSERT_EQ(guideCurve.GetName(), "NonLinear Leading Edge Guide Curve Profile for GuideCurveModel - Wing");
     ASSERT_EQ(guideCurve.GetFileName(), "/cpacs/vehicles/profiles/guideCurveProfiles/guideCurveProfile[7]");
 }
+
+/**
+* Tests CCPACSWingProfileGetPointAlgo class
+*/
+TEST_F(WingGuideCurve, tiglWingGuideCurve_CCPACSWingProfileGetPointAlgo)
+{
+    // read configuration
+    tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+    tigl::CCPACSConfiguration& config = manager.GetConfiguration(tiglHandle);
+
+    // get upper and lower wing profile
+    tigl::CCPACSWingProfile& profile = config.GetWingProfile("GuideCurveModel_Wing_Sec3_El1_Pro");
+    TopoDS_Wire upperWire = profile.GetUpperWire();
+    TopoDS_Wire lowerWire = profile.GetLowerWire();
+
+    // concatenate wires
+    BRepBuilderAPI_MakeWire wireBuilder(upperWire);
+    wireBuilder.Add(lowerWire);
+    ASSERT_TRUE(wireBuilder.IsDone());
+    TopoDS_Wire wire=wireBuilder.Wire();
+
+    // instantiate getPointAlgo
+    tigl::CCPACSWingProfileGetPointAlgo getPointAlgo(wire);
+    gp_Pnt point;
+    gp_Vec tangent;
+
+    // plot points and tangents
+    for (int i=0; i<=20; i++) {
+        double alpha = -1.0 + 2.0*i/double(20);
+        getPointAlgo.GetPointTangent(alpha, point, tangent);
+        outputXY(i, point.X(), point.Z(), "./TestData/analysis/tiglWingGuideCurve_profileSamplePoints_points.dat");
+        outputXYVector(i, point.X(), point.Z(), tangent.X(), tangent.Z(), "./TestData/analysis/tiglWingGuideCurve_profileSamplePoints_tangents.dat");
+        // plot points and tangents with gnuplot by:
+        // echo "plot 'TestData/analysis/tiglWingGuideCurve_profileSamplePoints_tangents.dat' u 1:2:3:4 with vectors filled head lw 2, 'TestData/analysis/tiglWingGuideCurve_profileSamplePoints_points.dat' w lines lw 2" | gnuplot -persist
+    }
+    // leading edge: point must be zero and tangent must be in z-direction
+    getPointAlgo.GetPointTangent(0.0, point, tangent);
+    ASSERT_NEAR(point.X(), 0.0, 1E-10);
+    ASSERT_NEAR(point.Y(), 0.0, 1E-10);
+    ASSERT_NEAR(point.Z(), 0.0, 1E-10);
+    ASSERT_NEAR(tangent.X(), 0.0, 1E-10);
+    ASSERT_NEAR(tangent.Y(), 0.0, 1E-10);
+
+    // lower trailing edge
+    getPointAlgo.GetPointTangent(-1.0, point, tangent);
+    ASSERT_NEAR(point.X(), 1.0, 1E-5);
+    ASSERT_NEAR(point.Y(), 0.0, 1E-10);
+    ASSERT_NEAR(point.Z(), -0.003, 1E-5);
+
+    // upper trailing edge
+    getPointAlgo.GetPointTangent(1.0, point, tangent);
+    ASSERT_NEAR(point.X(), 1.0, 1E-10);
+    ASSERT_NEAR(point.Y(), 0.0, 1E-10);
+    ASSERT_NEAR(point.Z(), 0.00126, 1E-10);
+}
+
 /**
 * Tests if B-spline guide curve intersects the sample points
 */
@@ -161,3 +206,5 @@ TEST_F(WingGuideCurve, tiglWingGuideCurve_samplePoints)
     }
     */
 }
+
+
