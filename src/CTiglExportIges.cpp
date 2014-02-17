@@ -64,7 +64,7 @@
 #include <XCAFDoc_DocumentTool.hxx>
 #include <XCAFDoc_ShapeTool.hxx>
 #include "IGESCAFControl_Writer.hxx"
-#endif
+#endif // TIGL_USE_XCAF
 
 #include <map>
 #include <cassert>
@@ -213,7 +213,7 @@ void CTiglExportIges::ExportFusedIGES(const std::string& filename)
     Handle(XCAFDoc_ShapeTool) myAssembly = XCAFDoc_DocumentTool::ShapeTool(hDoc->Main());
 
     IGESCAFControl_Writer igesWriter;
-    GroupAndInsertShapeToCAF(myAssembly, fusedAirplane);
+    GroupAndInsertShapeToCAF(myAssembly, fusedAirplane, myStoreType);
 
     igesWriter.Model()->ApplyStatic(); // apply set parameters
     if (igesWriter.Transfer(hDoc) == Standard_False) {
@@ -258,7 +258,7 @@ void CTiglExportIges::ExportShapes(const Handle(TopTools_HSequenceOfShape)& aHSe
     }
 }
 
-void CTiglExportIges::SetOCAFStoreType(IgesOCAFStoreType type)
+void CTiglExportIges::SetOCAFStoreType(CAFStoreType type)
 {
     myStoreType = type;
 }
@@ -282,64 +282,6 @@ void CTiglExportIges::ExportIgesWithCPACSMetadata(const std::string& filename)
 
     writer.Transfer(hDoc);
     writer.Write(filename.c_str());
-}
-
-
-
-void CTiglExportIges::GroupAndInsertShapeToCAF(Handle(XCAFDoc_ShapeTool) myAssembly, const PNamedShape shape)
-{
-    if (!shape) {
-        return;
-    }
-
-    TopTools_IndexedMapOfShape faceMap;
-    TopExp::MapShapes(shape->Shape(),   TopAbs_FACE, faceMap);
-    if (faceMap.Extent() > 0) {
-        if (myStoreType == WHOLE_SHAPE){
-            TDF_Label shapeLabel = myAssembly->NewShape();
-            myAssembly->SetShape(shapeLabel, shape->Shape());
-            TDataStd_Name::Set(shapeLabel, shape->Name());
-        }
-        else if (myStoreType == NAMED_COMPOUNDS) {
-            // create compounds with the same name as origin
-            ShapeMap map =  MapFacesToShapeGroups(shape);
-            // add compounds to document
-            ShapeMap::iterator it = map.begin();
-            for (; it != map.end(); ++it){
-                TDF_Label faceLabel = myAssembly->NewShape();
-                myAssembly->SetShape(faceLabel, it->second);
-                TDataStd_Name::Set(faceLabel, it->first.c_str());
-            }
-        }
-        else if (myStoreType == FACES) {
-            for (int iface = 1; iface <= faceMap.Extent(); ++iface) {
-                TopoDS_Face face = TopoDS::Face(faceMap(iface));
-                std::string name = shape->ShortName();
-                PNamedShape origin = shape->GetFaceTraits(iface-1).Origin();
-                if (origin){
-                    name = origin->ShortName();
-                }
-                TDF_Label faceLabel = myAssembly->NewShape();
-                myAssembly->SetShape(faceLabel, face);
-                TDataStd_Name::Set(faceLabel, name.c_str());
-            }
-        }
-    }
-    else {
-        // no faces, export edges as wires
-        Handle(TopTools_HSequenceOfShape) Edges = new TopTools_HSequenceOfShape();
-        TopExp_Explorer myEdgeExplorer (shape->Shape(), TopAbs_EDGE);
-        while (myEdgeExplorer.More()) {
-            Edges->Append(TopoDS::Edge(myEdgeExplorer.Current()));
-            myEdgeExplorer.Next();
-        }
-        ShapeAnalysis_FreeBounds::ConnectEdgesToWires(Edges, 1e-7, false, Edges);
-        for (int iwire = 1; iwire <= Edges->Length(); ++iwire) {
-            TDF_Label wireLabel = myAssembly->NewShape();
-            myAssembly->SetShape(wireLabel, Edges->Value(iwire));
-            TDataStd_Name::Set(wireLabel, shape->Name());
-        }
-    }
 }
 
 #endif

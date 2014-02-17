@@ -29,23 +29,70 @@
 #include "CCPACSFuselageSegment.h"
 #include "CCPACSWingSegment.h"
 #include "CTiglFusePlane.h"
+#include "tiglcommonfunctions.h"
 
 #include "TopoDS_Shape.hxx"
 #include "STEPControl_Controller.hxx"
+
 #ifdef TIGL_USE_XCAF
 #include "STEPCAFControl_Writer.hxx"
-#endif
+#include "XCAFApp_Application.hxx"
+#include "XCAFDoc_DocumentTool.hxx"
+#include "XSControl_WorkSession.hxx"
+#include "XSControl_TransferWriter.hxx"
+#include "TDocStd_Document.hxx"
+#endif // TIGL_USE_XCAF
+
 #include "STEPControl_Writer.hxx"
-#include "Standard_CString.hxx"
-#include "Interface_Static.hxx"
-#include "APIHeaderSection_MakeHeader.hxx"
+#include "StepShape_AdvancedFace.hxx"
 #include "STEPControl_StepModelType.hxx"
+#include "TransferBRep.hxx"
+#include "TransferBRep_ShapeMapper.hxx"
+#include "Transfer_FinderProcess.hxx"
+
+#include "Standard_CString.hxx"
+#include "TCollection_HAsciiString.hxx"
+#include "TopExp.hxx"
 #include "TopExp_Explorer.hxx"
-#include "BRepAlgoAPI_Cut.hxx"
+#include "TopTools_IndexedMapOfShape.hxx"
 
 #include <cassert>
 
 #define STEP_WRITEMODE STEPControl_AsIs
+
+namespace
+{
+
+    /**
+     * @brief WriteSTEPFaceNames takes the names of each face and writes it into the STEP model
+     * as an advanced face property
+     */
+    void WriteSTEPFaceNames(Handle_Transfer_FinderProcess FP, const PNamedShape shape)
+    {
+        if (!shape) {
+            return;
+        }
+
+        TopTools_IndexedMapOfShape faceMap;
+        TopExp::MapShapes(shape->Shape(),   TopAbs_FACE, faceMap);
+        for (int iface = 1; iface <= faceMap.Extent(); ++iface) {
+            TopoDS_Face face = TopoDS::Face(faceMap(iface));
+            std::string name = shape->ShortName();
+            PNamedShape origin = shape->GetFaceTraits(iface-1).Origin();
+            if (origin) {
+                name = origin->ShortName();
+            }
+            // set face name
+            Handle(StepShape_AdvancedFace) SF;
+            Handle(TransferBRep_ShapeMapper) mapper = TransferBRep::ShapeMapper ( FP, face );
+            if ( FP->FindTypedTransient ( mapper, STANDARD_TYPE(StepShape_AdvancedFace), SF ) ) {
+                Handle(TCollection_HAsciiString) str = new TCollection_HAsciiString(name.c_str());
+                SF->SetName(str);
+            }
+        }
+    }
+
+} //namespace
 
 namespace tigl 
 {
@@ -54,7 +101,7 @@ namespace tigl
 CTiglExportStep::CTiglExportStep(CCPACSConfiguration& config)
 :myConfig(config)
 {
-    SetExportMode(AS_FACES);
+    SetOCAFStoreType(NAMED_COMPOUNDS);
 }
 
 // Destructor
@@ -64,7 +111,7 @@ CTiglExportStep::~CTiglExportStep(void)
 
 void CTiglExportStep::AddFacesOfShape(const TopoDS_Shape& shape, STEPControl_Writer& writer) const 
 {
-    if (exportMode == AS_FACES) {
+    if (myStoreType == FACES) {
         TopExp_Explorer faceExplorer;
         for (faceExplorer.Init(shape, TopAbs_FACE); faceExplorer.More(); faceExplorer.Next()) {
             const TopoDS_Face& currentFace = TopoDS::Face(faceExplorer.Current());
@@ -81,12 +128,6 @@ void CTiglExportStep::AddFacesOfShape(const TopoDS_Shape& shape, STEPControl_Wri
         }
     }
 }
-
-void CTiglExportStep::SetExportMode(TiglStepExportMode mode) 
-{
-    exportMode = mode;
-}
-
 
 // Exports the whole configuration as STEP file
 // All wing- and fuselage segments are exported as single bodys
@@ -140,38 +181,51 @@ void CTiglExportStep::ExportStep(const std::string& filename) const
 // Exports the whole configuration as one fused part to an STEP file
 void CTiglExportStep::ExportFusedStep(const std::string& filename)
 {
-    PTiglFusePlane fuser = myConfig.AircraftFusingAlgo();
-    fuser->SetResultMode(HALF_PLANE);
-    assert(fuser);
-    if (!fuser->NamedShape()) {
-        throw CTiglError("Cannot compute fused aircraft in CTiglExportStep::ExportFusedStep", TIGL_ERROR);
-    }
-
-    TopoDS_Shape fusedAirplane = fuser->NamedShape()->Shape();
-
-    STEPControl_Controller::Init();
-    STEPControl_Writer            stepWriter;
-
-    if ( filename.empty()) {
+    if (filename.empty()) {
        LOG(ERROR) << "Error: Empty filename in ExportFusedStep.";
        return;
     }
 
-    // if we have a far field, do boolean subtract of plane from far-field
-    if (myConfig.GetFarField().GetFieldType() != NONE) {
-        try {
-            LOG(INFO) << "Trimming plane with far field...";
-            TopoDS_Shape& farField = myConfig.GetFarField().GetLoft();
-            fusedAirplane = BRepAlgoAPI_Cut(farField, fusedAirplane);
-            LOG(INFO) << "Done trimming.";
-        }
-        catch(Standard_ConstructionError& err) {
-            LOG(ERROR) << "OpenCascade error: " << err.GetMessageString();
-            LOG(ERROR) << "Can not trim plane with far field. Far field will not be part of STEP export.";
-        }
+    PTiglFusePlane fuser = myConfig.AircraftFusingAlgo();
+    fuser->SetResultMode(HALF_PLANE_TRIMMED_FF);
+    assert(fuser);
+
+    PNamedShape fusedAirplane = fuser->NamedShape();
+    if (!fusedAirplane) {
+        throw CTiglError("Error computing fused airplane.", TIGL_NULL_POINTER);
     }
 
+    STEPControl_Controller::Init();
+
+#ifdef TIGL_USE_XCAF
+    // create the xde document
+    Handle(XCAFApp_Application) hApp = XCAFApp_Application::GetApplication();
+    Handle(TDocStd_Document) hDoc;
+    hApp->NewDocument("MDTV-XCAF", hDoc);
+    Handle(XCAFDoc_ShapeTool) myAssembly = XCAFDoc_DocumentTool::ShapeTool(hDoc->Main());
+
+    STEPCAFControl_Writer stepWriter;
+    //GroupAndInsertShapeToCAF(myAssembly, fusedAirplane, myStoreType);
+    const ListPNamedShape& shapes = fuser->SubShapes();
+    ListPNamedShape::const_iterator it;
+    for (it = shapes.begin(); it != shapes.end(); ++it) {
+        GroupAndInsertShapeToCAF(myAssembly, *it, WHOLE_SHAPE);
+    }
+
+    if (stepWriter.Transfer(hDoc, STEP_WRITEMODE) == Standard_False) {
+        throw CTiglError("Cannot export fused airplane as STEP", TIGL_ERROR);
+    }
+
+    Handle(Transfer_FinderProcess) FP = stepWriter.Writer().WS()->TransferWriter()->FinderProcess();
+#else
+    STEPControl_Writer stepWriter;
     AddFacesOfShape(fusedAirplane, stepWriter);
+    Handle(Transfer_FinderProcess) FP = stepWriter.WS()->TransferWriter()->FinderProcess();
+#endif
+
+    for (it = shapes.begin(); it != shapes.end(); ++it) {
+        WriteSTEPFaceNames(FP, *it);
+    }
 
     // Write STEP file
     if (stepWriter.Write(const_cast<char*>(filename.c_str())) > IFSelect_RetDone) {
@@ -186,7 +240,7 @@ void CTiglExportStep::ExportFusedStep(const std::string& filename)
 void CTiglExportStep::ExportShapes(const Handle(TopTools_HSequenceOfShape)& aHSequenceOfShape, const std::string& filename)
 {
     STEPControl_Controller::Init();
-    STEPControl_Writer            stepWriter;
+    STEPControl_Writer stepWriter;
 
     if ( filename.empty()) {
        LOG(ERROR) << "Error: Empty filename in ExportShapes.";
@@ -200,6 +254,11 @@ void CTiglExportStep::ExportShapes(const Handle(TopTools_HSequenceOfShape)& aHSe
     if (stepWriter.Write(const_cast<char*>(filename.c_str())) > IFSelect_RetDone) {
         throw CTiglError("Error: Export of shapes to STEP file failed in CTiglExportStep::ExportShapes", TIGL_ERROR);
     }
+}
+
+void CTiglExportStep::SetOCAFStoreType(CAFStoreType type)
+{
+    myStoreType = type;
 }
 
 #ifdef TIGL_USE_XCAF

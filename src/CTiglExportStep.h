@@ -42,6 +42,8 @@
 class CCPACSConfiguration;
 class STEPControl_Writer;
 
+enum CAFStoreType;
+
 namespace tigl 
 {
 
@@ -61,8 +63,6 @@ public:
     // Virtual Destructor
     TIGL_EXPORT virtual ~CTiglExportStep(void);
 
-    TIGL_EXPORT void SetExportMode(TiglStepExportMode mode);
-    
     // Exports the whole configuration as IGES file
     TIGL_EXPORT void ExportStep(const std::string& filename) const;
 
@@ -71,6 +71,9 @@ public:
 
     // Save a sequence of shapes in IGES Format
     TIGL_EXPORT void ExportShapes(const Handle(TopTools_HSequenceOfShape)& aHSequenceOfShape, const std::string& filename);
+
+    // Sets the type of storing shapes to iges
+    TIGL_EXPORT void SetOCAFStoreType(CAFStoreType type);
 
 #ifdef TIGL_USE_XCAF // this feature requires xcaf
     // Saves as IGES, with cpacs metadata information in it
@@ -84,7 +87,7 @@ private:
     void operator=(const CTiglExportStep& ) { /* Do nothing */ }
 
     CCPACSConfiguration&          myConfig;       /**< TIGL configuration object */
-    TiglStepExportMode            exportMode;     /**< Mode how to export solids */
+    CAFStoreType                  myStoreType;    /**< Type specifying how to translate shapes into an OCAF document */
     void AddFacesOfShape(const TopoDS_Shape &shape, STEPControl_Writer &writer) const;
 };
 

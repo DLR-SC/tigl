@@ -39,6 +39,8 @@
 
 class CCPACSConfiguration;
 
+enum CAFStoreType;
+
 namespace tigl 
 {
 
@@ -46,13 +48,6 @@ class CTiglExportIges
 {
 
 public:
-    enum IgesOCAFStoreType
-    {
-        WHOLE_SHAPE,           /** Inserts the shape as it is into IGES. All faces will be named correctly but they will not be grouped by name */
-        NAMED_COMPOUNDS,       /** Collects all faces with the same origin into compounds. All faces are named correctly */
-        FACES                  /** Exports each face as its own group. The group name and the face name are identical    */
-    };
-
     // Constructor
     TIGL_EXPORT CTiglExportIges(CCPACSConfiguration& config);
 
@@ -69,7 +64,7 @@ public:
     TIGL_EXPORT void ExportShapes(const Handle(TopTools_HSequenceOfShape)& aHSequenceOfShape, const std::string& filename);
 
     // Sets the type of storing shapes to iges
-    TIGL_EXPORT void SetOCAFStoreType(IgesOCAFStoreType type);
+    TIGL_EXPORT void SetOCAFStoreType(CAFStoreType type);
 
 #ifdef TIGL_USE_XCAF
     // Saves as IGES, with cpacs metadata information in it
@@ -77,16 +72,13 @@ public:
 #endif
 
 protected:
-#ifdef TIGL_USE_XCAF
-    void GroupAndInsertShapeToCAF(Handle_XCAFDoc_ShapeTool myAssembly, const PNamedShape shape);
-#endif
 
 private:
     // Assignment operator
     void operator=(const CTiglExportIges& ) { /* Do nothing */ }
 
     CCPACSConfiguration&          myConfig;       /**< TIGL configuration object */
-    IgesOCAFStoreType             myStoreType;    /**< Type specifying how to translate shapes into an OCAF document */
+    CAFStoreType                  myStoreType;    /**< Type specifying how to translate shapes into an OCAF document */
     void SetTranslationParamters() const;
 };
 
