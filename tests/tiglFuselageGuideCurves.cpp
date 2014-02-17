@@ -1,4 +1,4 @@
-/* 
+/*
 * Copyright (C) 2007-2014 German Aerospace Center (DLR/SC)
 *
 * Created: 2014-02-10 Tobias Stollenwerk <Tobias.Stollenwerk@dlr.de>
@@ -22,6 +22,7 @@
 
 #include "test.h" // Brings in the GTest framework
 #include "tigl.h"
+#include "testUtils.h"
 #include "CCPACSConfigurationManager.h"
 #include "BRep_Tool.hxx"
 #include "BRepTools_WireExplorer.hxx"
@@ -31,14 +32,16 @@
 #include "GeomAPI_ProjectPointOnCurve.hxx"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
+#include "CCPACSGuideCurveProfile.h"
 #include "CCPACSGuideCurveProfiles.h"
+#include "CCPACSFuselageProfileGetPointAlgo.h"
 
 /******************************************************************************/
 
-class FuselageGuideCurve : public ::testing::Test 
+class FuselageGuideCurve : public ::testing::Test
 {
 protected:
-    virtual void SetUp() 
+    virtual void SetUp()
     {
         const char* filename = "TestData/simple_test_guide_curves.xml";
         ReturnCode tixiRet;
@@ -46,15 +49,15 @@ protected:
 
         tiglHandle = -1;
         tixiHandle = -1;
-        
+
         tixiRet = tixiOpenDocument(filename, &tixiHandle);
         ASSERT_TRUE (tixiRet == SUCCESS);
         tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "GuideCurveModel", &tiglHandle);
         ASSERT_TRUE(tiglRet == TIGL_SUCCESS);
 
         // read configuration
-        tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
-        tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(tiglHandle);
         Standard_Real u1, u2;
 
         // get guide curve
@@ -67,7 +70,7 @@ protected:
         gamma=std::vector<double>(tempz, tempz + sizeof(tempz) / sizeof(tempz[0]) );
     }
 
-    void TearDown() 
+    void TearDown()
     {
         ASSERT_TRUE(tiglCloseCPACSConfiguration(tiglHandle) == TIGL_SUCCESS);
         ASSERT_TRUE(tixiCloseDocument(tixiHandle) == SUCCESS);
@@ -76,7 +79,7 @@ protected:
     }
 
     // save x-y data
-    void outputXY(const int & i, const double& x, const double&y, const std::string& filename)
+    void outputXY(const int& i, const double& x, const double& y, const std::string& filename)
     {
         ofstream out;
         if (i>0) {
@@ -87,7 +90,19 @@ protected:
         }
         out << setprecision(17) << std::scientific  << x << "\t" << y << endl;
         out.close();
-    } 
+    }
+    void outputXYVector(const int& i, const double& x, const double& y, const double& vx, const double& vy, const std::string& filename)
+    {
+        ofstream out;
+        if (i>0) {
+            out.open(filename.c_str(), ios::app);
+        }
+        else {
+            out.open(filename.c_str());
+        }
+        out << setprecision(17) << std::scientific  << x << "\t" << y << "\t" << vx << "\t" << vy << "\t" << endl;
+        out.close();
+    }
 
     TixiDocumentHandle           tixiHandle;
     TiglCPACSConfigurationHandle tiglHandle;
@@ -103,7 +118,7 @@ protected:
 /**
 * Tests CCPACSGuideCurveProfile class
 */
-TEST_F(FuselageGuideCurve, tiglFuselageGuideCurveProfile_CCPACSGuideCurveProfile)
+TEST_F(FuselageGuideCurve, tiglFuselageGuideCurve_CCPACSGuideCurveProfile)
 {
     tigl::CCPACSGuideCurveProfile guideCurve("/cpacs/vehicles/profiles/guideCurveProfiles/guideCurveProfile[2]");
     guideCurve.ReadCPACS(tixiHandle);
@@ -114,7 +129,7 @@ TEST_F(FuselageGuideCurve, tiglFuselageGuideCurveProfile_CCPACSGuideCurveProfile
 /**
 * Tests CCPACSGuideCurveProfiles class
 */
-TEST_F(FuselageGuideCurve, tiglFuselageGuideCurveProfile_CCPACSGuideCurveProfiles)
+TEST_F(FuselageGuideCurve, tiglFuselageGuideCurve_CCPACSGuideCurveProfiles)
 {
     tigl::CCPACSGuideCurveProfiles guideCurves;
     guideCurves.ReadCPACS(tixiHandle);
@@ -125,23 +140,42 @@ TEST_F(FuselageGuideCurve, tiglFuselageGuideCurveProfile_CCPACSGuideCurveProfile
     ASSERT_EQ(guideCurve.GetFileName(), "/cpacs/vehicles/profiles/guideCurveProfiles/guideCurveProfile[2]");
 }
 /**
-* Tests if B-spline guide curve intersects the sample points
+* * Tests CCPACSFuselageProfileGetPointAlgo class
 */
-TEST_F(FuselageGuideCurve, tiglFuselageGuideCurve_samplePoints)
+TEST_F(FuselageGuideCurve, tiglFuselageGuideCurve_CCPACSFuselageProfileGetPointAlgo)
 {
-    /*
-    Standard_Real u1, u2;
-    TopoDS_Wire guideCurveWire = guideCurve.GetWire();
-    BRepTools_WireExplorer guideCurveExplorer(guideCurveWire);
-    Handle(Geom_Curve) curve =  BRep_Tool::Curve(guideCurveExplorer.Current(), u1, u2);
-    // project sample points on curve and check distance
-    for (unsigned int i = 0; i < beta.size(); ++i) {
-        gp_Pnt samplePoint(Standard_Real(0.0), Standard_Real(beta[i]), Standard_Real(gamma[i]));
-        GeomAPI_ProjectPointOnCurve projection(samplePoint, curve);
-        gp_Pnt projectedPoint=projection.NearestPoint();
-        outputXY(i, samplePoint.X(), samplePoint.Z(), "./TestData/analysis/tiglGuideCurve_samplePoints_cst.dat");
-        outputXY(i, projectedPoint.X(), projectedPoint.Z(), "./TestData/analysis/tiglGuideCurve_samplePoints_bspline.dat");
-        ASSERT_NEAR(0., samplePoint.Distance(projectedPoint), 1e-10);
+    // read configuration
+    tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+    tigl::CCPACSConfiguration& config = manager.GetConfiguration(tiglHandle);
+
+    // get upper and lower fuselage profile
+    tigl::CCPACSFuselageProfile& profile = config.GetFuselageProfile("GuideCurveModel_Fuselage_Sec3_El1_Pro");
+    TopoDS_Wire wire = profile.GetWire();
+
+    // instantiate getPointAlgo
+    tigl::CCPACSFuselageProfileGetPointAlgo getPointAlgo(wire);
+    gp_Pnt point;
+    gp_Vec tangent;
+
+    // plot points and tangents
+    for (int i=0; i<=50; i++) {
+        double alpha = i/double(50);
+        getPointAlgo.GetPointTangent(alpha, point, tangent);
+        outputXY(i, point.Y(), point.Z(), "./TestData/analysis/tiglFuselageGuideCurve_profileSamplePoints_points.dat");
+        outputXYVector(i, point.Y(), point.Z(), tangent.Y(), tangent.Z(), "./TestData/analysis/tiglFuselageGuideCurve_profileSamplePoints_tangents.dat");
+        // plot points and tangents with gnuplot by:
+        // echo "plot 'TestData/analysis/tiglFuselageGuideCurve_profileSamplePoints_tangents.dat' u 1:2:3:4 with vectors filled head lw 2, 'TestData/analysis/tiglFuselageGuideCurve_profileSamplePoints_points.dat' w lines lw 2" | gnuplot -persist
     }
-    */
+    // lower point
+    getPointAlgo.GetPointTangent(0.0, point, tangent);
+    ASSERT_NEAR(point.X(), 0.0, 1E-10);
+    ASSERT_NEAR(point.Y(), 0.0, 1E-10);
+    ASSERT_NEAR(point.Z(), -0.5, 1E-10);
+
+    // upper point
+    getPointAlgo.GetPointTangent(1.0, point, tangent);
+    ASSERT_NEAR(point.X(), 0.0, 1E-10);
+    ASSERT_NEAR(point.Y(), 0.0, 1E-10);
+    ASSERT_NEAR(point.Z(), 0.487497455, 1E-10);
 }
+
