@@ -36,10 +36,9 @@
 #include "CCPACSFuselages.h"
 #include "CCPACSFuselageProfile.h"
 #include "PNamedShape.h"
+#include "CCPACSImportExport.h"
 
 class CCPACSConfiguration;
-
-enum CAFStoreType;
 
 namespace tigl 
 {
@@ -64,7 +63,7 @@ public:
     TIGL_EXPORT void ExportShapes(const Handle(TopTools_HSequenceOfShape)& aHSequenceOfShape, const std::string& filename);
 
     // Sets the type of storing shapes to iges
-    TIGL_EXPORT void SetOCAFStoreType(CAFStoreType type);
+    TIGL_EXPORT void SetOCAFStoreType(ShapeStoreType type);
 
 #ifdef TIGL_USE_XCAF
     // Saves as IGES, with cpacs metadata information in it
@@ -78,7 +77,7 @@ private:
     void operator=(const CTiglExportIges& ) { /* Do nothing */ }
 
     CCPACSConfiguration&          myConfig;       /**< TIGL configuration object */
-    CAFStoreType                  myStoreType;    /**< Type specifying how to translate shapes into an OCAF document */
+    ShapeStoreType                  myStoreType;    /**< Type specifying how to translate shapes into an OCAF document */
     void SetTranslationParamters() const;
 };
 

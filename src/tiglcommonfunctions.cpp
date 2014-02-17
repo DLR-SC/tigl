@@ -331,7 +331,7 @@ Standard_Real ProjectPointOnLine(gp_Pnt p, gp_Pnt lineStart, gp_Pnt lineStop)
 
 
 #ifdef TIGL_USE_XCAF
-void GroupAndInsertShapeToCAF(Handle(XCAFDoc_ShapeTool) myAssembly, const PNamedShape shape, CAFStoreType storeType)
+void GroupAndInsertShapeToCAF(Handle(XCAFDoc_ShapeTool) myAssembly, const PNamedShape shape, tigl::ShapeStoreType storeType)
 {
     if (!shape) {
         return;
@@ -341,12 +341,12 @@ void GroupAndInsertShapeToCAF(Handle(XCAFDoc_ShapeTool) myAssembly, const PNamed
     TopExp::MapShapes(shape->Shape(),   TopAbs_FACE, faceMap);
     // any faces?
     if (faceMap.Extent() > 0) {
-        if (storeType == WHOLE_SHAPE){
+        if (storeType == tigl::WHOLE_SHAPE){
             TDF_Label shapeLabel = myAssembly->NewShape();
             myAssembly->SetShape(shapeLabel, shape->Shape());
             TDataStd_Name::Set(shapeLabel, shape->Name());
         }
-        else if (storeType == NAMED_COMPOUNDS) {
+        else if (storeType == tigl::NAMED_COMPOUNDS) {
             // create compounds with the same name as origin
             ShapeMap map =  MapFacesToShapeGroups(shape);
             // add compounds to document
@@ -357,7 +357,7 @@ void GroupAndInsertShapeToCAF(Handle(XCAFDoc_ShapeTool) myAssembly, const PNamed
                 TDataStd_Name::Set(faceLabel, it->first.c_str());
             }
         }
-        else if (storeType == FACES) {
+        else if (storeType == tigl::FACES) {
             for (int iface = 1; iface <= faceMap.Extent(); ++iface) {
                 TopoDS_Face face = TopoDS::Face(faceMap(iface));
                 std::string name = shape->ShortName();
