@@ -69,6 +69,9 @@ public:
     // Returns the UID of the fuselage profile
     TIGL_EXPORT const std::string& GetUID(void) const;
 
+    // Returns the flag for the mirror symmetry with respect to the x-z-plane in the fuselage profile
+    TIGL_EXPORT const bool GetMirrorSymmetry(void) const;
+
     // Invalidates internal fuselage profile state
     TIGL_EXPORT void Invalidate(void);
 
@@ -119,6 +122,7 @@ private:
     std::string               name;           /**< The Name of the profile */
     std::string               description;    /**< The description of the profile */
     std::string               uid;            /**< The UID of this profile */
+    bool                      mirrorSymmetry; /**< Mirror symmetry with repect to the x-z plane */
     CCPACSCoordinateContainer coordinates;    /**< Coordinates of a fuselage profile element */
     bool                      invalidated;    /**< Flag if element is invalid */
     TopoDS_Wire               wireOriginal;   /**< Original fuselage profile wire */
