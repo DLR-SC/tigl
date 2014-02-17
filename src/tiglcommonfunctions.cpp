@@ -34,6 +34,7 @@
 #include "TopExp.hxx"
 #include "TopoDS.hxx"
 #include "TopTools_IndexedMapOfShape.hxx"
+#include "TopTools_HSequenceOfShape.hxx"
 #include "GeomAdaptor_Curve.hxx"
 #include "BRepAdaptor_CompCurve.hxx"
 #include "GCPnts_AbscissaPoint.hxx"
@@ -48,9 +49,18 @@
 #include <Geom2d_TrimmedCurve.hxx>
 #include <Geom2dAPI_InterCurveCurve.hxx>
 
+#include "ShapeAnalysis_FreeBounds.hxx"
+
 #include <list>
 #include <algorithm>
 #include <cassert>
+
+// OCAF
+#include "TDF_Label.hxx"
+#include "TDataStd_Name.hxx"
+#ifdef TIGL_USE_XCAF
+#include "XCAFDoc_ShapeTool.hxx"
+#endif
 
 namespace
 {
@@ -319,4 +329,64 @@ Standard_Real ProjectPointOnLine(gp_Pnt p, gp_Pnt lineStart, gp_Pnt lineStop)
     return gp_Vec(lineStart, p) * gp_Vec(lineStart, lineStop) / gp_Vec(lineStart, lineStop).SquareMagnitude();
 }
 
+
+#ifdef TIGL_USE_XCAF
+void GroupAndInsertShapeToCAF(Handle(XCAFDoc_ShapeTool) myAssembly, const PNamedShape shape, CAFStoreType storeType)
+{
+    if (!shape) {
+        return;
+    }
+
+    TopTools_IndexedMapOfShape faceMap;
+    TopExp::MapShapes(shape->Shape(),   TopAbs_FACE, faceMap);
+    // any faces?
+    if (faceMap.Extent() > 0) {
+        if (storeType == WHOLE_SHAPE){
+            TDF_Label shapeLabel = myAssembly->NewShape();
+            myAssembly->SetShape(shapeLabel, shape->Shape());
+            TDataStd_Name::Set(shapeLabel, shape->Name());
+        }
+        else if (storeType == NAMED_COMPOUNDS) {
+            // create compounds with the same name as origin
+            ShapeMap map =  MapFacesToShapeGroups(shape);
+            // add compounds to document
+            ShapeMap::iterator it = map.begin();
+            for (; it != map.end(); ++it){
+                TDF_Label faceLabel = myAssembly->NewShape();
+                myAssembly->SetShape(faceLabel, it->second);
+                TDataStd_Name::Set(faceLabel, it->first.c_str());
+            }
+        }
+        else if (storeType == FACES) {
+            for (int iface = 1; iface <= faceMap.Extent(); ++iface) {
+                TopoDS_Face face = TopoDS::Face(faceMap(iface));
+                std::string name = shape->ShortName();
+                PNamedShape origin = shape->GetFaceTraits(iface-1).Origin();
+                if (origin){
+                    name = origin->ShortName();
+                }
+                TDF_Label faceLabel = myAssembly->NewShape();
+                myAssembly->SetShape(faceLabel, face);
+                TDataStd_Name::Set(faceLabel, name.c_str());
+            }
+        }
+    }
+    else {
+        // no faces, export edges as wires
+        Handle(TopTools_HSequenceOfShape) Edges = new TopTools_HSequenceOfShape();
+        TopExp_Explorer myEdgeExplorer (shape->Shape(), TopAbs_EDGE);
+        while (myEdgeExplorer.More()) {
+            Edges->Append(TopoDS::Edge(myEdgeExplorer.Current()));
+            myEdgeExplorer.Next();
+        }
+        ShapeAnalysis_FreeBounds::ConnectEdgesToWires(Edges, 1e-7, false, Edges);
+        for (int iwire = 1; iwire <= Edges->Length(); ++iwire) {
+            TDF_Label wireLabel = myAssembly->NewShape();
+            myAssembly->SetShape(wireLabel, Edges->Value(iwire));
+            TDataStd_Name::Set(wireLabel, shape->Name());
+        }
+    }
+}
+
+#endif
 
