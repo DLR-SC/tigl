@@ -80,6 +80,7 @@ void CCPACSFuselageProfile::Cleanup(void)
     uid        = "";
     description= "";
     wireLength = 0.0;
+    mirrorSymmetry = false;
 
     for (CCPACSCoordinateContainer::size_type i = 0; i < coordinates.size(); i++) {
         delete coordinates[i];
@@ -96,6 +97,7 @@ void CCPACSFuselageProfile::ReadCPACS(TixiDocumentHandle tixiHandle)
     std::string namePath        = ProfileXPath + "/name";
     std::string describtionPath = ProfileXPath + "/description";
     std::string elementPath     = ProfileXPath + "/pointList";
+    std::string symmetryPath    = ProfileXPath + "/symmetry";
 
     try {
         // Get subelement "name"
@@ -114,6 +116,18 @@ void CCPACSFuselageProfile::ReadCPACS(TixiDocumentHandle tixiHandle)
         char* ptrDescription = NULL;
         if (tixiGetTextElement(tixiHandle, const_cast<char*>(describtionPath.c_str()), &ptrDescription) == SUCCESS) {
             description = ptrDescription;
+        }
+
+        // Get mirror symmetry flag
+        mirrorSymmetry = false;
+        char* ptrSymmetry = NULL;
+        if (tixiCheckElement(tixiHandle, symmetryPath.c_str()) == SUCCESS) {
+            if (tixiGetTextElement(tixiHandle, const_cast<char*>(symmetryPath.c_str()), &ptrSymmetry) == SUCCESS) {
+                std::string symString = ptrSymmetry;
+                if ( symString == "half") {
+                    mirrorSymmetry = true;
+                }
+            }
         }
 
         // check if deprecated CPACS point definition is included in the CPACS file and give warning
@@ -177,8 +191,7 @@ void CCPACSFuselageProfile::ReadCPACS(TixiDocumentHandle tixiHandle)
             }
         }
 
-        // check if profile closed otherwise it is assumed to be a half profile
-        if (*coordinates.begin()==*coordinates.end()) {
+        if (!mirrorSymmetry) {
             // check if points with maximal/minimal y-component were calculated correctly
             if (maxYIndex==-1 || minYIndex==-1 || maxYIndex==minYIndex) {
                 throw CTiglError("Error: CCPACSWingProfilePointList::ReadCPACS: Unable to separate upper and lower wing profile from point list", TIGL_XML_ERROR);
@@ -216,6 +229,12 @@ const std::string& CCPACSFuselageProfile::GetName(void) const
 const std::string& CCPACSFuselageProfile::GetUID(void) const
 {
     return uid;
+}
+
+// Returns the flag for the mirror symmetry with respect to the x-z-plane in the fuselage profile
+const bool CCPACSFuselageProfile::GetMirrorSymmetry(void) const
+{
+    return mirrorSymmetry;
 }
 
 // Invalidates internal fuselage profile state
