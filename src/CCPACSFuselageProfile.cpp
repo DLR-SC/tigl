@@ -1,8 +1,8 @@
-/* 
+/*
 * Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
 *
 * Created: 2010-08-13 Markus Litz <Markus.Litz@dlr.de>
-* Changed: $Id$ 
+* Changed: $Id$
 *
 * Version: $Revision$
 *
@@ -46,15 +46,13 @@
 #include "GeomAdaptor_Curve.hxx"
 #include "GCPnts_AbscissaPoint.hxx"
 #include "CTiglInterpolateBsplineWire.h"
+#include "CTiglLogging.h"
 
 #include "math.h"
 #include <iostream>
+#include <limits>
 #include <sstream>
 
-
-#ifndef max
-#define max(a, b) (((a) > (b)) ? (a) : (b))
-#endif
 
 namespace tigl
 {
@@ -62,7 +60,7 @@ namespace tigl
 // Constructor
 CCPACSFuselageProfile::CCPACSFuselageProfile(const std::string& path)
     : ProfileXPath(path),
-    invalidated(true)
+      invalidated(true)
 {
     profileWireAlgo = WireAlgoPointer(new CTiglInterpolateBsplineWire);
     Cleanup();
@@ -118,73 +116,79 @@ void CCPACSFuselageProfile::ReadCPACS(TixiDocumentHandle tixiHandle)
             description = ptrDescription;
         }
 
-        /* Get point count */
-        int   pointCount;
-        if (tixiGetNamedChildrenCount(tixiHandle, const_cast<char*>(elementPath.c_str()), "point", &pointCount) != SUCCESS) {
-            throw CTiglError("Error: tixiGetNamedChildrenCount failed in CCPACSFuselageProfile::ReadCPACS", TIGL_XML_ERROR);
+        // check if deprecated CPACS point definition is included in the CPACS file and give warning
+        if (tixiCheckElement(tixiHandle, (elementPath + "/point[1]").c_str()) == SUCCESS) {
+                LOG(WARNING) << "Deprecated point definition in fuselage profile " << uid <<  " will be ignored" << endl;
         }
 
-        if (pointCount > 2) {
-            // Loop over all points
-            for (int i = 1; i <= pointCount; i++) {
-                CTiglPoint* point = new CTiglPoint(0.0, 0.0, 0.0);
-                coordinates.push_back(point);
+        std::string xXpath = elementPath + "/x";
+        std::string yXpath = elementPath + "/y";
+        std::string zXpath = elementPath + "/z";
 
-                std::ostringstream xpath;
-                xpath << elementPath.c_str() << "/point[" << i << "]";
-                std::string x = xpath.str();
-                char *ptrPathChar = const_cast<char*>(x.c_str());
-
-                if (tixiGetPoint(tixiHandle, ptrPathChar, &(point->x), &(point->y), &(point->z)) != SUCCESS) {
-                    throw CTiglError("Error: XML error while reading <point/> in CCPACSFuselageProfile::ReadCPACS", TIGL_XML_ERROR);
-                }
-            }
+        // check the number of elements in all three vectors. It has to be the same, otherwise cancel
+        int countX;
+        int countY;
+        int countZ;
+        if (tixiGetVectorSize(tixiHandle, const_cast<char*>(xXpath.c_str()), &countX) != SUCCESS) {
+            throw CTiglError("Error: XML error while reading point vector <x> in CCPACSFuselageProfile::ReadCPACS", TIGL_XML_ERROR);
         }
-        else { // read in vector based point list
-            std::string xXpath = elementPath + "/x";
-            std::string yXpath = elementPath + "/y";
-            std::string zXpath = elementPath + "/z";
+        if (tixiGetVectorSize(tixiHandle, const_cast<char*>(yXpath.c_str()), &countY) != SUCCESS) {
+            throw CTiglError("Error: XML error while reading point vector <y> in CCPACSFuselageProfile::ReadCPACS", TIGL_XML_ERROR);
+        }
+        if (tixiGetVectorSize(tixiHandle, const_cast<char*>(zXpath.c_str()), &countZ) != SUCCESS) {
+            throw CTiglError("Error: XML error while reading point vector <z> in CCPACSFuselageProfile::ReadCPACS", TIGL_XML_ERROR);
+        }
 
-            // check the number of elements in all three vectors. It has to be the same, otherwise cancel
-            int countX;
-            int countY;
-            int countZ;
-            if (tixiGetVectorSize(tixiHandle, const_cast<char*>(xXpath.c_str()), &countX) != SUCCESS){
-                throw CTiglError("Error: XML error while reading point vector <x> in CCPACSFuselageProfile::ReadCPACS", TIGL_XML_ERROR);
-            }
-            if (tixiGetVectorSize(tixiHandle, const_cast<char*>(yXpath.c_str()), &countY) != SUCCESS){
-                throw CTiglError("Error: XML error while reading point vector <y> in CCPACSFuselageProfile::ReadCPACS", TIGL_XML_ERROR);
-            }
-            if (tixiGetVectorSize(tixiHandle, const_cast<char*>(zXpath.c_str()), &countZ) != SUCCESS){
-                throw CTiglError("Error: XML error while reading point vector <z> in CCPACSFuselageProfile::ReadCPACS", TIGL_XML_ERROR);
-            }
+        if (countX != countY || countX != countZ || countY != countZ) {
+            throw CTiglError("Error: Vector size for profile points are not eqal in CCPACSFuselageProfile::ReadCPACS", TIGL_XML_ERROR);
+        }
 
-            if (countX != countY || countX != countZ || countY != countZ) {
-                throw CTiglError("Error: Vector size for profile points are not eqal in CCPACSFuselageProfile::ReadCPACS", TIGL_XML_ERROR);
-            }
+        // read in vectors, vectors are allocated and freed by tixi
+        double* xCoordinates = NULL;
+        double* yCoordinates = NULL;
+        double* zCoordinates = NULL;
 
-            // read in vectors, vectors are allocated and freed by tixi
-            double *xCoordinates = NULL;
-            double *yCoordinates = NULL;
-            double *zCoordinates = NULL;
+        if (tixiGetFloatVector(tixiHandle, const_cast<char*>(xXpath.c_str()), &xCoordinates, countX) != SUCCESS) {
+            throw CTiglError("Error: XML error while reading point vector <x> in CCPACSFuselageProfile::ReadCPACS", TIGL_XML_ERROR);
+        }
+        if (tixiGetFloatVector(tixiHandle, const_cast<char*>(yXpath.c_str()), &yCoordinates, countY) != SUCCESS) {
+            throw CTiglError("Error: XML error while reading point vector <y> in CCPACSFuselageProfile::ReadCPACS", TIGL_XML_ERROR);
+        }
+        if (tixiGetFloatVector(tixiHandle, const_cast<char*>(zXpath.c_str()), &zCoordinates, countZ) != SUCCESS) {
+            throw CTiglError("Error: XML error while reading point vector <z> in CCPACSFuselageProfile::ReadCPACS", TIGL_XML_ERROR);
+        }
 
-            if (tixiGetFloatVector(tixiHandle, const_cast<char*>(xXpath.c_str()), &xCoordinates, countX) != SUCCESS) {
-                throw CTiglError("Error: XML error while reading point vector <x> in CCPACSFuselageProfile::ReadCPACS", TIGL_XML_ERROR);
+        // points with maximal/minimal z-component
+        double maxY=-std::numeric_limits<double>::max();
+        double minY=std::numeric_limits<double>::max();
+        int maxYIndex=-1;
+        int minYIndex=-1;
+        // Loop over all points in the vector
+        for (int i = 0; i < countX; i++) {
+            CTiglPoint* point = new CTiglPoint(xCoordinates[i], yCoordinates[i], zCoordinates[i]);
+            coordinates.push_back(point);
+            if (yCoordinates[i]>maxY) {
+                maxY = yCoordinates[i];
+                maxYIndex = i;
             }
-            if (tixiGetFloatVector(tixiHandle, const_cast<char*>(yXpath.c_str()), &yCoordinates, countY) != SUCCESS) {
-                throw CTiglError("Error: XML error while reading point vector <y> in CCPACSFuselageProfile::ReadCPACS", TIGL_XML_ERROR);
-            }
-            if (tixiGetFloatVector(tixiHandle, const_cast<char*>(zXpath.c_str()), &zCoordinates, countZ) != SUCCESS) {
-                throw CTiglError("Error: XML error while reading point vector <z> in CCPACSFuselageProfile::ReadCPACS", TIGL_XML_ERROR);
-            }
-
-            // Loop over all points in the vector
-            for (int i = 0; i < countX; i++) {
-                CTiglPoint* point = new CTiglPoint(xCoordinates[i], yCoordinates[i], zCoordinates[i]);
-                coordinates.push_back(point);
+            if (yCoordinates[i]<minY) {
+                minY = yCoordinates[i];
+                minYIndex = i;
             }
         }
 
+        // check if profile closed otherwise it is assumed to be a half profile
+        if (*coordinates.begin()==*coordinates.end()) {
+            // check if points with maximal/minimal y-component were calculated correctly
+            if (maxYIndex==-1 || minYIndex==-1 || maxYIndex==minYIndex) {
+                throw CTiglError("Error: CCPACSWingProfilePointList::ReadCPACS: Unable to separate upper and lower wing profile from point list", TIGL_XML_ERROR);
+            }
+            // force order of points to run through y>0 part first
+            if (minYIndex<maxYIndex) {
+                LOG(WARNING) << "The point list order in fuselage profile " << uid <<  " is reversed in order to run through y>0 part first" << endl;
+                std::reverse(coordinates.begin(), coordinates.end());
+            }
+        }
     }
     catch (...) {
         if (tixiHandle != -1) {
@@ -269,7 +273,7 @@ void CCPACSFuselageProfile::BuildWires(void)
         gp_Pnt p1 = coordinates[i-1]->Get_gp_Pnt();
         gp_Pnt p2 = coordinates[i]->Get_gp_Pnt();
 
-        // only take points that are not "the same" 
+        // only take points that are not "the same"
         if ( !checkSamePoints(p1, p2) ) {
             points.push_back(coordinates[i]->Get_gp_Pnt());
         }
@@ -288,7 +292,7 @@ void CCPACSFuselageProfile::BuildWires(void)
 
     // Build wire from fuselage profile points
     const ITiglWireAlgorithm& wireBuilder = *profileWireAlgo;
-    const CTiglInterpolateBsplineWire * pSplineBuilder = dynamic_cast<const CTiglInterpolateBsplineWire*>(&wireBuilder);
+    const CTiglInterpolateBsplineWire* pSplineBuilder = dynamic_cast<const CTiglInterpolateBsplineWire*>(&wireBuilder);
     if (pSplineBuilder) {
         const_cast<CTiglInterpolateBsplineWire*>(pSplineBuilder)->setEndpointContinuity(C1);
     }
@@ -397,10 +401,10 @@ gp_Pnt CCPACSFuselageProfile::GetPoint(double zeta)
     }
 
     // Distance of searched point from end point of current edge
-    double currEndDelta = max((sumLength - length), 0.0);
+    double currEndDelta = std::max((sumLength - length), 0.0);
 
     // Distance of searched point from start point of current edge
-    double currDist = max((currLength - currEndDelta), 0.0);
+    double currDist = std::max((currLength - currEndDelta), 0.0);
 
     GCPnts_AbscissaPoint abscissaPoint(adaptorCurve, currDist, adaptorCurve.FirstParameter());
     gp_Pnt point = adaptorCurve.Value(abscissaPoint.Parameter());
@@ -422,3 +426,4 @@ std::vector<CTiglPoint*> CCPACSFuselageProfile::GetCoordinateContainer()
 }
 
 } // end namespace tigl
+

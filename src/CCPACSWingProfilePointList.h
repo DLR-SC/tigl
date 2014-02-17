@@ -1,8 +1,8 @@
-/* 
+/*
 * Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
 *
 * Created: 2013-12-12 Tobias Stollenwerk <Tobias.Stollenwerk@dlr.de>
-* Changed: $Id$ 
+* Changed: $Id$
 *
 * Version: $Revision$
 *
@@ -39,7 +39,7 @@
 #include "TopoDS_Wire.hxx"
 
 
-namespace tigl 
+namespace tigl
 {
 
 class CCPACSWingProfile;
@@ -73,25 +73,25 @@ public:
     TIGL_EXPORT std::vector<CTiglPoint*> GetSamplePoints() const;
 
     // get profiles CPACS XML path
-    TIGL_EXPORT const std::string & GetProfileDataXPath() const;
+    TIGL_EXPORT const std::string& GetProfileDataXPath() const;
 
     // get closed wing profile wire
-    TIGL_EXPORT const TopoDS_Wire & GetWireClosed() const;
+    TIGL_EXPORT const TopoDS_Wire& GetWireClosed() const;
 
     // get upper wing profile wire
-    TIGL_EXPORT const TopoDS_Wire & GetUpperWire() const;
+    TIGL_EXPORT const TopoDS_Wire& GetUpperWire() const;
 
     // get lower wing profile wire
-    TIGL_EXPORT const TopoDS_Wire & GetLowerWire() const;
+    TIGL_EXPORT const TopoDS_Wire& GetLowerWire() const;
 
     // get trailing edge
-    TIGL_EXPORT const TopoDS_Wire & GetTrailingEdge() const;
+    TIGL_EXPORT const TopoDS_Wire& GetTrailingEdge() const;
 
     // get leading edge point();
-    TIGL_EXPORT const gp_Pnt & GetLEPoint() const;
+    TIGL_EXPORT const gp_Pnt& GetLEPoint() const;
 
     // get trailing edge point();
-    TIGL_EXPORT const gp_Pnt & GetTEPoint() const;
+    TIGL_EXPORT const gp_Pnt& GetTEPoint() const;
 
 protected:
     // Builds the wing profile wires.
@@ -102,10 +102,10 @@ protected:
 
 private:
     // Copy constructor
-    CCPACSWingProfilePointList(const CCPACSWingProfilePointList& );
+    CCPACSWingProfilePointList(const CCPACSWingProfilePointList&);
 
     // Assignment operator
-    void operator=(const CCPACSWingProfilePointList& );
+    void operator=(const CCPACSWingProfilePointList&);
 
 private:
     CCPACSCoordinateContainer coordinates;    /**< Coordinates of a wing profile element */
@@ -125,3 +125,4 @@ private:
 } // end namespace tigl
 
 #endif // CCPACSWINGPROFILEPOINTLIST_H
+

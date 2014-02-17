@@ -1,8 +1,8 @@
-/* 
+/*
 * Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
 *
 * Created: 2010-08-13 Markus Litz <Markus.Litz@dlr.de>
-* Changed: $Id$ 
+* Changed: $Id$
 *
 * Version: $Revision$
 *
@@ -106,10 +106,10 @@ protected:
 
 private:
     // Copy constructor
-    CCPACSFuselageProfile(const CCPACSFuselageProfile& );
+    CCPACSFuselageProfile(const CCPACSFuselageProfile&);
 
     // Assignment operator
-    void operator=(const CCPACSFuselageProfile& );
+    void operator=(const CCPACSFuselageProfile&);
 
     // Checks is two point are the same, or nearly the same.
     bool checkSamePoints(gp_Pnt pointA, gp_Pnt pointB);
@@ -131,3 +131,4 @@ private:
 } // end namespace tigl
 
 #endif // CCPACSFUSELAGEPROFILE_H
+
