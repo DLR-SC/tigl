@@ -137,7 +137,7 @@ function checkArguments {
     	DIST=RedHat_RHEL-5
 	PACK_TYPE=rpm
 	if [[  $tmp_arch == i386 ]]; then
-	    PACK_ARCH=i686
+	    PACK_ARCH=i386
         else
             PACK_ARCH=x86_64
             LIBDIR=lib64
