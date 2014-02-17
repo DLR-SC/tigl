@@ -1,4 +1,4 @@
-/* 
+/*
 * Copyright (C) 2007-2014 German Aerospace Center (DLR/SC)
 *
 * Created: 2014-02-10 Tobias Stollenwerk <tobias.stollenwerk@dlr.de>
@@ -90,13 +90,13 @@ void CCPACSGuideCurveProfile::ReadCPACS(TixiDocumentHandle tixiHandle)
     int countX;
     int countY;
     int countZ;
-    if (tixiGetVectorSize(tixiHandle, const_cast<char*>(xXpath.c_str()), &countX) != SUCCESS){
+    if (tixiGetVectorSize(tixiHandle, const_cast<char*>(xXpath.c_str()), &countX) != SUCCESS) {
         throw CTiglError("Error: XML error while reading point vector <x> in CCPACSGuideCurveProfile::ReadCPACS", TIGL_XML_ERROR);
     }
-    if (tixiGetVectorSize(tixiHandle, const_cast<char*>(yXpath.c_str()), &countY) != SUCCESS){
+    if (tixiGetVectorSize(tixiHandle, const_cast<char*>(yXpath.c_str()), &countY) != SUCCESS) {
         throw CTiglError("Error: XML error while reading point vector <y> in CCPACSGuideCurveProfile::ReadCPACS", TIGL_XML_ERROR);
     }
-    if (tixiGetVectorSize(tixiHandle, const_cast<char*>(zXpath.c_str()), &countZ) != SUCCESS){
+    if (tixiGetVectorSize(tixiHandle, const_cast<char*>(zXpath.c_str()), &countZ) != SUCCESS) {
         throw CTiglError("Error: XML error while reading point vector <z> in CCPACSGuideCurveProfile::ReadCPACS", TIGL_XML_ERROR);
     }
 
@@ -105,9 +105,9 @@ void CCPACSGuideCurveProfile::ReadCPACS(TixiDocumentHandle tixiHandle)
     }
 
     // read in vectors, vectors are allocated and freed by tixi
-    double *xCoordinates = NULL;
-    double *yCoordinates = NULL;
-    double *zCoordinates = NULL;
+    double* xCoordinates = NULL;
+    double* yCoordinates = NULL;
+    double* zCoordinates = NULL;
 
     if (tixiGetFloatVector(tixiHandle, const_cast<char*>(xXpath.c_str()), &xCoordinates, countX) != SUCCESS) {
         throw CTiglError("Error: XML error while reading point vector <x> in CCPACSGuideCurveProfile::ReadCPACS", TIGL_XML_ERROR);
@@ -151,3 +151,6 @@ std::vector<PCTiglPoint> CCPACSGuideCurveProfile::GetGuideCurveProfilePoints()
 }
 
 } // end namespace tigl
+
+
+

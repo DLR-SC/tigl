@@ -1,4 +1,4 @@
-/* 
+/*
 * Copyright (C) 2007-2014 German Aerospace Center (DLR/SC)
 *
 * Created: 2014-02-10 Tobias Stollenwerk <tobias.stollenwerk@dlr.de>
@@ -94,3 +94,4 @@ CCPACSGuideCurveProfile& CCPACSGuideCurveProfiles::GetGuideCurveProfile(std::str
 }
 
 } // end namespace tigl
+
