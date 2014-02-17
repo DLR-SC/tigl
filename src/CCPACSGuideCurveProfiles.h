@@ -1,4 +1,4 @@
-/* 
+/*
 * Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
 *
 * Created: 2014-02-10 Tobias Stollenwerk <tobias.stollenwerk@dlr.de>
@@ -64,10 +64,16 @@ protected:
 
 private:
     // Copy constructor
-    CCPACSGuideCurveProfiles(const CCPACSGuideCurveProfiles& ) { /* Do nothing */ }
+    CCPACSGuideCurveProfiles(const CCPACSGuideCurveProfiles&)
+    {
+        /* Do nothing */
+    }
 
     // Assignment operator
-    void operator=(const CCPACSGuideCurveProfiles& ) { /* Do nothing */ }
+    void operator=(const CCPACSGuideCurveProfiles&)
+    {
+        /* Do nothing */
+    }
 
 private:
     CCPACSGuideCurveProfileContainer guideCurves;     // All guide curves
@@ -77,3 +83,4 @@ private:
 } // end namespace tigl
 
 #endif // CCPACSGUIDECURVEPROFILES_H
+
