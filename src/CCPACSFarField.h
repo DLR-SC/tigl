@@ -49,12 +49,6 @@ public:
 
     TIGL_EXPORT TiglFarFieldType GetFieldType();
 
-#ifdef TIGL_USE_XCAF
-    // builds data structure for a TDocStd_Application
-    // mostly used for export
-    TDF_Label ExportDataStructure(class CCPACSConfiguration&, Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label);
-#endif
-
 protected:
     virtual TopoDS_Shape BuildLoft(void);
 

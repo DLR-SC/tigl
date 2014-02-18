@@ -40,14 +40,6 @@
 #include "Bnd_Box.hxx"
 #include "BRepBndLib.hxx"
 
-#ifdef TIGL_USE_XCAF
-#include "XCAFDoc_ShapeTool.hxx"
-#include "XCAFApp_Application.hxx"
-#include "XCAFDoc_DocumentTool.hxx"
-#include "TDataStd_Name.hxx"
-#include "TDataXtd_Shape.hxx"
-#endif
-
 namespace tigl
 {
 
@@ -273,24 +265,6 @@ int CCPACSWing::GetSegmentCount(void) const
 {
     return segments.GetSegmentCount();
 }
-
-#ifdef TIGL_USE_XCAF
-// Get segment count
-TDF_Label CCPACSWing::ExportDataStructure(CCPACSConfiguration &config, Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label)
-{
-    TDF_Label wingLabel = CTiglAbstractPhysicalComponent::ExportDataStructure(config, myAssembly, label);
-
-    // Other (sub)-components
-    for (int i=1; i <= segments.GetSegmentCount(); i++) {
-        CCPACSWingSegment& segment = segments.GetSegment(i);
-        TDF_Label wingSegmentLabel = myAssembly->AddShape(segment.GetLoft(), false);
-        TDataStd_Name::Set (wingSegmentLabel, segment.GetUID().c_str());
-        //TDF_Label& subSegmentLabel = segment.ExportDataStructure(myAssembly, wingSegmentLabel);
-    }
-
-    return wingLabel;
-}
-#endif
 
 // Returns the segment for a given index
 CTiglAbstractSegment & CCPACSWing::GetSegment(const int index)

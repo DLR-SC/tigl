@@ -37,12 +37,6 @@
 #include "CTiglTransformation.h"
 #include "CTiglPoint.h"
 
-#ifdef TIGL_USE_XCAF
-#include "TDF_Label.hxx"
-#include "Handle_XCAFDoc_ShapeTool.hxx"
-#endif
-
-
 namespace tigl 
 {
 
@@ -66,12 +60,6 @@ public:
 
     // Returns a pointer to the list of children of a component.
     TIGL_EXPORT virtual ChildContainerType GetChildren(bool recursive);
-
-    // builds data structure for a TDocStd_Application
-    // mostly used for export
-#ifdef TIGL_USE_XCAF
-    virtual TDF_Label ExportDataStructure(class CCPACSConfiguration& config, Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label);
-#endif
 
     TIGL_EXPORT virtual void SetSymmetryAxis(const std::string& axis);
 
