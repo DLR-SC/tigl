@@ -141,7 +141,6 @@
       <string>Export to IGES</string>
      </property>
      <addaction name="tiglExportIgesAction"/>
-     <addaction name="tiglExportStructuredIgesAction"/>
      <addaction name="tiglExportFusedIgesAction"/>
     </widget>
     <widget class="QMenu" name="menuExport_to_STEP">
@@ -150,7 +149,6 @@
      </property>
      <addaction name="tiglExportStepAction"/>
      <addaction name="tiglExportFusedStepAction"/>
-     <addaction name="tiglExportStepWithMetaDataAction"/>
     </widget>
     <widget class="QMenu" name="menuExport_to_VTK">
      <property name="title">

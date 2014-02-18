@@ -1026,22 +1026,6 @@ void TIGLViewerDocument::exportFusedAsIges()
     }
 }
 
-void TIGLViewerDocument::exportAsStructuredIges()
-{
-    writeToStatusBar(tr("Saving model as IGES file with CPACS metadata..."));
-
-    QString fileName = QFileDialog::getSaveFileName(parent, tr("Save as..."), myLastFolder, tr("Export IGES(*.igs)"));
-
-    if (!fileName.isEmpty()) {
-        QApplication::setOverrideCursor( Qt::WaitCursor );
-        TiglReturnCode err = tiglExportStructuredIGES(m_cpacsHandle, qstringToCstring(fileName));
-        QApplication::restoreOverrideCursor();
-        if (err != TIGL_SUCCESS) {
-            displayError(QString("Error in function <u>tiglExportStructuredIGES</u>. Error code: %1").arg(err), "TIGL Error");
-        }
-    }
-}
-
 void TIGLViewerDocument::exportAsStep()
 {
     QString     fileName;
@@ -1078,28 +1062,6 @@ void TIGLViewerDocument::exportAsStepFused()
         QApplication::restoreOverrideCursor();
         if (err != TIGL_SUCCESS) {
             displayError(QString("Error in function <u>tiglExportFusedSTEP</u>. Error code: %1").arg(err), "TIGL Error");
-        }
-    }
-}
-
-void TIGLViewerDocument::exportAsStepWithMetaData()
-{
-    QString     fileName;
-    QString     fileType;
-    QFileInfo   fileInfo;
-
-    TIGLViewerInputOutput writer;
-
-    writeToStatusBar(tr("Saving as STEP file with CPACS MetaData TIGL..."));
-
-    fileName = QFileDialog::getSaveFileName(parent, tr("Save as..."), myLastFolder, tr("Export STEP(*.step *.stp)"));
-
-    if (!fileName.isEmpty()) {
-        QApplication::setOverrideCursor( Qt::WaitCursor );
-        TiglReturnCode err = tiglExportStructuredSTEP(m_cpacsHandle, qstringToCstring(fileName));
-        QApplication::restoreOverrideCursor();
-        if (err != TIGL_SUCCESS) {
-            displayError(QString("Error in function <u>tiglExportStructuredSTEP</u>. Error code: %1").arg(err), "TIGL Error");
         }
     }
 }

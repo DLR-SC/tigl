@@ -2736,29 +2736,6 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportFusedWingFuselageIGES(TiglCPACSConfi
                                                                   const char* filenamePtr);
 
 
-/**
-* @brief Exports the geometry of a CPACS configuration to IGES format. In this version
-*        structure, names and metadata will also be exported as much as it is possible.
-*
-* To maintain compatibility with CATIA, the file suffix should be ".igs".
-*
-* <b>Fortran syntax:</b>
-*
-* tigl_export_structured_iges(integer cpacsHandle, character*n filenamePtr, integer returnCode)
-*
-* @param[in]  cpacsHandle Handle for the CPACS configuration
-* @param[in]  filenamePtr Pointer to an IGES export file name
-*
-* @return
-*   - TIGL_SUCCESS if no error occurred
-*   - TIGL_NOT_FOUND if no configuration was found for the given handle
-*   - TIGL_NULL_POINTER if filenamePtr is a null pointer
-*   - TIGL_ERROR if some other error occurred
-*/
-TIGL_COMMON_EXPORT TiglReturnCode tiglExportStructuredIGES(TiglCPACSConfigurationHandle cpacsHandle,
-                                                           const char* filenamePtr);
-
-
 // ***************
 //       STEP
 // ***************
@@ -2804,28 +2781,6 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportSTEP(TiglCPACSConfigurationHandle cp
 */
 TIGL_COMMON_EXPORT TiglReturnCode tiglExportFusedSTEP(TiglCPACSConfigurationHandle cpacsHandle,
                                                       const char* filenamePtr);
-
-
-/**
-* @brief Exports the geometry of a CPACS configuration to STEP format. In this version
-*        structure, names and metadata will also be exported as much as it is possible.
-*
-*
-* <b>Fortran syntax:</b>
-*
-* tigl_export_structured_step(integer cpacsHandle, character*n filenamePtr, integer returnCode)
-*
-* @param[in]  cpacsHandle Handle for the CPACS configuration
-* @param[in]  filenamePtr Pointer to an STEP export file name
-*
-* @return
-*   - TIGL_SUCCESS if no error occurred
-*   - TIGL_NOT_FOUND if no configuration was found for the given handle
-*   - TIGL_NULL_POINTER if filenamePtr is a null pointer
-*   - TIGL_ERROR if some other error occurred
-*/
-TIGL_COMMON_EXPORT TiglReturnCode tiglExportStructuredSTEP(TiglCPACSConfigurationHandle cpacsHandle,
-                                                           const char* filenamePtr);
 
 
 // ***************
