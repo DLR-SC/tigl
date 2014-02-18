@@ -624,7 +624,7 @@ void TIGLViewerWidget::eraseSelected()
 {
     if (!myView.IsNull()) {
         for (myContext->InitCurrent(); myContext->MoreCurrent(); myContext->NextCurrent()) {
-            myContext->Erase(myContext->Current(), Standard_True, Standard_False);
+            myContext->Erase(myContext->Current());
         }
 
         myContext->ClearCurrents();

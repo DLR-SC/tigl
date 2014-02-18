@@ -42,7 +42,7 @@ TIGLViewerContext::TIGLViewerContext()
     // Create the OCC Viewers
     TCollection_ExtendedString a3DName("Visual3D");
     myViewer = createViewer( a3DName.ToExtString(), "", 1000.0 );
-    myViewer->Init();
+    myViewer->SetDefaultLights();
     myViewer->SetZBufferManagment(Standard_False);
     myViewer->SetDefaultViewProj( V3d_Zpos );    // Top view
      myContext = new AIS_InteractiveContext( myViewer );
