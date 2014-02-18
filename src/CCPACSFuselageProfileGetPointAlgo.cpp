@@ -46,11 +46,12 @@ void CCPACSFuselageProfileGetPointAlgo::GetPointTangent(const double& alpha, gp_
     if (alpha>=0.0 && alpha<=1.0) {
         WireGetPointTangent2(wire, alpha, point, tangent);
     }
-    else
-    {
+    else {
         throw CTiglError("Error: CCPACSFuselageProfileGetPointAlgo::GetPoint: Parameter out of range [-1,1]", TIGL_ERROR);
     }
 }
 
 } // end namespace tigl
+
+
 

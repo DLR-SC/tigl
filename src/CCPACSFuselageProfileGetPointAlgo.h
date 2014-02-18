@@ -43,14 +43,14 @@ class CCPACSFuselageProfileGetPointAlgo
 public:
     /**
      * \brief Constructor which expects a fuselage profile wire
-     * 
+     *
      *
      * \param wire Fuselage profile wire
      */
     CCPACSFuselageProfileGetPointAlgo (TopoDS_Wire& wire);
 
     /**
-     * \brief Get point and the tangent on fuselage profile at curve parameter alpha 
+     * \brief Get point and the tangent on fuselage profile at curve parameter alpha
      *
      * \param alpha The curve parameter which starts at alpha=0 and ends at alpha=1
      *
@@ -65,4 +65,6 @@ private:
 
 } // end namespace tigl
 #endif // CCPACSFUSELAGEPROFILEGETPOINTALGO_H
+
+
 

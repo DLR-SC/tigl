@@ -179,3 +179,5 @@ TEST_F(FuselageGuideCurve, tiglFuselageGuideCurve_CCPACSFuselageProfileGetPointA
     ASSERT_NEAR(point.Z(), 0.487497455, 1E-10);
 }
 
+
+
