@@ -20,7 +20,7 @@
  * @file   CCPACSWingProfileGetPointAlgo.cpp
  * @brief  Get point and tangent depending on the parameter on a fuselage guide curves
  *
- * This class takes the concatenated lower and upper wing profile wire (in this order) 
+ * This class takes the concatenated lower and upper wing profile wire (in this order)
  * and provides the point and the tangent for a given parameter alpha along the curve.
  * The curve starts at the trailing edge (alpha=-1), runs through the upper fuselage profile towards
  * the leading edge (alpha=0) and returns to the trailing edge (alpha=1) via the lower fuselage profile
@@ -73,11 +73,11 @@ void CCPACSWingProfileGetPointAlgo::GetPointTangent(const double& alpha, gp_Pnt&
         TopoDS_Wire upperWire = BRepBuilderAPI_MakeWire(upperEdge);
         WireGetPointTangent2(upperWire, alpha, point, tangent);
     }
-    else
-    {
+    else {
         throw CTiglError("Error: CCPACSWingProfileGetPointAlgo::GetPoint: Parameter out of range [-1,1]", TIGL_ERROR);
     }
 }
 
 } // end namespace tigl
+
 
