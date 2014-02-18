@@ -36,12 +36,15 @@
 #include "CCPACSFuselages.h"
 #include "CCPACSFuselageProfile.h"
 #include "CCPACSFarField.h"
-#include "TopoDS_Compound.hxx"
 #include "BRep_Builder.hxx"
 #include "CTiglShapeCache.h"
+#include "CSharedPtr.h"
 
 namespace tigl
 {
+
+class CTiglFusePlane;
+typedef CSharedPtr<CTiglFusePlane> PTiglFusePlane;
 
 class CCPACSConfiguration
 {
@@ -106,20 +109,18 @@ public:
     // Returns the uid manager
     TIGL_EXPORT CTiglUIDManager& GetUIDManager(void);
 
-    // Returns the boolean fused airplane as TopoDS_Shape
-    TIGL_EXPORT TopoDS_Shape& GetFusedAirplane(void);
+    // Returns the algorithm for fusing the aircraft
+    TIGL_EXPORT PTiglFusePlane AircraftFusingAlgo(void);
 
     // Returns the length of the airplane
     TIGL_EXPORT double GetAirplaneLenth(void);
 
     // Returns the UID of the loaded configuration.
-    TIGL_EXPORT std::string GetUID(void);
+    TIGL_EXPORT const std::string& GetUID(void) const;
         
     TIGL_EXPORT CTiglShapeCache& GetShapeCache(void);
 
 protected:
-    void BuildFusedPlane(CTiglAbstractPhysicalComponent* parent);
-
     // transform all components relative to their parents
     void transformAllComponents(CTiglAbstractPhysicalComponent* parent);
 
@@ -137,7 +138,7 @@ private:
     CCPACSFuselages              fuselages;            /**< Configuration fuselages element */
     CCPACSFarField               farField;             /**< Far field configuration for CFD tools */
     CTiglUIDManager              uidManager;           /**< Stores the unique ids of the components */
-    TopoDS_Shape                 fusedAirplane;        /**< The complete airplaine as one fused shape */
+    PTiglFusePlane               aircraftFuser;        /**< The aircraft fusing algo */
     std::string                  configUID;            /**< UID of the opened configuration   */
     CTiglShapeCache              shapeCache;
 };

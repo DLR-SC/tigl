@@ -49,9 +49,9 @@ public:
     TIGL_EXPORT virtual ~CGlogLoggerAdaptor();
 
     TIGL_EXPORT virtual void Write(bool force_flush,
-                       time_t timestamp,
-                       const char* message,
-                       int message_len);
+                                   time_t timestamp,
+                                   const char* message,
+                                   int message_len);
 
     // Flush any buffered messages
     TIGL_EXPORT virtual void Flush();

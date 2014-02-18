@@ -52,10 +52,10 @@ class CTiglIntersectionCalculation
 public:
     // Constructor
     TIGL_EXPORT CTiglIntersectionCalculation(CTiglShapeCache* cache,
-                                 const std::string &idOne, 
-                                 const std::string &idTwo, 
-                                 TopoDS_Shape compoundOne,
-                                 TopoDS_Shape compoundTwo );
+                                             const std::string &idOne,
+                                             const std::string &idTwo,
+                                             TopoDS_Shape compoundOne,
+                                             TopoDS_Shape compoundTwo );
 
     // Destructor
     TIGL_EXPORT virtual ~CTiglIntersectionCalculation(void);

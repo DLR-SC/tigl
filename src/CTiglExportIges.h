@@ -28,13 +28,9 @@
 
 #include "tigl_config.h"
 #include "tigl_internal.h"
-#include "TopTools_HSequenceOfShape.hxx"
-#include "CTiglUIDManager.h"
-#include "CCPACSHeader.h"
-#include "CCPACSWings.h"
-#include "CCPACSWingProfile.h"
-#include "CCPACSFuselages.h"
-#include "CCPACSFuselageProfile.h"
+#include "PNamedShape.h"
+#include "ListPNamedShape.h"
+#include "CCPACSImportExport.h"
 
 class CCPACSConfiguration;
 
@@ -50,7 +46,7 @@ public:
 
     // Virtual Destructor
     TIGL_EXPORT virtual ~CTiglExportIges(void);
-    
+
     // Exports the whole configuration as IGES file
     TIGL_EXPORT void ExportIGES(const std::string& filename) const;
 
@@ -58,19 +54,20 @@ public:
     TIGL_EXPORT void ExportFusedIGES(const std::string& filename);
 
     // Save a sequence of shapes in IGES Format
-    TIGL_EXPORT void ExportShapes(const Handle(TopTools_HSequenceOfShape)& aHSequenceOfShape, const std::string& filename);
+    TIGL_EXPORT void ExportShapes(const ListPNamedShape& shapes, const std::string& filename) const;
 
-#ifdef TIGL_USE_XCAF
-    // Saves as IGES, with cpacs metadata information in it
-    TIGL_EXPORT void ExportIgesWithCPACSMetadata(const std::string& filename);
-#endif
-    
+    // Sets the type of storing shapes to iges
+    TIGL_EXPORT void SetOCAFStoreType(ShapeStoreType type);
+
+protected:
+
 private:
     // Assignment operator
     void operator=(const CTiglExportIges& ) { /* Do nothing */ }
 
     CCPACSConfiguration&          myConfig;       /**< TIGL configuration object */
-    void SetTranslationParamters() const;
+    ShapeStoreType                  myStoreType;    /**< Type specifying how to translate shapes into an OCAF document */
+    void SetTranslationParameters() const;
 };
 
 } // end namespace tigl

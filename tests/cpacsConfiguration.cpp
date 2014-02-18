@@ -30,9 +30,11 @@
 
 /******************************************************************************/
 
-class tiglOpenCpacsConfiguration : public ::testing::Test {
- protected:
-  virtual void SetUp() {
+class tiglOpenCpacsConfiguration : public ::testing::Test
+{
+protected:
+    virtual void SetUp()
+    {
         const char* filename = "TestData/CPACS_21_D150.xml";
         ReturnCode tixiRet;
 
@@ -40,13 +42,14 @@ class tiglOpenCpacsConfiguration : public ::testing::Test {
         tixiHandle = -1;
         tixiRet = tixiOpenDocument(filename, &tixiHandle);
         ASSERT_TRUE( tixiRet == SUCCESS);
-  }
+    }
 
-  virtual void TearDown() {
+    virtual void TearDown()
+    {
         ASSERT_TRUE(tixiCloseDocument(tixiHandle) == SUCCESS);
         tiglHandle = -1;
         tixiHandle = -1;
-  }
+    }
 
     TixiDocumentHandle           tixiHandle;
     TiglCPACSConfigurationHandle tiglHandle;
@@ -60,7 +63,7 @@ class tiglOpenCpacsConfiguration : public ::testing::Test {
 */
 TEST_F(tiglOpenCpacsConfiguration, nullPointerArgument) 
 {
-	ASSERT_TRUE(tiglOpenCPACSConfiguration(tixiHandle, "D150_VAMP", NULL) == TIGL_NULL_POINTER);
+    ASSERT_TRUE(tiglOpenCPACSConfiguration(tixiHandle, "D150_VAMP", NULL) == TIGL_NULL_POINTER);
 }
 
 /**
@@ -68,9 +71,9 @@ TEST_F(tiglOpenCpacsConfiguration, nullPointerArgument)
 */
 TEST_F(tiglOpenCpacsConfiguration, openSuccess) 
 {
-	ASSERT_TRUE(tiglOpenCPACSConfiguration(tixiHandle, "D150_VAMP", &tiglHandle) == TIGL_SUCCESS);
-	ASSERT_TRUE(tiglHandle > 0);
-	ASSERT_TRUE(tiglCloseCPACSConfiguration(tiglHandle) == TIGL_SUCCESS);
+    ASSERT_TRUE(tiglOpenCPACSConfiguration(tixiHandle, "D150_VAMP", &tiglHandle) == TIGL_SUCCESS);
+    ASSERT_TRUE(tiglHandle > 0);
+    ASSERT_TRUE(tiglCloseCPACSConfiguration(tiglHandle) == TIGL_SUCCESS);
 }
 
 /**
@@ -78,45 +81,48 @@ TEST_F(tiglOpenCpacsConfiguration, openSuccess)
 */
 TEST_F(tiglOpenCpacsConfiguration, open_without_uid) 
 {
-	// Test with NULL argument
-	ASSERT_TRUE(tiglOpenCPACSConfiguration(tixiHandle, NULL, &tiglHandle) == TIGL_SUCCESS);
-	ASSERT_TRUE(tiglHandle > 0);
-	ASSERT_TRUE(tiglCloseCPACSConfiguration(tiglHandle) == TIGL_SUCCESS);
+    // Test with NULL argument
+    ASSERT_TRUE(tiglOpenCPACSConfiguration(tixiHandle, NULL, &tiglHandle) == TIGL_SUCCESS);
+    ASSERT_TRUE(tiglHandle > 0);
+    ASSERT_TRUE(tiglCloseCPACSConfiguration(tiglHandle) == TIGL_SUCCESS);
 
-	// Test with empty string argument
-	ASSERT_TRUE(tiglOpenCPACSConfiguration(tixiHandle, "", &tiglHandle) == TIGL_SUCCESS);
-	ASSERT_TRUE(tiglHandle > 0);
-	ASSERT_TRUE(tiglCloseCPACSConfiguration(tiglHandle) == TIGL_SUCCESS);
+    // Test with empty string argument
+    ASSERT_TRUE(tiglOpenCPACSConfiguration(tixiHandle, "", &tiglHandle) == TIGL_SUCCESS);
+    ASSERT_TRUE(tiglHandle > 0);
+    ASSERT_TRUE(tiglCloseCPACSConfiguration(tiglHandle) == TIGL_SUCCESS);
 }
 
 
 /******************************************************************************/
 
 
-class TiglGetCPACSTixiHandle : public ::testing::Test {
- protected:
-  virtual void SetUp() {
+class TiglGetCPACSTixiHandle : public ::testing::Test
+{
+protected:
+    virtual void SetUp()
+    {
         const char* filename = "TestData/CPACS_21_D150.xml";
         TiglReturnCode tiglRet;
 
         tiglHandle = -1;
         tixiHandle = -1;
-        
+
         ASSERT_TRUE(tixiOpenDocument(filename, &tixiHandle) == SUCCESS);
 
         tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "D150_VAMP", &tiglHandle);
         ASSERT_TRUE (tiglRet == TIGL_SUCCESS );
-  }
+    }
 
-  virtual void TearDown() {
+    virtual void TearDown()
+    {
         ASSERT_TRUE(tiglCloseCPACSConfiguration(tiglHandle)== TIGL_SUCCESS);
         ASSERT_TRUE(tixiCloseDocument(tixiHandle)== SUCCESS);
         tiglHandle = -1;
         tixiHandle = -1;
-  }
+    }
 
-  TixiDocumentHandle           tixiHandle;
-  TiglCPACSConfigurationHandle tiglHandle;
+    TixiDocumentHandle           tixiHandle;
+    TiglCPACSConfigurationHandle tiglHandle;
 };
 
 
@@ -125,7 +131,7 @@ class TiglGetCPACSTixiHandle : public ::testing::Test {
 */
 TEST_F(TiglGetCPACSTixiHandle, nullPointerArgument)
 {
-	ASSERT_TRUE(tiglGetCPACSTixiHandle(tiglHandle, NULL) == TIGL_NULL_POINTER);
+    ASSERT_TRUE(tiglGetCPACSTixiHandle(tiglHandle, NULL) == TIGL_NULL_POINTER);
 }
 
 /**
@@ -133,7 +139,7 @@ TEST_F(TiglGetCPACSTixiHandle, nullPointerArgument)
 */
 TEST_F(TiglGetCPACSTixiHandle, hanlde_notFound)
 {
-	ASSERT_TRUE(tiglGetCPACSTixiHandle(tiglHandle + 1, &tixiHandle) == TIGL_NOT_FOUND);
+    ASSERT_TRUE(tiglGetCPACSTixiHandle(tiglHandle + 1, &tixiHandle) == TIGL_NOT_FOUND);
 }
 
 /**
@@ -141,15 +147,17 @@ TEST_F(TiglGetCPACSTixiHandle, hanlde_notFound)
 */
 TEST_F(TiglGetCPACSTixiHandle, handle_success)
 {
-	TixiDocumentHandle tempHandle;
-	ASSERT_TRUE(tiglGetCPACSTixiHandle(tiglHandle, &tempHandle) == TIGL_SUCCESS);
+    TixiDocumentHandle tempHandle;
+    ASSERT_TRUE(tiglGetCPACSTixiHandle(tiglHandle, &tempHandle) == TIGL_SUCCESS);
 }
 
 /******************************************************************************/
 
-class tiglCPACSConfigurationHandleValid : public ::testing::Test {
- protected:
-  virtual void SetUp() {
+class tiglCPACSConfigurationHandleValid : public ::testing::Test
+{
+protected:
+    virtual void SetUp()
+    {
         const char* filename = "TestData/CPACS_21_D150.xml";
         TiglReturnCode tiglRet;
 
@@ -160,17 +168,18 @@ class tiglCPACSConfigurationHandleValid : public ::testing::Test {
 
         tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "D150_VAMP", &tiglHandle);
         ASSERT_TRUE(tiglRet == TIGL_SUCCESS);
-  }
+    }
 
-  virtual void TearDown() {
+    virtual void TearDown()
+    {
         ASSERT_TRUE(tiglCloseCPACSConfiguration(tiglHandle) == TIGL_SUCCESS);
         ASSERT_TRUE(tixiCloseDocument(tixiHandle) == SUCCESS);
         tiglHandle = -1;
         tixiHandle = -1;
-  }
+    }
 
-  TixiDocumentHandle           tixiHandle;
-  TiglCPACSConfigurationHandle tiglHandle;
+    TixiDocumentHandle           tixiHandle;
+    TiglCPACSConfigurationHandle tiglHandle;
 };
 
 /**

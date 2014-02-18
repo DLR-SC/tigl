@@ -58,6 +58,7 @@ set(tv_src
     TIGLViewerLogHistory.cpp
     TIGLViewerLogRedirection.cpp
     TIGLViewerLoggerHTMLDecorator.cpp
+    TIGLViewerFuseDialog.cpp
 )
 	
 # normal header files
@@ -92,6 +93,7 @@ set(tv_hdr_qobj
 	TIGLViewerEtaXsiDialog.h
 	TIGLViewerErrorDialog.h
 	TIGLViewerLogRedirection.h
+	TIGLViewerFuseDialog.h
 )
 
 set(tv_ui_comp
@@ -99,6 +101,7 @@ set(tv_ui_comp
 	src/TIGLViewerSettingsDialog.ui
 	src/TIGLViewerEtaXsiDialog.ui
 	src/TIGLViewerErrorDialog.ui
+	src/TIGLViewerFuseDialog.ui
 )
 	
 foreach ( _fname ${tv_src})
@@ -120,6 +123,9 @@ QT4_ADD_RESOURCES( tv_rcrs src/TIGLViewer.qrc )
 add_definitions(-DCSFDB -DQOCC_STATIC)
 
 include_directories( ${OpenCASCADE_INCLUDE_DIR} ${TIXI_INCLUDE_DIRS})
+# boost
+include_directories(${PROJECT_SOURCE_DIR}/thirdparty/boost_1_55_0)
+
 include_directories( ${PROJECT_SOURCE_DIR}/src ${CMAKE_CURRENT_SOURCE_DIR}/src ${PROJECT_BINARY_DIR}/src)
 
 # boost

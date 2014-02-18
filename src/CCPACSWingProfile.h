@@ -59,19 +59,13 @@ public:
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle);
 
     // Returns the name of the wing profile
-    TIGL_EXPORT std::string GetName(void) const;
-
-    // Gets the C pointer of the name string
-    TIGL_EXPORT const char * GetNamePtr(void) const;
+    TIGL_EXPORT const std::string& GetName(void) const;
 
     // Returns the description of the wing profile
-    TIGL_EXPORT std::string GetDescription(void) const;
+    TIGL_EXPORT const std::string& GetDescription(void) const;
 
     // Returns the uid of the wing profile
-    TIGL_EXPORT std::string GetUID(void) const;
-
-    // Gets the C pointer of the UID string
-    TIGL_EXPORT const char * GetUIDPtr(void) const;
+    TIGL_EXPORT const std::string& GetUID(void) const;
 
     // Invalidates internal wing profile state
     TIGL_EXPORT void Invalidate(void);

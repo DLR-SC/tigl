@@ -22,6 +22,7 @@
 #include "CCPACSWing.h"
 #include "CCPACSWingSegment.h"
 #include "CCPACSConfiguration.h"
+#include "CTiglFusePlane.h"
 
 #include <TopoDS.hxx>
 #include <TopoDS_Shape.hxx>
@@ -109,7 +110,15 @@ CTiglTriangularizer::CTiglTriangularizer(CCPACSConfiguration &config, bool fuseS
 {
     if (fuseShapes){
         CTiglAbstractPhysicalComponent* pRoot =  config.GetUIDManager().GetRootComponent();
-        TopoDS_Shape& planeShape = config.GetFusedAirplane();
+
+        PTiglFusePlane fuser = config.AircraftFusingAlgo();
+        fuser->SetResultMode(FULL_PLANE);
+        if (!fuser->NamedShape()) {
+            throw CTiglError("Error computing fused aircraft in CTiglTriangularizer", TIGL_ERROR);
+        }
+
+        TopoDS_Shape planeShape = fuser->NamedShape()->Shape();
+
         useMultipleObjects(false);
         triangularizeComponent(*pRoot, true, planeShape, deflection, mode);
     }
@@ -316,7 +325,9 @@ int CTiglTriangularizer::triangularizeFace(const TopoDS_Face & face, unsigned lo
             const gp_Pnt2d& uv_pnt = uvnodes(inode);
             gp_Pnt p; gp_Vec n;
             prop.Normal(uv_pnt.X(),uv_pnt.Y(),p,n);
-            n.Normalize();
+            if (n.SquareMagnitude() > 0.) {
+                n.Normalize();
+            }
             if (face.Orientation() == TopAbs_INTERNAL) {
                 n.Reverse();
             } 

@@ -220,7 +220,7 @@ void CCPACSWingSegment::ReadCPACS(TixiDocumentHandle tixiHandle, const std::stri
         throw CTiglError("The wing profiles " + innerConnection.GetProfile().GetUID() +
                          " and " + outerConnection.GetProfile().GetUID() +
                          " in segment " + GetUID() + " are not consistent. "
-                         "All profiles must have either a trailing edge or not. "
+                         "All profiles must either have a sharp or a blunt trailing edge. "
                          "Mixing different profile types is not allowed.");
     }
 
@@ -818,15 +818,5 @@ TopoDS_Shape& CCPACSWingSegment::GetLowerShape()
     }
     return lowerShape;
 }
-
-#ifdef TIGL_USE_XCAF
-// builds data structure for a TDocStd_Application
-// mostly used for export
-TDF_Label CCPACSWingSegment::ExportDataStructure(CCPACSConfiguration&, Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label)
-{
-    TDF_Label subLabel;
-    return subLabel;
-}
-#endif
 
 } // end namespace tigl

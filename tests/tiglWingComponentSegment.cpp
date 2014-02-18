@@ -567,7 +567,6 @@ TEST(WingComponentSegment4, tiglWingComponentSegmentPointGetSegmentEtaXsi_BUG2)
     ASSERT_STREQ("D150_wing_1Segment3ID", segmentUID);
     ASSERT_NEAR(0.5, sEta, 0.0001);
 
-
     tiglCloseCPACSConfiguration(tiglHandle);
     tixiCloseDocument(tixiHandle);
 }

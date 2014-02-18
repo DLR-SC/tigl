@@ -73,7 +73,7 @@ else()
     message("XCAF disabled. IGES and STEP export with CPACS metadata will not be avaible.")
 endif()
 
-find_package( OpenCASCADE REQUIRED COMPONENTS ${OCC_LIBS})
+find_package( OpenCASCADE 6.6.0 REQUIRED COMPONENTS ${OCC_LIBS})
 find_package( TIXI 2.1.0 REQUIRED)
 
 OPTION(TIGL_USE_GLOG "Enables advanced logging (requires google glog)" OFF)

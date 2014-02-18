@@ -20,10 +20,17 @@
 #define TIGLCOMMONFUNCTIONS_H
 
 #include "tigl_internal.h"
+#include "CCPACSImportExport.h"
 #include "Standard.hxx"
 #include "gp_Pnt.hxx"
 #include "gp_Vec.hxx"
 #include "TopoDS_Shape.hxx"
+#include "PNamedShape.h"
+
+#include <map>
+#include <string>
+
+typedef std::map<std::string, TopoDS_Shape> ShapeMap;
 
 TIGL_EXPORT Standard_Real GetWireLength(const class TopoDS_Wire& wire);
 
@@ -42,5 +49,17 @@ TIGL_EXPORT Standard_Real ProjectPointOnLine(gp_Pnt p, gp_Pnt lineStart, gp_Pnt 
 
 // returns the number of edges of the current shape
 TIGL_EXPORT unsigned int GetNumberOfEdges(const TopoDS_Shape& shape);
+
+// returns the central point of the face
+TIGL_EXPORT gp_Pnt GetCentralFacePoint(const class TopoDS_Face& face);
+
+// puts all faces with the same origin to one TopoDS_Compound
+// Maps all compounds with its name in the map
+TIGL_EXPORT ShapeMap MapFacesToShapeGroups(const PNamedShape shape);
+
+#ifdef TIGL_USE_XCAF
+#include "Handle_XCAFDoc_ShapeTool.hxx"
+void GroupAndInsertShapeToCAF(Handle_XCAFDoc_ShapeTool myAssembly, const PNamedShape shape, tigl::ShapeStoreType);
+#endif
 
 #endif // TIGLCOMMONFUNCTIONS_H

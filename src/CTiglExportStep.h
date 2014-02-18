@@ -27,29 +27,14 @@
 #define CTIGLEXPORTSTEP_H
 
 #include "tigl_internal.h"
-#include "CTiglUIDManager.h"
-#include "CCPACSHeader.h"
-#include "CCPACSWings.h"
-#include "CCPACSWingProfile.h"
-#include "CCPACSFuselages.h"
-#include "CCPACSFuselageProfile.h"
-
-#ifdef TIGL_USE_XCAF
-#include "STEPCAFControl_Writer.hxx"
-#endif
-#include "TopTools_HSequenceOfShape.hxx"
+#include "CCPACSImportExport.h"
+#include "ListPNamedShape.h"
 
 class CCPACSConfiguration;
 class STEPControl_Writer;
 
 namespace tigl 
 {
-
-enum TiglStepExportMode 
-{
-    AS_FACES,
-    AS_SOLIDS
-};
 
 class CTiglExportStep
 {
@@ -61,8 +46,6 @@ public:
     // Virtual Destructor
     TIGL_EXPORT virtual ~CTiglExportStep(void);
 
-    TIGL_EXPORT void SetExportMode(TiglStepExportMode mode);
-    
     // Exports the whole configuration as IGES file
     TIGL_EXPORT void ExportStep(const std::string& filename) const;
 
@@ -70,20 +53,19 @@ public:
     TIGL_EXPORT void ExportFusedStep(const std::string& filename);
 
     // Save a sequence of shapes in IGES Format
-    TIGL_EXPORT void ExportShapes(const Handle(TopTools_HSequenceOfShape)& aHSequenceOfShape, const std::string& filename);
+    TIGL_EXPORT void ExportShapes(const ListPNamedShape& shapes, const std::string& filename) const;
 
-#ifdef TIGL_USE_XCAF // this feature requires xcaf
-    // Saves as IGES, with cpacs metadata information in it
-    TIGL_EXPORT void ExportStepWithCPACSMetadata(const std::string& filename);
-#endif
+    // Sets the type of storing shapes to iges
+    TIGL_EXPORT void SetOCAFStoreType(ShapeStoreType type);
 
+protected:
 
 private:
     // Assignment operator
     void operator=(const CTiglExportStep& ) { /* Do nothing */ }
 
     CCPACSConfiguration&          myConfig;       /**< TIGL configuration object */
-    TiglStepExportMode            exportMode;     /**< Mode how to export solids */
+    ShapeStoreType                myStoreType;    /**< Type specifying how to translate shapes into an OCAF document */
     void AddFacesOfShape(const TopoDS_Shape &shape, STEPControl_Writer &writer) const;
 };
 
