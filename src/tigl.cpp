@@ -59,6 +59,23 @@
 
 static char * version = NULL;
 
+void tiglCleanup(void);
+bool tiglInit(void);
+
+// make tigl initialize on start
+const bool tiglInitialized = tiglInit();
+
+bool tiglInit(void)
+{
+    atexit(tiglCleanup);
+
+    // Initialize logger
+    tigl::CTiglLogging::Instance();
+    // Register dynamic tigl types
+    tigl::CTiglTypeRegistry::Init();
+    return true;
+}
+
 void tiglCleanup(void)
 {
     if (version) {
@@ -73,13 +90,6 @@ void tiglCleanup(void)
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglOpenCPACSConfiguration(TixiDocumentHandle tixiHandle, const char* configurationUID_cstr, TiglCPACSConfigurationHandle* cpacsHandlePtr)
 {
-    atexit(tiglCleanup);
-
-    // Initialize logger
-    tigl::CTiglLogging::Instance();
-    // Register dynamic tigl types
-    tigl::CTiglTypeRegistry::Init();
-
     std::string configurationUID;
     if (configurationUID_cstr) {
         configurationUID = configurationUID_cstr;
@@ -270,7 +280,6 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglIsCPACSConfigurationHandleValid(TiglCPACSC
 TIGL_COMMON_EXPORT char* tiglGetVersion()
 {
     if (!version) {
-        atexit(tiglCleanup);
         version = new char[512];
         if (std::string(TIGL_REVISION).size() > 0) {
             sprintf(version, "%s rev%s", TIGL_VERSION_STRING, TIGL_REVISION);
