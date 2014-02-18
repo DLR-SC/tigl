@@ -94,7 +94,7 @@ void TIGLViewerDocument::writeToStatusBar(QString text)
     qApp->processEvents();
 }
 
-void TIGLViewerDocument::displayError(QString text, QString header = NULL)
+void TIGLViewerDocument::displayError(QString text, QString header)
 {
     ((TIGLViewerWindow*) parent)->displayErrorMessage(text, header);
 }
