@@ -32,15 +32,6 @@
 #include "TCollection_HAsciiString.hxx"
 #include "TopExp_Explorer.hxx"
 
-#ifdef TIGL_USE_XCAF
-#include "TDocStd_Document.hxx"
-#include "XCAFDoc_ShapeTool.hxx"
-#include "XCAFApp_Application.hxx"
-#include "XCAFDoc_DocumentTool.hxx"
-#include "TDataStd_Name.hxx"
-#include "TDataXtd_Shape.hxx"
-#endif
-
 
 namespace tigl 
 {
@@ -114,50 +105,6 @@ void CTiglAbstractPhysicalComponent::SetSymmetryAxis(const std::string& axis)
     }
 }
 
-
-#ifdef TIGL_USE_XCAF
-TDF_Label CTiglAbstractPhysicalComponent::ExportDataStructure(CCPACSConfiguration &config, Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label)
-{
-    // add faces of current shape
-    TopExp_Explorer faceExplorer;
-    int iface = 1;
-    for (faceExplorer.Init(GetLoft(), TopAbs_FACE); faceExplorer.More(); faceExplorer.Next()) {
-        const TopoDS_Face& currentFace = TopoDS::Face(faceExplorer.Current());
-
-        TDF_Label aLabel = myAssembly->AddShape(currentFace, false);
-        std::stringstream stream;
-        stream << GetUID() << "_face" << iface++;
-        TDataStd_Name::Set (aLabel, stream.str().c_str());
-
-    }
-
-    // intersection lines with childs
-    // Other (sub)-components
-    ChildContainerType::iterator it = childContainer.begin();
-    for (; it != childContainer.end(); ++it) {
-        CTiglAbstractPhysicalComponent * pChild = *it;
-        if (pChild) {
-            CTiglIntersectionCalculation intersector(&(config.GetShapeCache()), GetUID(), pChild->GetUID(), GetLoft(), pChild->GetLoft());
-            for (int i = 1; i <= intersector.GetNumWires(); ++i) {
-                TopoDS_Wire& wire = intersector.GetWire(i);
-                TDF_Label wireLabel = myAssembly->AddShape(wire, false);
-                TDataStd_Name::Set (wireLabel, intersector.GetIDString(i).c_str());
-            }
-        }
-    }
-
-    // Other (sub)-components
-    it = childContainer.begin();
-    for (; it != childContainer.end(); ++it) {
-        CTiglAbstractPhysicalComponent * pChild = *it;
-        if (pChild) {
-            TDF_Label newLabel = pChild->ExportDataStructure(config, myAssembly, label);
-        }
-    }
-
-    return label;
-}
-#endif
 
 } // namespace tigl
 
