@@ -61,10 +61,12 @@ public:
 
 private:
     TopoDS_Wire wire;    /**< Wire of the fuselage profile */
+    Standard_Real wireLength; /**< Circumfence of the wing profile */
 };
 
 } // end namespace tigl
 #endif // CCPACSFUSELAGEPROFILEGETPOINTALGO_H
+
 
 
 

@@ -1,4 +1,4 @@
-/* 
+/*
 * Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
 *
 * Created: 2013-06-01 Martin Siggel <Martin.Siggel@dlr.de>
@@ -44,8 +44,7 @@ Standard_Real GetWireLength(const TopoDS_Wire& wire)
     Standard_Real wireLength = 0.0;
     // explore all edges of result wire
     BRepTools_WireExplorer wireExplorer;
-    for (wireExplorer.Init(wire); wireExplorer.More(); wireExplorer.Next())
-    {   
+    for (wireExplorer.Init(wire); wireExplorer.More(); wireExplorer.Next()) {
         Standard_Real firstParam;
         Standard_Real lastParam;
         TopoDS_Edge edge = wireExplorer.Current();
@@ -64,7 +63,7 @@ unsigned int GetNumberOfEdges(const TopoDS_Shape& shape)
 {
     TopExp_Explorer edgeExpl(shape, TopAbs_EDGE);
     unsigned int iEdges = 0;
-    for (;edgeExpl.More(); edgeExpl.Next()) {
+    for (; edgeExpl.More(); edgeExpl.Next()) {
         iEdges++;
     }
 
@@ -74,14 +73,15 @@ unsigned int GetNumberOfEdges(const TopoDS_Shape& shape)
 // Gets a point on the wire line in dependence of a parameter alpha with
 // 0.0 <= alpha <= 1.0. For alpha = 0.0 this is the line starting point,
 // for alpha = 1.0 the last point on the intersection line.
-gp_Pnt WireGetPoint(const TopoDS_Wire &wire, double alpha)
+gp_Pnt WireGetPoint(const TopoDS_Wire& wire, double alpha)
 {
-    gp_Pnt point; gp_Vec normal;
-    WireGetPointTangent(wire, alpha, point, normal);
+    gp_Pnt point;
+    gp_Vec tangent;
+    WireGetPointTangent(wire, alpha, point, tangent);
     return point;
 }
 
-void WireGetPointTangent(const TopoDS_Wire& wire, double alpha, gp_Pnt& point, gp_Vec& normal)
+void WireGetPointTangent(const TopoDS_Wire& wire, double alpha, gp_Pnt& point, gp_Vec& tangent)
 {
     if (alpha < 0.0 || alpha > 1.0) {
         throw tigl::CTiglError("Error: Parameter alpha not in the range 0.0 <= alpha <= 1.0 in WireGetPoint", TIGL_ERROR);
@@ -113,7 +113,7 @@ void WireGetPointTangent(const TopoDS_Wire& wire, double alpha, gp_Pnt& point, g
         if (!wireExplorer.More()) {
             break;
         }
-        
+
         edge = wireExplorer.Current();
         wireExplorer.Next();
 
@@ -134,27 +134,28 @@ void WireGetPointTangent(const TopoDS_Wire& wire, double alpha, gp_Pnt& point, g
     double currDist = std::max((currLength - currEndDelta), 0.0);
 
     GCPnts_AbscissaPoint abscissaPoint(adaptorCurve, currDist, adaptorCurve.FirstParameter());
-    adaptorCurve.D1(abscissaPoint.Parameter(), point, normal);
+    adaptorCurve.D1(abscissaPoint.Parameter(), point, tangent);
 }
 
 
-gp_Pnt WireGetPoint2(const TopoDS_Wire &wire, double alpha)
+gp_Pnt WireGetPoint2(const TopoDS_Wire& wire, double alpha)
 {
-    gp_Pnt point; gp_Vec normal;
-    WireGetPointTangent2(wire, alpha, point, normal);
+    gp_Pnt point;
+    gp_Vec tangent;
+    WireGetPointTangent2(wire, alpha, point, tangent);
     return point;
 }
 
-void WireGetPointTangent2(const TopoDS_Wire& wire, double alpha, gp_Pnt& point, gp_Vec& normal)
+void WireGetPointTangent2(const TopoDS_Wire& wire, double alpha, gp_Pnt& point, gp_Vec& tangent)
 {
     // ETA 3D point
     BRepAdaptor_CompCurve aCompoundCurve(wire, Standard_True);
-    
+
     Standard_Real len =  GCPnts_AbscissaPoint::Length( aCompoundCurve );
     GCPnts_AbscissaPoint algo(aCompoundCurve, len*alpha, aCompoundCurve.FirstParameter());
     if (algo.IsDone()) {
         double par = algo.Parameter();
-        aCompoundCurve.D1( par, point, normal );
+        aCompoundCurve.D1( par, point, tangent );
     }
     else {
         throw tigl::CTiglError("WireGetPointTangent2: Cannot compute point in curve.", TIGL_MATH_ERROR);
@@ -166,7 +167,7 @@ Standard_Real ProjectPointOnWire(const TopoDS_Wire& wire, gp_Pnt p)
     double smallestDist = DBL_MAX;
     double alpha  = 0.;
     int edgeIndex = 0;
-    
+
     // find edge with closest dist to point p
     BRepTools_WireExplorer wireExplorer;
     int iwire = 0;
@@ -174,7 +175,7 @@ Standard_Real ProjectPointOnWire(const TopoDS_Wire& wire, gp_Pnt p)
         Standard_Real firstParam, lastParam;
         TopoDS_Edge edge = wireExplorer.Current();
         Handle(Geom_Curve) curve = BRep_Tool::Curve(edge, firstParam, lastParam);
-        
+
         GeomAPI_ProjectPointOnCurve proj(p, curve, firstParam, lastParam);
         if (proj.NbPoints() > 0 && proj.LowerDistance() < smallestDist) {
             smallestDist = proj.LowerDistance();
@@ -182,11 +183,11 @@ Standard_Real ProjectPointOnWire(const TopoDS_Wire& wire, gp_Pnt p)
             alpha = proj.LowerDistanceParameter();
         }
     }
-    
+
     // compute partial length of wire until projection point is reached
     wireExplorer.Init(wire);
     double partLength = 0.;
-    for (int iwire = 0; iwire <= edgeIndex; ++iwire){
+    for (int iwire = 0; iwire <= edgeIndex; ++iwire) {
         Standard_Real firstParam;
         Standard_Real lastParam;
         TopoDS_Edge edge = wireExplorer.Current();
@@ -195,17 +196,27 @@ Standard_Real ProjectPointOnWire(const TopoDS_Wire& wire, gp_Pnt p)
         if (iwire == edgeIndex) {
             lastParam = alpha;
         }
-        
+
         partLength += GCPnts_AbscissaPoint::Length(adaptorCurve, firstParam, lastParam);
         wireExplorer.Next();
     }
-    
+
     // return relative coordinate
     return partLength/GetWireLength(wire);
 }
 
 // projects a point onto the line (lineStart<->lineStop) and returns the projection parameter
-Standard_Real ProjectPointOnLine(gp_Pnt p, gp_Pnt lineStart, gp_Pnt lineStop) 
+Standard_Real ProjectPointOnLine(gp_Pnt p, gp_Pnt lineStart, gp_Pnt lineStop)
 {
     return gp_Vec(lineStart, p) * gp_Vec(lineStart, lineStop) / gp_Vec(lineStart, lineStop).SquareMagnitude();
 }
+
+// calculates a wire's circumfence
+Standard_Real WireGetLength(const TopoDS_Wire& wire)
+{
+    // ETA 3D point
+    BRepAdaptor_CompCurve aCompoundCurve(wire, Standard_True);
+    Standard_Real len =  GCPnts_AbscissaPoint::Length( aCompoundCurve );
+    return len;
+}
+

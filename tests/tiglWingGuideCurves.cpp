@@ -156,14 +156,18 @@ TEST_F(WingGuideCurve, tiglWingGuideCurve_CCPACSWingProfileGetPointAlgo)
     gp_Vec tangent;
 
     // plot points and tangents
-    for (int i=0; i<=20; i++) {
-        double alpha = -1.0 + 2.0*i/double(20);
+    int N = 20;
+    int M = 2;
+    for (int i=0; i<=N+2*M; i++) {
+        double da = 2.0/double(N);
+        double alpha = -1.0 -M*da + da*i;
         getPointAlgo.GetPointTangent(alpha, point, tangent);
         outputXY(i, point.X(), point.Z(), "./TestData/analysis/tiglWingGuideCurve_profileSamplePoints_points.dat");
         outputXYVector(i, point.X(), point.Z(), tangent.X(), tangent.Z(), "./TestData/analysis/tiglWingGuideCurve_profileSamplePoints_tangents.dat");
         // plot points and tangents with gnuplot by:
-        // echo "plot 'TestData/analysis/tiglWingGuideCurve_profileSamplePoints_tangents.dat' u 1:2:3:4 with vectors filled head lw 2, 'TestData/analysis/tiglWingGuideCurve_profileSamplePoints_points.dat' w lines lw 2" | gnuplot -persist
+        // echo "plot 'TestData/analysis/tiglWingGuideCurve_profileSamplePoints_tangents.dat' u 1:2:3:4 with vectors filled head lw 2, 'TestData/analysis/tiglWingGuideCurve_profileSamplePoints_points.dat' w linespoints lw 2" | gnuplot -persist
     }
+
     // leading edge: point must be zero and tangent must be in z-direction
     getPointAlgo.GetPointTangent(0.0, point, tangent);
     ASSERT_NEAR(point.X(), 0.0, 1E-10);
@@ -183,6 +187,21 @@ TEST_F(WingGuideCurve, tiglWingGuideCurve_CCPACSWingProfileGetPointAlgo)
     ASSERT_NEAR(point.X(), 1.0, 1E-10);
     ASSERT_NEAR(point.Y(), 0.0, 1E-10);
     ASSERT_NEAR(point.Z(), 0.00126, 1E-10);
+
+    // check if tangent is constant for alpha > 1
+    gp_Vec tangent2;
+    getPointAlgo.GetPointTangent(1.0, point, tangent);
+    getPointAlgo.GetPointTangent(2.0, point, tangent2);
+    ASSERT_EQ(tangent.X(), tangent2.X());
+    ASSERT_EQ(tangent.Y(), tangent2.Y());
+    ASSERT_EQ(tangent.Z(), tangent2.Z());
+
+    // check if tangent is constant for alpha < 1
+    getPointAlgo.GetPointTangent(-1.0, point, tangent);
+    getPointAlgo.GetPointTangent(-2.0, point, tangent2);
+    ASSERT_EQ(tangent.X(), tangent2.X());
+    ASSERT_EQ(tangent.Y(), tangent2.Y());
+    ASSERT_EQ(tangent.Z(), tangent2.Z());
 }
 
 /**
@@ -206,6 +225,8 @@ TEST_F(WingGuideCurve, tiglWingGuideCurve_samplePoints)
     }
     */
 }
+
+
 
 
 

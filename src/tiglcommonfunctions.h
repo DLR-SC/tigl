@@ -43,4 +43,7 @@ TIGL_EXPORT Standard_Real ProjectPointOnLine(gp_Pnt p, gp_Pnt lineStart, gp_Pnt 
 // returns the number of edges of the current shape
 TIGL_EXPORT unsigned int GetNumberOfEdges(const TopoDS_Shape& shape);
 
+// calculates a wire's circumfence
+TIGL_EXPORT Standard_Real WireGetLength(const TopoDS_Wire& wire);
+
 #endif // TIGLCOMMONFUNCTIONS_H
