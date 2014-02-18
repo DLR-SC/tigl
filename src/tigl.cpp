@@ -270,6 +270,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglIsCPACSConfigurationHandleValid(TiglCPACSC
 TIGL_COMMON_EXPORT char* tiglGetVersion()
 {
     if (!version) {
+        atexit(tiglCleanup);
         version = new char[512];
         if (std::string(TIGL_REVISION).size() > 0) {
             sprintf(version, "%s rev%s", TIGL_VERSION_STRING, TIGL_REVISION);
@@ -1004,7 +1005,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetProfileName(TiglCPACSConfigurationH
         std::string profileUID = element.GetProfileIndex();
         tigl::CCPACSWingProfile& profile = config.GetWingProfile(profileUID);
 
-        *profileNamePtr = const_cast<char*>(profile.GetNamePtr());
+        *profileNamePtr = const_cast<char*>(profile.GetName().c_str());
 
         return TIGL_SUCCESS;
     }
@@ -2452,8 +2453,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetProfileName(TiglCPACSConfigurat
         std::string profileUID = element.GetProfileIndex();
         tigl::CCPACSFuselageProfile& profile = config.GetFuselageProfile(profileUID);
 
-        *profileNamePtr = (char *) profile.GetName().c_str();
-
+        *profileNamePtr = const_cast<char*>(profile.GetName().c_str());
+        
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
@@ -2899,42 +2900,6 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportFusedWingFuselageIGES(TiglCPACSConfi
     }
 }
 
-TIGL_COMMON_EXPORT TiglReturnCode tiglExportStructuredIGES(TiglCPACSConfigurationHandle cpacsHandle, const char *filenamePtr)
-{
-#ifdef TIGL_USE_XCAF
-    if (filenamePtr == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for filenamePtr";
-        LOG(ERROR) << "in function call to tiglExportStructuredIGES." << std::endl;
-        return TIGL_NULL_POINTER;
-    }
-
-    try {
-        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
-        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
-        tigl::CTiglExportIges exporter(config);
-        std::string filename = filenamePtr;
-        exporter.ExportIgesWithCPACSMetadata(filename);
-        return TIGL_SUCCESS;
-    }
-    catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
-        return TIGL_ERROR;
-    }
-    catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
-        return ex.getCode();
-    }
-    catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglExportStructuredIGES!" << std::endl;
-        return TIGL_ERROR;
-    }
-#else
-    LOG(ERROR) << "In order to use tiglExportStructuredIGES, TiGL has to be compiled with the XCAF framework." << std::endl;
-    return TIGL_ERROR;
-#endif
-}
-
-
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglExportSTEP(TiglCPACSConfigurationHandle cpacsHandle, const char* filenamePtr)
 {
@@ -2994,41 +2959,6 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportFusedSTEP(TiglCPACSConfigurationHand
         LOG(ERROR) << "Caught an exception in tiglExportFusedSTEP!" << std::endl;
         return TIGL_ERROR;
     }
-}
-
-TIGL_COMMON_EXPORT TiglReturnCode tiglExportStructuredSTEP(TiglCPACSConfigurationHandle cpacsHandle, const char *filenamePtr)
-{
-#ifdef TIGL_USE_XCAF
-    if (filenamePtr == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for filenamePtr";
-        LOG(ERROR) << "in function call to tiglExportStructuredSTEP." << std::endl;
-        return TIGL_NULL_POINTER;
-    }
-
-    try {
-        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
-        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
-        tigl::CTiglExportStep exporter(config);
-        std::string filename = filenamePtr;
-        exporter.ExportStepWithCPACSMetadata(filename);
-        return TIGL_SUCCESS;
-    }
-    catch (std::exception& ex) {
-        LOG(ERROR) << ex.what() << std::endl;
-        return TIGL_ERROR;
-    }
-    catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
-        return ex.getCode();
-    }
-    catch (...) {
-        LOG(ERROR) << "Caught an exception in tiglExportStructuredSTEP!" << std::endl;
-        return TIGL_ERROR;
-    }
-#else
-    LOG(ERROR) << "In order to use tiglExportStructuredSTEP, TiGL has to be compiled with the XCAF framework." << std::endl;
-    return TIGL_ERROR;
-#endif
 }
 
 

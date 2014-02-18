@@ -59,7 +59,10 @@
 #include "TIGLViewerSettings.h"
 #include "CTiglIntersectionCalculation.h"
 #include "TIGLViewerEtaXsiDialog.h"
+#include "TIGLViewerFuseDialog.h"
 #include "CTiglExportVtk.h"
+#include "tiglcommonfunctions.h"
+#include "CTiglFusePlane.h"
 #include "CCPACSWingProfilePointList.h"
 #include "CCPACSWingSegment.h"
 #include "CCPACSFuselageSegment.h"
@@ -988,7 +991,7 @@ void TIGLViewerDocument::exportAsIges()
 
     writeToStatusBar(tr("Saving as IGES file with TIGL..."));
 
-    fileName = QFileDialog::getSaveFileName(parent, tr("Save as..."), myLastFolder, tr("Export IGES(*.iges *.igs)"));
+    fileName = QFileDialog::getSaveFileName(parent, tr("Save as..."), myLastFolder, tr("Export IGES(*.igs)"));
 
     if (!fileName.isEmpty()) {
         QApplication::setOverrideCursor( Qt::WaitCursor );
@@ -1011,7 +1014,7 @@ void TIGLViewerDocument::exportFusedAsIges()
 
     writeToStatusBar(tr("Saving fused model as IGES file with TIGL..."));
 
-    fileName = QFileDialog::getSaveFileName(parent, tr("Save as..."), myLastFolder, tr("Export IGES(*.iges *.igs)"));
+    fileName = QFileDialog::getSaveFileName(parent, tr("Save as..."), myLastFolder, tr("Export IGES(*.igs)"));
 
     if (!fileName.isEmpty()) {
         QApplication::setOverrideCursor( Qt::WaitCursor );
@@ -1019,22 +1022,6 @@ void TIGLViewerDocument::exportFusedAsIges()
         QApplication::restoreOverrideCursor();
         if (err != TIGL_SUCCESS) {
             displayError(QString("Error in function <u>tiglExportFusedWingFuselageIGES</u>. Error code: %1").arg(err), "TIGL Error");
-        }
-    }
-}
-
-void TIGLViewerDocument::exportAsStructuredIges()
-{
-    writeToStatusBar(tr("Saving model as IGES file with CPACS metadata..."));
-
-    QString fileName = QFileDialog::getSaveFileName(parent, tr("Save as..."), myLastFolder, tr("Export IGES(*.iges *.igs)"));
-
-    if (!fileName.isEmpty()) {
-        QApplication::setOverrideCursor( Qt::WaitCursor );
-        TiglReturnCode err = tiglExportStructuredIGES(m_cpacsHandle, qstringToCstring(fileName));
-        QApplication::restoreOverrideCursor();
-        if (err != TIGL_SUCCESS) {
-            displayError(QString("Error in function <u>tiglExportStructuredIGES</u>. Error code: %1").arg(err), "TIGL Error");
         }
     }
 }
@@ -1075,28 +1062,6 @@ void TIGLViewerDocument::exportAsStepFused()
         QApplication::restoreOverrideCursor();
         if (err != TIGL_SUCCESS) {
             displayError(QString("Error in function <u>tiglExportFusedSTEP</u>. Error code: %1").arg(err), "TIGL Error");
-        }
-    }
-}
-
-void TIGLViewerDocument::exportAsStepWithMetaData()
-{
-    QString     fileName;
-    QString     fileType;
-    QFileInfo   fileInfo;
-
-    TIGLViewerInputOutput writer;
-
-    writeToStatusBar(tr("Saving as STEP file with CPACS MetaData TIGL..."));
-
-    fileName = QFileDialog::getSaveFileName(parent, tr("Save as..."), myLastFolder, tr("Export STEP(*.step *.stp)"));
-
-    if (!fileName.isEmpty()) {
-        QApplication::setOverrideCursor( Qt::WaitCursor );
-        TiglReturnCode err = tiglExportStructuredSTEP(m_cpacsHandle, qstringToCstring(fileName));
-        QApplication::restoreOverrideCursor();
-        if (err != TIGL_SUCCESS) {
-            displayError(QString("Error in function <u>tiglExportStructuredSTEP</u>. Error code: %1").arg(err), "TIGL Error");
         }
     }
 }
@@ -1292,7 +1257,12 @@ void TIGLViewerDocument::exportMeshedConfigVTK()
         QApplication::setOverrideCursor( Qt::WaitCursor );
         writeToStatusBar("Calculating fused airplane, this can take a while");
         // calculating loft, is cached afterwards
-        GetConfiguration().GetFusedAirplane();
+        tigl::PTiglFusePlane fuser = GetConfiguration().AircraftFusingAlgo();
+        if (fuser) {
+            // invoke fusing algo
+            fuser->SetResultMode(tigl::FULL_PLANE);
+            fuser->NamedShape();
+        }
         writeToStatusBar("Writing meshed vtk file");
         tigl::CTiglExportVtk exporter(GetConfiguration());
         
@@ -1419,11 +1389,64 @@ void TIGLViewerDocument::drawFusedWing()
 
 void TIGLViewerDocument::drawFusedAircraft()
 {
+    FuseDialog dialog(parent);
+    if (dialog.exec() != QDialog::Accepted) {
+        return;
+    }
+
+    tigl::TiglFuseResultMode mode = tigl::HALF_PLANE;
+    // make option
+    if (!dialog.TrimWithFarField()     && !dialog.UseSymmetries()) {
+        mode = tigl::HALF_PLANE;
+    }
+    else if (!dialog.TrimWithFarField() && dialog.UseSymmetries()) {
+        mode = tigl::FULL_PLANE;
+    }
+    else if (dialog.TrimWithFarField()  && !dialog.UseSymmetries()) {
+        mode = tigl::HALF_PLANE_TRIMMED_FF;
+    }
+    else if (dialog.TrimWithFarField()  && dialog.UseSymmetries()) {
+        mode = tigl::FULL_PLANE_TRIMMED_FF;
+    }
+
+
     QApplication::setOverrideCursor( Qt::WaitCursor );
     try {
-        TopoDS_Shape& airplane = GetConfiguration().GetFusedAirplane();
+        tigl::PTiglFusePlane fuser = GetConfiguration().AircraftFusingAlgo();
+        fuser->SetResultMode(mode);
+        PNamedShape airplane = fuser->NamedShape();
+        if (!airplane) {
+            displayError("Error computing fused aircraft");
+            return;
+        }
+
         myAISContext->EraseAll(Standard_False);
-        displayShape(airplane);
+
+
+        ShapeMap map = MapFacesToShapeGroups(airplane);
+        ShapeMap::iterator it;
+        int icol = 0;
+        Quantity_NameOfColor colors[] = {Quantity_NOC_BLUE4,
+                                         Quantity_NOC_RED,
+                                         Quantity_NOC_GREEN,
+                                         Quantity_NOC_MAGENTA1,
+                                         Quantity_NOC_AZURE,
+                                         Quantity_NOC_FIREBRICK};
+        int ncolors = sizeof(colors)/sizeof(Quantity_NameOfColor);
+        for (it = map.begin(); it != map.end(); ++it) {
+            if (icol >= ncolors) {
+                icol = 0;
+            }
+            displayShape(it->second, colors[icol++]);
+        }
+
+        const ListPNamedShape& ints = fuser->Intersections();
+        ListPNamedShape::const_iterator it2 = ints.begin();
+        for (; it2 != ints.end(); ++it2) {
+            if (*it2) {
+                displayShape((*it2)->Shape(), Quantity_NOC_WHITE);
+            }
+        }
     }
     catch(tigl::CTiglError & error){
         std::cerr << error.getError() << std::endl;
@@ -1437,7 +1460,7 @@ void TIGLViewerDocument::drawFusedAircraft()
 void TIGLViewerDocument::drawFusedAircraftTriangulation()
 {
     QApplication::setOverrideCursor( Qt::WaitCursor );
-    TopoDS_Shape& airplane = GetConfiguration().GetFusedAirplane();
+    TopoDS_Shape airplane = GetConfiguration().AircraftFusingAlgo()->NamedShape()->Shape();
     myAISContext->EraseAll(Standard_False);
     TopoDS_Compound triangulation;
     createShapeTriangulation(airplane, triangulation);

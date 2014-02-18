@@ -46,6 +46,7 @@
 #include "GeomAdaptor_Curve.hxx"
 #include "GCPnts_AbscissaPoint.hxx"
 #include "CTiglInterpolateBsplineWire.h"
+#include "tiglcommonfunctions.h"
 
 #include "math.h"
 #include <iostream>
@@ -186,6 +187,7 @@ void CCPACSFuselageProfile::ReadCPACS(TixiDocumentHandle tixiHandle)
         }
 
     }
+
     catch (...) {
         if (tixiHandle != -1) {
             tixiCloseDocument(tixiHandle); /* remove me`! */
@@ -228,7 +230,6 @@ void CCPACSFuselageProfile::Update(void)
     }
 
     BuildWires();
-    ComputeWireLength();
     invalidated = false;
 }
 
@@ -315,6 +316,8 @@ void CCPACSFuselageProfile::BuildWires(void)
 
     wireClosed   = TopoDS::Wire(tempShapeClosed);
     wireOriginal = TopoDS::Wire(tempShapeOriginal);
+
+    wireLength = GetWireLength(wireOriginal);
 }
 
 // Transforms a point by the fuselage profile transformation
@@ -322,29 +325,6 @@ gp_Pnt CCPACSFuselageProfile::TransformPoint(const gp_Pnt& aPoint) const
 {
     CTiglTransformation transformation;
     return transformation.Transform(aPoint);
-}
-
-// Computes the length of the fuselage profile wire
-void CCPACSFuselageProfile::ComputeWireLength(void)
-{
-    wireLength = 0.0;
-
-    BRepTools_WireExplorer wireExplorer;
-    for (wireExplorer.Init(wireOriginal); wireExplorer.More(); wireExplorer.Next()) {
-        Standard_Real firstParam;
-        Standard_Real lastParam;
-        TopoDS_Edge edge = wireExplorer.Current();
-        Handle(Geom_Curve) curve = BRep_Tool::Curve(edge, firstParam, lastParam);
-        GeomAdaptor_Curve adaptorCurve(curve);
-        wireLength += GCPnts_AbscissaPoint::Length(adaptorCurve);
-    }
-}
-
-// Get length of fuselage profile wire
-double CCPACSFuselageProfile::GetWireLength(void)
-{
-    Update();
-    return wireLength;
 }
 
 // Gets a point on the fuselage profile wire in dependence of a parameter zeta with

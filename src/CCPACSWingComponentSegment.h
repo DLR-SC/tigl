@@ -94,12 +94,6 @@ public:
 
     TIGL_EXPORT TiglGeometricComponentType GetComponentType(){ return TIGL_COMPONENT_WINGCOMPSEGMENT | TIGL_COMPONENT_SEGMENT | TIGL_COMPONENT_LOGICAL; }
 
-#ifdef TIGL_USE_XCAF
-    // builds data structure for a TDocStd_Application
-    // mostly used for export
-    TDF_Label ExportDataStructure(class CCPACSConfiguration &, Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label);
-#endif
-        
     TIGL_EXPORT MaterialList GetMaterials(double eta, double xsi, TiglStructureType);
 
     // returns a list of segments that belong to this component segment
