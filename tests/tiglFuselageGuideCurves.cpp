@@ -158,13 +158,16 @@ TEST_F(FuselageGuideCurve, tiglFuselageGuideCurve_CCPACSFuselageProfileGetPointA
     gp_Vec tangent;
 
     // plot points and tangents
-    for (int i=0; i<=50; i++) {
-        double alpha = i/double(50);
+    int N = 20;
+    int M = 2;
+    for (int i=0; i<=N+2*M; i++) {
+        double da = 2.0/double(N);
+        double alpha = -1.0 -M*da + da*i;
         getPointAlgo.GetPointTangent(alpha, point, tangent);
         outputXY(i, point.Y(), point.Z(), "./TestData/analysis/tiglFuselageGuideCurve_profileSamplePoints_points.dat");
         outputXYVector(i, point.Y(), point.Z(), tangent.Y(), tangent.Z(), "./TestData/analysis/tiglFuselageGuideCurve_profileSamplePoints_tangents.dat");
         // plot points and tangents with gnuplot by:
-        // echo "plot 'TestData/analysis/tiglFuselageGuideCurve_profileSamplePoints_tangents.dat' u 1:2:3:4 with vectors filled head lw 2, 'TestData/analysis/tiglFuselageGuideCurve_profileSamplePoints_points.dat' w lines lw 2" | gnuplot -persist
+        // echo "plot 'TestData/analysis/tiglFuselageGuideCurve_profileSamplePoints_tangents.dat' u 1:2:3:4 with vectors filled head lw 2, 'TestData/analysis/tiglFuselageGuideCurve_profileSamplePoints_points.dat' w linespoints lw 2" | gnuplot -persist
     }
     // lower point
     getPointAlgo.GetPointTangent(0.0, point, tangent);
@@ -177,7 +180,24 @@ TEST_F(FuselageGuideCurve, tiglFuselageGuideCurve_CCPACSFuselageProfileGetPointA
     ASSERT_NEAR(point.X(), 0.0, 1E-10);
     ASSERT_NEAR(point.Y(), 0.0, 1E-10);
     ASSERT_NEAR(point.Z(), 0.487497455, 1E-10);
+
+    // check if tangent is constant for alpha > 1
+    gp_Vec tangent2;
+    getPointAlgo.GetPointTangent(1.0, point, tangent);
+    getPointAlgo.GetPointTangent(2.0, point, tangent2);
+    ASSERT_EQ(tangent.X(), tangent2.X());
+    ASSERT_EQ(tangent.Y(), tangent2.Y());
+    ASSERT_EQ(tangent.Z(), tangent2.Z());
+
+    // check if tangent is constant for alpha < 0
+    getPointAlgo.GetPointTangent(0.0, point, tangent);
+    getPointAlgo.GetPointTangent(-1.0, point, tangent2);
+    ASSERT_EQ(tangent.X(), tangent2.X());
+    ASSERT_EQ(tangent.Y(), tangent2.Y());
+    ASSERT_EQ(tangent.Z(), tangent2.Z());
 }
+
+
 
 
 

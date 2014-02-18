@@ -31,6 +31,7 @@
 #include "CCPACSFuselageProfileGetPointAlgo.h"
 #include "BRepTools_WireExplorer.hxx"
 #include "BRepBuilderAPI_MakeWire.hxx"
+#include "Geom_Line.hxx"
 #include "tiglcommonfunctions.h"
 
 namespace tigl
@@ -39,19 +40,46 @@ namespace tigl
 CCPACSFuselageProfileGetPointAlgo::CCPACSFuselageProfileGetPointAlgo (TopoDS_Wire& w)
 {
     wire = w;
+    wireLength = WireGetLength(wire);
 }
 
 void CCPACSFuselageProfileGetPointAlgo::GetPointTangent(const double& alpha, gp_Pnt& point, gp_Vec& tangent)
 {
-    if (alpha>=0.0 && alpha<=1.0) {
+    // alpha<0.0 : use line in the direction of the tangent at alpha=0.0
+    if (alpha<0.0) {
+        // get startpoint
+        gp_Pnt startpoint;
+        WireGetPointTangent2(wire, 0.0, startpoint, tangent);
+        // get direction vector
+        gp_Dir dir(-1.0*tangent);
+        // construct line
+        Geom_Line line(startpoint, dir);
+        // map [-infinity, 0.0] to [0.0, infinity] and scale by profile length
+        Standard_Real zeta = wireLength*(-1.0*alpha);
+        // get point on line at distance zeta from the start point
+        line.D0(zeta, point);
+    }
+    else if (alpha>=0.0 && alpha<=1.0) {
         WireGetPointTangent2(wire, alpha, point, tangent);
     }
+    // alpha>1.0 : use line in the direction of the tangent at alpha=1.0
     else {
-        throw CTiglError("Error: CCPACSFuselageProfileGetPointAlgo::GetPoint: Parameter out of range [-1,1]", TIGL_ERROR);
+        // get startpoint
+        gp_Pnt startpoint;
+        WireGetPointTangent2(wire, 1.0, startpoint, tangent);
+        // get direction vector
+        gp_Dir dir(tangent);
+        // construct line
+        Geom_Line line(startpoint, dir);
+        // map [1.0, infinity] to [0.0, infinity] and scale by profile length
+        Standard_Real zeta = wireLength*(alpha - 1.0);
+        // get point on line at distance zeta from the start point
+        line.D0(zeta, point);
     }
 }
 
 } // end namespace tigl
+
 
 
 

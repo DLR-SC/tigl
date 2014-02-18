@@ -63,11 +63,13 @@ public:
     void GetPointTangent(const double& alpha, gp_Pnt& point, gp_Vec& tangent);
 
 private:
-    TopoDS_Edge upperEdge;    /**< Upper edge of wing profile */
-    TopoDS_Edge lowerEdge;    /**< Lower edge of wing profile */
+    TopoDS_Wire upperWire;    /**< Upper wire of wing profile */
+    TopoDS_Wire lowerWire;    /**< Lower wire of wing profile */
+    Standard_Real wireLength; /**< Circumfence of the wing profile */
 };
 
 } // end namespace tigl
 #endif // CCPACSWINGPROFILEGETPOINTALGO_H
+
 
 

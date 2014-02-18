@@ -28,10 +28,10 @@
 
 #include "tigl_internal.h"
 #include "CTiglError.h"
-#include "CTiglLogging.h"
 #include "CCPACSWingProfileGetPointAlgo.h"
 #include "BRepTools_WireExplorer.hxx"
 #include "BRepBuilderAPI_MakeWire.hxx"
+#include "Geom_Line.hxx"
 #include "tiglcommonfunctions.h"
 
 namespace tigl
@@ -39,6 +39,8 @@ namespace tigl
 
 CCPACSWingProfileGetPointAlgo::CCPACSWingProfileGetPointAlgo (TopoDS_Wire& wire)
 {
+    TopoDS_Edge lowerEdge;
+    TopoDS_Edge upperEdge;
     try {
         int count=0;
         BRepTools_WireExplorer wireExplorer(wire);
@@ -59,25 +61,57 @@ CCPACSWingProfileGetPointAlgo::CCPACSWingProfileGetPointAlgo (TopoDS_Wire& wire)
     catch(...) {
         throw CTiglError("Error: CCPACSWingProfileGetPointAlgo: Separation of upper and lower profile failed", TIGL_ERROR);
     }
+
+    // set wires
+    lowerWire = BRepBuilderAPI_MakeWire(lowerEdge);
+    upperWire = BRepBuilderAPI_MakeWire(upperEdge);
+
+    // set circumfence
+    wireLength = WireGetLength(wire);
 }
 
 void CCPACSWingProfileGetPointAlgo::GetPointTangent(const double& alpha, gp_Pnt& point, gp_Vec& tangent)
 {
-    if (alpha>=-1.0 && alpha<=0.0) {
+    // alpha<-1.0 : use line in the direction of the tangent at alpha=-1.0
+    if (alpha<-1.0) {
+        // get startpoint
+        gp_Pnt startpoint;
+        WireGetPointTangent2(lowerWire, 0.0, startpoint, tangent);
+        // get direction vector
+        gp_Dir dir(-1.0*tangent);
+        // construct line
+        Geom_Line line(startpoint, dir);
+        // map [-infinity, -1.0] to [0.0, infinity] and scale by profile length
+        Standard_Real zeta = wireLength*(-alpha - 1.0);
+        // get point on line at distance zeta from the start point
+        line.D0(zeta, point);
+    }
+    else if (alpha>=-1.0 && alpha<=0.0) {
         // mapping [-1,0] to [0,1]
         double zeta = alpha + 1.0;
-        TopoDS_Wire lowerWire = BRepBuilderAPI_MakeWire(lowerEdge);
         WireGetPointTangent2(lowerWire, zeta, point, tangent);
     }
     else if (alpha>0.0 && alpha<=1.0) {
-        TopoDS_Wire upperWire = BRepBuilderAPI_MakeWire(upperEdge);
         WireGetPointTangent2(upperWire, alpha, point, tangent);
     }
+    // alpha>1.0 : use line in the direction of the tangent at alpha=1.0
     else {
-        throw CTiglError("Error: CCPACSWingProfileGetPointAlgo::GetPoint: Parameter out of range [-1,1]", TIGL_ERROR);
+        // get startpoint
+        gp_Pnt startpoint;
+        WireGetPointTangent2(upperWire, 1.0, startpoint, tangent);
+        // get direction vector
+        gp_Dir dir(tangent);
+        // construct line
+        Geom_Line line(startpoint, dir);
+        // map [1.0, infinity] to [0.0, infinity] and scale by profile length
+        Standard_Real zeta = wireLength*(alpha - 1.0);
+        // get point on line at distance zeta from the start point
+        line.D0(zeta, point);
     }
 }
 
 } // end namespace tigl
+
+
 
 

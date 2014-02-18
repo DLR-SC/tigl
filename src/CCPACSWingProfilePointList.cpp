@@ -103,7 +103,7 @@ void CCPACSWingProfilePointList::ReadCPACS(TixiDocumentHandle tixiHandle)
 
         // check if deprecated CPACS point definition is included in the CPACS file and give warning
         if (tixiCheckElement(tixiHandle, (ProfileDataXPath + "/point[1]").c_str()) == SUCCESS) {
-                LOG(WARNING) << "Deprecated point definition in wing profile " << profileRef.GetUID() <<  " will be ignored" << endl;
+            LOG(WARNING) << "Deprecated point definition in wing profile " << profileRef.GetUID() <<  " will be ignored" << endl;
         }
 
         std::string xXpath = ProfileDataXPath +"/x";
@@ -384,4 +384,5 @@ const gp_Pnt& CCPACSWingProfilePointList::GetTEPoint() const
 
 
 } // end namespace tigl
+
 
