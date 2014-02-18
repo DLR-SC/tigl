@@ -117,7 +117,7 @@ CTiglExportIges::~CTiglExportIges(void)
 {
 }
 
-void CTiglExportIges::SetTranslationParamters() const
+void CTiglExportIges::SetTranslationParameters() const
 {
     Interface_Static::SetCVal("xstep.cascade.unit", "M");
     Interface_Static::SetCVal("write.iges.unit", "M");
@@ -136,16 +136,12 @@ void CTiglExportIges::SetTranslationParamters() const
 // All wing- and fuselage segments are exported as single bodys
 void CTiglExportIges::ExportIGES(const std::string& filename) const
 {
-    IGESControl_Controller::Init();
-
-    IGESControl_Writer igesWriter;
-    SetTranslationParamters();
-    igesWriter.Model()->ApplyStatic(); // apply set parameters
-
     if ( filename.empty()) {
-       LOG(ERROR) << "Error: Empty filename in ExportFusedIGES.";
+       LOG(ERROR) << "Error: Empty filename in ExportIGES.";
        return;
     }
+
+    ListPNamedShape shapes;
 
     // Export all wings of the configuration
     for (int w = 1; w <= myConfig.GetWingCount(); w++) {
@@ -154,8 +150,8 @@ void CTiglExportIges::ExportIGES(const std::string& filename) const
         for (int i = 1; i <= wing.GetSegmentCount(); i++) {
             CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(i);
             TopoDS_Shape loft = segment.GetLoft();
-
-            igesWriter.AddShape(loft);
+            PNamedShape shape(new CNamedShape(loft, segment.GetUID().c_str()));
+            shapes.push_back(shape);
         }
     }
 
@@ -169,19 +165,23 @@ void CTiglExportIges::ExportIGES(const std::string& filename) const
 
             // Transform loft by fuselage transformation => absolute world coordinates
             loft = fuselage.GetFuselageTransformation().Transform(loft);
-
-            igesWriter.AddShape(loft);
+            PNamedShape shape(new CNamedShape(loft, segment.GetUID().c_str()));
+            shapes.push_back(shape);
         }
     }
 
-    if (myConfig.GetFarField().GetFieldType() != NONE) {
-        igesWriter.AddShape(myConfig.GetFarField().GetLoft());
+    CCPACSFarField& farfield = myConfig.GetFarField();
+    if (farfield.GetFieldType() != NONE) {
+        PNamedShape shape(new CNamedShape(farfield.GetLoft(), farfield.GetUID().c_str()));
+        shapes.push_back(shape);
     }
 
-    // Write IGES file
-    igesWriter.ComputeModel();
-    if (igesWriter.Write(const_cast<char*>(filename.c_str())) != Standard_True) {
-        throw CTiglError("Error: Export to IGES file failed in CTiglExportIges::ExportIGES", TIGL_ERROR);
+    // write iges
+    try {
+        ExportShapes(shapes, filename);
+    }
+    catch (CTiglError&) {
+        throw CTiglError("Cannot export airplane in CTiglExportIges", TIGL_ERROR);
     }
 }
 
@@ -195,7 +195,7 @@ void CTiglExportIges::ExportFusedIGES(const std::string& filename)
     }
 
     PTiglFusePlane fuser = myConfig.AircraftFusingAlgo();
-    fuser->SetResultMode(HALF_PLANE);
+    fuser->SetResultMode(HALF_PLANE_TRIMMED_FF);
     assert(fuser);
 
     PNamedShape fusedAirplane = fuser->NamedShape();
@@ -203,8 +203,29 @@ void CTiglExportIges::ExportFusedIGES(const std::string& filename)
         throw CTiglError("Error computing fused airplane.", TIGL_NULL_POINTER);
     }
 
+    try {
+        ExportShapes(fuser->SubShapes(), filename);
+    }
+    catch (CTiglError&) {
+        throw CTiglError("Cannot export fused Airplane as IGES", TIGL_ERROR);
+    }
+}
+
+
+
+
+// Save a sequence of shapes in IGES Format
+void CTiglExportIges::ExportShapes(const ListPNamedShape& shapes, const std::string& filename) const
+{
     IGESControl_Controller::Init();
-    SetTranslationParamters();
+
+    if ( filename.empty()) {
+       LOG(ERROR) << "Error: Empty filename in ExportShapes.";
+       return;
+    }
+
+    ListPNamedShape::const_iterator it;
+    SetTranslationParameters();
 #ifdef TIGL_USE_XCAF
     // create the xde document
     Handle(XCAFApp_Application) hApp = XCAFApp_Application::GetApplication();
@@ -213,7 +234,9 @@ void CTiglExportIges::ExportFusedIGES(const std::string& filename)
     Handle(XCAFDoc_ShapeTool) myAssembly = XCAFDoc_DocumentTool::ShapeTool(hDoc->Main());
 
     IGESCAFControl_Writer igesWriter;
-    GroupAndInsertShapeToCAF(myAssembly, fusedAirplane, myStoreType);
+    for (it = shapes.begin(); it != shapes.end(); ++it) {
+        GroupAndInsertShapeToCAF(myAssembly, *it, WHOLE_SHAPE);
+    }
 
     igesWriter.Model()->ApplyStatic(); // apply set parameters
     if (igesWriter.Transfer(hDoc) == Standard_False) {
@@ -222,37 +245,21 @@ void CTiglExportIges::ExportFusedIGES(const std::string& filename)
 #else
     IGESControl_Writer igesWriter;
     igesWriter.Model()->ApplyStatic();
-    igesWriter.AddShape(fusedAirplane->Shape());
-#endif
 
-    WriteIGESFaceNames(igesWriter.TransferProcess(), fusedAirplane);
-
-    if (igesWriter.Write(const_cast<char*>(filename.c_str())) != Standard_True) {
-        throw CTiglError("Error: Export fused shapes to IGES file failed in CTiglExportIges::ExportFusedIGES", TIGL_ERROR);
-    }
-}
-
-
-
-
-// Save a sequence of shapes in IGES Format
-void CTiglExportIges::ExportShapes(const Handle(TopTools_HSequenceOfShape)& aHSequenceOfShape, const std::string& filename)
-{
-    IGESControl_Controller::Init();
-    IGESControl_Writer igesWriter;
-    SetTranslationParamters();
-    igesWriter.Model()->ApplyStatic(); // apply set parameters
-
-    if ( filename.empty()) {
-       LOG(ERROR) << "Error: Empty filename in ExportShapes.";
-       return;
-    }
-
-    for (Standard_Integer i=1;i<=aHSequenceOfShape->Length();i++) {
-        igesWriter.AddShape (aHSequenceOfShape->Value(i));
+    for (it = shapes.begin(); it != shapes.end(); ++it) {
+        PNamedShape pshape = *it;
+        igesWriter.AddShape (pshape->Shape());
     }
 
     igesWriter.ComputeModel();
+#endif
+
+    // write face entity names
+    for (it = shapes.begin(); it != shapes.end(); ++it) {
+        PNamedShape pshape = *it;
+        WriteIGESFaceNames(igesWriter.TransferProcess(), pshape);
+    }
+
     if (igesWriter.Write(const_cast<char*>(filename.c_str())) != Standard_True) {
         throw CTiglError("Error: Export of shapes to IGES file failed in CCPACSImportExport::SaveIGES", TIGL_ERROR);
     }
@@ -262,28 +269,5 @@ void CTiglExportIges::SetOCAFStoreType(ShapeStoreType type)
 {
     myStoreType = type;
 }
-
-#ifdef TIGL_USE_XCAF
-// Saves as iges, with cpacs metadata information in it
-void CTiglExportIges::ExportIgesWithCPACSMetadata(const std::string& filename)
-{
-    if ( filename.empty()) {
-        LOG(ERROR) << "Error: Empty filename in ExportIgesWithCPACSMetadata.";
-        return;
-    }
-
-    CCPACSImportExport generator(myConfig);
-    Handle(TDocStd_Document) hDoc = generator.buildXDEStructure();
-
-    IGESControl_Controller::Init();
-    IGESCAFControl_Writer writer;
-    SetTranslationParamters();
-    writer.Model()->ApplyStatic(); // apply set parameters
-
-    writer.Transfer(hDoc);
-    writer.Write(filename.c_str());
-}
-
-#endif
 
 } // end namespace tigl
