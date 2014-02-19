@@ -238,6 +238,7 @@ TEST_F(WingGuideCurve, tiglWingGuideCurve_CCPACSGuideCurveAlgo)
     tigl::CTiglTransformation trans;
     trans.SetIdentity();
     trans.AddTranslation(0.0, 1.0, 0.0);
+    trans.AddScaling(2.0, 1.0, 1.0);
     TopoDS_Wire lowerOuterWire = TopoDS::Wire(trans.Transform(lowerOuterWireLocal));
     TopoDS_Wire upperOuterWire = TopoDS::Wire(trans.Transform(upperOuterWireLocal));
 
@@ -254,7 +255,7 @@ TEST_F(WingGuideCurve, tiglWingGuideCurve_CCPACSGuideCurveAlgo)
 
     TopoDS_Wire guideCurveWire;
     // instantiate guideCurveAlgo
-    guideCurveWire = tigl::CCPACSGuideCurveAlgo<tigl::CCPACSWingProfileGetPointAlgo> (innerWire, outerWire, 0.0, 0.0, 1.0, 1.0, PGuideCurveProfile);
+    guideCurveWire = tigl::CCPACSGuideCurveAlgo<tigl::CCPACSWingProfileGetPointAlgo> (innerWire, outerWire, 0.0, 0.0, 1.0, 2.0, PGuideCurveProfile);
 
     // check is guide curve runs through sample points
     // get curve
@@ -274,6 +275,8 @@ TEST_F(WingGuideCurve, tiglWingGuideCurve_CCPACSGuideCurveAlgo)
         ASSERT_EQ(intersection.NbPoints(), 1);
         gp_Pnt point = intersection.Point(1);
 
+        // scale sample points since 2nd profile is scaled by a factor 2
+        predictedSamplePointsX[i]*=(1.0+(2.0-1.0)*b);
         // check is guide curve runs through the predicted sample points
         ASSERT_NEAR(predictedSamplePointsX[i], point.X(), 1E-14);
         ASSERT_NEAR(b, point.Y(), 1E-14);
@@ -302,5 +305,6 @@ TEST_F(WingGuideCurve, tiglWingGuideCurve_samplePoints)
     }
     */
 }
+
 
 
