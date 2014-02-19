@@ -120,6 +120,7 @@ endif(WIN32)
 
 # style checks
 add_custom_target(checkstyle)
+add_custom_target(checkstylexml)
 
 add_subdirectory(src)
 add_subdirectory(TIGLViewer)
