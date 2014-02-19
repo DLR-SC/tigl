@@ -14,6 +14,9 @@ find_package(Qt4 4.4.3)
 #build only tiglviewer if qt was found
 if(QT4_FOUND)	
 
+include(tiglmacros)
+AddToCheckstyle()
+
 # required opencascade libraries
 set (TV_OCC_LIBS 
 	TKOpenGl 

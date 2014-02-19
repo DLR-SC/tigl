@@ -69,13 +69,14 @@ namespace
         return "UNKNOWN";
     }
 
-    void NameSymplane(CNamedShape& shape){
+    void NameSymplane(CNamedShape& shape)
+    {
         TopTools_IndexedMapOfShape map;
         TopExp::MapShapes(shape.Shape(),   TopAbs_FACE, map);
-        for(int iface = 1; iface <= map.Extent(); ++iface){
+        for (int iface = 1; iface <= map.Extent(); ++iface){
             TopoDS_Face face = TopoDS::Face(map(iface));
             gp_Pnt p = GetCentralFacePoint(face);
-            if(fabs(p.Y()) < Precision::Confusion()) {
+            if (fabs(p.Y()) < Precision::Confusion()) {
                 CFaceTraits traits = shape.GetFaceTraits(iface-1);
                 traits.SetName("Symmetry");
                 shape.SetFaceTraits(iface-1, traits);

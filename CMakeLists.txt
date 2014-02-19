@@ -75,6 +75,7 @@ endif()
 
 find_package( OpenCASCADE 6.6.0 REQUIRED COMPONENTS ${OCC_LIBS})
 find_package( TIXI 2.1.0 REQUIRED)
+find_package( PythonInterp )
 
 OPTION(TIGL_USE_GLOG "Enables advanced logging (requires google glog)" OFF)
 if(TIGL_USE_GLOG)
@@ -117,6 +118,8 @@ if(WIN32)
     endif(CMAKE_BUILD_TYPE STREQUAL "Debug")
 endif(WIN32)
 
+# style checks
+add_custom_target(checkstyle)
 
 add_subdirectory(src)
 add_subdirectory(TIGLViewer)
