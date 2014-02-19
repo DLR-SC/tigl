@@ -49,7 +49,7 @@ public:
      * \param wire Wire which contains exactly two edges: The upper wing profile
      *             edge and the lower wing profile edge
      */
-    CCPACSWingProfileGetPointAlgo (TopoDS_Wire& wire);
+    CCPACSWingProfileGetPointAlgo (const TopoDS_Wire& wire);
 
     /**
      * \brief Get point and the tangent on wing profile at curve parameter alpha
@@ -70,6 +70,3 @@ private:
 
 } // end namespace tigl
 #endif // CCPACSWINGPROFILEGETPOINTALGO_H
-
-
-
