@@ -78,16 +78,13 @@ namespace
         TopExp::MapShapes(shape->Shape(),   TopAbs_FACE, faceMap);
         for (int iface = 1; iface <= faceMap.Extent(); ++iface) {
             TopoDS_Face face = TopoDS::Face(faceMap(iface));
-            std::string name = shape->Name();
-            PNamedShape origin = shape->GetFaceTraits(iface-1).Origin();
-            if (origin) {
-                name = origin->Name();
-            }
+            std::string faceName = shape->GetFaceTraits(iface-1).Name();
+
             // set face name
             Handle(StepShape_AdvancedFace) SF;
             Handle(TransferBRep_ShapeMapper) mapper = TransferBRep::ShapeMapper ( FP, face );
             if ( FP->FindTypedTransient ( mapper, STANDARD_TYPE(StepShape_AdvancedFace), SF ) ) {
-                Handle(TCollection_HAsciiString) str = new TCollection_HAsciiString(name.c_str());
+                Handle(TCollection_HAsciiString) str = new TCollection_HAsciiString(faceName.c_str());
                 SF->SetName(str);
             }
         }
@@ -196,13 +193,25 @@ void CTiglExportStep::ExportFusedStep(const std::string& filename)
     fuser->SetResultMode(HALF_PLANE_TRIMMED_FF);
     assert(fuser);
 
-    PNamedShape fusedAirplane = fuser->NamedShape();
+    PNamedShape fusedAirplane = fuser->FusedPlane();
+    PNamedShape farField      = fuser->FarField();
     if (!fusedAirplane) {
         throw CTiglError("Error computing fused airplane.", TIGL_NULL_POINTER);
     }
 
     try {
-        ExportShapes(fuser->SubShapes(), filename);
+        ListPNamedShape l;
+        l.push_back(fusedAirplane);
+        l.push_back(farField);
+
+        // add intersections
+        const ListPNamedShape& ints = fuser->Intersections();
+        ListPNamedShape::const_iterator it;
+        for (it = ints.begin(); it != ints.end(); ++it) {
+            l.push_back(*it);
+        }
+
+        ExportShapes(l, filename);
     }
     catch (CTiglError&) {
         throw CTiglError("Cannot export fused Airplane as STEP", TIGL_ERROR);
@@ -232,7 +241,7 @@ void CTiglExportStep::ExportShapes(const ListPNamedShape& shapes, const std::str
 
     STEPCAFControl_Writer stepWriter;
     for (it = shapes.begin(); it != shapes.end(); ++it) {
-        GroupAndInsertShapeToCAF(myAssembly, *it, WHOLE_SHAPE);
+        GroupAndInsertShapeToCAF(myAssembly, *it, NAMED_COMPOUNDS);
     }
 
     if (stepWriter.Transfer(hDoc, STEP_WRITEMODE) == Standard_False) {

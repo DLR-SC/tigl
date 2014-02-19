@@ -24,6 +24,14 @@
 #include "CFuseShapes.h"
 #include "CCutShape.h"
 #include "CMergeShapes.h"
+#include "CTrimShape.h"
+#include "tiglcommonfunctions.h"
+
+#include <BOPCol_ListOfShape.hxx>
+#include <BOPAlgo_PaveFiller.hxx>
+
+#include <TopExp.hxx>
+#include <TopTools_IndexedMapOfShape.hxx>
 
 #include <string>
 
@@ -60,6 +68,20 @@ namespace
 
         return "UNKNOWN";
     }
+
+    void NameSymplane(CNamedShape& shape){
+        TopTools_IndexedMapOfShape map;
+        TopExp::MapShapes(shape.Shape(),   TopAbs_FACE, map);
+        for(int iface = 1; iface <= map.Extent(); ++iface){
+            TopoDS_Face face = TopoDS::Face(map(iface));
+            gp_Pnt p = GetCentralFacePoint(face);
+            if(fabs(p.Y()) < Precision::Confusion()) {
+                CFaceTraits traits = shape.GetFaceTraits(iface-1);
+                traits.SetName("Symmetry");
+                shape.SetFaceTraits(iface-1, traits);
+            }
+        }
+    }
 }
 
 namespace tigl
@@ -80,7 +102,7 @@ void CTiglFusePlane::SetResultMode(TiglFuseResultMode mode)
     }
 }
 
-const PNamedShape CTiglFusePlane::NamedShape()
+const PNamedShape CTiglFusePlane::FusedPlane()
 {
     Perform();
     return _result;
@@ -99,12 +121,19 @@ const ListPNamedShape& CTiglFusePlane::Intersections()
     return _intersections;
 }
 
+const PNamedShape CTiglFusePlane::FarField()
+{
+    Perform();
+    return _farfield;
+}
+
 void CTiglFusePlane::Invalidate()
 {
     _hasPerformed = false;
     _subShapes.clear();
     _intersections.clear();
     _result.reset();
+    _farfield.reset();
 }
 
 /**
@@ -176,6 +205,27 @@ void CTiglFusePlane::Perform()
         if (*it) {
             _intersections.push_back(*it);
         }
+    }
+
+    CCPACSFarField& farfield = _myconfig.GetFarField();
+    if (farfield.GetFieldType() != NONE && (_mymode == FULL_PLANE_TRIMMED_FF || _mymode == HALF_PLANE_TRIMMED_FF)) {
+        PNamedShape ff(new CNamedShape(farfield.GetLoft(), farfield.GetUID().c_str()));
+        NameSymplane(*ff);
+
+        BOPCol_ListOfShape aLS;
+        aLS.Append(_result->Shape());
+        aLS.Append(ff->Shape());
+
+        BOPAlgo_PaveFiller dsfill;
+        dsfill.SetArguments(aLS);
+        dsfill.Perform();
+        CTrimShape trim1(_result, ff, dsfill, INCLUDE);
+        PNamedShape resulttrimmed = trim1.NamedShape();
+
+        CTrimShape trim2(ff, _result, dsfill, EXCLUDE);
+        _farfield = trim2.NamedShape();
+
+        _result = resulttrimmed;
     }
 
     if (_result) {

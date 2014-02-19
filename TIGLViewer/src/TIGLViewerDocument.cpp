@@ -1261,7 +1261,7 @@ void TIGLViewerDocument::exportMeshedConfigVTK()
         if (fuser) {
             // invoke fusing algo
             fuser->SetResultMode(tigl::FULL_PLANE);
-            fuser->NamedShape();
+            fuser->FusedPlane();
         }
         writeToStatusBar("Writing meshed vtk file");
         tigl::CTiglExportVtk exporter(GetConfiguration());
@@ -1414,7 +1414,7 @@ void TIGLViewerDocument::drawFusedAircraft()
     try {
         tigl::PTiglFusePlane fuser = GetConfiguration().AircraftFusingAlgo();
         fuser->SetResultMode(mode);
-        PNamedShape airplane = fuser->NamedShape();
+        PNamedShape airplane = fuser->FusedPlane();
         if (!airplane) {
             displayError("Error computing fused aircraft");
             return;
@@ -1447,6 +1447,15 @@ void TIGLViewerDocument::drawFusedAircraft()
                 displayShape((*it2)->Shape(), Quantity_NOC_WHITE);
             }
         }
+
+        // get far field if available
+        PNamedShape ff = fuser->FarField();
+        if (ff) {
+            Handle(AIS_Shape) shape = new AIS_Shape(ff->Shape());
+            shape->SetMaterial(Graphic3d_NOM_PEWTER);
+            shape->SetTransparency(0.6);
+            myAISContext->Display(shape, Standard_True);
+        }
     }
     catch(tigl::CTiglError & error){
         std::cerr << error.getError() << std::endl;
@@ -1460,7 +1469,7 @@ void TIGLViewerDocument::drawFusedAircraft()
 void TIGLViewerDocument::drawFusedAircraftTriangulation()
 {
     QApplication::setOverrideCursor( Qt::WaitCursor );
-    TopoDS_Shape airplane = GetConfiguration().AircraftFusingAlgo()->NamedShape()->Shape();
+    TopoDS_Shape airplane = GetConfiguration().AircraftFusingAlgo()->FusedPlane()->Shape();
     myAISContext->EraseAll(Standard_False);
     TopoDS_Compound triangulation;
     createShapeTriangulation(airplane, triangulation);
@@ -1637,43 +1646,39 @@ void TIGLViewerDocument::createShapeTriangulation(const TopoDS_Shape& shape, Top
     builder.MakeCompound(compound);
     builder.Add(compound, shape);
     
-    TopExp_Explorer shellExplorer;
     TopExp_Explorer faceExplorer;
-    for (shellExplorer.Init(shape, TopAbs_SHELL); shellExplorer.More(); shellExplorer.Next()) {
-        TopoDS_Shell shell = TopoDS::Shell(shellExplorer.Current());
 
-        for (faceExplorer.Init(shell, TopAbs_FACE); faceExplorer.More(); faceExplorer.Next()) {
-            TopoDS_Face face = TopoDS::Face(faceExplorer.Current());
-            TopLoc_Location location;
-            Handle(Poly_Triangulation) triangulation = BRep_Tool::Triangulation(face, location);
-            if (triangulation.IsNull()) {
-                continue;
+    for (faceExplorer.Init(shape, TopAbs_FACE); faceExplorer.More(); faceExplorer.Next()) {
+        TopoDS_Face face = TopoDS::Face(faceExplorer.Current());
+        TopLoc_Location location;
+        Handle(Poly_Triangulation) triangulation = BRep_Tool::Triangulation(face, location);
+        if (triangulation.IsNull()) {
+            continue;
+        }
+
+        gp_Trsf nodeTransformation = location;
+        const TColgp_Array1OfPnt& nodes = triangulation->Nodes();
+
+        int index1, index2, index3;
+        const Poly_Array1OfTriangle& triangles = triangulation->Triangles();
+        for (int j = triangles.Lower(); j <= triangles.Upper(); j++) {
+            const Poly_Triangle& triangle = triangles(j);
+            triangle.Get(index1, index2, index3);
+            gp_Pnt point1 = nodes(index1).Transformed(nodeTransformation);
+            gp_Pnt point2 = nodes(index2).Transformed(nodeTransformation);
+            gp_Pnt point3 = nodes(index3).Transformed(nodeTransformation);
+
+            BRepBuilderAPI_MakeEdge edge1(point1, point2);
+            BRepBuilderAPI_MakeEdge edge2(point2, point3);
+            BRepBuilderAPI_MakeEdge edge3(point3, point1);
+            if (edge1.IsDone()) {
+                builder.Add(compound, edge1);
             }
-
-            gp_Trsf nodeTransformation = location;
-            const TColgp_Array1OfPnt& nodes = triangulation->Nodes();
-
-            int index1, index2, index3;
-            const Poly_Array1OfTriangle& triangles = triangulation->Triangles();
-            for (int j = triangles.Lower(); j <= triangles.Upper(); j++) {
-                const Poly_Triangle& triangle = triangles(j);
-                triangle.Get(index1, index2, index3);
-                gp_Pnt point1 = nodes(index1).Transformed(nodeTransformation);
-                gp_Pnt point2 = nodes(index2).Transformed(nodeTransformation);
-                gp_Pnt point3 = nodes(index3).Transformed(nodeTransformation);
-
-                BRepBuilderAPI_MakeEdge edge1(point1, point2);
-                BRepBuilderAPI_MakeEdge edge2(point2, point3);
-                BRepBuilderAPI_MakeEdge edge3(point3, point1);
-                if (edge1.IsDone()) {
-                    builder.Add(compound, edge1);
-                }
-                if (edge2.IsDone()) {
-                    builder.Add(compound, edge2);
-                }
-                if (edge3.IsDone()) {
-                    builder.Add(compound, edge3);
-                }
+            if (edge2.IsDone()) {
+                builder.Add(compound, edge2);
+            }
+            if (edge3.IsDone()) {
+                builder.Add(compound, edge3);
             }
         }
     }

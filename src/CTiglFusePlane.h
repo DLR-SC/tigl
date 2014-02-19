@@ -44,7 +44,8 @@ public:
     // sets mode for plane generation, by default a half plane is created
     TIGL_EXPORT void SetResultMode(TiglFuseResultMode mode);
 
-    TIGL_EXPORT const PNamedShape NamedShape();
+    TIGL_EXPORT const PNamedShape FusedPlane();
+    TIGL_EXPORT const PNamedShape FarField();
     TIGL_EXPORT const ListPNamedShape& SubShapes();
     TIGL_EXPORT const ListPNamedShape& Intersections();
 
@@ -55,6 +56,7 @@ private:
     PNamedShape          _result;         /**< contains the result of the fusing operation >**/
     ListPNamedShape      _subShapes;      /**< contains the subshapes of the result after fusing >**/
     ListPNamedShape      _intersections;  /**< contains the shape shape intersections >**/
+    PNamedShape          _farfield;       /**< contains the farfield if available >**/
     CCPACSConfiguration& _myconfig;       /**< Ref to CPACS config >**/
     TiglFuseResultMode    _mymode;
     bool _hasPerformed;

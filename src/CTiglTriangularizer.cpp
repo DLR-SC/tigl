@@ -113,11 +113,11 @@ CTiglTriangularizer::CTiglTriangularizer(CCPACSConfiguration &config, bool fuseS
 
         PTiglFusePlane fuser = config.AircraftFusingAlgo();
         fuser->SetResultMode(FULL_PLANE);
-        if (!fuser->NamedShape()) {
+        if (!fuser->FusedPlane()) {
             throw CTiglError("Error computing fused aircraft in CTiglTriangularizer", TIGL_ERROR);
         }
 
-        TopoDS_Shape planeShape = fuser->NamedShape()->Shape();
+        TopoDS_Shape planeShape = fuser->FusedPlane()->Shape();
 
         useMultipleObjects(false);
         triangularizeComponent(*pRoot, true, planeShape, deflection, mode);
