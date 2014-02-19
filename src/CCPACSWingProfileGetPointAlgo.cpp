@@ -37,7 +37,7 @@
 namespace tigl
 {
 
-CCPACSWingProfileGetPointAlgo::CCPACSWingProfileGetPointAlgo (TopoDS_Wire& wire)
+CCPACSWingProfileGetPointAlgo::CCPACSWingProfileGetPointAlgo (const TopoDS_Wire& wire)
 {
     TopoDS_Edge lowerEdge;
     TopoDS_Edge upperEdge;
