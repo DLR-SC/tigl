@@ -7,7 +7,7 @@ function(AddToCheckstyle)
         DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/filefilter.txt
         WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
         COMMAND ${PYTHON_EXECUTABLE}
-        ARGS ${PROJECT_SOURCE_DIR}/thirdparty/nsiqcppstyle/nsiqcppstyle.py ${CMAKE_CURRENT_SOURCE_DIR}
+        ARGS ${PROJECT_SOURCE_DIR}/thirdparty/nsiqcppstyle/nsiqcppstyle.py -o ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR}
     )
 
     add_custom_command(
@@ -15,7 +15,7 @@ function(AddToCheckstyle)
         DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/filefilter.txt
         WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
         COMMAND ${PYTHON_EXECUTABLE}
-        ARGS ${PROJECT_SOURCE_DIR}/thirdparty/nsiqcppstyle/nsiqcppstyle.py --output=xml ${CMAKE_CURRENT_SOURCE_DIR}
+        ARGS ${PROJECT_SOURCE_DIR}/thirdparty/nsiqcppstyle/nsiqcppstyle.py --ci -o ${CMAKE_CURRENT_BINARY_DIR} --output=xml ${CMAKE_CURRENT_SOURCE_DIR}
     )
 
     add_custom_command(

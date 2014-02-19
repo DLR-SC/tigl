@@ -41,3 +41,6 @@ configure_file (
   "${CMAKE_CURRENT_BINARY_DIR}/runtests.sh"
 )
 
+include(tiglmacros)
+AddToCheckstyle()
+
