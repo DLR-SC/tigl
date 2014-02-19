@@ -69,3 +69,6 @@ install (FILES tigl.h ${CMAKE_CURRENT_BINARY_DIR}/tigl_version.h
 add_library(TIGL_static ${TIGL_SRC})
 # this does no actual linking but keeps track of the dependencies
 target_link_libraries (TIGL_static ${TIGL_LIBRARIES})
+
+include(tiglmacros)
+AddToCheckstyle()
