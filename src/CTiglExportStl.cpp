@@ -82,7 +82,7 @@ void CTiglExportStl::ExportMeshedGeometrySTL(const std::string& filename, double
     fuser->SetResultMode(FULL_PLANE);
 
     // get/compute shape
-    PNamedShape ac = fuser->NamedShape();
+    PNamedShape ac = fuser->FusedPlane();
     if (!ac) {
         throw CTiglError("Error computing fused geometry in CTiglExportStl::ExportMeshedGeometrySTL", TIGL_ERROR);
     }

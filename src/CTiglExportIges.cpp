@@ -198,13 +198,25 @@ void CTiglExportIges::ExportFusedIGES(const std::string& filename)
     fuser->SetResultMode(HALF_PLANE_TRIMMED_FF);
     assert(fuser);
 
-    PNamedShape fusedAirplane = fuser->NamedShape();
+    PNamedShape fusedAirplane = fuser->FusedPlane();
+    PNamedShape farField      = fuser->FarField();
     if (!fusedAirplane) {
         throw CTiglError("Error computing fused airplane.", TIGL_NULL_POINTER);
     }
 
     try {
-        ExportShapes(fuser->SubShapes(), filename);
+        ListPNamedShape l;
+        l.push_back(fusedAirplane);
+        l.push_back(farField);
+
+        // add intersections
+        const ListPNamedShape& ints = fuser->Intersections();
+        ListPNamedShape::const_iterator it;
+        for (it = ints.begin(); it != ints.end(); ++it) {
+            l.push_back(*it);
+        }
+
+        ExportShapes(l, filename);
     }
     catch (CTiglError&) {
         throw CTiglError("Cannot export fused Airplane as IGES", TIGL_ERROR);
