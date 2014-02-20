@@ -1,4 +1,4 @@
-/* 
+/*
 * Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
 *
 * Created: 2013-06-01 Martin Siggel <Martin.Siggel@dlr.de>
@@ -25,6 +25,7 @@
 #include "gp_Vec.hxx"
 #include "TopoDS_Shape.hxx"
 
+// calculates a wire's circumfence
 TIGL_EXPORT Standard_Real GetWireLength(const class TopoDS_Wire& wire);
 
 // returns a point on the wire (0 <= alpha <= 1)
@@ -43,7 +44,5 @@ TIGL_EXPORT Standard_Real ProjectPointOnLine(gp_Pnt p, gp_Pnt lineStart, gp_Pnt 
 // returns the number of edges of the current shape
 TIGL_EXPORT unsigned int GetNumberOfEdges(const TopoDS_Shape& shape);
 
-// calculates a wire's circumfence
-TIGL_EXPORT Standard_Real WireGetLength(const TopoDS_Wire& wire);
 
 #endif // TIGLCOMMONFUNCTIONS_H

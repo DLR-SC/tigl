@@ -47,8 +47,8 @@ public:
     /**
      * \brief Algorithm which constructs a guide curve for a wing or fuselage profile
      *
-     * \param profileWire1 Wire of the 1st profile in world coordinates (inner in the case of wing profiles)
-     * \param profileWire2 Wire of the 2nd profile in world coordinates (outer in the case of wing profiles)
+     * \param profileShape1 Shape of the 1st profile in world coordinates (inner in the case of wing profiles)
+     * \param profileShape2 Shape of the 2nd profile in world coordinates (outer in the case of wing profiles)
      * \param alpha1 Parameter which defines the starting point of the guide curve on the 1st profile
      * \param alpha2 Parameter which defines the starting point of the guide curve on the 2nd profile
      * \param scale1 Scaling factor from 1st profile (inner profile chord line in the case of wing profiles)
@@ -57,15 +57,15 @@ public:
      *
      * @return Guide curve wire in world coordinates
      */
-    TIGL_EXPORT CCPACSGuideCurveAlgo(const TopoDS_Wire& profileWire1,
-                                     const TopoDS_Wire& profileWire2,
+    TIGL_EXPORT CCPACSGuideCurveAlgo(const TopoDS_Shape& profileShape1,
+                                     const TopoDS_Shape& profileShape2,
                                      const Standard_Real& alpha1,
                                      const Standard_Real& alpha2,
                                      const Standard_Real& scale1,
                                      const Standard_Real& scale2,
                                      PCCPACSGuideCurveProfile PGuideCurveProfile) :
-        _getPointAlgo1(profileWire1),
-        _getPointAlgo2(profileWire2),
+        _getPointAlgo1(profileShape1),
+        _getPointAlgo2(profileShape2),
         _alpha1(alpha1),
         _alpha2(alpha2),
         _scale1(scale1),

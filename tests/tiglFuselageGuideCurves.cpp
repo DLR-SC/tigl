@@ -152,8 +152,13 @@ TEST_F(FuselageGuideCurve, tiglFuselageGuideCurve_CCPACSFuselageProfileGetPointA
     tigl::CCPACSFuselageProfile& profile = config.GetFuselageProfile("GuideCurveModel_Fuselage_Sec3_El1_Pro");
     TopoDS_Wire wire = profile.GetWire();
 
+    // pack wire into a compound
+    BRep_Builder builder;
+    TopoDS_Compound wireCompound;
+    builder.MakeCompound(wireCompound);
+    builder.Add(wireCompound, wire);
     // instantiate getPointAlgo
-    tigl::CCPACSFuselageProfileGetPointAlgo getPointAlgo(wire);
+    tigl::CCPACSFuselageProfileGetPointAlgo getPointAlgo(wireCompound);
     gp_Pnt point;
     gp_Vec tangent;
 
@@ -161,14 +166,15 @@ TEST_F(FuselageGuideCurve, tiglFuselageGuideCurve_CCPACSFuselageProfileGetPointA
     int N = 20;
     int M = 2;
     for (int i=0; i<=N+2*M; i++) {
-        double da = 2.0/double(N);
-        double alpha = -1.0 -M*da + da*i;
+        double da = 1.0/double(N);
+        double alpha = -M*da + da*i;
         getPointAlgo.GetPointTangent(alpha, point, tangent);
         outputXY(i, point.Y(), point.Z(), "./TestData/analysis/tiglFuselageGuideCurve_profileSamplePoints_points.dat");
         outputXYVector(i, point.Y(), point.Z(), tangent.Y(), tangent.Z(), "./TestData/analysis/tiglFuselageGuideCurve_profileSamplePoints_tangents.dat");
         // plot points and tangents with gnuplot by:
         // echo "plot 'TestData/analysis/tiglFuselageGuideCurve_profileSamplePoints_tangents.dat' u 1:2:3:4 with vectors filled head lw 2, 'TestData/analysis/tiglFuselageGuideCurve_profileSamplePoints_points.dat' w linespoints lw 2" | gnuplot -persist
     }
+
     // lower point
     getPointAlgo.GetPointTangent(0.0, point, tangent);
     ASSERT_NEAR(point.X(), 0.0, 1E-10);
@@ -196,6 +202,7 @@ TEST_F(FuselageGuideCurve, tiglFuselageGuideCurve_CCPACSFuselageProfileGetPointA
     ASSERT_EQ(tangent.Y(), tangent2.Y());
     ASSERT_EQ(tangent.Z(), tangent2.Z());
 }
+
 
 
 

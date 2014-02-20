@@ -46,10 +46,9 @@ public:
      * \brief Constructor which expects a wire of to concatenated upper and lower wing edges as input
      *
      *
-     * \param wire Wire which contains exactly two edges: The upper wing profile
-     *             edge and the lower wing profile edge
+     * \param shape Shape which contains exactly two wires: The upper and lower wing profile wires
      */
-    CCPACSWingProfileGetPointAlgo (const TopoDS_Wire& wire);
+    CCPACSWingProfileGetPointAlgo (const TopoDS_Shape& shape);
 
     /**
      * \brief Get point and the tangent on wing profile at curve parameter alpha
@@ -70,3 +69,5 @@ private:
 
 } // end namespace tigl
 #endif // CCPACSWINGPROFILEGETPOINTALGO_H
+
+

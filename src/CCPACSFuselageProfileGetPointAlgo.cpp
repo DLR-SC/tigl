@@ -32,15 +32,32 @@
 #include "BRepTools_WireExplorer.hxx"
 #include "BRepBuilderAPI_MakeWire.hxx"
 #include "Geom_Line.hxx"
+#include "TopExp_Explorer.hxx"
+#include "TopoDS.hxx"
 #include "tiglcommonfunctions.h"
 
 namespace tigl
 {
 
-CCPACSFuselageProfileGetPointAlgo::CCPACSFuselageProfileGetPointAlgo (TopoDS_Wire& w)
+CCPACSFuselageProfileGetPointAlgo::CCPACSFuselageProfileGetPointAlgo (TopoDS_Shape& shape)
 {
-    wire = w;
-    wireLength = WireGetLength(wire);
+    try {
+        TopExp_Explorer ex;
+        int count=0;
+        ex.Init(shape, TopAbs_WIRE);
+        if (ex.More()) {
+            wire = TopoDS::Wire(ex.Current());
+            ex.Next();
+            count++;
+        }
+        if (count!=1 || ex.More()) {
+            throw CTiglError("Error: CCPACSFuselageProfileGetPointAlgo: Number of extracted wires is not equal 1", TIGL_ERROR);
+        }
+    }
+    catch(...) {
+        throw CTiglError("Error: CCPACSFuselageProfileGetPointAlgo: Conversion of shape to wire failed", TIGL_ERROR);
+    }
+    wireLength = GetWireLength(wire);
 }
 
 void CCPACSFuselageProfileGetPointAlgo::GetPointTangent(const double& alpha, gp_Pnt& point, gp_Vec& tangent)
@@ -79,6 +96,8 @@ void CCPACSFuselageProfileGetPointAlgo::GetPointTangent(const double& alpha, gp_
 }
 
 } // end namespace tigl
+
+
 
 
 
