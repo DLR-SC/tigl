@@ -28,12 +28,14 @@
 #include "CSharedPtr.h"
 #include "CCPACSConfigurationManager.h"
 #include "BRep_Tool.hxx"
+#include "TopoDS_Shape.hxx"
 #include "BRepBuilderAPI_MakeWire.hxx"
 #include "BRepTools_WireExplorer.hxx"
 #include "Geom_Curve.hxx"
 #include "Geom_Plane.hxx"
 #include "gp_Pnt.hxx"
 #include "gp_Vec.hxx"
+#include "BRep_Builder.hxx"
 #include "GeomAPI_IntCS.hxx"
 #include "GeomAPI_ProjectPointOnCurve.hxx"
 #include "CTiglError.h"
@@ -151,13 +153,14 @@ TEST_F(WingGuideCurve, tiglWingGuideCurve_CCPACSWingProfileGetPointAlgo)
     TopoDS_Wire lowerWire = profile.GetLowerWire();
 
     // concatenate wires
-    BRepBuilderAPI_MakeWire wireBuilder(upperWire);
-    wireBuilder.Add(lowerWire);
-    ASSERT_TRUE(wireBuilder.IsDone());
-    TopoDS_Wire wire=wireBuilder.Wire();
+    BRep_Builder builder;
+    TopoDS_Compound concatenatedWires;
+    builder.MakeCompound(concatenatedWires);
+    builder.Add(concatenatedWires, lowerWire);
+    builder.Add(concatenatedWires, upperWire);
 
     // instantiate getPointAlgo
-    tigl::CCPACSWingProfileGetPointAlgo getPointAlgo(wire);
+    tigl::CCPACSWingProfileGetPointAlgo getPointAlgo(concatenatedWires);
     gp_Pnt point;
     gp_Vec tangent;
 
@@ -243,10 +246,16 @@ TEST_F(WingGuideCurve, tiglWingGuideCurve_CCPACSGuideCurveAlgo)
     TopoDS_Wire upperOuterWire = TopoDS::Wire(trans.Transform(upperOuterWireLocal));
 
     // concatenate wires
-    BRepBuilderAPI_MakeWire outerWireBuilder(upperOuterWire);
-    outerWireBuilder.Add(lowerOuterWire);
-    ASSERT_TRUE(outerWireBuilder.IsDone());
-    TopoDS_Wire outerWire=outerWireBuilder.Wire();
+    BRep_Builder builder;
+    TopoDS_Compound concatenatedOuterWires;
+    builder.MakeCompound(concatenatedOuterWires);
+    builder.Add(concatenatedOuterWires, lowerOuterWire);
+    builder.Add(concatenatedOuterWires, upperOuterWire);
+
+    TopoDS_Compound concatenatedInnerWires;
+    builder.MakeCompound(concatenatedInnerWires);
+    builder.Add(concatenatedInnerWires, lowerInnerWire);
+    builder.Add(concatenatedInnerWires, upperInnerWire);
 
     // get guide curve profile
     CSharedPtr<tigl::CCPACSGuideCurveProfile> PGuideCurveProfile(new tigl::CCPACSGuideCurveProfile("/cpacs/vehicles/profiles/guideCurveProfiles/guideCurveProfile[7]"));
@@ -255,7 +264,7 @@ TEST_F(WingGuideCurve, tiglWingGuideCurve_CCPACSGuideCurveAlgo)
 
     TopoDS_Wire guideCurveWire;
     // instantiate guideCurveAlgo
-    guideCurveWire = tigl::CCPACSGuideCurveAlgo<tigl::CCPACSWingProfileGetPointAlgo> (innerWire, outerWire, 0.0, 0.0, 1.0, 2.0, PGuideCurveProfile);
+    guideCurveWire = tigl::CCPACSGuideCurveAlgo<tigl::CCPACSWingProfileGetPointAlgo> (concatenatedInnerWires, concatenatedOuterWires, 0.0, 0.0, 1.0, 2.0, PGuideCurveProfile);
 
     // check is guide curve runs through sample points
     // get curve

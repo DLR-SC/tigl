@@ -47,7 +47,7 @@ public:
      *
      * \param wire Fuselage profile wire
      */
-    CCPACSFuselageProfileGetPointAlgo (TopoDS_Wire& wire);
+    CCPACSFuselageProfileGetPointAlgo (TopoDS_Shape& shape);
 
     /**
      * \brief Get point and the tangent on fuselage profile at curve parameter alpha
@@ -66,6 +66,8 @@ private:
 
 } // end namespace tigl
 #endif // CCPACSFUSELAGEPROFILEGETPOINTALGO_H
+
+
 
 
 

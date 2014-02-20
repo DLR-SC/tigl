@@ -38,25 +38,11 @@
 #include "BRepBuilderAPI_MakeEdge.hxx"
 #include "GeomAPI_ProjectPointOnCurve.hxx"
 
+// calculates a wire's circumference
 Standard_Real GetWireLength(const TopoDS_Wire& wire)
 {
-#if 0
-    Standard_Real wireLength = 0.0;
-    // explore all edges of result wire
-    BRepTools_WireExplorer wireExplorer;
-    for (wireExplorer.Init(wire); wireExplorer.More(); wireExplorer.Next()) {
-        Standard_Real firstParam;
-        Standard_Real lastParam;
-        TopoDS_Edge edge = wireExplorer.Current();
-        Handle(Geom_Curve) curve = BRep_Tool::Curve(edge, firstParam, lastParam);
-        GeomAdaptor_Curve adaptorCurve(curve, firstParam, lastParam);
-        wireLength += GCPnts_AbscissaPoint::Length(adaptorCurve);
-    }
-    return(wireLength);
-#else
     BRepAdaptor_CompCurve aCompoundCurve(wire, Standard_True);
     return GCPnts_AbscissaPoint::Length( aCompoundCurve );
-#endif
 }
 
 unsigned int GetNumberOfEdges(const TopoDS_Shape& shape)
@@ -210,13 +196,3 @@ Standard_Real ProjectPointOnLine(gp_Pnt p, gp_Pnt lineStart, gp_Pnt lineStop)
 {
     return gp_Vec(lineStart, p) * gp_Vec(lineStart, lineStop) / gp_Vec(lineStart, lineStop).SquareMagnitude();
 }
-
-// calculates a wire's circumfence
-Standard_Real WireGetLength(const TopoDS_Wire& wire)
-{
-    // ETA 3D point
-    BRepAdaptor_CompCurve aCompoundCurve(wire, Standard_True);
-    Standard_Real len =  GCPnts_AbscissaPoint::Length( aCompoundCurve );
-    return len;
-}
-

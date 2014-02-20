@@ -28,46 +28,51 @@
 
 #include "tigl_internal.h"
 #include "CTiglError.h"
+#include "CTiglLogging.h"
 #include "CCPACSWingProfileGetPointAlgo.h"
 #include "BRepTools_WireExplorer.hxx"
 #include "BRepBuilderAPI_MakeWire.hxx"
+#include "TopExp_Explorer.hxx"
+#include "TopoDS.hxx"
 #include "Geom_Line.hxx"
 #include "tiglcommonfunctions.h"
 
 namespace tigl
 {
 
-CCPACSWingProfileGetPointAlgo::CCPACSWingProfileGetPointAlgo (const TopoDS_Wire& wire)
+CCPACSWingProfileGetPointAlgo::CCPACSWingProfileGetPointAlgo (const TopoDS_Shape& shape)
 {
-    TopoDS_Edge lowerEdge;
-    TopoDS_Edge upperEdge;
     try {
         int count=0;
-        BRepTools_WireExplorer wireExplorer(wire);
-        if (wireExplorer.More()) {
-            lowerEdge = wireExplorer.Current();
+        TopExp_Explorer ex;
+        ex.Init(shape, TopAbs_WIRE);
+        if (ex.More()) {
+            lowerWire = TopoDS::Wire(ex.Current());
             count++;
+            ex.Next();
         }
-        wireExplorer.Next();
-        if (wireExplorer.More()) {
-            upperEdge = wireExplorer.Current();
+        if (ex.More()) {
+            upperWire = TopoDS::Wire(ex.Current());
             count++;
+            ex.Next();
         }
-        wireExplorer.Next();
-        if (count!=2 || wireExplorer.More()) {
+        if (count!=2 || ex.More()) {
             throw CTiglError("Error: CCPACSWingProfileGetPointAlgo: Number of extracted edges is not equal 2", TIGL_ERROR);
         }
     }
     catch(...) {
-        throw CTiglError("Error: CCPACSWingProfileGetPointAlgo: Separation of upper and lower profile failed", TIGL_ERROR);
+        throw CTiglError("Error: CCPACSWingProfileGetPointAlgo: Separation of upper and lower profiles failed", TIGL_ERROR);
     }
 
-    // set wires
-    lowerWire = BRepBuilderAPI_MakeWire(lowerEdge);
-    upperWire = BRepBuilderAPI_MakeWire(upperEdge);
-
+    // concatenate wires
+    BRepBuilderAPI_MakeWire wireBuilder(upperWire);
+    wireBuilder.Add(lowerWire);
+    if (!(wireBuilder.IsDone())) {
+        throw CTiglError("Error: CCPACSWingProfileGetPointAlgo: Concatenation of upper and lower profiles failed", TIGL_ERROR);
+    }
+    TopoDS_Wire wire=wireBuilder.Wire();
     // set circumfence
-    wireLength = WireGetLength(wire);
+    wireLength = GetWireLength(wire);
 }
 
 void CCPACSWingProfileGetPointAlgo::GetPointTangent(const double& alpha, gp_Pnt& point, gp_Vec& tangent)
@@ -111,6 +116,8 @@ void CCPACSWingProfileGetPointAlgo::GetPointTangent(const double& alpha, gp_Pnt&
 }
 
 } // end namespace tigl
+
+
 
 
 
