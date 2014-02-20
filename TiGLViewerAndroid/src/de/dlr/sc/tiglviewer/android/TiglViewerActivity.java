@@ -19,7 +19,6 @@ package de.dlr.sc.tiglviewer.android;
 import java.io.File;
 import java.util.ArrayList;
 
-
 import android.app.Dialog;
 import android.content.Context;
 import android.content.res.Configuration;
@@ -48,12 +47,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class TiglViewerActivity extends ActionBarActivity implements OnNavigationListener {
+	enum navType { 
+		MOVE, 
+		ROTATE 
+	}
+	
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
+    private EGLTouchListener mTouchListener;
 
     private CharSequence mDrawerTitle;
     private CharSequence mTitle;
+	navType navMode = navType.ROTATE;
     
     // list of possible files to open
     private ArrayList<String> fileList;
@@ -124,7 +130,8 @@ public class TiglViewerActivity extends ActionBarActivity implements OnNavigatio
         mDrawerLayout.setDrawerListener(mDrawerToggle);
         
         openGlSurface = (GLSurfaceView) findViewById(R.id.surfaceGLES1);
-        openGlSurface.setOnTouchListener(new EGLTouchListener());
+        mTouchListener = new EGLTouchListener();
+        openGlSurface.setOnTouchListener(mTouchListener);
         setSupportProgressBarIndeterminate(true);
         
         TiGLViewerNativeLib.setAssetMgr(getAssets());
@@ -182,6 +189,20 @@ public class TiglViewerActivity extends ActionBarActivity implements OnNavigatio
             about.setTitle("About TiGL Viewer");
             about.show();
             return true;
+        case R.id.action_toggle_navigation:
+        	switch (navMode) {
+        	case MOVE:
+        		navMode = navType.ROTATE;
+        		mTouchListener.setNavMode(navMode);
+        		item.setIcon(R.drawable.ic_move);
+        		break;
+        	case ROTATE:
+        		navMode = navType.MOVE;
+        		mTouchListener.setNavMode(navMode);
+        		item.setIcon(R.drawable.ic_action_rotate_left);
+        		break;
+        	}
+        	return true;
         default:
             return super.onOptionsItemSelected(item);
         }

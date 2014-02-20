@@ -14,4 +14,5 @@
     <string name="dummy_content">Dummy text</string>
     <string name="drawer_open">Open drawer</string>
     <string name="drawer_close">Close drawer</string>
+    <string name="change_navigation_button">Toggle navigation</string>
 </resources>

@@ -77,6 +77,7 @@ void OsgMainApp::initOsgWindow(int x,int y,int width,int height)
     if(soleViewer) {
     	// the window changed (resize)
     	soleViewer->setUpViewerAsEmbeddedInWindow(x,y,width,height);
+        soleViewer->getEventQueue()->setMouseInputRange(x,y,x+width,y+height);
     	osg::notify(osg::ALWAYS) << "just resizsing ";
     	return;
     }
