@@ -63,6 +63,7 @@
 #include "CCPACSWingProfilePointList.h"
 #include "CCPACSWingSegment.h"
 #include "CCPACSFuselageSegment.h"
+#include "tiglcommonfunctions.h"
 #include "CTiglPoint.h"
 
 #define max(a,b) ((a) > (b) ? (a) : (b))
@@ -326,6 +327,36 @@ QString TIGLViewerDocument::dlgGetWingComponentSegmentSelection()
     }
 }
 
+
+// Wing Segment selection Dialog
+QString TIGLViewerDocument::dlgGetWingSegmentSelection()
+{
+    QStringList segs;
+    bool ok;
+
+    // Initialize wing list
+    tigl::CCPACSConfiguration& config = GetConfiguration();
+    int wingCount = config.GetWingCount();
+    for (int i = 1; i <= wingCount; i++) {
+        tigl::CCPACSWing& wing = config.GetWing(i);
+        for (int j = 1; j <= wing.GetSegmentCount(); ++j) {
+            tigl::CTiglAbstractSegment& segment = wing.GetSegment(j);
+            std::string name = segment.GetUID();
+            if (name == "") {
+                name = "Unknown segment";
+            }
+            segs << name.c_str();
+        }
+    }
+
+    QString choice = QInputDialog::getItem(parent, tr("Select Segment"), tr("Available Segments:"), segs, 0, false, &ok);
+    if (ok) {
+        return choice;
+    }
+    else {
+        return "";
+    }
+}
 
 // Wing profile Dialog
 QString TIGLViewerDocument::dlgGetWingProfileSelection()
@@ -608,6 +639,36 @@ void TIGLViewerDocument::drawWingOverlayProfilePoints()
 }
 
 
+void TIGLViewerDocument::drawWingSegmentGuideCurves()
+{
+    QString wingUid = dlgGetWingSelection();
+    if (wingUid == "") {
+        return;
+    }
+    QString wingSegUid = dlgGetWingSegmentSelection();
+    if (wingSegUid == "") {
+        return;
+    }
+
+    tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
+    tigl::CCPACSWingSegment& wingSeg = (tigl::CCPACSWingSegment&) wing.GetSegment(wingSegUid.toStdString());
+
+    TopoDS_Compound guideCurveContainer = wingSeg.GetGuideCurves();
+    TopExp_Explorer ex;
+    for (ex.Init(guideCurveContainer, TopAbs_WIRE); ex.More(); ex.Next()) {
+        Handle(AIS_Shape) shape = new AIS_Shape(TopoDS::Wire(ex.Current()));
+        shape->SetMaterial(Graphic3d_NOM_METALIZED);
+        myAISContext->Display(shape, Standard_True);
+        for (int i=0; i<=10; i++)
+        {
+            double a=i/double(10);
+            gp_Pnt point;
+            gp_Vec tangent;
+            WireGetPointTangent2(TopoDS::Wire(ex.Current()), a, point, tangent), 
+            DisplayPoint(point, "", Standard_False, 0.0, 0.0, 0.0, 2.0);
+        }
+    }
+}
 
 void TIGLViewerDocument::drawFuselageProfiles()
 {

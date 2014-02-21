@@ -165,6 +165,15 @@ public:
     TIGL_EXPORT TopoDS_Shape& GetUpperShape();
     TIGL_EXPORT TopoDS_Shape& GetLowerShape();
 
+    // builds all guide curve wires
+    TIGL_EXPORT TopoDS_Compound GetGuideCurves(void);
+
+    // get guide curve for given UID
+    TIGL_EXPORT CCPACSGuideCurve& GetGuideCurve(std::string UID);
+
+    // check if guide curve with a given UID exists
+    TIGL_EXPORT bool GuideCurveExists(std::string UID);
+
     // Returns an upper or lower point on the segment surface in
     // dependence of parameters eta and xsi, which range from 0.0 to 1.0.
     // For eta = 0.0, xsi = 0.0 point is equal to leading edge on the
@@ -203,10 +212,6 @@ protected:
 
     // Builds the loft between the two segment sections
     TopoDS_Shape BuildLoft(void);
-
-    // Create guide curves
-    TopoDS_Compound BuildGuideCurves(void);
-
 
 private:
     // Copy constructor

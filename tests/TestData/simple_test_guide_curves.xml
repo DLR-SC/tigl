@@ -373,21 +373,21 @@
 									<guideCurve uID="GuideCurveModel_Wing_Seg_1_2_GuideCurve_TrailingEdgeLower">
 										<name>Lower Trailing Edge GuideCurve from GuideCurveModel - Wing Section 1 Main Element to GuideCurveModel - Wing Section 2 Main Element </name>
 										<description>Lower Trailing Edge GuideCurve from GuideCurveModel - Wing Section 1 Main Element to GuideCurveModel - Wing Section 2 Main Element </description>
-										<guideCurveProfileUID>GuideCurveModel_Wing_GuideCurveProfile_TrailingEdgeLower_Linear</guideCurveProfileUID>
+										<guideCurveProfileUID>GuideCurveModel_Wing_GuideCurveProfile_TrailingEdgeLower_NonLinear</guideCurveProfileUID>
 										<fromRelativeCircumference>-1.0</fromRelativeCircumference>
 										<toRelativeCircumference>-1.0</toRelativeCircumference>
 									</guideCurve>
-									<guideCurve uID="GuideCurveModel_Wing_Seg_1_2_GuideCurve_LeadingEdge_Nonlinear">
+									<guideCurve uID="GuideCurveModel_Wing_Seg_1_2_GuideCurve_LeadingEdge_NonLinear">
 										<name>Leading Edge GuideCurve from GuideCurveModel - Wing Section 1 Main Element to GuideCurveModel - Wing Section 2 Main Element </name>
 										<description>Leading Edge GuideCurve from GuideCurveModel - Wing Section 1 Main Element to GuideCurveModel - Wing Section 2 Main Element </description>
-										<guideCurveProfileUID>GuideCurveModel_Wing_GuideCurveProfile_LeadingEdge_Linear</guideCurveProfileUID>
+										<guideCurveProfileUID>GuideCurveModel_Wing_GuideCurveProfile_LeadingEdge_NonLinear</guideCurveProfileUID>
 										<fromRelativeCircumference>0.0</fromRelativeCircumference>
 										<toRelativeCircumference>0.0</toRelativeCircumference>
 									</guideCurve>
 									<guideCurve uID="GuideCurveModel_Wing_Seg_1_2_GuideCurve_TrailingEdgeUpper">
 										<name>Upper Trailing Edge GuideCurve from GuideCurveModel - Wing Section 1 Main Element to GuideCurveModel - Wing Section 2 Main Element </name>
 										<description>Upper Trailing Edge GuideCurve from GuideCurveModel - Wing Section 1 Main Element to GuideCurveModel - Wing Section 2 Main Element </description>
-										<guideCurveProfileUID>GuideCurveModel_Wing_GuideCurveProfile_TrailingEdgeUpper_Linear</guideCurveProfileUID>
+										<guideCurveProfileUID>GuideCurveModel_Wing_GuideCurveProfile_TrailingEdgeUpper_NonLinear</guideCurveProfileUID>
 										<fromRelativeCircumference>1.0</fromRelativeCircumference>
 										<toRelativeCircumference>1.0</toRelativeCircumference>
 									</guideCurve>
@@ -402,23 +402,37 @@
 									<guideCurve uID="GuideCurveModel_Wing_Seg_2_3_GuideCurve_TrailingEdgeLower">
 										<name>Lower Trailing Edge GuideCurve from GuideCurveModel - Wing Section 2 Main Element to GuideCurveModel - Wing Section 3 Main Element </name>
 										<description>Lower Trailing Edge GuideCurve from GuideCurveModel - Wing Section 2 Main Element to GuideCurveModel - Wing Section 3 Main Element </description>
-										<guideCurveProfileUID>GuideCurveModel_Wing_GuideCurveProfile_TrailingEdgeLower_Linear</guideCurveProfileUID>
+										<guideCurveProfileUID>GuideCurveModel_Wing_GuideCurveProfile_TrailingEdgeLower_NonLinear</guideCurveProfileUID>
 										<fromGuideCurveUID>GuideCurveModel_Wing_Seg_1_2_GuideCurve_TrailingEdgeLower</fromGuideCurveUID>
 										<toRelativeCircumference>-1.0</toRelativeCircumference>
 									</guideCurve>
 									<guideCurve uID="GuideCurveModel_Wing_Seg_2_3_GuideCurve_LeadingEdge">
 										<name>Leading Edge GuideCurve from GuideCurveModel - Wing Section 2 Main Element to GuideCurveModel - Wing Section 3 Main Element </name>
 										<description>Leading Edge GuideCurve from GuideCurveModel - Wing Section 2 Main Element to GuideCurveModel - Wing Section 3 Main Element </description>
-										<guideCurveProfileUID>GuideCurveModel_Wing_GuideCurveProfile_LeadingEdge_Linear</guideCurveProfileUID>
-										<fromGuideCurveUID>GuideCurveModel_Wing_Seg_1_2_GuideCurve_LeadingEdge</fromGuideCurveUID>
+										<guideCurveProfileUID>GuideCurveModel_Wing_GuideCurveProfile_LeadingEdge_NonLinear</guideCurveProfileUID>
+										<fromGuideCurveUID>GuideCurveModel_Wing_Seg_1_2_GuideCurve_LeadingEdge_NonLinear</fromGuideCurveUID>
 										<toRelativeCircumference>0.0</toRelativeCircumference>
 									</guideCurve>
 									<guideCurve uID="GuideCurveModel_Wing_Seg_2_3_GuideCurve_TrailingEdgeUpper">
 										<name>Upper Trailing Edge GuideCurve from GuideCurveModel - Wing Section 2 Main Element to GuideCurveModel - Wing Section 3 Main Element </name>
 										<description>Upper Trailing Edge GuideCurve from GuideCurveModel - Wing Section 2 Main Element to GuideCurveModel - Wing Section 3 Main Element </description>
-										<guideCurveProfileUID>GuideCurveModel_Wing_GuideCurveProfile_TrailingEdgeUpper_Linear</guideCurveProfileUID>
+										<guideCurveProfileUID>GuideCurveModel_Wing_GuideCurveProfile_TrailingEdgeUpper_NonLinear</guideCurveProfileUID>
 										<fromGuideCurveUID>GuideCurveModel_Wing_Seg_1_2_GuideCurve_TrailingEdgeUpper</fromGuideCurveUID>
 										<toRelativeCircumference>1.0</toRelativeCircumference>
+									</guideCurve>
+									<guideCurve uID="GuideCurveModel_Wing_Seg_2_3_GuideCurve_UpperWing">
+										<name>Upper Wing GuideCurve from GuideCurveModel - Wing Section 2 Main Element to GuideCurveModel - Wing Section 3 Main Element </name>
+										<description>Upper Wing GuideCurve from GuideCurveModel - Wing Section 2 Main Element to GuideCurveModel - Wing Section 3 Main Element </description>
+										<guideCurveProfileUID>GuideCurveModel_Wing_GuideCurveProfile_UpperWing_Crazy</guideCurveProfileUID>
+										<fromRelativeCircumference>0.5</fromRelativeCircumference>
+										<toRelativeCircumference>0.4</toRelativeCircumference>
+									</guideCurve>
+									<guideCurve uID="GuideCurveModel_Wing_Seg_2_3_GuideCurve_LowerWing">
+										<name>Lower Wing GuideCurve from GuideCurveModel - Wing Section 2 Main Element to GuideCurveModel - Wing Section 3 Main Element </name>
+										<description>Lower Wing GuideCurve from GuideCurveModel - Wing Section 2 Main Element to GuideCurveModel - Wing Section 3 Main Element </description>
+										<guideCurveProfileUID>GuideCurveModel_Wing_GuideCurveProfile_LowerWing_Crazy</guideCurveProfileUID>
+										<fromRelativeCircumference>-0.5</fromRelativeCircumference>
+										<toRelativeCircumference>-0.4</toRelativeCircumference>
 									</guideCurve>
 								</guideCurves>
 							</segment>
@@ -532,7 +546,7 @@
 					<name>NonLinear Leading Edge Guide Curve Profile for GuideCurveModel - Wing</name>
 					<description>NonLinear Leading Edge Guide Curve Profile for GuideCurveModel - Wing</description>
 					<pointList>
-						<x mapType="vector">0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0</x><y mapType="vector">0.1;0.2;0.3;0.4;0.5;0.6;0.7;0.8;0.9</y><z mapType="vector">0.0;0.001;0.003;0.009;0.008;0.007;0.006;0.002;0.0</z>
+						<x mapType="vector">0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0</x><y mapType="vector">0.1;0.2;0.3;0.4;0.5;0.6;0.7;0.8;0.9</y><z mapType="vector">0.0;0.01;0.03;0.09;0.08;0.07;0.06;0.02;0.0</z>
 					</pointList>
 				</guideCurveProfile>
 				<guideCurveProfile uID="GuideCurveModel_Wing_GuideCurveProfile_TrailingEdgeUpper_Linear">
@@ -547,6 +561,20 @@
 					<description>Linear Upper Trailing Edge Guide Curve Profile for GuideCurveModel - Wing</description>
 					<pointList>
 						<x mapType="vector">1.001;1.01;1.001</x><y mapType="vector">0.1;0.5;0.9</y><z mapType="vector">0.0;0.0;0.0</z>
+					</pointList>
+				</guideCurveProfile>
+				<guideCurveProfile uID="GuideCurveModel_Wing_GuideCurveProfile_UpperWing_Crazy">
+					<name>Crazy Upper Wing Guide Curve Profile for GuideCurveModel - Wing</name>
+					<description>Crazy Upper Wing Guide Curve Profile for GuideCurveModel - Wing</description>
+					<pointList>
+						<x mapType="vector">0.5;0.55;0.6;0.55;0.48;0.44;0.4;0.35;0.37</x><y mapType="vector">0.1;0.2;0.3;0.4;0.5;0.6;0.7;0.8;0.9</y><z mapType="vector">-0.02;-0.04;-0.02;0.00;0.04;0.08;0.12;0.08;0.04</z>
+					</pointList>
+				</guideCurveProfile>
+				<guideCurveProfile uID="GuideCurveModel_Wing_GuideCurveProfile_LowerWing_Crazy">
+					<name>Crazy Lower Wing Guide Curve Profile for GuideCurveModel - Wing</name>
+					<description>Crazy Lower Wing Guide Curve Profile for GuideCurveModel - Wing</description>
+					<pointList>
+						<x mapType="vector">-0.5;-0.55;-0.6;-0.55;-0.48;-0.44;-0.4;-0.35;-0.37</x><y mapType="vector">0.1;0.2;0.3;0.4;0.5;0.6;0.7;0.8;0.9</y><z mapType="vector">-0.02;-0.04;-0.02;0.00;0.04;0.08;0.12;0.08;0.04</z>
 					</pointList>
 				</guideCurveProfile>
 			</guideCurveProfiles>

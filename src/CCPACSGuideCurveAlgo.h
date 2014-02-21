@@ -26,6 +26,7 @@
 #include "tigl_internal.h"
 #include "CCPACSGuideCurveProfile.h"
 #include "CTiglInterpolateBsplineWire.h"
+#include "CTiglLogging.h"
 
 #ifndef CCPACSGUIDECURVEALGO_H
 #define CCPACSGUIDECURVEALGO_H
@@ -63,21 +64,21 @@ public:
                                      const Standard_Real& alpha2,
                                      const Standard_Real& scale1,
                                      const Standard_Real& scale2,
-                                     PCCPACSGuideCurveProfile PGuideCurveProfile) :
+                                     CCPACSGuideCurveProfile& gcp) :
         _getPointAlgo1(profileShape1),
         _getPointAlgo2(profileShape2),
         _alpha1(alpha1),
         _alpha2(alpha2),
         _scale1(scale1),
         _scale2(scale2),
-        _PGuideCurveProfile(PGuideCurveProfile)
+        _guideCurveProfile(gcp)
     {
     }
 
     TIGL_EXPORT operator TopoDS_Wire()
     {
         // get guide Curve points in local coordinates
-        std::vector<PCTiglPoint> guideCurveProfilePoints = _PGuideCurveProfile->GetGuideCurveProfilePoints();
+        std::vector<PCTiglPoint> guideCurveProfilePoints = _guideCurveProfile.GetGuideCurveProfilePoints();
         // container for guide Curve points in world coordinates
         std::vector<gp_Pnt> guideCurvePoints(guideCurveProfilePoints.size()+2);
         // get anchor points in world coordinates
@@ -97,12 +98,12 @@ public:
             // get starting point
             gp_Pnt startPoint;
             gp_Vec startTangent;
-            _getPointAlgo1.GetPointTangent(_alpha1, startPoint, startTangent);
+            _getPointAlgo1.GetPointTangent(alpha, startPoint, startTangent);
 
             // get end point
             gp_Pnt endPoint;
             gp_Vec endTangent;
-            _getPointAlgo2.GetPointTangent(_alpha2, endPoint, endTangent);
+            _getPointAlgo2.GetPointTangent(alpha, endPoint, endTangent);
 
             // construct normal vector in beta direction
             gp_Vec vectorBeta(startPoint, endPoint);
@@ -152,7 +153,7 @@ private:
     Standard_Real           _alpha2;               /**< End point parameter */
     Standard_Real           _scale1;               /**< 1st scale factor */
     Standard_Real           _scale2;               /**< 2nd scale factor */
-    PCCPACSGuideCurveProfile _PGuideCurveProfile;  /**< Pointer to guide curve profile */
+    CCPACSGuideCurveProfile& _guideCurveProfile;   /**< Guide curve profile */
     profileGetPointAlgo _getPointAlgo1;            /**< Get point and tangent of 1st profile */
     profileGetPointAlgo _getPointAlgo2;            /**< Get point and tangent of 2nd profile */
 };
@@ -160,4 +161,6 @@ private:
 } // end namespace tigl
 
 #endif // CCPACSGUIDECURVEALGO_H
+
+
 
