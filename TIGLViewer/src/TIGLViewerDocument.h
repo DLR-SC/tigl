@@ -80,6 +80,7 @@ public slots:
     void drawWingProfiles();
     void drawWing();
     void drawWingOverlayProfilePoints();
+    void drawWingSegmentGuideCurves();
     void drawWingTriangulation();
     void drawWingSamplePoints();
     void drawFusedWing();
@@ -124,6 +125,7 @@ private slots:
     // Wing selection dialogs
     QString dlgGetWingSelection();
     QString dlgGetWingComponentSegmentSelection();
+    QString dlgGetWingSegmentSelection();
     QString dlgGetWingProfileSelection();
 
 

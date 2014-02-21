@@ -38,6 +38,7 @@
 #include "CCPACSWingComponentSegments.h"
 #include "CCPACSWingPositionings.h"
 #include "CTiglAbstractSegment.h"
+#include "CCPACSGuideCurve.h"
 
 #include "TopoDS_Shape.hxx"
 
@@ -156,6 +157,9 @@ public:
     TIGL_EXPORT Handle(Geom_Surface) GetUpperSegmentSurface(int index);
 
     TIGL_EXPORT virtual void SetSymmetryAxis(const std::string& axis);
+
+    // Get the guide curve with a given UID
+    TIGL_EXPORT CCPACSGuideCurve& GetGuideCurve(std::string uid);
 
 protected:
     // Cleanup routine

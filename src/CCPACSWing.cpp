@@ -687,6 +687,16 @@ int CCPACSWing::GetSegmentEtaXsi(const gp_Pnt& point, double& eta, double& xsi, 
     return segmentFound;
 }
 
-
+// Get the guide curve with a given UID
+CCPACSGuideCurve& CCPACSWing::GetGuideCurve(std::string uid)
+{
+    for (int i=1; i <= segments.GetSegmentCount(); i++) {
+        CCPACSWingSegment& segment = segments.GetSegment(i);
+        if (segment.GuideCurveExists(uid)) {
+            return segment.GetGuideCurve(uid);
+        }
+    }
+    throw tigl::CTiglError("Error: Guide Curve with UID " + uid + " does not exists", TIGL_ERROR);
+}
 
 } // end namespace tigl

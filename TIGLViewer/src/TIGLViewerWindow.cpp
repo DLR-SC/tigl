@@ -670,6 +670,7 @@ void TIGLViewerWindow::connectSignals()
     // CPACS Wing Actions
     connect(drawWingProfilesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingProfiles()));
     connect(drawWingOverlayCPACSProfilePointsAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingOverlayProfilePoints()));
+    connect(drawWingSegmentGuideCurvesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingSegmentGuideCurves()));
     connect(drawWingsAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWing()));
     connect(drawWingTriangulationAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingTriangulation()));
     connect(drawWingSamplePointsAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingSamplePoints()));

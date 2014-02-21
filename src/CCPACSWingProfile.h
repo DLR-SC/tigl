@@ -96,6 +96,9 @@ public:
     // is already transformed by the wing profile element transformation.
     TIGL_EXPORT gp_Pnt GetTEPoint(void);
 
+    // Returns the chord line as a wire
+    TIGL_EXPORT TopoDS_Wire GetChordLineWire();
+
     // Returns a point on the chord line between leading and trailing
     // edge as function of parameter xsi, which ranges from 0.0 to 1.0.
     // For xsi = 0.0 chord point is equal to leading edge, for xsi = 1.0

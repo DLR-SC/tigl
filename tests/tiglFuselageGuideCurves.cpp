@@ -133,7 +133,7 @@ TEST_F(FuselageGuideCurve, tiglFuselageGuideCurve_CCPACSGuideCurveProfiles)
 {
     tigl::CCPACSGuideCurveProfiles guideCurves;
     guideCurves.ReadCPACS(tixiHandle);
-    ASSERT_EQ(guideCurves.GetGuideCurveProfileCount(), 9);
+    ASSERT_EQ(guideCurves.GetGuideCurveProfileCount(), 11);
     tigl::CCPACSGuideCurveProfile& guideCurve = guideCurves.GetGuideCurveProfile("GuideCurveModel_Fuselage_GuideCurveProfile_Middle_NonLinear");
     ASSERT_EQ(guideCurve.GetUID(), "GuideCurveModel_Fuselage_GuideCurveProfile_Middle_NonLinear");
     ASSERT_EQ(guideCurve.GetName(), "NonLinear Middle Guide Curve Profile for GuideCurveModel - Fuselage");

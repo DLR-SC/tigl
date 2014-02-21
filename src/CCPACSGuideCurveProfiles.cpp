@@ -87,6 +87,7 @@ CCPACSGuideCurveProfile& CCPACSGuideCurveProfiles::GetGuideCurveProfile(std::str
         return *(it->second);
     }
     else {
+        LOG(ERROR) << "Guide curve \"" + uid + "\" not found in CPACS file!" << endl;
         throw CTiglError("Guide curve \"" + uid + "\" not found in CPACS file!", TIGL_UID_ERROR);
     }
 }

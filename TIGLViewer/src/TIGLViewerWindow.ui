@@ -52,7 +52,7 @@
      <x>0</x>
      <y>0</y>
      <width>783</width>
-     <height>22</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="fileMenu">
@@ -112,6 +112,7 @@
      <addaction name="drawWingComponentSegmentAction"/>
      <addaction name="drawWingTriangulationAction"/>
      <addaction name="drawWingProfilesAction"/>
+     <addaction name="drawWingSegmentGuideCurvesAction"/>
      <addaction name="separator"/>
      <addaction name="drawWingSamplePointsAction"/>
      <addaction name="drawWingOverlayCPACSProfilePointsAction"/>
@@ -1158,6 +1159,11 @@
   <action name="tiglExportFuselageBRepAction">
    <property name="text">
     <string>Export Fuselage</string>
+   </property>
+  </action>
+  <action name="drawWingSegmentGuideCurvesAction">
+   <property name="text">
+    <string>Show Wing Segment Guide Curves</string>
    </property>
   </action>
  </widget>

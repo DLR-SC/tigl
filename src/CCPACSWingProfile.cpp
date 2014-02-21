@@ -250,6 +250,20 @@ gp_Pnt CCPACSWingProfile::GetChordPoint(double xsi)
     return gp_Pnt(chordPoint2d.X(), 0.0, chordPoint2d.Y());
 }
 
+// Returns the chord line as a wire
+TopoDS_Wire CCPACSWingProfile::GetChordLineWire() 
+{
+    // convert 2d chordline to 3d
+    Handle(Geom2d_TrimmedCurve) chordLine = GetChordLine();
+    gp_Pnt origin;
+    gp_Dir yDir(0.0, 1.0, 0.0);
+    gp_Pln xzPlane(origin, yDir);
+    Handle(Geom_Curve) chordLine3d = GeomAPI::To3d(chordLine, xzPlane);
+    TopoDS_Edge chordEdge = BRepBuilderAPI_MakeEdge(chordLine3d);
+    TopoDS_Wire chordWire = BRepBuilderAPI_MakeWire(chordEdge);
+    return chordWire;
+}
+
 // Returns a point on the upper wing profile as function of
 // parameter xsi, which ranges from 0.0 to 1.0.
 // For xsi = 0.0 point is equal to leading edge, for xsi = 1.0
