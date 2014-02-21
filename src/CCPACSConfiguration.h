@@ -1,8 +1,8 @@
-/* 
+/*
 * Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
 *
 * Created: 2010-08-13 Markus Litz <Markus.Litz@dlr.de>
-* Changed: $Id$ 
+* Changed: $Id$
 *
 * Version: $Revision$
 *
@@ -36,6 +36,7 @@
 #include "CCPACSFuselages.h"
 #include "CCPACSFuselageProfile.h"
 #include "CCPACSFarField.h"
+#include "CCPACSGuideCurveProfiles.h"
 #include "TopoDS_Compound.hxx"
 #include "BRep_Builder.hxx"
 #include "CTiglShapeCache.h"
@@ -103,6 +104,9 @@ public:
 
     TIGL_EXPORT CCPACSFarField& GetFarField();
 
+    // Returns the guide curve profile for a given UID.
+    TIGL_EXPORT CCPACSGuideCurveProfile& GetGuideCurveProfile(std::string UID) const;
+
     // Returns the uid manager
     TIGL_EXPORT CTiglUIDManager& GetUIDManager(void);
 
@@ -114,7 +118,7 @@ public:
 
     // Returns the UID of the loaded configuration.
     TIGL_EXPORT std::string GetUID(void);
-        
+
     TIGL_EXPORT CTiglShapeCache& GetShapeCache(void);
 
 protected:
@@ -125,10 +129,10 @@ protected:
 
 private:
     // Copy constructor
-    CCPACSConfiguration(const CCPACSConfiguration& );
+    CCPACSConfiguration(const CCPACSConfiguration&);
 
     // Assignment operator
-    void operator=(const CCPACSConfiguration& );
+    void operator=(const CCPACSConfiguration&);
 
 private:
     TixiDocumentHandle           tixiDocumentHandle;   /**< Handle for internal TixiDocument */
@@ -136,6 +140,7 @@ private:
     CCPACSWings                  wings;                /**< Configuration wings element */
     CCPACSFuselages              fuselages;            /**< Configuration fuselages element */
     CCPACSFarField               farField;             /**< Far field configuration for CFD tools */
+    CCPACSGuideCurveProfiles     guideCurveProfiles;   /**< Guide curve profiles */
     CTiglUIDManager              uidManager;           /**< Stores the unique ids of the components */
     TopoDS_Shape                 fusedAirplane;        /**< The complete airplaine as one fused shape */
     std::string                  configUID;            /**< UID of the opened configuration   */
@@ -145,3 +150,4 @@ private:
 } // end namespace tigl
 
 #endif // CCPACSCONFIGURATION_H
+

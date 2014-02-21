@@ -161,5 +161,3 @@ private:
 
 #endif // CCPACSGUIDECURVEALGO_H
 
-
-

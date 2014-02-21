@@ -1,8 +1,8 @@
-/* 
+/*
 * Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
 *
 * Created: 2010-08-13 Markus Litz <Markus.Litz@dlr.de>
-* Changed: $Id$ 
+* Changed: $Id$
 *
 * Version: $Revision$
 *
@@ -89,12 +89,13 @@ void CCPACSConfiguration::ReadCPACS(const char* configurationUID)
     wings.ReadCPACS(tixiDocumentHandle, configurationUID);
     fuselages.ReadCPACS(tixiDocumentHandle, configurationUID);
     farField.ReadCPACS(tixiDocumentHandle);
+    guideCurveProfiles.ReadCPACS(tixiDocumentHandle);
 
     configUID = configurationUID;
     // Now do parent <-> child transformations. Child should use the
-    // parent coordinate system as root. 
+    // parent coordinate system as root.
     try {
-        transformAllComponents(uidManager.GetRootComponent());    
+        transformAllComponents(uidManager.GetRootComponent());
     }
     catch (tigl::CTiglError& ex) {
         LOG(ERROR) << ex.getError() << std::endl;
@@ -111,7 +112,7 @@ void CCPACSConfiguration::transformAllComponents(CTiglAbstractPhysicalComponent*
         CTiglAbstractPhysicalComponent* child = *pIter;
         child->Translate(parentTranslation);
         transformAllComponents(child);
-            
+
     }
 }
 
@@ -127,17 +128,17 @@ TopoDS_Shape& CCPACSConfiguration::GetFusedAirplane(void)
 }
 
 
-// This function does the boolean fusing 
-void CCPACSConfiguration::BuildFusedPlane(CTiglAbstractPhysicalComponent *parent)
+// This function does the boolean fusing
+void CCPACSConfiguration::BuildFusedPlane(CTiglAbstractPhysicalComponent* parent)
 {
     if (!parent) {
         throw CTiglError("Null Pointer argument in CCPACSConfiguration::OutputComponentTree", TIGL_NULL_POINTER);
     }
 
     bool calcFullModel = true;
-        
+
     CTiglAbstractPhysicalComponent::ChildContainerType children = parent->GetChildren(false);
-        
+
     // count number of fusing operations
     int fuseCount = 0, ifuse = 0;
     CTiglAbstractPhysicalComponent::ChildContainerType::iterator pIter;
@@ -157,7 +158,7 @@ void CCPACSConfiguration::BuildFusedPlane(CTiglAbstractPhysicalComponent *parent
     if (!children.empty()) {
         fuseCount++;
     }
-        
+
     // this somewhat complicated fusing is the only way, that the result of all tested planes was okay
     TopoDS_Shape fusedChilds;
     for (pIter = children.begin(); pIter != children.end(); ++pIter) {
@@ -165,20 +166,20 @@ void CCPACSConfiguration::BuildFusedPlane(CTiglAbstractPhysicalComponent *parent
         TopoDS_Shape fusedChild = child->GetLoft();
         TopoDS_Shape tmpShape = child->GetMirroredLoft();
         if (!tmpShape.IsNull() && calcFullModel) {
-            try{
+            try {
                 fusedChild = BRepAlgoAPI_Fuse(fusedChild, tmpShape);
                 LOG(INFO) << (++ifuse)/(double)fuseCount * 100. << "% ";
             }
-            catch(...){
+            catch(...) {
                 throw CTiglError( "Error fusing "  + child->GetUID() + " with mirrored component ", TIGL_ERROR);
             }
         }
         if (!fusedChilds.IsNull()) {
-            try{
+            try {
                 fusedChilds = BRepAlgoAPI_Fuse(fusedChilds, fusedChild);
                 LOG(INFO) << (++ifuse)/(double)fuseCount * 100. << "% ";
             }
-            catch(...){
+            catch(...) {
                 throw CTiglError( "Error fusing component"  + child->GetUID() + " with plane ", TIGL_ERROR);
             }
         }
@@ -186,27 +187,27 @@ void CCPACSConfiguration::BuildFusedPlane(CTiglAbstractPhysicalComponent *parent
             fusedChilds = fusedChild;
         }
     }
-        
+
     //create root component
     TopoDS_Shape parentShape = parent->GetLoft();
     TopoDS_Shape tmpShape = parent->GetMirroredLoft();
     if (!tmpShape.IsNull() && calcFullModel && (parent->GetComponentType()& TIGL_COMPONENT_WING)) {
-        try{
+        try {
             parentShape = BRepAlgoAPI_Fuse(parentShape, tmpShape);
             LOG(INFO) << (++ifuse)/(double)fuseCount * 100. << "% ";
         }
-        catch(...){
+        catch(...) {
             throw CTiglError( "Error fusing "  + parent->GetUID() + " mirrored component!", TIGL_ERROR);
         }
     }
-        
+
     // fuse childs with root
     if (!fusedChilds.IsNull()) {
-        try{
+        try {
             fusedAirplane = BRepAlgoAPI_Fuse(parentShape, fusedChilds);
             LOG(INFO) << (++ifuse)/(double)fuseCount * 100. << "% ";
         }
-        catch(...){
+        catch(...) {
             throw CTiglError( "Error fusing parent loft \""  + parent->GetUID() + "\" with its childs!", TIGL_ERROR);
         }
     }
@@ -302,6 +303,12 @@ CCPACSFuselage& CCPACSConfiguration::GetFuselage(const std::string UID) const
     return fuselages.GetFuselage(UID);
 }
 
+// Returns the guide curve profile for a given UID.
+CCPACSGuideCurveProfile& CCPACSConfiguration::GetGuideCurveProfile(std::string UID) const
+{
+    return guideCurveProfiles.GetGuideCurveProfile(UID);
+}
+
 // Returns the uid manager
 CTiglUIDManager& CCPACSConfiguration::GetUIDManager(void)
 {
@@ -317,7 +324,7 @@ double CCPACSConfiguration::GetAirplaneLenth(void)
         tigl::CCPACSWing& wing = GetWing(w);
 
         for (int i = 1; i <= wing.GetSegmentCount(); i++) {
-            tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(i);
+            tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment&) wing.GetSegment(i);
             BRepBndLib::Add(segment.GetLoft(), boundingBox);
 
         }
@@ -327,7 +334,7 @@ double CCPACSConfiguration::GetAirplaneLenth(void)
         }
 
         for (int i = 1; i <= wing.GetSegmentCount(); i++) {
-            tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(i);
+            tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment&) wing.GetSegment(i);
             BRepBndLib::Add(segment.GetLoft(), boundingBox);
         }
     }
@@ -336,7 +343,7 @@ double CCPACSConfiguration::GetAirplaneLenth(void)
         tigl::CCPACSFuselage& fuselage = GetFuselage(f);
 
         for (int i = 1; i <= fuselage.GetSegmentCount(); i++) {
-            tigl::CCPACSFuselageSegment& segment = (tigl::CCPACSFuselageSegment &) fuselage.GetSegment(i);
+            tigl::CCPACSFuselageSegment& segment = (tigl::CCPACSFuselageSegment&) fuselage.GetSegment(i);
             TopoDS_Shape loft = segment.GetLoft();
 
             // Transform by fuselage transformation
@@ -355,10 +362,11 @@ std::string CCPACSConfiguration::GetUID(void)
 {
     return configUID;
 }
-    
+
 CTiglShapeCache& CCPACSConfiguration::GetShapeCache()
 {
     return shapeCache;
 }
 
 } // end namespace tigl
+

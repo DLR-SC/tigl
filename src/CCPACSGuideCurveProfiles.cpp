@@ -54,24 +54,22 @@ void CCPACSGuideCurveProfiles::ReadCPACS(TixiDocumentHandle tixiHandle)
 {
     Cleanup();
 
-    if (tixiCheckElement(tixiHandle, "/cpacs/vehicles/profiles/guideCurveProfiles") != SUCCESS) {
-        throw CTiglError("Error: tixiGetNamedChildrenCount failed in CCPACSGuideCurveProfiles::ReadCPACS", TIGL_XML_ERROR);
-    }
+    if (tixiCheckElement(tixiHandle, "/cpacs/vehicles/profiles/guideCurveProfiles") == SUCCESS) {
+        // Get element count
+        int elementCount;
+        if (tixiGetNamedChildrenCount(tixiHandle, "/cpacs/vehicles/profiles/guideCurveProfiles", "guideCurveProfile", &elementCount) != SUCCESS) {
+            throw CTiglError("Error: tixiGetNamedChildrenCount failed in CCPACSGuideCurveProfiles::ReadCPACS", TIGL_XML_ERROR);
+        }
 
-    // Get element count
-    int elementCount;
-    if (tixiGetNamedChildrenCount(tixiHandle, "/cpacs/vehicles/profiles/guideCurveProfiles", "guideCurveProfile", &elementCount) != SUCCESS) {
-        throw CTiglError("Error: tixiGetNamedChildrenCount failed in CCPACSGuideCurveProfiles::ReadCPACS", TIGL_XML_ERROR);
-    }
+        // Loop over all <guideCurve> elements
+        for (int i = 1; i <= elementCount; i++) {
+            std::ostringstream xpath;
+            xpath << "/cpacs/vehicles/profiles/guideCurveProfiles/guideCurveProfile[" << i << "]";
 
-    // Loop over all <guideCurve> elements
-    for (int i = 1; i <= elementCount; i++) {
-        std::ostringstream xpath;
-        xpath << "/cpacs/vehicles/profiles/guideCurveProfiles/guideCurveProfile[" << i << "]";
-
-        PCCPACSGuideCurveProfile guideCurve(new CCPACSGuideCurveProfile(xpath.str()));
-        guideCurve->ReadCPACS(tixiHandle);
-        guideCurves[guideCurve->GetUID()] = guideCurve;
+            PCCPACSGuideCurveProfile guideCurve(new CCPACSGuideCurveProfile(xpath.str()));
+            guideCurve->ReadCPACS(tixiHandle);
+            guideCurves[guideCurve->GetUID()] = guideCurve;
+        }
     }
 }
 
@@ -94,4 +92,5 @@ CCPACSGuideCurveProfile& CCPACSGuideCurveProfiles::GetGuideCurveProfile(std::str
 }
 
 } // end namespace tigl
+
 
