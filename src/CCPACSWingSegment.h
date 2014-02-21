@@ -1,8 +1,8 @@
-/* 
+/*
 * Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
 *
 * Created: 2010-08-13 Markus Litz <Markus.Litz@dlr.de>
-* Changed: $Id$ 
+* Changed: $Id$
 *
 * Version: $Revision$
 *
@@ -32,6 +32,7 @@
 #include "tigl_internal.h"
 #include "tixi.h"
 #include "CCPACSWingConnection.h"
+#include "CCPACSGuideCurves.h"
 #include "CTiglPoint.h"
 #include "CTiglAbstractSegment.h"
 #include "math/CTiglPointTranslator.h"
@@ -41,7 +42,7 @@
 #include "Geom_BSplineSurface.hxx"
 
 
-namespace tigl 
+namespace tigl
 {
 
 class CCPACSWing;
@@ -60,11 +61,11 @@ public:
     TIGL_EXPORT void Invalidate(void);
 
     // Read CPACS segment elements
-    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string & segmentXPath);
+    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& segmentXPath);
 
     // Returns the wing this segment belongs to
     TIGL_EXPORT CCPACSWing& GetWing(void) const;
-    
+
     TIGL_EXPORT TopoDS_Shape GetInnerClosure();
     TIGL_EXPORT TopoDS_Shape GetOuterClosure();
 
@@ -136,8 +137,8 @@ public:
     // Returns eta as parametric distance from a given point on the surface
     // Get information about a point beeing on upper/lower side with "GetIsOnTop"
     TIGL_EXPORT double GetEta(gp_Pnt pnt, bool isUpper);
-    
-    // calculates eta from a given XSI and 
+
+    // calculates eta from a given XSI and
     TIGL_EXPORT double GetEta(gp_Pnt pnt, double xsi);
 
     // Returns zeta as parametric distance from a given point on the surface
@@ -160,7 +161,7 @@ public:
 
     // Returns the upper Surface of this Segment
     TIGL_EXPORT Handle(Geom_Surface) GetUpperSurface();
-    
+
     TIGL_EXPORT TopoDS_Shape& GetUpperShape();
     TIGL_EXPORT TopoDS_Shape& GetLowerShape();
 
@@ -171,7 +172,7 @@ public:
     // edge on the outer wing profile. If fromUpper is true, a point
     // on the upper surface is returned, otherwise from the lower.
     TIGL_EXPORT gp_Pnt GetPoint(double eta, double xsi, bool fromUpper);
-    
+
     // Returns an upper or lower point on the segment surface in
     // dependence of parameters eta and xsi, which range from 0.0 to 1.0.
     // For eta = 0.0, xsi = 0.0 point is equal to leading edge on the
@@ -179,16 +180,19 @@ public:
     // edge on the outer wing profile. If fromUpper is true, a point
     // on the upper surface is returned, otherwise from the lower.
     // From a point on the surface, the intersection of a rotated normal vector
-    // is computed with the upper or lower segment surface. The amount of 
+    // is computed with the upper or lower segment surface. The amount of
     // rotation is given by the parameters xangle, yangle, zangle
     TIGL_EXPORT gp_Pnt GetPointAngles(double eta, double xsi, double xangle, double yangle, double zangle, bool fromUpper);
 
-    TIGL_EXPORT TiglGeometricComponentType GetComponentType(){ return TIGL_COMPONENT_WINGSEGMENT | TIGL_COMPONENT_SEGMENT | TIGL_COMPONENT_LOGICAL; }
+    TIGL_EXPORT TiglGeometricComponentType GetComponentType()
+    {
+        return TIGL_COMPONENT_WINGSEGMENT | TIGL_COMPONENT_SEGMENT | TIGL_COMPONENT_LOGICAL;
+    }
 
 #ifdef TIGL_USE_XCAF
     // builds data structure for a TDocStd_Application
     // mostly used for export
-    TDF_Label ExportDataStructure(class CCPACSConfiguration&, Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label);
+    TDF_Label ExportDataStructure(class CCPACSConfiguration&, Handle_XCAFDoc_ShapeTool& myAssembly, TDF_Label& label);
 #endif
 protected:
     // Cleanup routine
@@ -200,13 +204,16 @@ protected:
     // Builds the loft between the two segment sections
     TopoDS_Shape BuildLoft(void);
 
+    // Create guide curves
+    TopoDS_Compound BuildGuideCurves(void);
+
 
 private:
     // Copy constructor
-    CCPACSWingSegment(const CCPACSWingSegment& );
+    CCPACSWingSegment(const CCPACSWingSegment&);
 
     // Assignment operator
-    void operator=(const CCPACSWingSegment& );
+    void operator=(const CCPACSWingSegment&);
 
     // Builds upper and lower surfaces
     void MakeSurfaces();
@@ -214,18 +221,21 @@ private:
     std::string          name;                 /**< Segment name                            */
     CCPACSWingConnection innerConnection;      /**< Inner segment connection (root)         */
     CCPACSWingConnection outerConnection;      /**< Outer segment connection (tip)          */
+    CCPACSGuideCurves    guideCurves;          /**< Guide curve container                   */
     CCPACSWing*          wing;                 /**< Parent wing                             */
     double               myVolume;             /**< Volume of this segment                  */
     double               mySurfaceArea;        /**< Surface area of this segment            */
-    TopoDS_Shape         upperShape;           /**< Upper shape of this segment                */
+    TopoDS_Shape         upperShape;           /**< Upper shape of this segment             */
     TopoDS_Shape         lowerShape;
     Handle(Geom_Surface) upperSurface;
     Handle(Geom_Surface) lowerSurface;
     CTiglPointTranslator cordSurface;
     bool                 surfacesAreValid;
+    bool                 guideCurvesPresent;   /**< If guide curves are not present, lofted surface is possible */
 
 };
 
 } // end namespace tigl
 
 #endif // CCPACSWINGSEGMENT_H
+

@@ -43,6 +43,8 @@
 #include "CTiglLogging.h"
 #include "CCPACSGuideCurveProfile.h"
 #include "CCPACSGuideCurveProfiles.h"
+#include "CCPACSGuideCurve.h"
+#include "CCPACSGuideCurves.h"
 #include "CCPACSWingProfileGetPointAlgo.h"
 #include "CCPACSGuideCurveAlgo.h"
 
@@ -136,6 +138,36 @@ TEST_F(WingGuideCurve, tiglWingGuideCurve_CCPACSGuideCurveProfiles)
     ASSERT_EQ(guideCurve.GetUID(), "GuideCurveModel_Wing_GuideCurveProfile_LeadingEdge_NonLinear");
     ASSERT_EQ(guideCurve.GetName(), "NonLinear Leading Edge Guide Curve Profile for GuideCurveModel - Wing");
     ASSERT_EQ(guideCurve.GetFileName(), "/cpacs/vehicles/profiles/guideCurveProfiles/guideCurveProfile[7]");
+}
+
+/**
+* Tests CCPACSGuideCurve class
+*/
+TEST_F(WingGuideCurve, tiglWingGuideCurve_CCPACSGuideCurve)
+{
+    tigl::CCPACSGuideCurve guideCurve("/cpacs/vehicles/aircraft/model/wings/wing/segments/segment[1]/guideCurves/guideCurve[1]");
+    guideCurve.ReadCPACS(tixiHandle);
+    ASSERT_EQ(guideCurve.GetUID(), "GuideCurveModel_Wing_Seg_1_2_GuideCurve_TrailingEdgeLower");
+    ASSERT_EQ(guideCurve.GetName(), "Lower Trailing Edge GuideCurve from GuideCurveModel - Wing Section 1 Main Element to GuideCurveModel - Wing Section 2 Main Element ");
+    ASSERT_EQ(guideCurve.GetGuideCurveProfileUID(), "GuideCurveModel_Wing_GuideCurveProfile_TrailingEdgeLower_Linear");
+    ASSERT_EQ(guideCurve.GetFromRelativeCircumference(), -1.0);
+    ASSERT_EQ(guideCurve.GetToRelativeCircumference(), -1.0);
+}
+
+/**
+* Tests CCPACSGuideCurves class
+*/
+TEST_F(WingGuideCurve, tiglWingGuideCurve_CCPACSGuideCurves)
+{
+    tigl::CCPACSGuideCurves guideCurves;
+    guideCurves.ReadCPACS(tixiHandle, "/cpacs/vehicles/aircraft/model/wings/wing/segments/segment[2]");
+    ASSERT_EQ(guideCurves.GetGuideCurveCount(), 3);
+    tigl::CCPACSGuideCurve& guideCurve = guideCurves.GetGuideCurve("GuideCurveModel_Wing_Seg_2_3_GuideCurve_LeadingEdge");
+    ASSERT_EQ(guideCurve.GetUID(), "GuideCurveModel_Wing_Seg_2_3_GuideCurve_LeadingEdge");
+    ASSERT_EQ(guideCurve.GetName(), "Leading Edge GuideCurve from GuideCurveModel - Wing Section 2 Main Element to GuideCurveModel - Wing Section 3 Main Element ");
+    ASSERT_EQ(guideCurve.GetGuideCurveProfileUID(), "GuideCurveModel_Wing_GuideCurveProfile_LeadingEdge_Linear");
+    ASSERT_EQ(guideCurve.GetFromGuideCurveUID(), "GuideCurveModel_Wing_Seg_1_2_GuideCurve_LeadingEdge" );
+    ASSERT_EQ(guideCurve.GetToRelativeCircumference(), 0.0);
 }
 
 /**
@@ -259,7 +291,6 @@ TEST_F(WingGuideCurve, tiglWingGuideCurve_CCPACSGuideCurveAlgo)
 
     // get guide curve profile
     CSharedPtr<tigl::CCPACSGuideCurveProfile> PGuideCurveProfile(new tigl::CCPACSGuideCurveProfile("/cpacs/vehicles/profiles/guideCurveProfiles/guideCurveProfile[7]"));
-
     PGuideCurveProfile->ReadCPACS(tixiHandle);
 
     TopoDS_Wire guideCurveWire;
@@ -314,6 +345,7 @@ TEST_F(WingGuideCurve, tiglWingGuideCurve_samplePoints)
     }
     */
 }
+
 
 
 

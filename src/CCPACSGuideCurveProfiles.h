@@ -35,12 +35,13 @@ namespace tigl
 
 typedef CSharedPtr<CCPACSGuideCurveProfile> PCCPACSGuideCurveProfile;
 
+// Typedef for a container to store the guide curves.
+typedef std::map<std::string, PCCPACSGuideCurveProfile> CCPACSGuideCurveProfileContainer;
+
 class CCPACSGuideCurveProfiles
 {
 
 private:
-    // Typedef for a container to store the guide curves.
-    typedef std::map<std::string, PCCPACSGuideCurveProfile> CCPACSGuideCurveProfileContainer;
 
 public:
     // Constructor
@@ -83,4 +84,5 @@ private:
 } // end namespace tigl
 
 #endif // CCPACSGUIDECURVEPROFILES_H
+
 
