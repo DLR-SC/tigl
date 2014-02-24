@@ -211,7 +211,7 @@ void CCPACSWingSegment::ReadCPACS(TixiDocumentHandle tixiHandle, const std::stri
     tempString = segmentXPath + "/fromElementUID";
     innerConnection.ReadCPACS(tixiHandle, tempString);
 
-    // Inner connection
+    // Outer connection
     tempString = segmentXPath + "/toElementUID";
     outerConnection.ReadCPACS(tixiHandle, tempString);
 
@@ -853,8 +853,9 @@ bool CCPACSWingSegment::GuideCurveExists(std::string UID)
 }
 
 // Creates all guide curves
-TopoDS_Compound CCPACSWingSegment::GetGuideCurves(void)
+TopTools_SequenceOfShape& CCPACSWingSegment::GetGuideCurves(void)
 {
+    guideCurveWires.Clear();
     if (guideCurvesPresent) {
         // get upper and lower part of inner profile in world coordinates
         CCPACSWingProfile& innerProfile = innerConnection.GetProfile();
@@ -886,11 +887,6 @@ TopoDS_Compound CCPACSWingSegment::GetGuideCurves(void)
         double innerScale = GetWireLength(innerChordLineWire);
         double outerScale = GetWireLength(outerChordLineWire);
 
-        // container for the guide curve wires
-        TopoDS_Compound guideCurveContainer;
-        BRep_Builder guideCurveContainerBuilder;
-        guideCurveContainerBuilder.MakeCompound(guideCurveContainer);
-
         // loop through all guide curves and construct the corresponding wires
         int nGuideCurves = guideCurves.GetGuideCurveCount();
         for (int i=0; i!=nGuideCurves; i++) {
@@ -920,18 +916,17 @@ TopoDS_Compound CCPACSWingSegment::GetGuideCurves(void)
             CCPACSConfiguration& config = wing->GetConfiguration();
             CCPACSGuideCurveProfile& guideCurveProfile = config.GetGuideCurveProfile(guideCurveProfileUID);
 
+            LOG(ERROR) << guideCurve.GetUID() << endl;
             // construct guide curve algorithm
             TopoDS_Wire guideCurveWire = CCPACSGuideCurveAlgo<CCPACSWingProfileGetPointAlgo> (concatenatedInnerWires, concatenatedOuterWires, fromRelativeCircumference, toRelativeCircumference, innerScale, outerScale, guideCurveProfile);
-            guideCurveContainerBuilder.Add(guideCurveContainer, guideCurveWire);
+            guideCurveWires.Append(guideCurveWire);
         }
 
         // return container for guide curve wires
-        return guideCurveContainer;
+        return guideCurveWires;
     }
     else {
-        TopoDS_Compound guideCurveContainer;
-        guideCurveContainer.Nullify();
-        return guideCurveContainer;
+        return guideCurveWires;
     }
 }
 

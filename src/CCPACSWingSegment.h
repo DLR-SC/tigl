@@ -39,6 +39,7 @@
 
 #include "TopoDS_Shape.hxx"
 #include "TopoDS_Wire.hxx"
+#include "TopTools_SequenceOfShape.hxx"
 #include "Geom_BSplineSurface.hxx"
 
 
@@ -166,7 +167,7 @@ public:
     TIGL_EXPORT TopoDS_Shape& GetLowerShape();
 
     // builds all guide curve wires
-    TIGL_EXPORT TopoDS_Compound GetGuideCurves(void);
+    TIGL_EXPORT TopTools_SequenceOfShape& GetGuideCurves(void);
 
     // get guide curve for given UID
     TIGL_EXPORT CCPACSGuideCurve& GetGuideCurve(std::string UID);
@@ -227,6 +228,7 @@ private:
     CCPACSWingConnection innerConnection;      /**< Inner segment connection (root)         */
     CCPACSWingConnection outerConnection;      /**< Outer segment connection (tip)          */
     CCPACSGuideCurves    guideCurves;          /**< Guide curve container                   */
+    TopTools_SequenceOfShape guideCurveWires;  /**< container for the guide curve wires     */
     CCPACSWing*          wing;                 /**< Parent wing                             */
     double               myVolume;             /**< Volume of this segment                  */
     double               mySurfaceArea;        /**< Surface area of this segment            */
