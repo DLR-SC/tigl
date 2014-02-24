@@ -192,14 +192,12 @@ TEST_F(WingGuideCurve, tiglWingGuideCurve_CCPACSWingProfileGetPointAlgo)
     TopoDS_Wire lowerWire = profile.GetLowerWire();
 
     // concatenate wires
-    BRep_Builder builder;
-    TopoDS_Compound concatenatedWires;
-    builder.MakeCompound(concatenatedWires);
-    builder.Add(concatenatedWires, lowerWire);
-    builder.Add(concatenatedWires, upperWire);
+    TopTools_SequenceOfShape wireContainer;
+    wireContainer.Append(lowerWire);
+    wireContainer.Append(upperWire);
 
     // instantiate getPointAlgo
-    tigl::CCPACSWingProfileGetPointAlgo getPointAlgo(concatenatedWires);
+    tigl::CCPACSWingProfileGetPointAlgo getPointAlgo(wireContainer);
     gp_Pnt point;
     gp_Vec tangent;
 
@@ -285,16 +283,13 @@ TEST_F(WingGuideCurve, tiglWingGuideCurve_CCPACSGuideCurveAlgo)
     TopoDS_Wire upperOuterWire = TopoDS::Wire(trans.Transform(upperOuterWireLocal));
 
     // concatenate wires
-    BRep_Builder builder;
-    TopoDS_Compound concatenatedOuterWires;
-    builder.MakeCompound(concatenatedOuterWires);
-    builder.Add(concatenatedOuterWires, lowerOuterWire);
-    builder.Add(concatenatedOuterWires, upperOuterWire);
+    TopTools_SequenceOfShape outerWireContainer;
+    outerWireContainer.Append(lowerOuterWire);
+    outerWireContainer.Append(upperOuterWire);
 
-    TopoDS_Compound concatenatedInnerWires;
-    builder.MakeCompound(concatenatedInnerWires);
-    builder.Add(concatenatedInnerWires, lowerInnerWire);
-    builder.Add(concatenatedInnerWires, upperInnerWire);
+    TopTools_SequenceOfShape innerWireContainer;
+    innerWireContainer.Append(lowerInnerWire);
+    innerWireContainer.Append(upperInnerWire);
 
     tiglLogSetVerbosity(TILOG_ERROR);
     // get guide curve profile
@@ -303,7 +298,7 @@ TEST_F(WingGuideCurve, tiglWingGuideCurve_CCPACSGuideCurveAlgo)
 
     TopoDS_Wire guideCurveWire;
     // instantiate guideCurveAlgo
-    guideCurveWire = tigl::CCPACSGuideCurveAlgo<tigl::CCPACSWingProfileGetPointAlgo> (concatenatedInnerWires, concatenatedOuterWires, 0.0, 0.0, 1.0, 2.0, guideCurveProfile);
+    guideCurveWire = tigl::CCPACSGuideCurveAlgo<tigl::CCPACSWingProfileGetPointAlgo> (innerWireContainer, outerWireContainer, 0.0, 0.0, 1.0, 2.0, guideCurveProfile);
 
     // check if guide curve runs through sample points
     // get curve

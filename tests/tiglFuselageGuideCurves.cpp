@@ -152,13 +152,11 @@ TEST_F(FuselageGuideCurve, tiglFuselageGuideCurve_CCPACSFuselageProfileGetPointA
     tigl::CCPACSFuselageProfile& profile = config.GetFuselageProfile("GuideCurveModel_Fuselage_Sec3_El1_Pro");
     TopoDS_Wire wire = profile.GetWire();
 
-    // pack wire into a compound
-    BRep_Builder builder;
-    TopoDS_Compound wireCompound;
-    builder.MakeCompound(wireCompound);
-    builder.Add(wireCompound, wire);
+    // pack wire container for get point algo
+    TopTools_SequenceOfShape wireContainer;
+    wireContainer.Append(wire);
     // instantiate getPointAlgo
-    tigl::CCPACSFuselageProfileGetPointAlgo getPointAlgo(wireCompound);
+    tigl::CCPACSFuselageProfileGetPointAlgo getPointAlgo(wireContainer);
     gp_Pnt point;
     gp_Vec tangent;
 

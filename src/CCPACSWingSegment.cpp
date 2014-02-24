@@ -868,18 +868,14 @@ TopTools_SequenceOfShape& CCPACSWingSegment::GetGuideCurves(void)
         TopoDS_Wire lowerOuterWire = transformProfileWire(GetWing().GetTransformation(), outerConnection, outerProfile.GetLowerWire());
 
         // concatenate inner profile wires for guide curve construction algorithm
-        TopoDS_Compound concatenatedInnerWires;
-        BRep_Builder innerProfileBuilder;
-        innerProfileBuilder.MakeCompound(concatenatedInnerWires);
-        innerProfileBuilder.Add(concatenatedInnerWires, lowerInnerWire);
-        innerProfileBuilder.Add(concatenatedInnerWires, upperInnerWire);
+        TopTools_SequenceOfShape concatenatedInnerWires;
+        concatenatedInnerWires.Append(lowerInnerWire);
+        concatenatedInnerWires.Append(upperInnerWire);
 
         // concatenate outer profile wires for guide curve construction algorithm
-        TopoDS_Compound concatenatedOuterWires;
-        BRep_Builder outerProfileBuilder;
-        outerProfileBuilder.MakeCompound(concatenatedOuterWires);
-        outerProfileBuilder.Add(concatenatedOuterWires, lowerOuterWire);
-        outerProfileBuilder.Add(concatenatedOuterWires, upperOuterWire);
+        TopTools_SequenceOfShape concatenatedOuterWires;
+        concatenatedOuterWires.Append(lowerOuterWire);
+        concatenatedOuterWires.Append(upperOuterWire);
 
         // get chord lengths for inner profile in word coordinates
         TopoDS_Wire innerChordLineWire = transformProfileWire(GetWing().GetTransformation(), innerConnection, innerProfile.GetChordLineWire());
@@ -916,7 +912,6 @@ TopTools_SequenceOfShape& CCPACSWingSegment::GetGuideCurves(void)
             CCPACSConfiguration& config = wing->GetConfiguration();
             CCPACSGuideCurveProfile& guideCurveProfile = config.GetGuideCurveProfile(guideCurveProfileUID);
 
-            LOG(ERROR) << guideCurve.GetUID() << endl;
             // construct guide curve algorithm
             TopoDS_Wire guideCurveWire = CCPACSGuideCurveAlgo<CCPACSWingProfileGetPointAlgo> (concatenatedInnerWires, concatenatedOuterWires, fromRelativeCircumference, toRelativeCircumference, innerScale, outerScale, guideCurveProfile);
             guideCurveWires.Append(guideCurveWire);

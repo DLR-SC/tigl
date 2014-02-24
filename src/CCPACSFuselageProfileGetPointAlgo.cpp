@@ -39,20 +39,13 @@
 namespace tigl
 {
 
-CCPACSFuselageProfileGetPointAlgo::CCPACSFuselageProfileGetPointAlgo (TopoDS_Shape& shape)
+CCPACSFuselageProfileGetPointAlgo::CCPACSFuselageProfileGetPointAlgo (const TopTools_SequenceOfShape& wireContainer)
 {
     try {
-        TopExp_Explorer ex;
-        int count=0;
-        ex.Init(shape, TopAbs_WIRE);
-        if (ex.More()) {
-            wire = TopoDS::Wire(ex.Current());
-            ex.Next();
-            count++;
+        if (wireContainer.Length()!=1) {
+            throw CTiglError("Error: CCPACSWingProfileGetPointAlgo: Number of wires is not equal 1", TIGL_ERROR);
         }
-        if (count!=1 || ex.More()) {
-            throw CTiglError("Error: CCPACSFuselageProfileGetPointAlgo: Number of extracted wires is not equal 1", TIGL_ERROR);
-        }
+        wire = TopoDS::Wire(wireContainer(1));
     }
     catch(...) {
         throw CTiglError("Error: CCPACSFuselageProfileGetPointAlgo: Conversion of shape to wire failed", TIGL_ERROR);
