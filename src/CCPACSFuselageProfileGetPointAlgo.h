@@ -28,6 +28,7 @@
 #include "tigl_internal.h"
 #include "TopoDS_Wire.hxx"
 #include "TopoDS_Edge.hxx"
+#include "TopTools_SequenceOfShape.hxx"
 #include "gp_Pnt.hxx"
 #include "gp_Vec.hxx"
 
@@ -45,9 +46,9 @@ public:
      * \brief Constructor which expects a fuselage profile wire
      *
      *
-     * \param wire Fuselage profile wire
+     * \param wireContainer Contains exactly one Fuselage profile wire
      */
-    CCPACSFuselageProfileGetPointAlgo (TopoDS_Shape& shape);
+    CCPACSFuselageProfileGetPointAlgo (const TopTools_SequenceOfShape& wireContainer);
 
     /**
      * \brief Get point and the tangent on fuselage profile at curve parameter alpha

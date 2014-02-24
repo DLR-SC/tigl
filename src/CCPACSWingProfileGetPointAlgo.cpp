@@ -40,25 +40,14 @@
 namespace tigl
 {
 
-CCPACSWingProfileGetPointAlgo::CCPACSWingProfileGetPointAlgo (const TopoDS_Shape& shape)
+CCPACSWingProfileGetPointAlgo::CCPACSWingProfileGetPointAlgo (const TopTools_SequenceOfShape& wireContainer)
 {
     try {
-        int count=0;
-        TopExp_Explorer ex;
-        ex.Init(shape, TopAbs_WIRE);
-        if (ex.More()) {
-            lowerWire = TopoDS::Wire(ex.Current());
-            count++;
-            ex.Next();
+        if (wireContainer.Length()!=2) {
+            throw CTiglError("Error: CCPACSWingProfileGetPointAlgo: Number of wires is not equal 2", TIGL_ERROR);
         }
-        if (ex.More()) {
-            upperWire = TopoDS::Wire(ex.Current());
-            count++;
-            ex.Next();
-        }
-        if (count!=2 || ex.More()) {
-            throw CTiglError("Error: CCPACSWingProfileGetPointAlgo: Number of extracted edges is not equal 2", TIGL_ERROR);
-        }
+        lowerWire = TopoDS::Wire(wireContainer(1));
+        upperWire = TopoDS::Wire(wireContainer(2));
     }
     catch(...) {
         throw CTiglError("Error: CCPACSWingProfileGetPointAlgo: Separation of upper and lower profiles failed", TIGL_ERROR);

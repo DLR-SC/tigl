@@ -29,6 +29,7 @@
 #include "tigl_internal.h"
 #include "TopoDS_Wire.hxx"
 #include "TopoDS_Edge.hxx"
+#include "TopTools_SequenceOfShape.hxx"
 #include "gp_Pnt.hxx"
 #include "gp_Vec.hxx"
 
@@ -46,9 +47,9 @@ public:
      * \brief Constructor which expects a wire of to concatenated upper and lower wing edges as input
      *
      *
-     * \param shape Shape which contains exactly two wires: The upper and lower wing profile wires
+     * \param wireContainer Containes exactly two wires: The upper and lower wing profile wires
      */
-    CCPACSWingProfileGetPointAlgo (const TopoDS_Shape& shape);
+    CCPACSWingProfileGetPointAlgo (const TopTools_SequenceOfShape& wireContainer);
 
     /**
      * \brief Get point and the tangent on wing profile at curve parameter alpha
