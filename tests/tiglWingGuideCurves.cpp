@@ -29,6 +29,7 @@
 #include "CCPACSConfigurationManager.h"
 #include "BRep_Tool.hxx"
 #include "TopoDS_Shape.hxx"
+#include "TopTools_SequenceOfShape.hxx"
 #include "TopExp_Explorer.hxx"
 #include "BRepBuilderAPI_MakeWire.hxx"
 #include "BRepTools_WireExplorer.hxx"
@@ -343,14 +344,13 @@ TEST_F(WingGuideCurve, tiglWingGuideCurve_CCPACSWingSegment)
 
     tigl::CCPACSWingSegment& segment1 = (tigl::CCPACSWingSegment&) wing.GetSegment(1);
     tigl::CCPACSWingSegment& segment2 = (tigl::CCPACSWingSegment&) wing.GetSegment(2);
-    TopoDS_Compound guideCurveContainer1 = segment1.GetGuideCurves();
-    TopoDS_Compound guideCurveContainer2 = segment2.GetGuideCurves();
+    TopTools_SequenceOfShape& guideCurveContainer1 = segment1.GetGuideCurves();
+    TopTools_SequenceOfShape& guideCurveContainer2 = segment2.GetGuideCurves();
+
+    ASSERT_EQ(guideCurveContainer1.Length(), 3);
 
     // obtain second guide curve 
-    TopExp_Explorer ex;
-    ex.Init(guideCurveContainer1, TopAbs_WIRE);
-    ASSERT_TRUE(ex.More());
-    TopoDS_Wire guideCurveWire = TopoDS::Wire(ex.Current());
+    TopoDS_Wire guideCurveWire = TopoDS::Wire(guideCurveContainer1(1));
 
     // check if guide curve runs through sample points
     // get curve

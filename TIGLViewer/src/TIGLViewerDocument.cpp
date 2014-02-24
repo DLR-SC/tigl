@@ -653,20 +653,20 @@ void TIGLViewerDocument::drawWingSegmentGuideCurves()
     tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
     tigl::CCPACSWingSegment& wingSeg = (tigl::CCPACSWingSegment&) wing.GetSegment(wingSegUid.toStdString());
 
-    TopoDS_Compound guideCurveContainer = wingSeg.GetGuideCurves();
-    TopExp_Explorer ex;
-    for (ex.Init(guideCurveContainer, TopAbs_WIRE); ex.More(); ex.Next()) {
-        Handle(AIS_Shape) shape = new AIS_Shape(TopoDS::Wire(ex.Current()));
+    TopTools_SequenceOfShape& guideCurveContainer = wingSeg.GetGuideCurves();
+    for (int i=1; i<=guideCurveContainer.Length(); i++) {
+        TopoDS_Wire wire =TopoDS::Wire(guideCurveContainer(i));
+        Handle(AIS_Shape) shape = new AIS_Shape(wire);
         shape->SetMaterial(Graphic3d_NOM_METALIZED);
         myAISContext->Display(shape, Standard_True);
-        for (int i=0; i<=10; i++)
-        {
-            double a=i/double(10);
-            gp_Pnt point;
-            gp_Vec tangent;
-            WireGetPointTangent2(TopoDS::Wire(ex.Current()), a, point, tangent), 
-            DisplayPoint(point, "", Standard_False, 0.0, 0.0, 0.0, 2.0);
-        }
+        //for (int j=0; j<=10; j++)
+        //{
+            //double a=j/double(10);
+            //gp_Pnt point;
+            //gp_Vec tangent;
+            //WireGetPointTangent2(TopoDS::Wire(guideCurveContainer(i)), a, point, tangent), 
+            //DisplayPoint(point, "", Standard_False, 0.0, 0.0, 0.0, 2.0);
+        //}
     }
 }
 
