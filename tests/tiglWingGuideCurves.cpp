@@ -337,38 +337,61 @@ TEST_F(WingGuideCurve, tiglWingGuideCurve_CCPACSWingSegment)
     tigl::CCPACSConfiguration& config = manager.GetConfiguration(tiglHandle);
     tigl::CCPACSWing& wing = config.GetWing(1);
 
+    ASSERT_EQ(wing.GetSegmentCount(),3);
     tigl::CCPACSWingSegment& segment1 = (tigl::CCPACSWingSegment&) wing.GetSegment(1);
     tigl::CCPACSWingSegment& segment2 = (tigl::CCPACSWingSegment&) wing.GetSegment(2);
+    tigl::CCPACSWingSegment& segment3 = (tigl::CCPACSWingSegment&) wing.GetSegment(3);
     TopTools_SequenceOfShape& guideCurveContainer1 = segment1.GetGuideCurves();
     TopTools_SequenceOfShape& guideCurveContainer2 = segment2.GetGuideCurves();
+    TopTools_SequenceOfShape& guideCurveContainer3 = segment3.GetGuideCurves();
 
-    ASSERT_EQ(guideCurveContainer1.Length(), 3);
+    ASSERT_EQ(guideCurveContainer3.Length(), 3);
 
-    // obtain second guide curve 
-    TopoDS_Wire guideCurveWire = TopoDS::Wire(guideCurveContainer1(1));
+    // obtain leading edge guide curve 
+    TopoDS_Wire guideCurveWire = TopoDS::Wire(guideCurveContainer3(1));
 
     // check if guide curve runs through sample points
     // get curve
     Standard_Real u1, u2;
     BRepTools_WireExplorer guideCurveExplorer(guideCurveWire);
     Handle(Geom_Curve) curve =  BRep_Tool::Curve(guideCurveExplorer.Current(), u1, u2);
-    // set predicted sample points from cpacs file
-    // minus sign and x instead of z component due to rotation of pi/2 at the leading edge (alpha=0)
-    const double temp[] = {-0.0, -0.0, -0.01, -0.03, -0.09, -0.08, -0.07, -0.06, -0.02, -0.0, -0.0};
-    std::vector<double> predictedSamplePointsX (temp, temp + sizeof(temp) / sizeof(temp[0]) );
-    for (unsigned int i = 0; i <= 10; ++i) {
-        // get intersection point of the guide curve with planes parallel to the x-z plane located at b
-        double b = 5.0*i/double(10);
-        Handle(Geom_Plane) plane = new Geom_Plane(gp_Pnt(0.0, b, 0.0), gp_Dir(0.0, 1.0, 0.0));
+    // gamma values of cpacs data points
+    const double temp[] = {0.0, 0.0, 0.01, 0.03, 0.09, 0.08, 0.07, 0.06, 0.02, 0.0, 0.0};
+    std::vector<double> gammaDeviation (temp, temp + sizeof(temp) / sizeof(temp[0]) );
+    // number of sample points
+    int N=10;
+    // segement width
+    double width=2.0;
+    // segment position
+    double position=12.0;
+    // inner profile scale factor
+    double innerScale=1.0;
+    // outer profile scale factor
+    double outerScale=0.5;
+    // outer profile has a sweep angle of -30 degrees)
+    double angle=-M_PI/6.0;
+    for (unsigned int i = 0; i <= N; ++i) {
+        // get intersection point of the guide curve with planes in direciton n located at b
+        // n is the y direction rotated pi/6 (30 degrees) inside the x-y plane
+        double b = width*i/double(N);
+        gp_Pnt planeLocation = gp_Pnt(b*sin(angle), b*cos(angle)+position, 0.0);
+        Handle(Geom_Plane) plane = new Geom_Plane(planeLocation, gp_Dir(sin(angle), cos(angle), 0.0));
         GeomAPI_IntCS intersection (curve, plane);
-        ASSERT_TRUE(intersection.IsDone());
         ASSERT_EQ(intersection.NbPoints(), 1);
         gp_Pnt point = intersection.Point(1);
 
-        LOG(ERROR) << point.X() << "\t" << point.Y() << "\t" << point.Z() << endl;
+        // start at segment leading edge
+        gp_Vec predictedPoint(0.0, position, 0.0);
+        // go along the leading edge
+        predictedPoint += gp_Vec(b*sin(angle), b*cos(angle), 0.0);
+        // scale sample points since outer profile's chordline smaller by a facto 0.5
+        double s=(innerScale+(outerScale-innerScale)*i/double(N));
+        // go along direction perpendicular to the leading edge in the x-y plane
+        predictedPoint += gp_Vec(-cos(angle)*gammaDeviation[i]*s, sin(angle)*gammaDeviation[i]*s, 0.0);
+
         // check is guide curve runs through the predicted sample points
-        //ASSERT_NEAR(predictedSamplePointsX[i], point.X(), 1E-14);
-        ASSERT_NEAR(b, point.Y(), 1E-14);
-        //ASSERT_NEAR(0.0, point.Z(), 1E-14);
+        ASSERT_NEAR(predictedPoint.X(), point.X(), 1E-5);
+        ASSERT_NEAR(predictedPoint.Y(), point.Y(), 1E-5);
+        ASSERT_NEAR(predictedPoint.Z(), point.Z(), 1E-14);
     }
 }
