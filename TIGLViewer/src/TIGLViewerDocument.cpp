@@ -653,7 +653,7 @@ void TIGLViewerDocument::drawWingSegmentGuideCurves()
     tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
     tigl::CCPACSWingSegment& wingSeg = (tigl::CCPACSWingSegment&) wing.GetSegment(wingSegUid.toStdString());
 
-    TopTools_SequenceOfShape& guideCurveContainer = wingSeg.GetGuideCurves();
+    TopTools_SequenceOfShape& guideCurveContainer = wingSeg.BuildGuideCurves();
     for (int i=1; i<=guideCurveContainer.Length(); i++) {
         TopoDS_Wire wire =TopoDS::Wire(guideCurveContainer(i));
         Handle(AIS_Shape) shape = new AIS_Shape(wire);

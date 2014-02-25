@@ -853,7 +853,7 @@ bool CCPACSWingSegment::GuideCurveExists(std::string UID)
 }
 
 // Creates all guide curves
-TopTools_SequenceOfShape& CCPACSWingSegment::GetGuideCurves(void)
+TopTools_SequenceOfShape& CCPACSWingSegment::BuildGuideCurves(void)
 {
     guideCurveWires.Clear();
     if (guideCurvesPresent) {

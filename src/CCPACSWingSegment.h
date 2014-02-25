@@ -167,7 +167,7 @@ public:
     TIGL_EXPORT TopoDS_Shape& GetLowerShape();
 
     // builds all guide curve wires
-    TIGL_EXPORT TopTools_SequenceOfShape& GetGuideCurves(void);
+    TIGL_EXPORT TopTools_SequenceOfShape& BuildGuideCurves(void);
 
     // get guide curve for given UID
     TIGL_EXPORT CCPACSGuideCurve& GetGuideCurve(std::string UID);
