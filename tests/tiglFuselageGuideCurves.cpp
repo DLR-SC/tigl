@@ -25,16 +25,23 @@
 #include "testUtils.h"
 #include "CCPACSConfigurationManager.h"
 #include "BRep_Tool.hxx"
+#include "BRepBuilderAPI_MakeEdge.hxx"
+#include "BRepBuilderAPI_MakeWire.hxx"
 #include "BRepTools_WireExplorer.hxx"
 #include "Geom_Curve.hxx"
+#include "Geom_Plane.hxx"
+#include "Geom_Circle.hxx"
 #include "gp_Pnt.hxx"
 #include "gp_Pnt.hxx"
 #include "GeomAPI_ProjectPointOnCurve.hxx"
+#include "GeomAPI_IntCS.hxx"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CCPACSGuideCurveProfile.h"
 #include "CCPACSGuideCurveProfiles.h"
 #include "CCPACSFuselageProfileGetPointAlgo.h"
+#include "CCPACSGuideCurveAlgo.h"
+#include "CCPACSFuselageSegment.h"
 
 /******************************************************************************/
 
@@ -201,8 +208,65 @@ TEST_F(FuselageGuideCurve, tiglFuselageGuideCurve_CCPACSFuselageProfileGetPointA
     ASSERT_EQ(tangent.Z(), tangent2.Z());
 }
 
+/**
+* Tests CCPACSGuideCurveAlgo class
+*/
+TEST_F(FuselageGuideCurve, tiglFuselageGuideCurve_CCPACSGuideCurveAlgo)
+{
+    // create two circles
+    double radius1=1.0;
+    double radius2=2.0;
+    double distance=4.0;
+    gp_Pnt location1(0.0, -radius1, 0.0);
+    gp_Ax2 circlePosition1(location1, gp::DX(), gp::DZ());
+    Handle(Geom_Circle) circle1 = new Geom_Circle(circlePosition1, radius1);
+    gp_Pnt location2(distance, -radius2, 0.0);
+    gp_Ax2 circlePosition2(location2, gp::DX(), gp::DZ());
+    Handle(Geom_Circle) circle2 = new Geom_Circle(circlePosition2, radius2);
 
+    // convert to wires and consider only half circles starting at the bottom
+    double start=M_PI;
+    TopoDS_Edge edge1 = BRepBuilderAPI_MakeEdge(circle1, start, start+M_PI);
+    TopoDS_Edge edge2 = BRepBuilderAPI_MakeEdge(circle2, start, start+M_PI);
+    TopoDS_Wire wire1 = BRepBuilderAPI_MakeWire(edge1);
+    TopoDS_Wire wire2 = BRepBuilderAPI_MakeWire(edge2);
 
+    // container for guide curve algo
+    TopTools_SequenceOfShape wireContainer1;
+    wireContainer1.Append(wire1);
+    TopTools_SequenceOfShape wireContainer2;
+    wireContainer2.Append(wire2);
 
+    // get guide curve profile
+    tigl::CCPACSGuideCurveProfile guideCurveProfile("/cpacs/vehicles/profiles/guideCurveProfiles/guideCurveProfile[2]");
+    guideCurveProfile.ReadCPACS(tixiHandle);
 
+    TopoDS_Wire guideCurveWire;
+    // instantiate guideCurveAlgo
+    guideCurveWire = tigl::CCPACSGuideCurveAlgo<tigl::CCPACSFuselageProfileGetPointAlgo> (wireContainer1, wireContainer2, 0.5, 0.5, 2*radius1, 2*radius2, guideCurveProfile);
 
+    // check if guide curve runs through sample points
+    // get curve
+    Standard_Real u1, u2;
+    BRepTools_WireExplorer guideCurveExplorer(guideCurveWire);
+    Handle(Geom_Curve) curve =  BRep_Tool::Curve(guideCurveExplorer.Current(), u1, u2);
+    // set predicted sample points from cpacs file
+    const double temp[] = {0.0, 0.0, 0.01, 0.03, 0.09, 0.08, 0.07, 0.06, 0.02, 0.0, 0.0};
+    std::vector<double> predictedSamplePointsY (temp, temp + sizeof(temp) / sizeof(temp[0]) );
+    for (unsigned int i = 0; i <= 10; ++i) {
+        // get intersection point of the guide curve with planes parallel to the y-z plane located at a
+        double a = i/double(10);
+        Handle(Geom_Plane) plane = new Geom_Plane(gp_Pnt(a*distance, 0.0, 0.0), gp_Dir(1.0, 0.0, 0.0));
+        GeomAPI_IntCS intersection (curve, plane);
+        ASSERT_TRUE(intersection.IsDone());
+        ASSERT_EQ(intersection.NbPoints(), 1);
+        gp_Pnt point = intersection.Point(1);
+
+        // scale sample points since 2nd profile is scaled by a factor 2
+        predictedSamplePointsY[i]*=(2*radius1+(2*radius2-2*radius1)*a);
+        // check is guide curve runs through the predicted sample points
+        ASSERT_NEAR(a*distance, point.X(), 1E-14);
+        ASSERT_NEAR(predictedSamplePointsY[i], point.Y(), 1E-14);
+        ASSERT_NEAR(0.0, point.Z(), 1E-14);
+    }
+}
