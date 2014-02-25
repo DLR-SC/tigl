@@ -23,13 +23,13 @@
 * wing or fuselage profile at a given length parameter
 */
 
+#ifndef CCPACSGUIDECURVEALGO_H
+#define CCPACSGUIDECURVEALGO_H
+
 #include "tigl_internal.h"
 #include "CCPACSGuideCurveProfile.h"
 #include "CTiglInterpolateBsplineWire.h"
 #include "CTiglLogging.h"
-
-#ifndef CCPACSGUIDECURVEALGO_H
-#define CCPACSGUIDECURVEALGO_H
 
 namespace tigl
 {

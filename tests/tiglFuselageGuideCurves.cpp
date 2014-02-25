@@ -270,3 +270,68 @@ TEST_F(FuselageGuideCurve, tiglFuselageGuideCurve_CCPACSGuideCurveAlgo)
         ASSERT_NEAR(0.0, point.Z(), 1E-14);
     }
 }
+
+/**
+* Tests fuselage segment guide curve routines
+*/
+TEST_F(FuselageGuideCurve, tiglFuselageGuideCurve_CCPACSFuselageSegment)
+{
+    tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+    tigl::CCPACSConfiguration& config = manager.GetConfiguration(tiglHandle);
+    tigl::CCPACSFuselage& fuselage = config.GetFuselage(1);
+
+    ASSERT_EQ(fuselage.GetSegmentCount(),2);
+    tigl::CCPACSFuselageSegment& segment1 = (tigl::CCPACSFuselageSegment&) fuselage.GetSegment(1);
+    tigl::CCPACSFuselageSegment& segment2 = (tigl::CCPACSFuselageSegment&) fuselage.GetSegment(2);
+    TopTools_SequenceOfShape& guideCurveContainer1 = segment1.BuildGuideCurves();
+    TopTools_SequenceOfShape& guideCurveContainer2 = segment2.BuildGuideCurves();
+
+    ASSERT_EQ(guideCurveContainer1.Length(), 3);
+
+    // obtain leading edge guide curve 
+    TopoDS_Wire guideCurveWire = TopoDS::Wire(guideCurveContainer1(2));
+
+    // check if guide curve runs through sample points
+    // get curve
+    Standard_Real u1, u2;
+    BRepTools_WireExplorer guideCurveExplorer(guideCurveWire);
+    Handle(Geom_Curve) curve =  BRep_Tool::Curve(guideCurveExplorer.Current(), u1, u2);
+    // gamma values of cpacs data points
+    const double temp[] = {0.0, 0.0, 0.01, 0.03, 0.09, 0.08, 0.07, 0.06, 0.02, 0.0, 0.0};
+    std::vector<double> gammaDeviation (temp, temp + sizeof(temp) / sizeof(temp[0]) );
+    // number of sample points
+    int N=10;
+    // segment length
+    double length=10.0;
+    // segment position
+    double position=-10.0;
+    // start profile scale factor
+    double startScale=1.0;
+    // end profile scale factor
+    double endScale=1.0;
+    for (unsigned int i = 0; i <= N; ++i) {
+        // get intersection point of the guide curve with planes parallel to the y-z-direction
+        // located at a
+        double a = length*i/double(N);
+        gp_Pnt planeLocation = gp_Pnt(a+position, 0.0, 0.0);
+        Handle(Geom_Plane) plane = new Geom_Plane(planeLocation, gp_Dir(1.0, 0.0, 0.0));
+        GeomAPI_IntCS intersection (curve, plane);
+        ASSERT_EQ(intersection.NbPoints(), 1);
+        gp_Pnt point = intersection.Point(1);
+
+        // start at segment minimal x position
+        gp_Vec predictedPoint(position, 0.0, 0.0);
+        // go along the fuselage segment maximal y edge
+        predictedPoint += gp_Vec(0.0, 0.5*startScale + 0.5*(endScale-startScale) / length * a  ,  0.0);
+        predictedPoint += gp_Vec(a, 0.0, 0.0);
+        // scale sample points since outer profile's diameter is greater by a factor of 2
+        double s=(startScale+(endScale-startScale)*i/double(N));
+        // go along direction perpendicular to the leading edge in the x-y plane
+        predictedPoint += gp_Vec(0.0, gammaDeviation[i]*s, 0.0);
+
+        // check is guide curve runs through the predicted sample points
+        ASSERT_NEAR(predictedPoint.X(), point.X(), 1E-10);
+        ASSERT_NEAR(predictedPoint.Y(), point.Y(), 1E-10);
+        ASSERT_NEAR(predictedPoint.Z(), point.Z(), 1E-14);
+    }
+}

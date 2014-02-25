@@ -36,6 +36,7 @@
 #include "CCPACSFuselageSegments.h"
 #include "CCPACSFuselagePositionings.h"
 #include "CTiglAbstractPhysicalComponent.h"
+#include "CCPACSGuideCurve.h"
 
 #include "TopoDS_Shape.hxx"
 #include "TopoDS_Compound.hxx"
@@ -88,6 +89,9 @@ public:
     // Returns the segment for a given index
     TIGL_EXPORT CTiglAbstractSegment & GetSegment(const int index);
 
+    // Returns the segment for a given UID
+    TIGL_EXPORT CTiglAbstractSegment & GetSegment(std::string uid);
+
     // Gets the fuselage transformation
     TIGL_EXPORT CTiglTransformation GetFuselageTransformation(void);
 
@@ -123,6 +127,9 @@ public:
     TIGL_EXPORT gp_Pnt GetMinumumDistanceToGround(gp_Ax1 RAxis, double angle);
 
     TIGL_EXPORT void SetSymmetryAxis(const std::string& axis);
+
+    // Get the guide curve with a given UID
+    TIGL_EXPORT CCPACSGuideCurve& GetGuideCurve(std::string uid);
 
 protected:
     // Cleanup routine

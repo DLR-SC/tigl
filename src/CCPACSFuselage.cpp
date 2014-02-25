@@ -277,6 +277,12 @@ CTiglAbstractSegment & CCPACSFuselage::GetSegment(const int index)
     return (CTiglAbstractSegment &) segments.GetSegment(index);
 }
 
+// Returns the segment for a given uid
+CTiglAbstractSegment & CCPACSFuselage::GetSegment(std::string uid)
+{
+    return (CTiglAbstractSegment &) segments.GetSegment(uid);
+}
+
 // Builds a fused shape of all fuselage segments
 TopoDS_Shape CCPACSFuselage::BuildLoft(void)
 {
@@ -448,6 +454,18 @@ void CCPACSFuselage::SetSymmetryAxis(const std::string& axis)
         CCPACSFuselageSegment& segment = segments.GetSegment(i);
         segment.SetSymmetryAxis(axis);
     }
+}
+
+// Get the guide curve with a given UID
+CCPACSGuideCurve& CCPACSFuselage::GetGuideCurve(std::string uid)
+{
+    for (int i=1; i <= segments.GetSegmentCount(); i++) {
+        CCPACSFuselageSegment& segment = segments.GetSegment(i);
+        if (segment.GuideCurveExists(uid)) {
+            return segment.GetGuideCurve(uid);
+        }
+    }
+    throw tigl::CTiglError("Error: Guide Curve with UID " + uid + " does not exists", TIGL_ERROR);
 }
 
 } // end namespace tigl

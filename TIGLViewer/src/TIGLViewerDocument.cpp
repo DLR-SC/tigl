@@ -410,6 +410,36 @@ QString TIGLViewerDocument::dlgGetFuselageSelection()
     }
 }
 
+// Fuselage Segment selection Dialog
+QString TIGLViewerDocument::dlgGetFuselageSegmentSelection()
+{
+    QStringList segs;
+    bool ok;
+
+    // Initialize fuselage list
+    tigl::CCPACSConfiguration& config = GetConfiguration();
+    int fuselageCount = config.GetFuselageCount();
+    for (int i = 1; i <= fuselageCount; i++) {
+        tigl::CCPACSFuselage& fuselage = config.GetFuselage(i);
+        for (int j = 1; j <= fuselage.GetSegmentCount(); ++j) {
+            tigl::CTiglAbstractSegment& segment = fuselage.GetSegment(j);
+            std::string name = segment.GetUID();
+            if (name == "") {
+                name = "Unknown segment";
+            }
+            segs << name.c_str();
+        }
+    }
+
+    QString choice = QInputDialog::getItem(parent, tr("Select Segment"), tr("Available Segments:"), segs, 0, false, &ok);
+    if (ok) {
+        return choice;
+    }
+    else {
+        return "";
+    }
+}
+
 // Fuselage profile Dialog
 QString TIGLViewerDocument::dlgGetFuselageProfileSelection()
 {
@@ -711,6 +741,36 @@ void TIGLViewerDocument::drawFuselageProfiles()
     }
 }
 
+void TIGLViewerDocument::drawFuselageSegmentGuideCurves()
+{
+    QString fuselageUid = dlgGetFuselageSelection();
+    if (fuselageUid == "") {
+        return;
+    }
+    QString fuselageSegUid = dlgGetFuselageSegmentSelection();
+    if (fuselageSegUid == "") {
+        return;
+    }
+
+    tigl::CCPACSFuselage& fuselage = GetConfiguration().GetFuselage(fuselageUid.toStdString());
+    tigl::CCPACSFuselageSegment& fuselageSeg = (tigl::CCPACSFuselageSegment&) fuselage.GetSegment(fuselageSegUid.toStdString());
+
+    TopTools_SequenceOfShape& guideCurveContainer = fuselageSeg.BuildGuideCurves();
+    for (int i=1; i<=guideCurveContainer.Length(); i++) {
+        TopoDS_Wire wire =TopoDS::Wire(guideCurveContainer(i));
+        Handle(AIS_Shape) shape = new AIS_Shape(wire);
+        shape->SetMaterial(Graphic3d_NOM_METALIZED);
+        myAISContext->Display(shape, Standard_True);
+        //for (int j=0; j<=10; j++)
+        //{
+            //double a=j/double(10);
+            //gp_Pnt point;
+            //gp_Vec tangent;
+            //WireGetPointTangent2(TopoDS::Wire(guideCurveContainer(i)), a, point, tangent), 
+            //DisplayPoint(point, "", Standard_False, 0.0, 0.0, 0.0, 2.0);
+        //}
+    }
+}
 
 void TIGLViewerDocument::drawWing()
 {

@@ -95,6 +95,7 @@ public slots:
     void drawFuselageSamplePoints();
     void drawFuselageSamplePointsAngle();
     void drawFusedFuselage();
+    void drawFuselageSegmentGuideCurves();
 
     // TIGL slots
     void exportAsIges();
@@ -131,6 +132,7 @@ private slots:
 
     // Fuselage selection dialogs
     QString dlgGetFuselageSelection();
+    QString dlgGetFuselageSegmentSelection();
     QString dlgGetFuselageProfileSelection();
 
 

@@ -27,10 +27,14 @@
 #include "CTiglError.h"
 #include "CTiglTransformation.h"
 #include "TopoDS.hxx"
+#include "TopoDS_Wire.hxx"
 #include "gp_Pnt2d.hxx"
 #include "gp_Vec2d.hxx"
 #include "gp_Dir2d.hxx"
-#include "Geom2d_TrimmedCurve.hxx"
+#include "GC_MakeSegment.hxx"
+#include "BRepBuilderAPI_MakeEdge.hxx"
+#include "BRepBuilderAPI_MakeWire.hxx"
+#include "Geom_TrimmedCurve.hxx"
 #include "GCE2d_MakeSegment.hxx"
 #include "Geom2d_Line.hxx"
 #include "TopExp_Explorer.hxx"
@@ -432,6 +436,37 @@ gp_Pnt CCPACSFuselageProfile::GetPoint(double zeta)
 }
 
 
+void CCPACSFuselageProfile::BuildDiameterPoints(void)
+{
+    Update();
+    if (mirrorSymmetry) {
+        startDiameterPoint = coordinates[0]->Get_gp_Pnt();
+        endDiameterPoint = coordinates[coordinates.size() - 1]->Get_gp_Pnt();
+    }
+    else {
+        // compute starting diameter point
+        gp_Pnt firstPnt = coordinates[0]->Get_gp_Pnt();
+        gp_Pnt lastPnt  = coordinates[coordinates.size() - 1]->Get_gp_Pnt();
+        double x = (firstPnt.X() + lastPnt.X())/2.;
+        double y = (firstPnt.Y() + lastPnt.Y())/2.;
+        double z = (firstPnt.Z() + lastPnt.Z())/2.;
+        startDiameterPoint = gp_Pnt(x,y,z);
+
+        // find the point with the max dist to starting point
+        endDiameterPoint = startDiameterPoint;
+        CCPACSCoordinateContainer::iterator it; 
+        for (it = coordinates.begin(); it != coordinates.end(); ++it) {
+            gp_Pnt point = (*it)->Get_gp_Pnt();
+            if (startDiameterPoint.Distance(point) > startDiameterPoint.Distance(endDiameterPoint)) {
+                endDiameterPoint = point;
+            }
+        }
+        // project into x-z plane
+        endDiameterPoint.SetY(0.);
+        startDiameterPoint.SetY(0.);
+    }
+}
+
 // Returns the profile points as read from TIXI.
 std::vector<CTiglPoint*> CCPACSFuselageProfile::GetCoordinateContainer()
 {
@@ -442,6 +477,15 @@ std::vector<CTiglPoint*> CCPACSFuselageProfile::GetCoordinateContainer()
         newPointVector.push_back(new CTiglPoint(pnt.X(), pnt.Y(), pnt.Z()));
     }
     return newPointVector;
+}
+
+TopoDS_Wire CCPACSFuselageProfile::GetDiameterWire()
+{
+    BuildDiameterPoints();
+    Handle(Geom_TrimmedCurve) diameterCurve = GC_MakeSegment(startDiameterPoint, endDiameterPoint);
+    TopoDS_Edge diameterEdge = BRepBuilderAPI_MakeEdge(diameterCurve);
+    TopoDS_Wire diameterWire = BRepBuilderAPI_MakeWire(diameterEdge);
+    return diameterWire;
 }
 
 } // end namespace tigl
