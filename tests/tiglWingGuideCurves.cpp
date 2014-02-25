@@ -24,17 +24,18 @@
 #include "tigl.h"
 #include "testUtils.h"
 #include "tiglcommonfunctions.h"
-#include "CTiglLogging.h"
 #include "CSharedPtr.h"
 #include "CCPACSConfigurationManager.h"
 #include "BRep_Tool.hxx"
 #include "TopoDS_Shape.hxx"
 #include "TopTools_SequenceOfShape.hxx"
 #include "TopExp_Explorer.hxx"
+#include "BRepBuilderAPI_MakeEdge.hxx"
 #include "BRepBuilderAPI_MakeWire.hxx"
 #include "BRepTools_WireExplorer.hxx"
 #include "Geom_Curve.hxx"
 #include "Geom_Plane.hxx"
+#include "Geom_Circle.hxx"
 #include "gp_Pnt.hxx"
 #include "gp_Vec.hxx"
 #include "BRep_Builder.hxx"
@@ -42,7 +43,6 @@
 #include "GeomAPI_ProjectPointOnCurve.hxx"
 #include "CTiglError.h"
 #include "CTiglTransformation.h"
-#include "CTiglLogging.h"
 #include "CCPACSGuideCurveProfile.h"
 #include "CCPACSGuideCurveProfiles.h"
 #include "CCPACSGuideCurve.h"
@@ -255,50 +255,49 @@ TEST_F(WingGuideCurve, tiglWingGuideCurve_CCPACSWingProfileGetPointAlgo)
 */
 TEST_F(WingGuideCurve, tiglWingGuideCurve_CCPACSGuideCurveAlgo)
 {
-    // read configuration
-    tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
-    tigl::CCPACSConfiguration& config = manager.GetConfiguration(tiglHandle);
 
-    // get inner wing profiles
-    tigl::CCPACSWingProfile& innerProfile = config.GetWingProfile("GuideCurveModel_Wing_Sec3_El1_Pro");
-    TopoDS_Wire upperInnerWire = innerProfile.GetUpperWire();
-    TopoDS_Wire lowerInnerWire = innerProfile.GetLowerWire();
-    // concatenate wires
-    BRepBuilderAPI_MakeWire innerWireBuilder(upperInnerWire);
-    innerWireBuilder.Add(lowerInnerWire);
-    ASSERT_TRUE(innerWireBuilder.IsDone());
-    TopoDS_Wire innerWire=innerWireBuilder.Wire();
+    // create two circles parallel to the x-z plane going through the y-axis at alpha=0 
+    // the sense of rotation is such that the negative z-values come first
+    double radius1=1.0;
+    double radius2=1.0;
+    double distance=1.0;
+    gp_Pnt location1(radius1, 0.0,  0.0);
+    gp_Ax2 circlePosition1(location1, gp::DY(), gp::DX());
+    Handle(Geom_Circle) circle1 = new Geom_Circle(circlePosition1, radius1);
+    gp_Pnt location2(radius2, distance, 0.0);
+    gp_Ax2 circlePosition2(location2, gp::DY(), gp::DX());
+    Handle(Geom_Circle) circle2 = new Geom_Circle(circlePosition2, radius2);
 
-    // get outer wing profiles
-    tigl::CCPACSWingProfile& outerProfile = config.GetWingProfile("GuideCurveModel_Wing_Sec3_El1_Pro");
-    TopoDS_Wire upperOuterWireLocal = outerProfile.GetUpperWire();
-    TopoDS_Wire lowerOuterWireLocal = outerProfile.GetLowerWire();
+    // cut into lower and upper half circle
+    double start=0.0;
+    double mid=start+M_PI;
+    double end=mid+2*M_PI;
+    TopoDS_Edge innerLowerEdge = BRepBuilderAPI_MakeEdge(circle1, start, mid);
+    TopoDS_Edge innerUpperEdge = BRepBuilderAPI_MakeEdge(circle1,   mid, end);
+    TopoDS_Edge outerLowerEdge = BRepBuilderAPI_MakeEdge(circle2, start, mid);
+    TopoDS_Edge outerUpperEdge = BRepBuilderAPI_MakeEdge(circle2,   mid, end);
 
-    // translate outer wing profiles
-    tigl::CTiglTransformation trans;
-    trans.SetIdentity();
-    trans.AddTranslation(0.0, 1.0, 0.0);
-    trans.AddScaling(2.0, 1.0, 1.0);
-    TopoDS_Wire lowerOuterWire = TopoDS::Wire(trans.Transform(lowerOuterWireLocal));
-    TopoDS_Wire upperOuterWire = TopoDS::Wire(trans.Transform(upperOuterWireLocal));
+    // convert to wires 
+    TopoDS_Wire innerLowerWire = BRepBuilderAPI_MakeWire(innerLowerEdge);
+    TopoDS_Wire innerUpperWire = BRepBuilderAPI_MakeWire(innerUpperEdge);
+    TopoDS_Wire outerLowerWire = BRepBuilderAPI_MakeWire(outerLowerEdge);
+    TopoDS_Wire outerUpperWire = BRepBuilderAPI_MakeWire(outerUpperEdge);
 
-    // concatenate wires
-    TopTools_SequenceOfShape outerWireContainer;
-    outerWireContainer.Append(lowerOuterWire);
-    outerWireContainer.Append(upperOuterWire);
-
+    // concatenate wires for guide curve algo
     TopTools_SequenceOfShape innerWireContainer;
-    innerWireContainer.Append(lowerInnerWire);
-    innerWireContainer.Append(upperInnerWire);
+    innerWireContainer.Append(innerLowerWire);
+    innerWireContainer.Append(innerUpperWire);
+    TopTools_SequenceOfShape outerWireContainer;
+    outerWireContainer.Append(outerLowerWire);
+    outerWireContainer.Append(outerUpperWire);
 
-    tiglLogSetVerbosity(TILOG_ERROR);
     // get guide curve profile
     tigl::CCPACSGuideCurveProfile guideCurveProfile("/cpacs/vehicles/profiles/guideCurveProfiles/guideCurveProfile[7]");
     guideCurveProfile.ReadCPACS(tixiHandle);
 
     TopoDS_Wire guideCurveWire;
     // instantiate guideCurveAlgo
-    guideCurveWire = tigl::CCPACSGuideCurveAlgo<tigl::CCPACSWingProfileGetPointAlgo> (innerWireContainer, outerWireContainer, 0.0, 0.0, 1.0, 2.0, guideCurveProfile);
+    guideCurveWire = tigl::CCPACSGuideCurveAlgo<tigl::CCPACSWingProfileGetPointAlgo> (innerWireContainer, outerWireContainer, 0.0, 0.0, 2*radius1, 2*radius2, guideCurveProfile);
 
     // check if guide curve runs through sample points
     // get curve
@@ -306,23 +305,24 @@ TEST_F(WingGuideCurve, tiglWingGuideCurve_CCPACSGuideCurveAlgo)
     BRepTools_WireExplorer guideCurveExplorer(guideCurveWire);
     Handle(Geom_Curve) curve =  BRep_Tool::Curve(guideCurveExplorer.Current(), u1, u2);
     // set predicted sample points from cpacs file
-    // minus sign and x instead of z component due to rotation of pi/2 at the leading edge (alpha=0)
-    const double temp[] = {-0.0, -0.0, -0.01, -0.03, -0.09, -0.08, -0.07, -0.06, -0.02, -0.0, -0.0};
+    const double temp[] = {0.0, 0.0, 0.01, 0.03, 0.09, 0.08, 0.07, 0.06, 0.02, 0.0, 0.0};
     std::vector<double> predictedSamplePointsX (temp, temp + sizeof(temp) / sizeof(temp[0]) );
     for (unsigned int i = 0; i <= 10; ++i) {
         // get intersection point of the guide curve with planes parallel to the x-z plane located at b
         double b = i/double(10);
-        Handle(Geom_Plane) plane = new Geom_Plane(gp_Pnt(0.0, b, 0.0), gp_Dir(0.0, 1.0, 0.0));
+        Handle(Geom_Plane) plane = new Geom_Plane(gp_Pnt(0.0, b*distance, 0.0), gp_Dir(0.0, 1.0, 0.0));
         GeomAPI_IntCS intersection (curve, plane);
         ASSERT_TRUE(intersection.IsDone());
         ASSERT_EQ(intersection.NbPoints(), 1);
         gp_Pnt point = intersection.Point(1);
 
         // scale sample points since 2nd profile is scaled by a factor 2
-        predictedSamplePointsX[i]*=(1.0+(2.0-1.0)*b);
+        predictedSamplePointsX[i]*=(2*radius1+(2*radius2-2*radius1)*b);
+        // minus sign since gamma direcition is negative x-direction for alpha=0
+        predictedSamplePointsX[i]*=-1.0;
         // check is guide curve runs through the predicted sample points
         ASSERT_NEAR(predictedSamplePointsX[i], point.X(), 1E-14);
-        ASSERT_NEAR(b, point.Y(), 1E-14);
+        ASSERT_NEAR(b*distance, point.Y(), 1E-14);
         ASSERT_NEAR(0.0, point.Z(), 1E-14);
     }
 }
@@ -332,7 +332,6 @@ TEST_F(WingGuideCurve, tiglWingGuideCurve_CCPACSGuideCurveAlgo)
 */
 TEST_F(WingGuideCurve, tiglWingGuideCurve_CCPACSWingSegment)
 {
-    tiglLogSetVerbosity(TILOG_ERROR);
     tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
     tigl::CCPACSConfiguration& config = manager.GetConfiguration(tiglHandle);
     tigl::CCPACSWing& wing = config.GetWing(1);
