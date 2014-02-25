@@ -100,46 +100,46 @@ namespace tigl
 
 namespace
 {
-gp_Pnt transformProfilePoint(const tigl::CTiglTransformation& wingTransform, const tigl::CCPACSWingConnection& connection, const gp_Pnt& pointOnProfile)
-{
-    gp_Pnt transformedPoint(pointOnProfile);
+    gp_Pnt transformProfilePoint(const tigl::CTiglTransformation& wingTransform, const tigl::CCPACSWingConnection& connection, const gp_Pnt& pointOnProfile)
+    {
+        gp_Pnt transformedPoint(pointOnProfile);
 
-    // Do section element transformation on points
-    transformedPoint = connection.GetSectionElementTransformation().Transform(transformedPoint);
+        // Do section element transformation on points
+        transformedPoint = connection.GetSectionElementTransformation().Transform(transformedPoint);
 
-    // Do section transformations
-    transformedPoint = connection.GetSectionTransformation().Transform(transformedPoint);
+        // Do section transformations
+        transformedPoint = connection.GetSectionTransformation().Transform(transformedPoint);
 
-    // Do positioning transformations
-    transformedPoint = connection.GetPositioningTransformation().Transform(transformedPoint);
+        // Do positioning transformations
+        transformedPoint = connection.GetPositioningTransformation().Transform(transformedPoint);
 
-    transformedPoint = wingTransform.Transform(transformedPoint);
+        transformedPoint = wingTransform.Transform(transformedPoint);
 
-    return transformedPoint;
-}
-
-TopoDS_Wire transformProfileWire(const tigl::CTiglTransformation& wingTransform, const tigl::CCPACSWingConnection& connection, const TopoDS_Wire& wire)
-{
-    TopoDS_Shape transformedWire(wire);
-
-    // Do section element transformation on points
-    transformedWire = connection.GetSectionElementTransformation().Transform(transformedWire);
-
-    // Do section transformations
-    transformedWire = connection.GetSectionTransformation().Transform(transformedWire);
-
-    // Do positioning transformations
-    transformedWire = connection.GetPositioningTransformation().Transform(transformedWire);
-
-    transformedWire = wingTransform.Transform(transformedWire);
-
-    // Cast shapes to wires, see OpenCascade documentation
-    if (transformedWire.ShapeType() != TopAbs_WIRE) {
-        throw tigl::CTiglError("Error: Wrong shape type in CCPACSWingSegment::transformProfileWire", TIGL_ERROR);
+        return transformedPoint;
     }
 
-    return TopoDS::Wire(transformedWire);
-}
+    TopoDS_Wire transformProfileWire(const tigl::CTiglTransformation& wingTransform, const tigl::CCPACSWingConnection& connection, const TopoDS_Wire& wire)
+    {
+        TopoDS_Shape transformedWire(wire);
+
+        // Do section element transformation on points
+        transformedWire = connection.GetSectionElementTransformation().Transform(transformedWire);
+
+        // Do section transformations
+        transformedWire = connection.GetSectionTransformation().Transform(transformedWire);
+
+        // Do positioning transformations
+        transformedWire = connection.GetPositioningTransformation().Transform(transformedWire);
+
+        transformedWire = wingTransform.Transform(transformedWire);
+
+        // Cast shapes to wires, see OpenCascade documentation
+        if (transformedWire.ShapeType() != TopAbs_WIRE) {
+            throw tigl::CTiglError("Error: Wrong shape type in CCPACSWingSegment::transformProfileWire", TIGL_ERROR);
+        }
+
+        return TopoDS::Wire(transformedWire);
+    }
 }
 
 // Constructor
