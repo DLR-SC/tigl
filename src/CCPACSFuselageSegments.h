@@ -61,6 +61,9 @@ public:
     // Gets a segment by index. 
     TIGL_EXPORT CCPACSFuselageSegment& GetSegment(int index);
 
+    // Gets a segment by uid 
+    TIGL_EXPORT CCPACSFuselageSegment & GetSegment(const std::string& segmentUID);
+
     // Gets total segment count
     TIGL_EXPORT int GetSegmentCount(void) const;
 

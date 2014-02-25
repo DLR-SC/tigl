@@ -124,6 +124,7 @@
      </property>
      <addaction name="drawFuselageAction"/>
      <addaction name="drawFuselageProfilesAction"/>
+     <addaction name="drawFuselageSegmentGuideCurvesAction"/>
      <addaction name="drawFuselageTriangulationAction"/>
      <addaction name="drawFuselageSamplePointsAction"/>
      <addaction name="drawFuselageSamplePointsAngleAction"/>
@@ -1164,6 +1165,11 @@
   <action name="drawWingSegmentGuideCurvesAction">
    <property name="text">
     <string>Show Wing Segment Guide Curves</string>
+   </property>
+  </action>
+  <action name="drawFuselageSegmentGuideCurvesAction">
+   <property name="text">
+    <string>Show Fuselage Segment Guide Curves</string>
    </property>
   </action>
  </widget>

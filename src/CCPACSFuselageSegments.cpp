@@ -75,6 +75,17 @@ CCPACSFuselageSegment & CCPACSFuselageSegments::GetSegment(const int index)
     return (CCPACSFuselageSegment &) (*(segments[idx]));
 }
 
+// Gets a segment by uid. 
+CCPACSFuselageSegment & CCPACSFuselageSegments::GetSegment(const std::string& segmentUID)
+{
+    for (CCPACSFuselageSegmentContainer::size_type i = 0; i < segments.size(); i++) {
+        if (segments[i]->GetUID() == segmentUID) {
+            return (CCPACSFuselageSegment &) (*(segments[i]));
+        }
+    }
+    throw CTiglError("Error: Invalid uid in CCPACSFuselageSegments::GetSegment", TIGL_UID_ERROR);
+}
+
 // Gets total segment count
 int CCPACSFuselageSegments::GetSegmentCount(void) const
 {

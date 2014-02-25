@@ -33,8 +33,11 @@
 #include "tixi.h"
 #include "CCPACSFuselageConnection.h"
 #include "CTiglAbstractSegment.h"
+#include "CCPACSGuideCurves.h"
 
 #include "TopoDS_Shape.hxx"
+#include "TopTools_SequenceOfShape.hxx"
+
 
 
 namespace tigl
@@ -142,6 +145,15 @@ public:
 
     TIGL_EXPORT TiglGeometricComponentType GetComponentType(){return TIGL_COMPONENT_FUSELSEGMENT | TIGL_COMPONENT_SEGMENT | TIGL_COMPONENT_LOGICAL;}
 
+    // builds all guide curve wires
+    TIGL_EXPORT TopTools_SequenceOfShape& BuildGuideCurves(void);
+
+    // get guide curve for given UID
+    TIGL_EXPORT CCPACSGuideCurve& GetGuideCurve(std::string UID);
+
+    // check if guide curve with a given UID exists
+    TIGL_EXPORT bool GuideCurveExists(std::string UID);
+
 #ifdef TIGL_USE_XCAF
     // builds data structure for a TDocStd_Application
     // mostly used for export
@@ -169,9 +181,12 @@ private:
     CCPACSFuselageConnection startConnection;      /**< Start segment connection                */
     CCPACSFuselageConnection endConnection;        /**< End segment connection                  */
     CCPACSFuselage*          fuselage;             /**< Parent fuselage                         */
+    CCPACSGuideCurves        guideCurves;          /**< Guide curve container                   */
+    TopTools_SequenceOfShape guideCurveWires;      /**< container for the guide curve wires     */
     double                   myVolume;             /**< Volume of this segment                  */
     double                   mySurfaceArea;        /**< Surface Area of this segment            */
     double                   myWireLength;         /**< Wire length of this segment for a given zeta */
+    bool                     guideCurvesPresent;   /**< If guide curves are not present, lofted surface is possible */
 
 };
 

@@ -318,7 +318,7 @@ TEST_F(WingGuideCurve, tiglWingGuideCurve_CCPACSGuideCurveAlgo)
 
         // scale sample points since 2nd profile is scaled by a factor 2
         predictedSamplePointsX[i]*=(2*radius1+(2*radius2-2*radius1)*b);
-        // minus sign since gamma direcition is negative x-direction for alpha=0
+        // minus sign since gamma direction is negative x-direction for alpha=0
         predictedSamplePointsX[i]*=-1.0;
         // check is guide curve runs through the predicted sample points
         ASSERT_NEAR(predictedSamplePointsX[i], point.X(), 1E-14);
@@ -370,7 +370,7 @@ TEST_F(WingGuideCurve, tiglWingGuideCurve_CCPACSWingSegment)
     // outer profile has a sweep angle of -30 degrees)
     double angle=-M_PI/6.0;
     for (unsigned int i = 0; i <= N; ++i) {
-        // get intersection point of the guide curve with planes in direciton n located at b
+        // get intersection point of the guide curve with planes in direction n located at b
         // n is the y direction rotated pi/6 (30 degrees) inside the x-y plane
         double b = width*i/double(N);
         gp_Pnt planeLocation = gp_Pnt(b*sin(angle), b*cos(angle)+position, 0.0);
@@ -383,7 +383,7 @@ TEST_F(WingGuideCurve, tiglWingGuideCurve_CCPACSWingSegment)
         gp_Vec predictedPoint(0.0, position, 0.0);
         // go along the leading edge
         predictedPoint += gp_Vec(b*sin(angle), b*cos(angle), 0.0);
-        // scale sample points since outer profile's chordline smaller by a facto 0.5
+        // scale sample points since outer profile's chordline smaller by a factor of 0.5
         double s=(innerScale+(outerScale-innerScale)*i/double(N));
         // go along direction perpendicular to the leading edge in the x-y plane
         predictedPoint += gp_Vec(-cos(angle)*gammaDeviation[i]*s, sin(angle)*gammaDeviation[i]*s, 0.0);

@@ -30,6 +30,7 @@
 #include "tixi.h"
 #include "TopoDS_Wire.hxx"
 
+#include <Handle_Geom2d_TrimmedCurve.hxx>
 #include <gp_Pnt.hxx>
 
 #include <vector>
@@ -90,6 +91,9 @@ public:
     // Returns the profile points as read from TIXI.
     TIGL_EXPORT std::vector<CTiglPoint*> GetCoordinateContainer();
 
+    // Returns the "diameter" line as a wire
+    TIGL_EXPORT TopoDS_Wire GetDiameterWire();
+
 protected:
     // Cleanup routine
     void Cleanup(void);
@@ -106,6 +110,18 @@ protected:
 
     // Computes the length of the fuselage profile wire
     void ComputeWireLength(void);
+
+    // Helper function to determine the "diameter" (the wing profile chord line equivalent) 
+    // which is defined as the line intersecting Point1 and Point2
+    // 
+    // In the case of a non-mirror symmetric profile we have
+    // Point1: The middle point between first and last point of the profile point list
+    // Point2: The profile point list point with the largest distance to Point1
+    // 
+    // In the case of a mirror symmetric profile we have
+    // Point1: First point in the profile point list
+    // Point2: Last point in the profile point list
+    void BuildDiameterPoints(void);
 
 private:
     // Copy constructor
@@ -129,6 +145,8 @@ private:
     TopoDS_Wire               wireClosed;     /**< Forced closed fuselage profile wire */
     double                    wireLength;     /**< Length of fuselage profile wire */
     WireAlgoPointer           profileWireAlgo;
+    gp_Pnt                    startDiameterPoint; 
+    gp_Pnt                    endDiameterPoint;  
 
 };
 
