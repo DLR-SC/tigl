@@ -45,7 +45,10 @@
 
 
 #include "STEPControl_Writer.hxx"
+#include "STEPConstruct.hxx"
 #include "StepShape_AdvancedFace.hxx"
+#include "StepShape_OpenShell.hxx"
+#include "StepShape_ClosedShell.hxx"
 #include "STEPControl_StepModelType.hxx"
 #include "TransferBRep.hxx"
 #include "TransferBRep_ShapeMapper.hxx"
@@ -86,6 +89,27 @@ namespace
             if ( FP->FindTypedTransient ( mapper, STANDARD_TYPE(StepShape_AdvancedFace), SF ) ) {
                 Handle(TCollection_HAsciiString) str = new TCollection_HAsciiString(faceName.c_str());
                 SF->SetName(str);
+            }
+        }
+
+        // write shell names
+        TopTools_IndexedMapOfShape shellMap;
+        TopExp::MapShapes(shape->Shape(),   TopAbs_SHELL, shellMap);
+        for (int ishell = 1; ishell <= shellMap.Extent(); ++ishell) {
+            TopoDS_Shell shell = TopoDS::Shell(shellMap(ishell));
+            std::string shellName = shape->Name();
+
+            // set shell name
+            Handle(StepShape_OpenShell) SOS;
+            Handle(TransferBRep_ShapeMapper) mapper = TransferBRep::ShapeMapper ( FP, shell );
+            if ( FP->FindTypedTransient ( mapper, STANDARD_TYPE(StepShape_OpenShell), SOS ) ) {
+                Handle(TCollection_HAsciiString) str = new TCollection_HAsciiString(shellName.c_str());
+                SOS->SetName(str);
+            }
+            Handle(StepShape_ClosedShell) SCS;
+            if ( FP->FindTypedTransient ( mapper, STANDARD_TYPE(StepShape_ClosedShell), SCS ) ) {
+                Handle(TCollection_HAsciiString) str = new TCollection_HAsciiString(shellName.c_str());
+                SCS->SetName(str);
             }
         }
     }
@@ -240,8 +264,16 @@ void CTiglExportStep::ExportShapes(const ListPNamedShape& shapes, const std::str
     Handle(XCAFDoc_ShapeTool) myAssembly = XCAFDoc_DocumentTool::ShapeTool(hDoc->Main());
 
     STEPCAFControl_Writer stepWriter;
+    ListPNamedShape list;
     for (it = shapes.begin(); it != shapes.end(); ++it) {
-        GroupAndInsertShapeToCAF(myAssembly, *it, NAMED_COMPOUNDS);
+        ListPNamedShape templist = GroupFaces(*it, tigl::WHOLE_SHAPE);
+        for (ListPNamedShape::iterator it2 = templist.begin(); it2 != templist.end(); ++it2) {
+            list.push_back(*it2);
+        }
+    }
+    
+    for (it = list.begin(); it != list.end(); ++it) {
+        InsertShapeToCAF(myAssembly, *it);
     }
 
     if (stepWriter.Transfer(hDoc, STEP_WRITEMODE) == Standard_False) {
@@ -249,6 +281,12 @@ void CTiglExportStep::ExportShapes(const ListPNamedShape& shapes, const std::str
     }
 
     Handle(Transfer_FinderProcess) FP = stepWriter.Writer().WS()->TransferWriter()->FinderProcess();
+    
+    // write face entity names
+    for (it = list.begin(); it != list.end(); ++it) {
+        PNamedShape pshape = *it;
+        WriteSTEPFaceNames(FP, pshape);
+    }
 #else
     STEPControl_Writer stepWriter;
 
@@ -258,13 +296,13 @@ void CTiglExportStep::ExportShapes(const ListPNamedShape& shapes, const std::str
     }
 
     Handle(Transfer_FinderProcess) FP = stepWriter.WS()->TransferWriter()->FinderProcess();
-#endif
-
+    
     // write face entity names
     for (it = shapes.begin(); it != shapes.end(); ++it) {
         PNamedShape pshape = *it;
         WriteSTEPFaceNames(FP, pshape);
     }
+#endif
 
     if (stepWriter.Write(const_cast<char*>(filename.c_str())) > IFSelect_RetDone) {
         throw CTiglError("Error: Export of shapes to STEP file failed in CTiglExportStep::ExportShapes", TIGL_ERROR);

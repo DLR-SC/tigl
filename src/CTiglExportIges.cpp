@@ -247,7 +247,7 @@ void CTiglExportIges::ExportShapes(const ListPNamedShape& shapes, const std::str
 
     IGESCAFControl_Writer igesWriter;
     for (it = shapes.begin(); it != shapes.end(); ++it) {
-        GroupAndInsertShapeToCAF(myAssembly, *it, WHOLE_SHAPE);
+        InsertShapeToCAF(myAssembly, *it);
     }
 
     igesWriter.Model()->ApplyStatic(); // apply set parameters

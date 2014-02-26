@@ -37,6 +37,9 @@ public:
      /// can be found in the source shape. If so, it applies the name of
      /// the source face to the target face
     TIGL_EXPORT static void AppendNamesToShape(const PNamedShape source, PNamedShape target);
+
+    /// Tries to sew adjacent faces to create a shell (equivalent to create wires)
+    TIGL_EXPORT static PNamedShape Shellify(PNamedShape shape);
 };
 
 #endif // CBOOLEANOPERTOOLS_H

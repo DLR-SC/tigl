@@ -240,6 +240,9 @@ void CTrimShape::Perform()
         CBooleanOperTools::MapFaceNamesAfterBOP(splitAdapter, _source, _resultshape);
         CBooleanOperTools::MapFaceNamesAfterBOP(splitAdapter, _tool,   _resultshape);
 
+        // create shell
+        _resultshape = CBooleanOperTools::Shellify(_resultshape);
+
         if (debug) {
             WriteDebugShape(_resultshape->Shape(), "result");
         }

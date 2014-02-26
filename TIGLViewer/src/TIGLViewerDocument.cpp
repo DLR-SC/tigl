@@ -1036,7 +1036,7 @@ void TIGLViewerDocument::exportAsStep()
 
     writeToStatusBar(tr("Saving as STEP file with TIGL..."));
 
-    fileName = QFileDialog::getSaveFileName(parent, tr("Save as..."), myLastFolder, tr("Export STEP(*.step *.stp)"));
+    fileName = QFileDialog::getSaveFileName(parent, tr("Save as..."), myLastFolder, tr("Export STEP(*.stp *.step)"));
 
     if (!fileName.isEmpty()) {
         QApplication::setOverrideCursor( Qt::WaitCursor );
@@ -1054,7 +1054,7 @@ void TIGLViewerDocument::exportAsStepFused()
 
     writeToStatusBar(tr("Saving as STEP file with TIGL. This can take a while. Please wait..."));
 
-    fileName = QFileDialog::getSaveFileName(parent, tr("Save as..."), myLastFolder, tr("Export STEP(*.step *.stp)"));
+    fileName = QFileDialog::getSaveFileName(parent, tr("Save as..."), myLastFolder, tr("Export STEP(*.stp *.step)"));
 
     if (!fileName.isEmpty()) {
         QApplication::setOverrideCursor( Qt::WaitCursor );
@@ -1423,8 +1423,8 @@ void TIGLViewerDocument::drawFusedAircraft()
         myAISContext->EraseAll(Standard_False);
 
 
-        ShapeMap map = MapFacesToShapeGroups(airplane);
-        ShapeMap::iterator it;
+        ListPNamedShape map = GroupFaces(airplane, tigl::NAMED_COMPOUNDS);
+        ListPNamedShape::iterator it;
         int icol = 0;
         Quantity_NameOfColor colors[] = {Quantity_NOC_BLUE4,
                                          Quantity_NOC_RED,
@@ -1437,7 +1437,10 @@ void TIGLViewerDocument::drawFusedAircraft()
             if (icol >= ncolors) {
                 icol = 0;
             }
-            displayShape(it->second, colors[icol++]);
+            PNamedShape shape = *it;
+            if (shape) {
+                displayShape(shape->Shape(), colors[icol++]);
+            }
         }
 
         const ListPNamedShape& ints = fuser->Intersections();
