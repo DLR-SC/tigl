@@ -42,6 +42,7 @@
 #include "CCPACSFuselageProfileGetPointAlgo.h"
 #include "CCPACSGuideCurveAlgo.h"
 #include "CCPACSFuselageSegment.h"
+#include "CTiglLogging.h"
 
 /******************************************************************************/
 
@@ -280,6 +281,7 @@ TEST_F(FuselageGuideCurve, tiglFuselageGuideCurve_CCPACSFuselageSegment)
     tigl::CCPACSConfiguration& config = manager.GetConfiguration(tiglHandle);
     tigl::CCPACSFuselage& fuselage = config.GetFuselage(1);
 
+    tiglLogSetVerbosity(TILOG_ERROR);
     ASSERT_EQ(fuselage.GetSegmentCount(),2);
     tigl::CCPACSFuselageSegment& segment1 = (tigl::CCPACSFuselageSegment&) fuselage.GetSegment(1);
     tigl::CCPACSFuselageSegment& segment2 = (tigl::CCPACSFuselageSegment&) fuselage.GetSegment(2);
@@ -308,13 +310,14 @@ TEST_F(FuselageGuideCurve, tiglFuselageGuideCurve_CCPACSFuselageSegment)
     // start profile scale factor
     double startScale=1.0;
     // end profile scale factor
-    double endScale=1.0;
+    double endScale=2.0;
     for (unsigned int i = 0; i <= N; ++i) {
         // get intersection point of the guide curve with planes parallel to the y-z-direction
         // located at a
         double a = length*i/double(N);
-        gp_Pnt planeLocation = gp_Pnt(a+position, 0.0, 0.0);
-        Handle(Geom_Plane) plane = new Geom_Plane(planeLocation, gp_Dir(1.0, 0.0, 0.0));
+        gp_Pnt planeLocation = gp_Pnt(a+position, 0.5*startScale + 0.5*(endScale-startScale) / length * a, 0.0);
+        gp_Vec dirVec(gp_Pnt(position, 0.5*startScale, 0.0),gp_Pnt(0.0, 0.5*endScale, 0.0));
+        Handle(Geom_Plane) plane = new Geom_Plane(planeLocation, gp_Dir(dirVec));
         GeomAPI_IntCS intersection (curve, plane);
         ASSERT_EQ(intersection.NbPoints(), 1);
         gp_Pnt point = intersection.Point(1);
@@ -327,7 +330,8 @@ TEST_F(FuselageGuideCurve, tiglFuselageGuideCurve_CCPACSFuselageSegment)
         // scale sample points since outer profile's diameter is greater by a factor of 2
         double s=(startScale+(endScale-startScale)*i/double(N));
         // go along direction perpendicular to the leading edge in the x-y plane
-        predictedPoint += gp_Vec(0.0, gammaDeviation[i]*s, 0.0);
+        double angle=atan2(0.5*(endScale-startScale), length);
+        predictedPoint += gp_Vec(-sin(angle)*gammaDeviation[i]*s, cos(angle)*gammaDeviation[i]*s, 0.0);
 
         // check is guide curve runs through the predicted sample points
         ASSERT_NEAR(predictedPoint.X(), point.X(), 1E-10);
