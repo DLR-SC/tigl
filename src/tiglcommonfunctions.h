@@ -26,11 +26,12 @@
 #include "gp_Vec.hxx"
 #include "TopoDS_Shape.hxx"
 #include "PNamedShape.h"
+#include "ListPNamedShape.h"
 
 #include <map>
 #include <string>
 
-typedef std::map<std::string, TopoDS_Shape> ShapeMap;
+typedef std::map<std::string, PNamedShape> ShapeMap;
 
 TIGL_EXPORT Standard_Real GetWireLength(const class TopoDS_Wire& wire);
 
@@ -55,11 +56,11 @@ TIGL_EXPORT gp_Pnt GetCentralFacePoint(const class TopoDS_Face& face);
 
 // puts all faces with the same origin to one TopoDS_Compound
 // Maps all compounds with its name in the map
-TIGL_EXPORT ShapeMap MapFacesToShapeGroups(const PNamedShape shape);
+TIGL_EXPORT ListPNamedShape GroupFaces(const PNamedShape shape, tigl::ShapeStoreType groupType);
 
 #ifdef TIGL_USE_XCAF
 #include "Handle_XCAFDoc_ShapeTool.hxx"
-void GroupAndInsertShapeToCAF(Handle_XCAFDoc_ShapeTool myAssembly, const PNamedShape shape, tigl::ShapeStoreType);
+void InsertShapeToCAF(Handle_XCAFDoc_ShapeTool myAssembly, const PNamedShape shape);
 #endif
 
 #endif // TIGLCOMMONFUNCTIONS_H

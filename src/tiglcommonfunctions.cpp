@@ -25,6 +25,9 @@
 
 #include "CTiglError.h"
 #include "CNamedShape.h"
+#include "boolean_operations/CBooleanOperTools.h"
+#include "boolean_operations/BRepSewingToBRepBuilderShapeAdapter.h"
+#include "ListPNamedShape.h"
 
 #include "Geom_Curve.hxx"
 #include "Geom_Surface.hxx"
@@ -43,6 +46,7 @@
 #include "BRepBuilderAPI_MakeEdge.hxx"
 #include "GeomAPI_ProjectPointOnCurve.hxx"
 #include "BRepTools.hxx"
+#include "BRepBuilderAPI_Sewing.hxx"
 
 #include <Geom2d_Curve.hxx>
 #include <Geom2d_Line.hxx>
@@ -291,36 +295,92 @@ gp_Pnt GetCentralFacePoint(const TopoDS_Face& face)
     return p;
 }
 
-ShapeMap MapFacesToShapeGroups(const PNamedShape shape)
+ListPNamedShape GroupFaces(const PNamedShape shape, tigl::ShapeStoreType groupType)
 {
-    ShapeMap map;
+    ListPNamedShape shapeList;
     if (!shape) {
-        return map;
+        return shapeList;
     }
 
-    BRep_Builder b;
-    TopTools_IndexedMapOfShape faceMap;
-    TopExp::MapShapes(shape->Shape(),   TopAbs_FACE, faceMap);
-    for (int iface = 1; iface <= faceMap.Extent(); ++iface) {
-        TopoDS_Face face = TopoDS::Face(faceMap(iface));
-        std::string name = shape->ShortName();
-        PNamedShape origin = shape->GetFaceTraits(iface-1).Origin();
-        if (origin){
-            name = origin->ShortName();
+    if (groupType == tigl::NAMED_COMPOUNDS) {
+        BRep_Builder b;
+        TopTools_IndexedMapOfShape faceMap;
+        std::map<std::string, TopoDS_Shape> map;
+        TopExp::MapShapes(shape->Shape(),   TopAbs_FACE, faceMap);
+        if (faceMap.Extent() == 0) {
+            // return the shape as is
+            shapeList.push_back(shape);
+            return shapeList;
         }
-        ShapeMap::iterator it = map.find(name);
-        if (it == map.end()) {
-            TopoDS_Compound c;
-            b.MakeCompound(c);
-            b.Add(c, face);
-            map[name] = c;
+        
+        for (int iface = 1; iface <= faceMap.Extent(); ++iface) {
+            TopoDS_Face face = TopoDS::Face(faceMap(iface));
+            std::string name = shape->ShortName();
+            PNamedShape origin = shape->GetFaceTraits(iface-1).Origin();
+            if (origin){
+                name = origin->ShortName();
+            }
+            std::map<std::string, TopoDS_Shape>::iterator it = map.find(name);
+            if (it == map.end()) {
+                TopoDS_Compound c;
+                b.MakeCompound(c);
+                b.Add(c, face);
+                map[name] = c;
+            }
+            else {
+                TopoDS_Shape& c = it->second;
+                b.Add(c, face);
+            }
         }
-        else {
-            TopoDS_Shape& c = it->second;
-            b.Add(c, face);
+        
+        // create Named Shapes
+        std::map<std::string, TopoDS_Shape>::iterator it;
+        for (it = map.begin(); it != map.end(); ++it) {
+            PNamedShape pshape(new CNamedShape(it->second, it->first.c_str()));
+            shapeList.push_back(pshape);
+        }
+    
+        // set the original face traits
+        ListPNamedShape::iterator it2;
+        for (it2 = shapeList.begin(); it2 != shapeList.end(); ++it2) {
+            PNamedShape curshape = *it2;
+            CBooleanOperTools::AppendNamesToShape(shape, curshape);
+        }
+    
+    
+        for (it2 = shapeList.begin(); it2 != shapeList.end(); ++it2) {
+            PNamedShape curshape = *it2;
+            *it2 = CBooleanOperTools::Shellify(curshape);
         }
     }
-    return map;
+    else if (groupType == tigl::WHOLE_SHAPE) {
+        shapeList.push_back(shape);
+    }
+    else if (groupType == tigl::FACES) {
+        // store each face as an own shape
+        TopTools_IndexedMapOfShape faceMap;
+        TopExp::MapShapes(shape->Shape(), TopAbs_FACE, faceMap);
+        if (faceMap.Extent() == 0) {
+            // return the shape as is
+            shapeList.push_back(shape);
+            return shapeList;
+        }
+        
+        for (int iface = 1; iface <= faceMap.Extent(); ++iface) {
+            TopoDS_Face face = TopoDS::Face(faceMap(iface));
+            std::string name = shape->ShortName();
+            const CFaceTraits& traits = shape->GetFaceTraits(iface-1);
+            if (traits.Origin()) {
+                name = traits.Origin()->ShortName();
+            }
+
+            PNamedShape faceShape(new CNamedShape(face, name.c_str()));
+            faceShape->SetFaceTraits(0, shape->GetFaceTraits(iface-1));
+            shapeList.push_back(faceShape);
+        }
+        
+    }
+    return shapeList;
 }
 
 // projects a point onto the line (lineStart<->lineStop) and returns the projection parameter
@@ -331,7 +391,7 @@ Standard_Real ProjectPointOnLine(gp_Pnt p, gp_Pnt lineStart, gp_Pnt lineStop)
 
 
 #ifdef TIGL_USE_XCAF
-void GroupAndInsertShapeToCAF(Handle(XCAFDoc_ShapeTool) myAssembly, const PNamedShape shape, tigl::ShapeStoreType storeType)
+void InsertShapeToCAF(Handle(XCAFDoc_ShapeTool) myAssembly, const PNamedShape shape)
 {
     if (!shape) {
         return;
@@ -341,35 +401,9 @@ void GroupAndInsertShapeToCAF(Handle(XCAFDoc_ShapeTool) myAssembly, const PNamed
     TopExp::MapShapes(shape->Shape(),   TopAbs_FACE, faceMap);
     // any faces?
     if (faceMap.Extent() > 0) {
-        if (storeType == tigl::WHOLE_SHAPE){
-            TDF_Label shapeLabel = myAssembly->NewShape();
-            myAssembly->SetShape(shapeLabel, shape->Shape());
-            TDataStd_Name::Set(shapeLabel, shape->Name());
-        }
-        else if (storeType == tigl::NAMED_COMPOUNDS) {
-            // create compounds with the same name as origin
-            ShapeMap map =  MapFacesToShapeGroups(shape);
-            // add compounds to document
-            ShapeMap::iterator it = map.begin();
-            for (; it != map.end(); ++it){
-                TDF_Label faceLabel = myAssembly->NewShape();
-                myAssembly->SetShape(faceLabel, it->second);
-                TDataStd_Name::Set(faceLabel, it->first.c_str());
-            }
-        }
-        else if (storeType == tigl::FACES) {
-            for (int iface = 1; iface <= faceMap.Extent(); ++iface) {
-                TopoDS_Face face = TopoDS::Face(faceMap(iface));
-                std::string name = shape->ShortName();
-                PNamedShape origin = shape->GetFaceTraits(iface-1).Origin();
-                if (origin){
-                    name = origin->ShortName();
-                }
-                TDF_Label faceLabel = myAssembly->NewShape();
-                myAssembly->SetShape(faceLabel, face);
-                TDataStd_Name::Set(faceLabel, name.c_str());
-            }
-        }
+        TDF_Label shapeLabel = myAssembly->NewShape();
+        myAssembly->SetShape(shapeLabel, shape->Shape());
+        TDataStd_Name::Set(shapeLabel, shape->Name());
     }
     else {
         // no faces, export edges as wires

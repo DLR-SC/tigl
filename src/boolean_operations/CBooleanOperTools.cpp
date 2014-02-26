@@ -18,6 +18,7 @@
 
 #include "CBooleanOperTools.h"
 #include "CNamedShape.h"
+#include "BRepSewingToBRepBuilderShapeAdapter.h"
 
 #include <cassert>
 
@@ -30,6 +31,7 @@
 #include <TopTools_IndexedMapOfShape.hxx>
 
 #include <BRepBuilderAPI_MakeShape.hxx>
+#include <BRepBuilderAPI_Sewing.hxx>
 
 // finds out for each face of the splitted result, what the name of the parent face was
 void CBooleanOperTools::MapFaceNamesAfterBOP(BRepBuilderAPI_MakeShape& bop, const PNamedShape source, PNamedShape result)
@@ -76,4 +78,24 @@ void CBooleanOperTools::AppendNamesToShape(const PNamedShape source, PNamedShape
             target->FaceTraits(index-1).SetDerivedFromShape(source, iface-1);
         }
     }
+}
+
+/**
+ * @brief Tries to sew adjacent faces to create a shell (equivalent to create wires)
+ */
+PNamedShape CBooleanOperTools::Shellify(PNamedShape shape)
+{
+    BRepBuilderAPI_Sewing shellMaker;
+    shellMaker.Add(shape->Shape());
+    shellMaker.Perform();
+    BRepSewingToBRepBuilderShapeAdapter sewerAdapter(shellMaker);
+
+    // map names to shell
+    PNamedShape resultShell(new CNamedShape(*shape));
+    resultShell->SetShape(shellMaker.SewedShape());
+    PNamedShape tmpshape(new CNamedShape(*shape));
+    tmpshape->SetShape(shellMaker.ModifiedSubShape(shape->Shape()));
+    CBooleanOperTools::MapFaceNamesAfterBOP(sewerAdapter, tmpshape, resultShell);
+    
+    return resultShell;
 }
