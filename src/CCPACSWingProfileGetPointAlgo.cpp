@@ -53,15 +53,8 @@ CCPACSWingProfileGetPointAlgo::CCPACSWingProfileGetPointAlgo (const TopTools_Seq
         throw CTiglError("Error: CCPACSWingProfileGetPointAlgo: Separation of upper and lower profiles failed", TIGL_ERROR);
     }
 
-    // concatenate wires
-    BRepBuilderAPI_MakeWire wireBuilder(upperWire);
-    wireBuilder.Add(lowerWire);
-    if (!(wireBuilder.IsDone())) {
-        throw CTiglError("Error: CCPACSWingProfileGetPointAlgo: Concatenation of upper and lower profiles failed", TIGL_ERROR);
-    }
-    TopoDS_Wire wire=wireBuilder.Wire();
-    // set circumfence
-    wireLength = GetWireLength(wire);
+    lowerWireLength = GetWireLength(lowerWire);
+    upperWireLength = GetWireLength(upperWire);
 }
 
 void CCPACSWingProfileGetPointAlgo::GetPointTangent(const double& alpha, gp_Pnt& point, gp_Vec& tangent)
@@ -76,7 +69,7 @@ void CCPACSWingProfileGetPointAlgo::GetPointTangent(const double& alpha, gp_Pnt&
         // construct line
         Geom_Line line(startpoint, dir);
         // map [-infinity, -1.0] to [0.0, infinity] and scale by profile length
-        Standard_Real zeta = wireLength*(-alpha - 1.0);
+        Standard_Real zeta = lowerWireLength*(-alpha - 1.0);
         // get point on line at distance zeta from the start point
         line.D0(zeta, point);
     }
@@ -97,8 +90,8 @@ void CCPACSWingProfileGetPointAlgo::GetPointTangent(const double& alpha, gp_Pnt&
         gp_Dir dir(tangent);
         // construct line
         Geom_Line line(startpoint, dir);
-        // map [1.0, infinity] to [0.0, infinity] and scale by profile length
-        Standard_Real zeta = wireLength*(alpha - 1.0);
+        // map [1.0, infinity] to [0.0, infinity] and scale by the upper profile length
+        Standard_Real zeta = upperWireLength*(alpha - 1.0);
         // get point on line at distance zeta from the start point
         line.D0(zeta, point);
     }
