@@ -281,7 +281,6 @@ TEST_F(FuselageGuideCurve, tiglFuselageGuideCurve_CCPACSFuselageSegment)
     tigl::CCPACSConfiguration& config = manager.GetConfiguration(tiglHandle);
     tigl::CCPACSFuselage& fuselage = config.GetFuselage(1);
 
-    tiglLogSetVerbosity(TILOG_ERROR);
     ASSERT_EQ(fuselage.GetSegmentCount(),2);
     tigl::CCPACSFuselageSegment& segment1 = (tigl::CCPACSFuselageSegment&) fuselage.GetSegment(1);
     tigl::CCPACSFuselageSegment& segment2 = (tigl::CCPACSFuselageSegment&) fuselage.GetSegment(2);

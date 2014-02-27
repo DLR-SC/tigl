@@ -180,7 +180,7 @@ TEST_F(WingGuideCurve, tiglWingGuideCurve_CCPACSGuideCurves)
 /**
 * Tests CCPACSWingProfileGetPointAlgo class
 */
-TEST_F(WingGuideCurve, tiglWingGuideCurve_CCPACSWingProfileGetPointAlgo)
+TEST_F(WingGuideCurve, tiglWingGuideCurve_CCPACSWingProfileGetPointAlgoOnProfile)
 {
     // read configuration
     tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
@@ -251,6 +251,102 @@ TEST_F(WingGuideCurve, tiglWingGuideCurve_CCPACSWingProfileGetPointAlgo)
 }
 
 /**
+* Tests CCPACSWingProfileGetPointAlgo class
+*/
+TEST_F(WingGuideCurve, tiglWingGuideCurve_CCPACSWingProfileGetPointAlgoOnCircle)
+{
+    double radius1=1.0;
+    double distance=1.0;
+    gp_Pnt location1(radius1, 0.0,  0.0);
+    gp_Ax2 circlePosition1(location1, gp::DY(), gp::DX());
+    Handle(Geom_Circle) circle1 = new Geom_Circle(circlePosition1, radius1);
+
+    // cut into lower and upper half circle
+    double start=0.0;
+    double mid=start+M_PI;
+    double end=mid+M_PI;
+    TopoDS_Edge innerLowerEdge = BRepBuilderAPI_MakeEdge(circle1, start, mid);
+    TopoDS_Edge innerUpperEdge = BRepBuilderAPI_MakeEdge(circle1,   mid, end);
+
+    // convert to wires 
+    TopoDS_Wire innerLowerWire = BRepBuilderAPI_MakeWire(innerLowerEdge);
+    TopoDS_Wire innerUpperWire = BRepBuilderAPI_MakeWire(innerUpperEdge);
+
+    // concatenate wires for guide curve algo
+    TopTools_SequenceOfShape innerWireContainer;
+    innerWireContainer.Append(innerLowerWire);
+    innerWireContainer.Append(innerUpperWire);
+
+    // instantiate getPointAlgo
+    tigl::CCPACSWingProfileGetPointAlgo getPointAlgo(innerWireContainer);
+    gp_Pnt point;
+    gp_Vec tangent;
+
+    // plot points and tangents
+    int N = 20;
+    int M = 2;
+    for (int i=0; i<=N+2*M; i++) {
+        double da = 2.0/double(N);
+        double alpha = -1.0 -M*da + da*i;
+        getPointAlgo.GetPointTangent(alpha, point, tangent);
+        outputXY(i, point.X(), point.Z(), "./TestData/analysis/tiglWingGuideCurve_circleSamplePoints_points.dat");
+        outputXYVector(i, point.X(), point.Z(), tangent.X(), tangent.Z(), "./TestData/analysis/tiglWingGuideCurve_circleSamplePoints_tangents.dat");
+        // plot points and tangents with gnuplot by:
+        // echo "plot 'TestData/analysis/tiglWingGuideCurve_circleSamplePoints_tangents.dat' u 1:2:3:4 with vectors filled head lw 2, 'TestData/analysis/tiglWingGuideCurve_circleSamplePoints_points.dat' w linespoints lw 2" | gnuplot -persist
+    }
+
+    // leading edge: point must be zero and tangent must be in z-direction
+    getPointAlgo.GetPointTangent(0.0, point, tangent);
+    ASSERT_NEAR(point.X(), 0.0, 1E-10);
+    ASSERT_NEAR(point.Y(), 0.0, 1E-10);
+    ASSERT_NEAR(point.Z(), 0.0, 1E-10);
+    ASSERT_NEAR(tangent.X(), 0.0, 1E-10);
+    ASSERT_NEAR(tangent.Y(), 0.0, 1E-10);
+
+    // lower trailing edge and tangent must be in z-direction
+    getPointAlgo.GetPointTangent(-1.0, point, tangent);
+    ASSERT_NEAR(point.X(), 2.0, 1E-10);
+    ASSERT_NEAR(point.Y(), 0.0, 1E-10);
+    ASSERT_NEAR(point.Z(), 0.0, 1E-10);
+    ASSERT_NEAR(tangent.X(), 0.0, 1E-10);
+    ASSERT_NEAR(tangent.Y(), 0.0, 1E-10);
+    ASSERT_TRUE(tangent.Z()<0);
+
+    // upper trailing edge
+    getPointAlgo.GetPointTangent(1.0, point, tangent);
+    ASSERT_NEAR(point.X(), 2.0, 1E-10);
+    ASSERT_NEAR(point.Y(), 0.0, 1E-10);
+    ASSERT_NEAR(point.Z(), 0.0, 1E-10);
+    ASSERT_NEAR(tangent.X(), 0.0, 1E-10);
+    ASSERT_NEAR(tangent.Y(), 0.0, 1E-10);
+    ASSERT_TRUE(tangent.Z()<0);
+
+    // check points and tangents for alpha > 1
+    gp_Pnt point2;
+    gp_Vec tangent2;
+    getPointAlgo.GetPointTangent(1.0, point, tangent);
+    getPointAlgo.GetPointTangent(2.0, point2, tangent2);
+    ASSERT_NEAR(point2.X(), 2.0, 1E-10);
+    ASSERT_NEAR(point2.Y(), 0.0, 1E-10);
+    ASSERT_NEAR(point2.Z(), -M_PI, 1E-10);
+    ASSERT_EQ(tangent.X(), tangent2.X());
+    ASSERT_EQ(tangent.Y(), tangent2.Y());
+    ASSERT_EQ(tangent.Z(), tangent2.Z());
+    ASSERT_NEAR(point.Distance(point2), M_PI, 1E-10);
+
+    // check if tangent is constant for alpha < 1
+    getPointAlgo.GetPointTangent(-1.0, point, tangent);
+    getPointAlgo.GetPointTangent(-2.0, point2, tangent2);
+    ASSERT_NEAR(point2.X(), 2.0, 1E-10);
+    ASSERT_NEAR(point2.Y(), 0.0, 1E-10);
+    ASSERT_NEAR(point2.Z(), M_PI, 1E-10);
+    ASSERT_EQ(tangent.X(), tangent2.X());
+    ASSERT_EQ(tangent.Y(), tangent2.Y());
+    ASSERT_EQ(tangent.Z(), tangent2.Z());
+    ASSERT_NEAR(point.Distance(point2), M_PI, 1E-10);
+}
+
+/**
 * Tests CCPACSGuideCurveAlgo class
 */
 TEST_F(WingGuideCurve, tiglWingGuideCurve_CCPACSGuideCurveAlgo)
@@ -271,7 +367,7 @@ TEST_F(WingGuideCurve, tiglWingGuideCurve_CCPACSGuideCurveAlgo)
     // cut into lower and upper half circle
     double start=0.0;
     double mid=start+M_PI;
-    double end=mid+2*M_PI;
+    double end=mid+M_PI;
     TopoDS_Edge innerLowerEdge = BRepBuilderAPI_MakeEdge(circle1, start, mid);
     TopoDS_Edge innerUpperEdge = BRepBuilderAPI_MakeEdge(circle1,   mid, end);
     TopoDS_Edge outerLowerEdge = BRepBuilderAPI_MakeEdge(circle2, start, mid);
