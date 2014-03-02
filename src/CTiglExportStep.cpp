@@ -266,7 +266,7 @@ void CTiglExportStep::ExportShapes(const ListPNamedShape& shapes, const std::str
     STEPCAFControl_Writer stepWriter;
     ListPNamedShape list;
     for (it = shapes.begin(); it != shapes.end(); ++it) {
-        ListPNamedShape templist = GroupFaces(*it, tigl::WHOLE_SHAPE);
+        ListPNamedShape templist = GroupFaces(*it, myStoreType);
         for (ListPNamedShape::iterator it2 = templist.begin(); it2 != templist.end(); ++it2) {
             list.push_back(*it2);
         }

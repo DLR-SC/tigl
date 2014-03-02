@@ -305,7 +305,7 @@ ListPNamedShape GroupFaces(const PNamedShape shape, tigl::ShapeStoreType groupTy
     if (groupType == tigl::NAMED_COMPOUNDS) {
         BRep_Builder b;
         TopTools_IndexedMapOfShape faceMap;
-        std::map<std::string, TopoDS_Shape> map;
+        std::map<PNamedShape, TopoDS_Shape> map;
         TopExp::MapShapes(shape->Shape(),   TopAbs_FACE, faceMap);
         if (faceMap.Extent() == 0) {
             // return the shape as is
@@ -315,42 +315,41 @@ ListPNamedShape GroupFaces(const PNamedShape shape, tigl::ShapeStoreType groupTy
         
         for (int iface = 1; iface <= faceMap.Extent(); ++iface) {
             TopoDS_Face face = TopoDS::Face(faceMap(iface));
-            std::string name = shape->ShortName();
             PNamedShape origin = shape->GetFaceTraits(iface-1).Origin();
-            if (origin){
-                name = origin->ShortName();
-            }
-            std::map<std::string, TopoDS_Shape>::iterator it = map.find(name);
+
+            std::map<PNamedShape, TopoDS_Shape>::iterator it = map.find(origin);
             if (it == map.end()) {
                 TopoDS_Compound c;
                 b.MakeCompound(c);
                 b.Add(c, face);
-                map[name] = c;
+                map[origin] = c;
             }
             else {
                 TopoDS_Shape& c = it->second;
                 b.Add(c, face);
             }
         }
-        
+
         // create Named Shapes
-        std::map<std::string, TopoDS_Shape>::iterator it;
+        std::map<PNamedShape, TopoDS_Shape>::iterator it;
         for (it = map.begin(); it != map.end(); ++it) {
-            PNamedShape pshape(new CNamedShape(it->second, it->first.c_str()));
-            shapeList.push_back(pshape);
-        }
-    
-        // set the original face traits
-        ListPNamedShape::iterator it2;
-        for (it2 = shapeList.begin(); it2 != shapeList.end(); ++it2) {
-            PNamedShape curshape = *it2;
+            PNamedShape  origin     = it->first;
+            TopoDS_Shape toposhape  = it->second;
+            PNamedShape curshape;
+            if (origin) {
+                curshape = PNamedShape(new CNamedShape(toposhape, origin->Name()));
+                curshape->SetShortName(origin->ShortName());
+            }
+            else {
+                curshape = PNamedShape(new CNamedShape(toposhape, shape->Name()));
+                curshape->SetShortName(shape->ShortName());
+            }
+            // set the original face traits
             CBooleanOperTools::AppendNamesToShape(shape, curshape);
-        }
-    
-    
-        for (it2 = shapeList.begin(); it2 != shapeList.end(); ++it2) {
-            PNamedShape curshape = *it2;
-            *it2 = CBooleanOperTools::Shellify(curshape);
+
+            // make shells
+            curshape = CBooleanOperTools::Shellify(curshape);
+            shapeList.push_back(curshape);
         }
     }
     else if (groupType == tigl::WHOLE_SHAPE) {
@@ -368,13 +367,17 @@ ListPNamedShape GroupFaces(const PNamedShape shape, tigl::ShapeStoreType groupTy
         
         for (int iface = 1; iface <= faceMap.Extent(); ++iface) {
             TopoDS_Face face = TopoDS::Face(faceMap(iface));
-            std::string name = shape->ShortName();
             const CFaceTraits& traits = shape->GetFaceTraits(iface-1);
-            if (traits.Origin()) {
-                name = traits.Origin()->ShortName();
-            }
 
-            PNamedShape faceShape(new CNamedShape(face, name.c_str()));
+            PNamedShape faceShape;
+            if (traits.Origin()) {
+                faceShape = PNamedShape(new CNamedShape(face, traits.Origin()->Name()));
+                faceShape->SetShortName(traits.Origin()->ShortName());
+            }
+            else {
+                faceShape = PNamedShape(new CNamedShape(face, shape->Name()));
+                faceShape->SetShortName(shape->ShortName());
+            }
             faceShape->SetFaceTraits(0, shape->GetFaceTraits(iface-1));
             shapeList.push_back(faceShape);
         }
