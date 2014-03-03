@@ -257,8 +257,20 @@ void OsgMainApp::addObjectFromVTK(std::string filepath)
     geode->setName(filepath);
 
     root_1->addChild(geode.get());
-
 }
+
+void OsgMainApp::addObjectFromHOTSOSE(std::string filepath)
+{
+    osg::notify(osg::ALWAYS)<<"Opening Hotsose file "<< filepath << std::endl;
+
+    osg::ref_ptr<GeometricVisObject> geode = new GeometricVisObject;
+    geode->readHotsoseMesh(filepath.c_str());
+    geode->setName(filepath);
+
+    root_1->addChild(geode.get());
+}
+
+
 void OsgMainApp::addObjectFromCPACS(std::string filepath)
 {
     osg::notify(osg::ALWAYS)<<"Opening CPACS file "<< filepath << std::endl;

@@ -221,6 +221,9 @@ public class TiglViewerActivity extends ActionBarActivity implements OnNavigatio
 		if(filename.contains("xml")) {
 			TiGLViewerNativeLib.addObjectFromCPACS(filename);
 		}
+		else if(filename.contains("mesh")) {
+			TiGLViewerNativeLib.addObjectFromHOTSOSE(filename);
+		}
 		else if(filename.contains("vtp")) {
 			TiGLViewerNativeLib.addObjectFromVTK(filename);
 		}

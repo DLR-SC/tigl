@@ -7,6 +7,7 @@
 #include "tixi.h"
 #include "ITiglGeometricComponent.h"
 #include "CTiglTriangularizer.h"
+#include "CHotsoseMeshReader.h"
 #include <TopoDS_Shape.hxx>
 
 #include <osg/Geometry>
@@ -80,6 +81,53 @@ int GeometricVisObject::fromShape(TopoDS_Shape& loft, double deflection)
     return 0;
 }
 
+int GeometricVisObject::readHotsoseMesh(const char* filename)
+{
+	CHotsoseMeshReader reader;
+	tigl::CTiglPolyData polyData;
+	if (reader.readFromFile(filename, polyData) != TIGL_SUCCESS) {
+		osg::notify(osg::ALWAYS) << "Could not open " << filename << "!" << std::endl;
+		return 1;
+	}
+
+    polyData.switchObject(1);
+    tigl::CTiglPolyObject& inputObject = polyData.currentObject();
+
+    osg::ref_ptr<osg::Geometry> geometry = new osg::Geometry();
+
+    osg::Vec3Array* vertices = new osg::Vec3Array();
+
+    for (unsigned int iPoly = 0; iPoly < inputObject.getNPolygons(); iPoly++) {
+        if(inputObject.getNPointsOfPolygon(iPoly) != 4) {
+            osg::notify(osg::ALWAYS) << "Error: polygon has to be a quad!" << std::endl;
+            continue;
+        }
+        // else
+
+        for(int vindex = 3; vindex >= 0; vindex--) {
+            unsigned long index = inputObject.getVertexIndexOfPolygon(vindex, iPoly);
+
+            tigl::CTiglPoint vertexPoint  = inputObject.getVertexPoint (index);
+            osg::Vec3f vertex(vertexPoint.x,  vertexPoint.y,  vertexPoint.z );
+            vertices->push_back(vertex);
+        }
+    }
+
+    this->getOrCreateStateSet()->setAttribute(MaterialTemplate::getMaterial(UNSELECTED));
+    osg::DrawArrays* array = new osg::DrawArrays(osg::PrimitiveSet::QUADS , 0 , vertices->size());
+
+    geometry->addPrimitiveSet(array);
+    geometry->setVertexArray(vertices);
+
+    this->addDrawable(geometry.get());
+
+    osgUtil::SmoothingVisitor sv;
+    sv.setCreaseAngle(osg::DegreesToRadians(80.0f));
+    this->accept(sv);
+    this->setCullingActive(false);
+    this->getOrCreateStateSet()->setMode( GL_CULL_FACE, osg::StateAttribute::OFF );
+
+}
 
 int GeometricVisObject::readVTK(const char* xmlFilename)
 {

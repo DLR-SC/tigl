@@ -103,6 +103,7 @@ public:
     //Events
     void currentCamera();
     void addObjectFromVTK(std::string filepath);
+    void addObjectFromHOTSOSE(std::string filepath);
     void addObjectFromCPACS(std::string filepath);
     void removeObjects();
     void changeCamera(int view);

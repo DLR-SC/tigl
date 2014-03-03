@@ -18,6 +18,7 @@ public class TiGLViewerNativeLib {
     public static native void       setAssetMgr(AssetManager mgr);
     public static native void       step();
     public static native void       addObjectFromVTK(String filepath);
+    public static native void       addObjectFromHOTSOSE(String filepath);
     public static native void       addObjectFromCPACS(String filepath);
     public static native void       removeObjects();
     public static native void       changeCamera(int view);

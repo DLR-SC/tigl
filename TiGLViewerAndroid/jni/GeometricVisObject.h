@@ -16,6 +16,7 @@ public:
     //void unpick();
 
     int readVTK(const char* filename);
+    int readHotsoseMesh(const char* filename);
     int fromShape(TopoDS_Shape& loft, double deflection);
 
     int getId(){return id;};
