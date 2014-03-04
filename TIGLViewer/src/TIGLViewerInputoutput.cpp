@@ -219,6 +219,7 @@ Handle_TopTools_HSequenceOfShape TIGLViewerInputOutput::importIGES( const QStrin
 {
     Handle_TopTools_HSequenceOfShape aSequence;
     IGESControl_Reader Reader;
+    Interface_Static::SetCVal("xstep.cascade.unit", "M");
     int status = Reader.ReadFile( file.toAscii().data() );
 
     if ( status == IFSelect_RetDone ) {
@@ -268,6 +269,7 @@ Handle_TopTools_HSequenceOfShape TIGLViewerInputOutput::importSTEP( const QStrin
     Handle_TopTools_HSequenceOfShape aSequence;
 
     STEPControl_Reader aReader;
+    Interface_Static::SetCVal("xstep.cascade.unit", "M");
     IFSelect_ReturnStatus status = aReader.ReadFile( file.toAscii().data() );
     if ( status == IFSelect_RetDone ) {
         //Interface_TraceFile::SetDefault();

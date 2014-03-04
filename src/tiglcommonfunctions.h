@@ -60,7 +60,7 @@ TIGL_EXPORT ListPNamedShape GroupFaces(const PNamedShape shape, tigl::ShapeStore
 
 #ifdef TIGL_USE_XCAF
 #include "Handle_XCAFDoc_ShapeTool.hxx"
-void InsertShapeToCAF(Handle_XCAFDoc_ShapeTool myAssembly, const PNamedShape shape);
+void InsertShapeToCAF(Handle_XCAFDoc_ShapeTool myAssembly, const PNamedShape shape, bool useShortnames);
 #endif
 
 #endif // TIGLCOMMONFUNCTIONS_H
