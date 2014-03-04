@@ -144,6 +144,7 @@ void CFuseShapes::DoFuse()
         // Todo: make a new BOP out of this
         TopoDS_Shape intersection = BRepAlgoAPI_Section(_trimmedParent->Shape(), child->Shape(), DSFill);
         PNamedShape intersectionShape(new CNamedShape(intersection, std::string("INT" + std::string(_parent->Name()) + child->Name()).c_str()));
+        intersectionShape->SetShortName(std::string("INT" + std::string(_parent->ShortName()) + child->ShortName()).c_str());
         _intersections.push_back(intersectionShape);
 
 #ifdef DEBUG_BOP

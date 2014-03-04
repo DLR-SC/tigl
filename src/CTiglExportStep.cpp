@@ -53,6 +53,7 @@
 #include "TransferBRep.hxx"
 #include "TransferBRep_ShapeMapper.hxx"
 #include "Transfer_FinderProcess.hxx"
+#include "Interface_Static.hxx"
 
 #include "Standard_CString.hxx"
 #include "TCollection_HAsciiString.hxx"
@@ -249,6 +250,8 @@ void CTiglExportStep::ExportFusedStep(const std::string& filename)
 void CTiglExportStep::ExportShapes(const ListPNamedShape& shapes, const std::string& filename) const
 {
     STEPControl_Controller::Init();
+    Interface_Static::SetCVal("xstep.cascade.unit", "M");
+    Interface_Static::SetCVal("write.step.unit", "M");
 
     if ( filename.empty()) {
        LOG(ERROR) << "Error: Empty filename in ExportShapes.";
@@ -262,8 +265,9 @@ void CTiglExportStep::ExportShapes(const ListPNamedShape& shapes, const std::str
     Handle(TDocStd_Document) hDoc;
     hApp->NewDocument("MDTV-XCAF", hDoc);
     Handle(XCAFDoc_ShapeTool) myAssembly = XCAFDoc_DocumentTool::ShapeTool(hDoc->Main());
-
+    
     STEPCAFControl_Writer stepWriter;
+
     ListPNamedShape list;
     for (it = shapes.begin(); it != shapes.end(); ++it) {
         ListPNamedShape templist = GroupFaces(*it, myStoreType);
@@ -273,7 +277,7 @@ void CTiglExportStep::ExportShapes(const ListPNamedShape& shapes, const std::str
     }
     
     for (it = list.begin(); it != list.end(); ++it) {
-        InsertShapeToCAF(myAssembly, *it);
+        InsertShapeToCAF(myAssembly, *it, false);
     }
 
     if (stepWriter.Transfer(hDoc, STEP_WRITEMODE) == Standard_False) {

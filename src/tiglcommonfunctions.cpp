@@ -394,7 +394,7 @@ Standard_Real ProjectPointOnLine(gp_Pnt p, gp_Pnt lineStart, gp_Pnt lineStop)
 
 
 #ifdef TIGL_USE_XCAF
-void InsertShapeToCAF(Handle(XCAFDoc_ShapeTool) myAssembly, const PNamedShape shape)
+void InsertShapeToCAF(Handle(XCAFDoc_ShapeTool) myAssembly, const PNamedShape shape, bool useShortnames)
 {
     if (!shape) {
         return;
@@ -406,7 +406,12 @@ void InsertShapeToCAF(Handle(XCAFDoc_ShapeTool) myAssembly, const PNamedShape sh
     if (faceMap.Extent() > 0) {
         TDF_Label shapeLabel = myAssembly->NewShape();
         myAssembly->SetShape(shapeLabel, shape->Shape());
-        TDataStd_Name::Set(shapeLabel, shape->Name());
+        if (useShortnames) {
+            TDataStd_Name::Set(shapeLabel, shape->ShortName());
+        }
+        else {
+            TDataStd_Name::Set(shapeLabel, shape->Name());
+        }
     }
     else {
         // no faces, export edges as wires
@@ -420,7 +425,12 @@ void InsertShapeToCAF(Handle(XCAFDoc_ShapeTool) myAssembly, const PNamedShape sh
         for (int iwire = 1; iwire <= Edges->Length(); ++iwire) {
             TDF_Label wireLabel = myAssembly->NewShape();
             myAssembly->SetShape(wireLabel, Edges->Value(iwire));
-            TDataStd_Name::Set(wireLabel, shape->Name());
+            if (useShortnames) {
+                TDataStd_Name::Set(wireLabel, shape->ShortName());
+            }
+            else {
+                TDataStd_Name::Set(wireLabel, shape->Name());
+            }
         }
     }
 }
