@@ -166,6 +166,8 @@ TIGLViewerWindow::TIGLViewerWindow()
 
     cpacsConfiguration = new TIGLViewerDocument(this, myOCC->getContext(), getSettings());
     scriptEngine = new TIGLScriptEngine;
+    
+    setAcceptDrops(true);
 
     connectSignals();
     createMenus();
@@ -185,6 +187,34 @@ TIGLViewerWindow::~TIGLViewerWindow()
     delete errorStream;
     delete scriptEngine;
     delete tiglViewerSettings;
+}
+
+void TIGLViewerWindow::dragEnterEvent(QDragEnterEvent * ev)
+{
+    QList<QUrl> urls = ev->mimeData()->urls();
+    foreach (QUrl url, urls) {
+        if(url.isLocalFile()) {
+            QString suffix = QFileInfo(url.toLocalFile()).suffix();
+            if (suffix == "xml" || suffix == "brep" || suffix == "stp" || suffix == "igs" || suffix == "mesh") {
+                ev->accept();
+            }
+        }
+    }
+}
+
+void TIGLViewerWindow::dropEvent(QDropEvent *ev)
+{
+    QList<QUrl> urls = ev->mimeData()->urls();
+    foreach (QUrl url, urls) {
+        if(url.isLocalFile()) {
+            QString suffix = QFileInfo(url.toLocalFile()).suffix();
+            if (suffix == "xml" || suffix == "brep" || suffix == "stp" || suffix == "igs" || suffix == "mesh") {
+                ev->accept();
+                // load file
+                openFile(url.toLocalFile());
+            }
+        }
+    }
 }
 
 
