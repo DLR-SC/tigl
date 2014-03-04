@@ -80,7 +80,7 @@ public slots:
     void drawWingProfiles();
     void drawWing();
     void drawWingOverlayProfilePoints();
-    void drawWingSegmentGuideCurves();
+    void drawWingGuideCurves();
     void drawWingTriangulation();
     void drawWingSamplePoints();
     void drawFusedWing();
@@ -95,7 +95,7 @@ public slots:
     void drawFuselageSamplePoints();
     void drawFuselageSamplePointsAngle();
     void drawFusedFuselage();
-    void drawFuselageSegmentGuideCurves();
+    void drawFuselageGuideCurves();
 
     // TIGL slots
     void exportAsIges();

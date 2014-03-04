@@ -670,7 +670,7 @@ void TIGLViewerWindow::connectSignals()
     // CPACS Wing Actions
     connect(drawWingProfilesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingProfiles()));
     connect(drawWingOverlayCPACSProfilePointsAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingOverlayProfilePoints()));
-    connect(drawWingSegmentGuideCurvesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingSegmentGuideCurves()));
+    connect(drawWingGuideCurvesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingGuideCurves()));
     connect(drawWingsAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWing()));
     connect(drawWingTriangulationAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingTriangulation()));
     connect(drawWingSamplePointsAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingSamplePoints()));
@@ -695,7 +695,7 @@ void TIGLViewerWindow::connectSignals()
     connect(drawFuselageSamplePointsAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFuselageSamplePoints()));
     connect(drawFuselageSamplePointsAngleAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFuselageSamplePointsAngle()));
     connect(drawFusedFuselageAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFusedFuselage()));
-    connect(drawFuselageSegmentGuideCurvesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFuselageSegmentGuideCurves()));
+    connect(drawFuselageGuideCurvesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFuselageGuideCurves()));
 
     // Export functions
     connect(tiglExportFusedIgesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportFusedAsIges()));

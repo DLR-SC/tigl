@@ -112,7 +112,7 @@
      <addaction name="drawWingComponentSegmentAction"/>
      <addaction name="drawWingTriangulationAction"/>
      <addaction name="drawWingProfilesAction"/>
-     <addaction name="drawWingSegmentGuideCurvesAction"/>
+     <addaction name="drawWingGuideCurvesAction"/>
      <addaction name="separator"/>
      <addaction name="drawWingSamplePointsAction"/>
      <addaction name="drawWingOverlayCPACSProfilePointsAction"/>
@@ -124,7 +124,7 @@
      </property>
      <addaction name="drawFuselageAction"/>
      <addaction name="drawFuselageProfilesAction"/>
-     <addaction name="drawFuselageSegmentGuideCurvesAction"/>
+     <addaction name="drawFuselageGuideCurvesAction"/>
      <addaction name="drawFuselageTriangulationAction"/>
      <addaction name="drawFuselageSamplePointsAction"/>
      <addaction name="drawFuselageSamplePointsAngleAction"/>
@@ -1162,14 +1162,14 @@
     <string>Export Fuselage</string>
    </property>
   </action>
-  <action name="drawWingSegmentGuideCurvesAction">
+  <action name="drawWingGuideCurvesAction">
    <property name="text">
-    <string>Show Wing Segment Guide Curves</string>
+    <string>Show Wing Guide Curves</string>
    </property>
   </action>
-  <action name="drawFuselageSegmentGuideCurvesAction">
+  <action name="drawFuselageGuideCurvesAction">
    <property name="text">
-    <string>Show Fuselage Segment Guide Curves</string>
+    <string>Show Fuselage Guide Curves</string>
    </property>
   </action>
  </widget>
