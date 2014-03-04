@@ -63,6 +63,8 @@ public:
 
 protected:
      void contextMenuEvent(QContextMenuEvent *event);
+     void dropEvent(QDropEvent *ev);
+     void dragEnterEvent(QDragEnterEvent *ev);
 
 public slots:
     void updateMenus(TiglCPACSConfigurationHandle);
