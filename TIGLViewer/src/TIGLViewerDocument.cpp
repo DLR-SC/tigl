@@ -669,34 +669,29 @@ void TIGLViewerDocument::drawWingOverlayProfilePoints()
 }
 
 
-void TIGLViewerDocument::drawWingSegmentGuideCurves()
+void TIGLViewerDocument::drawWingGuideCurves()
 {
-    QString wingUid = dlgGetWingSelection();
-    if (wingUid == "") {
-        return;
-    }
-    QString wingSegUid = dlgGetWingSegmentSelection();
-    if (wingSegUid == "") {
-        return;
-    }
+    // loop over all wing segments
+    tigl::CCPACSConfiguration& config = GetConfiguration();
+    int wingCount = config.GetWingCount();
+    for (int i = 1; i <= wingCount; i++) {
+        tigl::CCPACSWing& wing = config.GetWing(i);
+        std::string wingUid = wing.GetUID();
+        for (int j = 1; j <= wing.GetSegmentCount(); ++j) {
+            tigl::CTiglAbstractSegment& segment = wing.GetSegment(j);
+            std::string wingSegUid = segment.GetUID();
 
-    tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
-    tigl::CCPACSWingSegment& wingSeg = (tigl::CCPACSWingSegment&) wing.GetSegment(wingSegUid.toStdString());
+            tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid);
+            tigl::CCPACSWingSegment& wingSeg = (tigl::CCPACSWingSegment&) wing.GetSegment(wingSegUid);
 
-    TopTools_SequenceOfShape& guideCurveContainer = wingSeg.BuildGuideCurves();
-    for (int i=1; i<=guideCurveContainer.Length(); i++) {
-        TopoDS_Wire wire =TopoDS::Wire(guideCurveContainer(i));
-        Handle(AIS_Shape) shape = new AIS_Shape(wire);
-        shape->SetMaterial(Graphic3d_NOM_METALIZED);
-        myAISContext->Display(shape, Standard_True);
-        //for (int j=0; j<=10; j++)
-        //{
-            //double a=j/double(10);
-            //gp_Pnt point;
-            //gp_Vec tangent;
-            //WireGetPointTangent2(TopoDS::Wire(guideCurveContainer(i)), a, point, tangent), 
-            //DisplayPoint(point, "", Standard_False, 0.0, 0.0, 0.0, 2.0);
-        //}
+            TopTools_SequenceOfShape& guideCurveContainer = wingSeg.BuildGuideCurves();
+            for (int i=1; i<=guideCurveContainer.Length(); i++) {
+                TopoDS_Wire wire =TopoDS::Wire(guideCurveContainer(i));
+                Handle(AIS_Shape) shape = new AIS_Shape(wire);
+                shape->SetMaterial(Graphic3d_NOM_METALIZED);
+                myAISContext->Display(shape, Standard_True);
+            }
+        }
     }
 }
 
@@ -741,34 +736,28 @@ void TIGLViewerDocument::drawFuselageProfiles()
     }
 }
 
-void TIGLViewerDocument::drawFuselageSegmentGuideCurves()
+void TIGLViewerDocument::drawFuselageGuideCurves()
 {
-    QString fuselageUid = dlgGetFuselageSelection();
-    if (fuselageUid == "") {
-        return;
-    }
-    QString fuselageSegUid = dlgGetFuselageSegmentSelection();
-    if (fuselageSegUid == "") {
-        return;
-    }
+    // loop over all fuselage segments
+    tigl::CCPACSConfiguration& config = GetConfiguration();
+    int fuselageCount = config.GetFuselageCount();
+    for (int i = 1; i <= fuselageCount; i++) {
+        tigl::CCPACSFuselage& fuselage = config.GetFuselage(i);
+        std::string fuselageUid = fuselage.GetUID();
+        for (int j = 1; j <= fuselage.GetSegmentCount(); ++j) {
+            tigl::CTiglAbstractSegment& segment = fuselage.GetSegment(j);
+            std::string fuselageSegUid = segment.GetUID();
+            tigl::CCPACSFuselage& fuselage = GetConfiguration().GetFuselage(fuselageUid);
+            tigl::CCPACSFuselageSegment& fuselageSeg = (tigl::CCPACSFuselageSegment&) fuselage.GetSegment(fuselageSegUid);
 
-    tigl::CCPACSFuselage& fuselage = GetConfiguration().GetFuselage(fuselageUid.toStdString());
-    tigl::CCPACSFuselageSegment& fuselageSeg = (tigl::CCPACSFuselageSegment&) fuselage.GetSegment(fuselageSegUid.toStdString());
-
-    TopTools_SequenceOfShape& guideCurveContainer = fuselageSeg.BuildGuideCurves();
-    for (int i=1; i<=guideCurveContainer.Length(); i++) {
-        TopoDS_Wire wire =TopoDS::Wire(guideCurveContainer(i));
-        Handle(AIS_Shape) shape = new AIS_Shape(wire);
-        shape->SetMaterial(Graphic3d_NOM_METALIZED);
-        myAISContext->Display(shape, Standard_True);
-        //for (int j=0; j<=10; j++)
-        //{
-            //double a=j/double(10);
-            //gp_Pnt point;
-            //gp_Vec tangent;
-            //WireGetPointTangent2(TopoDS::Wire(guideCurveContainer(i)), a, point, tangent), 
-            //DisplayPoint(point, "", Standard_False, 0.0, 0.0, 0.0, 2.0);
-        //}
+            TopTools_SequenceOfShape& guideCurveContainer = fuselageSeg.BuildGuideCurves();
+            for (int i=1; i<=guideCurveContainer.Length(); i++) {
+                TopoDS_Wire wire =TopoDS::Wire(guideCurveContainer(i));
+                Handle(AIS_Shape) shape = new AIS_Shape(wire);
+                shape->SetMaterial(Graphic3d_NOM_METALIZED);
+                myAISContext->Display(shape, Standard_True);
+            }
+        }
     }
 }
 
