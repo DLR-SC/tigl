@@ -52,6 +52,7 @@ int main(int argc, char *argv[])
 #if defined __linux__
     // we need to set us locale as we use "." for decimal point
     putenv("LC_NUMERIC=C");
+    setlocale(LC_NUMERIC, "C");
 #elif defined __APPLE__
     setlocale(LC_NUMERIC, "C");
 #endif
