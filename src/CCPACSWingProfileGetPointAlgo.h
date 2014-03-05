@@ -49,7 +49,7 @@ public:
      *
      * \param wireContainer Containes exactly two wires: The upper and lower wing profile wires
      */
-    CCPACSWingProfileGetPointAlgo (const TopTools_SequenceOfShape& wireContainer);
+    TIGL_EXPORT CCPACSWingProfileGetPointAlgo (const TopTools_SequenceOfShape& wireContainer);
 
     /**
      * \brief Get point and the tangent on wing profile at curve parameter alpha
@@ -60,7 +60,7 @@ public:
      * \param point Point on the profile corresponding to the parameter alpha
      * \param tangent Tangent on the profile corresponding to the parameter alpha
      */
-    void GetPointTangent(const double& alpha, gp_Pnt& point, gp_Vec& tangent);
+    TIGL_EXPORT void GetPointTangent(const double& alpha, gp_Pnt& point, gp_Vec& tangent);
 
 private:
     TopoDS_Wire upperWire;         /**< Upper wire of wing profile */

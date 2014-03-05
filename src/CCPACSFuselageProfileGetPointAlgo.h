@@ -48,7 +48,7 @@ public:
      *
      * \param wireContainer Contains exactly one Fuselage profile wire
      */
-    CCPACSFuselageProfileGetPointAlgo (const TopTools_SequenceOfShape& wireContainer);
+    TIGL_EXPORT CCPACSFuselageProfileGetPointAlgo (const TopTools_SequenceOfShape& wireContainer);
 
     /**
      * \brief Get point and the tangent on fuselage profile at curve parameter alpha
@@ -58,7 +58,7 @@ public:
      * \param point Point on the profile corresponding to the parameter alpha
      * \param tangent Tangent on the profile corresponding to the parameter alpha
      */
-    void GetPointTangent(const double& alpha, gp_Pnt& point, gp_Vec& tangent);
+    TIGL_EXPORT void GetPointTangent(const double& alpha, gp_Pnt& point, gp_Vec& tangent);
 
 private:
     TopoDS_Wire wire;    /**< Wire of the fuselage profile */

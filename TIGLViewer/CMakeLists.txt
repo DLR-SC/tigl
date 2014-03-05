@@ -163,7 +163,7 @@ add_executable(${PROGNAME} ${TYPE}
 )
 
 target_link_libraries(${PROGNAME} 
-	TIGL
+	TIGL_static
 	${TIXI_LIBRARIES} 
 	${QT_LIBRARIES} 
 	${OPENGL_LIBRARIES} 
