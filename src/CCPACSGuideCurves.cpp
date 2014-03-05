@@ -59,7 +59,7 @@ void CCPACSGuideCurves::ReadCPACS(TixiDocumentHandle tixiHandle, const std::stri
         // Get element count
         int elementCount;
         if (tixiGetNamedChildrenCount(tixiHandle, guideCurvesXPath.c_str(), "guideCurve", &elementCount) != SUCCESS) {
-            throw CTiglError("Error: tixiGetNamedChildrenCount failed in CCPACSGuideCurves::ReadCPACS", TIGL_XML_ERROR);
+            throw CTiglError("tixiGetNamedChildrenCount failed in CCPACSGuideCurves::ReadCPACS", TIGL_XML_ERROR);
         }
 
         // Loop over all <guideCurve> elements
@@ -83,22 +83,16 @@ int CCPACSGuideCurves::GetGuideCurveCount(void) const
 // Returns the guide curve for a given index
 CCPACSGuideCurve& CCPACSGuideCurves::GetGuideCurve(int index) const
 {
-    int i = 0;
-    CCPACSGuideCurveContainer::const_iterator p;
-    if (index-1>=0 && index-1<guideCurves.size()) {
-        for (p = guideCurves.begin(); p!=guideCurves.end(); ++p) {
-            if (i == index-1) {
-                break;
-            }
-            i++;
-        }
+    unsigned int arrayIndex = index - 1;
+    if (arrayIndex < guideCurves.size()) {
+        CCPACSGuideCurveContainer::const_iterator p = guideCurves.begin();
+        std::advance(p, arrayIndex);
         return (*p->second);
     }
     else {
-        char index_ch[10];
-        sprintf(index_ch, "%i", index);
-        std::string index_str=index_ch;
-        throw CTiglError("Error in CCPACSGuideCurve::GetGuideCurve: Guide curve with index \"" + index_str + "\" not found in CPACS file!", TIGL_INDEX_ERROR);
+        std::stringstream msg;
+        msg << "Invalid guide curve \"" << index << "\" in CCPACSGuideCurve::GetGuideCurve!";
+        throw CTiglError(msg.str(), TIGL_INDEX_ERROR);
     }
 }
 
@@ -110,7 +104,7 @@ CCPACSGuideCurve& CCPACSGuideCurves::GetGuideCurve(std::string uid) const
         return *(it->second);
     }
     else {
-        throw CTiglError("Error in CCPACSGuideCurve::GetGuideCurve: Guide curve \"" + uid + "\" not found in CPACS file!", TIGL_UID_ERROR);
+        throw CTiglError("CCPACSGuideCurve::GetGuideCurve: Guide curve \"" + uid + "\" not found in CPACS file!", TIGL_UID_ERROR);
     }
 }
 
