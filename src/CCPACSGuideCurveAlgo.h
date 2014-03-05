@@ -136,7 +136,7 @@ public:
             // add contribution from gamma
             // direction: linear interpolation of normal vectors in gamma direction
             // magnitude: gamma times linear interpolated scaling factor
-            guideCurvePoint += gamma * scale * (vectorGammaStart + (vectorGammaEnd - vectorGammaStart) * beta);
+            guideCurvePoint += gamma * scale * gp_Dir(vectorGammaStart + (vectorGammaEnd - vectorGammaStart) * beta);
             // save to container
             guideCurvePoints[i+1]=gp_Pnt(guideCurvePoint.X(), guideCurvePoint.Y(), guideCurvePoint.Z()) ;
         }
