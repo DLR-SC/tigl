@@ -85,16 +85,13 @@ namespace
         TopExp::MapShapes(shape->Shape(),   TopAbs_FACE, faceMap);
         for (int iface = 1; iface <= faceMap.Extent(); ++iface) {
             TopoDS_Face face = TopoDS::Face(faceMap(iface));
-            std::string name = shape->ShortName();
-            PNamedShape origin = shape->GetFaceTraits(iface-1).Origin();
-            if (origin) {
-                name = origin->ShortName();
-            }
+            std::string faceName = shape->GetFaceTraits(iface-1).Name();
+
             // set face name
             Handle(IGESData_IGESEntity) entity;
             Handle(TransferBRep_ShapeMapper) mapper = TransferBRep::ShapeMapper ( FP, face );
             if ( FP->FindTypedTransient ( mapper, STANDARD_TYPE(IGESData_IGESEntity), entity ) ) {
-                Handle(TCollection_HAsciiString) str = new TCollection_HAsciiString(name.c_str());
+                Handle(TCollection_HAsciiString) str = new TCollection_HAsciiString(faceName.c_str());
                 entity->SetLabel(str);
             }
         }
@@ -246,7 +243,16 @@ void CTiglExportIges::ExportShapes(const ListPNamedShape& shapes, const std::str
     Handle(XCAFDoc_ShapeTool) myAssembly = XCAFDoc_DocumentTool::ShapeTool(hDoc->Main());
 
     IGESCAFControl_Writer igesWriter;
+
+    ListPNamedShape list;
     for (it = shapes.begin(); it != shapes.end(); ++it) {
+        ListPNamedShape templist = GroupFaces(*it, myStoreType);
+        for (ListPNamedShape::iterator it2 = templist.begin(); it2 != templist.end(); ++it2) {
+            list.push_back(*it2);
+        }
+    }
+
+    for (it = list.begin(); it != list.end(); ++it) {
         InsertShapeToCAF(myAssembly, *it, true);
     }
 
