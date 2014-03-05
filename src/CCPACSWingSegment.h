@@ -166,8 +166,8 @@ public:
     TIGL_EXPORT TopoDS_Shape& GetUpperShape();
     TIGL_EXPORT TopoDS_Shape& GetLowerShape();
 
-    // builds all guide curve wires
-    TIGL_EXPORT TopTools_SequenceOfShape& BuildGuideCurves(void);
+    // Returns the guide curves of the segment as wires
+    TIGL_EXPORT TopTools_SequenceOfShape& GetGuideCurveWires();
 
     // get guide curve for given UID
     TIGL_EXPORT CCPACSGuideCurve& GetGuideCurve(std::string UID);
@@ -210,6 +210,9 @@ protected:
 
     // Update internal segment data
     void Update(void);
+    
+    // builds all guide curve wires
+    void BuildGuideCurveWires(void);
 
     // Builds the loft between the two segment sections
     TopoDS_Shape BuildLoft(void);
