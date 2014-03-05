@@ -222,11 +222,17 @@ Handle_TopTools_HSequenceOfShape TIGLViewerInputOutput::importIGES( const QStrin
     Interface_Static::SetCVal("xstep.cascade.unit", "M");
     int status = Reader.ReadFile( file.toAscii().data() );
 
+
     if ( status == IFSelect_RetDone ) {
-        aSequence = new TopTools_HSequenceOfShape();
         Reader.TransferRoots();
-        TopoDS_Shape aShape = Reader.OneShape();
-        aSequence->Append( aShape );
+        int nbs = Reader.NbShapes();
+        if ( nbs > 0 ) {
+            aSequence = new TopTools_HSequenceOfShape();
+            for ( int i = 1; i <= nbs; i++ ) {
+                TopoDS_Shape shape = Reader.Shape( i );
+                aSequence->Append( shape );
+            }
+        }
     }
     return aSequence;
 }
