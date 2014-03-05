@@ -165,6 +165,7 @@ void CCPACSWingSegment::Invalidate(void)
 {
     CTiglAbstractSegment::Invalidate();
     surfacesAreValid = false;
+    guideCurveWires.Clear();
 }
 
 // Cleanup routine
@@ -852,8 +853,16 @@ bool CCPACSWingSegment::GuideCurveExists(std::string UID)
     return guideCurves.GuideCurveExists(UID);
 }
 
+TopTools_SequenceOfShape& CCPACSWingSegment::GetGuideCurveWires()
+{
+    if (guideCurveWires.IsEmpty()) {
+        BuildGuideCurveWires();
+    }
+    return guideCurveWires;
+}
+
 // Creates all guide curves
-TopTools_SequenceOfShape& CCPACSWingSegment::BuildGuideCurves(void)
+void CCPACSWingSegment::BuildGuideCurveWires(void)
 {
     guideCurveWires.Clear();
     if (guideCurvesPresent) {
@@ -916,12 +925,6 @@ TopTools_SequenceOfShape& CCPACSWingSegment::BuildGuideCurves(void)
             TopoDS_Wire guideCurveWire = CCPACSGuideCurveAlgo<CCPACSWingProfileGetPointAlgo> (concatenatedInnerWires, concatenatedOuterWires, fromRelativeCircumference, toRelativeCircumference, innerScale, outerScale, guideCurveProfile);
             guideCurveWires.Append(guideCurveWire);
         }
-
-        // return container for guide curve wires
-        return guideCurveWires;
-    }
-    else {
-        return guideCurveWires;
     }
 }
 
