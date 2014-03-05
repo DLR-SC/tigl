@@ -63,14 +63,6 @@ protected:
         tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "GuideCurveModel", &tiglHandle);
         ASSERT_TRUE(tiglRet == TIGL_SUCCESS);
 
-        // read configuration
-        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
-        tigl::CCPACSConfiguration& config = manager.GetConfiguration(tiglHandle);
-        Standard_Real u1, u2;
-
-        // get guide curve
-        //tigl::CCPACSGuideCurve & guideCurve = config.GetGuideCurve("GuideCurveModel_Fuselage_Sec1_El1_Pro");
-
         // constant values for the guide curve points
         const double tempy[] = {0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9};
         beta=std::vector<double>(tempy, tempy + sizeof(tempy) / sizeof(tempy[0]) );
@@ -301,7 +293,7 @@ TEST_F(FuselageGuideCurve, tiglFuselageGuideCurve_CCPACSFuselageSegment)
     const double temp[] = {0.0, 0.0, 0.01, 0.03, 0.09, 0.08, 0.07, 0.06, 0.02, 0.0, 0.0};
     std::vector<double> gammaDeviation (temp, temp + sizeof(temp) / sizeof(temp[0]) );
     // number of sample points
-    int N=10;
+    unsigned int N=10;
     // segment length
     double length=10.0;
     // segment position

@@ -454,7 +454,7 @@ TEST_F(WingGuideCurve, tiglWingGuideCurve_CCPACSWingSegment)
     const double temp[] = {0.0, 0.0, 0.01, 0.03, 0.09, 0.08, 0.07, 0.06, 0.02, 0.0, 0.0};
     std::vector<double> gammaDeviation (temp, temp + sizeof(temp) / sizeof(temp[0]) );
     // number of sample points
-    int N=10;
+    unsigned int N=10;
     // segement width
     double width=2.0;
     // segment position
