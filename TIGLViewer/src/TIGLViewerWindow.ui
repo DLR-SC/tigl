@@ -52,7 +52,7 @@
      <x>0</x>
      <y>0</y>
      <width>783</width>
-     <height>24</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="fileMenu">
@@ -185,6 +185,8 @@
      </property>
      <addaction name="tiglExportWingBRepAction"/>
      <addaction name="tiglExportFuselageBRepAction"/>
+     <addaction name="tiglExportWingCurvesBRepAction"/>
+     <addaction name="tiglExportFuselageCurvesBRepAction"/>
     </widget>
     <addaction name="menuExport_to_IGES"/>
     <addaction name="menuExport_to_VTK"/>
@@ -1170,6 +1172,16 @@
   <action name="drawFuselageGuideCurvesAction">
    <property name="text">
     <string>Show Fuselage Guide Curves</string>
+   </property>
+  </action>
+  <action name="tiglExportWingCurvesBRepAction">
+   <property name="text">
+    <string>Export Wing Curves</string>
+   </property>
+  </action>
+  <action name="tiglExportFuselageCurvesBRepAction">
+   <property name="text">
+    <string>Export Fuselage Curves</string>
    </property>
   </action>
  </widget>

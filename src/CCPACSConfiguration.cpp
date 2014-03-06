@@ -344,10 +344,6 @@ double CCPACSConfiguration::GetAirplaneLenth(void)
 
         for (int i = 1; i <= fuselage.GetSegmentCount(); i++) {
             tigl::CCPACSFuselageSegment& segment = (tigl::CCPACSFuselageSegment&) fuselage.GetSegment(i);
-            TopoDS_Shape loft = segment.GetLoft();
-
-            // Transform by fuselage transformation
-            loft = fuselage.GetFuselageTransformation().Transform(loft);
             BRepBndLib::Add(segment.GetLoft(), boundingBox);
         }
     }
