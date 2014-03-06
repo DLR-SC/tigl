@@ -65,9 +65,6 @@ void CTiglExportStl::ExportMeshedFuselageSTL(int fuselageIndex, const std::strin
     CCPACSFuselage& fuselage = myConfig.GetFuselage(fuselageIndex);
     TopoDS_Shape loft = fuselage.GetLoft();
 
-    // Transform loft by fuselage transformation => absolute world coordinates
-    loft = fuselage.GetFuselageTransformation().Transform(loft);
-
     BRepMesh::Mesh(loft, deflection);
     StlAPI_Writer *StlWriter = new StlAPI_Writer();
     StlWriter->Write(loft, const_cast<char*>(filename.c_str()));

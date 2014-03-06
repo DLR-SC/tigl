@@ -261,7 +261,7 @@ TDF_Label CCPACSFuselage::ExportDataStructure(CCPACSConfiguration& config, Handl
     // Other (sub)-components
     for (int i=1; i <= segments.GetSegmentCount(); i++) {
         CCPACSFuselageSegment& segment = segments.GetSegment(i);
-        TopoDS_Shape loft = GetFuselageTransformation().Transform(segment.GetLoft());
+        TopoDS_Shape loft = segment.GetLoft();
         TDF_Label fuselageSegmentLabel = myAssembly->AddShape(loft, false);
         TDataStd_Name::Set (fuselageSegmentLabel, segment.GetUID().c_str());
         //TDF_Label& subSegmentLabel = segment.ExportDataStructure(myAssembly, fuselageSegmentLabel);
@@ -299,44 +299,15 @@ TopoDS_Shape CCPACSFuselage::BuildLoft(void)
     BRepOffsetAPI_ThruSections generator(Standard_True, ruled, Precision::Confusion() );
 
     for (int i=1; i <= segments.GetSegmentCount(); i++) {
-        CCPACSFuselageConnection& startConnection = segments.GetSegment(i).GetStartConnection();
-
-        CCPACSFuselageProfile& startProfile = startConnection.GetProfile();
-
-        TopoDS_Wire startWire = startProfile.GetWire(true);
-
-        // Do section element transformations
-        TopoDS_Shape startShape = startConnection.GetSectionElementTransformation().Transform(startWire);
-
-        // Do section transformations
-        startShape = startConnection.GetSectionTransformation().Transform(startShape);
-
-        // Do positioning transformations (positioning of sections)
-        startShape = startConnection.GetPositioningTransformation().Transform(startShape);
-
-        // Cast shapes to wires, see OpenCascade documentation
-        if (startShape.ShapeType() != TopAbs_WIRE) {
-            throw CTiglError("Error: Wrong shape type in CCPACSFuselage::BuildFusedSegments", TIGL_ERROR);
-        }
-        startWire = TopoDS::Wire(startShape);
-
-        generator.AddWire(startWire);
+        generator.AddWire(segments.GetSegment(i).GetStartWire());
     }
-
-    CCPACSFuselageConnection& endConnection = segments.GetSegment(segments.GetSegmentCount()).GetEndConnection();
-    CCPACSFuselageProfile& endProfile = endConnection.GetProfile();
-    TopoDS_Wire endWire = endProfile.GetWire(true);
-    TopoDS_Shape endShape = endConnection.GetSectionElementTransformation().Transform(endWire);
-    endShape = endConnection.GetSectionTransformation().Transform(endShape);
-    endShape = endConnection.GetPositioningTransformation().Transform(endShape);
-    endWire = TopoDS::Wire(endShape);
-    generator.AddWire(endWire);
+    generator.AddWire(segments.GetSegment(segments.GetSegmentCount()).GetEndWire());
         
     generator.SetMaxDegree(2); //surfaces will be C1-continuous
     generator.SetParType(Approx_Centripetal);
     generator.CheckCompatibility(Standard_False);
     generator.Build();
-    return GetFuselageTransformation().Transform(generator.Shape());
+    return generator.Shape();
 }
 
 
@@ -358,8 +329,7 @@ CTiglTransformation CCPACSFuselage::GetPositioningTransformation(const std::stri
 // the point is the start point of the profile wire, for zeta = 1.0 the last profile wire point.
 gp_Pnt CCPACSFuselage::GetPoint(int segmentIndex, double eta, double zeta)
 {
-    gp_Pnt pnt = ((CCPACSFuselageSegment &) GetSegment(segmentIndex)).GetPoint(eta, zeta);
-    return GetFuselageTransformation().Transform(pnt);
+    return ((CCPACSFuselageSegment &) GetSegment(segmentIndex)).GetPoint(eta, zeta);
 }
 
 

@@ -716,6 +716,8 @@ void TIGLViewerWindow::connectSignals()
     connect(tiglExportFuselageColladaAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportFuselageCollada()));
     connect(tiglExportFuselageBRepAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportFuselageBRep()));
     connect(tiglExportWingBRepAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportWingBRep()));
+    connect(tiglExportWingCurvesBRepAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportWingCurvesBRep()));
+    connect(tiglExportFuselageCurvesBRepAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportFuselageCurvesBRep()));
 
     // The co-ordinates from the view
     connect( myOCC, SIGNAL(mouseMoved(V3d_Coordinate,V3d_Coordinate,V3d_Coordinate)),

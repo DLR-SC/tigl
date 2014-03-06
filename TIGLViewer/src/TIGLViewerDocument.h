@@ -116,6 +116,8 @@ public slots:
     void exportFuselageCollada();
     void exportWingBRep();
     void exportFuselageBRep();
+    void exportWingCurvesBRep();
+    void exportFuselageCurvesBRep();
 
 
     // General slots
