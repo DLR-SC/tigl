@@ -105,21 +105,17 @@ public:
             gp_Vec endTangent;
             _getPointAlgo2.GetPointTangent(alpha, endPoint, endTangent);
 
-            // construct normal vector in beta direction
+            // construct vector in beta direction
             gp_Vec vectorBeta(startPoint, endPoint);
-            gp_Dir normalBeta(vectorBeta);
-
-            // normalized tangent at start and end profile
-            gp_Dir normalAlphaStart(startTangent);
-            gp_Dir normalAlphaEnd(endTangent);
 
             // ******************************************************************
             // construct start and end normal vectors in gamma direction
             // ******************************************************************
-            gp_Dir normalGammaStart = normalAlphaStart.Crossed(normalBeta);
-            gp_Dir normalGammaEnd = normalAlphaEnd.Crossed(normalBeta);
-            gp_Vec vectorGammaStart(normalGammaStart);
-            gp_Vec vectorGammaEnd(normalGammaEnd);
+            // interpolate tangent vectors at start and end profile
+            gp_Vec tangentInterpolated = startTangent + (endTangent - startTangent) * beta;
+
+            gp_Vec vectorGamma = tangentInterpolated.Crossed(vectorBeta);
+            gp_Dir normalGamma(vectorGamma);
 
             // ******************************************************************
             // calculate linear interpolated scaling factor in gamma direction
@@ -136,7 +132,7 @@ public:
             // add contribution from gamma
             // direction: linear interpolation of normal vectors in gamma direction
             // magnitude: gamma times linear interpolated scaling factor
-            guideCurvePoint += gamma * scale * gp_Dir(vectorGammaStart + (vectorGammaEnd - vectorGammaStart) * beta);
+            guideCurvePoint += gamma * scale * normalGamma;
             // save to container
             guideCurvePoints[i+1]=gp_Pnt(guideCurvePoint.X(), guideCurvePoint.Y(), guideCurvePoint.Z()) ;
         }
