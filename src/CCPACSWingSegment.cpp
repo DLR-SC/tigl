@@ -564,30 +564,12 @@ gp_Pnt CCPACSWingSegment::GetPointAngles(double eta, double xsi, double xangle, 
 
 gp_Pnt CCPACSWingSegment::GetChordPoint(double eta, double xsi)
 {
-    if (eta < 0.0 || eta > 1.0) {
-        throw CTiglError("Error: Parameter eta not in the range 0.0 <= eta <= 1.0 in CCPACSWingSegment::GetPoint", TIGL_ERROR);
-    }
+    MakeSurfaces();
 
-    CCPACSWingProfile& innerProfile = innerConnection.GetProfile();
-    CCPACSWingProfile& outerProfile = outerConnection.GetProfile();
+    CTiglPoint profilePoint; 
+    cordSurface.translate(eta,xsi, &profilePoint);
 
-    // Compute points on wing profiles for the given xsi
-    gp_Pnt innerProfilePoint = innerProfile.GetChordPoint(xsi);
-    gp_Pnt outerProfilePoint = outerProfile.GetChordPoint(xsi);
-
-    // Do section element transformation on points
-    innerProfilePoint = transformProfilePoint(wing->GetTransformation(), innerConnection, innerProfilePoint);
-    outerProfilePoint = transformProfilePoint(wing->GetTransformation(), outerConnection, outerProfilePoint);
-
-    // Get point on wing segment in dependence of eta by linear interpolation
-    Handle(Geom_TrimmedCurve) profileLine = GC_MakeSegment(innerProfilePoint, outerProfilePoint);
-    Standard_Real firstParam = profileLine->FirstParameter();
-    Standard_Real lastParam  = profileLine->LastParameter();
-    Standard_Real param = (lastParam - firstParam) * eta;
-    gp_Pnt profilePoint;
-    profileLine->D0(param, profilePoint);
-
-    return profilePoint;
+    return profilePoint.Get_gp_Pnt();
 }
 
 // TODO: remove this function if favour of Standard GetEta
@@ -631,7 +613,7 @@ double CCPACSWingSegment::GetEta(gp_Pnt pnt, double xsi)
 double CCPACSWingSegment::GetEta(gp_Pnt pnt, bool isUpper)
 {
     double eta = 0., xsi = 0.;
-    GetEtaXsi(pnt, isUpper, eta, xsi);
+    GetEtaXsi(pnt, eta, xsi);
     return eta;
 }
 
@@ -639,12 +621,12 @@ double CCPACSWingSegment::GetEta(gp_Pnt pnt, bool isUpper)
 double CCPACSWingSegment::GetXsi(gp_Pnt pnt, bool isUpper)
 {
     double eta = 0., xsi = 0.;
-    GetEtaXsi(pnt, isUpper, eta, xsi);
+    GetEtaXsi(pnt, eta, xsi);
     return xsi;
 }
 
 // Returns xsi as parametric distance from a given point on the surface
-void CCPACSWingSegment::GetEtaXsi(gp_Pnt pnt, bool isUpper, double& eta, double& xsi)
+void CCPACSWingSegment::GetEtaXsi(gp_Pnt pnt, double& eta, double& xsi)
 {
     MakeSurfaces();
     CTiglPoint tmpPnt(pnt.XYZ());
@@ -677,12 +659,21 @@ void CCPACSWingSegment::MakeSurfaces()
     if (surfacesAreValid) {
         return;
     }
-        
-    gp_Pnt inner_lep = GetChordPoint(0.0, 0.0);
-    gp_Pnt outer_lep = GetChordPoint(1.0, 0.0);
-        
-    gp_Pnt inner_tep = GetChordPoint(0.0, 1.0);
-    gp_Pnt outer_tep = GetChordPoint(1.0, 1.0);
+    
+    CCPACSWingProfile& innerProfile = innerConnection.GetProfile();
+    CCPACSWingProfile& outerProfile = outerConnection.GetProfile();
+
+    // Compute points on wing profiles for the given xsi
+    gp_Pnt inner_lep = innerProfile.GetChordPoint(0.);
+    gp_Pnt outer_lep = outerProfile.GetChordPoint(0.);
+    gp_Pnt inner_tep = innerProfile.GetChordPoint(1.);
+    gp_Pnt outer_tep = outerProfile.GetChordPoint(1.);
+
+    // Do section element transformation on points
+    inner_lep = transformProfilePoint(wing->GetTransformation(), innerConnection, inner_lep);
+    inner_tep = transformProfilePoint(wing->GetTransformation(), innerConnection, inner_tep);
+    outer_lep = transformProfilePoint(wing->GetTransformation(), outerConnection, outer_lep);
+    outer_tep = transformProfilePoint(wing->GetTransformation(), outerConnection, outer_tep);
         
     cordSurface.setQuadriangle(inner_lep.XYZ(), outer_lep.XYZ(), inner_tep.XYZ(), outer_tep.XYZ());
 

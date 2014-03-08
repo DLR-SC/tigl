@@ -278,7 +278,7 @@ void CTiglTriangularizer::annotateWingSegment(tigl::CCPACSWingSegment &segment, 
         }
         
         double eta = 0., xsi = 0.;
-        segment.GetEtaXsi(baryCenter.Get_gp_Pnt(), false, eta, xsi);
+        segment.GetEtaXsi(baryCenter.Get_gp_Pnt(), eta, xsi);
         currentObject().setPolyDataReal(iPoly, "eta", eta);
         currentObject().setPolyDataReal(iPoly, "xsi", xsi);
         

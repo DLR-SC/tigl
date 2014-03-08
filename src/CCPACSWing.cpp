@@ -653,7 +653,7 @@ int CCPACSWing::GetSegmentEtaXsi(const gp_Pnt& point, double& eta, double& xsi, 
     }
 
     CCPACSWingSegment& segment = (CCPACSWingSegment&) GetSegment(segmentFound);
-    segment.GetEtaXsi(point, true, eta, xsi);
+    segment.GetEtaXsi(point, eta, xsi);
 
     // TODO: do we need that here?
     onTop = segment.GetIsOnTop(point);

@@ -27,6 +27,7 @@
 #include <iostream>
 #include <algorithm>
 #include <string>
+#include <limits>
 
 #include "CCPACSWingComponentSegment.h"
 #include "CCPACSWing.h"
@@ -61,10 +62,6 @@
 #include "BRepExtrema_DistShapeShape.hxx"
 #include "TColgp_Array1OfPnt.hxx"
 
-#ifndef max
-#define max(a, b) (((a) > (b)) ? (a) : (b))
-#endif
-
 namespace tigl
 {
 
@@ -78,6 +75,16 @@ namespace
 
         double res = (b*v1)*(b*v2);
         return res <= 0.;
+    }
+    
+    double GetNearestValidParameter(double p) {
+        if (p < 0.) {
+            return 0.;
+        }
+        else if( p > 1.) {
+            return 1.;
+        }
+        return p;
     }
 }
 
@@ -344,7 +351,7 @@ void CCPACSWingComponentSegment::GetSegmentIntersection(const std::string& segme
     if (hasIntersected) {
         // now check if we found an intersection
         double etaTmp;
-        segment.GetEtaXsi(result, false, etaTmp, xsi);
+        segment.GetEtaXsi(result, etaTmp, xsi);
         // by design, result is inside the segment
         // However due to numerics, eta and xsi might
         // be a bit larger than 1 or smaller than 0
@@ -729,32 +736,19 @@ const CTiglAbstractSegment* CCPACSWingComponentSegment::findSegment(double x, do
     CTiglAbstractSegment* result = NULL;
     gp_Pnt pnt(x, y, z);
 
-    // first check if pnt lies on component segment shape with 1cm tolerance
-    TopoDS_Vertex v = BRepBuilderAPI_MakeVertex(pnt);
-    BRepExtrema_DistShapeShape extrema(GetLoft(), v);
-    if (extrema.IsDone() && extrema.NbSolution() > 0) {
-        nearestPoint = extrema.PointOnShape1(1);
-        double currentDist = nearestPoint.Distance(pnt);
-        if (currentDist > 1.e-2) {
-            return NULL;
-        }
-    }
-    else {
-        return NULL;
-    }
 
     SegmentList& segments = GetSegmentList();
 
-    double minDist = DBL_MAX;
+    double minDist = std::numeric_limits<double>::max();
     // now discover to which segment the point belongs
     for (SegmentList::iterator segit = segments.begin(); segit != segments.end(); ++segit) {
-        //Handle_Geom_Surface aSurf = wing->GetUpperSegmentSurface(i);
-        TopoDS_Shape segmentLoft = (*segit)->GetLoft();
-
-        BRepExtrema_DistShapeShape extrema(segmentLoft, v);
-        extrema.Perform();
-        if (extrema.IsDone() && extrema.NbSolution() > 0) {
-            gp_Pnt currentPoint = extrema.PointOnShape1(1);
+        try {
+            double eta, xsi;
+            (*segit)->GetEtaXsi(pnt, eta, xsi);
+            double nextEta = GetNearestValidParameter(eta);
+            double nextXsi = GetNearestValidParameter(xsi);
+            
+            gp_Pnt currentPoint = (*segit)->GetChordPoint(nextEta, nextXsi);
             double currentDist = currentPoint.Distance(pnt);
             if (currentDist < minDist) {
                 minDist   = currentDist;
@@ -762,6 +756,14 @@ const CTiglAbstractSegment* CCPACSWingComponentSegment::findSegment(double x, do
                 result = *segit;
             }
         }
+        catch(...) {
+            // do nothing
+        }
+    }
+
+    // check if pnt lies on component segment shape with 1cm tolerance
+    if (minDist > 1.e-2) {
+        return NULL;
     }
 
     return result;
