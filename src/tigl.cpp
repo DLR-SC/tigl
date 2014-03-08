@@ -1451,7 +1451,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentPointGetSegmentEtaXsi(
                         LOG(WARNING) << "Given point is located more than 1mm from the wing component segment body."
                                      << " The actual diviation is " << deviation*1000.  << " mm."
                                      << " The point will be projected onto the wing segment.";
-                        segment->GetEtaXsi(nearestPoint, true, *segmentEta, *segmentXsi);
+                        segment->GetEtaXsi(nearestPoint, *segmentEta, *segmentXsi);
                     }
                     else {
                         *segmentEta = segment->GetEta(pnt, *segmentXsi);

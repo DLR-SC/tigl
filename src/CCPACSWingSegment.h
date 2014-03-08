@@ -145,7 +145,7 @@ public:
     TIGL_EXPORT double GetXsi(gp_Pnt pnt, bool isUpper);
 
     // projects a point unto the wing and returns its coordinates
-    TIGL_EXPORT void GetEtaXsi(gp_Pnt pnt, bool isUpper, double& eta, double& xsi);
+    TIGL_EXPORT void GetEtaXsi(gp_Pnt pnt, double& eta, double& xsi);
 
 
     // Returns if the given point is ont the Top of the wing or on the lower side.
