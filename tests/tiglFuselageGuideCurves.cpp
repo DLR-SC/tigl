@@ -139,6 +139,96 @@ TEST_F(FuselageGuideCurve, tiglFuselageGuideCurve_CCPACSGuideCurveProfiles)
     ASSERT_EQ(guideCurve.GetName(), "NonLinear Middle Guide Curve Profile for GuideCurveModel - Fuselage");
     ASSERT_EQ(guideCurve.GetFileName(), "/cpacs/vehicles/profiles/guideCurveProfiles/guideCurveProfile[2]");
 }
+
+/**
+* Tests CCPACSFuselageProfileGetPointAlgo class
+*/
+TEST_F(FuselageGuideCurve, tiglFuselageGuideCurve_CCPACSFuselageProfileGetPointAlgoOnCircle)
+{
+    double radius1=1.0;
+    double distance=1.0;
+    gp_Pnt location1(radius1, 0.0,  0.0);
+    gp_Ax2 circlePosition1(location1, gp::DY(), gp::DX());
+    Handle(Geom_Circle) circle1 = new Geom_Circle(circlePosition1, radius1);
+
+    // convert to edge
+    double start=0.0;
+    double end=2*M_PI;
+    TopoDS_Edge innerEdge = BRepBuilderAPI_MakeEdge(circle1, start, end);
+
+    // convert to wires 
+    TopoDS_Wire innerWire = BRepBuilderAPI_MakeWire(innerEdge);
+
+    // put wire into container for getPointAlgo
+    TopTools_SequenceOfShape innerWireContainer;
+    innerWireContainer.Append(innerWire);
+
+    // instantiate getPointAlgo
+    tigl::CCPACSFuselageProfileGetPointAlgo getPointAlgo(innerWireContainer);
+    gp_Pnt point;
+    gp_Vec tangent;
+
+    // plot points and tangents
+    int N = 20;
+    int M = 2;
+    for (int i=0; i<=N+2*M; i++) {
+        double da = 1.0/double(N);
+        double alpha = -M*da + da*i;
+        getPointAlgo.GetPointTangent(alpha, point, tangent);
+        outputXY(i, point.X(), point.Z(), "./TestData/analysis/tiglFuselageGuideCurve_circleSamplePoints_points.dat");
+        outputXYVector(i, point.X(), point.Z(), tangent.X(), tangent.Z(), "./TestData/analysis/tiglFuselageGuideCurve_circleSamplePoints_tangents.dat");
+        // plot points and tangents with gnuplot by:
+        // echo "plot 'TestData/analysis/tiglFuselageGuideCurve_circleSamplePoints_tangents.dat' u 1:2:3:4 with vectors filled head lw 2, 'TestData/analysis/tiglFuselageGuideCurve_circleSamplePoints_points.dat' w linespoints lw 2" | gnuplot -persist
+    }
+
+    // start: point must be zero and tangent must be in negative z-direction and has to be of length pi
+    getPointAlgo.GetPointTangent(0.0, point, tangent);
+    ASSERT_NEAR(point.X(), 2.0, 1E-10);
+    ASSERT_NEAR(point.Y(), 0.0, 1E-10);
+    ASSERT_NEAR(point.Z(), 0.0, 1E-10);
+    ASSERT_NEAR(tangent.X(), 0.0, 1E-10);
+    ASSERT_NEAR(tangent.Y(), 0.0, 1E-10);
+    ASSERT_NEAR(tangent.Z(), -2*M_PI, 1E-10);
+
+    // end: Tangent must be in negative z-direction has to be of length pi
+    getPointAlgo.GetPointTangent(-1.0, point, tangent);
+    ASSERT_NEAR(point.X(), 2.0, 1E-10);
+    ASSERT_NEAR(point.Y(), 0.0, 1E-10);
+    ASSERT_NEAR(point.Z(), 2*M_PI, 1E-10);
+    ASSERT_NEAR(tangent.X(), 0.0, 1E-10);
+    ASSERT_NEAR(tangent.Y(), 0.0, 1E-10);
+    ASSERT_NEAR(tangent.Z(), -2*M_PI, 1E-10);
+
+    // check points and tangents for alpha > 1
+    gp_Pnt point2;
+    gp_Vec tangent2;
+    getPointAlgo.GetPointTangent(1.0, point, tangent);
+    getPointAlgo.GetPointTangent(2.0, point2, tangent2);
+    ASSERT_NEAR(point2.X(), 2.0, 1E-10);
+    ASSERT_NEAR(point2.Y(), 0.0, 1E-10);
+    ASSERT_NEAR(point2.Z(), -2*M_PI, 1E-10);
+    ASSERT_NEAR(tangent2.X(), 0.0, 1E-10);
+    ASSERT_NEAR(tangent2.Y(), 0.0, 1E-10);
+    ASSERT_NEAR(tangent2.Z(), -2*M_PI, 1E-10);
+    ASSERT_EQ(tangent.X(), tangent2.X());
+    ASSERT_EQ(tangent.Y(), tangent2.Y());
+    ASSERT_EQ(tangent.Z(), tangent2.Z());
+    ASSERT_NEAR(point.Distance(point2), 2*M_PI, 1E-10);
+
+    // check if tangent is constant for alpha < 0
+    getPointAlgo.GetPointTangent(0.0, point, tangent);
+    getPointAlgo.GetPointTangent(-1.0, point2, tangent2);
+    ASSERT_NEAR(point2.X(), 2.0, 1E-10);
+    ASSERT_NEAR(point2.Y(), 0.0, 1E-10);
+    ASSERT_NEAR(point2.Z(), 2*M_PI, 1E-10);
+    ASSERT_NEAR(tangent2.X(), 0.0, 1E-10);
+    ASSERT_NEAR(tangent2.Y(), 0.0, 1E-10);
+    ASSERT_NEAR(tangent2.Z(), -2*M_PI, 1E-10);
+    ASSERT_EQ(tangent.X(), tangent2.X());
+    ASSERT_EQ(tangent.Y(), tangent2.Y());
+    ASSERT_EQ(tangent.Z(), tangent2.Z());
+    ASSERT_NEAR(point.Distance(point2), 2*M_PI, 1E-10);
+}
 /**
 * * Tests CCPACSFuselageProfileGetPointAlgo class
 */

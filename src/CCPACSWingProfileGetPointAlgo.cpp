@@ -64,6 +64,8 @@ void CCPACSWingProfileGetPointAlgo::GetPointTangent(const double& alpha, gp_Pnt&
         // get startpoint
         gp_Pnt startpoint;
         WireGetPointTangent2(lowerWire, 0.0, startpoint, tangent);
+        // length of tangent has to be equal two the length of the lower profile curve
+        tangent = lowerWireLength * tangent/tangent.Magnitude();
         // get direction vector
         gp_Dir dir(-1.0*tangent);
         // construct line
@@ -77,15 +79,21 @@ void CCPACSWingProfileGetPointAlgo::GetPointTangent(const double& alpha, gp_Pnt&
         // mapping [-1,0] to [0,1]
         double zeta = alpha + 1.0;
         WireGetPointTangent2(lowerWire, zeta, point, tangent);
+        // length of tangent has to be equal two the length of the lower profile curve
+        tangent = lowerWireLength * tangent/tangent.Magnitude();
     }
     else if (alpha>0.0 && alpha<=1.0) {
         WireGetPointTangent2(upperWire, alpha, point, tangent);
+        // length of tangent has to be equal two the length of the upper profile curve
+        tangent = upperWireLength * tangent/tangent.Magnitude();
     }
     // alpha>1.0 : use line in the direction of the tangent at alpha=1.0
     else {
         // get startpoint
         gp_Pnt startpoint;
         WireGetPointTangent2(upperWire, 1.0, startpoint, tangent);
+        // length of tangent has to be equal two the length of the upper profile curve
+        tangent = upperWireLength * tangent/tangent.Magnitude();
         // get direction vector
         gp_Dir dir(tangent);
         // construct line
