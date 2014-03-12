@@ -59,7 +59,7 @@ void CCPACSFuselageProfileGetPointAlgo::GetPointTangent(const double& alpha, gp_
     if (alpha<0.0) {
         // get startpoint
         gp_Pnt startpoint;
-        WireGetPointTangent2(wire, 0.0, startpoint, tangent);
+        WireGetPointTangent(wire, 0.0, startpoint, tangent);
         // length of tangent has to be equal two the length of the profile curve
         tangent = wireLength * tangent/tangent.Magnitude();
         // get direction vector
@@ -72,7 +72,7 @@ void CCPACSFuselageProfileGetPointAlgo::GetPointTangent(const double& alpha, gp_
         line.D0(zeta, point);
     }
     else if (alpha>=0.0 && alpha<=1.0) {
-        WireGetPointTangent2(wire, alpha, point, tangent);
+        WireGetPointTangent(wire, alpha, point, tangent);
         // length of tangent has to be equal two the length of the profile curve
         tangent = wireLength * tangent/tangent.Magnitude();
     }
@@ -80,7 +80,7 @@ void CCPACSFuselageProfileGetPointAlgo::GetPointTangent(const double& alpha, gp_
     else {
         // get startpoint
         gp_Pnt startpoint;
-        WireGetPointTangent2(wire, 1.0, startpoint, tangent);
+        WireGetPointTangent(wire, 1.0, startpoint, tangent);
         // length of tangent has to be equal two the length of the profile curve
         tangent = wireLength * tangent/tangent.Magnitude();
         // get direction vector

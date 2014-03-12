@@ -32,9 +32,6 @@ TIGL_EXPORT Standard_Real GetWireLength(const class TopoDS_Wire& wire);
 TIGL_EXPORT gp_Pnt WireGetPoint(const TopoDS_Wire& wire, double alpha);
 TIGL_EXPORT void WireGetPointTangent(const TopoDS_Wire& wire, double alpha, gp_Pnt& point, gp_Vec& normal);
 
-TIGL_EXPORT gp_Pnt WireGetPoint2(const TopoDS_Wire& wire, double alpha);
-TIGL_EXPORT void WireGetPointTangent2(const TopoDS_Wire& wire, double alpha, gp_Pnt& point, gp_Vec& normal);
-
 // calculates the alpha value for a given point on a wire
 TIGL_EXPORT Standard_Real ProjectPointOnWire(const TopoDS_Wire& wire, gp_Pnt p);
 
