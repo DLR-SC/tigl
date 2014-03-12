@@ -102,24 +102,6 @@ protected:
 /******************************************************************************/
 
 /**
-* Tests if data was read in correctly
-*/
-/*
-TEST_F(WingGuideCurve, tiglWingGuideCurveProfile_readData)
-{
-    double x;
-    double y;
-    double z;
-    for (int i=0; i!=10; i++) {
-        ASSERT_TRUE(tiglWingGetUpperPoint(tiglHandle, 1, 1, 0.1*i, 0.0, &x, &y, &z) == TIGL_SUCCESS);
-        ASSERT_EQ(x, 0.0);
-        ASSERT_EQ(z, 0.0);
-        ASSERT_NEAR(y, 5*0.1*i, 1E-10);
-    }
-}
-*/
-
-/**
 * Tests CCPACSGuideCurveProfile class
 */
 TEST_F(WingGuideCurve, tiglWingGuideCurve_CCPACSGuideCurveProfile)
@@ -295,31 +277,32 @@ TEST_F(WingGuideCurve, tiglWingGuideCurve_CCPACSWingProfileGetPointAlgoOnCircle)
         // echo "plot 'TestData/analysis/tiglWingGuideCurve_circleSamplePoints_tangents.dat' u 1:2:3:4 with vectors filled head lw 2, 'TestData/analysis/tiglWingGuideCurve_circleSamplePoints_points.dat' w linespoints lw 2" | gnuplot -persist
     }
 
-    // leading edge: point must be zero and tangent must be in z-direction
+    // leading edge: point must be zero and tangent must be in z-direction and has to be of length pi
     getPointAlgo.GetPointTangent(0.0, point, tangent);
     ASSERT_NEAR(point.X(), 0.0, 1E-10);
     ASSERT_NEAR(point.Y(), 0.0, 1E-10);
     ASSERT_NEAR(point.Z(), 0.0, 1E-10);
     ASSERT_NEAR(tangent.X(), 0.0, 1E-10);
     ASSERT_NEAR(tangent.Y(), 0.0, 1E-10);
+    ASSERT_NEAR(tangent.Z(), M_PI, 1E-10);
 
-    // lower trailing edge and tangent must be in z-direction
+    // check lower trailing edge point. Tangent must be in negative z-direction has to be of length pi
     getPointAlgo.GetPointTangent(-1.0, point, tangent);
     ASSERT_NEAR(point.X(), 2.0, 1E-10);
     ASSERT_NEAR(point.Y(), 0.0, 1E-10);
     ASSERT_NEAR(point.Z(), 0.0, 1E-10);
     ASSERT_NEAR(tangent.X(), 0.0, 1E-10);
     ASSERT_NEAR(tangent.Y(), 0.0, 1E-10);
-    ASSERT_TRUE(tangent.Z()<0);
+    ASSERT_NEAR(tangent.Z(), -M_PI, 1E-10);
 
-    // upper trailing edge
+    // check upper trailing edge point. Tangent must be in negative z-direction has to be of length pi
     getPointAlgo.GetPointTangent(1.0, point, tangent);
     ASSERT_NEAR(point.X(), 2.0, 1E-10);
     ASSERT_NEAR(point.Y(), 0.0, 1E-10);
     ASSERT_NEAR(point.Z(), 0.0, 1E-10);
     ASSERT_NEAR(tangent.X(), 0.0, 1E-10);
     ASSERT_NEAR(tangent.Y(), 0.0, 1E-10);
-    ASSERT_TRUE(tangent.Z()<0);
+    ASSERT_NEAR(tangent.Z(), -M_PI, 1E-10);
 
     // check points and tangents for alpha > 1
     gp_Pnt point2;

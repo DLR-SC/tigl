@@ -134,6 +134,9 @@ gp_Pnt WireGetPoint2(const TopoDS_Wire& wire, double alpha)
 
 void WireGetPointTangent2(const TopoDS_Wire& wire, double alpha, gp_Pnt& point, gp_Vec& tangent)
 {
+    if (alpha < 0.0 || alpha > 1.0) {
+        throw tigl::CTiglError("Error: Parameter alpha not in the range 0.0 <= alpha <= 1.0 in WireGetPointTangent2", TIGL_ERROR);
+    }
     // ETA 3D point
     BRepAdaptor_CompCurve aCompoundCurve(wire, Standard_True);
 
@@ -142,9 +145,11 @@ void WireGetPointTangent2(const TopoDS_Wire& wire, double alpha, gp_Pnt& point, 
     if (algo.IsDone()) {
         double par = algo.Parameter();
         aCompoundCurve.D1( par, point, tangent );
+        // normalize tangent to length of the curve
+        tangent = len*tangent/tangent.Magnitude();
     }
     else {
-        throw tigl::CTiglError("WireGetPointTangent2: Cannot compute point in curve.", TIGL_MATH_ERROR);
+        throw tigl::CTiglError("WireGetPointTangent2: Cannot compute point on curve.", TIGL_MATH_ERROR);
     }
 }
 
