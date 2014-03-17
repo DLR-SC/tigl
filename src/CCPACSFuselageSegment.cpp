@@ -156,11 +156,9 @@ void CCPACSFuselageSegment::ReadCPACS(TixiDocumentHandle tixiHandle, const std::
             continuity = C0;
         }
         else if (strcmp(ptrCont, "C1") == 0) {
-            std::cout << "C1" << std::endl;
             continuity = C1;
         }
         else if (strcmp(ptrCont, "C2") == 0) {
-            std::cout << "C2" << std::endl;
             continuity = C2;
         }
         else {
