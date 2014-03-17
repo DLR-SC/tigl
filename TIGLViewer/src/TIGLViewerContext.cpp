@@ -24,18 +24,7 @@
 #include "TIGLViewerContext.h"
 #include "TIGLViewerInternal.h"
 
-#ifdef OCC_NEW_3DAPI
 #include <OpenGl_GraphicDriver.hxx>
-#else
-#ifdef WNT
-#include <Graphic3d_WNTGraphicDevice.hxx>
-#else
-#ifndef __APPLE__
-#include <Xw_GraphicDevice.hxx>
-#endif
-#include <Graphic3d_GraphicDevice.hxx>
-#endif
-#endif
 
 TIGLViewerContext::TIGLViewerContext()
 {
@@ -79,29 +68,13 @@ Handle_V3d_Viewer TIGLViewerContext::createViewer( const Standard_ExtString aNam
                                                    const Standard_CString aDomain,
                                                    const Standard_Real ViewSize )
 {
-#ifdef OCC_NEW_3DAPI
     static Handle(Graphic3d_GraphicDriver) deviceHandle;
     if (deviceHandle.IsNull()) {
         deviceHandle = new OpenGl_GraphicDriver ("TKOpenGl");
         deviceHandle->Begin (new Aspect_DisplayConnection());
     }
 
-#else // OCC_NEW_3DAPI
-#ifndef WNT
-    static Handle(Graphic3d_GraphicDevice) deviceHandle;
-    
-    if ( deviceHandle.IsNull() ) {
-        deviceHandle = new Graphic3d_GraphicDevice( getenv("DISPLAY") );
-    }
-#else
-    static Handle( Graphic3d_WNTGraphicDevice ) deviceHandle;
-    if ( deviceHandle.IsNull() ) {
-        deviceHandle = new Graphic3d_WNTGraphicDevice();
-    }
-#endif  // WNT
-#endif  // OCC_NEW_3DAPI
-
-    return new V3d_Viewer(    deviceHandle,
+    return new V3d_Viewer(  deviceHandle,
                             aName,
                             aDomain,
                             ViewSize,
