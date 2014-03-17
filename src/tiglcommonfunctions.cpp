@@ -47,6 +47,8 @@
 #include "GeomAPI_ProjectPointOnCurve.hxx"
 #include "BRepTools.hxx"
 #include "BRepBuilderAPI_Sewing.hxx"
+#include "Bnd_Box.hxx"
+#include "BRepBndLib.hxx"
 
 #include <Geom2d_Curve.hxx>
 #include <Geom2d_Line.hxx>
@@ -392,6 +394,16 @@ Standard_Real ProjectPointOnLine(gp_Pnt p, gp_Pnt lineStart, gp_Pnt lineStop)
     return gp_Vec(lineStart, p) * gp_Vec(lineStart, lineStop) / gp_Vec(lineStart, lineStop).SquareMagnitude();
 }
 
+// Returns the coordinates of the bounding box of the shape
+void GetShapeExtension(const TopoDS_Shape& shape,
+                       double& minx, double& maxx,
+                       double& miny, double& maxy,
+                       double& minz, double& maxz)
+{
+    Bnd_Box boundingBox;
+    BRepBndLib::Add(shape, boundingBox);
+    boundingBox.Get(minx, miny, minz, maxx, maxy, maxz);
+}
 
 #ifdef TIGL_USE_XCAF
 void InsertShapeToCAF(Handle(XCAFDoc_ShapeTool) myAssembly, const PNamedShape shape, bool useShortnames)
