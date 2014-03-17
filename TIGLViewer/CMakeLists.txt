@@ -19,8 +19,8 @@ AddToCheckstyle()
 
 # required opencascade libraries
 set (TV_OCC_LIBS 
-	TKOpenGl 
-	TKVRML TKShapeSchema TKPShape TKCDF PTKernel ${OCC_VISU_LIBS} ${OCC_LIBS}
+    TKOpenGl 
+    TKVRML TKShapeSchema TKPShape TKCDF PTKernel ${OCC_VISU_LIBS} ${OCC_LIBS}
 )
 
 set(OpenCASCADE_LIBRARIES "")
@@ -131,9 +131,6 @@ include_directories(${PROJECT_SOURCE_DIR}/thirdparty/boost_1_55_0)
 
 include_directories( ${PROJECT_SOURCE_DIR}/src ${CMAKE_CURRENT_SOURCE_DIR}/src ${PROJECT_BINARY_DIR}/src)
 
-# boost
-include_directories(${PROJECT_SOURCE_DIR}/thirdparty/boost_1_55_0)
-
 # include path for ui files
 include_directories( ${CMAKE_CURRENT_BINARY_DIR} )
 
@@ -211,19 +208,7 @@ IF(WIN32)
 
   # install runtime libs
   FILE(TO_CMAKE_PATH "$ENV{SYSTEMROOT}" SYSTEMROOT)
-  if(OCC_VERSION_STRING VERSION_EQUAL "6.3")
-    SET(CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS
-      "${SYSTEMROOT}/system32/msvcp71.dll"
-      "${SYSTEMROOT}/system32/msvcr71.dll"
-    )
-  endif()
 
-  # TKOpenGL is loaded as a plugin, hence we must manually install it
-  set( OCC_PLUGINS TKOpenGl.dll FWOSPlugin.dll)
-  foreach( _plug ${OCC_PLUGINS} )
-     set(OCC_PLUGINS_FULL ${OCC_PLUGINS_FULL} ${OpenCASCADE_DLL_DIRECTORY}/${_plug} )
-  endforeach()
-  INSTALL(FILES ${OCC_PLUGINS_FULL} DESTINATION bin COMPONENT viewer)
 ENDIF(WIN32)
 
 INCLUDE(InstallRequiredSystemLibraries)
@@ -234,7 +219,7 @@ set(DIRS ${TIXI_BINARY_DIR} ${OpenCASCADE_DLL_DIRECTORY}  ${OpenCASCADE_LINK_DIR
 
 if (WIN32 OR APPLE)
   include(DeployQt4)
-  INSTALL_QT4_EXECUTABLE(${APPS} "" "${OCC_PLUGINS_FULL}" "${DIRS}" "" "" viewer)
+  INSTALL_QT4_EXECUTABLE(${APPS} "" "" "${DIRS}" "" "" viewer)
 endif()
 
 else (QT4_FOUND)
