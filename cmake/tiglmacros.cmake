@@ -21,7 +21,7 @@ function(AddToCheckstyle)
     add_custom_command(
         OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/filefilter.txt
         COMMAND ${CMAKE_COMMAND}
-        ARGS -E copy ${PROJECT_SOURCE_DIR}/contrib/filefilter.txt ${CMAKE_CURRENT_SOURCE_DIR}/
+        ARGS -E copy ${PROJECT_SOURCE_DIR}/thirdparty/nsiqcppstyle/filefilter.txt ${CMAKE_CURRENT_SOURCE_DIR}/
     )
 
     add_custom_target(
