@@ -29,7 +29,7 @@ find_package( OpenCASCADE REQUIRED COMPONENTS ${TV_OCC_LIBS})
 OPTION(OpenCASCADE_STATICLIB "Check, if you link static opencascade libraries" OFF)
 if(OpenCASCADE_STATICLIB)
     # opencascade visualization uses freetype, thus we have to link it
-    find_package( Freetype REQUIRED )
+    find_package( FreetypeLib REQUIRED )
 endif(OpenCASCADE_STATICLIB)
 
 # we need opengl in order to build tiglviewer
