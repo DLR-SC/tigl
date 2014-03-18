@@ -92,18 +92,6 @@ void CTiglAbstractGeometricComponent::SetSymmetryAxis(const std::string& axis)
     }
 }
 
-// Returns a unique Hashcode for a specific geometric component
-int CTiglAbstractGeometricComponent::GetComponentHashCode(void)
-{
-    TopoDS_Shape& loft = GetLoft();
-    if (!loft.IsNull()) {
-        return loft.HashCode(2294967295);
-    }
-    else {
-        return 0;
-    }
-}
-
 CTiglTransformation CTiglAbstractGeometricComponent::GetTransformation()
 {
     return transformation;

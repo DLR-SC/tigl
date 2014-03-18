@@ -449,3 +449,15 @@ void InsertShapeToCAF(Handle(XCAFDoc_ShapeTool) myAssembly, const PNamedShape sh
 
 #endif
 
+// Returns a unique Hashcode for a specific geometric component
+int GetComponentHashCode(tigl::ITiglGeometricComponent& component)
+{
+    TopoDS_Shape& loft = component.GetLoft();
+    if (!loft.IsNull()) {
+        return loft.HashCode(2294967295);
+    }
+    else {
+        return 0;
+    }
+}
+
