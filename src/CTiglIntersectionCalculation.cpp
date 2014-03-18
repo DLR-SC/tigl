@@ -51,6 +51,7 @@
 #include "GCPnts_AbscissaPoint.hxx"
 #include "BRepBuilderAPI_MakeWire.hxx"
 #include "BRepBuilderAPI_MakeEdge.hxx"
+#include "BRepBuilderAPI_MakeFace.hxx"
 #include "BRepAlgoAPI_Section.hxx"
 #include "ShapeAnalysis_Wire.hxx"
 #include "Handle_TopTools_HSequenceOfShape.hxx"
@@ -60,32 +61,90 @@
 #include "CTiglShapeCache.h"
 
 #include <sstream>
+#include <boost/functional/hash.hpp>
 
 #ifndef max
 #define max(a, b) (((a) > (b)) ? (a) : (b))
 #endif
 
+namespace
+{
+    class HashablePlane
+    {
+    public:
+        HashablePlane(const gp_Pnt& p, const gp_Dir& n)
+        {
+            vector.push_back(p.X());
+            vector.push_back(p.Y());
+            vector.push_back(p.Z());
+            vector.push_back(n.X());
+            vector.push_back(n.Y());
+            vector.push_back(n.Z());
+        }
+        
+        operator std::vector<double>& ()
+        {
+            return vector;
+        }
+        
+    private:
+        std::vector<double> vector;
+    };
+}
+
 namespace tigl 
 {
 
 // Constructor
-CTiglIntersectionCalculation::CTiglIntersectionCalculation( CTiglShapeCache * cache,
-                                                            const std::string& idOne,
-                                                            const std::string& idTwo,
-                                                            TopoDS_Shape compoundOne,
-                                                            TopoDS_Shape compoundTwo)
+CTiglIntersectionCalculation::CTiglIntersectionCalculation(CTiglShapeCache * cache,
+                                                           const std::string& idOne,
+                                                           const std::string& idTwo,
+                                                           TopoDS_Shape compoundOne,
+                                                           TopoDS_Shape compoundTwo)
     : tolerance(1.0e-7),
     numWires(0)
 {
+    size_t hash1 = boost::hash<std::string>()(idOne);
+    size_t hash2 = boost::hash<std::string>()(idTwo);
+    computeIntersection(cache, hash1, hash2, compoundOne, compoundTwo);
+}
+
+// Compute intersection of a shape with a plane
+CTiglIntersectionCalculation::CTiglIntersectionCalculation(CTiglShapeCache* cache,
+                                                           const std::string& shapeID,
+                                                           TopoDS_Shape shape,
+                                                           gp_Pnt point,
+                                                           gp_Dir normal)
+    : tolerance(1.0e-7),
+    numWires(0)
+{
+
+    size_t hash1 = boost::hash<std::string>()(shapeID);
+    size_t hash2 = boost::hash<std::vector<double> >()(HashablePlane(point, normal));
+    
+    // create plane
+    TopoDS_Shape plane = BRepBuilderAPI_MakeFace(gp_Pln(point, normal));
+    computeIntersection(cache, hash1, hash2, shape, plane);
+}
+
+
+void CTiglIntersectionCalculation::computeIntersection(CTiglShapeCache * cache,
+                                                       size_t idOne,
+                                                       size_t idTwo,
+                                                       TopoDS_Shape compoundOne,
+                                                       TopoDS_Shape compoundTwo)
+{
     // create some identification string to store intersection in cache
     // it should not matter, if the arguments One and Two are interchanged
-    if (idOne.compare(idTwo)) {
-        id = idOne + "::" + idTwo;
+    std::stringstream stream;
+    if (idOne < idTwo) {
+        stream << idOne << "::" << idTwo;
     }
     else {
-        id = idTwo + "::" + idOne;
+        stream << idTwo << "::" << idOne;
     }
-    
+    id = stream.str();
+
     bool inCache = false;
     if (cache) {
         // check, if result is already in cache
@@ -98,7 +157,7 @@ CTiglIntersectionCalculation::CTiglIntersectionCalculation( CTiglShapeCache * ca
             }
         }
     }
-    
+
     if (!inCache) {
         Standard_Boolean PerformNow=Standard_False; 
         BRepAlgoAPI_Section section(compoundOne, compoundTwo, PerformNow); 
