@@ -21,7 +21,7 @@ set(TIGL_ADD_LIB_PATH "" CACHE PATH     "Additional library path for package sea
 set(CMAKE_INCLUDE_PATH "${CMAKE_INCLUDE_PATH}" ${TIGL_ADD_INCLUDE_PATH})
 set(CMAKE_LIBRARY_PATH "${CMAKE_LIBRARY_PATH}" ${TIGL_ADD_LIB_PATH})
 
-set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/contrib)
+set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 include(GNUInstallDirs)
 
 OPTION(TIGL_NIGHTLY "Creates a nightly build of tigl (includes git sha into tigl version)" OFF)
