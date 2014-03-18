@@ -203,6 +203,7 @@ void CCPACSWingSegment::ReadCPACS(TixiDocumentHandle tixiHandle, const std::stri
     tempString   = "uID";
     if (tixiGetTextAttribute(tixiHandle, const_cast<char*>(segmentXPath.c_str()), const_cast<char*>(tempString.c_str()), &ptrUID) == SUCCESS) {
         SetUID(ptrUID);
+        GetWing().GetConfiguration().GetUIDManager().AddUID(GetUID(), this);
     }
 
     // Inner connection

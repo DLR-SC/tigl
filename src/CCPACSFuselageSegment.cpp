@@ -28,6 +28,8 @@
 #include "CCPACSFuselageSegment.h"
 #include "CCPACSFuselage.h"
 #include "CCPACSFuselageProfile.h"
+#include "CCPACSConfiguration.h"
+#include "CTiglUIDManager.h"
 
 #include "BRepOffsetAPI_ThruSections.hxx"
 #include "TopExp_Explorer.hxx"
@@ -137,6 +139,7 @@ void CCPACSFuselageSegment::ReadCPACS(TixiDocumentHandle tixiHandle, const std::
     tempString   = "uID";
     if (tixiGetTextAttribute(tixiHandle, const_cast<char*>(segmentXPath.c_str()), const_cast<char*>(tempString.c_str()), &ptrUID) == SUCCESS) {
         SetUID(ptrUID);
+        GetFuselage().GetConfiguration().GetUIDManager().AddUID(GetUID(), this);
     }
 
     // Start connection

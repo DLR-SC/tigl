@@ -30,6 +30,7 @@
 #include "tigl.h"
 #include "tigl_version.h"
 #include "tigl_config.h"
+#include "tiglcommonfunctions.h"
 #include "tigl_error_strings.h"
 #include "CTiglTypeRegistry.h"
 #include "CTiglError.h"
@@ -4217,8 +4218,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglComponentGetHashCode(TiglCPACSConfiguratio
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
 
         tigl::CTiglUIDManager& uidManager = config.GetUIDManager();
-        int hash = uidManager.GetComponent(componentUID)->GetComponentHashCode();
-        *hashCodePtr = hash;
+
+        tigl::ITiglGeometricComponent* component = uidManager.GetComponent(componentUID);
+        if (component) {
+            int hash = GetComponentHashCode(*component);
+            *hashCodePtr = hash;
+        }
+        else {
+            return TIGL_UID_ERROR;
+        }
 
         return TIGL_SUCCESS;
     }

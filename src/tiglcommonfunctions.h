@@ -69,4 +69,7 @@ TIGL_EXPORT void GetShapeExtension(const TopoDS_Shape& shape,
 void InsertShapeToCAF(Handle_XCAFDoc_ShapeTool myAssembly, const PNamedShape shape, bool useShortnames);
 #endif
 
+// Returns a unique Hashcode for a specific geometric component based on its loft
+TIGL_EXPORT int GetComponentHashCode(tigl::ITiglGeometricComponent&);
+
 #endif // TIGLCOMMONFUNCTIONS_H
