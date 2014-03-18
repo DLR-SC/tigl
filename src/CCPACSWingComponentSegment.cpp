@@ -81,7 +81,7 @@ namespace
         if (p < 0.) {
             return 0.;
         }
-        else if( p > 1.) {
+        else if ( p > 1.) {
             return 1.;
         }
         return p;
