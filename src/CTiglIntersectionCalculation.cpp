@@ -79,21 +79,28 @@ namespace
     public:
         HashablePlane(const gp_Pnt& p, const gp_Dir& n)
         {
-            vector.push_back(p.X());
-            vector.push_back(p.Y());
-            vector.push_back(p.Z());
-            vector.push_back(n.X());
-            vector.push_back(n.Y());
-            vector.push_back(n.Z());
+            gp_Dir nlocal(n);
+            // compute hesse normal form
+            double d = gp_Vec(n)*gp_Vec(p.XYZ());
+            if (d < 0) {
+                d *= -1.;
+                nlocal.Reverse();
+            }
+
+            hash = 0;
+            boost::hash_combine(hash, d);
+            boost::hash_combine(hash, nlocal.X());
+            boost::hash_combine(hash, nlocal.Y());
+            boost::hash_combine(hash, nlocal.Z());
         }
-        
-        operator std::vector<double>& ()
+
+        size_t HashValue()
         {
-            return vector;
+            return hash;
         }
-        
+
     private:
-        std::vector<double> vector;
+        size_t hash;
     };
 }
 
@@ -123,8 +130,8 @@ CTiglIntersectionCalculation::CTiglIntersectionCalculation(CTiglShapeCache* cach
 {
 
     size_t hash1 = boost::hash<std::string>()(shapeID);
-    size_t hash2 = boost::hash<std::vector<double> >()(HashablePlane(point, normal));
-    
+    size_t hash2 = HashablePlane(point, normal).HashValue();
+
     // create plane
     TopoDS_Shape plane = BRepBuilderAPI_MakeFace(gp_Pln(point, normal));
     computeIntersection(cache, hash1, hash2, shape, plane);
