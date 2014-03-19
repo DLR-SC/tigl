@@ -76,14 +76,8 @@ public:
     // numIntersecLine is the number of the Intersection line.
     TIGL_EXPORT gp_Pnt GetPoint(double zeta, int wireID);
 
-    // gives the number of wires of the intersection calculation
-    TIGL_EXPORT int GetNumWires();
-
     // gives a reference to the computed wire
-    TIGL_EXPORT TopoDS_Wire& GetWire(int wireID);
-
-    // returns id string for intersection wire
-    TIGL_EXPORT std::string GetIDString(int wireID);
+    TIGL_EXPORT TopoDS_Wire GetWire(int wireID);
 
 protected:
     void computeIntersection(CTiglShapeCache* cache,
@@ -94,10 +88,8 @@ protected:
 
 private:        
     Standard_Real tolerance;
-    int numWires;                           /* The number of intersection lines */
-    TopoDS_Shape intersectionResult;        /* The full Intersection result */
-    std::vector<TopoDS_Wire> Wires;         /* All intersection wires */
-    std::string id;                         /* identifcation string of the intersection */
+    TopoDS_Compound intersectionResult;     /* The full Intersection result */
+    size_t id;                              /* identifcation id of the intersection */
     
 };
 
