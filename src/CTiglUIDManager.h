@@ -34,6 +34,8 @@
 namespace tigl 
 {
 
+typedef std::map<const std::string, ITiglGeometricComponent*> ShapeContainerType;
+
 class CTiglUIDManager
 {
 public:
@@ -55,6 +57,9 @@ public:
 
     // Returns the root component of the geometric topology.
     TIGL_EXPORT CTiglAbstractPhysicalComponent* GetRootComponent(void);
+
+    // Returns the contianer with all registered shapes
+    TIGL_EXPORT const ShapeContainerType& GetShapeContainer();
 
     // Clears the uid store
     TIGL_EXPORT void Clear(void);
@@ -78,7 +83,6 @@ protected:
 
 private:
     typedef std::map<const std::string, CTiglAbstractPhysicalComponent*> UIDStoreContainerType;
-    typedef std::map<const std::string, ITiglGeometricComponent*> ShapeContainerType;
 
     // Copy constructor
     CTiglUIDManager(const CTiglUIDManager& );

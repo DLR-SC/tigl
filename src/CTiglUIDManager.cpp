@@ -178,5 +178,10 @@ void CTiglUIDManager::BuildParentChildTree(void)
     }
 }
 
+const ShapeContainerType& CTiglUIDManager::GetShapeContainer()
+{
+    return allShapes;
+}
+
 } // end namespace tigl
 

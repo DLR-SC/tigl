@@ -60,6 +60,7 @@
 #include "CTiglIntersectionCalculation.h"
 #include "TIGLViewerEtaXsiDialog.h"
 #include "TIGLViewerFuseDialog.h"
+#include "TIGLViewerShapeIntersectionDialog.h"
 #include "CTiglExportVtk.h"
 #include "tiglcommonfunctions.h"
 #include "CTiglFusePlane.h"
@@ -1482,41 +1483,55 @@ void TIGLViewerDocument::drawFusedAircraftTriangulation()
 }
 
 
-void TIGLViewerDocument::drawWingFuselageIntersectionLine()
+void TIGLViewerDocument::drawIntersectionLine()
 {
-    QString wingUid = dlgGetWingSelection();
-    if (wingUid == "") {
-        return;
-    }
-    QString fuselageUid = dlgGetFuselageSelection();
-    if (fuselageUid == "") {
-        return;
-    }
-
-    QApplication::setOverrideCursor( Qt::WaitCursor );
-    
-    tigl::CCPACSConfiguration& config =GetConfiguration();
+    tigl::CCPACSConfiguration& config = GetConfiguration();
     tigl::CTiglUIDManager& uidManager = config.GetUIDManager();
 
-    writeToStatusBar(tr("Calculating fuselage..."));
-    TopoDS_Shape& compoundOne = uidManager.GetComponent(fuselageUid.toStdString())->GetLoft();
-    writeToStatusBar(tr("Calculating wing..."));
-    TopoDS_Shape& compoundTwo = uidManager.GetComponent(wingUid.toStdString())->GetLoft();
+    TIGLViewerShapeIntersectionDialog dialog(uidManager, parent);
+    if (dialog.exec() != QDialog::Accepted) {
+        return;
+    }
 
-    writeToStatusBar(tr("Calculating intersection... This may take a while!"));
-    tigl::CTiglIntersectionCalculation Intersector(&config.GetShapeCache(),fuselageUid.toStdString(), wingUid.toStdString(), compoundOne, compoundTwo);
+    int mode = dialog.GetMode();
+    tigl::CTiglIntersectionCalculation* Intersector = NULL;
+    if (mode == 0) {
+        // shape - shape
+        std::string uid1 = dialog.GetShape1UID().toStdString();
+        std::string uid2 = dialog.GetShape2UID().toStdString();
+        writeToStatusBar(QString(tr("Calculating %1 ...")).arg(uid1.c_str()));
+        TopoDS_Shape& compoundOne = uidManager.GetComponent(uid1)->GetLoft();
+        writeToStatusBar(QString(tr("Calculating %1 ...")).arg(uid2.c_str()));
+        TopoDS_Shape& compoundTwo = uidManager.GetComponent(uid2)->GetLoft();
 
-    if (Intersector.GetCountIntersectionLines() <= 0) {
-        displayError(tr("Could not find any intersection between fuselage and wing"), "TIGL Error");
+        writeToStatusBar(tr("Calculating intersection... This may take a while!"));
+        Intersector = new tigl::CTiglIntersectionCalculation(&config.GetShapeCache(),uid1, uid2, compoundOne, compoundTwo);
+    }
+    else if (mode == 1) {
+        // shape - plane
+        std::string uid = dialog.GetShapeUID().toStdString();
+        writeToStatusBar(QString(tr("Calculating %1 ...")).arg(uid.c_str()));
+        TopoDS_Shape& compoundOne = uidManager.GetComponent(uid)->GetLoft();
+
+        gp_Pnt p = dialog.GetPoint().Get_gp_Pnt();
+        gp_Dir n = dialog.GetNormal().Get_gp_Pnt().XYZ();
+        Intersector = new tigl::CTiglIntersectionCalculation(&config.GetShapeCache(), uid, compoundOne, p, n);
+    }
+    else {
+        return;
+    }
+
+    if (Intersector->GetCountIntersectionLines() <= 0) {
+        displayError(tr("Could not find any intersection between shapes"), "TIGL Error");
         return;
     }
     // load first wire
     int wireID = 1;
-    displayShape(Intersector.GetWire(wireID));
+    displayShape(Intersector->GetWire(wireID));
 
     /* now calculate intersection and display single points */
     for (double eta = 0.0; eta <= 1.0; eta += 0.025) {
-        gp_Pnt point = Intersector.GetPoint(eta, wireID);
+        gp_Pnt point = Intersector->GetPoint(eta, wireID);
 
         ISession_Point* aGraphicPoint = new ISession_Point(point);
         myAISContext->Display(aGraphicPoint,Standard_False);
@@ -1524,6 +1539,8 @@ void TIGLViewerDocument::drawWingFuselageIntersectionLine()
     myAISContext->UpdateCurrentViewer();
     QApplication::restoreOverrideCursor();
     writeToStatusBar("");
+
+    delete Intersector;
 }
 
 
