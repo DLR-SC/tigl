@@ -137,7 +137,12 @@ void CTiglIntersectionCalculation::computeIntersection(CTiglShapeCache * cache,
     // create some identification id to store intersection in cache
     // it should not matter, if the arguments One and Two are interchanged
     // the xor commutes, so this should work
-    id = idOne ^ idTwo;
+    if (idOne != idTwo) {
+        id = idOne ^ idTwo;
+    }
+    else {
+        id = idOne;
+    }
 
     bool inCache = false;
     if (cache) {

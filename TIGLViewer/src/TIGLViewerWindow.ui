@@ -52,7 +52,7 @@
      <x>0</x>
      <y>0</y>
      <width>783</width>
-     <height>22</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="fileMenu">
@@ -99,7 +99,7 @@
      <addaction name="showAllWingsAndFuselagesSurfacePointsAction"/>
      <addaction name="drawFusedAircraftAction"/>
      <addaction name="showFusedAirplaneTriangulation"/>
-     <addaction name="drawWingFuselageLineAction"/>
+     <addaction name="drawIntersectionAction"/>
      <addaction name="drawFarFieldAction"/>
     </widget>
     <widget class="QMenu" name="menuWings">
@@ -1054,9 +1054,9 @@
     <string>Ctrl+W</string>
    </property>
   </action>
-  <action name="drawWingFuselageLineAction">
+  <action name="drawIntersectionAction">
    <property name="text">
-    <string>Draw Fuseling/Wing Intersection line</string>
+    <string>Show Intersection Line</string>
    </property>
   </action>
   <action name="showFusedAirplaneTriangulation">
