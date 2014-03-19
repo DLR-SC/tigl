@@ -2827,7 +2827,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglComponentIntersectionLineCount(TiglCPACSCo
         TopoDS_Shape compoundTwo = uidManager.GetComponent(componentUidTwo)->GetLoft();
 
         tigl::CTiglIntersectionCalculation Intersector(&config.GetShapeCache(), componentUidOne, componentUidTwo, compoundOne, compoundTwo);
-        *numWires = Intersector.GetNumWires();
+        *numWires = Intersector.GetCountIntersectionLines();
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {

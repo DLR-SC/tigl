@@ -25,13 +25,16 @@
 
 #include "CTiglIntersectionCalculation.h"
 #include "CTiglError.h"
+#include "CTiglShapeCache.h"
 #include "tiglcommonfunctions.h"
 
 #include "GeomAPI_IntSS.hxx"
 #include "BRep_Tool.hxx"
+#include "BRep_Builder.hxx"
 #include "TopoDS.hxx"
 #include "TopoDS_Shape.hxx"
 #include "TopoDS_Solid.hxx"
+#include "TopoDS_Compound.hxx"
 #include "gp_Pnt2d.hxx"
 #include "gp_Vec2d.hxx"
 #include "gp_Dir2d.hxx"
@@ -58,7 +61,6 @@
 #include "TopTools_HSequenceOfShape.hxx"
 #include "ShapeAnalysis_FreeBounds.hxx"
 #include "BRepBuilderAPI_MakeWire.hxx"
-#include "CTiglShapeCache.h"
 
 #include <sstream>
 #include <boost/functional/hash.hpp>
@@ -101,8 +103,7 @@ CTiglIntersectionCalculation::CTiglIntersectionCalculation(CTiglShapeCache * cac
                                                            const std::string& idTwo,
                                                            TopoDS_Shape compoundOne,
                                                            TopoDS_Shape compoundTwo)
-    : tolerance(1.0e-7),
-    numWires(0)
+    : tolerance(1.0e-7)
 {
     size_t hash1 = boost::hash<std::string>()(idOne);
     size_t hash2 = boost::hash<std::string>()(idTwo);
@@ -115,8 +116,7 @@ CTiglIntersectionCalculation::CTiglIntersectionCalculation(CTiglShapeCache* cach
                                                            TopoDS_Shape shape,
                                                            gp_Pnt point,
                                                            gp_Dir normal)
-    : tolerance(1.0e-7),
-    numWires(0)
+    : tolerance(1.0e-7)
 {
 
     size_t hash1 = boost::hash<std::string>()(shapeID);
@@ -134,27 +134,17 @@ void CTiglIntersectionCalculation::computeIntersection(CTiglShapeCache * cache,
                                                        TopoDS_Shape compoundOne,
                                                        TopoDS_Shape compoundTwo)
 {
-    // create some identification string to store intersection in cache
+    // create some identification id to store intersection in cache
     // it should not matter, if the arguments One and Two are interchanged
-    std::stringstream stream;
-    if (idOne < idTwo) {
-        stream << idOne << "::" << idTwo;
-    }
-    else {
-        stream << idTwo << "::" << idOne;
-    }
-    id = stream.str();
+    // the xor commutes, so this should work
+    id = idOne ^ idTwo;
 
     bool inCache = false;
     if (cache) {
         // check, if result is already in cache
-        unsigned int nshapes = cache->GetNShapesOfType(id);
-        if (nshapes > 0) {
+        if (cache->HasShape(id)) {
+            intersectionResult = TopoDS::Compound(cache->GetShape(id));
             inCache = true;
-            numWires = nshapes;
-            for (unsigned int i = 0; i < nshapes; ++i) {
-                Wires.push_back(TopoDS::Wire(cache->GetShape(id, i)));
-            }
         }
     }
 
@@ -164,9 +154,8 @@ void CTiglIntersectionCalculation::computeIntersection(CTiglShapeCache * cache,
         section.ComputePCurveOn1(Standard_True); 
         section.Approximation(Standard_True); 
         section.Build(); 
-        intersectionResult = section.Shape();
-
-        TopExp_Explorer myEdgeExplorer (intersectionResult, TopAbs_EDGE);
+        TopoDS_Shape result = section.Shape();
+        TopExp_Explorer myEdgeExplorer (result, TopAbs_EDGE);
 
         Handle(TopTools_HSequenceOfShape) Edges = new TopTools_HSequenceOfShape();
 
@@ -177,7 +166,12 @@ void CTiglIntersectionCalculation::computeIntersection(CTiglShapeCache * cache,
 
         // connect all connected edges to wires and save them in container Edges again
         ShapeAnalysis_FreeBounds::ConnectEdgesToWires(Edges, tolerance, false, Edges);
-        numWires = Edges->Length();
+        int numWires = Edges->Length();
+
+        intersectionResult.Nullify();
+        BRep_Builder builder;
+        builder.MakeCompound(intersectionResult);
+        std::vector<TopoDS_Wire> Wires;
 
         // filter duplicated wires
         for (int wireID=1; wireID <= numWires; wireID++) {
@@ -191,26 +185,32 @@ void CTiglIntersectionCalculation::computeIntersection(CTiglShapeCache * cache,
 
             if (!found) {
                 Wires.push_back(wire);
-                if (cache) {
-                    cache->Insert(wire, id);
-                }
+                builder.Add(intersectionResult, wire);
             }
         }
-        numWires = Wires.size();
+
+        // add to cache
+        if (cache) {
+            cache->Insert(intersectionResult, id);
+        }
     }
 }
 
 // Destructor
 CTiglIntersectionCalculation::~CTiglIntersectionCalculation( void )
 {
-    Wires.clear();
 }
 
 
 // returns total number of intersection lines
 int CTiglIntersectionCalculation::GetCountIntersectionLines(void)
 {
-    return(numWires);
+    TopExp_Explorer wireExplorer(intersectionResult, TopAbs_WIRE);
+    int nwires = 0;
+    for (; wireExplorer.More(); wireExplorer.Next()) {
+        nwires++;
+    }
+    return nwires;
 }
 
 // Gets a point on the intersection line in dependence of a parameter zeta with
@@ -223,34 +223,26 @@ gp_Pnt CTiglIntersectionCalculation::GetPoint(double zeta, int wireID = 1)
         throw CTiglError("Error: Parameter zeta not in the range 0.0 <= zeta <= 1.0 in CTiglIntersectionCalculation::GetPoint", TIGL_ERROR);
     }
 
-    if (wireID > numWires) {
-        throw CTiglError("Error: Unknown wireID in CTiglIntersectionCalculation::GetPoint", TIGL_ERROR);
-    }
-
-    //TopoDS_Wire wire;
-    TopoDS_Wire& intersectionWire = (Wires[--wireID]);
-    return WireGetPoint(intersectionWire, zeta);
+    TopoDS_Wire wire = GetWire(wireID);
+    return WireGetPoint(wire, zeta);
 }
 
-// gives the number of wires of the intersection calculation
-int CTiglIntersectionCalculation::GetNumWires()
+TopoDS_Wire CTiglIntersectionCalculation::GetWire(int wireID)
 {
-    return( numWires );
-}
-
-std::string CTiglIntersectionCalculation::GetIDString(int wireID) 
-{
-    std::stringstream stream;
-    stream << "Intersect_" << id << "_" << wireID;
-    return stream.str();
-}
-
-TopoDS_Wire& CTiglIntersectionCalculation::GetWire(int wireID)
-{
-    if (wireID > numWires || wireID < 1){
+    if (wireID > GetCountIntersectionLines() || wireID < 1){
         throw CTiglError("Error: Invalid wireID in CTiglIntersectionCalculation::GetWire", TIGL_ERROR);
     }
-    return Wires.at(wireID-1);
+
+    TopExp_Explorer wireExplorer(intersectionResult, TopAbs_WIRE);
+    int currentWireID = 1;
+    for (; wireExplorer.More(); wireExplorer.Next()) {
+        if (wireID == currentWireID) {
+            return TopoDS::Wire(wireExplorer.Current());
+        }
+        currentWireID++;
+    }
+
+    throw CTiglError("Cannot retrieve intersection wire in CTiglIntersectionCalculation::GetPoint", TIGL_ERROR);
 }
 
 } // end namespace tigl
