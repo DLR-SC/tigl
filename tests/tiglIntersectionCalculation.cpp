@@ -79,7 +79,7 @@ TEST_F(TiglIntersectionCalculation, tiglIntersection_FuselageWingIntersects)
 
     tigl::CTiglIntersectionCalculation iCalc(&config.GetShapeCache(), fuselage.GetUID(), wing.GetUID(), fuselageShape, wingShape);
 
-    ASSERT_EQ(1, iCalc.GetNumWires());
+    ASSERT_EQ(1, iCalc.GetCountIntersectionLines());
 }
 
 
