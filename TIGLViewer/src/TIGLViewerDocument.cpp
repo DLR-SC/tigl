@@ -1515,6 +1515,7 @@ void TIGLViewerDocument::drawIntersectionLine()
 
         gp_Pnt p = dialog.GetPoint().Get_gp_Pnt();
         gp_Dir n = dialog.GetNormal().Get_gp_Pnt().XYZ();
+        writeToStatusBar(tr("Calculating intersection... This may take a while!"));
         Intersector = new tigl::CTiglIntersectionCalculation(&config.GetShapeCache(), uid, compoundOne, p, n);
     }
     else {
@@ -1523,6 +1524,7 @@ void TIGLViewerDocument::drawIntersectionLine()
 
     if (Intersector->GetCountIntersectionLines() <= 0) {
         displayError(tr("Could not find any intersection between shapes"), "TIGL Error");
+        writeToStatusBar("");
         return;
     }
     // load first wire
