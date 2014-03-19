@@ -194,6 +194,19 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>TabView</tabstop>
+  <tabstop>shape1Combo</tabstop>
+  <tabstop>shape2Combo</tabstop>
+  <tabstop>shapeCombo</tabstop>
+  <tabstop>pxSB</tabstop>
+  <tabstop>pySB</tabstop>
+  <tabstop>pzSB</tabstop>
+  <tabstop>nxSB</tabstop>
+  <tabstop>nySB</tabstop>
+  <tabstop>nzSB</tabstop>
+  <tabstop>buttonBox</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>
