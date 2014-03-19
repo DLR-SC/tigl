@@ -69,6 +69,9 @@
 #define max(a, b) (((a) > (b)) ? (a) : (b))
 #endif
 
+// WARNING: boost::hash gets incorrectly compiled with gcc 4.3.4 - the optimization will produce indeterministic hash values
+// To workaround the problem, we have to avoid optimization of this file
+
 namespace
 {
     class HashablePlane

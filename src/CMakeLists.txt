@@ -28,6 +28,11 @@ if(MSVC)
     add_definitions(-D_CRT_SECURE_NO_WARNINGS=1 /wd4355)
 endif(MSVC)
 
+if(CMAKE_COMPILER_IS_GNUCC)
+    # gcc 4.3.4 creates wrong code for boost::hash if compiled with optimizations
+    SET_SOURCE_FILES_PROPERTIES(CTiglIntersectionCalculation.cpp PROPERTIES COMPILE_FLAGS -O0)
+endif(CMAKE_COMPILER_IS_GNUCC)
+
 # tigl dll/so library
 add_library(TIGL SHARED ${TIGL_SRC})
 
