@@ -334,7 +334,7 @@ class CFunctionArg(object):
         
         regex = r'(?P<const>const\s)?(?P<name>[\w\s]+)(?P<pointer>[*]+)?'
         
-        basictypes    = ['int', 'long', 'float', 'double', 'char', 'void']
+        basictypes    = ['int', 'long', 'float', 'double', 'char', 'void', 'size_t']
 
         match = re.search(regex, mytype)
         name = match.group('name')

@@ -96,7 +96,7 @@ class MatlabGenerator(object):
                 string = 'plhs[%d] = mxCreateDoubleMatrix(1, 1, mxREAL);\n' \
                     % index
                 string +='*mxGetPr(plhs[%d]) = %s;\n' % (index, arg.name)
-            elif arg.type == 'int' and arg.npointer == 1:
+            elif (arg.type == 'int' or arg.type == 'size_t') and arg.npointer == 1:
                 string = 'plhs[%d] = mxCreateDoubleMatrix(1, 1, mxREAL);\n' \
                     % index
                 string +='*mxGetPr(plhs[%d]) = (double)%s;\n' % (index, arg.name)
@@ -287,6 +287,9 @@ This function returns %d value(s)\\n");\n' % (pseudocall, noutargs)
             if not arg.arrayinfos['is_array']:
                 if arg.type == 'int':
                     string += 4*' ' + '%s = mxToInt(prhs[%d]);\n' \
+                        % (arg.name, index+1)
+                elif arg.type == 'size_t':
+                    string += 4*' ' + '%s = mxToSize_t(prhs[%d]);\n' \
                         % (arg.name, index+1)
                 elif arg.is_string:
                     string += 4*' ' + 'mxToString(prhs[%d], &%s);\n' \

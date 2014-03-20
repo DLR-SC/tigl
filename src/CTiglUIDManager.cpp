@@ -58,15 +58,15 @@ void CTiglUIDManager::Update(void)
 void CTiglUIDManager::AddUID(const std::string& uid, ITiglGeometricComponent* componentPtr)
 {
     if (uid.empty()) {
-        throw CTiglError("Error: Empty UID in CTiglUIDManager::AddUID", TIGL_XML_ERROR);
+        throw CTiglError("Empty UID in CTiglUIDManager::AddUID", TIGL_XML_ERROR);
     }
 
     if (HasUID(uid)) {
-        throw CTiglError("Error: UID already exist in CTiglUIDManager::AddUID", TIGL_XML_ERROR);
+        throw CTiglError("UID already exist in CTiglUIDManager::AddUID", TIGL_XML_ERROR);
     }
 
     if (componentPtr == 0) {
-        throw CTiglError("Error: Null pointer for component in CTiglUIDManager::AddUID", TIGL_NULL_POINTER);
+        throw CTiglError("Null pointer for component in CTiglUIDManager::AddUID", TIGL_NULL_POINTER);
     }
 
     CTiglAbstractPhysicalComponent* tmp = dynamic_cast<CTiglAbstractPhysicalComponent*>(componentPtr);
@@ -81,7 +81,7 @@ void CTiglUIDManager::AddUID(const std::string& uid, ITiglGeometricComponent* co
 bool CTiglUIDManager::HasUID(const std::string& uid) const
 {
     if (uid.empty()) {
-        throw CTiglError("Error: Empty UID in CTiglUIDManager::HasUID", TIGL_XML_ERROR);
+        throw CTiglError("Empty UID in CTiglUIDManager::HasUID", TIGL_XML_ERROR);
     }
 
     return (allShapes.find(uid) != allShapes.end());
@@ -91,11 +91,13 @@ bool CTiglUIDManager::HasUID(const std::string& uid) const
 ITiglGeometricComponent* CTiglUIDManager::GetComponent(const std::string& uid)
 {
     if (uid.empty()) {
-        throw CTiglError("Error: Empty UID in CTiglUIDManager::GetComponent", TIGL_XML_ERROR);
+        throw CTiglError("Empty UID in CTiglUIDManager::GetComponent", TIGL_UID_ERROR);
     }
 
     if (!HasUID(uid)) {
-        throw CTiglError("Error: UID not found in CTiglUIDManager::GetComponent", TIGL_XML_ERROR);
+        std::stringstream stream;
+        stream << "UID " << uid << " not found in CTiglUIDManager::GetComponent";
+        throw CTiglError(stream.str(), TIGL_UID_ERROR);
     }
 
     return allShapes[uid];
@@ -105,11 +107,11 @@ ITiglGeometricComponent* CTiglUIDManager::GetComponent(const std::string& uid)
 CTiglAbstractPhysicalComponent* CTiglUIDManager::GetPhysicalComponent(const std::string& uid)
 {
     if (uid.empty()) {
-        throw CTiglError("Error: Empty UID in CTiglUIDManager::GetComponent", TIGL_XML_ERROR);
+        throw CTiglError("Empty UID in CTiglUIDManager::GetComponent", TIGL_XML_ERROR);
     }
 
     if (physicalShapes.find(uid) == physicalShapes.end()) {
-        throw CTiglError("Error: UID not found in CTiglUIDManager::GetComponent", TIGL_XML_ERROR);
+        throw CTiglError("UID not found in CTiglUIDManager::GetComponent", TIGL_XML_ERROR);
     }
 
     return physicalShapes[uid];

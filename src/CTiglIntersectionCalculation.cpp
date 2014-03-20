@@ -137,6 +137,24 @@ CTiglIntersectionCalculation::CTiglIntersectionCalculation(CTiglShapeCache* cach
     computeIntersection(cache, hash1, hash2, shape, plane);
 }
 
+CTiglIntersectionCalculation::CTiglIntersectionCalculation(CTiglShapeCache& cache,
+                                                           size_t intersectionID)
+    : tolerance(1.0e-7)
+{
+    // check that intersectionID is in cache
+    if (!cache.HasShape(intersectionID)) {
+        throw CTiglError("The given intersectionID can not be found.", TIGL_NOT_FOUND);
+    }
+    
+    try {
+        intersectionResult = TopoDS::Compound(cache.GetShape(intersectionID));
+    }
+    catch (Standard_TypeMismatch&) {
+        throw CTiglError("The given intersectionID is invalid.", TIGL_NOT_FOUND);
+    }
+
+    id = intersectionID;
+}
 
 void CTiglIntersectionCalculation::computeIntersection(CTiglShapeCache * cache,
                                                        size_t idOne,
@@ -245,7 +263,7 @@ gp_Pnt CTiglIntersectionCalculation::GetPoint(double zeta, int wireID = 1)
 TopoDS_Wire CTiglIntersectionCalculation::GetWire(int wireID)
 {
     if (wireID > GetCountIntersectionLines() || wireID < 1){
-        throw CTiglError("Error: Invalid wireID in CTiglIntersectionCalculation::GetWire", TIGL_ERROR);
+        throw CTiglError("Error: Invalid wireID in CTiglIntersectionCalculation::GetWire", TIGL_INDEX_ERROR);
     }
 
     TopExp_Explorer wireExplorer(intersectionResult, TopAbs_WIRE);
@@ -258,6 +276,11 @@ TopoDS_Wire CTiglIntersectionCalculation::GetWire(int wireID)
     }
 
     throw CTiglError("Cannot retrieve intersection wire in CTiglIntersectionCalculation::GetPoint", TIGL_ERROR);
+}
+
+size_t CTiglIntersectionCalculation::GetID()
+{
+    return id;
 }
 
 } // end namespace tigl
