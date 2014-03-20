@@ -134,6 +134,10 @@ QT4_ADD_RESOURCES( tv_rcrs src/TIGLViewer.qrc )
 add_definitions(-DCSFDB -DQOCC_STATIC)
 
 include_directories( ${OpenCASCADE_INCLUDE_DIR} ${TIXI_INCLUDE_DIRS})
+
+# opengl
+include_directories(${OPENGL_INCLUDE_DIR})
+
 # boost
 include_directories(${PROJECT_SOURCE_DIR}/thirdparty/boost_1_55_0)
 
