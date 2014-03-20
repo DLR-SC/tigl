@@ -2511,8 +2511,10 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetMinumumDistanceToGround(TiglCPA
 /*@{*/
 
 /**
-* @brief Returns a point on the intersection line of two geometric components. Often there are more
-*          that one intersection line, therefore you need to specify the line.
+* @brief <b>This is a deprecated function and will be removed in future releases.
+* Use ::tiglIntersectComponents and ::tiglIntersectGetPoint instead.</b>
+* The function returns a point on the intersection line of two geometric components. Often there are more
+* that one intersection line, therefore you need to specify the line.
 *
 * Returns a point on the intersection line between a surface and a wing in dependence
 * of parameter eta which range from 0.0 to 1.0.
@@ -2555,7 +2557,9 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglComponentIntersectionPoint(TiglCPACSConfig
                                                                  double* pointZPtr);
 
 /**
-* @brief Convienience function to returns a list of points on the intersection line of two geometric components. 
+* @brief <b>This is a deprecated function and will be removed in future releases.
+* Use ::tiglIntersectComponents and ::tiglIntersectGetPoint instead.</b>
+* Convienience function to returns a list of points on the intersection line of two geometric components. 
 * Often there are more that one intersection line, therefore you need to specify the line.
 *
 * Returns a point on the intersection line between a surface and a wing in dependence
@@ -2605,7 +2609,9 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglComponentIntersectionPoints(TiglCPACSConfi
                                                                   double* pointZArray);
 
 /**
-* @brief Returns the number if intersection lines of two geometric components.
+* @brief <b>This is a deprecated function and will be removed in future releases.
+* Use ::tiglIntersectGetLineCount in combination with ::tiglIntersectGetPoint instead.</b>
+* The function returns the number of intersection lines of two geometric components.
 *
 * <b>Fortran syntax:</b>
 *

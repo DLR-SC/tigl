@@ -2690,7 +2690,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetMinumumDistanceToGround(TiglCPA
 /*****************************************************************************************************/
 
 
-
+// DEPRECATED
 TIGL_COMMON_EXPORT TiglReturnCode tiglComponentIntersectionPoint(TiglCPACSConfigurationHandle cpacsHandle,
                                                                  const char*  componentUidOne,
                                                                  const char*  componentUidTwo,
@@ -2700,6 +2700,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglComponentIntersectionPoint(TiglCPACSConfig
                                                                  double* pointYPtr,
                                                                  double* pointZPtr)
 {
+    LOG(WARNING) << "The function tiglComponentIntersectionPoint is deprecated and will be removed in future releases. "
+                 << "More information can be found in the documentation.";
     if (pointXPtr == 0 || pointYPtr == 0 || pointZPtr == 0) {
         LOG(ERROR) << "Error: Null pointer argument for pointXPtr, pointYPtr or pointZPtr ";
         LOG(ERROR) << "in function call to tiglComponentIntersectionPoint." << std::endl;
@@ -2743,6 +2745,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglComponentIntersectionPoint(TiglCPACSConfig
     }
 }
 
+// DEPRECATED
 TIGL_COMMON_EXPORT TiglReturnCode tiglComponentIntersectionPoints(TiglCPACSConfigurationHandle cpacsHandle,
                                                                   const char *componentUidOne,
                                                                   const char *componentUidTwo,
@@ -2753,6 +2756,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglComponentIntersectionPoints(TiglCPACSConfi
                                                                   double* pointYArray,
                                                                   double* pointZArray)
 {
+    LOG(WARNING) << "The function tiglComponentIntersectionPoints is deprecated and will be removed in future releases. "
+                 << "More information can be found in the documentation.";
     if (etaArray == 0) {
         LOG(ERROR) << "Error: Null pointer argument for etaArray ";
         LOG(ERROR) << "in function call to tiglComponentIntersectionPoints." << std::endl;
@@ -2805,12 +2810,14 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglComponentIntersectionPoints(TiglCPACSConfi
     }
 }
 
-
+// DEPRECATED
 TIGL_COMMON_EXPORT TiglReturnCode tiglComponentIntersectionLineCount(TiglCPACSConfigurationHandle cpacsHandle,
                                                                      const char *componentUidOne,
                                                                      const char *componentUidTwo,
                                                                      int* numWires)
 {
+    LOG(WARNING) << "The function tiglComponentIntersectionLineCount is deprecated and will be removed in future releases. "
+                 << "More information can be found in the documentation.";
     if ( (componentUidOne == 0) || (componentUidTwo == 0)) {
         LOG(ERROR) << "Error: Null pointer argument for at least one given UID ";
         LOG(ERROR) << "in function call to tiglFuselageWingSurfaceIntersectionLineCount." << std::endl;
