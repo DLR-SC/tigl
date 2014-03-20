@@ -2604,7 +2604,6 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglComponentIntersectionPoints(TiglCPACSConfi
                                                                   double* pointYArray,
                                                                   double* pointZArray);
 
-
 /**
 * @brief Returns the number if intersection lines of two geometric components.
 *
@@ -2630,6 +2629,109 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglComponentIntersectionLineCount(TiglCPACSCo
                                                                      const char*  componentUidOne,
                                                                      const char*  componentUidTwo,
                                                                      int*   numWires);
+
+/**
+* @brief tiglIntersectComponents computes the intersection line(s) between two shapes
+* specified by their CPACS uid. It returns an intersection ID for further computations
+* on the result. To query points on the intersection line, ::tiglIntersectGetPoint has
+* to be called.
+*
+* @param[in]  cpacsHandle     Handle for the CPACS configuration
+* @param[in]  componentUidOne The UID of the first component
+* @param[in]  componentUidTwo The UID of the second component
+* @param[out] intersectionID  A unique identifier that is associated with the computed intersection.
+*
+*
+* @return
+*   - TIGL_SUCCESS if an intersection could be computed
+*   - TIGL_NOT_FOUND if the cpacs handle is not valid
+*   - TIGL_NULL_POINTER if either componentUidOne, componentUidTwo, or intersectionID are NULL pointers
+*   - TIGL_UID_ERROR if componentUidOne or componentUidTwo can not be found in the CPACS file
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglIntersectComponents(TiglCPACSConfigurationHandle cpacsHandle,
+                                                          const char*  componentUidOne,
+                                                          const char*  componentUidTwo,
+                                                          size_t* intersectionID);
+
+/**
+* @brief tiglIntersectWithPlane computes the intersection line(s) between a shape and a plane. 
+* It returns an intersection ID for further computations on the result. 
+* To query points on the intersection line, ::tiglIntersectGetPoint has
+* to be called.
+*
+* The shape has to be specified by its CPACS UID.
+* The plane is specified by a central point p on the plane and a normal vector n, which is
+* perpendicular to the plane. The normal vector must not be zero!
+*
+* @param[in]  cpacsHandle     Handle for the CPACS configuration
+* @param[in]  componentUid    The UID of the CPACS shape
+* @param[in]  px              X Coordinate of the plane center point
+* @param[in]  py              Y Coordinate of the plane center point
+* @param[in]  pz              Z Coordinate of the plane center point
+* @param[in]  nx              X value of the plane normal vector
+* @param[in]  ny              Y value of the plane normal vector
+* @param[in]  nz              Z value of the plane normal vector
+* @param[out] intersectionID  A unique identifier that is associated with the computed intersection.
+*
+*
+* @return
+*   - TIGL_SUCCESS if an intersection could be computed
+*   - TIGL_NOT_FOUND if the cpacs handle is not valid
+*   - TIGL_NULL_POINTER if either componentUid or intersectionID are NULL pointers
+*   - TIGL_UID_ERROR if componentUid can not be found in the CPACS file
+*   - TIGL_MATH_ERROR if the normal vector is zero
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglIntersectWithPlane(TiglCPACSConfigurationHandle cpacsHandle,
+                                                         const char*  componentUid,
+                                                         double px, double py, double pz,
+                                                         double nx, double ny, double nz,
+                                                         size_t* intersectionID);
+
+/**
+* @brief tiglIntersectGetLineCount return the number of intersection lines computed by 
+* ::tiglIntersectComponents or ::tiglIntersectWithPlane for the given intersectionID.
+*
+* @param[in]  cpacsHandle     Handle for the CPACS configuration
+* @param[in]  intersectionID  The intersection identifier returned by ::tiglIntersectComponents or ::tiglIntersectWithPlane
+* @param[out] lineCount       Number of intersection lines computed by ::tiglIntersectComponents or ::tiglIntersectWithPlane.
+*                             If no intersection could be computed, line count is 0.
+*
+* @return
+*   - TIGL_SUCCESS if no error occured
+*   - TIGL_NOT_FOUND if the cpacs handle  or the intersectionID is not valid
+*   - TIGL_NULL_POINTER if lineCount is a NULL pointer
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglIntersectGetLineCount(TiglCPACSConfigurationHandle cpacsHandle,
+                                                            size_t intersectionID,
+                                                            int* lineCount);
+
+/**
+* @brief tiglIntersectGetPoint samples a point on an intersection line calculated by
+* ::tiglIntersectComponents or ::tiglIntersectWithPlane.
+*
+* @param[in]  cpacsHandle     Handle for the CPACS configuration
+* @param[in]  intersectionID  The intersection identifier returned by ::tiglIntersectComponents or ::tiglIntersectWithPlane
+* @param[in]  lineIdx         Line index to sample from. To get the number of lines, call ::tiglIntersectGetLineCount.
+*                             1 <= lineIdx <= lineCount.
+* @param[in]  eta             Parameter on the curve that determines the point position, with 0 <= eta <= 1.
+* @param[out] pointX          X coordinate of the resulting point.
+* @param[out] pointY          Y coordinate of the resulting point.
+* @param[out] pointZ          Z coordinate of the resulting point.
+*
+* @return
+*   - TIGL_SUCCESS if no error occured
+*   - TIGL_NOT_FOUND if the cpacs handle  or the intersectionID is not valid
+*   - TIGL_NULL_POINTER if pointX, pointY, or pointZ are NULL pointers
+*   - TIGL_INDEX_ERROR if lineIdx is not in valid range
+*   - TIGL_MATH_ERROR if eta is not in range 0 <= eta <= 1
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglIntersectGetPoint(TiglCPACSConfigurationHandle cpacsHandle,
+                                                        size_t intersectionID,
+                                                        int lineIdx,
+                                                        double eta,
+                                                        double* pointX,
+                                                        double* pointY,
+                                                        double* pointZ);
 
 
 /*@}*/

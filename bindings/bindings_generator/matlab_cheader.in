@@ -88,6 +88,15 @@ int mxToInt(const mxArray * mxArr)
     return (int)dv;
 }
 
+size_t mxToSize_t(const mxArray * mxArr)
+{
+    double dv = *mxGetPr(mxArr);
+    if(!isinteger(dv))
+        mexWarnMsgTxt("Argument is not an integer\n");
+
+    return (size_t)dv;
+}
+
 void mxToIntArray(const mxArray * mxArr, int ** pIntArray)
 {
     mwSize i, totalSize;

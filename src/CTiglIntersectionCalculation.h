@@ -51,6 +51,7 @@ class CTiglIntersectionCalculation
 
 public:
     // Constructor, compute intersection of two TopoDS_Shapes
+    // cache variable can be NULL
     TIGL_EXPORT CTiglIntersectionCalculation(CTiglShapeCache* cache,
                                              const std::string& idOne,
                                              const std::string& idTwo,
@@ -58,11 +59,17 @@ public:
                                              TopoDS_Shape compoundTwo );
 
     // Computes the intersection of a shape with a plane
+    // cache variable can be NULL
     TIGL_EXPORT CTiglIntersectionCalculation(CTiglShapeCache* cache,
                                              const std::string& shapeID,
                                              TopoDS_Shape shape,
                                              gp_Pnt point,
                                              gp_Dir normal );
+
+    // Constructor, load intersection result from cache
+    // cache is mandatory, hence the reference
+    TIGL_EXPORT CTiglIntersectionCalculation(CTiglShapeCache& cache,
+                                             size_t intersectionID);
 
     // Destructor
     TIGL_EXPORT virtual ~CTiglIntersectionCalculation(void);
@@ -78,6 +85,9 @@ public:
 
     // gives a reference to the computed wire
     TIGL_EXPORT TopoDS_Wire GetWire(int wireID);
+
+    // returnes the unique ID for the current intersection
+    TIGL_EXPORT size_t GetID();
 
 protected:
     void computeIntersection(CTiglShapeCache* cache,
