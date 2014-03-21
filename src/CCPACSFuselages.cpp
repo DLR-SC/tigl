@@ -67,29 +67,26 @@ void CCPACSFuselages::Cleanup(void)
 void CCPACSFuselages::ReadCPACS(TixiDocumentHandle tixiHandle, const char* configurationUID)
 {
     Cleanup();
-    char *fuselagesXPathPrt = NULL;
     char *tmpString = NULL;
 
     if (tixiUIDGetXPath(tixiHandle, configurationUID, &tmpString) != SUCCESS) {
         throw CTiglError("XML error: tixiUIDGetXPath failed in CCPACSFuselages::ReadCPACS", TIGL_XML_ERROR);
     }
 
-    fuselagesXPathPrt = (char *) malloc(sizeof(char) * (strlen(tmpString) + 50));
-    strcpy(fuselagesXPathPrt, tmpString);
-    strcat(fuselagesXPathPrt, "[@uID=\"");
-    strcat(fuselagesXPathPrt, configurationUID);
-    strcat(fuselagesXPathPrt, "\"]/fuselages");
+    std::string fuselagesXPath = tmpString;
+    fuselagesXPath += "[@uID=\"";
+    fuselagesXPath += configurationUID;
+    fuselagesXPath += "\"]/fuselages";
     
     // Read fuselage profiles
     profiles.ReadCPACS(tixiHandle);
 
-    if (tixiCheckElement(tixiHandle, fuselagesXPathPrt) != SUCCESS){
-        free(fuselagesXPathPrt);
+    if (tixiCheckElement(tixiHandle, fuselagesXPath.c_str()) != SUCCESS){
         return;
     }
     /* Get fuselage element count */
     int fuselageCount;
-    if (tixiGetNamedChildrenCount(tixiHandle, fuselagesXPathPrt, "fuselage", &fuselageCount) != SUCCESS) {
+    if (tixiGetNamedChildrenCount(tixiHandle, fuselagesXPath.c_str(), "fuselage", &fuselageCount) != SUCCESS) {
         throw CTiglError("XML error: tixiGetNamedChildrenCount failed in CCPACSFuselages::ReadCPACS", TIGL_XML_ERROR);
     }
 
@@ -99,10 +96,9 @@ void CCPACSFuselages::ReadCPACS(TixiDocumentHandle tixiHandle, const char* confi
         fuselages.push_back(fuselage);
 
         std::ostringstream xpath;
-        xpath << fuselagesXPathPrt << "/fuselage[" << i << "]";
+        xpath << fuselagesXPath << "/fuselage[" << i << "]";
         fuselage->ReadCPACS(tixiHandle, xpath.str());
     }
-    free(fuselagesXPathPrt);
 }
 
 // Returns the total count of fuselage profiles in this configuration

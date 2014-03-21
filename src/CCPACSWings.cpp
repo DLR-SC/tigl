@@ -66,31 +66,27 @@ void CCPACSWings::Cleanup(void)
 void CCPACSWings::ReadCPACS(TixiDocumentHandle tixiHandle, const char* configurationUID)
 {
     Cleanup();
-    char *wingXPathPrt = NULL;
     char *tmpString = NULL;
 
     if (tixiUIDGetXPath(tixiHandle, configurationUID, &tmpString) != SUCCESS) {
         throw CTiglError("XML error: tixiUIDGetXPath failed in CCPACSWings::ReadCPACS", TIGL_XML_ERROR);
     }
 
-    wingXPathPrt = (char *) malloc(sizeof(char) * (strlen(tmpString) + 50));
-    strcpy(wingXPathPrt, tmpString);
-    strcat(wingXPathPrt, "[@uID=\"");
-    strcat(wingXPathPrt, configurationUID);
-    strcat(wingXPathPrt, "\"]/wings");
+    std::string wingXPath= tmpString;
+    wingXPath += "[@uID=\"";
+    wingXPath += configurationUID;
+    wingXPath += "\"]/wings";
 
     // Read wing profiles
     profiles.ReadCPACS(tixiHandle);
 
-    if (tixiCheckElement(tixiHandle, wingXPathPrt) != SUCCESS) {
-        free(wingXPathPrt);
+    if (tixiCheckElement(tixiHandle, wingXPath.c_str()) != SUCCESS) {
         return;
     }
 
     /* Get wing element count */
     int wingCount;
-    if (tixiGetNamedChildrenCount(tixiHandle, wingXPathPrt, "wing", &wingCount) != SUCCESS) {
-        free(wingXPathPrt);
+    if (tixiGetNamedChildrenCount(tixiHandle, wingXPath.c_str(), "wing", &wingCount) != SUCCESS) {
         throw CTiglError("XML error: tixiGetNamedChildrenCount failed in CCPACSWings::ReadCPACS", TIGL_XML_ERROR);
     }
 
@@ -100,10 +96,9 @@ void CCPACSWings::ReadCPACS(TixiDocumentHandle tixiHandle, const char* configura
         wings.push_back(wing);
 
         std::ostringstream xpath;
-        xpath << wingXPathPrt << "/wing[" << i << "]";
+        xpath << wingXPath << "/wing[" << i << "]";
         wing->ReadCPACS(tixiHandle, xpath.str());
     }
-    free(wingXPathPrt);
 }
 
 // Returns the total count of wing profiles in this configuration

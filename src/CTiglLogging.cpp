@@ -113,7 +113,7 @@ void CTiglLogging::LogToFile(const char* prefix)
     }
 
     else {
-        strcpy(buffer, "");
+        strncpy(buffer, "", 80);
     }
     std::string filename = std::string(prefix) + buffer+ "." + _fileEnding;
     
