@@ -76,8 +76,9 @@ namespace
         double res = (b*v1)*(b*v2);
         return res <= 0.;
     }
-    
-    double GetNearestValidParameter(double p) {
+
+    double GetNearestValidParameter(double p)
+    {
         if (p < 0.) {
             return 0.;
         }
