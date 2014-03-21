@@ -746,11 +746,14 @@ const CTiglAbstractSegment* CCPACSWingComponentSegment::findSegment(double x, do
         try {
             double eta, xsi;
             (*segit)->GetEtaXsi(pnt, eta, xsi);
+            gp_Pnt pointProjected = (*segit)->GetChordPoint(eta,xsi);
+
+            // Get nearest point on this segment
             double nextEta = GetNearestValidParameter(eta);
             double nextXsi = GetNearestValidParameter(xsi);
-            
             gp_Pnt currentPoint = (*segit)->GetChordPoint(nextEta, nextXsi);
-            double currentDist = currentPoint.Distance(pnt);
+            
+            double currentDist = currentPoint.Distance(pointProjected);
             if (currentDist < minDist) {
                 minDist   = currentDist;
                 nearestPoint = currentPoint;
