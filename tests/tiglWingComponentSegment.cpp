@@ -592,6 +592,15 @@ TEST_F(WingComponentSegment, tiglWingComponentSegmentPointGetSegmentEtaXsi_BUG4)
     ASSERT_EQ(TIGL_SUCCESS, tiglRet);
 }
 
+TEST_F(WingComponentSegment, tiglWingComponentFindSegment_BUG)
+{
+    double px, py, pz;
+    char *wingUID = NULL, *segmentUID = NULL;
+    ASSERT_EQ(TIGL_SUCCESS, tiglWingGetUpperPoint(tiglHandle, 1, 1, 0.5, 0.5, &px, &py, &pz));
+    TiglReturnCode tiglRet = tiglWingComponentSegmentFindSegment(tiglHandle, "D150_VAMP_W1_CompSeg1", px, py, pz, &segmentUID, &wingUID);
+    ASSERT_EQ(TIGL_SUCCESS, tiglRet);
+}
+
 TEST(WingComponentSegment5, GetSegmentIntersection_BUG)
 {
     const char* filename = "TestData/CS_SegIntersectionBUG.xml";
