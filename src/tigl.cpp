@@ -156,23 +156,19 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglOpenCPACSConfiguration(TixiDocumentHandle 
     }
     else {
         /* Check if configuration exists */
-        char *ConfigurationXPathPrt = NULL;
         char *tmpString = NULL;
         char *tmpString2 = NULL;
 
         tixiUIDGetXPath(tixiHandle, configurationUID.c_str(), &tmpString2);
-        ConfigurationXPathPrt = (char *) malloc(sizeof(char) * (strlen(tmpString2) + 50));
-        strcpy(ConfigurationXPathPrt, tmpString2);
-        strcat(ConfigurationXPathPrt, "[@uID=\"");
-        strcat(ConfigurationXPathPrt, configurationUID.c_str());
-        strcat(ConfigurationXPathPrt, "\"]");
-        int tixiReturn = tixiGetTextElement( tixiHandle, ConfigurationXPathPrt, &tmpString);
+        std::string ConfigurationXPath = tmpString2;
+        ConfigurationXPath += "[@uID=\"";
+        ConfigurationXPath += configurationUID.c_str();
+        ConfigurationXPath += "\"]";
+        int tixiReturn = tixiGetTextElement( tixiHandle, ConfigurationXPath.c_str(), &tmpString);
         if (tixiReturn != 0) {
-            free(ConfigurationXPathPrt);
             LOG(ERROR) << "Configuration '" << configurationUID << "' not found!" << std::endl;
             return TIGL_ERROR;
         }
-        free(ConfigurationXPathPrt);
     }
 
     tigl::CCPACSConfiguration* config = 0;
