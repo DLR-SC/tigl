@@ -111,7 +111,7 @@ class TestSimpleCpacs(unittest.TestCase):
         nmaterials = self.tigl.wingComponentSegmentGetMaterialCount(compSegmentUID, TiglStructureType.UPPER_SHELL, eta, xsi )
         self.assertEqual(nmaterials, 1)
 
-        material = self.tigl.wingComponentSegmentGetMaterialUIDs(compSegmentUID, TiglStructureType.UPPER_SHELL, eta, xsi, 1)
+        material = self.tigl.wingComponentSegmentGetMaterialUID(compSegmentUID, TiglStructureType.UPPER_SHELL, eta, xsi, 1)
         self.assertEqual(material, 'MyCellMat')
 ######      
         
