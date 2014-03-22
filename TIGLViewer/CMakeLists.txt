@@ -30,6 +30,12 @@ OPTION(OpenCASCADE_STATICLIB "Check, if you link static opencascade libraries" O
 if(OpenCASCADE_STATICLIB)
     # opencascade visualization uses freetype, thus we have to link it
     find_package( FreetypeLib REQUIRED )
+    set(EXTRA_LIBRARIES ${EXTRA_LIBRARIES} ${FREETYPE_LIBRARIES})
+
+    if(APPLE)
+        find_library(COCOA_LIBRARY Cocoa)
+        set(EXTRA_LIBRARIES ${EXTRA_LIBRARIES} ${COCOA_LIBRARY})
+    endif(APPLE)
 endif(OpenCASCADE_STATICLIB)
 
 # we need opengl in order to build tiglviewer
@@ -186,7 +192,7 @@ target_link_libraries(${PROGNAME}
 	${QT_LIBRARIES} 
 	${OPENGL_LIBRARIES} 
 	${OpenCASCADE_LIBRARIES} 
-	${FREETYPE_LIBRARIES} 
+	${EXTRA_LIBRARIES} 
 )
 
 if(GLOG_FOUND)

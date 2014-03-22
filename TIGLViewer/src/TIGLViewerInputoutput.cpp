@@ -29,6 +29,7 @@
 #include <TIGLAISTriangulation.h>
 #include <TColStd_HArray1OfInteger.hxx>
 #include <Poly_Triangulation.hxx>
+#include <IGESData_IGESModel.hxx>
 
 TIGLViewerInputOutput::TIGLViewerInputOutput(void)
 {
@@ -209,7 +210,15 @@ Handle_TopTools_HSequenceOfShape TIGLViewerInputOutput::importBREP( const QStrin
     Standard_Boolean result = BRepTools::Read(  aShape, file.toAscii().data(), aBuilder );
     if ( result ) {
         aSequence = new TopTools_HSequenceOfShape();
-        aSequence->Append( aShape );
+        if (aShape.ShapeType() == TopAbs_COMPOUND) {
+            for (TopoDS_Iterator anIter(aShape); anIter.More(); anIter.Next()) {
+                TopoDS_Shape aSh = anIter.Value();
+                aSequence->Append( aSh );
+            }
+        }
+        else {
+            aSequence->Append(aShape);
+        }
     }
 
     return aSequence;
@@ -349,7 +358,20 @@ bool TIGLViewerInputOutput::exportBREP( const QString& file, const Handle_TopToo
         return false;
     }
 
-    TopoDS_Shape shape = shapes->Value( 1 );
+    TopoDS_Shape shape;
+    if (shapes->Length() > 1) {
+        TopoDS_Compound compound;
+        BRep_Builder b;
+        b.MakeCompound(compound);
+
+        for (int ishape = 1; ishape <= shapes->Length(); ++ishape) {
+            b.Add(compound, shapes->Value(ishape));
+        }
+        shape = compound;
+    }
+    else {
+        shape = shapes->Value(1);
+    }
     return BRepTools::Write( shape, file.toAscii().data() );
 }
 
@@ -360,8 +382,13 @@ bool TIGLViewerInputOutput::exportIGES( const QString& file, const Handle_TopToo
     }
 
     IGESControl_Controller::Init();
-    IGESControl_Writer writer( Interface_Static::CVal( "XSTEP.iges.unit" ),
-                               Interface_Static::IVal( "XSTEP.iges.writebrep.mode" ) );
+    Interface_Static::SetCVal("xstep.cascade.unit", "M");
+    Interface_Static::SetCVal("write.iges.unit", "M");
+    Interface_Static::SetIVal("write.iges.brep.mode", 0);
+    Interface_Static::SetCVal("write.iges.header.author", "TiGL");
+    Interface_Static::SetCVal("write.iges.header.company", "German Aerospace Center (DLR), SC");
+    IGESControl_Writer writer;
+    writer.Model()->ApplyStatic();
 
     for ( int i = 1; i <= shapes->Length(); i++ ) {
         writer.AddShape ( shapes->Value( i ) );
@@ -377,7 +404,7 @@ bool TIGLViewerInputOutput::exportSTEP( const QString& file, const Handle_TopToo
     }
 
     IFSelect_ReturnStatus status;
-
+    Interface_Static::SetCVal("write.step.unit", "M");
     STEPControl_Writer writer;
     for ( int i = 1; i <= shapes->Length(); i++ ) {
         status = writer.Transfer( shapes->Value( i ), STEPControl_AsIs );
