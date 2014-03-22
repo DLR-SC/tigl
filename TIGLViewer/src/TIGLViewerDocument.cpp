@@ -185,6 +185,7 @@ void TIGLViewerDocument::closeCpacsConfiguration()
 
     myAISContext->EraseAll(Standard_False);
     emit documentUpdated(m_cpacsHandle);
+    myAISContext->UpdateCurrentViewer();
 }
 
 
@@ -1514,7 +1515,13 @@ void TIGLViewerDocument::drawIntersectionLine()
         TopoDS_Shape& compoundOne = uidManager.GetComponent(uid)->GetLoft();
 
         gp_Pnt p = dialog.GetPoint().Get_gp_Pnt();
-        gp_Dir n = dialog.GetNormal().Get_gp_Pnt().XYZ();
+        tigl::CTiglPoint normal = dialog.GetNormal();
+        if (normal.norm2() < 1e-7) {
+            displayError("The plane normal vector must not be zero.");
+            return;
+        }
+        gp_Dir n = normal.Get_gp_Pnt().XYZ();
+
         writeToStatusBar(tr("Calculating intersection... This may take a while!"));
         Intersector = new tigl::CTiglIntersectionCalculation(&config.GetShapeCache(), uid, compoundOne, p, n);
     }

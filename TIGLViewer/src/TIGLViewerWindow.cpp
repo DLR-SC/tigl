@@ -450,7 +450,11 @@ void TIGLViewerWindow::save()
 
     statusBar()->showMessage(tr("Invoked File|Save"));
 
-    fileName = QFileDialog::getSaveFileName(this, tr("Save as..."), myLastFolder, tr("Geometry Export (*.iges *.brep *.step *.stl *.vrml)"));
+    fileName = QFileDialog::getSaveFileName(this, tr("Save as..."), myLastFolder,
+                                            tr("IGES Geometry (*.igs);;") +
+                                            tr("STEP Geometry (*.stp);;") +
+                                            tr("STL Triangulation (*.stl);;") +
+                                            tr("BRep Geometry (*.brep)"));
 
     if (!fileName.isEmpty()) {
         fileInfo.setFile(fileName);
