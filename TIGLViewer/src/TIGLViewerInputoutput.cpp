@@ -30,6 +30,7 @@
 #include <TColStd_HArray1OfInteger.hxx>
 #include <Poly_Triangulation.hxx>
 #include <IGESData_IGESModel.hxx>
+#include <AIS_ListIteratorOfListOfInteractive.hxx>
 
 TIGLViewerInputOutput::TIGLViewerInputOutput(void)
 {
@@ -187,8 +188,27 @@ Handle_TopTools_HSequenceOfShape TIGLViewerInputOutput::getShapes( const Handle_
 {
     Handle_TopTools_HSequenceOfShape aSequence;
     Handle_AIS_InteractiveObject picked;
+    // export selected objects
     for ( ic->InitCurrent(); ic->MoreCurrent(); ic->NextCurrent() ) {
         Handle_AIS_InteractiveObject obj = ic->Current();
+        if ( obj->IsKind( STANDARD_TYPE( AIS_Shape ) ) ) {
+            TopoDS_Shape shape = Handle_AIS_Shape::DownCast(obj)->Shape();
+            if ( aSequence.IsNull() ) {
+                aSequence = new TopTools_HSequenceOfShape();
+            }
+            aSequence->Append( shape );
+        }
+    }
+    if (aSequence.IsNull() && aSequence->Length() > 0) {
+        return aSequence;
+    }
+
+    // if no objects are selected, export all objects
+    AIS_ListOfInteractive listAISShapes;
+    ic->DisplayedObjects(listAISShapes);
+    AIS_ListIteratorOfListOfInteractive iter(listAISShapes);
+    for (; iter.More(); iter.Next()) {
+        Handle_AIS_InteractiveObject obj = iter.Value();
         if ( obj->IsKind( STANDARD_TYPE( AIS_Shape ) ) ) {
             TopoDS_Shape shape = Handle_AIS_Shape::DownCast(obj)->Shape();
             if ( aSequence.IsNull() ) {
@@ -404,6 +424,8 @@ bool TIGLViewerInputOutput::exportSTEP( const QString& file, const Handle_TopToo
     }
 
     IFSelect_ReturnStatus status;
+    STEPControl_Controller::Init();
+    Interface_Static::SetCVal("xstep.cascade.unit", "M");
     Interface_Static::SetCVal("write.step.unit", "M");
     STEPControl_Writer writer;
     for ( int i = 1; i <= shapes->Length(); i++ ) {
