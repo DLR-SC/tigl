@@ -199,7 +199,7 @@ Handle_TopTools_HSequenceOfShape TIGLViewerInputOutput::getShapes( const Handle_
             aSequence->Append( shape );
         }
     }
-    if (aSequence.IsNull() && aSequence->Length() > 0) {
+    if (!aSequence.IsNull() && aSequence->Length() > 0) {
         return aSequence;
     }
 
