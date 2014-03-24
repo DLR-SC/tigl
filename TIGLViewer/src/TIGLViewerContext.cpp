@@ -34,14 +34,15 @@ TIGLViewerContext::TIGLViewerContext()
     myViewer->SetDefaultLights();
     myViewer->SetZBufferManagment(Standard_False);
     myViewer->SetDefaultViewProj( V3d_Zpos );    // Top view
-     myContext = new AIS_InteractiveContext( myViewer );
+    myContext = new AIS_InteractiveContext( myViewer );
 
     myGridType       = Aspect_GT_Rectangular;
     myGridMode       = Aspect_GDM_Lines;
     myGridColor      = Quantity_NOC_RED4;
     myGridTenthColor = Quantity_NOC_GRAY90;
 
-    myContext->SetHilightColor(Quantity_NOC_WHITE) ;
+    myContext->SetHilightColor(Quantity_NOC_WHITE);
+    myContext->SetIsoNumber(0);
 
     setGridOffset (0.0);
     gridXY();
