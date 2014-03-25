@@ -74,7 +74,7 @@ class CHeaderFileParser(object):
                 values[index] = name
         
         
-        print 'Parsed enum %s' % res.group('name')
+        # print 'Parsed enum %s' % res.group('name')
             
         return {'name': res.group('name'), 'values': values}
     
@@ -379,7 +379,7 @@ class CFunctionDec(object):
         self.returns_error =  returncode_str == self.return_value.rawtype
         self.method_name  = res.group('name') 
         
-        print 'Parsed function %s' % self.method_name    
+        # print 'Parsed function %s' % self.method_name    
         
         arg_string = res.group('args')
         if not arg_string:
