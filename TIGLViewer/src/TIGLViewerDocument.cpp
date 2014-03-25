@@ -1498,6 +1498,7 @@ void TIGLViewerDocument::drawIntersectionLine()
     tigl::CTiglIntersectionCalculation* Intersector = NULL;
     if (mode == 0) {
         // shape - shape
+        QApplication::setOverrideCursor( Qt::WaitCursor );
         std::string uid1 = dialog.GetShape1UID().toStdString();
         std::string uid2 = dialog.GetShape2UID().toStdString();
         writeToStatusBar(QString(tr("Calculating %1 ...")).arg(uid1.c_str()));
@@ -1510,6 +1511,7 @@ void TIGLViewerDocument::drawIntersectionLine()
     }
     else if (mode == 1) {
         // shape - plane
+        QApplication::setOverrideCursor( Qt::WaitCursor );
         std::string uid = dialog.GetShapeUID().toStdString();
         writeToStatusBar(QString(tr("Calculating %1 ...")).arg(uid.c_str()));
         TopoDS_Shape& compoundOne = uidManager.GetComponent(uid)->GetLoft();
@@ -1532,18 +1534,20 @@ void TIGLViewerDocument::drawIntersectionLine()
     if (Intersector->GetCountIntersectionLines() <= 0) {
         displayError(tr("Could not find any intersection between shapes"), "TIGL Error");
         writeToStatusBar("");
+        QApplication::restoreOverrideCursor();
         return;
     }
     // load first wire
-    int wireID = 1;
-    displayShape(Intersector->GetWire(wireID));
-
-    /* now calculate intersection and display single points */
-    for (double eta = 0.0; eta <= 1.0; eta += 0.025) {
-        gp_Pnt point = Intersector->GetPoint(eta, wireID);
-
-        ISession_Point* aGraphicPoint = new ISession_Point(point);
-        myAISContext->Display(aGraphicPoint,Standard_False);
+    for (int wireID = 1; wireID <= Intersector->GetCountIntersectionLines(); ++wireID) {
+        displayShape(Intersector->GetWire(wireID));
+        
+        /* now calculate intersection and display single points */
+        for (double eta = 0.0; eta <= 1.0; eta += 0.025) {
+            gp_Pnt point = Intersector->GetPoint(eta, wireID);
+            
+            ISession_Point* aGraphicPoint = new ISession_Point(point);
+            myAISContext->Display(aGraphicPoint,Standard_False);
+        }
     }
     myAISContext->UpdateCurrentViewer();
     QApplication::restoreOverrideCursor();
