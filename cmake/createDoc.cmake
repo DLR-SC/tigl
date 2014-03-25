@@ -37,10 +37,10 @@ if(DOXYGEN_FOUND)
 			DEPENDS ${PROJECT_BINARY_DIR}/doc/latex/refman.tex
 			WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/doc/latex/		
 			COMMAND ${LATEX}
-			ARGS ${PROJECT_BINARY_DIR}/doc/latex/refman.tex
+			ARGS -quiet ${PROJECT_BINARY_DIR}/doc/latex/refman.tex
 		    # run latex twice to get references right (normal use case of latex, don't ask why)
 			COMMAND ${LATEX}
-			ARGS ${PROJECT_BINARY_DIR}/doc/latex/refman.tex
+			ARGS -quiet ${PROJECT_BINARY_DIR}/doc/latex/refman.tex
 			COMMAND ${CMAKE_COMMAND}
 			ARGS -E copy ${PROJECT_BINARY_DIR}/doc/latex/refman.pdf ${PROJECT_BINARY_DIR}/doc/tiglRef.pdf
 		)
@@ -61,10 +61,10 @@ if(DOXYGEN_FOUND)
             # create directory for latex build
             # build pdf
 			COMMAND ${LATEX}
-			ARGS tiglGuide.tex 
+			ARGS -quiet tiglGuide.tex 
 			# run latex twice to get references right (normal use case of latex, don't ask why)
 		    COMMAND ${LATEX}
-			ARGS tiglGuide.tex
+			ARGS -quiet tiglGuide.tex
 		)
 
         # TIGL Changelog
@@ -83,10 +83,10 @@ if(DOXYGEN_FOUND)
             # create directory for latex build
             # build pdf
 			COMMAND ${LATEX}
-			ARGS changeLog.tex 
+			ARGS -quiet changeLog.tex 
 			# run latex twice to get references right (normal use case of latex, don't ask why)
 		    COMMAND ${LATEX}
-			ARGS changeLog.tex
+			ARGS -quiet changeLog.tex
 		)
 
 		add_custom_target(pdf
