@@ -26,6 +26,7 @@
 #include <QtCore/QString>
 #include <QShortcut>
 #include <QTimer>
+#include <QProcessEnvironment>
 
 #include <BRepBuilderAPI_MakeVertex.hxx>
 #include <TopoDS_Vertex.hxx>
@@ -410,7 +411,7 @@ void TIGLViewerWindow::loadSettings()
 
     tiglViewerSettings->loadSettings();
     settingsDialog->updateEntries();
-    myOCC->setBackgroundColor(tiglViewerSettings->BGColor());
+    applySettings();
 }
 
 void TIGLViewerWindow::saveSettings()
@@ -426,10 +427,24 @@ void TIGLViewerWindow::saveSettings()
     tiglViewerSettings->storeSettings();
 }
 
+void TIGLViewerWindow::applySettings()
+{
+    myOCC->setBackgroundColor(tiglViewerSettings->BGColor());
+    myOCC->getContext()->SetIsoNumber(tiglViewerSettings->numFaceIsosForDisplay());
+    myOCC->getContext()->UpdateCurrentViewer();
+    if (tiglViewerSettings->debugBooleanOperations()) {
+        qputenv("TIGL_DEBUG_BOP", "1");
+    }
+    else {
+        qputenv("TIGL_DEBUG_BOP", "");
+    }
+}
+
 void TIGLViewerWindow::changeSettings()
 {
+    settingsDialog->updateEntries();
     settingsDialog->exec();
-    myOCC->setBackgroundColor(tiglViewerSettings->BGColor());
+    applySettings();
 }
 
 

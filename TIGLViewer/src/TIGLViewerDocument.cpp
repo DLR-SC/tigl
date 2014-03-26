@@ -43,6 +43,7 @@
 #include <Poly_Triangulation.hxx>
 #include <BRepBuilderAPI_MakePolygon.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
+#include <BRepBuilderAPI_MakeVertex.hxx>
 #include <gce_MakeLin.hxx>
 #include <GC_MakeSegment.hxx>
 #include <BRepBndLib.hxx>
@@ -251,6 +252,18 @@ Handle(AIS_Shape) TIGLViewerDocument::displayShape(const TopoDS_Shape& loft, Qua
     shape->SetColor(color);
     shape->SetOwnDeviationCoefficient(_settings.tesselationAccuracy());
     myAISContext->Display(shape, Standard_True);
+    
+    if (_settings.enumerateFaces()) {
+        TopTools_IndexedMapOfShape shapeMap;
+        TopExp::MapShapes(loft, TopAbs_FACE, shapeMap);
+        for (int i = 1; i <= shapeMap.Extent(); ++i) {
+            const TopoDS_Face& face = TopoDS::Face(shapeMap(i));
+            gp_Pnt p = GetCentralFacePoint(face);
+            QString s = QString("%1").arg(i);
+            DisplayPoint(p, s.toStdString().c_str(), false, 0., 0., 0., 10.);
+        }
+    }
+    
     return shape;
 }
 

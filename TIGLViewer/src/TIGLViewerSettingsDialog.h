@@ -39,6 +39,7 @@ private slots:
     void onSliderTesselationChanged(int);
     void onSliderTriangulationChanged(int);
     void onColorChoserPushed();
+    void onSettingsListChanged(int);
 
 private:
     double calcTesselationAccu(int value);
