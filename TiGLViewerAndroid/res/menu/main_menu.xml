@@ -12,6 +12,10 @@
           android:title="@string/delete_button"
           android:icon="@drawable/abc_ic_clear"
           yourapp:showAsAction="always" />
+    <item android:id="@+id/action_zoom"
+        android:title="@string/zoom_button"
+        android:icon="@drawable/zoom"
+        yourapp:showAsAction="always"/>
     <!-- 
     <item
         android:id="@+id/action_settings"

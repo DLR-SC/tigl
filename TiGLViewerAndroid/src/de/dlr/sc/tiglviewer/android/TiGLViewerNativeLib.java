@@ -22,10 +22,12 @@ public class TiGLViewerNativeLib {
     public static native void       addObjectFromCPACS(String filepath);
     public static native void       removeObjects();
     public static native void       changeCamera(int view);
+    public static native void       fitScreen();
     public static native void       clearContents();
     public static native void       mouseButtonPressEvent(float x,float y, int button , int view);
     public static native void       mouseButtonReleaseEvent(float x,float y, int button , int view);
     public static native void       mouseMoveEvent(float x,float y , int view);
+    public static native void       pickEvent(float x, float y, int density, int view);
     public static native void       keyboardDown(int key);
     public static native void       keyboardUp(int key);
     public static native void       setClearColor(int red,int green, int blue);

@@ -5,7 +5,7 @@
 //#include "Visualizer.h"
 #include "MaterialTemplate.h"
 
-/*
+
 int PickHandler::hitCount = 0;
 
 
@@ -33,8 +33,8 @@ bool PickHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapt
 
 void PickHandler::pick(osgViewer::View* view, const osgGA::GUIEventAdapter& ea, bool add){
     osgUtil::LineSegmentIntersector::Intersections intersections;
-    Visualizer* visualizer = (Visualizer*) view->getViewerBase();
-    if(!add) visualizer->unpickNodes();
+    //Visualizer* visualizer = (Visualizer*) view->getViewerBase();
+    //if(!add) visualizer->unpickNodes();
 
 
     if(view->computeIntersections(ea.getX(),ea.getY(),intersections))
@@ -48,9 +48,13 @@ void PickHandler::pick(osgViewer::View* view, const osgGA::GUIEventAdapter& ea, 
             if(!intersectedGeode->isPicked())
             {
                 intersectedGeode->pick();
-                visualizer->addPickedNode(intersectedGeode);
+                //visualizer->addPickedNode(intersectedGeode);
+            }
+            else
+            {
+            	intersectedGeode->unpick();
             }
             std::cout<< hitCount <<"Hit:"<<hit->nodePath.back()->getName()<<std::endl;
         }
     }
-}*/
+}

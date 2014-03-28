@@ -15,4 +15,5 @@
     <string name="drawer_open">Open drawer</string>
     <string name="drawer_close">Close drawer</string>
     <string name="change_navigation_button">Toggle navigation</string>
+    <string name="zoom_button">Zoom on The Model</string>
 </resources>

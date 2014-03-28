@@ -1,6 +1,5 @@
 #include "OsgMainApp.hpp"
 #include "AuxiliaryViewUpdater.h"
-#include "GeometricVisObject.h"
 #include "TiglViewerBackground.h"
 
 #include <sstream>
@@ -13,9 +12,9 @@
 #include <CCPACSFuselage.h>
 #include <CCPACSFuselageSegment.h>
 #include <CTiglTriangularizer.h>
+#include <map>
 
 #define HOME_POS 80
-
 
 OsgMainApp& OsgMainApp::Instance() {
     static OsgMainApp _instance;
@@ -346,7 +345,19 @@ void OsgMainApp::addObjectFromCPACS(std::string filepath)
 
 void OsgMainApp::removeObjects()
 {
-    root_1->removeChildren(3,root_1->getNumChildren());
+	std::map<std::string,GeometricVisObject*>::iterator soi = selectedObjects.begin();
+	if(selectedObjects.size() == 0){
+		root_1->removeChildren(3,root_1->getNumChildren());
+	}
+	else{
+		for(soi = selectedObjects.begin() ; soi!= selectedObjects.end() ; ++soi){
+
+			root_1->removeChild(soi->second);
+			 osg::notify(osg::ALWAYS)<< soi->first << std::endl;
+		}
+		selectedObjects.clear();
+	}
+
 }
 
 void OsgMainApp::currentCamera()
@@ -380,6 +391,13 @@ void OsgMainApp::currentCamera()
 
         viewSelected = -1;
     }
+    else if(viewSelected == 4) {
+    	osgGA::TrackballManipulator* tm1 = new osgGA::TrackballManipulator();
+    	tm1->setHomePosition(osg::Vec3(-HOME_POS/2, -HOME_POS/2, HOME_POS/2), osg::Vec3(0, 0, 0), osg::Vec3(0, 0, 1));
+    	soleViewer->setCameraManipulator(tm1);
+
+    	viewSelected = -1;
+    }
 }
 
 void OsgMainApp::changeCamera(int view)
@@ -387,10 +405,18 @@ void OsgMainApp::changeCamera(int view)
     viewSelected = view;
 
 }
+
+void OsgMainApp::fitScreen()
+{
+	viewSelected = 4;
+}
+
 void OsgMainApp::mouseButtonPressEvent(float x,float y,int button, int view)
 {
-    soleViewer->getEventQueue()->mouseButtonPress(x,y,button);
-//  if(view == 1)
+
+
+        soleViewer->getEventQueue()->mouseButtonPress(x,y,button);
+//    if(view == 1)
 //  cviewer->getView(0)->getEventQueue()->mouseButtonPress(x, y, button);
 //  if(view == 2)
 //  cviewer->getView(1)->getEventQueue()->mouseButtonPress(x, y, button);
@@ -424,5 +450,99 @@ void OsgMainApp::mouseMoveEvent(float x,float y, int view){
 //  cviewer->getView(2)->getEventQueue()->mouseMotion(x, y);
 //  if(view == 4)
 //  cviewer->getView(3)->getEventQueue()->mouseMotion(x, y);
+
+}
+void OsgMainApp::pickEvent(float x, float y, int density, int view)
+{
+	int horPixels = 50;//0.11811*density;
+	int verPixels = 50;//0.0393701*density;
+	osg::notify(osg::ALWAYS)<<"Action area "<<  density <<" "<< horPixels << " " <<verPixels << std::endl;
+	osg::notify(osg::ALWAYS)<<"Position of Action " << x << " , " << y << std::endl;
+
+	bool rayHit = false;
+
+	osg::ref_ptr< osgUtil::LineSegmentIntersector > picker = new osgUtil::LineSegmentIntersector(osgUtil::Intersector::WINDOW, x, y);
+	osgUtil::IntersectionVisitor iv(picker.get());
+	soleViewer.get()->getCamera()->accept(iv);
+	iv.setTraversalMask( ~0x1 );
+
+	if(picker->containsIntersections()){
+
+	    osgUtil::LineSegmentIntersector::Intersections allIntersections = picker->getIntersections();
+	    osgUtil::LineSegmentIntersector::Intersections::iterator intersectionsIterator = allIntersections.begin();
+	    osg::notify(osg::ALWAYS)<<"Number of Intersections "<< intersectionsIterator->nodePath.size() << std::endl;
+
+	    GeometricVisObject* pickedObject;
+	    std::string nameOfpickedObject;
+
+		for(int i=0 ; i<intersectionsIterator->nodePath.size() ; i++)
+		{
+			osg::notify(osg::ALWAYS)<<"Object \""<< intersectionsIterator->nodePath.back()->getName()<<"\""<<std::endl;
+
+			pickedObject = (GeometricVisObject*) intersectionsIterator->nodePath.at(i);
+			nameOfpickedObject = intersectionsIterator->nodePath.at(i)->getName();
+
+			if(!(intersectionsIterator->nodePath.at(i)->getName().empty()))
+			{
+				if(!pickedObject->isPicked()){
+					pickedObject->pick();
+					selectedObjects.insert(std::pair<std::string, GeometricVisObject*>(nameOfpickedObject, pickedObject));
+					rayHit = true;
+				}
+				else{
+					pickedObject->unpick();
+					selectedObjects.erase(nameOfpickedObject);
+					rayHit = true;
+				}
+
+			}
+
+		}
+	}
+
+
+//	bool intersect = soleViewer.get()->computeIntersections(x,y,intersections);
+//	osgUtil::LineSegmentIntersector::Intersections::iterator hit = intersections.begin();
+//	osg::notify(osg::ALWAYS)<<"Number of Intersections "<< hit->nodePath.size() << std::endl;
+
+//	if(intersect)
+//			{
+//				for(int i=0 ; i<hit->nodePath.size() ; i++)
+//				{
+//					//osg::notify(osg::ALWAYS)<<"Object \""<< hit->nodePath.back()->getName()<<"\""<<std::endl;
+//					if(!(hit->nodePath.at(i)->getName().empty()))
+//					{
+//						//osg::notify(osg::ALWAYS)<<"Object \""<<hit->nodePath.back()->getName()<<"\""<<std::endl;
+//
+//						//GeometricVisObject* intersectedGeode = (GeometricVisObject*) hit->nodePath.at(i);
+//						if(!((GeometricVisObject*) hit->nodePath.at(i))->isPicked())
+//						{
+//							((GeometricVisObject*) hit->nodePath.at(i))->pick();
+//							rayHit = true;
+//							//osg::notify(osg::ALWAYS)<<"Object \""<<hit->nodePath.at(i)->getName()<<"\" is Picked"<<std::endl;
+//						}
+//						else
+//						{
+//							((GeometricVisObject*) hit->nodePath.at(i))->unpick();
+//							rayHit = true;
+//							//osg::notify(osg::ALWAYS)<<"Object \""<<hit->nodePath.at(i)->getName()<<"\" is UnPicked"<<std::endl
+//						}
+//						//rayHit = true;
+//						//delete &intersections;
+//						//delete &hit;
+//						//break;
+//					}
+//				}
+//
+//			}
+//			if(rayHit){
+//				break;
+//			}
+//		}
+//		if(rayHit){
+//			rayHit = false;
+//			break;
+//		}
+//	}
 
 }

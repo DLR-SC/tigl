@@ -72,11 +72,13 @@ int GeometricVisObject::fromShape(TopoDS_Shape& loft, double deflection)
     geometry->setNormalArray(normals);
     geometry->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
 
-    this->addDrawable(geometry.get());
+    osg::Geode* geode = new osg::Geode;
+    geode->addDrawable(geometry.get());
+    this->addChild(geode);
 
     this->getOrCreateStateSet()->setAttribute(MaterialTemplate::getMaterial(UNSELECTED));
 
-    //this->setPicked(false);
+    this->setPicked(false);
 
     return 0;
 }
@@ -119,13 +121,18 @@ int GeometricVisObject::readHotsoseMesh(const char* filename)
     geometry->addPrimitiveSet(array);
     geometry->setVertexArray(vertices);
 
-    this->addDrawable(geometry.get());
+    osg::Geode* geode = new osg::Geode;
+    geode->addDrawable(geometry.get());
 
     osgUtil::SmoothingVisitor sv;
     sv.setCreaseAngle(osg::DegreesToRadians(80.0f));
-    this->accept(sv);
-    this->setCullingActive(false);
-    this->getOrCreateStateSet()->setMode( GL_CULL_FACE, osg::StateAttribute::OFF );
+    geode->accept(sv);
+
+    geode->setCullingActive(false);
+    geode->getOrCreateStateSet()->setMode( GL_CULL_FACE, osg::StateAttribute::OFF );
+
+    this->addChild(geode);
+    this->setPicked(false);
 
 }
 
@@ -199,23 +206,24 @@ int GeometricVisObject::readVTK(const char* xmlFilename)
     geometry->setVertexArray(vertices);
     geometry->addPrimitiveSet(indices.get());
 
-    this->addDrawable(geometry.get());
-
-    //this->setPicked(false);
-
+    osg::Geode* geode = new osg::Geode;
+    geode->addDrawable(geometry.get());
     osgUtil::SmoothingVisitor sv;
     sv.setCreaseAngle(osg::DegreesToRadians(80.0f));
-    this->accept(sv);
+    geode->accept(sv);
+    this->addChild(geode);
+
+    this->setPicked(false);
 
     return 0;
 }
 
-//void GeometricVisObject::pick(){
-//  this->getOrCreateStateSet()->setAttribute(MaterialTemplate::getMaterial(1));
-//  this->setPicked(true);
-//}
+void GeometricVisObject::pick(){
+  this->getOrCreateStateSet()->setAttribute(MaterialTemplate::getMaterial(SELECTED));
+  this->setPicked(true);
+}
 
-//void GeometricVisObject::unpick(){
-//  this->getOrCreateStateSet()->setAttribute(MaterialTemplate::getMaterial(0));
-//  this->setPicked(false);
-//}
+void GeometricVisObject::unpick(){
+  this->getOrCreateStateSet()->setAttribute(MaterialTemplate::getMaterial(UNSELECTED));
+  this->setPicked(false);
+}

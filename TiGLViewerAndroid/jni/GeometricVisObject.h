@@ -12,8 +12,8 @@ public:
     GeometricVisObject();
 
     ~GeometricVisObject(void);
-    //void pick();
-    //void unpick();
+    void pick();
+    void unpick();
 
     int readVTK(const char* filename);
     int readHotsoseMesh(const char* filename);
@@ -21,8 +21,8 @@ public:
 
     int getId(){return id;};
     bool isPickable(){return false;};
-    //bool isPicked(){return this->picked;};
-    //void setPicked(bool v){this->picked = v;};
+    bool isPicked(){return this->picked;};
+    void setPicked(bool v){this->picked = v;};
 
 private:
     int id;

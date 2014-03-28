@@ -16,13 +16,36 @@
 
 package de.dlr.sc.tiglviewer.android;
 
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
+import org.apache.http.util.ByteArrayBuffer;
+import org.w3c.dom.Notation;
+
+import de.dlr.sc.tiglviewer.android.NoticeFragment.noticeFragmentsListener;
+
+import android.R.string;
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.DialogFragment;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.res.Configuration;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.opengl.GLSurfaceView;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -32,11 +55,14 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBar.OnNavigationListener;
 import android.support.v7.app.ActionBarActivity;
 import android.text.util.Linkify;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -46,7 +72,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class TiglViewerActivity extends ActionBarActivity implements OnNavigationListener {
+@SuppressLint("ValidFragment")
+public class TiglViewerActivity extends ActionBarActivity implements OnNavigationListener,noticeFragmentsListener {
 	enum navType { 
 		MOVE, 
 		ROTATE 
@@ -56,6 +83,7 @@ public class TiglViewerActivity extends ActionBarActivity implements OnNavigatio
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
     private EGLTouchListener mTouchListener;
+    public boolean downloadingOrNot = false;
 
     private CharSequence mDrawerTitle;
     private CharSequence mTitle;
@@ -65,10 +93,13 @@ public class TiglViewerActivity extends ActionBarActivity implements OnNavigatio
     private ArrayList<String> fileList;
 	private GLSurfaceView openGlSurface;
 	private Handler handler = new Handler();
-
+	ArrayList<Item> drawerItems = new ArrayList<Item>();
+	Context context;
+	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        context = this;
         //TiGLViewerNativeLib.setAssetMgr(getAssets());
         
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, 
@@ -78,6 +109,9 @@ public class TiglViewerActivity extends ActionBarActivity implements OnNavigatio
         supportRequestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setContentView(R.layout.activity_main);
         setSupportProgressBarIndeterminateVisibility(false);
+        
+        DisplayMetrics metrics = new DisplayMetrics();    
+        getWindowManager().getDefaultDisplay().getMetrics(metrics);
 
         mTitle = mDrawerTitle = getTitle();
 
@@ -86,10 +120,28 @@ public class TiglViewerActivity extends ActionBarActivity implements OnNavigatio
 
         // set a custom shadow that overlays the main content when the drawer opens
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, Gravity.RIGHT);
-        // set up the drawer's list view with items and click listener
-        this.addCPACSFilesToDrawer();
-        mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
+        
+        drawerItems.add(new ParentItem("Open Files"));
+        drawerItems.add(new ParentItem("Other Actions"));
+        drawerItems.add(new ChildItem("Download Models","downloadmodels"));
+        drawerItems.add(new ChildItem("Export File","exportfile"));
 
+        
+        mDrawerList.setAdapter(new ModelAdapter(this, drawerItems));
+
+        
+        mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
+        
+        File list[] = checkDirectory("Tiglviewer");
+        if(list == null)
+        {
+            showDownloadPrompt();
+        }
+        else
+        {
+            addCPACSFilesToDrawer();    
+        }
+        
         // enable ActionBar app icon to behave as action to toggle nav drawer
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
@@ -130,7 +182,7 @@ public class TiglViewerActivity extends ActionBarActivity implements OnNavigatio
         mDrawerLayout.setDrawerListener(mDrawerToggle);
         
         openGlSurface = (GLSurfaceView) findViewById(R.id.surfaceGLES1);
-        mTouchListener = new EGLTouchListener();
+        mTouchListener = new EGLTouchListener(metrics.densityDpi);
         openGlSurface.setOnTouchListener(mTouchListener);
         setSupportProgressBarIndeterminate(true);
         
@@ -203,6 +255,9 @@ public class TiglViewerActivity extends ActionBarActivity implements OnNavigatio
         		break;
         	}
         	return true;
+        case R.id.action_zoom:
+            TiGLViewerNativeLib.fitScreen();
+            return true;
         default:
             return super.onOptionsItemSelected(item);
         }
@@ -238,11 +293,12 @@ public class TiglViewerActivity extends ActionBarActivity implements OnNavigatio
         mDrawerList.setItemChecked(position, true);    
         mDrawerLayout.closeDrawer(mDrawerList);
 		
-		if(fileList == null || fileList.size() <= position) {
+		if(drawerItems == null || drawerItems
+		        .size() <= position) {
 			return;
 		}
-		final String file = fileList.get(position);		
-		final String filename = Environment.getExternalStorageDirectory().getPath() + "/Tiglviewer/" + file;
+		final Item selected = drawerItems.get(position);		
+		final String filename = Environment.getExternalStorageDirectory().getPath() + "/Tiglviewer/" + selected.getName();
 		setSupportProgressBarIndeterminateVisibility(true);
 		Thread thread = new Thread() {
 			public void run() {				
@@ -254,7 +310,7 @@ public class TiglViewerActivity extends ActionBarActivity implements OnNavigatio
 					public void run() {
 						setSupportProgressBarIndeterminateVisibility(false);
 						Toast.makeText(getBaseContext(), 
-								"File : " + file + " has been Loaded",
+								"File : " + selected.getName() + " has been Loaded",
 								Toast.LENGTH_SHORT).show();
 
 					}
@@ -298,32 +354,87 @@ public class TiglViewerActivity extends ActionBarActivity implements OnNavigatio
 		
 		return true;
 	}
-	
-	public void addCPACSFilesToDrawer() {
-	    fileList = new ArrayList<String>();   
-	    
-	    File file = new File(Environment.getExternalStorageDirectory(), "Tiglviewer");
-	    if (!file.exists()) {
-	    	Log.d("TiGL Viewer", "Application directory does not exist, creating directory Tiglviewer");
-	        file.mkdirs();
-	    }
 
-	    File list[] = file.listFiles();
+
+    /**
+     * Checks if the a give directory of the device is existing
+     * or not and if it is existring, is it empty or not?
+     * and if not it returns a list with the files in the folder
+     */
+    public File[] checkDirectory(String folderName)
+    {
+        File file = new File(Environment.getExternalStorageDirectory(), folderName);
+        
+        if (!file.exists()) 
+        {
+            return null;
+        }
+        fileList = new ArrayList<String>();   
+        File list[] = file.listFiles();
+        if(list.length == 0)
+        {
+            return null;
+        }
+        return list;
+    }
+    
+    /** 
+     * Add the sample models to the list in the 
+     * navigation drawer
+     */
+	public void addCPACSFilesToDrawer() {
+	    
+	    File list[] = checkDirectory("Tiglviewer");
+	    boolean itemExists = false;
+	    
 	    if(list != null) {		    
 		    for ( int i=0; i< list.length; i++) {
-		       fileList.add( list[i].getName() );
+		        itemExists = false;
+		       for(int j=0; j<drawerItems.size();j++)
+		       {
+		           if(drawerItems.get(j).isParentSection() == 1){
+		               continue;
+		           }
+		           else{
+		               if(list[i].getName().equals(drawerItems.get(j).getName()))
+		               {
+		                   itemExists = true;
+		                   break;
+		               }
+		           }
+		       }
+		       if(!itemExists){
+		       drawerItems.add(i+1,new ChildItem(list[i].getName() , "-"));
+		       }
 		    }
 	    }
-
-        mDrawerList.setAdapter(new ArrayAdapter<String>(this,
-                R.layout.drawer_list_item, fileList));
-	        
+	    
+        mDrawerList.setAdapter(new ModelAdapter(this, drawerItems));
 	}
 	
+	
+	/**
+	 * Checks If the device is connected to the internet 
+	 * with the correct parameters or not
+	 */
+	public boolean isConnectedToInternet(){
+	    ConnectivityManager connectivity = (ConnectivityManager)getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+	      if (connectivity != null) 
+	      {
+	          NetworkInfo[] info = connectivity.getAllNetworkInfo();
+	          if (info != null) 
+	              for (int i = 0; i < info.length; i++) 
+	                  if (info[i].getState() == NetworkInfo.State.CONNECTED)
+	                  {
+	                      return true;
+	                  }
+
+	      }
+	      return false;
+	}
 	@Override
 	protected void onRestart() {
 		addCPACSFilesToDrawer();
-		
 		super.onRestart();
 	}
 	
@@ -350,7 +461,130 @@ public class TiglViewerActivity extends ActionBarActivity implements OnNavigatio
 			tv.setText("v" + TiGLViewerNativeLib.tiglGetVersion());
 		}
 	}
+	
+	
+	/** BackGround thread to download the sample 
+	 * models on the create of the viewer activity
+	 */
+	public class DownloadFilesThread extends AsyncTask<URL, Integer, Long>
 
+	{
 
+	    @Override
+	    protected void onPreExecute(){
+	        setSupportProgressBarIndeterminateVisibility(true);
+	    }
+		@Override
+		protected Long doInBackground(URL... urls) {
+			try 
+			{
+			    
+			    File file = new File(Environment.getExternalStorageDirectory(), "Tiglviewer");
+			    
+			    if (!file.exists()) 
+			    {
+			    	Log.d("TiGL Viewer", "Application directory does not exist, creating directory Tiglviewer");
+			        file.mkdirs();
+			    }
+			    
+				HttpURLConnection  c = (HttpURLConnection) urls[0].openConnection();
+				InputStream inStream = c.getInputStream();
+				
+				Log.d("Downloading Files","Connection is opened, downloading Started");
+
+				
+				BufferedInputStream biStream = new BufferedInputStream(inStream);
+				ByteArrayBuffer bB = new ByteArrayBuffer(70);
+				
+				int rest = 0;
+				while((rest = biStream.read()) != -1)
+				{
+					bB.append((byte) rest);
+				}
+				
+				String localpath = Environment.getExternalStorageDirectory().getPath() + "/Tiglviewer/models.zip";
+				FileOutputStream outStream = new FileOutputStream(new File(localpath));
+				outStream.write(bB.toByteArray());
+				outStream.close();
+				
+				Log.d("Downloading Files","Stream is closed, downloading Ended");
+				
+				File zippedModeled = new File(localpath);
+				FileInputStream fin = new FileInputStream(zippedModeled);
+				ZipInputStream zin = new ZipInputStream(fin);
+				ZipEntry ze = null;
+				while((ze = zin.getNextEntry()) != null)
+				{
+					FileOutputStream fout = new FileOutputStream(new File(Environment.getExternalStorageDirectory().getPath() + "/Tiglviewer/" + ze.getName()));
+					byte[] bf = new byte[8192];
+					int len;
+					while((len = zin.read(bf)) != -1)
+					{
+						fout.write(bf,0,len);
+					}
+					fout.close();
+					zin.closeEntry();
+				}
+				
+				zin.close();
+				zippedModeled.delete();
+				
+			} 
+			catch(IOException e){
+				  
+				Log.d("Downloading files","IO EXception" +  e.getMessage());
+			}
+			return null;
+		}
+	@Override	
+	protected void onPostExecute(Long result)
+	{
+        addCPACSFilesToDrawer();
+        setSupportProgressBarIndeterminateVisibility(false);
+        Toast.makeText(getBaseContext(), 
+                "Sample Models have been downloaded",
+                Toast.LENGTH_SHORT).show();
+	}
+			
+	}
+    
+	
+	/**Function to call to show the download Fragment that asks the user if he/she wants to 
+	*download sample files or not
+	*/
+    public void showDownloadPrompt()
+    {
+        NoticeFragment dialog = new NoticeFragment();
+        dialog.show(getFragmentManager(), "downloadFragment");
+    }
+    
+    
+    
+    /**HandlerFunctions to run whenever the user chooses whether to download the sample files
+    *or not.
+    */
+    @Override
+    public void onYesClick(DialogFragment dialog) {
+        URL downloadingLink = null;
+        try {
+            downloadingLink = new URL("http://sourceforge.net/projects/tigl/files/DevTools/TiGL-SampleModels.zip");
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        if(isConnectedToInternet())
+        {
+        new DownloadFilesThread().execute(downloadingLink);
+        }
+        else
+        {
+            Toast.makeText(getBaseContext(), 
+                    "No internet connection. Check internet settings and try again.",
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
+    @Override
+    public void onNoClick(DialogFragment dialog) {
+        addCPACSFilesToDrawer();
+    }
 }
 

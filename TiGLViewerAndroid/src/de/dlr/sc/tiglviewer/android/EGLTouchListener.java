@@ -2,7 +2,10 @@ package de.dlr.sc.tiglviewer.android;
 
 
 import android.graphics.PointF;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.GestureDetector;
+import android.view.GestureDetector.OnGestureListener;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
@@ -15,11 +18,18 @@ public class EGLTouchListener implements OnTouchListener {
 	
     private moveTypes mode = moveTypes.NONE;
 	private navType navMode = navType.ROTATE;
+	private boolean moveOrpick = false;
 	
 	PointF oneFingerOrigin = new PointF(0,0);
 	PointF twoFingerOrigin = new PointF(0,0);
 	float distanceOrigin = 0.f;
-
+	
+	  
+	int screenDensity; 
+	public EGLTouchListener(int screenDensity)
+	{
+	    this.screenDensity = screenDensity;
+	}
 	public void setNavMode(TiglViewerActivity.navType type) {
 		navMode = type;
 	}
@@ -27,10 +37,10 @@ public class EGLTouchListener implements OnTouchListener {
 	@Override
 	public boolean onTouch(View arg0, MotionEvent event) {
 		int n_points = event.getPointerCount();
-		int action = event.getAction() & MotionEvent.ACTION_MASK;	
-		
+		int action = event.getAction() & MotionEvent.ACTION_MASK;
 		switch (n_points) {
 		case 2:
+		    moveOrpick = true;
 			switch (action) {
 			case MotionEvent.ACTION_POINTER_DOWN:
 				switch (mode) {
@@ -131,6 +141,7 @@ public class EGLTouchListener implements OnTouchListener {
 				break;
 
 			case MotionEvent.ACTION_MOVE:
+			    moveOrpick=true;
 				TiGLViewerNativeLib.mouseMoveEvent(event.getX(0),
 						event.getY(0), 1);
 
@@ -140,7 +151,13 @@ public class EGLTouchListener implements OnTouchListener {
 				break;
 
 			case MotionEvent.ACTION_UP:
-				switch (mode) {
+			    if(!moveOrpick){
+			    TiGLViewerNativeLib.pickEvent(event.getX(0), event.getY(0), screenDensity, 1);
+			    }
+			    else{
+			        moveOrpick = false;
+			    }
+			    switch (mode) {
 				case DRAG:
 					if (navMode == navType.ROTATE)
 						TiGLViewerNativeLib.mouseButtonReleaseEvent(

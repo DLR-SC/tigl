@@ -62,6 +62,7 @@
 #include "OsgAndroidNotifyHandler.hpp"
 #include "VirtualVisObject.hpp"
 #include "TiglViewerHUD.h"
+#include "GeometricVisObject.h"
 
 
 USE_OSGPLUGIN(osg)
@@ -75,6 +76,7 @@ USE_DOTOSGWRAPPER_LIBRARY(osgViewer)
 #define  LOG_TAG    "osgNativeLib"
 #define  LOGI(...)  __android_log_print(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
 #define  LOGE(...)  __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,__VA_ARGS__)
+typedef osgUtil::LineSegmentIntersector::Intersection Intersection;
 
 struct Model{
     std::string filename;
@@ -107,9 +109,12 @@ public:
     void addObjectFromCPACS(std::string filepath);
     void removeObjects();
     void changeCamera(int view);
+    void fitScreen();
     void mouseButtonPressEvent(float x,float y,int button , int view);
+    void pickEvent(float x, float y, int density, int view);
     void mouseButtonReleaseEvent(float x,float y,int button , int view);
     void mouseMoveEvent(float x,float y, int view);
+    osg::Vec3d windowToWord(osg::Vec3d windowPosition);
 
 private:
 	/*
@@ -129,6 +134,7 @@ private:
 	osg::ref_ptr<VirtualVisObject> _coordinateGrid;
 	osg::ref_ptr<osg::StateSet> _state;
 	osg::ref_ptr<osgGA::TrackballManipulator> tm;
+	std::map<std::string, GeometricVisObject*> selectedObjects;
 
     float _lodScale;
     unsigned int _prevFrame;
