@@ -24,7 +24,7 @@
 #include <sstream>
 #include <exception>
 
-#include "CCPACSOuterShape.h"
+#include "CCPACSControlSurfaceOuterShape.h"
 
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <Poly_Triangulation.hxx>

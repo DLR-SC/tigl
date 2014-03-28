@@ -28,7 +28,7 @@
 
 #include "tixi.h"
 #include "CTiglError.h"
-#include "CCPACSTrailingEdgeDeviceBorder.h"
+#include "CCPACSControlSurfaceBorder.h"
 
 
 #include "TopoDS_Face.hxx"

@@ -29,7 +29,7 @@
 #include "tixi.h"
 #include "CTiglAbstractPhysicalComponent.h"
 #include "CTiglError.h"
-#include "CCPACSOuterShape.h"
+#include "CCPACSControlSurfaceOuterShape.h"
 #include "CCPACSTrailingEdgeDevicePath.h"
 #include "CTiglControlSurfaceTransformation.h"
 

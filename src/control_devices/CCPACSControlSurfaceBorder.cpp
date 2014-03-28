@@ -20,7 +20,7 @@
  * @brief  Implementation of CPACS ...  handling routines.
  */
 
-#include "CCPACSTrailingEdgeDeviceBorder.h"
+#include "CCPACSControlSurfaceBorder.h"
 
 namespace tigl
 {
