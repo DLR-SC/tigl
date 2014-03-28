@@ -64,6 +64,9 @@ public:
     // Returns the CPACS configuration
     tigl::CCPACSConfiguration& GetConfiguration(void) const;
 
+    void drawWingFlapsForInteractiveUse(std::string selectedWing);
+    void updateControlSurfacesInteractiveObjects(std::string selectedWing, std::map<std::string,double> flapStatus);
+
 signals:
     void documentUpdated(TiglCPACSConfigurationHandle);
 

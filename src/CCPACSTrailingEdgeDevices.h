@@ -32,8 +32,11 @@
 #include "tixi.h"
 #include "CTiglError.h"
 #include "CCPACSTrailingEdgeDevice.h"
+#include "CSharedPtr.h"
 
 namespace tigl {
+
+class CCPACSWingComponentSegment;
 
 class CCPACSTrailingEdgeDevices
 {
@@ -42,12 +45,13 @@ private:
 
     typedef std::vector<CCPACSTrailingEdgeDevice*> trailingEdgeDeviceContainer;
     trailingEdgeDeviceContainer trailingEdgeDevices;
+    CCPACSWingComponentSegment* _componentSegment;
 
     void Cleanup();
 
 public:
 
-    CCPACSTrailingEdgeDevices();
+    CCPACSTrailingEdgeDevices(CCPACSWingComponentSegment*);
 
     void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string & trailingEdgeDevicesXPath);
 
@@ -56,6 +60,8 @@ public:
 
     ~CCPACSTrailingEdgeDevices();
 };
+
+typedef CSharedPtr<CCPACSTrailingEdgeDevices> CCPACSTrailingEdgeDevicesPtr;
 
 } // end namespace tigl
 

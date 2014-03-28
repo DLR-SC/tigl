@@ -1,10 +1,7 @@
 /*
  * Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
  *
- * Created: 2010-08-13 Markus Litz <Markus.Litz@dlr.de>
- * Changed: $Id$
- *
- * Version: $Revision$
+ * Created: 2014-01-28 Mark Geiger <Mark.Geiger@dlr.de>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,11 +27,13 @@
 
 #include "CCPACSTrailingEdgeDevices.h"
 #include "CCPACSTrailingEdgeDevice.h"
+#include "CCPACSWingComponentSegment.h"
 
 namespace tigl
 {
 
-CCPACSTrailingEdgeDevices::CCPACSTrailingEdgeDevices()
+CCPACSTrailingEdgeDevices::CCPACSTrailingEdgeDevices(CCPACSWingComponentSegment* cs)
+    : _componentSegment(cs)
 {
 }
 
@@ -73,7 +72,7 @@ void CCPACSTrailingEdgeDevices::ReadCPACS(TixiDocumentHandle tixiHandle,
     for (int i = 1; i <= trailingEdgeDeviceCount; i++) {
 
         CCPACSTrailingEdgeDevice* trailingEdgeDevice =
-                new CCPACSTrailingEdgeDevice();
+                new CCPACSTrailingEdgeDevice(_componentSegment);
         trailingEdgeDevices.push_back(trailingEdgeDevice);
         tempString = trailingEdgeDevicesXPath
                 + "/trailingEdgeDevices/trailingEdgeDevice[";

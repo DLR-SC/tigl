@@ -1,10 +1,7 @@
 /*
  * Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
  *
- * Created: 2010-08-13 Markus Litz <Markus.Litz@dlr.de>
- * Changed: $Id$
- *
- * Version: $Revision$
+ * Created: 2014-01-28 Mark Geiger <Mark.Geiger@dlr.de>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,13 +27,17 @@
 #include <vector>
 
 #include "tixi.h"
+#include "CTiglAbstractPhysicalComponent.h"
 #include "CTiglError.h"
 #include "CCPACSOuterShape.h"
 #include "CCPACSTrailingEdgeDevicePath.h"
+#include "CTiglControlSurfaceTransformation.h"
 
 namespace tigl {
 
-class CCPACSTrailingEdgeDevice
+class CCPACSWingComponentSegment;
+
+class CCPACSTrailingEdgeDevice : public CTiglAbstractPhysicalComponent
 {
 
 private:
@@ -54,14 +55,35 @@ private:
 
     CCPACSTrailingEdgeDevicePath path;
     CCPACSOuterShape outerShape;
+    std::string uID;
+    TopoDS_Shape loft;
+    CCPACSWingComponentSegment* _segment;
+
+    gp_Pnt s1;
+    gp_Pnt s2;
+    gp_Pnt s1s;
+    gp_Pnt s2s;
+
 
 public:
-    CCPACSTrailingEdgeDevice();
-
+    CCPACSTrailingEdgeDevice(CCPACSWingComponentSegment* segment);
     void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string & trailingEdgeDeviceXPath);
-
+    std::string getUID();
     CCPACSOuterShape getOuterShape();
-    CCPACSTrailingEdgeDevicePath getMovementPath();
+    CCPACSTrailingEdgeDevicePath getMovementPath();        // Returns the Component Type TIGL_COMPONENT_WING.
+    TiglGeometricComponentType GetComponentType(void) {return TIGL_COMPONENT_CONTROLSURF | TIGL_COMPONENT_PHYSICAL;}
+    TopoDS_Shape getCutOutShape(void);
+    void setLoft(TopoDS_Shape loft);
+    TopoDS_Face getFace();
+    gp_Trsf getTransformation(double flapStatusInPercent);
+
+protected:
+    TopoDS_Shape BuildLoft();
+
+private:
+    double linearInterpolation(std::vector<double> list1, std::vector<double> list2, double valueRelList1);
+    CCPACSTrailingEdgeDevice(const CCPACSTrailingEdgeDevice& segment); /* disable copy constructor */
+
 };
 
 } // end namespace tigl

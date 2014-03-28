@@ -89,6 +89,12 @@ namespace tigl {
         // Get segment count
         int GetComponentSegmentCount(void);
 
+        // Extends given flap of this wing
+        TopoDS_Shape ExtendFlap(std::string flapUID, double flapDeflectionPercantage );
+
+        // Adds all Segments of this wing and flaps to one shape
+        TopoDS_Shape BuildFusedSegmentsWithFlaps(bool splitWingInUpperAndLower, std::map<std::string,double> flapStatus);
+
 #ifdef TIGL_USE_XCAF
         // builds data structure for a TDocStd_Application
         // mostly used for export
@@ -116,6 +122,8 @@ namespace tigl {
 
         TopoDS_Shape & GetUpperShape();
         TopoDS_Shape & GetLowerShape();
+
+        TopoDS_Shape & GetWingWithoutFlaps();
 
         // Gets the volume of this wing
         double GetVolume(void);
@@ -185,6 +193,7 @@ namespace tigl {
 
         // Assignment operator
         void operator=(const CCPACSWing & );
+        double linearInterpolation(std::vector<double> list1, std::vector<double> list2, double valueRelList1);
 
     private:
         std::string                    name;                     /**< Wing name           */
@@ -196,6 +205,8 @@ namespace tigl {
         TopoDS_Shape                   fusedSegmentWithEdge;     /**< All Segments in one shape plus modelled leading edge */
         TopoDS_Shape                   upperShape;
         TopoDS_Shape                   lowerShape;
+        TopoDS_Shape                   wingCutOutShape;          /**< Wing without flaps / flaps removed */
+        TopoDS_Shape                   wingCleanShape;           /**< Clean wing surface without flaps cutout*/
         bool                           invalidated;              /**< Internal state flag */
         bool                           rebuildFusedSegments;     /**< Indicates if segmentation fusing need rebuild */
         bool                           rebuildFusedSegWEdge;     /**< Indicates if segmentation fusing need rebuild */

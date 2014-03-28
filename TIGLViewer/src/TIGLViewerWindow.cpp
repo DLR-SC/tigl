@@ -678,6 +678,7 @@ void TIGLViewerWindow::connectSignals()
     connect(drawWingComponentSegmentAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingComponentSegment()));
     connect(drawWingCSPointAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingComponentSegmentPoints()));
     connect(drawWingShellAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingShells()));
+    connect(drawWingFlapsAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingFlaps()));
 
 
     // CPACS Aircraft Actions

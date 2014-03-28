@@ -53,7 +53,8 @@
 #include <BRepAlgo_Common.hxx>
 #include <BRepBuilderAPI_Transform.hxx>
 #include <BRepPrimAPI_MakePrism.hxx>
-#include <gce_MakeRotation.hxx>
+#include <BRepAlgoAPI_Common.hxx>
+#include <BRepAlgoAPI_Cut.hxx>
 
 // TIGLViewer includes
 #include "TIGLViewerInternal.h"
@@ -70,7 +71,7 @@
 #include "CTiglExportVtk.h"
 #include "CCPACSWingProfilePointList.h"
 #include "CTiglPoint.h"
-#include "CCPACSBorder.h"
+#include "CCPACSTrailingEdgeDeviceBorder.h"
 #include "CCPACSControlSurfaces.h"
 #include "CCPACSTrailingEdgeDevice.h"
 #include "CCPACSWingComponentSegment.h"
@@ -684,138 +685,81 @@ void TIGLViewerDocument::drawWing()
 
 void TIGLViewerDocument::drawWingFlaps()
 {
-
-/*
     QStringList wings;
-    bool ok;
-    // Initialize wing list
     tigl::CCPACSConfiguration& config = GetConfiguration();
-    int wingCount = config.GetWingCount();
-    for (int i = 1; i <= wingCount; i++)
+    for (int i = 1; i <= config.GetWingCount(); i++)
     {
         tigl::CCPACSWing& wing = config.GetWing(i);
         std::string name = wing.GetUID();
-        if (name == "") name = "Unknown wing";
+        if (name == "") {
+            name = "Unknown Wing";
+        }
         wings << name.c_str();
     }
-    QString choice = QInputDialog::getItem(parent, tr("Select Wing"), tr("Available Wings:"), wings, 0, false, &ok);
-    if (!ok) {
+
+    TIGLViewerSelectWingAndFlapStatusDialog dialog(0,m_cpacsHandle, this);
+    int dialogValue = dialog.exec(wings);
+    if (dialogValue == 0 || dialog.getSelectedWing() == "" ) {
+        myAISContext->EraseAll();
         return;
     }
-*/
-
-    TIGLViewerSelectWingAndFlapStatusDialog dialog(0);
-    dialog.exec();
-
+    // Draw fused Shape
     myAISContext->EraseAll();
-    for ( int i = GetConfiguration().GetWingCount(); i > 0; i-- ) {
-        tigl::CCPACSWing& wing = GetConfiguration().GetWing(i);
-        TopoDS_Shape wingShape = GetConfiguration().GetWing(i).GetLoft();
-        for ( int j = GetConfiguration().GetWing(i).GetWingComponentSegmentCount(); j > 0; j-- ) {
-            TopoDS_Shape allFlapsPerWing;
-            tigl::CCPACSWingComponentSegment* componentSegment = &GetConfiguration().GetWing(i).GetWingComponentSegment(j);
-            tigl::CCPACSControlSurfaces controlSurfaces = GetConfiguration().GetWing(i).GetWingComponentSegment(j).getControlSurfaces();
-            for ( int k = controlSurfaces.getTrailingEdgeDevices()->getTrailingEdgeDeviceCount(); k > 0; k-- ) {
-                tigl::CCPACSTrailingEdgeDevice trailingEdgeDevice = controlSurfaces.getTrailingEdgeDevices()->getTrailingEdgeDeviceByID(k);
-                tigl::CCPACSBorder outerBorder = trailingEdgeDevice.getOuterShape().getOuterBorder();
+    tigl::CCPACSWing& wing = GetConfiguration().GetWing( dialog.getSelectedWing() );
+    TopoDS_Shape wingShape = wing.BuildFusedSegmentsWithFlaps(false, dialog.getTrailingEdgeStatus());
+    displayShape(wingShape);
+}
 
-                gp_Pnt point1 = componentSegment->GetPoint(outerBorder.getEtaLE(),outerBorder.getXsiLE());
-                gp_Pnt point2 = componentSegment->GetPoint(outerBorder.getEtaTE(),1.0f);
 
-                tigl::CCPACSBorder innerBorder = trailingEdgeDevice.getOuterShape().getInnerBorder();
+void TIGLViewerDocument::drawWingFlapsForInteractiveUse(std::string selectedWing)
+{
+    myAISContext->EraseAll();
+    tigl::CCPACSWing& wing = GetConfiguration().GetWing( selectedWing );
+    TopoDS_Shape wingWithoutFlaps = wing.GetWingWithoutFlaps();
+    displayShape(wingWithoutFlaps);
 
-                gp_Pnt point3 = componentSegment->GetPoint(innerBorder.getEtaLE(),innerBorder.getXsiLE());
-                gp_Pnt point4 = componentSegment->GetPoint(innerBorder.getEtaTE(),1.0f);
+    for ( int i = 1; i <= wing.GetComponentSegmentCount(); i++ ) {
 
-                TopoDS_Face face = componentSegment->getControlSurfaceTrailingEdgeOuterShapeFace(k);
+       tigl::CCPACSWingComponentSegment &componentSegment = wing.GetWingComponentSegment(i);
+       tigl::CCPACSTrailingEdgeDevices* trailingEdgeDevices = componentSegment.getControlSurfaces().getTrailingEdgeDevices();
 
-                double yTrans = 0;
-                double zTrans = 1;
-                if ( std::abs(point1.Y() - point2.Y()) < 0.001 &&
-                     std::abs(point2.Y() - point3.Y()) < 0.001 &&
-                     std::abs(point3.Y() - point4.Y()) < 0.001 &&
-                     std::abs(point4.Y() - point1.Y()) < 0.001 ) {
-                    zTrans = 0;
-                    yTrans = 1;
-                }
+       for ( int j = 1; j <= trailingEdgeDevices->getTrailingEdgeDeviceCount(); j++ ) {
+            tigl::CCPACSTrailingEdgeDevice &trailingEdgeDevice = trailingEdgeDevices->getTrailingEdgeDeviceByID(j);
+            displayShape(trailingEdgeDevice.GetLoft());
+       }
+    }
+    std::map<std::string,double> flapStatus;
+    updateControlSurfacesInteractiveObjects(selectedWing,flapStatus);
+}
 
-                gp_Pnt hingePoint1;
-                gp_Pnt hingePoint2;
+void TIGLViewerDocument::updateControlSurfacesInteractiveObjects(std::string selectedWing, std::map<std::string,double> flapStatus)
+{
+    tigl::CCPACSWing& wing = GetConfiguration().GetWing( selectedWing );
+    AIS_ListOfInteractive objList;
+    myAISContext->DisplayedObjects(objList);
+    AIS_ListIteratorOfListOfInteractive iter;
+    for(iter.Initialize(objList); iter.More(); iter.Next())
+    {
+        Handle_AIS_InteractiveObject &aisShp = iter.Value();
+        if(aisShp->IsKind("AIS_Shape"))
+        {
+            TopoDS_Shape myShape = Handle(AIS_Shape)::DownCast(aisShp)->Shape();
+            for ( int i = 1; i <= wing.GetComponentSegmentCount(); i++ ) {
 
-                for ( int borderCounter = 0; borderCounter < 2; borderCounter++) {
-                    tigl::CCPACSBorder border;
-                    double hingeXsi;
-                    if (borderCounter == 0) {
-                        border = outerBorder;
-                        hingeXsi = trailingEdgeDevice.getMovementPath().getOuterHingePoint().getXsi();
-                    }
-                    else {
-                        border = innerBorder;
-                        hingeXsi = trailingEdgeDevice.getMovementPath().getInnerHingePoint().getXsi();
-                    }
+                tigl::CCPACSWingComponentSegment &componentSegment = wing.GetWingComponentSegment(i);
+                tigl::CCPACSTrailingEdgeDevices* trailingEdgeDevices = componentSegment.getControlSurfaces().getTrailingEdgeDevices();
 
-                    double borderEtaLE = border.getEtaLE();
-                    double borderEtaTE = border.getEtaTE();
-                    double hingeEta = -1;
-
-                    if ( std::abs(borderEtaLE - borderEtaTE) < 0.0001 ) {
-                        hingeEta = (borderEtaTE + borderEtaLE)/2;
-                    }
-                    else {
-                        double m = ( border.getXsiLE() - 1 ) /( borderEtaLE - borderEtaTE );
-                        double x = borderEtaLE;
-                        double y = 1;
-                        double b = - ( ( m * x) / (y));
-                        hingeEta = ( y - b ) / m;
-                    }
-
-                    if (borderCounter == 0) {
-                        hingePoint1 = componentSegment->GetPoint(hingeEta,hingeXsi);
-                    }
-                    else {
-                        hingePoint2 = componentSegment->GetPoint(hingeEta,hingeXsi);
+                for ( int j = 1; j <= trailingEdgeDevices->getTrailingEdgeDeviceCount(); j++ ) {
+                    tigl::CCPACSTrailingEdgeDevice &trailingEdgeDevice = trailingEdgeDevices->getTrailingEdgeDeviceByID(j);
+                    if (myShape.IsEqual(trailingEdgeDevice.GetLoft())) {
+                        gp_Trsf trsf = trailingEdgeDevice.getTransformation(flapStatus[trailingEdgeDevice.getUID()]);
+                        myAISContext->SetLocation(aisShp,trsf);
                     }
                 }
-
-                gp_Dir rv(hingePoint2.X() - hingePoint1.X(), hingePoint2.Y() - hingePoint1.Y(), hingePoint2.Z() - hingePoint1.Z());
-                gp_Lin test(hingePoint1,rv);
-                gp_Trsf trans = gce_MakeRotation(test,-0.4f);
-
-                gp_Vec vec(0,yTrans,zTrans);
-                gp_Vec vec1(0,-yTrans,-zTrans);
-
-                TopoDS_Shape shape = BRepPrimAPI_MakePrism(face,2*vec);
-                gp_Trsf trans2;
-                trans2.SetTranslation(-vec);
-                shape = BRepBuilderAPI_Transform(shape, trans2);
-
-                TopoDS_Shape fusedShape = shape;
-
-                //displayShape(shape);
-
-
-                if (!allFlapsPerWing.IsNull()) {
-                    allFlapsPerWing = BRepAlgo_Fuse(allFlapsPerWing,fusedShape);
-                }
-                else {
-                    allFlapsPerWing = fusedShape;
-                }
-
-                TopoDS_Shape flap = BRepAlgo_Common(wing.GetLoft(),fusedShape);
-                BRepBuilderAPI_Transform form(flap,trans);
-                flap = form.Shape();
-                displayShape(flap);
-
-            }
-            for (int z = 1; z <= wing.GetSegmentCount(); z++) {
-                tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(z);
-                wingShape = segment.GetLoft();
-                wingShape = BRepAlgo_Cut(wingShape,allFlapsPerWing);
-                displayShape(wingShape);
             }
         }
     }
-
+    myAISContext->UpdateCurrentViewer();
 }
 
 

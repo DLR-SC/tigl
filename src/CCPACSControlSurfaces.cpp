@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
  *
  * Created: 2010-08-13 Markus Litz <Markus.Litz@dlr.de>
@@ -32,9 +32,10 @@
 namespace tigl
 {
 
-CCPACSControlSurfaces::CCPACSControlSurfaces()
+CCPACSControlSurfaces::CCPACSControlSurfaces(CCPACSWingComponentSegment* cs)
+    : _componentSegment(cs)
 {
-
+    trailingEdgeDevices = CSharedPtr<CCPACSTrailingEdgeDevices>(new CCPACSTrailingEdgeDevices(cs));
 }
 
 // Read CPACS segment elements
@@ -48,13 +49,13 @@ void CCPACSControlSurfaces::ReadCPACS(TixiDocumentHandle tixiHandle,
     tempString = segmentXPath + "/trailingEdgeDevices";
     elementPath = const_cast<char*>(tempString.c_str());
     if (tixiCheckElement(tixiHandle, elementPath) == SUCCESS) {
-        trailingEdgeDevices.ReadCPACS(tixiHandle, segmentXPath);
+        trailingEdgeDevices->ReadCPACS(tixiHandle, segmentXPath);
     }
 }
 
 CCPACSTrailingEdgeDevices* CCPACSControlSurfaces::getTrailingEdgeDevices()
 {
-    return &trailingEdgeDevices;
+    return trailingEdgeDevices.get();
 }
 
 } // end namespace tigl

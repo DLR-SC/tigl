@@ -1,10 +1,7 @@
 /*
  * Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
  *
- * Created: 2010-08-13 Markus Litz <Markus.Litz@dlr.de>
- * Changed: $Id$
- *
- * Version: $Revision$
+ * Created: 2014-01-28 Mark Geiger <Mark.Geiger@dlr.de>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,16 +20,12 @@
  * @brief  Implementation of CPACS ...  handling routines.
  */
 
-#include <iostream>
-#include <sstream>
-#include <exception>
-
-#include "CCPACSBorder.h"
+#include "CCPACSTrailingEdgeDeviceBorder.h"
 
 namespace tigl
 {
 
-CCPACSBorder::CCPACSBorder()
+CCPACSTrailingEdgeDeviceBorder::CCPACSTrailingEdgeDeviceBorder()
 {
     xsiType = "";
     xsiLE = -1;
@@ -42,7 +35,7 @@ CCPACSBorder::CCPACSBorder()
 }
 
 // Read CPACS Border element
-void CCPACSBorder::ReadCPACS(TixiDocumentHandle tixiHandle,
+void CCPACSTrailingEdgeDeviceBorder::ReadCPACS(TixiDocumentHandle tixiHandle,
         const std::string& BorderXPath)
 {
     char* elementPath;
@@ -69,19 +62,19 @@ void CCPACSBorder::ReadCPACS(TixiDocumentHandle tixiHandle,
 
 }
 
-double CCPACSBorder::getEtaLE()
+double CCPACSTrailingEdgeDeviceBorder::getEtaLE() const
 {
     return etaLE;
 }
-double CCPACSBorder::getEtaTE()
+double CCPACSTrailingEdgeDeviceBorder::getEtaTE() const
 {
     return etaTE;
 }
-double CCPACSBorder::getXsiLE()
+double CCPACSTrailingEdgeDeviceBorder::getXsiLE() const
 {
     return xsiLE;
 }
-double CCPACSBorder::getXsiTE()
+double CCPACSTrailingEdgeDeviceBorder::getXsiTE() const
 {
     return xsiTE;
 }

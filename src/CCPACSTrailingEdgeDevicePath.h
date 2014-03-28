@@ -1,10 +1,7 @@
 /*
  * Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
  *
- * Created: 2010-08-13 Markus Litz <Markus.Litz@dlr.de>
- * Changed: $Id$
- *
- * Version: $Revision$
+ * Created: 2014-01-28 Mark Geiger <Mark.Geiger@dlr.de>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +23,6 @@
 #ifndef CCPACSTrailingEdgeDevicePath_H
 #define CCPACSTrailingEdgeDevicePath_H
 
-#include <string>
 #include <vector>
 
 #include "tixi.h"
@@ -57,6 +53,14 @@ public:
 
     CCPACSTrailingEdgeDevicePathHingePoint getInnerHingePoint();
     CCPACSTrailingEdgeDevicePathHingePoint getOuterHingePoint();
+
+    std::vector<double> getInnerHingeTranslationsX();
+    std::vector<double> getInnerHingeTranslationsY();
+    std::vector<double> getInnerHingeTranslationsZ();
+    std::vector<double> getOuterHingeTranslationsX();
+    std::vector<double> getOuterHingeTranslationsZ();
+    std::vector<double> getRelDeflections();
+    std::vector<double> getHingeLineRotations();
 
 };
 

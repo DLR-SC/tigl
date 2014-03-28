@@ -68,7 +68,6 @@
 #include "GeomFill.hxx"
 #include "Handle_Geom_Curve.hxx"
 #include "BRepAdaptor_Curve.hxx"
-#include "BRepFill_Filling.hxx"
 #include "BRepBuilderAPI_MakePolygon.hxx"
 #include "GeomAPI_ProjectPointOnSurf.hxx"
 
@@ -94,6 +93,7 @@ namespace tigl {
         : CTiglAbstractSegment(aSegmentIndex)
         , wing(aWing)
         , surfacesAreValid(false)
+        , controlSurfaces(new CCPACSControlSurfaces(this))
     {
         Cleanup();
     }
@@ -182,7 +182,7 @@ namespace tigl {
         tempString = segmentXPath + "/controlSurfaces";
         elementPath = const_cast<char*>(tempString.c_str());
         if (tixiCheckElement(tixiHandle,elementPath) == SUCCESS) {
-            controlSurfaces.ReadCPACS(tixiHandle, elementPath);
+            controlSurfaces->ReadCPACS(tixiHandle, elementPath);
         }
 
 
@@ -665,55 +665,72 @@ namespace tigl {
 
     CCPACSControlSurfaces& CCPACSWingComponentSegment::getControlSurfaces()
     {
-        return controlSurfaces;
+        return *controlSurfaces;
     }
 
     TopoDS_Face CCPACSWingComponentSegment::getControlSurfaceTrailingEdgeOuterShapeFace(int trailingEdgeDeviceID)
     {
-        tigl::CCPACSTrailingEdgeDevice trailingEdgeDevice = controlSurfaces.getTrailingEdgeDevices()->getTrailingEdgeDeviceByID(trailingEdgeDeviceID);
-        tigl::CCPACSBorder outerBorder = trailingEdgeDevice.getOuterShape().getOuterBorder();
+        tigl::CCPACSTrailingEdgeDevice& trailingEdgeDevice = controlSurfaces->getTrailingEdgeDevices()->getTrailingEdgeDeviceByID(trailingEdgeDeviceID);
+        const tigl::CCPACSTrailingEdgeDeviceBorder& outerBorder = trailingEdgeDevice.getOuterShape().getOuterBorder();
 
         gp_Pnt point1 = this->GetPoint(outerBorder.getEtaLE(),outerBorder.getXsiLE());
         gp_Pnt point2 = this->GetPoint(outerBorder.getEtaTE(),1.0f);
 
-        tigl::CCPACSBorder innerBorder = trailingEdgeDevice.getOuterShape().getInnerBorder();
+        const tigl::CCPACSTrailingEdgeDeviceBorder& innerBorder = trailingEdgeDevice.getOuterShape().getInnerBorder();
 
         gp_Pnt point3 = this->GetPoint(innerBorder.getEtaLE(),innerBorder.getXsiLE());
         gp_Pnt point4 = this->GetPoint(innerBorder.getEtaTE(),1.0f);
 
+        gp_Pnt projectedPoint1;
+        gp_Pnt projectedPoint2;
+        gp_Pnt projectedPoint3;
+        gp_Pnt projectedPoint4;
 
-        // diese 4 Punkte auf Ebene projezieren.
-        std::ostringstream ostr;
-
-
-        gp_Pnt sv(0,0,-2);
-        gp_Dir nv(0,0,1);
-        Geom_Plane plane(sv,nv);
-
-        GeomAPI_ProjectPointOnSurf projection(point1,&plane);
-
-        for( int i = 1; i <= projection.NbPoints(); i++)
-        {
-            ostr << "blablubb der punkt ist :) : " << projection.Point(i).X() <<" wow ?!"<<endl;
+        double yTrans = 0;
+        double zTrans = 1;
+        if ( std::abs(point1.Y() - point2.Y()) < 0.001 &&
+             std::abs(point2.Y() - point3.Y()) < 0.001 &&
+             std::abs(point3.Y() - point4.Y()) < 0.001 &&
+             std::abs(point4.Y() - point1.Y()) < 0.001 ) {
+            zTrans = 0;
+            yTrans = 1;
         }
 
-        printf(ostr.str().c_str());
+        gp_Pnt sv(0,-yTrans*3,-zTrans*3);
+        gp_Dir nv(0,yTrans,zTrans);
+        Handle(Geom_Plane) plane = new Geom_Plane(sv,nv);
 
-        Handle(Geom_TrimmedCurve) segment1 = GC_MakeSegment(point1,point2);
-        Handle(Geom_TrimmedCurve) segment2 = GC_MakeSegment(point2,point4);
-        Handle(Geom_TrimmedCurve) segment3 = GC_MakeSegment(point3,point4);
-        Handle(Geom_TrimmedCurve) segment4 = GC_MakeSegment(point3,point1);
+
+        GeomAPI_ProjectPointOnSurf projection1(point1,plane);
+        for ( int i = 1; i <= projection1.NbPoints(); i++ ) {
+           projectedPoint1 = projection1.Point(1);
+        }
+        GeomAPI_ProjectPointOnSurf projection2(point2,plane);
+        for ( int i = 1; i <= projection2.NbPoints(); i++ ) {
+            projectedPoint2 = projection2.Point(1);
+        }
+        GeomAPI_ProjectPointOnSurf projection3(point3,plane);
+        for ( int i = 1; i <= projection3.NbPoints(); i++ ) {
+          projectedPoint3 = projection3.Point(1);
+        }
+        GeomAPI_ProjectPointOnSurf projection4(point4,plane);
+        for ( int i = 1; i <= projection4.NbPoints(); i++ ) {
+            projectedPoint4 = projection4.Point(1);
+        }
+
+        Handle(Geom_TrimmedCurve) segment1 = GC_MakeSegment(projectedPoint1,projectedPoint2);
+        Handle(Geom_TrimmedCurve) segment2 = GC_MakeSegment(projectedPoint2,projectedPoint4);
+        Handle(Geom_TrimmedCurve) segment3 = GC_MakeSegment(projectedPoint3,projectedPoint4);
+        Handle(Geom_TrimmedCurve) segment4 = GC_MakeSegment(projectedPoint3,projectedPoint1);
 
         TopoDS_Edge edge1 = BRepBuilderAPI_MakeEdge(segment1);
         TopoDS_Edge edge2 = BRepBuilderAPI_MakeEdge(segment2);
         TopoDS_Edge edge3 = BRepBuilderAPI_MakeEdge(segment3);
         TopoDS_Edge edge4 = BRepBuilderAPI_MakeEdge(segment4);
 
-//        TopoDS_Wire wire = BRepBuilderAPI_MakeWire(edge4,edge3,edge2,edge1);
-//       TopoDS_Face face = BRepBuilderAPI_MakeFace(wire);
+        TopoDS_Wire wire = BRepBuilderAPI_MakeWire(edge4,edge3,edge2,edge1);
+        TopoDS_Face face = BRepBuilderAPI_MakeFace(wire);
 
-        //BRepFill_Filling makeFilling()
-        TopoDS_Face face = BRepFill::Face(edge1, edge3);
         return face;
 
     }

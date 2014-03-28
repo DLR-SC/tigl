@@ -201,6 +201,7 @@ typedef unsigned int TiglGeometricComponentType;
 #define  TIGL_COMPONENT_FUSELSEGMENT    128
 #define  TIGL_COMPONENT_WINGCOMPSEGMENT 256
 #define  TIGL_COMPONENT_WINGSHELL       512
+#define  TIGL_COMPONENT_CONTROLSURF     1024
 
 
 enum TiglStructureType 

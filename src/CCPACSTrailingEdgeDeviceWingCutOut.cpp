@@ -24,45 +24,42 @@
 #include <sstream>
 #include <exception>
 
-#include "CCPACSTrailingEdgeDevicePathHingePoint.h"
+#include "CCPACSTrailingEdgeDeviceWingCutOut.h"
 
 namespace tigl
 {
 
-CCPACSTrailingEdgeDevicePathHingePoint::CCPACSTrailingEdgeDevicePathHingePoint()
+CCPACSTrailingEdgeDeviceWingCutOut::CCPACSTrailingEdgeDeviceWingCutOut()
 {
-    xsi = -1;
-    relHeight = -1;
 }
 
-// Read CPACS TrailingEdgeDevicePathHingePoint element
-void CCPACSTrailingEdgeDevicePathHingePoint::ReadCPACS(TixiDocumentHandle tixiHandle,
-        const std::string& TrailingEdgeDevicePathHingePointXPath)
+// Read CPACS TrailingEdgeDeviceWingCutOut element
+void CCPACSTrailingEdgeDeviceWingCutOut::ReadCPACS(TixiDocumentHandle tixiHandle,
+        const std::string& TrailingEdgeDeviceWingCutOutXPath)
 {
+    /*
     char* elementPath;
     std::string tempString;
 
     // getting subelements
-    tempString = TrailingEdgeDevicePathHingePointXPath + "/hingeXsi";
+    tempString = TrailingEdgeDeviceWingCutOutXPath + "/etaLE";
     elementPath = const_cast<char*>(tempString.c_str());
-    if (tixiGetDoubleElement(tixiHandle, elementPath, &xsi) != SUCCESS) {
-        // couldnt read xsi valu
+    if (tixiGetDoubleElement(tixiHandle, elementPath, &etaLE) != SUCCESS) {
+        // couldnt read etaLE
     }
 
-    tempString = TrailingEdgeDevicePathHingePointXPath + "/hingeRelHeight";
+    tempString = TrailingEdgeDeviceWingCutOutXPath + "/etaTE";
     elementPath = const_cast<char*>(tempString.c_str());
-    if (tixiGetDoubleElement(tixiHandle, elementPath, &relHeight) != SUCCESS) {
-        // couldnt read relHeight
+    if (tixiGetDoubleElement(tixiHandle, elementPath, &etaTE) != SUCCESS) {
+        etaTE = etaLE;
     }
-}
 
-double CCPACSTrailingEdgeDevicePathHingePoint::getRelHeight()
-{
-    return relHeight;
-}
-double CCPACSTrailingEdgeDevicePathHingePoint::getXsi()
-{
-    return xsi;
+    tempString = TrailingEdgeDeviceWingCutOutXPath + "/xsiLE";
+    elementPath = const_cast<char*>(tempString.c_str());
+    if (tixiGetDoubleElement(tixiHandle, elementPath, &xsiLE) != SUCCESS) {
+        // couldnt read xsiLE
+    }
+*/
 }
 
 }

@@ -24,44 +24,25 @@
 #include <sstream>
 #include <exception>
 
-#include "CCPACSTrailingEdgeDeviceSteps.h"
-
+#include "CCPACSTrailingEdgeDeviceWingCutOutProfiles.h"
 
 namespace tigl
 {
 
-CCPACSTrailingEdgeDeviceSteps::CCPACSTrailingEdgeDeviceSteps()
+CCPACSTrailingEdgeDeviceWingCutOutProfiles::CCPACSTrailingEdgeDeviceWingCutOutProfiles()
 {
 }
 
-CCPACSTrailingEdgeDeviceSteps::~CCPACSTrailingEdgeDeviceSteps()
+// Read CPACS TrailingEdgeDeviceWingCutOutProfiles element
+void CCPACSTrailingEdgeDeviceWingCutOutProfiles::ReadCPACS(TixiDocumentHandle tixiHandle,
+        const std::string& TrailingEdgeDeviceWingCutOutProfilesXPath)
 {
-    Cleanup();
-}
-
-void CCPACSTrailingEdgeDeviceSteps::Cleanup()
-{
-    for (std::size_t i = 0; i < trailingEdgeDeviceSteps.size(); i++) {
-        trailingEdgeDeviceSteps.pop_back();
-    }
-
-}
-
-// Read CPACS TrailingEdgeDeviceSteps element
-void CCPACSTrailingEdgeDeviceSteps::ReadCPACS(TixiDocumentHandle tixiHandle,
-        const std::string& TrailingEdgeDeviceStepsXPath)
-{
-    Cleanup();
-    ReturnCode tixiRet;
-    int trailingEdgeDeviceStepCount;
-    std::string tempString;
-    char* elementPath;
-
-    /* Get trailingEdgeDevice element count */
+    /*
+     *
     tempString = TrailingEdgeDeviceStepsXPath;
     elementPath = const_cast<char*>(tempString.c_str());
     tixiRet = tixiGetNamedChildrenCount(tixiHandle, elementPath,
-            "step", &trailingEdgeDeviceStepCount);
+            "profile", &trailingEdgeDeviceStepCount);
     if (tixiRet != SUCCESS) {
         return;
     }
@@ -79,22 +60,8 @@ void CCPACSTrailingEdgeDeviceSteps::ReadCPACS(TixiDocumentHandle tixiHandle,
 
         trailingEdgeDeviceStep->ReadCPACS(tixiHandle, xpath.str());
     }
-}
-
-
-
-
-CCPACSTrailingEdgeDeviceStep& CCPACSTrailingEdgeDeviceSteps::getTrailingEdgeDeviceStepByID( int id )
-{
-    return *trailingEdgeDeviceSteps[id-1];
-}
-
-int CCPACSTrailingEdgeDeviceSteps::getTrailingEdgeDeviceStepCount()
-{
-    return trailingEdgeDeviceSteps.size();
+*/
 }
 
 }
-
-
 // end namespace tigl

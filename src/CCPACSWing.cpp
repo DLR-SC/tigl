@@ -24,6 +24,7 @@
 */
 
 #include <iostream>
+#include <cassert>
 
 #include "CCPACSWing.h"
 #include "CCPACSConfiguration.h"
@@ -38,6 +39,13 @@
 #include "BRepAlgoAPI_Cut.hxx"
 #include "Bnd_Box.hxx"
 #include "BRepBndLib.hxx"
+#include "BRepBuilderAPI_Transform.hxx"
+#include "BRepAlgoAPI_Common.hxx"
+#include "BRepAlgoAPI_Section.hxx"
+#include "BOPCol_ListOfShape.hxx"
+#include "BOPAlgo_PaveFiller.hxx"
+#include <gce_MakeLin.hxx>
+#include <gce_MakeRotation.hxx>
 
 #ifdef TIGL_USE_XCAF
 #include "XCAFDoc_ShapeTool.hxx"
@@ -354,8 +362,95 @@ namespace tigl {
         return lowerShape;
     }
 
+    TopoDS_Shape & CCPACSWing::GetWingWithoutFlaps()
+    {
+        if(wingCutOutShape.IsNull())
+        {
+            std::map<std::string,double> flapStatus;
+            BuildFusedSegmentsWithFlaps(false, flapStatus);
+        }
+        return wingCutOutShape;
+    }
+
     TopoDS_Shape CCPACSWing::BuildLoft(){
         return BuildFusedSegments(true);
+    }
+
+    TopoDS_Shape CCPACSWing::ExtendFlap(std::string flapUID, double flapDeflectionPercantage )
+    {
+        std::map<std::string,double> flapMap;
+        flapMap[flapUID] =flapDeflectionPercantage;
+        return BuildFusedSegmentsWithFlaps(false, flapMap);
+    }
+
+    // Builds a fuse shape of all wing segments with flaps
+    TopoDS_Shape CCPACSWing::BuildFusedSegmentsWithFlaps(bool splitWingInUpperAndLower, std::map<std::string,double> flapStatus )
+    {
+        // packing all segments togehter in one Compound.
+        TopoDS_Compound wingAndFlaps;
+        BRep_Builder compoundBuilder;
+        compoundBuilder.MakeCompound (wingAndFlaps);
+
+        TopoDS_Shape trailingEdgeLoftCut;
+        TopoDS_Shape wingLoftCut;
+        for ( int i = 1; i <= GetWingComponentSegmentCount(); i++ ) {
+           CCPACSWingComponentSegment &componentSegment = componentSegments.GetComponentSegment(i);
+           CCPACSTrailingEdgeDevices* trailingEdgeDevices = componentSegment.getControlSurfaces().getTrailingEdgeDevices();
+
+           TopoDS_Shape wingLoft;
+
+           for ( int j = 1; j <= trailingEdgeDevices->getTrailingEdgeDeviceCount(); j++ ) {
+                CCPACSTrailingEdgeDevice &trailingEdgeDevice = trailingEdgeDevices->getTrailingEdgeDeviceByID(j);
+
+                if ( !wingCutOutShape.IsNull() ) {
+                    wingLoft = wingCutOutShape;
+                }
+                else {
+                    wingLoft = GetLoft();
+                }
+
+                if ( wingCleanShape.IsNull() ) {
+                    wingCleanShape = wingLoft;
+                }
+
+                if ( trailingEdgeDevice.GetLoft().IsNull() ) {
+                    // box built out of the 4 edge´s of the trailingEdgeDevice outer shape.
+                    TopoDS_Shape trailingEdgePrism = trailingEdgeDevice.getCutOutShape();
+
+                    // create intermediate result for boolean ops
+                    BOPCol_ListOfShape aLS;
+                    aLS.Append(trailingEdgePrism);
+                    aLS.Append(wingLoft);
+                    BOPAlgo_PaveFiller dsFill;
+                    dsFill.SetArguments(aLS);
+                    dsFill.Perform();
+
+                    // create common and cut out structure of the wing and the trailingEdgeDevice
+                    wingLoftCut  = BRepAlgoAPI_Cut(wingLoft, trailingEdgePrism, dsFill);
+                    trailingEdgeLoftCut = BRepAlgoAPI_Common(trailingEdgePrism, wingLoft, dsFill);
+                    wingCutOutShape = wingLoftCut;
+
+                    trailingEdgeDevice.setLoft(trailingEdgeLoftCut);
+                }
+                else {
+                    wingLoftCut = wingCutOutShape;
+                    trailingEdgeLoftCut = trailingEdgeDevice.GetLoft();
+                }
+
+                BRepBuilderAPI_Transform form(trailingEdgeLoftCut,trailingEdgeDevice.getTransformation(flapStatus[trailingEdgeDevice.getUID()]));
+
+                // shape of the trailingEdgeDevice.
+                trailingEdgeLoftCut = form.Shape();
+
+                // adding all shapes to one compound.
+                compoundBuilder.Add (wingAndFlaps, trailingEdgeLoftCut);
+           }
+        }
+        // adding all shapes to one compound.
+        compoundBuilder.Add (wingAndFlaps, wingLoftCut);
+
+        loft = wingAndFlaps;
+        return loft;
     }
 
     // Builds a fused shape of all wing segments

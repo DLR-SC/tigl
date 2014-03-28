@@ -1,10 +1,7 @@
 /*
  * Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
  *
- * Created: 2010-08-13 Markus Litz <Markus.Litz@dlr.de>
- * Changed: $Id$
- *
- * Version: $Revision$
+ * Created: 2014-01-28 Mark Geiger <Mark.Geiger@dlr.de>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,48 +20,35 @@
  * @brief  Implementation of ..
  */
 
-#ifndef CCPACSBorder_H
-#define CCPACSBorder_H
-
-#include <string>
-#include <vector>
+#ifndef CCPACSTrailingEdgeDeviceWingCutOut_H
+#define CCPACSTrailingEdgeDeviceWingCutOut_H
 
 #include "tixi.h"
 #include "CTiglError.h"
+#include "CCPACSTrailingEdgeDeviceWingCutOutProfiles.h"
 
 namespace tigl
 {
 
-class CCPACSBorder
+class CCPACSTrailingEdgeDeviceWingCutOut
 {
 
 private:
 
-    std::string xsiType;
+    // upper Skin
+    // lower Skin
+    // cutOutProfile
+    // ControlPoint
 
-    double etaLE;
-    double etaTE;
-    double xsiLE;
-    double xsiTE;
-
-    // choice
-    // airfoil
-    // leading Edge shape
-    // relHeightLE
 
 public:
-    CCPACSBorder();
+    CCPACSTrailingEdgeDeviceWingCutOut();
 
     void ReadCPACS(TixiDocumentHandle tixiHandle,
-            const std::string & BorderXPath);
-
-    double getEtaLE();
-    double getEtaTE();
-    double getXsiLE();
-    double getXsiTE();
+            const std::string & TrailingEdgeDeviceWingCutOutXPath);
 
 };
 
 } // end namespace tigl
 
-#endif // CCPACSBorder_H
+#endif // CCPACSTrailingEdgeDeviceWingCutOut_H

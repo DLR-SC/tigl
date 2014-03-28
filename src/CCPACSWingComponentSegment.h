@@ -161,7 +161,7 @@ namespace tigl {
         Handle(Geom_Surface) lowerSurface;
         bool                 surfacesAreValid;
         CCPACSWingCSStructure structure;
-        CCPACSControlSurfaces controlSurfaces;
+        CCPACSControlSurfacesPtr controlSurfaces;
 
     };
 
