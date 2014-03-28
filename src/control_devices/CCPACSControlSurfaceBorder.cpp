@@ -25,7 +25,7 @@
 namespace tigl
 {
 
-CCPACSTrailingEdgeDeviceBorder::CCPACSTrailingEdgeDeviceBorder()
+CCPACSControlSurfaceBorder::CCPACSControlSurfaceBorder()
 {
     xsiType = "";
     xsiLE = -1;
@@ -35,7 +35,7 @@ CCPACSTrailingEdgeDeviceBorder::CCPACSTrailingEdgeDeviceBorder()
 }
 
 // Read CPACS Border element
-void CCPACSTrailingEdgeDeviceBorder::ReadCPACS(TixiDocumentHandle tixiHandle,
+void CCPACSControlSurfaceBorder::ReadCPACS(TixiDocumentHandle tixiHandle,
         const std::string& BorderXPath)
 {
     char* elementPath;
@@ -62,19 +62,19 @@ void CCPACSTrailingEdgeDeviceBorder::ReadCPACS(TixiDocumentHandle tixiHandle,
 
 }
 
-double CCPACSTrailingEdgeDeviceBorder::getEtaLE() const
+double CCPACSControlSurfaceBorder::getEtaLE() const
 {
     return etaLE;
 }
-double CCPACSTrailingEdgeDeviceBorder::getEtaTE() const
+double CCPACSControlSurfaceBorder::getEtaTE() const
 {
     return etaTE;
 }
-double CCPACSTrailingEdgeDeviceBorder::getXsiLE() const
+double CCPACSControlSurfaceBorder::getXsiLE() const
 {
     return xsiLE;
 }
-double CCPACSTrailingEdgeDeviceBorder::getXsiTE() const
+double CCPACSControlSurfaceBorder::getXsiTE() const
 {
     return xsiTE;
 }

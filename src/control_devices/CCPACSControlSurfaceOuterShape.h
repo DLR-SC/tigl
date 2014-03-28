@@ -20,8 +20,8 @@
  * @brief  Implementation of ..
  */
 
-#ifndef CCPACSOuterShape_H
-#define CCPACSOuterShape_H
+#ifndef CCPACSControlSurfaceOuterShape_H
+#define CCPACSControlSurfaceOuterShape_H
 
 #include <string>
 #include <vector>
@@ -36,25 +36,25 @@
 namespace tigl
 {
 
-class CCPACSOuterShape
+class CCPACSControlSurfaceOuterShape
 {
 
 private:
     // intermediateAirfoils
-    CCPACSTrailingEdgeDeviceBorder outerBorder;
-    CCPACSTrailingEdgeDeviceBorder innerBorder;
+    CCPACSControlSurfaceBorder outerBorder;
+    CCPACSControlSurfaceBorder innerBorder;
 
 public:
-    CCPACSOuterShape();
+    CCPACSControlSurfaceOuterShape();
 
     void ReadCPACS(TixiDocumentHandle tixiHandle,
             const std::string & outerShapeXPath);
 
-    const CCPACSTrailingEdgeDeviceBorder& getInnerBorder();
-    const CCPACSTrailingEdgeDeviceBorder& getOuterBorder();
+    const CCPACSControlSurfaceBorder& getInnerBorder();
+    const CCPACSControlSurfaceBorder& getOuterBorder();
 
 };
 
 } // end namespace tigl
 
-#endif // CCPACSOuterShape_H
+#endif // CCPACSControlSurfaceOuterShape_H

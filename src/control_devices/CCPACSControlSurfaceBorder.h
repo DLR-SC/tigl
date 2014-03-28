@@ -31,7 +31,7 @@
 namespace tigl
 {
 
-class CCPACSTrailingEdgeDeviceBorder
+class CCPACSControlSurfaceBorder
 {
 
 private:
@@ -49,7 +49,7 @@ private:
     // relHeightLE
 
 public:
-    CCPACSTrailingEdgeDeviceBorder();
+    CCPACSControlSurfaceBorder();
 
     void ReadCPACS(TixiDocumentHandle tixiHandle,
             const std::string & BorderXPath);

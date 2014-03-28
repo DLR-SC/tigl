@@ -17,7 +17,7 @@
  */
 /**
  * @file
- * @brief  Implementation of ..
+ * @brief not implemented yet...
  */
 
 #ifndef CCPACSTrailingEdgeDeviceWingCutOut_H

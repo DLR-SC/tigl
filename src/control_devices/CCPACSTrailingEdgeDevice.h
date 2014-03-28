@@ -54,7 +54,7 @@ private:
     // zCouplings
 
     CCPACSTrailingEdgeDevicePath path;
-    CCPACSOuterShape outerShape;
+    CCPACSControlSurfaceOuterShape outerShape;
     std::string uID;
     TopoDS_Shape loft;
     CCPACSWingComponentSegment* _segment;
@@ -69,7 +69,7 @@ public:
     CCPACSTrailingEdgeDevice(CCPACSWingComponentSegment* segment);
     void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string & trailingEdgeDeviceXPath);
     std::string getUID();
-    CCPACSOuterShape getOuterShape();
+    CCPACSControlSurfaceOuterShape getOuterShape();
     CCPACSTrailingEdgeDevicePath getMovementPath();        // Returns the Component Type TIGL_COMPONENT_WING.
     TiglGeometricComponentType GetComponentType(void) {return TIGL_COMPONENT_CONTROLSURF | TIGL_COMPONENT_PHYSICAL;}
     TopoDS_Shape getCutOutShape(void);

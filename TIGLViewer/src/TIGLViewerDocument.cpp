@@ -71,7 +71,7 @@
 #include "CTiglExportVtk.h"
 #include "CCPACSWingProfilePointList.h"
 #include "CTiglPoint.h"
-#include "CCPACSTrailingEdgeDeviceBorder.h"
+#include "CCPACSControlSurfaceBorder.h"
 #include "CCPACSControlSurfaces.h"
 #include "CCPACSTrailingEdgeDevice.h"
 #include "CCPACSWingComponentSegment.h"

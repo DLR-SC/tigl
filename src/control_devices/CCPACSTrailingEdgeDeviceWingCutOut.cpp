@@ -17,7 +17,7 @@
  */
 /**
  * @file
- * @brief  Implementation of CPACS ...  handling routines.
+ * @brief  not implemented yet...
  */
 
 #include <iostream>

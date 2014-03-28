@@ -36,13 +36,13 @@
 namespace tigl
 {
 
-CCPACSOuterShape::CCPACSOuterShape()
+CCPACSControlSurfaceOuterShape::CCPACSControlSurfaceOuterShape()
 {
 
 }
 
 // Read CPACS outerShape element
-void CCPACSOuterShape::ReadCPACS(TixiDocumentHandle tixiHandle,
+void CCPACSControlSurfaceOuterShape::ReadCPACS(TixiDocumentHandle tixiHandle,
         const std::string& outerShapeXPath)
 {
 
@@ -65,11 +65,11 @@ void CCPACSOuterShape::ReadCPACS(TixiDocumentHandle tixiHandle,
     }
 }
 
-const CCPACSTrailingEdgeDeviceBorder& CCPACSOuterShape::getInnerBorder()
+const CCPACSControlSurfaceBorder& CCPACSControlSurfaceOuterShape::getInnerBorder()
 {
     return innerBorder;
 }
-const CCPACSTrailingEdgeDeviceBorder& CCPACSOuterShape::getOuterBorder()
+const CCPACSControlSurfaceBorder& CCPACSControlSurfaceOuterShape::getOuterBorder()
 {
     return outerBorder;
 }

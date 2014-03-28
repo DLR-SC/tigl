@@ -100,7 +100,7 @@ TopoDS_Shape CCPACSTrailingEdgeDevice::BuildLoft()
     return loft;
 }
 
-CCPACSOuterShape CCPACSTrailingEdgeDevice::getOuterShape()
+CCPACSControlSurfaceOuterShape CCPACSTrailingEdgeDevice::getOuterShape()
 {
     return outerShape;
 }
@@ -136,8 +136,8 @@ gp_Trsf CCPACSTrailingEdgeDevice::getTransformation(double flapStatusInPercent)
     double outerTranslationZ = linearInterpolation( relDeflections, this->getMovementPath().getOuterHingeTranslationsZ(), inputDeflection );
     relDeflections.clear();
 
-    const tigl::CCPACSTrailingEdgeDeviceBorder& outerBorder = this->getOuterShape().getOuterBorder();
-    const tigl::CCPACSTrailingEdgeDeviceBorder& innerBorder = this->getOuterShape().getInnerBorder();
+    const tigl::CCPACSControlSurfaceBorder& outerBorder = this->getOuterShape().getOuterBorder();
+    const tigl::CCPACSControlSurfaceBorder& innerBorder = this->getOuterShape().getInnerBorder();
 
     gp_Pnt innerHingeOld;
     gp_Pnt outerHingeOld;
@@ -148,7 +148,7 @@ gp_Trsf CCPACSTrailingEdgeDevice::getTransformation(double flapStatusInPercent)
      * to get calculated first.
      */
     for ( int borderCounter = 0; borderCounter < 2; borderCounter++) {
-        tigl::CCPACSTrailingEdgeDeviceBorder border;
+        tigl::CCPACSControlSurfaceBorder border;
         double hingeXsi;
         if (borderCounter == 0) {
             border = outerBorder;
@@ -212,11 +212,11 @@ TopoDS_Shape CCPACSTrailingEdgeDevice::getCutOutShape()
 {
     TopoDS_Face face = getFace();
 
-    const tigl::CCPACSTrailingEdgeDeviceBorder& outerBorder = this->getOuterShape().getOuterBorder();
+    const tigl::CCPACSControlSurfaceBorder& outerBorder = this->getOuterShape().getOuterBorder();
     gp_Pnt point1 = _segment->GetPoint(outerBorder.getEtaLE(),outerBorder.getXsiLE());
     gp_Pnt point2 = _segment->GetPoint(outerBorder.getEtaTE(),1.0f);
 
-    const tigl::CCPACSTrailingEdgeDeviceBorder& innerBorder = this->getOuterShape().getInnerBorder();
+    const tigl::CCPACSControlSurfaceBorder& innerBorder = this->getOuterShape().getInnerBorder();
     gp_Pnt point3 = _segment->GetPoint(innerBorder.getEtaLE(),innerBorder.getXsiLE());
     gp_Pnt point4 = _segment->GetPoint(innerBorder.getEtaTE(),1.0f);
 
@@ -239,11 +239,11 @@ TopoDS_Shape CCPACSTrailingEdgeDevice::getCutOutShape()
 
 TopoDS_Face CCPACSTrailingEdgeDevice::getFace()
 {
-    tigl::CCPACSTrailingEdgeDeviceBorder outerBorder = getOuterShape().getOuterBorder();
+    tigl::CCPACSControlSurfaceBorder outerBorder = getOuterShape().getOuterBorder();
     gp_Pnt point1 = _segment->GetPoint(outerBorder.getEtaLE(),outerBorder.getXsiLE());
     gp_Pnt point2 = _segment->GetPoint(outerBorder.getEtaTE(),1.0f);
 
-    tigl::CCPACSTrailingEdgeDeviceBorder innerBorder = getOuterShape().getInnerBorder();
+    tigl::CCPACSControlSurfaceBorder innerBorder = getOuterShape().getInnerBorder();
     gp_Pnt point3 = _segment->GetPoint(innerBorder.getEtaLE(),innerBorder.getXsiLE());
     gp_Pnt point4 = _segment->GetPoint(innerBorder.getEtaTE(),1.0f);
 

@@ -671,13 +671,12 @@ namespace tigl {
     TopoDS_Face CCPACSWingComponentSegment::getControlSurfaceTrailingEdgeOuterShapeFace(int trailingEdgeDeviceID)
     {
         tigl::CCPACSTrailingEdgeDevice& trailingEdgeDevice = controlSurfaces->getTrailingEdgeDevices()->getTrailingEdgeDeviceByID(trailingEdgeDeviceID);
-        const tigl::CCPACSTrailingEdgeDeviceBorder& outerBorder = trailingEdgeDevice.getOuterShape().getOuterBorder();
+        const tigl::CCPACSControlSurfaceBorder& outerBorder = trailingEdgeDevice.getOuterShape().getOuterBorder();
 
         gp_Pnt point1 = this->GetPoint(outerBorder.getEtaLE(),outerBorder.getXsiLE());
         gp_Pnt point2 = this->GetPoint(outerBorder.getEtaTE(),1.0f);
 
-        const tigl::CCPACSTrailingEdgeDeviceBorder& innerBorder = trailingEdgeDevice.getOuterShape().getInnerBorder();
-
+        const tigl::CCPACSControlSurfaceBorder& innerBorder = trailingEdgeDevice.getOuterShape().getInnerBorder();
         gp_Pnt point3 = this->GetPoint(innerBorder.getEtaLE(),innerBorder.getXsiLE());
         gp_Pnt point4 = this->GetPoint(innerBorder.getEtaTE(),1.0f);
 
