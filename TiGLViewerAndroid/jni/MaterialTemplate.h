@@ -3,13 +3,9 @@
 
 #include<osg/Material>
 
-enum TIGL_MATERIALS {
-    RED,
-    GREEN,
-    BLUE,
-    WHITE,
-    SELECTED,
-    UNSELECTED
+enum TIGL_MATERIALS
+{
+    RED, GREEN, BLUE, WHITE, SELECTED, UNSELECTED
 };
 
 class MaterialTemplate

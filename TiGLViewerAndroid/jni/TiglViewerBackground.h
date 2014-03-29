@@ -10,7 +10,8 @@
 
 #include <osg/Camera>
 
-class TiglViewerBackground : public osg::Camera{
+class TiglViewerBackground: public osg::Camera
+{
 public:
     TiglViewerBackground();
 

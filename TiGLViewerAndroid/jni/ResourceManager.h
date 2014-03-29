@@ -12,7 +12,8 @@
 #include <osg/ref_ptr>
 #include <osgText/Font>
 
-class ResourceManager {
+class ResourceManager
+{
 public:
     ResourceManager();
 

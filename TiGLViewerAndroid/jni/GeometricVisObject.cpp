@@ -21,49 +21,48 @@ int GeometricVisObject::noOfGVO = 0;
 template<class T>
 osg::ref_ptr<osg::Geode> SplitGeometry(osg::Vec3Array * vertexArray, T* indices)
 {
-	osg::ref_ptr<osg::Geode> geode = new osg::Geode;
+    osg::ref_ptr<osg::Geode> geode = new osg::Geode;
 
-	int iIndexDiff = 15600;
+    int iIndexDiff = 15600;
 
-	for (int iStartIndex = 0; iStartIndex < indices->size(); iStartIndex += iIndexDiff) {
+    for (int iStartIndex = 0; iStartIndex < indices->size(); iStartIndex += iIndexDiff) {
 
-		std::map<int, int> indexMap;
-		std::map<int, int>::iterator it;
+        std::map<int, int> indexMap;
+        std::map<int, int>::iterator it;
 
-		int iStopIndex = iStartIndex + iIndexDiff < indices->size() ?  iStartIndex + iIndexDiff : indices->size();
+        int iStopIndex = iStartIndex + iIndexDiff < indices->size() ? iStartIndex + iIndexDiff : indices->size();
 
-		// create map
-		osg::ref_ptr<osg::DrawElementsUShort> indicesShort = new osg::DrawElementsUShort(indices->getMode(), iStopIndex-iStartIndex);
-		for (int iIndex = iStartIndex; iIndex < iStopIndex; ++iIndex) {
-			int vertexIndexOld = indices->at(iIndex);
+        // create map
+        osg::ref_ptr<osg::DrawElementsUShort> indicesShort = new osg::DrawElementsUShort(indices->getMode(), iStopIndex - iStartIndex);
+        for (int iIndex = iStartIndex; iIndex < iStopIndex; ++iIndex) {
+            int vertexIndexOld = indices->at(iIndex);
 
-			it = indexMap.find(vertexIndexOld);
-			if (it == indexMap.end()) {
-				int nextIndex = indexMap.size();
-				indexMap[vertexIndexOld] = nextIndex;
-				indicesShort->at(iIndex-iStartIndex) = nextIndex;
-			}
-			else {
-				indicesShort->at(iIndex-iStartIndex) = it->second;
-			}
-		}
+            it = indexMap.find(vertexIndexOld);
+            if (it == indexMap.end()) {
+                int nextIndex = indexMap.size();
+                indexMap[vertexIndexOld] = nextIndex;
+                indicesShort->at(iIndex - iStartIndex) = nextIndex;
+            }
+            else {
+                indicesShort->at(iIndex - iStartIndex) = it->second;
+            }
+        }
 
-		// create new vertex array
-		osg::ref_ptr<osg::Vec3Array> verticesShort = new osg::Vec3Array(indexMap.size());
-		for (it = indexMap.begin(); it != indexMap.end(); ++it) {
-			int newIndex = it->second;
-			int oldOndex = it->first;
-			verticesShort->at(newIndex) = vertexArray->at(oldOndex);
-		}
-		osg::ref_ptr<osg::Geometry> geometry = new osg::Geometry();
-		geometry->setVertexArray(verticesShort);
-		geometry->addPrimitiveSet(indicesShort);
+        // create new vertex array
+        osg::ref_ptr<osg::Vec3Array> verticesShort = new osg::Vec3Array(indexMap.size());
+        for (it = indexMap.begin(); it != indexMap.end(); ++it) {
+            int newIndex = it->second;
+            int oldOndex = it->first;
+            verticesShort->at(newIndex) = vertexArray->at(oldOndex);
+        }
+        osg::ref_ptr<osg::Geometry> geometry = new osg::Geometry();
+        geometry->setVertexArray(verticesShort);
+        geometry->addPrimitiveSet(indicesShort);
 
+        geode->addDrawable(geometry.get());
+    }
 
-		geode->addDrawable(geometry.get());
-	}
-
-	return geode;
+    return geode;
 }
 
 GeometricVisObject::GeometricVisObject()
@@ -71,11 +70,9 @@ GeometricVisObject::GeometricVisObject()
     setName("");
 }
 
-
 GeometricVisObject::~GeometricVisObject(void)
 {
 }
-
 
 int GeometricVisObject::fromShape(TopoDS_Shape& loft, double deflection)
 {
@@ -87,35 +84,33 @@ int GeometricVisObject::fromShape(TopoDS_Shape& loft, double deflection)
     osg::ref_ptr<osg::Geometry> geometry = new osg::Geometry();
 
     osg::Vec3Array* vertices = new osg::Vec3Array();
-    osg::Vec3Array* normals =  new osg::Vec3Array();
-
-
+    osg::Vec3Array* normals = new osg::Vec3Array();
 
     for (unsigned int iPoly = 0; iPoly < inputObject.getNPolygons(); iPoly++) {
-        if(inputObject.getNPointsOfPolygon(iPoly) != 3) {
+        if (inputObject.getNPointsOfPolygon(iPoly) != 3) {
             osg::notify(osg::ALWAYS) << "Error: polygon has to be a triangle!" << std::endl;
             continue;
         }
         // else
 
-        for(int vindex = 0; vindex < 3; vindex++) {
+        for (int vindex = 0; vindex < 3; vindex++) {
             unsigned long index = inputObject.getVertexIndexOfPolygon(vindex, iPoly);
 
-            tigl::CTiglPoint vertexPoint  = inputObject.getVertexPoint (index);
+            tigl::CTiglPoint vertexPoint = inputObject.getVertexPoint(index);
             tigl::CTiglPoint vertexNormal = inputObject.getVertexNormal(index);
 
-            osg::Vec3f vertex(vertexPoint.x,  vertexPoint.y,  vertexPoint.z );
+            osg::Vec3f vertex(vertexPoint.x, vertexPoint.y, vertexPoint.z);
             osg::Vec3f normal(vertexNormal.x, vertexNormal.y, vertexNormal.z);
 
             // scale normals to unit length
             normal.normalize();
 
             vertices->push_back(vertex);
-            normals ->push_back(normal);
+            normals->push_back(normal);
         }
     }
 
-    osg::DrawArrays* array = new osg::DrawArrays(osg::PrimitiveSet::TRIANGLES , 0 , vertices->size());
+    osg::DrawArrays* array = new osg::DrawArrays(osg::PrimitiveSet::TRIANGLES, 0, vertices->size());
 
     geometry->addPrimitiveSet(array);
     geometry->setVertexArray(vertices);
@@ -135,50 +130,47 @@ int GeometricVisObject::fromShape(TopoDS_Shape& loft, double deflection)
 
 int GeometricVisObject::readHotsoseMesh(const char* filename)
 {
-	CHotsoseMeshReader reader;
-	tigl::CTiglPolyData polyData;
-	if (reader.readFromFile(filename, polyData) != TIGL_SUCCESS) {
-		osg::notify(osg::ALWAYS) << "Could not open " << filename << "!" << std::endl;
-		return 1;
-	}
+    CHotsoseMeshReader reader;
+    tigl::CTiglPolyData polyData;
+    if (reader.readFromFile(filename, polyData) != TIGL_SUCCESS) {
+        osg::notify(osg::ALWAYS) << "Could not open " << filename << "!" << std::endl;
+        return 1;
+    }
 
     polyData.switchObject(1);
     tigl::CTiglPolyObject& inputObject = polyData.currentObject();
 
+    osg::Vec3Array* vertices = new osg::Vec3Array();
+    osg::ref_ptr<osg::DrawElementsUInt> indices = new osg::DrawElementsUInt(osg::PrimitiveSet::QUADS);
 
-	osg::Vec3Array* vertices = new osg::Vec3Array();
-	osg::ref_ptr<osg::DrawElementsUInt> indices = new osg::DrawElementsUInt(osg::PrimitiveSet::QUADS);
+    for (unsigned int iPoly = 0; iPoly < inputObject.getNPolygons(); iPoly++) {
+        if (inputObject.getNPointsOfPolygon(iPoly) != 4) {
+            osg::notify(osg::ALWAYS) << "Error: polygon has to be a quad!" << std::endl;
+            continue;
+        }
 
-	for (unsigned int iPoly = 0; iPoly < inputObject.getNPolygons(); iPoly++) {
-		if(inputObject.getNPointsOfPolygon(iPoly) != 4) {
-			osg::notify(osg::ALWAYS) << "Error: polygon has to be a quad!" << std::endl;
-			continue;
-		}
+        for (int vindex = 3; vindex >= 0; vindex--) {
+            unsigned long index = inputObject.getVertexIndexOfPolygon(vindex, iPoly);
+            indices->push_back(index);
+        }
+    }
 
-		for(int vindex = 3; vindex >= 0; vindex--) {
-			unsigned long index = inputObject.getVertexIndexOfPolygon(vindex, iPoly);
-			indices->push_back(index);
-		}
-	}
+    for (int iVertex = 0; iVertex < inputObject.getNVertices(); ++iVertex) {
+        const tigl::CTiglPoint& p = inputObject.getVertexPoint(iVertex);
+        vertices->push_back(osg::Vec3(p.x, p.y, p.z));
+    }
 
-	for (int iVertex = 0; iVertex < inputObject.getNVertices(); ++iVertex) {
-		const tigl::CTiglPoint& p =  inputObject.getVertexPoint(iVertex);
-		vertices->push_back(osg::Vec3(p.x, p.y, p.z));
-	}
-
-
-	osg::ref_ptr<osg::Geode> geode = SplitGeometry<osg::DrawElementsUInt>(vertices, indices);
-
+    osg::ref_ptr<osg::Geode> geode = SplitGeometry<osg::DrawElementsUInt>(vertices, indices);
 
     osgUtil::SmoothingVisitor sv;
     sv.setCreaseAngle(osg::DegreesToRadians(80.0f));
     geode->accept(sv);
 
     geode->setCullingActive(false);
-    geode->getOrCreateStateSet()->setMode( GL_CULL_FACE, osg::StateAttribute::OFF );
+    geode->getOrCreateStateSet()->setMode(GL_CULL_FACE, osg::StateAttribute::OFF);
 
     this->addChild(geode);
-	this->getOrCreateStateSet()->setAttribute(MaterialTemplate::getMaterial(UNSELECTED));
+    this->getOrCreateStateSet()->setAttribute(MaterialTemplate::getMaterial(UNSELECTED));
     this->setPicked(false);
 
 }
@@ -186,21 +178,20 @@ int GeometricVisObject::readHotsoseMesh(const char* filename)
 int GeometricVisObject::readVTK(const char* xmlFilename)
 {
     TixiDocumentHandle handle = -1;
-     
-    if (tixiOpenDocument( xmlFilename, &handle ) != SUCCESS) {
+
+    if (tixiOpenDocument(xmlFilename, &handle) != SUCCESS) {
         osg::notify(osg::ALWAYS) << "Could not open " << xmlFilename << "!" << std::endl;
         return 1;
     }
 
     char * text = NULL;
-    if (tixiGetTextElement(handle, "/VTKFile/PolyData/Piece[1]/Points/DataArray", &text)!=SUCCESS) {
+    if (tixiGetTextElement(handle, "/VTKFile/PolyData/Piece[1]/Points/DataArray", &text) != SUCCESS) {
         osg::notify(osg::ALWAYS) << "Error reading vtk file " << xmlFilename << "!" << std::endl;
         return 2;
     }
 
-
     char * textDummy = text;
-    const char *  ptr = strtok(textDummy, " \t\n");
+    const char * ptr = strtok(textDummy, " \t\n");
     int iVertexCounter = 0;
     double x, y, z;
 
@@ -221,7 +212,7 @@ int GeometricVisObject::readVTK(const char* xmlFilename)
         case 2:
             z = val;
             //add to vertexlist
-            vertices->push_back(osg::Vec3(x,y,z));
+            vertices->push_back(osg::Vec3(x, y, z));
 
             iCoordinateCount = 0;
             iVertexCounter++;
@@ -243,17 +234,16 @@ int GeometricVisObject::readVTK(const char* xmlFilename)
         polyptr = strtok(NULL, " \t\n");
     }
 
-    tixiCloseDocument( handle );
+    tixiCloseDocument(handle);
 
     this->id = noOfGVO;
     noOfGVO++;
 
-    osg::ref_ptr<osg::Geode> geode = SplitGeometry< osg::DrawElementsUInt>(vertices, indices);
+    osg::ref_ptr<osg::Geode> geode = SplitGeometry<osg::DrawElementsUInt>(vertices, indices);
 
     osgUtil::SmoothingVisitor sv;
     sv.setCreaseAngle(osg::DegreesToRadians(80.0f));
     geode->accept(sv);
-
 
     this->addChild(geode);
     this->getOrCreateStateSet()->setAttribute(MaterialTemplate::getMaterial(UNSELECTED));
@@ -263,12 +253,14 @@ int GeometricVisObject::readVTK(const char* xmlFilename)
     return 0;
 }
 
-void GeometricVisObject::pick(){
-  this->getOrCreateStateSet()->setAttribute(MaterialTemplate::getMaterial(SELECTED));
-  this->setPicked(true);
+void GeometricVisObject::pick()
+{
+    this->getOrCreateStateSet()->setAttribute(MaterialTemplate::getMaterial(SELECTED));
+    this->setPicked(true);
 }
 
-void GeometricVisObject::unpick(){
-  this->getOrCreateStateSet()->setAttribute(MaterialTemplate::getMaterial(UNSELECTED));
-  this->setPicked(false);
+void GeometricVisObject::unpick()
+{
+    this->getOrCreateStateSet()->setAttribute(MaterialTemplate::getMaterial(UNSELECTED));
+    this->setPicked(false);
 }
