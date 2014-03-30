@@ -20,10 +20,10 @@
     android:layout_height="wrap_content"
     android:textAppearance="?android:attr/textAppearanceListItemSmall"
     android:gravity="center_vertical"
-    android:paddingLeft="16dp"
+    android:paddingLeft="32dp"
     android:paddingRight="16dp"
     android:textSize="15sp"
-    android:textStyle="bold"
-    android:textColor="#696969"
+    android:textStyle="normal"
+    android:textColor="#fff"
     android:background="?android:attr/activatedBackgroundIndicator"
     android:minHeight="?android:attr/listPreferredItemHeightSmall"/>

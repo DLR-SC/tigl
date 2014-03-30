@@ -218,6 +218,16 @@ public class TiglViewerActivity extends ActionBarActivity implements OnNavigatio
         // If the nav drawer is open, hide action items related to the content view
         //boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
         //menu.findItem(R.id.action_websearch).setVisible(!drawerOpen);
+        
+        if (navMode == navType.ROTATE) {
+            mTouchListener.setNavMode(navMode);
+            menu.findItem(R.id.action_toggle_navigation).setIcon(R.drawable.ic_move);
+        }
+        else {
+            mTouchListener.setNavMode(navMode);
+            menu.findItem(R.id.action_toggle_navigation).setIcon(R.drawable.ic_action_rotate_left);
+        }
+
         return super.onPrepareOptionsMenu(menu);
     }
 
