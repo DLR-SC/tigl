@@ -687,10 +687,10 @@ namespace tigl {
 
         double yTrans = 0;
         double zTrans = 1;
-        if ( std::abs(point1.Y() - point2.Y()) < 0.001 &&
-             std::abs(point2.Y() - point3.Y()) < 0.001 &&
-             std::abs(point3.Y() - point4.Y()) < 0.001 &&
-             std::abs(point4.Y() - point1.Y()) < 0.001 ) {
+        if ( fabs(point1.Y() - point2.Y()) < 0.001 &&
+             fabs(point2.Y() - point3.Y()) < 0.001 &&
+             fabs(point3.Y() - point4.Y()) < 0.001 &&
+             fabs(point4.Y() - point1.Y()) < 0.001 ) {
             zTrans = 0;
             yTrans = 1;
         }

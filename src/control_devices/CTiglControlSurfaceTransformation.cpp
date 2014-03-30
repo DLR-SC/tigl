@@ -25,6 +25,7 @@
 #include <exception>
 #include <vector>
 #include <cassert>
+#include <cmath>
 
 #include "CTiglControlSurfaceTransformation.h"
 
@@ -72,8 +73,8 @@ CTiglControlSurfaceTransformation::CTiglControlSurfaceTransformation(gp_Pnt hing
 
     // calculating needed rotation around the 3 axes.
     double r  = transformedOuterOld.Magnitude();
-    double phi     = std::atan2(p2Cy,p2Cx);
-    double theta   = std::acos(p2Cz/r);
+    double phi     = atan2(p2Cy,p2Cx);
+    double theta   = acos(p2Cz/r);
 
     // testing
     gp_Vec p2c = p1s + r*cos(phi)*sin(theta)*exV + r*sin(phi)*sin(theta)*eyV + r*cos(theta)*ezV;
