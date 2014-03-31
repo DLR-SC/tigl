@@ -32,6 +32,8 @@
 #include "tigl.h"
 #include "CTiglPoint.h"
 
+class TopoDS_Wire;
+
 namespace tigl 
 {
 class ITiglWingProfileAlgo

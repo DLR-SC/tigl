@@ -21,7 +21,7 @@ set(TIGL_ADD_LIB_PATH "" CACHE PATH     "Additional library path for package sea
 set(CMAKE_INCLUDE_PATH "${CMAKE_INCLUDE_PATH}" ${TIGL_ADD_INCLUDE_PATH})
 set(CMAKE_LIBRARY_PATH "${CMAKE_LIBRARY_PATH}" ${TIGL_ADD_LIB_PATH})
 
-set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/contrib)
+set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 include(GNUInstallDirs)
 
 OPTION(TIGL_NIGHTLY "Creates a nightly build of tigl (includes git sha into tigl version)" OFF)
@@ -73,8 +73,9 @@ else()
     message("XCAF disabled. IGES and STEP export with CPACS metadata will not be avaible.")
 endif()
 
-find_package( OpenCASCADE REQUIRED COMPONENTS ${OCC_LIBS})
+find_package( OpenCASCADE 6.6.0 REQUIRED COMPONENTS ${OCC_LIBS})
 find_package( TIXI 2.1.0 REQUIRED)
+find_package( PythonInterp )
 
 OPTION(TIGL_USE_GLOG "Enables advanced logging (requires google glog)" OFF)
 if(TIGL_USE_GLOG)
@@ -117,6 +118,9 @@ if(WIN32)
     endif(CMAKE_BUILD_TYPE STREQUAL "Debug")
 endif(WIN32)
 
+# style checks
+add_custom_target(checkstyle)
+add_custom_target(checkstylexml)
 
 add_subdirectory(src)
 add_subdirectory(TIGLViewer)

@@ -55,21 +55,25 @@ void CTiglUIDManager::Update(void)
 }
 
 // Function to add a UID and a geometric component to the uid store.
-void CTiglUIDManager::AddUID(const std::string& uid, CTiglAbstractPhysicalComponent* componentPtr)
+void CTiglUIDManager::AddUID(const std::string& uid, ITiglGeometricComponent* componentPtr)
 {
     if (uid.empty()) {
-        throw CTiglError("Error: Empty UID in CTiglUIDManager::AddUID", TIGL_XML_ERROR);
+        throw CTiglError("Empty UID in CTiglUIDManager::AddUID", TIGL_XML_ERROR);
     }
 
     if (HasUID(uid)) {
-        throw CTiglError("Error: UID already exist in CTiglUIDManager::AddUID", TIGL_XML_ERROR);
+        throw CTiglError("UID already exist in CTiglUIDManager::AddUID", TIGL_XML_ERROR);
     }
 
     if (componentPtr == 0) {
-        throw CTiglError("Error: Null pointer for component in CTiglUIDManager::AddUID", TIGL_NULL_POINTER);
+        throw CTiglError("Null pointer for component in CTiglUIDManager::AddUID", TIGL_NULL_POINTER);
     }
 
-    uidStore[uid] = componentPtr;
+    CTiglAbstractPhysicalComponent* tmp = dynamic_cast<CTiglAbstractPhysicalComponent*>(componentPtr);
+    if (tmp && (componentPtr->GetComponentType() | TIGL_COMPONENT_PHYSICAL) ) {
+        physicalShapes[uid] = tmp;
+    }
+    allShapes[uid] = componentPtr;
     invalidated = true;
 }
 
@@ -77,31 +81,47 @@ void CTiglUIDManager::AddUID(const std::string& uid, CTiglAbstractPhysicalCompon
 bool CTiglUIDManager::HasUID(const std::string& uid) const
 {
     if (uid.empty()) {
-        throw CTiglError("Error: Empty UID in CTiglUIDManager::HasUID", TIGL_XML_ERROR);
+        throw CTiglError("Empty UID in CTiglUIDManager::HasUID", TIGL_XML_ERROR);
     }
 
-    return (uidStore.find(uid) != uidStore.end());
+    return (allShapes.find(uid) != allShapes.end());
 }
 
 // Returns a pointer to the geometric component for the given unique id.
-CTiglAbstractPhysicalComponent* CTiglUIDManager::GetComponent(const std::string& uid)
+ITiglGeometricComponent* CTiglUIDManager::GetComponent(const std::string& uid)
 {
     if (uid.empty()) {
-        throw CTiglError("Error: Empty UID in CTiglUIDManager::GetComponent", TIGL_XML_ERROR);
+        throw CTiglError("Empty UID in CTiglUIDManager::GetComponent", TIGL_UID_ERROR);
     }
 
     if (!HasUID(uid)) {
-        throw CTiglError("Error: UID not found in CTiglUIDManager::GetComponent", TIGL_XML_ERROR);
+        std::stringstream stream;
+        stream << "UID " << uid << " not found in CTiglUIDManager::GetComponent";
+        throw CTiglError(stream.str(), TIGL_UID_ERROR);
     }
 
-    return uidStore[uid];
+    return allShapes[uid];
+}
+
+// Returns a pointer to the geometric component for the given unique id.
+CTiglAbstractPhysicalComponent* CTiglUIDManager::GetPhysicalComponent(const std::string& uid)
+{
+    if (uid.empty()) {
+        throw CTiglError("Empty UID in CTiglUIDManager::GetComponent", TIGL_XML_ERROR);
+    }
+
+    if (physicalShapes.find(uid) == physicalShapes.end()) {
+        throw CTiglError("UID not found in CTiglUIDManager::GetComponent", TIGL_XML_ERROR);
+    }
+
+    return physicalShapes[uid];
 }
 
 
 // Clears the uid store
 void CTiglUIDManager::Clear(void) 
 {
-    uidStore.clear();
+    physicalShapes.clear();
     rootComponent = 0;
     invalidated = true;
 }
@@ -110,9 +130,9 @@ void CTiglUIDManager::Clear(void)
 // if there is no parent.
 CTiglAbstractPhysicalComponent* CTiglUIDManager::GetParentComponent(const std::string& uid)
 {
-    CTiglAbstractPhysicalComponent* component = GetComponent(uid);
+    CTiglAbstractPhysicalComponent* component = GetPhysicalComponent(uid);
     std::string parentUID = component->GetParentUID();
-    return (parentUID.empty() ? 0 : GetComponent(parentUID));
+    return (parentUID.empty() ? 0 : GetPhysicalComponent(parentUID));
 }
 
 // Returns the root component of the geometric topology.
@@ -129,7 +149,7 @@ void CTiglUIDManager::FindRootComponent(void)
     UIDStoreContainerType::iterator pIter;
     int parentCnt = 0;
 
-    for (pIter = uidStore.begin(); pIter != uidStore.end(); ++pIter) {
+    for (pIter = physicalShapes.begin(); pIter != physicalShapes.end(); ++pIter) {
         CTiglAbstractPhysicalComponent* component = pIter->second;
         if (component->GetParentUID().empty()) {
             if (parentCnt != 0) {
@@ -151,13 +171,18 @@ void CTiglUIDManager::BuildParentChildTree(void)
 {
     UIDStoreContainerType::iterator pIter;
 
-    for (pIter = uidStore.begin(); pIter != uidStore.end(); ++pIter) {
+    for (pIter = physicalShapes.begin(); pIter != physicalShapes.end(); ++pIter) {
         CTiglAbstractPhysicalComponent* component = pIter->second;
         if (!component->GetParentUID().empty()) {
-            CTiglAbstractPhysicalComponent* parent = GetComponent(component->GetParentUID());
+            CTiglAbstractPhysicalComponent* parent = GetPhysicalComponent(component->GetParentUID());
             parent->AddChild(component);
         }
     }
+}
+
+const ShapeContainerType& CTiglUIDManager::GetShapeContainer()
+{
+    return allShapes;
 }
 
 } // end namespace tigl

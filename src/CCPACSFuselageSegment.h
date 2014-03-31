@@ -160,12 +160,6 @@ public:
     // check if guide curve with a given UID exists
     TIGL_EXPORT bool GuideCurveExists(std::string UID);
 
-#ifdef TIGL_USE_XCAF
-    // builds data structure for a TDocStd_Application
-    // mostly used for export
-    TDF_Label ExportDataStructure(class CCPACSConfiguration &, Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label);
-#endif
-
 protected:
     // Cleanup routine
     void Cleanup(void);

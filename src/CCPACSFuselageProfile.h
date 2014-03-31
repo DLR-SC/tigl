@@ -2,7 +2,6 @@
 * Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
 *
 * Created: 2010-08-13 Markus Litz <Markus.Litz@dlr.de>
-* Changed: $Id$
 *
 * Version: $Revision$
 *
@@ -80,9 +79,6 @@ public:
     // fuselage profile element transformation.
     TIGL_EXPORT TopoDS_Wire GetWire(bool forceClosed = false);
 
-    // Get length of fuselage profile wire
-    TIGL_EXPORT double GetWireLength(void);
-
     // Gets a point on the fuselage profile wire in dependence of a parameter zeta with
     // 0.0 <= zeta <= 1.0. For zeta = 0.0 this is the wire start point,
     // for zeta = 1.0 the last wire point.
@@ -107,9 +103,6 @@ protected:
     // Builds the fuselage profile wires. The wires are already transformed by the
     // fuselage profile transformation.
     void BuildWires(void);
-
-    // Computes the length of the fuselage profile wire
-    void ComputeWireLength(void);
 
     // Helper function to determine the "diameter" (the wing profile chord line equivalent) 
     // which is defined as the line intersecting Point1 and Point2

@@ -27,6 +27,7 @@
 #include <limits>
 
 #include "CTiglError.h"
+#include "CTiglTypeRegistry.h"
 #include "CTiglLogging.h"
 #include "CTiglInterpolateBsplineWire.h"
 #include "CTiglInterpolateLinearWire.h"
@@ -35,6 +36,7 @@
 #include "CTiglTransformation.h"
 #include "math.h"
 #include "CCPACSWingProfile.h"
+#include "CCPACSWingProfileFactory.h"
 
 #include "gp_Pnt2d.hxx"
 #include "gp_Vec2d.hxx"
@@ -68,11 +70,23 @@
 namespace tigl
 {
 
+// type creation function used by factory
+PTiglWingProfileAlgo CreateProfilePointList(const CCPACSWingProfile& profile, const std::string& cpacsPath)
+{
+    return PTiglWingProfileAlgo(new CCPACSWingProfilePointList(profile, cpacsPath));
+}
+
+// register algo at factory
+AUTORUN(CCPACSWingProfilePointList)
+{
+    return CCPACSWingProfileFactory::Instance().RegisterAlgo(CCPACSWingProfilePointList::CPACSID(), CreateProfilePointList);
+}
+
 // Constructor
 CCPACSWingProfilePointList::CCPACSWingProfilePointList(const CCPACSWingProfile& profile, const std::string& path)
     : profileRef(profile)
 {
-    ProfileDataXPath=path;
+    ProfileDataXPath=path + "/" + CPACSID();
     profileWireAlgo = WireAlgoPointer(new CTiglInterpolateBsplineWire);
 }
 
@@ -80,6 +94,11 @@ CCPACSWingProfilePointList::CCPACSWingProfilePointList(const CCPACSWingProfile& 
 CCPACSWingProfilePointList::~CCPACSWingProfilePointList(void)
 {
     delete profileWireAlgo;
+}
+
+std::string CCPACSWingProfilePointList::CPACSID()
+{
+    return "pointList";
 }
 
 // Cleanup routine

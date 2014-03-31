@@ -34,11 +34,6 @@
 #include "tigl_config.h"
 #include "CTiglTransformation.h"
 
-#ifdef TIGL_USE_XCAF
-#include "TDF_Label.hxx"
-#include "Handle_XCAFDoc_ShapeTool.hxx"
-#endif
-
 class TopoDS_Shape;
 
 
@@ -69,12 +64,6 @@ public:
 
     // Returns the Geometric type of this component, e.g. Wing or Fuselage
     virtual TiglGeometricComponentType GetComponentType(void) = 0;
-
-#ifdef TIGL_USE_XCAF
-    // builds data structure for a TDocStd_Application
-    // mostly used for export
-    virtual TDF_Label ExportDataStructure(class CCPACSConfiguration&, Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label) = 0;
-#endif
 
 protected:
     // Resets the geometric component.

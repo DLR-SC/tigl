@@ -24,19 +24,64 @@
 #include "tiglcommonfunctions.h"
 
 #include "CTiglError.h"
+#include "CNamedShape.h"
+#include "boolean_operations/CBooleanOperTools.h"
+#include "boolean_operations/BRepSewingToBRepBuilderShapeAdapter.h"
+#include "ListPNamedShape.h"
 
 #include "Geom_Curve.hxx"
+#include "Geom_Surface.hxx"
 #include "BRep_Tool.hxx"
 #include "BRepTools_WireExplorer.hxx"
 #include "TopExp_Explorer.hxx"
+#include "TopExp.hxx"
 #include "TopoDS.hxx"
+#include "TopTools_IndexedMapOfShape.hxx"
+#include "TopTools_HSequenceOfShape.hxx"
 #include "GeomAdaptor_Curve.hxx"
 #include "BRepAdaptor_CompCurve.hxx"
 #include "BRepAdaptor_Curve.hxx"
 #include "GCPnts_AbscissaPoint.hxx"
+#include "BRep_Builder.hxx"
 #include "BRepBuilderAPI_MakeWire.hxx"
 #include "BRepBuilderAPI_MakeEdge.hxx"
 #include "GeomAPI_ProjectPointOnCurve.hxx"
+#include "BRepTools.hxx"
+#include "BRepBuilderAPI_Sewing.hxx"
+#include "Bnd_Box.hxx"
+#include "BRepBndLib.hxx"
+
+#include <Geom2d_Curve.hxx>
+#include <Geom2d_Line.hxx>
+#include <Geom2d_TrimmedCurve.hxx>
+#include <Geom2dAPI_InterCurveCurve.hxx>
+
+#include "ShapeAnalysis_FreeBounds.hxx"
+
+#include <list>
+#include <algorithm>
+#include <cassert>
+
+// OCAF
+#include "TDF_Label.hxx"
+#include "TDataStd_Name.hxx"
+#ifdef TIGL_USE_XCAF
+#include "XCAFDoc_ShapeTool.hxx"
+#endif
+
+namespace
+{
+    struct IsSame
+    {
+        IsSame(double tolerance) : _tol(tolerance) {}
+        bool operator() (double first, double second)
+        {
+            return (fabs(first-second)<_tol);
+        }
+
+        double _tol;
+    };
+} // anonymous namespace
 
 // calculates a wire's circumference
 Standard_Real GetWireLength(const TopoDS_Wire& wire)
@@ -131,8 +176,223 @@ Standard_Real ProjectPointOnWire(const TopoDS_Wire& wire, gp_Pnt p)
     return partLength/GetWireLength(wire);
 }
 
+gp_Pnt GetCentralFacePoint(const TopoDS_Face& face)
+{
+    // compute point on face
+    Standard_Real umin, umax, vmin, vmax;
+
+    gp_Pnt p;
+
+    Handle_Geom_Surface surface = BRep_Tool::Surface(face);
+    BRepTools::UVBounds(face, umin, umax, vmin, vmax);
+    Standard_Real umean = 0.5*(umin+umax);
+    Standard_Real vmean = 0.5*(vmin+vmax);
+
+
+    // compute intersection of u-iso line with face boundaries
+    Handle_Geom2d_Curve uiso = new Geom2d_Line(
+                gp_Pnt2d(umean,0.),
+                gp_Dir2d(0., 1.)
+                );
+
+    TopExp_Explorer exp (face,TopAbs_EDGE);
+    std::list<double> intersections;
+    for (; exp.More(); exp.Next()) {
+        TopoDS_Edge edge = TopoDS::Edge(exp.Current());
+        Standard_Real first, last;
+
+        // Get geomteric curve from edge
+        Handle_Geom2d_Curve hcurve = BRep_Tool::CurveOnSurface(edge, face, first, last);
+        hcurve = new Geom2d_TrimmedCurve(hcurve, first, last);
+
+        Geom2dAPI_InterCurveCurve intersector(uiso, hcurve);
+        for (int ipoint = 0; ipoint < intersector.NbPoints(); ++ipoint) {
+            gp_Pnt2d p = intersector.Point(ipoint+1);
+            intersections.push_back(p.Y());
+        }
+    }
+
+    // remove duplicate solutions defined by tolerance
+    double tolerance = 1e-5;
+    intersections.sort();
+    intersections.unique(IsSame((vmax-vmin)*tolerance));
+
+    // normally we should have at least two intersections
+    // also the number of sections should be even - else something is really strange
+    //assert(intersections.size() % 2 == 0);
+    if (intersections.size() >= 2) {
+        std::list<double>::iterator it = intersections.begin();
+        double int1 = *it++;
+        double int2 = *it;
+        vmean = (int1 + int2)/2.;
+    }
+
+    surface->D0(umean, vmean, p);
+
+    return p;
+}
+
+ListPNamedShape GroupFaces(const PNamedShape shape, tigl::ShapeStoreType groupType)
+{
+    ListPNamedShape shapeList;
+    if (!shape) {
+        return shapeList;
+    }
+
+    if (groupType == tigl::NAMED_COMPOUNDS) {
+        BRep_Builder b;
+        TopTools_IndexedMapOfShape faceMap;
+        std::map<PNamedShape, TopoDS_Shape> map;
+        TopExp::MapShapes(shape->Shape(),   TopAbs_FACE, faceMap);
+        if (faceMap.Extent() == 0) {
+            // return the shape as is
+            shapeList.push_back(shape);
+            return shapeList;
+        }
+        
+        for (int iface = 1; iface <= faceMap.Extent(); ++iface) {
+            TopoDS_Face face = TopoDS::Face(faceMap(iface));
+            PNamedShape origin = shape->GetFaceTraits(iface-1).Origin();
+
+            std::map<PNamedShape, TopoDS_Shape>::iterator it = map.find(origin);
+            if (it == map.end()) {
+                TopoDS_Compound c;
+                b.MakeCompound(c);
+                b.Add(c, face);
+                map[origin] = c;
+            }
+            else {
+                TopoDS_Shape& c = it->second;
+                b.Add(c, face);
+            }
+        }
+
+        // create Named Shapes
+        std::map<PNamedShape, TopoDS_Shape>::iterator it;
+        for (it = map.begin(); it != map.end(); ++it) {
+            PNamedShape  origin     = it->first;
+            TopoDS_Shape toposhape  = it->second;
+            PNamedShape curshape;
+            if (origin) {
+                curshape = PNamedShape(new CNamedShape(toposhape, origin->Name()));
+                curshape->SetShortName(origin->ShortName());
+            }
+            else {
+                curshape = PNamedShape(new CNamedShape(toposhape, shape->Name()));
+                curshape->SetShortName(shape->ShortName());
+            }
+            // set the original face traits
+            CBooleanOperTools::AppendNamesToShape(shape, curshape);
+
+            // make shells
+            curshape = CBooleanOperTools::Shellify(curshape);
+            shapeList.push_back(curshape);
+        }
+    }
+    else if (groupType == tigl::WHOLE_SHAPE) {
+        shapeList.push_back(shape);
+    }
+    else if (groupType == tigl::FACES) {
+        // store each face as an own shape
+        TopTools_IndexedMapOfShape faceMap;
+        TopExp::MapShapes(shape->Shape(), TopAbs_FACE, faceMap);
+        if (faceMap.Extent() == 0) {
+            // return the shape as is
+            shapeList.push_back(shape);
+            return shapeList;
+        }
+        
+        for (int iface = 1; iface <= faceMap.Extent(); ++iface) {
+            TopoDS_Face face = TopoDS::Face(faceMap(iface));
+            const CFaceTraits& traits = shape->GetFaceTraits(iface-1);
+
+            PNamedShape faceShape;
+            if (traits.Origin()) {
+                faceShape = PNamedShape(new CNamedShape(face, traits.Origin()->Name()));
+                faceShape->SetShortName(traits.Origin()->ShortName());
+            }
+            else {
+                faceShape = PNamedShape(new CNamedShape(face, shape->Name()));
+                faceShape->SetShortName(shape->ShortName());
+            }
+            faceShape->SetFaceTraits(0, shape->GetFaceTraits(iface-1));
+            shapeList.push_back(faceShape);
+        }
+        
+    }
+    return shapeList;
+}
+
 // projects a point onto the line (lineStart<->lineStop) and returns the projection parameter
 Standard_Real ProjectPointOnLine(gp_Pnt p, gp_Pnt lineStart, gp_Pnt lineStop)
 {
     return gp_Vec(lineStart, p) * gp_Vec(lineStart, lineStop) / gp_Vec(lineStart, lineStop).SquareMagnitude();
 }
+
+// Returns the coordinates of the bounding box of the shape
+void GetShapeExtension(const TopoDS_Shape& shape,
+                       double& minx, double& maxx,
+                       double& miny, double& maxy,
+                       double& minz, double& maxz)
+{
+    Bnd_Box boundingBox;
+    BRepBndLib::Add(shape, boundingBox);
+    boundingBox.Get(minx, miny, minz, maxx, maxy, maxz);
+}
+
+#ifdef TIGL_USE_XCAF
+void InsertShapeToCAF(Handle(XCAFDoc_ShapeTool) myAssembly, const PNamedShape shape, bool useShortnames)
+{
+    if (!shape) {
+        return;
+    }
+
+    TopTools_IndexedMapOfShape faceMap;
+    TopExp::MapShapes(shape->Shape(),   TopAbs_FACE, faceMap);
+    // any faces?
+    if (faceMap.Extent() > 0) {
+        TDF_Label shapeLabel = myAssembly->NewShape();
+        myAssembly->SetShape(shapeLabel, shape->Shape());
+        if (useShortnames) {
+            TDataStd_Name::Set(shapeLabel, shape->ShortName());
+        }
+        else {
+            TDataStd_Name::Set(shapeLabel, shape->Name());
+        }
+    }
+    else {
+        // no faces, export edges as wires
+        Handle(TopTools_HSequenceOfShape) Edges = new TopTools_HSequenceOfShape();
+        TopExp_Explorer myEdgeExplorer (shape->Shape(), TopAbs_EDGE);
+        while (myEdgeExplorer.More()) {
+            Edges->Append(TopoDS::Edge(myEdgeExplorer.Current()));
+            myEdgeExplorer.Next();
+        }
+        ShapeAnalysis_FreeBounds::ConnectEdgesToWires(Edges, 1e-7, false, Edges);
+        for (int iwire = 1; iwire <= Edges->Length(); ++iwire) {
+            TDF_Label wireLabel = myAssembly->NewShape();
+            myAssembly->SetShape(wireLabel, Edges->Value(iwire));
+            if (useShortnames) {
+                TDataStd_Name::Set(wireLabel, shape->ShortName());
+            }
+            else {
+                TDataStd_Name::Set(wireLabel, shape->Name());
+            }
+        }
+    }
+}
+
+#endif
+
+// Returns a unique Hashcode for a specific geometric component
+int GetComponentHashCode(tigl::ITiglGeometricComponent& component)
+{
+    TopoDS_Shape& loft = component.GetLoft();
+    if (!loft.IsNull()) {
+        return loft.HashCode(2294967295);
+    }
+    else {
+        return 0;
+    }
+}
+

@@ -24,8 +24,10 @@
 */
 
 #include "CTiglError.h"
+#include "CTiglTypeRegistry.h"
 #include "CTiglLogging.h"
 #include "CTiglTransformation.h"
+#include "CCPACSWingProfileFactory.h"
 #include "math.h"
 
 #include "gp_Pnt2d.hxx"
@@ -94,16 +96,33 @@ namespace
     }
 } // anonymous namespace
 
+
+// register profile algo at factory
+PTiglWingProfileAlgo CreateProfileCST(const CCPACSWingProfile& profile, const std::string& cpacsPath)
+{
+    return PTiglWingProfileAlgo(new CCPACSWingProfileCST(profile, cpacsPath));
+}
+
+AUTORUN(CCPACSWingProfileCST)
+{
+    return CCPACSWingProfileFactory::Instance().RegisterAlgo(CCPACSWingProfileCST::CPACSID(), CreateProfileCST);
+}
+
 // Constructor
 CCPACSWingProfileCST::CCPACSWingProfileCST(const CCPACSWingProfile&, const std::string& path)
 {
-    ProfileDataXPath=path;
+    ProfileDataXPath=path + "/" + CPACSID();
     trailingEdge.Nullify();
 }
 
 // Destructor
 CCPACSWingProfileCST::~CCPACSWingProfileCST(void)
 {
+}
+
+std::string CCPACSWingProfileCST::CPACSID()
+{
+    return "cst2D";
 }
 
 // Cleanup routine

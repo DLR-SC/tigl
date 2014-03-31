@@ -189,11 +189,14 @@ def main():
     logs = [l.partition(" ")[2] for l in logs if l]
 
     # get commit messages and
-    logs = run("git log --format='###seperator###%%s -- %%b' %s..%s" % (last_commit, current_commit)).split('###seperator###')
+    logs = run("git log --pretty=format:\"###seperator###%%s -- %%b\" %s..%s" % (last_commit, current_commit)).split('###seperator###')
     # skip message body if non-existent
     logs = [l.rstrip(' -- \n') for l in logs if l]
     # remove newlines
     logs = [l.replace('\n', ' ') for l in logs]
+
+    # remove Conflict messages
+    logs = [l.split(" -- Conflicts:")[0] for l in logs]
 
     # get normal commit message heads
     #logs = run("git log --oneline --no-merges %s..%s" % (last_commit, current_commit)).split('\n')

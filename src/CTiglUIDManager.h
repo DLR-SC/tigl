@@ -34,6 +34,8 @@
 namespace tigl 
 {
 
+typedef std::map<const std::string, ITiglGeometricComponent*> ShapeContainerType;
+
 class CTiglUIDManager
 {
 public:
@@ -41,13 +43,13 @@ public:
     TIGL_EXPORT CTiglUIDManager(void);
 
     // Function to add a UID and a geometric component to the uid store.
-    TIGL_EXPORT void AddUID(const std::string& uid, CTiglAbstractPhysicalComponent* componentPtr);
+    TIGL_EXPORT void AddUID(const std::string& uid, ITiglGeometricComponent* componentPtr);
 
     // Checks if a UID already exists. 
     TIGL_EXPORT bool HasUID(const std::string& uid) const;
 
     // Returns a pointer to the geometric component for the given unique id.
-    TIGL_EXPORT CTiglAbstractPhysicalComponent* GetComponent(const std::string& uid);
+    TIGL_EXPORT ITiglGeometricComponent* GetComponent(const std::string& uid);
 
     // Returns the parent component for a component or a null pointer
     // if there is no parent.
@@ -55,6 +57,9 @@ public:
 
     // Returns the root component of the geometric topology.
     TIGL_EXPORT CTiglAbstractPhysicalComponent* GetRootComponent(void);
+
+    // Returns the contianer with all registered shapes
+    TIGL_EXPORT const ShapeContainerType& GetShapeContainer();
 
     // Clears the uid store
     TIGL_EXPORT void Clear(void);
@@ -71,6 +76,10 @@ protected:
 
     // Builds the parent child relationships.
     void BuildParentChildTree(void);
+    
+    
+    // Returns a pointer to the geometric component for the given unique id.
+    TIGL_EXPORT CTiglAbstractPhysicalComponent* GetPhysicalComponent(const std::string& uid);
 
 private:
     typedef std::map<const std::string, CTiglAbstractPhysicalComponent*> UIDStoreContainerType;
@@ -81,7 +90,8 @@ private:
     // Assignment operator
     void operator=(const CTiglUIDManager& );
 
-    UIDStoreContainerType           uidStore;
+    UIDStoreContainerType           physicalShapes;
+    ShapeContainerType              allShapes;
     bool                            invalidated;          /**< Internal state flag */
     CTiglAbstractPhysicalComponent* rootComponent;        /**< Ptr to the root component of the component tree */
 

@@ -46,6 +46,8 @@
 #include "BRepTools.hxx"
 #include <BRepBndLib.hxx>
 #include <Bnd_Box.hxx>
+#include "CTiglFusePlane.h"
+#include "CNamedShape.h"
 
 #include <cfloat>
 
@@ -73,7 +75,7 @@ void CCPACSConfiguration::Invalidate(void)
 {
     wings.Invalidate();
     fuselages.Invalidate();
-    fusedAirplane.Nullify();
+    aircraftFuser.reset();
     shapeCache.Clear();
     configUID = "";
 }
@@ -118,103 +120,14 @@ void CCPACSConfiguration::transformAllComponents(CTiglAbstractPhysicalComponent*
 
 
 // Returns the boolean fused airplane as TopoDS_Shape
-TopoDS_Shape& CCPACSConfiguration::GetFusedAirplane(void)
+PTiglFusePlane CCPACSConfiguration::AircraftFusingAlgo(void)
 {
-    if (fusedAirplane.IsNull()) {
-        CTiglAbstractPhysicalComponent* rootComponent = uidManager.GetRootComponent();
-        BuildFusedPlane(rootComponent);
+    if (! aircraftFuser) {
+        aircraftFuser = PTiglFusePlane(new CTiglFusePlane(*this));
     }
-    return(fusedAirplane);
+    return aircraftFuser;
 }
 
-
-// This function does the boolean fusing
-void CCPACSConfiguration::BuildFusedPlane(CTiglAbstractPhysicalComponent* parent)
-{
-    if (!parent) {
-        throw CTiglError("Null Pointer argument in CCPACSConfiguration::OutputComponentTree", TIGL_NULL_POINTER);
-    }
-
-    bool calcFullModel = true;
-
-    CTiglAbstractPhysicalComponent::ChildContainerType children = parent->GetChildren(false);
-
-    // count number of fusing operations
-    int fuseCount = 0, ifuse = 0;
-    CTiglAbstractPhysicalComponent::ChildContainerType::iterator pIter;
-    for (pIter = children.begin(); pIter != children.end(); ++pIter) {
-        CTiglAbstractPhysicalComponent* child = *pIter;
-        if (child->GetSymmetryAxis()!= TIGL_NO_SYMMETRY && calcFullModel) {
-            fuseCount++;
-        }
-        if (pIter != children.begin()) {
-            fuseCount++;
-        }
-    }
-    if (parent->GetSymmetryAxis() != TIGL_NO_SYMMETRY && calcFullModel && (parent->GetComponentType()& TIGL_COMPONENT_WING)) {
-        fuseCount++;
-    }
-    // parent with childs
-    if (!children.empty()) {
-        fuseCount++;
-    }
-
-    // this somewhat complicated fusing is the only way, that the result of all tested planes was okay
-    TopoDS_Shape fusedChilds;
-    for (pIter = children.begin(); pIter != children.end(); ++pIter) {
-        CTiglAbstractPhysicalComponent* child = *pIter;
-        TopoDS_Shape fusedChild = child->GetLoft();
-        TopoDS_Shape tmpShape = child->GetMirroredLoft();
-        if (!tmpShape.IsNull() && calcFullModel) {
-            try {
-                fusedChild = BRepAlgoAPI_Fuse(fusedChild, tmpShape);
-                LOG(INFO) << (++ifuse)/(double)fuseCount * 100. << "% ";
-            }
-            catch(...) {
-                throw CTiglError( "Error fusing "  + child->GetUID() + " with mirrored component ", TIGL_ERROR);
-            }
-        }
-        if (!fusedChilds.IsNull()) {
-            try {
-                fusedChilds = BRepAlgoAPI_Fuse(fusedChilds, fusedChild);
-                LOG(INFO) << (++ifuse)/(double)fuseCount * 100. << "% ";
-            }
-            catch(...) {
-                throw CTiglError( "Error fusing component"  + child->GetUID() + " with plane ", TIGL_ERROR);
-            }
-        }
-        else {
-            fusedChilds = fusedChild;
-        }
-    }
-
-    //create root component
-    TopoDS_Shape parentShape = parent->GetLoft();
-    TopoDS_Shape tmpShape = parent->GetMirroredLoft();
-    if (!tmpShape.IsNull() && calcFullModel && (parent->GetComponentType()& TIGL_COMPONENT_WING)) {
-        try {
-            parentShape = BRepAlgoAPI_Fuse(parentShape, tmpShape);
-            LOG(INFO) << (++ifuse)/(double)fuseCount * 100. << "% ";
-        }
-        catch(...) {
-            throw CTiglError( "Error fusing "  + parent->GetUID() + " mirrored component!", TIGL_ERROR);
-        }
-    }
-
-    // fuse childs with root
-    if (!fusedChilds.IsNull()) {
-        try {
-            fusedAirplane = BRepAlgoAPI_Fuse(parentShape, fusedChilds);
-            LOG(INFO) << (++ifuse)/(double)fuseCount * 100. << "% ";
-        }
-        catch(...) {
-            throw CTiglError( "Error fusing parent loft \""  + parent->GetUID() + "\" with its childs!", TIGL_ERROR);
-        }
-    }
-    else {
-        fusedAirplane = parentShape;
-    }
-}
 
 // Returns the underlying tixi document handle used by a CPACS configuration
 TixiDocumentHandle CCPACSConfiguration::GetTixiDocumentHandle(void) const
@@ -354,7 +267,7 @@ double CCPACSConfiguration::GetAirplaneLenth(void)
 }
 
 // Returns the uid manager
-std::string CCPACSConfiguration::GetUID(void)
+const std::string& CCPACSConfiguration::GetUID(void) const
 {
     return configUID;
 }

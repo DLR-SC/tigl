@@ -27,6 +27,10 @@
 
 #include <cassert>
 #include <iomanip>
+#include <limits>
+
+#include <GeomFill.hxx>
+#include <Geom_Line.hxx>
 
 namespace tigl
 {
@@ -146,11 +150,21 @@ TiglReturnCode CTiglPointTranslator::translate(const CTiglPoint& p, double* eta,
     }
     double etaxsi[2];
     //initial guess
-    etaxsi[0] = 0.5;
-    etaxsi[1] = 0.5;
+    double minDist = std::numeric_limits<double>::max();
+    for (double cureta = 0.; cureta <= 1.0; cureta += 0.2) {
+        for (double curxsi = 0.; curxsi <= 1.0; curxsi += 0.2) {
+            CTiglPoint curp;
+            calcPoint(cureta, curxsi, curp);
+            double dist = curp.distance2(p);
+            if (dist < minDist) {
+                etaxsi[0] = cureta;
+                etaxsi[1] = curxsi;
+                minDist = dist;
+            }
+        }
+    }
     
     assert(initialized);
-
     projector.setProjectionPoint(p);
 
     TiglReturnCode ret = CTiglOptimizer::optNewton2d(projector, etaxsi, 1e-6, 1e-8);
@@ -217,20 +231,14 @@ TiglReturnCode CTiglPointTranslator::project(const CTiglPoint& xx, CTiglPoint* p
         LOG(ERROR) << "Error in CTiglPointTranslator::project(): p may not be a NULL Pointer!" << std::endl;
         return TIGL_NULL_POINTER;
     }
-    double etaxsi[2];
-    etaxsi[0] = 0; etaxsi[1] = 0;
 
-    assert(initialized);
-
-    projector.setProjectionPoint(xx);
-
-
-    TiglReturnCode ret = CTiglOptimizer::optNewton2d(projector, etaxsi, 1e-8, 1e-8);
-    if (ret != TIGL_SUCCESS){
+    double eta, xsi;
+    TiglReturnCode ret = translate(xx, &eta, &xsi);
+    if (ret != TIGL_SUCCESS) {
         return ret;
     }
+    calcPoint(eta,xsi, *pOnSurf);
     
-    calcPoint(etaxsi[0],etaxsi[1],*pOnSurf);
     return TIGL_SUCCESS;
 }
 

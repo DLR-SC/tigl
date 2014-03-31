@@ -567,7 +567,6 @@ TEST(WingComponentSegment4, tiglWingComponentSegmentPointGetSegmentEtaXsi_BUG2)
     ASSERT_STREQ("D150_wing_1Segment3ID", segmentUID);
     ASSERT_NEAR(0.5, sEta, 0.0001);
 
-
     tiglCloseCPACSConfiguration(tiglHandle);
     tixiCloseDocument(tixiHandle);
 }
@@ -590,6 +589,15 @@ TEST_F(WingComponentSegment, tiglWingComponentSegmentPointGetSegmentEtaXsi_BUG4)
     double sEta = 0., sXsi = 0.;
     char *wingUID = NULL, *segmentUID = NULL;
     TiglReturnCode tiglRet = tiglWingComponentSegmentPointGetSegmentEtaXsi(tiglHandle, "D150_VAMP_SL1_CompSeg1", 0.95, 0.714, &wingUID, &segmentUID, &sEta, &sXsi);
+    ASSERT_EQ(TIGL_SUCCESS, tiglRet);
+}
+
+TEST_F(WingComponentSegment, tiglWingComponentFindSegment_BUG)
+{
+    double px, py, pz;
+    char *wingUID = NULL, *segmentUID = NULL;
+    ASSERT_EQ(TIGL_SUCCESS, tiglWingGetUpperPoint(tiglHandle, 1, 1, 0.5, 0.5, &px, &py, &pz));
+    TiglReturnCode tiglRet = tiglWingComponentSegmentFindSegment(tiglHandle, "D150_VAMP_W1_CompSeg1", px, py, pz, &segmentUID, &wingUID);
     ASSERT_EQ(TIGL_SUCCESS, tiglRet);
 }
 

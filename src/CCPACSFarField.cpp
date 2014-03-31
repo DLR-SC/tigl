@@ -29,14 +29,6 @@
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <TopExp_Explorer.hxx>
 
-#ifdef TIGL_USE_XCAF
-#include <XCAFDoc_ShapeTool.hxx>
-#include <XCAFApp_Application.hxx>
-#include <XCAFDoc_DocumentTool.hxx>
-#include <TDataStd_Name.hxx>
-#include <TDataXtd_Shape.hxx>
-#endif
-
 namespace tigl
 {
 
@@ -150,28 +142,6 @@ TiglGeometricComponentType CCPACSFarField::GetComponentType(void)
 {
     return TIGL_COMPONENT_LOGICAL;
 }
-
-#ifdef TIGL_USE_XCAF
-// builds data structure for a TDocStd_Application
-// mostly used for export
-TDF_Label CCPACSFarField::ExportDataStructure(CCPACSConfiguration&, Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label)
-{
-    // add faces of current shape
-    TopExp_Explorer faceExplorer;
-    int iface = 1;
-    for (faceExplorer.Init(GetLoft(), TopAbs_FACE); faceExplorer.More(); faceExplorer.Next()) {
-        const TopoDS_Face& currentFace = TopoDS::Face(faceExplorer.Current());
-
-        TDF_Label aLabel = myAssembly->AddShape(currentFace, false);
-        std::stringstream stream;
-        stream << GetUID() << "_face" << iface++;
-        TDataStd_Name::Set (aLabel, stream.str().c_str());
-
-    }
-
-    return label;
-}
-#endif
 
 } // namespace tigl
 

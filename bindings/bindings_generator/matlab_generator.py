@@ -96,7 +96,7 @@ class MatlabGenerator(object):
                 string = 'plhs[%d] = mxCreateDoubleMatrix(1, 1, mxREAL);\n' \
                     % index
                 string +='*mxGetPr(plhs[%d]) = %s;\n' % (index, arg.name)
-            elif arg.type == 'int' and arg.npointer == 1:
+            elif (arg.type == 'int' or arg.type == 'size_t') and arg.npointer == 1:
                 string = 'plhs[%d] = mxCreateDoubleMatrix(1, 1, mxREAL);\n' \
                     % index
                 string +='*mxGetPr(plhs[%d]) = (double)%s;\n' % (index, arg.name)
@@ -174,7 +174,7 @@ class MatlabGenerator(object):
         
     
     def create_mex_function(self, func):
-        string = 'void mex_%s%s {\n' % (func.method_name, self.mex_body)
+        string = 'void mex_%s%s\n{\n' % (func.method_name, self.mex_body)
         #declare variables
         inargs = [arg for arg in func.arguments if not arg.is_outarg]
         inargs_wo_sizes = [arg for arg in inargs if not arg.is_sizearg or func.arguments[arg.size_ref].is_outarg]
@@ -237,18 +237,20 @@ class MatlabGenerator(object):
         
         #check correct number in inargs
         string += 4*' ' + '/* check for corect number of in and out args */\n'
-        string += 4*' ' + 'if (nrhs != %d)\n' % (len(inargs_wo_sizes) + 1 + add_arg_count)
+        string += 4*' ' + 'if (nrhs != %d) {\n' % (len(inargs_wo_sizes) + 1 + add_arg_count)
         
         string += 4*' ' + '    mexErrMsgTxt("%s: Wrong number of arguments\\n");\n' % pseudocall
+        string += 4*' ' + '}\n'
         
         #check correct bumber of outargs
         noutargs = len(outargs)
         if not func.returns_error and func.return_value.type != 'void':
             noutargs += 1
             
-        string += 4*' ' + 'if (nlhs != %d)\n' % (noutargs)
+        string += 4*' ' + 'if (nlhs != %d) {\n' % (noutargs)
         string += 4*' ' + '    mexErrMsgTxt("%s: Wrong number of output values. \
 This function returns %d value(s)\\n");\n' % (pseudocall, noutargs)
+        string += 4*' ' + '}\n'
 
         string += '\n'
         
@@ -285,6 +287,9 @@ This function returns %d value(s)\\n");\n' % (pseudocall, noutargs)
             if not arg.arrayinfos['is_array']:
                 if arg.type == 'int':
                     string += 4*' ' + '%s = mxToInt(prhs[%d]);\n' \
+                        % (arg.name, index+1)
+                elif arg.type == 'size_t':
+                    string += 4*' ' + '%s = mxToSize_t(prhs[%d]);\n' \
                         % (arg.name, index+1)
                 elif arg.is_string:
                     string += 4*' ' + 'mxToString(prhs[%d], &%s);\n' \
@@ -369,7 +374,7 @@ extern "C" {
 
 '''
         string += '/** main entry point of MATLAB, deals as a function dispatcher */\n'
-        string += 'void mexFunction%s{\n' % self.mex_body
+        string += 'void mexFunction%s\n{\n' % self.mex_body
         
         string += '''
     char * functionName = NULL;
@@ -386,8 +391,9 @@ extern "C" {
         for index, func in enumerate(defs):
             if index > 0:
                 call += 'else '
-            call += 'if (strcmp(functionName, "%s") == 0)\n' % func.method_name
+            call += 'if (strcmp(functionName, "%s") == 0) {\n' % func.method_name
             call += '    mex_%s(nlhs, plhs, nrhs, prhs);\n' % func.method_name
+            call += '}\n'
         
         call += '''else {
     // this is only executed if the function could not be identified
@@ -416,14 +422,14 @@ mxFree(functionName);
         string = ''
         mycodename = self.cparser.returncode_str if self.cparser.returncode_str != "" else 'int'
         
-        string += 'void handleError(const char * funcname, %s code) {\n' % (mycodename)
+        string += 'void handleError(const char * funcname, %s code)\n{\n' % (mycodename)
      
         if self.cparser.returncode_str in self.cparser.enums:
             successcode = '%s' % (self.cparser.enums[self.cparser.returncode_str][0])
         else:
             successcode = '0'
 
-        string += '    if (code != %s){\n' % successcode
+        string += '    if (code != %s) {\n' % successcode
         string += '        char errormsg[1024];\n'
         string += '        sprintf(errormsg, "Error: \\"%s\\" returned code %d", funcname, code);\n'
         string += '        mexErrMsgTxt(errormsg);\n'

@@ -29,19 +29,19 @@
 
 #include "tigl_config.h"
 #include "tigl_internal.h"
-#include "tixi.h"
-#include "CTiglError.h"
 #include "CCPACSConfiguration.h"
 #include <string>
-
-#include "TopoDS_Shape.hxx"
-#ifdef TIGL_USE_XCAF
-#include "Handle_TDocStd_Document.hxx"
-#endif
 
 
 namespace tigl
 {
+
+enum ShapeStoreType
+{
+    WHOLE_SHAPE,           /** Inserts the shape as it is into IGES. All faces will be named correctly but they will not be grouped by name */
+    NAMED_COMPOUNDS,       /** Collects all faces with the same origin into compounds. All faces are named correctly */
+    FACES                  /** Exports each face as its own group. The group name and the face name are identical    */
+};
 
 class CCPACSImportExport
 {
@@ -53,14 +53,6 @@ public:
 
     // Virtual Destructor
     TIGL_EXPORT virtual ~CCPACSImportExport(void);
-
-#ifdef TIGL_USE_XCAF
-    Handle_TDocStd_Document buildXDEStructure();
-#endif
-
-
-protected:
-        
 
 private:
     CCPACSConfiguration&    myConfig;

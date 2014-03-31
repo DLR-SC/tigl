@@ -66,9 +66,6 @@ public:
     // Sets symmetry axis
     TIGL_EXPORT virtual void SetSymmetryAxis(const std::string& axis);
 
-    // Returns a unique Hashcode for a specific geometric component
-    TIGL_EXPORT int GetComponentHashCode(void);
-
     // Get transformation object
     TIGL_EXPORT virtual CTiglTransformation GetTransformation(void);
 
