@@ -96,7 +96,7 @@ typedef enum TiglReturnCode TiglReturnCode;
  \ingroup Enums
  Definition of possible logging levels
 */
-enum TiglLogLevel
+enum TiglLogLevel 
 {
     TILOG_SILENT   =0, /*!< No messages are printed. TiGL is completely silent, even in case of errors. */
     TILOG_ERROR    =1, /*!< Only error messages are printed. */
@@ -1317,7 +1317,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSymmetry(TiglCPACSConfigurationHand
 
 
 /**
-* @brief Returns the segmentUID and wingUID for a given point on a componentSegment.
+* @brief Returns the segmentUID and wingUID for a given point on a componentSegment. The returned strings must not be freed by the user anymore.
 *
 *
 * <b>Fortran syntax:</b>
@@ -2511,8 +2511,10 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetMinumumDistanceToGround(TiglCPA
 /*@{*/
 
 /**
-* @brief Returns a point on the intersection line of two geometric components. Often there are more
-*          that one intersection line, therefore you need to specify the line.
+* @brief <b>This is a deprecated function and will be removed in future releases.
+* Use ::tiglIntersectComponents and ::tiglIntersectGetPoint instead.</b>
+* The function returns a point on the intersection line of two geometric components. Often there are more
+* that one intersection line, therefore you need to specify the line.
 *
 * Returns a point on the intersection line between a surface and a wing in dependence
 * of parameter eta which range from 0.0 to 1.0.
@@ -2555,7 +2557,9 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglComponentIntersectionPoint(TiglCPACSConfig
                                                                  double* pointZPtr);
 
 /**
-* @brief Convienience function to returns a list of points on the intersection line of two geometric components. 
+* @brief <b>This is a deprecated function and will be removed in future releases.
+* Use ::tiglIntersectComponents and ::tiglIntersectGetPoint instead.</b>
+* Convienience function to returns a list of points on the intersection line of two geometric components. 
 * Often there are more that one intersection line, therefore you need to specify the line.
 *
 * Returns a point on the intersection line between a surface and a wing in dependence
@@ -2604,9 +2608,10 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglComponentIntersectionPoints(TiglCPACSConfi
                                                                   double* pointYArray,
                                                                   double* pointZArray);
 
-
 /**
-* @brief Returns the number if intersection lines of two geometric components.
+* @brief <b>This is a deprecated function and will be removed in future releases.
+* Use ::tiglIntersectGetLineCount in combination with ::tiglIntersectGetPoint instead.</b>
+* The function returns the number of intersection lines of two geometric components.
 *
 * <b>Fortran syntax:</b>
 *
@@ -2630,6 +2635,109 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglComponentIntersectionLineCount(TiglCPACSCo
                                                                      const char*  componentUidOne,
                                                                      const char*  componentUidTwo,
                                                                      int*   numWires);
+
+/**
+* @brief tiglIntersectComponents computes the intersection line(s) between two shapes
+* specified by their CPACS uid. It returns an intersection ID for further computations
+* on the result. To query points on the intersection line, ::tiglIntersectGetPoint has
+* to be called.
+*
+* @param[in]  cpacsHandle     Handle for the CPACS configuration
+* @param[in]  componentUidOne The UID of the first component
+* @param[in]  componentUidTwo The UID of the second component
+* @param[out] intersectionID  A unique identifier that is associated with the computed intersection.
+*
+*
+* @return
+*   - TIGL_SUCCESS if an intersection could be computed
+*   - TIGL_NOT_FOUND if the cpacs handle is not valid
+*   - TIGL_NULL_POINTER if either componentUidOne, componentUidTwo, or intersectionID are NULL pointers
+*   - TIGL_UID_ERROR if componentUidOne or componentUidTwo can not be found in the CPACS file
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglIntersectComponents(TiglCPACSConfigurationHandle cpacsHandle,
+                                                          const char*  componentUidOne,
+                                                          const char*  componentUidTwo,
+                                                          size_t* intersectionID);
+
+/**
+* @brief tiglIntersectWithPlane computes the intersection line(s) between a shape and a plane. 
+* It returns an intersection ID for further computations on the result. 
+* To query points on the intersection line, ::tiglIntersectGetPoint has
+* to be called.
+*
+* The shape has to be specified by its CPACS UID.
+* The plane is specified by a central point p on the plane and a normal vector n, which is
+* perpendicular to the plane. The normal vector must not be zero!
+*
+* @param[in]  cpacsHandle     Handle for the CPACS configuration
+* @param[in]  componentUid    The UID of the CPACS shape
+* @param[in]  px              X Coordinate of the plane center point
+* @param[in]  py              Y Coordinate of the plane center point
+* @param[in]  pz              Z Coordinate of the plane center point
+* @param[in]  nx              X value of the plane normal vector
+* @param[in]  ny              Y value of the plane normal vector
+* @param[in]  nz              Z value of the plane normal vector
+* @param[out] intersectionID  A unique identifier that is associated with the computed intersection.
+*
+*
+* @return
+*   - TIGL_SUCCESS if an intersection could be computed
+*   - TIGL_NOT_FOUND if the cpacs handle is not valid
+*   - TIGL_NULL_POINTER if either componentUid or intersectionID are NULL pointers
+*   - TIGL_UID_ERROR if componentUid can not be found in the CPACS file
+*   - TIGL_MATH_ERROR if the normal vector is zero
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglIntersectWithPlane(TiglCPACSConfigurationHandle cpacsHandle,
+                                                         const char*  componentUid,
+                                                         double px, double py, double pz,
+                                                         double nx, double ny, double nz,
+                                                         size_t* intersectionID);
+
+/**
+* @brief tiglIntersectGetLineCount return the number of intersection lines computed by 
+* ::tiglIntersectComponents or ::tiglIntersectWithPlane for the given intersectionID.
+*
+* @param[in]  cpacsHandle     Handle for the CPACS configuration
+* @param[in]  intersectionID  The intersection identifier returned by ::tiglIntersectComponents or ::tiglIntersectWithPlane
+* @param[out] lineCount       Number of intersection lines computed by ::tiglIntersectComponents or ::tiglIntersectWithPlane.
+*                             If no intersection could be computed, line count is 0.
+*
+* @return
+*   - TIGL_SUCCESS if no error occured
+*   - TIGL_NOT_FOUND if the cpacs handle  or the intersectionID is not valid
+*   - TIGL_NULL_POINTER if lineCount is a NULL pointer
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglIntersectGetLineCount(TiglCPACSConfigurationHandle cpacsHandle,
+                                                            size_t intersectionID,
+                                                            int* lineCount);
+
+/**
+* @brief tiglIntersectGetPoint samples a point on an intersection line calculated by
+* ::tiglIntersectComponents or ::tiglIntersectWithPlane.
+*
+* @param[in]  cpacsHandle     Handle for the CPACS configuration
+* @param[in]  intersectionID  The intersection identifier returned by ::tiglIntersectComponents or ::tiglIntersectWithPlane
+* @param[in]  lineIdx         Line index to sample from. To get the number of lines, call ::tiglIntersectGetLineCount.
+*                             1 <= lineIdx <= lineCount.
+* @param[in]  eta             Parameter on the curve that determines the point position, with 0 <= eta <= 1.
+* @param[out] pointX          X coordinate of the resulting point.
+* @param[out] pointY          Y coordinate of the resulting point.
+* @param[out] pointZ          Z coordinate of the resulting point.
+*
+* @return
+*   - TIGL_SUCCESS if no error occured
+*   - TIGL_NOT_FOUND if the cpacs handle  or the intersectionID is not valid
+*   - TIGL_NULL_POINTER if pointX, pointY, or pointZ are NULL pointers
+*   - TIGL_INDEX_ERROR if lineIdx is not in valid range
+*   - TIGL_MATH_ERROR if eta is not in range 0 <= eta <= 1
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglIntersectGetPoint(TiglCPACSConfigurationHandle cpacsHandle,
+                                                        size_t intersectionID,
+                                                        int lineIdx,
+                                                        double eta,
+                                                        double* pointX,
+                                                        double* pointY,
+                                                        double* pointZ);
 
 
 /*@}*/
@@ -2736,29 +2844,6 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportFusedWingFuselageIGES(TiglCPACSConfi
                                                                   const char* filenamePtr);
 
 
-/**
-* @brief Exports the geometry of a CPACS configuration to IGES format. In this version
-*        structure, names and metadata will also be exported as much as it is possible.
-*
-* To maintain compatibility with CATIA, the file suffix should be ".igs".
-*
-* <b>Fortran syntax:</b>
-*
-* tigl_export_structured_iges(integer cpacsHandle, character*n filenamePtr, integer returnCode)
-*
-* @param[in]  cpacsHandle Handle for the CPACS configuration
-* @param[in]  filenamePtr Pointer to an IGES export file name
-*
-* @return
-*   - TIGL_SUCCESS if no error occurred
-*   - TIGL_NOT_FOUND if no configuration was found for the given handle
-*   - TIGL_NULL_POINTER if filenamePtr is a null pointer
-*   - TIGL_ERROR if some other error occurred
-*/
-TIGL_COMMON_EXPORT TiglReturnCode tiglExportStructuredIGES(TiglCPACSConfigurationHandle cpacsHandle,
-                                                           const char* filenamePtr);
-
-
 // ***************
 //       STEP
 // ***************
@@ -2804,28 +2889,6 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportSTEP(TiglCPACSConfigurationHandle cp
 */
 TIGL_COMMON_EXPORT TiglReturnCode tiglExportFusedSTEP(TiglCPACSConfigurationHandle cpacsHandle,
                                                       const char* filenamePtr);
-
-
-/**
-* @brief Exports the geometry of a CPACS configuration to STEP format. In this version
-*        structure, names and metadata will also be exported as much as it is possible.
-*
-*
-* <b>Fortran syntax:</b>
-*
-* tigl_export_structured_step(integer cpacsHandle, character*n filenamePtr, integer returnCode)
-*
-* @param[in]  cpacsHandle Handle for the CPACS configuration
-* @param[in]  filenamePtr Pointer to an STEP export file name
-*
-* @return
-*   - TIGL_SUCCESS if no error occurred
-*   - TIGL_NOT_FOUND if no configuration was found for the given handle
-*   - TIGL_NULL_POINTER if filenamePtr is a null pointer
-*   - TIGL_ERROR if some other error occurred
-*/
-TIGL_COMMON_EXPORT TiglReturnCode tiglExportStructuredSTEP(TiglCPACSConfigurationHandle cpacsHandle,
-                                                           const char* filenamePtr);
 
 
 // ***************

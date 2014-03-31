@@ -23,17 +23,33 @@
 #ifndef CCPACSWINGPROFILEFACTORY_H
 #define CCPACSWINGPROFILEFACTORY_H
 #include <string>
+#include <map>
 #include "tixi.h"
 #include "tigl_internal.h"
+#include "PTiglWingProfileAlgo.h"
 
 namespace tigl 
 {
+
 class CCPACSWingProfile;
+class ITiglWingProfileAlgo;
+
+// registration function
+typedef PTiglWingProfileAlgo (*CreateProfileAlgoCallback)(const CCPACSWingProfile& profile, const std::string& cpacsPath);
 
 class CCPACSWingProfileFactory
 {
 public:
-    TIGL_EXPORT static ProfileAlgoPointer createProfileAlgo(TixiDocumentHandle tixiHandle, CCPACSWingProfile& profile, std::string & ProfileXPath);
+    static CCPACSWingProfileFactory& Instance();
+
+    bool RegisterAlgo(std::string cpacsID, CreateProfileAlgoCallback);
+
+    TIGL_EXPORT PTiglWingProfileAlgo CreateProfileAlgo(TixiDocumentHandle tixiHandle, CCPACSWingProfile& profile, std::string & ProfileXPath);
+private:
+    typedef std::map<std::string, CreateProfileAlgoCallback> ProfileMap;
+    ProfileMap profileMap;
+
+    CCPACSWingProfileFactory();
 };
 
 }

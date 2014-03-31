@@ -50,16 +50,16 @@ int main(int argc, char* argv[])
     int endSegmentCount;
     int n;
     int connectedSegmentIndex;
-	char* elementUID = NULL;
-	char* sectionUID = NULL;
-	int sectionIndex;
-	int elementIndex;
+    char* elementUID = NULL;
+    char* sectionUID = NULL;
+    int sectionIndex;
+    int elementIndex;
     double xsi;
     double eta;
     double zeta;
     double x, y, z;
     char *sectionIndexUID;
-	char *elementIndexUID;
+    char *elementIndexUID;
 
 
     /** 
@@ -67,16 +67,14 @@ int main(int argc, char* argv[])
     with TIXI to get a tixi handle and then use this handle to open
     and read the CPACS configuration.
     */
-	tixiReturn = tixiOpenDocument(filename, &tixiHandle);
-    if (tixiReturn != SUCCESS) 
-    {
+    tixiReturn = tixiOpenDocument(filename, &tixiHandle);
+    if (tixiReturn != SUCCESS) {
         fprintf(stdout, "\nError: tixiOpenDocument failed for file %s\n", filename);
         exit(1);
     }
     
     tiglReturn = tiglOpenCPACSConfiguration(tixiHandle, "VFW-614", &cpacsHandle);
-    if (tiglReturn != TIGL_SUCCESS) 
-    {
+    if (tiglReturn != TIGL_SUCCESS) {
         tixiCloseDocument(tixiHandle);
         fprintf(stdout, "\nError: tiglOpenCPACSConfiguration failed for file %s\n", filename);
         exit(1);
@@ -90,9 +88,8 @@ int main(int argc, char* argv[])
     tiglGetWingCount(cpacsHandle, &wingCount);
     fprintf(stdout, "Number of wings: %d\n", wingCount);
     /* Loop over all wings and get the number of wing segments */
-    for (wingIndex = 1; wingIndex <= wingCount; wingIndex++) 
-    {
-        tiglWingGetSegmentCount(cpacsHandle, wingIndex, &segmentCount);        
+    for (wingIndex = 1; wingIndex <= wingCount; wingIndex++) {
+        tiglWingGetSegmentCount(cpacsHandle, wingIndex, &segmentCount);
         fprintf(stdout, "Number of segments of wing number %d: %d\n", wingIndex, segmentCount);
     }
 
@@ -101,9 +98,8 @@ int main(int argc, char* argv[])
     tiglGetFuselageCount(cpacsHandle, &fuselageCount);
     fprintf(stdout, "Number of fuselages: %d\n", fuselageCount);
     /* Loop over all fuselages and get the number of fuselage segments */
-    for (fuselageIndex = 1; fuselageIndex <= fuselageCount; fuselageIndex++) 
-    {
-        tiglFuselageGetSegmentCount(cpacsHandle, fuselageIndex, &segmentCount);        
+    for (fuselageIndex = 1; fuselageIndex <= fuselageCount; fuselageIndex++) {
+        tiglFuselageGetSegmentCount(cpacsHandle, fuselageIndex, &segmentCount);
         fprintf(stdout, "Number of segments of fuselage number %d: %d\n", fuselageIndex, segmentCount);
     }
 
@@ -112,17 +108,13 @@ int main(int argc, char* argv[])
     /**
     * Loop over all wings and output some points.
     */
-    for (wingIndex = 1; wingIndex <= wingCount; wingIndex++) 
-    {
+    for (wingIndex = 1; wingIndex <= wingCount; wingIndex++) {
         fprintf(stdout, "Wing number %d:\n", wingIndex);
         tiglWingGetSegmentCount(cpacsHandle, wingIndex, &segmentCount);
-        for (segmentIndex = 1; segmentIndex <= segmentCount; segmentIndex++) 
-        {
+        for (segmentIndex = 1; segmentIndex <= segmentCount; segmentIndex++) {
             fprintf(stdout, "  Segment number %d:\n", segmentIndex);
-            for (eta = 0.0; eta <= 1.0; eta += 0.5) 
-            {
-                for (xsi = 0.0; xsi <= 1.0; xsi += 0.5) 
-                {
+            for (eta = 0.0; eta <= 1.0; eta += 0.5)  {
+                for (xsi = 0.0; xsi <= 1.0; xsi += 0.5) {
                     tiglWingGetUpperPoint(cpacsHandle, wingIndex, segmentIndex, eta, xsi, &x, &y, &z);
                     fprintf(stdout, "    eta = %f, xsi = %f: upper point = (%f, %f, %f)\n", eta, xsi, x, y, z);
 
@@ -137,17 +129,13 @@ int main(int argc, char* argv[])
     /**
     * Loop over all fuselages and output some points.
     */
-    for (fuselageIndex = 1; fuselageIndex <= fuselageCount; fuselageIndex++) 
-    {
+    for (fuselageIndex = 1; fuselageIndex <= fuselageCount; fuselageIndex++) {
         fprintf(stdout, "Fuselage number %d:\n", fuselageIndex);
         tiglFuselageGetSegmentCount(cpacsHandle, fuselageIndex, &segmentCount);
-        for (segmentIndex = 1; segmentIndex <= segmentCount; segmentIndex++) 
-        {
+        for (segmentIndex = 1; segmentIndex <= segmentCount; segmentIndex++) {
             fprintf(stdout, "  Segment number %d:\n", segmentIndex);
-            for (eta = 0.0; eta <= 1.0; eta += 0.5) 
-            {
-                for (zeta = 0.0; zeta <= 1.0; zeta += 0.5) 
-                {
+            for (eta = 0.0; eta <= 1.0; eta += 0.5) {
+                for (zeta = 0.0; zeta <= 1.0; zeta += 0.5) {
                     tiglFuselageGetPoint(cpacsHandle, fuselageIndex, segmentIndex, eta, zeta, &x, &y, &z);
                     fprintf(stdout, "    eta = %f, zeta = %f: point = (%f, %f, %f)\n", eta, zeta, x, y, z);
                 }
@@ -159,19 +147,16 @@ int main(int argc, char* argv[])
     /**
     * Loop over all wings and output for every segment the connected inner and outer segments.
     */
-    for (wingIndex = 1; wingIndex <= wingCount; wingIndex++) 
-    {
+    for (wingIndex = 1; wingIndex <= wingCount; wingIndex++) {
         fprintf(stdout, "Wing number %d:\n", wingIndex);
         tiglWingGetSegmentCount(cpacsHandle, wingIndex, &segmentCount);
-        for (segmentIndex = 1; segmentIndex <= segmentCount; segmentIndex++) 
-        {
+        for (segmentIndex = 1; segmentIndex <= segmentCount; segmentIndex++) {
             fprintf(stdout, "  Segment number %d:\n", segmentIndex);
 
             /** Inner connected segments */
             tiglWingGetInnerConnectedSegmentCount(cpacsHandle, wingIndex, segmentIndex, &innerSegmentCount);
             fprintf(stdout, "    Count of inner connected segments: %d\n", innerSegmentCount);
-            for (n = 1; n <= innerSegmentCount; n++)
-            {
+            for (n = 1; n <= innerSegmentCount; n++) {
                 tiglWingGetInnerConnectedSegmentIndex(cpacsHandle, wingIndex, segmentIndex, n, &connectedSegmentIndex);
                 fprintf(stdout, "    Index of the %d-th inner connected segment: %d\n", n, connectedSegmentIndex);
             }
@@ -179,8 +164,7 @@ int main(int argc, char* argv[])
             /** Outer connected segments */
             tiglWingGetOuterConnectedSegmentCount(cpacsHandle, wingIndex, segmentIndex, &outerSegmentCount);
             fprintf(stdout, "    Count of outer connected segments: %d\n", outerSegmentCount);
-            for (n = 1; n <= outerSegmentCount; n++)
-            {
+            for (n = 1; n <= outerSegmentCount; n++) {
                 tiglWingGetOuterConnectedSegmentIndex(cpacsHandle, wingIndex, segmentIndex, n, &connectedSegmentIndex);
                 fprintf(stdout, "    Index of the %d-th outer connected segment: %d\n", n, connectedSegmentIndex);
             }
@@ -191,25 +175,23 @@ int main(int argc, char* argv[])
     /**
     * Loop over all wings and output for every segment the section and element UIDs.
     */
-    for (wingIndex = 1; wingIndex <= wingCount; wingIndex++) 
-    {
+    for (wingIndex = 1; wingIndex <= wingCount; wingIndex++) {
         fprintf(stdout, "Wing number %d:\n", wingIndex);
         tiglWingGetSegmentCount(cpacsHandle, wingIndex, &segmentCount);
-        for (segmentIndex = 1; segmentIndex <= segmentCount; segmentIndex++) 
-        {
+        for (segmentIndex = 1; segmentIndex <= segmentCount; segmentIndex++) {
             fprintf(stdout, "  Segment number %d:\n", segmentIndex);
 
-			tiglWingGetInnerSectionAndElementUID(cpacsHandle, wingIndex, segmentIndex, &sectionUID, &elementIndexUID);
+            tiglWingGetInnerSectionAndElementUID(cpacsHandle, wingIndex, segmentIndex, &sectionUID, &elementIndexUID);
             fprintf(stdout, "    Inner section UID: %s\n", sectionUID);
             fprintf(stdout, "    Inner element UID: %s\n", elementIndexUID);
-			free(sectionUID);
-			free(elementIndexUID);
+            free(sectionUID);
+            free(elementIndexUID);
 
             tiglWingGetOuterSectionAndElementUID(cpacsHandle, wingIndex, segmentIndex, &sectionUID, &elementIndexUID);
             fprintf(stdout, "    Outer section UID: %s\n", sectionUID);
             fprintf(stdout, "    Outer element UID: %s\n", elementIndexUID);
-			free(sectionUID);
-			free(elementIndexUID);
+            free(sectionUID);
+            free(elementIndexUID);
         }
         fprintf(stdout, "\n");
     }
@@ -219,15 +201,13 @@ int main(int argc, char* argv[])
     /**
     * Loop over all wings and output for every segment the section and element indices.
     */
-    for (wingIndex = 1; wingIndex <= wingCount; wingIndex++) 
-    {
+    for (wingIndex = 1; wingIndex <= wingCount; wingIndex++) {
         fprintf(stdout, "Wing number %d:\n", wingIndex);
         tiglWingGetSegmentCount(cpacsHandle, wingIndex, &segmentCount);
-        for (segmentIndex = 1; segmentIndex <= segmentCount; segmentIndex++) 
-        {
+        for (segmentIndex = 1; segmentIndex <= segmentCount; segmentIndex++) {
             fprintf(stdout, "  Segment number %d:\n", segmentIndex);
 
-			tiglWingGetInnerSectionAndElementIndex(cpacsHandle, wingIndex, segmentIndex, &sectionIndex, &elementIndex);
+            tiglWingGetInnerSectionAndElementIndex(cpacsHandle, wingIndex, segmentIndex, &sectionIndex, &elementIndex);
             fprintf(stdout, "    Inner section index: %d\n", sectionIndex);
             fprintf(stdout, "    Inner element index: %d\n", elementIndex);
 
@@ -243,19 +223,16 @@ int main(int argc, char* argv[])
     * Loop over all fuselages and output for every segment the segments connected
     * to the start and end of the current segment.
     */
-    for (fuselageIndex = 1; fuselageIndex <= fuselageCount; fuselageIndex++) 
-    {
+    for (fuselageIndex = 1; fuselageIndex <= fuselageCount; fuselageIndex++) {
         fprintf(stdout, "Fuselage number %d:\n", fuselageIndex);
         tiglFuselageGetSegmentCount(cpacsHandle, fuselageIndex, &segmentCount);
-        for (segmentIndex = 1; segmentIndex <= segmentCount; segmentIndex++) 
-        {
+        for (segmentIndex = 1; segmentIndex <= segmentCount; segmentIndex++) {
             fprintf(stdout, "  Segment number %d:\n", segmentIndex);
 
             /** To the start section connected segments */
             tiglFuselageGetStartConnectedSegmentCount(cpacsHandle, fuselageIndex, segmentIndex, &startSegmentCount);
             fprintf(stdout, "    Count of to the start section connected segments: %d\n", startSegmentCount);
-            for (n = 1; n <= startSegmentCount; n++)
-            {
+            for (n = 1; n <= startSegmentCount; n++) {
                 tiglFuselageGetStartConnectedSegmentIndex(cpacsHandle, fuselageIndex, segmentIndex, n, &connectedSegmentIndex);
                 fprintf(stdout, "    Index of the %d-th to the start section connected segment: %d\n", n, connectedSegmentIndex);
             }
@@ -263,8 +240,7 @@ int main(int argc, char* argv[])
             /** To the end connected segments */
             tiglFuselageGetEndConnectedSegmentCount(cpacsHandle, fuselageIndex, segmentIndex, &endSegmentCount);
             fprintf(stdout, "    Count of to the end section connected segments: %d\n", endSegmentCount);
-            for (n = 1; n <= endSegmentCount; n++)
-            {
+            for (n = 1; n <= endSegmentCount; n++) {
                 tiglFuselageGetEndConnectedSegmentIndex(cpacsHandle, fuselageIndex, segmentIndex, n, &connectedSegmentIndex);
                 fprintf(stdout, "    Index of the %d-th to the end section connected segment: %d\n", n, connectedSegmentIndex);
             }
@@ -275,12 +251,10 @@ int main(int argc, char* argv[])
     /**
     * Loop over all fuselages and output for every segment the section and element UID.
     */
-    for (fuselageIndex = 1; fuselageIndex <= fuselageCount; fuselageIndex++) 
-    {
+    for (fuselageIndex = 1; fuselageIndex <= fuselageCount; fuselageIndex++) {
         fprintf(stdout, "Fuselage number %d:\n", fuselageIndex);
         tiglFuselageGetSegmentCount(cpacsHandle, fuselageIndex, &segmentCount);
-        for (segmentIndex = 1; segmentIndex <= segmentCount; segmentIndex++) 
-        {
+        for (segmentIndex = 1; segmentIndex <= segmentCount; segmentIndex++) {
             fprintf(stdout, "  Segment number %d:\n", segmentIndex);
 
             tiglFuselageGetStartSectionAndElementUID(cpacsHandle, fuselageIndex, segmentIndex, &sectionIndexUID, &elementIndexUID);
@@ -298,12 +272,10 @@ int main(int argc, char* argv[])
 	/**
     * Loop over all fuselages and output for every segment the section and element indicies.
     */
-    for (fuselageIndex = 1; fuselageIndex <= fuselageCount; fuselageIndex++) 
-    {
+    for (fuselageIndex = 1; fuselageIndex <= fuselageCount; fuselageIndex++) {
         fprintf(stdout, "Fuselage number %d:\n", fuselageIndex);
         tiglFuselageGetSegmentCount(cpacsHandle, fuselageIndex, &segmentCount);
-        for (segmentIndex = 1; segmentIndex <= segmentCount; segmentIndex++) 
-        {
+        for (segmentIndex = 1; segmentIndex <= segmentCount; segmentIndex++) {
             fprintf(stdout, "  Segment number %d:\n", segmentIndex);
 
             tiglFuselageGetStartSectionAndElementIndex(cpacsHandle, fuselageIndex, segmentIndex, &sectionIndex, &elementIndex);

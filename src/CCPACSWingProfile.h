@@ -36,7 +36,7 @@
 #include "tixi.h"
 #include "tigl_internal.h"
 #include "TopoDS_Wire.hxx"
-#include "CSharedPtr.h"
+#include "PTiglWingProfileAlgo.h"
 
 #include <gp_Pnt.hxx>
 #include <Handle_Geom2d_TrimmedCurve.hxx>
@@ -44,10 +44,6 @@
 
 namespace tigl 
 {
-
-class ITiglWingProfileAlgo;
-
-typedef CSharedPtr<ITiglWingProfileAlgo> ProfileAlgoPointer;
 
 class CCPACSWingProfile
 {
@@ -63,19 +59,13 @@ public:
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle);
 
     // Returns the name of the wing profile
-    TIGL_EXPORT std::string GetName(void) const;
-
-    // Gets the C pointer of the name string
-    TIGL_EXPORT const char * GetNamePtr(void) const;
+    TIGL_EXPORT const std::string& GetName(void) const;
 
     // Returns the description of the wing profile
-    TIGL_EXPORT std::string GetDescription(void) const;
+    TIGL_EXPORT const std::string& GetDescription(void) const;
 
     // Returns the uid of the wing profile
-    TIGL_EXPORT std::string GetUID(void) const;
-
-    // Gets the C pointer of the UID string
-    TIGL_EXPORT const char * GetUIDPtr(void) const;
+    TIGL_EXPORT const std::string& GetUID(void) const;
 
     // Invalidates internal wing profile state
     TIGL_EXPORT void Invalidate(void);
@@ -118,7 +108,7 @@ public:
     TIGL_EXPORT gp_Pnt GetLowerPoint(double xsi);
 
     // get profile algorithm type
-    TIGL_EXPORT ProfileAlgoPointer GetProfileAlgo(void) const;
+    TIGL_EXPORT PTiglWingProfileAlgo GetProfileAlgo(void) const;
 
 protected:
     // Cleanup routine
@@ -151,7 +141,7 @@ private:
     std::string               description;    /**< CPACS wing profile description */
     std::string               uid;            /**< CPACS wing profile UID */
     bool                      invalidated;    /**< Flag if element is invalid */
-    ProfileAlgoPointer        profileAlgo;    /**< Pointer to wing profile algorithm (pointList, CST, etc.) */
+    PTiglWingProfileAlgo      profileAlgo;    /**< Pointer to wing profile algorithm (pointList, CST, etc.) */
 
 }; // class CCPACSWingProfile
 

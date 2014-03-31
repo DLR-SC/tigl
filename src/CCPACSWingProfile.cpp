@@ -59,7 +59,6 @@
 #include "ITiglWingProfileAlgo.h"
 #include "CCPACSWingProfile.h"
 #include "CCPACSWingProfileFactory.h"
-#include "CCPACSWingProfilePointList.h"
 
 namespace tigl 
 {
@@ -119,7 +118,7 @@ void CCPACSWingProfile::ReadCPACS(TixiDocumentHandle tixiHandle)
         }
 
         // create wing profile algorithm via factory
-        profileAlgo=CCPACSWingProfileFactory::createProfileAlgo(tixiHandle, *this, ProfileXPath);
+        profileAlgo=CCPACSWingProfileFactory::Instance().CreateProfileAlgo(tixiHandle, *this, ProfileXPath);
         // read in wing profile data
         profileAlgo->ReadCPACS(tixiHandle);
     }
@@ -131,32 +130,21 @@ void CCPACSWingProfile::ReadCPACS(TixiDocumentHandle tixiHandle)
 }
 
 // Returns the name of the wing profile
-std::string CCPACSWingProfile::GetName(void) const
+const std::string& CCPACSWingProfile::GetName(void) const
 {
     return name;
 }
 
-// Returns the name of the wing profile
-const char * CCPACSWingProfile::GetNamePtr(void) const
-{
-    return name.c_str();
-}
-
 // Returns the describtion of the wing profile
-std::string CCPACSWingProfile::GetDescription(void) const
+const std::string& CCPACSWingProfile::GetDescription(void) const
 {
     return description;
 }
 
 // Returns the UID of the wing profile
-std::string CCPACSWingProfile::GetUID(void) const
+const std::string& CCPACSWingProfile::GetUID(void) const
 {
     return uid;
-}
-
-const char * CCPACSWingProfile::GetUIDPtr(void) const
-{
-    return uid.c_str();
 }
 
 // Invalidates internal wing profile state
@@ -349,8 +337,8 @@ gp_Pnt CCPACSWingProfile::GetPoint(double xsi, bool fromUpper)
         // There is only one intesection point with the wire
         gp_Pnt2d ipnt2d = ipnts2d[0];
         gp_Pnt ipnt3d(ipnt2d.X(), 0.0, ipnt2d.Y());
-        return ipnt3d;
-    }
+            return ipnt3d;
+        }
     else if (ipnts2d.size() > 1) {
         // There are one or more intersection points with the wire. Find the
         // points with the minimum and maximum y-values.
@@ -390,7 +378,7 @@ Handle(Geom2d_TrimmedCurve) CCPACSWingProfile::GetChordLine()
 }
 
 // get pointer to profile algorithm
-ProfileAlgoPointer CCPACSWingProfile::GetProfileAlgo(void) const
+PTiglWingProfileAlgo CCPACSWingProfile::GetProfileAlgo(void) const
 {
     return profileAlgo;
 }

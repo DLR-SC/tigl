@@ -36,6 +36,7 @@
 #include "tixi.h"
 #include "tigl_internal.h"
 #include "ITiglWingProfileAlgo.h"
+#include "PTiglWingProfileAlgo.h"
 #include "TopoDS_Wire.hxx"
 
 
@@ -59,6 +60,8 @@ public:
 
     // Destructor
     TIGL_EXPORT ~CCPACSWingProfilePointList(void);
+
+    TIGL_EXPORT static std::string CPACSID();
 
     // Cleanup routine
     TIGL_EXPORT void Cleanup(void);

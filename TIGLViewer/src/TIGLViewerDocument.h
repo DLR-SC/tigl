@@ -73,7 +73,7 @@ public slots:
     void drawAllFuselagesAndWingsSurfacePoints();
     void drawFusedAircraft();
     void drawFusedAircraftTriangulation();
-    void drawWingFuselageIntersectionLine();
+    void drawIntersectionLine();
     void drawFarField();
 
     // Wing slots
@@ -100,10 +100,8 @@ public slots:
     // TIGL slots
     void exportAsIges();
     void exportFusedAsIges();
-    void exportAsStructuredIges();
     void exportAsStep();
     void exportAsStepFused();
-    void exportAsStepWithMetaData();
     void exportMeshedWingSTL();
     void exportMeshedFuselageSTL();
     void exportMeshedWingVTK();
@@ -118,6 +116,7 @@ public slots:
     void exportFuselageBRep();
     void exportWingCurvesBRep();
     void exportFuselageCurvesBRep();
+    void exportFusedConfigBRep();
 
 
     // General slots
@@ -147,7 +146,7 @@ private:
     QString                                 loadedConfigurationFileName;
 
     void writeToStatusBar(QString text);
-    void displayError(QString text, QString header);
+    void displayError(QString text, QString header="");
     QString myLastFolder; // TODO: synchronize with TIGLViewerWindow
     char* qstringToCstring(QString text);
     void createShapeTriangulation(const class TopoDS_Shape& shape, class TopoDS_Compound& compound);

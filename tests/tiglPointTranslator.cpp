@@ -192,7 +192,7 @@ TEST(TiglPointTranslator, consistency){
 }
 
 TEST(TiglPointTranslator, performance){
-    int nruns = 1000000;
+    int nruns = 100000;
     
     CTiglPoint x1(0,4,0);
     CTiglPoint x2(8,4,0);
@@ -240,7 +240,25 @@ TEST(TiglPointTranslator, Bug1){
     CTiglPointTranslator trans(x1, x2, x3, x4 );
 
     ASSERT_EQ ( TIGL_SUCCESS,  trans.translate(p, &eta, &xsi) );
+}
+
+TEST(TiglPointTranslator, Bug2){
+    CTiglPoint x1(49.949999820005999,-5.8928318504061994e-005,2.9999999998003934);
+    CTiglPoint x2(56.939999932802237,-4.6876665182871935e-005,9.4999999998820623);
+    CTiglPoint x3(55.949849998596576,0.00010609274864148424,3.000000000376426);
+    CTiglPoint x4(59.179943999476052,1.4731199884798687e-005,9.5000000000971134);
+
+    CTiglPoint p(58.609604046723632,0.044117587761595446,9.2291668207101427);
+
+    double eta, xsi;
+
+    CTiglPointTranslator trans(x1, x2, x3, x4 );
+
+    ASSERT_EQ ( TIGL_SUCCESS,  trans.translate(p, &eta, &xsi) );
     
-    cout << "Eta/Xsi: " << eta << "," << xsi << endl;
+    ASSERT_LE(eta, 1.0);
+    ASSERT_LE(xsi, 1.0);
+    ASSERT_GE(eta, 0.0);
+    ASSERT_GE(xsi, 0.0);
 }
 

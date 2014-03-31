@@ -50,12 +50,26 @@ class CTiglIntersectionCalculation
 {
 
 public:
-    // Constructor
+    // Constructor, compute intersection of two TopoDS_Shapes
+    // cache variable can be NULL
     TIGL_EXPORT CTiglIntersectionCalculation(CTiglShapeCache* cache,
-                                 const std::string &idOne, 
-                                 const std::string &idTwo, 
-                                 TopoDS_Shape compoundOne,
-                                 TopoDS_Shape compoundTwo );
+                                             const std::string& idOne,
+                                             const std::string& idTwo,
+                                             TopoDS_Shape compoundOne,
+                                             TopoDS_Shape compoundTwo );
+
+    // Computes the intersection of a shape with a plane
+    // cache variable can be NULL
+    TIGL_EXPORT CTiglIntersectionCalculation(CTiglShapeCache* cache,
+                                             const std::string& shapeID,
+                                             TopoDS_Shape shape,
+                                             gp_Pnt point,
+                                             gp_Dir normal );
+
+    // Constructor, load intersection result from cache
+    // cache is mandatory, hence the reference
+    TIGL_EXPORT CTiglIntersectionCalculation(CTiglShapeCache& cache,
+                                             size_t intersectionID);
 
     // Destructor
     TIGL_EXPORT virtual ~CTiglIntersectionCalculation(void);
@@ -69,21 +83,23 @@ public:
     // numIntersecLine is the number of the Intersection line.
     TIGL_EXPORT gp_Pnt GetPoint(double zeta, int wireID);
 
-    // gives the number of wires of the intersection calculation
-    TIGL_EXPORT int GetNumWires();
-
     // gives a reference to the computed wire
-    TIGL_EXPORT TopoDS_Wire& GetWire(int wireID);
+    TIGL_EXPORT TopoDS_Wire GetWire(int wireID);
 
-    // returns id string for intersection wire
-    TIGL_EXPORT std::string GetIDString(int wireID);
+    // returnes the unique ID for the current intersection
+    TIGL_EXPORT size_t GetID();
+
+protected:
+    void computeIntersection(CTiglShapeCache* cache,
+                             size_t idOne,
+                             size_t idTwo,
+                             TopoDS_Shape compoundOne,
+                             TopoDS_Shape compoundTwo );
 
 private:        
     Standard_Real tolerance;
-    int numWires;                           /* The number of intersection lines */
-    TopoDS_Shape intersectionResult;        /* The full Intersection result */
-    std::vector<TopoDS_Wire> Wires;         /* All intersection wires */
-    std::string id;                         /* identifcation string of the intersection */
+    TopoDS_Compound intersectionResult;     /* The full Intersection result */
+    size_t id;                              /* identifcation id of the intersection */
     
 };
 

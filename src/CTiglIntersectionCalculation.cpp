@@ -25,13 +25,16 @@
 
 #include "CTiglIntersectionCalculation.h"
 #include "CTiglError.h"
+#include "CTiglShapeCache.h"
 #include "tiglcommonfunctions.h"
 
 #include "GeomAPI_IntSS.hxx"
 #include "BRep_Tool.hxx"
+#include "BRep_Builder.hxx"
 #include "TopoDS.hxx"
 #include "TopoDS_Shape.hxx"
 #include "TopoDS_Solid.hxx"
+#include "TopoDS_Compound.hxx"
 #include "gp_Pnt2d.hxx"
 #include "gp_Vec2d.hxx"
 #include "gp_Dir2d.hxx"
@@ -51,63 +54,141 @@
 #include "GCPnts_AbscissaPoint.hxx"
 #include "BRepBuilderAPI_MakeWire.hxx"
 #include "BRepBuilderAPI_MakeEdge.hxx"
+#include "BRepBuilderAPI_MakeFace.hxx"
 #include "BRepAlgoAPI_Section.hxx"
 #include "ShapeAnalysis_Wire.hxx"
 #include "Handle_TopTools_HSequenceOfShape.hxx"
 #include "TopTools_HSequenceOfShape.hxx"
 #include "ShapeAnalysis_FreeBounds.hxx"
 #include "BRepBuilderAPI_MakeWire.hxx"
-#include "CTiglShapeCache.h"
 
 #include <sstream>
+#include <boost/functional/hash.hpp>
 
 #ifndef max
 #define max(a, b) (((a) > (b)) ? (a) : (b))
 #endif
 
+// WARNING: boost::hash gets incorrectly compiled with gcc 4.3.4 - the optimization will produce indeterministic hash values
+// To workaround the problem, we have to avoid optimization of this file
+
+namespace
+{
+    class HashablePlane
+    {
+    public:
+        HashablePlane(const gp_Pnt& p, const gp_Dir& n)
+        {
+            gp_Dir nlocal(n);
+            // compute hesse normal form
+            double d = gp_Vec(n)*gp_Vec(p.XYZ());
+            if (d < 0) {
+                d *= -1.;
+                nlocal.Reverse();
+            }
+
+            hash = 0;
+            boost::hash_combine(hash, d);
+            boost::hash_combine(hash, nlocal.X());
+            boost::hash_combine(hash, nlocal.Y());
+            boost::hash_combine(hash, nlocal.Z());
+        }
+
+        size_t HashValue()
+        {
+            return hash;
+        }
+
+    private:
+        size_t hash;
+    };
+}
+
 namespace tigl 
 {
 
 // Constructor
-CTiglIntersectionCalculation::CTiglIntersectionCalculation( CTiglShapeCache * cache,
-                                                            const std::string& idOne,
-                                                            const std::string& idTwo,
-                                                            TopoDS_Shape compoundOne,
-                                                            TopoDS_Shape compoundTwo)
-    : tolerance(1.0e-7),
-    numWires(0)
+CTiglIntersectionCalculation::CTiglIntersectionCalculation(CTiglShapeCache * cache,
+                                                           const std::string& idOne,
+                                                           const std::string& idTwo,
+                                                           TopoDS_Shape compoundOne,
+                                                           TopoDS_Shape compoundTwo)
+    : tolerance(1.0e-7)
 {
-    // create some identification string to store intersection in cache
-    // it should not matter, if the arguments One and Two are interchanged
-    if (idOne.compare(idTwo)) {
-        id = idOne + "::" + idTwo;
-    }
-    else {
-        id = idTwo + "::" + idOne;
+    size_t hash1 = boost::hash<std::string>()(idOne);
+    size_t hash2 = boost::hash<std::string>()(idTwo);
+    computeIntersection(cache, hash1, hash2, compoundOne, compoundTwo);
+}
+
+// Compute intersection of a shape with a plane
+CTiglIntersectionCalculation::CTiglIntersectionCalculation(CTiglShapeCache* cache,
+                                                           const std::string& shapeID,
+                                                           TopoDS_Shape shape,
+                                                           gp_Pnt point,
+                                                           gp_Dir normal)
+    : tolerance(1.0e-7)
+{
+
+    size_t hash1 = boost::hash<std::string>()(shapeID);
+    size_t hash2 = HashablePlane(point, normal).HashValue();
+
+    // create plane
+    TopoDS_Shape plane = BRepBuilderAPI_MakeFace(gp_Pln(point, normal));
+    computeIntersection(cache, hash1, hash2, shape, plane);
+}
+
+CTiglIntersectionCalculation::CTiglIntersectionCalculation(CTiglShapeCache& cache,
+                                                           size_t intersectionID)
+    : tolerance(1.0e-7)
+{
+    // check that intersectionID is in cache
+    if (!cache.HasShape(intersectionID)) {
+        throw CTiglError("The given intersectionID can not be found.", TIGL_NOT_FOUND);
     }
     
+    try {
+        intersectionResult = TopoDS::Compound(cache.GetShape(intersectionID));
+    }
+    catch (Standard_TypeMismatch&) {
+        throw CTiglError("The given intersectionID is invalid.", TIGL_NOT_FOUND);
+    }
+
+    id = intersectionID;
+}
+
+void CTiglIntersectionCalculation::computeIntersection(CTiglShapeCache * cache,
+                                                       size_t idOne,
+                                                       size_t idTwo,
+                                                       TopoDS_Shape compoundOne,
+                                                       TopoDS_Shape compoundTwo)
+{
+    // create some identification id to store intersection in cache
+    // it should not matter, if the arguments One and Two are interchanged
+    // the xor commutes, so this should work
+    if (idOne != idTwo) {
+        id = idOne ^ idTwo;
+    }
+    else {
+        id = idOne;
+    }
+
     bool inCache = false;
     if (cache) {
         // check, if result is already in cache
-        unsigned int nshapes = cache->GetNShapesOfType(id);
-        if (nshapes > 0) {
+        if (cache->HasShape(id)) {
+            intersectionResult = TopoDS::Compound(cache->GetShape(id));
             inCache = true;
-            numWires = nshapes;
-            for (unsigned int i = 0; i < nshapes; ++i) {
-                Wires.push_back(TopoDS::Wire(cache->GetShape(id, i)));
-            }
         }
     }
-    
+
     if (!inCache) {
         Standard_Boolean PerformNow=Standard_False; 
         BRepAlgoAPI_Section section(compoundOne, compoundTwo, PerformNow); 
         section.ComputePCurveOn1(Standard_True); 
         section.Approximation(Standard_True); 
         section.Build(); 
-        intersectionResult = section.Shape();
-
-        TopExp_Explorer myEdgeExplorer (intersectionResult, TopAbs_EDGE);
+        TopoDS_Shape result = section.Shape();
+        TopExp_Explorer myEdgeExplorer (result, TopAbs_EDGE);
 
         Handle(TopTools_HSequenceOfShape) Edges = new TopTools_HSequenceOfShape();
 
@@ -118,7 +199,12 @@ CTiglIntersectionCalculation::CTiglIntersectionCalculation( CTiglShapeCache * ca
 
         // connect all connected edges to wires and save them in container Edges again
         ShapeAnalysis_FreeBounds::ConnectEdgesToWires(Edges, tolerance, false, Edges);
-        numWires = Edges->Length();
+        int numWires = Edges->Length();
+
+        intersectionResult.Nullify();
+        BRep_Builder builder;
+        builder.MakeCompound(intersectionResult);
+        std::vector<TopoDS_Wire> Wires;
 
         // filter duplicated wires
         for (int wireID=1; wireID <= numWires; wireID++) {
@@ -132,26 +218,32 @@ CTiglIntersectionCalculation::CTiglIntersectionCalculation( CTiglShapeCache * ca
 
             if (!found) {
                 Wires.push_back(wire);
-                if (cache) {
-                    cache->Insert(wire, id);
-                }
+                builder.Add(intersectionResult, wire);
             }
         }
-        numWires = Wires.size();
+
+        // add to cache
+        if (cache) {
+            cache->Insert(intersectionResult, id);
+        }
     }
 }
 
 // Destructor
 CTiglIntersectionCalculation::~CTiglIntersectionCalculation( void )
 {
-    Wires.clear();
 }
 
 
 // returns total number of intersection lines
 int CTiglIntersectionCalculation::GetCountIntersectionLines(void)
 {
-    return(numWires);
+    TopExp_Explorer wireExplorer(intersectionResult, TopAbs_WIRE);
+    int nwires = 0;
+    for (; wireExplorer.More(); wireExplorer.Next()) {
+        nwires++;
+    }
+    return nwires;
 }
 
 // Gets a point on the intersection line in dependence of a parameter zeta with
@@ -164,34 +256,31 @@ gp_Pnt CTiglIntersectionCalculation::GetPoint(double zeta, int wireID = 1)
         throw CTiglError("Error: Parameter zeta not in the range 0.0 <= zeta <= 1.0 in CTiglIntersectionCalculation::GetPoint", TIGL_ERROR);
     }
 
-    if (wireID > numWires) {
-        throw CTiglError("Error: Unknown wireID in CTiglIntersectionCalculation::GetPoint", TIGL_ERROR);
+    TopoDS_Wire wire = GetWire(wireID);
+    return WireGetPoint(wire, zeta);
+}
+
+TopoDS_Wire CTiglIntersectionCalculation::GetWire(int wireID)
+{
+    if (wireID > GetCountIntersectionLines() || wireID < 1){
+        throw CTiglError("Error: Invalid wireID in CTiglIntersectionCalculation::GetWire", TIGL_INDEX_ERROR);
     }
 
-    //TopoDS_Wire wire;
-    TopoDS_Wire& intersectionWire = (Wires[--wireID]);
-    return WireGetPoint(intersectionWire, zeta);
-}
-
-// gives the number of wires of the intersection calculation
-int CTiglIntersectionCalculation::GetNumWires()
-{
-    return( numWires );
-}
-
-std::string CTiglIntersectionCalculation::GetIDString(int wireID) 
-{
-    std::stringstream stream;
-    stream << "Intersect_" << id << "_" << wireID;
-    return stream.str();
-}
-
-TopoDS_Wire& CTiglIntersectionCalculation::GetWire(int wireID)
-{
-    if (wireID > numWires || wireID < 1){
-        throw CTiglError("Error: Invalid wireID in CTiglIntersectionCalculation::GetWire", TIGL_ERROR);
+    TopExp_Explorer wireExplorer(intersectionResult, TopAbs_WIRE);
+    int currentWireID = 1;
+    for (; wireExplorer.More(); wireExplorer.Next()) {
+        if (wireID == currentWireID) {
+            return TopoDS::Wire(wireExplorer.Current());
+        }
+        currentWireID++;
     }
-    return Wires.at(wireID-1);
+
+    throw CTiglError("Cannot retrieve intersection wire in CTiglIntersectionCalculation::GetPoint", TIGL_ERROR);
+}
+
+size_t CTiglIntersectionCalculation::GetID()
+{
+    return id;
 }
 
 } // end namespace tigl

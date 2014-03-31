@@ -54,18 +54,10 @@ class TestSimpleCpacs(unittest.TestCase):
         if not skipSlowFunctions:
             filenamePtr = "TestData/export/export.igs"
             self.tigl.exportFusedWingFuselageIGES(filenamePtr)
-            
-    def test_exportStructuredIGES(self):
-        filenamePtr = "TestData/export/export2.igs"
-        self.tigl.exportStructuredIGES(filenamePtr)
         
     def test_exportSTEP(self):
         filenamePtr = 'TestData/export/export.step'
         self.tigl.exportSTEP(filenamePtr)
-            
-    def test_exportStructuredSTEP(self):
-        filenamePtr = "TestData/export/export2.step"
-        self.tigl.exportStructuredSTEP(filenamePtr)
             
     def test_exportMeshedWingSTL(self):
         if not skipSlowFunctions:

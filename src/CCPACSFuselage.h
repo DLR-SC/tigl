@@ -80,12 +80,6 @@ public:
     // Get segment count
     TIGL_EXPORT int GetSegmentCount(void) const;
 
-#ifdef TIGL_USE_XCAF
-    // builds data structure for a TDocStd_Application
-    // mostly used for export
-    TDF_Label ExportDataStructure(CCPACSConfiguration &config, Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label);
-#endif
-
     // Returns the segment for a given index
     TIGL_EXPORT CTiglAbstractSegment & GetSegment(const int index);
 

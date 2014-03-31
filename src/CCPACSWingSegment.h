@@ -147,7 +147,7 @@ public:
     TIGL_EXPORT double GetXsi(gp_Pnt pnt, bool isUpper);
 
     // projects a point unto the wing and returns its coordinates
-    TIGL_EXPORT void GetEtaXsi(gp_Pnt pnt, bool isUpper, double& eta, double& xsi);
+    TIGL_EXPORT void GetEtaXsi(gp_Pnt pnt, double& eta, double& xsi);
 
 
     // Returns if the given point is ont the Top of the wing or on the lower side.
@@ -199,11 +199,6 @@ public:
         return TIGL_COMPONENT_WINGSEGMENT | TIGL_COMPONENT_SEGMENT | TIGL_COMPONENT_LOGICAL;
     }
 
-#ifdef TIGL_USE_XCAF
-    // builds data structure for a TDocStd_Application
-    // mostly used for export
-    TDF_Label ExportDataStructure(class CCPACSConfiguration&, Handle_XCAFDoc_ShapeTool& myAssembly, TDF_Label& label);
-#endif
 protected:
     // Cleanup routine
     void Cleanup(void);
