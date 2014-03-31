@@ -1371,6 +1371,36 @@ void TIGLViewerDocument::exportFuselageBRep()
     }
 }
 
+void TIGLViewerDocument::exportFusedConfigBRep()
+{
+    QString fileName = QFileDialog::getSaveFileName(parent, tr("Save as..."), myLastFolder, tr("Export BRep(*.brep)"));
+    if (fileName.isEmpty()) {
+        return;
+    }
+
+    QApplication::setOverrideCursor( Qt::WaitCursor );
+    try {
+        tigl::PTiglFusePlane fuser = GetConfiguration().AircraftFusingAlgo();
+        fuser->SetResultMode(tigl::FULL_PLANE);
+        PNamedShape airplane = fuser->FusedPlane();
+        if (!airplane) {
+            displayError("Error computing fused aircraft", "Error in BRep export");
+            QApplication::restoreOverrideCursor();
+            return;
+        }
+        
+        TopoDS_Shape shape = airplane->Shape();
+        BRepTools::Write(shape, fileName.toStdString().c_str());
+    }
+    catch(tigl::CTiglError & error){
+        displayError(error.getError(), "Error in BRep export");
+    }
+    catch(...){
+        displayError("Unknown Exception during computation of fused aircraft.", "Error in BRep export");
+    }
+    QApplication::restoreOverrideCursor();
+}
+
 void TIGLViewerDocument::drawFusedFuselage()
 {
     QString fuselageUid = dlgGetFuselageSelection();
