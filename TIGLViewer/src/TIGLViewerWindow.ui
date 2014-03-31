@@ -181,6 +181,7 @@
      </property>
      <addaction name="tiglExportWingBRepAction"/>
      <addaction name="tiglExportFuselageBRepAction"/>
+     <addaction name="tiglExportFusedConfigBRep"/>
     </widget>
     <addaction name="menuExport_to_IGES"/>
     <addaction name="menuExport_to_VTK"/>
@@ -1156,6 +1157,11 @@
   <action name="tiglExportFuselageBRepAction">
    <property name="text">
     <string>Export Fuselage</string>
+   </property>
+  </action>
+  <action name="tiglExportFusedConfigBRep">
+   <property name="text">
+    <string>Export Fused Configuration (slow)</string>
    </property>
   </action>
  </widget>
