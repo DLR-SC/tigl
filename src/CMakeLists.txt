@@ -1,20 +1,27 @@
 # TIGL Library
 
 find_package(Threads REQUIRED)
+include(tiglmacros)
 
 configure_file (
-  "${CMAKE_CURRENT_SOURCE_DIR}/tigl_version.h.in"
-  "${CMAKE_CURRENT_BINARY_DIR}/tigl_version.h"
+  "${CMAKE_CURRENT_SOURCE_DIR}/api/tigl_version.h.in"
+  "${CMAKE_CURRENT_BINARY_DIR}/api/tigl_version.h"
 )
 
 source_group(Fuselage REGULAR_EXPRESSION "CCPACSFuselage")
 source_group(Wing REGULAR_EXPRESSION "CCPACSWing")
 
+# add all subdirectories to include path
+set(TIGL_INCLUDES ${CMAKE_CURRENT_SOURCE_DIR})
+subdirlist(SUBDIRS ${CMAKE_CURRENT_SOURCE_DIR})
+foreach(subdir ${SUBDIRS})
+  set(TIGL_INCLUDES ${TIGL_INCLUDES} ${CMAKE_CURRENT_SOURCE_DIR}/${subdir})
+endforeach()
+
 include_directories(${OpenCASCADE_INCLUDE_DIR}
                     ${TIXI_INCLUDE_DIRS}
                     ${CMAKE_CURRENT_BINARY_DIR}
-                    ${CMAKE_CURRENT_SOURCE_DIR}
-                    ${CMAKE_CURRENT_SOURCE_DIR}/boolean_operations
+                    ${TIGL_INCLUDES}
 )
 
 file(GLOB_RECURSE TIGL_SRC
@@ -66,7 +73,7 @@ install (TARGETS TIGL
 		 
 install (EXPORT tigl-targets DESTINATION ${CMAKE_INSTALL_LIBDIR}/tigl)
 		 
-install (FILES tigl.h ${CMAKE_CURRENT_BINARY_DIR}/tigl_version.h
+install (FILES api/tigl.h ${CMAKE_CURRENT_BINARY_DIR}/api/tigl_version.h
 		 DESTINATION include
 		 COMPONENT headers)
 
@@ -75,5 +82,4 @@ add_library(TIGL_static ${TIGL_SRC})
 # this does no actual linking but keeps track of the dependencies
 target_link_libraries (TIGL_static ${TIGL_LIBRARIES})
 
-include(tiglmacros)
 AddToCheckstyle()
