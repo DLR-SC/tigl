@@ -46,6 +46,15 @@ set( QT_USE_QTMAIN   TRUE )
 include(${QT_USE_FILE} ${GLOG_INCLUDE_DIR})
 add_definitions(${QT_DEFINITIONS})
 
+# add all tigl directories to include path
+set(TIGL_INCLUDES ${PROJECT_SOURCE_DIR}/src/)
+subdirlist(SUBDIRS ${PROJECT_SOURCE_DIR}/src/)
+foreach(subdir ${SUBDIRS})
+  set(TIGL_INCLUDES ${TIGL_INCLUDES} ${PROJECT_SOURCE_DIR}/src/${subdir})
+endforeach()
+
+include_directories(${TIGL_INCLUDES})
+
 set(tv_src
     CommandLineParameters.cpp
     ISession_Point.cpp

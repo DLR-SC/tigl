@@ -1,7 +1,7 @@
 # tigl demo cmake project
 # author: Martin Siggel
 
-include_directories(${PROJECT_SOURCE_DIR}/src ${TIXI_INCLUDE_DIRS})
+include_directories(${PROJECT_SOURCE_DIR}/src/api ${TIXI_INCLUDE_DIRS})
 
 
 set(demo_LIBS TIGL)

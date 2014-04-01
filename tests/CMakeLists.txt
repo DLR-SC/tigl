@@ -1,8 +1,18 @@
 # units tests makefile
 
+include(tiglmacros)
+
 FILE (GLOB_RECURSE test_SRCS *.cpp *.cxx *.cc *.C *.c *.h *.hpp)
 SET (test_LIBS gtest TIGL)
 SET (test_BIN ${PROJECT_NAME}-unittests)
+
+# add all tigl directories to include path
+set(TIGL_INCLUDES ${PROJECT_SOURCE_DIR}/src/)
+subdirlist(SUBDIRS ${PROJECT_SOURCE_DIR}/src/)
+foreach(subdir ${SUBDIRS})
+  set(TIGL_INCLUDES ${TIGL_INCLUDES} ${PROJECT_SOURCE_DIR}/src/${subdir})
+endforeach()
+INCLUDE_DIRECTORIES(${TIGL_INCLUDES})
 
 INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR} ${PROJECT_SOURCE_DIR}/src ${PROJECT_BINARY_DIR}/src ${XML_INCLUDE_DIRS} ${TIXI_INCLUDE_DIRS} ${OpenCASCADE_INCLUDE_DIR})
 # boost
@@ -41,6 +51,5 @@ configure_file (
   "${CMAKE_CURRENT_BINARY_DIR}/runtests.sh"
 )
 
-include(tiglmacros)
 AddToCheckstyle()
 
