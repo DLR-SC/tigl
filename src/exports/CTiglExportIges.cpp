@@ -86,6 +86,11 @@ namespace
         for (int iface = 1; iface <= faceMap.Extent(); ++iface) {
             TopoDS_Face face = TopoDS::Face(faceMap(iface));
             std::string faceName = shape->GetFaceTraits(iface-1).Name();
+            // IGES allows entity names of at max 8 characters.
+            // If the string is longer than 8 characters, the IGES exports might crash
+            if (faceName.length() > 8) {
+                faceName = faceName.substr(0,8);
+            }
 
             // set face name
             Handle(IGESData_IGESEntity) entity;
