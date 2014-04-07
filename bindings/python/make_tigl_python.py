@@ -71,7 +71,7 @@ if __name__ == '__main__':
     # set the handle string that the parser can identify the handles
     parser.handle_str = 'TiglCPACSConfigurationHandle'
     parser.returncode_str  ='TiglReturnCode'
-    parser.parse_header_file(tiglpath + '/src/tigl.h')
+    parser.parse_header_file(tiglpath + '/src/api/tigl.h')
     
     # create the wrapper
     pg = PG.PythonGenerator(name_prefix = 'tigl', libname = 'TIGL')
