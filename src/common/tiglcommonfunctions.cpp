@@ -129,7 +129,7 @@ void WireGetPointTangent(const TopoDS_Wire& wire, double alpha, gp_Pnt& point, g
         tangent = len*tangent/tangent.Magnitude();
     }
     else {
-        throw tigl::CTiglError("WireGetPointTangent2: Cannot compute point on curve.", TIGL_MATH_ERROR);
+        throw tigl::CTiglError("WireGetPointTangent: Cannot compute point on curve.", TIGL_MATH_ERROR);
     }
 }
 
