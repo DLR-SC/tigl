@@ -63,22 +63,26 @@ void CCPACSWings::Cleanup(void)
 }
 
 // Read CPACS wings element
-void CCPACSWings::ReadCPACS(TixiDocumentHandle tixiHandle, const char* configurationUID)
+void CCPACSWings::ReadCPACS(TixiDocumentHandle tixiHandle, const char* configurationUID, const bool doAppend, const std::string wingsLibraryName, const std::string wingElementName, const std::string wingProfilesLibraryPath, const std::string wingProfileElementName)
 {
-    Cleanup();
+    if (!doAppend) {
+        Cleanup();
+    }
+
     char *tmpString = NULL;
 
     if (tixiUIDGetXPath(tixiHandle, configurationUID, &tmpString) != SUCCESS) {
         throw CTiglError("XML error: tixiUIDGetXPath failed in CCPACSWings::ReadCPACS", TIGL_XML_ERROR);
     }
 
-    std::string wingXPath= tmpString;
+    std::string wingXPath = tmpString;
     wingXPath += "[@uID=\"";
     wingXPath += configurationUID;
-    wingXPath += "\"]/wings";
+    wingXPath += "\"]/";
+    wingXPath += wingsLibraryName;
 
     // Read wing profiles
-    profiles.ReadCPACS(tixiHandle);
+    profiles.ReadCPACS(tixiHandle, doAppend, wingProfilesLibraryPath, wingProfileElementName);
 
     if (tixiCheckElement(tixiHandle, wingXPath.c_str()) != SUCCESS) {
         return;
@@ -86,7 +90,7 @@ void CCPACSWings::ReadCPACS(TixiDocumentHandle tixiHandle, const char* configura
 
     /* Get wing element count */
     int wingCount;
-    if (tixiGetNamedChildrenCount(tixiHandle, wingXPath.c_str(), "wing", &wingCount) != SUCCESS) {
+    if (tixiGetNamedChildrenCount(tixiHandle, wingXPath.c_str(), wingElementName.c_str(), &wingCount) != SUCCESS) {
         throw CTiglError("XML error: tixiGetNamedChildrenCount failed in CCPACSWings::ReadCPACS", TIGL_XML_ERROR);
     }
 
@@ -96,7 +100,7 @@ void CCPACSWings::ReadCPACS(TixiDocumentHandle tixiHandle, const char* configura
         wings.push_back(wing);
 
         std::ostringstream xpath;
-        xpath << wingXPath << "/wing[" << i << "]";
+        xpath << wingXPath << "/" << wingElementName << "[" << i << "]";
         wing->ReadCPACS(tixiHandle, xpath.str());
     }
 }

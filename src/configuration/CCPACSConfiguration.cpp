@@ -89,6 +89,7 @@ void CCPACSConfiguration::ReadCPACS(const char* configurationUID)
 
     header.ReadCPACS(tixiDocumentHandle);
     wings.ReadCPACS(tixiDocumentHandle, configurationUID);
+    wings.ReadCPACS(tixiDocumentHandle, configurationUID, 1, "rotorBlades", "rotorBlade", "/cpacs/vehicles/profiles/rotorAirfoils", "rotorAirfoil");
     fuselages.ReadCPACS(tixiDocumentHandle, configurationUID);
     farField.ReadCPACS(tixiDocumentHandle);
     guideCurveProfiles.ReadCPACS(tixiDocumentHandle);
