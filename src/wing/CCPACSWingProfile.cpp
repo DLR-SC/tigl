@@ -64,8 +64,9 @@ namespace tigl
 {
 
 // Constructor
-CCPACSWingProfile::CCPACSWingProfile(const std::string& path)
+CCPACSWingProfile::CCPACSWingProfile(const std::string& path, bool isRotorProfile)
     : ProfileXPath(path),
+    isRotorProfile(isRotorProfile),
     invalidated(true)
 {
     Cleanup();
@@ -145,6 +146,12 @@ const std::string& CCPACSWingProfile::GetDescription(void) const
 const std::string& CCPACSWingProfile::GetUID(void) const
 {
     return uid;
+}
+
+// Returns whether the profile is a rotor profile
+bool CCPACSWingProfile::IsRotorProfile(void) const
+{
+    return isRotorProfile;
 }
 
 // Invalidates internal wing profile state

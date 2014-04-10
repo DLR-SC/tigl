@@ -55,7 +55,7 @@ public:
     TIGL_EXPORT void Invalidate(void);
 
     // Read CPACS wings elements
-    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const char* configurationUID, const bool doAppend=0, const std::string wingsLibraryName="wings", const std::string wingElementName="wing", const std::string wingProfilesLibraryPath="/cpacs/vehicles/profiles/wingAirfoils", const std::string wingProfileElementName="wingAirfoil");
+    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const char* configurationUID, const bool doAppend=false, const bool isRotorBlade=false,const std::string wingsLibraryName="wings", const std::string wingElementName="wing", const std::string wingProfilesLibraryPath="/cpacs/vehicles/profiles/wingAirfoils", const std::string wingProfileElementName="wingAirfoil");
 
     // Returns the total count of wing profiles in this configuration
     TIGL_EXPORT int GetProfileCount(void) const;

@@ -63,7 +63,7 @@ void CCPACSWings::Cleanup(void)
 }
 
 // Read CPACS wings element
-void CCPACSWings::ReadCPACS(TixiDocumentHandle tixiHandle, const char* configurationUID, const bool doAppend, const std::string wingsLibraryName, const std::string wingElementName, const std::string wingProfilesLibraryPath, const std::string wingProfileElementName)
+void CCPACSWings::ReadCPACS(TixiDocumentHandle tixiHandle, const char* configurationUID, const bool doAppend, const bool isRotorBlade, const std::string wingsLibraryName, const std::string wingElementName, const std::string wingProfilesLibraryPath, const std::string wingProfileElementName)
 {
     if (!doAppend) {
         Cleanup();
@@ -82,7 +82,7 @@ void CCPACSWings::ReadCPACS(TixiDocumentHandle tixiHandle, const char* configura
     wingXPath += wingsLibraryName;
 
     // Read wing profiles
-    profiles.ReadCPACS(tixiHandle, doAppend, wingProfilesLibraryPath, wingProfileElementName);
+    profiles.ReadCPACS(tixiHandle, doAppend, isRotorBlade, wingProfilesLibraryPath, wingProfileElementName);
 
     if (tixiCheckElement(tixiHandle, wingXPath.c_str()) != SUCCESS) {
         return;
@@ -96,7 +96,7 @@ void CCPACSWings::ReadCPACS(TixiDocumentHandle tixiHandle, const char* configura
 
     // Loop over all wings
     for (int i = 1; i <= wingCount; i++) {
-        CCPACSWing* wing = new CCPACSWing(configuration);
+        CCPACSWing* wing = new CCPACSWing(configuration, isRotorBlade);
         wings.push_back(wing);
 
         std::ostringstream xpath;

@@ -68,6 +68,9 @@ public:
     // Returns the underlying tixi document handle used by a CPACS configuration
     TIGL_EXPORT TixiDocumentHandle GetTixiDocumentHandle(void) const;
 
+    // Returns whether this configuration is a rotorcraft
+    TIGL_EXPORT bool IsRotorcraft(void) const;
+
     // Returns the total count of wing profiles in this configuration
     TIGL_EXPORT int GetWingProfileCount(void) const;
 
@@ -138,6 +141,7 @@ private:
 
 private:
     TixiDocumentHandle           tixiDocumentHandle;   /**< Handle for internal TixiDocument */
+    bool                         isRotorcraft;         /**< Indicates whether this configuration is a rotorcraft */
     CCPACSHeader                 header;               /**< Configuration header element */
     CCPACSWings                  wings;                /**< Configuration wings element */
     CCPACSFuselages              fuselages;            /**< Configuration fuselages element */

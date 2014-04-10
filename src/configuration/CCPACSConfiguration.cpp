@@ -58,6 +58,7 @@ namespace tigl
 CCPACSConfiguration::CCPACSConfiguration(TixiDocumentHandle tixiHandle)
     : tixiDocumentHandle(tixiHandle)
     , header()
+    , isRotorcraft(false)
     , wings(this)
     , fuselages(this)
     , uidManager()
@@ -73,6 +74,7 @@ CCPACSConfiguration::~CCPACSConfiguration(void)
 // recalculation of wires, lofts etc.
 void CCPACSConfiguration::Invalidate(void)
 {
+    isRotorcraft = false;
     wings.Invalidate();
     fuselages.Invalidate();
     aircraftFuser.reset();
@@ -87,9 +89,17 @@ void CCPACSConfiguration::ReadCPACS(const char* configurationUID)
         return;
     }
 
+    // Check if the configuration is a rotorcraft
+    std::string rotorcraftModelXPath = "/cpacs/vehicles/rotorcraft/model[@uID='" + std::string(configurationUID) + "']";
+    if (tixiCheckElement(tixiDocumentHandle, rotorcraftModelXPath.c_str()) == SUCCESS) {
+        isRotorcraft = true;
+    }
+
     header.ReadCPACS(tixiDocumentHandle);
     wings.ReadCPACS(tixiDocumentHandle, configurationUID);
-    wings.ReadCPACS(tixiDocumentHandle, configurationUID, 1, "rotorBlades", "rotorBlade", "/cpacs/vehicles/profiles/rotorAirfoils", "rotorAirfoil");
+    if (isRotorcraft) {
+        wings.ReadCPACS(tixiDocumentHandle, configurationUID, true, true, "rotorBlades", "rotorBlade", "/cpacs/vehicles/profiles/rotorAirfoils", "rotorAirfoil");
+    }
     fuselages.ReadCPACS(tixiDocumentHandle, configurationUID);
     farField.ReadCPACS(tixiDocumentHandle);
     guideCurveProfiles.ReadCPACS(tixiDocumentHandle);
@@ -134,6 +144,12 @@ PTiglFusePlane CCPACSConfiguration::AircraftFusingAlgo(void)
 TixiDocumentHandle CCPACSConfiguration::GetTixiDocumentHandle(void) const
 {
     return tixiDocumentHandle;
+}
+
+// Returns whether this configuration is a rotorcraft
+bool CCPACSConfiguration::IsRotorcraft(void) const
+{
+    return isRotorcraft;
 }
 
 // Returns the total count of wing profiles in this configuration

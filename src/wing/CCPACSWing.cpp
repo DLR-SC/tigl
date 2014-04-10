@@ -74,8 +74,9 @@ namespace
 
 
 // Constructor
-CCPACSWing::CCPACSWing(CCPACSConfiguration* config)
-    : segments(this)
+CCPACSWing::CCPACSWing(CCPACSConfiguration* config, bool isRotorBlade)
+    : isRotorBlade(isRotorBlade)
+    , segments(this)
     , componentSegments(this)
     , configuration(config)
     , rebuildFusedSegments(true)
@@ -240,6 +241,12 @@ void CCPACSWing::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& win
 const std::string& CCPACSWing::GetName(void) const
 {
     return name;
+}
+
+// Returns whether this wing is a rotor blade
+bool CCPACSWing::IsRotorBlade(void) const
+{
+    return isRotorBlade;
 }
 
 // Returns the parent configuration

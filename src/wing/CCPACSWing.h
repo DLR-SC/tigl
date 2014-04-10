@@ -53,7 +53,7 @@ class CCPACSWing : public CTiglAbstractPhysicalComponent
 
 public:
     // Constructor
-    TIGL_EXPORT CCPACSWing(CCPACSConfiguration* config);
+    TIGL_EXPORT CCPACSWing(CCPACSConfiguration* config, bool isRotorBlade=false);
 
     // Virtual destructor
     TIGL_EXPORT virtual ~CCPACSWing(void);
@@ -66,6 +66,9 @@ public:
 
     // Returns the name of the wing
     TIGL_EXPORT const std::string & GetName(void) const;
+
+    // Returns whether this wing is a rotor blade
+    TIGL_EXPORT bool IsRotorBlade(void) const;
 
     // Returns the parent configuration
     TIGL_EXPORT CCPACSConfiguration & GetConfiguration(void) const;
@@ -182,6 +185,7 @@ private:
 
 private:
     std::string                    name;                     /**< Wing name           */
+    bool                           isRotorBlade;             /**< Indicates if this wing is a rotor blade */
     CCPACSWingSections             sections;                 /**< Wing sections       */
     CCPACSWingSegments             segments;                 /**< Wing segments       */
     CCPACSWingComponentSegments    componentSegments;        /**< Wing ComponentSegments */

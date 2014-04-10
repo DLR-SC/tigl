@@ -66,7 +66,7 @@ void CCPACSWingProfiles::Invalidate(void)
 }
 
 // Read CPACS wing profiles
-void CCPACSWingProfiles::ReadCPACS(TixiDocumentHandle tixiHandle, const bool doAppend, const std::string wingProfilesLibraryPath, const std::string wingProfileElementName)
+void CCPACSWingProfiles::ReadCPACS(TixiDocumentHandle tixiHandle, const bool doAppend, const bool isRotorProfile, const std::string wingProfilesLibraryPath, const std::string wingProfileElementName)
 {
     if (!doAppend) {
         Cleanup();
@@ -89,7 +89,7 @@ void CCPACSWingProfiles::ReadCPACS(TixiDocumentHandle tixiHandle, const bool doA
         /* Get the appropriate airfoil */
         std::ostringstream airfoilTmpStream;
         airfoilTmpStream << wingProfilesLibraryPath << "/" << wingProfileElementName << "[" << i << "]";
-        CCPACSWingProfile* profile = new CCPACSWingProfile(airfoilTmpStream.str());
+        CCPACSWingProfile* profile = new CCPACSWingProfile(airfoilTmpStream.str(), isRotorProfile);
         profile->ReadCPACS(tixiHandle);
         CCPACSWingProfileContainer::const_iterator it = profiles.find(profile->GetUID());
         if (it != profiles.end() && it->second) {
