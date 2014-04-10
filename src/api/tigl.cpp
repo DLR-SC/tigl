@@ -139,18 +139,21 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglOpenCPACSConfiguration(TixiDocumentHandle 
     /* configuration automatically */
     if (configurationUID == "") {
         ReturnCode    tixiRet;
-        int sectionCount = 0;
+        int modelCount = 0;
 
-        tixiRet = tixiGetNamedChildrenCount(tixiHandle, "/cpacs/vehicles/aircraft", "model", &sectionCount);
+        tixiRet = tixiGetNamedChildrenCount(tixiHandle, "/cpacs/vehicles/aircraft|/cpacs/vehicles/rotorcraft", "model", &modelCount);
         if (tixiRet != SUCCESS) {
             LOG(ERROR) << "No configuration specified!" << std::endl;
             return TIGL_ERROR;
         }
         char * tmpConfUID = NULL;
-        tixiGetTextAttribute(tixiHandle, "/cpacs/vehicles/aircraft/model", "uID", &tmpConfUID);
+        tixiRet = tixiGetTextAttribute(tixiHandle, "/cpacs/vehicles/aircraft/model[1]", "uID", &tmpConfUID);
         if (tixiRet != SUCCESS) {
-            LOG(ERROR) << "Problems reading configuration-uid!" << std::endl;
-            return TIGL_ERROR;
+            tixiRet = tixiGetTextAttribute(tixiHandle, "/cpacs/vehicles/rotorcraft/model[1]", "uID", &tmpConfUID);
+            if (tixiRet != SUCCESS) {
+                LOG(ERROR) << "Problems reading configuration-uid!" << std::endl;
+                return TIGL_ERROR;
+            }
         }
         configurationUID = tmpConfUID;
     }
