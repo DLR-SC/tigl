@@ -33,6 +33,7 @@
 #include "CCPACSHeader.h"
 #include "CCPACSWings.h"
 #include "CCPACSWingProfile.h"
+#include "CCPACSRotors.h"
 #include "CCPACSFuselages.h"
 #include "CCPACSFuselageProfile.h"
 #include "CCPACSFarField.h"
@@ -92,6 +93,15 @@ public:
     // Returns the wing for a given UID.
     TIGL_EXPORT CCPACSWing& GetWing(const std::string& UID) const;
 
+    // Returns the total count of rotors in a configuration
+    TIGL_EXPORT int GetRotorCount(void) const;
+
+    // Returns the rotor for a given index.
+    TIGL_EXPORT CCPACSRotor& GetRotor(int index) const;
+
+    // Returns the rotor for a given UID.
+    TIGL_EXPORT CCPACSRotor& GetRotor(const std::string& UID) const;
+
     TIGL_EXPORT TopoDS_Shape GetParentLoft(const std::string& UID);
 
     // Returns the total count of fuselage profiles in this configuration
@@ -112,6 +122,7 @@ public:
     // Returns the fuselage for a given UID.
     TIGL_EXPORT CCPACSFuselage& GetFuselage(std::string UID) const;
 
+    // Returns the farfield
     TIGL_EXPORT CCPACSFarField& GetFarField();
 
     // Returns the guide curve profile for a given UID.
@@ -148,6 +159,7 @@ private:
     CCPACSHeader                 header;               /**< Configuration header element */
     CCPACSWings                  wings;                /**< Configuration wings element */
     CCPACSFuselages              fuselages;            /**< Configuration fuselages element */
+    CCPACSRotors                 rotors;               /**< Configuration rotors element */
     CCPACSFarField               farField;             /**< Far field configuration for CFD tools */
     CCPACSGuideCurveProfiles     guideCurveProfiles;   /**< Guide curve profiles */
     CTiglUIDManager              uidManager;           /**< Stores the unique ids of the components */

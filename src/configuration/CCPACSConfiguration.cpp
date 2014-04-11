@@ -61,6 +61,7 @@ CCPACSConfiguration::CCPACSConfiguration(TixiDocumentHandle tixiHandle)
     , isRotorcraft(false)
     , wings(this)
     , fuselages(this)
+    , rotors(this)
     , uidManager()
 {
 }
@@ -77,6 +78,7 @@ void CCPACSConfiguration::Invalidate(void)
     isRotorcraft = false;
     wings.Invalidate();
     fuselages.Invalidate();
+    rotors.Invalidate();
     aircraftFuser.reset();
     shapeCache.Clear();
     configUID = "";
@@ -99,6 +101,7 @@ void CCPACSConfiguration::ReadCPACS(const char* configurationUID)
     wings.ReadCPACS(tixiDocumentHandle, configurationUID);
     if (isRotorcraft) {
         wings.ReadCPACS(tixiDocumentHandle, configurationUID, true, true, "rotorBlades", "rotorBlade", "/cpacs/vehicles/profiles/rotorAirfoils", "rotorAirfoil");
+        rotors.ReadCPACS(tixiDocumentHandle, configurationUID);
     }
     fuselages.ReadCPACS(tixiDocumentHandle, configurationUID);
     farField.ReadCPACS(tixiDocumentHandle);
@@ -191,6 +194,24 @@ CCPACSWing& CCPACSConfiguration::GetWing(int index) const
 CCPACSWing& CCPACSConfiguration::GetWing(const std::string& UID) const
 {
     return wings.GetWing(UID);
+}
+
+// Returns the total count of rotors in a configuration
+int CCPACSConfiguration::GetRotorCount(void) const
+{
+    return rotors.GetRotorCount();
+}
+
+// Returns the rotor for a given index.
+CCPACSRotor& CCPACSConfiguration::GetRotor(int index) const
+{
+    return rotors.GetRotor(index);
+}
+
+// Returns the rotor for a given UID.
+CCPACSRotor& CCPACSConfiguration::GetRotor(const std::string& UID) const
+{
+    return rotors.GetRotor(UID);
 }
 
 TopoDS_Shape CCPACSConfiguration::GetParentLoft(const std::string& UID)

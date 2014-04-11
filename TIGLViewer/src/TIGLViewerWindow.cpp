@@ -758,6 +758,11 @@ void TIGLViewerWindow::connectSignals()
     connect(drawRotorBladeCSPointAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawRotorBladeComponentSegmentPoints()));
     connect(drawRotorBladeShellAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawRotorBladeShells()));
 
+    // CPACS Rotorcraft Actions
+    connect(drawAllRotorsWingsAndFuselagesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawRotorsWingsAndFuselages()));
+    connect(drawRotorsAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawRotor()));
+    connect(drawRotorDisksAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawRotorDisk()));
+
     // Export functions
     connect(tiglExportFusedIgesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportFusedAsIges()));
     connect(tiglExportIgesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportAsIges()));
@@ -839,6 +844,7 @@ void TIGLViewerWindow::updateMenus(TiglCPACSConfigurationHandle hand)
     int nWings = 0;
     int nFuselages = 0;
     int nRotorBlades = 0;
+    int nRotors = 0;
     bool hasFarField = false;
 
     closeAction->setEnabled(hand > 0);
@@ -849,6 +855,7 @@ void TIGLViewerWindow::updateMenus(TiglCPACSConfigurationHandle hand)
             nRotorBlades = config.GetRotorBladeCount();
             nWings = config.GetWingCount() - nRotorBlades;
             nFuselages = config.GetFuselageCount();
+	    nRotors = config.GetRotorCount();
             hasFarField = config.GetFarField().GetFieldType() != tigl::NONE;
         }
     }
@@ -856,9 +863,11 @@ void TIGLViewerWindow::updateMenus(TiglCPACSConfigurationHandle hand)
 
     menuWings->setEnabled(nWings > 0);
     menuFuselages->setEnabled(nFuselages > 0);
-    menuRotorcraft->setEnabled(nRotorBlades > 0);
-    menuRotorBlades->setEnabled(nRotorBlades > 0);
     menuAircraft->setEnabled(nWings > 0 || nFuselages > 0);
+    menuRotorcraft->setEnabled((nRotors > 0) || (nRotorBlades > 0));
+    menuRotorBlades->setEnabled(nRotorBlades > 0);
+    drawRotorsAction->setEnabled(nRotors > 0);
+    drawRotorDisksAction->setEnabled(nRotors > 0);
     drawFarFieldAction->setEnabled(hasFarField);
 }
 

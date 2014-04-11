@@ -44,6 +44,7 @@
 #include <BRepBuilderAPI_MakePolygon.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRepBuilderAPI_MakeVertex.hxx>
+#include <BRepBuilderAPI_Transform.hxx>
 #include <gce_MakeLin.hxx>
 #include <GC_MakeSegment.hxx>
 #include <BRepBndLib.hxx>
@@ -164,7 +165,14 @@ TiglReturnCode TIGLViewerDocument::openCpacsConfiguration(const QString fileName
         displayError(QString("<u>tiglOpenCPACSConfiguration</u> returned %1").arg(tiglGetErrorString(tiglRet)), "Error while reading in CPACS configuration");
         return tiglRet;
     }
-    drawAllFuselagesAndWings();
+
+    if (GetConfiguration().GetRotorCount() > 0) {
+        drawRotorsWingsAndFuselages();
+    }
+    else {
+        drawAllFuselagesAndWings();
+    }
+
     loadedConfigurationFileName = fileName;
     return TIGL_SUCCESS;
 }
@@ -246,11 +254,12 @@ bool meshShape(const TopoDS_Shape& loft, double rel_deflection)
 }
 
 // a small helper when we just want to display a shape
-Handle(AIS_Shape) TIGLViewerDocument::displayShape(const TopoDS_Shape& loft, Quantity_Color color)
+Handle(AIS_Shape) TIGLViewerDocument::displayShape(const TopoDS_Shape& loft, Quantity_Color color, double transparency)
 {
     Handle(AIS_Shape) shape = new AIS_Shape(loft);
     shape->SetMaterial(Graphic3d_NOM_METALIZED);
     shape->SetColor(color);
+    shape->SetTransparency(transparency);
     shape->SetOwnDeviationCoefficient(_settings.tesselationAccuracy());
     myAISContext->Display(shape, Standard_True);
     
@@ -436,6 +445,33 @@ QString TIGLViewerDocument::dlgGetWingProfileSelection()
     }
 }
 
+
+// Rotor selection Dialog
+QString TIGLViewerDocument::dlgGetRotorSelection()
+{
+    QStringList rotors;
+    bool ok;
+
+    // Initialize rotorBlade list
+    tigl::CCPACSConfiguration& config = GetConfiguration();
+    int rotorCount = config.GetRotorCount();
+    for (int i = 1; i <= rotorCount; i++) {
+        tigl::CCPACSRotor& rotor = config.GetRotor(i);
+        std::string name = rotor.GetUID();
+        if (name == "") {
+            name = "Unknown rotor";
+        }
+        rotors << name.c_str();
+    }
+
+    QString choice = QInputDialog::getItem(parent, tr("Select Rotor"), tr("Available Rotors:"), rotors, 0, false, &ok);
+    if(ok) {
+        return choice;
+    }
+    else {
+        return "";
+    }
+}
 
 // Rotor Blade selection Dialog
 QString TIGLViewerDocument::dlgGetRotorBladeSelection()
@@ -716,6 +752,8 @@ void TIGLViewerDocument::drawWingOverlayProfilePoints()
 
 void TIGLViewerDocument::drawWingGuideCurves()
 {
+    QApplication::setOverrideCursor( Qt::WaitCursor );
+
     // loop over all wings
     tigl::CCPACSConfiguration& config = GetConfiguration();
     int wingCount = config.GetWingCount();
@@ -725,6 +763,8 @@ void TIGLViewerDocument::drawWingGuideCurves()
             drawWingGuideCurves(wing);
         }
     }
+
+    QApplication::restoreOverrideCursor();
 }
 
 void TIGLViewerDocument::drawFuselageProfiles()
@@ -957,7 +997,7 @@ void TIGLViewerDocument::drawFuselageSamplePointsAngle()
 
 void TIGLViewerDocument::drawAllFuselagesAndWingsSurfacePoints()
 {
-     myAISContext->EraseAll(Standard_False);
+    myAISContext->EraseAll(Standard_False);
     std::ostringstream text;
 
     // Draw all wings
@@ -1837,6 +1877,8 @@ void TIGLViewerDocument::drawRotorBladeOverlayProfilePoints()
 
 void TIGLViewerDocument::drawRotorBladeGuideCurves()
 {
+    QApplication::setOverrideCursor( Qt::WaitCursor );
+
     // loop over all wings
     tigl::CCPACSConfiguration& config = GetConfiguration();
     int wingCount = config.GetWingCount();
@@ -1846,6 +1888,8 @@ void TIGLViewerDocument::drawRotorBladeGuideCurves()
             drawWingGuideCurves(wing);
         }
     }
+
+    QApplication::restoreOverrideCursor();
 }
 
 void TIGLViewerDocument::drawRotorBlade()
@@ -1939,6 +1983,89 @@ void TIGLViewerDocument::drawRotorBladeShells()
     catch (tigl::CTiglError& ex) {
         std::cerr << ex.getError() << std::endl;
     }
+}
+
+
+void TIGLViewerDocument::drawRotorsWingsAndFuselages()
+{
+    drawAllFuselagesAndWings();
+
+    QApplication::setOverrideCursor( Qt::WaitCursor );
+
+    for (int i=0; i<GetConfiguration().GetRotorCount(); ++i) {
+        tigl::CCPACSRotor& rotor = GetConfiguration().GetRotor(i+1);
+        // Draw rotor
+        const TopoDS_Shape& rotorGeometry = rotor.GetLoft();
+        displayShape(rotorGeometry, Quantity_NOC_RotorCol);
+        // Draw rotor disk
+        const TopoDS_Shape& rotorDisk = rotor.GetRotorDisk();
+        displayShape(rotorDisk, Quantity_NOC_RotorCol, 0.9);
+
+        if(rotor.GetSymmetryAxis() == TIGL_NO_SYMMETRY)
+            continue;
+
+        // Draw mirrored rotor
+        const TopoDS_Shape& mirrRotorGeometry = rotor.GetMirroredLoft();
+        displayShape(mirrRotorGeometry, Quantity_NOC_MirrRotorCol);
+        // Draw mirrored rotor disk
+        gp_Ax2 mirrorPlane;
+        if(rotor.GetSymmetryAxis() == TIGL_X_Z_PLANE){
+            mirrorPlane = gp_Ax2(gp_Pnt(0,0,0),gp_Dir(0.,1.,0.));
+        }
+        else if(rotor.GetSymmetryAxis() == TIGL_X_Y_PLANE){
+            mirrorPlane = gp_Ax2(gp_Pnt(0,0,0),gp_Dir(0.,0.,1.));
+        }
+        else if(rotor.GetSymmetryAxis() == TIGL_Y_Z_PLANE){
+            mirrorPlane = gp_Ax2(gp_Pnt(0,0,0),gp_Dir(1.,0.,0.));
+        }
+        gp_Trsf theTransformation;
+        theTransformation.SetMirror(mirrorPlane);
+        BRepBuilderAPI_Transform myBRepTransformation(rotorDisk, theTransformation);
+        const TopoDS_Shape& mirrRotorDisk = myBRepTransformation.Shape();
+        displayShape(mirrRotorDisk, Quantity_NOC_MirrRotorCol, 0.9);
+    }
+
+    QApplication::restoreOverrideCursor();
+}
+
+void TIGLViewerDocument::drawRotor()
+{
+    QString rotorUid = dlgGetRotorSelection();
+    if(rotorUid=="")
+        return;
+
+    tigl::CCPACSRotor& rotor = GetConfiguration().GetRotor(rotorUid.toStdString());
+
+    QApplication::setOverrideCursor( Qt::WaitCursor );
+
+    //clear screen
+    myAISContext->EraseAll(Standard_False);
+
+    // Draw segment loft
+    const TopoDS_Shape& rotorGeometry = rotor.GetLoft();
+    displayShape(rotorGeometry, Quantity_NOC_RotorCol);
+
+    QApplication::restoreOverrideCursor();
+}
+
+void TIGLViewerDocument::drawRotorDisk()
+{
+    QString rotorUid = dlgGetRotorSelection();
+    if(rotorUid=="")
+        return;
+
+    tigl::CCPACSRotor& rotor = GetConfiguration().GetRotor(rotorUid.toStdString());
+
+    QApplication::setOverrideCursor( Qt::WaitCursor );
+
+    //clear screen
+    //myAISContext->EraseAll(Standard_False);
+
+    // Draw rotor disk
+    const TopoDS_Shape& rotorDisk = rotor.GetRotorDisk();
+    displayShape(rotorDisk, Quantity_NOC_RotorCol, 0.9);
+
+    QApplication::restoreOverrideCursor();
 }
 
 
@@ -2113,8 +2240,6 @@ void TIGLViewerDocument::drawWingOverlayProfilePoints(tigl::CCPACSWing& wing)
  */
 void TIGLViewerDocument::drawWingGuideCurves(tigl::CCPACSWing& wing)
 {
-    QApplication::setOverrideCursor( Qt::WaitCursor );
-
     std::string wingUid = wing.GetUID();
     // loop over all wing segments
     for (int j = 1; j <= wing.GetSegmentCount(); ++j) {
@@ -2130,8 +2255,6 @@ void TIGLViewerDocument::drawWingGuideCurves(tigl::CCPACSWing& wing)
             myAISContext->Display(shape, Standard_True);
         }
     }
-
-    QApplication::restoreOverrideCursor();
 }
 
 /*
@@ -2267,7 +2390,7 @@ void TIGLViewerDocument::drawWingComponentSegment(tigl::CTiglAbstractSegment& se
         displayShape(*pComponentSegment);
     }
     else {
-        cerr << "Component segment \"" << segment.GetUID() << "\" not found" << endl;	
+        cerr << "Component segment \"" << segment.GetUID() << "\" not found" << endl;   
     }
 
     QApplication::restoreOverrideCursor();

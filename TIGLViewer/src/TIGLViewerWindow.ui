@@ -151,6 +151,9 @@
       <string>Rotorcraft</string>
      </property>
      <addaction name="menuRotorBlades"/>
+     <addaction name="drawAllRotorsWingsAndFuselagesAction"/>
+     <addaction name="drawRotorsAction"/>
+     <addaction name="drawRotorDisksAction"/>
     </widget>
     <addaction name="menuAircraft"/>
     <addaction name="menuRotorcraft"/>
@@ -666,6 +669,30 @@
     <property name="text">
       <string>Show Rotor Blade Shells</string>
     </property>
+  </action>
+  <action name="drawAllRotorsWingsAndFuselagesAction">
+   <property name="text">
+    <string>Show all Rotors, Wings and Fuselages</string>
+   </property>
+   <property name="toolTip">
+    <string>Show all Rotors, Wings and Fuselages</string>
+   </property>
+  </action>
+  <action name="drawRotorsAction">
+   <property name="text">
+    <string>Show a Rotor</string>
+   </property>
+   <property name="toolTip">
+    <string>Show only one rotor</string>
+   </property>
+  </action>
+  <action name="drawRotorDisksAction">
+   <property name="text">
+    <string>Show a Rotor disk</string>
+   </property>
+   <property name="toolTip">
+    <string>Show only one rotor disk</string>
+   </property>
   </action>
   <action name="drawFuselageAction">
    <property name="text">
