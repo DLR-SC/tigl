@@ -288,8 +288,8 @@ void TIGLViewerDocument::DisplayPoint(gp_Pnt& aPoint,
 }
 
 
-// Wing selection Dialog
-QString TIGLViewerDocument::dlgGetWingSelection()
+// Wing and Rotor Blade Selection Dialog
+QString TIGLViewerDocument::dlgGetWingOrRotorBladeSelection()
 {
     QStringList wings;
     bool ok;
@@ -304,6 +304,35 @@ QString TIGLViewerDocument::dlgGetWingSelection()
             name = "Unknown wing";
         }
         wings << name.c_str();
+    }
+
+    QString choice = QInputDialog::getItem(parent, tr("Select Wing or Rotor Blade"), tr("Available Wings:"), wings, 0, false, &ok);
+    if (ok) {
+        return choice;
+    }
+    else {
+        return "";
+    }
+}
+
+// Wing selection Dialog
+QString TIGLViewerDocument::dlgGetWingSelection()
+{
+    QStringList wings;
+    bool ok;
+
+    // Initialize wing list
+    tigl::CCPACSConfiguration& config = GetConfiguration();
+    int wingCount = config.GetWingCount();
+    for (int i = 1; i <= wingCount; i++) {
+        tigl::CCPACSWing& wing = config.GetWing(i);
+        if (!wing.IsRotorBlade()) {
+            std::string name = wing.GetUID();
+            if (name == "") {
+                name = "Unknown wing";
+            }
+            wings << name.c_str();
+        }
     }
 
     QString choice = QInputDialog::getItem(parent, tr("Select Wing"), tr("Available Wings:"), wings, 0, false, &ok);
@@ -326,13 +355,15 @@ QString TIGLViewerDocument::dlgGetWingComponentSegmentSelection()
     int wingCount = config.GetWingCount();
     for (int i = 1; i <= wingCount; i++) {
         tigl::CCPACSWing& wing = config.GetWing(i);
-        for (int j = 1; j <= wing.GetComponentSegmentCount(); ++j) {
-            tigl::CTiglAbstractSegment& segment = wing.GetComponentSegment(j);
-            std::string name = segment.GetUID();
-            if (name == "") {
-                name = "Unknown component segment";
+        if (!wing.IsRotorBlade()) {
+            for (int j = 1; j <= wing.GetComponentSegmentCount(); ++j) {
+                tigl::CTiglAbstractSegment& segment = wing.GetComponentSegment(j);
+                std::string name = segment.GetUID();
+                if (name == "") {
+                    name = "Unknown component segment";
+                }
+                compSegs << name.c_str();
             }
-            compSegs << name.c_str();
         }
     }
 
@@ -357,13 +388,15 @@ QString TIGLViewerDocument::dlgGetWingSegmentSelection()
     int wingCount = config.GetWingCount();
     for (int i = 1; i <= wingCount; i++) {
         tigl::CCPACSWing& wing = config.GetWing(i);
-        for (int j = 1; j <= wing.GetSegmentCount(); ++j) {
-            tigl::CTiglAbstractSegment& segment = wing.GetSegment(j);
-            std::string name = segment.GetUID();
-            if (name == "") {
-                name = "Unknown segment";
+        if (!wing.IsRotorBlade()) {
+            for (int j = 1; j <= wing.GetSegmentCount(); ++j) {
+                tigl::CTiglAbstractSegment& segment = wing.GetSegment(j);
+                std::string name = segment.GetUID();
+                if (name == "") {
+                    name = "Unknown segment";
+                }
+                segs << name.c_str();
             }
-            segs << name.c_str();
         }
     }
 
@@ -387,12 +420,135 @@ QString TIGLViewerDocument::dlgGetWingProfileSelection()
     int profileCount = config.GetWingProfileCount();
     for (int i = 1; i <= profileCount; i++) {
         tigl::CCPACSWingProfile& profile = config.GetWingProfile(i);
-        std::string profileUID = profile.GetUID();
-        std::string name     = profile.GetName();
-        wingProfiles << profileUID.c_str();
+        if (!profile.IsRotorProfile()) {
+            std::string profileUID = profile.GetUID();
+            std::string name     = profile.GetName();
+            wingProfiles << profileUID.c_str();
+        }
     }
 
     QString choice = QInputDialog::getItem(parent, tr("Select Wing Profile"), tr("Available Wing Profiles:"), wingProfiles, 0, false, &ok);
+    if (ok) {
+        return choice;
+    }
+    else {
+        return "";
+    }
+}
+
+
+// Rotor Blade selection Dialog
+QString TIGLViewerDocument::dlgGetRotorBladeSelection()
+{
+    QStringList wings;
+    bool ok;
+
+    // Initialize wing list
+    tigl::CCPACSConfiguration& config = GetConfiguration();
+    int wingCount = config.GetWingCount();
+    for (int i = 1; i <= wingCount; i++) {
+        tigl::CCPACSWing& wing = config.GetWing(i);
+        if (wing.IsRotorBlade()) {
+            std::string name = wing.GetUID();
+            if (name == "") {
+                name = "Unknown rotor blade";
+            }
+            wings << name.c_str();
+        }
+    }
+
+    QString choice = QInputDialog::getItem(parent, tr("Select Rotor Blade"), tr("Available Rotor Blades:"), wings, 0, false, &ok);
+    if (ok) {
+        return choice;
+    }
+    else {
+        return "";
+    }
+}
+
+// Rotor Blade Component Segment Selection Dialog
+QString TIGLViewerDocument::dlgGetRotorBladeComponentSegmentSelection()
+{
+    QStringList compSegs;
+    bool ok;
+
+    // Initialize wing list
+    tigl::CCPACSConfiguration& config = GetConfiguration();
+    int wingCount = config.GetWingCount();
+    for (int i = 1; i <= wingCount; i++) {
+        tigl::CCPACSWing& wing = config.GetWing(i);
+        if (wing.IsRotorBlade()) {
+            for (int j = 1; j <= wing.GetComponentSegmentCount(); ++j) {
+                tigl::CTiglAbstractSegment& segment = wing.GetComponentSegment(j);
+                std::string name = segment.GetUID();
+                if (name == "") {
+                    name = "Unknown component segment";
+                }
+                compSegs << name.c_str();
+            }
+        }
+    }
+
+    QString choice = QInputDialog::getItem(parent, tr("Select Component Segment"), tr("Available Component Segments:"), compSegs, 0, false, &ok);
+    if (ok) {
+        return choice;
+    }
+    else {
+        return "";
+    }
+}
+
+// Rotor Blade Segment Selection Dialog
+QString TIGLViewerDocument::dlgGetRotorBladeSegmentSelection()
+{
+    QStringList segs;
+    bool ok;
+
+    // Initialize wing list
+    tigl::CCPACSConfiguration& config = GetConfiguration();
+    int wingCount = config.GetWingCount();
+    for (int i = 1; i <= wingCount; i++) {
+        tigl::CCPACSWing& wing = config.GetWing(i);
+        if (wing.IsRotorBlade()) {
+            for (int j = 1; j <= wing.GetSegmentCount(); ++j) {
+                tigl::CTiglAbstractSegment& segment = wing.GetSegment(j);
+                std::string name = segment.GetUID();
+                if (name == "") {
+                    name = "Unknown segment";
+                }
+                segs << name.c_str();
+            }
+        }
+    }
+
+    QString choice = QInputDialog::getItem(parent, tr("Select Segment"), tr("Available Segments:"), segs, 0, false, &ok);
+    if (ok) {
+        return choice;
+    }
+    else {
+        return "";
+    }
+}
+
+// Rotor Profile Dialog
+QString TIGLViewerDocument::dlgGetRotorProfileSelection()
+{
+    QStringList wingProfiles;
+    bool ok;
+
+    // Initialize wing list
+    tigl::CCPACSConfiguration& config = GetConfiguration();
+    int profileCount = config.GetWingProfileCount();
+    for (int i = 1; i <= profileCount; i++) {
+        tigl::CCPACSWingProfile& profile = config.GetWingProfile(i);
+        if (profile.IsRotorProfile()) {
+            std::string profileUID = profile.GetUID();
+            std::string name     = profile.GetName();
+            wingProfiles << profileUID.c_str();
+        }
+    }
+
+    QString choice = QInputDialog::getItem(parent, tr("Select Rotor Profile"), tr("Available Rotor Profiles:"), wingProfiles, 0, false, &ok);
     if (ok) {
         return choice;
     }
@@ -485,9 +641,15 @@ QString TIGLViewerDocument::dlgGetFuselageProfileSelection()
 
 void TIGLViewerDocument::drawAllFuselagesAndWings( )
 {
+    QApplication::setOverrideCursor( Qt::WaitCursor );
+
     // Draw all wings
     for (int w = 1; w <= GetConfiguration().GetWingCount(); w++) {
         tigl::CCPACSWing& wing = GetConfiguration().GetWing(w);
+
+        if (wing.IsRotorBlade()) {
+            continue;
+        }
 
         for (int i = 1; i <= wing.GetSegmentCount(); i++) {
             tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(i);
@@ -522,185 +684,45 @@ void TIGLViewerDocument::drawAllFuselagesAndWings( )
             displayShape(segment.GetMirroredLoft(), Quantity_NOC_MirrShapeCol);
         }
     }
-}
 
+    QApplication::restoreOverrideCursor();
+}
 
 
 void TIGLViewerDocument::drawWingProfiles()
 {
     QString wingProfile = dlgGetWingProfileSelection();
-    if (wingProfile == "") {
-        return;
+    try {
+        tigl::CCPACSWingProfile& profile = GetConfiguration().GetWingProfile(wingProfile.toStdString());
+        drawAirfoil(profile);
     }
-
-    myAISContext->EraseAll(Standard_False);
-
-    tigl::CCPACSWingProfile& profile = GetConfiguration().GetWingProfile(wingProfile.toStdString());
-    TopoDS_Wire wire        = profile.GetWire();
-    displayShape(wire,Quantity_NOC_WHITE);
-
-    // Leading/trailing edges
-    gp_Pnt lePoint = profile.GetLEPoint();
-    gp_Pnt tePoint = profile.GetTEPoint();
-
-    std::ostringstream text;
-    text << "LE(" << lePoint.X() << ", " << lePoint.Y() << ", " << lePoint.Z() << ")";
-    DisplayPoint(lePoint, const_cast<char*>(text.str().c_str()), Standard_False, 0.0, 0.0, 0.0, 2.0);
-    text.str("");
-    text << "TE(" << tePoint.X() << ", " << tePoint.Y() << ", " << tePoint.Z() << ")";
-    DisplayPoint(tePoint, const_cast<char*>(text.str().c_str()), Standard_False, 0.0, 0.0, 0.0, 2.0);
-    text.str("");
-
-    gp_Lin gpline = gce_MakeLin(lePoint, tePoint);
-
-    // Lets make a limited line for display reasons
-    Standard_Real length = lePoint.Distance(tePoint);
-    if (length > 0.0) {
-        Handle(Geom_TrimmedCurve) trimmedLine = GC_MakeSegment(gpline, -length * 0.2, length * 1.2);
-        TopoDS_Edge le_te_edge = BRepBuilderAPI_MakeEdge(trimmedLine);
-        displayShape(le_te_edge, Quantity_NOC_GOLD);
+    catch (tigl::CTiglError& ex) {
+        std::cerr << ex.getError() << std::endl;
     }
-
-    // display points in case of a few sample points
-    std::vector<tigl::CTiglPoint*> fewPointList=profile.GetProfileAlgo()->GetSamplePoints();
-    if (fewPointList.size() < 15) {
-        for (unsigned int i = 0; i<fewPointList.size(); ++i) {
-            tigl::CTiglPoint * p = fewPointList.at(i);
-            std::stringstream str;
-            str << i << ": (" << p->x << ", " << p->y << ", " << p->z << ")";
-            gp_Pnt pnt = p->Get_gp_Pnt();
-            DisplayPoint(pnt, str.str().c_str(), Standard_False, 0., 0., 0., 6.);
-        }
-    }
-    else {
-        // Draw some points on the wing profile
-        for (double xsi = 0.1; xsi <= 0.9; xsi = xsi + 0.2) {
-            try {
-                gp_Pnt chordPoint = profile.GetChordPoint(xsi);
-                text << "CPT(" << xsi << ")";
-                text << "(" << chordPoint.X() << ", " << chordPoint.Y() << ", " << chordPoint.Z() << ")";
-                DisplayPoint(chordPoint, const_cast<char*>(text.str().c_str()), Standard_False, 0.0, 0.0, 0.0, 2.0);
-                text.str("");
-            }
-            catch (tigl::CTiglError& ex) {
-                std::cerr << ex.getError() << std::endl;
-            }
-
-            try {
-                gp_Pnt upperPoint = profile.GetUpperPoint(xsi);
-                text << "UPT(" << xsi << ")";
-                text << "(" << upperPoint.X() << ", " << upperPoint.Y() << ", " << upperPoint.Z() << ")";
-                DisplayPoint(upperPoint, const_cast<char*>(text.str().c_str()), Standard_False, 0.0, 0.0, 0.0, 2.0);
-                text.str("");
-            }
-            catch (tigl::CTiglError& ex) {
-                std::cerr << ex.getError() << std::endl;
-            }
-
-            try {
-                gp_Pnt lowerPoint = profile.GetLowerPoint(xsi);
-                text << "LPT(" << xsi << ")";
-                text << "(" << lowerPoint.X() << ", " << lowerPoint.Y() << ", " << lowerPoint.Z() << ")";
-                DisplayPoint(lowerPoint, const_cast<char*>(text.str().c_str()), Standard_False, 0.0, 0.0, 0.0, 2.0);
-                text.str("");
-            }
-            catch (tigl::CTiglError& ex) {
-                std::cerr << ex.getError() << std::endl;
-            }
-        }
-    }
-
-    myOCC->viewLeft();
-    myOCC->fitAll();
 }
 
 void TIGLViewerDocument::drawWingOverlayProfilePoints()
 {
     QString wingUid = dlgGetWingSelection();
-    if (wingUid == "") {
-        return;
+    try {
+        tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
+        drawWingOverlayProfilePoints(wing);
     }
-
-    tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
-
-    for (int i = 1; i <= wing.GetSegmentCount(); i++) {
-        // Get segment
-        tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(i);
-        // Get inner profile point list
-        tigl::CCPACSWingConnection& innerConnection = segment.GetInnerConnection();
-        tigl::CCPACSWingProfile& innerProfile = innerConnection.GetProfile();
-        std::vector<tigl::CTiglPoint*> innerProfilePointList=innerProfile.GetProfileAlgo()->GetSamplePoints();
-        // get points and transform them
-        std::vector<tigl::CTiglPoint*> innerPoints;
-        for (std::vector<tigl::CTiglPoint*>::size_type i = 0; i < innerProfilePointList.size(); i++) {
-
-            gp_Pnt pnt = innerProfilePointList[i]->Get_gp_Pnt();
-
-            pnt = innerConnection.GetSectionElementTransformation().Transform(pnt);
-            pnt = innerConnection.GetSectionTransformation().Transform(pnt);
-            pnt = innerConnection.GetPositioningTransformation().Transform(pnt);
-
-            tigl::CTiglPoint *tiglPoint = new tigl::CTiglPoint(pnt.X(), pnt.Y(), pnt.Z());
-            innerPoints.push_back(tiglPoint);
-        }
-
-        // Draw inner profile points
-        for (std::vector<tigl::CTiglPoint*>::size_type i = 0; i < innerPoints.size(); i++) {
-            gp_Pnt pnt = innerPoints[i]->Get_gp_Pnt();
-            pnt = wing.GetWingTransformation().Transform(pnt);
-            DisplayPoint(pnt, "", Standard_False, 0.0, 0.0, 0.0, 2.0);
-        }
-
-        // Get outer profile point list
-        tigl::CCPACSWingConnection& outerConnection = segment.GetOuterConnection();
-        tigl::CCPACSWingProfile& outerProfile = outerConnection.GetProfile();
-        std::vector<tigl::CTiglPoint*> outerProfilePointList=outerProfile.GetProfileAlgo()->GetSamplePoints();
-        // get points and transform them
-        std::vector<tigl::CTiglPoint*> outerPoints;
-        for (std::vector<tigl::CTiglPoint*>::size_type i = 0; i < outerProfilePointList.size(); i++) {
-
-            gp_Pnt pnt = outerProfilePointList[i]->Get_gp_Pnt();
-
-            pnt = outerConnection.GetSectionElementTransformation().Transform(pnt);
-            pnt = outerConnection.GetSectionTransformation().Transform(pnt);
-            pnt = outerConnection.GetPositioningTransformation().Transform(pnt);
-
-            tigl::CTiglPoint *tiglPoint = new tigl::CTiglPoint(pnt.X(), pnt.Y(), pnt.Z());
-            outerPoints.push_back(tiglPoint);
-        }
-
-        // Draw outer profile points
-        for (std::vector<tigl::CTiglPoint*>::size_type i = 0; i < outerPoints.size(); i++) {
-            gp_Pnt pnt = outerPoints[i]->Get_gp_Pnt();
-            pnt = wing.GetWingTransformation().Transform(pnt);
-            DisplayPoint(pnt, "", Standard_False, 0.0, 0.0, 0.0, 2.0);
-        }
+    catch (tigl::CTiglError& ex) {
+        std::cerr << ex.getError() << std::endl;
     }
 }
 
 
 void TIGLViewerDocument::drawWingGuideCurves()
 {
-    // loop over all wing segments
+    // loop over all wings
     tigl::CCPACSConfiguration& config = GetConfiguration();
     int wingCount = config.GetWingCount();
     for (int i = 1; i <= wingCount; i++) {
         tigl::CCPACSWing& wing = config.GetWing(i);
-        std::string wingUid = wing.GetUID();
-        for (int j = 1; j <= wing.GetSegmentCount(); ++j) {
-            tigl::CTiglAbstractSegment& segment = wing.GetSegment(j);
-            std::string wingSegUid = segment.GetUID();
-
-            tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid);
-            tigl::CCPACSWingSegment& wingSeg = (tigl::CCPACSWingSegment&) wing.GetSegment(wingSegUid);
-
-            TopTools_SequenceOfShape& guideCurveContainer = wingSeg.GetGuideCurveWires();
-            for (int i=1; i<=guideCurveContainer.Length(); i++) {
-                TopoDS_Wire wire =TopoDS::Wire(guideCurveContainer(i));
-                Handle(AIS_Shape) shape = new AIS_Shape(wire);
-                shape->SetMaterial(Graphic3d_NOM_METALIZED);
-                myAISContext->Display(shape, Standard_True);
-            }
+        if (!wing.IsRotorBlade()) {
+            drawWingGuideCurves(wing);
         }
     }
 }
@@ -774,18 +796,12 @@ void TIGLViewerDocument::drawFuselageGuideCurves()
 void TIGLViewerDocument::drawWing()
 {
     QString wingUid = dlgGetWingSelection();
-    if (wingUid=="") {
-        return;
+    try {
+        tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
+        drawWing(wing);
     }
-
-    tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
-
-    myAISContext->EraseAll(Standard_False);
-
-    for (int i = 1; i <= wing.GetSegmentCount(); i++) {
-        // Draw segment loft
-        const TopoDS_Shape& loft = wing.GetSegment(i).GetLoft();
-        displayShape(loft);
+    catch (tigl::CTiglError& ex) {
+        std::cerr << ex.getError() << std::endl;
     }
 }
 
@@ -817,25 +833,13 @@ void TIGLViewerDocument::drawFuselage()
 void TIGLViewerDocument::drawWingTriangulation()
 {
     QString wingUid = dlgGetWingSelection();
-    // cancel on abort
-    if (wingUid == "") {
-        return;
+    try {
+        tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
+        drawWingTriangulation(wing);
     }
-
-    QApplication::setOverrideCursor( Qt::WaitCursor );
-    tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
-
-    //clear screen
-    myAISContext->EraseAll(Standard_False);
-
-    //we do not fuse segments anymore but build it from scratch with the profiles
-    TopoDS_Shape& fusedWing = wing.GetLoft();
-
-    TopoDS_Compound compound;
-    createShapeTriangulation(fusedWing, compound);
-    
-    displayShape(compound);
-    QApplication::restoreOverrideCursor();
+    catch (tigl::CTiglError& ex) {
+        std::cerr << ex.getError() << std::endl;
+    }
 }
 
 
@@ -864,64 +868,12 @@ void TIGLViewerDocument::drawFuselageTriangulation()
 void TIGLViewerDocument::drawWingSamplePoints()
 {
     QString wingUid = dlgGetWingSelection();
-    if (wingUid == "") {
-        return;
+    try {
+        tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
+        drawWingSamplePoints(wing);
     }
-
-    tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
-    int wingIndex = 0;
-    for (int i = 1; i <= GetConfiguration().GetWingCount(); ++i) {
-        tigl::CCPACSWing& curWing = GetConfiguration().GetWing(i);
-        if (wingUid.toStdString() == curWing.GetUID()) {
-            wingIndex = i;
-            break;
-        }
-    }
-
-    if (wingIndex <= 0) {
-        return;
-    }
-
-    myAISContext->EraseAll(Standard_False);
-
-    for (int segmentIndex = 1; segmentIndex <= wing.GetSegmentCount(); segmentIndex++) {
-        // Draw segment loft
-        tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(segmentIndex);
-        const TopoDS_Shape& loft = segment.GetLoft();
-
-        Handle(AIS_Shape) shape = new AIS_Shape(loft);
-        shape->SetColor(Quantity_NOC_BLUE2);
-        myAISContext->Display(shape, Standard_True);
-
-        // Draw some points on the wing segment
-        for (double eta = 0.0; eta <= 1.0; eta += 0.1) {
-            for (double xsi = 0.0; xsi <= 1.0; xsi += 0.1) {
-                double x, y, z;
-                tiglWingGetUpperPoint(m_cpacsHandle,
-                                      wingIndex,
-                                      segmentIndex,
-                                      eta,
-                                      xsi,
-                                      &x,
-                                      &y,
-                                      &z);
-
-                Handle(ISession_Point) aGraphicPoint = new ISession_Point(x, y, z);
-                myAISContext->Display(aGraphicPoint, Standard_False);
-
-                tiglWingGetLowerPoint(m_cpacsHandle,
-                                      wingIndex,
-                                      segmentIndex,
-                                      eta,
-                                      xsi,
-                                      &x,
-                                      &y,
-                                      &z);
-
-                aGraphicPoint = new ISession_Point(x, y, z);
-                myAISContext->Display(aGraphicPoint, Standard_False);
-            }
-        }
+    catch (tigl::CTiglError& ex) {
+        std::cerr << ex.getError() << std::endl;
     }
 }
 
@@ -1011,6 +963,9 @@ void TIGLViewerDocument::drawAllFuselagesAndWingsSurfacePoints()
     // Draw all wings
     for (int wingIndex = 1; wingIndex <= GetConfiguration().GetWingCount(); wingIndex++) {
         tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingIndex);
+        if (wing.IsRotorBlade()) {
+            continue;
+        }
 
         for (int segmentIndex = 1; segmentIndex <= wing.GetSegmentCount(); segmentIndex++) {
             tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(segmentIndex);
@@ -1182,7 +1137,7 @@ void TIGLViewerDocument::exportMeshedWingSTL()
 {
     QString     fileName;
 
-    QString wingUid = dlgGetWingSelection();
+    QString wingUid = dlgGetWingOrRotorBladeSelection();
     if (wingUid == "") {
         return;
     }
@@ -1233,7 +1188,7 @@ void TIGLViewerDocument::exportMeshedWingVTK()
 {
     QString     fileName;
 
-    QString wingUid = dlgGetWingSelection();
+    QString wingUid = dlgGetWingOrRotorBladeSelection();
     if (wingUid == "") {
         return;
     }
@@ -1263,7 +1218,7 @@ void TIGLViewerDocument::exportMeshedWingVTKsimple()
     QFileInfo    fileInfo;
     TIGLViewerInputOutput writer;
 
-    QString wingUid = dlgGetWingSelection();
+    QString wingUid = dlgGetWingOrRotorBladeSelection();
     if (wingUid == "") {
         return;
     }
@@ -1290,7 +1245,7 @@ void TIGLViewerDocument::exportWingCollada()
 {
     QString     fileName;
 
-    QString wingUid = dlgGetWingSelection();
+    QString wingUid = dlgGetWingOrRotorBladeSelection();
     if (wingUid == "") {
         return;
     }
@@ -1427,7 +1382,7 @@ void TIGLViewerDocument::exportFuselageCollada()
 
 void TIGLViewerDocument::exportWingBRep() 
 {
-    QString wingUid = dlgGetWingSelection();
+    QString wingUid = dlgGetWingOrRotorBladeSelection();
     if (wingUid == "") {
         return;
     }
@@ -1499,7 +1454,7 @@ void TIGLViewerDocument::exportFusedConfigBRep()
 
 void TIGLViewerDocument::exportWingCurvesBRep()
 {
-    QString wingUid = dlgGetWingSelection();
+    QString wingUid = dlgGetWingOrRotorBladeSelection();
     if (wingUid == "") {
         return;
     }
@@ -1632,16 +1587,13 @@ void TIGLViewerDocument::drawFusedFuselage()
 void TIGLViewerDocument::drawFusedWing()
 {
     QString wingUid = dlgGetWingSelection();
-    if (wingUid=="") {
-        return;
+    try {
+        tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
+        drawFusedWing(wing);
     }
-
-    myAISContext->EraseAll(Standard_False);
-    QApplication::setOverrideCursor( Qt::WaitCursor );
-    tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
-    TopoDS_Shape& loft = wing.GetLoft();
-    displayShape(loft);
-    QApplication::restoreOverrideCursor();
+    catch (tigl::CTiglError& ex) {
+        std::cerr << ex.getError() << std::endl;
+    }
 }
 
 
@@ -1815,32 +1767,21 @@ void TIGLViewerDocument::drawIntersectionLine()
 
 void TIGLViewerDocument::drawWingComponentSegment()
 {
-    QString wingUid = dlgGetWingComponentSegmentSelection();
-    if (wingUid == "") {
+    QString csUid = dlgGetWingComponentSegmentSelection();
+    if (csUid == "") {
         return;
     }
 
-    TopoDS_Shape* pComponentSegment = NULL;
-    myAISContext->EraseAll(Standard_False);
-    QApplication::setOverrideCursor( Qt::WaitCursor );
     for (int i = 1; i <= GetConfiguration().GetWingCount();++i) {
         tigl::CCPACSWing& wing = GetConfiguration().GetWing(i);
         for (int j = 1; j <= wing.GetComponentSegmentCount();++j) {
             tigl::CTiglAbstractSegment& segment = wing.GetComponentSegment(j);
-            if (segment.GetUID() == wingUid.toStdString()) {
-                pComponentSegment = &(segment.GetLoft());
+            if (segment.GetUID() == csUid.toStdString()) {
+                drawWingComponentSegment(segment);
                 break;
             }
         }
     }
-
-    if (pComponentSegment) {
-        displayShape(*pComponentSegment);
-    }
-    else {
-        cerr << "Component segment \"" << wingUid.toStdString() << "\" not found" << endl;
-    }
-    QApplication::restoreOverrideCursor();
 }
 
 void TIGLViewerDocument::drawWingComponentSegmentPoints()
@@ -1853,65 +1794,153 @@ void TIGLViewerDocument::drawWingComponentSegmentPoints()
     double eta = 0.5, xsi = 0.5;
 
     while (EtaXsiDialog::getEtaXsi(parent, eta, xsi) == QDialog::Accepted) {
-
-        // here are two alternative methods to determine the 3d point of the CS
-#if 0
-        // A more indirect method, good to debug errors in CCPACSWingComponentSegment::findSegment
-        char * wingUID, * segmentUID;
-        double alpha, beta;
-        TiglReturnCode ret = tiglWingComponentSegmentPointGetSegmentEtaXsi(
-                    getCpacsHandle(),
-                    csUid.toStdString().c_str(),
-                    eta, xsi,
-                    &wingUID,
-                    &segmentUID,
-                    &alpha, &beta);
-
-        if (ret == TIGL_SUCCESS){
-            tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUID);
-            tigl::CCPACSWingSegment& segment = dynamic_cast<tigl::CCPACSWingSegment&>(wing.GetSegment(segmentUID));
-            gp_Pnt point = segment.GetChordPoint(alpha, beta);
-            ISession_Point* aGraphicPoint = new ISession_Point(point);
-            myAISContext->Display(aGraphicPoint,Standard_True);
-        }
-        else {
-            displayError(QString("Error in <b>tiglWingComponentSegmentPointGetSegmentEtaXsi</b>. ReturnCode: %1").arg(ret), "Error");
-        }
-#else
-        double x,y,z;
-        TiglReturnCode ret = tiglWingComponentSegmentGetPoint(
-                    getCpacsHandle(),
-                    csUid.toStdString().c_str(),
-                    eta, xsi,
-                    &x, &y, &z);
-        if (ret == TIGL_SUCCESS){
-            gp_Pnt point(x,y,z);
-            ISession_Point* aGraphicPoint = new ISession_Point(point);
-            myAISContext->Display(aGraphicPoint,Standard_True);
-        }
-        else {
-            displayError(QString("Error in <b>tiglWingComponentSegmentPointGetPoint</b>. ReturnCode: %1").arg(ret), "Error");
-        }
-#endif
+        drawWingComponentSegmentPoint(csUid.toStdString(), eta, xsi);
     }
 }
 
 void TIGLViewerDocument::drawWingShells()
 {
     QString wingUid = dlgGetWingSelection();
-    if (wingUid == "") {
+    try {
+        tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
+        drawWingShells(wing);
+    }
+    catch (tigl::CTiglError& ex) {
+        std::cerr << ex.getError() << std::endl;
+    }
+}
+
+
+void TIGLViewerDocument::drawRotorProfiles()
+{
+    QString wingProfile = dlgGetRotorProfileSelection();
+    try {
+        tigl::CCPACSWingProfile& profile = GetConfiguration().GetWingProfile(wingProfile.toStdString());
+        drawAirfoil(profile);
+    }
+    catch (tigl::CTiglError& ex) {
+        std::cerr << ex.getError() << std::endl;
+    }
+}
+
+void TIGLViewerDocument::drawRotorBladeOverlayProfilePoints()
+{
+    QString wingUid = dlgGetRotorBladeSelection();
+    try {
+        tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
+        drawWingOverlayProfilePoints(wing);
+    }
+    catch (tigl::CTiglError& ex) {
+        std::cerr << ex.getError() << std::endl;
+    }
+}
+
+void TIGLViewerDocument::drawRotorBladeGuideCurves()
+{
+    // loop over all wings
+    tigl::CCPACSConfiguration& config = GetConfiguration();
+    int wingCount = config.GetWingCount();
+    for (int i = 1; i <= wingCount; i++) {
+        tigl::CCPACSWing& wing = config.GetWing(i);
+        if (wing.IsRotorBlade()) {
+            drawWingGuideCurves(wing);
+        }
+    }
+}
+
+void TIGLViewerDocument::drawRotorBlade()
+{
+    QString wingUid = dlgGetRotorBladeSelection();
+    try {
+        tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
+        drawWing(wing);
+    }
+    catch (tigl::CTiglError& ex) {
+        std::cerr << ex.getError() << std::endl;
+    }
+}
+
+void TIGLViewerDocument::drawRotorBladeTriangulation()
+{
+    QString wingUid = dlgGetRotorBladeSelection();
+    try {
+        tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
+        drawWingTriangulation(wing);
+    }
+    catch (tigl::CTiglError& ex) {
+        std::cerr << ex.getError() << std::endl;
+    }
+}
+
+void TIGLViewerDocument::drawRotorBladeSamplePoints()
+{
+    QString wingUid = dlgGetRotorBladeSelection();
+    try {
+        tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
+        drawWingSamplePoints(wing);
+    }
+    catch (tigl::CTiglError& ex) {
+        std::cerr << ex.getError() << std::endl;
+    }
+}
+
+void TIGLViewerDocument::drawFusedRotorBlade()
+{
+    QString wingUid = dlgGetRotorBladeSelection();
+    try {
+        tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
+        drawFusedWing(wing);
+    }
+    catch (tigl::CTiglError& ex) {
+        std::cerr << ex.getError() << std::endl;
+    }
+}
+
+void TIGLViewerDocument::drawRotorBladeComponentSegment()
+{
+    QString csUid = dlgGetRotorBladeComponentSegmentSelection();
+    if (csUid == "") {
         return;
     }
 
-    myAISContext->EraseAll(Standard_False);
-    QApplication::setOverrideCursor( Qt::WaitCursor );
-
-    tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
-    displayShape(wing.GetUpperShape(), Quantity_NOC_GREEN);
-    displayShape(wing.GetLowerShape(), Quantity_NOC_RED);
-
-    QApplication::restoreOverrideCursor();
+    for (int i = 1; i <= GetConfiguration().GetWingCount();++i) {
+        tigl::CCPACSWing& wing = GetConfiguration().GetWing(i);
+        for (int j = 1; j <= wing.GetComponentSegmentCount();++j) {
+            tigl::CTiglAbstractSegment& segment = wing.GetComponentSegment(j);
+            if (segment.GetUID() == csUid.toStdString()) {
+                drawWingComponentSegment(segment);
+                break;
+            }
+        }
+    }
 }
+
+void TIGLViewerDocument::drawRotorBladeComponentSegmentPoints()
+{
+    QString csUid = dlgGetRotorBladeComponentSegmentSelection();
+    if (csUid == "") {
+        return;
+    }
+    
+    double eta = 0.5, xsi = 0.5;
+
+    while (EtaXsiDialog::getEtaXsi(parent, eta, xsi) == QDialog::Accepted) {
+        drawWingComponentSegmentPoint(csUid.toStdString(), eta, xsi);
+    }
+}
+
+void TIGLViewerDocument::drawRotorBladeShells()
+{
+    QString wingUid = dlgGetRotorBladeSelection();
+    try {
+        tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
+        drawWingShells(wing);
+    }
+    catch (tigl::CTiglError& ex) {
+        std::cerr << ex.getError() << std::endl;
+    }
+}
+
 
 void TIGLViewerDocument::drawFarField()
 {
@@ -1923,6 +1952,386 @@ void TIGLViewerDocument::drawFarField()
         myAISContext->Display(shape, Standard_True);
         myOCC->fitAll();
     }
+}
+
+
+/*
+ * Draw the input airfoil and sample some points on it
+ */
+void TIGLViewerDocument::drawAirfoil(tigl::CCPACSWingProfile& profile)
+{
+    QApplication::setOverrideCursor( Qt::WaitCursor );
+
+    myAISContext->EraseAll(Standard_False);
+
+    TopoDS_Wire wire        = profile.GetWire();
+    displayShape(wire,Quantity_NOC_WHITE);
+
+    // Leading/trailing edges
+    gp_Pnt lePoint = profile.GetLEPoint();
+    gp_Pnt tePoint = profile.GetTEPoint();
+
+    std::ostringstream text;
+    text << "LE(" << lePoint.X() << ", " << lePoint.Y() << ", " << lePoint.Z() << ")";
+    DisplayPoint(lePoint, const_cast<char*>(text.str().c_str()), Standard_False, 0.0, 0.0, 0.0, 2.0);
+    text.str("");
+    text << "TE(" << tePoint.X() << ", " << tePoint.Y() << ", " << tePoint.Z() << ")";
+    DisplayPoint(tePoint, const_cast<char*>(text.str().c_str()), Standard_False, 0.0, 0.0, 0.0, 2.0);
+    text.str("");
+
+    gp_Lin gpline = gce_MakeLin(lePoint, tePoint);
+
+    // Lets make a limited line for display reasons
+    Standard_Real length = lePoint.Distance(tePoint);
+    if (length > 0.0) {
+        Handle(Geom_TrimmedCurve) trimmedLine = GC_MakeSegment(gpline, -length * 0.2, length * 1.2);
+        TopoDS_Edge le_te_edge = BRepBuilderAPI_MakeEdge(trimmedLine);
+        displayShape(le_te_edge, Quantity_NOC_GOLD);
+    }
+
+    // display points in case of a few sample points
+    std::vector<tigl::CTiglPoint*> fewPointList=profile.GetProfileAlgo()->GetSamplePoints();
+    if (fewPointList.size() < 15) {
+        for (unsigned int i = 0; i<fewPointList.size(); ++i) {
+            tigl::CTiglPoint * p = fewPointList.at(i);
+            std::stringstream str;
+            str << i << ": (" << p->x << ", " << p->y << ", " << p->z << ")";
+            gp_Pnt pnt = p->Get_gp_Pnt();
+            DisplayPoint(pnt, str.str().c_str(), Standard_False, 0., 0., 0., 6.);
+        }
+    }
+    else {
+        // Draw some points on the wing profile
+        for (double xsi = 0.1; xsi <= 0.9; xsi = xsi + 0.2) {
+            try {
+                gp_Pnt chordPoint = profile.GetChordPoint(xsi);
+                text << "CPT(" << xsi << ")";
+                text << "(" << chordPoint.X() << ", " << chordPoint.Y() << ", " << chordPoint.Z() << ")";
+                DisplayPoint(chordPoint, const_cast<char*>(text.str().c_str()), Standard_False, 0.0, 0.0, 0.0, 2.0);
+                text.str("");
+            }
+            catch (tigl::CTiglError& ex) {
+                std::cerr << ex.getError() << std::endl;
+            }
+
+            try {
+                gp_Pnt upperPoint = profile.GetUpperPoint(xsi);
+                text << "UPT(" << xsi << ")";
+                text << "(" << upperPoint.X() << ", " << upperPoint.Y() << ", " << upperPoint.Z() << ")";
+                DisplayPoint(upperPoint, const_cast<char*>(text.str().c_str()), Standard_False, 0.0, 0.0, 0.0, 2.0);
+                text.str("");
+            }
+            catch (tigl::CTiglError& ex) {
+                std::cerr << ex.getError() << std::endl;
+            }
+
+            try {
+                gp_Pnt lowerPoint = profile.GetLowerPoint(xsi);
+                text << "LPT(" << xsi << ")";
+                text << "(" << lowerPoint.X() << ", " << lowerPoint.Y() << ", " << lowerPoint.Z() << ")";
+                DisplayPoint(lowerPoint, const_cast<char*>(text.str().c_str()), Standard_False, 0.0, 0.0, 0.0, 2.0);
+                text.str("");
+            }
+            catch (tigl::CTiglError& ex) {
+                std::cerr << ex.getError() << std::endl;
+            }
+        }
+    }
+
+    myOCC->viewLeft();
+    myOCC->fitAll();
+
+    QApplication::restoreOverrideCursor();
+}
+
+/*
+ * Draw the input wing together with profile points
+ */
+void TIGLViewerDocument::drawWingOverlayProfilePoints(tigl::CCPACSWing& wing)
+{
+    QApplication::setOverrideCursor( Qt::WaitCursor );
+
+    for (int i = 1; i <= wing.GetSegmentCount(); i++) {
+        // Get segment
+        tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(i);
+        // Get inner profile point list
+        tigl::CCPACSWingConnection& innerConnection = segment.GetInnerConnection();
+        tigl::CCPACSWingProfile& innerProfile = innerConnection.GetProfile();
+        std::vector<tigl::CTiglPoint*> innerProfilePointList=innerProfile.GetProfileAlgo()->GetSamplePoints();
+        // get points and transform them
+        std::vector<tigl::CTiglPoint*> innerPoints;
+        for (std::vector<tigl::CTiglPoint*>::size_type i = 0; i < innerProfilePointList.size(); i++) {
+
+            gp_Pnt pnt = innerProfilePointList[i]->Get_gp_Pnt();
+
+            pnt = innerConnection.GetSectionElementTransformation().Transform(pnt);
+            pnt = innerConnection.GetSectionTransformation().Transform(pnt);
+            pnt = innerConnection.GetPositioningTransformation().Transform(pnt);
+
+            tigl::CTiglPoint *tiglPoint = new tigl::CTiglPoint(pnt.X(), pnt.Y(), pnt.Z());
+            innerPoints.push_back(tiglPoint);
+        }
+
+        // Draw inner profile points
+        for (std::vector<tigl::CTiglPoint*>::size_type i = 0; i < innerPoints.size(); i++) {
+            gp_Pnt pnt = innerPoints[i]->Get_gp_Pnt();
+            pnt = wing.GetWingTransformation().Transform(pnt);
+            DisplayPoint(pnt, "", Standard_False, 0.0, 0.0, 0.0, 2.0);
+        }
+
+        // Get outer profile point list
+        tigl::CCPACSWingConnection& outerConnection = segment.GetOuterConnection();
+        tigl::CCPACSWingProfile& outerProfile = outerConnection.GetProfile();
+        std::vector<tigl::CTiglPoint*> outerProfilePointList=outerProfile.GetProfileAlgo()->GetSamplePoints();
+        // get points and transform them
+        std::vector<tigl::CTiglPoint*> outerPoints;
+        for (std::vector<tigl::CTiglPoint*>::size_type i = 0; i < outerProfilePointList.size(); i++) {
+
+            gp_Pnt pnt = outerProfilePointList[i]->Get_gp_Pnt();
+
+            pnt = outerConnection.GetSectionElementTransformation().Transform(pnt);
+            pnt = outerConnection.GetSectionTransformation().Transform(pnt);
+            pnt = outerConnection.GetPositioningTransformation().Transform(pnt);
+
+            tigl::CTiglPoint *tiglPoint = new tigl::CTiglPoint(pnt.X(), pnt.Y(), pnt.Z());
+            outerPoints.push_back(tiglPoint);
+        }
+
+        // Draw outer profile points
+        for (std::vector<tigl::CTiglPoint*>::size_type i = 0; i < outerPoints.size(); i++) {
+            gp_Pnt pnt = outerPoints[i]->Get_gp_Pnt();
+            pnt = wing.GetWingTransformation().Transform(pnt);
+            DisplayPoint(pnt, "", Standard_False, 0.0, 0.0, 0.0, 2.0);
+        }
+    }
+
+    QApplication::restoreOverrideCursor();
+}
+
+/*
+ * Draw guide curves of the input wing
+ */
+void TIGLViewerDocument::drawWingGuideCurves(tigl::CCPACSWing& wing)
+{
+    QApplication::setOverrideCursor( Qt::WaitCursor );
+
+    std::string wingUid = wing.GetUID();
+    // loop over all wing segments
+    for (int j = 1; j <= wing.GetSegmentCount(); ++j) {
+        tigl::CTiglAbstractSegment& segment = wing.GetSegment(j);
+        std::string wingSegUid = segment.GetUID();
+        tigl::CCPACSWingSegment& wingSeg = (tigl::CCPACSWingSegment&) wing.GetSegment(wingSegUid);
+
+        TopTools_SequenceOfShape& guideCurveContainer = wingSeg.GetGuideCurveWires();
+        for (int i=1; i<=guideCurveContainer.Length(); i++) {
+            TopoDS_Wire wire =TopoDS::Wire(guideCurveContainer(i));
+            Handle(AIS_Shape) shape = new AIS_Shape(wire);
+            shape->SetMaterial(Graphic3d_NOM_METALIZED);
+            myAISContext->Display(shape, Standard_True);
+        }
+    }
+
+    QApplication::restoreOverrideCursor();
+}
+
+/*
+ * Draw the input wing
+ */
+void TIGLViewerDocument::drawWing(tigl::CCPACSWing& wing)
+{
+    QApplication::setOverrideCursor( Qt::WaitCursor );
+
+    myAISContext->EraseAll(Standard_False);
+
+    for (int i = 1; i <= wing.GetSegmentCount(); i++) {
+        // Draw segment loft
+        const TopoDS_Shape& loft = wing.GetSegment(i).GetLoft();
+        displayShape(loft);
+    }
+
+    QApplication::restoreOverrideCursor();
+}
+
+/*
+ * Draw the triangulation of the input wing
+ */
+void TIGLViewerDocument::drawWingTriangulation(tigl::CCPACSWing& wing)
+{
+    QApplication::setOverrideCursor( Qt::WaitCursor );
+
+    //clear screen
+    myAISContext->EraseAll(Standard_False);
+
+    //we do not fuse segments anymore but build it from scratch with the profiles
+    TopoDS_Shape& fusedWing = wing.GetLoft();
+
+    TopoDS_Compound compound;
+    createShapeTriangulation(fusedWing, compound);
+    displayShape(compound);
+
+    QApplication::restoreOverrideCursor();
+}
+
+/*
+ * Draw the input wing together with sampled points
+ */
+void TIGLViewerDocument::drawWingSamplePoints(tigl::CCPACSWing& wing)
+{
+    QApplication::setOverrideCursor( Qt::WaitCursor );
+
+    int wingIndex = 0;
+    for (int i = 1; i <= GetConfiguration().GetWingCount(); ++i) {
+        tigl::CCPACSWing& curWing = GetConfiguration().GetWing(i);
+        if (wing.GetUID() == curWing.GetUID()) {
+            wingIndex = i;
+            break;
+        }
+    }
+
+    if (wingIndex <= 0) {
+        QApplication::restoreOverrideCursor();
+        return;
+    }
+
+    myAISContext->EraseAll(Standard_False);
+
+    for (int segmentIndex = 1; segmentIndex <= wing.GetSegmentCount(); segmentIndex++) {
+        // Draw segment loft
+        tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(segmentIndex);
+        const TopoDS_Shape& loft = segment.GetLoft();
+
+        Handle(AIS_Shape) shape = new AIS_Shape(loft);
+        shape->SetColor(Quantity_NOC_BLUE2);
+        myAISContext->Display(shape, Standard_True);
+
+        // Draw some points on the wing segment
+        for (double eta = 0.0; eta <= 1.0; eta += 0.1) {
+            for (double xsi = 0.0; xsi <= 1.0; xsi += 0.1) {
+                double x, y, z;
+                tiglWingGetUpperPoint(m_cpacsHandle,
+                                      wingIndex,
+                                      segmentIndex,
+                                      eta,
+                                      xsi,
+                                      &x,
+                                      &y,
+                                      &z);
+
+                Handle(ISession_Point) aGraphicPoint = new ISession_Point(x, y, z);
+                myAISContext->Display(aGraphicPoint, Standard_False);
+
+                tiglWingGetLowerPoint(m_cpacsHandle,
+                                      wingIndex,
+                                      segmentIndex,
+                                      eta,
+                                      xsi,
+                                      &x,
+                                      &y,
+                                      &z);
+
+                aGraphicPoint = new ISession_Point(x, y, z);
+                myAISContext->Display(aGraphicPoint, Standard_False);
+            }
+        }
+    }
+
+    QApplication::restoreOverrideCursor();
+}
+
+/*
+ * Draw the input wing loft
+ */
+void TIGLViewerDocument::drawFusedWing(tigl::CCPACSWing& wing)
+{
+    QApplication::setOverrideCursor( Qt::WaitCursor );
+
+    myAISContext->EraseAll(Standard_False);
+    TopoDS_Shape& loft = wing.GetLoft();
+    displayShape(loft);
+
+    QApplication::restoreOverrideCursor();
+}
+
+/*
+ * Draw the input wing component segment
+ */
+void TIGLViewerDocument::drawWingComponentSegment(tigl::CTiglAbstractSegment& segment)
+{
+    QApplication::setOverrideCursor( Qt::WaitCursor );
+
+    myAISContext->EraseAll(Standard_False);
+
+    TopoDS_Shape* pComponentSegment = NULL;
+    pComponentSegment = &(segment.GetLoft());
+    if (pComponentSegment) {
+        displayShape(*pComponentSegment);
+    }
+    else {
+        cerr << "Component segment \"" << segment.GetUID() << "\" not found" << endl;	
+    }
+
+    QApplication::restoreOverrideCursor();
+}
+
+/*
+ * Draw a point on the input wing component segment
+ */
+void TIGLViewerDocument::drawWingComponentSegmentPoint(const std::string& csUID, const double& eta, const double& xsi)
+{
+    // here are two alternative methods to determine the 3d point of the CS
+#if 0
+    // A more indirect method, good to debug errors in CCPACSWingComponentSegment::findSegment
+    char * wingUID, * segmentUID;
+    double alpha, beta;
+    TiglReturnCode ret = tiglWingComponentSegmentPointGetSegmentEtaXsi(
+                             getCpacsHandle(),
+                             csUID.c_str(),
+                             eta, xsi,
+                             &wingUID,
+                             &segmentUID,
+                             &alpha, &beta);
+
+    if (ret == TIGL_SUCCESS){
+        tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUID);
+        tigl::CCPACSWingSegment& segment = dynamic_cast<tigl::CCPACSWingSegment&>(wing.GetSegment(segmentUID));
+        gp_Pnt point = segment.GetChordPoint(alpha, beta);
+        ISession_Point* aGraphicPoint = new ISession_Point(point);
+        myAISContext->Display(aGraphicPoint,Standard_True);
+    }
+    else {
+        displayError(QString("Error in <b>tiglWingComponentSegmentPointGetSegmentEtaXsi</b>. ReturnCode: %1").arg(ret), "Error");
+    }
+#else
+    double x,y,z;
+    TiglReturnCode ret = tiglWingComponentSegmentGetPoint(
+                             getCpacsHandle(),
+                             csUID.c_str(),
+                             eta, xsi,
+                             &x, &y, &z);
+    if (ret == TIGL_SUCCESS){
+        gp_Pnt point(x,y,z);
+        ISession_Point* aGraphicPoint = new ISession_Point(point);
+        myAISContext->Display(aGraphicPoint,Standard_True);
+    }
+    else {
+        displayError(QString("Error in <b>tiglWingComponentSegmentPointGetPoint</b>. ReturnCode: %1").arg(ret), "Error");
+    }
+#endif
+}
+
+/*
+ * Draw upper and lower surface of the input wing
+ */
+void TIGLViewerDocument::drawWingShells(tigl::CCPACSWing& wing)
+{
+    QApplication::setOverrideCursor( Qt::WaitCursor );
+
+    myAISContext->EraseAll(Standard_False);
+
+    displayShape(wing.GetUpperShape(), Quantity_NOC_GREEN);
+    displayShape(wing.GetLowerShape(), Quantity_NOC_RED);
+
+    QApplication::restoreOverrideCursor();
 }
 
 /*
@@ -1977,5 +2386,3 @@ TiglCPACSConfigurationHandle TIGLViewerDocument::getCpacsHandle(void) const
 {
     return this->m_cpacsHandle;
 }
-
-

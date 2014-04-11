@@ -129,6 +129,18 @@ int CCPACSWings::GetWingCount(void) const
     return (static_cast<int>(wings.size()));
 }
 
+// Returns the count of wings in a configuration with the property isRotorBlade set to true
+int CCPACSWings::GetRotorBladeCount(void) const
+{
+    int nRotorBlades = 0;
+    for (int i = 1; i <= GetWingCount(); i++) {
+        if (GetWing(i).IsRotorBlade()) {
+            nRotorBlades++;
+        }
+    }
+    return nRotorBlades;
+}
+
 // Returns the wing for a given index.
 CCPACSWing& CCPACSWings::GetWing(int index) const
 {

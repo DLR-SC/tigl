@@ -746,6 +746,18 @@ void TIGLViewerWindow::connectSignals()
     connect(drawFusedFuselageAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFusedFuselage()));
     connect(drawFuselageGuideCurvesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFuselageGuideCurves()));
 
+    // CPACS RotorBlade Actions
+    connect(drawRotorProfilesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawRotorProfiles()));
+    connect(drawRotorBladeOverlayCPACSProfilePointsAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawRotorBladeOverlayProfilePoints()));
+    connect(drawRotorBladeGuideCurvesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawRotorBladeGuideCurves()));
+    connect(drawRotorBladesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawRotorBlade()));
+    connect(drawRotorBladeTriangulationAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawRotorBladeTriangulation()));
+    connect(drawRotorBladeSamplePointsAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawRotorBladeSamplePoints()));
+    connect(drawFusedRotorBladeAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFusedRotorBlade()));
+    connect(drawRotorBladeComponentSegmentAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawRotorBladeComponentSegment()));
+    connect(drawRotorBladeCSPointAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawRotorBladeComponentSegmentPoints()));
+    connect(drawRotorBladeShellAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawRotorBladeShells()));
+
     // Export functions
     connect(tiglExportFusedIgesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportFusedAsIges()));
     connect(tiglExportIgesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportAsIges()));
@@ -826,24 +838,27 @@ void TIGLViewerWindow::updateMenus(TiglCPACSConfigurationHandle hand)
 {
     int nWings = 0;
     int nFuselages = 0;
-    if (hand > 0) {
-        tiglGetWingCount(hand, &nWings);
-        tiglGetFuselageCount(hand, &nFuselages);
-    }
-    menuWings->setEnabled(nWings > 0);
-    menuFuselages->setEnabled(nFuselages > 0);
-    menuAircraft->setEnabled(nWings > 0 || nFuselages > 0);
+    int nRotorBlades = 0;
+    bool hasFarField = false;
 
     closeAction->setEnabled(hand > 0);
 
-    bool hasFarField = false;
     try {
         if (hand > 0) {
             tigl::CCPACSConfiguration& config = tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(hand);
+            nRotorBlades = config.GetRotorBladeCount();
+            nWings = config.GetWingCount() - nRotorBlades;
+            nFuselages = config.GetFuselageCount();
             hasFarField = config.GetFarField().GetFieldType() != tigl::NONE;
         }
     }
     catch(tigl::CTiglError& ){}
+
+    menuWings->setEnabled(nWings > 0);
+    menuFuselages->setEnabled(nFuselages > 0);
+    menuRotorcraft->setEnabled(nRotorBlades > 0);
+    menuRotorBlades->setEnabled(nRotorBlades > 0);
+    menuAircraft->setEnabled(nWings > 0 || nFuselages > 0);
     drawFarFieldAction->setEnabled(hasFarField);
 }
 

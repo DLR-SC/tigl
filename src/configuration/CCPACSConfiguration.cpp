@@ -176,6 +176,12 @@ int CCPACSConfiguration::GetWingCount(void) const
     return wings.GetWingCount();
 }
 
+// Returns the count of wings in a configuration with the property isRotorBlade set to true
+int CCPACSConfiguration::GetRotorBladeCount(void) const
+{
+    return wings.GetRotorBladeCount();
+}
+
 // Returns the wing for a given index.
 CCPACSWing& CCPACSConfiguration::GetWing(int index) const
 {
