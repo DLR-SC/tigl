@@ -97,7 +97,8 @@ void CCPACSRotorBladeAttachment::ReadCPACS(TixiDocumentHandle tixiHandle, const 
     int numberOfBlades = 0;
     tempString  = rotorBladeAttachmentXPath + "/numberOfBlades";
     elementPath = const_cast<char*>(tempString.c_str());
-    if (tixiGetIntegerElement(tixiHandle, elementPath, &numberOfBlades) == SUCCESS) {
+    if (tixiCheckElement(tixiHandle, elementPath) == SUCCESS &&
+        tixiGetIntegerElement(tixiHandle, elementPath, &numberOfBlades) == SUCCESS) {
         for (int i=0; i<numberOfBlades; ++i) {
             azimuthAngles.push_back(static_cast<double>(i)*360./static_cast<double>(numberOfBlades));
         }

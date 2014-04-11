@@ -71,7 +71,7 @@ TopoDS_Wire transformToRotorCoords(const tigl::CCPACSWingConnection& wingConnect
 
     // Cast shapes to wires, see OpenCascade documentation
     if (resultWire.ShapeType() != TopAbs_WIRE) {
-        throw tigl::CTiglError("Error: Wrong shape type in CCPACSRotor::transformToAbsCoords", TIGL_ERROR);
+        throw tigl::CTiglError("Error: Wrong shape type in CCPACSRotor::transformToRotorCoords", TIGL_ERROR);
     }
 
     return TopoDS::Wire(resultWire);

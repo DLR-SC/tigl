@@ -237,6 +237,17 @@ void CCPACSWing::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& win
     Update();
 }
 
+// Returns the Component Type TIGL_COMPONENT_WING.
+TiglGeometricComponentType CCPACSWing::GetComponentType(void)
+{
+    if (isRotorBlade) {
+        return TIGL_COMPONENT_WING;
+    }
+    else {
+        return TIGL_COMPONENT_WING | TIGL_COMPONENT_PHYSICAL;
+    }
+}
+
 // Returns the name of the wing
 const std::string& CCPACSWing::GetName(void) const
 {

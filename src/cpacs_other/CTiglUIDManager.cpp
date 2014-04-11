@@ -70,7 +70,7 @@ void CTiglUIDManager::AddUID(const std::string& uid, ITiglGeometricComponent* co
     }
 
     CTiglAbstractPhysicalComponent* tmp = dynamic_cast<CTiglAbstractPhysicalComponent*>(componentPtr);
-    if (tmp && (componentPtr->GetComponentType() | TIGL_COMPONENT_PHYSICAL) ) {
+    if (tmp && (componentPtr->GetComponentType() & TIGL_COMPONENT_PHYSICAL) ) {
         physicalShapes[uid] = tmp;
     }
     allShapes[uid] = componentPtr;
