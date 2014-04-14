@@ -152,7 +152,10 @@ void CTiglExportIges::ExportIGES(const std::string& filename) const
         for (int i = 1; i <= wing.GetSegmentCount(); i++) {
             CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(i);
             TopoDS_Shape loft = segment.GetLoft();
-            PNamedShape shape(new CNamedShape(loft, segment.GetUID().c_str()));
+            // make short name
+            std::stringstream s;
+            s << "W" << w  << "S" << i;
+            PNamedShape shape(new CNamedShape(loft, s.str().c_str()));
             shapes.push_back(shape);
         }
     }
@@ -164,10 +167,10 @@ void CTiglExportIges::ExportIGES(const std::string& filename) const
         for (int i = 1; i <= fuselage.GetSegmentCount(); i++) {
             CCPACSFuselageSegment& segment = (tigl::CCPACSFuselageSegment &) fuselage.GetSegment(i);
             TopoDS_Shape loft = segment.GetLoft();
-
-            // Transform loft by fuselage transformation => absolute world coordinates
-            loft = fuselage.GetFuselageTransformation().Transform(loft);
-            PNamedShape shape(new CNamedShape(loft, segment.GetUID().c_str()));
+            // make short name
+            std::stringstream s;
+            s << "F" << f  << "S" << i;
+            PNamedShape shape(new CNamedShape(loft, s.str().c_str()));
             shapes.push_back(shape);
         }
     }

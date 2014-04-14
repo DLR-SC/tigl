@@ -182,9 +182,6 @@ void CTiglExportStep::ExportStep(const std::string& filename) const
         for (int i = 1; i <= fuselage.GetSegmentCount(); i++) {
             CCPACSFuselageSegment& segment = (tigl::CCPACSFuselageSegment &) fuselage.GetSegment(i);
             TopoDS_Shape loft = segment.GetLoft();
-
-            // Transform loft by fuselage transformation => absolute world coordinates
-            loft = fuselage.GetFuselageTransformation().Transform(loft);
             PNamedShape shape(new CNamedShape(loft, segment.GetUID().c_str()));
             shapes.push_back(shape);
         }
