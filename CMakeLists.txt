@@ -125,7 +125,7 @@ add_custom_target(checkstylexml)
 add_subdirectory(src)
 add_subdirectory(TIGLViewer)
 add_subdirectory(bindings)
-add_subdirectory(examples/TIGLDemo)
+add_subdirectory(examples)
 
 
 #create gtests, override gtest standard setting
