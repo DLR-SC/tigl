@@ -78,7 +78,7 @@ int main(int argc, char* argv[])
     // compute intersection of wing with a x-z plane
     if (nWings > 0) {
         char * wingUID = NULL;
-        size_t int_id = 0;
+        char* int_id = NULL;
         int nlines = 0;
         tiglWingGetUID(tiglHandle, 1, &wingUID);
         // do the intersection with a plane at p = (0,0.5,0) and normal vector n = (0,1,0)

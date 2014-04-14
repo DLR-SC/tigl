@@ -138,7 +138,7 @@ CTiglIntersectionCalculation::CTiglIntersectionCalculation(CTiglShapeCache* cach
 }
 
 CTiglIntersectionCalculation::CTiglIntersectionCalculation(CTiglShapeCache& cache,
-                                                           size_t intersectionID)
+                                                           const std::string& intersectionID)
     : tolerance(1.0e-7)
 {
     // check that intersectionID is in cache
@@ -157,20 +157,24 @@ CTiglIntersectionCalculation::CTiglIntersectionCalculation(CTiglShapeCache& cach
 }
 
 void CTiglIntersectionCalculation::computeIntersection(CTiglShapeCache * cache,
-                                                       size_t idOne,
-                                                       size_t idTwo,
+                                                       size_t hashOne,
+                                                       size_t hashTwo,
                                                        TopoDS_Shape compoundOne,
                                                        TopoDS_Shape compoundTwo)
 {
     // create some identification id to store intersection in cache
     // it should not matter, if the arguments One and Two are interchanged
     // the xor commutes, so this should work
-    if (idOne != idTwo) {
-        id = idOne ^ idTwo;
+    size_t tmpid;
+    if (hashOne != hashTwo) {
+        tmpid = hashOne ^ hashTwo;
     }
     else {
-        id = idOne;
+        tmpid = hashOne;
     }
+    std::stringstream s;
+    s << "int" << tmpid;
+    id = s.str();
 
     bool inCache = false;
     if (cache) {
@@ -278,7 +282,7 @@ TopoDS_Wire CTiglIntersectionCalculation::GetWire(int wireID)
     throw CTiglError("Cannot retrieve intersection wire in CTiglIntersectionCalculation::GetPoint", TIGL_ERROR);
 }
 
-size_t CTiglIntersectionCalculation::GetID()
+const std::string& CTiglIntersectionCalculation::GetID()
 {
     return id;
 }

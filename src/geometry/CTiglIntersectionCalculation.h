@@ -69,7 +69,7 @@ public:
     // Constructor, load intersection result from cache
     // cache is mandatory, hence the reference
     TIGL_EXPORT CTiglIntersectionCalculation(CTiglShapeCache& cache,
-                                             size_t intersectionID);
+                                             const std::string& intersectionID);
 
     // Destructor
     TIGL_EXPORT virtual ~CTiglIntersectionCalculation(void);
@@ -87,19 +87,19 @@ public:
     TIGL_EXPORT TopoDS_Wire GetWire(int wireID);
 
     // returnes the unique ID for the current intersection
-    TIGL_EXPORT size_t GetID();
+    TIGL_EXPORT const std::string& GetID();
 
 protected:
     void computeIntersection(CTiglShapeCache* cache,
-                             size_t idOne,
-                             size_t idTwo,
+                             size_t hashOne,
+                             size_t hashTwo,
                              TopoDS_Shape compoundOne,
                              TopoDS_Shape compoundTwo );
 
 private:        
     Standard_Real tolerance;
     TopoDS_Compound intersectionResult;     /* The full Intersection result */
-    size_t id;                              /* identifcation id of the intersection */
+    std::string id;                         /* identifcation id of the intersection */
     
 };
 
