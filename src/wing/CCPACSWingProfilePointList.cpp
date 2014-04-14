@@ -186,7 +186,7 @@ void CCPACSWingProfilePointList::ReadCPACS(TixiDocumentHandle tixiHandle)
         }
         // force order of points to run through the lower profile first and then through the upper profile
         if (minZIndex>maxZIndex) {
-            LOG(WARNING) << "The point list order in wing profile " << profileRef.GetUID() <<  " is reversed in order to run through lower part first" << endl;
+            LOG(WARNING) << "The points in profile " << profileRef.GetUID() <<  " don't seem to be ordered in a mathematical positive sense.";
             std::reverse(coordinates.begin(), coordinates.end());
         }
     }
