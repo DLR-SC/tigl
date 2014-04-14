@@ -9,7 +9,19 @@ set(demo_LIBS TIGL)
 add_executable(c_demo c-demo.c)
 target_link_libraries(c_demo ${demo_LIBS})
 
-install(FILES c-demo.c
+install(FILES 
+    c-demo.c
     DESTINATION share/doc/tigl/examples
     COMPONENT docu
 )
+
+if(WIN32)
+  # install makefile.msvc
+  install(FILES 
+      makefile.msvc
+      DESTINATION share/doc/tigl/examples
+      COMPONENT docu
+  )
+else(WIN32)
+  # install makefile.gnu
+endif(WIN32)
