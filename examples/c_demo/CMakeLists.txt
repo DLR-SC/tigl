@@ -23,5 +23,10 @@ if(WIN32)
       COMPONENT docu
   )
 else(WIN32)
-  # install makefile.gnu
+  # install makefile.gnu  
+  install(FILES 
+      makefile.gnu
+      DESTINATION share/doc/tigl/examples
+      COMPONENT docu
+  )
 endif(WIN32)
