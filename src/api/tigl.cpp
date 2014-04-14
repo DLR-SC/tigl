@@ -2850,7 +2850,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglComponentIntersectionLineCount(TiglCPACSCo
 TIGL_COMMON_EXPORT TiglReturnCode tiglIntersectComponents(TiglCPACSConfigurationHandle cpacsHandle,
                                                           const char*  componentUidOne,
                                                           const char*  componentUidTwo,
-                                                          size_t* intersectionID)
+                                                          char** intersectionID)
 {
     if (!componentUidOne) {
         LOG(ERROR) << "Null pointer for argument componentUidOne in tiglIntersectComponents.";
@@ -2882,7 +2882,10 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglIntersectComponents(TiglCPACSConfiguration
                                                            compoundOne, 
                                                            compoundTwo);
 
-            *intersectionID = Intersector.GetID();
+            std::string id = Intersector.GetID();
+            // TODO: this has to be freed by tigl upon configuration close
+            *intersectionID = (char*) malloc((id.length() + 3) * sizeof(char));
+            strcpy(*intersectionID, id.c_str());
 
             return TIGL_SUCCESS;
         }
@@ -2905,7 +2908,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglIntersectWithPlane(TiglCPACSConfigurationH
                                                          const char*  componentUid,
                                                          double px, double py, double pz,
                                                          double nx, double ny, double nz,
-                                                         size_t* intersectionID)
+                                                         char** intersectionID)
 {
     if (!componentUid) {
         LOG(ERROR) << "Null pointer for argument componentUid in tiglIntersectWithPlane.";
@@ -2936,7 +2939,10 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglIntersectWithPlane(TiglCPACSConfigurationH
                                                            shape,
                                                            p, n);
 
-            *intersectionID = Intersector.GetID();
+            std::string id = Intersector.GetID();
+            // TODO: this has to be freed by tigl upon configuration close
+            *intersectionID = (char*) malloc((id.length() + 3) * sizeof(char));
+            strcpy(*intersectionID, id.c_str());
 
             return TIGL_SUCCESS;
         }
@@ -2956,7 +2962,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglIntersectWithPlane(TiglCPACSConfigurationH
 }
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglIntersectGetLineCount(TiglCPACSConfigurationHandle cpacsHandle,
-                                                            size_t intersectionID,
+                                                            const char* intersectionID,
                                                             int* lineCount)
 {
     if (!lineCount) {
@@ -2985,7 +2991,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglIntersectGetLineCount(TiglCPACSConfigurati
 }
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglIntersectGetPoint(TiglCPACSConfigurationHandle cpacsHandle,
-                                                        size_t intersectionID,
+                                                        const char* intersectionID,
                                                         int lineIdx,
                                                         double eta,
                                                         double* pointX,

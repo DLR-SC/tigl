@@ -2657,7 +2657,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglComponentIntersectionLineCount(TiglCPACSCo
 TIGL_COMMON_EXPORT TiglReturnCode tiglIntersectComponents(TiglCPACSConfigurationHandle cpacsHandle,
                                                           const char*  componentUidOne,
                                                           const char*  componentUidTwo,
-                                                          size_t* intersectionID);
+                                                          char** intersectionID);
 
 /**
 * @brief tiglIntersectWithPlane computes the intersection line(s) between a shape and a plane. 
@@ -2691,7 +2691,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglIntersectWithPlane(TiglCPACSConfigurationH
                                                          const char*  componentUid,
                                                          double px, double py, double pz,
                                                          double nx, double ny, double nz,
-                                                         size_t* intersectionID);
+                                                         char** intersectionID);
 
 /**
 * @brief tiglIntersectGetLineCount return the number of intersection lines computed by 
@@ -2708,7 +2708,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglIntersectWithPlane(TiglCPACSConfigurationH
 *   - TIGL_NULL_POINTER if lineCount is a NULL pointer
 */
 TIGL_COMMON_EXPORT TiglReturnCode tiglIntersectGetLineCount(TiglCPACSConfigurationHandle cpacsHandle,
-                                                            size_t intersectionID,
+                                                            const char* intersectionID,
                                                             int* lineCount);
 
 /**
@@ -2732,7 +2732,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglIntersectGetLineCount(TiglCPACSConfigurati
 *   - TIGL_MATH_ERROR if eta is not in range 0 <= eta <= 1
 */
 TIGL_COMMON_EXPORT TiglReturnCode tiglIntersectGetPoint(TiglCPACSConfigurationHandle cpacsHandle,
-                                                        size_t intersectionID,
+                                                        const char* intersectionID,
                                                         int lineIdx,
                                                         double eta,
                                                         double* pointX,
