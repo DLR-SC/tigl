@@ -1,7 +1,10 @@
 Usage
 =====
 
-In order to use the TIGL library in a C program, you have to link against the TIGL as well as the TIXI library. Morover one needs to include the corresponding header files:
+In order to use the TiGL library in a C program, you have to link against the TiGL as well as the TiXI library. 
+The TiXI (TiXI Xml Interface) is used to read in the XML-based CPACS files. It can be obtained from the project site
+http://tixi.googlecode.com.
+In addition to the libraries itself, one needs to include the corresponding header files:
 
     #include "tigl.h" 
     #include "tixi.h"
@@ -15,7 +18,7 @@ For example, to open a CPACS configuration, one can use
 
 For more details and for the usage from Python or Matlab, see the examples in the
 
-    <TIGL_INSTALL_DIR>/share/doc/tigl/examples
+    TIGL_INSTALL_DIR/share/doc/tigl/examples
 
 directory.
 
