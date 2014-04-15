@@ -6,11 +6,11 @@ include_directories(${PROJECT_SOURCE_DIR}/src/api ${TIXI_INCLUDE_DIRS})
 
 set(demo_LIBS TIGL)
 
-add_executable(c_demo c-demo.c)
+add_executable(c_demo c_demo.c)
 target_link_libraries(c_demo ${demo_LIBS})
 
 install(FILES 
-    c-demo.c
+    c_demo.c
     DESTINATION share/doc/tigl/examples
     COMPONENT docu
 )
