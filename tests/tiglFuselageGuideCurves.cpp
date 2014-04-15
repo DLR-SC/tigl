@@ -341,7 +341,7 @@ TEST_F(FuselageGuideCurve, tiglFuselageGuideCurve_CCPACSGuideCurveAlgo)
         double a = i/double(10);
         Handle(Geom_Plane) plane = new Geom_Plane(gp_Pnt(a*distance, 0.0, 0.0), gp_Dir(1.0, 0.0, 0.0));
         GeomAPI_IntCS intersection (curve, plane);
-        ASSERT_TRUE(intersection.IsDone());
+        ASSERT_EQ(Standard_True, intersection.IsDone());
         ASSERT_EQ(intersection.NbPoints(), 1);
         gp_Pnt point = intersection.Point(1);
 
