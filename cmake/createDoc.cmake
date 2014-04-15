@@ -6,6 +6,9 @@ if(DOXYGEN_FOUND)
 		OUTPUT ${PROJECT_BINARY_DIR}/doc/html/index.html
 		OUTPUT ${PROJECT_BINARY_DIR}/doc/latex/refman.tex
 		DEPENDS ${PROJECT_SOURCE_DIR}/src/api/tigl.h
+		DEPENDS ${PROJECT_SOURCE_DIR}/doc/usage.md
+        DEPENDS ${PROJECT_SOURCE_DIR}/examples/README.md
+        DEPENDS ${PROJECT_BINARY_DIR}/doc/Doxyfile
 		COMMAND ${DOXYGEN_EXECUTABLE}
 		ARGS ${PROJECT_BINARY_DIR}/doc/Doxyfile
 	)

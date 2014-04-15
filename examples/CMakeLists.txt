@@ -4,7 +4,13 @@ add_subdirectory(python_demo)
 
 install(FILES 
     ${PROJECT_SOURCE_DIR}/tests/TestData/simpletest.cpacs.xml
-    README.txt
     DESTINATION share/doc/tigl/examples
     COMPONENT docu
+)
+
+install(FILES 
+    README.md
+    DESTINATION share/doc/tigl/examples
+    COMPONENT docu
+    RENAME README.txt
 )
