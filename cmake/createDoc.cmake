@@ -7,8 +7,9 @@ if(DOXYGEN_FOUND)
 		OUTPUT ${PROJECT_BINARY_DIR}/doc/latex/refman.tex
 		DEPENDS ${PROJECT_SOURCE_DIR}/src/api/tigl.h
 		DEPENDS ${PROJECT_SOURCE_DIR}/doc/usage.md
-        DEPENDS ${PROJECT_SOURCE_DIR}/examples/README.md
-        DEPENDS ${PROJECT_BINARY_DIR}/doc/Doxyfile
+		DEPENDS ${PROJECT_SOURCE_DIR}/doc/mainpage.md
+		DEPENDS ${PROJECT_SOURCE_DIR}/examples/README.md
+		DEPENDS ${PROJECT_BINARY_DIR}/doc/Doxyfile
 		COMMAND ${DOXYGEN_EXECUTABLE}
 		ARGS ${PROJECT_BINARY_DIR}/doc/Doxyfile
 	)
@@ -116,10 +117,6 @@ if(DOXYGEN_FOUND)
 				COMPONENT docu
 				OPTIONAL)
 				
-		install(FILES ${PROJECT_BINARY_DIR}/doc/tiglGuide/tiglGuide.pdf 
-				DESTINATION	share/doc/tigl
-				COMPONENT docu
-				OPTIONAL)
 			
         install(FILES ${PROJECT_BINARY_DIR}/doc/changeLog/changeLog.pdf 
 				DESTINATION	share/doc/tigl
@@ -133,13 +130,6 @@ if(DOXYGEN_FOUND)
 	    SET(CPACK_NSIS_DELETE_ICONS_EXTRA ${CPACK_NSIS_DELETE_ICONS_EXTRA} "
 	      !insertmacro MUI_STARTMENU_GETFOLDER Application $MUI_TEMP
 	      Delete \\\"$SMPROGRAMS\\\\$MUI_TEMP\\\\TIGL-Reference.lnk\\\"
-	    ")
-	    SET(CPACK_NSIS_CREATE_ICONS_EXTRA ${CPACK_NSIS_CREATE_ICONS_EXTRA} "
-	      CreateShortCut \\\"$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\TIGL-Guide.lnk\\\" \\\"$INSTDIR\\\\share\\\\doc\\\\tigl\\\\tiglGuide.pdf\\\"
-	    ")
-	    SET(CPACK_NSIS_DELETE_ICONS_EXTRA ${CPACK_NSIS_DELETE_ICONS_EXTRA} "
-	      !insertmacro MUI_STARTMENU_GETFOLDER Application $MUI_TEMP
-	      Delete \\\"$SMPROGRAMS\\\\$MUI_TEMP\\\\TIGL-Guide.lnk\\\"
 	    ")
 	    SET(CPACK_NSIS_CREATE_ICONS_EXTRA ${CPACK_NSIS_CREATE_ICONS_EXTRA} "
           CreateShortCut \\\"$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\TIGL-ChangeLog.lnk\\\" \\\"$INSTDIR\\\\share\\\\doc\\\\tigl\\\\changeLog.pdf\\\"
