@@ -10,7 +10,7 @@ directory.
 
 In order to run a TiGL based project, make sure to add
 	- TIGL_INSTALL_DIR/bin and TIXI_INSTALL_DIR/bin to *PATH on Windows*
-	- TIGL_INSTALL_DIR/lib and TIXI_INSTALL_DIR/lib to *LD_LIBRARY_PATH on Linux*
+	- TIGL_INSTALL_DIR/lib(64) and TIXI_INSTALL_DIR/lib(64) to *LD_LIBRARY_PATH on Linux*
 	- TIGL_INSTALL_DIR/lib and TIXI_INSTALL_DIR/lib to *DYLD_LIBRARY_PATH on Mac*
 	
 	
@@ -25,7 +25,7 @@ and an be build using the makefiles shipped with the example.
 
 On *Windows*, open a visual studio command prompt, go into the 
 
-	TIGL_INSTALL_DIR/share/doc/tigl/examples 
+    TIGL_INSTALL_DIR/share/doc/tigl/examples 
 
 directory. Open makefile.msvc in a text editor and
 change TIGL_HOME and TIXI_HOME to the appropriate directories. Then enter
@@ -36,9 +36,8 @@ to build the c-demo.exe.
 
 On *Linux*, open a shell and go into the directory 
 
-	TIGL_INSTALL_DIR/share/doc/tigl/examples 
+    TIGL_INSTALL_DIR/share/doc/tigl/examples 
 
-directory.
 Open makefile.gnu in a text editor and change TIGL_HOME and TIXI_HOME to the appropriate directories.
 Then type
 
