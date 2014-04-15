@@ -102,6 +102,7 @@ TEST_F(TiglIntersectionCalculation, tiglIntersectComponents)
     ASSERT_EQ(TIGL_NULL_POINTER, tiglIntersectGetPoint(tiglHandle, id, 1, 0.5, NULL, &py, &pz));
     ASSERT_EQ(TIGL_NULL_POINTER, tiglIntersectGetPoint(tiglHandle, id, 1, 0.5, &px, NULL, &pz));
     ASSERT_EQ(TIGL_NULL_POINTER, tiglIntersectGetPoint(tiglHandle, id, 1, 0.5, &px, &py, NULL));
+    ASSERT_EQ(TIGL_NULL_POINTER, tiglIntersectGetPoint(tiglHandle, NULL, 1, 0.5, &px, &py, &pz));
 }
 
 TEST_F(TiglIntersectionCalculation, tiglIntersectWithPlane)
@@ -138,8 +139,8 @@ TEST_F(TiglIntersectionCalculation, tiglIntersectGetLineCount_Errors)
 {
     char* id = NULL;
     int count = 0;
-    ASSERT_EQ(TIGL_NOT_FOUND, tiglIntersectGetLineCount(-1, id, &count));
-    ASSERT_EQ(TIGL_NULL_POINTER, tiglIntersectGetLineCount(tiglHandle, id, NULL));
+    ASSERT_EQ(TIGL_NULL_POINTER, tiglIntersectGetLineCount(-1, id, &count));
+    ASSERT_EQ(TIGL_NULL_POINTER, tiglIntersectGetLineCount(tiglHandle, "myid", NULL));
     // lets hope the id is invalid
     ASSERT_EQ(TIGL_NOT_FOUND, tiglIntersectGetLineCount(tiglHandle, "1234567890", &count));
 }
