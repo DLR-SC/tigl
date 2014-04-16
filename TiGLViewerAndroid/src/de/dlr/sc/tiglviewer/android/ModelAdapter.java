@@ -1,19 +1,16 @@
 package de.dlr.sc.tiglviewer.android;
 import java.util.ArrayList;
-import java.util.List;
 
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 
 public class ModelAdapter extends ArrayAdapter<Item> {
     
-    private Context context;
     private ArrayList<Item> items;
     private LayoutInflater vi;
     
@@ -22,7 +19,6 @@ public class ModelAdapter extends ArrayAdapter<Item> {
     }
     public ModelAdapter(Context context, ArrayList<Item> items) {
         super(context,0, items);
-        this.context = context;
         this.items = items;
         vi = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }

@@ -27,7 +27,7 @@ public class TiGLViewerNativeLib {
     public static native void       mouseButtonPressEvent(float x,float y, int button , int view);
     public static native void       mouseButtonReleaseEvent(float x,float y, int button , int view);
     public static native void       mouseMoveEvent(float x,float y , int view);
-    public static native void       pickEvent(float x, float y, int density, int view);
+    public static native void       pickEvent(float x, float y, int view);
     public static native void       keyboardDown(int key);
     public static native void       keyboardUp(int key);
     public static native void       setClearColor(int red,int green, int blue);

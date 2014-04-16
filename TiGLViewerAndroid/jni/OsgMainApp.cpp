@@ -1,6 +1,7 @@
 #include "OsgMainApp.hpp"
 #include "AuxiliaryViewUpdater.h"
 #include "TiglViewerBackground.h"
+#include "MaterialTemplate.h"
 
 #include <sstream>
 #include <tigl.h>
@@ -13,8 +14,9 @@
 #include <CCPACSFuselageSegment.h>
 #include <CTiglTriangularizer.h>
 #include <map>
+#include <osg/ShapeDrawable>
 
-#define HOME_POS 80
+#define HOME_POS 200
 
 OsgMainApp& OsgMainApp::Instance()
 {
@@ -30,11 +32,7 @@ OsgMainApp::OsgMainApp()
 void OsgMainApp::init()
 {
 
-    _lodScale = 1.0f;
-    _prevFrame = 0;
-
     _initialized = false;
-    _clean_scene = false;
     _assetManager = NULL;
     soleViewer = NULL;
 
@@ -76,31 +74,32 @@ void OsgMainApp::initOsgWindow(int x, int y, int width, int height)
 {
     screenHeight = (float) height;
     screenWidth = (float) width;
-    osg::notify(osg::ALWAYS) << "initIsgWindow  called";
+    float ar = screenWidth/ screenHeight;
+
 
     if (soleViewer) {
         // the window changed (resize)
         soleViewer->setUpViewerAsEmbeddedInWindow(x, y, width, height);
         soleViewer->getEventQueue()->setMouseInputRange(x, y, x + width, y + height);
-        osg::notify(osg::ALWAYS) << "just resizsing ";
+        float viewArea = 50;
+        soleViewer->getCamera()->setProjectionMatrixAsOrtho(-viewArea/2., viewArea/2., -viewArea/2. / ar, viewArea/2. / ar, -100, 200);
         return;
     }
 
     osg::notify(osg::ALWAYS) << "create viewer";
 
     soleViewer = new osgViewer::Viewer();
-    soleViewer->setUpViewerAsEmbeddedInWindow(x, y, width, height);
+    osgViewer::GraphicsWindowEmbedded* window = soleViewer->setUpViewerAsEmbeddedInWindow(x, y, width, height);
 
     soleViewer->getEventQueue()->setMouseInputRange(x, y, x + width, y + height);
-    //soleViewer->getCamera()->setClearColor( osg::Vec4(98/255. * 1.1 , 166/255. * 1.1 , 1.0 , 0.0) );
     soleViewer->getCamera()->setClearColor(osg::Vec4(0, 0, 0, 0));
-    soleViewer->getCamera()->setProjectionMatrixAsPerspective(20.0, width / (double) height, 10, 1000);
+    //soleViewer->getCamera()->setProjectionMatrixAsPerspective(20.0, width / (double) height, 10, 1000);
+    float zoomLevel = 0.3;
+    soleViewer->getCamera()->setProjectionMatrixAsOrtho(-screenWidth/2.*zoomLevel, screenWidth/2. * zoomLevel, -screenHeight/2. * zoomLevel, screenHeight/2. * zoomLevel, 0, 1000);
 
-    tm = new osgGA::TrackballManipulator();
-    tm->setHomePosition(osg::Vec3(-HOME_POS, -HOME_POS, HOME_POS), osg::Vec3(20, 0, 0), osg::Vec3(0, 0, 1));
-
-    // cviewer = new osgViewer::CompositeViewer();
-    //osgViewer::GraphicsWindowEmbedded* _gwe = new osgViewer::GraphicsWindowEmbedded(x,y,width,height);
+    //tm = new osgGA::TrackballManipulator();
+    osg::ref_ptr<OrthoManipulator> tm = new OrthoManipulator(soleViewer->getCamera());
+    tm->setHomePosition(osg::Vec3(-HOME_POS, -HOME_POS, HOME_POS), osg::Vec3(0, 0, 0), osg::Vec3(1, 1 , 1));
 
     soleViewer->addEventHandler(new osgViewer::StatsHandler);
     soleViewer->addEventHandler(new osgGA::StateSetManipulator(soleViewer->getCamera()->getOrCreateStateSet()));
@@ -124,21 +123,12 @@ void OsgMainApp::createScene()
     }
 
     root_1 = new osg::Group();
-    // root_2 = new osg::Group();
-    // root_3 = new osg::Group();
-    // root_4 = new osg::Group();
-
-    // cviewer->setThreadingModel(osgViewer::CompositeViewer::SingleThreaded);
+    modeledObjects = new osg::Group();
 
     _state = root_1->getOrCreateStateSet();
     _state->setMode(GL_LIGHTING, osg::StateAttribute::ON);
     _state->setMode(GL_DEPTH_TEST, osg::StateAttribute::ON);
     _state->setMode(GL_CULL_FACE, osg::StateAttribute::ON);
-
-    // cviewer->addView(createView(x,height/2,width/2,height/2,_gwe,1));
-    // cviewer->addView(createView(x,y,width/2,height/2,_gwe,2));
-    // cviewer->addView(createView(width/2,y,width/2,height/2,_gwe,4));
-    // cviewer->addView(createView(width/2,height/2,width/2,height/2,_gwe,3));
 
     osgViewer::Viewer::Views views;
     soleViewer->getViews(views);
@@ -158,96 +148,18 @@ void OsgMainApp::createScene()
     _coordinateGrid = new VirtualVisObject();
     _coordinateGrid->setMainAxesEnabled(false);
     root_1->addChild(_coordinateGrid);
-    // root_2->addChild(vvo->main.get());
-    // root_3->addChild(vvo->main.get());
-    // root_4->addChild(vvo->main.get());
+
 
     // add background as gradient
     osg::ref_ptr<TiglViewerBackground> bg = new TiglViewerBackground;
     bg->makeGradient(osg::Vec4(0.6, 0.6, 1., 1.));
     root_1->addChild(bg);
+    root_1->addChild(modeledObjects);
 
     soleViewer->setSceneData(root_1.get());
 }
-
-/*
- osgViewer::View* OsgMainApp::createView(int x, int y, int width, int height
- ,osgViewer::GraphicsWindowEmbedded* _gwe, int id)
- {
- osgViewer::View* _viewer = new osgViewer::View;
-
- osgGA::TrackballManipulator* tm = new osgGA::TrackballManipulator();
- osgGA::TrackballManipulator* tm1 = new osgGA::TrackballManipulator();
- osgGA::TrackballManipulator* tm2 = new osgGA::TrackballManipulator();
- osgGA::TrackballManipulator* tm3 = new osgGA::TrackballManipulator();
- tm->setHomePosition(osg::Vec3(300,300,300), osg::Vec3(0,0,0), osg::Vec3(0,0,1));
- tm1->setHomePosition(osg::Vec3(0,300,0), osg::Vec3(0,0,0), osg::Vec3(0,0,1));
- tm2->setHomePosition(osg::Vec3(-300,0,0), osg::Vec3(0,0,0), osg::Vec3(0,0,1));
- tm3->setHomePosition(osg::Vec3(0,0,300), osg::Vec3(0,0,0), osg::Vec3(0,0,1));
-
- osg::ref_ptr<osg::Camera> _camera = _viewer->getCamera();
- _camera->setViewport(new osg::Viewport(x,y,width,height));
- _camera->setGraphicsContext(_gwe);
-
- switch(id)
- {
- case(1):
- {
- addCross(crossnode1,_viewer, root_1.get() , x , y , width/4, height/4);
- _viewer->setSceneData(root_1.get());
- _state = root_1->getOrCreateStateSet();
- //_camera->setViewMatrixAsLookAt(osg::Vec3(300,300,300), osg::Vec3(0,0,0), osg::Vec3(0,0,1));
- _viewer->setCameraManipulator( tm );
- break;
- }
- case(2):
- {
- addCross(crossnode2,_viewer, root_2.get(), x , y , width/4, height/4);
- _viewer->setSceneData(root_2.get());
- _state = root_2->getOrCreateStateSet();
- _camera->setViewMatrixAsLookAt(osg::Vec3(-300,0,0), osg::Vec3(0,0,0),osg::Vec3(0,0,1));
- _viewer->addEventHandler(new AuxiliaryViewUpdater());
- break;
- }
- case(3):
- {
- addCross(crossnode3,_viewer, root_3.get(), x , y , width/4, height/4);
- _viewer->setSceneData(root_3.get());
- _state = root_3->getOrCreateStateSet();
- _camera->setViewMatrixAsLookAt(osg::Vec3(0,300,0), osg::Vec3(0,0,0),osg::Vec3(0,0,1));
- _viewer->addEventHandler(new AuxiliaryViewUpdater());
- break;
- }
- case(4):
- {
- addCross(crossnode4,_viewer, root_4.get(), x , y , width/4, height/4);
- _viewer->setSceneData(root_4.get());
- _state = root_4->getOrCreateStateSet();
- _camera->setViewMatrixAsLookAt(osg::Vec3(0,0,300), osg::Vec3(0,0,0),osg::Vec3(0,1,0));
- _viewer->addEventHandler(new AuxiliaryViewUpdater());
- break;
- }
-
- }
-
- _state->setMode(GL_LIGHTING, osg::StateAttribute::ON);
- _state->setMode(GL_DEPTH_TEST, osg::StateAttribute::ON);
- _state->setMode(GL_CULL_FACE, osg::StateAttribute::ON);
-
-
- _viewer->addEventHandler(new osgViewer::StatsHandler);
- _viewer->addEventHandler(new osgGA::StateSetManipulator(_viewer->getCamera()->getOrCreateStateSet()));
- _viewer->addEventHandler(new osgViewer::ThreadingHandler);
- _viewer->addEventHandler(new osgViewer::LODScaleHandler);
-
- return _viewer;
-
- }
- */
-//Draw
 void OsgMainApp::draw()
 {
-    currentCamera();
     soleViewer->frame();
 }
 //Events
@@ -259,7 +171,7 @@ void OsgMainApp::addObjectFromVTK(std::string filepath)
     geode->readVTK(filepath.c_str());
     geode->setName(filepath);
 
-    root_1->addChild(geode.get());
+    modeledObjects->addChild(geode.get());
 }
 
 void OsgMainApp::addObjectFromHOTSOSE(std::string filepath)
@@ -270,7 +182,7 @@ void OsgMainApp::addObjectFromHOTSOSE(std::string filepath)
     geode->readHotsoseMesh(filepath.c_str());
     geode->setName(filepath);
 
-    root_1->addChild(geode.get());
+    modeledObjects->addChild(geode.get());
 }
 
 void OsgMainApp::addObjectFromCPACS(std::string filepath)
@@ -302,7 +214,7 @@ void OsgMainApp::addObjectFromCPACS(std::string filepath)
             osg::ref_ptr<GeometricVisObject> geode = new GeometricVisObject;
             geode->fromShape(segment.GetLoft(), tesselationAccu);
             geode->setName(segment.GetUID());
-            root_1->addChild(geode.get());
+            modeledObjects->addChild(geode.get());
         }
 
         if (wing.GetSymmetryAxis() == TIGL_NO_SYMMETRY) {
@@ -316,7 +228,7 @@ void OsgMainApp::addObjectFromCPACS(std::string filepath)
             osg::ref_ptr<GeometricVisObject> geode = new GeometricVisObject;
             geode->fromShape(loft, tesselationAccu);
             geode->setName(segment.GetUID() + "_mirrored");
-            root_1->addChild(geode.get());
+            modeledObjects->addChild(geode.get());
         }
 
     }
@@ -337,7 +249,7 @@ void OsgMainApp::addObjectFromCPACS(std::string filepath)
                 osg::ref_ptr<GeometricVisObject> geode = new GeometricVisObject;
                 geode->fromShape(loft, tesselationAccu);
                 geode->setName(segment.GetUID());
-                root_1->addChild(geode.get());
+                modeledObjects->addChild(geode.get());
             }
             catch (...) {
                 osg::notify(osg::ALWAYS) << "Error: could not triangularize fuselage segment " << i << std::endl;
@@ -350,12 +262,12 @@ void OsgMainApp::removeObjects()
 {
     std::map<std::string, GeometricVisObject*>::iterator soi = selectedObjects.begin();
     if (selectedObjects.size() == 0) {
-        root_1->removeChildren(3, root_1->getNumChildren());
+        modeledObjects->removeChildren(0, root_1->getNumChildren());
     }
     else {
         for (soi = selectedObjects.begin(); soi != selectedObjects.end(); ++soi) {
 
-            root_1->removeChild(soi->second);
+            modeledObjects->removeChild(soi->second);
             osg::notify(osg::ALWAYS) << soi->first << std::endl;
         }
         selectedObjects.clear();
@@ -363,109 +275,94 @@ void OsgMainApp::removeObjects()
 
 }
 
-void OsgMainApp::currentCamera()
-{
-
-    if (viewSelected == 0) {
-        osgGA::TrackballManipulator* tm1 = new osgGA::TrackballManipulator();
-        tm1->setHomePosition(osg::Vec3(-HOME_POS, -HOME_POS, HOME_POS), osg::Vec3(20, 0, 0), osg::Vec3(0, 0, 1));
-        soleViewer->setCameraManipulator(tm1);
-
-        viewSelected = -1;
-    }
-    else if (viewSelected == 1) {
-        osgGA::TrackballManipulator* tm1 = new osgGA::TrackballManipulator();
-        tm1->setHomePosition(osg::Vec3(20, 0, HOME_POS), osg::Vec3(20, 0, 0), osg::Vec3(0, 0, 1));
-        soleViewer->setCameraManipulator(tm1);
-
-        viewSelected = -1;
-    }
-    else if (viewSelected == 2) {
-        osgGA::TrackballManipulator* tm1 = new osgGA::TrackballManipulator();
-        tm1->setHomePosition(osg::Vec3(20, -HOME_POS, 0), osg::Vec3(20, 0, 0), osg::Vec3(0, 0, 1));
-        soleViewer->setCameraManipulator(tm1);
-
-        viewSelected = -1;
-    }
-    else if (viewSelected == 3) {
-        osgGA::TrackballManipulator* tm1 = new osgGA::TrackballManipulator();
-        tm1->setHomePosition(osg::Vec3(-HOME_POS, 0, 0), osg::Vec3(0, 0, 0), osg::Vec3(0, 0, 1));
-        soleViewer->setCameraManipulator(tm1);
-
-        viewSelected = -1;
-    }
-    else if (viewSelected == 4) {
-        osgGA::TrackballManipulator* tm1 = new osgGA::TrackballManipulator();
-        tm1->setHomePosition(osg::Vec3(-HOME_POS / 2, -HOME_POS / 2, HOME_POS / 2), osg::Vec3(0, 0, 0), osg::Vec3(0, 0, 1));
-        soleViewer->setCameraManipulator(tm1);
-
-        viewSelected = -1;
-    }
-}
-
 void OsgMainApp::changeCamera(int view)
 {
-    viewSelected = view;
+    if(!soleViewer) {
+        return;
+    }
+
+    osgGA::CameraManipulator* m = new OrthoManipulator(soleViewer->getCamera());
+    if(!m) {
+        return;
+    }
+    /*pres*/
+    if (view == 0) {
+        // perspective
+        m->setHomePosition(osg::Vec3(-HOME_POS, -HOME_POS, HOME_POS), osg::Vec3(20, 0, 0), osg::Vec3(1, 1, 1));
+    }
+    else if (view == 1) {
+        // top
+        m->setHomePosition(osg::Vec3(20, 0, HOME_POS), osg::Vec3(20, 0, 0), osg::Vec3(0, 1, 0));
+    }
+    else if (view == 2) {
+        // side
+        m->setHomePosition(osg::Vec3(20, -HOME_POS, 0), osg::Vec3(20, 0, 0), osg::Vec3(0, 0, 1));
+    }
+    else if (view == 3) {
+        // front
+        m->setHomePosition(osg::Vec3(-HOME_POS, 0, 0), osg::Vec3(0, 0, 0), osg::Vec3(0, 0, 1));
+    }
+    else if (view == 4) {
+        m->setHomePosition(objectsBounds, osg::Vec3(0, 0, 0), osg::Vec3(0, 0, 1));
+    }
+    soleViewer->setCameraManipulator(m);
 
 }
 
 void OsgMainApp::fitScreen()
 {
-    viewSelected = 4;
+    osg::BoundingSphere sphere = modeledObjects->getBound();
+
+    double radius = sphere.radius();
+    objectsBounds = osg::Vec3((radius+30),(radius+30), radius+30);
+
+    changeCamera(4);
 }
 
 void OsgMainApp::mouseButtonPressEvent(float x, float y, int button, int view)
 {
-
     soleViewer->getEventQueue()->mouseButtonPress(x, y, button);
-//    if(view == 1)
-//  cviewer->getView(0)->getEventQueue()->mouseButtonPress(x, y, button);
-//  if(view == 2)
-//  cviewer->getView(1)->getEventQueue()->mouseButtonPress(x, y, button);
-//  if(view == 3)
-//  cviewer->getView(2)->getEventQueue()->mouseButtonPress(x, y, button);
-//  if(view == 4)
-//  cviewer->getView(3)->getEventQueue()->mouseButtonPress(x, y, button);
-
 }
+
 void OsgMainApp::mouseButtonReleaseEvent(float x, float y, int button, int view)
 {
-
     soleViewer->getEventQueue()->mouseButtonRelease(x, y, button);
-//  if(view == 1)
-//  cviewer->getView(0)->getEventQueue()->mouseButtonRelease(x, y, button);
-//  if(view == 2)
-//  cviewer->getView(1)->getEventQueue()->mouseButtonRelease(x, y, button);
-//  if(view == 3)
-//  cviewer->getView(2)->getEventQueue()->mouseButtonRelease(x, y, button);
-//  if(view == 4)
-//  cviewer->getView(3)->getEventQueue()->mouseButtonRelease(x, y, button);
-
 }
+
 void OsgMainApp::mouseMoveEvent(float x, float y, int view)
 {
-
     soleViewer->getEventQueue()->mouseMotion(x, y);
-//  if(view == 1)
-//  cviewer->getView(0)->getEventQueue()->mouseMotion(x, y);
-//  if(view == 2)
-//  cviewer->getView(1)->getEventQueue()->mouseMotion(x, y);
-//  if(view == 3)
-//  cviewer->getView(2)->getEventQueue()->mouseMotion(x, y);
-//  if(view == 4)
-//  cviewer->getView(3)->getEventQueue()->mouseMotion(x, y);
-
 }
-void OsgMainApp::pickEvent(float x, float y, int density, int view)
+
+
+void OsgMainApp::pickEvent(float x, float y, int /* view */)
 {
-    int horPixels = 50; //0.11811*density;
-    int verPixels = 50; //0.0393701*density;
-    osg::notify(osg::ALWAYS) << "Action area " << density << " " << horPixels << " " << verPixels << std::endl;
-    osg::notify(osg::ALWAYS) << "Position of Action " << x << " , " << y << std::endl;
+    // map pixel coordinates to [-1,1] (OpenGL Screen Coordinates)
+    float xwindow =  x/screenWidth  * 2. - 1;
+    float ywindow = -y/screenHeight * 2. + 1;
+
+    if (!soleViewer || !soleViewer->getCamera()) {
+        return;
+    }
+    osg::Camera* cam = soleViewer->getCamera();
+
+    osg::Matrixd m;
+    m.preMult(cam->getProjectionMatrix());
+    m.preMult(cam->getViewMatrix());
+
+    // define intersection ray
+    osg::Vec3d startPoint (xwindow, ywindow, -1000);
+    osg::Vec3d endPoint(xwindow, ywindow, 1000);
+
+    osg::Matrixd i;
+    i.invert(m);
+
+    osg::Vec3d wStart =  startPoint * i;
+    osg::Vec3d wEnd   =  endPoint   * i;
 
     bool rayHit = false;
 
-    osg::ref_ptr<osgUtil::LineSegmentIntersector> picker = new osgUtil::LineSegmentIntersector(osgUtil::Intersector::WINDOW, x, y);
+    osg::ref_ptr<osgUtil::LineSegmentIntersector> picker = new osgUtil::LineSegmentIntersector(wStart, wEnd);
     osgUtil::IntersectionVisitor iv(picker.get());
     soleViewer.get()->getCamera()->accept(iv);
     iv.setTraversalMask(~0x1);
@@ -480,7 +377,6 @@ void OsgMainApp::pickEvent(float x, float y, int density, int view)
         std::string nameOfpickedObject;
 
         for (int i = 0; i < intersectionsIterator->nodePath.size(); i++) {
-            osg::notify(osg::ALWAYS) << "Object \"" << intersectionsIterator->nodePath.back()->getName() << "\"" << std::endl;
 
             pickedObject = (GeometricVisObject*) intersectionsIterator->nodePath.at(i);
             nameOfpickedObject = intersectionsIterator->nodePath.at(i)->getName();
@@ -496,54 +392,9 @@ void OsgMainApp::pickEvent(float x, float y, int density, int view)
                     selectedObjects.erase(nameOfpickedObject);
                     rayHit = true;
                 }
-
             }
 
         }
     }
-
-//	bool intersect = soleViewer.get()->computeIntersections(x,y,intersections);
-//	osgUtil::LineSegmentIntersector::Intersections::iterator hit = intersections.begin();
-//	osg::notify(osg::ALWAYS)<<"Number of Intersections "<< hit->nodePath.size() << std::endl;
-
-//	if(intersect)
-//			{
-//				for(int i=0 ; i<hit->nodePath.size() ; i++)
-//				{
-//					//osg::notify(osg::ALWAYS)<<"Object \""<< hit->nodePath.back()->getName()<<"\""<<std::endl;
-//					if(!(hit->nodePath.at(i)->getName().empty()))
-//					{
-//						//osg::notify(osg::ALWAYS)<<"Object \""<<hit->nodePath.back()->getName()<<"\""<<std::endl;
-//
-//						//GeometricVisObject* intersectedGeode = (GeometricVisObject*) hit->nodePath.at(i);
-//						if(!((GeometricVisObject*) hit->nodePath.at(i))->isPicked())
-//						{
-//							((GeometricVisObject*) hit->nodePath.at(i))->pick();
-//							rayHit = true;
-//							//osg::notify(osg::ALWAYS)<<"Object \""<<hit->nodePath.at(i)->getName()<<"\" is Picked"<<std::endl;
-//						}
-//						else
-//						{
-//							((GeometricVisObject*) hit->nodePath.at(i))->unpick();
-//							rayHit = true;
-//							//osg::notify(osg::ALWAYS)<<"Object \""<<hit->nodePath.at(i)->getName()<<"\" is UnPicked"<<std::endl
-//						}
-//						//rayHit = true;
-//						//delete &intersections;
-//						//delete &hit;
-//						//break;
-//					}
-//				}
-//
-//			}
-//			if(rayHit){
-//				break;
-//			}
-//		}
-//		if(rayHit){
-//			rayHit = false;
-//			break;
-//		}
-//	}
 
 }

@@ -30,17 +30,11 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import org.apache.http.util.ByteArrayBuffer;
-import org.w3c.dom.Notation;
 
-import de.dlr.sc.tiglviewer.android.NoticeFragment.noticeFragmentsListener;
-
-import android.R.string;
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -57,12 +51,10 @@ import android.support.v7.app.ActionBarActivity;
 import android.text.util.Linkify;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -71,6 +63,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import de.dlr.sc.tiglviewer.android.NoticeFragment.noticeFragmentsListener;
 
 @SuppressLint("ValidFragment")
 public class TiglViewerActivity extends ActionBarActivity implements OnNavigationListener,noticeFragmentsListener {
@@ -90,7 +83,6 @@ public class TiglViewerActivity extends ActionBarActivity implements OnNavigatio
 	navType navMode = navType.ROTATE;
     
     // list of possible files to open
-    private ArrayList<String> fileList;
 	private GLSurfaceView openGlSurface;
 	private Handler handler = new Handler();
 	ArrayList<Item> drawerItems = new ArrayList<Item>();
@@ -379,7 +371,6 @@ public class TiglViewerActivity extends ActionBarActivity implements OnNavigatio
         {
             return null;
         }
-        fileList = new ArrayList<String>();   
         File list[] = file.listFiles();
         if(list.length == 0)
         {

@@ -59,6 +59,7 @@
 #include <osgGA/SphericalManipulator>
 
 //Self headers
+#include "OrthoManipulator.h"
 #include "OsgAndroidNotifyHandler.hpp"
 #include "VirtualVisObject.hpp"
 #include "TiglViewerHUD.h"
@@ -111,7 +112,7 @@ public:
     void changeCamera(int view);
     void fitScreen();
     void mouseButtonPressEvent(float x, float y, int button, int view);
-    void pickEvent(float x, float y, int density, int view);
+    void pickEvent(float x, float y, int view);
     void mouseButtonReleaseEvent(float x, float y, int button, int view);
     void mouseMoveEvent(float x, float y, int view);
     osg::Vec3d windowToWord(osg::Vec3d windowPosition);
@@ -121,28 +122,14 @@ private:
      * * Commented code is used for adding multiple views in the same viewer
      */
     osg::ref_ptr<osgViewer::Viewer> soleViewer;
-    //osg::ref_ptr<osgViewer::CompositeViewer> cviewer;
-    //osgViewer::View* _viewer;
     osg::ref_ptr<osg::Group> root_1;
-    //osg::ref_ptr<osg::Group> root_2;
-    //osg::ref_ptr<osg::Group> root_3;
-    //osg::ref_ptr<osg::Group> root_4;
-    osg::ref_ptr<TiglViewerHUD> crossnode1;
-    //osg::ref_ptr<CrossNode> crossnode2;
-    //osg::ref_ptr<CrossNode> crossnode3;
-    //osg::ref_ptr<CrossNode> crossnode4;
     osg::ref_ptr<VirtualVisObject> _coordinateGrid;
     osg::ref_ptr<osg::StateSet> _state;
-    osg::ref_ptr<osgGA::TrackballManipulator> tm;
     std::map<std::string, GeometricVisObject*> selectedObjects;
-
-    float _lodScale;
-    unsigned int _prevFrame;
+    osg::Vec3 objectsBounds;
+    osg::ref_ptr<osg::Group> modeledObjects;
 
     bool _initialized;
-    bool _clean_scene;
-    int counter;
-    int viewSelected;
     float screenHeight;
     float screenWidth;
 
