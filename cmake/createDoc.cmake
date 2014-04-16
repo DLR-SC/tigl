@@ -7,8 +7,6 @@ if(DOXYGEN_FOUND)
         DEPENDS ${PROJECT_SOURCE_DIR}/ChangeLog
         COMMAND python ${PROJECT_SOURCE_DIR}/misc/createChangeLog/changeLogToMD.py -i ${PROJECT_SOURCE_DIR}/ChangeLog -o ${PROJECT_BINARY_DIR}/doc/changeLog/ChangeLog.md
     )
-    MESSAGE (python ${PROJECT_SOURCE_DIR}/misc/createChangeLog/changeLogToMD.py -i ${PROJECT_SOURCE_DIR}/ChangeLog -o ${PROJECT_BINARY_DIR}/doc/changeLog/ChangeLog.md)
-
 
 	configure_file(${PROJECT_SOURCE_DIR}/doc/Doxyfile.in ${PROJECT_BINARY_DIR}/doc/Doxyfile @ONLY)
 	configure_file(${PROJECT_SOURCE_DIR}/doc/footer.html ${PROJECT_BINARY_DIR}/doc/footer.html @ONLY)
