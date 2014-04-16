@@ -43,28 +43,28 @@ private:
 
 public:
     // Constructor
-    CCPACSRotors(CCPACSConfiguration* config);
+    TIGL_EXPORT CCPACSRotors(CCPACSConfiguration* config);
 
     // Virtual Destructor
-    virtual ~CCPACSRotors(void);
+    TIGL_EXPORT virtual ~CCPACSRotors(void);
 
     // Invalidates internal state
-    void Invalidate(void);
+    TIGL_EXPORT void Invalidate(void);
 
     // Read CPACS rotors elements
-    void ReadCPACS(TixiDocumentHandle tixiHandle, const char* configurationUID, const std::string rotorsLibraryName="rotors", const std::string rotorElementName="rotor", const std::string rotorProfilesLibraryPath="/cpacs/vehicles/profiles/rotorAirfoils", const std::string rotorProfileElementName="rotorAirfoil");
+    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const char* configurationUID, const std::string rotorsLibraryName="rotors", const std::string rotorElementName="rotor", const std::string rotorProfilesLibraryPath="/cpacs/vehicles/profiles/rotorAirfoils", const std::string rotorProfileElementName="rotorAirfoil");
 
     // Returns the total count of rotors in a configuration
-    int GetRotorCount(void) const;
+    TIGL_EXPORT int GetRotorCount(void) const;
 
     // Returns the rotor for a given index.
-    CCPACSRotor& GetRotor(int index) const;
+    TIGL_EXPORT CCPACSRotor& GetRotor(int index) const;
 
     // Returns the rotor for a given UID.
-    CCPACSRotor& GetRotor(const std::string& UID) const;
+    TIGL_EXPORT CCPACSRotor& GetRotor(const std::string& UID) const;
 
     // Returns the parent configuration
-    CCPACSConfiguration& GetConfiguration(void) const;
+    TIGL_EXPORT CCPACSConfiguration& GetConfiguration(void) const;
 
 protected:
     // Cleanup routine
@@ -78,7 +78,6 @@ private:
     void operator=(const CCPACSRotors&);
 
 private:
-    //TODO: *CCPACSRotorBlades rotorBlades;     /**< pointer to the collection of rotor blades */
     CCPACSRotorContainer rotors;        /**< Rotor elements */
     CCPACSConfiguration* configuration; /**< Pointer to parent configuration */
 

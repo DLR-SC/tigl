@@ -108,6 +108,10 @@ public:
     // returns the transformed point
     TIGL_EXPORT gp_Pnt Transform(const gp_Pnt& point) const;
     
+    // Transforms a CTiglPoint with the current transformation matrix and
+    // returns the transformed CTiglPoint
+    TIGL_EXPORT CTiglPoint Transform(const CTiglPoint& point) const;
+
     // Returns the inverted Transformation
     TIGL_EXPORT CTiglTransformation Inverted() const;
 

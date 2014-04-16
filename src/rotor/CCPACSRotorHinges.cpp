@@ -24,6 +24,7 @@
 */
 
 #include "CCPACSRotorHinges.h"
+#include "CCPACSRotorBladeAttachment.h"
 #include "CTiglError.h"
 #include <iostream>
 #include <sstream>
@@ -32,8 +33,8 @@ namespace tigl
 {
 
 // Constructor
-CCPACSRotorHinges::CCPACSRotorHinges(CCPACSConfiguration* config)
-    : configuration(config)
+CCPACSRotorHinges::CCPACSRotorHinges(CCPACSRotorBladeAttachment* rotorBladeAttachment)
+    : rotorBladeAttachment(rotorBladeAttachment)
 {
     Cleanup();
 }
@@ -74,7 +75,7 @@ void CCPACSRotorHinges::ReadCPACS(TixiDocumentHandle tixiHandle, const std::stri
 
     // Loop over all rotorHinge elements
     for (int i = 1; i <= elementCount; i++) {
-        CCPACSRotorHinge* rotorHinge = new CCPACSRotorHinge(configuration);
+        CCPACSRotorHinge* rotorHinge = new CCPACSRotorHinge(rotorBladeAttachment);
         rotorHinges.push_back(rotorHinge);
 
         std::ostringstream xpath;
@@ -102,7 +103,19 @@ CCPACSRotorHinge& CCPACSRotorHinges::GetRotorHinge(int index) const
 // Returns the parent configuration
 CCPACSConfiguration& CCPACSRotorHinges::GetConfiguration(void) const
 {
-    return *configuration;
+    return rotorBladeAttachment->GetConfiguration();
+}
+
+// Returns the parent rotor
+CCPACSRotor& CCPACSRotorHinges::GetRotor(void) const
+{
+    return rotorBladeAttachment->GetRotor();
+}
+
+// Returns the parent rotor blade attachment
+CCPACSRotorBladeAttachment& CCPACSRotorHinges::GetRotorBladeAttachment(void) const
+{
+    return *rotorBladeAttachment;
 }
 
 } // end namespace tigl

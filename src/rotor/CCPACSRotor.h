@@ -56,87 +56,86 @@ class CCPACSRotor : public CTiglAbstractPhysicalComponent
 
 public:
     // Constructor
-    CCPACSRotor(CCPACSConfiguration* config);
+    TIGL_EXPORT CCPACSRotor(CCPACSConfiguration* config);
 
     // Virtual destructor
-    virtual ~CCPACSRotor(void);
+    TIGL_EXPORT virtual ~CCPACSRotor(void);
 
     // Invalidates internal state
-    void Invalidate(void);
+    TIGL_EXPORT void Invalidate(void);
 
     // Read CPACS rotor elements
-    void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& rotorXPath);
+    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& rotorXPath);
 
     // Returns the name of the rotor
-    const std::string& GetName(void) const;
+    TIGL_EXPORT const std::string& GetName(void) const;
 
     // Returns the description of the rotor
-    const std::string& GetDescription(void) const;
+    TIGL_EXPORT const std::string& GetDescription(void) const;
 
-    // Get the Transformation object
-    CTiglTransformation GetTransformation(void);
+    // Returns the Transformation object
+    TIGL_EXPORT CTiglTransformation GetTransformation(void);
 
     // Sets the Translation object
-    void Translate(CTiglPoint trans);
+    TIGL_EXPORT void Translate(CTiglPoint trans);
 
-    // Get Translation
-    CTiglPoint GetTranslation(void);
+    // Returns the Translation
+    TIGL_EXPORT CTiglPoint GetTranslation(void);
 
     // Returns the type of the rotor
-    const TiglRotorType& GetType(void) const;
+    TIGL_EXPORT const TiglRotorType& GetType(void) const;
 
     // Returns the nominal rotations per minute (rpm) of the rotor
-    const double& GetNominalRotationsPerMinute(void) const;
+    TIGL_EXPORT const double& GetNominalRotationsPerMinute(void) const;
+
+    // Returns the rotor blade attachment count
+    TIGL_EXPORT int GetRotorBladeAttachmentCount(void) const;
+
+    // Returns the rotor blade attachment for a given index
+    TIGL_EXPORT CCPACSRotorBladeAttachment& GetRotorBladeAttachment(int index) const;
+
+    // Returns the rotor blade count
+    TIGL_EXPORT int GetRotorBladeCount(void) const;
+
+    // Returns the rotor blade for a given index
+    TIGL_EXPORT CCPACSRotorBlade& GetRotorBlade(int index) const;
 
     // Returns the parent configuration
-    CCPACSConfiguration& GetConfiguration(void) const;
+    TIGL_EXPORT CCPACSConfiguration& GetConfiguration(void) const;
 
     // Returns the rotor hub object
-    const CCPACSRotorHub& GetRotorHub(void) const;
+    TIGL_EXPORT const CCPACSRotorHub& GetRotorHub(void) const;
 
     // Returns the rotor disk geometry
-    TopoDS_Shape GetRotorDisk(void);
+    TIGL_EXPORT TopoDS_Shape GetRotorDisk(void);
 
-    /*
-            // Get rotor blade count
-            int GetRotorBladeCount(void) const;
+    // Returns the volume of this rotor
+    TIGL_EXPORT double GetVolume(void);
 
-            // Returns the rotor blade for a given index
-            CCPACSRotorBlade& GetRotorBlade(int index) const;
+    // Returns the surface area of this rotor
+    TIGL_EXPORT double GetSurfaceArea(void);
 
-    #ifdef TIGL_USE_XCAF
-            // builds data structure for a TDocStd_Application
-            // mostly used for export
-            TDF_Label ExportDataStructure(CCPACSConfiguration& config, Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label);
-    #endif
+    // Returns the reference area of this rotor.
+    // Here, we always take the reference rotor disk area projected to a plane normal to the rotor hub z direction
+    TIGL_EXPORT double GetReferenceArea(void);
 
-            // Get the rotor blade transformation for a rotor blade given by its index
-            CTiglTransformation GetRotorBladeTransformation(int index);
+    // Returns the radius of the rotor
+    TIGL_EXPORT double GetRadius(void);
 
-            // Gets the loft of a rotor blade given by its index
-            TopoDS_Shape & GetRotorBladeGeometry(int index);
+    // Returns the diameter of this rotor
+    TIGL_EXPORT double GetDiameter(void);
 
-            // Gets the volume of this rotor
-            double GetVolume(void);
-    */
-    /*TODO:
-            // Gets the surface area of this rotor
-            double GetSurfaceArea();
+    // Returns the sum of all blade planform areas of a rotor
+    TIGL_EXPORT double GetTotalBladePlanformArea(void);
 
-            // Returns the reference area of this rotor.
-            // Here, we always take the reference rotor disk area projected to a plane normal to the rotor hub direction
-            double GetReferenceArea();
+    // Returns the rotor solidity
+    TIGL_EXPORT double GetSolidity(void);
 
-            // Returns the radius of the rotor
-            double GetRotorRadius(void);
-    */
     // Returns the Component Type TIGL_COMPONENT_ROTOR.
-    TiglGeometricComponentType GetComponentType(void)
+    TIGL_EXPORT TiglGeometricComponentType GetComponentType(void)
     {
         return TIGL_COMPONENT_ROTOR | TIGL_COMPONENT_PHYSICAL;
     }
-
-    virtual void SetSymmetryAxis(const std::string& axis);
 
 protected:
     // Cleanup routine
@@ -148,14 +147,8 @@ protected:
     // Update internal rotor data
     void Update(void);
 
+    // Returns the geometry of the whole rotor (assembly of all rotor blades). (implementation for abstract base class CTiglAbstractGeometricComponent)
     virtual TopoDS_Shape BuildLoft(void);
-
-    TopoDS_Shape BuildRotorDisk(void);
-
-    /*TODO:
-            // Adds all Segments of this rotor to one shape
-            TopoDS_Shape BuildRotorGeometry(void);
-    */
 
 private:
     // Copy constructor
@@ -170,12 +163,9 @@ private:
     TiglRotorType          type;                        /**< Rotor type           */
     double                 nominalRotationsPerMinute;   /**< Rotor type           */
     CCPACSRotorHub         rotorHub;                    /**< Rotor hub            */
-//TODO:        CCPACSRotorBlades      rotorBlades;                 /**< Rotor blades         */
     CCPACSConfiguration*   configuration;               /**< Parent configuration */
-//TODO:        TopoDS_Shape           rotorGeometry;               /**< All blades           */
     bool                   invalidated;                 /**< Internal state flag  */
     bool                   rebuildGeometry;             /**< Indicates if geometry needs to be rebuilt */
-//TODO:        double                 myVolume;                    /**< Volume of this Rotor */
 };
 
 } // end namespace tigl

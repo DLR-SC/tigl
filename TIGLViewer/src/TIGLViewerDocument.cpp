@@ -2068,6 +2068,148 @@ void TIGLViewerDocument::drawRotorDisk()
     QApplication::restoreOverrideCursor();
 }
 
+void TIGLViewerDocument::showRotorProperties()
+{
+    QString rotorUid = dlgGetRotorSelection();
+    if(rotorUid=="")
+        return;
+
+    tigl::CCPACSRotor& rotor = GetConfiguration().GetRotor(rotorUid.toStdString());
+
+    QString propertiesText;
+    QString valueText;
+    tigl::CTiglPoint tmpPoint;
+
+    QApplication::setOverrideCursor( Qt::WaitCursor );
+
+    try {
+        valueText = QString::fromStdString(rotor.GetUID());
+    }
+    catch (...) {
+        valueText = "ERROR";
+    }
+    propertiesText += "UID: " + valueText + "\n";
+
+    try {
+        valueText = QString::number(rotor.GetType());
+    }
+    catch (...) {
+        valueText = "ERROR";
+    }
+    propertiesText += "Type: " + valueText + "\n";
+
+    try {
+        valueText = QString::fromStdString(rotor.GetName());
+    }
+    catch (...) {
+        valueText = "ERROR";
+    }
+    propertiesText += "Name: " + valueText + "\n";
+
+    try {
+        valueText = QString::fromStdString(rotor.GetDescription());
+    }
+    catch (...) {
+        valueText = "ERROR";
+    }
+    propertiesText += "Description: " + valueText + "\n";
+
+    try {
+        tmpPoint = rotor.GetTranslation();
+        valueText = "(" + QString::number(tmpPoint.x) + "; " + QString::number(tmpPoint.y) + "; " + QString::number(tmpPoint.z) + ")";
+    }
+    catch (...) {
+        valueText = "ERROR";
+    }
+    propertiesText += "Translation: " + valueText + "\n";
+
+    try {
+        valueText = QString::number(rotor.GetNominalRotationsPerMinute());
+    }
+    catch (...) {
+        valueText = "ERROR";
+    }
+    propertiesText += "RPM: " + valueText + "\n";
+
+    try {
+        valueText = QString::number(rotor.GetRotorBladeAttachmentCount());
+    }
+    catch (...) {
+        valueText = "ERROR";
+    }
+    propertiesText += "RotorBladeAttachmentCount: " + valueText + "\n";
+
+    try {
+        valueText = QString::number(rotor.GetRotorBladeCount());
+    }
+    catch (...) {
+        valueText = "ERROR";
+    }
+    propertiesText += "RotorBladeCount: " + valueText + "\n";
+
+    try {
+        valueText = QString::number(rotor.GetRadius());
+    }
+    catch (...) {
+        valueText = "ERROR";
+    }
+    propertiesText += "Radius: " + valueText + "\n";
+
+    try {
+        valueText = QString::number(rotor.GetDiameter());
+    }
+    catch (...) {
+        valueText = "ERROR";
+    }
+    propertiesText += "Diameter: " + valueText + "\n";
+
+    try {
+        valueText = QString::number(rotor.GetTotalBladePlanformArea());
+    }
+    catch (...) {
+        valueText = "ERROR";
+    }
+    propertiesText += "Total blade planform area: " + valueText + "\n";
+
+    try {
+        valueText = QString::number(rotor.GetReferenceArea());
+    }
+    catch (...) {
+        valueText = "ERROR";
+    }
+    propertiesText += "Reference area: " + valueText + "\n";
+
+    try {
+        valueText = QString::number(rotor.GetSolidity());
+    }
+    catch (...) {
+        valueText = "ERROR";
+    }
+    propertiesText += "Solidity: " + valueText + "\n";
+
+    try {
+        valueText = QString::number(rotor.GetSurfaceArea());
+    }
+    catch (...) {
+        valueText = "ERROR";
+    }
+    propertiesText += "Surface area: " + valueText + "\n";
+
+    try {
+        valueText = QString::number(rotor.GetVolume());
+    }
+    catch (...) {
+        valueText = "ERROR";
+    }
+    propertiesText += "Volume: " + valueText;
+
+    QMessageBox msgBox;
+    msgBox.setText("Properties of rotor '" + rotorUid + "':");
+    msgBox.setInformativeText(propertiesText);
+
+    QApplication::restoreOverrideCursor();
+    int ret = msgBox.exec();
+}
 
 void TIGLViewerDocument::drawFarField()
 {

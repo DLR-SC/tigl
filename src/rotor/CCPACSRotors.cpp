@@ -74,9 +74,6 @@ void CCPACSRotors::ReadCPACS(TixiDocumentHandle tixiHandle, const char* configur
 
     rotorXPathPrt = std::string(tmpString) + "[@uID=\"" + std::string(configurationUID) + "\"]/" + rotorsLibraryName;
 
-    // Read rotor blades?
-    //rotorBlades.ReadCPACS(tixiHandle, rotorBladesLibraryPath, rotorBladeElementName);
-
     if (tixiCheckElement(tixiHandle, rotorXPathPrt.c_str()) != SUCCESS) {
         return;
     }

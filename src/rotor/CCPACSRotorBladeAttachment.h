@@ -30,58 +30,64 @@
 #include <vector>
 
 #include "tixi.h"
-#include "CTiglTransformation.h"
+#include "CCPACSRotorBlades.h"
 #include "CCPACSRotorHinges.h"
-//TODO:#include "CCPACSRotorBlades.h"
 
 
 namespace tigl
 {
 
 class CCPACSConfiguration;
+class CCPACSRotor;
 
 class CCPACSRotorBladeAttachment
 {
 
 public:
     // Constructor
-    CCPACSRotorBladeAttachment(CCPACSConfiguration* config);
+    TIGL_EXPORT CCPACSRotorBladeAttachment(CCPACSRotor* rotor);
 
     // Virtual destructor
-    virtual ~CCPACSRotorBladeAttachment(void);
+    TIGL_EXPORT virtual ~CCPACSRotorBladeAttachment(void);
 
     // Invalidates internal state
-    void Invalidate(void);
+    TIGL_EXPORT void Invalidate(void);
 
     // Read CPACS rotor elements
-    void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& rotorBladeAttachmentXPath);
+    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& rotorBladeAttachmentXPath);
+
+    // Builds and returns the transformation matrix for an attached rotor blade
+    TIGL_EXPORT CTiglTransformation GetRotorBladeTransformationMatrix(double thetaDeg=0., double bladeDeltaThetaDeg=0., bool doHingeTransformation=true, bool doRotorTransformation=false);
 
     // Returns the UID of the rotor blade attachment
-    const std::string& GetUID(void) const;
+    TIGL_EXPORT const std::string& GetUID(void) const;
 
     // Returns the number of attached rotor blades
-    int GetNumberOfBlades(void) const;
+    TIGL_EXPORT int GetNumberOfBlades(void) const;
 
     // Returns the azimuth angle of the attached rotor blade with the given index
-    const double& GetAzimuthAngle(int index) const;
+    TIGL_EXPORT const double& GetAzimuthAngle(int index) const;
 
     // Returns the UID of the referenced rotor blade
-    const std::string& GetRotorBladeUID(void) const;
-
-    // Returns the parent configuration
-    CCPACSConfiguration& GetConfiguration(void) const;
+    TIGL_EXPORT const std::string& GetRotorBladeUID(void) const;
 
     // Get hinge count
-    int GetHingeCount(void) const;
+    TIGL_EXPORT int GetHingeCount(void) const;
 
     // Returns the hinge for a given index
-    CCPACSRotorHinge& GetHinge(int index) const;
+    TIGL_EXPORT CCPACSRotorHinge& GetHinge(int index) const;
 
-//TODO:        // Get rotor blade count
-//TODO:        int GetRotorBladeCount(void) const;
+    // Get rotor blade count
+    TIGL_EXPORT int GetRotorBladeCount(void) const;
 
-//TODO:        // Returns the rotor blade for a given index
-//TODO:        CCPACSRotorBlade& GetRotorBlade(int index) const;
+    // Returns the rotor blade for a given index
+    TIGL_EXPORT CCPACSRotorBlade& GetRotorBlade(int index) const;
+
+    // Returns the parent rotor
+    TIGL_EXPORT CCPACSRotor& GetRotor(void) const;
+
+    // Returns the parent configuration
+    TIGL_EXPORT CCPACSConfiguration& GetConfiguration(void) const;
 
 protected:
     // Cleanup routine
@@ -102,8 +108,8 @@ private:
     std::vector<double>            azimuthAngles;            /**< Rotor hub type       */
     std::string                    rotorBladeUID;            /**< Rotor blade uID      */
     CCPACSRotorHinges              hinges;                   /**< Hinges               */
-//TODO:        CCPACSRotorBlades              rotorBlades;              /**< Rotor blades         */
-    CCPACSConfiguration*           configuration;            /**< Parent configuration */
+    CCPACSRotorBlades              rotorBlades;              /**< Rotor blades         */
+    CCPACSRotor*                   rotor;                    /**< Parent rotor         */
     bool                           invalidated;              /**< Internal state flag  */
 };
 

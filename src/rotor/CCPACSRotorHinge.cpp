@@ -26,14 +26,15 @@
 #include <cmath>
 
 #include "CCPACSRotorHinge.h"
+#include "CCPACSRotorBladeAttachment.h"
 #include "CTiglError.h"
 
 namespace tigl
 {
 
 // Constructor
-CCPACSRotorHinge::CCPACSRotorHinge(CCPACSConfiguration* config)
-    : configuration(config)
+CCPACSRotorHinge::CCPACSRotorHinge(CCPACSRotorBladeAttachment* rotorBladeAttachment)
+    : rotorBladeAttachment(rotorBladeAttachment)
 {
     Cleanup();
 }
@@ -300,7 +301,19 @@ double CCPACSRotorHinge::GetHingeAngle(double thetaDeg, double a0, std::vector<d
 // Returns the parent configuration
 CCPACSConfiguration& CCPACSRotorHinge::GetConfiguration(void) const
 {
-    return *configuration;
+    return rotorBladeAttachment->GetConfiguration();
+}
+
+// Returns the parent rotor
+CCPACSRotor& CCPACSRotorHinge::GetRotor(void) const
+{
+    return rotorBladeAttachment->GetRotor();
+}
+
+// Returns the parent rotor blade attachment
+CCPACSRotorBladeAttachment& CCPACSRotorHinge::GetRotorBladeAttachment(void) const
+{
+    return *rotorBladeAttachment;
 }
 
 } // end namespace tigl

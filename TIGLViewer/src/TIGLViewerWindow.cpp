@@ -762,6 +762,7 @@ void TIGLViewerWindow::connectSignals()
     connect(drawAllRotorsWingsAndFuselagesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawRotorsWingsAndFuselages()));
     connect(drawRotorsAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawRotor()));
     connect(drawRotorDisksAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawRotorDisk()));
+    connect(showRotorPropertiesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(showRotorProperties()));
 
     // Export functions
     connect(tiglExportFusedIgesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportFusedAsIges()));
@@ -855,7 +856,7 @@ void TIGLViewerWindow::updateMenus(TiglCPACSConfigurationHandle hand)
             nRotorBlades = config.GetRotorBladeCount();
             nWings = config.GetWingCount() - nRotorBlades;
             nFuselages = config.GetFuselageCount();
-	    nRotors = config.GetRotorCount();
+            nRotors = config.GetRotorCount();
             hasFarField = config.GetFarField().GetFieldType() != tigl::NONE;
         }
     }

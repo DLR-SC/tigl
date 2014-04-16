@@ -135,6 +135,17 @@ double quadrilateral_area(const CTiglPoint& A, const CTiglPoint& B, const CTiglP
     return 0.5 * AC.CrossMagnitude(BD);
 }
 
+/**
+ * @brief Calculates the distance of a point P from the line defined by a point X0 and direction DX
+ */
+double distance_point_from_line(const CTiglPoint& P, const CTiglPoint& X0, const CTiglPoint& DX)
+{
+    double lenDX = DX.norm2();
+    assert(lenDX > 0.);
+
+    return CTiglPoint::cross_prod(DX, X0-P).norm2()/lenDX;
+}
+
 /** 
  * @brief Computes the nth derivative of x^k
  */

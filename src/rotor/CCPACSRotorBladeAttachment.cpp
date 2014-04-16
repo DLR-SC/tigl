@@ -24,17 +24,19 @@
 */
 
 #include "CCPACSRotorBladeAttachment.h"
+#include "CCPACSRotor.h"
+#include "CCPACSConfiguration.h"
 #include "CTiglError.h"
 
 namespace tigl
 {
 
 // Constructor
-CCPACSRotorBladeAttachment::CCPACSRotorBladeAttachment(CCPACSConfiguration* config)
-    : configuration(config)
-    , hinges(config)
+CCPACSRotorBladeAttachment::CCPACSRotorBladeAttachment(CCPACSRotor* rotor)
+    : rotor(rotor)
+    , hinges(this)
+    , rotorBlades(this)
     , azimuthAngles()
-//TODO:    , rotorBlades(config)
 {
     Cleanup();
 }
@@ -49,9 +51,10 @@ CCPACSRotorBladeAttachment::~CCPACSRotorBladeAttachment(void)
 void CCPACSRotorBladeAttachment::Cleanup(void)
 {
     uID  = "";
-    azimuthAngles.clear();
     rotorBladeUID = "";
-    //TODO?: hinges.Cleanup();
+    //hinges.Cleanup();
+    //rotorBlades.Cleanup();
+    azimuthAngles.clear();
 }
 
 // Update internal rotor blade attachment data
@@ -71,13 +74,12 @@ void CCPACSRotorBladeAttachment::Invalidate(void)
     for (int i = 1; i <= GetHingeCount(); i++) {
         GetHinge(i).Invalidate();
     }
-//TODO:        for (int i = 1; i <= GetRotorBladeCount(); i++)
-//TODO:        {
-//TODO:            GetRotorBlade(i).Invalidate();
-//TODO:        }
+    for (int i = 1; i <= GetRotorBladeCount(); i++) {
+        GetRotorBlade(i).Invalidate();
+    }
 }
 
-// Read CPACS rotor elements
+// Read CPACS rotor blade attachment elements
 void CCPACSRotorBladeAttachment::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& rotorBladeAttachmentXPath)
 {
     Cleanup();
@@ -98,7 +100,7 @@ void CCPACSRotorBladeAttachment::ReadCPACS(TixiDocumentHandle tixiHandle, const 
     tempString  = rotorBladeAttachmentXPath + "/numberOfBlades";
     elementPath = const_cast<char*>(tempString.c_str());
     if (tixiCheckElement(tixiHandle, elementPath) == SUCCESS &&
-        tixiGetIntegerElement(tixiHandle, elementPath, &numberOfBlades) == SUCCESS) {
+            tixiGetIntegerElement(tixiHandle, elementPath, &numberOfBlades) == SUCCESS) {
         for (int i=0; i<numberOfBlades; ++i) {
             azimuthAngles.push_back(static_cast<double>(i)*360./static_cast<double>(numberOfBlades));
         }
@@ -134,7 +136,65 @@ void CCPACSRotorBladeAttachment::ReadCPACS(TixiDocumentHandle tixiHandle, const 
     // Get subelement "hinges"
     hinges.ReadCPACS(tixiHandle, rotorBladeAttachmentXPath + "/hinges", "hinge");
 
+    // Create rotor blades
+    CCPACSWing* ptrToUnattachedRotorBlade = &(GetConfiguration().GetWing(rotorBladeUID));
+    for (int i=0; i<azimuthAngles.size(); ++i) {
+        rotorBlades.AddRotorBlade(new CCPACSRotorBlade(this, ptrToUnattachedRotorBlade, i+1));
+    }
+
     Update();
+}
+
+// Builds and returns the transformation matrix for an attached rotor blade
+//     rotorThetaDeg:         current azimuthal position of the rotor in degrees
+//     bladeDeltaThetaDeg:    azimuth angle offset of the attached blade
+//     doRotorTransformation: include the parent rotor transformation?
+CTiglTransformation CCPACSRotorBladeAttachment::GetRotorBladeTransformationMatrix(double rotorThetaDeg, double bladeDeltaThetaDeg, bool doHingeTransformation, bool doRotorTransformation)
+{
+    double bladeThetaDeg = rotorThetaDeg + bladeDeltaThetaDeg; // current azimuthal position of the rotor blade in degrees
+    double rotDir = (rotor->GetNominalRotationsPerMinute() < 0. ? -1. : 1.); // rotation direction (+1: anti-clockwise, -1: clockwise/french)
+
+    // Rotor blade transformation chain:
+    CTiglTransformation rotorBladeTransformation;
+
+    // 0. Initialize matrix
+    rotorBladeTransformation.SetIdentity();
+
+    // 1. Rotation around hinges, beginning with the last
+    if (doHingeTransformation) {
+        for (int k=GetHingeCount()-1; k>=0; --k) {
+            CTiglPoint curHingePosition = GetHinge(k+1).GetTranslation();
+            TiglRotorHingeType curHingeType = GetHinge(k+1).GetType();
+            // a. move to origin
+            rotorBladeTransformation.AddTranslation(-curHingePosition.x, -curHingePosition.y, -curHingePosition.z);
+            // b. rotate around hinge axis
+            if (curHingeType == TIGLROTORHINGE_PITCH) {
+                rotorBladeTransformation.AddRotationX( (GetHinge(k+1).GetHingeAngle(bladeThetaDeg)));
+            }
+            else if (curHingeType == TIGLROTORHINGE_FLAP) {
+                rotorBladeTransformation.AddRotationY(-(GetHinge(k+1).GetHingeAngle(bladeThetaDeg)));
+            }
+            else if (curHingeType == TIGLROTORHINGE_LEAD_LAG) {
+                rotorBladeTransformation.AddRotationZ( (GetHinge(k+1).GetHingeAngle(bladeThetaDeg)));
+            }
+            // c. move back to origin
+            rotorBladeTransformation.AddTranslation(curHingePosition.x, curHingePosition.y, curHingePosition.z);
+            //TODO: account for rotation and scaling of hinge?
+        }
+    }
+    // 2. If the rotation direction is clockwise (e.g. french rotor): mirror rotor blade in x direction
+    if (rotDir<0) {
+        rotorBladeTransformation.AddMirroringAtYZPlane();
+    }
+    // 3. Rotate the rotor blade around z to its azimuth position
+    rotorBladeTransformation.AddRotationZ(rotDir * bladeThetaDeg);
+
+    // 4. Add rotor transformation if desired
+    if (doRotorTransformation) {
+        rotorBladeTransformation.PreMultiply(rotor->GetTransformation());
+    }
+
+    return rotorBladeTransformation;
 }
 
 // Returns the UID of the rotor blade attachment
@@ -165,12 +225,6 @@ const std::string& CCPACSRotorBladeAttachment::GetRotorBladeUID(void) const
     return rotorBladeUID;
 }
 
-// Returns the parent configuration
-CCPACSConfiguration& CCPACSRotorBladeAttachment::GetConfiguration(void) const
-{
-    return *configuration;
-}
-
 // Get hinge count
 int CCPACSRotorBladeAttachment::GetHingeCount(void) const
 {
@@ -183,16 +237,28 @@ CCPACSRotorHinge& CCPACSRotorBladeAttachment::GetHinge(const int index) const
     return hinges.GetRotorHinge(index);
 }
 
-//TODO:	// Get rotor blade count
-//TODO:	int CCPACSRotorBladeAttachment::GetRotorBladeCount(void) const
-//TODO:	{
-//TODO:		return (static_cast<int>(rotorBlades.size()));
-//TODO:	}
+// Get rotor blade count
+int CCPACSRotorBladeAttachment::GetRotorBladeCount(void) const
+{
+    return rotorBlades.GetRotorBladeCount();
+}
 
-//TODO:    // Returns the rotor blade for a given index
-//TODO:	CCPACSRotorBlade& CCPACSRotorBladeAttachment::GetRotorBlade(const int index) const
-//TODO:	{
-//TODO:        return rotorBlades.GetRotorBlade(index);
-//TODO:	}
+// Returns the rotor blade for a given index
+CCPACSRotorBlade& CCPACSRotorBladeAttachment::GetRotorBlade(const int index) const
+{
+    return rotorBlades.GetRotorBlade(index);
+}
+
+// Returns the parent rotor
+CCPACSRotor& CCPACSRotorBladeAttachment::GetRotor(void) const
+{
+    return *rotor;
+}
+
+// Returns the parent configuration
+CCPACSConfiguration& CCPACSRotorBladeAttachment::GetConfiguration(void) const
+{
+    return rotor->GetConfiguration();
+}
 
 } // end namespace tigl

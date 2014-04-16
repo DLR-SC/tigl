@@ -203,6 +203,7 @@ typedef unsigned int TiglGeometricComponentType;
 #define  TIGL_COMPONENT_WINGCOMPSEGMENT 256
 #define  TIGL_COMPONENT_WINGSHELL       512
 #define  TIGL_COMPONENT_ROTOR           1024     /**< The Component is a rotor */
+#define  TIGL_COMPONENT_ROTORBLADE      2048     /**< The Component is a rotor blade */
 
 
 enum TiglStructureType 

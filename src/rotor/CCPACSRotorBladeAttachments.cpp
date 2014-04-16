@@ -24,6 +24,7 @@
 */
 
 #include "CCPACSRotorBladeAttachments.h"
+#include "CCPACSRotor.h"
 #include "CTiglError.h"
 #include <iostream>
 #include <sstream>
@@ -32,13 +33,13 @@ namespace tigl
 {
 
 // Constructor
-CCPACSRotorBladeAttachments::CCPACSRotorBladeAttachments(CCPACSConfiguration* config)
-    : configuration(config)
+CCPACSRotorBladeAttachments::CCPACSRotorBladeAttachments(CCPACSRotor* rotor)
+    : rotor(rotor)
 {
     Cleanup();
 }
 
-// Virtual Destructor
+// Destructor
 CCPACSRotorBladeAttachments::~CCPACSRotorBladeAttachments(void)
 {
     Cleanup();
@@ -74,7 +75,7 @@ void CCPACSRotorBladeAttachments::ReadCPACS(TixiDocumentHandle tixiHandle, const
 
     // Loop over all rotorBladeAttachment elements
     for (int i = 1; i <= elementCount; i++) {
-        CCPACSRotorBladeAttachment* rotorBladeAttachment = new CCPACSRotorBladeAttachment(configuration);
+        CCPACSRotorBladeAttachment* rotorBladeAttachment = new CCPACSRotorBladeAttachment(rotor);
         rotorBladeAttachments.push_back(rotorBladeAttachment);
 
         std::ostringstream xpath;
@@ -99,10 +100,16 @@ CCPACSRotorBladeAttachment& CCPACSRotorBladeAttachments::GetRotorBladeAttachment
     return (*rotorBladeAttachments[index]);
 }
 
+// Returns the parent rotor
+CCPACSRotor& CCPACSRotorBladeAttachments::GetRotor(void) const
+{
+    return *rotor;
+}
+
 // Returns the parent configuration
 CCPACSConfiguration& CCPACSRotorBladeAttachments::GetConfiguration(void) const
 {
-    return *configuration;
+    return rotor->GetConfiguration();
 }
 
 } // end namespace tigl

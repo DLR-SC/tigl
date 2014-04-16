@@ -434,6 +434,12 @@ gp_Pnt CCPACSWing::GetLowerPoint(int segmentIndex, double eta, double xsi)
     return  ((CCPACSWingSegment &) GetSegment(segmentIndex)).GetLowerPoint(eta, xsi);
 }
 
+// Gets a point on the chord surface in absolute (world) coordinates for a given segment, eta, xsi
+gp_Pnt CCPACSWing::GetChordPoint(int segmentIndex, double eta, double xsi)
+{
+    return  ((CCPACSWingSegment &) GetSegment(segmentIndex)).GetChordPoint(eta, xsi);
+}
+
 // Returns the volume of this wing
 double CCPACSWing::GetVolume(void)
 {

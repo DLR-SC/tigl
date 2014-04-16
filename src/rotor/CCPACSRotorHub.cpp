@@ -24,16 +24,16 @@
 */
 
 #include "CCPACSRotorHub.h"
+#include "CCPACSRotor.h"
 #include "CTiglError.h"
 
 namespace tigl
 {
 
 // Constructor
-CCPACSRotorHub::CCPACSRotorHub(CCPACSConfiguration* config)
-    : configuration(config)
-    , rotorBladeAttachments(config)
-//TODO:    , rotorBlades(config)
+CCPACSRotorHub::CCPACSRotorHub(CCPACSRotor* rotor)
+    : rotor(rotor)
+    , rotorBladeAttachments(rotor)
 {
     Cleanup();
 }
@@ -51,6 +51,7 @@ void CCPACSRotorHub::Cleanup(void)
     name = "";
     description = "";
     type = TIGLROTORHUB_UNDEFINED;
+    //rotorBladeAttachments.Cleanup();
 
     Invalidate();
 }
@@ -153,7 +154,7 @@ const TiglRotorHubType& CCPACSRotorHub::GetType(void) const
     return type;
 }
 
-// Get rotor blade attachment count
+// Returns the rotor blade attachment count
 int CCPACSRotorHub::GetRotorBladeAttachmentCount(void) const
 {
     return rotorBladeAttachments.GetRotorBladeAttachmentCount();
@@ -165,10 +166,38 @@ CCPACSRotorBladeAttachment& CCPACSRotorHub::GetRotorBladeAttachment(int index) c
     return rotorBladeAttachments.GetRotorBladeAttachment(index);
 }
 
+// Returns the rotor blade count
+int CCPACSRotorHub::GetRotorBladeCount(void) const
+{
+    int rotorBladeCount = 0;
+    for (int i=1; i<=GetRotorBladeAttachmentCount(); i++) {
+        rotorBladeCount += GetRotorBladeAttachment(i).GetRotorBladeCount();
+    }
+    return rotorBladeCount;
+}
+
+// Returns the rotor blade for a given index
+CCPACSRotorBlade& CCPACSRotorHub::GetRotorBlade(int index) const
+{
+    int rotorBladeIndex = index;
+    int rotorBladeAttachmentIndex = 1;
+    while (rotorBladeIndex > GetRotorBladeAttachment(rotorBladeAttachmentIndex).GetRotorBladeCount()) {
+        rotorBladeIndex -= GetRotorBladeAttachment(rotorBladeAttachmentIndex).GetRotorBladeCount();
+        rotorBladeAttachmentIndex++;
+    }
+    return GetRotorBladeAttachment(rotorBladeAttachmentIndex).GetRotorBlade(index);
+}
+
 // Returns the parent configuration
 CCPACSConfiguration& CCPACSRotorHub::GetConfiguration(void) const
 {
-    return *configuration;
+    return rotor->GetConfiguration();
+}
+
+// Returns the parent rotor
+CCPACSRotor& CCPACSRotorHub::GetRotor(void) const
+{
+    return *rotor;
 }
 
 } // end namespace tigl

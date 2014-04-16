@@ -22,3 +22,82 @@
 * @file
 * @brief  Implementation of rotor blades handling routines.
 */
+
+#include "CCPACSRotorBlades.h"
+#include "CCPACSRotorBladeAttachment.h"
+#include "CTiglError.h"
+
+namespace tigl
+{
+
+// Constructor
+CCPACSRotorBlades::CCPACSRotorBlades(CCPACSRotorBladeAttachment* rotorBladeAttachment)
+    : rotorBladeAttachment(rotorBladeAttachment)
+{
+    Cleanup();
+}
+
+// Destructor
+CCPACSRotorBlades::~CCPACSRotorBlades(void)
+{
+    Cleanup();
+}
+
+// Invalidates internal state
+void CCPACSRotorBlades::Invalidate(void)
+{
+    for (int i = 1; i <= GetRotorBladeCount(); i++) {
+        GetRotorBlade(i).Invalidate();
+    }
+}
+
+// Cleanup routine
+void CCPACSRotorBlades::Cleanup(void)
+{
+    for (CCPACSRotorBladeContainer::size_type i = 0; i < rotorBlades.size(); i++) {
+        delete rotorBlades[i];
+    }
+    rotorBlades.clear();
+}
+
+// Adds a rotor blade to the  rotor blade container
+void CCPACSRotorBlades::AddRotorBlade(CCPACSRotorBlade* rotorBlade)
+{
+    rotorBlades.push_back(rotorBlade);
+}
+
+// Returns the total count of rotor blades of a rotor blade attachment
+int CCPACSRotorBlades::GetRotorBladeCount(void) const
+{
+    return (static_cast<int>(rotorBlades.size()));
+}
+
+// Returns the rotor blade for a given index
+CCPACSRotorBlade& CCPACSRotorBlades::GetRotorBlade(int index) const
+{
+    index --;
+    if (index < 0 || index >= GetRotorBladeCount()) {
+        throw CTiglError("Error: Invalid index in CCPACSRotorBlades::GetRotorBlade", TIGL_INDEX_ERROR);
+    }
+    return (*rotorBlades[index]);
+}
+
+// Returns the parent rotor blade attachment
+CCPACSRotorBladeAttachment& CCPACSRotorBlades::GetRotorBladeAttachment(void) const
+{
+    return *rotorBladeAttachment;
+}
+
+// Returns the parent rotor
+CCPACSRotor& CCPACSRotorBlades::GetRotor(void) const
+{
+    return rotorBladeAttachment->GetRotor();
+}
+
+// Returns the parent configuration
+CCPACSConfiguration& CCPACSRotorBlades::GetConfiguration(void) const
+{
+    return rotorBladeAttachment->GetConfiguration();
+}
+
+} // end namespace tigl

@@ -105,6 +105,9 @@ public:
     // Gets the upper point in absolute (world) coordinates for a given segment, eta, xsi
     TIGL_EXPORT gp_Pnt GetLowerPoint(int segmentIndex, double eta, double xsi);
 
+    // Gets a point on the chord surface in absolute (world) coordinates for a given segment, eta, xsi
+    TIGL_EXPORT gp_Pnt GetChordPoint(int segmentIndex, double eta, double xsi);
+
     // Gets the loft of the whole wing
     TIGL_EXPORT TopoDS_Shape & GetLoftWithLeadingEdge(void);
         

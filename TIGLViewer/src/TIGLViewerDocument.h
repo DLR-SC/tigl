@@ -115,6 +115,7 @@ public slots:
     void drawRotorsWingsAndFuselages();
     void drawRotor();
     void drawRotorDisk();
+    void showRotorProperties();
 
     // TIGL slots
     void exportAsIges();

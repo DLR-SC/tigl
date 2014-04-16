@@ -27,27 +27,11 @@
 
 #include "CCPACSRotor.h"
 #include "CCPACSConfiguration.h"
-#include "CTiglAbstractSegment.h"
 #include "CTiglError.h"
 
-#include "BRepOffsetAPI_ThruSections.hxx"
-#include "BRepAlgoAPI_Fuse.hxx"
-#include "ShapeFix_Shape.hxx"
 #include "GProp_GProps.hxx"
 #include "BRepGProp.hxx"
-#include "BRepAlgoAPI_Cut.hxx"
-#include "Bnd_Box.hxx"
-#include "BRepBndLib.hxx"
-#include "BRepBuilderAPI_MakePolygon.hxx"
-#include "BRepPrimAPI_MakeRevol.hxx"
-
-#ifdef TIGL_USE_XCAF
-#include "XCAFDoc_ShapeTool.hxx"
-#include "XCAFApp_Application.hxx"
-#include "XCAFDoc_DocumentTool.hxx"
-#include "TDataStd_Name.hxx"
-#include "TDataXtd_Shape.hxx"
-#endif
+#include "BRep_Builder.hxx"
 
 namespace
 {
@@ -55,29 +39,7 @@ inline double max(double a, double b)
 {
     return a > b? a : b;
 }
-
-TopoDS_Wire transformToRotorCoords(const tigl::CCPACSWingConnection& wingConnection, const TopoDS_Wire& origWire)
-{
-    TopoDS_Shape resultWire(origWire);
-
-    // Do section element transformations
-    resultWire = wingConnection.GetSectionElementTransformation().Transform(resultWire);
-
-    // Do section transformations
-    resultWire = wingConnection.GetSectionTransformation().Transform(resultWire);
-
-    // Do positioning transformations (positioning of sections)
-    resultWire = wingConnection.GetPositioningTransformation().Transform(resultWire);
-
-    // Cast shapes to wires, see OpenCascade documentation
-    if (resultWire.ShapeType() != TopAbs_WIRE) {
-        throw tigl::CTiglError("Error: Wrong shape type in CCPACSRotor::transformToRotorCoords", TIGL_ERROR);
-    }
-
-    return TopoDS::Wire(resultWire);
 }
-}
-
 
 namespace tigl
 {
@@ -85,8 +47,7 @@ namespace tigl
 // Constructor
 CCPACSRotor::CCPACSRotor(CCPACSConfiguration* config)
     : configuration(config)
-    , rotorHub(config)
-//TODO:        , rotorBlades(this)
+    , rotorHub(this)
     , rebuildGeometry(true)
 {
     Cleanup();
@@ -103,7 +64,6 @@ void CCPACSRotor::Invalidate(void)
 {
     invalidated = true;
     rotorHub.Invalidate();
-//TODO:        rotorBlades.Invalidate();
 }
 
 // Cleanup routine
@@ -156,6 +116,14 @@ void CCPACSRotor::Update(void)
     BuildMatrix();
     invalidated = false;
     rebuildGeometry = true;
+
+    // Update all rotor blade transformations
+    for (int i=1; i<=GetRotorBladeAttachmentCount(); ++i) {
+        for (int j=1; j<=GetRotorBladeAttachment(i).GetRotorBladeCount(); ++j) {
+            GetRotorBladeAttachment(i).GetRotorBlade(j).Invalidate();
+            GetRotorBladeAttachment(i).GetRotorBlade(j).Update();
+        }
+    }
 }
 
 // Read CPACS rotor element
@@ -322,6 +290,30 @@ const double& CCPACSRotor::GetNominalRotationsPerMinute(void) const
     return nominalRotationsPerMinute;
 }
 
+// Returns the rotor blade attachment count
+int CCPACSRotor::GetRotorBladeAttachmentCount(void) const
+{
+    return rotorHub.GetRotorBladeAttachmentCount();
+}
+
+// Returns the rotor blade attachment for a given index
+CCPACSRotorBladeAttachment& CCPACSRotor::GetRotorBladeAttachment(int index) const
+{
+    return rotorHub.GetRotorBladeAttachment(index);
+}
+
+// Returns the rotor blade count
+int CCPACSRotor::GetRotorBladeCount(void) const
+{
+    return rotorHub.GetRotorBladeCount();
+}
+
+// Returns the rotor blade for a given index
+CCPACSRotorBlade& CCPACSRotor::GetRotorBlade(int index) const
+{
+    return rotorHub.GetRotorBlade(index);
+}
+
 // Returns the parent configuration
 CCPACSConfiguration& CCPACSRotor::GetConfiguration(void) const
 {
@@ -334,289 +326,105 @@ const CCPACSRotorHub& CCPACSRotor::GetRotorHub(void) const
     return rotorHub;
 }
 
-// Returns the rotor disk geometry
+// Returns the rotor disk geometry (of the first attached blade)
 TopoDS_Shape CCPACSRotor::GetRotorDisk(void)
 {
-    return BuildRotorDisk();
-}
-
-/*TODO:
-    // Get rotor blade count
-    int CCPACSRotor::GetRotorBladeCount(void) const
-    {
-        return rotorBlades.GetRotorBladeCount();
-    }
-
-    // Returns the rotor blade for a given index
-    CCPACSRotorBlade& CCPACSRotor::GetRotorBlade(int index) const
-    {
-        return rotorBlades.GetRotorBlade(index);
-    }
-
-#ifdef TIGL_USE_XCAF
-    // Get data structure for geometry export
-    TDF_Label CCPACSRotor::ExportDataStructure(CCPACSConfiguration &config, Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label)
-    {
-        TDF_Label rotorLabel = CTiglAbstractPhysicalComponent::ExportDataStructure(config, myAssembly, label);
-
-        // Other (sub)-components
-        for (int i=1; i <= rotorBlades.GetRotorBladeCount(); i++) {
-            CCPACSRotorBlade& rotorBlade = RotorBlades.GetSegment(i);
-            TDF_Label rotorBladeLabel = myAssembly->AddShape(rotorBlade.GetLoft(), false);
-            TDataStd_Name::Set (rotorBladeLabel, rotorBlade.GetUID().c_str());
-            //TDF_Label& subSegmentLabel = segment.ExportDataStructure(myAssembly, rotorSegmentLabel);
-        }
-
-        return rotorLabel;
-    }
-#endif
-*/
-// Gets the geometry of the whole rotor. (implementation for abstract base class CTiglAbstractGeometricComponent)
-TopoDS_Shape CCPACSRotor::BuildLoft()
-{
-
-    double thetaDeg = 0.; // current azimuthal position of the rotor in degrees
-    double rotDir = (nominalRotationsPerMinute < 0. ? -1. : 1.); // rotation direction (+1: anti-clockwise, -1: clockwise/french)
-
-    TopoDS_Compound rotorGeometry;
-    BRep_Builder aBuilder;
-
-    aBuilder.MakeCompound(rotorGeometry);
-
-    for (int i=0; i<rotorHub.GetRotorBladeAttachmentCount(); ++i) {
-
-        TopoDS_Shape origRotorBlade = configuration->GetWing(rotorHub.GetRotorBladeAttachment(i+1).GetRotorBladeUID()).GetLoft();
-
-        for (int j=0; j<rotorHub.GetRotorBladeAttachment(i+1).GetNumberOfBlades(); ++j) {
-
-            // Create a new instance of the referenced rotor blade
-            TopoDS_Shape curRotorBlade = origRotorBlade;
-
-            // Rotor blade transformation chain:
-            CTiglTransformation curRotorBladeTransformation;
-            // 0. Initialize matrix
-            curRotorBladeTransformation.SetIdentity();
-            // 1. Rotation around hinges, beginning with the last
-            for (int k=rotorHub.GetRotorBladeAttachment(i+1).GetHingeCount()-1; k>=0; --k) {
-                CTiglPoint curHingePosition = rotorHub.GetRotorBladeAttachment(i+1).GetHinge(k+1).GetTranslation();
-                TiglRotorHingeType curHingeType = rotorHub.GetRotorBladeAttachment(i+1).GetHinge(k+1).GetType();
-                // a. move to origin
-                curRotorBladeTransformation.AddTranslation(-curHingePosition.x, -curHingePosition.y, -curHingePosition.z);
-                // b. rotate around hinge axis
-                if (curHingeType == TIGLROTORHINGE_PITCH) {
-                    curRotorBladeTransformation.AddRotationX( (rotorHub.GetRotorBladeAttachment(i+1).GetHinge(k+1).GetHingeAngle(thetaDeg)));
-                }
-                else if (curHingeType == TIGLROTORHINGE_FLAP) {
-                    curRotorBladeTransformation.AddRotationY(-(rotorHub.GetRotorBladeAttachment(i+1).GetHinge(k+1).GetHingeAngle(thetaDeg)));
-                }
-                else if (curHingeType == TIGLROTORHINGE_LEAD_LAG) {
-                    curRotorBladeTransformation.AddRotationZ( (rotorHub.GetRotorBladeAttachment(i+1).GetHinge(k+1).GetHingeAngle(thetaDeg)));
-                }
-                // c. move back to origin
-                curRotorBladeTransformation.AddTranslation(curHingePosition.x, curHingePosition.y, curHingePosition.z);
-                //TODO: account for rotation and scaling of hinge?
-            }
-            // 2. If the rotation direction is clockwise (e.g. french rotor): mirror rotor blade in x direction
-            if (rotDir<0) {
-                curRotorBladeTransformation.AddMirroringAtYZPlane();
-            }
-            // 3. Rotate the rotor blade around z to its azimuth position
-            curRotorBladeTransformation.AddRotationZ(rotDir * (thetaDeg + rotorHub.GetRotorBladeAttachment(i+1).GetAzimuthAngle(j+1)));
-            // 4. Add rotor transformation
-            curRotorBladeTransformation.PreMultiply(transformation);
-            // Apply transformations
-            curRotorBlade = curRotorBladeTransformation.Transform(curRotorBlade);
-
-            // Add the transformed rotor blade to the rotor assembly
-            aBuilder.Add(rotorGeometry,curRotorBlade);
-        }
-    }
-
-    // Return the generated geometry
-    return rotorGeometry;
-}
-
-// Draws the rotor disk (only using information of the first attached blade)
-TopoDS_Shape CCPACSRotor::BuildRotorDisk()
-{
-
-    double thetaDeg = 0.; // current azimuthal position of the rotor in degrees
-    double rotDir = (nominalRotationsPerMinute < 0. ? -1. : 1.); // rotation direction (+1: anti-clockwise, -1: clockwise/french)
-
+    // Create the rotor disk
     TopoDS_Shape rotorDisk;
-
-    // rotorBladeAttachment 1
-    int i = 0;
-
-    // Make PolyLine quarterChordLine: BRepBuilderAPI_MakePolygon;
-    if (rotorHub.GetRotorBladeAttachmentCount() < 1) {
-        return rotorDisk;
-    }
-    if (rotorHub.GetRotorBladeAttachment(i+1).GetNumberOfBlades() < 1) {
-        return rotorDisk;
-    }
-    CCPACSWing* rotorBlade = &(configuration->GetWing(rotorHub.GetRotorBladeAttachment(i+1).GetRotorBladeUID()));
-    if (rotorBlade->GetSegmentCount() < 1) {
-        return rotorDisk;
-    }
-    BRepBuilderAPI_MakePolygon P;
-    gp_Pnt upperLePoint = rotorBlade->GetUpperPoint(1, 0., 0.);
-    gp_Pnt lowerLePoint = rotorBlade->GetLowerPoint(1, 0., 0.);
-    gp_Pnt upperTePoint = rotorBlade->GetUpperPoint(1, 0., 1.);
-    gp_Pnt lowerTePoint = rotorBlade->GetLowerPoint(1, 0., 1.);
-    P.Add(gp_Pnt(0.5*(upperLePoint.X()+lowerLePoint.X()) + 0.125 * (upperTePoint.X()+lowerTePoint.X()-upperLePoint.X()-lowerLePoint.X()),
-                 0.5*(upperLePoint.Y()+lowerLePoint.Y()) + 0.125 * (upperTePoint.Y()+lowerTePoint.Y()-upperLePoint.Y()-lowerLePoint.Y()),
-                 0.5*(upperLePoint.Z()+lowerLePoint.Z()) + 0.125 * (upperTePoint.Z()+lowerTePoint.Z()-upperLePoint.Z()-lowerLePoint.Z())));
-    for (int i=0; i<rotorBlade->GetSegmentCount(); ++i) {
-        upperLePoint = rotorBlade->GetUpperPoint(1, 1., 0.);
-        lowerLePoint = rotorBlade->GetLowerPoint(1, 1., 0.);
-        upperTePoint = rotorBlade->GetUpperPoint(1, 1., 1.);
-        lowerTePoint = rotorBlade->GetLowerPoint(1, 1., 1.);
-        P.Add(gp_Pnt(0.5*(upperLePoint.X()+lowerLePoint.X()) + 0.125 * (upperTePoint.X()+lowerTePoint.X()-upperLePoint.X()-lowerLePoint.X()),
-                     0.5*(upperLePoint.Y()+lowerLePoint.Y()) + 0.125 * (upperTePoint.Y()+lowerTePoint.Y()-upperLePoint.Y()-lowerLePoint.Y()),
-                     0.5*(upperLePoint.Z()+lowerLePoint.Z()) + 0.125 * (upperTePoint.Z()+lowerTePoint.Z()-upperLePoint.Z()-lowerLePoint.Z())));
-    }
-    TopoDS_Shape quarterChordLine = P.Shape();
-
-    // rotorBlade 1
-    int j=0;
-
-    // Rotor blade transformation chain:
-    CTiglTransformation curRotorBladeTransformation;
-    // 0. Initialize matrix
-    curRotorBladeTransformation.SetIdentity();
-    // 1. Rotation around hinges, beginning with the last
-    for (int k=rotorHub.GetRotorBladeAttachment(i+1).GetHingeCount()-1; k>=0; --k) {
-        CTiglPoint curHingePosition = rotorHub.GetRotorBladeAttachment(i+1).GetHinge(k+1).GetTranslation();
-        TiglRotorHingeType curHingeType = rotorHub.GetRotorBladeAttachment(i+1).GetHinge(k+1).GetType();
-        // a. move to origin
-        curRotorBladeTransformation.AddTranslation(-curHingePosition.x, -curHingePosition.y, -curHingePosition.z);
-        // b. rotate around hinge axis
-        if (curHingeType == TIGLROTORHINGE_PITCH) {
-            curRotorBladeTransformation.AddRotationX( (rotorHub.GetRotorBladeAttachment(i+1).GetHinge(k+1).GetHingeAngle(thetaDeg)));
+    if (GetRotorBladeAttachmentCount() > 0) {
+        if (GetRotorBladeAttachment(1).GetRotorBladeCount() > 0) {
+            rotorDisk = GetRotorBladeAttachment(1).GetRotorBlade(1).GetRotorDisk();
         }
-        else if (curHingeType == TIGLROTORHINGE_FLAP) {
-            curRotorBladeTransformation.AddRotationY(-(rotorHub.GetRotorBladeAttachment(i+1).GetHinge(k+1).GetHingeAngle(thetaDeg)));
-        }
-        else if (curHingeType == TIGLROTORHINGE_LEAD_LAG) {
-            curRotorBladeTransformation.AddRotationZ( (rotorHub.GetRotorBladeAttachment(i+1).GetHinge(k+1).GetHingeAngle(thetaDeg)));
-        }
-        // c. move back to origin
-        curRotorBladeTransformation.AddTranslation(curHingePosition.x, curHingePosition.y, curHingePosition.z);
-        //TODO: account for rotation and scaling of hinge?
     }
-    // 2. If the rotation direction is clockwise (e.g. french rotor): mirror rotor blade in x direction
-    if (rotDir<0) {
-        curRotorBladeTransformation.AddMirroringAtYZPlane();
-    }
-    // 3. Rotate the rotor blade around z to its azimuth position
-    curRotorBladeTransformation.AddRotationZ(rotDir * (thetaDeg + rotorHub.GetRotorBladeAttachment(i+1).GetAzimuthAngle(j+1)));
-    // Apply transformations
-    quarterChordLine = curRotorBladeTransformation.Transform(quarterChordLine);
-
-    // Make surface of Revolution from PolyLine
-    gp_Ax1 axis(gp_Pnt(0., 0., 0.), gp_Dir(0., 0., 1.));
-    rotorDisk = BRepPrimAPI_MakeRevol(quarterChordLine, axis);
-
-    // Apply rotor transformation
-    rotorDisk = transformation.Transform(rotorDisk);
-
     // Return the generated geometry
     return rotorDisk;
 }
 
-/*TODO:
-    // Returns the volume of this rotor
-    double CCPACSRotor::GetVolume(void)
-    {
-        TopoDS_Shape& fusedSegments = GetLoft();
-
-        // Calculate volume
-        GProp_GProps System;
-        BRepGProp::VolumeProperties(fusedSegments, System);
-        double myVolume = System.Mass();
-        return myVolume;
-    }
-
-    // Returns the surface area of this rotor
-    double CCPACSRotor::GetSurfaceArea(void)
-    {
-        TopoDS_Shape& fusedSegments = GetLoft();
-
-        // Calculate surface area
-        GProp_GProps System;
-        BRepGProp::SurfaceProperties(fusedSegments, System);
-        double myArea = System.Mass();
-        return myArea;
-    }
-
-    // Returns the reference area of this rotor.
-    // Here, we always take the reference rotor disk area projected to a plane normal to the rotor hub direction
-    double CCPACSRotor::GetReferenceArea()
-    {
-        double refArea = 0.0;
-
-        for (int i=1; i <= rotorBlades.GetRotorBladeCount(); i++) {
-            refArea += rotorBlades.GetSegment(i).GetReferenceArea();
-        }
-        return refArea;
-    }
-*/
-// sets the symmetry plane for all childs
-void CCPACSRotor::SetSymmetryAxis(const std::string& axis)
+// Returns the geometry of the whole rotor (assembly of all rotor blades). (implementation for abstract base class CTiglAbstractGeometricComponent)
+TopoDS_Shape CCPACSRotor::BuildLoft()
 {
-    CTiglAbstractGeometricComponent::SetSymmetryAxis(axis);
-    /*TODO?:
-            for(int i = 1; i <= rotorBlades.GetSegmentCount(); ++i){
-                CCPACSRotorBlade& rotorBlade = rotorBlades.GetSegment(i);
-                rotorBlades.SetSymmetryAxis(axis);
-            }
-    */
-}
-/*TODO:
-    double CCPACSRotor::GetRotorRadius() {
-        Bnd_Box boundingBox;
-        if (GetSymmetryAxis() == TIGL_NO_SYMMETRY) {
-            for (int i = 1; i <= GetRotorBladeCount(); ++i) {
-                TopoDS_Shape& segmentShape = GetRotorBlade(i).GetLoft();
-                BRepBndLib::Add(segmentShape, boundingBox);
-            }
-
-            Standard_Real xmin, xmax, ymin, ymax, zmin, zmax;
-            boundingBox.Get(xmin, ymin, zmin, xmax, ymax, zmax);
-            double xw = xmax - xmin;
-            double yw = ymax - ymin;
-            double zw = zmax - zmin;
-
-            return max(xw, max(yw, zw));
-        }
-        else {
-            for (int i = 1; i <= GetRotorBladeCount(); ++i) {
-                CTiglAbstractSegment& segment = GetRotorBlade(i);
-                TopoDS_Shape& segmentShape = segment.GetLoft();
-                BRepBndLib::Add(segmentShape, boundingBox);
-                TopoDS_Shape segmentMirroredShape = segment.GetMirroredLoft();
-                BRepBndLib::Add(segmentMirroredShape, boundingBox);
-            }
-
-            Standard_Real xmin, xmax, ymin, ymax, zmin, zmax;
-            boundingBox.Get(xmin, ymin, zmin, xmax, ymax, zmax);
-
-            switch (GetSymmetryAxis()){
-            case TIGL_X_Y_PLANE:
-                return zmax-zmin;
-                break;
-            case TIGL_X_Z_PLANE:
-                return ymax-ymin;
-                break;
-            case TIGL_Y_Z_PLANE:
-                return xmax-ymin;
-                break;
-            default:
-                return ymax-ymin;
-            }
+    // Create rotor assembly
+    TopoDS_Compound rotorGeometry;
+    BRep_Builder aBuilder;
+    aBuilder.MakeCompound(rotorGeometry);
+    for (int i=0; i<rotorHub.GetRotorBladeAttachmentCount(); ++i) {
+        for (int j=0; j<rotorHub.GetRotorBladeAttachment(i+1).GetRotorBladeCount(); ++j) {
+            // Add the transformed rotor blade to the rotor assembly
+            aBuilder.Add(rotorGeometry, rotorHub.GetRotorBladeAttachment(i+1).GetRotorBlade(j+1).GetLoft());
         }
     }
-*/
+    // Return the generated geometry
+    return rotorGeometry;
+}
+
+// Returns the volume of this rotor
+double CCPACSRotor::GetVolume(void)
+{
+    TopoDS_Shape& fusedRotorBlades = GetLoft();
+
+    // Calculate volume
+    GProp_GProps System;
+    BRepGProp::VolumeProperties(fusedRotorBlades, System);
+    double myVolume = System.Mass();
+    return myVolume;
+}
+
+// Returns the surface area of this rotor
+double CCPACSRotor::GetSurfaceArea(void)
+{
+    TopoDS_Shape& fusedRotorBlades = GetLoft();
+
+    // Calculate surface area
+    GProp_GProps System;
+    BRepGProp::SurfaceProperties(fusedRotorBlades, System);
+    double myArea = System.Mass();
+    return myArea;
+}
+
+// Returns the reference area of this rotor
+// Here, we always take the reference rotor disk area projected to a plane normal to the rotor hub direction
+double CCPACSRotor::GetReferenceArea(void)
+{
+    double r = GetRadius();
+    return M_PI * r*r;
+}
+
+// Returns the radius of this rotor
+double CCPACSRotor::GetRadius(void)
+{
+    double rotorRadius = 0.0;
+    // Get the blade maximum rotor radius
+    for (int i=1; i<=GetRotorBladeAttachmentCount(); ++i) {
+        if (GetRotorBladeAttachment(i).GetRotorBladeCount() > 0) {
+            rotorRadius = max(GetRotorBladeAttachment(i).GetRotorBlade(1).GetRadius(), rotorRadius);
+        }
+    }
+    return rotorRadius;
+}
+
+// Returns the diameter of this rotor
+double CCPACSRotor::GetDiameter(void)
+{
+    return 2.*GetRadius();
+}
+
+// Returns the sum of all blade planform areas of a rotor
+double CCPACSRotor::GetTotalBladePlanformArea(void)
+{
+    double totalRotorBladeArea = 0.0;
+    // Add rotor blade planform areas
+    for (int i=1; i<=GetRotorBladeAttachmentCount(); ++i) {
+        if (GetRotorBladeAttachment(i).GetRotorBladeCount() > 0) {
+            totalRotorBladeArea += GetRotorBladeAttachment(i).GetRotorBladeCount() * GetRotorBladeAttachment(i).GetRotorBlade(1).GetPlanformArea();
+        }
+    }
+    return totalRotorBladeArea;
+}
+
+// Returns the rotor solidity
+double CCPACSRotor::GetSolidity(void)
+{
+    return GetTotalBladePlanformArea()/GetReferenceArea();
+}
 
 } // end namespace tigl

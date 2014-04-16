@@ -46,64 +46,72 @@ enum TiglRotorHingeType {
 typedef enum TiglRotorHingeType TiglRotorHingeType;
 
 class CCPACSConfiguration;
+class CCPACSRotor;
+class CCPACSRotorBladeAttachment;
 
 class CCPACSRotorHinge
 {
 
 public:
     // Constructor
-    CCPACSRotorHinge(CCPACSConfiguration* config);
+    TIGL_EXPORT CCPACSRotorHinge(CCPACSRotorBladeAttachment* rotorBladeAttachment);
 
     // Virtual destructor
-    virtual ~CCPACSRotorHinge(void);
+    TIGL_EXPORT virtual ~CCPACSRotorHinge(void);
 
     // Invalidates internal state
-    void Invalidate(void);
+    TIGL_EXPORT void Invalidate(void);
 
     // Read CPACS rotorHinge elements
-    void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& rotorHingeXPath);
+    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& rotorHingeXPath);
 
     // Returns the UID of the rotor blade attachment
-    const std::string& GetUID(void) const;
+    TIGL_EXPORT const std::string& GetUID(void) const;
 
     // Returns the name of the rotor blade attachment
-    const std::string& GetName(void) const;
+    TIGL_EXPORT const std::string& GetName(void) const;
 
     // Returns the description of the rotor blade attachment
-    const std::string& GetDescription(void) const;
+    TIGL_EXPORT const std::string& GetDescription(void) const;
 
     // Returns the type of the rotor blade attachment
-    const TiglRotorHingeType& GetType(void) const;
+    TIGL_EXPORT const TiglRotorHingeType& GetType(void) const;
 
-    // Gets the rotor hinge transformation
-    const CTiglTransformation& GetTransformation(void) const;
+    // Returns the rotor hinge transformation
+    TIGL_EXPORT const CTiglTransformation& GetTransformation(void) const;
 
-    // Gets the scaling vector of the rotor hinge transformation
-    const CTiglPoint& GetScaling(void) const;
+    // Returns the scaling vector of the rotor hinge transformation
+    TIGL_EXPORT const CTiglPoint& GetScaling(void) const;
 
-    // Gets the rotation vector of the rotor hinge transformation
-    const CTiglPoint& GetRotation(void) const;
+    // Returns the rotation vector of the rotor hinge transformation
+    TIGL_EXPORT const CTiglPoint& GetRotation(void) const;
 
-    // Gets the translation vector of the rotor hinge transformation
-    const CTiglPoint& GetTranslation(void) const;
+    // Returns the translation vector of the rotor hinge transformation
+    TIGL_EXPORT const CTiglPoint& GetTranslation(void) const;
 
-    // Gets the rotor hinge neutral position
-    const double& GetNeutralPosition(void) const;
+    // Returns the rotor hinge neutral position
+    TIGL_EXPORT const double& GetNeutralPosition(void) const;
 
-    // Gets the rotor hinge static stiffness
-    const double& GetStaticStiffness(void) const;
+    // Returns the rotor hinge static stiffness
+    TIGL_EXPORT const double& GetStaticStiffness(void) const;
 
-    // Gets the rotor hinge dynamic stiffness
-    const double& GetDynamicStiffness(void) const;
+    // Returns the rotor hinge dynamic stiffness
+    TIGL_EXPORT const double& GetDynamicStiffness(void) const;
 
-    // Gets the rotor hinge damping
-    const double& GetDamping(void) const;
+    // Returns the rotor hinge damping
+    TIGL_EXPORT const double& GetDamping(void) const;
 
-    // Gets the rotor hinge damping
-    double GetHingeAngle(double thetaDeg=0., double a0=0., std::vector<double> aSin=std::vector<double>(), std::vector<double> aCos=std::vector<double>()) const;
+    // Returns the rotor hinge angle
+    TIGL_EXPORT double GetHingeAngle(double thetaDeg=0., double a0=0., std::vector<double> aSin=std::vector<double>(), std::vector<double> aCos=std::vector<double>()) const;
 
     // Returns the parent configuration
-    CCPACSConfiguration& GetConfiguration(void) const;
+    TIGL_EXPORT CCPACSConfiguration& GetConfiguration(void) const;
+
+    // Returns the parent rotor
+    TIGL_EXPORT CCPACSRotor& GetRotor(void) const;
+
+    // Returns the parent rotor blade attachment
+    TIGL_EXPORT CCPACSRotorBladeAttachment& GetRotorBladeAttachment(void) const;
 
 protected:
     // Cleanup routine
@@ -123,20 +131,20 @@ private:
     void operator=(const CCPACSRotorHinge&);
 
 private:
-    std::string           uID;                      /**< Hinge uID            */
-    std::string           name;                     /**< Hinge name           */
-    std::string           description;              /**< Hinge description    */
-    CTiglTransformation   transformation;           /**< Hinge transformation */
-    CTiglPoint            translation;              /**< Hinge transformation: translation */
-    CTiglPoint            scaling;                  /**< Hinge transformation: scaling */
-    CTiglPoint            rotation;                 /**< Hinge transformation: rotation */
-    TiglRotorHingeType    type;                     /**< Hinge type           */
-    double                neutralPosition;          /**< Neutral position of the hinge */
-    double                staticStiffness;          /**< Static stiffness of the hinge */
-    double                dynamicStiffness;         /**< Dynamic stiffness of the hinge */
-    double                damping;                  /**< Damping of the hinge */
-    CCPACSConfiguration*  configuration;            /**< Parent configuration */
-    bool                  invalidated;              /**< Internal state flag  */
+    std::string                 uID;                    /**< Hinge uID            */
+    std::string                 name;                   /**< Hinge name           */
+    std::string                 description;            /**< Hinge description    */
+    CTiglTransformation         transformation;         /**< Hinge transformation */
+    CTiglPoint                  translation;            /**< Hinge transformation: translation */
+    CTiglPoint                  scaling;                /**< Hinge transformation: scaling */
+    CTiglPoint                  rotation;               /**< Hinge transformation: rotation */
+    TiglRotorHingeType          type;                   /**< Hinge type           */
+    double                      neutralPosition;        /**< Neutral position of the hinge */
+    double                      staticStiffness;        /**< Static stiffness of the hinge */
+    double                      dynamicStiffness;       /**< Dynamic stiffness of the hinge */
+    double                      damping;                /**< Damping of the hinge */
+    CCPACSRotorBladeAttachment* rotorBladeAttachment;   /**< Parent configuration */
+    bool                        invalidated;            /**< Internal state flag  */
 };
 
 } // end namespace tigl

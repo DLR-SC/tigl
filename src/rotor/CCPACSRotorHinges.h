@@ -34,6 +34,8 @@ namespace tigl
 {
 
 class CCPACSConfiguration;
+class CCPACSRotor;
+class CCPACSRotorBladeAttachment;
 
 class CCPACSRotorHinges
 {
@@ -43,28 +45,34 @@ private:
 
 public:
     // Constructor
-    CCPACSRotorHinges(CCPACSConfiguration* config);
+    TIGL_EXPORT CCPACSRotorHinges(CCPACSRotorBladeAttachment* rotorBladeAttachment);
 
     // Virtual Destructor
-    virtual ~CCPACSRotorHinges(void);
+    TIGL_EXPORT virtual ~CCPACSRotorHinges(void);
 
     // Invalidates internal state
-    void Invalidate(void);
+    TIGL_EXPORT void Invalidate(void);
 
     // Read CPACS rotorHinges elements
-    void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string rotorHingesLibraryXPath, const std::string rotorHingeElementName="hinge");
+    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string rotorHingesLibraryXPath, const std::string rotorHingeElementName="hinge");
 
     // Returns the total count of rotor hinges in a rotor blade attachment
-    int GetRotorHingeCount(void) const;
+    TIGL_EXPORT int GetRotorHingeCount(void) const;
 
     // Returns the rotor hinge for a given index.
-    CCPACSRotorHinge& GetRotorHinge(int index) const;
+    TIGL_EXPORT CCPACSRotorHinge& GetRotorHinge(int index) const;
 
     // Returns the rotor hinge for a given UID.
-    CCPACSRotorHinge& GetRotorHinge(const std::string& UID) const;
+    TIGL_EXPORT CCPACSRotorHinge& GetRotorHinge(const std::string& UID) const;
 
     // Returns the parent configuration
-    CCPACSConfiguration& GetConfiguration(void) const;
+    TIGL_EXPORT CCPACSConfiguration& GetConfiguration(void) const;
+
+    // Returns the parent rotor
+    TIGL_EXPORT CCPACSRotor& GetRotor(void) const;
+
+    // Returns the parent rotor blade attachment
+    TIGL_EXPORT CCPACSRotorBladeAttachment& GetRotorBladeAttachment(void) const;
 
 protected:
     // Cleanup routine
@@ -78,8 +86,8 @@ private:
     void operator=(const CCPACSRotorHinges&);
 
 private:
-    CCPACSRotorHingeContainer rotorHinges;  /**< RotorHinge elements */
-    CCPACSConfiguration* configuration;                         /**< Pointer to parent configuration */
+    CCPACSRotorHingeContainer   rotorHinges;            /**< RotorHinge elements */
+    CCPACSRotorBladeAttachment* rotorBladeAttachment;   /**< Pointer to parent rotor blade attachment */
 
 };
 
