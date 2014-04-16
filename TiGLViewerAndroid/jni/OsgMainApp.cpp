@@ -72,19 +72,52 @@ AAssetManager* OsgMainApp::getAssetManager()
 
 void OsgMainApp::initOsgWindow(int x, int y, int width, int height)
 {
-    screenHeight = (float) height;
-    screenWidth = (float) width;
-    float ar = screenWidth/ screenHeight;
+
+    float ar = (float)width/ (float)height;
 
 
     if (soleViewer) {
         // the window changed (resize)
+        // get previous screen area
+        double left, right, bottom, top, zNear, zFar;
+        soleViewer->getCamera()->getProjectionMatrixAsOrtho(left, right, bottom, top, zNear, zFar);
+        if (screenWidth > screenHeight && width < height) {
+            // screen rotated from landscape to portrait
+            // map former width to height
+            bottom = left;
+            top = right;
+            double _height = top - bottom;
+            left   = -_height*ar/2.;
+            right  =  _height*ar/2.;
+        }
+        else if (screenWidth < screenHeight && width > height) {
+            // screen rotated from portrait to landscape
+            // map former height to width
+            left = bottom;
+            right = top;
+            double _width = right - left;
+            bottom = -_width/(2.*ar);
+            top    =  _width/(2.*ar);
+        }
+        else {
+            // map the width
+            double center = (top + bottom)/2.;
+            double _width = right - left;
+            bottom = -_width/(2.*ar);
+            top    =  _width/(2.*ar);
+        }
+
         soleViewer->setUpViewerAsEmbeddedInWindow(x, y, width, height);
         soleViewer->getEventQueue()->setMouseInputRange(x, y, x + width, y + height);
-        float viewArea = 50;
-        soleViewer->getCamera()->setProjectionMatrixAsOrtho(-viewArea/2., viewArea/2., -viewArea/2. / ar, viewArea/2. / ar, -100, 200);
+        soleViewer->getCamera()->setProjectionMatrixAsOrtho(left, right, bottom, top, zNear, zFar);
+
+        screenHeight = (float) height;
+        screenWidth = (float) width;
         return;
     }
+
+    screenHeight = (float) height;
+    screenWidth = (float) width;
 
     osg::notify(osg::ALWAYS) << "create viewer";
 
@@ -93,13 +126,11 @@ void OsgMainApp::initOsgWindow(int x, int y, int width, int height)
 
     soleViewer->getEventQueue()->setMouseInputRange(x, y, x + width, y + height);
     soleViewer->getCamera()->setClearColor(osg::Vec4(0, 0, 0, 0));
-    //soleViewer->getCamera()->setProjectionMatrixAsPerspective(20.0, width / (double) height, 10, 1000);
-    float zoomLevel = 0.3;
+    float zoomLevel = 0.1;
     soleViewer->getCamera()->setProjectionMatrixAsOrtho(-screenWidth/2.*zoomLevel, screenWidth/2. * zoomLevel, -screenHeight/2. * zoomLevel, screenHeight/2. * zoomLevel, 0, 1000);
 
-    //tm = new osgGA::TrackballManipulator();
     osg::ref_ptr<OrthoManipulator> tm = new OrthoManipulator(soleViewer->getCamera());
-    tm->setHomePosition(osg::Vec3(-HOME_POS, -HOME_POS, HOME_POS), osg::Vec3(0, 0, 0), osg::Vec3(1, 1 , 1));
+    tm->setHomePosition(osg::Vec3(0, 0, HOME_POS), osg::Vec3(0, 0, 0), osg::Vec3(0, 1 , 0));
 
     soleViewer->addEventHandler(new osgViewer::StatsHandler);
     soleViewer->addEventHandler(new osgGA::StateSetManipulator(soleViewer->getCamera()->getOrCreateStateSet()));
@@ -110,6 +141,7 @@ void OsgMainApp::initOsgWindow(int x, int y, int width, int height)
     soleViewer->realize();
 
     createScene();
+    changeCamera(0);
 
     _initialized = true;
 }
@@ -280,33 +312,43 @@ void OsgMainApp::removeObjects()
 
 void OsgMainApp::changeCamera(int view)
 {
-    if(!soleViewer) {
+    if (!soleViewer) {
         return;
     }
 
-    osgGA::CameraManipulator* m = new OrthoManipulator(soleViewer->getCamera());
-    if(!m) {
+    osgGA::StandardManipulator* m = dynamic_cast<osgGA::StandardManipulator*>(soleViewer->getCameraManipulator());
+    if (!m) {
         return;
     }
+
+    osg::Vec3d eye, center, up, dir;
+    m->getTransformation(eye, center, up);
+    double distance = (eye-center).length();
+
     /*pres*/
     if (view == 0) {
         // perspective
-        m->setHomePosition(osg::Vec3(-HOME_POS, -HOME_POS, HOME_POS), osg::Vec3(20, 0, 0), osg::Vec3(1, 1, 1));
+        dir = osg::Vec3d(-1, -1, 1);
+        up = osg::Vec3d(1,1,1);
     }
     else if (view == 1) {
         // top
-        m->setHomePosition(osg::Vec3(20, 0, HOME_POS), osg::Vec3(20, 0, 0), osg::Vec3(0, 1, 0));
+        dir = osg::Vec3d(0, 0, 1);
+        up = osg::Vec3d(0,1,0);
     }
     else if (view == 2) {
         // side
-        m->setHomePosition(osg::Vec3(20, -HOME_POS, 0), osg::Vec3(20, 0, 0), osg::Vec3(0, 0, 1));
+        dir = osg::Vec3d(0, -1, 0);
+        up = osg::Vec3d(0,0,1);
     }
     else if (view == 3) {
         // front
-        m->setHomePosition(osg::Vec3(-HOME_POS, 0, 0), osg::Vec3(0, 0, 0), osg::Vec3(0, 0, 1));
+        dir = osg::Vec3d(-1, 0, 0);
+        up = osg::Vec3d(0,0,1);
     }
-    soleViewer->setCameraManipulator(m);
-
+    dir.normalize();
+    eye = center + dir*distance;
+    m->setTransformation(eye, center, up);
 }
 
 void OsgMainApp::fitScreen()
