@@ -37,6 +37,14 @@ osg::Matrixd OrthoManipulator::getInverseMatrix() const
     return t2;
 }
 
+void OrthoManipulator::getTransformation( osg::Vec3d& eye, osg::Vec3d& center, osg::Vec3d& up ) const
+{
+    center = _center;
+    eye = _center + _rotation * osg::Vec3d( 0., 0., _distance );
+    up = _rotation * osg::Vec3d( 0., 1., 0. );
+}
+
+
 void OrthoManipulator::setTransformation( const osg::Vec3d& eye, const osg::Vec3d& center, const osg::Vec3d& up)
 {
     osg::Vec3d lv( center - eye );

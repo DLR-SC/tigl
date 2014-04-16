@@ -29,14 +29,14 @@ public:
     virtual void setTransformation( const osg::Vec3d&, const osg::Quat& ) {}
     virtual void setTransformation( const osg::Vec3d& eye, const osg::Vec3d& center, const osg::Vec3d& up);
     virtual void getTransformation( osg::Vec3d&, osg::Quat& ) const {}
-    virtual void getTransformation( osg::Vec3d&, osg::Vec3d&, osg::Vec3d& ) const {}
+    virtual void getTransformation( osg::Vec3d& eye, osg::Vec3d& center, osg::Vec3d& up) const;
 
 protected:
     virtual bool performMovementLeftMouseButton(const double eventTimeDelta, const double dx, const double dy );
     virtual bool performMovementMiddleMouseButton(const double eventTimeDelta, const double dx, const double dy );
     virtual bool performMovementRightMouseButton(const double eventTimeDelta, const double dx, const double dy );
-    virtual bool handleMouseWheel( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& us );
-    virtual bool handleMousePush( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& us );
+    virtual bool handleMouseWheel  ( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& us );
+    virtual bool handleMousePush   ( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& us );
     virtual bool handleMouseRelease( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& us );
     void rotateModel(const double dx, const double dy);
     void panModel(const double dx, const double dy );

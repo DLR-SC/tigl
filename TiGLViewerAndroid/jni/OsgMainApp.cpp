@@ -172,6 +172,7 @@ void OsgMainApp::addObjectFromVTK(std::string filepath)
     geode->setName(filepath);
 
     modeledObjects->addChild(geode.get());
+    fitScreen();
 }
 
 void OsgMainApp::addObjectFromHOTSOSE(std::string filepath)
@@ -183,6 +184,7 @@ void OsgMainApp::addObjectFromHOTSOSE(std::string filepath)
     geode->setName(filepath);
 
     modeledObjects->addChild(geode.get());
+    fitScreen();
 }
 
 void OsgMainApp::addObjectFromCPACS(std::string filepath)
@@ -256,6 +258,7 @@ void OsgMainApp::addObjectFromCPACS(std::string filepath)
             }
         }
     }
+    fitScreen();
 }
 
 void OsgMainApp::removeObjects()
@@ -302,21 +305,58 @@ void OsgMainApp::changeCamera(int view)
         // front
         m->setHomePosition(osg::Vec3(-HOME_POS, 0, 0), osg::Vec3(0, 0, 0), osg::Vec3(0, 0, 1));
     }
-    else if (view == 4) {
-        m->setHomePosition(objectsBounds, osg::Vec3(0, 0, 0), osg::Vec3(0, 0, 1));
-    }
     soleViewer->setCameraManipulator(m);
 
 }
 
 void OsgMainApp::fitScreen()
 {
-    osg::BoundingSphere sphere = modeledObjects->getBound();
+    // zoom in picked objects, if any
+    osg::ref_ptr<osg::Group> selectedObjs = new osg::Group;
+    for (int iChild = 0; iChild < modeledObjects->getNumChildren(); ++iChild) {
+        GeometricVisObject* obj = dynamic_cast<GeometricVisObject*>(modeledObjects->getChild(iChild));
+        if (obj && obj->isPicked()) {
+            selectedObjs->addChild(obj);
+        }
+    }
 
-    double radius = sphere.radius();
-    objectsBounds = osg::Vec3((radius+30),(radius+30), radius+30);
+    osg::BoundingSphere sphere;
+    if (selectedObjs->getNumChildren() > 0) {
+        sphere = selectedObjs->getBound();
+    }
+    else {
+        sphere = modeledObjects->getBound();
+    }
 
-    changeCamera(4);
+
+    double radius = sphere.radius() * 1.4;
+    if (radius <= 0.) {
+        return;
+    }
+
+    osg::Vec3d center = sphere.center();
+
+    osg::Vec3d eye, centerold, up;
+    osgGA::StandardManipulator* cm = dynamic_cast<osgGA::StandardManipulator*> (soleViewer->getCameraManipulator());
+    if(!cm) {
+        LOG(ERROR) << "Incompatible camera manipulator";
+        return;
+    }
+
+    cm->getTransformation(eye, centerold, up);
+
+    // center camera
+    osg::Vec3d displacement = center-centerold;
+    cm->setTransformation(eye + displacement, center, up);
+
+    // take correct zoom level
+    double ar = screenWidth/screenHeight;
+    if (screenWidth > screenHeight) {
+        soleViewer->getCamera()->setProjectionMatrixAsOrtho(-radius*ar/2., radius*ar/2., -radius/2., radius/2., 0, 1000);
+    }
+    else {
+        soleViewer->getCamera()->setProjectionMatrixAsOrtho(-radius/2, radius/2., -radius/(2.*ar), radius/(2.*ar), 0, 1000);
+    }
 }
 
 void OsgMainApp::mouseButtonPressEvent(float x, float y, int button, int view)

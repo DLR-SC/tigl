@@ -126,7 +126,6 @@ private:
     osg::ref_ptr<VirtualVisObject> _coordinateGrid;
     osg::ref_ptr<osg::StateSet> _state;
     std::map<std::string, GeometricVisObject*> selectedObjects;
-    osg::Vec3 objectsBounds;
     osg::ref_ptr<osg::Group> modeledObjects;
 
     bool _initialized;
