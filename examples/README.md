@@ -1,5 +1,5 @@
-Examples
-========
+Examples {#tigl_examples}
+=========================
 
 TiGL ships with three examples of how to use the API from different programming languages: C/C++, Python and MATLAB. 
 All examples can be found in the

@@ -1,5 +1,5 @@
-The TiGL Geometry Library {#mainpage}
-=========================
+Overview{#mainpage}
+==================
 
 The TiGL Geometry Library can be used for easy processing of geometric data stored inside CPACS data sets. 
 TiGL offers query functions for the geometry structure. 
@@ -11,8 +11,8 @@ The developed library uses the Open Source software OpenCASCADE to represent the
 B-spline surfaces in order to compute surface points and also to export the geometry in the IGES/STEP/STL/VTK format. 
 The library provides external interfaces for C/C++, Python, MATLAB and FORTRAN. 
 
-What is TIGL
-------------
+@section sec1 What is TIGL
+
 In order to perform the modeling of wings and fuselages as well as the computation of surface points effectively, a
 geometry library was developed in C++. The library provides external interfaces
 for C and FORTRAN. Some of the requirements of the library were:
@@ -20,7 +20,7 @@ for C and FORTRAN. Some of the requirements of the library were:
  - Ability to read and process the information stored in a CPACS file for
  wings and fuselages,
  - Possibility to extend to engine pods, landing gear and other
- geometrical characteristics, e.g.,
+ geometrical characteristics, 
  - Ability to build up the three-dimensional airplane geometry for further
  processing,
  - Ability to compute surface points in Cartesian coordinates by using
@@ -45,8 +45,8 @@ only the modeling of simple wings or fuselages but also the description of quite
 structures with branches or flaps is targeted.
 
 
-TiGLViewer
-----------
+@section sec2 TiGLViewer
+
 In order to review the geometry information of the central data set a visualization
 tool, TIGLViewer, was developed. The TIGLViewer allows the visualization of the used airfoils and
 fuselage profiles as well as of the surfaces and the entire airplane model.
@@ -54,3 +54,5 @@ Furthermore, the TIGLViewer can be used to validate and test the implemented
 functions of the geometry library, for example the calculation of points on the
 surface or other functions to check data that belong to the geometry structure.
 
+@page tigl_usage Usage
+@page tigl_examples Examples

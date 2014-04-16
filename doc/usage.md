@@ -1,4 +1,4 @@
-Usage
+Usage {#tigl_usage}
 =====
 
 In order to use the TiGL library in a C program, you have to link against the TiGL as well as the TiXI library. 
