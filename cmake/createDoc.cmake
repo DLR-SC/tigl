@@ -1,11 +1,11 @@
 find_package(Doxygen)
-if(DOXYGEN_FOUND)
+if(DOXYGEN_FOUND AND PYTHONINTERP_FOUND)
 
     # convert ChangeLog to Markdown for usage in doxygen 
     add_custom_command(
         OUTPUT ${PROJECT_BINARY_DIR}/doc/changeLog/ChangeLog.md
         DEPENDS ${PROJECT_SOURCE_DIR}/ChangeLog
-        COMMAND python ${PROJECT_SOURCE_DIR}/misc/createChangeLog/changeLogToMD.py -i ${PROJECT_SOURCE_DIR}/ChangeLog -o ${PROJECT_BINARY_DIR}/doc/changeLog/ChangeLog.md
+        COMMAND ${PYTHON_EXECUTABLE} ${PROJECT_SOURCE_DIR}/misc/createChangeLog/changeLogToMD.py -i ${PROJECT_SOURCE_DIR}/ChangeLog -o ${PROJECT_BINARY_DIR}/doc/changeLog/ChangeLog.md
     )
 
 	configure_file(${PROJECT_SOURCE_DIR}/doc/Doxyfile.in ${PROJECT_BINARY_DIR}/doc/Doxyfile @ONLY)
@@ -147,4 +147,4 @@ if(DOXYGEN_FOUND)
 			COMMENT "Generating API documentation with Doxygen" VERBATIM 
 		)
 	endif()
-endif(DOXYGEN_FOUND)
+endif(DOXYGEN_FOUND AND PYTHONINTERP_FOUND)
