@@ -75,7 +75,6 @@ void CCPACSWingProfiles::ReadCPACS(TixiDocumentHandle tixiHandle, const bool doA
     ReturnCode    tixiRet;
     int           elementCount;
     std::string   elementString;
-    char*         elementPath;
 
     /* Get wing profile count */
     tixiRet = tixiGetNamedChildrenCount(tixiHandle, wingProfilesLibraryPath.c_str(), wingProfileElementName.c_str(), &elementCount);

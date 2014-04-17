@@ -402,6 +402,13 @@ double CCPACSRotor::GetRadius(void)
     return rotorRadius;
 }
 
+// Returns the tip speed this rotor
+double CCPACSRotor::GetTipSpeed(void)
+{
+    // return GetNominalRotationsPerMinute()/60. * 2.*M_PI*GetRadius();
+    return GetNominalRotationsPerMinute()/30. * M_PI*GetRadius();
+}
+
 // Returns the diameter of this rotor
 double CCPACSRotor::GetDiameter(void)
 {

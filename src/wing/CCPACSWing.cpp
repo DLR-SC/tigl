@@ -30,6 +30,7 @@
 #include "CTiglAbstractSegment.h"
 #include "CCPACSWingSegment.h"
 #include "CTiglError.h"
+#include "math/tiglmathfunctions.h"
 
 #include "BRepOffsetAPI_ThruSections.hxx"
 #include "BRepAlgoAPI_Fuse.hxx"
@@ -583,6 +584,14 @@ double CCPACSWing::GetWingspan()
             return ymax-ymin;
         }
     }
+}
+
+// Returns the aspect ratio of a wing: AR=b**2/A=((2s)**2)/(2A_half)
+//     b: full span; A: Reference area of full wing (wing + symmetrical wing)
+//     s: half span; A_half: Reference area of wing without symmetrical wing
+double CCPACSWing::GetAspectRatio()
+{
+    return 2.0*(pow_int(GetWingspan(),2)/GetReferenceArea(GetSymmetryAxis()));
 }
 
 

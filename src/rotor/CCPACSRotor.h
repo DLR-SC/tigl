@@ -122,6 +122,9 @@ public:
     // Returns the radius of the rotor
     TIGL_EXPORT double GetRadius(void);
 
+    // Returns the tip speed this rotor
+    TIGL_EXPORT double GetTipSpeed(void);
+
     // Returns the diameter of this rotor
     TIGL_EXPORT double GetDiameter(void);
 

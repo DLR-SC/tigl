@@ -85,6 +85,18 @@ public:
     // Returns the radius of this rotor blade
     TIGL_EXPORT double GetRadius(void);
 
+    // Returns the tip speed of this rotor blade
+    TIGL_EXPORT double GetTipSpeed(void);
+
+    // Returns the radius of a point on the rotor blade quarter chord line for a given segment index and eta
+    TIGL_EXPORT double GetLocalRadius(const int& segmentIndex, const double& eta);
+
+    // Returns the rotor blade chord length for a given segment index and eta
+    TIGL_EXPORT double GetLocalChord(const int& segmentIndex, const double& eta);
+
+    // Returns the local rotor blade twist angle (in degrees) for a given segment index and eta
+    TIGL_EXPORT double GetLocalTwistAngle(const int& segmentIndex, const double& eta);
+
     // Returns the rotor disk geometry
     TIGL_EXPORT TopoDS_Shape GetRotorDisk(void);
 

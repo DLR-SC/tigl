@@ -2132,6 +2132,14 @@ void TIGLViewerDocument::showRotorProperties()
     propertiesText += "RPM: " + valueText + "\n";
 
     try {
+        valueText = QString::number(rotor.GetTipSpeed());
+    }
+    catch (...) {
+        valueText = "ERROR";
+    }
+    propertiesText += "Tip Speed: " + valueText + "\n";
+
+    try {
         valueText = QString::number(rotor.GetRotorBladeAttachmentCount());
     }
     catch (...) {
@@ -2202,6 +2210,55 @@ void TIGLViewerDocument::showRotorProperties()
         valueText = "ERROR";
     }
     propertiesText += "Volume: " + valueText;
+
+    if (rotor.GetRotorBladeCount() > 0) {
+        propertiesText += "\n";
+
+        try {
+            valueText = QString::number(rotor.GetRotorBlade(1).GetLocalRadius(1,0.));
+        }
+        catch (...) {
+            valueText = "ERROR";
+        }
+        propertiesText += "Blade 1 Root Radius: " + valueText + "\n";
+        try {
+            valueText = QString::number(rotor.GetRotorBlade(1).GetLocalRadius(rotor.GetRotorBlade(1).GetUnattachedRotorBlade().GetSegmentCount(),1.));
+        }
+        catch (...) {
+            valueText = "ERROR";
+        }
+        propertiesText += "Blade 1 Tip Radius: " + valueText + "\n";
+    
+        try {
+            valueText = QString::number(rotor.GetRotorBlade(1).GetLocalChord(1,0.));
+        }
+        catch (...) {
+            valueText = "ERROR";
+        }
+        propertiesText += "Blade 1 Root Chord: " + valueText + "\n";
+        try {
+            valueText = QString::number(rotor.GetRotorBlade(1).GetLocalChord(rotor.GetRotorBlade(1).GetUnattachedRotorBlade().GetSegmentCount(),1.));
+        }
+        catch (...) {
+            valueText = "ERROR";
+        }
+        propertiesText += "Blade 1 Tip Chord: " + valueText + "\n";
+    
+        try {
+            valueText = QString::number(rotor.GetRotorBlade(1).GetLocalTwistAngle(1,0.));
+        }
+        catch (...) {
+            valueText = "ERROR";
+        }
+        propertiesText += "Blade 1 Root Twist: " + valueText + "\n";
+        try {
+            valueText = QString::number(rotor.GetRotorBlade(1).GetLocalTwistAngle(rotor.GetRotorBlade(1).GetUnattachedRotorBlade().GetSegmentCount(),1.));
+        }
+        catch (...) {
+            valueText = "ERROR";
+        }
+        propertiesText += "Blade 1 Tip Twist: " + valueText + "\n";
+    }
 
     QMessageBox msgBox;
     msgBox.setText("Properties of rotor '" + rotorUid + "':");

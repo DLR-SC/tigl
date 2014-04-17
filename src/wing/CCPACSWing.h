@@ -139,6 +139,9 @@ public:
     // Returns the wingspan of the wing
     TIGL_EXPORT double GetWingspan(void);
 
+    // Returns the aspect ratio of the wing
+    TIGL_EXPORT double GetAspectRatio(void);
+
     // Returns the mean aerodynamic chord of the wing
     TIGL_EXPORT void  GetWingMAC(double& mac_chord, double& mac_x, double& mac_y, double& mac_z);
 

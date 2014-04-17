@@ -83,7 +83,7 @@ void CCPACSRotorBlade::BuildMatrix(void)
 {
     double thetaDeg = 0.; // current azimuthal position of the rotor in degrees
 
-    transformation = rotorBladeAttachment->GetRotorBladeTransformationMatrix(thetaDeg, GetAzimuthAngle(), true, true);
+    transformation = rotorBladeAttachment->GetRotorBladeTransformationMatrix(thetaDeg, GetAzimuthAngle(), true, true, true);
     backTransformation = transformation.Inverted();
 }
 
@@ -161,7 +161,7 @@ double CCPACSRotorBlade::GetPlanformArea(void)
         return planformArea;
     }
 
-    CTiglTransformation bladeTransformation = rotorBladeAttachment->GetRotorBladeTransformationMatrix(0., 0., true, false);
+    CTiglTransformation bladeTransformation = rotorBladeAttachment->GetRotorBladeTransformationMatrix(0., 0., false, false, false);
 
     for (int i=1; i<=rotorBlade->GetSegmentCount(); ++i) {
         // Get corner points of the segment
@@ -202,7 +202,7 @@ double CCPACSRotorBlade::GetRadius(void)
     gp_Pnt maxDistPoint;
     double curDist;
 
-    CTiglTransformation bladeTransformation = rotorBladeAttachment->GetRotorBladeTransformationMatrix(0., 0., true, true);
+    CTiglTransformation bladeTransformation = rotorBladeAttachment->GetRotorBladeTransformationMatrix(0., 0., false, false, true);
     CTiglPoint quarterChordPointTransformed = bladeTransformation.Transform(rotorBlade->GetChordPoint(1, 0., 0.25)).XYZ();
     curDist = distance_point_from_line(quarterChordPointTransformed, rotorAxisOrigin, rotorAxisDirection);
     rotorRadius = curDist;
@@ -216,6 +216,76 @@ double CCPACSRotorBlade::GetRadius(void)
 
     return rotorRadius;
 }
+
+// Returns the tip speed this rotor blade
+double CCPACSRotorBlade::GetTipSpeed(void)
+{
+    // return GetRotor().GetNominalRotationsPerMinute()/60. * 2.*M_PI*GetRadius();
+    return GetRotor().GetNominalRotationsPerMinute()/30. * M_PI*GetRadius();
+}
+
+// Returns the radius of a point on the rotor blade quarter chord line for a given segment index and eta
+double CCPACSRotorBlade::GetLocalRadius(const int& segmentIndex, const double& eta)
+{
+    double radius = 0.0;
+
+    if (rotorBlade->GetSegmentCount() < 1) {
+        return radius;
+    }
+
+    CTiglPoint rotorAxisOrigin(    rotorBladeAttachment->GetRotor().GetTransformation().Transform(CTiglPoint(0., 0., 0.)) );
+    CTiglPoint rotorAxisDirection( rotorBladeAttachment->GetRotor().GetTransformation().Transform(CTiglPoint(0., 0., 1.)) );
+    rotorAxisDirection -= rotorAxisOrigin;
+
+    CTiglTransformation bladeTransformation = rotorBladeAttachment->GetRotorBladeTransformationMatrix(0., 0., false, false, true);
+    CTiglPoint quarterChordPointTransformed = bladeTransformation.Transform(rotorBlade->GetChordPoint(segmentIndex, eta, 0.25)).XYZ();
+    radius = distance_point_from_line(quarterChordPointTransformed, rotorAxisOrigin, rotorAxisDirection);
+
+    return radius;
+}
+
+// Returns the rotor blade chord length for a given segment index and eta
+double CCPACSRotorBlade::GetLocalChord(const int& segmentIndex, const double& eta)
+{
+    double chordLength = 0.0;
+
+    if (rotorBlade->GetSegmentCount() < 1) {
+        return chordLength;
+    }
+
+    CTiglTransformation bladeTransformation = rotorBladeAttachment->GetRotorBladeTransformationMatrix(0., 0., false, false, true);
+    gp_Pnt LePoint = bladeTransformation.Transform(rotorBlade->GetChordPoint(segmentIndex, eta, 0.0));
+    gp_Pnt TePoint = bladeTransformation.Transform(rotorBlade->GetChordPoint(segmentIndex, eta, 1.0));
+    chordLength = LePoint.Distance(TePoint);
+
+    return chordLength;
+}
+
+// Returns the local rotor blade twist angle (in degrees) for a given segment index and eta
+double CCPACSRotorBlade::GetLocalTwistAngle(const int& segmentIndex, const double& eta)
+{
+    double twistAngle = 0.0;
+
+    if (rotorBlade->GetSegmentCount() < 1) {
+        return twistAngle;
+    }
+
+    CTiglPoint rotorAxisOrigin(    rotorBladeAttachment->GetRotor().GetTransformation().Transform(CTiglPoint(0., 0., 0.)) );
+    CTiglPoint rotorAxisDirection( rotorBladeAttachment->GetRotor().GetTransformation().Transform(CTiglPoint(0., 0., 1.)) );
+    rotorAxisDirection -= rotorAxisOrigin;
+
+    CTiglTransformation bladeTransformation = rotorBladeAttachment->GetRotorBladeTransformationMatrix(0., 0., false, false, true);
+    CTiglPoint LePoint = bladeTransformation.Transform(rotorBlade->GetChordPoint(segmentIndex, eta, 0.00)).XYZ();
+    CTiglPoint QcPoint = bladeTransformation.Transform(rotorBlade->GetChordPoint(segmentIndex, eta, 0.25)).XYZ();
+    CTiglPoint TePoint = bladeTransformation.Transform(rotorBlade->GetChordPoint(segmentIndex, eta, 1.00)).XYZ();
+    CTiglPoint radialDirection = QcPoint - (rotorAxisOrigin + CTiglPoint::vector_projection(QcPoint-rotorAxisOrigin, rotorAxisDirection));
+    CTiglPoint zeroTwistDirection = CTiglPoint::cross_prod(radialDirection, rotorAxisDirection);
+    CTiglPoint chordLine = TePoint - LePoint;
+    twistAngle = - atan2( CTiglPoint::scalar_projection(chordLine,rotorAxisDirection), CTiglPoint::scalar_projection(chordLine,zeroTwistDirection) ) * 180./M_PI;
+
+    return twistAngle;
+}
+
 
 // Create the rotor blade geometry by copying and transforming the original unattached rotor blade geometry
 TopoDS_Shape CCPACSRotorBlade::BuildLoft(void)
@@ -256,7 +326,7 @@ TopoDS_Shape CCPACSRotorBlade::BuildRotorDisk()
     TopoDS_Shape quarterChordLine = P.Shape();
 
     // Apply blade transformations without rotor transformation
-    quarterChordLine = rotorBladeAttachment->GetRotorBladeTransformationMatrix(thetaDeg, GetAzimuthAngle(), true, false).Transform(quarterChordLine);
+    quarterChordLine = rotorBladeAttachment->GetRotorBladeTransformationMatrix(thetaDeg, GetAzimuthAngle(), true, true, false).Transform(quarterChordLine);
 
     // Make surface of Revolution from PolyLine
     gp_Ax1 axis(gp_Pnt(0., 0., 0.), gp_Dir(0., 0., 1.));

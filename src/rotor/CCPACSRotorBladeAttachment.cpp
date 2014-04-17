@@ -149,10 +149,9 @@ void CCPACSRotorBladeAttachment::ReadCPACS(TixiDocumentHandle tixiHandle, const 
 //     rotorThetaDeg:         current azimuthal position of the rotor in degrees
 //     bladeDeltaThetaDeg:    azimuth angle offset of the attached blade
 //     doRotorTransformation: include the parent rotor transformation?
-CTiglTransformation CCPACSRotorBladeAttachment::GetRotorBladeTransformationMatrix(double rotorThetaDeg, double bladeDeltaThetaDeg, bool doHingeTransformation, bool doRotorTransformation)
+CTiglTransformation CCPACSRotorBladeAttachment::GetRotorBladeTransformationMatrix(double rotorThetaDeg, double bladeDeltaThetaDeg, bool doHingeTransformation, bool doRotationDirTransformation, bool doRotorTransformation)
 {
     double bladeThetaDeg = rotorThetaDeg + bladeDeltaThetaDeg; // current azimuthal position of the rotor blade in degrees
-    double rotDir = (rotor->GetNominalRotationsPerMinute() < 0. ? -1. : 1.); // rotation direction (+1: anti-clockwise, -1: clockwise/french)
 
     // Rotor blade transformation chain:
     CTiglTransformation rotorBladeTransformation;
@@ -183,11 +182,14 @@ CTiglTransformation CCPACSRotorBladeAttachment::GetRotorBladeTransformationMatri
         }
     }
     // 2. If the rotation direction is clockwise (e.g. french rotor): mirror rotor blade in x direction
-    if (rotDir<0) {
-        rotorBladeTransformation.AddMirroringAtYZPlane();
+    if (doRotationDirTransformation) {
+        if (rotor->GetNominalRotationsPerMinute() < 0. ) {
+            rotorBladeTransformation.AddMirroringAtYZPlane();
+	    bladeThetaDeg *= -1.;
+        }
     }
     // 3. Rotate the rotor blade around z to its azimuth position
-    rotorBladeTransformation.AddRotationZ(rotDir * bladeThetaDeg);
+    rotorBladeTransformation.AddRotationZ(bladeThetaDeg);
 
     // 4. Add rotor transformation if desired
     if (doRotorTransformation) {

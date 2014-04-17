@@ -57,7 +57,7 @@ public:
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& rotorBladeAttachmentXPath);
 
     // Builds and returns the transformation matrix for an attached rotor blade
-    TIGL_EXPORT CTiglTransformation GetRotorBladeTransformationMatrix(double thetaDeg=0., double bladeDeltaThetaDeg=0., bool doHingeTransformation=true, bool doRotorTransformation=false);
+    TIGL_EXPORT CTiglTransformation GetRotorBladeTransformationMatrix(double thetaDeg=0., double bladeDeltaThetaDeg=0., bool doHingeTransformation=true, bool doRotationDirTransformation=true, bool doRotorTransformation=false);
 
     // Returns the UID of the rotor blade attachment
     TIGL_EXPORT const std::string& GetUID(void) const;
