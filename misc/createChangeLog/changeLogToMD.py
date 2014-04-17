@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import argparse
+import os
 
 
 def main():
@@ -10,12 +11,12 @@ def main():
     parser.add_argument('-o', '--output', default='ChangeLog.rst', help='TIGL change log RST file')
     args = parser.parse_args()
 
-    f = open(args.input,  'r')
+    f = open(os.path.normpath(args.input),  'r')
     lines = f.readlines()
     f.close()
 
     # convert to MD 
-    f = open(args.output,  'w')
+    f = open(os.path.normpath(args.output),  'w')
     f.write("Latest Changes\n")
     f.write("==============\n")
     f.write("\n")

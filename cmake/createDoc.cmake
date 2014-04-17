@@ -4,6 +4,7 @@ if(DOXYGEN_FOUND AND PYTHONINTERP_FOUND)
     # convert ChangeLog to Markdown for usage in doxygen 
     add_custom_command(
         OUTPUT ${PROJECT_BINARY_DIR}/doc/changeLog/ChangeLog.md
+        DEPENDS ${PROJECT_BINARY_DIR}/doc/changeLog
         DEPENDS ${PROJECT_SOURCE_DIR}/ChangeLog
         COMMAND ${PYTHON_EXECUTABLE} ${PROJECT_SOURCE_DIR}/misc/createChangeLog/changeLogToMD.py -i ${PROJECT_SOURCE_DIR}/ChangeLog -o ${PROJECT_BINARY_DIR}/doc/changeLog/ChangeLog.md
     )
