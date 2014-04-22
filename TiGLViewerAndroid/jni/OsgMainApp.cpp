@@ -273,9 +273,6 @@ void OsgMainApp::addObjectFromCPACS(std::string filepath)
         for (int i = 1; i <= fuselage.GetSegmentCount(); i++) {
             tigl::CCPACSFuselageSegment& segment = (tigl::CCPACSFuselageSegment &) fuselage.GetSegment(i);
             TopoDS_Shape loft = segment.GetLoft();
-
-            // Transform by fuselage transformation
-            loft = fuselage.GetFuselageTransformation().Transform(loft);
             osg::notify(osg::ALWAYS) << "Computing " << segment.GetUID() << std::endl;
             try {
                 tigl::CTiglTriangularizer t(loft, tesselationAccu);

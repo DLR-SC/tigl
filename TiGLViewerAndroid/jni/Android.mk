@@ -15,7 +15,23 @@ include $(CLEAR_VARS)
 
 LOCAL_MODULE    := TIGL_static
 	
-TIGL_INCLUDES := $(LOCAL_PATH)/../../src  $(LOCAL_PATH)/../../thirdparty/boost_1_55_0
+TIGL_INCLUDES := \
+  $(LOCAL_PATH)/../../src \
+  $(LOCAL_PATH)/../../src/api \
+  $(LOCAL_PATH)/../../src/boolean_operations \
+  $(LOCAL_PATH)/../../src/common \
+  $(LOCAL_PATH)/../../src/configuration \
+  $(LOCAL_PATH)/../../src/cpacs_other \
+  $(LOCAL_PATH)/../../src/exports \
+  $(LOCAL_PATH)/../../src/fuselage \
+  $(LOCAL_PATH)/../../src/geometry \
+  $(LOCAL_PATH)/../../src/guide_curves \
+  $(LOCAL_PATH)/../../src/logging \
+  $(LOCAL_PATH)/../../src/math \
+  $(LOCAL_PATH)/../../src/system \
+  $(LOCAL_PATH)/../../src/wing \
+  $(LOCAL_PATH)/../../thirdparty/boost_1_55_0
+
 LOCAL_STATIC_LIBRARIES := $(OCCLIBS) TIXI_static
 
 
@@ -24,6 +40,8 @@ LOCAL_C_INCLUDES := $(TIGL_INCLUDES)
 LOCAL_EXPORT_C_INCLUDES := $(TIGL_INCLUDES)
 FILE_LIST := $(wildcard $(LOCAL_PATH)/../../src/*.cpp)
 FILE_LIST += $(wildcard $(LOCAL_PATH)/../../src/**/*.cpp)
+FILE_LIST += $(wildcard $(LOCAL_PATH)/../../src/*.cxx)
+FILE_LIST += $(wildcard $(LOCAL_PATH)/../../src/**/*.cxx)
 LOCAL_SRC_FILES := $(FILE_LIST:$(LOCAL_PATH)/%=%)
 
 include $(BUILD_STATIC_LIBRARY)
