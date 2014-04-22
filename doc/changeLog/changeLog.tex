@@ -61,9 +61,10 @@
   \begin{quote}
   \begin{itemize}
   \item
-    \begin{description}
-    \item[The returned UID strings of the following functions must not
-    be freed by the user anymore:]
+    The returned UID strings of the following functions must not be
+    freed by the user anymore:
+
+    \begin{quote}
     \begin{itemize}
     \itemsep1pt\parskip0pt\parsep0pt
     \item
@@ -79,7 +80,7 @@
     \item
       \texttt{tiglWingComponentSegmentFindSegment}
     \end{itemize}
-    \end{description}
+    \end{quote}
   \item
     Changed behavior of \texttt{tiglWingComponentSegmentFindSegment}. In
     case the specified point does not lie within 1 cm of any segment,
@@ -91,8 +92,8 @@
     can not be executed, \texttt{TIGL\_MATH\_ERROR} is returned.
   \item
     The following API functions \texttt{tiglComponentIntersectionPoint},
-    \texttt{tiglComponentIntersectionPoints}, and
-    \texttt{tiglComponentIntersectionLineCount.} are deprecated and will
+    \texttt{tiglComponentIntersectionPoints} and
+    \texttt{tiglComponentIntersectionLineCount} are deprecated and will
     be removed in future releases. These functions are replaced by new
     intersection routines.
   \item
@@ -106,9 +107,9 @@
   \begin{quote}
   \begin{itemize}
   \item
-    \begin{description}
-    \item[Completely reworked boolean operations with the following
-    effects:]
+    Completely reworked boolean operations with the following effects:
+
+    \begin{quote}
     \begin{itemize}
     \itemsep1pt\parskip0pt\parsep0pt
     \item
@@ -120,10 +121,11 @@
       The boolean operations can be debugged now by setting the
       environment variable TIGL\_DEBUG\_BOP
     \end{itemize}
-    \end{description}
+    \end{quote}
   \item
-    \begin{description}
-    \item[Completely rewritten STEP and IGES exports:]
+    Completely rewritten STEP and IGES exports:
+
+    \begin{quote}
     \begin{itemize}
     \itemsep1pt\parskip0pt\parsep0pt
     \item
@@ -135,7 +137,7 @@
     \item
       IGES export in non-BREP mode since it is not supported by CATIA
     \end{itemize}
-    \end{description}
+    \end{quote}
   \item
     Added new demos for C, Python and MATLAB. Please look into the
     documentation how to run them.
@@ -159,9 +161,10 @@
   \begin{quote}
   \begin{itemize}
   \item
-    \begin{description}
-    \item[Added new API functions for shape/shape and shape/plane
-    intersections:]
+    Added new API functions for shape/shape and shape/plane
+    intersections:
+
+    \begin{quote}
     \begin{itemize}
     \itemsep1pt\parskip0pt\parsep0pt
     \item
@@ -173,7 +176,7 @@
     \item
       \texttt{tiglIntersectGetPoint}
     \end{itemize}
-    \end{description}
+    \end{quote}
   \end{itemize}
   \end{quote}
 \item
@@ -199,8 +202,9 @@
   \begin{quote}
   \begin{itemize}
   \item
-    \begin{description}
-    \item[Improved IGES import:]
+    Improved IGES import:
+
+    \begin{quote}
     \begin{itemize}
     \itemsep1pt\parskip0pt\parsep0pt
     \item
@@ -209,16 +213,17 @@
     \item
       Fixed wrong scaling when importing IGES files.
     \end{itemize}
-    \end{description}
+    \end{quote}
   \item
-    \begin{description}
-    \item[Improved STEP export:]
+    Improved STEP export:
+
+    \begin{quote}
     \begin{itemize}
     \itemsep1pt\parskip0pt\parsep0pt
     \item
       Files are now exported in units of meters instead of millimeters.
     \end{itemize}
-    \end{description}
+    \end{quote}
   \item
     Improved BREP export and import: compound objects are now decomposed
     to separate objects.
@@ -234,8 +239,9 @@
     if no shape is selected. Otherwise, only the selected objects are
     exported.
   \item
-    \begin{description}
-    \item[Added debugging parameters to settings dialog. This includes:]
+    Added debugging parameters to settings dialog. This includes:
+
+    \begin{quote}
     \begin{itemize}
     \itemsep1pt\parskip0pt\parsep0pt
     \item
@@ -246,7 +252,7 @@
       Debug boolean operations (if enabled, debugging shapes in BRep
       format are stored to the current working directory)
     \end{itemize}
-    \end{description}
+    \end{quote}
   \item
     Added new dialog for shape/shape and shape/plane intersections.
   \item
