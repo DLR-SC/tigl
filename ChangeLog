@@ -4,6 +4,7 @@ Version 2.1.2
 
     - Changed API:
         - The returned UID strings of the following functions must not be freed by the user anymore:
+
             - ``tiglWingGetOuterSectionAndElementIndex``
             - ``tiglWingGetInnerSectionAndElementUID``
             - ``tiglFuselageGetStartSectionAndElementUID``
@@ -15,19 +16,21 @@ Version 2.1.2
           lie within 1 cm of any segment, ``TIGL_NOT_FOUND`` is returned.
         - Changed behavior of ``tiglWingComponentSegmentPointGetSegmentEtaXsi``. If the specified point lies outside
           any segment so that the transformation can not be executed, ``TIGL_MATH_ERROR`` is returned.
-        - The following API functions ``tiglComponentIntersectionPoint``, ``tiglComponentIntersectionPoints``, 
-          and ``tiglComponentIntersectionLineCount.`` are deprecated and will
+        - The following API functions ``tiglComponentIntersectionPoint``, ``tiglComponentIntersectionPoints`` 
+          and ``tiglComponentIntersectionLineCount`` are deprecated and will
           be removed in future releases. These functions are replaced by new intersection routines.
         - Removed functions ``tiglExportStructuredIGES`` and ``tiglExportStructuredSTEP``
 
     - General changes:
         - Completely reworked boolean operations with the following effects:
+
             - Fusing the whole plane is faster in many cases and more reliable
             - We keep track of the origins of each trimmed face which helps for
               the IGES and STEP exports
             - The boolean operations can be debugged now by setting the environment variable TIGL_DEBUG_BOP
 
         - Completely rewritten STEP and IGES exports:
+
             - Each face has now an identifier name
             - Inclusion of intersection curves
             - Inclusion of far fields into exports
@@ -42,6 +45,7 @@ Version 2.1.2
 
     - New API functions:
         - Added new API functions for shape/shape and shape/plane intersections:
+
             - ``tiglIntersectComponents``
             - ``tiglIntersectWithPlane``
             - ``tiglIntersectGetLineCount``
@@ -55,10 +59,14 @@ Version 2.1.2
 
     - TiGLViewer:
         - Improved IGES import: 
+
             - Multiple shapes are now imported as separate shapes from IGES files.
             - Fixed wrong scaling when importing IGES files.
+
         - Improved STEP export:
+
             - Files are now exported in units of meters instead of millimeters.
+
         - Improved BREP export and import: compound objects are now decomposed to separate objects.
         - Added method to export fused aircraft to BREP
         - Added method to export wing and fuselage profiles and guide curves to BREP
@@ -66,10 +74,12 @@ Version 2.1.2
         - General save-as dialog: All visible objects are saved to the file, if no shape is selected. 
           Otherwise, only the selected objects are exported.
         - Added debugging parameters to settings dialog. This includes:
+
             - Adapting number of displayed iso lines per face
             - Display face numbers
             - Debug boolean operations (if enabled, debugging shapes in BRep format are stored 
               to the current working directory)
+
         - Added new dialog for shape/shape and shape/plane intersections.
         - Added drag and drop support to TiGLViewer. Files (CPACS, IGES, STEP, BREP) are opened when they are dragged into TiGLViewer.
         - TiGLViewer displays far field after calculating the trimmed aircraft
