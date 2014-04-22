@@ -18,7 +18,7 @@ from tiglwrapper import Tigl, TiglBoolean
 from tixiwrapper import Tixi
 import sys
 
-def matlab_demo(filename):
+def python_demo(filename):
     tixi = Tixi()
     tigl = Tigl()
     
@@ -99,7 +99,7 @@ def main(argv):
         return
         
     filename = argv[1]
-    matlab_demo(filename)
+    python_demo(filename)
     
 if __name__ == "__main__":
    main(sys.argv)
