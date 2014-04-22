@@ -175,7 +175,8 @@ enum TiglSymmetryAxis
 typedef enum TiglSymmetryAxis TiglSymmetryAxis;
 
 /**
- \ingroup Enums Definition of possible algorithms used in calculations. Use
+ \ingroup Enums 
+  Definition of possible algorithms used in calculations. Use
   these constants to define the algorithm to be used e.g. in interpolations.
 */
 enum TiglAlgorithmCode
@@ -187,21 +188,22 @@ enum TiglAlgorithmCode
 
 
 /**
- \ingroup Enums Definition of possible types for geometric components. Used for calculations where
+ \ingroup Enums 
+  Definition of possible types for geometric components. Used for calculations where
   the type if the component changes the way of behavior.
 */
 typedef unsigned int TiglGeometricComponentType;
 
-#define  TIGL_COMPONENT_PHYSICAL        1
-#define  TIGL_COMPONENT_LOGICAL         2
-#define  TIGL_COMPONENT_PLANE           4
+#define  TIGL_COMPONENT_PHYSICAL        1        /**< A phyisical component like a fuselage, wing, nacelle, something you could touch */
+#define  TIGL_COMPONENT_LOGICAL         2        /**< A logical component, like a wing segment */
+#define  TIGL_COMPONENT_PLANE           4        /**< The whole aircraft */
 #define  TIGL_COMPONENT_FUSELAGE        8        /**< The Component is a fuselage */
 #define  TIGL_COMPONENT_WING            16       /**< The Component is a wing */
-#define  TIGL_COMPONENT_SEGMENT         32
-#define  TIGL_COMPONENT_WINGSEGMENT     64
-#define  TIGL_COMPONENT_FUSELSEGMENT    128
-#define  TIGL_COMPONENT_WINGCOMPSEGMENT 256
-#define  TIGL_COMPONENT_WINGSHELL       512
+#define  TIGL_COMPONENT_SEGMENT         32       /**< The Component is a general segment */
+#define  TIGL_COMPONENT_WINGSEGMENT     64       /**< The Component is a wing segment */
+#define  TIGL_COMPONENT_FUSELSEGMENT    128      /**< The Component is a fuselage segment */
+#define  TIGL_COMPONENT_WINGCOMPSEGMENT 256      /**< The Component is a wing component segment */
+#define  TIGL_COMPONENT_WINGSHELL       512      /**< The Component is a face of the wing (e.g. upper wing surface) */
 
 
 enum TiglStructureType 
@@ -249,7 +251,7 @@ enum TiglImportExportFormat
     TIGL_IMPORTEXPORT_IGES = 0,            /**< Use IGES format for geometry import/export */
     TIGL_IMPORTEXPORT_STEP = 1,            /**< Use STEP format for geometry import/export */
     TIGL_IMPORTEXPORT_STL  = 2,            /**< Use STL format for geometry import/export */
-    TIGL_IMPORTEXPORT_VTK  = 3          /**< Use VTK (XML/VTP) format for geometry import/export */
+    TIGL_IMPORTEXPORT_VTK  = 3             /**< Use VTK (XML/VTP) format for geometry import/export */
 };
 
 typedef const char** TiglStringList;
@@ -2748,52 +2750,52 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglIntersectGetPoint(TiglCPACSConfigurationHa
             Functions for export of wings/fuselages.
 
 
-       # VTK-Export #
-            There a various different VTK exports functions in TIGL. All functions starting with 'tiglExportVTK[Fuselage|Wing]...' are exporting
-            a special triangulation with no duplicated points into a VTK file formated in XML (file extension .vtp) with some custom
-            informations added to the file.
+# VTK-Export #
+    There a various different VTK exports functions in TIGL. All functions starting with 'tiglExportVTK[Fuselage|Wing]...' are exporting
+    a special triangulation with no duplicated points into a VTK file formated in XML (file extension .vtp) with some custom
+    informations added to the file.
 
-            In addition to the triangulated geometry, additional data are written to the VTK file. These data currently include:
-            - uID: The UID of the fuselage or wing component segment on which the triangle exists.
-            - segmentIndex: The segmentIndex of the fuselage or wing component segment on which the triangle exists. Kind of redundant to the UID.
-            - eta/xsi: The parameters in the surface parametrical space of the triangle.
-            - isOnTop: Flag that indicates whether the triangle is on the top of the wing or not. Please see the cpacs documentation how "up"
-                       is defined for wings.
+    In addition to the triangulated geometry, additional data are written to the VTK file. These data currently include:
+    - uID: The UID of the fuselage or wing component segment on which the triangle exists.
+    - segmentIndex: The segmentIndex of the fuselage or wing component segment on which the triangle exists. Kind of redundant to the UID.
+    - eta/xsi: The parameters in the surface parametrical space of the triangle.
+    - isOnTop: Flag that indicates whether the triangle is on the top of the wing or not. Please see the cpacs documentation how "up"
+               is defined for wings.
 
-            Please note that at this time these information are only valid for wings!
+    Please note that at this time these information are only valid for wings!
 
-            There are two ways, how these additional data are attached to the VTK file. The first is the official VTK way to declare additional
-            data for each polygon/triangle. For each data entry, a \<DataArray\> tag is added under the xpath
-            @verbatim
-            /VTKFile/PolyData/Piece/CellData
-            @endverbatim
+    There are two ways, how these additional data are attached to the VTK file. The first is the official VTK way to declare additional
+    data for each polygon/triangle. For each data entry, a \<DataArray\> tag is added under the xpath
+    @verbatim
+    /VTKFile/PolyData/Piece/CellData
+    @endverbatim
 
-            Each CellData contains a vector(list) of values, each of them corresponding the data of one triangle. For example the data
-            entry for the wing segment eta coordinates for 4 triangles looks like.
-            @verbatim
-            <DataArray type="Float64" Name="eta" NumberOfComponents="1"
-                format="ascii" RangeMin="0.000000" RangeMax="1.000000">
-                    0.25 0.5 0.75 1.0
-            </DataArray>
-            @endverbatim
+    Each CellData contains a vector(list) of values, each of them corresponding the data of one triangle. For example the data
+    entry for the wing segment eta coordinates for 4 triangles looks like.
+    @verbatim
+    <DataArray type="Float64" Name="eta" NumberOfComponents="1"
+        format="ascii" RangeMin="0.000000" RangeMax="1.000000">
+            0.25 0.5 0.75 1.0
+    </DataArray>
+    @endverbatim
 
-            The second way these data are stored is by using the "MetaData" mechanism of VTK. Here, a \<MetaData\> tag is added under the xpath
-            @verbatim
-            /VTKFile/PolyData/Piece/Polys
-            @endverbatim
+    The second way these data are stored is by using the "MetaData" mechanism of VTK. Here, a \<MetaData\> tag is added under the xpath
+    @verbatim
+    /VTKFile/PolyData/Piece/Polys
+    @endverbatim
 
-            A typical exported MetaData tag looks like the following:
-            @verbatim
-            <MetaData elements="uID segmentIndex eta xsi isOnTop">
-              "rootToInnerkink" 1 3.18702 0.551342 0
-              "rootToInnerkink" 1 2.93939 0.581634 0
-              "rootToInnerkink" 1 4.15239 0.520915 0
-              ...
-            </MetaData>
-            @endverbatim
+    A typical exported MetaData tag looks like the following:
+    @verbatim
+    <MetaData elements="uID segmentIndex eta xsi isOnTop">
+      "rootToInnerkink" 1 3.18702 0.551342 0
+      "rootToInnerkink" 1 2.93939 0.581634 0
+      "rootToInnerkink" 1 4.15239 0.520915 0
+      ...
+    </MetaData>
+    @endverbatim
 
-            The 'elements' attribute indicates the number and the names of the additional information tags as a whitespace separated list. In
-            this example you could see 5 information fields with the name.
+    The 'elements' attribute indicates the number and the names of the additional information tags as a whitespace separated list. In
+    this example you could see 5 information fields with the name.
  */
 
 /*@{*/
