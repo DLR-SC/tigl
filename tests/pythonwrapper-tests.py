@@ -54,18 +54,10 @@ class TestSimpleCpacs(unittest.TestCase):
         if not skipSlowFunctions:
             filenamePtr = "TestData/export/export.igs"
             self.tigl.exportFusedWingFuselageIGES(filenamePtr)
-            
-    def test_exportStructuredIGES(self):
-        filenamePtr = "TestData/export/export2.igs"
-        self.tigl.exportStructuredIGES(filenamePtr)
         
     def test_exportSTEP(self):
         filenamePtr = 'TestData/export/export.step'
         self.tigl.exportSTEP(filenamePtr)
-            
-    def test_exportStructuredSTEP(self):
-        filenamePtr = "TestData/export/export2.step"
-        self.tigl.exportStructuredSTEP(filenamePtr)
             
     def test_exportMeshedWingSTL(self):
         if not skipSlowFunctions:
@@ -108,10 +100,10 @@ class TestSimpleCpacs(unittest.TestCase):
         compSegmentUID = "WING_CS1"
         eta = 0.25
         xsi = 0.9
-		nmaterials = self.tigl.wingComponentSegmentGetMaterialCount(compSegmentUID, TiglStructureType.UPPER_SHELL, eta, xsi )
-		self.assertEqual(nmaterials, 1)
-		
-        material = self.tigl.wingComponentSegmentGetMaterialUIDs(compSegmentUID, TiglStructureType.UPPER_SHELL, eta, xsi, 1)
+        nmaterials = self.tigl.wingComponentSegmentGetMaterialCount(compSegmentUID, TiglStructureType.UPPER_SHELL, eta, xsi )
+        self.assertEqual(nmaterials, 1)
+
+        material = self.tigl.wingComponentSegmentGetMaterialUID(compSegmentUID, TiglStructureType.UPPER_SHELL, eta, xsi, 1)
         self.assertEqual(material, 'MyCellMat')
 ######      
         
@@ -133,22 +125,30 @@ class TestTiglLogging(unittest.TestCase):
     def test_info(self):
         status, out, err = self.get_logs(3)
         self.assertTrue(len(out), 1)
-        self.assertTrue(len(err), 2)
+        self.assertTrue(len(err), 4)
         self.assertTrue(out[0].startswith('INF'))
         self.assertTrue(out[0].endswith('No far-field defined.'))
         self.assertTrue(err[0].startswith('WRN'))
         self.assertTrue(err[0].endswith('CPACS dataset version is higher than TIGL library version!'))
-        self.assertTrue(err[1].startswith('ERR'))
-        self.assertTrue(err[1].endswith('Error: Invalid uid in tiglWingComponentSegmentPointGetSegmentEtaXsi'))
-    
+        self.assertTrue(err[1].startswith('WRN'))
+        self.assertTrue(err[1].endswith("The points in profile PointListExampleAirfoil don't seem to be ordered in a mathematical positive sense."))
+        self.assertTrue(err[2].startswith('WRN'))
+        self.assertTrue(err[2].endswith('Please correct the wing profile!'))
+        self.assertTrue(err[3].startswith('ERR'))
+        self.assertTrue(err[3].endswith('Error: Invalid uid in tiglWingComponentSegmentPointGetSegmentEtaXsi'))
+
     def test_warning(self):
         status, out, err = self.get_logs(2)
         self.assertTrue(len(out), 0)
-        self.assertTrue(len(err), 2)
+        self.assertTrue(len(err), 4)
         self.assertTrue(err[0].startswith('WRN'))
         self.assertTrue(err[0].endswith('CPACS dataset version is higher than TIGL library version!'))
-        self.assertTrue(err[1].startswith('ERR'))
-        self.assertTrue(err[1].endswith('Error: Invalid uid in tiglWingComponentSegmentPointGetSegmentEtaXsi'))
+        self.assertTrue(err[1].startswith('WRN'))
+        self.assertTrue(err[1].endswith("The points in profile PointListExampleAirfoil don't seem to be ordered in a mathematical positive sense."))
+        self.assertTrue(err[2].startswith('WRN'))
+        self.assertTrue(err[2].endswith('Please correct the wing profile!'))
+        self.assertTrue(err[3].startswith('ERR'))
+        self.assertTrue(err[3].endswith('Error: Invalid uid in tiglWingComponentSegmentPointGetSegmentEtaXsi'))
 
     def test_error(self):
         status, out, err = self.get_logs(1)
@@ -168,14 +168,18 @@ class TestTiglLogging(unittest.TestCase):
         lines=f.readlines()
         f.close()
         lout=[line.rstrip('\n') for line in lines]
-        self.assertTrue(len(lout), 4)
+        self.assertTrue(len(lout), 6)
         self.assertTrue(lout[0].startswith('TiGL log file created at'))
         self.assertTrue(lout[1].startswith('WRN'))
         self.assertTrue(lout[1].endswith('CPACS dataset version is higher than TIGL library version!'))
-        self.assertTrue(lout[2].startswith('INF'))
-        self.assertTrue(lout[2].endswith('No far-field defined.'))
-        self.assertTrue(lout[3].startswith('ERR'))
-        self.assertTrue(lout[3].endswith('Error: Invalid uid in tiglWingComponentSegmentPointGetSegmentEtaXsi'))
+        self.assertTrue(lout[2].startswith('WRN'))
+        self.assertTrue(lout[2].endswith("The points in profile PointListExampleAirfoil don't seem to be ordered in a mathematical positive sense."))
+        self.assertTrue(lout[3].startswith('WRN'))
+        self.assertTrue(lout[3].endswith('Please correct the wing profile!'))
+        self.assertTrue(lout[4].startswith('INF'))
+        self.assertTrue(lout[4].endswith('No far-field defined.'))
+        self.assertTrue(lout[5].startswith('ERR'))
+        self.assertTrue(lout[5].endswith('Error: Invalid uid in tiglWingComponentSegmentPointGetSegmentEtaXsi'))
 
 # ----------------------------------------------------------------------- #
 # The following tests should only check, if the python api is correct.
@@ -184,6 +188,7 @@ class TestTiglApi(unittest.TestCase):
     def setUp(self):
         self.tigl = Tigl()
         self.tixi = Tixi()
+        self.tigl.logSetVerbosity(TiglLogLevel.TILOG_SILENT)
         self.tixi.open('TestData/CPACS_21_D150.xml')
         self.tigl.open(self.tixi, 'D150_VAMP')
     
@@ -311,6 +316,11 @@ class TestTiglApi(unittest.TestCase):
         (wingUID, segmentUID, eta, xsi) = self.tigl.wingComponentSegmentPointGetSegmentEtaXsi('D150_VAMP_W1_CompSeg1', 0.0, 0.0)
         self.assertEqual(wingUID, 'D150_VAMP_W1')
         self.assertEqual(segmentUID, 'D150_VAMP_W1_Seg1')
+        self.assertAlmostEqual(eta, 0.0)
+        self.assertAlmostEqual(xsi, 0.0)
+
+    def test_wingSegmentPointGetComponentSegmentEtaXsi(self):
+        (eta, xsi) = self.tigl.wingSegmentPointGetComponentSegmentEtaXsi('D150_VAMP_W1_Seg1', 'D150_VAMP_W1_CompSeg1', 0.0, 0.0)
         self.assertAlmostEqual(eta, 0.0)
         self.assertAlmostEqual(xsi, 0.0)
         
@@ -511,11 +521,6 @@ class TestTiglApi(unittest.TestCase):
         ret = self.tigl.fuselageGetSegmentSurfaceArea(fuselageIndex, segmentIndex)
         self.assertEqual(isinstance(ret,float),True)
             
-    def test_wingGetReferenceArea(self):
-        wingIndex = 1
-        ret = self.tigl.wingGetReferenceArea(wingIndex)
-        self.assertEqual(isinstance(ret,float),True)
-            
     def test_componentGetHashCode(self):
         componentUID = self.tigl.wingGetUID(1)
         ret = self.tigl.componentGetHashCode(componentUID)
@@ -536,7 +541,7 @@ class TestTiglApi(unittest.TestCase):
         self.assertLess(area, 135.)
         
     def test_wingGetReferenceArea(self):
-        area = self.tigl.wingGetReferenceArea(1);
+        area = self.tigl.wingGetReferenceArea(1, TiglSymmetryAxis.TIGL_X_Y_PLANE);
         self.assertGreater(area, 60.)
         self.assertLess(area, 70.)
 

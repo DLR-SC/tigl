@@ -35,7 +35,7 @@ class PythonGenerator(object):
         self.libname = libname
         self.classname = libname[0].upper() + libname[1:].lower()
         self.handle_str = '_handle'
-        self.native_types = ['int', 'double', 'float', 'char', 'bool']
+        self.native_types = ['int', 'double', 'float', 'char', 'bool', 'size_t']
         self.license = None
         self.userfunctions = None
         self.postconstr = None

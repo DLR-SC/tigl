@@ -40,11 +40,13 @@ TIGLViewerSettingsDialog::TIGLViewerSettingsDialog(TIGLViewerSettings& settings,
 
     tessAccuEdit->setText (QString("%1").arg(sliderTesselationAccuracy->value()));
     trianAccuEdit->setText(QString("%1").arg(sliderTriangulationAccuracy->value()));
+    settingsList->item(0)->setSelected(true);
 
     connect(buttonBox, SIGNAL(accepted()), this, SLOT(onSettingsAccepted()));
     connect(sliderTesselationAccuracy,   SIGNAL(valueChanged(int)), this, SLOT(onSliderTesselationChanged(int)));
     connect(sliderTriangulationAccuracy, SIGNAL(valueChanged(int)), this, SLOT(onSliderTriangulationChanged(int)));
     connect(buttonColorChoser, SIGNAL(clicked()), this, SLOT(onColorChoserPushed()));
+    connect(settingsList, SIGNAL(currentRowChanged(int)), this, SLOT(onSettingsListChanged(int)));
 }
 
 double TIGLViewerSettingsDialog::calcTesselationAccu(int value)
@@ -79,6 +81,10 @@ void TIGLViewerSettingsDialog::onSettingsAccepted()
     _settings.setTesselationAccuracy(calcTesselationAccu(sliderTesselationAccuracy->value()));
     _settings.setTriangulationAccuracy(calcTriangulationAccu(sliderTriangulationAccuracy->value()));
     _settings.setBGColor(_bgcolor);
+    
+    _settings.setDebugBooleanOperationsEnabled(debugBopCB->isChecked());
+    _settings.setEnumerateFacesEnabled(enumerateFaceCB->isChecked());
+    _settings.setNumberOfIsolinesPerFace(numIsoLinesSB->value());
 }
 
 void TIGLViewerSettingsDialog::updateEntries()
@@ -105,6 +111,10 @@ void TIGLViewerSettingsDialog::updateEntries()
 
     _bgcolor = _settings.BGColor();
     updateBGColorButton();
+
+    debugBopCB->setChecked(_settings.debugBooleanOperations());
+    enumerateFaceCB->setChecked(_settings.enumerateFaces());
+    numIsoLinesSB->setValue(_settings.numFaceIsosForDisplay());
 }
 
 void TIGLViewerSettingsDialog::onSliderTesselationChanged(int val)
@@ -130,6 +140,11 @@ void TIGLViewerSettingsDialog::updateBGColorButton()
 {
     QString qss = QString(BTN_STYLE).arg(_bgcolor.name());
     buttonColorChoser->setStyleSheet(qss);
+}
+
+void TIGLViewerSettingsDialog::onSettingsListChanged(int index)
+{
+    stackedWidget->setCurrentIndex(index);
 }
 
 TIGLViewerSettingsDialog::~TIGLViewerSettingsDialog() {}

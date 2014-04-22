@@ -18,6 +18,7 @@
 
 #include "gtest/gtest.h"
 #include "CTiglLogging.h"
+#include <tixi.h>
 
 #ifdef HAVE_VLD
 #include <vld.h>
@@ -30,5 +31,7 @@ int main(int argc, char **argv)
     // disable any console logging
     tigl::CTiglLogging::Instance().SetConsoleVerbosity(TILOG_SILENT);
     tigl::CTiglLogging::Instance().LogToFile("tigltest");
-    return RUN_ALL_TESTS();
+    int retval = RUN_ALL_TESTS();
+    tixiCleanup();
+    return retval;
 }

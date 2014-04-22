@@ -43,6 +43,7 @@
 #include <Poly_Triangulation.hxx>
 #include <BRepBuilderAPI_MakePolygon.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
+#include <BRepBuilderAPI_MakeVertex.hxx>
 #include <gce_MakeLin.hxx>
 #include <GC_MakeSegment.hxx>
 #include <BRepBndLib.hxx>
@@ -59,10 +60,15 @@
 #include "TIGLViewerSettings.h"
 #include "CTiglIntersectionCalculation.h"
 #include "TIGLViewerEtaXsiDialog.h"
+#include "TIGLViewerFuseDialog.h"
+#include "TIGLViewerShapeIntersectionDialog.h"
 #include "CTiglExportVtk.h"
+#include "tiglcommonfunctions.h"
+#include "CTiglFusePlane.h"
 #include "CCPACSWingProfilePointList.h"
 #include "CCPACSWingSegment.h"
 #include "CCPACSFuselageSegment.h"
+#include "tiglcommonfunctions.h"
 #include "CTiglPoint.h"
 
 #define max(a,b) ((a) > (b) ? (a) : (b))
@@ -91,7 +97,7 @@ void TIGLViewerDocument::writeToStatusBar(QString text)
     qApp->processEvents();
 }
 
-void TIGLViewerDocument::displayError(QString text, QString header = NULL)
+void TIGLViewerDocument::displayError(QString text, QString header)
 {
     ((TIGLViewerWindow*) parent)->displayErrorMessage(text, header);
 }
@@ -181,6 +187,7 @@ void TIGLViewerDocument::closeCpacsConfiguration()
 
     myAISContext->EraseAll(Standard_False);
     emit documentUpdated(m_cpacsHandle);
+    myAISContext->UpdateCurrentViewer();
 }
 
 
@@ -246,6 +253,18 @@ Handle(AIS_Shape) TIGLViewerDocument::displayShape(const TopoDS_Shape& loft, Qua
     shape->SetColor(color);
     shape->SetOwnDeviationCoefficient(_settings.tesselationAccuracy());
     myAISContext->Display(shape, Standard_True);
+    
+    if (_settings.enumerateFaces()) {
+        TopTools_IndexedMapOfShape shapeMap;
+        TopExp::MapShapes(loft, TopAbs_FACE, shapeMap);
+        for (int i = 1; i <= shapeMap.Extent(); ++i) {
+            const TopoDS_Face& face = TopoDS::Face(shapeMap(i));
+            gp_Pnt p = GetCentralFacePoint(face);
+            QString s = QString("%1").arg(i);
+            DisplayPoint(p, s.toStdString().c_str(), false, 0., 0., 0., 10.);
+        }
+    }
+    
     return shape;
 }
 
@@ -327,6 +346,36 @@ QString TIGLViewerDocument::dlgGetWingComponentSegmentSelection()
 }
 
 
+// Wing Segment selection Dialog
+QString TIGLViewerDocument::dlgGetWingSegmentSelection()
+{
+    QStringList segs;
+    bool ok;
+
+    // Initialize wing list
+    tigl::CCPACSConfiguration& config = GetConfiguration();
+    int wingCount = config.GetWingCount();
+    for (int i = 1; i <= wingCount; i++) {
+        tigl::CCPACSWing& wing = config.GetWing(i);
+        for (int j = 1; j <= wing.GetSegmentCount(); ++j) {
+            tigl::CTiglAbstractSegment& segment = wing.GetSegment(j);
+            std::string name = segment.GetUID();
+            if (name == "") {
+                name = "Unknown segment";
+            }
+            segs << name.c_str();
+        }
+    }
+
+    QString choice = QInputDialog::getItem(parent, tr("Select Segment"), tr("Available Segments:"), segs, 0, false, &ok);
+    if (ok) {
+        return choice;
+    }
+    else {
+        return "";
+    }
+}
+
 // Wing profile Dialog
 QString TIGLViewerDocument::dlgGetWingProfileSelection()
 {
@@ -371,6 +420,36 @@ QString TIGLViewerDocument::dlgGetFuselageSelection()
         fuselages << name.c_str();
     }
     QString choice = QInputDialog::getItem(parent, tr("Select Fuselage"), tr("Available Fuselages:"), fuselages, 0, false, &ok);
+    if (ok) {
+        return choice;
+    }
+    else {
+        return "";
+    }
+}
+
+// Fuselage Segment selection Dialog
+QString TIGLViewerDocument::dlgGetFuselageSegmentSelection()
+{
+    QStringList segs;
+    bool ok;
+
+    // Initialize fuselage list
+    tigl::CCPACSConfiguration& config = GetConfiguration();
+    int fuselageCount = config.GetFuselageCount();
+    for (int i = 1; i <= fuselageCount; i++) {
+        tigl::CCPACSFuselage& fuselage = config.GetFuselage(i);
+        for (int j = 1; j <= fuselage.GetSegmentCount(); ++j) {
+            tigl::CTiglAbstractSegment& segment = fuselage.GetSegment(j);
+            std::string name = segment.GetUID();
+            if (name == "") {
+                name = "Unknown segment";
+            }
+            segs << name.c_str();
+        }
+    }
+
+    QString choice = QInputDialog::getItem(parent, tr("Select Segment"), tr("Available Segments:"), segs, 0, false, &ok);
     if (ok) {
         return choice;
     }
@@ -431,11 +510,7 @@ void TIGLViewerDocument::drawAllFuselagesAndWings( )
 
         for (int i = 1; i <= fuselage.GetSegmentCount(); i++) {
             tigl::CCPACSFuselageSegment& segment = (tigl::CCPACSFuselageSegment &) fuselage.GetSegment(i);
-            TopoDS_Shape loft = segment.GetLoft();
-
-            // Transform by fuselage transformation
-            loft = fuselage.GetFuselageTransformation().Transform(loft);
-            displayShape(loft);
+            displayShape(segment.GetLoft());
         }
 
         if (fuselage.GetSymmetryAxis() == TIGL_NO_SYMMETRY) {
@@ -444,11 +519,7 @@ void TIGLViewerDocument::drawAllFuselagesAndWings( )
 
         for (int i = 1; i <= fuselage.GetSegmentCount(); i++) {
             tigl::CCPACSFuselageSegment& segment = (tigl::CCPACSFuselageSegment &) fuselage.GetSegment(i);
-            TopoDS_Shape loft = segment.GetMirroredLoft();
-
-            // Transform by fuselage transformation
-            loft = fuselage.GetFuselageTransformation().Transform(loft);
-            displayShape(loft, Quantity_NOC_MirrShapeCol);
+            displayShape(segment.GetMirroredLoft(), Quantity_NOC_MirrShapeCol);
         }
     }
 }
@@ -608,6 +679,31 @@ void TIGLViewerDocument::drawWingOverlayProfilePoints()
 }
 
 
+void TIGLViewerDocument::drawWingGuideCurves()
+{
+    // loop over all wing segments
+    tigl::CCPACSConfiguration& config = GetConfiguration();
+    int wingCount = config.GetWingCount();
+    for (int i = 1; i <= wingCount; i++) {
+        tigl::CCPACSWing& wing = config.GetWing(i);
+        std::string wingUid = wing.GetUID();
+        for (int j = 1; j <= wing.GetSegmentCount(); ++j) {
+            tigl::CTiglAbstractSegment& segment = wing.GetSegment(j);
+            std::string wingSegUid = segment.GetUID();
+
+            tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid);
+            tigl::CCPACSWingSegment& wingSeg = (tigl::CCPACSWingSegment&) wing.GetSegment(wingSegUid);
+
+            TopTools_SequenceOfShape& guideCurveContainer = wingSeg.GetGuideCurveWires();
+            for (int i=1; i<=guideCurveContainer.Length(); i++) {
+                TopoDS_Wire wire =TopoDS::Wire(guideCurveContainer(i));
+                Handle(AIS_Shape) shape = new AIS_Shape(wire);
+                shape->SetMaterial(Graphic3d_NOM_METALIZED);
+                myAISContext->Display(shape, Standard_True);
+            }
+        }
+    }
+}
 
 void TIGLViewerDocument::drawFuselageProfiles()
 {
@@ -650,6 +746,30 @@ void TIGLViewerDocument::drawFuselageProfiles()
     }
 }
 
+void TIGLViewerDocument::drawFuselageGuideCurves()
+{
+    // loop over all fuselage segments
+    tigl::CCPACSConfiguration& config = GetConfiguration();
+    int fuselageCount = config.GetFuselageCount();
+    for (int i = 1; i <= fuselageCount; i++) {
+        tigl::CCPACSFuselage& fuselage = config.GetFuselage(i);
+        std::string fuselageUid = fuselage.GetUID();
+        for (int j = 1; j <= fuselage.GetSegmentCount(); ++j) {
+            tigl::CTiglAbstractSegment& segment = fuselage.GetSegment(j);
+            std::string fuselageSegUid = segment.GetUID();
+            tigl::CCPACSFuselage& fuselage = GetConfiguration().GetFuselage(fuselageUid);
+            tigl::CCPACSFuselageSegment& fuselageSeg = (tigl::CCPACSFuselageSegment&) fuselage.GetSegment(fuselageSegUid);
+
+            TopTools_SequenceOfShape& guideCurveContainer = fuselageSeg.BuildGuideCurves();
+            for (int i=1; i<=guideCurveContainer.Length(); i++) {
+                TopoDS_Wire wire =TopoDS::Wire(guideCurveContainer(i));
+                Handle(AIS_Shape) shape = new AIS_Shape(wire);
+                shape->SetMaterial(Graphic3d_NOM_METALIZED);
+                myAISContext->Display(shape, Standard_True);
+            }
+        }
+    }
+}
 
 void TIGLViewerDocument::drawWing()
 {
@@ -749,6 +869,18 @@ void TIGLViewerDocument::drawWingSamplePoints()
     }
 
     tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
+    int wingIndex = 0;
+    for (int i = 1; i <= GetConfiguration().GetWingCount(); ++i) {
+        tigl::CCPACSWing& curWing = GetConfiguration().GetWing(i);
+        if (wingUid.toStdString() == curWing.GetUID()) {
+            wingIndex = i;
+            break;
+        }
+    }
+
+    if (wingIndex <= 0) {
+        return;
+    }
 
     myAISContext->EraseAll(Standard_False);
 
@@ -766,7 +898,7 @@ void TIGLViewerDocument::drawWingSamplePoints()
             for (double xsi = 0.0; xsi <= 1.0; xsi += 0.1) {
                 double x, y, z;
                 tiglWingGetUpperPoint(m_cpacsHandle,
-                                      1,    // TODO: we need to implement that function to use UID instead of index!
+                                      wingIndex,
                                       segmentIndex,
                                       eta,
                                       xsi,
@@ -778,7 +910,7 @@ void TIGLViewerDocument::drawWingSamplePoints()
                 myAISContext->Display(aGraphicPoint, Standard_False);
 
                 tiglWingGetLowerPoint(m_cpacsHandle,
-                                      1,    // TODO: we need to implement that function to use UID instead of index!
+                                      wingIndex,
                                       segmentIndex,
                                       eta,
                                       xsi,
@@ -809,8 +941,7 @@ void TIGLViewerDocument::drawFuselageSamplePoints()
         // Draw segment loft
         tigl::CCPACSFuselageSegment& segment = (tigl::CCPACSFuselageSegment &) fuselage.GetSegment(segmentIndex);
         TopoDS_Shape loft = segment.GetLoft();
-        // Transform by fuselage transformation
-        loft = fuselage.GetFuselageTransformation().Transform(loft);
+
         Handle(AIS_Shape) shape = new AIS_Shape(loft);
         shape->SetColor(Quantity_NOC_BLUE2);
         myAISContext->Display(shape, Standard_True);
@@ -856,9 +987,6 @@ void TIGLViewerDocument::drawFuselageSamplePointsAngle()
     for (int i = 1; i <= fuselage.GetSegmentCount(); i++) {
         tigl::CCPACSFuselageSegment& segment = (tigl::CCPACSFuselageSegment &) fuselage.GetSegment(i);
         TopoDS_Shape loft = segment.GetLoft();
-
-        // Transform by fuselage transformation
-        loft = fuselage.GetFuselageTransformation().Transform(loft);
 
         displayShape(loft);
 
@@ -935,8 +1063,6 @@ void TIGLViewerDocument::drawAllFuselagesAndWingsSurfacePoints()
             // Draw segment loft
             tigl::CCPACSFuselageSegment& segment = (tigl::CCPACSFuselageSegment &) fuselage.GetSegment(segmentIndex);
             TopoDS_Shape loft = segment.GetLoft();
-            // Transform by fuselage transformation
-            loft = fuselage.GetFuselageTransformation().Transform(loft);
             Handle(AIS_Shape) shape = new AIS_Shape(loft);
             shape->SetColor(Quantity_NOC_BLUE2);
             myAISContext->Display(shape, Standard_True);
@@ -976,7 +1102,7 @@ void TIGLViewerDocument::exportAsIges()
 
     writeToStatusBar(tr("Saving as IGES file with TIGL..."));
 
-    fileName = QFileDialog::getSaveFileName(parent, tr("Save as..."), myLastFolder, tr("Export IGES(*.iges *.igs)"));
+    fileName = QFileDialog::getSaveFileName(parent, tr("Save as..."), myLastFolder, tr("Export IGES(*.igs)"));
 
     if (!fileName.isEmpty()) {
         QApplication::setOverrideCursor( Qt::WaitCursor );
@@ -999,7 +1125,7 @@ void TIGLViewerDocument::exportFusedAsIges()
 
     writeToStatusBar(tr("Saving fused model as IGES file with TIGL..."));
 
-    fileName = QFileDialog::getSaveFileName(parent, tr("Save as..."), myLastFolder, tr("Export IGES(*.iges *.igs)"));
+    fileName = QFileDialog::getSaveFileName(parent, tr("Save as..."), myLastFolder, tr("Export IGES(*.igs)"));
 
     if (!fileName.isEmpty()) {
         QApplication::setOverrideCursor( Qt::WaitCursor );
@@ -1007,22 +1133,6 @@ void TIGLViewerDocument::exportFusedAsIges()
         QApplication::restoreOverrideCursor();
         if (err != TIGL_SUCCESS) {
             displayError(QString("Error in function <u>tiglExportFusedWingFuselageIGES</u>. Error code: %1").arg(err), "TIGL Error");
-        }
-    }
-}
-
-void TIGLViewerDocument::exportAsStructuredIges()
-{
-    writeToStatusBar(tr("Saving model as IGES file with CPACS metadata..."));
-
-    QString fileName = QFileDialog::getSaveFileName(parent, tr("Save as..."), myLastFolder, tr("Export IGES(*.iges *.igs)"));
-
-    if (!fileName.isEmpty()) {
-        QApplication::setOverrideCursor( Qt::WaitCursor );
-        TiglReturnCode err = tiglExportStructuredIGES(m_cpacsHandle, qstringToCstring(fileName));
-        QApplication::restoreOverrideCursor();
-        if (err != TIGL_SUCCESS) {
-            displayError(QString("Error in function <u>tiglExportStructuredIGES</u>. Error code: %1").arg(err), "TIGL Error");
         }
     }
 }
@@ -1037,7 +1147,7 @@ void TIGLViewerDocument::exportAsStep()
 
     writeToStatusBar(tr("Saving as STEP file with TIGL..."));
 
-    fileName = QFileDialog::getSaveFileName(parent, tr("Save as..."), myLastFolder, tr("Export STEP(*.step *.stp)"));
+    fileName = QFileDialog::getSaveFileName(parent, tr("Save as..."), myLastFolder, tr("Export STEP(*.stp *.step)"));
 
     if (!fileName.isEmpty()) {
         QApplication::setOverrideCursor( Qt::WaitCursor );
@@ -1055,7 +1165,7 @@ void TIGLViewerDocument::exportAsStepFused()
 
     writeToStatusBar(tr("Saving as STEP file with TIGL. This can take a while. Please wait..."));
 
-    fileName = QFileDialog::getSaveFileName(parent, tr("Save as..."), myLastFolder, tr("Export STEP(*.step *.stp)"));
+    fileName = QFileDialog::getSaveFileName(parent, tr("Save as..."), myLastFolder, tr("Export STEP(*.stp *.step)"));
 
     if (!fileName.isEmpty()) {
         QApplication::setOverrideCursor( Qt::WaitCursor );
@@ -1063,28 +1173,6 @@ void TIGLViewerDocument::exportAsStepFused()
         QApplication::restoreOverrideCursor();
         if (err != TIGL_SUCCESS) {
             displayError(QString("Error in function <u>tiglExportFusedSTEP</u>. Error code: %1").arg(err), "TIGL Error");
-        }
-    }
-}
-
-void TIGLViewerDocument::exportAsStepWithMetaData()
-{
-    QString     fileName;
-    QString     fileType;
-    QFileInfo   fileInfo;
-
-    TIGLViewerInputOutput writer;
-
-    writeToStatusBar(tr("Saving as STEP file with CPACS MetaData TIGL..."));
-
-    fileName = QFileDialog::getSaveFileName(parent, tr("Save as..."), myLastFolder, tr("Export STEP(*.step *.stp)"));
-
-    if (!fileName.isEmpty()) {
-        QApplication::setOverrideCursor( Qt::WaitCursor );
-        TiglReturnCode err = tiglExportStructuredSTEP(m_cpacsHandle, qstringToCstring(fileName));
-        QApplication::restoreOverrideCursor();
-        if (err != TIGL_SUCCESS) {
-            displayError(QString("Error in function <u>tiglExportStructuredSTEP</u>. Error code: %1").arg(err), "TIGL Error");
         }
     }
 }
@@ -1280,7 +1368,12 @@ void TIGLViewerDocument::exportMeshedConfigVTK()
         QApplication::setOverrideCursor( Qt::WaitCursor );
         writeToStatusBar("Calculating fused airplane, this can take a while");
         // calculating loft, is cached afterwards
-        GetConfiguration().GetFusedAirplane();
+        tigl::PTiglFusePlane fuser = GetConfiguration().AircraftFusingAlgo();
+        if (fuser) {
+            // invoke fusing algo
+            fuser->SetResultMode(tigl::FULL_PLANE);
+            fuser->FusedPlane();
+        }
         writeToStatusBar("Writing meshed vtk file");
         tigl::CTiglExportVtk exporter(GetConfiguration());
         
@@ -1374,6 +1467,153 @@ void TIGLViewerDocument::exportFuselageBRep()
     }
 }
 
+void TIGLViewerDocument::exportFusedConfigBRep()
+{
+    QString fileName = QFileDialog::getSaveFileName(parent, tr("Save as..."), myLastFolder, tr("Export BRep(*.brep)"));
+    if (fileName.isEmpty()) {
+        return;
+    }
+
+    QApplication::setOverrideCursor( Qt::WaitCursor );
+    try {
+        tigl::PTiglFusePlane fuser = GetConfiguration().AircraftFusingAlgo();
+        fuser->SetResultMode(tigl::FULL_PLANE);
+        PNamedShape airplane = fuser->FusedPlane();
+        if (!airplane) {
+            displayError("Error computing fused aircraft", "Error in BRep export");
+            QApplication::restoreOverrideCursor();
+            return;
+        }
+        
+        TopoDS_Shape shape = airplane->Shape();
+        BRepTools::Write(shape, fileName.toStdString().c_str());
+    }
+    catch(tigl::CTiglError & error){
+        displayError(error.getError(), "Error in BRep export");
+    }
+    catch(...){
+        displayError("Unknown Exception during computation of fused aircraft.", "Error in BRep export");
+    }
+    QApplication::restoreOverrideCursor();
+}
+
+void TIGLViewerDocument::exportWingCurvesBRep()
+{
+    QString wingUid = dlgGetWingSelection();
+    if (wingUid == "") {
+        return;
+    }
+
+    writeToStatusBar(tr("Saving Wing Curves as BRep file..."));
+
+    QString dirname = QFileDialog::getExistingDirectory(parent, tr("Chose directory..."), myLastFolder,  
+                                                        QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+
+    if (dirname == "") {
+        return;
+    }
+    
+    tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
+    QString baseName = QDir(std::string(dirname.toStdString() + "/" + wing.GetUID()).c_str()).absolutePath();
+    
+    TopoDS_Compound profiles, guides;
+    BRep_Builder builder;
+    builder.MakeCompound(profiles);
+    builder.MakeCompound(guides);
+    
+    Handle(TopTools_HSequenceOfShape) allGuides = new TopTools_HSequenceOfShape;
+    for (int isegment = 1; isegment <= wing.GetSegmentCount(); ++isegment) {
+        // display profiles
+        tigl::CCPACSWingSegment& segment = static_cast<tigl::CCPACSWingSegment&>(wing.GetSegment(isegment));
+        builder.Add(profiles, segment.GetInnerWire());
+        if (isegment == wing.GetSegmentCount()) {
+            builder.Add(profiles, segment.GetOuterWire());
+        }
+        
+        // build guide curve container
+        TopTools_SequenceOfShape& wires = segment.GetGuideCurveWires();
+        for (int iwire = 1; iwire <= wires.Length(); ++iwire) {
+            for (TopExp_Explorer edgeExp(wires(iwire), TopAbs_EDGE); edgeExp.More(); edgeExp.Next()) {
+                allGuides->Append(edgeExp.Current());
+            }
+        }
+    }
+    
+    // write profiles to brep
+    std::string profFileName = baseName.toStdString() + "_profiles.brep";
+    BRepTools::Write(profiles, profFileName.c_str());
+    
+    if (allGuides->Length() > 0) {
+        ShapeAnalysis_FreeBounds::ConnectEdgesToWires(allGuides, Precision::Confusion(), false, allGuides);
+        for (int iwire = 1; iwire <= allGuides->Length(); ++iwire) {
+            builder.Add(guides, allGuides->Value(iwire));
+        }
+        
+        // write to brep
+        std::string guideFileName = baseName.toStdString() + "_guides.brep";
+        BRepTools::Write(guides, guideFileName.c_str());
+    }
+}
+
+void TIGLViewerDocument::exportFuselageCurvesBRep()
+{
+    QString fuselageUid = dlgGetFuselageSelection();
+    if (fuselageUid == "") {
+        return;
+    }
+
+    writeToStatusBar(tr("Saving Fuselage curves as BRep file..."));
+
+    QString dirname = QFileDialog::getExistingDirectory(parent, tr("Chose directory..."), myLastFolder,  
+                                                        QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+
+    if (dirname == "") {
+        return;
+    }
+    
+    
+    tigl::CCPACSFuselage& fuselage = GetConfiguration().GetFuselage(fuselageUid.toStdString());
+    QString baseName = QDir(std::string(dirname.toStdString() + "/" + fuselage.GetUID()).c_str()).absolutePath();
+    
+    TopoDS_Compound profiles, guides;
+    BRep_Builder builder;
+    builder.MakeCompound(profiles);
+    builder.MakeCompound(guides);
+    
+    Handle(TopTools_HSequenceOfShape) allGuides = new TopTools_HSequenceOfShape;
+    for (int isegment = 1; isegment <= fuselage.GetSegmentCount(); ++isegment) {
+        // display profiles
+        tigl::CCPACSFuselageSegment& segment = static_cast<tigl::CCPACSFuselageSegment&>(fuselage.GetSegment(isegment));
+        builder.Add(profiles, segment.GetStartWire());
+        if (isegment == fuselage.GetSegmentCount()) {
+            builder.Add(profiles, segment.GetEndWire());
+        }
+        
+        // build guide curve container
+        TopTools_SequenceOfShape& wires = segment.BuildGuideCurves();
+        for (int iwire = 1; iwire <= wires.Length(); ++iwire) {
+            for (TopExp_Explorer edgeExp(wires(iwire), TopAbs_EDGE); edgeExp.More(); edgeExp.Next()) {
+                allGuides->Append(edgeExp.Current());
+            }
+        }
+    }
+    
+    // write profiles to brep
+    std::string profFileName = baseName.toStdString() + "_profiles.brep";
+    BRepTools::Write(profiles, profFileName.c_str());
+    
+    if (allGuides->Length() > 0) {
+        ShapeAnalysis_FreeBounds::ConnectEdgesToWires(allGuides, Precision::Confusion(), false, allGuides);
+        for (int iwire = 1; iwire <= allGuides->Length(); ++iwire) {
+            builder.Add(guides, allGuides->Value(iwire));
+        }
+        
+        // write to brep
+        std::string guideFileName = baseName.toStdString() + "_guides.brep";
+        BRepTools::Write(guides, guideFileName.c_str());
+    }
+}
+
 void TIGLViewerDocument::drawFusedFuselage()
 {
     QString fuselageUid = dlgGetFuselageSelection();
@@ -1407,11 +1647,76 @@ void TIGLViewerDocument::drawFusedWing()
 
 void TIGLViewerDocument::drawFusedAircraft()
 {
+    FuseDialog dialog(parent);
+    if (dialog.exec() != QDialog::Accepted) {
+        return;
+    }
+
+    tigl::TiglFuseResultMode mode = tigl::HALF_PLANE;
+    // make option
+    if (!dialog.TrimWithFarField()     && !dialog.UseSymmetries()) {
+        mode = tigl::HALF_PLANE;
+    }
+    else if (!dialog.TrimWithFarField() && dialog.UseSymmetries()) {
+        mode = tigl::FULL_PLANE;
+    }
+    else if (dialog.TrimWithFarField()  && !dialog.UseSymmetries()) {
+        mode = tigl::HALF_PLANE_TRIMMED_FF;
+    }
+    else if (dialog.TrimWithFarField()  && dialog.UseSymmetries()) {
+        mode = tigl::FULL_PLANE_TRIMMED_FF;
+    }
+
+
     QApplication::setOverrideCursor( Qt::WaitCursor );
     try {
-        TopoDS_Shape& airplane = GetConfiguration().GetFusedAirplane();
+        tigl::PTiglFusePlane fuser = GetConfiguration().AircraftFusingAlgo();
+        fuser->SetResultMode(mode);
+        PNamedShape airplane = fuser->FusedPlane();
+        if (!airplane) {
+            displayError("Error computing fused aircraft");
+            return;
+        }
+
         myAISContext->EraseAll(Standard_False);
-        displayShape(airplane);
+
+
+        ListPNamedShape map = GroupFaces(airplane, tigl::NAMED_COMPOUNDS);
+        ListPNamedShape::iterator it;
+        int icol = 0;
+        Quantity_NameOfColor colors[] = {Quantity_NOC_BLUE4,
+                                         Quantity_NOC_RED,
+                                         Quantity_NOC_GREEN,
+                                         Quantity_NOC_MAGENTA1,
+                                         Quantity_NOC_AZURE,
+                                         Quantity_NOC_FIREBRICK};
+        int ncolors = sizeof(colors)/sizeof(Quantity_NameOfColor);
+        for (it = map.begin(); it != map.end(); ++it) {
+            if (icol >= ncolors) {
+                icol = 0;
+            }
+            PNamedShape shape = *it;
+            if (shape) {
+                displayShape(shape->Shape(), colors[icol++]);
+            }
+        }
+
+        const ListPNamedShape& ints = fuser->Intersections();
+        ListPNamedShape::const_iterator it2 = ints.begin();
+        for (; it2 != ints.end(); ++it2) {
+            if (*it2) {
+                displayShape((*it2)->Shape(), Quantity_NOC_WHITE);
+            }
+        }
+
+        // get far field if available
+        PNamedShape ff = fuser->FarField();
+        if (ff) {
+            Handle(AIS_Shape) shape = new AIS_Shape(ff->Shape());
+            shape->SetMaterial(Graphic3d_NOM_PEWTER);
+            shape->SetTransparency(0.6);
+            myAISContext->Display(shape, Standard_True);
+        }
     }
     catch(tigl::CTiglError & error){
         std::cerr << error.getError() << std::endl;
@@ -1425,7 +1730,7 @@ void TIGLViewerDocument::drawFusedAircraft()
 void TIGLViewerDocument::drawFusedAircraftTriangulation()
 {
     QApplication::setOverrideCursor( Qt::WaitCursor );
-    TopoDS_Shape& airplane = GetConfiguration().GetFusedAirplane();
+    TopoDS_Shape airplane = GetConfiguration().AircraftFusingAlgo()->FusedPlane()->Shape();
     myAISContext->EraseAll(Standard_False);
     TopoDS_Compound triangulation;
     createShapeTriangulation(airplane, triangulation);
@@ -1435,48 +1740,76 @@ void TIGLViewerDocument::drawFusedAircraftTriangulation()
 }
 
 
-void TIGLViewerDocument::drawWingFuselageIntersectionLine()
+void TIGLViewerDocument::drawIntersectionLine()
 {
-    QString wingUid = dlgGetWingSelection();
-    if (wingUid == "") {
-        return;
-    }
-    QString fuselageUid = dlgGetFuselageSelection();
-    if (fuselageUid == "") {
-        return;
-    }
-
-    QApplication::setOverrideCursor( Qt::WaitCursor );
-    
-    tigl::CCPACSConfiguration& config =GetConfiguration();
+    tigl::CCPACSConfiguration& config = GetConfiguration();
     tigl::CTiglUIDManager& uidManager = config.GetUIDManager();
 
-    writeToStatusBar(tr("Calculating fuselage..."));
-    TopoDS_Shape& compoundOne = uidManager.GetComponent(fuselageUid.toStdString())->GetLoft();
-    writeToStatusBar(tr("Calculating wing..."));
-    TopoDS_Shape& compoundTwo = uidManager.GetComponent(wingUid.toStdString())->GetLoft();
+    TIGLViewerShapeIntersectionDialog dialog(uidManager, parent);
+    if (dialog.exec() != QDialog::Accepted) {
+        return;
+    }
 
-    writeToStatusBar(tr("Calculating intersection... This may take a while!"));
-    tigl::CTiglIntersectionCalculation Intersector(&config.GetShapeCache(),fuselageUid.toStdString(), wingUid.toStdString(), compoundOne, compoundTwo);
+    int mode = dialog.GetMode();
+    tigl::CTiglIntersectionCalculation* Intersector = NULL;
+    if (mode == 0) {
+        // shape - shape
+        QApplication::setOverrideCursor( Qt::WaitCursor );
+        std::string uid1 = dialog.GetShape1UID().toStdString();
+        std::string uid2 = dialog.GetShape2UID().toStdString();
+        writeToStatusBar(QString(tr("Calculating %1 ...")).arg(uid1.c_str()));
+        TopoDS_Shape& compoundOne = uidManager.GetComponent(uid1)->GetLoft();
+        writeToStatusBar(QString(tr("Calculating %1 ...")).arg(uid2.c_str()));
+        TopoDS_Shape& compoundTwo = uidManager.GetComponent(uid2)->GetLoft();
 
-    if (Intersector.GetCountIntersectionLines() <= 0) {
-        displayError(tr("Could not find any intersection between fuselage and wing"), "TIGL Error");
+        writeToStatusBar(tr("Calculating intersection... This may take a while!"));
+        Intersector = new tigl::CTiglIntersectionCalculation(&config.GetShapeCache(),uid1, uid2, compoundOne, compoundTwo);
+    }
+    else if (mode == 1) {
+        // shape - plane
+        QApplication::setOverrideCursor( Qt::WaitCursor );
+        std::string uid = dialog.GetShapeUID().toStdString();
+        writeToStatusBar(QString(tr("Calculating %1 ...")).arg(uid.c_str()));
+        TopoDS_Shape& compoundOne = uidManager.GetComponent(uid)->GetLoft();
+
+        gp_Pnt p = dialog.GetPoint().Get_gp_Pnt();
+        tigl::CTiglPoint normal = dialog.GetNormal();
+        if (normal.norm2() < 1e-7) {
+            displayError("The plane normal vector must not be zero.");
+            return;
+        }
+        gp_Dir n = normal.Get_gp_Pnt().XYZ();
+
+        writeToStatusBar(tr("Calculating intersection... This may take a while!"));
+        Intersector = new tigl::CTiglIntersectionCalculation(&config.GetShapeCache(), uid, compoundOne, p, n);
+    }
+    else {
+        return;
+    }
+
+    if (Intersector->GetCountIntersectionLines() <= 0) {
+        displayError(tr("Could not find any intersection between shapes"), "TIGL Error");
+        writeToStatusBar("");
+        QApplication::restoreOverrideCursor();
         return;
     }
     // load first wire
-    int wireID = 1;
-    displayShape(Intersector.GetWire(wireID));
-
-    /* now calculate intersection and display single points */
-    for (double eta = 0.0; eta <= 1.0; eta += 0.025) {
-        gp_Pnt point = Intersector.GetPoint(eta, wireID);
-
-        ISession_Point* aGraphicPoint = new ISession_Point(point);
-        myAISContext->Display(aGraphicPoint,Standard_False);
+    for (int wireID = 1; wireID <= Intersector->GetCountIntersectionLines(); ++wireID) {
+        displayShape(Intersector->GetWire(wireID));
+        
+        /* now calculate intersection and display single points */
+        for (double eta = 0.0; eta <= 1.0; eta += 0.025) {
+            gp_Pnt point = Intersector->GetPoint(eta, wireID);
+            
+            ISession_Point* aGraphicPoint = new ISession_Point(point);
+            myAISContext->Display(aGraphicPoint,Standard_False);
+        }
     }
     myAISContext->UpdateCurrentViewer();
     QApplication::restoreOverrideCursor();
     writeToStatusBar("");
+
+    delete Intersector;
 }
 
 
@@ -1602,43 +1935,39 @@ void TIGLViewerDocument::createShapeTriangulation(const TopoDS_Shape& shape, Top
     builder.MakeCompound(compound);
     builder.Add(compound, shape);
     
-    TopExp_Explorer shellExplorer;
     TopExp_Explorer faceExplorer;
-    for (shellExplorer.Init(shape, TopAbs_SHELL); shellExplorer.More(); shellExplorer.Next()) {
-        TopoDS_Shell shell = TopoDS::Shell(shellExplorer.Current());
 
-        for (faceExplorer.Init(shell, TopAbs_FACE); faceExplorer.More(); faceExplorer.Next()) {
-            TopoDS_Face face = TopoDS::Face(faceExplorer.Current());
-            TopLoc_Location location;
-            Handle(Poly_Triangulation) triangulation = BRep_Tool::Triangulation(face, location);
-            if (triangulation.IsNull()) {
-                continue;
+    for (faceExplorer.Init(shape, TopAbs_FACE); faceExplorer.More(); faceExplorer.Next()) {
+        TopoDS_Face face = TopoDS::Face(faceExplorer.Current());
+        TopLoc_Location location;
+        Handle(Poly_Triangulation) triangulation = BRep_Tool::Triangulation(face, location);
+        if (triangulation.IsNull()) {
+            continue;
+        }
+
+        gp_Trsf nodeTransformation = location;
+        const TColgp_Array1OfPnt& nodes = triangulation->Nodes();
+
+        int index1, index2, index3;
+        const Poly_Array1OfTriangle& triangles = triangulation->Triangles();
+        for (int j = triangles.Lower(); j <= triangles.Upper(); j++) {
+            const Poly_Triangle& triangle = triangles(j);
+            triangle.Get(index1, index2, index3);
+            gp_Pnt point1 = nodes(index1).Transformed(nodeTransformation);
+            gp_Pnt point2 = nodes(index2).Transformed(nodeTransformation);
+            gp_Pnt point3 = nodes(index3).Transformed(nodeTransformation);
+
+            BRepBuilderAPI_MakeEdge edge1(point1, point2);
+            BRepBuilderAPI_MakeEdge edge2(point2, point3);
+            BRepBuilderAPI_MakeEdge edge3(point3, point1);
+            if (edge1.IsDone()) {
+                builder.Add(compound, edge1);
             }
-
-            gp_Trsf nodeTransformation = location;
-            const TColgp_Array1OfPnt& nodes = triangulation->Nodes();
-
-            int index1, index2, index3;
-            const Poly_Array1OfTriangle& triangles = triangulation->Triangles();
-            for (int j = triangles.Lower(); j <= triangles.Upper(); j++) {
-                const Poly_Triangle& triangle = triangles(j);
-                triangle.Get(index1, index2, index3);
-                gp_Pnt point1 = nodes(index1).Transformed(nodeTransformation);
-                gp_Pnt point2 = nodes(index2).Transformed(nodeTransformation);
-                gp_Pnt point3 = nodes(index3).Transformed(nodeTransformation);
-
-                BRepBuilderAPI_MakeEdge edge1(point1, point2);
-                BRepBuilderAPI_MakeEdge edge2(point2, point3);
-                BRepBuilderAPI_MakeEdge edge3(point3, point1);
-                if (edge1.IsDone()) {
-                    builder.Add(compound, edge1);
-                }
-                if (edge2.IsDone()) {
-                    builder.Add(compound, edge2);
-                }
-                if (edge3.IsDone()) {
-                    builder.Add(compound, edge3);
-                }
+            if (edge2.IsDone()) {
+                builder.Add(compound, edge2);
+            }
+            if (edge3.IsDone()) {
+                builder.Add(compound, edge3);
             }
         }
     }

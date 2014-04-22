@@ -525,20 +525,14 @@ TEST_F( TiglFuselageSegment, FuselageGetStartSectionAndElementUID_success)
     ASSERT_TRUE(tiglFuselageGetStartSectionAndElementUID(tiglHandle, 1, 1, &sectionUID, &elementUID) == TIGL_SUCCESS);
     ASSERT_TRUE(strcmp(sectionUID, "D150_VAMP_FL1_Sec1") == 0);
     ASSERT_TRUE(strcmp(elementUID, "D150_VAMP_FL1_Sec1_Elem1") == 0);
-    free(sectionUID);
-    free(elementUID);
 
     ASSERT_TRUE(tiglFuselageGetStartSectionAndElementUID(tiglHandle, 1, 2, &sectionUID, &elementUID) == TIGL_SUCCESS);
     ASSERT_TRUE(strcmp(sectionUID, "D150_VAMP_FL1_Sec2") == 0);
     ASSERT_TRUE(strcmp(elementUID, "D150_VAMP_FL1_Sec2_Elem1") == 0);
-    free(sectionUID);
-    free(elementUID);
 
     ASSERT_TRUE(tiglFuselageGetStartSectionAndElementUID(tiglHandle, 1, 3, &sectionUID, &elementUID) == TIGL_SUCCESS);
     ASSERT_TRUE(strcmp(sectionUID, "D150_VAMP_FL1_Sec3") == 0);
     ASSERT_TRUE(strcmp(elementUID, "D150_VAMP_FL1_Sec3_Elem1") == 0);
-    free(sectionUID);
-    free(elementUID);
 }
 
 /***************************************************************************************************/
@@ -581,22 +575,16 @@ TEST_F( TiglFuselageSegment, FuselageGetEndSectionAndElementUID_success)
     char* sectionUID;
     char* elementUID;
     ASSERT_TRUE(tiglFuselageGetEndSectionAndElementUID(tiglHandle, 1, 1, &sectionUID, &elementUID) == TIGL_SUCCESS);
-    ASSERT_TRUE(strcmp(sectionUID, "D150_VAMP_FL1_Sec2") == 0);
-    ASSERT_TRUE(strcmp(elementUID, "D150_VAMP_FL1_Sec2_Elem1") == 0);
-    free(sectionUID);
-    free(elementUID);
+    ASSERT_STREQ("D150_VAMP_FL1_Sec2", sectionUID);
+    ASSERT_STREQ("D150_VAMP_FL1_Sec2_Elem1",elementUID);
 
     ASSERT_TRUE(tiglFuselageGetEndSectionAndElementUID(tiglHandle, 1, 2, &sectionUID, &elementUID) == TIGL_SUCCESS);
-    ASSERT_TRUE(strcmp(sectionUID, "D150_VAMP_FL1_Sec3") == 0);
-    ASSERT_TRUE(strcmp(elementUID, "D150_VAMP_FL1_Sec3_Elem1") == 0);
-    free(sectionUID);
-    free(elementUID);
+    ASSERT_STREQ("D150_VAMP_FL1_Sec3", sectionUID);
+    ASSERT_STREQ("D150_VAMP_FL1_Sec3_Elem1", elementUID);
 
     ASSERT_TRUE(tiglFuselageGetEndSectionAndElementUID(tiglHandle, 1, 3, &sectionUID, &elementUID) == TIGL_SUCCESS);
-    ASSERT_TRUE(strcmp(sectionUID, "D150_VAMP_FL1_Sec4") == 0);
-    ASSERT_TRUE(strcmp(elementUID, "D150_VAMP_FL1_Sec4_Elem1") == 0);
-    free(sectionUID);
-    free(elementUID);
+    ASSERT_STREQ("D150_VAMP_FL1_Sec4", sectionUID);
+    ASSERT_STREQ("D150_VAMP_FL1_Sec4_Elem1", elementUID);
 }
 
 

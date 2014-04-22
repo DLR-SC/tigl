@@ -12,10 +12,10 @@ endif()
 project (TIGL NONE)
 set(TIGL_VERSION_MAJOR 2)
 set(TIGL_VERSION_MINOR 1)
-set(TIGL_VERSION_PATCH 0)
+set(TIGL_VERSION_PATCH 2)
 set(TIGL_VERSION "${TIGL_VERSION_MAJOR}.${TIGL_VERSION_MINOR}.${TIGL_VERSION_PATCH}")
 
-set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/contrib)
+set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
 OPTION(TIGL_ANDROID "Creates the tiglviewer android app" OFF)
 
@@ -62,15 +62,25 @@ set (OCC_VISU_LIBS
 )
 
 OPTION(TIGL_USE_XCAF "Enables more export functionality (but requires XCAF, which itself requires OCCT Visualization)" ON)
+OPTION(TIGL_XCAF_WO_VISU "Check, if you have a patched OCCT in which XCAF does not require visualization" OFF)
+mark_as_advanced(TIGL_XCAF_WO_VISU)
+
+# TKStdSchema TKPCAF TKPShape PTKernel 
 
 if(TIGL_USE_XCAF)
-    set(OCC_LIBS TKXDEIGES TKXDESTEP TKPCAF TKXCAF TKCAF ${OCC_VISU_LIBS} TKPShape PTKernel TKLCAF TKCDF   TKStdSchema ${OCC_LIBS})
+    set(XCAF_LIBS TKXDEIGES TKXDESTEP TKXCAF TKCAF TKLCAF TKCDF)
+    if(NOT TIGL_XCAF_WO_VISU)
+        set(XCAF_LIBS ${XCAF_LIBS} ${OCC_VISU_LIBS} TKStdSchema TKPCAF TKPShape PTKernel)
+    endif()
+
+    set(OCC_LIBS ${XCAF_LIBS} ${OCC_LIBS})
 else()
     message("XCAF disabled. IGES and STEP export with CPACS metadata will not be avaible.")
 endif()
 
-find_package( OpenCASCADE REQUIRED COMPONENTS ${OCC_LIBS})
+find_package( OpenCASCADE 6.6.0 REQUIRED COMPONENTS ${OCC_LIBS})
 find_package( TIXI 2.1.0 REQUIRED)
+find_package( PythonInterp )
 
 OPTION(TIGL_USE_GLOG "Enables advanced logging (requires google glog)" OFF)
 if(TIGL_USE_GLOG)
@@ -113,11 +123,14 @@ if(WIN32)
     endif(CMAKE_BUILD_TYPE STREQUAL "Debug")
 endif(WIN32)
 
+# style checks
+add_custom_target(checkstyle)
+add_custom_target(checkstylexml)
 
 add_subdirectory(src)
 add_subdirectory(TIGLViewer)
 add_subdirectory(bindings)
-add_subdirectory(examples/TIGLDemo)
+add_subdirectory(examples)
 
 
 #create gtests, override gtest standard setting

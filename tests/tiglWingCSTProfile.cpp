@@ -21,6 +21,7 @@
 */
 
 #include "test.h" // Brings in the GTest framework
+#include "testUtils.h"
 #include "tigl.h"
 #include "math/tiglmathfunctions.h"
 #include "CCPACSConfigurationManager.h"
@@ -31,10 +32,6 @@
 #include "gp_Pnt.hxx"
 #include "gp_Pnt.hxx"
 #include "GeomAPI_ProjectPointOnCurve.hxx"
-
-// for testing
-#include <fstream>
-#include <iomanip>
 
 /******************************************************************************/
 
@@ -83,20 +80,6 @@ protected:
         tiglHandle = -1;
         tixiHandle = -1;
     }
-
-    // save x-y data
-    void outputXY(const int & i, const double& x, const double&y, const std::string& filename)
-    {
-        ofstream out;
-        if (i>0) {
-            out.open(filename.c_str(), ios::app);
-        }
-        else {
-            out.open(filename.c_str());
-        }
-        out << setprecision(17) << std::scientific  << x << "\t" << y << endl;
-        out.close();
-    } 
 
     TixiDocumentHandle           tixiHandle;
     TiglCPACSConfigurationHandle tiglHandle;

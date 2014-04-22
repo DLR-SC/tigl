@@ -25,7 +25,7 @@ if __name__ == '__main__':
     parser.decoration = 'TIGL_COMMON_EXPORT'
     parser.add_alias('TixiDocumentHandle', 'int')
     parser.add_alias('FILE','void')
-    parser.parse_header_file(tiglpath + '/src/tigl.h')
+    parser.parse_header_file(tiglpath + '/src/api/tigl.h')
     
     # create the wrapper
     generator = MG.MatlabGenerator(parser, 'tigl', 'tigl.h')

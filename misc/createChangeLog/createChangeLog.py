@@ -3,6 +3,7 @@
 import argparse
 import subprocess
 import datetime
+import re
 
 
 def run(cmd):
@@ -78,40 +79,61 @@ class changelog:
 def isCategoryWord(word, buzzwords, prefixes=[], suffixes=[], contains=[]):
     boolCont = []
     for prefix in prefixes:
-        boolCont.append(word.startswith(prefix))
+        boolCont.append(word.startswith(prefix) and word != prefix)
     for suffix in suffixes:
-        boolCont.append(word.endswith(suffix))
+        boolCont.append(word.endswith(suffix) and word != suffix)
     for contain in contains:
         boolCont.append(contain in word and word != contain)
     for buzzword in buzzwords:
-        boolCont.append(word.lower == buzzword.lower)
+        boolCont.append(word.lower() == buzzword.lower())
     return any(boolCont)
 
-def isCategoryLine(line, operator, buzzwords, prefixes=[], suffixes=[], contains=[]):
-    boolCont = []
-    for word in line:
-        boolCont.append(isCategoryWord(word, buzzwords, prefixes, suffixes, contains))
-    return operator(boolCont)
-
+# replace one after another
+def replace_queue(line, tiglwords):
+    # replace first occurence of tiglwords
+    new_line = ''
+    curr_line = line
+    if tiglwords:
+        while tiglwords:
+            tword = tiglwords[0]
+            (prefix, word, suffix) = curr_line.partition(tword)
+            new_line += prefix
+            new_line += '``' + tword + '``'
+            curr_line = suffix
+            tiglwords.pop(0)
+        new_line += suffix
+        return new_line
+    else:
+        return line
 
 # decorate code words e.g. tigl -> `tigl`
 def decorate(logs):
     codePrefixes = ['tixi', 'tigl', 'CCPACS', 'ITigl', 'CTigl']
-    codeSuffixes = ['.sh', '.cpp', '.h']
+    codeSuffixes = ['.sh', '.cpp', '.h', '.py', '.txt', '.tex']
     codeContains = ['Wing', 'Fuselage']
     codeBuzzwords = []
     logs_decorated = []
     for line in logs:
         tiglwords = []
-        for word in line.split():
+        words = re.findall(r"[a-zA-Z0-9_\-\.\/()]+:{2}[a-zA-Z0-9_\-\.\/()]+|[a-zA-Z0-9_\-\.\/()]+", line)
+        for word in words:
             if isCategoryWord(word, codeBuzzwords, codePrefixes, codeSuffixes, codeContains):
                 tiglwords.append(word)
-        new_line = line
-        for tword in tiglwords:
-            new_line = new_line.replace(' ' + tword + ' ', ' `' + tword + '` ')
+        new_line = replace_queue(line, tiglwords)
         logs_decorated.append(new_line)
     logs = logs_decorated
     return logs
+
+def isCategoryLine(line, operator, buzzwords):
+    words = re.findall(r"[a-zA-Z0-9_]+", line)
+    boolCont = []
+    for buzzword in buzzwords:
+        buzzWordinLines = False
+        for word in words:
+            if (word.lower() == buzzword.lower()):
+                buzzWordinLines = True
+        boolCont.append(buzzWordinLines)
+    return operator(boolCont)
 
 # get fixes if fixed occurs (case insensitive)
 def getFixes(logs):
@@ -154,7 +176,6 @@ def main():
 
     # check if on master branch
     branch = run("git rev-parse --abbrev-ref HEAD").rsplit('\n')[0]
-    print branch
     if branch != 'master':
         print "You are not on the master branch! Break."
         exit(1)
@@ -168,11 +189,14 @@ def main():
     logs = [l.partition(" ")[2] for l in logs if l]
 
     # get commit messages and
-    logs = run("git log --format='###seperator###%%s -- %%b' %s..%s" % (last_commit, current_commit)).split('###seperator###')
+    logs = run("git log --pretty=format:\"###seperator###%%s -- %%b\" %s..%s" % (last_commit, current_commit)).split('###seperator###')
     # skip message body if non-existent
     logs = [l.rstrip(' -- \n') for l in logs if l]
     # remove newlines
     logs = [l.replace('\n', ' ') for l in logs]
+
+    # remove Conflict messages
+    logs = [l.split(" -- Conflicts:")[0] for l in logs]
 
     # get normal commit message heads
     #logs = run("git log --oneline --no-merges %s..%s" % (last_commit, current_commit)).split('\n')

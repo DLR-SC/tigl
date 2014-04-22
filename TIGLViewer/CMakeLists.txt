@@ -14,15 +14,29 @@ find_package(Qt4 4.4.3)
 #build only tiglviewer if qt was found
 if(QT4_FOUND)	
 
+include(tiglmacros)
+AddToCheckstyle()
+
 # required opencascade libraries
 set (TV_OCC_LIBS 
-	TKOpenGl 
-	TKVRML TKShapeSchema TKPShape TKCDF PTKernel ${OCC_VISU_LIBS} ${OCC_LIBS}
+    TKOpenGl 
+    TKVRML TKShapeSchema TKPShape TKCDF PTKernel ${OCC_VISU_LIBS} ${OCC_LIBS}
 )
 
 set(OpenCASCADE_LIBRARIES "")
 find_package( OpenCASCADE REQUIRED COMPONENTS ${TV_OCC_LIBS})
 
+OPTION(OpenCASCADE_STATICLIB "Check, if you link static opencascade libraries" OFF)
+if(OpenCASCADE_STATICLIB)
+    # opencascade visualization uses freetype, thus we have to link it
+    find_package( FreetypeLib REQUIRED )
+    set(EXTRA_LIBRARIES ${EXTRA_LIBRARIES} ${FREETYPE_LIBRARIES})
+
+    if(APPLE)
+        find_library(COCOA_LIBRARY Cocoa)
+        set(EXTRA_LIBRARIES ${EXTRA_LIBRARIES} ${COCOA_LIBRARY})
+    endif(APPLE)
+endif(OpenCASCADE_STATICLIB)
 
 # we need opengl in order to build tiglviewer
 find_package(OpenGL REQUIRED)
@@ -31,6 +45,15 @@ set( QT_USE_QTSCRIPT TRUE )
 set( QT_USE_QTMAIN   TRUE )
 include(${QT_USE_FILE} ${GLOG_INCLUDE_DIR})
 add_definitions(${QT_DEFINITIONS})
+
+# add all tigl directories to include path
+set(TIGL_INCLUDES ${PROJECT_SOURCE_DIR}/src/)
+subdirlist(SUBDIRS ${PROJECT_SOURCE_DIR}/src/)
+foreach(subdir ${SUBDIRS})
+  set(TIGL_INCLUDES ${TIGL_INCLUDES} ${PROJECT_SOURCE_DIR}/src/${subdir})
+endforeach()
+
+include_directories(${TIGL_INCLUDES})
 
 set(tv_src
     CommandLineParameters.cpp
@@ -58,6 +81,8 @@ set(tv_src
     TIGLViewerLogHistory.cpp
     TIGLViewerLogRedirection.cpp
     TIGLViewerLoggerHTMLDecorator.cpp
+    TIGLViewerFuseDialog.cpp
+    TIGLViewerShapeIntersectionDialog.cpp
 )
 	
 # normal header files
@@ -92,6 +117,8 @@ set(tv_hdr_qobj
 	TIGLViewerEtaXsiDialog.h
 	TIGLViewerErrorDialog.h
 	TIGLViewerLogRedirection.h
+	TIGLViewerFuseDialog.h
+	TIGLViewerShapeIntersectionDialog.h
 )
 
 set(tv_ui_comp
@@ -99,6 +126,8 @@ set(tv_ui_comp
 	src/TIGLViewerSettingsDialog.ui
 	src/TIGLViewerEtaXsiDialog.ui
 	src/TIGLViewerErrorDialog.ui
+	src/TIGLViewerFuseDialog.ui
+	src/TIGLViewerShapeIntersectionDialog.ui
 )
 	
 foreach ( _fname ${tv_src})
@@ -120,10 +149,14 @@ QT4_ADD_RESOURCES( tv_rcrs src/TIGLViewer.qrc )
 add_definitions(-DCSFDB -DQOCC_STATIC)
 
 include_directories( ${OpenCASCADE_INCLUDE_DIR} ${TIXI_INCLUDE_DIRS})
-include_directories( ${PROJECT_SOURCE_DIR}/src ${CMAKE_CURRENT_SOURCE_DIR}/src ${PROJECT_BINARY_DIR}/src)
+
+# opengl
+include_directories(${OPENGL_INCLUDE_DIR})
 
 # boost
 include_directories(${PROJECT_SOURCE_DIR}/thirdparty/boost_1_55_0)
+
+include_directories( ${PROJECT_SOURCE_DIR}/src ${CMAKE_CURRENT_SOURCE_DIR}/src ${PROJECT_BINARY_DIR}/src)
 
 # include path for ui files
 include_directories( ${CMAKE_CURRENT_BINARY_DIR} )
@@ -168,6 +201,7 @@ target_link_libraries(${PROGNAME}
 	${QT_LIBRARIES} 
 	${OPENGL_LIBRARIES} 
 	${OpenCASCADE_LIBRARIES} 
+	${EXTRA_LIBRARIES} 
 )
 
 if(GLOG_FOUND)
@@ -202,21 +236,10 @@ IF(WIN32)
 
   # install runtime libs
   FILE(TO_CMAKE_PATH "$ENV{SYSTEMROOT}" SYSTEMROOT)
-  if(OCC_VERSION_STRING VERSION_EQUAL "6.3")
-    SET(CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS
-      "${SYSTEMROOT}/system32/msvcp71.dll"
-      "${SYSTEMROOT}/system32/msvcr71.dll"
-    )
-  endif()
 
-  # TKOpenGL is loaded as a plugin, hence we must manually install it
-  set( OCC_PLUGINS TKOpenGl.dll FWOSPlugin.dll)
-  foreach( _plug ${OCC_PLUGINS} )
-     set(OCC_PLUGINS_FULL ${OCC_PLUGINS_FULL} ${OpenCASCADE_DLL_DIRECTORY}/${_plug} )
-  endforeach()
-  INSTALL(FILES ${OCC_PLUGINS_FULL} DESTINATION bin COMPONENT viewer)
 ENDIF(WIN32)
 
+SET(CMAKE_INSTALL_OPENMP_LIBRARIES "ON")
 INCLUDE(InstallRequiredSystemLibraries)
 
 	
@@ -225,7 +248,7 @@ set(DIRS ${TIXI_BINARY_DIR} ${OpenCASCADE_DLL_DIRECTORY}  ${OpenCASCADE_LINK_DIR
 
 if (WIN32 OR APPLE)
   include(DeployQt4)
-  INSTALL_QT4_EXECUTABLE(${APPS} "" "${OCC_PLUGINS_FULL}" "${DIRS}" "" "" viewer)
+  INSTALL_QT4_EXECUTABLE(${APPS} "" "" "${DIRS}" "" "" viewer)
 endif()
 
 else (QT4_FOUND)

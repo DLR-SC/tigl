@@ -4,7 +4,7 @@
 set(TIGL_F_SRC tigl_fortran.cpp)
 set(TIGL_F_HDR tigl_fortran.h)
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../src ${TIXI_INCLUDE_DIRS})
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../src ${CMAKE_CURRENT_SOURCE_DIR}/../../src/api ${TIXI_INCLUDE_DIRS})
 
 #find out the fortran compiler
 include(CMakeDetermineFortranCompiler)

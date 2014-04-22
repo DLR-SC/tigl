@@ -39,17 +39,7 @@
 #include "TIGLViewerInternal.h"
 #include "TIGLViewerDocument.h"
 
-#ifdef OCC_NEW_3DAPI
-  #include <OpenGl_GraphicDriver.hxx>
-#else
-  #if defined _WIN32 || defined __WIN32__
-    #include <Graphic3d_WNTGraphicDevice.hxx>
-  #elif defined __APPLE__
-    // no more include required
-  #else
-    #include <Graphic3d_GraphicDevice.hxx>
-  #endif
-#endif // OCC_NEW_3DAPI
+#include <OpenGl_GraphicDriver.hxx>
 
 #if defined _WIN32 || defined __WIN32__
   #include <WNT_Window.hxx>
@@ -168,35 +158,17 @@ void TIGLViewerWidget::initializeOCC(const Handle_AIS_InteractiveContext& aConte
     myViewer  = myContext->CurrentViewer();
     myView    = myViewer->CreateView();
 
-#ifdef OCC_NEW_3DAPI
-  #if defined _WIN32 || defined __WIN32__
+#if defined _WIN32 || defined __WIN32__
     myWindow = new WNT_Window(winId());
     myWindow->SetFlags( WDF_NOERASEBKGRND );
-  #elif defined __APPLE__
+#elif defined __APPLE__
     myWindow = new Cocoa_Window((NSView *)winId());
-  #else
+#else
     Aspect_Handle windowHandle = (Aspect_Handle)winId();
     myWindow = new Xw_Window(myContext->CurrentViewer()->Driver()->GetDisplayConnection(),
                              windowHandle);
-  #endif
-#else // OCC_NEW_3DAPI
-    int windowHandle = (int) winId();
-    short lo = (short)   windowHandle;
-    short hi = (short) ( windowHandle >> 16 );
-  #if defined _WIN32 || defined __WIN32__
-    myWindow = new WNT_Window( Handle(Graphic3d_WNTGraphicDevice)
-                               ::DownCast( myContext->CurrentViewer()->Device() ) ,
-                               (int) hi, (int) lo );
-    // Turn off background erasing in OCC's window
-    myWindow->SetFlags( WDF_NOERASEBKGRND );
-  #elif defined __APPLE__
-    myWindow = new Cocoa_Window((NSView *)winId());
-  #else
-    myWindow = new Xw_Window( Handle(Graphic3d_GraphicDevice)
-                                    ::DownCast( myContext->CurrentViewer()->Device() ),
-                              (int) hi, (int) lo, Xw_WQ_SAMEQUALITY, Quantity_NOC_BLACK );
-  #endif // WNT
-#endif // OCC_NEW_3DAPI
+#endif
+
     if (!myView.IsNull()) {
         // Set my window (Hwnd) into the OCC view
         myView->SetWindow( myWindow, rc , paintCallBack, this  );
@@ -204,11 +176,7 @@ void TIGLViewerWidget::initializeOCC(const Handle_AIS_InteractiveContext& aConte
         myView->SetScale( 2 );            // Choose a "nicer" initial scale
 
         // Set up axes (Trihedron) in lower left corner.
-#ifdef OCC_PATCHED
         myView->TriedronDisplay( Aspect_TOTP_LEFT_LOWER, Quantity_NOC_WHITE, 0.1, V3d_ZBUFFER );
-#else
-        myView->TriedronDisplay( Aspect_TOTP_LEFT_LOWER, Quantity_NOC_WHITE, 0.1, V3d_WIREFRAME );
-#endif
         //myView->SetAntialiasingOn();
 
         //myView->ColorScaleDisplay();
@@ -585,7 +553,7 @@ void TIGLViewerWidget::setBackgroundColor(const QColor& col)
         Standard_Real R1 = col.red()/255.;
         Standard_Real G1 = col.green()/255.;
         Standard_Real B1 = col.blue()/255.;
-#ifdef OCC_BG
+
         // Disable provious gradient
         myView->SetBgGradientColors ( Quantity_NOC_BLACK , Quantity_NOC_BLACK, Aspect_GFM_NONE, Standard_False);
 
@@ -597,9 +565,6 @@ void TIGLViewerWidget::setBackgroundColor(const QColor& col)
 
         myView->SetBgGradientColors( up, down, Aspect_GFM_VER, Standard_False);
 
-#else
-        myView->SetBackgroundColor(Quantity_TOC_RGB,R1,G1,B1);
-#endif
     } 
     redraw();
 }
@@ -624,7 +589,7 @@ void TIGLViewerWidget::eraseSelected()
 {
     if (!myView.IsNull()) {
         for (myContext->InitCurrent(); myContext->MoreCurrent(); myContext->NextCurrent()) {
-            myContext->Erase(myContext->Current(), Standard_True, Standard_False);
+            myContext->Erase(myContext->Current());
         }
 
         myContext->ClearCurrents();
@@ -1043,14 +1008,7 @@ Standard_Boolean TIGLViewerWidget::convertToPlane(Standard_Integer Xs,
     Standard_Real Vx, Vy, Vz;
     gp_Pln aPlane(myView->Viewer()->PrivilegedPlane());
 
-#ifdef OCC_PATCHED
     myView->Convert( Xs, Ys, Xv, Yv, Zv ); 
-#else
-    // The + 1 overcomes a fault in OCC, in "OpenGl_togl_unproject_raster.c",
-    // which transforms the Y axis ordinate. The function uses the height of the
-    // window, not the Y maximum which is (height - 1).
-    myView->Convert( Xs, Ys + 1, Xv, Yv, Zv ); 
-#endif 
 
     myView->Proj( Vx, Vy, Vz );
     gp_Lin aLine(gp_Pnt(Xv, Yv, Zv), gp_Dir(Vx, Vy, Vz));
@@ -1113,51 +1071,6 @@ int TIGLViewerWidget::paintCallBack (Aspect_Drawable /* drawable */,
 // OCC 6.4.0. Thus we should only use it with old OCC
 void TIGLViewerWidget::paintOCC( void )
 {
-#ifndef OCC_BG
-    glDisable( GL_LIGHTING ); 
-    glMatrixMode( GL_MODELVIEW );
-    glPushMatrix();
-    glLoadIdentity();
-    glMatrixMode( GL_PROJECTION );
-    glPushMatrix();
-    glLoadIdentity();
-
-    GLfloat left   = -1.0f;
-    GLfloat right  =  1.0f;
-    GLfloat bottom = -1.0f;
-    GLfloat top    =  1.0f;
-    GLfloat depth  =  1.0f;
-
-    glOrtho( left, right, bottom, top, 1.0, -1.0 );
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_COLOR);
-
-#ifndef OCC_PATCHED
-    glEnable(GL_BLEND);
-    if (myView->ColorScaleIsDisplayed()) {
-        // Not needed on patched OCC 6.2 versions, but is the lowest
-        // common denominator working code on collaborators OpenGL
-        // graphics cards.
-        glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_COLOR);
-    }
-#endif
-
-    // purple gradient background
-    glBegin( GL_QUADS);
-    {
-        glColor4f  (  0.1f, 0.1f, 0.1f, 1.0f );
-        glVertex3d (  left, bottom, depth );
-        glVertex3d ( right, bottom, depth );
-        glColor4f  (  0.8f, 0.8f, 0.9f, 1.0f );
-        glVertex3d ( right,    top, depth );
-        glVertex3d (  left,    top, depth );
-    }
-    glEnd();
-
-    glPopMatrix();
-    glMatrixMode( GL_MODELVIEW );
-    glPopMatrix();
-#endif
 }
 
 

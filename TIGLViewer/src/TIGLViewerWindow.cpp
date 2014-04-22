@@ -26,6 +26,7 @@
 #include <QtCore/QString>
 #include <QShortcut>
 #include <QTimer>
+#include <QProcessEnvironment>
 
 #include <BRepBuilderAPI_MakeVertex.hxx>
 #include <TopoDS_Vertex.hxx>
@@ -166,6 +167,8 @@ TIGLViewerWindow::TIGLViewerWindow()
 
     cpacsConfiguration = new TIGLViewerDocument(this, myOCC->getContext(), getSettings());
     scriptEngine = new TIGLScriptEngine;
+    
+    setAcceptDrops(true);
 
     connectSignals();
     createMenus();
@@ -185,6 +188,34 @@ TIGLViewerWindow::~TIGLViewerWindow()
     delete errorStream;
     delete scriptEngine;
     delete tiglViewerSettings;
+}
+
+void TIGLViewerWindow::dragEnterEvent(QDragEnterEvent * ev)
+{
+    QList<QUrl> urls = ev->mimeData()->urls();
+    foreach (QUrl url, urls) {
+        if (!url.toLocalFile().isEmpty()) {
+            QString suffix = QFileInfo(url.toLocalFile()).suffix();
+            if (suffix == "xml" || suffix == "brep" || suffix == "stp" || suffix == "igs" || suffix == "mesh") {
+                ev->accept();
+            }
+        }
+    }
+}
+
+void TIGLViewerWindow::dropEvent(QDropEvent *ev)
+{
+    QList<QUrl> urls = ev->mimeData()->urls();
+    foreach (QUrl url, urls) {
+        if (!url.toLocalFile().isEmpty()) {
+            QString suffix = QFileInfo(url.toLocalFile()).suffix();
+            if (suffix == "xml" || suffix == "brep" || suffix == "stp" || suffix == "igs" || suffix == "mesh") {
+                ev->accept();
+                // load file
+                openFile(url.toLocalFile());
+            }
+        }
+    }
 }
 
 
@@ -380,7 +411,7 @@ void TIGLViewerWindow::loadSettings()
 
     tiglViewerSettings->loadSettings();
     settingsDialog->updateEntries();
-    myOCC->setBackgroundColor(tiglViewerSettings->BGColor());
+    applySettings();
 }
 
 void TIGLViewerWindow::saveSettings()
@@ -396,10 +427,24 @@ void TIGLViewerWindow::saveSettings()
     tiglViewerSettings->storeSettings();
 }
 
+void TIGLViewerWindow::applySettings()
+{
+    myOCC->setBackgroundColor(tiglViewerSettings->BGColor());
+    myOCC->getContext()->SetIsoNumber(tiglViewerSettings->numFaceIsosForDisplay());
+    myOCC->getContext()->UpdateCurrentViewer();
+    if (tiglViewerSettings->debugBooleanOperations()) {
+        qputenv("TIGL_DEBUG_BOP", "1");
+    }
+    else {
+        qputenv("TIGL_DEBUG_BOP", "");
+    }
+}
+
 void TIGLViewerWindow::changeSettings()
 {
+    settingsDialog->updateEntries();
     settingsDialog->exec();
-    myOCC->setBackgroundColor(tiglViewerSettings->BGColor());
+    applySettings();
 }
 
 
@@ -420,7 +465,11 @@ void TIGLViewerWindow::save()
 
     statusBar()->showMessage(tr("Invoked File|Save"));
 
-    fileName = QFileDialog::getSaveFileName(this, tr("Save as..."), myLastFolder, tr("Geometry Export (*.iges *.brep *.step *.stl *.vrml)"));
+    fileName = QFileDialog::getSaveFileName(this, tr("Save as..."), myLastFolder,
+                                            tr("IGES Geometry (*.igs);;") +
+                                            tr("STEP Geometry (*.stp);;") +
+                                            tr("STL Triangulation (*.stl);;") +
+                                            tr("BRep Geometry (*.brep)"));
 
     if (!fileName.isEmpty()) {
         fileInfo.setFile(fileName);
@@ -670,6 +719,7 @@ void TIGLViewerWindow::connectSignals()
     // CPACS Wing Actions
     connect(drawWingProfilesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingProfiles()));
     connect(drawWingOverlayCPACSProfilePointsAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingOverlayProfilePoints()));
+    connect(drawWingGuideCurvesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingGuideCurves()));
     connect(drawWingsAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWing()));
     connect(drawWingTriangulationAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingTriangulation()));
     connect(drawWingSamplePointsAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingSamplePoints()));
@@ -683,7 +733,7 @@ void TIGLViewerWindow::connectSignals()
     connect(showAllWingsAndFuselagesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawAllFuselagesAndWings()));
     connect(showAllWingsAndFuselagesSurfacePointsAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawAllFuselagesAndWingsSurfacePoints()));
     connect(drawFusedAircraftAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFusedAircraft()));
-    connect(drawWingFuselageLineAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingFuselageIntersectionLine()));
+    connect(drawIntersectionAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawIntersectionLine()));
     connect(showFusedAirplaneTriangulation, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFusedAircraftTriangulation()));
     connect(drawFarFieldAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFarField()));
 
@@ -694,12 +744,11 @@ void TIGLViewerWindow::connectSignals()
     connect(drawFuselageSamplePointsAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFuselageSamplePoints()));
     connect(drawFuselageSamplePointsAngleAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFuselageSamplePointsAngle()));
     connect(drawFusedFuselageAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFusedFuselage()));
+    connect(drawFuselageGuideCurvesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFuselageGuideCurves()));
 
     // Export functions
     connect(tiglExportFusedIgesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportFusedAsIges()));
     connect(tiglExportIgesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportAsIges()));
-    connect(tiglExportStructuredIgesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportAsStructuredIges()));
-    connect(tiglExportStepWithMetaDataAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportAsStepWithMetaData()));
     connect(tiglExportFusedStepAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportAsStepFused()));
     connect(tiglExportStepAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportAsStep()));
     connect(tiglExportMeshedWingSTL, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportMeshedWingSTL()));
@@ -714,6 +763,9 @@ void TIGLViewerWindow::connectSignals()
     connect(tiglExportFuselageColladaAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportFuselageCollada()));
     connect(tiglExportFuselageBRepAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportFuselageBRep()));
     connect(tiglExportWingBRepAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportWingBRep()));
+    connect(tiglExportFusedConfigBRep, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportFusedConfigBRep()));
+    connect(tiglExportWingCurvesBRepAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportWingCurvesBRep()));
+    connect(tiglExportFuselageCurvesBRepAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportFuselageCurvesBRep()));
 
     // The co-ordinates from the view
     connect( myOCC, SIGNAL(mouseMoved(V3d_Coordinate,V3d_Coordinate,V3d_Coordinate)),

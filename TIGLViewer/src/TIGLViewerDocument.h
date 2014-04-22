@@ -73,13 +73,14 @@ public slots:
     void drawAllFuselagesAndWingsSurfacePoints();
     void drawFusedAircraft();
     void drawFusedAircraftTriangulation();
-    void drawWingFuselageIntersectionLine();
+    void drawIntersectionLine();
     void drawFarField();
 
     // Wing slots
     void drawWingProfiles();
     void drawWing();
     void drawWingOverlayProfilePoints();
+    void drawWingGuideCurves();
     void drawWingTriangulation();
     void drawWingSamplePoints();
     void drawFusedWing();
@@ -94,14 +95,13 @@ public slots:
     void drawFuselageSamplePoints();
     void drawFuselageSamplePointsAngle();
     void drawFusedFuselage();
+    void drawFuselageGuideCurves();
 
     // TIGL slots
     void exportAsIges();
     void exportFusedAsIges();
-    void exportAsStructuredIges();
     void exportAsStep();
     void exportAsStepFused();
-    void exportAsStepWithMetaData();
     void exportMeshedWingSTL();
     void exportMeshedFuselageSTL();
     void exportMeshedWingVTK();
@@ -114,6 +114,9 @@ public slots:
     void exportFuselageCollada();
     void exportWingBRep();
     void exportFuselageBRep();
+    void exportWingCurvesBRep();
+    void exportFuselageCurvesBRep();
+    void exportFusedConfigBRep();
 
 
     // General slots
@@ -124,11 +127,13 @@ private slots:
     // Wing selection dialogs
     QString dlgGetWingSelection();
     QString dlgGetWingComponentSegmentSelection();
+    QString dlgGetWingSegmentSelection();
     QString dlgGetWingProfileSelection();
 
 
     // Fuselage selection dialogs
     QString dlgGetFuselageSelection();
+    QString dlgGetFuselageSegmentSelection();
     QString dlgGetFuselageProfileSelection();
 
 
@@ -141,7 +146,7 @@ private:
     QString                                 loadedConfigurationFileName;
 
     void writeToStatusBar(QString text);
-    void displayError(QString text, QString header);
+    void displayError(QString text, QString header="");
     QString myLastFolder; // TODO: synchronize with TIGLViewerWindow
     char* qstringToCstring(QString text);
     void createShapeTriangulation(const class TopoDS_Shape& shape, class TopoDS_Compound& compound);

@@ -28,6 +28,7 @@ public:
     void loadSettings();
     void storeSettings();
 
+    // Display settings Tab
     void setTesselationAccuracy(double);
     void setTriangulationAccuracy(double);
     void setBGColor(const QColor&);
@@ -37,12 +38,25 @@ public:
 
     const QColor& BGColor() const;
 
+    // Debugging Tab
+    void setDebugBooleanOperationsEnabled(bool);
+    void setEnumerateFacesEnabled(bool);
+    void setNumberOfIsolinesPerFace(int);
+    
+    bool debugBooleanOperations() const;
+    bool enumerateFaces() const;
+    int  numFaceIsosForDisplay() const;
+
     virtual ~TIGLViewerSettings();
 
 private:
     double _tesselationAccuracy;
     double _triangulationAccuracy;
     QColor _bgcolor;
+    
+    bool _debugBOPs;
+    bool _enumFaces;
+    int  _nIsosPerFace;
 };
 
 #endif /* TIGLVIEWERSETTINGS_H_ */

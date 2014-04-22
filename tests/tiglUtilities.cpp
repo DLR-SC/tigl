@@ -24,9 +24,13 @@
 #include "tigl.h"
 #include "tiglcommonfunctions.h"
 #include "CTiglLogging.h"
+#include "CTiglInterpolateBsplineWire.h"
 
 #include "BRepBuilderAPI_MakeWire.hxx"
 #include "BRepBuilderAPI_MakeEdge.hxx"
+#include "BRepAdaptor_CompCurve.hxx"
+#include "GCPnts_AbscissaPoint.hxx"
+#include "TopoDS_Wire.hxx"
 #include "gp_Circ.hxx"
 
 TEST(Misc, WireGetPoint)
@@ -48,9 +52,9 @@ TEST(Misc, WireGetPoint)
     ASSERT_NEAR(0.0, p2_.Distance(p2), 1e-7);
     ASSERT_NEAR(0.0, p3_.Distance(p3), 1e-7);
     
-    p1_ = WireGetPoint2(wireBuilder.Wire(), 0.0);
-    p2_ = WireGetPoint2(wireBuilder.Wire(), 0.25);
-    p3_ = WireGetPoint2(wireBuilder.Wire(), 1.0);
+    p1_ = WireGetPoint(wireBuilder.Wire(), 0.0);
+    p2_ = WireGetPoint(wireBuilder.Wire(), 0.25);
+    p3_ = WireGetPoint(wireBuilder.Wire(), 1.0);
     
     ASSERT_NEAR(0.0, p1_.Distance(p1), 1e-7);
     ASSERT_NEAR(0.0, p2_.Distance(p2), 1e-7);
@@ -76,6 +80,12 @@ TEST(Misc, GetPointOnCirc)
     gp_Pnt p4(-M_PI/2., 1, 0);
     gp_Pnt p5(-M_PI, 1, 0);
     
+    ASSERT_NEAR(0.0, p1.Distance(WireGetPoint(wire,0.00)), 1e-7);
+    ASSERT_NEAR(0.0, p2.Distance(WireGetPoint(wire,0.25)), 1e-7);
+    ASSERT_NEAR(0.0, p3.Distance(WireGetPoint(wire,0.50)), 1e-7);
+    ASSERT_NEAR(0.0, p4.Distance(WireGetPoint(wire,0.75)), 1e-7);
+    ASSERT_NEAR(0.0, p5.Distance(WireGetPoint(wire,1.00)), 1e-7);
+
     ASSERT_NEAR(0.0, p1.Distance(WireGetPoint(wire,0.00)), 1e-7);
     ASSERT_NEAR(0.0, p2.Distance(WireGetPoint(wire,0.25)), 1e-7);
     ASSERT_NEAR(0.0, p3.Distance(WireGetPoint(wire,0.50)), 1e-7);

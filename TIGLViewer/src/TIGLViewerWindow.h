@@ -63,6 +63,8 @@ public:
 
 protected:
      void contextMenuEvent(QContextMenuEvent *event);
+     void dropEvent(QDropEvent *ev);
+     void dragEnterEvent(QDragEnterEvent *ev);
 
 public slots:
     void updateMenus(TiglCPACSConfigurationHandle);
@@ -93,6 +95,7 @@ private slots:
     void statusMessage (const QString aMessage);
     void loadSettings();
     void saveSettings();
+    void applySettings();
     void changeSettings();
 
 private:
