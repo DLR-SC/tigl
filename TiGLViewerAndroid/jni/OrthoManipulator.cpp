@@ -9,6 +9,8 @@
 
 #include <CTiglLogging.h>
 
+#undef DEBUG
+
  OrthoManipulator::OrthoManipulator(osg::Camera* c)
     : _center(0, 0, 0), _distance(100), _camera(c)
     {
@@ -82,7 +84,9 @@ void OrthoManipulator::zoom(double l)
 bool OrthoManipulator::performMovementLeftMouseButton(const double eventTimeDelta, const double dx, const double dy ){
 
     rotateModel(dx,dy);
+#ifdef DEBUG
     LOG(INFO) << "Left Mouse Action " << std::endl;
+#endif
     return true;
 }
 
@@ -90,14 +94,18 @@ bool OrthoManipulator::performMovementLeftMouseButton(const double eventTimeDelt
 bool OrthoManipulator::performMovementMiddleMouseButton(const double eventTimeDelta, const double dx, const double dy )
 {
     panModel(dx, dy);
+#ifdef DEBUG
     LOG(INFO)  << "Middle Mouse Action " << std::endl;
+#endif
     return true;
 }
 
 // zoom on right button move
 bool OrthoManipulator::performMovementRightMouseButton(const double eventTimeDelta, const double dx, const double dy )
 {
+#ifdef DEBUG
     LOG(INFO) << "Right Mouse Action with " << dy << std::endl;
+#endif
 
     // make zoom speed proportional to movement
     float zoomStep = pow(0.95, -dy*20.);
@@ -108,7 +116,9 @@ bool OrthoManipulator::performMovementRightMouseButton(const double eventTimeDel
 
 bool OrthoManipulator::handleMouseWheel( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& us )
 {
+#ifdef DEBUG
     LOG(INFO) << "Mouse Wheel motion " << std::endl;
+#endif
     return true;
 }
 

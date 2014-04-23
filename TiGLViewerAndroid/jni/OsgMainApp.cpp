@@ -84,20 +84,20 @@ void OsgMainApp::initOsgWindow(int x, int y, int width, int height)
         if (screenWidth > screenHeight && width < height) {
             // screen rotated from landscape to portrait
             // map former width to height
-            bottom = left;
-            top = right;
-            double _height = top - bottom;
-            left   = -_height*ar/2.;
-            right  =  _height*ar/2.;
-        }
-        else if (screenWidth < screenHeight && width > height) {
-            // screen rotated from portrait to landscape
-            // map former height to width
             left = bottom;
             right = top;
             double _width = right - left;
             bottom = -_width/(2.*ar);
             top    =  _width/(2.*ar);
+        }
+        else if (screenWidth < screenHeight && width > height) {
+            // screen rotated from portrait to landscape
+            // map former height to width
+            bottom = left;
+            top = right;
+            double _height = top - bottom;
+            left   = -_height*ar/2.;
+            right  =  _height*ar/2.;
         }
         else {
             // map the width
@@ -371,11 +371,12 @@ void OsgMainApp::fitScreen()
         sphere = modeledObjects->getBound();
     }
 
-
-    double radius = sphere.radius() * 1.4;
+    // make radius somewhat smaller to zoom in
+    double radius = sphere.radius() * 0.8;
     if (radius <= 0.) {
         return;
     }
+
 
     osg::Vec3d center = sphere.center();
 
@@ -395,10 +396,10 @@ void OsgMainApp::fitScreen()
     // take correct zoom level
     double ar = screenWidth/screenHeight;
     if (screenWidth > screenHeight) {
-        soleViewer->getCamera()->setProjectionMatrixAsOrtho(-radius*ar/2., radius*ar/2., -radius/2., radius/2., 0, 1000);
+        soleViewer->getCamera()->setProjectionMatrixAsOrtho(-radius*ar, radius*ar, -radius, radius, 0, 1000);
     }
     else {
-        soleViewer->getCamera()->setProjectionMatrixAsOrtho(-radius/2, radius/2., -radius/(2.*ar), radius/(2.*ar), 0, 1000);
+        soleViewer->getCamera()->setProjectionMatrixAsOrtho(-radius, radius, -radius/ar, radius/ar, 0, 1000);
     }
 }
 
