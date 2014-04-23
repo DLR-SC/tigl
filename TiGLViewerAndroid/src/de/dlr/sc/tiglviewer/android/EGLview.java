@@ -52,11 +52,11 @@ public class EGLview extends GLSurfaceView {
     
     public EGLview(Context context) {
         super(context);
-        init(false, 16, 8);
+        init(true, 24, 8);
     }
     public EGLview(Context context, AttributeSet attrs) {
         super(context,attrs);
-        init(false, 16, 8);
+        init(true, 24, 8);
     }
     
     
@@ -170,15 +170,17 @@ public class EGLview extends GLSurfaceView {
 
         public EGLConfig chooseConfig(EGL10 egl, EGLDisplay display,
                 EGLConfig[] configs) {
+            // maximize depth and stencil buffer
+            int maxbuffer = 0;
+            EGLConfig result = null;
             for(EGLConfig config : configs) {
                 int d = findConfigAttrib(egl, display, config,
                         EGL10.EGL_DEPTH_SIZE, 0);
                 int s = findConfigAttrib(egl, display, config,
                         EGL10.EGL_STENCIL_SIZE, 0);
 
-                // We need at least mDepthSize and mStencilSize bits
-                if (d < mDepthSize || s < mStencilSize)
-                    continue;
+                Log.i(TAG, "Depth: " + d + " Stencil: " + s);
+                
 
                 // We want an *exact* match for red/green/blue/alpha
                 int r = findConfigAttrib(egl, display, config,
@@ -190,10 +192,15 @@ public class EGLview extends GLSurfaceView {
                 int a = findConfigAttrib(egl, display, config,
                         EGL10.EGL_ALPHA_SIZE, 0);
 
-                if (r == mRedSize && g == mGreenSize && b == mBlueSize && a == mAlphaSize)
-                    return config;
+                if (r == mRedSize && g == mGreenSize && b == mBlueSize && a == mAlphaSize) {
+                    if (d + 2*s > maxbuffer) {
+                        maxbuffer = d + 2*s;
+                        result = config;
+                    }
+
+                }
             }
-            return null;
+            return result;
         }
 
         private int findConfigAttrib(EGL10 egl, EGLDisplay display,

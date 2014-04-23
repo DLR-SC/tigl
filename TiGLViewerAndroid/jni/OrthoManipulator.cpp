@@ -136,11 +136,7 @@ void OrthoManipulator::panModel(const double dx, const double dy )
     osg::Vec3d deltaWorld = -deltaScreen * osg::Matrixd::inverse(_camera->getProjectionMatrix());
     deltaWorld.z() = 0.;
 
-    osg::Matrix rotation_matrix;
-    rotation_matrix.makeRotate( _rotation );
-
-
-    _center += deltaWorld * rotation_matrix;
+    _center += _rotation * deltaWorld;
 }
 
 void OrthoManipulator::rotateModel(const double dx, const double dy)
