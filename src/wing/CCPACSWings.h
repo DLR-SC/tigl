@@ -78,6 +78,9 @@ public:
     // Returns the wing for a given UID.
     TIGL_EXPORT CCPACSWing& GetWing(const std::string& UID) const;
 
+    // Returns the wing index for a given UID.
+    TIGL_EXPORT int GetWingIndex(const std::string& UID) const;
+
 protected:
     // Cleanup routine
     void Cleanup(void);

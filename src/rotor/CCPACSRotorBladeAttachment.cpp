@@ -221,10 +221,16 @@ const double& CCPACSRotorBladeAttachment::GetAzimuthAngle(int index) const
     return (azimuthAngles[index]);
 }
 
-// Returns the UID of the referenced rotor blade
-const std::string& CCPACSRotorBladeAttachment::GetRotorBladeUID(void) const
+// Returns the UID of the referenced wing definition
+const std::string& CCPACSRotorBladeAttachment::GetWingUID(void) const
 {
     return rotorBladeUID;
+}
+
+// Returns the index of the referenced wing definition
+int CCPACSRotorBladeAttachment::GetWingIndex(void) const
+{
+    return GetConfiguration().GetWingIndex(rotorBladeUID);
 }
 
 // Get hinge count

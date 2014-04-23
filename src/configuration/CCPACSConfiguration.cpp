@@ -190,10 +190,17 @@ CCPACSWing& CCPACSConfiguration::GetWing(int index) const
 {
     return wings.GetWing(index);
 }
+
 // Returns the wing for a given UID.
 CCPACSWing& CCPACSConfiguration::GetWing(const std::string& UID) const
 {
     return wings.GetWing(UID);
+}
+
+// Returns the wing index for a given UID.
+int CCPACSConfiguration::GetWingIndex(const std::string& UID) const
+{
+    return wings.GetWingIndex(UID);
 }
 
 // Returns the total count of rotors in a configuration
@@ -212,6 +219,12 @@ CCPACSRotor& CCPACSConfiguration::GetRotor(int index) const
 CCPACSRotor& CCPACSConfiguration::GetRotor(const std::string& UID) const
 {
     return rotors.GetRotor(UID);
+}
+
+// Returns the rotor index for a given UID.
+int CCPACSConfiguration::GetRotorIndex(const std::string& UID) const
+{
+    return rotors.GetRotorIndex(UID);
 }
 
 TopoDS_Shape CCPACSConfiguration::GetParentLoft(const std::string& UID)

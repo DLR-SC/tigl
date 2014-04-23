@@ -68,8 +68,11 @@ public:
     // Returns the azimuth angle of the attached rotor blade with the given index
     TIGL_EXPORT const double& GetAzimuthAngle(int index) const;
 
-    // Returns the UID of the referenced rotor blade
-    TIGL_EXPORT const std::string& GetRotorBladeUID(void) const;
+    // Returns the UID of the referenced wing definition
+    TIGL_EXPORT const std::string& GetWingUID(void) const;
+
+    // Returns the index of the referenced wing definition
+    TIGL_EXPORT int GetWingIndex(void) const;
 
     // Get hinge count
     TIGL_EXPORT int GetHingeCount(void) const;

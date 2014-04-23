@@ -154,14 +154,22 @@ CCPACSWing& CCPACSWings::GetWing(int index) const
 // Returns the wing for a given UID.
 CCPACSWing& CCPACSWings::GetWing(const std::string& UID) const
 {
+    return (*wings[GetWingIndex(UID)]);
+}
+
+// Returns the wing index for a given UID.
+int CCPACSWings::GetWingIndex(const std::string& UID) const
+{
     for (int i=0; i < GetWingCount(); i++) {
         const std::string tmpUID(wings[i]->GetUID());
         if (tmpUID == UID) {
-            return (*wings[i]);
+            return i;
         }
     }
 
     // UID not there
-    throw CTiglError("Error: Invalid UID in CCPACSWings::GetWing", TIGL_INDEX_ERROR);
+    throw CTiglError("Error: Invalid UID in CCPACSWings::GetWingIndex", TIGL_UID_ERROR);
+    return -1;
 }
+
 } // end namespace tigl

@@ -93,6 +93,9 @@ public:
     // Returns the wing for a given UID.
     TIGL_EXPORT CCPACSWing& GetWing(const std::string& UID) const;
 
+    // Returns the wing index for a given UID.
+    TIGL_EXPORT int GetWingIndex(const std::string& UID) const;
+
     // Returns the total count of rotors in a configuration
     TIGL_EXPORT int GetRotorCount(void) const;
 
@@ -101,6 +104,9 @@ public:
 
     // Returns the rotor for a given UID.
     TIGL_EXPORT CCPACSRotor& GetRotor(const std::string& UID) const;
+
+    // Returns the rotor index for a given UID.
+    TIGL_EXPORT int GetRotorIndex(const std::string& UID) const;
 
     TIGL_EXPORT TopoDS_Shape GetParentLoft(const std::string& UID);
 

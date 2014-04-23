@@ -63,6 +63,9 @@ public:
     // Returns the rotor for a given UID.
     TIGL_EXPORT CCPACSRotor& GetRotor(const std::string& UID) const;
 
+    // Returns the rotor index for a given UID.
+    TIGL_EXPORT int GetRotorIndex(const std::string& UID) const;
+
     // Returns the parent configuration
     TIGL_EXPORT CCPACSConfiguration& GetConfiguration(void) const;
 
