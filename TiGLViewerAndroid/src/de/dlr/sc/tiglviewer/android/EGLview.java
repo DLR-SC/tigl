@@ -48,7 +48,7 @@ import javax.microedition.khronos.opengles.GL10;
  */
 public class EGLview extends GLSurfaceView {
     private static String TAG = "EGLview";
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = false;
     
     public EGLview(Context context) {
         super(context);

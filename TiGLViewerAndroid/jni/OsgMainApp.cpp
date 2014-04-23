@@ -292,17 +292,21 @@ void OsgMainApp::addObjectFromCPACS(std::string filepath)
 
 void OsgMainApp::removeObjects()
 {
-    std::map<std::string, GeometricVisObject*>::iterator soi = selectedObjects.begin();
-    if (selectedObjects.size() == 0) {
-        modeledObjects->removeChildren(0, root_1->getNumChildren());
+    std::vector<osg::Node*> selected;
+    for (int iChild = 0; iChild < modeledObjects->getNumChildren(); ++iChild) {
+        GeometricVisObject* obj = dynamic_cast<GeometricVisObject*>(modeledObjects->getChild(iChild));
+        if (obj && obj->isPicked()) {
+            selected.push_back(obj);
+        }
+    }
+    if (selected.size() == 0) {
+        modeledObjects->removeChildren(0, modeledObjects->getNumChildren());
     }
     else {
-        for (soi = selectedObjects.begin(); soi != selectedObjects.end(); ++soi) {
-
-            modeledObjects->removeChild(soi->second);
-            osg::notify(osg::ALWAYS) << soi->first << std::endl;
+        std::vector<osg::Node*>::iterator it;
+        for (it = selected.begin(); it != selected.end(); ++it) {
+            modeledObjects->removeChild(*it);
         }
-        selectedObjects.clear();
     }
 
 }
@@ -463,12 +467,10 @@ void OsgMainApp::pickEvent(float x, float y, int /* view */)
             if (!(intersectionsIterator->nodePath.at(i)->getName().empty())) {
                 if (!pickedObject->isPicked()) {
                     pickedObject->pick();
-                    selectedObjects.insert(std::pair<std::string, GeometricVisObject*>(nameOfpickedObject, pickedObject));
                     rayHit = true;
                 }
                 else {
                     pickedObject->unpick();
-                    selectedObjects.erase(nameOfpickedObject);
                     rayHit = true;
                 }
             }
