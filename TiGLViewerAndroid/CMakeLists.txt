@@ -23,8 +23,8 @@ ENDIF()
 
 
 configure_file (
-  "${PROJECT_SOURCE_DIR}/src/tigl_version.h.in"
-  "${PROJECT_SOURCE_DIR}/src/tigl_version.h"
+  "${PROJECT_SOURCE_DIR}/src/api/tigl_version.h.in"
+  "${PROJECT_SOURCE_DIR}/src/api/tigl_version.h"
 )
 
 configure_file (
