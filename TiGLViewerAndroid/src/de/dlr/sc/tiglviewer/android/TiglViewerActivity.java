@@ -46,7 +46,7 @@ import android.os.Handler;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBar.OnNavigationListener;
+import android.support.v7.app.ActionBar.OnNavigationListener; 
 import android.support.v7.app.ActionBarActivity;
 import android.text.util.Linkify;
 import android.util.DisplayMetrics;
@@ -467,6 +467,7 @@ public class TiglViewerActivity extends ActionBarActivity implements OnNavigatio
 					   "TiGL uses Open CASCADE 6.7.0 and OpenSceneGraph 3.2.1\n" +
 					   "\n" +
 					   "Visit the TiGL project page at http://code.google.com/p/tigl/");
+			tv.setGravity(Gravity.CENTER);
 			Linkify.addLinks(tv, Linkify.WEB_URLS);
 			tv = (TextView) findViewById(R.id.tigl_version);
 			tv.setText("v" + TiGLViewerNativeLib.tiglGetVersion());
