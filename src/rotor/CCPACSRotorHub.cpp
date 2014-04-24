@@ -185,7 +185,7 @@ CCPACSRotorBlade& CCPACSRotorHub::GetRotorBlade(int index) const
         rotorBladeIndex -= GetRotorBladeAttachment(rotorBladeAttachmentIndex).GetRotorBladeCount();
         rotorBladeAttachmentIndex++;
     }
-    return GetRotorBladeAttachment(rotorBladeAttachmentIndex).GetRotorBlade(index);
+    return GetRotorBladeAttachment(rotorBladeAttachmentIndex).GetRotorBlade(rotorBladeIndex);
 }
 
 // Returns the parent configuration

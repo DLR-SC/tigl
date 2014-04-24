@@ -114,7 +114,7 @@ CCPACSRotor& CCPACSRotors::GetRotor(int index) const
 // Returns the rotor for a given UID.
 CCPACSRotor& CCPACSRotors::GetRotor(const std::string& UID) const
 {
-    return (*rotors[GetRotorIndex(UID)]);
+    return (*rotors[GetRotorIndex(UID)-1]);
 }
 
 // Returns the rotor index for a given UID.
@@ -123,7 +123,7 @@ int CCPACSRotors::GetRotorIndex(const std::string& UID) const
     for(int i=0; i < GetRotorCount(); i++) {
         const std::string tmpUID(rotors[i]->GetUID());
         if(tmpUID == UID) {
-            return i;
+            return i+1;
         }
     }
 

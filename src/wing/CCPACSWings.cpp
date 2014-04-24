@@ -154,7 +154,7 @@ CCPACSWing& CCPACSWings::GetWing(int index) const
 // Returns the wing for a given UID.
 CCPACSWing& CCPACSWings::GetWing(const std::string& UID) const
 {
-    return (*wings[GetWingIndex(UID)]);
+    return (*wings[GetWingIndex(UID)-1]);
 }
 
 // Returns the wing index for a given UID.
@@ -163,7 +163,7 @@ int CCPACSWings::GetWingIndex(const std::string& UID) const
     for (int i=0; i < GetWingCount(); i++) {
         const std::string tmpUID(wings[i]->GetUID());
         if (tmpUID == UID) {
-            return i;
+            return i+1;
         }
     }
 

@@ -2821,9 +2821,9 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorGetTipSpeed(TiglCPACSConfigurationHan
 *   - TIGL_NULL_POINTER if rotorBladeCountPtr is a null pointer
 *   - TIGL_ERROR if some other error occurred
 */
-TIGL_COMMON_EXPORT TiglReturnCode tiglGetRotorBladeCount(TiglCPACSConfigurationHandle cpacsHandle,
-                                                         int rotorIndex,
-                                                         int* rotorBladeCountPtr);
+TIGL_COMMON_EXPORT TiglReturnCode tiglRotorGetRotorBladeCount(TiglCPACSConfigurationHandle cpacsHandle,
+                                                              int rotorIndex,
+                                                              int* rotorBladeCountPtr);
 
 /**
 * @brief Returns the index of the parent wing definition of a rotor blade.
@@ -2847,7 +2847,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglGetRotorBladeCount(TiglCPACSConfigurationH
 *   - TIGL_NULL_POINTER if wingIndexPtr is a null pointer
 *   - TIGL_ERROR if some other error occurred
 */
-TIGL_COMMON_EXPORT TiglReturnCode tiglGetRotorBladeWingIndex(TiglCPACSConfigurationHandle cpacsHandle,
+TIGL_COMMON_EXPORT TiglReturnCode tiglRotorBladeGetWingIndex(TiglCPACSConfigurationHandle cpacsHandle,
                                                              int rotorIndex,
                                                              int rotorBladeIndex,
                                                              int* wingIndexPtr);
@@ -2874,7 +2874,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglGetRotorBladeWingIndex(TiglCPACSConfigurat
 *   - TIGL_NULL_POINTER if wingUIDPtr is a null pointer
 *   - TIGL_ERROR if some other error occurred
 */
-TIGL_COMMON_EXPORT TiglReturnCode tiglGetRotorBladeWingUID(TiglCPACSConfigurationHandle cpacsHandle,
+TIGL_COMMON_EXPORT TiglReturnCode tiglRotorBladeGetWingUID(TiglCPACSConfigurationHandle cpacsHandle,
                                                            int rotorIndex,
                                                            int rotorBladeIndex,
                                                            char** wingUIDPtr);
@@ -2901,7 +2901,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglGetRotorBladeWingUID(TiglCPACSConfiguratio
 *   - TIGL_NULL_POINTER if azimuthPtr is a null pointer
 *   - TIGL_ERROR if some other error occurred
 */
-TIGL_COMMON_EXPORT TiglReturnCode tiglGetRotorBladeAzimuthAngle(TiglCPACSConfigurationHandle cpacsHandle,
+TIGL_COMMON_EXPORT TiglReturnCode tiglRotorBladeGetAzimuthAngle(TiglCPACSConfigurationHandle cpacsHandle,
                                                                 int rotorIndex,
                                                                 int rotorBladeIndex,
                                                                 double* azimuthAnglePtr);
@@ -2930,10 +2930,35 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglGetRotorBladeAzimuthAngle(TiglCPACSConfigu
 *   - TIGL_NULL_POINTER if radiusPtr is a null pointer
 *   - TIGL_ERROR if some other error occurred
 */
-TIGL_COMMON_EXPORT TiglReturnCode tiglGetRotorBladeRadius(TiglCPACSConfigurationHandle cpacsHandle,
+TIGL_COMMON_EXPORT TiglReturnCode tiglRotorBladeGetRadius(TiglCPACSConfigurationHandle cpacsHandle,
                                                           int rotorIndex,
                                                           int rotorBladeIndex,
                                                           double* radiusPtr);
+
+/**
+* @brief Returns the planform area of the rotor blade.
+*
+* <b>Fortran syntax:</b>
+*
+* tigl_rotor_blade_get_planform_area(integer cpacsHandle, int rotorIndex, int rotorBladeIndex, real planformAreaPtr, integer returnCode)
+*
+*
+* @param[in]  cpacsHandle       Handle for the CPACS configuration
+* @param[in]  rotorIndex        Index of the rotor
+* @param[in]  rotorBladeIndex   Index of the rotor blade to calculate the area, starting at 1
+* @param[out] planformAreaPtr   The planform area of the rotor blade
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_INDEX_ERROR if rotorIndex or rotorBladeIndex are invalid
+*   - TIGL_NULL_POINTER if planformAreaPtr is a null pointer
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglRotorBladeGetPlanformArea(TiglCPACSConfigurationHandle cpacsHandle, 
+                                                                int rotorIndex,
+                                                                int rotorBladeIndex,
+                                                                double *planformAreaPtr);
 
 /**
 * @brief Returns the surface area of the rotor blade.
@@ -3007,7 +3032,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorBladeGetVolume(TiglCPACSConfiguration
 *   - TIGL_NULL_POINTER if tipSpeedPtr is a null pointer
 *   - TIGL_ERROR if some other error occurred
 */
-TIGL_COMMON_EXPORT TiglReturnCode tiglGetRotorBladeTipSpeed(TiglCPACSConfigurationHandle cpacsHandle,
+TIGL_COMMON_EXPORT TiglReturnCode tiglRotorBladeGetTipSpeed(TiglCPACSConfigurationHandle cpacsHandle,
                                                             int rotorIndex,
                                                             int rotorBladeIndex,
                                                             double* tipSpeedPtr);
@@ -3045,7 +3070,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglGetRotorBladeTipSpeed(TiglCPACSConfigurati
 *   - TIGL_NULL_POINTER if radiusPtr is a null pointer
 *   - TIGL_ERROR if some other error occurred
 */
-TIGL_COMMON_EXPORT TiglReturnCode tiglGetRotorBladeLocalRadius(TiglCPACSConfigurationHandle cpacsHandle,
+TIGL_COMMON_EXPORT TiglReturnCode tiglRotorBladeGetLocalRadius(TiglCPACSConfigurationHandle cpacsHandle,
                                                                int rotorIndex,
                                                                int rotorBladeIndex,
                                                                int segmentIndex,
@@ -3083,7 +3108,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglGetRotorBladeLocalRadius(TiglCPACSConfigur
 *   - TIGL_NULL_POINTER if chordPtr is a null pointer
 *   - TIGL_ERROR if some other error occurred
 */
-TIGL_COMMON_EXPORT TiglReturnCode tiglGetRotorBladeLocalChord(TiglCPACSConfigurationHandle cpacsHandle,
+TIGL_COMMON_EXPORT TiglReturnCode tiglRotorBladeGetLocalChord(TiglCPACSConfigurationHandle cpacsHandle,
                                                               int rotorIndex,
                                                               int rotorBladeIndex,
                                                               int segmentIndex,
@@ -3121,7 +3146,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglGetRotorBladeLocalChord(TiglCPACSConfigura
 *   - TIGL_NULL_POINTER if twistAnglePtr is a null pointer
 *   - TIGL_ERROR if some other error occurred
 */
-TIGL_COMMON_EXPORT TiglReturnCode tiglGetRotorBladeLocalTwistAngle(TiglCPACSConfigurationHandle cpacsHandle,
+TIGL_COMMON_EXPORT TiglReturnCode tiglRotorBladeGetLocalTwistAngle(TiglCPACSConfigurationHandle cpacsHandle,
                                                                    int rotorIndex,
                                                                    int rotorBladeIndex,
                                                                    int segmentIndex,
