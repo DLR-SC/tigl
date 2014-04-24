@@ -108,10 +108,21 @@ void CCPACSConfiguration::ReadCPACS(const char* configurationUID)
     guideCurveProfiles.ReadCPACS(tixiDocumentHandle);
 
     configUID = configurationUID;
-    // Now do parent <-> child transformations. Child should use the
-    // parent coordinate system as root.
+
+    // Now do parent <-> child transformations.
+    // Child should use the parent coordinate system as root.
     try {
-        transformAllComponents(uidManager.GetRootComponent());
+        uidManager.Update();
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+    }
+    try {
+        const UIDStoreContainerType& allRootComponentsWithChildren = uidManager.GetAllRootComponentsWithChildren();
+        for (UIDStoreContainerType::const_iterator pIter = allRootComponentsWithChildren.begin(); pIter != allRootComponentsWithChildren.end(); ++pIter) {
+            CTiglAbstractPhysicalComponent* rootComponent = pIter->second;
+            transformAllComponents(rootComponent);
+        }
     }
     catch (tigl::CTiglError& ex) {
         LOG(ERROR) << ex.getError() << std::endl;
@@ -128,7 +139,6 @@ void CCPACSConfiguration::transformAllComponents(CTiglAbstractPhysicalComponent*
         CTiglAbstractPhysicalComponent* child = *pIter;
         child->Translate(parentTranslation);
         transformAllComponents(child);
-
     }
 }
 
