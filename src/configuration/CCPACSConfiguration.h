@@ -126,7 +126,10 @@ public:
     TIGL_EXPORT CCPACSFuselage& GetFuselage(int index) const;
 
     // Returns the fuselage for a given UID.
-    TIGL_EXPORT CCPACSFuselage& GetFuselage(std::string UID) const;
+    TIGL_EXPORT CCPACSFuselage& GetFuselage(const std::string& UID) const;
+
+    // Returns the fuselage index for a given UID.
+    TIGL_EXPORT int GetFuselageIndex(const std::string& UID) const;
 
     // Returns the farfield
     TIGL_EXPORT CCPACSFarField& GetFarField();

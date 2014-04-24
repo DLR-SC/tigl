@@ -112,6 +112,19 @@ TEST_F(TiglFuselageHelper, tiglFuselageGetUID_success)
     ASSERT_STREQ(uid, "SimpleFuselage");
 }
 
+/**
+* Tests tiglFuselageGetIndex with success
+*/
+TEST_F(TiglFuselageHelper, tiglFuselageGetIndex_success)
+{
+    int fuselageIndex;
+    ASSERT_TRUE(tiglFuselageGetIndex(tiglHandle, "SimpleFuselage", &fuselageIndex) == TIGL_SUCCESS);
+    ASSERT_EQ(fuselageIndex, 1);
+}
+
+/**
+* Tests tiglFuselageGetVolume with success
+*/
 TEST_F(TiglFuselageHelper, tiglFuselageGetVolume)
 {
     double volume = 0.;

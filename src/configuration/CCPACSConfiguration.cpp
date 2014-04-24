@@ -262,15 +262,21 @@ CCPACSFuselage& CCPACSConfiguration::GetFuselage(int index) const
     return fuselages.GetFuselage(index);
 }
 
+// Returns the fuselage for a given UID.
+CCPACSFuselage& CCPACSConfiguration::GetFuselage(const std::string& UID) const
+{
+    return fuselages.GetFuselage(UID);
+}
+
+// Returns the fuselage index for a given UID.
+int CCPACSConfiguration::GetFuselageIndex(const std::string& UID) const
+{
+    return fuselages.GetFuselageIndex(UID);
+}
+
 CCPACSFarField& CCPACSConfiguration::GetFarField()
 {
     return farField;
-}
-
-// Returns the fuselage for a given UID.
-CCPACSFuselage& CCPACSConfiguration::GetFuselage(const std::string UID) const
-{
-    return fuselages.GetFuselage(UID);
 }
 
 // Returns the guide curve profile for a given UID.

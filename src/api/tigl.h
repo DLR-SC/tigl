@@ -2339,6 +2339,43 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetUID(TiglCPACSConfigurationHandl
 
 
 /**
+* @brief Returns the index of a fuselage.
+*
+*
+* <b>Fortran syntax:</b>
+*
+* tigl_fuselage_get_index(integer cpacsHandle,
+*                         character*n uIDNamePtr,
+*                         integer fuselageIndex,
+*                         integer returnCode)
+*
+*
+* @param[in]  cpacsHandle       Handle for the CPACS configuration
+* @param[in]  fuselageUID       The uid of the fuselage
+* @param[out] fuselageIndexPtr  The index of a fuselage, starting at 1
+*
+* Usage example:
+*
+@verbatim
+   TiglReturnCode returnCode;
+   int fuselageIndex;
+   returnCode = tiglFuselageGetUID(cpacsHandle, fuselageUID, &fuselageIndex);
+   printf("The Index of the fuselage is %d\n", fuselageIndex);
+@endverbatim
+*
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_UID_ERROR if fuselageUID does not exist
+*   - TIGL_NULL_POINTER if fuselageUID is a null pointer
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetIndex(TiglCPACSConfigurationHandle cpacsHandle,
+                                                       const char* fuselageUID,
+                                                       int* fuselageIndexPtr);
+
+/**
 * @brief Returns the UID of a segment of a fuselage. The string returned must not be
 * deleted by the caller via free(). It will be deleted when the CPACS configuration
 * is closed.

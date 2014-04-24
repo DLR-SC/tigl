@@ -1092,30 +1092,22 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetIndex(TiglCPACSConfigurationHandle 
     try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
-        
-        int nwings = config.GetWingCount();
-        for (int iwing = 1; iwing <= nwings; ++iwing) {
-            tigl::CCPACSWing& wing = config.GetWing(iwing);
-            if (wing.GetUID() == std::string(wingUID)) {
-                *wingIndexPtr = iwing;
-                return TIGL_SUCCESS;
-            }
-        }
-
-        LOG(ERROR) << "Error in tiglWingGetIndex: the wing \"" << wingUID << "\" can not be found!" << std::endl;
-        *wingIndexPtr = -1;
-        return TIGL_UID_ERROR;
+        *wingIndexPtr = config.GetWingIndex(std::string(wingUID));
+        return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what() << std::endl;
+        *wingIndexPtr = -1;
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
         LOG(ERROR) << ex.getError() << std::endl;
+        *wingIndexPtr = -1;
         return ex.getCode();
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglWingGetIndex!" << std::endl;
+        *wingIndexPtr = -1;
         return TIGL_ERROR;
     }
 }
@@ -2519,6 +2511,45 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetUID(TiglCPACSConfigurationHandl
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglFuselageGetUID!" << std::endl;
+        return TIGL_ERROR;
+    }
+}
+
+
+TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetIndex(TiglCPACSConfigurationHandle cpacsHandle,
+                                                       const char * fuselageUID,
+                                                       int* fuselageIndexPtr)
+{
+    if (fuselageUID == 0) {
+        LOG(ERROR) << "Error: Null pointer argument for fuselageUID ";
+        LOG(ERROR) << "in function call to tiglFuselageGetIndex." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+    if (fuselageIndexPtr == 0) {
+        LOG(ERROR) << "Error: Null pointer argument for fuselageIndexPtr ";
+        LOG(ERROR) << "in function call to tiglFuselageGetIndex." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+
+    try {
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+        *fuselageIndexPtr = config.GetFuselageIndex(std::string(fuselageUID));
+        return TIGL_SUCCESS;
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        *fuselageIndexPtr = -1;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        *fuselageIndexPtr = -1;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglFuselageGetIndex!" << std::endl;
+        *fuselageIndexPtr = -1;
         return TIGL_ERROR;
     }
 }
