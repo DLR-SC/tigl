@@ -185,7 +185,7 @@ CTiglTransformation CCPACSRotorBladeAttachment::GetRotorBladeTransformationMatri
     if (doRotationDirTransformation) {
         if (rotor->GetNominalRotationsPerMinute() < 0. ) {
             rotorBladeTransformation.AddMirroringAtYZPlane();
-	    bladeThetaDeg *= -1.;
+            bladeThetaDeg *= -1.;
         }
     }
     // 3. Rotate the rotor blade around z to its azimuth position

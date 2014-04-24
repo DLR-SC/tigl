@@ -178,7 +178,7 @@ void CTiglUIDManager::FindRootComponents(void)
                 rootComponent = component;
             }
             if (childCnt > 0) {
-	        allRootComponentsWithChildren[pIter->first] = component;
+                allRootComponentsWithChildren[pIter->first] = component;
             }
             rootComponentCnt++;
         }
