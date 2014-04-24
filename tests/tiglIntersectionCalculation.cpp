@@ -84,7 +84,7 @@ TEST_F(TiglIntersectionCalculation, tiglIntersection_FuselageWingIntersects)
 
 TEST_F(TiglIntersectionCalculation, tiglIntersectComponents)
 {
-    size_t id = 0;
+    char* id = NULL;
     int count = 0;
     double px, py, pz;
     ASSERT_EQ(TIGL_SUCCESS, tiglIntersectComponents(tiglHandle, "Wing", "SimpleFuselage", &id));
@@ -94,7 +94,7 @@ TEST_F(TiglIntersectionCalculation, tiglIntersectComponents)
     
     // tests errors of tiglIntersectGetPoint since we already have a result
     ASSERT_EQ(TIGL_NOT_FOUND,    tiglIntersectGetPoint(-1, id, 1, 0., &px, &py, &pz));
-    ASSERT_EQ(TIGL_NOT_FOUND,    tiglIntersectGetPoint(tiglHandle, 1234567890, 1, 0., &px, &py, &pz));
+    ASSERT_EQ(TIGL_NOT_FOUND,    tiglIntersectGetPoint(tiglHandle, "1234567890", 1, 0., &px, &py, &pz));
     ASSERT_EQ(TIGL_INDEX_ERROR,  tiglIntersectGetPoint(tiglHandle, id, 0, 0., &px, &py, &pz));
     ASSERT_EQ(TIGL_INDEX_ERROR,  tiglIntersectGetPoint(tiglHandle, id, 2, 0., &px, &py, &pz));
     ASSERT_EQ(TIGL_MATH_ERROR,   tiglIntersectGetPoint(tiglHandle, id, 1, -0.5, &px, &py, &pz));
@@ -102,11 +102,12 @@ TEST_F(TiglIntersectionCalculation, tiglIntersectComponents)
     ASSERT_EQ(TIGL_NULL_POINTER, tiglIntersectGetPoint(tiglHandle, id, 1, 0.5, NULL, &py, &pz));
     ASSERT_EQ(TIGL_NULL_POINTER, tiglIntersectGetPoint(tiglHandle, id, 1, 0.5, &px, NULL, &pz));
     ASSERT_EQ(TIGL_NULL_POINTER, tiglIntersectGetPoint(tiglHandle, id, 1, 0.5, &px, &py, NULL));
+    ASSERT_EQ(TIGL_NULL_POINTER, tiglIntersectGetPoint(tiglHandle, NULL, 1, 0.5, &px, &py, &pz));
 }
 
 TEST_F(TiglIntersectionCalculation, tiglIntersectWithPlane)
 {
-    size_t id = 0;
+    char* id = NULL;
     int count = 0;
     ASSERT_EQ(TIGL_SUCCESS, tiglIntersectWithPlane(tiglHandle, "SimpleFuselage", 0., 0., 0., 0., 0., 1., &id));
     ASSERT_EQ(TIGL_SUCCESS, tiglIntersectGetLineCount(tiglHandle, id, &count));
@@ -125,7 +126,7 @@ TEST_F(TiglIntersectionCalculation, tiglIntersectWithPlane)
 
 TEST_F(TiglIntersectionCalculation, tiglIntersectComponents_Errors)
 {
-    size_t id = 0;
+    char* id = NULL;
     ASSERT_EQ(TIGL_UID_ERROR,    tiglIntersectComponents(tiglHandle, "UNKNOWN_UID", "SimpleFuselage", &id));
     ASSERT_EQ(TIGL_UID_ERROR,    tiglIntersectComponents(tiglHandle, "Wing", "UNKNOWN_UID", &id));
     ASSERT_EQ(TIGL_NOT_FOUND,    tiglIntersectComponents(-1, "Wing", "SimpleFuselage", &id));
@@ -136,11 +137,11 @@ TEST_F(TiglIntersectionCalculation, tiglIntersectComponents_Errors)
 
 TEST_F(TiglIntersectionCalculation, tiglIntersectGetLineCount_Errors)
 {
-    size_t id = 0;
+    char* id = NULL;
     int count = 0;
-    ASSERT_EQ(TIGL_NOT_FOUND, tiglIntersectGetLineCount(-1, id, &count));
-    ASSERT_EQ(TIGL_NULL_POINTER, tiglIntersectGetLineCount(tiglHandle, id, NULL));
+    ASSERT_EQ(TIGL_NULL_POINTER, tiglIntersectGetLineCount(-1, id, &count));
+    ASSERT_EQ(TIGL_NULL_POINTER, tiglIntersectGetLineCount(tiglHandle, "myid", NULL));
     // lets hope the id is invalid
-    ASSERT_EQ(TIGL_NOT_FOUND, tiglIntersectGetLineCount(tiglHandle, 1234567890, &count));
+    ASSERT_EQ(TIGL_NOT_FOUND, tiglIntersectGetLineCount(tiglHandle, "1234567890", &count));
 }
 

@@ -12,7 +12,7 @@ endif()
 project (TIGL)
 set(TIGL_VERSION_MAJOR 2)
 set(TIGL_VERSION_MINOR 1)
-set(TIGL_VERSION_PATCH 1)
+set(TIGL_VERSION_PATCH 2)
 set(TIGL_VERSION "${TIGL_VERSION_MAJOR}.${TIGL_VERSION_MINOR}.${TIGL_VERSION_PATCH}")
 
 set(TIGL_ADD_INCLUDE_PATH "" CACHE PATH "Additional include path for package search")
@@ -125,7 +125,7 @@ add_custom_target(checkstylexml)
 add_subdirectory(src)
 add_subdirectory(TIGLViewer)
 add_subdirectory(bindings)
-add_subdirectory(examples/TIGLDemo)
+add_subdirectory(examples)
 
 
 #create gtests, override gtest standard setting

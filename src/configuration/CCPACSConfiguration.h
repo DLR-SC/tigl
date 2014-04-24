@@ -41,6 +41,7 @@
 #include "TopoDS_Compound.hxx"
 #include "BRep_Builder.hxx"
 #include "CTiglShapeCache.h"
+#include "CTiglMemoryPool.h"
 #include "CSharedPtr.h"
 
 namespace tigl
@@ -151,6 +152,8 @@ public:
 
     TIGL_EXPORT CTiglShapeCache& GetShapeCache(void);
 
+    TIGL_EXPORT CTiglMemoryPool& GetMemoryPool(void);
+
 protected:
     // transform all components relative to their parents
     void transformAllComponents(CTiglAbstractPhysicalComponent* parent);
@@ -175,6 +178,7 @@ private:
     PTiglFusePlane               aircraftFuser;        /**< The aircraft fusing algo */
     std::string                  configUID;            /**< UID of the opened configuration   */
     CTiglShapeCache              shapeCache;
+    CTiglMemoryPool              memoryPool;
 };
 
 } // end namespace tigl

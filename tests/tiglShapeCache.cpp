@@ -30,21 +30,21 @@ TEST(ShapeCache, GetNShapes)
     tigl::CTiglShapeCache cache;
     TopoDS_Shape shape;
     
-    ASSERT_FALSE(cache.HasShape(1));
-    cache.GetContainer()[1] = shape;
+    ASSERT_FALSE(cache.HasShape("1"));
+    cache.GetContainer()["1"] = shape;
     
     ASSERT_EQ(1, cache.GetNShape());
-    ASSERT_TRUE(cache.HasShape(1));
+    ASSERT_TRUE(cache.HasShape("1"));
     
-    cache.GetContainer()[2] = shape;
+    cache.GetContainer()["2"] = shape;
     
     ASSERT_EQ(2, cache.GetNShape());
-    ASSERT_TRUE(cache.HasShape(2));
+    ASSERT_TRUE(cache.HasShape("2"));
     
     cache.Clear();
     
     ASSERT_EQ(0, cache.GetNShape());
-    ASSERT_FALSE(cache.HasShape(1));
+    ASSERT_FALSE(cache.HasShape("1"));
 }
 
 TEST(ShapeCache, Insert)
@@ -52,13 +52,13 @@ TEST(ShapeCache, Insert)
     tigl::CTiglShapeCache cache;
     TopoDS_Shape shape;
     
-    cache.Insert(shape, 1);
-    ASSERT_TRUE(cache.HasShape(1));
+    cache.Insert(shape, "1");
+    ASSERT_TRUE(cache.HasShape("1"));
     ASSERT_EQ(1, cache.GetNShape());
     
-    cache.Insert(shape, 2);
-    ASSERT_TRUE(cache.HasShape(1));
-    ASSERT_TRUE(cache.HasShape(2));
+    cache.Insert(shape, "2");
+    ASSERT_TRUE(cache.HasShape("1"));
+    ASSERT_TRUE(cache.HasShape("2"));
     ASSERT_EQ(2, cache.GetNShape());
 }
 
@@ -67,21 +67,21 @@ TEST(ShapeCache, Remove)
     tigl::CTiglShapeCache cache;
     TopoDS_Shape shape;
     
-    cache.Remove(1);
-    ASSERT_FALSE(cache.HasShape(1));
+    cache.Remove("1");
+    ASSERT_FALSE(cache.HasShape("1"));
     
-    cache.Insert(shape, 1);
-    cache.Remove(1);
-    ASSERT_FALSE(cache.HasShape(1));
+    cache.Insert(shape, "1");
+    cache.Remove("1");
+    ASSERT_FALSE(cache.HasShape("1"));
     
-    cache.Insert(shape, 1);
-    cache.Insert(shape, 2);
-    cache.Remove(1);
-    ASSERT_FALSE(cache.HasShape(1));
-    ASSERT_TRUE (cache.HasShape(2));
+    cache.Insert(shape, "1");
+    cache.Insert(shape, "2");
+    cache.Remove("1");
+    ASSERT_FALSE(cache.HasShape("1"));
+    ASSERT_TRUE (cache.HasShape("2"));
     ASSERT_EQ(1, cache.GetNShape());
     
-    cache.Remove(2);
+    cache.Remove("2");
     ASSERT_EQ(0, cache.GetNShape());
 }
 
@@ -109,21 +109,21 @@ TEST(ShapeCache, Get)
     ASSERT_FALSE(shape2.IsNull());
     ASSERT_FALSE(shape3.IsNull());
     
-    TopoDS_Shape shape = cache.GetShape(1);
+    TopoDS_Shape shape = cache.GetShape("1");
     ASSERT_TRUE(shape.IsNull());
     
-    cache.Insert(shape1, 1);
-    shape = cache.GetShape(1);
+    cache.Insert(shape1, "1");
+    shape = cache.GetShape("1");
     ASSERT_TRUE (shape.IsEqual(shape1));
     ASSERT_FALSE(shape.IsEqual(shape2));
     
-    cache.Insert(shape2, 2);
-    shape = cache.GetShape(2);
+    cache.Insert(shape2, "2");
+    shape = cache.GetShape("2");
     ASSERT_TRUE(shape.IsEqual(shape2));
     
-    shape = cache.GetShape(1);
+    shape = cache.GetShape("1");
     ASSERT_TRUE(shape.IsEqual(shape1));
     
-    shape = cache.GetShape(3);
+    shape = cache.GetShape("3");
     ASSERT_TRUE(shape.IsNull());
 }

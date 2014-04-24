@@ -350,5 +350,10 @@ CTiglShapeCache& CCPACSConfiguration::GetShapeCache()
     return shapeCache;
 }
 
+CTiglMemoryPool& CCPACSConfiguration::GetMemoryPool()
+{
+    return memoryPool;
+}
+
 } // end namespace tigl
 

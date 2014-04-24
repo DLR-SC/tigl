@@ -9,9 +9,11 @@
 \ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
   \usepackage[utf8]{inputenc}
 \else % if luatex or xelatex
-  \usepackage{fontspec}
   \ifxetex
+    \usepackage{mathspec}
     \usepackage{xltxtra,xunicode}
+  \else
+    \usepackage{fontspec}
   \fi
   \defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
   \newcommand{\euro}{€}
@@ -30,6 +32,7 @@
             pdfauthor={},
             pdftitle={},
             colorlinks=true,
+            citecolor=blue,
             urlcolor=blue,
             linkcolor=magenta,
             pdfborder={0 0 0}}
@@ -45,6 +48,235 @@
 \begin{document}
 
 \title{TiGL -- Latest Changes} \maketitle
+
+\section{Version 2.1.2}\label{version-2.1.2}
+
+17/04/2014
+
+\begin{quote}
+\begin{itemize}
+\item
+  Changed API:
+
+  \begin{quote}
+  \begin{itemize}
+  \item
+    The returned UID strings of the following functions must not be
+    freed by the user anymore:
+
+    \begin{quote}
+    \begin{itemize}
+    \itemsep1pt\parskip0pt\parsep0pt
+    \item
+      \texttt{tiglWingGetOuterSectionAndElementIndex}
+    \item
+      \texttt{tiglWingGetInnerSectionAndElementUID}
+    \item
+      \texttt{tiglFuselageGetStartSectionAndElementUID}
+    \item
+      \texttt{tiglFuselageGetEndSectionAndElementUID}
+    \item
+      \texttt{tiglWingComponentSegmentPointGetSegmentEtaXsi}
+    \item
+      \texttt{tiglWingComponentSegmentFindSegment}
+    \end{itemize}
+    \end{quote}
+  \item
+    Changed behavior of \texttt{tiglWingComponentSegmentFindSegment}. In
+    case the specified point does not lie within 1 cm of any segment,
+    \texttt{TIGL\_NOT\_FOUND} is returned.
+  \item
+    Changed behavior of
+    \texttt{tiglWingComponentSegmentPointGetSegmentEtaXsi}. If the
+    specified point lies outside any segment so that the transformation
+    can not be executed, \texttt{TIGL\_MATH\_ERROR} is returned.
+  \item
+    The following API functions \texttt{tiglComponentIntersectionPoint},
+    \texttt{tiglComponentIntersectionPoints} and
+    \texttt{tiglComponentIntersectionLineCount} are deprecated and will
+    be removed in future releases. These functions are replaced by new
+    intersection routines.
+  \item
+    Removed functions \texttt{tiglExportStructuredIGES} and
+    \texttt{tiglExportStructuredSTEP}
+  \end{itemize}
+  \end{quote}
+\item
+  General changes:
+
+  \begin{quote}
+  \begin{itemize}
+  \item
+    Completely reworked boolean operations with the following effects:
+
+    \begin{quote}
+    \begin{itemize}
+    \itemsep1pt\parskip0pt\parsep0pt
+    \item
+      Fusing the whole plane is faster in many cases and more reliable
+    \item
+      We keep track of the origins of each trimmed face which helps for
+      the IGES and STEP exports
+    \item
+      The boolean operations can be debugged now by setting the
+      environment variable TIGL\_DEBUG\_BOP
+    \end{itemize}
+    \end{quote}
+  \item
+    Completely rewritten STEP and IGES exports:
+
+    \begin{quote}
+    \begin{itemize}
+    \itemsep1pt\parskip0pt\parsep0pt
+    \item
+      Each face has now an identifier name
+    \item
+      Inclusion of intersection curves
+    \item
+      Inclusion of far fields into exports
+    \item
+      IGES export in non-BREP mode since it is not supported by CATIA
+    \end{itemize}
+    \end{quote}
+  \item
+    Added new demos for C, Python and MATLAB. Please look into the
+    documentation how to run them.
+  \item
+    Added function for the intersection computation of a geometrical
+    shape with a plane
+  \item
+    Experimental implementation of wing and fuselage guide curves
+  \item
+    The mathematical orientation of wing profiles is checked for
+    correctness
+  \item
+    TiGL requires now at least OpenCASCADE 6.6.0
+  \item
+    Ported to OpenCASCADE 6.7.0
+  \end{itemize}
+  \end{quote}
+\item
+  New API functions:
+
+  \begin{quote}
+  \begin{itemize}
+  \item
+    Added new API functions for shape/shape and shape/plane
+    intersections:
+
+    \begin{quote}
+    \begin{itemize}
+    \itemsep1pt\parskip0pt\parsep0pt
+    \item
+      \texttt{tiglIntersectComponents}
+    \item
+      \texttt{tiglIntersectWithPlane}
+    \item
+      \texttt{tiglIntersectGetLineCount}
+    \item
+      \texttt{tiglIntersectGetPoint}
+    \end{itemize}
+    \end{quote}
+  \end{itemize}
+  \end{quote}
+\item
+  Fixes:
+
+  \begin{quote}
+  \begin{itemize}
+  \itemsep1pt\parskip0pt\parsep0pt
+  \item
+    Fixed a bug in \texttt{tiglWingComponentSegmentFindSegment}
+  \item
+    Fixed numerical inaccuracy in the projection of points to a wing
+    segment
+  \item
+    Fixed crash in case of too long UIDs
+  \item
+    Fixed some memory leaks
+  \end{itemize}
+  \end{quote}
+\item
+  TiGLViewer:
+
+  \begin{quote}
+  \begin{itemize}
+  \item
+    Improved IGES import:
+
+    \begin{quote}
+    \begin{itemize}
+    \itemsep1pt\parskip0pt\parsep0pt
+    \item
+      Multiple shapes are now imported as separate shapes from IGES
+      files.
+    \item
+      Fixed wrong scaling when importing IGES files.
+    \end{itemize}
+    \end{quote}
+  \item
+    Improved STEP export:
+
+    \begin{quote}
+    \begin{itemize}
+    \itemsep1pt\parskip0pt\parsep0pt
+    \item
+      Files are now exported in units of meters instead of millimeters.
+    \end{itemize}
+    \end{quote}
+  \item
+    Improved BREP export and import: compound objects are now decomposed
+    to separate objects.
+  \item
+    Added method to export fused aircraft to BREP
+  \item
+    Added method to export wing and fuselage profiles and guide curves
+    to BREP
+  \item
+    Fixed incorrect units in IGES and STEP export from save-as dialog.
+  \item
+    General save-as dialog: All visible objects are saved to the file,
+    if no shape is selected. Otherwise, only the selected objects are
+    exported.
+  \item
+    Added debugging parameters to settings dialog. This includes:
+
+    \begin{quote}
+    \begin{itemize}
+    \itemsep1pt\parskip0pt\parsep0pt
+    \item
+      Adapting number of displayed iso lines per face
+    \item
+      Display face numbers
+    \item
+      Debug boolean operations (if enabled, debugging shapes in BRep
+      format are stored to the current working directory)
+    \end{itemize}
+    \end{quote}
+  \item
+    Added new dialog for shape/shape and shape/plane intersections.
+  \item
+    Added drag and drop support to TiGLViewer. Files (CPACS, IGES, STEP,
+    BREP) are opened when they are dragged into TiGLViewer.
+  \item
+    TiGLViewer displays far field after calculating the trimmed aircraft
+  \item
+    Iso U/V lines are no longer displayed by default. This can be
+    changed in the settings dialog.
+  \item
+    The fused/trimmed aircraft geometry is displayed using a different
+    color for each component.
+  \item
+    Added visualization of wing and fuselage guide curves.
+  \item
+    Fix: Only the first intersection curve was displayed. This is fixed
+    now.
+  \item
+    New icons
+  \end{itemize}
+  \end{quote}
+\end{itemize}
+\end{quote}
 
 \section{Version 2.1.1}\label{version-2.1.1}
 

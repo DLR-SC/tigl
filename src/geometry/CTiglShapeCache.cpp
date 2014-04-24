@@ -27,12 +27,12 @@ CTiglShapeCache::CTiglShapeCache()
     Reset();
 }
 
-void CTiglShapeCache::Insert(const TopoDS_Shape &shape, size_t id)
+void CTiglShapeCache::Insert(const TopoDS_Shape &shape, const std::string& id)
 {
     shapeContainer[id] = shape;
 }
 
-TopoDS_Shape& CTiglShapeCache::GetShape(size_t id) 
+TopoDS_Shape& CTiglShapeCache::GetShape(const std::string& id) 
 {
     ShapeContainer::iterator it = shapeContainer.find(id);
     if (it == shapeContainer.end()) {
@@ -44,7 +44,7 @@ TopoDS_Shape& CTiglShapeCache::GetShape(size_t id)
 }
 
 /// Returns true, if the shape with id is in the cache
-bool CTiglShapeCache::HasShape(size_t id)
+bool CTiglShapeCache::HasShape(const std::string& id)
 {
     ShapeContainer::iterator it = shapeContainer.find(id);
     return it != shapeContainer.end();
@@ -61,7 +61,7 @@ void CTiglShapeCache::Clear()
     shapeContainer.clear();
 }
 
-void CTiglShapeCache::Remove(size_t id) 
+void CTiglShapeCache::Remove(const std::string& id) 
 {
     ShapeContainer::iterator it = shapeContainer.find(id);
     if (it != shapeContainer.end()) {

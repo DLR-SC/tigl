@@ -239,6 +239,7 @@ IF(WIN32)
 
 ENDIF(WIN32)
 
+SET(CMAKE_INSTALL_OPENMP_LIBRARIES "ON")
 INCLUDE(InstallRequiredSystemLibraries)
 
 	
