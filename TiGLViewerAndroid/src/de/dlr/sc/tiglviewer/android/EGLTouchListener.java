@@ -3,6 +3,7 @@ package de.dlr.sc.tiglviewer.android;
 
 import android.graphics.PointF;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
@@ -186,5 +187,4 @@ public class EGLTouchListener implements OnTouchListener {
         float y = event.getY(0) - event.getY(1);
         return (float)Math.sqrt(x * x + y * y);
     }
-
 }

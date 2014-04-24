@@ -16,4 +16,7 @@
     <string name="drawer_close">Close drawer</string>
     <string name="change_navigation_button">Toggle navigation</string>
     <string name="zoom_button">Fit to screen</string>
+    <string name="help_button">Help</string>
+    <string name="text_Navigation">To navigate:</string>
+    <string name="main_drawer">Main drawer:</string>
 </resources>

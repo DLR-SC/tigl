@@ -16,6 +16,9 @@
           android:title="@string/delete_button"
           android:icon="@drawable/abc_ic_clear"
           yourapp:showAsAction="always" />
+     
+     <item android:id="@+id/action_help"
+        android:title="@string/help_button"/>
     <!-- 
     <item
         android:id="@+id/action_settings"

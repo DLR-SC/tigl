@@ -51,6 +51,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.text.util.Linkify;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -66,7 +67,7 @@ import android.widget.Toast;
 import de.dlr.sc.tiglviewer.android.NoticeFragment.noticeFragmentsListener;
 
 @SuppressLint("ValidFragment")
-public class TiglViewerActivity extends ActionBarActivity implements OnNavigationListener,noticeFragmentsListener {
+public class TiglViewerActivity extends ActionBarActivity implements OnNavigationListener,noticeFragmentsListener{
 	enum navType { 
 		MOVE, 
 		ROTATE 
@@ -115,11 +116,11 @@ public class TiglViewerActivity extends ActionBarActivity implements OnNavigatio
         
         drawerItems.add(new ParentItem("Open Files"));
         drawerItems.add(new ParentItem("Other Actions"));
-        drawerItems.add(new ChildItem("Download Models","downloadmodels"));
-        drawerItems.add(new ChildItem("Export File","exportfile"));
+        drawerItems.add(new ChildItem("Download Models","Download Models"));
+        drawerItems.add(new ChildItem("Export File","Export File"));
 
-        
-        mDrawerList.setAdapter(new ModelAdapter(this, drawerItems));
+        ModelAdapter drawerWrapper = new ModelAdapter(this, drawerItems);
+        mDrawerList.setAdapter(drawerWrapper);
 
         
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
@@ -260,6 +261,11 @@ public class TiglViewerActivity extends ActionBarActivity implements OnNavigatio
         case R.id.action_zoom:
             TiGLViewerNativeLib.fitScreen();
             return true;
+        case R.id.action_help:
+            helpDialog help = new helpDialog(this);
+            help.setTitle("Help");
+            help.show();
+            return true;
         default:
             return super.onOptionsItemSelected(item);
         }
@@ -269,7 +275,13 @@ public class TiglViewerActivity extends ActionBarActivity implements OnNavigatio
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            selectItem(position);
+            
+                if(drawerItems.get(position).getName() == "Download Models"){
+                    downloadAction();
+                }
+                else if(drawerItems.get(position).getName() != "Export File"){
+                    selectItem(position); 
+                }
             mDrawerLayout.closeDrawer(mDrawerList);
         }
     }
@@ -289,8 +301,6 @@ public class TiglViewerActivity extends ActionBarActivity implements OnNavigatio
     // is called when item in drawer is selected
     private void selectItem(int position) {
         // update the main content by replacing fragments
-
-
         // update selected item and title, then close the drawer
         mDrawerList.setItemChecked(position, true);    
         mDrawerLayout.closeDrawer(mDrawerList);
@@ -463,7 +473,30 @@ public class TiglViewerActivity extends ActionBarActivity implements OnNavigatio
 		}
 	}
 	
-	
+	public class helpDialog extends Dialog{
+	    public helpDialog(Context context)
+	    {
+	        super(context);
+	    }
+	    @Override
+	    public void onCreate(Bundle savedInstanceState){
+	        setContentView(R.layout.help_dialog);
+	        TextView tv = (TextView) findViewById(R.id.navi_onefinger);
+	        tv.setText("1- One finger action for rotation/panning.");
+	        tv = (TextView) findViewById(R.id.navi_toggle);
+	        tv.setText("(Toggle between both actions using the move/rotate icon)");
+	        tv = (TextView) findViewById(R.id.navi_twofingers);
+	        tv.setText("2- Two fingers action for zooming in/out." +
+	                   "\n"+
+	                   "3- Select parts of the model by tapping them." +
+	                   "\n"+
+	                   "4- Use the x icon to remove the selected parts.");
+	        tv = (TextView) findViewById(R.id.draw_ma);
+	        tv.setText("1- Select models to load."+
+	                   "\n" +
+	                   "2- Download sample models.");
+	    }
+	}
 	/** BackGround thread to download the sample 
 	 * models on the create of the viewer activity
 	 */
@@ -566,6 +599,14 @@ public class TiglViewerActivity extends ActionBarActivity implements OnNavigatio
     */
     @Override
     public void onYesClick(DialogFragment dialog) {
+        downloadAction();
+    }
+    @Override
+    public void onNoClick(DialogFragment dialog) {
+        addCPACSFilesToDrawer();
+    }
+    
+    public void downloadAction(){
         URL downloadingLink = null;
         try {
             downloadingLink = new URL("http://sourceforge.net/projects/tigl/files/DevTools/TiGL-SampleModels.zip");
@@ -582,10 +623,6 @@ public class TiglViewerActivity extends ActionBarActivity implements OnNavigatio
                     "No internet connection. Check internet settings and try again.",
                     Toast.LENGTH_SHORT).show();
         }
-    }
-    @Override
-    public void onNoClick(DialogFragment dialog) {
-        addCPACSFilesToDrawer();
     }
 }
 
