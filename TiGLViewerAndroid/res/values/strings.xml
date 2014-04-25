@@ -17,6 +17,8 @@
     <string name="change_navigation_button">Toggle navigation</string>
     <string name="zoom_button">Fit to screen</string>
     <string name="help_button">Help</string>
-    <string name="text_Navigation">To navigate:</string>
-    <string name="main_drawer">Main drawer:</string>
+    <string name="text_Navigation">Navigation</string>
+    <string name="main_drawer">Main drawer :-</string>
+    <string name="text_new_models">Importing new models</string>
+    <string name="text_store">- Place your model file into the Tiglviewer directory in your home directory.</string>
 </resources>

@@ -32,6 +32,7 @@ import java.util.zip.ZipInputStream;
 import org.apache.http.util.ByteArrayBuffer;
 
 import android.annotation.SuppressLint;
+import android.app.ActionBar.LayoutParams;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
@@ -265,6 +266,8 @@ public class TiglViewerActivity extends ActionBarActivity implements OnNavigatio
             helpDialog help = new helpDialog(this);
             help.setTitle("Help");
             help.show();
+            Window window = help.getWindow();
+            window.setLayout(LayoutParams.WRAP_CONTENT , LayoutParams.WRAP_CONTENT);
             return true;
         default:
             return super.onOptionsItemSelected(item);
@@ -467,7 +470,6 @@ public class TiglViewerActivity extends ActionBarActivity implements OnNavigatio
 					   "TiGL uses Open CASCADE 6.7.0 and OpenSceneGraph 3.2.1\n" +
 					   "\n" +
 					   "Visit the TiGL project page at http://code.google.com/p/tigl/");
-			tv.setGravity(Gravity.CENTER);
 			Linkify.addLinks(tv, Linkify.WEB_URLS);
 			tv = (TextView) findViewById(R.id.tigl_version);
 			tv.setText("v" + TiGLViewerNativeLib.tiglGetVersion());
@@ -482,20 +484,17 @@ public class TiglViewerActivity extends ActionBarActivity implements OnNavigatio
 	    @Override
 	    public void onCreate(Bundle savedInstanceState){
 	        setContentView(R.layout.help_dialog);
-	        TextView tv = (TextView) findViewById(R.id.navi_onefinger);
-	        tv.setText("1- One finger action for rotation/panning.");
-	        tv = (TextView) findViewById(R.id.navi_toggle);
-	        tv.setText("(Toggle between both actions using the move/rotate icon)");
-	        tv = (TextView) findViewById(R.id.navi_twofingers);
-	        tv.setText("2- Two fingers action for zooming in/out." +
+         TextView tv = (TextView) findViewById(R.id.navi_onefinger);
+         tv.setText("- One finger action for rotation/panning");
+	     tv = (TextView) findViewById(R.id.navi_toggle);
+	     tv.setText("(Toggle between both actions using the move/rotate icon)");
+	     tv = (TextView) findViewById(R.id.navi_twofingers);
+	     tv.setText("- Two fingers action for zooming in/out." +
 	                   "\n"+
-	                   "3- Select parts of the model by tapping them." +
+	                   "- Select parts of the model by tapping them." +
 	                   "\n"+
-	                   "4- Use the x icon to remove the selected parts.");
-	        tv = (TextView) findViewById(R.id.draw_ma);
-	        tv.setText("1- Select models to load."+
-	                   "\n" +
-	                   "2- Download sample models.");
+	                   "- Use the x icon to remove the selected parts.");
+
 	    }
 	}
 	/** BackGround thread to download the sample 
