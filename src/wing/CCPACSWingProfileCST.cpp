@@ -23,12 +23,14 @@
 * geometry representation method.
 */
 
+#include <algorithm>
+#include <cmath>
+
 #include "CTiglError.h"
 #include "CTiglTypeRegistry.h"
 #include "CTiglLogging.h"
 #include "CTiglTransformation.h"
 #include "CCPACSWingProfileFactory.h"
-#include "math.h"
 
 #include "gp_Pnt2d.hxx"
 #include "gp_Vec2d.hxx"
@@ -61,7 +63,6 @@
 #include "CCPACSWingProfileCST.h"
 #include <GeomAPI_Interpolate.hxx>
 #include <TColgp_HArray1OfPnt.hxx>
-#include <algorithm>
 
 
 namespace tigl

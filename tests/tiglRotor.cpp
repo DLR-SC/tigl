@@ -23,10 +23,12 @@
 * @brief Tests for rotor functions.
 */
 
+#define _USE_MATH_DEFINES
+#include <cmath>
+#include <cstring>
+
 #include "test.h" // Brings in the GTest framework
 #include "tigl.h"
-#include <cmath>
-#include <string.h>
 
 /******************************************************************************/
 

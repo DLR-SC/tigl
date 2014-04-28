@@ -23,7 +23,7 @@
 * @brief  Implementation of CPACS wing ComponentSegment handling routines.
 */
 
-#include <math.h>
+#include <cmath>
 #include <iostream>
 #include <algorithm>
 #include <string>

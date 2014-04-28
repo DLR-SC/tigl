@@ -22,7 +22,7 @@
 * @file
 * @brief  Implementation of CPACS fuselage handling routines.
 */
-
+#include <cmath>
 #include <iostream>
 
 #include "tigl_config.h"
@@ -45,9 +45,6 @@
 #include "BRepBuilderAPI_MakeWire.hxx"
 #include "GC_MakeSegment.hxx"
 #include "BRepExtrema_DistShapeShape.hxx"
-
-#define _USE_MATH_DEFINES
-#include <math.h>
 
 
 namespace tigl

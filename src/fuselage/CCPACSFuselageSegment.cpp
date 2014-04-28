@@ -23,6 +23,7 @@
 * @brief  Implementation of CPACS fuselage segment handling routines.
 */
 #include <iostream>
+#include <cmath>
 
 #include "CCPACSFuselageSegment.h"
 #include "CCPACSFuselage.h"
@@ -85,8 +86,6 @@
 #define max(a, b) (((a) > (b)) ? (a) : (b))
 #endif
 
-#define _USE_MATH_DEFINES
-#include <math.h>
 namespace
 {
     gp_Pnt transformProfilePoint(const tigl::CTiglTransformation& fuselTransform, const tigl::CCPACSFuselageConnection& connection, const gp_Pnt& pointOnProfile)

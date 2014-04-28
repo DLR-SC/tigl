@@ -25,6 +25,7 @@
 #include <vector>
 #include <algorithm>
 #include <limits>
+#include <cmath>
 
 #include "CTiglError.h"
 #include "CTiglTypeRegistry.h"
@@ -34,7 +35,6 @@
 #include "ITiglWingProfileAlgo.h"
 #include "CCPACSWingProfilePointList.h"
 #include "CTiglTransformation.h"
-#include "math.h"
 #include "CCPACSWingProfile.h"
 #include "CCPACSWingProfileFactory.h"
 

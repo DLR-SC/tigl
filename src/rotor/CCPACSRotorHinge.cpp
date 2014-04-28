@@ -289,10 +289,10 @@ double CCPACSRotorHinge::GetHingeAngle(double thetaDeg, double a0, std::vector<d
 {
     double theta = thetaDeg * M_PI/180.; // convert theta from degree to rad
     double hingeAngle = neutralPosition + a0; // Constant portion
-    for (int i=0; i<aSin.size(); ++i) { // Sine coefficients
+    for (unsigned int i = 0; i < aSin.size(); ++i) { // Sine coefficients
         hingeAngle += aSin[i] * sin(static_cast<double>(i+1) * theta);
     }
-    for (int i=0; i<aCos.size(); ++i) { // Cosine coefficients
+    for (unsigned int i = 0;  i < aCos.size(); ++i) { // Cosine coefficients
         hingeAngle += aCos[i] * cos(static_cast<double>(i+1) * theta);
     }
     return hingeAngle;

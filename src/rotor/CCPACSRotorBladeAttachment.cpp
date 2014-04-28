@@ -138,7 +138,7 @@ void CCPACSRotorBladeAttachment::ReadCPACS(TixiDocumentHandle tixiHandle, const 
 
     // Create rotor blades
     CCPACSWing* ptrToUnattachedRotorBlade = &(GetConfiguration().GetWing(rotorBladeUID));
-    for (int i=0; i<azimuthAngles.size(); ++i) {
+    for (unsigned int i=0; i<azimuthAngles.size(); ++i) {
         rotorBlades.AddRotorBlade(new CCPACSRotorBlade(this, ptrToUnattachedRotorBlade, i+1));
     }
 
@@ -215,7 +215,7 @@ int CCPACSRotorBladeAttachment::GetNumberOfBlades(void) const
 const double& CCPACSRotorBladeAttachment::GetAzimuthAngle(int index) const
 {
     index --;
-    if (index < 0 || index >= azimuthAngles.size()) {
+    if (index < 0 || index >= (int) azimuthAngles.size()) {
         throw CTiglError("Error: Invalid index in CCPACSRotorBladeAttachment::GetAzimuthAngle", TIGL_INDEX_ERROR);
     }
     return (azimuthAngles[index]);

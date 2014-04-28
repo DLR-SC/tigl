@@ -26,10 +26,10 @@
 #include <iostream>
 #include <sstream>
 #include <vector>
+#include <cmath>
 
 #include "CTiglError.h"
 #include "CTiglLogging.h"
-#include "math.h"
 
 #include "gp_Pnt2d.hxx"
 #include "gp_Vec2d.hxx"
