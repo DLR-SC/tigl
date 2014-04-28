@@ -37,7 +37,8 @@
 namespace tigl
 {
 
-enum TiglRotorHingeType {
+enum TiglRotorHingeType
+{
     TIGLROTORHINGE_UNDEFINED,
     TIGLROTORHINGE_FLAP,
     TIGLROTORHINGE_PITCH,

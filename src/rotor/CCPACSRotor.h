@@ -40,7 +40,8 @@
 namespace tigl
 {
 
-enum TiglRotorType {
+enum TiglRotorType
+{
     TIGLROTOR_UNDEFINED,
     TIGLROTOR_MAIN_ROTOR,
     TIGLROTOR_TAIL_ROTOR,

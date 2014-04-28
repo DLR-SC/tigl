@@ -3196,9 +3196,9 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorBladeGetWingUID(TiglCPACSConfiguratio
 }
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglRotorBladeGetAzimuthAngle(TiglCPACSConfigurationHandle cpacsHandle,
-                                                           int rotorIndex,
-                                                           int rotorBladeIndex,
-                                                           double* azimuthAnglePtr)
+                                                                int rotorIndex,
+                                                                int rotorBladeIndex,
+                                                                double* azimuthAnglePtr)
 {
     if (azimuthAnglePtr == 0) {
         LOG(ERROR) << "Error: Null pointer argument for azimuthAnglePtr ";

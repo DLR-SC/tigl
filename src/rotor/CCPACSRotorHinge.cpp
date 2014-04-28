@@ -183,31 +183,35 @@ void CCPACSRotorHinge::ReadCPACS(TixiDocumentHandle tixiHandle, const std::strin
 
     // Get subelement "neutralPosition"
     tempString    = rotorHingeXPath + "/neutralPosition";
-    if (tixiCheckElement(tixiHandle, tempString.c_str())== SUCCESS)
+    if (tixiCheckElement(tixiHandle, tempString.c_str())== SUCCESS) {
         if (tixiGetDoubleElement(tixiHandle, tempString.c_str(), &tmpDouble) == SUCCESS) {
             neutralPosition = tmpDouble;
         }
+    }
 
     // Get subelement "staticStiffness"
     tempString    = rotorHingeXPath + "/staticStiffness";
-    if (tixiCheckElement(tixiHandle, tempString.c_str())== SUCCESS)
+    if (tixiCheckElement(tixiHandle, tempString.c_str())== SUCCESS) {
         if (tixiGetDoubleElement(tixiHandle, tempString.c_str(), &tmpDouble) == SUCCESS) {
             staticStiffness = tmpDouble;
         }
+    }
 
     // Get subelement "dynamicStiffness"
     tempString    = rotorHingeXPath + "/dynamicStiffness";
-    if (tixiCheckElement(tixiHandle, tempString.c_str())== SUCCESS)
+    if (tixiCheckElement(tixiHandle, tempString.c_str())== SUCCESS) {
         if (tixiGetDoubleElement(tixiHandle, tempString.c_str(), &tmpDouble) == SUCCESS) {
             dynamicStiffness = tmpDouble;
         }
+    }
 
     // Get subelement "damping"
     tempString    = rotorHingeXPath + "/damping";
-    if (tixiCheckElement(tixiHandle, tempString.c_str())== SUCCESS)
+    if (tixiCheckElement(tixiHandle, tempString.c_str())== SUCCESS) {
         if (tixiGetDoubleElement(tixiHandle, tempString.c_str(), &tmpDouble) == SUCCESS) {
             damping = tmpDouble;
         }
+    }
 
     Update();
 }

@@ -163,7 +163,8 @@ void CCPACSRotor::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& ro
     tempString         = rotorXPath + "/parentUID";
     elementPath        = const_cast<char*>(tempString.c_str());
     if (tixiCheckElement(tixiHandle, elementPath) == SUCCESS &&
-            tixiGetTextElement(tixiHandle, elementPath, &ptrParentUID) == SUCCESS) {
+        tixiGetTextElement(tixiHandle, elementPath, &ptrParentUID) == SUCCESS) {
+
         SetParentUID(ptrParentUID);
     }
 
@@ -224,10 +225,11 @@ void CCPACSRotor::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& ro
     double tmpDouble = 0.;
     tempString       = rotorXPath + "/nominalRotationsPerMinute";
     elementPath      = const_cast<char*>(tempString.c_str());
-    if (tixiCheckElement(tixiHandle,elementPath)== SUCCESS)
+    if (tixiCheckElement(tixiHandle,elementPath)== SUCCESS) {
         if (tixiGetDoubleElement(tixiHandle, elementPath, &tmpDouble) == SUCCESS) {
             nominalRotationsPerMinute = tmpDouble;
         }
+    }
 
     // Get subelement "rotorHub"
     rotorHub.ReadCPACS(tixiHandle, rotorXPath + "/rotorHub");

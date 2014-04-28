@@ -465,7 +465,7 @@ QString TIGLViewerDocument::dlgGetRotorSelection()
     }
 
     QString choice = QInputDialog::getItem(parent, tr("Select Rotor"), tr("Available Rotors:"), rotors, 0, false, &ok);
-    if(ok) {
+    if (ok) {
         return choice;
     }
     else {
@@ -2001,21 +2001,22 @@ void TIGLViewerDocument::drawRotorsWingsAndFuselages()
         const TopoDS_Shape& rotorDisk = rotor.GetRotorDisk();
         displayShape(rotorDisk, Quantity_NOC_RotorCol, 0.9);
 
-        if(rotor.GetSymmetryAxis() == TIGL_NO_SYMMETRY)
+        if (rotor.GetSymmetryAxis() == TIGL_NO_SYMMETRY) {
             continue;
+        }
 
         // Draw mirrored rotor
         const TopoDS_Shape& mirrRotorGeometry = rotor.GetMirroredLoft();
         displayShape(mirrRotorGeometry, Quantity_NOC_MirrRotorCol);
         // Draw mirrored rotor disk
         gp_Ax2 mirrorPlane;
-        if(rotor.GetSymmetryAxis() == TIGL_X_Z_PLANE){
+        if (rotor.GetSymmetryAxis() == TIGL_X_Z_PLANE) {
             mirrorPlane = gp_Ax2(gp_Pnt(0,0,0),gp_Dir(0.,1.,0.));
         }
-        else if(rotor.GetSymmetryAxis() == TIGL_X_Y_PLANE){
+        else if (rotor.GetSymmetryAxis() == TIGL_X_Y_PLANE) {
             mirrorPlane = gp_Ax2(gp_Pnt(0,0,0),gp_Dir(0.,0.,1.));
         }
-        else if(rotor.GetSymmetryAxis() == TIGL_Y_Z_PLANE){
+        else if (rotor.GetSymmetryAxis() == TIGL_Y_Z_PLANE) {
             mirrorPlane = gp_Ax2(gp_Pnt(0,0,0),gp_Dir(1.,0.,0.));
         }
         gp_Trsf theTransformation;
@@ -2031,8 +2032,9 @@ void TIGLViewerDocument::drawRotorsWingsAndFuselages()
 void TIGLViewerDocument::drawRotor()
 {
     QString rotorUid = dlgGetRotorSelection();
-    if(rotorUid=="")
+    if (rotorUid=="") {
         return;
+    }
 
     tigl::CCPACSRotor& rotor = GetConfiguration().GetRotor(rotorUid.toStdString());
 
@@ -2051,8 +2053,9 @@ void TIGLViewerDocument::drawRotor()
 void TIGLViewerDocument::drawRotorDisk()
 {
     QString rotorUid = dlgGetRotorSelection();
-    if(rotorUid=="")
+    if (rotorUid=="") {
         return;
+    }
 
     tigl::CCPACSRotor& rotor = GetConfiguration().GetRotor(rotorUid.toStdString());
 
@@ -2071,8 +2074,9 @@ void TIGLViewerDocument::drawRotorDisk()
 void TIGLViewerDocument::showRotorProperties()
 {
     QString rotorUid = dlgGetRotorSelection();
-    if(rotorUid=="")
+    if (rotorUid=="") {
         return;
+    }
 
     tigl::CCPACSRotor& rotor = GetConfiguration().GetRotor(rotorUid.toStdString());
 

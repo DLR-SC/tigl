@@ -35,7 +35,8 @@
 namespace tigl
 {
 
-enum TiglRotorHubType {
+enum TiglRotorHubType
+{
     TIGLROTORHUB_UNDEFINED,
     TIGLROTORHUB_SEMI_RIGID,
     TIGLROTORHUB_RIGID,
