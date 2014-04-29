@@ -4,6 +4,41 @@
     android:layout_height="fill_parent"
     android:orientation="vertical"
     android:padding="10dip">
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:fillViewport="true">
+        
+     <LinearLayout
+         android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+         android:orientation="vertical"
+         android:scrollbars="vertical"
+    	 android:scrollbarAlwaysDrawVerticalTrack="true">
+    
+    <LinearLayout 
+        android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="left"
+    android:orientation="vertical">
+        <TextView
+        android:id="@+id/tigl_details"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="17sp"
+        android:layout_marginTop="5dp"/>
+    </LinearLayout>
+    <LinearLayout android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="left"
+    android:orientation="vertical">
+        <TextView
+        android:id="@+id/import_files"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="17sp"
+        android:layout_marginTop="5dp"/>
+    </LinearLayout>
     <LinearLayout
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
@@ -12,46 +47,58 @@
         <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="17sp"
+        android:textSize="20sp"
         android:textStyle="bold"
         android:text="@string/text_Navigation"
         android:layout_marginTop="5dp"/>
-        <TextView
-        android:id="@+id/navi_onefinger"  
+    </LinearLayout>
+      <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="0.9"
-        android:layout_marginTop="5dp"/>
-        <TextView
-        android:id="@+id/navi_toggle"  
-        android:layout_width="wrap_content"
+        android:orientation="horizontal">
+      <TextView   
+      android:text="@string/rotation"  
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:gravity="center"
+      android:textSize="17sp"
+      android:layout_marginTop="12dp"
+      android:layout_marginLeft="10dp"
+      android:drawablePadding="10dip"
+      android:drawableLeft="@drawable/ic_action_rotate_left_dark"/>
+      </LinearLayout>
+      <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="10sp"/>
-        <TextView
-        android:id="@+id/navi_twofingers"  
-        android:layout_width="wrap_content"
+        android:orientation="horizontal">
+      <TextView   
+      android:text="@string/move"  
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:gravity="center"
+      android:textSize="17sp"
+      android:layout_marginTop="12dp"
+      android:drawablePadding="10dip"
+      android:layout_marginLeft="10dp"
+      android:drawableLeft="@drawable/ic_move_dark"/>
+      </LinearLayout>
+      <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="0.9"/>
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="left"
-        android:orientation="vertical">
-        <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="17sp"
-        android:textStyle="bold"
-        android:text="@string/text_new_models"
-        android:layout_marginTop="5dp"/>
-        <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="0.8"
-        android:text="@string/text_store"
-        android:layout_marginTop="5dp"/>
-        
-    </LinearLayout>
-	
+        android:orientation="horizontal">
+      <TextView   
+      android:text="@string/delete"  
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:gravity="center"
+      android:textSize="17sp"
+      android:layout_marginTop="12dp"
+      android:drawablePadding="10dip"
+      android:layout_marginLeft="10dp"
+      android:drawableLeft="@drawable/ic_action_remove"/>
+      </LinearLayout>
+      
+      </LinearLayout>
+      </ScrollView>
+    	
 </LinearLayout>

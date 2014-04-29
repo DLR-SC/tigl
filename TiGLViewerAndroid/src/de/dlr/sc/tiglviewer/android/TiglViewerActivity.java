@@ -484,17 +484,11 @@ public class TiglViewerActivity extends ActionBarActivity implements OnNavigatio
 	    @Override
 	    public void onCreate(Bundle savedInstanceState){
 	        setContentView(R.layout.help_dialog);
-         TextView tv = (TextView) findViewById(R.id.navi_onefinger);
-         tv.setText("- One finger action for rotation/panning");
-	     tv = (TextView) findViewById(R.id.navi_toggle);
-	     tv.setText("(Toggle between both actions using the move/rotate icon)");
-	     tv = (TextView) findViewById(R.id.navi_twofingers);
-	     tv.setText("- Two fingers action for zooming in/out." +
-	                   "\n"+
-	                   "- Select parts of the model by tapping them." +
-	                   "\n"+
-	                   "- Use the x icon to remove the selected parts.");
-
+	     TextView tv = (TextView) findViewById(R.id.tigl_details);
+	     tv.setText("The TiGLViewer allows you to view 3D Geometries. Currently" +
+	     		", CPACS XML files and VTK(.vtp) files can be viewed.");
+	     tv = (TextView) findViewById(R.id.import_files);
+	     tv.setText("To import your own file, place it in the Tiglviewer directory");
 	    }
 	}
 	/** BackGround thread to download the sample 
