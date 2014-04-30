@@ -124,8 +124,6 @@ public class EGLview extends GLSurfaceView {
             mGreenSize = g;
             mBlueSize = b;
             mAlphaSize = a;
-            mDepthSize = depth;
-            mStencilSize = stencil;
         }
 
         /* This EGL config specification is used to specify 1.x rendering.
@@ -178,9 +176,6 @@ public class EGLview extends GLSurfaceView {
                         EGL10.EGL_DEPTH_SIZE, 0);
                 int s = findConfigAttrib(egl, display, config,
                         EGL10.EGL_STENCIL_SIZE, 0);
-
-                Log.i(TAG, "Depth: " + d + " Stencil: " + s);
-                
 
                 // We want an *exact* match for red/green/blue/alpha
                 int r = findConfigAttrib(egl, display, config,
@@ -312,8 +307,6 @@ public class EGLview extends GLSurfaceView {
         protected int mGreenSize;
         protected int mBlueSize;
         protected int mAlphaSize;
-        protected int mDepthSize;
-        protected int mStencilSize;
         private int[] mValue = new int[1];
     }
 
