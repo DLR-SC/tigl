@@ -21,7 +21,11 @@
     <string name="move">Move Object</string>
     <string name="delete">Delete selected or all objects</string>
     <string name="text_Navigation">Navigation</string>
-    <string name="main_drawer">Main drawer :-</string>
-    <string name="text_new_models">Importing new models</string>
-    <string name="text_store">- Place your model file into the Tiglviewer directory in your home directory.</string>
+    <string name="help_text">
+      <![CDATA[
+        <p>The TiGL Viewer allows you to view 3D Geometries. 
+        Currently, CPACS XML files and VTK(.vtp) files can be displayed.</p>
+        <p>To import your own file, place it into the <b>Tiglviewer</b> directory.</p>
+      ]]>
+    </string>
 </resources>

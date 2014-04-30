@@ -49,6 +49,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBar.OnNavigationListener; 
 import android.support.v7.app.ActionBarActivity;
+import android.text.Html;
 import android.text.util.Linkify;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -263,7 +264,7 @@ public class TiglViewerActivity extends ActionBarActivity implements OnNavigatio
             TiGLViewerNativeLib.fitScreen();
             return true;
         case R.id.action_help:
-            helpDialog help = new helpDialog(this);
+            HelpDialog help = new HelpDialog(this);
             help.setTitle("Help");
             help.show();
             Window window = help.getWindow();
@@ -476,19 +477,16 @@ public class TiglViewerActivity extends ActionBarActivity implements OnNavigatio
 		}
 	}
 	
-	public class helpDialog extends Dialog{
-	    public helpDialog(Context context)
+	public class HelpDialog extends Dialog{
+	    public HelpDialog(Context context)
 	    {
 	        super(context);
 	    }
 	    @Override
 	    public void onCreate(Bundle savedInstanceState){
 	        setContentView(R.layout.help_dialog);
-	     TextView tv = (TextView) findViewById(R.id.tigl_details);
-	     tv.setText("The TiGLViewer allows you to view 3D Geometries. Currently" +
-	     		", CPACS XML files and VTK(.vtp) files can be viewed.");
-	     tv = (TextView) findViewById(R.id.import_files);
-	     tv.setText("To import your own file, place it in the Tiglviewer directory");
+			TextView tv = (TextView) findViewById(R.id.tigl_details);
+	        tv.setText(Html.fromHtml(getResources().getString(R.string.help_text)));
 	    }
 	}
 	/** BackGround thread to download the sample 

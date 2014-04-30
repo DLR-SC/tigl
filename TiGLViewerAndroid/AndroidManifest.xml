@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="de.dlr.sc.tiglviewer.android"
-    android:versionCode="3"
+    android:versionCode="4"
     android:versionName="2.1.2" >
 
     <uses-sdk
-        android:minSdkVersion="11"
+        android:minSdkVersion="14"
         android:targetSdkVersion="19" />
     
     <!-- OpenGL min. requirements (1.1) -->
