@@ -36,6 +36,7 @@ import android.app.ActionBar.LayoutParams;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -465,14 +466,22 @@ public class TiglViewerActivity extends ActionBarActivity implements OnNavigatio
 		public void onCreate(Bundle savedInstanceState) {
 			setContentView(R.layout.about_dialog);
 			TextView tv = (TextView) findViewById(R.id.about_text);
-			tv.setText("The TiGLViewer allows you to view CPACS geometries.\n" +
+			tv.setText("The TiGLViewer is based on the TiGL library and allows you to view CPACS geometries.\n" +
 					   "\n" + 
-					   "TiGL uses Open CASCADE 6.7.0 and OpenSceneGraph 3.2.1\n" +
+					   "TiGLViewer uses TiGL " + TiGLViewerNativeLib.tiglGetVersion() + 
+					   ", Open CASCADE 6.7.0 and OpenSceneGraph 3.2.1\n" +
 					   "\n" +
-					   "Visit the TiGL project page at http://code.google.com/p/tigl/");
+					   "Visit the TiGL project page at http://software.dlr.de/p/tigl");
 			Linkify.addLinks(tv, Linkify.WEB_URLS);
-			tv = (TextView) findViewById(R.id.tigl_version);
-			tv.setText("v" + TiGLViewerNativeLib.tiglGetVersion());
+            try {
+                tv = (TextView) findViewById(R.id.tigl_version);
+            	String versionName = getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
+    			tv.setText("v" + versionName);
+            }
+            catch (PackageManager.NameNotFoundException e) {
+            	// don't add version info
+            }
+
 		}
 	}
 	

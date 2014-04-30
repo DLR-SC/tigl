@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">TiGL Viewer</string>
-    <string name="text_copyright">Copyright&#169; 2007&#8211;2014 German Aerospace Center(DLR/SC)</string>
+    <string name="text_copyright">Copyright&#169; 2014 German Aerospace Center(DLR)</string>
     <string name="view">View</string>
     <string-array name="view_mode">
         <item>Perspective</item>

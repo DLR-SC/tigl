@@ -3,7 +3,7 @@ buildscript {
                 mavenCentral()
         }
         dependencies {
-                classpath 'com.android.tools.build:gradle:0.7.3+'
+                classpath 'com.android.tools.build:gradle:0.9.+'
         }
 }
 
@@ -16,29 +16,23 @@ repositories {
 android {
 
     compileSdkVersion 19
-    buildToolsVersion "19.0.1"
+    buildToolsVersion "19.0.3"
+
+    defaultConfig{
+        versionName "1.0"
+        versionCode 5
+    }
+    // make code to 3-digits code: 5 -> 005 (required for architecture prefixing)
+    def versionCodeString = String.format('%03d', defaultConfig.versionCode)
 
     sourceSets {
             main {
-                    manifest {
-                            srcFile 'AndroidManifest.xml'
-                    }
-                    java {
-                            srcDir 'src'
-                    }
-                    res {
-                            srcDir 'res'
-                    }
-                    assets {
-                            srcDir 'assets'
-                    }
-                    resources {
-                            srcDir 'src'
-                    }
-                    aidl {
-                            srcDir 'src'
-                    }
-                    
+                    manifest.srcFile 'AndroidManifest.xml'
+                    java.srcDir 'src'
+                    res.srcDir 'res'
+                    assets.srcDir 'assets'
+                    resources.srcDir 'src'
+                    aidl.srcDir 'src'
                     jniLibs.srcDir 'libs'
             }
     }
@@ -99,9 +93,31 @@ android {
     }
 
     clean.dependsOn 'cleanNative'
+
+    productFlavors {
+        x86 {
+            versionCode Integer.parseInt("6" + versionCodeString)
+            ndk {
+                abiFilter "x86"
+            }
+        }
+        armv7 {
+            versionCode Integer.parseInt("2" + versionCodeString)
+            ndk {
+                abiFilter "armeabi-v7a"
+            }
+        }
+        arm {
+            versionCode Integer.parseInt("1" + versionCodeString)
+            ndk {
+                abiFilter "armeabi"
+            }
+        }
+        fat
+    }
 }
 
 dependencies {
-    compile 'com.android.support:support-v4:18.0.0'
-    compile 'com.android.support:appcompat-v7:18.0.+'
+    compile 'com.android.support:support-v4:18.+'
+    compile 'com.android.support:appcompat-v7:18.+'
 }
