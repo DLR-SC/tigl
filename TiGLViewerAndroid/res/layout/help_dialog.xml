@@ -44,6 +44,15 @@
             android:drawablePadding="10dip"
             android:gravity="center"
             android:text="@string/move" />
+        
+       <TextView
+           android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:drawableLeft="@drawable/ic_action_full_screen_dark"
+            android:drawablePadding="10dip"
+            android:gravity="center"
+            android:text="@string/fit_to_screen" />
 
         <TextView
             android:layout_width="wrap_content"
