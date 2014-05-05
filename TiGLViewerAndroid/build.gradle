@@ -117,6 +117,11 @@ android {
     }
 }
 
+// apply signing configuration
+if(project.hasProperty("TiGLViewerApp.signing") && new File(project.property("TiGLViewerApp.signing") + ".gradle").exists()) {
+    apply from: project.property("TiGLViewerApp.signing") + ".gradle";
+}
+
 dependencies {
     compile 'com.android.support:support-v4:18.+'
     compile 'com.android.support:appcompat-v7:18.+'
