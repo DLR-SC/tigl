@@ -33,7 +33,7 @@ TiglViewerHUD::~TiglViewerHUD()
 
 void TiglViewerHUD::init()
 {
-    setProjectionMatrix(osg::Matrixd::ortho2D(-1.7, 1.7, -1.7, 1.7));
+    setProjectionMatrix(osg::Matrixd::ortho2D(-1.5, 1.5, -1.5, 1.5));
     setRenderOrder( osg::Camera::POST_RENDER, 1);
     setClearMask( GL_DEPTH_BUFFER_BIT );
     setAllowEventFocus( false );
@@ -59,7 +59,7 @@ void TiglViewerHUD::traverse(osg::NodeVisitor &nv)
         osg::Matrix rot_mat(rot);
 
         // the -10 moves the cross a bit back to prevent culling at the view plane
-        rot_mat.postMult(osg::Matrix::translate(-0.5,-0.5,-10));
+        rot_mat.postMult(osg::Matrix::translate(-0.3,-0.3,-10));
 
         _coordinateCross->setMatrix(rot_mat);
 
