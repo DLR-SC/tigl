@@ -15,7 +15,6 @@ public class EGLTouchListener implements OnTouchListener {
     
     private moveTypes mode = moveTypes.NONE;
     private navType navMode = navType.ROTATE;
-    private boolean moveOrpick = false;
     
     PointF oneFingerOrigin = new PointF(0,0);
     PointF twoFingerOrigin = new PointF(0,0);
@@ -37,7 +36,6 @@ public class EGLTouchListener implements OnTouchListener {
         int action = event.getAction() & MotionEvent.ACTION_MASK;
         switch (n_points) {
         case 2:
-            moveOrpick = true;
             switch (action) {
             case MotionEvent.ACTION_POINTER_DOWN:
                 switch (mode) {
@@ -138,7 +136,6 @@ public class EGLTouchListener implements OnTouchListener {
                 break;
 
             case MotionEvent.ACTION_MOVE:
-                moveOrpick=true;
                 TiGLViewerNativeLib.mouseMoveEvent(event.getX(0),
                         event.getY(0), 1);
 
@@ -148,12 +145,6 @@ public class EGLTouchListener implements OnTouchListener {
                 break;
 
             case MotionEvent.ACTION_UP:
-                if (!moveOrpick) {
-                    TiGLViewerNativeLib.pickEvent(event.getX(0), event.getY(0), 1);
-                }
-                else {
-                    moveOrpick = false;
-                }
                 switch (mode) {
                 case DRAG:
                     if (navMode == navType.ROTATE)

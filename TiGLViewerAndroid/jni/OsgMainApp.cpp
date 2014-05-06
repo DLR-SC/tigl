@@ -2,6 +2,7 @@
 #include "AuxiliaryViewUpdater.h"
 #include "TiglViewerBackground.h"
 #include "MaterialTemplate.h"
+#include "PickHandler.h"
 
 #include <sstream>
 #include <tigl.h>
@@ -136,6 +137,7 @@ void OsgMainApp::initOsgWindow(int x, int y, int width, int height)
     soleViewer->addEventHandler(new osgGA::StateSetManipulator(soleViewer->getCamera()->getOrCreateStateSet()));
     soleViewer->addEventHandler(new osgViewer::ThreadingHandler);
     soleViewer->addEventHandler(new osgViewer::LODScaleHandler);
+    soleViewer->addEventHandler(new PickHandler);
 
     soleViewer->setCameraManipulator(tm);
     soleViewer->realize();
@@ -416,67 +418,4 @@ void OsgMainApp::mouseButtonReleaseEvent(float x, float y, int button, int view)
 void OsgMainApp::mouseMoveEvent(float x, float y, int view)
 {
     soleViewer->getEventQueue()->mouseMotion(x, y);
-}
-
-
-void OsgMainApp::pickEvent(float x, float y, int /* view */)
-{
-    // map pixel coordinates to [-1,1] (OpenGL Screen Coordinates)
-    float xwindow =  x/screenWidth  * 2. - 1;
-    float ywindow = -y/screenHeight * 2. + 1;
-
-    if (!soleViewer || !soleViewer->getCamera()) {
-        return;
-    }
-    osg::Camera* cam = soleViewer->getCamera();
-
-    osg::Matrixd m;
-    m.preMult(cam->getProjectionMatrix());
-    m.preMult(cam->getViewMatrix());
-
-    // define intersection ray
-    osg::Vec3d startPoint (xwindow, ywindow, -1000);
-    osg::Vec3d endPoint(xwindow, ywindow, 1000);
-
-    osg::Matrixd i;
-    i.invert(m);
-
-    osg::Vec3d wStart =  startPoint * i;
-    osg::Vec3d wEnd   =  endPoint   * i;
-
-    bool rayHit = false;
-
-    osg::ref_ptr<osgUtil::LineSegmentIntersector> picker = new osgUtil::LineSegmentIntersector(wStart, wEnd);
-    osgUtil::IntersectionVisitor iv(picker.get());
-    soleViewer.get()->getCamera()->accept(iv);
-    iv.setTraversalMask(~0x1);
-
-    if (picker->containsIntersections()) {
-
-        osgUtil::LineSegmentIntersector::Intersections allIntersections = picker->getIntersections();
-        osgUtil::LineSegmentIntersector::Intersections::iterator intersectionsIterator = allIntersections.begin();
-        osg::notify(osg::ALWAYS) << "Number of Intersections " << intersectionsIterator->nodePath.size() << std::endl;
-
-        GeometricVisObject* pickedObject;
-        std::string nameOfpickedObject;
-
-        for (int i = 0; i < intersectionsIterator->nodePath.size(); i++) {
-
-            pickedObject = (GeometricVisObject*) intersectionsIterator->nodePath.at(i);
-            nameOfpickedObject = intersectionsIterator->nodePath.at(i)->getName();
-
-            if (!(intersectionsIterator->nodePath.at(i)->getName().empty())) {
-                if (!pickedObject->isPicked()) {
-                    pickedObject->pick();
-                    rayHit = true;
-                }
-                else {
-                    pickedObject->unpick();
-                    rayHit = true;
-                }
-            }
-
-        }
-    }
-
 }
