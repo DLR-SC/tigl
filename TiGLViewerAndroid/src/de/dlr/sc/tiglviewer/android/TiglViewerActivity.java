@@ -466,12 +466,12 @@ public class TiglViewerActivity extends ActionBarActivity implements OnNavigatio
 		public void onCreate(Bundle savedInstanceState) {
 			setContentView(R.layout.about_dialog);
 			TextView tv = (TextView) findViewById(R.id.about_text);
-			tv.setText("The TiGL Viewer is based on the TiGL library and allows you to view CPACS geometries.\n" +
-					   "\n" + 
-					   "TiGL Viewer uses TiGL " + TiGLViewerNativeLib.tiglGetVersion() + 
-					   ", Open CASCADE 6.7.0 and OpenSceneGraph 3.2.1\n" +
-					   "\n" +
-					   "Visit the TiGL project page at http://software.dlr.de/p/tigl");
+			// set version numbers
+			String s = tv.getText().toString();
+			s = s.replace("TIGL_VERSION", TiGLViewerNativeLib.tiglGetVersion());
+			s = s.replace("OCCT_VERSION", TiGLViewerNativeLib.occtGetVersion());
+			s = s.replace("OSG_VERSION", TiGLViewerNativeLib.osgGetVersion());
+			tv.setText(s);
 			Linkify.addLinks(tv, Linkify.WEB_URLS);
             try {
                 tv = (TextView) findViewById(R.id.tigl_version);

@@ -37,5 +37,7 @@ public class TiGLViewerNativeLib {
     public static native void       unLoadObject(int number);
     public static native String[]   getObjectNames();
     public static native String     tiglGetVersion();
+    public static native String     osgGetVersion();
+    public static native String     occtGetVersion();
 }
 

@@ -3,6 +3,8 @@
 #include <android/log.h>
 #include <android/asset_manager.h>
 #include <android/asset_manager_jni.h>
+#include <osg/Version>
+#include <Standard_Version.hxx>
 
 #include "tigl.h"
 
@@ -27,6 +29,8 @@ JNIEXPORT void JNICALL Java_de_dlr_sc_tiglviewer_android_TiGLViewerNativeLib_mou
 JNIEXPORT void JNICALL Java_de_dlr_sc_tiglviewer_android_TiGLViewerNativeLib_mouseMoveEvent(JNIEnv * env, jobject obj, jfloat x, jfloat y, jint view);
 JNIEXPORT void JNICALL Java_de_dlr_sc_tiglviewer_android_TiGLViewerNativeLib_pickEvent(JNIEnv * env, jobject obj, jfloat x, jfloat y, jint view);
 JNIEXPORT jstring JNICALL Java_de_dlr_sc_tiglviewer_android_TiGLViewerNativeLib_tiglGetVersion(JNIEnv *, jobject);
+JNIEXPORT jstring JNICALL Java_de_dlr_sc_tiglviewer_android_TiGLViewerNativeLib_osgGetVersion(JNIEnv *, jobject);
+JNIEXPORT jstring JNICALL Java_de_dlr_sc_tiglviewer_android_TiGLViewerNativeLib_occtGetVersion(JNIEnv *, jobject);
 }
 ;
 
@@ -109,5 +113,13 @@ JNIEXPORT void JNICALL Java_de_dlr_sc_tiglviewer_android_TiGLViewerNativeLib_pic
 JNIEXPORT jstring JNICALL Java_de_dlr_sc_tiglviewer_android_TiGLViewerNativeLib_tiglGetVersion(JNIEnv * env, jobject)
 {
     return env->NewStringUTF(tiglGetVersion());
+}
+JNIEXPORT jstring JNICALL Java_de_dlr_sc_tiglviewer_android_TiGLViewerNativeLib_osgGetVersion(JNIEnv * env, jobject)
+{
+    return env->NewStringUTF(osgGetVersion());
+}
+JNIEXPORT jstring JNICALL Java_de_dlr_sc_tiglviewer_android_TiGLViewerNativeLib_occtGetVersion(JNIEnv * env, jobject)
+{
+    return env->NewStringUTF(OCC_VERSION_COMPLETE);
 }
 

@@ -29,4 +29,8 @@
       ]]>
     </string>
     <string name="fit_to_screen">Fit object into screen</string>
+    <string name="about_text">The TiGL Viewer is based on the TiGL library and allows you to view CPACS geometries.\n\n 
+        TiGL Viewer uses TiGL TIGL_VERSION, Open CASCADE OCCT_VERSION and OpenSceneGraph OSG_VERSION.\n\n
+        Visit the TiGL project page at http://software.dlr.de/p/tigl
+	</string>
 </resources>

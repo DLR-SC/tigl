@@ -38,6 +38,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dip"
         android:id="@+id/about_text"
+        android:text="@string/about_text"
         android:layout_marginTop="10dip"
         android:layout_weight="0.77" />
    <TextView
