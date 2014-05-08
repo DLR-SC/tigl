@@ -97,6 +97,7 @@ private slots:
     void saveSettings();
     void applySettings();
     void changeSettings();
+    void makeScreenShot();
 
 private:
     void connectSignals();

@@ -941,14 +941,6 @@ AIS_StatusOfPick TIGLViewerWidget::inputEvent( bool multi )
     return pick;
 }
 
-bool TIGLViewerWidget::dump(Standard_CString theFile)
-{
-  redraw();
-  return myView->Dump(theFile);
-}
-
-
-
 void TIGLViewerWidget::setMode( const CurrentAction3d mode )
 {
     if ( mode != myMode ) {
@@ -1094,4 +1086,33 @@ Standard_Real TIGLViewerWidget::viewPrecision( bool resized )
         }
     }
     return myViewPrecision;
+}
+
+void TIGLViewerWidget::makeScreenshot(const QString& filename)
+{
+    if (myView) {
+        // get window size
+        // we could also use a higher resolution if we want
+        int width = 0, height = 0;
+        myView->Window()->Size(width, height);
+
+        // write screenshot to pixmap
+        Image_PixMap pixmap;
+        myView->ToPixMap(pixmap, width, height);
+
+        // copy to qimage which supports a variety of file formats
+        QImage img(QSize(pixmap.Width(), pixmap.Height()), QImage::Format_RGB888);
+        for (unsigned int aRow = 0; aRow <  pixmap.Height(); ++aRow) {
+          for (unsigned int aCol = 0; aCol < pixmap.Width(); ++aCol) {
+            // extremely SLOW but universal (implemented for all supported pixel formats)
+            Quantity_Color aColor = pixmap.PixelColor ((Standard_Integer )aCol, (Standard_Integer )aRow);
+            QColor qcol(aColor.Red()*255., aColor.Green()*255, aColor.Blue()*255);
+            img.setPixel(aCol, aRow, qcol.rgb());
+          }
+        }
+
+        if (!img.save(filename, NULL, 80)) {
+            throw tigl::CTiglError("Cannot save screenshot to file.");
+        }
+    }
 }

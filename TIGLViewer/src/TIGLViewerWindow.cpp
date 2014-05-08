@@ -669,6 +669,7 @@ void TIGLViewerWindow::connectSignals()
     }
 
     connect(saveAction, SIGNAL(triggered()), this, SLOT(save()));
+    connect(saveScreenshotAction, SIGNAL(triggered()), this, SLOT(makeScreenShot()));
     connect(printAction, SIGNAL(triggered()), this, SLOT(print()));
     connect(setBackgroundAction, SIGNAL(triggered()), this, SLOT(setBackgroundImage()));
     connect(exitAction, SIGNAL(triggered()), this, SLOT(close()));
@@ -855,4 +856,21 @@ void TIGLViewerWindow::closeEvent(QCloseEvent*)
 TIGLViewerSettings& TIGLViewerWindow::getSettings()
 {
     return *tiglViewerSettings;
+}
+
+void TIGLViewerWindow::makeScreenShot()
+{
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Save Screenshot"), myLastFolder,
+                                                    tr("PNG-Image (*.png);;") +
+                                                    tr("JPEG-Image (*.jpg);;") +
+                                                    tr("Windows-BMP-Image (*.bmp)"));
+
+    if (!fileName.isEmpty() && myOCC) {
+        try {
+            myOCC->makeScreenshot(fileName);
+        }
+        catch(tigl::CTiglError&) {
+            displayErrorMessage("Cannot save screenshot.", "Error");
+        }
+    }
 }
