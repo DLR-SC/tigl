@@ -147,6 +147,7 @@ public slots:
     void setObjectsShading();
     void setObjectsColor();
     void setObjectsMaterial();
+    void makeScreenshot(const QString& filename);
 
 protected: // methods
 
@@ -232,10 +233,6 @@ private: // methods
     static int paintCallBack (Aspect_Drawable, 
                               void*, 
                               Aspect_GraphicCallbackStruct*);
-
-public:
-
-    bool dump(Standard_CString theFile);
 
 };
 

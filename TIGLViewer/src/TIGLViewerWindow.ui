@@ -69,6 +69,7 @@
     <addaction name="openScriptAction"/>
     <addaction name="recentFileMenu"/>
     <addaction name="saveAction"/>
+    <addaction name="saveScreenshotAction"/>
     <addaction name="closeAction"/>
     <addaction name="printAction"/>
     <addaction name="setBackgroundAction"/>
@@ -1186,6 +1187,16 @@
   <action name="tiglExportFuselageCurvesBRepAction">
    <property name="text">
     <string>Export Fuselage Curves</string>
+   </property>
+  </action>
+  <action name="actionCreate_Screenshot">
+   <property name="text">
+    <string>Create Screenshot</string>
+   </property>
+  </action>
+  <action name="saveScreenshotAction">
+   <property name="text">
+    <string>Save Screenshot</string>
    </property>
   </action>
  </widget>
