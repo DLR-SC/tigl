@@ -30,6 +30,8 @@
 #include <TopoDS_Face.hxx>
 
 #include <TopExp_Explorer.hxx>
+#include <TopExp.hxx>
+#include <TopTools_IndexedMapOfShape.hxx>
 #include <TopLoc_Location.hxx>
 #include <Poly_Triangulation.hxx>
 #include <BRep_Tool.hxx>
@@ -80,21 +82,19 @@ CTiglTriangularizer::CTiglTriangularizer(TopoDS_Shape& shape, double deflection,
 
 int CTiglTriangularizer::triangularizeShape(const TopoDS_Shape& shape)
 {
-    TopExp_Explorer shellExplorer;
-    TopExp_Explorer faceExplorer;
-    
-    for (shellExplorer.Init(shape, TopAbs_SHELL); shellExplorer.More(); shellExplorer.Next()) {
-        const TopoDS_Shell shell = TopoDS::Shell(shellExplorer.Current());
-        
-        for (faceExplorer.Init(shell, TopAbs_FACE); faceExplorer.More(); faceExplorer.Next()) {
-            TopoDS_Face face = TopoDS::Face(faceExplorer.Current());
+    TopTools_IndexedMapOfShape faceMap;
+    TopExp::MapShapes(shape,   TopAbs_FACE, faceMap);
+
+    // find newly created from source
+    for (int iface = 1; iface <= faceMap.Extent(); ++iface) {
+        TopoDS_Face face = TopoDS::Face(faceMap(iface));
             unsigned long nVertices, iPolyLower, iPolyUpper;
             triangularizeFace(face, nVertices, iPolyLower, iPolyUpper);
         } // for faces
         if (_useMultipleObjects) {
             createNewObject();
         }
-    } // for shells
+    //} // for shells
     
     return 0;
 }
