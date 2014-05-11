@@ -19,6 +19,7 @@ JNIEXPORT void JNICALL Java_de_dlr_sc_tiglviewer_android_TiGLViewerNativeLib_cre
 JNIEXPORT void JNICALL Java_de_dlr_sc_tiglviewer_android_TiGLViewerNativeLib_setAssetMgr(JNIEnv * env, jobject obj, jobject mgr);
 JNIEXPORT void JNICALL Java_de_dlr_sc_tiglviewer_android_TiGLViewerNativeLib_step(JNIEnv * env, jobject obj);
 JNIEXPORT void JNICALL Java_de_dlr_sc_tiglviewer_android_TiGLViewerNativeLib_openFile(JNIEnv * env, jobject obj, jstring filepath);
+JNIEXPORT jboolean JNICALL Java_de_dlr_sc_tiglviewer_android_TiGLViewerNativeLib_isFiletypeSupported(JNIEnv * env, jobject obj, jstring filepath);
 JNIEXPORT void JNICALL Java_de_dlr_sc_tiglviewer_android_TiGLViewerNativeLib_removeObjects(JNIEnv * env, jobject obj);
 JNIEXPORT void JNICALL Java_de_dlr_sc_tiglviewer_android_TiGLViewerNativeLib_changeCamera(JNIEnv * env, jobject obj, jint view);
 JNIEXPORT void JNICALL Java_de_dlr_sc_tiglviewer_android_TiGLViewerNativeLib_fitScreen(JNIEnv * env, jobject obj);
@@ -67,6 +68,14 @@ JNIEXPORT void JNICALL Java_de_dlr_sc_tiglviewer_android_TiGLViewerNativeLib_ope
     const char *nativeAddress = env->GetStringUTFChars(filepath, NULL);
     OsgMainApp::Instance().openFile(std::string(nativeAddress));
     env->ReleaseStringUTFChars(filepath, nativeAddress);
+}
+
+JNIEXPORT jboolean JNICALL Java_de_dlr_sc_tiglviewer_android_TiGLViewerNativeLib_isFiletypeSupported(JNIEnv * env, jobject obj, jstring filepath)
+{
+    const char *nativeAddress = env->GetStringUTFChars(filepath, NULL);
+    jboolean result = OsgMainApp::Instance().isFileSupported(std::string(nativeAddress));
+    env->ReleaseStringUTFChars(filepath, nativeAddress);
+    return result;
 }
 
 JNIEXPORT void JNICALL Java_de_dlr_sc_tiglviewer_android_TiGLViewerNativeLib_removeObjects(JNIEnv * env, jobject obj)

@@ -390,7 +390,8 @@ public class TiglViewerActivity extends ActionBarActivity implements OnNavigatio
 	    File list[] = checkDirectory("Tiglviewer");
 	    boolean itemExists = false;
 	    
-	    if(list != null) {		    
+	    if(list != null) {	
+	        int ivalid = 0;
 		    for ( int i=0; i< list.length; i++) {
 		        itemExists = false;
 		       for(int j=0; j<drawerItems.size();j++)
@@ -406,8 +407,9 @@ public class TiglViewerActivity extends ActionBarActivity implements OnNavigatio
 		               }
 		           }
 		       }
-		       if(!itemExists){
-		       drawerItems.add(i+1,new ChildItem(list[i].getName() , "-"));
+		       if(!itemExists && TiGLViewerNativeLib.isFiletypeSupported(list[i].getName())){
+		           drawerItems.add(ivalid+1,new ChildItem(list[i].getName() , "-"));
+		           ivalid++;
 		       }
 		    }
 	    }

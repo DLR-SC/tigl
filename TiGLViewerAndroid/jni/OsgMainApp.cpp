@@ -260,6 +260,33 @@ bool OsgMainApp::openFile( const std::string& filename )
     return true;
 }
 
+bool OsgMainApp::isFileSupported(const std::string& filename)
+{
+    std::string::size_type idx;
+    idx = filename.rfind('.');
+    std::string fileType;
+    if (idx != std::string::npos) {
+        fileType = filename.substr(idx+1);
+    }
+    else {
+        return false;
+    }
+
+    std::transform(fileType.begin(), fileType.end(), fileType.begin(), ::tolower);
+
+    if (fileType == "xml"  ||
+        fileType == "brep" ||
+        fileType == "igs"  || fileType == "iges" ||
+        fileType == "stp"  || fileType == "step" ||
+        fileType == "vtp"  ||
+        fileType == "mesh") {
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
 void OsgMainApp::openTriangulationModel( FileFormat format, std::string filename)
 {
     switch(format) {

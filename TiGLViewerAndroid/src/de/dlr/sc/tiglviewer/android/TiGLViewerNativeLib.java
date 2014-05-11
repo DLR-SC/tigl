@@ -18,6 +18,7 @@ public class TiGLViewerNativeLib {
     public static native void       setAssetMgr(AssetManager mgr);
     public static native void       step();
     public static native void       openFile(String filepath);
+    public static native boolean    isFiletypeSupported(String filepath);
     public static native void       removeObjects();
     public static native void       changeCamera(int view);
     public static native void       fitScreen();

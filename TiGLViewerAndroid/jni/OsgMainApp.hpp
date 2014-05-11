@@ -111,6 +111,7 @@ public:
     void currentCamera();
     void openTriangulationModel( FileFormat format, std::string filename);
     bool openFile( const std::string& fileName );
+    bool isFileSupported(const std::string& filename);
     void displayShape(TopoDS_Shape shape, std::string id);
     void removeObjects();
     void changeCamera(int view);
