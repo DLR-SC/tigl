@@ -289,18 +289,6 @@ public class TiglViewerActivity extends ActionBarActivity implements OnNavigatio
             mDrawerLayout.closeDrawer(mDrawerList);
         }
     }
-    
-    private void openFile(String filename) {
-		if(filename.contains("xml")) {
-			TiGLViewerNativeLib.addObjectFromCPACS(filename);
-		}
-		else if(filename.contains("mesh")) {
-			TiGLViewerNativeLib.addObjectFromHOTSOSE(filename);
-		}
-		else if(filename.contains("vtp")) {
-			TiGLViewerNativeLib.addObjectFromVTK(filename);
-		}
-    }
 
     // is called when item in drawer is selected
     private void selectItem(int position) {
@@ -318,7 +306,7 @@ public class TiglViewerActivity extends ActionBarActivity implements OnNavigatio
 		setSupportProgressBarIndeterminateVisibility(true);
 		Thread thread = new Thread() {
 			public void run() {				
-				openFile(filename);
+				TiGLViewerNativeLib.openFile(filename);
 				
 				// make success dialog appear and stop the progress bar
 				Runnable r=new Runnable() {
@@ -334,7 +322,7 @@ public class TiglViewerActivity extends ActionBarActivity implements OnNavigatio
 				handler.post(r);
 			} // run
 		}; // thread
-		thread.start(); 	
+		thread.start(); 
 				
     }
 

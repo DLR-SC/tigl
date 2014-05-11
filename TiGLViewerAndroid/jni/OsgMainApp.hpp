@@ -73,15 +73,19 @@ USE_OSGPLUGIN(freetype)
 USE_DOTOSGWRAPPER_LIBRARY(osg)
 USE_DOTOSGWRAPPER_LIBRARY(osgViewer)
 
-#define  LOG_TAG    "osgNativeLib"
-#define  LOGI(...)  __android_log_print(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
-#define  LOGE(...)  __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,__VA_ARGS__)
-typedef osgUtil::LineSegmentIntersector::Intersection Intersection;
 
-struct Model
+
+enum FileFormat
 {
-    std::string filename;
-    std::string name;
+    FormatBREP,
+    FormatIGES,
+    FormatSTEP,
+    FormatCSFDB,
+    FormatVRML,
+    FormatSTL,
+    FormatMESH,
+    FormatVTK,
+    FormatCPACS
 };
 
 class OsgMainApp
@@ -105,9 +109,9 @@ public:
     void draw();
     //Events
     void currentCamera();
-    void addObjectFromVTK(std::string filepath);
-    void addObjectFromHOTSOSE(std::string filepath);
-    void addObjectFromCPACS(std::string filepath);
+    void openTriangulationModel( FileFormat format, std::string filename);
+    bool openFile( const std::string& fileName );
+    void displayShape(TopoDS_Shape shape, std::string id);
     void removeObjects();
     void changeCamera(int view);
     void fitScreen();
@@ -118,6 +122,10 @@ public:
     osg::Vec3d windowToWord(osg::Vec3d windowPosition);
 
 private:
+    void addObjectFromVTK(std::string filepath);
+    void addObjectFromHOTSOSE(std::string filepath);
+
+
     /*
      * * Commented code is used for adding multiple views in the same viewer
      */
@@ -132,13 +140,9 @@ private:
     float screenWidth;
 
     OsgAndroidNotifyHandler *_notifyHandler;
-    AAssetManager* _assetManager;CSharedPtr<TiglAndroidLogger> _logAdapter;
+    AAssetManager* _assetManager;
+    CSharedPtr<TiglAndroidLogger> _logAdapter;
 
-    std::vector<Model> _vModels;
-    std::vector<Model> _vModelsToLoad;
-    std::vector<Model> _vModelsToDelete;
-
-    // osgViewer::View* createView(int x, int y, int height, int width , osgViewer::GraphicsWindowEmbedded* _gwe , int id);
     osg::Node* addCross(osg::ref_ptr<osgViewer::View> view, int x, int y, int size);
     OsgMainApp();
 

@@ -3,8 +3,11 @@
 #include "TiglViewerBackground.h"
 #include "MaterialTemplate.h"
 #include "PickHandler.h"
+#include "CADImport.h"
 
 #include <sstream>
+#include <string>
+#include <algorithm>
 #include <tigl.h>
 #include <CTiglLogging.h>
 #include <CCPACSConfigurationManager.h>
@@ -16,8 +19,13 @@
 #include <CTiglTriangularizer.h>
 #include <map>
 #include <osg/ShapeDrawable>
+#include <TopTools_HSequenceOfShape.hxx>
+#include <Bnd_Box.hxx>
+#include <BRepBndLib.hxx>
 
 #define HOME_POS 200
+
+const double tesselationAccu = 0.01;
 
 OsgMainApp& OsgMainApp::Instance()
 {
@@ -196,6 +204,76 @@ void OsgMainApp::draw()
 {
     soleViewer->frame();
 }
+
+bool OsgMainApp::openFile( const std::string& filename )
+{
+
+    std::string::size_type idx;
+    idx = filename.rfind('.');
+    std::string fileType;
+    if (idx != std::string::npos) {
+        fileType = filename.substr(idx+1);
+    }
+    else {
+        return false;
+    }
+
+    std::transform(fileType.begin(), fileType.end(), fileType.begin(), ::tolower);
+
+    FileFormat format;
+    bool isCAD = false;
+    if (fileType == "xml") {
+        format = FormatCPACS;
+        isCAD = true;
+    }
+    if (fileType == "brep" || fileType == "rle") {
+        format = FormatBREP;
+        isCAD = true;
+    }
+    if (fileType == "step" || fileType == "stp") {
+        format = FormatSTEP;
+        isCAD = true;
+    }
+    if (fileType == "iges" || fileType == "igs") {
+        format = FormatIGES;
+        isCAD = true;
+    }
+    if (fileType == "stl") {
+        format = FormatSTL;
+    }
+    if (fileType == "mesh") {
+        format = FormatMESH;
+    }
+    if (fileType == "vtp") {
+        format = FormatVTK;
+    }
+
+    if (isCAD) {
+        openCADModel( format, filename );
+        fitScreen();
+    }
+    else {
+        openTriangulationModel( format, filename);
+        fitScreen();
+    }
+
+    return true;
+}
+
+void OsgMainApp::openTriangulationModel( FileFormat format, std::string filename)
+{
+    switch(format) {
+    case FormatVTK:
+        addObjectFromVTK(filename);
+        break;
+    case FormatMESH:
+        addObjectFromHOTSOSE(filename);
+        break;
+    default:
+        return;
+    }
+}
+
 //Events
 void OsgMainApp::addObjectFromVTK(std::string filepath)
 {
@@ -206,7 +284,6 @@ void OsgMainApp::addObjectFromVTK(std::string filepath)
     geode->setName(filepath);
 
     modeledObjects->addChild(geode.get());
-    fitScreen();
 }
 
 void OsgMainApp::addObjectFromHOTSOSE(std::string filepath)
@@ -218,78 +295,6 @@ void OsgMainApp::addObjectFromHOTSOSE(std::string filepath)
     geode->setName(filepath);
 
     modeledObjects->addChild(geode.get());
-    fitScreen();
-}
-
-void OsgMainApp::addObjectFromCPACS(std::string filepath)
-{
-    osg::notify(osg::ALWAYS) << "Opening CPACS file " << filepath << std::endl;
-    TixiDocumentHandle handle = -1;
-    TiglCPACSConfigurationHandle tiglHandle = -1;
-
-    if (tixiOpenDocument(filepath.c_str(), &handle) != SUCCESS) {
-        return;
-    }
-
-    if (tiglOpenCPACSConfiguration(handle, "", &tiglHandle) != TIGL_SUCCESS) {
-        osg::notify(osg::ALWAYS) << "Error opening cpacs file " << filepath << std::endl;
-    }
-
-    tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
-    tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
-
-    double tesselationAccu = 0.01;
-
-    for (int iWing = 1; iWing <= config.GetWingCount(); ++iWing) {
-        tigl::CCPACSWing& wing = config.GetWing(iWing);
-
-        for (int iSegment = 1; iSegment <= wing.GetSegmentCount(); ++iSegment) {
-            tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(iSegment);
-            osg::notify(osg::ALWAYS) << "Computing " << segment.GetUID() << std::endl;
-
-            osg::ref_ptr<GeometricVisObject> geode = new GeometricVisObject;
-            geode->fromShape(segment.GetLoft(), tesselationAccu);
-            geode->setName(segment.GetUID());
-            modeledObjects->addChild(geode.get());
-        }
-
-        if (wing.GetSymmetryAxis() == TIGL_NO_SYMMETRY) {
-            continue;
-        }
-
-        for (int i = 1; i <= wing.GetSegmentCount(); i++) {
-            tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(i);
-            TopoDS_Shape loft = segment.GetMirroredLoft();
-
-            osg::ref_ptr<GeometricVisObject> geode = new GeometricVisObject;
-            geode->fromShape(loft, tesselationAccu);
-            geode->setName(segment.GetUID() + "_mirrored");
-            modeledObjects->addChild(geode.get());
-        }
-
-    }
-
-    for (int f = 1; f <= config.GetFuselageCount(); f++) {
-        tigl::CCPACSFuselage& fuselage = config.GetFuselage(f);
-
-        for (int i = 1; i <= fuselage.GetSegmentCount(); i++) {
-            tigl::CCPACSFuselageSegment& segment = (tigl::CCPACSFuselageSegment &) fuselage.GetSegment(i);
-            TopoDS_Shape loft = segment.GetLoft();
-            osg::notify(osg::ALWAYS) << "Computing " << segment.GetUID() << std::endl;
-            try {
-                tigl::CTiglTriangularizer t(loft, tesselationAccu);
-
-                osg::ref_ptr<GeometricVisObject> geode = new GeometricVisObject;
-                geode->fromShape(loft, tesselationAccu);
-                geode->setName(segment.GetUID());
-                modeledObjects->addChild(geode.get());
-            }
-            catch (...) {
-                osg::notify(osg::ALWAYS) << "Error: could not triangularize fuselage segment " << i << std::endl;
-            }
-        }
-    }
-    fitScreen();
 }
 
 void OsgMainApp::removeObjects()
@@ -418,4 +423,29 @@ void OsgMainApp::mouseButtonReleaseEvent(float x, float y, int button, int view)
 void OsgMainApp::mouseMoveEvent(float x, float y, int view)
 {
     soleViewer->getEventQueue()->mouseMotion(x, y);
+}
+
+void OsgMainApp::displayShape(TopoDS_Shape shape, std::string id)
+{
+    // The arrow calculation is based on the global min max
+    Bnd_Box aBndBox;
+    BRepBndLib::Add (shape, aBndBox);
+    double aDeflection = tesselationAccu;
+    if (!aBndBox.IsVoid())
+    {
+      Standard_Real aXmin, aYmin, aZmin, aXmax, aYmax, aZmax;
+      aBndBox.Get (aXmin, aYmin, aZmin, aXmax, aYmax, aZmax);
+      aDeflection = Max (aXmax-aXmin, Max (aYmax-aYmin, aZmax-aZmin))
+                       * tesselationAccu;
+    }
+    try {
+        osg::ref_ptr<GeometricVisObject> geode = new GeometricVisObject;
+        LOG(WARNING) << "LOAD SHAPE " << id;
+        geode->fromShape(shape, aDeflection);
+        geode->setName(id);
+        modeledObjects->addChild(geode.get());
+    }
+    catch (...) {
+        osg::notify(osg::ALWAYS) << "Error: could not triangularize " << id << std::endl;
+    }
 }
