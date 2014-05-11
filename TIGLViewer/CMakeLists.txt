@@ -83,6 +83,7 @@ set(tv_src
     TIGLViewerLoggerHTMLDecorator.cpp
     TIGLViewerFuseDialog.cpp
     TIGLViewerShapeIntersectionDialog.cpp
+    TIGLViewerScreenshotDialog.cpp
 )
 	
 # normal header files
@@ -119,6 +120,7 @@ set(tv_hdr_qobj
 	TIGLViewerLogRedirection.h
 	TIGLViewerFuseDialog.h
 	TIGLViewerShapeIntersectionDialog.h
+	TIGLViewerScreenshotDialog.h
 )
 
 set(tv_ui_comp
@@ -128,6 +130,7 @@ set(tv_ui_comp
 	src/TIGLViewerErrorDialog.ui
 	src/TIGLViewerFuseDialog.ui
 	src/TIGLViewerShapeIntersectionDialog.ui
+	src/TIGLViewerScreenshotDialog.ui
 )
 	
 foreach ( _fname ${tv_src})

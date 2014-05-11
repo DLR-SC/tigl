@@ -147,7 +147,7 @@ public slots:
     void setObjectsShading();
     void setObjectsColor();
     void setObjectsMaterial();
-    void makeScreenshot(const QString& filename);
+    void makeScreenshot(int width, int height, int quality, const QString& filename);
 
 protected: // methods
 

@@ -50,6 +50,7 @@
 #include "TIGLViewerLogRedirection.h"
 #include "CTiglLogSplitter.h"
 #include "TIGLViewerLoggerHTMLDecorator.h"
+#include "TIGLViewerScreenshotDialog.h"
 
 void ShowOrigin ( Handle_AIS_InteractiveContext theContext );
 void AddVertex  ( double x, double y, double z, Handle_AIS_InteractiveContext theContext );
@@ -866,8 +867,18 @@ void TIGLViewerWindow::makeScreenShot()
                                                     tr("Windows-BMP-Image (*.bmp)"));
 
     if (!fileName.isEmpty() && myOCC) {
+        
+        TIGLViewerScreenshotDialog dialog(fileName, this);
+        dialog.setQualityValue(80);
+        dialog.setImageSize(myOCC->width(), myOCC->height());
+        if (dialog.exec() != QDialog::Accepted) {
+            return;
+        }
+        
+        int width, height;
+        dialog.getImageSize(width, height);
         try {
-            myOCC->makeScreenshot(fileName);
+            myOCC->makeScreenshot(width, height, dialog.getQualityValue(), fileName);
         }
         catch(tigl::CTiglError&) {
             displayErrorMessage("Cannot save screenshot.", "Error");
