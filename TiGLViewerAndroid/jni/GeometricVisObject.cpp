@@ -12,6 +12,7 @@
 
 #include <osg/Geometry>
 #include <osg/Material>
+#include <osg/LightModel>
 #include <osgUtil/SmoothingVisitor>
 
 #include <map>
@@ -119,6 +120,12 @@ int GeometricVisObject::fromShape(TopoDS_Shape& loft, double deflection)
 
     osg::Geode* geode = new osg::Geode;
     geode->addDrawable(geometry.get());
+    geode->setCullingActive(false);
+    geode->getOrCreateStateSet()->setMode(GL_CULL_FACE, osg::StateAttribute::OFF);
+    osg::ref_ptr<osg::LightModel> pLightModel = new osg::LightModel();
+    pLightModel->setTwoSided( true );
+    geode->getOrCreateStateSet()->setAttributeAndModes(pLightModel.get(), osg::StateAttribute::ON);
+
     this->addChild(geode);
 
     this->getOrCreateStateSet()->setAttribute(MaterialTemplate::getMaterial(UNSELECTED));
@@ -168,6 +175,9 @@ int GeometricVisObject::readHotsoseMesh(const char* filename)
 
     geode->setCullingActive(false);
     geode->getOrCreateStateSet()->setMode(GL_CULL_FACE, osg::StateAttribute::OFF);
+    osg::ref_ptr<osg::LightModel> pLightModel = new osg::LightModel();
+    pLightModel->setTwoSided( true );
+    this->getOrCreateStateSet()->setAttributeAndModes(pLightModel.get(), osg::StateAttribute::ON);
 
     this->addChild(geode);
     this->getOrCreateStateSet()->setAttribute(MaterialTemplate::getMaterial(UNSELECTED));
