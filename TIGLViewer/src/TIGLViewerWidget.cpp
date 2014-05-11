@@ -1088,13 +1088,14 @@ Standard_Real TIGLViewerWidget::viewPrecision( bool resized )
     return myViewPrecision;
 }
 
-void TIGLViewerWidget::makeScreenshot(const QString& filename)
+void TIGLViewerWidget::makeScreenshot(int width, int height, int quality, const QString& filename)
 {
     if (myView) {
         // get window size
         // we could also use a higher resolution if we want
-        int width = 0, height = 0;
-        myView->Window()->Size(width, height);
+        if (width == 0 || height == 0) {
+            myView->Window()->Size(width, height);
+        }
 
         // write screenshot to pixmap
         Image_PixMap pixmap;
@@ -1111,7 +1112,7 @@ void TIGLViewerWidget::makeScreenshot(const QString& filename)
           }
         }
 
-        if (!img.save(filename, NULL, 80)) {
+        if (!img.save(filename, NULL, quality)) {
             throw tigl::CTiglError("Cannot save screenshot to file.");
         }
     }
