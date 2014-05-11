@@ -300,7 +300,7 @@ Handle_TopTools_HSequenceOfShape TIGLViewerInputOutput::importMESH( const QStrin
 
 Handle_TopTools_HSequenceOfShape TIGLViewerInputOutput::importSTEP( const QString& file )
 {
-    Handle_TopTools_HSequenceOfShape aSequence;
+    Handle_TopTools_HSequenceOfShape aSequence = new TopTools_HSequenceOfShape;
 
     STEPControl_Reader aReader;
     Interface_Static::SetCVal("xstep.cascade.unit", "M");
@@ -319,13 +319,17 @@ Handle_TopTools_HSequenceOfShape TIGLViewerInputOutput::importSTEP( const QStrin
             }
             int nbs = aReader.NbShapes();
             if ( nbs > 0 ) {
-                aSequence = new TopTools_HSequenceOfShape();
                 for ( int i = 1; i <= nbs; i++ ) {
                     TopoDS_Shape shape = aReader.Shape( i );
                     aSequence->Append( shape );
                 }
             }
+            aReader.ClearShapes();
         }
+    }
+    
+    if (aSequence->Length() == 0) {
+        aSequence.Nullify();
     }
     return aSequence;
 }
