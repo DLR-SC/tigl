@@ -6,9 +6,9 @@
 #include "OsgMainApp.hpp"
 
 void openCADModel( const FileFormat format, const std::string& file );
-ListPNamedShape importSTEP ( const std::string& file );
-ListPNamedShape importIGES ( const std::string& file );
-ListPNamedShape importBREP( const std::string& file );
-ListPNamedShape importCPACS( const std::string& file );
+void importSTEP ( const std::string& file );
+void importIGES ( const std::string& file );
+void importBREP( const std::string& file );
+void importCPACS( const std::string& file );
 
 #endif // CADIMPORT_H_

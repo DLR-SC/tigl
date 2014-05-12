@@ -25,16 +25,16 @@ void openCADModel( const FileFormat format, const std::string& file )
     try {
         switch ( format ) {
         case FormatBREP:
-            shapes = importBREP( file );
+            importBREP( file );
             break;
         case FormatIGES:
-            shapes = importIGES( file );
+            importIGES( file );
             break;
         case FormatSTEP:
-            shapes = importSTEP( file );
+            importSTEP( file );
             break;
         case FormatCPACS:
-            shapes = importCPACS( file );
+            importCPACS( file );
             break;
         default:
             break;
@@ -42,17 +42,10 @@ void openCADModel( const FileFormat format, const std::string& file )
     } catch ( Standard_Failure ) {
         return;
     }
-
-    for ( int i = 0; i < shapes.size(); i++ ) {
-        PNamedShape pshape = shapes[i];
-        OsgMainApp::Instance().displayShape(pshape->Shape(), pshape->Name());
-    }
 }
 
-ListPNamedShape importSTEP( const std::string& file )
+void importSTEP( const std::string& file )
 {
-    ListPNamedShape aSequence;
-
     STEPControl_Reader aReader;
     Interface_Static::SetCVal("xstep.cascade.unit", "M");
     IFSelect_ReturnStatus status = aReader.ReadFile( file.c_str() );
@@ -74,43 +67,35 @@ ListPNamedShape importSTEP( const std::string& file )
                     TopoDS_Shape shape = aReader.Shape( i );
                     std::stringstream str;
                     str << "STEP_IMPORT_" << iShape++;
-                    PNamedShape pshape(new CNamedShape(shape, str.str().c_str()));
-                    aSequence.push_back(pshape);
+                    OsgMainApp::Instance().displayShape(shape, str.str());
                 }
             }
             aReader.ClearShapes();
         }
     }
-    return aSequence;
 }
 
-ListPNamedShape importIGES( const std::string& file )
+void importIGES( const std::string& file )
 {
-    ListPNamedShape aSequence;
     IGESControl_Reader Reader;
     Interface_Static::SetCVal("xstep.cascade.unit", "M");
     int status = Reader.ReadFile( file.c_str() );
-    LOG(WARNING) << "1";
     static int iShape = 0;
     if ( status == IFSelect_RetDone ) {
         Reader.TransferRoots();
         int nbs = Reader.NbShapes();
-        LOG(WARNING) << "2";
         if ( nbs > 0 ) {
             for ( int i = 1; i <= nbs; i++ ) {
-                LOG(WARNING) << "3";
                 std::stringstream str;
                 str << "IGES_IMPORT_" << iShape++;
                 TopoDS_Shape shape = Reader.Shape( i );
-                PNamedShape pshape(new CNamedShape(shape, str.str().c_str()));
-                aSequence.push_back(pshape);
+                OsgMainApp::Instance().displayShape(shape, str.str());
             }
         }
     }
-    return aSequence;
 }
 
-ListPNamedShape importBREP( const std::string& file )
+void importBREP( const std::string& file )
 {
     ListPNamedShape aSequence;
     TopoDS_Shape aShape;
@@ -124,27 +109,24 @@ ListPNamedShape importBREP( const std::string& file )
                 TopoDS_Shape aSh = anIter.Value();
                 std::stringstream str;
                 str << "BREP_IMPORT_" << iShape++;
-                aSequence.push_back(PNamedShape(new CNamedShape(aSh, str.str().c_str() )));
+                OsgMainApp::Instance().displayShape(aSh, str.str());
             }
         }
         else {
             std::stringstream str;
             str << "BREP_IMPORT_" << iShape++;
-            aSequence.push_back(PNamedShape(new CNamedShape(aShape, str.str().c_str() )));
+            OsgMainApp::Instance().displayShape(aShape, str.str());
         }
     }
-
-    return aSequence;
 }
 
-ListPNamedShape importCPACS(const std::string& filepath)
+void importCPACS(const std::string& filepath)
 {
-    ListPNamedShape aSequence;
     TixiDocumentHandle handle = -1;
     TiglCPACSConfigurationHandle tiglHandle = -1;
 
     if (tixiOpenDocument(filepath.c_str(), &handle) != SUCCESS) {
-        return aSequence;
+        return;
     }
 
     if (tiglOpenCPACSConfiguration(handle, "", &tiglHandle) != TIGL_SUCCESS) {
@@ -159,8 +141,7 @@ ListPNamedShape importCPACS(const std::string& filepath)
 
         for (int iSegment = 1; iSegment <= wing.GetSegmentCount(); ++iSegment) {
             tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(iSegment);
-            PNamedShape pshape(new CNamedShape(segment.GetLoft(), segment.GetUID().c_str()));
-            aSequence.push_back(pshape);
+            OsgMainApp::Instance().displayShape(segment.GetLoft(), segment.GetUID());
         }
 
         if (wing.GetSymmetryAxis() == TIGL_NO_SYMMETRY) {
@@ -170,8 +151,7 @@ ListPNamedShape importCPACS(const std::string& filepath)
         for (int i = 1; i <= wing.GetSegmentCount(); i++) {
             tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(i);
             TopoDS_Shape loft = segment.GetMirroredLoft();
-            PNamedShape pshape(new CNamedShape(loft, std::string(segment.GetUID() + "_mirrored").c_str()));
-            aSequence.push_back(pshape);
+            OsgMainApp::Instance().displayShape(loft, segment.GetUID() + "_mirrored");
         }
 
     }
@@ -182,9 +162,7 @@ ListPNamedShape importCPACS(const std::string& filepath)
         for (int i = 1; i <= fuselage.GetSegmentCount(); i++) {
             tigl::CCPACSFuselageSegment& segment = (tigl::CCPACSFuselageSegment &) fuselage.GetSegment(i);
             TopoDS_Shape loft = segment.GetLoft();
-            PNamedShape pshape(new CNamedShape(loft, segment.GetUID().c_str()));
-            aSequence.push_back(pshape);
+            OsgMainApp::Instance().displayShape(loft, segment.GetUID());
         }
     }
-    return aSequence;
 }
