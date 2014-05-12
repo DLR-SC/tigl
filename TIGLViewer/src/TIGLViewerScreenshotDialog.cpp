@@ -1,5 +1,5 @@
 #include "TIGLViewerScreenshotDialog.h"
-#include "ui_tiglviewerscreenshotdialog.h"
+#include "ui_TIGLViewerScreenshotDialog.h"
 
 #include <QFileInfo>
 
