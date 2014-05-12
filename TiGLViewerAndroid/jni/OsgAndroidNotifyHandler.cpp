@@ -1,9 +1,15 @@
 /*
- * OsgAndroidNotifyHandler.cpp
- *
- *  Created on: 31/05/2011
- *      Author: Jorge Izquierdo Ciges
- */
+* Copyright (C) 2002 Robert Osfield
+*
+* This file is licensed under the OpenSceneGraph Public
+* License (OSGPL), Version 0.0. It is part of the 
+* OpenSceneGraph android example code.
+*
+* OsgAndroidNotifyHandler.cpp
+*
+*  Created on: 31/05/2011
+*      Author: Jorge Izquierdo Ciges
+*/
 
 #include "OsgAndroidNotifyHandler.hpp"
 #include <iostream>

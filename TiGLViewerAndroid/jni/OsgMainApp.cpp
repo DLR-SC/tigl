@@ -1,5 +1,20 @@
+/*
+* Copyright (C) 2007-2014 German Aerospace Center (DLR/SC)
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
+
 #include "OsgMainApp.hpp"
-#include "AuxiliaryViewUpdater.h"
 #include "TiglViewerBackground.h"
 #include "MaterialTemplate.h"
 #include "PickHandler.h"
@@ -280,6 +295,7 @@ bool OsgMainApp::isFileSupported(const std::string& filename)
         fileType == "stp"  || fileType == "step" ||
         fileType == "vtp"  ||
         fileType == "mesh") {
+
         return true;
     }
     else {
@@ -416,7 +432,7 @@ void OsgMainApp::fitScreen()
 
     osg::Vec3d eye, centerold, up;
     osgGA::StandardManipulator* cm = dynamic_cast<osgGA::StandardManipulator*> (soleViewer->getCameraManipulator());
-    if(!cm) {
+    if (!cm) {
         LOG(ERROR) << "Incompatible camera manipulator";
         return;
     }
@@ -458,8 +474,7 @@ void OsgMainApp::displayShape(TopoDS_Shape shape, std::string id)
     Bnd_Box aBndBox;
     BRepBndLib::Add (shape, aBndBox);
     double aDeflection = tesselationAccu;
-    if (!aBndBox.IsVoid())
-    {
+    if (!aBndBox.IsVoid()) {
       Standard_Real aXmin, aYmin, aZmin, aXmax, aYmax, aZmax;
       aBndBox.Get (aXmin, aYmin, aZmin, aXmax, aYmax, aZmax);
       aDeflection = Max (aXmax-aXmin, Max (aYmax-aYmin, aZmax-aZmin))

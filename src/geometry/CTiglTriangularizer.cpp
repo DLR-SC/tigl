@@ -85,17 +85,16 @@ int CTiglTriangularizer::triangularizeShape(const TopoDS_Shape& shape)
     TopTools_IndexedMapOfShape faceMap;
     TopExp::MapShapes(shape,   TopAbs_FACE, faceMap);
 
-    // find newly created from source
     for (int iface = 1; iface <= faceMap.Extent(); ++iface) {
         TopoDS_Face face = TopoDS::Face(faceMap(iface));
-            unsigned long nVertices, iPolyLower, iPolyUpper;
-            triangularizeFace(face, nVertices, iPolyLower, iPolyUpper);
-        } // for faces
-        if (_useMultipleObjects) {
-            createNewObject();
-        }
-    //} // for shells
-    
+        unsigned long nVertices, iPolyLower, iPolyUpper;
+        triangularizeFace(face, nVertices, iPolyLower, iPolyUpper);
+    }
+
+    if (_useMultipleObjects) {
+        createNewObject();
+    }
+
     return 0;
 }
 

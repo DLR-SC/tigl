@@ -1,3 +1,19 @@
+/*
+* Copyright (C) 2007-2012 German Aerospace Center (DLR/SC)
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
+
 #include "VirtualVisObject.hpp"
 #include <osg/Geometry>
 #include <osg/ShapeDrawable>
@@ -7,24 +23,32 @@
 
 void VirtualVisObject::setXYGrid(bool active, int size, int unit)
 {
-    if(!xyGeode) initXYGeode(size, unit);
+    if (!xyGeode) {
+        initXYGeode(size, unit);
+    }
 
-    if(active)
+    if (active) {
         addChild(xyGeode.get());
-    else
+    }
+    else {
         removeChild(xyGeode.get());
+    }
 
     xy = active;
 }
 
 void VirtualVisObject::setXZGrid(bool active, int size, int unit)
 {
-    if(!xzGeode) initXZGeode(size, unit);
+    if (!xzGeode) {
+        initXZGeode(size, unit);
+    }
 
-    if(active)
+    if (active) {
         addChild(xzGeode.get());
-    else
+    }
+    else {
         removeChild(xzGeode.get());
+    }
 
     xz = active;
 }
@@ -32,12 +56,16 @@ void VirtualVisObject::setXZGrid(bool active, int size, int unit)
 
 void VirtualVisObject::setYZGrid(bool active, int size, int unit)
 {
-    if(!yzGeode) initYZGeode(size, unit);
+    if (!yzGeode) {
+        initYZGeode(size, unit);
+    }
 
-    if(active)
+    if (active) {
         addChild(yzGeode.get());
-    else
+    }
+    else {
         removeChild(yzGeode.get());
+    }
 
     yz=active;
 }
@@ -45,17 +73,22 @@ void VirtualVisObject::setYZGrid(bool active, int size, int unit)
 
 void VirtualVisObject::setMainAxesEnabled(bool active)
 {
-    if(!axesGeode) initAxesGeode();
+    if (!axesGeode) {
+        initAxesGeode();
+    }
 
-    if(active)
+    if (active) {
         addChild(axesGeode.get());
-    else
+    }
+    else {
         removeChild(axesGeode.get());
+    }
 
     axes = active;
 }
 
-void VirtualVisObject::initXYGeode(int size, int unit){
+void VirtualVisObject::initXYGeode(int size, int unit)
+{
 
     xyGeode = new osg::Geode();
     osg::Geometry* lines      = new osg::Geometry();
@@ -64,7 +97,7 @@ void VirtualVisObject::initXYGeode(int size, int unit){
     osg::Vec3Array* vertices = new osg::Vec3Array();
     osg::Vec3Array* vertices_wide = new osg::Vec3Array();
     for (int i = 0; i <= size; i+=unit) {
-        if(i % (10*unit) != 0){
+        if (i % (10*unit) != 0) {
             vertices->push_back(osg::Vec3(-size,i,0));
             vertices->push_back(osg::Vec3(size,i,0));
             vertices->push_back(osg::Vec3(-size,-i,0));
@@ -151,7 +184,7 @@ void VirtualVisObject::initYZGeode(int size, int unit)
     osg::Geometry* linesY = new osg::Geometry();
 
     osg::Vec3Array* vertices = new osg::Vec3Array();
-    for(int i = 0; i < size/unit+1; i++){
+    for (int i = 0; i < size/unit+1; i++){
         vertices->push_back(osg::Vec3(0, size, i*unit));
         vertices->push_back(osg::Vec3(0, -size, i*unit));
         vertices->push_back(osg::Vec3(0, -size, -i*unit));

@@ -1,3 +1,19 @@
+/*
+* Copyright (C) 2007-2014 German Aerospace Center (DLR/SC)
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
+
 #include "PickHandler.h"
 #include <osgUtil/LineSegmentIntersector>
 #include <iostream>
@@ -18,42 +34,36 @@ PickHandler::PickHandler()
 bool PickHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa)
 {
     bool add = false;
-    if (ea.getModKeyMask() & osgGA::GUIEventAdapter::MODKEY_CTRL)
+    if (ea.getModKeyMask() & osgGA::GUIEventAdapter::MODKEY_CTRL) {
         add = true;
+    }
 
     switch (ea.getEventType()) {
-    case (osgGA::GUIEventAdapter::RELEASE):
-    {
+    case (osgGA::GUIEventAdapter::RELEASE): {
         osgViewer::View* view = dynamic_cast<osgViewer::View*>(&aa);
         double dx = _lastx - ea.getXnormalized();
         double dy = _lasty - ea.getYnormalized();
         double distance = sqrt(dx*dx + dy*dy);
         _lastx = ea.getXnormalized();
         _lasty = ea.getYnormalized();
-        if(view && distance < PICK_MOVEMENT_THRESHOLD)
-        {
-            if(ea.getTime() - _lastTime >= TIME_TO_CENTER)
-            {
+        if (view && distance < PICK_MOVEMENT_THRESHOLD) {
+            if (ea.getTime() - _lastTime >= TIME_TO_CENTER) {
                 // center view picked point
                 osgUtil::LineSegmentIntersector::Intersections its = rayIntersection(view, ea, add);
                 changeCOR(view,its);
             }
-            else
-            {
+            else {
                 // select object
                 osgUtil::LineSegmentIntersector::Intersections its = rayIntersection(view, ea, add);
                 pick(its);
             }
             return true;
         }
-        else
-        {
+        else {
            return false;
-
         }
     }
-    case (osgGA::GUIEventAdapter::PUSH):
-    {
+    case (osgGA::GUIEventAdapter::PUSH): {
         _lastTime = ea.getTime();
         _lastx = ea.getXnormalized();
         _lasty = ea.getYnormalized();
@@ -103,28 +113,29 @@ osgUtil::LineSegmentIntersector::Intersections PickHandler::rayIntersection(osgV
 
 void PickHandler::pick(osgUtil::LineSegmentIntersector::Intersections allIntersections)
 {
-       if(allIntersections.empty())
-           return;
+   if (allIntersections.empty()) {
+       return;
+   }
 
-        osgUtil::LineSegmentIntersector::Intersections::iterator intersectionsIterator = allIntersections.begin();
+    osgUtil::LineSegmentIntersector::Intersections::iterator intersectionsIterator = allIntersections.begin();
 
-        GeometricVisObject* pickedObject;
-        std::string nameOfpickedObject;
+    GeometricVisObject* pickedObject;
+    std::string nameOfpickedObject;
 
-        for (int i = 0; i < intersectionsIterator->nodePath.size(); i++) {
+    for (int i = 0; i < intersectionsIterator->nodePath.size(); i++) {
 
-            pickedObject = (GeometricVisObject*) intersectionsIterator->nodePath.at(i);
-            nameOfpickedObject = intersectionsIterator->nodePath.at(i)->getName();
+        pickedObject = (GeometricVisObject*) intersectionsIterator->nodePath.at(i);
+        nameOfpickedObject = intersectionsIterator->nodePath.at(i)->getName();
 
-            if (!(intersectionsIterator->nodePath.at(i)->getName().empty())) {
-                if (!pickedObject->isPicked()) {
-                    pickedObject->pick();
-                }
-                else {
-                    pickedObject->unpick();
-                }
+        if (!(intersectionsIterator->nodePath.at(i)->getName().empty())) {
+            if (!pickedObject->isPicked()) {
+                pickedObject->pick();
+            }
+            else {
+                pickedObject->unpick();
             }
         }
+    }
 }
 
 void PickHandler::changeCOR(osgViewer::View* view, osgUtil::LineSegmentIntersector::Intersections allIntersections)
