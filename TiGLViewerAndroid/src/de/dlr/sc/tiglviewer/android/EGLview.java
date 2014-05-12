@@ -1,5 +1,3 @@
-
-package de.dlr.sc.tiglviewer.android;
 /*
  * Copyright (C) 2008 The Android Open Source Project
  *
@@ -15,6 +13,9 @@ package de.dlr.sc.tiglviewer.android;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package de.dlr.sc.tiglviewer.android;
+
 import android.content.Context;
 import android.graphics.PixelFormat;
 import android.opengl.GLSurfaceView;
