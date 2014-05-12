@@ -146,7 +146,11 @@ endif(TIGL_BUILD_TESTS)
 
 
 else(NOT TIGL_ANDROID)
+   find_package( PythonInterp )
    message("Build TiGLViewerApp")
+
+   add_custom_target(checkstyle)
+   add_custom_target(checkstylexml)
    
    set(TIGL_USE_XCAF FALSE)
    set(GLOG_FOUND FALSE)

@@ -1,4 +1,5 @@
 include(android-tools)
+include(tiglmacros)
 
 find_ndk_mod(osg)
 find_ndk_mod(oce)
@@ -57,6 +58,8 @@ ADD_CUSTOM_TARGET(
   TiGLViewerApp ALL 
   DEPENDS build/apk/TiGLViewerAndroid.apk
 )
+
+AddToCheckstyle()
 
 message("The TiGLViewer app can now be build using \"make\"")
 
