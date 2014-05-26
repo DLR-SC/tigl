@@ -121,8 +121,8 @@ CTiglExportIges::~CTiglExportIges(void)
 
 void CTiglExportIges::SetTranslationParameters() const
 {
-    Interface_Static::SetCVal("xstep.cascade.unit", "M");
-    Interface_Static::SetCVal("write.iges.unit", "M");
+    Interface_Static::SetCVal("xstep.cascade.unit", "MM");
+    Interface_Static::SetCVal("write.iges.unit", "MM");
     /*
      * BRep entities in IGES are experimental and untested.
      * They allow to specify things like shells and solids.
@@ -242,6 +242,17 @@ void CTiglExportIges::ExportShapes(const ListPNamedShape& shapes, const std::str
     }
 
     ListPNamedShape::const_iterator it;
+    // scale all shapes to mm
+    ListPNamedShape shapeScaled;
+    for (it = shapes.begin(); it != shapes.end(); ++it) {
+        PNamedShape pshape = *it;
+        CTiglTransformation trafo;
+        trafo.AddScaling(1000,1000,1000);
+        PNamedShape pScaledShape(new CNamedShape(*pshape));
+        pScaledShape->SetShape(trafo.Transform(pshape->Shape()));
+        shapeScaled.push_back(pScaledShape);
+    }
+    
     SetTranslationParameters();
 #ifdef TIGL_USE_XCAF
     // create the xde document
@@ -253,7 +264,7 @@ void CTiglExportIges::ExportShapes(const ListPNamedShape& shapes, const std::str
     IGESCAFControl_Writer igesWriter;
 
     ListPNamedShape list;
-    for (it = shapes.begin(); it != shapes.end(); ++it) {
+    for (it = shapeScaled.begin(); it != shapeScaled.end(); ++it) {
         ListPNamedShape templist = GroupFaces(*it, myStoreType);
         for (ListPNamedShape::iterator it2 = templist.begin(); it2 != templist.end(); ++it2) {
             list.push_back(*it2);
@@ -269,10 +280,10 @@ void CTiglExportIges::ExportShapes(const ListPNamedShape& shapes, const std::str
         throw CTiglError("Cannot export fused airplane as IGES", TIGL_ERROR);
     }
 #else
-    IGESControl_Writer igesWriter;
+    IGESControl_Writer igesWriter("MM", 0);
     igesWriter.Model()->ApplyStatic();
 
-    for (it = shapes.begin(); it != shapes.end(); ++it) {
+    for (it = shapeScaled.begin(); it != shapeScaled.end(); ++it) {
         PNamedShape pshape = *it;
         igesWriter.AddShape (pshape->Shape());
     }
@@ -281,7 +292,7 @@ void CTiglExportIges::ExportShapes(const ListPNamedShape& shapes, const std::str
 #endif
 
     // write face entity names
-    for (it = shapes.begin(); it != shapes.end(); ++it) {
+    for (it = shapeScaled.begin(); it != shapeScaled.end(); ++it) {
         PNamedShape pshape = *it;
         WriteIGESFaceNames(igesWriter.TransferProcess(), pshape);
     }
