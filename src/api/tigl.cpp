@@ -425,7 +425,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetLowerPointAtDirection(TiglCPACSConf
                                                                    double* pointXPtr,
                                                                    double* pointYPtr,
                                                                    double* pointZPtr)
-    {
+{
     if (pointXPtr == NULL || pointYPtr == NULL || pointZPtr == NULL) {
         LOG(ERROR) << "Error: Null pointer argument for pointXPtr, pointYPtr or pointZPtr ";
         LOG(ERROR) << "in function call to tiglWingGetLowerPointAtDirection." << std::endl;
