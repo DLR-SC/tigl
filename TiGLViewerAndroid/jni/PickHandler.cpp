@@ -29,6 +29,7 @@ PickHandler::PickHandler()
     _lastx = 0.;
     _lasty = 0.;
     _lastTime= 0.;
+    centeringAction=false;
 }
 
 bool PickHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa)
@@ -37,7 +38,22 @@ bool PickHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapt
     if (ea.getModKeyMask() & osgGA::GUIEventAdapter::MODKEY_CTRL) {
         add = true;
     }
-
+    if (_lastTime != 0 && ea.getTime() - _lastTime >= TIME_TO_CENTER) {
+        osgViewer::View* view = dynamic_cast<osgViewer::View*>(&aa);
+        double dx = _lastx - ea.getXnormalized();
+        double dy = _lasty - ea.getYnormalized();
+        double distance = sqrt(dx*dx + dy*dy);
+        _lastx = ea.getXnormalized();
+        _lasty = ea.getYnormalized();
+        _lastTime = 0;
+        if (view && distance < PICK_MOVEMENT_THRESHOLD) {
+        // center view picked point
+        osgUtil::LineSegmentIntersector::Intersections its = rayIntersection(view, ea, add);
+        changeCOR(view,its);
+        centeringAction = true;
+        _lastTime = 0;
+        }
+    }
     switch (ea.getEventType()) {
     case (osgGA::GUIEventAdapter::RELEASE): {
         osgViewer::View* view = dynamic_cast<osgViewer::View*>(&aa);
@@ -46,13 +62,9 @@ bool PickHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapt
         double distance = sqrt(dx*dx + dy*dy);
         _lastx = ea.getXnormalized();
         _lasty = ea.getYnormalized();
+        _lastTime = 0;
         if (view && distance < PICK_MOVEMENT_THRESHOLD) {
-            if (ea.getTime() - _lastTime >= TIME_TO_CENTER) {
-                // center view picked point
-                osgUtil::LineSegmentIntersector::Intersections its = rayIntersection(view, ea, add);
-                changeCOR(view,its);
-            }
-            else {
+            if(!centeringAction){
                 // select object
                 osgUtil::LineSegmentIntersector::Intersections its = rayIntersection(view, ea, add);
                 pick(its);
@@ -64,6 +76,7 @@ bool PickHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapt
         }
     }
     case (osgGA::GUIEventAdapter::PUSH): {
+        centeringAction = false;
         _lastTime = ea.getTime();
         _lastx = ea.getXnormalized();
         _lasty = ea.getYnormalized();
@@ -137,10 +150,9 @@ void PickHandler::pick(osgUtil::LineSegmentIntersector::Intersections allInterse
         }
     }
 }
-
 void PickHandler::changeCOR(osgViewer::View* view, osgUtil::LineSegmentIntersector::Intersections allIntersections)
 {
-    osg::Vec3d eye, oldCenter, up;
+    osg::Vec3d eye, oldCenter, up, newCenter;
     osgGA::StandardManipulator* m = dynamic_cast<osgGA::StandardManipulator*> (view->getCameraManipulator());
     m->getTransformation( eye, oldCenter, up );
 
@@ -150,11 +162,10 @@ void PickHandler::changeCOR(osgViewer::View* view, osgUtil::LineSegmentIntersect
         GeometricVisObject* pickedObject = dynamic_cast<GeometricVisObject*>(intersectionsIterator->nodePath.at(i));
 
         if (pickedObject) {
-            osg::Vec3d newCenter = intersectionsIterator->getWorldIntersectPoint();
+            newCenter = intersectionsIterator->getWorldIntersectPoint();
             osg::Vec3d displacement = newCenter - oldCenter;
             m->setTransformation( eye + displacement, newCenter, up );
             break;
         }
     }
 }
-

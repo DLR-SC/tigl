@@ -364,7 +364,6 @@ public class TiglViewerActivity extends ActionBarActivity implements
     public File[] checkDirectory(String folderName) {
         File file = new File(Environment.getExternalStorageDirectory(),
                 folderName);
-
         if (!file.exists()) {
             return null;
         }
