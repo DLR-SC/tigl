@@ -157,7 +157,6 @@ else(NOT TIGL_ANDROID)
    
    find_package(AndroidNDK REQUIRED)
    find_package(AndroidSDK REQUIRED)
-   find_package(Ant REQUIRED)
 
    add_subdirectory(TiGLViewerAndroid)
 endif(NOT TIGL_ANDROID)
