@@ -23,13 +23,11 @@
 
 #include <QtCore/QObject>
 #include "TIGLViewer.h"
+#include "TIGLViewerColors.h"
 #include "CCPACSConfiguration.h"
 
 #include <Handle_AIS_Shape.hxx>
 #include <Quantity_Color.hxx>
-
-#define Quantity_NOC_ShapeCol (Quantity_Color(0., 170./255.,1., Quantity_TOC_RGB))
-#define Quantity_NOC_MirrShapeCol (Quantity_Color(251./255., 1., 169./255., Quantity_TOC_RGB))
 
 class QOCC_DECLSPEC TIGLViewerDocument : public QObject
 {
@@ -42,7 +40,7 @@ class QOCC_DECLSPEC TIGLViewerDocument : public QObject
 
 public:
 
-    TIGLViewerDocument( QWidget *parentWidget, const Handle_AIS_InteractiveContext& ic, const class TIGLViewerSettings& set );
+    TIGLViewerDocument( QWidget *parentWidget, const Handle_AIS_InteractiveContext& ic );
     ~TIGLViewerDocument( );
 
     TiglReturnCode openCpacsConfiguration(const QString fileName);
@@ -139,7 +137,6 @@ private slots:
 
 private: 
     TiglCPACSConfigurationHandle            m_cpacsHandle;
-    const TIGLViewerSettings&               _settings;
     QWidget*                                parent;
     Handle_AIS_InteractiveContext           myAISContext;
     class TIGLViewerWidget*                 myOCC;

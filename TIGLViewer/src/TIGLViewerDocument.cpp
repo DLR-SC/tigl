@@ -77,8 +77,7 @@
 #define strdup(str) _strdup((str))
 #endif
 
-TIGLViewerDocument::TIGLViewerDocument( QWidget *parentWidget, const Handle_AIS_InteractiveContext& ic, const TIGLViewerSettings& set )
-: _settings(set)
+TIGLViewerDocument::TIGLViewerDocument( QWidget *parentWidget, const Handle_AIS_InteractiveContext& ic )
 {
     parent = parentWidget;
     myAISContext = ic;
@@ -248,24 +247,7 @@ bool meshShape(const TopoDS_Shape& loft, double rel_deflection)
 // a small helper when we just want to display a shape
 Handle(AIS_Shape) TIGLViewerDocument::displayShape(const TopoDS_Shape& loft, Quantity_Color color)
 {
-    Handle(AIS_Shape) shape = new AIS_Shape(loft);
-    shape->SetMaterial(Graphic3d_NOM_METALIZED);
-    shape->SetColor(color);
-    shape->SetOwnDeviationCoefficient(_settings.tesselationAccuracy());
-    myAISContext->Display(shape, Standard_True);
-    
-    if (_settings.enumerateFaces()) {
-        TopTools_IndexedMapOfShape shapeMap;
-        TopExp::MapShapes(loft, TopAbs_FACE, shapeMap);
-        for (int i = 1; i <= shapeMap.Extent(); ++i) {
-            const TopoDS_Face& face = TopoDS::Face(shapeMap(i));
-            gp_Pnt p = GetCentralFacePoint(face);
-            QString s = QString("%1").arg(i);
-            DisplayPoint(p, s.toStdString().c_str(), false, 0., 0., 0., 10.);
-        }
-    }
-    
-    return shape;
+    return myOCC->displayShape(loft, color);
 }
 
 
@@ -278,13 +260,9 @@ void TIGLViewerDocument::DisplayPoint(gp_Pnt& aPoint,
                                       Standard_Real aZoffset,
                                       Standard_Real TextScale)
 {
-    Handle(ISession_Point) aGraphicPoint = new ISession_Point(aPoint);
-    myAISContext->Display(aGraphicPoint,UpdateViewer);
-    Handle(ISession_Text) aGraphicText = new ISession_Text(aText, aPoint.X() + anXoffset,
-                                                 aPoint.Y() + anYoffset,
-                                                 aPoint.Z() + aZoffset);
-    aGraphicText->SetScale(TextScale);
-    myAISContext->Display(aGraphicText,UpdateViewer);
+    return myOCC->DisplayPoint(aPoint, aText, UpdateViewer,
+                               anXoffset, anYoffset, aZoffset,
+                               TextScale);
 }
 
 
@@ -1194,7 +1172,7 @@ void TIGLViewerDocument::exportMeshedWingSTL()
     if (!fileName.isEmpty()) {
         QApplication::setOverrideCursor( Qt::WaitCursor );
         tigl::CCPACSWing& wing = GetConfiguration().GetWing(qstringToCstring(wingUid));
-        double deflection = wing.GetWingspan()/2. * _settings.triangulationAccuracy();
+        double deflection = wing.GetWingspan()/2. * TIGLViewerSettings::Instance().triangulationAccuracy();
         TiglReturnCode err = tiglExportMeshedWingSTLByUID(m_cpacsHandle, qstringToCstring(wingUid), qstringToCstring(fileName), deflection);
         QApplication::restoreOverrideCursor();
         if (err != TIGL_SUCCESS) {
@@ -1245,7 +1223,7 @@ void TIGLViewerDocument::exportMeshedWingVTK()
     if (!fileName.isEmpty()) {
         QApplication::setOverrideCursor( Qt::WaitCursor );
         tigl::CCPACSWing& wing = GetConfiguration().GetWing(qstringToCstring(wingUid));
-        double deflection = wing.GetWingspan()/2. * _settings.triangulationAccuracy();
+        double deflection = wing.GetWingspan()/2. * TIGLViewerSettings::Instance().triangulationAccuracy();
 
         TiglReturnCode err = tiglExportMeshedWingVTKByUID(m_cpacsHandle, wingUid.toStdString().c_str(), qstringToCstring(fileName), deflection);
         QApplication::restoreOverrideCursor();
@@ -1275,7 +1253,7 @@ void TIGLViewerDocument::exportMeshedWingVTKsimple()
     if (!fileName.isEmpty()) {
         QApplication::setOverrideCursor( Qt::WaitCursor );
         tigl::CCPACSWing& wing = GetConfiguration().GetWing(qstringToCstring(wingUid));
-        double deflection = wing.GetWingspan()/2. * _settings.triangulationAccuracy();
+        double deflection = wing.GetWingspan()/2. * TIGLViewerSettings::Instance().triangulationAccuracy();
 
         TiglReturnCode err = tiglExportMeshedWingVTKSimpleByUID(m_cpacsHandle, qstringToCstring(wingUid), qstringToCstring(fileName), deflection);
         QApplication::restoreOverrideCursor();
@@ -1302,7 +1280,7 @@ void TIGLViewerDocument::exportWingCollada()
     if (!fileName.isEmpty()) {
         QApplication::setOverrideCursor( Qt::WaitCursor );
         tigl::CCPACSWing& wing = GetConfiguration().GetWing(qstringToCstring(wingUid));
-        double deflection = wing.GetWingspan()/2. * _settings.triangulationAccuracy();
+        double deflection = wing.GetWingspan()/2. * TIGLViewerSettings::Instance().triangulationAccuracy();
 
         TiglReturnCode err = tiglExportWingColladaByUID(m_cpacsHandle, wingUid.toStdString().c_str(), qstringToCstring(fileName), deflection);
         QApplication::restoreOverrideCursor();
@@ -1377,7 +1355,8 @@ void TIGLViewerDocument::exportMeshedConfigVTK()
         writeToStatusBar("Writing meshed vtk file");
         tigl::CTiglExportVtk exporter(GetConfiguration());
         
-        double deflection = GetConfiguration().GetAirplaneLenth() * _settings.triangulationAccuracy();
+        double deflection = GetConfiguration().GetAirplaneLenth() 
+                * TIGLViewerSettings::Instance().triangulationAccuracy();
         exporter.ExportMeshedGeometryVTK(fileName.toStdString(), deflection);
         
         writeToStatusBar("");
@@ -1395,7 +1374,8 @@ void TIGLViewerDocument::exportMeshedConfigVTKNoFuse()
         writeToStatusBar("Writing meshed vtk file");
         tigl::CTiglExportVtk exporter(GetConfiguration());
 
-        double deflection = GetConfiguration().GetAirplaneLenth() * _settings.triangulationAccuracy();
+        double deflection = GetConfiguration().GetAirplaneLenth() 
+                * TIGLViewerSettings::Instance().triangulationAccuracy();
         exporter.ExportMeshedGeometryVTKNoFuse(fileName.toStdString(), deflection);
 
         writeToStatusBar("");
@@ -1415,7 +1395,8 @@ void TIGLViewerDocument::exportFuselageCollada()
 
     if (!fileName.isEmpty()) {
         QApplication::setOverrideCursor( Qt::WaitCursor );
-        double deflection = GetConfiguration().GetAirplaneLenth() * _settings.triangulationAccuracy();
+        double deflection = GetConfiguration().GetAirplaneLenth() 
+                * TIGLViewerSettings::Instance().triangulationAccuracy();
         TiglReturnCode err = tiglExportFuselageColladaByUID(m_cpacsHandle, qstringToCstring(fuselageUid), qstringToCstring(fileName), deflection);
         QApplication::restoreOverrideCursor();
         if (err != TIGL_SUCCESS) {
@@ -1930,7 +1911,7 @@ void TIGLViewerDocument::drawFarField()
  */
 void TIGLViewerDocument::createShapeTriangulation(const TopoDS_Shape& shape, TopoDS_Compound& compound)
 {
-    meshShape(shape, _settings.triangulationAccuracy());
+    meshShape(shape, TIGLViewerSettings::Instance().triangulationAccuracy());
     BRep_Builder builder;
     builder.MakeCompound(compound);
     builder.Add(compound, shape);
