@@ -38,6 +38,10 @@
 
 #include "TIGLViewerInternal.h"
 #include "TIGLViewerDocument.h"
+#include "TIGLViewerSettings.h"
+#include "ISession_Point.h"
+#include "ISession_Text.h"
+#include "tiglcommonfunctions.h"
 
 #include <OpenGl_GraphicDriver.hxx>
 
@@ -1116,4 +1120,46 @@ void TIGLViewerWidget::makeScreenshot(int width, int height, int quality, const 
             throw tigl::CTiglError("Cannot save screenshot to file.");
         }
     }
+}
+
+// a small helper when we just want to display a shape
+Handle(AIS_Shape) TIGLViewerWidget::displayShape(const TopoDS_Shape& loft, Quantity_Color color)
+{
+    TIGLViewerSettings& settings = TIGLViewerSettings::Instance();
+    Handle(AIS_Shape) shape = new AIS_Shape(loft);
+    shape->SetMaterial(Graphic3d_NOM_METALIZED);
+    shape->SetColor(color);
+    shape->SetOwnDeviationCoefficient(settings.tesselationAccuracy());
+    myContext->Display(shape, Standard_True);
+    
+    if (settings.enumerateFaces()) {
+        TopTools_IndexedMapOfShape shapeMap;
+        TopExp::MapShapes(loft, TopAbs_FACE, shapeMap);
+        for (int i = 1; i <= shapeMap.Extent(); ++i) {
+            const TopoDS_Face& face = TopoDS::Face(shapeMap(i));
+            gp_Pnt p = GetCentralFacePoint(face);
+            QString s = QString("%1").arg(i);
+            DisplayPoint(p, s.toStdString().c_str(), false, 0., 0., 0., 10.);
+        }
+    }
+    
+    return shape;
+}
+
+// Displays a point on the screen
+void TIGLViewerWidget::DisplayPoint(const gp_Pnt& aPoint,
+                                      const char* aText,
+                                      Standard_Boolean UpdateViewer,
+                                      Standard_Real anXoffset,
+                                      Standard_Real anYoffset,
+                                      Standard_Real aZoffset,
+                                      Standard_Real TextScale)
+{
+    Handle(ISession_Point) aGraphicPoint = new ISession_Point(aPoint.X(), aPoint.Y(), aPoint.Z());
+    myContext->Display(aGraphicPoint,UpdateViewer);
+    Handle(ISession_Text) aGraphicText = new ISession_Text(aText, aPoint.X() + anXoffset,
+                                                 aPoint.Y() + anYoffset,
+                                                 aPoint.Z() + aZoffset);
+    aGraphicText->SetScale(TextScale);
+    myContext->Display(aGraphicText,UpdateViewer);
 }

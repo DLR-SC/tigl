@@ -125,7 +125,7 @@ TIGLViewerWindow::TIGLViewerWindow()
 {
     setupUi(this);
 
-    tiglViewerSettings = new TIGLViewerSettings();
+    tiglViewerSettings = &TIGLViewerSettings::Instance();
     settingsDialog = new TIGLViewerSettingsDialog(*tiglViewerSettings, this);
 
     myVC  = new TIGLViewerContext();
@@ -166,7 +166,7 @@ TIGLViewerWindow::TIGLViewerWindow()
     p.setColor(QPalette::Base, Qt::black);
     console->setPalette(p);
 
-    cpacsConfiguration = new TIGLViewerDocument(this, myOCC->getContext(), getSettings());
+    cpacsConfiguration = new TIGLViewerDocument(this, myOCC->getContext());
     scriptEngine = new TIGLScriptEngine;
     
     setAcceptDrops(true);
@@ -188,7 +188,6 @@ TIGLViewerWindow::~TIGLViewerWindow()
     delete stdoutStream;
     delete errorStream;
     delete scriptEngine;
-    delete tiglViewerSettings;
 }
 
 void TIGLViewerWindow::dragEnterEvent(QDragEnterEvent * ev)
@@ -346,10 +345,10 @@ void TIGLViewerWindow::openFile(const QString& fileName)
                 triangulation = true;
             }
             if (triangulation) {
-                reader.importTriangulation( fileInfo.absoluteFilePath(), format, myOCC->getContext() );
+                reader.importTriangulation( fileInfo.absoluteFilePath(), format, *myOCC );
             }
             else {
-                reader.importModel ( fileInfo.absoluteFilePath(), format, myOCC->getContext() );
+                reader.importModel ( fileInfo.absoluteFilePath(), format, *myOCC );
             }
         }
         watcher = new QFileSystemWatcher();
