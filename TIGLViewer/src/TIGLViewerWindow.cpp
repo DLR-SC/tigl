@@ -517,12 +517,12 @@ void TIGLViewerWindow::setBackgroundImage()
     fileName = QFileDialog::getOpenFileName (    this,
                                                   tr("Open Background Image"),
                                                 myLastFolder,
-                                                tr( "Images (*.gif *.bmp);;" ) );
+                                                tr( "Images (*.jpg *.png *.gif *.bmp);;" ) );
     if (!fileName.isEmpty()) {
         fileInfo.setFile(fileName);
         fileType = fileInfo.suffix();
         
-        if (fileType.toLower() == tr("bmp") || fileType.toLower() == tr("gif")) {
+        if (fileType.toLower() == tr("bmp") || fileType.toLower() == tr("gif") || fileType.toLower() == tr("jpg") || fileType.toLower() == tr("png")) {
             myOCC->setBGImage(fileName);
         }
         else {
