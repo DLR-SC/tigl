@@ -1148,12 +1148,12 @@ Handle(AIS_Shape) TIGLViewerWidget::displayShape(const TopoDS_Shape& loft, Quant
 
 // Displays a point on the screen
 void TIGLViewerWidget::DisplayPoint(const gp_Pnt& aPoint,
-                                      const char* aText,
-                                      Standard_Boolean UpdateViewer,
-                                      Standard_Real anXoffset,
-                                      Standard_Real anYoffset,
-                                      Standard_Real aZoffset,
-                                      Standard_Real TextScale)
+                                    const char* aText,
+                                    Standard_Boolean UpdateViewer,
+                                    Standard_Real anXoffset,
+                                    Standard_Real anYoffset,
+                                    Standard_Real aZoffset,
+                                    Standard_Real TextScale)
 {
     Handle(ISession_Point) aGraphicPoint = new ISession_Point(aPoint.X(), aPoint.Y(), aPoint.Z());
     myContext->Display(aGraphicPoint,UpdateViewer);
