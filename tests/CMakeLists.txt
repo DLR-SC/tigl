@@ -45,7 +45,6 @@ file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/test_logging.py DESTINATION ${PROJECT_BINA
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/TestData/export)
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/TestData/analysis)
 
-get_filename_component(TIXI_LIB_PATH ${TIXI_LIBRARY} PATH)
 configure_file (
   "${CMAKE_CURRENT_SOURCE_DIR}/runtests.sh.in"
   "${CMAKE_CURRENT_BINARY_DIR}/runtests.sh"

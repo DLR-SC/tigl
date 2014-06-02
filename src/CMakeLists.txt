@@ -72,7 +72,7 @@ install (TARGETS TIGL
 		 ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
 		 )
 		 
-install (EXPORT tigl-targets DESTINATION ${CMAKE_INSTALL_LIBDIR}/tigl)
+install (EXPORT tigl-targets DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/tigl)
 		 
 install (FILES api/tigl.h ${CMAKE_CURRENT_BINARY_DIR}/api/tigl_version.h
 		 DESTINATION include
