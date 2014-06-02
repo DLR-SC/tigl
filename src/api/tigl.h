@@ -746,9 +746,9 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetLowerPointAtDirection(TiglCPACSConf
                                                                    int segmentIndex,
                                                                    double eta,
                                                                    double xsi,
-                                                                   double xAngle,
-                                                                   double yAngle,
-                                                                   double zAngle,
+                                                                   double dirx,
+                                                                   double diry,
+                                                                   double dirz,
                                                                    double* pointXPtr,
                                                                    double* pointYPtr,
                                                                    double* pointZPtr);
