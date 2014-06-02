@@ -9,6 +9,6 @@ echo "Running unit tests..."
 # now run the python tests
 echo $DYLD_LIBRARY_PATH
 echo "Running python API tests..."
-export PYTHONPATH=$PYTHONPATH:@LIBRARY_OUTPUT_PATH@:@TIXI_INCLUDE_DIR@/../share/tixi/python
+export PYTHONPATH=$PYTHONPATH:@LIBRARY_OUTPUT_PATH@:@TIXI_INCLUDE_DIRS@../share/tixi/python
 
 python pythonwrapper-tests.py
