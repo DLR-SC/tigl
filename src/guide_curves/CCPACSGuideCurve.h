@@ -81,6 +81,12 @@ public:
 
     TIGL_EXPORT const TopoDS_Edge& GetCurve() const;
 
+    // Connects the current guide curve segment with another segment guide
+    // This implies, that guide.fromGuideCurveUID == this.uid
+    TIGL_EXPORT void ConnectToCurve(CCPACSGuideCurve* guide);
+
+    TIGL_EXPORT CCPACSGuideCurve* GetConnectedCurve() const;
+
 protected:
     // Cleanup routine
     void Cleanup(void);
@@ -93,6 +99,7 @@ private:
     void operator=(const CCPACSGuideCurve&);
 
     TopoDS_Edge guideCurveTopo;           /**< Actual topological entity of the curve */
+    CCPACSGuideCurve* nextGuideSegment;   /**< Pointer to a guide curve segment that is connected to this segment */
     std::string GuideCurveXPath;          /**< The XPath to this guide curve in cpacs */
     std::string name;                     /**< The Name of the guide curve */
     std::string description;              /**< The description of the guide curve */

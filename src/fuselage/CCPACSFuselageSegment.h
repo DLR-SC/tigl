@@ -154,11 +154,8 @@ public:
     // builds all guide curve wires
     TIGL_EXPORT TopTools_SequenceOfShape& BuildGuideCurves(void);
 
-    // get guide curve for given UID
-    TIGL_EXPORT CCPACSGuideCurve& GetGuideCurve(std::string UID);
+    TIGL_EXPORT CCPACSGuideCurves& GetGuideCurves();
 
-    // check if guide curve with a given UID exists
-    TIGL_EXPORT bool GuideCurveExists(std::string UID);
 
 protected:
     // Cleanup routine

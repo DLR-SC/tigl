@@ -126,6 +126,8 @@ public:
     TIGL_EXPORT CCPACSGuideCurve& GetGuideCurve(std::string uid);
 
 protected:
+    void BuildGuideCurves();
+
     // Cleanup routine
     void Cleanup(void);
 
@@ -154,6 +156,7 @@ private:
     FusedElementsContainerType fusedElements;        /**< Stores already fused segments */
 
     TopoDS_Compound            aCompound;
+    TopoDS_Compound            guideCurves;
     BRep_Builder               aBuilder;
     double                     myVolume;             /**< Volume of this fuselage              */
 };

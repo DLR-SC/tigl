@@ -779,16 +779,9 @@ double CCPACSFuselageSegment::GetCircumference(const double eta)
     return myWireLength;
 }
 
-// get guide curve for given UID
-CCPACSGuideCurve& CCPACSFuselageSegment::GetGuideCurve(std::string UID)
+CCPACSGuideCurves& CCPACSFuselageSegment::GetGuideCurves()
 {
-    return guideCurves.GetGuideCurve(UID);
-}
-
-// check if guide curve with a given UID exists
-bool CCPACSFuselageSegment::GuideCurveExists(std::string UID)
-{
-    return guideCurves.GuideCurveExists(UID);
+    return guideCurves;
 }
 
 // Creates all guide curves
@@ -851,8 +844,15 @@ TopTools_SequenceOfShape& CCPACSFuselageSegment::BuildGuideCurves(void)
             CCPACSGuideCurveProfile& guideCurveProfile = config.GetGuideCurveProfile(guideCurveProfileUID);
 
             // construct guide curve algorithm
-            TopoDS_Edge guideCurveWire = CCPACSGuideCurveAlgo<CCPACSFuselageProfileGetPointAlgo> (startWireContainer, endWireContainer, fromRelativeCircumference, toRelativeCircumference, innerScale, outerScale, guideCurveProfile);
-            guideCurveWires.Append(guideCurveWire);
+            TopoDS_Edge guideCurveEdge = CCPACSGuideCurveAlgo<CCPACSFuselageProfileGetPointAlgo> (startWireContainer, 
+                                                                                                  endWireContainer, 
+                                                                                                  fromRelativeCircumference, 
+                                                                                                  toRelativeCircumference, 
+                                                                                                  innerScale, 
+                                                                                                  outerScale, 
+                                                                                                  guideCurveProfile);
+            guideCurveWires.Append(guideCurveEdge);
+            guideCurve.SetCurve(guideCurveEdge);
         }
 
         // return container for guide curve wires

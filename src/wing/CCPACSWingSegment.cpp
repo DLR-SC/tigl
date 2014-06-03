@@ -815,18 +815,6 @@ TopoDS_Shape& CCPACSWingSegment::GetLowerShape()
     return lowerShape;
 }
 
-// get guide curve for given UID
-CCPACSGuideCurve& CCPACSWingSegment::GetGuideCurve(std::string UID)
-{
-    return guideCurves.GetGuideCurve(UID);
-}
-
-// check if guide curve with a given UID exists
-bool CCPACSWingSegment::GuideCurveExists(std::string UID)
-{
-    return guideCurves.GuideCurveExists(UID);
-}
-
 TopTools_SequenceOfShape& CCPACSWingSegment::GetGuideCurveWires()
 {
     if (guideCurveWires.IsEmpty()) {
@@ -896,10 +884,22 @@ void CCPACSWingSegment::BuildGuideCurveWires(void)
             CCPACSGuideCurveProfile& guideCurveProfile = config.GetGuideCurveProfile(guideCurveProfileUID);
 
             // construct guide curve algorithm
-            TopoDS_Edge guideCurveWire = CCPACSGuideCurveAlgo<CCPACSWingProfileGetPointAlgo> (concatenatedInnerWires, concatenatedOuterWires, fromRelativeCircumference, toRelativeCircumference, innerScale, outerScale, guideCurveProfile);
-            guideCurveWires.Append(guideCurveWire);
+            TopoDS_Edge guideCurveEdge = CCPACSGuideCurveAlgo<CCPACSWingProfileGetPointAlgo> (concatenatedInnerWires,
+                                                                                              concatenatedOuterWires,
+                                                                                              fromRelativeCircumference,
+                                                                                              toRelativeCircumference,
+                                                                                              innerScale,
+                                                                                              outerScale,
+                                                                                              guideCurveProfile);
+            guideCurveWires.Append(guideCurveEdge);
+            guideCurve.SetCurve(guideCurveEdge);
         }
     }
+}
+
+CCPACSGuideCurves& CCPACSWingSegment::GetGuideCurves()
+{
+    return guideCurves;
 }
 
 } // end namespace tigl

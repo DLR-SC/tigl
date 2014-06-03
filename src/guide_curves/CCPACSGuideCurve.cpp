@@ -51,6 +51,7 @@ void CCPACSGuideCurve::Cleanup(void)
     description= "";
     fromGuideCurveUID = "";
     fromRelativeCircumferenceIsSet = true;
+    nextGuideSegment = NULL;
     guideCurveTopo.Nullify();
 }
 
@@ -167,6 +168,24 @@ void CCPACSGuideCurve::SetCurve(const TopoDS_Edge& edge)
 const TopoDS_Edge& CCPACSGuideCurve::GetCurve() const
 {
     return guideCurveTopo;
+}
+
+void CCPACSGuideCurve::ConnectToCurve(CCPACSGuideCurve *guide)
+{
+    if (!guide) {
+        throw CTiglError("Null pointer guide curve in CCPACSGuideCurve::ConnectToCurve", TIGL_ERROR);
+    }
+    
+    if (guide->GetFromGuideCurveUID() != uid) {
+        throw CTiglError("Guide curves cannot be connected. Mismatching uids.", TIGL_ERROR);
+    }
+    
+    nextGuideSegment = guide;
+}
+
+CCPACSGuideCurve* CCPACSGuideCurve::GetConnectedCurve() const
+{
+    return nextGuideSegment;
 }
 
 } // end namespace tigl

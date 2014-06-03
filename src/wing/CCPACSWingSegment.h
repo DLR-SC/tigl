@@ -169,11 +169,7 @@ public:
     // Returns the guide curves of the segment as wires
     TIGL_EXPORT TopTools_SequenceOfShape& GetGuideCurveWires();
 
-    // get guide curve for given UID
-    TIGL_EXPORT CCPACSGuideCurve& GetGuideCurve(std::string UID);
-
-    // check if guide curve with a given UID exists
-    TIGL_EXPORT bool GuideCurveExists(std::string UID);
+    TIGL_EXPORT CCPACSGuideCurves& GetGuideCurves();
 
     // Returns an upper or lower point on the segment surface in
     // dependence of parameters eta and xsi, which range from 0.0 to 1.0.

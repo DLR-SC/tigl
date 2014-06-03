@@ -36,6 +36,7 @@
 #include "ShapeFix_Shape.hxx"
 #include "GProp_GProps.hxx"
 #include "BRep_Tool.hxx"
+#include "BRepTools.hxx"
 #include "BRepGProp.hxx"
 #include "BRepBuilderAPI_Transform.hxx"
 #include "Geom_TrimmedCurve.hxx"
@@ -45,6 +46,7 @@
 #include "BRepBuilderAPI_MakeWire.hxx"
 #include "GC_MakeSegment.hxx"
 #include "BRepExtrema_DistShapeShape.hxx"
+#include "ShapeFix_Wire.hxx"
 
 #define _USE_MATH_DEFINES
 #include <math.h>
@@ -391,11 +393,64 @@ CCPACSGuideCurve& CCPACSFuselage::GetGuideCurve(std::string uid)
 {
     for (int i=1; i <= segments.GetSegmentCount(); i++) {
         CCPACSFuselageSegment& segment = segments.GetSegment(i);
-        if (segment.GuideCurveExists(uid)) {
-            return segment.GetGuideCurve(uid);
+        if (segment.GetGuideCurves().GuideCurveExists(uid)) {
+            return segment.GetGuideCurves().GetGuideCurve(uid);
         }
     }
     throw tigl::CTiglError("Error: Guide Curve with UID " + uid + " does not exists", TIGL_ERROR);
+}
+
+void CCPACSFuselage::BuildGuideCurves()
+{
+    guideCurves.Nullify();
+    BRep_Builder b;
+    b.MakeCompound(guideCurves);
+    std::map<std::string, CCPACSGuideCurve*> roots;
+    
+    // find roots and connect the belonging guide curve segments
+    for (int isegment = 1; isegment <= GetSegmentCount(); ++isegment) {
+        CCPACSFuselageSegment& segment = segments.GetSegment(isegment);
+        CCPACSGuideCurves& segmentCurves = segment.GetGuideCurves();
+        for (int iguide = 1; iguide <=  segmentCurves.GetGuideCurveCount(); ++iguide) {
+            CCPACSGuideCurve& curve = segmentCurves.GetGuideCurve(iguide);
+            std::string fromCurveUID = curve.GetFromGuideCurveUID();
+            if (fromCurveUID.empty()) {
+                // this is a root curve
+                std::string rootUID = curve.GetUID();
+                roots[rootUID] = &curve;
+            }
+            else {
+                CCPACSGuideCurve& fromCurve = GetGuideCurve(fromCurveUID);
+                fromCurve.ConnectToCurve(&curve);
+            }
+        }
+    }
+    
+    // build the guide curves for each segment
+    for (int isegment = 1; isegment <= GetSegmentCount(); ++isegment) {
+        CCPACSFuselageSegment& segment = segments.GetSegment(isegment);
+        segment.BuildGuideCurves();
+    }
+    
+    // connect belonging guide curves to wires
+    std::map<std::string, CCPACSGuideCurve*>::iterator it;
+    for (it = roots.begin(); it != roots.end(); ++it) {
+        CCPACSGuideCurve* curCurve = it->second;
+        BRepBuilderAPI_MakeWire wireMaker;
+        while (curCurve) {
+            const TopoDS_Edge& edge = curCurve->GetCurve();
+            wireMaker.Add(edge);
+            curCurve = curCurve->GetConnectedCurve();
+        }
+        TopoDS_Wire result = wireMaker.Wire();
+        // Fix Shape, might be necessary since the order of edges could be wrong
+        ShapeFix_Wire wireFixer;
+        wireFixer.Load(result);
+        wireFixer.FixReorder();
+        wireFixer.Perform();
+        result = wireFixer.Wire();
+        b.Add(guideCurves, result);
+    }
 }
 
 } // end namespace tigl

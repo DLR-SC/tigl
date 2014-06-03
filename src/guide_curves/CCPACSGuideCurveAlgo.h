@@ -134,7 +134,7 @@ public:
             // magnitude: gamma times linear interpolated scaling factor
             guideCurvePoint += gamma * scale * normalGamma;
             // save to container
-            guideCurvePoints[i+1]=gp_Pnt(guideCurvePoint.X(), guideCurvePoint.Y(), guideCurvePoint.Z()) ;
+            guideCurvePoints[i+1]=gp_Pnt(guideCurvePoint.XYZ()) ;
         }
 
         // interpolate B-Spline curve through guide curve points

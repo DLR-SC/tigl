@@ -41,6 +41,7 @@
 #include "CCPACSGuideCurve.h"
 
 #include "TopoDS_Shape.hxx"
+#include "TopoDS_Compound.hxx"
 
 
 namespace tigl
@@ -154,8 +155,9 @@ public:
 
     // Get the guide curve with a given UID
     TIGL_EXPORT CCPACSGuideCurve& GetGuideCurve(std::string uid);
-
 protected:
+    void BuildGuideCurves();
+
     // Cleanup routine
     void Cleanup(void);
 
@@ -190,6 +192,7 @@ private:
     TopoDS_Shape                   fusedSegmentWithEdge;     /**< All Segments in one shape plus modelled leading edge */ 
     TopoDS_Shape                   upperShape;
     TopoDS_Shape                   lowerShape;
+    TopoDS_Compound                guideCurves;
     bool                           invalidated;              /**< Internal state flag */
     bool                           rebuildFusedSegments;     /**< Indicates if segmentation fusing need rebuild */
     bool                           rebuildFusedSegWEdge;     /**< Indicates if segmentation fusing need rebuild */
