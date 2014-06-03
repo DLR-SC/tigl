@@ -22,11 +22,6 @@
 // include files and other standard functionality
 #cmakedefine HAVE_STDSHARED_PTR
 
-// opencascade configurations
-#cmakedefine OCC_PATCHED
-#cmakedefine OCC_BG
-#cmakedefine OCC_NEW_3DAPI
-
 // optional libraries
 #cmakedefine GLOG_FOUND
 
