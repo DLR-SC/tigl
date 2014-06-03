@@ -28,6 +28,7 @@
 #include "CSharedPtr.h"
 
 #include <gp_Pnt.hxx>
+#include <TopoDS_Edge.hxx>
 
 #include <vector>
 #include <string>
@@ -76,23 +77,22 @@ public:
     // Returns the relative circumference of the end profile
     TIGL_EXPORT const double& GetToRelativeCircumference(void) const;
 
+    TIGL_EXPORT void SetCurve(const TopoDS_Edge&);
+
+    TIGL_EXPORT const TopoDS_Edge& GetCurve() const;
+
 protected:
     // Cleanup routine
     void Cleanup(void);
 
 private:
     // Copy constructor
-    CCPACSGuideCurve(const CCPACSGuideCurve&)
-    {
-        /* Do nothing */
-    };
+    CCPACSGuideCurve(const CCPACSGuideCurve&);
 
     // Assignment operator
-    void operator=(const CCPACSGuideCurve&)
-    {
-        /* Do nothing */
-    };
+    void operator=(const CCPACSGuideCurve&);
 
+    TopoDS_Edge guideCurveTopo;           /**< Actual topological entity of the curve */
     std::string GuideCurveXPath;          /**< The XPath to this guide curve in cpacs */
     std::string name;                     /**< The Name of the guide curve */
     std::string description;              /**< The description of the guide curve */

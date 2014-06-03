@@ -26,6 +26,8 @@
 #include "CTiglPoint.h"
 #include "CTiglLogging.h"
 
+#include <TopoDS_Edge.hxx>
+
 namespace tigl
 {
 
@@ -49,6 +51,7 @@ void CCPACSGuideCurve::Cleanup(void)
     description= "";
     fromGuideCurveUID = "";
     fromRelativeCircumferenceIsSet = true;
+    guideCurveTopo.Nullify();
 }
 
 // Read guide curve file
@@ -154,6 +157,16 @@ const double& CCPACSGuideCurve::GetFromRelativeCircumference(void) const
 const double& CCPACSGuideCurve::GetToRelativeCircumference(void) const
 {
     return toRelativeCircumference;
+}
+
+void CCPACSGuideCurve::SetCurve(const TopoDS_Edge& edge)
+{
+    guideCurveTopo = edge;
+}
+
+const TopoDS_Edge& CCPACSGuideCurve::GetCurve() const
+{
+    return guideCurveTopo;
 }
 
 } // end namespace tigl

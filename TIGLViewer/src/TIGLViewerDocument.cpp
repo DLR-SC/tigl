@@ -659,6 +659,7 @@ void TIGLViewerDocument::drawWingOverlayProfilePoints()
 
 void TIGLViewerDocument::drawWingGuideCurves()
 {
+    QApplication::setOverrideCursor( Qt::WaitCursor );
     // loop over all wing segments
     tigl::CCPACSConfiguration& config = GetConfiguration();
     int wingCount = config.GetWingCount();
@@ -674,13 +675,15 @@ void TIGLViewerDocument::drawWingGuideCurves()
 
             TopTools_SequenceOfShape& guideCurveContainer = wingSeg.GetGuideCurveWires();
             for (int i=1; i<=guideCurveContainer.Length(); i++) {
-                TopoDS_Wire wire =TopoDS::Wire(guideCurveContainer(i));
+                TopoDS_Edge wire =TopoDS::Edge(guideCurveContainer(i));
                 Handle(AIS_Shape) shape = new AIS_Shape(wire);
                 shape->SetMaterial(Graphic3d_NOM_METALIZED);
-                myAISContext->Display(shape, Standard_True);
+                myAISContext->Display(shape, Standard_False);
             }
         }
     }
+    myAISContext->UpdateCurrentViewer();
+    QApplication::restoreOverrideCursor();
 }
 
 void TIGLViewerDocument::drawFuselageProfiles()
@@ -726,6 +729,7 @@ void TIGLViewerDocument::drawFuselageProfiles()
 
 void TIGLViewerDocument::drawFuselageGuideCurves()
 {
+    QApplication::setOverrideCursor( Qt::WaitCursor );
     // loop over all fuselage segments
     tigl::CCPACSConfiguration& config = GetConfiguration();
     int fuselageCount = config.GetFuselageCount();
@@ -740,13 +744,15 @@ void TIGLViewerDocument::drawFuselageGuideCurves()
 
             TopTools_SequenceOfShape& guideCurveContainer = fuselageSeg.BuildGuideCurves();
             for (int i=1; i<=guideCurveContainer.Length(); i++) {
-                TopoDS_Wire wire =TopoDS::Wire(guideCurveContainer(i));
+                TopoDS_Edge wire =TopoDS::Edge(guideCurveContainer(i));
                 Handle(AIS_Shape) shape = new AIS_Shape(wire);
                 shape->SetMaterial(Graphic3d_NOM_METALIZED);
-                myAISContext->Display(shape, Standard_True);
+                myAISContext->Display(shape, Standard_False);
             }
         }
     }
+    QApplication::restoreOverrideCursor();
+    myAISContext->UpdateCurrentViewer();
 }
 
 void TIGLViewerDocument::drawWing()

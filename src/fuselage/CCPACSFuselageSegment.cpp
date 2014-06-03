@@ -851,7 +851,7 @@ TopTools_SequenceOfShape& CCPACSFuselageSegment::BuildGuideCurves(void)
             CCPACSGuideCurveProfile& guideCurveProfile = config.GetGuideCurveProfile(guideCurveProfileUID);
 
             // construct guide curve algorithm
-            TopoDS_Wire guideCurveWire = CCPACSGuideCurveAlgo<CCPACSFuselageProfileGetPointAlgo> (startWireContainer, endWireContainer, fromRelativeCircumference, toRelativeCircumference, innerScale, outerScale, guideCurveProfile);
+            TopoDS_Edge guideCurveWire = CCPACSGuideCurveAlgo<CCPACSFuselageProfileGetPointAlgo> (startWireContainer, endWireContainer, fromRelativeCircumference, toRelativeCircumference, innerScale, outerScale, guideCurveProfile);
             guideCurveWires.Append(guideCurveWire);
         }
 

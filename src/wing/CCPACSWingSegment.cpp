@@ -896,7 +896,7 @@ void CCPACSWingSegment::BuildGuideCurveWires(void)
             CCPACSGuideCurveProfile& guideCurveProfile = config.GetGuideCurveProfile(guideCurveProfileUID);
 
             // construct guide curve algorithm
-            TopoDS_Wire guideCurveWire = CCPACSGuideCurveAlgo<CCPACSWingProfileGetPointAlgo> (concatenatedInnerWires, concatenatedOuterWires, fromRelativeCircumference, toRelativeCircumference, innerScale, outerScale, guideCurveProfile);
+            TopoDS_Edge guideCurveWire = CCPACSGuideCurveAlgo<CCPACSWingProfileGetPointAlgo> (concatenatedInnerWires, concatenatedOuterWires, fromRelativeCircumference, toRelativeCircumference, innerScale, outerScale, guideCurveProfile);
             guideCurveWires.Append(guideCurveWire);
         }
     }

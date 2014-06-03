@@ -25,6 +25,7 @@
 #include "gp_Pnt.hxx"
 #include "gp_Vec.hxx"
 #include "TopoDS_Shape.hxx"
+#include <TopoDS_Edge.hxx>
 #include "PNamedShape.h"
 #include "ListPNamedShape.h"
 
@@ -69,5 +70,8 @@ void InsertShapeToCAF(Handle_XCAFDoc_ShapeTool myAssembly, const PNamedShape sha
 
 // Returns a unique Hashcode for a specific geometric component based on its loft
 TIGL_EXPORT int GetComponentHashCode(tigl::ITiglGeometricComponent&);
+
+// Creates an Edge from the given Points by B-Spline interpolation
+TIGL_EXPORT TopoDS_Edge EdgeSplineFromPoints(const std::vector<gp_Pnt>& points);
 
 #endif // TIGLCOMMONFUNCTIONS_H

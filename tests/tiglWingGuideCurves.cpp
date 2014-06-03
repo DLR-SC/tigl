@@ -374,15 +374,14 @@ TEST_F(WingGuideCurve, tiglWingGuideCurve_CCPACSGuideCurveAlgo)
     tigl::CCPACSGuideCurveProfile guideCurveProfile("/cpacs/vehicles/profiles/guideCurveProfiles/guideCurveProfile[7]");
     guideCurveProfile.ReadCPACS(tixiHandle);
 
-    TopoDS_Wire guideCurveWire;
+    TopoDS_Edge guideCurveEdge;
     // instantiate guideCurveAlgo
-    guideCurveWire = tigl::CCPACSGuideCurveAlgo<tigl::CCPACSWingProfileGetPointAlgo> (innerWireContainer, outerWireContainer, 0.0, 0.0, 2*radius1, 2*radius2, guideCurveProfile);
+    guideCurveEdge = tigl::CCPACSGuideCurveAlgo<tigl::CCPACSWingProfileGetPointAlgo> (innerWireContainer, outerWireContainer, 0.0, 0.0, 2*radius1, 2*radius2, guideCurveProfile);
 
     // check if guide curve runs through sample points
     // get curve
     Standard_Real u1, u2;
-    BRepTools_WireExplorer guideCurveExplorer(guideCurveWire);
-    Handle(Geom_Curve) curve =  BRep_Tool::Curve(guideCurveExplorer.Current(), u1, u2);
+    Handle(Geom_Curve) curve =  BRep_Tool::Curve(guideCurveEdge, u1, u2);
     // set predicted sample points from cpacs file
     const double temp[] = {0.0, 0.0, 0.01, 0.03, 0.09, 0.08, 0.07, 0.06, 0.02, 0.0, 0.0};
     std::vector<double> predictedSamplePointsX (temp, temp + sizeof(temp) / sizeof(temp[0]) );
@@ -426,13 +425,12 @@ TEST_F(WingGuideCurve, tiglWingGuideCurve_CCPACSWingSegment)
     ASSERT_EQ(guideCurveContainer3.Length(), 3);
 
     // obtain leading edge guide curve 
-    TopoDS_Wire guideCurveWire = TopoDS::Wire(guideCurveContainer3(1));
+    TopoDS_Edge guideCurveEdge = TopoDS::Edge(guideCurveContainer3(1));
 
     // check if guide curve runs through sample points
     // get curve
     Standard_Real u1, u2;
-    BRepTools_WireExplorer guideCurveExplorer(guideCurveWire);
-    Handle(Geom_Curve) curve =  BRep_Tool::Curve(guideCurveExplorer.Current(), u1, u2);
+    Handle(Geom_Curve) curve =  BRep_Tool::Curve(guideCurveEdge, u1, u2);
     // gamma values of cpacs data points
     const double temp[] = {0.0, 0.0, 0.01, 0.03, 0.09, 0.08, 0.07, 0.06, 0.02, 0.0, 0.0};
     std::vector<double> gammaDeviation (temp, temp + sizeof(temp) / sizeof(temp[0]) );

@@ -55,8 +55,11 @@
 #include <Geom2d_Line.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
 #include <Geom2dAPI_InterCurveCurve.hxx>
+#include <GeomAPI_Interpolate.hxx>
 
-#include "ShapeAnalysis_FreeBounds.hxx"
+#include <TColgp_HArray1OfPnt.hxx>
+
+#include <ShapeAnalysis_FreeBounds.hxx>
 
 #include <list>
 #include <algorithm>
@@ -396,3 +399,19 @@ int GetComponentHashCode(tigl::ITiglGeometricComponent& component)
     }
 }
 
+// Creates an Edge from the given Points by B-Spline interpolation
+TopoDS_Edge EdgeSplineFromPoints(const std::vector<gp_Pnt>& points)
+{
+    unsigned int pointCount = points.size();
+    
+    Handle(TColgp_HArray1OfPnt) hpoints = new TColgp_HArray1OfPnt(1, pointCount);
+    for (unsigned int j = 0; j < pointCount; j++) {
+        hpoints->SetValue(j + 1, points[j]);
+    }
+
+    GeomAPI_Interpolate interPol(hpoints, Standard_False, Precision::Confusion());
+    interPol.Perform();
+    Handle(Geom_BSplineCurve) hcurve = interPol.Curve();
+    
+    return BRepBuilderAPI_MakeEdge(hcurve);
+}
