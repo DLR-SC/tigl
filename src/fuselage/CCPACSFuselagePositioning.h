@@ -67,6 +67,13 @@ public:
     // Gets the section index of the start section of this positioning
     TIGL_EXPORT std::string GetStartSectionIndex(void);
 
+    // Adds child to childs. To be successful the following condition must be met:
+    // child.startSectionIndex == this.endSectionIndex
+    TIGL_EXPORT void ConnectChildPositioning(CCPACSFuselagePositioning* child);
+    TIGL_EXPORT const std::vector<CCPACSFuselagePositioning*> GetChilds() const;
+    
+    TIGL_EXPORT void DisconnectChilds();
+
 protected:
     // Cleanup routine
     void Cleanup(void);
@@ -95,6 +102,7 @@ private:
     std::string          endSection;           /**< uid of end section                      */
     bool                 invalidated;          /**< Internal state flag                     */
 
+    std::vector<CCPACSFuselagePositioning*> childPositionings;
 };
 
 } // end namespace tigl
