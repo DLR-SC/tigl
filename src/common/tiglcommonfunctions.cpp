@@ -173,7 +173,14 @@ Standard_Real ProjectPointOnWire(const TopoDS_Wire& wire, gp_Pnt p)
     }
 
     // return relative coordinate
-    return partLength/GetWireLength(wire);
+    double normalizedLength = partLength/GetWireLength(wire);
+    if (normalizedLength > 1.0) {
+        normalizedLength = 1.0;
+    }
+    else if (normalizedLength < 0.0) {
+        normalizedLength = 0.0;
+    }
+    return normalizedLength;
 }
 
 gp_Pnt GetCentralFacePoint(const TopoDS_Face& face)
