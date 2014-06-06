@@ -50,6 +50,7 @@
 #include "TIGLViewerLogRedirection.h"
 #include "CTiglLogSplitter.h"
 #include "TIGLViewerLoggerHTMLDecorator.h"
+#include "TIGLViewerScreenshotDialog.h"
 
 void ShowOrigin ( Handle_AIS_InteractiveContext theContext );
 void AddVertex  ( double x, double y, double z, Handle_AIS_InteractiveContext theContext );
@@ -124,7 +125,7 @@ TIGLViewerWindow::TIGLViewerWindow()
 {
     setupUi(this);
 
-    tiglViewerSettings = new TIGLViewerSettings();
+    tiglViewerSettings = &TIGLViewerSettings::Instance();
     settingsDialog = new TIGLViewerSettingsDialog(*tiglViewerSettings, this);
 
     myVC  = new TIGLViewerContext();
@@ -165,7 +166,7 @@ TIGLViewerWindow::TIGLViewerWindow()
     p.setColor(QPalette::Base, Qt::black);
     console->setPalette(p);
 
-    cpacsConfiguration = new TIGLViewerDocument(this, myOCC->getContext(), getSettings());
+    cpacsConfiguration = new TIGLViewerDocument(this, myOCC->getContext());
     scriptEngine = new TIGLScriptEngine;
     
     setAcceptDrops(true);
@@ -187,7 +188,6 @@ TIGLViewerWindow::~TIGLViewerWindow()
     delete stdoutStream;
     delete errorStream;
     delete scriptEngine;
-    delete tiglViewerSettings;
 }
 
 void TIGLViewerWindow::dragEnterEvent(QDragEnterEvent * ev)
@@ -345,10 +345,10 @@ void TIGLViewerWindow::openFile(const QString& fileName)
                 triangulation = true;
             }
             if (triangulation) {
-                reader.importTriangulation( fileInfo.absoluteFilePath(), format, myOCC->getContext() );
+                reader.importTriangulation( fileInfo.absoluteFilePath(), format, *myOCC );
             }
             else {
-                reader.importModel ( fileInfo.absoluteFilePath(), format, myOCC->getContext() );
+                reader.importModel ( fileInfo.absoluteFilePath(), format, *myOCC );
             }
         }
         watcher = new QFileSystemWatcher();
@@ -517,12 +517,12 @@ void TIGLViewerWindow::setBackgroundImage()
     fileName = QFileDialog::getOpenFileName (    this,
                                                   tr("Open Background Image"),
                                                 myLastFolder,
-                                                tr( "Images (*.gif *.bmp);;" ) );
+                                                tr( "Images (*.jpg *.png *.gif *.bmp);;" ) );
     if (!fileName.isEmpty()) {
         fileInfo.setFile(fileName);
         fileType = fileInfo.suffix();
         
-        if (fileType.toLower() == tr("bmp") || fileType.toLower() == tr("gif")) {
+        if (fileType.toLower() == tr("bmp") || fileType.toLower() == tr("gif") || fileType.toLower() == tr("jpg") || fileType.toLower() == tr("png")) {
             myOCC->setBGImage(fileName);
         }
         else {
@@ -669,6 +669,7 @@ void TIGLViewerWindow::connectSignals()
     }
 
     connect(saveAction, SIGNAL(triggered()), this, SLOT(save()));
+    connect(saveScreenshotAction, SIGNAL(triggered()), this, SLOT(makeScreenShot()));
     connect(printAction, SIGNAL(triggered()), this, SLOT(print()));
     connect(setBackgroundAction, SIGNAL(triggered()), this, SLOT(setBackgroundImage()));
     connect(exitAction, SIGNAL(triggered()), this, SLOT(close()));
@@ -855,4 +856,31 @@ void TIGLViewerWindow::closeEvent(QCloseEvent*)
 TIGLViewerSettings& TIGLViewerWindow::getSettings()
 {
     return *tiglViewerSettings;
+}
+
+void TIGLViewerWindow::makeScreenShot()
+{
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Save Screenshot"), myLastFolder,
+                                                    tr("PNG-Image (*.png);;") +
+                                                    tr("JPEG-Image (*.jpg);;") +
+                                                    tr("Windows-BMP-Image (*.bmp)"));
+
+    if (!fileName.isEmpty() && myOCC) {
+        
+        TIGLViewerScreenshotDialog dialog(fileName, this);
+        dialog.setQualityValue(80);
+        dialog.setImageSize(myOCC->width(), myOCC->height());
+        if (dialog.exec() != QDialog::Accepted) {
+            return;
+        }
+        
+        int width, height;
+        dialog.getImageSize(width, height);
+        try {
+            myOCC->makeScreenshot(width, height, dialog.getQualityValue(), fileName);
+        }
+        catch(tigl::CTiglError&) {
+            displayErrorMessage("Cannot save screenshot.", "Error");
+        }
+    }
 }

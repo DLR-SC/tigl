@@ -24,6 +24,8 @@
 #include <QtCore/QObject>
 #include "TIGLViewer.h"
 
+class TIGLViewerWidget;
+
 class QOCC_DECLSPEC TIGLViewerInputOutput : public QObject
 {
     Q_OBJECT
@@ -46,11 +48,11 @@ public:
 
     bool importModel( const QString fileName, 
                       const FileFormat format, 
-                      const Handle_AIS_InteractiveContext& ic );
+                      TIGLViewerWidget& widget );
 
     bool importTriangulation( const QString fileName,
                               const FileFormat format,
-                              const Handle_AIS_InteractiveContext& ic );
+                              TIGLViewerWidget& widget );
 
     bool exportModel( const QString fileName, 
                       const FileFormat format, 

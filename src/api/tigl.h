@@ -626,7 +626,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetUpperPoint(TiglCPACSConfigurationHa
 *
 * @return
 *   - TIGL_SUCCESS if a point was found
-*   - TIGL_NOT_FOUND if no point was found or the cpacs handle is not valid
+*   - TIGL_NOT_FOUND if no intersection point was found or the cpacs handle is not valid
+*   - TIGL_MATH_ERROR if the given direction is a null vector (which has zero length)
 *   - TIGL_INDEX_ERROR if wingIndex or segmentIndex are not valid
 *   - TIGL_NULL_POINTER if pointXPtr, pointYPtr or pointZPtr are null pointers
 *   - TIGL_ERROR if some other error occured
@@ -643,22 +644,23 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetLowerPoint(TiglCPACSConfigurationHa
 
 /**
 * @brief Returns a point on the upper wing surface for a
-* a given wing and segment index. This function is different from tiglWingGetUpperPoint, as a point 
-* on the cord surface is calculated (given eta and xsi coordinates) and the normal vector at that 
-* point is rotated around the x, y, and z axis by the given angles. Finally, the intersection point 
-* of the rotated normal and the upper wing shell is computed. The point is returned in absolute world coordinates.
+* a given wing and segment index. This function is different from ::tiglWingGetUpperPoint: 
+* First, a point on the wing chord surface is computed (defined by segment index and eta,xsi).
+* Then, a line is constructed, which is defined by this point and a direction given by the user.
+* The intersection of this line with the upper wing surface is finnaly returned.
+* The point is returned in absolute world coordinates.
 *
 *
 * <b>Fortran syntax:</b>
 *
-* tigl_wing_get_upper_point_at_angle(integer cpacsHandle,
+* tigl_wing_get_upper_point_at_direction(integer cpacsHandle,
 *                           integer wingIndex,
 *                           integer segmentIndex,
 *                           real eta,
 *                           real xsi,
-*                           real xangle,
-*                           real yangle,
-*                           real zangle,
+*                           real dirx,
+*                           real diry,
+*                           real dirz,
 *                           real pointXPtr,
 *                           real pointYPtr,
 *                           real pointZPtr,
@@ -669,50 +671,52 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetLowerPoint(TiglCPACSConfigurationHa
 * @param[in]  segmentIndex The index of the segment of the wing, starting at 1
 * @param[in]  eta          eta in the range 0.0 <= eta <= 1.0; eta = 0 for inner section , eta = 1 for outer section
 * @param[in]  xsi          xsi in the range 0.0 <= xsi <= 1.0; xsi = 0 for Leading Edge, xsi =  1 for Trailing Edge
-* @param[in]  xAngle       Angle of normal vector rotation around the x-Axis (in degrees)
-* @param[in]  yAngle       Angle of normal vector rotation around the y-Axis (in degrees)
-* @param[in]  zAngle       Angle of normal vector rotation around the z-Axis (in degrees)
+* @param[in]  dirx         X-component of the direction vector.
+* @param[in]  diry         Y-component of the direction vector.
+* @param[in]  dirz         Z-component of the direction vector.
 * @param[out] pointXPtr    Pointer to the x-coordinate of the point in absolute world coordinates
 * @param[out] pointYPtr    Pointer to the y-coordinate of the point in absolute world coordinates
 * @param[out] pointZPtr    Pointer to the z-coordinate of the point in absolute world coordinates
 *
 * @return
 *   - TIGL_SUCCESS if a point was found
-*   - TIGL_NOT_FOUND if no point was found or the cpacs handle is not valid
+*   - TIGL_NOT_FOUND if no intersection point was found or the cpacs handle is not valid
+*   - TIGL_MATH_ERROR if the given direction is a null vector (which has zero length)
 *   - TIGL_INDEX_ERROR if wingIndex or segmentIndex are not valid
 *   - TIGL_NULL_POINTER if pointXPtr, pointYPtr or pointZPtr are null pointers
 *   - TIGL_ERROR if some other error occurred
 */
-TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetUpperPointAtAngle(TiglCPACSConfigurationHandle cpacsHandle,
-                                                               int wingIndex,
-                                                               int segmentIndex,
-                                                               double eta,
-                                                               double xsi,
-                                                               double xAngle,
-                                                               double yAngle,
-                                                               double zAngle,
-                                                               double* pointXPtr,
-                                                               double* pointYPtr,
-                                                               double* pointZPtr);
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetUpperPointAtDirection(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                   int wingIndex,
+                                                                   int segmentIndex,
+                                                                   double eta,
+                                                                   double xsi,
+                                                                   double dirx,
+                                                                   double diry,
+                                                                   double dirz,
+                                                                   double* pointXPtr,
+                                                                   double* pointYPtr,
+                                                                   double* pointZPtr);
                
 /**
 * @brief Returns a point on the lower wing surface for a
-* a given wing and segment index. This function is different from tiglWingGetLowerPoint, as a point 
-* on the cord surface is calculated (given eta and xsi coordinates) and the normal vector at that 
-* point is rotated around the x, y, and z axis by the given angles. Finally, the intersection point 
-* of the rotated normal and the lower wing shell is computed. The point is returned in absolute world coordinates.
+* a given wing and segment index. This function is different from ::tiglWingGetLowerPoint: 
+* First, a point on the wing chord surface is computed (defined by segment index and eta,xsi).
+* Then, a line is constructed, which is defined by this point and a direction given by the user.
+* The intersection of this line with the lower wing surface is finnaly returned.
+* The point is returned in absolute world coordinates.
 *
 *
 * <b>Fortran syntax:</b>
 *
-* tigl_wing_get_lower_point_at_angle(integer cpacsHandle,
+* tigl_wing_get_lower_point_at_direction(integer cpacsHandle,
 *                           integer wingIndex,
 *                           integer segmentIndex,
 *                           real eta,
 *                           real xsi,
-*                           real xangle,
-*                           real yangle,
-*                           real zangle,
+*                           real dirx,
+*                           real diry,
+*                           real dirz,
 *                           real pointXPtr,
 *                           real pointYPtr,
 *                           real pointZPtr,
@@ -723,9 +727,9 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetUpperPointAtAngle(TiglCPACSConfigur
 * @param[in]  segmentIndex The index of the segment of the wing, starting at 1
 * @param[in]  eta          eta in the range 0.0 <= eta <= 1.0; eta = 0 for inner section , eta = 1 for outer section
 * @param[in]  xsi          xsi in the range 0.0 <= xsi <= 1.0; xsi = 0 for Leading Edge, xsi =  1 for Trailing Edge
-* @param[in]  xAngle       Angle of normal vector rotation around the x-Axis (in degrees)
-* @param[in]  yAngle       Angle of normal vector rotation around the y-Axis (in degrees)
-* @param[in]  zAngle       Angle of normal vector rotation around the z-Axis (in degrees)
+* @param[in]  dirx         X-component of the direction vector.
+* @param[in]  diry         Y-component of the direction vector.
+* @param[in]  dirz         Z-component of the direction vector.
 * @param[out] pointXPtr    Pointer to the x-coordinate of the point in absolute world coordinates
 * @param[out] pointYPtr    Pointer to the y-coordinate of the point in absolute world coordinates
 * @param[out] pointZPtr    Pointer to the z-coordinate of the point in absolute world coordinates
@@ -737,17 +741,17 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetUpperPointAtAngle(TiglCPACSConfigur
 *   - TIGL_NULL_POINTER if pointXPtr, pointYPtr or pointZPtr are null pointers
 *   - TIGL_ERROR if some other error occurred
 */
-TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetLowerPointAtAngle(TiglCPACSConfigurationHandle cpacsHandle,
-                                                               int wingIndex,
-                                                               int segmentIndex,
-                                                               double eta,
-                                                               double xsi,
-                                                               double xAngle,
-                                                               double yAngle,
-                                                               double zAngle,
-                                                               double* pointXPtr,
-                                                               double* pointYPtr,
-                                                               double* pointZPtr);
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetLowerPointAtDirection(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                   int wingIndex,
+                                                                   int segmentIndex,
+                                                                   double eta,
+                                                                   double xsi,
+                                                                   double dirx,
+                                                                   double diry,
+                                                                   double dirz,
+                                                                   double* pointXPtr,
+                                                                   double* pointYPtr,
+                                                                   double* pointZPtr);
                
 /**
 * @brief Inverse function to tiglWingGetLowerPoint and tiglWingGetLowerPoint. Calculates to a point (x,y,z)

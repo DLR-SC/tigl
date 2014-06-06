@@ -38,6 +38,10 @@
 
 #include "TIGLViewerInternal.h"
 #include "TIGLViewerDocument.h"
+#include "TIGLViewerSettings.h"
+#include "ISession_Point.h"
+#include "ISession_Text.h"
+#include "tiglcommonfunctions.h"
 
 #include <OpenGl_GraphicDriver.hxx>
 
@@ -941,14 +945,6 @@ AIS_StatusOfPick TIGLViewerWidget::inputEvent( bool multi )
     return pick;
 }
 
-bool TIGLViewerWidget::dump(Standard_CString theFile)
-{
-  redraw();
-  return myView->Dump(theFile);
-}
-
-
-
 void TIGLViewerWidget::setMode( const CurrentAction3d mode )
 {
     if ( mode != myMode ) {
@@ -1094,4 +1090,76 @@ Standard_Real TIGLViewerWidget::viewPrecision( bool resized )
         }
     }
     return myViewPrecision;
+}
+
+void TIGLViewerWidget::makeScreenshot(int width, int height, int quality, const QString& filename)
+{
+    if (myView) {
+        // get window size
+        // we could also use a higher resolution if we want
+        if (width == 0 || height == 0) {
+            myView->Window()->Size(width, height);
+        }
+
+        // write screenshot to pixmap
+        Image_PixMap pixmap;
+        myView->ToPixMap(pixmap, width, height);
+
+        // copy to qimage which supports a variety of file formats
+        QImage img(QSize(pixmap.Width(), pixmap.Height()), QImage::Format_RGB888);
+        for (unsigned int aRow = 0; aRow <  pixmap.Height(); ++aRow) {
+          for (unsigned int aCol = 0; aCol < pixmap.Width(); ++aCol) {
+            // extremely SLOW but universal (implemented for all supported pixel formats)
+            Quantity_Color aColor = pixmap.PixelColor ((Standard_Integer )aCol, (Standard_Integer )aRow);
+            QColor qcol(aColor.Red()*255., aColor.Green()*255, aColor.Blue()*255);
+            img.setPixel(aCol, aRow, qcol.rgb());
+          }
+        }
+
+        if (!img.save(filename, NULL, quality)) {
+            throw tigl::CTiglError("Cannot save screenshot to file.");
+        }
+    }
+}
+
+// a small helper when we just want to display a shape
+Handle(AIS_Shape) TIGLViewerWidget::displayShape(const TopoDS_Shape& loft, Quantity_Color color)
+{
+    TIGLViewerSettings& settings = TIGLViewerSettings::Instance();
+    Handle(AIS_Shape) shape = new AIS_Shape(loft);
+    shape->SetMaterial(Graphic3d_NOM_METALIZED);
+    shape->SetColor(color);
+    shape->SetOwnDeviationCoefficient(settings.tesselationAccuracy());
+    myContext->Display(shape, Standard_True);
+    
+    if (settings.enumerateFaces()) {
+        TopTools_IndexedMapOfShape shapeMap;
+        TopExp::MapShapes(loft, TopAbs_FACE, shapeMap);
+        for (int i = 1; i <= shapeMap.Extent(); ++i) {
+            const TopoDS_Face& face = TopoDS::Face(shapeMap(i));
+            gp_Pnt p = GetCentralFacePoint(face);
+            QString s = QString("%1").arg(i);
+            DisplayPoint(p, s.toStdString().c_str(), false, 0., 0., 0., 10.);
+        }
+    }
+    
+    return shape;
+}
+
+// Displays a point on the screen
+void TIGLViewerWidget::DisplayPoint(const gp_Pnt& aPoint,
+                                    const char* aText,
+                                    Standard_Boolean UpdateViewer,
+                                    Standard_Real anXoffset,
+                                    Standard_Real anYoffset,
+                                    Standard_Real aZoffset,
+                                    Standard_Real TextScale)
+{
+    Handle(ISession_Point) aGraphicPoint = new ISession_Point(aPoint.X(), aPoint.Y(), aPoint.Z());
+    myContext->Display(aGraphicPoint,UpdateViewer);
+    Handle(ISession_Text) aGraphicText = new ISession_Text(aText, aPoint.X() + anXoffset,
+                                                 aPoint.Y() + anYoffset,
+                                                 aPoint.Z() + aZoffset);
+    aGraphicText->SetScale(TextScale);
+    myContext->Display(aGraphicText,UpdateViewer);
 }

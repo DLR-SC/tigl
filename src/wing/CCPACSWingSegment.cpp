@@ -520,39 +520,31 @@ gp_Pnt CCPACSWingSegment::GetPoint(double eta, double xsi, bool fromUpper)
     return profilePoint;
 }
 
-gp_Pnt CCPACSWingSegment::GetPointAngles(double eta, double xsi, double xangle, double yangle, double zangle, bool fromUpper)
+gp_Pnt CCPACSWingSegment::GetPointDirection(double eta, double xsi, double dirx, double diry, double dirz, bool fromUpper)
 {
     if (eta < 0.0 || eta > 1.0) {
         throw CTiglError("Error: Parameter eta not in the range 0.0 <= eta <= 1.0 in CCPACSWingSegment::GetPoint", TIGL_ERROR);
+    }
+
+    if (dirx*dirx + diry*diry + dirz*dirz < 1e-10) {
+        // invalid direction
+        throw CTiglError("Direction must not be a null vector in CCPACSWingSegment::GetPointDirection.", TIGL_MATH_ERROR);
     }
 
     if (!surfacesAreValid) {
         MakeSurfaces();
     }
 
-    CTiglPoint tiglPoint, tiglNormal;
+    CTiglPoint tiglPoint;
     cordSurface.translate(eta, xsi, &tiglPoint);
-    cordSurface.getNormal(eta,xsi, &tiglNormal);
 
-    // calc vector
-    CTiglTransformation trafo;
-    trafo.AddRotationX(xangle);
-    trafo.AddRotationY(yangle);
-    trafo.AddRotationZ(zangle);
+    gp_Dir direction(dirx, diry, dirz);
 
-    gp_Vec normalVec(trafo.Transform(tiglNormal.Get_gp_Pnt()).XYZ());
-    normalVec.Normalize();
-
-    gp_Pnt start(tiglPoint.Get_gp_Pnt().XYZ() + 1e3*normalVec.XYZ());
-    gp_Pnt stop (tiglPoint.Get_gp_Pnt().XYZ() - 1e3*normalVec.XYZ());
-
-    BRepBuilderAPI_MakeWire wireBuilder;
-    TopoDS_Edge normalEdge = BRepBuilderAPI_MakeEdge(start, stop);
-    wireBuilder.Add(normalEdge);
-    TopoDS_Wire normalWire = wireBuilder.Wire();
+    gp_Lin line(tiglPoint.Get_gp_Pnt(), direction);
+    TopoDS_Edge normalEdge = BRepBuilderAPI_MakeEdge(line);
 
     BRepExtrema_DistShapeShape extrema;
-    extrema.LoadS1(normalWire);
+    extrema.LoadS1(normalEdge);
     if (fromUpper) {
         extrema.LoadS2(wing->GetUpperShape());
     }
