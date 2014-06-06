@@ -23,20 +23,14 @@ set (TV_OCC_LIBS
     TKVRML TKShapeSchema TKPShape TKCDF PTKernel ${OCC_VISU_LIBS} ${OCC_LIBS}
 )
 
-set(OpenCASCADE_LIBRARIES "")
-find_package( OpenCASCADE REQUIRED COMPONENTS ${TV_OCC_LIBS})
-
-OPTION(OpenCASCADE_STATICLIB "Check, if you link static opencascade libraries" OFF)
-if(OpenCASCADE_STATICLIB)
-    # opencascade visualization uses freetype, thus we have to link it
-    find_package( FreetypeLib REQUIRED )
-    set(EXTRA_LIBRARIES ${EXTRA_LIBRARIES} ${FREETYPE_LIBRARIES})
-
-    if(APPLE)
-        find_library(COCOA_LIBRARY Cocoa)
-        set(EXTRA_LIBRARIES ${EXTRA_LIBRARIES} ${COCOA_LIBRARY})
-    endif(APPLE)
-endif(OpenCASCADE_STATICLIB)
+find_package(OCE 0.15 COMPONENTS ${TV_OCC_LIBS} QUIET)
+if(OCE_FOUND)
+  set(OpenCASCADE_LIBRARIES ${TV_OCC_LIBS})
+  set(OpenCASCADE_INCLUDE_DIR ${OCE_INCLUDE_DIRS})
+else(OCE_FOUND)
+  set(OpenCASCADE_LIBRARIES "")
+  find_package(OpenCASCADE REQUIRED COMPONENTS ${TV_OCC_LIBS})
+endif(OCE_FOUND)
 
 # we need opengl in order to build tiglviewer
 find_package(OpenGL REQUIRED)
@@ -83,6 +77,7 @@ set(tv_src
     TIGLViewerLoggerHTMLDecorator.cpp
     TIGLViewerFuseDialog.cpp
     TIGLViewerShapeIntersectionDialog.cpp
+    TIGLViewerScreenshotDialog.cpp
 )
 	
 # normal header files
@@ -119,6 +114,7 @@ set(tv_hdr_qobj
 	TIGLViewerLogRedirection.h
 	TIGLViewerFuseDialog.h
 	TIGLViewerShapeIntersectionDialog.h
+	TIGLViewerScreenshotDialog.h
 )
 
 set(tv_ui_comp
@@ -128,6 +124,7 @@ set(tv_ui_comp
 	src/TIGLViewerErrorDialog.ui
 	src/TIGLViewerFuseDialog.ui
 	src/TIGLViewerShapeIntersectionDialog.ui
+	src/TIGLViewerScreenshotDialog.ui
 )
 	
 foreach ( _fname ${tv_src})
@@ -244,7 +241,7 @@ INCLUDE(InstallRequiredSystemLibraries)
 
 	
 # set directories to look for dependencies
-set(DIRS ${TIXI_BINARY_DIR} ${OpenCASCADE_DLL_DIRECTORY}  ${OpenCASCADE_LINK_DIRECTORY} ${QT_BINARY_DIR} ${TIGL_ADD_LIB_PATH})
+set(DIRS ${TIXI_LIB_PATH} ${OpenCASCADE_DLL_DIRECTORY}  ${OpenCASCADE_LINK_DIRECTORY} ${QT_BINARY_DIR} ${TIGL_ADD_LIB_PATH})
 
 if (WIN32 OR APPLE)
   include(DeployQt4)

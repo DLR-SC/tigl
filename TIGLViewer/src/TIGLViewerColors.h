@@ -1,7 +1,7 @@
 /*
-* Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
+* Copyright (C) 2007-2014 German Aerospace Center (DLR/SC)
 *
-* Created: 2013-04-23 Martin Siggel <Martin.Siggel@dlr.de>
+* Created: 2014-05-28 Martin Siggel <Martin.Siggel@dlr.de>
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -16,16 +16,10 @@
 * limitations under the License.
 */
 
-#ifndef CONFIG_H
-#define CONFIG_H
+#ifndef TIGLVIEWERCOLORS_H
+#define TIGLVIEWERCOLORS_H
 
-// include files and other standard functionality
-#cmakedefine HAVE_STDSHARED_PTR
+#define Quantity_NOC_ShapeCol     (Quantity_Color(0., 170./255.,1., Quantity_TOC_RGB))
+#define Quantity_NOC_MirrShapeCol (Quantity_Color(251./255., 1., 169./255., Quantity_TOC_RGB))
 
-// optional libraries
-#cmakedefine GLOG_FOUND
-
-// tigl switches
-#cmakedefine TIGL_USE_XCAF
-
-#endif // CONFIG_H
+#endif // TIGLVIEWERCOLORS_H

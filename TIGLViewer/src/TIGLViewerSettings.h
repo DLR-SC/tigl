@@ -24,7 +24,8 @@
 class TIGLViewerSettings
 {
 public:
-    TIGLViewerSettings();
+    static TIGLViewerSettings& Instance();
+    
     void loadSettings();
     void storeSettings();
 
@@ -50,6 +51,8 @@ public:
     virtual ~TIGLViewerSettings();
 
 private:
+    TIGLViewerSettings();
+    
     double _tesselationAccuracy;
     double _triangulationAccuracy;
     QColor _bgcolor;

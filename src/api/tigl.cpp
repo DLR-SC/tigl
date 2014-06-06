@@ -371,21 +371,21 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetLowerPoint(TiglCPACSConfigurationHa
     }
 }
 
-TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetUpperPointAtAngle(TiglCPACSConfigurationHandle cpacsHandle,
-                                                               int wingIndex,
-                                                               int segmentIndex,
-                                                               double eta,
-                                                               double xsi,
-                                                               double xangle,
-                                                               double yangle,
-                                                               double zangle,
-                                                               double* pointXPtr,
-                                                               double* pointYPtr,
-                                                               double* pointZPtr)
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetUpperPointAtDirection(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                   int wingIndex,
+                                                                   int segmentIndex,
+                                                                   double eta,
+                                                                   double xsi,
+                                                                   double dirx,
+                                                                   double diry,
+                                                                   double dirz,
+                                                                   double* pointXPtr,
+                                                                   double* pointYPtr,
+                                                                   double* pointZPtr)
 {
     if (pointXPtr == NULL || pointYPtr == NULL || pointZPtr == NULL) {
         LOG(ERROR) << "Error: Null pointer argument for pointXPtr, pointYPtr or pointZPtr ";
-        LOG(ERROR) << "in function call to tiglWingGetUpperPointAtAngle." << std::endl;
+        LOG(ERROR) << "in function call to tiglWingGetUpperPointAtDirection." << std::endl;
         return TIGL_NULL_POINTER;
     }
 
@@ -394,7 +394,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetUpperPointAtAngle(TiglCPACSConfigur
         tigl::CCPACSConfiguration & config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSWing& wing = config.GetWing(wingIndex);
         tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment&) wing.GetSegment(segmentIndex);
-        gp_Pnt point = segment.GetPointAngles(eta, xsi, xangle, yangle, zangle, true);
+        gp_Pnt point = segment.GetPointDirection(eta, xsi, dirx, diry, dirz, true);
         *pointXPtr = point.X();
         *pointYPtr = point.Y();
         *pointZPtr = point.Z();
@@ -409,26 +409,26 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetUpperPointAtAngle(TiglCPACSConfigur
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an unknown exception in tiglWingGetUpperPointAtAngle" << std::endl;
+        LOG(ERROR) << "Caught an unknown exception in tiglWingGetUpperPointAtDirection" << std::endl;
         return TIGL_ERROR;
     }
 }
 
-TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetLowerPointAtAngle(TiglCPACSConfigurationHandle cpacsHandle,
-                                                               int wingIndex,
-                                                               int segmentIndex,
-                                                               double eta,
-                                                               double xsi,
-                                                               double xangle,
-                                                               double yangle,
-                                                               double zangle,
-                                                               double* pointXPtr,
-                                                               double* pointYPtr,
-                                                               double* pointZPtr)
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetLowerPointAtDirection(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                   int wingIndex,
+                                                                   int segmentIndex,
+                                                                   double eta,
+                                                                   double xsi,
+                                                                   double dirx,
+                                                                   double diry,
+                                                                   double dirz,
+                                                                   double* pointXPtr,
+                                                                   double* pointYPtr,
+                                                                   double* pointZPtr)
 {
     if (pointXPtr == NULL || pointYPtr == NULL || pointZPtr == NULL) {
         LOG(ERROR) << "Error: Null pointer argument for pointXPtr, pointYPtr or pointZPtr ";
-        LOG(ERROR) << "in function call to tiglWingGetLowerPointAtAngle." << std::endl;
+        LOG(ERROR) << "in function call to tiglWingGetLowerPointAtDirection." << std::endl;
         return TIGL_NULL_POINTER;
     }
 
@@ -437,7 +437,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetLowerPointAtAngle(TiglCPACSConfigur
         tigl::CCPACSConfiguration & config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSWing& wing = config.GetWing(wingIndex);
         tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment&) wing.GetSegment(segmentIndex);
-        gp_Pnt point = segment.GetPointAngles(eta, xsi, xangle, yangle, zangle, false);
+        gp_Pnt point = segment.GetPointDirection(eta, xsi, dirx, diry, dirz, false);
         *pointXPtr = point.X();
         *pointYPtr = point.Y();
         *pointZPtr = point.Z();
@@ -452,7 +452,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetLowerPointAtAngle(TiglCPACSConfigur
         return ex.getCode();
     }
     catch (...) {
-        LOG(ERROR) << "Caught an unknown exception in tiglWingGetLowerPointAtAngle" << std::endl;
+        LOG(ERROR) << "Caught an unknown exception in tiglWingGetLowerPointAtDirection" << std::endl;
         return TIGL_ERROR;
     }
 }
