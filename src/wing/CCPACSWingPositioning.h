@@ -67,6 +67,13 @@ public:
     // Gets the section-uid of the inner section of this positioning
     TIGL_EXPORT std::string GetInnerSectionIndex(void);
 
+    // Adds child to childs. To be successful the following condition must be met:
+    // child.startSectionIndex == this.endSectionIndex
+    TIGL_EXPORT void ConnectChildPositioning(CCPACSWingPositioning* child);
+    TIGL_EXPORT void DisconnectChilds();
+
+    TIGL_EXPORT const std::vector<CCPACSWingPositioning*> GetChilds() const;
+
 protected:
     // Cleanup routine
     void Cleanup(void);
@@ -95,6 +102,7 @@ private:
     std::string          outerSection;         /**< UID of the outer section                */
     bool                 invalidated;          /**< Internal state flag                     */
 
+    std::vector<CCPACSWingPositioning*> childPositionings;
 };
 
 } // end namespace tigl

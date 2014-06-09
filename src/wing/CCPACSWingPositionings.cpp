@@ -33,7 +33,6 @@ namespace tigl
 // Constructor
 CCPACSWingPositionings::CCPACSWingPositionings(void)
     : positionings()
-    , transformations()
     , invalidated(true)
 {
 }
@@ -48,54 +47,40 @@ CCPACSWingPositionings::~CCPACSWingPositionings(void)
 void CCPACSWingPositionings::Invalidate(void)
 {
     invalidated = true;
-    for (int i = 1; i <= GetPositioningCount(); i++) {
-        GetPositioning(i).Invalidate();
+    CCPACSWingPositioningIterator it;
+    for (it = positionings.begin(); it != positionings.end(); ++it) {
+        CCPACSWingPositioning* pos = it->second;
+        pos->Invalidate();
     }
-    transformations.clear();
 }
 
 // Cleanup routine
 void CCPACSWingPositionings::Cleanup(void)
 {
-    for (CCPACSWingPositioningContainer::size_type i = 0; i < positionings.size(); i++) {
-        delete positionings[i];
+    CCPACSWingPositioningIterator it;
+    for (it = positionings.begin(); it != positionings.end(); ++it) {
+        CCPACSWingPositioning* pos = it->second;
+        delete pos;
     }
     positionings.clear();
-    transformations.clear();
     invalidated = true;
-}
-
-// Gets a positioning by index.
-CCPACSWingPositioning& CCPACSWingPositionings::GetPositioning(int index) const
-{
-    index--;
-    if (index < 0 || index >= GetPositioningCount()) {
-        throw CTiglError("Error: Invalid index value in CCPACSWingPositionings::GetPositioning", TIGL_INDEX_ERROR);
-    }
-    return (*(positionings[index]));
-}
-
-// Gets total positioning count
-int CCPACSWingPositionings::GetPositioningCount(void) const
-{
-    return static_cast<int>(positionings.size());
 }
 
 // Returns the positioning matrix for a given section index
 CTiglTransformation CCPACSWingPositionings::GetPositioningTransformation(std::string sectionIndex)
 {
     Update();
-    CCPACSTransformationMapIterator iter = transformations.find(sectionIndex);
+    CCPACSWingPositioningIterator iter = positionings.find(sectionIndex);
         
     // check, if section has positioning definition, if not
     // return Zero-Transformation
-    if (iter == transformations.end()){
+    if (iter == positionings.end()){
         CTiglTransformation zeroTrans;
         zeroTrans.SetIdentity();
         return zeroTrans;
     }
        
-    return iter->second;
+    return iter->second->GetOuterTransformation();
 }
 
 // Update internal positionings structure
@@ -104,39 +89,64 @@ void CCPACSWingPositionings::Update(void)
     if (!invalidated) {
         return;
     }
-        
-    // reset all position base points
-    for (int ipos = 1; ipos <= GetPositioningCount(); ++ipos) {
-        GetPositioning(ipos).SetInnerPoint(CTiglPoint(0,0,0));
-    }
-        
-    for (int ipos = 1; ipos <= GetPositioningCount(); ++ipos) {
-        UpdateNextPositioning(ipos, 0);
-    }
 
     invalidated = false;
+        
+    // reset all position base points
+    CCPACSWingPositioningIterator it;
+    
+    // diconnect and reset
+    for (it = positionings.begin(); it != positionings.end(); ++it) {
+        CCPACSWingPositioning* actPos = it->second;
+        actPos->DisconnectChilds();
+        actPos->SetInnerPoint(CTiglPoint(0,0,0));
+    }
+    
+    // connect positionings, find roots
+    std::vector<CCPACSWingPositioning*> rootNodes;
+    for (it = positionings.begin(); it != positionings.end(); ++it) {
+        CCPACSWingPositioning* actPos = it->second;
+        std::string fromUID = actPos->GetInnerSectionIndex();
+        if (fromUID != "") {
+            CCPACSWingPositioningIterator pos = positionings.find(fromUID);
+            if (pos != positionings.end()) {
+                CCPACSWingPositioning* fromPos = pos->second;
+                fromPos->ConnectChildPositioning(actPos);
+            }
+            else {
+                // invalid from UID
+                throw CTiglError("Positioning fromSectionUID " + fromUID + " does not exist");
+            }
+        }
+        else {
+            rootNodes.push_back(actPos);
+        }
+    }
+
+    for (std::vector<CCPACSWingPositioning*>::iterator it = rootNodes.begin(); it != rootNodes.end(); it++) {
+        UpdateNextPositioning(*it, 0);
+    }
 }
 
-void CCPACSWingPositionings::UpdateNextPositioning(int positioningIndex, int rec_depth)
+void CCPACSWingPositionings::UpdateNextPositioning(CCPACSWingPositioning* currPos, int depth)
 {
-    if (rec_depth > 1000) {
-        throw CTiglError("Recursive definition of wing positionings");
+    // check for recursive definition
+    if (depth > 1000) {
+        throw CTiglError("Recursive definition of wing positioning is not allowed");
+    }
+
+    if (currPos->GetOuterSectionIndex() == ""){
+        throw CTiglError("illegal definition of wing positionings");
     }
         
-    CCPACSWingPositioning& currPos = GetPositioning(positioningIndex);
-
-    // Store the transformation of the outer section of the current positioning in a map.
-    // Note: Internally we use 0-based indices, but in the CPACS file the indices are 1-based.
-    transformations[currPos.GetOuterSectionIndex()] = currPos.GetOuterTransformation();
-
-    // Find all positionings which have the outer section of the current positioning
-    // defined as their inner section.
-    for (int i = 1; i <= GetPositioningCount(); i++) {
-        CCPACSWingPositioning& nextPos = GetPositioning(i);
-        if (currPos.GetOuterSectionIndex() == nextPos.GetInnerSectionIndex() && i != positioningIndex) {
-            nextPos.SetInnerPoint(currPos.GetOuterPoint());
-            UpdateNextPositioning(i, rec_depth + 1);
-        }
+    // Find all positionings which have the end section of the current positioning
+    // defined as their start section.
+    std::vector<CCPACSWingPositioning*>::const_iterator it;
+    const std::vector<CCPACSWingPositioning*>& childs = currPos->GetChilds();
+    for (it = childs.begin(); it != childs.end(); ++it) {
+        CCPACSWingPositioning* childPos = *it;
+        childPos->SetInnerPoint(currPos->GetOuterPoint());
+        UpdateNextPositioning(childPos, depth+1);
     }
 }
 
@@ -161,12 +171,13 @@ void CCPACSWingPositionings::ReadCPACS(TixiDocumentHandle tixiHandle, const std:
     // Loop over all positionings
     for (int i = 1; i <= positioningCount; i++) {
         CCPACSWingPositioning* positioning = new CCPACSWingPositioning();
-        positionings.push_back(positioning);
 
         tempString = wingXPath + "/positionings/positioning[";
         std::ostringstream xpath;
         xpath << tempString << i << "]";
         positioning->ReadCPACS(tixiHandle, xpath.str());
+        
+        positionings[positioning->GetOuterSectionIndex()] = positioning;
     }
 
     Update();

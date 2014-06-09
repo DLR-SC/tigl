@@ -129,8 +129,6 @@ void CCPACSFuselagePositionings::Update(void)
 
 
 
-// @todo: This code is only working, if the first positions is basis for everything else
-// and if its fromSectionUID is empty in CPACS. We should completely rewrite this code
 void CCPACSFuselagePositionings::UpdateNextPositioning(CCPACSFuselagePositioning* currPos, int depth)
 {
     // check for recursive definition

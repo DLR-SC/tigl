@@ -61,6 +61,7 @@ void CCPACSWingPositioning::Cleanup(void)
     outerTransformation.SetIdentity();
     innerSection  = -1;
     outerSection  = -1;
+    childPositionings.clear();
     Invalidate();
 }
 
@@ -186,6 +187,29 @@ void CCPACSWingPositioning::ReadCPACS(TixiDocumentHandle tixiHandle, const std::
     }
 
     Update();
+}
+
+void CCPACSWingPositioning::ConnectChildPositioning(CCPACSWingPositioning* child)
+{
+    if (!child) {
+        return;
+    }
+    
+    if (child->innerSection != this->outerSection) {
+        throw CTiglError("Incompatible positioning connection in CCPACSWingPositioning::ConnectChildPositioning");
+    }
+    
+    childPositionings.push_back(child);
+}
+
+const std::vector<CCPACSWingPositioning*> CCPACSWingPositioning::GetChilds() const
+{
+    return childPositionings;
+}
+
+void CCPACSWingPositioning::DisconnectChilds()
+{
+    childPositionings.clear();
 }
 
 } // end namespace tigl
