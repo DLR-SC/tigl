@@ -62,7 +62,7 @@ void CTiglUIDManager::AddUID(const std::string& uid, ITiglGeometricComponent* co
     }
 
     if (HasUID(uid)) {
-        throw CTiglError("UID already exist in CTiglUIDManager::AddUID", TIGL_XML_ERROR);
+        throw CTiglError(("UID " + uid + " already exist in CTiglUIDManager::AddUID").c_str(), TIGL_XML_ERROR);
     }
 
     if (componentPtr == 0) {
