@@ -25,6 +25,8 @@
 // optional libraries
 #cmakedefine GLOG_FOUND
 
+#cmakedefine LOFTALGO_FOUND
+
 // tigl switches
 #cmakedefine TIGL_USE_XCAF
 

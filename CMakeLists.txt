@@ -87,6 +87,9 @@ else(OCE_FOUND)
   find_package(OpenCASCADE 6.6.0 REQUIRED COMPONENTS ${OCC_LIBS})
 endif(OCE_FOUND)
 
+# search loftalgo library
+find_package(LOFTALGO)
+
 # search TiXI
 set(TIXI_PATH "" CACHE PATH "TiXI installation prefix")
 set(CMAKE_PREFIX_PATH "${TIXI_PATH};${CMAKE_PREFIX_PATH}")

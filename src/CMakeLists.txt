@@ -25,6 +25,10 @@ include_directories(${OpenCASCADE_INCLUDE_DIR}
                     ${TIGL_INCLUDES}
 )
 
+if(LOFTALGO_FOUND)
+  include_directories(${LOFTALGO_INCLUDE_DIRS})
+endif()
+
 file(GLOB_RECURSE TIGL_SRC
     "*.h"
     "*.hxx"
