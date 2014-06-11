@@ -95,8 +95,9 @@ public class TiglViewerActivity extends ActionBarActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         context = this;
-        //TiGLViewerNativeLib.setAssetMgr(getAssets());        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        //TiGLViewerNativeLib.setAssetMgr(getAssets());        
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+        WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         // supportRequestWindowFeature(Window.FEATURE_PROGRESS);
         supportRequestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
