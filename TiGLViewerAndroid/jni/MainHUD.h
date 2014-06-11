@@ -10,12 +10,12 @@
 
 #include <osg/Camera>
 
-class mainHUD : public osg::Camera
+class MainHUD : public osg::Camera
 {
 public:
-    mainHUD();
-    mainHUD(int screenWidth, int screenHeight);
-    virtual ~mainHUD();
+    MainHUD();
+    MainHUD(int screenWidth, int screenHeight);
+    virtual ~MainHUD();
     void showCenterCross();
     void updateViewPort(int screenWidth, int screenHeight);
 
@@ -26,7 +26,7 @@ protected:
 private:
     void init();
     void createCenterCross();
-    osg::Node* centerCross;
+    osg::ref_ptr<Node> centerCross;
 };
 
 #endif /* MAINHUD_H_ */

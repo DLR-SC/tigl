@@ -131,6 +131,7 @@ public:
     void mouseButtonReleaseEvent(float x, float y, int button, int view);
     void mouseMoveEvent(float x, float y, int view);
     osg::Vec3d windowToWord(osg::Vec3d windowPosition);
+    osg::ref_ptr<MainHUD> getMainHUD();
 
 private:
     void addObjectFromVTK(std::string filepath);
@@ -145,11 +146,11 @@ private:
     osg::ref_ptr<VirtualVisObject> _coordinateGrid;
     osg::ref_ptr<osg::StateSet> _state;
     osg::ref_ptr<osg::Group> modeledObjects;
-    mainHUD * mH;
+    osg::ref_ptr<MainHUD> mH;
 
     bool _initialized;
-    double screenHeight;
-    double screenWidth;
+    float screenHeight;
+    float screenWidth;
 
     OsgAndroidNotifyHandler *_notifyHandler;
     AAssetManager* _assetManager;

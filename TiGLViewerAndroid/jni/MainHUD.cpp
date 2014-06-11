@@ -1,10 +1,20 @@
 /*
- * mainHUD.cpp
- *
- *  Created on: 03.06.2014
- *      Author: aly_mm
- */
-
+* Copyright (C) 2007-2014 German Aerospace Center (DLR/SC)
+*
+* Created: 2014-06-11 Mahmoud Aly <Mahmoud.Aly@dlr.de>
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
 
 #include <osg/Geometry>
 #include <osg/Geode>
@@ -12,22 +22,20 @@
 #include <osg/BlendFunc>
 #include <iostream>
 #include "mainHUD.h"
-#include "OsgMainApp.hpp"
-#include "MaterialTemplate.h"
 #include "FadeOutCallBack.h"
 
 
 
-mainHUD::mainHUD(int screenWidth, int screenHeight)
+MainHUD::MainHUD(int screenWidth, int screenHeight)
 {
     _screenWidth = screenWidth;
     _screenHeight = screenHeight;
     centerCross = NULL;
     init();
 }
-mainHUD::~mainHUD(){}
+MainHUD::~MainHUD(){}
 
-void mainHUD::init()
+void MainHUD::init()
 {
     setClearMask( GL_DEPTH_BUFFER_BIT );
     setRenderOrder( osg::Camera::POST_RENDER, 1 );
@@ -37,7 +45,7 @@ void mainHUD::init()
     setViewport(0 , 0 , _screenWidth , _screenHeight);
     updateViewPort(_screenWidth, _screenHeight);
 }
-void mainHUD::updateViewPort(int screenWidth, int screenHeight)
+void MainHUD::updateViewPort(int screenWidth, int screenHeight)
 {
     _screenWidth = screenWidth;
     _screenHeight = screenHeight;
@@ -54,16 +62,16 @@ void mainHUD::updateViewPort(int screenWidth, int screenHeight)
         setProjectionMatrixAsOrtho2D(-1., 1., -1./ar, 1/ar);
     }
 }
-void mainHUD::showCenterCross()
+void MainHUD::showCenterCross()
 {
-    if (!centerCross) {
+    if (!centerCross.get()) {
         createCenterCross();
     }
 
-    osg::StateSet* stateset = centerCross->getOrCreateStateSet();
-    centerCross->setUpdateCallback(new FadeOutCallback((osg::Material *)stateset->getAttribute(osg::StateAttribute::MATERIAL)));
+    osg::StateSet* stateset = centerCross.get()->getOrCreateStateSet();
+    centerCross.get()->setUpdateCallback(new FadeOutCallback((osg::Material *)stateset->getAttribute(osg::StateAttribute::MATERIAL)));
 }
-void mainHUD::createCenterCross()
+void MainHUD::createCenterCross()
 {
     float vlineLength;
     float hlineLength;
@@ -146,6 +154,6 @@ void mainHUD::createCenterCross()
     stateset->setAttribute(lw);
     stateset->setAttribute(material,osg::StateAttribute::OVERRIDE);
 
-    centerCross = (osg::Node*) crossgeode;
-    addChild(centerCross);
+    centerCross = (osg::ref_ptr<Node>) crossgeode;
+    addChild(centerCross.get());
 }

@@ -18,7 +18,6 @@
 #define PICKHANDLER_H
 #include <osgGA/GUIEventHandler>
 #include <osgViewer/View>
-#include "mainHUD.h"
 class PickHandler : public osgGA::GUIEventHandler
 {
 public:

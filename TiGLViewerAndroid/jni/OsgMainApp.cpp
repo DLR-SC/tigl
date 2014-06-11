@@ -138,13 +138,13 @@ void OsgMainApp::initOsgWindow(int x, int y, int width, int height)
         screenHeight = (double) height;
         screenWidth = (double) width;
 
-        mH->updateViewPort(screenWidth, screenHeight);
+        mH.get()->updateViewPort(screenWidth, screenHeight);
 
         return;
     }
 
-    screenHeight = (double) height;
-    screenWidth = (double) width;
+    screenHeight = (float) height;
+    screenWidth = (float) width;
 
     osg::notify(osg::ALWAYS) << "create viewer";
 
@@ -209,8 +209,8 @@ void OsgMainApp::createScene()
     root_1->addChild(_coordinateGrid);
 
     // Add the main Heads Up Display
-    mH = new mainHUD(screenWidth, screenHeight);
-    root_1->addChild(mH);
+    mH = new MainHUD(screenWidth, screenHeight);
+    root_1->addChild(mH.get());
 
     // add background as gradient
     osg::ref_ptr<TiglViewerBackground> bg = new TiglViewerBackground;
@@ -220,6 +220,11 @@ void OsgMainApp::createScene()
 
     soleViewer->setSceneData(root_1.get());
 }
+osg::ref_ptr<MainHUD> OsgMainApp::getMainHUD()
+{
+    return mH;
+}
+
 void OsgMainApp::draw()
 {
     soleViewer->frame();
