@@ -140,7 +140,6 @@ CCPACSFuselageSegment::CCPACSFuselageSegment(CCPACSFuselage* aFuselage, int aSeg
     , startConnection(this)
     , endConnection(this)
     , fuselage(aFuselage)
-    , guideCurvesPresent(false)
 {
     Cleanup();
 }
@@ -160,6 +159,7 @@ void CCPACSFuselageSegment::Cleanup(void)
     myWireLength  = 0.;
     continuity    = C2;
     guideCurvesPresent = false;
+    guideCurvesBuilt = false;
     CTiglAbstractSegment::Cleanup();
 }
 
@@ -779,15 +779,14 @@ double CCPACSFuselageSegment::GetCircumference(const double eta)
     return myWireLength;
 }
 
-CCPACSGuideCurves& CCPACSFuselageSegment::GetGuideCurves()
-{
-    return guideCurves;
-}
 
 // Creates all guide curves
-TopTools_SequenceOfShape& CCPACSFuselageSegment::BuildGuideCurves(void)
+void CCPACSFuselageSegment::BuildGuideCurveSegments(void)
 {
-    guideCurveWires.Clear();
+    if (!guideCurvesPresent || guideCurvesBuilt) {
+        return;
+    }
+
     if (guideCurvesPresent) {
 
         // get start and end profile
@@ -829,7 +828,7 @@ TopTools_SequenceOfShape& CCPACSFuselageSegment::BuildGuideCurves(void)
                 // get neighboring guide curve UID
                 std::string neighborGuideCurveUID = guideCurve.GetFromGuideCurveUID();
                 // get neighboring guide curve
-                CCPACSGuideCurve& neighborGuideCurve = fuselage->GetGuideCurve(neighborGuideCurveUID);
+                CCPACSGuideCurve& neighborGuideCurve = fuselage->GetGuideCurveSegment(neighborGuideCurveUID);
                 // get relative circumference from neighboring guide curve
                 fromRelativeCircumference = neighborGuideCurve.GetToRelativeCircumference();
             }
@@ -851,16 +850,16 @@ TopTools_SequenceOfShape& CCPACSFuselageSegment::BuildGuideCurves(void)
                                                                                                   innerScale, 
                                                                                                   outerScale, 
                                                                                                   guideCurveProfile);
-            guideCurveWires.Append(guideCurveEdge);
             guideCurve.SetCurve(guideCurveEdge);
         }
+    }
+    guideCurvesBuilt = true;
+}
 
-        // return container for guide curve wires
-        return guideCurveWires;
-    }
-    else {
-        return guideCurveWires;
-    }
+CCPACSGuideCurves& CCPACSFuselageSegment::GetGuideCurveSegments()
+{
+    BuildGuideCurveSegments();
+    return guideCurves;
 }
 
 

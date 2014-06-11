@@ -122,8 +122,11 @@ public:
 
     TIGL_EXPORT void SetSymmetryAxis(const std::string& axis);
 
-    // Get the guide curve with a given UID
-    TIGL_EXPORT CCPACSGuideCurve& GetGuideCurve(std::string uid);
+    // Get the guide curve segment(partial guide curve) with a given UID
+    TIGL_EXPORT CCPACSGuideCurve& GetGuideCurveSegment(std::string uid);
+
+    // Returns all guide curve wires as a compound
+    TIGL_EXPORT TopoDS_Compound& GetGuideCurveWires();
 
 protected:
     void BuildGuideCurves();

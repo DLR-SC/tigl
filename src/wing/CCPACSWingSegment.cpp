@@ -148,8 +148,6 @@ CCPACSWingSegment::CCPACSWingSegment(CCPACSWing* aWing, int aSegmentIndex)
     , innerConnection(this)
     , outerConnection(this)
     , wing(aWing)
-    , surfacesAreValid(false)
-    , guideCurvesPresent(false)
 {
     Cleanup();
 }
@@ -165,7 +163,7 @@ void CCPACSWingSegment::Invalidate(void)
 {
     CTiglAbstractSegment::Invalidate();
     surfacesAreValid = false;
-    guideCurveWires.Clear();
+    guideCurvesBuilt = false;
 }
 
 // Cleanup routine
@@ -176,6 +174,7 @@ void CCPACSWingSegment::Cleanup(void)
     lowerShape.Nullify();
     surfacesAreValid = false;
     guideCurvesPresent = false;
+    guideCurvesBuilt = false;
     CTiglAbstractSegment::Cleanup();
 }
 
@@ -815,18 +814,13 @@ TopoDS_Shape& CCPACSWingSegment::GetLowerShape()
     return lowerShape;
 }
 
-TopTools_SequenceOfShape& CCPACSWingSegment::GetGuideCurveWires()
-{
-    if (guideCurveWires.IsEmpty()) {
-        BuildGuideCurveWires();
-    }
-    return guideCurveWires;
-}
-
 // Creates all guide curves
-void CCPACSWingSegment::BuildGuideCurveWires(void)
+void CCPACSWingSegment::BuildGuideCurveSegments(void)
 {
-    guideCurveWires.Clear();
+    if (!guideCurvesPresent || guideCurvesBuilt) {
+        return;
+    }
+    
     if (guideCurvesPresent) {
         // get upper and lower part of inner profile in world coordinates
         CCPACSWingProfile& innerProfile = innerConnection.GetProfile();
@@ -869,7 +863,7 @@ void CCPACSWingSegment::BuildGuideCurveWires(void)
                 // get neighboring guide curve UID
                 std::string neighborGuideCurveUID = guideCurve.GetFromGuideCurveUID();
                 // get neighboring guide curve
-                CCPACSGuideCurve& neighborGuideCurve = wing->GetGuideCurve(neighborGuideCurveUID);
+                CCPACSGuideCurve& neighborGuideCurve = wing->GetGuideCurveSegment(neighborGuideCurveUID);
                 // get relative circumference from neighboring guide curve
                 fromRelativeCircumference = neighborGuideCurve.GetToRelativeCircumference();
             }
@@ -891,14 +885,15 @@ void CCPACSWingSegment::BuildGuideCurveWires(void)
                                                                                               innerScale,
                                                                                               outerScale,
                                                                                               guideCurveProfile);
-            guideCurveWires.Append(guideCurveEdge);
             guideCurve.SetCurve(guideCurveEdge);
         }
     }
+    guideCurvesBuilt = true;
 }
 
-CCPACSGuideCurves& CCPACSWingSegment::GetGuideCurves()
+CCPACSGuideCurves& CCPACSWingSegment::GetGuideCurveSegments()
 {
+    BuildGuideCurveSegments();
     return guideCurves;
 }
 

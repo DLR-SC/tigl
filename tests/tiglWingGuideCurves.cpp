@@ -418,14 +418,12 @@ TEST_F(WingGuideCurve, tiglWingGuideCurve_CCPACSWingSegment)
     tigl::CCPACSWingSegment& segment1 = (tigl::CCPACSWingSegment&) wing.GetSegment(1);
     tigl::CCPACSWingSegment& segment2 = (tigl::CCPACSWingSegment&) wing.GetSegment(2);
     tigl::CCPACSWingSegment& segment3 = (tigl::CCPACSWingSegment&) wing.GetSegment(3);
-    TopTools_SequenceOfShape& guideCurveContainer1 = segment1.GetGuideCurveWires();
-    TopTools_SequenceOfShape& guideCurveContainer2 = segment2.GetGuideCurveWires();
-    TopTools_SequenceOfShape& guideCurveContainer3 = segment3.GetGuideCurveWires();
 
-    ASSERT_EQ(guideCurveContainer3.Length(), 3);
+    tigl::CCPACSGuideCurves& guides = segment3.GetGuideCurveSegments();
+    ASSERT_EQ(guides.GetGuideCurveCount(), 3);
 
     // obtain leading edge guide curve 
-    TopoDS_Edge guideCurveEdge = TopoDS::Edge(guideCurveContainer3(1));
+    TopoDS_Edge guideCurveEdge = guides.GetGuideCurve(1).GetCurve();
 
     // check if guide curve runs through sample points
     // get curve

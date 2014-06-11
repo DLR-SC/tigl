@@ -365,13 +365,12 @@ TEST_F(FuselageGuideCurve, tiglFuselageGuideCurve_CCPACSFuselageSegment)
     ASSERT_EQ(fuselage.GetSegmentCount(),2);
     tigl::CCPACSFuselageSegment& segment1 = (tigl::CCPACSFuselageSegment&) fuselage.GetSegment(1);
     tigl::CCPACSFuselageSegment& segment2 = (tigl::CCPACSFuselageSegment&) fuselage.GetSegment(2);
-    TopTools_SequenceOfShape& guideCurveContainer1 = segment1.BuildGuideCurves();
-    TopTools_SequenceOfShape& guideCurveContainer2 = segment2.BuildGuideCurves();
 
-    ASSERT_EQ(guideCurveContainer1.Length(), 3);
+    tigl::CCPACSGuideCurves& guides = segment1.GetGuideCurveSegments();
+    ASSERT_EQ(guides.GetGuideCurveCount(), 3);
 
     // obtain leading edge guide curve 
-    TopoDS_Edge guideCurveWire = TopoDS::Edge(guideCurveContainer1(2));
+    TopoDS_Edge guideCurveWire = guides.GetGuideCurve(2).GetCurve();
 
     // check if guide curve runs through sample points
     // get curve

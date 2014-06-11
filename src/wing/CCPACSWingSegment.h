@@ -166,10 +166,7 @@ public:
     TIGL_EXPORT TopoDS_Shape& GetUpperShape();
     TIGL_EXPORT TopoDS_Shape& GetLowerShape();
 
-    // Returns the guide curves of the segment as wires
-    TIGL_EXPORT TopTools_SequenceOfShape& GetGuideCurveWires();
-
-    TIGL_EXPORT CCPACSGuideCurves& GetGuideCurves();
+    TIGL_EXPORT CCPACSGuideCurves& GetGuideCurveSegments();
 
     // Returns an upper or lower point on the segment surface in
     // dependence of parameters eta and xsi, which range from 0.0 to 1.0.
@@ -201,8 +198,8 @@ protected:
     // Update internal segment data
     void Update(void);
     
-    // builds all guide curve wires
-    void BuildGuideCurveWires(void);
+    // builds all guide curve segments wires
+    void BuildGuideCurveSegments(void);
 
     // Builds the loft between the two segment sections
     TopoDS_Shape BuildLoft(void);
@@ -221,7 +218,6 @@ private:
     CCPACSWingConnection innerConnection;      /**< Inner segment connection (root)         */
     CCPACSWingConnection outerConnection;      /**< Outer segment connection (tip)          */
     CCPACSGuideCurves    guideCurves;          /**< Guide curve container                   */
-    TopTools_SequenceOfShape guideCurveWires;  /**< container for the guide curve wires     */
     CCPACSWing*          wing;                 /**< Parent wing                             */
     double               myVolume;             /**< Volume of this segment                  */
     double               mySurfaceArea;        /**< Surface area of this segment            */
@@ -232,6 +228,7 @@ private:
     CTiglPointTranslator cordSurface;
     bool                 surfacesAreValid;
     bool                 guideCurvesPresent;   /**< If guide curves are not present, lofted surface is possible */
+    bool                 guideCurvesBuilt;     /**< True, if guide curves are already built                     */
 
 };
 

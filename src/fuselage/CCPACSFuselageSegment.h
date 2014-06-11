@@ -151,11 +151,7 @@ public:
 
     TIGL_EXPORT TiglGeometricComponentType GetComponentType(){return TIGL_COMPONENT_FUSELSEGMENT | TIGL_COMPONENT_SEGMENT | TIGL_COMPONENT_LOGICAL;}
 
-    // builds all guide curve wires
-    TIGL_EXPORT TopTools_SequenceOfShape& BuildGuideCurves(void);
-
-    TIGL_EXPORT CCPACSGuideCurves& GetGuideCurves();
-
+    TIGL_EXPORT CCPACSGuideCurves& GetGuideCurveSegments();
 
 protected:
     // Cleanup routine
@@ -163,6 +159,9 @@ protected:
 
     // Update internal segment data
     void Update(void);
+    
+    // builds all guide curve segments
+    void BuildGuideCurveSegments(void);
 
     // Builds the loft between the two segment sections
     TopoDS_Shape BuildLoft(void);
@@ -179,11 +178,11 @@ private:
     CCPACSFuselageConnection endConnection;        /**< End segment connection                  */
     CCPACSFuselage*          fuselage;             /**< Parent fuselage                         */
     CCPACSGuideCurves        guideCurves;          /**< Guide curve container                   */
-    TopTools_SequenceOfShape guideCurveWires;      /**< container for the guide curve wires     */
     double                   myVolume;             /**< Volume of this segment                  */
     double                   mySurfaceArea;        /**< Surface Area of this segment            */
     double                   myWireLength;         /**< Wire length of this segment for a given zeta */
     bool                     guideCurvesPresent;   /**< If guide curves are not present, lofted surface is possible */
+    bool                     guideCurvesBuilt;     /**< True, if guide curves are already built                     */
 
 };
 

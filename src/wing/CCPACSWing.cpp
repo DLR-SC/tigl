@@ -665,19 +665,30 @@ int CCPACSWing::GetSegmentEtaXsi(const gp_Pnt& point, double& eta, double& xsi, 
 }
 
 // Get the guide curve with a given UID
-CCPACSGuideCurve& CCPACSWing::GetGuideCurve(std::string uid)
+CCPACSGuideCurve& CCPACSWing::GetGuideCurveSegment(std::string uid)
 {
     for (int i=1; i <= segments.GetSegmentCount(); i++) {
         CCPACSWingSegment& segment = segments.GetSegment(i);
-        if (segment.GetGuideCurves().GuideCurveExists(uid)) {
-            return segment.GetGuideCurves().GetGuideCurve(uid);
+        if (segment.GetGuideCurveSegments().GuideCurveExists(uid)) {
+            return segment.GetGuideCurveSegments().GetGuideCurve(uid);
         }
     }
     throw tigl::CTiglError("Error: Guide Curve with UID " + uid + " does not exists", TIGL_ERROR);
 }
 
+TopoDS_Compound& CCPACSWing::GetGuideCurveWires()
+{
+    BuildGuideCurves();
+    return guideCurves;
+}
+
+
 void CCPACSWing::BuildGuideCurves()
 {
+    if (!guideCurves.IsNull()) {
+        return;
+    }
+    
     guideCurves.Nullify();
     BRep_Builder b;
     b.MakeCompound(guideCurves);
@@ -686,7 +697,7 @@ void CCPACSWing::BuildGuideCurves()
     // connect the belonging guide curve segments
     for (int isegment = 1; isegment <= GetSegmentCount(); ++isegment) {
         CCPACSWingSegment& segment = segments.GetSegment(isegment);
-        CCPACSGuideCurves& segmentCurves = segment.GetGuideCurves();
+        CCPACSGuideCurves& segmentCurves = segment.GetGuideCurveSegments();
         for (int iguide = 1; iguide <=  segmentCurves.GetGuideCurveCount(); ++iguide) {
             CCPACSGuideCurve& curve = segmentCurves.GetGuideCurve(iguide);
             std::string fromCurveUID = curve.GetFromGuideCurveUID();
@@ -696,17 +707,10 @@ void CCPACSWing::BuildGuideCurves()
                 roots[rootUID] = &curve;
             }
             else {
-                CCPACSGuideCurve& fromCurve = GetGuideCurve(fromCurveUID);
+                CCPACSGuideCurve& fromCurve = GetGuideCurveSegment(fromCurveUID);
                 fromCurve.ConnectToCurve(&curve);
             }
         }
-    }
-    
-    // build the guide curves for each segment
-    for (int isegment = 1; isegment <= GetSegmentCount(); ++isegment) {
-        CCPACSWingSegment& segment = segments.GetSegment(isegment);
-        // ToDO: we should make this different
-        segment.GetGuideCurveWires();
     }
     
     // connect belonging guide curves to wires
