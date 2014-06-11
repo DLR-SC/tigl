@@ -18,6 +18,7 @@
 #define PICKHANDLER_H
 #include <osgGA/GUIEventHandler>
 #include <osgViewer/View>
+#include "mainHUD.h"
 class PickHandler : public osgGA::GUIEventHandler
 {
 public:
@@ -28,8 +29,7 @@ private:
     virtual void pick(osgUtil::LineSegmentIntersector::Intersections allIntersections);
     osgUtil::LineSegmentIntersector::Intersections rayIntersection(osgViewer::View* view, const osgGA::GUIEventAdapter& ea, bool add);
     void changeCOR(osgViewer::View* view, osgUtil::LineSegmentIntersector::Intersections allIntersections);
-    void vfeedbackOnCentering(osgViewer::View* view, osg::Vec3d pos);
-    osg::Geometry* createQuad(osg::Vec3d pos);
+    osg::Node* findNamedNode(const std::string& searchName,osg::Node* currNode);
 
     double _lastx, _lasty;
     double _lastTime;

@@ -20,9 +20,12 @@
 #include "GeometricVisObject.h"
 #include "MaterialTemplate.h"
 #include <osgGA/StandardManipulator>
+#include "FadeOutCallBack.h"
 
 #define TIME_TO_CENTER 0.4
 #define PICK_MOVEMENT_THRESHOLD 0.05
+float action_x = -1;
+float action_y = -1;
 
 PickHandler::PickHandler()
 {
@@ -86,11 +89,12 @@ bool PickHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapt
         return false;
 
     }
-
-
 }
 osgUtil::LineSegmentIntersector::Intersections PickHandler::rayIntersection(osgViewer::View* view, const osgGA::GUIEventAdapter& ea, bool add)
 {
+    action_x = ea.getX();
+    action_y = ea.getY();
+
     float xwindow =  ea.getX()/(ea.getXmax()- ea.getXmin())  * 2. - 1;
     float ywindow = -ea.getY()/(ea.getYmax()- ea.getYmin())  * 2. + 1;
 
@@ -152,7 +156,8 @@ void PickHandler::pick(osgUtil::LineSegmentIntersector::Intersections allInterse
 }
 void PickHandler::changeCOR(osgViewer::View* view, osgUtil::LineSegmentIntersector::Intersections allIntersections)
 {
-    osg::Vec3d eye, oldCenter, up, newCenter;
+    mainHUD * mH = (mainHUD *)findNamedNode("mainHUD",view->getSceneData());
+    osg::Vec3d eye, oldCenter, up, newCenter, windowPos;
     osgGA::StandardManipulator* m = dynamic_cast<osgGA::StandardManipulator*> (view->getCameraManipulator());
     m->getTransformation( eye, oldCenter, up );
 
@@ -165,7 +170,33 @@ void PickHandler::changeCOR(osgViewer::View* view, osgUtil::LineSegmentIntersect
             newCenter = intersectionsIterator->getWorldIntersectPoint();
             osg::Vec3d displacement = newCenter - oldCenter;
             m->setTransformation( eye + displacement, newCenter, up );
+            mH->showCenterCross();
             break;
         }
     }
+}
+osg::Node* PickHandler::findNamedNode(const std::string& searchName,osg::Node* currNode)
+{
+   osg::Group* currGroup;
+   osg::Node* foundNode;
+
+   if ( !currNode) {
+      return NULL;
+   }
+   if (currNode->getName() == searchName) {
+      return currNode;
+   }
+   currGroup = currNode->asGroup();
+   if ( currGroup ) {
+      for (unsigned int i = 0 ; i < currGroup->getNumChildren(); i ++) {
+         foundNode = findNamedNode(searchName, currGroup->getChild(i));
+         if (foundNode) {
+            return foundNode;
+         }
+     }
+      return NULL;
+   }
+   else {
+      return NULL;
+   }
 }

@@ -51,7 +51,7 @@ TiglViewerHUD::~TiglViewerHUD()
 void TiglViewerHUD::init()
 {
     setProjectionMatrix(osg::Matrixd::ortho2D(-1.5, 1.5, -1.5, 1.5));
-    setRenderOrder( osg::Camera::POST_RENDER, 1);
+    setRenderOrder( osg::Camera::POST_RENDER, 2);
     setClearMask( GL_DEPTH_BUFFER_BIT );
     setAllowEventFocus( false );
     setReferenceFrame( osg::Transform::ABSOLUTE_RF );

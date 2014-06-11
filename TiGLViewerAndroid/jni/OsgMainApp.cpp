@@ -135,13 +135,16 @@ void OsgMainApp::initOsgWindow(int x, int y, int width, int height)
         soleViewer->getEventQueue()->setMouseInputRange(x, y, x + width, y + height);
         soleViewer->getCamera()->setProjectionMatrixAsOrtho(left, right, bottom, top, zNear, zFar);
 
-        screenHeight = (float) height;
-        screenWidth = (float) width;
+        screenHeight = (double) height;
+        screenWidth = (double) width;
+
+        mH->updateViewPort(screenWidth, screenHeight);
+
         return;
     }
 
-    screenHeight = (float) height;
-    screenWidth = (float) width;
+    screenHeight = (double) height;
+    screenWidth = (double) width;
 
     osg::notify(osg::ALWAYS) << "create viewer";
 
@@ -160,7 +163,7 @@ void OsgMainApp::initOsgWindow(int x, int y, int width, int height)
     soleViewer->addEventHandler(new osgGA::StateSetManipulator(soleViewer->getCamera()->getOrCreateStateSet()));
     soleViewer->addEventHandler(new osgViewer::ThreadingHandler);
     soleViewer->addEventHandler(new osgViewer::LODScaleHandler);
-    soleViewer->addEventHandler(new PickHandler);
+    soleViewer->addEventHandler(new PickHandler());
 
     soleViewer->setCameraManipulator(tm);
     soleViewer->realize();
@@ -182,7 +185,7 @@ void OsgMainApp::createScene()
     root_1 = new osg::Group();
     modeledObjects = new osg::Group();
 
-    _state = root_1->getOrCreateStateSet();
+    _state = modeledObjects->getOrCreateStateSet();
     _state->setMode(GL_LIGHTING, osg::StateAttribute::ON);
     _state->setMode(GL_DEPTH_TEST, osg::StateAttribute::ON);
     _state->setMode(GL_CULL_FACE, osg::StateAttribute::ON);
@@ -192,7 +195,6 @@ void OsgMainApp::createScene()
     osgViewer::ViewerBase::Contexts contexts;
     soleViewer->getContexts(contexts);
     if (contexts.size() > 0) {
-        osg::notify(osg::ALWAYS) << "Number of contexts: " << contexts.size();
         const osg::GraphicsContext::Traits* t = contexts[0]->getTraits();
         int size = t->width > t->height ? t->height : t->width;
         size /= 3;
@@ -206,6 +208,9 @@ void OsgMainApp::createScene()
     _coordinateGrid->setMainAxesEnabled(false);
     root_1->addChild(_coordinateGrid);
 
+    // Add the main Heads Up Display
+    mH = new mainHUD(screenWidth, screenHeight);
+    root_1->addChild(mH);
 
     // add background as gradient
     osg::ref_ptr<TiglViewerBackground> bg = new TiglViewerBackground;

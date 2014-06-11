@@ -3,7 +3,7 @@
     package="de.dlr.sc.tiglviewer.android" >
 
     <uses-sdk
-        android:minSdkVersion="14"
+        android:minSdkVersion="11"
         android:targetSdkVersion="19" />
     
     <!-- OpenGL min. requirements (1.1) -->

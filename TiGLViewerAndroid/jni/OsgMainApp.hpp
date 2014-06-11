@@ -73,6 +73,7 @@
 #include "VirtualVisObject.hpp"
 #include "TiglViewerHUD.h"
 #include "GeometricVisObject.h"
+#include "mainHUD.h"
 
 USE_OSGPLUGIN(osg)
 USE_OSGPLUGIN(osg2)
@@ -144,10 +145,11 @@ private:
     osg::ref_ptr<VirtualVisObject> _coordinateGrid;
     osg::ref_ptr<osg::StateSet> _state;
     osg::ref_ptr<osg::Group> modeledObjects;
+    mainHUD * mH;
 
     bool _initialized;
-    float screenHeight;
-    float screenWidth;
+    double screenHeight;
+    double screenWidth;
 
     OsgAndroidNotifyHandler *_notifyHandler;
     AAssetManager* _assetManager;
