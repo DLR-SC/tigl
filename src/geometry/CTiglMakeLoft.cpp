@@ -44,7 +44,7 @@ namespace
     TopoDS_Shape MakeShells(TopoDS_Shape& shell, const Standard_Real presPln);
 } // namespace
 
-CMakeLoft::CMakeLoft(double tolerance)
+CTiglMakeLoft::CTiglMakeLoft(double tolerance)
 {
     _hasPerformed = false;
     _makeSolid = true;
@@ -52,7 +52,7 @@ CMakeLoft::CMakeLoft(double tolerance)
     _myTolerance = tolerance;
 }
 
-CMakeLoft::CMakeLoft(const TopoDS_Shape &profiles, const TopoDS_Shape &guides, double tolerance)
+CTiglMakeLoft::CTiglMakeLoft(const TopoDS_Shape &profiles, const TopoDS_Shape &guides, double tolerance)
 {
     _hasPerformed = false;
     _result.Nullify();
@@ -61,7 +61,7 @@ CMakeLoft::CMakeLoft(const TopoDS_Shape &profiles, const TopoDS_Shape &guides, d
     addGuides(guides);
 }
 
-void CMakeLoft::addProfiles(const TopoDS_Shape &profiles)
+void CTiglMakeLoft::addProfiles(const TopoDS_Shape &profiles)
 {
     if (profiles.ShapeType() == TopAbs_COMPOUND) {
         for (TopoDS_Iterator anIter(profiles); anIter.More(); anIter.Next()) {
@@ -74,7 +74,7 @@ void CMakeLoft::addProfiles(const TopoDS_Shape &profiles)
     }
 }
 
-void CMakeLoft::addGuides(const TopoDS_Shape &guides)
+void CTiglMakeLoft::addGuides(const TopoDS_Shape &guides)
 {
     if (guides.ShapeType() == TopAbs_COMPOUND) {
         for (TopoDS_Iterator anIter(guides); anIter.More(); anIter.Next()) {
@@ -87,19 +87,19 @@ void CMakeLoft::addGuides(const TopoDS_Shape &guides)
     }
 }
 
-TopoDS_Shape &CMakeLoft::Shape()
+TopoDS_Shape &CTiglMakeLoft::Shape()
 {
     Perform();
     
     return _result;
 }
 
-CMakeLoft::operator TopoDS_Shape &()
+CTiglMakeLoft::operator TopoDS_Shape &()
 {
     return Shape();
 }
 
-void CMakeLoft::Perform() 
+void CTiglMakeLoft::Perform() 
 {
     if (_hasPerformed) {
         return;
@@ -119,7 +119,7 @@ void CMakeLoft::Perform()
     _hasPerformed = true;
 }
 
-void CMakeLoft::setMakeSolid(bool enabled)
+void CTiglMakeLoft::setMakeSolid(bool enabled)
 {
     _makeSolid = enabled;
 }
@@ -127,7 +127,7 @@ void CMakeLoft::setMakeSolid(bool enabled)
 /**
  * @brief Builds the loft using profiles and guide curves
  */
-void CMakeLoft::makeLoftWithGuides()
+void CTiglMakeLoft::makeLoftWithGuides()
 {
 #ifdef LOFTALGO_FOUND
     BRep_Builder b;
@@ -148,7 +148,7 @@ void CMakeLoft::makeLoftWithGuides()
     // Don't sew yet. We do it later in solid creation
     SurfMaker.Perform(_myTolerance, 1e-4, GeomFill_CoonsC2Style, Standard_False);
     TopoDS_Shape faces = SurfMaker.Patches();
-    std::cout << "Status: " << SurfMaker.GetStatus() << std::endl;
+    printf("Status: %d\n" , SurfMaker.GetStatus());
     
     if (_makeSolid) {
         // check if the first wire is the same as the last
@@ -190,7 +190,7 @@ void CMakeLoft::makeLoftWithGuides()
 #endif // LOFTALGO_FOUND
 }
 
-void CMakeLoft::makeLoftWithoutGuides()
+void CTiglMakeLoft::makeLoftWithoutGuides()
 {
     BRepOffsetAPI_ThruSections lofter(_makeSolid, Standard_True, _myTolerance);
     for (unsigned int i = 0; i < profiles.size(); ++i) {

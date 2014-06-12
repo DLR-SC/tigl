@@ -22,12 +22,17 @@
 #include <vector>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Wire.hxx>
-
-class CMakeLoft
+/**
+ * @brief The CTiglMakeLoft class is used to create loft topologies using cross sections
+ * and optional guide curves. By default, the resulting topology is a solid. In order to
+ * prevent closing the loft side faces (and making a solid), you can call
+ * CTiglMakeLoft::setMakeSolid(false)
+ */
+class CTiglMakeLoft
 {
 public:
-    CMakeLoft(double tolerance = 1e-6);
-    CMakeLoft(const TopoDS_Shape& profiles, const TopoDS_Shape& guides, double tolerance = 1e-6);
+    CTiglMakeLoft(double tolerance = 1e-6);
+    CTiglMakeLoft(const TopoDS_Shape& profiles, const TopoDS_Shape& guides, double tolerance = 1e-6);
     
     /**
      * @brief Should be called to add sections/profiles to the algorithm.

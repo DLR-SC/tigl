@@ -339,7 +339,7 @@ TopoDS_Shape CCPACSWing::BuildLoft()
 // Builds a fused shape of all wing segments
 TopoDS_Shape CCPACSWing::BuildFusedSegments(bool splitWingInUpperAndLower)
 {
-    CMakeLoft lofter;
+    CTiglMakeLoft lofter;
     lofter.setMakeSolid(true);
 
     for (int i=1; i <= segments.GetSegmentCount(); i++) {
