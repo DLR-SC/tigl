@@ -42,6 +42,7 @@
 #include "BRepBuilderAPI_MakeWire.hxx"
 #include "BRepTools.hxx"
 #include "ShapeFix_Wire.hxx"
+#include "CTiglMakeLoft.h"
 
 namespace tigl
 {
@@ -338,27 +339,23 @@ TopoDS_Shape CCPACSWing::BuildLoft()
 // Builds a fused shape of all wing segments
 TopoDS_Shape CCPACSWing::BuildFusedSegments(bool splitWingInUpperAndLower)
 {
-    //@todo: this probably works only if the wings does not split somewere
-    BRepOffsetAPI_ThruSections generator(Standard_True, Standard_True, Precision::Confusion() );
+    CMakeLoft lofter;
+    lofter.setMakeSolid(true);
 
     for (int i=1; i <= segments.GetSegmentCount(); i++) {
-        CCPACSWingConnection& startConnection = segments.GetSegment(i).GetInnerConnection();
-        CCPACSWingProfile& startProfile = startConnection.GetProfile();
-        TopoDS_Wire startWire = transformToWingCoords(startConnection, startProfile.GetWire());
-
-        generator.AddWire(startWire);
+        TopoDS_Shape& startWire = segments.GetSegment(i).GetInnerWire();
+        lofter.addProfiles(startWire);
     }
+    
+    TopoDS_Wire endWire =  segments.GetSegment(segments.GetSegmentCount()).GetOuterWire();
+    lofter.addProfiles(endWire);
+    
+    // add guide curves
+    lofter.addGuides(GetGuideCurveWires());
 
-    CCPACSWingConnection& endConnection = segments.GetSegment(segments.GetSegmentCount()).GetOuterConnection();
-    CCPACSWingProfile& endProfile = endConnection.GetProfile();
-    TopoDS_Wire endWire = transformToWingCoords(endConnection,endProfile.GetWire());
 
-    generator.AddWire(endWire);
-
-    generator.CheckCompatibility(Standard_False);
-    generator.Build();
-        
-    return GetWingTransformation().Transform(generator.Shape());
+    TopoDS_Shape result = lofter.Shape();
+    return result;
 }
     
 // Builds a fused shape of all wing segments
