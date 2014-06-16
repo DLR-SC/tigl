@@ -577,6 +577,16 @@ gp_Pnt CCPACSWingSegment::GetChordPoint(double eta, double xsi)
     return profilePoint.Get_gp_Pnt();
 }
 
+gp_Pnt CCPACSWingSegment::GetChordNormal(double eta, double xsi)
+{
+    MakeSurfaces();
+
+    CTiglPoint normal; 
+    cordSurface.getNormal(eta,xsi, &normal);
+
+    return normal.Get_gp_Pnt();
+}
+
 // TODO: remove this function if favour of Standard GetEta
 double CCPACSWingSegment::GetEta(gp_Pnt pnt, double xsi)
 {

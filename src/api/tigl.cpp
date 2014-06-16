@@ -371,6 +371,88 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetLowerPoint(TiglCPACSConfigurationHa
     }
 }
 
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetChordPoint(TiglCPACSConfigurationHandle cpacsHandle,
+                                                        int wingIndex,
+                                                        int segmentIndex,
+                                                        double eta,
+                                                        double xsi,
+                                                        double* pointXPtr,
+                                                        double* pointYPtr,
+                                                        double* pointZPtr)
+{
+    if (pointXPtr == 0 || pointYPtr == 0 || pointZPtr == 0) {
+        LOG(ERROR) << "Error: Null pointer argument for pointXPtr, pointYPtr or pointZPtr ";
+        LOG(ERROR) << "in function call to tiglWingGetChordPoint." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+
+    try {
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+        tigl::CCPACSWing& wing = config.GetWing(wingIndex);
+        tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment&) wing.GetSegment(segmentIndex);
+        
+        gp_Pnt point = segment.GetChordPoint(eta, xsi);
+        *pointXPtr = point.X();
+        *pointYPtr = point.Y();
+        *pointZPtr = point.Z();
+        return TIGL_SUCCESS;
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglWingGetChordPoint!" << std::endl;
+        return TIGL_ERROR;
+    }
+}
+
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetChordNormal(TiglCPACSConfigurationHandle cpacsHandle,
+                                                         int wingIndex,
+                                                         int segmentIndex,
+                                                         double eta,
+                                                         double xsi,
+                                                         double* normalXPtr,
+                                                         double* normalYPtr,
+                                                         double* normalZPtr)
+{
+    if (normalXPtr == 0 || normalYPtr == 0 || normalZPtr == 0) {
+        LOG(ERROR) << "Error: Null pointer argument for normalXPtr, normalYPtr or normalZPtr ";
+        LOG(ERROR) << "in function call to tiglWingGetChordNormal." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+
+    try {
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+        tigl::CCPACSWing& wing = config.GetWing(wingIndex);
+        tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment&) wing.GetSegment(segmentIndex);
+        
+        gp_Pnt normal = segment.GetChordNormal(eta, xsi);
+        *normalXPtr = normal.X();
+        *normalYPtr = normal.Y();
+        *normalZPtr = normal.Z();
+        return TIGL_SUCCESS;
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglWingGetChordNormal!" << std::endl;
+        return TIGL_ERROR;
+    }
+}
+
 TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetUpperPointAtDirection(TiglCPACSConfigurationHandle cpacsHandle,
                                                                    int wingIndex,
                                                                    int segmentIndex,
