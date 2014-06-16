@@ -627,7 +627,6 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetUpperPoint(TiglCPACSConfigurationHa
 * @return
 *   - TIGL_SUCCESS if a point was found
 *   - TIGL_NOT_FOUND if no intersection point was found or the cpacs handle is not valid
-*   - TIGL_MATH_ERROR if the given direction is a null vector (which has zero length)
 *   - TIGL_INDEX_ERROR if wingIndex or segmentIndex are not valid
 *   - TIGL_NULL_POINTER if pointXPtr, pointYPtr or pointZPtr are null pointers
 *   - TIGL_ERROR if some other error occured
@@ -640,7 +639,73 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetLowerPoint(TiglCPACSConfigurationHa
                                                         double* pointXPtr,
                                                         double* pointYPtr,
                                                         double* pointZPtr);
-        
+
+/**
+* @brief Returns a point on the wing chord surface for a
+* a given wing and segment index.
+*
+* Returns a point on the wing chord surface in dependence of parameters eta and xsi,
+* which range from 0.0 to 1.0. For eta = 0.0, xsi = 0.0 the point is equal to
+* the leading edge on the inner section of the given segment. For eta = 1.0, xsi = 1.0
+* the point is equal to the trailing edge on the outer section of the given segment. The
+* point is returned in absolute world coordinates.
+*
+* @param[in]  cpacsHandle  Handle for the CPACS configuration
+* @param[in]  wingIndex    The index of the wing, starting at 1
+* @param[in]  segmentIndex The index of the segment of the wing, starting at 1
+* @param[in]  eta          eta in the range 0.0 <= eta <= 1.0
+* @param[in]  xsi          xsi in the range 0.0 <= xsi <= 1.0
+* @param[out] pointXPtr    Pointer to the x-coordinate of the point in absolute world coordinates
+* @param[out] pointYPtr    Pointer to the y-coordinate of the point in absolute world coordinates
+* @param[out] pointZPtr    Pointer to the z-coordinate of the point in absolute world coordinates
+*
+* @return
+*   - TIGL_SUCCESS if a point was found
+*   - TIGL_NOT_FOUND if cpacs handle is not valid
+*   - TIGL_INDEX_ERROR if wingIndex or segmentIndex are not valid
+*   - TIGL_NULL_POINTER if pointXPtr, pointYPtr or pointZPtr are null pointers
+*   - TIGL_ERROR if some other error occured
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetChordPoint(TiglCPACSConfigurationHandle cpacsHandle,
+                                                        int wingIndex,
+                                                        int segmentIndex,
+                                                        double eta,
+                                                        double xsi,
+                                                        double* pointXPtr,
+                                                        double* pointYPtr,
+                                                        double* pointZPtr);
+
+/**
+* @brief Returns a normal vector on the wing chord surface for a
+* a given wing and segment index.
+*
+* Returns a normal vector on the wing chord surface in dependence of parameters eta and xsi,
+* which range from 0.0 to 1.0.
+*
+* @param[in]  cpacsHandle  Handle for the CPACS configuration
+* @param[in]  wingIndex    The index of the wing, starting at 1
+* @param[in]  segmentIndex The index of the segment of the wing, starting at 1
+* @param[in]  eta          eta in the range 0.0 <= eta <= 1.0
+* @param[in]  xsi          xsi in the range 0.0 <= xsi <= 1.0
+* @param[out] normalXPtr   Pointer to the x-coordinate of the resulting normal vector
+* @param[out] normalYPtr   Pointer to the y-coordinate of the resulting normal vector
+* @param[out] normalZPtr   Pointer to the z-coordinate of the resulting normal vector
+*
+* @return
+*   - TIGL_SUCCESS if a point was found
+*   - TIGL_NOT_FOUND if cpacs handle is not valid
+*   - TIGL_INDEX_ERROR if wingIndex or segmentIndex are not valid
+*   - TIGL_NULL_POINTER if normalXPtr, normalYPtr or normalZPtr are null pointers
+*   - TIGL_ERROR if some other error occured
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetChordNormal(TiglCPACSConfigurationHandle cpacsHandle,
+                                                         int wingIndex,
+                                                         int segmentIndex,
+                                                         double eta,
+                                                         double xsi,
+                                                         double* normalXPtr,
+                                                         double* normalYPtr,
+                                                         double* normalZPtr);
 
 /**
 * @brief Returns a point on the upper wing surface for a
