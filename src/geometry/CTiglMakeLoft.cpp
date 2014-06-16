@@ -24,6 +24,7 @@
 #include <TopExp.hxx>
 #include <BRep_Builder.hxx>
 #include <BRepLib.hxx>
+#include <BRepTools.hxx>
 #ifdef LOFTALGO_FOUND
   #include <MakePatches.hxx>
 #endif
@@ -50,6 +51,7 @@ CTiglMakeLoft::CTiglMakeLoft(double tolerance)
     _makeSolid = true;
     _result.Nullify();
     _myTolerance = tolerance;
+    _makeSmooth = false;
 }
 
 CTiglMakeLoft::CTiglMakeLoft(const TopoDS_Shape &profiles, const TopoDS_Shape &guides, double tolerance)
@@ -124,6 +126,11 @@ void CTiglMakeLoft::setMakeSolid(bool enabled)
     _makeSolid = enabled;
 }
 
+void CTiglMakeLoft::setMakeSmooth(bool enabled)
+{
+    _makeSmooth = enabled;
+}
+
 /**
  * @brief Builds the loft using profiles and guide curves
  */
@@ -143,6 +150,9 @@ void CTiglMakeLoft::makeLoftWithGuides()
         TopoDS_Wire& guide =  guides[i];
         b.Add(cguid, guide);
     }
+    
+    BRepTools::Write(cprof, "profiles.brep");
+    BRepTools::Write(cguid, "guides.brep");
     
     MakePatches SurfMaker(cguid, cprof);
     // Don't sew yet. We do it later in solid creation
@@ -192,12 +202,19 @@ void CTiglMakeLoft::makeLoftWithGuides()
 
 void CTiglMakeLoft::makeLoftWithoutGuides()
 {
-    BRepOffsetAPI_ThruSections lofter(_makeSolid, Standard_True, _myTolerance);
+    bool isRuled = !_makeSmooth;
+    BRepOffsetAPI_ThruSections lofter(_makeSolid, isRuled, _myTolerance);
     for (unsigned int i = 0; i < profiles.size(); ++i) {
         TopoDS_Wire& profile =  profiles[i];
         lofter.AddWire(profile);
     }
     lofter.CheckCompatibility(Standard_False);
+
+    if (_makeSmooth) {
+        lofter.SetMaxDegree(2); //surfaces will be C1-continuous
+        lofter.SetParType(Approx_Centripetal);
+    }
+
     _result = lofter.Shape();
 }
 

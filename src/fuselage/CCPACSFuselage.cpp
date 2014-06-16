@@ -47,6 +47,7 @@
 #include "GC_MakeSegment.hxx"
 #include "BRepExtrema_DistShapeShape.hxx"
 #include "ShapeFix_Wire.hxx"
+#include "CTiglMakeLoft.h"
 
 #define _USE_MATH_DEFINES
 #include <math.h>
@@ -251,25 +252,22 @@ TopoDS_Shape CCPACSFuselage::BuildLoft(void)
     // Get Continuity of first segment
     // TODO: adapt lofting to have multiple different continuities
     TiglContinuity cont = segments.GetSegment(1).GetContinuity();
-    Standard_Boolean ruled = (cont == C0? true : false);
-
-
-    // Ne need a smooth fuselage by default
-    // @TODO: OpenCascade::ThruSections is currently buggy and crashes, if smooth lofting
-    // is performed. Therefore we swicth the 2. parameter to Standard_True (non smooth lofting).
-    // This has to be reverted, as soon as the bug is fixed!!!
-    BRepOffsetAPI_ThruSections generator(Standard_True, ruled, Precision::Confusion() );
-
+    Standard_Boolean smooth = (cont == C0? false : true);
+    
+    CTiglMakeLoft lofter;
+    // add profiles
     for (int i=1; i <= segments.GetSegmentCount(); i++) {
-        generator.AddWire(segments.GetSegment(i).GetStartWire());
+        lofter.addProfiles(segments.GetSegment(i).GetStartWire());
     }
-    generator.AddWire(segments.GetSegment(segments.GetSegmentCount()).GetEndWire());
-        
-    generator.SetMaxDegree(2); //surfaces will be C1-continuous
-    generator.SetParType(Approx_Centripetal);
-    generator.CheckCompatibility(Standard_False);
-    generator.Build();
-    return generator.Shape();
+    lofter.addProfiles(segments.GetSegment(segments.GetSegmentCount()).GetEndWire());
+    
+    // add guides
+    lofter.addGuides(GetGuideCurveWires());
+    
+    lofter.setMakeSmooth(smooth);
+    lofter.setMakeSolid(true);
+    
+    return lofter.Shape();
 }
 
 

@@ -57,6 +57,14 @@ public:
      */
     void setMakeSolid(bool enabled);
     
+    /**
+     * @brief setMakeSmooth switches, wether the resulting loft will be ruled
+     * or smoothed. This switch only applies, if no guide curves are applied.
+     * 
+     * @param enabled Set to true, if smoothing should be enabled.
+     */
+    void setMakeSmooth(bool enabled);
+    
     TopoDS_Shape& Shape();
     
     operator TopoDS_Shape& ();
@@ -73,7 +81,7 @@ private:
     
     double _myTolerance;
     std::vector<TopoDS_Wire> guides, profiles;
-    bool _hasPerformed, _makeSolid;
+    bool _hasPerformed, _makeSolid, _makeSmooth;
     
     TopoDS_Shape _result;
 };

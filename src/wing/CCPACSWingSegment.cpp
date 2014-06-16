@@ -37,6 +37,7 @@
 #include "CCPACSWingProfileGetPointAlgo.h"
 #include "CCPACSConfiguration.h"
 #include "CTiglError.h"
+#include "CTiglMakeLoft.h"
 #include "tiglcommonfunctions.h"
 #include "math/tiglmathfunctions.h"
 
@@ -280,13 +281,19 @@ TopoDS_Shape CCPACSWingSegment::BuildLoft(void)
     TopoDS_Wire outerWire = GetOuterWire();
 
     // Build loft
-    //BRepOffsetAPI_ThruSections generator(Standard_False, Standard_False, Precision::Confusion());
-    BRepOffsetAPI_ThruSections generator(/* is solid (else shell) */ Standard_True, /* ruled (else smoothed out) */ Standard_False, Precision::Confusion());
-    generator.AddWire(innerWire);
-    generator.AddWire(outerWire);
-    generator.CheckCompatibility(/* check (defaults to true) */ Standard_False);
-    generator.Build();
-    TopoDS_Shape loft = generator.Shape();
+    CTiglMakeLoft lofter;
+    lofter.addProfiles(innerWire);
+    lofter.addProfiles(outerWire);
+    
+    BuildGuideCurveSegments();
+    CCPACSGuideCurves& curves = GetGuideCurveSegments();
+    for (int iguide = 1; iguide <= curves.GetGuideCurveCount(); ++iguide) {
+        CCPACSGuideCurve& curve = curves.GetGuideCurve(iguide);
+        BRepBuilderAPI_MakeWire wireMaker(curve.GetCurve());
+        lofter.addGuides(wireMaker.Wire());
+    }
+    
+    TopoDS_Shape loft = lofter.Shape();
 
     Handle(ShapeFix_Shape) sfs = new ShapeFix_Shape;
     sfs->Init ( loft );
