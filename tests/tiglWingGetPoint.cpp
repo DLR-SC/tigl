@@ -315,3 +315,79 @@ TEST_F(WingGetPointSimple, getPointDirection)
     ASSERT_EQ(TIGL_INDEX_ERROR, tiglWingGetUpperPointAtDirection(tiglHandle, 0, 1, 0.5, 0.5, 0., 0., 1., &px, &py, &pz));
     ASSERT_EQ(TIGL_INDEX_ERROR, tiglWingGetUpperPointAtDirection(tiglHandle, 1, 0, 0.5, 0.5, 0., 0., 1., &px, &py, &pz));
 }
+
+TEST_F(WingGetPointSimple, getChordPoint_success)
+{
+    double px, py, pz;
+    ASSERT_EQ(TIGL_SUCCESS, tiglWingGetChordPoint(tiglHandle, 1, 1, 0.0, 0.0, &px, &py, &pz));
+    ASSERT_NEAR(0.0, px, 1e-7);
+    ASSERT_NEAR(0.0, py, 1e-7);
+    ASSERT_NEAR(0.0, pz, 1e-7);
+    
+    ASSERT_EQ(TIGL_SUCCESS, tiglWingGetChordPoint(tiglHandle, 1, 1, 1.0, 0.0, &px, &py, &pz));
+    ASSERT_NEAR(0.0, px, 1e-7);
+    ASSERT_NEAR(1.0, py, 1e-7);
+    ASSERT_NEAR(0.0, pz, 1e-7);
+    
+    ASSERT_EQ(TIGL_SUCCESS, tiglWingGetChordPoint(tiglHandle, 1, 1, 0.0, 1.0, &px, &py, &pz));
+    ASSERT_NEAR(1.0, px, 1e-7);
+    ASSERT_NEAR(0.0, py, 1e-7);
+    ASSERT_NEAR(0.0, pz, 1e-7);
+    
+    ASSERT_EQ(TIGL_SUCCESS, tiglWingGetChordPoint(tiglHandle, 1, 1, 1.0, 1.0, &px, &py, &pz));
+    ASSERT_NEAR(1.0, px, 1e-7);
+    ASSERT_NEAR(1.0, py, 1e-7);
+    ASSERT_NEAR(0.0, pz, 1e-7);
+}
+
+TEST_F(WingGetPointSimple, getChordPoint_invalidArgs)
+{
+    double px, py, pz;
+    ASSERT_EQ(TIGL_INDEX_ERROR, tiglWingGetChordPoint(tiglHandle, 1, 0, 0.0, 0.0, &px, &py, &pz));
+    ASSERT_EQ(TIGL_INDEX_ERROR, tiglWingGetChordPoint(tiglHandle, 1, 3, 0.0, 0.0, &px, &py, &pz));
+    ASSERT_EQ(TIGL_NOT_FOUND  , tiglWingGetChordPoint(-1, 1, 1, 0.0, 0.0, &px, &py, &pz));
+    ASSERT_EQ(TIGL_NULL_POINTER,tiglWingGetChordPoint(tiglHandle, 1, 1, 0.0, 0.0, NULL, &py, &pz));
+    ASSERT_EQ(TIGL_NULL_POINTER,tiglWingGetChordPoint(tiglHandle, 1, 1, 0.0, 0.0, &px, NULL, &pz));
+    ASSERT_EQ(TIGL_NULL_POINTER,tiglWingGetChordPoint(tiglHandle, 1, 1, 0.0, 0.0, &px, &py, NULL));
+}
+
+TEST_F(WingGetPointSimple, getChordNormal_success)
+{
+    double nx, ny, nz;
+    ASSERT_EQ(TIGL_SUCCESS, tiglWingGetChordNormal(tiglHandle, 1, 1, 0.0, 0.0, &nx, &ny, &nz));
+    ASSERT_NEAR(0.0, nx, 1e-7);
+    ASSERT_NEAR(0.0, ny, 1e-7);
+    ASSERT_NEAR(1.0, nz, 1e-7);
+    
+    ASSERT_EQ(TIGL_SUCCESS, tiglWingGetChordNormal(tiglHandle, 1, 1, 1.0, 0.0, &nx, &ny, &nz));
+    ASSERT_NEAR(0.0, nx, 1e-7);
+    ASSERT_NEAR(0.0, ny, 1e-7);
+    ASSERT_NEAR(1.0, nz, 1e-7);
+    
+    ASSERT_EQ(TIGL_SUCCESS, tiglWingGetChordNormal(tiglHandle, 1, 1, 0.0, 1.0, &nx, &ny, &nz));
+    ASSERT_NEAR(0.0, nx, 1e-7);
+    ASSERT_NEAR(0.0, ny, 1e-7);
+    ASSERT_NEAR(1.0, nz, 1e-7);
+    
+    ASSERT_EQ(TIGL_SUCCESS, tiglWingGetChordNormal(tiglHandle, 1, 1, 1.0, 1.0, &nx, &ny, &nz));
+    ASSERT_NEAR(0.0, nx, 1e-7);
+    ASSERT_NEAR(0.0, ny, 1e-7);
+    ASSERT_NEAR(1.0, nz, 1e-7);
+    
+    // now on the second segment
+    ASSERT_EQ(TIGL_SUCCESS, tiglWingGetChordNormal(tiglHandle, 1, 2, 0.5, 0.5, &nx, &ny, &nz));
+    ASSERT_NEAR(0.0, nx, 1e-7);
+    ASSERT_NEAR(0.0, ny, 1e-7);
+    ASSERT_NEAR(1.0, nz, 1e-7);
+}
+
+TEST_F(WingGetPointSimple, getChordNormal_invalidArgs)
+{
+    double nx, ny, nz;
+    ASSERT_EQ(TIGL_INDEX_ERROR, tiglWingGetChordNormal(tiglHandle, 1, 0, 0.0, 0.0, &nx, &ny, &nz));
+    ASSERT_EQ(TIGL_INDEX_ERROR, tiglWingGetChordNormal(tiglHandle, 1, 3, 0.0, 0.0, &nx, &ny, &nz));
+    ASSERT_EQ(TIGL_NOT_FOUND  , tiglWingGetChordNormal(-1, 1, 1, 0.0, 0.0, &nx, &ny, &nz));
+    ASSERT_EQ(TIGL_NULL_POINTER,tiglWingGetChordNormal(tiglHandle, 1, 1, 0.0, 0.0, NULL, &ny, &nz));
+    ASSERT_EQ(TIGL_NULL_POINTER,tiglWingGetChordNormal(tiglHandle, 1, 1, 0.0, 0.0, &nx, NULL, &nz));
+    ASSERT_EQ(TIGL_NULL_POINTER,tiglWingGetChordNormal(tiglHandle, 1, 1, 0.0, 0.0, &nx, &ny, NULL));
+}

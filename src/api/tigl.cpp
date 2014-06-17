@@ -434,9 +434,17 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetChordNormal(TiglCPACSConfigurationH
         tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment&) wing.GetSegment(segmentIndex);
         
         gp_Pnt normal = segment.GetChordNormal(eta, xsi);
-        *normalXPtr = normal.X();
-        *normalYPtr = normal.Y();
-        *normalZPtr = normal.Z();
+        // normalize normal
+        double len = normal.X()*normal.X() + normal.Y()*normal.Y() + normal.Z()*normal.Z();
+        len = sqrt(len);
+        if (len < 1e-7) {
+            LOG(ERROR) << "Computed normal vector on wing chord face is zero";
+            return TIGL_ERROR;
+        }
+        
+        *normalXPtr = normal.X()/len;
+        *normalYPtr = normal.Y()/len;
+        *normalZPtr = normal.Z()/len;
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
