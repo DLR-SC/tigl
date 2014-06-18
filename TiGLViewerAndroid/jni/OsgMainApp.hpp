@@ -74,6 +74,8 @@
 #include "TiglViewerHUD.h"
 #include "GeometricVisObject.h"
 #include "mainHUD.h"
+#include "jni.h"
+#include "NativeCodeCallbacks.h"
 
 USE_OSGPLUGIN(osg)
 USE_OSGPLUGIN(osg2)
@@ -113,6 +115,7 @@ public:
 
     //Initialization function
     void initOsgWindow(int x, int y, int width, int height);
+    void setNativeCodeCallbacks(JNIEnv* Env, jobject hcb);
     //Draw
     void createScene();
 
@@ -132,6 +135,7 @@ public:
     void mouseMoveEvent(float x, float y, int view);
     osg::Vec3d windowToWord(osg::Vec3d windowPosition);
     osg::ref_ptr<MainHUD> getMainHUD();
+    NativeCodeCallbacks * getNativeCodeCallbacks();
 
 private:
     void addObjectFromVTK(std::string filepath);
@@ -147,6 +151,7 @@ private:
     osg::ref_ptr<osg::StateSet> _state;
     osg::ref_ptr<osg::Group> modeledObjects;
     osg::ref_ptr<MainHUD> mH;
+    NativeCodeCallbacks* hl;
 
     bool _initialized;
     float screenHeight;

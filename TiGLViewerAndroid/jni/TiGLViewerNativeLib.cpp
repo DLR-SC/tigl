@@ -27,66 +27,51 @@
 #include <iostream>
 
 #include "OsgMainApp.hpp"
+#include "TiGLViewerNativeLib.h"
 
-extern "C"
-{
-JNIEXPORT void JNICALL Java_de_dlr_sc_tiglviewer_android_TiGLViewerNativeLib_init(JNIEnv * env, jobject obj, jint width, jint height);
-JNIEXPORT void JNICALL Java_de_dlr_sc_tiglviewer_android_TiGLViewerNativeLib_createScene(JNIEnv * env, jobject obj);
-JNIEXPORT void JNICALL Java_de_dlr_sc_tiglviewer_android_TiGLViewerNativeLib_setAssetMgr(JNIEnv * env, jobject obj, jobject mgr);
-JNIEXPORT void JNICALL Java_de_dlr_sc_tiglviewer_android_TiGLViewerNativeLib_step(JNIEnv * env, jobject obj);
-JNIEXPORT void JNICALL Java_de_dlr_sc_tiglviewer_android_TiGLViewerNativeLib_openFile(JNIEnv * env, jobject obj, jstring filepath);
-JNIEXPORT jboolean JNICALL Java_de_dlr_sc_tiglviewer_android_TiGLViewerNativeLib_isFiletypeSupported(JNIEnv * env, jobject obj, jstring filepath);
-JNIEXPORT void JNICALL Java_de_dlr_sc_tiglviewer_android_TiGLViewerNativeLib_removeObjects(JNIEnv * env, jobject obj);
-JNIEXPORT void JNICALL Java_de_dlr_sc_tiglviewer_android_TiGLViewerNativeLib_changeCamera(JNIEnv * env, jobject obj, jint view);
-JNIEXPORT void JNICALL Java_de_dlr_sc_tiglviewer_android_TiGLViewerNativeLib_fitScreen(JNIEnv * env, jobject obj);
-JNIEXPORT void JNICALL Java_de_dlr_sc_tiglviewer_android_TiGLViewerNativeLib_mouseButtonPressEvent(JNIEnv * env, jobject obj, jfloat x, jfloat y, jint button, jint view);
-JNIEXPORT void JNICALL Java_de_dlr_sc_tiglviewer_android_TiGLViewerNativeLib_mouseButtonReleaseEvent(JNIEnv * env, jobject obj, jfloat x, jfloat y, jint button, jint view);
-JNIEXPORT void JNICALL Java_de_dlr_sc_tiglviewer_android_TiGLViewerNativeLib_mouseMoveEvent(JNIEnv * env, jobject obj, jfloat x, jfloat y, jint view);
-JNIEXPORT jstring JNICALL Java_de_dlr_sc_tiglviewer_android_TiGLViewerNativeLib_tiglGetVersion(JNIEnv *, jobject);
-JNIEXPORT jstring JNICALL Java_de_dlr_sc_tiglviewer_android_TiGLViewerNativeLib_osgGetVersion(JNIEnv *, jobject);
-JNIEXPORT jstring JNICALL Java_de_dlr_sc_tiglviewer_android_TiGLViewerNativeLib_occtGetVersion(JNIEnv *, jobject);
-}
-;
 
-JNIEXPORT void JNICALL Java_de_dlr_sc_tiglviewer_android_TiGLViewerNativeLib_setAssetMgr(JNIEnv * env, jobject obj, jobject mgr)
+JNIEXPORT void JNICALL Java_de_dlr_sc_tiglviewer_android_TiGLViewerNativeLib_setAssetMgr(JNIEnv * env, jclass , jobject mgr)
 {
     AAssetManager* manager = AAssetManager_fromJava(env, mgr);
     OsgMainApp::Instance().setAssetManager(manager);
 }
-
-JNIEXPORT void JNICALL Java_de_dlr_sc_tiglviewer_android_TiGLViewerNativeLib_init(JNIEnv * env, jobject obj, jint width, jint height)
+JNIEXPORT void JNICALL Java_de_dlr_sc_tiglviewer_android_TiGLViewerNativeLib_sendJNICallbacks (JNIEnv * env, jclass, jobject jo)
+{
+    OsgMainApp::Instance().setNativeCodeCallbacks(env, jo);
+}
+JNIEXPORT void JNICALL Java_de_dlr_sc_tiglviewer_android_TiGLViewerNativeLib_init(JNIEnv * env, jclass, jint width, jint height)
 {
     OsgMainApp::Instance().initOsgWindow(0, 0, width, height);
 }
 
-JNIEXPORT void JNICALL Java_de_dlr_sc_tiglviewer_android_TiGLViewerNativeLib_step(JNIEnv * env, jobject obj)
+JNIEXPORT void JNICALL Java_de_dlr_sc_tiglviewer_android_TiGLViewerNativeLib_step(JNIEnv * env, jclass)
 {
     OsgMainApp::Instance().draw();
 }
 
-JNIEXPORT void JNICALL Java_de_dlr_sc_tiglviewer_android_TiGLViewerNativeLib_createScene(JNIEnv * env, jobject obj)
+JNIEXPORT void JNICALL Java_de_dlr_sc_tiglviewer_android_TiGLViewerNativeLib_createScene(JNIEnv * env, jclass)
 {
     OsgMainApp::Instance().createScene();
 }
 
-JNIEXPORT void JNICALL Java_de_dlr_sc_tiglviewer_android_TiGLViewerNativeLib_changeCamera(JNIEnv * env, jobject obj, jint view)
+JNIEXPORT void JNICALL Java_de_dlr_sc_tiglviewer_android_TiGLViewerNativeLib_changeCamera(JNIEnv * env, jclass, jint view)
 {
     OsgMainApp::Instance().changeCamera(view);
 }
 
-JNIEXPORT void JNICALL Java_de_dlr_sc_tiglviewer_android_TiGLViewerNativeLib_fitScreen(JNIEnv * env, jobject obj)
+JNIEXPORT void JNICALL Java_de_dlr_sc_tiglviewer_android_TiGLViewerNativeLib_fitScreen(JNIEnv * env, jclass)
 {
     OsgMainApp::Instance().fitScreen();
 }
 
-JNIEXPORT void JNICALL Java_de_dlr_sc_tiglviewer_android_TiGLViewerNativeLib_openFile(JNIEnv * env, jobject obj, jstring filepath)
+JNIEXPORT void JNICALL Java_de_dlr_sc_tiglviewer_android_TiGLViewerNativeLib_openFile(JNIEnv * env, jclass, jstring filepath)
 {
     const char *nativeAddress = env->GetStringUTFChars(filepath, NULL);
     OsgMainApp::Instance().openFile(std::string(nativeAddress));
     env->ReleaseStringUTFChars(filepath, nativeAddress);
 }
 
-JNIEXPORT jboolean JNICALL Java_de_dlr_sc_tiglviewer_android_TiGLViewerNativeLib_isFiletypeSupported(JNIEnv * env, jobject obj, jstring filepath)
+JNIEXPORT jboolean JNICALL Java_de_dlr_sc_tiglviewer_android_TiGLViewerNativeLib_isFiletypeSupported(JNIEnv * env, jclass, jstring filepath)
 {
     const char *nativeAddress = env->GetStringUTFChars(filepath, NULL);
     jboolean result = OsgMainApp::Instance().isFileSupported(std::string(nativeAddress));
@@ -94,38 +79,38 @@ JNIEXPORT jboolean JNICALL Java_de_dlr_sc_tiglviewer_android_TiGLViewerNativeLib
     return result;
 }
 
-JNIEXPORT void JNICALL Java_de_dlr_sc_tiglviewer_android_TiGLViewerNativeLib_removeObjects(JNIEnv * env, jobject obj)
+JNIEXPORT void JNICALL Java_de_dlr_sc_tiglviewer_android_TiGLViewerNativeLib_removeObjects(JNIEnv * env, jclass)
 {
     OsgMainApp::Instance().removeObjects();
 }
 
-JNIEXPORT void JNICALL Java_de_dlr_sc_tiglviewer_android_TiGLViewerNativeLib_mouseButtonPressEvent(JNIEnv * env, jobject obj, jfloat x, jfloat y, jint button, jint view)
+JNIEXPORT void JNICALL Java_de_dlr_sc_tiglviewer_android_TiGLViewerNativeLib_mouseButtonPressEvent(JNIEnv * env, jclass, jfloat x, jfloat y, jint button, jint view)
 {
     OsgMainApp::Instance().mouseButtonPressEvent(x, y, button, view);
 }
 
-JNIEXPORT void JNICALL Java_de_dlr_sc_tiglviewer_android_TiGLViewerNativeLib_mouseButtonReleaseEvent(JNIEnv * env, jobject obj, jfloat x, jfloat y, jint button, jint view)
+JNIEXPORT void JNICALL Java_de_dlr_sc_tiglviewer_android_TiGLViewerNativeLib_mouseButtonReleaseEvent(JNIEnv * env, jclass, jfloat x, jfloat y, jint button, jint view)
 {
     OsgMainApp::Instance().mouseButtonReleaseEvent(x, y, button, view);
 }
 
-JNIEXPORT void JNICALL Java_de_dlr_sc_tiglviewer_android_TiGLViewerNativeLib_mouseMoveEvent(JNIEnv * env, jobject obj, jfloat x, jfloat y, jint view)
+JNIEXPORT void JNICALL Java_de_dlr_sc_tiglviewer_android_TiGLViewerNativeLib_mouseMoveEvent(JNIEnv * env, jclass, jfloat x, jfloat y, jint view)
 {
     OsgMainApp::Instance().mouseMoveEvent(x, y, view);
 }
 
 
-JNIEXPORT jstring JNICALL Java_de_dlr_sc_tiglviewer_android_TiGLViewerNativeLib_tiglGetVersion(JNIEnv * env, jobject)
+JNIEXPORT jstring JNICALL Java_de_dlr_sc_tiglviewer_android_TiGLViewerNativeLib_tiglGetVersion(JNIEnv * env, jclass)
 {
     return env->NewStringUTF(tiglGetVersion());
 }
 
-JNIEXPORT jstring JNICALL Java_de_dlr_sc_tiglviewer_android_TiGLViewerNativeLib_osgGetVersion(JNIEnv * env, jobject)
+JNIEXPORT jstring JNICALL Java_de_dlr_sc_tiglviewer_android_TiGLViewerNativeLib_osgGetVersion(JNIEnv * env, jclass)
 {
     return env->NewStringUTF(osgGetVersion());
 }
 
-JNIEXPORT jstring JNICALL Java_de_dlr_sc_tiglviewer_android_TiGLViewerNativeLib_occtGetVersion(JNIEnv * env, jobject)
+JNIEXPORT jstring JNICALL Java_de_dlr_sc_tiglviewer_android_TiGLViewerNativeLib_occtGetVersion(JNIEnv * env, jclass)
 {
     return env->NewStringUTF(OCC_VERSION_COMPLETE);
 }

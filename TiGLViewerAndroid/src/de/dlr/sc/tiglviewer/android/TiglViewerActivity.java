@@ -74,7 +74,7 @@ public class TiglViewerActivity extends ActionBarActivity implements
     enum navType {
         MOVE, ROTATE
     }
-
+    private HapticCallback hcb = new HapticCallback();
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
@@ -178,6 +178,8 @@ public class TiglViewerActivity extends ActionBarActivity implements
         setSupportProgressBarIndeterminate(true);
 
         TiGLViewerNativeLib.setAssetMgr(getAssets());
+        TiGLViewerNativeLib.sendJNICallbacks(hcb);
+        hcb.vi = (View) openGlSurface;
     }
 
     @Override

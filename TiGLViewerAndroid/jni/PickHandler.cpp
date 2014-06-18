@@ -22,6 +22,7 @@
 #include <osgGA/StandardManipulator>
 #include "mainHUD.h"
 #include "OsgMainApp.hpp"
+#include "NativeCodeCallbacks.h"
 
 #define TIME_TO_CENTER 0.4
 #define PICK_MOVEMENT_THRESHOLD 0.05
@@ -168,6 +169,10 @@ void PickHandler::changeCOR(osgViewer::View* view, osgUtil::LineSegmentIntersect
             m->setTransformation( eye + displacement, newCenter, up );
             if(mH.get()){
                 mH->showCenterCross();
+                NativeCodeCallbacks* callBackObj = OsgMainApp::Instance().getNativeCodeCallbacks();
+                if (callBackObj) {
+                    callBackObj->startListening();
+                }
             }
             break;
         }

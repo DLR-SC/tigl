@@ -93,7 +93,10 @@ AAssetManager* OsgMainApp::getAssetManager()
 {
     return _assetManager;
 }
-
+void OsgMainApp::setNativeCodeCallbacks(JNIEnv* Env, jobject hcb)
+{
+    hl = new NativeCodeCallbacks(Env,hcb);
+}
 void OsgMainApp::initOsgWindow(int x, int y, int width, int height)
 {
 
@@ -224,7 +227,10 @@ osg::ref_ptr<MainHUD> OsgMainApp::getMainHUD()
 {
     return mH;
 }
-
+NativeCodeCallbacks * OsgMainApp::getNativeCodeCallbacks()
+{
+    return hl;
+}
 void OsgMainApp::draw()
 {
     soleViewer->frame();
