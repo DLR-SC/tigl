@@ -167,7 +167,7 @@ void PickHandler::changeCOR(osgViewer::View* view, osgUtil::LineSegmentIntersect
             osg::Vec3d displacement = newCenter - oldCenter;
             m->setTransformation( eye + displacement, newCenter, up );
             if(mH.get()){
-                mH.get()->showCenterCross();
+                mH->showCenterCross();
             }
             break;
         }

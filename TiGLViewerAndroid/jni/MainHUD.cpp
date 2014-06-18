@@ -64,12 +64,12 @@ void MainHUD::updateViewPort(int screenWidth, int screenHeight)
 }
 void MainHUD::showCenterCross()
 {
-    if (!centerCross.get()) {
+    if (!centerCross) {
         createCenterCross();
     }
 
-    osg::StateSet* stateset = centerCross.get()->getOrCreateStateSet();
-    centerCross.get()->setUpdateCallback(new FadeOutCallback((osg::Material *)stateset->getAttribute(osg::StateAttribute::MATERIAL)));
+    osg::StateSet* stateset = centerCross->getOrCreateStateSet();
+    centerCross->setUpdateCallback(new FadeOutCallback((osg::Material *)stateset->getAttribute(osg::StateAttribute::MATERIAL)));
 }
 void MainHUD::createCenterCross()
 {
@@ -155,5 +155,5 @@ void MainHUD::createCenterCross()
     stateset->setAttribute(material,osg::StateAttribute::OVERRIDE);
 
     centerCross = (osg::ref_ptr<Node>) crossgeode;
-    addChild(centerCross.get());
+    addChild(centerCross);
 }

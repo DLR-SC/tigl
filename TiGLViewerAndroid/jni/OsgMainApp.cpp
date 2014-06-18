@@ -138,7 +138,7 @@ void OsgMainApp::initOsgWindow(int x, int y, int width, int height)
         screenHeight = (double) height;
         screenWidth = (double) width;
 
-        mH.get()->updateViewPort(screenWidth, screenHeight);
+        mH->updateViewPort(screenWidth, screenHeight);
 
         return;
     }
@@ -210,7 +210,7 @@ void OsgMainApp::createScene()
 
     // Add the main Heads Up Display
     mH = new MainHUD(screenWidth, screenHeight);
-    root_1->addChild(mH.get());
+    root_1->addChild(mH);
 
     // add background as gradient
     osg::ref_ptr<TiglViewerBackground> bg = new TiglViewerBackground;
