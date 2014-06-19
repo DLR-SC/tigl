@@ -16,23 +16,28 @@
 
 #ifndef PICKHANDLER_H
 #define PICKHANDLER_H
+
 #include <osgGA/GUIEventHandler>
 #include <osgViewer/View>
+
 class PickHandler : public osgGA::GUIEventHandler
 {
 public:
     PickHandler();
-    ~PickHandler(){};
+
+protected:
     bool handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa);
+
 private:
+    // selects/unselects picked objects
     virtual void pick(osgUtil::LineSegmentIntersector::Intersections allIntersections);
-    osgUtil::LineSegmentIntersector::Intersections rayIntersection(osgViewer::View* view, const osgGA::GUIEventAdapter& ea, bool add);
+
+    // Change view center and center of rotation at picked point
     void changeCOR(osgViewer::View* view, osgUtil::LineSegmentIntersector::Intersections allIntersections);
 
     double _lastx, _lasty;
     double _lastTime;
     bool centeringAction;
-
 };
 
 #endif

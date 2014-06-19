@@ -17,23 +17,25 @@
 */
 
 
-#ifndef _HAPTICLISTENER_H_
-#define _HAPTICLISTENER_H_
+#ifndef _JAVACALLBACKS_H_
+#define _JAVACALLBACKS_H_
 
 #include <jni.h>
 
-class NativeCodeCallbacks
+class JavaCallbacks
 {
 public:
-    NativeCodeCallbacks(JNIEnv* mEnv, jobject hf);
-    void startListening();
+    JavaCallbacks(JNIEnv* mEnv, jobject jniCallbacks);
+
+    void hapticFeedback();
+
+private:
     // Cached JNI references.
     JavaVM* mJavaVM;
-    jobject hapticFront;
-    // Classes.
-    jclass ClassHaptic;
+    jobject javaCallbackObj;
+
     // Methods.
-    jmethodID MethodOnAlert;
+    jmethodID methodHapticFeedback;
 };
 
-#endif
+#endif // _JAVACALLBACKS_H_

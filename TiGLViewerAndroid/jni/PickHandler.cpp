@@ -22,10 +22,12 @@
 #include <osgGA/StandardManipulator>
 #include "mainHUD.h"
 #include "OsgMainApp.hpp"
-#include "NativeCodeCallbacks.h"
+#include "JavaCallbacks.h"
 
 #define TIME_TO_CENTER 0.4
 #define PICK_MOVEMENT_THRESHOLD 0.05
+
+osgUtil::LineSegmentIntersector::Intersections rayIntersection(osgViewer::View* view, const osgGA::GUIEventAdapter& ea, bool add);
 
 PickHandler::PickHandler()
 {
@@ -90,7 +92,8 @@ bool PickHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapt
 
     }
 }
-osgUtil::LineSegmentIntersector::Intersections PickHandler::rayIntersection(osgViewer::View* view, const osgGA::GUIEventAdapter& ea, bool add)
+
+osgUtil::LineSegmentIntersector::Intersections rayIntersection(osgViewer::View* view, const osgGA::GUIEventAdapter& ea, bool add)
 {
     float xwindow =  ea.getX()/(ea.getXmax()- ea.getXmin())  * 2. - 1;
     float ywindow = -ea.getY()/(ea.getYmax()- ea.getYmin())  * 2. + 1;
@@ -151,9 +154,10 @@ void PickHandler::pick(osgUtil::LineSegmentIntersector::Intersections allInterse
         }
     }
 }
+
+
 void PickHandler::changeCOR(osgViewer::View* view, osgUtil::LineSegmentIntersector::Intersections allIntersections)
 {
-    osg::ref_ptr<MainHUD> mH = OsgMainApp::Instance().getMainHUD();
     osg::Vec3d eye, oldCenter, up, newCenter, windowPos;
     osgGA::StandardManipulator* m = dynamic_cast<osgGA::StandardManipulator*> (view->getCameraManipulator());
     m->getTransformation( eye, oldCenter, up );
@@ -162,17 +166,22 @@ void PickHandler::changeCOR(osgViewer::View* view, osgUtil::LineSegmentIntersect
     for (int i = 0; i < intersectionsIterator->nodePath.size(); i++) {
 
         GeometricVisObject* pickedObject = dynamic_cast<GeometricVisObject*>(intersectionsIterator->nodePath.at(i));
-
         if (pickedObject) {
+            // center view at current intersection point
             newCenter = intersectionsIterator->getWorldIntersectPoint();
             osg::Vec3d displacement = newCenter - oldCenter;
             m->setTransformation( eye + displacement, newCenter, up );
-            if(mH.get()){
+
+            // display centering cross
+            osg::ref_ptr<MainHUD> mH = OsgMainApp::Instance().getMainHUD();
+            if (mH) {
                 mH->showCenterCross();
-                NativeCodeCallbacks* callBackObj = OsgMainApp::Instance().getNativeCodeCallbacks();
-                if (callBackObj) {
-                    callBackObj->startListening();
-                }
+            }
+
+            // perform haptic feedback
+            JavaCallbacks* callBackObj = OsgMainApp::Instance().getJavaCallbacks();
+            if (callBackObj) {
+                callBackObj->hapticFeedback();
             }
             break;
         }

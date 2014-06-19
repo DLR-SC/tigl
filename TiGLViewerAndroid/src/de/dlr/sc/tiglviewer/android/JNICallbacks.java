@@ -19,12 +19,20 @@
 package de.dlr.sc.tiglviewer.android;
 import android.view.View;
 
-public class HapticCallback {
+public class JNICallbacks {
     
-    View vi;
-    public void onAlert()
-    {
-        vi.setHapticFeedbackEnabled(true);
-        vi.performHapticFeedback(0);
+    private View view = null;
+
+    public void hapticFeedback() {
+        if (view == null) {
+            return;
+        }
+    
+        view.setHapticFeedbackEnabled(true);
+        view.performHapticFeedback(0);
+    }
+    
+    public void setView(View v) {
+        view = v;
     }
 }

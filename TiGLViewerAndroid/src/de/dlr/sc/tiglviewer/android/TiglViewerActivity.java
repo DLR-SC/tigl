@@ -66,15 +66,16 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-import de.dlr.sc.tiglviewer.android.NoticeFragment.noticeFragmentsListener;
+import de.dlr.sc.tiglviewer.android.NoticeFragment.YesNoListenerInterface;
 
 @SuppressLint("ValidFragment")
 public class TiglViewerActivity extends ActionBarActivity implements
-        OnNavigationListener, noticeFragmentsListener {
+        OnNavigationListener, YesNoListenerInterface {
+
     enum navType {
         MOVE, ROTATE
     }
-    private HapticCallback hcb = new HapticCallback();
+    private JNICallbacks jniCallbacks = new JNICallbacks();
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
@@ -178,8 +179,8 @@ public class TiglViewerActivity extends ActionBarActivity implements
         setSupportProgressBarIndeterminate(true);
 
         TiGLViewerNativeLib.setAssetMgr(getAssets());
-        TiGLViewerNativeLib.sendJNICallbacks(hcb);
-        hcb.vi = (View) openGlSurface;
+        jniCallbacks.setView(openGlSurface);
+        TiGLViewerNativeLib.setJNICallbacks(jniCallbacks);
     }
 
     @Override

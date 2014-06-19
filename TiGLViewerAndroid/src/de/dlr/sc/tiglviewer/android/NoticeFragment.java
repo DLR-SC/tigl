@@ -24,23 +24,23 @@ import android.os.Bundle;
 
 public class NoticeFragment extends DialogFragment {
 
-    public interface noticeFragmentsListener {
+    public interface YesNoListenerInterface {
         public void onYesClick(DialogFragment dialog);
         public void onNoClick(DialogFragment dialog);
     }
 
 
-    noticeFragmentsListener listener;
+    YesNoListenerInterface listener;
 
     public void onAttach(Activity activity) {
         super.onAttach(activity);
 
         try {
-            listener = (noticeFragmentsListener) activity;
+            listener = (YesNoListenerInterface) activity;
         }
         catch (ClassCastException e) {
 
-            throw new ClassCastException(activity.toString() + "must implement the listener first");
+            throw new ClassCastException(activity.toString() + "must implement YesNoListenerInterface");
         }
     }
 

@@ -35,10 +35,12 @@ JNIEXPORT void JNICALL Java_de_dlr_sc_tiglviewer_android_TiGLViewerNativeLib_set
     AAssetManager* manager = AAssetManager_fromJava(env, mgr);
     OsgMainApp::Instance().setAssetManager(manager);
 }
-JNIEXPORT void JNICALL Java_de_dlr_sc_tiglviewer_android_TiGLViewerNativeLib_sendJNICallbacks (JNIEnv * env, jclass, jobject jo)
+
+JNIEXPORT void JNICALL Java_de_dlr_sc_tiglviewer_android_TiGLViewerNativeLib_setJNICallbacks (JNIEnv * env, jclass, jobject jniCallbacks)
 {
-    OsgMainApp::Instance().setNativeCodeCallbacks(env, jo);
+    OsgMainApp::Instance().setJNICallbacks(env, jniCallbacks);
 }
+
 JNIEXPORT void JNICALL Java_de_dlr_sc_tiglviewer_android_TiGLViewerNativeLib_init(JNIEnv * env, jclass, jint width, jint height)
 {
     OsgMainApp::Instance().initOsgWindow(0, 0, width, height);

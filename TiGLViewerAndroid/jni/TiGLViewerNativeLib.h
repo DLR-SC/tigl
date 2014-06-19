@@ -13,10 +13,10 @@ JNIEXPORT void JNICALL Java_de_dlr_sc_tiglviewer_android_TiGLViewerNativeLib_set
   (JNIEnv * env, jclass, jobject mgr);
 /*
  * Class:     de_dlr_sc_tiglviewer_android_TiGLViewerNativeLib
- * Method:    sendJNICallbacks
- * Signature: (Lde/dlr/sc/tiglviewer/android/HapticCallback;)V
+ * Method:    setJNICallbacks
+ * Signature: (Lde/dlr/sc/tiglviewer/android/JNICallbacks;)V
  */
-JNIEXPORT void JNICALL Java_de_dlr_sc_tiglviewer_android_TiGLViewerNativeLib_sendJNICallbacks
+JNIEXPORT void JNICALL Java_de_dlr_sc_tiglviewer_android_TiGLViewerNativeLib_setJNICallbacks
   (JNIEnv *, jclass, jobject);
 /*
  * Class:     de_dlr_sc_tiglviewer_android_TiGLViewerNativeLib

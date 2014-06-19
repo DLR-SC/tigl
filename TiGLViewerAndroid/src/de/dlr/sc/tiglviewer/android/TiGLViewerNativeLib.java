@@ -29,7 +29,7 @@ public class TiGLViewerNativeLib {
     * @param height the current view height
     */
     public static native void       init(int width, int height);
-    public static native void       sendJNICallbacks(HapticCallback hcb);
+    public static native void       setJNICallbacks(JNICallbacks callbacks);
     public static native void       createScene();
     public static native void       setAssetMgr(AssetManager mgr);
     public static native void       step();

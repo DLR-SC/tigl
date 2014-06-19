@@ -16,10 +16,10 @@
 * limitations under the License.
 */
 
-#include "NativeCodeCallbacks.h"
+#include "JavaCallbacks.h"
 #include <CTiglLogging.h>
 
-NativeCodeCallbacks::NativeCodeCallbacks(JNIEnv* mEnv, jobject hf)
+JavaCallbacks::JavaCallbacks(JNIEnv* mEnv, jobject hf)
 {
     mJavaVM = NULL;
 
@@ -28,20 +28,20 @@ NativeCodeCallbacks::NativeCodeCallbacks(JNIEnv* mEnv, jobject hf)
         return;
     }
 
-    ClassHaptic = mEnv->GetObjectClass(hf);
+    jclass ClassHaptic = mEnv->GetObjectClass(hf);
     if (!ClassHaptic) {
         LOG(ERROR) << "Cannot find object class";
         return;
     }
 
-    MethodOnAlert = mEnv->GetMethodID(ClassHaptic, "onAlert", "()V");
-    if (MethodOnAlert == 0) {
+    methodHapticFeedback = mEnv->GetMethodID(ClassHaptic, "hapticFeedback", "()V");
+    if (methodHapticFeedback == 0) {
         LOG(ERROR) << "Cannot find method id";
         return;
     }
-    hapticFront   = mEnv->NewGlobalRef(hf);
+    javaCallbackObj   = mEnv->NewGlobalRef(hf);
 }
-void NativeCodeCallbacks::startListening()
+void JavaCallbacks::hapticFeedback()
 {
     if (!mJavaVM) {
         return;
@@ -54,14 +54,16 @@ void NativeCodeCallbacks::startListening()
     lJavaVMAttachArgs.group = NULL;
     JNIEnv* lEnv;
     if (mJavaVM->AttachCurrentThread(&lEnv, &lJavaVMAttachArgs) != JNI_OK) {
-        lEnv = NULL;
+        LOG(ERROR) << "Cannot attach thread to javavm. Haptic feedback disabled.";
+        return;
     }
 
-    if ( MethodOnAlert == 0 || hapticFront == NULL || lEnv == NULL ) {
+    if ( methodHapticFeedback == 0 || !javaCallbackObj || !lEnv) {
+        LOG(ERROR) << "Cannot call ";
         return;
     }
 
     // call method
-    lEnv->CallVoidMethod(hapticFront, MethodOnAlert);
+    lEnv->CallVoidMethod(javaCallbackObj, methodHapticFeedback);
 
 }

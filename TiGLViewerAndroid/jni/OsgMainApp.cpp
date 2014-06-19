@@ -15,10 +15,12 @@
 */
 
 #include "OsgMainApp.hpp"
+#include "OsgAndroidNotifyHandler.hpp"
 #include "TiglViewerBackground.h"
 #include "MaterialTemplate.h"
 #include "PickHandler.h"
 #include "CADImport.h"
+#include "JavaCallbacks.h"
 
 #include <sstream>
 #include <string>
@@ -59,6 +61,7 @@ void OsgMainApp::init()
     _initialized = false;
     _assetManager = NULL;
     soleViewer = NULL;
+    javaCallback.reset();
 
     // pipe osg and tigl message to android
     _notifyHandler = new OsgAndroidNotifyHandler();
@@ -93,10 +96,12 @@ AAssetManager* OsgMainApp::getAssetManager()
 {
     return _assetManager;
 }
-void OsgMainApp::setNativeCodeCallbacks(JNIEnv* Env, jobject hcb)
+
+void OsgMainApp::setJNICallbacks(JNIEnv* Env, jobject callbacks)
 {
-    hl = new NativeCodeCallbacks(Env,hcb);
+    javaCallback = CSharedPtr<JavaCallbacks>(new JavaCallbacks(Env, callbacks));
 }
+
 void OsgMainApp::initOsgWindow(int x, int y, int width, int height)
 {
 
@@ -221,16 +226,18 @@ void OsgMainApp::createScene()
     root_1->addChild(bg);
     root_1->addChild(modeledObjects);
 
-    soleViewer->setSceneData(root_1.get());
+    soleViewer->setSceneData(root_1);
 }
 osg::ref_ptr<MainHUD> OsgMainApp::getMainHUD()
 {
     return mH;
 }
-NativeCodeCallbacks * OsgMainApp::getNativeCodeCallbacks()
+
+JavaCallbacks * OsgMainApp::getJavaCallbacks()
 {
-    return hl;
+    return javaCallback.get();
 }
+
 void OsgMainApp::draw()
 {
     soleViewer->frame();
@@ -342,7 +349,7 @@ void OsgMainApp::addObjectFromVTK(std::string filepath)
     geode->readVTK(filepath.c_str());
     geode->setName(filepath);
 
-    modeledObjects->addChild(geode.get());
+    modeledObjects->addChild(geode);
 }
 
 void OsgMainApp::addObjectFromHOTSOSE(std::string filepath)
@@ -353,7 +360,7 @@ void OsgMainApp::addObjectFromHOTSOSE(std::string filepath)
     geode->readHotsoseMesh(filepath.c_str());
     geode->setName(filepath);
 
-    modeledObjects->addChild(geode.get());
+    modeledObjects->addChild(geode);
 }
 
 void OsgMainApp::removeObjects()
@@ -498,10 +505,10 @@ void OsgMainApp::displayShape(TopoDS_Shape shape, std::string id)
     }
     try {
         osg::ref_ptr<GeometricVisObject> geode = new GeometricVisObject;
-        LOG(WARNING) << "LOAD SHAPE " << id;
+        LOG(INFO) << "LOAD SHAPE " << id;
         geode->fromShape(shape, aDeflection);
         geode->setName(id);
-        modeledObjects->addChild(geode.get());
+        modeledObjects->addChild(geode);
     }
     catch (...) {
         osg::notify(osg::ALWAYS) << "Error: could not triangularize " << id << std::endl;
