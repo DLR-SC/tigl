@@ -2,6 +2,8 @@
 <resources>
     <string name="app_name">TiGL Viewer</string>
     <string name="text_copyright">&#169; 2014 German Aerospace Center (DLR)</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
     <string name="view">View</string>
     <string-array name="view_mode">
         <item>Perspective</item>
@@ -32,5 +34,8 @@
     <string name="about_text">The TiGL Viewer is based on the TiGL library and allows you to view CPACS geometries.\n\n 
         TiGL Viewer uses TiGL TIGL_VERSION, Open CASCADE OCCT_VERSION and OpenSceneGraph OSG_VERSION.\n\n
         Visit the TiGL project page at http://software.dlr.de/p/tigl
-	</string>
+    </string>
+    <string name="network_error">No internet connection. Check internet settings and try again.</string>
+    <string name="download_success">Sample models have been downloaded.</string>
+    <string name="download_sample_models">There are no files to view. Would you like to download some sample models?</string>
 </resources>

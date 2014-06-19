@@ -566,7 +566,7 @@ public class TiglViewerActivity extends ActionBarActivity implements
             addCPACSFilesToDrawer();
             setSupportProgressBarIndeterminateVisibility(false);
             Toast.makeText(getBaseContext(),
-                    "Sample Models have been downloaded", Toast.LENGTH_SHORT)
+                    R.string.download_success, Toast.LENGTH_SHORT)
                     .show();
         }
 
@@ -608,7 +608,7 @@ public class TiglViewerActivity extends ActionBarActivity implements
         } else {
             Toast.makeText(
                     getBaseContext(),
-                    "No internet connection. Check internet settings and try again.",
+                    R.string.network_error,
                     Toast.LENGTH_SHORT).show();
         }
     }

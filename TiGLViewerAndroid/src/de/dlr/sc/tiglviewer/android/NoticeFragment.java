@@ -48,14 +48,14 @@ public class NoticeFragment extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedState) {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage("There are no files to view. Would you like to download some sample models?")
-            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+        builder.setMessage(R.string.download_sample_models)
+            .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     listener.onYesClick(NoticeFragment.this);
                 }
             })
-            .setNegativeButton("No", new DialogInterface.OnClickListener() {
+            .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     listener.onNoClick(NoticeFragment.this);
