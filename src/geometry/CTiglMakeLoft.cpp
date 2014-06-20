@@ -32,6 +32,7 @@
 #include <BRepBuilderAPI_FindPlane.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRepClass3d_SolidClassifier.hxx>
+#include <BRepAlgo.hxx>
 #include <BRepBuilderAPI_Sewing.hxx>
 #include <StdFail_NotDone.hxx>
 #include <Precision.hxx>
@@ -144,6 +145,9 @@ void CTiglMakeLoft::makeLoftWithGuides()
     
     for (unsigned int i = 0; i < profiles.size(); ++i) {
         TopoDS_Wire& profile =  profiles[i];
+        
+        // remove leading edge split in profile
+        profile =  BRepAlgo::ConcatenateWire(profile,GeomAbs_C1);
         b.Add(cprof, profile);
     }
     for (unsigned int i = 0; i < guides.size(); ++i) {
@@ -151,13 +155,22 @@ void CTiglMakeLoft::makeLoftWithGuides()
         b.Add(cguid, guide);
     }
     
+#ifdef DEBUG
+    static iLoft = 0;
     BRepTools::Write(cprof, "profiles.brep");
     BRepTools::Write(cguid, "guides.brep");
+    iLoft++;
+#endif
     
     MakePatches SurfMaker(cguid, cprof);
     // Don't sew yet. We do it later in solid creation
     SurfMaker.Perform(_myTolerance, 1e-4, GeomFill_CoonsC2Style, Standard_False);
     TopoDS_Shape faces = SurfMaker.Patches();
+    if (SurfMaker.GetStatus() > 0) {
+        LOG(ERROR) << "Could not create loft with guide curves. " << "Error code = " << SurfMaker.GetStatus();
+        return;
+    }
+    
     printf("Status: %d\n" , SurfMaker.GetStatus());
     
     if (_makeSolid) {
