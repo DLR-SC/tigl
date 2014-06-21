@@ -18,6 +18,8 @@
 
 #include "CTiglMakeLoft.h"
 #include "tigl_config.h"
+#include "tiglcommonfunctions.h"
+#include "CTiglLogging.h"
 
 #include <TopoDS.hxx>
 #include <TopoDS_Compound.hxx>
@@ -147,7 +149,9 @@ void CTiglMakeLoft::makeLoftWithGuides()
         TopoDS_Wire& profile =  profiles[i];
         
         // remove leading edge split in profile
-        profile =  BRepAlgo::ConcatenateWire(profile,GeomAbs_C1);
+        if (GetNumberOfEdges(profile) > 1) {
+            profile =  BRepAlgo::ConcatenateWire(profile,GeomAbs_C1);
+        }
         b.Add(cprof, profile);
     }
     for (unsigned int i = 0; i < guides.size(); ++i) {
@@ -156,9 +160,14 @@ void CTiglMakeLoft::makeLoftWithGuides()
     }
     
 #ifdef DEBUG
-    static iLoft = 0;
-    BRepTools::Write(cprof, "profiles.brep");
-    BRepTools::Write(cguid, "guides.brep");
+    static int iLoft = 0;
+    std::stringstream sprof;
+    sprof << "profiles" << iLoft << ".brep";
+    BRepTools::Write(cprof, sprof.str().c_str());
+    
+    std::stringstream sguid;
+    sguid << "guides" << iLoft << ".brep";
+    BRepTools::Write(cguid, sguid.str().c_str());
     iLoft++;
 #endif
     
@@ -170,8 +179,6 @@ void CTiglMakeLoft::makeLoftWithGuides()
         LOG(ERROR) << "Could not create loft with guide curves. " << "Error code = " << SurfMaker.GetStatus();
         return;
     }
-    
-    printf("Status: %d\n" , SurfMaker.GetStatus());
     
     if (_makeSolid) {
         // check if the first wire is the same as the last
