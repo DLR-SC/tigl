@@ -192,8 +192,8 @@ TopoDS_Wire CCPACSWingProfile::GetWire()
     Update();
     // rebuild closed wire
     BRepBuilderAPI_MakeWire closedWireBuilder;
-    closedWireBuilder.Add(profileAlgo->GetUpperWire());
     closedWireBuilder.Add(profileAlgo->GetLowerWire());
+    closedWireBuilder.Add(profileAlgo->GetUpperWire());
     if (!profileAlgo->GetTrailingEdge().IsNull()) {
         closedWireBuilder.Add(profileAlgo->GetTrailingEdge());
     }
