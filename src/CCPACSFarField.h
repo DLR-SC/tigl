@@ -21,11 +21,14 @@
 
 #include "CTiglAbstractGeometricComponent.h"
 #include "tixi.h"
+#include "tigl_internal.h"
 #include "tigl_config.h"
 
-namespace tigl {
+namespace tigl
+{
 
-enum TiglFarFieldType {
+enum TiglFarFieldType
+{
     NONE,
     HALF_SPHERE,
     FULL_SPHERE,
@@ -36,21 +39,15 @@ enum TiglFarFieldType {
 class CCPACSFarField : public CTiglAbstractGeometricComponent
 {
 public:
-    CCPACSFarField();
-    ~CCPACSFarField();
+    TIGL_EXPORT CCPACSFarField();
+    TIGL_EXPORT ~CCPACSFarField();
 
-    void ReadCPACS(TixiDocumentHandle tixiHandle);
+    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle);
 
     // Returns the Geometric type of this component, e.g. Wing or Fuselage
-    virtual TiglGeometricComponentType GetComponentType(void);
+    TIGL_EXPORT virtual TiglGeometricComponentType GetComponentType(void);
 
-    TiglFarFieldType GetFieldType();
-
-#ifdef TIGL_USE_XCAF
-    // builds data structure for a TDocStd_Application
-    // mostly used for export
-    TDF_Label ExportDataStructure(class CCPACSConfiguration&, Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label);
-#endif
+    TIGL_EXPORT TiglFarFieldType GetFieldType();
 
 protected:
     virtual TopoDS_Shape BuildLoft(void);

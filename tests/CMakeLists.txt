@@ -1,7 +1,7 @@
 # units tests makefile
 
 FILE (GLOB_RECURSE test_SRCS *.cpp *.cxx *.cc *.C *.c *.h *.hpp)
-SET (test_LIBS gtest TIGL_static ${OpenCASCADE_LIBRARIES} ${TIXI_LIBRARIES} ${VLD_LIBRARIES})
+SET (test_LIBS gtest TIGL)
 SET (test_BIN ${PROJECT_NAME}-unittests)
 
 INCLUDE_DIRECTORIES(
@@ -13,6 +13,8 @@ INCLUDE_DIRECTORIES(
   ${TIXI_INCLUDE_DIRS}
   ${OpenCASCADE_INCLUDE_DIR}
 )
+# boost
+INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/thirdparty/boost_1_55_0)
 
 ADD_DEFINITIONS(-DTIGL_VERSION=\"${TIGL_VERSION}\")
 
@@ -46,4 +48,7 @@ configure_file (
   "${CMAKE_CURRENT_SOURCE_DIR}/runtests.sh.in"
   "${CMAKE_CURRENT_BINARY_DIR}/runtests.sh"
 )
+
+include(tiglmacros)
+AddToCheckstyle()
 

@@ -29,6 +29,7 @@
 #include "tixi.h"
 #include "CTiglError.h"
 #include "CCPACSControlSurfaceBorder.h"
+#include "tigl_internal.h"
 
 
 #include "TopoDS_Face.hxx"
@@ -45,13 +46,13 @@ private:
     CCPACSControlSurfaceBorder innerBorder;
 
 public:
-    CCPACSControlSurfaceOuterShape();
+    TIGL_EXPORT CCPACSControlSurfaceOuterShape();
 
-    void ReadCPACS(TixiDocumentHandle tixiHandle,
+    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle,
             const std::string & outerShapeXPath);
 
-    const CCPACSControlSurfaceBorder& getInnerBorder();
-    const CCPACSControlSurfaceBorder& getOuterBorder();
+    TIGL_EXPORT const CCPACSControlSurfaceBorder& getInnerBorder();
+    TIGL_EXPORT const CCPACSControlSurfaceBorder& getOuterBorder();
 
 };
 

@@ -27,60 +27,63 @@
 #ifndef CTIGLINTERPOLATEBSPLINEWIRE_H
 #define CTIGLINTERPOLATEBSPLINEWIRE_H
 
+#include "tigl_internal.h"
 #include "ITiglWireAlgorithm.h"
 #include "Geom_BSplineCurve.hxx"
 
-namespace tigl {
+namespace tigl 
+{
 
-    enum ETiglContinuity{
-        C0,
-        C1
-    };
+enum ETiglContinuity
+{
+    C0,
+    C1
+};
 
-    class CTiglInterpolateBsplineWire : public ITiglWireAlgorithm
-    {
+class CTiglInterpolateBsplineWire : public ITiglWireAlgorithm
+{
 
-    public:
-        // Constructor
-        CTiglInterpolateBsplineWire(void);
+public:
+    // Constructor
+    TIGL_EXPORT CTiglInterpolateBsplineWire(void);
 
-        // Destructor
-        virtual ~CTiglInterpolateBsplineWire(void);
+    // Destructor
+    TIGL_EXPORT virtual ~CTiglInterpolateBsplineWire(void);
 
-        // Builds the wire from the given points
-        virtual TopoDS_Wire BuildWire(const CPointContainer& points, bool forceClosed = false) const;
+    // Builds the wire from the given points
+    TIGL_EXPORT virtual TopoDS_Wire BuildWire(const CPointContainer& points, bool forceClosed = false) const;
 
 
-        // if set to true, the endpoints of a closed wire will be c1 steady
-        virtual void setEndpointContinuity(enum ETiglContinuity cont) { continuity = cont; }
+    // if set to true, the endpoints of a closed wire will be c1 steady
+    TIGL_EXPORT virtual void setEndpointContinuity(enum ETiglContinuity cont) { continuity = cont; }
 
-        // Returns the algorithm code identifier for an algorithm
-        virtual TiglAlgorithmCode GetAlgorithmCode(void) const;
+    // Returns the algorithm code identifier for an algorithm
+    TIGL_EXPORT virtual TiglAlgorithmCode GetAlgorithmCode(void) const;
 
-        // Returns the point on the wire with the smallest x value
-        virtual gp_Pnt GetPointWithMinX(const CPointContainer& points) const;
+    // Returns the point on the wire with the smallest x value
+    TIGL_EXPORT virtual gp_Pnt GetPointWithMinX(const CPointContainer& points) const;
 
-        // Returns the point on the wire with the biggest x value
-        virtual gp_Pnt GetPointWithMaxX(const CPointContainer& points) const;
+    // Returns the point on the wire with the biggest x value
+    TIGL_EXPORT virtual gp_Pnt GetPointWithMaxX(const CPointContainer& points) const;
 
-        // Returns the point on the wire with the smallest y value
-        virtual gp_Pnt GetPointWithMinY(const CPointContainer& points) const;
+    // Returns the point on the wire with the smallest y value
+    TIGL_EXPORT virtual gp_Pnt GetPointWithMinY(const CPointContainer& points) const;
 
-        // Returns the point on the wire with the biggest y value
-        virtual gp_Pnt GetPointWithMaxY(const CPointContainer& points) const;
+    // Returns the point on the wire with the biggest y value
+    TIGL_EXPORT virtual gp_Pnt GetPointWithMaxY(const CPointContainer& points) const;
 
-    protected:
+protected:
 
-    private:
-        // Copy constructor
-        CTiglInterpolateBsplineWire(const CTiglInterpolateBsplineWire& );
+private:
+    // Copy constructor
+    CTiglInterpolateBsplineWire(const CTiglInterpolateBsplineWire& );
 
-        // Assignment operator
-        void operator=(const CTiglInterpolateBsplineWire& );
+    // Assignment operator
+    void operator=(const CTiglInterpolateBsplineWire& );
 
-        ETiglContinuity continuity;
+    ETiglContinuity continuity;
 
-    };
+};
 
 } // end namespace tigl
 

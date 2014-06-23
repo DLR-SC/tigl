@@ -21,14 +21,16 @@
 #include <tixi.h>
 #include <iostream>
 
-TIGLViewerControlFile::TIGLViewerControlFile() {
+TIGLViewerControlFile::TIGLViewerControlFile() 
+{
     showConsole  = UNDEFINED;
     showToolbars = UNDEFINED;
 }
 
-CF_ReturnCode TIGLViewerControlFile::read(const char * filename){
+CF_ReturnCode TIGLViewerControlFile::read(const char * filename)
+{
     TixiDocumentHandle handle;
-    if(tixiOpenDocument((char*)filename, &handle)!=SUCCESS){
+    if (tixiOpenDocument((char*)filename, &handle)!=SUCCESS) {
         std::cerr << "Error: control file \"" << filename << "\" could not be openend" << std::endl;
         return CF_FILE_NOT_FOUND;
     }
@@ -36,28 +38,35 @@ CF_ReturnCode TIGLViewerControlFile::read(const char * filename){
     // read in console stuff
     const char * prefix = "/TIGLViewer/console";
     int display = 1;
-    if(tixiGetBooleanAttribute(handle, prefix, "display", &display)==SUCCESS){
-        if(display == 1)
+    if (tixiGetBooleanAttribute(handle, prefix, "display", &display)==SUCCESS) {
+        if (display == 1) {
             showConsole = CF_TRUE;
-        else if (display == 0)
+        }
+        else if (display == 0) {
             showConsole = CF_FALSE;
-        else
+        }
+        else {
             showConsole = UNDEFINED;
+        }
     }
 
     const char * prefix2 = "/TIGLViewer/toolbars";
     display = 1;
-    if(tixiGetBooleanAttribute(handle, prefix2, "display", &display)==SUCCESS){
-        if(display == 1)
+    if (tixiGetBooleanAttribute(handle, prefix2, "display", &display)==SUCCESS) {
+        if (display == 1) {
             showToolbars = CF_TRUE;
-        else if (display == 0)
+        }
+        else if (display == 0) {
             showToolbars = CF_FALSE;
-        else
+        }
+        else {
             showToolbars = UNDEFINED;
+        }
     }
 
     return CF_SUCCESS;
 }
 
-TIGLViewerControlFile::~TIGLViewerControlFile() {
+TIGLViewerControlFile::~TIGLViewerControlFile() 
+{
 }

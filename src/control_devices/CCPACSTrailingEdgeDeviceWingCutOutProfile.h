@@ -28,6 +28,7 @@
 
 #include "tixi.h"
 #include "CTiglError.h"
+#include "tigl_internal.h"
 
 namespace tigl
 {
@@ -42,13 +43,13 @@ private:
     // profileUID
 
 public:
-    CCPACSTrailingEdgeDeviceWingCutOutProfile();
+    TIGL_EXPORT CCPACSTrailingEdgeDeviceWingCutOutProfile();
 
-    void ReadCPACS(TixiDocumentHandle tixiHandle,
+    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle,
             const std::string & TrailingEdgeDeviceWingCutOutProfileXPath);
 
-    double getEta();
-    double getRotZ();
+    TIGL_EXPORT double getEta();
+    TIGL_EXPORT double getRotZ();
 
 };
 

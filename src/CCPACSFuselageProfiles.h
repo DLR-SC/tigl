@@ -26,58 +26,60 @@
 #ifndef CCPACSFUSELAGEPROFILES_H
 #define CCPACSFUSELAGEPROFILES_H
 
+#include "tigl_internal.h"
 #include "tixi.h"
 #include "CCPACSFuselageProfile.h"
 #include <string>
 #include <map>
 
-namespace tigl {
+namespace tigl
+{
 
-    class CCPACSFuselageProfiles
-    {
+class CCPACSFuselageProfiles
+{
 
-    private:
-        // Typedef for a container to store the fuselage profiles.
-        typedef std::map<std::string, CCPACSFuselageProfile*> CCPACSFuselageProfileContainer;
+private:
+    // Typedef for a container to store the fuselage profiles.
+    typedef std::map<std::string, CCPACSFuselageProfile*> CCPACSFuselageProfileContainer;
 
-    public:
-        // Constructor
-        CCPACSFuselageProfiles(void);
+public:
+    // Constructor
+    TIGL_EXPORT CCPACSFuselageProfiles(void);
 
-        // Virtual Destructor
-        virtual ~CCPACSFuselageProfiles(void);
+    // Virtual Destructor
+    TIGL_EXPORT virtual ~CCPACSFuselageProfiles(void);
 
-        // Read CPACS fuselage profiles
-        void ReadCPACS(TixiDocumentHandle tixiHandle);
+    // Read CPACS fuselage profiles
+    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle);
 
-        // Returns the total count of fuselage profiles in this configuration
-        int GetProfileCount(void) const;
+    // Returns the total count of fuselage profiles in this configuration
+    TIGL_EXPORT int GetProfileCount(void) const;
 
-        // Returns the fuselage profile for a given index.
-        CCPACSFuselageProfile& GetProfile(int index) const;
+    // Returns the fuselage profile for a given index.
+    TIGL_EXPORT CCPACSFuselageProfile& GetProfile(int index) const;
 
-        // Returns the fuselage profile for a given uid.
-        CCPACSFuselageProfile& GetProfile(std::string uid) const;
+    // Returns the fuselage profile for a given uid.
+    TIGL_EXPORT CCPACSFuselageProfile& GetProfile(std::string uid) const;
 
-        // Invalidates internal state
-        void Invalidate(void);
+    // Invalidates internal state
+    TIGL_EXPORT void Invalidate(void);
 
-    protected:
-        // Cleanup routine
-        void Cleanup(void);
+protected:
+    // Cleanup routine
+    void Cleanup(void);
 
-    private:
-        // Copy constructor
-        CCPACSFuselageProfiles(const CCPACSFuselageProfiles& ) { /* Do nothing */ }
+private:
+    // Copy constructor
+    CCPACSFuselageProfiles(const CCPACSFuselageProfiles& ) { /* Do nothing */ }
 
-        // Assignment operator
-        void operator=(const CCPACSFuselageProfiles& ) { /* Do nothing */ }
+    // Assignment operator
+    void operator=(const CCPACSFuselageProfiles& ) { /* Do nothing */ }
 
-    private:
-        std::string                    librarypath;  // Directory path to fuselage profiles
-        CCPACSFuselageProfileContainer profiles;     // All fuselage profiles
+private:
+    std::string                    librarypath;  // Directory path to fuselage profiles
+    CCPACSFuselageProfileContainer profiles;     // All fuselage profiles
 
-    };
+};
 
 } // end namespace tigl
 

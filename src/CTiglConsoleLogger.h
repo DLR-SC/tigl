@@ -19,17 +19,19 @@
 #ifndef CTIGLCONSOLELOGGER_H
 #define CTIGLCONSOLELOGGER_H
 
+#include "tigl_internal.h"
 #include "ITiglLogger.h"
 
-namespace tigl {
+namespace tigl 
+{
 
 class CTiglConsoleLogger : public ITiglLogger
 {
 public:
-    CTiglConsoleLogger();
-    virtual ~CTiglConsoleLogger() {}
-    virtual void LogMessage(TiglLogLevel, const char * message);
-    virtual void SetVerbosity(TiglLogLevel);
+    TIGL_EXPORT CTiglConsoleLogger();
+    TIGL_EXPORT virtual ~CTiglConsoleLogger() {}
+    TIGL_EXPORT virtual void LogMessage(TiglLogLevel, const char * message);
+    TIGL_EXPORT virtual void SetVerbosity(TiglLogLevel);
 private:
     TiglLogLevel verbosity;
 };

@@ -27,6 +27,7 @@
 
 #include "tixi.h"
 #include "CTiglError.h"
+#include "tigl_internal.h"
 
 namespace tigl
 {
@@ -49,15 +50,15 @@ private:
     // relHeightLE
 
 public:
-    CCPACSControlSurfaceBorder();
+    TIGL_EXPORT CCPACSControlSurfaceBorder();
 
-    void ReadCPACS(TixiDocumentHandle tixiHandle,
+    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle,
             const std::string & BorderXPath);
 
-    double getEtaLE() const;
-    double getEtaTE() const;
-    double getXsiLE() const;
-    double getXsiTE() const;
+    TIGL_EXPORT double getEtaLE() const;
+    TIGL_EXPORT double getEtaTE() const;
+    TIGL_EXPORT double getXsiLE() const;
+    TIGL_EXPORT double getXsiTE() const;
 
 };
 

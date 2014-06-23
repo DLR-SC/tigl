@@ -22,8 +22,9 @@
 #include <QDialog>
 #include <QPushButton>
 
-namespace Ui {
-class TIGLViewerErrorDialog;
+namespace Ui
+{
+    class TIGLViewerErrorDialog;
 }
 
 class TIGLViewerErrorDialog : public QDialog

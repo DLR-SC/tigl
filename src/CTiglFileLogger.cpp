@@ -19,16 +19,18 @@
 #include "CTiglFileLogger.h"
 #include "CTiglError.h"
 #include "CMutex.h"
+#include "CScopedLock.h"
 
 #include <cstdio>
 #include <ctime>
 #include <iostream>
 
-namespace tigl {
+namespace tigl 
+{
 
 CTiglFileLogger::CTiglFileLogger(FILE * file) : logFileStream(file), mutex(new CMutex), verbosity(TILOG_DEBUG4)
 {
-    if(!logFileStream) {
+    if (!logFileStream) {
         throw CTiglError("Null pointer for argument file in CTiglLogFile", TIGL_NULL_POINTER);
     }
     
@@ -39,7 +41,7 @@ CTiglFileLogger::CTiglFileLogger(const char* filename) :  mutex(new CMutex) , ve
 {
 
     logFileStream = fopen(filename,"w");
-    if(!logFileStream) {
+    if (!logFileStream) {
         throw CTiglError("Log file can not be created CTiglLogFile", TIGL_OPEN_FAILED);
     }
     fileOpened = true;
@@ -54,24 +56,19 @@ CTiglFileLogger::CTiglFileLogger(const char* filename) :  mutex(new CMutex) , ve
     fprintf(logFileStream, "%s\n", buffer);
 }
 
-CTiglFileLogger::~CTiglFileLogger(){
-    if(mutex){
-        delete mutex;
-    }
-    if(fileOpened) {
+CTiglFileLogger::~CTiglFileLogger()
+{
+    if (fileOpened) {
         fclose(logFileStream);
     }
 }
 
 void CTiglFileLogger::LogMessage(TiglLogLevel level, const char *message)
 {
-    if (level<=verbosity)
-    {
-        if(logFileStream)
-        {
-            mutex->lock();
+    if (level<=verbosity) {
+        if (logFileStream) {
+            CScopedLock lock(*mutex);
             fprintf(logFileStream, "%s\n", message);
-            mutex->unlock();
         }
     }
 }

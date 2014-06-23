@@ -26,6 +26,8 @@
 #ifndef CTIGLABSTRACTGEOMETRICCOMPONENT_H
 #define CTIGLABSTRACTGEOMETRICCOMPONENT_H
 
+#include "tigl_internal.h"
+
 #include <list>
 #include <string>
 #include <TopoDS_Shape.hxx>
@@ -33,78 +35,75 @@
 #include "ITiglGeometricComponent.h"
 
 
-namespace tigl {
+namespace tigl 
+{
 
-    class CTiglAbstractGeometricComponent : public ITiglGeometricComponent
-    {
+class CTiglAbstractGeometricComponent : public ITiglGeometricComponent
+{
 
-    public:
-        // Constructor
-        CTiglAbstractGeometricComponent(void);
+public:
+    // Constructor
+    TIGL_EXPORT CTiglAbstractGeometricComponent(void);
 
-        // Virtual Destructor
-        virtual ~CTiglAbstractGeometricComponent(void);
+    // Virtual Destructor
+    TIGL_EXPORT virtual ~CTiglAbstractGeometricComponent(void);
 
-           // Gets the loft of a geometric component
-        virtual TopoDS_Shape& GetLoft(void);
+       // Gets the loft of a geometric component
+    TIGL_EXPORT virtual TopoDS_Shape& GetLoft(void);
 
-        // Get the loft mirrored at the mirror plane
-        virtual TopoDS_Shape GetMirroredLoft(void);
+    // Get the loft mirrored at the mirror plane
+    TIGL_EXPORT virtual TopoDS_Shape GetMirroredLoft(void);
 
-        // Gets the component uid
-        virtual const std::string& GetUID(void);
+    // Gets the component uid
+    TIGL_EXPORT virtual const std::string& GetUID(void) const;
 
-        // Sets the component uid
-        virtual void SetUID(const std::string& uid);
+    // Sets the component uid
+    TIGL_EXPORT virtual void SetUID(const std::string& uid);
 
-        // Gets symmetry axis
-        virtual TiglSymmetryAxis GetSymmetryAxis(void);
+    // Gets symmetry axis
+    TIGL_EXPORT virtual TiglSymmetryAxis GetSymmetryAxis(void);
 
-        // Sets symmetry axis
-        virtual void SetSymmetryAxis(const std::string& axis);
+    // Sets symmetry axis
+    TIGL_EXPORT virtual void SetSymmetryAxis(const std::string& axis);
 
-        // Returns a unique Hashcode for a specific geometric component
-        int GetComponentHashCode(void);
+    // Get transformation object
+    TIGL_EXPORT virtual CTiglTransformation GetTransformation(void);
 
-        // Get transformation object
-        virtual CTiglTransformation GetTransformation(void);
+    // Get component translation
+    TIGL_EXPORT virtual CTiglPoint GetTranslation(void);
 
-        // Get component translation
-        virtual CTiglPoint GetTranslation(void);
+    // Set transformation object
+    TIGL_EXPORT virtual void Translate(CTiglPoint trans);
+    
+    // return if pnt lies on the loft
+    TIGL_EXPORT bool GetIsOn(const gp_Pnt &pnt);
+    
+    // return if pnt lies on the mirrored loft
+    // if the loft as no symmetry, false is returned
+    TIGL_EXPORT bool GetIsOnMirrored(const gp_Pnt &pnt);
+protected:
+    // Resets the geometric component.
+    virtual void Reset(void);
+    
+    virtual TopoDS_Shape BuildLoft(void) = 0;
 
-        // Set transformation object
-        virtual void Translate(CTiglPoint trans);
-        
-        // return if pnt lies on the loft
-        bool GetIsOn(const gp_Pnt &pnt);
-        
-        // return if pnt lies on the mirrored loft
-        // if the loft as no symmetry, false is returned
-        bool GetIsOnMirrored(const gp_Pnt &pnt);
-    protected:
-        // Resets the geometric component.
-        virtual void Reset(void);
-        
-        virtual TopoDS_Shape BuildLoft(void) = 0;
+    CTiglTransformation        transformation;
+    CTiglTransformation        backTransformation;
+    CTiglPoint                 translation;
+    CTiglPoint                 scaling;
+    CTiglPoint                 rotation;
+    TopoDS_Shape               loft;
 
-        CTiglTransformation        transformation;
-        CTiglTransformation        backTransformation;
-        CTiglPoint                 translation;
-        CTiglPoint                 scaling;
-        CTiglPoint                 rotation;
-        TopoDS_Shape               loft;
+private:
+    // Copy constructor
+    CTiglAbstractGeometricComponent(const CTiglAbstractGeometricComponent& ) { /* Do nothing */ }
 
-    private:
-        // Copy constructor
-        CTiglAbstractGeometricComponent(const CTiglAbstractGeometricComponent& ) { /* Do nothing */ }
+    // Assignment operator
+    void operator=(const CTiglAbstractGeometricComponent& );
 
-        // Assignment operator
-        void operator=(const CTiglAbstractGeometricComponent& );
-
-    private:
-        std::string        myUID;           /**< UID of this component               */
-        TiglSymmetryAxis   mySymmetryAxis;  /**< SymmetryAxis of this component      */
-    };
+    std::string        myUID;           /**< UID of this component               */
+    TiglSymmetryAxis   mySymmetryAxis;  /**< SymmetryAxis of this component      */
+};
 
 } // end namespace tigl
 

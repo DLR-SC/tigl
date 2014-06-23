@@ -33,6 +33,7 @@
 #include "CTiglError.h"
 #include "CCPACSTrailingEdgeDevice.h"
 #include "CSharedPtr.h"
+#include "tigl_internal.h"
 
 namespace tigl {
 
@@ -51,14 +52,14 @@ private:
 
 public:
 
-    CCPACSTrailingEdgeDevices(CCPACSWingComponentSegment*);
+    TIGL_EXPORT CCPACSTrailingEdgeDevices(CCPACSWingComponentSegment*);
 
-    void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string & trailingEdgeDevicesXPath);
+    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string & trailingEdgeDevicesXPath);
 
-    CCPACSTrailingEdgeDevice& getTrailingEdgeDeviceByID( int id );
-    int getTrailingEdgeDeviceCount();
+    TIGL_EXPORT CCPACSTrailingEdgeDevice& getTrailingEdgeDeviceByID( int id );
+    TIGL_EXPORT int getTrailingEdgeDeviceCount();
 
-    ~CCPACSTrailingEdgeDevices();
+    TIGL_EXPORT ~CCPACSTrailingEdgeDevices();
 };
 
 typedef CSharedPtr<CCPACSTrailingEdgeDevices> CCPACSTrailingEdgeDevicesPtr;

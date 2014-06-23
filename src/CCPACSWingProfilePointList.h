@@ -32,93 +32,94 @@
 
 #include <vector>
 #include <string>
-#include <memory>
-
-#include "ITiglWingProfileAlgo.h"
 
 #include "tixi.h"
-#include "CTiglPoint.h"
-#include "CTiglTransformation.h"
-
+#include "tigl_internal.h"
+#include "ITiglWingProfileAlgo.h"
+#include "PTiglWingProfileAlgo.h"
 #include "TopoDS_Wire.hxx"
-#include "Geom2d_TrimmedCurve.hxx"
 
 
 namespace tigl 
 {
 
-    class ITiglWireAlgorithm;
-    typedef ITiglWireAlgorithm* WireAlgoPointer;
+class CCPACSWingProfile;
+class ITiglWireAlgorithm;
+typedef ITiglWireAlgorithm* WireAlgoPointer;
 
-    class CCPACSWingProfilePointList : public ITiglWingProfileAlgo
-    {
+class CCPACSWingProfilePointList : public ITiglWingProfileAlgo
+{
 
-    private:
-        // Typedef for a container to store the coordinates of a wing profile element.
-        typedef std::vector<CTiglPoint*> CCPACSCoordinateContainer;
+private:
+    // Typedef for a container to store the coordinates of a wing profile element.
+    typedef std::vector<CTiglPoint*> CCPACSCoordinateContainer;
 
-    public:
-        // Constructor
-        CCPACSWingProfilePointList(const std::string& aFilename);
+public:
+    // Constructor
+    TIGL_EXPORT CCPACSWingProfilePointList(const CCPACSWingProfile& profile, const std::string& cpacsPath);
 
-        // Destructor
-        ~CCPACSWingProfilePointList(void);
+    // Destructor
+    TIGL_EXPORT ~CCPACSWingProfilePointList(void);
 
-        // Cleanup routine
-        void Cleanup(void);
+    TIGL_EXPORT static std::string CPACSID();
 
-        // Update interna
-        void Update(void);
+    // Cleanup routine
+    TIGL_EXPORT void Cleanup(void);
 
-        // Read CPACS wing profile file
-        void ReadCPACS(TixiDocumentHandle tixiHandle);
+    // Update interna
+    TIGL_EXPORT void Update(void);
 
-        // Returns the profile points as read from TIXI.
-        std::vector<CTiglPoint*> GetSamplePoints() const;
+    // Read CPACS wing profile file
+    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle);
 
-        // get profiles CPACS XML path
-        const std::string & GetProfileDataXPath() const;
+    // Returns the profile points as read from TIXI.
+    TIGL_EXPORT std::vector<CTiglPoint*> GetSamplePoints() const;
 
-        // get closed wing profile wire
-        const TopoDS_Wire & GetWireClosed() const;
+    // get profiles CPACS XML path
+    TIGL_EXPORT const std::string & GetProfileDataXPath() const;
 
-        // get upper wing profile wire
-        const TopoDS_Wire & GetUpperWire() const;
+    // get closed wing profile wire
+    TIGL_EXPORT const TopoDS_Wire & GetWireClosed() const;
 
-        // get lower wing profile wire
-        const TopoDS_Wire & GetLowerWire() const;
+    // get upper wing profile wire
+    TIGL_EXPORT const TopoDS_Wire & GetUpperWire() const;
 
-        // get leading edge point();
-        const gp_Pnt & GetLEPoint() const;
+    // get lower wing profile wire
+    TIGL_EXPORT const TopoDS_Wire & GetLowerWire() const;
 
-        // get trailing edge point();
-        const gp_Pnt & GetTEPoint() const;
+    // get leading edge point();
+    TIGL_EXPORT const gp_Pnt & GetLEPoint() const;
 
-    protected:
-        // Builds the wing profile wires.
-        void BuildWires();
+    // get trailing edge point();
+    TIGL_EXPORT const gp_Pnt & GetTEPoint() const;
 
-        // Builds leading and trailing edge points of the wing profile wire.
-        void BuildLETEPoints(void);
+protected:
+    // Builds the wing profile wires.
+    void BuildWires();
 
-    private:
-        // Copy constructor
-        CCPACSWingProfilePointList(const CCPACSWingProfilePointList& );
+    // Builds leading and trailing edge points of the wing profile wire.
+    void BuildLETEPoints(void);
 
-        // Assignment operator
-        void operator=(const CCPACSWingProfilePointList& );
+private:
+    // Copy constructor
+    CCPACSWingProfilePointList(const CCPACSWingProfilePointList& );
 
-    private:
-        CCPACSCoordinateContainer coordinates;    /**< Coordinates of a wing profile element */
-        WireAlgoPointer           profileWireAlgo;/**< Pointer to wire algorithm (e.g. CTiglInterpolateBsplineWire) */
+    // Assignment operator
+    void operator=(const CCPACSWingProfilePointList& );
 
-        std::string               ProfileDataXPath;   /**< CPACS path to profile data (pointList or cst2D) */
-        TopoDS_Wire               wireClosed;     /**< Forced closed wing profile wire */
-        TopoDS_Wire               upperWire;      /**< wire of the upper wing profile */
-        TopoDS_Wire               lowerWire;      /**< wire of the lower wing profile */
-        gp_Pnt                    lePoint;        /**< Leading edge point */
-        gp_Pnt                    tePoint;        /**< Trailing edge point */
-    };
+private:
+    CCPACSCoordinateContainer coordinates;    /**< Coordinates of a wing profile element */
+    WireAlgoPointer           profileWireAlgo;/**< Pointer to wire algorithm (e.g. CTiglInterpolateBsplineWire) */
+    const CCPACSWingProfile&  profileRef;     /**< Reference to the wing profile */
+
+
+    std::string               ProfileDataXPath; /**< CPACS path to profile data (pointList or cst2D) */
+    TopoDS_Wire               wireClosed;       /**< Forced closed wing profile wire */
+    TopoDS_Wire               upperWire;        /**< wire of the upper wing profile */
+    TopoDS_Wire               lowerWire;        /**< wire of the lower wing profile */
+    gp_Pnt                    lePoint;          /**< Leading edge point */
+    gp_Pnt                    tePoint;          /**< Trailing edge point */
+};
 
 } // end namespace tigl
 

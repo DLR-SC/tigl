@@ -99,7 +99,7 @@
      <addaction name="showAllWingsAndFuselagesSurfacePointsAction"/>
      <addaction name="drawFusedAircraftAction"/>
      <addaction name="showFusedAirplaneTriangulation"/>
-     <addaction name="drawWingFuselageLineAction"/>
+     <addaction name="drawIntersectionAction"/>
      <addaction name="drawFarFieldAction"/>
     </widget>
     <widget class="QMenu" name="menuWings">
@@ -142,7 +142,6 @@
       <string>Export to IGES</string>
      </property>
      <addaction name="tiglExportIgesAction"/>
-     <addaction name="tiglExportStructuredIgesAction"/>
      <addaction name="tiglExportFusedIgesAction"/>
     </widget>
     <widget class="QMenu" name="menuExport_to_STEP">
@@ -151,7 +150,6 @@
      </property>
      <addaction name="tiglExportStepAction"/>
      <addaction name="tiglExportFusedStepAction"/>
-     <addaction name="tiglExportStepWithMetaDataAction"/>
     </widget>
     <widget class="QMenu" name="menuExport_to_VTK">
      <property name="title">
@@ -184,6 +182,7 @@
      </property>
      <addaction name="tiglExportWingBRepAction"/>
      <addaction name="tiglExportFuselageBRepAction"/>
+     <addaction name="tiglExportFusedConfigBRep"/>
     </widget>
     <addaction name="menuExport_to_IGES"/>
     <addaction name="menuExport_to_VTK"/>
@@ -1057,9 +1056,9 @@
     <string>Ctrl+W</string>
    </property>
   </action>
-  <action name="drawWingFuselageLineAction">
+  <action name="drawIntersectionAction">
    <property name="text">
-    <string>Draw Fuseling/Wing Intersection line</string>
+    <string>Show Intersection Line</string>
    </property>
   </action>
   <action name="showFusedAirplaneTriangulation">
@@ -1159,6 +1158,11 @@
   <action name="tiglExportFuselageBRepAction">
    <property name="text">
     <string>Export Fuselage</string>
+   </property>
+  </action>
+  <action name="tiglExportFusedConfigBRep">
+   <property name="text">
+    <string>Export Fused Configuration (slow)</string>
    </property>
   </action>
   <action name="drawWingFlapsAction">

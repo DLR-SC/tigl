@@ -1,5 +1,7 @@
 # TIGL Library
 
+find_package(Threads REQUIRED)
+
 configure_file (
   "${CMAKE_CURRENT_SOURCE_DIR}/tigl_version.h.in"
   "${CMAKE_CURRENT_BINARY_DIR}/tigl_version.h"
@@ -9,24 +11,32 @@ source_group(Fuselage REGULAR_EXPRESSION "CCPACSFuselage")
 source_group(Wing REGULAR_EXPRESSION "CCPACSWing")
 
 set(TIGL_INCLUDE_DIRS
-    control_devices
+    ${CMAKE_CURRENT_SOURCE_DIR}/control_devices
 )
 
 include_directories(${OpenCASCADE_INCLUDE_DIR}
                     ${TIXI_INCLUDE_DIRS}
                     ${CMAKE_CURRENT_BINARY_DIR}
                     ${CMAKE_CURRENT_SOURCE_DIR}
+                    ${CMAKE_CURRENT_SOURCE_DIR}/boolean_operations
                     ${TIGL_INCLUDE_DIRS}
 )
 
 file(GLOB_RECURSE TIGL_SRC
     "*.h"
+    "*.hxx"
     "*.cpp"
+    "*.cxx"
 )
 
 if(MSVC)
-    add_definitions(-D_CRT_SECURE_NO_WARNINGS=1 /wd4355 )
+    add_definitions(-D_CRT_SECURE_NO_WARNINGS=1 /wd4355)
 endif(MSVC)
+
+if(CMAKE_COMPILER_IS_GNUCC)
+    # gcc 4.3.4 creates wrong code for boost::hash if compiled with optimizations
+    SET_SOURCE_FILES_PROPERTIES(CTiglIntersectionCalculation.cpp PROPERTIES COMPILE_FLAGS -O0)
+endif(CMAKE_COMPILER_IS_GNUCC)
 
 # tigl dll/so library
 add_library(TIGL SHARED ${TIGL_SRC})
@@ -43,7 +53,12 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
   add_definitions(-DDEBUG)
 endif()
 
-target_link_libraries (TIGL ${OpenCASCADE_LIBRARIES} ${TIXI_LIBRARIES} ${VLD_LIBRARIES})
+set(TIGL_LIBRARIES ${OpenCASCADE_LIBRARIES} ${TIXI_LIBRARIES} ${VLD_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
+if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+  set(TIGL_LIBRARIES  ${TIGL_LIBRARIES} rt)
+endif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+
+target_link_libraries (TIGL ${TIGL_LIBRARIES})
 set_target_properties( TIGL PROPERTIES VERSION ${TIGL_VERSION})
 set_target_properties( TIGL PROPERTIES SOVERSION "${TIGL_VERSION_MAJOR}")
 
@@ -62,4 +77,8 @@ install (FILES tigl.h ${CMAKE_CURRENT_BINARY_DIR}/tigl_version.h
 
 # static lib for tiglviewer
 add_library(TIGL_static ${TIGL_SRC})
+# this does no actual linking but keeps track of the dependencies
+target_link_libraries (TIGL_static ${TIGL_LIBRARIES})
 
+include(tiglmacros)
+AddToCheckstyle()

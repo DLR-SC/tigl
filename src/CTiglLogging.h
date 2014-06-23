@@ -28,6 +28,7 @@
 
 #include "tigl_config.h"
 #include "tigl.h"
+#include "tigl_internal.h"
 #include "CSharedPtr.h"
 
 #include <string>
@@ -43,7 +44,8 @@
 #include <cstring>
 #endif
 
-namespace tigl {
+namespace tigl 
+{
 
 #ifndef GLOG_FOUND
     //dummy implementation if glog is not available
@@ -69,9 +71,9 @@ namespace tigl {
     class DummyLogger_
     {
     public:
-        DummyLogger_();
-        virtual ~DummyLogger_();
-        std::ostringstream& AppendToStream(TiglLogLevel level, const char *file, int line);
+        TIGL_EXPORT DummyLogger_();
+        TIGL_EXPORT virtual ~DummyLogger_();
+        TIGL_EXPORT std::ostringstream& AppendToStream(TiglLogLevel level, const char *file, int line);
     protected:
         std::ostringstream stream;
     private:
@@ -84,9 +86,9 @@ namespace tigl {
     class DebugStream_
     {
     public:
-        DebugStream_();
-        virtual ~DebugStream_();
-        std::ostringstream& AppendToStream(TiglLogLevel level, const char *file, int line);
+        TIGL_EXPORT DebugStream_();
+        TIGL_EXPORT virtual ~DebugStream_();
+        TIGL_EXPORT std::ostringstream& AppendToStream(TiglLogLevel level, const char *file, int line);
     protected:
         std::ostringstream stream;
     private:
@@ -99,55 +101,55 @@ namespace tigl {
 
 // define smart pointer to logger
 class ITiglLogger;
-typedef CSharedPtr<ITiglLogger> PTiglLogger;
+typedef class CSharedPtr<ITiglLogger> PTiglLogger;
 
-class CTiglLogging {
+class CTiglLogging
+{
+public:
+    // Returns a reference to the only instance of this class
+    TIGL_EXPORT static CTiglLogging& Instance(void);
+    
+    // convenience functions that insert the appropriate loggers
+    TIGL_EXPORT void LogToFile(const char* filePrefix);
+    TIGL_EXPORT void LogToStream(FILE * fp);
+    TIGL_EXPORT void SetLogFileEnding(const char* ending);
+    TIGL_EXPORT void SetTimeIdInFilenameEnabled(bool enabled);
+    TIGL_EXPORT void LogToConsole();
+    TIGL_EXPORT void SetConsoleVerbosity(TiglLogLevel vlevel);
+    
+    // allows installing a custom log sink/receiver
+    // The logger becomes property of this class
+    // Therefore the logger should not be deleted
+    // manually.
+    TIGL_EXPORT void SetLogger(PTiglLogger);
+    TIGL_EXPORT PTiglLogger GetLogger();
 
-    public:
-        // Returns a reference to the only instance of this class
-        static CTiglLogging& Instance(void);
-        
-        // convenience functions that insert the appropriate loggers
-        void LogToFile(const char* filePrefix);
-        void LogToStream(FILE * fp);
-        void SetLogFileEnding(const char* ending);
-        void SetTimeIdInFilenameEnabled(bool enabled);
-        void LogToConsole();
-        void SetConsoleVerbosity(TiglLogLevel vlevel);
-        
-        // allows installing a custom log sink/receiver
-        // The logger becomes property of this class
-        // Therefore the logger should not be deleted
-        // manually.
-        void SetLogger(PTiglLogger);
-        PTiglLogger GetLogger();
+    // Destructor
+    TIGL_EXPORT ~CTiglLogging(void);
 
-        // Destructor
-        ~CTiglLogging(void);
+private:
+    // Constructor
+    CTiglLogging(void);
 
-    private:
-        // Constructor
-        CTiglLogging(void);
+    // Logger Initialize with defaults
+    void initLogger(void);
 
-        // Logger Initialize with defaults
-        void initLogger(void);
+    // Copy constructor
+    CTiglLogging(const CTiglLogging& )                { /* Do nothing */ }
 
-        // Copy constructor
-        CTiglLogging(const CTiglLogging& )                { /* Do nothing */ }
-
-        // Assignment operator
-        void operator=(const CTiglLogging& )             { /* Do nothing */ }
-        
-        PTiglLogger      _myLogger;
-        std::string        _fileEnding;
-        bool               _timeIdInFilename;
-        TiglLogLevel       _consoleVerbosity;
-        PTiglLogger      _consoleLogger;
+    // Assignment operator
+    void operator=(const CTiglLogging& )             { /* Do nothing */ }
+    
+    PTiglLogger      _myLogger;
+    std::string        _fileEnding;
+    bool               _timeIdInFilename;
+    TiglLogLevel       _consoleVerbosity;
+    PTiglLogger      _consoleLogger;
 
 };
 
 // get log level string (for testing purposes)
-std::string getLogLevelString(TiglLogLevel level);
+TIGL_EXPORT std::string getLogLevelString(TiglLogLevel level);
 
 } // end namespace tigl
 

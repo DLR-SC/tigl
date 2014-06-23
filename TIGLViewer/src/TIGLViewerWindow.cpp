@@ -26,6 +26,7 @@
 #include <QtCore/QString>
 #include <QShortcut>
 #include <QTimer>
+#include <QProcessEnvironment>
 
 #include <BRepBuilderAPI_MakeVertex.hxx>
 #include <TopoDS_Vertex.hxx>
@@ -71,10 +72,13 @@ void TIGLViewerWindow::contextMenuEvent(QContextMenuEvent *event)
      QMenu menu(this);
 
      bool OneOrMoreIsSelected = false;
-     for (myVC->getContext()->InitCurrent(); myVC->getContext()->MoreCurrent (); myVC->getContext()->NextCurrent ())
-         if (myVC->getContext()->IsDisplayed(myVC->getContext()->Current())) OneOrMoreIsSelected=true;
+     for (myVC->getContext()->InitCurrent(); myVC->getContext()->MoreCurrent (); myVC->getContext()->NextCurrent ()) {
+         if (myVC->getContext()->IsDisplayed(myVC->getContext()->Current())) {
+             OneOrMoreIsSelected=true;
+         }
+     }
 
-     if(OneOrMoreIsSelected) {
+     if (OneOrMoreIsSelected) {
         QAction *eraseAct;
         eraseAct = new QAction(tr("&Erase"), this);
         eraseAct->setStatusTip(tr("Erase selected components"));
@@ -163,6 +167,8 @@ TIGLViewerWindow::TIGLViewerWindow()
 
     cpacsConfiguration = new TIGLViewerDocument(this, myOCC->getContext(), getSettings());
     scriptEngine = new TIGLScriptEngine;
+    
+    setAcceptDrops(true);
 
     connectSignals();
     createMenus();
@@ -176,11 +182,40 @@ TIGLViewerWindow::TIGLViewerWindow()
     setMinimumSize(160, 160);
 }
 
-TIGLViewerWindow::~TIGLViewerWindow(){
+TIGLViewerWindow::~TIGLViewerWindow()
+{
     delete stdoutStream;
     delete errorStream;
     delete scriptEngine;
     delete tiglViewerSettings;
+}
+
+void TIGLViewerWindow::dragEnterEvent(QDragEnterEvent * ev)
+{
+    QList<QUrl> urls = ev->mimeData()->urls();
+    foreach (QUrl url, urls) {
+        if (!url.toLocalFile().isEmpty()) {
+            QString suffix = QFileInfo(url.toLocalFile()).suffix();
+            if (suffix == "xml" || suffix == "brep" || suffix == "stp" || suffix == "igs" || suffix == "mesh") {
+                ev->accept();
+            }
+        }
+    }
+}
+
+void TIGLViewerWindow::dropEvent(QDropEvent *ev)
+{
+    QList<QUrl> urls = ev->mimeData()->urls();
+    foreach (QUrl url, urls) {
+        if (!url.toLocalFile().isEmpty()) {
+            QString suffix = QFileInfo(url.toLocalFile()).suffix();
+            if (suffix == "xml" || suffix == "brep" || suffix == "stp" || suffix == "igs" || suffix == "mesh") {
+                ev->accept();
+                // load file
+                openFile(url.toLocalFile());
+            }
+        }
+    }
 }
 
 
@@ -190,22 +225,23 @@ void TIGLViewerWindow::setInitialCpacsFileName(QString filename)
     openFile(filename);
 }
 
-void TIGLViewerWindow::setInitialControlFile(QString filename){
+void TIGLViewerWindow::setInitialControlFile(QString filename)
+{
     TIGLViewerControlFile cf;
-    if(cf.read(filename.toStdString().c_str()) == CF_SUCCESS){
-        if(cf.showConsole == CF_TRUE){
+    if (cf.read(filename.toStdString().c_str()) == CF_SUCCESS) {
+        if (cf.showConsole == CF_TRUE) {
             console->setVisible(true);
             showConsoleAction->setChecked(true);
         }
-        else if(cf.showConsole == CF_FALSE){
+        else if (cf.showConsole == CF_FALSE) {
             console->setVisible(false);
             showConsoleAction->setChecked(false);
         }
-        if(cf.showToolbars == CF_TRUE){
+        if (cf.showToolbars == CF_TRUE) {
             toolBar->setVisible(true);
             toolBarView->setVisible(true);
         }
-        else if(cf.showToolbars == CF_FALSE){
+        else if (cf.showToolbars == CF_FALSE) {
             toolBar->setVisible(false);
             toolBarView->setVisible(false);
         }
@@ -254,15 +290,17 @@ void TIGLViewerWindow::openScript()
     scriptEngine->openFile(fileName);
 }
 
-void TIGLViewerWindow::closeConfiguration(){
+void TIGLViewerWindow::closeConfiguration()
+{
     cpacsConfiguration->closeCpacsConfiguration();
 }
 
 void TIGLViewerWindow::openRecentFile()
 {
     QAction *action = qobject_cast<QAction *>(sender());
-    if (action)
+    if (action) {
         openFile(action->data().toString());
+    }
 }
 
 void TIGLViewerWindow::openFile(const QString& fileName)
@@ -276,39 +314,33 @@ void TIGLViewerWindow::openFile(const QString& fileName)
 
     statusBar()->showMessage(tr("Invoked File|Open"));
 
-    if (!fileName.isEmpty())
-    {
+    if (!fileName.isEmpty()) {
         fileInfo.setFile(fileName);
         fileType = fileInfo.suffix();
         
-        if (fileType.toLower() == tr("xml"))
-        {
+        if (fileType.toLower() == tr("xml")) {
             TiglReturnCode tiglRet = cpacsConfiguration->openCpacsConfiguration(fileInfo.absoluteFilePath());
-            if(tiglRet != TIGL_SUCCESS)
+            if (tiglRet != TIGL_SUCCESS) {
                 return;
+            }
 
             updateMenus(cpacsConfiguration->getCpacsHandle());
         }
         else {
 
-            if (fileType.toLower() == tr("brep") || fileType.toLower() == tr("rle"))
-            {
+            if (fileType.toLower() == tr("brep") || fileType.toLower() == tr("rle")) {
                 format = TIGLViewerInputOutput::FormatBREP;
             }
-            if (fileType.toLower() == tr("step") || fileType.toLower() == tr("stp"))
-            {
+            if (fileType.toLower() == tr("step") || fileType.toLower() == tr("stp")) {
                 format = TIGLViewerInputOutput::FormatSTEP;
             }
-            if (fileType.toLower() == tr("iges") || fileType.toLower() == tr("igs"))
-            {
+            if (fileType.toLower() == tr("iges") || fileType.toLower() == tr("igs")) {
                 format = TIGLViewerInputOutput::FormatIGES;
             }
-            if (fileType.toLower() == tr("stl"))
-            {
+            if (fileType.toLower() == tr("stl")) {
                 format = TIGLViewerInputOutput::FormatSTL;
             }
-            if (fileType.toLower() == tr("mesh"))
-            {
+            if (fileType.toLower() == tr("mesh")) {
                 format = TIGLViewerInputOutput::FormatMESH;
                 triangulation = true;
             }
@@ -330,7 +362,8 @@ void TIGLViewerWindow::openFile(const QString& fileName)
     myOCC->fitAll();
 }
 
-void TIGLViewerWindow::reopenFile(){
+void TIGLViewerWindow::reopenFile()
+{
     QString      fileType;
     QFileInfo    fileInfo;
 
@@ -355,8 +388,9 @@ void TIGLViewerWindow::setCurrentFile(const QString &fileName)
     QStringList files = settings.value("recentFileList").toStringList();
     files.removeAll(fileName);
     files.prepend(fileName);
-    while (files.size() > MaxRecentFiles)
+    while (files.size() > MaxRecentFiles) {
         files.removeLast();
+    }
 
     settings.setValue("recentFileList", files);
     settings.setValue("lastFolder", myLastFolder);
@@ -364,7 +398,8 @@ void TIGLViewerWindow::setCurrentFile(const QString &fileName)
     updateRecentFileActions();
 }
 
-void TIGLViewerWindow::loadSettings(){
+void TIGLViewerWindow::loadSettings()
+{
     QSettings settings("DLR SC-VK","TIGLViewer");
 
     bool showConsole = settings.value("show_console",QVariant(true)).toBool();
@@ -376,10 +411,11 @@ void TIGLViewerWindow::loadSettings(){
 
     tiglViewerSettings->loadSettings();
     settingsDialog->updateEntries();
-    myOCC->setBackgroundColor(tiglViewerSettings->BGColor());
+    applySettings();
 }
 
-void TIGLViewerWindow::saveSettings(){
+void TIGLViewerWindow::saveSettings()
+{
     QSettings settings("DLR SC-VK","TIGLViewer");
 
     bool showConsole = consoleDockWidget->isVisible();
@@ -391,9 +427,24 @@ void TIGLViewerWindow::saveSettings(){
     tiglViewerSettings->storeSettings();
 }
 
-void TIGLViewerWindow::changeSettings(){
-    settingsDialog->exec();
+void TIGLViewerWindow::applySettings()
+{
     myOCC->setBackgroundColor(tiglViewerSettings->BGColor());
+    myOCC->getContext()->SetIsoNumber(tiglViewerSettings->numFaceIsosForDisplay());
+    myOCC->getContext()->UpdateCurrentViewer();
+    if (tiglViewerSettings->debugBooleanOperations()) {
+        qputenv("TIGL_DEBUG_BOP", "1");
+    }
+    else {
+        qputenv("TIGL_DEBUG_BOP", "");
+    }
+}
+
+void TIGLViewerWindow::changeSettings()
+{
+    settingsDialog->updateEntries();
+    settingsDialog->exec();
+    applySettings();
 }
 
 
@@ -414,26 +465,25 @@ void TIGLViewerWindow::save()
 
     statusBar()->showMessage(tr("Invoked File|Save"));
 
-    fileName = QFileDialog::getSaveFileName(this, tr("Save as..."), myLastFolder, tr("Geometry Export (*.iges *.brep *.step *.stl *.vrml)"));
+    fileName = QFileDialog::getSaveFileName(this, tr("Save as..."), myLastFolder,
+                                            tr("IGES Geometry (*.igs);;") +
+                                            tr("STEP Geometry (*.stp);;") +
+                                            tr("STL Triangulation (*.stl);;") +
+                                            tr("BRep Geometry (*.brep)"));
 
-    if (!fileName.isEmpty())
-    {
+    if (!fileName.isEmpty()) {
         fileInfo.setFile(fileName);
         fileType = fileInfo.suffix();
-        if (fileType.toLower() == tr("brep") || fileType.toLower() == tr("rle"))
-        {
+        if (fileType.toLower() == tr("brep") || fileType.toLower() == tr("rle")) {
             format = TIGLViewerInputOutput::FormatBREP;
         }
-        if (fileType.toLower() == tr("step") || fileType.toLower() == tr("stp"))
-        {
+        if (fileType.toLower() == tr("step") || fileType.toLower() == tr("stp")) {
             format = TIGLViewerInputOutput::FormatSTEP;
         }
-        if (fileType.toLower() == tr("iges") || fileType.toLower() == tr("igs"))
-        {
+        if (fileType.toLower() == tr("iges") || fileType.toLower() == tr("igs")) {
             format = TIGLViewerInputOutput::FormatIGES;
         }
-        if (fileType.toLower() == tr("stl"))
-        {
+        if (fileType.toLower() == tr("stl")) {
             format = TIGLViewerInputOutput::FormatSTL;
         }
 
@@ -468,13 +518,11 @@ void TIGLViewerWindow::setBackgroundImage()
                                                   tr("Open Background Image"),
                                                 myLastFolder,
                                                 tr( "Images (*.gif *.bmp);;" ) );
-    if (!fileName.isEmpty())
-    {
+    if (!fileName.isEmpty()) {
         fileInfo.setFile(fileName);
         fileType = fileInfo.suffix();
         
-        if (fileType.toLower() == tr("bmp") || fileType.toLower() == tr("gif"))
-        {
+        if (fileType.toLower() == tr("bmp") || fileType.toLower() == tr("gif")) {
             myOCC->setBGImage(fileName);
         }
         else {
@@ -575,8 +623,8 @@ void TIGLViewerWindow::aboutQt()
 
 
 void TIGLViewerWindow::xyzPosition (V3d_Coordinate X,
-                              V3d_Coordinate Y,
-                              V3d_Coordinate Z)
+                                    V3d_Coordinate Y,
+                                    V3d_Coordinate Z)
 {
     QString aString;
     QTextStream ts(&aString);
@@ -585,8 +633,8 @@ void TIGLViewerWindow::xyzPosition (V3d_Coordinate X,
 }
 
 void TIGLViewerWindow::addPoint (V3d_Coordinate X,
-                           V3d_Coordinate Y,
-                           V3d_Coordinate Z)
+                                 V3d_Coordinate Y,
+                                 V3d_Coordinate Z)
 {
     AddVertex ( X, Y, Z, myVC->getContext() );
 }
@@ -685,7 +733,7 @@ void TIGLViewerWindow::connectSignals()
     connect(showAllWingsAndFuselagesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawAllFuselagesAndWings()));
     connect(showAllWingsAndFuselagesSurfacePointsAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawAllFuselagesAndWingsSurfacePoints()));
     connect(drawFusedAircraftAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFusedAircraft()));
-    connect(drawWingFuselageLineAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingFuselageIntersectionLine()));
+    connect(drawIntersectionAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawIntersectionLine()));
     connect(showFusedAirplaneTriangulation, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFusedAircraftTriangulation()));
     connect(drawFarFieldAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFarField()));
 
@@ -700,8 +748,6 @@ void TIGLViewerWindow::connectSignals()
     // Export functions
     connect(tiglExportFusedIgesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportFusedAsIges()));
     connect(tiglExportIgesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportAsIges()));
-    connect(tiglExportStructuredIgesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportAsStructuredIges()));
-    connect(tiglExportStepWithMetaDataAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportAsStepWithMetaData()));
     connect(tiglExportFusedStepAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportAsStepFused()));
     connect(tiglExportStepAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportAsStep()));
     connect(tiglExportMeshedWingSTL, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportMeshedWingSTL()));
@@ -716,6 +762,7 @@ void TIGLViewerWindow::connectSignals()
     connect(tiglExportFuselageColladaAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportFuselageCollada()));
     connect(tiglExportFuselageBRepAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportFuselageBRep()));
     connect(tiglExportWingBRepAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportWingBRep()));
+    connect(tiglExportFusedConfigBRep, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportFusedConfigBRep()));
 
     // The co-ordinates from the view
     connect( myOCC, SIGNAL(mouseMoved(V3d_Coordinate,V3d_Coordinate,V3d_Coordinate)),
@@ -744,8 +791,9 @@ void TIGLViewerWindow::connectSignals()
 
 void TIGLViewerWindow::createMenus()
 {
-    for (int i = 0; i < MaxRecentFiles; ++i)
+    for (int i = 0; i < MaxRecentFiles; ++i) {
         recentFileMenu->addAction(recentFileActions[i]);
+    }
     updateRecentFileActions();
 }
 
@@ -762,18 +810,20 @@ void TIGLViewerWindow::updateRecentFileActions()
         recentFileActions[i]->setData(files[i]);
         recentFileActions[i]->setVisible(true);
     }
-    for (int j = numRecentFiles; j < MaxRecentFiles; ++j)
+    for (int j = numRecentFiles; j < MaxRecentFiles; ++j) {
         recentFileActions[j]->setVisible(false);
+    }
 
     recentFileMenu->setEnabled(numRecentFiles > 0);
 
     myLastFolder = settings.value("lastFolder").toString();
 }
 
-void TIGLViewerWindow::updateMenus(TiglCPACSConfigurationHandle hand){
+void TIGLViewerWindow::updateMenus(TiglCPACSConfigurationHandle hand)
+{
     int nWings = 0;
     int nFuselages = 0;
-    if(hand > 0){
+    if (hand > 0) {
         tiglGetWingCount(hand, &nWings);
         tiglGetFuselageCount(hand, &nFuselages);
     }
@@ -785,7 +835,7 @@ void TIGLViewerWindow::updateMenus(TiglCPACSConfigurationHandle hand){
 
     bool hasFarField = false;
     try {
-        if(hand > 0) {
+        if (hand > 0) {
             tigl::CCPACSConfiguration& config = tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(hand);
             hasFarField = config.GetFarField().GetFieldType() != tigl::NONE;
         }
@@ -794,10 +844,12 @@ void TIGLViewerWindow::updateMenus(TiglCPACSConfigurationHandle hand){
     drawFarFieldAction->setEnabled(hasFarField);
 }
 
-void TIGLViewerWindow::closeEvent(QCloseEvent*) {
+void TIGLViewerWindow::closeEvent(QCloseEvent*)
+{
     saveSettings();
 }
 
-TIGLViewerSettings& TIGLViewerWindow::getSettings(){
+TIGLViewerSettings& TIGLViewerWindow::getSettings()
+{
     return *tiglViewerSettings;
 }

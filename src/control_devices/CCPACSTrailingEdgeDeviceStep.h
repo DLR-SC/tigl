@@ -29,6 +29,7 @@
 #include "tixi.h"
 #include "CTiglError.h"
 #include "CCPACSHingeTranslation.h"
+#include "tigl_internal.h"
 
 namespace tigl
 {
@@ -46,16 +47,16 @@ private:
     CCPACSHingeTranslation outerHingeTranslation;
 
 public:
-    CCPACSTrailingEdgeDeviceStep();
+    TIGL_EXPORT CCPACSTrailingEdgeDeviceStep();
 
-    void ReadCPACS(TixiDocumentHandle tixiHandle,
+    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle,
             const std::string & TrailingEdgeDeviceStepXPath);
 
-    CCPACSHingeTranslation getInnerHingeTranslation();
-    CCPACSHingeTranslation getOuterHingeTranslation();
+    TIGL_EXPORT CCPACSHingeTranslation getInnerHingeTranslation();
+    TIGL_EXPORT CCPACSHingeTranslation getOuterHingeTranslation();
 
-    double getRelDeflection();
-    double getHingeLineRotation();
+    TIGL_EXPORT double getRelDeflection();
+    TIGL_EXPORT double getHingeLineRotation();
 
 };
 

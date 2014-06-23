@@ -37,142 +37,142 @@
 #include "GeomAbs_Shape.hxx"
 #include "Precision.hxx"
             
-namespace tigl {
+namespace tigl 
+{
 
-    // Constructor
-    CTiglApproximateBsplineWire::CTiglApproximateBsplineWire()
-    {
+// Constructor
+CTiglApproximateBsplineWire::CTiglApproximateBsplineWire()
+{
+}
+
+// Destructor
+CTiglApproximateBsplineWire::~CTiglApproximateBsplineWire(void)
+{
+}
+
+// Builds the wire from the given points
+TopoDS_Wire CTiglApproximateBsplineWire::BuildWire(const CPointContainer& points, bool forceClosed) const
+{
+    if (points.size() < 2) {
+        throw CTiglError("Error: To less points to build a wire in CTiglApproximateBsplineWire::BuildWire", TIGL_ERROR);
     }
 
-    // Destructor
-    CTiglApproximateBsplineWire::~CTiglApproximateBsplineWire(void)
-    {
+    // If first and last point are identical always force wire closure independently of given forceClosed flag.
+    if (points[0].Distance(points[points.size() - 1]) <= Precision::Confusion()) {
+        forceClosed = true;
     }
 
-    // Builds the wire from the given points
-    TopoDS_Wire CTiglApproximateBsplineWire::BuildWire(const CPointContainer& points, bool forceClosed) const
-    {
-        if (points.size() < 2)
-            throw CTiglError("Error: To less points to build a wire in CTiglApproximateBsplineWire::BuildWire", TIGL_ERROR);
-
-        // If first and last point are identical always force wire closure independently of given forceClosed flag.
-        if (points[0].Distance(points[points.size() - 1]) <= Precision::Confusion())
-            forceClosed = true;
-
-        TColgp_Array1OfPnt pointsArray(1, points.size());
-        for (CPointContainer::size_type i = 0; i < points.size(); i++) 
-        {
-            pointsArray.SetValue(i + 1, points[i]);
-        }
-
-        Handle(Geom_BSplineCurve) hcurve = GeomAPI_PointsToBSpline(
-            pointsArray, 
-            Geom_BSplineCurve::MaxDegree() - 6, 
-            Geom_BSplineCurve::MaxDegree(), 
-            GeomAbs_C2, 
-            Precision::Confusion()).Curve();
-
-        // This one works around a bug in OpenCascade if a curve is closed and
-        // periodic. After calling this method, the curve is still closed but
-        // no longer periodic, which leads to errors when creating the 3d-lofts
-        // from the curves.
-        hcurve->SetNotPeriodic();
-
-        TopoDS_Edge edge = BRepBuilderAPI_MakeEdge(hcurve);
-        BRepBuilderAPI_MakeWire wireBuilder(edge);
-        if (!wireBuilder.IsDone()) 
-            throw CTiglError("Error: Wire construction failed in CTiglApproximateBsplineWire::BuildWire", TIGL_ERROR);
-
-        TopoDS_Wire wire = wireBuilder.Wire();
-
-        if (forceClosed && !hcurve->IsClosed())
-        {
-            gp_Pnt startPnt = hcurve->StartPoint();
-            gp_Pnt endPnt   = hcurve->EndPoint();
-            if (startPnt.Distance(endPnt) <= Precision::Confusion())
-                throw CTiglError("Error: Can't find a valid start and end point for wire closing in"
-                                 "CTiglApproximateBsplineWire::BuildWire", TIGL_ERROR);
-            edge = BRepBuilderAPI_MakeEdge(endPnt, startPnt);
-            wire = BRepBuilderAPI_MakeWire(wire, edge).Wire();
-            if (!wire.Closed())
-                throw CTiglError("Error: Wire closing failed in CTiglApproximateBsplineWire::BuildWire", TIGL_ERROR);
-        }
-
-        return wire;
+    TColgp_Array1OfPnt pointsArray(1, points.size());
+    for (CPointContainer::size_type i = 0; i < points.size(); i++) {
+        pointsArray.SetValue(i + 1, points[i]);
     }
 
-    // Returns the algorithm code identifier for an algorithm
-    TiglAlgorithmCode CTiglApproximateBsplineWire::GetAlgorithmCode(void) const
-    {
-        return TIGL_APPROXIMATE_BSPLINE_WIRE;
+    Handle(Geom_BSplineCurve) hcurve = GeomAPI_PointsToBSpline(
+        pointsArray, 
+        Geom_BSplineCurve::MaxDegree() - 6, 
+        Geom_BSplineCurve::MaxDegree(), 
+        GeomAbs_C2, 
+        Precision::Confusion()).Curve();
+
+    // This one works around a bug in OpenCascade if a curve is closed and
+    // periodic. After calling this method, the curve is still closed but
+    // no longer periodic, which leads to errors when creating the 3d-lofts
+    // from the curves.
+    hcurve->SetNotPeriodic();
+
+    TopoDS_Edge edge = BRepBuilderAPI_MakeEdge(hcurve);
+    BRepBuilderAPI_MakeWire wireBuilder(edge);
+    if (!wireBuilder.IsDone()) {
+        throw CTiglError("Error: Wire construction failed in CTiglApproximateBsplineWire::BuildWire", TIGL_ERROR);
     }
 
-    // Returns the point on the wire with the smallest x value
-    gp_Pnt CTiglApproximateBsplineWire::GetPointWithMinX(const CPointContainer& points) const
-    {
-        if (points.size() == 0)
-        {
-            throw CTiglError("Error: To less points in CTiglInterpolateBsplineWire::GetPointWithMinX", TIGL_ERROR);
-        }
+    TopoDS_Wire wire = wireBuilder.Wire();
 
-        gp_Pnt minXPnt = points[0];
-        for (CPointContainer::size_type i = 0; i < points.size(); i++)
-        {
-            if (points[i].X() < minXPnt.X())
-                minXPnt = points[i];
+    if (forceClosed && !hcurve->IsClosed()) {
+        gp_Pnt startPnt = hcurve->StartPoint();
+        gp_Pnt endPnt   = hcurve->EndPoint();
+        if (startPnt.Distance(endPnt) <= Precision::Confusion()) {
+            throw CTiglError("Error: Can't find a valid start and end point for wire closing in"
+                             "CTiglApproximateBsplineWire::BuildWire", TIGL_ERROR);
         }
-        return minXPnt;
+        edge = BRepBuilderAPI_MakeEdge(endPnt, startPnt);
+        wire = BRepBuilderAPI_MakeWire(wire, edge).Wire();
+        if (!wire.Closed()) {
+            throw CTiglError("Error: Wire closing failed in CTiglApproximateBsplineWire::BuildWire", TIGL_ERROR);
+        }
     }
 
-    // Returns the point on the wire with the biggest x value
-    gp_Pnt CTiglApproximateBsplineWire::GetPointWithMaxX(const CPointContainer& points) const
-    {
-        if (points.size() == 0)
-        {
-            throw CTiglError("Error: To less points in CTiglInterpolateBsplineWire::GetPointWithMaxX", TIGL_ERROR);
-        }
+    return wire;
+}
 
-        gp_Pnt maxXPnt = points[0];
-        for (CPointContainer::size_type i = 0; i < points.size(); i++)
-        {
-            if (points[i].X() > maxXPnt.X())
-                maxXPnt = points[i];
-        }
-        return maxXPnt;
+// Returns the algorithm code identifier for an algorithm
+TiglAlgorithmCode CTiglApproximateBsplineWire::GetAlgorithmCode(void) const
+{
+    return TIGL_APPROXIMATE_BSPLINE_WIRE;
+}
+
+// Returns the point on the wire with the smallest x value
+gp_Pnt CTiglApproximateBsplineWire::GetPointWithMinX(const CPointContainer& points) const
+{
+    if (points.size() == 0) {
+        throw CTiglError("Error: To less points in CTiglInterpolateBsplineWire::GetPointWithMinX", TIGL_ERROR);
     }
 
-    // Returns the point on the wire with the smallest y value
-    gp_Pnt CTiglApproximateBsplineWire::GetPointWithMinY(const CPointContainer& points) const
-    {
-        if (points.size() == 0)
-        {
-            throw CTiglError("Error: To less points in CTiglInterpolateBsplineWire::GetPointWithMinY", TIGL_ERROR);
+    gp_Pnt minXPnt = points[0];
+    for (CPointContainer::size_type i = 0; i < points.size(); i++) {
+        if (points[i].X() < minXPnt.X()) {
+            minXPnt = points[i];
         }
+    }
+    return minXPnt;
+}
 
-        gp_Pnt minYPnt = points[0];
-        for (CPointContainer::size_type i = 0; i < points.size(); i++)
-        {
-            if (points[i].Y() < minYPnt.Y())
-                minYPnt = points[i];
-        }
-        return minYPnt;
+// Returns the point on the wire with the biggest x value
+gp_Pnt CTiglApproximateBsplineWire::GetPointWithMaxX(const CPointContainer& points) const
+{
+    if (points.size() == 0) {
+        throw CTiglError("Error: To less points in CTiglInterpolateBsplineWire::GetPointWithMaxX", TIGL_ERROR);
     }
 
-    // Returns the point on the wire with the biggest y value
-    gp_Pnt CTiglApproximateBsplineWire::GetPointWithMaxY(const CPointContainer& points) const
-    {
-        if (points.size() == 0)
-        {
-            throw CTiglError("Error: To less points in CTiglInterpolateBsplineWire::GetPointWithMaxY", TIGL_ERROR);
+    gp_Pnt maxXPnt = points[0];
+    for (CPointContainer::size_type i = 0; i < points.size(); i++) {
+        if (points[i].X() > maxXPnt.X()) {
+            maxXPnt = points[i];
         }
-
-        gp_Pnt maxYPnt = points[0];
-        for (CPointContainer::size_type i = 0; i < points.size(); i++)
-        {
-            if (points[i].Y() > maxYPnt.Y())
-                maxYPnt = points[i];
-        }
-        return maxYPnt;
     }
+    return maxXPnt;
+}
+
+// Returns the point on the wire with the smallest y value
+gp_Pnt CTiglApproximateBsplineWire::GetPointWithMinY(const CPointContainer& points) const
+{
+    if (points.size() == 0) {
+        throw CTiglError("Error: To less points in CTiglInterpolateBsplineWire::GetPointWithMinY", TIGL_ERROR);
+    }
+
+    gp_Pnt minYPnt = points[0];
+    for (CPointContainer::size_type i = 0; i < points.size(); i++) {
+        if (points[i].Y() < minYPnt.Y()) {
+            minYPnt = points[i];
+        }
+    }
+    return minYPnt;
+}
+
+// Returns the point on the wire with the biggest y value
+gp_Pnt CTiglApproximateBsplineWire::GetPointWithMaxY(const CPointContainer& points) const
+{
+    if (points.size() == 0) {
+        throw CTiglError("Error: To less points in CTiglInterpolateBsplineWire::GetPointWithMaxY", TIGL_ERROR);
+    }
+
+    gp_Pnt maxYPnt = points[0];
+    for (CPointContainer::size_type i = 0; i < points.size(); i++) {
+        if (points[i].Y() > maxYPnt.Y()) {
+            maxYPnt = points[i];
+        }
+    }
+    return maxYPnt;
+}
 
 } // end namespace tigl

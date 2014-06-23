@@ -19,23 +19,25 @@
 #ifndef CCPACSWINGCSSTRUCTURE_H
 #define CCPACSWINGCSSTRUCTURE_H
 
+#include "tigl_internal.h"
 #include "CCPACSWingShell.h"
 
-namespace tigl {
+namespace tigl
+{
 
 class CCPACSWingCSStructure
 {
 public:
-    CCPACSWingCSStructure();
+    TIGL_EXPORT CCPACSWingCSStructure();
     
-    void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& structureXPath);
+    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& structureXPath);
     
-    CCPACSWingShell& GetLowerShell();
-    CCPACSWingShell& GetUpperShell();
+    TIGL_EXPORT CCPACSWingShell& GetLowerShell();
+    TIGL_EXPORT CCPACSWingShell& GetUpperShell();
     
-    void Cleanup();
-    void Invalidate();
-    bool IsValid() const;
+    TIGL_EXPORT void Cleanup();
+    TIGL_EXPORT void Invalidate();
+    TIGL_EXPORT bool IsValid() const;
 private:
     CCPACSWingShell upperShell, lowerShell;
     

@@ -26,67 +26,76 @@
 #ifndef CTIGLUIDMANAGER_H
 #define CTIGLUIDMANAGER_H
 
+#include "tigl_internal.h"
 #include "CTiglAbstractPhysicalComponent.h"
 #include <map>
 #include <string>
 
-namespace tigl {
+namespace tigl 
+{
 
-    class CTiglUIDManager
-    {
+typedef std::map<const std::string, ITiglGeometricComponent*> ShapeContainerType;
 
-    private:
-        typedef std::map<const std::string, CTiglAbstractPhysicalComponent*> UIDStoreContainerType;
+class CTiglUIDManager
+{
+public:
+    // Constructor
+    TIGL_EXPORT CTiglUIDManager(void);
 
-    public:
-        // Constructor
-        CTiglUIDManager(void);
+    // Function to add a UID and a geometric component to the uid store.
+    TIGL_EXPORT void AddUID(const std::string& uid, ITiglGeometricComponent* componentPtr);
 
-        // Function to add a UID and a geometric component to the uid store.
-        void AddUID(const std::string& uid, CTiglAbstractPhysicalComponent* componentPtr);
+    // Checks if a UID already exists. 
+    TIGL_EXPORT bool HasUID(const std::string& uid) const;
 
-        // Checks if a UID already exists. 
-        bool HasUID(const std::string& uid) const;
+    // Returns a pointer to the geometric component for the given unique id.
+    TIGL_EXPORT ITiglGeometricComponent* GetComponent(const std::string& uid);
 
-        // Returns a pointer to the geometric component for the given unique id.
-        CTiglAbstractPhysicalComponent* GetComponent(const std::string& uid);
+    // Returns the parent component for a component or a null pointer
+    // if there is no parent.
+    TIGL_EXPORT CTiglAbstractPhysicalComponent* GetParentComponent(const std::string& uid);
 
-        // Returns the parent component for a component or a null pointer
-        // if there is no parent.
-        CTiglAbstractPhysicalComponent* GetParentComponent(const std::string& uid);
+    // Returns the root component of the geometric topology.
+    TIGL_EXPORT CTiglAbstractPhysicalComponent* GetRootComponent(void);
 
-        // Returns the root component of the geometric topology.
-        CTiglAbstractPhysicalComponent* GetRootComponent(void);
+    // Returns the contianer with all registered shapes
+    TIGL_EXPORT const ShapeContainerType& GetShapeContainer();
 
-        // Clears the uid store
-        void Clear(void);
+    // Clears the uid store
+    TIGL_EXPORT void Clear(void);
 
-        // Virtual Destructor
-        virtual ~CTiglUIDManager(void);
+    // Virtual Destructor
+    TIGL_EXPORT virtual ~CTiglUIDManager(void);
 
-    protected:
-           // Update internal UID manager data.
-        void Update(void);
+protected:
+       // Update internal UID manager data.
+    void Update(void);
 
-        // Returns the root component of the geometric topology.
-        void FindRootComponent(void);
+    // Returns the root component of the geometric topology.
+    void FindRootComponent(void);
 
-        // Builds the parent child relationships.
-        void BuildParentChildTree(void);
+    // Builds the parent child relationships.
+    void BuildParentChildTree(void);
+    
+    
+    // Returns a pointer to the geometric component for the given unique id.
+    TIGL_EXPORT CTiglAbstractPhysicalComponent* GetPhysicalComponent(const std::string& uid);
 
-    private:
-        // Copy constructor
-        CTiglUIDManager(const CTiglUIDManager& );
+private:
+    typedef std::map<const std::string, CTiglAbstractPhysicalComponent*> UIDStoreContainerType;
 
-        // Assignment operator
-        void operator=(const CTiglUIDManager& );
+    // Copy constructor
+    CTiglUIDManager(const CTiglUIDManager& );
 
-    private:
-        UIDStoreContainerType           uidStore;
-        bool                            invalidated;          /**< Internal state flag */
-        CTiglAbstractPhysicalComponent* rootComponent;        /**< Ptr to the root component of the component tree */
+    // Assignment operator
+    void operator=(const CTiglUIDManager& );
 
-    };
+    UIDStoreContainerType           physicalShapes;
+    ShapeContainerType              allShapes;
+    bool                            invalidated;          /**< Internal state flag */
+    CTiglAbstractPhysicalComponent* rootComponent;        /**< Ptr to the root component of the component tree */
+
+};
 
 } // end namespace tigl
 

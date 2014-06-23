@@ -32,9 +32,11 @@
 #include "CCPACSWing.h"
 #include "CCPACSFuselage.h"
 
-class TiglIntersection : public ::testing::Test {
- protected:
-  virtual void SetUp() {
+class TiglIntersectionCalculation : public ::testing::Test
+{
+protected:
+    virtual void SetUp()
+    {
         const char* filename = "TestData/simpletest.cpacs.xml";
         ReturnCode tixiRet;
         TiglReturnCode tiglRet;
@@ -47,14 +49,15 @@ class TiglIntersection : public ::testing::Test {
 
         tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "Cpacs2Test", &tiglHandle);
         ASSERT_TRUE(tiglRet == TIGL_SUCCESS);
-  }
+    }
 
-  virtual void TearDown() {
+    virtual void TearDown()
+    {
         ASSERT_TRUE(tiglCloseCPACSConfiguration(tiglHandle) == TIGL_SUCCESS);
         ASSERT_TRUE(tixiCloseDocument(tixiHandle) == SUCCESS);
         tiglHandle = -1;
         tixiHandle = -1;
-  }
+    }
 
     TixiDocumentHandle           tixiHandle;
     TiglCPACSConfigurationHandle tiglHandle;
@@ -64,7 +67,7 @@ class TiglIntersection : public ::testing::Test {
 /**
 * Tests 
 */
-TEST_F(TiglIntersection, tiglIntersection_FuselageWingIntersects)
+TEST_F(TiglIntersectionCalculation, tiglIntersection_FuselageWingIntersects)
 {
     tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
     tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
@@ -75,8 +78,69 @@ TEST_F(TiglIntersection, tiglIntersection_FuselageWingIntersects)
     TopoDS_Shape& fuselageShape = fuselage.GetLoft();
 
     tigl::CTiglIntersectionCalculation iCalc(&config.GetShapeCache(), fuselage.GetUID(), wing.GetUID(), fuselageShape, wingShape);
-    
-    ASSERT_EQ(1, iCalc.GetNumWires());
+
+    ASSERT_EQ(1, iCalc.GetCountIntersectionLines());
 }
 
+TEST_F(TiglIntersectionCalculation, tiglIntersectComponents)
+{
+    size_t id = 0;
+    int count = 0;
+    double px, py, pz;
+    ASSERT_EQ(TIGL_SUCCESS, tiglIntersectComponents(tiglHandle, "Wing", "SimpleFuselage", &id));
+    ASSERT_EQ(TIGL_SUCCESS, tiglIntersectGetLineCount(tiglHandle, id, &count));
+    ASSERT_EQ(1, count);
+    ASSERT_EQ(TIGL_SUCCESS, tiglIntersectGetPoint(tiglHandle, id, 1, 0., &px, &py, &pz));
+    
+    // tests errors of tiglIntersectGetPoint since we already have a result
+    ASSERT_EQ(TIGL_NOT_FOUND,    tiglIntersectGetPoint(-1, id, 1, 0., &px, &py, &pz));
+    ASSERT_EQ(TIGL_NOT_FOUND,    tiglIntersectGetPoint(tiglHandle, 1234567890, 1, 0., &px, &py, &pz));
+    ASSERT_EQ(TIGL_INDEX_ERROR,  tiglIntersectGetPoint(tiglHandle, id, 0, 0., &px, &py, &pz));
+    ASSERT_EQ(TIGL_INDEX_ERROR,  tiglIntersectGetPoint(tiglHandle, id, 2, 0., &px, &py, &pz));
+    ASSERT_EQ(TIGL_MATH_ERROR,   tiglIntersectGetPoint(tiglHandle, id, 1, -0.5, &px, &py, &pz));
+    ASSERT_EQ(TIGL_MATH_ERROR,   tiglIntersectGetPoint(tiglHandle, id, 1,  1.5, &px, &py, &pz));
+    ASSERT_EQ(TIGL_NULL_POINTER, tiglIntersectGetPoint(tiglHandle, id, 1, 0.5, NULL, &py, &pz));
+    ASSERT_EQ(TIGL_NULL_POINTER, tiglIntersectGetPoint(tiglHandle, id, 1, 0.5, &px, NULL, &pz));
+    ASSERT_EQ(TIGL_NULL_POINTER, tiglIntersectGetPoint(tiglHandle, id, 1, 0.5, &px, &py, NULL));
+}
+
+TEST_F(TiglIntersectionCalculation, tiglIntersectWithPlane)
+{
+    size_t id = 0;
+    int count = 0;
+    ASSERT_EQ(TIGL_SUCCESS, tiglIntersectWithPlane(tiglHandle, "SimpleFuselage", 0., 0., 0., 0., 0., 1., &id));
+    ASSERT_EQ(TIGL_SUCCESS, tiglIntersectGetLineCount(tiglHandle, id, &count));
+    ASSERT_EQ(1, count);
+
+    ASSERT_EQ(TIGL_SUCCESS, tiglIntersectWithPlane(tiglHandle, "SimpleFuselage", 0., 0., 2., 0., 0., 1., &id));
+    ASSERT_EQ(TIGL_SUCCESS, tiglIntersectGetLineCount(tiglHandle, id, &count));
+    ASSERT_EQ(0, count);
+
+    ASSERT_EQ(TIGL_NOT_FOUND,    tiglIntersectWithPlane(-1, "SimpleFuselage", 0., 0., 0., 0., 0., 1., &id));
+    ASSERT_EQ(TIGL_UID_ERROR,    tiglIntersectWithPlane(tiglHandle, "UNKNOWN_UID", 0., 0., 0., 0., 0., 1., &id));
+    ASSERT_EQ(TIGL_NULL_POINTER, tiglIntersectWithPlane(tiglHandle, NULL, 0., 0., 0., 0., 0., 1., &id));
+    ASSERT_EQ(TIGL_NULL_POINTER, tiglIntersectWithPlane(tiglHandle, "SimpleFuselage", 0., 0., 0., 0., 0., 1., NULL));
+    ASSERT_EQ(TIGL_MATH_ERROR,   tiglIntersectWithPlane(tiglHandle, "SimpleFuselage", 0., 0., 0., 0., 0., 0., &id));
+}
+
+TEST_F(TiglIntersectionCalculation, tiglIntersectComponents_Errors)
+{
+    size_t id = 0;
+    ASSERT_EQ(TIGL_UID_ERROR,    tiglIntersectComponents(tiglHandle, "UNKNOWN_UID", "SimpleFuselage", &id));
+    ASSERT_EQ(TIGL_UID_ERROR,    tiglIntersectComponents(tiglHandle, "Wing", "UNKNOWN_UID", &id));
+    ASSERT_EQ(TIGL_NOT_FOUND,    tiglIntersectComponents(-1, "Wing", "SimpleFuselage", &id));
+    ASSERT_EQ(TIGL_NULL_POINTER, tiglIntersectComponents(tiglHandle, NULL, "SimpleFuselage", &id));
+    ASSERT_EQ(TIGL_NULL_POINTER, tiglIntersectComponents(tiglHandle, "Wing", NULL, &id));
+    ASSERT_EQ(TIGL_NULL_POINTER, tiglIntersectComponents(tiglHandle, "Wing", "SimpleFuselage", NULL));
+}
+
+TEST_F(TiglIntersectionCalculation, tiglIntersectGetLineCount_Errors)
+{
+    size_t id = 0;
+    int count = 0;
+    ASSERT_EQ(TIGL_NOT_FOUND, tiglIntersectGetLineCount(-1, id, &count));
+    ASSERT_EQ(TIGL_NULL_POINTER, tiglIntersectGetLineCount(tiglHandle, id, NULL));
+    // lets hope the id is invalid
+    ASSERT_EQ(TIGL_NOT_FOUND, tiglIntersectGetLineCount(tiglHandle, 1234567890, &count));
+}
 

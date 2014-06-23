@@ -27,49 +27,51 @@
 #define CCPACSHEADER_H
 
 #include <string>
+#include "tigl_internal.h"
 #include "tixi.h"
 
-namespace tigl {
+namespace tigl
+{
 
-    class CCPACSHeader
-    {
+class CCPACSHeader
+{
 
-    public:
-        // Constructor
-        CCPACSHeader(const std::string& aName = "", const std::string& aCreator = "", const std::string& aTimestamp = "");
+public:
+    // Constructor
+    TIGL_EXPORT CCPACSHeader(const std::string& aName = "", const std::string& aCreator = "", const std::string& aTimestamp = "");
 
-        // Virtual Destructor
-        virtual ~CCPACSHeader(void);
+    // Virtual Destructor
+    TIGL_EXPORT virtual ~CCPACSHeader(void);
 
-        // Getter/Setter for member name
-        std::string GetName(void) const;
+    // Getter/Setter for member name
+    TIGL_EXPORT std::string GetName(void) const;
 
-        // Getter/Setter for member creator
-        std::string GetCreator(void) const;
+    // Getter/Setter for member creator
+    TIGL_EXPORT std::string GetCreator(void) const;
 
-        // Getter/Setter for member timestamp
-        std::string GetTimestamp(void) const;
+    // Getter/Setter for member timestamp
+    TIGL_EXPORT std::string GetTimestamp(void) const;
 
-        // Read CPACS header elements
-        void ReadCPACS(TixiDocumentHandle tixiHandle);
+    // Read CPACS header elements
+    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle);
 
-    protected:
-        // Cleanup routine
-        void Cleanup(void);
+protected:
+    // Cleanup routine
+    void Cleanup(void);
 
-    private:
-        // Copy constructor
-        CCPACSHeader(const CCPACSHeader& ) { /* Do nothing */ }
+private:
+    // Copy constructor
+    CCPACSHeader(const CCPACSHeader& ) { /* Do nothing */ }
 
-        // Assignment operator
-        void operator=(const CCPACSHeader& ) { /* Do nothing */ }
+    // Assignment operator
+    void operator=(const CCPACSHeader& ) { /* Do nothing */ }
 
-    private:
-        std::string name;       /**< Configuration name          */
-        std::string creator;    /**< Configuration author        */
-        std::string timestamp;  /**< Configuration creation time */
+private:
+    std::string name;       /**< Configuration name          */
+    std::string creator;    /**< Configuration author        */
+    std::string timestamp;  /**< Configuration creation time */
 
-    };
+};
 
 } // end namespace tigl
 

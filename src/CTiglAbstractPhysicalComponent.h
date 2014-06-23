@@ -31,67 +31,49 @@
 #include <string>
 
 #include "tigl.h"
+#include "tigl_internal.h"
 #include "tigl_config.h"
 #include "CTiglAbstractGeometricComponent.h"
 #include "CTiglTransformation.h"
 #include "CTiglPoint.h"
 
-#ifdef TIGL_USE_XCAF
-#include "TDF_Label.hxx"
-#include "Handle_XCAFDoc_ShapeTool.hxx"
-#endif
+namespace tigl 
+{
 
+class CTiglAbstractPhysicalComponent : public CTiglAbstractGeometricComponent
+{
 
-namespace tigl {
+public:
+    // Container type to store a components children
+    typedef std::list<CTiglAbstractPhysicalComponent*> ChildContainerType;
 
-    class CTiglAbstractPhysicalComponent : public CTiglAbstractGeometricComponent
-    {
+    TIGL_EXPORT CTiglAbstractPhysicalComponent();
 
-    public:
-        // Container type to store a components children
-        typedef std::list<CTiglAbstractPhysicalComponent*> ChildContainerType;
+    // Returns the parent unique id
+    TIGL_EXPORT virtual std::string& GetParentUID(void);
 
-    protected:
-        // Define a std::map to store the indices of already fused segments
-        typedef std::map<int, int> FusedElementsContainerType;
+    // Sets the parent uid.
+    TIGL_EXPORT virtual void SetParentUID(const std::string& parentUID);
 
-    public:
-        CTiglAbstractPhysicalComponent();
+    // Adds a child to this geometric component.
+    TIGL_EXPORT virtual void AddChild(CTiglAbstractPhysicalComponent* componentPtr);
 
-        // Returns the parent unique id
-        virtual std::string& GetParentUID(void);
+    // Returns a pointer to the list of children of a component.
+    TIGL_EXPORT virtual ChildContainerType GetChildren(bool recursive);
 
-        // Sets the parent uid.
-        virtual void SetParentUID(const std::string& parentUID);
+    TIGL_EXPORT virtual void SetSymmetryAxis(const std::string& axis);
 
-        // Adds a child to this geometric component.
-        virtual void AddChild(CTiglAbstractPhysicalComponent* componentPtr);
+protected:
+    // Define a std::map to store the indices of already fused segments
+    typedef std::map<int, int> FusedElementsContainerType;
 
-        // Returns a pointer to the list of children of a component.
-        virtual ChildContainerType GetChildren(bool recursive);
+    // Resets the geometric component.
+    virtual void Reset(void);
 
-        // number of segments
-        //virtual int GetSegmentCount(void) const = 0;
+    ChildContainerType childContainer;
+    std::string        parentUID;       /**< UID of the parent of this component */
 
-        // builds data structure for a TDocStd_Application
-        // mostly used for export
-#ifdef TIGL_USE_XCAF
-        virtual TDF_Label ExportDataStructure(class CCPACSConfiguration& config, Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label);
-#endif
-
-        // Returns the segment for a given index
-        //virtual class CTiglAbstractSegment & GetSegment(const int index) = 0;
-
-        virtual void SetSymmetryAxis(const std::string& axis);
-
-    protected:
-        // Resets the geometric component.
-        virtual void Reset(void);
-
-        ChildContainerType childContainer;
-        std::string        parentUID;       /**< UID of the parent of this component */
-
-    };
+};
 
 } // end namespace tigl
 

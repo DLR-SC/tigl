@@ -31,6 +31,7 @@
 
 #include "tixi.h"
 #include "CTiglError.h"
+#include "tigl_internal.h"
 
 namespace tigl
 {
@@ -46,14 +47,14 @@ private:
 
 
 public:
-    CCPACSHingeTranslation();
+    TIGL_EXPORT CCPACSHingeTranslation();
 
-    void ReadCPACS(TixiDocumentHandle tixiHandle,
+    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle,
             const std::string & HingeTranslationXPath);
 
-    double getX();
-    double getY();
-    double getZ();
+    TIGL_EXPORT double getX();
+    TIGL_EXPORT double getY();
+    TIGL_EXPORT double getZ();
 
 };
 

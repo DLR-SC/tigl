@@ -25,71 +25,68 @@
 #include <TopoDS_Shape.hxx>
 #include <gp_Trsf.hxx>
 
-TEST(ShapeCache, GetNShapes){
+TEST(ShapeCache, GetNShapes)
+{
     tigl::CTiglShapeCache cache;
     TopoDS_Shape shape;
     
-    ASSERT_EQ(0, cache.GetNShapesOfType("blubb"));
-    cache.GetContainer()["blubb::0"] = shape;
+    ASSERT_FALSE(cache.HasShape(1));
+    cache.GetContainer()[1] = shape;
     
     ASSERT_EQ(1, cache.GetNShape());
-    ASSERT_EQ(1, cache.GetNShapesOfType("blubb"));
+    ASSERT_TRUE(cache.HasShape(1));
     
-    cache.GetContainer()["blubb::1"] = shape;
+    cache.GetContainer()[2] = shape;
     
     ASSERT_EQ(2, cache.GetNShape());
-    ASSERT_EQ(2, cache.GetNShapesOfType("blubb"));
-    
-    cache.GetContainer()["flupp::0"] = shape;
-    
-    ASSERT_EQ(3, cache.GetNShape());
-    ASSERT_EQ(2, cache.GetNShapesOfType("blubb"));
-    ASSERT_EQ(1, cache.GetNShapesOfType("flupp"));
+    ASSERT_TRUE(cache.HasShape(2));
     
     cache.Clear();
     
     ASSERT_EQ(0, cache.GetNShape());
-    ASSERT_EQ(0, cache.GetNShapesOfType("blubb"));
+    ASSERT_FALSE(cache.HasShape(1));
 }
 
-TEST(ShapeCache, Insert){
+TEST(ShapeCache, Insert)
+{
     tigl::CTiglShapeCache cache;
     TopoDS_Shape shape;
     
-    cache.Insert(shape, "blubb");
-    ASSERT_EQ(1, cache.GetNShapesOfType("blubb"));
-    
-    cache.Insert(shape, "blubb");
-    ASSERT_EQ(2, cache.GetNShapesOfType("blubb"));
-    
-    cache.Insert(shape, "flubb");
-    ASSERT_EQ(2, cache.GetNShapesOfType("blubb"));
-    ASSERT_EQ(1, cache.GetNShapesOfType("flubb"));
-}
-
-TEST(ShapeCache, Remove){
-    tigl::CTiglShapeCache cache;
-    TopoDS_Shape shape;
-    
-    cache.Remove("blubb");
-    ASSERT_EQ(0, cache.GetNShapesOfType("blubb"));
-    
-    cache.Insert(shape, "blubb");
-    cache.Remove("blubb");
-    ASSERT_EQ(0, cache.GetNShapesOfType("blubb"));
-    
-    cache.Insert(shape, "blubb");
-    cache.Insert(shape, "blubb");
-    cache.Insert(shape, "flupp");
-    cache.Remove("blubb");
-    ASSERT_EQ(0, cache.GetNShapesOfType("blubb"));
+    cache.Insert(shape, 1);
+    ASSERT_TRUE(cache.HasShape(1));
     ASSERT_EQ(1, cache.GetNShape());
     
-    cache.Remove("flupp");
+    cache.Insert(shape, 2);
+    ASSERT_TRUE(cache.HasShape(1));
+    ASSERT_TRUE(cache.HasShape(2));
+    ASSERT_EQ(2, cache.GetNShape());
+}
+
+TEST(ShapeCache, Remove)
+{
+    tigl::CTiglShapeCache cache;
+    TopoDS_Shape shape;
+    
+    cache.Remove(1);
+    ASSERT_FALSE(cache.HasShape(1));
+    
+    cache.Insert(shape, 1);
+    cache.Remove(1);
+    ASSERT_FALSE(cache.HasShape(1));
+    
+    cache.Insert(shape, 1);
+    cache.Insert(shape, 2);
+    cache.Remove(1);
+    ASSERT_FALSE(cache.HasShape(1));
+    ASSERT_TRUE (cache.HasShape(2));
+    ASSERT_EQ(1, cache.GetNShape());
+    
+    cache.Remove(2);
     ASSERT_EQ(0, cache.GetNShape());
 }
 
-TEST(ShapeCache, Get){
+TEST(ShapeCache, Get)
+{
     tigl::CTiglShapeCache cache;
     
     // create 3 different shapes
@@ -112,21 +109,21 @@ TEST(ShapeCache, Get){
     ASSERT_FALSE(shape2.IsNull());
     ASSERT_FALSE(shape3.IsNull());
     
-    TopoDS_Shape shape = cache.GetShape("blubb");
-    ASSERT_EQ(1, shape.IsNull());
+    TopoDS_Shape shape = cache.GetShape(1);
+    ASSERT_TRUE(shape.IsNull());
     
-    cache.Insert(shape1, "blubb");
-    shape = cache.GetShape("blubb");
-    ASSERT_EQ(1, shape.IsEqual(shape1));
-    ASSERT_EQ(0, shape.IsEqual(shape2));
+    cache.Insert(shape1, 1);
+    shape = cache.GetShape(1);
+    ASSERT_TRUE (shape.IsEqual(shape1));
+    ASSERT_FALSE(shape.IsEqual(shape2));
     
-    cache.Insert(shape2, "blubb");
-    shape = cache.GetShape("blubb");
-    ASSERT_EQ(1, shape.IsEqual(shape1));
+    cache.Insert(shape2, 2);
+    shape = cache.GetShape(2);
+    ASSERT_TRUE(shape.IsEqual(shape2));
     
-    shape = cache.GetShape("blubb", 1);
-    ASSERT_EQ(1, shape.IsEqual(shape2));
+    shape = cache.GetShape(1);
+    ASSERT_TRUE(shape.IsEqual(shape1));
     
-    shape = cache.GetShape("blubb", 2);
-    ASSERT_EQ(1, shape.IsNull());
+    shape = cache.GetShape(3);
+    ASSERT_TRUE(shape.IsNull());
 }

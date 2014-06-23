@@ -32,63 +32,18 @@
 #include <sstream>
 #include <exception>
 
-#ifdef TIGL_USE_XCAF
-#include "Interface_Static.hxx"
-#include "TCollection_ExtendedString.hxx"
-#include "XCAFDoc_ShapeTool.hxx"
-#include "XCAFApp_Application.hxx"
-#include "XCAFDoc_DocumentTool.hxx"
-#include "TDocStd_Document.hxx"
-#include "IGESControl_Controller.hxx"
-#include "IGESCAFControl_Writer.hxx"
-#include "TDataStd_Name.hxx"
-#endif
+namespace tigl
+{
 
-namespace tigl {
+// Constructor
+CCPACSImportExport::CCPACSImportExport(CCPACSConfiguration& config)
+:myConfig(config)
+{
+}
 
-    // Constructor
-    CCPACSImportExport::CCPACSImportExport(CCPACSConfiguration& config)
-    :myConfig(config)
-    {
-    }
-
-    // Destructor
-    CCPACSImportExport::~CCPACSImportExport(void)
-    {
-    }
-
-#ifdef TIGL_USE_XCAF
-    Handle_TDocStd_Document CCPACSImportExport::buildXDEStructure()
-    {
-
-        Handle(XCAFApp_Application) hApp = XCAFApp_Application::GetApplication();
-        Handle(TDocStd_Document) hDoc;
-        hApp->NewDocument(TCollection_ExtendedString("MDTV-XCAF"), hDoc);
-        Handle_XCAFDoc_ShapeTool hShapeTool = XCAFDoc_DocumentTool::ShapeTool(hDoc->Main());
-        TDF_Label rootLabel= TDF_TagSource::NewChild(hDoc->Main());
-
-
-        CTiglUIDManager& uidManager = myConfig.GetUIDManager();
-
-        CTiglAbstractPhysicalComponent* rootComponent = uidManager.GetRootComponent();
-        if (rootComponent == NULL) {
-            LOG(ERROR) << "Error: No Root Component";
-            return NULL;
-        }
-
-        TDataStd_Name::Set (rootLabel, myConfig.GetUID().c_str());
-        rootComponent->ExportDataStructure(myConfig, hShapeTool, rootLabel);
-
-        // add far field to root label
-        if (myConfig.GetFarField().GetFieldType() != NONE) {
-            myConfig.GetFarField().ExportDataStructure(myConfig, hShapeTool, rootLabel);
-        }
-
-        return hDoc;
-    }
-#endif
-
-
-
+// Destructor
+CCPACSImportExport::~CCPACSImportExport(void)
+{
+}
 
 } // end namespace tigl

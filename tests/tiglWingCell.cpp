@@ -20,17 +20,10 @@
 
 #include "CCPACSWingCell.h"
 
-//forward declation of internal stuff
-namespace WingCellInternal {
-    struct Point2D{
-        double x;
-        double y;
-    };
-    double sign(Point2D p1, Point2D p2, Point2D p3);
-    double area(Point2D p1, Point2D p2, Point2D p3);
-}
+using namespace tigl;
 
-TEST(WingCell, IsInner){
+TEST(WingCell, IsInner)
+{
     tigl::CCPACSWingCell cell;
     cell.SetLeadingEdgeInnerPoint (0,0);
     cell.SetLeadingEdgeOuterPoint (1,0);
@@ -64,7 +57,8 @@ TEST(WingCell, IsInner){
     ASSERT_FALSE(cell.IsInside(-0.2, -0.5));
 }
 
-TEST(WingCell, IsInner_NonConvex){
+TEST(WingCell, IsInner_NonConvex)
+{
     tigl::CCPACSWingCell cell;
     cell.SetLeadingEdgeInnerPoint (0,0);
     cell.SetLeadingEdgeOuterPoint (1,0);
@@ -80,7 +74,8 @@ TEST(WingCell, IsInner_NonConvex){
     ASSERT_FALSE(cell.IsInside(1.0, 1.0));
 }
 
-TEST(WingCell, IsConvex){
+TEST(WingCell, IsConvex)
+{
     tigl::CCPACSWingCell cell;
     cell.SetLeadingEdgeInnerPoint (0,0);
     cell.SetLeadingEdgeOuterPoint (1,0);
@@ -102,7 +97,8 @@ TEST(WingCell, IsConvex){
     ASSERT_TRUE(cell.IsConvex());
 }
 
-TEST(WingCell, area){
+TEST(WingCell, area)
+{
     WingCellInternal::Point2D p1, p2, p3;
     p1.x = 1.; p1.y = 1.;
     p2.x = 2.; p2.y = 1.;

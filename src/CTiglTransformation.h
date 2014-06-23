@@ -26,99 +26,101 @@
 #ifndef CTIGLTRANSFORMATION_H
 #define CTIGLTRANSFORMATION_H
 
+#include "tigl_internal.h"
 #include "CTiglPoint.h"
 #include "gp_GTrsf.hxx"
 #include "gp_Pnt.hxx"
 #include "TopoDS.hxx"
 
-namespace tigl {
+namespace tigl 
+{
 
-    class CTiglTransformation
-    {
+class CTiglTransformation
+{
 
-    public:
-        // Constructor
-        CTiglTransformation(void);
-        CTiglTransformation(const gp_GTrsf& ocMatrix);
+public:
+    // Constructor
+    TIGL_EXPORT CTiglTransformation(void);
+    TIGL_EXPORT CTiglTransformation(const gp_GTrsf& ocMatrix);
 
-        // Virtual Destructor
-        virtual ~CTiglTransformation(void);
-        
-        CTiglTransformation& operator=(const CTiglTransformation&);
-
-        // Converts degree to radian, utility function
-        static double DegreeToRadian(double degree);
-
-        // Converts radian to degree, utility function
-        static double RadianToDegree(double radian);
-
-        // Sets matrix to identity matrix
-        void SetIdentity(void);
-
-        // Sets a value of the transformation matrix by row/col
-        void SetValue(int row, int col, double value);
-
-        // Returns the current transformation as gp_GTrsf object
-        gp_GTrsf Get_gp_GTrsf(void) const;
-
-        // Post multiply this matrix with another matrix and stores 
-        // the result in this matrix
-        void PostMultiply(const CTiglTransformation& aTrans);
-
-        // Pre multiply this matrix with another matrix and stores 
-        // The result in this matrix
-        void PreMultiply(const CTiglTransformation& aTrans);
-
-        // Adds a translation to the matrix
-        void AddTranslation(double tx, double ty, double tz);
-
-        // Adds a scaling transformation to the matrix
-        void AddScaling(double sx, double sy, double sz);
-
-        // Adds a rotation around the x,y,z axis to the matrix
-        void AddRotationX(double degreeX);
-        void AddRotationY(double degreeY);
-        void AddRotationZ(double degreeZ);
-
-        // Adds projection on xy plane by setting the z coordinate to 0
-        void AddProjectionOnXYPlane(void);
-
-        // Adds projection on xz plane by setting the y coordinate to 0
-        void AddProjectionOnXZPlane(void);
-
-        // Adds projection on yz plane by setting the x coordinate to 0
-        void AddProjectionOnYZPlane(void);
-
-        // Adds mirroring at xy plane
-        void AddMirroringAtXYPlane(void);
-
-        // Adds mirroring at xz plane
-        void AddMirroringAtXZPlane(void);
-
-        // Adds mirroring at yz plane
-        void AddMirroringAtYZPlane(void);
-
-        // Transforms a shape with the current transformation matrix and
-        // returns the transformed shape
-        TopoDS_Shape Transform(const TopoDS_Shape& shape) const;
-
-        // Transforms a point with the current transformation matrix and
-        // returns the transformed point
-        gp_Pnt Transform(const gp_Pnt& point) const;
-        
-        // Returns the inverted Transformation
-        CTiglTransformation Inverted() const;
-
-        // Default copy constructor and assignment operator are correct
-        // since memberwise copy is enough for this class.
-
-        // for debug purposes
-        void printTransformMatrix();
-
-    private:
-        double m_matrix[4][4];
+    // Virtual Destructor
+    TIGL_EXPORT virtual ~CTiglTransformation(void);
     
-    };
+    TIGL_EXPORT CTiglTransformation& operator=(const CTiglTransformation&);
+
+    // Converts degree to radian, utility function
+    TIGL_EXPORT static double DegreeToRadian(double degree);
+
+    // Converts radian to degree, utility function
+    TIGL_EXPORT static double RadianToDegree(double radian);
+
+    // Sets matrix to identity matrix
+    TIGL_EXPORT void SetIdentity(void);
+
+    // Sets a value of the transformation matrix by row/col
+    TIGL_EXPORT void SetValue(int row, int col, double value);
+
+    // Returns the current transformation as gp_GTrsf object
+    TIGL_EXPORT gp_GTrsf Get_gp_GTrsf(void) const;
+
+    // Post multiply this matrix with another matrix and stores 
+    // the result in this matrix
+    TIGL_EXPORT void PostMultiply(const CTiglTransformation& aTrans);
+
+    // Pre multiply this matrix with another matrix and stores 
+    // The result in this matrix
+    TIGL_EXPORT void PreMultiply(const CTiglTransformation& aTrans);
+
+    // Adds a translation to the matrix
+    TIGL_EXPORT void AddTranslation(double tx, double ty, double tz);
+
+    // Adds a scaling transformation to the matrix
+    TIGL_EXPORT void AddScaling(double sx, double sy, double sz);
+
+    // Adds a rotation around the x,y,z axis to the matrix
+    TIGL_EXPORT void AddRotationX(double degreeX);
+    TIGL_EXPORT void AddRotationY(double degreeY);
+    TIGL_EXPORT void AddRotationZ(double degreeZ);
+
+    // Adds projection on xy plane by setting the z coordinate to 0
+    TIGL_EXPORT void AddProjectionOnXYPlane(void);
+
+    // Adds projection on xz plane by setting the y coordinate to 0
+    TIGL_EXPORT void AddProjectionOnXZPlane(void);
+
+    // Adds projection on yz plane by setting the x coordinate to 0
+    TIGL_EXPORT void AddProjectionOnYZPlane(void);
+
+    // Adds mirroring at xy plane
+    TIGL_EXPORT void AddMirroringAtXYPlane(void);
+
+    // Adds mirroring at xz plane
+    TIGL_EXPORT void AddMirroringAtXZPlane(void);
+
+    // Adds mirroring at yz plane
+    TIGL_EXPORT void AddMirroringAtYZPlane(void);
+
+    // Transforms a shape with the current transformation matrix and
+    // returns the transformed shape
+    TIGL_EXPORT TopoDS_Shape Transform(const TopoDS_Shape& shape) const;
+
+    // Transforms a point with the current transformation matrix and
+    // returns the transformed point
+    TIGL_EXPORT gp_Pnt Transform(const gp_Pnt& point) const;
+    
+    // Returns the inverted Transformation
+    TIGL_EXPORT CTiglTransformation Inverted() const;
+
+    // Default copy constructor and assignment operator are correct
+    // since memberwise copy is enough for this class.
+
+    // for debug purposes
+    TIGL_EXPORT void printTransformMatrix();
+
+private:
+    double m_matrix[4][4];
+
+};
 
 } // end namespace tigl
 

@@ -81,9 +81,9 @@ void TIGLViewerSelectWingAndFlapStatusDialog::on_comboBoxWings_currentIndexChang
     vLayout->setSpacing(0);
     QPalette Pal(palette());
 
-    int noDevices = wing.GetWingComponentSegmentCount();
-    for ( int i = 1; i <= wing.GetWingComponentSegmentCount(); i++ ) {
-        tigl::CCPACSWingComponentSegment &componentSegment = wing.GetWingComponentSegment(i);
+    int noDevices = wing.GetComponentSegmentCount();
+    for ( int i = 1; i <= wing.GetComponentSegmentCount(); i++ ) {
+        tigl::CCPACSWingComponentSegment& componentSegment = (tigl::CCPACSWingComponentSegment&) wing.GetComponentSegment(i);
         if ( componentSegment.getControlSurfaces().getTrailingEdgeDevices()->getTrailingEdgeDeviceCount() < 1) {
             noDevices--;
             if (noDevices == 0) {

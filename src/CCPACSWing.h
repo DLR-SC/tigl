@@ -30,6 +30,7 @@
 
 #include "tigl_config.h"
 #include "tixi.h"
+#include "tigl_internal.h"
 #include "CTiglTransformation.h"
 #include "CTiglAbstractPhysicalComponent.h"
 #include "CCPACSWingSections.h"
@@ -41,179 +42,169 @@
 #include "TopoDS_Shape.hxx"
 
 
-namespace tigl {
+namespace tigl
+{
 
-    class CCPACSConfiguration;
+class CCPACSConfiguration;
 
-    class CCPACSWing : public CTiglAbstractPhysicalComponent
-    {
+class CCPACSWing : public CTiglAbstractPhysicalComponent
+{
 
-    public:
-        // Constructor
-        CCPACSWing(CCPACSConfiguration* config);
+public:
+    // Constructor
+    TIGL_EXPORT CCPACSWing(CCPACSConfiguration* config);
 
-        // Virtual destructor
-        virtual ~CCPACSWing(void);
+    // Virtual destructor
+    TIGL_EXPORT virtual ~CCPACSWing(void);
 
-        // Invalidates internal state
-        void Invalidate(void);
+    // Invalidates internal state
+    TIGL_EXPORT void Invalidate(void);
 
-        // Read CPACS wing elements
-        void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string & wingXPath);
+    // Read CPACS wing elements
+    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string & wingXPath);
 
-        // Returns the name of the wing
-        const std::string & GetName(void) const;
+    // Returns the name of the wing
+    TIGL_EXPORT const std::string & GetName(void) const;
 
-        // Returns the parent configuration
-        CCPACSConfiguration & GetConfiguration(void) const;
+    // Returns the parent configuration
+    TIGL_EXPORT CCPACSConfiguration & GetConfiguration(void) const;
 
-        // Get section count
-        int GetSectionCount(void) const;
+    // Get section count
+    TIGL_EXPORT int GetSectionCount(void) const;
 
-        // Returns the section for a given index
-        CCPACSWingSection & GetSection(int index) const;
+    // Returns the section for a given index
+    TIGL_EXPORT CCPACSWingSection & GetSection(int index) const;
 
-        // Get segment count
-        int GetSegmentCount(void) const;
+    // Get segment count
+    TIGL_EXPORT int GetSegmentCount(void) const;
 
-        // Returns the segment for a given index or uid
-        CTiglAbstractSegment & GetSegment(const int index);
-        CTiglAbstractSegment & GetSegment(std::string uid);
+    // Returns the segment for a given index or uid
+    TIGL_EXPORT CTiglAbstractSegment & GetSegment(const int index);
+    TIGL_EXPORT CTiglAbstractSegment & GetSegment(std::string uid);
 
-        // Return the WingComponentSegment for a given index
-        CCPACSWingComponentSegment& GetWingComponentSegment(int index);
+    // Get segment count
+    TIGL_EXPORT int GetComponentSegmentCount(void);
 
-        // Return the number of WingComponentSegments
-        int GetWingComponentSegmentCount();
+    // Returns the segment for a given index or uid
+    TIGL_EXPORT CTiglAbstractSegment & GetComponentSegment(const int index);
+    TIGL_EXPORT CTiglAbstractSegment & GetComponentSegment(std::string uid);
 
-        // Get segment count
-        int GetComponentSegmentCount(void);
+    // Extends given flap of this wing
+    TIGL_EXPORT TopoDS_Shape ExtendFlap(std::string flapUID, double flapDeflectionPercantage );
 
-        // Extends given flap of this wing
-        TopoDS_Shape ExtendFlap(std::string flapUID, double flapDeflectionPercantage );
+    // Adds all Segments of this wing and flaps to one shape
+    TIGL_EXPORT TopoDS_Shape BuildFusedSegmentsWithFlaps(bool splitWingInUpperAndLower, std::map<std::string,double> flapStatus);
 
-        // Adds all Segments of this wing and flaps to one shape
-        TopoDS_Shape BuildFusedSegmentsWithFlaps(bool splitWingInUpperAndLower, std::map<std::string,double> flapStatus);
+    // Gets the wing transformation
+    TIGL_EXPORT CTiglTransformation GetWingTransformation(void);
 
-#ifdef TIGL_USE_XCAF
-        // builds data structure for a TDocStd_Application
-        // mostly used for export
-        TDF_Label ExportDataStructure(CCPACSConfiguration& config, Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label);
-#endif
+    // Get the positioning transformation for a given section uid
+    TIGL_EXPORT CTiglTransformation GetPositioningTransformation(std::string sectionUID);
 
-        // Returns the segment for a given index or uid
-        CTiglAbstractSegment & GetComponentSegment(const int index);
-        CTiglAbstractSegment & GetComponentSegment(std::string uid);
+    // Gets the upper point in absolute (world) coordinates for a given segment, eta, xsi
+    TIGL_EXPORT gp_Pnt GetUpperPoint(int segmentIndex, double eta, double xsi);
 
-        // Gets the wing transformation
-        CTiglTransformation GetWingTransformation(void);
+    // Gets the upper point in absolute (world) coordinates for a given segment, eta, xsi
+    TIGL_EXPORT gp_Pnt GetLowerPoint(int segmentIndex, double eta, double xsi);
 
-        // Get the positioning transformation for a given section uid
-        CTiglTransformation GetPositioningTransformation(std::string sectionUID);
+    TIGL_EXPORT TopoDS_Shape & GetWingWithoutFlaps();
 
-        // Gets the upper point in absolute (world) coordinates for a given segment, eta, xsi
-        gp_Pnt GetUpperPoint(int segmentIndex, double eta, double xsi);
+    // Gets the loft of the whole wing
+    TIGL_EXPORT TopoDS_Shape & GetLoftWithLeadingEdge(void);
 
-        // Gets the upper point in absolute (world) coordinates for a given segment, eta, xsi
-        gp_Pnt GetLowerPoint(int segmentIndex, double eta, double xsi);
+    TIGL_EXPORT TopoDS_Shape & GetUpperShape();
+    TIGL_EXPORT TopoDS_Shape & GetLowerShape();
 
-        // Gets the loft of the whole wing
-        TopoDS_Shape & GetLoftWithLeadingEdge(void);
+    // Gets the volume of this wing
+    TIGL_EXPORT double GetVolume(void);
 
-        TopoDS_Shape & GetUpperShape();
-        TopoDS_Shape & GetLowerShape();
+    // Get the Transformation object
+    TIGL_EXPORT CTiglTransformation GetTransformation(void);
 
-        TopoDS_Shape & GetWingWithoutFlaps();
+    // Sets a Transformation object
+    TIGL_EXPORT void Translate(CTiglPoint trans);
 
-        // Gets the volume of this wing
-        double GetVolume(void);
+    // Get Translation
+    TIGL_EXPORT CTiglPoint GetTranslation(void);
 
-        // Get the Transformation object
-        CTiglTransformation GetTransformation(void);
+    // Gets the surfade area of this wing
+    TIGL_EXPORT double GetSurfaceArea();
 
-        // Sets a Transformation object
-        void Translate(CTiglPoint trans);
+    // Returns the reference area of the wing by taking account the drilateral portions
+    // of each wing segment by projecting the wing segments into the plane defined by the user
+    TIGL_EXPORT double GetReferenceArea(TiglSymmetryAxis symPlane);
 
-        // Get Translation
-        CTiglPoint GetTranslation(void);
+    // Returns wetted Area
+    TIGL_EXPORT double GetWettedArea(TopoDS_Shape parent);
 
-        // Gets the surfade area of this wing
-        double GetSurfaceArea();
+    // Returns the wingspan of the wing
+    TIGL_EXPORT double GetWingspan(void);
 
-        // Returns the reference area of the wing by taking account the drilateral portions
-        // of each wing segment by projecting the wing segments into the plane defined by the user
-        double GetReferenceArea(TiglSymmetryAxis symPlane);
+    // Returns the mean aerodynamic chord of the wing
+    TIGL_EXPORT void  GetWingMAC(double& mac_chord, double& mac_x, double& mac_y, double& mac_z);
 
-        // Returns wetted Area
-        double GetWettedArea(TopoDS_Shape parent);
+    // Calculates the segment coordinates from global (x,y,z) coordinates
+    // Returns the segment index of the according segment
+    // If x,y,z does not belong to any segment, -1 is returned
+    TIGL_EXPORT int GetSegmentEtaXsi(const gp_Pnt& xyz, double& eta, double& xsi, bool &onTop);
 
-        // Returns the wingspan of the wing
-        double GetWingspan(void);
+    // Returns the Component Type TIGL_COMPONENT_WING.
+    TIGL_EXPORT TiglGeometricComponentType GetComponentType(void) {return TIGL_COMPONENT_WING | TIGL_COMPONENT_PHYSICAL;}
 
-        // Returns the mean aerodynamic chord of the wing
-        void  GetWingMAC(double& mac_chord, double& mac_x, double& mac_y, double& mac_z);
+    // Returns the lower Surface of a Segment
+    TIGL_EXPORT Handle(Geom_Surface) GetLowerSegmentSurface(int index);
 
-        // Calculates the segment coordinates from global (x,y,z) coordinates
-        // Returns the segment index of the according segment
-        // If x,y,z does not belong to any segment, -1 is returned
-        int GetSegmentEtaXsi(const gp_Pnt& xyz, double& eta, double& xsi, bool &onTop);
+    // Returns the upper Surface of a Segment
+    TIGL_EXPORT Handle(Geom_Surface) GetUpperSegmentSurface(int index);
 
-        // Returns the Component Type TIGL_COMPONENT_WING.
-        TiglGeometricComponentType GetComponentType(void) {return TIGL_COMPONENT_WING | TIGL_COMPONENT_PHYSICAL;}
+    TIGL_EXPORT virtual void SetSymmetryAxis(const std::string& axis);
 
-        // Returns the lower Surface of a Segment
-        Handle(Geom_Surface) GetLowerSegmentSurface(int index);
+protected:
+    // Cleanup routine
+    void Cleanup(void);
 
-        // Returns the upper Surface of a Segment
-        Handle(Geom_Surface) GetUpperSegmentSurface(int index);
+    // Build transformation matrix for the wing
+    void BuildMatrix(void);
 
-        virtual void SetSymmetryAxis(const std::string& axis);
+    // Update internal wing data
+    void Update(void);
 
-    protected:
-        // Cleanup routine
-        void Cleanup(void);
+    // Adds all Segments of this wing to one shape
+    TopoDS_Shape BuildFusedSegments(bool splitWingInUpperAndLower);
 
-        // Build transformation matrix for the wing
-        void BuildMatrix(void);
+    TopoDS_Shape BuildLoft(void);
 
-        // Update internal wing data
-        void Update(void);
-
-        // Adds all Segments of this wing to one shape
-        TopoDS_Shape BuildFusedSegments(bool splitWingInUpperAndLower);
-
-        TopoDS_Shape BuildLoft(void);
-
-        void BuildUpperLowerShells();
+    void BuildUpperLowerShells();
 
 
-    private:
-        // Copy constructor
-        CCPACSWing(const CCPACSWing & );
+private:
+    // Copy constructor
+    CCPACSWing(const CCPACSWing & );
 
-        // Assignment operator
-        void operator=(const CCPACSWing & );
-        double linearInterpolation(std::vector<double> list1, std::vector<double> list2, double valueRelList1);
+    // Assignment operator
+    void operator=(const CCPACSWing & );
 
-    private:
-        std::string                    name;                     /**< Wing name           */
-        CCPACSWingSections             sections;                 /**< Wing sections       */
-        CCPACSWingSegments             segments;                 /**< Wing segments       */
-        CCPACSWingComponentSegments    componentSegments;        /**< Wing ComponentSegments */
-        CCPACSWingPositionings         positionings;             /**< Wing positionings   */
-        CCPACSConfiguration*           configuration;            /**< Parent configuration*/
-        TopoDS_Shape                   fusedSegmentWithEdge;     /**< All Segments in one shape plus modelled leading edge */
-        TopoDS_Shape                   upperShape;
-        TopoDS_Shape                   lowerShape;
-        TopoDS_Shape                   wingCutOutShape;          /**< Wing without flaps / flaps removed */
-        TopoDS_Shape                   wingCleanShape;           /**< Clean wing surface without flaps cutout*/
-        bool                           invalidated;              /**< Internal state flag */
-        bool                           rebuildFusedSegments;     /**< Indicates if segmentation fusing need rebuild */
-        bool                           rebuildFusedSegWEdge;     /**< Indicates if segmentation fusing need rebuild */
-        bool                           rebuildShells;
-        FusedElementsContainerType     fusedElements;            /**< Stores already fused segments */
-        double                         myVolume;                 /**< Volume of this Wing           */
-    };
+    double linearInterpolation(std::vector<double> list1, std::vector<double> list2, double valueRelList1);
+
+private:
+    std::string                    name;                     /**< Wing name           */
+    CCPACSWingSections             sections;                 /**< Wing sections       */
+    CCPACSWingSegments             segments;                 /**< Wing segments       */
+    CCPACSWingComponentSegments    componentSegments;        /**< Wing ComponentSegments */
+    CCPACSWingPositionings         positionings;             /**< Wing positionings   */
+    CCPACSConfiguration*           configuration;            /**< Parent configuration*/
+    TopoDS_Shape                   fusedSegmentWithEdge;     /**< All Segments in one shape plus modelled leading edge */
+    TopoDS_Shape                   upperShape;
+    TopoDS_Shape                   lowerShape;
+    TopoDS_Shape                   wingCutOutShape;          /**< Wing without flaps / flaps removed */
+    TopoDS_Shape                   wingCleanShape;           /**< Clean wing surface without flaps cutout*/
+    bool                           invalidated;              /**< Internal state flag */
+    bool                           rebuildFusedSegments;     /**< Indicates if segmentation fusing need rebuild */
+    bool                           rebuildFusedSegWEdge;     /**< Indicates if segmentation fusing need rebuild */
+    bool                           rebuildShells;
+    FusedElementsContainerType     fusedElements;            /**< Stores already fused segments */
+    double                         myVolume;                 /**< Volume of this Wing           */
+};
 
 } // end namespace tigl
 

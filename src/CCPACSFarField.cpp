@@ -29,39 +29,35 @@
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <TopExp_Explorer.hxx>
 
-#ifdef TIGL_USE_XCAF
-#include <XCAFDoc_ShapeTool.hxx>
-#include <XCAFApp_Application.hxx>
-#include <XCAFDoc_DocumentTool.hxx>
-#include <TDataStd_Name.hxx>
-#include <TDataXtd_Shape.hxx>
-#endif
+namespace tigl
+{
 
-namespace tigl {
-
-CCPACSFarField::CCPACSFarField() {
+CCPACSFarField::CCPACSFarField()
+{
     init();
 }
 
-CCPACSFarField::~CCPACSFarField() {
-}
+CCPACSFarField::~CCPACSFarField() {}
 
-void CCPACSFarField::init() {
+void CCPACSFarField::init()
+{
     fieldType = NONE;
     fieldSize = 0.;
     loft.Nullify();
     SetUID("FarField");
 }
 
-TiglFarFieldType CCPACSFarField::GetFieldType(){
+TiglFarFieldType CCPACSFarField::GetFieldType()
+{
     return fieldType;
 }
 
-void CCPACSFarField::ReadCPACS(TixiDocumentHandle tixiHandle) {
+void CCPACSFarField::ReadCPACS(TixiDocumentHandle tixiHandle)
+{
     init();
 
     std::string prefix = "/cpacs/toolspecific/cFD/farField";
-    if(tixiCheckElement(tixiHandle, prefix.c_str()) != SUCCESS) {
+    if (tixiCheckElement(tixiHandle, prefix.c_str()) != SUCCESS) {
         LOG(INFO) << "No far-field defined.";
         fieldType = NONE;
         return;
@@ -112,12 +108,13 @@ void CCPACSFarField::ReadCPACS(TixiDocumentHandle tixiHandle) {
     }
 }
 
-TopoDS_Shape CCPACSFarField::BuildLoft(void){
+TopoDS_Shape CCPACSFarField::BuildLoft(void)
+{
     TopoDS_Shape shape;
     shape.Nullify();
     gp_Pnt center(0,0,0);
 
-    switch(fieldType){
+    switch (fieldType) {
     case NONE:
         return shape;
     case FULL_SPHERE:
@@ -141,31 +138,10 @@ TopoDS_Shape CCPACSFarField::BuildLoft(void){
     return shape;
 }
 
-TiglGeometricComponentType CCPACSFarField::GetComponentType(void) {
+TiglGeometricComponentType CCPACSFarField::GetComponentType(void)
+{
     return TIGL_COMPONENT_LOGICAL;
 }
-
-#ifdef TIGL_USE_XCAF
-// builds data structure for a TDocStd_Application
-// mostly used for export
-TDF_Label CCPACSFarField::ExportDataStructure(CCPACSConfiguration&, Handle_XCAFDoc_ShapeTool &myAssembly, TDF_Label& label)
-{
-    // add faces of current shape
-    TopExp_Explorer faceExplorer;
-    int iface = 1;
-    for (faceExplorer.Init(GetLoft(), TopAbs_FACE); faceExplorer.More(); faceExplorer.Next()) {
-        const TopoDS_Face& currentFace = TopoDS::Face(faceExplorer.Current());
-
-        TDF_Label aLabel = myAssembly->AddShape(currentFace, false);
-        std::stringstream stream;
-        stream << GetUID() << "_face" << iface++;
-        TDataStd_Name::Set (aLabel, stream.str().c_str());
-
-    }
-
-    return label;
-}
-#endif
 
 } // namespace tigl
 

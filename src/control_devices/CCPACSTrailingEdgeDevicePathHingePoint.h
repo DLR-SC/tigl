@@ -28,6 +28,7 @@
 
 #include "tixi.h"
 #include "CTiglError.h"
+#include "tigl_internal.h"
 
 namespace tigl
 {
@@ -42,13 +43,13 @@ private:
 
 
 public:
-    CCPACSTrailingEdgeDevicePathHingePoint();
+    TIGL_EXPORT CCPACSTrailingEdgeDevicePathHingePoint();
 
-    void ReadCPACS(TixiDocumentHandle tixiHandle,
+    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle,
             const std::string & TrailingEdgeDevicePathHingePointXPath);
 
-    double getRelHeight();
-    double getXsi();
+    TIGL_EXPORT double getRelHeight();
+    TIGL_EXPORT double getXsi();
 
 };
 

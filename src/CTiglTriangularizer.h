@@ -22,15 +22,18 @@
 #ifndef CTIGLTRIANGULARIZER_H
 #define CTIGLTRIANGULARIZER_H
 
+#include "tigl_internal.h"
 #include "CTiglPolyData.h"
 #include <gp_Pnt.hxx>
 
 class TopoDS_Shape;
 class TopoDS_Face;
 
-namespace tigl {
+namespace tigl 
+{
 
-enum ComponentTraingMode {
+enum ComponentTraingMode 
+{
     NO_INFO,
     SEGMENT_INFO
 };
@@ -38,12 +41,12 @@ enum ComponentTraingMode {
 class CTiglTriangularizer : public CTiglPolyData
 {
 public:
-    CTiglTriangularizer();
-    CTiglTriangularizer(TopoDS_Shape&, double deflection, bool useMultipleObjects = false);
-    CTiglTriangularizer(class CTiglAbstractPhysicalComponent &comp, double deflection, ComponentTraingMode mode);
-    CTiglTriangularizer(class CCPACSConfiguration& config, bool fuseShapes, double deflection, ComponentTraingMode mode);
+    TIGL_EXPORT CTiglTriangularizer();
+    TIGL_EXPORT CTiglTriangularizer(TopoDS_Shape&, double deflection, bool useMultipleObjects = false);
+    TIGL_EXPORT CTiglTriangularizer(class CTiglAbstractPhysicalComponent &comp, double deflection, ComponentTraingMode mode);
+    TIGL_EXPORT CTiglTriangularizer(class CCPACSConfiguration& config, bool fuseShapes, double deflection, ComponentTraingMode mode);
     
-    void useMultipleObjects(bool);
+    TIGL_EXPORT void useMultipleObjects(bool);
     
 private:
     int triangularizeComponent(class CTiglAbstractPhysicalComponent &, bool includeChilds, TopoDS_Shape& shape, double deflection, ComponentTraingMode = NO_INFO);

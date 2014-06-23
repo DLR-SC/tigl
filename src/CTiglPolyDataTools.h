@@ -20,20 +20,22 @@
 #define CTIGLPOLYDATATOOLS_H
 
 
+#include "tigl_internal.h"
 #include <TopoDS_Shape.hxx>
 #include <Handle_Poly_Triangulation.hxx>
 #include <CTiglPolyData.h>
 
-namespace tigl {
+namespace tigl 
+{
 
 class CTiglPolyDataTools
 {
 public:
-    CTiglPolyDataTools();
+    TIGL_EXPORT CTiglPolyDataTools();
 
-    static TopoDS_Shape MakeTopoDS(CTiglPolyData& mesh);
+    TIGL_EXPORT static TopoDS_Shape MakeTopoDS(CTiglPolyData& mesh);
 
-    static Handle(Poly_Triangulation) MakePoly_Triangulation(CTiglPolyData& mesh);
+    TIGL_EXPORT static Handle(Poly_Triangulation) MakePoly_Triangulation(CTiglPolyData& mesh);
 };
 
 } // namespace tigl

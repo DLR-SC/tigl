@@ -26,6 +26,8 @@
 #ifndef CCPACSCONFIGURATION_H
 #define CCPACSCONFIGURATION_H
 
+#include "tigl_internal.h"
+
 #include "CTiglUIDManager.h"
 #include "CTiglLogging.h"
 #include "CCPACSHeader.h"
@@ -34,110 +36,112 @@
 #include "CCPACSFuselages.h"
 #include "CCPACSFuselageProfile.h"
 #include "CCPACSFarField.h"
-#include "TopoDS_Compound.hxx"
 #include "BRep_Builder.hxx"
 #include "CTiglShapeCache.h"
+#include "CSharedPtr.h"
 
-namespace tigl {
+namespace tigl
+{
 
-    class CCPACSConfiguration
-    {
+class CTiglFusePlane;
+typedef CSharedPtr<CTiglFusePlane> PTiglFusePlane;
 
-    public:
-        // Constructor
-        CCPACSConfiguration(TixiDocumentHandle tixiHandle);
+class CCPACSConfiguration
+{
 
-        // Virtual Destructor
-        virtual ~CCPACSConfiguration(void);
+public:
+    // Constructor
+    TIGL_EXPORT CCPACSConfiguration(TixiDocumentHandle tixiHandle);
 
-        // Invalidates the internal state of the configuration and forces
-        // recalculation of wires, lofts etc.
-        void Invalidate(void);
+    // Virtual Destructor
+    TIGL_EXPORT virtual ~CCPACSConfiguration(void);
 
-        // Read CPACS configuration
-        void ReadCPACS(const char* configurationUID);
+    // Invalidates the internal state of the configuration and forces
+    // recalculation of wires, lofts etc.
+    TIGL_EXPORT void Invalidate(void);
 
-        // Returns the underlying tixi document handle used by a CPACS configuration
-        TixiDocumentHandle GetTixiDocumentHandle(void) const;
+    // Read CPACS configuration
+    TIGL_EXPORT void ReadCPACS(const char* configurationUID);
 
-        // Returns the total count of wing profiles in this configuration
-        int GetWingProfileCount(void) const;
+    // Returns the underlying tixi document handle used by a CPACS configuration
+    TIGL_EXPORT TixiDocumentHandle GetTixiDocumentHandle(void) const;
 
-        // Returns the wing profile for a given index - TODO: depricated!
-        CCPACSWingProfile& GetWingProfile(int index) const;
+    // Returns the total count of wing profiles in this configuration
+    TIGL_EXPORT int GetWingProfileCount(void) const;
 
-        // Returns the wing profile for a given uid.
-        CCPACSWingProfile& GetWingProfile(std::string uid) const;
+    // Returns the wing profile for a given index - TODO: depricated!
+    TIGL_EXPORT CCPACSWingProfile& GetWingProfile(int index) const;
 
-        // Returns the total count of wings in a configuration
-        int GetWingCount(void) const;
+    // Returns the wing profile for a given uid.
+    TIGL_EXPORT CCPACSWingProfile& GetWingProfile(std::string uid) const;
 
-        // Returns the wing for a given index.
-        CCPACSWing& GetWing(int index) const;
+    // Returns the total count of wings in a configuration
+    TIGL_EXPORT int GetWingCount(void) const;
 
-        // Returns the wing for a given UID.
-        CCPACSWing& GetWing(const std::string& UID) const;
+    // Returns the wing for a given index.
+    TIGL_EXPORT CCPACSWing& GetWing(int index) const;
 
-        TopoDS_Shape GetParentLoft(const std::string& UID);
+    // Returns the wing for a given UID.
+    TIGL_EXPORT CCPACSWing& GetWing(const std::string& UID) const;
 
-        // Returns the total count of fuselage profiles in this configuration
-        int GetFuselageProfileCount(void) const;
+    TIGL_EXPORT TopoDS_Shape GetParentLoft(const std::string& UID);
 
-        // Returns the fuselage profile for a given index.
-        CCPACSFuselageProfile& GetFuselageProfile(int index) const;
+    // Returns the total count of fuselage profiles in this configuration
+    TIGL_EXPORT int GetFuselageProfileCount(void) const;
 
-        // Returns the fuselage profile for a given uid.
-        CCPACSFuselageProfile& GetFuselageProfile(std::string uid) const;
+    // Returns the fuselage profile for a given index.
+    TIGL_EXPORT CCPACSFuselageProfile& GetFuselageProfile(int index) const;
 
-        // Returns the total count of fuselages in a configuration
-        int GetFuselageCount(void) const;
+    // Returns the fuselage profile for a given uid.
+    TIGL_EXPORT CCPACSFuselageProfile& GetFuselageProfile(std::string uid) const;
 
-        // Returns the fuselage for a given index.
-        CCPACSFuselage& GetFuselage(int index) const;
+    // Returns the total count of fuselages in a configuration
+    TIGL_EXPORT int GetFuselageCount(void) const;
 
-        // Returns the fuselage for a given UID.
-        CCPACSFuselage& GetFuselage(std::string UID) const;
+    // Returns the fuselage for a given index.
+    TIGL_EXPORT CCPACSFuselage& GetFuselage(int index) const;
 
-        CCPACSFarField& GetFarField();
+    // Returns the fuselage for a given UID.
+    TIGL_EXPORT CCPACSFuselage& GetFuselage(std::string UID) const;
 
-        // Returns the uid manager
-        CTiglUIDManager& GetUIDManager(void);
+    TIGL_EXPORT CCPACSFarField& GetFarField();
 
-        // Returns the boolean fused airplane as TopoDS_Shape
-        TopoDS_Shape& GetFusedAirplane(void);
+    // Returns the uid manager
+    TIGL_EXPORT CTiglUIDManager& GetUIDManager(void);
 
-        // Returns the length of the airplane
-        double GetAirplaneLenth(void);
+    // Returns the algorithm for fusing the aircraft
+    TIGL_EXPORT PTiglFusePlane AircraftFusingAlgo(void);
 
-        // Returns the UID of the loaded configuration.
-        std::string GetUID(void);
+    // Returns the length of the airplane
+    TIGL_EXPORT double GetAirplaneLenth(void);
+
+    // Returns the UID of the loaded configuration.
+    TIGL_EXPORT const std::string& GetUID(void) const;
         
-        CTiglShapeCache& GetShapeCache(void);
+    TIGL_EXPORT CTiglShapeCache& GetShapeCache(void);
 
-    protected:
-        void BuildFusedPlane(CTiglAbstractPhysicalComponent* parent);
+protected:
+    // transform all components relative to their parents
+    void transformAllComponents(CTiglAbstractPhysicalComponent* parent);
 
-        // transform all components relative to their parents
-        void transformAllComponents(CTiglAbstractPhysicalComponent* parent);
+private:
+    // Copy constructor
+    CCPACSConfiguration(const CCPACSConfiguration& );
 
-    private:
-        // Copy constructor
-        CCPACSConfiguration(const CCPACSConfiguration& );
+    // Assignment operator
+    void operator=(const CCPACSConfiguration& );
 
-        // Assignment operator
-        void operator=(const CCPACSConfiguration& );
-
-    private:
-        TixiDocumentHandle           tixiDocumentHandle;   /**< Handle for internal TixiDocument */
-        CCPACSHeader                 header;               /**< Configuration header element */
-        CCPACSWings                  wings;                /**< Configuration wings element */
-        CCPACSFuselages              fuselages;            /**< Configuration fuselages element */
-        CCPACSFarField               farField;             /**< Far field configuration for CFD tools */
-        CTiglUIDManager              uidManager;           /**< Stores the unique ids of the components */
-        TopoDS_Shape                 fusedAirplane;        /**< The complete airplaine as one fused shape */
-        std::string                  configUID;            /**< UID of the opened configuration   */
-        CTiglShapeCache              shapeCache;
-    };
+private:
+    TixiDocumentHandle           tixiDocumentHandle;   /**< Handle for internal TixiDocument */
+    CCPACSHeader                 header;               /**< Configuration header element */
+    CCPACSWings                  wings;                /**< Configuration wings element */
+    CCPACSFuselages              fuselages;            /**< Configuration fuselages element */
+    CCPACSFarField               farField;             /**< Far field configuration for CFD tools */
+    CTiglUIDManager              uidManager;           /**< Stores the unique ids of the components */
+    PTiglFusePlane               aircraftFuser;        /**< The aircraft fusing algo */
+    std::string                  configUID;            /**< UID of the opened configuration   */
+    CTiglShapeCache              shapeCache;
+};
 
 } // end namespace tigl
 

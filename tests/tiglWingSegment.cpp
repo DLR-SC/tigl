@@ -32,35 +32,38 @@
 
 /***************************************************************************************************/
 
-class WingSegment : public ::testing::Test {
- protected:
-  static void SetUpTestCase() {
+class WingSegment : public ::testing::Test 
+{
+protected:
+    static void SetUpTestCase() 
+    {
         const char* filename = "TestData/CPACS_21_D150.xml";
         ReturnCode tixiRet;
         TiglReturnCode tiglRet;
 
         tiglHandle = -1;
         tixiHandle = -1;
-        
+
         tixiRet = tixiOpenDocument(filename, &tixiHandle);
         ASSERT_TRUE (tixiRet == SUCCESS);
         tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "D150_VAMP", &tiglHandle);
         ASSERT_TRUE(tiglRet == TIGL_SUCCESS);
-  }
+    }
 
-  static void TearDownTestCase() {
+    static void TearDownTestCase() 
+    {
         ASSERT_TRUE(tiglCloseCPACSConfiguration(tiglHandle) == TIGL_SUCCESS);
         ASSERT_TRUE(tixiCloseDocument(tixiHandle) == SUCCESS);
         tiglHandle = -1;
         tixiHandle = -1;
-  }
-  
-  virtual void SetUp() {}
-  virtual void TearDown() {}
-  
+    }
 
-  static TixiDocumentHandle           tixiHandle;
-  static TiglCPACSConfigurationHandle tiglHandle;
+    virtual void SetUp() {}
+    virtual void TearDown() {}
+
+
+    static TixiDocumentHandle           tixiHandle;
+    static TiglCPACSConfigurationHandle tiglHandle;
 };
 
 
@@ -70,36 +73,39 @@ TiglCPACSConfigurationHandle WingSegment::tiglHandle = 0;
 /***************************************************************************************************/
 
 
-class WingSegmentSimple : public ::testing::Test {
- protected:
-  static void SetUpTestCase() {
+class WingSegmentSimple : public ::testing::Test 
+{
+protected:
+    static void SetUpTestCase() 
+    {
         const char* filename = "TestData/simpletest.cpacs.xml";
         ReturnCode tixiRet;
         TiglReturnCode tiglRet;
 
         tiglSimpleHandle = -1;
         tixiSimpleHandle = -1;
-        
+
         tixiRet = tixiOpenDocument(filename, &tixiSimpleHandle);
         ASSERT_TRUE (tixiRet == SUCCESS);
 
         tiglRet = tiglOpenCPACSConfiguration(tixiSimpleHandle, "Cpacs2Test", &tiglSimpleHandle);
         ASSERT_TRUE(tiglRet == TIGL_SUCCESS);
-  }
+    }
 
-  static void TearDownTestCase() {
+    static void TearDownTestCase() 
+    {
         ASSERT_TRUE(tiglCloseCPACSConfiguration(tiglSimpleHandle) == TIGL_SUCCESS);
         ASSERT_TRUE(tixiCloseDocument(tixiSimpleHandle) == SUCCESS);
         tiglSimpleHandle = -1;
         tixiSimpleHandle = -1;
-  }
-  
-  virtual void SetUp() {}
-  virtual void TearDown() {}
-  
+    }
 
-  static TixiDocumentHandle           tixiSimpleHandle;
-  static TiglCPACSConfigurationHandle tiglSimpleHandle;
+    virtual void SetUp() {}
+    virtual void TearDown() {}
+
+
+    static TixiDocumentHandle           tixiSimpleHandle;
+    static TiglCPACSConfigurationHandle tiglSimpleHandle;
 };
 
 
@@ -563,20 +569,14 @@ TEST_F(WingSegment, tiglWingGetInnerSectionAndElementUID_success)
     ASSERT_TRUE(tiglWingGetInnerSectionAndElementUID(tiglHandle, 1, 1, &sectionUID, &elementUID) == TIGL_SUCCESS);
     ASSERT_TRUE(strcmp(sectionUID, "D150_VAMP_W1_Sec1") == 0);
     ASSERT_TRUE(strcmp(elementUID, "D150_VAMP_W1_Sec1_Elem1") == 0);
-	free(sectionUID);
-	free(elementUID);
     
-	ASSERT_TRUE(tiglWingGetInnerSectionAndElementUID(tiglHandle, 1, 2, &sectionUID, &elementUID) == TIGL_SUCCESS);
+    ASSERT_TRUE(tiglWingGetInnerSectionAndElementUID(tiglHandle, 1, 2, &sectionUID, &elementUID) == TIGL_SUCCESS);
     ASSERT_TRUE(strcmp(sectionUID, "D150_VAMP_W1_Sec2") == 0);
     ASSERT_TRUE(strcmp(elementUID, "D150_VAMP_W1_Sec2_Elem1") == 0);
-	free(sectionUID);
-	free(elementUID);
 
     ASSERT_TRUE(tiglWingGetInnerSectionAndElementUID(tiglHandle, 1, 3, &sectionUID, &elementUID) == TIGL_SUCCESS);
     ASSERT_TRUE(strcmp(sectionUID, "D150_VAMP_W1_Sec3") == 0);
     ASSERT_TRUE(strcmp(elementUID, "D150_VAMP_W1_Sec3_Elem1") == 0);
-    free(sectionUID);
-	free(elementUID);
 }
 
 /***************************************************************************************************/
@@ -616,25 +616,19 @@ TEST_F(WingSegment, tiglWingGetOuterSectionAndElementUID_invalidSegment)
 */
 TEST_F(WingSegment, tiglWingGetOuterSectionAndElementUID_success)
 {
-	char* sectionUID;
+    char* sectionUID;
     char* elementUID;
     ASSERT_TRUE(tiglWingGetOuterSectionAndElementUID(tiglHandle, 1, 1, &sectionUID, &elementUID) == TIGL_SUCCESS);
     ASSERT_TRUE(strcmp(sectionUID, "D150_VAMP_W1_Sec2") == 0);
     ASSERT_TRUE(strcmp(elementUID, "D150_VAMP_W1_Sec2_Elem1") == 0);
-	free(sectionUID);
-	free(elementUID);
 
     ASSERT_TRUE(tiglWingGetOuterSectionAndElementUID(tiglHandle, 1, 2, &sectionUID, &elementUID) == TIGL_SUCCESS);
     ASSERT_TRUE(strcmp(sectionUID, "D150_VAMP_W1_Sec3") == 0);
     ASSERT_TRUE(strcmp(elementUID, "D150_VAMP_W1_Sec3_Elem1") == 0);
-    free(sectionUID);
-	free(elementUID);
-	
-	ASSERT_TRUE(tiglWingGetOuterSectionAndElementUID(tiglHandle, 1, 3, &sectionUID, &elementUID) == TIGL_SUCCESS);
+
+    ASSERT_TRUE(tiglWingGetOuterSectionAndElementUID(tiglHandle, 1, 3, &sectionUID, &elementUID) == TIGL_SUCCESS);
     ASSERT_TRUE(strcmp(sectionUID, "D150_VAMP_W1_Sec4") == 0);
     ASSERT_TRUE(strcmp(elementUID, "D150_VAMP_W1_Sec4_Elem1") == 0);
-	free(sectionUID);
-	free(elementUID);
 }
 
 /* Tests on simple geometry__________________________ */
@@ -771,7 +765,8 @@ TEST_F(WingSegmentSimple, getIsOnTop_performance)
 }
 
 
-TEST_F(WingSegmentSimple, trafo_Consistency){
+TEST_F(WingSegmentSimple, trafo_Consistency)
+{
     // we transform eta, xsi to x,y,z and perform the back transform
     // we check if we get the the same eta xsi as before
     int segIndex = 1;
@@ -789,7 +784,7 @@ TEST_F(WingSegmentSimple, trafo_Consistency){
 
     gp_Pnt point(x,y,z);
     double eta_end=0., xsi_end = 0.;
-    segment.GetEtaXsi(point, false, eta_end, xsi_end);
+    segment.GetEtaXsi(point, eta_end, xsi_end);
 
     ASSERT_NEAR(eta_end, eta_start, 1e-7);
     ASSERT_NEAR(xsi_end, xsi_start, 1e-7);
@@ -797,7 +792,7 @@ TEST_F(WingSegmentSimple, trafo_Consistency){
     // lower wing surface
     ASSERT_TRUE(tiglWingGetLowerPoint(tiglSimpleHandle, 1, segIndex, eta_start, xsi_start, &x, &y, &z) == TIGL_SUCCESS);
     point = gp_Pnt(x,y,z);
-    segment.GetEtaXsi(point, false, eta_end, xsi_end);
+    segment.GetEtaXsi(point, eta_end, xsi_end);
 
     ASSERT_NEAR(eta_end, eta_start, 1e-7);
     ASSERT_NEAR(xsi_end, xsi_start, 1e-7);
@@ -809,13 +804,14 @@ TEST_F(WingSegmentSimple, trafo_Consistency){
     tigl::CCPACSWingSegment& segment2 = (tigl::CCPACSWingSegment&) wing.GetSegment(segIndex);
     ASSERT_TRUE(tiglWingGetLowerPoint(tiglSimpleHandle, 1, segIndex, eta_start, xsi_start, &x, &y, &z) == TIGL_SUCCESS);
     point = gp_Pnt(x,y,z);
-    segment2.GetEtaXsi(point, false, eta_end, xsi_end);
+    segment2.GetEtaXsi(point, eta_end, xsi_end);
 
     ASSERT_NEAR(eta_end, eta_start, 1e-7);
     ASSERT_NEAR(xsi_end, xsi_start, 1e-7);
 }
 
-TEST_F(WingSegmentSimple, getEtaXsi_Performance){
+TEST_F(WingSegmentSimple, getEtaXsi_Performance)
+{
     // we transform eta, xsi to x,y,z and perform the back transform
     // we check if we get the the same eta xsi as before
     int segIndex = 1;
@@ -835,19 +831,20 @@ TEST_F(WingSegmentSimple, getEtaXsi_Performance){
     double eta_end=0., xsi_end = 0.;
 
     // we do one cold start to create all faces, we don't count it
-    segment.GetEtaXsi(point, false, eta_end, xsi_end);
+    segment.GetEtaXsi(point, eta_end, xsi_end);
 
     int nruns = 100000;
     clock_t start = clock();
-    for(int i = 0; i < nruns; ++i){
-        segment.GetEtaXsi(point, false, eta_end, xsi_end);
+    for (int i = 0; i < nruns; ++i) {
+        segment.GetEtaXsi(point, eta_end, xsi_end);
     }
     clock_t stop = clock();
     cout << "Elapsed time per projection [us]: " << double(stop-start)/(double)CLOCKS_PER_SEC/(double)nruns * 1.e6 << endl;
 }
 
 // @todo: test of failures, outliers etc...
-TEST_F(WingSegmentSimple, wingGetEtaXsi){
+TEST_F(WingSegmentSimple, wingGetEtaXsi)
+{
     double x = 0., y = 0., z = 0.;
     ASSERT_TRUE(tiglWingGetUpperPoint(tiglSimpleHandle, 1, 1, 0.5, 0.5, &x, &y, &z) == TIGL_SUCCESS);
 

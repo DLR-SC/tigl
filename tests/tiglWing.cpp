@@ -30,35 +30,38 @@
 
 /******************************************************************************/
 
-class TiglWing : public ::testing::Test {
- protected:
-  static void SetUpTestCase() {
+class TiglWing : public ::testing::Test 
+{
+protected:
+    static void SetUpTestCase() 
+    {
         const char* filename = "TestData/CPACS_21_D150.xml";
         ReturnCode tixiRet;
         TiglReturnCode tiglRet;
 
         tiglHandle = -1;
         tixiHandle = -1;
-        
+
         tixiRet = tixiOpenDocument(filename, &tixiHandle);
         ASSERT_TRUE (tixiRet == SUCCESS);
         tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "D150_VAMP", &tiglHandle);
         ASSERT_TRUE(tiglRet == TIGL_SUCCESS);
-  }
+    }
 
-  static void TearDownTestCase() {
+    static void TearDownTestCase() 
+    {
         ASSERT_TRUE(tiglCloseCPACSConfiguration(tiglHandle) == TIGL_SUCCESS);
         ASSERT_TRUE(tixiCloseDocument(tixiHandle) == SUCCESS);
         tiglHandle = -1;
         tixiHandle = -1;
-  }
-  
-  virtual void SetUp() {}
-  virtual void TearDown() {}
-  
+    }
 
-  static TixiDocumentHandle           tixiHandle;
-  static TiglCPACSConfigurationHandle tiglHandle;
+    virtual void SetUp() {}
+    virtual void TearDown() {}
+
+
+    static TixiDocumentHandle           tixiHandle;
+    static TiglCPACSConfigurationHandle tiglHandle;
 };
 
 
@@ -66,9 +69,11 @@ TixiDocumentHandle TiglWing::tixiHandle = 0;
 TiglCPACSConfigurationHandle TiglWing::tiglHandle = 0;
 
 
-class WingSimple : public ::testing::Test {
- protected:
-  static void SetUpTestCase() {
+class WingSimple : public ::testing::Test 
+{
+protected:
+    static void SetUpTestCase() 
+    {
         const char* filename = "TestData/simpletest.cpacs.xml";
         ReturnCode tixiRet;
         TiglReturnCode tiglRet;
@@ -81,21 +86,22 @@ class WingSimple : public ::testing::Test {
 
         tiglRet = tiglOpenCPACSConfiguration(tixiSimpleWingHandle, "Cpacs2Test", &tiglSimpleWingHandle);
         ASSERT_TRUE(tiglRet == TIGL_SUCCESS);
-  }
+    }
 
-  static void TearDownTestCase() {
+    static void TearDownTestCase() 
+    {
         ASSERT_TRUE(tiglCloseCPACSConfiguration(tiglSimpleWingHandle) == TIGL_SUCCESS);
         ASSERT_TRUE(tixiCloseDocument(tixiSimpleWingHandle) == SUCCESS);
         tiglSimpleWingHandle = -1;
         tixiSimpleWingHandle = -1;
-  }
+    }
 
-  virtual void SetUp() {}
-  virtual void TearDown() {}
+    virtual void SetUp() {}
+    virtual void TearDown() {}
 
 
-  static TixiDocumentHandle           tixiSimpleWingHandle;
-  static TiglCPACSConfigurationHandle tiglSimpleWingHandle;
+    static TixiDocumentHandle           tixiSimpleWingHandle;
+    static TiglCPACSConfigurationHandle tiglSimpleWingHandle;
 };
 
 TixiDocumentHandle WingSimple::tixiSimpleWingHandle = 0;
@@ -205,7 +211,8 @@ TEST_F(TiglWing, tiglWingGetSectionUID_success)
 /**
 * Tests for tiglWingGetIndex
 */
-TEST_F(TiglWing, tiglWingGetIndex_success){
+TEST_F(TiglWing, tiglWingGetIndex_success)
+{
     int wingIndex = 0;
     ASSERT_TRUE(tiglWingGetIndex(tiglHandle, "D150_VAMP_W1", &wingIndex) == TIGL_SUCCESS);
     ASSERT_TRUE(wingIndex == 1);
@@ -217,24 +224,28 @@ TEST_F(TiglWing, tiglWingGetIndex_success){
     ASSERT_TRUE(wingIndex == 3);
 }
 
-TEST_F(TiglWing, tiglWingGetIndex_wrongUID){
+TEST_F(TiglWing, tiglWingGetIndex_wrongUID)
+{
     int wingIndex = 0;
     ASSERT_TRUE(tiglWingGetIndex(tiglHandle, "invalid_uid", &wingIndex) == TIGL_UID_ERROR);
     ASSERT_TRUE(wingIndex == -1);
 }
 
-TEST_F(TiglWing, tiglWingGetIndex_nullPtr){
+TEST_F(TiglWing, tiglWingGetIndex_nullPtr)
+{
     int wingIndex = 0;
     ASSERT_TRUE(tiglWingGetIndex(tiglHandle, NULL , &wingIndex) == TIGL_NULL_POINTER);
 }
 
 
-TEST_F(TiglWing, tiglWingGetIndex_indexNullPtr){
+TEST_F(TiglWing, tiglWingGetIndex_indexNullPtr)
+{
     int wingIndex = 0;
     ASSERT_TRUE(tiglWingGetIndex(tiglHandle, "D150_VAMP_SL1" , NULL) == TIGL_NULL_POINTER);
 }
 
-TEST_F(TiglWing, tiglWingGetIndex_wrongHandle){
+TEST_F(TiglWing, tiglWingGetIndex_wrongHandle)
+{
     TiglCPACSConfigurationHandle myWrongHandle = -1234;
     int wingIndex = 0;
     ASSERT_TRUE(tiglWingGetIndex(myWrongHandle, "D150_VAMP_W1_Seg1" , &wingIndex) == TIGL_NOT_FOUND);
@@ -243,7 +254,8 @@ TEST_F(TiglWing, tiglWingGetIndex_wrongHandle){
 /**
 * Tests tiglWingGetSegmentIndex
 */
-TEST_F(TiglWing, tiglWingGetSegmentIndex_success){
+TEST_F(TiglWing, tiglWingGetSegmentIndex_success)
+{
     int segmentIndex = 0;
     int wingIndex = 0;
     ASSERT_EQ(TIGL_SUCCESS, tiglWingGetSegmentIndex(tiglHandle, "D150_VAMP_W1_Seg1", &segmentIndex, &wingIndex));
@@ -259,13 +271,15 @@ TEST_F(TiglWing, tiglWingGetSegmentIndex_success){
     ASSERT_EQ(1, wingIndex);
 }
 
-TEST_F(TiglWing, tiglWingGetSegmentIndex_wrongUID){
+TEST_F(TiglWing, tiglWingGetSegmentIndex_wrongUID)
+{
     int segmentIndex = 0;
     int wingIndex    = 0;
     ASSERT_TRUE(tiglWingGetSegmentIndex(tiglHandle, "invalid_seg_name", &segmentIndex, &wingIndex) == TIGL_UID_ERROR);
 }
 
-TEST_F(TiglWing, tiglWingGetSegmentIndex_nullPtr){
+TEST_F(TiglWing, tiglWingGetSegmentIndex_nullPtr)
+{
     int segmentIndex = 0;
     int wingIndex = 0;
     ASSERT_TRUE(tiglWingGetSegmentIndex(tiglHandle, NULL, &segmentIndex, &wingIndex) == TIGL_NULL_POINTER);
@@ -281,13 +295,15 @@ TEST_F(TiglWing, tiglWingGetSegmentIndex_wrongHandle){
 }
 
 
-TEST_F(WingSimple, wingGetMAC_success){
+TEST_F(WingSimple, wingGetMAC_success)
+{
     double  c_1, x_1, y_1, z_1;
     tiglWingGetMAC(tiglSimpleWingHandle, "Wing", &c_1, &x_1, &y_1, &z_1);
     ASSERT_NEAR(19./21., c_1, 1e-7);
 }
 
-TEST_F(WingSimple, wingGetReferenceArea_success){
+TEST_F(WingSimple, wingGetReferenceArea_success)
+{
     double ref = 0.;
     tiglWingGetReferenceArea(tiglSimpleWingHandle, 1, TIGL_X_Y_PLANE, &ref);
     ASSERT_NEAR(1.75, ref, 1e-7);

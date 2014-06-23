@@ -26,6 +26,7 @@
 #include "tixi.h"
 #include "CTiglError.h"
 #include "CCPACSTrailingEdgeDeviceWingCutOutProfiles.h"
+#include "tigl_internal.h"
 
 namespace tigl
 {
@@ -42,9 +43,9 @@ private:
 
 
 public:
-    CCPACSTrailingEdgeDeviceWingCutOut();
+    TIGL_EXPORT CCPACSTrailingEdgeDeviceWingCutOut();
 
-    void ReadCPACS(TixiDocumentHandle tixiHandle,
+    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle,
             const std::string & TrailingEdgeDeviceWingCutOutXPath);
 
 };

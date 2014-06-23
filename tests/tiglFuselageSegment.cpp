@@ -29,9 +29,11 @@
 
 /***************************************************************************************************/
 
-class TiglFuselage_segment : public ::testing::Test {
- protected:
-  static void SetUpTestCase() {
+class  TiglFuselageSegment : public ::testing::Test
+{
+protected:
+    static void SetUpTestCase()
+    {
         const char* filename = "TestData/CPACS_21_D150.xml";
         ReturnCode tixiRet;
         TiglReturnCode tiglRet;
@@ -43,26 +45,27 @@ class TiglFuselage_segment : public ::testing::Test {
         ASSERT_TRUE (tixiRet == SUCCESS);
         tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "D150_VAMP", &tiglHandle);
         ASSERT_TRUE(tiglRet == TIGL_SUCCESS);
-  }
+    }
 
-  static void TearDownTestCase() {
+    static void TearDownTestCase()
+    {
         ASSERT_TRUE(tiglCloseCPACSConfiguration(tiglHandle) == TIGL_SUCCESS);
         ASSERT_TRUE(tixiCloseDocument(tixiHandle) == SUCCESS);
         tiglHandle = -1;
         tixiHandle = -1;
-  }
-  
-  virtual void SetUp() {}
-  virtual void TearDown() {}
-  
+    }
 
-  static TixiDocumentHandle           tixiHandle;
-  static TiglCPACSConfigurationHandle tiglHandle;
+    virtual void SetUp() {}
+    virtual void TearDown() {}
+
+
+    static TixiDocumentHandle           tixiHandle;
+    static TiglCPACSConfigurationHandle tiglHandle;
 };
 
 
-TixiDocumentHandle TiglFuselage_segment::tixiHandle = 0;
-TiglCPACSConfigurationHandle TiglFuselage_segment::tiglHandle = 0;
+TixiDocumentHandle  TiglFuselageSegment::tixiHandle = 0;
+TiglCPACSConfigurationHandle  TiglFuselageSegment::tiglHandle = 0;
 
 
 /***************************************************************************************************/
@@ -70,28 +73,28 @@ TiglCPACSConfigurationHandle TiglFuselage_segment::tiglHandle = 0;
 /**
 * Tests tiglGetFuselageCount with invalid CPACS handle.
 */
-TEST_F(TiglFuselage_segment, FuselageCount_invalidHandle)
+TEST_F( TiglFuselageSegment, FuselageCount_invalidHandle)
 {
-	int fuselageCount;
-	ASSERT_TRUE(tiglGetFuselageCount(-1, &fuselageCount) == TIGL_NOT_FOUND);
+    int fuselageCount;
+    ASSERT_TRUE(tiglGetFuselageCount(-1, &fuselageCount) == TIGL_NOT_FOUND);
 }
 
 /**
 * Tests tiglGetFuselageCount with null pointer argument.
 */
-TEST_F(TiglFuselage_segment, FuselageCount_nullPointerArgument)
+TEST_F( TiglFuselageSegment, FuselageCount_nullPointerArgument)
 {
-	ASSERT_TRUE(tiglGetFuselageCount(tiglHandle, NULL) == TIGL_NULL_POINTER);
+    ASSERT_TRUE(tiglGetFuselageCount(tiglHandle, NULL) == TIGL_NULL_POINTER);
 }
 
 /**
 * Tests successfull call of tiglGetFuselageCount.
 */
-TEST_F(TiglFuselage_segment, FuselageCount_success)
+TEST_F( TiglFuselageSegment, FuselageCount_success)
 {
-	int fuselageCount;
-	ASSERT_TRUE(tiglGetFuselageCount(tiglHandle, &fuselageCount) == TIGL_SUCCESS);
-	ASSERT_TRUE(fuselageCount == 1);
+    int fuselageCount;
+    ASSERT_TRUE(tiglGetFuselageCount(tiglHandle, &fuselageCount) == TIGL_SUCCESS);
+    ASSERT_TRUE(fuselageCount == 1);
 }
 
 /***************************************************************************************************/
@@ -99,37 +102,37 @@ TEST_F(TiglFuselage_segment, FuselageCount_success)
 /**
 * Tests tiglFuselageGetSegmentCount with invalid CPACS handle.
 */
-TEST_F(TiglFuselage_segment, FuselageSegmentCount_invalidHandle)
+TEST_F( TiglFuselageSegment, FuselageSegmentCount_invalidHandle)
 {
-	int segmentCount;
-	ASSERT_TRUE(tiglFuselageGetSegmentCount(-1, 1, &segmentCount) == TIGL_NOT_FOUND);
+    int segmentCount;
+    ASSERT_TRUE(tiglFuselageGetSegmentCount(-1, 1, &segmentCount) == TIGL_NOT_FOUND);
 }
 
 /**
 * Tests tiglFuselageGetSegmentCount with invalid fuselage index.
 */
-TEST_F(TiglFuselage_segment, FuselageSegmentCount_invalidFuselage)
+TEST_F( TiglFuselageSegment, FuselageSegmentCount_invalidFuselage)
 {
-	int segmentCount;
-	ASSERT_TRUE(tiglFuselageGetSegmentCount(tiglHandle, 0, &segmentCount) == TIGL_INDEX_ERROR);
+    int segmentCount;
+    ASSERT_TRUE(tiglFuselageGetSegmentCount(tiglHandle, 0, &segmentCount) == TIGL_INDEX_ERROR);
 }
 
 /**
 * Tests tiglFuselageGetSegmentCount with null pointer argument for segmentCountPtr.
 */
-TEST_F(TiglFuselage_segment, FuselageSegmentCount_nullPointerArgument)
+TEST_F( TiglFuselageSegment, FuselageSegmentCount_nullPointerArgument)
 {
-	ASSERT_TRUE(tiglFuselageGetSegmentCount(tiglHandle, 1, NULL) == TIGL_NULL_POINTER);
+    ASSERT_TRUE(tiglFuselageGetSegmentCount(tiglHandle, 1, NULL) == TIGL_NULL_POINTER);
 }
 
 /**
 * Tests successfull call of tiglFuselageGetSegmentCount.
 */
-TEST_F(TiglFuselage_segment, FuselageSegmentCount_success)
+TEST_F( TiglFuselageSegment, FuselageSegmentCount_success)
 {
-	int segmentCount;
-	ASSERT_TRUE(tiglFuselageGetSegmentCount(tiglHandle, 1, &segmentCount) == TIGL_SUCCESS);
-	ASSERT_TRUE(segmentCount == 59);
+    int segmentCount;
+    ASSERT_TRUE(tiglFuselageGetSegmentCount(tiglHandle, 1, &segmentCount) == TIGL_SUCCESS);
+    ASSERT_TRUE(segmentCount == 59);
 }
 
 /***************************************************************************************************/
@@ -137,48 +140,48 @@ TEST_F(TiglFuselage_segment, FuselageSegmentCount_success)
 /**
 * Tests tiglFuselageGetStartConnectedSegmentCount with invalid CPACS handle.
 */
-TEST_F(TiglFuselage_segment, FuselageGetStartConnectedSegmentCount_invalidHandle)
+TEST_F( TiglFuselageSegment, FuselageGetStartConnectedSegmentCount_invalidHandle)
 {
-	int segmentCount;
-	ASSERT_TRUE(tiglFuselageGetStartConnectedSegmentCount(-1, 1, 1, &segmentCount) == TIGL_NOT_FOUND);
+    int segmentCount;
+    ASSERT_TRUE(tiglFuselageGetStartConnectedSegmentCount(-1, 1, 1, &segmentCount) == TIGL_NOT_FOUND);
 }
 
 /**
 * Tests tiglFuselageGetStartConnectedSegmentCount with invalid fuselage index.
 */
-TEST_F(TiglFuselage_segment, FuselageGetStartConnectedSegmentCount_invalidFuselage)
+TEST_F( TiglFuselageSegment, FuselageGetStartConnectedSegmentCount_invalidFuselage)
 {
-	int segmentCount;
-	ASSERT_TRUE(tiglFuselageGetStartConnectedSegmentCount(tiglHandle, 0, 1, &segmentCount) == TIGL_INDEX_ERROR);
+    int segmentCount;
+    ASSERT_TRUE(tiglFuselageGetStartConnectedSegmentCount(tiglHandle, 0, 1, &segmentCount) == TIGL_INDEX_ERROR);
 }
 
 /**
 * Tests tiglFuselageGetStartConnectedSegmentCount with invalid segment index.
 */
-TEST_F(TiglFuselage_segment, FuselageGetStartConnectedSegmentCount_invalidSegment)
+TEST_F( TiglFuselageSegment, FuselageGetStartConnectedSegmentCount_invalidSegment)
 {
-	int segmentCount;
-	ASSERT_TRUE(tiglFuselageGetStartConnectedSegmentCount(tiglHandle, 1, 0, &segmentCount) == TIGL_INDEX_ERROR);
+    int segmentCount;
+    ASSERT_TRUE(tiglFuselageGetStartConnectedSegmentCount(tiglHandle, 1, 0, &segmentCount) == TIGL_INDEX_ERROR);
 }
 
 /**
 * Tests tiglFuselageGetStartConnectedSegmentCount with null pointer argument.
 */
-TEST_F(TiglFuselage_segment, FuselageGetStartConnectedSegmentCount_nullPointerArgument)
+TEST_F( TiglFuselageSegment, FuselageGetStartConnectedSegmentCount_nullPointerArgument)
 {
-	ASSERT_TRUE(tiglFuselageGetStartConnectedSegmentCount(tiglHandle, 1, 1, NULL) == TIGL_NULL_POINTER);
+    ASSERT_TRUE(tiglFuselageGetStartConnectedSegmentCount(tiglHandle, 1, 1, NULL) == TIGL_NULL_POINTER);
 }
 
 /**
 * Tests successfull call of tiglFuselageGetStartConnectedSegmentCount.
 */
-TEST_F(TiglFuselage_segment, FuselageGetStartConnectedSegmentCount_success)
+TEST_F( TiglFuselageSegment, FuselageGetStartConnectedSegmentCount_success)
 {
-	int segmentCount;
-	ASSERT_TRUE(tiglFuselageGetStartConnectedSegmentCount(tiglHandle, 1, 1, &segmentCount) == TIGL_SUCCESS);
-	ASSERT_TRUE(segmentCount == 0);
-	ASSERT_TRUE(tiglFuselageGetStartConnectedSegmentCount(tiglHandle, 1, 2, &segmentCount) == TIGL_SUCCESS);
-	ASSERT_TRUE(segmentCount == 1);
+    int segmentCount;
+    ASSERT_TRUE(tiglFuselageGetStartConnectedSegmentCount(tiglHandle, 1, 1, &segmentCount) == TIGL_SUCCESS);
+    ASSERT_TRUE(segmentCount == 0);
+    ASSERT_TRUE(tiglFuselageGetStartConnectedSegmentCount(tiglHandle, 1, 2, &segmentCount) == TIGL_SUCCESS);
+    ASSERT_TRUE(segmentCount == 1);
 }
 
 /***************************************************************************************************/
@@ -186,48 +189,48 @@ TEST_F(TiglFuselage_segment, FuselageGetStartConnectedSegmentCount_success)
 /**
 * Tests tiglFuselageGetEndConnectedSegmentCount with invalid CPACS handle.
 */
-TEST_F(TiglFuselage_segment, FuselageGetEndConnectedSegmentCount_invalidHandle)
+TEST_F( TiglFuselageSegment, FuselageGetEndConnectedSegmentCount_invalidHandle)
 {
-	int segmentCount;
-	ASSERT_TRUE(tiglFuselageGetEndConnectedSegmentCount(-1, 1, 1, &segmentCount) == TIGL_NOT_FOUND);
+    int segmentCount;
+    ASSERT_TRUE(tiglFuselageGetEndConnectedSegmentCount(-1, 1, 1, &segmentCount) == TIGL_NOT_FOUND);
 }
 
 /**
 * Tests tiglFuselageGetEndConnectedSegmentCount with invalid fuselage index.
 */
-TEST_F(TiglFuselage_segment, FuselageGetEndConnectedSegmentCount_invalidFuselage)
+TEST_F( TiglFuselageSegment, FuselageGetEndConnectedSegmentCount_invalidFuselage)
 {
-	int segmentCount;
-	ASSERT_TRUE(tiglFuselageGetEndConnectedSegmentCount(tiglHandle, 0, 1, &segmentCount) == TIGL_INDEX_ERROR);
+    int segmentCount;
+    ASSERT_TRUE(tiglFuselageGetEndConnectedSegmentCount(tiglHandle, 0, 1, &segmentCount) == TIGL_INDEX_ERROR);
 }
 
 /**
 * Tests tiglFuselageGetEndConnectedSegmentCount with invalid segment index.
 */
-TEST_F(TiglFuselage_segment, FuselageGetEndConnectedSegmentCount_invalidSegment)
+TEST_F( TiglFuselageSegment, FuselageGetEndConnectedSegmentCount_invalidSegment)
 {
-	int segmentCount;
-	ASSERT_TRUE(tiglFuselageGetEndConnectedSegmentCount(tiglHandle, 1, 0, &segmentCount) == TIGL_INDEX_ERROR);
+    int segmentCount;
+    ASSERT_TRUE(tiglFuselageGetEndConnectedSegmentCount(tiglHandle, 1, 0, &segmentCount) == TIGL_INDEX_ERROR);
 }
 
 /**
 * Tests tiglFuselageGetEndConnectedSegmentCount with null pointer argument.
 */
-TEST_F(TiglFuselage_segment, FuselageGetEndConnectedSegmentCount_nullPointerArgument)
+TEST_F( TiglFuselageSegment, FuselageGetEndConnectedSegmentCount_nullPointerArgument)
 {
-	ASSERT_TRUE(tiglFuselageGetEndConnectedSegmentCount(tiglHandle, 1, 1, NULL) == TIGL_NULL_POINTER);
+    ASSERT_TRUE(tiglFuselageGetEndConnectedSegmentCount(tiglHandle, 1, 1, NULL) == TIGL_NULL_POINTER);
 }
 
 /**
 * Tests successfull call of tiglFuselageGetEndConnectedSegmentCount.
 */
-TEST_F(TiglFuselage_segment, FuselageGetEndConnectedSegmentCount_success)
+TEST_F( TiglFuselageSegment, FuselageGetEndConnectedSegmentCount_success)
 {
-	int segmentCount;
-	ASSERT_TRUE(tiglFuselageGetEndConnectedSegmentCount(tiglHandle, 1, 1, &segmentCount) == TIGL_SUCCESS);
-	ASSERT_TRUE(segmentCount == 1);
-	ASSERT_TRUE(tiglFuselageGetEndConnectedSegmentCount(tiglHandle, 1, 59, &segmentCount) == TIGL_SUCCESS);
-	ASSERT_TRUE(segmentCount == 0);
+    int segmentCount;
+    ASSERT_TRUE(tiglFuselageGetEndConnectedSegmentCount(tiglHandle, 1, 1, &segmentCount) == TIGL_SUCCESS);
+    ASSERT_TRUE(segmentCount == 1);
+    ASSERT_TRUE(tiglFuselageGetEndConnectedSegmentCount(tiglHandle, 1, 59, &segmentCount) == TIGL_SUCCESS);
+    ASSERT_TRUE(segmentCount == 0);
 }
 
 /***************************************************************************************************/
@@ -235,59 +238,59 @@ TEST_F(TiglFuselage_segment, FuselageGetEndConnectedSegmentCount_success)
 /**
 * Tests tiglFuselageGetStartConnectedSegmentIndex with invalid CPACS handle.
 */
-TEST_F(TiglFuselage_segment, FuselageGetStartConnectedSegmentIndex_invalidHandle)
+TEST_F( TiglFuselageSegment, FuselageGetStartConnectedSegmentIndex_invalidHandle)
 {
-	int connectedSegment;
-	ASSERT_TRUE(tiglFuselageGetStartConnectedSegmentIndex(-1, 1, 2, 1, &connectedSegment) == TIGL_NOT_FOUND);
+    int connectedSegment;
+    ASSERT_TRUE(tiglFuselageGetStartConnectedSegmentIndex(-1, 1, 2, 1, &connectedSegment) == TIGL_NOT_FOUND);
 }
 
 /**
 * Tests tiglFuselageGetStartConnectedSegmentIndex with invalid fuselage index.
 */
-TEST_F(TiglFuselage_segment, FuselageGetStartConnectedSegmentIndex_invalidFuselage)
+TEST_F( TiglFuselageSegment, FuselageGetStartConnectedSegmentIndex_invalidFuselage)
 {
-	int connectedSegment;
-	ASSERT_TRUE(tiglFuselageGetStartConnectedSegmentIndex(tiglHandle, 0, 2, 1, &connectedSegment) == TIGL_INDEX_ERROR);
+    int connectedSegment;
+    ASSERT_TRUE(tiglFuselageGetStartConnectedSegmentIndex(tiglHandle, 0, 2, 1, &connectedSegment) == TIGL_INDEX_ERROR);
 }
 
 /**
 * Tests tiglFuselageGetStartConnectedSegmentIndex with invalid segment index.
 */
-TEST_F(TiglFuselage_segment, FuselageGetStartConnectedSegmentIndex_invalidSegment)
+TEST_F( TiglFuselageSegment, FuselageGetStartConnectedSegmentIndex_invalidSegment)
 {
-	int connectedSegment;
-	ASSERT_TRUE(tiglFuselageGetStartConnectedSegmentIndex(tiglHandle, 1, 0, 1, &connectedSegment) == TIGL_INDEX_ERROR);
+    int connectedSegment;
+    ASSERT_TRUE(tiglFuselageGetStartConnectedSegmentIndex(tiglHandle, 1, 0, 1, &connectedSegment) == TIGL_INDEX_ERROR);
 }
 
 /**
 * Tests tiglFuselageGetStartConnectedSegmentIndex with invalid segment n-parameter.
 */
-TEST_F(TiglFuselage_segment, FuselageGetStartConnectedSegmentIndex_invalidN)
+TEST_F( TiglFuselageSegment, FuselageGetStartConnectedSegmentIndex_invalidN)
 {
-	int connectedSegment;
-	ASSERT_TRUE(tiglFuselageGetStartConnectedSegmentIndex(tiglHandle, 1, 1, 1, &connectedSegment) == TIGL_INDEX_ERROR);
-	ASSERT_TRUE(tiglFuselageGetStartConnectedSegmentIndex(tiglHandle, 1, 1, 0, &connectedSegment) == TIGL_INDEX_ERROR);
-	ASSERT_TRUE(tiglFuselageGetStartConnectedSegmentIndex(tiglHandle, 1, 2, 2, &connectedSegment) == TIGL_INDEX_ERROR);
+    int connectedSegment;
+    ASSERT_TRUE(tiglFuselageGetStartConnectedSegmentIndex(tiglHandle, 1, 1, 1, &connectedSegment) == TIGL_INDEX_ERROR);
+    ASSERT_TRUE(tiglFuselageGetStartConnectedSegmentIndex(tiglHandle, 1, 1, 0, &connectedSegment) == TIGL_INDEX_ERROR);
+    ASSERT_TRUE(tiglFuselageGetStartConnectedSegmentIndex(tiglHandle, 1, 2, 2, &connectedSegment) == TIGL_INDEX_ERROR);
 }
 
 /**
 * Tests tiglFuselageGetStartConnectedSegmentIndex with null pointer argument.
 */
-TEST_F(TiglFuselage_segment, FuselageGetStartConnectedSegmentIndex_nullPointerArgument)
+TEST_F( TiglFuselageSegment, FuselageGetStartConnectedSegmentIndex_nullPointerArgument)
 {
-	ASSERT_TRUE(tiglFuselageGetStartConnectedSegmentIndex(tiglHandle, 1, 2, 1, NULL) == TIGL_NULL_POINTER);
+    ASSERT_TRUE(tiglFuselageGetStartConnectedSegmentIndex(tiglHandle, 1, 2, 1, NULL) == TIGL_NULL_POINTER);
 }
 
 /**
 * Tests successfull call of tiglFuselageGetStartConnectedSegmentIndex.
 */
-TEST_F(TiglFuselage_segment, FuselageGetStartConnectedSegmentIndex_success)
+TEST_F( TiglFuselageSegment, FuselageGetStartConnectedSegmentIndex_success)
 {
-	int connectedSegment;
-	ASSERT_TRUE(tiglFuselageGetStartConnectedSegmentIndex(tiglHandle, 1, 2, 1, &connectedSegment) == TIGL_SUCCESS);
-	ASSERT_TRUE(connectedSegment == 1);
-	ASSERT_TRUE(tiglFuselageGetStartConnectedSegmentIndex(tiglHandle, 1, 3, 1, &connectedSegment) == TIGL_SUCCESS);
-	ASSERT_TRUE(connectedSegment == 2);
+    int connectedSegment;
+    ASSERT_TRUE(tiglFuselageGetStartConnectedSegmentIndex(tiglHandle, 1, 2, 1, &connectedSegment) == TIGL_SUCCESS);
+    ASSERT_TRUE(connectedSegment == 1);
+    ASSERT_TRUE(tiglFuselageGetStartConnectedSegmentIndex(tiglHandle, 1, 3, 1, &connectedSegment) == TIGL_SUCCESS);
+    ASSERT_TRUE(connectedSegment == 2);
 }
 
 /***************************************************************************************************/
@@ -295,59 +298,59 @@ TEST_F(TiglFuselage_segment, FuselageGetStartConnectedSegmentIndex_success)
 /**
 * Tests tiglFuselageGetEndConnectedSegmentIndex with invalid CPACS handle.
 */
-TEST_F(TiglFuselage_segment, FuselageGetEndConnectedSegmentIndex_invalidHandle)
+TEST_F( TiglFuselageSegment, FuselageGetEndConnectedSegmentIndex_invalidHandle)
 {
-	int connectedSegment;
-	ASSERT_TRUE(tiglFuselageGetEndConnectedSegmentIndex(-1, 1, 1, 1, &connectedSegment) == TIGL_NOT_FOUND);
+    int connectedSegment;
+    ASSERT_TRUE(tiglFuselageGetEndConnectedSegmentIndex(-1, 1, 1, 1, &connectedSegment) == TIGL_NOT_FOUND);
 }
 
 /**
 * Tests tiglFuselageGetEndConnectedSegmentIndex with invalid fuselage index.
 */
-TEST_F(TiglFuselage_segment, FuselageGetEndConnectedSegmentIndex_invalidFuselage)
+TEST_F( TiglFuselageSegment, FuselageGetEndConnectedSegmentIndex_invalidFuselage)
 {
-	int connectedSegment;
-	ASSERT_TRUE(tiglFuselageGetEndConnectedSegmentIndex(tiglHandle, 0, 1, 1, &connectedSegment) == TIGL_INDEX_ERROR);
+    int connectedSegment;
+    ASSERT_TRUE(tiglFuselageGetEndConnectedSegmentIndex(tiglHandle, 0, 1, 1, &connectedSegment) == TIGL_INDEX_ERROR);
 }
 
 /**
 * Tests tiglFuselageGetEndConnectedSegmentIndex with invalid segment index.
 */
-TEST_F(TiglFuselage_segment, FuselageGetEndConnectedSegmentIndex_invalidSegment)
+TEST_F( TiglFuselageSegment, FuselageGetEndConnectedSegmentIndex_invalidSegment)
 {
-	int connectedSegment;
-	ASSERT_TRUE(tiglFuselageGetEndConnectedSegmentIndex(tiglHandle, 1, 0, 1, &connectedSegment) == TIGL_INDEX_ERROR);
+    int connectedSegment;
+    ASSERT_TRUE(tiglFuselageGetEndConnectedSegmentIndex(tiglHandle, 1, 0, 1, &connectedSegment) == TIGL_INDEX_ERROR);
 }
 
 /**
 * Tests tiglFuselageGetEndConnectedSegmentIndex with invalid segment n-parameter.
 */
-TEST_F(TiglFuselage_segment, FuselageGetEndConnectedSegmentIndex_invalidN)
+TEST_F( TiglFuselageSegment, FuselageGetEndConnectedSegmentIndex_invalidN)
 {
-	int connectedSegment;
-	ASSERT_TRUE(tiglFuselageGetEndConnectedSegmentIndex(tiglHandle, 1, 1, 2, &connectedSegment) == TIGL_INDEX_ERROR);
-	ASSERT_TRUE(tiglFuselageGetEndConnectedSegmentIndex(tiglHandle, 1, 1, 0, &connectedSegment) == TIGL_INDEX_ERROR);
-	ASSERT_TRUE(tiglFuselageGetEndConnectedSegmentIndex(tiglHandle, 1, 59, 1, &connectedSegment) == TIGL_INDEX_ERROR);
+    int connectedSegment;
+    ASSERT_TRUE(tiglFuselageGetEndConnectedSegmentIndex(tiglHandle, 1, 1, 2, &connectedSegment) == TIGL_INDEX_ERROR);
+    ASSERT_TRUE(tiglFuselageGetEndConnectedSegmentIndex(tiglHandle, 1, 1, 0, &connectedSegment) == TIGL_INDEX_ERROR);
+    ASSERT_TRUE(tiglFuselageGetEndConnectedSegmentIndex(tiglHandle, 1, 59, 1, &connectedSegment) == TIGL_INDEX_ERROR);
 }
 
 /**
 * Tests tiglFuselageGetEndConnectedSegmentIndex with null pointer argument.
 */
-TEST_F(TiglFuselage_segment, FuselageGetEndConnectedSegmentIndex_nullPointerArgument)
+TEST_F( TiglFuselageSegment, FuselageGetEndConnectedSegmentIndex_nullPointerArgument)
 {
-	ASSERT_TRUE(tiglFuselageGetEndConnectedSegmentIndex(tiglHandle, 1, 1, 1, NULL) == TIGL_NULL_POINTER);
+    ASSERT_TRUE(tiglFuselageGetEndConnectedSegmentIndex(tiglHandle, 1, 1, 1, NULL) == TIGL_NULL_POINTER);
 }
 
 /**
 * Tests successfull call of tiglFuselageGetEndConnectedSegmentIndex.
 */
-TEST_F(TiglFuselage_segment, FuselageGetEndConnectedSegmentIndex_success)
+TEST_F( TiglFuselageSegment, FuselageGetEndConnectedSegmentIndex_success)
 {
-	int connectedSegment;
-	ASSERT_TRUE(tiglFuselageGetEndConnectedSegmentIndex(tiglHandle, 1, 1, 1, &connectedSegment) == TIGL_SUCCESS);
-	ASSERT_TRUE(connectedSegment == 2);
-	ASSERT_TRUE(tiglFuselageGetEndConnectedSegmentIndex(tiglHandle, 1, 2, 1, &connectedSegment) == TIGL_SUCCESS);
-	ASSERT_TRUE(connectedSegment == 3);
+    int connectedSegment;
+    ASSERT_TRUE(tiglFuselageGetEndConnectedSegmentIndex(tiglHandle, 1, 1, 1, &connectedSegment) == TIGL_SUCCESS);
+    ASSERT_TRUE(connectedSegment == 2);
+    ASSERT_TRUE(tiglFuselageGetEndConnectedSegmentIndex(tiglHandle, 1, 2, 1, &connectedSegment) == TIGL_SUCCESS);
+    ASSERT_TRUE(connectedSegment == 3);
 }
 
 /***************************************************************************************************/
@@ -355,61 +358,61 @@ TEST_F(TiglFuselage_segment, FuselageGetEndConnectedSegmentIndex_success)
 /**
 * Tests tiglFuselageGetStartSectionAndElementIndex with invalid CPACS handle.
 */
-TEST_F(TiglFuselage_segment, FuselageGetStartSectionAndElementIndex_invalidHandle)
+TEST_F( TiglFuselageSegment, FuselageGetStartSectionAndElementIndex_invalidHandle)
 {
-	int sectionIndex;
-	int elementIndex;
-	ASSERT_TRUE(tiglFuselageGetStartSectionAndElementIndex(-1, 1, 1, &sectionIndex, &elementIndex) == TIGL_NOT_FOUND);
+    int sectionIndex;
+    int elementIndex;
+    ASSERT_TRUE(tiglFuselageGetStartSectionAndElementIndex(-1, 1, 1, &sectionIndex, &elementIndex) == TIGL_NOT_FOUND);
 }
 
 /**
 * Tests tiglFuselageGetStartSectionAndElementIndex with invalid fuselage index.
 */
-TEST_F(TiglFuselage_segment, FuselageGetStartSectionAndElementIndex_invalidFuselage)
+TEST_F( TiglFuselageSegment, FuselageGetStartSectionAndElementIndex_invalidFuselage)
 {
-	int sectionIndex;
-	int elementIndex;
-	ASSERT_TRUE(tiglFuselageGetStartSectionAndElementIndex(tiglHandle, 0, 1, &sectionIndex, &elementIndex) == TIGL_INDEX_ERROR);
+    int sectionIndex;
+    int elementIndex;
+    ASSERT_TRUE(tiglFuselageGetStartSectionAndElementIndex(tiglHandle, 0, 1, &sectionIndex, &elementIndex) == TIGL_INDEX_ERROR);
 }
 
 /**
 * Tests tiglFuselageGetStartSectionAndElementIndex with invalid segment index.
 */
-TEST_F(TiglFuselage_segment, FuselageGetStartSectionAndElementIndex_invalidSegment)
+TEST_F( TiglFuselageSegment, FuselageGetStartSectionAndElementIndex_invalidSegment)
 {
-	int sectionIndex;
-	int elementIndex;
-	ASSERT_TRUE(tiglFuselageGetStartSectionAndElementIndex(tiglHandle, 1, 0, &sectionIndex, &elementIndex) == TIGL_INDEX_ERROR);
+    int sectionIndex;
+    int elementIndex;
+    ASSERT_TRUE(tiglFuselageGetStartSectionAndElementIndex(tiglHandle, 1, 0, &sectionIndex, &elementIndex) == TIGL_INDEX_ERROR);
 }
 
 /**
 * Tests tiglFuselageGetStartSectionAndElementIndex with null pointer argument.
 */
-TEST_F(TiglFuselage_segment, FuselageGetStartSectionAndElementIndex_nullPointerArgument)
+TEST_F( TiglFuselageSegment, FuselageGetStartSectionAndElementIndex_nullPointerArgument)
 {
-	int sectionIndex;
-	int elementIndex;
-	ASSERT_TRUE(tiglFuselageGetStartSectionAndElementIndex(tiglHandle, 1, 1, NULL, &elementIndex) == TIGL_NULL_POINTER);
-	ASSERT_TRUE(tiglFuselageGetStartSectionAndElementIndex(tiglHandle, 1, 1, &sectionIndex, NULL) == TIGL_NULL_POINTER);
-	ASSERT_TRUE(tiglFuselageGetStartSectionAndElementIndex(tiglHandle, 1, 1, NULL, NULL)          == TIGL_NULL_POINTER);
+    int sectionIndex;
+    int elementIndex;
+    ASSERT_TRUE(tiglFuselageGetStartSectionAndElementIndex(tiglHandle, 1, 1, NULL, &elementIndex) == TIGL_NULL_POINTER);
+    ASSERT_TRUE(tiglFuselageGetStartSectionAndElementIndex(tiglHandle, 1, 1, &sectionIndex, NULL) == TIGL_NULL_POINTER);
+    ASSERT_TRUE(tiglFuselageGetStartSectionAndElementIndex(tiglHandle, 1, 1, NULL, NULL)          == TIGL_NULL_POINTER);
 }
 
 /**
 * Tests successfull call of tiglFuselageGetStartSectionAndElementIndex.
 */
-TEST_F(TiglFuselage_segment, FuselageGetStartSectionAndElementIndex_success)
+TEST_F( TiglFuselageSegment, FuselageGetStartSectionAndElementIndex_success)
 {
-	int sectionIndex;
-	int elementIndex;
-	ASSERT_TRUE(tiglFuselageGetStartSectionAndElementIndex(tiglHandle, 1, 1, &sectionIndex, &elementIndex) == TIGL_SUCCESS);
-	ASSERT_TRUE(sectionIndex == 1);
-	ASSERT_TRUE(elementIndex == 1);
-	ASSERT_TRUE(tiglFuselageGetStartSectionAndElementIndex(tiglHandle, 1, 2, &sectionIndex, &elementIndex) == TIGL_SUCCESS);
-	ASSERT_TRUE(sectionIndex == 2);
-	ASSERT_TRUE(elementIndex == 1);
-	ASSERT_TRUE(tiglFuselageGetStartSectionAndElementIndex(tiglHandle, 1, 3, &sectionIndex, &elementIndex) == TIGL_SUCCESS);
-	ASSERT_TRUE(sectionIndex == 3);
-	ASSERT_TRUE(elementIndex == 1);
+    int sectionIndex;
+    int elementIndex;
+    ASSERT_TRUE(tiglFuselageGetStartSectionAndElementIndex(tiglHandle, 1, 1, &sectionIndex, &elementIndex) == TIGL_SUCCESS);
+    ASSERT_TRUE(sectionIndex == 1);
+    ASSERT_TRUE(elementIndex == 1);
+    ASSERT_TRUE(tiglFuselageGetStartSectionAndElementIndex(tiglHandle, 1, 2, &sectionIndex, &elementIndex) == TIGL_SUCCESS);
+    ASSERT_TRUE(sectionIndex == 2);
+    ASSERT_TRUE(elementIndex == 1);
+    ASSERT_TRUE(tiglFuselageGetStartSectionAndElementIndex(tiglHandle, 1, 3, &sectionIndex, &elementIndex) == TIGL_SUCCESS);
+    ASSERT_TRUE(sectionIndex == 3);
+    ASSERT_TRUE(elementIndex == 1);
 }
 
 /***************************************************************************************************/
@@ -417,61 +420,61 @@ TEST_F(TiglFuselage_segment, FuselageGetStartSectionAndElementIndex_success)
 /**
 * Tests tiglFuselageGetEndSectionAndElementIndex with invalid CPACS handle.
 */
-TEST_F(TiglFuselage_segment, FuselageGetEndSectionAndElementIndex_invalidHandle)
+TEST_F( TiglFuselageSegment, FuselageGetEndSectionAndElementIndex_invalidHandle)
 {
-	int sectionIndex;
-	int elementIndex;
-	ASSERT_TRUE(tiglFuselageGetEndSectionAndElementIndex(-1, 1, 1, &sectionIndex, &elementIndex) == TIGL_NOT_FOUND);
+    int sectionIndex;
+    int elementIndex;
+    ASSERT_TRUE(tiglFuselageGetEndSectionAndElementIndex(-1, 1, 1, &sectionIndex, &elementIndex) == TIGL_NOT_FOUND);
 }
 
 /**
 * Tests tiglFuselageGetEndSectionAndElementIndex with invalid fuselage index.
 */
-TEST_F(TiglFuselage_segment, FuselageGetEndSectionAndElementIndex_invalidFuselage)
+TEST_F( TiglFuselageSegment, FuselageGetEndSectionAndElementIndex_invalidFuselage)
 {
-	int sectionIndex;
-	int elementIndex;
-	ASSERT_TRUE(tiglFuselageGetEndSectionAndElementIndex(tiglHandle, 0, 1, &sectionIndex, &elementIndex) == TIGL_INDEX_ERROR);
+    int sectionIndex;
+    int elementIndex;
+    ASSERT_TRUE(tiglFuselageGetEndSectionAndElementIndex(tiglHandle, 0, 1, &sectionIndex, &elementIndex) == TIGL_INDEX_ERROR);
 }
 
 /**
 * Tests tiglFuselageGetEndSectionAndElementIndex with invalid segment index.
 */
-TEST_F(TiglFuselage_segment, FuselageGetEndSectionAndElementIndex_invalidSegment)
+TEST_F( TiglFuselageSegment, FuselageGetEndSectionAndElementIndex_invalidSegment)
 {
-	int sectionIndex;
-	int elementIndex;
-	ASSERT_TRUE(tiglFuselageGetEndSectionAndElementIndex(tiglHandle, 1, 0, &sectionIndex, &elementIndex) == TIGL_INDEX_ERROR);
+    int sectionIndex;
+    int elementIndex;
+    ASSERT_TRUE(tiglFuselageGetEndSectionAndElementIndex(tiglHandle, 1, 0, &sectionIndex, &elementIndex) == TIGL_INDEX_ERROR);
 }
 
 /**
 * Tests tiglFuselageGetEndSectionAndElementIndex with null pointer argument.
 */
-TEST_F(TiglFuselage_segment, FuselageGetEndSectionAndElementIndex_nullPointerArgument)
+TEST_F( TiglFuselageSegment, FuselageGetEndSectionAndElementIndex_nullPointerArgument)
 {
-	int sectionIndex;
-	int elementIndex;
-	ASSERT_TRUE(tiglFuselageGetEndSectionAndElementIndex(tiglHandle, 1, 1, NULL, &elementIndex) == TIGL_NULL_POINTER);
-	ASSERT_TRUE(tiglFuselageGetEndSectionAndElementIndex(tiglHandle, 1, 1, &sectionIndex, NULL) == TIGL_NULL_POINTER);
-	ASSERT_TRUE(tiglFuselageGetEndSectionAndElementIndex(tiglHandle, 1, 1, NULL, NULL)          == TIGL_NULL_POINTER);
+    int sectionIndex;
+    int elementIndex;
+    ASSERT_TRUE(tiglFuselageGetEndSectionAndElementIndex(tiglHandle, 1, 1, NULL, &elementIndex) == TIGL_NULL_POINTER);
+    ASSERT_TRUE(tiglFuselageGetEndSectionAndElementIndex(tiglHandle, 1, 1, &sectionIndex, NULL) == TIGL_NULL_POINTER);
+    ASSERT_TRUE(tiglFuselageGetEndSectionAndElementIndex(tiglHandle, 1, 1, NULL, NULL)          == TIGL_NULL_POINTER);
 }
 
 /**
 * Tests successfull call of tiglFuselageGetEndSectionAndElementIndex.
 */
-TEST_F(TiglFuselage_segment, FuselageGetEndSectionAndElementIndex_success)
+TEST_F( TiglFuselageSegment, FuselageGetEndSectionAndElementIndex_success)
 {
-	int sectionIndex;
-	int elementIndex;
-	ASSERT_TRUE(tiglFuselageGetEndSectionAndElementIndex(tiglHandle, 1, 1, &sectionIndex, &elementIndex) == TIGL_SUCCESS);
-	ASSERT_TRUE(sectionIndex == 2);
-	ASSERT_TRUE(elementIndex == 1);
-	ASSERT_TRUE(tiglFuselageGetEndSectionAndElementIndex(tiglHandle, 1, 2, &sectionIndex, &elementIndex) == TIGL_SUCCESS);
-	ASSERT_TRUE(sectionIndex == 3);
-	ASSERT_TRUE(elementIndex == 1);
-	ASSERT_TRUE(tiglFuselageGetEndSectionAndElementIndex(tiglHandle, 1, 3, &sectionIndex, &elementIndex) == TIGL_SUCCESS);
-	ASSERT_TRUE(sectionIndex == 4);
-	ASSERT_TRUE(elementIndex == 1);
+    int sectionIndex;
+    int elementIndex;
+    ASSERT_TRUE(tiglFuselageGetEndSectionAndElementIndex(tiglHandle, 1, 1, &sectionIndex, &elementIndex) == TIGL_SUCCESS);
+    ASSERT_TRUE(sectionIndex == 2);
+    ASSERT_TRUE(elementIndex == 1);
+    ASSERT_TRUE(tiglFuselageGetEndSectionAndElementIndex(tiglHandle, 1, 2, &sectionIndex, &elementIndex) == TIGL_SUCCESS);
+    ASSERT_TRUE(sectionIndex == 3);
+    ASSERT_TRUE(elementIndex == 1);
+    ASSERT_TRUE(tiglFuselageGetEndSectionAndElementIndex(tiglHandle, 1, 3, &sectionIndex, &elementIndex) == TIGL_SUCCESS);
+    ASSERT_TRUE(sectionIndex == 4);
+    ASSERT_TRUE(elementIndex == 1);
 }
 
 
@@ -484,58 +487,52 @@ TEST_F(TiglFuselage_segment, FuselageGetEndSectionAndElementIndex_success)
 /**
 * Tests tiglFuselageGetStartSectionAndElementUID with invalid CPACS handle.
 */
-TEST_F(TiglFuselage_segment, FuselageGetStartSectionAndElementUID_invalidHandle)
+TEST_F( TiglFuselageSegment, FuselageGetStartSectionAndElementUID_invalidHandle)
 {
-	char* sectionUID;
-	char* elementUID;
-	ASSERT_TRUE(tiglFuselageGetStartSectionAndElementUID(-1, 1, 1, &sectionUID, &elementUID) == TIGL_NOT_FOUND);
+    char* sectionUID;
+    char* elementUID;
+    ASSERT_TRUE(tiglFuselageGetStartSectionAndElementUID(-1, 1, 1, &sectionUID, &elementUID) == TIGL_NOT_FOUND);
 }
 
 /**
 * Tests tiglFuselageGetStartSectionAndElementUID with invalid fuselage index.
 */
-TEST_F(TiglFuselage_segment, FuselageGetStartSectionAndElementUID_invalidFuselage)
+TEST_F( TiglFuselageSegment, FuselageGetStartSectionAndElementUID_invalidFuselage)
 {
-	char* sectionUID;
-	char* elementUID;
-	ASSERT_TRUE(tiglFuselageGetStartSectionAndElementUID(tiglHandle, 0, 1, &sectionUID, &elementUID) == TIGL_INDEX_ERROR);
+    char* sectionUID;
+    char* elementUID;
+    ASSERT_TRUE(tiglFuselageGetStartSectionAndElementUID(tiglHandle, 0, 1, &sectionUID, &elementUID) == TIGL_INDEX_ERROR);
 }
 
 /**
 * Tests tiglFuselageGetStartSectionAndElementUID with invalid segment index.
 */
-TEST_F(TiglFuselage_segment, FuselageGetStartSectionAndElementUID_invalidSegment)
+TEST_F( TiglFuselageSegment, FuselageGetStartSectionAndElementUID_invalidSegment)
 {
-	char* sectionUID;
-	char* elementUID;
-	ASSERT_TRUE(tiglFuselageGetStartSectionAndElementUID(tiglHandle, 1, 0, &sectionUID, &elementUID) == TIGL_INDEX_ERROR);
+    char* sectionUID;
+    char* elementUID;
+    ASSERT_TRUE(tiglFuselageGetStartSectionAndElementUID(tiglHandle, 1, 0, &sectionUID, &elementUID) == TIGL_INDEX_ERROR);
 }
 
 
 /**
 * Tests successfull call of tiglFuselageGetStartSectionAndElementUID.
 */
-TEST_F(TiglFuselage_segment, FuselageGetStartSectionAndElementUID_success)
+TEST_F( TiglFuselageSegment, FuselageGetStartSectionAndElementUID_success)
 {
     char* sectionUID;
     char* elementUID;
     ASSERT_TRUE(tiglFuselageGetStartSectionAndElementUID(tiglHandle, 1, 1, &sectionUID, &elementUID) == TIGL_SUCCESS);
     ASSERT_TRUE(strcmp(sectionUID, "D150_VAMP_FL1_Sec1") == 0);
     ASSERT_TRUE(strcmp(elementUID, "D150_VAMP_FL1_Sec1_Elem1") == 0);
-	free(sectionUID);
-	free(elementUID);
 
     ASSERT_TRUE(tiglFuselageGetStartSectionAndElementUID(tiglHandle, 1, 2, &sectionUID, &elementUID) == TIGL_SUCCESS);
     ASSERT_TRUE(strcmp(sectionUID, "D150_VAMP_FL1_Sec2") == 0);
     ASSERT_TRUE(strcmp(elementUID, "D150_VAMP_FL1_Sec2_Elem1") == 0);
-	free(sectionUID);
-	free(elementUID);
 
     ASSERT_TRUE(tiglFuselageGetStartSectionAndElementUID(tiglHandle, 1, 3, &sectionUID, &elementUID) == TIGL_SUCCESS);
     ASSERT_TRUE(strcmp(sectionUID, "D150_VAMP_FL1_Sec3") == 0);
     ASSERT_TRUE(strcmp(elementUID, "D150_VAMP_FL1_Sec3_Elem1") == 0);
-	free(sectionUID);
-	free(elementUID);
 }
 
 /***************************************************************************************************/
@@ -543,57 +540,51 @@ TEST_F(TiglFuselage_segment, FuselageGetStartSectionAndElementUID_success)
 /**
 * Tests tiglFuselageGetEndSectionAndElementUID with invalid CPACS handle.
 */
-TEST_F(TiglFuselage_segment, FuselageGetEndSectionAndElementUID_invalidHandle)
+TEST_F( TiglFuselageSegment, FuselageGetEndSectionAndElementUID_invalidHandle)
 {
-	char* sectionUID;
-	char* elementUID;
-	ASSERT_TRUE(tiglFuselageGetEndSectionAndElementUID(-1, 1, 1, &sectionUID, &elementUID) == TIGL_NOT_FOUND);
+    char* sectionUID;
+    char* elementUID;
+    ASSERT_TRUE(tiglFuselageGetEndSectionAndElementUID(-1, 1, 1, &sectionUID, &elementUID) == TIGL_NOT_FOUND);
 }
 
 /**
 * Tests tiglFuselageGetEndSectionAndElementUID with invalid fuselage index.
 */
-TEST_F(TiglFuselage_segment, FuselageGetEndSectionAndElementUID_invalidFuselage)
+TEST_F( TiglFuselageSegment, FuselageGetEndSectionAndElementUID_invalidFuselage)
 {
-	char* sectionUID;
-	char* elementUID;
-	ASSERT_TRUE(tiglFuselageGetEndSectionAndElementUID(tiglHandle, 0, 1, &sectionUID, &elementUID) == TIGL_INDEX_ERROR);
+    char* sectionUID;
+    char* elementUID;
+    ASSERT_TRUE(tiglFuselageGetEndSectionAndElementUID(tiglHandle, 0, 1, &sectionUID, &elementUID) == TIGL_INDEX_ERROR);
 }
 
 /**
 * Tests tiglFuselageGetEndSectionAndElementUID with invalid segment index.
 */
-TEST_F(TiglFuselage_segment, FuselageGetEndSectionAndElementUID_invalidSegment)
+TEST_F( TiglFuselageSegment, FuselageGetEndSectionAndElementUID_invalidSegment)
 {
-	char* sectionUID;
-	char* elementUID;
-	ASSERT_TRUE(tiglFuselageGetEndSectionAndElementUID(tiglHandle, 1, 0, &sectionUID, &elementUID) == TIGL_INDEX_ERROR);
+    char* sectionUID;
+    char* elementUID;
+    ASSERT_TRUE(tiglFuselageGetEndSectionAndElementUID(tiglHandle, 1, 0, &sectionUID, &elementUID) == TIGL_INDEX_ERROR);
 }
 
 /**
 * Tests successfull call of tiglFuselageGetEndSectionAndElementUID.
 */
-TEST_F(TiglFuselage_segment, FuselageGetEndSectionAndElementUID_success)
+TEST_F( TiglFuselageSegment, FuselageGetEndSectionAndElementUID_success)
 {
     char* sectionUID;
     char* elementUID;
     ASSERT_TRUE(tiglFuselageGetEndSectionAndElementUID(tiglHandle, 1, 1, &sectionUID, &elementUID) == TIGL_SUCCESS);
-    ASSERT_TRUE(strcmp(sectionUID, "D150_VAMP_FL1_Sec2") == 0);
-    ASSERT_TRUE(strcmp(elementUID, "D150_VAMP_FL1_Sec2_Elem1") == 0);
-	free(sectionUID);
-	free(elementUID);
+    ASSERT_STREQ("D150_VAMP_FL1_Sec2", sectionUID);
+    ASSERT_STREQ("D150_VAMP_FL1_Sec2_Elem1",elementUID);
 
     ASSERT_TRUE(tiglFuselageGetEndSectionAndElementUID(tiglHandle, 1, 2, &sectionUID, &elementUID) == TIGL_SUCCESS);
-    ASSERT_TRUE(strcmp(sectionUID, "D150_VAMP_FL1_Sec3") == 0);
-    ASSERT_TRUE(strcmp(elementUID, "D150_VAMP_FL1_Sec3_Elem1") == 0);
-	free(sectionUID);
-	free(elementUID);
+    ASSERT_STREQ("D150_VAMP_FL1_Sec3", sectionUID);
+    ASSERT_STREQ("D150_VAMP_FL1_Sec3_Elem1", elementUID);
 
     ASSERT_TRUE(tiglFuselageGetEndSectionAndElementUID(tiglHandle, 1, 3, &sectionUID, &elementUID) == TIGL_SUCCESS);
-    ASSERT_TRUE(strcmp(sectionUID, "D150_VAMP_FL1_Sec4") == 0);
-    ASSERT_TRUE(strcmp(elementUID, "D150_VAMP_FL1_Sec4_Elem1") == 0);
-	free(sectionUID);
-	free(elementUID);
+    ASSERT_STREQ("D150_VAMP_FL1_Sec4", sectionUID);
+    ASSERT_STREQ("D150_VAMP_FL1_Sec4_Elem1", elementUID);
 }
 
 

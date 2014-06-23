@@ -25,128 +25,148 @@
 
 #include "CTiglPoint.h"
 
-namespace tigl {
+namespace tigl 
+{
 
-    // Constructor
-    CTiglPoint::CTiglPoint(double xval, double yval, double zval)
-        : x(xval)
-        , y(yval)
-        , z(zval)
-    {
-    }
+// Constructor
+CTiglPoint::CTiglPoint(double xval, double yval, double zval)
+    : x(xval)
+    , y(yval)
+    , z(zval)
+{
+}
 
-    // Copy constructor
-    CTiglPoint::CTiglPoint(const CTiglPoint& aPoint)
-    {
+// Copy constructor
+CTiglPoint::CTiglPoint(const CTiglPoint& aPoint)
+{
+    x = aPoint.x;
+    y = aPoint.y;
+    z = aPoint.z;
+}
+
+CTiglPoint::CTiglPoint(const gp_XYZ& aPoint)
+{
+    x = aPoint.X();
+    y = aPoint.Y();
+    z = aPoint.Z();
+}
+
+// Assignment operator
+CTiglPoint& CTiglPoint::operator=(const CTiglPoint& aPoint)
+{
+    if (&aPoint != this) {
         x = aPoint.x;
         y = aPoint.y;
         z = aPoint.z;
     }
+    return *this;
+}
 
-    CTiglPoint::CTiglPoint(const gp_XYZ& aPoint)
-    {
-        x = aPoint.X();
-        y = aPoint.Y();
-        z = aPoint.Z();
-    }
+CTiglPoint CTiglPoint::operator+(const CTiglPoint& aPoint) const
+{
+    CTiglPoint p;
+    p.x = x + aPoint.x;
+    p.y = y + aPoint.y;
+    p.z = z + aPoint.z;
+    return p;
+}
 
-    // Assignment operator
-    CTiglPoint& CTiglPoint::operator=(const CTiglPoint& aPoint)
-    {
-        if (&aPoint != this) {
-            x = aPoint.x;
-            y = aPoint.y;
-            z = aPoint.z;
-        }
-        return *this;
-    }
+CTiglPoint& CTiglPoint::operator+=(const CTiglPoint& aPoint) 
+{
+    x += aPoint.x;
+    y += aPoint.y;
+    z += aPoint.z;
+    return *this;
+}
 
-    CTiglPoint CTiglPoint::operator+(const CTiglPoint& aPoint) const{
-        CTiglPoint p;
-        p.x = x + aPoint.x;
-        p.y = y + aPoint.y;
-        p.z = z + aPoint.z;
-        return p;
-    }
+CTiglPoint CTiglPoint::operator-(const CTiglPoint& aPoint) const
+{
+    CTiglPoint p;
+    p.x = x - aPoint.x;
+    p.y = y - aPoint.y;
+    p.z = z - aPoint.z;
+    return p;
+}
 
-    CTiglPoint& CTiglPoint::operator+=(const CTiglPoint& aPoint) {
-        x += aPoint.x;
-        y += aPoint.y;
-        z += aPoint.z;
-        return *this;
-    }
+CTiglPoint& CTiglPoint::operator-=(const CTiglPoint& aPoint) 
+{
+    x -= aPoint.x;
+    y -= aPoint.y;
+    z -= aPoint.z;
+    return *this;
+}
 
-    CTiglPoint CTiglPoint::operator-(const CTiglPoint& aPoint) const{
-        CTiglPoint p;
-        p.x = x - aPoint.x;
-        p.y = y - aPoint.y;
-        p.z = z - aPoint.z;
-        return p;
-    }
+CTiglPoint CTiglPoint::operator*(double s) const
+{
+    CTiglPoint p;
+    p.x = x*s;
+    p.y = y*s;
+    p.z = z*s;
+    return p;
+}
 
-    CTiglPoint& CTiglPoint::operator-=(const CTiglPoint& aPoint) {
-        x -= aPoint.x;
-        y -= aPoint.y;
-        z -= aPoint.z;
-        return *this;
-    }
+double CTiglPoint::norm2Sqr() const 
+{
+    return x*x+y*y+z*z;
+}
 
-    CTiglPoint CTiglPoint::operator*(double s) const{
-        CTiglPoint p;
-        p.x = x*s;
-        p.y = y*s;
-        p.z = z*s;
-        return p;
-    }
+double CTiglPoint::norm2() const 
+{
+    return sqrt(x*x + y*y + z*z);
+}
 
-    double CTiglPoint::norm2Sqr() const {
-        return x*x+y*y+z*z;
-    }
+// Destructor
+CTiglPoint::~CTiglPoint(void)
+{
+}
 
-    double CTiglPoint::norm2() const {
-        return sqrt(x*x + y*y + z*z);
-    }
+// Convert a CTiglPoint to a OpenCascade gp_Pnt
+gp_Pnt CTiglPoint::Get_gp_Pnt(void) const
+{
+    return gp_Pnt(x, y, z);
+}
 
-    // Destructor
-    CTiglPoint::~CTiglPoint(void)
-    {
-    }
+// Dump internal point data
+void CTiglPoint::Dump(std::ostream& aStream) const 
+{
+    aStream << "CTiglPoint: (" << x << ", " << y << ", " << z << ")";
+}
 
-    // Convert a CTiglPoint to a OpenCascade gp_Pnt
-    gp_Pnt CTiglPoint::Get_gp_Pnt(void) const
-    {
-        return gp_Pnt(x, y, z);
-    }
+double CTiglPoint::inner_prod(const CTiglPoint& a, const CTiglPoint& b) 
+{
+    return a.x*b.x + a.y*b.y + a.z*b.z;
+}
 
-    // Dump internal point data
-    void CTiglPoint::Dump(std::ostream& aStream) const 
-    {
-        aStream << "CTiglPoint: (" << x << ", " << y << ", " << z << ")";
-    }
+CTiglPoint CTiglPoint::cross_prod(const CTiglPoint& a, const CTiglPoint& b) 
+{
+    CTiglPoint c;
+    c.x = a.y*b.z - a.z*b.y;
+    c.y = a.z*b.x - a.x*b.z;
+    c.z = a.x*b.y - a.y*b.x;
+    return c;
+}
 
-    double CTiglPoint::inner_prod(const CTiglPoint& a, const CTiglPoint& b) {
-        return a.x*b.x + a.y*b.y + a.z*b.z;
-    }
-    
-    CTiglPoint CTiglPoint::cross_prod(const CTiglPoint& a, const CTiglPoint& b) {
-        CTiglPoint c;
-        c.x = a.y*b.z - a.z*b.y;
-        c.y = a.z*b.x - a.x*b.z;
-        c.z = a.x*b.y - a.y*b.x;
-        return c;
-    }
+double CTiglPoint::distance2(const CTiglPoint &p) const 
+{
+    return (x-p.x)*(x-p.x) + (y-p.y)*(y-p.y) + (z-p.z)*(z-p.z);
+}
 
-    double CTiglPoint::distance2(const CTiglPoint &p) const {
-        return (x-p.x)*(x-p.x) + (y-p.y)*(y-p.y) + (z-p.z)*(z-p.z);
+void CTiglPoint::getMinMax(double & min, double & max) const 
+{
+    min = x;
+    if (y < min) {
+        min = y;
     }
-
-    void CTiglPoint::getMinMax(double & min, double & max) const {
-        min = x;
-        if(y < min) min = y;
-        if(z < min) min = z;
-        max = x;
-        if(y > max) max = y;
-        if(z > max) max = z;
+    if (z < min) {
+        min = z;
     }
+    max = x;
+    if (y > max) {
+        max = y;
+    }
+    if (z > max) {
+        max = z;
+    }
+}
 
 } // end namespace tigl

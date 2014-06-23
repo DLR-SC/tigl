@@ -27,70 +27,72 @@
 #define CCPACSFUSELAGECONNECTION_H
 
 #include "tixi.h"
+#include "tigl_internal.h"
 #include "CCPACSFuselageProfile.h"
 #include "CTiglTransformation.h"
 #include <string>
 
-namespace tigl {
+namespace tigl
+{
 
-    class CCPACSFuselageSegment;
+class CCPACSFuselageSegment;
 
-    class CCPACSFuselageConnection
-    {
+class CCPACSFuselageConnection
+{
 
-    public:
-        // Constructor
-        CCPACSFuselageConnection(CCPACSFuselageSegment* aSegment);
+public:
+    // Constructor
+    TIGL_EXPORT CCPACSFuselageConnection(CCPACSFuselageSegment* aSegment);
 
-        // Virtual Destructor
-        virtual ~CCPACSFuselageConnection(void);
+    // Virtual Destructor
+    TIGL_EXPORT virtual ~CCPACSFuselageConnection(void);
 
-        // Read CPACS connection element
-        void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& connectionXPath);
+    // Read CPACS connection element
+    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& connectionXPath);
 
-        // Returns the section UID of this connection
-        std::string GetSectionUID(void) const;
+    // Returns the section UID of this connection
+    TIGL_EXPORT const std::string& GetSectionUID(void) const;
 
-        // Returns the section element UID of this connection
-        std::string GetSectionElementUID(void) const;
+    // Returns the section element UID of this connection
+    TIGL_EXPORT const std::string& GetSectionElementUID(void) const;
 
-        // Returns the section index of this connection
-        int GetSectionIndex(void) const;
+    // Returns the section index of this connection
+    TIGL_EXPORT int GetSectionIndex(void) const;
 
-        // Returns the section element index of this connection
-        int GetSectionElementIndex(void) const;
+    // Returns the section element index of this connection
+    TIGL_EXPORT int GetSectionElementIndex(void) const;
 
-        // Returns the fuselage profile referenced by this connection
-        CCPACSFuselageProfile& GetProfile(void) const;
+    // Returns the fuselage profile referenced by this connection
+    TIGL_EXPORT CCPACSFuselageProfile& GetProfile(void) const;
 
-        // Returns the positioning transformation (segment transformation) for the referenced section
-        CTiglTransformation GetPositioningTransformation(void) const;
+    // Returns the positioning transformation (segment transformation) for the referenced section
+    TIGL_EXPORT CTiglTransformation GetPositioningTransformation(void) const;
 
-        // Returns the section matrix referenced by this connection
-        CTiglTransformation GetSectionTransformation(void) const;
+    // Returns the section matrix referenced by this connection
+    TIGL_EXPORT CTiglTransformation GetSectionTransformation(void) const;
 
-        // Returns the section element matrix referenced by this connection
-        CTiglTransformation GetSectionElementTransformation(void) const;
+    // Returns the section element matrix referenced by this connection
+    TIGL_EXPORT CTiglTransformation GetSectionElementTransformation(void) const;
 
-    protected:
-        // Cleanup routine
-        void Cleanup(void);
+protected:
+    // Cleanup routine
+    void Cleanup(void);
 
-    private:
-        // Copy constructor
-        CCPACSFuselageConnection(const CCPACSFuselageConnection& );
+private:
+    // Copy constructor
+    CCPACSFuselageConnection(const CCPACSFuselageConnection& );
 
-        // Assignment operator
-        void operator=(const CCPACSFuselageConnection& );
+    // Assignment operator
+    void operator=(const CCPACSFuselageConnection& );
 
-    private:
-        int                            sectionIndex; /**< Index in sections */
-        int                            elementIndex; /**< Index in section/elements */
-        std::string                    sectionUID;   /**< UID in sections */
-        std::string                    elementUID;   /**< UID in section/elements */
-        CCPACSFuselageSegment*         segment;      /**< Parent segment */
+private:
+    int                            sectionIndex; /**< Index in sections */
+    int                            elementIndex; /**< Index in section/elements */
+    std::string                    sectionUID;   /**< UID in sections */
+    std::string                    elementUID;   /**< UID in section/elements */
+    CCPACSFuselageSegment*         segment;      /**< Parent segment */
 
-    };
+};
 
 } // end namespace tigl
 

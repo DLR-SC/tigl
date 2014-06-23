@@ -32,22 +32,24 @@
 #define C1    0.1
 #define BTFAC 0.5
 
-namespace {
+namespace 
+{
     inline double max(double a, double b) { return a > b ? a : b; }
 }
 
 //#define DEBUG
 
-namespace tigl{
+namespace tigl
+{
 
 // more infos here: http://en.wikipedia.org/wiki/Wolfe_conditions
 inline double CTiglOptimizer::armijoBacktrack2d(const class ITiglObjectiveFunction& f, const double * x, 
-    const double * grad, double * dir, 
-    double alpha, double& of)
+                                                const double * grad, double * dir, 
+                                                double alpha, double& of)
 {
     double slope = grad[0]*dir[0]+grad[1]*dir[1];
     // the hessian might not be positive definite
-    if(slope >= -1.e-15){
+    if (slope >= -1.e-15){
 #ifdef DEBUG
         DLOG(WARNING) << "Warning: Hessian not pos. definite. Switch back to gradient.";
 #endif
@@ -67,9 +69,9 @@ inline double CTiglOptimizer::armijoBacktrack2d(const class ITiglObjectiveFuncti
 
     while ( (of=f.getFunctionValue(xnew)) > of_init + C1*alpha*slope ){
         alpha *= BTFAC;
-        if(iter++ > 20) {
+        if (iter++ > 20) {
             //normally we should not get here (except from pathological functions)
-            LOG(ERROR) << "Error: line search cannot find sufficient decrease, abort" << std::endl;
+            LOG(ERROR) << "Line search cannot find sufficient decrease, abort" << std::endl;
             alpha = 0.;
             of = of_init;
             break;
@@ -81,10 +83,11 @@ inline double CTiglOptimizer::armijoBacktrack2d(const class ITiglObjectiveFuncti
     return alpha;
 }
 
-TiglReturnCode CTiglOptimizer::optNewton2d(const class ITiglObjectiveFunction& f, double * x, double gradTol, double ofTol){
+TiglReturnCode CTiglOptimizer::optNewton2d(const class ITiglObjectiveFunction& f, double * x, double gradTol, double ofTol)
+{
     
-    if(f.getParameterCount() != 2) {
-        LOG(ERROR) << "Error: Determinant too small in CTiglPointTranslator::optimize!" << std::endl;
+    if (f.getParameterCount() != 2) {
+        LOG(ERROR) << "Number of optimization parameters != 2 in CTiglPointTranslator::optimize!" << std::endl;
         return TIGL_MATH_ERROR;
     }
 
@@ -106,14 +109,14 @@ TiglReturnCode CTiglOptimizer::optNewton2d(const class ITiglObjectiveFunction& f
 
     while ( iter < numOfIter && 
             (of_old - of)/max(of, 1.) > ofTol && 
-            sqrt(grad[0]*grad[0]+grad[1]*grad[1]) > gradTol ) 
-    {
+            sqrt(grad[0]*grad[0]+grad[1]*grad[1]) > gradTol ) {
+
         of_old = of;
 
         // calculate determinant of hessian
         double det = TIGL_MATRIX2D(hess,2,0,0)*TIGL_MATRIX2D(hess,2,1,1) - TIGL_MATRIX2D(hess,2,0,1)*TIGL_MATRIX2D(hess,2,1,0);
         if ( fabs(det) < 1e-12 ){
-            LOG(ERROR) << "Error: Determinant too small in CTiglPointTranslator::optimize!" << std::endl;
+            LOG(ERROR) << "Determinant too small in CTiglPointTranslator::optimize!" << std::endl;
             return TIGL_MATH_ERROR;
         }
 
@@ -133,7 +136,7 @@ TiglReturnCode CTiglOptimizer::optNewton2d(const class ITiglObjectiveFunction& f
         double alpha = 1.;
         // we need a line search to ensure convergence, lets take backtracking approach
         alpha = armijoBacktrack2d(f,x, grad, dir, alpha, of);
-        if(alpha <= 0.){
+        if (alpha <= 0.) {
             return TIGL_MATH_ERROR;
         }
 

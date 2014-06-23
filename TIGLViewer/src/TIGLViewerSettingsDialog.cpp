@@ -34,19 +34,23 @@
 #define BTN_STYLE "#buttonColorChoser {background-color: %1; border: 1px solid black; border-radius: 5px;} #buttonColorChoser:hover {border: 1px solid white;}"
 
 TIGLViewerSettingsDialog::TIGLViewerSettingsDialog(TIGLViewerSettings& settings, QWidget *parent)
-: _settings(settings), QDialog(parent) {
+    : _settings(settings), QDialog(parent)
+{
     setupUi(this);
 
     tessAccuEdit->setText (QString("%1").arg(sliderTesselationAccuracy->value()));
     trianAccuEdit->setText(QString("%1").arg(sliderTriangulationAccuracy->value()));
+    settingsList->item(0)->setSelected(true);
 
     connect(buttonBox, SIGNAL(accepted()), this, SLOT(onSettingsAccepted()));
     connect(sliderTesselationAccuracy,   SIGNAL(valueChanged(int)), this, SLOT(onSliderTesselationChanged(int)));
     connect(sliderTriangulationAccuracy, SIGNAL(valueChanged(int)), this, SLOT(onSliderTriangulationChanged(int)));
     connect(buttonColorChoser, SIGNAL(clicked()), this, SLOT(onColorChoserPushed()));
+    connect(settingsList, SIGNAL(currentRowChanged(int)), this, SLOT(onSettingsListChanged(int)));
 }
 
-double TIGLViewerSettingsDialog::calcTesselationAccu(int value){
+double TIGLViewerSettingsDialog::calcTesselationAccu(int value)
+{
     // calculate tesselation accuracy, slider range is from 0 ... 10
     // we map it onto 0.1 to 0.00001 - logarithmic slider
     double dmax = WORST_TESSELATION, dmin = BEST_TESSELATION;
@@ -58,7 +62,8 @@ double TIGLViewerSettingsDialog::calcTesselationAccu(int value){
     return c * exp(-mu * (double)value);
 }
 
-double TIGLViewerSettingsDialog::calcTriangulationAccu(int value){
+double TIGLViewerSettingsDialog::calcTriangulationAccu(int value)
+{
     // calculate triangulation accuracy, slider range is from 0 ... 10
     // we map it onto 0.1 to 0.00001 - logarithmic slider
     double dmax = WORST_TRIANGULATION, dmin = BEST_TRIANGULATION;
@@ -71,13 +76,19 @@ double TIGLViewerSettingsDialog::calcTriangulationAccu(int value){
 }
 
 
-void TIGLViewerSettingsDialog::onSettingsAccepted(){
+void TIGLViewerSettingsDialog::onSettingsAccepted()
+{
     _settings.setTesselationAccuracy(calcTesselationAccu(sliderTesselationAccuracy->value()));
     _settings.setTriangulationAccuracy(calcTriangulationAccu(sliderTriangulationAccuracy->value()));
     _settings.setBGColor(_bgcolor);
+    
+    _settings.setDebugBooleanOperationsEnabled(debugBopCB->isChecked());
+    _settings.setEnumerateFacesEnabled(enumerateFaceCB->isChecked());
+    _settings.setNumberOfIsolinesPerFace(numIsoLinesSB->value());
 }
 
-void TIGLViewerSettingsDialog::updateEntries(){
+void TIGLViewerSettingsDialog::updateEntries()
+{
     // calculate tesselation accuracy, slider range is from 0 ... 10
     // we map it onto 0.1 to 0.00001 - logarithmic slider
     double dmax = WORST_TESSELATION, dmin = BEST_TESSELATION;
@@ -100,28 +111,40 @@ void TIGLViewerSettingsDialog::updateEntries(){
 
     _bgcolor = _settings.BGColor();
     updateBGColorButton();
+
+    debugBopCB->setChecked(_settings.debugBooleanOperations());
+    enumerateFaceCB->setChecked(_settings.enumerateFaces());
+    numIsoLinesSB->setValue(_settings.numFaceIsosForDisplay());
 }
 
-void TIGLViewerSettingsDialog::onSliderTesselationChanged(int val){
+void TIGLViewerSettingsDialog::onSliderTesselationChanged(int val)
+{
     tessAccuEdit->setText(QString("%1").arg(val));
 }
 
-void TIGLViewerSettingsDialog::onSliderTriangulationChanged(int val){
+void TIGLViewerSettingsDialog::onSliderTriangulationChanged(int val)
+{
     trianAccuEdit->setText(QString("%1").arg(val));
 }
 
-void TIGLViewerSettingsDialog::onColorChoserPushed(){
+void TIGLViewerSettingsDialog::onColorChoserPushed()
+{
     QColor col = QColorDialog::getColor(_bgcolor, this);
-    if(col.isValid()) {
+    if (col.isValid()) {
         _bgcolor = col;
         updateBGColorButton();
     }
 }
 
-void TIGLViewerSettingsDialog::updateBGColorButton(){
+void TIGLViewerSettingsDialog::updateBGColorButton()
+{
     QString qss = QString(BTN_STYLE).arg(_bgcolor.name());
     buttonColorChoser->setStyleSheet(qss);
 }
 
-TIGLViewerSettingsDialog::~TIGLViewerSettingsDialog() {
+void TIGLViewerSettingsDialog::onSettingsListChanged(int index)
+{
+    stackedWidget->setCurrentIndex(index);
 }
+
+TIGLViewerSettingsDialog::~TIGLViewerSettingsDialog() {}

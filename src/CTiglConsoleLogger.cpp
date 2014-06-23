@@ -20,25 +20,28 @@
 
 #include <iostream>
 
-tigl::CTiglConsoleLogger::CTiglConsoleLogger() : verbosity(TILOG_ERROR)
+namespace tigl
+{
+
+CTiglConsoleLogger::CTiglConsoleLogger() : verbosity(TILOG_WARNING)
 {                                            
 }
-void tigl::CTiglConsoleLogger::LogMessage(TiglLogLevel level, const char *message)
+
+void CTiglConsoleLogger::LogMessage(TiglLogLevel level, const char *message)
 {
-    if (level<=verbosity)
-    {
-        if(level == TILOG_ERROR || level == TILOG_WARNING) 
-        {
+    if (level<=verbosity) {
+        if (level == TILOG_ERROR || level == TILOG_WARNING) {
             fprintf(stderr, "%s\n", message);
         }
-        else 
-        {
+        else {
             fprintf(stdout, "%s\n", message);
         }
     }
 }
 
-void tigl::CTiglConsoleLogger::SetVerbosity(TiglLogLevel vlevel)
+void CTiglConsoleLogger::SetVerbosity(TiglLogLevel vlevel)
 {
     verbosity=vlevel;
 }
+
+} // end namespace tigl

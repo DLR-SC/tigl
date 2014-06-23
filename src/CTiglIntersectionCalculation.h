@@ -27,6 +27,7 @@
 #define CTIGLINTERSECTIONCALCULATION
 
 #include "tigl.h"
+#include "tigl_internal.h"
 #include "CCPACSHeader.h"
 #include "CCPACSWings.h"
 #include "CCPACSWingProfile.h"
@@ -40,50 +41,67 @@
 #include "ShapeAnalysis_FreeBounds.hxx"
 
 
-namespace tigl {
+namespace tigl 
+{
 
-    class CTiglShapeCache;
+class CTiglShapeCache;
 
-    class CTiglIntersectionCalculation
-    {
+class CTiglIntersectionCalculation
+{
 
-    public:
-        // Constructor
-        CTiglIntersectionCalculation(CTiglShapeCache* cache, 
-                                     const std::string &idOne, 
-                                     const std::string &idTwo, 
-                                     TopoDS_Shape compoundOne,
-                                     TopoDS_Shape compoundTwo );
+public:
+    // Constructor, compute intersection of two TopoDS_Shapes
+    // cache variable can be NULL
+    TIGL_EXPORT CTiglIntersectionCalculation(CTiglShapeCache* cache,
+                                             const std::string& idOne,
+                                             const std::string& idTwo,
+                                             TopoDS_Shape compoundOne,
+                                             TopoDS_Shape compoundTwo );
 
-        // Destructor
-        virtual ~CTiglIntersectionCalculation(void);
+    // Computes the intersection of a shape with a plane
+    // cache variable can be NULL
+    TIGL_EXPORT CTiglIntersectionCalculation(CTiglShapeCache* cache,
+                                             const std::string& shapeID,
+                                             TopoDS_Shape shape,
+                                             gp_Pnt point,
+                                             gp_Dir normal );
 
-        // returns total number of intersection lines
-        int GetCountIntersectionLines(void);
+    // Constructor, load intersection result from cache
+    // cache is mandatory, hence the reference
+    TIGL_EXPORT CTiglIntersectionCalculation(CTiglShapeCache& cache,
+                                             size_t intersectionID);
 
-        // Gets a point on the intersection line in dependence of a parameter zeta with
-        // 0.0 <= zeta <= 1.0. For zeta = 0.0 this is the line starting point,
-        // for zeta = 1.0 the last point on the intersection line.
-        // numIntersecLine is the number of the Intersection line.
-        gp_Pnt GetPoint(double zeta, int wireID);
+    // Destructor
+    TIGL_EXPORT virtual ~CTiglIntersectionCalculation(void);
 
-        // gives the number of wires of the intersection calculation
-        int GetNumWires();
+    // returns total number of intersection lines
+    TIGL_EXPORT int GetCountIntersectionLines(void);
 
-        // gives a reference to the computed wire
-        TopoDS_Wire& GetWire(int wireID);
+    // Gets a point on the intersection line in dependence of a parameter zeta with
+    // 0.0 <= zeta <= 1.0. For zeta = 0.0 this is the line starting point,
+    // for zeta = 1.0 the last point on the intersection line.
+    // numIntersecLine is the number of the Intersection line.
+    TIGL_EXPORT gp_Pnt GetPoint(double zeta, int wireID);
 
-        // returns id string for intersection wire
-        std::string GetIDString(int wireID);
+    // gives a reference to the computed wire
+    TIGL_EXPORT TopoDS_Wire GetWire(int wireID);
 
-    private:        
-        Standard_Real tolerance;
-        int numWires;                           /* The number of intersection lines */
-        TopoDS_Shape intersectionResult;        /* The full Intersection result */
-        std::vector<TopoDS_Wire> Wires;         /* All intersection wires */
-        std::string id;                         /* identifcation string of the intersection */
-        
-    };
+    // returnes the unique ID for the current intersection
+    TIGL_EXPORT size_t GetID();
+
+protected:
+    void computeIntersection(CTiglShapeCache* cache,
+                             size_t idOne,
+                             size_t idTwo,
+                             TopoDS_Shape compoundOne,
+                             TopoDS_Shape compoundTwo );
+
+private:        
+    Standard_Real tolerance;
+    TopoDS_Compound intersectionResult;     /* The full Intersection result */
+    size_t id;                              /* identifcation id of the intersection */
+    
+};
 
 } // end namespace tigl
 

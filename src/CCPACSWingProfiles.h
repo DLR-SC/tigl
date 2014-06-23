@@ -26,58 +26,60 @@
 #ifndef CCPACSWINGPROFILES_H
 #define CCPACSWINGPROFILES_H
 
+#include "tigl_internal.h"
 #include "tixi.h"
 #include "CCPACSWingProfile.h"
 #include <string>
 #include <map>
 
-namespace tigl {
+namespace tigl
+{
 
-    class CCPACSWingProfiles
-    {
+class CCPACSWingProfiles
+{
 
-    private:
-        // Typedef for a container to store the wing profiles and their uid.
-        typedef std::map<std::string, CCPACSWingProfile*> CCPACSWingProfileContainer;
+private:
+    // Typedef for a container to store the wing profiles and their uid.
+    typedef std::map<std::string, CCPACSWingProfile*> CCPACSWingProfileContainer;
 
-    public:
-        // Constructor
-        CCPACSWingProfiles(void);
+public:
+    // Constructor
+    TIGL_EXPORT CCPACSWingProfiles(void);
 
-        // Virtual Destructor
-        virtual ~CCPACSWingProfiles(void);
+    // Virtual Destructor
+    TIGL_EXPORT virtual ~CCPACSWingProfiles(void);
 
-        // Read CPACS wing profiles
-        void ReadCPACS(TixiDocumentHandle tixiHandle);
+    // Read CPACS wing profiles
+    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle);
 
-        // Returns the total count of wing profiles in this configuration
-        int GetProfileCount(void) const;
+    // Returns the total count of wing profiles in this configuration
+    TIGL_EXPORT int GetProfileCount(void) const;
 
-        // Returns the wing profile for a given index or uid.
-        CCPACSWingProfile& GetProfile(std::string uid) const;
+    // Returns the wing profile for a given index or uid.
+    TIGL_EXPORT CCPACSWingProfile& GetProfile(std::string uid) const;
 
-        // Returns the wing profile for a given index or uid - TODO: depricated!
-        CCPACSWingProfile& GetProfile(int index) const;
+    // Returns the wing profile for a given index or uid - TODO: depricated!
+    TIGL_EXPORT CCPACSWingProfile& GetProfile(int index) const;
 
-        // Invalidates internal state
-        void Invalidate(void);
+    // Invalidates internal state
+    TIGL_EXPORT void Invalidate(void);
 
-    protected:
-        // Cleanup routine
-        void Cleanup(void);
+protected:
+    // Cleanup routine
+    void Cleanup(void);
 
-    private:
-        // Copy constructor
-        CCPACSWingProfiles(const CCPACSWingProfiles& ) { /* Do nothing */ }
+private:
+    // Copy constructor
+    CCPACSWingProfiles(const CCPACSWingProfiles& ) { /* Do nothing */ }
 
-        // Assignment operator
-        void operator=(const CCPACSWingProfiles& ) { /* Do nothing */ }
+    // Assignment operator
+    void operator=(const CCPACSWingProfiles& ) { /* Do nothing */ }
 
-    private:
-        std::string                librarypath; // Directory path to wing profiles
-        CCPACSWingProfileContainer profiles;    // All wing profiles
+private:
+    std::string                librarypath; // Directory path to wing profiles
+    CCPACSWingProfileContainer profiles;    // All wing profiles
 
-    };
+};
 
 } // end namespace tigl
 

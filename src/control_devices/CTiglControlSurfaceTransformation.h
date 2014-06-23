@@ -26,6 +26,7 @@
 #include <string>
 
 #include "CTiglError.h"
+#include "tigl_internal.h"
 
 #include "gp_Trsf.hxx"
 
@@ -49,20 +50,20 @@ private:
 
 public:
 
-    CTiglControlSurfaceTransformation(gp_Pnt hingePoint1 ,gp_Pnt hingePoint2,
+    TIGL_EXPORT CTiglControlSurfaceTransformation(gp_Pnt hingePoint1 ,gp_Pnt hingePoint2,
                                       gp_Pnt hingePoint1s, gp_Pnt hingePoint2s,
                                       double rotationAlpha);
 
-    gp_Trsf getTotalTransformation();
-    gp_Trsf getTranslationTransformation();
-    gp_Trsf getScaleTransformation();
-    gp_Trsf getRotAlphaTransformation();
-    gp_Trsf getRotPhiTransformation();
-    gp_Trsf getRotThetaTransformation();
-    gp_Trsf getToLocalTransformation();
-    gp_Trsf getFromLocalTransformation();
+    TIGL_EXPORT gp_Trsf getTotalTransformation();
+    TIGL_EXPORT gp_Trsf getTranslationTransformation();
+    TIGL_EXPORT gp_Trsf getScaleTransformation();
+    TIGL_EXPORT gp_Trsf getRotAlphaTransformation();
+    TIGL_EXPORT gp_Trsf getRotPhiTransformation();
+    TIGL_EXPORT gp_Trsf getRotThetaTransformation();
+    TIGL_EXPORT gp_Trsf getToLocalTransformation();
+    TIGL_EXPORT gp_Trsf getFromLocalTransformation();
 
-    ~CTiglControlSurfaceTransformation();
+    TIGL_EXPORT ~CTiglControlSurfaceTransformation();
 };
 
 

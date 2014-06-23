@@ -21,24 +21,27 @@
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 
-namespace tigl {
+namespace tigl
+{
 
 CCPACSWingCSStructure::CCPACSWingCSStructure()
 {
     Cleanup();
 }
 
-void CCPACSWingCSStructure::Cleanup(){
+void CCPACSWingCSStructure::Cleanup()
+{
     upperShell.Reset();
     lowerShell.Reset();
     isvalid = false;
 }
 
-void CCPACSWingCSStructure::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string &structureXPath){
+void CCPACSWingCSStructure::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string &structureXPath)
+{
     Cleanup();
     
     // check path
-    if( tixiCheckElement(tixiHandle, structureXPath.c_str()) != SUCCESS){
+    if ( tixiCheckElement(tixiHandle, structureXPath.c_str()) != SUCCESS) {
         LOG(ERROR) << "Wing structure " << structureXPath << " not found in CPACS file!" << std::endl;
         return;
     }
@@ -58,11 +61,13 @@ void CCPACSWingCSStructure::ReadCPACS(TixiDocumentHandle tixiHandle, const std::
     isvalid = true;
 }
 
-CCPACSWingShell& CCPACSWingCSStructure::GetLowerShell() {
+CCPACSWingShell& CCPACSWingCSStructure::GetLowerShell()
+{
     return lowerShell;
 }
 
-CCPACSWingShell& CCPACSWingCSStructure::GetUpperShell() {
+CCPACSWingShell& CCPACSWingCSStructure::GetUpperShell()
+{
     return upperShell;
 }
 

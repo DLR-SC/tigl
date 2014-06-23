@@ -19,6 +19,7 @@
 #ifndef CGLOGLOGGERADAPTOR_H
 #define CGLOGLOGGERADAPTOR_H
 
+#include "tigl_internal.h"
 #include "tigl_config.h"
 
 #ifdef GLOG_FOUND
@@ -26,7 +27,8 @@
 #include <glog/logging.h>
 #include <CTiglLogging.h>
 
-namespace tigl {
+namespace tigl 
+{
 
 class ITiglLogger;
 class CMutex;
@@ -42,19 +44,19 @@ public:
     // this class. Therefore one must
     // not manually delete a logger 
     // after inserting it into this class.
-    CGlogLoggerAdaptor(PTiglLogger);
+    TIGL_EXPORT CGlogLoggerAdaptor(PTiglLogger);
     
-    virtual ~CGlogLoggerAdaptor();
+    TIGL_EXPORT virtual ~CGlogLoggerAdaptor();
 
-    virtual void Write(bool force_flush,
-                       time_t timestamp,
-                       const char* message,
-                       int message_len);
+    TIGL_EXPORT virtual void Write(bool force_flush,
+                                   time_t timestamp,
+                                   const char* message,
+                                   int message_len);
 
     // Flush any buffered messages
-    virtual void Flush();
+    TIGL_EXPORT virtual void Flush();
 
-    virtual google::uint32 LogSize();
+    TIGL_EXPORT virtual google::uint32 LogSize();
 
 private:
     PTiglLogger _mylogger;

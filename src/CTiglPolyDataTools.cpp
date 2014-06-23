@@ -30,45 +30,50 @@
 #include <Poly_Triangulation.hxx>
 #include <TShort_HArray1OfShortReal.hxx>
 
-namespace {
-void AddTriangle(TopoDS_Compound& compound, gp_Pnt p1, gp_Pnt p2, gp_Pnt p3) {
-    double eps = Precision::Confusion();
-    BRep_Builder builder;
-    if(p1.Distance(p2) > eps &&
-       p2.Distance(p3) > eps &&
-       p3.Distance(p1) > eps) {
-        BRepBuilderAPI_MakePolygon poly;
-        poly.Add(p1);
-        poly.Add(p2);
-        poly.Add(p3);
-        poly.Add(p1);
+namespace 
+{
+    void AddTriangle(TopoDS_Compound& compound, gp_Pnt p1, gp_Pnt p2, gp_Pnt p3) 
+    {
+        double eps = Precision::Confusion();
+        BRep_Builder builder;
+        if (p1.Distance(p2) > eps &&
+            p2.Distance(p3) > eps &&
+            p3.Distance(p1) > eps) {
 
-        try {
-            BRepBuilderAPI_MakeFace facemaker(poly.Wire(), Standard_False);
-            if(facemaker.IsDone()){
-                TopoDS_Face triangleFace = facemaker.Face();
-                builder.Add(compound, triangleFace);
+            BRepBuilderAPI_MakePolygon poly;
+            poly.Add(p1);
+            poly.Add(p2);
+            poly.Add(p3);
+            poly.Add(p1);
+    
+            try {
+                BRepBuilderAPI_MakeFace facemaker(poly.Wire(), Standard_False);
+                if (facemaker.IsDone()) {
+                    TopoDS_Face triangleFace = facemaker.Face();
+                    builder.Add(compound, triangleFace);
+                }
             }
-        }
-        catch(...) {
-            // ignore error
+            catch(...) {
+                // ignore error
+            }
         }
     }
 }
-}
 
-namespace tigl {
+namespace tigl 
+{
 
 CTiglPolyDataTools::CTiglPolyDataTools()
 {
 }
 
-TopoDS_Shape CTiglPolyDataTools::MakeTopoDS(CTiglPolyData& mesh) {
+TopoDS_Shape CTiglPolyDataTools::MakeTopoDS(CTiglPolyData& mesh) 
+{
     BRep_Builder builder;
     TopoDS_Compound compound;
     builder.MakeCompound(compound);
     tigl::CTiglPolyObject& co = mesh.currentObject();
-    for(unsigned long ipoly = 0; ipoly < co.getNPolygons(); ++ipoly) {
+    for (unsigned long ipoly = 0; ipoly < co.getNPolygons(); ++ipoly) {
         if (co.getNPointsOfPolygon(ipoly) == 3) {
             long index1 = co.getVertexIndexOfPolygon(0, ipoly);
             long index2 = co.getVertexIndexOfPolygon(1, ipoly);
@@ -79,7 +84,7 @@ TopoDS_Shape CTiglPolyDataTools::MakeTopoDS(CTiglPolyData& mesh) {
                         co.getVertexPoint(index2).Get_gp_Pnt(),
                         co.getVertexPoint(index3).Get_gp_Pnt());
         }
-        else if(co.getNPointsOfPolygon(ipoly) == 4) {
+        else if (co.getNPointsOfPolygon(ipoly) == 4) {
             long index1 = co.getVertexIndexOfPolygon(0, ipoly);
             long index2 = co.getVertexIndexOfPolygon(1, ipoly);
             long index3 = co.getVertexIndexOfPolygon(2, ipoly);
@@ -110,13 +115,13 @@ Handle(Poly_Triangulation) CTiglPolyDataTools::MakePoly_Triangulation(CTiglPolyD
     // count number of vertices
     unsigned long nverts = 0;
     unsigned long ntria  = 0;
-    for(unsigned int ipoly = 0; ipoly < co.getNPolygons(); ++ipoly){
+    for (unsigned int ipoly = 0; ipoly < co.getNPolygons(); ++ipoly) {
         unsigned long npoints = co.getNPointsOfPolygon(ipoly);
-        if (npoints == 3){
+        if (npoints == 3) {
             nverts += 3;
             ntria+=1;
         }
-        if (npoints == 4){
+        if (npoints == 4) {
             // make 2 triangles
             nverts += 6;
             ntria+=2;
@@ -130,9 +135,9 @@ Handle(Poly_Triangulation) CTiglPolyDataTools::MakePoly_Triangulation(CTiglPolyD
     Standard_Integer iNode = 1;
     Standard_Integer iTria = 1;
     Standard_Integer iNormal = 1;
-    for(unsigned int ipoly = 0; ipoly < co.getNPolygons(); ++ipoly){
+    for (unsigned int ipoly = 0; ipoly < co.getNPolygons(); ++ipoly) {
         unsigned long npoints = co.getNPointsOfPolygon(ipoly);
-        if (npoints == 3){
+        if (npoints == 3) {
             unsigned long index1 = co.getVertexIndexOfPolygon(0, ipoly);
             unsigned long index2 = co.getVertexIndexOfPolygon(1, ipoly);
             unsigned long index3 = co.getVertexIndexOfPolygon(2, ipoly);

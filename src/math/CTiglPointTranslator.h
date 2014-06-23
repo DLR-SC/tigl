@@ -29,13 +29,16 @@
 
 #include "CTiglPoint.h"
 #include "tigl.h"
+#include "tigl_internal.h"
 #include "ITiglObjectiveFunction.h"
 
-namespace tigl {
+namespace tigl 
+{
 
-class CTiglPointTranslator{
+class CTiglPointTranslator
+{
 public:
-    CTiglPointTranslator();
+    TIGL_EXPORT CTiglPointTranslator();
 
     /**
      * @brief The class is initialized with the corners of a quadriangle. 
@@ -44,7 +47,7 @@ public:
      * @param xbl (in) Coordinate of back left point
      * @param xbr (in) Coordinate of back right point
      */
-    CTiglPointTranslator(const CTiglPoint& xfl, const CTiglPoint& xfr, const CTiglPoint& xbl, const CTiglPoint& xbr);
+    TIGL_EXPORT CTiglPointTranslator(const CTiglPoint& xfl, const CTiglPoint& xfr, const CTiglPoint& xbl, const CTiglPoint& xbr);
     
     /**
      * @brief Defines the quadriangle by the given for spatial points.
@@ -53,42 +56,44 @@ public:
      * @param xbl (in) Coordinate of back left point
      * @param xbr (in) Coordinate of back right point
      */
-    void setQuadriangle(const CTiglPoint& xfl, const CTiglPoint& xfr, const CTiglPoint& xbl, const CTiglPoint& xbr);
+    TIGL_EXPORT void setQuadriangle(const CTiglPoint& xfl, const CTiglPoint& xfr, const CTiglPoint& xbl, const CTiglPoint& xbr);
 
     /// Finds an eta-xsi coordinate that minimizes the distance to point p.
     /// The function is not reentrant. If you want to parallelize it, use 
     /// multiple instances of CTiglPointTranslator.
-    TiglReturnCode translate(const CTiglPoint& p, double* eta, double* xsi);
+    TIGL_EXPORT TiglReturnCode translate(const CTiglPoint& p, double* eta, double* xsi);
     
     /// Converts from eta-xsi to spatial coordinates. Reentrant.
-    TiglReturnCode translate(double eta, double xsi, CTiglPoint* p) const;
+    TIGL_EXPORT TiglReturnCode translate(double eta, double xsi, CTiglPoint* p) const;
 
-    TiglReturnCode getNormal(double eta, double xsi, CTiglPoint* n) const;
+    TIGL_EXPORT TiglReturnCode getNormal(double eta, double xsi, CTiglPoint* n) const;
     
     /// Projects the point p onto the plane and returns that point pOnSurf.
     /// The function is not reentrant. If you want to parallelize it, use 
     /// multiple instances of CTiglPointTranslator.
-    TiglReturnCode project(const CTiglPoint& p, CTiglPoint* pOnSurf);
+    TIGL_EXPORT TiglReturnCode project(const CTiglPoint& p, CTiglPoint* pOnSurf);
 
 private:
-    class SegmentProjection : public tigl::ITiglObjectiveFunction {
+    class SegmentProjection : public tigl::ITiglObjectiveFunction 
+    {
     public:
-        SegmentProjection(CTiglPointTranslator& t, CTiglPoint & a, CTiglPoint& b, CTiglPoint& c, CTiglPoint& d) 
-          : ITiglObjectiveFunction(), _t(t), _a(a), _b(b), _c(c), _d(d), _x(0,0,0) {
+        TIGL_EXPORT SegmentProjection(CTiglPointTranslator& t, CTiglPoint & a, CTiglPoint& b, CTiglPoint& c, CTiglPoint& d)
+          : ITiglObjectiveFunction(), _t(t), _a(a), _b(b), _c(c), _d(d), _x(0,0,0) 
+        {
         }
 
-        virtual ~SegmentProjection(void){}
+        TIGL_EXPORT virtual ~SegmentProjection(void){}
 
-        void setProjectionPoint(const CTiglPoint& p);
+        TIGL_EXPORT void setProjectionPoint(const CTiglPoint& p);
 
-        virtual double getFunctionValue(const double * x) const ;
-        void   getGradient     (const double * x, double * dx) const  ;
-        void   getHessian      (const double * x, double * H)  const  ;
-        void   getGradientHessian(const double * x, double * dx, double * H) const;
+        TIGL_EXPORT virtual double getFunctionValue(const double * x) const ;
+        TIGL_EXPORT void   getGradient     (const double * x, double * dx) const  ;
+        TIGL_EXPORT void   getHessian      (const double * x, double * H)  const  ;
+        TIGL_EXPORT void   getGradientHessian(const double * x, double * dx, double * H) const;
 
-        virtual int getParameterCount() const { return 2; }
-        virtual bool hasAnalyticGradient() const { return true; }
-        virtual bool hasAnalyticHessian () const { return true; }
+        TIGL_EXPORT virtual int getParameterCount() const { return 2; }
+        TIGL_EXPORT virtual bool hasAnalyticGradient() const { return true; }
+        TIGL_EXPORT virtual bool hasAnalyticHessian () const { return true; }
 
     private:
         CTiglPointTranslator& _t;

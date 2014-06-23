@@ -74,7 +74,7 @@ class CHeaderFileParser(object):
                 values[index] = name
         
         
-        print 'Parsed enum %s' % res.group('name')
+        # print 'Parsed enum %s' % res.group('name')
             
         return {'name': res.group('name'), 'values': values}
     
@@ -334,7 +334,7 @@ class CFunctionArg(object):
         
         regex = r'(?P<const>const\s)?(?P<name>[\w\s]+)(?P<pointer>[*]+)?'
         
-        basictypes    = ['int', 'long', 'float', 'double', 'char', 'void']
+        basictypes    = ['int', 'long', 'float', 'double', 'char', 'void', 'size_t']
 
         match = re.search(regex, mytype)
         name = match.group('name')
@@ -379,7 +379,7 @@ class CFunctionDec(object):
         self.returns_error =  returncode_str == self.return_value.rawtype
         self.method_name  = res.group('name') 
         
-        print 'Parsed function %s' % self.method_name    
+        # print 'Parsed function %s' % self.method_name    
         
         arg_string = res.group('args')
         if not arg_string:

@@ -19,74 +19,64 @@
 #include "CTiglShapeCache.h"
 #include <sstream>
 
-namespace {
-std::string mangleID(const std::string & id, unsigned int number){
-    std::stringstream stream;
-    stream << id << "::" << number;
-    return stream.str();
-}
-}
+namespace tigl 
+{
 
-namespace tigl {
-
-CTiglShapeCache::CTiglShapeCache() {
+CTiglShapeCache::CTiglShapeCache() 
+{
     Reset();
 }
 
-void CTiglShapeCache::Insert(const TopoDS_Shape &shape, const std::string &id){
-    int nshapes = GetNShapesOfType(id);
-    shapeContainer[mangleID(id,nshapes)] = shape;
+void CTiglShapeCache::Insert(const TopoDS_Shape &shape, size_t id)
+{
+    shapeContainer[id] = shape;
 }
 
-TopoDS_Shape& CTiglShapeCache::GetShape(const std::string &id, unsigned int inumber) {
-    ShapeContainer::iterator it = shapeContainer.find(mangleID(id, inumber));
-    if(it == shapeContainer.end())
+TopoDS_Shape& CTiglShapeCache::GetShape(size_t id) 
+{
+    ShapeContainer::iterator it = shapeContainer.find(id);
+    if (it == shapeContainer.end()) {
         return nullShape;
-    else
-        return it->second;
-}
-
-unsigned int CTiglShapeCache::GetNShapesOfType(const std::string &id) const {
-    int nshapes = 0;
-    while(true){
-        ShapeContainer::const_iterator it = shapeContainer.find(mangleID(id, nshapes));
-        if(it != shapeContainer.end())
-            nshapes++;
-        else
-            break;
     }
-    
-    return nshapes;
+    else {
+        return it->second;
+    }
 }
 
-unsigned int CTiglShapeCache::GetNShape() const {
+/// Returns true, if the shape with id is in the cache
+bool CTiglShapeCache::HasShape(size_t id)
+{
+    ShapeContainer::iterator it = shapeContainer.find(id);
+    return it != shapeContainer.end();
+}
+
+unsigned int CTiglShapeCache::GetNShape() const 
+{
     return shapeContainer.size();
 }
 
 
-void CTiglShapeCache::Clear(){
+void CTiglShapeCache::Clear()
+{
     shapeContainer.clear();
 }
 
-void CTiglShapeCache::Remove(const std::string& id) {
-    int nshapes = 0;
-    while(true){
-        ShapeContainer::iterator it = shapeContainer.find(mangleID(id, nshapes));
-        if(it != shapeContainer.end()){
-            nshapes++;
-            shapeContainer.erase(it);
-        }
-        else
-            break;
+void CTiglShapeCache::Remove(size_t id) 
+{
+    ShapeContainer::iterator it = shapeContainer.find(id);
+    if (it != shapeContainer.end()) {
+        shapeContainer.erase(it);
     }
 }
 
-void CTiglShapeCache::Reset() {
+void CTiglShapeCache::Reset() 
+{
     nullShape.Nullify();
     Clear();
 }
 
-CTiglShapeCache::ShapeContainer& CTiglShapeCache::GetContainer() {
+CTiglShapeCache::ShapeContainer& CTiglShapeCache::GetContainer() 
+{
     return shapeContainer;
 }
 

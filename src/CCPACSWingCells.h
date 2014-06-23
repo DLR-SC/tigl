@@ -21,10 +21,12 @@
 
 #include <vector>
 #include "tixi.h"
+#include "tigl_internal.h"
 
 #include <string>
 
-namespace tigl {
+namespace tigl
+{
 
 class CCPACSWingCell;
 
@@ -36,24 +38,24 @@ private:
     
 public:
     // Constructor
-    CCPACSWingCells();
+    TIGL_EXPORT CCPACSWingCells();
     
     // Virtual Destructor
-    virtual ~CCPACSWingCells(void);
+    TIGL_EXPORT virtual ~CCPACSWingCells(void);
     
-    void Reset();
+    TIGL_EXPORT void Reset();
     
     // Read CPACS wings elements
-    void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& cellsXPath);
+    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& cellsXPath);
     
     // Returns the total count of wing cells for that wing component segment
-    int GetCellCount(void) const;
+    TIGL_EXPORT int GetCellCount(void) const;
     
     // Returns the wing cell for a given index.
-    CCPACSWingCell& GetCell(int index) const;
+    TIGL_EXPORT CCPACSWingCell& GetCell(int index) const;
     
     // Returns the wing cell for a given UID.
-    CCPACSWingCell& GetCell(const std::string& UID) const;
+    TIGL_EXPORT CCPACSWingCell& GetCell(const std::string& UID) const;
     
 protected:
     // Cleanup routine

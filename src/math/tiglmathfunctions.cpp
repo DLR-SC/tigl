@@ -16,6 +16,7 @@
 * limitations under the License.
 */
 
+#include "tiglmathfunctions.h"
 #include "CTiglError.h"
 
 #include <cassert>
@@ -27,15 +28,18 @@
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 
-namespace tigl {
+namespace tigl 
+{
 
 /**
  * @brief Computes the binomial coefficient (n,k)
  */
-int binom(int n, int k) {
+int binom(int n, int k) 
+{
     // this is an efficient implementation, taken from wikipedia
-    if (k == 0)
+    if (k == 0) {
         return 1;
+    }
 
     if (2*k > n) {
         return binom(n, n-k);
@@ -53,12 +57,14 @@ int binom(int n, int k) {
 /**
  * @brief Computes the factorial n! in a non recursive fashion
  */
-int factorial(int n){
+int factorial(int n)
+{
     assert(n >= 0);
     
     int result = 1;
-    for(int i = 2; i <= n; ++i)
+    for (int i = 2; i <= n; ++i) {
         result *= i;
+    }
     
     return result;
 }
@@ -66,12 +72,14 @@ int factorial(int n){
 /**
  * @brief Computes the power x^n
  */
-double pow_int(double x, int n) {
+double pow_int(double x, int n) 
+{
     assert(n >= 0);
     
     double result = 1.;
-    for(int i = 0; i < n; ++i)
+    for (int i = 0; i < n; ++i) {
         result *= x;
+    }
     
     return result;
 }
@@ -80,7 +88,8 @@ double pow_int(double x, int n) {
  * @brief Computes the values of the i-th bernstein polynome 
  * with degree n at position x
 */
-double bernstein_poly(int i, int n, double x) {
+double bernstein_poly(int i, int n, double x) 
+{
     assert(i <= n);
     return (double)binom(n,i) * pow_int(x, i) * pow_int(1.-x, n-i);
 }
@@ -93,20 +102,24 @@ double bernstein_poly(int i, int n, double x) {
  * Doha et al (2011): On the Derivatives of Bernstein Polynomials: An Application for
  * the Solution of High Even-Order Differential Equations
 */
-double bernstein_poly_deriv(int k, int i, int n, double x) {
-    if (k <= 0)
+double bernstein_poly_deriv(int k, int i, int n, double x) 
+{
+    if (k <= 0) {
         return bernstein_poly(i, n, x);
+    }
 
     // The k-th derivative of a polynom at degree n < k is always zero
-    if (k > n)
+    if (k > n) {
         return 0.;
+    }
     
     int jmin = std::max(0, i + k - n);
     int jmax = std::min(i, k);
     
     double result = 0.;
-    for (int j = jmin; j <= jmax; ++j)
+    for (int j = jmin; j <= jmax; ++j) {
         result += pow_int(-1., j + k) * binom(k, j) * bernstein_poly(i - j, n - k, x);
+    }
     result *= factorial(n)/factorial(n-k);
     return result;
 }
@@ -114,7 +127,8 @@ double bernstein_poly_deriv(int k, int i, int n, double x) {
 /**
  * @brief Calculated the area of a quadrilateral defined by the 4 corner points A,B,C,D
  */
-double quadrilateral_area(const CTiglPoint& A, const CTiglPoint& B, const CTiglPoint& C, const CTiglPoint& D) {
+double quadrilateral_area(const CTiglPoint& A, const CTiglPoint& B, const CTiglPoint& C, const CTiglPoint& D) 
+{
     gp_Vec AC(A.Get_gp_Pnt(),C.Get_gp_Pnt());
     gp_Vec BD(B.Get_gp_Pnt(),D.Get_gp_Pnt());
 
@@ -124,7 +138,8 @@ double quadrilateral_area(const CTiglPoint& A, const CTiglPoint& B, const CTiglP
 /** 
  * @brief Computes the nth derivative of x^k
  */
-double pow_deriv(double x, double k, int n) {
+double pow_deriv(double x, double k, int n) 
+{
     assert(n >= 0);
 
     if (n == 0) {
@@ -161,8 +176,7 @@ double class_function(const double& N1, const double& N2, const double& x)
 double class_function_deriv(const double& N1, const double& N2, const int& n, const double& x)
 {
     double res = 0.;
-    for(int i = 0; i <= n; i++)
-    {
+    for (int i = 0; i <= n; i++) {
         res += tigl::binom(n,i)
              * tigl::pow_deriv(x,N1,i)
              * tigl::pow_deriv(1-x, N2, n-i)
@@ -219,8 +233,7 @@ double cstcurve(const double& N1, const double& N2, const std::vector<double>& B
 double cstcurve_deriv(const double& N1, const double& N2, const std::vector<double>& B, const int& n, const double& x)
 {
     double res = 0.;
-    for (int i= 0; i<= n; i++)
-    {
+    for (int i= 0; i<= n; i++) {
         res += tigl::binom(n,i)
              * class_function_deriv(N1, N2, i, x)
              * shape_function_deriv(B, n-i, x);

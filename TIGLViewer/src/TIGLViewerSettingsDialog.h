@@ -23,7 +23,8 @@
 
 #include <QColor>
 
-class TIGLViewerSettingsDialog : public QDialog, private Ui::TIGLViewerSettingsDialog{
+class TIGLViewerSettingsDialog : public QDialog, private Ui::TIGLViewerSettingsDialog
+{
     Q_OBJECT
 public:
     TIGLViewerSettingsDialog(class TIGLViewerSettings&, class QWidget *parent=NULL);
@@ -38,6 +39,7 @@ private slots:
     void onSliderTesselationChanged(int);
     void onSliderTriangulationChanged(int);
     void onColorChoserPushed();
+    void onSettingsListChanged(int);
 
 private:
     double calcTesselationAccu(int value);

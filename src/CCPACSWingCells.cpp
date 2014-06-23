@@ -24,50 +24,56 @@
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 
-namespace tigl {
+namespace tigl
+{
 
-CCPACSWingCells::CCPACSWingCells(){
+CCPACSWingCells::CCPACSWingCells()
+{
     Reset();
 }
 
-CCPACSWingCells::~CCPACSWingCells(){
+CCPACSWingCells::~CCPACSWingCells()
+{
     Cleanup();
 }
 
-void CCPACSWingCells::Reset(){
+void CCPACSWingCells::Reset()
+{
     Cleanup();
 }
 
-void CCPACSWingCells::Cleanup(){
+void CCPACSWingCells::Cleanup()
+{
     CCPACSWingCellContainer::iterator cellit;
-    for(cellit = cells.begin(); cellit != cells.end(); ++cellit){
+    for (cellit = cells.begin(); cellit != cells.end(); ++cellit) {
         delete (*cellit);
         *cellit = NULL;
     }
     cells.clear();
 }
 
-void CCPACSWingCells::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string &cellsXPath){
+void CCPACSWingCells::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string &cellsXPath)
+{
     Cleanup();
     
     // check path
-    if( tixiCheckElement(tixiHandle, cellsXPath.c_str()) != SUCCESS){
+    if (tixiCheckElement(tixiHandle, cellsXPath.c_str()) != SUCCESS) {
         LOG(ERROR) << "Wing Cells definition" << cellsXPath << " not found in CPACS file!" << std::endl;
         return;
     }
     
     int ncells = 0;
-    if (tixiGetNamedChildrenCount(tixiHandle, cellsXPath.c_str(), "cell", &ncells) != SUCCESS){
+    if (tixiGetNamedChildrenCount(tixiHandle, cellsXPath.c_str(), "cell", &ncells) != SUCCESS) {
         // no cells found
         return;
     }
     
-    for(int icell = 1; icell <= ncells; ++icell){
+    for (int icell = 1; icell <= ncells; ++icell) {
         std::stringstream stream;
         stream << cellsXPath << "/" << "cell[" << icell << "]";
         
         // check path
-        if( tixiCheckElement(tixiHandle, stream.str().c_str()) == SUCCESS){
+        if ( tixiCheckElement(tixiHandle, stream.str().c_str()) == SUCCESS) {
             CCPACSWingCell * cell = new CCPACSWingCell();
             cell->ReadCPACS(tixiHandle, stream.str().c_str());
             cells.push_back(cell);
@@ -75,12 +81,14 @@ void CCPACSWingCells::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string
     }
 }
 
-int CCPACSWingCells::GetCellCount() const {
+int CCPACSWingCells::GetCellCount() const
+{
     return cells.size();
 }
 
-CCPACSWingCell& CCPACSWingCells::GetCell(int index) const {
-    if(index < 1 || index > GetCellCount()){
+CCPACSWingCell& CCPACSWingCells::GetCell(int index) const
+{
+    if (index < 1 || index > GetCellCount()) {
         throw CTiglError("Illegal index in CCPACSWingCells::GetCell", TIGL_INDEX_ERROR);
     }
     

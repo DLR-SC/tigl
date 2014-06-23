@@ -32,6 +32,7 @@
 #include "CCPACSControlSurfaceOuterShape.h"
 #include "CCPACSTrailingEdgeDevicePath.h"
 #include "CTiglControlSurfaceTransformation.h"
+#include "tigl_internal.h"
 
 namespace tigl {
 
@@ -66,16 +67,16 @@ private:
 
 
 public:
-    CCPACSTrailingEdgeDevice(CCPACSWingComponentSegment* segment);
-    void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string & trailingEdgeDeviceXPath);
-    std::string getUID();
-    CCPACSControlSurfaceOuterShape getOuterShape();
-    CCPACSTrailingEdgeDevicePath getMovementPath();        // Returns the Component Type TIGL_COMPONENT_WING.
-    TiglGeometricComponentType GetComponentType(void) {return TIGL_COMPONENT_CONTROLSURF | TIGL_COMPONENT_PHYSICAL;}
-    TopoDS_Shape getCutOutShape(void);
-    void setLoft(TopoDS_Shape loft);
-    TopoDS_Face getFace();
-    gp_Trsf getTransformation(double flapStatusInPercent);
+    TIGL_EXPORT TIGL_EXPORT CCPACSTrailingEdgeDevice(CCPACSWingComponentSegment* segment);
+    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string & trailingEdgeDeviceXPath);
+    TIGL_EXPORT std::string getUID();
+    TIGL_EXPORT CCPACSControlSurfaceOuterShape getOuterShape();
+    TIGL_EXPORT CCPACSTrailingEdgeDevicePath getMovementPath();        // Returns the Component Type TIGL_COMPONENT_WING.
+    TIGL_EXPORT TiglGeometricComponentType GetComponentType(void) {return TIGL_COMPONENT_CONTROLSURF | TIGL_COMPONENT_PHYSICAL;}
+    TIGL_EXPORT TopoDS_Shape getCutOutShape(void);
+    TIGL_EXPORT void setLoft(TopoDS_Shape loft);
+    TIGL_EXPORT TopoDS_Face getFace();
+    TIGL_EXPORT gp_Trsf getTransformation(double flapStatusInPercent);
 
 protected:
     TopoDS_Shape BuildLoft();

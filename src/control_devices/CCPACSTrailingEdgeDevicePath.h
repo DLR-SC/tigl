@@ -29,6 +29,7 @@
 #include "CTiglError.h"
 #include "CCPACSTrailingEdgeDeviceSteps.h"
 #include "CCPACSTrailingEdgeDevicePathHingePoint.h"
+#include "tigl_internal.h"
 
 namespace tigl
 {
@@ -44,23 +45,23 @@ private:
     CCPACSTrailingEdgeDevicePathHingePoint outerPoint;
 
 public:
-    CCPACSTrailingEdgeDevicePath();
+    TIGL_EXPORT CCPACSTrailingEdgeDevicePath();
 
-    void ReadCPACS(TixiDocumentHandle tixiHandle,
+    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle,
             const std::string & trailingEdgeDevicePathXPath);
 
-    CCPACSTrailingEdgeDeviceSteps getSteps();
+    TIGL_EXPORT CCPACSTrailingEdgeDeviceSteps getSteps();
 
-    CCPACSTrailingEdgeDevicePathHingePoint getInnerHingePoint();
-    CCPACSTrailingEdgeDevicePathHingePoint getOuterHingePoint();
+    TIGL_EXPORT CCPACSTrailingEdgeDevicePathHingePoint getInnerHingePoint();
+    TIGL_EXPORT CCPACSTrailingEdgeDevicePathHingePoint getOuterHingePoint();
 
-    std::vector<double> getInnerHingeTranslationsX();
-    std::vector<double> getInnerHingeTranslationsY();
-    std::vector<double> getInnerHingeTranslationsZ();
-    std::vector<double> getOuterHingeTranslationsX();
-    std::vector<double> getOuterHingeTranslationsZ();
-    std::vector<double> getRelDeflections();
-    std::vector<double> getHingeLineRotations();
+    TIGL_EXPORT std::vector<double> getInnerHingeTranslationsX();
+    TIGL_EXPORT std::vector<double> getInnerHingeTranslationsY();
+    TIGL_EXPORT std::vector<double> getInnerHingeTranslationsZ();
+    TIGL_EXPORT std::vector<double> getOuterHingeTranslationsX();
+    TIGL_EXPORT std::vector<double> getOuterHingeTranslationsZ();
+    TIGL_EXPORT std::vector<double> getRelDeflections();
+    TIGL_EXPORT std::vector<double> getHingeLineRotations();
 
 };
 

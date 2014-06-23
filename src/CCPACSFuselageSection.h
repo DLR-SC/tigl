@@ -26,65 +26,67 @@
 #ifndef CCPACSFUSELAGESECTION_H
 #define CCPACSFUSELAGESECTION_H
 
+#include "tigl_internal.h"
 #include "tixi.h"
 #include "CCPACSFuselageSectionElements.h"
 #include "CTiglTransformation.h"
 #include <string>
 
-namespace tigl {
+namespace tigl
+{
 
-    class CCPACSFuselageSection
-    {
+class CCPACSFuselageSection
+{
 
-    public:
-        // Constructor
-        CCPACSFuselageSection();
+public:
+    // Constructor
+    TIGL_EXPORT CCPACSFuselageSection();
 
-        // Virtual Destructor
-        virtual ~CCPACSFuselageSection(void);
+    // Virtual Destructor
+    TIGL_EXPORT virtual ~CCPACSFuselageSection(void);
 
-        // Read CPACS section elements
-        void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& sectionXPath);
+    // Read CPACS section elements
+    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& sectionXPath);
 
-        // Get element count for this section
-        int GetSectionElementCount(void) const;
+    // Get element count for this section
+    TIGL_EXPORT int GetSectionElementCount(void) const;
 
-        // Get element for a given index
-        CCPACSFuselageSectionElement& GetSectionElement(int index) const;
+    // Get element for a given index
+    TIGL_EXPORT CCPACSFuselageSectionElement& GetSectionElement(int index) const;
         
-        // Get the UID of this FuselageSection
-        const std::string &GetUID(void) const;
+    // Get the UID of this FuselageSection
+    TIGL_EXPORT const std::string &GetUID(void) const;
 
-        // Gets the section transformation
-        CTiglTransformation GetSectionTransformation(void) const;
+    // Gets the section transformation
+    TIGL_EXPORT CTiglTransformation GetSectionTransformation(void) const;
 
-    protected:
-        // Cleanup routine
-        void Cleanup(void);
+protected:
+    // Cleanup routine
+    void Cleanup(void);
 
-        // Build transformation matrix for the section
-        void BuildMatrix(void);
+    // Build transformation matrix for the section
+    void BuildMatrix(void);
 
-        // Update internal section data
-        void Update(void);
+    // Update internal section data
+    void Update(void);
 
-    private:
-        // Copy constructor
-        CCPACSFuselageSection(const CCPACSFuselageSection& );
+private:
+    // Copy constructor
+    CCPACSFuselageSection(const CCPACSFuselageSection& );
 
-        // Assignment operator
-        void operator=(const CCPACSFuselageSection& );
+    // Assignment operator
+    void operator=(const CCPACSFuselageSection& );
 
-    private:
-        std::string                   name;           /**< Section name             */
-        std::string                   uid;            /**< Section uid              */
-        CTiglTransformation           transformation; /**< Section transfromation   */
-        CTiglPoint                    translation;    /**< Section translation      */
-        CTiglPoint                    scaling;        /**< Section scaling          */
-        CTiglPoint                    rotation;       /**< Section rotation         */
-        CCPACSFuselageSectionElements elements;       /**< Section elements         */
+private:
+    std::string                   name;           /**< Section name             */
+    std::string                   uid;            /**< Section uid              */
+    CTiglTransformation           transformation; /**< Section transfromation   */
+    CTiglPoint                    translation;    /**< Section translation      */
+    CTiglPoint                    scaling;        /**< Section scaling          */
+    CTiglPoint                    rotation;       /**< Section rotation         */
+    CCPACSFuselageSectionElements elements;       /**< Section elements         */
 
-    };
+};
 
 } // end namespace tigl
 

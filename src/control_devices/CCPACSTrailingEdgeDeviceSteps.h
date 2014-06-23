@@ -29,6 +29,7 @@
 #include "tixi.h"
 #include "CTiglError.h"
 #include "CCPACSTrailingEdgeDeviceStep.h"
+#include "tigl_internal.h"
 
 namespace tigl
 {
@@ -44,14 +45,14 @@ private:
     void Cleanup();
 
 public:
-    CCPACSTrailingEdgeDeviceSteps();
-    ~CCPACSTrailingEdgeDeviceSteps();
+    TIGL_EXPORT CCPACSTrailingEdgeDeviceSteps();
+    TIGL_EXPORT ~CCPACSTrailingEdgeDeviceSteps();
 
-    void ReadCPACS(TixiDocumentHandle tixiHandle,
+    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle,
             const std::string & TrailingEdgeDeviceStepsXPath);
 
-    CCPACSTrailingEdgeDeviceStep& getTrailingEdgeDeviceStepByID( int id );
-    int getTrailingEdgeDeviceStepCount();
+    TIGL_EXPORT CCPACSTrailingEdgeDeviceStep& getTrailingEdgeDeviceStepByID( int id );
+    TIGL_EXPORT int getTrailingEdgeDeviceStepCount();
 };
 
 } // end namespace tigl

@@ -28,125 +28,124 @@
 #include <iostream>
 #include <sstream>
 
-namespace tigl {
+namespace tigl
+{
 
-    // Constructor
-    CCPACSWings::CCPACSWings(CCPACSConfiguration* config)
-        : configuration(config)
-    {
-        Cleanup();
+// Constructor
+CCPACSWings::CCPACSWings(CCPACSConfiguration* config)
+    : configuration(config)
+{
+    Cleanup();
+}
+
+// Destructor
+CCPACSWings::~CCPACSWings(void)
+{
+    Cleanup();
+}
+
+// Invalidates internal state
+void CCPACSWings::Invalidate(void)
+{
+    profiles.Invalidate();
+    for (int i = 1; i <= GetWingCount(); i++) {
+        GetWing(i).Invalidate();
+    }
+}
+
+// Cleanup routine
+void CCPACSWings::Cleanup(void)
+{
+    for (CCPACSWingContainer::size_type i = 0; i < wings.size(); i++) {
+        delete wings[i];
+    }
+    wings.clear();
+}
+
+// Read CPACS wings element
+void CCPACSWings::ReadCPACS(TixiDocumentHandle tixiHandle, const char* configurationUID)
+{
+    Cleanup();
+    char *tmpString = NULL;
+
+    if (tixiUIDGetXPath(tixiHandle, configurationUID, &tmpString) != SUCCESS) {
+        throw CTiglError("XML error: tixiUIDGetXPath failed in CCPACSWings::ReadCPACS", TIGL_XML_ERROR);
     }
 
-    // Destructor
-    CCPACSWings::~CCPACSWings(void)
-    {
-        Cleanup();
+    std::string wingXPath= tmpString;
+    wingXPath += "[@uID=\"";
+    wingXPath += configurationUID;
+    wingXPath += "\"]/wings";
+
+    // Read wing profiles
+    profiles.ReadCPACS(tixiHandle);
+
+    if (tixiCheckElement(tixiHandle, wingXPath.c_str()) != SUCCESS) {
+        return;
     }
 
-    // Invalidates internal state
-    void CCPACSWings::Invalidate(void)
-    {
-        profiles.Invalidate();
-        for (int i = 1; i <= GetWingCount(); i++) 
-        {
-            GetWing(i).Invalidate();
+    /* Get wing element count */
+    int wingCount;
+    if (tixiGetNamedChildrenCount(tixiHandle, wingXPath.c_str(), "wing", &wingCount) != SUCCESS) {
+        throw CTiglError("XML error: tixiGetNamedChildrenCount failed in CCPACSWings::ReadCPACS", TIGL_XML_ERROR);
+    }
+
+    // Loop over all wings
+    for (int i = 1; i <= wingCount; i++) {
+        CCPACSWing* wing = new CCPACSWing(configuration);
+        wings.push_back(wing);
+
+        std::ostringstream xpath;
+        xpath << wingXPath << "/wing[" << i << "]";
+        wing->ReadCPACS(tixiHandle, xpath.str());
+    }
+}
+
+// Returns the total count of wing profiles in this configuration
+int CCPACSWings::GetProfileCount(void) const
+{
+    return profiles.GetProfileCount();
+}
+
+// Returns the wing profile for a given uid.
+CCPACSWingProfile& CCPACSWings::GetProfile(std::string uid) const
+{
+    return profiles.GetProfile(uid);
+}
+
+// Returns the wing profile for a given index.
+CCPACSWingProfile& CCPACSWings::GetProfile(int index) const
+{
+    return profiles.GetProfile(index);
+}
+
+// Returns the total count of wings in a configuration
+int CCPACSWings::GetWingCount(void) const
+{
+    return (static_cast<int>(wings.size()));
+}
+
+// Returns the wing for a given index.
+CCPACSWing& CCPACSWings::GetWing(int index) const
+{
+    index --;
+    if (index < 0 || index >= GetWingCount()) {
+        throw CTiglError("Error: Invalid index in CCPACSWings::GetWing", TIGL_INDEX_ERROR);
+    }
+    return (*wings[index]);
+}
+
+// Returns the wing for a given UID.
+CCPACSWing& CCPACSWings::GetWing(const std::string& UID) const
+{
+    for (int i=0; i < GetWingCount(); i++) {
+        const std::string tmpUID(wings[i]->GetUID());
+        if (tmpUID == UID) {
+            return (*wings[i]);
         }
     }
 
-    // Cleanup routine
-    void CCPACSWings::Cleanup(void)
-    {
-        for (CCPACSWingContainer::size_type i = 0; i < wings.size(); i++) 
-        {
-            delete wings[i];
-        }
-        wings.clear();
-    }
-
-    // Read CPACS wings element
-    void CCPACSWings::ReadCPACS(TixiDocumentHandle tixiHandle, const char* configurationUID)
-    {
-        Cleanup();
-        char *wingXPathPrt = NULL;
-        char *tmpString = NULL;
-
-        if (tixiUIDGetXPath(tixiHandle, configurationUID, &tmpString) != SUCCESS) 
-            throw CTiglError("XML error: tixiUIDGetXPath failed in CCPACSWings::ReadCPACS", TIGL_XML_ERROR);
-
-        wingXPathPrt = (char *) malloc(sizeof(char) * (strlen(tmpString) + 50));
-        strcpy(wingXPathPrt, tmpString);
-        strcat(wingXPathPrt, "[@uID=\"");
-        strcat(wingXPathPrt, configurationUID);
-        strcat(wingXPathPrt, "\"]/wings");
-
-        // Read wing profiles
-        profiles.ReadCPACS(tixiHandle);
-
-        if (tixiCheckElement(tixiHandle, wingXPathPrt) != SUCCESS)
-            return;
-
-        /* Get wing element count */
-        int wingCount;
-        if (tixiGetNamedChildrenCount(tixiHandle, wingXPathPrt, "wing", &wingCount) != SUCCESS)
-            throw CTiglError("XML error: tixiGetNamedChildrenCount failed in CCPACSWings::ReadCPACS", TIGL_XML_ERROR);
-
-        // Loop over all wings
-        for (int i = 1; i <= wingCount; i++) {
-            CCPACSWing* wing = new CCPACSWing(configuration);
-            wings.push_back(wing);
-
-            std::ostringstream xpath;
-            xpath << wingXPathPrt << "/wing[" << i << "]";
-            wing->ReadCPACS(tixiHandle, xpath.str());
-        }
-        free(wingXPathPrt);
-    }
-
-    // Returns the total count of wing profiles in this configuration
-    int CCPACSWings::GetProfileCount(void) const
-    {
-        return profiles.GetProfileCount();
-    }
-
-    // Returns the wing profile for a given uid.
-    CCPACSWingProfile& CCPACSWings::GetProfile(std::string uid) const
-    {
-        return profiles.GetProfile(uid);
-    }
-
-    // Returns the wing profile for a given index.
-    CCPACSWingProfile& CCPACSWings::GetProfile(int index) const
-    {
-        return profiles.GetProfile(index);
-    }
-
-    // Returns the total count of wings in a configuration
-    int CCPACSWings::GetWingCount(void) const
-    {
-        return (static_cast<int>(wings.size()));
-    }
-
-    // Returns the wing for a given index.
-    CCPACSWing& CCPACSWings::GetWing(int index) const
-    {
-        index --;
-        if (index < 0 || index >= GetWingCount())
-            throw CTiglError("Error: Invalid index in CCPACSWings::GetWing", TIGL_INDEX_ERROR);
-        return (*wings[index]);
-    }
-
-    // Returns the wing for a given UID.
-    CCPACSWing& CCPACSWings::GetWing(const std::string& UID) const
-    {
-        for(int i=0; i < GetWingCount(); i++)
-        {
-            const std::string tmpUID(wings[i]->GetUID());
-            if(tmpUID == UID) {
-                return (*wings[i]);
-            }
-        }
-
-        // UID not there
-        throw CTiglError("Error: Invalid UID in CCPACSWings::GetWing", TIGL_INDEX_ERROR);
-    }
+    // UID not there
+    throw CTiglError("Error: Invalid UID in CCPACSWings::GetWing", TIGL_INDEX_ERROR);
+}
 } // end namespace tigl

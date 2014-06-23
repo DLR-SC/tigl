@@ -16,47 +16,49 @@
 * limitations under the License.
 */
 
-#ifndef CTIGLSHAPECACHE_H
-#define CTIGLSHAPECACHE_H
-
-#include <map>
-#include <string>
-#include <TopoDS_Shape.hxx>
-
-namespace tigl {
-
 /**
  * @brief The CTiglShapeCache class acts as a storage for all kinds of intermediate 
  * shape results in order to improve speed of reoccurent calculations.
  */
+
+#ifndef CTIGLSHAPECACHE_H
+#define CTIGLSHAPECACHE_H
+
+#include "tigl_internal.h"
+#include <map>
+#include <string>
+#include <TopoDS_Shape.hxx>
+
+namespace tigl 
+{
+
 class CTiglShapeCache
 {
 public:
-    typedef std::map<std::string, TopoDS_Shape> ShapeContainer;
+    typedef std::map<size_t, TopoDS_Shape> ShapeContainer;
     
-    CTiglShapeCache();
+    TIGL_EXPORT CTiglShapeCache();
     
     /// Inserts a shape with the given id into the cache
-    void Insert(const TopoDS_Shape& shape, const std::string& id);
+    TIGL_EXPORT void Insert(const TopoDS_Shape& shape, size_t id);
     
-    /// Returns the shape with the given id and an optional number (if multiple shapes 
-    /// with the same id were added). If the shape is not found, a nullshape/empty shape is returned
-    TopoDS_Shape& GetShape(const std::string& id, unsigned int inumber = 0);
+    /// Returns the shape with the given id. If the shape is not found, a nullshape/empty shape is returned
+    TIGL_EXPORT TopoDS_Shape& GetShape(size_t id);
     
-    /// Returns number of shapes with the same id
-    unsigned int GetNShapesOfType(const std::string& id) const;
+    /// Returns true, if the shape with id is in the cache
+    TIGL_EXPORT bool HasShape(size_t id);
     
     /// Returns total number of shapes in map
-    unsigned int GetNShape() const;
+    TIGL_EXPORT unsigned int GetNShape() const;
     
     /// Removes alles shapes with the given id from the cache
-    void Remove(const std::string& id);
+    TIGL_EXPORT void Remove(size_t id);
     
     /// Empties the cache
-    void Clear();
+    TIGL_EXPORT void Clear();
     
     /// Returns the underlying map for direct access
-    ShapeContainer& GetContainer();
+    TIGL_EXPORT ShapeContainer& GetContainer();
     
 private:
     void Reset();

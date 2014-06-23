@@ -21,14 +21,16 @@
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 
-namespace tigl {
+namespace tigl
+{
 
 CCPACSMaterial::CCPACSMaterial()
 {
     Cleanup();
 }
 
-void CCPACSMaterial::Cleanup(){
+void CCPACSMaterial::Cleanup()
+{
     uid = "UID_NOTSET";
     thickness = -1.;
     thicknessScaling = 1.;
@@ -36,11 +38,12 @@ void CCPACSMaterial::Cleanup(){
     is_composite = false;
 }
 
-void CCPACSMaterial::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string &materialXPath){
+void CCPACSMaterial::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string &materialXPath)
+{
     Cleanup();
     
     // check path
-    if( tixiCheckElement(tixiHandle, materialXPath.c_str()) != SUCCESS){
+    if ( tixiCheckElement(tixiHandle, materialXPath.c_str()) != SUCCESS) {
         LOG(ERROR) << "Material definition" << materialXPath << " not found in CPACS file!" << std::endl;
         return;
     }
@@ -62,21 +65,23 @@ void CCPACSMaterial::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string 
     
     // get thickness (not mandatory)
     tempstring = materialXPath + "/thickness";
-    if(tixiCheckElement(tixiHandle, tempstring.c_str())== SUCCESS){
-       if(tixiGetDoubleElement(tixiHandle, tempstring.c_str(), &thickness) != SUCCESS) {
+    if (tixiCheckElement(tixiHandle, tempstring.c_str())== SUCCESS) {
+       if (tixiGetDoubleElement(tixiHandle, tempstring.c_str(), &thickness) != SUCCESS) {
            LOG(ERROR) << "Invalid material thickness in " << materialXPath;
        }
     }
-    else if(tixiCheckElement(tixiHandle, std::string(materialXPath + "/thicknessScaling").c_str())== SUCCESS){
-       if(tixiGetDoubleElement(tixiHandle, std::string(materialXPath + "/thicknessScaling").c_str(), &thicknessScaling) != SUCCESS) {
+    else if (tixiCheckElement(tixiHandle, std::string(materialXPath + "/thicknessScaling").c_str())== SUCCESS) {
+       if (tixiGetDoubleElement(tixiHandle, std::string(materialXPath + "/thicknessScaling").c_str(), &thicknessScaling) != SUCCESS) {
            LOG(ERROR) << "Invalid composite thickness scaling in " << materialXPath;
        }
     }
     else {
-        if(!isComposite())
+        if (!isComposite()) {
             LOG(INFO) << "Thickness of Material " << materialXPath << " not set.";
-        else
+        }
+        else {
             LOG(INFO) << "Thickness scaling of Composite Material " << materialXPath << " not set.";
+        }
     }
     
     isvalid = true;

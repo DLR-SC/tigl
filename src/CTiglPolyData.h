@@ -23,6 +23,7 @@
 #define VTKPOLYDATA_H
 
 #include <vector>
+#include "tigl_internal.h"
 #include <tixi.h>
 #include "CTiglPoint.h"
 
@@ -30,32 +31,34 @@ class ObjectImpl;
 
 #define UNDEFINED_REAL 0.0
 
-namespace tigl {
+namespace tigl 
+{
 
-class CTiglPolygon{
+class CTiglPolygon
+{
 public:
-    CTiglPolygon();
+    TIGL_EXPORT CTiglPolygon();
 
-    void addPoint(const CTiglPoint&);
+    TIGL_EXPORT void addPoint(const CTiglPoint&);
 
     // returns number of points inside polygon
-    unsigned int getNPoints() const;
+    TIGL_EXPORT unsigned int getNPoints() const;
 
-    CTiglPoint& getPoint(unsigned int index);
+    TIGL_EXPORT CTiglPoint& getPoint(unsigned int index);
 
     //returns reference to point object
-    const CTiglPoint& getPointConst(unsigned int index) const;
+    TIGL_EXPORT const CTiglPoint& getPointConst(unsigned int index) const;
 
     //returns reference to normal vector
-    const CTiglPoint& getNormConst(unsigned int index) const;
+    TIGL_EXPORT const CTiglPoint& getNormConst(unsigned int index) const;
 
     // sets a metadata text, can be used for vtk export
-    void setMetadata(const char *);
+    TIGL_EXPORT void setMetadata(const char *);
 
     // returns metadata text
-    const char * getMetadata() const;
+    TIGL_EXPORT const char * getMetadata() const;
 
-    void addNormal(const CTiglPoint&);
+    TIGL_EXPORT void addNormal(const CTiglPoint&);
 
 private:
     std::string _metadata;
@@ -63,73 +66,74 @@ private:
     std::vector<CTiglPoint> _normals;
 };
 
-class CTiglPolyObject{
+class CTiglPolyObject
+{
 public:
-    CTiglPolyObject();
-    ~CTiglPolyObject();
+    TIGL_EXPORT CTiglPolyObject();
+    TIGL_EXPORT ~CTiglPolyObject();
     
     // switch , if to store normal vectors
-    void enableNormals(bool);
+    TIGL_EXPORT void enableNormals(bool);
 
-    bool hasNormals() const;
+    TIGL_EXPORT bool hasNormals() const;
     
     // adds a triangle to the global polygon list. the corners are spcified with the vertex indices
     // returned by addPointNormal or getVertexIndexOfPolygon. Returns index of added Triangle
-    unsigned long addTriangleByVertexIndex(unsigned long i1, unsigned long i2, unsigned long i3 );
+    TIGL_EXPORT unsigned long addTriangleByVertexIndex(unsigned long i1, unsigned long i2, unsigned long i3 );
 
     // adds a polygon to the object
-    void addPolygon(const class CTiglPolygon&);
+    TIGL_EXPORT void addPolygon(const class CTiglPolygon&);
     
-    unsigned long getNVertices() const;
+    TIGL_EXPORT unsigned long getNVertices() const;
 
     // returns the number of polygons for the current surface
-    unsigned long getNPolygons() const;
+    TIGL_EXPORT unsigned long getNPolygons() const;
 
     // returns the number of points of the polygon
-    unsigned long getNPointsOfPolygon(unsigned long iPoly) const;
+    TIGL_EXPORT unsigned long getNPointsOfPolygon(unsigned long iPoly) const;
 
     // states, if some metadata were set for this object
-    bool hasMetadata() const;
+    TIGL_EXPORT bool hasMetadata() const;
     
-    const char * getPolyMetadata(unsigned long iPoly) const;
+    TIGL_EXPORT const char * getPolyMetadata(unsigned long iPoly) const;
 
-    void setPolyMetadata(unsigned long iPoly, const char *);
+    TIGL_EXPORT void setPolyMetadata(unsigned long iPoly, const char *);
     
     // sets a description of the elements stored in the metadata
-    void setMetadataElements(const char *);
+    TIGL_EXPORT void setMetadataElements(const char *);
     
-    const char * getMetadataElements() const;
+    TIGL_EXPORT const char * getMetadataElements() const;
 
     // returns the vertex index of the ith point of a polygon
     // to retrieve the actual point, call getPoint with this index
-    unsigned long getVertexIndexOfPolygon(unsigned long iPoint, unsigned long iPoly) const;
+    TIGL_EXPORT unsigned long getVertexIndexOfPolygon(unsigned long iPoint, unsigned long iPoly) const;
     
     // each polygon has a list of data elements, this methods sets the value
-    void setPolyDataReal(unsigned long iPoly, const char * dataName, double value);
+    TIGL_EXPORT void setPolyDataReal(unsigned long iPoly, const char * dataName, double value);
     
-    double getPolyDataReal(unsigned long iPoly, const char * dataName) const;
+    TIGL_EXPORT double getPolyDataReal(unsigned long iPoly, const char * dataName) const;
 
     //  ---------- Vertex specific methods -----------------
     
     // adds a point and its normal vector to the global point list and returns its index in the list
-    unsigned long addPointNormal(const class CTiglPoint& p, const class CTiglPoint& n);    
+    TIGL_EXPORT unsigned long addPointNormal(const class CTiglPoint& p, const class CTiglPoint& n);
     
     // returns the actual point, specified with the vertex index
-    const CTiglPoint& getVertexPoint(unsigned long iVertexIndex) const;
+    TIGL_EXPORT const CTiglPoint& getVertexPoint(unsigned long iVertexIndex) const;
     
     // returns the normal vector, specified with vertex index
-    const CTiglPoint& getVertexNormal(unsigned long iVertexIndex) const;
+    TIGL_EXPORT const CTiglPoint& getVertexNormal(unsigned long iVertexIndex) const;
     
     // each vertex has a list of data elements, this methods sets the value
-    void setVertexDataReal(unsigned long iVertexIndex, const char * dataName, double value);
+    TIGL_EXPORT void setVertexDataReal(unsigned long iVertexIndex, const char * dataName, double value);
     
-    double getVertexDataReal(unsigned long iVertexIndex, const char * dataName) const;
+    TIGL_EXPORT double getVertexDataReal(unsigned long iVertexIndex, const char * dataName) const;
     
     // returns the number if different polygon data entries 
-    unsigned int getNumberOfPolyRealData() const;
+    TIGL_EXPORT unsigned int getNumberOfPolyRealData() const;
     
     // retuns the  name of the ith data field (i = 0 .. getNumberPolyReadlData - 1)
-    const char * getPolyDataFieldName(unsigned long iField) const;
+    TIGL_EXPORT const char * getPolyDataFieldName(unsigned long iField) const;
 
 
 private:
@@ -138,31 +142,32 @@ private:
     ObjectImpl * impl;
 };
 
-class CTiglPolyData {
+class CTiglPolyData 
+{
 public:
-    CTiglPolyData();
-    ~CTiglPolyData();
+    TIGL_EXPORT CTiglPolyData();
+    TIGL_EXPORT ~CTiglPolyData();
 
     // returns number of object
-    unsigned int getNObjects();
+    TIGL_EXPORT unsigned int getNObjects();
 
     // returns the total number of polygons, including all objects
-    unsigned long getTotalPolygonCount();
+    TIGL_EXPORT unsigned long getTotalPolygonCount();
     // returns the total number of vertices, including all objects
-    unsigned long getTotalVertexCount();
+    TIGL_EXPORT unsigned long getTotalVertexCount();
 
     // creates a new object, switches current object to the new one
     // we store the polygon data as different object
     // to allow hard edges
-    CTiglPolyObject& createNewObject();
+    TIGL_EXPORT CTiglPolyObject& createNewObject();
 
-    CTiglPolyObject& currentObject();
+    TIGL_EXPORT CTiglPolyObject& currentObject();
 
     // changes the current surface, we count from 1 to getNObjects
-    CTiglPolyObject& switchObject(unsigned int iObject);
+    TIGL_EXPORT CTiglPolyObject& switchObject(unsigned int iObject);
 
-    void writeVTK(const char * filename);
-    void printVTK();
+    TIGL_EXPORT void writeVTK(const char * filename);
+    TIGL_EXPORT void printVTK();
 
 private:
     void writeVTKPiece(TixiDocumentHandle& handle, unsigned int iObject);
@@ -172,6 +177,6 @@ private:
     std::vector<CTiglPolyObject*>::iterator itCurrentObj;
 };
 
-}
+} // end namespace tigl
 
 #endif // VTKPOLYDATA_H
