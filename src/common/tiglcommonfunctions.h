@@ -40,9 +40,14 @@ typedef std::map<std::string, PNamedShape> ShapeMap;
 // calculates a wire's circumfence
 TIGL_EXPORT Standard_Real GetWireLength(const class TopoDS_Wire& wire);
 
+TIGL_EXPORT Standard_Real GetEdgeLength(const class TopoDS_Edge& edge);
+
 // returns a point on the wire (0 <= alpha <= 1)
 TIGL_EXPORT gp_Pnt WireGetPoint(const TopoDS_Wire& wire, double alpha);
 TIGL_EXPORT void WireGetPointTangent(const TopoDS_Wire& wire, double alpha, gp_Pnt& point, gp_Vec& normal);
+
+TIGL_EXPORT gp_Pnt EdgeGetPoint(const TopoDS_Edge& edge, double alpha);
+TIGL_EXPORT void EdgeGetPointTangent(const TopoDS_Edge& edge, double alpha, gp_Pnt& point, gp_Vec& normal);
 
 // calculates the alpha value for a given point on a wire
 TIGL_EXPORT Standard_Real ProjectPointOnWire(const TopoDS_Wire& wire, gp_Pnt p);
@@ -56,6 +61,9 @@ TIGL_EXPORT unsigned int GetNumberOfEdges(const TopoDS_Shape& shape);
 TIGL_EXPORT TopoDS_Edge GetEdge(const TopoDS_Shape& shape, int iEdge);
 
 TIGL_EXPORT Handle_Geom_BSplineCurve GetBSplineCurve(const TopoDS_Edge& e);
+
+// Returns the number of subshapes, if the shape is a compound
+TIGL_EXPORT unsigned int GetNumberOfSubshapes(const TopoDS_Shape& shape);
 
 // returns the central point of the face
 TIGL_EXPORT gp_Pnt GetCentralFacePoint(const class TopoDS_Face& face);
