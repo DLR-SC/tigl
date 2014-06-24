@@ -93,6 +93,17 @@ Standard_Real GetWireLength(const TopoDS_Wire& wire)
     return GCPnts_AbscissaPoint::Length( aCompoundCurve );
 }
 
+Standard_Real GetEdgeLength(const TopoDS_Edge &edge)
+{
+    /*Standard_Real umin, umax;
+    Handle_Geom_Curve curve = BRep_Tool::Curve(edge, umin, umax);
+    GeomAdaptor_Curve adaptorCurve(curve, umin, umax);
+    Standard_Real length = GCPnts_AbscissaPoint::Length(adaptorCurve, umin, umax);
+    return length;*/
+    BRepBuilderAPI_MakeWire maker(edge);
+    return GetWireLength(maker.Wire());
+}
+
 unsigned int GetNumberOfEdges(const TopoDS_Shape& shape)
 {
     TopExp_Explorer edgeExpl(shape, TopAbs_EDGE);
@@ -102,6 +113,20 @@ unsigned int GetNumberOfEdges(const TopoDS_Shape& shape)
     }
 
     return iEdges;
+}
+
+unsigned int GetNumberOfSubshapes(const TopoDS_Shape &shape)
+{
+    if (shape.ShapeType() == TopAbs_COMPOUND) {
+        unsigned int n = 0;
+        for (TopoDS_Iterator anIter(shape); anIter.More(); anIter.Next()) {
+            n++;
+        }
+        return n;
+    }
+    else {
+        return 0;
+    }
 }
 
 // Gets a point on the wire line in dependence of a parameter alpha with
@@ -118,7 +143,7 @@ gp_Pnt WireGetPoint(const TopoDS_Wire& wire, double alpha)
 void WireGetPointTangent(const TopoDS_Wire& wire, double alpha, gp_Pnt& point, gp_Vec& tangent)
 {
     if (alpha < 0.0 || alpha > 1.0) {
-        throw tigl::CTiglError("Error: Parameter alpha not in the range 0.0 <= alpha <= 1.0 in WireGetPointTangent2", TIGL_ERROR);
+        throw tigl::CTiglError("Error: Parameter alpha not in the range 0.0 <= alpha <= 1.0 in WireGetPointTangent", TIGL_ERROR);
     }
     // ETA 3D point
     BRepAdaptor_CompCurve aCompoundCurve(wire, Standard_True);
@@ -134,6 +159,38 @@ void WireGetPointTangent(const TopoDS_Wire& wire, double alpha, gp_Pnt& point, g
     else {
         throw tigl::CTiglError("WireGetPointTangent: Cannot compute point on curve.", TIGL_MATH_ERROR);
     }
+}
+
+gp_Pnt EdgeGetPoint(const TopoDS_Edge& edge, double alpha)
+{
+    gp_Pnt point;
+    gp_Vec tangent;
+    EdgeGetPointTangent(edge, alpha, point, tangent);
+    return point;
+}
+
+void EdgeGetPointTangent(const TopoDS_Edge& edge, double alpha, gp_Pnt& point, gp_Vec& tangent)
+{
+    /*if (alpha < 0.0 || alpha > 1.0) {
+        throw tigl::CTiglError("Error: Parameter alpha not in the range 0.0 <= alpha <= 1.0 in EdgeGetPointTangent", TIGL_ERROR);
+    }
+    // ETA 3D point
+    Standard_Real umin, umax;
+    Handle_Geom_Curve curve = BRep_Tool::Curve(edge, umin, umax);
+    GeomAdaptor_Curve adaptorCurve(curve, umin, umax);
+    Standard_Real len =  GCPnts_AbscissaPoint::Length( adaptorCurve, umin, umax );
+    GCPnts_AbscissaPoint algo(adaptorCurve, len*alpha, umin);
+    if (algo.IsDone()) {
+        double par = algo.Parameter();
+        adaptorCurve.D1( par, point, tangent );
+        // normalize tangent to length of the curve
+        tangent = len*tangent/tangent.Magnitude();
+    }
+    else {
+        throw tigl::CTiglError("EdgeGetPointTangent: Cannot compute point on curve.", TIGL_MATH_ERROR);
+    }*/
+    BRepBuilderAPI_MakeWire maker(edge);
+    WireGetPointTangent(maker.Wire(),alpha, point, tangent);
 }
 
 Standard_Real ProjectPointOnWire(const TopoDS_Wire& wire, gp_Pnt p)
