@@ -246,13 +246,7 @@ void CCPACSWingProfileCST::BuildWires()
     upperInter.Perform();
     Handle(Geom_BSplineCurve) hUpperCurve = upperInter.Curve();
 
-    TopoDS_Edge upperEdge = BRepBuilderAPI_MakeEdge(hUpperCurve);
-    BRepBuilderAPI_MakeWire upperWireBuilder(upperEdge);
-    if (!upperWireBuilder.IsDone()) { 
-        throw CTiglError("Error: Upper wire construction failed in CCPACSWingProfileCST::BuildWires", TIGL_ERROR);
-    }
-
-    upperWire = upperWireBuilder.Wire();
+    upperWire = BRepBuilderAPI_MakeEdge(hUpperCurve);
     if (upperWire.IsNull() == Standard_True) {
         throw CTiglError("Error: TopoDS_Wire upperWire is null in CCPACSWingProfileCST::BuildWires", TIGL_ERROR);
     }
@@ -289,19 +283,13 @@ void CCPACSWingProfileCST::BuildWires()
     lowerInter.Perform();
     Handle(Geom_BSplineCurve) hLowerCurve = lowerInter.Curve();
 
-    TopoDS_Edge lowerEdge = BRepBuilderAPI_MakeEdge(hLowerCurve);
-    BRepBuilderAPI_MakeWire lowerWireBuilder(lowerEdge);
-    if (!lowerWireBuilder.IsDone()) {
-        throw CTiglError("Error: Lower wire construction failed in CCPACSWingProfileCST::BuildWires", TIGL_ERROR);
-    }
-
-    lowerWire = lowerWireBuilder.Wire();
+    lowerWire = BRepBuilderAPI_MakeEdge(hLowerCurve);
     if (lowerWire.IsNull() == Standard_True) {
         throw CTiglError("Error: TopoDS_Wire lowerWire is null in CCPACSWingProfileCST::BuildWires", TIGL_ERROR);
     }
 
     // Build closed wire
-    BRepBuilderAPI_MakeWire closedWireBuilder(upperEdge,lowerEdge);
+    BRepBuilderAPI_MakeWire closedWireBuilder(upperWire,lowerWire);
     if (!closedWireBuilder.IsDone()) {
         throw CTiglError("Error: Closed wire construction failed in CCPACSWingProfileCST::BuildWires", TIGL_ERROR);
     }
@@ -339,19 +327,19 @@ const TopoDS_Wire & CCPACSWingProfileCST::GetWireClosed() const
 }
         
 // get upper wing profile wire
-const TopoDS_Wire & CCPACSWingProfileCST::GetUpperWire() const
+const TopoDS_Edge & CCPACSWingProfileCST::GetUpperWire() const
 {
     return upperWire;
 }
             
 // get lower wing profile wire
-const TopoDS_Wire & CCPACSWingProfileCST::GetLowerWire() const
+const TopoDS_Edge & CCPACSWingProfileCST::GetLowerWire() const
 {
     return lowerWire;
 }
 
 // get trailing edge
-const TopoDS_Wire & CCPACSWingProfileCST::GetTrailingEdge() const 
+const TopoDS_Edge & CCPACSWingProfileCST::GetTrailingEdge() const 
 {
     return trailingEdge;
 }
