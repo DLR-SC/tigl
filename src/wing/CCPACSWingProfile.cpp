@@ -169,21 +169,21 @@ void CCPACSWingProfile::Update(void)
 TopoDS_Wire CCPACSWingProfile::GetUpperWire()
 {
     Update();
-    return profileAlgo->GetUpperWire();
+    return BRepBuilderAPI_MakeWire(profileAlgo->GetUpperWire()).Wire();
 }
     
 // Returns the wing profile lower wire
 TopoDS_Wire CCPACSWingProfile::GetLowerWire()
 {
     Update();
-    return profileAlgo->GetLowerWire();
+    return BRepBuilderAPI_MakeWire(profileAlgo->GetLowerWire()).Wire();
 }
     
 // Returns the wing profile trailing edge
 TopoDS_Wire CCPACSWingProfile::GetTrailingEdge()
 {
     Update();
-    return profileAlgo->GetTrailingEdge();
+    return BRepBuilderAPI_MakeWire(profileAlgo->GetTrailingEdge()).Wire();
 }
 
 // Returns the wing profile lower and upper wire fused

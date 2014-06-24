@@ -285,32 +285,21 @@ void CCPACSWingProfilePointList::BuildWires()
     }
 
     // upper and lower edges
-    TopoDS_Edge lowerEdge, upperEdge;
-    lowerEdge = BRepBuilderAPI_MakeEdge(lowerCurve);
-    upperEdge = BRepBuilderAPI_MakeEdge(upperCurve);
+    lowerWire = BRepBuilderAPI_MakeEdge(lowerCurve);
+    upperWire = BRepBuilderAPI_MakeEdge(upperCurve);
 
     // Trailing edge points
     gp_Pnt te_up, te_down;
     te_up = upperCurve->EndPoint();
     te_down = lowerCurve->StartPoint();
 
-    // Wire builder
-    BRepBuilderAPI_MakeWire upperWireBuilder, lowerWireBuilder;
-
     //check if we have to close upper and lower wing shells
     if (te_up.Distance(te_down) > Precision::Confusion()) {
-        const TopoDS_Edge& e =  BRepBuilderAPI_MakeEdge(te_up,te_down);
-        trailingEdge = BRepBuilderAPI_MakeWire(e);
+        trailingEdge =  BRepBuilderAPI_MakeEdge(te_up,te_down);
     }
     else {
         trailingEdge.Nullify();
     }
-
-    upperWireBuilder.Add(upperEdge);
-    lowerWireBuilder.Add(lowerEdge);
-
-    upperWire = upperWireBuilder.Wire();
-    lowerWire = lowerWireBuilder.Wire();
 }
 
 // Builds leading and trailing edge points of the wing profile wire.
@@ -372,19 +361,19 @@ const TopoDS_Wire& CCPACSWingProfilePointList::GetWireClosed() const
 }
 
 // get upper wing profile wire
-const TopoDS_Wire& CCPACSWingProfilePointList::GetUpperWire() const
+const TopoDS_Edge& CCPACSWingProfilePointList::GetUpperWire() const
 {
     return upperWire;
 }
 
 // get lower wing profile wire
-const TopoDS_Wire& CCPACSWingProfilePointList::GetLowerWire() const
+const TopoDS_Edge& CCPACSWingProfilePointList::GetLowerWire() const
 {
     return lowerWire;
 }
 
 // get trailing edge
-const TopoDS_Wire& CCPACSWingProfilePointList::GetTrailingEdge() const
+const TopoDS_Edge& CCPACSWingProfilePointList::GetTrailingEdge() const
 {
     return trailingEdge;
 }

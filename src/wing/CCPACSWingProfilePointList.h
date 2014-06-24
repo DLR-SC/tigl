@@ -38,6 +38,7 @@
 #include "ITiglWingProfileAlgo.h"
 #include "PTiglWingProfileAlgo.h"
 #include "TopoDS_Wire.hxx"
+#include "TopoDS_Edge.hxx"
 
 
 namespace tigl
@@ -82,13 +83,13 @@ public:
     TIGL_EXPORT const TopoDS_Wire& GetWireClosed() const;
 
     // get upper wing profile wire
-    TIGL_EXPORT const TopoDS_Wire& GetUpperWire() const;
+    TIGL_EXPORT const TopoDS_Edge& GetUpperWire() const;
 
     // get lower wing profile wire
-    TIGL_EXPORT const TopoDS_Wire& GetLowerWire() const;
+    TIGL_EXPORT const TopoDS_Edge& GetLowerWire() const;
 
     // get trailing edge
-    TIGL_EXPORT const TopoDS_Wire& GetTrailingEdge() const;
+    TIGL_EXPORT const TopoDS_Edge& GetTrailingEdge() const;
 
     // get leading edge point();
     TIGL_EXPORT const gp_Pnt& GetLEPoint() const;
@@ -118,9 +119,9 @@ private:
 
     std::string               ProfileDataXPath; /**< CPACS path to profile data (pointList or cst2D) */
     TopoDS_Wire               wireClosed;       /**< Forced closed wing profile wire */
-    TopoDS_Wire               upperWire;        /**< wire of the upper wing profile */
-    TopoDS_Wire               lowerWire;        /**< wire of the lower wing profile */
-    TopoDS_Wire               trailingEdge;     /**< wire of the trailing edge */
+    TopoDS_Edge               upperWire;        /**< wire of the upper wing profile */
+    TopoDS_Edge               lowerWire;        /**< wire of the lower wing profile */
+    TopoDS_Edge               trailingEdge;     /**< wire of the trailing edge */
     gp_Pnt                    lePoint;          /**< Leading edge point */
     gp_Pnt                    tePoint;          /**< Trailing edge point */
 };
