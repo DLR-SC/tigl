@@ -450,8 +450,8 @@ void CCPACSWing::BuildUpperLowerShells()
         CCPACSWingConnection& startConnection = segments.GetSegment(i).GetInnerConnection();
         CCPACSWingProfile& startProfile = startConnection.GetProfile();
         TopoDS_Wire upperWire, lowerWire;
-        upperWire = transformToWingCoords(startConnection, startProfile.GetUpperWire());
-        lowerWire = transformToWingCoords(startConnection, startProfile.GetLowerWire());
+        upperWire = TopoDS::Wire(transformToWingCoords(startConnection, BRepBuilderAPI_MakeWire(startProfile.GetUpperWire())));
+        lowerWire = TopoDS::Wire(transformToWingCoords(startConnection, BRepBuilderAPI_MakeWire(startProfile.GetLowerWire())));
         generatorUp.AddWire(upperWire);
         generatorLow.AddWire(lowerWire);
     }
@@ -460,8 +460,8 @@ void CCPACSWing::BuildUpperLowerShells()
     CCPACSWingProfile& endProfile = endConnection.GetProfile();
     TopoDS_Wire endUpWire, endLowWire;
 
-    endUpWire = transformToWingCoords(endConnection, endProfile.GetUpperWire());
-    endLowWire = transformToWingCoords(endConnection, endProfile.GetLowerWire());
+    endUpWire  = TopoDS::Wire(transformToWingCoords(endConnection, BRepBuilderAPI_MakeWire(endProfile.GetUpperWire())));
+    endLowWire = TopoDS::Wire(transformToWingCoords(endConnection, BRepBuilderAPI_MakeWire(endProfile.GetLowerWire())));
 
     generatorUp.AddWire(endUpWire);
     generatorLow.AddWire(endLowWire);

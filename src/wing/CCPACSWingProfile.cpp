@@ -166,24 +166,24 @@ void CCPACSWingProfile::Update(void)
 }
     
 // Returns the wing profile upper wire
-TopoDS_Wire CCPACSWingProfile::GetUpperWire()
+TopoDS_Edge CCPACSWingProfile::GetUpperWire()
 {
     Update();
-    return BRepBuilderAPI_MakeWire(profileAlgo->GetUpperWire()).Wire();
+    return profileAlgo->GetUpperWire();
 }
     
 // Returns the wing profile lower wire
-TopoDS_Wire CCPACSWingProfile::GetLowerWire()
+TopoDS_Edge CCPACSWingProfile::GetLowerWire()
 {
     Update();
-    return BRepBuilderAPI_MakeWire(profileAlgo->GetLowerWire()).Wire();
+    return profileAlgo->GetLowerWire();
 }
     
 // Returns the wing profile trailing edge
-TopoDS_Wire CCPACSWingProfile::GetTrailingEdge()
+TopoDS_Edge CCPACSWingProfile::GetTrailingEdge()
 {
     Update();
-    return BRepBuilderAPI_MakeWire(profileAlgo->GetTrailingEdge()).Wire();
+    return profileAlgo->GetTrailingEdge();
 }
 
 // Returns the wing profile lower and upper wire fused
@@ -309,36 +309,34 @@ gp_Pnt CCPACSWingProfile::GetPoint(double xsi, bool fromUpper)
 
     // Loop over all edges of the wing profile curve and try to find intersection points
     std::vector<gp_Pnt2d> ipnts2d;
-    BRepTools_WireExplorer wireExplorer;
+    TopoDS_Edge edge;
     if (fromUpper) {
-        wireExplorer.Init(GetUpperWire());
+        edge = GetUpperWire();
     }
     else {
-        wireExplorer.Init(GetLowerWire());
+        edge = GetLowerWire();
     }
 
-    for (; wireExplorer.More(); wireExplorer.Next()) {
-        const TopoDS_Edge& edge = wireExplorer.Current();
-        Standard_Real firstParam;
-        Standard_Real lastParam;
-        // get curve and trim it - trimming is important, else it will be infinite
-        Handle(Geom_Curve) curve3d = BRep_Tool::Curve(edge, firstParam, lastParam);
-        curve3d = new Geom_TrimmedCurve(curve3d, firstParam, lastParam);
+    Standard_Real firstParam;
+    Standard_Real lastParam;
+    // get curve and trim it - trimming is important, else it will be infinite
+    Handle(Geom_Curve) curve3d = BRep_Tool::Curve(edge, firstParam, lastParam);
+    curve3d = new Geom_TrimmedCurve(curve3d, firstParam, lastParam);
 
-        // Convert 3d curve to 2d curve lying in the xz-plane
-        Handle(Geom2d_Curve) curve2d = GeomAPI::To2d(curve3d, xzPlane);
-        // Check if there are intersection points between line2d and curve2d
-        Geom2dAPI_InterCurveCurve intersection(line2d, curve2d);
-        for (int n = 1; n <= intersection.NbPoints(); n++) {
-            ipnts2d.push_back(intersection.Point(n));
-        }
+    // Convert 3d curve to 2d curve lying in the xz-plane
+    Handle(Geom2d_Curve) curve2d = GeomAPI::To2d(curve3d, xzPlane);
+    // Check if there are intersection points between line2d and curve2d
+    Geom2dAPI_InterCurveCurve intersection(line2d, curve2d);
+    for (int n = 1; n <= intersection.NbPoints(); n++) {
+        ipnts2d.push_back(intersection.Point(n));
     }
+
     if (ipnts2d.size() == 1) {
         // There is only one intesection point with the wire
         gp_Pnt2d ipnt2d = ipnts2d[0];
         gp_Pnt ipnt3d(ipnt2d.X(), 0.0, ipnt2d.Y());
             return ipnt3d;
-        }
+    }
     else if (ipnts2d.size() > 1) {
         // There are one or more intersection points with the wire. Find the
         // points with the minimum and maximum y-values.
