@@ -95,13 +95,11 @@ Standard_Real GetWireLength(const TopoDS_Wire& wire)
 
 Standard_Real GetEdgeLength(const TopoDS_Edge &edge)
 {
-    /*Standard_Real umin, umax;
+    Standard_Real umin, umax;
     Handle_Geom_Curve curve = BRep_Tool::Curve(edge, umin, umax);
     GeomAdaptor_Curve adaptorCurve(curve, umin, umax);
     Standard_Real length = GCPnts_AbscissaPoint::Length(adaptorCurve, umin, umax);
-    return length;*/
-    BRepBuilderAPI_MakeWire maker(edge);
-    return GetWireLength(maker.Wire());
+    return length;
 }
 
 unsigned int GetNumberOfEdges(const TopoDS_Shape& shape)
@@ -171,7 +169,7 @@ gp_Pnt EdgeGetPoint(const TopoDS_Edge& edge, double alpha)
 
 void EdgeGetPointTangent(const TopoDS_Edge& edge, double alpha, gp_Pnt& point, gp_Vec& tangent)
 {
-    /*if (alpha < 0.0 || alpha > 1.0) {
+    if (alpha < 0.0 || alpha > 1.0) {
         throw tigl::CTiglError("Error: Parameter alpha not in the range 0.0 <= alpha <= 1.0 in EdgeGetPointTangent", TIGL_ERROR);
     }
     // ETA 3D point
@@ -188,9 +186,7 @@ void EdgeGetPointTangent(const TopoDS_Edge& edge, double alpha, gp_Pnt& point, g
     }
     else {
         throw tigl::CTiglError("EdgeGetPointTangent: Cannot compute point on curve.", TIGL_MATH_ERROR);
-    }*/
-    BRepBuilderAPI_MakeWire maker(edge);
-    WireGetPointTangent(maker.Wire(),alpha, point, tangent);
+    }
 }
 
 Standard_Real ProjectPointOnWire(const TopoDS_Wire& wire, gp_Pnt p)
