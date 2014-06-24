@@ -36,6 +36,7 @@
 #include "tixi.h"
 #include "tigl_internal.h"
 #include "TopoDS_Wire.hxx"
+#include "TopoDS_Edge.hxx"
 #include "PTiglWingProfileAlgo.h"
 
 #include <gp_Pnt.hxx>
@@ -74,9 +75,9 @@ public:
     TIGL_EXPORT TopoDS_Wire GetWire();
         
     // Returns ths wing upper and lower profile wire
-    TIGL_EXPORT TopoDS_Wire GetUpperWire();
-    TIGL_EXPORT TopoDS_Wire GetLowerWire();
-    TIGL_EXPORT TopoDS_Wire GetTrailingEdge();
+    TIGL_EXPORT TopoDS_Edge GetUpperWire();
+    TIGL_EXPORT TopoDS_Edge GetLowerWire();
+    TIGL_EXPORT TopoDS_Edge GetTrailingEdge();
 
     // Returns the leading edge point of the wing profile wire. The leading edge point
     // is already transformed by the wing profile element transformation.

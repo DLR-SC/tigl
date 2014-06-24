@@ -683,10 +683,10 @@ void CCPACSWingSegment::MakeSurfaces()
         
     cordSurface.setQuadriangle(inner_lep.XYZ(), outer_lep.XYZ(), inner_tep.XYZ(), outer_tep.XYZ());
 
-    TopoDS_Wire iu_wire = innerConnection.GetProfile().GetUpperWire();
-    TopoDS_Wire ou_wire = outerConnection.GetProfile().GetUpperWire();
-    TopoDS_Wire il_wire = innerConnection.GetProfile().GetLowerWire();
-    TopoDS_Wire ol_wire = outerConnection.GetProfile().GetLowerWire();
+    TopoDS_Wire iu_wire = BRepBuilderAPI_MakeWire(innerConnection.GetProfile().GetUpperWire());
+    TopoDS_Wire ou_wire = BRepBuilderAPI_MakeWire(outerConnection.GetProfile().GetUpperWire());
+    TopoDS_Wire il_wire = BRepBuilderAPI_MakeWire(innerConnection.GetProfile().GetLowerWire());
+    TopoDS_Wire ol_wire = BRepBuilderAPI_MakeWire(outerConnection.GetProfile().GetLowerWire());
 
     iu_wire = TopoDS::Wire(transformProfileWire(GetWing().GetTransformation(), innerConnection, iu_wire));
     ou_wire = TopoDS::Wire(transformProfileWire(GetWing().GetTransformation(), outerConnection, ou_wire));
@@ -826,13 +826,13 @@ void CCPACSWingSegment::BuildGuideCurveSegments(void)
     if (guideCurvesPresent) {
         // get upper and lower part of inner profile in world coordinates
         CCPACSWingProfile& innerProfile = innerConnection.GetProfile();
-        TopoDS_Wire upperInnerWire = TopoDS::Wire(transformProfileWire(GetWing().GetTransformation(), innerConnection, innerProfile.GetUpperWire()));
-        TopoDS_Wire lowerInnerWire = TopoDS::Wire(transformProfileWire(GetWing().GetTransformation(), innerConnection, innerProfile.GetLowerWire()));
+        TopoDS_Edge upperInnerWire = TopoDS::Edge(transformProfileWire(GetWing().GetTransformation(), innerConnection, innerProfile.GetUpperWire()));
+        TopoDS_Edge lowerInnerWire = TopoDS::Edge(transformProfileWire(GetWing().GetTransformation(), innerConnection, innerProfile.GetLowerWire()));
 
         // get upper and lower part of outer profile in world coordinates
         CCPACSWingProfile& outerProfile = outerConnection.GetProfile();
-        TopoDS_Wire upperOuterWire = TopoDS::Wire(transformProfileWire(GetWing().GetTransformation(), outerConnection, outerProfile.GetUpperWire()));
-        TopoDS_Wire lowerOuterWire = TopoDS::Wire(transformProfileWire(GetWing().GetTransformation(), outerConnection, outerProfile.GetLowerWire()));
+        TopoDS_Edge upperOuterWire = TopoDS::Edge(transformProfileWire(GetWing().GetTransformation(), outerConnection, outerProfile.GetUpperWire()));
+        TopoDS_Edge lowerOuterWire = TopoDS::Edge(transformProfileWire(GetWing().GetTransformation(), outerConnection, outerProfile.GetLowerWire()));
 
         // concatenate inner profile wires for guide curve construction algorithm
         TopTools_SequenceOfShape concatenatedInnerWires;

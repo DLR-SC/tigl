@@ -170,8 +170,8 @@ TEST_F(WingGuideCurve, tiglWingGuideCurve_CCPACSWingProfileGetPointAlgoOnProfile
 
     // get upper and lower wing profile
     tigl::CCPACSWingProfile& profile = config.GetWingProfile("GuideCurveModel_Wing_Sec3_El1_Pro");
-    TopoDS_Wire upperWire = profile.GetUpperWire();
-    TopoDS_Wire lowerWire = profile.GetLowerWire();
+    TopoDS_Edge upperWire = profile.GetUpperWire();
+    TopoDS_Edge lowerWire = profile.GetLowerWire();
 
     // concatenate wires
     TopTools_SequenceOfShape wireContainer;
@@ -250,14 +250,10 @@ TEST_F(WingGuideCurve, tiglWingGuideCurve_CCPACSWingProfileGetPointAlgoOnCircle)
     TopoDS_Edge innerLowerEdge = BRepBuilderAPI_MakeEdge(circle1, start, mid);
     TopoDS_Edge innerUpperEdge = BRepBuilderAPI_MakeEdge(circle1,   mid, end);
 
-    // convert to wires 
-    TopoDS_Wire innerLowerWire = BRepBuilderAPI_MakeWire(innerLowerEdge);
-    TopoDS_Wire innerUpperWire = BRepBuilderAPI_MakeWire(innerUpperEdge);
-
     // concatenate wires for guide curve algo
     TopTools_SequenceOfShape innerWireContainer;
-    innerWireContainer.Append(innerLowerWire);
-    innerWireContainer.Append(innerUpperWire);
+    innerWireContainer.Append(innerLowerEdge);
+    innerWireContainer.Append(innerUpperEdge);
 
     // instantiate getPointAlgo
     tigl::CCPACSWingProfileGetPointAlgo getPointAlgo(innerWireContainer);
@@ -356,19 +352,13 @@ TEST_F(WingGuideCurve, tiglWingGuideCurve_CCPACSGuideCurveAlgo)
     TopoDS_Edge outerLowerEdge = BRepBuilderAPI_MakeEdge(circle2, start, mid);
     TopoDS_Edge outerUpperEdge = BRepBuilderAPI_MakeEdge(circle2,   mid, end);
 
-    // convert to wires 
-    TopoDS_Wire innerLowerWire = BRepBuilderAPI_MakeWire(innerLowerEdge);
-    TopoDS_Wire innerUpperWire = BRepBuilderAPI_MakeWire(innerUpperEdge);
-    TopoDS_Wire outerLowerWire = BRepBuilderAPI_MakeWire(outerLowerEdge);
-    TopoDS_Wire outerUpperWire = BRepBuilderAPI_MakeWire(outerUpperEdge);
-
     // concatenate wires for guide curve algo
     TopTools_SequenceOfShape innerWireContainer;
-    innerWireContainer.Append(innerLowerWire);
-    innerWireContainer.Append(innerUpperWire);
+    innerWireContainer.Append(innerLowerEdge);
+    innerWireContainer.Append(innerUpperEdge);
     TopTools_SequenceOfShape outerWireContainer;
-    outerWireContainer.Append(outerLowerWire);
-    outerWireContainer.Append(outerUpperWire);
+    outerWireContainer.Append(outerLowerEdge);
+    outerWireContainer.Append(outerUpperEdge);
 
     // get guide curve profile
     tigl::CCPACSGuideCurveProfile guideCurveProfile("/cpacs/vehicles/profiles/guideCurveProfiles/guideCurveProfile[7]");
