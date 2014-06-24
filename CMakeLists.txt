@@ -75,7 +75,10 @@ endif()
 
 # search OCE. If OCE is not found, search for standard OpenCASCADE
 set(CMAKE_PREFIX_PATH "$ENV{CASROOT};${CASROOT};${CMAKE_PREFIX_PATH}")
+OPTION(OpenCASCADE_DONT_SEARCH_OCE "Disabled searching for OCE" OFF)
+if(NOT OpenCASCADE_DONT_SEARCH_OCE)
 find_package(OCE 0.15 COMPONENTS ${OCC_LIBS} QUIET)
+endif()
 if(OCE_FOUND)
   set(OpenCASCADE_LIBRARIES ${OCC_LIBS})
   set(OpenCASCADE_INCLUDE_DIR ${OCE_INCLUDE_DIRS})

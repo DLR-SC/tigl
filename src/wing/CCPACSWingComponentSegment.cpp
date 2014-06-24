@@ -36,6 +36,7 @@
 #include "CTiglLogging.h"
 #include "CCPACSWingCell.h"
 #include "CTiglApproximateBsplineWire.h"
+#include "CTiglMakeLoft.h"
 #include "tiglcommonfunctions.h"
 
 #include "BRepOffsetAPI_ThruSections.hxx"
@@ -387,59 +388,25 @@ void CCPACSWingComponentSegment::GetSegmentIntersection(const std::string& segme
 // Builds the loft between the two segment sections
 TopoDS_Shape CCPACSWingComponentSegment::BuildLoft(void)
 {
-
-    BRepOffsetAPI_ThruSections generator(Standard_True, Standard_True, Precision::Confusion() );
-
     SegmentList& segments = GetSegmentList();
     if (segments.size() == 0) {
         throw CTiglError("Error: Could not find segments in CCPACSWingComponentSegment::BuildLoft", TIGL_ERROR);
     }
-        
+    
+    CTiglMakeLoft lofter;
+    lofter.setMakeSolid(true);
+
     for (SegmentList::iterator it=segments.begin(); it != segments.end(); ++it) {
         CCPACSWingSegment& segment = **it;
-        CCPACSWingConnection& startConnection = segment.GetInnerConnection();
-    
-        CCPACSWingProfile& startProfile = startConnection.GetProfile();
-        TopoDS_Wire startWire = startProfile.GetWire();
-    
-        // Do section element transformations
-        TopoDS_Shape startShape = startConnection.GetSectionElementTransformation().Transform(startWire);
-    
-        // Do section transformations
-        startShape = startConnection.GetSectionTransformation().Transform(startShape);
-    
-        // Do positioning transformations (positioning of sections)
-        startShape = startConnection.GetPositioningTransformation().Transform(startShape);
-    
-        // Cast shapes to wires, see OpenCascade documentation
-        if (startShape.ShapeType() != TopAbs_WIRE) {
-            throw CTiglError("Error: Wrong shape type in CCPACSWingComponentSegment::BuildLoft", TIGL_ERROR);
-        }
-        startWire = TopoDS::Wire(startShape);
-    
-        generator.AddWire(startWire);
+        TopoDS_Shape& startWire = segment.GetInnerWire();
+        lofter.addProfiles(startWire);
     }
-
     // add outer wire
     CCPACSWingSegment& segment = *segments[segments.size()-1];
-    CCPACSWingConnection& endConnection = segment.GetOuterConnection();
-    CCPACSWingProfile& endProfile = endConnection.GetProfile();
-    TopoDS_Wire endWire = endProfile.GetWire();
-    TopoDS_Shape endShape = endConnection.GetSectionElementTransformation().Transform(endWire);
-    endShape = endConnection.GetSectionTransformation().Transform(endShape);
-    endShape = endConnection.GetPositioningTransformation().Transform(endShape);
-    if (endShape.ShapeType() != TopAbs_WIRE) {
-        throw CTiglError("Error: Wrong shape type in CCPACSWingComponentSegment::BuildLoft", TIGL_ERROR);
-    }
-    endWire = TopoDS::Wire(endShape);
-    generator.AddWire(endWire);
+    TopoDS_Wire endWire =  segment.GetOuterWire();
+    lofter.addProfiles(endWire);
 
-    generator.CheckCompatibility(Standard_False);
-    generator.Build();
-    TopoDS_Shape loft = generator.Shape();
-
-    // transform with wing transformation
-    loft = wing->GetWingTransformation().Transform(loft);
+    TopoDS_Shape loft = lofter.Shape();
 
     BRepTools::Clean(loft);
 
@@ -447,17 +414,7 @@ TopoDS_Shape CCPACSWingComponentSegment::BuildLoft(void)
     sfs->Init ( loft );
     sfs->Perform();
     loft = sfs->Shape();
-
-    // Calculate volume
-    GProp_GProps System;
-    BRepGProp::VolumeProperties(loft, System);
-    myVolume = System.Mass();
-
-    // Calculate surface area
-    GProp_GProps AreaSystem;
-    BRepGProp::SurfaceProperties(loft, AreaSystem);
-    mySurfaceArea = AreaSystem.Mass();
-        
+    
     return loft;
 }
 
@@ -647,21 +604,6 @@ void CCPACSWingComponentSegment::GetEtaXsiFromSegmentEtaXsi(const std::string& s
 
     UpdateProjectedLeadingEdge();
     eta = ProjectPointOnWire(projLeadingEdge, point3d);
-}
-
-
-// Returns the volume of this segment
-double CCPACSWingComponentSegment::GetVolume(void)
-{
-    GetLoft();
-    return( myVolume );
-}
-
-// Returns the surface area of this segment
-double CCPACSWingComponentSegment::GetSurfaceArea(void)
-{
-    GetLoft();
-    return( mySurfaceArea );
 }
 
 //    // Returns an upper or lower point on the segment surface in

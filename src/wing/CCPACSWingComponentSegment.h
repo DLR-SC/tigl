@@ -76,12 +76,6 @@ public:
     // Get the eta xsi coordinate from a segment point (given by seta, sxsi)
     TIGL_EXPORT void GetEtaXsiFromSegmentEtaXsi(const std::string &segmentUID, double seta, double sxsi, double &eta, double &xsi);
 
-    // Gets the volume of this segment
-    TIGL_EXPORT double GetVolume();
-
-    // Gets the surface area of this segment
-    TIGL_EXPORT double GetSurfaceArea();
-
     // Gets the fromElementUID of this segment
     TIGL_EXPORT const std::string & GetFromElementUID(void) const;
 
