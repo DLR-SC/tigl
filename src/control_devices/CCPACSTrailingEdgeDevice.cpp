@@ -164,7 +164,7 @@ gp_Trsf CCPACSTrailingEdgeDevice::getTransformation(double flapStatusInPercent)
         double hingeEta = -1;
 
         // only calculate etaCoordinate if it´s not the same as the other one.
-        if ( std::abs(borderEtaLE - borderEtaTE) < 0.0001 ) {
+        if ( fabs(borderEtaLE - borderEtaTE) < 0.0001 ) {
             hingeEta = (borderEtaTE + borderEtaLE)/2;
         }
         else {
@@ -222,10 +222,10 @@ TopoDS_Shape CCPACSTrailingEdgeDevice::getCutOutShape()
 
     double yTrans = 0;
     double zTrans = 1;
-    if ( std::abs(point1.Y() - point2.Y()) < 0.1 &&
-         std::abs(point2.Y() - point3.Y()) < 0.1 &&
-         std::abs(point3.Y() - point4.Y()) < 0.1 &&
-         std::abs(point4.Y() - point1.Y()) < 0.1 ) {
+    if ( fabs(point1.Y() - point2.Y()) < 0.1 &&
+         fabs(point2.Y() - point3.Y()) < 0.1 &&
+         fabs(point3.Y() - point4.Y()) < 0.1 &&
+         fabs(point4.Y() - point1.Y()) < 0.1 ) {
         zTrans = 0;
         yTrans = 1;
     }
@@ -254,10 +254,10 @@ TopoDS_Face CCPACSTrailingEdgeDevice::getFace()
 
     double yTrans = 0;
     double zTrans = 1;
-    if ( std::abs(point1.Y() - point2.Y()) < 0.1 &&
-         std::abs(point2.Y() - point3.Y()) < 0.1 &&
-         std::abs(point3.Y() - point4.Y()) < 0.1 &&
-         std::abs(point4.Y() - point1.Y()) < 0.1 ) {
+    if ( fabs(point1.Y() - point2.Y()) < 0.1 &&
+         fabs(point2.Y() - point3.Y()) < 0.1 &&
+         fabs(point3.Y() - point4.Y()) < 0.1 &&
+         fabs(point4.Y() - point1.Y()) < 0.1 ) {
         zTrans = 0;
         yTrans = 1;
     }
