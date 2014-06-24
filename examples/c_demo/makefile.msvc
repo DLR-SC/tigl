@@ -1,0 +1,9 @@
+# This is a makefile to build the example TiGL program
+
+# Please modify the variables TIGL_HOME and TIXI_HOME 
+# to the appropriate install locations
+TIGL_HOME=<tigl install folder>
+TIXI_HOME=<tixi install folder>
+
+c_demo.exe: c_demo.c
+	cl.exe /nologo c_demo.c -I $(TIGL_HOME)\include -I $(TIXI_HOME)\include $(TIGL_HOME)\lib\TIGL.lib $(TIXI_HOME)\lib\TIXI.lib 

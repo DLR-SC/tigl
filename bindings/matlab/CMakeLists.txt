@@ -11,7 +11,7 @@ message(STATUS "Found MATLAB. Create matlab bindings.")
 #run python to create the tiglmatlab.c
 add_custom_command(
 	OUTPUT tiglmatlab.c
-	DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/make_tigl_matlab.py ${PROJECT_SOURCE_DIR}/src/tigl.h
+	DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/make_tigl_matlab.py ${PROJECT_SOURCE_DIR}/src/api/tigl.h
 	WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
 	COMMAND ${PYTHON_EXECUTABLE}
 	ARGS ${CMAKE_CURRENT_SOURCE_DIR}/make_tigl_matlab.py
@@ -25,7 +25,7 @@ if(MSVC)
   set(TMAT_SRC ${TMAT_SRC} exports.def)
 endif()
 
-include_directories(${PROJECT_SOURCE_DIR}/src ${MATLAB_INCLUDE_DIR} ${TIXI_INCLUDE_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
+include_directories(${PROJECT_SOURCE_DIR}/src/api ${MATLAB_INCLUDE_DIR} ${TIXI_INCLUDE_DIRS} ${CMAKE_CURRENT_SOURCE_DIR})
 
 add_library(tigl_matlab SHARED ${TMAT_SRC})
 target_link_libraries(tigl_matlab ${MATLAB_mat_LIBRARY} ${MATLAB_mx_LIBRARY} ${MATLAB_mex_LIBRARY} TIGL)

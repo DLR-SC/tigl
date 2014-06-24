@@ -23,13 +23,11 @@
 
 #include <QtCore/QObject>
 #include "TIGLViewer.h"
+#include "TIGLViewerColors.h"
 #include "CCPACSConfiguration.h"
 
 #include <Handle_AIS_Shape.hxx>
 #include <Quantity_Color.hxx>
-
-#define Quantity_NOC_ShapeCol (Quantity_Color(0., 170./255.,1., Quantity_TOC_RGB))
-#define Quantity_NOC_MirrShapeCol (Quantity_Color(251./255., 1., 169./255., Quantity_TOC_RGB))
 
 class QOCC_DECLSPEC TIGLViewerDocument : public QObject
 {
@@ -42,7 +40,7 @@ class QOCC_DECLSPEC TIGLViewerDocument : public QObject
 
 public:
 
-    TIGLViewerDocument( QWidget *parentWidget, const Handle_AIS_InteractiveContext& ic, const class TIGLViewerSettings& set );
+    TIGLViewerDocument( QWidget *parentWidget, const Handle_AIS_InteractiveContext& ic );
     ~TIGLViewerDocument( );
 
     TiglReturnCode openCpacsConfiguration(const QString fileName);
@@ -83,6 +81,7 @@ public slots:
     void drawWingProfiles();
     void drawWing();
     void drawWingOverlayProfilePoints();
+    void drawWingGuideCurves();
     void drawWingTriangulation();
     void drawWingSamplePoints();
     void drawFusedWing();
@@ -98,6 +97,7 @@ public slots:
     void drawFuselageSamplePoints();
     void drawFuselageSamplePointsAngle();
     void drawFusedFuselage();
+    void drawFuselageGuideCurves();
 
     // TIGL slots
     void exportAsIges();
@@ -116,6 +116,8 @@ public slots:
     void exportFuselageCollada();
     void exportWingBRep();
     void exportFuselageBRep();
+    void exportWingCurvesBRep();
+    void exportFuselageCurvesBRep();
     void exportFusedConfigBRep();
 
 
@@ -127,17 +129,18 @@ private slots:
     // Wing selection dialogs
     QString dlgGetWingSelection();
     QString dlgGetWingComponentSegmentSelection();
+    QString dlgGetWingSegmentSelection();
     QString dlgGetWingProfileSelection();
 
 
     // Fuselage selection dialogs
     QString dlgGetFuselageSelection();
+    QString dlgGetFuselageSegmentSelection();
     QString dlgGetFuselageProfileSelection();
 
 
 private:
     TiglCPACSConfigurationHandle            m_cpacsHandle;
-    const TIGLViewerSettings&               _settings;
     QWidget*                                parent;
     Handle_AIS_InteractiveContext           myAISContext;
     class TIGLViewerWidget*                 myOCC;

@@ -1,3 +1,95 @@
+Version 2.1.2
+-------------
+17/04/2014
+
+    - Changed API:
+        - The returned UID strings of the following functions must not be freed by the user anymore:
+
+            - ``tiglWingGetOuterSectionAndElementIndex``
+            - ``tiglWingGetInnerSectionAndElementUID``
+            - ``tiglFuselageGetStartSectionAndElementUID``
+            - ``tiglFuselageGetEndSectionAndElementUID``
+            - ``tiglWingComponentSegmentPointGetSegmentEtaXsi``
+            - ``tiglWingComponentSegmentFindSegment`` 
+            
+        - Changed behavior of ``tiglWingComponentSegmentFindSegment``. In case the specified point does not 
+          lie within 1 cm of any segment, ``TIGL_NOT_FOUND`` is returned.
+        - Changed behavior of ``tiglWingComponentSegmentPointGetSegmentEtaXsi``. If the specified point lies outside
+          any segment so that the transformation can not be executed, ``TIGL_MATH_ERROR`` is returned.
+        - The following API functions ``tiglComponentIntersectionPoint``, ``tiglComponentIntersectionPoints`` 
+          and ``tiglComponentIntersectionLineCount`` are deprecated and will
+          be removed in future releases. These functions are replaced by new intersection routines.
+        - Removed functions ``tiglExportStructuredIGES`` and ``tiglExportStructuredSTEP``
+
+    - General changes:
+        - Completely reworked boolean operations with the following effects:
+
+            - Fusing the whole plane is faster in many cases and more reliable
+            - We keep track of the origins of each trimmed face which helps for
+              the IGES and STEP exports
+            - The boolean operations can be debugged now by setting the environment variable TIGL_DEBUG_BOP
+
+        - Completely rewritten STEP and IGES exports:
+
+            - Each face has now an identifier name
+            - Inclusion of intersection curves
+            - Inclusion of far fields into exports
+            - IGES export in non-BREP mode since it is not supported by CATIA
+
+        - Added new demos for C, Python and MATLAB. Please look into the documentation how to run them.
+        - Added function for the intersection computation of a geometrical shape with a plane 
+        - Experimental implementation of wing and fuselage guide curves
+        - The mathematical orientation of wing profiles is checked for correctness
+        - TiGL requires now at least OpenCASCADE 6.6.0 
+        - Ported to OpenCASCADE 6.7.0
+
+    - New API functions:
+        - Added new API functions for shape/shape and shape/plane intersections:
+
+            - ``tiglIntersectComponents``
+            - ``tiglIntersectWithPlane``
+            - ``tiglIntersectGetLineCount``
+            - ``tiglIntersectGetPoint``
+
+    - Fixes:
+        - Fixed a bug in ``tiglWingComponentSegmentFindSegment``
+        - Fixed numerical inaccuracy in the projection of points to a wing segment
+        - Fixed crash in case of too long UIDs
+        - Fixed some memory leaks 
+
+    - TiGLViewer:
+        - Improved IGES import: 
+
+            - Multiple shapes are now imported as separate shapes from IGES files.
+            - Fixed wrong scaling when importing IGES files.
+
+        - Improved STEP export:
+
+            - Files are now exported in units of meters instead of millimeters.
+
+        - Improved BREP export and import: compound objects are now decomposed to separate objects.
+        - Added method to export fused aircraft to BREP
+        - Added method to export wing and fuselage profiles and guide curves to BREP
+        - Fixed incorrect units in IGES and STEP export from save-as dialog.
+        - General save-as dialog: All visible objects are saved to the file, if no shape is selected. 
+          Otherwise, only the selected objects are exported.
+        - Added debugging parameters to settings dialog. This includes:
+
+            - Adapting number of displayed iso lines per face
+            - Display face numbers
+            - Debug boolean operations (if enabled, debugging shapes in BRep format are stored 
+              to the current working directory)
+
+        - Added new dialog for shape/shape and shape/plane intersections.
+        - Added drag and drop support to TiGLViewer. Files (CPACS, IGES, STEP, BREP) are opened when they are dragged into TiGLViewer.
+        - TiGLViewer displays far field after calculating the trimmed aircraft
+        - Iso U/V lines are no longer displayed by default. This can be changed in the settings dialog.
+        - The fused/trimmed aircraft geometry is displayed using a different color for each component.
+        - Added visualization of wing and fuselage guide curves.
+        - Fix: Only the first intersection curve was displayed. This is fixed now.
+        - New icons
+
+
 Version 2.1.1
 -------------
 Released: 28/01/2014
@@ -34,20 +126,20 @@ Version 2.1.0
 Released: 17/01/2014
 
     - Changed API:
-    	- Added argument for ``tiglWingGetReferenceArea`` to define the projection plane for reference area calculations
+        - Added argument for ``tiglWingGetReferenceArea`` to define the projection plane for reference area calculations
     
     - General Changes:
         - Support for parametric CST wing profiles
         - Logging improvements. The console verbosity can now be set independent of file logging.
     
     - New API functions:
-    	- ``tiglWingGetMAC``, computes the mead aerodynamic chord length and position (thanks to Arda!)
+        - ``tiglWingGetMAC``, computes the mead aerodynamic chord length and position (thanks to Arda!)
     
     - Fixes:
-    	- Fixed crash in case of missing wing and fuselage profiles
-    	- Fixed accuracy errors in ``tiglWingSegmentPointGetComponentSegmentEtaXsi`` and ``tiglWingComponentSegmentPointGetSegmentEtaXsi``
-    	- Fixed a warning when including ``tigl.h``
-    	- Fixed numerical bug ``tiglWingComponentSegmentGetSegmentIntersection``
+        - Fixed crash in case of missing wing and fuselage profiles
+        - Fixed accuracy errors in ``tiglWingSegmentPointGetComponentSegmentEtaXsi`` and ``tiglWingComponentSegmentPointGetSegmentEtaXsi``
+        - Fixed a warning when including ``tigl.h``
+        - Fixed numerical bug ``tiglWingComponentSegmentGetSegmentIntersection``
     
     - TiGLViewer:
         - Improved dialog for displaying wing component segment points
@@ -61,8 +153,8 @@ Version 2.0.7
 Released: 21/11/2013
 
     - Changed API:
-    	- replaced ``tiglWingComponentSegmentGetMaterialUIDs`` with 
-    	  ``tiglWingComponentSegmentGetMaterialUID`` and ``tiglWingComponentSegmentGetMaterialCount``
+        - replaced ``tiglWingComponentSegmentGetMaterialUIDs`` with 
+          ``tiglWingComponentSegmentGetMaterialUID`` and ``tiglWingComponentSegmentGetMaterialCount``
     
     - General Changes:
         - Implementation of far fields
@@ -72,16 +164,16 @@ Released: 21/11/2013
         - New Logging Framework
     
     - New API functions:
-    	- ``tiglWingGetSegmentEtaXsi``, to transform global x,y,z coordinates into wing segment coordinates
-    	- ``tiglExportFusedSTEP``, exports the trimmed/fused geometry as a step file
-    	- ``tiglWingComponentSegmentGetMaterialUID``, to get the material UID at a point of the component segment
-    	- ``tiglWingComponentSegmentGetMaterialThickness``, to get the material thickness at a point of the component segment
-    	- ``tiglWingComponentSegmentGetMaterialCount``, to get the number of materials defined at a point of the component segment
-    	- ``tiglLogSetFileEnding``, ``tiglLogSetTimeInFilenameEnabled``, ``tiglLogToFileDisabled``,
-    	  ``tiglLogToFileEnabled``, ``tiglLogToFileStreamEnabled``, to modify logging settings
+        - ``tiglWingGetSegmentEtaXsi``, to transform global x,y,z coordinates into wing segment coordinates
+        - ``tiglExportFusedSTEP``, exports the trimmed/fused geometry as a step file
+        - ``tiglWingComponentSegmentGetMaterialUID``, to get the material UID at a point of the component segment
+        - ``tiglWingComponentSegmentGetMaterialThickness``, to get the material thickness at a point of the component segment
+        - ``tiglWingComponentSegmentGetMaterialCount``, to get the number of materials defined at a point of the component segment
+        - ``tiglLogSetFileEnding``, ``tiglLogSetTimeInFilenameEnabled``, ``tiglLogToFileDisabled``,
+          ``tiglLogToFileEnabled``, ``tiglLogToFileStreamEnabled``, to modify logging settings
     
     - Fixes:
-    	- fixed a bug in ``tiglWingComponentSegmentGetSegmentIntersection``
+        - fixed a bug in ``tiglWingComponentSegmentGetSegmentIntersection``
     
     - TiGLViewer:
         - Loading of HOTSOSE mesh files
@@ -103,28 +195,28 @@ Released: 27/08/2013
         - Prepared TiGL for Android (currently working but still experimental)
     
     - New API functions:
-    	- ``tiglExportMeshedWingSTLByUID`` and ``tiglExportMeshedFuselageSTLByUID`` for STL export (Hello 3D printing!)
-    	- ``tiglWingComponentSegmentGetSegmentIntersection``
+        - ``tiglExportMeshedWingSTLByUID`` and ``tiglExportMeshedFuselageSTLByUID`` for STL export (Hello 3D printing!)
+        - ``tiglWingComponentSegmentGetSegmentIntersection``
     
     - Fixes:
-    	- Fixed ``tiglFuselageGetPointAngle`` and ``tiglFuselageGetPointAngleTranslated`` giving wrong results (issues 89 and 92)
-    	- TiGL required positionings for all fuselage segments, this is now fixed (issue 57)
-    	- Fixed error when opening CPACS files with composite materials
-    	- Fixed wrong units in iges export (issue 78)
-    	- Silenced Error messages that weren't errors
-    	- Fixed different errors in ``tiglWingComponentSegmentPointGetSegmentEtaXsi``
-    	- Fixed duplicate log files
-    	
+        - Fixed ``tiglFuselageGetPointAngle`` and ``tiglFuselageGetPointAngleTranslated`` giving wrong results (issues 89 and 92)
+        - TiGL required positionings for all fuselage segments, this is now fixed (issue 57)
+        - Fixed error when opening CPACS files with composite materials
+        - Fixed wrong units in iges export (issue 78)
+        - Silenced Error messages that weren't errors
+        - Fixed different errors in ``tiglWingComponentSegmentPointGetSegmentEtaXsi``
+        - Fixed duplicate log files
+        
     
 Version 2.0.5
 -------------
 Released: 11/06/2013
 
     - Changed API:
-    	- Switched to const ``char * strings``
-    	- ``tiglWingGetSegmentIndex`` returns now also the wing index instead of asking for it
-    	- Removed TiGL wire algorithms switching functions. Now a Bspline wire is used for each profile.
-    	
+        - Switched to const ``char * strings``
+        - ``tiglWingGetSegmentIndex`` returns now also the wing index instead of asking for it
+        - Removed TiGL wire algorithms switching functions. Now a Bspline wire is used for each profile.
+        
     - General Changes:
         - Symmetry modeling
         - Explicit modeling of the wing leading edge to improve tesselated output (no more leading edge bumps)
@@ -132,11 +224,11 @@ Released: 11/06/2013
         - The fuselage lofting now creates a smooth surface without hard edges (due to fixed OpenCASCADE bug)
         - Completely rewritten VTK export:
 
-        	- Full body export including wing segment metadata
-        	- Fixed lots of errors. 
-        	- Large improvement of calculation times. 
-        	- Provides wing segment metadata in a proper VTK-way, to allow visualization of these data in VTK viewers.
-        	  Calculation and export of the proper normal vectors.
+            - Full body export including wing segment metadata
+            - Fixed lots of errors. 
+            - Large improvement of calculation times. 
+            - Provides wing segment metadata in a proper VTK-way, to allow visualization of these data in VTK viewers.
+              Calculation and export of the proper normal vectors.
     
         - IGES and STEP export with CPACS metadata
         - Collada export for use in 3D rendering programs like Blender
@@ -144,30 +236,30 @@ Released: 11/06/2013
         - Completeley rewritten python bindings (e.g. better support for arrays)
         - Added logging framework to write outputs into log files (google-glog)
         - Ported to OpenCASCADE 6.6.0
-    	
+        
     - New API functions:
-    	- ``tiglWingComponentSegmentGetMaterialUIDs``, to query materials on component segment
-    	- ``tiglWingComponentSegmentGetPoint``, to query cartesian point on the wing component segment (on chord surface)
-    	- ``tiglWingSegmentPointGetComponentSegmentEtaXsi``, to compute segment to component segment coordinates
-    	- ``tiglWingComponentSegmentGetSegmentUID``, queries the uids of the ith segment of the component segment
-    	- ``tiglWingComponentSegmentGetNumberOfSegments``, queries the number of segments belonging to a component segment
-    	- ``tiglExportFuselageColladaByUID``
-    	- ``tiglExportWingColladaByUID``
-    	- ``tiglExportStructuredIGES``
-    	- ``tiglExportStructuredSTEP``
-    	- ``tiglConfigurationGetLength``, returns the length of the airplane
-    	- ``tiglWingGetSpan``, returns the wing span
-    	- ``tiglComponentIntersectionPoints`` (convenience function, vectorizes ``tiglComponentIntersectionPoint`` to improve speed)
-    	- ``tiglExportMeshedGeometryVTKSimple`` and ``tiglExportMeshedGeometryVTKSimple`` (replaced dummy implementation)
-    	
+        - ``tiglWingComponentSegmentGetMaterialUIDs``, to query materials on component segment
+        - ``tiglWingComponentSegmentGetPoint``, to query cartesian point on the wing component segment (on chord surface)
+        - ``tiglWingSegmentPointGetComponentSegmentEtaXsi``, to compute segment to component segment coordinates
+        - ``tiglWingComponentSegmentGetSegmentUID``, queries the uids of the ith segment of the component segment
+        - ``tiglWingComponentSegmentGetNumberOfSegments``, queries the number of segments belonging to a component segment
+        - ``tiglExportFuselageColladaByUID``
+        - ``tiglExportWingColladaByUID``
+        - ``tiglExportStructuredIGES``
+        - ``tiglExportStructuredSTEP``
+        - ``tiglConfigurationGetLength``, returns the length of the airplane
+        - ``tiglWingGetSpan``, returns the wing span
+        - ``tiglComponentIntersectionPoints`` (convenience function, vectorizes ``tiglComponentIntersectionPoint`` to improve speed)
+        - ``tiglExportMeshedGeometryVTKSimple`` and ``tiglExportMeshedGeometryVTKSimple`` (replaced dummy implementation)
+        
     - Fixes:
         - Intersection calculation used by ``tiglComponentIntersectionPoint``
-    	- Fixed incorrectly placed fuselage positionings
-    	- Fixed ``tiglWingComponentSegmentFindSegment`` returning segments that don't belong to the component segment
-    	- Workaround to buggy OpenCASCADE boolean fuse algorithms (which seems to be non-commutative). As a result, the fusing of the whole plane
-    	  can be slower than before.
-    	- Removed warning about missing component segments
-    	
+        - Fixed incorrectly placed fuselage positionings
+        - Fixed ``tiglWingComponentSegmentFindSegment`` returning segments that don't belong to the component segment
+        - Workaround to buggy OpenCASCADE boolean fuse algorithms (which seems to be non-commutative). As a result, the fusing of the whole plane
+          can be slower than before.
+        - Removed warning about missing component segments
+        
     - TiGLViewer:
         - Display user defined component segment point
         - Improved speed of intersection calculation
@@ -186,12 +278,12 @@ Version 2.0.4
 Released: 17/01/2013
 
     - New API Functions: 
-    	- Added function ``tiglGetErrorString``
+        - Added function ``tiglGetErrorString``
 
     - Fixes:
-    	- Fixed bug in ``tiglWingComponentSegmentPointGetSegmentEtaXsi``
-    	- Fixed camberline / chordline bug
-    	- Fixed exception, when no airfoils are available
+        - Fixed bug in ``tiglWingComponentSegmentPointGetSegmentEtaXsi``
+        - Fixed camberline / chordline bug
+        - Fixed exception, when no airfoils are available
 
 
     - TiGLViewer:
@@ -228,24 +320,24 @@ Released: 17/01/2013
         - Added coverage with gcov (gcc only) to project
 
     - New API Functions:
-    	- ``tiglWingGetIndex`` Returns the wing index given a wing UID
-    	- ``tiglWingGetSegmentIndex`` Returns the segment index given a wing segment UID
-    	- ``tiglWingGetComponentSegmentCount`` Returns the number of component segments for a specific wing (selected by wing index)
-    	- ``tiglWingGetComponentSegmentIndex`` Translates component segment UID into component segment index
-    	- ``tiglWingGetComponentSegmentUID`` Translates component segment index into component segment UID
+        - ``tiglWingGetIndex`` Returns the wing index given a wing UID
+        - ``tiglWingGetSegmentIndex`` Returns the segment index given a wing segment UID
+        - ``tiglWingGetComponentSegmentCount`` Returns the number of component segments for a specific wing (selected by wing index)
+        - ``tiglWingGetComponentSegmentIndex`` Translates component segment UID into component segment index
+        - ``tiglWingGetComponentSegmentUID`` Translates component segment index into component segment UID
 
     - Fixes:
-    	- Fixed ``tiglWingComponentSegmentPointGetSegmentEtaXsi``
-    	- Fixed accuracy of ``CCPACSWingComponentSegment::getPoint``
-    	- Fixed accuracy of ``CCPACSWingSegment::getEta``
-    	- Fixed memory management handling of ``tiglWingGetProfileName``
-    	- Fixed memory leaks in VTK export
-    	- Fixed memory leak in ``CCPACSFuselages``
+        - Fixed ``tiglWingComponentSegmentPointGetSegmentEtaXsi``
+        - Fixed accuracy of ``CCPACSWingComponentSegment::getPoint``
+        - Fixed accuracy of ``CCPACSWingSegment::getEta``
+        - Fixed memory management handling of ``tiglWingGetProfileName``
+        - Fixed memory leaks in VTK export
+        - Fixed memory leak in ``CCPACSFuselages``
 
     - TIGLViewer:
-    	- Menus are enabled/disabled depending on number of wings/fuselages
-    	- Added close configuration menu entry
-    	- improved view rotation with middle mouse button
+        - Menus are enabled/disabled depending on number of wings/fuselages
+        - Added close configuration menu entry
+        - improved view rotation with middle mouse button
 
 
 Version 2.0.2

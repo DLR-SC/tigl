@@ -23,6 +23,7 @@
 
 #include "TIGLViewerInternal.h"
 #include "TIGLViewerInputoutput.h"
+#include "TIGLViewerWidget.h"
 #include <BRepBuilderAPI_MakePolygon.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <CTiglPolyDataTools.h>
@@ -42,10 +43,11 @@ TIGLViewerInputOutput::~TIGLViewerInputOutput(void)
 
 bool TIGLViewerInputOutput::importModel( const QString fileName,
                                          const FileFormat format,
-                                         const Handle_AIS_InteractiveContext& ic )
+                                         TIGLViewerWidget& widget )
 {
 
     QApplication::setOverrideCursor( Qt::WaitCursor );
+    widget.getContext()->SetDisplayMode(AIS_Shaded,Standard_False);
     Handle_TopTools_HSequenceOfShape shapes = importModel( format, fileName );
     QApplication::restoreOverrideCursor();
 
@@ -54,20 +56,16 @@ bool TIGLViewerInputOutput::importModel( const QString fileName,
     }
 
     for ( int i = 1; i <= shapes->Length(); i++ ) {
-        Handle(AIS_Shape) anAISShape = new AIS_Shape( shapes->Value( i ) );
-        ic->SetMaterial( anAISShape, Graphic3d_NOM_GOLD);
-        ic->SetColor( anAISShape, Quantity_NOC_RED);
-        ic->SetDisplayMode( anAISShape, 1, Standard_False );
-        ic->Display(anAISShape, Standard_False);
+        widget.displayShape(shapes->Value(i));
     }
-    ic->UpdateCurrentViewer();
     return true;
 }
 
 bool TIGLViewerInputOutput::importTriangulation( const QString fileName,
                                                  const FileFormat format,
-                                                 const Handle_AIS_InteractiveContext& ic )
+                                                 TIGLViewerWidget& widget )
 {
+    Handle(AIS_InteractiveContext) ic = widget.getContext();
     Handle(Poly_Triangulation) triangulation;
     triangulation.Nullify();
 
@@ -251,7 +249,6 @@ Handle_TopTools_HSequenceOfShape TIGLViewerInputOutput::importIGES( const QStrin
     Interface_Static::SetCVal("xstep.cascade.unit", "M");
     int status = Reader.ReadFile( file.toAscii().data() );
 
-
     if ( status == IFSelect_RetDone ) {
         Reader.TransferRoots();
         int nbs = Reader.NbShapes();
@@ -301,7 +298,7 @@ Handle_TopTools_HSequenceOfShape TIGLViewerInputOutput::importMESH( const QStrin
 
 Handle_TopTools_HSequenceOfShape TIGLViewerInputOutput::importSTEP( const QString& file )
 {
-    Handle_TopTools_HSequenceOfShape aSequence;
+    Handle_TopTools_HSequenceOfShape aSequence = new TopTools_HSequenceOfShape;
 
     STEPControl_Reader aReader;
     Interface_Static::SetCVal("xstep.cascade.unit", "M");
@@ -320,13 +317,17 @@ Handle_TopTools_HSequenceOfShape TIGLViewerInputOutput::importSTEP( const QStrin
             }
             int nbs = aReader.NbShapes();
             if ( nbs > 0 ) {
-                aSequence = new TopTools_HSequenceOfShape();
                 for ( int i = 1; i <= nbs; i++ ) {
                     TopoDS_Shape shape = aReader.Shape( i );
                     aSequence->Append( shape );
                 }
             }
+            aReader.ClearShapes();
         }
+    }
+    
+    if (aSequence->Length() == 0) {
+        aSequence.Nullify();
     }
     return aSequence;
 }

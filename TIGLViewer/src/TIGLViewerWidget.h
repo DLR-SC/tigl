@@ -23,6 +23,7 @@
 #define TIGLVIEWERWIDGET_H
 
 #include <QWidget>
+#include <Quantity_Color.hxx>
 
 #if defined WNT
 #include <Handle_WNT_Window.hxx>
@@ -31,6 +32,7 @@
 #endif
 
 #include "TIGLViewer.h"
+#include "TIGLViewerColors.h"
 
 
 /** the key for multi selection */
@@ -44,6 +46,9 @@
 class Handle_AIS_InteractiveContext;
 class Handle_V3d_View;
 class Handle_Visual3d_Layer;
+class Handle_AIS_Shape;
+class TopoDS_Shape;
+class gp_Pnt;
 
 class QOCC_DECLSPEC TIGLViewerWidget : public QWidget
 {
@@ -101,6 +106,15 @@ public:
     class QToolBar* myToolBar;
 
     void redraw( bool isPainting = false );
+    
+    Handle_AIS_Shape displayShape(const TopoDS_Shape& loft, Quantity_Color color = Quantity_NOC_ShapeCol);
+    void DisplayPoint(const gp_Pnt& aPoint,
+                      const char*   aText,
+                      Standard_Boolean UpdateViewer,
+                      Standard_Real anXoffset,
+                      Standard_Real anYoffset,
+                      Standard_Real aZoffset,
+                      Standard_Real TextScale);
 
 signals:
 
@@ -147,6 +161,7 @@ public slots:
     void setObjectsShading();
     void setObjectsColor();
     void setObjectsMaterial();
+    void makeScreenshot(int width, int height, int quality, const QString& filename);
 
 protected: // methods
 
@@ -232,10 +247,6 @@ private: // methods
     static int paintCallBack (Aspect_Drawable, 
                               void*, 
                               Aspect_GraphicCallbackStruct*);
-
-public:
-
-    bool dump(Standard_CString theFile);
 
 };
 

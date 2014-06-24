@@ -12,7 +12,7 @@ endif()
 project (TIGL)
 set(TIGL_VERSION_MAJOR 2)
 set(TIGL_VERSION_MINOR 1)
-set(TIGL_VERSION_PATCH 1)
+set(TIGL_VERSION_PATCH 2)
 set(TIGL_VERSION "${TIGL_VERSION_MAJOR}.${TIGL_VERSION_MINOR}.${TIGL_VERSION_PATCH}")
 
 set(TIGL_ADD_INCLUDE_PATH "" CACHE PATH "Additional include path for package search")
@@ -73,8 +73,27 @@ else()
     message("XCAF disabled. IGES and STEP export with CPACS metadata will not be avaible.")
 endif()
 
-find_package( OpenCASCADE 6.6.0 REQUIRED COMPONENTS ${OCC_LIBS})
+# search OCE. If OCE is not found, search for standard OpenCASCADE
+set(CMAKE_PREFIX_PATH "$ENV{CASROOT};${CASROOT};${CMAKE_PREFIX_PATH}")
+find_package(OCE 0.15 COMPONENTS ${OCC_LIBS} QUIET)
+if(OCE_FOUND)
+  set(OpenCASCADE_LIBRARIES ${OCC_LIBS})
+  set(OpenCASCADE_INCLUDE_DIR ${OCE_INCLUDE_DIRS})
+  # get directory of shared libs
+  get_target_property(TKERNEL_LOCATION TKernel LOCATION)
+  get_filename_component(OpenCASCADE_DLL_DIRECTORY ${TKERNEL_LOCATION} PATH)
+else(OCE_FOUND)
+  message("OCE not found! Searching for OpenCASCADE.")
+  find_package(OpenCASCADE 6.6.0 REQUIRED COMPONENTS ${OCC_LIBS})
+endif(OCE_FOUND)
+
+# search TiXI
+set(TIXI_PATH "" CACHE PATH "TiXI installation prefix")
+set(CMAKE_PREFIX_PATH "${TIXI_PATH};${CMAKE_PREFIX_PATH}")
 find_package( TIXI 2.1.0 REQUIRED)
+get_target_property(TIXI_LIBRARY TIXI LOCATION)
+get_filename_component(TIXI_LIB_PATH ${TIXI_LIBRARY} PATH)
+
 find_package( PythonInterp )
 
 OPTION(TIGL_USE_GLOG "Enables advanced logging (requires google glog)" OFF)
@@ -125,7 +144,7 @@ add_custom_target(checkstylexml)
 add_subdirectory(src)
 add_subdirectory(TIGLViewer)
 add_subdirectory(bindings)
-add_subdirectory(examples/TIGLDemo)
+add_subdirectory(examples)
 
 
 #create gtests, override gtest standard setting

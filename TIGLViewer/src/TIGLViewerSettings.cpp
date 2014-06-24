@@ -19,6 +19,12 @@
 #include <TIGLViewerSettings.h>
 #include <QSettings>
 
+TIGLViewerSettings& TIGLViewerSettings::Instance()
+{
+    static TIGLViewerSettings settings;
+    return settings;
+}
+
 TIGLViewerSettings::TIGLViewerSettings()
 {
     _tesselationAccuracy = 0.000316;

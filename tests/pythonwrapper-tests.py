@@ -103,7 +103,7 @@ class TestSimpleCpacs(unittest.TestCase):
         nmaterials = self.tigl.wingComponentSegmentGetMaterialCount(compSegmentUID, TiglStructureType.UPPER_SHELL, eta, xsi )
         self.assertEqual(nmaterials, 1)
 
-        material = self.tigl.wingComponentSegmentGetMaterialUIDs(compSegmentUID, TiglStructureType.UPPER_SHELL, eta, xsi, 1)
+        material = self.tigl.wingComponentSegmentGetMaterialUID(compSegmentUID, TiglStructureType.UPPER_SHELL, eta, xsi, 1)
         self.assertEqual(material, 'MyCellMat')
 ######      
         
@@ -125,22 +125,30 @@ class TestTiglLogging(unittest.TestCase):
     def test_info(self):
         status, out, err = self.get_logs(3)
         self.assertTrue(len(out), 1)
-        self.assertTrue(len(err), 2)
+        self.assertTrue(len(err), 4)
         self.assertTrue(out[0].startswith('INF'))
         self.assertTrue(out[0].endswith('No far-field defined.'))
         self.assertTrue(err[0].startswith('WRN'))
         self.assertTrue(err[0].endswith('CPACS dataset version is higher than TIGL library version!'))
-        self.assertTrue(err[1].startswith('ERR'))
-        self.assertTrue(err[1].endswith('Error: Invalid uid in tiglWingComponentSegmentPointGetSegmentEtaXsi'))
-    
+        self.assertTrue(err[1].startswith('WRN'))
+        self.assertTrue(err[1].endswith("The points in profile PointListExampleAirfoil don't seem to be ordered in a mathematical positive sense."))
+        self.assertTrue(err[2].startswith('WRN'))
+        self.assertTrue(err[2].endswith('Please correct the wing profile!'))
+        self.assertTrue(err[3].startswith('ERR'))
+        self.assertTrue(err[3].endswith('Error: Invalid uid in tiglWingComponentSegmentPointGetSegmentEtaXsi'))
+
     def test_warning(self):
         status, out, err = self.get_logs(2)
         self.assertTrue(len(out), 0)
-        self.assertTrue(len(err), 2)
+        self.assertTrue(len(err), 4)
         self.assertTrue(err[0].startswith('WRN'))
         self.assertTrue(err[0].endswith('CPACS dataset version is higher than TIGL library version!'))
-        self.assertTrue(err[1].startswith('ERR'))
-        self.assertTrue(err[1].endswith('Error: Invalid uid in tiglWingComponentSegmentPointGetSegmentEtaXsi'))
+        self.assertTrue(err[1].startswith('WRN'))
+        self.assertTrue(err[1].endswith("The points in profile PointListExampleAirfoil don't seem to be ordered in a mathematical positive sense."))
+        self.assertTrue(err[2].startswith('WRN'))
+        self.assertTrue(err[2].endswith('Please correct the wing profile!'))
+        self.assertTrue(err[3].startswith('ERR'))
+        self.assertTrue(err[3].endswith('Error: Invalid uid in tiglWingComponentSegmentPointGetSegmentEtaXsi'))
 
     def test_error(self):
         status, out, err = self.get_logs(1)
@@ -160,14 +168,18 @@ class TestTiglLogging(unittest.TestCase):
         lines=f.readlines()
         f.close()
         lout=[line.rstrip('\n') for line in lines]
-        self.assertTrue(len(lout), 4)
+        self.assertTrue(len(lout), 6)
         self.assertTrue(lout[0].startswith('TiGL log file created at'))
         self.assertTrue(lout[1].startswith('WRN'))
         self.assertTrue(lout[1].endswith('CPACS dataset version is higher than TIGL library version!'))
-        self.assertTrue(lout[2].startswith('INF'))
-        self.assertTrue(lout[2].endswith('No far-field defined.'))
-        self.assertTrue(lout[3].startswith('ERR'))
-        self.assertTrue(lout[3].endswith('Error: Invalid uid in tiglWingComponentSegmentPointGetSegmentEtaXsi'))
+        self.assertTrue(lout[2].startswith('WRN'))
+        self.assertTrue(lout[2].endswith("The points in profile PointListExampleAirfoil don't seem to be ordered in a mathematical positive sense."))
+        self.assertTrue(lout[3].startswith('WRN'))
+        self.assertTrue(lout[3].endswith('Please correct the wing profile!'))
+        self.assertTrue(lout[4].startswith('INF'))
+        self.assertTrue(lout[4].endswith('No far-field defined.'))
+        self.assertTrue(lout[5].startswith('ERR'))
+        self.assertTrue(lout[5].endswith('Error: Invalid uid in tiglWingComponentSegmentPointGetSegmentEtaXsi'))
 
 # ----------------------------------------------------------------------- #
 # The following tests should only check, if the python api is correct.
