@@ -92,11 +92,11 @@ public class ModelAdapter extends ArrayAdapter<Item> {
                 v = vi.inflate(R.layout.drawer_list_item_1, null);
                 final TextView name = (TextView) v.findViewById(R.id.child);
                 if (name != null) {
-                    if (c.name == "Export File") {
+                    /*if (c.name == "Export File") {
                         v.setOnClickListener(null);
                         v.setOnLongClickListener(null);
                         v.setLongClickable(false);
-                    }
+                    }*/
                     name.setText(c.name);
                 }
             }

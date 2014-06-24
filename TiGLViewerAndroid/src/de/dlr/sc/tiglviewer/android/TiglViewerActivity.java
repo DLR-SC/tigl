@@ -120,7 +120,7 @@ public class TiglViewerActivity extends ActionBarActivity implements
         drawerItems.add(new ParentItem("Open Files"));
         drawerItems.add(new ParentItem("Other Actions"));
         drawerItems.add(new ChildItem("Download Models", "Download Models"));
-        drawerItems.add(new ChildItem("Export File", "Export File"));
+        //drawerItems.add(new ChildItem("Export File", "Export File"));
 
         ModelAdapter drawerWrapper = new ModelAdapter(this, drawerItems);
         mDrawerList.setAdapter(drawerWrapper);
@@ -280,7 +280,7 @@ public class TiglViewerActivity extends ActionBarActivity implements
 
             if (drawerItems.get(position).getName() == "Download Models") {
                 downloadAction();
-            } else if (drawerItems.get(position).getName() != "Export File") {
+            } else /*if (drawerItems.get(position).getName() != "Export File")*/ {
                 selectItem(position);
             }
             mDrawerLayout.closeDrawer(mDrawerList);
@@ -315,7 +315,6 @@ public class TiglViewerActivity extends ActionBarActivity implements
                                 "File : " + selected.getName()
                                         + " has been Loaded",
                                 Toast.LENGTH_SHORT).show();
-
                     }
                 };
                 handler.post(r);

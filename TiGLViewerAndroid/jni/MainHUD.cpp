@@ -76,13 +76,13 @@ void MainHUD::createCenterCross()
     float vlineLength;
     float hlineLength;
 
-    vlineLength = 0.05 ;
+    vlineLength = 0.04 ;
     hlineLength = vlineLength;
 
 
     //Line Width
     osg::LineWidth *  lw = new osg::LineWidth();
-    lw->setWidth(5.0f);
+    lw->setWidth(3.0f);
 
     //Draw Top Line
     osg::Vec3 top_line_1(0.0f,0.03f,0.0f);
@@ -149,7 +149,7 @@ void MainHUD::createCenterCross()
     stateset->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
 
     osg::ref_ptr<osg::Material> material = new osg::Material();
-    material->setDiffuse(osg::Material::FRONT_AND_BACK, osg::Vec4(1.f, 1.f, 0.f, 1.0f));
+    material->setDiffuse(osg::Material::FRONT_AND_BACK, osg::Vec4(1.f, 0.f, 0.25f, 1.0f));
 
     stateset->setAttribute(lw);
     stateset->setAttribute(material,osg::StateAttribute::OVERRIDE);
