@@ -67,7 +67,7 @@ private:
 
 
 public:
-    TIGL_EXPORT TIGL_EXPORT CCPACSTrailingEdgeDevice(CCPACSWingComponentSegment* segment);
+    TIGL_EXPORT CCPACSTrailingEdgeDevice(CCPACSWingComponentSegment* segment);
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string & trailingEdgeDeviceXPath);
     TIGL_EXPORT std::string getUID();
     TIGL_EXPORT CCPACSControlSurfaceOuterShape getOuterShape();

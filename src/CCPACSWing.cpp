@@ -339,7 +339,7 @@ TopoDS_Shape CCPACSWing::BuildFusedSegmentsWithFlaps(bool splitWingInUpperAndLow
 
        TopoDS_Shape wingLoft;
 
-       for ( int j = 1; j <= trailingEdgeDevices->getTrailingEdgeDeviceCount(); j++ ) {
+       for ( int j = trailingEdgeDevices->getTrailingEdgeDeviceCount(); j > 0 ; j-- ) {
             CCPACSTrailingEdgeDevice &trailingEdgeDevice = trailingEdgeDevices->getTrailingEdgeDeviceByID(j);
 
             if ( !wingCutOutShape.IsNull() ) {
@@ -359,15 +359,15 @@ TopoDS_Shape CCPACSWing::BuildFusedSegmentsWithFlaps(bool splitWingInUpperAndLow
 
                 // create intermediate result for boolean ops
                 BOPCol_ListOfShape aLS;
-                aLS.Append(trailingEdgePrism);
                 aLS.Append(wingLoft);
+                aLS.Append(trailingEdgePrism);
                 BOPAlgo_PaveFiller dsFill;
                 dsFill.SetArguments(aLS);
                 dsFill.Perform();
 
                 // create common and cut out structure of the wing and the trailingEdgeDevice
-                wingLoftCut  = BRepAlgoAPI_Cut(wingLoft, trailingEdgePrism, dsFill);
-                trailingEdgeLoftCut = BRepAlgoAPI_Common(trailingEdgePrism, wingLoft, dsFill);
+                wingLoftCut  = BRepAlgoAPI_Cut(wingLoft, trailingEdgePrism,dsFill);
+                trailingEdgeLoftCut = BRepAlgoAPI_Common(wingLoft, trailingEdgePrism, dsFill);
                 wingCutOutShape = wingLoftCut;
 
                 trailingEdgeDevice.setLoft(trailingEdgeLoftCut);
