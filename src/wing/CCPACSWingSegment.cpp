@@ -39,6 +39,7 @@
 #include "CTiglError.h"
 #include "CTiglMakeLoft.h"
 #include "tiglcommonfunctions.h"
+#include "tigl_config.h"
 #include "math/tiglmathfunctions.h"
 
 #include "BRepOffsetAPI_ThruSections.hxx"
@@ -245,14 +246,50 @@ CCPACSWing& CCPACSWingSegment::GetWing(void) const
 TopoDS_Wire CCPACSWingSegment::GetInnerWire(void)
 {
     CCPACSWingProfile& innerProfile = innerConnection.GetProfile();
-    return TopoDS::Wire(transformProfileWire(GetWing().GetTransformation(), innerConnection, innerProfile.GetWire()));
+    TopoDS_Wire w;
+    
+    /*
+    * The loft algorithm with guide curves does not like splitted
+    * wing profiles, we have to give him the unsplitted one.
+    * In all other cases, we need the splitted wire to distiguish
+    * upper und lower wing surface
+    */
+#ifdef LOFTALGO_FOUND
+    if (guideCurves.GetGuideCurveCount() > 0) {
+        w = innerProfile.GetWire();
+    }
+    else {
+        w = innerProfile.GetSplitWire();
+    }
+#else
+    w = innerProfile.GetSplitWire();
+#endif
+    return TopoDS::Wire(transformProfileWire(GetWing().GetTransformation(), innerConnection, w));
 }
 
 // helper function to get the outer transformed chord line wire
 TopoDS_Wire CCPACSWingSegment::GetOuterWire(void)
 {
     CCPACSWingProfile& outerProfile = outerConnection.GetProfile();
-    return TopoDS::Wire(transformProfileWire(GetWing().GetTransformation(), outerConnection, outerProfile.GetWire()));
+    TopoDS_Wire w;
+    
+    /*
+    * The loft algorithm with guide curves does not like splitted
+    * wing profiles, we have to give him the unsplitted one.
+    * In all other cases, we need the splitted wire to distiguish
+    * upper und lower wing surface
+    */
+#ifdef LOFTALGO_FOUND
+    if (guideCurves.GetGuideCurveCount() > 0) {
+        w = outerProfile.GetWire();
+    }
+    else {
+        w = outerProfile.GetSplitWire();
+    }
+#else
+    w = outerProfile.GetSplitWire();
+#endif
+    return TopoDS::Wire(transformProfileWire(GetWing().GetTransformation(), outerConnection, w));
 }
 
 // helper function to get the inner closing of the wing segment
@@ -289,7 +326,11 @@ TopoDS_Shape CCPACSWingSegment::BuildLoft(void)
     }
     
     TopoDS_Shape loft = lofter.Shape();
-
+    if (loft.IsNull()) {
+        LOG(ERROR) << "Cannot compute wing segment loft " << GetUID();
+        return loft;
+    }
+    
     Handle(ShapeFix_Shape) sfs = new ShapeFix_Shape;
     sfs->Init ( loft );
     sfs->Perform();

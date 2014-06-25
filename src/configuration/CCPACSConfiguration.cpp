@@ -88,10 +88,10 @@ void CCPACSConfiguration::ReadCPACS(const char* configurationUID)
     }
 
     header.ReadCPACS(tixiDocumentHandle);
+    guideCurveProfiles.ReadCPACS(tixiDocumentHandle);
     wings.ReadCPACS(tixiDocumentHandle, configurationUID);
     fuselages.ReadCPACS(tixiDocumentHandle, configurationUID);
     farField.ReadCPACS(tixiDocumentHandle);
-    guideCurveProfiles.ReadCPACS(tixiDocumentHandle);
 
     configUID = configurationUID;
     // Now do parent <-> child transformations. Child should use the
