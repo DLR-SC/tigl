@@ -37,6 +37,7 @@
 #include "math.h"
 #include "CCPACSWingProfile.h"
 #include "CCPACSWingProfileFactory.h"
+#include "tiglcommonfunctions.h"
 
 #include "gp_Pnt2d.hxx"
 #include "gp_Vec2d.hxx"
@@ -215,8 +216,8 @@ void CCPACSWingProfilePointList::BuildWires()
         throw CTiglError("Linear Wing Profiles are currently not supported",TIGL_ERROR);
     }
 
-    TopoDS_Wire tempWireClosed   = wireBuilder.BuildWire(points, true);
-    if (tempWireClosed.IsNull()) {
+    TopoDS_Wire tempWireOpened   = wireBuilder.BuildWire(points, false);
+    if (tempWireOpened.IsNull()) {
         throw CTiglError("Error: TopoDS_Wire is null in CCPACSWingProfilePointList::BuildWire", TIGL_ERROR);
     }
 
@@ -225,20 +226,21 @@ void CCPACSWingProfilePointList::BuildWires()
     CTiglTransformation transformation;
     transformation.AddProjectionOnXZPlane();
 
-    TopoDS_Shape tempShapeClosed   = transformation.Transform(tempWireClosed);
-
-    // Cast shapes to wires, see OpenCascade documentation
-    if (tempShapeClosed.ShapeType() != TopAbs_WIRE) {
-        throw CTiglError("Error: Wrong shape type in CCPACSWingProfilePointList::BuildWire", TIGL_ERROR);
+    TopoDS_Wire tempShapeOpened   = TopoDS::Wire(transformation.Transform(tempWireOpened));
+    // the open wire should consist of only 1 edge - lets check
+    if (GetNumberOfEdges(tempShapeOpened) != 1) {
+        throw CTiglError("Number of Wing Profile Edges is not 1. Please contact the developers");
     }
-
-    wireClosed   = TopoDS::Wire(tempShapeClosed);
+    TopExp_Explorer wireEx(tempShapeOpened, TopAbs_EDGE);
+    TopoDS_Edge profileEdgeTmp = TopoDS::Edge(wireEx.Current());
 
     BuildLETEPoints();
 
-    // Create upper and lower wires
-    // Get BSpline curve
-    Handle_Geom_BSplineCurve curve = BRepAdaptor_CompCurve(wireClosed).BSpline();
+    // Get the curve of the wire
+    Standard_Real u1,u2;
+    Handle_Geom_Curve curve = BRep_Tool::Curve(profileEdgeTmp, u1, u2);
+    curve = new Geom_TrimmedCurve(curve, u1, u2);
+    
     // Get Leading edge parameter on curve
     double lep_par = GeomAPI_ProjectPointOnCurve(lePoint, curve).LowerDistanceParameter();
 
@@ -266,6 +268,7 @@ void CCPACSWingProfilePointList::BuildWires()
                              << " Please correct the wing profile!";
             }
             lowerCurve = new Geom_TrimmedCurve(lowerCurve, w, lowerCurve->LastParameter());
+            curve = new Geom_TrimmedCurve(curve, w, curve->LastParameter());
         }
     }
     GeomAPI_IntCS int2(upperCurve, new Geom_Plane(plane));
@@ -281,12 +284,14 @@ void CCPACSWingProfilePointList::BuildWires()
                              << " Please correct the wing profile!";
             }
             upperCurve = new Geom_TrimmedCurve(upperCurve, upperCurve->FirstParameter(), w);
+            curve = new Geom_TrimmedCurve(curve, curve->FirstParameter(), w);
         }
     }
 
     // upper and lower edges
     lowerWire = BRepBuilderAPI_MakeEdge(lowerCurve);
     upperWire = BRepBuilderAPI_MakeEdge(upperCurve);
+    upperLowerEdge = BRepBuilderAPI_MakeEdge(curve);
 
     // Trailing edge points
     gp_Pnt te_up, te_down;
@@ -354,12 +359,6 @@ const std::string& CCPACSWingProfilePointList::GetProfileDataXPath() const
     return ProfileDataXPath;
 }
 
-// get forced closed wing profile wire
-const TopoDS_Wire& CCPACSWingProfilePointList::GetWireClosed() const
-{
-    return wireClosed;
-}
-
 // get upper wing profile wire
 const TopoDS_Edge& CCPACSWingProfilePointList::GetUpperWire() const
 {
@@ -370,6 +369,12 @@ const TopoDS_Edge& CCPACSWingProfilePointList::GetUpperWire() const
 const TopoDS_Edge& CCPACSWingProfilePointList::GetLowerWire() const
 {
     return lowerWire;
+}
+
+// get the upper and lower wing profile combined into one edge
+const TopoDS_Edge & CCPACSWingProfilePointList::GetUpperLowerWire() const 
+{
+    return upperLowerEdge;
 }
 
 // get trailing edge

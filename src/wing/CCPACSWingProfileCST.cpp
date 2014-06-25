@@ -43,6 +43,8 @@
 #include "TopoDS_Edge.hxx"
 #include "GCE2d_MakeSegment.hxx"
 #include "BRep_Tool.hxx"
+#include "BRepTools.hxx"
+#include "BRepAlgo.hxx"
 #include "BRepAdaptor_CompCurve.hxx"
 #include "Geom2dAPI_InterCurveCurve.hxx"
 #include "GeomAPI_ProjectPointOnCurve.hxx"
@@ -61,6 +63,8 @@
 #include "CCPACSWingProfileCST.h"
 #include <GeomAPI_Interpolate.hxx>
 #include <TColgp_HArray1OfPnt.hxx>
+#include <TColStd_HArray1OfBoolean.hxx>
+#include <TColgp_Array1OfVec.hxx>
 #include <algorithm>
 
 
@@ -214,35 +218,32 @@ void CCPACSWingProfileCST::ReadCPACS(TixiDocumentHandle tixiHandle)
 void CCPACSWingProfileCST::BuildWires()
 {
     // Build upper wire
-    // Copy points
-    ITiglWireAlgorithm::CPointContainer upperPoints;
+
+    // fill in upper points from front to back
+    Handle(TColgp_HArray1OfPnt) hUpperPoints = new TColgp_HArray1OfPnt(1, upperCoordinates.size());
     for (size_t i = 0; i < upperCoordinates.size(); i++) {
-        upperPoints.push_back(upperCoordinates[i]->Get_gp_Pnt());
-    }
-    Handle(TColgp_HArray1OfPnt) hUpperPoints = new TColgp_HArray1OfPnt(1, upperPoints.size());
-    for (size_t i = 0; i < upperPoints.size(); i++) {
-        hUpperPoints->SetValue(i + 1, upperPoints[i]);
+        hUpperPoints->SetValue(i + 1, upperCoordinates[i]->Get_gp_Pnt());
     }
 
     // set the tangency conditions
-    gp_Vec t1, t2;
+    gp_Vec tu1, tu2;
     if (upperN1 < 1.) {
-        t1 = gp_Vec(0.0, 0.0, 1.0);
+        tu1 = gp_Vec(0.0, 0.0, 1.0);
     }
     else {
-        t1 = gp_Vec(1.0, 0.0, cstcurve_deriv(upperN1, upperN2, upperB, 1, 0.0));
+        tu1 = gp_Vec(1.0, 0.0, cstcurve_deriv(upperN1, upperN2, upperB, 1, 0.0));
     }
 
     if (upperN2 < 1.) {
-        t2 = gp_Vec(0.0, 0.0, 1.0);
+        tu2 = gp_Vec(0.0, 0.0, 1.0);
     }
     else {
-        t2 = gp_Vec(1.0, 0.0, cstcurve_deriv(upperN1, upperN2, upperB, 1, 1.0));
+        tu2 = gp_Vec(1.0, 0.0, cstcurve_deriv(upperN1, upperN2, upperB, 1, 1.0));
     }
 
     // interpolate
     GeomAPI_Interpolate upperInter(hUpperPoints, Standard_False, 1e-6);
-    upperInter.Load(t1,t2, Standard_False);
+    upperInter.Load(tu1,tu2, Standard_False);
     upperInter.Perform();
     Handle(Geom_BSplineCurve) hUpperCurve = upperInter.Curve();
 
@@ -253,52 +254,84 @@ void CCPACSWingProfileCST::BuildWires()
 
     // Build lower wire
     // Copy points
-    ITiglWireAlgorithm::CPointContainer lowerPoints;
+
+    // fill in lower points from back to front
+    Handle(TColgp_HArray1OfPnt) hLowerPoints = new TColgp_HArray1OfPnt(1, lowerCoordinates.size());
     for (size_t i = 0; i < lowerCoordinates.size(); i++) {
-        lowerPoints.push_back(lowerCoordinates[i]->Get_gp_Pnt());
-    }
-    Handle(TColgp_HArray1OfPnt) hLowerPoints = new TColgp_HArray1OfPnt(1, lowerPoints.size());
-    for (size_t i = 0; i < lowerPoints.size(); i++) {
-        hLowerPoints->SetValue(i + 1, lowerPoints[i]);
+        hLowerPoints->SetValue(i + 1, lowerCoordinates[i]->Get_gp_Pnt());
     }
 
     // set the tangency conditions
+    gp_Vec tl1, tl2;
     if (lowerN1 < 1.) {
-        t1 = gp_Vec(0.0, 0.0, -1.0);
+        tl1 = gp_Vec(0.0, 0.0, -1.0);
     }
     else {
-        t1 = gp_Vec(1.0, 0.0, -cstcurve_deriv(lowerN1, lowerN2, lowerB, 1, 0.0));
+        tl1 = gp_Vec(1.0, 0.0, -cstcurve_deriv(lowerN1, lowerN2, lowerB, 1, 0.0));
     }
 
     if (lowerN2 < 1.) {
-        t2 = gp_Vec(0.0, 0.0, -1.0);
+        tl2 = gp_Vec(0.0, 0.0, -1.0);
     }
     else {
-        t2 = gp_Vec(1.0, 0.0, -cstcurve_deriv(lowerN1, lowerN2, lowerB, 1, 1.0));
+        tl2 = gp_Vec(1.0, 0.0, -cstcurve_deriv(lowerN1, lowerN2, lowerB, 1, 1.0));
     }
 
     // interpolate
     GeomAPI_Interpolate lowerInter(hLowerPoints, Standard_False, 1e-6);
-    lowerInter.Load(t1,t2, Standard_False);
+    lowerInter.Load(tl1,tl2, Standard_False);
     lowerInter.Perform();
     Handle(Geom_BSplineCurve) hLowerCurve = lowerInter.Curve();
-
+    hLowerCurve->Reverse();
+    
     lowerWire = BRepBuilderAPI_MakeEdge(hLowerCurve);
     if (lowerWire.IsNull() == Standard_True) {
         throw CTiglError("Error: TopoDS_Wire lowerWire is null in CCPACSWingProfileCST::BuildWires", TIGL_ERROR);
     }
-
-    // Build closed wire
-    BRepBuilderAPI_MakeWire closedWireBuilder(upperWire,lowerWire);
-    if (!closedWireBuilder.IsDone()) {
-        throw CTiglError("Error: Closed wire construction failed in CCPACSWingProfileCST::BuildWires", TIGL_ERROR);
+    
+    // fill in all points to create edge from lower to upper
+    Standard_Integer totalPoints = upperCoordinates.size() + lowerCoordinates.size() - 1;
+    Handle(TColgp_HArray1OfPnt) hTotalPoints = 
+            new TColgp_HArray1OfPnt(1, totalPoints);
+    Standard_Integer occIndex = 1;
+    for (size_t i = lowerCoordinates.size(); i > 0; i--) {
+        hTotalPoints->SetValue(occIndex, lowerCoordinates[i-1]->Get_gp_Pnt());
+        occIndex++;
     }
-
-    wireClosed = closedWireBuilder.Wire();
-    if (wireClosed.IsNull() == Standard_True) {
-        throw CTiglError("Error: TopoDS_Wire closedWire is null in CCPACSWingProfileCST::BuildWires", TIGL_ERROR);
+    for (size_t i = 1; i < upperCoordinates.size(); i++) {
+        hTotalPoints->SetValue(occIndex, upperCoordinates[i]->Get_gp_Pnt());
+        occIndex++;
     }
-        
+    
+    
+    GeomAPI_Interpolate totalInter(hTotalPoints, Standard_False, 1e-6);
+    TColgp_Array1OfVec tangents(1, totalPoints);
+    Handle(TColStd_HArray1OfBoolean) bools = new TColStd_HArray1OfBoolean(1, totalPoints);
+    // reset, disable all tangents
+    for (int i = 1; i <= totalPoints; ++i) {
+        tangents.SetValue(i, gp_Vec(0,0,0));
+        bools->SetValue(i, Standard_False);
+    }
+    // set start and end tangent
+    tangents.SetValue(1, -tl2);
+    tangents.SetValue(totalPoints, tu2);
+    bools->SetValue(1, Standard_True);
+    bools->SetValue(totalPoints, Standard_True);
+    
+    // set leading edge tangent
+    gp_Vec meanVec = (tu1 - tl1)/2.;
+    Standard_Integer lePointPosition = lowerCoordinates.size();
+    tangents.SetValue(lePointPosition, meanVec);
+    bools->SetValue(lePointPosition, Standard_True);
+    
+    totalInter.Load(tangents, bools, Standard_False);
+    totalInter.Perform();
+    Handle(Geom_BSplineCurve) hTotalCurve = totalInter.Curve();
+    
+    upperLowerEdge = BRepBuilderAPI_MakeEdge(hTotalCurve);
+    if (upperLowerEdge.IsNull() == Standard_True) {
+        throw CTiglError("Error: TopoDS_Wire upperLowerEdge is null in CCPACSWingProfileCST::BuildWires", TIGL_ERROR);
+    }
 }
 
 // Builds leading and trailing edge points of the wing profile wire.
@@ -319,12 +352,6 @@ const std::string & CCPACSWingProfileCST::GetProfileDataXPath() const
 {
     return ProfileDataXPath;
 }
-
-// get forced closed wing profile wire
-const TopoDS_Wire & CCPACSWingProfileCST::GetWireClosed() const
-{
-    return wireClosed;
-}
         
 // get upper wing profile wire
 const TopoDS_Edge & CCPACSWingProfileCST::GetUpperWire() const
@@ -336,6 +363,12 @@ const TopoDS_Edge & CCPACSWingProfileCST::GetUpperWire() const
 const TopoDS_Edge & CCPACSWingProfileCST::GetLowerWire() const
 {
     return lowerWire;
+}
+
+// gets the upper and lower wing profile into on edge
+const TopoDS_Edge & CCPACSWingProfileCST::GetUpperLowerWire() const
+{
+    return upperLowerEdge;
 }
 
 // get trailing edge
