@@ -140,11 +140,12 @@ private slots:
 
 
 private:
-    TiglCPACSConfigurationHandle            m_cpacsHandle;
-    QWidget*                                parent;
-    Handle_AIS_InteractiveContext           myAISContext;
-    class TIGLViewerWidget*                 myOCC;
-    QString                                 loadedConfigurationFileName;
+    TiglCPACSConfigurationHandle                    m_cpacsHandle;
+    QWidget*                                        parent;
+    Handle_AIS_InteractiveContext                   myAISContext;
+    class TIGLViewerWidget*                         myOCC;
+    QString                                         loadedConfigurationFileName;
+    std::map<std::string,Handle(AIS_Shape)>         flapsForInteractiveUse;
 
     void writeToStatusBar(QString text);
     void displayError(QString text, QString header="");

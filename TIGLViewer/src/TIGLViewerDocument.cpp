@@ -811,6 +811,7 @@ void TIGLViewerDocument::drawWingFlaps()
 
 void TIGLViewerDocument::drawWingFlapsForInteractiveUse(std::string selectedWing)
 {
+    flapsForInteractiveUse.clear();
     myAISContext->EraseAll();
     tigl::CCPACSWing& wing = GetConfiguration().GetWing( selectedWing );
     TopoDS_Shape wingWithoutFlaps = wing.GetWingWithoutFlaps();
@@ -818,13 +819,13 @@ void TIGLViewerDocument::drawWingFlapsForInteractiveUse(std::string selectedWing
 
     for ( int i = 1; i <= wing.GetComponentSegmentCount(); i++ ) {
 
-       tigl::CCPACSWingComponentSegment &componentSegment = (tigl::CCPACSWingComponentSegment&) wing.GetComponentSegment(i);
-       tigl::CCPACSTrailingEdgeDevices* trailingEdgeDevices = componentSegment.getControlSurfaces().getTrailingEdgeDevices();
+        tigl::CCPACSWingComponentSegment &componentSegment = (tigl::CCPACSWingComponentSegment&) wing.GetComponentSegment(i);
+        tigl::CCPACSTrailingEdgeDevices* trailingEdgeDevices = componentSegment.getControlSurfaces().getTrailingEdgeDevices();
 
-       for ( int j = 1; j <= trailingEdgeDevices->getTrailingEdgeDeviceCount(); j++ ) {
+        for ( int j = 1; j <= trailingEdgeDevices->getTrailingEdgeDeviceCount(); j++ ) {
             tigl::CCPACSTrailingEdgeDevice &trailingEdgeDevice = trailingEdgeDevices->getTrailingEdgeDeviceByID(j);
-            displayShape(trailingEdgeDevice.GetLoft());
-       }
+            flapsForInteractiveUse[trailingEdgeDevice.getUID()] = displayShape(trailingEdgeDevice.GetLoft());
+        }
     }
     std::map<std::string,double> flapStatus;
     updateControlSurfacesInteractiveObjects(selectedWing,flapStatus);
@@ -833,27 +834,17 @@ void TIGLViewerDocument::drawWingFlapsForInteractiveUse(std::string selectedWing
 void TIGLViewerDocument::updateControlSurfacesInteractiveObjects(std::string selectedWing, std::map<std::string,double> flapStatus)
 {
     tigl::CCPACSWing& wing = GetConfiguration().GetWing( selectedWing );
-    AIS_ListOfInteractive objList;
-    myAISContext->DisplayedObjects(objList);
-    AIS_ListIteratorOfListOfInteractive iter;
-    for(iter.Initialize(objList); iter.More(); iter.Next())
-    {
-        Handle_AIS_InteractiveObject &aisShp = iter.Value();
-        if(aisShp->IsKind("AIS_Shape"))
-        {
-            TopoDS_Shape myShape = Handle(AIS_Shape)::DownCast(aisShp)->Shape();
-            for ( int i = 1; i <= wing.GetComponentSegmentCount(); i++ ) {
+    for ( int i = 1; i <= wing.GetComponentSegmentCount(); i++ ) {
 
-                tigl::CCPACSWingComponentSegment &componentSegment = (tigl::CCPACSWingComponentSegment&) wing.GetComponentSegment(i);
-                tigl::CCPACSTrailingEdgeDevices* trailingEdgeDevices = componentSegment.getControlSurfaces().getTrailingEdgeDevices();
+        tigl::CCPACSWingComponentSegment &componentSegment = (tigl::CCPACSWingComponentSegment&) wing.GetComponentSegment(i);
+        tigl::CCPACSTrailingEdgeDevices* trailingEdgeDevices = componentSegment.getControlSurfaces().getTrailingEdgeDevices();
 
-                for ( int j = 1; j <= trailingEdgeDevices->getTrailingEdgeDeviceCount(); j++ ) {
-                    tigl::CCPACSTrailingEdgeDevice &trailingEdgeDevice = trailingEdgeDevices->getTrailingEdgeDeviceByID(j);
-                    if (myShape.IsEqual(trailingEdgeDevice.GetLoft())) {
-                        gp_Trsf trsf = trailingEdgeDevice.getTransformation(flapStatus[trailingEdgeDevice.getUID()]);
-                        myAISContext->SetLocation(aisShp,trsf);
-                    }
-                }
+        for ( int j = 1; j <= trailingEdgeDevices->getTrailingEdgeDeviceCount(); j++ ) {
+
+            tigl::CCPACSTrailingEdgeDevice &trailingEdgeDevice = trailingEdgeDevices->getTrailingEdgeDeviceByID(j);
+            if (flapsForInteractiveUse.find(trailingEdgeDevice.getUID()) != flapsForInteractiveUse.end()) {
+               gp_Trsf trsf = trailingEdgeDevice.getTransformation(flapStatus[trailingEdgeDevice.getUID()]);
+               myAISContext->SetLocation((Handle_AIS_InteractiveObject) flapsForInteractiveUse[trailingEdgeDevice.getUID()],trsf);
             }
         }
     }
@@ -1447,7 +1438,7 @@ void TIGLViewerDocument::exportMeshedConfigVTK()
         writeToStatusBar("Writing meshed vtk file");
         tigl::CTiglExportVtk exporter(GetConfiguration());
 
-        double deflection = GetConfiguration().GetAirplaneLenth() 
+        double deflection = GetConfiguration().GetAirplaneLenth()
                 * TIGLViewerSettings::Instance().triangulationAccuracy();
         exporter.ExportMeshedGeometryVTK(fileName.toStdString(), deflection);
 
@@ -1466,7 +1457,7 @@ void TIGLViewerDocument::exportMeshedConfigVTKNoFuse()
         writeToStatusBar("Writing meshed vtk file");
         tigl::CTiglExportVtk exporter(GetConfiguration());
 
-        double deflection = GetConfiguration().GetAirplaneLenth() 
+        double deflection = GetConfiguration().GetAirplaneLenth()
                 * TIGLViewerSettings::Instance().triangulationAccuracy();
         exporter.ExportMeshedGeometryVTKNoFuse(fileName.toStdString(), deflection);
 
@@ -1487,7 +1478,7 @@ void TIGLViewerDocument::exportFuselageCollada()
 
     if (!fileName.isEmpty()) {
         QApplication::setOverrideCursor( Qt::WaitCursor );
-        double deflection = GetConfiguration().GetAirplaneLenth() 
+        double deflection = GetConfiguration().GetAirplaneLenth()
                 * TIGLViewerSettings::Instance().triangulationAccuracy();
         TiglReturnCode err = tiglExportFuselageColladaByUID(m_cpacsHandle, qstringToCstring(fuselageUid), qstringToCstring(fileName), deflection);
         QApplication::restoreOverrideCursor();
@@ -1579,21 +1570,21 @@ void TIGLViewerDocument::exportWingCurvesBRep()
 
     writeToStatusBar(tr("Saving Wing Curves as BRep file..."));
 
-    QString dirname = QFileDialog::getExistingDirectory(parent, tr("Chose directory..."), myLastFolder,  
+    QString dirname = QFileDialog::getExistingDirectory(parent, tr("Chose directory..."), myLastFolder,
                                                         QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
 
     if (dirname == "") {
         return;
     }
-    
+
     tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
     QString baseName = QDir(std::string(dirname.toStdString() + "/" + wing.GetUID()).c_str()).absolutePath();
-    
+
     TopoDS_Compound profiles, guides;
     BRep_Builder builder;
     builder.MakeCompound(profiles);
     builder.MakeCompound(guides);
-    
+
     Handle(TopTools_HSequenceOfShape) allGuides = new TopTools_HSequenceOfShape;
     for (int isegment = 1; isegment <= wing.GetSegmentCount(); ++isegment) {
         // display profiles
@@ -1602,7 +1593,7 @@ void TIGLViewerDocument::exportWingCurvesBRep()
         if (isegment == wing.GetSegmentCount()) {
             builder.Add(profiles, segment.GetOuterWire());
         }
-        
+
         // build guide curve container
         TopTools_SequenceOfShape& wires = segment.GetGuideCurveWires();
         for (int iwire = 1; iwire <= wires.Length(); ++iwire) {
@@ -1611,17 +1602,17 @@ void TIGLViewerDocument::exportWingCurvesBRep()
             }
         }
     }
-    
+
     // write profiles to brep
     std::string profFileName = baseName.toStdString() + "_profiles.brep";
     BRepTools::Write(profiles, profFileName.c_str());
-    
+
     if (allGuides->Length() > 0) {
         ShapeAnalysis_FreeBounds::ConnectEdgesToWires(allGuides, Precision::Confusion(), false, allGuides);
         for (int iwire = 1; iwire <= allGuides->Length(); ++iwire) {
             builder.Add(guides, allGuides->Value(iwire));
         }
-        
+
         // write to brep
         std::string guideFileName = baseName.toStdString() + "_guides.brep";
         BRepTools::Write(guides, guideFileName.c_str());
@@ -1637,22 +1628,22 @@ void TIGLViewerDocument::exportFuselageCurvesBRep()
 
     writeToStatusBar(tr("Saving Fuselage curves as BRep file..."));
 
-    QString dirname = QFileDialog::getExistingDirectory(parent, tr("Chose directory..."), myLastFolder,  
+    QString dirname = QFileDialog::getExistingDirectory(parent, tr("Chose directory..."), myLastFolder,
                                                         QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
 
     if (dirname == "") {
         return;
     }
-    
-    
+
+
     tigl::CCPACSFuselage& fuselage = GetConfiguration().GetFuselage(fuselageUid.toStdString());
     QString baseName = QDir(std::string(dirname.toStdString() + "/" + fuselage.GetUID()).c_str()).absolutePath();
-    
+
     TopoDS_Compound profiles, guides;
     BRep_Builder builder;
     builder.MakeCompound(profiles);
     builder.MakeCompound(guides);
-    
+
     Handle(TopTools_HSequenceOfShape) allGuides = new TopTools_HSequenceOfShape;
     for (int isegment = 1; isegment <= fuselage.GetSegmentCount(); ++isegment) {
         // display profiles
@@ -1661,7 +1652,7 @@ void TIGLViewerDocument::exportFuselageCurvesBRep()
         if (isegment == fuselage.GetSegmentCount()) {
             builder.Add(profiles, segment.GetEndWire());
         }
-        
+
         // build guide curve container
         TopTools_SequenceOfShape& wires = segment.BuildGuideCurves();
         for (int iwire = 1; iwire <= wires.Length(); ++iwire) {
@@ -1670,17 +1661,17 @@ void TIGLViewerDocument::exportFuselageCurvesBRep()
             }
         }
     }
-    
+
     // write profiles to brep
     std::string profFileName = baseName.toStdString() + "_profiles.brep";
     BRepTools::Write(profiles, profFileName.c_str());
-    
+
     if (allGuides->Length() > 0) {
         ShapeAnalysis_FreeBounds::ConnectEdgesToWires(allGuides, Precision::Confusion(), false, allGuides);
         for (int iwire = 1; iwire <= allGuides->Length(); ++iwire) {
             builder.Add(guides, allGuides->Value(iwire));
         }
-        
+
         // write to brep
         std::string guideFileName = baseName.toStdString() + "_guides.brep";
         BRepTools::Write(guides, guideFileName.c_str());
