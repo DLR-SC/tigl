@@ -174,6 +174,9 @@ protected:
 
 
 private:
+    // get short name for loft
+    std::string GetShortShapeName(void);
+
     // Copy constructor
     CCPACSWing(const CCPACSWing & );
 

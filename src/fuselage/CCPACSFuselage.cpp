@@ -244,6 +244,21 @@ CTiglAbstractSegment & CCPACSFuselage::GetSegment(std::string uid)
     return (CTiglAbstractSegment &) segments.GetSegment(uid);
 }
 
+// get short name for loft
+std::string CCPACSFuselage::GetShortShapeName () {
+    unsigned int findex = 0;
+    for (int i = 1; i <= GetConfiguration().GetFuselageCount(); ++i) {
+        tigl::CCPACSFuselage& f = GetConfiguration().GetFuselage(i);
+        if (GetUID() == f.GetUID()) {
+            findex = i;
+            std::stringstream shortName;
+            shortName << "F" << findex;
+            return shortName.str();
+        }
+    }
+    return "UNKNOWN";
+}
+
 // Builds a fused shape of all fuselage segments
 PNamedShape CCPACSFuselage::BuildLoft(void)
 {
@@ -270,7 +285,7 @@ PNamedShape CCPACSFuselage::BuildLoft(void)
     generator.Build();
     TopoDS_Shape loftShape =  generator.Shape();
     std::string loftName = GetUID();
-    std::string loftShortName = MakeShortNameFuselage(GetConfiguration(), loftName);
+    std::string loftShortName = GetShortShapeName();
     PNamedShape loft(new CNamedShape(loftShape, loftName.c_str(), loftShortName.c_str()));
     return loft;
 }

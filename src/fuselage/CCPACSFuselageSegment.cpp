@@ -262,6 +262,28 @@ TopoDS_Wire CCPACSFuselageSegment::GetEndWire(void)
     return transformProfileWire(GetFuselage().GetTransformation(), endConnection, endProfile.GetWire(true));
 }
 
+// get short name for loft
+std::string CCPACSFuselageSegment::GetShortShapeName() {
+    unsigned int findex = 0;
+    unsigned int fsindex = 0;
+    for (int i = 1; i <= fuselage->GetConfiguration().GetFuselageCount(); ++i) {
+        tigl::CCPACSFuselage& f = fuselage->GetConfiguration().GetFuselage(i);
+        if (fuselage->GetUID() == f.GetUID()) {
+            findex = i;
+            for (int j = 1; j <= f.GetSegmentCount(); j++) {
+                tigl::CTiglAbstractSegment& fs = f.GetSegment(j);
+                if (GetUID() == fs.GetUID()) {
+                    fsindex = j;
+                    std::stringstream shortName;
+                    shortName << "F" << findex << "S" << fsindex;
+                    return shortName.str();
+                }
+            }
+        }
+    }
+    return "UNKNOWN";
+}
+
 // Builds the loft between the two segment sections
 PNamedShape CCPACSFuselageSegment::BuildLoft(void)
 {
@@ -285,7 +307,7 @@ PNamedShape CCPACSFuselageSegment::BuildLoft(void)
     mySurfaceArea = AreaSystem.Mass();
         
     std::string loftName = GetUID();
-    std::string loftShortName = MakeShortNameFuselageSegment(fuselage->GetConfiguration(), fuselage->GetUID(), loftName);
+    std::string loftShortName = GetShortShapeName();
     PNamedShape loft(new CNamedShape(loftShape, loftName.c_str(), loftShortName.c_str()));
     return loft;
 }
