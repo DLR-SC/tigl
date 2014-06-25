@@ -70,7 +70,7 @@ CTiglTriangularizer::CTiglTriangularizer()
     useMultipleObjects(false);
 }
 
-CTiglTriangularizer::CTiglTriangularizer(TopoDS_Shape& shape, double deflection, bool multipleObj) 
+CTiglTriangularizer::CTiglTriangularizer(const TopoDS_Shape& shape, double deflection, bool multipleObj) 
 {
     useMultipleObjects(multipleObj);
     
@@ -103,7 +103,7 @@ CTiglTriangularizer::CTiglTriangularizer(CTiglAbstractPhysicalComponent& comp, d
 {
     useMultipleObjects(false);
     LOG(INFO) << "Calculating fused plane";
-    triangularizeComponent(comp, false, comp.GetLoft(), deflection, mode);
+    triangularizeComponent(comp, false, comp.GetLoft()->Shape(), deflection, mode);
 }
 
 CTiglTriangularizer::CTiglTriangularizer(CCPACSConfiguration &config, bool fuseShapes, double deflection, ComponentTraingMode mode) 
@@ -127,7 +127,7 @@ CTiglTriangularizer::CTiglTriangularizer(CCPACSConfiguration &config, bool fuseS
         for (int iWing = 1; iWing <= config.GetWingCount(); ++iWing) {
             CCPACSWing& wing = config.GetWing(iWing);
 
-            TopoDS_Shape& wshape = wing.GetLoft();
+            const TopoDS_Shape& wshape = wing.GetLoft()->Shape();
             BRepMesh::Mesh(wshape,deflection);
             triangularizeShape(wshape);
 
@@ -135,7 +135,7 @@ CTiglTriangularizer::CTiglTriangularizer(CCPACSConfiguration &config, bool fuseS
                 continue;
             }
 
-            TopoDS_Shape wshape_m = wing.GetMirroredLoft();
+            const TopoDS_Shape& wshape_m = wing.GetMirroredLoft()->Shape();
             BRepMesh::Mesh(wshape_m,deflection);
             triangularizeShape(wshape_m);
         }
@@ -143,7 +143,7 @@ CTiglTriangularizer::CTiglTriangularizer(CCPACSConfiguration &config, bool fuseS
         for (int iFuselage = 1; iFuselage <= config.GetFuselageCount(); ++iFuselage) {
             CCPACSFuselage& fuselage = config.GetFuselage(iFuselage);
 
-            TopoDS_Shape& wshape = fuselage.GetLoft();
+            const TopoDS_Shape& wshape = fuselage.GetLoft()->Shape();
             BRepMesh::Mesh(wshape,deflection);
             triangularizeShape(wshape);
 
@@ -151,7 +151,7 @@ CTiglTriangularizer::CTiglTriangularizer(CCPACSConfiguration &config, bool fuseS
                 continue;
             }
 
-            TopoDS_Shape wshape_m = fuselage.GetMirroredLoft();
+            const TopoDS_Shape& wshape_m = fuselage.GetMirroredLoft()->Shape();
             BRepMesh::Mesh(wshape_m,deflection);
             triangularizeShape(wshape_m);
         }
@@ -169,7 +169,7 @@ bool isValidCoord(double c)
     }
 }
 
-int CTiglTriangularizer::triangularizeComponent(CTiglAbstractPhysicalComponent & component, bool include_childs, TopoDS_Shape& shape, double deflection, ComponentTraingMode mode)
+int CTiglTriangularizer::triangularizeComponent(CTiglAbstractPhysicalComponent & component, bool include_childs, const TopoDS_Shape& shape, double deflection, ComponentTraingMode mode)
 {
     // create list of child components
     CTiglAbstractPhysicalComponent::ChildContainerType allcomponents = component.GetChildren(true);

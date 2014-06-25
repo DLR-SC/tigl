@@ -166,7 +166,7 @@ TEST_F(tiglExportSimple, export_wing_collada)
     tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglSimpleHandle);
     tigl::CCPACSWing& wing = config.GetWing(1);
 
-    tigl::CTiglTriangularizer t(wing.GetLoft(), 0.001);
+    tigl::CTiglTriangularizer t(wing.GetLoft()->Shape(), 0.001);
 
     TiglReturnCode ret = tigl::CTiglExportCollada::writeToDisc(t, "simple_wing", "TestData/export/simpletest_wing.dae");
 

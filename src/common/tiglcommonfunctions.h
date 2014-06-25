@@ -27,6 +27,8 @@
 #include "TopoDS_Shape.hxx"
 #include "PNamedShape.h"
 #include "ListPNamedShape.h"
+#include "CCPACSConfiguration.h"
+#include "CTiglAbstractPhysicalComponent.h"
 
 #include <map>
 #include <string>
@@ -69,5 +71,16 @@ void InsertShapeToCAF(Handle_XCAFDoc_ShapeTool myAssembly, const PNamedShape sha
 
 // Returns a unique Hashcode for a specific geometric component based on its loft
 TIGL_EXPORT int GetComponentHashCode(tigl::ITiglGeometricComponent&);
+
+// Generate short name for CCPACSFuselage
+std::string MakeShortNameFuselage (tigl::CCPACSConfiguration& config, const std::string& fuselageUID);
+// Generate short name for CCPACSFuselageSegment
+std::string MakeShortNameFuselageSegment (tigl::CCPACSConfiguration& config, const std::string& fuselageUID, const std::string& fsUID);
+// Generate short name for CCPACSWing
+std::string MakeShortNameWing (tigl::CCPACSConfiguration& config, const std::string& wingUID);
+// Generate short name for CCPACSWingSegment
+std::string MakeShortNameWingSegment(tigl::CCPACSConfiguration& config, const std::string& wingUID, const std::string& wsUID);
+// Generate short name for CCPACSWingComponentSegment
+std::string MakeShortNameWingComponentSegment(tigl::CCPACSConfiguration& config, const std::string& wingUID, const std::string& wcsUID);
 
 #endif // TIGLCOMMONFUNCTIONS_H

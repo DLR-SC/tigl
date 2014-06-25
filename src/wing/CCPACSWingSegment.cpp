@@ -275,7 +275,7 @@ TopoDS_Shape CCPACSWingSegment::GetOuterClosure()
 }
 
 // Builds the loft between the two segment sections
-TopoDS_Shape CCPACSWingSegment::BuildLoft(void)
+PNamedShape CCPACSWingSegment::BuildLoft(void)
 {
     TopoDS_Wire innerWire = GetInnerWire();
     TopoDS_Wire outerWire = GetOuterWire();
@@ -287,23 +287,27 @@ TopoDS_Shape CCPACSWingSegment::BuildLoft(void)
     generator.AddWire(outerWire);
     generator.CheckCompatibility(/* check (defaults to true) */ Standard_False);
     generator.Build();
-    TopoDS_Shape loft = generator.Shape();
+    TopoDS_Shape loftShape = generator.Shape();
 
     Handle(ShapeFix_Shape) sfs = new ShapeFix_Shape;
-    sfs->Init ( loft );
+    sfs->Init ( loftShape );
     sfs->Perform();
-    loft = sfs->Shape();
+    loftShape = sfs->Shape();
 
     // Calculate volume
     GProp_GProps System;
-    BRepGProp::VolumeProperties(loft, System);
+    BRepGProp::VolumeProperties(loftShape, System);
     myVolume = System.Mass();
 
     // Calculate surface area
     GProp_GProps AreaSystem;
-    BRepGProp::SurfaceProperties(loft, AreaSystem);
+    BRepGProp::SurfaceProperties(loftShape, AreaSystem);
     mySurfaceArea = AreaSystem.Mass();
 
+    // Set Names
+    std::string loftName = GetUID();
+    std::string loftShortName = MakeShortNameWingSegment(wing->GetConfiguration(), wing->GetUID(), GetUID());
+    PNamedShape loft (new CNamedShape(loftShape, loftName.c_str(), loftShortName.c_str()));
     return loft;
 }
 

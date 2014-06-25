@@ -43,7 +43,7 @@ void CCPACSFarField::init()
 {
     fieldType = NONE;
     fieldSize = 0.;
-    loft.Nullify();
+    loft.reset();
     SetUID("FarField");
 }
 
@@ -108,7 +108,7 @@ void CCPACSFarField::ReadCPACS(TixiDocumentHandle tixiHandle)
     }
 }
 
-TopoDS_Shape CCPACSFarField::BuildLoft(void)
+PNamedShape CCPACSFarField::BuildLoft(void)
 {
     TopoDS_Shape shape;
     shape.Nullify();
@@ -116,7 +116,7 @@ TopoDS_Shape CCPACSFarField::BuildLoft(void)
 
     switch (fieldType) {
     case NONE:
-        return shape;
+        shape.Nullify();
     case FULL_SPHERE:
         shape = BRepPrimAPI_MakeSphere(center, fieldSize).Shape();
         break;
@@ -135,7 +135,10 @@ TopoDS_Shape CCPACSFarField::BuildLoft(void)
         shape.Nullify();
     }
 
-    return shape;
+    std::string loftName = GetUID();
+    std::string loftShortName = "FF";
+    PNamedShape loft(new CNamedShape(shape, loftName.c_str(), loftShortName.c_str()));
+    return loft;
 }
 
 TiglGeometricComponentType CCPACSFarField::GetComponentType(void)

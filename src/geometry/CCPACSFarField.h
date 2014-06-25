@@ -50,7 +50,7 @@ public:
     TIGL_EXPORT TiglFarFieldType GetFieldType();
 
 protected:
-    virtual TopoDS_Shape BuildLoft(void);
+    virtual PNamedShape BuildLoft(void);
 
 private:
     void init();

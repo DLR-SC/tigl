@@ -30,6 +30,7 @@
 #include "CTiglAbstractSegment.h"
 #include "CCPACSWingSegment.h"
 #include "CTiglError.h"
+#include "tiglcommonfunctions.h"
 
 #include "BRepOffsetAPI_ThruSections.hxx"
 #include "BRepAlgoAPI_Fuse.hxx"
@@ -301,7 +302,7 @@ CTiglAbstractSegment & CCPACSWing::GetComponentSegment(std::string uid)
 TopoDS_Shape & CCPACSWing::GetLoftWithLeadingEdge(void)
 {
     if (rebuildFusedSegWEdge) {
-        fusedSegmentWithEdge = BuildFusedSegments(true);
+        fusedSegmentWithEdge = BuildFusedSegments(true)->Shape();
     }
     rebuildFusedSegWEdge = false;
     return fusedSegmentWithEdge;
@@ -327,13 +328,13 @@ TopoDS_Shape & CCPACSWing::GetLowerShape(void)
     return lowerShape;
 }
     
-TopoDS_Shape CCPACSWing::BuildLoft()
+PNamedShape CCPACSWing::BuildLoft()
 {
     return BuildFusedSegments(true);
 }
 
 // Builds a fused shape of all wing segments
-TopoDS_Shape CCPACSWing::BuildFusedSegments(bool splitWingInUpperAndLower)
+PNamedShape CCPACSWing::BuildFusedSegments(bool splitWingInUpperAndLower)
 {
     //@todo: this probably works only if the wings does not split somewere
     BRepOffsetAPI_ThruSections generator(Standard_True, Standard_True, Precision::Confusion() );
@@ -355,7 +356,11 @@ TopoDS_Shape CCPACSWing::BuildFusedSegments(bool splitWingInUpperAndLower)
     generator.CheckCompatibility(Standard_False);
     generator.Build();
         
-    return GetWingTransformation().Transform(generator.Shape());
+    TopoDS_Shape loftShape = GetWingTransformation().Transform(generator.Shape());
+    std::string loftName = GetUID();
+    std::string loftShortName = MakeShortNameWing(GetConfiguration(), loftName);
+    PNamedShape loft(new CNamedShape(loftShape, loftName.c_str(), loftShortName.c_str()));
+    return loft;
 }
     
 // Builds a fused shape of all wing segments
@@ -419,7 +424,7 @@ gp_Pnt CCPACSWing::GetLowerPoint(int segmentIndex, double eta, double xsi)
 // Returns the volume of this wing
 double CCPACSWing::GetVolume(void)
 {
-    TopoDS_Shape& fusedSegments = GetLoft();
+    const TopoDS_Shape& fusedSegments = GetLoft()->Shape();
 
     // Calculate volume
     GProp_GProps System;
@@ -453,7 +458,7 @@ CTiglPoint CCPACSWing::GetTranslation(void)
 // Returns the surface area of this wing
 double CCPACSWing::GetSurfaceArea(void)
 {
-    TopoDS_Shape& fusedSegments = GetLoft();
+    const TopoDS_Shape& fusedSegments = GetLoft()->Shape();
 
     // Calculate surface area
     GProp_GProps System;
@@ -477,7 +482,7 @@ double CCPACSWing::GetReferenceArea(TiglSymmetryAxis symPlane)
 
 double CCPACSWing::GetWettedArea(TopoDS_Shape parent)
 {
-    TopoDS_Shape loft = GetLoft();
+    const TopoDS_Shape& loft = GetLoft()->Shape();
 
     TopoDS_Shape wettedLoft = BRepAlgoAPI_Cut(loft, parent); 
 
@@ -521,7 +526,7 @@ double CCPACSWing::GetWingspan()
     Bnd_Box boundingBox;
     if (GetSymmetryAxis() == TIGL_NO_SYMMETRY) {
         for (int i = 1; i <= GetSegmentCount(); ++i) {
-            TopoDS_Shape& segmentShape = GetSegment(i).GetLoft();
+            const TopoDS_Shape& segmentShape = GetSegment(i).GetLoft()->Shape();
             BRepBndLib::Add(segmentShape, boundingBox);
         }
 
@@ -536,9 +541,9 @@ double CCPACSWing::GetWingspan()
     else {
         for (int i = 1; i <= GetSegmentCount(); ++i) {
             CTiglAbstractSegment& segment = GetSegment(i);
-            TopoDS_Shape& segmentShape = segment.GetLoft();
+            const TopoDS_Shape& segmentShape = segment.GetLoft()->Shape();
             BRepBndLib::Add(segmentShape, boundingBox);
-            TopoDS_Shape segmentMirroredShape = segment.GetMirroredLoft();
+            const TopoDS_Shape& segmentMirroredShape = segment.GetMirroredLoft()->Shape();
             BRepBndLib::Add(segmentMirroredShape, boundingBox);
         }
 

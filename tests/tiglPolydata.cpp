@@ -373,7 +373,7 @@ TEST_F(TriangularizeShape, exportVTK_FusedWing)
 
     bool exportError = false;
 
-    tigl::CTiglTriangularizer t(wing.GetLoft(), 0.001);
+    tigl::CTiglTriangularizer t(wing.GetLoft()->Shape(), 0.001);
     try {
         t.writeVTK("exported_fused_wing_simple.vtp");
     }
@@ -395,7 +395,7 @@ TEST_F(TriangularizeShape, exportVTK_CompoundWing)
     builder.MakeCompSolid(compound);
 
     for (int i = 1; i <= wing.GetSegmentCount(); ++i) {
-        builder.Add(compound, wing.GetSegment(i).GetLoft());
+        builder.Add(compound, wing.GetSegment(i).GetLoft()->Shape());
     }
 
     bool exportError = false;
