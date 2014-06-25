@@ -221,6 +221,9 @@ private:
     // Assignment operator
     void operator=(const CCPACSWingSegment&);
 
+    // get short name for loft
+    std::string GetShortShapeName (void);
+
     // Builds upper and lower surfaces
     void MakeSurfaces();
 

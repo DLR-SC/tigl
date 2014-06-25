@@ -384,6 +384,27 @@ void CCPACSWingComponentSegment::GetSegmentIntersection(const std::string& segme
     }
 }
 
+// get short name for loft
+std::string CCPACSWingComponentSegment::GetShortShapeName() {
+    unsigned int windex = 0;
+    unsigned int wcsindex = 0;
+    for (int i = 1; i <= wing->GetConfiguration().GetWingCount(); ++i) {
+        tigl::CCPACSWing& w = wing->GetConfiguration().GetWing(i);
+        if (wing->GetUID() == w.GetUID()) {
+            windex = i;
+            for (int j = 1; j <= w.GetComponentSegmentCount(); j++) {
+                tigl::CTiglAbstractSegment& wcs = w.GetComponentSegment(j);
+                if (GetUID() == wcs.GetUID()) {
+                    wcsindex = j;
+                    std::stringstream shortName;
+                    shortName << "W" << windex << "CS" << wcsindex;
+                    return shortName.str();
+                }
+            }
+        }
+    }
+    return "UNKNOWN";
+}
 // Builds the loft between the two segment sections
 PNamedShape CCPACSWingComponentSegment::BuildLoft(void)
 {
@@ -460,7 +481,7 @@ PNamedShape CCPACSWingComponentSegment::BuildLoft(void)
         
     // Set Names
     std::string loftName = GetUID();
-    std::string loftShortName = MakeShortNameWingComponentSegment(wing->GetConfiguration(), wing->GetUID(), GetUID());
+    std::string loftShortName = GetShortShapeName();
     PNamedShape loft (new CNamedShape(loftShape, loftName.c_str(), loftShortName.c_str()));
     return loft;
 }

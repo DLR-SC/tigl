@@ -94,6 +94,8 @@
 #include "GCPnts_AbscissaPoint.hxx"
 #include "BRepAdaptor_CompCurve.hxx"
 #include "BRepTools.hxx"
+#include <TopExp.hxx>
+#include <TopTools_IndexedMapOfShape.hxx>
 
 namespace tigl
 {
@@ -274,6 +276,58 @@ TopoDS_Shape CCPACSWingSegment::GetOuterClosure()
     return BRepBuilderAPI_MakeFace(wire).Face();
 }
 
+// get short name for loft
+std::string CCPACSWingSegment::GetShortShapeName () {
+    unsigned int windex = 0;
+    unsigned int wsindex = 0;
+    for (int i = 1; i <= wing->GetConfiguration().GetWingCount(); ++i) {
+        tigl::CCPACSWing& w = wing->GetConfiguration().GetWing(i);
+        if (wing->GetUID() == w.GetUID()) {
+            windex = i;
+            for (int j = 1; j <= w.GetSegmentCount(); j++) {
+                tigl::CTiglAbstractSegment& ws = w.GetSegment(j);
+                if (GetUID() == ws.GetUID()) {
+                    wsindex = j;
+                    std::stringstream shortName;
+                    shortName << "W" << windex << "S" << wsindex;
+                    return shortName.str();
+                }
+            }
+        }
+    }
+    return "UNKNOWN";
+}
+
+// Set the face traits
+void SetFaceTraits (PNamedShape loft) { 
+    // designated names of the faces
+    std::vector<std::string> names(5);
+    names[0]="Bottom";
+    names[1]="Top";
+    names[2]="TrailingEdge";
+    names[3]="Inside";
+    names[4]="Outside";
+
+    // map of faces
+    TopTools_IndexedMapOfShape map;
+    TopExp::MapShapes(loft->Shape(),   TopAbs_FACE, map);
+
+    // check if number of faces is correct (only valid for ruled surfaces lofts)
+    if (map.Extent() != 5 && map.Extent() != 4) {
+        throw tigl::CTiglError("CCPACSWingSegment: Unable to name face traits in ruled surface loft", TIGL_ERROR);
+    }
+    // remove trailing edge name if there is no trailing edge
+    if (map.Extent() == 4) {
+        names.erase(names.begin()+2);
+    }
+    // set face trait names and origin
+    for (int i = 0; i < map.Extent(); i++) {
+        CFaceTraits traits = loft->GetFaceTraits(i);
+        traits.SetName(names[i].c_str());
+        loft->SetFaceTraits(i, traits);
+    }
+}
+
 // Builds the loft between the two segment sections
 PNamedShape CCPACSWingSegment::BuildLoft(void)
 {
@@ -306,8 +360,9 @@ PNamedShape CCPACSWingSegment::BuildLoft(void)
 
     // Set Names
     std::string loftName = GetUID();
-    std::string loftShortName = MakeShortNameWingSegment(wing->GetConfiguration(), wing->GetUID(), GetUID());
+    std::string loftShortName = GetShortShapeName();
     PNamedShape loft (new CNamedShape(loftShape, loftName.c_str(), loftShortName.c_str()));
+    SetFaceTraits(loft);
     return loft;
 }
 

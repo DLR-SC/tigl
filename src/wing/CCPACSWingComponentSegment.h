@@ -124,6 +124,9 @@ protected:
 //  gp_Pnt GetPoint(double eta, double xsi, bool fromUpper);
 
 private:
+    // get short name for loft
+    std::string GetShortShapeName(void);
+
     // Copy constructor
     CCPACSWingComponentSegment(const CCPACSWingComponentSegment& );
 

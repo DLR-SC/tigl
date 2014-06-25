@@ -30,28 +30,8 @@
 #include <BOPCol_ListOfShape.hxx>
 #include <BOPAlgo_PaveFiller.hxx>
 
-#include <TopExp.hxx>
-#include <TopTools_IndexedMapOfShape.hxx>
 
 #include <string>
-
-namespace
-{
-    void NameSymplane(CNamedShape& shape)
-    {
-        TopTools_IndexedMapOfShape map;
-        TopExp::MapShapes(shape.Shape(),   TopAbs_FACE, map);
-        for (int iface = 1; iface <= map.Extent(); ++iface){
-            TopoDS_Face face = TopoDS::Face(map(iface));
-            gp_Pnt p = GetCentralFacePoint(face);
-            if (fabs(p.Y()) < Precision::Confusion()) {
-                CFaceTraits traits = shape.GetFaceTraits(iface-1);
-                traits.SetName("Symmetry");
-                shape.SetFaceTraits(iface-1, traits);
-            }
-        }
-    }
-}
 
 namespace tigl
 {
@@ -168,7 +148,6 @@ void CTiglFusePlane::Perform()
     CCPACSFarField& farfield = _myconfig.GetFarField();
     if (farfield.GetFieldType() != NONE && (_mymode == FULL_PLANE_TRIMMED_FF || _mymode == HALF_PLANE_TRIMMED_FF)) {
         PNamedShape ff = farfield.GetLoft();
-        NameSymplane(*ff);
 
         BOPCol_ListOfShape aLS;
         aLS.Append(_result->Shape());

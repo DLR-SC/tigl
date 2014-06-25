@@ -328,6 +328,21 @@ TopoDS_Shape & CCPACSWing::GetLowerShape(void)
     return lowerShape;
 }
     
+
+// get short name for loft
+std::string CCPACSWing::GetShortShapeName() {
+    unsigned int windex = 0;
+    for (int i = 1; i <= GetConfiguration().GetWingCount(); ++i) {
+        tigl::CCPACSWing& w = GetConfiguration().GetWing(i);
+        if (GetUID() == w.GetUID()) {
+            windex = i;
+            std::stringstream shortName;
+            shortName << "W" << windex;
+            return shortName.str();
+        }
+    }
+    return "UNKNOWN";
+}
 PNamedShape CCPACSWing::BuildLoft()
 {
     return BuildFusedSegments(true);
@@ -358,7 +373,7 @@ PNamedShape CCPACSWing::BuildFusedSegments(bool splitWingInUpperAndLower)
         
     TopoDS_Shape loftShape = GetWingTransformation().Transform(generator.Shape());
     std::string loftName = GetUID();
-    std::string loftShortName = MakeShortNameWing(GetConfiguration(), loftName);
+    std::string loftShortName = GetShortShapeName();
     PNamedShape loft(new CNamedShape(loftShape, loftName.c_str(), loftShortName.c_str()));
     return loft;
 }

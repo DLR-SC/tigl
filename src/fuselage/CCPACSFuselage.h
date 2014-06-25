@@ -139,6 +139,9 @@ protected:
     PNamedShape BuildLoft(void);
 
 private:
+    // get short name for loft
+    std::string GetShortShapeName(void);
+
     // Copy constructor
     CCPACSFuselage(const CCPACSFuselage & );
 
