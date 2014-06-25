@@ -59,7 +59,7 @@ CTiglExportCollada::CTiglExportCollada(CCPACSConfiguration& config) : myconfig(c
 TiglReturnCode CTiglExportCollada::exportFuselage(const std::string& fuselageUID, const std::string &filename, const double deflection)
 {
     CTiglAbstractPhysicalComponent & component = myconfig.GetFuselage(fuselageUID);
-    TopoDS_Shape& loft = component.GetLoft();
+    TopoDS_Shape loft = component.GetLoft()->Shape();
     
     return exportShape(loft, fuselageUID, filename, deflection);
 }
@@ -67,7 +67,7 @@ TiglReturnCode CTiglExportCollada::exportFuselage(const std::string& fuselageUID
 TiglReturnCode CTiglExportCollada::exportWing(const std::string& wingUID, const std::string &filename, const double deflection)
 {
     CTiglAbstractPhysicalComponent & component = myconfig.GetWing(wingUID);
-    TopoDS_Shape& loft = component.GetLoft();
+    TopoDS_Shape loft = component.GetLoft()->Shape();
     
     return exportShape(loft, wingUID, filename, deflection);
 }

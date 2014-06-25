@@ -42,14 +42,14 @@ class CTiglTriangularizer : public CTiglPolyData
 {
 public:
     TIGL_EXPORT CTiglTriangularizer();
-    TIGL_EXPORT CTiglTriangularizer(TopoDS_Shape&, double deflection, bool useMultipleObjects = false);
+    TIGL_EXPORT CTiglTriangularizer(const TopoDS_Shape&, double deflection, bool useMultipleObjects = false);
     TIGL_EXPORT CTiglTriangularizer(class CTiglAbstractPhysicalComponent &comp, double deflection, ComponentTraingMode mode);
     TIGL_EXPORT CTiglTriangularizer(class CCPACSConfiguration& config, bool fuseShapes, double deflection, ComponentTraingMode mode);
     
     TIGL_EXPORT void useMultipleObjects(bool);
     
 private:
-    int triangularizeComponent(class CTiglAbstractPhysicalComponent &, bool includeChilds, TopoDS_Shape& shape, double deflection, ComponentTraingMode = NO_INFO);
+    int triangularizeComponent(class CTiglAbstractPhysicalComponent &, bool includeChilds, const TopoDS_Shape& shape, double deflection, ComponentTraingMode = NO_INFO);
     int triangularizeShape(const TopoDS_Shape &);
     void annotateWingSegment(class CCPACSWingSegment &segment, gp_Pnt centralP, bool pointOnMirroredShape, unsigned long iPolyLow, unsigned long iPolyUp);
     int triangularizeFace(const TopoDS_Face &, unsigned long& nVertices, unsigned long& iPolyLow, unsigned long& iPolyUp);

@@ -36,6 +36,11 @@ CNamedShape::CNamedShape(const TopoDS_Shape &shape, const char *shapeName)
     InitFaceTraits();
 }
 
+CNamedShape::CNamedShape(const TopoDS_Shape &shape, const char *shapeName, const char *shapeShortName)
+    : _myshape(shape), _myname(shapeName), _myshortName(shapeShortName)
+{
+    InitFaceTraits();
+}
 CNamedShape::CNamedShape(const CNamedShape& ns)
     : _myshape(ns._myshape)
 {

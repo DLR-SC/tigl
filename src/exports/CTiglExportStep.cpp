@@ -169,9 +169,8 @@ void CTiglExportStep::ExportStep(const std::string& filename) const
 
         for (int i = 1; i <= wing.GetSegmentCount(); i++) {
             CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(i);
-            TopoDS_Shape loft = segment.GetLoft();
-            PNamedShape shape(new CNamedShape(loft, segment.GetUID().c_str()));
-            shapes.push_back(shape);
+            PNamedShape loft = segment.GetLoft();
+            shapes.push_back(loft);
         }
     }
 
@@ -181,16 +180,14 @@ void CTiglExportStep::ExportStep(const std::string& filename) const
 
         for (int i = 1; i <= fuselage.GetSegmentCount(); i++) {
             CCPACSFuselageSegment& segment = (tigl::CCPACSFuselageSegment &) fuselage.GetSegment(i);
-            TopoDS_Shape loft = segment.GetLoft();
-            PNamedShape shape(new CNamedShape(loft, segment.GetUID().c_str()));
-            shapes.push_back(shape);
+            PNamedShape loft = segment.GetLoft();
+            shapes.push_back(loft);
         }
     }
 
     CCPACSFarField& farfield = myConfig.GetFarField();
     if (farfield.GetFieldType() != NONE) {
-        PNamedShape shape(new CNamedShape(farfield.GetLoft(), farfield.GetUID().c_str()));
-        shapes.push_back(shape);
+        shapes.push_back(farfield.GetLoft());
     }
 
     // write step

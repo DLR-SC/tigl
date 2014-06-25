@@ -385,7 +385,7 @@ void CCPACSWingComponentSegment::GetSegmentIntersection(const std::string& segme
 }
 
 // Builds the loft between the two segment sections
-TopoDS_Shape CCPACSWingComponentSegment::BuildLoft(void)
+PNamedShape CCPACSWingComponentSegment::BuildLoft(void)
 {
 
     BRepOffsetAPI_ThruSections generator(Standard_True, Standard_True, Precision::Confusion() );
@@ -436,28 +436,32 @@ TopoDS_Shape CCPACSWingComponentSegment::BuildLoft(void)
 
     generator.CheckCompatibility(Standard_False);
     generator.Build();
-    TopoDS_Shape loft = generator.Shape();
+    TopoDS_Shape loftShape = generator.Shape();
 
     // transform with wing transformation
-    loft = wing->GetWingTransformation().Transform(loft);
+    loftShape = wing->GetWingTransformation().Transform(loftShape);
 
-    BRepTools::Clean(loft);
+    BRepTools::Clean(loftShape);
 
     Handle(ShapeFix_Shape) sfs = new ShapeFix_Shape;
-    sfs->Init ( loft );
+    sfs->Init ( loftShape );
     sfs->Perform();
-    loft = sfs->Shape();
+    loftShape = sfs->Shape();
 
     // Calculate volume
     GProp_GProps System;
-    BRepGProp::VolumeProperties(loft, System);
+    BRepGProp::VolumeProperties(loftShape, System);
     myVolume = System.Mass();
 
     // Calculate surface area
     GProp_GProps AreaSystem;
-    BRepGProp::SurfaceProperties(loft, AreaSystem);
+    BRepGProp::SurfaceProperties(loftShape, AreaSystem);
     mySurfaceArea = AreaSystem.Mass();
         
+    // Set Names
+    std::string loftName = GetUID();
+    std::string loftShortName = MakeShortNameWingComponentSegment(wing->GetConfiguration(), wing->GetUID(), GetUID());
+    PNamedShape loft (new CNamedShape(loftShape, loftName.c_str(), loftShortName.c_str()));
     return loft;
 }
 

@@ -28,6 +28,8 @@
 #include "boolean_operations/CBooleanOperTools.h"
 #include "boolean_operations/BRepSewingToBRepBuilderShapeAdapter.h"
 #include "ListPNamedShape.h"
+#include "CNamedShape.h"
+#include "PNamedShape.h"
 
 #include "Geom_Curve.hxx"
 #include "Geom_Surface.hxx"
@@ -394,7 +396,7 @@ void InsertShapeToCAF(Handle(XCAFDoc_ShapeTool) myAssembly, const PNamedShape sh
 // Returns a unique Hashcode for a specific geometric component
 int GetComponentHashCode(tigl::ITiglGeometricComponent& component)
 {
-    TopoDS_Shape& loft = component.GetLoft();
+    const TopoDS_Shape& loft = (*component.GetLoft()).Shape();
     if (!loft.IsNull()) {
         return loft.HashCode(2294967295);
     }
@@ -403,3 +405,93 @@ int GetComponentHashCode(tigl::ITiglGeometricComponent& component)
     }
 }
 
+
+std::string MakeShortNameFuselage (tigl::CCPACSConfiguration& config, const std::string& fuselageUID) {
+    unsigned int findex = 0;
+    for (int i = 1; i <= config.GetFuselageCount(); ++i) {
+        tigl::CCPACSFuselage& f = config.GetFuselage(i);
+        if (fuselageUID == f.GetUID()) {
+            findex = i;
+            std::stringstream shortName;
+            shortName << "F" << findex;
+            return shortName.str();
+        }
+    }
+    return "UNKNOWN";
+}
+
+std::string MakeShortNameFuselageSegment (tigl::CCPACSConfiguration& config, const std::string& fuselageUID, const std::string& fsUID) {
+    unsigned int findex = 0;
+    unsigned int fsindex = 0;
+    for (int i = 1; i <= config.GetFuselageCount(); ++i) {
+        tigl::CCPACSFuselage& f = config.GetFuselage(i);
+        if (fuselageUID == f.GetUID()) {
+            findex = i;
+            for (int j = 1; j <= f.GetSegmentCount(); j++) {
+                tigl::CTiglAbstractSegment& fs = f.GetSegment(j);
+                if (fsUID == fs.GetUID()) {
+                    fsindex = j;
+                    std::stringstream shortName;
+                    shortName << "F" << findex << "S" << fsindex;
+                    return shortName.str();
+                }
+            }
+        }
+    }
+    return "UNKNOWN";
+}
+
+std::string MakeShortNameWing (tigl::CCPACSConfiguration& config, const std::string& wingUID) {
+    unsigned int windex = 0;
+    for (int i = 1; i <= config.GetWingCount(); ++i) {
+        tigl::CCPACSWing& w = config.GetWing(i);
+        if (wingUID == w.GetUID()) {
+            windex = i;
+            std::stringstream shortName;
+            shortName << "W" << windex;
+            return shortName.str();
+        }
+    }
+    return "UNKNOWN";
+}
+
+std::string MakeShortNameWingSegment (tigl::CCPACSConfiguration& config, const std::string& wingUID, const std::string& wsUID) {
+    unsigned int windex = 0;
+    unsigned int wsindex = 0;
+    for (int i = 1; i <= config.GetWingCount(); ++i) {
+        tigl::CCPACSWing& w = config.GetWing(i);
+        if (wingUID == w.GetUID()) {
+            windex = i;
+            for (int j = 1; j <= w.GetSegmentCount(); j++) {
+                tigl::CTiglAbstractSegment& ws = w.GetSegment(j);
+                if (wsUID == ws.GetUID()) {
+                    wsindex = j;
+                    std::stringstream shortName;
+                    shortName << "W" << windex << "S" << wsindex;
+                    return shortName.str();
+                }
+            }
+        }
+    }
+    return "UNKNOWN";
+}
+std::string MakeShortNameWingComponentSegment (tigl::CCPACSConfiguration& config, const std::string& wingUID, const std::string& wcsUID) {
+    unsigned int windex = 0;
+    unsigned int wcsindex = 0;
+    for (int i = 1; i <= config.GetWingCount(); ++i) {
+        tigl::CCPACSWing& w = config.GetWing(i);
+        if (wingUID == w.GetUID()) {
+            windex = i;
+            for (int j = 1; j <= w.GetComponentSegmentCount(); j++) {
+                tigl::CTiglAbstractSegment& wcs = w.GetComponentSegment(j);
+                if (wcsUID == wcs.GetUID()) {
+                    wcsindex = j;
+                    std::stringstream shortName;
+                    shortName << "W" << windex << "CS" << wcsindex;
+                    return shortName.str();
+                }
+            }
+        }
+    }
+    return "UNKNOWN";
+}

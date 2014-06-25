@@ -52,11 +52,11 @@ CTiglExportStl::CTiglExportStl(CCPACSConfiguration& config)
 void CTiglExportStl::ExportMeshedWingSTL(int wingIndex, const std::string& filename, double deflection)
 {
     CCPACSWing& wing = myConfig.GetWing(wingIndex);
-    TopoDS_Shape loft = wing.GetLoft();
+    PNamedShape loft = wing.GetLoft();
 
-    BRepMesh::Mesh(loft, deflection);
+    BRepMesh::Mesh(loft->Shape(), deflection);
     StlAPI_Writer *StlWriter = new StlAPI_Writer();
-    StlWriter->Write(loft, const_cast<char*>(filename.c_str()));
+    StlWriter->Write(loft->Shape(), const_cast<char*>(filename.c_str()));
 }
 
 
@@ -64,11 +64,11 @@ void CTiglExportStl::ExportMeshedWingSTL(int wingIndex, const std::string& filen
 void CTiglExportStl::ExportMeshedFuselageSTL(int fuselageIndex, const std::string& filename, double deflection)
 {
     CCPACSFuselage& fuselage = myConfig.GetFuselage(fuselageIndex);
-    TopoDS_Shape loft = fuselage.GetLoft();
+    PNamedShape loft = fuselage.GetLoft();
 
-    BRepMesh::Mesh(loft, deflection);
+    BRepMesh::Mesh(loft->Shape(), deflection);
     StlAPI_Writer *StlWriter = new StlAPI_Writer();
-    StlWriter->Write(loft, const_cast<char*>(filename.c_str()));
+    StlWriter->Write(loft->Shape(), const_cast<char*>(filename.c_str()));
 }
 
 // Exports a whole geometry, boolean fused and meshed, as STL file

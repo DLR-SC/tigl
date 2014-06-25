@@ -136,7 +136,7 @@ protected:
     void Update(void);
         
     // Adds all segments of this fuselage to one shape
-    TopoDS_Shape BuildLoft(void);
+    PNamedShape BuildLoft(void);
 
 private:
     // Copy constructor

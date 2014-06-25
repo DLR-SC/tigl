@@ -168,7 +168,7 @@ protected:
     void Update(void);
 
     // Builds the loft between the two segment sections
-    TopoDS_Shape BuildLoft(void);
+    PNamedShape BuildLoft(void);
 
 private:
     // Copy constructor

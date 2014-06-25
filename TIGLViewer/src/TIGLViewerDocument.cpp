@@ -469,7 +469,7 @@ void TIGLViewerDocument::drawAllFuselagesAndWings( )
 
         for (int i = 1; i <= wing.GetSegmentCount(); i++) {
             tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(i);
-            displayShape(segment.GetLoft());
+            displayShape(segment.GetLoft()->Shape());
         }
 
         if (wing.GetSymmetryAxis() == TIGL_NO_SYMMETRY) {
@@ -478,7 +478,7 @@ void TIGLViewerDocument::drawAllFuselagesAndWings( )
 
         for (int i = 1; i <= wing.GetSegmentCount(); i++) {
             tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(i);
-            displayShape(segment.GetMirroredLoft(), Quantity_NOC_MirrShapeCol);
+            displayShape(segment.GetMirroredLoft()->Shape(), Quantity_NOC_MirrShapeCol);
         }
     }
 
@@ -488,7 +488,7 @@ void TIGLViewerDocument::drawAllFuselagesAndWings( )
 
         for (int i = 1; i <= fuselage.GetSegmentCount(); i++) {
             tigl::CCPACSFuselageSegment& segment = (tigl::CCPACSFuselageSegment &) fuselage.GetSegment(i);
-            displayShape(segment.GetLoft());
+            displayShape(segment.GetLoft()->Shape());
         }
 
         if (fuselage.GetSymmetryAxis() == TIGL_NO_SYMMETRY) {
@@ -497,7 +497,7 @@ void TIGLViewerDocument::drawAllFuselagesAndWings( )
 
         for (int i = 1; i <= fuselage.GetSegmentCount(); i++) {
             tigl::CCPACSFuselageSegment& segment = (tigl::CCPACSFuselageSegment &) fuselage.GetSegment(i);
-            displayShape(segment.GetMirroredLoft(), Quantity_NOC_MirrShapeCol);
+            displayShape(segment.GetMirroredLoft()->Shape(), Quantity_NOC_MirrShapeCol);
         }
     }
 }
@@ -762,7 +762,7 @@ void TIGLViewerDocument::drawWing()
 
     for (int i = 1; i <= wing.GetSegmentCount(); i++) {
         // Draw segment loft
-        const TopoDS_Shape& loft = wing.GetSegment(i).GetLoft();
+        const TopoDS_Shape& loft = wing.GetSegment(i).GetLoft()->Shape();
         displayShape(loft);
     }
 }
@@ -784,7 +784,7 @@ void TIGLViewerDocument::drawFuselage()
     for (int i = 1; i <= fuselage.GetSegmentCount(); i++) {
         // Draw segment loft
         tigl::CCPACSFuselageSegment& segment = (tigl::CCPACSFuselageSegment &) fuselage.GetSegment(i);
-        TopoDS_Shape loft = segment.GetLoft();
+        TopoDS_Shape loft = segment.GetLoft()->Shape();
         // Transform by fuselage transformation
         loft = fuselage.GetFuselageTransformation().Transform(loft);
         displayShape(loft);
@@ -807,7 +807,7 @@ void TIGLViewerDocument::drawWingTriangulation()
     myAISContext->EraseAll(Standard_False);
 
     //we do not fuse segments anymore but build it from scratch with the profiles
-    TopoDS_Shape& fusedWing = wing.GetLoft();
+    const TopoDS_Shape& fusedWing = wing.GetLoft()->Shape();
 
     TopoDS_Compound compound;
     createShapeTriangulation(fusedWing, compound);
@@ -829,7 +829,7 @@ void TIGLViewerDocument::drawFuselageTriangulation()
 
     //clear screen
     myAISContext->EraseAll(Standard_False);
-    TopoDS_Shape fusedWing = fuselage.GetLoft();
+    const TopoDS_Shape& fusedWing = fuselage.GetLoft()->Shape();
 
     TopoDS_Compound triangulation;
     createShapeTriangulation(fusedWing, triangulation);
@@ -865,7 +865,7 @@ void TIGLViewerDocument::drawWingSamplePoints()
     for (int segmentIndex = 1; segmentIndex <= wing.GetSegmentCount(); segmentIndex++) {
         // Draw segment loft
         tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(segmentIndex);
-        const TopoDS_Shape& loft = segment.GetLoft();
+        const TopoDS_Shape& loft = segment.GetLoft()->Shape();
 
         Handle(AIS_Shape) shape = new AIS_Shape(loft);
         shape->SetColor(Quantity_NOC_BLUE2);
@@ -918,7 +918,7 @@ void TIGLViewerDocument::drawFuselageSamplePoints()
     for (int segmentIndex = 1; segmentIndex <= fuselage.GetSegmentCount(); segmentIndex++) {
         // Draw segment loft
         tigl::CCPACSFuselageSegment& segment = (tigl::CCPACSFuselageSegment &) fuselage.GetSegment(segmentIndex);
-        TopoDS_Shape loft = segment.GetLoft();
+        const TopoDS_Shape& loft = segment.GetLoft()->Shape();
 
         Handle(AIS_Shape) shape = new AIS_Shape(loft);
         shape->SetColor(Quantity_NOC_BLUE2);
@@ -964,7 +964,7 @@ void TIGLViewerDocument::drawFuselageSamplePointsAngle()
     // Draw the fuselage
     for (int i = 1; i <= fuselage.GetSegmentCount(); i++) {
         tigl::CCPACSFuselageSegment& segment = (tigl::CCPACSFuselageSegment &) fuselage.GetSegment(i);
-        TopoDS_Shape loft = segment.GetLoft();
+        const TopoDS_Shape& loft = segment.GetLoft()->Shape();
 
         displayShape(loft);
 
@@ -992,7 +992,7 @@ void TIGLViewerDocument::drawAllFuselagesAndWingsSurfacePoints()
 
         for (int segmentIndex = 1; segmentIndex <= wing.GetSegmentCount(); segmentIndex++) {
             tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(segmentIndex);
-            const TopoDS_Shape& loft = segment.GetLoft();
+            const TopoDS_Shape& loft = segment.GetLoft()->Shape();
 
             Handle(AIS_Shape) shape = new AIS_Shape(loft);
             shape->SetColor(Quantity_NOC_BLUE2);
@@ -1040,7 +1040,7 @@ void TIGLViewerDocument::drawAllFuselagesAndWingsSurfacePoints()
         for (int segmentIndex = 1; segmentIndex <= fuselage.GetSegmentCount(); segmentIndex++) {
             // Draw segment loft
             tigl::CCPACSFuselageSegment& segment = (tigl::CCPACSFuselageSegment &) fuselage.GetSegment(segmentIndex);
-            TopoDS_Shape loft = segment.GetLoft();
+            const TopoDS_Shape& loft = segment.GetLoft()->Shape();
             Handle(AIS_Shape) shape = new AIS_Shape(loft);
             shape->SetColor(Quantity_NOC_BLUE2);
             myAISContext->Display(shape, Standard_True);
@@ -1420,7 +1420,7 @@ void TIGLViewerDocument::exportWingBRep()
     if (!fileName.isEmpty()) {
         QApplication::setOverrideCursor( Qt::WaitCursor );
         tigl::ITiglGeometricComponent& wing = GetConfiguration().GetWing(wingUid.toStdString());
-        TopoDS_Shape& loft = wing.GetLoft();
+        const TopoDS_Shape& loft = wing.GetLoft()->Shape();
         BRepTools::Write(loft, fileName.toStdString().c_str());
         QApplication::restoreOverrideCursor();
 
@@ -1441,7 +1441,7 @@ void TIGLViewerDocument::exportFuselageBRep()
     if (!fileName.isEmpty()) {
         QApplication::setOverrideCursor( Qt::WaitCursor );
         tigl::ITiglGeometricComponent& fuselage = GetConfiguration().GetFuselage(fuselageUid.toStdString());
-        TopoDS_Shape& loft = fuselage.GetLoft();
+        const TopoDS_Shape& loft = fuselage.GetLoft()->Shape();
         BRepTools::Write(loft, fileName.toStdString().c_str());
         QApplication::restoreOverrideCursor();
 
@@ -1605,7 +1605,7 @@ void TIGLViewerDocument::drawFusedFuselage()
     myAISContext->EraseAll(Standard_False);
     QApplication::setOverrideCursor( Qt::WaitCursor );
     tigl::CCPACSFuselage& fuselage = GetConfiguration().GetFuselage(fuselageUid.toStdString());
-    displayShape(fuselage.GetLoft());
+    displayShape(fuselage.GetLoft()->Shape());
     QApplication::restoreOverrideCursor();
 }
 
@@ -1620,7 +1620,7 @@ void TIGLViewerDocument::drawFusedWing()
     myAISContext->EraseAll(Standard_False);
     QApplication::setOverrideCursor( Qt::WaitCursor );
     tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
-    TopoDS_Shape& loft = wing.GetLoft();
+    const TopoDS_Shape& loft = wing.GetLoft()->Shape();
     displayShape(loft);
     QApplication::restoreOverrideCursor();
 }
@@ -1739,9 +1739,9 @@ void TIGLViewerDocument::drawIntersectionLine()
         std::string uid1 = dialog.GetShape1UID().toStdString();
         std::string uid2 = dialog.GetShape2UID().toStdString();
         writeToStatusBar(QString(tr("Calculating %1 ...")).arg(uid1.c_str()));
-        TopoDS_Shape& compoundOne = uidManager.GetComponent(uid1)->GetLoft();
+        const TopoDS_Shape& compoundOne = uidManager.GetComponent(uid1)->GetLoft()->Shape();
         writeToStatusBar(QString(tr("Calculating %1 ...")).arg(uid2.c_str()));
-        TopoDS_Shape& compoundTwo = uidManager.GetComponent(uid2)->GetLoft();
+        const TopoDS_Shape& compoundTwo = uidManager.GetComponent(uid2)->GetLoft()->Shape();
 
         writeToStatusBar(tr("Calculating intersection... This may take a while!"));
         Intersector = new tigl::CTiglIntersectionCalculation(&config.GetShapeCache(),uid1, uid2, compoundOne, compoundTwo);
@@ -1751,7 +1751,7 @@ void TIGLViewerDocument::drawIntersectionLine()
         QApplication::setOverrideCursor( Qt::WaitCursor );
         std::string uid = dialog.GetShapeUID().toStdString();
         writeToStatusBar(QString(tr("Calculating %1 ...")).arg(uid.c_str()));
-        TopoDS_Shape& compoundOne = uidManager.GetComponent(uid)->GetLoft();
+        const TopoDS_Shape& compoundOne = uidManager.GetComponent(uid)->GetLoft()->Shape();
 
         gp_Pnt p = dialog.GetPoint().Get_gp_Pnt();
         tigl::CTiglPoint normal = dialog.GetNormal();
@@ -1801,7 +1801,7 @@ void TIGLViewerDocument::drawWingComponentSegment()
         return;
     }
 
-    TopoDS_Shape* pComponentSegment = NULL;
+    const TopoDS_Shape* pComponentSegment = NULL;
     myAISContext->EraseAll(Standard_False);
     QApplication::setOverrideCursor( Qt::WaitCursor );
     for (int i = 1; i <= GetConfiguration().GetWingCount();++i) {
@@ -1809,7 +1809,7 @@ void TIGLViewerDocument::drawWingComponentSegment()
         for (int j = 1; j <= wing.GetComponentSegmentCount();++j) {
             tigl::CTiglAbstractSegment& segment = wing.GetComponentSegment(j);
             if (segment.GetUID() == wingUid.toStdString()) {
-                pComponentSegment = &(segment.GetLoft());
+                pComponentSegment = &(segment.GetLoft()->Shape());
                 break;
             }
         }
@@ -1898,7 +1898,7 @@ void TIGLViewerDocument::drawFarField()
 {
     tigl::CCPACSFarField& farField = GetConfiguration().GetFarField();
     if (farField.GetFieldType() != tigl::NONE) {
-        Handle(AIS_Shape) shape = new AIS_Shape(farField.GetLoft());
+        Handle(AIS_Shape) shape = new AIS_Shape(farField.GetLoft()->Shape());
         shape->SetMaterial(Graphic3d_NOM_PEWTER);
         shape->SetTransparency(0.6);
         myAISContext->Display(shape, Standard_True);

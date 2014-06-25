@@ -87,9 +87,8 @@ void CTiglExportVtk::ExportMeshedFuselageVTKByIndex(const int fuselageIndex, con
 void CTiglExportVtk::ExportMeshedFuselageVTKByUID(const std::string& fuselageUID, const std::string& filename, const double deflection)
 {
     CTiglAbstractPhysicalComponent & component = myConfig.GetFuselage(fuselageUID);
-    TopoDS_Shape& loft = component.GetLoft();
-    
-    CTiglTriangularizer trian(loft, deflection, false);
+    const TopoDS_Shape& shape = component.GetLoft()->Shape();
+    CTiglTriangularizer trian(shape, deflection, false);
     trian.writeVTK(filename.c_str());
 }
 
@@ -123,8 +122,8 @@ void CTiglExportVtk::ExportMeshedWingVTKSimpleByIndex(const int wingIndex, const
 void CTiglExportVtk::ExportMeshedFuselageVTKSimpleByUID(const std::string& fuselageUID, const std::string& filename, const double deflection)
 {
     CTiglAbstractPhysicalComponent & component = myConfig.GetFuselage(fuselageUID);
-    TopoDS_Shape& loft = component.GetLoft();
-    CTiglTriangularizer loftTrian(loft, deflection);
+    const TopoDS_Shape& shape = component.GetLoft()->Shape();
+    CTiglTriangularizer loftTrian(shape, deflection);
     loftTrian.writeVTK(filename.c_str());
 }
 

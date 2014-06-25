@@ -109,9 +109,9 @@ void CTiglAbstractGeometricComponent::Translate(CTiglPoint trans)
     translation.z += trans.z;
 }
 
-TopoDS_Shape& CTiglAbstractGeometricComponent::GetLoft(void)
+PNamedShape CTiglAbstractGeometricComponent::GetLoft(void)
 {
-    if (loft.IsNull()) {
+    if (!(loft)) {
 #ifdef DEBUG
         LOG(INFO) << "Building loft " << GetUID();
 #endif
@@ -120,12 +120,12 @@ TopoDS_Shape& CTiglAbstractGeometricComponent::GetLoft(void)
     return loft;
 }
 
-TopoDS_Shape CTiglAbstractGeometricComponent::GetMirroredLoft(void)
+PNamedShape CTiglAbstractGeometricComponent::GetMirroredLoft(void)
 {
     if (mySymmetryAxis == TIGL_NO_SYMMETRY) {
-        TopoDS_Shape nullShape;
-        nullShape.Nullify();
-        return  nullShape;
+        PNamedShape nullShape;
+        nullShape.reset();
+        return nullShape;
     }
 
     gp_Ax2 mirrorPlane;
@@ -141,18 +141,23 @@ TopoDS_Shape CTiglAbstractGeometricComponent::GetMirroredLoft(void)
 
     gp_Trsf theTransformation;
     theTransformation.SetMirror(mirrorPlane);
-    BRepBuilderAPI_Transform myBRepTransformation(GetLoft(), theTransformation);
-
-    return myBRepTransformation.Shape();
+    BRepBuilderAPI_Transform myBRepTransformation(GetLoft()->Shape(), theTransformation);
+    std::string mirrorName = GetLoft()->Name();
+    mirrorName += "M";
+    std::string mirrorShortName = GetLoft()->ShortName();
+    mirrorShortName += "M";
+    TopoDS_Shape mirroredShape = myBRepTransformation.Shape();
+    PNamedShape mirroredPNamedShape (new CNamedShape(mirroredShape, mirrorName.c_str(), mirrorShortName.c_str()));
+    return mirroredPNamedShape;
 }
 
 bool CTiglAbstractGeometricComponent::GetIsOn(const gp_Pnt& pnt) 
 {
-    TopoDS_Shape& segmentLoft = GetLoft();
+    const TopoDS_Shape& segmentShape = GetLoft()->Shape();
 
     // fast check with bounding box
     Bnd_Box boundingBox;
-    BRepBndLib::Add(segmentLoft, boundingBox);
+    BRepBndLib::Add(segmentShape, boundingBox);
 
     Standard_Real xmin, xmax, ymin, ymax, zmin, zmax;
     boundingBox.Get(xmin, ymin, zmin, xmax, ymax, zmax);
@@ -167,7 +172,7 @@ bool CTiglAbstractGeometricComponent::GetIsOn(const gp_Pnt& pnt)
     double tolerance = 0.03; // 3cm
 
     BRepClass3d_SolidClassifier classifier;
-    classifier.Load(segmentLoft);
+    classifier.Load(segmentShape);
     classifier.Perform(pnt, tolerance);
     if ((classifier.State() == TopAbs_IN) || (classifier.State() == TopAbs_ON)) {
         return true;

@@ -37,38 +37,6 @@
 
 namespace
 {
-    std::string MakeShortName(tigl::CCPACSConfiguration& config, tigl::CTiglAbstractPhysicalComponent& comp)
-    {
-        if (comp.GetComponentType() & TIGL_COMPONENT_FUSELAGE) {
-            unsigned int index = 0;
-            for (int i = 1; i <= config.GetFuselageCount(); ++i) {
-                tigl::CCPACSFuselage& f = config.GetFuselage(i);
-                if (comp.GetUID() == f.GetUID()) {
-                    index = i;
-                    break;
-                }
-            }
-            std::stringstream str;
-            str << "F" << index;
-            return str.str();
-        }
-        else if (comp.GetComponentType() & TIGL_COMPONENT_WING) {
-            unsigned int index = 0;
-            for (int i = 1; i <= config.GetWingCount(); ++i) {
-                tigl::CCPACSWing& f = config.GetWing(i);
-                if (comp.GetUID() == f.GetUID()) {
-                    index = i;
-                    break;
-                }
-            }
-            std::stringstream str;
-            str << "W" << index;
-            return str.str();
-        }
-
-        return "UNKNOWN";
-    }
-
     void NameSymplane(CNamedShape& shape)
     {
         TopTools_IndexedMapOfShape map;
@@ -154,15 +122,9 @@ void CTiglFusePlane::Perform()
         return;
     }
 
-    std::string rootName = rootComponent->GetUID();
-    std::string rootShortName = MakeShortName(_myconfig, *rootComponent);
-    PNamedShape rootShape    (new CNamedShape(rootComponent->GetLoft()        , rootName.c_str()));
-    rootShape->SetShortName(rootShortName.c_str());
-
+    PNamedShape rootShape (rootComponent->GetLoft());
     if (_mymode == FULL_PLANE || _mymode == FULL_PLANE_TRIMMED_FF) {
-        PNamedShape rootShapeMirr(new CNamedShape(rootComponent->GetMirroredLoft(), rootName.c_str()));
-        rootShortName += "M";
-        rootShapeMirr->SetShortName(rootShortName.c_str());
+        PNamedShape rootShapeMirr = rootComponent->GetMirroredLoft();
         rootShape = CMergeShapes(rootShape, rootShapeMirr);
     }
 
@@ -176,14 +138,9 @@ void CTiglFusePlane::Perform()
             continue;
         }
 
-        std::string childShortName = MakeShortName(_myconfig, *child);
-        PNamedShape childShape    (new CNamedShape(child->GetLoft()        , child->GetUID().c_str()));
-        childShape->SetShortName(childShortName.c_str());
-
+        PNamedShape childShape = child->GetLoft();
         if (_mymode == FULL_PLANE || _mymode == FULL_PLANE_TRIMMED_FF) {
-            PNamedShape childShapeMirr(new CNamedShape(child->GetMirroredLoft(), child->GetUID().c_str()));
-            childShortName += "M";
-            childShapeMirr->SetShortName(childShortName.c_str());
+            PNamedShape childShapeMirr = child->GetMirroredLoft();
             childShape = CMergeShapes(childShape, childShapeMirr);
         }
         childShapes.push_back(childShape);
@@ -210,7 +167,7 @@ void CTiglFusePlane::Perform()
 
     CCPACSFarField& farfield = _myconfig.GetFarField();
     if (farfield.GetFieldType() != NONE && (_mymode == FULL_PLANE_TRIMMED_FF || _mymode == HALF_PLANE_TRIMMED_FF)) {
-        PNamedShape ff(new CNamedShape(farfield.GetLoft(), farfield.GetUID().c_str()));
+        PNamedShape ff = farfield.GetLoft();
         NameSymplane(*ff);
 
         BOPCol_ListOfShape aLS;
