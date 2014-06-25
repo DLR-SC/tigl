@@ -60,6 +60,9 @@ public:
     // get lower wing profile wire
     virtual const TopoDS_Edge & GetLowerWire() const = 0;
 
+    // get the upper and lower wing profile combined into one edge
+    virtual const TopoDS_Edge & GetUpperLowerWire() const = 0;
+
     // get trailing edge
     virtual const TopoDS_Edge & GetTrailingEdge() const = 0;
 

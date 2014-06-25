@@ -71,7 +71,10 @@ public:
     // Invalidates internal wing profile state
     TIGL_EXPORT void Invalidate(void);
 
-    // Returns the wing profile wire.
+    // Returns the wing profile wire, splitted at the leading edge
+    TIGL_EXPORT TopoDS_Wire GetSplitWire();
+    
+    // Returns the wing profile wire
     TIGL_EXPORT TopoDS_Wire GetWire();
         
     // Returns ths wing upper and lower profile wire
