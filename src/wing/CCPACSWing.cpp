@@ -334,9 +334,9 @@ TopoDS_Shape CCPACSWing::BuildFusedSegmentsWithFlaps(bool splitWingInUpperAndLow
     TopoDS_Shape trailingEdgeLoftCut;
     TopoDS_Shape wingLoftCut;
     for ( int i = 1; i <= GetComponentSegmentCount(); i++ ) {
+
        CCPACSWingComponentSegment &componentSegment = componentSegments.GetComponentSegment(i);
        CCPACSTrailingEdgeDevices* trailingEdgeDevices = componentSegment.getControlSurfaces().getTrailingEdgeDevices();
-
        TopoDS_Shape wingLoft;
 
        for ( int j = trailingEdgeDevices->getTrailingEdgeDeviceCount(); j > 0 ; j-- ) {
@@ -386,11 +386,16 @@ TopoDS_Shape CCPACSWing::BuildFusedSegmentsWithFlaps(bool splitWingInUpperAndLow
             compoundBuilder.Add (wingAndFlaps, trailingEdgeLoftCut);
        }
     }
+
+    // If there are now TrailingEdgeDevices, then there is no wingLoftCut.
+    if (wingLoftCut.IsNull()) {
+        wingLoftCut = GetLoft();
+    }
+
     // adding all shapes to one compound.
     compoundBuilder.Add (wingAndFlaps, wingLoftCut);
 
-    loft = wingAndFlaps;
-    return loft;
+    return wingAndFlaps;
 }
 
 // Gets the loft of the whole wing.
