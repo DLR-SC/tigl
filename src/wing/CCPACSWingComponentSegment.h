@@ -98,9 +98,6 @@ public:
 
     TIGL_EXPORT TiglGeometricComponentType GetComponentType(){ return TIGL_COMPONENT_WINGCOMPSEGMENT | TIGL_COMPONENT_SEGMENT | TIGL_COMPONENT_LOGICAL; }
 
-
-    TIGL_EXPORT TopoDS_Face getControlSurfaceTrailingEdgeOuterShapeFace(int trailingEdgeDeviceID);
-
     TIGL_EXPORT MaterialList GetMaterials(double eta, double xsi, TiglStructureType);
 
     // returns a list of segments that belong to this component segment
