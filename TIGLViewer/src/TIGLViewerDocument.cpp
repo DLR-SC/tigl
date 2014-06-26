@@ -814,6 +814,7 @@ void TIGLViewerDocument::drawWingFlapsForInteractiveUse(std::string selectedWing
     flapsForInteractiveUse.clear();
     myAISContext->EraseAll();
     tigl::CCPACSWing& wing = GetConfiguration().GetWing( selectedWing );
+
     TopoDS_Shape wingWithoutFlaps = wing.GetWingWithoutFlaps();
     displayShape(wingWithoutFlaps);
 
