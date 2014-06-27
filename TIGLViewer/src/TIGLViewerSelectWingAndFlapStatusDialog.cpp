@@ -86,10 +86,10 @@ void TIGLViewerSelectWingAndFlapStatusDialog::on_comboBoxWings_currentIndexChang
         tigl::CCPACSWingComponentSegment& componentSegment = (tigl::CCPACSWingComponentSegment&) wing.GetComponentSegment(i);
         if ( componentSegment.getControlSurfaces().getTrailingEdgeDevices()->getTrailingEdgeDeviceCount() < 1) {
             noDevices--;
-            if (noDevices <= 1) {
+            if (noDevices < 1) {
                 QPushButton *okButton= ui->buttonBox->button(QDialogButtonBox::Ok);
                 okButton->setEnabled(false);
-                QLabel* error = new QLabel("There are no TrailingEdgeDevices to display");
+                QLabel* error = new QLabel("This wing has no ControlSurfaces");
                 error->setMargin(50);
                 vLayout->addWidget( error );
             }
