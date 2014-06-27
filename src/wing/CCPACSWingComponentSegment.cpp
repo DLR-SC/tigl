@@ -61,6 +61,8 @@
 #include "BRepClass3d_SolidClassifier.hxx"
 #include "BRepExtrema_DistShapeShape.hxx"
 #include "TColgp_Array1OfPnt.hxx"
+#include <TopExp.hxx>
+#include <TopTools_IndexedMapOfShape.hxx>
 
 namespace tigl
 {
@@ -86,6 +88,46 @@ namespace
             return 1.;
         }
         return p;
+    }
+
+    // Set the face traits
+    void SetFaceTraits (PNamedShape loft, const int& nSegments) 
+    { 
+        // designated names of the faces
+        std::vector<std::string> names(3);
+        names[0]="Bottom";
+        names[1]="Top";
+        names[2]="TrailingEdge";
+        std::vector<std::string> endnames(2);
+        endnames[0]="Inside";
+        endnames[1]="Outside";
+
+        // map of faces
+        TopTools_IndexedMapOfShape map;
+        TopExp::MapShapes(loft->Shape(),   TopAbs_FACE, map);
+
+        unsigned int nFaces = map.Extent();
+        // check if number of faces without inside and outside surface (nFaces-2) 
+        // is a multiple of 2 (without Trailing Edges) or 3 (with Trailing Edges)
+        if (!((nFaces-2)/nSegments == 2 || (nFaces-2)/nSegments == 3) || nFaces < 4) {
+            throw tigl::CTiglError("CCPACSWingComponentSegment: Unable to name face traits in ruled surface loft", TIGL_ERROR);
+        }
+        // remove trailing edge name if there is no trailing edge
+        if ((nFaces-2)/nSegments == 2) {
+            names.erase(names.begin()+2);
+        }
+        // assign "Top" and "Bottom" to face traits
+        for (int i = 0; i < nFaces-2; i++) {
+            CFaceTraits traits = loft->GetFaceTraits(i);
+            traits.SetName(names[i%names.size()].c_str());
+            loft->SetFaceTraits(i, traits);
+        }
+        // assign "Inside" and "Outside" to face traits
+        for (int i = nFaces-2; i < nFaces; i++) {
+            CFaceTraits traits = loft->GetFaceTraits(i);
+            traits.SetName(endnames[i-nFaces+2].c_str());
+            loft->SetFaceTraits(i, traits);
+        }
     }
 }
 
@@ -385,7 +427,8 @@ void CCPACSWingComponentSegment::GetSegmentIntersection(const std::string& segme
 }
 
 // get short name for loft
-std::string CCPACSWingComponentSegment::GetShortShapeName() {
+std::string CCPACSWingComponentSegment::GetShortShapeName() 
+{
     unsigned int windex = 0;
     unsigned int wcsindex = 0;
     for (int i = 1; i <= wing->GetConfiguration().GetWingCount(); ++i) {
@@ -405,6 +448,7 @@ std::string CCPACSWingComponentSegment::GetShortShapeName() {
     }
     return "UNKNOWN";
 }
+
 // Builds the loft between the two segment sections
 PNamedShape CCPACSWingComponentSegment::BuildLoft(void)
 {
@@ -483,6 +527,7 @@ PNamedShape CCPACSWingComponentSegment::BuildLoft(void)
     std::string loftName = GetUID();
     std::string loftShortName = GetShortShapeName();
     PNamedShape loft (new CNamedShape(loftShape, loftName.c_str(), loftShortName.c_str()));
+    SetFaceTraits(loft, segments.size());
     return loft;
 }
 

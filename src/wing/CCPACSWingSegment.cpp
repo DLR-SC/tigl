@@ -142,6 +142,38 @@ namespace
 
         return TopoDS::Wire(transformedWire);
     }
+
+    // Set the face traits
+    void SetFaceTraits (PNamedShape loft) 
+    { 
+        // designated names of the faces
+        std::vector<std::string> names(5);
+        names[0]="Bottom";
+        names[1]="Top";
+        names[2]="TrailingEdge";
+        names[3]="Inside";
+        names[4]="Outside";
+
+        // map of faces
+        TopTools_IndexedMapOfShape map;
+        TopExp::MapShapes(loft->Shape(),   TopAbs_FACE, map);
+
+        // check if number of faces is correct (only valid for ruled surfaces lofts)
+        if (map.Extent() != 5 && map.Extent() != 4) {
+            throw tigl::CTiglError("CCPACSWingSegment: Unable to name face traits in ruled surface loft", TIGL_ERROR);
+        }
+        // remove trailing edge name if there is no trailing edge
+        if (map.Extent() == 4) {
+            names.erase(names.begin()+2);
+        }
+        // set face trait names
+        for (int i = 0; i < map.Extent(); i++) {
+            CFaceTraits traits = loft->GetFaceTraits(i);
+            traits.SetName(names[i].c_str());
+            loft->SetFaceTraits(i, traits);
+        }
+    }
+
 }
 
 // Constructor
@@ -277,7 +309,8 @@ TopoDS_Shape CCPACSWingSegment::GetOuterClosure()
 }
 
 // get short name for loft
-std::string CCPACSWingSegment::GetShortShapeName () {
+std::string CCPACSWingSegment::GetShortShapeName () 
+{
     unsigned int windex = 0;
     unsigned int wsindex = 0;
     for (int i = 1; i <= wing->GetConfiguration().GetWingCount(); ++i) {
@@ -296,36 +329,6 @@ std::string CCPACSWingSegment::GetShortShapeName () {
         }
     }
     return "UNKNOWN";
-}
-
-// Set the face traits
-void SetFaceTraits (PNamedShape loft) { 
-    // designated names of the faces
-    std::vector<std::string> names(5);
-    names[0]="Bottom";
-    names[1]="Top";
-    names[2]="TrailingEdge";
-    names[3]="Inside";
-    names[4]="Outside";
-
-    // map of faces
-    TopTools_IndexedMapOfShape map;
-    TopExp::MapShapes(loft->Shape(),   TopAbs_FACE, map);
-
-    // check if number of faces is correct (only valid for ruled surfaces lofts)
-    if (map.Extent() != 5 && map.Extent() != 4) {
-        throw tigl::CTiglError("CCPACSWingSegment: Unable to name face traits in ruled surface loft", TIGL_ERROR);
-    }
-    // remove trailing edge name if there is no trailing edge
-    if (map.Extent() == 4) {
-        names.erase(names.begin()+2);
-    }
-    // set face trait names and origin
-    for (int i = 0; i < map.Extent(); i++) {
-        CFaceTraits traits = loft->GetFaceTraits(i);
-        traits.SetName(names[i].c_str());
-        loft->SetFaceTraits(i, traits);
-    }
 }
 
 // Builds the loft between the two segment sections
