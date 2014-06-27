@@ -237,11 +237,13 @@ void CTiglExportIges::ExportShapes(const ListPNamedShape& shapes, const std::str
     ListPNamedShape shapeScaled;
     for (it = shapes.begin(); it != shapes.end(); ++it) {
         PNamedShape pshape = *it;
-        CTiglTransformation trafo;
-        trafo.AddScaling(1000,1000,1000);
-        PNamedShape pScaledShape(new CNamedShape(*pshape));
-        pScaledShape->SetShape(trafo.Transform(pshape->Shape()));
-        shapeScaled.push_back(pScaledShape);
+        if (pshape) {
+            CTiglTransformation trafo;
+            trafo.AddScaling(1000,1000,1000);
+            PNamedShape pScaledShape(new CNamedShape(*pshape));
+            pScaledShape->SetShape(trafo.Transform(pshape->Shape()));
+            shapeScaled.push_back(pScaledShape);
+        }
     }
     
     SetTranslationParameters();
