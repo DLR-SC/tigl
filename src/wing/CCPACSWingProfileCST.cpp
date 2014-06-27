@@ -247,9 +247,9 @@ void CCPACSWingProfileCST::BuildWires()
     upperInter.Perform();
     Handle(Geom_BSplineCurve) hUpperCurve = upperInter.Curve();
 
-    upperWire = BRepBuilderAPI_MakeEdge(hUpperCurve);
-    if (upperWire.IsNull() == Standard_True) {
-        throw CTiglError("Error: TopoDS_Wire upperWire is null in CCPACSWingProfileCST::BuildWires", TIGL_ERROR);
+    upperEdge = BRepBuilderAPI_MakeEdge(hUpperCurve);
+    if (upperEdge.IsNull() == Standard_True) {
+        throw CTiglError("Error: TopoDS_Wire upperEdge is null in CCPACSWingProfileCST::BuildWires", TIGL_ERROR);
     }
 
     // Build lower wire
@@ -284,9 +284,9 @@ void CCPACSWingProfileCST::BuildWires()
     Handle(Geom_BSplineCurve) hLowerCurve = lowerInter.Curve();
     hLowerCurve->Reverse();
     
-    lowerWire = BRepBuilderAPI_MakeEdge(hLowerCurve);
-    if (lowerWire.IsNull() == Standard_True) {
-        throw CTiglError("Error: TopoDS_Wire lowerWire is null in CCPACSWingProfileCST::BuildWires", TIGL_ERROR);
+    lowerEdge = BRepBuilderAPI_MakeEdge(hLowerCurve);
+    if (lowerEdge.IsNull() == Standard_True) {
+        throw CTiglError("Error: TopoDS_Wire lowerEdge is null in CCPACSWingProfileCST::BuildWires", TIGL_ERROR);
     }
     
     // fill in all points to create edge from lower to upper
@@ -354,19 +354,19 @@ const std::string & CCPACSWingProfileCST::GetProfileDataXPath() const
 }
         
 // get upper wing profile wire
-const TopoDS_Edge & CCPACSWingProfileCST::GetUpperWire() const
+const TopoDS_Edge & CCPACSWingProfileCST::GetUpperEdge() const
 {
-    return upperWire;
+    return upperEdge;
 }
             
 // get lower wing profile wire
-const TopoDS_Edge & CCPACSWingProfileCST::GetLowerWire() const
+const TopoDS_Edge & CCPACSWingProfileCST::GetLowerEdge() const
 {
-    return lowerWire;
+    return lowerEdge;
 }
 
 // gets the upper and lower wing profile into on edge
-const TopoDS_Edge & CCPACSWingProfileCST::GetUpperLowerWire() const
+const TopoDS_Edge & CCPACSWingProfileCST::GetUpperLowerEdge() const
 {
     return upperLowerEdge;
 }

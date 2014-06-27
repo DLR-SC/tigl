@@ -48,7 +48,7 @@ namespace tigl
 
 class CCPACSWing;
 
-class CCPACSWingSegment : public CTiglAbstractSegment
+class CCPACSWingSegment : public CTiglAbstractSegment, public IGuideCurveBuilder
 {
 
 public:
@@ -190,6 +190,9 @@ public:
     {
         return TIGL_COMPONENT_WINGSEGMENT | TIGL_COMPONENT_SEGMENT | TIGL_COMPONENT_LOGICAL;
     }
+    
+    // builds all guide curve segments wires
+    TIGL_EXPORT void BuildGuideCurve(CCPACSGuideCurve*);
 
 protected:
     // Cleanup routine
@@ -198,8 +201,6 @@ protected:
     // Update internal segment data
     void Update(void);
     
-    // builds all guide curve segments wires
-    void BuildGuideCurveSegments(void);
 
     // Builds the loft between the two segment sections
     TopoDS_Shape BuildLoft(void);

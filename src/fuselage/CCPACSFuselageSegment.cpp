@@ -228,6 +228,10 @@ void CCPACSFuselageSegment::ReadCPACS(TixiDocumentHandle tixiHandle, const std::
     if (tixiCheckElement(tixiHandle, (segmentXPath + "/guideCurves").c_str()) == SUCCESS) {
         guideCurvesPresent = true;
         guideCurves.ReadCPACS(tixiHandle, segmentXPath);
+        for (int iguide = 1; iguide <= guideCurves.GetGuideCurveCount(); ++iguide) {
+            CCPACSGuideCurve& curve = guideCurves.GetGuideCurve(iguide);
+            curve.SetGuideCurveBuilder(this);
+        }
     }
     else {
         guideCurvesPresent = false;
@@ -781,8 +785,10 @@ double CCPACSFuselageSegment::GetCircumference(const double eta)
 
 
 // Creates all guide curves
-void CCPACSFuselageSegment::BuildGuideCurveSegments(void)
+void CCPACSFuselageSegment::BuildGuideCurve(CCPACSGuideCurve*)
 {
+    // build all guides at once, this is more efficient
+    
     if (!guideCurvesPresent || guideCurvesBuilt) {
         return;
     }
@@ -815,28 +821,16 @@ void CCPACSFuselageSegment::BuildGuideCurveSegments(void)
 
         // loop through all guide curves and construct the corresponding wires
         int nGuideCurves = guideCurves.GetGuideCurveCount();
-        for (int i=0; i!=nGuideCurves; i++) {
+        for (int i=1; i<= nGuideCurves; i++) {
             // get guide curve
-            CCPACSGuideCurve& guideCurve = guideCurves.GetGuideCurve(i+1);
-            double fromRelativeCircumference;
-            // check if fromRelativeCircumference is given in the current guide curve
-            if (guideCurve.GetFromRelativeCircumferenceIsSet()) {
-                fromRelativeCircumference = guideCurve.GetFromRelativeCircumference();
-            }
-            // otherwise get relative circumference from neighboring segment guide curve
-            else {
-                // get neighboring guide curve UID
-                std::string neighborGuideCurveUID = guideCurve.GetFromGuideCurveUID();
-                // get neighboring guide curve
-                CCPACSGuideCurve& neighborGuideCurve = fuselage->GetGuideCurveSegment(neighborGuideCurveUID);
-                // get relative circumference from neighboring guide curve
-                fromRelativeCircumference = neighborGuideCurve.GetToRelativeCircumference();
-            }
+            CCPACSGuideCurve& guideCurve = guideCurves.GetGuideCurve(i);
+            // get relative circumference of inner profile
+            double fromRelativeCircumference = guideCurve.GetFromRelativeCircumference();
+
             // get relative circumference of outer profile
             double toRelativeCircumference = guideCurve.GetToRelativeCircumference();
             // get guide curve profile UID
             std::string guideCurveProfileUID = guideCurve.GetGuideCurveProfileUID();
-            // get relative circumference of inner profile
 
             // get guide curve profile
             CCPACSConfiguration& config = fuselage->GetConfiguration();
@@ -858,7 +852,6 @@ void CCPACSFuselageSegment::BuildGuideCurveSegments(void)
 
 CCPACSGuideCurves& CCPACSFuselageSegment::GetGuideCurveSegments()
 {
-    BuildGuideCurveSegments();
     return guideCurves;
 }
 

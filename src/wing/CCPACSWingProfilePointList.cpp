@@ -289,8 +289,8 @@ void CCPACSWingProfilePointList::BuildWires()
     }
 
     // upper and lower edges
-    lowerWire = BRepBuilderAPI_MakeEdge(lowerCurve);
-    upperWire = BRepBuilderAPI_MakeEdge(upperCurve);
+    lowerEdge = BRepBuilderAPI_MakeEdge(lowerCurve);
+    upperEdge = BRepBuilderAPI_MakeEdge(upperCurve);
     upperLowerEdge = BRepBuilderAPI_MakeEdge(curve);
 
     // Trailing edge points
@@ -360,19 +360,19 @@ const std::string& CCPACSWingProfilePointList::GetProfileDataXPath() const
 }
 
 // get upper wing profile wire
-const TopoDS_Edge& CCPACSWingProfilePointList::GetUpperWire() const
+const TopoDS_Edge& CCPACSWingProfilePointList::GetUpperEdge() const
 {
-    return upperWire;
+    return upperEdge;
 }
 
 // get lower wing profile wire
-const TopoDS_Edge& CCPACSWingProfilePointList::GetLowerWire() const
+const TopoDS_Edge& CCPACSWingProfilePointList::GetLowerEdge() const
 {
-    return lowerWire;
+    return lowerEdge;
 }
 
 // get the upper and lower wing profile combined into one edge
-const TopoDS_Edge & CCPACSWingProfilePointList::GetUpperLowerWire() const 
+const TopoDS_Edge & CCPACSWingProfilePointList::GetUpperLowerEdge() const 
 {
     return upperLowerEdge;
 }

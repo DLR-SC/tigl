@@ -131,6 +131,8 @@ public:
 protected:
     void BuildGuideCurves();
 
+    void ConnectGuideCurveSegments();
+
     // Cleanup routine
     void Cleanup(void);
 

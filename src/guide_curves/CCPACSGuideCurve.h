@@ -39,6 +39,8 @@ namespace tigl
 class CTiglPoint;
 typedef class CSharedPtr<CTiglPoint> PCTiglPoint;
 
+class IGuideCurveBuilder;
+
 class CCPACSGuideCurve
 {
 
@@ -73,19 +75,23 @@ public:
 
     // Returns the relative circumference of the starting profile
     TIGL_EXPORT const double& GetFromRelativeCircumference(void) const;
+    
+    TIGL_EXPORT void SetFromRelativeCircumference(double);
 
     // Returns the relative circumference of the end profile
     TIGL_EXPORT const double& GetToRelativeCircumference(void) const;
 
     TIGL_EXPORT void SetCurve(const TopoDS_Edge&);
 
-    TIGL_EXPORT const TopoDS_Edge& GetCurve() const;
+    TIGL_EXPORT const TopoDS_Edge& GetCurve();
 
     // Connects the current guide curve segment with another segment guide
     // This implies, that guide.fromGuideCurveUID == this.uid
     TIGL_EXPORT void ConnectToCurve(CCPACSGuideCurve* guide);
 
     TIGL_EXPORT CCPACSGuideCurve* GetConnectedCurve() const;
+    
+    TIGL_EXPORT void SetGuideCurveBuilder(IGuideCurveBuilder*);
 
 protected:
     // Cleanup routine
@@ -109,7 +115,15 @@ private:
     bool fromRelativeCircumferenceIsSet;  /**< Determine if fromRelativeCircumference is set */
     double fromRelativeCircumference;     /**< The relative circumfence of the starting profile */ 
     double toRelativeCircumference;       /**< The relative circumfence of the end profile */ 
+    IGuideCurveBuilder* builder;
+    bool isBuild;                         /**< Checks whether the guide curve is already built */
 
+};
+
+class IGuideCurveBuilder
+{
+public:
+    virtual void BuildGuideCurve(CCPACSGuideCurve*) = 0;
 };
 
 } // end namespace tigl

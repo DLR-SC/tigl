@@ -190,6 +190,7 @@ void CCPACSFuselage::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string&
 
     // Get subelement "segments"
     segments.ReadCPACS(tixiHandle, fuselageXPath);
+    ConnectGuideCurveSegments();
 
     // Register ourself at the unique id manager
     configuration->GetUIDManager().AddUID(ptrUID, this);
@@ -452,6 +453,22 @@ void CCPACSFuselage::BuildGuideCurves()
         wireFixer.Perform();
         result = wireFixer.Wire();
         b.Add(guideCurves, result);
+    }
+}
+
+void CCPACSFuselage::ConnectGuideCurveSegments(void)
+{
+    for (int isegment = 1; isegment <= GetSegmentCount(); ++isegment) {
+        CCPACSFuselageSegment& segment = static_cast<CCPACSFuselageSegment&>(GetSegment(isegment));
+        CCPACSGuideCurves& curves = segment.GetGuideCurveSegments();
+        for (int icurve = 1; icurve <= curves.GetGuideCurveCount(); ++icurve) {
+            CCPACSGuideCurve& curve = curves.GetGuideCurve(icurve);
+            if (!curve.GetFromRelativeCircumferenceIsSet()) {
+                std::string fromUID = curve.GetFromGuideCurveUID();
+                CCPACSGuideCurve& fromCurve = GetGuideCurveSegment(fromUID);
+                curve.SetFromRelativeCircumference(fromCurve.GetToRelativeCircumference());
+            }
+        }
     }
 }
 

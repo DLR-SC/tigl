@@ -28,6 +28,7 @@
 #include <string>
 #include <cassert>
 #include <cfloat>
+#include <map>
 
 #include "CCPACSWingSegment.h"
 #include "CCPACSWing.h"
@@ -217,6 +218,10 @@ void CCPACSWingSegment::ReadCPACS(TixiDocumentHandle tixiHandle, const std::stri
     if (tixiCheckElement(tixiHandle, (segmentXPath + "/guideCurves").c_str()) == SUCCESS) {
         guideCurvesPresent = true;
         guideCurves.ReadCPACS(tixiHandle, segmentXPath);
+        for (int iguide = 1; iguide <= guideCurves.GetGuideCurveCount(); ++iguide) {
+            CCPACSGuideCurve& curve = guideCurves.GetGuideCurve(iguide);
+            curve.SetGuideCurveBuilder(this);
+        }
     }
     else {
         guideCurvesPresent = false;
@@ -317,12 +322,28 @@ TopoDS_Shape CCPACSWingSegment::BuildLoft(void)
     lofter.addProfiles(innerWire);
     lofter.addProfiles(outerWire);
     
-    BuildGuideCurveSegments();
     CCPACSGuideCurves& curves = GetGuideCurveSegments();
-    for (int iguide = 1; iguide <= curves.GetGuideCurveCount(); ++iguide) {
-        CCPACSGuideCurve& curve = curves.GetGuideCurve(iguide);
-        BRepBuilderAPI_MakeWire wireMaker(curve.GetCurve());
-        lofter.addGuides(wireMaker.Wire());
+    if (curves.GetGuideCurveCount() > 0) {
+        bool hasTrailingEdge = !innerConnection.GetProfile().GetTrailingEdge().IsNull();
+        
+        // order guide curves according to fromRelativeCircumeference
+        std::multimap<double, CCPACSGuideCurve*> guideMap;
+        for (int iguide = 1; iguide <= curves.GetGuideCurveCount(); ++iguide) {
+            CCPACSGuideCurve* curve = &curves.GetGuideCurve(iguide);
+            double value = curve->GetFromRelativeCircumference();
+            if (value >= 1. && !hasTrailingEdge) {
+                // this is a trailing edge profile, we should add it first
+                value = -1.;
+            }
+            guideMap.insert(std::make_pair<double, CCPACSGuideCurve*>(value, curve));
+        }
+        
+        std::multimap<double, CCPACSGuideCurve*>::iterator it;
+        for (it = guideMap.begin(); it != guideMap.end(); ++it) {
+            CCPACSGuideCurve* curve = it->second;
+            BRepBuilderAPI_MakeWire wireMaker(curve->GetCurve());
+            lofter.addGuides(wireMaker.Wire());
+        }
     }
     
     TopoDS_Shape loft = lofter.Shape();
@@ -858,8 +879,10 @@ TopoDS_Shape& CCPACSWingSegment::GetLowerShape()
 }
 
 // Creates all guide curves
-void CCPACSWingSegment::BuildGuideCurveSegments(void)
+void CCPACSWingSegment::BuildGuideCurve(CCPACSGuideCurve*)
 {
+    // we build all curves at once, not just the one asked for
+    
     if (!guideCurvesPresent || guideCurvesBuilt) {
         return;
     }
@@ -869,7 +892,7 @@ void CCPACSWingSegment::BuildGuideCurveSegments(void)
         CCPACSWingProfile& innerProfile = innerConnection.GetProfile();
         TopoDS_Edge upperInnerWire = TopoDS::Edge(transformProfileWire(GetWing().GetTransformation(), innerConnection, innerProfile.GetUpperWire()));
         TopoDS_Edge lowerInnerWire = TopoDS::Edge(transformProfileWire(GetWing().GetTransformation(), innerConnection, innerProfile.GetLowerWire()));
-
+        
         // get upper and lower part of outer profile in world coordinates
         CCPACSWingProfile& outerProfile = outerConnection.GetProfile();
         TopoDS_Edge upperOuterWire = TopoDS::Edge(transformProfileWire(GetWing().GetTransformation(), outerConnection, outerProfile.GetUpperWire()));
@@ -893,23 +916,11 @@ void CCPACSWingSegment::BuildGuideCurveSegments(void)
 
         // loop through all guide curves and construct the corresponding wires
         int nGuideCurves = guideCurves.GetGuideCurveCount();
-        for (int i=0; i!=nGuideCurves; i++) {
+        for (int i=1; i <= nGuideCurves; i++) {
             // get guide curve
-            CCPACSGuideCurve& guideCurve = guideCurves.GetGuideCurve(i+1);
-            double fromRelativeCircumference;
-            // check if fromRelativeCircumference is given in the current guide curve
-            if (guideCurve.GetFromRelativeCircumferenceIsSet()) {
-                fromRelativeCircumference = guideCurve.GetFromRelativeCircumference();
-            }
-            // otherwise get relative circumference from neighboring segment guide curve
-            else {
-                // get neighboring guide curve UID
-                std::string neighborGuideCurveUID = guideCurve.GetFromGuideCurveUID();
-                // get neighboring guide curve
-                CCPACSGuideCurve& neighborGuideCurve = wing->GetGuideCurveSegment(neighborGuideCurveUID);
-                // get relative circumference from neighboring guide curve
-                fromRelativeCircumference = neighborGuideCurve.GetToRelativeCircumference();
-            }
+            CCPACSGuideCurve& guideCurve = guideCurves.GetGuideCurve(i);
+            double fromRelativeCircumference = guideCurve.GetFromRelativeCircumference();
+
             // get relative circumference of outer profile
             double toRelativeCircumference = guideCurve.GetToRelativeCircumference();
             // get guide curve profile UID
@@ -936,7 +947,6 @@ void CCPACSWingSegment::BuildGuideCurveSegments(void)
 
 CCPACSGuideCurves& CCPACSWingSegment::GetGuideCurveSegments()
 {
-    BuildGuideCurveSegments();
     return guideCurves;
 }
 

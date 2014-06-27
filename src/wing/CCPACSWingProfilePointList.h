@@ -80,13 +80,13 @@ public:
     TIGL_EXPORT const std::string& GetProfileDataXPath() const;
 
     // get upper wing profile wire
-    TIGL_EXPORT const TopoDS_Edge& GetUpperWire() const;
+    TIGL_EXPORT const TopoDS_Edge& GetUpperEdge() const;
 
     // get lower wing profile wire
-    TIGL_EXPORT const TopoDS_Edge& GetLowerWire() const;
+    TIGL_EXPORT const TopoDS_Edge& GetLowerEdge() const;
 
     // get the upper and lower wing profile combined into one edge
-    TIGL_EXPORT const TopoDS_Edge & GetUpperLowerWire() const;
+    TIGL_EXPORT const TopoDS_Edge & GetUpperLowerEdge() const;
 
     // get trailing edge
     TIGL_EXPORT const TopoDS_Edge& GetTrailingEdge() const;
@@ -118,10 +118,10 @@ private:
 
 
     std::string               ProfileDataXPath; /**< CPACS path to profile data (pointList or cst2D) */
-    TopoDS_Edge               upperWire;        /**< wire of the upper wing profile */
-    TopoDS_Edge               lowerWire;        /**< wire of the lower wing profile */
+    TopoDS_Edge               upperEdge;        /**< edge of the upper wing profile */
+    TopoDS_Edge               lowerEdge;        /**< edge of the lower wing profile */
     TopoDS_Edge               upperLowerEdge;   /**< edge of the upper and lower wing profile combined */
-    TopoDS_Edge               trailingEdge;     /**< wire of the trailing edge */
+    TopoDS_Edge               trailingEdge;     /**< edge of the trailing edge */
     gp_Pnt                    lePoint;          /**< Leading edge point */
     gp_Pnt                    tePoint;          /**< Trailing edge point */
 };

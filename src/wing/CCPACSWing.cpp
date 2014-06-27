@@ -140,6 +140,22 @@ void CCPACSWing::BuildMatrix(void)
     backTransformation = transformation.Inverted();
 }
 
+void CCPACSWing::ConnectGuideCurveSegments(void)
+{
+    for (int isegment = 1; isegment <= GetSegmentCount(); ++isegment) {
+        CCPACSWingSegment& segment = static_cast<CCPACSWingSegment&>(GetSegment(isegment));
+        CCPACSGuideCurves& curves = segment.GetGuideCurveSegments();
+        for (int icurve = 1; icurve <= curves.GetGuideCurveCount(); ++icurve) {
+            CCPACSGuideCurve& curve = curves.GetGuideCurve(icurve);
+            if (!curve.GetFromRelativeCircumferenceIsSet()) {
+                std::string fromUID = curve.GetFromGuideCurveUID();
+                CCPACSGuideCurve& fromCurve = GetGuideCurveSegment(fromUID);
+                curve.SetFromRelativeCircumference(fromCurve.GetToRelativeCircumference());
+            }
+        }
+    }
+}
+
 // Update internal wing data
 void CCPACSWing::Update(void)
 {
@@ -223,6 +239,7 @@ void CCPACSWing::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& win
 
     // Get subelement "segments"
     segments.ReadCPACS(tixiHandle, wingXPath);
+    ConnectGuideCurveSegments();
 
     // Get subelement "componentSegments"
     componentSegments.ReadCPACS(tixiHandle, wingXPath);
@@ -675,12 +692,12 @@ CCPACSGuideCurve& CCPACSWing::GetGuideCurveSegment(std::string uid)
 
 TopoDS_Compound& CCPACSWing::GetGuideCurveWires()
 {
-    BuildGuideCurves();
+    BuildGuideCurveWires();
     return guideCurves;
 }
 
 
-void CCPACSWing::BuildGuideCurves()
+void CCPACSWing::BuildGuideCurveWires()
 {
     if (!guideCurves.IsNull()) {
         return;
@@ -689,7 +706,17 @@ void CCPACSWing::BuildGuideCurves()
     guideCurves.Nullify();
     BRep_Builder b;
     b.MakeCompound(guideCurves);
-    std::map<std::string, CCPACSGuideCurve*> roots;
+    
+    // check, if the wing has a blunt trailing edge
+    bool hasBluntTE = true;
+    if (GetSectionCount() > 0) {
+        CCPACSWingSegment& segment = segments.GetSegment(1);
+        hasBluntTE = !segment.GetInnerConnection().GetProfile().GetTrailingEdge().IsNull();
+    }
+    
+    // the guide curves will be sorted according to the inner
+    // from relativeCircumference
+    std::multimap<double, CCPACSGuideCurve*> roots;
     
     // connect the belonging guide curve segments
     for (int isegment = 1; isegment <= GetSegmentCount(); ++isegment) {
@@ -700,8 +727,11 @@ void CCPACSWing::BuildGuideCurves()
             std::string fromCurveUID = curve.GetFromGuideCurveUID();
             if (fromCurveUID.empty()) {
                 // this is a root curve
-                std::string rootUID = curve.GetUID();
-                roots[rootUID] = &curve;
+                double fromRef = curve.GetFromRelativeCircumference();
+                if (fromRef >= 1. && !hasBluntTE) {
+                    fromRef = -1.;
+                }
+                roots.insert(std::make_pair<double, CCPACSGuideCurve*>(fromRef, &curve));
             }
             else {
                 CCPACSGuideCurve& fromCurve = GetGuideCurveSegment(fromCurveUID);
@@ -711,7 +741,7 @@ void CCPACSWing::BuildGuideCurves()
     }
     
     // connect belonging guide curves to wires
-    std::map<std::string, CCPACSGuideCurve*>::iterator it;
+    std::multimap<double, CCPACSGuideCurve*>::iterator it;
     for (it = roots.begin(); it != roots.end(); ++it) {
         CCPACSGuideCurve* curCurve = it->second;
         BRepBuilderAPI_MakeWire wireMaker;

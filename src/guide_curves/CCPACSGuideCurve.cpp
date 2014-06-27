@@ -53,6 +53,8 @@ void CCPACSGuideCurve::Cleanup(void)
     fromRelativeCircumferenceIsSet = true;
     nextGuideSegment = NULL;
     guideCurveTopo.Nullify();
+    builder = NULL;
+    isBuild = false;
 }
 
 // Read guide curve file
@@ -160,13 +162,22 @@ const double& CCPACSGuideCurve::GetToRelativeCircumference(void) const
     return toRelativeCircumference;
 }
 
+void CCPACSGuideCurve::SetFromRelativeCircumference(double v) {
+    fromRelativeCircumference = v;
+}
+
+// This will be called be the guide curve builder
 void CCPACSGuideCurve::SetCurve(const TopoDS_Edge& edge)
 {
+    isBuild = true;
     guideCurveTopo = edge;
 }
 
-const TopoDS_Edge& CCPACSGuideCurve::GetCurve() const
+const TopoDS_Edge& CCPACSGuideCurve::GetCurve()
 {
+    if (builder && !isBuild) {
+        builder->BuildGuideCurve(this);
+    }
     return guideCurveTopo;
 }
 
@@ -186,6 +197,11 @@ void CCPACSGuideCurve::ConnectToCurve(CCPACSGuideCurve *guide)
 CCPACSGuideCurve* CCPACSGuideCurve::GetConnectedCurve() const
 {
     return nextGuideSegment;
+}
+
+void CCPACSGuideCurve::SetGuideCurveBuilder(IGuideCurveBuilder* b)
+{
+    builder = b;
 }
 
 } // end namespace tigl

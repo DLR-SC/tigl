@@ -45,7 +45,7 @@ namespace tigl
 
 class CCPACSFuselage;
 
-class CCPACSFuselageSegment : public CTiglAbstractSegment
+class CCPACSFuselageSegment : public CTiglAbstractSegment, public IGuideCurveBuilder
 {
 
 public:
@@ -152,6 +152,9 @@ public:
     TIGL_EXPORT TiglGeometricComponentType GetComponentType(){return TIGL_COMPONENT_FUSELSEGMENT | TIGL_COMPONENT_SEGMENT | TIGL_COMPONENT_LOGICAL;}
 
     TIGL_EXPORT CCPACSGuideCurves& GetGuideCurveSegments();
+    
+    // builds all guide curve segments
+    TIGL_EXPORT void BuildGuideCurve(CCPACSGuideCurve*);
 
 protected:
     // Cleanup routine
@@ -159,9 +162,6 @@ protected:
 
     // Update internal segment data
     void Update(void);
-    
-    // builds all guide curve segments
-    void BuildGuideCurveSegments(void);
 
     // Builds the loft between the two segment sections
     TopoDS_Shape BuildLoft(void);
