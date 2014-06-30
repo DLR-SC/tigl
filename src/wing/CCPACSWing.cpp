@@ -212,6 +212,20 @@ void CCPACSWing::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& win
             throw CTiglError("Error: XML error while reading <translation/> in CCPACSWing::ReadCPACS", TIGL_XML_ERROR);
         }
     }
+    
+    // Get translation type (attribute of "/transformation/translation")
+    if (tixiCheckAttribute(tixiHandle, elementPath, "refType") == SUCCESS) {
+        char * refTypeVal = NULL;
+        if (tixiGetTextAttribute(tixiHandle, elementPath, "refType", &refTypeVal) == SUCCESS) {
+            std::string refTypeStr(refTypeVal);
+            if (refTypeStr == "absGlobal") {
+                translationType = ABS_GLOBAL;
+            }
+            else if (refTypeStr == "absLocal") {
+                translationType = ABS_LOCAL;
+            }
+        }
+    }
 
     // Get subelement "/transformation/scaling"
     tempString  = wingXPath + "/transformation/scaling";

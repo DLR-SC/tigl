@@ -53,6 +53,7 @@ void CTiglAbstractGeometricComponent::Reset()
     translation = CTiglPoint(0.,0.,0.);
     scaling     = CTiglPoint(1.,1.,1.);
     rotation    = CTiglPoint(0.,0.,0.);
+    translationType = ABS_LOCAL;
 }
 
 // Destructor
@@ -97,9 +98,14 @@ CTiglTransformation CTiglAbstractGeometricComponent::GetTransformation()
     return transformation;
 }
 
-CTiglPoint CTiglAbstractGeometricComponent::GetTranslation()
+CTiglPoint CTiglAbstractGeometricComponent::GetTranslation() const
 {
     return translation;
+}
+
+ECPACSTranslationType CTiglAbstractGeometricComponent::GetTranslationType(void) const
+{
+    return translationType;
 }
 
 void CTiglAbstractGeometricComponent::Translate(CTiglPoint trans)

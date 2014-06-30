@@ -40,6 +40,12 @@ class TopoDS_Shape;
 namespace tigl 
 {
 
+enum ECPACSTranslationType
+{
+    ABS_LOCAL,
+    ABS_GLOBAL
+};
+
 class ITiglGeometricComponent
 {
 
@@ -60,7 +66,9 @@ public:
     virtual void Translate(CTiglPoint trans) = 0;
 
     // Get component translation
-    virtual CTiglPoint GetTranslation(void) = 0;
+    virtual CTiglPoint GetTranslation(void) const = 0;
+    
+    virtual ECPACSTranslationType GetTranslationType(void) const = 0;
 
     // Returns the Geometric type of this component, e.g. Wing or Fuselage
     virtual TiglGeometricComponentType GetComponentType(void) = 0;
