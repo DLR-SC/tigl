@@ -19,8 +19,8 @@ android {
     buildToolsVersion "19.0.3"
 
     defaultConfig{
-        versionName "1.1"
-        versionCode 6
+        versionName "1.2"
+        versionCode 7
     }
     // make code to 3-digits code: 5 -> 005 (required for architecture prefixing)
     def versionCodeString = String.format('%03d', defaultConfig.versionCode)
