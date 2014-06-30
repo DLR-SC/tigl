@@ -71,7 +71,10 @@ public:
     TIGL_EXPORT virtual CTiglTransformation GetTransformation(void);
 
     // Get component translation
-    TIGL_EXPORT virtual CTiglPoint GetTranslation(void);
+    TIGL_EXPORT virtual CTiglPoint GetTranslation(void) const;
+    
+    // Get type of translation (global or local)
+    TIGL_EXPORT virtual ECPACSTranslationType GetTranslationType(void) const;
 
     // Set transformation object
     TIGL_EXPORT virtual void Translate(CTiglPoint trans);
@@ -91,6 +94,7 @@ protected:
     CTiglTransformation        transformation;
     CTiglTransformation        backTransformation;
     CTiglPoint                 translation;
+    ECPACSTranslationType      translationType;
     CTiglPoint                 scaling;
     CTiglPoint                 rotation;
     PNamedShape                loft;
