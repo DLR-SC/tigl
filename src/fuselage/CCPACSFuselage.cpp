@@ -414,7 +414,7 @@ void CCPACSFuselage::BuildGuideCurves()
     guideCurves.Nullify();
     BRep_Builder b;
     b.MakeCompound(guideCurves);
-    std::map<std::string, CCPACSGuideCurve*> roots;
+    std::multimap<double, CCPACSGuideCurve*> roots;
     
     // find roots and connect the belonging guide curve segments
     for (int isegment = 1; isegment <= GetSegmentCount(); ++isegment) {
@@ -425,8 +425,10 @@ void CCPACSFuselage::BuildGuideCurves()
             std::string fromCurveUID = curve.GetFromGuideCurveUID();
             if (fromCurveUID.empty()) {
                 // this is a root curve
-                std::string rootUID = curve.GetUID();
-                roots[rootUID] = &curve;
+                double relCirc= curve.GetFromRelativeCircumference();
+                //TODO: determine if half fuselage or not. If not
+                //the guide curve at relCirc=1 should be inserted at relCirc=0
+                roots.insert(std::make_pair<double, CCPACSGuideCurve*>(relCirc, &curve));
             }
             else {
                 CCPACSGuideCurve& fromCurve = GetGuideCurveSegment(fromCurveUID);
@@ -436,7 +438,7 @@ void CCPACSFuselage::BuildGuideCurves()
     }
     
     // connect belonging guide curves to wires
-    std::map<std::string, CCPACSGuideCurve*>::iterator it;
+    std::multimap<double, CCPACSGuideCurve*>::iterator it;
     for (it = roots.begin(); it != roots.end(); ++it) {
         CCPACSGuideCurve* curCurve = it->second;
         BRepBuilderAPI_MakeWire wireMaker;
