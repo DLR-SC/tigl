@@ -31,7 +31,7 @@
 class CTiglMakeLoft
 {
 public:
-    CTiglMakeLoft(double tolerance = 1e-6);
+    CTiglMakeLoft(double tolerance = 1e-5);
     CTiglMakeLoft(const TopoDS_Shape& profiles, const TopoDS_Shape& guides, double tolerance = 1e-6);
     
     /**

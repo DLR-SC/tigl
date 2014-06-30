@@ -180,6 +180,13 @@ void CTiglMakeLoft::makeLoftWithGuides()
         return;
     }
     
+#ifdef DEBUG
+    // store intermediate result
+    std::stringstream spatches;
+    spatches << "patches" << iLoft << ".brep";
+    BRepTools::Write(faces, spatches.str().c_str());
+#endif
+    
     if (_makeSolid) {
         // check if the first wire is the same as the last
         Standard_Boolean vClosed = (profiles[0].IsSame(profiles[profiles.size()-1]));
@@ -210,6 +217,13 @@ void CTiglMakeLoft::makeLoftWithGuides()
             TopoDS_Face innerCap, outerCap;
             _result = faces;
             _result = MakeSolid(faces, wire1, wire2, 1e-6, innerCap, outerCap);
+            
+#ifdef DEBUG
+            // store solid result
+            std::stringstream ssolid;
+            ssolid << "solid" << iLoft << ".brep";
+            BRepTools::Write(_result, ssolid.str().c_str());
+#endif
         }
     }
     else {
