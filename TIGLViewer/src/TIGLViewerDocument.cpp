@@ -841,8 +841,8 @@ void TIGLViewerDocument::updateControlSurfacesInteractiveObjects(std::string sel
         tigl::CCPACSTrailingEdgeDevices* trailingEdgeDevices = componentSegment.getControlSurfaces().getTrailingEdgeDevices();
 
         for ( int j = 1; j <= trailingEdgeDevices->getTrailingEdgeDeviceCount(); j++ ) {
-
             tigl::CCPACSTrailingEdgeDevice &trailingEdgeDevice = trailingEdgeDevices->getTrailingEdgeDeviceByID(j);
+            //displayShape(trailingEdgeDevice.getCutOutShape());
             if (flapsForInteractiveUse.find(trailingEdgeDevice.getUID()) != flapsForInteractiveUse.end()) {
                gp_Trsf trsf = trailingEdgeDevice.getTransformation(flapStatus[trailingEdgeDevice.getUID()]);
                myAISContext->SetLocation((Handle_AIS_InteractiveObject) flapsForInteractiveUse[trailingEdgeDevice.getUID()],trsf);
