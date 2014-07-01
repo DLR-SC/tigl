@@ -49,7 +49,7 @@ public:
     TIGL_EXPORT CCPACSControlSurfaceOuterShape();
 
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle,
-            const std::string & outerShapeXPath);
+            const std::string & outerShapeXPath, bool isLeadingEdge = false);
 
     TIGL_EXPORT const CCPACSControlSurfaceBorder& getInnerBorder();
     TIGL_EXPORT const CCPACSControlSurfaceBorder& getOuterBorder();

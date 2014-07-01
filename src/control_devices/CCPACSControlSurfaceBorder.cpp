@@ -36,28 +36,53 @@ CCPACSControlSurfaceBorder::CCPACSControlSurfaceBorder()
 
 // Read CPACS Border element
 void CCPACSControlSurfaceBorder::ReadCPACS(TixiDocumentHandle tixiHandle,
-        const std::string& BorderXPath)
+        const std::string& BorderXPath, bool isLeadingEdge)
 {
     char* elementPath;
     std::string tempString;
 
-    // getting subelements
-    tempString = BorderXPath + "/etaLE";
-    elementPath = const_cast<char*>(tempString.c_str());
-    if (tixiGetDoubleElement(tixiHandle, elementPath, &etaLE) != SUCCESS) {
-        // couldnt read etaLE
-    }
+    if (!isLeadingEdge){
+        // getting subelements
+        tempString = BorderXPath + "/etaLE";
+        elementPath = const_cast<char*>(tempString.c_str());
+        if (tixiGetDoubleElement(tixiHandle, elementPath, &etaLE) != SUCCESS) {
+            // couldnt read etaLE
+        }
 
-    tempString = BorderXPath + "/etaTE";
-    elementPath = const_cast<char*>(tempString.c_str());
-    if (tixiGetDoubleElement(tixiHandle, elementPath, &etaTE) != SUCCESS) {
-        etaTE = etaLE;
-    }
+        tempString = BorderXPath + "/etaTE";
+        elementPath = const_cast<char*>(tempString.c_str());
+        if (tixiGetDoubleElement(tixiHandle, elementPath, &etaTE) != SUCCESS) {
+            etaTE = etaLE;
+        }
 
-    tempString = BorderXPath + "/xsiLE";
-    elementPath = const_cast<char*>(tempString.c_str());
-    if (tixiGetDoubleElement(tixiHandle, elementPath, &xsiLE) != SUCCESS) {
-        // couldnt read xsiLE
+        tempString = BorderXPath + "/xsiLE";
+        elementPath = const_cast<char*>(tempString.c_str());
+        if (tixiGetDoubleElement(tixiHandle, elementPath, &xsiLE) != SUCCESS) {
+            // couldnt read xsiLE
+        }
+
+        xsiTE = 1;
+    }
+    else {
+        // getting subelements
+        tempString = BorderXPath + "/etaLE";
+        elementPath = const_cast<char*>(tempString.c_str());
+        if (tixiGetDoubleElement(tixiHandle, elementPath, &etaLE) != SUCCESS) {
+            // couldnt read etaLE
+        }
+
+        tempString = BorderXPath + "/etaTE";
+        elementPath = const_cast<char*>(tempString.c_str());
+        if (tixiGetDoubleElement(tixiHandle, elementPath, &etaTE) != SUCCESS) {
+            etaTE = etaLE;
+        }
+
+        tempString = BorderXPath + "/xsiTEUpper";
+        elementPath = const_cast<char*>(tempString.c_str());
+        if (tixiGetDoubleElement(tixiHandle, elementPath, &xsiTE) != SUCCESS) {
+            // couldnt read xsiLE
+        }
+        xsiLE = 0;
     }
 
 }
