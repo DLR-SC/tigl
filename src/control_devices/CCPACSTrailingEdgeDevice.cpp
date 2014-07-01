@@ -235,43 +235,8 @@ TopoDS_Face CCPACSTrailingEdgeDevice::getFace()
     gp_Pnt point3 = _segment->GetPoint(innerBorder.getEtaLE(),innerBorder.getXsiLE());
     gp_Pnt point4 = _segment->GetPoint(innerBorder.getEtaTE(), innerBorder.getXsiTE());
 
-    gp_Vec nvV = getNormalOfTrailingEdgeDevice();
-    nvV.Multiply(determineCutOutPrismThickness());
-
-    gp_Vec sv;
-    gp_Dir nv;
-
-    sv = gp_Vec(point1.XYZ()) - (nvV);
-    nv.SetXYZ(nvV.XYZ());
-
-    Handle(Geom_Plane) plane = new Geom_Plane(gp_Pnt(sv.XYZ()),nv);
-
-    gp_Pnt projectedPoint1;
-    gp_Pnt projectedPoint2;
-    gp_Pnt projectedPoint3;
-    gp_Pnt projectedPoint4;
-
-    GeomAPI_ProjectPointOnSurf projection1(point1,plane);
-    for ( int i = 1; i <= projection1.NbPoints(); i++ ) {
-       projectedPoint1 = projection1.Point(1);
-    }
-    GeomAPI_ProjectPointOnSurf projection2(point2,plane);
-    for ( int i = 1; i <= projection2.NbPoints(); i++ ) {
-        projectedPoint2 = projection2.Point(1);
-    }
-    GeomAPI_ProjectPointOnSurf projection3(point3,plane);
-    for ( int i = 1; i <= projection3.NbPoints(); i++ ) {
-      projectedPoint3 = projection3.Point(1);
-    }
-    GeomAPI_ProjectPointOnSurf projection4(point4,plane);
-    for ( int i = 1; i <= projection4.NbPoints(); i++ ) {
-        projectedPoint4 = projection4.Point(1);
-    }
-
-    gp_Vec p1(projectedPoint1.XYZ());
-    gp_Vec p2(projectedPoint2.XYZ());
-    gp_Vec p3(projectedPoint3.XYZ());
-    gp_Vec p4(projectedPoint4.XYZ());
+    gp_Vec p1, p2, p3, p4;
+    getProjectedPoints(point1,point2,point3,point4,p1,p2,p3,p4);
 
     gp_Vec dirP1P2(p2 - p1);
     gp_Vec dirP3P4(p4 - p3);
@@ -285,13 +250,10 @@ TopoDS_Face CCPACSTrailingEdgeDevice::getFace()
     p2 = p2 + dirP1P2.Multiplied(0.1*fac);
     p4 = p4 + dirP3P4.Multiplied(0.1*fac);
 
-    projectedPoint2.SetXYZ(p2.XYZ());
-    projectedPoint4.SetXYZ(p4.XYZ());
-
-    Handle(Geom_TrimmedCurve) segment1 = GC_MakeSegment(projectedPoint1,projectedPoint2);
-    Handle(Geom_TrimmedCurve) segment2 = GC_MakeSegment(projectedPoint2,projectedPoint4);
-    Handle(Geom_TrimmedCurve) segment3 = GC_MakeSegment(projectedPoint3,projectedPoint4);
-    Handle(Geom_TrimmedCurve) segment4 = GC_MakeSegment(projectedPoint3,projectedPoint1);
+    Handle(Geom_TrimmedCurve) segment1 = GC_MakeSegment(gp_Pnt(p1.XYZ()),gp_Pnt(p2.XYZ()));
+    Handle(Geom_TrimmedCurve) segment2 = GC_MakeSegment(gp_Pnt(p2.XYZ()),gp_Pnt(p4.XYZ()));
+    Handle(Geom_TrimmedCurve) segment3 = GC_MakeSegment(gp_Pnt(p3.XYZ()),gp_Pnt(p4.XYZ()));
+    Handle(Geom_TrimmedCurve) segment4 = GC_MakeSegment(gp_Pnt(p3.XYZ()),gp_Pnt(p1.XYZ()));
 
     TopoDS_Edge edge1 = BRepBuilderAPI_MakeEdge(segment1);
     TopoDS_Edge edge2 = BRepBuilderAPI_MakeEdge(segment2);
@@ -321,6 +283,49 @@ double CCPACSTrailingEdgeDevice::linearInterpolation(std::vector<double> list1, 
     double min2 = list2[idefRem-1];
     double max2 = list2[idefRem];
     return value * ( max2 - min2 ) + min2;
+}
+
+void CCPACSTrailingEdgeDevice::getProjectedPoints(gp_Pnt point1, gp_Pnt point2, gp_Pnt point3, gp_Pnt point4,
+                                                  gp_Vec& projectedPoint1, gp_Vec& projectedPoint2, gp_Vec&
+                                                  projectedPoint3, gp_Vec& projectedPoint4 )
+{
+    gp_Vec nvV = getNormalOfTrailingEdgeDevice();
+    nvV.Multiply(determineCutOutPrismThickness());
+
+    gp_Vec sv;
+    gp_Dir nv;
+
+    sv = gp_Vec(point1.XYZ()) - (nvV);
+    nv.SetXYZ(nvV.XYZ());
+
+    Handle(Geom_Plane) plane = new Geom_Plane(gp_Pnt(sv.XYZ()),nv);
+
+    gp_Pnt p1;
+    gp_Pnt p2;
+    gp_Pnt p3;
+    gp_Pnt p4;
+
+    GeomAPI_ProjectPointOnSurf projection1(point1,plane);
+    for ( int i = 1; i <= projection1.NbPoints(); i++ ) {
+        p1 = projection1.Point(1);
+    }
+    GeomAPI_ProjectPointOnSurf projection2(point2,plane);
+    for ( int i = 1; i <= projection2.NbPoints(); i++ ) {
+        p2 = projection2.Point(1);
+    }
+    GeomAPI_ProjectPointOnSurf projection3(point3,plane);
+    for ( int i = 1; i <= projection3.NbPoints(); i++ ) {
+        p3 = projection3.Point(1);
+    }
+    GeomAPI_ProjectPointOnSurf projection4(point4,plane);
+    for ( int i = 1; i <= projection4.NbPoints(); i++ ) {
+        p4 = projection4.Point(1);
+    }
+
+    projectedPoint1 = gp_Vec(p1.XYZ());
+    projectedPoint2 = gp_Vec(p2.XYZ());
+    projectedPoint3 = gp_Vec(p3.XYZ());
+    projectedPoint4 = gp_Vec(p4.XYZ());
 }
 
 double CCPACSTrailingEdgeDevice::determineCutOutPrismThickness()

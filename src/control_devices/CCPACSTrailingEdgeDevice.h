@@ -78,6 +78,10 @@ public:
     TIGL_EXPORT void setLoft(TopoDS_Shape loft);
     TIGL_EXPORT TopoDS_Face getFace();
     TIGL_EXPORT gp_Trsf getTransformation(double flapStatusInPercent);
+    TIGL_EXPORT void getProjectedPoints(gp_Pnt point1, gp_Pnt point2, gp_Pnt point3,
+                                        gp_Pnt point4, gp_Vec& projectedPoint1,
+                                        gp_Vec& projectedPoint2, gp_Vec& projectedPoint3,
+                                        gp_Vec& projectedPoint4 );
 
 protected:
     TopoDS_Shape BuildLoft();
