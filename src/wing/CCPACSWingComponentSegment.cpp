@@ -73,6 +73,8 @@
 #include "BRepBuilderAPI_MakePolygon.hxx"
 #include "GeomAPI_ProjectPointOnSurf.hxx"
 
+#include "GeomLProp_SLProps.hxx"
+
 namespace tigl
 {
 
@@ -558,7 +560,6 @@ void CCPACSWingComponentSegment::UpdateProjectedLeadingEdge()
     projLeadingEdge = wireBuilder.Wire();
 }
 
-
 // Gets a point in relative wing coordinates for a given eta and xsi
 gp_Pnt CCPACSWingComponentSegment::GetPoint(double eta, double xsi)
 {
@@ -638,6 +639,19 @@ gp_Pnt CCPACSWingComponentSegment::GetPoint(double eta, double xsi)
     }
 }
 
+gp_Vec CCPACSWingComponentSegment::GetNormal(double eta, double xsi)
+{
+    double seta = 0., sxsi = 0.;
+    CCPACSWingSegment* segment = GetSegmentEtaXsi(eta, xsi, seta, sxsi);
+    if (!segment) {
+        throw CTiglError("Normal vector not defined for these eta, xsi coordinates in CCPACSWingComponentSegment::GetNormal", TIGL_MATH_ERROR);
+    }
+
+    gp_Vec v = segment->GetChordNormal(seta, sxsi);
+    return v;
+
+}
+
 void CCPACSWingComponentSegment::GetEtaXsiFromSegmentEtaXsi(const std::string& segmentUID, double seta, double sxsi, double& eta, double& xsi)
 {
     // search for ETA coordinate
@@ -667,6 +681,32 @@ void CCPACSWingComponentSegment::GetEtaXsiFromSegmentEtaXsi(const std::string& s
 
     UpdateProjectedLeadingEdge();
     eta = ProjectPointOnWire(projLeadingEdge, point3d);
+}
+
+CCPACSWingSegment* CCPACSWingComponentSegment::GetSegmentEtaXsi(double cseta, double csxsi, double& seta, double& sxsi)
+{
+    gp_Pnt p = GetPoint(cseta, csxsi);
+
+    gp_Pnt pres;
+    CCPACSWingSegment* segment = (CCPACSWingSegment*)(findSegment(p.X(), p.Y(), p.Z(), pres));
+    if (!segment) {
+        // this point does not exist on any segment
+        return NULL;
+    }
+
+    double deviation = pres.Distance(p);
+    if ( deviation > 1e-3) {
+        LOG(WARNING) << "Given point is located more than 1mm from the wing component segment body."
+                     << " The actual diviation is " << deviation*1000.  << " mm."
+                     << " The point will be projected onto the wing segment.";
+        segment->GetEtaXsi(pres, seta, sxsi);
+    }
+    else {
+        sxsi = csxsi;
+        seta = segment->GetEta(p, sxsi);
+    }
+
+    return segment;
 }
 
 

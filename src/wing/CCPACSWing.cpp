@@ -394,8 +394,8 @@ TopoDS_Shape CCPACSWing::BuildFusedSegmentsWithFlaps(bool splitWingInUpperAndLow
 
     // adding all shapes to one compound.
     compoundBuilder.Add (wingAndFlaps, wingLoftCut);
-
-    return wingAndFlaps;
+    loft = wingAndFlaps;
+    return loft;
 }
 
 // Gets the loft of the whole wing.

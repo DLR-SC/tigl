@@ -27,6 +27,7 @@
 
 #include "CCPACSTrailingEdgeDevice.h"
 #include "CCPACSWingComponentSegment.h"
+#include "CCPACSWingSegment.h"
 
 #include "Handle_Geom_Plane.hxx"
 #include "Geom_Plane.hxx"
@@ -42,6 +43,9 @@
 #include <BRepPrimAPI_MakePrism.hxx>
 #include <BRepAlgoAPI_Common.hxx>
 #include <BRepAlgoAPI_Cut.hxx>
+#include "Bnd_Box.hxx"
+#include "BRepBndLib.hxx"
+#include "gp_Pln.hxx"
 
 #ifdef TIGL_USE_XCAF
 #include "XCAFDoc_ShapeTool.hxx"
@@ -60,7 +64,7 @@ CCPACSTrailingEdgeDevice::CCPACSTrailingEdgeDevice(CCPACSWingComponentSegment* s
 }
 
 // Read CPACS trailingEdgeDevice elements
-void CCPACSTrailingEdgeDevice::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& trailingEdgeDeviceXPath)
+void CCPACSTrailingEdgeDevice::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& trailingEdgeDeviceXPath, bool isLeadingEdge)
 {
     char*       elementPath;
     std::string tempString;
@@ -71,7 +75,7 @@ void CCPACSTrailingEdgeDevice::ReadCPACS(TixiDocumentHandle tixiHandle, const st
     elementPath   = const_cast<char*>(tempString.c_str());
     if (tixiGetTextElement(tixiHandle, elementPath, &ptrName) == SUCCESS)
     {
-        outerShape.ReadCPACS(tixiHandle, elementPath);
+        outerShape.ReadCPACS(tixiHandle, elementPath, isLeadingEdge);
     }
 
     tempString = trailingEdgeDeviceXPath + "/path";
@@ -88,6 +92,8 @@ void CCPACSTrailingEdgeDevice::ReadCPACS(TixiDocumentHandle tixiHandle, const st
             uID = uIDtmp;
         }
     }
+
+    _isLeadingEdge = isLeadingEdge;
 }
 
 void CCPACSTrailingEdgeDevice::setLoft(TopoDS_Shape loft)
@@ -211,27 +217,9 @@ gp_Trsf CCPACSTrailingEdgeDevice::getTransformation(double flapStatusInPercent)
 TopoDS_Shape CCPACSTrailingEdgeDevice::getCutOutShape()
 {
     TopoDS_Face face = getFace();
-
-    const tigl::CCPACSControlSurfaceBorder& outerBorder = this->getOuterShape().getOuterBorder();
-    gp_Pnt point1 = _segment->GetPoint(outerBorder.getEtaLE(),outerBorder.getXsiLE());
-    gp_Pnt point2 = _segment->GetPoint(outerBorder.getEtaTE(),1.0f);
-
-    const tigl::CCPACSControlSurfaceBorder& innerBorder = this->getOuterShape().getInnerBorder();
-    gp_Pnt point3 = _segment->GetPoint(innerBorder.getEtaLE(),innerBorder.getXsiLE());
-    gp_Pnt point4 = _segment->GetPoint(innerBorder.getEtaTE(),1.0f);
-
-    double yTrans = 0;
-    double zTrans = 1;
-    if ( fabs(point1.Y() - point2.Y()) < 0.1 &&
-         fabs(point2.Y() - point3.Y()) < 0.1 &&
-         fabs(point3.Y() - point4.Y()) < 0.1 &&
-         fabs(point4.Y() - point1.Y()) < 0.1 ) {
-        zTrans = 0;
-        yTrans = 1;
-    }
-
-    gp_Vec vec(0,yTrans,zTrans);
-    TopoDS_Shape prism = BRepPrimAPI_MakePrism(face,15*vec);
+    gp_Vec vec = getNormalOfTrailingEdgeDevice();
+    vec.Multiply(determineCutOutPrismThickness()*2);
+    TopoDS_Shape prism = BRepPrimAPI_MakePrism(face,vec);
 
     loft = prism;
     return loft;
@@ -241,30 +229,27 @@ TopoDS_Face CCPACSTrailingEdgeDevice::getFace()
 {
     tigl::CCPACSControlSurfaceBorder outerBorder = getOuterShape().getOuterBorder();
     gp_Pnt point1 = _segment->GetPoint(outerBorder.getEtaLE(),outerBorder.getXsiLE());
-    gp_Pnt point2 = _segment->GetPoint(outerBorder.getEtaTE(),1.0f);
+    gp_Pnt point2 = _segment->GetPoint(outerBorder.getEtaTE(),outerBorder.getXsiTE());
 
     tigl::CCPACSControlSurfaceBorder innerBorder = getOuterShape().getInnerBorder();
     gp_Pnt point3 = _segment->GetPoint(innerBorder.getEtaLE(),innerBorder.getXsiLE());
-    gp_Pnt point4 = _segment->GetPoint(innerBorder.getEtaTE(),1.0f);
+    gp_Pnt point4 = _segment->GetPoint(innerBorder.getEtaTE(), innerBorder.getXsiTE());
+
+    gp_Vec nvV = getNormalOfTrailingEdgeDevice();
+    nvV.Multiply(determineCutOutPrismThickness());
+
+    gp_Vec sv;
+    gp_Dir nv;
+
+    sv = gp_Vec(point1.XYZ()) - (nvV);
+    nv.SetXYZ(nvV.XYZ());
+
+    Handle(Geom_Plane) plane = new Geom_Plane(gp_Pnt(sv.XYZ()),nv);
 
     gp_Pnt projectedPoint1;
     gp_Pnt projectedPoint2;
     gp_Pnt projectedPoint3;
     gp_Pnt projectedPoint4;
-
-    double yTrans = 0;
-    double zTrans = 1;
-    if ( fabs(point1.Y() - point2.Y()) < 0.1 &&
-         fabs(point2.Y() - point3.Y()) < 0.1 &&
-         fabs(point3.Y() - point4.Y()) < 0.1 &&
-         fabs(point4.Y() - point1.Y()) < 0.1 ) {
-        zTrans = 0;
-        yTrans = 1;
-    }
-
-    gp_Pnt sv(0,-yTrans*3,-zTrans*3);
-    gp_Dir nv(0,yTrans,zTrans);
-    Handle(Geom_Plane) plane = new Geom_Plane(sv,nv);
 
     GeomAPI_ProjectPointOnSurf projection1(point1,plane);
     for ( int i = 1; i <= projection1.NbPoints(); i++ ) {
@@ -293,8 +278,12 @@ TopoDS_Face CCPACSTrailingEdgeDevice::getFace()
     dirP1P2.Normalize();
     dirP3P4.Normalize();
 
-    p2 = p2 + dirP1P2.Multiplied(0.1);
-    p4 = p4 + dirP3P4.Multiplied(0.1);
+    double fac = 1;
+    if ( _isLeadingEdge ) {
+        fac = -1;
+    }
+    p2 = p2 + dirP1P2.Multiplied(0.1*fac);
+    p4 = p4 + dirP3P4.Multiplied(0.1*fac);
 
     projectedPoint2.SetXYZ(p2.XYZ());
     projectedPoint4.SetXYZ(p4.XYZ());
@@ -311,6 +300,7 @@ TopoDS_Face CCPACSTrailingEdgeDevice::getFace()
 
     TopoDS_Wire wire = BRepBuilderAPI_MakeWire(edge4,edge3,edge2,edge1);
     TopoDS_Face face = BRepBuilderAPI_MakeFace(wire);
+
     return face;
 }
 
@@ -331,6 +321,44 @@ double CCPACSTrailingEdgeDevice::linearInterpolation(std::vector<double> list1, 
     double min2 = list2[idefRem-1];
     double max2 = list2[idefRem];
     return value * ( max2 - min2 ) + min2;
+}
+
+double CCPACSTrailingEdgeDevice::determineCutOutPrismThickness()
+{
+    TopoDS_Shape wcsShape = _segment->GetLoft();
+    Bnd_Box B;
+    double Xmin,Xmax,Ymin,Ymax,Zmin,Zmax;
+    BRepBndLib::Add(wcsShape,B);
+    B.Get(Xmin,Ymin,Zmin,Xmax,Ymax,Zmax);
+
+    double minThickness = Xmax-Xmin;
+
+    /*
+     * This may lead to bugs in some really special cases, like when
+     * a WCS is thicker than wide or long -> return maxThickness instead.
+     */
+
+    if ( Ymax-Ymin < minThickness ) {
+        minThickness = Ymax-Ymin;
+    }
+    if ( Zmax-Zmin < minThickness ) {
+        minThickness = Zmax-Zmin;
+    }
+    return minThickness;
+}
+
+gp_Vec CCPACSTrailingEdgeDevice::getNormalOfTrailingEdgeDevice()
+{
+    gp_Pnt point1 = _segment->GetPoint(0,0);
+    gp_Pnt point2 = _segment->GetPoint(0,1);
+    gp_Pnt point3 = _segment->GetPoint(1,0);
+
+    gp_Vec dir1to2 = -(gp_Vec(point1.XYZ()) - gp_Vec(point2.XYZ()));
+    gp_Vec dir1to3 = -(gp_Vec(point1.XYZ()) - gp_Vec(point3.XYZ()));
+
+    gp_Vec nvV = dir1to2^dir1to3;
+    nvV.Normalize();
+    return nvV;
 }
 
 } // end namespace tigl

@@ -74,8 +74,15 @@ public:
     // Gets a point in relative wing coordinates for a given eta and xsi
     TIGL_EXPORT gp_Pnt GetPoint(double eta, double xsi);
 
+    TIGL_EXPORT gp_Vec GetNormal(double eta, double xsi);
+
+    // Gets a uv - values in relative wing coordinates for a given eta and xsi
+    TIGL_EXPORT void GetUV(double eta, double xsi, double* u, double* v);
+
     // Get the eta xsi coordinate from a segment point (given by seta, sxsi)
     TIGL_EXPORT void GetEtaXsiFromSegmentEtaXsi(const std::string &segmentUID, double seta, double sxsi, double &eta, double &xsi);
+
+    TIGL_EXPORT CCPACSWingSegment* GetSegmentEtaXsi(double cseta, double csxsi, double& seta, double& sxsi);
 
     // Gets the volume of this segment
     TIGL_EXPORT double GetVolume();
@@ -137,7 +144,6 @@ private:
     std::vector<int> findPath(const std::string& fromUid, const::std::string& toUID, const std::vector<int>& curPath, bool forward) const;
 
     void UpdateProjectedLeadingEdge();
-
 
 private:
     std::string          name;                 /**< Segment name                            */

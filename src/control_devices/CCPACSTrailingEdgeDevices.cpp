@@ -78,8 +78,28 @@ void CCPACSTrailingEdgeDevices::ReadCPACS(TixiDocumentHandle tixiHandle,
                 + "/trailingEdgeDevices/trailingEdgeDevice[";
         std::ostringstream xpath;
         xpath << tempString << i << "]";
-
         trailingEdgeDevice->ReadCPACS(tixiHandle, xpath.str());
+    }
+    // Get leadingEdgeDevice element count
+    tempString = trailingEdgeDevicesXPath + "/leadingEdgeDevices";
+    elementPath = const_cast<char*>(tempString.c_str());
+    tixiRet = tixiGetNamedChildrenCount(tixiHandle, elementPath,
+            "leadingEdgeDevice", &trailingEdgeDeviceCount);
+    if (tixiRet != SUCCESS) {
+        return;
+    }
+
+    // Loop over all leadingEdgeDevices
+    for (int i = 1; i <= trailingEdgeDeviceCount; i++) {
+
+        CCPACSTrailingEdgeDevice* trailingEdgeDevice =
+                new CCPACSTrailingEdgeDevice(_componentSegment);
+        trailingEdgeDevices.push_back(trailingEdgeDevice);
+        tempString = trailingEdgeDevicesXPath
+                + "/leadingEdgeDevices/leadingEdgeDevice[";
+        std::ostringstream xpath;
+        xpath << tempString << i << "]";
+        trailingEdgeDevice->ReadCPACS(tixiHandle, xpath.str(), true);
     }
 }
 

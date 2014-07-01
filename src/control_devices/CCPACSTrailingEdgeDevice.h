@@ -65,10 +65,11 @@ private:
     gp_Pnt s1s;
     gp_Pnt s2s;
 
+    bool _isLeadingEdge;
 
 public:
     TIGL_EXPORT CCPACSTrailingEdgeDevice(CCPACSWingComponentSegment* segment);
-    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string & trailingEdgeDeviceXPath);
+    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string & trailingEdgeDeviceXPath, bool isLeadingEdge = false);
     TIGL_EXPORT std::string getUID();
     TIGL_EXPORT CCPACSControlSurfaceOuterShape getOuterShape();
     TIGL_EXPORT CCPACSTrailingEdgeDevicePath getMovementPath();        // Returns the Component Type TIGL_COMPONENT_WING.
@@ -84,6 +85,8 @@ protected:
 private:
     double linearInterpolation(std::vector<double> list1, std::vector<double> list2, double valueRelList1);
     CCPACSTrailingEdgeDevice(const CCPACSTrailingEdgeDevice& segment); /* disable copy constructor */
+    double determineCutOutPrismThickness();
+    gp_Vec getNormalOfTrailingEdgeDevice();
 
 };
 
