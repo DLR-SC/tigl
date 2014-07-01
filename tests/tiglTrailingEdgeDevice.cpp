@@ -83,9 +83,9 @@ TEST_F(TiglTrailingEdgeDevice, getFaceAndWCSNormal)
     tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
     tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
 
-    for ( int j = 0; j < 3; j ++ ) {
+    for ( int j = 1; j < config.GetWingCount(); j ++ ) {
 
-        tigl::CCPACSWing& wing = config.GetWing(j+1);
+        tigl::CCPACSWing& wing = config.GetWing(j);
         tigl::CCPACSWingComponentSegment& segment = (tigl::CCPACSWingComponentSegment&) wing.GetComponentSegment(compseg);
 
         int trailingEdgeCount = segment.getControlSurfaces().getTrailingEdgeDevices()->getTrailingEdgeDeviceCount();
@@ -119,9 +119,9 @@ TEST_F(TiglTrailingEdgeDevice, getProjectedPoints)
     tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
     tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
 
-    for ( int j = 0; j < 3; j ++ ) {
+    for ( int j = 1; j < config.GetWingCount(); j ++ ) {
 
-        tigl::CCPACSWing& wing = config.GetWing(j+1);
+        tigl::CCPACSWing& wing = config.GetWing(j);
         tigl::CCPACSWingComponentSegment& segment = (tigl::CCPACSWingComponentSegment&) wing.GetComponentSegment(compseg);
 
         int trailingEdgeCount = segment.getControlSurfaces().getTrailingEdgeDevices()->getTrailingEdgeDeviceCount();
