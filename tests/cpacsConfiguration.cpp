@@ -1,8 +1,8 @@
-/* 
+/*
 * Copyright (C) 2007-2012 German Aerospace Center (DLR/SC)
 *
 * Created: 2010-08-13 Markus Litz <Markus.Litz@dlr.de>
-* Changed: $Id$ 
+* Changed: $Id$
 *
 * Version: $Revision$
 *
@@ -61,7 +61,7 @@ protected:
 /**
 * Tests tiglOpenCPACSConfiguration with null pointer arguments.
 */
-TEST_F(tiglOpenCpacsConfiguration, nullPointerArgument) 
+TEST_F(tiglOpenCpacsConfiguration, nullPointerArgument)
 {
     ASSERT_TRUE(tiglOpenCPACSConfiguration(tixiHandle, "D150_VAMP", NULL) == TIGL_NULL_POINTER);
 }
@@ -69,7 +69,7 @@ TEST_F(tiglOpenCpacsConfiguration, nullPointerArgument)
 /**
 * Tests a successfull run of tiglOpenCPACSConfiguration.
 */
-TEST_F(tiglOpenCpacsConfiguration, openSuccess) 
+TEST_F(tiglOpenCpacsConfiguration, openSuccess)
 {
     ASSERT_TRUE(tiglOpenCPACSConfiguration(tixiHandle, "D150_VAMP", &tiglHandle) == TIGL_SUCCESS);
     ASSERT_TRUE(tiglHandle > 0);
@@ -79,7 +79,7 @@ TEST_F(tiglOpenCpacsConfiguration, openSuccess)
 /**
 * Tests a successfull open of tiglOpenCPACSConfiguration with specifiing the uid of the configuration.
 */
-TEST_F(tiglOpenCpacsConfiguration, open_without_uid) 
+TEST_F(tiglOpenCpacsConfiguration, open_without_uid)
 {
     // Test with NULL argument
     ASSERT_TRUE(tiglOpenCPACSConfiguration(tixiHandle, NULL, &tiglHandle) == TIGL_SUCCESS);
@@ -163,7 +163,7 @@ protected:
 
         tiglHandle = -1;
         tixiHandle = -1;
-        
+
         ASSERT_TRUE( tixiOpenDocument(filename, &tixiHandle) == SUCCESS);
 
         tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "D150_VAMP", &tiglHandle);
@@ -208,6 +208,6 @@ TEST_F(tiglCPACSConfigurationHandleValid,validHandle)
 */
 TEST_F(tiglCPACSConfigurationHandleValid, version_valid)
 {
-    ASSERT_TRUE(!strcmp(tiglGetVersion(), TIGL_VERSION));
+    ASSERT_STREQ(TIGL_VERSION, tiglGetVersion());
 }
 
