@@ -205,7 +205,7 @@ void TIGLViewerSelectWingAndFlapStatusDialog::slider_value_changed(int k)
     _displayer_rotation.at(slider->windowTitle().toStdString())->setText(textRot);
     _trailingEdgeDevices[slider->windowTitle().toStdString()] = value/10;
 
-    _document->updateControlSurfacesInteractiveObjects(getSelectedWing(),_trailingEdgeDevices);
+    _document->updateControlSurfacesInteractiveObjects(getSelectedWing(),_trailingEdgeDevices,slider->windowTitle().toStdString());
 }
 
 void TIGLViewerSelectWingAndFlapStatusDialog::cleanup()

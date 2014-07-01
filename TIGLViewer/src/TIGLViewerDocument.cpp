@@ -826,13 +826,13 @@ void TIGLViewerDocument::drawWingFlapsForInteractiveUse(std::string selectedWing
         for ( int j = 1; j <= trailingEdgeDevices->getTrailingEdgeDeviceCount(); j++ ) {
             tigl::CCPACSTrailingEdgeDevice &trailingEdgeDevice = trailingEdgeDevices->getTrailingEdgeDeviceByID(j);
             flapsForInteractiveUse[trailingEdgeDevice.getUID()] = displayShape(trailingEdgeDevice.GetLoft());
+            std::map<std::string,double> flapStatus;
+            updateControlSurfacesInteractiveObjects(selectedWing,flapStatus,trailingEdgeDevice.getUID());
         }
     }
-    std::map<std::string,double> flapStatus;
-    updateControlSurfacesInteractiveObjects(selectedWing,flapStatus);
 }
 
-void TIGLViewerDocument::updateControlSurfacesInteractiveObjects(std::string selectedWing, std::map<std::string,double> flapStatus)
+void TIGLViewerDocument::updateControlSurfacesInteractiveObjects(std::string selectedWing, std::map<std::string,double> flapStatus, std::string trailingUID)
 {
     tigl::CCPACSWing& wing = GetConfiguration().GetWing( selectedWing );
     for ( int i = 1; i <= wing.GetComponentSegmentCount(); i++ ) {
@@ -843,7 +843,7 @@ void TIGLViewerDocument::updateControlSurfacesInteractiveObjects(std::string sel
         for ( int j = 1; j <= trailingEdgeDevices->getTrailingEdgeDeviceCount(); j++ ) {
             tigl::CCPACSTrailingEdgeDevice &trailingEdgeDevice = trailingEdgeDevices->getTrailingEdgeDeviceByID(j);
             //displayShape(trailingEdgeDevice.getCutOutShape());
-            if (flapsForInteractiveUse.find(trailingEdgeDevice.getUID()) != flapsForInteractiveUse.end()) {
+            if (flapsForInteractiveUse.find(trailingEdgeDevice.getUID()) != flapsForInteractiveUse.end() && trailingUID == trailingEdgeDevice.getUID()) {
                gp_Trsf trsf = trailingEdgeDevice.getTransformation(flapStatus[trailingEdgeDevice.getUID()]);
                myAISContext->SetLocation((Handle_AIS_InteractiveObject) flapsForInteractiveUse[trailingEdgeDevice.getUID()],trsf);
             }
