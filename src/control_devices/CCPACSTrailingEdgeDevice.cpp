@@ -366,4 +366,9 @@ gp_Vec CCPACSTrailingEdgeDevice::getNormalOfTrailingEdgeDevice()
     return nvV;
 }
 
+CCPACSWingComponentSegment* CCPACSTrailingEdgeDevice::getSegment()
+{
+    return _segment;
+}
+
 } // end namespace tigl

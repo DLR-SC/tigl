@@ -28,6 +28,11 @@
 #include "BRepAdaptor_Surface.hxx"
 #include "BRepLProp.hxx"
 #include "BRepLProp_SLProps.hxx"
+#include "BRepTools.hxx"
+#include "GeomLProp_SLProps.hxx"
+#include "gp_Pln.hxx"
+#include "Geom_Plane.hxx"
+#include "Handle_Geom_Plane.hxx"
 
 using namespace std;
 
@@ -71,7 +76,7 @@ TiglCPACSConfigurationHandle TiglTrailingEdgeDevice::tiglHandle = 0;
 //#########################################################################################################
 
 
-TEST_F(TiglTrailingEdgeDevice, getFace)
+TEST_F(TiglTrailingEdgeDevice, getFaceAndWCSNormal)
 {
     int compseg = 1;
     // now we have do use the internal interface as we currently have no public api for this
@@ -87,22 +92,59 @@ TEST_F(TiglTrailingEdgeDevice, getFace)
 
         for ( int i = 1; i <= trailingEdgeCount; i++ ) {
             tigl::CCPACSTrailingEdgeDevice &trailingEdge = segment.getControlSurfaces().getTrailingEdgeDevices()->getTrailingEdgeDeviceByID(i);
-            TopoDS_Face boundary_face = trailingEdge.getFace();
+            TopoDS_Face face = trailingEdge.getFace();
 
-            BRepAdaptor_Surface surf_adapt_from_bound_face(boundary_face);
-            BRepLProp_SLProps sl_props_from_bound_face(surf_adapt_from_bound_face, 1,1,1,1);
-            gp_Dir normal_of_bound_face = sl_props_from_bound_face.Normal();
+            // check if each TED-Face has the same normalvector as the WingComponentSegment
+            TopoDS_Face aCurrentFace = face;
+            Standard_Real umin, umax, vmin, vmax;
+            BRepTools::UVBounds(aCurrentFace,umin, umax, vmin, vmax);
+            Handle(Geom_Surface) aSurface = BRep_Tool::Surface(aCurrentFace);
+            GeomLProp_SLProps props(aSurface, umin, vmin,1, 0.01);
 
-            gp_Vec direction(normal_of_bound_face.XYZ());
-            direction.Normalize();
+            gp_Vec normalTED = gp_Vec(props.Normal().XYZ());
+            gp_Vec normalWCS = trailingEdge.getNormalOfTrailingEdgeDevice();
 
-            if ( j == 0 ) {
-                ASSERT_NEAR(1.0,fabs(direction.Z()),1e-7);
-            } else if ( j == 1 ){
-                ASSERT_NEAR(1.0,fabs(direction.Z()),1e-7);
-            } else if ( j == 2 ){
-                ASSERT_NEAR(1.0,fabs(direction.Y()),1e-7);
-            }
+            ASSERT_NEAR(std::fabs(normalTED.X()),std::fabs(normalWCS.X()),1e-4);
+            ASSERT_NEAR(std::fabs(normalTED.Y()),std::fabs(normalWCS.Y()),1e-4);
+            ASSERT_NEAR(std::fabs(normalTED.Z()),std::fabs(normalWCS.Z()),1e-4);
         }
     }
 }
+
+TEST_F(TiglTrailingEdgeDevice, getProjectedPoints)
+{
+    // check if all projected points are aligned in a plane.
+
+    int compseg = 1;
+    tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
+    tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
+
+    for ( int j = 0; j < 3; j ++ ) {
+
+        tigl::CCPACSWing& wing = config.GetWing(j+1);
+        tigl::CCPACSWingComponentSegment& segment = (tigl::CCPACSWingComponentSegment&) wing.GetComponentSegment(compseg);
+
+        int trailingEdgeCount = segment.getControlSurfaces().getTrailingEdgeDevices()->getTrailingEdgeDeviceCount();
+
+        for ( int i = 1; i <= trailingEdgeCount; i++ ) {
+            tigl::CCPACSTrailingEdgeDevice &trailingEdge = segment.getControlSurfaces().getTrailingEdgeDevices()->getTrailingEdgeDeviceByID(i);
+
+            tigl::CCPACSControlSurfaceBorder outerBorder = trailingEdge.getOuterShape().getOuterBorder();
+            gp_Pnt point1 = trailingEdge.getSegment()->GetPoint(outerBorder.getEtaLE(),outerBorder.getXsiLE());
+            gp_Pnt point2 = trailingEdge.getSegment()->GetPoint(outerBorder.getEtaTE(),outerBorder.getXsiTE());
+
+            tigl::CCPACSControlSurfaceBorder innerBorder = trailingEdge.getOuterShape().getInnerBorder();
+            gp_Pnt point3 = trailingEdge.getSegment()->GetPoint(innerBorder.getEtaLE(),innerBorder.getXsiLE());
+            gp_Pnt point4 = trailingEdge.getSegment()->GetPoint(innerBorder.getEtaTE(), innerBorder.getXsiTE());
+
+            gp_Vec pp1,pp2,pp3,pp4;
+            trailingEdge.getProjectedPoints(point1,point2,point3,point4,pp1,pp2,pp3,pp4);
+
+            gp_Pnt sv = gp_Pnt(pp1.XYZ());
+            gp_Vec normal = (pp2 - pp1)^(pp3 - pp1);
+            gp_Pln plane(sv,normal);
+            ASSERT_EQ(plane.Contains(gp_Pnt(pp4.XYZ()),1e-5),Standard_Boolean(true));
+        }
+    }
+}
+

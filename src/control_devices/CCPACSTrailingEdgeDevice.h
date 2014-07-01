@@ -82,6 +82,8 @@ public:
                                         gp_Pnt point4, gp_Vec& projectedPoint1,
                                         gp_Vec& projectedPoint2, gp_Vec& projectedPoint3,
                                         gp_Vec& projectedPoint4 );
+    TIGL_EXPORT gp_Vec getNormalOfTrailingEdgeDevice();
+    TIGL_EXPORT CCPACSWingComponentSegment* getSegment();
 
 protected:
     TopoDS_Shape BuildLoft();
@@ -90,7 +92,6 @@ private:
     double linearInterpolation(std::vector<double> list1, std::vector<double> list2, double valueRelList1);
     CCPACSTrailingEdgeDevice(const CCPACSTrailingEdgeDevice& segment); /* disable copy constructor */
     double determineCutOutPrismThickness();
-    gp_Vec getNormalOfTrailingEdgeDevice();
 
 };
 
