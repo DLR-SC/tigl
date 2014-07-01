@@ -571,20 +571,20 @@ gp_Pnt CCPACSWingSegment::GetChordPoint(double eta, double xsi)
 {
     MakeSurfaces();
 
-    CTiglPoint profilePoint; 
+    CTiglPoint profilePoint;
     cordSurface.translate(eta,xsi, &profilePoint);
 
     return profilePoint.Get_gp_Pnt();
 }
 
-gp_Pnt CCPACSWingSegment::GetChordNormal(double eta, double xsi)
+gp_Vec CCPACSWingSegment::GetChordNormal(double eta, double xsi)
 {
     MakeSurfaces();
 
-    CTiglPoint normal; 
+    CTiglPoint normal;
     cordSurface.getNormal(eta,xsi, &normal);
 
-    return normal.Get_gp_Pnt();
+    return gp_Vec(normal.Get_gp_Pnt().XYZ());
 }
 
 // TODO: remove this function if favour of Standard GetEta
@@ -674,7 +674,7 @@ void CCPACSWingSegment::MakeSurfaces()
     if (surfacesAreValid) {
         return;
     }
-    
+
     CCPACSWingProfile& innerProfile = innerConnection.GetProfile();
     CCPACSWingProfile& outerProfile = outerConnection.GetProfile();
 
@@ -689,7 +689,7 @@ void CCPACSWingSegment::MakeSurfaces()
     inner_tep = transformProfilePoint(wing->GetTransformation(), innerConnection, inner_tep);
     outer_lep = transformProfilePoint(wing->GetTransformation(), outerConnection, outer_lep);
     outer_tep = transformProfilePoint(wing->GetTransformation(), outerConnection, outer_tep);
-        
+
     cordSurface.setQuadriangle(inner_lep.XYZ(), outer_lep.XYZ(), inner_tep.XYZ(), outer_tep.XYZ());
 
     TopoDS_Wire iu_wire = innerConnection.GetProfile().GetUpperWire();
