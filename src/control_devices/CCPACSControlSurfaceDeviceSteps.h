@@ -20,46 +20,41 @@
  * @brief  Implementation of ..
  */
 
-#ifndef CCPACSTrailingEdgeDeviceStep_H
-#define CCPACSTrailingEdgeDeviceStep_H
+#ifndef CCPACSControlSurfaceDeviceSteps_H
+#define CCPACSControlSurfaceDeviceSteps_H
 
 #include <string>
 #include <vector>
 
 #include "tixi.h"
 #include "CTiglError.h"
-#include "CCPACSHingeTranslation.h"
+#include "CCPACSControlSurfaceDeviceStep.h"
 #include "tigl_internal.h"
 
 namespace tigl
 {
 
-class CCPACSTrailingEdgeDeviceStep
+class CCPACSControlSurfaceDeviceSteps
 {
 
 private:
+    typedef std::vector<CCPACSControlSurfaceDeviceStep*> controlSurfaceDeviceStepContainer;
 
-    double relDeflection;
-    double hingeLineRotation;
+    controlSurfaceDeviceStepContainer controlSurfaceDeviceSteps;
 
-
-    CCPACSHingeTranslation innerHingeTranslation;
-    CCPACSHingeTranslation outerHingeTranslation;
+    void Cleanup();
 
 public:
-    TIGL_EXPORT CCPACSTrailingEdgeDeviceStep();
+    TIGL_EXPORT CCPACSControlSurfaceDeviceSteps();
+    TIGL_EXPORT ~CCPACSControlSurfaceDeviceSteps();
 
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle,
-            const std::string & TrailingEdgeDeviceStepXPath);
+            const std::string & controlSurfaceDeviceStepsXPath);
 
-    TIGL_EXPORT CCPACSHingeTranslation getInnerHingeTranslation();
-    TIGL_EXPORT CCPACSHingeTranslation getOuterHingeTranslation();
-
-    TIGL_EXPORT double getRelDeflection();
-    TIGL_EXPORT double getHingeLineRotation();
-
+    TIGL_EXPORT CCPACSControlSurfaceDeviceStep& getControlSurfaceDeviceStepByID( int id );
+    TIGL_EXPORT int getControlSurfaceDeviceStepCount();
 };
 
 } // end namespace tigl
 
-#endif // CCPACSTrailingEdgeDeviceStep_H
+#endif // CCPACSTrailingEdgeDeviceSteps_H

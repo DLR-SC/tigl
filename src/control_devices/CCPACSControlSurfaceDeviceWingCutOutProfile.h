@@ -17,44 +17,42 @@
  */
 /**
  * @file
- * @brief  Implementation of ..
+ * @brief  not implemented yet...
  */
 
-#ifndef CCPACSTrailingEdgeDeviceSteps_H
-#define CCPACSTrailingEdgeDeviceSteps_H
+#ifndef CCPACSControlSurfaceDeviceWingCutOutProfile_H
+#define CCPACSControlSurfaceDeviceWingCutOutProfile_H
 
 #include <string>
 #include <vector>
 
 #include "tixi.h"
 #include "CTiglError.h"
-#include "CCPACSTrailingEdgeDeviceStep.h"
 #include "tigl_internal.h"
 
 namespace tigl
 {
 
-class CCPACSTrailingEdgeDeviceSteps
+class CCPACSControlSurfaceDeviceWingCutOutProfile
 {
 
 private:
-    typedef std::vector<CCPACSTrailingEdgeDeviceStep*> trailingEdgeDeviceStepContainer;
 
-    trailingEdgeDeviceStepContainer trailingEdgeDeviceSteps;
-
-    void Cleanup();
+    double eta;
+    double rotZ;
+    // profileUID
 
 public:
-    TIGL_EXPORT CCPACSTrailingEdgeDeviceSteps();
-    TIGL_EXPORT ~CCPACSTrailingEdgeDeviceSteps();
+    TIGL_EXPORT CCPACSControlSurfaceDeviceWingCutOutProfile();
 
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle,
-            const std::string & TrailingEdgeDeviceStepsXPath);
+            const std::string & controlSurfaceDeviceWingCutOutProfileXPath);
 
-    TIGL_EXPORT CCPACSTrailingEdgeDeviceStep& getTrailingEdgeDeviceStepByID( int id );
-    TIGL_EXPORT int getTrailingEdgeDeviceStepCount();
+    TIGL_EXPORT double getEta();
+    TIGL_EXPORT double getRotZ();
+
 };
 
 } // end namespace tigl
 
-#endif // CCPACSTrailingEdgeDeviceSteps_H
+#endif // CCPACSTrailingEdgeDeviceWingCutOutProfile_H

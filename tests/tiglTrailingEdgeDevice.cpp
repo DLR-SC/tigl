@@ -17,7 +17,7 @@
  */
 
 #include "test.h"
-#include "CCPACSTrailingEdgeDevice.h"
+#include "CCPACSControlSurfaceDevice.h"
 #include "CCPACSWing.h"
 #include "CCPACSWingComponentSegment.h"
 #include "CCPACSConfigurationManager.h"
@@ -88,11 +88,11 @@ TEST_F(TiglTrailingEdgeDevice, getFaceAndWCSNormal)
         tigl::CCPACSWing& wing = config.GetWing(j);
         tigl::CCPACSWingComponentSegment& segment = (tigl::CCPACSWingComponentSegment&) wing.GetComponentSegment(compseg);
 
-        int trailingEdgeCount = segment.getControlSurfaces().getTrailingEdgeDevices()->getTrailingEdgeDeviceCount();
+        int controlSurfaceCount = segment.getControlSurfaces().getControlSurfaceDevices()->getControlSurfaceDeviceCount();
 
-        for ( int i = 1; i <= trailingEdgeCount; i++ ) {
-            tigl::CCPACSTrailingEdgeDevice &trailingEdge = segment.getControlSurfaces().getTrailingEdgeDevices()->getTrailingEdgeDeviceByID(i);
-            TopoDS_Face face = trailingEdge.getFace();
+        for ( int i = 1; i <= controlSurfaceCount; i++ ) {
+            tigl::CCPACSControlSurfaceDevice &controlSurface = segment.getControlSurfaces().getControlSurfaceDevices()->getControlSurfaceDeviceByID(i);
+            TopoDS_Face face = controlSurface.getFace();
 
             // check if each TED-Face has the same normalvector as the WingComponentSegment
             TopoDS_Face aCurrentFace = face;
@@ -102,7 +102,7 @@ TEST_F(TiglTrailingEdgeDevice, getFaceAndWCSNormal)
             GeomLProp_SLProps props(aSurface, umin, vmin,1, 0.01);
 
             gp_Vec normalTED = gp_Vec(props.Normal().XYZ());
-            gp_Vec normalWCS = trailingEdge.getNormalOfTrailingEdgeDevice();
+            gp_Vec normalWCS = controlSurface.getNormalOfTrailingEdgeDevice();
 
             ASSERT_NEAR(std::fabs(normalTED.X()),std::fabs(normalWCS.X()),1e-4);
             ASSERT_NEAR(std::fabs(normalTED.Y()),std::fabs(normalWCS.Y()),1e-4);
@@ -124,21 +124,21 @@ TEST_F(TiglTrailingEdgeDevice, getProjectedPoints)
         tigl::CCPACSWing& wing = config.GetWing(j);
         tigl::CCPACSWingComponentSegment& segment = (tigl::CCPACSWingComponentSegment&) wing.GetComponentSegment(compseg);
 
-        int trailingEdgeCount = segment.getControlSurfaces().getTrailingEdgeDevices()->getTrailingEdgeDeviceCount();
+        int trailingEdgeCount = segment.getControlSurfaces().getControlSurfaceDevices()->getControlSurfaceDeviceCount();
 
         for ( int i = 1; i <= trailingEdgeCount; i++ ) {
-            tigl::CCPACSTrailingEdgeDevice &trailingEdge = segment.getControlSurfaces().getTrailingEdgeDevices()->getTrailingEdgeDeviceByID(i);
+            tigl::CCPACSControlSurfaceDevice &controlSurface = segment.getControlSurfaces().getControlSurfaceDevices()->getControlSurfaceDeviceByID(i);
 
-            tigl::CCPACSControlSurfaceBorder outerBorder = trailingEdge.getOuterShape().getOuterBorder();
-            gp_Pnt point1 = trailingEdge.getSegment()->GetPoint(outerBorder.getEtaLE(),outerBorder.getXsiLE());
-            gp_Pnt point2 = trailingEdge.getSegment()->GetPoint(outerBorder.getEtaTE(),outerBorder.getXsiTE());
+            tigl::CCPACSControlSurfaceBorder outerBorder = controlSurface.getOuterShape().getOuterBorder();
+            gp_Pnt point1 = controlSurface.getSegment()->GetPoint(outerBorder.getEtaLE(),outerBorder.getXsiLE());
+            gp_Pnt point2 = controlSurface.getSegment()->GetPoint(outerBorder.getEtaTE(),outerBorder.getXsiTE());
 
-            tigl::CCPACSControlSurfaceBorder innerBorder = trailingEdge.getOuterShape().getInnerBorder();
-            gp_Pnt point3 = trailingEdge.getSegment()->GetPoint(innerBorder.getEtaLE(),innerBorder.getXsiLE());
-            gp_Pnt point4 = trailingEdge.getSegment()->GetPoint(innerBorder.getEtaTE(), innerBorder.getXsiTE());
+            tigl::CCPACSControlSurfaceBorder innerBorder = controlSurface.getOuterShape().getInnerBorder();
+            gp_Pnt point3 = controlSurface.getSegment()->GetPoint(innerBorder.getEtaLE(),innerBorder.getXsiLE());
+            gp_Pnt point4 = controlSurface.getSegment()->GetPoint(innerBorder.getEtaTE(), innerBorder.getXsiTE());
 
             gp_Vec pp1,pp2,pp3,pp4;
-            trailingEdge.getProjectedPoints(point1,point2,point3,point4,pp1,pp2,pp3,pp4);
+            controlSurface.getProjectedPoints(point1,point2,point3,point4,pp1,pp2,pp3,pp4);
 
             gp_Pnt sv = gp_Pnt(pp1.XYZ());
             gp_Vec normal = (pp2 - pp1)^(pp3 - pp1);

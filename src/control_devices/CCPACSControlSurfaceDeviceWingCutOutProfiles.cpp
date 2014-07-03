@@ -24,22 +24,22 @@
 #include <sstream>
 #include <exception>
 
-#include "CCPACSTrailingEdgeDeviceWingCutOutProfiles.h"
+#include "CCPACSControlSurfaceDeviceWingCutOutProfiles.h"
 
 namespace tigl
 {
 
-CCPACSTrailingEdgeDeviceWingCutOutProfiles::CCPACSTrailingEdgeDeviceWingCutOutProfiles()
+CCPACSControlSurfaceDeviceWingCutOutProfiles::CCPACSControlSurfaceDeviceWingCutOutProfiles()
 {
 }
 
 // Read CPACS TrailingEdgeDeviceWingCutOutProfiles element
-void CCPACSTrailingEdgeDeviceWingCutOutProfiles::ReadCPACS(TixiDocumentHandle tixiHandle,
-        const std::string& TrailingEdgeDeviceWingCutOutProfilesXPath)
+void CCPACSControlSurfaceDeviceWingCutOutProfiles::ReadCPACS(TixiDocumentHandle tixiHandle,
+        const std::string& controlSurfaceDeviceWingCutOutProfilesXPath)
 {
     /*
      *
-    tempString = TrailingEdgeDeviceStepsXPath;
+    tempString = controlSurfaceDeviceWingCutOutProfilesXPath;
     elementPath = const_cast<char*>(tempString.c_str());
     tixiRet = tixiGetNamedChildrenCount(tixiHandle, elementPath,
             "profile", &trailingEdgeDeviceStepCount);

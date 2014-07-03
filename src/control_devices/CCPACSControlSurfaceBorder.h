@@ -20,8 +20,8 @@
  * @brief  Implementation of ..
  */
 
-#ifndef CCPACSBorder_H
-#define CCPACSBorder_H
+#ifndef CCPACSControlSurfaceBorder_H
+#define CCPACSControlSurfaceBorder_H
 
 #include <string>
 

@@ -31,7 +31,7 @@
 
 #include "tixi.h"
 #include "CTiglError.h"
-#include "CCPACSTrailingEdgeDevices.h"
+#include "CCPACSControlSurfaceDevices.h"
 #include "CSharedPtr.h"
 #include "tigl_internal.h"
 
@@ -48,7 +48,7 @@ private:
     // LeadingEdgeDevices
     // Spoilers
 
-    CCPACSTrailingEdgeDevicesPtr trailingEdgeDevices;
+    CCPACSControlSurfaceDevicesPtr controlSurfaceDevices;
     CCPACSWingComponentSegment* _componentSegment;
 
 public:
@@ -57,7 +57,7 @@ public:
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle,
             const std::string & segmentXPath);
 
-    TIGL_EXPORT CCPACSTrailingEdgeDevices* getTrailingEdgeDevices();
+    TIGL_EXPORT CCPACSControlSurfaceDevices* getControlSurfaceDevices();
 
 };
 

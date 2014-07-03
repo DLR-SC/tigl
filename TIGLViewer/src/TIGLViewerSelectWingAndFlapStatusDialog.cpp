@@ -20,7 +20,7 @@
 #include "ui_TIGLViewerSelectWingAndFlapStatusDialog.h"
 #include "CCPACSConfigurationManager.h"
 #include "CCPACSConfiguration.h"
-#include "CCPACSTrailingEdgeDevice.h"
+#include "CCPACSControlSurfaceDevice.h"
 #include "CCPACSWingComponentSegment.h"
 #include "CCPACSWing.h"
 
@@ -40,7 +40,7 @@ TIGLViewerSelectWingAndFlapStatusDialog::TIGLViewerSelectWingAndFlapStatusDialog
     ui->setupUi(this);
     switcher = false;
     setFixedSize(size());
-    this->setWindowTitle("Choose TrailingEdge Deflection");
+    this->setWindowTitle("Choose ControlSurface Deflection");
     _document = document;
 }
 
@@ -62,9 +62,9 @@ std::string TIGLViewerSelectWingAndFlapStatusDialog::getSelectedWing()
     return ui->comboBoxWings->currentText().toStdString();
 }
 
-std::map<std::string,double> TIGLViewerSelectWingAndFlapStatusDialog::getTrailingEdgeStatus()
+std::map<std::string,double> TIGLViewerSelectWingAndFlapStatusDialog::getControlSurfaceStatus()
 {
-    return _trailingEdgeDevices;
+    return _controlSurfaceDevices;
 }
 
 void TIGLViewerSelectWingAndFlapStatusDialog::on_comboBoxWings_currentIndexChanged(int index)
@@ -84,7 +84,7 @@ void TIGLViewerSelectWingAndFlapStatusDialog::on_comboBoxWings_currentIndexChang
     int noDevices = wing.GetComponentSegmentCount();
     for ( int i = 1; i <= wing.GetComponentSegmentCount(); i++ ) {
         tigl::CCPACSWingComponentSegment& componentSegment = (tigl::CCPACSWingComponentSegment&) wing.GetComponentSegment(i);
-        if ( componentSegment.getControlSurfaces().getTrailingEdgeDevices()->getTrailingEdgeDeviceCount() < 1) {
+        if ( componentSegment.getControlSurfaces().getControlSurfaceDevices()->getControlSurfaceDeviceCount() < 1) {
             noDevices--;
             if (noDevices < 1) {
                 QPushButton *okButton= ui->buttonBox->button(QDialogButtonBox::Ok);
@@ -98,8 +98,8 @@ void TIGLViewerSelectWingAndFlapStatusDialog::on_comboBoxWings_currentIndexChang
             QPushButton *okButton= ui->buttonBox->button(QDialogButtonBox::Ok);
             okButton->setEnabled(true);
         }
-        for ( int j = 1; j <= componentSegment.getControlSurfaces().getTrailingEdgeDevices()->getTrailingEdgeDeviceCount(); j++ ) {
-            tigl::CCPACSTrailingEdgeDevice& trailingEdgeDevice = componentSegment.getControlSurfaces().getTrailingEdgeDevices()->getTrailingEdgeDeviceByID(j);
+        for ( int j = 1; j <= componentSegment.getControlSurfaces().getControlSurfaceDevices()->getControlSurfaceDeviceCount(); j++ ) {
+            tigl::CCPACSControlSurfaceDevice& controlSurfaceDevice = componentSegment.getControlSurfaces().getControlSurfaceDevices()->getControlSurfaceDeviceByID(j);
 
             QHBoxLayout* hLayout = new QHBoxLayout;
             QWidget* innerWidget = new QWidget;
@@ -118,7 +118,7 @@ void TIGLViewerSelectWingAndFlapStatusDialog::on_comboBoxWings_currentIndexChang
                 switcher = true;
             }
 
-            QString uid = trailingEdgeDevice.getUID().c_str();
+            QString uid = controlSurfaceDevice.getUID().c_str();
             QLabel* label = new QLabel(uid);
             label->setFixedSize(250,15);
             QSlider* slider = new QSlider(Qt::Horizontal);
@@ -130,9 +130,9 @@ void TIGLViewerSelectWingAndFlapStatusDialog::on_comboBoxWings_currentIndexChang
             QString def = "Deflection: ";
             QString rot = "Rotation: ";
 
-            if ( trailingEdgeDevice.getMovementPath().getSteps().getTrailingEdgeDeviceStepCount() > 0 ) {
-                def.append(QString::number(trailingEdgeDevice.getMovementPath().getSteps().getTrailingEdgeDeviceStepByID(1).getRelDeflection()));
-                rot.append(QString::number(trailingEdgeDevice.getMovementPath().getSteps().getTrailingEdgeDeviceStepByID(1).getHingeLineRotation()));
+            if ( controlSurfaceDevice.getMovementPath().getSteps().getControlSurfaceDeviceStepCount() > 0 ) {
+                def.append(QString::number(controlSurfaceDevice.getMovementPath().getSteps().getControlSurfaceDeviceStepByID(1).getRelDeflection()));
+                rot.append(QString::number(controlSurfaceDevice.getMovementPath().getSteps().getControlSurfaceDeviceStepByID(1).getHingeLineRotation()));
             }
 
             QLabel* display_rotation = new QLabel(rot);
@@ -161,13 +161,13 @@ void TIGLViewerSelectWingAndFlapStatusDialog::on_comboBoxWings_currentIndexChang
             slider->setWindowTitle( uid );
             vLayout->addWidget(innerWidget);
 
-            if ( _trailingEdgeDevices[uid.toStdString()] == NULL )
+            if ( _controlSurfaceDevices[uid.toStdString()] == NULL )
             {
-               _trailingEdgeDevices[uid.toStdString()] = 0;
+               _controlSurfaceDevices[uid.toStdString()] = 0;
             }
 
             connect(slider, SIGNAL(valueChanged(int)), this, SLOT(slider_value_changed(int)));
-            _trailingEdgeDevicesPointer[uid.toStdString()] = &trailingEdgeDevice;
+            _controlSurfaceDevicesPointer[uid.toStdString()] = &controlSurfaceDevice;
         }
         outerWidget->setLayout(vLayout);
         ui->scrollArea->setWidget(outerWidget);
@@ -185,10 +185,10 @@ void TIGLViewerSelectWingAndFlapStatusDialog::slider_value_changed(int k)
 
     std::vector<double> relDeflections;
     std::vector<double> rotations;
-    for ( int steps = 0; steps < _trailingEdgeDevicesPointer[slider->windowTitle().toStdString()]->getMovementPath().getSteps().getTrailingEdgeDeviceStepCount(); steps++ )
+    for ( int steps = 0; steps < _controlSurfaceDevicesPointer[slider->windowTitle().toStdString()]->getMovementPath().getSteps().getControlSurfaceDeviceStepCount(); steps++ )
     {
-        relDeflections.push_back(_trailingEdgeDevicesPointer[slider->windowTitle().toStdString()]->getMovementPath().getSteps().getTrailingEdgeDeviceStepByID(steps+1).getRelDeflection());
-        rotations.push_back(_trailingEdgeDevicesPointer[slider->windowTitle().toStdString()]->getMovementPath().getSteps().getTrailingEdgeDeviceStepByID(steps+1).getHingeLineRotation());
+        relDeflections.push_back(_controlSurfaceDevicesPointer[slider->windowTitle().toStdString()]->getMovementPath().getSteps().getControlSurfaceDeviceStepByID(steps+1).getRelDeflection());
+        rotations.push_back(_controlSurfaceDevicesPointer[slider->windowTitle().toStdString()]->getMovementPath().getSteps().getControlSurfaceDeviceStepByID(steps+1).getHingeLineRotation());
     }
 
     double value = k;
@@ -203,15 +203,15 @@ void TIGLViewerSelectWingAndFlapStatusDialog::slider_value_changed(int k)
     _displayer.at(slider->windowTitle().toStdString())->setText(textVal);
     _displayer_deflection.at(slider->windowTitle().toStdString())->setText(textDef);
     _displayer_rotation.at(slider->windowTitle().toStdString())->setText(textRot);
-    _trailingEdgeDevices[slider->windowTitle().toStdString()] = value/10;
+    _controlSurfaceDevices[slider->windowTitle().toStdString()] = value/10;
 
-    _document->updateControlSurfacesInteractiveObjects(getSelectedWing(),_trailingEdgeDevices,slider->windowTitle().toStdString());
+    _document->updateControlSurfacesInteractiveObjects(getSelectedWing(),_controlSurfaceDevices,slider->windowTitle().toStdString());
 }
 
 void TIGLViewerSelectWingAndFlapStatusDialog::cleanup()
 {
     _displayer.clear();
-    _trailingEdgeDevices.clear();
+    _controlSurfaceDevices.clear();
     _displayer_deflection.clear();
     _displayer_rotation.clear();
     return;
@@ -219,7 +219,7 @@ void TIGLViewerSelectWingAndFlapStatusDialog::cleanup()
 
 double TIGLViewerSelectWingAndFlapStatusDialog::getTrailingEdgeFlapValue( std::string uid )
 {
-    return _trailingEdgeDevices[uid];
+    return _controlSurfaceDevices[uid];
 }
 
 double TIGLViewerSelectWingAndFlapStatusDialog::linearInterpolation(std::vector<double> list1, std::vector<double> list2, double valueRelList1)

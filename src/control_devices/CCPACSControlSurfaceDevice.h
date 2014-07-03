@@ -20,8 +20,8 @@
  * @brief  Implementation of ..
  */
 
-#ifndef CCPACSTrailingEdgeDevice_H
-#define CCPACSTrailingEdgeDevice_H
+#ifndef CCPACSControlSurfaceDevice_H
+#define CCPACSControlSurfaceDevice_H
 
 #include <string>
 #include <vector>
@@ -30,7 +30,7 @@
 #include "CTiglAbstractPhysicalComponent.h"
 #include "CTiglError.h"
 #include "CCPACSControlSurfaceOuterShape.h"
-#include "CCPACSTrailingEdgeDevicePath.h"
+#include "CCPACSControlSurfaceDevicePath.h"
 #include "CTiglControlSurfaceTransformation.h"
 #include "tigl_internal.h"
 
@@ -38,7 +38,7 @@ namespace tigl {
 
 class CCPACSWingComponentSegment;
 
-class CCPACSTrailingEdgeDevice : public CTiglAbstractPhysicalComponent
+class CCPACSControlSurfaceDevice : public CTiglAbstractPhysicalComponent
 {
 
 private:
@@ -54,7 +54,7 @@ private:
     // interconnectionStruts
     // zCouplings
 
-    CCPACSTrailingEdgeDevicePath path;
+    CCPACSControlSurfaceDevicePath path;
     CCPACSControlSurfaceOuterShape outerShape;
     std::string uID;
     TopoDS_Shape loft;
@@ -68,11 +68,11 @@ private:
     bool _isLeadingEdge;
 
 public:
-    TIGL_EXPORT CCPACSTrailingEdgeDevice(CCPACSWingComponentSegment* segment);
+    TIGL_EXPORT CCPACSControlSurfaceDevice(CCPACSWingComponentSegment* segment);
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string & trailingEdgeDeviceXPath, bool isLeadingEdge = false);
     TIGL_EXPORT std::string getUID();
     TIGL_EXPORT CCPACSControlSurfaceOuterShape getOuterShape();
-    TIGL_EXPORT CCPACSTrailingEdgeDevicePath getMovementPath();        // Returns the Component Type TIGL_COMPONENT_WING.
+    TIGL_EXPORT CCPACSControlSurfaceDevicePath getMovementPath();        // Returns the Component Type TIGL_COMPONENT_WING.
     TIGL_EXPORT TiglGeometricComponentType GetComponentType(void) {return TIGL_COMPONENT_CONTROLSURF | TIGL_COMPONENT_PHYSICAL;}
     TIGL_EXPORT TopoDS_Shape getCutOutShape(void);
     TIGL_EXPORT void setLoft(TopoDS_Shape loft);
@@ -90,11 +90,11 @@ protected:
 
 private:
     double linearInterpolation(std::vector<double> list1, std::vector<double> list2, double valueRelList1);
-    CCPACSTrailingEdgeDevice(const CCPACSTrailingEdgeDevice& segment); /* disable copy constructor */
+    CCPACSControlSurfaceDevice(const CCPACSControlSurfaceDevice& segment); /* disable copy constructor */
     double determineCutOutPrismThickness();
 
 };
 
 } // end namespace tigl
 
-#endif // CCPACSTrailingEdgeDevice_H
+#endif // CCPACSControlSurfaceDevice_H

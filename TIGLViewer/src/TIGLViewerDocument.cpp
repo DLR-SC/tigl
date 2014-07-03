@@ -81,7 +81,7 @@
 #include "CTiglPoint.h"
 #include "CCPACSControlSurfaceBorder.h"
 #include "CCPACSControlSurfaces.h"
-#include "CCPACSTrailingEdgeDevice.h"
+#include "CCPACSControlSurfaceDevice.h"
 #include "CCPACSWingComponentSegment.h"
 #include "TIGLViewerSelectWingAndFlapStatusDialog.h"
 
@@ -804,7 +804,7 @@ void TIGLViewerDocument::drawWingFlaps()
     // Draw fused Shape
     myAISContext->EraseAll();
     tigl::CCPACSWing& wing = GetConfiguration().GetWing( dialog.getSelectedWing() );
-    TopoDS_Shape wingShape = wing.BuildFusedSegmentsWithFlaps(false, dialog.getTrailingEdgeStatus());
+    TopoDS_Shape wingShape = wing.BuildFusedSegmentsWithFlaps(false, dialog.getControlSurfaceStatus());
     displayShape(wingShape);
 }
 
@@ -821,10 +821,10 @@ void TIGLViewerDocument::drawWingFlapsForInteractiveUse(std::string selectedWing
     for ( int i = 1; i <= wing.GetComponentSegmentCount(); i++ ) {
 
         tigl::CCPACSWingComponentSegment &componentSegment = (tigl::CCPACSWingComponentSegment&) wing.GetComponentSegment(i);
-        tigl::CCPACSTrailingEdgeDevices* trailingEdgeDevices = componentSegment.getControlSurfaces().getTrailingEdgeDevices();
+        tigl::CCPACSControlSurfaceDevices* trailingEdgeDevices = componentSegment.getControlSurfaces().getControlSurfaceDevices();
 
-        for ( int j = 1; j <= trailingEdgeDevices->getTrailingEdgeDeviceCount(); j++ ) {
-            tigl::CCPACSTrailingEdgeDevice &trailingEdgeDevice = trailingEdgeDevices->getTrailingEdgeDeviceByID(j);
+        for ( int j = 1; j <= trailingEdgeDevices->getControlSurfaceDeviceCount(); j++ ) {
+            tigl::CCPACSControlSurfaceDevice &trailingEdgeDevice = trailingEdgeDevices->getControlSurfaceDeviceByID(j);
             flapsForInteractiveUse[trailingEdgeDevice.getUID()] = displayShape(trailingEdgeDevice.GetLoft());
             std::map<std::string,double> flapStatus;
             updateControlSurfacesInteractiveObjects(selectedWing,flapStatus,trailingEdgeDevice.getUID());
@@ -838,11 +838,14 @@ void TIGLViewerDocument::updateControlSurfacesInteractiveObjects(std::string sel
     for ( int i = 1; i <= wing.GetComponentSegmentCount(); i++ ) {
 
         tigl::CCPACSWingComponentSegment &componentSegment = (tigl::CCPACSWingComponentSegment&) wing.GetComponentSegment(i);
-        tigl::CCPACSTrailingEdgeDevices* trailingEdgeDevices = componentSegment.getControlSurfaces().getTrailingEdgeDevices();
+        tigl::CCPACSControlSurfaceDevices* trailingEdgeDevices = componentSegment.getControlSurfaces().getControlSurfaceDevices();
 
-        for ( int j = 1; j <= trailingEdgeDevices->getTrailingEdgeDeviceCount(); j++ ) {
-            tigl::CCPACSTrailingEdgeDevice &trailingEdgeDevice = trailingEdgeDevices->getTrailingEdgeDeviceByID(j);
-            //displayShape(trailingEdgeDevice.getCutOutShape());
+        for ( int j = 1; j <= trailingEdgeDevices->getControlSurfaceDeviceCount(); j++ ) {
+            tigl::CCPACSControlSurfaceDevice &trailingEdgeDevice = trailingEdgeDevices->getControlSurfaceDeviceByID(j);
+
+            // ** debuging: show cutOutShapes, while in InteractiveMode.
+            // ** displayShape(trailingEdgeDevice.getCutOutShape());
+
             if (flapsForInteractiveUse.find(trailingEdgeDevice.getUID()) != flapsForInteractiveUse.end() && trailingUID == trailingEdgeDevice.getUID()) {
                gp_Trsf trsf = trailingEdgeDevice.getTransformation(flapStatus[trailingEdgeDevice.getUID()]);
                myAISContext->SetLocation((Handle_AIS_InteractiveObject) flapsForInteractiveUse[trailingEdgeDevice.getUID()],trsf);

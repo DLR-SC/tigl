@@ -21,77 +21,75 @@
  */
 
 #include <iostream>
-#include <sstream>
 #include <exception>
-
-#include "CCPACSTrailingEdgeDeviceSteps.h"
+#include <sstream>
+#include "CCPACSControlSurfaceDeviceSteps.h"
 
 
 namespace tigl
 {
 
-CCPACSTrailingEdgeDeviceSteps::CCPACSTrailingEdgeDeviceSteps()
+CCPACSControlSurfaceDeviceSteps::CCPACSControlSurfaceDeviceSteps()
 {
 }
 
-CCPACSTrailingEdgeDeviceSteps::~CCPACSTrailingEdgeDeviceSteps()
+CCPACSControlSurfaceDeviceSteps::~CCPACSControlSurfaceDeviceSteps()
 {
     Cleanup();
 }
 
-void CCPACSTrailingEdgeDeviceSteps::Cleanup()
+void CCPACSControlSurfaceDeviceSteps::Cleanup()
 {
-    for (std::size_t i = 0; i < trailingEdgeDeviceSteps.size(); i++) {
-        trailingEdgeDeviceSteps.pop_back();
+    for (std::size_t i = 0; i < controlSurfaceDeviceSteps.size(); i++) {
+        controlSurfaceDeviceSteps.pop_back();
     }
 
 }
 
 // Read CPACS TrailingEdgeDeviceSteps element
-void CCPACSTrailingEdgeDeviceSteps::ReadCPACS(TixiDocumentHandle tixiHandle,
-        const std::string& TrailingEdgeDeviceStepsXPath)
+void CCPACSControlSurfaceDeviceSteps::ReadCPACS(TixiDocumentHandle tixiHandle,
+        const std::string& controlSurfaceDeviceStepsXPath)
 {
     Cleanup();
     ReturnCode tixiRet;
-    int trailingEdgeDeviceStepCount;
+    int controlSurfaceDeviceStepCount;
     std::string tempString;
     char* elementPath;
 
     /* Get trailingEdgeDevice element count */
-    tempString = TrailingEdgeDeviceStepsXPath;
+    tempString = controlSurfaceDeviceStepsXPath;
     elementPath = const_cast<char*>(tempString.c_str());
     tixiRet = tixiGetNamedChildrenCount(tixiHandle, elementPath,
-            "step", &trailingEdgeDeviceStepCount);
+            "step", &controlSurfaceDeviceStepCount);
     if (tixiRet != SUCCESS) {
         return;
     }
 
     // Loop over all trailingEdgeDevices
-    for (int i = 1; i <= trailingEdgeDeviceStepCount; i++) {
+    for (int i = 1; i <= controlSurfaceDeviceStepCount; i++) {
 
-        CCPACSTrailingEdgeDeviceStep* trailingEdgeDeviceStep =
-                new CCPACSTrailingEdgeDeviceStep();
-        trailingEdgeDeviceSteps.push_back(trailingEdgeDeviceStep);
-        tempString = TrailingEdgeDeviceStepsXPath
+        CCPACSControlSurfaceDeviceStep* controlSurfaceDeviceStep =
+                new CCPACSControlSurfaceDeviceStep();
+        controlSurfaceDeviceSteps.push_back(controlSurfaceDeviceStep);
+        tempString = controlSurfaceDeviceStepsXPath
                 + "/step[";
         std::ostringstream xpath;
         xpath << tempString << i << "]";
-
-        trailingEdgeDeviceStep->ReadCPACS(tixiHandle, xpath.str());
+        controlSurfaceDeviceStep->ReadCPACS(tixiHandle, xpath.str());
     }
 }
 
 
 
 
-CCPACSTrailingEdgeDeviceStep& CCPACSTrailingEdgeDeviceSteps::getTrailingEdgeDeviceStepByID( int id )
+CCPACSControlSurfaceDeviceStep& CCPACSControlSurfaceDeviceSteps::getControlSurfaceDeviceStepByID( int id )
 {
-    return *trailingEdgeDeviceSteps[id-1];
+    return *controlSurfaceDeviceSteps[id-1];
 }
 
-int CCPACSTrailingEdgeDeviceSteps::getTrailingEdgeDeviceStepCount()
+int CCPACSControlSurfaceDeviceSteps::getControlSurfaceDeviceStepCount()
 {
-    return trailingEdgeDeviceSteps.size();
+    return controlSurfaceDeviceSteps.size();
 }
 
 }

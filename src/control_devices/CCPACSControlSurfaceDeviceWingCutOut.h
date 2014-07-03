@@ -17,40 +17,39 @@
  */
 /**
  * @file
- * @brief  not implemented yet...
+ * @brief not implemented yet...
  */
 
-#ifndef CCPACSTrailingEdgeDeviceWingCutOutProfiles_H
-#define CCPACSTrailingEdgeDeviceWingCutOutProfiles_H
-
-#include <vector>
+#ifndef CCPACSControlSurfaceDeviceWingCutOut_H
+#define CCPACSControlSurfaceDeviceWingCutOut_H
 
 #include "tixi.h"
 #include "CTiglError.h"
-#include "CCPACSTrailingEdgeDeviceWingCutOutProfile.h"
+#include "CCPACSControlSurfaceDeviceWingCutOutProfiles.h"
 #include "tigl_internal.h"
 
 namespace tigl
 {
 
-class CCPACSTrailingEdgeDeviceWingCutOutProfiles
+class CCPACSControlSurfaceDeviceWingCutOut
 {
 
 private:
 
-    typedef std::vector<CCPACSTrailingEdgeDeviceWingCutOutProfile*> trailingEdgeDeviceCutOutProfileContainer;
-    trailingEdgeDeviceCutOutProfileContainer wingCutOutProfiles;
-
+    // upper Skin
+    // lower Skin
+    // cutOutProfile
+    // ControlPoint
 
 
 public:
-    TIGL_EXPORT CCPACSTrailingEdgeDeviceWingCutOutProfiles();
+    TIGL_EXPORT CCPACSControlSurfaceDeviceWingCutOut();
 
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle,
-            const std::string & TrailingEdgeDeviceWingCutOutProfilesXPath);
+            const std::string & controlSurfaceDeviceWingCutOutXPath);
 
 };
 
 } // end namespace tigl
 
-#endif // CCPACSTrailingEdgeDeviceWingCutOutProfiles_H
+#endif // CCPACSTrailingEdgeDeviceWingCutOut_H

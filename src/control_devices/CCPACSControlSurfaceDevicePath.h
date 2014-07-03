@@ -20,40 +20,40 @@
  * @brief  Implementation of ..
  */
 
-#ifndef CCPACSTrailingEdgeDevicePath_H
-#define CCPACSTrailingEdgeDevicePath_H
+#ifndef CCPACSControlSurfaceDevicePath_H
+#define CCPACSControlSurfaceDevicePath_H
 
 #include <vector>
 
 #include "tixi.h"
 #include "CTiglError.h"
-#include "CCPACSTrailingEdgeDeviceSteps.h"
-#include "CCPACSTrailingEdgeDevicePathHingePoint.h"
+#include "CCPACSControlSurfaceDeviceSteps.h"
+#include "CCPACSControlSurfaceDevicePathHingePoint.h"
 #include "tigl_internal.h"
 
 namespace tigl
 {
 
-class CCPACSTrailingEdgeDevicePath
+class CCPACSControlSurfaceDevicePath
 {
 
 private:
 
-    CCPACSTrailingEdgeDeviceSteps steps;
+    CCPACSControlSurfaceDeviceSteps steps;
 
-    CCPACSTrailingEdgeDevicePathHingePoint innerPoint;
-    CCPACSTrailingEdgeDevicePathHingePoint outerPoint;
+    CCPACSControlSurfaceDevicePathHingePoint innerPoint;
+    CCPACSControlSurfaceDevicePathHingePoint outerPoint;
 
 public:
-    TIGL_EXPORT CCPACSTrailingEdgeDevicePath();
+    TIGL_EXPORT CCPACSControlSurfaceDevicePath();
 
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle,
-            const std::string & trailingEdgeDevicePathXPath);
+            const std::string & controlSurfaceDevicePathXPath);
 
-    TIGL_EXPORT CCPACSTrailingEdgeDeviceSteps getSteps();
+    TIGL_EXPORT CCPACSControlSurfaceDeviceSteps getSteps();
 
-    TIGL_EXPORT CCPACSTrailingEdgeDevicePathHingePoint getInnerHingePoint();
-    TIGL_EXPORT CCPACSTrailingEdgeDevicePathHingePoint getOuterHingePoint();
+    TIGL_EXPORT CCPACSControlSurfaceDevicePathHingePoint getInnerHingePoint();
+    TIGL_EXPORT CCPACSControlSurfaceDevicePathHingePoint getOuterHingePoint();
 
     TIGL_EXPORT std::vector<double> getInnerHingeTranslationsX();
     TIGL_EXPORT std::vector<double> getInnerHingeTranslationsY();

@@ -24,42 +24,46 @@
 #include <sstream>
 #include <exception>
 
-#include "CCPACSTrailingEdgeDeviceWingCutOut.h"
+#include "CCPACSControlSurfaceDeviceWingCutOutProfile.h"
 
 namespace tigl
 {
 
-CCPACSTrailingEdgeDeviceWingCutOut::CCPACSTrailingEdgeDeviceWingCutOut()
+CCPACSControlSurfaceDeviceWingCutOutProfile::CCPACSControlSurfaceDeviceWingCutOutProfile()
 {
 }
 
-// Read CPACS TrailingEdgeDeviceWingCutOut element
-void CCPACSTrailingEdgeDeviceWingCutOut::ReadCPACS(TixiDocumentHandle tixiHandle,
-        const std::string& TrailingEdgeDeviceWingCutOutXPath)
+// Read CPACS controlSurfaceDeviceWingCutOutProfile element
+void CCPACSControlSurfaceDeviceWingCutOutProfile::ReadCPACS(TixiDocumentHandle tixiHandle,
+        const std::string& controlSurfaceDeviceWingCutOutProfileXPath)
 {
-    /*
     char* elementPath;
     std::string tempString;
+    double eta;
+    double rotz;
 
     // getting subelements
-    tempString = TrailingEdgeDeviceWingCutOutXPath + "/etaLE";
+    tempString = controlSurfaceDeviceWingCutOutProfileXPath + "/eta";
     elementPath = const_cast<char*>(tempString.c_str());
-    if (tixiGetDoubleElement(tixiHandle, elementPath, &etaLE) != SUCCESS) {
-        // couldnt read etaLE
+    if (tixiGetDoubleElement(tixiHandle, elementPath, &eta) != SUCCESS) {
+        // couldnt read eta
     }
 
-    tempString = TrailingEdgeDeviceWingCutOutXPath + "/etaTE";
+    tempString = controlSurfaceDeviceWingCutOutProfileXPath + "/rotZ";
     elementPath = const_cast<char*>(tempString.c_str());
-    if (tixiGetDoubleElement(tixiHandle, elementPath, &etaTE) != SUCCESS) {
-        etaTE = etaLE;
+    if (tixiGetDoubleElement(tixiHandle, elementPath, &rotz) != SUCCESS) {
+        // couldnt read rotZ
     }
 
-    tempString = TrailingEdgeDeviceWingCutOutXPath + "/xsiLE";
-    elementPath = const_cast<char*>(tempString.c_str());
-    if (tixiGetDoubleElement(tixiHandle, elementPath, &xsiLE) != SUCCESS) {
-        // couldnt read xsiLE
-    }
-*/
+}
+
+double CCPACSControlSurfaceDeviceWingCutOutProfile::getEta()
+{
+    return eta;
+}
+double CCPACSControlSurfaceDeviceWingCutOutProfile::getRotZ()
+{
+    return rotZ;
 }
 
 }

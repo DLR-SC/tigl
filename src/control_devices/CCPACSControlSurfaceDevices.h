@@ -1,10 +1,7 @@
 /*
  * Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
  *
- * Created: 2010-08-13 Markus Litz <Markus.Litz@dlr.de>
- * Changed: $Id$
- *
- * Version: $Revision$
+ * Created: 2014-01-28 Mark Geiger <Mark.Geiger@dlr.de>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,15 +20,15 @@
  * @brief  Implementation of ..
  */
 
-#ifndef CCPACSTrailingEdgeDevices_H
-#define CCPACSTrailingEdgeDevices_H
+#ifndef CCPACSControlSurfaceDevices_H
+#define CCPACSControlSurfaceDevices_H
 
 #include <string>
 #include <vector>
 
 #include "tixi.h"
 #include "CTiglError.h"
-#include "CCPACSTrailingEdgeDevice.h"
+#include "CCPACSControlSurfaceDevice.h"
 #include "CSharedPtr.h"
 #include "tigl_internal.h"
 
@@ -39,31 +36,31 @@ namespace tigl {
 
 class CCPACSWingComponentSegment;
 
-class CCPACSTrailingEdgeDevices
+class CCPACSControlSurfaceDevices
 {
 
 private:
 
-    typedef std::vector<CCPACSTrailingEdgeDevice*> trailingEdgeDeviceContainer;
-    trailingEdgeDeviceContainer trailingEdgeDevices;
+    typedef std::vector<CCPACSControlSurfaceDevice*> trailingEdgeDeviceContainer;
+    trailingEdgeDeviceContainer controlSurfaceDevices;
     CCPACSWingComponentSegment* _componentSegment;
 
     void Cleanup();
 
 public:
 
-    TIGL_EXPORT CCPACSTrailingEdgeDevices(CCPACSWingComponentSegment*);
+    TIGL_EXPORT CCPACSControlSurfaceDevices(CCPACSWingComponentSegment*);
 
-    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string & trailingEdgeDevicesXPath);
+    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& controlSurfaceDevicesXPath, bool isLeading);
 
-    TIGL_EXPORT CCPACSTrailingEdgeDevice& getTrailingEdgeDeviceByID( int id );
-    TIGL_EXPORT int getTrailingEdgeDeviceCount();
+    TIGL_EXPORT CCPACSControlSurfaceDevice& getControlSurfaceDeviceByID( int id );
+    TIGL_EXPORT int getControlSurfaceDeviceCount();
 
-    TIGL_EXPORT ~CCPACSTrailingEdgeDevices();
+    TIGL_EXPORT ~CCPACSControlSurfaceDevices();
 };
 
-typedef CSharedPtr<CCPACSTrailingEdgeDevices> CCPACSTrailingEdgeDevicesPtr;
+typedef CSharedPtr<CCPACSControlSurfaceDevices> CCPACSControlSurfaceDevicesPtr;
 
 } // end namespace tigl
 
-#endif // CCPACSTrailingEdgeDevices_H
+#endif // CCPACSControlSurfaceDevices_H

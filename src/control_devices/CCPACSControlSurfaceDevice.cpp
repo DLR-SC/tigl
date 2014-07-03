@@ -25,7 +25,7 @@
 #include <exception>
 #include <cassert>
 
-#include "CCPACSTrailingEdgeDevice.h"
+#include "CCPACSControlSurfaceDevice.h"
 #include "CCPACSWingComponentSegment.h"
 #include "CCPACSWingSegment.h"
 
@@ -57,14 +57,14 @@
 
 namespace tigl {
 
-CCPACSTrailingEdgeDevice::CCPACSTrailingEdgeDevice(CCPACSWingComponentSegment* segment)
+CCPACSControlSurfaceDevice::CCPACSControlSurfaceDevice(CCPACSWingComponentSegment* segment)
     : _segment(segment)
 {
     uID = "not loaded";
 }
 
 // Read CPACS trailingEdgeDevice elements
-void CCPACSTrailingEdgeDevice::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& trailingEdgeDeviceXPath, bool isLeadingEdge)
+void CCPACSControlSurfaceDevice::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& trailingEdgeDeviceXPath, bool isLeadingEdge)
 {
     char*       elementPath;
     std::string tempString;
@@ -96,32 +96,32 @@ void CCPACSTrailingEdgeDevice::ReadCPACS(TixiDocumentHandle tixiHandle, const st
     _isLeadingEdge = isLeadingEdge;
 }
 
-void CCPACSTrailingEdgeDevice::setLoft(TopoDS_Shape loft)
+void CCPACSControlSurfaceDevice::setLoft(TopoDS_Shape loft)
 {
     this->loft = loft;
 }
 
-TopoDS_Shape CCPACSTrailingEdgeDevice::BuildLoft()
+TopoDS_Shape CCPACSControlSurfaceDevice::BuildLoft()
 {
     return loft;
 }
 
-CCPACSControlSurfaceOuterShape CCPACSTrailingEdgeDevice::getOuterShape()
+CCPACSControlSurfaceOuterShape CCPACSControlSurfaceDevice::getOuterShape()
 {
     return outerShape;
 }
 
-CCPACSTrailingEdgeDevicePath CCPACSTrailingEdgeDevice::getMovementPath()
+CCPACSControlSurfaceDevicePath CCPACSControlSurfaceDevice::getMovementPath()
 {
     return path;
 }
 
-std::string CCPACSTrailingEdgeDevice::getUID()
+std::string CCPACSControlSurfaceDevice::getUID()
 {
     return uID;
 }
 
-gp_Trsf CCPACSTrailingEdgeDevice::getTransformation(double flapStatusInPercent)
+gp_Trsf CCPACSControlSurfaceDevice::getTransformation(double flapStatusInPercent)
 {
 
     // rotation axis defined by two hinge Points, inner and outer.
@@ -187,24 +187,35 @@ gp_Trsf CCPACSTrailingEdgeDevice::getTransformation(double flapStatusInPercent)
          *  to store values.
          */
         if (borderCounter == 0) {
+
+            //double eta = 0.,xsi = 0.;
+            /*CCPACSWingSegment* segment = *///_segment->GetSegmentEtaXsi(hingeEta,hingeXsi,eta,xsi);
+            //gp_Pnt hingeUpper = segment->GetUpperPoint(eta,xsi);
+            //gp_Pnt hingeLower = segment->GetLowerPoint(eta,xsi);
+            // double relHeight = path.getOuterHingePoint().getRelHeight();
+            //gp_Vec upperToLower = (gp_Vec(hingeLower.XYZ()) - gp_Vec(hingeUpper.XYZ())).Multiplied(relHeight);
+            //hingePoint1 = gp_Pnt(( gp_Vec(hingeUpper.XYZ()) + gp_Vec(upperToLower.XYZ() )).XYZ());
+
             hingePoint1 = _segment->GetPoint(hingeEta,hingeXsi);
+
+            // hier eventuell statt 0, innerTranslation.Y() ?
             gp_Vec hingeTranslation(outerTranslationX, 0, outerTranslationZ);
-            gp_Vec hingeVec1(hingePoint1.X(), hingePoint1.Y(), hingePoint1.Z());
+            gp_Vec hingeVec1(hingePoint1.XYZ());
             hingeVec1 = hingeVec1 + hingeTranslation;
             outerHingeOld = hingePoint1;
-            hingePoint1.SetX(hingeVec1.X());
-            hingePoint1.SetY(hingeVec1.Y());
-            hingePoint1.SetZ(hingeVec1.Z());
+            hingePoint1.SetXYZ(hingeVec1.XYZ());
         }
         else {
+
+
             hingePoint2 = _segment->GetPoint(hingeEta,hingeXsi);
+
+
             gp_Vec hingeTranslation(innerTranslationX, innerTranslationY, innerTranslationZ);
             gp_Vec hingeVec2(hingePoint2.X(), hingePoint2.Y(), hingePoint2.Z());
             hingeVec2 = hingeVec2 + hingeTranslation;
             innerHingeOld = hingePoint2;
-            hingePoint2.SetX(hingeVec2.X());
-            hingePoint2.SetY(hingeVec2.Y());
-            hingePoint2.SetZ(hingeVec2.Z());
+            hingePoint2.SetXYZ(hingeVec2.XYZ());
         }
     }
 
@@ -214,7 +225,7 @@ gp_Trsf CCPACSTrailingEdgeDevice::getTransformation(double flapStatusInPercent)
     return transformation.getTotalTransformation();
 }
 
-TopoDS_Shape CCPACSTrailingEdgeDevice::getCutOutShape()
+TopoDS_Shape CCPACSControlSurfaceDevice::getCutOutShape()
 {
     TopoDS_Face face = getFace();
     gp_Vec vec = getNormalOfTrailingEdgeDevice();
@@ -225,7 +236,7 @@ TopoDS_Shape CCPACSTrailingEdgeDevice::getCutOutShape()
     return loft;
 }
 
-TopoDS_Face CCPACSTrailingEdgeDevice::getFace()
+TopoDS_Face CCPACSControlSurfaceDevice::getFace()
 {
     tigl::CCPACSControlSurfaceBorder outerBorder = getOuterShape().getOuterBorder();
     gp_Pnt point1 = _segment->GetPoint(outerBorder.getEtaLE(),outerBorder.getXsiLE());
@@ -266,7 +277,7 @@ TopoDS_Face CCPACSTrailingEdgeDevice::getFace()
     return face;
 }
 
-double CCPACSTrailingEdgeDevice::linearInterpolation(std::vector<double> list1, std::vector<double> list2, double valueRelList1)
+double CCPACSControlSurfaceDevice::linearInterpolation(std::vector<double> list1, std::vector<double> list2, double valueRelList1)
 {
     double min = 0;
     double max = 0;
@@ -285,7 +296,7 @@ double CCPACSTrailingEdgeDevice::linearInterpolation(std::vector<double> list1, 
     return value * ( max2 - min2 ) + min2;
 }
 
-void CCPACSTrailingEdgeDevice::getProjectedPoints(gp_Pnt point1, gp_Pnt point2, gp_Pnt point3, gp_Pnt point4,
+void CCPACSControlSurfaceDevice::getProjectedPoints(gp_Pnt point1, gp_Pnt point2, gp_Pnt point3, gp_Pnt point4,
                                                   gp_Vec& projectedPoint1, gp_Vec& projectedPoint2, gp_Vec&
                                                   projectedPoint3, gp_Vec& projectedPoint4 )
 {
@@ -328,7 +339,7 @@ void CCPACSTrailingEdgeDevice::getProjectedPoints(gp_Pnt point1, gp_Pnt point2, 
     projectedPoint4 = gp_Vec(p4.XYZ());
 }
 
-double CCPACSTrailingEdgeDevice::determineCutOutPrismThickness()
+double CCPACSControlSurfaceDevice::determineCutOutPrismThickness()
 {
     TopoDS_Shape wcsShape = _segment->GetLoft();
     Bnd_Box B;
@@ -352,7 +363,7 @@ double CCPACSTrailingEdgeDevice::determineCutOutPrismThickness()
     return minThickness;
 }
 
-gp_Vec CCPACSTrailingEdgeDevice::getNormalOfTrailingEdgeDevice()
+gp_Vec CCPACSControlSurfaceDevice::getNormalOfTrailingEdgeDevice()
 {
     gp_Pnt point1 = _segment->GetPoint(0,0);
     gp_Pnt point2 = _segment->GetPoint(0,1);
@@ -366,7 +377,7 @@ gp_Vec CCPACSTrailingEdgeDevice::getNormalOfTrailingEdgeDevice()
     return nvV;
 }
 
-CCPACSWingComponentSegment* CCPACSTrailingEdgeDevice::getSegment()
+CCPACSWingComponentSegment* CCPACSControlSurfaceDevice::getSegment()
 {
     return _segment;
 }

@@ -24,43 +24,43 @@
 #include <sstream>
 #include <exception>
 
-#include "CCPACSTrailingEdgeDevicePathHingePoint.h"
+#include "CCPACSControlSurfaceDevicePathHingePoint.h"
 
 namespace tigl
 {
 
-CCPACSTrailingEdgeDevicePathHingePoint::CCPACSTrailingEdgeDevicePathHingePoint()
+CCPACSControlSurfaceDevicePathHingePoint::CCPACSControlSurfaceDevicePathHingePoint()
 {
     xsi = -1;
     relHeight = -1;
 }
 
 // Read CPACS TrailingEdgeDevicePathHingePoint element
-void CCPACSTrailingEdgeDevicePathHingePoint::ReadCPACS(TixiDocumentHandle tixiHandle,
-        const std::string& TrailingEdgeDevicePathHingePointXPath)
+void CCPACSControlSurfaceDevicePathHingePoint::ReadCPACS(TixiDocumentHandle tixiHandle,
+        const std::string& controlSurfaceDevicePathHingePointXPath)
 {
     char* elementPath;
     std::string tempString;
 
     // getting subelements
-    tempString = TrailingEdgeDevicePathHingePointXPath + "/hingeXsi";
+    tempString = controlSurfaceDevicePathHingePointXPath + "/hingeXsi";
     elementPath = const_cast<char*>(tempString.c_str());
     if (tixiGetDoubleElement(tixiHandle, elementPath, &xsi) != SUCCESS) {
         // couldnt read xsi valu
     }
 
-    tempString = TrailingEdgeDevicePathHingePointXPath + "/hingeRelHeight";
+    tempString = controlSurfaceDevicePathHingePointXPath + "/hingeRelHeight";
     elementPath = const_cast<char*>(tempString.c_str());
     if (tixiGetDoubleElement(tixiHandle, elementPath, &relHeight) != SUCCESS) {
         // couldnt read relHeight
     }
 }
 
-double CCPACSTrailingEdgeDevicePathHingePoint::getRelHeight()
+double CCPACSControlSurfaceDevicePathHingePoint::getRelHeight()
 {
     return relHeight;
 }
-double CCPACSTrailingEdgeDevicePathHingePoint::getXsi()
+double CCPACSControlSurfaceDevicePathHingePoint::getXsi()
 {
     return xsi;
 }

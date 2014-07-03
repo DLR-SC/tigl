@@ -24,7 +24,7 @@
 #include <vector>
 #include <QLabel>
 #include "CCPACSConfigurationManager.h"
-#include "CCPACSTrailingEdgeDevice.h"
+#include "CCPACSControlSurfaceDevice.h"
 #include "TIGLViewerDocument.h"
 
 namespace Ui {
@@ -40,7 +40,7 @@ public:
     int exec(QStringList wings);
     std::string getSelectedWing();
     double getTrailingEdgeFlapValue( std::string uid );
-    std::map<std::string,double> getTrailingEdgeStatus();
+    std::map<std::string,double> getControlSurfaceStatus();
 
 
 private slots:
@@ -53,11 +53,11 @@ private:
     double linearInterpolation(std::vector<double> list1, std::vector<double> list2, double valueRelList1);
     Ui::TIGLViewerSelectWingAndFlapStatusDialog *ui;
     TiglCPACSConfigurationHandle _handle;
-    std::map< std::string, double> _trailingEdgeDevices;
+    std::map< std::string, double> _controlSurfaceDevices;
     std::map< std::string, QLabel*> _displayer;
     std::map< std::string, QLabel*> _displayer_deflection;
     std::map< std::string, QLabel*> _displayer_rotation;
-    std::map< std::string, tigl::CCPACSTrailingEdgeDevice*> _trailingEdgeDevicesPointer;
+    std::map< std::string, tigl::CCPACSControlSurfaceDevice*> _controlSurfaceDevicesPointer;
     TIGLViewerDocument* _document;
     void cleanup();
 

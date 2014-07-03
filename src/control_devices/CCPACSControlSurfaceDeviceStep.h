@@ -17,39 +17,49 @@
  */
 /**
  * @file
- * @brief not implemented yet...
+ * @brief  Implementation of ..
  */
 
-#ifndef CCPACSTrailingEdgeDeviceWingCutOut_H
-#define CCPACSTrailingEdgeDeviceWingCutOut_H
+#ifndef CCPACSControlSurfaceDeviceStep_H
+#define CCPACSControlSurfaceDeviceStep_H
+
+#include <string>
+#include <vector>
 
 #include "tixi.h"
 #include "CTiglError.h"
-#include "CCPACSTrailingEdgeDeviceWingCutOutProfiles.h"
+#include "CCPACSHingeTranslation.h"
 #include "tigl_internal.h"
 
 namespace tigl
 {
 
-class CCPACSTrailingEdgeDeviceWingCutOut
+class CCPACSControlSurfaceDeviceStep
 {
 
 private:
 
-    // upper Skin
-    // lower Skin
-    // cutOutProfile
-    // ControlPoint
+    double relDeflection;
+    double hingeLineRotation;
 
+
+    CCPACSHingeTranslation innerHingeTranslation;
+    CCPACSHingeTranslation outerHingeTranslation;
 
 public:
-    TIGL_EXPORT CCPACSTrailingEdgeDeviceWingCutOut();
+    TIGL_EXPORT CCPACSControlSurfaceDeviceStep();
 
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle,
-            const std::string & TrailingEdgeDeviceWingCutOutXPath);
+            const std::string & controlSurfaceDeviceStepXPath);
+
+    TIGL_EXPORT CCPACSHingeTranslation getInnerHingeTranslation();
+    TIGL_EXPORT CCPACSHingeTranslation getOuterHingeTranslation();
+
+    TIGL_EXPORT double getRelDeflection();
+    TIGL_EXPORT double getHingeLineRotation();
 
 };
 
 } // end namespace tigl
 
-#endif // CCPACSTrailingEdgeDeviceWingCutOut_H
+#endif // CCPACSTrailingEdgeDeviceStep_H

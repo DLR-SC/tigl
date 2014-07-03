@@ -24,46 +24,42 @@
 #include <sstream>
 #include <exception>
 
-#include "CCPACSTrailingEdgeDeviceWingCutOutProfile.h"
+#include "CCPACSControlSurfaceDeviceWingCutOut.h"
 
 namespace tigl
 {
 
-CCPACSTrailingEdgeDeviceWingCutOutProfile::CCPACSTrailingEdgeDeviceWingCutOutProfile()
+CCPACSControlSurfaceDeviceWingCutOut::CCPACSControlSurfaceDeviceWingCutOut()
 {
 }
 
-// Read CPACS TrailingEdgeDeviceWingCutOutProfile element
-void CCPACSTrailingEdgeDeviceWingCutOutProfile::ReadCPACS(TixiDocumentHandle tixiHandle,
-        const std::string& TrailingEdgeDeviceWingCutOutProfileXPath)
+// Read CPACS TrailingEdgeDeviceWingCutOut element
+void CCPACSControlSurfaceDeviceWingCutOut::ReadCPACS(TixiDocumentHandle tixiHandle,
+        const std::string& controlSurfaceDeviceWingCutOutXPath)
 {
+    /*
     char* elementPath;
     std::string tempString;
-    double eta;
-    double rotz;
 
     // getting subelements
-    tempString = TrailingEdgeDeviceWingCutOutProfileXPath + "/eta";
+    tempString = TrailingEdgeDeviceWingCutOutXPath + "/etaLE";
     elementPath = const_cast<char*>(tempString.c_str());
-    if (tixiGetDoubleElement(tixiHandle, elementPath, &eta) != SUCCESS) {
-        // couldnt read eta
+    if (tixiGetDoubleElement(tixiHandle, elementPath, &etaLE) != SUCCESS) {
+        // couldnt read etaLE
     }
 
-    tempString = TrailingEdgeDeviceWingCutOutProfileXPath + "/rotZ";
+    tempString = TrailingEdgeDeviceWingCutOutXPath + "/etaTE";
     elementPath = const_cast<char*>(tempString.c_str());
-    if (tixiGetDoubleElement(tixiHandle, elementPath, &rotz) != SUCCESS) {
-        // couldnt read rotZ
+    if (tixiGetDoubleElement(tixiHandle, elementPath, &etaTE) != SUCCESS) {
+        etaTE = etaLE;
     }
 
-}
-
-double CCPACSTrailingEdgeDeviceWingCutOutProfile::getEta()
-{
-    return eta;
-}
-double CCPACSTrailingEdgeDeviceWingCutOutProfile::getRotZ()
-{
-    return rotZ;
+    tempString = TrailingEdgeDeviceWingCutOutXPath + "/xsiLE";
+    elementPath = const_cast<char*>(tempString.c_str());
+    if (tixiGetDoubleElement(tixiHandle, elementPath, &xsiLE) != SUCCESS) {
+        // couldnt read xsiLE
+    }
+*/
 }
 
 }

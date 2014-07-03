@@ -17,11 +17,11 @@
  */
 /**
  * @file
- * @brief  not implemented yet...
+ * @brief  Implementation of ..
  */
 
-#ifndef CCPACSTrailingEdgeDeviceWingCutOutProfile_H
-#define CCPACSTrailingEdgeDeviceWingCutOutProfile_H
+#ifndef CCPACSControlSurfaceDevicePathHingePoint_H
+#define CCPACSControlSurfaceDevicePathHingePoint_H
 
 #include <string>
 #include <vector>
@@ -33,26 +33,26 @@
 namespace tigl
 {
 
-class CCPACSTrailingEdgeDeviceWingCutOutProfile
+class CCPACSControlSurfaceDevicePathHingePoint
 {
 
 private:
 
-    double eta;
-    double rotZ;
-    // profileUID
+    double relHeight;
+    double xsi;
+
 
 public:
-    TIGL_EXPORT CCPACSTrailingEdgeDeviceWingCutOutProfile();
+    TIGL_EXPORT CCPACSControlSurfaceDevicePathHingePoint();
 
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle,
-            const std::string & TrailingEdgeDeviceWingCutOutProfileXPath);
+            const std::string & controlSurfaceDevicePathHingePointXPath);
 
-    TIGL_EXPORT double getEta();
-    TIGL_EXPORT double getRotZ();
+    TIGL_EXPORT double getRelHeight();
+    TIGL_EXPORT double getXsi();
 
 };
 
 } // end namespace tigl
 
-#endif // CCPACSTrailingEdgeDeviceWingCutOutProfile_H
+#endif // CCPACSTrailingEdgeDevicePathHingePoint_H

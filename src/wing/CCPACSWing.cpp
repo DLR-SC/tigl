@@ -336,11 +336,11 @@ TopoDS_Shape CCPACSWing::BuildFusedSegmentsWithFlaps(bool splitWingInUpperAndLow
     for ( int i = 1; i <= GetComponentSegmentCount(); i++ ) {
 
        CCPACSWingComponentSegment &componentSegment = componentSegments.GetComponentSegment(i);
-       CCPACSTrailingEdgeDevices* trailingEdgeDevices = componentSegment.getControlSurfaces().getTrailingEdgeDevices();
+       CCPACSControlSurfaceDevices* controlSurfaceDevices = componentSegment.getControlSurfaces().getControlSurfaceDevices();
        TopoDS_Shape wingLoft;
 
-       for ( int j = trailingEdgeDevices->getTrailingEdgeDeviceCount(); j > 0 ; j-- ) {
-            CCPACSTrailingEdgeDevice &trailingEdgeDevice = trailingEdgeDevices->getTrailingEdgeDeviceByID(j);
+       for ( int j = controlSurfaceDevices->getControlSurfaceDeviceCount(); j > 0 ; j-- ) {
+            CCPACSControlSurfaceDevice &trailingEdgeDevice = controlSurfaceDevices->getControlSurfaceDeviceByID(j);
 
             if ( !wingCutOutShape.IsNull() ) {
                 wingLoft = wingCutOutShape;

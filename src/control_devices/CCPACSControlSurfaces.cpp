@@ -35,7 +35,7 @@ namespace tigl
 CCPACSControlSurfaces::CCPACSControlSurfaces(CCPACSWingComponentSegment* cs)
     : _componentSegment(cs)
 {
-    trailingEdgeDevices = CSharedPtr<CCPACSTrailingEdgeDevices>(new CCPACSTrailingEdgeDevices(cs));
+    controlSurfaceDevices = CSharedPtr<CCPACSControlSurfaceDevices>(new CCPACSControlSurfaceDevices(cs));
 }
 
 // Read CPACS segment elements
@@ -49,13 +49,20 @@ void CCPACSControlSurfaces::ReadCPACS(TixiDocumentHandle tixiHandle,
     tempString = segmentXPath + "/trailingEdgeDevices";
     elementPath = const_cast<char*>(tempString.c_str());
     if (tixiCheckElement(tixiHandle, elementPath) == SUCCESS) {
-        trailingEdgeDevices->ReadCPACS(tixiHandle, segmentXPath);
+        controlSurfaceDevices->ReadCPACS(tixiHandle, elementPath, false);
+    }
+
+    // read LeadingEdgeDevices
+    tempString = segmentXPath + "/leadingEdgeDevices";
+    elementPath = const_cast<char*>(tempString.c_str());
+    if (tixiCheckElement(tixiHandle, elementPath) == SUCCESS) {
+        controlSurfaceDevices->ReadCPACS(tixiHandle, elementPath, true);
     }
 }
 
-CCPACSTrailingEdgeDevices* CCPACSControlSurfaces::getTrailingEdgeDevices()
+CCPACSControlSurfaceDevices* CCPACSControlSurfaces::getControlSurfaceDevices()
 {
-    return trailingEdgeDevices.get();
+    return controlSurfaceDevices.get();
 }
 
 } // end namespace tigl
