@@ -41,8 +41,8 @@ class CCPACSControlSurfaceDevices
 
 private:
 
-    typedef std::vector<CCPACSControlSurfaceDevice*> trailingEdgeDeviceContainer;
-    trailingEdgeDeviceContainer controlSurfaceDevices;
+    typedef std::vector<CCPACSControlSurfaceDevice*> controlSurfaceDeviceContainer;
+    controlSurfaceDeviceContainer controlSurfaceDevices;
     CCPACSWingComponentSegment* _componentSegment;
 
     void Cleanup();

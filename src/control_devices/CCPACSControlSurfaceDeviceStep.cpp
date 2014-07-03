@@ -68,12 +68,12 @@ void CCPACSControlSurfaceDeviceStep::ReadCPACS(TixiDocumentHandle tixiHandle,
     }
 }
 
-CCPACSHingeTranslation CCPACSControlSurfaceDeviceStep::getInnerHingeTranslation()
+CCPACSControlSurfaceHingeTranslation CCPACSControlSurfaceDeviceStep::getInnerHingeTranslation()
 {
     return innerHingeTranslation;
 }
 
-CCPACSHingeTranslation CCPACSControlSurfaceDeviceStep::getOuterHingeTranslation()
+CCPACSControlSurfaceHingeTranslation CCPACSControlSurfaceDeviceStep::getOuterHingeTranslation()
 {
     return outerHingeTranslation;
 }

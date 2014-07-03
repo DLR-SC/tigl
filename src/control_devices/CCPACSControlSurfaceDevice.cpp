@@ -28,6 +28,8 @@
 #include "CCPACSControlSurfaceDevice.h"
 #include "CCPACSWingComponentSegment.h"
 #include "CCPACSWingSegment.h"
+#include "CTiglControlSurfaceHingeLine.h"
+
 
 #include "Handle_Geom_Plane.hxx"
 #include "Geom_Plane.hxx"
@@ -94,6 +96,7 @@ void CCPACSControlSurfaceDevice::ReadCPACS(TixiDocumentHandle tixiHandle, const 
     }
 
     _isLeadingEdge = isLeadingEdge;
+    _hingeLine = new CTiglControlSurfaceHingeLine(getOuterShape(),getMovementPath(),_segment);
 }
 
 void CCPACSControlSurfaceDevice::setLoft(TopoDS_Shape loft)
@@ -123,13 +126,8 @@ std::string CCPACSControlSurfaceDevice::getUID()
 
 gp_Trsf CCPACSControlSurfaceDevice::getTransformation(double flapStatusInPercent)
 {
-
-    // rotation axis defined by two hinge Points, inner and outer.
-    gp_Pnt hingePoint1;
-    gp_Pnt hingePoint2;
-
     /*
-     * this block of code calculates all needed values to rotate and move the trailingEdgeDevice according
+     * this block of code calculates all needed values to rotate and move the controlSurfaceDevice according
      * to the given relDeflection by using a linearInterpolation.
      */
     std::vector<double> relDeflections = this->getMovementPath().getRelDeflections();
@@ -142,82 +140,12 @@ gp_Trsf CCPACSControlSurfaceDevice::getTransformation(double flapStatusInPercent
     double outerTranslationZ = linearInterpolation( relDeflections, this->getMovementPath().getOuterHingeTranslationsZ(), inputDeflection );
     relDeflections.clear();
 
-    const tigl::CCPACSControlSurfaceBorder& outerBorder = this->getOuterShape().getOuterBorder();
-    const tigl::CCPACSControlSurfaceBorder& innerBorder = this->getOuterShape().getInnerBorder();
+    gp_Pnt innerHingeOld = _hingeLine->getInnerHingePoint();;
+    gp_Pnt outerHingeOld = _hingeLine->getOuterHingePoint();;
 
-    gp_Pnt innerHingeOld;
-    gp_Pnt outerHingeOld;
-
-    /*
-     * determine outer and inner HingePoint, this is tricky because
-     * the eta coordinate is not given in the CPACS file, so it has
-     * to get calculated first.
-     */
-    for ( int borderCounter = 0; borderCounter < 2; borderCounter++) {
-        tigl::CCPACSControlSurfaceBorder border;
-        double hingeXsi;
-        if (borderCounter == 0) {
-            border = outerBorder;
-            hingeXsi = this->getMovementPath().getOuterHingePoint().getXsi();
-        }
-        else {
-            border = innerBorder;
-            hingeXsi = this->getMovementPath().getInnerHingePoint().getXsi();
-        }
-
-        double borderEtaLE = border.getEtaLE();
-        double borderEtaTE = border.getEtaTE();
-        double hingeEta = -1;
-
-        // only calculate etaCoordinate if it´s not the same as the other one.
-        if ( fabs(borderEtaLE - borderEtaTE) < 0.0001 ) {
-            hingeEta = (borderEtaTE + borderEtaLE)/2;
-        }
-        else {
-            double m = ( border.getXsiLE() - 1 ) /( borderEtaLE - borderEtaTE );
-            double x = borderEtaLE;
-            double y = 1;
-            double b = - ( ( m * x) / (y));
-            hingeEta = ( y - b ) / m;
-        }
-
-        /*
-         *  different approach for inner and outer border. borderCounter == 0 means outerBorder,
-         *  borderCounter == 1 means innerBorder. Could be packed into one block by using arrays
-         *  to store values.
-         */
-        if (borderCounter == 0) {
-
-            //double eta = 0.,xsi = 0.;
-            /*CCPACSWingSegment* segment = *///_segment->GetSegmentEtaXsi(hingeEta,hingeXsi,eta,xsi);
-            //gp_Pnt hingeUpper = segment->GetUpperPoint(eta,xsi);
-            //gp_Pnt hingeLower = segment->GetLowerPoint(eta,xsi);
-            // double relHeight = path.getOuterHingePoint().getRelHeight();
-            //gp_Vec upperToLower = (gp_Vec(hingeLower.XYZ()) - gp_Vec(hingeUpper.XYZ())).Multiplied(relHeight);
-            //hingePoint1 = gp_Pnt(( gp_Vec(hingeUpper.XYZ()) + gp_Vec(upperToLower.XYZ() )).XYZ());
-
-            hingePoint1 = _segment->GetPoint(hingeEta,hingeXsi);
-
-            // hier eventuell statt 0, innerTranslation.Y() ?
-            gp_Vec hingeTranslation(outerTranslationX, 0, outerTranslationZ);
-            gp_Vec hingeVec1(hingePoint1.XYZ());
-            hingeVec1 = hingeVec1 + hingeTranslation;
-            outerHingeOld = hingePoint1;
-            hingePoint1.SetXYZ(hingeVec1.XYZ());
-        }
-        else {
-
-
-            hingePoint2 = _segment->GetPoint(hingeEta,hingeXsi);
-
-
-            gp_Vec hingeTranslation(innerTranslationX, innerTranslationY, innerTranslationZ);
-            gp_Vec hingeVec2(hingePoint2.X(), hingePoint2.Y(), hingePoint2.Z());
-            hingeVec2 = hingeVec2 + hingeTranslation;
-            innerHingeOld = hingePoint2;
-            hingePoint2.SetXYZ(hingeVec2.XYZ());
-        }
-    }
+    // may use outerTranslationY instead of 0.
+    gp_Pnt hingePoint1 = _hingeLine->getTransformedOuterHingePoint(gp_Vec(outerTranslationX, 0, outerTranslationZ));
+    gp_Pnt hingePoint2 = _hingeLine->getTransformedInnerHingePoint(gp_Vec(innerTranslationX, innerTranslationY, innerTranslationZ));
 
     // calculating the needed transformations
     CTiglControlSurfaceTransformation transformation(innerHingeOld, outerHingeOld, hingePoint2, hingePoint1, rotation);
@@ -254,12 +182,15 @@ TopoDS_Face CCPACSControlSurfaceDevice::getFace()
     dirP1P2.Normalize();
     dirP3P4.Normalize();
 
-    double fac = 1;
+    double fac = 0.1;
     if ( _isLeadingEdge ) {
-        fac = -1;
+        p1 = p1 - dirP1P2.Multiplied(fac);
+        p3 = p3 - dirP3P4.Multiplied(fac);
     }
-    p2 = p2 + dirP1P2.Multiplied(0.1*fac);
-    p4 = p4 + dirP3P4.Multiplied(0.1*fac);
+    else {
+        p2 = p2 + dirP1P2.Multiplied(fac);
+        p4 = p4 + dirP3P4.Multiplied(fac);
+    }
 
     Handle(Geom_TrimmedCurve) segment1 = GC_MakeSegment(gp_Pnt(p1.XYZ()),gp_Pnt(p2.XYZ()));
     Handle(Geom_TrimmedCurve) segment2 = GC_MakeSegment(gp_Pnt(p2.XYZ()),gp_Pnt(p4.XYZ()));

@@ -23,8 +23,8 @@
  * @brief  Implementation of ..
  */
 
-#ifndef CCPACSHingeTranslation_H
-#define CCPACSHingeTranslation_H
+#ifndef CCPACSControlSurfaceHingeTranslation_H
+#define CCPACSControlSurfaceHingeTranslation_H
 
 #include <string>
 #include <vector>
@@ -36,7 +36,7 @@
 namespace tigl
 {
 
-class CCPACSHingeTranslation
+class CCPACSControlSurfaceHingeTranslation
 {
 
 private:
@@ -47,7 +47,7 @@ private:
 
 
 public:
-    TIGL_EXPORT CCPACSHingeTranslation();
+    TIGL_EXPORT CCPACSControlSurfaceHingeTranslation();
 
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle,
             const std::string & HingeTranslationXPath);

@@ -821,13 +821,13 @@ void TIGLViewerDocument::drawWingFlapsForInteractiveUse(std::string selectedWing
     for ( int i = 1; i <= wing.GetComponentSegmentCount(); i++ ) {
 
         tigl::CCPACSWingComponentSegment &componentSegment = (tigl::CCPACSWingComponentSegment&) wing.GetComponentSegment(i);
-        tigl::CCPACSControlSurfaceDevices* trailingEdgeDevices = componentSegment.getControlSurfaces().getControlSurfaceDevices();
+        tigl::CCPACSControlSurfaceDevices* controlSurfaceDevices = componentSegment.getControlSurfaces().getControlSurfaceDevices();
 
-        for ( int j = 1; j <= trailingEdgeDevices->getControlSurfaceDeviceCount(); j++ ) {
-            tigl::CCPACSControlSurfaceDevice &trailingEdgeDevice = trailingEdgeDevices->getControlSurfaceDeviceByID(j);
-            flapsForInteractiveUse[trailingEdgeDevice.getUID()] = displayShape(trailingEdgeDevice.GetLoft());
+        for ( int j = 1; j <= controlSurfaceDevices->getControlSurfaceDeviceCount(); j++ ) {
+            tigl::CCPACSControlSurfaceDevice &controlSurfaceDevice = controlSurfaceDevices->getControlSurfaceDeviceByID(j);
+            flapsForInteractiveUse[controlSurfaceDevice.getUID()] = displayShape(controlSurfaceDevice.GetLoft());
             std::map<std::string,double> flapStatus;
-            updateControlSurfacesInteractiveObjects(selectedWing,flapStatus,trailingEdgeDevice.getUID());
+            updateControlSurfacesInteractiveObjects(selectedWing,flapStatus,controlSurfaceDevice.getUID());
         }
     }
 }
@@ -838,17 +838,17 @@ void TIGLViewerDocument::updateControlSurfacesInteractiveObjects(std::string sel
     for ( int i = 1; i <= wing.GetComponentSegmentCount(); i++ ) {
 
         tigl::CCPACSWingComponentSegment &componentSegment = (tigl::CCPACSWingComponentSegment&) wing.GetComponentSegment(i);
-        tigl::CCPACSControlSurfaceDevices* trailingEdgeDevices = componentSegment.getControlSurfaces().getControlSurfaceDevices();
+        tigl::CCPACSControlSurfaceDevices* controlSurfaceDevices = componentSegment.getControlSurfaces().getControlSurfaceDevices();
 
-        for ( int j = 1; j <= trailingEdgeDevices->getControlSurfaceDeviceCount(); j++ ) {
-            tigl::CCPACSControlSurfaceDevice &trailingEdgeDevice = trailingEdgeDevices->getControlSurfaceDeviceByID(j);
+        for ( int j = 1; j <= controlSurfaceDevices->getControlSurfaceDeviceCount(); j++ ) {
+            tigl::CCPACSControlSurfaceDevice &controlSurfaceDevice = controlSurfaceDevices->getControlSurfaceDeviceByID(j);
 
             // ** debuging: show cutOutShapes, while in InteractiveMode.
-            // ** displayShape(trailingEdgeDevice.getCutOutShape());
+            // ** displayShape(controlSurfaceDevice.getCutOutShape());
 
-            if (flapsForInteractiveUse.find(trailingEdgeDevice.getUID()) != flapsForInteractiveUse.end() && trailingUID == trailingEdgeDevice.getUID()) {
-               gp_Trsf trsf = trailingEdgeDevice.getTransformation(flapStatus[trailingEdgeDevice.getUID()]);
-               myAISContext->SetLocation((Handle_AIS_InteractiveObject) flapsForInteractiveUse[trailingEdgeDevice.getUID()],trsf);
+            if (flapsForInteractiveUse.find(controlSurfaceDevice.getUID()) != flapsForInteractiveUse.end() && trailingUID == controlSurfaceDevice.getUID()) {
+               gp_Trsf trsf = controlSurfaceDevice.getTransformation(flapStatus[controlSurfaceDevice.getUID()]);
+               myAISContext->SetLocation((Handle_AIS_InteractiveObject) flapsForInteractiveUse[controlSurfaceDevice.getUID()],trsf);
             }
         }
     }

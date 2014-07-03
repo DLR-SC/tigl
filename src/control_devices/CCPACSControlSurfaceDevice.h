@@ -33,6 +33,7 @@
 #include "CCPACSControlSurfaceDevicePath.h"
 #include "CTiglControlSurfaceTransformation.h"
 #include "tigl_internal.h"
+#include "CTiglControlSurfaceHingeLine.h"
 
 namespace tigl {
 
@@ -59,6 +60,7 @@ private:
     std::string uID;
     TopoDS_Shape loft;
     CCPACSWingComponentSegment* _segment;
+    CTiglControlSurfaceHingeLine* _hingeLine;
 
     gp_Pnt s1;
     gp_Pnt s2;

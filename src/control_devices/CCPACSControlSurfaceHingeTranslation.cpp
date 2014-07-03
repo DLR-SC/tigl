@@ -27,12 +27,12 @@
 #include <sstream>
 #include <exception>
 
-#include "CCPACSHingeTranslation.h"
+#include "CCPACSControlSurfaceHingeTranslation.h"
 
 namespace tigl
 {
 
-CCPACSHingeTranslation::CCPACSHingeTranslation()
+CCPACSControlSurfaceHingeTranslation::CCPACSControlSurfaceHingeTranslation()
 {
     x = 0;
     y = 0;
@@ -40,7 +40,7 @@ CCPACSHingeTranslation::CCPACSHingeTranslation()
 }
 
 // Read CPACS HingeTranslation element
-void CCPACSHingeTranslation::ReadCPACS(TixiDocumentHandle tixiHandle,
+void CCPACSControlSurfaceHingeTranslation::ReadCPACS(TixiDocumentHandle tixiHandle,
         const std::string& HingeTranslationXPath)
 {
     char* elementPath;
@@ -69,15 +69,15 @@ void CCPACSHingeTranslation::ReadCPACS(TixiDocumentHandle tixiHandle,
     }
 }
 
-double CCPACSHingeTranslation::getX()
+double CCPACSControlSurfaceHingeTranslation::getX()
 {
     return x;
 }
-double CCPACSHingeTranslation::getY()
+double CCPACSControlSurfaceHingeTranslation::getY()
 {
     return y;
 }
-double CCPACSHingeTranslation::getZ()
+double CCPACSControlSurfaceHingeTranslation::getZ()
 {
     return z;
 }
