@@ -263,7 +263,8 @@ TopoDS_Wire CCPACSFuselageSegment::GetEndWire(void)
 }
 
 // get short name for loft
-std::string CCPACSFuselageSegment::GetShortShapeName() {
+std::string CCPACSFuselageSegment::GetShortShapeName()
+{
     unsigned int findex = 0;
     unsigned int fsindex = 0;
     for (int i = 1; i <= fuselage->GetConfiguration().GetFuselageCount(); ++i) {
