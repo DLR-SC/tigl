@@ -101,13 +101,13 @@ namespace
             names.erase(names.begin()+2);
         }
         // assign "Top" and "Bottom" to face traits
-        for (int i = 0; i < nFaces-2; i++) {
+        for (unsigned int i = 0; i < nFaces-2; i++) {
             CFaceTraits traits = loft->GetFaceTraits(i);
             traits.SetName(names[i%names.size()].c_str());
             loft->SetFaceTraits(i, traits);
         }
         // assign "Inside" and "Outside" to face traits
-        for (int i = nFaces-2; i < nFaces; i++) {
+        for (unsigned int i = nFaces-2; i < nFaces; i++) {
             CFaceTraits traits = loft->GetFaceTraits(i);
             traits.SetName(endnames[i-nFaces+2].c_str());
             loft->SetFaceTraits(i, traits);
