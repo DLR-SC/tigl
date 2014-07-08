@@ -245,7 +245,8 @@ CTiglAbstractSegment & CCPACSFuselage::GetSegment(std::string uid)
 }
 
 // get short name for loft
-std::string CCPACSFuselage::GetShortShapeName () {
+std::string CCPACSFuselage::GetShortShapeName ()
+{
     unsigned int findex = 0;
     for (int i = 1; i <= GetConfiguration().GetFuselageCount(); ++i) {
         tigl::CCPACSFuselage& f = GetConfiguration().GetFuselage(i);
