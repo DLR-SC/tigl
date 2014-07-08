@@ -147,7 +147,11 @@ PNamedShape CTiglAbstractGeometricComponent::GetMirroredLoft(void)
     std::string mirrorShortName = GetLoft()->ShortName();
     mirrorShortName += "M";
     TopoDS_Shape mirroredShape = myBRepTransformation.Shape();
-    PNamedShape mirroredPNamedShape (new CNamedShape(mirroredShape, mirrorName.c_str(), mirrorShortName.c_str()));
+    
+    PNamedShape mirroredPNamedShape(new CNamedShape(*GetLoft()));
+    mirroredPNamedShape->SetShape(mirroredShape);
+    mirroredPNamedShape->SetName(mirrorName.c_str());
+    mirroredPNamedShape->SetShortName(mirrorShortName.c_str());
     return mirroredPNamedShape;
 }
 
