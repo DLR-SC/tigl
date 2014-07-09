@@ -91,7 +91,7 @@ public:
     TIGL_EXPORT CTiglAbstractSegment & GetComponentSegment(std::string uid);
 
     // Extends given flap of this wing
-    TIGL_EXPORT TopoDS_Shape ExtendFlap(std::string flapUID, double flapDeflectionPercantage );
+    TIGL_EXPORT TopoDS_Shape ExtendFlap(std::string flapUID, double flapDeflectionPercentage );
 
     // Adds all Segments of this wing and flaps to one shape
     TIGL_EXPORT TopoDS_Shape BuildFusedSegmentsWithFlaps(bool splitWingInUpperAndLower, std::map<std::string,double> flapStatus);
