@@ -143,8 +143,8 @@ gp_Trsf CCPACSControlSurfaceDevice::getTransformation(double flapStatusInPercent
     gp_Pnt innerHingeOld = _hingeLine->getInnerHingePoint();;
     gp_Pnt outerHingeOld = _hingeLine->getOuterHingePoint();;
 
-    // may use outerTranslationY instead of 0.
-    gp_Pnt hingePoint1 = _hingeLine->getTransformedOuterHingePoint(gp_Vec(outerTranslationX, 0, outerTranslationZ));
+    // may use innerTranslationY instead of 0.
+    gp_Pnt hingePoint1 = _hingeLine->getTransformedOuterHingePoint(gp_Vec(outerTranslationX, innerTranslationY, outerTranslationZ));
     gp_Pnt hingePoint2 = _hingeLine->getTransformedInnerHingePoint(gp_Vec(innerTranslationX, innerTranslationY, innerTranslationZ));
 
     // calculating the needed transformations

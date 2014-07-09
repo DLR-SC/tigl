@@ -63,7 +63,7 @@ public:
     tigl::CCPACSConfiguration& GetConfiguration(void) const;
 
     void drawWingFlapsForInteractiveUse(std::string selectedWing);
-    void updateControlSurfacesInteractiveObjects(std::string selectedWing, std::map<std::string,double> flapStatus, std::string trailingUID);
+    void updateControlSurfacesInteractiveObjects(std::string selectedWing, std::map<std::string,double> flapStatus, std::string controlUID);
 
 signals:
     void documentUpdated(TiglCPACSConfigurationHandle);

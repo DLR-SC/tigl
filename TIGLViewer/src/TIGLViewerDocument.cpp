@@ -832,7 +832,7 @@ void TIGLViewerDocument::drawWingFlapsForInteractiveUse(std::string selectedWing
     }
 }
 
-void TIGLViewerDocument::updateControlSurfacesInteractiveObjects(std::string selectedWing, std::map<std::string,double> flapStatus, std::string trailingUID)
+void TIGLViewerDocument::updateControlSurfacesInteractiveObjects(std::string selectedWing, std::map<std::string,double> flapStatus, std::string controlUID)
 {
     tigl::CCPACSWing& wing = GetConfiguration().GetWing( selectedWing );
     for ( int i = 1; i <= wing.GetComponentSegmentCount(); i++ ) {
@@ -846,7 +846,7 @@ void TIGLViewerDocument::updateControlSurfacesInteractiveObjects(std::string sel
             // ** debuging: show cutOutShapes, while in InteractiveMode.
             // ** displayShape(controlSurfaceDevice.getCutOutShape());
 
-            if (flapsForInteractiveUse.find(controlSurfaceDevice.getUID()) != flapsForInteractiveUse.end() && trailingUID == controlSurfaceDevice.getUID()) {
+            if (flapsForInteractiveUse.find(controlSurfaceDevice.getUID()) != flapsForInteractiveUse.end() && controlUID == controlSurfaceDevice.getUID()) {
                gp_Trsf trsf = controlSurfaceDevice.getTransformation(flapStatus[controlSurfaceDevice.getUID()]);
                myAISContext->SetLocation((Handle_AIS_InteractiveObject) flapsForInteractiveUse[controlSurfaceDevice.getUID()],trsf);
             }

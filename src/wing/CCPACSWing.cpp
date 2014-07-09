@@ -316,10 +316,10 @@ TopoDS_Shape & CCPACSWing::GetLoftWithLeadingEdge(void)
 }
 
 
-TopoDS_Shape CCPACSWing::ExtendFlap(std::string flapUID, double flapDeflectionPercantage )
+TopoDS_Shape CCPACSWing::ExtendFlap(std::string flapUID, double flapDeflectionPercentage )
 {
     std::map<std::string,double> flapMap;
-    flapMap[flapUID] =flapDeflectionPercantage;
+    flapMap[flapUID] = flapDeflectionPercentage;
     return BuildFusedSegmentsWithFlaps(false, flapMap);
 }
 
@@ -331,7 +331,7 @@ TopoDS_Shape CCPACSWing::BuildFusedSegmentsWithFlaps(bool splitWingInUpperAndLow
     BRep_Builder compoundBuilder;
     compoundBuilder.MakeCompound (wingAndFlaps);
 
-    TopoDS_Shape trailingEdgeLoftCut;
+    TopoDS_Shape controlSurfaceLoftCut;
     TopoDS_Shape wingLoftCut;
     for ( int i = 1; i <= GetComponentSegmentCount(); i++ ) {
 
@@ -340,7 +340,7 @@ TopoDS_Shape CCPACSWing::BuildFusedSegmentsWithFlaps(bool splitWingInUpperAndLow
        TopoDS_Shape wingLoft;
 
        for ( int j = controlSurfaceDevices->getControlSurfaceDeviceCount(); j > 0 ; j-- ) {
-            CCPACSControlSurfaceDevice &trailingEdgeDevice = controlSurfaceDevices->getControlSurfaceDeviceByID(j);
+            CCPACSControlSurfaceDevice &controlSurfaceDevice = controlSurfaceDevices->getControlSurfaceDeviceByID(j);
 
             if ( !wingCutOutShape.IsNull() ) {
                 wingLoft = wingCutOutShape;
@@ -353,37 +353,37 @@ TopoDS_Shape CCPACSWing::BuildFusedSegmentsWithFlaps(bool splitWingInUpperAndLow
                 wingCleanShape = wingLoft;
             }
 
-            if ( trailingEdgeDevice.GetLoft().IsNull() ) {
-                // box built out of the 4 edge´s of the trailingEdgeDevice outer shape.
-                TopoDS_Shape trailingEdgePrism = trailingEdgeDevice.getCutOutShape();
+            if ( controlSurfaceDevice.GetLoft().IsNull() ) {
+                // box built out of the 4 edge´s of the controlSurfaceDevice outer shape.
+                TopoDS_Shape controlSurfacePrism = controlSurfaceDevice.getCutOutShape();
 
                 // create intermediate result for boolean ops
                 BOPCol_ListOfShape aLS;
                 aLS.Append(wingLoft);
-                aLS.Append(trailingEdgePrism);
+                aLS.Append(controlSurfacePrism);
                 BOPAlgo_PaveFiller dsFill;
                 dsFill.SetArguments(aLS);
                 dsFill.Perform();
 
-                // create common and cut out structure of the wing and the trailingEdgeDevice
-                wingLoftCut  = BRepAlgoAPI_Cut(wingLoft, trailingEdgePrism,dsFill);
-                trailingEdgeLoftCut = BRepAlgoAPI_Common(wingLoft, trailingEdgePrism, dsFill);
+                // create common and cut out structure of the wing and the controlSurfaceDevice
+                wingLoftCut  = BRepAlgoAPI_Cut(wingLoft, controlSurfacePrism,dsFill);
+                controlSurfaceLoftCut = BRepAlgoAPI_Common(wingLoft, controlSurfacePrism, dsFill);
                 wingCutOutShape = wingLoftCut;
 
-                trailingEdgeDevice.setLoft(trailingEdgeLoftCut);
+                controlSurfaceDevice.setLoft(controlSurfaceLoftCut);
             }
             else {
                 wingLoftCut = wingCutOutShape;
-                trailingEdgeLoftCut = trailingEdgeDevice.GetLoft();
+                controlSurfaceLoftCut = controlSurfaceDevice.GetLoft();
             }
 
-            BRepBuilderAPI_Transform form(trailingEdgeLoftCut,trailingEdgeDevice.getTransformation(flapStatus[trailingEdgeDevice.getUID()]));
+            BRepBuilderAPI_Transform form(controlSurfaceLoftCut,controlSurfaceDevice.getTransformation(flapStatus[controlSurfaceDevice.getUID()]));
 
-            // shape of the trailingEdgeDevice.
-            trailingEdgeLoftCut = form.Shape();
+            // shape of the controlSurfaceDevice.
+            controlSurfaceLoftCut = form.Shape();
 
             // adding all shapes to one compound.
-            compoundBuilder.Add (wingAndFlaps, trailingEdgeLoftCut);
+            compoundBuilder.Add (wingAndFlaps, controlSurfaceLoftCut);
        }
     }
 
