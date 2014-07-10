@@ -28,6 +28,8 @@
 #include "boolean_operations/CBooleanOperTools.h"
 #include "boolean_operations/BRepSewingToBRepBuilderShapeAdapter.h"
 #include "ListPNamedShape.h"
+#include "CNamedShape.h"
+#include "PNamedShape.h"
 
 #include "Geom_Curve.hxx"
 #include "Geom_Surface.hxx"
@@ -394,7 +396,7 @@ void InsertShapeToCAF(Handle(XCAFDoc_ShapeTool) myAssembly, const PNamedShape sh
 // Returns a unique Hashcode for a specific geometric component
 int GetComponentHashCode(tigl::ITiglGeometricComponent& component)
 {
-    TopoDS_Shape& loft = component.GetLoft();
+    const TopoDS_Shape& loft = (*component.GetLoft()).Shape();
     if (!loft.IsNull()) {
         return loft.HashCode(2294967295);
     }
@@ -402,4 +404,3 @@ int GetComponentHashCode(tigl::ITiglGeometricComponent& component)
         return 0;
     }
 }
-

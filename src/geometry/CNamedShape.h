@@ -69,6 +69,7 @@ class CNamedShape
 public:
     TIGL_EXPORT CNamedShape();
     TIGL_EXPORT CNamedShape(const TopoDS_Shape& shape, const char* shapeName);
+    TIGL_EXPORT CNamedShape(const TopoDS_Shape& shape, const char* shapeName, const char* shapeShortName);
     TIGL_EXPORT CNamedShape(const CNamedShape&);
     TIGL_EXPORT CNamedShape &operator= (const CNamedShape&);
     TIGL_EXPORT ~CNamedShape();

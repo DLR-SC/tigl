@@ -20,6 +20,7 @@
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "CCPACSConfiguration.h"
+#include "tiglcommonfunctions.h"
 
 #include <string>
 #include <cmath>
@@ -28,6 +29,8 @@
 #include <BRepPrimAPI_MakeSphere.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <TopExp_Explorer.hxx>
+#include <TopExp.hxx>
+#include <TopTools_IndexedMapOfShape.hxx>
 
 namespace tigl
 {
@@ -43,7 +46,7 @@ void CCPACSFarField::init()
 {
     fieldType = NONE;
     fieldSize = 0.;
-    loft.Nullify();
+    loft.reset();
     SetUID("FarField");
 }
 
@@ -108,7 +111,7 @@ void CCPACSFarField::ReadCPACS(TixiDocumentHandle tixiHandle)
     }
 }
 
-TopoDS_Shape CCPACSFarField::BuildLoft(void)
+PNamedShape CCPACSFarField::BuildLoft(void)
 {
     TopoDS_Shape shape;
     shape.Nullify();
@@ -116,7 +119,7 @@ TopoDS_Shape CCPACSFarField::BuildLoft(void)
 
     switch (fieldType) {
     case NONE:
-        return shape;
+        shape.Nullify();
     case FULL_SPHERE:
         shape = BRepPrimAPI_MakeSphere(center, fieldSize).Shape();
         break;
@@ -135,7 +138,25 @@ TopoDS_Shape CCPACSFarField::BuildLoft(void)
         shape.Nullify();
     }
 
-    return shape;
+    // set names
+    std::string loftName = GetUID();
+    std::string loftShortName = "FF";
+
+    PNamedShape loft(new CNamedShape(shape, loftName.c_str(), loftShortName.c_str()));
+
+    // rename the face trait, which represents the symmetry plane
+    TopTools_IndexedMapOfShape map;
+    TopExp::MapShapes(shape,   TopAbs_FACE, map);
+    for (int iface = 1; iface <= map.Extent(); ++iface){
+        TopoDS_Face face = TopoDS::Face(map(iface));
+        gp_Pnt p = GetCentralFacePoint(face);
+        if (fabs(p.Y()) < Precision::Confusion()) {
+            CFaceTraits traits = loft->GetFaceTraits(iface-1);
+            traits.SetName("Symmetry");
+            loft->SetFaceTraits(iface-1, traits);
+        }
+    }
+    return loft;
 }
 
 TiglGeometricComponentType CCPACSFarField::GetComponentType(void)

@@ -95,16 +95,20 @@ void CCPACSControlSurfaceDevice::ReadCPACS(TixiDocumentHandle tixiHandle, const 
         }
     }
 
+    std::string loftName = GetUID();
+    std::string loftShortName = GetShortShapeName();
+    loft  = PNamedShape(new CNamedShape(TopoDS_Shape(), loftName.c_str(), loftShortName.c_str()));
+
     _isLeadingEdge = isLeadingEdge;
     _hingeLine = new CTiglControlSurfaceHingeLine(getOuterShape(),getMovementPath(),_segment);
 }
 
 void CCPACSControlSurfaceDevice::setLoft(TopoDS_Shape loft)
 {
-    this->loft = loft;
+    this->loft->SetShape(loft);
 }
 
-TopoDS_Shape CCPACSControlSurfaceDevice::BuildLoft()
+PNamedShape CCPACSControlSurfaceDevice::BuildLoft()
 {
     return loft;
 }
@@ -160,8 +164,8 @@ TopoDS_Shape CCPACSControlSurfaceDevice::getCutOutShape()
     vec.Multiply(determineCutOutPrismThickness()*2);
     TopoDS_Shape prism = BRepPrimAPI_MakePrism(face,vec);
 
-    loft = prism;
-    return loft;
+    loft->SetShape(prism);
+    return loft->Shape();
 }
 
 TopoDS_Face CCPACSControlSurfaceDevice::getFace()
@@ -272,7 +276,7 @@ void CCPACSControlSurfaceDevice::getProjectedPoints(gp_Pnt point1, gp_Pnt point2
 
 double CCPACSControlSurfaceDevice::determineCutOutPrismThickness()
 {
-    TopoDS_Shape wcsShape = _segment->GetLoft();
+    TopoDS_Shape wcsShape = _segment->GetLoft()->Shape();
     Bnd_Box B;
     double Xmin,Xmax,Ymin,Ymax,Zmin,Zmax;
     BRepBndLib::Add(wcsShape,B);
@@ -311,6 +315,25 @@ gp_Vec CCPACSControlSurfaceDevice::getNormalOfTrailingEdgeDevice()
 CCPACSWingComponentSegment* CCPACSControlSurfaceDevice::getSegment()
 {
     return _segment;
+}
+
+// get short name for loft
+std::string CCPACSControlSurfaceDevice::GetShortShapeName()
+{
+    std::string tmp = _segment->GetLoft()->ShortName();
+    for (int j = 1; j <= _segment->getControlSurfaces().getControlSurfaceDevices()->getControlSurfaceDeviceCount(); j++) {
+        tigl::CCPACSControlSurfaceDevice& csd = _segment->getControlSurfaces().getControlSurfaceDevices()->getControlSurfaceDeviceByID(j);
+        if (GetUID() == csd.GetUID()) {
+            std::stringstream shortName;
+            if (_isLeadingEdge) {
+                shortName << tmp << "LED" << j;
+            } else {
+                shortName << tmp << "TED" << j;
+            }
+            return shortName.str();
+        }
+    }
+    return "UNKNOWN";
 }
 
 } // end namespace tigl

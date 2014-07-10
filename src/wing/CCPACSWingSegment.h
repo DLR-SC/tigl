@@ -212,7 +212,7 @@ protected:
     void BuildGuideCurveWires(void);
 
     // Builds the loft between the two segment sections
-    TopoDS_Shape BuildLoft(void);
+    PNamedShape BuildLoft(void);
 
 private:
     // Copy constructor
@@ -220,6 +220,9 @@ private:
 
     // Assignment operator
     void operator=(const CCPACSWingSegment&);
+
+    // get short name for loft
+    std::string GetShortShapeName (void);
 
     // Builds upper and lower surfaces
     void MakeSurfaces();

@@ -58,7 +58,7 @@ private:
     CCPACSControlSurfaceDevicePath path;
     CCPACSControlSurfaceOuterShape outerShape;
     std::string uID;
-    TopoDS_Shape loft;
+    PNamedShape loft;
     CCPACSWingComponentSegment* _segment;
     CTiglControlSurfaceHingeLine* _hingeLine;
 
@@ -88,12 +88,13 @@ public:
     TIGL_EXPORT CCPACSWingComponentSegment* getSegment();
 
 protected:
-    TopoDS_Shape BuildLoft();
+    PNamedShape BuildLoft();
 
 private:
     double linearInterpolation(std::vector<double> list1, std::vector<double> list2, double valueRelList1);
     CCPACSControlSurfaceDevice(const CCPACSControlSurfaceDevice& segment); /* disable copy constructor */
     double determineCutOutPrismThickness();
+    std::string GetShortShapeName();
 
 };
 

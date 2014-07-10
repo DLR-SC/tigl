@@ -62,6 +62,8 @@
 #include "BRepClass3d_SolidClassifier.hxx"
 #include "BRepExtrema_DistShapeShape.hxx"
 #include "TColgp_Array1OfPnt.hxx"
+#include <TopExp.hxx>
+#include <TopTools_IndexedMapOfShape.hxx>
 #include "Handle_Geom_TrimmedCurve.hxx"
 #include "GC_MakeSegment.hxx"
 #include "BRepPrimAPI_MakePrism.hxx"
@@ -99,6 +101,46 @@ namespace
             return 1.;
         }
         return p;
+    }
+
+    // Set the face traits
+    void SetFaceTraits (PNamedShape loft, const int& nSegments) 
+    { 
+        // designated names of the faces
+        std::vector<std::string> names(3);
+        names[0]="Bottom";
+        names[1]="Top";
+        names[2]="TrailingEdge";
+        std::vector<std::string> endnames(2);
+        endnames[0]="Inside";
+        endnames[1]="Outside";
+
+        // map of faces
+        TopTools_IndexedMapOfShape map;
+        TopExp::MapShapes(loft->Shape(),   TopAbs_FACE, map);
+
+        unsigned int nFaces = map.Extent();
+        // check if number of faces without inside and outside surface (nFaces-2) 
+        // is a multiple of 2 (without Trailing Edges) or 3 (with Trailing Edges)
+        if (!((nFaces-2)/nSegments == 2 || (nFaces-2)/nSegments == 3) || nFaces < 4) {
+            throw tigl::CTiglError("CCPACSWingComponentSegment: Unable to name face traits in ruled surface loft", TIGL_ERROR);
+        }
+        // remove trailing edge name if there is no trailing edge
+        if ((nFaces-2)/nSegments == 2) {
+            names.erase(names.begin()+2);
+        }
+        // assign "Top" and "Bottom" to face traits
+        for (unsigned int i = 0; i < nFaces-2; i++) {
+            CFaceTraits traits = loft->GetFaceTraits(i);
+            traits.SetName(names[i%names.size()].c_str());
+            loft->SetFaceTraits(i, traits);
+        }
+        // assign "Inside" and "Outside" to face traits
+        for (unsigned int i = nFaces-2; i < nFaces; i++) {
+            CFaceTraits traits = loft->GetFaceTraits(i);
+            traits.SetName(endnames[i-nFaces+2].c_str());
+            loft->SetFaceTraits(i, traits);
+        }
     }
 }
 
@@ -214,6 +256,7 @@ CCPACSWing& CCPACSWingComponentSegment::GetWing(void) const
     return *wing;
 }
 
+    
 
 SegmentList& CCPACSWingComponentSegment::GetSegmentList()
 {
@@ -241,6 +284,7 @@ SegmentList& CCPACSWingComponentSegment::GetSegmentList()
 
     return wingSegments;
 }
+    
 
 // Determines, which segments belong to the component segment
 std::vector<int> CCPACSWingComponentSegment::findPath(const std::string& fromUID, const::std::string& toUID, const std::vector<int>& curPath, bool forward) const
@@ -248,6 +292,7 @@ std::vector<int> CCPACSWingComponentSegment::findPath(const std::string& fromUID
     if ( fromUID == toUID ) {
         return curPath;
     }
+        
 
     // find all segments with InnerSectionUID == fromUID
     std::vector<int> segList;
@@ -258,6 +303,7 @@ std::vector<int> CCPACSWingComponentSegment::findPath(const std::string& fromUID
             segList.push_back(i);
         }
     }
+        
 
     std::vector<int>::iterator segIt = segList.begin();
     for (; segIt != segList.end(); ++segIt) {
@@ -406,8 +452,31 @@ void CCPACSWingComponentSegment::GetSegmentIntersection(const std::string& segme
     }
 }
 
+// get short name for loft
+std::string CCPACSWingComponentSegment::GetShortShapeName() 
+{
+    unsigned int windex = 0;
+    unsigned int wcsindex = 0;
+    for (int i = 1; i <= wing->GetConfiguration().GetWingCount(); ++i) {
+        tigl::CCPACSWing& w = wing->GetConfiguration().GetWing(i);
+        if (wing->GetUID() == w.GetUID()) {
+            windex = i;
+            for (int j = 1; j <= w.GetComponentSegmentCount(); j++) {
+                tigl::CTiglAbstractSegment& wcs = w.GetComponentSegment(j);
+                if (GetUID() == wcs.GetUID()) {
+                    wcsindex = j;
+                    std::stringstream shortName;
+                    shortName << "W" << windex << "CS" << wcsindex;
+                    return shortName.str();
+                }
+            }
+        }
+    }
+    return "UNKNOWN";
+}
+
 // Builds the loft between the two segment sections
-TopoDS_Shape CCPACSWingComponentSegment::BuildLoft(void)
+PNamedShape CCPACSWingComponentSegment::BuildLoft(void)
 {
 
     BRepOffsetAPI_ThruSections generator(Standard_True, Standard_True, Precision::Confusion() );
@@ -458,28 +527,33 @@ TopoDS_Shape CCPACSWingComponentSegment::BuildLoft(void)
 
     generator.CheckCompatibility(Standard_False);
     generator.Build();
-    TopoDS_Shape loft = generator.Shape();
+    TopoDS_Shape loftShape = generator.Shape();
 
     // transform with wing transformation
-    loft = wing->GetWingTransformation().Transform(loft);
+    loftShape = wing->GetWingTransformation().Transform(loftShape);
 
-    BRepTools::Clean(loft);
+    BRepTools::Clean(loftShape);
 
     Handle(ShapeFix_Shape) sfs = new ShapeFix_Shape;
-    sfs->Init ( loft );
+    sfs->Init ( loftShape );
     sfs->Perform();
-    loft = sfs->Shape();
+    loftShape = sfs->Shape();
 
     // Calculate volume
     GProp_GProps System;
-    BRepGProp::VolumeProperties(loft, System);
+    BRepGProp::VolumeProperties(loftShape, System);
     myVolume = System.Mass();
 
     // Calculate surface area
     GProp_GProps AreaSystem;
-    BRepGProp::SurfaceProperties(loft, AreaSystem);
+    BRepGProp::SurfaceProperties(loftShape, AreaSystem);
     mySurfaceArea = AreaSystem.Mass();
 
+    // Set Names
+    std::string loftName = GetUID();
+    std::string loftShortName = GetShortShapeName();
+    PNamedShape loft (new CNamedShape(loftShape, loftName.c_str(), loftShortName.c_str()));
+    SetFaceTraits(loft, segments.size());
     return loft;
 }
 
@@ -655,6 +729,7 @@ gp_Vec CCPACSWingComponentSegment::GetNormal(double eta, double xsi)
 void CCPACSWingComponentSegment::GetEtaXsiFromSegmentEtaXsi(const std::string& segmentUID, double seta, double sxsi, double& eta, double& xsi)
 {
     // search for ETA coordinate
+        
 
     if (seta < 0.0 || seta > 1.0) {
         throw CTiglError("Error: Parameter seta not in the range 0.0 <= seta <= 1.0 in CCPACSWingComponentSegment::GetPoint", TIGL_ERROR);
@@ -662,6 +737,7 @@ void CCPACSWingComponentSegment::GetEtaXsiFromSegmentEtaXsi(const std::string& s
     if (sxsi < 0.0 || sxsi > 1.0) {
         throw CTiglError("Error: Parameter sxsi not in the range 0.0 <= sxsi <= 1.0 in CCPACSWingComponentSegment::GetPoint", TIGL_ERROR);
     }
+        
 
     SegmentList& segments = GetSegmentList();
     // check that segment belongs to component segment
@@ -802,6 +878,7 @@ const CTiglAbstractSegment* CCPACSWingComponentSegment::findSegment(double x, do
     CTiglAbstractSegment* result = NULL;
     gp_Pnt pnt(x, y, z);
 
+
     SegmentList& segments = GetSegmentList();
 
     double minDist = std::numeric_limits<double>::max();
@@ -841,11 +918,13 @@ const CTiglAbstractSegment* CCPACSWingComponentSegment::findSegment(double x, do
 MaterialList CCPACSWingComponentSegment::GetMaterials(double eta, double xsi, TiglStructureType type)
 {
     MaterialList list;
+        
 
     if (!structure.IsValid()) {
         // return empty list
         return list;
     }
+        
 
     if (type != UPPER_SHELL && type != LOWER_SHELL) {
         LOG(ERROR) << "Cannot compute materials for inner structure in CCPACSWingComponentSegment::GetMaterials (not yet implemented)";
@@ -859,16 +938,19 @@ MaterialList CCPACSWingComponentSegment::GetMaterials(double eta, double xsi, Ti
             if (!cell.GetMaterial().IsValid()) {
                 continue;
             }
+                
 
             if (cell.IsInside(eta,xsi)) {
                 list.push_back(&(cell.GetMaterial()));
             }
         }
+            
 
         // add complete skin, only if no cells are defined
         if (list.empty() && shell->GetMaterial().IsValid()){
             list.push_back(&(shell->GetMaterial()));
         }
+        
 
     }
     return list;
