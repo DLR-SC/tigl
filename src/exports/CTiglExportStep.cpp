@@ -151,27 +151,26 @@ namespace
             // set wire name
             Handle(StepShape_GeometricCurveSet) SGC;
             Handle(TransferBRep_ShapeMapper) mapper = TransferBRep::ShapeMapper ( FP, wire );
-            if ( FP->FindTypedTransient ( mapper, STANDARD_TYPE(StepShape_GeometricCurveSet), SGC ) ) {
-                Handle(TCollection_HAsciiString) str = new TCollection_HAsciiString(wireName.c_str());
-                SGC->SetName(str);
+            if (!FP->FindTypedTransient ( mapper, STANDARD_TYPE(StepShape_GeometricCurveSet), SGC )) {
+                continue;
+            }
+            
+            Handle(TCollection_HAsciiString) str = new TCollection_HAsciiString(wireName.c_str());
+            SGC->SetName(str);
+            
+            // name edges
+            for (int i = 1; i <= SGC->NbElements(); ++i) {
+                StepShape_GeometricSetSelect elem = SGC->ElementsValue(i);
+                Handle_StepGeom_Curve curve = Handle(StepGeom_Curve)::DownCast(elem.Value());
                 
-                // name edges
-                for (int i = 1; i <= SGC->NbElements(); ++i) {
-                    StepShape_GeometricSetSelect elem = SGC->ElementsValue(i);
-                    Handle_StepGeom_Curve curve = Handle(StepGeom_Curve)::DownCast(elem.Value());
-                    
-                    if (!curve.IsNull()) {
-                        curve->SetName(str);
-                    }
-                    
-                    // CATIA does only show the basis curves. Hence we must name them too
-                    Handle_StepGeom_TrimmedCurve tcurve = Handle(StepGeom_TrimmedCurve)::DownCast(elem.Value());
-                    if (!tcurve.IsNull()) {
-                        curve = tcurve->BasisCurve();
-                        if (!curve.IsNull()) {
-                            curve->SetName(str);
-                        }
-                    }
+                if (!curve.IsNull()) {
+                    curve->SetName(str);
+                }
+                
+                // CATIA does only show the basis curves. Hence we must name them too
+                Handle_StepGeom_TrimmedCurve tcurve = Handle(StepGeom_TrimmedCurve)::DownCast(elem.Value());
+                if (!tcurve.IsNull() && !tcurve->BasisCurve().IsNull()) {
+                    tcurve->BasisCurve()->SetName(str);
                 }
             }
         }
