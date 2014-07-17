@@ -101,6 +101,34 @@ namespace
             }
         }
     }
+    
+    void WriteIGESShapeNames(Handle_Transfer_FinderProcess FP, const PNamedShape shape)
+    {
+        if (!shape) {
+            return;
+        }
+
+        std::string shapeName = shape->ShortName();
+        // IGES allows entity names of at max 8 characters.
+        // If the string is longer than 8 characters, the IGES exports might crash
+        if (shapeName.length() > 8) {
+            shapeName = shapeName.substr(0,8);
+        }
+
+        // insert blanks
+        int nblanks = 8 - shapeName.length();
+        for (int i = 0; i < nblanks; ++i) {
+            shapeName.insert(shapeName.begin(), ' ');
+        }
+
+        // set face name
+        Handle(IGESData_IGESEntity) entity;
+        Handle(TransferBRep_ShapeMapper) mapper = TransferBRep::ShapeMapper ( FP, shape->Shape() );
+        if ( FP->FindTypedTransient ( mapper, STANDARD_TYPE(IGESData_IGESEntity), entity ) ) {
+            Handle(TCollection_HAsciiString) str = new TCollection_HAsciiString(shapeName.c_str());
+            entity->SetLabel(str);
+        }
+    }
 
 } //namespace
 
@@ -287,6 +315,7 @@ void CTiglExportIges::ExportShapes(const ListPNamedShape& shapes, const std::str
     // write face entity names
     for (it = shapeScaled.begin(); it != shapeScaled.end(); ++it) {
         PNamedShape pshape = *it;
+        WriteIGESShapeNames(igesWriter.TransferProcess(), pshape);
         WriteIGESFaceNames(igesWriter.TransferProcess(), pshape);
     }
 
