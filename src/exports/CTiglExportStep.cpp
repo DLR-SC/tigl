@@ -72,6 +72,7 @@
 #include "TopExp_Explorer.hxx"
 #include "TopTools_IndexedMapOfShape.hxx"
 #include "TopTools_HSequenceOfShape.hxx"
+#include "TopoDS_Edge.hxx"
 #include "ShapeAnalysis_FreeBounds.hxx"
 
 #include <cassert>
@@ -233,7 +234,7 @@ namespace
     {
         WriteStepFaceNames(FP, shape);
         WriteStepShellName(FP, shape);
-        WriteStepidName(FP, shape);
+        WriteStepSolidName(FP, shape);
         WriteStepProductName(FP, shape);
     }
 
