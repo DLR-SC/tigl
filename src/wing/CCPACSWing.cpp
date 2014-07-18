@@ -602,9 +602,9 @@ double CCPACSWing::GetWingspan()
     else {
         for (int i = 1; i <= GetSegmentCount(); ++i) {
             CTiglAbstractSegment& segment = GetSegment(i);
-            const TopoDS_Shape& segmentShape = segment.GetLoft()->Shape();
+            TopoDS_Shape segmentShape = segment.GetLoft()->Shape();
             BRepBndLib::Add(segmentShape, boundingBox);
-            const TopoDS_Shape& segmentMirroredShape = segment.GetMirroredLoft()->Shape();
+            TopoDS_Shape segmentMirroredShape = segment.GetMirroredLoft()->Shape();
             BRepBndLib::Add(segmentMirroredShape, boundingBox);
         }
 
