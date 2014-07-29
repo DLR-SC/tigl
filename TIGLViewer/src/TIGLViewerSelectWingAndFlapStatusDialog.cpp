@@ -42,6 +42,8 @@ TIGLViewerSelectWingAndFlapStatusDialog::TIGLViewerSelectWingAndFlapStatusDialog
     setFixedSize(size());
     this->setWindowTitle("Choose ControlSurface Deflection");
     _document = document;
+    QPalette Pal(palette());
+    ui->scrollArea->setPalette(Pal);
 }
 
 TIGLViewerSelectWingAndFlapStatusDialog::~TIGLViewerSelectWingAndFlapStatusDialog()
@@ -80,6 +82,8 @@ void TIGLViewerSelectWingAndFlapStatusDialog::on_comboBoxWings_currentIndexChang
     vLayout->setContentsMargins(0,0,0,0);
     vLayout->setSpacing(0);
     QPalette Pal(palette());
+    Pal.setColor(QPalette::Background, Qt::white);
+    switcher = false;
 
     int noDevices = wing.GetComponentSegmentCount();
     for ( int i = 1; i <= wing.GetComponentSegmentCount(); i++ ) {
