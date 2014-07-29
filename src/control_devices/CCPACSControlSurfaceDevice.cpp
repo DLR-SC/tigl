@@ -336,4 +336,8 @@ std::string CCPACSControlSurfaceDevice::GetShortShapeName()
     return "UNKNOWN";
 }
 
+bool CCPACSControlSurfaceDevice::isLeadingEdgeDevice()
+{
+    return _isLeadingEdge;
+}
 } // end namespace tigl

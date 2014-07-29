@@ -255,7 +255,7 @@
     </property>
    </widget>
   </widget>
-  <widget class="QCheckBox" name="checkBox">
+  <widget class="QCheckBox" name="checkTED">
    <property name="geometry">
     <rect>
      <x>520</x>
@@ -267,8 +267,14 @@
    <property name="text">
     <string>TED</string>
    </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="tristate">
+    <bool>false</bool>
+   </property>
   </widget>
-  <widget class="QCheckBox" name="checkBox_2">
+  <widget class="QCheckBox" name="checkLED">
    <property name="geometry">
     <rect>
      <x>590</x>
@@ -280,8 +286,11 @@
    <property name="text">
     <string>LED</string>
    </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
   </widget>
-  <widget class="QCheckBox" name="checkBox_3">
+  <widget class="QCheckBox" name="checkSpoiler">
    <property name="geometry">
     <rect>
      <x>660</x>
@@ -292,6 +301,9 @@
    </property>
    <property name="text">
     <string>Spoilers</string>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
    </property>
   </widget>
  </widget>

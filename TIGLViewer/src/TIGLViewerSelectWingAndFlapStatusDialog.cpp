@@ -38,7 +38,7 @@ TIGLViewerSelectWingAndFlapStatusDialog::TIGLViewerSelectWingAndFlapStatusDialog
 {
     _handle = handle;
     ui->setupUi(this);
-    switcher = false;
+    switcher = true;
     setFixedSize(size());
     this->setWindowTitle("Choose ControlSurface Deflection");
     _document = document;
@@ -71,113 +71,7 @@ std::map<std::string,double> TIGLViewerSelectWingAndFlapStatusDialog::getControl
 
 void TIGLViewerSelectWingAndFlapStatusDialog::on_comboBoxWings_currentIndexChanged(int index)
 {
-    std::string wingUID = ui->comboBoxWings->currentText().toStdString();
-    tigl::CCPACSWing &wing = tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(_handle).GetWing(wingUID);
-
-    cleanup();
-
-    QWidget* outerWidget = new QWidget;
-    QVBoxLayout* vLayout = new QVBoxLayout;
-    vLayout->setAlignment(Qt::AlignTop);
-    vLayout->setContentsMargins(0,0,0,0);
-    vLayout->setSpacing(0);
-    QPalette Pal(palette());
-    Pal.setColor(QPalette::Background, Qt::white);
-    switcher = false;
-
-    int noDevices = wing.GetComponentSegmentCount();
-    for ( int i = 1; i <= wing.GetComponentSegmentCount(); i++ ) {
-        tigl::CCPACSWingComponentSegment& componentSegment = (tigl::CCPACSWingComponentSegment&) wing.GetComponentSegment(i);
-        if ( componentSegment.getControlSurfaces().getControlSurfaceDevices()->getControlSurfaceDeviceCount() < 1) {
-            noDevices--;
-            if (noDevices < 1) {
-                QPushButton *okButton= ui->buttonBox->button(QDialogButtonBox::Ok);
-                okButton->setEnabled(false);
-                QLabel* error = new QLabel("This wing has no ControlSurfaces");
-                error->setMargin(50);
-                vLayout->addWidget( error );
-            }
-        }
-        else {
-            QPushButton *okButton= ui->buttonBox->button(QDialogButtonBox::Ok);
-            okButton->setEnabled(true);
-        }
-        for ( int j = 1; j <= componentSegment.getControlSurfaces().getControlSurfaceDevices()->getControlSurfaceDeviceCount(); j++ ) {
-            tigl::CCPACSControlSurfaceDevice& controlSurfaceDevice = componentSegment.getControlSurfaces().getControlSurfaceDevices()->getControlSurfaceDeviceByID(j);
-
-            QHBoxLayout* hLayout = new QHBoxLayout;
-            QWidget* innerWidget = new QWidget;
-            QWidget* innerWidget2 = new QWidget;
-            innerWidget->setAutoFillBackground(true);
-            innerWidget->setPalette(Pal);
-            innerWidget2->setAutoFillBackground(true);
-            innerWidget2->setPalette(Pal);
-
-            if (switcher) {
-                Pal.setColor(QPalette::Background, Qt::white);
-                switcher = false;
-            }
-            else {
-                Pal.setColor(QPalette::Background, Qt::lightGray);
-                switcher = true;
-            }
-
-            QString uid = controlSurfaceDevice.getUID().c_str();
-            QLabel* label = new QLabel(uid);
-            label->setFixedSize(250,15);
-            QSlider* slider = new QSlider(Qt::Horizontal);
-            slider->setFixedSize(90,15);
-            slider->setMaximum(1000);
-
-            QLabel* displayer = new QLabel("Value: 0% ");
-            displayer->setFixedHeight(15);
-            QString def = "Deflection: ";
-            QString rot = "Rotation: ";
-
-            if ( controlSurfaceDevice.getMovementPath().getSteps().getControlSurfaceDeviceStepCount() > 0 ) {
-                def.append(QString::number(controlSurfaceDevice.getMovementPath().getSteps().getControlSurfaceDeviceStepByID(1).getRelDeflection()));
-                rot.append(QString::number(controlSurfaceDevice.getMovementPath().getSteps().getControlSurfaceDeviceStepByID(1).getHingeLineRotation()));
-            }
-
-            QLabel* display_rotation = new QLabel(rot);
-            QLabel* display_deflection = new QLabel(def);
-            displayer->setMargin(0);
-            display_rotation->setMargin(0);
-            display_rotation->setFixedHeight(15);
-
-            displayer->setFixedWidth(90);
-            display_rotation->setFixedWidth(90);
-            display_deflection->setFixedWidth(90);
-
-            _displayer[uid.toStdString()] = displayer;
-            _displayer_rotation[uid.toStdString()] = display_rotation;
-            _displayer_deflection[uid.toStdString()] = display_deflection;
-
-            hLayout->addWidget(label);
-            hLayout->addWidget(slider);
-            hLayout->addWidget(displayer);
-            hLayout->addWidget(display_rotation);
-            hLayout->addWidget(display_deflection);
-            hLayout->addWidget(displayer);
-
-            innerWidget->setLayout(hLayout);
-
-            slider->setWindowTitle( uid );
-            vLayout->addWidget(innerWidget);
-
-            if ( _controlSurfaceDevices[uid.toStdString()] == NULL )
-            {
-               _controlSurfaceDevices[uid.toStdString()] = 0;
-            }
-
-            connect(slider, SIGNAL(valueChanged(int)), this, SLOT(slider_value_changed(int)));
-            _controlSurfaceDevicesPointer[uid.toStdString()] = &controlSurfaceDevice;
-        }
-        outerWidget->setLayout(vLayout);
-        ui->scrollArea->setWidget(outerWidget);
-    }
-
-    _document->drawWingFlapsForInteractiveUse(getSelectedWing());
+    drawGUI(true);
 }
 
 void TIGLViewerSelectWingAndFlapStatusDialog::slider_value_changed(int k)
@@ -243,4 +137,138 @@ double TIGLViewerSelectWingAndFlapStatusDialog::linearInterpolation(std::vector<
     double min2 = list2[idefRem-1];
     double max2 = list2[idefRem];
     return value * ( max2 - min2 ) + min2;
+}
+
+void TIGLViewerSelectWingAndFlapStatusDialog::drawGUI(bool redrawModel)
+{
+    std::string wingUID = ui->comboBoxWings->currentText().toStdString();
+    tigl::CCPACSWing &wing = tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(_handle).GetWing(wingUID);
+
+    cleanup();
+
+    QWidget* outerWidget = new QWidget;
+    QVBoxLayout* vLayout = new QVBoxLayout;
+    vLayout->setAlignment(Qt::AlignTop);
+    vLayout->setContentsMargins(0,0,0,0);
+    vLayout->setSpacing(0);
+    QPalette Pal(palette());
+    Pal.setColor(QPalette::Background, Qt::white);
+    switcher = true;
+
+    int noDevices = wing.GetComponentSegmentCount();
+    for ( int i = 1; i <= wing.GetComponentSegmentCount(); i++ ) {
+        tigl::CCPACSWingComponentSegment& componentSegment = (tigl::CCPACSWingComponentSegment&) wing.GetComponentSegment(i);
+        if ( componentSegment.getControlSurfaces().getControlSurfaceDevices()->getControlSurfaceDeviceCount() < 1) {
+            noDevices--;
+            if (noDevices < 1) {
+                QPushButton *okButton= ui->buttonBox->button(QDialogButtonBox::Ok);
+                okButton->setEnabled(false);
+                QLabel* error = new QLabel("This wing has no ControlSurfaces");
+                error->setMargin(50);
+                vLayout->addWidget( error );
+            }
+        }
+        else {
+            QPushButton *okButton= ui->buttonBox->button(QDialogButtonBox::Ok);
+            okButton->setEnabled(true);
+        }
+
+        for ( int j = 1; j <= componentSegment.getControlSurfaces().getControlSurfaceDevices()->getControlSurfaceDeviceCount(); j++ ) {
+            tigl::CCPACSControlSurfaceDevice& controlSurfaceDevice = componentSegment.getControlSurfaces().getControlSurfaceDevices()->getControlSurfaceDeviceByID(j);
+
+            if ((!ui->checkTED->isChecked() && !controlSurfaceDevice.isLeadingEdgeDevice())
+                    || (!ui->checkLED->isChecked() && controlSurfaceDevice.isLeadingEdgeDevice()))
+            {
+                continue;
+            }
+
+            if (switcher) {
+                Pal.setColor(QPalette::Background, Qt::white);
+                switcher = false;
+            }
+            else {
+                Pal.setColor(QPalette::Background, Qt::lightGray);
+                switcher = true;
+            }
+
+            QHBoxLayout* hLayout = new QHBoxLayout;
+            QWidget* innerWidget = new QWidget;
+            QWidget* innerWidget2 = new QWidget;
+            innerWidget->setAutoFillBackground(true);
+            innerWidget->setPalette(Pal);
+            innerWidget2->setAutoFillBackground(true);
+            innerWidget2->setPalette(Pal);
+
+            QString uid = controlSurfaceDevice.getUID().c_str();
+            QLabel* label = new QLabel(uid);
+            label->setFixedSize(250,15);
+            QSlider* slider = new QSlider(Qt::Horizontal);
+            slider->setFixedSize(90,15);
+            slider->setMaximum(1000);
+
+            QLabel* displayer = new QLabel("Value: 0% ");
+            displayer->setFixedHeight(15);
+            QString def = "Deflection: ";
+            QString rot = "Rotation: ";
+
+            if ( controlSurfaceDevice.getMovementPath().getSteps().getControlSurfaceDeviceStepCount() > 0 ) {
+                def.append(QString::number(controlSurfaceDevice.getMovementPath().getSteps().getControlSurfaceDeviceStepByID(1).getRelDeflection()));
+                rot.append(QString::number(controlSurfaceDevice.getMovementPath().getSteps().getControlSurfaceDeviceStepByID(1).getHingeLineRotation()));
+            }
+
+            QLabel* display_rotation = new QLabel(rot);
+            QLabel* display_deflection = new QLabel(def);
+            displayer->setMargin(0);
+            display_rotation->setMargin(0);
+            display_rotation->setFixedHeight(15);
+
+            displayer->setFixedWidth(90);
+            display_rotation->setFixedWidth(90);
+            display_deflection->setFixedWidth(90);
+
+            _displayer[uid.toStdString()] = displayer;
+            _displayer_rotation[uid.toStdString()] = display_rotation;
+            _displayer_deflection[uid.toStdString()] = display_deflection;
+
+            hLayout->addWidget(label);
+            hLayout->addWidget(slider);
+            hLayout->addWidget(displayer);
+            hLayout->addWidget(display_rotation);
+            hLayout->addWidget(display_deflection);
+            hLayout->addWidget(displayer);
+
+            innerWidget->setLayout(hLayout);
+
+            slider->setWindowTitle( uid );
+            vLayout->addWidget(innerWidget);
+
+            if ( _controlSurfaceDevices[uid.toStdString()] == NULL )
+            {
+               _controlSurfaceDevices[uid.toStdString()] = 0;
+            }
+
+            connect(slider, SIGNAL(valueChanged(int)), this, SLOT(slider_value_changed(int)));
+            _controlSurfaceDevicesPointer[uid.toStdString()] = &controlSurfaceDevice;
+        }
+        outerWidget->setLayout(vLayout);
+        ui->scrollArea->setWidget(outerWidget);
+    }
+    if (redrawModel) {
+        _document->drawWingFlapsForInteractiveUse(getSelectedWing());
+    }
+}
+
+void TIGLViewerSelectWingAndFlapStatusDialog::on_checkTED_stateChanged(int arg1)
+{
+   drawGUI(false);
+}
+
+void TIGLViewerSelectWingAndFlapStatusDialog::on_checkLED_stateChanged(int arg1)
+{
+    drawGUI(false);
+}
+
+void TIGLViewerSelectWingAndFlapStatusDialog::on_checkSpoiler_stateChanged(int arg1)
+{
+    drawGUI(false);
 }

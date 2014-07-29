@@ -86,7 +86,7 @@ public:
                                         gp_Vec& projectedPoint4 );
     TIGL_EXPORT gp_Vec getNormalOfTrailingEdgeDevice();
     TIGL_EXPORT CCPACSWingComponentSegment* getSegment();
-
+    TIGL_EXPORT bool isLeadingEdgeDevice();
 protected:
     PNamedShape BuildLoft();
 

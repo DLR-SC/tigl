@@ -46,6 +46,9 @@ public:
 private slots:
     void on_comboBoxWings_currentIndexChanged(int index);
     void slider_value_changed(int k);
+    void on_checkTED_stateChanged(int arg1);
+    void on_checkLED_stateChanged(int arg1);
+    void on_checkSpoiler_stateChanged(int arg1);
 
 private:
     bool switcher;
@@ -59,6 +62,7 @@ private:
     std::map< std::string, QLabel*> _displayer_rotation;
     std::map< std::string, tigl::CCPACSControlSurfaceDevice*> _controlSurfaceDevicesPointer;
     TIGLViewerDocument* _document;
+    void drawGUI(bool redrawModel);
     void cleanup();
 
 
