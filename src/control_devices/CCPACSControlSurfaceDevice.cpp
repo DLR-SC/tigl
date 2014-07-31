@@ -163,7 +163,7 @@ TopoDS_Shape CCPACSControlSurfaceDevice::getCutOutShape()
     gp_Vec vec = getNormalOfControlSurfaceDevice();
 
     if (_type == SPOILER) {
-        vec.Multiply(0.8f);
+        vec.Multiply(determineSpoilerThickness()*100);
     } else {
         vec.Multiply(determineCutOutPrismThickness()*2);
     }
@@ -242,13 +242,12 @@ void CCPACSControlSurfaceDevice::getProjectedPoints(gp_Pnt point1, gp_Pnt point2
                                                   gp_Vec& projectedPoint1, gp_Vec& projectedPoint2, gp_Vec&
                                                   projectedPoint3, gp_Vec& projectedPoint4 )
 {
-    gp_Vec nvV = getNormalOfControlSurfaceDevice();
-
     gp_Vec sv;
     gp_Dir nv;
+    gp_Vec nvV = getNormalOfControlSurfaceDevice();
 
     if (_type == SPOILER) {
-        nvV.Multiply(0.1f);
+        nvV.Multiply(determineSpoilerThickness());
         sv = gp_Vec(point1.XYZ()) - (nvV);
     } else {
         nvV.Multiply(determineCutOutPrismThickness());
@@ -354,4 +353,11 @@ TiglControlSurfaceType CCPACSControlSurfaceDevice::getType()
 {
     return _type;
 }
+
+double CCPACSControlSurfaceDevice::determineSpoilerThickness()
+{
+    return 0.01f;
+}
+
+
 } // end namespace tigl

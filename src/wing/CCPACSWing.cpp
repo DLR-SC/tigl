@@ -33,6 +33,8 @@
 #include "CTiglError.h"
 #include "tiglcommonfunctions.h"
 
+#include "PNamedShape.h"
+#include "CCutShape.h"
 #include "BRepOffsetAPI_ThruSections.hxx"
 #include "BRepAlgoAPI_Fuse.hxx"
 #include "ShapeFix_Shape.hxx"
@@ -370,83 +372,89 @@ TopoDS_Shape CCPACSWing::ExtendFlap(std::string flapUID, double flapDeflectionPe
     return BuildFusedSegmentsWithFlaps(false, flapMap);
 }
 
-// Builds a fuse shape of all wing segments with flaps
-TopoDS_Shape CCPACSWing::BuildFusedSegmentsWithFlaps(bool splitWingInUpperAndLower, std::map<std::string,double> flapStatus )
+void CCPACSWing::BuildFlapsAndWingWithoutFlaps()
 {
 
     if ( wingCleanShape.IsNull() ) {
+        // remeber old wing loft
         wingCleanShape = GetLoft()->Shape();
+    } else {
+        // nothing to do, because everything is built already.
+        return;
     }
 
-    // packing all segments togehter in one Compound.
-    TopoDS_Compound wingAndFlaps;
-    BRep_Builder compoundBuilder;
-    compoundBuilder.MakeCompound (wingAndFlaps);
+    TopoDS_Compound allFlapPrisms;
+    BRep_Builder compoundBuilderFlaps;
+    compoundBuilderFlaps.MakeCompound (allFlapPrisms);
 
-    TopoDS_Shape controlSurfaceLoftCut;
-    TopoDS_Shape wingLoftCut;
+    TopoDS_Shape allCutOutBoxes;
     for ( int i = 1; i <= GetComponentSegmentCount(); i++ ) {
 
        CCPACSWingComponentSegment &componentSegment = componentSegments.GetComponentSegment(i);
        CCPACSControlSurfaceDevices* controlSurfaceDevices = componentSegment.getControlSurfaces().getControlSurfaceDevices();
-       TopoDS_Shape wingLoft;
 
-       for ( int j = controlSurfaceDevices->getControlSurfaceDeviceCount(); j > 0 ; j-- ) {
+        for ( int j = controlSurfaceDevices->getControlSurfaceDeviceCount(); j > 0 ; j-- ) {
             CCPACSControlSurfaceDevice &controlSurfaceDevice = controlSurfaceDevices->getControlSurfaceDeviceByID(j);
 
-            if ( !wingCutOutShape.IsNull() ) {
-                wingLoft = wingCutOutShape;
+            TopoDS_Shape controlSurfacePrism = controlSurfaceDevice.getCutOutShape();
+            if (controlSurfaceDevice.getType() != SPOILER) {
+                compoundBuilderFlaps.Add(allFlapPrisms,controlSurfacePrism);
+                if (!allCutOutBoxes.IsNull()) {
+                    allCutOutBoxes = BRepAlgoAPI_Fuse(allCutOutBoxes,controlSurfacePrism);
+                }
+                else {
+                    allCutOutBoxes = controlSurfacePrism;
+                }
             }
-            else {
-                wingLoft = GetLoft()->Shape();
-            }
+            TopoDS_Shape deviceShape = BRepAlgoAPI_Common(GetLoft()->Shape(),controlSurfacePrism);
 
-            if ( controlSurfaceDevice.GetLoft()->Shape().IsNull() ) {
-                // box built out of the 4 edges of the controlSurfaceDevice outer shape.
-                TopoDS_Shape controlSurfacePrism = controlSurfaceDevice.getCutOutShape();
+            controlSurfaceDevice.GetLoft()->SetShape(deviceShape);
+        }
+    }
 
-                // create intermediate result for boolean ops
-                BOPCol_ListOfShape aLS;
-                aLS.Append(wingLoft);
-                aLS.Append(controlSurfacePrism);
-                BOPAlgo_PaveFiller dsFill;
-                dsFill.SetArguments(aLS);
-                dsFill.Perform();
+    PNamedShape parentShape(new CNamedShape(wingCleanShape,"test"));
+    PNamedShape cutterShape(new CNamedShape(allCutOutBoxes,"test2"));
 
-                // create common and cut out structure of the wing and the controlSurfaceDevice
-                wingLoftCut  = BRepAlgoAPI_Cut(wingLoft, controlSurfacePrism,dsFill);
-                controlSurfaceLoftCut = BRepAlgoAPI_Common(wingLoft, controlSurfacePrism, dsFill);
-                wingCutOutShape = wingLoftCut;
+    CCutShape cutter(parentShape,cutterShape);
+    cutter.Perform();
+    wingCutOutShape = cutter.NamedShape()->Shape();
+}
 
-                //controlSurfaceDevice.setLoft(controlSurfaceLoftCut);
-                controlSurfaceDevice.GetLoft()->SetShape(controlSurfaceLoftCut);
-            }
-            else {
-                wingLoftCut = wingCutOutShape;
-                controlSurfaceLoftCut = controlSurfaceDevice.GetLoft()->Shape();
-            }
+// Builds a fuse shape of all wing segments with flaps
+TopoDS_Shape CCPACSWing::BuildFusedSegmentsWithFlaps(bool splitWingInUpperAndLower, std::map<std::string,double> flapStatus )
+{
+    if ( wingCleanShape.IsNull() ) {
+        BuildFlapsAndWingWithoutFlaps();
+    }
 
-            BRepBuilderAPI_Transform form(controlSurfaceLoftCut,controlSurfaceDevice.getTransformation(flapStatus[controlSurfaceDevice.getUID()]));
+    TopoDS_Compound allFlaps;
+    BRep_Builder compoundBuilderFlaps;
+    compoundBuilderFlaps.MakeCompound (allFlaps);
 
-            // shape of the controlSurfaceDevice.
-            controlSurfaceLoftCut = form.Shape();
+    for ( int i = 1; i <= GetComponentSegmentCount(); i++ ) {
 
-            // adding all shapes to one compound.
-            compoundBuilder.Add (wingAndFlaps, controlSurfaceLoftCut);
+       CCPACSWingComponentSegment &componentSegment = componentSegments.GetComponentSegment(i);
+       CCPACSControlSurfaceDevices* controlSurfaceDevices = componentSegment.getControlSurfaces().getControlSurfaceDevices();
+
+       for ( int j = controlSurfaceDevices->getControlSurfaceDeviceCount(); j > 0 ; j-- ) {
+
+            CCPACSControlSurfaceDevice &controlSurfaceDevice = controlSurfaceDevices->getControlSurfaceDeviceByID(j);
+
+            TopoDS_Shape deviceShape = controlSurfaceDevice.GetLoft()->Shape();
+            BRepBuilderAPI_Transform form(deviceShape,controlSurfaceDevice.getTransformation(flapStatus[controlSurfaceDevice.getUID()]));
+            compoundBuilderFlaps.Add(allFlaps,form.Shape());
        }
     }
 
-    // If there are now TrailingEdgeDevices, then there is no wingLoftCut.
-    if (wingLoftCut.IsNull()) {
-        wingLoftCut = GetLoft()->Shape();
-    }
+    TopoDS_Compound wingAndFlaps;
+    BRep_Builder compoundBuilder;
+    compoundBuilder.MakeCompound (wingAndFlaps);
 
-    // adding all shapes to one compound.
-    compoundBuilder.Add (wingAndFlaps, wingLoftCut);
-
-    //loft = wingAndFlaps;
+    compoundBuilder.Add(wingAndFlaps,allFlaps);
+    compoundBuilder.Add(wingAndFlaps,wingCutOutShape);
     loft->SetShape(wingAndFlaps);
-    return loft->Shape();
+
+    return wingAndFlaps;
 }
 
 // Gets the loft of the whole wing.

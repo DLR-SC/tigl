@@ -95,7 +95,7 @@ private:
     CCPACSControlSurfaceDevice(const CCPACSControlSurfaceDevice& segment); /* disable copy constructor */
     double determineCutOutPrismThickness();
     std::string GetShortShapeName();
-
+    double determineSpoilerThickness();
 };
 
 } // end namespace tigl
