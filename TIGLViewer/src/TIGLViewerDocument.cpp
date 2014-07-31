@@ -804,7 +804,9 @@ void TIGLViewerDocument::drawWingFlaps()
     // Draw fused Shape
     myAISContext->EraseAll();
     tigl::CCPACSWing& wing = GetConfiguration().GetWing( dialog.getSelectedWing() );
+
     TopoDS_Shape wingShape = wing.BuildFusedSegmentsWithFlaps(false, dialog.getControlSurfaceStatus());
+
     displayShape(wingShape);
 }
 
