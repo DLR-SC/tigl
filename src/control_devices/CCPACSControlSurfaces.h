@@ -44,10 +44,6 @@ class CCPACSControlSurfaces
 {
 
 private:
-
-    // LeadingEdgeDevices
-    // Spoilers
-
     CCPACSControlSurfaceDevicesPtr controlSurfaceDevices;
     CCPACSWingComponentSegment* _componentSegment;
 

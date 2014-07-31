@@ -66,7 +66,7 @@ CCPACSControlSurfaceDevice::CCPACSControlSurfaceDevice(CCPACSWingComponentSegmen
 }
 
 // Read CPACS trailingEdgeDevice elements
-void CCPACSControlSurfaceDevice::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& trailingEdgeDeviceXPath, bool isLeadingEdge)
+void CCPACSControlSurfaceDevice::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& trailingEdgeDeviceXPath, TiglControlSurfaceType type)
 {
     char*       elementPath;
     std::string tempString;
@@ -77,7 +77,7 @@ void CCPACSControlSurfaceDevice::ReadCPACS(TixiDocumentHandle tixiHandle, const 
     elementPath   = const_cast<char*>(tempString.c_str());
     if (tixiGetTextElement(tixiHandle, elementPath, &ptrName) == SUCCESS)
     {
-        outerShape.ReadCPACS(tixiHandle, elementPath, isLeadingEdge);
+        outerShape.ReadCPACS(tixiHandle, elementPath, type);
     }
 
     tempString = trailingEdgeDeviceXPath + "/path";
@@ -99,7 +99,7 @@ void CCPACSControlSurfaceDevice::ReadCPACS(TixiDocumentHandle tixiHandle, const 
     std::string loftShortName = GetShortShapeName();
     loft  = PNamedShape(new CNamedShape(TopoDS_Shape(), loftName.c_str(), loftShortName.c_str()));
 
-    _isLeadingEdge = isLeadingEdge;
+    _type = type;
     _hingeLine = new CTiglControlSurfaceHingeLine(getOuterShape(),getMovementPath(),_segment);
 }
 
@@ -160,8 +160,14 @@ gp_Trsf CCPACSControlSurfaceDevice::getTransformation(double flapStatusInPercent
 TopoDS_Shape CCPACSControlSurfaceDevice::getCutOutShape()
 {
     TopoDS_Face face = getFace();
-    gp_Vec vec = getNormalOfTrailingEdgeDevice();
-    vec.Multiply(determineCutOutPrismThickness()*2);
+    gp_Vec vec = getNormalOfControlSurfaceDevice();
+
+    if (_type == SPOILER) {
+        vec.Multiply(0.8f);
+    } else {
+        vec.Multiply(determineCutOutPrismThickness()*2);
+    }
+
     TopoDS_Shape prism = BRepPrimAPI_MakePrism(face,vec);
 
     loft->SetShape(prism);
@@ -170,6 +176,7 @@ TopoDS_Shape CCPACSControlSurfaceDevice::getCutOutShape()
 
 TopoDS_Face CCPACSControlSurfaceDevice::getFace()
 {
+
     tigl::CCPACSControlSurfaceBorder outerBorder = getOuterShape().getOuterBorder();
     gp_Pnt point1 = _segment->GetPoint(outerBorder.getEtaLE(),outerBorder.getXsiLE());
     gp_Pnt point2 = _segment->GetPoint(outerBorder.getEtaTE(),outerBorder.getXsiTE());
@@ -187,11 +194,11 @@ TopoDS_Face CCPACSControlSurfaceDevice::getFace()
     dirP3P4.Normalize();
 
     double fac = 0.1;
-    if ( _isLeadingEdge ) {
+    if ( _type == LEADING_EDGE_DEVICE ) {
         p1 = p1 - dirP1P2.Multiplied(fac);
         p3 = p3 - dirP3P4.Multiplied(fac);
     }
-    else {
+    else if ( _type == TRAILING_EDGE_DEVICE) {
         p2 = p2 + dirP1P2.Multiplied(fac);
         p4 = p4 + dirP3P4.Multiplied(fac);
     }
@@ -235,13 +242,18 @@ void CCPACSControlSurfaceDevice::getProjectedPoints(gp_Pnt point1, gp_Pnt point2
                                                   gp_Vec& projectedPoint1, gp_Vec& projectedPoint2, gp_Vec&
                                                   projectedPoint3, gp_Vec& projectedPoint4 )
 {
-    gp_Vec nvV = getNormalOfTrailingEdgeDevice();
-    nvV.Multiply(determineCutOutPrismThickness());
+    gp_Vec nvV = getNormalOfControlSurfaceDevice();
 
     gp_Vec sv;
     gp_Dir nv;
 
-    sv = gp_Vec(point1.XYZ()) - (nvV);
+    if (_type == SPOILER) {
+        nvV.Multiply(0.1f);
+        sv = gp_Vec(point1.XYZ()) - (nvV);
+    } else {
+        nvV.Multiply(determineCutOutPrismThickness());
+        sv = gp_Vec(point1.XYZ()) - (nvV);
+    }
     nv.SetXYZ(nvV.XYZ());
 
     Handle(Geom_Plane) plane = new Geom_Plane(gp_Pnt(sv.XYZ()),nv);
@@ -298,7 +310,7 @@ double CCPACSControlSurfaceDevice::determineCutOutPrismThickness()
     return minThickness;
 }
 
-gp_Vec CCPACSControlSurfaceDevice::getNormalOfTrailingEdgeDevice()
+gp_Vec CCPACSControlSurfaceDevice::getNormalOfControlSurfaceDevice()
 {
     gp_Pnt point1 = _segment->GetPoint(0,0);
     gp_Pnt point2 = _segment->GetPoint(0,1);
@@ -325,10 +337,12 @@ std::string CCPACSControlSurfaceDevice::GetShortShapeName()
         tigl::CCPACSControlSurfaceDevice& csd = _segment->getControlSurfaces().getControlSurfaceDevices()->getControlSurfaceDeviceByID(j);
         if (GetUID() == csd.GetUID()) {
             std::stringstream shortName;
-            if (_isLeadingEdge) {
+            if (_type == LEADING_EDGE_DEVICE) {
                 shortName << tmp << "LED" << j;
-            } else {
+            } else if(_type == TRAILING_EDGE_DEVICE) {
                 shortName << tmp << "TED" << j;
+            } else if(_type == SPOILER) {
+                shortName << tmp << "SPO" << j;
             }
             return shortName.str();
         }
@@ -336,8 +350,8 @@ std::string CCPACSControlSurfaceDevice::GetShortShapeName()
     return "UNKNOWN";
 }
 
-bool CCPACSControlSurfaceDevice::isLeadingEdgeDevice()
+TiglControlSurfaceType CCPACSControlSurfaceDevice::getType()
 {
-    return _isLeadingEdge;
+    return _type;
 }
 } // end namespace tigl

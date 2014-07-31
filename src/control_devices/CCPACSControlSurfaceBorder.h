@@ -53,7 +53,7 @@ public:
     TIGL_EXPORT CCPACSControlSurfaceBorder();
 
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle,
-            const std::string & BorderXPath, bool isLeadingEdge = false);
+            const std::string & BorderXPath, TiglControlSurfaceType type = TRAILING_EDGE_DEVICE);
 
     TIGL_EXPORT double getEtaLE() const;
     TIGL_EXPORT double getEtaTE() const;

@@ -51,7 +51,7 @@ void CCPACSControlSurfaceDevices::Cleanup()
 
 // Read CPACS TrailingEdgeDevices elements
 void CCPACSControlSurfaceDevices::ReadCPACS(TixiDocumentHandle tixiHandle,
-        const std::string& controlSurfaceDevicesXPath, bool isLeading)
+        const std::string& controlSurfaceDevicesXPath, TiglControlSurfaceType type)
 {
     ReturnCode tixiRet;
     int controlSurfaceDeviceCount;
@@ -62,13 +62,17 @@ void CCPACSControlSurfaceDevices::ReadCPACS(TixiDocumentHandle tixiHandle,
     tempString = controlSurfaceDevicesXPath;
     elementPath = const_cast<char*>(tempString.c_str());
 
-    if(!isLeading) {
+    if (type == TRAILING_EDGE_DEVICE) {
         tixiRet = tixiGetNamedChildrenCount(tixiHandle, elementPath,
                 "trailingEdgeDevice", &controlSurfaceDeviceCount);
     }
-    else {
+    else if (type == LEADING_EDGE_DEVICE) {
         tixiRet = tixiGetNamedChildrenCount(tixiHandle, elementPath,
                 "leadingEdgeDevice", &controlSurfaceDeviceCount);
+    }
+    else if (type == SPOILER) {
+        tixiRet = tixiGetNamedChildrenCount(tixiHandle, elementPath,
+                "spoiler", &controlSurfaceDeviceCount);
     }
 
     if (tixiRet != SUCCESS) {
@@ -81,17 +85,20 @@ void CCPACSControlSurfaceDevices::ReadCPACS(TixiDocumentHandle tixiHandle,
                 new CCPACSControlSurfaceDevice(_componentSegment);
         controlSurfaceDevices.push_back(controlSurfaceDevice);
 
-        if (isLeading)
-        {
+
+        if(type == LEADING_EDGE_DEVICE) {
             tempString = controlSurfaceDevicesXPath + "/leadingEdgeDevice[";
         }
-        else {
+        else if (type == TRAILING_EDGE_DEVICE) {
             tempString = controlSurfaceDevicesXPath + "/trailingEdgeDevice[";
+        }
+        else if (type == SPOILER) {
+            tempString = controlSurfaceDevicesXPath + "/spoiler[";
         }
 
         std::ostringstream xpath;
         xpath << tempString << i << "]";
-        controlSurfaceDevice->ReadCPACS(tixiHandle, xpath.str(), isLeading);
+        controlSurfaceDevice->ReadCPACS(tixiHandle, xpath.str(), type);
     }
 
 }

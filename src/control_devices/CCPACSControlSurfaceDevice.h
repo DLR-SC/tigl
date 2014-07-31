@@ -67,11 +67,11 @@ private:
     gp_Pnt s1s;
     gp_Pnt s2s;
 
-    bool _isLeadingEdge;
+    TiglControlSurfaceType _type;
 
 public:
     TIGL_EXPORT CCPACSControlSurfaceDevice(CCPACSWingComponentSegment* segment);
-    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string & trailingEdgeDeviceXPath, bool isLeadingEdge = false);
+    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string & trailingEdgeDeviceXPath, TiglControlSurfaceType type = TRAILING_EDGE_DEVICE);
     TIGL_EXPORT std::string getUID();
     TIGL_EXPORT CCPACSControlSurfaceOuterShape getOuterShape();
     TIGL_EXPORT CCPACSControlSurfaceDevicePath getMovementPath();        // Returns the Component Type TIGL_COMPONENT_WING.
@@ -84,9 +84,9 @@ public:
                                         gp_Pnt point4, gp_Vec& projectedPoint1,
                                         gp_Vec& projectedPoint2, gp_Vec& projectedPoint3,
                                         gp_Vec& projectedPoint4 );
-    TIGL_EXPORT gp_Vec getNormalOfTrailingEdgeDevice();
+    TIGL_EXPORT gp_Vec getNormalOfControlSurfaceDevice();
     TIGL_EXPORT CCPACSWingComponentSegment* getSegment();
-    TIGL_EXPORT bool isLeadingEdgeDevice();
+    TIGL_EXPORT TiglControlSurfaceType getType();
 protected:
     PNamedShape BuildLoft();
 

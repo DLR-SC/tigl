@@ -43,7 +43,7 @@ CCPACSControlSurfaceOuterShape::CCPACSControlSurfaceOuterShape()
 
 // Read CPACS outerShape element
 void CCPACSControlSurfaceOuterShape::ReadCPACS(TixiDocumentHandle tixiHandle,
-        const std::string& outerShapeXPath, bool isLeadingEdge)
+        const std::string& outerShapeXPath, TiglControlSurfaceType type)
 {
 
     char* elementPath;
@@ -54,14 +54,14 @@ void CCPACSControlSurfaceOuterShape::ReadCPACS(TixiDocumentHandle tixiHandle,
     tempString = outerShapeXPath + "/outerBorder";
     elementPath = const_cast<char*>(tempString.c_str());
     if (tixiGetTextElement(tixiHandle, elementPath, &ptrName) == SUCCESS) {
-        outerBorder.ReadCPACS(tixiHandle, elementPath, isLeadingEdge);
+        outerBorder.ReadCPACS(tixiHandle, elementPath, type);
     }
 
     // Get innerBorder
     tempString = outerShapeXPath + "/innerBorder";
     elementPath = const_cast<char*>(tempString.c_str());
     if (tixiGetTextElement(tixiHandle, elementPath, &ptrName) == SUCCESS) {
-        innerBorder.ReadCPACS(tixiHandle, elementPath, isLeadingEdge);
+        innerBorder.ReadCPACS(tixiHandle, elementPath, type);
     }
 }
 

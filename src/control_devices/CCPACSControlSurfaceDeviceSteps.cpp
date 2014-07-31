@@ -56,7 +56,7 @@ void CCPACSControlSurfaceDeviceSteps::ReadCPACS(TixiDocumentHandle tixiHandle,
     std::string tempString;
     char* elementPath;
 
-    /* Get trailingEdgeDevice element count */
+    /* Get controlSurfaceDevice element count */
     tempString = controlSurfaceDeviceStepsXPath;
     elementPath = const_cast<char*>(tempString.c_str());
     tixiRet = tixiGetNamedChildrenCount(tixiHandle, elementPath,
@@ -65,7 +65,7 @@ void CCPACSControlSurfaceDeviceSteps::ReadCPACS(TixiDocumentHandle tixiHandle,
         return;
     }
 
-    // Loop over all trailingEdgeDevices
+    // Loop over all controlSurfaceDevices
     for (int i = 1; i <= controlSurfaceDeviceStepCount; i++) {
 
         CCPACSControlSurfaceDeviceStep* controlSurfaceDeviceStep =

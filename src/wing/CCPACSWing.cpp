@@ -401,7 +401,7 @@ TopoDS_Shape CCPACSWing::BuildFusedSegmentsWithFlaps(bool splitWingInUpperAndLow
             }
 
             if ( controlSurfaceDevice.GetLoft()->Shape().IsNull() ) {
-                // box built out of the 4 edge´s of the controlSurfaceDevice outer shape.
+                // box built out of the 4 edges of the controlSurfaceDevice outer shape.
                 TopoDS_Shape controlSurfacePrism = controlSurfaceDevice.getCutOutShape();
 
                 // create intermediate result for boolean ops

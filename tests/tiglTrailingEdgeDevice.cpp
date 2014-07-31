@@ -102,7 +102,7 @@ TEST_F(TiglTrailingEdgeDevice, getFaceAndWCSNormal)
             GeomLProp_SLProps props(aSurface, umin, vmin,1, 0.01);
 
             gp_Vec normalTED = gp_Vec(props.Normal().XYZ());
-            gp_Vec normalWCS = controlSurface.getNormalOfTrailingEdgeDevice();
+            gp_Vec normalWCS = controlSurface.getNormalOfControlSurfaceDevice();
 
             ASSERT_NEAR(std::fabs(normalTED.X()),std::fabs(normalWCS.X()),1e-4);
             ASSERT_NEAR(std::fabs(normalTED.Y()),std::fabs(normalWCS.Y()),1e-4);

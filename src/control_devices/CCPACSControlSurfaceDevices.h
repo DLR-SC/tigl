@@ -51,7 +51,7 @@ public:
 
     TIGL_EXPORT CCPACSControlSurfaceDevices(CCPACSWingComponentSegment*);
 
-    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& controlSurfaceDevicesXPath, bool isLeading);
+    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& controlSurfaceDevicesXPath, TiglControlSurfaceType type);
 
     TIGL_EXPORT CCPACSControlSurfaceDevice& getControlSurfaceDeviceByID( int id );
     TIGL_EXPORT int getControlSurfaceDeviceCount();

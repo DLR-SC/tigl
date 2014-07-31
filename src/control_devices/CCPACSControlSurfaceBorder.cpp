@@ -36,12 +36,12 @@ CCPACSControlSurfaceBorder::CCPACSControlSurfaceBorder()
 
 // Read CPACS Border element
 void CCPACSControlSurfaceBorder::ReadCPACS(TixiDocumentHandle tixiHandle,
-        const std::string& BorderXPath, bool isLeadingEdge)
+        const std::string& BorderXPath, TiglControlSurfaceType type)
 {
     char* elementPath;
     std::string tempString;
 
-    if (!isLeadingEdge){
+    if (type == TRAILING_EDGE_DEVICE){
         // getting subelements
         tempString = BorderXPath + "/etaLE";
         elementPath = const_cast<char*>(tempString.c_str());
@@ -63,7 +63,7 @@ void CCPACSControlSurfaceBorder::ReadCPACS(TixiDocumentHandle tixiHandle,
 
         xsiTE = 1;
     }
-    else {
+    else if (type == LEADING_EDGE_DEVICE){
         // getting subelements
         tempString = BorderXPath + "/etaLE";
         elementPath = const_cast<char*>(tempString.c_str());
@@ -84,7 +84,32 @@ void CCPACSControlSurfaceBorder::ReadCPACS(TixiDocumentHandle tixiHandle,
         }
         xsiLE = 0;
     }
+    else if (type == SPOILER){
+        // getting subelements
+        tempString = BorderXPath + "/etaLE";
+        elementPath = const_cast<char*>(tempString.c_str());
+        if (tixiGetDoubleElement(tixiHandle, elementPath, &etaLE) != SUCCESS) {
+            // couldnt read etaLE
+        }
 
+        tempString = BorderXPath + "/etaTE";
+        elementPath = const_cast<char*>(tempString.c_str());
+        if (tixiGetDoubleElement(tixiHandle, elementPath, &etaTE) != SUCCESS) {
+            etaTE = etaLE;
+        }
+
+        tempString = BorderXPath + "/xsiLE";
+        elementPath = const_cast<char*>(tempString.c_str());
+        if (tixiGetDoubleElement(tixiHandle, elementPath, &xsiLE) != SUCCESS) {
+            // couldnt read xsiLE
+        }
+
+        tempString = BorderXPath + "/xsiTE";
+        elementPath = const_cast<char*>(tempString.c_str());
+        if (tixiGetDoubleElement(tixiHandle, elementPath, &xsiTE) != SUCCESS) {
+            // couldnt read xsiTE
+        }
+    }
 }
 
 double CCPACSControlSurfaceBorder::getEtaLE() const

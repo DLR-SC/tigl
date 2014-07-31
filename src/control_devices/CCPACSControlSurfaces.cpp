@@ -49,14 +49,20 @@ void CCPACSControlSurfaces::ReadCPACS(TixiDocumentHandle tixiHandle,
     tempString = segmentXPath + "/trailingEdgeDevices";
     elementPath = const_cast<char*>(tempString.c_str());
     if (tixiCheckElement(tixiHandle, elementPath) == SUCCESS) {
-        controlSurfaceDevices->ReadCPACS(tixiHandle, elementPath, false);
+        controlSurfaceDevices->ReadCPACS(tixiHandle, elementPath, TRAILING_EDGE_DEVICE);
     }
 
     // read LeadingEdgeDevices
     tempString = segmentXPath + "/leadingEdgeDevices";
     elementPath = const_cast<char*>(tempString.c_str());
     if (tixiCheckElement(tixiHandle, elementPath) == SUCCESS) {
-        controlSurfaceDevices->ReadCPACS(tixiHandle, elementPath, true);
+        controlSurfaceDevices->ReadCPACS(tixiHandle, elementPath, LEADING_EDGE_DEVICE);
+    }
+
+    tempString = segmentXPath + "/spoilers";
+    elementPath = const_cast<char*>(tempString.c_str());
+    if (tixiCheckElement(tixiHandle,elementPath) == SUCCESS) {
+        controlSurfaceDevices->ReadCPACS(tixiHandle,elementPath, SPOILER);
     }
 }
 
