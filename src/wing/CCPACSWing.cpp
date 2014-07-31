@@ -373,6 +373,11 @@ TopoDS_Shape CCPACSWing::ExtendFlap(std::string flapUID, double flapDeflectionPe
 // Builds a fuse shape of all wing segments with flaps
 TopoDS_Shape CCPACSWing::BuildFusedSegmentsWithFlaps(bool splitWingInUpperAndLower, std::map<std::string,double> flapStatus )
 {
+
+    if ( wingCleanShape.IsNull() ) {
+        wingCleanShape = GetLoft()->Shape();
+    }
+
     // packing all segments togehter in one Compound.
     TopoDS_Compound wingAndFlaps;
     BRep_Builder compoundBuilder;
@@ -394,10 +399,6 @@ TopoDS_Shape CCPACSWing::BuildFusedSegmentsWithFlaps(bool splitWingInUpperAndLow
             }
             else {
                 wingLoft = GetLoft()->Shape();
-            }
-
-            if ( wingCleanShape.IsNull() ) {
-                wingCleanShape = wingLoft;
             }
 
             if ( controlSurfaceDevice.GetLoft()->Shape().IsNull() ) {
