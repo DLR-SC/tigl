@@ -109,7 +109,6 @@ void TIGLViewerSelectWingAndFlapStatusDialog::slider_value_changed(int k)
 void TIGLViewerSelectWingAndFlapStatusDialog::cleanup()
 {
     _displayer.clear();
-    _controlSurfaceDevices.clear();
     _displayer_deflection.clear();
     _displayer_rotation.clear();
     return;
@@ -141,10 +140,9 @@ double TIGLViewerSelectWingAndFlapStatusDialog::linearInterpolation(std::vector<
 
 void TIGLViewerSelectWingAndFlapStatusDialog::drawGUI(bool redrawModel)
 {
+    cleanup();
     std::string wingUID = ui->comboBoxWings->currentText().toStdString();
     tigl::CCPACSWing &wing = tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(_handle).GetWing(wingUID);
-
-    cleanup();
 
     QWidget* outerWidget = new QWidget;
     QVBoxLayout* vLayout = new QVBoxLayout;
@@ -176,8 +174,9 @@ void TIGLViewerSelectWingAndFlapStatusDialog::drawGUI(bool redrawModel)
         for ( int j = 1; j <= componentSegment.getControlSurfaces().getControlSurfaceDevices()->getControlSurfaceDeviceCount(); j++ ) {
             tigl::CCPACSControlSurfaceDevice& controlSurfaceDevice = componentSegment.getControlSurfaces().getControlSurfaceDevices()->getControlSurfaceDeviceByID(j);
 
-            if ((!ui->checkTED->isChecked() && !controlSurfaceDevice.isLeadingEdgeDevice())
-                    || (!ui->checkLED->isChecked() && controlSurfaceDevice.isLeadingEdgeDevice()))
+            if ((!ui->checkTED->isChecked() && controlSurfaceDevice.getType() == TRAILING_EDGE_DEVICE)
+                    || (!ui->checkLED->isChecked() && controlSurfaceDevice.getType() == LEADING_EDGE_DEVICE)
+                    || (!ui->checkSpoiler->isChecked() && controlSurfaceDevice.getType() == SPOILER))
             {
                 continue;
             }
@@ -225,6 +224,9 @@ void TIGLViewerSelectWingAndFlapStatusDialog::drawGUI(bool redrawModel)
             displayer->setFixedWidth(90);
             display_rotation->setFixedWidth(90);
             display_deflection->setFixedWidth(90);
+            double savedValue = _controlSurfaceDevices[uid.toStdString()];
+            displayer->setText("Value: " + QString::number(savedValue) + "%");
+            slider->setValue((int) savedValue*10);
 
             _displayer[uid.toStdString()] = displayer;
             _displayer_rotation[uid.toStdString()] = display_rotation;

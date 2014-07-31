@@ -31,6 +31,8 @@ namespace Ui {
 class TIGLViewerSelectWingAndFlapStatusDialog;
 }
 
+static std::map< std::string, double> _controlSurfaceDevices;
+
 class TIGLViewerSelectWingAndFlapStatusDialog : public QDialog
 {
     Q_OBJECT
@@ -52,11 +54,9 @@ private slots:
 
 private:
     bool switcher;
-
     double linearInterpolation(std::vector<double> list1, std::vector<double> list2, double valueRelList1);
     Ui::TIGLViewerSelectWingAndFlapStatusDialog *ui;
     TiglCPACSConfigurationHandle _handle;
-    std::map< std::string, double> _controlSurfaceDevices;
     std::map< std::string, QLabel*> _displayer;
     std::map< std::string, QLabel*> _displayer_deflection;
     std::map< std::string, QLabel*> _displayer_rotation;
