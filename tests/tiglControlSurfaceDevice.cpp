@@ -38,7 +38,7 @@ using namespace std;
 
 /******************************************************************************/
 
-class TiglTrailingEdgeDevice : public ::testing::Test {
+class TiglControlSurfaceDevice : public ::testing::Test {
  protected:
   static void SetUpTestCase() {
         const char* filename = "TestData/CPACS_21_D150.xml";
@@ -70,13 +70,13 @@ class TiglTrailingEdgeDevice : public ::testing::Test {
 };
 
 
-TixiDocumentHandle TiglTrailingEdgeDevice::tixiHandle = 0;
-TiglCPACSConfigurationHandle TiglTrailingEdgeDevice::tiglHandle = 0;
+TixiDocumentHandle TiglControlSurfaceDevice::tixiHandle = 0;
+TiglCPACSConfigurationHandle TiglControlSurfaceDevice::tiglHandle = 0;
 
 //#########################################################################################################
 
 
-TEST_F(TiglTrailingEdgeDevice, getFaceAndWCSNormal)
+TEST_F(TiglControlSurfaceDevice, getFaceAndWCSNormal)
 {
     int compseg = 1;
     // now we have do use the internal interface as we currently have no public api for this
@@ -111,7 +111,7 @@ TEST_F(TiglTrailingEdgeDevice, getFaceAndWCSNormal)
     }
 }
 
-TEST_F(TiglTrailingEdgeDevice, getProjectedPoints)
+TEST_F(TiglControlSurfaceDevice, getProjectedPoints)
 {
     // check if all projected points are aligned in a plane.
 
@@ -124,9 +124,9 @@ TEST_F(TiglTrailingEdgeDevice, getProjectedPoints)
         tigl::CCPACSWing& wing = config.GetWing(j);
         tigl::CCPACSWingComponentSegment& segment = (tigl::CCPACSWingComponentSegment&) wing.GetComponentSegment(compseg);
 
-        int trailingEdgeCount = segment.getControlSurfaces().getControlSurfaceDevices()->getControlSurfaceDeviceCount();
+        int controlSurfaceCount = segment.getControlSurfaces().getControlSurfaceDevices()->getControlSurfaceDeviceCount();
 
-        for ( int i = 1; i <= trailingEdgeCount; i++ ) {
+        for ( int i = 1; i <= controlSurfaceCount; i++ ) {
             tigl::CCPACSControlSurfaceDevice &controlSurface = segment.getControlSurfaces().getControlSurfaceDevices()->getControlSurfaceDeviceByID(i);
 
             tigl::CCPACSControlSurfaceBorder outerBorder = controlSurface.getOuterShape().getOuterBorder();
