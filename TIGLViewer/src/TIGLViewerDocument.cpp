@@ -811,7 +811,7 @@ void TIGLViewerDocument::drawWingFlaps()
 }
 
 
-void TIGLViewerDocument::drawWingFlapsForInteractiveUse(std::string selectedWing)
+void TIGLViewerDocument::drawWingFlapsForInteractiveUse(std::string selectedWing, std::map<std::string,double> flapStatus)
 {
     flapsForInteractiveUse.clear();
     myAISContext->EraseAll();
@@ -828,7 +828,6 @@ void TIGLViewerDocument::drawWingFlapsForInteractiveUse(std::string selectedWing
         for ( int j = 1; j <= controlSurfaceDevices->getControlSurfaceDeviceCount(); j++ ) {
             tigl::CCPACSControlSurfaceDevice &controlSurfaceDevice = controlSurfaceDevices->getControlSurfaceDeviceByID(j);
             flapsForInteractiveUse[controlSurfaceDevice.getUID()] = displayShape(controlSurfaceDevice.GetLoft()->Shape());
-            std::map<std::string,double> flapStatus;
             updateControlSurfacesInteractiveObjects(selectedWing,flapStatus,controlSurfaceDevice.getUID());
         }
     }

@@ -256,7 +256,7 @@ void TIGLViewerSelectWingAndFlapStatusDialog::drawGUI(bool redrawModel)
         ui->scrollArea->setWidget(outerWidget);
     }
     if (redrawModel) {
-        _document->drawWingFlapsForInteractiveUse(getSelectedWing());
+        _document->drawWingFlapsForInteractiveUse(getSelectedWing(), getControlSurfaceStatus());
     }
 }
 
