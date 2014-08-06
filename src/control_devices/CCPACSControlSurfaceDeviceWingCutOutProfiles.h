@@ -41,6 +41,8 @@ private:
     typedef std::vector<CCPACSControlSurfaceDeviceWingCutOutProfile*> controlSurfaceDeviceCutOutProfileContainer;
     controlSurfaceDeviceCutOutProfileContainer wingCutOutProfiles;
 
+    //outer cut out // eta = outerBorderEta
+    //inner cut out // eta = innerBorderEta
 
 
 public:

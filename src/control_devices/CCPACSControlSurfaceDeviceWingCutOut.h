@@ -38,7 +38,7 @@ private:
 
     // upper Skin
     // lower Skin
-    // cutOutProfile
+    // cutOutProfiles
     // ControlPoint
 
 
