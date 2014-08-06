@@ -77,32 +77,8 @@ void TIGLViewerSelectWingAndFlapStatusDialog::on_comboBoxWings_currentIndexChang
 void TIGLViewerSelectWingAndFlapStatusDialog::slider_value_changed(int k)
 {
     QSlider* slider = dynamic_cast<QSlider*>(QObject::sender());
-    QString textVal = "Value: ";
-    QString textRot = "Rotation: ";
-    QString textDef = "Deflection: ";
-
-    std::vector<double> relDeflections;
-    std::vector<double> rotations;
-    for ( int steps = 0; steps < _controlSurfaceDevicesPointer[slider->windowTitle().toStdString()]->getMovementPath().getSteps().getControlSurfaceDeviceStepCount(); steps++ )
-    {
-        relDeflections.push_back(_controlSurfaceDevicesPointer[slider->windowTitle().toStdString()]->getMovementPath().getSteps().getControlSurfaceDeviceStepByID(steps+1).getRelDeflection());
-        rotations.push_back(_controlSurfaceDevicesPointer[slider->windowTitle().toStdString()]->getMovementPath().getSteps().getControlSurfaceDeviceStepByID(steps+1).getHingeLineRotation());
-    }
-
-    double value = k;
-    double flapStatusInPercent = value/10;
-    double inputDeflection = ( relDeflections[relDeflections.size()-1] - relDeflections[0] ) * ( flapStatusInPercent/100 ) + relDeflections[0];
-    double rotation = linearInterpolation( relDeflections, rotations, inputDeflection );
-
-    textVal.append(QString::number(value/10));
-    textRot.append(QString::number(rotation));
-    textDef.append(QString::number(inputDeflection));
-    textVal.append("% ");
-    _displayer.at(slider->windowTitle().toStdString())->setText(textVal);
-    _displayer_deflection.at(slider->windowTitle().toStdString())->setText(textDef);
-    _displayer_rotation.at(slider->windowTitle().toStdString())->setText(textRot);
-    _controlSurfaceDevices[slider->windowTitle().toStdString()] = value/10;
-
+    std::string uid = slider->windowTitle().toStdString();
+    setSliderAndLabels(uid,k);
     _document->updateControlSurfacesInteractiveObjects(getSelectedWing(),_controlSurfaceDevices,slider->windowTitle().toStdString());
 }
 
@@ -123,7 +99,7 @@ double TIGLViewerSelectWingAndFlapStatusDialog::linearInterpolation(std::vector<
 {
     double min = 0;
     double max = 0;
-    int idefRem = 0;
+    int idefRem = 1;
     for ( std::vector<double>::size_type idef = 1; idef < list1.size(); idef++ ) {
         if ( list1[idef-1] <= valueRelList1 && list1[idef] >= valueRelList1 ) {
             min = list1[idef-1];
@@ -224,7 +200,32 @@ void TIGLViewerSelectWingAndFlapStatusDialog::drawGUI(bool redrawModel)
             displayer->setFixedWidth(90);
             display_rotation->setFixedWidth(90);
             display_deflection->setFixedWidth(90);
-            double savedValue = _controlSurfaceDevices[uid.toStdString()];
+
+            double savedValue;
+            if (_controlSurfaceDevices.find(uid.toStdString()) != _controlSurfaceDevices.end()) {
+                savedValue = _controlSurfaceDevices[uid.toStdString()];
+            } else {
+                std::vector<double> relDeflections;
+                std::vector<double> rotations;
+                for ( int steps = 0; steps < controlSurfaceDevice.getMovementPath().getSteps().getControlSurfaceDeviceStepCount(); steps++ )
+                {
+                    relDeflections.push_back(controlSurfaceDevice.getMovementPath().getSteps().getControlSurfaceDeviceStepByID(steps+1).getRelDeflection());
+                    rotations.push_back(controlSurfaceDevice.getMovementPath().getSteps().getControlSurfaceDeviceStepByID(steps+1).getHingeLineRotation());
+                }
+
+                if (relDeflections.size() > 1) {
+                    double deflection = linearInterpolation(rotations,relDeflections,0);
+                    // map Deflection to Percentage.
+                    double minDef = relDeflections[0];
+                    double deflectionRange = relDeflections[relDeflections.size()-1] - minDef;
+                    savedValue = ((deflection - minDef)/deflectionRange)*100;
+
+                } else {
+                    savedValue = 50;
+                }
+            }
+
+
             displayer->setText("Value: " + QString::number(savedValue) + "%");
             slider->setValue((int) savedValue*10);
 
@@ -251,6 +252,7 @@ void TIGLViewerSelectWingAndFlapStatusDialog::drawGUI(bool redrawModel)
 
             connect(slider, SIGNAL(valueChanged(int)), this, SLOT(slider_value_changed(int)));
             _controlSurfaceDevicesPointer[uid.toStdString()] = &controlSurfaceDevice;
+            setSliderAndLabels(uid.toStdString(),savedValue*10);
         }
         outerWidget->setLayout(vLayout);
         ui->scrollArea->setWidget(outerWidget);
@@ -273,4 +275,33 @@ void TIGLViewerSelectWingAndFlapStatusDialog::on_checkLED_stateChanged(int arg1)
 void TIGLViewerSelectWingAndFlapStatusDialog::on_checkSpoiler_stateChanged(int arg1)
 {
     drawGUI(false);
+}
+
+void TIGLViewerSelectWingAndFlapStatusDialog::setSliderAndLabels(std::string controlSurfaceDeviceUID, int k)
+{
+    QString textVal = "Value: ";
+    QString textRot = "Rotation: ";
+    QString textDef = "Deflection: ";
+
+    std::vector<double> relDeflections;
+    std::vector<double> rotations;
+    for ( int steps = 0; steps < _controlSurfaceDevicesPointer[controlSurfaceDeviceUID]->getMovementPath().getSteps().getControlSurfaceDeviceStepCount(); steps++ )
+    {
+        relDeflections.push_back(_controlSurfaceDevicesPointer[controlSurfaceDeviceUID]->getMovementPath().getSteps().getControlSurfaceDeviceStepByID(steps+1).getRelDeflection());
+        rotations.push_back(_controlSurfaceDevicesPointer[controlSurfaceDeviceUID]->getMovementPath().getSteps().getControlSurfaceDeviceStepByID(steps+1).getHingeLineRotation());
+    }
+
+    double value = k;
+    double flapStatusInPercent = value/10;
+    double inputDeflection = ( relDeflections[relDeflections.size()-1] - relDeflections[0] ) * ( flapStatusInPercent/100 ) + relDeflections[0];
+    double rotation = linearInterpolation( relDeflections, rotations, inputDeflection );
+
+    textVal.append(QString::number(value/10));
+    textRot.append(QString::number(rotation));
+    textDef.append(QString::number(inputDeflection));
+    textVal.append("% ");
+    _displayer.at(controlSurfaceDeviceUID)->setText(textVal);
+    _displayer_deflection.at(controlSurfaceDeviceUID)->setText(textDef);
+    _displayer_rotation.at(controlSurfaceDeviceUID)->setText(textRot);
+    _controlSurfaceDevices[controlSurfaceDeviceUID] = value/10;
 }

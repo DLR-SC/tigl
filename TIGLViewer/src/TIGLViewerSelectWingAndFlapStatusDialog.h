@@ -62,6 +62,7 @@ private:
     std::map< std::string, QLabel*> _displayer_rotation;
     std::map< std::string, tigl::CCPACSControlSurfaceDevice*> _controlSurfaceDevicesPointer;
     TIGLViewerDocument* _document;
+    void setSliderAndLabels(std::string controlSurfaceDeviceUID, int k);
     void drawGUI(bool redrawModel);
     void cleanup();
 
