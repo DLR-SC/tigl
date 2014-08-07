@@ -63,7 +63,6 @@ void CCPACSControlSurfaceDeviceWingCutOutProfile::ReadCPACS(TixiDocumentHandle t
         throw CTiglError("Error: XML error while reading controlSurfaceProfileUID in CCPACSControlSurfaceDeviceWingCutOutProfile::ReadCPACS", TIGL_XML_ERROR);
     }
     profileUID = ptrControlSurfaceDeviceProfileUID;
-    printf(profileUID.c_str());
 }
 
 double CCPACSControlSurfaceDeviceWingCutOutProfile::getEta()
