@@ -40,7 +40,7 @@ private:
 
     double eta;
     double rotZ;
-    // profileUID
+    std::string profileUID;
 
 public:
     TIGL_EXPORT CCPACSControlSurfaceDeviceWingCutOutProfile();

@@ -37,30 +37,33 @@ CCPACSControlSurfaceDeviceWingCutOutProfiles::CCPACSControlSurfaceDeviceWingCutO
 void CCPACSControlSurfaceDeviceWingCutOutProfiles::ReadCPACS(TixiDocumentHandle tixiHandle,
         const std::string& controlSurfaceDeviceWingCutOutProfilesXPath)
 {
-    /*
-     *
-    tempString = controlSurfaceDeviceWingCutOutProfilesXPath;
+
+    char* elementPath;
+    std::string tempString;
+    ReturnCode tixiRet;
+
+    tempString = controlSurfaceDeviceWingCutOutProfilesXPath + "/cutOutProfiles";
     elementPath = const_cast<char*>(tempString.c_str());
+    int profileCount;
+
     tixiRet = tixiGetNamedChildrenCount(tixiHandle, elementPath,
-            "profile", &trailingEdgeDeviceStepCount);
+            "cutOutProfile", &profileCount);
     if (tixiRet != SUCCESS) {
         return;
     }
 
-    // Loop over all trailingEdgeDevices
-    for (int i = 1; i <= trailingEdgeDeviceStepCount; i++) {
+    // Loop over all controlSurfaceDeviceWingCoutOutProfile
+    for (int i = 1; i <= profileCount; i++) {
 
-        CCPACSTrailingEdgeDeviceStep* trailingEdgeDeviceStep =
-                new CCPACSTrailingEdgeDeviceStep();
-        trailingEdgeDeviceSteps.push_back(trailingEdgeDeviceStep);
-        tempString = TrailingEdgeDeviceStepsXPath
-                + "/step[";
+        CCPACSControlSurfaceDeviceWingCutOutProfile* cutOutProfile =
+                new CCPACSControlSurfaceDeviceWingCutOutProfile();
+        wingCutOutProfiles.push_back(cutOutProfile);
+        tempString = controlSurfaceDeviceWingCutOutProfilesXPath
+                + "/cutOutProfiles/cutOutProfile[";
         std::ostringstream xpath;
         xpath << tempString << i << "]";
-
-        trailingEdgeDeviceStep->ReadCPACS(tixiHandle, xpath.str());
+        cutOutProfile->ReadCPACS(tixiHandle, xpath.str());
     }
-*/
 }
 
 }

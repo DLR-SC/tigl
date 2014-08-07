@@ -28,6 +28,7 @@
 #include "CCPACSControlSurfaceDeviceWingCutOutProfiles.h"
 #include "tigl_internal.h"
 
+
 namespace tigl
 {
 
@@ -41,6 +42,7 @@ private:
     // cutOutProfiles
     // ControlPoint
 
+    CCPACSControlSurfaceDeviceWingCutOutProfiles wingCutOutProfiles;
 
 public:
     TIGL_EXPORT CCPACSControlSurfaceDeviceWingCutOut();
@@ -52,4 +54,4 @@ public:
 
 } // end namespace tigl
 
-#endif // CCPACSTrailingEdgeDeviceWingCutOut_H
+#endif // CCPACSControlSurfaceDeviceWingCutOut_H

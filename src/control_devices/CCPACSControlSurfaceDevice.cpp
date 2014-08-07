@@ -29,6 +29,7 @@
 #include "CCPACSWingComponentSegment.h"
 #include "CCPACSWingSegment.h"
 #include "CTiglControlSurfaceHingeLine.h"
+#include "CCPACSControlSurfaceDeviceWingCutOut.h"
 
 
 #include "Handle_Geom_Plane.hxx"
@@ -66,33 +67,39 @@ CCPACSControlSurfaceDevice::CCPACSControlSurfaceDevice(CCPACSWingComponentSegmen
 }
 
 // Read CPACS trailingEdgeDevice elements
-void CCPACSControlSurfaceDevice::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& trailingEdgeDeviceXPath, TiglControlSurfaceType type)
+void CCPACSControlSurfaceDevice::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& controlSurfaceDeviceXPath, TiglControlSurfaceType type)
 {
     char*       elementPath;
     std::string tempString;
 
     // Get sublement "outerShape"
     char* ptrName = NULL;
-    tempString    = trailingEdgeDeviceXPath + "/outerShape";
+    tempString    = controlSurfaceDeviceXPath + "/outerShape";
     elementPath   = const_cast<char*>(tempString.c_str());
     if (tixiGetTextElement(tixiHandle, elementPath, &ptrName) == SUCCESS)
     {
         outerShape.ReadCPACS(tixiHandle, elementPath, type);
     }
 
-    tempString = trailingEdgeDeviceXPath + "/path";
+    tempString = controlSurfaceDeviceXPath + "/path";
     elementPath = const_cast<char*>(tempString.c_str());
     if (tixiCheckElement(tixiHandle, elementPath) == SUCCESS) {
         path.ReadCPACS(tixiHandle, elementPath);
     }
 
     char* atrName = NULL;
-    if ( tixiGetAttributeName(tixiHandle,trailingEdgeDeviceXPath.c_str(),1,&atrName) == SUCCESS ) {
-        if (tixiCheckAttribute(tixiHandle, trailingEdgeDeviceXPath.c_str(), atrName) == SUCCESS ) {
+    if ( tixiGetAttributeName(tixiHandle,controlSurfaceDeviceXPath.c_str(),1,&atrName) == SUCCESS ) {
+        if (tixiCheckAttribute(tixiHandle, controlSurfaceDeviceXPath.c_str(), atrName) == SUCCESS ) {
             char* uIDtmp;
-            tixiGetTextAttribute(tixiHandle,trailingEdgeDeviceXPath.c_str(),atrName, &uIDtmp);
+            tixiGetTextAttribute(tixiHandle,controlSurfaceDeviceXPath.c_str(),atrName, &uIDtmp);
             uID = uIDtmp;
         }
+    }
+
+    tempString = controlSurfaceDeviceXPath + "/wingCutOut";
+    elementPath = const_cast<char*>(tempString.c_str());
+    if (tixiCheckElement(tixiHandle, elementPath) == SUCCESS) {
+        wingCutOut.ReadCPACS(tixiHandle, elementPath);
     }
 
     std::string loftName = GetUID();

@@ -100,7 +100,6 @@ void CCPACSControlSurfaceDevices::ReadCPACS(TixiDocumentHandle tixiHandle,
         xpath << tempString << i << "]";
         controlSurfaceDevice->ReadCPACS(tixiHandle, xpath.str(), type);
     }
-
 }
 
 CCPACSControlSurfaceDevice& CCPACSControlSurfaceDevices::getControlSurfaceDeviceByID(

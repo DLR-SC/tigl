@@ -39,8 +39,8 @@ void CCPACSControlSurfaceDeviceWingCutOutProfile::ReadCPACS(TixiDocumentHandle t
 {
     char* elementPath;
     std::string tempString;
-    double eta;
-    double rotz;
+    eta = -1;
+    rotZ = -1;
 
     // getting subelements
     tempString = controlSurfaceDeviceWingCutOutProfileXPath + "/eta";
@@ -51,10 +51,19 @@ void CCPACSControlSurfaceDeviceWingCutOutProfile::ReadCPACS(TixiDocumentHandle t
 
     tempString = controlSurfaceDeviceWingCutOutProfileXPath + "/rotZ";
     elementPath = const_cast<char*>(tempString.c_str());
-    if (tixiGetDoubleElement(tixiHandle, elementPath, &rotz) != SUCCESS) {
+    if (tixiGetDoubleElement(tixiHandle, elementPath, &rotZ) != SUCCESS) {
         // couldnt read rotZ
     }
 
+    // read profilUID
+    char* ptrControlSurfaceDeviceProfileUID = NULL;
+    tempString = controlSurfaceDeviceWingCutOutProfileXPath + "/profileUID";
+    elementPath = const_cast<char*>(tempString.c_str());
+    if (tixiGetTextElement(tixiHandle, elementPath, &ptrControlSurfaceDeviceProfileUID) != SUCCESS) {
+        throw CTiglError("Error: XML error while reading controlSurfaceProfileUID in CCPACSControlSurfaceDeviceWingCutOutProfile::ReadCPACS", TIGL_XML_ERROR);
+    }
+    profileUID = ptrControlSurfaceDeviceProfileUID;
+    printf(profileUID.c_str());
 }
 
 double CCPACSControlSurfaceDeviceWingCutOutProfile::getEta()

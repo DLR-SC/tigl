@@ -34,6 +34,7 @@
 #include "CTiglControlSurfaceTransformation.h"
 #include "tigl_internal.h"
 #include "CTiglControlSurfaceHingeLine.h"
+#include "CCPACSControlSurfaceDeviceWingCutOut.h"
 
 namespace tigl {
 
@@ -69,9 +70,11 @@ private:
 
     TiglControlSurfaceType _type;
 
+    CCPACSControlSurfaceDeviceWingCutOut wingCutOut;
+
 public:
     TIGL_EXPORT CCPACSControlSurfaceDevice(CCPACSWingComponentSegment* segment);
-    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string & trailingEdgeDeviceXPath, TiglControlSurfaceType type = TRAILING_EDGE_DEVICE);
+    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string & controlSurfaceDeviceXPath, TiglControlSurfaceType type = TRAILING_EDGE_DEVICE);
     TIGL_EXPORT std::string getUID();
     TIGL_EXPORT CCPACSControlSurfaceOuterShape getOuterShape();
     TIGL_EXPORT CCPACSControlSurfaceDevicePath getMovementPath();        // Returns the Component Type TIGL_COMPONENT_WING.

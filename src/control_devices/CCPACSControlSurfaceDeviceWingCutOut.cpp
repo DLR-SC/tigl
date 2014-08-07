@@ -25,6 +25,7 @@
 #include <exception>
 
 #include "CCPACSControlSurfaceDeviceWingCutOut.h"
+#include "CCPACSControlSurfaceDeviceWingCutOutProfiles.h"
 
 namespace tigl
 {
@@ -33,33 +34,21 @@ CCPACSControlSurfaceDeviceWingCutOut::CCPACSControlSurfaceDeviceWingCutOut()
 {
 }
 
-// Read CPACS TrailingEdgeDeviceWingCutOut element
+// Read CPACS ControlSurface DeviceWingCutOut element
 void CCPACSControlSurfaceDeviceWingCutOut::ReadCPACS(TixiDocumentHandle tixiHandle,
         const std::string& controlSurfaceDeviceWingCutOutXPath)
 {
-    /*
     char* elementPath;
     std::string tempString;
 
-    // getting subelements
-    tempString = TrailingEdgeDeviceWingCutOutXPath + "/etaLE";
+
+    tempString = controlSurfaceDeviceWingCutOutXPath + "/cutOutProfiles";
     elementPath = const_cast<char*>(tempString.c_str());
-    if (tixiGetDoubleElement(tixiHandle, elementPath, &etaLE) != SUCCESS) {
-        // couldnt read etaLE
+    if (tixiCheckElement(tixiHandle, elementPath) == SUCCESS) {
+        wingCutOutProfiles.ReadCPACS(tixiHandle,elementPath);
     }
 
-    tempString = TrailingEdgeDeviceWingCutOutXPath + "/etaTE";
-    elementPath = const_cast<char*>(tempString.c_str());
-    if (tixiGetDoubleElement(tixiHandle, elementPath, &etaTE) != SUCCESS) {
-        etaTE = etaLE;
-    }
 
-    tempString = TrailingEdgeDeviceWingCutOutXPath + "/xsiLE";
-    elementPath = const_cast<char*>(tempString.c_str());
-    if (tixiGetDoubleElement(tixiHandle, elementPath, &xsiLE) != SUCCESS) {
-        // couldnt read xsiLE
-    }
-*/
 }
 
 }

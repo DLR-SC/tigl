@@ -42,7 +42,6 @@ private:
     double relDeflection;
     double hingeLineRotation;
 
-
     CCPACSControlSurfaceHingeTranslation innerHingeTranslation;
     CCPACSControlSurfaceHingeTranslation outerHingeTranslation;
 
