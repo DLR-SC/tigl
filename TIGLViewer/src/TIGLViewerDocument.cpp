@@ -785,8 +785,6 @@ void TIGLViewerDocument::drawFuselage()
         // Draw segment loft
         tigl::CCPACSFuselageSegment& segment = (tigl::CCPACSFuselageSegment &) fuselage.GetSegment(i);
         TopoDS_Shape loft = segment.GetLoft()->Shape();
-        // Transform by fuselage transformation
-        loft = fuselage.GetFuselageTransformation().Transform(loft);
         displayShape(loft);
     }
     QApplication::restoreOverrideCursor();
