@@ -92,7 +92,7 @@ namespace
     }
 
     // Set the face traits
-    void SetFaceTraits (PNamedShape loft, const int& nSegments) 
+    void SetFaceTraits (PNamedShape loft, unsigned int nSegments) 
     { 
         // designated names of the faces
         std::vector<std::string> names(3);
@@ -580,7 +580,7 @@ void CCPACSWingComponentSegment::UpdateProjectedLeadingEdge()
     }
 
     // check if we have to extend the leading edge at wing tip
-    int nPoints = LEPointsProjected.size();
+    unsigned int nPoints = LEPointsProjected.size();
     tigl::CCPACSWingSegment& outerSegment = *segments[segments.size()-1];
     tigl::CCPACSWingSegment& innerSegment = *segments[0];
 
@@ -640,7 +640,7 @@ gp_Pnt CCPACSWingComponentSegment::GetPoint(double eta, double xsi)
     }
 
     // build up iso xsi line control points
-    TColgp_Array1OfPnt xsiPoints(1,segments.size()+1);
+    TColgp_Array1OfPnt xsiPoints(1,(Standard_Integer) segments.size() + 1);
     SegmentList::iterator segmentIt = segments.begin();
     int pointIndex = 1;
     for (; segmentIt != segments.end(); ++segmentIt) {
