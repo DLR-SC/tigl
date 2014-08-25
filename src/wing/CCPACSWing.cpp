@@ -75,7 +75,7 @@ namespace
     }
 
     // Set the face traits
-    void SetFaceTraits (PNamedShape loft, const int& nSegments) 
+    void SetFaceTraits (PNamedShape loft, unsigned int nSegments) 
     { 
         // designated names of the faces
         std::vector<std::string> names(3);

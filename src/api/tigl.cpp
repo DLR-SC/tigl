@@ -1739,7 +1739,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetNumberOfSegments(Ti
             try {
                 tigl::CCPACSWingComponentSegment & compSeg = (tigl::CCPACSWingComponentSegment &) wing.GetComponentSegment(componentSegmentUID);
                 tigl::SegmentList& segments = compSeg.GetSegmentList();
-                *nsegments = segments.size();
+                *nsegments = (int) segments.size();
                 return TIGL_SUCCESS;
             }
             catch (tigl::CTiglError& err){
@@ -3886,7 +3886,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetMaterialCount(TiglC
                 //now do the calculations
                 tigl::MaterialList list = compSeg.GetMaterials(eta, xsi, structureType);
 
-                *materialCount = list.size();
+                *materialCount = (int) list.size();
                 return TIGL_SUCCESS;
             }
             catch(tigl::CTiglError& ex) {
