@@ -391,3 +391,31 @@ TEST_F(WingGetPointSimple, getChordNormal_invalidArgs)
     ASSERT_EQ(TIGL_NULL_POINTER,tiglWingGetChordNormal(tiglHandle, 1, 1, 0.0, 0.0, &nx, NULL, &nz));
     ASSERT_EQ(TIGL_NULL_POINTER,tiglWingGetChordNormal(tiglHandle, 1, 1, 0.0, 0.0, &nx, &ny, NULL));
 }
+
+TEST(WingGetPointBugs, getPointDirection_Fuehrer)
+{
+    const char* filename = "TestData/WingGetPointBug1.xml";
+
+    TixiDocumentHandle tiglHandle = -1;
+    TiglCPACSConfigurationHandle tixiHandle = -1;
+
+    ReturnCode tixiRet = tixiOpenDocument(filename, &tixiHandle);
+    ASSERT_TRUE (tixiRet == SUCCESS);
+    TiglReturnCode tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "", &tiglHandle);
+    ASSERT_TRUE(tiglRet == TIGL_SUCCESS);
+    
+    double px, py, pz;
+    double dirx, diry, dirz;
+    dirx = 0.0; diry =  -0.069756473744125316; dirz = 0.99756405025982431;
+    ASSERT_EQ(TIGL_SUCCESS, tiglWingGetUpperPointAtDirection(tiglHandle, 1, 1, 0.04, 0.0001, dirx, diry, dirz, &px, &py, &pz));
+    ASSERT_EQ(TIGL_SUCCESS, tiglWingGetUpperPointAtDirection(tiglHandle, 1, 1, 0.06, 0.0001, dirx, diry, dirz, &px, &py, &pz));
+    ASSERT_EQ(TIGL_SUCCESS, tiglWingGetUpperPointAtDirection(tiglHandle, 1, 1, 0.08, 0.0001, dirx, diry, dirz, &px, &py, &pz));
+    ASSERT_EQ(TIGL_SUCCESS, tiglWingGetUpperPointAtDirection(tiglHandle, 1, 1, 0.088, 0.004, dirx, diry, dirz, &px, &py, &pz));
+    
+    ASSERT_EQ(TIGL_SUCCESS, tiglWingGetUpperPointAtDirection(tiglHandle, 1, 1, 0.0, 0.0001, dirx, diry, dirz, &px, &py, &pz));
+    ASSERT_EQ(TIGL_SUCCESS, tiglWingGetUpperPointAtDirection(tiglHandle, 1, 1, 0.0, 0.004, dirx, diry, dirz, &px, &py, &pz));
+    ASSERT_EQ(TIGL_SUCCESS, tiglWingGetUpperPointAtDirection(tiglHandle, 1, 1, 0.0, 0.036, dirx, diry, dirz, &px, &py, &pz));
+    ASSERT_EQ(TIGL_SUCCESS, tiglWingGetUpperPointAtDirection(tiglHandle, 1, 1, 0.0, 0.07568, dirx, diry, dirz, &px, &py, &pz));
+    ASSERT_EQ(TIGL_SUCCESS, tiglWingGetUpperPointAtDirection(tiglHandle, 1, 1, 0.0, 0.16569, dirx, diry, dirz, &px, &py, &pz));
+    ASSERT_EQ(TIGL_SUCCESS, tiglWingGetUpperPointAtDirection(tiglHandle, 1, 1, 0.0, 1.0, dirx, diry, dirz, &px, &py, &pz));
+}
