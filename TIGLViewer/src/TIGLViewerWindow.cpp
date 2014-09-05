@@ -746,6 +746,10 @@ void TIGLViewerWindow::connectSignals()
     connect(drawFuselageSamplePointsAngleAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFuselageSamplePointsAngle()));
     connect(drawFusedFuselageAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFusedFuselage()));
     connect(drawFuselageGuideCurvesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFuselageGuideCurves()));
+    
+    // Misc drawing actions
+    connect(drawPointAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawPoint()));
+    connect(drawVectorAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawVector()));
 
     // Export functions
     connect(tiglExportFusedIgesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportFusedAsIges()));

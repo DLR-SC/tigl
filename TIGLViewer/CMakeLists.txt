@@ -52,6 +52,7 @@ include_directories(${TIGL_INCLUDES})
 set(tv_src
     CommandLineParameters.cpp
     ISession_Point.cpp
+    ISession_Direction.cpp
     ISession_Text.cpp
     main.cpp
     TIGLViewerApplication.cpp
@@ -78,12 +79,14 @@ set(tv_src
     TIGLViewerFuseDialog.cpp
     TIGLViewerShapeIntersectionDialog.cpp
     TIGLViewerScreenshotDialog.cpp
+    TIGLViewerDrawVectorDialog.cpp
 )
 	
 # normal header files
 set(tv_hdr
     CommandLineParameters.h
     ISession_Point.h
+    ISession_Direction.h
     ISession_Text.h
     TIGLViewer.h
     TIGLViewerSettings.h
@@ -111,6 +114,7 @@ set(tv_hdr_qobj
 	TiglViewerConsole.h
 	TIGLViewerEtaXsiDialog.h
 	TIGLViewerErrorDialog.h
+    TIGLViewerDrawVectorDialog.h
 	TIGLViewerLogRedirection.h
 	TIGLViewerFuseDialog.h
 	TIGLViewerShapeIntersectionDialog.h
@@ -125,6 +129,7 @@ set(tv_ui_comp
 	src/TIGLViewerFuseDialog.ui
 	src/TIGLViewerShapeIntersectionDialog.ui
 	src/TIGLViewerScreenshotDialog.ui
+    src/TIGLViewerDrawVectorDialog.ui
 )
 	
 foreach ( _fname ${tv_src})
