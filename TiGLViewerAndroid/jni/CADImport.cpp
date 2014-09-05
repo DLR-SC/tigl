@@ -181,5 +181,15 @@ void importCPACS(const std::string& filepath)
             TopoDS_Shape loft = segment.GetLoft();
             OsgMainApp::Instance().displayShape(loft, segment.GetUID());
         }
+
+        if (fuselage.GetSymmetryAxis() == TIGL_NO_SYMMETRY) {
+            continue;
+        }
+
+        for (int i = 1; i <= fuselage.GetSegmentCount(); i++) {
+            tigl::CCPACSFuselageSegment& segment = (tigl::CCPACSFuselageSegment &) fuselage.GetSegment(i);
+            TopoDS_Shape loft = segment.GetMirroredLoft();
+            OsgMainApp::Instance().displayShape(loft, segment.GetUID() + "_mirrored");
+        }
     }
 }
