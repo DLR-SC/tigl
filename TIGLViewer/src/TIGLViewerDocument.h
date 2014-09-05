@@ -94,6 +94,10 @@ public slots:
     void drawFuselageSamplePointsAngle();
     void drawFusedFuselage();
     void drawFuselageGuideCurves();
+    
+    // Misc slots
+    void drawPoint();
+    void drawVector();
 
     // TIGL slots
     void exportAsIges();
