@@ -215,7 +215,6 @@ TEST_F(tiglExportSimple, export_wing_collada)
 // check if face names were set correctly in the case with a trailing edge
 TEST_F(tiglExportSimple, check_face_traits)
 {
-    tiglLogSetVerbosity(TILOG_ERROR);
     ASSERT_EQ(TIGL_SUCCESS, tiglExportIGES(tiglSimpleHandle,"TestData/export/simpletest.iges"));
     ASSERT_EQ(TIGL_SUCCESS, tiglExportFusedWingFuselageIGES(tiglSimpleHandle,"TestData/export/simpletest_fused.iges"));
 }
@@ -223,7 +222,6 @@ TEST_F(tiglExportSimple, check_face_traits)
 // check if face names were set correctly in the case without a trailing edge
 TEST_F(tiglExportRectangularWing, check_face_traits)
 {
-    tiglLogSetVerbosity(TILOG_ERROR);
     ASSERT_EQ(TIGL_SUCCESS, tiglExportIGES(tiglRectangularWingHandle,"TestData/export/rectangular_wing_test.iges"));
     ASSERT_EQ(TIGL_SUCCESS, tiglExportFusedWingFuselageIGES(tiglRectangularWingHandle,"TestData/export/rectangular_wing_test_fused.iges"));
 }
