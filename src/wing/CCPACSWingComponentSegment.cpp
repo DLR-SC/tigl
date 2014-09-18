@@ -398,7 +398,7 @@ TopoDS_Shape CCPACSWingComponentSegment::BuildLoft(void)
 
     for (SegmentList::iterator it=segments.begin(); it != segments.end(); ++it) {
         CCPACSWingSegment& segment = **it;
-        TopoDS_Shape& startWire = segment.GetInnerWire();
+        const TopoDS_Shape& startWire = segment.GetInnerWire();
         lofter.addProfiles(startWire);
     }
     // add outer wire

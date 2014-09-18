@@ -374,7 +374,7 @@ TopoDS_Shape CCPACSWing::BuildFusedSegments(bool splitWingInUpperAndLower)
     lofter.setMakeSolid(true);
 
     for (int i=1; i <= segments.GetSegmentCount(); i++) {
-        TopoDS_Shape& startWire = segments.GetSegment(i).GetInnerWire();
+        const TopoDS_Shape& startWire = segments.GetSegment(i).GetInnerWire();
         lofter.addProfiles(startWire);
     }
     
