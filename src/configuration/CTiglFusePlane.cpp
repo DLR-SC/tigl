@@ -32,6 +32,7 @@
 
 
 #include <string>
+#include <cassert>
 
 namespace tigl
 {
@@ -57,11 +58,6 @@ const PNamedShape CTiglFusePlane::FusedPlane()
     return _result;
 }
 
-const ListPNamedShape& CTiglFusePlane::SubShapes()
-{
-    Perform();
-    return _subShapes;
-}
 
 
 const ListPNamedShape& CTiglFusePlane::Intersections()
@@ -79,10 +75,50 @@ const PNamedShape CTiglFusePlane::FarField()
 void CTiglFusePlane::Invalidate()
 {
     _hasPerformed = false;
-    _subShapes.clear();
     _intersections.clear();
     _result.reset();
     _farfield.reset();
+}
+
+PNamedShape CTiglFusePlane::FuseWithChilds(CTiglAbstractPhysicalComponent* parent)
+{
+    assert(parent != NULL);
+    
+    PNamedShape parentShape (parent->GetLoft());
+    if (_mymode == FULL_PLANE || _mymode == FULL_PLANE_TRIMMED_FF) {
+        PNamedShape rootShapeMirr = parent->GetMirroredLoft();
+        parentShape = CMergeShapes(parentShape, rootShapeMirr);
+    }
+
+    CTiglAbstractPhysicalComponent::ChildContainerType childs = parent->GetChildren(false);
+    CTiglAbstractPhysicalComponent::ChildContainerType::iterator childIt;
+    
+    if (childs.size() == 0) {
+        return parentShape;
+    }
+
+    ListPNamedShape childShapes;
+    for (childIt = childs.begin(); childIt != childs.end(); ++childIt) {
+        CTiglAbstractPhysicalComponent* child = *childIt;
+        if (!child) {
+            continue;
+        }
+
+        PNamedShape childShape = FuseWithChilds(child);
+        childShapes.push_back(childShape);
+    }
+    CFuseShapes fuser(parentShape, childShapes);
+    PNamedShape result = fuser.NamedShape();
+
+    // insert intersections
+    ListPNamedShape::const_iterator it = fuser.Intersections().begin();
+    for (; it != fuser.Intersections().end(); it++) {
+        if (*it) {
+            _intersections.push_back(*it);
+        }
+    }
+    
+    return result;
 }
 
 /**
@@ -102,48 +138,7 @@ void CTiglFusePlane::Perform()
         return;
     }
 
-    PNamedShape rootShape (rootComponent->GetLoft());
-    if (_mymode == FULL_PLANE || _mymode == FULL_PLANE_TRIMMED_FF) {
-        PNamedShape rootShapeMirr = rootComponent->GetMirroredLoft();
-        rootShape = CMergeShapes(rootShape, rootShapeMirr);
-    }
-
-    CTiglAbstractPhysicalComponent::ChildContainerType childs = rootComponent->GetChildren(false);
-    CTiglAbstractPhysicalComponent::ChildContainerType::iterator childIt;
-
-    ListPNamedShape childShapes;
-    for (childIt = childs.begin(); childIt != childs.end(); ++childIt) {
-        CTiglAbstractPhysicalComponent* child = *childIt;
-        if (!child) {
-            continue;
-        }
-
-        PNamedShape childShape = child->GetLoft();
-        if (_mymode == FULL_PLANE || _mymode == FULL_PLANE_TRIMMED_FF) {
-            PNamedShape childShapeMirr = child->GetMirroredLoft();
-            childShape = CMergeShapes(childShape, childShapeMirr);
-        }
-        childShapes.push_back(childShape);
-    }
-    CFuseShapes fuser(rootShape, childShapes);
-    _result = fuser.NamedShape();
-
-    // insert trimmed shapes from fusing
-    if (fuser.TrimmedParent()) {
-        _subShapes.push_back(fuser.TrimmedParent());
-    }
-    ListPNamedShape::const_iterator it = fuser.TrimmedChilds().begin();
-    for (; it != fuser.TrimmedChilds().end(); it++) {
-        if (*it) {
-            _subShapes.push_back(*it);
-        }
-    }
-    it = fuser.Intersections().begin();
-    for (; it != fuser.Intersections().end(); it++) {
-        if (*it) {
-            _intersections.push_back(*it);
-        }
-    }
+    _result = FuseWithChilds(rootComponent);
 
     CCPACSFarField& farfield = _myconfig.GetFarField();
     if (farfield.GetFieldType() != NONE && (_mymode == FULL_PLANE_TRIMMED_FF || _mymode == HALF_PLANE_TRIMMED_FF)) {
