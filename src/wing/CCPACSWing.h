@@ -95,6 +95,8 @@ public:
 
     // Adds all Segments of this wing and flaps to one shape
     TIGL_EXPORT TopoDS_Shape BuildFusedSegmentsWithFlaps(bool splitWingInUpperAndLower, std::map<std::string,double> flapStatus);
+
+    // builds Wing Without Flaps.
     TIGL_EXPORT void BuildFlapsAndWingWithoutFlaps();
 
     // Gets the wing transformation

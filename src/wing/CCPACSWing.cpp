@@ -406,14 +406,14 @@ void CCPACSWing::BuildFlapsAndWingWithoutFlaps()
                     allCutOutBoxes = controlSurfacePrism;
                 }
             }
-            TopoDS_Shape deviceShape = BRepAlgoAPI_Common(GetLoft()->Shape(),controlSurfacePrism);
 
+            TopoDS_Shape deviceShape = BRepAlgoAPI_Common(wingCleanShape,controlSurfacePrism);
             controlSurfaceDevice.GetLoft()->SetShape(deviceShape);
         }
     }
 
-    PNamedShape parentShape(new CNamedShape(wingCleanShape,"test"));
-    PNamedShape cutterShape(new CNamedShape(allCutOutBoxes,"test2"));
+    PNamedShape parentShape(new CNamedShape(wingCleanShape,""));
+    PNamedShape cutterShape(new CNamedShape(allCutOutBoxes,""));
 
     CCutShape cutter(parentShape,cutterShape);
     cutter.Perform();

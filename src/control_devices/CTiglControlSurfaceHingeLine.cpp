@@ -28,11 +28,11 @@
 namespace tigl
 {
 
-CTiglControlSurfaceHingeLine::CTiglControlSurfaceHingeLine(CCPACSControlSurfaceOuterShape outerShape, CCPACSControlSurfaceDevicePath path,
+CTiglControlSurfaceHingeLine::CTiglControlSurfaceHingeLine(CCPACSControlSurfaceDeviceOuterShape outerShape, CCPACSControlSurfaceDevicePath path,
                                                            CCPACSWingComponentSegment* segment)
 {
     // Calculate inner and outer HingePoint
-    tigl::CCPACSControlSurfaceBorder borders[2];
+    tigl::CCPACSControlSurfaceDeviceOuterShapeBorder borders[2];
     borders[0] = outerShape.getOuterBorder();
     borders[1] = outerShape.getInnerBorder();
 

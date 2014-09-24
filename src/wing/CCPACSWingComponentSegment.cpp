@@ -74,6 +74,18 @@
 #include "BRepAdaptor_Curve.hxx"
 #include "BRepBuilderAPI_MakePolygon.hxx"
 #include "GeomAPI_ProjectPointOnSurf.hxx"
+#include "Geom2d_TrimmedCurve.hxx"
+#include "GeomAdaptor_Curve.hxx"
+#include "GeomAPI_ProjectPointOnCurve.hxx"
+#include "Geom_TrimmedCurve.hxx"
+#include "Geom_Surface.hxx"
+#include "Handle_Geom_Surface.hxx"
+#include "GeomInt_IntSS.hxx"
+#include "IntAna_Int3Pln.hxx"
+#include "BRepAlgoAPI_Section.hxx"
+#include "GeomAPI_IntSS.hxx"
+#include "Handle_Geom_Plane.hxx"
+#include "Geom_Line.hxx"
 
 #include "GeomLProp_SLProps.hxx"
 
@@ -104,8 +116,8 @@ namespace
     }
 
     // Set the face traits
-    void SetFaceTraits (PNamedShape loft, const int& nSegments) 
-    { 
+    void SetFaceTraits (PNamedShape loft, const int& nSegments)
+    {
         // designated names of the faces
         std::vector<std::string> names(3);
         names[0]="Bottom";
@@ -120,7 +132,7 @@ namespace
         TopExp::MapShapes(loft->Shape(),   TopAbs_FACE, map);
 
         unsigned int nFaces = map.Extent();
-        // check if number of faces without inside and outside surface (nFaces-2) 
+        // check if number of faces without inside and outside surface (nFaces-2)
         // is a multiple of 2 (without Trailing Edges) or 3 (with Trailing Edges)
         if (!((nFaces-2)/nSegments == 2 || (nFaces-2)/nSegments == 3) || nFaces < 4) {
             throw tigl::CTiglError("CCPACSWingComponentSegment: Unable to name face traits in ruled surface loft", TIGL_ERROR);
@@ -256,7 +268,7 @@ CCPACSWing& CCPACSWingComponentSegment::GetWing(void) const
     return *wing;
 }
 
-    
+
 
 SegmentList& CCPACSWingComponentSegment::GetSegmentList()
 {
@@ -284,7 +296,7 @@ SegmentList& CCPACSWingComponentSegment::GetSegmentList()
 
     return wingSegments;
 }
-    
+
 
 // Determines, which segments belong to the component segment
 std::vector<int> CCPACSWingComponentSegment::findPath(const std::string& fromUID, const::std::string& toUID, const std::vector<int>& curPath, bool forward) const
@@ -292,7 +304,7 @@ std::vector<int> CCPACSWingComponentSegment::findPath(const std::string& fromUID
     if ( fromUID == toUID ) {
         return curPath;
     }
-        
+
 
     // find all segments with InnerSectionUID == fromUID
     std::vector<int> segList;
@@ -303,7 +315,7 @@ std::vector<int> CCPACSWingComponentSegment::findPath(const std::string& fromUID
             segList.push_back(i);
         }
     }
-        
+
 
     std::vector<int>::iterator segIt = segList.begin();
     for (; segIt != segList.end(); ++segIt) {
@@ -453,7 +465,7 @@ void CCPACSWingComponentSegment::GetSegmentIntersection(const std::string& segme
 }
 
 // get short name for loft
-std::string CCPACSWingComponentSegment::GetShortShapeName() 
+std::string CCPACSWingComponentSegment::GetShortShapeName()
 {
     unsigned int windex = 0;
     unsigned int wcsindex = 0;
@@ -729,7 +741,7 @@ gp_Vec CCPACSWingComponentSegment::GetNormal(double eta, double xsi)
 void CCPACSWingComponentSegment::GetEtaXsiFromSegmentEtaXsi(const std::string& segmentUID, double seta, double sxsi, double& eta, double& xsi)
 {
     // search for ETA coordinate
-        
+
 
     if (seta < 0.0 || seta > 1.0) {
         throw CTiglError("Error: Parameter seta not in the range 0.0 <= seta <= 1.0 in CCPACSWingComponentSegment::GetPoint", TIGL_ERROR);
@@ -737,7 +749,7 @@ void CCPACSWingComponentSegment::GetEtaXsiFromSegmentEtaXsi(const std::string& s
     if (sxsi < 0.0 || sxsi > 1.0) {
         throw CTiglError("Error: Parameter sxsi not in the range 0.0 <= sxsi <= 1.0 in CCPACSWingComponentSegment::GetPoint", TIGL_ERROR);
     }
-        
+
 
     SegmentList& segments = GetSegmentList();
     // check that segment belongs to component segment
@@ -803,6 +815,120 @@ double CCPACSWingComponentSegment::GetSurfaceArea(void)
 CCPACSControlSurfaces& CCPACSWingComponentSegment::getControlSurfaces()
 {
     return *controlSurfaces;
+}
+
+gp_Pnt CCPACSWingComponentSegment::GetPointDirection(double eta, double xsi, double dirx, double diry, double dirz, bool fromUpper)
+{
+    if (eta < 0.0 || eta > 1.0) {
+        throw CTiglError("Error: Parameter eta not in the range 0.0 <= eta <= 1.0 in CCPACSWingSegment::GetPoint", TIGL_ERROR);
+    }
+
+    if (dirx*dirx + diry*diry + dirz*dirz < 1e-10) {
+        // invalid direction
+        throw CTiglError("Direction must not be a null vector in CCPACSWingSegment::GetPointDirection.", TIGL_MATH_ERROR);
+    }
+
+    CTiglPoint tiglPoint(GetPoint(eta,xsi).XYZ());
+
+    gp_Dir direction(dirx, diry, dirz);
+
+    gp_Lin line(tiglPoint.Get_gp_Pnt(), direction);
+    TopoDS_Edge normalEdge = BRepBuilderAPI_MakeEdge(line);
+
+    BRepExtrema_DistShapeShape extrema;
+    extrema.LoadS1(normalEdge);
+    if (fromUpper) {
+        extrema.LoadS2(wing->GetUpperShape());
+    }
+    else {
+        extrema.LoadS2(wing->GetLowerShape());
+    }
+
+    extrema.Perform();
+    if (!extrema.IsDone()) {
+        throw CTiglError("Could not calculate intersection of line with wing shell in CCPACSWingSegment::GetPointAngles", TIGL_NOT_FOUND);
+    }
+
+    gp_Pnt p1 = extrema.PointOnShape1(1);
+    gp_Pnt p2 = extrema.PointOnShape2(1);
+
+    if (p1.Distance(p2) > 1e-7) {
+        throw CTiglError("Could not calculate intersection of line with wing shell in CCPACSWingSegment::GetPointAngles", TIGL_NOT_FOUND);
+    }
+
+    return p2;
+}
+
+gp_Vec CCPACSWingComponentSegment::GetPointTangent(double eta, double xsi, double dirx, double diry, double dirz, gp_Pln etaPlane, bool fromUpper)
+{
+    gp_Pnt point;
+    gp_Vec normal = GetPointNormal(eta,xsi,dirx,diry,dirz,fromUpper,point);
+    gp_Pln tangentPlane(point,normal);
+
+    Handle_Geom_Plane geomEtaPlane = new Geom_Plane(etaPlane);
+    Handle_Geom_Plane geomTangentPlane = new Geom_Plane(tangentPlane);
+
+    // Get intersection curve
+    GeomAPI_IntSS     intersection;
+    intersection.Perform(geomEtaPlane, geomTangentPlane, 1.0e-7);
+    Handle(Geom_Curve) curve = intersection.Line(1);
+    gp_Vec value((Handle(Geom_Line)::DownCast(curve))->Lin().Direction().XYZ());
+
+    return value;
+}
+
+gp_Vec CCPACSWingComponentSegment::GetPointNormal(double eta, double xsi, double dirx, double diry, double dirz, bool fromUpper, gp_Pnt& point)
+{
+    if (eta < 0.0 || eta > 1.0) {
+        throw CTiglError("Error: Parameter eta not in the range 0.0 <= eta <= 1.0 in CCPACSWingSegment::GetPoint", TIGL_ERROR);
+    }
+
+    if (dirx*dirx + diry*diry + dirz*dirz < 1e-10) {
+        // invalid direction
+        throw CTiglError("Direction must not be a null vector in CCPACSWingSegment::GetPointDirection.", TIGL_MATH_ERROR);
+    }
+
+    CTiglPoint tiglPoint(GetPoint(eta,xsi).XYZ());
+
+    gp_Dir direction(dirx, diry, dirz);
+
+    gp_Lin line(tiglPoint.Get_gp_Pnt(), direction);
+    TopoDS_Edge normalEdge = BRepBuilderAPI_MakeEdge(line);
+
+    BRepExtrema_DistShapeShape extrema;
+    extrema.LoadS1(normalEdge);
+    if (fromUpper) {
+        extrema.LoadS2(wing->GetUpperShape());
+    }
+    else {
+        extrema.LoadS2(wing->GetLowerShape());
+    }
+
+    extrema.Perform();
+    if (!extrema.IsDone()) {
+        throw CTiglError("Could not calculate intersection of line with wing shell in CCPACSWingSegment::GetPointAngles", TIGL_NOT_FOUND);
+    }
+
+    extrema.SupportTypeShape2(1);
+    Standard_Real u,v;
+    extrema.ParOnFaceS2(1,u,v);
+    TopoDS_Face face =  TopoDS::Face(extrema.SupportOnShape2(1));
+    Handle_Geom_Surface surface1 = BRep_Tool::Surface(face);
+
+    gp_Pnt a;
+    gp_Vec b,c;
+    surface1->D1(u,v,a,b,c);
+
+    point = a;
+
+    gp_Vec helper(direction.XYZ());
+    gp_Vec normal = b^c;
+
+    if (helper * normal < 0) {
+        normal.Multiply(-1);
+    }
+
+    return normal;
 }
 
 //    // Returns an upper or lower point on the segment surface in
@@ -918,13 +1044,13 @@ const CTiglAbstractSegment* CCPACSWingComponentSegment::findSegment(double x, do
 MaterialList CCPACSWingComponentSegment::GetMaterials(double eta, double xsi, TiglStructureType type)
 {
     MaterialList list;
-        
+
 
     if (!structure.IsValid()) {
         // return empty list
         return list;
     }
-        
+
 
     if (type != UPPER_SHELL && type != LOWER_SHELL) {
         LOG(ERROR) << "Cannot compute materials for inner structure in CCPACSWingComponentSegment::GetMaterials (not yet implemented)";
@@ -938,19 +1064,19 @@ MaterialList CCPACSWingComponentSegment::GetMaterials(double eta, double xsi, Ti
             if (!cell.GetMaterial().IsValid()) {
                 continue;
             }
-                
+
 
             if (cell.IsInside(eta,xsi)) {
                 list.push_back(&(cell.GetMaterial()));
             }
         }
-            
+
 
         // add complete skin, only if no cells are defined
         if (list.empty() && shell->GetMaterial().IsValid()){
             list.push_back(&(shell->GetMaterial()));
         }
-        
+
 
     }
     return list;

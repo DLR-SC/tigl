@@ -113,6 +113,14 @@ public:
     // creates an (iso) component segment line
     TIGL_EXPORT TopoDS_Wire GetCSLine(double eta1, double xsi1, double eta2, double xsi2, int NSTEPS=101);
 
+    TIGL_EXPORT gp_Pnt GetPointDirection(double eta, double xsi, double dirx, double diry, double dirz, bool fromUpper);
+
+    // Gets the Tangent to a point on the Shape of the Wing Geometry, the etaPlane defines the Direction.
+    TIGL_EXPORT gp_Vec GetPointTangent(double eta, double xsi, double dirx, double diry, double dirz, gp_Pln etaPlane, bool fromUpper);
+
+    // Gets the Normal of a point on the Wing Geometry.
+    TIGL_EXPORT gp_Vec GetPointNormal(double eta, double xsi, double dirx, double diry, double dirz, bool fromUpper, gp_Pnt& point);
+
     // calculates the intersection of a segment iso eta line with a component segment line (defined by its start and end point)
     // returns the xsi coordinate of the intersection
     TIGL_EXPORT void GetSegmentIntersection(const std::string& segmentUID, double csEta1, double csXsi1, double csEta2, double csXsi2, double eta, double& xsi);

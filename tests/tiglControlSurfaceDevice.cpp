@@ -99,7 +99,7 @@ TEST_F(TiglControlSurfaceDevice, getFaceAndWCSNormal)
             Standard_Real umin, umax, vmin, vmax;
             BRepTools::UVBounds(aCurrentFace,umin, umax, vmin, vmax);
             Handle(Geom_Surface) aSurface = BRep_Tool::Surface(aCurrentFace);
-            GeomLProp_SLProps props(aSurface, umin, vmin,1, 0.01);
+            GeomLProp_SLProps props(aSurface, umin, vmin, 1, 0.01);
 
             gp_Vec normalCSD = controlSurface.getNormalOfControlSurfaceDevice();
             gp_Vec normalWCS = gp_Vec(props.Normal().XYZ());
@@ -114,7 +114,6 @@ TEST_F(TiglControlSurfaceDevice, getFaceAndWCSNormal)
 TEST_F(TiglControlSurfaceDevice, getProjectedPoints)
 {
     // check if all projected points are aligned in a plane.
-
     int compseg = 1;
     tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
     tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
@@ -129,11 +128,11 @@ TEST_F(TiglControlSurfaceDevice, getProjectedPoints)
         for ( int i = 1; i <= controlSurfaceCount; i++ ) {
             tigl::CCPACSControlSurfaceDevice &controlSurface = segment.getControlSurfaces().getControlSurfaceDevices()->getControlSurfaceDeviceByID(i);
 
-            tigl::CCPACSControlSurfaceBorder outerBorder = controlSurface.getOuterShape().getOuterBorder();
+            tigl::CCPACSControlSurfaceDeviceOuterShapeBorder outerBorder = controlSurface.getOuterShape().getOuterBorder();
             gp_Pnt point1 = controlSurface.getSegment()->GetPoint(outerBorder.getEtaLE(),outerBorder.getXsiLE());
             gp_Pnt point2 = controlSurface.getSegment()->GetPoint(outerBorder.getEtaTE(),outerBorder.getXsiTE());
 
-            tigl::CCPACSControlSurfaceBorder innerBorder = controlSurface.getOuterShape().getInnerBorder();
+            tigl::CCPACSControlSurfaceDeviceOuterShapeBorder innerBorder = controlSurface.getOuterShape().getInnerBorder();
             gp_Pnt point3 = controlSurface.getSegment()->GetPoint(innerBorder.getEtaLE(),innerBorder.getXsiLE());
             gp_Pnt point4 = controlSurface.getSegment()->GetPoint(innerBorder.getEtaTE(), innerBorder.getXsiTE());
 

@@ -144,8 +144,8 @@ namespace
     }
 
     // Set the face traits
-    void SetFaceTraits (PNamedShape loft) 
-    { 
+    void SetFaceTraits (PNamedShape loft)
+    {
         // designated names of the faces
         std::vector<std::string> names(5);
         names[0]="Bottom";
@@ -309,7 +309,7 @@ TopoDS_Shape CCPACSWingSegment::GetOuterClosure()
 }
 
 // get short name for loft
-std::string CCPACSWingSegment::GetShortShapeName () 
+std::string CCPACSWingSegment::GetShortShapeName ()
 {
     unsigned int windex = 0;
     unsigned int wsindex = 0;

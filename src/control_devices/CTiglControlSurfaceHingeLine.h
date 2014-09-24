@@ -27,7 +27,7 @@
 
 #include "gp_Pnt.hxx"
 
-#include "CCPACSControlSurfaceOuterShape.h"
+#include "CCPACSControlSurfaceDeviceOuterShape.h"
 #include "CCPACSControlSurfaceDevicePath.h"
 
 
@@ -44,7 +44,7 @@ private:
     gp_Pnt outerHingePoint;
 
 public:
-    TIGL_EXPORT CTiglControlSurfaceHingeLine(CCPACSControlSurfaceOuterShape outerShape,
+    TIGL_EXPORT CTiglControlSurfaceHingeLine(CCPACSControlSurfaceDeviceOuterShape outerShape,
                                              CCPACSControlSurfaceDevicePath path, CCPACSWingComponentSegment* segment);
 
     TIGL_EXPORT gp_Pnt getTransformedInnerHingePoint(gp_Vec translation);

@@ -1,10 +1,7 @@
 /*
  * Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
  *
- * Created: 2010-08-13 Markus Litz <Markus.Litz@dlr.de>
- * Changed: $Id$
- *
- * Version: $Revision$
+ * Created: 2014-01-28 Mark Geiger <Mark.Geiger@dlr.de>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -62,7 +59,13 @@ void CCPACSControlSurfaces::ReadCPACS(TixiDocumentHandle tixiHandle,
     tempString = segmentXPath + "/spoilers";
     elementPath = const_cast<char*>(tempString.c_str());
     if (tixiCheckElement(tixiHandle,elementPath) == SUCCESS) {
-        controlSurfaceDevices->ReadCPACS(tixiHandle,elementPath, SPOILER);
+        /*
+         * Spoilers have been disabled, because there are still some problems with the implementation.
+         * To Solve these problems, following thing should be done:
+         *  -> Find a Method to determine Spoiler Thickness
+         *  -> How to Build The Cut Out Shape
+         */
+        // controlSurfaceDevices->ReadCPACS(tixiHandle,elementPath, SPOILER);
     }
 }
 

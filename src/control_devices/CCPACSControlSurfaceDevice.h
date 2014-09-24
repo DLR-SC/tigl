@@ -29,12 +29,13 @@
 #include "tixi.h"
 #include "CTiglAbstractPhysicalComponent.h"
 #include "CTiglError.h"
-#include "CCPACSControlSurfaceOuterShape.h"
-#include "CCPACSControlSurfaceDevicePath.h"
+#include "CCPACSControlSurfaceDeviceOuterShape.h"
+#include "CCPACSControlSurfaceDeviceOuterShape.h"
 #include "CTiglControlSurfaceTransformation.h"
 #include "tigl_internal.h"
 #include "CTiglControlSurfaceHingeLine.h"
 #include "CCPACSControlSurfaceDeviceWingCutOut.h"
+#include "gp_Lin.hxx"
 
 namespace tigl {
 
@@ -57,7 +58,7 @@ private:
     // zCouplings
 
     CCPACSControlSurfaceDevicePath path;
-    CCPACSControlSurfaceOuterShape outerShape;
+    CCPACSControlSurfaceDeviceOuterShape outerShape;
     std::string uID;
     PNamedShape loft;
     CCPACSWingComponentSegment* _segment;
@@ -76,7 +77,7 @@ public:
     TIGL_EXPORT CCPACSControlSurfaceDevice(CCPACSWingComponentSegment* segment);
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string & controlSurfaceDeviceXPath, TiglControlSurfaceType type = TRAILING_EDGE_DEVICE);
     TIGL_EXPORT std::string getUID();
-    TIGL_EXPORT CCPACSControlSurfaceOuterShape getOuterShape();
+    TIGL_EXPORT CCPACSControlSurfaceDeviceOuterShape getOuterShape();
     TIGL_EXPORT CCPACSControlSurfaceDevicePath getMovementPath();        // Returns the Component Type TIGL_COMPONENT_WING.
     TIGL_EXPORT TiglGeometricComponentType GetComponentType(void) {return TIGL_COMPONENT_CONTROLSURF | TIGL_COMPONENT_PHYSICAL;}
     TIGL_EXPORT TopoDS_Shape getCutOutShape(void);
@@ -90,6 +91,7 @@ public:
     TIGL_EXPORT gp_Vec getNormalOfControlSurfaceDevice();
     TIGL_EXPORT CCPACSWingComponentSegment* getSegment();
     TIGL_EXPORT TiglControlSurfaceType getType();
+
 protected:
     PNamedShape BuildLoft();
 
@@ -99,6 +101,14 @@ private:
     double determineCutOutPrismThickness();
     std::string GetShortShapeName();
     double determineSpoilerThickness();
+
+    gp_Pnt getLeadingEdgeShapeLeadingEdgePoint(bool isInnerBorder);
+    gp_Pnt getLeadingEdgeShapeLowerPoint(bool isInnerBorder);
+    gp_Pnt getLeadingEdgeShapeUpperPoint(bool isInnerBorder);
+    gp_Vec getLeadingEdgeShapeTangent(gp_Pnt leadingPoint, gp_Pnt lowerPoint, gp_Pnt upperPoint,bool isInnerBorder, bool isUpper);
+    gp_Vec getLeadingEdgeShapeNormal(gp_Pnt point, gp_Vec tangent,gp_Pln etaPlane, gp_Vec checker);
+    TopoDS_Wire buildLeadingEdgeShapeWire(bool isInnerBorder);
+
 };
 
 } // end namespace tigl

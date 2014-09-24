@@ -48,7 +48,6 @@ CTiglControlSurfaceTransformation::CTiglControlSurfaceTransformation(gp_Pnt hing
     gp_Vec p1s(hingePoint1s.XYZ());
     gp_Vec p2s(hingePoint2s.XYZ());
 
-
     // those three vectors define the local coordinate System.
     gp_Vec exV = (p2 - p1);
     exV.Normalize();

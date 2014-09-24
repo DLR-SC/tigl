@@ -79,7 +79,7 @@
 #include "CCPACSFuselageSegment.h"
 #include "tiglcommonfunctions.h"
 #include "CTiglPoint.h"
-#include "CCPACSControlSurfaceBorder.h"
+#include "CCPACSControlSurfaceDeviceOuterShapeBorder.h"
 #include "CCPACSControlSurfaces.h"
 #include "CCPACSControlSurfaceDevice.h"
 #include "CCPACSWingComponentSegment.h"
@@ -801,12 +801,11 @@ void TIGLViewerDocument::drawWingFlaps()
         myAISContext->EraseAll();
         return;
     }
-    // Draw fused Shape
+    // Erase
     myAISContext->EraseAll();
+
     tigl::CCPACSWing& wing = GetConfiguration().GetWing( dialog.getSelectedWing() );
-
     TopoDS_Shape wingShape = wing.BuildFusedSegmentsWithFlaps(false, dialog.getControlSurfaceStatus());
-
     displayShape(wingShape);
 }
 
@@ -843,9 +842,6 @@ void TIGLViewerDocument::updateControlSurfacesInteractiveObjects(std::string sel
 
         for ( int j = 1; j <= controlSurfaceDevices->getControlSurfaceDeviceCount(); j++ ) {
             tigl::CCPACSControlSurfaceDevice &controlSurfaceDevice = controlSurfaceDevices->getControlSurfaceDeviceByID(j);
-
-            // ** debuging: show cutOutShapes, while in InteractiveMode.
-            // ** displayShape(controlSurfaceDevice.getCutOutShape());
 
             if (flapsForInteractiveUse.find(controlSurfaceDevice.getUID()) != flapsForInteractiveUse.end() && controlUID == controlSurfaceDevice.getUID()) {
                gp_Trsf trsf = controlSurfaceDevice.getTransformation(flapStatus[controlSurfaceDevice.getUID()]);
