@@ -40,7 +40,7 @@ TIGLViewerSelectWingAndFlapStatusDialog::TIGLViewerSelectWingAndFlapStatusDialog
     ui->setupUi(this);
     switcher = true;
     setFixedSize(size());
-    this->setWindowTitle("Choose ControlSurface Deflection");
+    this->setWindowTitle("Choose ControlSurface Deflections");
     _document = document;
     QPalette Pal(palette());
     ui->scrollArea->setPalette(Pal);
@@ -139,7 +139,14 @@ void TIGLViewerSelectWingAndFlapStatusDialog::drawGUI(bool redrawModel)
                 okButton->setEnabled(false);
                 QLabel* error = new QLabel("This wing has no ControlSurfaces");
                 error->setMargin(50);
+                QWidget* innerWidgetE = new QWidget;
+                innerWidgetE->setAutoFillBackground(true);
+                innerWidgetE->setPalette(Pal);
                 vLayout->addWidget( error );
+                vLayout->addWidget(innerWidgetE);
+                outerWidget->setLayout(vLayout);
+                ui->scrollArea->setWidget(outerWidget);
+                return;
             }
         }
         else {
