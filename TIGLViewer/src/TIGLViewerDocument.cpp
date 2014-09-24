@@ -798,7 +798,15 @@ void TIGLViewerDocument::drawWingFlaps()
 
     TIGLViewerSelectWingAndFlapStatusDialog dialog(0,m_cpacsHandle, this);
     int dialogValue = dialog.exec(wings);
-    if (dialogValue == 0 || dialog.getSelectedWing() == "" ) {
+    if ( dialogValue == 0 ) {
+        for ( int i = 1; i <= GetConfiguration().GetWingCount(); i++ )
+        {
+            GetConfiguration().GetWing(i).ResetWingShape();
+        }
+        myAISContext->EraseAll();
+        return;
+    } else if ( dialog.getSelectedWing() == "" )
+    {
         myAISContext->EraseAll();
         return;
     }
