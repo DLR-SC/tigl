@@ -18,8 +18,8 @@ include(tiglmacros)
 AddToCheckstyle()
 
 # required opencascade libraries
-set (TV_OCC_LIBS 
-    TKOpenGl 
+set (TV_OCC_LIBS
+    TKOpenGl
     TKVRML TKShapeSchema TKPShape TKCDF PTKernel ${OCC_VISU_LIBS} ${OCC_LIBS}
 )
 
@@ -52,6 +52,7 @@ include_directories(${TIGL_INCLUDES})
 set(tv_src
     CommandLineParameters.cpp
     ISession_Point.cpp
+    ISession_Direction.cpp
     ISession_Text.cpp
     main.cpp
     TIGLViewerApplication.cpp
@@ -79,12 +80,14 @@ set(tv_src
     TIGLViewerShapeIntersectionDialog.cpp
     TIGLViewerScreenshotDialog.cpp
     TIGLViewerSelectWingAndFlapStatusDialog.cpp
+    TIGLViewerDrawVectorDialog.cpp
 )
 
 # normal header files
 set(tv_hdr
     CommandLineParameters.h
     ISession_Point.h
+    ISession_Direction.h
     ISession_Text.h
     TIGLViewer.h
     TIGLViewerSettings.h
@@ -112,11 +115,12 @@ set(tv_hdr_qobj
     TiglViewerConsole.h
     TIGLViewerEtaXsiDialog.h
     TIGLViewerErrorDialog.h
+    TIGLViewerDrawVectorDialog.h
     TIGLViewerLogRedirection.h
     TIGLViewerSelectWingAndFlapStatusDialog.h
-	TIGLViewerFuseDialog.h
-	TIGLViewerShapeIntersectionDialog.h
-	TIGLViewerScreenshotDialog.h
+    TIGLViewerFuseDialog.h
+    TIGLViewerShapeIntersectionDialog.h
+    TIGLViewerScreenshotDialog.h
 )
 
 set(tv_ui_comp
@@ -125,9 +129,10 @@ set(tv_ui_comp
     src/TIGLViewerEtaXsiDialog.ui
     src/TIGLViewerErrorDialog.ui
     src/TIGLViewerSelectWingAndFlapStatusDialog.ui
-	src/TIGLViewerFuseDialog.ui
-	src/TIGLViewerShapeIntersectionDialog.ui
-	src/TIGLViewerScreenshotDialog.ui
+    src/TIGLViewerFuseDialog.ui
+    src/TIGLViewerShapeIntersectionDialog.ui
+    src/TIGLViewerScreenshotDialog.ui
+    src/TIGLViewerDrawVectorDialog.ui
 )
 
 foreach ( _fname ${tv_src})
@@ -205,7 +210,7 @@ target_link_libraries(${PROGNAME}
     ${QT_LIBRARIES}
     ${OPENGL_LIBRARIES}
     ${OpenCASCADE_LIBRARIES}
-	${EXTRA_LIBRARIES} 
+    ${EXTRA_LIBRARIES}
 )
 
 if(GLOG_FOUND)

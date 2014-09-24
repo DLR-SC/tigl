@@ -66,7 +66,7 @@ private:
 
     CCPACSConfiguration&          myConfig;       /**< TIGL configuration object */
     ShapeStoreType                myStoreType;    /**< Type specifying how to translate shapes into an OCAF document */
-    void AddFacesOfShape(const TopoDS_Shape &shape, STEPControl_Writer &writer) const;
+    void AddToStep(PNamedShape shape, STEPControl_Writer &writer) const;
 };
 
 } // end namespace tigl

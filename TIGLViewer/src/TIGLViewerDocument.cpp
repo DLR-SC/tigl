@@ -69,6 +69,7 @@
 #include "TIGLViewerSettings.h"
 #include "CTiglIntersectionCalculation.h"
 #include "TIGLViewerEtaXsiDialog.h"
+#include "TIGLViewerDrawVectorDialog.h"
 #include "TIGLViewerFuseDialog.h"
 #include "TIGLViewerShapeIntersectionDialog.h"
 #include "CTiglExportVtk.h"
@@ -869,8 +870,6 @@ void TIGLViewerDocument::drawFuselage()
         // Draw segment loft
         tigl::CCPACSFuselageSegment& segment = (tigl::CCPACSFuselageSegment &) fuselage.GetSegment(i);
         TopoDS_Shape loft = segment.GetLoft()->Shape();
-        // Transform by fuselage transformation
-        loft = fuselage.GetFuselageTransformation().Transform(loft);
         displayShape(loft);
     }
     QApplication::restoreOverrideCursor();
@@ -1067,8 +1066,7 @@ void TIGLViewerDocument::drawFuselageSamplePointsAngle()
 
 void TIGLViewerDocument::drawAllFuselagesAndWingsSurfacePoints()
 {
-     myAISContext->EraseAll(Standard_False);
-    std::ostringstream text;
+    myAISContext->EraseAll(Standard_False);
 
     // Draw all wings
     for (int wingIndex = 1; wingIndex <= GetConfiguration().GetWingCount(); wingIndex++) {
@@ -2036,6 +2034,36 @@ void TIGLViewerDocument::createShapeTriangulation(const TopoDS_Shape& shape, Top
             }
         }
     }
+}
+
+void TIGLViewerDocument::drawPoint()
+{
+    TIGLViewerDrawVectorDialog dialog("Draw Point", parent);
+    dialog.setDirectionEnabled(false);
+
+    if (dialog.exec() != QDialog::Accepted) {
+        return;
+    }
+
+    gp_Pnt point = dialog.getPoint().Get_gp_Pnt();
+    std::stringstream stream;
+    stream << "(" << point.X() << ", " << point.Y() << ", " << point.Z() << ")";
+    DisplayPoint(point, stream.str().c_str(), Standard_True, 0, 0, 0, 1.);
+}
+
+void TIGLViewerDocument::drawVector()
+{
+    TIGLViewerDrawVectorDialog dialog("Draw Vector", parent);
+
+    if (dialog.exec() != QDialog::Accepted) {
+        return;
+    }
+
+    gp_Pnt point = dialog.getPoint().Get_gp_Pnt();
+    gp_Vec dir   = dialog.getDirection().Get_gp_Pnt().XYZ();
+    std::stringstream stream;
+    stream << "(" << point.X() << ", " << point.Y() << ", " << point.Z() << ")";
+    myOCC->DisplayVector(point, dir, stream.str().c_str(), Standard_True, 0,0,0, 1.);
 }
 
 TiglCPACSConfigurationHandle TIGLViewerDocument::getCpacsHandle(void) const

@@ -44,6 +44,7 @@
 #include "TopoDS_Face.hxx"
 #include "TopoDS_Wire.hxx"
 #include "GeomAPI_IntCS.hxx"
+#include "GeomAPI_ProjectPointOnSurf.hxx"
 #include "Geom_Plane.hxx"
 #include "gp_Pln.hxx"
 //#include "Geom_Surface.hxx"
@@ -116,7 +117,7 @@ namespace
     }
 
     // Set the face traits
-    void SetFaceTraits (PNamedShape loft, const int& nSegments)
+    void SetFaceTraits (PNamedShape loft, unsigned int nSegments)
     {
         // designated names of the faces
         std::vector<std::string> names(3);
@@ -583,6 +584,15 @@ void CCPACSWingComponentSegment::UpdateProjectedLeadingEdge()
         str << "Wing component " << GetUID() << " does not contain any segments (CCPACSWingComponentSegment::updateProjectedLeadingEdge)!";
         throw CTiglError(str.str(), TIGL_ERROR);
     }
+
+    // create projection plane
+    gp_GTrsf wingTrafo = wing->GetTransformation().Get_gp_GTrsf();
+    gp_XYZ pCenter(0,0,0);
+    gp_XYZ pDirX(1,0,0);
+    wingTrafo.Transforms(pCenter);
+    wingTrafo.Transforms(pDirX);
+    Handle(Geom_Plane) projPlane = new Geom_Plane(pCenter, pDirX-pCenter);
+
     std::vector<gp_Pnt> LEPointsProjected;
     SegmentList::iterator segmentIt = segments.begin();
     int pointIndex = 1;
@@ -592,14 +602,14 @@ void CCPACSWingComponentSegment::UpdateProjectedLeadingEdge()
         // build iso xsi line
         gp_Pnt lep = segment.GetChordPoint(0.,0.);
 
-        // build leading edge projected to x=0 plane
-        gp_Pnt lep_proj(0., lep.Y(), lep.Z());
+        // build leading edge projected to the plane
+        gp_Pnt lep_proj = GeomAPI_ProjectPointOnSurf(lep, projPlane).NearestPoint();
         LEPointsProjected.push_back(lep_proj);
 
         if (segmentIt == segments.end()-1) {
             // add outer section of last segment
             gp_Pnt lep = segment.GetChordPoint(1., 0.);
-            gp_Pnt lep_proj(0., lep.Y(), lep.Z());
+            gp_Pnt lep_proj = GeomAPI_ProjectPointOnSurf(lep, projPlane).NearestPoint();
             LEPointsProjected.push_back(lep_proj);
             // the break should not be necessary here, since the loop is
             break;
@@ -608,7 +618,7 @@ void CCPACSWingComponentSegment::UpdateProjectedLeadingEdge()
     }
 
     // check if we have to extend the leading edge at wing tip
-    int nPoints = LEPointsProjected.size();
+    unsigned int nPoints = LEPointsProjected.size();
     tigl::CCPACSWingSegment& outerSegment = *segments[segments.size()-1];
     tigl::CCPACSWingSegment& innerSegment = *segments[0];
 
@@ -667,7 +677,7 @@ gp_Pnt CCPACSWingComponentSegment::GetPoint(double eta, double xsi)
     }
 
     // build up iso xsi line control points
-    TColgp_Array1OfPnt xsiPoints(1,segments.size()+1);
+    TColgp_Array1OfPnt xsiPoints(1,(Standard_Integer) segments.size() + 1);
     SegmentList::iterator segmentIt = segments.begin();
     int pointIndex = 1;
     for (; segmentIt != segments.end(); ++segmentIt) {

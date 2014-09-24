@@ -40,6 +40,7 @@
 #include "TIGLViewerDocument.h"
 #include "TIGLViewerSettings.h"
 #include "ISession_Point.h"
+#include "ISession_Direction.h"
 #include "ISession_Text.h"
 #include "tiglcommonfunctions.h"
 
@@ -1157,6 +1158,25 @@ void TIGLViewerWidget::DisplayPoint(const gp_Pnt& aPoint,
 {
     Handle(ISession_Point) aGraphicPoint = new ISession_Point(aPoint.X(), aPoint.Y(), aPoint.Z());
     myContext->Display(aGraphicPoint,UpdateViewer);
+    Handle(ISession_Text) aGraphicText = new ISession_Text(aText, aPoint.X() + anXoffset,
+                                                 aPoint.Y() + anYoffset,
+                                                 aPoint.Z() + aZoffset);
+    aGraphicText->SetScale(TextScale);
+    myContext->Display(aGraphicText,UpdateViewer);
+}
+
+// Displays a vector on the screen
+void TIGLViewerWidget::DisplayVector(const gp_Pnt& aPoint,
+                                     const gp_Vec& aVec,
+                                     const char* aText,
+                                     Standard_Boolean UpdateViewer,
+                                     Standard_Real anXoffset,
+                                     Standard_Real anYoffset,
+                                     Standard_Real aZoffset,
+                                     Standard_Real TextScale)
+{
+    Handle(ISession_Direction) aGraphicDirection = new ISession_Direction(aPoint, aVec);
+    myContext->Display(aGraphicDirection,UpdateViewer);
     Handle(ISession_Text) aGraphicText = new ISession_Text(aText, aPoint.X() + anXoffset,
                                                  aPoint.Y() + anYoffset,
                                                  aPoint.Z() + aZoffset);

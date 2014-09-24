@@ -91,6 +91,7 @@
 #include "GeomAPI_ProjectPointOnSurf.hxx"
 #include "GeomAPI_ProjectPointOnCurve.hxx"
 #include "BRepExtrema_DistShapeShape.hxx"
+#include "BRepIntCurveSurface_Inter.hxx"
 #include "GCPnts_AbscissaPoint.hxx"
 #include "BRepAdaptor_CompCurve.hxx"
 #include "BRepTools.hxx"
@@ -601,32 +602,23 @@ gp_Pnt CCPACSWingSegment::GetPointDirection(double eta, double xsi, double dirx,
     cordSurface.translate(eta, xsi, &tiglPoint);
 
     gp_Dir direction(dirx, diry, dirz);
-
     gp_Lin line(tiglPoint.Get_gp_Pnt(), direction);
-    TopoDS_Edge normalEdge = BRepBuilderAPI_MakeEdge(line);
-
-    BRepExtrema_DistShapeShape extrema;
-    extrema.LoadS1(normalEdge);
+    
+    BRepIntCurveSurface_Inter inter;
+    double tol = 1e-6;
     if (fromUpper) {
-        extrema.LoadS2(wing->GetUpperShape());
+        inter.Init(wing->GetUpperShape(), line, tol);
     }
     else {
-        extrema.LoadS2(wing->GetLowerShape());
+        inter.Init(wing->GetLowerShape(), line, tol);
     }
-
-    extrema.Perform();
-    if (!extrema.IsDone()) {
-        throw CTiglError("Could not calculate intersection of line with wing shell in CCPACSWingSegment::GetPointAngles", TIGL_NOT_FOUND);
+    
+    if (inter.More()) {
+        return inter.Pnt();
     }
-
-    gp_Pnt p1 = extrema.PointOnShape1(1);
-    gp_Pnt p2 = extrema.PointOnShape2(1);
-
-    if (p1.Distance(p2) > 1e-7) {
-        throw CTiglError("Could not calculate intersection of line with wing shell in CCPACSWingSegment::GetPointAngles", TIGL_NOT_FOUND);
+    else {
+        throw CTiglError("Could not calculate intersection of line with wing shell in CCPACSWingSegment::GetPointDirection", TIGL_NOT_FOUND);
     }
-
-    return p2;
 }
 
 gp_Pnt CCPACSWingSegment::GetChordPoint(double eta, double xsi)

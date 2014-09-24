@@ -49,6 +49,7 @@ class Handle_Visual3d_Layer;
 class Handle_AIS_Shape;
 class TopoDS_Shape;
 class gp_Pnt;
+class gp_Vec;
 
 class QOCC_DECLSPEC TIGLViewerWidget : public QWidget
 {
@@ -115,6 +116,15 @@ public:
                       Standard_Real anYoffset,
                       Standard_Real aZoffset,
                       Standard_Real TextScale);
+    
+    void DisplayVector(const gp_Pnt& aPoint,
+                       const gp_Vec& aVec,
+                       const char* aText,
+                       Standard_Boolean UpdateViewer,
+                       Standard_Real anXoffset,
+                       Standard_Real anYoffset,
+                       Standard_Real aZoffset,
+                       Standard_Real TextScale);
 
 signals:
 

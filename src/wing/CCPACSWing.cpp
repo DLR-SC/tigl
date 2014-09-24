@@ -87,7 +87,7 @@ namespace
     }
 
     // Set the face traits
-    void SetFaceTraits (PNamedShape loft, const int& nSegments)
+    void SetFaceTraits (PNamedShape loft, unsigned int nSegments)
     {
         // designated names of the faces
         std::vector<std::string> names(3);
@@ -245,6 +245,20 @@ void CCPACSWing::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& win
     if (tixiCheckElement(tixiHandle, elementPath) == SUCCESS) {
         if (tixiGetPoint(tixiHandle, elementPath, &(translation.x), &(translation.y), &(translation.z)) != SUCCESS) {
             throw CTiglError("Error: XML error while reading <translation/> in CCPACSWing::ReadCPACS", TIGL_XML_ERROR);
+        }
+    }
+
+    // Get translation type (attribute of "/transformation/translation")
+    if (tixiCheckAttribute(tixiHandle, elementPath, "refType") == SUCCESS) {
+        char * refTypeVal = NULL;
+        if (tixiGetTextAttribute(tixiHandle, elementPath, "refType", &refTypeVal) == SUCCESS) {
+            std::string refTypeStr(refTypeVal);
+            if (refTypeStr == "absGlobal") {
+                translationType = ABS_GLOBAL;
+            }
+            else if (refTypeStr == "absLocal") {
+                translationType = ABS_LOCAL;
+            }
         }
     }
 
@@ -724,9 +738,9 @@ double CCPACSWing::GetWingspan()
     else {
         for (int i = 1; i <= GetSegmentCount(); ++i) {
             CTiglAbstractSegment& segment = GetSegment(i);
-            const TopoDS_Shape& segmentShape = segment.GetLoft()->Shape();
+            TopoDS_Shape segmentShape = segment.GetLoft()->Shape();
             BRepBndLib::Add(segmentShape, boundingBox);
-            const TopoDS_Shape& segmentMirroredShape = segment.GetMirroredLoft()->Shape();
+            TopoDS_Shape segmentMirroredShape = segment.GetMirroredLoft()->Shape();
             BRepBndLib::Add(segmentMirroredShape, boundingBox);
         }
 

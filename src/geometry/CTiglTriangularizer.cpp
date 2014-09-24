@@ -127,7 +127,7 @@ CTiglTriangularizer::CTiglTriangularizer(CCPACSConfiguration &config, bool fuseS
         for (int iWing = 1; iWing <= config.GetWingCount(); ++iWing) {
             CCPACSWing& wing = config.GetWing(iWing);
 
-            const TopoDS_Shape& wshape = wing.GetLoft()->Shape();
+            TopoDS_Shape wshape = wing.GetLoft()->Shape();
             BRepMesh::Mesh(wshape,deflection);
             triangularizeShape(wshape);
 
@@ -135,7 +135,7 @@ CTiglTriangularizer::CTiglTriangularizer(CCPACSConfiguration &config, bool fuseS
                 continue;
             }
 
-            const TopoDS_Shape& wshape_m = wing.GetMirroredLoft()->Shape();
+            TopoDS_Shape wshape_m = wing.GetMirroredLoft()->Shape();
             BRepMesh::Mesh(wshape_m,deflection);
             triangularizeShape(wshape_m);
         }
@@ -143,7 +143,7 @@ CTiglTriangularizer::CTiglTriangularizer(CCPACSConfiguration &config, bool fuseS
         for (int iFuselage = 1; iFuselage <= config.GetFuselageCount(); ++iFuselage) {
             CCPACSFuselage& fuselage = config.GetFuselage(iFuselage);
 
-            const TopoDS_Shape& wshape = fuselage.GetLoft()->Shape();
+            TopoDS_Shape wshape = fuselage.GetLoft()->Shape();
             BRepMesh::Mesh(wshape,deflection);
             triangularizeShape(wshape);
 
@@ -151,7 +151,7 @@ CTiglTriangularizer::CTiglTriangularizer(CCPACSConfiguration &config, bool fuseS
                 continue;
             }
 
-            const TopoDS_Shape& wshape_m = fuselage.GetMirroredLoft()->Shape();
+            TopoDS_Shape wshape_m = fuselage.GetMirroredLoft()->Shape();
             BRepMesh::Mesh(wshape_m,deflection);
             triangularizeShape(wshape_m);
         }
