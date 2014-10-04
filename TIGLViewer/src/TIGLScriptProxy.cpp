@@ -20,24 +20,26 @@
 */
 
 #include "TIGLScriptProxy.h"
+#include "TIGLViewerDocument.h"
 
-#include <QtGui/QWidget>
+#include <QWidget>
 
-TIGLScriptProxy::TIGLScriptProxy()
+TIGLScriptProxy::TIGLScriptProxy(TIGLViewerWindow* app)
+    : QObject(app)
 {
-    m_cpacsHandle = 1;
+    _app = app;
 }
 
 // Returns the CPACS configuration
-tigl::CCPACSConfiguration& TIGLScriptProxy::GetConfiguration(void) const
+tigl::CCPACSConfiguration& TIGLScriptProxy::GetConfiguration(void)
 {
     tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
-    return manager.GetConfiguration(m_cpacsHandle);
+    return manager.GetConfiguration(getTiglHandle());
 }
 
 TiglCPACSConfigurationHandle TIGLScriptProxy::getTiglHandle(void)
 {
-    return m_cpacsHandle;
+    return _app->getDocument()->getCpacsHandle();
 }
 
 char* TIGLScriptProxy::qString2char(QString str)
@@ -46,94 +48,81 @@ char* TIGLScriptProxy::qString2char(QString str)
     return (ba.data());
 }
 
-void TIGLScriptProxy::registerClass(QScriptEngine* engine)
-{
-        if (!engine) {
-            return;
-        }
-        
-        QScriptValue ctor = engine->newFunction(TIGLScriptProxyConstructor);
-        QScriptValue metaObject = engine->newQMetaObject(&QObject::staticMetaObject, ctor);
-        engine->globalObject().setProperty("TIGL", metaObject);
-}
-
-QScriptValue TIGLScriptProxyConstructor(QScriptContext * context, QScriptEngine * engine)
-{
-        QString fileName = context->argument(0).toString();
-        //QObject *parent = context->argument(1).toQObject();
-        TIGLScriptProxy *TIGL = new TIGLScriptProxy();//, parent);
-        return engine->newQObject(TIGL, QScriptEngine::ScriptOwnership);
-}
-
 QStringList TIGLScriptProxy::getMemberFunctions()
 {
-    return QStringList()  << "tiglGetWingCount" << "tiglGetVersion" << "tiglComponentGetHashCode(componentUID)" << "tiglComponentIntersectionLineCount(uid1, uid2)"
-                          << "tiglExportFusedWingFuselageIGES(filename)" << "tiglExportIGES(filename)" << "tiglExportMeshedFuselageSTL(fuselageIndex, filename, deflection)"
-                          << "tiglExportMeshedFuselageVTKByIndex(fuselageIndex, filename, deflection)" << "tiglExportMeshedFuselageVTKByUID(fuselageUID, filename, deflection)"
-                          << "tiglFuselageGetCircumference(fuselageIndex, segmentIndex, eta)" << "tiglFuselageGetPoint(fuselageIndex, segmentIndex, eta, zeta)"
-                          << "tiglFuselageGetSegmentUID(fuselageIndex, segmentIndex)" << "tiglFuselageGetSegmentVolume(fuselageIndex, segmentIndex)"
-                          << "tiglGetFuselageCount";
+    return QStringList()  << "getWingCount" << "getVersion" << "componentGetHashCode(componentUID)" << "componentIntersectionLineCount(uid1, uid2)"
+                          << "exportFusedWingFuselageIGES(filename)" << "exportIGES(filename)" << "exportMeshedFuselageSTL(fuselageIndex, filename, deflection)"
+                          << "exportMeshedFuselageVTKByIndex(fuselageIndex, filename, deflection)" << "exportMeshedFuselageVTKByUID(fuselageUID, filename, deflection)"
+                          << "fuselageGetCircumference(fuselageIndex, segmentIndex, eta)" << "fuselageGetPoint(fuselageIndex, segmentIndex, eta, zeta)"
+                          << "fuselageGetSegmentUID(fuselageIndex, segmentIndex)" << "fuselageGetSegmentVolume(fuselageIndex, segmentIndex)"
+                          << "getFuselageCount";
 }
 
-int TIGLScriptProxy::tiglGetWingCount()
+QScriptValue TIGLScriptProxy::getWingCount()
 {
-    tigl::CCPACSConfiguration& config = GetConfiguration();
-    return(config.GetWingCount());
+    int count = 0;
+    TiglReturnCode ret = ::tiglGetWingCount(getTiglHandle(), &count);
+    if (ret != TIGL_SUCCESS) {
+        return context()->throwError(tiglGetErrorString(ret));
+    }
+    else {
+        return count;
+    }
 }
 
-QString TIGLScriptProxy::tiglGetVersion()
+QString TIGLScriptProxy::getVersion()
 {
     return(::tiglGetVersion());
 }
 
 
-int TIGLScriptProxy::tiglComponentGetHashCode (QString componentUID)
+int TIGLScriptProxy::componentGetHashCode (QString componentUID)
 {
     int hashCode;
     ::tiglComponentGetHashCode (getTiglHandle(), qString2char(componentUID), &hashCode);
     return(hashCode);
 }
 
-int TIGLScriptProxy::tiglComponentIntersectionLineCount (QString componentUidOne, QString componentUidTwo)
+int TIGLScriptProxy::componentIntersectionLineCount (QString componentUidOne, QString componentUidTwo)
 {
     int numWires;
     ::tiglComponentIntersectionLineCount (getTiglHandle(), qString2char(componentUidOne), qString2char(componentUidTwo), &numWires);
     return(numWires);
 }
 
-void TIGLScriptProxy::tiglExportFusedWingFuselageIGES (QString filenamePtr)
+void TIGLScriptProxy::exportFusedWingFuselageIGES (QString filenamePtr)
 {
     ::tiglExportFusedWingFuselageIGES(getTiglHandle(), qString2char(filenamePtr));
 }
 
-void TIGLScriptProxy::tiglExportIGES (QString filenamePtr)
+void TIGLScriptProxy::exportIGES (QString filenamePtr)
 {
     ::tiglExportIGES(getTiglHandle(), qString2char(filenamePtr));
 }
 
-void TIGLScriptProxy::tiglExportMeshedFuselageSTL (int fuselageIndex, QString filenamePtr, double deflection)
+void TIGLScriptProxy::exportMeshedFuselageSTL (int fuselageIndex, QString filenamePtr, double deflection)
 {
     ::tiglExportMeshedFuselageSTL(getTiglHandle(), fuselageIndex, qString2char(filenamePtr), deflection);
 }
 
-void TIGLScriptProxy::tiglExportMeshedFuselageVTKByIndex (int fuselageIndex, QString filenamePtr, double deflection)
+void TIGLScriptProxy::exportMeshedFuselageVTKByIndex (int fuselageIndex, QString filenamePtr, double deflection)
 {
     ::tiglExportMeshedFuselageVTKByIndex(getTiglHandle(), fuselageIndex, qString2char(filenamePtr), deflection);
 }
 
-void TIGLScriptProxy::tiglExportMeshedFuselageVTKByUID (QString fuselageUID, QString filenamePtr, double deflection)
+void TIGLScriptProxy::exportMeshedFuselageVTKByUID (QString fuselageUID, QString filenamePtr, double deflection)
 {
     ::tiglExportMeshedFuselageVTKByUID(getTiglHandle(), qString2char(fuselageUID), qString2char(filenamePtr), deflection);
 }
 
-double TIGLScriptProxy::tiglFuselageGetCircumference (int fuselageIndex, int segmentIndex, double eta)
+double TIGLScriptProxy::fuselageGetCircumference (int fuselageIndex, int segmentIndex, double eta)
 {
     double circumference;
     ::tiglFuselageGetCircumference (getTiglHandle(), fuselageIndex, segmentIndex, eta, &circumference);
     return circumference;
 }
 
-QString TIGLScriptProxy::tiglFuselageGetPoint (int fuselageIndex, int segmentIndex, double eta, double zeta)
+QString TIGLScriptProxy::fuselageGetPoint (int fuselageIndex, int segmentIndex, double eta, double zeta)
 {
     double x,y,z;
     QString strX, strY, strZ, pnt;
@@ -145,23 +134,29 @@ QString TIGLScriptProxy::tiglFuselageGetPoint (int fuselageIndex, int segmentInd
     return(pnt);
 }
 
-QString TIGLScriptProxy::tiglFuselageGetSegmentUID (int fuselageIndex, int segmentIndex)
+QString TIGLScriptProxy::fuselageGetSegmentUID (int fuselageIndex, int segmentIndex)
 {
     char *uidName;
     ::tiglFuselageGetSegmentUID (getTiglHandle(), fuselageIndex, segmentIndex, &uidName);
     return(QString(uidName));
 }
 
-double TIGLScriptProxy::tiglFuselageGetSegmentVolume (int fuselageIndex, int segmentIndex)
+double TIGLScriptProxy::fuselageGetSegmentVolume (int fuselageIndex, int segmentIndex)
 {
     double volume;
     ::tiglFuselageGetSegmentVolume (getTiglHandle(), fuselageIndex, segmentIndex, &volume);
     return volume;
 }
 
-int TIGLScriptProxy::tiglGetFuselageCount()
+QScriptValue TIGLScriptProxy::getFuselageCount()
 {
-    tigl::CCPACSConfiguration& config = GetConfiguration();
-    return(config.GetFuselageCount());
+    int count = 0;
+    TiglReturnCode ret = ::tiglGetFuselageCount(getTiglHandle(), &count);
+    if (ret != TIGL_SUCCESS) {
+        return context()->throwError(tiglGetErrorString(ret));
+    }
+    else {
+        return count;
+    }
 }
 

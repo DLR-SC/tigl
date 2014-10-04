@@ -337,10 +337,10 @@ void TIGLViewerWindow::openFile(const QString& fileName)
                 triangulation = true;
             }
             if (triangulation) {
-                reader.importTriangulation( fileInfo.absoluteFilePath(), format, getScene() );
+                reader.importTriangulation( fileInfo.absoluteFilePath(), format, *getScene() );
             }
             else {
-                reader.importModel ( fileInfo.absoluteFilePath(), format, getScene() );
+                reader.importModel ( fileInfo.absoluteFilePath(), format, *getScene() );
             }
         }
         watcher = new QFileSystemWatcher();
@@ -422,8 +422,8 @@ void TIGLViewerWindow::saveSettings()
 void TIGLViewerWindow::applySettings()
 {
     myOCC->setBackgroundColor(tiglViewerSettings->BGColor());
-    getScene().getContext()->SetIsoNumber(tiglViewerSettings->numFaceIsosForDisplay());
-    getScene().getContext()->UpdateCurrentViewer();
+    getScene()->getContext()->SetIsoNumber(tiglViewerSettings->numFaceIsosForDisplay());
+    getScene()->getContext()->UpdateCurrentViewer();
     if (tiglViewerSettings->debugBooleanOperations()) {
         qputenv("TIGL_DEBUG_BOP", "1");
     }
@@ -480,7 +480,7 @@ void TIGLViewerWindow::save()
         }
 
         myLastFolder = fileInfo.absolutePath();
-        writer.exportModel ( fileInfo.absoluteFilePath(), format, getScene().getContext() );
+        writer.exportModel ( fileInfo.absoluteFilePath(), format, getScene()->getContext() );
     }
 }
 
@@ -783,6 +783,8 @@ void TIGLViewerWindow::connectSignals()
     connect(logDirect.get(), SIGNAL(newMessage(QString)), console, SLOT(output(QString)));
 
     connect(scriptEngine, SIGNAL(scriptResult(QString)), console, SLOT(output(QString)));
+    connect(scriptEngine, SIGNAL(scriptError(QString)), console, SLOT(outputError(QString)));
+    connect(scriptEngine, SIGNAL(evalDone()), console, SLOT(newLine()));
     connect(console, SIGNAL(onChange(QString)), scriptEngine, SLOT(textChanged(QString)));
     connect(console, SIGNAL(onCommand(QString)), scriptEngine, SLOT(eval(QString)));
 

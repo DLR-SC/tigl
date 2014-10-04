@@ -23,6 +23,7 @@
 #define TIGLVIEWERWIDGET_H
 
 #include <QWidget>
+#include <QMetaType>
 #include <Quantity_Color.hxx>
 
 #if defined WNT
@@ -239,5 +240,7 @@ private: // methods
                               Aspect_GraphicCallbackStruct*);
 
 };
+
+Q_DECLARE_METATYPE(TIGLViewerWidget*)
 
 #endif // TIGLVIEWERWIDGET_H

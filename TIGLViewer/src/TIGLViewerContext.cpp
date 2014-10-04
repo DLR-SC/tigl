@@ -105,6 +105,7 @@ void TIGLViewerContext::deleteAllObjects()
     for ( aListIterator.Initialize( aList ); aListIterator.More(); aListIterator.Next() ) {
         myContext->Remove( aListIterator.Value(), Standard_False);
     }
+    myContext->UpdateCurrentViewer();
 }
 /*! 
 \brief    Sets the privileged plane to the XY Axis.  
