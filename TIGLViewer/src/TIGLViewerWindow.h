@@ -47,14 +47,11 @@ public:
 
     TIGLViewerWindow();
     virtual ~TIGLViewerWindow();
-    Handle_AIS_InteractiveContext& getContext() { return myVC->getContext(); };
+    TIGLViewerContext& getScene() { return *myScene; }
+    TIGLViewerWidget* getViewer();
 
-    void setInitialCpacsFileName(QString filename);
-
+    
     void setInitialControlFile(QString filename);
-
-    // Returns the Open CASCADE Widget and Context.
-    TIGLViewerWidget* getMyOCC();
 
     class TIGLViewerSettings& getSettings();
 
@@ -68,6 +65,7 @@ protected:
 
 public slots:
     void updateMenus(TiglCPACSConfigurationHandle);
+    void openFile(const QString&);
 
 private slots:
     void newFile();
@@ -102,7 +100,6 @@ private slots:
 private:
     void connectSignals();
     void createMenus();
-    void openFile(const QString&);
     void updateRecentFileActions();
     void setCurrentFile(const QString &);
 
@@ -111,7 +108,7 @@ private:
     QAction *recentFileActions[MaxRecentFiles];
 
     // The OpenCASCADE context;
-    TIGLViewerContext*      myVC;
+    TIGLViewerContext*      myScene;
 
     QString                 myLastFolder;
 

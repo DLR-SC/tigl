@@ -67,18 +67,18 @@ int main(int argc, char *argv[])
     window->show();
 
     if (!PARAMS.controlFile.isEmpty()){
-        if (window->getMyOCC()) {
-            window->getMyOCC()->repaint();
+        if (window->getViewer()) {
+            window->getViewer()->repaint();
         }
         window->setInitialControlFile(PARAMS.controlFile);
     }
 
     // if a filename is given, open the configuration
     if (!PARAMS.initialFilename.isEmpty()) {
-        if (window->getMyOCC()) {
-            window->getMyOCC()->repaint();
+        if (window->getViewer()) {
+            window->getViewer()->repaint();
         }
-        window->setInitialCpacsFileName(PARAMS.initialFilename);
+        window->openFile(PARAMS.initialFilename);
     }
 
     retval = app.exec();

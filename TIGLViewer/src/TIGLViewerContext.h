@@ -21,8 +21,14 @@
 #ifndef TIGLVIEWERCONTEXT_H
 #define TIGLVIEWERCONTEXT_H
 
-#include <QtCore/QObject>
+#include <AIS_Shape.hxx>
+#include <QObject>
 #include "TIGLViewer.h"
+#include "TIGLViewerColors.h"
+
+class TopoDS_Shape;
+class gp_Pnt;
+class gp_Vec;
 
 class QOCC_DECLSPEC TIGLViewerContext : public QObject
 {
@@ -44,6 +50,24 @@ public:
     void deleteAllObjects();
 
     void setGridOffset (Quantity_Length offset);
+    
+    Handle_AIS_Shape displayShape(const TopoDS_Shape& loft, Quantity_Color color = Quantity_NOC_ShapeCol);
+    void displayPoint(const gp_Pnt& aPoint,
+                      const char*   aText,
+                      Standard_Boolean UpdateViewer,
+                      Standard_Real anXoffset,
+                      Standard_Real anYoffset,
+                      Standard_Real aZoffset,
+                      Standard_Real TextScale);
+    
+    void displayVector(const gp_Pnt& aPoint,
+                       const gp_Vec& aVec,
+                       const char* aText,
+                       Standard_Boolean UpdateViewer,
+                       Standard_Real anXoffset,
+                       Standard_Real anYoffset,
+                       Standard_Real aZoffset,
+                       Standard_Real TextScale);
 
 public slots:
 

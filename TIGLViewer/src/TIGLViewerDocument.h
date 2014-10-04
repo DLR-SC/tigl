@@ -29,6 +29,8 @@
 #include <Handle_AIS_Shape.hxx>
 #include <Quantity_Color.hxx>
 
+class TIGLViewerWindow;
+
 class QOCC_DECLSPEC TIGLViewerDocument : public QObject
 {
     Q_OBJECT
@@ -40,7 +42,7 @@ class QOCC_DECLSPEC TIGLViewerDocument : public QObject
 
 public:
 
-    TIGLViewerDocument( QWidget *parentWidget, const Handle_AIS_InteractiveContext& ic );
+    TIGLViewerDocument(TIGLViewerWindow *parentWidget);
     ~TIGLViewerDocument( );
 
     TiglReturnCode openCpacsConfiguration(const QString fileName);
@@ -141,9 +143,7 @@ private slots:
 
 private: 
     TiglCPACSConfigurationHandle            m_cpacsHandle;
-    QWidget*                                parent;
-    Handle_AIS_InteractiveContext           myAISContext;
-    class TIGLViewerWidget*                 myOCC;
+    TIGLViewerWindow*                       app;
     QString                                 loadedConfigurationFileName;
 
     void writeToStatusBar(QString text);

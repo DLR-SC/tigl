@@ -73,8 +73,8 @@ void TIGLViewerWindow::contextMenuEvent(QContextMenuEvent *event)
      QMenu menu(this);
 
      bool OneOrMoreIsSelected = false;
-     for (myVC->getContext()->InitCurrent(); myVC->getContext()->MoreCurrent (); myVC->getContext()->NextCurrent ()) {
-         if (myVC->getContext()->IsDisplayed(myVC->getContext()->Current())) {
+     for (myScene->getContext()->InitCurrent(); myScene->getContext()->MoreCurrent (); myScene->getContext()->NextCurrent ()) {
+         if (myScene->getContext()->IsDisplayed(myScene->getContext()->Current())) {
              OneOrMoreIsSelected=true;
          }
      }
@@ -128,9 +128,8 @@ TIGLViewerWindow::TIGLViewerWindow()
     tiglViewerSettings = &TIGLViewerSettings::Instance();
     settingsDialog = new TIGLViewerSettingsDialog(*tiglViewerSettings, this);
 
-    myVC  = new TIGLViewerContext();
-    myOCC->setContext(myVC->getContext());
-    Handle(AIS_InteractiveContext) context = myVC->getContext();
+    myScene  = new TIGLViewerContext();
+    myOCC->setContext(myScene->getContext());
 
     // we create a timer to workaround QFileSystemWatcher bug,
     // which emits multiple signals in a few milliseconds. This caused
@@ -166,8 +165,8 @@ TIGLViewerWindow::TIGLViewerWindow()
     p.setColor(QPalette::Base, Qt::black);
     console->setPalette(p);
 
-    cpacsConfiguration = new TIGLViewerDocument(this, myOCC->getContext());
-    scriptEngine = new TIGLScriptEngine;
+    cpacsConfiguration = new TIGLViewerDocument(this);
+    scriptEngine = new TIGLScriptEngine(this);
     
     setAcceptDrops(true);
 
@@ -187,7 +186,6 @@ TIGLViewerWindow::~TIGLViewerWindow()
 {
     delete stdoutStream;
     delete errorStream;
-    delete scriptEngine;
 }
 
 void TIGLViewerWindow::dragEnterEvent(QDragEnterEvent * ev)
@@ -219,12 +217,6 @@ void TIGLViewerWindow::dropEvent(QDropEvent *ev)
 }
 
 
-void TIGLViewerWindow::setInitialCpacsFileName(QString filename)
-{
-    currentFile = filename;
-    openFile(filename);
-}
-
 void TIGLViewerWindow::setInitialControlFile(QString filename)
 {
     TIGLViewerControlFile cf;
@@ -254,7 +246,7 @@ void TIGLViewerWindow::newFile()
 {
     statusBar()->showMessage(tr("Invoked File|New"));
     //myOCC->getView()->ColorScaleErase();
-    myVC->deleteAllObjects();
+    myScene->deleteAllObjects();
 }
 
 void TIGLViewerWindow::open()
@@ -345,10 +337,10 @@ void TIGLViewerWindow::openFile(const QString& fileName)
                 triangulation = true;
             }
             if (triangulation) {
-                reader.importTriangulation( fileInfo.absoluteFilePath(), format, *myOCC );
+                reader.importTriangulation( fileInfo.absoluteFilePath(), format, getScene() );
             }
             else {
-                reader.importModel ( fileInfo.absoluteFilePath(), format, *myOCC );
+                reader.importModel ( fileInfo.absoluteFilePath(), format, getScene() );
             }
         }
         watcher = new QFileSystemWatcher();
@@ -374,7 +366,7 @@ void TIGLViewerWindow::reopenFile()
         cpacsConfiguration->updateConfiguration();
     }
     else {
-        myVC->getContext()->EraseAll(Standard_False);
+        myScene->getContext()->EraseAll(Standard_False);
         openFile(currentFile);
     }
 }
@@ -430,8 +422,8 @@ void TIGLViewerWindow::saveSettings()
 void TIGLViewerWindow::applySettings()
 {
     myOCC->setBackgroundColor(tiglViewerSettings->BGColor());
-    myOCC->getContext()->SetIsoNumber(tiglViewerSettings->numFaceIsosForDisplay());
-    myOCC->getContext()->UpdateCurrentViewer();
+    getScene().getContext()->SetIsoNumber(tiglViewerSettings->numFaceIsosForDisplay());
+    getScene().getContext()->UpdateCurrentViewer();
     if (tiglViewerSettings->debugBooleanOperations()) {
         qputenv("TIGL_DEBUG_BOP", "1");
     }
@@ -448,7 +440,7 @@ void TIGLViewerWindow::changeSettings()
 }
 
 
-TIGLViewerWidget* TIGLViewerWindow::getMyOCC()
+TIGLViewerWidget* TIGLViewerWindow::getViewer()
 {
     return myOCC;
 }
@@ -488,7 +480,7 @@ void TIGLViewerWindow::save()
         }
 
         myLastFolder = fileInfo.absolutePath();
-        writer.exportModel ( fileInfo.absoluteFilePath(), format, myOCC->getContext() );
+        writer.exportModel ( fileInfo.absoluteFilePath(), format, getScene().getContext() );
     }
 }
 
@@ -636,7 +628,7 @@ void TIGLViewerWindow::addPoint (V3d_Coordinate X,
                                  V3d_Coordinate Y,
                                  V3d_Coordinate Z)
 {
-    AddVertex ( X, Y, Z, myVC->getContext() );
+    AddVertex ( X, Y, Z, myScene->getContext() );
 }
 
 void TIGLViewerWindow::statusMessage (const QString aMessage)
@@ -692,12 +684,12 @@ void TIGLViewerWindow::connectSignals()
     connect(selectAction, SIGNAL(triggered()), myOCC, SLOT(selecting()));
 
     // view->grid menu
-    connect(gridOnAction, SIGNAL(toggled(bool)), myVC, SLOT(toggleGrid(bool)));
-    connect(gridXYAction, SIGNAL(triggered()), myVC, SLOT(gridXY()));
-    connect(gridXZAction, SIGNAL(triggered()), myVC, SLOT(gridXZ()));
-    connect(gridYZAction, SIGNAL(triggered()), myVC, SLOT(gridYZ()));
-    connect(gridRectAction, SIGNAL(triggered()), myVC, SLOT(gridRect()));
-    connect(gridCircAction, SIGNAL(triggered()), myVC, SLOT(gridCirc()));
+    connect(gridOnAction, SIGNAL(toggled(bool)), myScene, SLOT(toggleGrid(bool)));
+    connect(gridXYAction, SIGNAL(triggered()), myScene, SLOT(gridXY()));
+    connect(gridXZAction, SIGNAL(triggered()), myScene, SLOT(gridXZ()));
+    connect(gridYZAction, SIGNAL(triggered()), myScene, SLOT(gridYZ()));
+    connect(gridRectAction, SIGNAL(triggered()), myScene, SLOT(gridRect()));
+    connect(gridCircAction, SIGNAL(triggered()), myScene, SLOT(gridCirc()));
 
     // Standard View
     connect(viewFrontAction, SIGNAL(triggered()), myOCC, SLOT(viewFront()));
@@ -713,7 +705,7 @@ void TIGLViewerWindow::connectSignals()
     connect(viewZoomOutAction, SIGNAL(triggered()), myOCC, SLOT(zoomOut()));
     connect(showConsoleAction, SIGNAL(toggled(bool)), consoleDockWidget, SLOT(setVisible(bool)));
     connect(consoleDockWidget, SIGNAL(visibilityChanged(bool)), showConsoleAction, SLOT(setChecked(bool)));
-    connect(showWireframeAction, SIGNAL(toggled(bool)), myVC, SLOT(wireFrame(bool)));
+    connect(showWireframeAction, SIGNAL(toggled(bool)), myScene, SLOT(wireFrame(bool)));
 
     connect(openTimer, SIGNAL(timeout()), this, SLOT(reopenFile()));
 
@@ -790,7 +782,7 @@ void TIGLViewerWindow::connectSignals()
 
     connect(logDirect.get(), SIGNAL(newMessage(QString)), console, SLOT(output(QString)));
 
-    connect(scriptEngine, SIGNAL(printResults(QString)), console, SLOT(output(QString)));
+    connect(scriptEngine, SIGNAL(scriptResult(QString)), console, SLOT(output(QString)));
     connect(console, SIGNAL(onChange(QString)), scriptEngine, SLOT(textChanged(QString)));
     connect(console, SIGNAL(onCommand(QString)), scriptEngine, SLOT(eval(QString)));
 
