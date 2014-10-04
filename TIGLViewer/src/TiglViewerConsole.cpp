@@ -102,6 +102,15 @@ void Console::onEnter()
 void Console::output(QString s)
 {
     appendHtml(QString("<font color=\"white\">%1</font><br/><br/>").arg(s));
+}
+
+void Console::outputError(QString s)
+{
+    appendHtml(QString("<i><font color=\"red\">%1</font></i><br/><br/>").arg(s));
+}
+
+void Console::newLine()
+{
     insertPrompt();
     isLocked = false;
 }
@@ -126,8 +135,14 @@ void Console::scrollDown()
 
 void Console::historyAdd(QString cmd)
 {
-    history->append(cmd);
-    historyPos = history->length();
+    int pos = history->lastIndexOf(cmd);
+    if (pos > 0) {
+        historyPos = pos+1;
+    }
+    else {
+        history->append(cmd);
+        historyPos = history->length();
+    }
 }
 
 void Console::historyBack()

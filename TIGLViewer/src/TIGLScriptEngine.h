@@ -42,10 +42,12 @@ public:
 public slots:
     void textChanged(QString line);
     void eval(QString commandLine);
+    void printText(QString);
     
 signals:
     void scriptResult(QString text);
     void scriptError(QString text);
+    void evalDone();
     
 private:
     QScriptEngine engine;

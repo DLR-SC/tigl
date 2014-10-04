@@ -37,18 +37,19 @@ class QFileSystemWatcher;
 class QShortcut;
 class TIGLViewerLogHistory;
 class TIGLViewerLogRedirection;
+class TIGLViewerDocument;
 
 class TIGLViewerWindow : public QMainWindow, private Ui::TIGLViewerWindow
 {
     Q_OBJECT
+    Q_PROPERTY(TIGLViewerWidget*  viewer READ getViewer)
+    Q_PROPERTY(TIGLViewerContext* scene  READ getScene)
 
 public:
     enum { MaxRecentFiles = 5 };
 
     TIGLViewerWindow();
     virtual ~TIGLViewerWindow();
-    TIGLViewerContext& getScene() { return *myScene; }
-    TIGLViewerWidget* getViewer();
 
     
     void setInitialControlFile(QString filename);
@@ -66,6 +67,11 @@ protected:
 public slots:
     void updateMenus(TiglCPACSConfigurationHandle);
     void openFile(const QString&);
+    void closeConfiguration();
+    
+    TIGLViewerWidget*   getViewer();
+    TIGLViewerContext*  getScene() { return myScene; }
+    TIGLViewerDocument* getDocument() { return cpacsConfiguration; }
 
 private slots:
     void newFile();
@@ -73,7 +79,6 @@ private slots:
     void reopenFile();
     void openScript();
     void openRecentFile();
-    void closeConfiguration();
     void save();
     void print();
     void setBackgroundImage();
@@ -112,7 +117,7 @@ private:
 
     QString                 myLastFolder;
 
-    class TIGLViewerDocument* cpacsConfiguration;
+    TIGLViewerDocument* cpacsConfiguration;
     QString currentFile;
     QString controlFileName;
     QFileSystemWatcher *watcher;

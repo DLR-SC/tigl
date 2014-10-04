@@ -25,6 +25,7 @@
 #include <QObject>
 #include "TIGLViewer.h"
 #include "TIGLViewerColors.h"
+#include <QMetaType>
 
 class TopoDS_Shape;
 class gp_Pnt;
@@ -47,8 +48,6 @@ public:
                                     const Standard_CString aDomain,
                                     const Standard_Real ViewSize );
 
-    void deleteAllObjects();
-
     void setGridOffset (Quantity_Length offset);
     
     Handle_AIS_Shape displayShape(const TopoDS_Shape& loft, Quantity_Color color = Quantity_NOC_ShapeCol);
@@ -70,7 +69,7 @@ public:
                        Standard_Real TextScale);
 
 public slots:
-
+    void deleteAllObjects();
     void gridXY     ( void );
     void gridXZ     ( void );
     void gridYZ     ( void );
@@ -95,5 +94,7 @@ private:
     Quantity_NameOfColor            myGridTenthColor;
 
 };
+
+Q_DECLARE_METATYPE(TIGLViewerContext*)
 
 #endif // TIGLVIEWERCONTEXT_H

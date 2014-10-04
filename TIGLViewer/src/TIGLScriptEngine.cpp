@@ -23,18 +23,59 @@
 #include "TIXIScriptProxy.h"
 #include "TIGLScriptProxy.h"
 
-#include <QtGui/QWidget>
+#include <QWidget>
+
+template <class T>
+QScriptValue qobjectToScriptValue(QScriptEngine *engine, T* const &in)
+{
+    return engine->newQObject(in);
+}
+
+template <class T>
+void objectFromScriptValue(const QScriptValue &object, T* &out)
+{
+    out = qobject_cast<T*>(object.toQObject());
+}
+
+
+QScriptValue myPrintFunction(QScriptContext *context, QScriptEngine *engine)
+{
+    QString result;
+    for (int i = 0; i < context->argumentCount(); ++i) {
+        if (i > 0)
+            result.append(" ");
+        result.append(context->argument(i).toString());
+    }
+
+    QScriptValue calleeData = context->callee().data();
+    TIGLScriptEngine *scriptEngine = qobject_cast<TIGLScriptEngine*>(calleeData.toQObject());
+    scriptEngine->printText(result);
+
+    return engine->undefinedValue();
+}
+
 
 TIGLScriptEngine::TIGLScriptEngine(TIGLViewerWindow* app)
     : QObject(app)
 {
-    tiglScriptProxy = new TIGLScriptProxy();
+    tiglScriptProxy = new TIGLScriptProxy(app);
     tixiScriptProxy = new TIXIScriptProxy();
-    TIGLScriptProxy::registerClass(&engine); 
     TIXIScriptProxy::registerClass(&engine);
-    
+
     QScriptValue appValue = engine.newQObject(app);
-    engine.globalObject().setProperty("Viewer", appValue);
+    engine.globalObject().setProperty("app", appValue);
+
+    QScriptValue tiglProxyValue =  engine.newQObject(tiglScriptProxy, QScriptEngine::ScriptOwnership);
+    engine.globalObject().setProperty("tigl", tiglProxyValue);
+
+    qScriptRegisterMetaType(&engine, qobjectToScriptValue<TIGLViewerWidget>, objectFromScriptValue<TIGLViewerWidget>);
+    qScriptRegisterMetaType(&engine, qobjectToScriptValue<TIGLViewerContext>, objectFromScriptValue<TIGLViewerContext>);
+
+    // register/overwrite print function
+    QScriptValue printFun = engine.newFunction(myPrintFunction);
+    printFun.setData(engine.newQObject(this));
+    engine.globalObject().setProperty("print", printFun);
+
     prefixString = "  $ ";
 }
 
@@ -67,19 +108,16 @@ void TIGLScriptEngine::eval(QString commandLine)
         return;
     }
 
-    // only for testing purpose
-    //engine.evaluate("var tigl = new TIGL();");
-    //engine.evaluate("var tixi = new TIXI();");
-    //val = engine.evaluate("tigl.tiglGetFuselageCount();");
-    //val = engine.evaluate("tixi.tixiGetTextElement('/cpacs/header/name');");
-
     val = engine.evaluate(commandLine);
     QString result = val.toString();
-    if (result == "undefined") {
-        result = "done";
+    if (!val.isUndefined() && !val.isError()) {
+        emit scriptResult( prefixString + result  );
     }
-
-    emit scriptResult( prefixString + result  );
+    else if(val.isError())
+    {
+        emit scriptError(val.toString());
+    }
+    emit evalDone();
 }
 
 void TIGLScriptEngine::displayHelp()
@@ -89,19 +127,20 @@ void TIGLScriptEngine::displayHelp()
     helpString =  "====== TIGLViewer scripting help ======<br/><br/>";
     helpString += "Available TIGL functions: <br/>";
     helpString += tiglScriptProxy->getMemberFunctions().join("<br/>") + "<br/><br/>";
-    helpString += "Available TIXI functions: <br/>";
-    helpString += tixiScriptProxy->getMemberFunctions().join("<br/>") + "<br/><br/>";
 
     helpString += "Usage example TIGL: <br/>";
-    helpString += "Initialize TIGL: \tvar tigl = new TIGL();<br/>";
-    helpString += "Use TIGL: \ttigl.tiglGetFuselageCount();<br/>";
-    helpString += "Usage example TIXI: <br/>";
-    helpString += "Initialize TIXI: \tvar tixi = new TIXI();<br/>";
-    helpString += "Use TIXI: \ttixi.tixiGetTextElement('/cpacs/header/name');<br/>";
+    helpString += "Use TIGL: \ttigl.getFuselageCount();<br/>";
+
     helpString += "Type 'help' to get a list of available TIXI/TIGL fuctions.";
 
 
     emit scriptResult( helpString );
+    emit evalDone();
+}
+
+void TIGLScriptEngine::printText(QString text)
+{
+    emit scriptResult(text);
 }
 
 

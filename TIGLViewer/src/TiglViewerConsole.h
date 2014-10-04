@@ -35,6 +35,8 @@ public:
 
 public slots:
     void output(QString);
+    void outputError(QString);
+    void newLine();
 
 protected:
     void keyPressEvent(QKeyEvent *);
