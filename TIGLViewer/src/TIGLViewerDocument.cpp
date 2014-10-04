@@ -59,6 +59,7 @@
 #include "CTiglError.h"
 #include "TIGLViewerSettings.h"
 #include "CTiglIntersectionCalculation.h"
+#include "TIGLViewerWindow.h"
 #include "TIGLViewerEtaXsiDialog.h"
 #include "TIGLViewerDrawVectorDialog.h"
 #include "TIGLViewerFuseDialog.h"
@@ -78,11 +79,10 @@
 #define strdup(str) _strdup((str))
 #endif
 
-TIGLViewerDocument::TIGLViewerDocument( QWidget *parentWidget, const Handle_AIS_InteractiveContext& ic )
+TIGLViewerDocument::TIGLViewerDocument(TIGLViewerWindow *parentWidget)
+    : QObject(parentWidget)
 {
-    parent = parentWidget;
-    myAISContext = ic;
-    myOCC = ((TIGLViewerWindow*) parent)->getMyOCC();
+    app = parentWidget;
     m_cpacsHandle = -1;
 }
 
@@ -93,13 +93,13 @@ TIGLViewerDocument::~TIGLViewerDocument( )
 
 void TIGLViewerDocument::writeToStatusBar(QString text)
 {
-    ((TIGLViewerWindow*) parent)->statusBar()->showMessage(text);
+    app->statusBar()->showMessage(text);
     qApp->processEvents();
 }
 
 void TIGLViewerDocument::displayError(QString text, QString header)
 {
-    ((TIGLViewerWindow*) parent)->displayErrorMessage(text, header);
+    app->displayErrorMessage(text, header);
 }
 
 
@@ -112,7 +112,7 @@ TiglReturnCode TIGLViewerDocument::openCpacsConfiguration(const QString fileName
 {
     QStringList configurations;
 
-    myAISContext->SetDisplayMode(AIS_Shaded,Standard_False);
+    app->getScene().getContext()->SetDisplayMode(AIS_Shaded,Standard_False);
 
     TixiDocumentHandle tixiHandle = -1;
 
@@ -151,7 +151,7 @@ TiglReturnCode TIGLViewerDocument::openCpacsConfiguration(const QString fileName
     }
     else {
         bool ok;
-        QString item = QInputDialog::getItem(parent, tr("Select CPACS Configuration"),
+        QString item = QInputDialog::getItem(app, tr("Select CPACS Configuration"),
                                              tr("Available Configurations:"), configurations, 0, false, &ok);
         if (ok && !item.isEmpty()) {
             tiglRet = tiglOpenCPACSConfiguration(tixiHandle, strdup((const char*)item.toLatin1()), &m_cpacsHandle);
@@ -185,9 +185,9 @@ void TIGLViewerDocument::closeCpacsConfiguration()
         tixiCloseDocument(tixiHandle);
     }
 
-    myAISContext->EraseAll(Standard_False);
+    app->getScene().deleteAllObjects();
     emit documentUpdated(m_cpacsHandle);
-    myAISContext->UpdateCurrentViewer();
+    app->getScene().getContext()->UpdateCurrentViewer();
 }
 
 
@@ -200,7 +200,7 @@ void TIGLViewerDocument::updateConfiguration()
     if (!loadedConfigurationFileName.isEmpty()) {
         tiglCloseCPACSConfiguration(m_cpacsHandle);
         m_cpacsHandle = -1;
-        myAISContext->EraseAll(Standard_False);
+        app->getScene().deleteAllObjects();
         openCpacsConfiguration(loadedConfigurationFileName);
         emit documentUpdated(m_cpacsHandle);
     }
@@ -248,7 +248,7 @@ bool meshShape(const TopoDS_Shape& loft, double rel_deflection)
 // a small helper when we just want to display a shape
 Handle(AIS_Shape) TIGLViewerDocument::displayShape(const TopoDS_Shape& loft, Quantity_Color color)
 {
-    return myOCC->displayShape(loft, color);
+    return app->getScene().displayShape(loft, color);
 }
 
 
@@ -261,7 +261,7 @@ void TIGLViewerDocument::DisplayPoint(gp_Pnt& aPoint,
                                       Standard_Real aZoffset,
                                       Standard_Real TextScale)
 {
-    return myOCC->DisplayPoint(aPoint, aText, UpdateViewer,
+    return app->getScene().displayPoint(aPoint, aText, UpdateViewer,
                                anXoffset, anYoffset, aZoffset,
                                TextScale);
 }
@@ -285,7 +285,7 @@ QString TIGLViewerDocument::dlgGetWingSelection()
         wings << name.c_str();
     }
 
-    QString choice = QInputDialog::getItem(parent, tr("Select Wing"), tr("Available Wings:"), wings, 0, false, &ok);
+    QString choice = QInputDialog::getItem(app, tr("Select Wing"), tr("Available Wings:"), wings, 0, false, &ok);
     if (ok) {
         return choice;
     }
@@ -315,7 +315,7 @@ QString TIGLViewerDocument::dlgGetWingComponentSegmentSelection()
         }
     }
 
-    QString choice = QInputDialog::getItem(parent, tr("Select Component Segment"), tr("Available Component Segments:"), compSegs, 0, false, &ok);
+    QString choice = QInputDialog::getItem(app, tr("Select Component Segment"), tr("Available Component Segments:"), compSegs, 0, false, &ok);
     if (ok) {
         return choice;
     }
@@ -346,7 +346,7 @@ QString TIGLViewerDocument::dlgGetWingSegmentSelection()
         }
     }
 
-    QString choice = QInputDialog::getItem(parent, tr("Select Segment"), tr("Available Segments:"), segs, 0, false, &ok);
+    QString choice = QInputDialog::getItem(app, tr("Select Segment"), tr("Available Segments:"), segs, 0, false, &ok);
     if (ok) {
         return choice;
     }
@@ -371,7 +371,7 @@ QString TIGLViewerDocument::dlgGetWingProfileSelection()
         wingProfiles << profileUID.c_str();
     }
 
-    QString choice = QInputDialog::getItem(parent, tr("Select Wing Profile"), tr("Available Wing Profiles:"), wingProfiles, 0, false, &ok);
+    QString choice = QInputDialog::getItem(app, tr("Select Wing Profile"), tr("Available Wing Profiles:"), wingProfiles, 0, false, &ok);
     if (ok) {
         return choice;
     }
@@ -398,7 +398,7 @@ QString TIGLViewerDocument::dlgGetFuselageSelection()
         }
         fuselages << name.c_str();
     }
-    QString choice = QInputDialog::getItem(parent, tr("Select Fuselage"), tr("Available Fuselages:"), fuselages, 0, false, &ok);
+    QString choice = QInputDialog::getItem(app, tr("Select Fuselage"), tr("Available Fuselages:"), fuselages, 0, false, &ok);
     if (ok) {
         return choice;
     }
@@ -428,7 +428,7 @@ QString TIGLViewerDocument::dlgGetFuselageSegmentSelection()
         }
     }
 
-    QString choice = QInputDialog::getItem(parent, tr("Select Segment"), tr("Available Segments:"), segs, 0, false, &ok);
+    QString choice = QInputDialog::getItem(app, tr("Select Segment"), tr("Available Segments:"), segs, 0, false, &ok);
     if (ok) {
         return choice;
     }
@@ -453,7 +453,7 @@ QString TIGLViewerDocument::dlgGetFuselageProfileSelection()
         fuselageProfiles << profileUID.c_str();
     }
 
-    QString choice = QInputDialog::getItem(parent, tr("Select Fuselage Profile"), tr("Available Fuselage Profiles:"), fuselageProfiles, 0, false, &ok);
+    QString choice = QInputDialog::getItem(app, tr("Select Fuselage Profile"), tr("Available Fuselage Profiles:"), fuselageProfiles, 0, false, &ok);
     if (ok) {
         return choice;
     }
@@ -512,7 +512,7 @@ void TIGLViewerDocument::drawWingProfiles()
         return;
     }
 
-    myAISContext->EraseAll(Standard_False);
+    app->getScene().deleteAllObjects();
 
     tigl::CCPACSWingProfile& profile = GetConfiguration().GetWingProfile(wingProfile.toStdString());
     TopoDS_Wire wire        = profile.GetWire();
@@ -589,8 +589,8 @@ void TIGLViewerDocument::drawWingProfiles()
         }
     }
 
-    myOCC->viewLeft();
-    myOCC->fitAll();
+    app->getViewer()->viewLeft();
+    app->getViewer()->fitAll();
 }
 
 void TIGLViewerDocument::drawWingOverlayProfilePoints()
@@ -678,7 +678,7 @@ void TIGLViewerDocument::drawWingGuideCurves()
                 TopoDS_Wire wire =TopoDS::Wire(guideCurveContainer(i));
                 Handle(AIS_Shape) shape = new AIS_Shape(wire);
                 shape->SetMaterial(Graphic3d_NOM_METALIZED);
-                myAISContext->Display(shape, Standard_True);
+                app->getScene().getContext()->Display(shape, Standard_True);
             }
         }
     }
@@ -691,13 +691,11 @@ void TIGLViewerDocument::drawFuselageProfiles()
         return;
     }
 
-    myAISContext->EraseAll(Standard_False);
+    app->getScene().deleteAllObjects();
 
     tigl::CCPACSFuselageProfile& profile = GetConfiguration().GetFuselageProfile(fuselageProfile.toStdString());
     TopoDS_Wire wire        = profile.GetWire();
-    Handle(AIS_Shape) shape = new AIS_Shape(wire);
-    shape->SetColor(Quantity_NOC_WHITE);
-    myAISContext->Display(shape, Standard_True);
+    app->getScene().displayShape(wire, Quantity_NOC_WHITE);
 
     if (profile.GetCoordinateContainer().size() < 15) {
         for (unsigned int i = 0; i < profile.GetCoordinateContainer().size(); ++i) {
@@ -742,9 +740,7 @@ void TIGLViewerDocument::drawFuselageGuideCurves()
             TopTools_SequenceOfShape& guideCurveContainer = fuselageSeg.BuildGuideCurves();
             for (int i=1; i<=guideCurveContainer.Length(); i++) {
                 TopoDS_Wire wire =TopoDS::Wire(guideCurveContainer(i));
-                Handle(AIS_Shape) shape = new AIS_Shape(wire);
-                shape->SetMaterial(Graphic3d_NOM_METALIZED);
-                myAISContext->Display(shape, Standard_True);
+                app->getScene().displayShape(wire);
             }
         }
     }
@@ -759,7 +755,7 @@ void TIGLViewerDocument::drawWing()
 
     tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
 
-    myAISContext->EraseAll(Standard_False);
+    app->getScene().deleteAllObjects();
 
     for (int i = 1; i <= wing.GetSegmentCount(); i++) {
         // Draw segment loft
@@ -780,7 +776,7 @@ void TIGLViewerDocument::drawFuselage()
     QApplication::setOverrideCursor( Qt::WaitCursor );
     tigl::CCPACSFuselage& fuselage = GetConfiguration().GetFuselage(fuselageUid.toStdString());
 
-    myAISContext->EraseAll(Standard_False);
+    app->getScene().deleteAllObjects();
 
     for (int i = 1; i <= fuselage.GetSegmentCount(); i++) {
         // Draw segment loft
@@ -803,7 +799,7 @@ void TIGLViewerDocument::drawWingTriangulation()
     tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
 
     //clear screen
-    myAISContext->EraseAll(Standard_False);
+    app->getScene().deleteAllObjects();
 
     //we do not fuse segments anymore but build it from scratch with the profiles
     const TopoDS_Shape& fusedWing = wing.GetLoft()->Shape();
@@ -827,13 +823,13 @@ void TIGLViewerDocument::drawFuselageTriangulation()
     tigl::CCPACSFuselage& fuselage = GetConfiguration().GetFuselage(fuselageUid.toStdString());
 
     //clear screen
-    myAISContext->EraseAll(Standard_False);
+    app->getScene().deleteAllObjects();
     const TopoDS_Shape& fusedWing = fuselage.GetLoft()->Shape();
 
     TopoDS_Compound triangulation;
     createShapeTriangulation(fusedWing, triangulation);
 
-    displayShape(triangulation);
+    app->getScene().displayShape(triangulation);
     QApplication::restoreOverrideCursor();
 }
 
@@ -859,16 +855,14 @@ void TIGLViewerDocument::drawWingSamplePoints()
         return;
     }
 
-    myAISContext->EraseAll(Standard_False);
+    app->getScene().deleteAllObjects();
 
     for (int segmentIndex = 1; segmentIndex <= wing.GetSegmentCount(); segmentIndex++) {
         // Draw segment loft
         tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(segmentIndex);
         const TopoDS_Shape& loft = segment.GetLoft()->Shape();
 
-        Handle(AIS_Shape) shape = new AIS_Shape(loft);
-        shape->SetColor(Quantity_NOC_BLUE2);
-        myAISContext->Display(shape, Standard_True);
+        app->getScene().displayShape(loft);
 
         // Draw some points on the wing segment
         for (double eta = 0.0; eta <= 1.0; eta += 0.1) {
@@ -884,7 +878,7 @@ void TIGLViewerDocument::drawWingSamplePoints()
                                       &z);
 
                 Handle(ISession_Point) aGraphicPoint = new ISession_Point(x, y, z);
-                myAISContext->Display(aGraphicPoint, Standard_False);
+                app->getScene().getContext()->Display(aGraphicPoint, Standard_False);
 
                 tiglWingGetLowerPoint(m_cpacsHandle,
                                       wingIndex,
@@ -895,8 +889,7 @@ void TIGLViewerDocument::drawWingSamplePoints()
                                       &y,
                                       &z);
 
-                aGraphicPoint = new ISession_Point(x, y, z);
-                myAISContext->Display(aGraphicPoint, Standard_False);
+                app->getScene().displayPoint(gp_Pnt(x,y,z),"",Standard_False, 0., 0., 0., 1.);
             }
         }
     }
@@ -912,16 +905,14 @@ void TIGLViewerDocument::drawFuselageSamplePoints()
 
     tigl::CCPACSFuselage& fuselage = GetConfiguration().GetFuselage(fuselageUid.toStdString());
 
-    myAISContext->EraseAll(Standard_False);
+    app->getScene().deleteAllObjects();
 
     for (int segmentIndex = 1; segmentIndex <= fuselage.GetSegmentCount(); segmentIndex++) {
         // Draw segment loft
         tigl::CCPACSFuselageSegment& segment = (tigl::CCPACSFuselageSegment &) fuselage.GetSegment(segmentIndex);
         const TopoDS_Shape& loft = segment.GetLoft()->Shape();
 
-        Handle(AIS_Shape) shape = new AIS_Shape(loft);
-        shape->SetColor(Quantity_NOC_BLUE2);
-        myAISContext->Display(shape, Standard_True);
+        app->getScene().displayShape(loft);
 
         // Draw some points on the fuselage segment
         for (double eta = 0.0; eta <= 1.0; eta += 0.25) {
@@ -936,8 +927,7 @@ void TIGLViewerDocument::drawFuselageSamplePoints()
                                      &y,
                                      &z);
 
-                Handle(ISession_Point) aGraphicPoint = new ISession_Point(x, y, z);
-                myAISContext->Display(aGraphicPoint, Standard_False);
+                app->getScene().displayPoint(gp_Pnt(x,y,z),"",Standard_False, 0., 0., 0., 1.);
             }
         }
     }
@@ -957,7 +947,7 @@ void TIGLViewerDocument::drawFuselageSamplePointsAngle()
     int fuselageIndex = 1;
     double x, y, z;
 
-    myAISContext->EraseAll(Standard_False);
+    app->getScene().deleteAllObjects();
     tigl::CCPACSFuselage& fuselage = GetConfiguration().GetFuselage(fuselageIndex);
 
     // Draw the fuselage
@@ -973,8 +963,7 @@ void TIGLViewerDocument::drawFuselageSamplePointsAngle()
                         0.5, angle,
                         &x, &y, &z);
 
-        Handle(ISession_Point) aGraphicPoint = new ISession_Point(x, y, z);
-        myAISContext->Display(aGraphicPoint, Standard_False);
+        app->getScene().displayPoint(gp_Pnt(x,y,z),"",Standard_False, 0., 0., 0., 1.);
     }
 
 }
@@ -982,7 +971,7 @@ void TIGLViewerDocument::drawFuselageSamplePointsAngle()
 
 void TIGLViewerDocument::drawAllFuselagesAndWingsSurfacePoints()
 {
-    myAISContext->EraseAll(Standard_False);
+    app->getScene().deleteAllObjects();
 
     // Draw all wings
     for (int wingIndex = 1; wingIndex <= GetConfiguration().GetWingCount(); wingIndex++) {
@@ -992,9 +981,7 @@ void TIGLViewerDocument::drawAllFuselagesAndWingsSurfacePoints()
             tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(segmentIndex);
             const TopoDS_Shape& loft = segment.GetLoft()->Shape();
 
-            Handle(AIS_Shape) shape = new AIS_Shape(loft);
-            shape->SetColor(Quantity_NOC_BLUE2);
-            myAISContext->Display(shape, Standard_True);
+            app->getScene().displayShape(loft);
 
             for (double eta = 0.0; eta <= 1.0; eta += 0.1) {
                 for (double xsi = 0.0; xsi <= 1.0; xsi += 0.1) {
@@ -1008,12 +995,7 @@ void TIGLViewerDocument::drawAllFuselagesAndWingsSurfacePoints()
                                             &y,
                                             &z);
                     
-                    Handle(ISession_Point) aGraphicPoint = new ISession_Point(x, y, z);
-                    myAISContext->Display(aGraphicPoint,Standard_False);
-                    //text << "PT(" << xsi << ", " << eta << ")";
-                    //text << "(" << x << ", " << y << ", " << z << ")";
-                    //DisplayPoint(gp_Pnt(x, y, z), const_cast<char*>(text.str().c_str()), Standard_False, 0.0, 0.0, 0.0, 2.0);
-                    //text.str("");
+                    app->getScene().displayPoint(gp_Pnt(x,y,z), "",Standard_False, 0,0,0,1.);
 
                     tiglWingGetLowerPoint( m_cpacsHandle,
                                            wingIndex,
@@ -1024,8 +1006,7 @@ void TIGLViewerDocument::drawAllFuselagesAndWingsSurfacePoints()
                                            &y,
                                            &z);
 
-                    aGraphicPoint = new ISession_Point(x, y, z);
-                    myAISContext->Display(aGraphicPoint,Standard_False);
+                    app->getScene().displayPoint(gp_Pnt(x,y,z), "",Standard_False, 0,0,0,1.);
                 }
             }
         }
@@ -1039,9 +1020,7 @@ void TIGLViewerDocument::drawAllFuselagesAndWingsSurfacePoints()
             // Draw segment loft
             tigl::CCPACSFuselageSegment& segment = (tigl::CCPACSFuselageSegment &) fuselage.GetSegment(segmentIndex);
             const TopoDS_Shape& loft = segment.GetLoft()->Shape();
-            Handle(AIS_Shape) shape = new AIS_Shape(loft);
-            shape->SetColor(Quantity_NOC_BLUE2);
-            myAISContext->Display(shape, Standard_True);
+            app->getScene().displayShape(loft);
 
             // Draw some points on the fuselage segment
             for (double eta = 0.0; eta <= 1.0; eta += 0.25) {
@@ -1056,8 +1035,7 @@ void TIGLViewerDocument::drawAllFuselagesAndWingsSurfacePoints()
                                           &y,
                                           &z);
 
-                    Handle(ISession_Point) aGraphicPoint = new ISession_Point(x, y, z);
-                    myAISContext->Display(aGraphicPoint,Standard_False);
+                    app->getScene().displayPoint(gp_Pnt(x,y,z), "",Standard_False, 0,0,0,1.);
                 }
             }
         }
@@ -1078,7 +1056,7 @@ void TIGLViewerDocument::exportAsIges()
 
     writeToStatusBar(tr("Saving as IGES file with TIGL..."));
 
-    fileName = QFileDialog::getSaveFileName(parent, tr("Save as..."), myLastFolder, tr("Export IGES(*.igs)"));
+    fileName = QFileDialog::getSaveFileName(app, tr("Save as..."), myLastFolder, tr("Export IGES(*.igs)"));
 
     if (!fileName.isEmpty()) {
         QApplication::setOverrideCursor( Qt::WaitCursor );
@@ -1101,7 +1079,7 @@ void TIGLViewerDocument::exportFusedAsIges()
 
     writeToStatusBar(tr("Saving fused model as IGES file with TIGL..."));
 
-    fileName = QFileDialog::getSaveFileName(parent, tr("Save as..."), myLastFolder, tr("Export IGES(*.igs)"));
+    fileName = QFileDialog::getSaveFileName(app, tr("Save as..."), myLastFolder, tr("Export IGES(*.igs)"));
 
     if (!fileName.isEmpty()) {
         QApplication::setOverrideCursor( Qt::WaitCursor );
@@ -1123,7 +1101,7 @@ void TIGLViewerDocument::exportAsStep()
 
     writeToStatusBar(tr("Saving as STEP file with TIGL..."));
 
-    fileName = QFileDialog::getSaveFileName(parent, tr("Save as..."), myLastFolder, tr("Export STEP(*.stp *.step)"));
+    fileName = QFileDialog::getSaveFileName(app, tr("Save as..."), myLastFolder, tr("Export STEP(*.stp *.step)"));
 
     if (!fileName.isEmpty()) {
         QApplication::setOverrideCursor( Qt::WaitCursor );
@@ -1141,7 +1119,7 @@ void TIGLViewerDocument::exportAsStepFused()
 
     writeToStatusBar(tr("Saving as STEP file with TIGL. This can take a while. Please wait..."));
 
-    fileName = QFileDialog::getSaveFileName(parent, tr("Save as..."), myLastFolder, tr("Export STEP(*.stp *.step)"));
+    fileName = QFileDialog::getSaveFileName(app, tr("Save as..."), myLastFolder, tr("Export STEP(*.stp *.step)"));
 
     if (!fileName.isEmpty()) {
         QApplication::setOverrideCursor( Qt::WaitCursor );
@@ -1165,7 +1143,7 @@ void TIGLViewerDocument::exportMeshedWingSTL()
 
     writeToStatusBar(tr("Saving meshed Wing as STL file with TIGL..."));
 
-    fileName = QFileDialog::getSaveFileName(parent, tr("Save as..."), myLastFolder, tr("Export STL(*.stl)"));
+    fileName = QFileDialog::getSaveFileName(app, tr("Save as..."), myLastFolder, tr("Export STL(*.stl)"));
 
     if (!fileName.isEmpty()) {
         QApplication::setOverrideCursor( Qt::WaitCursor );
@@ -1192,7 +1170,7 @@ void TIGLViewerDocument::exportMeshedFuselageSTL()
 
     writeToStatusBar(tr("Saving meshed Fuselage as STL file with TIGL..."));
 
-    fileName = QFileDialog::getSaveFileName(parent, tr("Save as..."), myLastFolder, tr("Export STL(*.stl)"));
+    fileName = QFileDialog::getSaveFileName(app, tr("Save as..."), myLastFolder, tr("Export STL(*.stl)"));
 
     if (!fileName.isEmpty()) {
         QApplication::setOverrideCursor( Qt::WaitCursor );
@@ -1216,7 +1194,7 @@ void TIGLViewerDocument::exportMeshedWingVTK()
 
     writeToStatusBar(tr("Saving meshed Wing as VTK file with TIGL..."));
 
-    fileName = QFileDialog::getSaveFileName(parent, tr("Save as..."), myLastFolder, tr("Export VTK(*.vtp)"));
+    fileName = QFileDialog::getSaveFileName(app, tr("Save as..."), myLastFolder, tr("Export VTK(*.vtp)"));
 
     if (!fileName.isEmpty()) {
         QApplication::setOverrideCursor( Qt::WaitCursor );
@@ -1246,7 +1224,7 @@ void TIGLViewerDocument::exportMeshedWingVTKsimple()
 
     writeToStatusBar(tr("Saving meshed Wing as simple VTK file with TIGL..."));
 
-    fileName = QFileDialog::getSaveFileName(parent, tr("Save as..."), myLastFolder, tr("Export VTK(*.vtp)"));
+    fileName = QFileDialog::getSaveFileName(app, tr("Save as..."), myLastFolder, tr("Export VTK(*.vtp)"));
 
     if (!fileName.isEmpty()) {
         QApplication::setOverrideCursor( Qt::WaitCursor );
@@ -1273,7 +1251,7 @@ void TIGLViewerDocument::exportWingCollada()
 
     writeToStatusBar(tr("Saving meshed Wing as Collada file with TIGL..."));
 
-    fileName = QFileDialog::getSaveFileName(parent, tr("Save as..."), myLastFolder, tr("Export Collada(*.dae)"));
+    fileName = QFileDialog::getSaveFileName(app, tr("Save as..."), myLastFolder, tr("Export Collada(*.dae)"));
 
     if (!fileName.isEmpty()) {
         QApplication::setOverrideCursor( Qt::WaitCursor );
@@ -1303,7 +1281,7 @@ void TIGLViewerDocument::exportMeshedFuselageVTK()
 
     writeToStatusBar(tr("Saving meshed Fuselage as VTK file with TIGL..."));
 
-    fileName = QFileDialog::getSaveFileName(parent, tr("Save as..."), myLastFolder, tr("Export VTK(*.vtp)"));
+    fileName = QFileDialog::getSaveFileName(app, tr("Save as..."), myLastFolder, tr("Export VTK(*.vtp)"));
 
     if (!fileName.isEmpty()) {
         QApplication::setOverrideCursor( Qt::WaitCursor );
@@ -1323,7 +1301,7 @@ void TIGLViewerDocument::exportMeshedFuselageVTKsimple()
 
     writeToStatusBar(tr("Saving meshed Fuselage as simple VTK file with TIGL..."));
 
-    fileName = QFileDialog::getSaveFileName(parent, tr("Save as..."), myLastFolder, tr("Export VTK(*.vtp)"));
+    fileName = QFileDialog::getSaveFileName(app, tr("Save as..."), myLastFolder, tr("Export VTK(*.vtp)"));
 
     if (!fileName.isEmpty()) {
         QApplication::setOverrideCursor( Qt::WaitCursor );
@@ -1338,7 +1316,7 @@ void TIGLViewerDocument::exportMeshedFuselageVTKsimple()
 void TIGLViewerDocument::exportMeshedConfigVTK()
 {
     QString     fileName;
-    fileName = QFileDialog::getSaveFileName(parent, tr("Save as..."), myLastFolder, tr("Export VTK(*.vtp)"));
+    fileName = QFileDialog::getSaveFileName(app, tr("Save as..."), myLastFolder, tr("Export VTK(*.vtp)"));
 
     if (!fileName.isEmpty()) {
         QApplication::setOverrideCursor( Qt::WaitCursor );
@@ -1365,7 +1343,7 @@ void TIGLViewerDocument::exportMeshedConfigVTK()
 void TIGLViewerDocument::exportMeshedConfigVTKNoFuse()
 {
     QString     fileName;
-    fileName = QFileDialog::getSaveFileName(parent, tr("Save as..."), myLastFolder, tr("Export VTK(*.vtp)"));
+    fileName = QFileDialog::getSaveFileName(app, tr("Save as..."), myLastFolder, tr("Export VTK(*.vtp)"));
 
     if (!fileName.isEmpty()) {
         QApplication::setOverrideCursor( Qt::WaitCursor );
@@ -1389,7 +1367,7 @@ void TIGLViewerDocument::exportFuselageCollada()
 
     writeToStatusBar(tr("Saving meshed Fuselage as Collada file with TIGL..."));
 
-    fileName = QFileDialog::getSaveFileName(parent, tr("Save as..."), myLastFolder, tr("Export Collada(*.dae)"));
+    fileName = QFileDialog::getSaveFileName(app, tr("Save as..."), myLastFolder, tr("Export Collada(*.dae)"));
 
     if (!fileName.isEmpty()) {
         QApplication::setOverrideCursor( Qt::WaitCursor );
@@ -1413,7 +1391,7 @@ void TIGLViewerDocument::exportWingBRep()
 
     writeToStatusBar(tr("Saving Wing as BRep file..."));
 
-    QString fileName = QFileDialog::getSaveFileName(parent, tr("Save as..."), myLastFolder, tr("Export BRep(*.brep)"));
+    QString fileName = QFileDialog::getSaveFileName(app, tr("Save as..."), myLastFolder, tr("Export BRep(*.brep)"));
 
     if (!fileName.isEmpty()) {
         QApplication::setOverrideCursor( Qt::WaitCursor );
@@ -1434,7 +1412,7 @@ void TIGLViewerDocument::exportFuselageBRep()
 
     writeToStatusBar(tr("Saving Fuselage as BRep file..."));
 
-    QString fileName = QFileDialog::getSaveFileName(parent, tr("Save as..."), myLastFolder, tr("Export BRep(*.brep)"));
+    QString fileName = QFileDialog::getSaveFileName(app, tr("Save as..."), myLastFolder, tr("Export BRep(*.brep)"));
 
     if (!fileName.isEmpty()) {
         QApplication::setOverrideCursor( Qt::WaitCursor );
@@ -1448,7 +1426,7 @@ void TIGLViewerDocument::exportFuselageBRep()
 
 void TIGLViewerDocument::exportFusedConfigBRep()
 {
-    QString fileName = QFileDialog::getSaveFileName(parent, tr("Save as..."), myLastFolder, tr("Export BRep(*.brep)"));
+    QString fileName = QFileDialog::getSaveFileName(app, tr("Save as..."), myLastFolder, tr("Export BRep(*.brep)"));
     if (fileName.isEmpty()) {
         return;
     }
@@ -1485,7 +1463,7 @@ void TIGLViewerDocument::exportWingCurvesBRep()
 
     writeToStatusBar(tr("Saving Wing Curves as BRep file..."));
 
-    QString dirname = QFileDialog::getExistingDirectory(parent, tr("Chose directory..."), myLastFolder,  
+    QString dirname = QFileDialog::getExistingDirectory(app, tr("Chose directory..."), myLastFolder,  
                                                         QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
 
     if (dirname == "") {
@@ -1543,7 +1521,7 @@ void TIGLViewerDocument::exportFuselageCurvesBRep()
 
     writeToStatusBar(tr("Saving Fuselage curves as BRep file..."));
 
-    QString dirname = QFileDialog::getExistingDirectory(parent, tr("Chose directory..."), myLastFolder,  
+    QString dirname = QFileDialog::getExistingDirectory(app, tr("Chose directory..."), myLastFolder,  
                                                         QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
 
     if (dirname == "") {
@@ -1600,7 +1578,7 @@ void TIGLViewerDocument::drawFusedFuselage()
         return;
     }
 
-    myAISContext->EraseAll(Standard_False);
+    app->getScene().deleteAllObjects();
     QApplication::setOverrideCursor( Qt::WaitCursor );
     tigl::CCPACSFuselage& fuselage = GetConfiguration().GetFuselage(fuselageUid.toStdString());
     displayShape(fuselage.GetLoft()->Shape());
@@ -1615,7 +1593,7 @@ void TIGLViewerDocument::drawFusedWing()
         return;
     }
 
-    myAISContext->EraseAll(Standard_False);
+    app->getScene().deleteAllObjects();
     QApplication::setOverrideCursor( Qt::WaitCursor );
     tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
     const TopoDS_Shape& loft = wing.GetLoft()->Shape();
@@ -1626,7 +1604,7 @@ void TIGLViewerDocument::drawFusedWing()
 
 void TIGLViewerDocument::drawFusedAircraft()
 {
-    FuseDialog dialog(parent);
+    FuseDialog dialog(app);
     if (dialog.exec() != QDialog::Accepted) {
         return;
     }
@@ -1657,7 +1635,7 @@ void TIGLViewerDocument::drawFusedAircraft()
             return;
         }
 
-        myAISContext->EraseAll(Standard_False);
+        app->getScene().deleteAllObjects();
 
 
         ListPNamedShape map = GroupFaces(airplane, tigl::NAMED_COMPOUNDS);
@@ -1694,7 +1672,7 @@ void TIGLViewerDocument::drawFusedAircraft()
             Handle(AIS_Shape) shape = new AIS_Shape(ff->Shape());
             shape->SetMaterial(Graphic3d_NOM_PEWTER);
             shape->SetTransparency(0.6);
-            myAISContext->Display(shape, Standard_True);
+            app->getScene().getContext()->Display(shape, Standard_True);
         }
     }
     catch(tigl::CTiglError & error){
@@ -1710,7 +1688,7 @@ void TIGLViewerDocument::drawFusedAircraftTriangulation()
 {
     QApplication::setOverrideCursor( Qt::WaitCursor );
     TopoDS_Shape airplane = GetConfiguration().AircraftFusingAlgo()->FusedPlane()->Shape();
-    myAISContext->EraseAll(Standard_False);
+    app->getScene().deleteAllObjects();
     TopoDS_Compound triangulation;
     createShapeTriangulation(airplane, triangulation);
 
@@ -1724,7 +1702,7 @@ void TIGLViewerDocument::drawIntersectionLine()
     tigl::CCPACSConfiguration& config = GetConfiguration();
     tigl::CTiglUIDManager& uidManager = config.GetUIDManager();
 
-    TIGLViewerShapeIntersectionDialog dialog(uidManager, parent);
+    TIGLViewerShapeIntersectionDialog dialog(uidManager, app);
     if (dialog.exec() != QDialog::Accepted) {
         return;
     }
@@ -1779,12 +1757,10 @@ void TIGLViewerDocument::drawIntersectionLine()
         /* now calculate intersection and display single points */
         for (double eta = 0.0; eta <= 1.0; eta += 0.025) {
             gp_Pnt point = Intersector->GetPoint(eta, wireID);
-            
-            ISession_Point* aGraphicPoint = new ISession_Point(point);
-            myAISContext->Display(aGraphicPoint,Standard_False);
+            app->getScene().displayPoint(point, "", Standard_False, 0,0,0,1);
         }
     }
-    myAISContext->UpdateCurrentViewer();
+    app->getScene().getContext()->UpdateCurrentViewer();
     QApplication::restoreOverrideCursor();
     writeToStatusBar("");
 
@@ -1800,7 +1776,7 @@ void TIGLViewerDocument::drawWingComponentSegment()
     }
 
     const TopoDS_Shape* pComponentSegment = NULL;
-    myAISContext->EraseAll(Standard_False);
+    app->getScene().deleteAllObjects();
     QApplication::setOverrideCursor( Qt::WaitCursor );
     for (int i = 1; i <= GetConfiguration().GetWingCount();++i) {
         tigl::CCPACSWing& wing = GetConfiguration().GetWing(i);
@@ -1831,7 +1807,7 @@ void TIGLViewerDocument::drawWingComponentSegmentPoints()
     
     double eta = 0.5, xsi = 0.5;
 
-    while (EtaXsiDialog::getEtaXsi(parent, eta, xsi) == QDialog::Accepted) {
+    while (EtaXsiDialog::getEtaXsi(app, eta, xsi) == QDialog::Accepted) {
 
         // here are two alternative methods to determine the 3d point of the CS
 #if 0
@@ -1850,8 +1826,7 @@ void TIGLViewerDocument::drawWingComponentSegmentPoints()
             tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUID);
             tigl::CCPACSWingSegment& segment = dynamic_cast<tigl::CCPACSWingSegment&>(wing.GetSegment(segmentUID));
             gp_Pnt point = segment.GetChordPoint(alpha, beta);
-            ISession_Point* aGraphicPoint = new ISession_Point(point);
-            myAISContext->Display(aGraphicPoint,Standard_True);
+            app->getContext().DisplayPoint(point, "", Standard_True, 0,0,0,1.0);
         }
         else {
             displayError(QString("Error in <b>tiglWingComponentSegmentPointGetSegmentEtaXsi</b>. ReturnCode: %1").arg(ret), "Error");
@@ -1865,8 +1840,7 @@ void TIGLViewerDocument::drawWingComponentSegmentPoints()
                     &x, &y, &z);
         if (ret == TIGL_SUCCESS){
             gp_Pnt point(x,y,z);
-            ISession_Point* aGraphicPoint = new ISession_Point(point);
-            myAISContext->Display(aGraphicPoint,Standard_True);
+            app->getScene().displayPoint(point, "", Standard_True, 0,0,0,1.0);
         }
         else {
             displayError(QString("Error in <b>tiglWingComponentSegmentPointGetPoint</b>. ReturnCode: %1").arg(ret), "Error");
@@ -1882,7 +1856,7 @@ void TIGLViewerDocument::drawWingShells()
         return;
     }
 
-    myAISContext->EraseAll(Standard_False);
+    app->getScene().deleteAllObjects();
     QApplication::setOverrideCursor( Qt::WaitCursor );
 
     tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
@@ -1899,8 +1873,8 @@ void TIGLViewerDocument::drawFarField()
         Handle(AIS_Shape) shape = new AIS_Shape(farField.GetLoft()->Shape());
         shape->SetMaterial(Graphic3d_NOM_PEWTER);
         shape->SetTransparency(0.6);
-        myAISContext->Display(shape, Standard_True);
-        myOCC->fitAll();
+        app->getScene().getContext()->Display(shape, Standard_True);
+        app->getViewer()->fitAll();
     }
 }
 
@@ -1954,7 +1928,7 @@ void TIGLViewerDocument::createShapeTriangulation(const TopoDS_Shape& shape, Top
 
 void TIGLViewerDocument::drawPoint()
 {
-    TIGLViewerDrawVectorDialog dialog("Draw Point", parent);
+    TIGLViewerDrawVectorDialog dialog("Draw Point", app);
     dialog.setDirectionEnabled(false);
     
     if (dialog.exec() != QDialog::Accepted) {
@@ -1969,7 +1943,7 @@ void TIGLViewerDocument::drawPoint()
 
 void TIGLViewerDocument::drawVector()
 {
-    TIGLViewerDrawVectorDialog dialog("Draw Vector", parent);
+    TIGLViewerDrawVectorDialog dialog("Draw Vector", app);
     
     if (dialog.exec() != QDialog::Accepted) {
         return;
@@ -1979,7 +1953,7 @@ void TIGLViewerDocument::drawVector()
     gp_Vec dir   = dialog.getDirection().Get_gp_Pnt().XYZ();
     std::stringstream stream;
     stream << "(" << point.X() << ", " << point.Y() << ", " << point.Z() << ")";
-    myOCC->DisplayVector(point, dir, stream.str().c_str(), Standard_True, 0,0,0, 1.);
+    app->getScene().displayVector(point, dir, stream.str().c_str(), Standard_True, 0,0,0, 1.);
 }
 
 TiglCPACSConfigurationHandle TIGLViewerDocument::getCpacsHandle(void) const 

@@ -32,7 +32,6 @@
 #endif
 
 #include "TIGLViewer.h"
-#include "TIGLViewerColors.h"
 
 
 /** the key for multi selection */
@@ -95,11 +94,9 @@ public:
 
     ~TIGLViewerWidget();
 
+    // the scene context must be set before first use
     void setContext(const Handle_AIS_InteractiveContext& aContext){ myContext = aContext; }
 
-    void initializeOCC(const Handle_AIS_InteractiveContext& aContext = NULL);
-
-    Handle_AIS_InteractiveContext    getContext( void ) { return myContext; }
     Handle_V3d_View                  getView( void )    { return myView; }
 
     //Overrides
@@ -107,24 +104,6 @@ public:
     class QToolBar* myToolBar;
 
     void redraw( bool isPainting = false );
-    
-    Handle_AIS_Shape displayShape(const TopoDS_Shape& loft, Quantity_Color color = Quantity_NOC_ShapeCol);
-    void DisplayPoint(const gp_Pnt& aPoint,
-                      const char*   aText,
-                      Standard_Boolean UpdateViewer,
-                      Standard_Real anXoffset,
-                      Standard_Real anYoffset,
-                      Standard_Real aZoffset,
-                      Standard_Real TextScale);
-    
-    void DisplayVector(const gp_Pnt& aPoint,
-                       const gp_Vec& aVec,
-                       const char* aText,
-                       Standard_Boolean UpdateViewer,
-                       Standard_Real anXoffset,
-                       Standard_Real anYoffset,
-                       Standard_Real aZoffset,
-                       Standard_Real TextScale);
 
 signals:
 
@@ -186,6 +165,7 @@ protected: // methods
     virtual void leaveEvent           ( QEvent * );
 
 private: // members
+    void initializeOCC(const Handle_AIS_InteractiveContext& aContext = NULL);
 
 #if defined WNT
     Handle_WNT_Window               myWindow;

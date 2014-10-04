@@ -25,12 +25,16 @@
 
 #include <QtGui/QWidget>
 
-TIGLScriptEngine::TIGLScriptEngine()
+TIGLScriptEngine::TIGLScriptEngine(TIGLViewerWindow* app)
+    : QObject(app)
 {
     tiglScriptProxy = new TIGLScriptProxy();
     tixiScriptProxy = new TIXIScriptProxy();
     TIGLScriptProxy::registerClass(&engine); 
     TIXIScriptProxy::registerClass(&engine);
+    
+    QScriptValue appValue = engine.newQObject(app);
+    engine.globalObject().setProperty("Viewer", appValue);
     prefixString = "  $ ";
 }
 
@@ -75,7 +79,7 @@ void TIGLScriptEngine::eval(QString commandLine)
         result = "done";
     }
 
-    emit printResults( prefixString + result  );
+    emit scriptResult( prefixString + result  );
 }
 
 void TIGLScriptEngine::displayHelp()
@@ -97,7 +101,7 @@ void TIGLScriptEngine::displayHelp()
     helpString += "Type 'help' to get a list of available TIXI/TIGL fuctions.";
 
 
-    emit printResults( helpString );
+    emit scriptResult( helpString );
 }
 
 

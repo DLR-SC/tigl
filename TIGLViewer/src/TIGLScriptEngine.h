@@ -28,13 +28,14 @@
 
 #include "TIGLScriptProxy.h"
 #include "TIXIScriptProxy.h"
+#include "TIGLViewerWindow.h"
 
 class TIGLScriptEngine :public QObject
 {
     Q_OBJECT
     
 public:
-    TIGLScriptEngine();
+    TIGLScriptEngine(TIGLViewerWindow* window);
     //~TIGLScriptEngine();
     void openFile(QString fileName);
     
@@ -43,7 +44,8 @@ public slots:
     void eval(QString commandLine);
     
 signals:
-    void printResults(QString text);
+    void scriptResult(QString text);
+    void scriptError(QString text);
     
 private:
     QScriptEngine engine;
