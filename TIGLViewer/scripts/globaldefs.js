@@ -8,8 +8,21 @@ Point3d.prototype.toString = function() {
     return 'Point3d(x,y,z = ' + this.x + ',' + this.y + ',' + this.z + ')'; 
 }
 
-Point3d.prototype.scaled = function(f) {
+Point3d.prototype.mult = function(f) {
     return new Point3d(f * this.x, f * this.y, f * this.z);
+}
+
+Point3d.prototype.dot = function(p) {
+    return p.x * this.x + p.y * this.y + p.z * this.z;
+}
+
+Point3d.prototype.length = function() {
+    return Math.sqrt(this.dot(this))
+}
+
+Point3d.prototype.normalized = function()
+{
+    return this.mult(1./this.length());
 }
 
 Point3d.prototype.add = function(p) {
