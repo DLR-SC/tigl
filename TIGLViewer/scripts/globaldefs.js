@@ -8,6 +8,14 @@ Point3d.prototype.toString = function() {
     return 'Point3d(x,y,z = ' + this.x + ',' + this.y + ',' + this.z + ')'; 
 }
 
+Point3d.prototype.scaled = function(f) {
+    return new Point3d(f * this.x, f * this.y, f * this.z);
+}
+
+Point3d.prototype.add = function(p) {
+    return new Point3d(this.x + p.x, this.y + p.y, this.z + p.z);
+}
+
 function drawPoint() {
     if (arguments.length == 1) {
         p = arguments[0]

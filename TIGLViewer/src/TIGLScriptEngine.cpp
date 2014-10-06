@@ -111,7 +111,20 @@ void TIGLScriptEngine::eval(QString commandLine)
         return;
     }
 
-    val = engine.evaluate(commandLine);
+    try {
+        val = engine.evaluate(commandLine);
+    }
+    catch (tigl::CTiglError& err) {
+        emit scriptError(err.getError());
+        emit evalDone();
+        return;
+    }
+    catch(...) {
+        emit scriptError("Unknown exception!");
+        emit evalDone();
+        return;
+    }
+
     QString result = val.toString();
     if (!val.isUndefined() && !val.isError()) {
         emit scriptResult( prefixString + result  );
