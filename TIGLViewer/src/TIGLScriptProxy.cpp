@@ -122,16 +122,12 @@ double TIGLScriptProxy::fuselageGetCircumference (int fuselageIndex, int segment
     return circumference;
 }
 
-QString TIGLScriptProxy::fuselageGetPoint (int fuselageIndex, int segmentIndex, double eta, double zeta)
+QScriptValue TIGLScriptProxy::fuselageGetPoint (int fuselageIndex, int segmentIndex, double eta, double zeta)
 {
     double x,y,z;
-    QString strX, strY, strZ, pnt;
     ::tiglFuselageGetPoint (getTiglHandle(), fuselageIndex, segmentIndex, eta, zeta, &x, &y, &z);
-    strX.setNum(x);
-    strY.setNum(y);
-    strZ.setNum(z);
-    pnt = strX + ", " + strY + ", " + strZ;
-    return(pnt);
+    QScriptValue Point3dCtor = engine()->globalObject().property("Point3d");
+    return Point3dCtor.construct(QScriptValueList() << x << y << z);
 }
 
 QString TIGLScriptProxy::fuselageGetSegmentUID (int fuselageIndex, int segmentIndex)
@@ -159,4 +155,3 @@ QScriptValue TIGLScriptProxy::getFuselageCount()
         return count;
     }
 }
-

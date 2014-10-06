@@ -75,7 +75,10 @@ TIGLScriptEngine::TIGLScriptEngine(TIGLViewerWindow* app)
     QScriptValue printFun = engine.newFunction(myPrintFunction);
     printFun.setData(engine.newQObject(this));
     engine.globalObject().setProperty("print", printFun);
-
+    
+    // evaluate resource file
+    openFile(":/scripts/globaldefs.js");
+    
     prefixString = "  $ ";
 }
 
