@@ -69,6 +69,8 @@ public:
                        Standard_Real TextScale);
 
 public slots:
+    void drawPoint(double x, double y, double z);
+    void drawVector(double x, double y, double z, double dirx, double diry, double dirz);
     void deleteAllObjects();
     void gridXY     ( void );
     void gridXZ     ( void );

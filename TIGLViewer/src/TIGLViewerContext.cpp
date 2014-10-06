@@ -262,6 +262,12 @@ void TIGLViewerContext::displayPoint(const gp_Pnt& aPoint,
     myContext->Display(aGraphicText,UpdateViewer);
 }
 
+// convenience wrapper
+void TIGLViewerContext::drawPoint(double x, double y, double z)
+{
+    displayPoint(gp_Pnt(x,y,z), "", Standard_True, 0,0,0, 1.0);
+}
+
 // Displays a vector on the screen
 void TIGLViewerContext::displayVector(const gp_Pnt& aPoint,
                                      const gp_Vec& aVec,
@@ -279,6 +285,12 @@ void TIGLViewerContext::displayVector(const gp_Pnt& aPoint,
                                                  aPoint.Z() + aZoffset);
     aGraphicText->SetScale(TextScale);
     myContext->Display(aGraphicText,UpdateViewer);
+}
+
+// convenience wrapper
+void TIGLViewerContext::drawVector(double x, double y, double z, double dirx, double diry, double dirz)
+{
+    displayVector(gp_Pnt(x,y,z), gp_Vec(dirx, diry, dirz), "", Standard_True, 0,0,0, 1.0);
 }
 
 

@@ -14,5 +14,6 @@
     <file>../gfx/select.png</file>
     <file>../gfx/settings-display.png</file>
     <file>../gfx/settings.png</file>
+    <file>../scripts/globaldefs.js</file>
 </qresource>
 </RCC>
