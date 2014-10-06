@@ -63,9 +63,10 @@ public slots:
     void exportMeshedFuselageVTKByUID (QString fuselageUID, QString filenamePtr, double deflection);
     double  fuselageGetCircumference (int fuselageIndex, int segmentIndex, double eta);
     QScriptValue fuselageGetPoint (int fuselageIndex, int segmentIndex, double eta, double zeta);
-    QString fuselageGetSegmentUID (int fuselageIndex, int segmentIndex);
+    QScriptValue fuselageGetSegmentUID (int fuselageIndex, int segmentIndex);
     double  fuselageGetSegmentVolume (int fuselageIndex, int segmentIndex);
     QScriptValue getFuselageCount();
+    QScriptValue fuselageGetSegmentCount(int fuselageIndex);
     
 private:
     QString m_fileName;

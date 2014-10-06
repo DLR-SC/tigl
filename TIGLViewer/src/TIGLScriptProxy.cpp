@@ -55,7 +55,7 @@ QStringList TIGLScriptProxy::getMemberFunctions()
                           << "exportMeshedFuselageVTKByIndex(fuselageIndex, filename, deflection)" << "exportMeshedFuselageVTKByUID(fuselageUID, filename, deflection)"
                           << "fuselageGetCircumference(fuselageIndex, segmentIndex, eta)" << "fuselageGetPoint(fuselageIndex, segmentIndex, eta, zeta)"
                           << "fuselageGetSegmentUID(fuselageIndex, segmentIndex)" << "fuselageGetSegmentVolume(fuselageIndex, segmentIndex)"
-                          << "getFuselageCount";
+                          << "getFuselageCount" << "fuselageGetSegmentCount(fuselageIndex)";
 }
 
 QScriptValue TIGLScriptProxy::getWingCount()
@@ -125,16 +125,26 @@ double TIGLScriptProxy::fuselageGetCircumference (int fuselageIndex, int segment
 QScriptValue TIGLScriptProxy::fuselageGetPoint (int fuselageIndex, int segmentIndex, double eta, double zeta)
 {
     double x,y,z;
-    ::tiglFuselageGetPoint (getTiglHandle(), fuselageIndex, segmentIndex, eta, zeta, &x, &y, &z);
-    QScriptValue Point3dCtor = engine()->globalObject().property("Point3d");
-    return Point3dCtor.construct(QScriptValueList() << x << y << z);
+    TiglReturnCode ret = ::tiglFuselageGetPoint (getTiglHandle(), fuselageIndex, segmentIndex, eta, zeta, &x, &y, &z);
+    if (ret != TIGL_SUCCESS) {
+        return context()->throwError(tiglGetErrorString(ret));
+    }
+    else {
+        QScriptValue Point3dCtor = engine()->globalObject().property("Point3d");
+        return Point3dCtor.construct(QScriptValueList() << x << y << z);
+    }
 }
 
-QString TIGLScriptProxy::fuselageGetSegmentUID (int fuselageIndex, int segmentIndex)
+QScriptValue TIGLScriptProxy::fuselageGetSegmentUID (int fuselageIndex, int segmentIndex)
 {
     char *uidName;
-    ::tiglFuselageGetSegmentUID (getTiglHandle(), fuselageIndex, segmentIndex, &uidName);
-    return(QString(uidName));
+    TiglReturnCode ret = ::tiglFuselageGetSegmentUID (getTiglHandle(), fuselageIndex, segmentIndex, &uidName);
+    if (ret != TIGL_SUCCESS) {
+        return context()->throwError(tiglGetErrorString(ret));
+    }
+    else {
+        return uidName;
+    }
 }
 
 double TIGLScriptProxy::fuselageGetSegmentVolume (int fuselageIndex, int segmentIndex)
@@ -148,6 +158,18 @@ QScriptValue TIGLScriptProxy::getFuselageCount()
 {
     int count = 0;
     TiglReturnCode ret = ::tiglGetFuselageCount(getTiglHandle(), &count);
+    if (ret != TIGL_SUCCESS) {
+        return context()->throwError(tiglGetErrorString(ret));
+    }
+    else {
+        return count;
+    }
+}
+
+QScriptValue TIGLScriptProxy::fuselageGetSegmentCount(int fuselageIndex)
+{
+    int count = 0;
+    TiglReturnCode ret = ::tiglFuselageGetSegmentCount(getTiglHandle(), fuselageIndex, &count);
     if (ret != TIGL_SUCCESS) {
         return context()->throwError(tiglGetErrorString(ret));
     }
