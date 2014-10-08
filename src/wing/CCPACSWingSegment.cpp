@@ -161,7 +161,8 @@ namespace
 
         // check if number of faces is correct (only valid for ruled surfaces lofts)
         if (map.Extent() != 5 && map.Extent() != 4) {
-            throw tigl::CTiglError("CCPACSWingSegment: Unable to name face traits in ruled surface loft", TIGL_ERROR);
+            LOG(ERROR) << "CCPACSWingSegment: Unable to determine face names in ruled surface loft";
+            return;
         }
         // remove trailing edge name if there is no trailing edge
         if (map.Extent() == 4) {
