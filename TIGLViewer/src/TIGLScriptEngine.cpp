@@ -42,8 +42,9 @@ QScriptValue myPrintFunction(QScriptContext *context, QScriptEngine *engine)
 {
     QString result;
     for (int i = 0; i < context->argumentCount(); ++i) {
-        if (i > 0)
+        if (i > 0) {
             result.append(" ");
+        }
         result.append(context->argument(i).toString());
     }
 
@@ -126,11 +127,10 @@ void TIGLScriptEngine::eval(QString commandLine)
     }
 
     QString result = val.toString();
-    if (!val.isUndefined() && !val.isError()) {
+    if (!val.isUndefined() && !val.isError() && result.isEmpty()) {
         emit scriptResult( prefixString + result  );
     }
-    else if(val.isError())
-    {
+    else if (val.isError()) {
         emit scriptError(val.toString());
     }
     emit evalDone();

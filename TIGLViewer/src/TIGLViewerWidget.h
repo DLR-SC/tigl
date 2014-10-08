@@ -131,7 +131,8 @@ public slots:
     void selecting();
     void hiddenLineOn();
     void hiddenLineOff();
-    void setBackgroundColor(const QColor&);
+    void setBackgroundGradient(int r, int g, int b);
+    void setBackgroundColor(int r, int g, int b);
     void setBGImage(const QString&);
     void viewFront();
     void viewBack();

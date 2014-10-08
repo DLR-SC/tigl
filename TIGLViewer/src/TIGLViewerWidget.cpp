@@ -199,7 +199,7 @@ void TIGLViewerWidget::initializeOCC(const Handle_AIS_InteractiveContext& aConte
 
         myLayer   = new Visual3d_Layer (myViewer->Viewer(), Aspect_TOL_OVERLAY, Standard_True /*aSizeDependant*/);
 
-        setBackgroundColor(myBGColor);
+        setBackgroundGradient(myBGColor.red(), myBGColor.green(), myBGColor.blue());
 
         emit initialized();
     }
@@ -551,13 +551,13 @@ void TIGLViewerWidget::hiddenLineOn()
     }
 }
 
-void TIGLViewerWidget::setBackgroundColor(const QColor& col)
+void TIGLViewerWidget::setBackgroundGradient(int r, int g, int b)
 {
-    myBGColor = col;
+    myBGColor = QColor(r,g,b);
     if (!myView.IsNull()) {
-        Standard_Real R1 = col.red()/255.;
-        Standard_Real G1 = col.green()/255.;
-        Standard_Real B1 = col.blue()/255.;
+        Standard_Real R1 = r/255.;
+        Standard_Real G1 = g/255.;
+        Standard_Real B1 = b/255.;
 
         // Disable provious gradient
         myView->SetBgGradientColors ( Quantity_NOC_BLACK , Quantity_NOC_BLACK, Aspect_GFM_NONE, Standard_False);
@@ -572,6 +572,16 @@ void TIGLViewerWidget::setBackgroundColor(const QColor& col)
 
     } 
     redraw();
+}
+
+void TIGLViewerWidget::setBackgroundColor(int r, int g, int b)
+{
+    if (!myView.IsNull()) {
+        // Disable provious gradient
+        myView->SetBgGradientColors ( Quantity_NOC_BLACK , Quantity_NOC_BLACK, Aspect_GFM_NONE, Standard_False);
+        myView->SetBackgroundColor(Quantity_TOC_RGB, r/255., g/255., b/255.);
+        redraw();
+    }
 }
 
 void TIGLViewerWidget::setReset ()

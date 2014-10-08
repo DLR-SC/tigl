@@ -246,12 +246,12 @@ Handle(AIS_Shape) TIGLViewerContext::displayShape(const TopoDS_Shape& loft, Quan
 
 // Displays a point on the screen
 void TIGLViewerContext::displayPoint(const gp_Pnt& aPoint,
-                                    const char* aText,
-                                    Standard_Boolean UpdateViewer,
-                                    Standard_Real anXoffset,
-                                    Standard_Real anYoffset,
-                                    Standard_Real aZoffset,
-                                    Standard_Real TextScale)
+                                     const char* aText,
+                                     Standard_Boolean UpdateViewer,
+                                     Standard_Real anXoffset,
+                                     Standard_Real anYoffset,
+                                     Standard_Real aZoffset,
+                                     Standard_Real TextScale)
 {
     Handle(ISession_Point) aGraphicPoint = new ISession_Point(aPoint.X(), aPoint.Y(), aPoint.Z());
     myContext->Display(aGraphicPoint,UpdateViewer);
@@ -270,13 +270,13 @@ void TIGLViewerContext::drawPoint(double x, double y, double z)
 
 // Displays a vector on the screen
 void TIGLViewerContext::displayVector(const gp_Pnt& aPoint,
-                                     const gp_Vec& aVec,
-                                     const char* aText,
-                                     Standard_Boolean UpdateViewer,
-                                     Standard_Real anXoffset,
-                                     Standard_Real anYoffset,
-                                     Standard_Real aZoffset,
-                                     Standard_Real TextScale)
+                                      const gp_Vec& aVec,
+                                      const char* aText,
+                                      Standard_Boolean UpdateViewer,
+                                      Standard_Real anXoffset,
+                                      Standard_Real anYoffset,
+                                      Standard_Real aZoffset,
+                                      Standard_Real TextScale)
 {
     Handle(ISession_Direction) aGraphicDirection = new ISession_Direction(aPoint, aVec);
     myContext->Display(aGraphicDirection,UpdateViewer);

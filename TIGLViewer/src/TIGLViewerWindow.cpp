@@ -279,6 +279,11 @@ void TIGLViewerWindow::openScript()
                                                 tr("Open File"),
                                                 myLastFolder,
                                                 tr( "Choose your script (*)" ) );
+    openScript(fileName);
+}
+
+void TIGLViewerWindow::openScript(const QString& fileName)
+{
     scriptEngine->openFile(fileName);
 }
 
@@ -421,7 +426,8 @@ void TIGLViewerWindow::saveSettings()
 
 void TIGLViewerWindow::applySettings()
 {
-    myOCC->setBackgroundColor(tiglViewerSettings->BGColor());
+    QColor col = tiglViewerSettings->BGColor();
+    myOCC->setBackgroundGradient(col.red(), col.green(), col.blue());
     getScene()->getContext()->SetIsoNumber(tiglViewerSettings->numFaceIsosForDisplay());
     getScene()->getContext()->UpdateCurrentViewer();
     if (tiglViewerSettings->debugBooleanOperations()) {

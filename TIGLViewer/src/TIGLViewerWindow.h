@@ -67,6 +67,7 @@ protected:
 public slots:
     void updateMenus(TiglCPACSConfigurationHandle);
     void openFile(const QString&);
+    void openScript(const QString&);
     void closeConfiguration();
     
     TIGLViewerWidget*   getViewer();
