@@ -111,7 +111,8 @@ namespace
         // check if number of faces without inside and outside surface (nFaces-2) 
         // is a multiple of 2 (without Trailing Edges) or 3 (with Trailing Edges)
         if (!((nFaces-2)/nSegments == 2 || (nFaces-2)/nSegments == 3) || nFaces < 4) {
-            throw tigl::CTiglError("CCPACSWingComponentSegment: Unable to name face traits in ruled surface loft", TIGL_ERROR);
+            LOG(ERROR) << "CCPACSWingComponentSegment: Unable to determine name face names from component segmetn loft";
+            return;
         }
         // remove trailing edge name if there is no trailing edge
         if ((nFaces-2)/nSegments == 2) {
