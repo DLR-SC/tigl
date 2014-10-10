@@ -80,7 +80,7 @@ TIGLScriptEngine::TIGLScriptEngine(TIGLViewerWindow* app)
     // evaluate resource file
     openFile(":/scripts/globaldefs.js");
     
-    prefixString = "  $ ";
+    prefixString = "";
 }
 
 
@@ -127,7 +127,7 @@ void TIGLScriptEngine::eval(QString commandLine)
     }
 
     QString result = val.toString();
-    if (!val.isUndefined() && !val.isError() && result.isEmpty()) {
+    if (!val.isUndefined() && !val.isError() && !result.isEmpty()) {
         emit scriptResult( prefixString + result  );
     }
     else if (val.isError()) {
@@ -142,8 +142,11 @@ void TIGLScriptEngine::displayHelp()
 
     helpString =  "====== TIGLViewer scripting help ======<br/><br/>";
     helpString += "Available TIGL functions: <br/>";
-    helpString += tiglScriptProxy->getMemberFunctions().join("<br/>") + "<br/><br/>";
+    foreach(QString fun, tiglScriptProxy->getMemberFunctions()) {
+        helpString += "    " + fun + "<br/>";
+    }
 
+    helpString += "<br/><br/>";
     helpString += "Usage example TIGL: <br/>";
     helpString += "Use TIGL: \ttigl.getFuselageCount();<br/>";
 

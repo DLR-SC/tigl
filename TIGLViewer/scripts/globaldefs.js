@@ -5,7 +5,7 @@ function Point3d(x,y,z) {
 }
 
 Point3d.prototype.toString = function() {
-    return 'Point3d(x,y,z = ' + this.x + ',' + this.y + ',' + this.z + ')'; 
+    return 'Point3d(' + this.x + ',' + this.y + ',' + this.z + ')'; 
 }
 
 Point3d.prototype.mult = function(f) {
@@ -27,6 +27,27 @@ Point3d.prototype.normalized = function()
 
 Point3d.prototype.add = function(p) {
     return new Point3d(this.x + p.x, this.y + p.y, this.z + p.z);
+}
+
+Point3d.prototype.subtract = function(p) {
+    return new Point3d(this.x - p.x, this.y - p.y, this.z - p.z);
+}
+
+Point3d.prototype.cross = function(p) {
+    return new Point3d(this.y*p.z - this.z*p.y, this.z*p.x - this.x*p.z, this.x*p.y - this.y*p.x);
+}
+
+Point3d.help = function() {
+    s =  "Point3d method help:\n";
+    s += "    mult(factor): scales the point\n";
+    s += "    add(Point3d): addition of points\n";
+    s += "    subtract(Point3d): subtraction of points\n";
+    s += "    dot(Point3d): scalar product\n";
+    s += "    length(): length of vector\n";
+    s += "    normalized(): returns normalized vector (length=1)\n";
+    s += "    cross(Point3d): cross product\n";
+    s += "\n";
+    return s
 }
 
 function drawPoint() {

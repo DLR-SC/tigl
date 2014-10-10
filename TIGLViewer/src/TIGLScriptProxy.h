@@ -67,6 +67,12 @@ public slots:
     double  fuselageGetSegmentVolume (int fuselageIndex, int segmentIndex);
     QScriptValue getFuselageCount();
     QScriptValue fuselageGetSegmentCount(int fuselageIndex);
+    QScriptValue wingGetUpperPoint(int wingIndex, int segmentIndex, double eta, double xsi);
+    QScriptValue wingGetLowerPoint(int wingIndex, int segmentIndex, double eta, double xsi);
+    QScriptValue wingGetUpperPointAtDirection(int wingIndex, int segmentIndex, double eta, double xsi, double dirx, double diry, double dirz);
+    QScriptValue wingGetLowerPointAtDirection(int wingIndex, int segmentIndex, double eta, double xsi, double dirx, double diry, double dirz);
+    QScriptValue wingGetChordPoint(int wingIndex, int segmentIndex, double eta, double xsi);
+    QScriptValue wingGetChordNormal(int wingIndex, int segmentIndex, double eta, double xsi);
     
 private:
     QString m_fileName;
