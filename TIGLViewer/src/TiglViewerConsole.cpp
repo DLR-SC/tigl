@@ -28,7 +28,7 @@
 Console::Console(QWidget *parent) :
     QPlainTextEdit(parent)
 {
-    prompt = "TiglViewer> ";
+    prompt = ">> ";
 
     QPalette p = palette();
     p.setColor(QPalette::Base, Qt::black);
@@ -101,7 +101,9 @@ void Console::onEnter()
 
 void Console::output(QString s)
 {
-    appendHtml(QString("<font color=\"white\">%1</font><br/><br/>").arg(s));
+    s = s.replace("\n", "<br/>");
+    s = s.replace("  ", "&nbsp;&nbsp;");
+    appendHtml(QString("<font color=\"white\">%1</font><br/>").arg(s));
 }
 
 void Console::outputError(QString s)
