@@ -34,8 +34,6 @@ class TIGLScriptProxy :public QObject, public QScriptable
 {
     Q_OBJECT
     
-    Q_PROPERTY(QScriptValue wingCount READ getWingCount() )
-    Q_PROPERTY(QScriptValue fuselageCount READ getFuselageCount() )
     Q_PROPERTY(QString version READ getVersion() )
     
 private:

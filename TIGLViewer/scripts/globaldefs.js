@@ -86,3 +86,17 @@ function drawVector() {
         throw Error("Invalid argument count. Valid possibilities are: drawVector(Point3d, Point3d), drawVector(x,y,z, dirx, diry, dirz)");
     }
 }
+
+function help(arg) {
+    if (typeof arg == "object") {
+        print(arg + ":\n");
+        for(var m in arg) {
+            if(typeof arg[m] == "function") {
+                print("    " + m);
+            }
+        }
+    }
+    else {
+        print("type: " + typeof(arg))
+    }
+}
