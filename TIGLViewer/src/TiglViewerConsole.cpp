@@ -48,29 +48,34 @@ void Console::keyPressEvent(QKeyEvent *event)
         return;
     }
     
-    if (event->key() >= 0x20 && event->key() <= 0x7e &&
-        (event->modifiers() == Qt::NoModifier || event->modifiers() == Qt::ShiftModifier)) {
-
-        QPlainTextEdit::keyPressEvent(event);
-    }
-
-    if (event->key() == Qt::Key_Backspace &&
-        event->modifiers() == Qt::NoModifier &&
-        textCursor().position() - textCursor().block().position() > prompt.length()) {
-
-        QPlainTextEdit::keyPressEvent(event);
-    }
 
     if (event->key() == Qt::Key_Return && event->modifiers() == Qt::NoModifier) {
         onEnter();
     }
-
-    if (event->key() == Qt::Key_Up) {
+    else if (event->key() == Qt::Key_Up) {
         historyBack();
     }
-
-    if (event->key() == Qt::Key_Down) {
+    else if (event->key() == Qt::Key_Down) {
         historyForward();
+    }
+    else if ((event->key() == Qt::Key_Backspace || event->key() == Qt::Key_Left) &&
+             event->modifiers() == Qt::NoModifier &&
+             textCursor().position() - textCursor().block().position() > prompt.length()) {
+
+        QPlainTextEdit::keyPressEvent(event);
+    }
+    else if ((event->key() == Qt::Key_A && event->modifiers() == Qt::CTRL)) {
+        // select the whole line without the prompt
+        QTextCursor cursor = textCursor();
+        cursor.movePosition(QTextCursor::StartOfBlock);
+        cursor.setPosition(cursor.position() + prompt.length());
+        cursor.movePosition(QTextCursor::EndOfBlock, QTextCursor::KeepAnchor);
+        setTextCursor(cursor);
+    }
+    else  if ((event->key() != Qt::Key_Backspace && event->key() != Qt::Key_Left) ||
+              event->modifiers() != Qt::NoModifier) {
+        
+        QPlainTextEdit::keyPressEvent(event);
     }
 
     QString cmd = textCursor().block().text().mid(prompt.length());
@@ -89,13 +94,22 @@ void Console::contextMenuEvent(QContextMenuEvent *){}
 void Console::onEnter()
 {
     if (textCursor().position() - textCursor().block().position() == prompt.length()) {
+        // no text inserted
         insertPrompt();
         return;
     }
 
     QString cmd = textCursor().block().text().mid(prompt.length());
+    QTextCursor cursor = textCursor();
+    cursor.movePosition(QTextCursor::EndOfBlock);
+    setTextCursor(cursor);
     isLocked = true;
     historyAdd(cmd);
+    
+    // remove line breaks
+    cmd.remove(QChar(0x2028));
+    cmd.remove(QChar(0x2029));
+    
     emit onCommand(cmd);
 }
 
