@@ -59,7 +59,7 @@ void Console::keyPressEvent(QKeyEvent *event)
         historyForward();
     }
     else if ((event->key() == Qt::Key_Backspace || event->key() == Qt::Key_Left) &&
-             event->modifiers() == Qt::NoModifier &&
+             (event->modifiers() == Qt::NoModifier || event->modifiers() == Qt::KeypadModifier) &&
              textCursor().position() - textCursor().block().position() > prompt.length()) {
 
         QPlainTextEdit::keyPressEvent(event);
@@ -73,7 +73,7 @@ void Console::keyPressEvent(QKeyEvent *event)
         setTextCursor(cursor);
     }
     else  if ((event->key() != Qt::Key_Backspace && event->key() != Qt::Key_Left) ||
-              event->modifiers() != Qt::NoModifier) {
+              (event->modifiers() != Qt::NoModifier && event->modifiers() != Qt::KeypadModifier)) {
         
         QPlainTextEdit::keyPressEvent(event);
     }
