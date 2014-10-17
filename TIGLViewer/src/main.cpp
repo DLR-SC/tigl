@@ -24,11 +24,8 @@
 #include <clocale>
 
 #include <QString>
-#include <QtGui/QtGui>
-#include <QtGui/QPlastiqueStyle>
 #include <QMessageBox>
 
-#include "TIGLViewerApplication.h"
 #include "TIGLViewerWindow.h"
 #include "CommandLineParameters.h"
 
@@ -39,7 +36,7 @@ void showHelp(QString);
 
 int main(int argc, char *argv[])
 {
-    TIGLViewerApplication app( argc, argv );
+    QApplication app(argc, argv);
     
 #ifdef __APPLE__
     if (!getenv("CSF_GraphicShr")){

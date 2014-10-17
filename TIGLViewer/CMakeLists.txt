@@ -55,7 +55,6 @@ set(tv_src
     ISession_Direction.cpp
     ISession_Text.cpp
     main.cpp
-    TIGLViewerApplication.cpp
     TIGLViewerContext.cpp
     TIGLViewerDocument.cpp
     TIGLViewerInputoutput.cpp
@@ -100,7 +99,6 @@ set(tv_hdr
 # qobject header files that have to be moced
 set(tv_hdr_qobj
 	TIGLDebugStream.h
-	TIGLViewerApplication.h
 	TIGLViewerContext.h
 	TIGLViewerDocument.h
 	TIGLViewerInputoutput.h
