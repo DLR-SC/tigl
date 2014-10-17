@@ -72,6 +72,8 @@ public:
     // Returns the total count of wing profiles in this configuration
     TIGL_EXPORT int GetWingProfileCount(void) const;
 
+    TIGL_EXPORT bool HasWingProfile(std::string uid) const;
+
     // Returns the wing profile for a given index - TODO: depricated!
     TIGL_EXPORT CCPACSWingProfile& GetWingProfile(int index) const;
 
@@ -88,6 +90,8 @@ public:
     TIGL_EXPORT CCPACSWing& GetWing(const std::string& UID) const;
 
     TIGL_EXPORT TopoDS_Shape GetParentLoft(const std::string& UID);
+
+    TIGL_EXPORT bool HasFuselageProfile(std::string uid) const;
 
     // Returns the total count of fuselage profiles in this configuration
     TIGL_EXPORT int GetFuselageProfileCount(void) const;

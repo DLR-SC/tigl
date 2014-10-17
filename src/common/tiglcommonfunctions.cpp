@@ -38,6 +38,8 @@
 #include "TopExp_Explorer.hxx"
 #include "TopExp.hxx"
 #include "TopoDS.hxx"
+#include "TopoDS_Shape.hxx"
+#include "TopoDS_Edge.hxx"
 #include "TopTools_IndexedMapOfShape.hxx"
 #include "TopTools_HSequenceOfShape.hxx"
 #include "GeomAdaptor_Curve.hxx"
@@ -57,6 +59,8 @@
 #include <Geom2d_Line.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
 #include <Geom2dAPI_InterCurveCurve.hxx>
+#include <Geom_TrimmedCurve.hxx>
+#include <GeomConvert.hxx>
 
 #include "ShapeAnalysis_FreeBounds.hxx"
 
@@ -403,4 +407,28 @@ int GetComponentHashCode(tigl::ITiglGeometricComponent& component)
     else {
         return 0;
     }
+}
+
+
+TopoDS_Edge GetEdge(const TopoDS_Shape &shape, int iEdge)
+{
+    TopTools_IndexedMapOfShape edgeMap;
+    TopExp::MapShapes(shape, TopAbs_EDGE, edgeMap);
+    
+    if (iEdge < 0 || iEdge >= edgeMap.Extent()) {
+        return TopoDS_Edge();
+    }
+    else {
+        return TopoDS::Edge(edgeMap(iEdge+1));
+    }
+}
+
+Handle_Geom_BSplineCurve GetBSplineCurve(const TopoDS_Edge& e) {
+    double u1, u2;
+    Handle_Geom_Curve curve = BRep_Tool::Curve(e, u1, u2);
+    curve = new Geom_TrimmedCurve(curve, u1, u2);
+    
+    // convert to bspline
+    Handle_Geom_BSplineCurve bspl =  GeomConvert::CurveToBSplineCurve(curve);
+    return bspl;
 }

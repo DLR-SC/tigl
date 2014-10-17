@@ -55,6 +55,7 @@
 
 #include "gp_Pnt.hxx"
 #include "TopoDS_Shape.hxx"
+#include "TopoDS_Edge.hxx"
 
 /*****************************************************************************/
 /* Private functions.                                                 */
@@ -288,6 +289,275 @@ TIGL_COMMON_EXPORT char* tiglGetVersion()
         }
     }
     return version;
+}
+
+/*** General geometry function ***/
+
+
+TIGL_COMMON_EXPORT TiglReturnCode tiglProfileGetBSplineCount(TiglCPACSConfigurationHandle cpacsHandle,
+                                                             const char* profileUID,
+                                                             int* curveCount)
+{
+    // input data check
+    if (!profileUID) {
+        LOG(ERROR) << "Null pointer for argument profileUID in tiglProfileGetBSplineCount";
+        return TIGL_NULL_POINTER;
+    }
+    if (!curveCount) {
+        LOG(ERROR) << "Null pointer for argument curveCount in tiglProfileGetBSplineCount";
+        return TIGL_NULL_POINTER;
+    }
+    
+    try {
+        tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration & config = manager.GetConfiguration(cpacsHandle);
+        
+        if (config.HasWingProfile(profileUID)) {
+            tigl::CCPACSWingProfile& profile = config.GetWingProfile(profileUID);
+            int edgeCount = GetNumberOfEdges(profile.GetUpperWire()) 
+                          + GetNumberOfEdges(profile.GetLowerWire());
+            *curveCount = edgeCount;
+            
+            return TIGL_SUCCESS;
+        }
+        else if (config.HasFuselageProfile(profileUID)) {
+            tigl::CCPACSFuselageProfile& profile = config.GetFuselageProfile(profileUID);
+            int edgeCount = GetNumberOfEdges(profile.GetWire(false));
+            *curveCount = edgeCount;
+    
+            return TIGL_SUCCESS;
+        }
+        else {
+            LOG(ERROR) << "Profile " << profileUID << " not found in cpacs file.";
+            return TIGL_UID_ERROR;
+        }
+    }
+    catch (tigl::CTiglError& err) {
+        LOG(ERROR) << err.getError();
+        return err.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Unknown error in tiglProfileGetBSplineCount";
+        return TIGL_ERROR;
+    }
+}
+
+
+TIGL_COMMON_EXPORT TiglReturnCode tiglProfileGetBSplineDataSizes(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                 const char* profileUID,
+                                                                 int curveid,
+                                                                 int* degree,
+                                                                 int* ncontrolPoints,
+                                                                 int* nKnots)
+{
+    // input data check
+    if (!profileUID) {
+        LOG(ERROR) << "Null pointer for argument profileUID in tiglProfileGetBSplineDataSizes";
+        return TIGL_NULL_POINTER;
+    }
+    if (!degree) {
+        LOG(ERROR) << "Null pointer for argument degree in tiglProfileGetBSplineDataSizes";
+        return TIGL_NULL_POINTER;
+    }
+    if (!ncontrolPoints) {
+        LOG(ERROR) << "Null pointer for argument ncontrolPoints in tiglProfileGetBSplineDataSizes";
+        return TIGL_NULL_POINTER;
+    }
+    if (!nKnots) {
+        LOG(ERROR) << "Null pointer for argument nKnots in tiglProfileGetBSplineDataSizes";
+        return TIGL_NULL_POINTER;
+    }
+    if (curveid <= 0) {
+        LOG(ERROR) << "Negative index of argument curveid in tiglProfileGetBSplineDataSizes";
+        return TIGL_INDEX_ERROR;
+    }
+    
+    try {
+        tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration & config = manager.GetConfiguration(cpacsHandle);
+        
+        TopoDS_Edge e;
+        
+        // query wings
+        if (config.HasWingProfile(profileUID)) {
+            tigl::CCPACSWingProfile& profile = config.GetWingProfile(profileUID);
+            int nel = GetNumberOfEdges(profile.GetLowerWire());
+            int neu = GetNumberOfEdges(profile.GetUpperWire());
+            
+            if (curveid <= nel) {
+                e = GetEdge(profile.GetLowerWire(), curveid - 1);
+            }
+            else if (curveid <= nel + neu) {
+                e = GetEdge(profile.GetUpperWire(), curveid - nel - 1);
+            }
+            else {
+                return TIGL_INDEX_ERROR;
+            }
+        }
+        // query fuselages
+        else if (config.HasFuselageProfile(profileUID)) {
+            tigl::CCPACSFuselageProfile& profile = config.GetFuselageProfile(profileUID);
+            TopoDS_Wire wire = profile.GetWire(false);
+            int ne = GetNumberOfEdges(wire);
+            
+            if (curveid <= ne) {
+                e = GetEdge(wire, curveid - 1);
+            }
+            else {
+                return TIGL_INDEX_ERROR;
+            }
+        }
+        // no profile found
+        else {
+            LOG(ERROR) << "Profile " << profileUID << " not found in cpacs file.";
+            return TIGL_UID_ERROR;
+        }
+        
+        // profile found, lets get bspline data
+        
+        if (!e.IsNull()) {
+             Handle_Geom_BSplineCurve bspl = GetBSplineCurve(e);
+             *degree = bspl->Degree();
+             *ncontrolPoints = bspl->NbPoles();
+             
+             *nKnots = 0;
+             for (int i = 1; i <= bspl->NbKnots(); ++i) {
+                 *nKnots += bspl->Multiplicity(i);
+             }
+             return TIGL_SUCCESS;
+        }
+        else {
+            // this should normally not happen
+            return TIGL_ERROR;
+        }
+    }
+    catch (tigl::CTiglError& err) {
+        LOG(ERROR) << err.getError();
+        return err.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Unknown error in tiglProfileGetBSplineCount";
+        return TIGL_ERROR;
+    }
+}
+
+
+TIGL_COMMON_EXPORT TiglReturnCode tiglProfileGetBSplineData(TiglCPACSConfigurationHandle cpacsHandle,
+                                                            const char* profileUID,
+                                                            int curveid,
+                                                            int ncp, double* cpx, double* cpy, double* cpz,
+                                                            int nk, double* knots)
+{
+    // input data check
+    if (!profileUID) {
+        LOG(ERROR) << "Null pointer for argument profileUID in tiglProfileGetBSplineData";
+        return TIGL_NULL_POINTER;
+    }
+    if (!cpx || !cpy || !cpz) {
+        LOG(ERROR) << "Null pointer for control polygon argument in tiglProfileGetBSplineData";
+        return TIGL_NULL_POINTER;
+    }
+    if (!knots) {
+        LOG(ERROR) << "Null pointer for argument ncontrolPoints in tiglProfileGetBSplineData";
+        return TIGL_NULL_POINTER;
+    }
+    if (curveid <= 0) {
+        LOG(ERROR) << "Negative index of argument curveid in tiglProfileGetBSplineData";
+        return TIGL_INDEX_ERROR;
+    }
+    
+    try {
+        tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration & config = manager.GetConfiguration(cpacsHandle);
+        
+        TopoDS_Edge e;
+        
+        // query wings
+        if (config.HasWingProfile(profileUID)) {
+            tigl::CCPACSWingProfile& profile = config.GetWingProfile(profileUID);
+            int nel = GetNumberOfEdges(profile.GetLowerWire());
+            int neu = GetNumberOfEdges(profile.GetUpperWire());
+            
+            if (curveid <= nel) {
+                e = GetEdge(profile.GetLowerWire(), curveid - 1);
+            }
+            else if (curveid <= nel + neu) {
+                e = GetEdge(profile.GetUpperWire(), curveid - nel - 1);
+            }
+            else {
+                return TIGL_INDEX_ERROR;
+            }
+        }
+        // query fuselages
+        else if (config.HasFuselageProfile(profileUID)) {
+            tigl::CCPACSFuselageProfile& profile = config.GetFuselageProfile(profileUID);
+            TopoDS_Wire wire = profile.GetWire(false);
+            int ne = GetNumberOfEdges(wire);
+            
+            if (curveid <= ne) {
+                e = GetEdge(wire, curveid - 1);
+            }
+            else {
+                return TIGL_INDEX_ERROR;
+            }
+        }
+        // no profile found
+        else {
+            LOG(ERROR) << "Profile " << profileUID << " not found in cpacs file.";
+            return TIGL_UID_ERROR;
+        }
+        
+        // profile found, lets get bspline data
+        
+        if (!e.IsNull()) {
+            Handle_Geom_BSplineCurve bspl = GetBSplineCurve(e);
+            // check correct sizes
+            if (ncp != bspl->NbPoles()) {
+                return TIGL_ERROR;
+            }
+            
+            int nKnots = 0;
+            for (int i = 1; i <= bspl->NbKnots(); ++i) {
+                nKnots += bspl->Multiplicity(i);
+            }
+            
+            if (nk != nKnots) {
+                return TIGL_ERROR;
+            }
+
+            // copy control points
+            for (int icp = 0; icp < bspl->NbPoles(); ++icp) {
+                gp_Pnt p = bspl->Pole(icp+1);
+                cpx[icp] = p.X();
+                cpy[icp] = p.Y();
+                cpz[icp] = p.Z();
+            }
+            
+            // copy knots
+            int ipos = 0;
+            for (int iknot = 1; iknot <= bspl->NbKnots(); ++iknot) {
+                double knot = bspl->Knot(iknot);
+                for (int imult = 0; imult < bspl->Multiplicity(iknot); ++imult) {
+                    knots[ipos] = knot;
+                    ipos++;
+                }
+            }
+            
+            return TIGL_SUCCESS;
+        }
+        else {
+            // this should normally not happen
+            return TIGL_ERROR;
+        }
+    }
+    catch (tigl::CTiglError& err) {
+        LOG(ERROR) << err.getError();
+        return err.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Unknown error in tiglProfileGetBSplineCount";
+        return TIGL_ERROR;
+    }
 }
 
 
