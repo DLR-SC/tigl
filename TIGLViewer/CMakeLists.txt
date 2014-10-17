@@ -79,6 +79,7 @@ set(tv_src
     TIGLViewerShapeIntersectionDialog.cpp
     TIGLViewerScreenshotDialog.cpp
     TIGLViewerDrawVectorDialog.cpp
+    TIGLViewerScopedCommand.cpp
 )
 	
 # normal header files
@@ -94,6 +95,7 @@ set(tv_hdr
     CHotsoseMeshReader.h
     TIGLViewerLogHistory.h
     TIGLViewerLoggerHTMLDecorator.h
+    TIGLViewerScopedCommand.h
 )
 
 # qobject header files that have to be moced
@@ -112,7 +114,7 @@ set(tv_hdr_qobj
 	TiglViewerConsole.h
 	TIGLViewerEtaXsiDialog.h
 	TIGLViewerErrorDialog.h
-    TIGLViewerDrawVectorDialog.h
+	TIGLViewerDrawVectorDialog.h
 	TIGLViewerLogRedirection.h
 	TIGLViewerFuseDialog.h
 	TIGLViewerShapeIntersectionDialog.h
@@ -127,7 +129,7 @@ set(tv_ui_comp
 	src/TIGLViewerFuseDialog.ui
 	src/TIGLViewerShapeIntersectionDialog.ui
 	src/TIGLViewerScreenshotDialog.ui
-    src/TIGLViewerDrawVectorDialog.ui
+	src/TIGLViewerDrawVectorDialog.ui
 )
 	
 foreach ( _fname ${tv_src})

@@ -44,6 +44,7 @@
 #include "TIGLScriptEngine.h"
 #include "CommandLineParameters.h"
 #include "TIGLViewerSettings.h"
+#include "TiglViewerConsole.h"
 #include "TIGLViewerControlFile.h"
 #include "TIGLViewerErrorDialog.h"
 #include "TIGLViewerLogHistory.h"
@@ -51,6 +52,7 @@
 #include "CTiglLogSplitter.h"
 #include "TIGLViewerLoggerHTMLDecorator.h"
 #include "TIGLViewerScreenshotDialog.h"
+#include "TIGLViewerScopedCommand.h"
 
 void ShowOrigin ( Handle_AIS_InteractiveContext theContext );
 void AddVertex  ( double x, double y, double z, Handle_AIS_InteractiveContext theContext );
@@ -309,6 +311,8 @@ void TIGLViewerWindow::openFile(const QString& fileName)
     TIGLViewerInputOutput reader;
     bool triangulation = false;
 
+    TIGLViewerScopedCommand command(getConsole());
+    Q_UNUSED(command);
     statusBar()->showMessage(tr("Invoked File|Open"));
 
     if (!fileName.isEmpty()) {
@@ -790,7 +794,7 @@ void TIGLViewerWindow::connectSignals()
 
     connect(scriptEngine, SIGNAL(scriptResult(QString)), console, SLOT(output(QString)));
     connect(scriptEngine, SIGNAL(scriptError(QString)), console, SLOT(outputError(QString)));
-    connect(scriptEngine, SIGNAL(evalDone()), console, SLOT(newLine()));
+    connect(scriptEngine, SIGNAL(evalDone()), console, SLOT(endCommand()));
     connect(console, SIGNAL(onChange(QString)), scriptEngine, SLOT(textChanged(QString)));
     connect(console, SIGNAL(onCommand(QString)), scriptEngine, SLOT(eval(QString)));
 
@@ -860,6 +864,11 @@ void TIGLViewerWindow::closeEvent(QCloseEvent*)
 TIGLViewerSettings& TIGLViewerWindow::getSettings()
 {
     return *tiglViewerSettings;
+}
+
+Console* TIGLViewerWindow::getConsole()
+{
+    return console;
 }
 
 void TIGLViewerWindow::makeScreenShot()

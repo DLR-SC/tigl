@@ -21,6 +21,7 @@
 
 #include "TIGLViewerDocument.h"
 #include "TIGLViewerWindow.h"
+#include "TIGLViewerScopedCommand.h"
 
 // QT Stuff
 #include <qnamespace.h>
@@ -79,6 +80,8 @@
 #define strdup(str) _strdup((str))
 #endif
 
+#define START_COMMAND() TIGLViewerScopedCommand command(app->getConsole());Q_UNUSED(command);
+
 TIGLViewerDocument::TIGLViewerDocument(TIGLViewerWindow *parentWidget)
     : QObject(parentWidget)
 {
@@ -110,6 +113,7 @@ char* TIGLViewerDocument::qstringToCstring(QString text)
 
 TiglReturnCode TIGLViewerDocument::openCpacsConfiguration(const QString fileName)
 {
+    START_COMMAND();
     QStringList configurations;
 
     app->getScene()->getContext()->SetDisplayMode(AIS_Shaded,Standard_False);
@@ -198,6 +202,7 @@ void TIGLViewerDocument::updateConfiguration()
 {
     // Right now, we just close the tigl session and open a new one
     if (!loadedConfigurationFileName.isEmpty()) {
+        START_COMMAND();
         tiglCloseCPACSConfiguration(m_cpacsHandle);
         m_cpacsHandle = -1;
         app->getScene()->deleteAllObjects();
@@ -464,6 +469,7 @@ QString TIGLViewerDocument::dlgGetFuselageProfileSelection()
 
 void TIGLViewerDocument::drawAllFuselagesAndWings( )
 {
+    START_COMMAND();
     // Draw all wings
     for (int w = 1; w <= GetConfiguration().GetWingCount(); w++) {
         tigl::CCPACSWing& wing = GetConfiguration().GetWing(w);
@@ -512,6 +518,7 @@ void TIGLViewerDocument::drawWingProfiles()
         return;
     }
 
+    START_COMMAND();
     app->getScene()->deleteAllObjects();
 
     tigl::CCPACSWingProfile& profile = GetConfiguration().GetWingProfile(wingProfile.toStdString());
@@ -600,6 +607,7 @@ void TIGLViewerDocument::drawWingOverlayProfilePoints()
         return;
     }
 
+    START_COMMAND();
     tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
 
     for (int i = 1; i <= wing.GetSegmentCount(); i++) {
@@ -660,6 +668,7 @@ void TIGLViewerDocument::drawWingOverlayProfilePoints()
 
 void TIGLViewerDocument::drawWingGuideCurves()
 {
+    START_COMMAND();
     // loop over all wing segments
     tigl::CCPACSConfiguration& config = GetConfiguration();
     int wingCount = config.GetWingCount();
@@ -691,6 +700,7 @@ void TIGLViewerDocument::drawFuselageProfiles()
         return;
     }
 
+    START_COMMAND();
     app->getScene()->deleteAllObjects();
 
     tigl::CCPACSFuselageProfile& profile = GetConfiguration().GetFuselageProfile(fuselageProfile.toStdString());
@@ -725,6 +735,7 @@ void TIGLViewerDocument::drawFuselageProfiles()
 
 void TIGLViewerDocument::drawFuselageGuideCurves()
 {
+    START_COMMAND();
     // loop over all fuselage segments
     tigl::CCPACSConfiguration& config = GetConfiguration();
     int fuselageCount = config.GetFuselageCount();
@@ -753,6 +764,7 @@ void TIGLViewerDocument::drawWing()
         return;
     }
 
+    START_COMMAND();
     tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
 
     app->getScene()->deleteAllObjects();
@@ -773,7 +785,7 @@ void TIGLViewerDocument::drawFuselage()
         return;
     }
 
-    QApplication::setOverrideCursor( Qt::WaitCursor );
+    START_COMMAND();
     tigl::CCPACSFuselage& fuselage = GetConfiguration().GetFuselage(fuselageUid.toStdString());
 
     app->getScene()->deleteAllObjects();
@@ -784,7 +796,6 @@ void TIGLViewerDocument::drawFuselage()
         TopoDS_Shape loft = segment.GetLoft()->Shape();
         displayShape(loft);
     }
-    QApplication::restoreOverrideCursor();
 }
 
 void TIGLViewerDocument::drawWingTriangulation()
@@ -795,7 +806,7 @@ void TIGLViewerDocument::drawWingTriangulation()
         return;
     }
 
-    QApplication::setOverrideCursor( Qt::WaitCursor );
+    START_COMMAND();
     tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
 
     //clear screen
@@ -808,7 +819,6 @@ void TIGLViewerDocument::drawWingTriangulation()
     createShapeTriangulation(fusedWing, compound);
     
     displayShape(compound);
-    QApplication::restoreOverrideCursor();
 }
 
 
@@ -819,7 +829,7 @@ void TIGLViewerDocument::drawFuselageTriangulation()
         return;
     }
 
-    QApplication::setOverrideCursor( Qt::WaitCursor );
+    START_COMMAND();
     tigl::CCPACSFuselage& fuselage = GetConfiguration().GetFuselage(fuselageUid.toStdString());
 
     //clear screen
@@ -830,7 +840,6 @@ void TIGLViewerDocument::drawFuselageTriangulation()
     createShapeTriangulation(fusedWing, triangulation);
 
     app->getScene()->displayShape(triangulation);
-    QApplication::restoreOverrideCursor();
 }
 
 
@@ -841,6 +850,7 @@ void TIGLViewerDocument::drawWingSamplePoints()
         return;
     }
 
+    START_COMMAND();
     tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
     int wingIndex = 0;
     for (int i = 1; i <= GetConfiguration().GetWingCount(); ++i) {
@@ -903,6 +913,7 @@ void TIGLViewerDocument::drawFuselageSamplePoints()
         return;
     }
 
+    START_COMMAND();
     tigl::CCPACSFuselage& fuselage = GetConfiguration().GetFuselage(fuselageUid.toStdString());
 
     app->getScene()->deleteAllObjects();
@@ -944,6 +955,7 @@ void TIGLViewerDocument::drawFuselageSamplePointsAngle()
         return;
     }
 
+    START_COMMAND();
     int fuselageIndex = 1;
     double x, y, z;
 
@@ -971,6 +983,7 @@ void TIGLViewerDocument::drawFuselageSamplePointsAngle()
 
 void TIGLViewerDocument::drawAllFuselagesAndWingsSurfacePoints()
 {
+    START_COMMAND();
     app->getScene()->deleteAllObjects();
 
     // Draw all wings
@@ -1059,9 +1072,8 @@ void TIGLViewerDocument::exportAsIges()
     fileName = QFileDialog::getSaveFileName(app, tr("Save as..."), myLastFolder, tr("Export IGES(*.igs)"));
 
     if (!fileName.isEmpty()) {
-        QApplication::setOverrideCursor( Qt::WaitCursor );
+        START_COMMAND();
         TiglReturnCode err = tiglExportIGES(m_cpacsHandle, qstringToCstring(fileName));
-        QApplication::restoreOverrideCursor();
         if (err != TIGL_SUCCESS) {
             displayError(QString("Error in function <u>tiglExportIGES</u>. Error code: %1").arg(err), "TIGL Error");
         }
@@ -1082,9 +1094,8 @@ void TIGLViewerDocument::exportFusedAsIges()
     fileName = QFileDialog::getSaveFileName(app, tr("Save as..."), myLastFolder, tr("Export IGES(*.igs)"));
 
     if (!fileName.isEmpty()) {
-        QApplication::setOverrideCursor( Qt::WaitCursor );
+        START_COMMAND();
         TiglReturnCode err = tiglExportFusedWingFuselageIGES(m_cpacsHandle, qstringToCstring(fileName));
-        QApplication::restoreOverrideCursor();
         if (err != TIGL_SUCCESS) {
             displayError(QString("Error in function <u>tiglExportFusedWingFuselageIGES</u>. Error code: %1").arg(err), "TIGL Error");
         }
@@ -1104,9 +1115,8 @@ void TIGLViewerDocument::exportAsStep()
     fileName = QFileDialog::getSaveFileName(app, tr("Save as..."), myLastFolder, tr("Export STEP(*.stp *.step)"));
 
     if (!fileName.isEmpty()) {
-        QApplication::setOverrideCursor( Qt::WaitCursor );
+        START_COMMAND();
         TiglReturnCode err = tiglExportSTEP(m_cpacsHandle, qstringToCstring(fileName));
-        QApplication::restoreOverrideCursor();
         if (err != TIGL_SUCCESS) {
             displayError(QString("Error in function <u>tiglExportSTEP</u>. Error code: %1").arg(err), "TIGL Error");
         }
@@ -1122,9 +1132,8 @@ void TIGLViewerDocument::exportAsStepFused()
     fileName = QFileDialog::getSaveFileName(app, tr("Save as..."), myLastFolder, tr("Export STEP(*.stp *.step)"));
 
     if (!fileName.isEmpty()) {
-        QApplication::setOverrideCursor( Qt::WaitCursor );
+        START_COMMAND();
         TiglReturnCode err = tiglExportFusedSTEP(m_cpacsHandle, qstringToCstring(fileName));
-        QApplication::restoreOverrideCursor();
         if (err != TIGL_SUCCESS) {
             displayError(QString("Error in function <u>tiglExportFusedSTEP</u>. Error code: %1").arg(err), "TIGL Error");
         }
@@ -1146,11 +1155,10 @@ void TIGLViewerDocument::exportMeshedWingSTL()
     fileName = QFileDialog::getSaveFileName(app, tr("Save as..."), myLastFolder, tr("Export STL(*.stl)"));
 
     if (!fileName.isEmpty()) {
-        QApplication::setOverrideCursor( Qt::WaitCursor );
+        START_COMMAND();
         tigl::CCPACSWing& wing = GetConfiguration().GetWing(qstringToCstring(wingUid));
         double deflection = wing.GetWingspan()/2. * TIGLViewerSettings::Instance().triangulationAccuracy();
         TiglReturnCode err = tiglExportMeshedWingSTLByUID(m_cpacsHandle, qstringToCstring(wingUid), qstringToCstring(fileName), deflection);
-        QApplication::restoreOverrideCursor();
         if (err != TIGL_SUCCESS) {
             displayError(QString("Error in function <u>tiglExportMeshedWingSTLByUID</u>. Error code: %1").arg(err), "TIGL Error");
         }
@@ -1173,9 +1181,8 @@ void TIGLViewerDocument::exportMeshedFuselageSTL()
     fileName = QFileDialog::getSaveFileName(app, tr("Save as..."), myLastFolder, tr("Export STL(*.stl)"));
 
     if (!fileName.isEmpty()) {
-        QApplication::setOverrideCursor( Qt::WaitCursor );
+        START_COMMAND();
         TiglReturnCode err = tiglExportMeshedFuselageSTLByUID(m_cpacsHandle, qstringToCstring(fuselageUid), qstringToCstring(fileName), 0.01);
-        QApplication::restoreOverrideCursor();
         if (err != TIGL_SUCCESS) {
             displayError(QString("Error in function <u>tiglExportMeshedFuselageSTLByUID</u>. Error code: %1").arg(err), "TIGL Error");
         }
@@ -1197,12 +1204,11 @@ void TIGLViewerDocument::exportMeshedWingVTK()
     fileName = QFileDialog::getSaveFileName(app, tr("Save as..."), myLastFolder, tr("Export VTK(*.vtp)"));
 
     if (!fileName.isEmpty()) {
-        QApplication::setOverrideCursor( Qt::WaitCursor );
+        START_COMMAND();
         tigl::CCPACSWing& wing = GetConfiguration().GetWing(qstringToCstring(wingUid));
         double deflection = wing.GetWingspan()/2. * TIGLViewerSettings::Instance().triangulationAccuracy();
 
         TiglReturnCode err = tiglExportMeshedWingVTKByUID(m_cpacsHandle, wingUid.toStdString().c_str(), qstringToCstring(fileName), deflection);
-        QApplication::restoreOverrideCursor();
         if (err != TIGL_SUCCESS) {
             displayError(QString("Error in function <u>tiglExportMeshedWingVTKByIndex</u>. Error code: %1").arg(err), "TIGL Error");
         }
@@ -1227,12 +1233,11 @@ void TIGLViewerDocument::exportMeshedWingVTKsimple()
     fileName = QFileDialog::getSaveFileName(app, tr("Save as..."), myLastFolder, tr("Export VTK(*.vtp)"));
 
     if (!fileName.isEmpty()) {
-        QApplication::setOverrideCursor( Qt::WaitCursor );
+        START_COMMAND();
         tigl::CCPACSWing& wing = GetConfiguration().GetWing(qstringToCstring(wingUid));
         double deflection = wing.GetWingspan()/2. * TIGLViewerSettings::Instance().triangulationAccuracy();
 
         TiglReturnCode err = tiglExportMeshedWingVTKSimpleByUID(m_cpacsHandle, qstringToCstring(wingUid), qstringToCstring(fileName), deflection);
-        QApplication::restoreOverrideCursor();
         if (err != TIGL_SUCCESS) {
             displayError(QString("Error in function <u>tiglExportMeshedWingVTKSimpleByUID</u>. Error code: %1").arg(err), "TIGL Error");
         }
@@ -1254,12 +1259,11 @@ void TIGLViewerDocument::exportWingCollada()
     fileName = QFileDialog::getSaveFileName(app, tr("Save as..."), myLastFolder, tr("Export Collada(*.dae)"));
 
     if (!fileName.isEmpty()) {
-        QApplication::setOverrideCursor( Qt::WaitCursor );
+        START_COMMAND();
         tigl::CCPACSWing& wing = GetConfiguration().GetWing(qstringToCstring(wingUid));
         double deflection = wing.GetWingspan()/2. * TIGLViewerSettings::Instance().triangulationAccuracy();
 
         TiglReturnCode err = tiglExportWingColladaByUID(m_cpacsHandle, wingUid.toStdString().c_str(), qstringToCstring(fileName), deflection);
-        QApplication::restoreOverrideCursor();
         if (err != TIGL_SUCCESS) {
             displayError(QString("Error in function <u>tiglExportWingColladaByUID</u>. Error code: %1").arg(err), "TIGL Error");
         }
@@ -1284,9 +1288,8 @@ void TIGLViewerDocument::exportMeshedFuselageVTK()
     fileName = QFileDialog::getSaveFileName(app, tr("Save as..."), myLastFolder, tr("Export VTK(*.vtp)"));
 
     if (!fileName.isEmpty()) {
-        QApplication::setOverrideCursor( Qt::WaitCursor );
+        START_COMMAND();
         TiglReturnCode err = tiglExportMeshedFuselageVTKByUID(m_cpacsHandle, wingUid.toStdString().c_str(), qstringToCstring(fileName), 0.1);
-        QApplication::restoreOverrideCursor();
         if (err != TIGL_SUCCESS) {
             displayError(QString("Error in function <u>tiglExportMeshedFuselageVTKByIndex</u>. Error code: %1").arg(err), "TIGL Error");
         }
@@ -1304,9 +1307,8 @@ void TIGLViewerDocument::exportMeshedFuselageVTKsimple()
     fileName = QFileDialog::getSaveFileName(app, tr("Save as..."), myLastFolder, tr("Export VTK(*.vtp)"));
 
     if (!fileName.isEmpty()) {
-        QApplication::setOverrideCursor( Qt::WaitCursor );
+        START_COMMAND();
         TiglReturnCode err = tiglExportMeshedFuselageVTKSimpleByUID(m_cpacsHandle, qstringToCstring(fuselageUid), qstringToCstring(fileName), 0.1);
-        QApplication::restoreOverrideCursor();
         if (err != TIGL_SUCCESS) {
             displayError(QString("Error in function <u>tiglExportMeshedFuselageVTKSimpleByUID</u>. Error code: %1").arg(err), "TIGL Error");
         }
@@ -1319,7 +1321,7 @@ void TIGLViewerDocument::exportMeshedConfigVTK()
     fileName = QFileDialog::getSaveFileName(app, tr("Save as..."), myLastFolder, tr("Export VTK(*.vtp)"));
 
     if (!fileName.isEmpty()) {
-        QApplication::setOverrideCursor( Qt::WaitCursor );
+        START_COMMAND();
         writeToStatusBar("Calculating fused airplane, this can take a while");
         // calculating loft, is cached afterwards
         tigl::PTiglFusePlane fuser = GetConfiguration().AircraftFusingAlgo();
@@ -1336,7 +1338,6 @@ void TIGLViewerDocument::exportMeshedConfigVTK()
         exporter.ExportMeshedGeometryVTK(fileName.toStdString(), deflection);
         
         writeToStatusBar("");
-        QApplication::restoreOverrideCursor();
     }
 }
 
@@ -1370,11 +1371,10 @@ void TIGLViewerDocument::exportFuselageCollada()
     fileName = QFileDialog::getSaveFileName(app, tr("Save as..."), myLastFolder, tr("Export Collada(*.dae)"));
 
     if (!fileName.isEmpty()) {
-        QApplication::setOverrideCursor( Qt::WaitCursor );
+        START_COMMAND();
         double deflection = GetConfiguration().GetAirplaneLenth() 
                 * TIGLViewerSettings::Instance().triangulationAccuracy();
         TiglReturnCode err = tiglExportFuselageColladaByUID(m_cpacsHandle, qstringToCstring(fuselageUid), qstringToCstring(fileName), deflection);
-        QApplication::restoreOverrideCursor();
         if (err != TIGL_SUCCESS) {
             displayError(QString("Error in function <u>tiglExportFuselageColladaByUID</u>. Error code: %1").arg(err), "TIGL Error");
         }
@@ -1394,11 +1394,10 @@ void TIGLViewerDocument::exportWingBRep()
     QString fileName = QFileDialog::getSaveFileName(app, tr("Save as..."), myLastFolder, tr("Export BRep(*.brep)"));
 
     if (!fileName.isEmpty()) {
-        QApplication::setOverrideCursor( Qt::WaitCursor );
+        START_COMMAND();
         tigl::ITiglGeometricComponent& wing = GetConfiguration().GetWing(wingUid.toStdString());
         const TopoDS_Shape& loft = wing.GetLoft()->Shape();
         BRepTools::Write(loft, fileName.toStdString().c_str());
-        QApplication::restoreOverrideCursor();
 
     }
 }
@@ -1415,11 +1414,10 @@ void TIGLViewerDocument::exportFuselageBRep()
     QString fileName = QFileDialog::getSaveFileName(app, tr("Save as..."), myLastFolder, tr("Export BRep(*.brep)"));
 
     if (!fileName.isEmpty()) {
-        QApplication::setOverrideCursor( Qt::WaitCursor );
+        START_COMMAND();
         tigl::ITiglGeometricComponent& fuselage = GetConfiguration().GetFuselage(fuselageUid.toStdString());
         const TopoDS_Shape& loft = fuselage.GetLoft()->Shape();
         BRepTools::Write(loft, fileName.toStdString().c_str());
-        QApplication::restoreOverrideCursor();
 
     }
 }
@@ -1431,14 +1429,13 @@ void TIGLViewerDocument::exportFusedConfigBRep()
         return;
     }
 
-    QApplication::setOverrideCursor( Qt::WaitCursor );
+    START_COMMAND();
     try {
         tigl::PTiglFusePlane fuser = GetConfiguration().AircraftFusingAlgo();
         fuser->SetResultMode(tigl::FULL_PLANE);
         PNamedShape airplane = fuser->FusedPlane();
         if (!airplane) {
             displayError("Error computing fused aircraft", "Error in BRep export");
-            QApplication::restoreOverrideCursor();
             return;
         }
         
@@ -1451,7 +1448,6 @@ void TIGLViewerDocument::exportFusedConfigBRep()
     catch(...){
         displayError("Unknown Exception during computation of fused aircraft.", "Error in BRep export");
     }
-    QApplication::restoreOverrideCursor();
 }
 
 void TIGLViewerDocument::exportWingCurvesBRep()
@@ -1470,6 +1466,7 @@ void TIGLViewerDocument::exportWingCurvesBRep()
         return;
     }
     
+    START_COMMAND();
     tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
     QString baseName = QDir(std::string(dirname.toStdString() + "/" + wing.GetUID()).c_str()).absolutePath();
     
@@ -1528,7 +1525,7 @@ void TIGLViewerDocument::exportFuselageCurvesBRep()
         return;
     }
     
-    
+    START_COMMAND();
     tigl::CCPACSFuselage& fuselage = GetConfiguration().GetFuselage(fuselageUid.toStdString());
     QString baseName = QDir(std::string(dirname.toStdString() + "/" + fuselage.GetUID()).c_str()).absolutePath();
     
@@ -1578,11 +1575,10 @@ void TIGLViewerDocument::drawFusedFuselage()
         return;
     }
 
+    START_COMMAND();
     app->getScene()->deleteAllObjects();
-    QApplication::setOverrideCursor( Qt::WaitCursor );
     tigl::CCPACSFuselage& fuselage = GetConfiguration().GetFuselage(fuselageUid.toStdString());
     displayShape(fuselage.GetLoft()->Shape());
-    QApplication::restoreOverrideCursor();
 }
 
 
@@ -1593,12 +1589,11 @@ void TIGLViewerDocument::drawFusedWing()
         return;
     }
 
+    START_COMMAND();
     app->getScene()->deleteAllObjects();
-    QApplication::setOverrideCursor( Qt::WaitCursor );
     tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
     const TopoDS_Shape& loft = wing.GetLoft()->Shape();
     displayShape(loft);
-    QApplication::restoreOverrideCursor();
 }
 
 
@@ -1624,8 +1619,7 @@ void TIGLViewerDocument::drawFusedAircraft()
         mode = tigl::FULL_PLANE_TRIMMED_FF;
     }
 
-
-    QApplication::setOverrideCursor( Qt::WaitCursor );
+    START_COMMAND();
     try {
         tigl::PTiglFusePlane fuser = GetConfiguration().AircraftFusingAlgo();
         fuser->SetResultMode(mode);
@@ -1681,19 +1675,17 @@ void TIGLViewerDocument::drawFusedAircraft()
     catch(...){
         std::cerr << "Unknown Exception" << std::endl;
     }
-    QApplication::restoreOverrideCursor();
 }
 
 void TIGLViewerDocument::drawFusedAircraftTriangulation()
 {
-    QApplication::setOverrideCursor( Qt::WaitCursor );
+    START_COMMAND();
     TopoDS_Shape airplane = GetConfiguration().AircraftFusingAlgo()->FusedPlane()->Shape();
     app->getScene()->deleteAllObjects();
     TopoDS_Compound triangulation;
     createShapeTriangulation(airplane, triangulation);
 
     displayShape(triangulation);
-    QApplication::restoreOverrideCursor();
 }
 
 
@@ -1707,11 +1699,11 @@ void TIGLViewerDocument::drawIntersectionLine()
         return;
     }
 
+    START_COMMAND();
     int mode = dialog.GetMode();
     tigl::CTiglIntersectionCalculation* Intersector = NULL;
     if (mode == 0) {
         // shape - shape
-        QApplication::setOverrideCursor( Qt::WaitCursor );
         std::string uid1 = dialog.GetShape1UID().toStdString();
         std::string uid2 = dialog.GetShape2UID().toStdString();
         writeToStatusBar(QString(tr("Calculating %1 ...")).arg(uid1.c_str()));
@@ -1724,7 +1716,6 @@ void TIGLViewerDocument::drawIntersectionLine()
     }
     else if (mode == 1) {
         // shape - plane
-        QApplication::setOverrideCursor( Qt::WaitCursor );
         std::string uid = dialog.GetShapeUID().toStdString();
         writeToStatusBar(QString(tr("Calculating %1 ...")).arg(uid.c_str()));
         const TopoDS_Shape& compoundOne = uidManager.GetComponent(uid)->GetLoft()->Shape();
@@ -1747,7 +1738,6 @@ void TIGLViewerDocument::drawIntersectionLine()
     if (Intersector->GetCountIntersectionLines() <= 0) {
         displayError(tr("Could not find any intersection between shapes"), "TIGL Error");
         writeToStatusBar("");
-        QApplication::restoreOverrideCursor();
         return;
     }
     // load first wire
@@ -1761,7 +1751,6 @@ void TIGLViewerDocument::drawIntersectionLine()
         }
     }
     app->getScene()->getContext()->UpdateCurrentViewer();
-    QApplication::restoreOverrideCursor();
     writeToStatusBar("");
 
     delete Intersector;
@@ -1775,9 +1764,9 @@ void TIGLViewerDocument::drawWingComponentSegment()
         return;
     }
 
+    START_COMMAND();
     const TopoDS_Shape* pComponentSegment = NULL;
     app->getScene()->deleteAllObjects();
-    QApplication::setOverrideCursor( Qt::WaitCursor );
     for (int i = 1; i <= GetConfiguration().GetWingCount();++i) {
         tigl::CCPACSWing& wing = GetConfiguration().GetWing(i);
         for (int j = 1; j <= wing.GetComponentSegmentCount();++j) {
@@ -1795,7 +1784,6 @@ void TIGLViewerDocument::drawWingComponentSegment()
     else {
         cerr << "Component segment \"" << wingUid.toStdString() << "\" not found" << endl;
     }
-    QApplication::restoreOverrideCursor();
 }
 
 void TIGLViewerDocument::drawWingComponentSegmentPoints()
@@ -1805,6 +1793,7 @@ void TIGLViewerDocument::drawWingComponentSegmentPoints()
         return;
     }
     
+    START_COMMAND();
     double eta = 0.5, xsi = 0.5;
 
     while (EtaXsiDialog::getEtaXsi(app, eta, xsi) == QDialog::Accepted) {
@@ -1856,18 +1845,17 @@ void TIGLViewerDocument::drawWingShells()
         return;
     }
 
+    START_COMMAND();
     app->getScene()->deleteAllObjects();
-    QApplication::setOverrideCursor( Qt::WaitCursor );
 
     tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
     displayShape(wing.GetUpperShape(), Quantity_NOC_GREEN);
     displayShape(wing.GetLowerShape(), Quantity_NOC_RED);
-
-    QApplication::restoreOverrideCursor();
 }
 
 void TIGLViewerDocument::drawFarField()
 {
+    START_COMMAND();
     tigl::CCPACSFarField& farField = GetConfiguration().GetFarField();
     if (farField.GetFieldType() != tigl::NONE) {
         Handle(AIS_Shape) shape = new AIS_Shape(farField.GetLoft()->Shape());
