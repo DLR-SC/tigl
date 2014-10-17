@@ -55,6 +55,8 @@ public:
     // Returns the total count of wing profiles in this configuration
     TIGL_EXPORT int GetProfileCount(void) const;
 
+    TIGL_EXPORT bool HasProfile(std::string uid) const;
+
     // Returns the wing profile for a given index or uid.
     TIGL_EXPORT CCPACSWingProfile& GetProfile(std::string uid) const;
 

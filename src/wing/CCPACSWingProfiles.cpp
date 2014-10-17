@@ -102,6 +102,17 @@ int CCPACSWingProfiles::GetProfileCount(void) const
     return (static_cast<int>(profiles.size()));
 }
 
+bool CCPACSWingProfiles::HasProfile(std::string uid) const
+{
+    CCPACSWingProfileContainer::const_iterator it = profiles.find(uid);
+    if (it != profiles.end() && it->second) {
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
 // Returns the wing profile for a given uid.
 CCPACSWingProfile& CCPACSWingProfiles::GetProfile(std::string uid) const
 {

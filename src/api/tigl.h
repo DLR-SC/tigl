@@ -3771,6 +3771,108 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetWettedArea(TiglCPACSConfigurationHa
 /*@}*/
 /*****************************************************************************************************/
 /**
+  \defgroup GeometryFunctions General geometry functions.
+ */
+/*@{*/
+
+/**
+* @brief Returns the number of curves the given profile is made of.
+* 
+* The given profile may be a fuselage profile or a wing profile. Typically,
+* wing profiles consist of two curves (lower and upper curve), fuselage profiles
+* consist of only one curve.
+*
+* @param[in]  cpacsHandle     Handle for the CPACS configuration
+* @param[in]  profileUID      UID of the profile
+* @param[out] curveCount      Number of curves
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_UID_ERROR if profileUID is wrong
+*   - TIGL_NULL_POINTER if profileUID or curveCount NULL
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglProfileGetBSplineCount(TiglCPACSConfigurationHandle cpacsHandle,
+                                                             const char* profileUID,
+                                                             int* curveCount);
+
+/**
+* @brief Returns the B-Spline data sizes for a given curve on a profile. This includes
+* size of the knot vector, size of the control point vector and degree of the spline.
+* 
+* The given profile may be a fuselage profile or a wing profile. Typically,
+* wing profiles consist of two curves (lower and upper curve), fuselage profiles
+* consist of only one curve.
+*
+* @param[in]  cpacsHandle     Handle for the CPACS configuration
+* @param[in]  profileUID      UID of the profile
+* @param[in]  curveid         Index of the curve. Number of curves must be queried 
+*                             with ::tiglProfileGetBSplineCount. 1 <= index <= count
+* @param[out] degree          Degree of the B-Spline
+* @param[out] nControlPoints  Size of the control point vector
+* @param[out] nKnots          Size of the knot vector
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_UID_ERROR if profileUID is wrong
+*   - TIGL_INDEX_ERROR if curveid knot in range [1, curveCount]
+*   - TIGL_NULL_POINTER if the argument profileUID, degree, ncontrolPoints, or nKnots are NULL
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglProfileGetBSplineDataSizes(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                 const char* profileUID,
+                                                                 int curveid,
+                                                                 int* degree,
+                                                                 int* nControlPoints,
+                                                                 int* nKnots);
+/**
+* @brief Returns the B-Spline data of the given profile curve. This includes 
+* the knot vector and the control points of the B-Spline.
+* 
+* The output arrays cpx, cpy, cpz, and knots have to be allocated by the user first.
+* The control point vector arrays must have the size nControlPoints. This value must 
+* be queried with ::tiglProfileGetBSplineDataSizes first.
+* The knot vector array must have the size kKnots. This value has to be queried also
+* using the function ::tiglProfileGetBSplineDataSizes.
+* 
+* The given profile may be a fuselage profile or a wing profile. Typically,
+* wing profiles consist of two curves (lower and upper curve), fuselage profiles
+* consist of only one curve.
+*
+* @param[in]  cpacsHandle     Handle for the CPACS configuration
+* @param[in]  profileUID      UID of the profile
+* @param[in]  curveid         Index of the curve. Number of curves must be queried 
+*                             with ::tiglProfileGetBSplineCount. 1 <= index <= count
+* @param[in]  nControlPoints  Size of the control point vector. To be queried with ::tiglProfileGetBSplineDataSizes first.
+* @param[out] cpx             X-values of the control point vector.
+* @param[out] cpy             Y-values of the control point vector.
+* @param[out] cpz             Z-values of the control point vector.
+* @param[in]  nKnots          Size of the knot vector. To be queried with ::tiglProfileGetBSplineDataSizes first.
+* @param[out] knots           Knot vector values.
+* 
+* @cond
+* #annotate out: 4AM(3), 5AM(3), 6AM(3), 8AM(7)#
+* @endcond
+* 
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_UID_ERROR if profileUID is wrong
+*   - TIGL_INDEX_ERROR if curveid knot in range [1, curveCount]
+*   - TIGL_NULL_POINTER if the argument profileUID, cpx, cpy, cpz, or knots are NULL
+*   - TIGL_ERROR if the values nControlPoints, or nKnots are wrong
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglProfileGetBSplineData(TiglCPACSConfigurationHandle cpacsHandle,
+                                                            const char* profileUID,
+                                                            int curveid,
+                                                            int nControlPoints, double* cpx, double* cpy, double* cpz,
+                                                            int nKnots, double* knots);
+
+/*@}*/
+/*****************************************************************************************************/
+/**
   \defgroup LoggingFunctions Logging functions.
     The following functions are used to customize the behaviour how messages are handled by TiGL. By default,
     only error messages and warnings are printed to the console.

@@ -137,6 +137,11 @@ TixiDocumentHandle CCPACSConfiguration::GetTixiDocumentHandle(void) const
     return tixiDocumentHandle;
 }
 
+bool CCPACSConfiguration::HasWingProfile(std::string uid) const
+{
+    return wings.HasProfile(uid);
+}
+
 // Returns the total count of wing profiles in this configuration
 int CCPACSConfiguration::GetWingProfileCount(void) const
 {
@@ -175,6 +180,11 @@ CCPACSWing& CCPACSConfiguration::GetWing(const std::string& UID) const
 TopoDS_Shape CCPACSConfiguration::GetParentLoft(const std::string& UID)
 {
     return uidManager.GetParentComponent(UID)->GetLoft()->Shape();
+}
+
+bool CCPACSConfiguration::HasFuselageProfile(std::string uid) const
+{
+    return fuselages.HasProfile(uid);
 }
 
 // Returns the total count of fuselage profiles in this configuration

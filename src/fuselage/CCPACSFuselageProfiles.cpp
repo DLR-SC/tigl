@@ -90,6 +90,17 @@ void CCPACSFuselageProfiles::ReadCPACS(TixiDocumentHandle tixiHandle)
     }
 }
 
+bool CCPACSFuselageProfiles::HasProfile(std::string uid) const
+{
+    CCPACSFuselageProfileContainer::const_iterator it = profiles.find(uid);
+    if (it != profiles.end() && it->second) {
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
 // Returns the total count of fuselage profiles in this configuration
 int CCPACSFuselageProfiles::GetProfileCount(void) const
 {
