@@ -55,6 +55,7 @@ public:
     void setInitialControlFile(QString filename);
 
     class TIGLViewerSettings& getSettings();
+    class Console*            getConsole();
 
     // Displays a simple dialog for error messages
     void displayErrorMessage (const QString aMessage, QString aHeader);

@@ -40,6 +40,7 @@ Console::Console(QWidget *parent) :
     historyPos = 0;
     insertPrompt(false);
     isLocked = false;
+    isDirty = false;
 }
 
 void Console::keyPressEvent(QKeyEvent *event)
@@ -82,9 +83,10 @@ void Console::keyPressEvent(QKeyEvent *event)
     emit onChange(cmd);
 }
 
-void Console::mousePressEvent(QMouseEvent *)
+void Console::mousePressEvent(QMouseEvent * e)
 {
-    setFocus();
+    QWidget::mousePressEvent(e);
+    //setFocus();
 }
 
 void Console::mouseDoubleClickEvent(QMouseEvent *){}
@@ -103,13 +105,15 @@ void Console::onEnter()
     QTextCursor cursor = textCursor();
     cursor.movePosition(QTextCursor::EndOfBlock);
     setTextCursor(cursor);
-    isLocked = true;
     historyAdd(cmd);
     
     // remove line breaks
     cmd.remove(QChar(0x2028));
     cmd.remove(QChar(0x2029));
     
+    startCommand();
+     // we enforce new line from console itself
+    isDirty = true;
     emit onCommand(cmd);
 }
 
@@ -118,17 +122,28 @@ void Console::output(QString s)
     s = s.replace("\n", "<br/>");
     s = s.replace("  ", "&nbsp;&nbsp;");
     appendHtml(QString("<font color=\"white\">%1</font><br/>").arg(s));
+    isDirty = true;
+    qDebug() << "got string " << s;
 }
 
 void Console::outputError(QString s)
 {
     appendHtml(QString("<i><font color=\"red\">%1</font></i><br/><br/>").arg(s));
+    isDirty = true;
 }
 
-void Console::newLine()
+void Console::startCommand()
 {
-    insertPrompt();
+    isLocked = true;
+}
+
+void Console::endCommand()
+{
+    if (isDirty) {
+        insertPrompt();
+    }
     isLocked = false;
+    isDirty = false;
 }
 
 void Console::insertPrompt(bool insertNewBlock)
@@ -141,6 +156,7 @@ void Console::insertPrompt(bool insertNewBlock)
     textCursor().setBlockCharFormat(format);
     textCursor().insertText(prompt);
     scrollDown();
+    isDirty = false;
 }
 
 void Console::scrollDown()
