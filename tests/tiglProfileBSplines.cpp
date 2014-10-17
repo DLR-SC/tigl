@@ -1,8 +1,26 @@
+/* 
+* Copyright (C) 2007-2014 German Aerospace Center (DLR/SC)
+*
+* Created: 2014-10-17 Martin Siggel <Martin.Siggel@dlr.de>
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
+
 #include "test.h"
 #include "tigl.h"
 
 
-class BSplineSimpleGeom : public ::testing::Test 
+class TiglProfileBSplines : public ::testing::Test 
 {
 protected:
     static void SetUpTestCase() 
@@ -37,10 +55,10 @@ protected:
     static TiglCPACSConfigurationHandle tiglSimpleHandle;
 };
 
-TixiDocumentHandle BSplineSimpleGeom::tixiSimpleHandle = 0;
-TiglCPACSConfigurationHandle BSplineSimpleGeom::tiglSimpleHandle = 0;
+TixiDocumentHandle TiglProfileBSplines::tixiSimpleHandle = 0;
+TiglCPACSConfigurationHandle TiglProfileBSplines::tiglSimpleHandle = 0;
 
-TEST_F(BSplineSimpleGeom, curveCount)
+TEST_F(TiglProfileBSplines, curveCount)
 {
     int count;
     ASSERT_EQ(TIGL_SUCCESS, tiglProfileGetBSplineCount(tiglSimpleHandle, "NACA0012", &count));
@@ -50,7 +68,7 @@ TEST_F(BSplineSimpleGeom, curveCount)
     ASSERT_EQ(1, count);
 }
 
-TEST_F(BSplineSimpleGeom, curveCount_Errors)
+TEST_F(TiglProfileBSplines, curveCount_Errors)
 {
     int count;
     ASSERT_EQ(TIGL_NOT_FOUND, tiglProfileGetBSplineCount(-1, "NACA0012", &count));
@@ -59,7 +77,7 @@ TEST_F(BSplineSimpleGeom, curveCount_Errors)
     ASSERT_EQ(TIGL_NULL_POINTER, tiglProfileGetBSplineCount(tiglSimpleHandle,"NACA0012", NULL));
 }
 
-TEST_F(BSplineSimpleGeom, splineSizes)
+TEST_F(TiglProfileBSplines, splineSizes)
 {
     int n, ncp, nk;
     ASSERT_EQ(TIGL_SUCCESS, tiglProfileGetBSplineDataSizes(tiglSimpleHandle, "NACA0012", 1, &n, &ncp, &nk));
@@ -72,7 +90,7 @@ TEST_F(BSplineSimpleGeom, splineSizes)
 
 }
 
-TEST_F(BSplineSimpleGeom, splineSizes_Errors)
+TEST_F(TiglProfileBSplines, splineSizes_Errors)
 {
     int n, ncp, nk;
     ASSERT_EQ(TIGL_NOT_FOUND, tiglProfileGetBSplineDataSizes(-1, "NACA0012", 1, &n, &ncp, &nk));
@@ -85,7 +103,7 @@ TEST_F(BSplineSimpleGeom, splineSizes_Errors)
     ASSERT_EQ(TIGL_INDEX_ERROR, tiglProfileGetBSplineDataSizes(tiglSimpleHandle, "NACA0012", 3, &n, &ncp, &nk));
 }
 
-TEST_F(BSplineSimpleGeom, splineData)
+TEST_F(TiglProfileBSplines, splineData)
 {
     int n, ncp, nk;
     ASSERT_EQ(TIGL_SUCCESS, tiglProfileGetBSplineDataSizes(tiglSimpleHandle, "NACA0012", 1, &n, &ncp, &nk));
@@ -110,7 +128,7 @@ TEST_F(BSplineSimpleGeom, splineData)
     delete[] knots;
 }
 
-TEST_F(BSplineSimpleGeom, splineData_Errors)
+TEST_F(TiglProfileBSplines, splineData_Errors)
 {
     int n, ncp, nk;
     ASSERT_EQ(TIGL_SUCCESS, tiglProfileGetBSplineDataSizes(tiglSimpleHandle, "NACA0012", 1, &n, &ncp, &nk));

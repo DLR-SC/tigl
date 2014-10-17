@@ -423,7 +423,8 @@ TopoDS_Edge GetEdge(const TopoDS_Shape &shape, int iEdge)
     }
 }
 
-Handle_Geom_BSplineCurve GetBSplineCurve(const TopoDS_Edge& e) {
+Handle_Geom_BSplineCurve GetBSplineCurve(const TopoDS_Edge& e)
+{
     double u1, u2;
     Handle_Geom_Curve curve = BRep_Tool::Curve(e, u1, u2);
     curve = new Geom_TrimmedCurve(curve, u1, u2);
