@@ -80,6 +80,14 @@ int main(int argc, char *argv[])
         }
         window->openFile(PARAMS.initialFilename);
     }
+    
+    // if a script is given
+    if (!PARAMS.initialScript.isEmpty()) {
+        if (window->getViewer()) {
+            window->getViewer()->repaint();
+        }
+        window->openScript(PARAMS.initialScript);
+    }
 
     retval = app.exec();
     window->hide();
@@ -96,6 +104,7 @@ void showHelp(QString appName)
     helpText += "  --help                      This help page\n";
     helpText += "  --filename <filename>    Initial CPACS file to open and display.\n";
     helpText += "  --modelUID <uid>         Initial model uid open and display.\n";
+    helpText += "  --script <filename>       Script to execute.\n";
     helpText += "  --windowtitle <title>    The titel of the TIGLViewer window.\n";
     helpText += "  --controlFile <filename>    Name of the control file.\n";
     helpText += "  --JediMode <on|off>      Makes you some kind of superhero like CPACS-Ninja.\n";
@@ -123,6 +132,15 @@ int parseArguments(QStringList argList)
             }
             else {
                 PARAMS.initialFilename = argList.at(++i);
+            }
+        }
+        else if (arg.compare("--script") == 0) {
+            if (i+1 >= argList.size()) {
+                cout << "missing script filename" << endl;
+                return -1;
+            }
+            else {
+                PARAMS.initialScript = argList.at(++i);
             }
         }
         else if (arg.compare("--windowtitle") == 0) {
