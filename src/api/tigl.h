@@ -712,7 +712,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetChordNormal(TiglCPACSConfigurationH
 * a given wing and segment index. This function is different from ::tiglWingGetUpperPoint: 
 * First, a point on the wing chord surface is computed (defined by segment index and eta,xsi).
 * Then, a line is constructed, which is defined by this point and a direction given by the user.
-* The intersection of this line with the upper wing surface is finnaly returned.
+* The intersection of this line with the upper wing surface is finally returned.
 * The point is returned in absolute world coordinates.
 *
 *
@@ -768,7 +768,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetUpperPointAtDirection(TiglCPACSConf
 * a given wing and segment index. This function is different from ::tiglWingGetLowerPoint: 
 * First, a point on the wing chord surface is computed (defined by segment index and eta,xsi).
 * Then, a line is constructed, which is defined by this point and a direction given by the user.
-* The intersection of this line with the lower wing surface is finnaly returned.
+* The intersection of this line with the lower wing surface is finally returned.
 * The point is returned in absolute world coordinates.
 *
 *
@@ -1318,6 +1318,36 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSegmentIndex(TiglCPACSConfiguration
                                                           const char * segmentUID,
                                                           int * segmentIndexPtr,
                                                           int * wingIndexPtr);
+
+
+/**
+* @brief Returns the number of sections of a wing. 
+**
+*
+* @param[in]  cpacsHandle     Handle for the CPACS configuration
+* @param[in]  wingIndex       The index of a wing, starting at 1
+* @param[out] sectionCount    The number of sections of the wing
+*
+* Usage example:
+*
+@verbatim
+   TiglReturnCode returnCode;
+   int sectionCount = 0;
+   returnCode = tiglWingGetSectionUID(cpacsHandle, wingIndex, &sectionCount);
+   printf("The Number of sections of wing %d is %d\n", wingIndex, sectionCount);
+@endverbatim
+*
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_INDEX_ERROR if wingIndex is not valid
+*   - TIGL_NULL_POINTER if sectionCount is a null pointer
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSectionCount(TiglCPACSConfigurationHandle cpacsHandle,
+                                                          int wingIndex,
+                                                          int* sectionCount);
 
 /**
 * @brief Returns the UID of a section of a wing. The string returned must not be
@@ -2450,6 +2480,36 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSegmentUID(TiglCPACSConfigurati
        
 
 /**
+* @brief Returns the number of sections of a fuselage. 
+**
+*
+* @param[in]  cpacsHandle     Handle for the CPACS configuration
+* @param[in]  fuselageIndex   The index of a fuselage, starting at 1
+* @param[out] sectionCount    The number of sections of the fuselage
+*
+* Usage example:
+*
+@verbatim
+   TiglReturnCode returnCode;
+   int sectionCount = 0;
+   returnCode = tiglFuselageGetSectionUID(cpacsHandle, fuselageIndex, &sectionCount);
+   printf("The Number of sections of fuselage %d is %d\n", fuselageIndex, sectionCount);
+@endverbatim
+*
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_INDEX_ERROR if fuselageIndex is not valid
+*   - TIGL_NULL_POINTER if sectionCount is a null pointer
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSectionCount(TiglCPACSConfigurationHandle cpacsHandle,
+                                                              int fuselageIndex,
+                                                              int* sectionCount);
+
+
+/**
 * @brief Returns the UID of a section of a fuselage. The string returned must not be
 * deleted by the caller via free(). It will be deleted when the CPACS configuration
 * is closed.
@@ -2503,7 +2563,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSectionUID(TiglCPACSConfigurati
 *
 *
 * @param[in]  cpacsHandle      Handle for the CPACS configuration
-* @param[in]  fuselageIndex    Index of the Wing to export
+* @param[in]  fuselageIndex    Index of the fuselage in the cpacs file
 * @param[out] symmetryAxisPtr  Returning TiglSymmetryAxis enum pointer
 *
 * @return
@@ -2664,7 +2724,6 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglComponentIntersectionPoint(TiglCPACSConfig
 * @param[out] pointZArray          Array of z-coordinates of the points in absolute world coordinates. The Array must be preallocated with the size numberOfPoints.
 *
 * @return
-*   - TIGL_SUCCESS if a point was found
 *   - TIGL_NOT_FOUND if no point was found or the cpacs handle is not valid
 *   - TIGL_NULL_POINTER if pointXPtr, pointYPtr or pointZPtr are null pointers
 *   - TIGL_ERROR if some other error occurred
