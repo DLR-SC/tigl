@@ -27,12 +27,12 @@ import com.sun.jna.ptr.IntByReference;
  * This class the high level access class to the TiGL library.
 
  */
-public class TiglInterface {
+public class Tigl {
 	
     /**
      * Central logger instance.
      */
-    protected static final Log LOGGER = LogFactory.getLog(TiglInterface.class);
+    protected static final Log LOGGER = LogFactory.getLog(Tigl.class);
 
     
     /**
