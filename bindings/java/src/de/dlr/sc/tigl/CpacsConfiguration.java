@@ -74,6 +74,43 @@ public class CpacsConfiguration implements AutoCloseable {
     }
     
     /**
+     * Returns the number of sections of the wing
+     * 
+     * @param wingIndex Index of the wing
+     * @return Number of wing sections
+     * @throws TiglException
+     */
+    public int wingGetSectionCount(final int wingIndex) throws TiglException {
+        checkTiglConfiguration();
+
+        IntByReference sectionCount = new IntByReference();
+        errorCode = TiglNativeInterface.tiglWingGetSectionCount(cpacsHandle, wingIndex, sectionCount);
+        throwIfError("tiglWingGetSectionCount", errorCode);
+        
+        return sectionCount.getValue();
+    }
+    
+    
+    /**
+     * Returns the UID of the i-th wing section
+     * 
+     * @param wingIndex Index of the wing 
+     * @param sectionIndex Index of the section
+     * @return
+     * @throws TiglException
+     */
+    public String wingGetSectionUID(final int wingIndex, final int sectionIndex) throws TiglException {
+        checkTiglConfiguration();
+        
+        PointerByReference c_suid = new PointerByReference();
+        errorCode = TiglNativeInterface.tiglWingGetSectionUID(cpacsHandle, wingIndex, sectionIndex, c_suid);
+        throwIfError("tiglWingGetSectionUID", errorCode);
+        
+        String sectionUID = c_suid.getValue().getString(0);
+        return sectionUID;
+    }
+    
+    /**
      * Returns the number of wing segments for the given wing
      * @param wingIndex Index of the wing (1 <= index <= numerOfWings)
      * 
@@ -173,6 +210,87 @@ public class CpacsConfiguration implements AutoCloseable {
 
         return point;
     }
+    
+    
+    /**
+     * Returns a point on the upper wing surface for a
+     * a given wing and segment index. This function is different from ::tiglWingGetUpperPoint: 
+     * First, a point on the wing chord surface is computed (defined by segment index and eta,xsi).
+     * Then, a line is constructed, which is defined by this point and a direction given by the user.
+     * The intersection of this line with the upper wing surface is finally returned.
+     * The point is returned in absolute world coordinates.
+     * 
+     * @param wingIndex - The index number of the wing.
+     * @param segmentIndex- the segment index where the realtiv coordinates belong to.
+     * @param eta - the eta coordinate, going from 0 - 1
+     * @param xsi - the xsi coordinate, going from 0 - 1
+     * @param direction Direction of the intersection line
+     * @return - a Point object with x, y, z.
+     * @throws TiglException 
+     */
+    public TiglPoint wingGetUpperPointAtDirection(final int wingIndex, final int segmentIndex, final double eta, final double xsi, TiglPoint direction) throws TiglException {
+        TiglPoint point = new TiglPoint();
+
+        checkTiglConfiguration();
+        
+        DoubleByReference pointX = new DoubleByReference();
+        DoubleByReference pointY = new DoubleByReference();
+        DoubleByReference pointZ = new DoubleByReference();
+
+        // get uppper Point from TIGL
+        errorCode = TiglNativeInterface.tiglWingGetUpperPointAtDirection(cpacsHandle, wingIndex, segmentIndex, 
+                eta, xsi, 
+                direction.getX(), direction.getY(), direction.getZ(), 
+                pointX, pointY, pointZ);
+        throwIfError("tiglWingGetUpperPointAtDirection", errorCode);
+
+        point.setX(pointX.getValue());
+        point.setY(pointY.getValue());
+        point.setZ(pointZ.getValue());
+
+        return point;
+    }
+    
+    
+    /**
+     * Returns a point on the lower wing surface for a
+     * a given wing and segment index. This function is different from ::tiglWingGetLowerPoint: 
+     * First, a point on the wing chord surface is computed (defined by segment index and eta,xsi).
+     * Then, a line is constructed, which is defined by this point and a direction given by the user.
+     * The intersection of this line with the lower wing surface is finally returned.
+     * The point is returned in absolute world coordinates.
+     * 
+     * @param wingIndex - The index number of the wing.
+     * @param segmentIndex- the segment index where the realtiv coordinates belong to.
+     * @param eta - the eta coordinate, going from 0 - 1
+     * @param xsi - the xsi coordinate, going from 0 - 1
+     * @param direction Direction of the intersection line
+     * @return - a Point object with x, y, z.
+     * @throws TiglException 
+     */
+    public TiglPoint wingGetLowerPointAtDirection(final int wingIndex, final int segmentIndex, final double eta, final double xsi, TiglPoint direction) throws TiglException {
+        TiglPoint point = new TiglPoint();
+
+        checkTiglConfiguration();
+        
+        DoubleByReference pointX = new DoubleByReference();
+        DoubleByReference pointY = new DoubleByReference();
+        DoubleByReference pointZ = new DoubleByReference();
+
+        // get uppper Point from TIGL
+        errorCode = TiglNativeInterface.tiglWingGetLowerPointAtDirection(cpacsHandle, wingIndex, segmentIndex, 
+                eta, xsi, 
+                direction.getX(), direction.getY(), direction.getZ(), 
+                pointX, pointY, pointZ);
+        throwIfError("tiglWingGetLowerPointAtDirection", errorCode);
+
+        point.setX(pointX.getValue());
+        point.setY(pointY.getValue());
+        point.setZ(pointZ.getValue());
+
+        return point;
+    }
+    
     
     /**
      * Returns an absolute point from a given relative coordinates eta, xsi on the wing chord surface,
@@ -302,6 +420,44 @@ public class CpacsConfiguration implements AutoCloseable {
         return fuselageUID;
     }
 
+
+    /**
+     * Returns the number of sections of the fuselage
+     * 
+     * @param wingIndex Index of the fuselage
+     * @return Number of fuselage sections
+     * @throws TiglException
+     */
+    public int fuselageGetSectionCount(final int fuselageIndex) throws TiglException {
+        checkTiglConfiguration();
+
+        IntByReference sectionCount = new IntByReference();
+        errorCode = TiglNativeInterface.tiglFuselageGetSectionCount(cpacsHandle, fuselageIndex, sectionCount);
+        throwIfError("tiglFuselageGetSectionCount", errorCode);
+        
+        return sectionCount.getValue();
+    }
+
+
+    /**
+     * Returns the UID of the i-th fuselage section
+     * 
+     * @param wingIndex Index of the fuselage 
+     * @param sectionIndex Index of the section
+     * @return
+     * @throws TiglException
+     */
+    public String fuselageGetSectionUID(final int fuselageIndex, final int sectionIndex) throws TiglException {
+        checkTiglConfiguration();
+        
+        PointerByReference c_suid = new PointerByReference();
+        errorCode = TiglNativeInterface.tiglFuselageGetSectionUID(cpacsHandle, fuselageIndex, sectionIndex, c_suid);
+        throwIfError("tiglFuselageGetSectionUID", errorCode);
+        
+        String sectionUID = c_suid.getValue().getString(0);
+        return sectionUID;
+    }
+    
     
     /**
      * Returns the number of fuselage segments for the given fuselage
@@ -581,8 +737,8 @@ public class CpacsConfiguration implements AutoCloseable {
     
     private static void throwIfError(String methodname, int errorCode) throws TiglException {
         if (errorCode != TiglReturnCode.TIGL_SUCCESS.getValue()) {
-    		String message = " In TiGL function \"" + methodname + "."
-    				+ "\"";
+            String message = " In TiGL function \"" + methodname + "."
+                    + "\"";
             throw new TiglException(message, TiglReturnCode.getEnum(errorCode));
         }
     }
