@@ -44,17 +44,12 @@ public class CpacsConfiguration implements AutoCloseable {
     }
 
     
-    public String wingGetUID(final int wingIndex) {
-        if (!checkTiglConfiguration()) {
-            return "";
-        }
+    public String wingGetUID(final int wingIndex) throws TiglException {
+        checkTiglConfiguration();
         
         PointerByReference c_wuid = new PointerByReference();
         errorCode = TiglNativeInterface.tiglWingGetUID(cpacsHandle, wingIndex, c_wuid);
-        if (errorCode != 0) {
-            LOGGER.error("tiglExportIGES failed in TIGLInterface::tiglWingGetUpperPoint");
-            return "";
-        }  
+        throwIfError("tiglWingGetUID", errorCode);
         
         String wingUID = c_wuid.getValue().getString(0);
         return wingUID;
@@ -65,18 +60,14 @@ public class CpacsConfiguration implements AutoCloseable {
      * @param wingIndex Index of the wing (1 <= index <= numerOfWings)
      * 
      * @return Number of wing segments
+     * @throws TiglException 
      */
-    public int wingGetSegmentCount(final int wingIndex) {
-        if (!checkTiglConfiguration()) {
-            return 0;
-        }
+    public int wingGetSegmentCount(final int wingIndex) throws TiglException {
+        checkTiglConfiguration();
         
         IntByReference segmentCount = new IntByReference();
         errorCode = TiglNativeInterface.tiglWingGetSegmentCount(cpacsHandle, wingIndex, segmentCount);
-        if (errorCode != 0) {
-            LOGGER.error("wingGetSegmentCount failed in TiglNativeInterface.tiglWingGetSegmentCount");
-            return 0;
-        }
+        throwIfError("tiglWingGetSegmentCount", errorCode);
         
         return segmentCount.getValue();
     }
@@ -87,18 +78,14 @@ public class CpacsConfiguration implements AutoCloseable {
      * @param segmentIndex Index of the segment to query (1 <= index <= #segmentCount)
      * 
      * @return UID of the segment as a String
+     * @throws TiglException 
      */
-    public String wingGetSegmentUID(final int wingIndex, final int segmentIndex) {
-        if (!checkTiglConfiguration()) {
-            return "";
-        }
+    public String wingGetSegmentUID(final int wingIndex, final int segmentIndex) throws TiglException {
+        checkTiglConfiguration();
         
         PointerByReference c_suid = new PointerByReference();
         errorCode = TiglNativeInterface.tiglWingGetSegmentUID(cpacsHandle, wingIndex, segmentIndex, c_suid);
-        if (errorCode != 0) {
-            LOGGER.error("wingGetSegmentUID failed in native call of TiglNativeInterface.tiglWingGetSegmentUID");
-            return "";
-        }  
+        throwIfError("tiglWingGetSegmentUID", errorCode);
         
         String segmentUID = c_suid.getValue().getString(0);
         return segmentUID;
@@ -114,24 +101,20 @@ public class CpacsConfiguration implements AutoCloseable {
      * @param eta - the eta coordinate, going from 0 - 1
      * @param xsi - the xsi coordinate, going from 0 - 1
      * @return - a Point object with x, y, z.
+     * @throws TiglException 
      */
-    public TiglPoint wingGetUpperPoint(final int wingIndex, final int segmentIndex, final double eta, final double xsi) {
+    public TiglPoint wingGetUpperPoint(final int wingIndex, final int segmentIndex, final double eta, final double xsi) throws TiglException {
         TiglPoint point = new TiglPoint();
 
-        if (!checkTiglConfiguration()) {
-            return point;
-        }
-
+        checkTiglConfiguration();
+        
         DoubleByReference pointX = new DoubleByReference();
         DoubleByReference pointY = new DoubleByReference();
         DoubleByReference pointZ = new DoubleByReference();
 
         // get uppper Point from TIGL
         errorCode = TiglNativeInterface.tiglWingGetUpperPoint(cpacsHandle, wingIndex, segmentIndex, eta, xsi, pointX, pointY, pointZ);
-        if (errorCode != 0) {
-            LOGGER.error("tiglExportIGES failed in TIGLInterface::tiglWingGetUpperPoint");
-            return point;
-        }  
+        throwIfError("tiglWingGetUpperPoint", errorCode);
 
         point.setX(pointX.getValue());
         point.setY(pointY.getValue());
@@ -151,13 +134,12 @@ public class CpacsConfiguration implements AutoCloseable {
      * @param eta - the eta coordinate, going from 0 - 1
      * @param xsi - the xsi coordinate, going from 0 - 1
      * @return - a Point object with x, y, z.
+     * @throws TiglException 
      */
-    public TiglPoint wingGetLowerPoint(final int wingIndex, final int segmentIndex, final double eta, final double xsi) {
+    public TiglPoint wingGetLowerPoint(final int wingIndex, final int segmentIndex, final double eta, final double xsi) throws TiglException {
         TiglPoint point = new TiglPoint();
 
-        if (!checkTiglConfiguration()) {
-            return point;
-        }
+        checkTiglConfiguration();
 
         DoubleByReference pointX = new DoubleByReference();
         DoubleByReference pointY = new DoubleByReference();
@@ -165,10 +147,7 @@ public class CpacsConfiguration implements AutoCloseable {
 
         // get lower Point from TIGL
         errorCode = TiglNativeInterface.tiglWingGetLowerPoint(cpacsHandle, wingIndex, segmentIndex, eta, xsi, pointX, pointY, pointZ);
-        if (errorCode != 0) {
-            LOGGER.error("tiglExportIGES failed in TIGLInterface::tiglWingGetLowerPoint");
-            return point;
-        }  
+        throwIfError("tiglWingGetLowerPoint", errorCode);
 
         point.setX(pointX.getValue());
         point.setY(pointY.getValue());
@@ -185,13 +164,12 @@ public class CpacsConfiguration implements AutoCloseable {
      * @param eta - the eta coordinate, going from 0 - 1
      * @param xsi - the xsi coordinate, going from 0 - 1
      * @return - a Point object with x, y, z.
+     * @throws TiglException 
      */
-    public TiglPoint wingGetChordPoint(final int wingIndex, final int segmentIndex, final double eta, final double xsi) {
+    public TiglPoint wingGetChordPoint(final int wingIndex, final int segmentIndex, final double eta, final double xsi) throws TiglException {
         TiglPoint point = new TiglPoint();
 
-        if (!checkTiglConfiguration()) {
-            return point;
-        }
+        checkTiglConfiguration();
 
         DoubleByReference pointX = new DoubleByReference();
         DoubleByReference pointY = new DoubleByReference();
@@ -199,10 +177,7 @@ public class CpacsConfiguration implements AutoCloseable {
 
         // get lower Point from TIGL
         errorCode = TiglNativeInterface.tiglWingGetChordPoint(cpacsHandle, wingIndex, segmentIndex, eta, xsi, pointX, pointY, pointZ);
-        if (errorCode != 0) {
-            LOGGER.error("calling native function TiglNativeInterface.tiglWingGetChordPoint failed");
-            return point;
-        }  
+        throwIfError("tiglWingGetChordPoint", errorCode);
 
         point.setX(pointX.getValue());
         point.setY(pointY.getValue());
@@ -219,13 +194,12 @@ public class CpacsConfiguration implements AutoCloseable {
      * @param eta - the eta coordinate, going from 0 - 1
      * @param xsi - the xsi coordinate, going from 0 - 1
      * @return - a Point object with x, y, z.
+     * @throws TiglException 
      */
-    public TiglPoint wingGetChordNormal(final int wingIndex, final int segmentIndex, final double eta, final double xsi) {
+    public TiglPoint wingGetChordNormal(final int wingIndex, final int segmentIndex, final double eta, final double xsi) throws TiglException {
         TiglPoint point = new TiglPoint();
 
-        if (!checkTiglConfiguration()) {
-            return point;
-        }
+        checkTiglConfiguration();
 
         DoubleByReference pointX = new DoubleByReference();
         DoubleByReference pointY = new DoubleByReference();
@@ -233,10 +207,7 @@ public class CpacsConfiguration implements AutoCloseable {
 
         // get lower Point from TIGL
         errorCode = TiglNativeInterface.tiglWingGetChordNormal(cpacsHandle, wingIndex, segmentIndex, eta, xsi, pointX, pointY, pointZ);
-        if (errorCode != 0) {
-            LOGGER.error("calling native function TiglNativeInterface.tiglWingGetChordPoint failed");
-            return point;
-        }  
+        throwIfError("tiglWingGetChordNormal", errorCode);
 
         point.setX(pointX.getValue());
         point.setY(pointY.getValue());
@@ -245,17 +216,12 @@ public class CpacsConfiguration implements AutoCloseable {
         return point;
     }
     
-    public double wingGetReferenceArea(final int wingIndex, final TiglSymmetryAxis projectionPlane) {
-        if (!checkTiglConfiguration()) {
-            return 0.;
-        }
+    public double wingGetReferenceArea(final int wingIndex, final TiglSymmetryAxis projectionPlane) throws TiglException {
+        checkTiglConfiguration();
         
         DoubleByReference referenceArea = new DoubleByReference();
         errorCode = TiglNativeInterface.tiglWingGetReferenceArea(wingIndex, wingIndex, projectionPlane.getValue(), referenceArea);
-        if (errorCode != 0) {
-            LOGGER.error("calling native function TiglNativeInterface.tiglWingGetReferenceArea failed");
-            return 0.;
-        }  
+        throwIfError("tiglWingGetReferenceArea", errorCode);
         
         return referenceArea.getValue();
     }
@@ -268,13 +234,12 @@ public class CpacsConfiguration implements AutoCloseable {
      * @param xsi Xsi (profile depth) coordinate, with 0<=xsi<=1
      * 
      * @return Point on the wing component segment
+     * @throws TiglException 
      */
-    public TiglPoint wingComponentSegmentGetPoint(String componentSegmentUID, double eta, double xsi) {
+    public TiglPoint wingComponentSegmentGetPoint(String componentSegmentUID, double eta, double xsi) throws TiglException {
         TiglPoint point = new TiglPoint();
 
-        if (!checkTiglConfiguration()) {
-            return point;
-        }
+        checkTiglConfiguration();
         
         DoubleByReference pointX = new DoubleByReference();
         DoubleByReference pointY = new DoubleByReference();
@@ -282,10 +247,7 @@ public class CpacsConfiguration implements AutoCloseable {
         
         // get lower Point from TIGL
         errorCode = TiglNativeInterface.tiglWingComponentSegmentGetPoint(cpacsHandle, componentSegmentUID, eta, xsi, pointX, pointY, pointZ);
-        if (errorCode != 0) {
-            LOGGER.error("calling native function TiglNativeInterface.tiglWingComponentSegmentGetPoint failed");
-            return point;
-        }  
+        throwIfError("tiglWingComponentSegmentGetPoint", errorCode);
 
         point.setX(pointX.getValue());
         point.setY(pointY.getValue());
@@ -296,34 +258,27 @@ public class CpacsConfiguration implements AutoCloseable {
 
     /**
      * Returns the number of fuselages defined for the current configuration
+     * @throws TiglException 
      */
-    public int getFuselageCount() {
-        if (!checkTiglConfiguration()) {
-            return 0;
-        }
+    public int getFuselageCount() throws TiglException {
+        checkTiglConfiguration();
+
         
         IntByReference fuselageCount = new IntByReference();
         errorCode = TiglNativeInterface.tiglGetFuselageCount(cpacsHandle, fuselageCount);
-        if (errorCode != 0) {
-            LOGGER.error("getFuselageCount failed in TiglNativeInterface.tiglGetFuselageCount");
-            return 0;
-        }
+        throwIfError("tiglGetFuselageCount", errorCode);
         
         return fuselageCount.getValue();
     }
     
     
-    public String fuselageGetUID(final int fuselageIndex) {
-        if (!checkTiglConfiguration()) {
-            return "";
-        }
+    public String fuselageGetUID(final int fuselageIndex) throws TiglException {
+        checkTiglConfiguration();
+
         
         PointerByReference c_fuid = new PointerByReference();
         errorCode = TiglNativeInterface.tiglFuselageGetUID(cpacsHandle, fuselageIndex, c_fuid);
-        if (errorCode != 0) {
-            LOGGER.error("fuselageGetUID failed in TiglNativeInterface.tiglFuselageGetUID");
-            return "";
-        }  
+        throwIfError("tiglFuselageGetUID", errorCode);
         
         String fuselageUID = c_fuid.getValue().getString(0);
         return fuselageUID;
@@ -335,18 +290,15 @@ public class CpacsConfiguration implements AutoCloseable {
      * @param fuselageIndex Index of the wing (1 <= index <= numerOfFuselages)
      * 
      * @return Number of fuselage segments
+     * @throws TiglException 
      */
-    public int fuselageGetSegmentCount(int fuselageIndex) {
-        if (!checkTiglConfiguration()) {
-            return 0;
-        }
+    public int fuselageGetSegmentCount(int fuselageIndex) throws TiglException {
+        checkTiglConfiguration();
+
         
         IntByReference segmentCount = new IntByReference();
         errorCode = TiglNativeInterface.tiglFuselageGetSegmentCount(cpacsHandle, fuselageIndex, segmentCount);
-        if (errorCode != 0) {
-            LOGGER.error("fuselageGetSegmentCount failed in TiglNativeInterface.tiglFuselageGetSegmentCount");
-            return 0;
-        }
+        throwIfError("tiglFuselageGetSegmentCount", errorCode);
         
         return segmentCount.getValue();
     }
@@ -358,18 +310,15 @@ public class CpacsConfiguration implements AutoCloseable {
      * @param segmentIndex Index of the segment to query (1 <= index <= #segmentCount)
      * 
      * @return UID of the segment as a String
+     * @throws TiglException 
      */
-    public String fuselageGetSegmentUID(final int fuselageIndex, final int segmentIndex) {
-        if (!checkTiglConfiguration()) {
-            return "";
-        }
+    public String fuselageGetSegmentUID(final int fuselageIndex, final int segmentIndex) throws TiglException {
+        checkTiglConfiguration();
+
         
         PointerByReference c_suid = new PointerByReference();
         errorCode = TiglNativeInterface.tiglFuselageGetSegmentUID(cpacsHandle, fuselageIndex, segmentIndex, c_suid);
-        if (errorCode != 0) {
-            LOGGER.error("fuselageGetSegmentUID failed in native call of TiglNativeInterface.tiglFuselageGetSegmentUID");
-            return "";
-        }  
+        throwIfError("tiglFuselageGetSegmentUID", errorCode);
         
         String segmentUID = c_suid.getValue().getString(0);
         return segmentUID;
@@ -386,13 +335,13 @@ public class CpacsConfiguration implements AutoCloseable {
      * @param eta - the eta coordinate, going from 0 - 1
      * @param xsi - the xsi coordinate, going from 0 - 1
      * @return - a Point object with x, y, z.
+     * @throws TiglException 
      */
-    public TiglPoint fuselageGetPoint(final int fuselageIndex, final int segmentIndex, final double eta, final double xsi) {
+    public TiglPoint fuselageGetPoint(final int fuselageIndex, final int segmentIndex, final double eta, final double xsi) throws TiglException {
         TiglPoint point = new TiglPoint();
 
-        if (!checkTiglConfiguration()) {
-            return point;
-        }
+        checkTiglConfiguration();
+
 
         DoubleByReference pointX = new DoubleByReference();
         DoubleByReference pointY = new DoubleByReference();
@@ -400,10 +349,7 @@ public class CpacsConfiguration implements AutoCloseable {
 
         // get lower Point from TIGL
         errorCode = TiglNativeInterface.tiglFuselageGetPoint(cpacsHandle, fuselageIndex, segmentIndex, eta, xsi, pointX, pointY, pointZ);
-        if (errorCode != 0) {
-            LOGGER.error("tiglExportIGES failed in TIGLInterface::tiglFuselageGetPoint");
-            return point;
-        }  
+        throwIfError("tiglFuselageGetPoint", errorCode);
 
         point.setX(pointX.getValue());
         point.setY(pointY.getValue());
@@ -416,23 +362,24 @@ public class CpacsConfiguration implements AutoCloseable {
      * Returns the B-Spline parameterization of a CPACS profile (wing or fuselage currently)
      * @param uid CPACS UID of the profile
      * @return List of B-Spline the profile is constructed of
+     * @throws TiglException 
      */
-    public ArrayList<TiglBSpline> getProfileSplines(String uid) {
+    public ArrayList<TiglBSpline> getProfileSplines(String uid) throws TiglException {
+        checkTiglConfiguration();
+
         ArrayList<TiglBSpline> list = new ArrayList<>();
         
         IntByReference splineCount = new IntByReference(0);
-        int tiglRet = TiglNativeInterface.tiglProfileGetBSplineCount(cpacsHandle, uid, splineCount);
-        
-        if (tiglRet != 0 || splineCount.getValue() < 1) {
-            return list;
-        }
-        
+        errorCode = TiglNativeInterface.tiglProfileGetBSplineCount(cpacsHandle, uid, splineCount);
+        throwIfError("tiglProfileGetBSplineCount", errorCode);
+
         for (int ispl = 1; ispl <= splineCount.getValue(); ++ispl) {
             IntByReference degree = new IntByReference();
             IntByReference ncp    = new IntByReference();
             IntByReference nk     = new IntByReference();
             // get data sizes
-            TiglNativeInterface.tiglProfileGetBSplineDataSizes(cpacsHandle, uid, ispl, degree, ncp, nk);
+            errorCode = TiglNativeInterface.tiglProfileGetBSplineDataSizes(cpacsHandle, uid, ispl, degree, ncp, nk);
+            throwIfError("tiglProfileGetBSplineDataSizes", errorCode);
             
             // allocate memory
             Pointer cpx   = new Memory(ncp.getValue() * Native.getNativeSize(Double.TYPE));
@@ -441,7 +388,8 @@ public class CpacsConfiguration implements AutoCloseable {
             Pointer knots = new Memory(nk.getValue()  * Native.getNativeSize(Double.TYPE));
             
             // get data
-            TiglNativeInterface.tiglProfileGetBSplineData(cpacsHandle, uid, ispl, ncp.getValue(), cpx, cpy, cpz, nk.getValue(), knots);
+            errorCode = TiglNativeInterface.tiglProfileGetBSplineData(cpacsHandle, uid, ispl, ncp.getValue(), cpx, cpy, cpz, nk.getValue(), knots);
+            throwIfError("tiglProfileGetBSplineData", errorCode);
             
             TiglBSpline spline = new TiglBSpline();
             spline.degree = degree.getValue();
@@ -472,20 +420,14 @@ public class CpacsConfiguration implements AutoCloseable {
      * 
      * @param exportFileName
      *            The full filename of the file to be exported.
-     * @return true if success.
+     * @throws TiglException 
      */    
-    public boolean exportIGES(final String exportFileName) { 
-        if (!checkTiglConfiguration()) {
-            return false;
-        }
+    public void exportIGES(final String exportFileName) throws TiglException { 
+        checkTiglConfiguration();
 
         // export to the file
         errorCode = TiglNativeInterface.tiglExportIGES(cpacsHandle, exportFileName); 
-        if (errorCode != 0) {
-            LOGGER.error("exportIGES failed in TiglNativeInterface.tiglExportIGES");
-            return false;
-        }          
-        return true;
+        throwIfError("tiglExportIGES", errorCode);
     }
     
     /**
@@ -493,20 +435,14 @@ public class CpacsConfiguration implements AutoCloseable {
      * 
      * @param exportFileName
      *            The full filename of the file to be exported.
-     * @return true if success.
+     * @throws TiglException 
      */    
-    public boolean exportSTEP(final String exportFileName) { 
-        if (!checkTiglConfiguration()) {
-            return false;
-        }
+    public void exportSTEP(final String exportFileName) throws TiglException { 
+        checkTiglConfiguration();
 
         // export to the file
         errorCode = TiglNativeInterface.tiglExportSTEP(cpacsHandle, exportFileName);
-        if (errorCode != 0) {
-            LOGGER.error("exportSTEP failed in TiglNativeInterface.tiglExportSTEP");
-            return false;
-        }          
-        return true;
+        throwIfError("tiglExportSTEP", errorCode);
     }
     
     
@@ -516,20 +452,14 @@ public class CpacsConfiguration implements AutoCloseable {
      * @param wingUID - UID of the wing to export
      * @param fileName - The filename to save with.
      * @param deflection - The deflection of the meshing.
-     * @return true if success.
+     * @throws TiglException 
      */
-    public boolean exportMeshedWingVTK(final String wingUID, final String fileName, final double deflection) {
-        if (!checkTiglConfiguration()) {
-            return false;
-        }
+    public void exportMeshedWingVTK(final String wingUID, final String fileName, final double deflection) throws TiglException {
+        checkTiglConfiguration();
 
         // export to the file
         errorCode = TiglNativeInterface.tiglExportMeshedWingVTKByUID(cpacsHandle, wingUID, fileName, deflection); 
-        if (errorCode != 0) {
-            LOGGER.error("tiglExportIGES failed in TIGLInterface::tiglExportMeshedWingVTKByIndex");
-            return false;
-        }        
-        return true;
+        throwIfError("TiglNativeInterface.tiglExportMeshedWingVTKByUID", errorCode);
     }
 
     /**
@@ -539,20 +469,14 @@ public class CpacsConfiguration implements AutoCloseable {
      * @param wingUID - The UID of the wing to export.
      * @param fileName - The filename to save with.
      * @param deflection - The deflection of the meshing.
-     * @return true if success.
+     * @throws TiglException 
      */
-    public boolean exportMeshedWingVTKSimple(final String wingUID, final String fileName, final double deflection) {
-        if (!checkTiglConfiguration()) {
-            return false;
-        }
+    public void exportMeshedWingVTKSimple(final String wingUID, final String fileName, final double deflection) throws TiglException {
+        checkTiglConfiguration();
 
         // export to the file
         errorCode = TiglNativeInterface.tiglExportMeshedWingVTKSimpleByUID(cpacsHandle, wingUID, fileName, deflection); 
-        if (errorCode != 0) {
-            LOGGER.error("tiglExportIGES failed in TIGLInterface::tiglExportMeshedWingVTKByUID");
-            return false;
-        }        
-        return true;
+        throwIfError("tiglExportMeshedWingVTKSimpleByUID", errorCode);
     }
 
     /**
@@ -563,20 +487,14 @@ public class CpacsConfiguration implements AutoCloseable {
      * @param fuselageUID - The UID of the fuselage to export.
      * @param fileName - The filename to save with.
      * @param deflection - The deflection of the meshing.
-     * @return true if success.
+     * @throws TiglException 
      */
-    public boolean exportMeshedFuselageVTKSimple(final String fuselageUID, final String fileName, final double deflection) {
-        if (!checkTiglConfiguration()) {
-            return false;
-        }
+    public void exportMeshedFuselageVTKSimple(final String fuselageUID, final String fileName, final double deflection) throws TiglException {
+        checkTiglConfiguration();
 
         // export to the file
         errorCode = TiglNativeInterface.tiglExportMeshedFuselageVTKSimpleByUID(cpacsHandle, fuselageUID, fileName, deflection); 
-        if (errorCode != 0) {
-            LOGGER.error("tiglExportIGES failed in TIGLInterface::tiglExportMeshedFuselageVTK");
-            return false;
-        }        
-        return true;
+        throwIfError("tiglExportMeshedFuselageVTKSimpleByUID", errorCode);
     }    
 
     /**
@@ -588,20 +506,14 @@ public class CpacsConfiguration implements AutoCloseable {
      * @param fuselageUID - The UID of the fuselage to export.
      * @param fileName - The filename to save with.
      * @param deflection - The deflection of the meshing.
-     * @return true if success..
+     * @throws TiglException 
      */
-    public boolean exportMeshedFuselageVTK(final String fuselageUID, final String fileName, final double deflection) {
-        if (!checkTiglConfiguration()) {
-            return false;
-        }
+    public void exportMeshedFuselageVTK(final String fuselageUID, final String fileName, final double deflection) throws TiglException {
+        checkTiglConfiguration();
 
         // export to the file
         errorCode = TiglNativeInterface.tiglExportMeshedFuselageVTKByUID(cpacsHandle, fuselageUID, fileName, deflection); 
-        if (errorCode != 0) {
-            LOGGER.error("tiglExportIGES failed in TIGLInterface::tiglExportMeshedFuselageVTK");
-            return false;
-        }        
-        return true;
+        throwIfError("tiglExportMeshedFuselageVTKSimpleByUID", errorCode);
     }
     
 
@@ -636,20 +548,24 @@ public class CpacsConfiguration implements AutoCloseable {
      * Checks if this instance has a cpacs configuration loaded.
      * 
      * @return true if success
+     * @throws TiglException 
      */
-    private boolean checkTiglConfiguration() 
+    private void checkTiglConfiguration() throws TiglException 
     {
         // check if configuration is loaded
-        if (cpacsHandle <= 0) {
+        IntByReference isValid = new IntByReference();
+        TiglNativeInterface.tiglIsCPACSConfigurationHandleValid(cpacsHandle, isValid);
+        if (isValid.getValue() != TiglBoolean.TIGL_TRUE.getValue()) {
             LOGGER.error("checkTiglConfiguration::Tried to work with a cpacs configuration whose handle is invalid (not loaded/imported before)");
-            return false;
+            throw new TiglException("Invalid cpacs handle", TiglReturnCode.TIGL_NOT_FOUND);
         }
-        return true;
     }
     
-    private static void throwIfError(String methodname, int errorcode) throws TiglException {
-        if (errorcode != TiglReturnCode.TIGL_SUCCESS.getValue()) {
-            throw new TiglException(methodname, TiglReturnCode.getEnum(errorcode));
+    private static void throwIfError(String methodname, int errorCode) throws TiglException {
+        if (errorCode != TiglReturnCode.TIGL_SUCCESS.getValue()) {
+    		String message = " In TiGL function \"" + methodname + "."
+    				+ "\"";
+            throw new TiglException(message, TiglReturnCode.getEnum(errorCode));
         }
     }
     

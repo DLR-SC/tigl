@@ -54,7 +54,7 @@ public class TiGLTest {
 				System.out.println("wingcount: " + wingCount.getValue());
 			}
 			
-			DoubleByReference mac = new DoubleByReference();
+			DoubleByReference mac   = new DoubleByReference();
 			DoubleByReference mac_x = new DoubleByReference();
 			DoubleByReference mac_y = new DoubleByReference();
 			DoubleByReference mac_z = new DoubleByReference();
