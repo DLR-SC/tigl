@@ -18,10 +18,16 @@ public class TiGLTest {
 
 
 	public static void main(String[] args) {
+		if (args.length != 1) {
+			System.err.println("Usage: tigltest <cpacs-file>");
+			return;
+		}
+		
+		String filename = args[0];
 		
 		System.out.println("TiGL Version: " + Tigl.getVersion());
 		
-		try (CpacsConfiguration config = Tigl.openCPACSConfiguration("d:\\src\\tiglsplineexample\\simpletest.cpacs.xml", "")) {
+		try (CpacsConfiguration config = Tigl.openCPACSConfiguration(filename, "")) {
 			
 			// get splines from a profile NACA0012
 			ArrayList<TiglBSpline> splines = config.getProfileSplines("NACA0012");
