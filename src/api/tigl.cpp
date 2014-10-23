@@ -1573,20 +1573,58 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSegmentIndex(TiglCPACSConfiguration
 }
 
 
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSectionCount(TiglCPACSConfigurationHandle cpacsHandle,
+                                                          int wingIndex,
+                                                          int* sectionCount)
+{
+    if (sectionCount == 0) {
+        LOG(ERROR) << "Error: Null pointer argument for sectionCount "
+                   << "in function call to tiglWingGetSectionCount.";
+        return TIGL_NULL_POINTER;
+    }
+
+    if (wingIndex < 1) {
+        LOG(ERROR) << "Error: Wing index is less than zero "
+                   << "in function call to tiglWingGetSectionCount.";
+        return TIGL_INDEX_ERROR;
+    }
+
+    try {
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+        tigl::CCPACSWing& wing = config.GetWing(wingIndex);
+        *sectionCount = wing.GetSectionCount();
+        return TIGL_SUCCESS;
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglWingGetSectionCount!" << std::endl;
+        return TIGL_ERROR;
+    }
+}
+
+
 TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSectionUID(TiglCPACSConfigurationHandle cpacsHandle,
                                                         int wingIndex,
                                                         int sectionIndex,
                                                         char** uidNamePtr)
 {
     if (uidNamePtr == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for uidNamePtr ";
-        LOG(ERROR) << "in function call to tiglWingGetSectionUID." << std::endl;
+        LOG(ERROR) << "Error: Null pointer argument for uidNamePtr "
+                   << "in function call to tiglWingGetSectionUID.";
         return TIGL_NULL_POINTER;
     }
 
     if (wingIndex < 1 || sectionIndex < 1) {
-        LOG(ERROR) << "Error: Wing or segment index index in less than zero ";
-        LOG(ERROR) << "in function call to tiglWingGetSectionUID." << std::endl;
+        LOG(ERROR) << "Error: Wing or segment index is less than zero "
+                   << "in function call to tiglWingGetSectionUID.";
         return TIGL_INDEX_ERROR;
     }
 
@@ -2913,6 +2951,44 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSegmentUID(TiglCPACSConfigurati
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglFuselageGetSegmentUID!" << std::endl;
+        return TIGL_ERROR;
+    }
+}
+
+
+TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSectionCount(TiglCPACSConfigurationHandle cpacsHandle,
+                                                          int fuselageIndex,
+                                                          int* sectionCount)
+{
+    if (sectionCount == 0) {
+        LOG(ERROR) << "Error: Null pointer argument for sectionCount "
+                   << "in function call to tiglFuselageGetSectionCount.";
+        return TIGL_NULL_POINTER;
+    }
+
+    if (fuselageIndex < 1) {
+        LOG(ERROR) << "Error: Fuselage index is less than zero "
+                   << "in function call to tiglFuselageGetSectionCount.";
+        return TIGL_INDEX_ERROR;
+    }
+
+    try {
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+        tigl::CCPACSFuselage& fuselage = config.GetFuselage(fuselageIndex);
+        *sectionCount = fuselage.GetSectionCount();
+        return TIGL_SUCCESS;
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglFuselageGetSectionCount!" << std::endl;
         return TIGL_ERROR;
     }
 }

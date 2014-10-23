@@ -17,7 +17,7 @@
 */
 
 /* 
-* This file is automatically created from tigl.h on 2014-10-21.
+* This file is automatically created from tigl.h on 2014-10-23.
 * If you experience any bugs please contact the authors
 */
 
@@ -63,6 +63,7 @@ public class TiglNativeInterface {
     public static native int tiglWingGetIndex(int cpacsHandle, String wingUID, IntByReference wingIndexPtr);
     public static native int tiglWingGetSegmentUID(int cpacsHandle, int wingIndex, int segmentIndex, PointerByReference uidNamePtr);
     public static native int tiglWingGetSegmentIndex(int cpacsHandle, String segmentUID, IntByReference segmentIndexPtr, IntByReference wingIndexPtr);
+    public static native int tiglWingGetSectionCount(int cpacsHandle, int wingIndex, IntByReference sectionCount);
     public static native int tiglWingGetSectionUID(int cpacsHandle, int wingIndex, int sectionIndex, PointerByReference uidNamePtr);
     public static native int tiglWingGetSymmetry(int cpacsHandle, int wingIndex, IntByReference symmetryAxisPtr);
     public static native int tiglWingComponentSegmentFindSegment(int cpacsHandle, String componentSegmentUID, double x, double y, double z, PointerByReference segmentUID, PointerByReference wingUID);
@@ -93,6 +94,7 @@ public class TiglNativeInterface {
     public static native int tiglFuselageGetProfileName(int cpacsHandle, int fuselageIndex, int sectionIndex, int elementIndex, PointerByReference profileNamePtr);
     public static native int tiglFuselageGetUID(int cpacsHandle, int fuselageIndex, PointerByReference uidNamePtr);
     public static native int tiglFuselageGetSegmentUID(int cpacsHandle, int fuselageIndex, int segmentIndex, PointerByReference uidNamePtr);
+    public static native int tiglFuselageGetSectionCount(int cpacsHandle, int fuselageIndex, IntByReference sectionCount);
     public static native int tiglFuselageGetSectionUID(int cpacsHandle, int fuselageIndex, int sectionIndex, PointerByReference uidNamePtr);
     public static native int tiglFuselageGetSymmetry(int cpacsHandle, int fuselageIndex, IntByReference symmetryAxisPtr);
     public static native int tiglFuselageGetMinumumDistanceToGround(int cpacsHandle, String fuselageUID, double axisPntX, double axisPntY, double axisPntZ, double axisDirX, double axisDirY, double axisDirZ, double angle, DoubleByReference pointXPtr, DoubleByReference pointYPtr, DoubleByReference pointZPtr);
