@@ -22,8 +22,7 @@ public class TiglException extends Exception{
 	
 	@Override
 	public String getMessage() {
-		return "TiglException: " + methodName  
-				+ ": returned " + TiglNativeInterface.tiglGetErrorString(errorCode.getValue()) 
+		return "TiglException: " + methodName + " Error code " + errorCode.toString()  
 				+ "(" + errorCode.getValue() + ")";
 	}
 }
