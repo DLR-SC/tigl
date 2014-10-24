@@ -1,5 +1,3 @@
-package de.dlr.sc.tigltest;
-
 import java.util.ArrayList;
 
 import com.sun.jna.ptr.DoubleByReference;
@@ -14,7 +12,7 @@ import de.dlr.sc.tigl.TiglSymmetryAxis;
 import de.dlr.sc.tigl.TiglException;
 
 
-public class TiGLTest {
+public class JavaDemo {
 
 
 	public static void main(String[] args) {
@@ -38,6 +36,10 @@ public class TiGLTest {
 			
 			System.out.println("fuselagecount: " + config.getFuselageCount());
 			String wingUID = config.wingGetUID(1);
+			
+			for (int i = 1; i <= config.wingGetSectionCount(1); ++i) {
+				System.out.println(config.wingGetSectionUID(1, i));
+			}
 			
 			TiglPoint p = config.wingGetLowerPoint(1, 1, 0.5, 0.5);
 			System.out.println(p);
