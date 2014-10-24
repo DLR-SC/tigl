@@ -424,7 +424,7 @@ public class CpacsConfiguration implements AutoCloseable {
     /**
      * Returns the number of sections of the fuselage
      * 
-     * @param wingIndex Index of the fuselage
+     * @param fuselageIndex Index of the fuselage
      * @return Number of fuselage sections
      * @throws TiglException
      */
