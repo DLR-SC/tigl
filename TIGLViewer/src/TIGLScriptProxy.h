@@ -40,7 +40,6 @@ private:
     // Returns the CPACS configuration
     tigl::CCPACSConfiguration& GetConfiguration(void);
     TiglCPACSConfigurationHandle getTiglHandle(void);
-    char* qString2char(QString str);
     
 public:
     TIGLScriptProxy(TIGLViewerWindow* app);
@@ -52,17 +51,22 @@ public slots:
     // wrapped tigl functions
     QScriptValue getWingCount();
     QString getVersion();
-    int  componentGetHashCode (QString componentUID);
-    int  componentIntersectionLineCount (QString componentUidOne, QString componentUidTwo);
-    void exportFusedWingFuselageIGES (QString filenamePtr);
-    void exportIGES (QString filenamePtr);
-    void exportMeshedFuselageSTL(int fuselageIndex, QString filenamePtr, double deflection);
-    void exportMeshedFuselageVTKByIndex (int fuselageIndex, QString filenamePtr, double deflection);
-    void exportMeshedFuselageVTKByUID (QString fuselageUID, QString filenamePtr, double deflection);
-    double  fuselageGetCircumference (int fuselageIndex, int segmentIndex, double eta);
+    QScriptValue componentGetHashCode (QString componentUID);
+    QScriptValue componentIntersectionLineCount (QString componentUidOne, QString componentUidTwo);
+    
+    // exports
+    QScriptValue exportFusedWingFuselageIGES (QString filename);
+    QScriptValue exportIGES (QString filename);
+    QScriptValue exportSTEP (QString filename);
+    QScriptValue exportMeshedFuselageSTL(int fuselageIndex, QString filename, double deflection);
+    QScriptValue exportMeshedFuselageVTKByIndex (int fuselageIndex, QString filename, double deflection);
+    QScriptValue exportMeshedFuselageVTKByUID (QString fuselageUID, QString filename, double deflection);
+    
+    // fuselage stuff
+    QScriptValue fuselageGetCircumference (int fuselageIndex, int segmentIndex, double eta);
     QScriptValue fuselageGetPoint (int fuselageIndex, int segmentIndex, double eta, double zeta);
     QScriptValue fuselageGetSegmentUID (int fuselageIndex, int segmentIndex);
-    double  fuselageGetSegmentVolume (int fuselageIndex, int segmentIndex);
+    QScriptValue fuselageGetSegmentVolume (int fuselageIndex, int segmentIndex);
     QScriptValue getFuselageCount();
     QScriptValue fuselageGetSegmentCount(int fuselageIndex);
     QScriptValue wingGetUpperPoint(int wingIndex, int segmentIndex, double eta, double xsi);
@@ -71,6 +75,9 @@ public slots:
     QScriptValue wingGetLowerPointAtDirection(int wingIndex, int segmentIndex, double eta, double xsi, double dirx, double diry, double dirz);
     QScriptValue wingGetChordPoint(int wingIndex, int segmentIndex, double eta, double xsi);
     QScriptValue wingGetChordNormal(int wingIndex, int segmentIndex, double eta, double xsi);
+    QScriptValue wingGetSegmentCount(int wingIndex);
+    QScriptValue wingGetSegmentUID(int wingIndex, int segmentIndex);
+    QString      getErrorString(int errorCode);
     
 private:
     QString m_fileName;
