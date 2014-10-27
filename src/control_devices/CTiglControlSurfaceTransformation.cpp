@@ -119,11 +119,14 @@ CTiglControlSurfaceTransformation::CTiglControlSurfaceTransformation(gp_Pnt hing
      *
      * and delete comment marks around scale by the totalTransformation.
     */
+    /*
     double sf =  (p2s-p1s).Magnitude()/(p2-p1).Magnitude();
+    // MS: this line is problematic, since OpenCASCADE does not allow non-uniform scaling
     scale.SetValues(sf,0,0,0,
                     0 ,1,0,0,
                     0 ,0,1,0,
                     1e-14,1e-14);
+    */
 
     // calculating and applying the final transformation.
     totalTransformation = translation * transformationFromLocal * rotPhi * rotTheta * rotAlpha /* * scale */ * transformationToLocal;
