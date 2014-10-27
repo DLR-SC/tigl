@@ -4110,9 +4110,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportFuselageColladaByUID(const TiglCPACS
     try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
-        tigl::CTiglExportCollada exporter(config);
-        
-        return exporter.exportFuselage(fuselageUID, filenamePtr, deflection);
+        tigl::CCPACSFuselage& fuselage = config.GetFuselage(fuselageUID);
+        return tigl::CTiglExportCollada::write(fuselage.GetLoft(), filenamePtr, deflection);
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what() << std::endl;
@@ -4144,9 +4143,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportWingColladaByUID(const TiglCPACSConf
     try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
-        tigl::CTiglExportCollada exporter(config);
-        
-        return exporter.exportWing(wingUID, filenamePtr, deflection);
+        tigl::CCPACSWing& wing = config.GetWing(wingUID);
+        return tigl::CTiglExportCollada::write(wing.GetLoft(), filenamePtr, deflection);
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what() << std::endl;

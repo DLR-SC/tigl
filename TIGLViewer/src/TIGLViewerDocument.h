@@ -116,6 +116,7 @@ public slots:
     void exportMeshedConfigVTKNoFuse();
     void exportWingCollada();
     void exportFuselageCollada();
+    void exportConfigCollada();
     void exportWingBRep();
     void exportFuselageBRep();
     void exportWingCurvesBRep();

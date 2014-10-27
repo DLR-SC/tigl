@@ -73,6 +73,7 @@
 #include "CCPACSFuselageSegment.h"
 #include "tiglcommonfunctions.h"
 #include "CTiglPoint.h"
+#include "CTiglExportCollada.h"
 
 #define max(a,b) ((a) > (b) ? (a) : (b))
 
@@ -81,6 +82,20 @@
 #endif
 
 #define START_COMMAND() TIGLViewerScopedCommand command(app->getConsole());Q_UNUSED(command);
+
+double getAbsDeflection (const TopoDS_Shape& theShape, double relDeflection)
+{
+    double aDeflection = relDeflection;
+    Bnd_Box aBndBox;
+    BRepBndLib::Add (theShape, aBndBox, Standard_False);
+    if (!aBndBox.IsVoid()) {
+        Standard_Real aXmin, aYmin, aZmin, aXmax, aYmax, aZmax;
+        aBndBox.Get (aXmin, aYmin, aZmin, aXmax, aYmax, aZmax);
+        aDeflection *= max(max(aXmax-aXmin, aYmax-aYmin), aZmax-aZmin);
+    }
+    
+    return aDeflection;
+}
 
 TIGLViewerDocument::TIGLViewerDocument(TIGLViewerWindow *parentWidget)
     : QObject(parentWidget)
@@ -1270,6 +1285,60 @@ void TIGLViewerDocument::exportWingCollada()
     }
 }
 
+void TIGLViewerDocument::exportFuselageCollada()
+{
+    QString     fileName;
+
+    QString fuselageUid = dlgGetFuselageSelection();
+
+    writeToStatusBar(tr("Saving meshed Fuselage as Collada file with TIGL..."));
+
+    fileName = QFileDialog::getSaveFileName(app, tr("Save as..."), myLastFolder, tr("Export Collada(*.dae)"));
+
+    if (!fileName.isEmpty()) {
+        START_COMMAND();
+        double deflection = GetConfiguration().GetAirplaneLenth() 
+                * TIGLViewerSettings::Instance().triangulationAccuracy();
+        TiglReturnCode err = tiglExportFuselageColladaByUID(m_cpacsHandle, qstringToCstring(fuselageUid), qstringToCstring(fileName), deflection);
+        if (err != TIGL_SUCCESS) {
+            displayError(QString("Error in function <u>tiglExportFuselageColladaByUID</u>. Error code: %1").arg(err), "TIGL Error");
+        }
+    }
+}
+
+void TIGLViewerDocument::exportConfigCollada()
+{
+    QString fileName = QFileDialog::getSaveFileName(app, tr("Save as..."), myLastFolder, tr("Export Collada(*.dae)"));
+    if (!fileName.isEmpty()) {
+        START_COMMAND();
+        TIGLViewerSettings& settings = TIGLViewerSettings::Instance();
+        double relDeflect = settings.triangulationAccuracy();
+        
+        tigl::CTiglExportCollada exporter;
+        tigl::CCPACSConfiguration& config = GetConfiguration();
+        for (int ifusel = 1; ifusel <= config.GetFuselageCount(); ++ifusel) {
+            tigl::CCPACSFuselage& fusel = config.GetFuselage(ifusel);
+            writeToStatusBar(tr("Computing ") + fusel.GetUID().c_str() + ".");
+            PNamedShape fshape = fusel.GetLoft();
+            exporter.addShape(fshape, getAbsDeflection(fshape->Shape(), relDeflect));
+        }
+        
+        for (int iwing = 1; iwing <= config.GetWingCount(); ++iwing) {
+            tigl::CCPACSWing& wing = config.GetWing(iwing);
+            writeToStatusBar(tr("Computing ") + wing.GetUID().c_str() + ".");
+            PNamedShape wshape = wing.GetLoft();
+            exporter.addShape(wshape, getAbsDeflection(wshape->Shape(), relDeflect));
+        }
+        
+        writeToStatusBar(tr("Meshing and writing COLLADA file ") + fileName + ".");
+        TiglReturnCode err = exporter.write(fileName.toStdString());
+        writeToStatusBar("");
+        if (err != TIGL_SUCCESS) {
+            displayError(QString("Error while exporting to COLLADA. Error code: %1").arg(err), "TIGL Error");
+        }
+    }
+}
+
 
 void TIGLViewerDocument::exportMeshedFuselageVTK()
 {
@@ -1357,27 +1426,6 @@ void TIGLViewerDocument::exportMeshedConfigVTKNoFuse()
 
         writeToStatusBar("");
         QApplication::restoreOverrideCursor();
-    }
-}
-
-void TIGLViewerDocument::exportFuselageCollada()
-{
-    QString     fileName;
-
-    QString fuselageUid = dlgGetFuselageSelection();
-
-    writeToStatusBar(tr("Saving meshed Fuselage as Collada file with TIGL..."));
-
-    fileName = QFileDialog::getSaveFileName(app, tr("Save as..."), myLastFolder, tr("Export Collada(*.dae)"));
-
-    if (!fileName.isEmpty()) {
-        START_COMMAND();
-        double deflection = GetConfiguration().GetAirplaneLenth() 
-                * TIGLViewerSettings::Instance().triangulationAccuracy();
-        TiglReturnCode err = tiglExportFuselageColladaByUID(m_cpacsHandle, qstringToCstring(fuselageUid), qstringToCstring(fileName), deflection);
-        if (err != TIGL_SUCCESS) {
-            displayError(QString("Error in function <u>tiglExportFuselageColladaByUID</u>. Error code: %1").arg(err), "TIGL Error");
-        }
     }
 }
 
