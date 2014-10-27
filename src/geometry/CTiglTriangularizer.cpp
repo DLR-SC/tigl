@@ -74,7 +74,11 @@ CTiglTriangularizer::CTiglTriangularizer(const TopoDS_Shape& shape, double defle
 {
     useMultipleObjects(multipleObj);
     
-    BRepMesh::Mesh(shape,deflection);
+    // check if we have already a mesh with given deflection
+    if (!BRepTools::Triangulation (shape, deflection)) {
+        BRepTools::Clean (shape);
+        BRepMesh::Mesh(shape, deflection);
+    }
     triangularizeShape(shape);
 }
 

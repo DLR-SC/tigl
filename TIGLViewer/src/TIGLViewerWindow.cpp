@@ -768,6 +768,7 @@ void TIGLViewerWindow::connectSignals()
     connect(tiglExportMeshedFuselageVTKsimple, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportMeshedFuselageVTKsimple()));
     connect(tiglExportWingColladaAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportWingCollada()));
     connect(tiglExportFuselageColladaAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportFuselageCollada()));
+    connect(tiglExportConfigurationColladaAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportConfigCollada()));
     connect(tiglExportFuselageBRepAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportFuselageBRep()));
     connect(tiglExportWingBRepAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportWingBRep()));
     connect(tiglExportFusedConfigBRep, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportFusedConfigBRep()));
