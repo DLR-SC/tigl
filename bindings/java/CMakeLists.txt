@@ -1,4 +1,4 @@
-find_package(JAVA COMPONENTS Development)
+find_package(Java COMPONENTS Development)
 
 if (JAVA_FOUND)
 
