@@ -2957,8 +2957,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSegmentUID(TiglCPACSConfigurati
 
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSectionCount(TiglCPACSConfigurationHandle cpacsHandle,
-                                                          int fuselageIndex,
-                                                          int* sectionCount)
+                                                              int fuselageIndex,
+                                                              int* sectionCount)
 {
     if (sectionCount == 0) {
         LOG(ERROR) << "Error: Null pointer argument for sectionCount "
