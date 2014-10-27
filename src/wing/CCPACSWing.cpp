@@ -875,4 +875,12 @@ CCPACSGuideCurve& CCPACSWing::GetGuideCurve(std::string uid)
     throw tigl::CTiglError("Error: Guide Curve with UID " + uid + " does not exists", TIGL_ERROR);
 }
 
+
+void CCPACSWing::ResetWingShape()
+{
+    if(!wingCleanShape.IsNull()) {
+        loft->SetShape(wingCleanShape);
+    }
+}
+
 } // end namespace tigl

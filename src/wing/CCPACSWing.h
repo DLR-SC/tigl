@@ -166,6 +166,9 @@ public:
     // Get the guide curve with a given UID
     TIGL_EXPORT CCPACSGuideCurve& GetGuideCurve(std::string uid);
 
+    // resets wing Shape to cleanShape
+    TIGL_EXPORT void ResetWingShape();
+
 protected:
     // Cleanup routine
     void Cleanup(void);

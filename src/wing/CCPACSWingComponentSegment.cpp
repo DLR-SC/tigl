@@ -872,7 +872,7 @@ gp_Pnt CCPACSWingComponentSegment::GetPointDirection(double eta, double xsi, dou
 gp_Vec CCPACSWingComponentSegment::GetPointTangent(double eta, double xsi, double dirx, double diry, double dirz, gp_Pln etaPlane, bool fromUpper)
 {
     gp_Pnt point;
-    gp_Vec normal = GetPointNormal(eta,xsi,dirx,diry,dirz,fromUpper,point);
+    gp_Vec normal = GetPointDirectionNormal(eta,xsi,dirx,diry,dirz,fromUpper,point);
     gp_Pln tangentPlane(point,normal);
 
     Handle_Geom_Plane geomEtaPlane = new Geom_Plane(etaPlane);
@@ -887,7 +887,7 @@ gp_Vec CCPACSWingComponentSegment::GetPointTangent(double eta, double xsi, doubl
     return value;
 }
 
-gp_Vec CCPACSWingComponentSegment::GetPointNormal(double eta, double xsi, double dirx, double diry, double dirz, bool fromUpper, gp_Pnt& point)
+gp_Vec CCPACSWingComponentSegment::GetPointDirectionNormal(double eta, double xsi, double dirx, double diry, double dirz, bool fromUpper, gp_Pnt& point)
 {
     if (eta < 0.0 || eta > 1.0) {
         throw CTiglError("Error: Parameter eta not in the range 0.0 <= eta <= 1.0 in CCPACSWingSegment::GetPoint", TIGL_ERROR);

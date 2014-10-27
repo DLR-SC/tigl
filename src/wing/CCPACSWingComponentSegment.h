@@ -119,7 +119,7 @@ public:
     TIGL_EXPORT gp_Vec GetPointTangent(double eta, double xsi, double dirx, double diry, double dirz, gp_Pln etaPlane, bool fromUpper);
 
     // Gets the Normal of a point on the Wing Geometry.
-    TIGL_EXPORT gp_Vec GetPointNormal(double eta, double xsi, double dirx, double diry, double dirz, bool fromUpper, gp_Pnt& point);
+    TIGL_EXPORT gp_Vec GetPointDirectionNormal(double eta, double xsi, double dirx, double diry, double dirz, bool fromUpper, gp_Pnt& point);
 
     // calculates the intersection of a segment iso eta line with a component segment line (defined by its start and end point)
     // returns the xsi coordinate of the intersection
