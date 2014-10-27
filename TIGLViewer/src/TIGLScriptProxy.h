@@ -63,6 +63,7 @@ public slots:
     QScriptValue exportMeshedFuselageVTKByUID (QString fuselageUID, QString filename, double deflection);
     
     // fuselage stuff
+    QScriptValue fuselageGetUID(int fuselageIndex);
     QScriptValue fuselageGetCircumference (int fuselageIndex, int segmentIndex, double eta);
     QScriptValue fuselageGetPoint (int fuselageIndex, int segmentIndex, double eta, double zeta);
     QScriptValue fuselageGetSegmentUID (int fuselageIndex, int segmentIndex);
@@ -70,6 +71,9 @@ public slots:
     QScriptValue getFuselageCount();
     QScriptValue fuselageGetSegmentCount(int fuselageIndex);
     QScriptValue wingGetUpperPoint(int wingIndex, int segmentIndex, double eta, double xsi);
+    
+    // wing stuff
+    QScriptValue wingGetUID(int wingIndex);
     QScriptValue wingGetLowerPoint(int wingIndex, int segmentIndex, double eta, double xsi);
     QScriptValue wingGetUpperPointAtDirection(int wingIndex, int segmentIndex, double eta, double xsi, double dirx, double diry, double dirz);
     QScriptValue wingGetLowerPointAtDirection(int wingIndex, int segmentIndex, double eta, double xsi, double dirx, double diry, double dirz);
@@ -78,6 +82,7 @@ public slots:
     QScriptValue wingGetSegmentCount(int wingIndex);
     QScriptValue wingGetSegmentUID(int wingIndex, int segmentIndex);
     QString      getErrorString(int errorCode);
+    QScriptValue getShape(QString uid);
     
 private:
     QString m_fileName;

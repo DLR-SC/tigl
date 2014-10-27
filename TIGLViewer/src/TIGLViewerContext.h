@@ -50,7 +50,6 @@ public:
 
     void setGridOffset (Quantity_Length offset);
     
-    Handle_AIS_Shape displayShape(const TopoDS_Shape& loft, Quantity_Color color = Quantity_NOC_ShapeCol);
     void displayPoint(const gp_Pnt& aPoint,
                       const char*   aText,
                       Standard_Boolean UpdateViewer,
@@ -69,6 +68,7 @@ public:
                        Standard_Real TextScale);
 
 public slots:
+    void displayShape(const TopoDS_Shape& loft, Quantity_Color color = Quantity_NOC_ShapeCol);
     void drawPoint(double x, double y, double z);
     void drawVector(double x, double y, double z, double dirx, double diry, double dirz);
     void deleteAllObjects();

@@ -123,7 +123,6 @@ void Console::output(QString s)
     s = s.replace("  ", "&nbsp;&nbsp;");
     appendHtml(QString("<font color=\"white\">%1</font><br/>").arg(s));
     isDirty = true;
-    qDebug() << "got string " << s;
 }
 
 void Console::outputError(QString s)

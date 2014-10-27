@@ -221,7 +221,7 @@ void TIGLViewerContext::setGridOffset (Quantity_Length offset)
 }
 
 // a small helper when we just want to display a shape
-Handle(AIS_Shape) TIGLViewerContext::displayShape(const TopoDS_Shape& loft, Quantity_Color color)
+void TIGLViewerContext::displayShape(const TopoDS_Shape& loft, Quantity_Color color)
 {
     TIGLViewerSettings& settings = TIGLViewerSettings::Instance();
     Handle(AIS_Shape) shape = new AIS_Shape(loft);
@@ -240,8 +240,6 @@ Handle(AIS_Shape) TIGLViewerContext::displayShape(const TopoDS_Shape& loft, Quan
             displayPoint(p, s.toStdString().c_str(), false, 0., 0., 0., 10.);
         }
     }
-    
-    return shape;
 }
 
 // Displays a point on the screen
