@@ -251,9 +251,9 @@ bool meshShape(const TopoDS_Shape& loft, double rel_deflection)
 }
 
 // a small helper when we just want to display a shape
-Handle(AIS_Shape) TIGLViewerDocument::displayShape(const TopoDS_Shape& loft, Quantity_Color color)
+void TIGLViewerDocument::displayShape(const TopoDS_Shape& loft, Quantity_Color color)
 {
-    return app->getScene()->displayShape(loft, color);
+    app->getScene()->displayShape(loft, color);
 }
 
 

@@ -87,6 +87,10 @@ function drawVector() {
     }
 }
 
+function drawShape(shape) {
+    app.scene.displayShape(shape)
+}
+
 function help(arg) {
     if (typeof arg == "object") {
         print(arg + ":\n");

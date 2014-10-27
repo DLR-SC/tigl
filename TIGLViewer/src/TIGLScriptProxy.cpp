@@ -26,6 +26,8 @@
 
 #define qString2char(str) ((str).toStdString().c_str())
 
+Q_DECLARE_METATYPE(TopoDS_Shape)
+
 TIGLScriptProxy::TIGLScriptProxy(TIGLViewerWindow* app)
     : QObject(app)
 {
@@ -180,6 +182,19 @@ QScriptValue TIGLScriptProxy::exportMeshedFuselageVTKByUID (QString fuselageUID,
     }
 }
 
+QScriptValue TIGLScriptProxy::fuselageGetUID(int fuselageIndex)
+{
+    char* uid = NULL;
+    TiglReturnCode ret = ::tiglFuselageGetUID(getTiglHandle(), fuselageIndex, &uid);
+    if (ret != TIGL_SUCCESS) {
+        return context()->throwError(tiglGetErrorString(ret));
+    }
+    else {
+        return uid;
+    }
+}
+
+
 QScriptValue TIGLScriptProxy::fuselageGetCircumference (int fuselageIndex, int segmentIndex, double eta)
 {
     double circumference;
@@ -252,6 +267,19 @@ QScriptValue TIGLScriptProxy::fuselageGetSegmentCount(int fuselageIndex)
         return count;
     }
 }
+
+QScriptValue TIGLScriptProxy::wingGetUID(int wingIndex)
+{
+    char* uid = NULL;
+    TiglReturnCode ret = ::tiglWingGetUID(getTiglHandle(), wingIndex, &uid);
+    if (ret != TIGL_SUCCESS) {
+        return context()->throwError(tiglGetErrorString(ret));
+    }
+    else {
+        return uid;
+    }
+}
+
 
 QScriptValue TIGLScriptProxy::wingGetUpperPoint(int wingIndex, int segmentIndex, double eta, double xsi)
 {
@@ -359,5 +387,33 @@ QScriptValue TIGLScriptProxy::wingGetLowerPointAtDirection(int wingIndex, int se
     else {
         QScriptValue Point3dCtor = engine()->globalObject().property("Point3d");
         return Point3dCtor.construct(QScriptValueList() << px << py << pz);
+    }
+}
+
+QScriptValue TIGLScriptProxy::getShape(QString uid)
+{
+    try {
+        tigl::CCPACSConfiguration& config = _app->getDocument()->GetConfiguration();
+        tigl::CTiglUIDManager& manager = config.GetUIDManager();
+        if (manager.HasUID(uid.toStdString()) ) {
+            tigl::ITiglGeometricComponent* component = manager.GetComponent(uid.toStdString());
+            if (component) {
+                TopoDS_Shape shape = component->GetLoft()->Shape();
+                return engine()->newVariant(QVariant::fromValue(shape));
+            }
+            else {
+                return QScriptValue::UndefinedValue;
+            }
+        }
+        else {
+            return context()->throwError("No shape " + uid + " on cpacs configuration.");
+        }
+    }
+    catch(tigl::CTiglError& err) {
+        TiglReturnCode errorCode = err.getCode();
+        return context()->throwError(tiglGetErrorString(errorCode));
+    }
+    catch(...) {
+        return context()->throwError("Unknown error");
     }
 }
