@@ -1047,7 +1047,7 @@
     <string>Console</string>
    </property>
    <property name="shortcut">
-    <string>Alt+D</string>
+    <string>Alt+C</string>
    </property>
   </action>
   <action name="showScriptAction">
