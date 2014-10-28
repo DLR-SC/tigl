@@ -59,11 +59,22 @@ void Console::keyPressEvent(QKeyEvent *event)
     else if (event->key() == Qt::Key_Down) {
         historyForward();
     }
-    else if ((event->key() == Qt::Key_Backspace || event->key() == Qt::Key_Left) &&
-             (event->modifiers() == Qt::NoModifier || event->modifiers() == Qt::KeypadModifier) &&
-             textCursor().position() - textCursor().block().position() > prompt.length()) {
-
-        QPlainTextEdit::keyPressEvent(event);
+    else if (event->key() == Qt::Key_Backspace || event->key() == Qt::Key_Left) {
+        if (textCursor().position() - textCursor().block().position() > prompt.length()) {
+            QPlainTextEdit::keyPressEvent(event);
+        }
+    }
+    else if (event->key() == Qt::Key_Home) {
+        QTextCursor cursor = textCursor();
+        if (event->modifiers() == Qt::SHIFT) {
+            cursor.movePosition(QTextCursor::StartOfBlock, QTextCursor::KeepAnchor);
+            cursor.setPosition(cursor.position() + prompt.length(), QTextCursor::KeepAnchor);
+        }
+        else {
+            cursor.movePosition(QTextCursor::StartOfBlock);
+            cursor.setPosition(cursor.position() + prompt.length());
+        }
+        setTextCursor(cursor);
     }
     else if ((event->key() == Qt::Key_A && event->modifiers() == Qt::CTRL)) {
         // select the whole line without the prompt
@@ -73,9 +84,14 @@ void Console::keyPressEvent(QKeyEvent *event)
         cursor.movePosition(QTextCursor::EndOfBlock, QTextCursor::KeepAnchor);
         setTextCursor(cursor);
     }
-    else  if ((event->key() != Qt::Key_Backspace && event->key() != Qt::Key_Left) ||
-              (event->modifiers() != Qt::NoModifier && event->modifiers() != Qt::KeypadModifier)) {
-        
+    // disable undo/redo
+    else  if ((event->key() == Qt::Key_Z && event->modifiers() == Qt::CTRL) ||
+              (event->key() == Qt::Key_Y && event->modifiers() == Qt::CTRL) ||
+              (event->key() == Qt::Key_Z && event->modifiers() == (Qt::CTRL & Qt::SHIFT))){
+        // do nothing by default
+        QWidget::keyPressEvent(event);
+    }
+    else {
         QPlainTextEdit::keyPressEvent(event);
     }
 
@@ -95,12 +111,6 @@ void Console::contextMenuEvent(QContextMenuEvent *){}
 
 void Console::onEnter()
 {
-    if (textCursor().position() - textCursor().block().position() == prompt.length()) {
-        // no text inserted
-        insertPrompt();
-        return;
-    }
-
     QString cmd = textCursor().block().text().mid(prompt.length());
     QTextCursor cursor = textCursor();
     cursor.movePosition(QTextCursor::EndOfBlock);
