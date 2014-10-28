@@ -23,6 +23,7 @@
 #define TIGLVIEWERWIDGET_H
 
 #include <QWidget>
+#include <QMetaType>
 #include <Quantity_Color.hxx>
 
 #if defined WNT
@@ -32,7 +33,6 @@
 #endif
 
 #include "TIGLViewer.h"
-#include "TIGLViewerColors.h"
 
 
 /** the key for multi selection */
@@ -49,6 +49,7 @@ class Handle_Visual3d_Layer;
 class Handle_AIS_Shape;
 class TopoDS_Shape;
 class gp_Pnt;
+class gp_Vec;
 
 class QOCC_DECLSPEC TIGLViewerWidget : public QWidget
 {
@@ -94,11 +95,9 @@ public:
 
     ~TIGLViewerWidget();
 
+    // the scene context must be set before first use
     void setContext(const Handle_AIS_InteractiveContext& aContext){ myContext = aContext; }
 
-    void initializeOCC(const Handle_AIS_InteractiveContext& aContext = NULL);
-
-    Handle_AIS_InteractiveContext    getContext( void ) { return myContext; }
     Handle_V3d_View                  getView( void )    { return myView; }
 
     //Overrides
@@ -106,15 +105,6 @@ public:
     class QToolBar* myToolBar;
 
     void redraw( bool isPainting = false );
-    
-    Handle_AIS_Shape displayShape(const TopoDS_Shape& loft, Quantity_Color color = Quantity_NOC_ShapeCol);
-    void DisplayPoint(const gp_Pnt& aPoint,
-                      const char*   aText,
-                      Standard_Boolean UpdateViewer,
-                      Standard_Real anXoffset,
-                      Standard_Real anYoffset,
-                      Standard_Real aZoffset,
-                      Standard_Real TextScale);
 
 signals:
 
@@ -141,7 +131,8 @@ public slots:
     void selecting();
     void hiddenLineOn();
     void hiddenLineOff();
-    void setBackgroundColor(const QColor&);
+    void setBackgroundGradient(int r, int g, int b);
+    void setBackgroundColor(int r, int g, int b);
     void setBGImage(const QString&);
     void viewFront();
     void viewBack();
@@ -176,6 +167,7 @@ protected: // methods
     virtual void leaveEvent           ( QEvent * );
 
 private: // members
+    void initializeOCC(const Handle_AIS_InteractiveContext& aContext = NULL);
 
 #if defined WNT
     Handle_WNT_Window               myWindow;
@@ -249,5 +241,7 @@ private: // methods
                               Aspect_GraphicCallbackStruct*);
 
 };
+
+Q_DECLARE_METATYPE(TIGLViewerWidget*)
 
 #endif // TIGLVIEWERWIDGET_H

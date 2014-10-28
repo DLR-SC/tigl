@@ -33,7 +33,6 @@ namespace tigl
 // Constructor
 CCPACSFuselagePositionings::CCPACSFuselagePositionings(void)
     : positionings()
-    , transformations()
     , invalidated(true)
 {
 }
@@ -48,53 +47,39 @@ CCPACSFuselagePositionings::~CCPACSFuselagePositionings(void)
 void CCPACSFuselagePositionings::Invalidate(void)
 {
     invalidated = true;
-    for (int i = 1; i <= GetPositioningCount(); i++) {
-        GetPositioning(i).Invalidate();
+    CCPACSFuselagePositioningIterator it;
+    for (it = positionings.begin(); it != positionings.end(); ++it) {
+        CCPACSFuselagePositioning* pos = it->second;
+        pos->Invalidate();
     }
-    transformations.clear();
 }
 
 // Cleanup routine
 void CCPACSFuselagePositionings::Cleanup(void)
 {
-    for (CCPACSFuselagePositioningContainer::size_type i = 0; i < positionings.size(); i++) {
-        delete positionings[i];
+    CCPACSFuselagePositioningIterator it;
+    for (it = positionings.begin(); it != positionings.end(); ++it) {
+        CCPACSFuselagePositioning* pos = it->second;
+        delete pos;
     }
     positionings.clear();
-    transformations.clear();
     invalidated = true;
-}
-
-// Gets a positioning by index.
-CCPACSFuselagePositioning& CCPACSFuselagePositionings::GetPositioning(int index) const
-{
-    index--;
-    if (index < 0 || index >= GetPositioningCount()) {
-        throw CTiglError("Error: Invalid index value in CCPACSFuselagePositionings::GetPositioning", TIGL_INDEX_ERROR);
-    }
-    return (*(positionings[index]));
-}
-
-// Gets total positioning count
-int CCPACSFuselagePositionings::GetPositioningCount(void) const
-{
-    return static_cast<int>(positionings.size());
 }
 
 // Returns the positioning matrix for a given section index
 CTiglTransformation CCPACSFuselagePositionings::GetPositioningTransformation(std::string sectionIndex)
 {
     Update();
-    CCPACSTransformationMapIterator iter = transformations.find(sectionIndex);
+    CCPACSFuselagePositioningIterator iter = positionings.find(sectionIndex);
         
     // check, if section has positioning definition, if not
     // return Zero-Transformation
-    if (iter == transformations.end()){
+    if (iter == positionings.end()){
         CTiglTransformation zeroTrans;
         zeroTrans.SetIdentity();
         return zeroTrans;
     }
-    return iter->second;
+    return iter->second->GetEndTransformation();
 }
 
 // Update internal positionings structure
@@ -106,68 +91,63 @@ void CCPACSFuselagePositionings::Update(void)
 
     invalidated = false;
         
-    // test if positionings are defined recursively
-    for (int ipos = 1; ipos <= GetPositioningCount(); ++ipos){
-        TestRecursiveDefinition(ipos,0);
-    }
-        
     // reset all position base points
-    for (int ipos = 1; ipos <= GetPositioningCount(); ++ipos){
-        GetPositioning(ipos).SetStartPoint(CTiglPoint(0,0,0));
-    }
-        
-    // find out root nodes
-    std::vector<int> rootNodes;
-    for (int ipos = 1; ipos <= GetPositioningCount(); ++ipos){
-        CCPACSFuselagePositioning& actPos = GetPositioning(ipos);
-        if (actPos.GetStartSectionIndex() == "") {
-            rootNodes.push_back(ipos);
-        }
-    }
-        
-    for (std::vector<int>::iterator it = rootNodes.begin(); it != rootNodes.end(); it++) {
-        UpdateNextPositioning(*it);
-    }
-}
+    CCPACSFuselagePositioningIterator it;
     
-void CCPACSFuselagePositionings::TestRecursiveDefinition(int positioningIndex, int rec_depth)
-{
-    if (rec_depth > 1000) {
-        throw CTiglError("Recursive definition of fuselage positionings");
+    // diconnect and reset
+    for (it = positionings.begin(); it != positionings.end(); ++it) {
+        CCPACSFuselagePositioning* actPos = it->second;
+        actPos->DisconnectChilds();
+        actPos->SetStartPoint(CTiglPoint(0,0,0));
     }
-        
-    CCPACSFuselagePositioning& currPos = GetPositioning(positioningIndex);
-    for (int i = 1; i <= GetPositioningCount(); i++) {
-        CCPACSFuselagePositioning& nextPos = GetPositioning(i);
-        if (currPos.GetEndSectionIndex() == nextPos.GetStartSectionIndex() && positioningIndex != i) {
-            TestRecursiveDefinition(i, rec_depth + 1);
+    
+    // connect positionings, find roots
+    std::vector<CCPACSFuselagePositioning*> rootNodes;
+    for (it = positionings.begin(); it != positionings.end(); ++it) {
+        CCPACSFuselagePositioning* actPos = it->second;
+        std::string fromUID = actPos->GetStartSectionIndex();
+        if (fromUID != "") {
+            CCPACSFuselagePositioningIterator pos = positionings.find(fromUID);
+            if (pos != positionings.end()) {
+                CCPACSFuselagePositioning* fromPos = pos->second;
+                fromPos->ConnectChildPositioning(actPos);
+            }
+            else {
+                // invalid from UID
+                throw CTiglError("Positioning fromSectionUID " + fromUID + " does not exist");
+            }
         }
+        else {
+            rootNodes.push_back(actPos);
+        }
+    }
+
+    for (std::vector<CCPACSFuselagePositioning*>::iterator it = rootNodes.begin(); it != rootNodes.end(); it++) {
+        UpdateNextPositioning(*it, 0);
     }
 }
 
 
-// @todo: This code is only working, if the first positions is basis for everything else
-// and if its fromSectionUID is empty in CPACS. We should completely rewrite this code
-void CCPACSFuselagePositionings::UpdateNextPositioning(int positioningIndex)
+
+void CCPACSFuselagePositionings::UpdateNextPositioning(CCPACSFuselagePositioning* currPos, int depth)
 {
-    CCPACSFuselagePositioning& currPos = GetPositioning(positioningIndex);
+    // check for recursive definition
+    if (depth > 1000) {
+        throw CTiglError("Recursive definition of fuselage positioning is not allowed");
+    }
 
-    // Store the transformation of the end section of the current positioning in a map.
-    // Note: Internally we use 0-based indices, but in the CPACS file the indices are 1-based.
-    transformations[currPos.GetEndSectionIndex()] = currPos.GetEndTransformation();
-
-    if (currPos.GetEndSectionIndex() == ""){
+    if (currPos->GetEndSectionIndex() == ""){
         throw CTiglError("illegal definition of fuselage positionings");
     }
         
     // Find all positionings which have the end section of the current positioning
     // defined as their start section.
-    for (int i = 1; i <= GetPositioningCount(); i++) {
-        CCPACSFuselagePositioning& nextPos = GetPositioning(i);
-        if (currPos.GetEndSectionIndex() == nextPos.GetStartSectionIndex() && positioningIndex != i) {
-            nextPos.SetStartPoint(currPos.GetEndPoint());
-            UpdateNextPositioning(i);
-        }
+    std::vector<CCPACSFuselagePositioning*>::const_iterator it;
+    const std::vector<CCPACSFuselagePositioning*>& childs = currPos->GetChilds();
+    for (it = childs.begin(); it != childs.end(); ++it) {
+        CCPACSFuselagePositioning* childPos = *it;
+        childPos->SetStartPoint(currPos->GetEndPoint());
+        UpdateNextPositioning(childPos, depth+1);
     }
 }
 
@@ -192,12 +172,13 @@ void CCPACSFuselagePositionings::ReadCPACS(TixiDocumentHandle tixiHandle, const 
     // Loop over all positionings
     for (int i = 1; i <= positioningCount; i++) {
         CCPACSFuselagePositioning* positioning = new CCPACSFuselagePositioning();
-        positionings.push_back(positioning);
 
         tempString = fuselageXPath + "/positionings/positioning[";
         std::ostringstream xpath;
         xpath << tempString << i << "]";
         positioning->ReadCPACS(tixiHandle, xpath.str());
+        
+        positionings[positioning->GetEndSectionIndex()] = positioning;
     }
 
     Update();

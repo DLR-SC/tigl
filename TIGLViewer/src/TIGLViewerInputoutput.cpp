@@ -43,11 +43,11 @@ TIGLViewerInputOutput::~TIGLViewerInputOutput(void)
 
 bool TIGLViewerInputOutput::importModel( const QString fileName,
                                          const FileFormat format,
-                                         TIGLViewerWidget& widget )
+                                         TIGLViewerContext& scene )
 {
 
     QApplication::setOverrideCursor( Qt::WaitCursor );
-    widget.getContext()->SetDisplayMode(AIS_Shaded,Standard_False);
+    scene.getContext()->SetDisplayMode(AIS_Shaded,Standard_False);
     Handle_TopTools_HSequenceOfShape shapes = importModel( format, fileName );
     QApplication::restoreOverrideCursor();
 
@@ -56,16 +56,16 @@ bool TIGLViewerInputOutput::importModel( const QString fileName,
     }
 
     for ( int i = 1; i <= shapes->Length(); i++ ) {
-        widget.displayShape(shapes->Value(i));
+        scene.displayShape(shapes->Value(i));
     }
     return true;
 }
 
 bool TIGLViewerInputOutput::importTriangulation( const QString fileName,
                                                  const FileFormat format,
-                                                 TIGLViewerWidget& widget )
+                                                 TIGLViewerContext& scene )
 {
-    Handle(AIS_InteractiveContext) ic = widget.getContext();
+    Handle(AIS_InteractiveContext) ic = scene.getContext();
     Handle(Poly_Triangulation) triangulation;
     triangulation.Nullify();
 

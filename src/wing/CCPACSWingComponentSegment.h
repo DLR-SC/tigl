@@ -107,7 +107,7 @@ protected:
     void Update(void);
 
     // Builds the loft between the two segment sections
-    TopoDS_Shape BuildLoft(void);
+    PNamedShape BuildLoft(void);
 
     // Returns an upper or lower point on the segment surface in
     // dependence of parameters eta and xsi, which range from 0.0 to 1.0.
@@ -118,6 +118,9 @@ protected:
 //  gp_Pnt GetPoint(double eta, double xsi, bool fromUpper);
 
 private:
+    // get short name for loft
+    std::string GetShortShapeName(void);
+
     // Copy constructor
     CCPACSWingComponentSegment(const CCPACSWingComponentSegment& );
 
@@ -128,6 +131,8 @@ private:
 
     void UpdateProjectedLeadingEdge();
 
+    // create short name
+    std::string MakeShortName();
 
 private:
     std::string          name;                 /**< Segment name                            */

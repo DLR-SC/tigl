@@ -114,6 +114,48 @@ TiglCPACSConfigurationHandle WingSegmentSimple::tiglSimpleHandle = 0;
 
 /***************************************************************************************************/
 
+
+class WingSegmentSpecial : public ::testing::Test 
+{
+protected:
+    static void SetUpTestCase() 
+    {
+        const char* filename = "TestData/test_wing_segment_special.xml";
+        ReturnCode tixiRet;
+        TiglReturnCode tiglRet;
+
+        tiglSpecialHandle = -1;
+        tixiSpecialHandle = -1;
+
+        tixiRet = tixiOpenDocument(filename, &tixiSpecialHandle);
+        ASSERT_TRUE (tixiRet == SUCCESS);
+
+        tiglRet = tiglOpenCPACSConfiguration(tixiSpecialHandle, "Aircraft1", &tiglSpecialHandle);
+        ASSERT_TRUE(tiglRet == TIGL_SUCCESS);
+    }
+
+    static void TearDownTestCase() 
+    {
+        ASSERT_TRUE(tiglCloseCPACSConfiguration(tiglSpecialHandle) == TIGL_SUCCESS);
+        ASSERT_TRUE(tixiCloseDocument(tixiSpecialHandle) == SUCCESS);
+        tiglSpecialHandle = -1;
+        tixiSpecialHandle = -1;
+    }
+
+    virtual void SetUp() {}
+    virtual void TearDown() {}
+
+
+    static TixiDocumentHandle           tixiSpecialHandle;
+    static TiglCPACSConfigurationHandle tiglSpecialHandle;
+};
+
+
+TixiDocumentHandle WingSegmentSpecial::tixiSpecialHandle = 0;
+TiglCPACSConfigurationHandle WingSegmentSpecial::tiglSpecialHandle = 0;
+
+/***************************************************************************************************/
+
 /**
 * Tests tiglGetWingCount with invalid CPACS handle.
 */
@@ -863,3 +905,15 @@ TEST_F(WingSegmentSimple, wingGetEtaXsi)
     ASSERT_NEAR(0.5, xsi, 1e-7);
 }
 
+// Test wingSegmentPointGetComponentSegmentEtaXsi 
+// especially if restriction of returned eta value to [0,1] is fulfilled
+TEST_F(WingSegmentSpecial, getCompSegEtaXsi)
+{
+    double eta, xsi;
+    ASSERT_EQ(TIGL_SUCCESS, tiglWingSegmentPointGetComponentSegmentEtaXsi(tiglSpecialHandle, "Aircraft1_Wing1_Seg3", "Aircraft1_Wing1_CompSeg1", 1.0, 0.25, &eta, &xsi));
+    ASSERT_EQ(eta, 1.0);
+    ASSERT_EQ(xsi, 0.25);
+    ASSERT_EQ(TIGL_SUCCESS, tiglWingSegmentPointGetComponentSegmentEtaXsi(tiglSpecialHandle, "Aircraft1_Wing1_Seg3", "Aircraft1_Wing1_CompSeg1", 1.0, 1.0, &eta, &xsi));
+    ASSERT_EQ(eta, 1.0);
+    ASSERT_EQ(xsi, 1.0);
+}

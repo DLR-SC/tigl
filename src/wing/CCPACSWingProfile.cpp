@@ -215,10 +215,14 @@ TopoDS_Wire CCPACSWingProfile::GetWire()
     if (!profileAlgo->GetTrailingEdge().IsNull()) {
         closedWireBuilder.Add(profileAlgo->GetTrailingEdge());
     }
+    closedWireBuilder.Build();
+    
+    if (!closedWireBuilder.IsDone()) {
+        throw CTiglError("Error creating closed wing profile");
+    }
         
     return closedWireBuilder.Wire();
 }
-
 
 // Returns the leading edge point of the wing profile wire. The leading edge point
 // is already transformed by the wing profile transformation.

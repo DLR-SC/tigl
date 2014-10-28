@@ -28,6 +28,8 @@
 #include "boolean_operations/CBooleanOperTools.h"
 #include "boolean_operations/BRepSewingToBRepBuilderShapeAdapter.h"
 #include "ListPNamedShape.h"
+#include "CNamedShape.h"
+#include "PNamedShape.h"
 
 #include "Geom_Curve.hxx"
 #include "Geom_Surface.hxx"
@@ -36,6 +38,8 @@
 #include "TopExp_Explorer.hxx"
 #include "TopExp.hxx"
 #include "TopoDS.hxx"
+#include "TopoDS_Shape.hxx"
+#include "TopoDS_Edge.hxx"
 #include "TopTools_IndexedMapOfShape.hxx"
 #include "TopTools_HSequenceOfShape.hxx"
 #include "GeomAdaptor_Curve.hxx"
@@ -56,6 +60,8 @@
 #include <Geom2d_TrimmedCurve.hxx>
 #include <Geom2dAPI_InterCurveCurve.hxx>
 #include <GeomAPI_Interpolate.hxx>
+#include <Geom_TrimmedCurve.hxx>
+#include <GeomConvert.hxx>
 
 #include <TColgp_HArray1OfPnt.hxx>
 
@@ -229,7 +235,14 @@ Standard_Real ProjectPointOnWire(const TopoDS_Wire& wire, gp_Pnt p)
     }
 
     // return relative coordinate
-    return partLength/GetWireLength(wire);
+    double normalizedLength = partLength/GetWireLength(wire);
+    if (normalizedLength > 1.0) {
+        normalizedLength = 1.0;
+    }
+    else if (normalizedLength < 0.0) {
+        normalizedLength = 0.0;
+    }
+    return normalizedLength;
 }
 
 gp_Pnt GetCentralFacePoint(const TopoDS_Face& face)
@@ -443,7 +456,7 @@ void InsertShapeToCAF(Handle(XCAFDoc_ShapeTool) myAssembly, const PNamedShape sh
 // Returns a unique Hashcode for a specific geometric component
 int GetComponentHashCode(tigl::ITiglGeometricComponent& component)
 {
-    TopoDS_Shape& loft = component.GetLoft();
+    const TopoDS_Shape& loft = (*component.GetLoft()).Shape();
     if (!loft.IsNull()) {
         return loft.HashCode(2294967295);
     }
@@ -467,4 +480,28 @@ TopoDS_Edge EdgeSplineFromPoints(const std::vector<gp_Pnt>& points)
     Handle(Geom_BSplineCurve) hcurve = interPol.Curve();
     
     return BRepBuilderAPI_MakeEdge(hcurve);
+}
+
+TopoDS_Edge GetEdge(const TopoDS_Shape &shape, int iEdge)
+{
+    TopTools_IndexedMapOfShape edgeMap;
+    TopExp::MapShapes(shape, TopAbs_EDGE, edgeMap);
+    
+    if (iEdge < 0 || iEdge >= edgeMap.Extent()) {
+        return TopoDS_Edge();
+    }
+    else {
+        return TopoDS::Edge(edgeMap(iEdge+1));
+    }
+}
+
+Handle_Geom_BSplineCurve GetBSplineCurve(const TopoDS_Edge& e)
+{
+    double u1, u2;
+    Handle_Geom_Curve curve = BRep_Tool::Curve(e, u1, u2);
+    curve = new Geom_TrimmedCurve(curve, u1, u2);
+    
+    // convert to bspline
+    Handle_Geom_BSplineCurve bspl =  GeomConvert::CurveToBSplineCurve(curve);
+    return bspl;
 }

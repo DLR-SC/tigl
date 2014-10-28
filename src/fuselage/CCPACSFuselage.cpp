@@ -30,6 +30,7 @@
 #include "CCPACSFuselage.h"
 #include "CCPACSFuselageSegment.h"
 #include "CCPACSConfiguration.h"
+#include "tiglcommonfunctions.h"
 
 #include "BRepOffsetAPI_ThruSections.hxx"
 #include "BRepAlgoAPI_Fuse.hxx"
@@ -73,7 +74,7 @@ CCPACSFuselage::~CCPACSFuselage(void)
 // Invalidates internal state
 void CCPACSFuselage::Invalidate(void)
 {
-    loft.Nullify();
+    loft.reset();
     segments.Invalidate();
     positionings.Invalidate();
 }
@@ -247,8 +248,24 @@ CTiglAbstractSegment & CCPACSFuselage::GetSegment(std::string uid)
     return (CTiglAbstractSegment &) segments.GetSegment(uid);
 }
 
+// get short name for loft
+std::string CCPACSFuselage::GetShortShapeName ()
+{
+    unsigned int findex = 0;
+    for (int i = 1; i <= GetConfiguration().GetFuselageCount(); ++i) {
+        tigl::CCPACSFuselage& f = GetConfiguration().GetFuselage(i);
+        if (GetUID() == f.GetUID()) {
+            findex = i;
+            std::stringstream shortName;
+            shortName << "F" << findex;
+            return shortName.str();
+        }
+    }
+    return "UNKNOWN";
+}
+
 // Builds a fused shape of all fuselage segments
-TopoDS_Shape CCPACSFuselage::BuildLoft(void)
+PNamedShape CCPACSFuselage::BuildLoft(void)
 {
     // Get Continuity of first segment
     // TODO: adapt lofting to have multiple different continuities
@@ -268,7 +285,11 @@ TopoDS_Shape CCPACSFuselage::BuildLoft(void)
     lofter.setMakeSmooth(smooth);
     lofter.setMakeSolid(true);
     
-    return lofter.Shape();
+    TopoDS_Shape loftShape =  lofter.Shape();
+    std::string loftName = GetUID();
+    std::string loftShortName = GetShortShapeName();
+    PNamedShape loft(new CNamedShape(loftShape, loftName.c_str(), loftShortName.c_str()));
+    return loft;
 }
 
 
@@ -297,7 +318,7 @@ gp_Pnt CCPACSFuselage::GetPoint(int segmentIndex, double eta, double zeta)
 // Returns the volume of this fuselage
 double CCPACSFuselage::GetVolume(void)
 {
-    TopoDS_Shape& fusedSegments = GetLoft();
+    const TopoDS_Shape& fusedSegments = GetLoft()->Shape();
 
     // Calculate volume
     GProp_GProps System;
@@ -328,7 +349,7 @@ double CCPACSFuselage::GetCircumference(const int segmentIndex, const double eta
 // Returns the surface area of this fuselage
 double CCPACSFuselage::GetSurfaceArea(void)
 {
-    TopoDS_Shape& fusedSegments = GetLoft();
+    const TopoDS_Shape& fusedSegments = GetLoft()->Shape();
     // Calculate surface area
     GProp_GProps System;
     BRepGProp::SurfaceProperties(fusedSegments, System);
@@ -341,7 +362,7 @@ double CCPACSFuselage::GetSurfaceArea(void)
 gp_Pnt CCPACSFuselage::GetMinumumDistanceToGround(gp_Ax1 RAxis, double angle)
 {
 
-    TopoDS_Shape fusedFuselage = GetLoft();
+    TopoDS_Shape fusedFuselage = GetLoft()->Shape();
 
     // now rotate the fuselage
     gp_Trsf myTrsf;

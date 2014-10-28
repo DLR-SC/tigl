@@ -30,7 +30,8 @@
 
 #include <list>
 #include <string>
-#include <TopoDS_Shape.hxx>
+#include "CNamedShape.h"
+#include "PNamedShape.h"
 
 #include "ITiglGeometricComponent.h"
 
@@ -49,10 +50,10 @@ public:
     TIGL_EXPORT virtual ~CTiglAbstractGeometricComponent(void);
 
        // Gets the loft of a geometric component
-    TIGL_EXPORT virtual TopoDS_Shape& GetLoft(void);
+    TIGL_EXPORT virtual PNamedShape GetLoft(void);
 
     // Get the loft mirrored at the mirror plane
-    TIGL_EXPORT virtual TopoDS_Shape GetMirroredLoft(void);
+    TIGL_EXPORT virtual PNamedShape GetMirroredLoft(void);
 
     // Gets the component uid
     TIGL_EXPORT virtual const std::string& GetUID(void) const;
@@ -88,7 +89,7 @@ protected:
     // Resets the geometric component.
     virtual void Reset(void);
     
-    virtual TopoDS_Shape BuildLoft(void) = 0;
+    virtual PNamedShape BuildLoft(void) = 0;
 
     CTiglTransformation        transformation;
     CTiglTransformation        backTransformation;
@@ -96,7 +97,7 @@ protected:
     ECPACSTranslationType      translationType;
     CTiglPoint                 scaling;
     CTiglPoint                 rotation;
-    TopoDS_Shape               loft;
+    PNamedShape                loft;
 
 private:
     // Copy constructor

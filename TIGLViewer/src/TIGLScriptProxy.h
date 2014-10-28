@@ -28,48 +28,66 @@
 #include "tixi.h"
 #include "CCPACSConfiguration.h"
 #include "CCPACSConfigurationManager.h"
+#include "TIGLViewerWindow.h"
 
-class TIGLScriptProxy :public QObject
+class TIGLScriptProxy :public QObject, public QScriptable
 {
     Q_OBJECT
     
-    Q_PROPERTY( QString wingCount READ tiglGetWingCount() )
+    Q_PROPERTY(QString version READ getVersion() )
     
 private:
     // Returns the CPACS configuration
-    tigl::CCPACSConfiguration& GetConfiguration(void) const;
+    tigl::CCPACSConfiguration& GetConfiguration(void);
     TiglCPACSConfigurationHandle getTiglHandle(void);
-    char* qString2char(QString str);
     
 public:
-    TIGLScriptProxy();
+    TIGLScriptProxy(TIGLViewerWindow* app);
     //~TIGLScriptProxy();
-    
-    static void registerClass(QScriptEngine *);
     
 public slots:
     QStringList getMemberFunctions();
     
     // wrapped tigl functions
-    int tiglGetWingCount();
-    QString tiglGetVersion();
-    int tiglComponentGetHashCode (QString componentUID);
-    int tiglComponentIntersectionLineCount (QString componentUidOne, QString componentUidTwo);
-    void tiglExportFusedWingFuselageIGES (QString filenamePtr);
-    void tiglExportIGES (QString filenamePtr);
-    void tiglExportMeshedFuselageSTL(int fuselageIndex, QString filenamePtr, double deflection);
-    void tiglExportMeshedFuselageVTKByIndex (int fuselageIndex, QString filenamePtr, double deflection);
-    void tiglExportMeshedFuselageVTKByUID (QString fuselageUID, QString filenamePtr, double deflection);
-    double tiglFuselageGetCircumference (int fuselageIndex, int segmentIndex, double eta);
-    QString tiglFuselageGetPoint (int fuselageIndex, int segmentIndex, double eta, double zeta);
-    QString tiglFuselageGetSegmentUID (int fuselageIndex, int segmentIndex);
-    double tiglFuselageGetSegmentVolume (int fuselageIndex, int segmentIndex);
-    int tiglGetFuselageCount();
+    QScriptValue getWingCount();
+    QString getVersion();
+    QScriptValue componentGetHashCode (QString componentUID);
+    QScriptValue componentIntersectionLineCount (QString componentUidOne, QString componentUidTwo);
+    
+    // exports
+    QScriptValue exportFusedWingFuselageIGES (QString filename);
+    QScriptValue exportIGES (QString filename);
+    QScriptValue exportSTEP (QString filename);
+    QScriptValue exportMeshedFuselageSTL(int fuselageIndex, QString filename, double deflection);
+    QScriptValue exportMeshedFuselageVTKByIndex (int fuselageIndex, QString filename, double deflection);
+    QScriptValue exportMeshedFuselageVTKByUID (QString fuselageUID, QString filename, double deflection);
+    
+    // fuselage stuff
+    QScriptValue fuselageGetUID(int fuselageIndex);
+    QScriptValue fuselageGetCircumference (int fuselageIndex, int segmentIndex, double eta);
+    QScriptValue fuselageGetPoint (int fuselageIndex, int segmentIndex, double eta, double zeta);
+    QScriptValue fuselageGetSegmentUID (int fuselageIndex, int segmentIndex);
+    QScriptValue fuselageGetSegmentVolume (int fuselageIndex, int segmentIndex);
+    QScriptValue getFuselageCount();
+    QScriptValue fuselageGetSegmentCount(int fuselageIndex);
+    QScriptValue wingGetUpperPoint(int wingIndex, int segmentIndex, double eta, double xsi);
+    
+    // wing stuff
+    QScriptValue wingGetUID(int wingIndex);
+    QScriptValue wingGetLowerPoint(int wingIndex, int segmentIndex, double eta, double xsi);
+    QScriptValue wingGetUpperPointAtDirection(int wingIndex, int segmentIndex, double eta, double xsi, double dirx, double diry, double dirz);
+    QScriptValue wingGetLowerPointAtDirection(int wingIndex, int segmentIndex, double eta, double xsi, double dirx, double diry, double dirz);
+    QScriptValue wingGetChordPoint(int wingIndex, int segmentIndex, double eta, double xsi);
+    QScriptValue wingGetChordNormal(int wingIndex, int segmentIndex, double eta, double xsi);
+    QScriptValue wingGetSegmentCount(int wingIndex);
+    QScriptValue wingGetSegmentUID(int wingIndex, int segmentIndex);
+    QString      getErrorString(int errorCode);
+    QScriptValue getShape(QString uid);
     
 private:
     QString m_fileName;
     QStringList memberFunctions;
-    int m_cpacsHandle;
+    TIGLViewerWindow* _app;
 
 };
 

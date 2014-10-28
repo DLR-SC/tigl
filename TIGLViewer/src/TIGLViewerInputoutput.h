@@ -23,6 +23,7 @@
 
 #include <QtCore/QObject>
 #include "TIGLViewer.h"
+#include "TIGLViewerContext.h"
 
 class TIGLViewerWidget;
 
@@ -48,11 +49,11 @@ public:
 
     bool importModel( const QString fileName, 
                       const FileFormat format, 
-                      TIGLViewerWidget& widget );
+                      TIGLViewerContext& scene );
 
     bool importTriangulation( const QString fileName,
                               const FileFormat format,
-                              TIGLViewerWidget& widget );
+                              TIGLViewerContext& scene );
 
     bool exportModel( const QString fileName, 
                       const FileFormat format, 

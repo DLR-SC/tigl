@@ -35,6 +35,11 @@ public:
 
 public slots:
     void output(QString);
+    void outputError(QString);
+    /// should be called after calling a command
+    void startCommand();
+    /// This should be called to indicate, that a command has performed
+    void endCommand();
 
 protected:
     void keyPressEvent(QKeyEvent *);
@@ -46,6 +51,7 @@ private:
     bool isLocked;
     QStringList *history;
     int historyPos;
+    bool isDirty;
 
     void onEnter();
     void insertPrompt(bool insertNewBlock = true);

@@ -18,6 +18,7 @@
 
 #include "TIGLViewerErrorDialog.h"
 #include "ui_TIGLViewerErrorDialog.h"
+#include <QStyle>
 
 namespace
 {

@@ -28,6 +28,10 @@
 #include <TopoDS_Edge.hxx>
 #include "PNamedShape.h"
 #include "ListPNamedShape.h"
+#include "CCPACSConfiguration.h"
+#include "CTiglAbstractPhysicalComponent.h"
+#include <TopoDS_Edge.hxx>
+#include <Geom_BSplineCurve.hxx>
 
 #include <map>
 #include <string>
@@ -54,6 +58,10 @@ TIGL_EXPORT Standard_Real ProjectPointOnLine(gp_Pnt p, gp_Pnt lineStart, gp_Pnt 
 
 // returns the number of edges of the current shape
 TIGL_EXPORT unsigned int GetNumberOfEdges(const TopoDS_Shape& shape);
+
+TIGL_EXPORT TopoDS_Edge GetEdge(const TopoDS_Shape& shape, int iEdge);
+
+TIGL_EXPORT Handle_Geom_BSplineCurve GetBSplineCurve(const TopoDS_Edge& e);
 
 // Returns the number of subshapes, if the shape is a compound
 TIGL_EXPORT unsigned int GetNumberOfSubshapes(const TopoDS_Shape& shape);

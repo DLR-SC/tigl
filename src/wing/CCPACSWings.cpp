@@ -101,6 +101,11 @@ void CCPACSWings::ReadCPACS(TixiDocumentHandle tixiHandle, const char* configura
     }
 }
 
+bool CCPACSWings::HasProfile(std::string uid) const
+{
+    return profiles.HasProfile(uid);
+}
+
 // Returns the total count of wing profiles in this configuration
 int CCPACSWings::GetProfileCount(void) const
 {

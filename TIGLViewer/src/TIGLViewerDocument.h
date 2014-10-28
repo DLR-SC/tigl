@@ -29,6 +29,8 @@
 #include <Handle_AIS_Shape.hxx>
 #include <Quantity_Color.hxx>
 
+class TIGLViewerWindow;
+
 class QOCC_DECLSPEC TIGLViewerDocument : public QObject
 {
     Q_OBJECT
@@ -40,7 +42,7 @@ class QOCC_DECLSPEC TIGLViewerDocument : public QObject
 
 public:
 
-    TIGLViewerDocument( QWidget *parentWidget, const Handle_AIS_InteractiveContext& ic );
+    TIGLViewerDocument(TIGLViewerWindow *parentWidget);
     ~TIGLViewerDocument( );
 
     TiglReturnCode openCpacsConfiguration(const QString fileName);
@@ -48,7 +50,7 @@ public:
     TiglCPACSConfigurationHandle getCpacsHandle(void) const;
 
     // a small helper when we just want to display a shape
-    Handle(AIS_Shape) displayShape(const TopoDS_Shape& shape, Quantity_Color col = Quantity_NOC_ShapeCol);
+    void displayShape(const TopoDS_Shape& shape, Quantity_Color col = Quantity_NOC_ShapeCol);
 
     // Draws a point
     void DisplayPoint(gp_Pnt& aPoint,
@@ -94,6 +96,10 @@ public slots:
     void drawFuselageSamplePointsAngle();
     void drawFusedFuselage();
     void drawFuselageGuideCurves();
+    
+    // Misc slots
+    void drawPoint();
+    void drawVector();
 
     // TIGL slots
     void exportAsIges();
@@ -110,6 +116,7 @@ public slots:
     void exportMeshedConfigVTKNoFuse();
     void exportWingCollada();
     void exportFuselageCollada();
+    void exportConfigCollada();
     void exportWingBRep();
     void exportFuselageBRep();
     void exportWingCurvesBRep();
@@ -137,9 +144,7 @@ private slots:
 
 private: 
     TiglCPACSConfigurationHandle            m_cpacsHandle;
-    QWidget*                                parent;
-    Handle_AIS_InteractiveContext           myAISContext;
-    class TIGLViewerWidget*                 myOCC;
+    TIGLViewerWindow*                       app;
     QString                                 loadedConfigurationFileName;
 
     void writeToStatusBar(QString text);

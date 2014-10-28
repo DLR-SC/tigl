@@ -1,10 +1,7 @@
-/*
+/* 
 * Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
 *
-* Created: 2010-08-13 Markus Litz <Markus.Litz@dlr.de>
-* Changed: $Id: TIGLViewerApplication.cpp 64 2011-08-02 13:54:09Z markus.litz $
-*
-* Version: $Revision: 64 $
+* Created: 2014-10-21 Martin Siggel <martin.siggel@dlr.de>
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -19,24 +16,17 @@
 * limitations under the License.
 */
 
-#include <QtCore/QEvent>
-#include <QtCore/QDataStream>
-#include <QtGui/QCursor>
-#include <QtCore/QWaitCondition>
-#include <QtCore/QMutex>
-#include <QtCore/QThread>
+package de.dlr.sc.tigl;
 
-#include "CTiglLogging.h"
+import com.sun.jna.Native;
+import com.sun.jna.ptr.*;
 
-#include "TIGLViewerInternal.h"
-#include "TIGLViewerApplication.h"
-
-TIGLViewerApplication::TIGLViewerApplication(int &argc, char **argv, int _internal ) :
-    QApplication (argc, argv, _internal)
-{
+public class TixiNativeInterface {
+    static {
+        Native.register("TIXI");
+    }
+    
+    static native int tixiOpenDocument (String xmlFilename, IntByReference handle);
+    static native int tixiImportFromString(String xmlImportString, IntByReference handle);
+    static native int tixiCloseDocument (int handle);
 }
-
-TIGLViewerApplication::~TIGLViewerApplication()
-{
-}
-

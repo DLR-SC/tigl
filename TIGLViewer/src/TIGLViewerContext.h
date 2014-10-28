@@ -21,8 +21,15 @@
 #ifndef TIGLVIEWERCONTEXT_H
 #define TIGLVIEWERCONTEXT_H
 
-#include <QtCore/QObject>
+#include <AIS_Shape.hxx>
+#include <QObject>
 #include "TIGLViewer.h"
+#include "TIGLViewerColors.h"
+#include <QMetaType>
+
+class TopoDS_Shape;
+class gp_Pnt;
+class gp_Vec;
 
 class QOCC_DECLSPEC TIGLViewerContext : public QObject
 {
@@ -41,12 +48,30 @@ public:
                                     const Standard_CString aDomain,
                                     const Standard_Real ViewSize );
 
-    void deleteAllObjects();
-
     void setGridOffset (Quantity_Length offset);
+    
+    void displayPoint(const gp_Pnt& aPoint,
+                      const char*   aText,
+                      Standard_Boolean UpdateViewer,
+                      Standard_Real anXoffset,
+                      Standard_Real anYoffset,
+                      Standard_Real aZoffset,
+                      Standard_Real TextScale);
+    
+    void displayVector(const gp_Pnt& aPoint,
+                       const gp_Vec& aVec,
+                       const char* aText,
+                       Standard_Boolean UpdateViewer,
+                       Standard_Real anXoffset,
+                       Standard_Real anYoffset,
+                       Standard_Real aZoffset,
+                       Standard_Real TextScale);
 
 public slots:
-
+    void displayShape(const TopoDS_Shape& loft, Quantity_Color color = Quantity_NOC_ShapeCol);
+    void drawPoint(double x, double y, double z);
+    void drawVector(double x, double y, double z, double dirx, double diry, double dirz);
+    void deleteAllObjects();
     void gridXY     ( void );
     void gridXZ     ( void );
     void gridYZ     ( void );
@@ -71,5 +96,7 @@ private:
     Quantity_NameOfColor            myGridTenthColor;
 
 };
+
+Q_DECLARE_METATYPE(TIGLViewerContext*)
 
 #endif // TIGLVIEWERCONTEXT_H

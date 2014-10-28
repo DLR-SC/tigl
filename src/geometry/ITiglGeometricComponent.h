@@ -31,10 +31,9 @@
 #include <string>
 
 #include "tigl.h"
+#include "PNamedShape.h"
 #include "tigl_config.h"
 #include "CTiglTransformation.h"
-
-class TopoDS_Shape;
 
 
 namespace tigl 
@@ -51,7 +50,7 @@ class ITiglGeometricComponent
 
 public:
        // Gets the loft of a geometric component
-    virtual TopoDS_Shape & GetLoft(void) = 0;
+    virtual PNamedShape GetLoft(void) = 0;
 
     // Returns the unique id of this component
     virtual const std::string& GetUID(void) const = 0;

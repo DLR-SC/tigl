@@ -30,60 +30,9 @@
 #include <BOPCol_ListOfShape.hxx>
 #include <BOPAlgo_PaveFiller.hxx>
 
-#include <TopExp.hxx>
-#include <TopTools_IndexedMapOfShape.hxx>
 
 #include <string>
-
-namespace
-{
-    std::string MakeShortName(tigl::CCPACSConfiguration& config, tigl::CTiglAbstractPhysicalComponent& comp)
-    {
-        if (comp.GetComponentType() & TIGL_COMPONENT_FUSELAGE) {
-            unsigned int index = 0;
-            for (int i = 1; i <= config.GetFuselageCount(); ++i) {
-                tigl::CCPACSFuselage& f = config.GetFuselage(i);
-                if (comp.GetUID() == f.GetUID()) {
-                    index = i;
-                    break;
-                }
-            }
-            std::stringstream str;
-            str << "F" << index;
-            return str.str();
-        }
-        else if (comp.GetComponentType() & TIGL_COMPONENT_WING) {
-            unsigned int index = 0;
-            for (int i = 1; i <= config.GetWingCount(); ++i) {
-                tigl::CCPACSWing& f = config.GetWing(i);
-                if (comp.GetUID() == f.GetUID()) {
-                    index = i;
-                    break;
-                }
-            }
-            std::stringstream str;
-            str << "W" << index;
-            return str.str();
-        }
-
-        return "UNKNOWN";
-    }
-
-    void NameSymplane(CNamedShape& shape)
-    {
-        TopTools_IndexedMapOfShape map;
-        TopExp::MapShapes(shape.Shape(),   TopAbs_FACE, map);
-        for (int iface = 1; iface <= map.Extent(); ++iface){
-            TopoDS_Face face = TopoDS::Face(map(iface));
-            gp_Pnt p = GetCentralFacePoint(face);
-            if (fabs(p.Y()) < Precision::Confusion()) {
-                CFaceTraits traits = shape.GetFaceTraits(iface-1);
-                traits.SetName("Symmetry");
-                shape.SetFaceTraits(iface-1, traits);
-            }
-        }
-    }
-}
+#include <cassert>
 
 namespace tigl
 {
@@ -109,11 +58,6 @@ const PNamedShape CTiglFusePlane::FusedPlane()
     return _result;
 }
 
-const ListPNamedShape& CTiglFusePlane::SubShapes()
-{
-    Perform();
-    return _subShapes;
-}
 
 
 const ListPNamedShape& CTiglFusePlane::Intersections()
@@ -131,10 +75,50 @@ const PNamedShape CTiglFusePlane::FarField()
 void CTiglFusePlane::Invalidate()
 {
     _hasPerformed = false;
-    _subShapes.clear();
     _intersections.clear();
     _result.reset();
     _farfield.reset();
+}
+
+PNamedShape CTiglFusePlane::FuseWithChilds(CTiglAbstractPhysicalComponent* parent)
+{
+    assert(parent != NULL);
+    
+    PNamedShape parentShape (parent->GetLoft());
+    if (_mymode == FULL_PLANE || _mymode == FULL_PLANE_TRIMMED_FF) {
+        PNamedShape rootShapeMirr = parent->GetMirroredLoft();
+        parentShape = CMergeShapes(parentShape, rootShapeMirr);
+    }
+
+    CTiglAbstractPhysicalComponent::ChildContainerType childs = parent->GetChildren(false);
+    CTiglAbstractPhysicalComponent::ChildContainerType::iterator childIt;
+    
+    if (childs.size() == 0) {
+        return parentShape;
+    }
+
+    ListPNamedShape childShapes;
+    for (childIt = childs.begin(); childIt != childs.end(); ++childIt) {
+        CTiglAbstractPhysicalComponent* child = *childIt;
+        if (!child) {
+            continue;
+        }
+
+        PNamedShape childShape = FuseWithChilds(child);
+        childShapes.push_back(childShape);
+    }
+    CFuseShapes fuser(parentShape, childShapes);
+    PNamedShape result = fuser.NamedShape();
+
+    // insert intersections
+    ListPNamedShape::const_iterator it = fuser.Intersections().begin();
+    for (; it != fuser.Intersections().end(); it++) {
+        if (*it) {
+            _intersections.push_back(*it);
+        }
+    }
+    
+    return result;
 }
 
 /**
@@ -154,64 +138,11 @@ void CTiglFusePlane::Perform()
         return;
     }
 
-    std::string rootName = rootComponent->GetUID();
-    std::string rootShortName = MakeShortName(_myconfig, *rootComponent);
-    PNamedShape rootShape    (new CNamedShape(rootComponent->GetLoft()        , rootName.c_str()));
-    rootShape->SetShortName(rootShortName.c_str());
-
-    if (_mymode == FULL_PLANE || _mymode == FULL_PLANE_TRIMMED_FF) {
-        PNamedShape rootShapeMirr(new CNamedShape(rootComponent->GetMirroredLoft(), rootName.c_str()));
-        rootShortName += "M";
-        rootShapeMirr->SetShortName(rootShortName.c_str());
-        rootShape = CMergeShapes(rootShape, rootShapeMirr);
-    }
-
-    CTiglAbstractPhysicalComponent::ChildContainerType childs = rootComponent->GetChildren(false);
-    CTiglAbstractPhysicalComponent::ChildContainerType::iterator childIt;
-
-    ListPNamedShape childShapes;
-    for (childIt = childs.begin(); childIt != childs.end(); ++childIt) {
-        CTiglAbstractPhysicalComponent* child = *childIt;
-        if (!child) {
-            continue;
-        }
-
-        std::string childShortName = MakeShortName(_myconfig, *child);
-        PNamedShape childShape    (new CNamedShape(child->GetLoft()        , child->GetUID().c_str()));
-        childShape->SetShortName(childShortName.c_str());
-
-        if (_mymode == FULL_PLANE || _mymode == FULL_PLANE_TRIMMED_FF) {
-            PNamedShape childShapeMirr(new CNamedShape(child->GetMirroredLoft(), child->GetUID().c_str()));
-            childShortName += "M";
-            childShapeMirr->SetShortName(childShortName.c_str());
-            childShape = CMergeShapes(childShape, childShapeMirr);
-        }
-        childShapes.push_back(childShape);
-    }
-    CFuseShapes fuser(rootShape, childShapes);
-    _result = fuser.NamedShape();
-
-    // insert trimmed shapes from fusing
-    if (fuser.TrimmedParent()) {
-        _subShapes.push_back(fuser.TrimmedParent());
-    }
-    ListPNamedShape::const_iterator it = fuser.TrimmedChilds().begin();
-    for (; it != fuser.TrimmedChilds().end(); it++) {
-        if (*it) {
-            _subShapes.push_back(*it);
-        }
-    }
-    it = fuser.Intersections().begin();
-    for (; it != fuser.Intersections().end(); it++) {
-        if (*it) {
-            _intersections.push_back(*it);
-        }
-    }
+    _result = FuseWithChilds(rootComponent);
 
     CCPACSFarField& farfield = _myconfig.GetFarField();
     if (farfield.GetFieldType() != NONE && (_mymode == FULL_PLANE_TRIMMED_FF || _mymode == HALF_PLANE_TRIMMED_FF)) {
-        PNamedShape ff(new CNamedShape(farfield.GetLoft(), farfield.GetUID().c_str()));
-        NameSymplane(*ff);
+        PNamedShape ff = farfield.GetLoft();
 
         BOPCol_ListOfShape aLS;
         aLS.Append(_result->Shape());

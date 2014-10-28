@@ -24,8 +24,9 @@ set (TV_OCC_LIBS
 )
 
 if(NOT OpenCASCADE_DONT_SEARCH_OCE)
-find_package(OCE 0.15 COMPONENTS ${TV_OCC_LIBS} QUIET)
+  find_package(OCE 0.15 COMPONENTS ${TV_OCC_LIBS} QUIET)
 endif()
+
 if(OCE_FOUND)
   set(OpenCASCADE_LIBRARIES ${TV_OCC_LIBS})
   set(OpenCASCADE_INCLUDE_DIR ${OCE_INCLUDE_DIRS})
@@ -54,9 +55,9 @@ include_directories(${TIGL_INCLUDES})
 set(tv_src
     CommandLineParameters.cpp
     ISession_Point.cpp
+    ISession_Direction.cpp
     ISession_Text.cpp
     main.cpp
-    TIGLViewerApplication.cpp
     TIGLViewerContext.cpp
     TIGLViewerDocument.cpp
     TIGLViewerInputoutput.cpp
@@ -80,12 +81,15 @@ set(tv_src
     TIGLViewerFuseDialog.cpp
     TIGLViewerShapeIntersectionDialog.cpp
     TIGLViewerScreenshotDialog.cpp
+    TIGLViewerDrawVectorDialog.cpp
+    TIGLViewerScopedCommand.cpp
 )
 	
 # normal header files
 set(tv_hdr
     CommandLineParameters.h
     ISession_Point.h
+    ISession_Direction.h
     ISession_Text.h
     TIGLViewer.h
     TIGLViewerSettings.h
@@ -94,12 +98,12 @@ set(tv_hdr
     CHotsoseMeshReader.h
     TIGLViewerLogHistory.h
     TIGLViewerLoggerHTMLDecorator.h
+    TIGLViewerScopedCommand.h
 )
 
 # qobject header files that have to be moced
 set(tv_hdr_qobj
 	TIGLDebugStream.h
-	TIGLViewerApplication.h
 	TIGLViewerContext.h
 	TIGLViewerDocument.h
 	TIGLViewerInputoutput.h
@@ -113,6 +117,7 @@ set(tv_hdr_qobj
 	TiglViewerConsole.h
 	TIGLViewerEtaXsiDialog.h
 	TIGLViewerErrorDialog.h
+	TIGLViewerDrawVectorDialog.h
 	TIGLViewerLogRedirection.h
 	TIGLViewerFuseDialog.h
 	TIGLViewerShapeIntersectionDialog.h
@@ -127,6 +132,7 @@ set(tv_ui_comp
 	src/TIGLViewerFuseDialog.ui
 	src/TIGLViewerShapeIntersectionDialog.ui
 	src/TIGLViewerScreenshotDialog.ui
+	src/TIGLViewerDrawVectorDialog.ui
 )
 	
 foreach ( _fname ${tv_src})

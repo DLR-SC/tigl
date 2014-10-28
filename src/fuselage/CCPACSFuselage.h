@@ -143,9 +143,12 @@ protected:
     void Update(void);
         
     // Adds all segments of this fuselage to one shape
-    TopoDS_Shape BuildLoft(void);
+    PNamedShape BuildLoft(void);
 
 private:
+    // get short name for loft
+    std::string GetShortShapeName(void);
+
     // Copy constructor
     CCPACSFuselage(const CCPACSFuselage & );
 

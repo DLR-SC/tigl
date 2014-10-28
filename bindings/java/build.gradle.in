@@ -1,0 +1,30 @@
+version = "@TIGL_VERSION@"
+
+apply plugin: 'java'
+
+project.archivesBaseName = 'tigl'
+libsDirName = '${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}'
+
+buildDir = '.'
+
+sourceSets {
+    main {
+        java {
+            srcDir '@TIGLJAVA_SOURCE_DIR@'
+        }
+    }
+}
+
+
+repositories {
+	mavenCentral()
+}
+dependencies {
+	compile group: 'commons-logging', name: 'commons-logging', version: '1.2'
+	compile group: 'net.java.dev.jna', name: 'jna', version: '4.1.0'
+}
+
+
+task prepareWrapper(type: Wrapper) {
+   gradleVersion = '2.1'
+}

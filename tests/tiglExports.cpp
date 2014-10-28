@@ -110,6 +110,44 @@ TixiDocumentHandle tiglExportSimple::tixiSimpleHandle = 0;
 TiglCPACSConfigurationHandle tiglExportSimple::tiglSimpleHandle = 0;
 
 
+class tiglExportRectangularWing : public ::testing::Test
+{
+protected:
+    static void SetUpTestCase()
+    {
+        const char* filename = "TestData/simple_rectangle_compseg.xml";
+        ReturnCode tixiRet;
+        TiglReturnCode tiglRet;
+
+        tiglRectangularWingHandle = -1;
+        tixiRectangularWingHandle = -1;
+
+        tixiRet = tixiOpenDocument(filename, &tixiRectangularWingHandle);
+        ASSERT_TRUE (tixiRet == SUCCESS);
+        tiglRet = tiglOpenCPACSConfiguration(tixiRectangularWingHandle, "", &tiglRectangularWingHandle);
+        ASSERT_TRUE(tiglRet == TIGL_SUCCESS);
+    }
+
+    static void TearDownTestCase()
+    {
+        ASSERT_TRUE(tiglCloseCPACSConfiguration(tiglRectangularWingHandle) == TIGL_SUCCESS);
+        ASSERT_TRUE(tixiCloseDocument(tixiRectangularWingHandle) == SUCCESS);
+        tiglRectangularWingHandle = -1;
+        tixiRectangularWingHandle = -1;
+    }
+
+    virtual void SetUp() {}
+    virtual void TearDown() {}
+
+
+    static TixiDocumentHandle           tixiRectangularWingHandle;
+    static TiglCPACSConfigurationHandle tiglRectangularWingHandle;
+};
+
+TixiDocumentHandle tiglExportRectangularWing::tixiRectangularWingHandle = 0;
+TiglCPACSConfigurationHandle tiglExportRectangularWing::tiglRectangularWingHandle = 0;
+
+
 
 /******************************************************************************/
 
@@ -166,9 +204,22 @@ TEST_F(tiglExportSimple, export_wing_collada)
     tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglSimpleHandle);
     tigl::CCPACSWing& wing = config.GetWing(1);
 
-    tigl::CTiglTriangularizer t(wing.GetLoft(), 0.001);
-
-    TiglReturnCode ret = tigl::CTiglExportCollada::writeToDisc(t, "simple_wing", "TestData/export/simpletest_wing.dae");
+    TiglReturnCode ret = tigl::CTiglExportCollada::write(wing.GetLoft(), "TestData/export/simpletest_wing.dae", 0.001);
 
     ASSERT_EQ(TIGL_SUCCESS, ret);
+}
+
+
+// check if face names were set correctly in the case with a trailing edge
+TEST_F(tiglExportSimple, check_face_traits)
+{
+    ASSERT_EQ(TIGL_SUCCESS, tiglExportIGES(tiglSimpleHandle,"TestData/export/simpletest.iges"));
+    ASSERT_EQ(TIGL_SUCCESS, tiglExportFusedWingFuselageIGES(tiglSimpleHandle,"TestData/export/simpletest_fused.iges"));
+}
+
+// check if face names were set correctly in the case without a trailing edge
+TEST_F(tiglExportRectangularWing, check_face_traits)
+{
+    ASSERT_EQ(TIGL_SUCCESS, tiglExportIGES(tiglRectangularWingHandle,"TestData/export/rectangular_wing_test.iges"));
+    ASSERT_EQ(TIGL_SUCCESS, tiglExportFusedWingFuselageIGES(tiglRectangularWingHandle,"TestData/export/rectangular_wing_test_fused.iges"));
 }

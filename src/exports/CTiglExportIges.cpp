@@ -47,6 +47,7 @@
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
+#include <TopTools_HSequenceOfShape.hxx>
 
 // IGES export
 #include <TransferBRep_ShapeMapper.hxx>
@@ -86,6 +87,16 @@ namespace
         for (int iface = 1; iface <= faceMap.Extent(); ++iface) {
             TopoDS_Face face = TopoDS::Face(faceMap(iface));
             std::string faceName = shape->GetFaceTraits(iface-1).Name();
+            
+            if (faceName == shape->Name()) {
+                faceName = shape->ShortName();
+            }
+            
+            PNamedShape origin = shape->GetFaceTraits(iface-1).Origin();
+            if (origin && origin->Name() == faceName) {
+                faceName = origin->ShortName();
+            }
+            
             // IGES allows entity names of at max 8 characters.
             // If the string is longer than 8 characters, the IGES exports might crash
             if (faceName.length() > 8) {
@@ -100,6 +111,64 @@ namespace
                 entity->SetLabel(str);
             }
         }
+    }
+    
+    void WriteIGESShapeNames(Handle_Transfer_FinderProcess FP, const PNamedShape shape)
+    {
+        if (!shape) {
+            return;
+        }
+
+        std::string shapeName = shape->ShortName();
+        // IGES allows entity names of at max 8 characters.
+        // If the string is longer than 8 characters, the IGES exports might crash
+        if (shapeName.length() > 8) {
+            shapeName = shapeName.substr(0,8);
+        }
+
+        // insert blanks
+        int nblanks = 8 - shapeName.length();
+        for (int i = 0; i < nblanks; ++i) {
+            shapeName.insert(shapeName.begin(), ' ');
+        }
+
+        // set face name
+        Handle(IGESData_IGESEntity) entity;
+        Handle(TransferBRep_ShapeMapper) mapper = TransferBRep::ShapeMapper ( FP, shape->Shape() );
+        if ( FP->FindTypedTransient ( mapper, STANDARD_TYPE(IGESData_IGESEntity), entity ) ) {
+            Handle(TCollection_HAsciiString) str = new TCollection_HAsciiString(shapeName.c_str());
+            entity->SetLabel(str);
+        }
+    }
+    
+    void WriteIgesWireName(Handle_Transfer_FinderProcess FP, const PNamedShape shape)
+    {
+        if (!shape) {
+            return;
+        }
+        
+        TopTools_IndexedMapOfShape wireMap;
+        TopExp::MapShapes(shape->Shape(),   TopAbs_EDGE, wireMap);
+        for (int iwire = 1; iwire <= wireMap.Extent(); ++iwire) {
+            TopoDS_Edge wire = TopoDS::Edge(wireMap(iwire));
+            std::string wireName = shape->ShortName();
+
+            // set wire name
+            Handle(IGESData_IGESEntity) entity;
+            Handle(TransferBRep_ShapeMapper) mapper = TransferBRep::ShapeMapper ( FP, wire );
+            if (!FP->FindTypedTransient ( mapper, STANDARD_TYPE(IGESData_IGESEntity), entity ) ) {
+                continue;
+            }
+            
+            Handle(TCollection_HAsciiString) str = new TCollection_HAsciiString(wireName.c_str());
+            entity->SetLabel(str);
+        }
+    }
+    
+    void WriteIgesNames(Handle_Transfer_FinderProcess FP, const PNamedShape shape)
+    {
+        WriteIGESFaceNames(FP, shape);
+        WriteIGESShapeNames(FP, shape);
     }
 
 } //namespace
@@ -151,12 +220,8 @@ void CTiglExportIges::ExportIGES(const std::string& filename) const
 
         for (int i = 1; i <= wing.GetSegmentCount(); i++) {
             CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(i);
-            TopoDS_Shape loft = segment.GetLoft();
-            // make short name
-            std::stringstream s;
-            s << "W" << w  << "S" << i;
-            PNamedShape shape(new CNamedShape(loft, s.str().c_str()));
-            shapes.push_back(shape);
+            PNamedShape loft = segment.GetLoft();
+            shapes.push_back(loft);
         }
     }
 
@@ -166,19 +231,14 @@ void CTiglExportIges::ExportIGES(const std::string& filename) const
 
         for (int i = 1; i <= fuselage.GetSegmentCount(); i++) {
             CCPACSFuselageSegment& segment = (tigl::CCPACSFuselageSegment &) fuselage.GetSegment(i);
-            TopoDS_Shape loft = segment.GetLoft();
-            // make short name
-            std::stringstream s;
-            s << "F" << f  << "S" << i;
-            PNamedShape shape(new CNamedShape(loft, s.str().c_str()));
-            shapes.push_back(shape);
+            PNamedShape loft = segment.GetLoft();
+            shapes.push_back(loft);
         }
     }
 
     CCPACSFarField& farfield = myConfig.GetFarField();
     if (farfield.GetFieldType() != NONE) {
-        PNamedShape shape(new CNamedShape(farfield.GetLoft(), farfield.GetUID().c_str()));
-        shapes.push_back(shape);
+        shapes.push_back(farfield.GetLoft());
     }
 
     // write iges
@@ -246,11 +306,21 @@ void CTiglExportIges::ExportShapes(const ListPNamedShape& shapes, const std::str
     ListPNamedShape shapeScaled;
     for (it = shapes.begin(); it != shapes.end(); ++it) {
         PNamedShape pshape = *it;
-        CTiglTransformation trafo;
-        trafo.AddScaling(1000,1000,1000);
-        PNamedShape pScaledShape(new CNamedShape(*pshape));
-        pScaledShape->SetShape(trafo.Transform(pshape->Shape()));
-        shapeScaled.push_back(pScaledShape);
+        if (pshape) {
+            CTiglTransformation trafo;
+            trafo.AddScaling(1000,1000,1000);
+            PNamedShape pScaledShape(new CNamedShape(*pshape));
+            pScaledShape->SetShape(trafo.Transform(pshape->Shape()));
+            shapeScaled.push_back(pScaledShape);
+        }
+    }
+    
+    ListPNamedShape list;
+    for (it = shapeScaled.begin(); it != shapeScaled.end(); ++it) {
+        ListPNamedShape templist = GroupFaces(*it, myStoreType);
+        for (ListPNamedShape::iterator it2 = templist.begin(); it2 != templist.end(); ++it2) {
+            list.push_back(*it2);
+        }
     }
     
     SetTranslationParameters();
@@ -263,14 +333,6 @@ void CTiglExportIges::ExportShapes(const ListPNamedShape& shapes, const std::str
 
     IGESCAFControl_Writer igesWriter;
 
-    ListPNamedShape list;
-    for (it = shapeScaled.begin(); it != shapeScaled.end(); ++it) {
-        ListPNamedShape templist = GroupFaces(*it, myStoreType);
-        for (ListPNamedShape::iterator it2 = templist.begin(); it2 != templist.end(); ++it2) {
-            list.push_back(*it2);
-        }
-    }
-
     for (it = list.begin(); it != list.end(); ++it) {
         InsertShapeToCAF(myAssembly, *it, true);
     }
@@ -279,23 +341,23 @@ void CTiglExportIges::ExportShapes(const ListPNamedShape& shapes, const std::str
     if (igesWriter.Transfer(hDoc) == Standard_False) {
         throw CTiglError("Cannot export fused airplane as IGES", TIGL_ERROR);
     }
+
+    // write face entity names
+    for (it = list.begin(); it != list.end(); ++it) {
+        PNamedShape pshape = *it;
+        WriteIgesNames(igesWriter.TransferProcess(), pshape);
+    }
 #else
     IGESControl_Writer igesWriter("MM", 0);
     igesWriter.Model()->ApplyStatic();
 
-    for (it = shapeScaled.begin(); it != shapeScaled.end(); ++it) {
+    for (it = list.begin(); it != list.end(); ++it) {
         PNamedShape pshape = *it;
-        igesWriter.AddShape (pshape->Shape());
+        AddToIges(pshape, igesWriter);
     }
 
     igesWriter.ComputeModel();
 #endif
-
-    // write face entity names
-    for (it = shapeScaled.begin(); it != shapeScaled.end(); ++it) {
-        PNamedShape pshape = *it;
-        WriteIGESFaceNames(igesWriter.TransferProcess(), pshape);
-    }
 
     if (igesWriter.Write(const_cast<char*>(filename.c_str())) != Standard_True) {
         throw CTiglError("Error: Export of shapes to IGES file failed in CCPACSImportExport::SaveIGES", TIGL_ERROR);
@@ -305,6 +367,54 @@ void CTiglExportIges::ExportShapes(const ListPNamedShape& shapes, const std::str
 void CTiglExportIges::SetOCAFStoreType(ShapeStoreType type)
 {
     myStoreType = type;
+}
+
+/**
+ * @brief This function is analog to the InsertShapeToCAF function
+ * The only difference is that it works directly on the step file
+ * without CAF
+ */
+void CTiglExportIges::AddToIges(PNamedShape shape, IGESControl_Writer& writer) const 
+{
+    if (!shape) {
+        return;
+    }
+    
+    std::string shapeName = shape->Name();
+    std::string shapeShortName = shape->ShortName();
+    Handle(Transfer_FinderProcess) FP = writer.TransferProcess();
+    TopTools_IndexedMapOfShape faceMap;
+    TopExp::MapShapes(shape->Shape(),   TopAbs_FACE, faceMap);
+    // any faces?
+    if (faceMap.Extent() > 0) {
+        int ret = writer.AddShape(shape->Shape());
+        if (ret > IFSelect_RetDone) {
+            throw CTiglError("Error: Export to IGES file failed in CTiglExportStep. Could not translate shape " 
+                             + shapeName + " to iges entity,", TIGL_ERROR);
+        }
+        WriteIgesNames(FP, shape);
+    }
+    else {
+        // no faces, export edges as wires
+        Handle(TopTools_HSequenceOfShape) Edges = new TopTools_HSequenceOfShape();
+        TopExp_Explorer myEdgeExplorer (shape->Shape(), TopAbs_EDGE);
+        while (myEdgeExplorer.More()) {
+            Edges->Append(TopoDS::Edge(myEdgeExplorer.Current()));
+            myEdgeExplorer.Next();
+        }
+        ShapeAnalysis_FreeBounds::ConnectEdgesToWires(Edges, 1e-7, false, Edges);
+        for (int iwire = 1; iwire <= Edges->Length(); ++iwire) {
+            int ret = writer.AddShape(Edges->Value(iwire));
+            if (ret > IFSelect_RetDone) {
+                throw CTiglError("Error: Export to IGES file failed in CTiglExportIges. Could not translate shape " 
+                                 + shapeName + " to iges entity,", TIGL_ERROR);
+            }
+            PNamedShape theWire(new CNamedShape(Edges->Value(iwire),shapeName.c_str()));
+            theWire->SetShortName(shapeShortName.c_str());
+            WriteIGESShapeNames(FP, theWire);
+            WriteIgesWireName(FP, theWire);
+        }
+    }
 }
 
 } // end namespace tigl

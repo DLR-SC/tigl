@@ -627,7 +627,6 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetUpperPoint(TiglCPACSConfigurationHa
 * @return
 *   - TIGL_SUCCESS if a point was found
 *   - TIGL_NOT_FOUND if no intersection point was found or the cpacs handle is not valid
-*   - TIGL_MATH_ERROR if the given direction is a null vector (which has zero length)
 *   - TIGL_INDEX_ERROR if wingIndex or segmentIndex are not valid
 *   - TIGL_NULL_POINTER if pointXPtr, pointYPtr or pointZPtr are null pointers
 *   - TIGL_ERROR if some other error occured
@@ -640,14 +639,80 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetLowerPoint(TiglCPACSConfigurationHa
                                                         double* pointXPtr,
                                                         double* pointYPtr,
                                                         double* pointZPtr);
-        
+
+/**
+* @brief Returns a point on the wing chord surface for a
+* a given wing and segment index.
+*
+* Returns a point on the wing chord surface in dependence of parameters eta and xsi,
+* which range from 0.0 to 1.0. For eta = 0.0, xsi = 0.0 the point is equal to
+* the leading edge on the inner section of the given segment. For eta = 1.0, xsi = 1.0
+* the point is equal to the trailing edge on the outer section of the given segment. The
+* point is returned in absolute world coordinates.
+*
+* @param[in]  cpacsHandle  Handle for the CPACS configuration
+* @param[in]  wingIndex    The index of the wing, starting at 1
+* @param[in]  segmentIndex The index of the segment of the wing, starting at 1
+* @param[in]  eta          eta in the range 0.0 <= eta <= 1.0
+* @param[in]  xsi          xsi in the range 0.0 <= xsi <= 1.0
+* @param[out] pointXPtr    Pointer to the x-coordinate of the point in absolute world coordinates
+* @param[out] pointYPtr    Pointer to the y-coordinate of the point in absolute world coordinates
+* @param[out] pointZPtr    Pointer to the z-coordinate of the point in absolute world coordinates
+*
+* @return
+*   - TIGL_SUCCESS if a point was found
+*   - TIGL_NOT_FOUND if cpacs handle is not valid
+*   - TIGL_INDEX_ERROR if wingIndex or segmentIndex are not valid
+*   - TIGL_NULL_POINTER if pointXPtr, pointYPtr or pointZPtr are null pointers
+*   - TIGL_ERROR if some other error occured
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetChordPoint(TiglCPACSConfigurationHandle cpacsHandle,
+                                                        int wingIndex,
+                                                        int segmentIndex,
+                                                        double eta,
+                                                        double xsi,
+                                                        double* pointXPtr,
+                                                        double* pointYPtr,
+                                                        double* pointZPtr);
+
+/**
+* @brief Returns a normal vector on the wing chord surface for a
+* a given wing and segment index.
+*
+* Returns a normal vector on the wing chord surface in dependence of parameters eta and xsi,
+* which range from 0.0 to 1.0.
+*
+* @param[in]  cpacsHandle  Handle for the CPACS configuration
+* @param[in]  wingIndex    The index of the wing, starting at 1
+* @param[in]  segmentIndex The index of the segment of the wing, starting at 1
+* @param[in]  eta          eta in the range 0.0 <= eta <= 1.0
+* @param[in]  xsi          xsi in the range 0.0 <= xsi <= 1.0
+* @param[out] normalXPtr   Pointer to the x-coordinate of the resulting normal vector
+* @param[out] normalYPtr   Pointer to the y-coordinate of the resulting normal vector
+* @param[out] normalZPtr   Pointer to the z-coordinate of the resulting normal vector
+*
+* @return
+*   - TIGL_SUCCESS if a point was found
+*   - TIGL_NOT_FOUND if cpacs handle is not valid
+*   - TIGL_INDEX_ERROR if wingIndex or segmentIndex are not valid
+*   - TIGL_NULL_POINTER if normalXPtr, normalYPtr or normalZPtr are null pointers
+*   - TIGL_ERROR if some other error occured
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetChordNormal(TiglCPACSConfigurationHandle cpacsHandle,
+                                                         int wingIndex,
+                                                         int segmentIndex,
+                                                         double eta,
+                                                         double xsi,
+                                                         double* normalXPtr,
+                                                         double* normalYPtr,
+                                                         double* normalZPtr);
 
 /**
 * @brief Returns a point on the upper wing surface for a
 * a given wing and segment index. This function is different from ::tiglWingGetUpperPoint: 
 * First, a point on the wing chord surface is computed (defined by segment index and eta,xsi).
 * Then, a line is constructed, which is defined by this point and a direction given by the user.
-* The intersection of this line with the upper wing surface is finnaly returned.
+* The intersection of this line with the upper wing surface is finally returned.
 * The point is returned in absolute world coordinates.
 *
 *
@@ -703,7 +768,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetUpperPointAtDirection(TiglCPACSConf
 * a given wing and segment index. This function is different from ::tiglWingGetLowerPoint: 
 * First, a point on the wing chord surface is computed (defined by segment index and eta,xsi).
 * Then, a line is constructed, which is defined by this point and a direction given by the user.
-* The intersection of this line with the lower wing surface is finnaly returned.
+* The intersection of this line with the lower wing surface is finally returned.
 * The point is returned in absolute world coordinates.
 *
 *
@@ -1253,6 +1318,36 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSegmentIndex(TiglCPACSConfiguration
                                                           const char * segmentUID,
                                                           int * segmentIndexPtr,
                                                           int * wingIndexPtr);
+
+
+/**
+* @brief Returns the number of sections of a wing. 
+**
+*
+* @param[in]  cpacsHandle     Handle for the CPACS configuration
+* @param[in]  wingIndex       The index of a wing, starting at 1
+* @param[out] sectionCount    The number of sections of the wing
+*
+* Usage example:
+*
+@verbatim
+   TiglReturnCode returnCode;
+   int sectionCount = 0;
+   returnCode = tiglWingGetSectionUID(cpacsHandle, wingIndex, &sectionCount);
+   printf("The Number of sections of wing %d is %d\n", wingIndex, sectionCount);
+@endverbatim
+*
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_INDEX_ERROR if wingIndex is not valid
+*   - TIGL_NULL_POINTER if sectionCount is a null pointer
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSectionCount(TiglCPACSConfigurationHandle cpacsHandle,
+                                                          int wingIndex,
+                                                          int* sectionCount);
 
 /**
 * @brief Returns the UID of a section of a wing. The string returned must not be
@@ -2385,6 +2480,36 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSegmentUID(TiglCPACSConfigurati
        
 
 /**
+* @brief Returns the number of sections of a fuselage. 
+**
+*
+* @param[in]  cpacsHandle     Handle for the CPACS configuration
+* @param[in]  fuselageIndex   The index of a fuselage, starting at 1
+* @param[out] sectionCount    The number of sections of the fuselage
+*
+* Usage example:
+*
+@verbatim
+   TiglReturnCode returnCode;
+   int sectionCount = 0;
+   returnCode = tiglFuselageGetSectionUID(cpacsHandle, fuselageIndex, &sectionCount);
+   printf("The Number of sections of fuselage %d is %d\n", fuselageIndex, sectionCount);
+@endverbatim
+*
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_INDEX_ERROR if fuselageIndex is not valid
+*   - TIGL_NULL_POINTER if sectionCount is a null pointer
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSectionCount(TiglCPACSConfigurationHandle cpacsHandle,
+                                                              int fuselageIndex,
+                                                              int* sectionCount);
+
+
+/**
 * @brief Returns the UID of a section of a fuselage. The string returned must not be
 * deleted by the caller via free(). It will be deleted when the CPACS configuration
 * is closed.
@@ -2438,7 +2563,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSectionUID(TiglCPACSConfigurati
 *
 *
 * @param[in]  cpacsHandle      Handle for the CPACS configuration
-* @param[in]  fuselageIndex    Index of the Wing to export
+* @param[in]  fuselageIndex    Index of the fuselage in the cpacs file
 * @param[out] symmetryAxisPtr  Returning TiglSymmetryAxis enum pointer
 *
 * @return
@@ -2599,7 +2724,6 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglComponentIntersectionPoint(TiglCPACSConfig
 * @param[out] pointZArray          Array of z-coordinates of the points in absolute world coordinates. The Array must be preallocated with the size numberOfPoints.
 *
 * @return
-*   - TIGL_SUCCESS if a point was found
 *   - TIGL_NOT_FOUND if no point was found or the cpacs handle is not valid
 *   - TIGL_NULL_POINTER if pointXPtr, pointYPtr or pointZPtr are null pointers
 *   - TIGL_ERROR if some other error occurred
@@ -3702,6 +3826,108 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetReferenceArea(TiglCPACSConfiguratio
 TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetWettedArea(TiglCPACSConfigurationHandle cpacsHandle, 
                                                         char* wingUID,
                                                         double *wettedAreaPtr);
+
+/*@}*/
+/*****************************************************************************************************/
+/**
+  \defgroup GeometryFunctions General geometry functions.
+ */
+/*@{*/
+
+/**
+* @brief Returns the number of curves the given profile is made of.
+* 
+* The given profile may be a fuselage profile or a wing profile. Typically,
+* wing profiles consist of two curves (lower and upper curve), fuselage profiles
+* consist of only one curve.
+*
+* @param[in]  cpacsHandle     Handle for the CPACS configuration
+* @param[in]  profileUID      UID of the profile
+* @param[out] curveCount      Number of curves
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_UID_ERROR if profileUID is wrong
+*   - TIGL_NULL_POINTER if profileUID or curveCount NULL
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglProfileGetBSplineCount(TiglCPACSConfigurationHandle cpacsHandle,
+                                                             const char* profileUID,
+                                                             int* curveCount);
+
+/**
+* @brief Returns the B-Spline data sizes for a given curve on a profile. This includes
+* size of the knot vector, size of the control point vector and degree of the spline.
+* 
+* The given profile may be a fuselage profile or a wing profile. Typically,
+* wing profiles consist of two curves (lower and upper curve), fuselage profiles
+* consist of only one curve.
+*
+* @param[in]  cpacsHandle     Handle for the CPACS configuration
+* @param[in]  profileUID      UID of the profile
+* @param[in]  curveid         Index of the curve. Number of curves must be queried 
+*                             with ::tiglProfileGetBSplineCount. 1 <= index <= count
+* @param[out] degree          Degree of the B-Spline
+* @param[out] nControlPoints  Size of the control point vector
+* @param[out] nKnots          Size of the knot vector
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_UID_ERROR if profileUID is wrong
+*   - TIGL_INDEX_ERROR if curveid knot in range [1, curveCount]
+*   - TIGL_NULL_POINTER if the argument profileUID, degree, ncontrolPoints, or nKnots are NULL
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglProfileGetBSplineDataSizes(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                 const char* profileUID,
+                                                                 int curveid,
+                                                                 int* degree,
+                                                                 int* nControlPoints,
+                                                                 int* nKnots);
+/**
+* @brief Returns the B-Spline data of the given profile curve. This includes 
+* the knot vector and the control points of the B-Spline.
+* 
+* The output arrays cpx, cpy, cpz, and knots have to be allocated by the user first.
+* The control point vector arrays must have the size nControlPoints. This value must 
+* be queried with ::tiglProfileGetBSplineDataSizes first.
+* The knot vector array must have the size kKnots. This value has to be queried also
+* using the function ::tiglProfileGetBSplineDataSizes.
+* 
+* The given profile may be a fuselage profile or a wing profile. Typically,
+* wing profiles consist of two curves (lower and upper curve), fuselage profiles
+* consist of only one curve.
+*
+* @param[in]  cpacsHandle     Handle for the CPACS configuration
+* @param[in]  profileUID      UID of the profile
+* @param[in]  curveid         Index of the curve. Number of curves must be queried 
+*                             with ::tiglProfileGetBSplineCount. 1 <= index <= count
+* @param[in]  nControlPoints  Size of the control point vector. To be queried with ::tiglProfileGetBSplineDataSizes first.
+* @param[out] cpx             X-values of the control point vector.
+* @param[out] cpy             Y-values of the control point vector.
+* @param[out] cpz             Z-values of the control point vector.
+* @param[in]  nKnots          Size of the knot vector. To be queried with ::tiglProfileGetBSplineDataSizes first.
+* @param[out] knots           Knot vector values.
+* 
+* @cond
+* #annotate out: 4AM(3), 5AM(3), 6AM(3), 8AM(7)#
+* @endcond
+* 
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_UID_ERROR if profileUID is wrong
+*   - TIGL_INDEX_ERROR if curveid knot in range [1, curveCount]
+*   - TIGL_NULL_POINTER if the argument profileUID, cpx, cpy, cpz, or knots are NULL
+*   - TIGL_ERROR if the values nControlPoints, or nKnots are wrong
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglProfileGetBSplineData(TiglCPACSConfigurationHandle cpacsHandle,
+                                                            const char* profileUID,
+                                                            int curveid,
+                                                            int nControlPoints, double* cpx, double* cpy, double* cpz,
+                                                            int nKnots, double* knots);
 
 /*@}*/
 /*****************************************************************************************************/

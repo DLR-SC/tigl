@@ -174,14 +174,17 @@ protected:
     void Update(void);
 
     // Adds all Segments of this wing to one shape
-    TopoDS_Shape BuildFusedSegments(bool splitWingInUpperAndLower);
+    PNamedShape BuildFusedSegments(bool splitWingInUpperAndLower);
         
-    TopoDS_Shape BuildLoft(void);
+    PNamedShape BuildLoft(void);
         
     void BuildUpperLowerShells();
 
 
 private:
+    // get short name for loft
+    std::string GetShortShapeName(void);
+
     // Copy constructor
     CCPACSWing(const CCPACSWing & );
 

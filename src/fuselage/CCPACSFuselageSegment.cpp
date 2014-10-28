@@ -266,8 +266,31 @@ TopoDS_Wire CCPACSFuselageSegment::GetEndWire(void)
     return transformProfileWire(GetFuselage().GetTransformation(), endConnection, endProfile.GetWire(true));
 }
 
+// get short name for loft
+std::string CCPACSFuselageSegment::GetShortShapeName()
+{
+    unsigned int findex = 0;
+    unsigned int fsindex = 0;
+    for (int i = 1; i <= fuselage->GetConfiguration().GetFuselageCount(); ++i) {
+        tigl::CCPACSFuselage& f = fuselage->GetConfiguration().GetFuselage(i);
+        if (fuselage->GetUID() == f.GetUID()) {
+            findex = i;
+            for (int j = 1; j <= f.GetSegmentCount(); j++) {
+                tigl::CTiglAbstractSegment& fs = f.GetSegment(j);
+                if (GetUID() == fs.GetUID()) {
+                    fsindex = j;
+                    std::stringstream shortName;
+                    shortName << "F" << findex << "S" << fsindex;
+                    return shortName.str();
+                }
+            }
+        }
+    }
+    return "UNKNOWN";
+}
+
 // Builds the loft between the two segment sections
-TopoDS_Shape CCPACSFuselageSegment::BuildLoft(void)
+PNamedShape CCPACSFuselageSegment::BuildLoft(void)
 {
     // Build loft
     //BRepOffsetAPI_ThruSections generator(Standard_False, Standard_False, Precision::Confusion());
@@ -276,18 +299,21 @@ TopoDS_Shape CCPACSFuselageSegment::BuildLoft(void)
     generator.AddWire(GetEndWire());
     generator.CheckCompatibility(Standard_False);
     generator.Build();
-    TopoDS_Shape loft = generator.Shape();
+    TopoDS_Shape loftShape = generator.Shape();
 
     // Calculate volume
     GProp_GProps System;
-    BRepGProp::VolumeProperties(loft, System);
+    BRepGProp::VolumeProperties(loftShape, System);
     myVolume = System.Mass();
 
     // Calculate surface area
     GProp_GProps AreaSystem;
-    BRepGProp::SurfaceProperties(loft, AreaSystem);
+    BRepGProp::SurfaceProperties(loftShape, AreaSystem);
     mySurfaceArea = AreaSystem.Mass();
         
+    std::string loftName = GetUID();
+    std::string loftShortName = GetShortShapeName();
+    PNamedShape loft(new CNamedShape(loftShape, loftName.c_str(), loftShortName.c_str()));
     return loft;
 }
 
@@ -620,7 +646,7 @@ TopoDS_Shape CCPACSFuselageSegment::getWireOnLoft(double eta)
     Handle(TopTools_HSequenceOfShape) Wires;    /* All intersection wires */
     Handle(TopTools_HSequenceOfShape) Edges;    /* All intersection edges */
     Standard_Boolean PerformNow = Standard_False;
-    BRepAlgoAPI_Section section(GetLoft(), shaft_face, PerformNow);
+    BRepAlgoAPI_Section section(GetLoft()->Shape(), shaft_face, PerformNow);
     section.ComputePCurveOn1(Standard_True);
     section.Approximation(Standard_True);
     section.Build();

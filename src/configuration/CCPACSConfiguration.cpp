@@ -137,6 +137,11 @@ TixiDocumentHandle CCPACSConfiguration::GetTixiDocumentHandle(void) const
     return tixiDocumentHandle;
 }
 
+bool CCPACSConfiguration::HasWingProfile(std::string uid) const
+{
+    return wings.HasProfile(uid);
+}
+
 // Returns the total count of wing profiles in this configuration
 int CCPACSConfiguration::GetWingProfileCount(void) const
 {
@@ -174,7 +179,12 @@ CCPACSWing& CCPACSConfiguration::GetWing(const std::string& UID) const
 
 TopoDS_Shape CCPACSConfiguration::GetParentLoft(const std::string& UID)
 {
-    return uidManager.GetParentComponent(UID)->GetLoft();
+    return uidManager.GetParentComponent(UID)->GetLoft()->Shape();
+}
+
+bool CCPACSConfiguration::HasFuselageProfile(std::string uid) const
+{
+    return fuselages.HasProfile(uid);
 }
 
 // Returns the total count of fuselage profiles in this configuration
@@ -240,7 +250,7 @@ double CCPACSConfiguration::GetAirplaneLenth(void)
 
         for (int i = 1; i <= wing.GetSegmentCount(); i++) {
             tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment&) wing.GetSegment(i);
-            BRepBndLib::Add(segment.GetLoft(), boundingBox);
+            BRepBndLib::Add(segment.GetLoft()->Shape(), boundingBox);
 
         }
 
@@ -250,7 +260,7 @@ double CCPACSConfiguration::GetAirplaneLenth(void)
 
         for (int i = 1; i <= wing.GetSegmentCount(); i++) {
             tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment&) wing.GetSegment(i);
-            BRepBndLib::Add(segment.GetLoft(), boundingBox);
+            BRepBndLib::Add(segment.GetLoft()->Shape(), boundingBox);
         }
     }
 
@@ -259,7 +269,7 @@ double CCPACSConfiguration::GetAirplaneLenth(void)
 
         for (int i = 1; i <= fuselage.GetSegmentCount(); i++) {
             tigl::CCPACSFuselageSegment& segment = (tigl::CCPACSFuselageSegment&) fuselage.GetSegment(i);
-            BRepBndLib::Add(segment.GetLoft(), boundingBox);
+            BRepBndLib::Add(segment.GetLoft()->Shape(), boundingBox);
         }
     }
     Standard_Real xmin, xmax, ymin, ymax, zmin, zmax;

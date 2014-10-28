@@ -28,7 +28,7 @@
 Console::Console(QWidget *parent) :
     QPlainTextEdit(parent)
 {
-    prompt = "TiglViewer> ";
+    prompt = ">> ";
 
     QPalette p = palette();
     p.setColor(QPalette::Base, Qt::black);
@@ -40,6 +40,7 @@ Console::Console(QWidget *parent) :
     historyPos = 0;
     insertPrompt(false);
     isLocked = false;
+    isDirty = false;
 }
 
 void Console::keyPressEvent(QKeyEvent *event)
@@ -48,38 +49,60 @@ void Console::keyPressEvent(QKeyEvent *event)
         return;
     }
     
-    if (event->key() >= 0x20 && event->key() <= 0x7e &&
-        (event->modifiers() == Qt::NoModifier || event->modifiers() == Qt::ShiftModifier)) {
-
-        QPlainTextEdit::keyPressEvent(event);
-    }
-
-    if (event->key() == Qt::Key_Backspace &&
-        event->modifiers() == Qt::NoModifier &&
-        textCursor().position() - textCursor().block().position() > prompt.length()) {
-
-        QPlainTextEdit::keyPressEvent(event);
-    }
 
     if (event->key() == Qt::Key_Return && event->modifiers() == Qt::NoModifier) {
         onEnter();
     }
-
-    if (event->key() == Qt::Key_Up) {
+    else if (event->key() == Qt::Key_Up) {
         historyBack();
     }
-
-    if (event->key() == Qt::Key_Down) {
+    else if (event->key() == Qt::Key_Down) {
         historyForward();
+    }
+    else if (event->key() == Qt::Key_Backspace || event->key() == Qt::Key_Left) {
+        if (textCursor().position() - textCursor().block().position() > prompt.length()) {
+            QPlainTextEdit::keyPressEvent(event);
+        }
+    }
+    else if (event->key() == Qt::Key_Home) {
+        QTextCursor cursor = textCursor();
+        if (event->modifiers() == Qt::SHIFT) {
+            cursor.movePosition(QTextCursor::StartOfBlock, QTextCursor::KeepAnchor);
+            cursor.setPosition(cursor.position() + prompt.length(), QTextCursor::KeepAnchor);
+        }
+        else {
+            cursor.movePosition(QTextCursor::StartOfBlock);
+            cursor.setPosition(cursor.position() + prompt.length());
+        }
+        setTextCursor(cursor);
+    }
+    else if ((event->key() == Qt::Key_A && event->modifiers() == Qt::CTRL)) {
+        // select the whole line without the prompt
+        QTextCursor cursor = textCursor();
+        cursor.movePosition(QTextCursor::StartOfBlock);
+        cursor.setPosition(cursor.position() + prompt.length());
+        cursor.movePosition(QTextCursor::EndOfBlock, QTextCursor::KeepAnchor);
+        setTextCursor(cursor);
+    }
+    // disable undo/redo
+    else  if ((event->key() == Qt::Key_Z && event->modifiers() == Qt::CTRL) ||
+              (event->key() == Qt::Key_Y && event->modifiers() == Qt::CTRL) ||
+              (event->key() == Qt::Key_Z && event->modifiers() == (Qt::CTRL & Qt::SHIFT))){
+        // do nothing by default
+        QWidget::keyPressEvent(event);
+    }
+    else {
+        QPlainTextEdit::keyPressEvent(event);
     }
 
     QString cmd = textCursor().block().text().mid(prompt.length());
     emit onChange(cmd);
 }
 
-void Console::mousePressEvent(QMouseEvent *)
+void Console::mousePressEvent(QMouseEvent * e)
 {
-    setFocus();
+    QWidget::mousePressEvent(e);
+    //setFocus();
 }
 
 void Console::mouseDoubleClickEvent(QMouseEvent *){}
@@ -88,22 +111,48 @@ void Console::contextMenuEvent(QContextMenuEvent *){}
 
 void Console::onEnter()
 {
-    if (textCursor().position() - textCursor().block().position() == prompt.length()) {
-        insertPrompt();
-        return;
-    }
-
     QString cmd = textCursor().block().text().mid(prompt.length());
-    isLocked = true;
+    QTextCursor cursor = textCursor();
+    cursor.movePosition(QTextCursor::EndOfBlock);
+    setTextCursor(cursor);
     historyAdd(cmd);
+    
+    // remove line breaks
+    cmd.remove(QChar(0x2028));
+    cmd.remove(QChar(0x2029));
+    
+    startCommand();
+     // we enforce new line from console itself
+    isDirty = true;
     emit onCommand(cmd);
 }
 
 void Console::output(QString s)
 {
-    appendHtml(QString("<font color=\"white\">%1</font><br/><br/>").arg(s));
-    insertPrompt();
+    s = s.replace("\n", "<br/>");
+    s = s.replace("  ", "&nbsp;&nbsp;");
+    appendHtml(QString("<font color=\"white\">%1</font><br/>").arg(s));
+    isDirty = true;
+}
+
+void Console::outputError(QString s)
+{
+    appendHtml(QString("<i><font color=\"red\">%1</font></i><br/><br/>").arg(s));
+    isDirty = true;
+}
+
+void Console::startCommand()
+{
+    isLocked = true;
+}
+
+void Console::endCommand()
+{
+    if (isDirty) {
+        insertPrompt();
+    }
     isLocked = false;
+    isDirty = false;
 }
 
 void Console::insertPrompt(bool insertNewBlock)
@@ -116,6 +165,7 @@ void Console::insertPrompt(bool insertNewBlock)
     textCursor().setBlockCharFormat(format);
     textCursor().insertText(prompt);
     scrollDown();
+    isDirty = false;
 }
 
 void Console::scrollDown()
@@ -126,8 +176,14 @@ void Console::scrollDown()
 
 void Console::historyAdd(QString cmd)
 {
-    history->append(cmd);
-    historyPos = history->length();
+    int pos = history->lastIndexOf(cmd);
+    if (pos > 0) {
+        historyPos = pos+1;
+    }
+    else {
+        history->append(cmd);
+        historyPos = history->length();
+    }
 }
 
 void Console::historyBack()

@@ -42,11 +42,8 @@ class CCPACSWingPositionings
 
 private:
     // Typedef for a CCPACSWingPositioning container to store the positionings.
-    typedef std::vector<CCPACSWingPositioning*> CCPACSWingPositioningContainer;
-
-    // Typedef for a CTiglTransformation map to store multiple transformations by a section-uid.
-    typedef std::map<std::string, CTiglTransformation> CCPACSTransformationMap;
-    typedef CCPACSTransformationMap::iterator  CCPACSTransformationMapIterator;
+    typedef std::map<std::string, CCPACSWingPositioning*> CCPACSWingPositioningContainer;
+    typedef CCPACSWingPositioningContainer::iterator CCPACSWingPositioningIterator;
 
 public:
     // Constructor
@@ -61,12 +58,6 @@ public:
     // Invalidates internal state
     TIGL_EXPORT void Invalidate(void);
 
-    // Gets a positioning by index.
-    TIGL_EXPORT CCPACSWingPositioning& GetPositioning(int index) const;
-
-    // Gets total positioning count
-    TIGL_EXPORT int GetPositioningCount(void) const;
-
     // Returns the positioning matrix for a given section-uid
     TIGL_EXPORT CTiglTransformation GetPositioningTransformation(std::string sectionIndex);
 
@@ -78,7 +69,7 @@ protected:
     void Update(void);
 
     // Update connected positionings recursive
-    void UpdateNextPositioning(int positioningIndex, int rec_depth);
+    void UpdateNextPositioning(CCPACSWingPositioning*, int depth);
 
 private:
     // Copy constructor
@@ -89,7 +80,6 @@ private:
 
 private:
     CCPACSWingPositioningContainer positionings;      /**< Positioning elements */
-    CCPACSTransformationMap        transformations;   /**< Map of transformations */
     bool                           invalidated;       /**< Internal state flag  */
 
 };

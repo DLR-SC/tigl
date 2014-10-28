@@ -37,26 +37,25 @@ class QFileSystemWatcher;
 class QShortcut;
 class TIGLViewerLogHistory;
 class TIGLViewerLogRedirection;
+class TIGLViewerDocument;
 
 class TIGLViewerWindow : public QMainWindow, private Ui::TIGLViewerWindow
 {
     Q_OBJECT
+    Q_PROPERTY(TIGLViewerWidget*  viewer READ getViewer)
+    Q_PROPERTY(TIGLViewerContext* scene  READ getScene)
 
 public:
     enum { MaxRecentFiles = 5 };
 
     TIGLViewerWindow();
     virtual ~TIGLViewerWindow();
-    Handle_AIS_InteractiveContext& getContext() { return myVC->getContext(); };
 
-    void setInitialCpacsFileName(QString filename);
-
+    
     void setInitialControlFile(QString filename);
 
-    // Returns the Open CASCADE Widget and Context.
-    TIGLViewerWidget* getMyOCC();
-
     class TIGLViewerSettings& getSettings();
+    class Console*            getConsole();
 
     // Displays a simple dialog for error messages
     void displayErrorMessage (const QString aMessage, QString aHeader);
@@ -68,6 +67,13 @@ protected:
 
 public slots:
     void updateMenus(TiglCPACSConfigurationHandle);
+    void openFile(const QString&);
+    void openScript(const QString&);
+    void closeConfiguration();
+    
+    TIGLViewerWidget*   getViewer();
+    TIGLViewerContext*  getScene() { return myScene; }
+    TIGLViewerDocument* getDocument() { return cpacsConfiguration; }
 
 private slots:
     void newFile();
@@ -75,7 +81,6 @@ private slots:
     void reopenFile();
     void openScript();
     void openRecentFile();
-    void closeConfiguration();
     void save();
     void print();
     void setBackgroundImage();
@@ -102,7 +107,6 @@ private slots:
 private:
     void connectSignals();
     void createMenus();
-    void openFile(const QString&);
     void updateRecentFileActions();
     void setCurrentFile(const QString &);
 
@@ -111,11 +115,11 @@ private:
     QAction *recentFileActions[MaxRecentFiles];
 
     // The OpenCASCADE context;
-    TIGLViewerContext*      myVC;
+    TIGLViewerContext*      myScene;
 
     QString                 myLastFolder;
 
-    class TIGLViewerDocument* cpacsConfiguration;
+    TIGLViewerDocument* cpacsConfiguration;
     QString currentFile;
     QString controlFileName;
     QFileSystemWatcher *watcher;

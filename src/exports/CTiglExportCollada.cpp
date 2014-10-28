@@ -19,13 +19,8 @@
 
 /*
 TODO:
--Bezeichnung (Box/Filname) korigieren
 -translate rotate scale überprüfen
 -Material referenz fehlt (pong)
-
-- extract col_id from filename (no absolute file path)
-- change, that multiple objects are stored as different collada objects
-
 */
 
 #include "CTiglExportCollada.h"
@@ -43,45 +38,111 @@ TODO:
 
 // OpenCASCADE
 #include <TopoDS_Shape.hxx>
+#include <BRepTools.hxx>
 
-#ifdef _MSC_VER
-    #define snprintf _snprintf
-#endif
+namespace 
+{
+    template <typename T>
+    std::string toStr ( T Number )
+    {
+        std::ostringstream ss;
+        ss << Number;
+        return ss.str();
+    }
+}
 
 namespace tigl
 {
 
-CTiglExportCollada::CTiglExportCollada(CCPACSConfiguration& config) : myconfig(config)
+CTiglExportCollada::CTiglExportCollada()
 {
 }
 
-
-TiglReturnCode CTiglExportCollada::exportFuselage(const std::string& fuselageUID, const std::string &filename, const double deflection)
+void CTiglExportCollada::addShape(PNamedShape shape, double deflection)
 {
-    CTiglAbstractPhysicalComponent & component = myconfig.GetFuselage(fuselageUID);
-    TopoDS_Shape& loft = component.GetLoft();
+    if (!shape) {
+        return;
+    }
     
-    return exportShape(loft, fuselageUID, filename, deflection);
+    _shapes.push_back(shape);
+    _deflects.push_back(deflection);
 }
 
-TiglReturnCode CTiglExportCollada::exportWing(const std::string& wingUID, const std::string &filename, const double deflection)
+
+bool writeHeader(TixiDocumentHandle handle)
 {
-    CTiglAbstractPhysicalComponent & component = myconfig.GetWing(wingUID);
-    TopoDS_Shape& loft = component.GetLoft();
+    tixiAddTextAttribute(handle, "/COLLADA", "xmlns", "http://www.collada.org/2008/03/COLLADASchema");
+    tixiAddTextAttribute(handle, "/COLLADA", "version", "1.5.0");
+
+    tixiCreateElement(handle, "/COLLADA", "asset");
+
+    tixiCreateElement(handle, "/COLLADA/asset", "contributor");
+
+    time_t rawtime;
+    struct tm * timeinfo;
+    char buffer [80];
+    time (&rawtime);
+    timeinfo = localtime (&rawtime);
+    strftime (buffer,80,"%Y-%m-%dT%H:%S:%MZ",timeinfo);
+    tixiAddTextElement(handle, "/COLLADA/asset","created",  buffer);
+    tixiAddTextElement(handle, "/COLLADA/asset","modified", buffer); 
+    tixiAddTextElement(handle, "/COLLADA/asset","up_axis", "Z_UP");
     
-    return exportShape(loft, wingUID, filename, deflection);
+    tixiCreateElement(handle, "/COLLADA/asset", "unit");
+    tixiAddTextAttribute(handle, "/COLLADA/asset/unit", "name", "meters");
+    tixiAddDoubleAttribute(handle, "/COLLADA/asset/unit", "meter", 1.0, "%f");
+    
+    return true;
 }
 
-TiglReturnCode CTiglExportCollada::exportShape(TopoDS_Shape& shape, const std::string& shapeID,  const std::string& filename, const double deflection)
+bool writeMeshArray(TixiDocumentHandle handle, std::string meshPath, int sourceIndex, std::string id, std::string data, int dataCount)
 {
-    // mesh 
-    CTiglTriangularizer t(shape, deflection, false);
-    return writeToDisc(t, shapeID.c_str(), filename.c_str());
+    tixiCreateElement(handle, meshPath.c_str(), "source");
+    
+    std::string meshSourcePath = meshPath + "/source[" + toStr(sourceIndex) + "]";
+    tixiAddTextAttribute(handle, meshSourcePath.c_str(), "id", id.c_str());
+
+    // Write the data
+    tixiAddTextElement(handle, meshSourcePath.c_str(), "float_array", data.c_str());
+    tixiAddIntegerAttribute(handle, (meshSourcePath + "/float_array").c_str(), "count", dataCount*3, "%d"); // count(Pos)
+    
+    std::string arrayid = id + "-array";
+    tixiAddTextAttribute(handle, (meshSourcePath + "/float_array").c_str(), "id", arrayid.c_str());
+
+    tixiCreateElement(handle, meshSourcePath.c_str(), "technique_common");
+
+    std::string techniqueCommonPath = meshSourcePath + "/technique_common";
+    tixiCreateElement(handle, techniqueCommonPath.c_str(),"accessor");
+    
+    std::string accessorPath = techniqueCommonPath + "/accessor";
+    tixiAddIntegerAttribute(handle, accessorPath.c_str(),"count", dataCount,"%d"); // count Pos/stride
+    tixiAddTextAttribute(handle,accessorPath.c_str(),"offset","0");
+    
+    arrayid = "#" + arrayid;
+    tixiAddTextAttribute(handle, accessorPath.c_str(),"source", arrayid.c_str());
+    tixiAddTextAttribute(handle, accessorPath.c_str(),"stride","3");
+
+    tixiCreateElement(handle, accessorPath.c_str(), "param");
+    std::string paramPath = accessorPath + "/param[1]";
+    tixiAddTextAttribute(handle, paramPath.c_str(), "name", "X");
+    tixiAddTextAttribute(handle, paramPath.c_str(), "type", "float");
+
+    tixiCreateElement(handle, accessorPath.c_str(), "param");
+    paramPath = accessorPath + "/param[2]";
+    tixiAddTextAttribute(handle, paramPath.c_str(), "name", "Y");
+    tixiAddTextAttribute(handle, paramPath.c_str(), "type", "float");
+
+    tixiCreateElement(handle, accessorPath.c_str(), "param");
+    paramPath = accessorPath + "/param[3]";
+    tixiAddTextAttribute(handle, paramPath.c_str(), "name", "Z");
+    tixiAddTextAttribute(handle, paramPath.c_str(), "type", "float");
+    
+    return true;
 }
 
-TiglReturnCode CTiglExportCollada::writeToDisc(CTiglPolyData& polyData, const char* col_id, const char * filename)  
+bool writeGeometryMesh(TixiDocumentHandle handle, CTiglPolyData& polyData, std::string col_id, int& geometryIndex)
 {
-
+    // create vertex, normal and triangle strings
     std::stringstream stream_verts;
     std::stringstream stream_normals;
     std::stringstream stream_trians;
@@ -129,169 +190,147 @@ TiglReturnCode CTiglExportCollada::writeToDisc(CTiglPolyData& polyData, const ch
             count_vert++;
         }
     } //end for objects
-
-    // COLLADA header
-
-    TixiDocumentHandle handle = -1;  
-    tixiCreateDocument("COLLADA", &handle);
-    tixiAddTextAttribute(handle, "/COLLADA", "xmlns", "http://www.collada.org/2008/03/COLLADASchema");
-    tixiAddTextAttribute(handle, "/COLLADA", "version", "1.5.0");
-
-    tixiCreateElement(handle, "/COLLADA", "asset");
-
-    tixiCreateElement(handle, "/COLLADA/asset", "contributor");
-
-    time_t rawtime;
-    struct tm * timeinfo;
-    char buffer [80];
-    time (&rawtime);
-    timeinfo = localtime (&rawtime);
-    strftime (buffer,80,"%Y-%m-%dT%H:%S:%MZ",timeinfo);
-    tixiAddTextElement(handle, "/COLLADA/asset","created",  buffer);
-    tixiAddTextElement(handle, "/COLLADA/asset","modified", buffer); 
-    tixiAddTextElement(handle, "/COLLADA/asset","up_axis", "Z_UP");
     
-    tixiCreateElement(handle, "/COLLADA/asset", "unit");
-    tixiAddTextAttribute(handle, "/COLLADA/asset/unit", "name", "meters");
-    tixiAddDoubleAttribute(handle, "/COLLADA/asset/unit", "meter", 1.0, "%f");
+    if (tixiCreateElement(handle,"/COLLADA/library_geometries", "geometry") != SUCCESS) {
+       return false;
+    }
+    
+    std::string geometryPath  = "/COLLADA/library_geometries/geometry[" +  toStr(geometryIndex) + "]";
+    
+    tixiAddTextAttribute(handle, geometryPath.c_str(), "id", col_id.c_str());
+    tixiAddTextAttribute(handle, geometryPath.c_str(), "name", col_id.c_str());
+
+    tixiCreateElement(handle, geometryPath.c_str(), "mesh");
+    std::string meshPath = geometryPath  + "/mesh";
+
+    // write vertices and normals
+    writeMeshArray(handle, meshPath, 1, col_id + "-mesh-positions", stream_verts.str(), count_pos);
+    writeMeshArray(handle, meshPath, 2, col_id + "-mesh-normals", stream_normals.str(), count_norm);
+    
+    tixiCreateElement(handle, meshPath.c_str(), "vertices");
+    std::string vertsPath = meshPath + "/vertices";
+    std::string id = col_id + "-mesh-vertices";
+    tixiAddTextAttribute(handle, vertsPath.c_str(), "id", id.c_str());
+
+    tixiCreateElement(handle, vertsPath.c_str(),"input");
+    std::string inputPath = vertsPath + "/input";
+    tixiAddTextAttribute(handle, inputPath.c_str(),"semantic","POSITION");
+    id = "#" + col_id + "-mesh-positions";
+    tixiAddTextAttribute(handle, inputPath.c_str(),"source", id.c_str());
+
+    tixiCreateElement(handle, meshPath.c_str(), "triangles");
+    std::string trianPath = meshPath + "/triangles";
+    tixiAddIntegerAttribute(handle, trianPath.c_str(), "count", count_vert, "%d");
+    tixiAddTextAttribute(handle, trianPath.c_str(), "material", "WHITE");
+
+    tixiCreateElement(handle, trianPath.c_str(),"input");
+    inputPath = trianPath + "/input";
+    tixiAddTextAttribute(handle, inputPath.c_str(),"offset","0");
+    tixiAddTextAttribute(handle, inputPath.c_str(),"semantic","VERTEX");
+    id = "#" + col_id + "-mesh-vertices";
+    tixiAddTextAttribute(handle, inputPath.c_str(),"source", id.c_str());
+
+    tixiCreateElement(handle, trianPath.c_str(),"input");
+    inputPath = trianPath + "/input[2]";
+    tixiAddTextAttribute(handle, inputPath.c_str(),"offset","1");
+    tixiAddTextAttribute(handle, inputPath.c_str(),"semantic","NORMAL");
+    id = "#" + col_id + "-mesh-normals";
+    tixiAddTextAttribute(handle, inputPath.c_str(),"source", id.c_str());
+
+    /* ------ */
+    // Insert vertex data
+    tixiAddTextElement(handle, trianPath.c_str(), "p", stream_trians.str().c_str());
+    
+    geometryIndex++;
+    return true;
+}
+
+bool writeSceneNode(TixiDocumentHandle handle, std::string scenePath, std::string nodeName, std::string meshID, int& nodeIndex)
+{
+    tixiCreateElement(handle, scenePath.c_str(), "node");
+    
+    std::string nodePath = scenePath + "/node[" + toStr(nodeIndex) + "]";
+    nodeIndex++;
+    tixiAddTextAttribute(handle, nodePath.c_str(), "id",   nodeName.c_str());
+    tixiAddTextAttribute(handle, nodePath.c_str(), "name", nodeName.c_str());
+
+    tixiAddTextElement(handle, nodePath.c_str(), "translate", "0 0 0");
+    tixiAddTextElement(handle, nodePath.c_str(), "rotate", "0 0 1 0");
+    tixiAddTextElement(handle, nodePath.c_str(), "rotate", "0 1 0 0");
+    tixiAddTextElement(handle, nodePath.c_str(), "rotate", "1 0 0 0");
+    tixiAddTextElement(handle, nodePath.c_str(), "scale", "1 1 1");
+
+    tixiCreateElement(handle, nodePath.c_str(), "instance_geometry");
+    std::string instGeomPath = nodePath + "/instance_geometry";
+    std::string url = "#" + meshID;
+    tixiAddTextAttribute(handle, instGeomPath.c_str(), "url", url.c_str());
+
+    tixiCreateElement(handle, instGeomPath.c_str(), "bind_material");
+    std::string bindMatPath = instGeomPath + "/bind_material";
+
+    tixiCreateElement(handle, bindMatPath.c_str(), "technique_common");
+    std::string techCommPath = bindMatPath + "/technique_common";
+
+    tixiCreateElement(handle, techCommPath.c_str(), "instance_material");
+    std::string instMatPath = techCommPath + "/instance_material";
+    
+    tixiAddTextAttribute(handle, instMatPath.c_str(),"symbol", "WHITE");
+    tixiAddTextAttribute(handle, instMatPath.c_str(),"target", "#whiteMaterial");
+    
+    return true;
+}
+
+
+TiglReturnCode CTiglExportCollada::write(const std::string& filename)
+{
+    TixiDocumentHandle handle = -1;  
+    if (tixiCreateDocument("COLLADA", &handle) != SUCCESS) {
+        return TIGL_ERROR;
+    }
+    
+    writeHeader(handle);
 
     // Body
     tixiCreateElement(handle,"/COLLADA","library_geometries");
 
-    tixiCreateElement(handle,"/COLLADA/library_geometries", "geometry");
-    tixiAddTextAttribute(handle, "/COLLADA/library_geometries/geometry", "id", col_id);
-    tixiAddTextAttribute(handle, "/COLLADA/library_geometries/geometry", "name", col_id);
-
-      tixiCreateElement(handle, "/COLLADA/library_geometries/geometry","mesh");
-
-    tixiCreateElement(handle, "/COLLADA/library_geometries/geometry/mesh", "source");
-    char tmpstr[1024];
-    snprintf(tmpstr, 1024, "%s-Pos", col_id);
-    tixiAddTextAttribute(handle, "/COLLADA/library_geometries/geometry/mesh/source", "id", tmpstr);
-
-    /* ------ */
-    // Vertices
-    tixiAddTextElement(handle, "/COLLADA/library_geometries/geometry/mesh/source", "float_array", stream_verts.str().c_str());
-
-    tixiAddIntegerAttribute(handle, "/COLLADA/library_geometries/geometry/mesh/source/float_array", "count", count_pos*3, "%d"); // count(Pos)
-    snprintf(tmpstr, 1024, "%s-Pos-array",col_id);
-    tixiAddTextAttribute(handle, "/COLLADA/library_geometries/geometry/mesh/source/float_array", "id", tmpstr);
-
-    tixiCreateElement(handle,"/COLLADA/library_geometries/geometry/mesh/source", "technique_common");
-
-    tixiCreateElement(handle,"/COLLADA/library_geometries/geometry/mesh/source/technique_common","accessor");
-    tixiAddIntegerAttribute(handle,"/COLLADA/library_geometries/geometry/mesh/source/technique_common/accessor","count",count_pos,"%d"); // count Pos/stride
-    tixiAddTextAttribute(handle,"/COLLADA/library_geometries/geometry/mesh/source/technique_common/accessor","offset","0");
-    snprintf(tmpstr, 1024, "#%s-Pos-array",col_id);
-    tixiAddTextAttribute(handle,"/COLLADA/library_geometries/geometry/mesh/source/technique_common/accessor","source",tmpstr);
-    tixiAddTextAttribute(handle,"/COLLADA/library_geometries/geometry/mesh/source/technique_common/accessor","stride","3");
-
-    tixiCreateElement(handle, "/COLLADA/library_geometries/geometry/mesh/source/technique_common/accessor", "param");
-    tixiAddTextAttribute(handle,"/COLLADA/library_geometries/geometry/mesh/source/technique_common/accessor/param", "name", "X");
-    tixiAddTextAttribute(handle,"/COLLADA/library_geometries/geometry/mesh/source/technique_common/accessor/param", "type", "float");
-
-    tixiCreateElement(handle, "/COLLADA/library_geometries/geometry/mesh/source/technique_common/accessor", "param");
-    tixiAddTextAttribute(handle,"/COLLADA/library_geometries/geometry/mesh/source/technique_common/accessor/param[2]", "name", "Y");
-    tixiAddTextAttribute(handle,"/COLLADA/library_geometries/geometry/mesh/source/technique_common/accessor/param[2]", "type", "float");
-
-    tixiCreateElement(handle, "/COLLADA/library_geometries/geometry/mesh/source/technique_common/accessor", "param");
-    tixiAddTextAttribute(handle,"/COLLADA/library_geometries/geometry/mesh/source/technique_common/accessor/param[3]", "name", "Z");
-    tixiAddTextAttribute(handle,"/COLLADA/library_geometries/geometry/mesh/source/technique_common/accessor/param[3]", "type", "float");
-
-    tixiCreateElement(handle, "/COLLADA/library_geometries/geometry/mesh", "source");
-    snprintf(tmpstr, 1024, "%s-normals",col_id);
-    tixiAddTextAttribute(handle, "/COLLADA/library_geometries/geometry/mesh/source[2]", "id", tmpstr);
-
-    /* ------ */
-    // Normals 
-    tixiAddTextElement(handle, "/COLLADA/library_geometries/geometry/mesh/source[2]", "float_array", stream_normals.str().c_str());
-
-    tixiAddIntegerAttribute(handle, "/COLLADA/library_geometries/geometry/mesh/source[2]/float_array", "count", (count_norm*3), "%d");
-    snprintf(tmpstr, 1024, "%s-normals-array",col_id);
-    tixiAddTextAttribute(handle, "/COLLADA/library_geometries/geometry/mesh/source[2]/float_array", "id", tmpstr);
-
-    tixiCreateElement(handle,"/COLLADA/library_geometries/geometry/mesh/source[2]", "technique_common");
-
-    tixiCreateElement(handle,"/COLLADA/library_geometries/geometry/mesh/source[2]/technique_common","accessor");
-    tixiAddIntegerAttribute(handle,"/COLLADA/library_geometries/geometry/mesh/source[2]/technique_common/accessor","count",count_pos,"%d");
-    tixiAddTextAttribute(handle,"/COLLADA/library_geometries/geometry/mesh/source[2]/technique_common/accessor","offset","0");
-    snprintf(tmpstr, 1024, "#%s-normals-array",col_id);
-    tixiAddTextAttribute(handle,"/COLLADA/library_geometries/geometry/mesh/source[2]/technique_common/accessor","source",tmpstr);
-    tixiAddTextAttribute(handle,"/COLLADA/library_geometries/geometry/mesh/source[2]/technique_common/accessor","stride","3");
-
-    tixiCreateElement(handle, "/COLLADA/library_geometries/geometry/mesh/source[2]/technique_common/accessor", "param");
-    tixiAddTextAttribute(handle,"/COLLADA/library_geometries/geometry/mesh/source[2]/technique_common/accessor/param", "name", "X");
-    tixiAddTextAttribute(handle,"/COLLADA/library_geometries/geometry/mesh/source[2]/technique_common/accessor/param", "type", "float");
-
-    tixiCreateElement(handle, "/COLLADA/library_geometries/geometry/mesh/source[2]/technique_common/accessor", "param");
-    tixiAddTextAttribute(handle,"/COLLADA/library_geometries/geometry/mesh/source[2]/technique_common/accessor/param[2]", "name", "Y");
-    tixiAddTextAttribute(handle,"/COLLADA/library_geometries/geometry/mesh/source[2]/technique_common/accessor/param[2]", "type", "float");
-
-    tixiCreateElement(handle, "/COLLADA/library_geometries/geometry/mesh/source[2]/technique_common/accessor", "param");
-    tixiAddTextAttribute(handle,"/COLLADA/library_geometries/geometry/mesh/source[2]/technique_common/accessor/param[3]", "name", "Z");
-    tixiAddTextAttribute(handle,"/COLLADA/library_geometries/geometry/mesh/source[2]/technique_common/accessor/param[3]", "type", "float");
-
-    tixiCreateElement(handle, "/COLLADA/library_geometries/geometry/mesh", "vertices");
-    snprintf(tmpstr, 1024, "%s-vertices",col_id);
-    tixiAddTextAttribute(handle, "/COLLADA/library_geometries/geometry/mesh/vertices", "id", tmpstr);
-
-    tixiCreateElement(handle, "/COLLADA/library_geometries/geometry/mesh/vertices","input");
-    tixiAddTextAttribute(handle, "/COLLADA/library_geometries/geometry/mesh/vertices/input","semantic","POSITION");
-    snprintf(tmpstr, 1024, "#%s-Pos",col_id);
-    tixiAddTextAttribute(handle, "/COLLADA/library_geometries/geometry/mesh/vertices/input","source",tmpstr);
-
-    tixiCreateElement(handle, "/COLLADA/library_geometries/geometry/mesh", "triangles");
-    tixiAddIntegerAttribute(handle, "/COLLADA/library_geometries/geometry/mesh/triangles", "count", count_vert, "%d");
-    tixiAddTextAttribute(handle, "/COLLADA/library_geometries/geometry/mesh/triangles", "material", "WHITE");
-
-    tixiCreateElement(handle, "/COLLADA/library_geometries/geometry/mesh/triangles","input");
-    tixiAddTextAttribute(handle, "/COLLADA/library_geometries/geometry/mesh/triangles/input","offset","0");
-    tixiAddTextAttribute(handle, "/COLLADA/library_geometries/geometry/mesh/triangles/input","semantic","VERTEX");
-    snprintf(tmpstr, 1024, "#%s-vertices",col_id);
-    tixiAddTextAttribute(handle, "/COLLADA/library_geometries/geometry/mesh/triangles/input","source",tmpstr);
-
-    tixiCreateElement(handle, "/COLLADA/library_geometries/geometry/mesh/triangles","input");
-    tixiAddTextAttribute(handle, "/COLLADA/library_geometries/geometry/mesh/triangles/input[2]","offset","1");
-    tixiAddTextAttribute(handle, "/COLLADA/library_geometries/geometry/mesh/triangles/input[2]","semantic","NORMAL");
-    snprintf(tmpstr, 1024, "#%s-normals",col_id);
-    tixiAddTextAttribute(handle, "/COLLADA/library_geometries/geometry/mesh/triangles/input[2]","source",tmpstr);
-
-    /* ------ */
-    // Insert vertex data
-    tixiAddTextElement(handle, "/COLLADA/library_geometries/geometry/mesh//triangles", "p", stream_trians.str().c_str());
-
+    // write object mesh info
+    int geomIndex = 1;
+    for (unsigned int i = 0; i < _shapes.size(); ++i) {
+        // Do the meshing
+        PNamedShape pshape = _shapes[i];
+        double deflection = _deflects[i];
+        CTiglTriangularizer polyData(pshape->Shape(), deflection);
+        
+        writeGeometryMesh(handle, polyData, pshape->Name(), geomIndex);
+    }
+    
+    // write the scene and link object to geometry
     tixiCreateElement(handle, "/COLLADA", "library_visual_scenes");
-
     tixiCreateElement(handle, "/COLLADA/library_visual_scenes", "visual_scene");
-
     tixiAddTextAttribute(handle, "/COLLADA/library_visual_scenes/visual_scene", "id", "DefaultScene");
 
-    tixiCreateElement(handle, "/COLLADA/library_visual_scenes/visual_scene", "node");
-    tixiAddTextAttribute(handle, "/COLLADA/library_visual_scenes/visual_scene/node", "id", col_id);
-    tixiAddTextAttribute(handle, "/COLLADA/library_visual_scenes/visual_scene/node", "name", col_id);
+    // add each object to the scene
+    int nodeIndex = 1;
+    for (unsigned int i = 0; i < _shapes.size(); ++i) {
+        PNamedShape pshape = _shapes[i];
+        // Todo: insert transformation matrix also
+        writeSceneNode(handle, "/COLLADA/library_visual_scenes/visual_scene", pshape->Name(), pshape->Name(), nodeIndex);
+    }
 
-    tixiAddTextElement(handle, "/COLLADA/library_visual_scenes/visual_scene/node", "translate", "0 0 0");
-    tixiAddTextElement(handle, "/COLLADA/library_visual_scenes/visual_scene/node", "rotate", "0 0 1 0");
-    tixiAddTextElement(handle, "/COLLADA/library_visual_scenes/visual_scene/node", "rotate", "0 1 0 0");
-    tixiAddTextElement(handle, "/COLLADA/library_visual_scenes/visual_scene/node", "rotate", "1 0 0 0");
-    tixiAddTextElement(handle, "/COLLADA/library_visual_scenes/visual_scene/node", "scale", "1 1 1");
 
-    tixiCreateElement(handle, "/COLLADA/library_visual_scenes/visual_scene/node", "instance_geometry");
-    snprintf(tmpstr, 1024, "#%s",col_id);
-    tixiAddTextAttribute(handle, "/COLLADA/library_visual_scenes/visual_scene/node/instance_geometry", "url", tmpstr);
-
-    tixiCreateElement(handle, "/COLLADA/library_visual_scenes/visual_scene/node/instance_geometry", "bind_material");
-
-    tixiCreateElement(handle, "/COLLADA/library_visual_scenes/visual_scene/node/instance_geometry/bind_material", "technique_common");
-
-    tixiCreateElement(handle, "/COLLADA/library_visual_scenes/visual_scene/node/instance_geometry/bind_material/technique_common", "instance_material");
-    tixiAddTextAttribute(handle, "/COLLADA/library_visual_scenes/visual_scene/node/instance_geometry/bind_material/technique_common/instance_material","symbol", "WHITE");
-    tixiAddTextAttribute(handle, "/COLLADA/library_visual_scenes/visual_scene/node/instance_geometry/bind_material/technique_common/instance_material","target", "#whiteMaterial");
-    // #whiteMaterial = NULL, da nicht implementiert. Fehlt noch oben im Header-Bereich ... Pong, def collor usw.
-
-    tixiSaveDocument(handle, filename);
+    if (tixiSaveDocument(handle, filename.c_str()) != SUCCESS) {
+        LOG(ERROR) << "Cannot save collada file " << filename;
+        return TIGL_ERROR;
+    }
 
     return TIGL_SUCCESS;
+}
+
+TiglReturnCode CTiglExportCollada::write(PNamedShape shape, const std::string& filename, double deflection)
+{
+    CTiglExportCollada exporter;
+    exporter.addShape(shape, deflection);
+    return exporter.write(filename);
 }
 
 } // namespace tigl

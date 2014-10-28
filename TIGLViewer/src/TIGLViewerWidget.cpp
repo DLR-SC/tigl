@@ -40,6 +40,7 @@
 #include "TIGLViewerDocument.h"
 #include "TIGLViewerSettings.h"
 #include "ISession_Point.h"
+#include "ISession_Direction.h"
 #include "ISession_Text.h"
 #include "tiglcommonfunctions.h"
 
@@ -198,7 +199,7 @@ void TIGLViewerWidget::initializeOCC(const Handle_AIS_InteractiveContext& aConte
 
         myLayer   = new Visual3d_Layer (myViewer->Viewer(), Aspect_TOL_OVERLAY, Standard_True /*aSizeDependant*/);
 
-        setBackgroundColor(myBGColor);
+        setBackgroundGradient(myBGColor.red(), myBGColor.green(), myBGColor.blue());
 
         emit initialized();
     }
@@ -550,13 +551,13 @@ void TIGLViewerWidget::hiddenLineOn()
     }
 }
 
-void TIGLViewerWidget::setBackgroundColor(const QColor& col)
+void TIGLViewerWidget::setBackgroundGradient(int r, int g, int b)
 {
-    myBGColor = col;
+    myBGColor = QColor(r,g,b);
     if (!myView.IsNull()) {
-        Standard_Real R1 = col.red()/255.;
-        Standard_Real G1 = col.green()/255.;
-        Standard_Real B1 = col.blue()/255.;
+        Standard_Real R1 = r/255.;
+        Standard_Real G1 = g/255.;
+        Standard_Real B1 = b/255.;
 
         // Disable provious gradient
         myView->SetBgGradientColors ( Quantity_NOC_BLACK , Quantity_NOC_BLACK, Aspect_GFM_NONE, Standard_False);
@@ -571,6 +572,16 @@ void TIGLViewerWidget::setBackgroundColor(const QColor& col)
 
     } 
     redraw();
+}
+
+void TIGLViewerWidget::setBackgroundColor(int r, int g, int b)
+{
+    if (!myView.IsNull()) {
+        // Disable provious gradient
+        myView->SetBgGradientColors ( Quantity_NOC_BLACK , Quantity_NOC_BLACK, Aspect_GFM_NONE, Standard_False);
+        myView->SetBackgroundColor(Quantity_TOC_RGB, r/255., g/255., b/255.);
+        redraw();
+    }
 }
 
 void TIGLViewerWidget::setReset ()
@@ -1120,46 +1131,4 @@ void TIGLViewerWidget::makeScreenshot(int width, int height, int quality, const 
             throw tigl::CTiglError("Cannot save screenshot to file.");
         }
     }
-}
-
-// a small helper when we just want to display a shape
-Handle(AIS_Shape) TIGLViewerWidget::displayShape(const TopoDS_Shape& loft, Quantity_Color color)
-{
-    TIGLViewerSettings& settings = TIGLViewerSettings::Instance();
-    Handle(AIS_Shape) shape = new AIS_Shape(loft);
-    shape->SetMaterial(Graphic3d_NOM_METALIZED);
-    shape->SetColor(color);
-    shape->SetOwnDeviationCoefficient(settings.tesselationAccuracy());
-    myContext->Display(shape, Standard_True);
-    
-    if (settings.enumerateFaces()) {
-        TopTools_IndexedMapOfShape shapeMap;
-        TopExp::MapShapes(loft, TopAbs_FACE, shapeMap);
-        for (int i = 1; i <= shapeMap.Extent(); ++i) {
-            const TopoDS_Face& face = TopoDS::Face(shapeMap(i));
-            gp_Pnt p = GetCentralFacePoint(face);
-            QString s = QString("%1").arg(i);
-            DisplayPoint(p, s.toStdString().c_str(), false, 0., 0., 0., 10.);
-        }
-    }
-    
-    return shape;
-}
-
-// Displays a point on the screen
-void TIGLViewerWidget::DisplayPoint(const gp_Pnt& aPoint,
-                                    const char* aText,
-                                    Standard_Boolean UpdateViewer,
-                                    Standard_Real anXoffset,
-                                    Standard_Real anYoffset,
-                                    Standard_Real aZoffset,
-                                    Standard_Real TextScale)
-{
-    Handle(ISession_Point) aGraphicPoint = new ISession_Point(aPoint.X(), aPoint.Y(), aPoint.Z());
-    myContext->Display(aGraphicPoint,UpdateViewer);
-    Handle(ISession_Text) aGraphicText = new ISession_Text(aText, aPoint.X() + anXoffset,
-                                                 aPoint.Y() + anYoffset,
-                                                 aPoint.Z() + aZoffset);
-    aGraphicText->SetScale(TextScale);
-    myContext->Display(aGraphicText,UpdateViewer);
 }

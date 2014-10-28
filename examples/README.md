@@ -86,3 +86,15 @@ Please add both directories to the MATLAB path using the 'path' command of MATLA
 The demo can be called as a function by entering
 
     matlab_demo('simpletest.cpacs.xml')
+
+	
+JAVA-Demo
+---------
+To compile the Java Demo (JavaDemo.java), you have to link against the following libraries
+	- commons-logging (Apache Commons logging)
+	- jna and jna-platform (Sun Java Native Access)
+	- tigl (the JAR file can be found in TIGL_INSTALL_DIR/share/tigl/java)
+	
+Under Windows it is important to chose the right TiGL library matching to the Java Virtual Machine. 
+That means if you use a 64 Bit JVM, use the TiGL 64 bit library and vice versa.
+	
