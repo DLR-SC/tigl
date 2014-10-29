@@ -35,6 +35,12 @@ endif(OCE_FOUND)
 # we need opengl in order to build tiglviewer
 find_package(OpenGL REQUIRED)
 
+if(CMAKE_SYSTEM_NAME STREQUAL Linux)
+  # set library search path to local lib directory during installation
+  set(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE) 
+  set(CMAKE_INSTALL_RPATH \$ORIGIN/../${CMAKE_INSTALL_LIBDIR})
+endif() # linux
+
 set( QT_USE_QTSCRIPT TRUE )
 set( QT_USE_QTMAIN   TRUE )
 include(${QT_USE_FILE} ${GLOG_INCLUDE_DIR})
