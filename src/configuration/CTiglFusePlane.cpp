@@ -29,6 +29,8 @@
 
 #include <BOPCol_ListOfShape.hxx>
 #include <BOPAlgo_PaveFiller.hxx>
+#include <BRepAlgoAPI_Cut.hxx>
+#include <BRepAlgoAPI_Common.hxx>
 
 
 #include <string>
@@ -110,6 +112,24 @@ PNamedShape CTiglFusePlane::FuseWithChilds(CTiglAbstractPhysicalComponent* paren
     CFuseShapes fuser(parentShape, childShapes);
     PNamedShape result = fuser.NamedShape();
 
+    // trim previous intersections
+    ListPNamedShape::iterator intIt = _intersections.begin();
+    ListPNamedShape newInts;
+    for (; intIt != _intersections.end(); ++intIt) {
+        PNamedShape inters = *intIt;
+        if (!inters) {
+            continue;
+        }
+
+        TopoDS_Shape sh = inters->Shape();
+        sh = BRepAlgoAPI_Cut(sh, parentShape->Shape());
+        if (! sh.IsNull()) {
+            inters->SetShape(sh);
+            newInts.push_back(inters);
+        }
+    }
+    _intersections = newInts;
+
     // insert intersections
     ListPNamedShape::const_iterator it = fuser.Intersections().begin();
     for (; it != fuser.Intersections().end(); it++) {
@@ -158,6 +178,24 @@ void CTiglFusePlane::Perform()
         _farfield = trim2.NamedShape();
 
         _result = resulttrimmed;
+
+        // trim intersections with far field
+        ListPNamedShape::iterator intIt = _intersections.begin();
+        ListPNamedShape newInts;
+        for (; intIt != _intersections.end(); ++intIt) {
+            PNamedShape inters = *intIt;
+            if (!inters) {
+                continue;
+            }
+
+            TopoDS_Shape sh = inters->Shape();
+            sh = BRepAlgoAPI_Common(sh, ff->Shape());
+            if (! sh.IsNull()) {
+                inters->SetShape(sh);
+                newInts.push_back(inters);
+            }
+        }
+        _intersections = newInts;
     }
 
     if (_result) {
