@@ -235,7 +235,7 @@ void CCPACSWingProfileCST::BuildWires()
     }
 
     if (upperN2 < 1.) {
-        tu2 = gp_Vec(0.0, 0.0, 1.0);
+        tu2 = gp_Vec(0.0, 0.0, -1.0);
     }
     else {
         tu2 = gp_Vec(1.0, 0.0, cstcurve_deriv(upperN1, upperN2, upperB, 1, 1.0));
@@ -271,7 +271,7 @@ void CCPACSWingProfileCST::BuildWires()
     }
 
     if (lowerN2 < 1.) {
-        tl2 = gp_Vec(0.0, 0.0, -1.0);
+        tl2 = gp_Vec(0.0, 0.0, 1.0);
     }
     else {
         tl2 = gp_Vec(1.0, 0.0, -cstcurve_deriv(lowerN1, lowerN2, lowerB, 1, 1.0));
