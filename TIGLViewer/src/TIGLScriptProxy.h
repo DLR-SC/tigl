@@ -33,6 +33,7 @@
 class TIGLScriptProxy :public QObject, public QScriptable
 {
     Q_OBJECT
+    Q_CLASSINFO("Description", "TiGL Interface")
     
     Q_PROPERTY(QString version READ getVersion() )
     

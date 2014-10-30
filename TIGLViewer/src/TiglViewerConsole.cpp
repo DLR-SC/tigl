@@ -85,9 +85,8 @@ void Console::keyPressEvent(QKeyEvent *event)
         setTextCursor(cursor);
     }
     // disable undo/redo
-    else  if ((event->key() == Qt::Key_Z && event->modifiers() == Qt::CTRL) ||
-              (event->key() == Qt::Key_Y && event->modifiers() == Qt::CTRL) ||
-              (event->key() == Qt::Key_Z && event->modifiers() == (Qt::CTRL & Qt::SHIFT))){
+    else if ((event->key() == Qt::Key_Z && event->modifiers() == Qt::CTRL) ||
+             (event->key() == Qt::Key_Y && event->modifiers() == Qt::CTRL)) {
         // do nothing by default
         QWidget::keyPressEvent(event);
     }
