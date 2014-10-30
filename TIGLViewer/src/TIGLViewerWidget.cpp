@@ -569,7 +569,6 @@ void TIGLViewerWidget::setBackgroundGradient(int r, int g, int b)
         Quantity_Color down(R1*fd > 1 ? 1. : R1*fd, G1*fd > 1 ? 1. : G1*fd, B1*fd > 1 ? 1. : B1*fd, Quantity_TOC_RGB);
 
         myView->SetBgGradientColors( up, down, Aspect_GFM_VER, Standard_False);
-
     } 
     redraw();
 }
@@ -1103,9 +1102,14 @@ Standard_Real TIGLViewerWidget::viewPrecision( bool resized )
     return myViewPrecision;
 }
 
-void TIGLViewerWidget::makeScreenshot(int width, int height, int quality, const QString& filename)
+void TIGLViewerWidget::makeScreenshot(const QString& filename, bool whiteBG, int width, int height, int quality)
 {
     if (myView) {
+        if (whiteBG) {
+            myView->SetBgGradientColors ( Quantity_NOC_BLACK , Quantity_NOC_BLACK, Aspect_GFM_NONE, Standard_False);
+            myView->SetBackgroundColor(Quantity_NOC_WHITE);
+        }
+        
         // get window size
         // we could also use a higher resolution if we want
         if (width == 0 || height == 0) {
@@ -1115,6 +1119,11 @@ void TIGLViewerWidget::makeScreenshot(int width, int height, int quality, const 
         // write screenshot to pixmap
         Image_PixMap pixmap;
         myView->ToPixMap(pixmap, width, height);
+
+        if (whiteBG) {
+            // reset color
+            setBackgroundGradient(myBGColor.red(), myBGColor.green(), myBGColor.blue());
+        }
 
         // copy to qimage which supports a variety of file formats
         QImage img(QSize(pixmap.Width(), pixmap.Height()), QImage::Format_RGB888);

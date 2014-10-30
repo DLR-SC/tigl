@@ -891,7 +891,7 @@ void TIGLViewerWindow::makeScreenShot()
         int width, height;
         dialog.getImageSize(width, height);
         try {
-            myOCC->makeScreenshot(width, height, dialog.getQualityValue(), fileName);
+            myOCC->makeScreenshot(fileName, dialog.getWhiteBGEnabled(), width, height, dialog.getQualityValue());
         }
         catch(tigl::CTiglError&) {
             displayErrorMessage("Cannot save screenshot.", "Error");
