@@ -55,6 +55,136 @@ QScriptValue myPrintFunction(QScriptContext *context, QScriptEngine *engine)
     return engine->undefinedValue();
 }
 
+QScriptValue isQObject(QScriptContext *context, QScriptEngine *)
+{
+    if (context->argumentCount() == 1) {
+        return context->argument(0).isQObject();
+    }
+    else {
+        return context->throwError("Invalid number of arguments");
+    }
+}
+
+QScriptValue isQMetaObject(QScriptContext *context, QScriptEngine *)
+{
+    if (context->argumentCount() == 1) {
+        return context->argument(0).isQMetaObject();
+    }
+    else {
+        return context->throwError("Invalid number of arguments");
+    }
+}
+
+QScriptValue QMetaObjectGetObjectDescription(QScriptContext *context, QScriptEngine *)
+{
+    if (context->argumentCount() != 1 || !context->argument(0).isQMetaObject()) {
+        return context->throwError("Argument must be a qmetaobject");
+    }
+
+    const QMetaObject* meta = context->argument(0).toQMetaObject();
+    
+    int index=meta->indexOfClassInfo("Description");
+    if (index >= 0) {
+        QString desc = meta->classInfo(index).value();
+        return desc;
+    }
+    else {
+        // return object name
+        return meta->className();
+    }
+}
+
+QScriptValue QObjGetMetaObj(QScriptContext *context, QScriptEngine * engine)
+{
+    if (context->argumentCount() != 1 || !context->argument(0).isQObject()) {
+        return context->throwError("Invalid argument");
+    }
+    
+    QObject* obj = context->argument(0).toQObject();
+    const QMetaObject* meta = obj->metaObject();
+    
+    return engine->newQMetaObject(meta);
+}
+
+
+QScriptValue QMetaObjectGetMemberFunctions(QScriptContext *context, QScriptEngine * engine)
+{
+    if (context->argumentCount() != 1 || !context->argument(0).isQMetaObject()) {
+        return context->throwError("Argument must be a qmetaobject");
+    }
+
+    const QMetaObject* meta = context->argument(0).toQMetaObject();
+    
+    QStringList retval;
+    for (int imeth = meta->methodOffset(); imeth < meta->methodCount(); ++imeth) {
+        QMetaMethod method = meta->method(imeth);
+        
+        if (method.access() != QMetaMethod::Public) {
+            continue;
+        }
+        
+        QString name =  method.signature();
+        int idx = name.indexOf("(");
+        if (idx >= 0) {
+            name = name.left(idx);
+        }
+        
+        if (method.parameterTypes().size() > 0) {
+            name += "(";
+            for (int i = 0; i < method.parameterTypes().size(); ++i) {
+                QString partype = method.parameterTypes().at(i);
+                QString parname = method.parameterNames().at(i);
+                if (parname.isEmpty()) {
+                    name += partype + ", ";
+                }
+                else {
+                    name += parname + ", ";
+                }
+            }
+
+            name = name.left(name.size()-2);
+            name += ")";
+        }
+        else {
+            name += "()";
+            //name = method.signature();
+        }
+        retval << name;
+    }
+    
+    return qScriptValueFromSequence (engine, retval);
+}
+
+QScriptValue QMetaObjectGetProperties(QScriptContext *context, QScriptEngine * engine)
+{
+    if (context->argumentCount() != 1 || !context->argument(0).isQMetaObject()) {
+        return context->throwError("Argument must be a qmetaobject");
+    }
+
+    const QMetaObject* meta = context->argument(0).toQMetaObject();
+    QStringList retval;
+    for (int iprop = meta->propertyOffset(); iprop < meta->propertyCount(); ++iprop) {
+        QMetaProperty prop = meta->property(iprop);
+        if (!prop.isReadable()) {
+            continue;
+        }
+        QString name =  prop.name();
+        retval << name;
+    }
+    
+    return qScriptValueFromSequence (engine, retval);
+}
+
+QScriptValue QMetaObjectGetSuperclass(QScriptContext *context, QScriptEngine * engine)
+{
+    if (context->argumentCount() != 1 || !context->argument(0).isQMetaObject()) {
+        return context->throwError("Argument must be a qmetaobject");
+    }
+
+    const QMetaObject* meta = context->argument(0).toQMetaObject();
+    
+    return engine->newQMetaObject(meta->superClass());
+}
 
 TIGLScriptEngine::TIGLScriptEngine(TIGLViewerWindow* app)
     : QObject(app)
@@ -76,6 +206,27 @@ TIGLScriptEngine::TIGLScriptEngine(TIGLViewerWindow* app)
     QScriptValue printFun = engine.newFunction(myPrintFunction);
     printFun.setData(engine.newQObject(this));
     engine.globalObject().setProperty("print", printFun);
+    
+    QScriptValue isQObjFun = engine.newFunction(isQObject,1);
+    engine.globalObject().setProperty("isQObject", isQObjFun);
+    
+    QScriptValue isQMetaObjFun = engine.newFunction(isQMetaObject,1);
+    engine.globalObject().setProperty("isQMetaObject", isQMetaObjFun);
+    
+    QScriptValue qobjGetMetaObj = engine.newFunction(QObjGetMetaObj,1);
+    engine.globalObject().setProperty("qobjGetMetaObj", qobjGetMetaObj);
+    
+    QScriptValue qobjGetMembers = engine.newFunction(QMetaObjectGetMemberFunctions, 1);
+    engine.globalObject().setProperty("qMetaObjMembers", qobjGetMembers);
+    
+    QScriptValue qobjGetProps = engine.newFunction(QMetaObjectGetProperties, 1);
+    engine.globalObject().setProperty("qMetaObjProperties", qobjGetProps);
+    
+    QScriptValue qobjDescription = engine.newFunction(QMetaObjectGetObjectDescription, 1);
+    engine.globalObject().setProperty("qMetaObjDescription", qobjDescription);
+    
+    QScriptValue qobjSuperclasss = engine.newFunction(QMetaObjectGetSuperclass, 1);
+    engine.globalObject().setProperty("qMetaObjGetSuperclass", qobjSuperclasss);
     
     // evaluate resource file
     openFile(":/scripts/globaldefs.js");
@@ -141,19 +292,16 @@ void TIGLScriptEngine::displayHelp()
     QString helpString;
 
     helpString =  "====== TIGLViewer scripting help ======<br/><br/>";
-    helpString += "Available TIGL functions: <br/>";
-    foreach(QString fun, tiglScriptProxy->getMemberFunctions()) {
-        helpString += "    " + fun + "<br/>";
-    }
+    engine.evaluate(QString("print('%1')").arg(helpString));
+    engine.evaluate("help(tigl)");
 
-    helpString += "<br/><br/>";
+    helpString = "<br/><br/>";
     helpString += "Usage example TIGL: <br/>";
     helpString += "Use TIGL: \ttigl.getFuselageCount();<br/>";
 
     helpString += "Type 'help' to get a list of available TIXI/TIGL fuctions.";
+    engine.evaluate(QString("print(\"%1\")").arg(helpString));
 
-
-    emit scriptResult( helpString );
     emit evalDone();
 }
 

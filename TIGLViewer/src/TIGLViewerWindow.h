@@ -44,6 +44,7 @@ class TIGLViewerWindow : public QMainWindow, private Ui::TIGLViewerWindow
     Q_OBJECT
     Q_PROPERTY(TIGLViewerWidget*  viewer READ getViewer)
     Q_PROPERTY(TIGLViewerContext* scene  READ getScene)
+    Q_CLASSINFO("Description", "TiGL Viewer Application")
 
 public:
     enum { MaxRecentFiles = 5 };
@@ -66,9 +67,8 @@ protected:
      void dragEnterEvent(QDragEnterEvent *ev);
 
 public slots:
-    void updateMenus(TiglCPACSConfigurationHandle);
-    void openFile(const QString&);
-    void openScript(const QString&);
+    void openFile(const QString& fileName);
+    void openScript(const QString& scriptFileName);
     void closeConfiguration();
     
     TIGLViewerWidget*   getViewer();
@@ -76,6 +76,7 @@ public slots:
     TIGLViewerDocument* getDocument() { return cpacsConfiguration; }
 
 private slots:
+    void updateMenus(TiglCPACSConfigurationHandle);
     void newFile();
     void open();
     void reopenFile();

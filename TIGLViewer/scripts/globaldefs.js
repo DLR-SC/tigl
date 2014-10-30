@@ -91,8 +91,47 @@ function drawShape(shape) {
     app.scene.displayShape(shape)
 }
 
-function help(arg) {
-    if (typeof arg == "object") {
+function help(arg, derived) {
+    if(typeof(derived)==='derived') depth = false;
+
+    if (isQObject(arg)) {
+        meta = qobjGetMetaObj(arg);
+        help(meta)
+
+    }
+    else if (isQMetaObject(arg)) {
+        if (derived) {
+            if (qMetaObjDescription(arg) == "QObject" ) {
+                return;
+            }
+            print("Derived from <b>" + qMetaObjDescription(arg) + "</b> with the methods:\n")
+        }
+        else {
+            print("The <b>" + qMetaObjDescription(arg) + "</b> class provides the following methods:\n")
+        }
+        members = qMetaObjMembers(arg);
+        props = qMetaObjProperties(arg);
+        for (i in members) {
+           print("    " + members[i]);
+        }
+        if (props.length > 0) {
+            if (derived) {
+                print("\nAnd properties:\n")
+            }
+            else {
+                print("\nThe following properties are defined:\n");
+            }
+            for (i in props) {
+                print("    " + props[i]);
+            }
+        }
+        sup = qMetaObjGetSuperclass(arg);
+        if (sup) {
+            print("\n")
+            help(sup, true);
+        }
+    }
+    else if (typeof arg == "object") {
         print(arg + ":\n");
         for(var m in arg) {
             if(typeof arg[m] == "function") {
