@@ -416,23 +416,17 @@ PNamedShape CCPACSWing::BuildFusedSegments(bool splitWingInUpperAndLower)
     BRepOffsetAPI_ThruSections generator(Standard_True, Standard_True, Precision::Confusion() );
 
     for (int i=1; i <= segments.GetSegmentCount(); i++) {
-        CCPACSWingConnection& startConnection = segments.GetSegment(i).GetInnerConnection();
-        CCPACSWingProfile& startProfile = startConnection.GetProfile();
-        TopoDS_Wire startWire = transformToWingCoords(startConnection, startProfile.GetWire());
-
+        TopoDS_Wire startWire = segments.GetSegment(i).GetInnerWire();
         generator.AddWire(startWire);
     }
 
-    CCPACSWingConnection& endConnection = segments.GetSegment(segments.GetSegmentCount()).GetOuterConnection();
-    CCPACSWingProfile& endProfile = endConnection.GetProfile();
-    TopoDS_Wire endWire = transformToWingCoords(endConnection,endProfile.GetWire());
-
+    TopoDS_Wire endWire = segments.GetSegment(segments.GetSegmentCount()).GetOuterWire();
     generator.AddWire(endWire);
 
     generator.CheckCompatibility(Standard_False);
     generator.Build();
         
-    TopoDS_Shape loftShape = GetWingTransformation().Transform(generator.Shape());
+    TopoDS_Shape loftShape = generator.Shape();
     std::string loftName = GetUID();
     std::string loftShortName = GetShortShapeName();
     PNamedShape loft(new CNamedShape(loftShape, loftName.c_str(), loftShortName.c_str()));

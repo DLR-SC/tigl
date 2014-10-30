@@ -464,49 +464,18 @@ PNamedShape CCPACSWingComponentSegment::BuildLoft(void)
         
     for (SegmentList::iterator it=segments.begin(); it != segments.end(); ++it) {
         CCPACSWingSegment& segment = **it;
-        CCPACSWingConnection& startConnection = segment.GetInnerConnection();
-    
-        CCPACSWingProfile& startProfile = startConnection.GetProfile();
-        TopoDS_Wire startWire = startProfile.GetWire();
-    
-        // Do section element transformations
-        TopoDS_Shape startShape = startConnection.GetSectionElementTransformation().Transform(startWire);
-    
-        // Do section transformations
-        startShape = startConnection.GetSectionTransformation().Transform(startShape);
-    
-        // Do positioning transformations (positioning of sections)
-        startShape = startConnection.GetPositioningTransformation().Transform(startShape);
-    
-        // Cast shapes to wires, see OpenCascade documentation
-        if (startShape.ShapeType() != TopAbs_WIRE) {
-            throw CTiglError("Error: Wrong shape type in CCPACSWingComponentSegment::BuildLoft", TIGL_ERROR);
-        }
-        startWire = TopoDS::Wire(startShape);
-    
+        TopoDS_Wire startWire = segment.GetInnerWire();
         generator.AddWire(startWire);
     }
 
     // add outer wire
     CCPACSWingSegment& segment = *segments[segments.size()-1];
-    CCPACSWingConnection& endConnection = segment.GetOuterConnection();
-    CCPACSWingProfile& endProfile = endConnection.GetProfile();
-    TopoDS_Wire endWire = endProfile.GetWire();
-    TopoDS_Shape endShape = endConnection.GetSectionElementTransformation().Transform(endWire);
-    endShape = endConnection.GetSectionTransformation().Transform(endShape);
-    endShape = endConnection.GetPositioningTransformation().Transform(endShape);
-    if (endShape.ShapeType() != TopAbs_WIRE) {
-        throw CTiglError("Error: Wrong shape type in CCPACSWingComponentSegment::BuildLoft", TIGL_ERROR);
-    }
-    endWire = TopoDS::Wire(endShape);
+    TopoDS_Wire endWire = segment.GetOuterWire();
     generator.AddWire(endWire);
 
     generator.CheckCompatibility(Standard_False);
     generator.Build();
     TopoDS_Shape loftShape = generator.Shape();
-
-    // transform with wing transformation
-    loftShape = wing->GetWingTransformation().Transform(loftShape);
 
     BRepTools::Clean(loftShape);
 
