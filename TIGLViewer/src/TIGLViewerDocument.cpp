@@ -106,6 +106,7 @@ TIGLViewerDocument::TIGLViewerDocument(TIGLViewerWindow *parentWidget)
 
 TIGLViewerDocument::~TIGLViewerDocument( )
 {
+    closeCpacsConfiguration();
     m_cpacsHandle = -1;
 }
 
@@ -263,27 +264,6 @@ bool meshShape(const TopoDS_Shape& loft, double rel_deflection)
     else {
         return false;
     }
-}
-
-// a small helper when we just want to display a shape
-void TIGLViewerDocument::displayShape(const TopoDS_Shape& loft, Quantity_Color color)
-{
-    app->getScene()->displayShape(loft, color);
-}
-
-
-// Displays a point on the screen
-void TIGLViewerDocument::DisplayPoint(gp_Pnt& aPoint,
-                                      const char* aText,
-                                      Standard_Boolean UpdateViewer,
-                                      Standard_Real anXoffset,
-                                      Standard_Real anYoffset,
-                                      Standard_Real aZoffset,
-                                      Standard_Real TextScale)
-{
-    return app->getScene()->displayPoint(aPoint, aText, UpdateViewer,
-                               anXoffset, anYoffset, aZoffset,
-                               TextScale);
 }
 
 
@@ -491,7 +471,7 @@ void TIGLViewerDocument::drawAllFuselagesAndWings( )
 
         for (int i = 1; i <= wing.GetSegmentCount(); i++) {
             tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(i);
-            displayShape(segment.GetLoft()->Shape());
+            app->getScene()->displayShape(segment.GetLoft()->Shape());
         }
 
         if (wing.GetSymmetryAxis() == TIGL_NO_SYMMETRY) {
@@ -500,7 +480,7 @@ void TIGLViewerDocument::drawAllFuselagesAndWings( )
 
         for (int i = 1; i <= wing.GetSegmentCount(); i++) {
             tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(i);
-            displayShape(segment.GetMirroredLoft()->Shape(), Quantity_NOC_MirrShapeCol);
+            app->getScene()->displayShape(segment.GetMirroredLoft()->Shape(), Quantity_NOC_MirrShapeCol);
         }
     }
 
@@ -510,7 +490,7 @@ void TIGLViewerDocument::drawAllFuselagesAndWings( )
 
         for (int i = 1; i <= fuselage.GetSegmentCount(); i++) {
             tigl::CCPACSFuselageSegment& segment = (tigl::CCPACSFuselageSegment &) fuselage.GetSegment(i);
-            displayShape(segment.GetLoft()->Shape());
+            app->getScene()->displayShape(segment.GetLoft()->Shape());
         }
 
         if (fuselage.GetSymmetryAxis() == TIGL_NO_SYMMETRY) {
@@ -519,7 +499,7 @@ void TIGLViewerDocument::drawAllFuselagesAndWings( )
 
         for (int i = 1; i <= fuselage.GetSegmentCount(); i++) {
             tigl::CCPACSFuselageSegment& segment = (tigl::CCPACSFuselageSegment &) fuselage.GetSegment(i);
-            displayShape(segment.GetMirroredLoft()->Shape(), Quantity_NOC_MirrShapeCol);
+            app->getScene()->displayShape(segment.GetMirroredLoft()->Shape(), Quantity_NOC_MirrShapeCol);
         }
     }
 }
@@ -538,7 +518,7 @@ void TIGLViewerDocument::drawWingProfiles()
 
     tigl::CCPACSWingProfile& profile = GetConfiguration().GetWingProfile(wingProfile.toStdString());
     TopoDS_Wire wire        = profile.GetWire();
-    displayShape(wire,Quantity_NOC_WHITE);
+    app->getScene()->displayShape(wire,Quantity_NOC_WHITE);
 
     // Leading/trailing edges
     gp_Pnt lePoint = profile.GetLEPoint();
@@ -546,10 +526,10 @@ void TIGLViewerDocument::drawWingProfiles()
 
     std::ostringstream text;
     text << "LE(" << lePoint.X() << ", " << lePoint.Y() << ", " << lePoint.Z() << ")";
-    DisplayPoint(lePoint, const_cast<char*>(text.str().c_str()), Standard_False, 0.0, 0.0, 0.0, 2.0);
+    app->getScene()->displayPoint(lePoint, const_cast<char*>(text.str().c_str()), Standard_False, 0.0, 0.0, 0.0, 2.0);
     text.str("");
     text << "TE(" << tePoint.X() << ", " << tePoint.Y() << ", " << tePoint.Z() << ")";
-    DisplayPoint(tePoint, const_cast<char*>(text.str().c_str()), Standard_False, 0.0, 0.0, 0.0, 2.0);
+    app->getScene()->displayPoint(tePoint, const_cast<char*>(text.str().c_str()), Standard_False, 0.0, 0.0, 0.0, 2.0);
     text.str("");
 
     gp_Lin gpline = gce_MakeLin(lePoint, tePoint);
@@ -559,7 +539,7 @@ void TIGLViewerDocument::drawWingProfiles()
     if (length > 0.0) {
         Handle(Geom_TrimmedCurve) trimmedLine = GC_MakeSegment(gpline, -length * 0.2, length * 1.2);
         TopoDS_Edge le_te_edge = BRepBuilderAPI_MakeEdge(trimmedLine);
-        displayShape(le_te_edge, Quantity_NOC_GOLD);
+        app->getScene()->displayShape(le_te_edge, Quantity_NOC_GOLD);
     }
 
     // display points in case of a few sample points
@@ -570,7 +550,7 @@ void TIGLViewerDocument::drawWingProfiles()
             std::stringstream str;
             str << i << ": (" << p->x << ", " << p->y << ", " << p->z << ")";
             gp_Pnt pnt = p->Get_gp_Pnt();
-            DisplayPoint(pnt, str.str().c_str(), Standard_False, 0., 0., 0., 6.);
+            app->getScene()->displayPoint(pnt, str.str().c_str(), Standard_False, 0., 0., 0., 6.);
         }
     }
     else {
@@ -580,7 +560,7 @@ void TIGLViewerDocument::drawWingProfiles()
                 gp_Pnt chordPoint = profile.GetChordPoint(xsi);
                 text << "CPT(" << xsi << ")";
                 text << "(" << chordPoint.X() << ", " << chordPoint.Y() << ", " << chordPoint.Z() << ")";
-                DisplayPoint(chordPoint, const_cast<char*>(text.str().c_str()), Standard_False, 0.0, 0.0, 0.0, 2.0);
+                app->getScene()->displayPoint(chordPoint, const_cast<char*>(text.str().c_str()), Standard_False, 0.0, 0.0, 0.0, 2.0);
                 text.str("");
             }
             catch (tigl::CTiglError& ex) {
@@ -591,7 +571,7 @@ void TIGLViewerDocument::drawWingProfiles()
                 gp_Pnt upperPoint = profile.GetUpperPoint(xsi);
                 text << "UPT(" << xsi << ")";
                 text << "(" << upperPoint.X() << ", " << upperPoint.Y() << ", " << upperPoint.Z() << ")";
-                DisplayPoint(upperPoint, const_cast<char*>(text.str().c_str()), Standard_False, 0.0, 0.0, 0.0, 2.0);
+                app->getScene()->displayPoint(upperPoint, const_cast<char*>(text.str().c_str()), Standard_False, 0.0, 0.0, 0.0, 2.0);
                 text.str("");
             }
             catch (tigl::CTiglError& ex) {
@@ -602,7 +582,7 @@ void TIGLViewerDocument::drawWingProfiles()
                 gp_Pnt lowerPoint = profile.GetLowerPoint(xsi);
                 text << "LPT(" << xsi << ")";
                 text << "(" << lowerPoint.X() << ", " << lowerPoint.Y() << ", " << lowerPoint.Z() << ")";
-                DisplayPoint(lowerPoint, const_cast<char*>(text.str().c_str()), Standard_False, 0.0, 0.0, 0.0, 2.0);
+                app->getScene()->displayPoint(lowerPoint, const_cast<char*>(text.str().c_str()), Standard_False, 0.0, 0.0, 0.0, 2.0);
                 text.str("");
             }
             catch (tigl::CTiglError& ex) {
@@ -650,7 +630,7 @@ void TIGLViewerDocument::drawWingOverlayProfilePoints()
         for (std::vector<tigl::CTiglPoint*>::size_type i = 0; i < innerPoints.size(); i++) {
             gp_Pnt pnt = innerPoints[i]->Get_gp_Pnt();
             pnt = wing.GetWingTransformation().Transform(pnt);
-            DisplayPoint(pnt, "", Standard_False, 0.0, 0.0, 0.0, 2.0);
+            app->getScene()->displayPoint(pnt, "", Standard_False, 0.0, 0.0, 0.0, 2.0);
         }
 
         // Get outer profile point list
@@ -675,7 +655,7 @@ void TIGLViewerDocument::drawWingOverlayProfilePoints()
         for (std::vector<tigl::CTiglPoint*>::size_type i = 0; i < outerPoints.size(); i++) {
             gp_Pnt pnt = outerPoints[i]->Get_gp_Pnt();
             pnt = wing.GetWingTransformation().Transform(pnt);
-            DisplayPoint(pnt, "", Standard_False, 0.0, 0.0, 0.0, 2.0);
+            app->getScene()->displayPoint(pnt, "", Standard_False, 0.0, 0.0, 0.0, 2.0);
         }
     }
 }
@@ -728,7 +708,7 @@ void TIGLViewerDocument::drawFuselageProfiles()
             std::stringstream str;
             str << i << ": (" << p->x << ", " << p->y << ", " << p->z << ")";
             gp_Pnt pnt = p->Get_gp_Pnt();
-            DisplayPoint(pnt, str.str().c_str(), Standard_False, 0., 0., 0., 6.);
+            app->getScene()->displayPoint(pnt, str.str().c_str(), Standard_False, 0., 0., 0., 6.);
         }
 
     }
@@ -738,7 +718,7 @@ void TIGLViewerDocument::drawFuselageProfiles()
               gp_Pnt wirePoint = profile.GetPoint(zeta);
               std::ostringstream text;
               text << "PT(" << zeta << ")";
-              DisplayPoint(wirePoint, const_cast<char*>(text.str().c_str()), Standard_False, 0.0, 0.0, 0.0, 2.0);
+              app->getScene()->displayPoint(wirePoint, const_cast<char*>(text.str().c_str()), Standard_False, 0.0, 0.0, 0.0, 2.0);
               text.str("");
             }
             catch (tigl::CTiglError& ex) {
@@ -787,7 +767,7 @@ void TIGLViewerDocument::drawWing()
     for (int i = 1; i <= wing.GetSegmentCount(); i++) {
         // Draw segment loft
         const TopoDS_Shape& loft = wing.GetSegment(i).GetLoft()->Shape();
-        displayShape(loft);
+        app->getScene()->displayShape(loft);
     }
 }
 
@@ -809,7 +789,7 @@ void TIGLViewerDocument::drawFuselage()
         // Draw segment loft
         tigl::CCPACSFuselageSegment& segment = (tigl::CCPACSFuselageSegment &) fuselage.GetSegment(i);
         TopoDS_Shape loft = segment.GetLoft()->Shape();
-        displayShape(loft);
+        app->getScene()->displayShape(loft);
     }
 }
 
@@ -833,7 +813,7 @@ void TIGLViewerDocument::drawWingTriangulation()
     TopoDS_Compound compound;
     createShapeTriangulation(fusedWing, compound);
     
-    displayShape(compound);
+    app->getScene()->displayShape(compound);
 }
 
 
@@ -982,10 +962,10 @@ void TIGLViewerDocument::drawFuselageSamplePointsAngle()
         tigl::CCPACSFuselageSegment& segment = (tigl::CCPACSFuselageSegment &) fuselage.GetSegment(i);
         const TopoDS_Shape& loft = segment.GetLoft()->Shape();
 
-        displayShape(loft);
+        app->getScene()->displayShape(loft);
 
         // Display the intersection point
-         tiglFuselageGetPointAngle(m_cpacsHandle,
+        tiglFuselageGetPointAngle(m_cpacsHandle,
                         fuselageIndex, i,
                         0.5, angle,
                         &x, &y, &z);
@@ -1626,7 +1606,7 @@ void TIGLViewerDocument::drawFusedFuselage()
     START_COMMAND();
     app->getScene()->deleteAllObjects();
     tigl::CCPACSFuselage& fuselage = GetConfiguration().GetFuselage(fuselageUid.toStdString());
-    displayShape(fuselage.GetLoft()->Shape());
+    app->getScene()->displayShape(fuselage.GetLoft()->Shape());
 }
 
 
@@ -1641,7 +1621,7 @@ void TIGLViewerDocument::drawFusedWing()
     app->getScene()->deleteAllObjects();
     tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
     const TopoDS_Shape& loft = wing.GetLoft()->Shape();
-    displayShape(loft);
+    app->getScene()->displayShape(loft);
 }
 
 
@@ -1696,7 +1676,7 @@ void TIGLViewerDocument::drawFusedAircraft()
             }
             PNamedShape shape = *it;
             if (shape) {
-                displayShape(shape->Shape(), colors[icol++]);
+                app->getScene()->displayShape(shape->Shape(), colors[icol++]);
             }
         }
 
@@ -1704,7 +1684,7 @@ void TIGLViewerDocument::drawFusedAircraft()
         ListPNamedShape::const_iterator it2 = ints.begin();
         for (; it2 != ints.end(); ++it2) {
             if (*it2) {
-                displayShape((*it2)->Shape(), Quantity_NOC_WHITE);
+                app->getScene()->displayShape((*it2)->Shape(), Quantity_NOC_WHITE);
             }
         }
 
@@ -1733,7 +1713,7 @@ void TIGLViewerDocument::drawFusedAircraftTriangulation()
     TopoDS_Compound triangulation;
     createShapeTriangulation(airplane, triangulation);
 
-    displayShape(triangulation);
+    app->getScene()->displayShape(triangulation);
 }
 
 
@@ -1790,7 +1770,7 @@ void TIGLViewerDocument::drawIntersectionLine()
     }
     // load first wire
     for (int wireID = 1; wireID <= Intersector->GetCountIntersectionLines(); ++wireID) {
-        displayShape(Intersector->GetWire(wireID));
+        app->getScene()->displayShape(Intersector->GetWire(wireID));
         
         /* now calculate intersection and display single points */
         for (double eta = 0.0; eta <= 1.0; eta += 0.025) {
@@ -1827,7 +1807,7 @@ void TIGLViewerDocument::drawWingComponentSegment()
     }
 
     if (pComponentSegment) {
-        displayShape(*pComponentSegment);
+        app->getScene()->displayShape(*pComponentSegment);
     }
     else {
         cerr << "Component segment \"" << wingUid.toStdString() << "\" not found" << endl;
@@ -1897,8 +1877,8 @@ void TIGLViewerDocument::drawWingShells()
     app->getScene()->deleteAllObjects();
 
     tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid.toStdString());
-    displayShape(wing.GetUpperShape(), Quantity_NOC_GREEN);
-    displayShape(wing.GetLowerShape(), Quantity_NOC_RED);
+    app->getScene()->displayShape(wing.GetUpperShape(), Quantity_NOC_GREEN);
+    app->getScene()->displayShape(wing.GetLowerShape(), Quantity_NOC_RED);
 }
 
 void TIGLViewerDocument::drawFarField()
@@ -1960,36 +1940,6 @@ void TIGLViewerDocument::createShapeTriangulation(const TopoDS_Shape& shape, Top
             }
         }
     }
-}
-
-void TIGLViewerDocument::drawPoint()
-{
-    TIGLViewerDrawVectorDialog dialog("Draw Point", app);
-    dialog.setDirectionEnabled(false);
-    
-    if (dialog.exec() != QDialog::Accepted) {
-        return;
-    }
-    
-    gp_Pnt point = dialog.getPoint().Get_gp_Pnt();
-    std::stringstream stream;
-    stream << "(" << point.X() << ", " << point.Y() << ", " << point.Z() << ")";
-    DisplayPoint(point, stream.str().c_str(), Standard_True, 0, 0, 0, 1.);
-}
-
-void TIGLViewerDocument::drawVector()
-{
-    TIGLViewerDrawVectorDialog dialog("Draw Vector", app);
-    
-    if (dialog.exec() != QDialog::Accepted) {
-        return;
-    }
-    
-    gp_Pnt point = dialog.getPoint().Get_gp_Pnt();
-    gp_Vec dir   = dialog.getDirection().Get_gp_Pnt().XYZ();
-    std::stringstream stream;
-    stream << "(" << point.X() << ", " << point.Y() << ", " << point.Z() << ")";
-    app->getScene()->displayVector(point, dir, stream.str().c_str(), Standard_True, 0,0,0, 1.);
 }
 
 TiglCPACSConfigurationHandle TIGLViewerDocument::getCpacsHandle(void) const 

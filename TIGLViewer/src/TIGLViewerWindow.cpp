@@ -38,6 +38,7 @@
 
 #include "TIGLViewerWindow.h"
 #include "TIGLViewerSettingsDialog.h"
+#include "TIGLViewerDrawVectorDialog.h"
 #include "TIGLViewerDocument.h"
 #include "TIGLViewerInputoutput.h"
 #include "TIGLDebugStream.h"
@@ -167,14 +168,14 @@ TIGLViewerWindow::TIGLViewerWindow()
     p.setColor(QPalette::Base, Qt::black);
     console->setPalette(p);
 
-    cpacsConfiguration = new TIGLViewerDocument(this);
+    //cpacsConfiguration = new TIGLViewerDocument(this);
     scriptEngine = new TIGLScriptEngine(this);
     
     setAcceptDrops(true);
 
     connectSignals();
     createMenus();
-    updateMenus(-1);
+    updateMenus();
 
     loadSettings();
 
@@ -291,7 +292,10 @@ void TIGLViewerWindow::openScript(const QString& fileName)
 
 void TIGLViewerWindow::closeConfiguration()
 {
-    cpacsConfiguration->closeCpacsConfiguration();
+    if (cpacsConfiguration) {
+        delete cpacsConfiguration;
+        cpacsConfiguration = NULL;
+    }
 }
 
 void TIGLViewerWindow::openRecentFile()
@@ -310,6 +314,7 @@ void TIGLViewerWindow::openFile(const QString& fileName)
     TIGLViewerInputOutput::FileFormat format;
     TIGLViewerInputOutput reader;
     bool triangulation = false;
+    bool success = false;
 
     TIGLViewerScopedCommand command(getConsole());
     Q_UNUSED(command);
@@ -320,12 +325,17 @@ void TIGLViewerWindow::openFile(const QString& fileName)
         fileType = fileInfo.suffix();
         
         if (fileType.toLower() == tr("xml")) {
+            cpacsConfiguration = new TIGLViewerDocument(this);
             TiglReturnCode tiglRet = cpacsConfiguration->openCpacsConfiguration(fileInfo.absoluteFilePath());
             if (tiglRet != TIGL_SUCCESS) {
+                delete cpacsConfiguration;
+                cpacsConfiguration = NULL;
                 return;
             }
 
-            updateMenus(cpacsConfiguration->getCpacsHandle());
+            connectConfiguration();
+            updateMenus();
+            success = true;
         }
         else {
 
@@ -346,21 +356,25 @@ void TIGLViewerWindow::openFile(const QString& fileName)
                 triangulation = true;
             }
             if (triangulation) {
-                reader.importTriangulation( fileInfo.absoluteFilePath(), format, *getScene() );
+                success = reader.importTriangulation( fileInfo.absoluteFilePath(), format, *getScene() );
             }
             else {
-                reader.importModel ( fileInfo.absoluteFilePath(), format, *getScene() );
+                success = reader.importModel ( fileInfo.absoluteFilePath(), format, *getScene() );
             }
         }
         watcher = new QFileSystemWatcher();
         watcher->addPath(fileInfo.absoluteFilePath());
         QObject::connect(watcher, SIGNAL(fileChanged(QString)), openTimer, SLOT(start()));
+        myLastFolder = fileInfo.absolutePath();
+        if (success) {
+            setCurrentFile(fileName);
+            myOCC->viewAxo();
+            myOCC->fitAll();
+        }
+        else {
+            displayErrorMessage("Error opening file " + fileName, "Error");
+        }
     }
-    myLastFolder = fileInfo.absolutePath();
-    setCurrentFile(fileName);
-
-    myOCC->viewAxo();
-    myOCC->fitAll();
 }
 
 void TIGLViewerWindow::reopenFile()
@@ -656,6 +670,68 @@ void TIGLViewerWindow::displayErrorMessage (const QString aMessage, QString aHea
     dialog.exec();
 }
 
+void TIGLViewerWindow::connectConfiguration()
+{
+    if (!cpacsConfiguration) {
+        return;
+    }
+    
+    // CPACS Wing Actions
+    connect(drawWingProfilesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingProfiles()));
+    connect(drawWingOverlayCPACSProfilePointsAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingOverlayProfilePoints()));
+    connect(drawWingGuideCurvesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingGuideCurves()));
+    connect(drawWingsAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWing()));
+    connect(drawWingTriangulationAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingTriangulation()));
+    connect(drawWingSamplePointsAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingSamplePoints()));
+    connect(drawFusedWingAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFusedWing()));
+    connect(drawWingComponentSegmentAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingComponentSegment()));
+    connect(drawWingCSPointAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingComponentSegmentPoints()));
+    connect(drawWingShellAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingShells()));
+
+
+    // CPACS Aircraft Actions
+    connect(showAllWingsAndFuselagesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawAllFuselagesAndWings()));
+    connect(showAllWingsAndFuselagesSurfacePointsAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawAllFuselagesAndWingsSurfacePoints()));
+    connect(drawFusedAircraftAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFusedAircraft()));
+    connect(drawIntersectionAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawIntersectionLine()));
+    connect(showFusedAirplaneTriangulation, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFusedAircraftTriangulation()));
+    connect(drawFarFieldAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFarField()));
+
+    // CPACS Fuselage Actions
+    connect(drawFuselageProfilesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFuselageProfiles()));
+    connect(drawFuselageAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFuselage()));
+    connect(drawFuselageTriangulationAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFuselageTriangulation()));
+    connect(drawFuselageSamplePointsAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFuselageSamplePoints()));
+    connect(drawFuselageSamplePointsAngleAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFuselageSamplePointsAngle()));
+    connect(drawFusedFuselageAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFusedFuselage()));
+    connect(drawFuselageGuideCurvesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFuselageGuideCurves()));
+
+    // Export functions
+    connect(tiglExportFusedIgesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportFusedAsIges()));
+    connect(tiglExportIgesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportAsIges()));
+    connect(tiglExportFusedStepAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportAsStepFused()));
+    connect(tiglExportStepAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportAsStep()));
+    connect(tiglExportMeshedWingSTL, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportMeshedWingSTL()));
+    connect(tiglExportMeshedFuselageSTL, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportMeshedFuselageSTL()));
+    connect(tiglExportMeshedWingVTK, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportMeshedWingVTK()));
+    connect(tiglExportMeshedWingVTKsimple, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportMeshedWingVTKsimple()));
+    connect(tiglExportMeshedFuselageVTK, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportMeshedFuselageVTK()));
+    connect(tiglExportMeshedConfigVTK, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportMeshedConfigVTK()));
+    connect(tiglExportMeshedConfigVTKNoFuse, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportMeshedConfigVTKNoFuse()));
+    connect(tiglExportMeshedFuselageVTKsimple, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportMeshedFuselageVTKsimple()));
+    connect(tiglExportWingColladaAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportWingCollada()));
+    connect(tiglExportFuselageColladaAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportFuselageCollada()));
+    connect(tiglExportConfigurationColladaAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportConfigCollada()));
+    connect(tiglExportFuselageBRepAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportFuselageBRep()));
+    connect(tiglExportWingBRepAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportWingBRep()));
+    connect(tiglExportFusedConfigBRep, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportFusedConfigBRep()));
+    connect(tiglExportWingCurvesBRepAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportWingCurvesBRep()));
+    connect(tiglExportFuselageCurvesBRepAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportFuselageCurvesBRep()));
+    
+    connect(cpacsConfiguration, SIGNAL(documentUpdated(TiglCPACSConfigurationHandle)), 
+             this, SLOT(updateMenus()) );
+}
+
 void TIGLViewerWindow::connectSignals()
 {
     connect(newAction, SIGNAL(triggered()), this, SLOT(newFile()));
@@ -683,6 +759,11 @@ void TIGLViewerWindow::connectSignals()
     connect(aboutAction, SIGNAL(triggered()), this, SLOT(about()));
     connect(aboutQtAction, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
     connect(aboutQtAction, SIGNAL(triggered()), this, SLOT(aboutQt()));
+
+    // Misc drawing actions
+    connect(drawPointAction, SIGNAL(triggered()), this, SLOT(drawPoint()));
+    connect(drawVectorAction, SIGNAL(triggered()), this, SLOT(drawVector()));
+    
 
     // view->actions menu
     connect(fitAction, SIGNAL(triggered()), myOCC, SLOT(fitExtents()));
@@ -719,62 +800,6 @@ void TIGLViewerWindow::connectSignals()
 
     connect(openTimer, SIGNAL(timeout()), this, SLOT(reopenFile()));
 
-    // CPACS Wing Actions
-    connect(drawWingProfilesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingProfiles()));
-    connect(drawWingOverlayCPACSProfilePointsAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingOverlayProfilePoints()));
-    connect(drawWingGuideCurvesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingGuideCurves()));
-    connect(drawWingsAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWing()));
-    connect(drawWingTriangulationAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingTriangulation()));
-    connect(drawWingSamplePointsAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingSamplePoints()));
-    connect(drawFusedWingAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFusedWing()));
-    connect(drawWingComponentSegmentAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingComponentSegment()));
-    connect(drawWingCSPointAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingComponentSegmentPoints()));
-    connect(drawWingShellAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawWingShells()));
-
-
-    // CPACS Aircraft Actions
-    connect(showAllWingsAndFuselagesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawAllFuselagesAndWings()));
-    connect(showAllWingsAndFuselagesSurfacePointsAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawAllFuselagesAndWingsSurfacePoints()));
-    connect(drawFusedAircraftAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFusedAircraft()));
-    connect(drawIntersectionAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawIntersectionLine()));
-    connect(showFusedAirplaneTriangulation, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFusedAircraftTriangulation()));
-    connect(drawFarFieldAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFarField()));
-
-    // CPACS Fuselage Actions
-    connect(drawFuselageProfilesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFuselageProfiles()));
-    connect(drawFuselageAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFuselage()));
-    connect(drawFuselageTriangulationAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFuselageTriangulation()));
-    connect(drawFuselageSamplePointsAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFuselageSamplePoints()));
-    connect(drawFuselageSamplePointsAngleAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFuselageSamplePointsAngle()));
-    connect(drawFusedFuselageAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFusedFuselage()));
-    connect(drawFuselageGuideCurvesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFuselageGuideCurves()));
-    
-    // Misc drawing actions
-    connect(drawPointAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawPoint()));
-    connect(drawVectorAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawVector()));
-
-    // Export functions
-    connect(tiglExportFusedIgesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportFusedAsIges()));
-    connect(tiglExportIgesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportAsIges()));
-    connect(tiglExportFusedStepAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportAsStepFused()));
-    connect(tiglExportStepAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportAsStep()));
-    connect(tiglExportMeshedWingSTL, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportMeshedWingSTL()));
-    connect(tiglExportMeshedFuselageSTL, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportMeshedFuselageSTL()));
-    connect(tiglExportMeshedWingVTK, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportMeshedWingVTK()));
-    connect(tiglExportMeshedWingVTKsimple, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportMeshedWingVTKsimple()));
-    connect(tiglExportMeshedFuselageVTK, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportMeshedFuselageVTK()));
-    connect(tiglExportMeshedConfigVTK, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportMeshedConfigVTK()));
-    connect(tiglExportMeshedConfigVTKNoFuse, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportMeshedConfigVTKNoFuse()));
-    connect(tiglExportMeshedFuselageVTKsimple, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportMeshedFuselageVTKsimple()));
-    connect(tiglExportWingColladaAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportWingCollada()));
-    connect(tiglExportFuselageColladaAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportFuselageCollada()));
-    connect(tiglExportConfigurationColladaAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportConfigCollada()));
-    connect(tiglExportFuselageBRepAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportFuselageBRep()));
-    connect(tiglExportWingBRepAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportWingBRep()));
-    connect(tiglExportFusedConfigBRep, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportFusedConfigBRep()));
-    connect(tiglExportWingCurvesBRepAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportWingCurvesBRep()));
-    connect(tiglExportFuselageCurvesBRepAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportFuselageCurvesBRep()));
-
     // The co-ordinates from the view
     connect( myOCC, SIGNAL(mouseMoved(V3d_Coordinate,V3d_Coordinate,V3d_Coordinate)),
              this,   SLOT(xyzPosition(V3d_Coordinate,V3d_Coordinate,V3d_Coordinate)) );
@@ -784,9 +809,6 @@ void TIGLViewerWindow::connectSignals()
              this,   SLOT (addPoint    (V3d_Coordinate,V3d_Coordinate,V3d_Coordinate)) );
 
     connect( myOCC, SIGNAL(sendStatus(const QString)), this,  SLOT  (statusMessage(const QString)) );
-
-    connect( cpacsConfiguration, SIGNAL(documentUpdated(TiglCPACSConfigurationHandle)), 
-             this, SLOT(updateMenus(TiglCPACSConfigurationHandle)) );
 
     connect(stdoutStream, SIGNAL(sendString(QString)), console, SLOT(output(QString)));
     connect(errorStream , SIGNAL(sendString(QString)), console, SLOT(output(QString)));
@@ -832,13 +854,17 @@ void TIGLViewerWindow::updateRecentFileActions()
     myLastFolder = settings.value("lastFolder").toString();
 }
 
-void TIGLViewerWindow::updateMenus(TiglCPACSConfigurationHandle hand)
+void TIGLViewerWindow::updateMenus()
 {
     int nWings = 0;
     int nFuselages = 0;
-    if (hand > 0) {
-        tiglGetWingCount(hand, &nWings);
-        tiglGetFuselageCount(hand, &nFuselages);
+    int hand = 0;
+    if (cpacsConfiguration) {
+        hand = cpacsConfiguration->getCpacsHandle();
+        if (hand > 0) {
+            tiglGetWingCount(hand, &nWings);
+            tiglGetFuselageCount(hand, &nFuselages);
+        }
     }
     menuWings->setEnabled(nWings > 0);
     menuFuselages->setEnabled(nFuselages > 0);
@@ -890,11 +916,38 @@ void TIGLViewerWindow::makeScreenShot()
         
         int width, height;
         dialog.getImageSize(width, height);
-        try {
-            myOCC->makeScreenshot(fileName, dialog.getWhiteBGEnabled(), width, height, dialog.getQualityValue());
-        }
-        catch(tigl::CTiglError&) {
-            displayErrorMessage("Cannot save screenshot.", "Error");
+        if (!myOCC->makeScreenshot(fileName, dialog.getWhiteBGEnabled(), width, height, dialog.getQualityValue())) {
+            displayErrorMessage("Error saving screenshot.", "Error");
         }
     }
+}
+
+void TIGLViewerWindow::drawPoint()
+{
+    TIGLViewerDrawVectorDialog dialog("Draw Point", this);
+    dialog.setDirectionEnabled(false);
+    
+    if (dialog.exec() != QDialog::Accepted) {
+        return;
+    }
+    
+    gp_Pnt point = dialog.getPoint().Get_gp_Pnt();
+    std::stringstream stream;
+    stream << "(" << point.X() << ", " << point.Y() << ", " << point.Z() << ")";
+    getScene()->displayPoint(point, stream.str().c_str(), Standard_True, 0, 0, 0, 1.);
+}
+
+void TIGLViewerWindow::drawVector()
+{
+    TIGLViewerDrawVectorDialog dialog("Draw Vector", this);
+    
+    if (dialog.exec() != QDialog::Accepted) {
+        return;
+    }
+    
+    gp_Pnt point = dialog.getPoint().Get_gp_Pnt();
+    gp_Vec dir   = dialog.getDirection().Get_gp_Pnt().XYZ();
+    std::stringstream stream;
+    stream << "(" << point.X() << ", " << point.Y() << ", " << point.Z() << ")";
+    getScene()->displayVector(point, dir, stream.str().c_str(), Standard_True, 0,0,0, 1.);
 }
