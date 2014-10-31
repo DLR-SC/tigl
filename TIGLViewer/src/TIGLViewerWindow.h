@@ -25,6 +25,7 @@
 #include <QMainWindow>
 
 #include "TIGLViewerContext.h"
+#include "TIGLViewerDocument.h"
 #include "tigl.h"
 #include "CSharedPtr.h"
 
@@ -37,7 +38,6 @@ class QFileSystemWatcher;
 class QShortcut;
 class TIGLViewerLogHistory;
 class TIGLViewerLogRedirection;
-class TIGLViewerDocument;
 
 class TIGLViewerWindow : public QMainWindow, private Ui::TIGLViewerWindow
 {
@@ -76,7 +76,7 @@ public slots:
     TIGLViewerDocument* getDocument() { return cpacsConfiguration; }
 
 private slots:
-    void updateMenus(TiglCPACSConfigurationHandle);
+    void updateMenus();
     void newFile();
     void open();
     void reopenFile();
@@ -104,9 +104,12 @@ private slots:
     void applySettings();
     void changeSettings();
     void makeScreenShot();
+    void drawPoint();
+    void drawVector();
 
 private:
     void connectSignals();
+    void connectConfiguration();
     void createMenus();
     void updateRecentFileActions();
     void setCurrentFile(const QString &);

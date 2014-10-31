@@ -26,12 +26,12 @@
 #include <cmath>
 #include <iostream>
 
-#include <QtGui/QApplication>
-#include <QtGui/QBitmap>
+#include <QApplication>
+#include <QBitmap>
 #include <QPainter>
-#include <QtGui/QInputEvent>
-#include <QtGui/QColorDialog>
-#include <QtGui/QPlastiqueStyle>
+#include <QInputEvent>
+#include <QColorDialog>
+#include <QPlastiqueStyle>
 #include <QRubberBand>
 #include <QMessageBox>
 #include <QInputDialog>
@@ -1102,42 +1102,61 @@ Standard_Real TIGLViewerWidget::viewPrecision( bool resized )
     return myViewPrecision;
 }
 
-void TIGLViewerWidget::makeScreenshot(const QString& filename, bool whiteBG, int width, int height, int quality)
+/** 
+ * Note:This function with custom width and height seems to be working only on windows
+ * If it fails, we are switching back to the current screen resolution.
+ */
+bool TIGLViewerWidget::makeScreenshot(const QString& filename, bool whiteBGEnabled, int width, int height, int quality)
 {
-    if (myView) {
-        if (whiteBG) {
-            myView->SetBgGradientColors ( Quantity_NOC_BLACK , Quantity_NOC_BLACK, Aspect_GFM_NONE, Standard_False);
-            myView->SetBackgroundColor(Quantity_NOC_WHITE);
-        }
-        
-        // get window size
-        // we could also use a higher resolution if we want
-        if (width == 0 || height == 0) {
-            myView->Window()->Size(width, height);
-        }
-
-        // write screenshot to pixmap
-        Image_PixMap pixmap;
-        myView->ToPixMap(pixmap, width, height);
-
-        if (whiteBG) {
-            // reset color
-            setBackgroundGradient(myBGColor.red(), myBGColor.green(), myBGColor.blue());
-        }
-
-        // copy to qimage which supports a variety of file formats
-        QImage img(QSize(pixmap.Width(), pixmap.Height()), QImage::Format_RGB888);
-        for (unsigned int aRow = 0; aRow <  pixmap.Height(); ++aRow) {
-          for (unsigned int aCol = 0; aCol < pixmap.Width(); ++aCol) {
-            // extremely SLOW but universal (implemented for all supported pixel formats)
-            Quantity_Color aColor = pixmap.PixelColor ((Standard_Integer )aCol, (Standard_Integer )aRow);
-            QColor qcol(aColor.Red()*255., aColor.Green()*255, aColor.Blue()*255);
-            img.setPixel(aCol, aRow, qcol.rgb());
-          }
-        }
-
-        if (!img.save(filename, NULL, quality)) {
-            throw tigl::CTiglError("Cannot save screenshot to file.");
-        }
+    if (!myView) {
+        return false;
     }
+
+    if (whiteBGEnabled) {
+        myView->SetBgGradientColors ( Quantity_NOC_BLACK , Quantity_NOC_BLACK, Aspect_GFM_NONE, Standard_False);
+        myView->SetBackgroundColor(Quantity_NOC_WHITE);
+        myView->Redraw();
+    }
+
+    // get window size
+    // we could also use a higher resolution if we want
+    if (width == 0 || height == 0) {
+        myView->Window()->Size(width, height);
+    }
+
+    // write screenshot to pixmap
+    Image_PixMap pixmap;
+    bool success = myView->ToPixMap(pixmap, width, height, Graphic3d_BT_RGB);
+    if (!success) {
+        // use size of the window
+        LOG(WARNING) << "Error changing image size to " << width << "x" << height 
+                     << " for screenshot. Using current resolution.";
+        myView->Window()->Size(width, height);
+        success = myView->ToPixMap(pixmap, width, height, Graphic3d_BT_RGB);
+    }
+
+    if (whiteBGEnabled) {
+        // reset color
+        setBackgroundGradient(myBGColor.red(), myBGColor.green(), myBGColor.blue());
+    }
+
+    // copy to qimage which supports a variety of file formats
+    QImage img(QSize(pixmap.Width(), pixmap.Height()), QImage::Format_RGB888);
+    for (unsigned int aRow = 0; aRow <  pixmap.Height(); ++aRow) {
+      for (unsigned int aCol = 0; aCol < pixmap.Width(); ++aCol) {
+        // extremely SLOW but universal (implemented for all supported pixel formats)
+        Quantity_Color aColor = pixmap.PixelColor ((Standard_Integer )aCol, (Standard_Integer )aRow);
+        QColor qcol(aColor.Red()*255., aColor.Green()*255, aColor.Blue()*255);
+        img.setPixel(aCol, aRow, qcol.rgb());
+      }
+    }
+    
+    if (!img.save(filename, NULL, quality)) {
+        LOG(ERROR) << "Unable to save screenshot to file '" + filename.toStdString() + "'";
+        return false;
+    }
+    else {
+        return true;
+    }
+
 }

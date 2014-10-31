@@ -21,6 +21,7 @@
 
 #include "TIGLScriptProxy.h"
 #include "TIGLViewerDocument.h"
+#include "TIGLScriptEngine.h"
 
 #include <QWidget>
 
@@ -43,7 +44,12 @@ tigl::CCPACSConfiguration& TIGLScriptProxy::GetConfiguration(void)
 
 TiglCPACSConfigurationHandle TIGLScriptProxy::getTiglHandle(void)
 {
-    return _app->getDocument()->getCpacsHandle();
+    if (!_app->getDocument()) {
+        return -1;
+    }
+    else {
+        return _app->getDocument()->getCpacsHandle();
+    }
 }
 
 QStringList TIGLScriptProxy::getMemberFunctions()

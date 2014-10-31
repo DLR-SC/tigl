@@ -21,9 +21,9 @@
 #ifndef TIGLVIEWERDOCUMENT_H
 #define TIGLVIEWERDOCUMENT_H
 
-#include <QtCore/QObject>
+#include <QObject>
+#include <QMetaType>
 #include "TIGLViewer.h"
-#include "TIGLViewerColors.h"
 #include "CCPACSConfiguration.h"
 
 #include <Handle_AIS_Shape.hxx>
@@ -31,7 +31,7 @@
 
 class TIGLViewerWindow;
 
-class QOCC_DECLSPEC TIGLViewerDocument : public QObject
+class TIGLViewerDocument : public QObject
 {
     Q_OBJECT
 
@@ -48,18 +48,6 @@ public:
     TiglReturnCode openCpacsConfiguration(const QString fileName);
     void closeCpacsConfiguration();
     TiglCPACSConfigurationHandle getCpacsHandle(void) const;
-
-    // a small helper when we just want to display a shape
-    void displayShape(const TopoDS_Shape& shape, Quantity_Color col = Quantity_NOC_ShapeCol);
-
-    // Draws a point
-    void DisplayPoint(gp_Pnt& aPoint,
-                      const char* aText,
-                      Standard_Boolean UpdateViewer,
-                      Standard_Real anXoffset,
-                      Standard_Real anYoffset,
-                      Standard_Real aZoffset,
-                      Standard_Real TextScale);
 
     // Returns the CPACS configuration
     tigl::CCPACSConfiguration& GetConfiguration(void) const;
@@ -96,10 +84,6 @@ public slots:
     void drawFuselageSamplePointsAngle();
     void drawFusedFuselage();
     void drawFuselageGuideCurves();
-    
-    // Misc slots
-    void drawPoint();
-    void drawVector();
 
     // TIGL slots
     void exportAsIges();
@@ -154,5 +138,7 @@ private:
     void createShapeTriangulation(const class TopoDS_Shape& shape, class TopoDS_Compound& compound);
     
 };
+
+Q_DECLARE_METATYPE(TIGLViewerDocument*)
 
 #endif // TIGLVIEWERDOCUMENT_H

@@ -292,17 +292,24 @@ void TIGLScriptEngine::displayHelp()
 {
     QString helpString;
 
-    helpString =  "====== TIGLViewer scripting help ======<br/><br/>";
-    engine.evaluate(QString("print('%1')").arg(helpString));
-    engine.evaluate("help(tigl)");
+    helpString =  "====== TiGL Viewer scripting help ======<br/><br/>";
 
-    helpString = "<br/><br/>";
-    helpString += "Usage example TIGL: <br/>";
-    helpString += "Use TIGL: \ttigl.getFuselageCount();<br/>";
+    helpString += "Some examples how to use TiGL: <br/>";
+    helpString += "Compute and draw point on wing:<br/>";
+    helpString += "    p = tigl.wingGetUpperPoint(1, 1, 0.5, 0.5);<br/>";
+    helpString += "    drawPoint(p);<br/>";
+    helpString += "<br/>";
+    helpString += "Draw first wing:<br/>";
+    helpString += "    uid = tigl.wingGetUID(1)<br/>";
+    helpString += "    drawShape(tigl.getShape(uid));<br/><br/>";
+    
+    helpString += "Show top view and fit screen:<br/>";
+    helpString += "    app.viewer.viewTop()<br/>";
+    helpString += "    app.viewer.fitAll();<br/><br/>";
 
-    helpString += "Type 'help' to get a list of available TIXI/TIGL fuctions.";
-    engine.evaluate(QString("print(\"%1\")").arg(helpString));
-
+    helpString += "Type 'help(tigl)' to get a list of available TiGL fuctions.<br/>";
+    helpString += "Use the help function on any object to display its public methods e.g. 'help(app.viewer)'.";
+    emit scriptResult(helpString);
     emit evalDone();
 }
 
