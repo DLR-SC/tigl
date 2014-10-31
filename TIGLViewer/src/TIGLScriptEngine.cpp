@@ -201,6 +201,7 @@ TIGLScriptEngine::TIGLScriptEngine(TIGLViewerWindow* app)
 
     qScriptRegisterMetaType(&engine, qobjectToScriptValue<TIGLViewerWidget>, objectFromScriptValue<TIGLViewerWidget>);
     qScriptRegisterMetaType(&engine, qobjectToScriptValue<TIGLViewerContext>, objectFromScriptValue<TIGLViewerContext>);
+    qScriptRegisterMetaType(&engine, qobjectToScriptValue<TIGLViewerDocument>, objectFromScriptValue<TIGLViewerDocument>);
 
     // register/overwrite print function
     QScriptValue printFun = engine.newFunction(myPrintFunction);
@@ -208,25 +209,25 @@ TIGLScriptEngine::TIGLScriptEngine(TIGLViewerWindow* app)
     engine.globalObject().setProperty("print", printFun);
     
     QScriptValue isQObjFun = engine.newFunction(isQObject,1);
-    engine.globalObject().setProperty("isQObject", isQObjFun);
+    engine.globalObject().setProperty("_isQObject", isQObjFun);
     
     QScriptValue isQMetaObjFun = engine.newFunction(isQMetaObject,1);
-    engine.globalObject().setProperty("isQMetaObject", isQMetaObjFun);
+    engine.globalObject().setProperty("_isQMetaObject", isQMetaObjFun);
     
     QScriptValue qobjGetMetaObj = engine.newFunction(QObjGetMetaObj,1);
-    engine.globalObject().setProperty("qobjGetMetaObj", qobjGetMetaObj);
+    engine.globalObject().setProperty("_qobjGetMetaObj", qobjGetMetaObj);
     
     QScriptValue qobjGetMembers = engine.newFunction(QMetaObjectGetMemberFunctions, 1);
-    engine.globalObject().setProperty("qMetaObjMembers", qobjGetMembers);
+    engine.globalObject().setProperty("_qMetaObjMembers", qobjGetMembers);
     
     QScriptValue qobjGetProps = engine.newFunction(QMetaObjectGetProperties, 1);
-    engine.globalObject().setProperty("qMetaObjProperties", qobjGetProps);
+    engine.globalObject().setProperty("_qMetaObjProperties", qobjGetProps);
     
     QScriptValue qobjDescription = engine.newFunction(QMetaObjectGetObjectDescription, 1);
-    engine.globalObject().setProperty("qMetaObjDescription", qobjDescription);
+    engine.globalObject().setProperty("_qMetaObjDescription", qobjDescription);
     
     QScriptValue qobjSuperclasss = engine.newFunction(QMetaObjectGetSuperclass, 1);
-    engine.globalObject().setProperty("qMetaObjGetSuperclass", qobjSuperclasss);
+    engine.globalObject().setProperty("_qMetaObjGetSuperclass", qobjSuperclasss);
     
     // evaluate resource file
     openFile(":/scripts/globaldefs.js");
