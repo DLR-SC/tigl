@@ -125,6 +125,7 @@ void TIGLViewerWindow::contextMenuEvent(QContextMenuEvent *event)
 
 TIGLViewerWindow::TIGLViewerWindow()
     : myLastFolder(tr(""))
+    , cpacsConfiguration(NULL)
 {
     setupUi(this);
 
