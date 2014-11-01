@@ -158,23 +158,23 @@ TIGLViewerWidget::~TIGLViewerWidget()
 
 void TIGLViewerWidget::initializeOCC(const Handle_AIS_InteractiveContext& aContext)
 {
-    Aspect_RenderingContext rc = 0;
-    myContext = aContext;
-    myViewer  = myContext->CurrentViewer();
-    myView    = myViewer->CreateView();
+    if (myView.IsNull()) {
+        Aspect_RenderingContext rc = 0;
+        myContext = aContext;
+        myViewer  = myContext->CurrentViewer();
+        myView    = myViewer->CreateView();
 
 #if defined _WIN32 || defined __WIN32__
-    myWindow = new WNT_Window(winId());
-    myWindow->SetFlags( WDF_NOERASEBKGRND );
+        myWindow = new WNT_Window(winId());
+        myWindow->SetFlags( WDF_NOERASEBKGRND );
 #elif defined __APPLE__
-    myWindow = new Cocoa_Window((NSView *)winId());
+        myWindow = new Cocoa_Window((NSView *)winId());
 #else
-    Aspect_Handle windowHandle = (Aspect_Handle)winId();
-    myWindow = new Xw_Window(myContext->CurrentViewer()->Driver()->GetDisplayConnection(),
-                             windowHandle);
+        Aspect_Handle windowHandle = (Aspect_Handle)winId();
+        myWindow = new Xw_Window(myContext->CurrentViewer()->Driver()->GetDisplayConnection(),
+                                 windowHandle);
 #endif
 
-    if (!myView.IsNull()) {
         // Set my window (Hwnd) into the OCC view
         myView->SetWindow( myWindow, rc , paintCallBack, this  );
         // Set up axes (Trihedron) in lower left corner.
