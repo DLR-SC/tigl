@@ -47,8 +47,6 @@ public:
     //~TIGLScriptProxy();
     
 public slots:
-    QStringList getMemberFunctions();
-    
     // wrapped tigl functions
     QScriptValue getWingCount();
     QString getVersion();

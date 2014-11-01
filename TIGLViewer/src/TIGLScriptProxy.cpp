@@ -52,34 +52,6 @@ TiglCPACSConfigurationHandle TIGLScriptProxy::getTiglHandle(void)
     }
 }
 
-QStringList TIGLScriptProxy::getMemberFunctions()
-{
-    QStringList retval;
-    const QMetaObject* meta = this->metaObject();
-    for (int imeth = meta->methodOffset(); imeth < meta->methodCount(); ++imeth) {
-        QMetaMethod method = meta->method(imeth);
-        QString name =  method.signature();
-        int idx = name.indexOf("(");
-        if (idx >= 0) {
-            name = name.left(idx);
-        }
-        
-        if (method.parameterNames().size() > 0) {
-            name += "(";
-            foreach(QString parName, method.parameterNames()) {
-                name += parName + ", ";
-            }
-            name = name.left(name.size()-2);
-            name += ")";
-        }
-        else {
-            name += "()";
-        }
-        retval << name;
-    }
-    return retval;
-}
-
 QScriptValue TIGLScriptProxy::getWingCount()
 {
     int count = 0;
@@ -398,6 +370,10 @@ QScriptValue TIGLScriptProxy::wingGetLowerPointAtDirection(int wingIndex, int se
 
 QScriptValue TIGLScriptProxy::getShape(QString uid)
 {
+    if (!_app->getDocument()) {
+        return context()->throwError("No cpacs file opened.");
+    }
+    
     try {
         tigl::CCPACSConfiguration& config = _app->getDocument()->GetConfiguration();
         tigl::CTiglUIDManager& manager = config.GetUIDManager();
@@ -412,7 +388,7 @@ QScriptValue TIGLScriptProxy::getShape(QString uid)
             }
         }
         else {
-            return context()->throwError("No shape " + uid + " on cpacs configuration.");
+            return context()->throwError("No shape '" + uid + "'' on cpacs configuration.");
         }
     }
     catch(tigl::CTiglError& err) {
