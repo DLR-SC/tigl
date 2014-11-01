@@ -232,6 +232,8 @@ TIGLScriptEngine::TIGLScriptEngine(TIGLViewerWindow* app)
     // evaluate resource file
     openFile(":/scripts/globaldefs.js");
     
+    engine.globalObject().setProperty("ans", 0);
+    
     prefixString = "";
 }
 
@@ -280,6 +282,7 @@ void TIGLScriptEngine::eval(QString commandLine)
 
     QString result = val.toString();
     if (!val.isUndefined() && !val.isError() && !result.isEmpty()) {
+        engine.globalObject().setProperty("ans", val);
         emit scriptResult( prefixString + result  );
     }
     else if (val.isError()) {
