@@ -871,6 +871,22 @@ void TIGLViewerWindow::updateMenus()
     menuFuselages->setEnabled(nFuselages > 0);
     menuAircraft->setEnabled(nWings > 0 || nFuselages > 0);
 
+    tiglMenu->setEnabled(hand>0);
+
+    tiglExportMeshedFuselageSTL->setEnabled(nFuselages > 0);
+    tiglExportMeshedFuselageVTK->setEnabled(nFuselages > 0);
+    tiglExportMeshedFuselageVTKsimple->setEnabled(nFuselages > 0);
+    tiglExportFuselageBRepAction->setEnabled(nFuselages > 0);
+    tiglExportFuselageColladaAction->setEnabled(nFuselages > 0);
+    tiglExportFuselageCurvesBRepAction->setEnabled(nFuselages > 0);
+
+    tiglExportMeshedWingSTL->setEnabled(nWings > 0);
+    tiglExportMeshedWingVTK->setEnabled(nWings > 0);
+    tiglExportMeshedWingVTKsimple->setEnabled(nWings > 0);
+    tiglExportWingBRepAction->setEnabled(nWings > 0);
+    tiglExportWingColladaAction->setEnabled(nWings > 0);
+    tiglExportWingCurvesBRepAction->setEnabled(nWings > 0);
+
     closeAction->setEnabled(hand > 0);
 
     bool hasFarField = false;
