@@ -205,9 +205,7 @@ void TIGLViewerDocument::closeCpacsConfiguration()
         tixiCloseDocument(tixiHandle);
     }
 
-    app->getScene()->deleteAllObjects();
     emit documentUpdated(m_cpacsHandle);
-    app->getScene()->getContext()->UpdateCurrentViewer();
 }
 
 

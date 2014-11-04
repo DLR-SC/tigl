@@ -294,6 +294,7 @@ void TIGLViewerWindow::openScript(const QString& fileName)
 void TIGLViewerWindow::closeConfiguration()
 {
     if (cpacsConfiguration) {
+        getScene()->deleteAllObjects();
         delete cpacsConfiguration;
         cpacsConfiguration = NULL;
     }
@@ -326,14 +327,15 @@ void TIGLViewerWindow::openFile(const QString& fileName)
         fileType = fileInfo.suffix();
         
         if (fileType.toLower() == tr("xml")) {
-            cpacsConfiguration = new TIGLViewerDocument(this);
-            TiglReturnCode tiglRet = cpacsConfiguration->openCpacsConfiguration(fileInfo.absoluteFilePath());
+            TIGLViewerDocument* config = new TIGLViewerDocument(this);
+            TiglReturnCode tiglRet = config->openCpacsConfiguration(fileInfo.absoluteFilePath());
             if (tiglRet != TIGL_SUCCESS) {
-                delete cpacsConfiguration;
-                cpacsConfiguration = NULL;
+                delete config;
                 return;
             }
-
+            delete cpacsConfiguration;
+            cpacsConfiguration = config;
+            
             connectConfiguration();
             updateMenus();
             success = true;
