@@ -73,6 +73,7 @@ void Console::keyPressEvent(QKeyEvent *event)
         cursor.setPosition(_lastPosition);
         setTextCursor(cursor);
         _restorePosition = false;
+        setReadOnly(false);
     }
 
     if (event->key() == Qt::Key_Return && event->modifiers() == Qt::NoModifier) {
@@ -112,9 +113,8 @@ void Console::keyPressEvent(QKeyEvent *event)
     else if ((event->key() == Qt::Key_A && event->modifiers() == Qt::CTRL)) {
         // select the whole line without the prompt
         QTextCursor cursor = textCursor();
-        cursor.movePosition(QTextCursor::StartOfBlock);
-        cursor.setPosition(cursor.position() + prompt.length());
-        cursor.movePosition(QTextCursor::EndOfBlock, QTextCursor::KeepAnchor);
+        cursor.setPosition(_promptPosition);
+        cursor.movePosition(QTextCursor::End, QTextCursor::KeepAnchor);
         setTextCursor(cursor);
     }
     // disable undo/redo
@@ -137,9 +137,11 @@ void Console::mousePressEvent(QMouseEvent * e)
     QPlainTextEdit::mousePressEvent(e);
     if (textCursor().position() < _promptPosition) {
         _restorePosition = true;
+        setReadOnly(true);
     }
     else {
         _lastPosition = textCursor().position();
+        setReadOnly(false);
     }
 }
 
@@ -153,6 +155,7 @@ void Console::onEnter()
     cursor.setPosition(_promptPosition);
     cursor.movePosition(QTextCursor::End, QTextCursor::KeepAnchor);
     QString cmd = cursor.selectedText();
+    cursor.movePosition(QTextCursor::End);
     setTextCursor(cursor);
     historyAdd(cmd);
     
