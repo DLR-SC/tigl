@@ -31,6 +31,7 @@ class Console : public QPlainTextEdit
     Q_OBJECT
 public:
     explicit Console(QWidget *parent = 0);
+    ~Console();
     void scrollDown();
 
 public slots:
@@ -40,6 +41,10 @@ public slots:
     void startCommand();
     /// This should be called to indicate, that a command has performed
     void endCommand();
+    /// the famous clrscr
+    void clearScreen();
+    
+    void showHistory();
 
 protected:
     void keyPressEvent(QKeyEvent *);
@@ -52,6 +57,8 @@ private:
     QStringList *history;
     int historyPos;
     bool isDirty;
+    int _promptPosition, _lastPosition;
+    bool _restorePosition;
 
     void onEnter();
     void insertPrompt(bool insertNewBlock = true);

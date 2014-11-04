@@ -303,11 +303,11 @@ void TIGLScriptEngine::displayHelp()
     helpString += "    drawPoint(p);<br/>";
     helpString += "<br/>";
     helpString += "Draw first wing:<br/>";
-    helpString += "    uid = tigl.wingGetUID(1)<br/>";
+    helpString += "    uid = tigl.wingGetUID(1);<br/>";
     helpString += "    drawShape(tigl.getShape(uid));<br/><br/>";
     
     helpString += "Show top view and fit screen:<br/>";
-    helpString += "    app.viewer.viewTop()<br/>";
+    helpString += "    app.viewer.viewTop();<br/>";
     helpString += "    app.viewer.fitAll();<br/><br/>";
 
     helpString += "Type 'help(tigl)' to get a list of available TiGL fuctions.<br/>";
