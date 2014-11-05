@@ -28,7 +28,7 @@
 Console::Console(QWidget *parent) :
     QPlainTextEdit(parent)
 {
-    prompt = ">> ";
+    _prompt = ">> ";
 
     QPalette p = palette();
     p.setColor(QPalette::Base, Qt::black);
@@ -36,24 +36,18 @@ Console::Console(QWidget *parent) :
     setPalette(p);
     appendPlainText("Type \"help\" for help\n\n");
 
-    history = new QStringList;
-    historyPos = 0;
+    _historyPos = 0;
     insertPrompt(false);
     _promptPosition = _lastPosition = textCursor().position();
-    isLocked = false;
-    isDirty = false;
+    _isLocked = false;
+    _isDirty = false;
     _restorePosition = false;
     setAcceptDrops(false);
 }
 
-Console::~Console()
-{
-    delete history;
-}
-
 void Console::keyPressEvent(QKeyEvent *event)
 {
-    if (isLocked) {
+    if (_isLocked) {
         return;
     }
     
@@ -79,6 +73,20 @@ void Console::keyPressEvent(QKeyEvent *event)
     }
     else if (event->key() == Qt::Key_Down) {
         historyForward();
+    }
+    else if (event->key() == Qt::Key_PageUp) {
+        QScrollBar *vbar = verticalScrollBar();
+        if (vbar) {
+            vbar->setValue(vbar->value() - height()/cursorRect().height());
+        }
+        QWidget::keyPressEvent(event);
+    }
+    else if (event->key() == Qt::Key_PageDown) {
+        QScrollBar *vbar = verticalScrollBar();
+        if (vbar) {
+            vbar->setValue(vbar->value() + height()/cursorRect().height());
+        }
+        QWidget::keyPressEvent(event);
     }
     else if (event->key() == Qt::Key_A && event->modifiers() == Qt::ControlModifier) {
         selectAll();
@@ -130,7 +138,7 @@ void Console::keyPressEvent(QKeyEvent *event)
     }
     _lastPosition = textCursor().position();
 
-    QString cmd = textCursor().block().text().mid(prompt.length());
+    QString cmd = textCursor().block().text().mid(_prompt.length());
     emit onChange(cmd);
 }
 
@@ -262,7 +270,7 @@ void Console::onEnter()
     cmd = cmd.simplified();
     
     if (cmd == "clear" || cmd == "clrscr") {
-        clearScreen();
+        clear();
         return;
     }
     else if (cmd == "history") {
@@ -272,7 +280,7 @@ void Console::onEnter()
     
     startCommand();
      // we enforce new line from console itself
-    isDirty = true;
+    _isDirty = true;
     emit onCommand(cmd);
 }
 
@@ -286,7 +294,7 @@ void Console::output(QString s)
     s = s.replace("\n", "<br/>");
     s = s.replace("  ", "&nbsp;&nbsp;");
     appendHtml(QString("<font color=\"white\">%1</font><br/>").arg(s));
-    isDirty = true;
+    _isDirty = true;
 }
 
 void Console::outputError(QString s)
@@ -297,33 +305,33 @@ void Console::outputError(QString s)
     _restorePosition = false;
     
     appendHtml(QString("<i><font color=\"red\">%1</font></i><br/><br/>").arg(s));
-    isDirty = true;
+    _isDirty = true;
 }
 
 void Console::startCommand()
 {
-    isLocked = true;
+    _isLocked = true;
 }
 
 void Console::endCommand()
 {
-    if (isDirty) {
+    if (_isDirty) {
         insertPrompt();
     }
-    isLocked = false;
-    isDirty = false;
+    _isLocked = false;
+    _isDirty = false;
 }
 
-void Console::clearScreen()
+void Console::clear()
 {
-    this->clear();
-    insertPrompt();
+    QPlainTextEdit::clear();
+    insertPrompt(false);
 }
 
 void Console::showHistory()
 {
     int ihist = 0;
-    foreach (QString str, *history) {
+    foreach (QString str, _history) {
         str.remove(QChar(0x2028));
         str.remove(QChar(0x2029));
         str = str.simplified();
@@ -346,11 +354,11 @@ void Console::insertPrompt(bool insertNewBlock)
     QTextCharFormat format;
     format.setForeground(Qt::green);
     textCursor().setBlockCharFormat(format);
-    textCursor().insertText(prompt);
+    textCursor().insertText(_prompt);
     _promptPosition = textCursor().position();
     _lastPosition = _promptPosition;
     scrollDown();
-    isDirty = false;
+    _isDirty = false;
 }
 
 void Console::scrollDown()
@@ -365,37 +373,37 @@ void Console::historyAdd(QString cmd)
         return;
     }
 
-    history->append(cmd);
-    historyPos = history->length();
+    _history.append(cmd);
+    _historyPos = _history.length();
 }
 
 void Console::historyBack()
 {
-    if (!historyPos) {
+    if (!_historyPos) {
         return;
     }
     QTextCursor cursor = textCursor();
     cursor.setPosition(_promptPosition);
     cursor.movePosition(QTextCursor::End, QTextCursor::KeepAnchor);
     cursor.removeSelectedText();
-    cursor.insertText(history->at(historyPos-1));
+    cursor.insertText(_history.at(_historyPos-1));
     setTextCursor(cursor);
-    historyPos--;
+    _historyPos--;
 }
 
 void Console::historyForward()
 {
-    if (historyPos == history->length()) {
+    if (_historyPos == _history.length()) {
         return;
     }
     selectAll();
     deleteSelected();
     QTextCursor cursor = textCursor();
-    if (historyPos != history->length() - 1) {
-        cursor.insertText(history->at(historyPos + 1));
+    if (_historyPos != _history.length() - 1) {
+        cursor.insertText(_history.at(_historyPos + 1));
     }
     setTextCursor(cursor);
-    historyPos++;
+    _historyPos++;
 }
 
 void Console::restoreCursorPosition()
