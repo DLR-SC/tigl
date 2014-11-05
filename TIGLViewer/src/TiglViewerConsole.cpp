@@ -43,6 +43,7 @@ Console::Console(QWidget *parent) :
     isLocked = false;
     isDirty = false;
     _restorePosition = false;
+    setAcceptDrops(false);
 }
 
 Console::~Console()
@@ -68,13 +69,7 @@ void Console::keyPressEvent(QKeyEvent *event)
     
     // we dont want to insert text into output stuff
     // just in the prompt. We jump back at the last position
-    if (_restorePosition) {
-        QTextCursor cursor = textCursor();
-        cursor.setPosition(_lastPosition);
-        setTextCursor(cursor);
-        _restorePosition = false;
-        setReadOnly(false);
-    }
+    restoreCursorPosition();
 
     if (event->key() == Qt::Key_Return && event->modifiers() == Qt::NoModifier) {
         onEnter();
@@ -85,9 +80,23 @@ void Console::keyPressEvent(QKeyEvent *event)
     else if (event->key() == Qt::Key_Down) {
         historyForward();
     }
-    else if (event->key() == Qt::Key_Backspace || event->key() == Qt::Key_Left) {
-        if (textCursor().position() - _promptPosition) {
+    else if (event->key() == Qt::Key_A && event->modifiers() == Qt::ControlModifier) {
+        selectAll();
+    }
+    else if (event->key() == Qt::Key_Backspace) {
+        if (deleteAllowed()) {
             QPlainTextEdit::keyPressEvent(event);
+        }
+        else {
+            QWidget::keyPressEvent(event);
+        }
+    }
+    else if (event->key() == Qt::Key_Left) {
+        if (textCursor().position() > _promptPosition) {
+            QPlainTextEdit::keyPressEvent(event);
+        }
+        else {
+            QWidget::keyPressEvent(event);
         }
     }
     else if (event->key() == Qt::Key_Home) {
@@ -108,13 +117,6 @@ void Console::keyPressEvent(QKeyEvent *event)
         else {
             cursor.movePosition(QTextCursor::End);
         }
-        setTextCursor(cursor);
-    }
-    else if ((event->key() == Qt::Key_A && event->modifiers() == Qt::CTRL)) {
-        // select the whole line without the prompt
-        QTextCursor cursor = textCursor();
-        cursor.setPosition(_promptPosition);
-        cursor.movePosition(QTextCursor::End, QTextCursor::KeepAnchor);
         setTextCursor(cursor);
     }
     // disable undo/redo
@@ -145,9 +147,106 @@ void Console::mousePressEvent(QMouseEvent * e)
     }
 }
 
-void Console::mouseDoubleClickEvent(QMouseEvent *){}
+void Console::mouseReleaseEvent(QMouseEvent * e)
+{
 
-void Console::contextMenuEvent(QContextMenuEvent *){}
+    QPlainTextEdit::mouseReleaseEvent(e);
+    QTextCursor cursor = this->cursorForPosition(e->pos());
+    if (cursor.position() < _promptPosition) {
+        _restorePosition = true;
+        setReadOnly(true);
+    }
+    else {
+        _lastPosition = textCursor().position();
+        setReadOnly(false);
+    }
+}
+
+void Console::selectAll()
+{
+    // select the whole line without the prompt
+    QTextCursor cursor = textCursor();
+    cursor.setPosition(_promptPosition);
+    cursor.movePosition(QTextCursor::End, QTextCursor::KeepAnchor);
+    setTextCursor(cursor);
+}
+
+void Console::deleteSelected()
+{
+    if (deleteAllowed()) {
+        QTextCursor cursor = textCursor();
+        cursor.removeSelectedText();
+    }
+}
+
+void Console::paste()
+{
+    restoreCursorPosition();
+    QPlainTextEdit::paste();
+}
+
+void Console::contextMenuEvent(QContextMenuEvent * event)
+{
+    QMenu menu(this);
+    
+    bool enabled = !textCursor().selectedText().isEmpty();
+    
+    QAction *cutAction;
+    cutAction = new QAction(tr("&Cut"), this);
+    cutAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_X));
+    cutAction->setEnabled(deleteAllowed() && enabled);
+    cutAction->setIcon(QIcon::fromTheme("edit-cut", QIcon(":/gfx/edit-cut.png")));
+    menu.addAction(cutAction);
+    connect(cutAction, SIGNAL(triggered()), this, SLOT(cut()));
+    
+    QAction *copyAction;
+    copyAction = new QAction(tr("C&opy"), this);
+    copyAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_C));
+    copyAction->setEnabled(enabled);
+    copyAction->setIcon(QIcon::fromTheme("edit-copy", QIcon(":/gfx/edit-copy.png")));
+    menu.addAction(copyAction);
+    connect(copyAction, SIGNAL(triggered()), this, SLOT(copy()));
+    
+    QAction *pasteAction;
+    pasteAction = new QAction(tr("&Paste"), this);
+    pasteAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_V));
+    pasteAction->setEnabled(enabled);
+    pasteAction->setIcon(QIcon::fromTheme("edit-paste", QIcon(":/gfx/edit-paste.png")));
+    menu.addAction(pasteAction);
+    connect(pasteAction, SIGNAL(triggered()), this, SLOT(paste()));
+    
+    QAction *deleteAction;
+    deleteAction = new QAction(tr("&Delete"), this);
+    deleteAction->setEnabled(deleteAllowed() && enabled);
+    deleteAction->setIcon(QIcon::fromTheme("edit-delete"));
+    menu.addAction(deleteAction);
+    connect(deleteAction, SIGNAL(triggered()), this, SLOT(deleteSelected()));
+    
+    menu.addSeparator();
+    
+    QAction *selectAllAction;
+    selectAllAction = new QAction(tr("&Select All"), this);
+    selectAllAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_A));
+    selectAllAction->setIcon(QIcon::fromTheme("edit-select-all", QIcon(":/gfx/edit-select-all.png")));
+    menu.addAction(selectAllAction);
+    connect(selectAllAction, SIGNAL(triggered()), this, SLOT(selectAll()));
+    
+    menu.exec(event->globalPos());
+}
+
+bool Console::deleteAllowed()
+{
+    QTextCursor cursor = textCursor();
+    
+    bool haveSelection = cursor.anchor() != cursor.position();
+    
+    if (haveSelection) {
+        return cursor.position() >= _promptPosition && cursor.anchor() >= _promptPosition;
+    }
+    else {
+        return cursor.position() > _promptPosition;
+    }
+}
 
 void Console::onEnter()
 {
@@ -160,8 +259,7 @@ void Console::onEnter()
     historyAdd(cmd);
     
     // remove line breaks
-    cmd.remove(QChar(0x2028));
-    cmd.remove(QChar(0x2029));
+    cmd = cmd.simplified();
     
     if (cmd == "clear" || cmd == "clrscr") {
         clearScreen();
@@ -229,7 +327,13 @@ void Console::showHistory()
         str.remove(QChar(0x2028));
         str.remove(QChar(0x2029));
         str = str.simplified();
-        output(QString::number(ihist++) + "&nbsp;&nbsp;&nbsp;&nbsp;" + str);
+        QString numStr = QString::number(ihist++);
+        int strlen = numStr.length();
+        for (int i = 4; i > strlen; i--) {
+            numStr += "&nbsp;&nbsp;";
+        }
+        numStr += "&nbsp;&nbsp;";
+        output(numStr + str);
     }
     insertPrompt();
 }
@@ -257,14 +361,12 @@ void Console::scrollDown()
 
 void Console::historyAdd(QString cmd)
 {
-    int pos = history->lastIndexOf(cmd);
-    if (pos > 0) {
-        historyPos = pos+1;
+    if (cmd.simplified().isEmpty()) {
+        return;
     }
-    else {
-        history->append(cmd);
-        historyPos = history->length();
-    }
+
+    history->append(cmd);
+    historyPos = history->length();
 }
 
 void Console::historyBack()
@@ -286,16 +388,23 @@ void Console::historyForward()
     if (historyPos == history->length()) {
         return;
     }
+    selectAll();
+    deleteSelected();
     QTextCursor cursor = textCursor();
-    cursor.setPosition(_promptPosition);
-    cursor.movePosition(QTextCursor::End, QTextCursor::KeepAnchor);
-    cursor.removeSelectedText();
-    if (historyPos == history->length() - 1) {
-        //cursor.insertText(prompt);
-    }
-    else {
+    if (historyPos != history->length() - 1) {
         cursor.insertText(history->at(historyPos + 1));
     }
     setTextCursor(cursor);
     historyPos++;
+}
+
+void Console::restoreCursorPosition()
+{
+    if (_restorePosition) {
+        QTextCursor cursor = textCursor();
+        cursor.setPosition(_lastPosition);
+        setTextCursor(cursor);
+        _restorePosition = false;
+        setReadOnly(false);
+    }
 }

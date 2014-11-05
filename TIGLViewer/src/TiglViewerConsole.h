@@ -37,20 +37,34 @@ public:
 public slots:
     void output(QString);
     void outputError(QString);
+
     /// should be called after calling a command
     void startCommand();
+
     /// This should be called to indicate, that a command has performed
     void endCommand();
+
     /// the famous clrscr
     void clearScreen();
-    
+
+    /// shows the command history in the console
     void showHistory();
+
+    /// selects all entered text (everything after prompt)
+    void selectAll();
+
+    /// deletes the selected text (only text behind prompt)
+    void deleteSelected();
+
+    /// paste in text
+    void paste();
 
 protected:
     void keyPressEvent(QKeyEvent *);
     void mousePressEvent(QMouseEvent *);
-    void mouseDoubleClickEvent(QMouseEvent *);
+    void mouseReleaseEvent(QMouseEvent *);
     void contextMenuEvent(QContextMenuEvent *);
+
 private:
     QString prompt;
     bool isLocked;
@@ -65,6 +79,8 @@ private:
     void historyAdd(QString);
     void historyBack();
     void historyForward();
+    void restoreCursorPosition();
+    bool deleteAllowed();
 signals:
     void onCommand(QString);
     void onChange(QString);

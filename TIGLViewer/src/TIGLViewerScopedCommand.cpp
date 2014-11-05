@@ -20,10 +20,12 @@
 
 #include "TiglViewerConsole.h"
 
-TIGLViewerScopedCommand::TIGLViewerScopedCommand(Console* console)
+TIGLViewerScopedCommand::TIGLViewerScopedCommand(Console* console, bool showLoadCursor)
 {
     _console = console;
-    QApplication::setOverrideCursor( Qt::WaitCursor );
+    if (showLoadCursor) {
+        QApplication::setOverrideCursor( Qt::WaitCursor );
+    }
     if (_console) {
         _console->startCommand();
     }
