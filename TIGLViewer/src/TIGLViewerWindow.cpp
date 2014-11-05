@@ -120,6 +120,8 @@ void TIGLViewerWindow::contextMenuEvent(QContextMenuEvent *event)
         connect(materialAct, SIGNAL(triggered()), myOCC, SLOT(setObjectsMaterial()));
      }
 
+     TIGLViewerScopedCommand command(getConsole(), false);
+     Q_UNUSED(command);
      menu.exec(event->globalPos());
  }
 
