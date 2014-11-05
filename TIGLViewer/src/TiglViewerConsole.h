@@ -31,8 +31,6 @@ class Console : public QPlainTextEdit
     Q_OBJECT
 public:
     explicit Console(QWidget *parent = 0);
-    ~Console();
-    void scrollDown();
 
 public slots:
     void output(QString);
@@ -45,7 +43,7 @@ public slots:
     void endCommand();
 
     /// the famous clrscr
-    void clearScreen();
+    void clear();
 
     /// shows the command history in the console
     void showHistory();
@@ -59,6 +57,9 @@ public slots:
     /// paste in text
     void paste();
 
+    /// scrolls down the text to see last line
+    void scrollDown();
+
 protected:
     void keyPressEvent(QKeyEvent *);
     void mousePressEvent(QMouseEvent *);
@@ -66,12 +67,20 @@ protected:
     void contextMenuEvent(QContextMenuEvent *);
 
 private:
-    QString prompt;
-    bool isLocked;
-    QStringList *history;
-    int historyPos;
-    bool isDirty;
+    QString _prompt;
+    bool _isLocked;
+    QStringList _history;
+
+    /// current position in history
+    int _historyPos;
+
+    /// determines, if text was printed during a command
+    bool _isDirty;
+
+    /// positions of the current prompt and the cursor
     int _promptPosition, _lastPosition;
+    
+    /// determines if the cursor has to be restored
     bool _restorePosition;
 
     void onEnter();

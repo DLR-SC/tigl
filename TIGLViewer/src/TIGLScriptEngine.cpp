@@ -300,8 +300,8 @@ void TIGLScriptEngine::displayHelp()
     helpString += "Some examples how to use TiGL: <br/>";
     helpString += "Compute and draw point on wing:<br/>";
     helpString += "    p = tigl.wingGetUpperPoint(1, 1, 0.5, 0.5);<br/>";
-    helpString += "    drawPoint(p);<br/>";
-    helpString += "<br/>";
+    helpString += "    drawPoint(p);<br/><br/>";
+
     helpString += "Draw first wing:<br/>";
     helpString += "    uid = tigl.wingGetUID(1);<br/>";
     helpString += "    drawShape(tigl.getShape(uid));<br/><br/>";
@@ -309,6 +309,10 @@ void TIGLScriptEngine::displayHelp()
     helpString += "Show top view and fit screen:<br/>";
     helpString += "    app.viewer.viewTop();<br/>";
     helpString += "    app.viewer.fitAll();<br/><br/>";
+    
+    helpString += "Make a screenshot:<br/>";
+    helpString += "    app.viewer.makeScreenshot('image.png');//PNG image, white background<br/>";
+    helpString += "    app.viewer.makeScreenshot('image.jpg', false);//JPEG image, current background<br/><br/>";
 
     helpString += "Type 'help(tigl)' to get a list of available TiGL fuctions.<br/>";
     helpString += "Use the help function on any object to display its public methods e.g. 'help(app.viewer)'.";
