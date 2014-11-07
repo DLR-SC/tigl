@@ -2638,13 +2638,21 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetMinumumDistanceToGround(TiglCPA
 /**
   \defgroup BooleanFunctions Functions for boolean calculations
     Function for boolean calculations on wings/fuselages.
+    
+    These function currently only implement intersection algorithms between two shapes
+    defined in cpacs ot a shape and a plane. Shapes or geometries are identified with 
+    their cpacs uid.
+    
+    Currently only wings, wing segments, fuselages, and fuselage segments can be used
+    in the intersection routines.
  */
 /*@{*/
 
 /**
-* @brief <b>This is a deprecated function and will be removed in future releases.
-* Use ::tiglIntersectComponents and ::tiglIntersectGetPoint instead.</b>
-* The function returns a point on the intersection line of two geometric components. Often there are more
+* @deprecated This is a deprecated function and will be removed in future releases.
+* Use ::tiglIntersectComponents and ::tiglIntersectGetPoint instead.
+* 
+* @brief The function returns a point on the intersection line of two geometric components. Often there are more
 * that one intersection line, therefore you need to specify the line.
 *
 * Returns a point on the intersection line between a surface and a wing in dependence
@@ -2688,9 +2696,10 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglComponentIntersectionPoint(TiglCPACSConfig
                                                                  double* pointZPtr);
 
 /**
-* @brief <b>This is a deprecated function and will be removed in future releases.
-* Use ::tiglIntersectComponents and ::tiglIntersectGetPoint instead.</b>
-* Convienience function to returns a list of points on the intersection line of two geometric components. 
+* @deprecated This is a deprecated function and will be removed in future releases.
+* Use ::tiglIntersectComponents and ::tiglIntersectGetPoint instead.
+* 
+* @brief Convienience function to returns a list of points on the intersection line of two geometric components. 
 * Often there are more that one intersection line, therefore you need to specify the line.
 *
 * Returns a point on the intersection line between a surface and a wing in dependence
@@ -2739,17 +2748,17 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglComponentIntersectionPoints(TiglCPACSConfi
                                                                   double* pointZArray);
 
 /**
-* @brief <b>This is a deprecated function and will be removed in future releases.
-* Use ::tiglIntersectGetLineCount in combination with ::tiglIntersectGetPoint instead.</b>
-* The function returns the number of intersection lines of two geometric components.
+* @deprecated This is a deprecated function and will be removed in future releases.
+* Use ::tiglIntersectGetLineCount in combination with ::tiglIntersectGetPoint instead.
+*
+* @brief The function returns the number of intersection lines of two geometric components.
 *
 * <b>Fortran syntax:</b>
 *
 * TiglReturnCode tigl_component_intersection_line_count(integer cpacsHandle,
-*                                                          integer fuselageIndex,
-*                                                           integer* wingIndex,
-*                                                          integer returnCode);
-*
+*                                                       integer fuselageIndex,
+*                                                       integer* wingIndex,
+*                                                       integer returnCode);
 *
 * @param[in]  cpacsHandle     Handle for the CPACS configuration
 * @param[in]  componentUidOne The UID of the first component
