@@ -161,7 +161,7 @@ TIGLViewerWindow::TIGLViewerWindow()
 
     logDirect = CSharedPtr<TIGLViewerLogRedirection>(new TIGLViewerLogRedirection);
     logDirect->SetVerbosity(TILOG_WARNING);
-    CSharedPtr<TIGLViewerLoggerHTMLDecorator> logHTMLDecorator(new TIGLViewerLoggerHTMLDecorator(logDirect));
+    tigl::PTiglLogger logHTMLDecorator(new TIGLViewerLoggerHTMLDecorator(logDirect));
     splitter->AddLogger(logHTMLDecorator);
 
     // register logger at tigl
@@ -478,8 +478,8 @@ TIGLViewerWidget* TIGLViewerWindow::getViewer()
 void TIGLViewerWindow::save()
 {
     QString     fileName;
-    QString        fileType;
-    QFileInfo    fileInfo;
+    QString     fileType;
+    QFileInfo   fileInfo;
 
     TIGLViewerInputOutput::FileFormat format;
     TIGLViewerInputOutput writer;
@@ -493,6 +493,8 @@ void TIGLViewerWindow::save()
                                             tr("BRep Geometry (*.brep)"));
 
     if (!fileName.isEmpty()) {
+        TIGLViewerScopedCommand command(getConsole());
+        Q_UNUSED(command);
         fileInfo.setFile(fileName);
         fileType = fileInfo.suffix();
         if (fileType.toLower() == tr("brep") || fileType.toLower() == tr("rle")) {
@@ -512,20 +514,6 @@ void TIGLViewerWindow::save()
         writer.exportModel ( fileInfo.absoluteFilePath(), format, getScene()->getContext() );
     }
 }
-
-void TIGLViewerWindow::print()
-{
-    QMessageBox msgBox;
-    QString text =     "Printing is not yet implemented!<br>Go to TIGLViewer project page \
-                    (<a href=\"http://code.google.com/p/tigl/\">http://code.google.com/p/tigl/</a>) and make a feature request";
-
-    statusBar()->showMessage(tr("Invoked File|Print"));
-
-    msgBox.setWindowTitle("Undo not yet implemented!");
-    msgBox.setText(text);
-    msgBox.exec();
-}
-
 
 void TIGLViewerWindow::setBackgroundImage()
 {
@@ -551,72 +539,6 @@ void TIGLViewerWindow::setBackgroundImage()
         }
 
     }
-}
-
-
-void TIGLViewerWindow::undo()
-{
-    QMessageBox msgBox;
-    QString text =     "Undo is not yet implemented!<br>Go to TIGLViewer project page \
-                    (<a href=\"http://code.google.com/p/tigl/\">http://code.google.com/p/tigl/</a>) and make a feature request";
-
-    statusBar()->showMessage(tr("Invoked Edit|Undo"));
-
-    msgBox.setWindowTitle("Undo not yet implemented!");
-    msgBox.setText(text);
-    msgBox.exec();
-}
-
-void TIGLViewerWindow::redo()
-{
-    QMessageBox msgBox;
-    QString text =     "Redo is not yet implemented!<br>Go to TIGLViewer project page \
-                    (<a href=\"http://code.google.com/p/tigl/\">http://code.google.com/p/tigl/</a>) and make a feature request";
-
-    statusBar()->showMessage(tr("Invoked Edit|Redo"));
-
-    msgBox.setWindowTitle("Redo not yet implemented!");
-    msgBox.setText(text);
-    msgBox.exec();
-}
-
-void TIGLViewerWindow::cut()
-{
-    QMessageBox msgBox;
-    QString text =     "Cut is not yet implemented!<br>Go to TIGLViewer project page \
-                    (<a href=\"http://code.google.com/p/tigl/\">http://code.google.com/p/tigl/</a>) and make a feature request";
-
-    statusBar()->showMessage(tr("Invoked Edit|Cut"));
-
-    msgBox.setWindowTitle("Cut not yet implemented!");
-    msgBox.setText(text);
-    msgBox.exec();
-}
-
-void TIGLViewerWindow::copy()
-{
-    QMessageBox msgBox;
-    QString text =     "Copy is not yet implemented!<br>Go to TIGLViewer project page \
-                    (<a href=\"http://code.google.com/p/tigl/\">http://code.google.com/p/tigl/</a>) and make a feature request";
-
-    statusBar()->showMessage(tr("Invoked Edit|Copy"));
-
-    msgBox.setWindowTitle("Copy not yet implemented!");
-    msgBox.setText(text);
-    msgBox.exec();
-}
-
-void TIGLViewerWindow::paste()
-{
-    QMessageBox msgBox;
-    QString text =     "Paste is not yet implemented!<br>Go to TIGLViewer project page \
-                    (<a href=\"http://code.google.com/p/tigl/\">http://code.google.com/p/tigl/</a>) and make a feature request";
-
-    statusBar()->showMessage(tr("Invoked Edit|Paste"));
-
-    msgBox.setWindowTitle("Paste not yet implemented!");
-    msgBox.setText(text);
-    msgBox.exec();
 }
 
 void TIGLViewerWindow::about()
@@ -753,14 +675,8 @@ void TIGLViewerWindow::connectSignals()
 
     connect(saveAction, SIGNAL(triggered()), this, SLOT(save()));
     connect(saveScreenshotAction, SIGNAL(triggered()), this, SLOT(makeScreenShot()));
-    connect(printAction, SIGNAL(triggered()), this, SLOT(print()));
     connect(setBackgroundAction, SIGNAL(triggered()), this, SLOT(setBackgroundImage()));
     connect(exitAction, SIGNAL(triggered()), this, SLOT(close()));
-    connect(undoAction, SIGNAL(triggered()), this, SLOT(undo()));
-    connect(redoAction, SIGNAL(triggered()), this, SLOT(redo()));
-    connect(cutAction, SIGNAL(triggered()), this, SLOT(cut()));
-    connect(copyAction, SIGNAL(triggered()), this, SLOT(copy()));
-    connect(pasteAction, SIGNAL(triggered()), this, SLOT(paste()));
     connect(aboutAction, SIGNAL(triggered()), this, SLOT(about()));
     connect(aboutQtAction, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
     connect(aboutQtAction, SIGNAL(triggered()), this, SLOT(aboutQt()));
