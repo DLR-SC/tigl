@@ -17,8 +17,6 @@
 */
 /**
  * Implementation of a console window
- *
- * Credits go to Petr Trofimov, https://github.com/ptrofimov/RedisConsole
  */
 
 #ifndef CONSOLE_H

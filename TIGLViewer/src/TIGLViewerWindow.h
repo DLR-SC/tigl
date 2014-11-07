@@ -83,13 +83,7 @@ private slots:
     void openScript();
     void openRecentFile();
     void save();
-    void print();
     void setBackgroundImage();
-    void undo();
-    void redo();
-    void cut();
-    void copy();
-    void paste();
     void about();
     void aboutQt();
     void xyzPosition (V3d_Coordinate X,

@@ -17,8 +17,6 @@
 */
 /**
  * Implementation of a console window
- *
- * Credits go to Petr Trofimov, https://github.com/ptrofimov/RedisConsole
  */
 
 #include "TiglViewerConsole.h"
@@ -77,14 +75,14 @@ void Console::keyPressEvent(QKeyEvent *event)
     else if (event->key() == Qt::Key_PageUp) {
         QScrollBar *vbar = verticalScrollBar();
         if (vbar) {
-            vbar->setValue(vbar->value() - height()/cursorRect().height());
+            vbar->setValue(vbar->value() - vbar->pageStep());
         }
         QWidget::keyPressEvent(event);
     }
     else if (event->key() == Qt::Key_PageDown) {
         QScrollBar *vbar = verticalScrollBar();
         if (vbar) {
-            vbar->setValue(vbar->value() + height()/cursorRect().height());
+            vbar->setValue(vbar->value() + vbar->pageStep());
         }
         QWidget::keyPressEvent(event);
     }
