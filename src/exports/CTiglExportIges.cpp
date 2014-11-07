@@ -76,7 +76,7 @@ namespace
     /**
      * @brief WriteIGESFaceNames takes the names of each face and writes it into the IGES model.
      */
-    void WriteIGESFaceNames(Handle_Transfer_FinderProcess FP, const PNamedShape shape)
+    void WriteIGESFaceNames(Handle_Transfer_FinderProcess FP, const PNamedShape shape, int level)
     {
         if (!shape) {
             return;
@@ -109,11 +109,12 @@ namespace
             if ( FP->FindTypedTransient ( mapper, STANDARD_TYPE(IGESData_IGESEntity), entity ) ) {
                 Handle(TCollection_HAsciiString) str = new TCollection_HAsciiString(faceName.c_str());
                 entity->SetLabel(str);
+                entity->InitLevel(0, level);
             }
         }
     }
     
-    void WriteIGESShapeNames(Handle_Transfer_FinderProcess FP, const PNamedShape shape)
+    void WriteIGESShapeNames(Handle_Transfer_FinderProcess FP, const PNamedShape shape, int level)
     {
         if (!shape) {
             return;
@@ -138,6 +139,7 @@ namespace
         if ( FP->FindTypedTransient ( mapper, STANDARD_TYPE(IGESData_IGESEntity), entity ) ) {
             Handle(TCollection_HAsciiString) str = new TCollection_HAsciiString(shapeName.c_str());
             entity->SetLabel(str);
+            entity->InitLevel(0, level);
         }
     }
     
@@ -165,10 +167,10 @@ namespace
         }
     }
     
-    void WriteIgesNames(Handle_Transfer_FinderProcess FP, const PNamedShape shape)
+    void WriteIgesNames(Handle_Transfer_FinderProcess FP, const PNamedShape shape, int level)
     {
-        WriteIGESFaceNames(FP, shape);
-        WriteIGESShapeNames(FP, shape);
+        WriteIGESFaceNames(FP, shape, level);
+        WriteIGESShapeNames(FP, shape, level);
     }
 
 } //namespace
@@ -343,17 +345,19 @@ void CTiglExportIges::ExportShapes(const ListPNamedShape& shapes, const std::str
     }
 
     // write face entity names
+    int level = 0;
     for (it = list.begin(); it != list.end(); ++it) {
         PNamedShape pshape = *it;
-        WriteIgesNames(igesWriter.TransferProcess(), pshape);
+        WriteIgesNames(igesWriter.TransferProcess(), pshape, level++);
     }
 #else
     IGESControl_Writer igesWriter("MM", 0);
     igesWriter.Model()->ApplyStatic();
 
+    int level = 0;
     for (it = list.begin(); it != list.end(); ++it) {
         PNamedShape pshape = *it;
-        AddToIges(pshape, igesWriter);
+        AddToIges(pshape, igesWriter, level++);
     }
 
     igesWriter.ComputeModel();
@@ -374,7 +378,7 @@ void CTiglExportIges::SetOCAFStoreType(ShapeStoreType type)
  * The only difference is that it works directly on the step file
  * without CAF
  */
-void CTiglExportIges::AddToIges(PNamedShape shape, IGESControl_Writer& writer) const 
+void CTiglExportIges::AddToIges(PNamedShape shape, IGESControl_Writer& writer, int level) const 
 {
     if (!shape) {
         return;
@@ -392,7 +396,7 @@ void CTiglExportIges::AddToIges(PNamedShape shape, IGESControl_Writer& writer) c
             throw CTiglError("Error: Export to IGES file failed in CTiglExportStep. Could not translate shape " 
                              + shapeName + " to iges entity,", TIGL_ERROR);
         }
-        WriteIgesNames(FP, shape);
+        WriteIgesNames(FP, shape, level);
     }
     else {
         // no faces, export edges as wires
@@ -411,7 +415,7 @@ void CTiglExportIges::AddToIges(PNamedShape shape, IGESControl_Writer& writer) c
             }
             PNamedShape theWire(new CNamedShape(Edges->Value(iwire),shapeName.c_str()));
             theWire->SetShortName(shapeShortName.c_str());
-            WriteIGESShapeNames(FP, theWire);
+            WriteIGESShapeNames(FP, theWire, level);
             WriteIgesWireName(FP, theWire);
         }
     }
