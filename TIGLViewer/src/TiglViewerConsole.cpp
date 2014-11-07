@@ -370,8 +370,13 @@ void Console::historyAdd(QString cmd)
     if (cmd.simplified().isEmpty()) {
         return;
     }
+    
+    if (_history.size() == 0 || cmd != _history.at(_history.size()-1)) {
+        // we only add, if current command is different than last
+        // this is the same behaviour as in unix shells
+        _history.append(cmd);
+    }
 
-    _history.append(cmd);
     _historyPos = _history.length();
 }
 
