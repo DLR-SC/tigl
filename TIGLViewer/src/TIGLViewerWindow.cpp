@@ -478,14 +478,8 @@ TIGLViewerWidget* TIGLViewerWindow::getViewer()
 void TIGLViewerWindow::save()
 {
     QString     fileName;
-    QString     fileType;
-    QFileInfo   fileInfo;
-
-    TIGLViewerInputOutput::FileFormat format;
-    TIGLViewerInputOutput writer;
 
     statusBar()->showMessage(tr("Invoked File|Save"));
-
     fileName = QFileDialog::getSaveFileName(this, tr("Save as..."), myLastFolder,
                                             tr("IGES Geometry (*.igs);;") +
                                             tr("STEP Geometry (*.stp);;") +
@@ -495,24 +489,40 @@ void TIGLViewerWindow::save()
     if (!fileName.isEmpty()) {
         TIGLViewerScopedCommand command(getConsole());
         Q_UNUSED(command);
+        saveFile(fileName);
+        
+        QFileInfo fileInfo;
         fileInfo.setFile(fileName);
-        fileType = fileInfo.suffix();
-        if (fileType.toLower() == tr("brep") || fileType.toLower() == tr("rle")) {
-            format = TIGLViewerInputOutput::FormatBREP;
-        }
-        if (fileType.toLower() == tr("step") || fileType.toLower() == tr("stp")) {
-            format = TIGLViewerInputOutput::FormatSTEP;
-        }
-        if (fileType.toLower() == tr("iges") || fileType.toLower() == tr("igs")) {
-            format = TIGLViewerInputOutput::FormatIGES;
-        }
-        if (fileType.toLower() == tr("stl")) {
-            format = TIGLViewerInputOutput::FormatSTL;
-        }
-
         myLastFolder = fileInfo.absolutePath();
-        writer.exportModel ( fileInfo.absoluteFilePath(), format, getScene()->getContext() );
     }
+}
+
+bool TIGLViewerWindow::saveFile(const QString &fileName)
+{
+    TIGLViewerInputOutput::FileFormat format;
+    QFileInfo fileInfo;
+    
+    fileInfo.setFile(fileName);
+    QString fileType = fileInfo.suffix();
+    if (fileType.toLower() == tr("brep") || fileType.toLower() == tr("rle")) {
+        format = TIGLViewerInputOutput::FormatBREP;
+    }
+    else if (fileType.toLower() == tr("step") || fileType.toLower() == tr("stp")) {
+        format = TIGLViewerInputOutput::FormatSTEP;
+    }
+    else if (fileType.toLower() == tr("iges") || fileType.toLower() == tr("igs")) {
+        format = TIGLViewerInputOutput::FormatIGES;
+    }
+    else if (fileType.toLower() == tr("stl")) {
+        format = TIGLViewerInputOutput::FormatSTL;
+    }
+    else {
+        LOG(ERROR) << "Unknown file format " << fileType.toStdString();
+        return false;
+    }
+
+    TIGLViewerInputOutput writer;
+    return writer.exportModel ( fileInfo.absoluteFilePath(), format, getScene()->getContext());
 }
 
 void TIGLViewerWindow::setBackgroundImage()
@@ -548,15 +558,18 @@ void TIGLViewerWindow::about()
     QString tiglVersion(tiglGetVersion());
     QString occtVersion = QString("%1.%2.%3").arg(OCC_VERSION_MAJOR).arg(OCC_VERSION_MINOR).arg(OCC_VERSION_MAINTENANCE);
 
-    text =     "The <b>TIGLViewer</b> allows you to view CPACS geometries.<br> \
-                   Copyright (C) 2007-2013 German Aerospace Center (DLR/SC) <br><br>";
-    text += "TIXI version: " + tixiVersion + "<br>";
-    text += "TIGL version: " + tiglVersion + "<br>";
-    text += "OpenCascade version: " + occtVersion + "<br><br>";
-    text += "Visit the TIGLViewer project page at <a href=\"http://code.google.com/p/tigl/\">http://code.google.com/p/tigl/</a>";
+    text =  "The <b>TiGL Viewer</b> is based on the TiGL library and allows you to view CPACS geometries. ";
+    text += "TiGL Viewer uses the following Open Source libraries:<br/><br/>";
+    
+    text += "TiXI: v" + tixiVersion + "<br/>";
+    text += "TiGL: v" + tiglVersion + "<br/>";
+    text += "OpenCASCADE: v" + occtVersion + "<br/><br/>";
 
-    statusBar()->showMessage(tr("Invoked Help|About"));
-    QMessageBox::about(this, tr("About Menu"), text);
+    text += "Visit the TiGL project page at <a href=\"http://software.dlr.de/p/tigl/\">http://software.dlr.de/p/tigl/</a><br/><br/>";
+
+    text += "&copy; 2014 German Aerospace Center (DLR) ";
+
+    QMessageBox::about(this, tr("About TiGL Viewer"), text);
 }
 
 void TIGLViewerWindow::aboutQt()

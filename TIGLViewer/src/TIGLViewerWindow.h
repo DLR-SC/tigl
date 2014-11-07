@@ -69,6 +69,7 @@ protected:
 public slots:
     void openFile(const QString& fileName);
     void openScript(const QString& scriptFileName);
+    bool saveFile(const QString& fileName);
     void closeConfiguration();
     
     TIGLViewerWidget*   getViewer();
