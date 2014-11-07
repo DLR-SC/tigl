@@ -65,7 +65,7 @@ protected:
 private:
     // Assignment operator
     void operator=(const CTiglExportIges& ) { /* Do nothing */ }
-    void AddToIges(PNamedShape shape, IGESControl_Writer& writer) const;
+    void AddToIges(PNamedShape shape, IGESControl_Writer& writer, int level = 0) const;
 
     CCPACSConfiguration&          myConfig;       /**< TIGL configuration object */
     ShapeStoreType                  myStoreType;    /**< Type specifying how to translate shapes into an OCAF document */
