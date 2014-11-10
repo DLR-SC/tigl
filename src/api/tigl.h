@@ -3722,7 +3722,9 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSurfaceArea(TiglCPACSConfigurat
 
 
 /**
-* @brief Returns the surface area of a segment of a wing.
+* @brief Returns the surface area of a segment of a wing. This includes only the area
+* of the upper and lower wing segment surface and does not include the trailing egde
+* or any closing faces.
 *
 * <b>Fortran syntax:</b>
 *
