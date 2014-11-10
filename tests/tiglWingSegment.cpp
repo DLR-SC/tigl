@@ -918,6 +918,19 @@ TEST_F(WingSegmentSpecial, getCompSegEtaXsi)
     ASSERT_EQ(xsi, 1.0);
 }
 
+TEST_F(WingSegmentSimple, getSurfacArea)
+{
+    double area;
+    TiglReturnCode ret = tiglWingGetSegmentSurfaceArea(tiglSimpleHandle, 1, 1,
+                                                       &area);
+    ASSERT_EQ(TIGL_SUCCESS, ret);
+    
+    double expect = 2.;
+    // we assume a quite large error (3 percent) since the airfoil area
+    // is larger due to its curvature
+    ASSERT_NEAR(expect, area, expect*0.03);
+}
+
 TEST_F(WingSegmentSimple, getSurfaceAreaTrimmed)
 {
     double upperArea, lowerArea;

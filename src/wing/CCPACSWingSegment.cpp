@@ -408,11 +408,6 @@ PNamedShape CCPACSWingSegment::BuildLoft(void)
     BRepGProp::VolumeProperties(loftShape, System);
     myVolume = System.Mass();
 
-    // Calculate surface area
-    GProp_GProps AreaSystem;
-    BRepGProp::SurfaceProperties(loftShape, AreaSystem);
-    mySurfaceArea = AreaSystem.Mass();
-
     // Set Names
     std::string loftName = GetUID();
     std::string loftShortName = GetShortShapeName();
@@ -503,7 +498,7 @@ double CCPACSWingSegment::GetVolume(void)
 // Returns the surface area of this segment
 double CCPACSWingSegment::GetSurfaceArea(void)
 {
-    Update();
+    MakeSurfaces();
     return( mySurfaceArea );
 }
 
@@ -568,13 +563,6 @@ double CCPACSWingSegment::GetSurfaceArea(bool fromUpper,
     
     TopoDS_Wire w = BRepBuilderAPI_MakeWire(e1,e2,e3,e4);
     TopoDS_Face f = BRepBuilderAPI_MakeFace(BRep_Tool::Surface(face), w);
-    
-    if (fromUpper) {
-        BRepTools::Write(f, "upperface.brep");
-    }
-    else {
-        BRepTools::Write(f, "lowerface.brep");
-    }
     
     // compute the surface area
     GProp_GProps sprops;
@@ -913,6 +901,15 @@ void CCPACSWingSegment::MakeSurfaces()
 #endif
     lowerShape = faceExplorer.Current();
     lowerSurface = BRep_Tool::Surface(TopoDS::Face(lowerShape));
+    
+    // compute total surface area
+    GProp_GProps sprops;
+    BRepGProp::SurfaceProperties(upperShape, sprops);
+    double upperArea = sprops.Mass();
+    BRepGProp::SurfaceProperties(lowerShape, sprops);
+    double lowerArea = sprops.Mass();
+    
+    mySurfaceArea = upperArea + lowerArea;
 
     surfacesAreValid = true;
 }
