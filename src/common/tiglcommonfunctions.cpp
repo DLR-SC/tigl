@@ -116,6 +116,17 @@ unsigned int GetNumberOfEdges(const TopoDS_Shape& shape)
     return iEdges;
 }
 
+unsigned int GetNumberOfFaces(const TopoDS_Shape& shape)
+{
+    TopExp_Explorer faceExpl(shape, TopAbs_FACE);
+    unsigned int iFaces = 0;
+    for (; faceExpl.More(); faceExpl.Next()) {
+        iFaces++;
+    }
+
+    return iFaces;
+}
+
 unsigned int GetNumberOfSubshapes(const TopoDS_Shape &shape)
 {
     if (shape.ShapeType() == TopAbs_COMPOUND) {

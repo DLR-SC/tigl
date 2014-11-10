@@ -3750,6 +3750,84 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSegmentSurfaceArea(TiglCPACSConfigu
                                                                 int segmentIndex,
                                                                 double* surfaceAreaPtr);
 
+/**
+* @brief Computes the area of the trimmed upper wing segment surface. This function can be e.g. used
+* to determine the area of the wing flaps.
+* 
+* The computed area does not include the trailing edge or any closing side faces.
+* 
+* All eta and xsi values must be in the range [0,1]. The trimmed area is defined with the 
+* four corner point P1, P2, P3, and P4. The order of the points shouled be right handed, as
+* shown the the image below.
+* 
+* @image html surfaceAreaTrimmed.png "Location of the four corner points"
+* @image latex surfaceAreaTrimmed.pdf "Location of the four corner points" width=10cm
+* 
+* Each of the points is defined with an eta/xsi coordinate pair in the wing segment system.
+* 
+* @param[in]  cpacsHandle     Handle for the CPACS configuration
+* @param[in]  wingIndex       The index of a wing, starting at 1
+* @param[in]  segmentIndex    The index of a segment, starting at 1
+* @param[in]  eta1            Eta value of P1 in range [0,1]
+* @param[in]  xsi1            Xsi value of P1 in range [0,1]
+* @param[in]  eta2            Eta value of P2 in range [0,1]
+* @param[in]  xsi2            Xsi value of P2 in range [0,1]
+* @param[in]  eta3            Eta value of P3 in range [0,1]
+* @param[in]  xsi3            Xsi value of P3 in range [0,1]
+* @param[in]  eta4            Eta value of P4 in range [0,1]
+* @param[in]  xsi4            Xsi value of P4 in range [0,1]
+* @param[out] surfaceArea     Area of the trimmed upper wing surface
+* 
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_INDEX_ERROR if wingIndex ot segmentIndex are not valid
+*   - TIGL_NULL_POINTER if surfaceArea is a null pointer
+*   - TIGL_ERROR if the eta/xsi coordinates are not in the valid range [0,1] or another error occured
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSegmentUpperSurfaceAreaTrimmed(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                            int wingIndex,
+                                                                            int segmentIndex,
+                                                                            double eta1, double xsi1,
+                                                                            double eta2, double xsi2,
+                                                                            double eta3, double xsi3,
+                                                                            double eta4, double xsi4,
+                                                                            double* surfaceArea);
+
+/**
+* @brief Computes the area of the trimmed lower wing segment surface. This function can be e.g. used
+* to determine the area of the wing flaps.
+*
+* The use of this function is analog to ::tiglWingGetSegmentUpperSurfaceAreaTrimmed.
+* 
+* @param[in]  cpacsHandle     Handle for the CPACS configuration
+* @param[in]  wingIndex       The index of a wing, starting at 1
+* @param[in]  segmentIndex    The index of a segment, starting at 1
+* @param[in]  eta1            Eta value of P1 in range [0,1]
+* @param[in]  xsi1            Xsi value of P1 in range [0,1]
+* @param[in]  eta2            Eta value of P2 in range [0,1]
+* @param[in]  xsi2            Xsi value of P2 in range [0,1]
+* @param[in]  eta3            Eta value of P3 in range [0,1]
+* @param[in]  xsi3            Xsi value of P3 in range [0,1]
+* @param[in]  eta4            Eta value of P4 in range [0,1]
+* @param[in]  xsi4            Xsi value of P4 in range [0,1]
+* @param[out] surfaceArea     Area of the trimmed lower wing surface
+* 
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_INDEX_ERROR if wingIndex ot segmentIndex are not valid
+*   - TIGL_NULL_POINTER if surfaceArea is a null pointer
+*   - TIGL_ERROR if the eta/xsi coordinates are not in the valid range [0,1] or another error occured
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSegmentLowerSurfaceAreaTrimmed(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                            int wingIndex,
+                                                                            int segmentIndex,
+                                                                            double eta1, double xsi1,
+                                                                            double eta2, double xsi2,
+                                                                            double eta3, double xsi3,
+                                                                            double eta4, double xsi4,
+                                                                            double* surfaceArea);
 
 /**
 * @brief Returns the surface area of a segment of a fuselage.

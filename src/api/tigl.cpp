@@ -4704,6 +4704,100 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSegmentSurfaceArea(TiglCPACSCon
     }
 }
 
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSegmentUpperSurfaceAreaTrimmed(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                            int wingIndex,
+                                                                            int segmentIndex,
+                                                                            double eta1, double xsi1,
+                                                                            double eta2, double xsi2,
+                                                                            double eta3, double xsi3,
+                                                                            double eta4, double xsi4,
+                                                                            double* surfaceArea)
+{
+    if (surfaceArea == 0) {
+        LOG(ERROR) << "Error: Null pointer argument for surfaceArea "
+                   << "in function call to tiglWingGetSegmentUpperSurfaceAreaTrimmed.";
+        return TIGL_NULL_POINTER;
+    }
+
+    if (wingIndex < 1 || segmentIndex < 1) {
+        LOG(ERROR) << "Error: Wing or segment index index in less than one "
+                   << "in function call to tiglWingGetSegmentUpperSurfaceAreaTrimmed.";
+        return TIGL_INDEX_ERROR;
+    }
+    
+    try {
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+        tigl::CCPACSWing& wing = config.GetWing(wingIndex);
+        tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment&) wing.GetSegment(segmentIndex);
+        *surfaceArea = segment.GetSurfaceArea(true, 
+                                              eta1, xsi1,
+                                              eta2, xsi2,
+                                              eta3, xsi3,
+                                              eta4, xsi4);
+        return TIGL_SUCCESS;
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglWingGetSegmentUpperSurfaceAreaTrimmed!" << std::endl;
+        return TIGL_ERROR;
+    }
+}
+
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSegmentLowerSurfaceAreaTrimmed(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                            int wingIndex,
+                                                                            int segmentIndex,
+                                                                            double eta1, double xsi1,
+                                                                            double eta2, double xsi2,
+                                                                            double eta3, double xsi3,
+                                                                            double eta4, double xsi4,
+                                                                            double* surfaceArea)
+{
+    if (surfaceArea == 0) {
+        LOG(ERROR) << "Error: Null pointer argument for surfaceArea "
+                   << "in function call to tiglWingGetSegmentLowerSurfaceAreaTrimmed.";
+        return TIGL_NULL_POINTER;
+    }
+
+    if (wingIndex < 1 || segmentIndex < 1) {
+        LOG(ERROR) << "Error: Wing or segment index index in less than one "
+                   << "in function call to tiglWingGetSegmentLowerSurfaceAreaTrimmed.";
+        return TIGL_INDEX_ERROR;
+    }
+    
+    try {
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+        tigl::CCPACSWing& wing = config.GetWing(wingIndex);
+        tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment&) wing.GetSegment(segmentIndex);
+        *surfaceArea = segment.GetSurfaceArea(false, 
+                                              eta1, xsi1,
+                                              eta2, xsi2,
+                                              eta3, xsi3,
+                                              eta4, xsi4);
+        return TIGL_SUCCESS;
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglWingGetSegmentLowerSurfaceAreaTrimmed!" << std::endl;
+        return TIGL_ERROR;
+    }
+}
+
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetReferenceArea(TiglCPACSConfigurationHandle cpacsHandle, int wingIndex,
                                                            TiglSymmetryAxis symPlane,
