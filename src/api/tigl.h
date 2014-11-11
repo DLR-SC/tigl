@@ -3759,7 +3759,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSegmentSurfaceArea(TiglCPACSConfigu
 * The computed area does not include the trailing edge or any closing side faces.
 * 
 * All eta and xsi values must be in the range [0,1]. The trimmed area is defined with the 
-* four corner point P1, P2, P3, and P4. The order of the points shouled be right handed, as
+* four corner point P1, P2, P3, and P4. The order of the points should be right handed, as
 * shown the the image below.
 * 
 * @image html surfaceAreaTrimmed.png "Location of the four corner points"

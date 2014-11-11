@@ -502,7 +502,8 @@ double CCPACSWingSegment::GetSurfaceArea(void)
     return( mySurfaceArea );
 }
 
-void CCPACSWingSegment::etaXsiToUV(bool isFromUpper, double eta, double xsi, double& u, double& v) {
+void CCPACSWingSegment::etaXsiToUV(bool isFromUpper, double eta, double xsi, double& u, double& v)
+{
     gp_Pnt pnt = GetPoint(eta,xsi, isFromUpper);
 
     Handle_Geom_Surface surf;
