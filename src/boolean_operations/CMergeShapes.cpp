@@ -40,7 +40,7 @@
 #include <vector>
 
 CMergeShapes::CMergeShapes(const PNamedShape shape, const PNamedShape tool)
-    : _source(shape), _tool(tool)
+    : _tool(tool), _source(shape)
 {
     _hasPerformed = false;
 }

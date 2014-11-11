@@ -30,11 +30,12 @@
 #include "CCPACSImportExport.h"
 #include "ListPNamedShape.h"
 
-class CCPACSConfiguration;
 class STEPControl_Writer;
 
 namespace tigl 
 {
+
+class CCPACSConfiguration;
 
 class CTiglExportStep
 {

@@ -32,11 +32,12 @@
 #include "ListPNamedShape.h"
 #include "CCPACSImportExport.h"
 
-class CCPACSConfiguration;
 class IGESControl_Writer;
 
 namespace tigl 
 {
+
+class CCPACSConfiguration;
 
 class CTiglExportIges
 {
@@ -68,7 +69,7 @@ private:
     void AddToIges(PNamedShape shape, IGESControl_Writer& writer, int level = 0) const;
 
     CCPACSConfiguration&          myConfig;       /**< TIGL configuration object */
-    ShapeStoreType                  myStoreType;    /**< Type specifying how to translate shapes into an OCAF document */
+    ShapeStoreType                myStoreType;    /**< Type specifying how to translate shapes into an OCAF document */
     void SetTranslationParameters() const;
 };
 

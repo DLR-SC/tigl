@@ -1,6 +1,14 @@
 find_package(Doxygen)
 if(DOXYGEN_FOUND AND PYTHONINTERP_FOUND)
 
+    # create latex build directory
+    add_custom_command(
+        OUTPUT ${PROJECT_BINARY_DIR}/doc/changeLog/
+        DEPENDS ${PROJECT_SOURCE_DIR}/doc/changeLog/changeLog.tex
+        COMMAND ${CMAKE_COMMAND}
+        ARGS -E copy_directory ${PROJECT_SOURCE_DIR}/doc/changeLog/ ${PROJECT_BINARY_DIR}/doc/changeLog
+    )
+
     # convert ChangeLog to Markdown for usage in doxygen 
     add_custom_command(
         OUTPUT ${PROJECT_BINARY_DIR}/doc/changeLog/ChangeLog.md
@@ -82,13 +90,6 @@ if(DOXYGEN_FOUND AND PYTHONINTERP_FOUND)
         )
 
         # TIGL Changelog
-        # create latex build directory
-        add_custom_command(
-            OUTPUT ${PROJECT_BINARY_DIR}/doc/changeLog/
-            DEPENDS ${PROJECT_SOURCE_DIR}/doc/changeLog/changeLog.tex 
-            COMMAND ${CMAKE_COMMAND}
-            ARGS -E copy_directory ${PROJECT_SOURCE_DIR}/doc/changeLog/ ${PROJECT_BINARY_DIR}/doc/changeLog
-        )
         # create pdf file
         add_custom_command(
             OUTPUT ${PROJECT_BINARY_DIR}/doc/changeLog/changeLog.pdf

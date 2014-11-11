@@ -73,7 +73,7 @@ ISession_Text::ISession_Text
                   const Quantity_Factor          aScale)      // = 1
                   :AIS_InteractiveObject(),MyText(aText),MyX(anX),MyY(anY),MyZ(aZ),
                   MyTypeOfText(aType),MyAngle(anAngle),MySlant(aslant),MyColorIndex(aColorIndex),
-                  MyFontIndex(aFontIndex),MyScale(aScale),MyWidth(0),MyHeight(0)
+                  MyFontIndex(aFontIndex),MyScale(aScale)
 {}
 
 ISession_Text::ISession_Text
@@ -87,7 +87,7 @@ ISession_Text::ISession_Text
                   const Quantity_Factor          aScale)      // = 1
                   :AIS_InteractiveObject(),MyText(aText),MyX(aPoint.X()),MyY(aPoint.Y()),MyZ(aPoint.Z()),
                   MyTypeOfText(aType),MyAngle(anAngle),MySlant(aslant),MyColorIndex(aColorIndex),
-                  MyFontIndex(aFontIndex),MyScale(aScale),MyWidth(0),MyHeight(0)
+                  MyFontIndex(aFontIndex),MyScale(aScale)
 {}
 
 
@@ -109,27 +109,6 @@ void ISession_Text::Compute(const Handle(Prs3d_Projector)& ,
                             const Handle(Prs3d_Presentation)& )
  {
  }
-
-#if 0
-void ISession_Text::Compute(const Handle(PrsMgr_PresentationManager2d)& ,
-                         const Handle(Graphic2d_GraphicObject)& aGrObj, 
-                         const Standard_Integer /* unmode*/)
-{
-    Handle(Graphic2d_Text) text;
-    text = new Graphic2d_Text(aGrObj, MyText, MyX, MyY, MyAngle,MyTypeOfText,MyScale);
-    text->SetFontIndex(MyFontIndex);
-    
-    text->SetColorIndex(MyColorIndex);
-    
-    text->SetSlant(MySlant);
-    text->SetUnderline(Standard_False);
-    text->SetZoomable(Standard_True);
-    aGrObj->Display();
-    Quantity_Length anXoffset,anYoffset;
-    text->TextSize(MyWidth, MyHeight,anXoffset,anYoffset);
-
-}
-#endif
 
 void ISession_Text::ComputeSelection(const Handle(SelectMgr_Selection)& /*aSelection*/,
                                      const Standard_Integer /*unMode*/)

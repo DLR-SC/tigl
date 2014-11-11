@@ -218,7 +218,7 @@ private: // methods
 
     AIS_StatusOfPick        dragEvent ( const QPoint startPoint, const QPoint endPoint, const bool multi = false );
     AIS_StatusOfPick        inputEvent( const bool multi = false );
-    AIS_StatusOfDetection    moveEvent ( const QPoint point );
+    AIS_StatusOfDetection   moveEvent ( const QPoint point );
     
     void setMode( const CurrentAction3d mode );
     
