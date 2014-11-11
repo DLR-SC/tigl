@@ -175,6 +175,9 @@ bool TIGLViewerInputOutput::exportModel( const FileFormat format, const QString&
         case FormatVRML:
             status = exportVRML( file, shapes );
             break;
+        default:
+            status = false;
+            break;
         }
     } catch ( Standard_Failure ) {
         status = false;

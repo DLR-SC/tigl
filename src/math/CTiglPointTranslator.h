@@ -78,7 +78,7 @@ private:
     {
     public:
         TIGL_EXPORT SegmentProjection(CTiglPointTranslator& t, CTiglPoint & a, CTiglPoint& b, CTiglPoint& c, CTiglPoint& d)
-          : ITiglObjectiveFunction(), _t(t), _a(a), _b(b), _c(c), _d(d), _x(0,0,0) 
+          : ITiglObjectiveFunction(), _t(t), _a(a), _b(b), _c(c), _x(0,0,0)
         {
         }
 
@@ -97,7 +97,7 @@ private:
 
     private:
         CTiglPointTranslator& _t;
-        CTiglPoint &_a, &_b, &_c, &_d;
+        CTiglPoint &_a, &_b, &_c;
         CTiglPoint _x;
     };
 

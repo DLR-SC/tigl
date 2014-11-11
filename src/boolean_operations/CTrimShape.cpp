@@ -160,14 +160,14 @@ namespace
 } // namespace
 
 CTrimShape::CTrimShape(const PNamedShape shape, const PNamedShape trimmingTool, TrimOperation op)
-    : _dsfiller(NULL), _source(shape), _tool(trimmingTool), _resultshape(), _operation(op)
+    : _operation(op), _resultshape(), _tool(trimmingTool), _source(shape), _dsfiller(NULL)
 {
     _fillerAllocated = false;
     _hasPerformed = false;
 }
 
 CTrimShape::CTrimShape(const PNamedShape shape, const PNamedShape trimmingTool, const BOPAlgo_PaveFiller & filler, TrimOperation op)
-    : _source(shape), _tool(trimmingTool), _resultshape(), _operation(op)
+    : _operation(op), _resultshape(), _tool(trimmingTool), _source(shape)
 {
     _fillerAllocated = false;
     _hasPerformed = false;
