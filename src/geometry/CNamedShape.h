@@ -48,7 +48,8 @@ public:
     TIGL_EXPORT const PNamedShape Origin() const;
     TIGL_EXPORT void SetOrigin(const PNamedShape);
 
-    // Sets the traits, that it is derived by the iface-th trait of the origin shape
+    // marks this face trait as derived from another shapes face, where
+    // origin is the other shape and iface is the face index in the original shape
     TIGL_EXPORT void SetDerivedFromShape(PNamedShape origin, unsigned int iface);
     
     TIGL_EXPORT const char* Name() const;

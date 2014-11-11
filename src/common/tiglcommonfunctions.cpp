@@ -71,9 +71,6 @@
 // OCAF
 #include "TDF_Label.hxx"
 #include "TDataStd_Name.hxx"
-#ifdef TIGL_USE_XCAF
-#include "XCAFDoc_ShapeTool.hxx"
-#endif
 
 namespace
 {
@@ -416,50 +413,6 @@ void GetShapeExtension(const TopoDS_Shape& shape,
     BRepBndLib::Add(shape, boundingBox);
     boundingBox.Get(minx, miny, minz, maxx, maxy, maxz);
 }
-
-#ifdef TIGL_USE_XCAF
-void InsertShapeToCAF(Handle(XCAFDoc_ShapeTool) myAssembly, const PNamedShape shape, bool useShortnames)
-{
-    if (!shape) {
-        return;
-    }
-
-    TopTools_IndexedMapOfShape faceMap;
-    TopExp::MapShapes(shape->Shape(),   TopAbs_FACE, faceMap);
-    // any faces?
-    if (faceMap.Extent() > 0) {
-        TDF_Label shapeLabel = myAssembly->NewShape();
-        myAssembly->SetShape(shapeLabel, shape->Shape());
-        if (useShortnames) {
-            TDataStd_Name::Set(shapeLabel, shape->ShortName());
-        }
-        else {
-            TDataStd_Name::Set(shapeLabel, shape->Name());
-        }
-    }
-    else {
-        // no faces, export edges as wires
-        Handle(TopTools_HSequenceOfShape) Edges = new TopTools_HSequenceOfShape();
-        TopExp_Explorer myEdgeExplorer (shape->Shape(), TopAbs_EDGE);
-        while (myEdgeExplorer.More()) {
-            Edges->Append(TopoDS::Edge(myEdgeExplorer.Current()));
-            myEdgeExplorer.Next();
-        }
-        ShapeAnalysis_FreeBounds::ConnectEdgesToWires(Edges, 1e-7, false, Edges);
-        for (int iwire = 1; iwire <= Edges->Length(); ++iwire) {
-            TDF_Label wireLabel = myAssembly->NewShape();
-            myAssembly->SetShape(wireLabel, Edges->Value(iwire));
-            if (useShortnames) {
-                TDataStd_Name::Set(wireLabel, shape->ShortName());
-            }
-            else {
-                TDataStd_Name::Set(wireLabel, shape->Name());
-            }
-        }
-    }
-}
-
-#endif
 
 // Returns a unique Hashcode for a specific geometric component
 int GetComponentHashCode(tigl::ITiglGeometricComponent& component)

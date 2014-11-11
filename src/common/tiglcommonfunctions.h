@@ -81,11 +81,6 @@ TIGL_EXPORT void GetShapeExtension(const TopoDS_Shape& shape,
                                    double& miny, double& maxy,
                                    double& minz, double& maxz);
 
-#ifdef TIGL_USE_XCAF
-#include "Handle_XCAFDoc_ShapeTool.hxx"
-void InsertShapeToCAF(Handle_XCAFDoc_ShapeTool myAssembly, const PNamedShape shape, bool useShortnames);
-#endif
-
 // Returns a unique Hashcode for a specific geometric component based on its loft
 TIGL_EXPORT int GetComponentHashCode(tigl::ITiglGeometricComponent&);
 

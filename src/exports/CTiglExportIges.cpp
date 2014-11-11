@@ -55,18 +55,6 @@
 #include <TransferBRep.hxx>
 #include <IGESData_IGESEntity.hxx>
 
-#ifdef TIGL_USE_XCAF
-// OCAF
-#include <TDocStd_Document.hxx>
-#include <TDF_Label.hxx>
-#include <TDataStd_Name.hxx>
-// XCAF, TODO: Get rid of xcaf
-#include <XCAFApp_Application.hxx>
-#include <XCAFDoc_DocumentTool.hxx>
-#include <XCAFDoc_ShapeTool.hxx>
-#include "IGESCAFControl_Writer.hxx"
-#endif // TIGL_USE_XCAF
-
 #include <map>
 #include <cassert>
 
@@ -326,31 +314,7 @@ void CTiglExportIges::ExportShapes(const ListPNamedShape& shapes, const std::str
     }
     
     SetTranslationParameters();
-#ifdef TIGL_USE_XCAF
-    // create the xde document
-    Handle(XCAFApp_Application) hApp = XCAFApp_Application::GetApplication();
-    Handle(TDocStd_Document) hDoc;
-    hApp->NewDocument("MDTV-XCAF", hDoc);
-    Handle(XCAFDoc_ShapeTool) myAssembly = XCAFDoc_DocumentTool::ShapeTool(hDoc->Main());
 
-    IGESCAFControl_Writer igesWriter;
-
-    for (it = list.begin(); it != list.end(); ++it) {
-        InsertShapeToCAF(myAssembly, *it, true);
-    }
-
-    igesWriter.Model()->ApplyStatic(); // apply set parameters
-    if (igesWriter.Transfer(hDoc) == Standard_False) {
-        throw CTiglError("Cannot export fused airplane as IGES", TIGL_ERROR);
-    }
-
-    // write face entity names
-    int level = 0;
-    for (it = list.begin(); it != list.end(); ++it) {
-        PNamedShape pshape = *it;
-        WriteIgesNames(igesWriter.TransferProcess(), pshape, level++);
-    }
-#else
     IGESControl_Writer igesWriter("MM", 0);
     igesWriter.Model()->ApplyStatic();
 
@@ -361,7 +325,6 @@ void CTiglExportIges::ExportShapes(const ListPNamedShape& shapes, const std::str
     }
 
     igesWriter.ComputeModel();
-#endif
 
     if (igesWriter.Write(const_cast<char*>(filename.c_str())) != Standard_True) {
         throw CTiglError("Error: Export of shapes to IGES file failed in CCPACSImportExport::SaveIGES", TIGL_ERROR);

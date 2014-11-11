@@ -34,12 +34,6 @@
 #include "TopoDS_Shape.hxx"
 #include "STEPControl_Controller.hxx"
 
-#ifdef TIGL_USE_XCAF
-#include "STEPCAFControl_Writer.hxx"
-#include "XCAFApp_Application.hxx"
-#include "XCAFDoc_DocumentTool.hxx"
-#include "TDocStd_Document.hxx"
-#endif // TIGL_USE_XCAF
 #include "XSControl_WorkSession.hxx"
 #include "XSControl_TransferWriter.hxx"
 
@@ -410,38 +404,12 @@ void CTiglExportStep::ExportShapes(const ListPNamedShape& shapes, const std::str
         }
     }
 
-#ifdef TIGL_USE_XCAF
-    // create the xde document
-    Handle(XCAFApp_Application) hApp = XCAFApp_Application::GetApplication();
-    Handle(TDocStd_Document) hDoc;
-    hApp->NewDocument("MDTV-XCAF", hDoc);
-    Handle(XCAFDoc_ShapeTool) myAssembly = XCAFDoc_DocumentTool::ShapeTool(hDoc->Main());
-    
-    STEPCAFControl_Writer stepWriter;
-
-    for (it = list.begin(); it != list.end(); ++it) {
-        InsertShapeToCAF(myAssembly, *it, false);
-    }
-
-    if (stepWriter.Transfer(hDoc, STEP_WRITEMODE) == Standard_False) {
-        throw CTiglError("Cannot export shape as STEP", TIGL_ERROR);
-    }
-
-    Handle(Transfer_FinderProcess) FP = stepWriter.Writer().WS()->TransferWriter()->FinderProcess();
-    
-    // write face entity names
-    for (it = list.begin(); it != list.end(); ++it) {
-        PNamedShape pshape = *it;
-        WriteStepNames(FP, pshape);
-    }
-#else
     STEPControl_Writer stepWriter;
     
     for (it = list.begin(); it != list.end(); ++it) {
         PNamedShape pshape = *it;
         AddToStep(pshape, stepWriter);
     }
-#endif
     
     if (stepWriter.Write(const_cast<char*>(filename.c_str())) > IFSelect_RetDone) {
         throw CTiglError("Error: Export of shapes to STEP file failed in CTiglExportStep::ExportShapes", TIGL_ERROR);
