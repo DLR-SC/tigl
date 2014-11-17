@@ -542,7 +542,7 @@ void TIGLViewerDocument::drawWingProfiles()
 
     // display points in case of a few sample points
     std::vector<tigl::CTiglPoint*> fewPointList=profile.GetProfileAlgo()->GetSamplePoints();
-    if (fewPointList.size() < 15) {
+    if (fewPointList.size() < 15 && fewPointList.size() > 0) {
         for (unsigned int i = 0; i<fewPointList.size(); ++i) {
             tigl::CTiglPoint * p = fewPointList.at(i);
             std::stringstream str;

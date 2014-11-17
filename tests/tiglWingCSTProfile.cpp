@@ -28,10 +28,14 @@
 #include "CCPACSWingProfile.h"
 #include "BRep_Tool.hxx"
 #include "BRepTools_WireExplorer.hxx"
+#include "BRepBuilderAPI_MakeEdge.hxx"
+#include "BRepTools.hxx"
 #include "Geom_Curve.hxx"
 #include "gp_Pnt.hxx"
 #include "gp_Pnt.hxx"
 #include "GeomAPI_ProjectPointOnCurve.hxx"
+#include "Geom_BSplineCurve.hxx"
+#include "CCSTCurveBuilder.h"
 
 /******************************************************************************/
 
@@ -104,7 +108,8 @@ TEST_F(WingCSTProfile, tiglWingCSTProfile_samplePoints)
         gp_Pnt projectedPoint=projection.NearestPoint();
         outputXY(i, samplePoint.X(), samplePoint.Z(), "./TestData/analysis/tiglWingCSTProfile_samplePoints_cst.dat");
         outputXY(i, projectedPoint.X(), projectedPoint.Z(), "./TestData/analysis/tiglWingCSTProfile_samplePoints_bspline.dat");
-        ASSERT_NEAR(0., samplePoint.Distance(projectedPoint), 1e-10);
+        // the approximation is no longer exact at the sample points (no interpolation anymore)
+        ASSERT_NEAR(0., samplePoint.Distance(projectedPoint), 1e-4);
     }  
 }
 
@@ -145,4 +150,98 @@ TEST_F(WingCSTProfile, tiglWingCSTProfile_VTK_export)
 {
     const char* vtkWingFilename = "TestData/export/CPACS_21_CST_simple_wing1.vtp";
     ASSERT_TRUE(tiglExportMeshedWingVTKSimpleByUID(tiglHandle, "CSTExample_W1", vtkWingFilename, 0.01) == TIGL_SUCCESS);
+}
+
+TEST(CSTApprox, simpleAirfoil)
+{
+    double N1 = 0.5;
+    double N2 = 1.0;
+    std::vector<double> B;
+    B.push_back(1.0);
+    B.push_back(1.0);
+    B.push_back(1.0);
+    
+    tigl::CCSTCurveBuilder builder(N1, N2, B);
+    Handle_Geom_BSplineCurve curve = builder.Curve();
+
+    double devmax=0.0;
+    // project sample points on curve and calculate distance
+    std::vector<double> x;
+    for (int i = 0; i < 100; ++i) {
+        x.push_back(double(i)/100.0);
+    }
+
+    for (unsigned int i = 0; i < x.size(); ++i) {
+        gp_Pnt samplePoint(x[i], Standard_Real(tigl::cstcurve(N1, N2, B, x[i])), 0);
+        GeomAPI_ProjectPointOnCurve projection(samplePoint, curve);
+        gp_Pnt projectedPoint=projection.NearestPoint();
+        double deviation=samplePoint.Distance(projectedPoint);
+        if (deviation >= devmax) {
+            devmax=deviation;
+        }
+    }
+    ASSERT_NEAR(0.0, devmax, 1e-5);
+}
+
+TEST(CSTApprox, ellipticBody)
+{
+    double N1 = 0.5;
+    double N2 = 0.5;
+    std::vector<double> B;
+    B.push_back(1.0);
+    B.push_back(1.0);
+    B.push_back(1.0);
+    
+    tigl::CCSTCurveBuilder builder(N1, N2, B);
+    Handle_Geom_BSplineCurve curve = builder.Curve();
+
+    double devmax=0.0;
+    // project sample points on curve and calculate distance
+    std::vector<double> x;
+    for (int i = 0; i < 100; ++i) {
+        x.push_back(double(i)/100.0);
+    }
+
+    for (unsigned int i = 0; i < x.size(); ++i) {
+        gp_Pnt samplePoint(x[i], Standard_Real(tigl::cstcurve(N1, N2, B, x[i])), 0);
+        GeomAPI_ProjectPointOnCurve projection(samplePoint, curve);
+        gp_Pnt projectedPoint=projection.NearestPoint();
+        double deviation=samplePoint.Distance(projectedPoint);
+        if (deviation >= devmax) {
+            devmax=deviation;
+        }
+    }
+    ASSERT_NEAR(0.0, devmax, 1e-5);
+}
+
+TEST(CSTApprox, hypersonicAirfoil)
+{
+    double N1 = 1.0;
+    double N2 = 1.0;
+    std::vector<double> B;
+    B.push_back(1.0);
+    B.push_back(1.0);
+    B.push_back(1.0);
+    
+    tigl::CCSTCurveBuilder builder(N1, N2, B);
+    Handle_Geom_BSplineCurve curve = builder.Curve();
+
+    double devmax=0.0;
+    // project sample points on curve and calculate distance
+    std::vector<double> x;
+    for (int i = 0; i < 100; ++i) {
+        x.push_back(double(i)/100.0);
+    }
+
+    for (unsigned int i = 0; i < x.size(); ++i) {
+        gp_Pnt samplePoint(x[i], Standard_Real(tigl::cstcurve(N1, N2, B, x[i])), 0.);
+        GeomAPI_ProjectPointOnCurve projection(samplePoint, curve);
+        gp_Pnt projectedPoint=projection.NearestPoint();
+        double deviation=samplePoint.Distance(projectedPoint);
+        if (deviation >= devmax) {
+            devmax=deviation;
+        }
+    }
+    // approximation should be exact since we require only degree 2 spline
+    ASSERT_NEAR(0.0, devmax, 1e-12);
 }
