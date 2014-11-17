@@ -492,9 +492,9 @@
 						<upperN1>0.5</upperN1>
 						<upperN2>1.0</upperN2>
 						<upperB mapType="vector">0.5;0.5;0.2;0.1</upperB>
-						<lowerN1>0.1</lowerN1>
+						<lowerN1>0.5</lowerN1>
 						<lowerN2>1.0</lowerN2>
-						<lowerB mapType="vector">0.1;0.1;0.0;-0.11;0.0;0.1;0.2</lowerB>
+						<lowerB mapType="vector">0.3;0.1;0.0;-0.11;0.0;0.1;0.2</lowerB>
 					</cst2D>
 				</wingAirfoil>
 			</wingAirfoils>
