@@ -38,7 +38,7 @@ namespace
     class ChebSegment
     {
     public:
-        ChebSegment::ChebSegment(int degree)
+        ChebSegment(int degree)
             : cx(0,degree), cy(0,degree), cz(0,degree)
         {
         }
