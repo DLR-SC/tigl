@@ -23,7 +23,8 @@
 
 #include <cassert>
 
-namespace {
+namespace
+{
     /// we reparameterize the cst curve to achieve correct leading and trailing edge
     /// interpolation
     double fx(double t, void* p)

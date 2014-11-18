@@ -49,10 +49,10 @@ public:
      * @param maxDepth Maximum depth of curve splitting -> Influences resulting segment number
      */
     CFunctionToBspline(MathFunc x, MathFunc y, MathFunc z, void* obj,
-                      double umin, double umax,
-                      int degree,
-                      double tolerance=1e-5,
-                      int maxDepth = 10);
+                       double umin, double umax,
+                       int degree,
+                       double tolerance=1e-5,
+                       int maxDepth = 10);
 
     ~CFunctionToBspline();
 

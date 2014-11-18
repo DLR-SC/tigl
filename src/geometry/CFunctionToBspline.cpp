@@ -52,8 +52,7 @@ namespace
     math_Vector subVec(const math_Vector& v, int low, int high)
     {
         math_Vector v2(low, high);
-        for (int i = low; i <= high; ++i)
-        {
+        for (int i = low; i <= high; ++i) {
             v2(i) = v(i); 
         }
         return v2;
@@ -100,10 +99,10 @@ public:
 // ---------------- Interfacing class -------------------------- // 
 
 CFunctionToBspline::CFunctionToBspline(MathFunc x, MathFunc y, MathFunc z, void* obj,
-                                     double umin, double umax,
-                                     int degree,
-                                     double tolerance,
-                                     int maxDepth)
+                                       double umin, double umax,
+                                       int degree,
+                                       double tolerance,
+                                       int maxDepth)
 {
     pimpl = new CFunctionToBsplineImpl(x, y, z, obj, umin, umax, degree, tolerance, maxDepth);
 }
