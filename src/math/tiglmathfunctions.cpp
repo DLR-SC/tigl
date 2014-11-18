@@ -254,10 +254,10 @@ double cstcurve_deriv(const double& N1, const double& N2, const std::vector<doub
  */
 math_Vector cheb_approx(MathFunc func, void* parms, int N, double a, double b)
 {
-    math_Vector c(0, N-1);
     if (N <= 0) {
-        return c;
+        throw CTiglError("N <= 0 in cheb_approx", TIGL_MATH_ERROR);
     }
+    math_Vector c(0, N-1);
     
     double * fx = new double[N];
     for (int k = 1; k <= N; ++k) {

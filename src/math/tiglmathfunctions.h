@@ -133,6 +133,8 @@ typedef double (*MathFunc)(double t, void* obj);
 /**
  * @brief Chebycheff approximation of a function f(x), x in [a,b]
  *
+ * @throws CTiglError (TIGL_MATH_ERROR) if N <= 0 
+ * 
  * @param func The 1D funktion to approximate
  * @param parms Additional data passed to the function func (may be NULL)
  * @param N Number of function evaluations ( = polynomial degree + 1)
