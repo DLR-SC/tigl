@@ -38,7 +38,7 @@ class TestSimpleCpacs(unittest.TestCase):
         self.tixi.close()
 
     def test_tiglGetVersion(self):
-        print 'TIGL-Version: ', self.tigl.version
+        print('TIGL-Version: ' + self.tigl.version)
         
     def test_objectCount(self):
         self.assertEqual(self.tigl.getWingCount(),1)
@@ -114,8 +114,8 @@ class TestTiglLogging(unittest.TestCase):
         out, err=process.communicate()
         status=process.returncode
         # seperate output lines
-        out=out.rstrip('\n').split('\n')
-        err=err.rstrip('\n').split('\n')
+        out=out.decode("UTF-8").rstrip('\n').split('\n')
+        err=err.decode("UTF-8").rstrip('\n').split('\n')
         return (status, out, err)
 
     def test_test_script(self):
@@ -552,7 +552,7 @@ class TestTiglApi(unittest.TestCase):
     def test_MergedTests(self):
         if skipSlowFunctions:
             return
-        print "Slow Functions (14min)",
+        print( "Slow Functions (14min)")
         
         #exportMeshedFuselageSTL
         fuselageIndex = 1
@@ -594,7 +594,7 @@ class TestTiglApi(unittest.TestCase):
         self.assertEqual(isinstance(ret,float),True)
 
         # Wetted Area
-        print "50%",
+        print("50%")
         wingUID = self.tigl.wingGetUID(1)
         ret = self.tigl.wingGetWettedArea(wingUID)
         self.assertEqual(isinstance(ret,float),True)
@@ -603,7 +603,7 @@ class TestTiglApi(unittest.TestCase):
         fuselageIndex = 1
         ret = self.tigl.fuselageGetSurfaceArea(fuselageIndex)
         self.assertEqual(isinstance(ret,float),True)
-        print "100%"
+        print("100%")
 # ----------------------------------------------------------------------- #     
 if __name__ == '__main__':
     unittest.main()
