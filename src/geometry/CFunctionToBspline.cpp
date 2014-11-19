@@ -158,14 +158,8 @@ std::vector<ChebSegment> CFunctionToBspline::CFunctionToBsplineImpl::approxSegme
         std::vector<ChebSegment> list1 = approxSegment(umin, umin + (umax-umin)*alpha, depth + 1);
         std::vector<ChebSegment> list2 = approxSegment(umin + (umax-umin)*alpha, umax, depth + 1);
         // combine lists
-        std::vector<ChebSegment> result;
-        for (unsigned int i = 0; i < list1.size(); ++i) {
-            result.push_back(list1[i]);
-        }
-        for (unsigned int i = 0; i < list2.size(); ++i) {
-            result.push_back(list2[i]);
-        }
-        return result;
+        list1.insert(list1.end(), list2.begin(), list2.end());
+        return list1;
     }
     
 }
@@ -249,7 +243,7 @@ Handle_Geom_BSplineCurve CFunctionToBspline::CFunctionToBsplineImpl::concatC1(co
 
 #ifdef DEBUG
     // check range connectivities
-    for (unsigned int i = 1; i < curves.size(); ++i) {
+    for (size_t i = 1; i < curves.size(); ++i) {
         Handle_Geom_BSplineCurve lastCurve = curves[i-1];
         Handle_Geom_BSplineCurve thisCurve = curves[i];
         assert(lastCurve->LastParameter() == thisCurve->FirstParameter());
@@ -259,8 +253,9 @@ Handle_Geom_BSplineCurve CFunctionToBspline::CFunctionToBsplineImpl::concatC1(co
     // count control points
     int ncp = 2;
     int nkn = 1;
-    for (unsigned int i = 0; i < curves.size(); ++i) {
-        Handle_Geom_BSplineCurve curve = curves[i];
+    std::vector<Handle_Geom_BSplineCurve>::const_iterator curveIt;
+    for (curveIt = curves.begin(); curveIt != curves.end(); ++curveIt) {
+        Handle_Geom_BSplineCurve curve = *curveIt;
         ncp += curve->NbPoles() - 2;
         nkn += curve->NbKnots() - 1;
     }
@@ -271,8 +266,9 @@ Handle_Geom_BSplineCurve CFunctionToBspline::CFunctionToBsplineImpl::concatC1(co
     TColStd_Array1OfInteger mults(1, nkn);
 
     int iknotT = 1, imultT = 1, icpT = 1;
-    for (unsigned int icurve = 0; icurve < curves.size(); ++icurve) {
-        Handle_Geom_BSplineCurve curve = curves[icurve];
+    int icurve = 0;
+    for (curveIt = curves.begin(); curveIt != curves.end(); ++curveIt, ++icurve) {
+        Handle_Geom_BSplineCurve curve = *curveIt;
 
         // special handling of the first knot, control point
         knots.SetValue(iknotT++, curve->Knot(1));
@@ -284,7 +280,7 @@ Handle_Geom_BSplineCurve CFunctionToBspline::CFunctionToBsplineImpl::concatC1(co
         else {
             // set multiplicity to maxDegree to allow c0 concatenation
             mults.SetValue(imultT++, _degree-1);
-            // skip setting a control point
+            // omit the first control points of the current curve
         }
 
         // just copy control points, weights, knots and multiplicites
