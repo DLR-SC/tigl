@@ -112,10 +112,7 @@ class PythonGenerator(object):
     def create_constructor(self):
         indent = 4*' '
         string = ''
-        string += indent + 'def __init__(self):\n'
-        indent +=  4*' '
-        string += indent + 'self.%s = ctypes.c_int(-1)\n\n' % self.handle_str
-               
+        string += indent + '# load the %s library\n' % self.libname
         string += indent + '# We only support python2.5 and newer\n'
         string += indent + 'if sys.version_info<(2,5,0):\n'
         string += indent + '    print("At least python 2.5 is needed from %sWrapper.")\n\n' \
@@ -123,15 +120,19 @@ class PythonGenerator(object):
         
         string += indent + 'try:\n'
         string += indent + '    if sys.platform == \'win32\':\n'
-        string += indent + '        self.lib = ctypes.cdll.%s\n' % self.libname
+        string += indent + '        lib = ctypes.cdll.%s\n' % self.libname
         string += indent + '    elif sys.platform == \'darwin\':\n'
-        string += indent + '        self.lib = ctypes.CDLL("lib%s.dylib")\n' % self.libname
+        string += indent + '        lib = ctypes.CDLL("lib%s.dylib")\n' % self.libname
         string += indent + '    else:\n'
-        string += indent + '        self.lib = ctypes.CDLL("lib%s.so")\n' % self.libname
+        string += indent + '        lib = ctypes.CDLL("lib%s.so")\n' % self.libname
         string += indent + 'except:\n'
         string += indent + '    raise Exception("Could not load the %s library. Please check if:\\n" +\n' % self.libname 
         string += indent + '    "  1) The PATH (Windows) / LD_LIBRARY_PATH (Linux) environment variable points to the library\\n" +\n' 
-        string += indent + '    "  2) The architecture of the library matches the architecture of python (a 32 bit python needs a 32 bit shared library)\\n")\n'
+        string += indent + '    "  2) The architecture of the library matches the architecture of python (a 32 bit python needs a 32 bit shared library)\\n")\n\n'
+
+        string += indent + 'def __init__(self):\n'
+        indent +=  4*' '
+        string += indent + 'self.%s = ctypes.c_int(-1)\n\n' % self.handle_str
         
         return string
         
