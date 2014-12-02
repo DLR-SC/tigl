@@ -38,7 +38,19 @@ find_package(OpenGL REQUIRED)
 if(CMAKE_SYSTEM_NAME STREQUAL Linux)
   # set library search path to local lib directory during installation
   set(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE) 
-  set(CMAKE_INSTALL_RPATH \$ORIGIN/../${CMAKE_INSTALL_LIBDIR})
+  set(RELDIR "../${CMAKE_INSTALL_LIBDIR}")
+
+  if (IS_ABSOLUTE ${CMAKE_INSTALL_LIBDIR})
+    # get relative path to tiglviewer binary
+    file(RELATIVE_PATH RELDIR ${CMAKE_INSTALL_PREFIX}/bin "${CMAKE_INSTALL_LIBDIR}")
+  endif()
+  
+  set(CMAKE_INSTALL_RPATH \$ORIGIN/${RELDIR})
+
+  if (NOT RELDIR STREQUAL "../lib")
+    message(STATUS ${RELDIR})
+    set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_RPATH}:\$ORIGIN/../lib}")
+  endif()
 endif() # linux
 
 set( QT_USE_QTSCRIPT TRUE )
