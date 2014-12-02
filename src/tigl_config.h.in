@@ -25,4 +25,7 @@
 // optional libraries
 #cmakedefine GLOG_FOUND
 
+// tixi settings
+#cmakedefine HAVE_TIXI_SETPRINTMSG
+
 #endif // CONFIG_H
