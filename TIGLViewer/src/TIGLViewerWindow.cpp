@@ -54,6 +54,7 @@
 #include "TIGLViewerLoggerHTMLDecorator.h"
 #include "TIGLViewerScreenshotDialog.h"
 #include "TIGLViewerScopedCommand.h"
+#include "tigl_config.h"
 
 void ShowOrigin ( Handle_AIS_InteractiveContext theContext );
 void AddVertex  ( double x, double y, double z, Handle_AIS_InteractiveContext theContext );
@@ -69,6 +70,25 @@ void AddVertex (double x, double y, double z, Handle_AIS_InteractiveContext theC
 void ShowOrigin ( Handle_AIS_InteractiveContext theContext )
 {
     AddVertex ( 0.0, 0.0, 0.0, theContext);
+}
+
+void TixiMessageHandler(MessageType type, const char *message, ...)
+{
+    va_list varArgs;
+    va_start(varArgs, message);
+    QString str;
+    str.vsprintf(message, varArgs);
+    va_end(varArgs);
+    
+    if (type == MESSAGETYPE_ERROR) {
+        LOG(ERROR) << str.toStdString();
+    }
+    else if (type == MESSAGETYPE_WARNING) {
+        LOG(WARNING) << str.toStdString();
+    }
+    else {
+        LOG(INFO) << str.toStdString();
+    }
 }
 
 void TIGLViewerWindow::contextMenuEvent(QContextMenuEvent *event)
@@ -136,6 +156,11 @@ TIGLViewerWindow::TIGLViewerWindow()
 
     myScene  = new TIGLViewerContext();
     myOCC->setContext(myScene->getContext());
+    
+#ifdef HAVE_TIXI_SETPRINTMSG
+    // set tixi logger
+    tixiSetPrintMsgFunc(TixiMessageHandler);
+#endif
 
     // we create a timer to workaround QFileSystemWatcher bug,
     // which emits multiple signals in a few milliseconds. This caused

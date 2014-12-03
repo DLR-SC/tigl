@@ -309,7 +309,7 @@
   </widget>
   <widget class="QDockWidget" name="consoleDockWidget">
    <property name="windowTitle">
-    <string>Tigl Console</string>
+    <string>TiGL Console</string>
    </property>
    <attribute name="dockWidgetArea">
     <number>8</number>
