@@ -56,3 +56,4 @@ surface or other functions to check data that belong to the geometry structure.
 
 @page tigl_usage Usage
 @page tigl_examples Examples
+@page tiglviewer TiGL Viewer
