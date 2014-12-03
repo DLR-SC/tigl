@@ -168,9 +168,9 @@ namespace tigl
 
 // Constructor
 CTiglExportIges::CTiglExportIges(CCPACSConfiguration& config)
-    : myConfig(config)
+    : _config(config)
 {
-    myStoreType = NAMED_COMPOUNDS;
+    _groupMode = NAMED_COMPOUNDS;
 }
 
 // Destructor
@@ -205,8 +205,8 @@ void CTiglExportIges::ExportIGES(const std::string& filename) const
     ListPNamedShape shapes;
 
     // Export all wings of the configuration
-    for (int w = 1; w <= myConfig.GetWingCount(); w++) {
-        CCPACSWing& wing = myConfig.GetWing(w);
+    for (int w = 1; w <= _config.GetWingCount(); w++) {
+        CCPACSWing& wing = _config.GetWing(w);
 
         for (int i = 1; i <= wing.GetSegmentCount(); i++) {
             CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(i);
@@ -216,8 +216,8 @@ void CTiglExportIges::ExportIGES(const std::string& filename) const
     }
 
     // Export all fuselages of the configuration
-    for (int f = 1; f <= myConfig.GetFuselageCount(); f++) {
-        CCPACSFuselage& fuselage = myConfig.GetFuselage(f);
+    for (int f = 1; f <= _config.GetFuselageCount(); f++) {
+        CCPACSFuselage& fuselage = _config.GetFuselage(f);
 
         for (int i = 1; i <= fuselage.GetSegmentCount(); i++) {
             CCPACSFuselageSegment& segment = (tigl::CCPACSFuselageSegment &) fuselage.GetSegment(i);
@@ -226,7 +226,7 @@ void CTiglExportIges::ExportIGES(const std::string& filename) const
         }
     }
 
-    CCPACSFarField& farfield = myConfig.GetFarField();
+    CCPACSFarField& farfield = _config.GetFarField();
     if (farfield.GetFieldType() != NONE) {
         shapes.push_back(farfield.GetLoft());
     }
@@ -249,7 +249,7 @@ void CTiglExportIges::ExportFusedIGES(const std::string& filename)
        return;
     }
 
-    PTiglFusePlane fuser = myConfig.AircraftFusingAlgo();
+    PTiglFusePlane fuser = _config.AircraftFusingAlgo();
     fuser->SetResultMode(HALF_PLANE_TRIMMED_FF);
     assert(fuser);
 
@@ -307,7 +307,7 @@ void CTiglExportIges::ExportShapes(const ListPNamedShape& shapes, const std::str
     
     ListPNamedShape list;
     for (it = shapeScaled.begin(); it != shapeScaled.end(); ++it) {
-        ListPNamedShape templist = GroupFaces(*it, myStoreType);
+        ListPNamedShape templist = GroupFaces(*it, _groupMode);
         for (ListPNamedShape::iterator it2 = templist.begin(); it2 != templist.end(); ++it2) {
             list.push_back(*it2);
         }
@@ -331,15 +331,16 @@ void CTiglExportIges::ExportShapes(const ListPNamedShape& shapes, const std::str
     }
 }
 
-void CTiglExportIges::SetOCAFStoreType(ShapeStoreType type)
+void CTiglExportIges::SetGroupMode(ShapeGroupMode mode)
 {
-    myStoreType = type;
+    _groupMode = mode;
 }
 
 /**
- * @brief This function is analog to the InsertShapeToCAF function
- * The only difference is that it works directly on the step file
- * without CAF
+ * @briefAdds a shape to the IGES file. All faces are named according to their face
+ * traits. If there are no faces, the wires are named according to the shape name.
+ * 
+ * The level parameter defines the iges layer/level, which is another way of grouping faces.
  */
 void CTiglExportIges::AddToIges(PNamedShape shape, IGESControl_Writer& writer, int level) const 
 {
