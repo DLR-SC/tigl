@@ -24,9 +24,9 @@
 namespace tigl
 {
 
-enum ShapeStoreType
+enum ShapeGroupMode
 {
-    WHOLE_SHAPE,           /** Inserts the shape as it is into IGES. All faces will be named correctly but they will not be grouped by name */
+    WHOLE_SHAPE,           /** Inserts the shape as it is into IGES/STEP. All faces will be named correctly but they will not be grouped by name */
     NAMED_COMPOUNDS,       /** Collects all faces with the same origin into compounds. All faces are named correctly */
     FACES                  /** Exports each face as its own group. The group name and the face name are identical    */
 };

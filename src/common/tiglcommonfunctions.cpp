@@ -68,10 +68,6 @@
 #include <algorithm>
 #include <cassert>
 
-// OCAF
-#include "TDF_Label.hxx"
-#include "TDataStd_Name.hxx"
-
 namespace
 {
     struct IsSame
@@ -306,7 +302,7 @@ gp_Pnt GetCentralFacePoint(const TopoDS_Face& face)
     return p;
 }
 
-ListPNamedShape GroupFaces(const PNamedShape shape, tigl::ShapeStoreType groupType)
+ListPNamedShape GroupFaces(const PNamedShape shape, tigl::ShapeGroupMode groupType)
 {
     ListPNamedShape shapeList;
     if (!shape) {

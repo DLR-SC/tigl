@@ -73,7 +73,7 @@ TIGL_EXPORT gp_Pnt GetCentralFacePoint(const class TopoDS_Face& face);
 
 // puts all faces with the same origin to one TopoDS_Compound
 // Maps all compounds with its name in the map
-TIGL_EXPORT ListPNamedShape GroupFaces(const PNamedShape shape, tigl::ShapeStoreType groupType);
+TIGL_EXPORT ListPNamedShape GroupFaces(const PNamedShape shape, tigl::ShapeGroupMode groupType);
 
 // Returns the coordinates of the bounding box of the shape
 TIGL_EXPORT void GetShapeExtension(const TopoDS_Shape& shape,
