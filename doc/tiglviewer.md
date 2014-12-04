@@ -115,9 +115,8 @@ select the objects of interest and __press the right mouse button__ inside the 3
 
 @section mobile Mobile platforms
 
-__Android__
-
-The TiGL Viewer is also available for Android. It can be downloaded from the [Google play store](https://play.google.com/store/apps/details?id=de.dlr.sc.tiglviewer.android&hl=de)
+A simplified version of the TiGL Viewer is also available for mobile devices based on Android. It can be downloaded from the 
+[Google play store](https://play.google.com/store/apps/details?id=de.dlr.sc.tiglviewer.android&hl=de).
   
-@image html images/tiglviewer-android.png
-@image latex images/tiglviewer-android.png  "The TIGL viewer for Android" width=5cm
+@image html images/tiglviewer-android-web.jpg "The TiGL Viewer App for Android"
+@image latex images/tiglviewer-android.png  "The TiGL Viewer App for Android" width=9cm
