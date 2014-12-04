@@ -20,7 +20,14 @@ or making some debug plots.
   * Compute and export a trimmed aircraft configuration
   * Compute discrete points on wings/fuselages using TiGL functions
 
-@section settings The Settings Dialog
+@section navigation Navigation in the 3D view
+
+@image html images/tiglviewer-navigation.png
+@image latex images/tiglviewer-navigation.pdf  "The navigation panel" width=9cm
+
+@section shortcuts Keyboard shortcuts
+  
+@section settings The Settings
 
 The settings dialog allows some customization of the visualization of objects and the export of meshes. It is opened by clicking on File -> Settings.
 
@@ -57,4 +64,5 @@ select the objects of interest and __press the right mouse button__ inside the 3
 @image html images/tiglviewer-shading-web.jpg "Different shading settings (glossy red, plastic blue, wireframe)"
 @image latex images/tiglviewer-shading.png  "Different shading settings (glossy red, plastic blue, wireframe)" width=12cm
 
+@section mobile Mobile platforms
   
