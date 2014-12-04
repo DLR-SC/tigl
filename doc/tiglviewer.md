@@ -79,6 +79,7 @@ __Change view__
 The settings dialog allows some customization of the visualization of objects and the export of meshes. It is opened by clicking on File -> Settings.
 
 __Display Settings__
+
  * Tesselation accuracy: the accuracy how the mathematical geometries are converted to triangles. The higher 
    this setting is, the more triangles are created. High values typical require more computation time. __Default: 5__.
  * Triangulation accuracy: similar to tesselation accuracy, but only used for export of triangular meshes (VTK, COLLADA, STL).
@@ -89,6 +90,7 @@ __Display Settings__
 @image latex images/tiglviewer_displaysettings.jpg  "The display settings dialog" width=7cm
  
 __Debugging__
+
  * Enumerate faces: If enabled, a number will be displayed next to each face in the viewer. This helps to understand
    the order of face creation. Mostly useful for TiGL developers. __Default: off__
  * Debug boolean operations: Boolean operations tend to be quite unstable due to the problems in the OpenCASCADE kernel. 
