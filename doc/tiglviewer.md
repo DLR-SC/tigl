@@ -22,10 +22,57 @@ or making some debug plots.
 
 @section navigation Navigation in the 3D view
 
+The most often used navigation functions are included in the tool bar 
+
 @image html images/tiglviewer-navigation.png
 @image latex images/tiglviewer-navigation.pdf  "The navigation panel" width=9cm
 
+Here, one can use
+
+ * "Select shapes" to select some parts ("shapes") of the geometry with the
+    mouse.
+ * "Pan view" to translate the whole geometry with the mouse
+ * "Rotate view" to rotate the view point with the mouse
+ * "Zoom" to zoom in or out with the mouse
+
+ * "Top" to see the top view of the geometry
+ * "Side" to see the side view of the geometry
+ * "Front" to see the front view of the geometry
+ * "Axonometric" to see the axonometric view of the geometry
+
+More functions can be found in the "View" menu. 
+
 @section shortcuts Keyboard shortcuts
+
+The following keyboard shortcuts can be used
+
+__Basic actions__
+ | Keys   |  Action                     |
+ |:------:|:----------------------------|
+ | Ctrl+O | open file                   |
+ | Ctrl+S | save file                   |
+ | Ctrl+Q | close program               |
+
+__Change view__
+
+ | Keys   |  Action                     |
+ |:------:|:----------------------------|
+ | 1      | Front view                  |
+ | 2      | Back view                   |
+ | 3      | Top view                    |
+ | 4      | Bottom view                 |
+ | 5      | Left view                   |
+ | 6      | Right view                  |
+ | Ctrl-D | Axonometric view            |
+ | +      | Zoom in                     |
+ | -      | Zoom out                    |
+ | Ctrl-W | Toggle display of wireframe |
+ | Alt-C  | Toggle display of console   |
+ | Ctrl-E | Enable zoom mode            |
+ | Ctrl-T | Enable pan view mode        |
+ | Ctrl-R | Enable rotate view mode     |
+ | Ctrl-A | Fit all                     |
+ | Ctrl-G | Toggle display of grid      |
   
 @section settings The Settings
 
@@ -65,4 +112,10 @@ select the objects of interest and __press the right mouse button__ inside the 3
 @image latex images/tiglviewer-shading.png  "Different shading settings (glossy red, plastic blue, wireframe)" width=12cm
 
 @section mobile Mobile platforms
+
+__Android__
+
+The TiGL Viewer is also available for Android. It can be downloaded from the [Google play store](https://play.google.com/store/apps/details?id=de.dlr.sc.tiglviewer.android&hl=de)
   
+@image html images/tiglviewer-android.png
+@image latex images/tiglviewer-android.png  "The TIGL viewer for Android" width=5cm
