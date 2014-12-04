@@ -1,6 +1,8 @@
 find_package(Doxygen)
 if(DOXYGEN_FOUND AND PYTHONINTERP_FOUND)
 
+    file(GLOB_RECURSE DOC_MD_SRC  "${PROJECT_SOURCE_DIR}/doc/*.md")
+
     # create latex build directory
     add_custom_command(
         OUTPUT ${PROJECT_BINARY_DIR}/doc/changeLog/
@@ -23,9 +25,7 @@ if(DOXYGEN_FOUND AND PYTHONINTERP_FOUND)
         OUTPUT ${PROJECT_BINARY_DIR}/doc/html/index.html
         OUTPUT ${PROJECT_BINARY_DIR}/doc/latex/refman.tex
         DEPENDS ${PROJECT_SOURCE_DIR}/src/api/tigl.h
-        DEPENDS ${PROJECT_SOURCE_DIR}/doc/usage.md
-        DEPENDS ${PROJECT_SOURCE_DIR}/doc/mainpage.md
-        DEPENDS ${PROJECT_SOURCE_DIR}/examples/README.md
+        DEPENDS ${DOC_MD_SRC}
         DEPENDS ${PROJECT_BINARY_DIR}/doc/Doxyfile
         DEPENDS ${PROJECT_BINARY_DIR}/doc/changeLog/ChangeLog.md
         COMMAND ${DOXYGEN_EXECUTABLE}
