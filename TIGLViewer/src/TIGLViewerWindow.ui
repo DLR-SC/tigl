@@ -1202,6 +1202,10 @@
    </property>
   </action>
   <action name="saveScreenshotAction">
+   <property name="icon">
+    <iconset resource="TIGLViewer.qrc">
+     <normaloff>:/gfx/screenshot.png</normaloff>:/gfx/screenshot.png</iconset>
+   </property>
    <property name="text">
     <string>Save Screenshot</string>
    </property>
