@@ -44,7 +44,7 @@ More functions can be found in the "View" menu.
 
 @section shortcuts Keyboard shortcuts
 
-The following keyboard shortcuts can be used
+All actions in the TiGL Viewer can be accessed using the application menu or the context menu inside the 3D view. To improve usability, some the actions can also be executed with keyboard shortcuts. The most practical ones are:
 
 __Basic actions__
  | Keys   |  Action                     |
@@ -71,7 +71,7 @@ __Change view__
  | Ctrl-E | Enable zoom mode            |
  | Ctrl-T | Enable pan view mode        |
  | Ctrl-R | Enable rotate view mode     |
- | Ctrl-A | Fit all                     |
+ | Ctrl-A | Fits all  objects into view | 
  | Ctrl-G | Toggle display of grid      |
   
 @section settings The Settings
