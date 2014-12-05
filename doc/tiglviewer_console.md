@@ -6,8 +6,8 @@ debugging of geometries. To show and hide the console, press __ALT+C__.
 
 The console has two purposes
 
- 1. Show all kinds of error messages, warnings etc. from the TiGL and OpenCASCADE engine
- 2. The user can enter code to steer the TiGL Viewer application
+ 1. to show all kinds of error messages, warnings etc. from the TiGL and OpenCASCADE engine
+ 2. to enter user code to steer the TiGL Viewer application
 
 In many cases, the user wants to open a CPACS file and execute TiGL function to compute and draw some points
 on the aircraft surface. Another use case would be to automatize the creation of screenshots of a changing aircraft
@@ -19,27 +19,97 @@ geometry.
 We copied some practical features from the famous bash terminal to improve the usability of the console. This includes 
 a history of the recently typed commands. Just type 
 
-    history 
+@code{.js}
+history 
+@endcode
 
 To navigate through the recent commands from the history, use the up and down arrow keys.
 
 To clear the console, enter
 
-    clear
+@code{.js}
+clear 
+@endcode
 
 For a general help, type in
 
-    help
+@code{.js}
+help 
+@endcode
 
-### Global functions ###
+@section console_basic Basic use
 
- * drawPoint
- * drawVector
- * drawShape
- * Point3d
+The console understands all kinds of JavaScript elements. Thus, typical constructs like loops, functions, and even classes can be defined.
+Instead of typing the code into the console, TiGL Viewer can also load and execute a script file. If you want to load a script file during
+the startup of TiGL Viewer, use the `--script` option:
+
+     TIGLViewer --script myscript.js [--filename aircraft.cpacs.xml]
+
+__The `ans` object__: The result of the last command will be stored in a variable `ans`. This can be sometimes quite practical:
+
+@code{.js}
+>> 2+3
+5
+>> ans*ans
+25
+>> ans - 5
+20
+@endcode
+
+In addition to pure JavaScript, TiGL Viewer offers some function to draw points, vectors and TiGL shapes.
+
+__Draw a point at (0,0,0)__
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.js}
+drawPoint(new Point3d(0,0,0));
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+
+__Draw an arrow in z direction__
+
+@code{.js}
+pnt = new Point3d(0,0,0);
+dir = new Point3d(0,0,5);
+drawVector(pnt, dir);
+@endcode
+
+__Draw the first fuselage of a cpacs file__
+
+@code{.js}
+uid = tigl.fuselageGetUID(1);
+shape = tigl.getShape(uid);
+drawShape(shape);
+@endcode
+
+In case you want to do some vector arithmetic, we defined the `Point3d` class, which offers some basic
+vector functionality:
+
+@code{.js}
+>> p = new Point3d(10,0,0)
+Point3d(10,0,0)
+>> p.length()
+10
+>> p.add(p)
+Point3d(20,0,0)
+>> p.normalized()
+Point3d(1,0,0)
+>> p.dot(p)
+100
+>> p.mult(0.5)
+Point3d(5,0,0)
+>> q = new Point3d(0,10,0)
+Point3d(0,10,0)
+>> p.cross(q)
+Point3d(0,0,100)
+@endcode
+
+To get a list of all `Point3d` methods, enter
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.js}
+help(new Point3d);
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
 
 
-### The main application objects ###
+@section console_mainobj The main application objects
+
 
 The TiGL Viewer scripting engine consists of four main objects. The whole application can be controlled with only
 these four objects. These are app, app.viewer, app.scene, and tigl. 
@@ -51,7 +121,7 @@ To show the help for e.g. the tigl object, enter
 help(tigl);
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
 
-#### The app object ####
+@subsection app The app object
 
 This is the main object of the application. It is used to load and save files, load scripts, control the application's window
 size, and also close the application. Some methods of the app object are
@@ -66,7 +136,7 @@ size, and also close the application. Some methods of the app object are
 
 To get a list of all methods and properties, enter help(app) in the TiGL Viewer console.
 
-#### The app.viewer object ####
+@subsection appviewer The app.viewer object
 
 This object controls the rendering of the 3D view. It can be used to
 
@@ -95,7 +165,7 @@ in Linux or Max OS X__. The syntax is the following:
 app.viewer.makeScreenshot("myfile-large.jpg", true, 1500, 1000);
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The most important methods of the app.viewer object are:
+The most important methods of the _app.viewer_ object are:
 
 |    method             |         description                                                     |
 ------------------------|-------------------------------------------------------------------------|
@@ -117,14 +187,42 @@ help(app.viewer);
  
 in the TiGL Viewer console.
 
-#### The app.scene object ####
 
-#### The tigl object ####
+@subsection appscene The app.scene object
+
+
+The application scene controls, which objects are shown in the 3D view. Thus, it offers methods to display
+objects and points, to clear the whole scene and modifying the grid display.
+
+The most important _app.scene_ methods are:
+
+|    method             |         description                                                     |
+------------------------|-------------------------------------------------------------------------|
+| wireFrame             | if argument is true, all objetcs will be displayed in wireframe mode    |
+| displayShape          | displays a TiGL geometry (e.g. got from tigl.getShape("wingUID"))       |
+| drawPoint             | draws a point (e.g. app.scene.drawPoint(0,0,10))                        |
+| drawVector            | draws a vector/arrow (e.g. app.scene.drawVector(x,y,z,dx,dy,dz))        |
+| deleteAllObjects      | clears the scene                                                        |
+| gridOn                | displays the grid                                                       |
+| gridOff               | turns of the grid display                                               |
+| gridXY                | Sets the grid into the X-Y plane                                        |
+| gridXZ                | Sets the grid into the X-Z plane                                        |
+| gridYZ                | Sets the grid into the Y-Z plane                                        |
+| gridCirc              | Switches the grid into polar form                                       |
+| gridRect              | Swictehs the grid into cartesian form                                   |
+
+To get a list of all app.scene methods and properties, enter:
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.js}
+help(app.scene);
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
+
+@subsection console_tigl The tigl object
 
 
 Make Screenshots
 
-### Examples ###
+@section examples Examples
 
 _Open a file_
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.js}
@@ -172,12 +270,12 @@ app.scene.deleteAllObjects();
 
 _Disable the coordinate grid_
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.js}
-app.scene.toggleGrid(false);
+app.scene.gridOff();
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 _Show polar grid in y-z plane_
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.js}
 app.scene.gridCirc();
 app.scene.gridYZ();
-app.scene.toggleGrid(true);
+app.scene.gridOn();
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
