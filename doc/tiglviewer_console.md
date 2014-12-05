@@ -59,6 +59,7 @@ __The `ans` object__: The result of the last command will be stored in a variabl
 In addition to pure JavaScript, TiGL Viewer offers some function to draw points, vectors and TiGL shapes.
 
 __Draw a point at (0,0,0)__
+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.js}
 drawPoint(new Point3d(0,0,0));
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
@@ -219,10 +220,60 @@ help(app.scene);
 
 @subsection console_tigl The tigl object
 
+The tigl object is used to access the TiGL library functions. Currently, not all functions are wrapped. 
 
-Make Screenshots
+These are the functions currently wrapped by the scripting interface
+
+ * getWingCount()
+ * getVersion()
+ * componentGetHashCode(componentUID)
+ * componentIntersectionLineCount(componentUidOne, componentUidTwo)
+ * exportFusedWingFuselageIGES(filename)
+ * exportIGES(filename)
+ * exportSTEP(filename)
+ * exportMeshedFuselageSTL(fuselageIndex, filename, deflection)
+ * exportMeshedFuselageVTKByIndex(fuselageIndex, filename, deflection)
+ * exportMeshedFuselageVTKByUID(fuselageUID, filename, deflection)
+ * fuselageGetUID(fuselageIndex)
+ * fuselageGetCircumference(fuselageIndex, segmentIndex, eta)
+ * fuselageGetPoint(fuselageIndex, segmentIndex, eta, zeta)
+ * fuselageGetSegmentUID(fuselageIndex, segmentIndex)
+ * fuselageGetSegmentVolume(fuselageIndex, segmentIndex)
+ * getFuselageCount()
+ * fuselageGetSegmentCount(fuselageIndex)
+ * wingGetUpperPoint(wingIndex, segmentIndex, eta, xsi)
+ * wingGetUID(wingIndex)
+ * wingGetLowerPoint(wingIndex, segmentIndex, eta, xsi)
+ * wingGetUpperPointAtDirection(wingIndex, segmentIndex, eta, xsi, dirx, diry, dirz)
+ * wingGetLowerPointAtDirection(wingIndex, segmentIndex, eta, xsi, dirx, diry, dirz)
+ * wingGetChordPoint(wingIndex, segmentIndex, eta, xsi)
+ * wingGetChordNormal(wingIndex, segmentIndex, eta, xsi)
+ * wingGetSegmentCount(wingIndex)
+ * wingGetSegmentUID(wingIndex, segmentIndex)
+ * getErrorString(errorCode)
+ * getShape(uid)
+
+In comparison to the C/C++ API, the scripting functions don't return error codes. Instead, an exception is thrown in case of an error, e.g. if 
+no CPACS file is currently open.
+
+The use of these functions is analog to the TiGL functions of the C API. The only exception is the `tigl.getShape(uid)` method. It can be used
+to return the CAD representation of a CPACS entity. Currently, only wings, fuselages, wing segments, and fuselage segments can be
+returned by `getShape`. The returned shape can then be rendered using the `drawShape` command.
+
+The point sampling functions (e.g. `fuselageGetPoint`, `wingGetChordPoint`, ...) return a Point3d object.
+
+__Example__
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.js}
+app.openFile("aircraft.cpacs.xml");
+p = tigl.wingGetUpperPoint(1, 1, 0.5, 0.2);
+drawPoint(p);
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+
 
 @section examples Examples
+
+Here are some real life examples how to use the scripting engine:
 
 _Open a file_
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.js}
