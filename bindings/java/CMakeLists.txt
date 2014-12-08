@@ -1,4 +1,4 @@
-find_package(Java COMPONENTS Development)
+find_package(Java 1.7.0 COMPONENTS Development)
 
 if (JAVA_FOUND)
 
@@ -32,3 +32,4 @@ if (JAVA_FOUND)
 	install(FILES ${TIGL_JAR} DESTINATION share/tigl/java)
 
 endif()
+
