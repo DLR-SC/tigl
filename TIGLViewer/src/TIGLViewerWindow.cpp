@@ -72,6 +72,7 @@ void ShowOrigin ( Handle_AIS_InteractiveContext theContext )
     AddVertex ( 0.0, 0.0, 0.0, theContext);
 }
 
+#ifdef HAVE_TIXI_SETPRINTMSG
 void TixiMessageHandler(MessageType type, const char *message, ...)
 {
     va_list varArgs;
@@ -90,6 +91,7 @@ void TixiMessageHandler(MessageType type, const char *message, ...)
         LOG(INFO) << str.toStdString();
     }
 }
+#endif
 
 void TIGLViewerWindow::contextMenuEvent(QContextMenuEvent *event)
  {

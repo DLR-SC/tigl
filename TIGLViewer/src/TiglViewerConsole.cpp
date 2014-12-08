@@ -156,7 +156,6 @@ void Console::mousePressEvent(QMouseEvent * e)
 void Console::mouseReleaseEvent(QMouseEvent * e)
 {
 
-    QPlainTextEdit::mouseReleaseEvent(e);
     QTextCursor cursor = this->cursorForPosition(e->pos());
     if (cursor.position() < _promptPosition) {
         _restorePosition = true;
@@ -166,6 +165,7 @@ void Console::mouseReleaseEvent(QMouseEvent * e)
         _lastPosition = textCursor().position();
         setReadOnly(false);
     }
+    QPlainTextEdit::mouseReleaseEvent(e);
 }
 
 void Console::selectAll()
