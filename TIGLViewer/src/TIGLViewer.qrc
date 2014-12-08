@@ -18,6 +18,7 @@
     <file>../gfx/edit-paste.png</file>
     <file>../gfx/edit-copy.png</file>
     <file>../gfx/edit-select-all.png</file>
+    <file>../gfx/screenshot.png</file>
     <file>../scripts/globaldefs.js</file>
 </qresource>
 </RCC>
