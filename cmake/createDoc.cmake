@@ -3,20 +3,12 @@ if(DOXYGEN_FOUND AND PYTHONINTERP_FOUND)
 
     file(GLOB_RECURSE DOC_MD_SRC  "${PROJECT_SOURCE_DIR}/doc/*.md")
 
-    # create latex build directory
-    add_custom_command(
-        OUTPUT ${PROJECT_BINARY_DIR}/doc/changeLog/
-        DEPENDS ${PROJECT_SOURCE_DIR}/doc/changeLog/changeLog.tex
-        COMMAND ${CMAKE_COMMAND}
-        ARGS -E copy_directory ${PROJECT_SOURCE_DIR}/doc/changeLog/ ${PROJECT_BINARY_DIR}/doc/changeLog
-    )
 
     # convert ChangeLog to Markdown for usage in doxygen 
     add_custom_command(
-        OUTPUT ${PROJECT_BINARY_DIR}/doc/changeLog/ChangeLog.md
-        DEPENDS ${PROJECT_BINARY_DIR}/doc/changeLog
+        OUTPUT ${PROJECT_BINARY_DIR}/doc/ChangeLog.md
         DEPENDS ${PROJECT_SOURCE_DIR}/ChangeLog
-        COMMAND ${PYTHON_EXECUTABLE} ${PROJECT_SOURCE_DIR}/misc/createChangeLog/changeLogToMD.py -i ${PROJECT_SOURCE_DIR}/ChangeLog -o ${PROJECT_BINARY_DIR}/doc/changeLog/ChangeLog.md
+        COMMAND ${PYTHON_EXECUTABLE} ${PROJECT_SOURCE_DIR}/misc/createChangeLog/changeLogToMD.py -i ${PROJECT_SOURCE_DIR}/ChangeLog -o ${PROJECT_BINARY_DIR}/doc/ChangeLog.md
     )
 
     configure_file(${PROJECT_SOURCE_DIR}/doc/Doxyfile.in ${PROJECT_BINARY_DIR}/doc/Doxyfile @ONLY)
@@ -27,7 +19,7 @@ if(DOXYGEN_FOUND AND PYTHONINTERP_FOUND)
         DEPENDS ${PROJECT_SOURCE_DIR}/src/api/tigl.h
         DEPENDS ${DOC_MD_SRC}
         DEPENDS ${PROJECT_BINARY_DIR}/doc/Doxyfile
-        DEPENDS ${PROJECT_BINARY_DIR}/doc/changeLog/ChangeLog.md
+        DEPENDS ${PROJECT_BINARY_DIR}/doc/ChangeLog.md
         COMMAND ${DOXYGEN_EXECUTABLE}
         ARGS ${PROJECT_BINARY_DIR}/doc/Doxyfile
     )
@@ -89,21 +81,6 @@ if(DOXYGEN_FOUND AND PYTHONINTERP_FOUND)
             ARGS -quiet tiglGuide.tex
         )
 
-        # TIGL Changelog
-        # create pdf file
-        add_custom_command(
-            OUTPUT ${PROJECT_BINARY_DIR}/doc/changeLog/changeLog.pdf
-            DEPENDS ${PROJECT_SOURCE_DIR}/doc/changeLog/changeLog.tex ${PROJECT_BINARY_DIR}/doc/changeLog/
-            WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/doc/changeLog/        
-            # create directory for latex build
-            # build pdf
-            COMMAND ${LATEX}
-            ARGS -quiet changeLog.tex 
-            # run latex twice to get references right (normal use case of latex, don't ask why)
-            COMMAND ${LATEX}
-            ARGS -quiet changeLog.tex
-        )
-
         add_custom_target(pdf
             COMMENT "Generating PDF reference documentation with latex" VERBATIM 
             DEPENDS ${PROJECT_BINARY_DIR}/doc/tiglRef.pdf
@@ -114,12 +91,8 @@ if(DOXYGEN_FOUND AND PYTHONINTERP_FOUND)
             DEPENDS ${PROJECT_BINARY_DIR}/doc/tiglGuide/tiglGuide.pdf
         )
 
-        add_custom_target(changeLog
-            COMMENT "Generating PDF ChangeLog for TIGL with latex" VERBATIM 
-            DEPENDS ${PROJECT_BINARY_DIR}/doc/changeLog/changeLog.pdf
-        )
         add_custom_target(doc
-            DEPENDS html pdf guide changeLog
+            DEPENDS html pdf guide
             COMMENT "Generating API documentation with Doxygen" VERBATIM 
         )
         
@@ -129,11 +102,6 @@ if(DOXYGEN_FOUND AND PYTHONINTERP_FOUND)
                 OPTIONAL)
                 
             
-        install(FILES ${PROJECT_BINARY_DIR}/doc/changeLog/changeLog.pdf 
-                DESTINATION    share/doc/tigl
-                COMPONENT docu
-                OPTIONAL)
-
         # create start menu entries
         SET(CPACK_NSIS_CREATE_ICONS_EXTRA ${CPACK_NSIS_CREATE_ICONS_EXTRA} "
           CreateShortCut \\\"$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\TiGL-Reference.lnk\\\" \\\"$INSTDIR\\\\share\\\\doc\\\\tigl\\\\tiglRef.pdf\\\"
