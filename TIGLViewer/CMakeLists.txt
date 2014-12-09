@@ -49,7 +49,7 @@ if(CMAKE_SYSTEM_NAME STREQUAL Linux)
 
   if (NOT RELDIR STREQUAL "../lib")
     message(STATUS ${RELDIR})
-    set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_RPATH}:\$ORIGIN/../lib}")
+    set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_RPATH}:\$ORIGIN/../lib")
   endif()
 endif() # linux
 
