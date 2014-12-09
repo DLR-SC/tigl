@@ -1,4 +1,4 @@
-find_package(Doxygen)
+find_package(Doxygen 1.8.0)
 if(DOXYGEN_FOUND AND PYTHONINTERP_FOUND)
 
     file(GLOB_RECURSE DOC_MD_SRC  "${PROJECT_SOURCE_DIR}/doc/*.md")
