@@ -262,3 +262,35 @@ TEST(TiglPointTranslator, Bug2){
     ASSERT_GE(xsi, 0.0);
 }
 
+TEST(TiglPointTranslator, Bug3){
+    // this bug provokes a line search error
+    CTiglPoint x1(45.508156566358146,28.862645269916445,1.422736682335471);
+    CTiglPoint x2(45.613850894119032,28.931475252736018,1.4325057334778124);
+    CTiglPoint x3(47.97740962007417,28.862645269916445,1.5096965771722497);
+    CTiglPoint x4(48.007314417208725,28.931475252736018,1.4325057334778124);
+
+    CTiglPoint p(40.630419753446105,16.113766742873569,0.34096276352572791);
+
+    double eta, xsi;
+
+    CTiglPointTranslator trans(x1, x2, x3, x4 );
+
+    ASSERT_EQ ( TIGL_SUCCESS,  trans.translate(p, &eta, &xsi) );
+}
+
+TEST(TiglPointTranslator, Bug4){
+    // this bug provokes a line search error
+    CTiglPoint x1(45.508156566358146,28.862645269916445,1.422736682335471);
+    CTiglPoint x2(45.613850894119032,28.931475252736018,1.4325057334778124);
+    CTiglPoint x3(47.97740962007417,28.862645269916445,1.5096965771722497);
+    CTiglPoint x4(48.007314417208725,28.931475252736018,1.4325057334778124);
+
+    CTiglPoint p(39.866104718872023,16.193327665794129,0.34559303306764189);
+
+    double eta, xsi;
+
+    CTiglPointTranslator trans(x1, x2, x3, x4 );
+
+    ASSERT_EQ ( TIGL_SUCCESS,  trans.translate(p, &eta, &xsi) );
+}
+
