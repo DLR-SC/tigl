@@ -9,9 +9,9 @@ All examples can be found in the
 directory.
 
 In order to run a TiGL based project, make sure to add
-	- TIGL_INSTALL_DIR/bin and TIXI_INSTALL_DIR/bin to *PATH on Windows*
-	- TIGL_INSTALL_DIR/lib(64) and TIXI_INSTALL_DIR/lib(64) to *LD_LIBRARY_PATH on Linux*
-	- TIGL_INSTALL_DIR/lib and TIXI_INSTALL_DIR/lib to *DYLD_LIBRARY_PATH on Mac*
+  - TIGL_INSTALL_DIR/bin and TIXI_INSTALL_DIR/bin to *PATH on Windows*
+  - TIGL_INSTALL_DIR/lib(64) and TIXI_INSTALL_DIR/lib(64) to *LD_LIBRARY_PATH on Linux*
+  - TIGL_INSTALL_DIR/lib and TIXI_INSTALL_DIR/lib to *DYLD_LIBRARY_PATH on Mac*
 	
 	
 C-Demo
@@ -47,8 +47,8 @@ to build the c-demo.
 
 
 To build this example program by yourself without a makefile, one has to link against the following libaries:
-    - (lib)TIGL
-    - (lib)TIXI
+  - (lib)TIGL
+  - (lib)TIXI
 
 The OpenCASCADE libraries should be automatically linked by the TiGL shared library.
 
@@ -91,9 +91,9 @@ The demo can be called as a function by entering
 JAVA-Demo
 ---------
 To compile the Java Demo (JavaDemo.java), you have to link against the following libraries
-	- commons-logging (Apache Commons logging)
-	- jna and jna-platform (Sun Java Native Access)
-	- tigl (the JAR file can be found in TIGL_INSTALL_DIR/share/tigl/java)
+  - commons-logging (Apache Commons logging)
+  - jna and jna-platform (Sun Java Native Access)
+  - tigl (the JAR file can be found in TIGL_INSTALL_DIR/share/tigl/java)
 	
 Under Windows it is important to chose the right TiGL library matching to the Java Virtual Machine. 
 That means if you use a 64 Bit JVM, use the TiGL 64 bit library and vice versa.
