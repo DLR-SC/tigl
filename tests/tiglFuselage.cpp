@@ -1,4 +1,4 @@
-/* 
+/*
 * Copyright (C) 2007-2015 German Aerospace Center (DLR/SC)
 *
 * Created: 2015-01-05 Jonas Jepsen <Jonas.Jepsen@dlr.de>
@@ -30,7 +30,7 @@
 class TiglFuselage : public ::testing::Test
 {
 protected:
-    static void SetUpTestCase() 
+    static void SetUpTestCase()
     {
         const char* filename = "TestData/CPACS_21_D150.xml";
         ReturnCode tixiRet;
@@ -45,7 +45,7 @@ protected:
         ASSERT_TRUE(tiglRet == TIGL_SUCCESS);
     }
 
-    static void TearDownTestCase() 
+    static void TearDownTestCase()
     {
         ASSERT_TRUE(tiglCloseCPACSConfiguration(tiglHandle) == TIGL_SUCCESS);
         ASSERT_TRUE(tixiCloseDocument(tixiHandle) == SUCCESS);
@@ -141,7 +141,8 @@ TEST_F(TiglFuselage, tiglFuselageGetSegmentIndex_nullPtr)
     ASSERT_TRUE(tiglFuselageGetSegmentIndex(tiglHandle, "D150_VAMP_FL1_Seg1", &segmentIndex, NULL) == TIGL_NULL_POINTER);
 }
 
-TEST_F(TiglFuselage, tiglFuselageGetSegmentIndex_wrongHandle){
+TEST_F(TiglFuselage, tiglFuselageGetSegmentIndex_wrongHandle)
+{
     TiglCPACSConfigurationHandle myWrongHandle = -1234;
     int segmentIndex = 0;
     int fuselageIndex = 0;
