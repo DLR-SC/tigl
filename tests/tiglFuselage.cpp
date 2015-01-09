@@ -1,7 +1,7 @@
-/*
-* Copyright (C) 2007-2015 German Aerospace Center (DLR/SC)
+/* 
+* Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
 *
-* Created: 2015-01-05 Jonas Jepsen <Jonas.Jepsen@dlr.de>
+* Created: 2015-01-07 Jonas Jepsen <Jonas.Jepsen@dlr.de>
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@
 class TiglFuselage : public ::testing::Test
 {
 protected:
-    static void SetUpTestCase()
+    static void SetUpTestCase() 
     {
         const char* filename = "TestData/CPACS_21_D150.xml";
         ReturnCode tixiRet;
@@ -45,7 +45,7 @@ protected:
         ASSERT_TRUE(tiglRet == TIGL_SUCCESS);
     }
 
-    static void TearDownTestCase()
+    static void TearDownTestCase() 
     {
         ASSERT_TRUE(tiglCloseCPACSConfiguration(tiglHandle) == TIGL_SUCCESS);
         ASSERT_TRUE(tixiCloseDocument(tixiHandle) == SUCCESS);
