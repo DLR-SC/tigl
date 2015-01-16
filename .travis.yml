@@ -5,7 +5,7 @@ compiler:
 before_install:
   - sudo sh -c "echo 'deb http://download.opensuse.org/repositories/home:/martinsiggel/xUbuntu_13.10/ /' >> /etc/apt/sources.list.d/tigl.list"
   - sudo apt-get update
-  - sudo apt-get install libtixi-dev liboce-dev
+  - sudo apt-get install libtixi-dev liboce-foundation-dev liboce-modeling-dev liboce-ocaf-lite-dev liboce-ocaf-dev liboce-visualization-dev 
   
 before_script:
   - mkdir build
