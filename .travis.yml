@@ -3,16 +3,19 @@ compiler:
   - gcc
 
 before_install:
-  - sudo sh -c "echo 'deb http://download.opensuse.org/repositories/home:/martinsiggel/xUbuntu_13.10/ /' >> /etc/apt/sources.list.d/tigl.list"
-  - sudo apt-get update
-  - sudo apt-get install libtixi-dev liboce-foundation-dev liboce-modeling-dev liboce-ocaf-lite-dev liboce-ocaf-dev liboce-visualization-dev 
+  - curl http://download.opensuse.org/repositories/home:/martinsiggel/xUbuntu_12.04/Release.key | sudo apt-key add -
+  - echo "deb http://download.opensuse.org/repositories/home:/martinsiggel/xUbuntu_12.04/ /" | sudo tee -a /etc/apt/sources.list
+  - sudo apt-get update -qq
+  - sudo apt-get install -y libtixi-dev liboce-dev
+# oce ships a faulty config file, we have to remove it and use standard opencascade detection
+  - sudo rm /usr/lib/oce-0.15/OCEConfig.cmake  
   
 before_script:
   - mkdir build
   - cd build
 
 script: 
-  - cmake ..
+  - cmake -DTIGL_BUILD_TESTS=ON ..
   - make test
 
 
