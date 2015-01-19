@@ -18,3 +18,5 @@ by NURBS surfaces. The library provides external interfaces for C, C++, Python, 
 
 TiGL is shipped with the Qt based _TiGL Viewer_ which is used to visualize the aircraft
 geometries or as a CAD file viewer.
+
+![Screenshot of the TiGL Viewer](doc/images/tiglviewer-web.jpg)
