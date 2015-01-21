@@ -151,12 +151,25 @@ TiglReturnCode TIGLViewerDocument::openCpacsConfiguration(const QString fileName
     for (int i = 0; i < countAircrafts; i++) {
         char *text;
         tixiRet = tixiGetTextAttribute( tixiHandle, CPACS_XPATH_AIRCRAFT_MODEL, "uID", &text);
-        configurations << text;
+        if (tixiRet == SUCCESS) {
+            configurations << text;
+        }
+        else {
+            displayError(QString("Error: missing uID for aircraft model %1!").arg(i), "TIXI Error");
+            return TIGL_OPEN_FAILED;
+        }
     }    
     for (int i = 0; i < countRotorcrafts; i++) {
         char *text;
         tixiRet = tixiGetTextAttribute(tixiHandle, CPACS_XPATH_ROTORCRAFT_MODEL, "uID", &text);
-        configurations << text;
+        if (tixiRet == SUCCESS) {
+            configurations << text;
+        }
+        else {
+            displayError(QString("Error: missing uID for rotorcraft model %1!").arg(i), "TIXI Error");
+            return TIGL_OPEN_FAILED;
+        }
+
     }
 
     // Get configuration from user and open with TIGL
