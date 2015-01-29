@@ -699,7 +699,7 @@ gp_Pnt CCPACSWingSegment::GetPoint(double eta, double xsi, bool fromUpper)
     return profilePoint;
 }
 
-gp_Pnt CCPACSWingSegment::GetPointDirection(double eta, double xsi, double dirx, double diry, double dirz, bool fromUpper)
+gp_Pnt CCPACSWingSegment::GetPointDirection(double eta, double xsi, double dirx, double diry, double dirz, bool fromUpper, double& deviation)
 {
     if (eta < 0.0 || eta > 1.0) {
         throw CTiglError("Error: Parameter eta not in the range 0.0 <= eta <= 1.0 in CCPACSWingSegment::GetPoint", TIGL_ERROR);
@@ -720,20 +720,38 @@ gp_Pnt CCPACSWingSegment::GetPointDirection(double eta, double xsi, double dirx,
     gp_Dir direction(dirx, diry, dirz);
     gp_Lin line(tiglPoint.Get_gp_Pnt(), direction);
     
-    BRepIntCurveSurface_Inter inter;
-    double tol = 1e-6;
+    TopoDS_Shape skin;
     if (fromUpper) {
-        inter.Init(wing->GetUpperShape(), line, tol);
+        skin = wing->GetUpperShape();
     }
     else {
-        inter.Init(wing->GetLowerShape(), line, tol);
+        skin = wing->GetLowerShape();
     }
     
+    BRepIntCurveSurface_Inter inter;
+    double tol = 1e-6;
+    inter.Init(skin, line, tol);
+    
     if (inter.More()) {
+        deviation = 0.;
         return inter.Pnt();
     }
     else {
-        throw CTiglError("Could not calculate intersection of line with wing shell in CCPACSWingSegment::GetPointDirection", TIGL_NOT_FOUND);
+        // there is not intersection, lets compute the point next to the line
+        BRepExtrema_DistShapeShape extrema;
+        extrema.LoadS1(BRepBuilderAPI_MakeEdge(line));
+        extrema.LoadS2(skin);
+        extrema.Perform();
+        
+        if (!extrema.IsDone()) {
+            throw CTiglError("Could not calculate intersection of line with wing shell in CCPACSWingSegment::GetPointDirection", TIGL_NOT_FOUND);
+        }
+        
+        gp_Pnt p1 = extrema.PointOnShape1(1);
+        gp_Pnt p2 = extrema.PointOnShape2(1);
+
+        deviation = p1.Distance(p2);
+        return p2;
     }
 }
 

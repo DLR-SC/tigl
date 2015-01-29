@@ -728,28 +728,30 @@ TEST_F(WingSegmentSimple, getPointDirection)
 
     tigl::CCPACSWingSegment& segment  = (tigl::CCPACSWingSegment&) wing.GetSegment(1);
     
+    double deviation = 0.;
     gp_Pnt point    = segment.GetPoint(0.5, 0.5, true);
-    gp_Pnt pointAng = segment.GetPointDirection(0.5, 0.5, 0., 0., 1., true);
+    gp_Pnt pointAng = segment.GetPointDirection(0.5, 0.5, 0., 0., 1., true, deviation);
     ASSERT_NEAR(0.0, point.Distance(pointAng), 1e-7);
     
-    pointAng = segment.GetPointDirection(0.5, 0.5, 1., 0., 1., true);
+    pointAng = segment.GetPointDirection(0.5, 0.5, 1., 0., 1., true, deviation);
     ASSERT_GT(pointAng.X(), point.X());
     ASSERT_NEAR(point.Y(), pointAng.Y(), 1e-7);
     
-    pointAng = segment.GetPointDirection(0.5, 0.5, -1., 0., 1., true);
+    pointAng = segment.GetPointDirection(0.5, 0.5, -1., 0., 1., true, deviation);
     ASSERT_LT(pointAng.X(), point.X());
     ASSERT_NEAR(point.Y(), pointAng.Y(), 1e-7);
     
-    pointAng = segment.GetPointDirection(0.5, 0.5, 0., -1., 1., true);
+    pointAng = segment.GetPointDirection(0.5, 0.5, 0., -1., 1., true,deviation);
     ASSERT_LT(pointAng.Y(), point.Y());
     ASSERT_NEAR(point.X(), pointAng.X(), 1e-7);
     
-    pointAng = segment.GetPointDirection(0.5, 0.5, 0., 1., 1., true);
+    pointAng = segment.GetPointDirection(0.5, 0.5, 0., 1., 1., true,deviation);
     ASSERT_GT(pointAng.Y(), point.Y());
     ASSERT_NEAR(point.X(), pointAng.X(), 1e-7);
     
     // test at the end of a segment
-    ASSERT_THROW(segment.GetPointDirection(0.0, 0.5, 0, -1., 1., true), tigl::CTiglError);
+    segment.GetPointDirection(0.0, 0.5, 0, -1., 1., true, deviation);
+    ASSERT_GT(deviation, 1e-3);
 }
 
 TEST_F(WingSegmentSimple, getIsOnTop_success)

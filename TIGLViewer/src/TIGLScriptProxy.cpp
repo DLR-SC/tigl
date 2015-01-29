@@ -343,10 +343,13 @@ QString TIGLScriptProxy::getErrorString(int errorCode)
 QScriptValue TIGLScriptProxy::wingGetUpperPointAtDirection(int wingIndex, int segmentIndex, double eta, double xsi, double dirx, double diry, double dirz)
 {
     
-    double px, py, pz;
-    TiglReturnCode ret = ::tiglWingGetUpperPointAtDirection(getTiglHandle(), wingIndex, segmentIndex, eta, xsi, dirx, diry, dirz,&px, &py, &pz);
+    double px, py, pz, distance;
+    TiglReturnCode ret = ::tiglWingGetUpperPointAtDirection(getTiglHandle(), wingIndex, segmentIndex, eta, xsi, dirx, diry, dirz,&px, &py, &pz, &distance);
     if (ret != TIGL_SUCCESS) {
         return context()->throwError(tiglGetErrorString(ret));
+    }
+    else if (distance > 1e-3) {
+        return context()->throwError(QString("Cannot compute point. Upper wing shell is missed by %1 cm.").arg(distance/100.));
     }
     else {
         QScriptValue Point3dCtor = engine()->globalObject().property("Point3d");
@@ -357,10 +360,13 @@ QScriptValue TIGLScriptProxy::wingGetUpperPointAtDirection(int wingIndex, int se
 QScriptValue TIGLScriptProxy::wingGetLowerPointAtDirection(int wingIndex, int segmentIndex, double eta, double xsi, double dirx, double diry, double dirz)
 {
     
-    double px, py, pz;
-    TiglReturnCode ret = ::tiglWingGetLowerPointAtDirection(getTiglHandle(), wingIndex, segmentIndex, eta, xsi, dirx, diry, dirz,&px, &py, &pz);
+    double px, py, pz, distance;
+    TiglReturnCode ret = ::tiglWingGetLowerPointAtDirection(getTiglHandle(), wingIndex, segmentIndex, eta, xsi, dirx, diry, dirz,&px, &py, &pz, &distance);
     if (ret != TIGL_SUCCESS) {
         return context()->throwError(tiglGetErrorString(ret));
+    }
+    else if (distance > 1e-3) {
+        return context()->throwError(QString("Cannot compute point. Lower wing shell is missed by %1 cm.").arg(distance*100.));
     }
     else {
         QScriptValue Point3dCtor = engine()->globalObject().property("Point3d");
