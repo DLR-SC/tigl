@@ -56,6 +56,8 @@
 #include "TIGLViewerScopedCommand.h"
 #include "tigl_config.h"
 
+#include <cstdlib>
+
 void ShowOrigin ( Handle_AIS_InteractiveContext theContext );
 void AddVertex  ( double x, double y, double z, Handle_AIS_InteractiveContext theContext );
 
@@ -484,7 +486,7 @@ void TIGLViewerWindow::applySettings()
         qputenv("TIGL_DEBUG_BOP", "1");
     }
     else {
-        qputenv("TIGL_DEBUG_BOP", "");
+        deleteEnvVar("TIGL_DEBUG_BOP");
     }
 }
 
@@ -927,4 +929,27 @@ void TIGLViewerWindow::drawVector()
     std::stringstream stream;
     stream << "(" << point.X() << ", " << point.Y() << ", " << point.Z() << ")";
     getScene()->displayVector(point, dir, stream.str().c_str(), Standard_True, 0,0,0, 1.);
+}
+
+bool TIGLViewerWindow::deleteEnvVar(const QString& varName)
+{
+    const char* vn = varName.toStdString().c_str();
+#if defined(_MSC_VER) && _MSC_VER >= 1400
+    return _putenv_s(vn, "") == 0;
+#elif (defined(_POSIX_VERSION) && (_POSIX_VERSION-0) >= 200112L) || defined(Q_OS_BSD4)
+    // POSIX.1-2001 and BSD have unsetenv
+    return unsetenv(vn) == 0;
+#elif defined(Q_CC_MINGW)
+    // On mingw, putenv("var=") removes "var" from the environment
+    QByteArray buffer(vn);
+    buffer += '=';
+    return putenv(buffer.constData()) == 0;
+#else
+    // Fallback to putenv("var=") which will insert an empty var into the
+    // environment and leak it
+    QByteArray buffer(vn);
+    buffer += '=';
+    char *envVar = qstrdup(buffer.constData());
+    return putenv(envVar) == 0;
+#endif
 }
