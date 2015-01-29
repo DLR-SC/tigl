@@ -110,6 +110,7 @@ private:
     void setCurrentFile(const QString &);
 
     void closeEvent(QCloseEvent*);
+    bool deleteEnvVar(const QString& varName);
 
     QAction *recentFileActions[MaxRecentFiles];
 
