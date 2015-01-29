@@ -716,21 +716,6 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetChordNormal(TiglCPACSConfigurationH
 * The point is returned in absolute world coordinates.
 *
 *
-* <b>Fortran syntax:</b>
-*
-* tigl_wing_get_upper_point_at_direction(integer cpacsHandle,
-*                           integer wingIndex,
-*                           integer segmentIndex,
-*                           real eta,
-*                           real xsi,
-*                           real dirx,
-*                           real diry,
-*                           real dirz,
-*                           real pointXPtr,
-*                           real pointYPtr,
-*                           real pointZPtr,
-*                           integer returnCode)
-*
 * @param[in]  cpacsHandle  Handle for the CPACS configuration
 * @param[in]  wingIndex    The index of the wing, starting at 1
 * @param[in]  segmentIndex The index of the segment of the wing, starting at 1
@@ -742,6 +727,10 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetChordNormal(TiglCPACSConfigurationH
 * @param[out] pointXPtr    Pointer to the x-coordinate of the point in absolute world coordinates
 * @param[out] pointYPtr    Pointer to the y-coordinate of the point in absolute world coordinates
 * @param[out] pointZPtr    Pointer to the z-coordinate of the point in absolute world coordinates
+* @param[out] errorDistance If the upper surface is missed by the line, the absolute distance between line and 
+*                           the nearest point on the surface is returned. The distance is zero in case of successful intersection.
+*                           <b>It's up to the user to decide, if the distance is too large and the result has
+*                           to be treated as an error.</b>
 *
 * @return
 *   - TIGL_SUCCESS if a point was found
@@ -761,7 +750,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetUpperPointAtDirection(TiglCPACSConf
                                                                    double dirz,
                                                                    double* pointXPtr,
                                                                    double* pointYPtr,
-                                                                   double* pointZPtr);
+                                                                   double* pointZPtr,
+                                                                   double* errorDistance);
                
 /**
 * @brief Returns a point on the lower wing surface for a
@@ -771,21 +761,6 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetUpperPointAtDirection(TiglCPACSConf
 * The intersection of this line with the lower wing surface is finally returned.
 * The point is returned in absolute world coordinates.
 *
-*
-* <b>Fortran syntax:</b>
-*
-* tigl_wing_get_lower_point_at_direction(integer cpacsHandle,
-*                           integer wingIndex,
-*                           integer segmentIndex,
-*                           real eta,
-*                           real xsi,
-*                           real dirx,
-*                           real diry,
-*                           real dirz,
-*                           real pointXPtr,
-*                           real pointYPtr,
-*                           real pointZPtr,
-*                           integer returnCode)
 *
 * @param[in]  cpacsHandle  Handle for the CPACS configuration
 * @param[in]  wingIndex    The index of the wing, starting at 1
@@ -798,6 +773,10 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetUpperPointAtDirection(TiglCPACSConf
 * @param[out] pointXPtr    Pointer to the x-coordinate of the point in absolute world coordinates
 * @param[out] pointYPtr    Pointer to the y-coordinate of the point in absolute world coordinates
 * @param[out] pointZPtr    Pointer to the z-coordinate of the point in absolute world coordinates
+* @param[out] errorDistance If the lower surface is missed by the line, the absolute distance between line and 
+*                           the nearest point on the surface is returned. The distance is zero in case of successful intersection.
+*                           <b>It's up to the user to decide, if the distance is too large and the result has
+*                           to be treated as an error.</b>
 *
 * @return
 *   - TIGL_SUCCESS if a point was found
@@ -816,7 +795,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetLowerPointAtDirection(TiglCPACSConf
                                                                    double dirz,
                                                                    double* pointXPtr,
                                                                    double* pointYPtr,
-                                                                   double* pointZPtr);
+                                                                   double* pointZPtr,
+                                                                   double* errorDistance);
                
 /**
 * @brief Inverse function to tiglWingGetLowerPoint and tiglWingGetLowerPoint. Calculates to a point (x,y,z)

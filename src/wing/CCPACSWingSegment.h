@@ -200,7 +200,7 @@ public:
     // on the upper surface is returned, otherwise from the lower.
     // The intersection is with the wing surface is computed with a line
     // starting at a point on the chord face with the given direction dir.
-    TIGL_EXPORT gp_Pnt GetPointDirection(double eta, double xsi, double dirx, double diry, double dirz, bool fromUpper);
+    TIGL_EXPORT gp_Pnt GetPointDirection(double eta, double xsi, double dirx, double diry, double dirz, bool fromUpper, double& deviation);
 
     TIGL_EXPORT TiglGeometricComponentType GetComponentType()
     {

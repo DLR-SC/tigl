@@ -743,11 +743,17 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetUpperPointAtDirection(TiglCPACSConf
                                                                    double dirz,
                                                                    double* pointXPtr,
                                                                    double* pointYPtr,
-                                                                   double* pointZPtr)
+                                                                   double* pointZPtr,
+                                                                   double* errorDistance)
 {
     if (pointXPtr == NULL || pointYPtr == NULL || pointZPtr == NULL) {
-        LOG(ERROR) << "Error: Null pointer argument for pointXPtr, pointYPtr or pointZPtr ";
-        LOG(ERROR) << "in function call to tiglWingGetUpperPointAtDirection." << std::endl;
+        LOG(ERROR) << "Null pointer argument for pointXPtr, pointYPtr or pointZPtr "
+                   << "in function call to tiglWingGetUpperPointAtDirection.";
+        return TIGL_NULL_POINTER;
+    }
+    
+    if (errorDistance == NULL) {
+        LOG(ERROR) << "Null pointer in errorDistance argument in tiglWingGetUpperPointAtDirection.";
         return TIGL_NULL_POINTER;
     }
 
@@ -756,10 +762,17 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetUpperPointAtDirection(TiglCPACSConf
         tigl::CCPACSConfiguration & config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSWing& wing = config.GetWing(wingIndex);
         tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment&) wing.GetSegment(segmentIndex);
-        gp_Pnt point = segment.GetPointDirection(eta, xsi, dirx, diry, dirz, true);
+   
+        gp_Pnt point = segment.GetPointDirection(eta, xsi, dirx, diry, dirz, true, *errorDistance);
+        
+        if (*errorDistance > 1e-3) {
+            LOG(WARNING) << "The wing's upper skin is missed by more than 1cm  in tiglWingGetUpperPointAtDirection.";
+        }
+        
         *pointXPtr = point.X();
         *pointYPtr = point.Y();
         *pointZPtr = point.Z();
+        
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
@@ -786,11 +799,17 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetLowerPointAtDirection(TiglCPACSConf
                                                                    double dirz,
                                                                    double* pointXPtr,
                                                                    double* pointYPtr,
-                                                                   double* pointZPtr)
+                                                                   double* pointZPtr,
+                                                                   double* errorDistance)
 {
     if (pointXPtr == NULL || pointYPtr == NULL || pointZPtr == NULL) {
-        LOG(ERROR) << "Error: Null pointer argument for pointXPtr, pointYPtr or pointZPtr ";
-        LOG(ERROR) << "in function call to tiglWingGetLowerPointAtDirection." << std::endl;
+        LOG(ERROR) << "Error: Null pointer argument for pointXPtr, pointYPtr or pointZPtr "
+                   << "in function call to tiglWingGetLowerPointAtDirection.";
+        return TIGL_NULL_POINTER;
+    }
+    
+    if (errorDistance == NULL) {
+        LOG(ERROR) << "Null pointer in errorDistance argument in tiglWingGetLowerPointAtDirection.";
         return TIGL_NULL_POINTER;
     }
 
@@ -799,10 +818,16 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetLowerPointAtDirection(TiglCPACSConf
         tigl::CCPACSConfiguration & config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSWing& wing = config.GetWing(wingIndex);
         tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment&) wing.GetSegment(segmentIndex);
-        gp_Pnt point = segment.GetPointDirection(eta, xsi, dirx, diry, dirz, false);
+
+        gp_Pnt point = segment.GetPointDirection(eta, xsi, dirx, diry, dirz, false, *errorDistance);
         *pointXPtr = point.X();
         *pointYPtr = point.Y();
         *pointZPtr = point.Z();
+        
+        if (*errorDistance > 1e-3) {
+            LOG(WARNING) << "The wing's lower skin is missed by more than 1cm  in tiglWingGetLowerPointAtDirection.";
+        }
+
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
