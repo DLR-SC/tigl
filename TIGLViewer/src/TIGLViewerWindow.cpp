@@ -931,23 +931,24 @@ void TIGLViewerWindow::drawVector()
     getScene()->displayVector(point, dir, stream.str().c_str(), Standard_True, 0,0,0, 1.);
 }
 
-bool TIGLViewerWindow::deleteEnvVar(const QString& varName)
+/// This function is copied from QtCoreLib (>5.1)
+/// and is not available in qt4
+bool TIGLViewerWindow::deleteEnvVar(const char * varName)
 {
-    const char* vn = varName.toStdString().c_str();
 #if defined(_MSC_VER) && _MSC_VER >= 1400
-    return _putenv_s(vn, "") == 0;
+    return _putenv_s(varName, "");
 #elif (defined(_POSIX_VERSION) && (_POSIX_VERSION-0) >= 200112L) || defined(Q_OS_BSD4)
     // POSIX.1-2001 and BSD have unsetenv
-    return unsetenv(vn) == 0;
+    return unsetenv(varName) == 0;
 #elif defined(Q_CC_MINGW)
     // On mingw, putenv("var=") removes "var" from the environment
-    QByteArray buffer(vn);
+    QByteArray buffer(varName);
     buffer += '=';
     return putenv(buffer.constData()) == 0;
 #else
     // Fallback to putenv("var=") which will insert an empty var into the
     // environment and leak it
-    QByteArray buffer(vn);
+    QByteArray buffer(varName);
     buffer += '=';
     char *envVar = qstrdup(buffer.constData());
     return putenv(envVar) == 0;
