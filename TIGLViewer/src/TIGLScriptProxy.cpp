@@ -348,12 +348,13 @@ QScriptValue TIGLScriptProxy::wingGetUpperPointAtDirection(int wingIndex, int se
     if (ret != TIGL_SUCCESS) {
         return context()->throwError(tiglGetErrorString(ret));
     }
-    else if (distance > 1e-3) {
-        return context()->throwError(QString("Cannot compute point. Upper wing shell is missed by %1 cm.").arg(distance/100.));
-    }
     else {
-        QScriptValue Point3dCtor = engine()->globalObject().property("Point3d");
-        return Point3dCtor.construct(QScriptValueList() << px << py << pz);
+        QScriptValue Point3dCtor  = engine()->globalObject().property("Point3d");
+        QScriptValue GPResultCtor = engine()->globalObject().property("GetPointDirectionResult");
+
+        QScriptValue pnt = Point3dCtor.construct(QScriptValueList() << px << py << pz);
+        QScriptValue result = GPResultCtor.construct(QScriptValueList() << pnt << distance);
+        return result;
     }
 }
 
@@ -365,12 +366,13 @@ QScriptValue TIGLScriptProxy::wingGetLowerPointAtDirection(int wingIndex, int se
     if (ret != TIGL_SUCCESS) {
         return context()->throwError(tiglGetErrorString(ret));
     }
-    else if (distance > 1e-3) {
-        return context()->throwError(QString("Cannot compute point. Lower wing shell is missed by %1 cm.").arg(distance*100.));
-    }
     else {
-        QScriptValue Point3dCtor = engine()->globalObject().property("Point3d");
-        return Point3dCtor.construct(QScriptValueList() << px << py << pz);
+        QScriptValue Point3dCtor  = engine()->globalObject().property("Point3d");
+        QScriptValue GPResultCtor = engine()->globalObject().property("GetPointDirectionResult");
+
+        QScriptValue pnt = Point3dCtor.construct(QScriptValueList() << px << py << pz);
+        QScriptValue result = GPResultCtor.construct(QScriptValueList() << pnt << distance);
+        return result;
     }
 }
 

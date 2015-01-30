@@ -50,6 +50,23 @@ Point3d.help = function() {
     return s
 }
 
+function GetPointDirectionResult(point, distance) {
+    this.point = point;
+    this.errorDistance = distance;
+}
+
+GetPointDirectionResult.prototype.toString = function() {
+    return '{ point: ' + this.point + ', errorDistance = ' + this.errorDistance + ' }'; 
+}
+
+GetPointDirectionResult.prototype.getPoint = function() {
+    return this.point;
+}
+
+GetPointDirectionResult.prototype.getErrorDistance = function() {
+    return this.errorDistance;
+}
+
 function drawPoint() {
     if (arguments.length == 1) {
         p = arguments[0]
