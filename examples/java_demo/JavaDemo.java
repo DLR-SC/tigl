@@ -45,6 +45,10 @@ public class JavaDemo {
 			System.out.println(p);
 			
 			System.out.println(config.wingComponentSegmentGetPoint("WING_CS1", 0.5, 0.5));
+			
+			Tigl.GetPointDirectionResult result = config.wingGetUpperPointAtDirection(1, 1, 0.5, 0.5, new TiglPoint(0, 0, 1));
+			System.out.println("GetPointDirection point=" + result.point);
+			System.out.println("GetPointDirection error=" + result.errorDistance);
 
 			// do some exports
 			config.exportIGES("test.igs");

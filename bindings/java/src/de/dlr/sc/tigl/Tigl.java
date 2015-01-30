@@ -117,4 +117,13 @@ public class Tigl {
         return config;
     }
     
+    public static class GetPointDirectionResult {
+        public GetPointDirectionResult(TiglPoint p , double errorDistance) {
+            this.point = p;
+            this.errorDistance = errorDistance;
+        }
+        
+        public TiglPoint point;
+        public double errorDistance;
+    }
 }
