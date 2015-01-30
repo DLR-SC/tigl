@@ -17,7 +17,7 @@
 */
 
 /* 
-* This file is automatically created from tigl.h on 2014-10-23.
+* This file is automatically created from tigl.h on 2015-01-30.
 * If you experience any bugs please contact the authors
 */
 
@@ -47,8 +47,8 @@ public class TiglNativeInterface {
     public static native int tiglWingGetLowerPoint(int cpacsHandle, int wingIndex, int segmentIndex, double eta, double xsi, DoubleByReference pointXPtr, DoubleByReference pointYPtr, DoubleByReference pointZPtr);
     public static native int tiglWingGetChordPoint(int cpacsHandle, int wingIndex, int segmentIndex, double eta, double xsi, DoubleByReference pointXPtr, DoubleByReference pointYPtr, DoubleByReference pointZPtr);
     public static native int tiglWingGetChordNormal(int cpacsHandle, int wingIndex, int segmentIndex, double eta, double xsi, DoubleByReference normalXPtr, DoubleByReference normalYPtr, DoubleByReference normalZPtr);
-    public static native int tiglWingGetUpperPointAtDirection(int cpacsHandle, int wingIndex, int segmentIndex, double eta, double xsi, double dirx, double diry, double dirz, DoubleByReference pointXPtr, DoubleByReference pointYPtr, DoubleByReference pointZPtr);
-    public static native int tiglWingGetLowerPointAtDirection(int cpacsHandle, int wingIndex, int segmentIndex, double eta, double xsi, double dirx, double diry, double dirz, DoubleByReference pointXPtr, DoubleByReference pointYPtr, DoubleByReference pointZPtr);
+    public static native int tiglWingGetUpperPointAtDirection(int cpacsHandle, int wingIndex, int segmentIndex, double eta, double xsi, double dirx, double diry, double dirz, DoubleByReference pointXPtr, DoubleByReference pointYPtr, DoubleByReference pointZPtr, DoubleByReference errorDistance);
+    public static native int tiglWingGetLowerPointAtDirection(int cpacsHandle, int wingIndex, int segmentIndex, double eta, double xsi, double dirx, double diry, double dirz, DoubleByReference pointXPtr, DoubleByReference pointYPtr, DoubleByReference pointZPtr, DoubleByReference errorDistance);
     public static native int tiglWingGetSegmentEtaXsi(int cpacsHandle, int wingIndex, double pointX, double pointY, double pointZ, IntByReference segmentIndex, DoubleByReference eta, DoubleByReference xsi, IntByReference isOnTop);
     public static native int tiglWingGetInnerConnectedSegmentCount(int cpacsHandle, int wingIndex, int segmentIndex, IntByReference segmentCountPtr);
     public static native int tiglWingGetOuterConnectedSegmentCount(int cpacsHandle, int wingIndex, int segmentIndex, IntByReference segmentCountPtr);
@@ -93,7 +93,9 @@ public class TiglNativeInterface {
     public static native int tiglFuselageGetEndSectionAndElementIndex(int cpacsHandle, int fuselageIndex, int segmentIndex, IntByReference sectionIndexPtr, IntByReference elementIndexPtr);
     public static native int tiglFuselageGetProfileName(int cpacsHandle, int fuselageIndex, int sectionIndex, int elementIndex, PointerByReference profileNamePtr);
     public static native int tiglFuselageGetUID(int cpacsHandle, int fuselageIndex, PointerByReference uidNamePtr);
+    public static native int tiglFuselageGetIndex(int cpacsHandle, String fuselageUID, IntByReference fuselageIndexPtr);
     public static native int tiglFuselageGetSegmentUID(int cpacsHandle, int fuselageIndex, int segmentIndex, PointerByReference uidNamePtr);
+    public static native int tiglFuselageGetSegmentIndex(int cpacsHandle, String segmentUID, IntByReference segmentIndexPtr, IntByReference fuselageIndexPtr);
     public static native int tiglFuselageGetSectionCount(int cpacsHandle, int fuselageIndex, IntByReference sectionCount);
     public static native int tiglFuselageGetSectionUID(int cpacsHandle, int fuselageIndex, int sectionIndex, PointerByReference uidNamePtr);
     public static native int tiglFuselageGetSymmetry(int cpacsHandle, int fuselageIndex, IntByReference symmetryAxisPtr);
@@ -134,6 +136,8 @@ public class TiglNativeInterface {
     public static native int tiglWingGetSurfaceArea(int cpacsHandle, int wingIndex, DoubleByReference surfaceAreaPtr);
     public static native int tiglFuselageGetSurfaceArea(int cpacsHandle, int fuselageIndex, DoubleByReference surfaceAreaPtr);
     public static native int tiglWingGetSegmentSurfaceArea(int cpacsHandle, int wingIndex, int segmentIndex, DoubleByReference surfaceAreaPtr);
+    public static native int tiglWingGetSegmentUpperSurfaceAreaTrimmed(int cpacsHandle, int wingIndex, int segmentIndex, double eta1, double xsi1, double eta2, double xsi2, double eta3, double xsi3, double eta4, double xsi4, DoubleByReference surfaceArea);
+    public static native int tiglWingGetSegmentLowerSurfaceAreaTrimmed(int cpacsHandle, int wingIndex, int segmentIndex, double eta1, double xsi1, double eta2, double xsi2, double eta3, double xsi3, double eta4, double xsi4, DoubleByReference surfaceArea);
     public static native int tiglFuselageGetSegmentSurfaceArea(int cpacsHandle, int fuselageIndex, int segmentIndex, DoubleByReference surfaceAreaPtr);
     public static native int tiglWingGetReferenceArea(int cpacsHandle, int wingIndex, int symPlane, DoubleByReference referenceAreaPtr);
     public static native int tiglWingGetWettedArea(int cpacsHandle, String wingUID, DoubleByReference wettedAreaPtr);
