@@ -16,6 +16,7 @@ before_script:
 
 script: 
   - cmake -DTIGL_BUILD_TESTS=ON ..
+  - make
   - make test
 
 
