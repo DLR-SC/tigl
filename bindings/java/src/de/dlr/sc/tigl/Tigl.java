@@ -117,6 +117,16 @@ public class Tigl {
         return config;
     }
     
+    public static class WingCoordinates {
+        public WingCoordinates(double eta, double xsi) {
+            this.eta = eta;
+            this.xsi = xsi;
+        }
+        
+        public double eta;
+        public double xsi;
+    }
+    
     public static class GetPointDirectionResult {
         public GetPointDirectionResult(TiglPoint p , double errorDistance) {
             this.point = p;
@@ -125,5 +135,27 @@ public class Tigl {
         
         public TiglPoint point;
         public double errorDistance;
+    }
+    
+    public static class WingGetSegmentIndexResult {
+        public WingGetSegmentIndexResult(int wIndex , int sIndex) {
+            this.wingIndex = wIndex;
+            this.segmentIndex = sIndex;
+        }
+        
+        public int wingIndex;
+        public int segmentIndex;
+    }
+    
+    public static class WingSegmentProjectionResult {
+        public WingSegmentProjectionResult(WingCoordinates c, boolean isOnTop, int segmentIndex) {
+            this.point = c;
+            this.isOnTop = isOnTop;
+            this.segmentIndex = segmentIndex;
+        }
+        
+        boolean isOnTop;
+        int segmentIndex;
+        WingCoordinates point;
     }
 }
