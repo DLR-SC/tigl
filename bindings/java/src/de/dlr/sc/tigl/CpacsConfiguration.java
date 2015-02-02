@@ -31,6 +31,9 @@ import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.ptr.PointerByReference;
 
 import de.dlr.sc.tigl.Tigl.GetPointDirectionResult;
+import de.dlr.sc.tigl.Tigl.WingCoordinates;
+import de.dlr.sc.tigl.Tigl.WingGetSegmentIndexResult;
+import de.dlr.sc.tigl.Tigl.WingSegmentProjectionResult;
 
 public class CpacsConfiguration implements AutoCloseable {
     
@@ -63,7 +66,14 @@ public class CpacsConfiguration implements AutoCloseable {
         return wingCount.getValue();
     }
 
-    
+    /**
+     * Returns the CPACS UID of a wing
+     * 
+     * @param wingIndex - Index of the wing with 1 <= index <= nWings
+     * 
+     * @return UID of the Wing
+     * @throws TiglException
+     */
     public String wingGetUID(final int wingIndex) throws TiglException {
         checkTiglConfiguration();
         
@@ -76,9 +86,28 @@ public class CpacsConfiguration implements AutoCloseable {
     }
     
     /**
+     * Returns the index of a wing given its UID
+     * 
+     * @param wingUID - CPACS UID of the wing
+     * 
+     * @return Wing index
+     * @throws TiglException
+     */
+    public int wingGetIndex(final String wingUID) throws TiglException {
+        checkTiglConfiguration();
+        
+        IntByReference c_windex = new IntByReference();
+        errorCode = TiglNativeInterface.tiglWingGetIndex(cpacsHandle, wingUID, c_windex);
+        throwIfError("tiglWingGetIndex", errorCode);
+        
+        return c_windex.getValue();
+    }
+    
+    /**
      * Returns the number of sections of the wing
      * 
-     * @param wingIndex Index of the wing
+     * @param wingIndex - Index of the wing
+     * 
      * @return Number of wing sections
      * @throws TiglException
      */
@@ -96,8 +125,8 @@ public class CpacsConfiguration implements AutoCloseable {
     /**
      * Returns the UID of the i-th wing section
      * 
-     * @param wingIndex Index of the wing 
-     * @param sectionIndex Index of the section
+     * @param wingIndex - Index of the wing 
+     * @param sectionIndex - Index of the section
      * @return
      * @throws TiglException
      */
@@ -113,8 +142,26 @@ public class CpacsConfiguration implements AutoCloseable {
     }
     
     /**
+     * Returns the symmetry of a wing
+     * 
+     * @param wingIndex - Index of the wing with 1 <= index <= nWings
+     * 
+     * @return Symmetry Axis of the wing
+     * @throws TiglException
+     */
+    public TiglSymmetryAxis wingGetSymmetry(final int wingIndex) throws TiglException {
+        checkTiglConfiguration();
+        
+        IntByReference c_sym = new IntByReference();
+        errorCode = TiglNativeInterface.tiglWingGetSymmetry(cpacsHandle, wingIndex, c_sym);
+        throwIfError("tiglWingGetSectionUID", errorCode);
+        
+        return TiglSymmetryAxis.getEnum(c_sym.getValue());
+    }
+    
+    /**
      * Returns the number of wing segments for the given wing
-     * @param wingIndex Index of the wing (1 <= index <= numerOfWings)
+     * @param wingIndex - Index of the wing (1 <= index <= numerOfWings)
      * 
      * @return Number of wing segments
      * @throws TiglException 
@@ -131,8 +178,8 @@ public class CpacsConfiguration implements AutoCloseable {
     
     /**
      * Returns the UID of a wing segment
-     * @param wingIndex Index of the wing to query (1 <= index <= #wingCount)
-     * @param segmentIndex Index of the segment to query (1 <= index <= #segmentCount)
+     * @param wingIndex - Index of the wing to query (1 <= index <= #wingCount)
+     * @param segmentIndex - Index of the segment to query (1 <= index <= #segmentCount)
      * 
      * @return UID of the segment as a String
      * @throws TiglException 
@@ -147,7 +194,48 @@ public class CpacsConfiguration implements AutoCloseable {
         String segmentUID = c_suid.getValue().getString(0);
         return segmentUID;
     }
+    
+    /**
+     * Returns the index of a wing given its UID
+     * 
+     * @param segmentUID - CPACS UID of the wing segment
+     * 
+     * @return Wing index and wing segment index
+     * @throws TiglException
+     */
+    public WingGetSegmentIndexResult wingGetSegmentIndex(final String segmentUID) throws TiglException {
+        checkTiglConfiguration();
+        
+        IntByReference c_sindex = new IntByReference();
+        IntByReference c_windex = new IntByReference();
+        errorCode = TiglNativeInterface.tiglWingGetSegmentIndex(cpacsHandle, segmentUID, c_sindex, c_windex);
+        throwIfError("tiglWingGetIndex", errorCode);
+        
+        return new WingGetSegmentIndexResult(c_windex.getValue(), c_sindex.getValue());
+    }
 
+    /**
+     * 
+     */
+    public WingSegmentProjectionResult wingGetSegmentEtaXsi(final int wingIndex, final TiglPoint p) throws TiglException {
+        checkTiglConfiguration();
+        DoubleByReference c_eta = new DoubleByReference();
+        DoubleByReference c_xsi = new DoubleByReference();
+        IntByReference   c_sIdx = new IntByReference();
+        IntByReference    c_Top = new IntByReference();
+        
+        errorCode = TiglNativeInterface.tiglWingGetSegmentEtaXsi(cpacsHandle,
+                wingIndex, p.getX(), p.getY(), p.getZ(), c_sIdx, c_eta, c_xsi,
+                c_Top);
+        
+        throwIfError("tiglWingGetSegmentEtaXsi", errorCode);
+        
+        return new WingSegmentProjectionResult(
+                new WingCoordinates(c_eta.getValue(), c_xsi.getValue()),
+                c_Top.getValue() == 1,
+                c_sIdx.getValue());
+    }
+    
     /**
      * 
      * Returns an absolute point from a given relative coordinates eta, xsi on the upper-
@@ -331,6 +419,90 @@ public class CpacsConfiguration implements AutoCloseable {
     }
     
     /**
+     * Returns the count of wing segments connected to the inner 
+     * section of a given segment.
+     * 
+     * @param wingIndex - Index of the wing
+     * @param segmentIndex - Index of the wing segment
+     * 
+     * @return Number of connected segments
+     * @throws TiglException
+     */
+    public int wingGetInnerConnectedSegmentCount(int wingIndex, int segmentIndex) throws TiglException {
+        checkTiglConfiguration();
+        
+        IntByReference c_segCount = new IntByReference();
+        errorCode = TiglNativeInterface.tiglWingGetInnerConnectedSegmentCount(cpacsHandle, wingIndex, segmentIndex, c_segCount);
+        throwIfError("tiglWingGetInnerConnectedSegmentCount", errorCode);
+        
+        return c_segCount.getValue();
+    }
+    
+    /**
+     * Returns the count of wing segments connected to the outer 
+     * section of a given segment.
+     * 
+     * @param wingIndex - Index of the wing
+     * @param segmentIndex - Index of the wing segment
+     * 
+     * @return Number of connected segments
+     * @throws TiglException
+     */
+    public int wingGetOuterConnectedSegmentCount(int wingIndex, int segmentIndex) throws TiglException {
+        checkTiglConfiguration();
+        
+        IntByReference c_segCount = new IntByReference();
+        errorCode = TiglNativeInterface.tiglWingGetOuterConnectedSegmentCount(cpacsHandle, wingIndex, segmentIndex, c_segCount);
+        throwIfError("tiglWingGetOuterConnectedSegmentCount", errorCode);
+        
+        return c_segCount.getValue();
+    }
+    
+    /**
+     * Returns the index (number) of the n-th wing segment connected 
+     * to the inner section of a given segment. n starts at 1.
+     * 
+     * @param wingIndex - Index of the wing
+     * @param segmentIndex - Index of the wing segment
+     * @param n - n-th segment searched, 1 <= n <= tiglWingGetInnerConnectedSegmentCount(...)
+     * 
+     * @return Index of the n-th connected segment
+     * @throws TiglException
+     */
+    public int wingGetInnerConnectedSegmentIndex(int wingIndex, int segmentIndex, int n) throws TiglException {
+        checkTiglConfiguration();
+        
+        IntByReference c_segIndex = new IntByReference();
+        errorCode = TiglNativeInterface.tiglWingGetInnerConnectedSegmentIndex(cpacsHandle, wingIndex, segmentIndex, n, c_segIndex);
+        throwIfError("tiglWingGetInnerConnectedSegmentIndex", errorCode);
+        
+        return c_segIndex.getValue();
+    }
+    
+    /**
+     * Returns the index (number) of the n-th wing segment connected 
+     * to the outer section of a given segment. n starts at 1.
+     * 
+     * @param wingIndex - Index of the wing
+     * @param segmentIndex - Index of the wing segment
+     * @param n - n-th segment searched, 1 <= n <= tiglWingGetOuterConnectedSegmentCount(...)
+     * 
+     * @return Index of the n-th connected segment
+     * @throws TiglException
+     */
+    public int wingGetOuterConnectedSegmentIndex(int wingIndex, int segmentIndex, int n) throws TiglException {
+        checkTiglConfiguration();
+        
+        IntByReference c_segIndex = new IntByReference();
+        errorCode = TiglNativeInterface.tiglWingGetOuterConnectedSegmentIndex(cpacsHandle, wingIndex, segmentIndex, n, c_segIndex);
+        throwIfError("tiglWingGetOuterConnectedSegmentIndex", errorCode);
+        
+        return c_segIndex.getValue();
+    }
+    
+    
+    
+    /**
      * Returns the normal direction of the wing chord surface for a given eta, xsi coordinate
      * 
      * @param wingIndex - The index number of the wing.
@@ -373,9 +545,9 @@ public class CpacsConfiguration implements AutoCloseable {
     
     /**
      * Returns a points on the wing component segment
-     * @param componentSegmentUID CPACS UID of the wing component segment
-     * @param eta Eta (span wise) coordinate, with 0<=eta<=1
-     * @param xsi Xsi (profile depth) coordinate, with 0<=xsi<=1
+     * @param componentSegmentUID - CPACS UID of the wing component segment
+     * @param eta - Eta (span wise) coordinate, with 0<=eta<=1
+     * @param xsi - Xsi (profile depth) coordinate, with 0<=xsi<=1
      * 
      * @return Point on the wing component segment
      * @throws TiglException 
@@ -432,7 +604,7 @@ public class CpacsConfiguration implements AutoCloseable {
     /**
      * Returns the number of sections of the fuselage
      * 
-     * @param fuselageIndex Index of the fuselage
+     * @param fuselageIndex - Index of the fuselage
      * @return Number of fuselage sections
      * @throws TiglException
      */
@@ -450,8 +622,8 @@ public class CpacsConfiguration implements AutoCloseable {
     /**
      * Returns the UID of the i-th fuselage section
      * 
-     * @param wingIndex Index of the fuselage 
-     * @param sectionIndex Index of the section
+     * @param wingIndex - Index of the fuselage 
+     * @param sectionIndex - Index of the section
      * @return
      * @throws TiglException
      */
@@ -488,8 +660,8 @@ public class CpacsConfiguration implements AutoCloseable {
     
     /**
      * Returns the UID of a fuselage segment
-     * @param fuselageIndex Index of the fuselage to query (1 <= index <= #fuselageCount)
-     * @param segmentIndex Index of the segment to query (1 <= index <= #segmentCount)
+     * @param fuselageIndex - Index of the fuselage to query (1 <= index <= #fuselageCount)
+     * @param segmentIndex - Index of the segment to query (1 <= index <= #segmentCount)
      * 
      * @return UID of the segment as a String
      * @throws TiglException 
@@ -698,6 +870,35 @@ public class CpacsConfiguration implements AutoCloseable {
         throwIfError("tiglExportMeshedFuselageVTKSimpleByUID", errorCode);
     }
     
+    /**
+     * Exports a wing of a CPACS Geometry as a collada file for the use in Blender.
+     * 
+     * @param wingUID - The UID of the wing to export.
+     * @param fileName - The filename to save with.
+     * @param deflection - The deflection/accuracy of the meshing. (typical value: 0.01)
+     * @throws TiglException 
+     */
+    public void exportWingCollada(final String wingUID, final String fileName, final double deflection) throws TiglException {
+        checkTiglConfiguration();
+        
+        errorCode = TiglNativeInterface.tiglExportWingColladaByUID(cpacsHandle, wingUID, fileName, deflection);
+        throwIfError("tiglExportWingColladaByUID", errorCode);
+    }
+    
+    /**
+     * Exports a fuselage of a CPACS Geometry as a collada file for the use in Blender.
+     * 
+     * @param fuselageUID - The UID of the fuselage to export.
+     * @param fileName - The filename to save with.
+     * @param deflection - The deflection/accuracy of the meshing. (typical value: 0.01)
+     * @throws TiglException 
+     */
+    public void exportFuselageCollada(final String fuselageUID, final String fileName, final double deflection) throws TiglException {
+        checkTiglConfiguration();
+        
+        errorCode = TiglNativeInterface.tiglExportFuselageColladaByUID(cpacsHandle, fuselageUID, fileName, deflection);
+        throwIfError("tiglExportFuselageColladaByUID", errorCode);
+    }
 
     /**
      * Returns the CPACS handle. This can be used to directly access the TiglNativeInterface class
