@@ -154,8 +154,8 @@ public class Tigl {
             this.segmentIndex = segmentIndex;
         }
         
-        boolean isOnTop;
-        int segmentIndex;
-        WingCoordinates point;
+        public boolean isOnTop;
+        public int segmentIndex;
+        public WingCoordinates point;
     }
 }

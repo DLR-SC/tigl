@@ -43,6 +43,9 @@ public class JavaDemo {
 			
 			TiglPoint p = config.wingGetLowerPoint(1, 1, 0.5, 0.5);
 			System.out.println(p);
+			Tigl.WingSegmentProjectionResult res = config.wingGetSegmentEtaXsi(1, p);
+			System.out.println("eta/xsi: " + res.point.eta + "," + res.point.xsi);
+			System.out.println("OnTop: " + res.isOnTop);
 			
 			System.out.println(config.wingComponentSegmentGetPoint("WING_CS1", 0.5, 0.5));
 			
@@ -53,6 +56,7 @@ public class JavaDemo {
 			// do some exports
 			config.exportIGES("test.igs");
 			config.exportSTEP("test.stp");
+			config.exportWingCollada(config.wingGetUID(1), "wing.dae", 0.01);
 			
 			// example how to access low level tigl interface
 			IntByReference wingCount = new IntByReference();
