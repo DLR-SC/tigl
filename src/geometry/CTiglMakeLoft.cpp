@@ -115,7 +115,7 @@ void CTiglMakeLoft::Perform()
         // to the loft with guides
         makeLoftWithGuides();
 #else
-        makeLoftWithGuides();
+        makeLoftWithoutGuides();
 #endif
     }
     else {
