@@ -167,7 +167,12 @@ void CTiglMakeLoft::makeLoftWithGuides()
     
     MakePatches SurfMaker(cguid, cprof);
     // Don't sew yet. We do it later in solid creation
-    SurfMaker.Perform(_myTolerance, 1e-4, GeomFill_CoonsC2Style, Standard_True);
+#ifdef TIGL_OCE_COONS_PATCHED
+    GeomFill_FillingStyle style = GeomFill_CoonsC2Style;
+#else
+    GeomFill_FillingStyle style = GeomFill_CoonsStyle;
+#endif
+    SurfMaker.Perform(_myTolerance, 1e-4, style, Standard_True);
     TopoDS_Shape faces = SurfMaker.Patches();
     if (SurfMaker.GetStatus() > 0) {
         LOG(ERROR) << "Could not create loft with guide curves. " << "Error code = " << SurfMaker.GetStatus();

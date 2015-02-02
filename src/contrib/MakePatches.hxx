@@ -108,7 +108,7 @@ public:
      */
     Standard_EXPORT   void Perform(const Standard_Real theTolConf,
                                    const Standard_Real theTolParam,
-                                   const GeomFill_FillingStyle theStyle = GeomFill_CoonsC2Style,
+                                   const GeomFill_FillingStyle theStyle = GeomFill_CoonsStyle,
                                    const Standard_Boolean theSewing = Standard_True) ;
 
     /**
@@ -140,7 +140,7 @@ public:
                  const Standard_Real theTolConf,
                  const Standard_Real theTolParam,
                  const Standard_Integer theBaseCurve = 1,
-                 const GeomFill_FillingStyle theStyle = GeomFill_CoonsC2Style);
+                 const GeomFill_FillingStyle theStyle = GeomFill_CoonsStyle);
     /**
      * Returns status of calculations\n
      * 0 - success, 1 - algorithm failed
