@@ -728,28 +728,30 @@ TEST_F(WingSegmentSimple, getPointDirection)
 
     tigl::CCPACSWingSegment& segment  = (tigl::CCPACSWingSegment&) wing.GetSegment(1);
     
+    double deviation = 0.;
     gp_Pnt point    = segment.GetPoint(0.5, 0.5, true);
-    gp_Pnt pointAng = segment.GetPointDirection(0.5, 0.5, 0., 0., 1., true);
+    gp_Pnt pointAng = segment.GetPointDirection(0.5, 0.5, 0., 0., 1., true, deviation);
     ASSERT_NEAR(0.0, point.Distance(pointAng), 1e-7);
     
-    pointAng = segment.GetPointDirection(0.5, 0.5, 1., 0., 1., true);
+    pointAng = segment.GetPointDirection(0.5, 0.5, 1., 0., 1., true, deviation);
     ASSERT_GT(pointAng.X(), point.X());
     ASSERT_NEAR(point.Y(), pointAng.Y(), 1e-7);
     
-    pointAng = segment.GetPointDirection(0.5, 0.5, -1., 0., 1., true);
+    pointAng = segment.GetPointDirection(0.5, 0.5, -1., 0., 1., true, deviation);
     ASSERT_LT(pointAng.X(), point.X());
     ASSERT_NEAR(point.Y(), pointAng.Y(), 1e-7);
     
-    pointAng = segment.GetPointDirection(0.5, 0.5, 0., -1., 1., true);
+    pointAng = segment.GetPointDirection(0.5, 0.5, 0., -1., 1., true,deviation);
     ASSERT_LT(pointAng.Y(), point.Y());
     ASSERT_NEAR(point.X(), pointAng.X(), 1e-7);
     
-    pointAng = segment.GetPointDirection(0.5, 0.5, 0., 1., 1., true);
+    pointAng = segment.GetPointDirection(0.5, 0.5, 0., 1., 1., true,deviation);
     ASSERT_GT(pointAng.Y(), point.Y());
     ASSERT_NEAR(point.X(), pointAng.X(), 1e-7);
     
     // test at the end of a segment
-    ASSERT_THROW(segment.GetPointDirection(0.0, 0.5, 0, -1., 1., true), tigl::CTiglError);
+    segment.GetPointDirection(0.0, 0.5, 0, -1., 1., true, deviation);
+    ASSERT_GT(deviation, 1e-3);
 }
 
 TEST_F(WingSegmentSimple, getIsOnTop_success)
@@ -916,4 +918,176 @@ TEST_F(WingSegmentSpecial, getCompSegEtaXsi)
     ASSERT_EQ(TIGL_SUCCESS, tiglWingSegmentPointGetComponentSegmentEtaXsi(tiglSpecialHandle, "Aircraft1_Wing1_Seg3", "Aircraft1_Wing1_CompSeg1", 1.0, 1.0, &eta, &xsi));
     ASSERT_EQ(eta, 1.0);
     ASSERT_EQ(xsi, 1.0);
+}
+
+TEST_F(WingSegmentSimple, getSurfacArea)
+{
+    double area;
+    TiglReturnCode ret = tiglWingGetSegmentSurfaceArea(tiglSimpleHandle, 1, 1,
+                                                       &area);
+    ASSERT_EQ(TIGL_SUCCESS, ret);
+    
+    double expect = 2.;
+    // we assume a quite large error (3 percent) since the airfoil area
+    // is larger due to its curvature
+    ASSERT_NEAR(expect, area, expect*0.03);
+}
+
+TEST_F(WingSegmentSimple, getSurfaceAreaTrimmed)
+{
+    double upperArea, lowerArea;
+    
+    TiglReturnCode ret = tiglWingGetSegmentUpperSurfaceAreaTrimmed(tiglSimpleHandle, 1, 1,
+                                                                   0.2, 0.8, 
+                                                                   0.2, 1.0,
+                                                                   0.8, 1.0,
+                                                                   0.8, 0.8,
+                                                                   &upperArea);
+    ASSERT_EQ(TIGL_SUCCESS, ret);
+    
+    
+    ret = tiglWingGetSegmentUpperSurfaceAreaTrimmed(tiglSimpleHandle, 1, 1,
+                                                    0.2, 0.8, 
+                                                    0.2, 1.0,
+                                                    0.8, 1.0,
+                                                    0.8, 0.8,
+                                                    &lowerArea);
+    ASSERT_EQ(TIGL_SUCCESS, ret);
+
+    
+    double expect = 0.6*0.2;
+    // we assume a quite large error (3 percent) since the airfoil area
+    // is larger due to its curvature
+    ASSERT_NEAR(expect, upperArea, expect*0.03);
+    ASSERT_NEAR(expect, lowerArea, expect*0.03);
+}
+
+TEST_F(WingSegmentSimple, getSurfaceAreaTrimmedUpper_Errors)
+{
+    double upperArea;
+    
+    // test index errors
+    ASSERT_EQ(TIGL_INDEX_ERROR, tiglWingGetSegmentUpperSurfaceAreaTrimmed(tiglSimpleHandle, 2, 1,
+                                                                          0.2, 0.8, 
+                                                                          0.2, 1.0,
+                                                                          0.8, 1.0,
+                                                                          0.8, 0.8,
+                                                                          &upperArea));
+    
+    ASSERT_EQ(TIGL_INDEX_ERROR, tiglWingGetSegmentUpperSurfaceAreaTrimmed(tiglSimpleHandle, 0, 1,
+                                                                          0.2, 0.8, 
+                                                                          0.2, 1.0,
+                                                                          0.8, 1.0,
+                                                                          0.8, 0.8,
+                                                                          &upperArea));
+    
+    ASSERT_EQ(TIGL_INDEX_ERROR, tiglWingGetSegmentUpperSurfaceAreaTrimmed(tiglSimpleHandle, 1, 0,
+                                                                          0.2, 0.8, 
+                                                                          0.2, 1.0,
+                                                                          0.8, 1.0,
+                                                                          0.8, 0.8,
+                                                                          &upperArea));
+    
+    ASSERT_EQ(TIGL_INDEX_ERROR, tiglWingGetSegmentUpperSurfaceAreaTrimmed(tiglSimpleHandle, 1, 3,
+                                                                          0.2, 0.8, 
+                                                                          0.2, 1.0,
+                                                                          0.8, 1.0,
+                                                                          0.8, 0.8,
+                                                                          &upperArea));
+    
+    // test invalid handle
+    ASSERT_EQ(TIGL_NOT_FOUND, tiglWingGetSegmentUpperSurfaceAreaTrimmed(-1, 1, 1,
+                                                                        0.2, 0.8, 
+                                                                        0.2, 1.0,
+                                                                        0.8, 1.0,
+                                                                        0.8, 0.8,
+                                                                        &upperArea));
+    
+    // test null pointer
+    ASSERT_EQ(TIGL_NULL_POINTER, tiglWingGetSegmentUpperSurfaceAreaTrimmed(tiglSimpleHandle, 1, 3,
+                                                                           0.2, 0.8, 
+                                                                           0.2, 1.0,
+                                                                           0.8, 1.0,
+                                                                           0.8, 0.8,
+                                                                           NULL));
+    
+    // test invalid eta/xsi
+    ASSERT_EQ(TIGL_ERROR, tiglWingGetSegmentUpperSurfaceAreaTrimmed(tiglSimpleHandle, 1, 1,
+                                                                    0.2, 0.8, 
+                                                                    0.2, 1.1,
+                                                                    0.8, 1.1,
+                                                                    0.8, 0.8,
+                                                                    &upperArea));
+    
+    ASSERT_EQ(TIGL_ERROR, tiglWingGetSegmentUpperSurfaceAreaTrimmed(tiglSimpleHandle, 1, 1,
+                                                                    -0.1, 0.8, 
+                                                                    -0.1, 1.0,
+                                                                    0.8, 1.0,
+                                                                    0.8, 0.8,
+                                                                    &upperArea));
+}
+
+TEST_F(WingSegmentSimple, getSurfaceAreaTrimmedLower_Errors)
+{
+    double lowerArea;
+    
+    // test index errors
+    ASSERT_EQ(TIGL_INDEX_ERROR, tiglWingGetSegmentLowerSurfaceAreaTrimmed(tiglSimpleHandle, 2, 1,
+                                                                          0.2, 0.8, 
+                                                                          0.2, 1.0,
+                                                                          0.8, 1.0,
+                                                                          0.8, 0.8,
+                                                                          &lowerArea));
+    
+    ASSERT_EQ(TIGL_INDEX_ERROR, tiglWingGetSegmentLowerSurfaceAreaTrimmed(tiglSimpleHandle, 0, 1,
+                                                                          0.2, 0.8, 
+                                                                          0.2, 1.0,
+                                                                          0.8, 1.0,
+                                                                          0.8, 0.8,
+                                                                          &lowerArea));
+    
+    ASSERT_EQ(TIGL_INDEX_ERROR, tiglWingGetSegmentLowerSurfaceAreaTrimmed(tiglSimpleHandle, 1, 0,
+                                                                          0.2, 0.8, 
+                                                                          0.2, 1.0,
+                                                                          0.8, 1.0,
+                                                                          0.8, 0.8,
+                                                                          &lowerArea));
+    
+    ASSERT_EQ(TIGL_INDEX_ERROR, tiglWingGetSegmentLowerSurfaceAreaTrimmed(tiglSimpleHandle, 1, 3,
+                                                                          0.2, 0.8, 
+                                                                          0.2, 1.0,
+                                                                          0.8, 1.0,
+                                                                          0.8, 0.8,
+                                                                          &lowerArea));
+    
+    // test invalid handle
+    ASSERT_EQ(TIGL_NOT_FOUND, tiglWingGetSegmentLowerSurfaceAreaTrimmed(-1, 1, 1,
+                                                                        0.2, 0.8, 
+                                                                        0.2, 1.0,
+                                                                        0.8, 1.0,
+                                                                        0.8, 0.8,
+                                                                        &lowerArea));
+    
+    // test null pointer
+    ASSERT_EQ(TIGL_NULL_POINTER, tiglWingGetSegmentLowerSurfaceAreaTrimmed(tiglSimpleHandle, 1, 3,
+                                                                           0.2, 0.8, 
+                                                                           0.2, 1.0,
+                                                                           0.8, 1.0,
+                                                                           0.8, 0.8,
+                                                                           NULL));
+    
+    // test invalid eta/xsi
+    ASSERT_EQ(TIGL_ERROR, tiglWingGetSegmentLowerSurfaceAreaTrimmed(tiglSimpleHandle, 1, 1,
+                                                                    0.2, 0.8, 
+                                                                    0.2, 1.1,
+                                                                    0.8, 1.1,
+                                                                    0.8, 0.8,
+                                                                    &lowerArea));
+    
+    ASSERT_EQ(TIGL_ERROR, tiglWingGetSegmentLowerSurfaceAreaTrimmed(tiglSimpleHandle, 1, 1,
+                                                                    -0.1, 0.8, 
+                                                                    -0.1, 1.0,
+                                                                    0.8, 1.0,
+                                                                    0.8, 0.8,
+                                                                    &lowerArea));
 }

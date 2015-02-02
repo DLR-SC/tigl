@@ -59,6 +59,9 @@ TIGL_EXPORT Standard_Real ProjectPointOnLine(gp_Pnt p, gp_Pnt lineStart, gp_Pnt 
 // returns the number of edges of the current shape
 TIGL_EXPORT unsigned int GetNumberOfEdges(const TopoDS_Shape& shape);
 
+// returns the number of faces of the current shape
+TIGL_EXPORT unsigned int GetNumberOfFaces(const TopoDS_Shape& shape);
+
 TIGL_EXPORT TopoDS_Edge GetEdge(const TopoDS_Shape& shape, int iEdge);
 
 TIGL_EXPORT Handle_Geom_BSplineCurve GetBSplineCurve(const TopoDS_Edge& e);
@@ -71,18 +74,13 @@ TIGL_EXPORT gp_Pnt GetCentralFacePoint(const class TopoDS_Face& face);
 
 // puts all faces with the same origin to one TopoDS_Compound
 // Maps all compounds with its name in the map
-TIGL_EXPORT ListPNamedShape GroupFaces(const PNamedShape shape, tigl::ShapeStoreType groupType);
+TIGL_EXPORT ListPNamedShape GroupFaces(const PNamedShape shape, tigl::ShapeGroupMode groupType);
 
 // Returns the coordinates of the bounding box of the shape
 TIGL_EXPORT void GetShapeExtension(const TopoDS_Shape& shape,
                                    double& minx, double& maxx,
                                    double& miny, double& maxy,
                                    double& minz, double& maxz);
-
-#ifdef TIGL_USE_XCAF
-#include "Handle_XCAFDoc_ShapeTool.hxx"
-void InsertShapeToCAF(Handle_XCAFDoc_ShapeTool myAssembly, const PNamedShape shape, bool useShortnames);
-#endif
 
 // Returns a unique Hashcode for a specific geometric component based on its loft
 TIGL_EXPORT int GetComponentHashCode(tigl::ITiglGeometricComponent&);

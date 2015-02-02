@@ -21,6 +21,7 @@
 
 #include "TIGLScriptProxy.h"
 #include "TIGLViewerDocument.h"
+#include "TIGLScriptEngine.h"
 
 #include <QWidget>
 
@@ -43,35 +44,12 @@ tigl::CCPACSConfiguration& TIGLScriptProxy::GetConfiguration(void)
 
 TiglCPACSConfigurationHandle TIGLScriptProxy::getTiglHandle(void)
 {
-    return _app->getDocument()->getCpacsHandle();
-}
-
-QStringList TIGLScriptProxy::getMemberFunctions()
-{
-    QStringList retval;
-    const QMetaObject* meta = this->metaObject();
-    for (int imeth = meta->methodOffset(); imeth < meta->methodCount(); ++imeth) {
-        QMetaMethod method = meta->method(imeth);
-        QString name =  method.signature();
-        int idx = name.indexOf("(");
-        if (idx >= 0) {
-            name = name.left(idx);
-        }
-        
-        if (method.parameterNames().size() > 0) {
-            name += "(";
-            foreach(QString parName, method.parameterNames()) {
-                name += parName + ", ";
-            }
-            name = name.left(name.size()-2);
-            name += ")";
-        }
-        else {
-            name += "()";
-        }
-        retval << name;
+    if (!_app->getDocument()) {
+        return -1;
     }
-    return retval;
+    else {
+        return _app->getDocument()->getCpacsHandle();
+    }
 }
 
 QScriptValue TIGLScriptProxy::getWingCount()
@@ -365,33 +343,45 @@ QString TIGLScriptProxy::getErrorString(int errorCode)
 QScriptValue TIGLScriptProxy::wingGetUpperPointAtDirection(int wingIndex, int segmentIndex, double eta, double xsi, double dirx, double diry, double dirz)
 {
     
-    double px, py, pz;
-    TiglReturnCode ret = ::tiglWingGetUpperPointAtDirection(getTiglHandle(), wingIndex, segmentIndex, eta, xsi, dirx, diry, dirz,&px, &py, &pz);
+    double px, py, pz, distance;
+    TiglReturnCode ret = ::tiglWingGetUpperPointAtDirection(getTiglHandle(), wingIndex, segmentIndex, eta, xsi, dirx, diry, dirz,&px, &py, &pz, &distance);
     if (ret != TIGL_SUCCESS) {
         return context()->throwError(tiglGetErrorString(ret));
     }
     else {
-        QScriptValue Point3dCtor = engine()->globalObject().property("Point3d");
-        return Point3dCtor.construct(QScriptValueList() << px << py << pz);
+        QScriptValue Point3dCtor  = engine()->globalObject().property("Point3d");
+        QScriptValue GPResultCtor = engine()->globalObject().property("GetPointDirectionResult");
+
+        QScriptValue pnt = Point3dCtor.construct(QScriptValueList() << px << py << pz);
+        QScriptValue result = GPResultCtor.construct(QScriptValueList() << pnt << distance);
+        return result;
     }
 }
 
 QScriptValue TIGLScriptProxy::wingGetLowerPointAtDirection(int wingIndex, int segmentIndex, double eta, double xsi, double dirx, double diry, double dirz)
 {
     
-    double px, py, pz;
-    TiglReturnCode ret = ::tiglWingGetLowerPointAtDirection(getTiglHandle(), wingIndex, segmentIndex, eta, xsi, dirx, diry, dirz,&px, &py, &pz);
+    double px, py, pz, distance;
+    TiglReturnCode ret = ::tiglWingGetLowerPointAtDirection(getTiglHandle(), wingIndex, segmentIndex, eta, xsi, dirx, diry, dirz,&px, &py, &pz, &distance);
     if (ret != TIGL_SUCCESS) {
         return context()->throwError(tiglGetErrorString(ret));
     }
     else {
-        QScriptValue Point3dCtor = engine()->globalObject().property("Point3d");
-        return Point3dCtor.construct(QScriptValueList() << px << py << pz);
+        QScriptValue Point3dCtor  = engine()->globalObject().property("Point3d");
+        QScriptValue GPResultCtor = engine()->globalObject().property("GetPointDirectionResult");
+
+        QScriptValue pnt = Point3dCtor.construct(QScriptValueList() << px << py << pz);
+        QScriptValue result = GPResultCtor.construct(QScriptValueList() << pnt << distance);
+        return result;
     }
 }
 
 QScriptValue TIGLScriptProxy::getShape(QString uid)
 {
+    if (!_app->getDocument()) {
+        return context()->throwError("No cpacs file opened.");
+    }
+    
     try {
         tigl::CCPACSConfiguration& config = _app->getDocument()->GetConfiguration();
         tigl::CTiglUIDManager& manager = config.GetUIDManager();
@@ -406,7 +396,7 @@ QScriptValue TIGLScriptProxy::getShape(QString uid)
             }
         }
         else {
-            return context()->throwError("No shape " + uid + " on cpacs configuration.");
+            return context()->throwError("No shape '" + uid + "'' on cpacs configuration.");
         }
     }
     catch(tigl::CTiglError& err) {

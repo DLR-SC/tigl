@@ -32,11 +32,12 @@
 #include "ListPNamedShape.h"
 #include "CCPACSImportExport.h"
 
-class CCPACSConfiguration;
 class IGESControl_Writer;
 
 namespace tigl 
 {
+
+class CCPACSConfiguration;
 
 class CTiglExportIges
 {
@@ -58,17 +59,17 @@ public:
     TIGL_EXPORT void ExportShapes(const ListPNamedShape& shapes, const std::string& filename) const;
 
     // Sets the type of storing shapes to iges
-    TIGL_EXPORT void SetOCAFStoreType(ShapeStoreType type);
+    TIGL_EXPORT void SetGroupMode(ShapeGroupMode mode);
 
 protected:
 
 private:
     // Assignment operator
     void operator=(const CTiglExportIges& ) { /* Do nothing */ }
-    void AddToIges(PNamedShape shape, IGESControl_Writer& writer) const;
+    void AddToIges(PNamedShape shape, IGESControl_Writer& writer, int level = 0) const;
 
-    CCPACSConfiguration&          myConfig;       /**< TIGL configuration object */
-    ShapeStoreType                  myStoreType;    /**< Type specifying how to translate shapes into an OCAF document */
+    CCPACSConfiguration&          _config;       /**< TIGL configuration object */
+    ShapeGroupMode                _groupMode;    /**< Type specifying how to group faces in the iges file */
     void SetTranslationParameters() const;
 };
 

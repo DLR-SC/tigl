@@ -46,6 +46,7 @@ function printUsage {
     echo "    ubuntu_12.10   Ubuntu 12.10"
     echo "    ubuntu_13.04   Ubuntu 13.04"
     echo "    ubuntu_13.10   Ubuntu 13.10"
+    echo "    ubuntu_14.04   Ubuntu 14.04"
     echo "    fedora_17      Fedora 17"
     echo "    rhel_5         Red Hat Enterprise Linux 5"
     echo "    rhel_6         Red Hat Enterprise Linux 6"
@@ -192,6 +193,14 @@ function checkArguments {
         else
             PACK_ARCH=amd64
         fi
+    elif [[ $tmp_dist == ubuntu_14.04 ]]; then
+        DIST=xUbuntu_14.04
+        PACK_TYPE=deb
+        if [[  $tmp_arch == i386 ]]; then
+            PACK_ARCH=i386
+        else
+            PACK_ARCH=amd64
+        fi
     else
 	echo "Error: Unsupported distribution:" $1
 	echo
@@ -209,6 +218,7 @@ download() {
     wget --progress=dot $url 2>&1 | grep --line-buffered "%" | sed -u -e "s,\.,,g" | awk '{printf("\b\b\b\b%4s", $2)}'
     return $?
 }
+
 
 checkArguments $@
 
@@ -261,7 +271,7 @@ elif [[ $PACK_TYPE == deb ]]; then
   # select required files
   for file in $filelist; do
 	#opencascade	
-	if [[ $file == liboce-*.deb ]] && [[ $file != liboce*dev* ]]
+	if [[ $file == liboce-*.deb ]] && [[ $file != liboce*dev* ]] && [[ $file != liboce*ocaf2* ]]
 	then
 		bin_file_list+=($file)
 	fi
@@ -304,7 +314,7 @@ for file in ${bin_file_list[@]}; do
 	    rpm2cpio $file | cpio -idm 2> /dev/null
 	elif [[ $PACK_TYPE == deb ]]; then
 	    ar x $file
-	    tar -zxf data.tar.gz
+	    tar -xf data.tar.*
 	else
 	    echo "Unknown package type $PACK_TYPE"
 	    exit 5

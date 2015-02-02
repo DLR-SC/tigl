@@ -27,7 +27,7 @@
 
 #cmakedefine LOFTALGO_FOUND
 
-// tigl switches
-#cmakedefine TIGL_USE_XCAF
+// tixi settings
+#cmakedefine HAVE_TIXI_SETPRINTMSG
 
 #endif // CONFIG_H

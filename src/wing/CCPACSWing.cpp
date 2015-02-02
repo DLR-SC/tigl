@@ -539,12 +539,6 @@ void CCPACSWing::Translate(CTiglPoint trans)
     componentSegments.Invalidate();
     Update();
 }
-    
-// Get Translation
-CTiglPoint CCPACSWing::GetTranslation(void)
-{
-    return translation;
-}
 
 // Returns the surface area of this wing
 double CCPACSWing::GetSurfaceArea(void)

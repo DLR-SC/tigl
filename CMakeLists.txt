@@ -12,7 +12,7 @@ endif()
 project (TIGL)
 set(TIGL_VERSION_MAJOR 2)
 set(TIGL_VERSION_MINOR 1)
-set(TIGL_VERSION_PATCH 2)
+set(TIGL_VERSION_PATCH 3)
 set(TIGL_VERSION "${TIGL_VERSION_MAJOR}.${TIGL_VERSION_MINOR}.${TIGL_VERSION_PATCH}")
 
 set(TIGL_ADD_INCLUDE_PATH "" CACHE PATH "Additional include path for package search")
@@ -64,23 +64,6 @@ set (OCC_VISU_LIBS
 	TKV3d TKMesh TKHLR TKService
 )
 
-OPTION(TIGL_USE_XCAF "Enables more export functionality (but requires XCAF, which itself requires OCCT Visualization)" ON)
-OPTION(TIGL_XCAF_WO_VISU "Check, if you have a patched OCCT in which XCAF does not require visualization" OFF)
-mark_as_advanced(TIGL_XCAF_WO_VISU)
-
-# TKStdSchema TKPCAF TKPShape PTKernel 
-
-if(TIGL_USE_XCAF)
-    set(XCAF_LIBS TKXDEIGES TKXDESTEP TKXCAF TKCAF TKLCAF TKCDF)
-    if(NOT TIGL_XCAF_WO_VISU)
-        set(XCAF_LIBS ${XCAF_LIBS} ${OCC_VISU_LIBS} TKStdSchema TKPCAF TKPShape PTKernel)
-    endif()
-
-    set(OCC_LIBS ${XCAF_LIBS} ${OCC_LIBS})
-else()
-    message("XCAF disabled. IGES and STEP export with CPACS metadata will not be avaible.")
-endif()
-
 # search OCE. If OCE is not found, search for standard OpenCASCADE
 set(CMAKE_PREFIX_PATH "$ENV{CASROOT};${CASROOT};${CMAKE_PREFIX_PATH}")
 OPTION(OpenCASCADE_DONT_SEARCH_OCE "Disabled searching for OCE" OFF)
@@ -108,6 +91,10 @@ set(CMAKE_PREFIX_PATH "${TIXI_PATH};${CMAKE_PREFIX_PATH}")
 find_package( TIXI 2.1.0 REQUIRED)
 get_target_property(TIXI_LIBRARY TIXI LOCATION)
 get_filename_component(TIXI_LIB_PATH ${TIXI_LIBRARY} PATH)
+
+if(TIXI_VERSION VERSION_GREATER 2.1.0)
+  set(HAVE_TIXI_SETPRINTMSG TRUE)
+endif()
 
 find_package( PythonInterp )
 

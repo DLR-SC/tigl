@@ -75,7 +75,7 @@ void CTiglExportStl::ExportMeshedFuselageSTL(int fuselageIndex, const std::strin
 void CTiglExportStl::ExportMeshedGeometrySTL(const std::string& filename, double deflection)
 {
     PTiglFusePlane fuser = myConfig.AircraftFusingAlgo();
-    assert(fuser != NULL);
+    assert(fuser);
     fuser->SetResultMode(FULL_PLANE);
 
     // get/compute shape

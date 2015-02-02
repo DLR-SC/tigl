@@ -20,16 +20,6 @@
 #include "ui_TIGLViewerErrorDialog.h"
 #include <QStyle>
 
-namespace
-{
-
-    inline int max(int a, int b)
-    {
-        return a > b? a : b;
-    }
-
-}
-
 TIGLViewerErrorDialog::TIGLViewerErrorDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::TIGLViewerErrorDialog)

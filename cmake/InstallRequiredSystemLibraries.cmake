@@ -1,31 +1,34 @@
+#.rst:
+# InstallRequiredSystemLibraries
+# ------------------------------
+#
+#
+#
 # By including this file, all library files listed in the variable
 # CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS will be installed with
-# install(PROGRAMS ...) into bin for WIN32 and lib
-# for non-WIN32. If CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS_SKIP is set to TRUE
-# before including this file, then the INSTALL command is not called.
-# The user can use the variable CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS to use a
-# custom install command and install them however they want.
-# If it is the MSVC compiler, then the microsoft run
-# time libraries will be found and automatically added to the
-# CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS, and installed.
-# If CMAKE_INSTALL_DEBUG_LIBRARIES is set and it is the MSVC
-# compiler, then the debug libraries are installed when available.
-# If CMAKE_INSTALL_DEBUG_LIBRARIES_ONLY is set then only the debug
-# libraries are installed when both debug and release are available.
-# If CMAKE_INSTALL_MFC_LIBRARIES is set then the MFC run time
-# libraries are installed as well as the CRT run time libraries.
-# If CMAKE_INSTALL_SYSTEM_RUNTIME_DESTINATION is set then the libraries are
-# installed to that directory rather than the default.
-# If CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS_NO_WARNINGS is NOT set, then this file
-# warns about required files that do not exist. You can set this variable to
-# ON before including this file to avoid the warning. For example, the Visual
-# Studio Express editions do not include the redistributable files, so if you
-# include this file on a machine with only VS Express installed, you'll get
-# the warning.
-
-# Extension by DLR:
-# If CMAKE_INSTALL_OPENMP_LIBRARIES is set then the OpenMP run time
-# libraries are installed as well as the CRT run time libraries.
+# install(PROGRAMS ...) into bin for WIN32 and lib for non-WIN32.  If
+# CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS_SKIP is set to TRUE before including
+# this file, then the INSTALL command is not called.  The user can use
+# the variable CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS to use a custom install
+# command and install them however they want.  If it is the MSVC
+# compiler, then the microsoft run time libraries will be found and
+# automatically added to the CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS, and
+# installed.  If CMAKE_INSTALL_DEBUG_LIBRARIES is set and it is the MSVC
+# compiler, then the debug libraries are installed when available.  If
+# CMAKE_INSTALL_DEBUG_LIBRARIES_ONLY is set then only the debug
+# libraries are installed when both debug and release are available.  If
+# CMAKE_INSTALL_MFC_LIBRARIES is set then the MFC run time libraries are
+# installed as well as the CRT run time libraries.  If
+# CMAKE_INSTALL_OPENMP_LIBRARIES is set then the OpenMP run time libraries
+# are installed as well.  If
+# CMAKE_INSTALL_SYSTEM_RUNTIME_DESTINATION is set then the libraries are
+# installed to that directory rather than the default.  If
+# CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS_NO_WARNINGS is NOT set, then this
+# file warns about required files that do not exist.  You can set this
+# variable to ON before including this file to avoid the warning.  For
+# example, the Visual Studio Express editions do not include the
+# redistributable files, so if you include this file on a machine with
+# only VS Express installed, you'll get the warning.
 
 #=============================================================================
 # Copyright 2006-2009 Kitware, Inc.
@@ -39,6 +42,7 @@
 #=============================================================================
 # (To distribute this file outside of CMake, substitute the full
 #  License text for the above reference.)
+
 if(MSVC)
   file(TO_CMAKE_PATH "$ENV{SYSTEMROOT}" SYSTEMROOT)
 
@@ -92,6 +96,8 @@ if(MSVC)
         "${MSVC80_CRT_DIR}/msvcp80.dll"
         "${MSVC80_CRT_DIR}/msvcr80.dll"
         )
+    else()
+      set(__install__libs)
     endif()
 
     if(CMAKE_INSTALL_DEBUG_LIBRARIES)
@@ -130,6 +136,8 @@ if(MSVC)
         "${MSVC90_CRT_DIR}/msvcp90.dll"
         "${MSVC90_CRT_DIR}/msvcr90.dll"
         )
+    else()
+      set(__install__libs)
     endif()
 
     if(CMAKE_INSTALL_DEBUG_LIBRARIES)
@@ -155,40 +163,28 @@ if(MSVC)
         "${msvc_install_dir}/../../VC/redist"
         "${base_dir}/VC/redist"
         "$ENV{ProgramFiles}/Microsoft Visual Studio ${v}.0/VC/redist"
-        "$ENV{ProgramFiles(x86)}/Microsoft Visual Studio ${v}.0/VC/redist"
+        set(programfilesx86 "ProgramFiles(x86)")
+        "$ENV{${programfilesx86}}/Microsoft Visual Studio ${v}.0/VC/redist"
       )
     mark_as_advanced(MSVC${v}_REDIST_DIR)
     set(MSVC${v}_CRT_DIR "${MSVC${v}_REDIST_DIR}/${CMAKE_MSVC_ARCH}/Microsoft.VC${v}0.CRT")
-    set(MSVC${v}_OMP_DIR "${MSVC${v}_REDIST_DIR}/${CMAKE_MSVC_ARCH}/Microsoft.VC${v}0.OPENMP")
 
     if(NOT CMAKE_INSTALL_DEBUG_LIBRARIES_ONLY)
       set(__install__libs
         "${MSVC${v}_CRT_DIR}/msvcp${v}0.dll"
         "${MSVC${v}_CRT_DIR}/msvcr${v}0.dll"
         )
-      if (CMAKE_INSTALL_OPENMP_LIBRARIES)
-        set(__install__libs 
-          ${__install__libs}
-           "${MSVC${v}_OMP_DIR}/vcomp${v}0.dll"
-        )
-      endif()
+    else()
+      set(__install__libs)
     endif()
 
     if(CMAKE_INSTALL_DEBUG_LIBRARIES)
       set(MSVC${v}_CRT_DIR
         "${MSVC${v}_REDIST_DIR}/Debug_NonRedist/${CMAKE_MSVC_ARCH}/Microsoft.VC${v}0.DebugCRT")
-      set(MSVC${v}_OMP_DIR
-        "${MSVC${v}_REDIST_DIR}/Debug_NonRedist/${CMAKE_MSVC_ARCH}/Microsoft.VC${v}0.DebugOpenMP")
       set(__install__libs ${__install__libs}
         "${MSVC${v}_CRT_DIR}/msvcp${v}0d.dll"
         "${MSVC${v}_CRT_DIR}/msvcr${v}0d.dll"
         )
-      if (CMAKE_INSTALL_OPENMP_LIBRARIES)
-        set(__install__libs 
-          ${__install__libs}
-           "${MSVC${v}_OMP_DIR}/vcomp${v}0d.dll"
-        )
-      endif()
     endif()
   endmacro()
 
@@ -202,6 +198,10 @@ if(MSVC)
 
   if(MSVC12)
     MSVCRT_FILES_FOR_VERSION(12)
+  endif()
+
+  if(MSVC14)
+    MSVCRT_FILES_FOR_VERSION(14)
   endif()
 
   if(CMAKE_INSTALL_MFC_LIBRARIES)
@@ -308,25 +308,42 @@ if(MSVC)
     macro(MFC_FILES_FOR_VERSION version)
       set(v "${version}")
 
+      # Multi-Byte Character Set versions of MFC are available as optional
+      # addon since Visual Studio 12.  So for version 12 or higher, check
+      # whether they are available and exclude them if they are not.
+      if("${v}" LESS 12 OR EXISTS "${MSVC${v}_MFC_DIR}/mfc${v}0d.dll")
+        set(mbcs ON)
+      else()
+        set(mbcs OFF)
+      endif()
+
       if(CMAKE_INSTALL_DEBUG_LIBRARIES)
         set(MSVC${v}_MFC_DIR
           "${MSVC${v}_REDIST_DIR}/Debug_NonRedist/${CMAKE_MSVC_ARCH}/Microsoft.VC${v}0.DebugMFC")
         set(__install__libs ${__install__libs}
-          "${MSVC${v}_MFC_DIR}/mfc${v}0d.dll"
           "${MSVC${v}_MFC_DIR}/mfc${v}0ud.dll"
-          "${MSVC${v}_MFC_DIR}/mfcm${v}0d.dll"
           "${MSVC${v}_MFC_DIR}/mfcm${v}0ud.dll"
           )
+        if(mbcs)
+          set(__install__libs ${__install__libs}
+            "${MSVC${v}_MFC_DIR}/mfc${v}0d.dll"
+            "${MSVC${v}_MFC_DIR}/mfcm${v}0d.dll"
+          )
+        endif()
       endif()
 
       set(MSVC${v}_MFC_DIR "${MSVC${v}_REDIST_DIR}/${CMAKE_MSVC_ARCH}/Microsoft.VC${v}0.MFC")
       if(NOT CMAKE_INSTALL_DEBUG_LIBRARIES_ONLY)
         set(__install__libs ${__install__libs}
-          "${MSVC${v}_MFC_DIR}/mfc${v}0.dll"
           "${MSVC${v}_MFC_DIR}/mfc${v}0u.dll"
-          "${MSVC${v}_MFC_DIR}/mfcm${v}0.dll"
           "${MSVC${v}_MFC_DIR}/mfcm${v}0u.dll"
           )
+        if(mbcs)
+          set(__install__libs ${__install__libs}
+            "${MSVC${v}_MFC_DIR}/mfc${v}0.dll"
+            "${MSVC${v}_MFC_DIR}/mfcm${v}0.dll"
+          )
+        endif()
       endif()
 
       # include the language dll's as well as the actuall dll's
@@ -356,6 +373,44 @@ if(MSVC)
     if(MSVC12)
       MFC_FILES_FOR_VERSION(12)
     endif()
+
+    if(MSVC14)
+      MFC_FILES_FOR_VERSION(14)
+    endif()
+  endif()
+
+  # MSVC 8 was the first version with OpenMP
+  # Furthermore, there is no debug version of this
+  if(CMAKE_INSTALL_OPENMP_LIBRARIES)
+    macro(OPENMP_FILES_FOR_VERSION version_a version_b)
+      set(va "${version_a}")
+      set(vb "${version_b}")
+      set(MSVC${va}_OPENMP_DIR "${MSVC${va}_REDIST_DIR}/${CMAKE_MSVC_ARCH}/Microsoft.VC${vb}.OPENMP")
+
+      if(NOT CMAKE_INSTALL_DEBUG_LIBRARIES_ONLY)
+        set(__install__libs ${__install__libs}
+          "${MSVC${va}_OPENMP_DIR}/vcomp${vb}.dll")
+      endif()
+    endmacro()
+
+    if(MSVC80)
+      OPENMP_FILES_FOR_VERSION(80 80)
+    endif()
+    if(MSVC90)
+      OPENMP_FILES_FOR_VERSION(90 90)
+    endif()
+    if(MSVC10)
+      OPENMP_FILES_FOR_VERSION(10 100)
+    endif()
+    if(MSVC11)
+      OPENMP_FILES_FOR_VERSION(11 110)
+    endif()
+    if(MSVC12)
+      OPENMP_FILES_FOR_VERSION(12 120)
+    endif()
+    if(MSVC14)
+      OPENMP_FILES_FOR_VERSION(14 140)
+    endif()
   endif()
 
   foreach(lib
@@ -379,18 +434,18 @@ endif()
 
 if(WATCOM)
   get_filename_component( CompilerPath ${CMAKE_C_COMPILER} PATH )
-  if(WATCOM17)
-     set( __install__libs ${CompilerPath}/clbr17.dll
-       ${CompilerPath}/mt7r17.dll ${CompilerPath}/plbr17.dll )
+  if(CMAKE_C_COMPILER_VERSION)
+    set(_compiler_version ${CMAKE_C_COMPILER_VERSION})
+  else()
+    set(_compiler_version ${CMAKE_CXX_COMPILER_VERSION})
   endif()
-  if(WATCOM18)
-     set( __install__libs ${CompilerPath}/clbr18.dll
-       ${CompilerPath}/mt7r18.dll ${CompilerPath}/plbr18.dll )
-  endif()
-  if(WATCOM19)
-     set( __install__libs ${CompilerPath}/clbr19.dll
-       ${CompilerPath}/mt7r19.dll ${CompilerPath}/plbr19.dll )
-  endif()
+  string(REGEX MATCHALL "[0-9]+" _watcom_version_list "${_compiler_version}")
+  list(GET _watcom_version_list 0 _watcom_major)
+  list(GET _watcom_version_list 1 _watcom_minor)
+  set( __install__libs
+    ${CompilerPath}/clbr${_watcom_major}${_watcom_minor}.dll
+    ${CompilerPath}/mt7r${_watcom_major}${_watcom_minor}.dll
+    ${CompilerPath}/plbr${_watcom_major}${_watcom_minor}.dll )
   foreach(lib
       ${__install__libs}
       )

@@ -30,6 +30,8 @@ import com.sun.jna.ptr.DoubleByReference;
 import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.ptr.PointerByReference;
 
+import de.dlr.sc.tigl.Tigl.GetPointDirectionResult;
+
 public class CpacsConfiguration implements AutoCloseable {
     
     /**
@@ -225,30 +227,33 @@ public class CpacsConfiguration implements AutoCloseable {
      * @param eta - the eta coordinate, going from 0 - 1
      * @param xsi - the xsi coordinate, going from 0 - 1
      * @param direction Direction of the intersection line
-     * @return - a Point object with x, y, z.
+     * @return - a Point and an error distance (see documentation)
      * @throws TiglException 
      */
-    public TiglPoint wingGetUpperPointAtDirection(final int wingIndex, final int segmentIndex, final double eta, final double xsi, TiglPoint direction) throws TiglException {
+    public GetPointDirectionResult wingGetUpperPointAtDirection(final int wingIndex, final int segmentIndex, final double eta, final double xsi, TiglPoint direction) throws TiglException {
         TiglPoint point = new TiglPoint();
 
         checkTiglConfiguration();
         
-        DoubleByReference pointX = new DoubleByReference();
-        DoubleByReference pointY = new DoubleByReference();
-        DoubleByReference pointZ = new DoubleByReference();
+        DoubleByReference pointX  = new DoubleByReference();
+        DoubleByReference pointY  = new DoubleByReference();
+        DoubleByReference pointZ  = new DoubleByReference();
+        DoubleByReference errDist = new DoubleByReference();
 
         // get uppper Point from TIGL
         errorCode = TiglNativeInterface.tiglWingGetUpperPointAtDirection(cpacsHandle, wingIndex, segmentIndex, 
                 eta, xsi, 
                 direction.getX(), direction.getY(), direction.getZ(), 
-                pointX, pointY, pointZ);
+                pointX, pointY, pointZ, errDist);
         throwIfError("tiglWingGetUpperPointAtDirection", errorCode);
 
         point.setX(pointX.getValue());
         point.setY(pointY.getValue());
         point.setZ(pointZ.getValue());
 
-        return point;
+        GetPointDirectionResult result = new GetPointDirectionResult(point, errDist.getValue());
+
+        return result;
     }
     
     
@@ -265,30 +270,33 @@ public class CpacsConfiguration implements AutoCloseable {
      * @param eta - the eta coordinate, going from 0 - 1
      * @param xsi - the xsi coordinate, going from 0 - 1
      * @param direction Direction of the intersection line
-     * @return - a Point object with x, y, z.
+     * @return - The point and an error distance (see documentation)
      * @throws TiglException 
      */
-    public TiglPoint wingGetLowerPointAtDirection(final int wingIndex, final int segmentIndex, final double eta, final double xsi, TiglPoint direction) throws TiglException {
+    public GetPointDirectionResult wingGetLowerPointAtDirection(final int wingIndex, final int segmentIndex, final double eta, final double xsi, TiglPoint direction) throws TiglException {
         TiglPoint point = new TiglPoint();
 
         checkTiglConfiguration();
         
-        DoubleByReference pointX = new DoubleByReference();
-        DoubleByReference pointY = new DoubleByReference();
-        DoubleByReference pointZ = new DoubleByReference();
+        DoubleByReference pointX  = new DoubleByReference();
+        DoubleByReference pointY  = new DoubleByReference();
+        DoubleByReference pointZ  = new DoubleByReference();
+        DoubleByReference errDist = new DoubleByReference();
 
         // get uppper Point from TIGL
         errorCode = TiglNativeInterface.tiglWingGetLowerPointAtDirection(cpacsHandle, wingIndex, segmentIndex, 
                 eta, xsi, 
                 direction.getX(), direction.getY(), direction.getZ(), 
-                pointX, pointY, pointZ);
+                pointX, pointY, pointZ, errDist);
         throwIfError("tiglWingGetLowerPointAtDirection", errorCode);
 
         point.setX(pointX.getValue());
         point.setY(pointY.getValue());
         point.setZ(pointZ.getValue());
 
-        return point;
+        GetPointDirectionResult result = new GetPointDirectionResult(point, errDist.getValue());
+
+        return result;
     }
     
     

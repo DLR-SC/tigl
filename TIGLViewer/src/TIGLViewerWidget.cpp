@@ -26,12 +26,12 @@
 #include <cmath>
 #include <iostream>
 
-#include <QtGui/QApplication>
-#include <QtGui/QBitmap>
+#include <QApplication>
+#include <QBitmap>
 #include <QPainter>
-#include <QtGui/QInputEvent>
-#include <QtGui/QColorDialog>
-#include <QtGui/QPlastiqueStyle>
+#include <QInputEvent>
+#include <QColorDialog>
+#include <QPlastiqueStyle>
 #include <QRubberBand>
 #include <QMessageBox>
 #include <QInputDialog>
@@ -158,23 +158,23 @@ TIGLViewerWidget::~TIGLViewerWidget()
 
 void TIGLViewerWidget::initializeOCC(const Handle_AIS_InteractiveContext& aContext)
 {
-    Aspect_RenderingContext rc = 0;
-    myContext = aContext;
-    myViewer  = myContext->CurrentViewer();
-    myView    = myViewer->CreateView();
+    if (myView.IsNull()) {
+        Aspect_RenderingContext rc = 0;
+        myContext = aContext;
+        myViewer  = myContext->CurrentViewer();
+        myView    = myViewer->CreateView();
 
 #if defined _WIN32 || defined __WIN32__
-    myWindow = new WNT_Window(winId());
-    myWindow->SetFlags( WDF_NOERASEBKGRND );
+        myWindow = new WNT_Window(winId());
+        myWindow->SetFlags( WDF_NOERASEBKGRND );
 #elif defined __APPLE__
-    myWindow = new Cocoa_Window((NSView *)winId());
+        myWindow = new Cocoa_Window((NSView *)winId());
 #else
-    Aspect_Handle windowHandle = (Aspect_Handle)winId();
-    myWindow = new Xw_Window(myContext->CurrentViewer()->Driver()->GetDisplayConnection(),
-                             windowHandle);
+        Aspect_Handle windowHandle = (Aspect_Handle)winId();
+        myWindow = new Xw_Window(myContext->CurrentViewer()->Driver()->GetDisplayConnection(),
+                                 windowHandle);
 #endif
 
-    if (!myView.IsNull()) {
         // Set my window (Hwnd) into the OCC view
         myView->SetWindow( myWindow, rc , paintCallBack, this  );
         // Set up axes (Trihedron) in lower left corner.
@@ -569,7 +569,6 @@ void TIGLViewerWidget::setBackgroundGradient(int r, int g, int b)
         Quantity_Color down(R1*fd > 1 ? 1. : R1*fd, G1*fd > 1 ? 1. : G1*fd, B1*fd > 1 ? 1. : B1*fd, Quantity_TOC_RGB);
 
         myView->SetBgGradientColors( up, down, Aspect_GFM_VER, Standard_False);
-
     } 
     redraw();
 }
@@ -1103,32 +1102,61 @@ Standard_Real TIGLViewerWidget::viewPrecision( bool resized )
     return myViewPrecision;
 }
 
-void TIGLViewerWidget::makeScreenshot(int width, int height, int quality, const QString& filename)
+/** 
+ * Note:This function with custom width and height seems to be working only on windows
+ * If it fails, we are switching back to the current screen resolution.
+ */
+bool TIGLViewerWidget::makeScreenshot(const QString& filename, bool whiteBGEnabled, int width, int height, int quality)
 {
-    if (myView) {
-        // get window size
-        // we could also use a higher resolution if we want
-        if (width == 0 || height == 0) {
-            myView->Window()->Size(width, height);
-        }
-
-        // write screenshot to pixmap
-        Image_PixMap pixmap;
-        myView->ToPixMap(pixmap, width, height);
-
-        // copy to qimage which supports a variety of file formats
-        QImage img(QSize(pixmap.Width(), pixmap.Height()), QImage::Format_RGB888);
-        for (unsigned int aRow = 0; aRow <  pixmap.Height(); ++aRow) {
-          for (unsigned int aCol = 0; aCol < pixmap.Width(); ++aCol) {
-            // extremely SLOW but universal (implemented for all supported pixel formats)
-            Quantity_Color aColor = pixmap.PixelColor ((Standard_Integer )aCol, (Standard_Integer )aRow);
-            QColor qcol(aColor.Red()*255., aColor.Green()*255, aColor.Blue()*255);
-            img.setPixel(aCol, aRow, qcol.rgb());
-          }
-        }
-
-        if (!img.save(filename, NULL, quality)) {
-            throw tigl::CTiglError("Cannot save screenshot to file.");
-        }
+    if (!myView) {
+        return false;
     }
+
+    if (whiteBGEnabled) {
+        myView->SetBgGradientColors ( Quantity_NOC_BLACK , Quantity_NOC_BLACK, Aspect_GFM_NONE, Standard_False);
+        myView->SetBackgroundColor(Quantity_NOC_WHITE);
+        myView->Redraw();
+    }
+
+    // get window size
+    // we could also use a higher resolution if we want
+    if (width == 0 || height == 0) {
+        myView->Window()->Size(width, height);
+    }
+
+    // write screenshot to pixmap
+    Image_PixMap pixmap;
+    bool success = myView->ToPixMap(pixmap, width, height, Graphic3d_BT_RGB);
+    if (!success) {
+        // use size of the window
+        LOG(WARNING) << "Error changing image size to " << width << "x" << height 
+                     << " for screenshot. Using current resolution.";
+        myView->Window()->Size(width, height);
+        success = myView->ToPixMap(pixmap, width, height, Graphic3d_BT_RGB);
+    }
+
+    if (whiteBGEnabled) {
+        // reset color
+        setBackgroundGradient(myBGColor.red(), myBGColor.green(), myBGColor.blue());
+    }
+
+    // copy to qimage which supports a variety of file formats
+    QImage img(QSize(pixmap.Width(), pixmap.Height()), QImage::Format_RGB888);
+    for (unsigned int aRow = 0; aRow <  pixmap.Height(); ++aRow) {
+      for (unsigned int aCol = 0; aCol < pixmap.Width(); ++aCol) {
+        // extremely SLOW but universal (implemented for all supported pixel formats)
+        Quantity_Color aColor = pixmap.PixelColor ((Standard_Integer )aCol, (Standard_Integer )aRow);
+        QColor qcol(aColor.Red()*255., aColor.Green()*255, aColor.Blue()*255);
+        img.setPixel(aCol, aRow, qcol.rgb());
+      }
+    }
+    
+    if (!img.save(filename, NULL, quality)) {
+        LOG(ERROR) << "Unable to save screenshot to file '" + filename.toStdString() + "'";
+        return false;
+    }
+    else {
+        return true;
+    }
+
 }

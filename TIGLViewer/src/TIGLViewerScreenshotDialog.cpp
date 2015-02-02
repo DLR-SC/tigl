@@ -60,3 +60,8 @@ int TIGLViewerScreenshotDialog::getQualityValue() const
 {
     return ui->qualityBox_2->value();
 }
+
+bool TIGLViewerScreenshotDialog::getWhiteBGEnabled() const
+{
+    return ui->whiteBGCheckbox->isChecked();
+}

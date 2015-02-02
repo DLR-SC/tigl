@@ -38,8 +38,8 @@ namespace tigl
 
 // Constructor
 CTiglAbstractGeometricComponent::CTiglAbstractGeometricComponent(void)
-    : mySymmetryAxis(TIGL_NO_SYMMETRY)
-    , myUID("")
+    : myUID("")
+    , mySymmetryAxis(TIGL_NO_SYMMETRY)
 {
     Reset();
 }

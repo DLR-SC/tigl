@@ -118,9 +118,6 @@ public:
     // Sets a Transformation object
     TIGL_EXPORT void Translate(CTiglPoint trans);
 
-    // Get Translation
-    TIGL_EXPORT CTiglPoint GetTranslation(void);
-
     // Gets the surfade area of this wing
     TIGL_EXPORT double GetSurfaceArea();
 

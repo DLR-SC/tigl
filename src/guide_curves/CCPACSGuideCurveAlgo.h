@@ -144,13 +144,13 @@ public:
     }
 
 private:
+    profileGetPointAlgo _getPointAlgo1;            /**< Get point and tangent of 1st profile */
+    profileGetPointAlgo _getPointAlgo2;            /**< Get point and tangent of 2nd profile */
     Standard_Real           _alpha1;               /**< Starting point parameter */
     Standard_Real           _alpha2;               /**< End point parameter */
     Standard_Real           _scale1;               /**< 1st scale factor */
     Standard_Real           _scale2;               /**< 2nd scale factor */
     CCPACSGuideCurveProfile& _guideCurveProfile;   /**< Guide curve profile */
-    profileGetPointAlgo _getPointAlgo1;            /**< Get point and tangent of 1st profile */
-    profileGetPointAlgo _getPointAlgo2;            /**< Get point and tangent of 2nd profile */
 };
 
 } // end namespace tigl

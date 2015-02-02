@@ -55,18 +55,6 @@
 #include <TransferBRep.hxx>
 #include <IGESData_IGESEntity.hxx>
 
-#ifdef TIGL_USE_XCAF
-// OCAF
-#include <TDocStd_Document.hxx>
-#include <TDF_Label.hxx>
-#include <TDataStd_Name.hxx>
-// XCAF, TODO: Get rid of xcaf
-#include <XCAFApp_Application.hxx>
-#include <XCAFDoc_DocumentTool.hxx>
-#include <XCAFDoc_ShapeTool.hxx>
-#include "IGESCAFControl_Writer.hxx"
-#endif // TIGL_USE_XCAF
-
 #include <map>
 #include <cassert>
 
@@ -76,7 +64,7 @@ namespace
     /**
      * @brief WriteIGESFaceNames takes the names of each face and writes it into the IGES model.
      */
-    void WriteIGESFaceNames(Handle_Transfer_FinderProcess FP, const PNamedShape shape)
+    void WriteIGESFaceNames(Handle_Transfer_FinderProcess FP, const PNamedShape shape, int level)
     {
         if (!shape) {
             return;
@@ -109,11 +97,12 @@ namespace
             if ( FP->FindTypedTransient ( mapper, STANDARD_TYPE(IGESData_IGESEntity), entity ) ) {
                 Handle(TCollection_HAsciiString) str = new TCollection_HAsciiString(faceName.c_str());
                 entity->SetLabel(str);
+                entity->InitLevel(0, level);
             }
         }
     }
     
-    void WriteIGESShapeNames(Handle_Transfer_FinderProcess FP, const PNamedShape shape)
+    void WriteIGESShapeNames(Handle_Transfer_FinderProcess FP, const PNamedShape shape, int level)
     {
         if (!shape) {
             return;
@@ -138,6 +127,7 @@ namespace
         if ( FP->FindTypedTransient ( mapper, STANDARD_TYPE(IGESData_IGESEntity), entity ) ) {
             Handle(TCollection_HAsciiString) str = new TCollection_HAsciiString(shapeName.c_str());
             entity->SetLabel(str);
+            entity->InitLevel(0, level);
         }
     }
     
@@ -165,10 +155,10 @@ namespace
         }
     }
     
-    void WriteIgesNames(Handle_Transfer_FinderProcess FP, const PNamedShape shape)
+    void WriteIgesNames(Handle_Transfer_FinderProcess FP, const PNamedShape shape, int level)
     {
-        WriteIGESFaceNames(FP, shape);
-        WriteIGESShapeNames(FP, shape);
+        WriteIGESFaceNames(FP, shape, level);
+        WriteIGESShapeNames(FP, shape, level);
     }
 
 } //namespace
@@ -178,9 +168,9 @@ namespace tigl
 
 // Constructor
 CTiglExportIges::CTiglExportIges(CCPACSConfiguration& config)
-    : myConfig(config)
+    : _config(config)
 {
-    myStoreType = NAMED_COMPOUNDS;
+    _groupMode = NAMED_COMPOUNDS;
 }
 
 // Destructor
@@ -215,8 +205,8 @@ void CTiglExportIges::ExportIGES(const std::string& filename) const
     ListPNamedShape shapes;
 
     // Export all wings of the configuration
-    for (int w = 1; w <= myConfig.GetWingCount(); w++) {
-        CCPACSWing& wing = myConfig.GetWing(w);
+    for (int w = 1; w <= _config.GetWingCount(); w++) {
+        CCPACSWing& wing = _config.GetWing(w);
 
         for (int i = 1; i <= wing.GetSegmentCount(); i++) {
             CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(i);
@@ -226,8 +216,8 @@ void CTiglExportIges::ExportIGES(const std::string& filename) const
     }
 
     // Export all fuselages of the configuration
-    for (int f = 1; f <= myConfig.GetFuselageCount(); f++) {
-        CCPACSFuselage& fuselage = myConfig.GetFuselage(f);
+    for (int f = 1; f <= _config.GetFuselageCount(); f++) {
+        CCPACSFuselage& fuselage = _config.GetFuselage(f);
 
         for (int i = 1; i <= fuselage.GetSegmentCount(); i++) {
             CCPACSFuselageSegment& segment = (tigl::CCPACSFuselageSegment &) fuselage.GetSegment(i);
@@ -236,7 +226,7 @@ void CTiglExportIges::ExportIGES(const std::string& filename) const
         }
     }
 
-    CCPACSFarField& farfield = myConfig.GetFarField();
+    CCPACSFarField& farfield = _config.GetFarField();
     if (farfield.GetFieldType() != NONE) {
         shapes.push_back(farfield.GetLoft());
     }
@@ -259,7 +249,7 @@ void CTiglExportIges::ExportFusedIGES(const std::string& filename)
        return;
     }
 
-    PTiglFusePlane fuser = myConfig.AircraftFusingAlgo();
+    PTiglFusePlane fuser = _config.AircraftFusingAlgo();
     fuser->SetResultMode(HALF_PLANE_TRIMMED_FF);
     assert(fuser);
 
@@ -317,64 +307,42 @@ void CTiglExportIges::ExportShapes(const ListPNamedShape& shapes, const std::str
     
     ListPNamedShape list;
     for (it = shapeScaled.begin(); it != shapeScaled.end(); ++it) {
-        ListPNamedShape templist = GroupFaces(*it, myStoreType);
+        ListPNamedShape templist = GroupFaces(*it, _groupMode);
         for (ListPNamedShape::iterator it2 = templist.begin(); it2 != templist.end(); ++it2) {
             list.push_back(*it2);
         }
     }
     
     SetTranslationParameters();
-#ifdef TIGL_USE_XCAF
-    // create the xde document
-    Handle(XCAFApp_Application) hApp = XCAFApp_Application::GetApplication();
-    Handle(TDocStd_Document) hDoc;
-    hApp->NewDocument("MDTV-XCAF", hDoc);
-    Handle(XCAFDoc_ShapeTool) myAssembly = XCAFDoc_DocumentTool::ShapeTool(hDoc->Main());
 
-    IGESCAFControl_Writer igesWriter;
-
-    for (it = list.begin(); it != list.end(); ++it) {
-        InsertShapeToCAF(myAssembly, *it, true);
-    }
-
-    igesWriter.Model()->ApplyStatic(); // apply set parameters
-    if (igesWriter.Transfer(hDoc) == Standard_False) {
-        throw CTiglError("Cannot export fused airplane as IGES", TIGL_ERROR);
-    }
-
-    // write face entity names
-    for (it = list.begin(); it != list.end(); ++it) {
-        PNamedShape pshape = *it;
-        WriteIgesNames(igesWriter.TransferProcess(), pshape);
-    }
-#else
     IGESControl_Writer igesWriter("MM", 0);
     igesWriter.Model()->ApplyStatic();
 
+    int level = 0;
     for (it = list.begin(); it != list.end(); ++it) {
         PNamedShape pshape = *it;
-        AddToIges(pshape, igesWriter);
+        AddToIges(pshape, igesWriter, level++);
     }
 
     igesWriter.ComputeModel();
-#endif
 
     if (igesWriter.Write(const_cast<char*>(filename.c_str())) != Standard_True) {
         throw CTiglError("Error: Export of shapes to IGES file failed in CCPACSImportExport::SaveIGES", TIGL_ERROR);
     }
 }
 
-void CTiglExportIges::SetOCAFStoreType(ShapeStoreType type)
+void CTiglExportIges::SetGroupMode(ShapeGroupMode mode)
 {
-    myStoreType = type;
+    _groupMode = mode;
 }
 
 /**
- * @brief This function is analog to the InsertShapeToCAF function
- * The only difference is that it works directly on the step file
- * without CAF
+ * @briefAdds a shape to the IGES file. All faces are named according to their face
+ * traits. If there are no faces, the wires are named according to the shape name.
+ * 
+ * The level parameter defines the iges layer/level, which is another way of grouping faces.
  */
-void CTiglExportIges::AddToIges(PNamedShape shape, IGESControl_Writer& writer) const 
+void CTiglExportIges::AddToIges(PNamedShape shape, IGESControl_Writer& writer, int level) const 
 {
     if (!shape) {
         return;
@@ -392,7 +360,7 @@ void CTiglExportIges::AddToIges(PNamedShape shape, IGESControl_Writer& writer) c
             throw CTiglError("Error: Export to IGES file failed in CTiglExportStep. Could not translate shape " 
                              + shapeName + " to iges entity,", TIGL_ERROR);
         }
-        WriteIgesNames(FP, shape);
+        WriteIgesNames(FP, shape, level);
     }
     else {
         // no faces, export edges as wires
@@ -411,7 +379,7 @@ void CTiglExportIges::AddToIges(PNamedShape shape, IGESControl_Writer& writer) c
             }
             PNamedShape theWire(new CNamedShape(Edges->Value(iwire),shapeName.c_str()));
             theWire->SetShortName(shapeShortName.c_str());
-            WriteIGESShapeNames(FP, theWire);
+            WriteIGESShapeNames(FP, theWire, level);
             WriteIgesWireName(FP, theWire);
         }
     }

@@ -14,6 +14,11 @@
     <file>../gfx/select.png</file>
     <file>../gfx/settings-display.png</file>
     <file>../gfx/settings.png</file>
+    <file>../gfx/edit-cut.png</file>
+    <file>../gfx/edit-paste.png</file>
+    <file>../gfx/edit-copy.png</file>
+    <file>../gfx/edit-select-all.png</file>
+    <file>../gfx/screenshot.png</file>
     <file>../scripts/globaldefs.js</file>
 </qresource>
 </RCC>

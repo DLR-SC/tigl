@@ -22,7 +22,7 @@
 class TIGLViewerScopedCommand
 {
 public:
-    TIGLViewerScopedCommand(class Console*);
+    TIGLViewerScopedCommand(class Console*, bool showLoadCursor = true);
     ~TIGLViewerScopedCommand();
 private:
     class Console* _console;

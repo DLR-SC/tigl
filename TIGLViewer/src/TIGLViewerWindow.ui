@@ -73,29 +73,81 @@
       <string>&amp;Recent Files</string>
      </property>
     </widget>
+    <widget class="QMenu" name="tiglMenu">
+     <property name="title">
+      <string>&amp;CPACS Export</string>
+     </property>
+     <widget class="QMenu" name="menuExport_to_IGES">
+      <property name="title">
+       <string>IGES</string>
+      </property>
+      <addaction name="tiglExportIgesAction"/>
+      <addaction name="tiglExportFusedIgesAction"/>
+     </widget>
+     <widget class="QMenu" name="menuExport_to_STEP">
+      <property name="title">
+       <string>STEP</string>
+      </property>
+      <addaction name="tiglExportStepAction"/>
+      <addaction name="tiglExportFusedStepAction"/>
+     </widget>
+     <widget class="QMenu" name="menuExport_to_VTK">
+      <property name="title">
+       <string>VTK</string>
+      </property>
+      <addaction name="tiglExportMeshedWingVTK"/>
+      <addaction name="tiglExportMeshedWingVTKsimple"/>
+      <addaction name="tiglExportMeshedFuselageVTK"/>
+      <addaction name="tiglExportMeshedFuselageVTKsimple"/>
+      <addaction name="tiglExportMeshedConfigVTKNoFuse"/>
+      <addaction name="tiglExportMeshedConfigVTK"/>
+     </widget>
+     <widget class="QMenu" name="menuExport_to_STL">
+      <property name="title">
+       <string>STL</string>
+      </property>
+      <addaction name="tiglExportMeshedWingSTL"/>
+      <addaction name="tiglExportMeshedFuselageSTL"/>
+     </widget>
+     <widget class="QMenu" name="menuExport_to_Collada">
+      <property name="title">
+       <string>Collada</string>
+      </property>
+      <addaction name="tiglExportWingColladaAction"/>
+      <addaction name="tiglExportFuselageColladaAction"/>
+      <addaction name="tiglExportConfigurationColladaAction"/>
+     </widget>
+     <widget class="QMenu" name="menuExport_to_BRep">
+      <property name="title">
+       <string>BRep</string>
+      </property>
+      <addaction name="tiglExportWingBRepAction"/>
+      <addaction name="tiglExportFuselageBRepAction"/>
+      <addaction name="tiglExportFusedConfigBRep"/>
+      <addaction name="tiglExportWingCurvesBRepAction"/>
+      <addaction name="tiglExportFuselageCurvesBRepAction"/>
+     </widget>
+     <addaction name="menuExport_to_IGES"/>
+     <addaction name="menuExport_to_STEP"/>
+     <addaction name="menuExport_to_BRep"/>
+     <addaction name="separator"/>
+     <addaction name="menuExport_to_VTK"/>
+     <addaction name="menuExport_to_STL"/>
+     <addaction name="menuExport_to_Collada"/>
+    </widget>
     <addaction name="newAction"/>
     <addaction name="openAction"/>
-    <addaction name="openScriptAction"/>
     <addaction name="recentFileMenu"/>
+    <addaction name="openScriptAction"/>
+    <addaction name="setBackgroundAction"/>
+    <addaction name="separator"/>
     <addaction name="saveAction"/>
     <addaction name="saveScreenshotAction"/>
+    <addaction name="tiglMenu"/>
     <addaction name="closeAction"/>
-    <addaction name="printAction"/>
-    <addaction name="setBackgroundAction"/>
+    <addaction name="separator"/>
     <addaction name="settingsAction"/>
-    <addaction name="separator"/>
     <addaction name="exitAction"/>
-   </widget>
-   <widget class="QMenu" name="editMenu">
-    <property name="title">
-     <string>&amp;Edit</string>
-    </property>
-    <addaction name="undoAction"/>
-    <addaction name="redoAction"/>
-    <addaction name="separator"/>
-    <addaction name="cutAction"/>
-    <addaction name="copyAction"/>
-    <addaction name="pasteAction"/>
    </widget>
    <widget class="QMenu" name="cpacsMenu">
     <property name="title">
@@ -151,67 +203,6 @@
     <addaction name="menuWings"/>
     <addaction name="menuFuselages"/>
     <addaction name="menuMisc_Geometry"/>
-   </widget>
-   <widget class="QMenu" name="tiglMenu">
-    <property name="title">
-     <string>&amp;TIGL Exports</string>
-    </property>
-    <widget class="QMenu" name="menuExport_to_IGES">
-     <property name="title">
-      <string>Export to IGES</string>
-     </property>
-     <addaction name="tiglExportIgesAction"/>
-     <addaction name="tiglExportFusedIgesAction"/>
-    </widget>
-    <widget class="QMenu" name="menuExport_to_STEP">
-     <property name="title">
-      <string>Export to STEP</string>
-     </property>
-     <addaction name="tiglExportStepAction"/>
-     <addaction name="tiglExportFusedStepAction"/>
-    </widget>
-    <widget class="QMenu" name="menuExport_to_VTK">
-     <property name="title">
-      <string>Export to VTK</string>
-     </property>
-     <addaction name="tiglExportMeshedWingVTK"/>
-     <addaction name="tiglExportMeshedWingVTKsimple"/>
-     <addaction name="tiglExportMeshedFuselageVTK"/>
-     <addaction name="tiglExportMeshedFuselageVTKsimple"/>
-     <addaction name="tiglExportMeshedConfigVTKNoFuse"/>
-     <addaction name="tiglExportMeshedConfigVTK"/>
-    </widget>
-    <widget class="QMenu" name="menuExport_to_STL">
-     <property name="title">
-      <string>Export to STL</string>
-     </property>
-     <addaction name="tiglExportMeshedWingSTL"/>
-     <addaction name="tiglExportMeshedFuselageSTL"/>
-    </widget>
-    <widget class="QMenu" name="menuExport_to_Collada">
-     <property name="title">
-      <string>Export to Collada</string>
-     </property>
-     <addaction name="tiglExportWingColladaAction"/>
-     <addaction name="tiglExportFuselageColladaAction"/>
-     <addaction name="tiglExportConfigurationColladaAction"/>
-    </widget>
-    <widget class="QMenu" name="menuExport_to_BRep">
-     <property name="title">
-      <string>Export to BRep</string>
-     </property>
-     <addaction name="tiglExportWingBRepAction"/>
-     <addaction name="tiglExportFuselageBRepAction"/>
-     <addaction name="tiglExportFusedConfigBRep"/>
-     <addaction name="tiglExportWingCurvesBRepAction"/>
-     <addaction name="tiglExportFuselageCurvesBRepAction"/>
-    </widget>
-    <addaction name="menuExport_to_IGES"/>
-    <addaction name="menuExport_to_VTK"/>
-    <addaction name="menuExport_to_STEP"/>
-    <addaction name="menuExport_to_STL"/>
-    <addaction name="menuExport_to_Collada"/>
-    <addaction name="menuExport_to_BRep"/>
    </widget>
    <widget class="QMenu" name="viewMenu">
     <property name="title">
@@ -275,9 +266,7 @@
     <addaction name="aboutQtAction"/>
    </widget>
    <addaction name="fileMenu"/>
-   <addaction name="editMenu"/>
    <addaction name="cpacsMenu"/>
-   <addaction name="tiglMenu"/>
    <addaction name="viewMenu"/>
    <addaction name="helpMenu"/>
   </widget>
@@ -320,7 +309,7 @@
   </widget>
   <widget class="QDockWidget" name="consoleDockWidget">
    <property name="windowTitle">
-    <string>Tigl Console</string>
+    <string>TiGL Console</string>
    </property>
    <attribute name="dockWidgetArea">
     <number>8</number>
@@ -1213,6 +1202,10 @@
    </property>
   </action>
   <action name="saveScreenshotAction">
+   <property name="icon">
+    <iconset resource="TIGLViewer.qrc">
+     <normaloff>:/gfx/screenshot.png</normaloff>:/gfx/screenshot.png</iconset>
+   </property>
    <property name="text">
     <string>Save Screenshot</string>
    </property>

@@ -34,7 +34,7 @@
 #define BTN_STYLE "#buttonColorChoser {background-color: %1; border: 1px solid black; border-radius: 5px;} #buttonColorChoser:hover {border: 1px solid white;}"
 
 TIGLViewerSettingsDialog::TIGLViewerSettingsDialog(TIGLViewerSettings& settings, QWidget *parent)
-    : _settings(settings), QDialog(parent)
+    : QDialog(parent), _settings(settings)
 {
     setupUi(this);
 

@@ -152,7 +152,7 @@ public slots:
     void setObjectsShading();
     void setObjectsColor();
     void setObjectsMaterial();
-    void makeScreenshot(int width, int height, int quality, const QString& filename);
+    bool makeScreenshot(const QString& filename, bool whiteBGEnabled = true, int width=0, int height=0, int quality=90);
 
 protected: // methods
 
@@ -218,7 +218,7 @@ private: // methods
 
     AIS_StatusOfPick        dragEvent ( const QPoint startPoint, const QPoint endPoint, const bool multi = false );
     AIS_StatusOfPick        inputEvent( const bool multi = false );
-    AIS_StatusOfDetection    moveEvent ( const QPoint point );
+    AIS_StatusOfDetection   moveEvent ( const QPoint point );
     
     void setMode( const CurrentAction3d mode );
     

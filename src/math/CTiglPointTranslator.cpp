@@ -35,11 +35,6 @@
 namespace tigl
 {
 
-namespace 
-{
-    inline double max(double a, double b) { return a > b ? a : b; }
-}
-
 void CTiglPointTranslator::SegmentProjection::setProjectionPoint(const CTiglPoint& p)
 {
     _x = p;

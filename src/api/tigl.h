@@ -716,21 +716,6 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetChordNormal(TiglCPACSConfigurationH
 * The point is returned in absolute world coordinates.
 *
 *
-* <b>Fortran syntax:</b>
-*
-* tigl_wing_get_upper_point_at_direction(integer cpacsHandle,
-*                           integer wingIndex,
-*                           integer segmentIndex,
-*                           real eta,
-*                           real xsi,
-*                           real dirx,
-*                           real diry,
-*                           real dirz,
-*                           real pointXPtr,
-*                           real pointYPtr,
-*                           real pointZPtr,
-*                           integer returnCode)
-*
 * @param[in]  cpacsHandle  Handle for the CPACS configuration
 * @param[in]  wingIndex    The index of the wing, starting at 1
 * @param[in]  segmentIndex The index of the segment of the wing, starting at 1
@@ -742,6 +727,10 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetChordNormal(TiglCPACSConfigurationH
 * @param[out] pointXPtr    Pointer to the x-coordinate of the point in absolute world coordinates
 * @param[out] pointYPtr    Pointer to the y-coordinate of the point in absolute world coordinates
 * @param[out] pointZPtr    Pointer to the z-coordinate of the point in absolute world coordinates
+* @param[out] errorDistance If the upper surface is missed by the line, the absolute distance between line and 
+*                           the nearest point on the surface is returned. The distance is zero in case of successful intersection.
+*                           <b>It's up to the user to decide, if the distance is too large and the result has
+*                           to be treated as an error.</b>
 *
 * @return
 *   - TIGL_SUCCESS if a point was found
@@ -761,7 +750,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetUpperPointAtDirection(TiglCPACSConf
                                                                    double dirz,
                                                                    double* pointXPtr,
                                                                    double* pointYPtr,
-                                                                   double* pointZPtr);
+                                                                   double* pointZPtr,
+                                                                   double* errorDistance);
                
 /**
 * @brief Returns a point on the lower wing surface for a
@@ -771,21 +761,6 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetUpperPointAtDirection(TiglCPACSConf
 * The intersection of this line with the lower wing surface is finally returned.
 * The point is returned in absolute world coordinates.
 *
-*
-* <b>Fortran syntax:</b>
-*
-* tigl_wing_get_lower_point_at_direction(integer cpacsHandle,
-*                           integer wingIndex,
-*                           integer segmentIndex,
-*                           real eta,
-*                           real xsi,
-*                           real dirx,
-*                           real diry,
-*                           real dirz,
-*                           real pointXPtr,
-*                           real pointYPtr,
-*                           real pointZPtr,
-*                           integer returnCode)
 *
 * @param[in]  cpacsHandle  Handle for the CPACS configuration
 * @param[in]  wingIndex    The index of the wing, starting at 1
@@ -798,6 +773,10 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetUpperPointAtDirection(TiglCPACSConf
 * @param[out] pointXPtr    Pointer to the x-coordinate of the point in absolute world coordinates
 * @param[out] pointYPtr    Pointer to the y-coordinate of the point in absolute world coordinates
 * @param[out] pointZPtr    Pointer to the z-coordinate of the point in absolute world coordinates
+* @param[out] errorDistance If the lower surface is missed by the line, the absolute distance between line and 
+*                           the nearest point on the surface is returned. The distance is zero in case of successful intersection.
+*                           <b>It's up to the user to decide, if the distance is too large and the result has
+*                           to be treated as an error.</b>
 *
 * @return
 *   - TIGL_SUCCESS if a point was found
@@ -816,7 +795,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetLowerPointAtDirection(TiglCPACSConf
                                                                    double dirz,
                                                                    double* pointXPtr,
                                                                    double* pointYPtr,
-                                                                   double* pointZPtr);
+                                                                   double* pointZPtr,
+                                                                   double* errorDistance);
                
 /**
 * @brief Inverse function to tiglWingGetLowerPoint and tiglWingGetLowerPoint. Calculates to a point (x,y,z)
@@ -2437,6 +2417,44 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetUID(TiglCPACSConfigurationHandl
 
 
 /**
+* @brief Returns the Index of a fuselage.
+*
+*
+* <b>Fortran syntax:</b>
+*
+* tigl_fuselage_get_index(integer cpacsHandle,
+*                            character*n uIDNamePtr,
+*                            integer fuselageIndex,
+*                            integer returnCode)
+*
+*
+* @param[in]  cpacsHandle     Handle for the CPACS configuration
+* @param[in]  fuselageUID         The uid of the fuselage
+* @param[out] fuselageIndexPtr    The index of a fuselage, starting at 1
+*
+* Usage example:
+*
+@verbatim
+   TiglReturnCode returnCode;
+   int fuselageIndex;
+   returnCode = tiglFuselageGetIndex(cpacsHandle, fuselageUID, &fuselageIndex);
+   printf("The Index of the fuselage is %d\n", fuselageIndex);
+@endverbatim
+*
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_UID_ERROR if fuselageUID does not exist
+*   - TIGL_NULL_POINTER if fuselageUID is a null pointer
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetIndex(TiglCPACSConfigurationHandle cpacsHandle,
+                                                       const char* fuselageUID,
+                                                       int* fuselageIndexPtr);
+
+
+/**
 * @brief Returns the UID of a segment of a fuselage. The string returned must not be
 * deleted by the caller via free(). It will be deleted when the CPACS configuration
 * is closed.
@@ -2477,7 +2495,49 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSegmentUID(TiglCPACSConfigurati
                                                             int fuselageIndex,
                                                             int segmentIndex,
                                                             char** uidNamePtr);
-       
+
+
+/**
+* @brief Returns the Index of a segment of a fuselage.
+*
+*
+* <b>Fortran syntax:</b>
+*
+* tigl_fuselage_get_segment_index(integer cpacsHandle,
+*                            integer fuselageIndex,
+*                            character*n uIDNamePtr,
+*                            integer segmentIndex,
+*                            integer returnCode)
+*
+*
+* @param[in]  cpacsHandle     Handle for the CPACS configuration
+* @param[in]  segmentUID      The uid of the fuselage
+* @param[out] segmentIndexPtr  The index of a segment, starting at 1
+* @param[out] fuselageIndexPtr     The index of a fuselage, starting at 1
+*
+* Usage example:
+*
+@verbatim
+   TiglReturnCode returnCode;
+   int segmentIndex, fuselageIndex;
+   returnCode = tiglFuselageGetSegmentIndex(cpacsHandle, segmentUID, &segmentIndex, &fuselageIndex);
+   printf("The Index of the segment of fuselage %d is %d\n", fuselageIndex, segmentIndex);
+@endverbatim
+*
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_INDEX_ERROR if fuselageIndex is not valid
+*   - TIGL_UID_ERROR if the segmentUID does not exist
+*   - TIGL_NULL_POINTER if segmentUID is a null pointer
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSegmentIndex(TiglCPACSConfigurationHandle cpacsHandle,
+                                                          const char * segmentUID,
+                                                          int * segmentIndexPtr,
+                                                          int * fuselageIndexPtr);
+
 
 /**
 * @brief Returns the number of sections of a fuselage. 
@@ -2638,13 +2698,21 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetMinumumDistanceToGround(TiglCPA
 /**
   \defgroup BooleanFunctions Functions for boolean calculations
     Function for boolean calculations on wings/fuselages.
+    
+    These function currently only implement intersection algorithms between two shapes
+    defined in cpacs ot a shape and a plane. Shapes or geometries are identified with 
+    their cpacs uid.
+    
+    Currently only wings, wing segments, fuselages, and fuselage segments can be used
+    in the intersection routines.
  */
 /*@{*/
 
 /**
-* @brief <b>This is a deprecated function and will be removed in future releases.
-* Use ::tiglIntersectComponents and ::tiglIntersectGetPoint instead.</b>
-* The function returns a point on the intersection line of two geometric components. Often there are more
+* @deprecated This is a deprecated function and will be removed in future releases.
+* Use ::tiglIntersectComponents and ::tiglIntersectGetPoint instead.
+* 
+* @brief The function returns a point on the intersection line of two geometric components. Often there are more
 * that one intersection line, therefore you need to specify the line.
 *
 * Returns a point on the intersection line between a surface and a wing in dependence
@@ -2688,9 +2756,10 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglComponentIntersectionPoint(TiglCPACSConfig
                                                                  double* pointZPtr);
 
 /**
-* @brief <b>This is a deprecated function and will be removed in future releases.
-* Use ::tiglIntersectComponents and ::tiglIntersectGetPoint instead.</b>
-* Convienience function to returns a list of points on the intersection line of two geometric components. 
+* @deprecated This is a deprecated function and will be removed in future releases.
+* Use ::tiglIntersectComponents and ::tiglIntersectGetPoint instead.
+* 
+* @brief Convienience function to returns a list of points on the intersection line of two geometric components. 
 * Often there are more that one intersection line, therefore you need to specify the line.
 *
 * Returns a point on the intersection line between a surface and a wing in dependence
@@ -2739,17 +2808,17 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglComponentIntersectionPoints(TiglCPACSConfi
                                                                   double* pointZArray);
 
 /**
-* @brief <b>This is a deprecated function and will be removed in future releases.
-* Use ::tiglIntersectGetLineCount in combination with ::tiglIntersectGetPoint instead.</b>
-* The function returns the number of intersection lines of two geometric components.
+* @deprecated This is a deprecated function and will be removed in future releases.
+* Use ::tiglIntersectGetLineCount in combination with ::tiglIntersectGetPoint instead.
+*
+* @brief The function returns the number of intersection lines of two geometric components.
 *
 * <b>Fortran syntax:</b>
 *
 * TiglReturnCode tigl_component_intersection_line_count(integer cpacsHandle,
-*                                                          integer fuselageIndex,
-*                                                           integer* wingIndex,
-*                                                          integer returnCode);
-*
+*                                                       integer fuselageIndex,
+*                                                       integer* wingIndex,
+*                                                       integer returnCode);
 *
 * @param[in]  cpacsHandle     Handle for the CPACS configuration
 * @param[in]  componentUidOne The UID of the first component
@@ -3713,7 +3782,9 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSurfaceArea(TiglCPACSConfigurat
 
 
 /**
-* @brief Returns the surface area of a segment of a wing.
+* @brief Returns the surface area of a segment of a wing. This includes only the area
+* of the upper and lower wing segment surface and does not include the trailing egde
+* or any closing faces.
 *
 * <b>Fortran syntax:</b>
 *
@@ -3741,6 +3812,84 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSegmentSurfaceArea(TiglCPACSConfigu
                                                                 int segmentIndex,
                                                                 double* surfaceAreaPtr);
 
+/**
+* @brief Computes the area of the trimmed upper wing segment surface. This function can be e.g. used
+* to determine the area of the wing flaps.
+* 
+* The computed area does not include the trailing edge or any closing side faces.
+* 
+* All eta and xsi values must be in the range [0,1]. The trimmed area is defined with the 
+* four corner point P1, P2, P3, and P4. The order of the points should be right handed, as
+* shown the the image below.
+* 
+* @image html surfaceAreaTrimmed.png "Location of the four corner points"
+* @image latex surfaceAreaTrimmed.pdf "Location of the four corner points" width=10cm
+* 
+* Each of the points is defined with an eta/xsi coordinate pair in the wing segment system.
+* 
+* @param[in]  cpacsHandle     Handle for the CPACS configuration
+* @param[in]  wingIndex       The index of a wing, starting at 1
+* @param[in]  segmentIndex    The index of a segment, starting at 1
+* @param[in]  eta1            Eta value of P1 in range [0,1]
+* @param[in]  xsi1            Xsi value of P1 in range [0,1]
+* @param[in]  eta2            Eta value of P2 in range [0,1]
+* @param[in]  xsi2            Xsi value of P2 in range [0,1]
+* @param[in]  eta3            Eta value of P3 in range [0,1]
+* @param[in]  xsi3            Xsi value of P3 in range [0,1]
+* @param[in]  eta4            Eta value of P4 in range [0,1]
+* @param[in]  xsi4            Xsi value of P4 in range [0,1]
+* @param[out] surfaceArea     Area of the trimmed upper wing surface
+* 
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_INDEX_ERROR if wingIndex ot segmentIndex are not valid
+*   - TIGL_NULL_POINTER if surfaceArea is a null pointer
+*   - TIGL_ERROR if the eta/xsi coordinates are not in the valid range [0,1] or another error occured
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSegmentUpperSurfaceAreaTrimmed(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                            int wingIndex,
+                                                                            int segmentIndex,
+                                                                            double eta1, double xsi1,
+                                                                            double eta2, double xsi2,
+                                                                            double eta3, double xsi3,
+                                                                            double eta4, double xsi4,
+                                                                            double* surfaceArea);
+
+/**
+* @brief Computes the area of the trimmed lower wing segment surface. This function can be e.g. used
+* to determine the area of the wing flaps.
+*
+* The use of this function is analog to ::tiglWingGetSegmentUpperSurfaceAreaTrimmed.
+* 
+* @param[in]  cpacsHandle     Handle for the CPACS configuration
+* @param[in]  wingIndex       The index of a wing, starting at 1
+* @param[in]  segmentIndex    The index of a segment, starting at 1
+* @param[in]  eta1            Eta value of P1 in range [0,1]
+* @param[in]  xsi1            Xsi value of P1 in range [0,1]
+* @param[in]  eta2            Eta value of P2 in range [0,1]
+* @param[in]  xsi2            Xsi value of P2 in range [0,1]
+* @param[in]  eta3            Eta value of P3 in range [0,1]
+* @param[in]  xsi3            Xsi value of P3 in range [0,1]
+* @param[in]  eta4            Eta value of P4 in range [0,1]
+* @param[in]  xsi4            Xsi value of P4 in range [0,1]
+* @param[out] surfaceArea     Area of the trimmed lower wing surface
+* 
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_INDEX_ERROR if wingIndex ot segmentIndex are not valid
+*   - TIGL_NULL_POINTER if surfaceArea is a null pointer
+*   - TIGL_ERROR if the eta/xsi coordinates are not in the valid range [0,1] or another error occured
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSegmentLowerSurfaceAreaTrimmed(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                            int wingIndex,
+                                                                            int segmentIndex,
+                                                                            double eta1, double xsi1,
+                                                                            double eta2, double xsi2,
+                                                                            double eta3, double xsi3,
+                                                                            double eta4, double xsi4,
+                                                                            double* surfaceArea);
 
 /**
 * @brief Returns the surface area of a segment of a fuselage.

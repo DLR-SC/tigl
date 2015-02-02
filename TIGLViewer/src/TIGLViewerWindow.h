@@ -25,6 +25,7 @@
 #include <QMainWindow>
 
 #include "TIGLViewerContext.h"
+#include "TIGLViewerDocument.h"
 #include "tigl.h"
 #include "CSharedPtr.h"
 
@@ -37,13 +38,13 @@ class QFileSystemWatcher;
 class QShortcut;
 class TIGLViewerLogHistory;
 class TIGLViewerLogRedirection;
-class TIGLViewerDocument;
 
 class TIGLViewerWindow : public QMainWindow, private Ui::TIGLViewerWindow
 {
     Q_OBJECT
     Q_PROPERTY(TIGLViewerWidget*  viewer READ getViewer)
     Q_PROPERTY(TIGLViewerContext* scene  READ getScene)
+    Q_CLASSINFO("Description", "TiGL Viewer Application")
 
 public:
     enum { MaxRecentFiles = 5 };
@@ -66,9 +67,9 @@ protected:
      void dragEnterEvent(QDragEnterEvent *ev);
 
 public slots:
-    void updateMenus(TiglCPACSConfigurationHandle);
-    void openFile(const QString&);
-    void openScript(const QString&);
+    void openFile(const QString& fileName);
+    void openScript(const QString& scriptFileName);
+    bool saveFile(const QString& fileName);
     void closeConfiguration();
     
     TIGLViewerWidget*   getViewer();
@@ -76,19 +77,14 @@ public slots:
     TIGLViewerDocument* getDocument() { return cpacsConfiguration; }
 
 private slots:
+    void updateMenus();
     void newFile();
     void open();
     void reopenFile();
     void openScript();
     void openRecentFile();
     void save();
-    void print();
     void setBackgroundImage();
-    void undo();
-    void redo();
-    void cut();
-    void copy();
-    void paste();
     void about();
     void aboutQt();
     void xyzPosition (V3d_Coordinate X,
@@ -103,14 +99,18 @@ private slots:
     void applySettings();
     void changeSettings();
     void makeScreenShot();
+    void drawPoint();
+    void drawVector();
 
 private:
     void connectSignals();
+    void connectConfiguration();
     void createMenus();
     void updateRecentFileActions();
     void setCurrentFile(const QString &);
 
     void closeEvent(QCloseEvent*);
+    bool deleteEnvVar(const char* varname);
 
     QAction *recentFileActions[MaxRecentFiles];
 

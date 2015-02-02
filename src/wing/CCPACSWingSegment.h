@@ -131,6 +131,12 @@ public:
 
     // Gets the surface area of this segment
     TIGL_EXPORT double GetSurfaceArea();
+    
+    TIGL_EXPORT double GetSurfaceArea(bool fromUpper, 
+                                      double eta1, double xsi1,
+                                      double eta2, double xsi2,
+                                      double eta3, double xsi3,
+                                      double eta4, double xsi4);
 
     // helper function to get the inner transformed chord line wire, used in GetLoft and when determining triangulation midpoints projection on segments in VtkExport
     TIGL_EXPORT TopoDS_Wire GetInnerWire(void);
@@ -187,7 +193,7 @@ public:
     // on the upper surface is returned, otherwise from the lower.
     // The intersection is with the wing surface is computed with a line
     // starting at a point on the chord face with the given direction dir.
-    TIGL_EXPORT gp_Pnt GetPointDirection(double eta, double xsi, double dirx, double diry, double dirz, bool fromUpper);
+    TIGL_EXPORT gp_Pnt GetPointDirection(double eta, double xsi, double dirx, double diry, double dirz, bool fromUpper, double& deviation);
 
     TIGL_EXPORT TiglGeometricComponentType GetComponentType()
     {
@@ -220,6 +226,9 @@ private:
 
     // Builds upper and lower surfaces
     void MakeSurfaces();
+    
+    // converts segment eta xsi coordinates to face uv koordinates
+    void etaXsiToUV(bool isFromUpper, double eta, double xsi, double& u, double& v);
 
     std::string          name;                 /**< Segment name                            */
     CCPACSWingConnection innerConnection;      /**< Inner segment connection (root)         */

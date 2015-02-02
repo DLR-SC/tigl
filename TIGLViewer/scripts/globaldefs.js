@@ -50,6 +50,23 @@ Point3d.help = function() {
     return s
 }
 
+function GetPointDirectionResult(point, distance) {
+    this.point = point;
+    this.errorDistance = distance;
+}
+
+GetPointDirectionResult.prototype.toString = function() {
+    return '{ point: ' + this.point + ', errorDistance = ' + this.errorDistance + ' }'; 
+}
+
+GetPointDirectionResult.prototype.getPoint = function() {
+    return this.point;
+}
+
+GetPointDirectionResult.prototype.getErrorDistance = function() {
+    return this.errorDistance;
+}
+
 function drawPoint() {
     if (arguments.length == 1) {
         p = arguments[0]
@@ -91,16 +108,74 @@ function drawShape(shape) {
     app.scene.displayShape(shape)
 }
 
-function help(arg) {
-    if (typeof arg == "object") {
-        print(arg + ":\n");
-        for(var m in arg) {
-            if(typeof arg[m] == "function") {
-                print("    " + m);
+function _getObjectMethods(obj) {
+    var res = [];
+    for (meth in obj) {
+        if (!meth.startsWith("_")) {
+            res.push(meth);
+        }
+    }
+    return res;
+}
+
+function help(arg, derived) {
+    if (_isQObject(arg)) {
+        meta = _qobjGetMetaObj(arg);
+        help(meta);
+
+    }
+    else if (_isQMetaObject(arg)) {
+        if (derived) {
+            if (_qMetaObjDescription(arg) == "QObject" ) {
+                return;
+            }
+            print("Derived from <b>" + _qMetaObjDescription(arg) + "</b> with the methods:\n")
+        }
+        else {
+            print("The <b>" + _qMetaObjDescription(arg) + "</b> class provides the following methods:\n")
+        }
+        members = _qMetaObjMembers(arg);
+        props = _qMetaObjProperties(arg);
+        for (i in members) {
+           print("    " + members[i]);
+        }
+        if (props.length > 0) {
+            if (derived) {
+                print("\nAnd properties:\n");
+            }
+            else {
+                print("\nThe following properties are defined:\n");
+            }
+            for (i in props) {
+                print("    " + props[i]);
+            }
+        }
+        sup = _qMetaObjGetSuperclass(arg);
+        if (sup) {
+            print("\n");
+            help(sup, true);
+        }
+    }
+    else if (typeof arg == "object") {
+        print("This object provides following methods:\n");
+        methods = _getObjectMethods(arg);
+        for(var i in methods) {
+            mname = methods[i];
+            meth = arg[mname];
+            if (typeof meth == "function" && !_isQMetaObject(meth)) {
+                print("    " + mname);
             }
         }
     }
     else {
         print("type: " + typeof(arg))
     }
+}
+
+// add some some convenience function
+if (typeof String.prototype.startsWith != 'function') {
+  // see below for better implementation!
+  String.prototype.startsWith = function (str){
+    return this.indexOf(str) == 0;
+  };
 }

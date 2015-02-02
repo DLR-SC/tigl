@@ -743,11 +743,17 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetUpperPointAtDirection(TiglCPACSConf
                                                                    double dirz,
                                                                    double* pointXPtr,
                                                                    double* pointYPtr,
-                                                                   double* pointZPtr)
+                                                                   double* pointZPtr,
+                                                                   double* errorDistance)
 {
     if (pointXPtr == NULL || pointYPtr == NULL || pointZPtr == NULL) {
-        LOG(ERROR) << "Error: Null pointer argument for pointXPtr, pointYPtr or pointZPtr ";
-        LOG(ERROR) << "in function call to tiglWingGetUpperPointAtDirection." << std::endl;
+        LOG(ERROR) << "Null pointer argument for pointXPtr, pointYPtr or pointZPtr "
+                   << "in function call to tiglWingGetUpperPointAtDirection.";
+        return TIGL_NULL_POINTER;
+    }
+    
+    if (errorDistance == NULL) {
+        LOG(ERROR) << "Null pointer in errorDistance argument in tiglWingGetUpperPointAtDirection.";
         return TIGL_NULL_POINTER;
     }
 
@@ -756,10 +762,17 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetUpperPointAtDirection(TiglCPACSConf
         tigl::CCPACSConfiguration & config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSWing& wing = config.GetWing(wingIndex);
         tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment&) wing.GetSegment(segmentIndex);
-        gp_Pnt point = segment.GetPointDirection(eta, xsi, dirx, diry, dirz, true);
+   
+        gp_Pnt point = segment.GetPointDirection(eta, xsi, dirx, diry, dirz, true, *errorDistance);
+        
+        if (*errorDistance > 1e-3) {
+            LOG(WARNING) << "The wing's upper skin is missed by more than 1cm  in tiglWingGetUpperPointAtDirection.";
+        }
+        
         *pointXPtr = point.X();
         *pointYPtr = point.Y();
         *pointZPtr = point.Z();
+        
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
@@ -786,11 +799,17 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetLowerPointAtDirection(TiglCPACSConf
                                                                    double dirz,
                                                                    double* pointXPtr,
                                                                    double* pointYPtr,
-                                                                   double* pointZPtr)
+                                                                   double* pointZPtr,
+                                                                   double* errorDistance)
 {
     if (pointXPtr == NULL || pointYPtr == NULL || pointZPtr == NULL) {
-        LOG(ERROR) << "Error: Null pointer argument for pointXPtr, pointYPtr or pointZPtr ";
-        LOG(ERROR) << "in function call to tiglWingGetLowerPointAtDirection." << std::endl;
+        LOG(ERROR) << "Error: Null pointer argument for pointXPtr, pointYPtr or pointZPtr "
+                   << "in function call to tiglWingGetLowerPointAtDirection.";
+        return TIGL_NULL_POINTER;
+    }
+    
+    if (errorDistance == NULL) {
+        LOG(ERROR) << "Null pointer in errorDistance argument in tiglWingGetLowerPointAtDirection.";
         return TIGL_NULL_POINTER;
     }
 
@@ -799,10 +818,16 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetLowerPointAtDirection(TiglCPACSConf
         tigl::CCPACSConfiguration & config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSWing& wing = config.GetWing(wingIndex);
         tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment&) wing.GetSegment(segmentIndex);
-        gp_Pnt point = segment.GetPointDirection(eta, xsi, dirx, diry, dirz, false);
+
+        gp_Pnt point = segment.GetPointDirection(eta, xsi, dirx, diry, dirz, false, *errorDistance);
         *pointXPtr = point.X();
         *pointYPtr = point.Y();
         *pointZPtr = point.Z();
+        
+        if (*errorDistance > 1e-3) {
+            LOG(WARNING) << "The wing's lower skin is missed by more than 1cm  in tiglWingGetLowerPointAtDirection.";
+        }
+
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {
@@ -2915,6 +2940,52 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetUID(TiglCPACSConfigurationHandl
     }
 }
 
+TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetIndex(TiglCPACSConfigurationHandle cpacsHandle,
+                                                       const char * fuselageUID,
+                                                       int* fuselageIndexPtr)
+{
+    if (fuselageUID == 0) {
+        LOG(ERROR) << "Error: Null pointer argument for fuselageUID ";
+        LOG(ERROR) << "in function call to tiglFuselageGetIndex." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+    if (fuselageIndexPtr == 0) {
+        LOG(ERROR) << "Error: Null pointer argument for fuselageIndexPtr ";
+        LOG(ERROR) << "in function call to tiglFuselageGetIndex." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+
+    try {
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+
+        int nfuselages = config.GetFuselageCount();
+        for (int ifuselage = 1; ifuselage <= nfuselages; ++ifuselage) {
+            tigl::CCPACSFuselage& fuselage = config.GetFuselage(ifuselage);
+            if (fuselage.GetUID() == std::string(fuselageUID)) {
+                *fuselageIndexPtr = ifuselage;
+                return TIGL_SUCCESS;
+            }
+        }
+
+        LOG(ERROR) << "Error in tiglFuselageGetIndex: the fuselage \"" << fuselageUID << "\" can not be found!" << std::endl;
+        *fuselageIndexPtr = -1;
+        return TIGL_UID_ERROR;
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglFuselageGetIndex!" << std::endl;
+        return TIGL_ERROR;
+    }
+}
+
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSegmentUID(TiglCPACSConfigurationHandle cpacsHandle,
                                                             int fuselageIndex,
@@ -2951,6 +3022,64 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSegmentUID(TiglCPACSConfigurati
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglFuselageGetSegmentUID!" << std::endl;
+        return TIGL_ERROR;
+    }
+}
+
+
+TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSegmentIndex(TiglCPACSConfigurationHandle cpacsHandle,
+                                                              const char * segmentUID,
+                                                              int * segmentIndex,
+                                                              int * fuselageIndex)
+{
+    if (segmentUID == 0) {
+        LOG(ERROR) << "Error: Null pointer argument for segmentUID ";
+        LOG(ERROR) << "in function call to tiglFuselageGetSegmentIndex." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+    if (segmentIndex == 0) {
+        LOG(ERROR) << "Error: Null pointer argument for segmentIndex ";
+        LOG(ERROR) << "in function call to tiglFuselageGetSegmentIndex." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+    if (fuselageIndex == 0) {
+        LOG(ERROR) << "Error: Null pointer argument for fuselageIndex ";
+        LOG(ERROR) << "in function call to tiglFuselageGetSegmentIndex." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+
+    try {
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+
+        for (int iFuselage = 1; iFuselage <= config.GetFuselageCount(); ++iFuselage) {
+            tigl::CCPACSFuselage& fuselage = config.GetFuselage(iFuselage);
+            try {
+                int fuselageSegIndex = fuselage.GetSegment(segmentUID).GetSegmentIndex();
+                *segmentIndex = fuselageSegIndex;
+                *fuselageIndex = iFuselage;
+                return TIGL_SUCCESS;
+            }
+            catch (tigl::CTiglError&) {
+                continue;
+            }
+        }
+
+        LOG(ERROR) << "Error in tiglFuselageGetSegmentIndex: could not find a fuselage index with given uid \"" << segmentUID << "\".";
+        *segmentIndex = -1;
+        *fuselageIndex = -1;
+        return TIGL_UID_ERROR;
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglFuselageGetSegmentIndex!" << std::endl;
         return TIGL_ERROR;
     }
 }
@@ -4700,6 +4829,100 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSegmentSurfaceArea(TiglCPACSCon
     }
     catch (...) {
         LOG(ERROR) << "Caught an exception in tiglFuselageGetSegmentSurfaceArea!" << std::endl;
+        return TIGL_ERROR;
+    }
+}
+
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSegmentUpperSurfaceAreaTrimmed(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                            int wingIndex,
+                                                                            int segmentIndex,
+                                                                            double eta1, double xsi1,
+                                                                            double eta2, double xsi2,
+                                                                            double eta3, double xsi3,
+                                                                            double eta4, double xsi4,
+                                                                            double* surfaceArea)
+{
+    if (surfaceArea == 0) {
+        LOG(ERROR) << "Error: Null pointer argument for surfaceArea "
+                   << "in function call to tiglWingGetSegmentUpperSurfaceAreaTrimmed.";
+        return TIGL_NULL_POINTER;
+    }
+
+    if (wingIndex < 1 || segmentIndex < 1) {
+        LOG(ERROR) << "Error: Wing or segment index index in less than one "
+                   << "in function call to tiglWingGetSegmentUpperSurfaceAreaTrimmed.";
+        return TIGL_INDEX_ERROR;
+    }
+    
+    try {
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+        tigl::CCPACSWing& wing = config.GetWing(wingIndex);
+        tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment&) wing.GetSegment(segmentIndex);
+        *surfaceArea = segment.GetSurfaceArea(true, 
+                                              eta1, xsi1,
+                                              eta2, xsi2,
+                                              eta3, xsi3,
+                                              eta4, xsi4);
+        return TIGL_SUCCESS;
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglWingGetSegmentUpperSurfaceAreaTrimmed!" << std::endl;
+        return TIGL_ERROR;
+    }
+}
+
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSegmentLowerSurfaceAreaTrimmed(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                            int wingIndex,
+                                                                            int segmentIndex,
+                                                                            double eta1, double xsi1,
+                                                                            double eta2, double xsi2,
+                                                                            double eta3, double xsi3,
+                                                                            double eta4, double xsi4,
+                                                                            double* surfaceArea)
+{
+    if (surfaceArea == 0) {
+        LOG(ERROR) << "Error: Null pointer argument for surfaceArea "
+                   << "in function call to tiglWingGetSegmentLowerSurfaceAreaTrimmed.";
+        return TIGL_NULL_POINTER;
+    }
+
+    if (wingIndex < 1 || segmentIndex < 1) {
+        LOG(ERROR) << "Error: Wing or segment index index in less than one "
+                   << "in function call to tiglWingGetSegmentLowerSurfaceAreaTrimmed.";
+        return TIGL_INDEX_ERROR;
+    }
+    
+    try {
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+        tigl::CCPACSWing& wing = config.GetWing(wingIndex);
+        tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment&) wing.GetSegment(segmentIndex);
+        *surfaceArea = segment.GetSurfaceArea(false, 
+                                              eta1, xsi1,
+                                              eta2, xsi2,
+                                              eta3, xsi3,
+                                              eta4, xsi4);
+        return TIGL_SUCCESS;
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglWingGetSegmentLowerSurfaceAreaTrimmed!" << std::endl;
         return TIGL_ERROR;
     }
 }

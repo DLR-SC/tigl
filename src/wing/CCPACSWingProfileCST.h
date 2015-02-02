@@ -27,6 +27,7 @@
 #include "ITiglWingProfileAlgo.h"
 
 #include <vector>
+#include <TopoDS_Edge.hxx>
 
 #ifndef CCPACSWINGPROFILECST_H
 #define CCPACSWINGPROFILECST_H
@@ -88,9 +89,6 @@ protected:
     // Builds the wing profile wires.
     void BuildWires();
 
-    // Builds leading and trailing edge points of the wing profile wire.
-    void BuildLETEPoints(void);
-
 private:
     // Copy constructor
     CCPACSWingProfileCST(const CCPACSWingProfileCST& );
@@ -99,9 +97,6 @@ private:
     void operator=(const CCPACSWingProfileCST& );
 
 private:
-    CCPACSCoordinateContainer coordinates;        /**< Coordinates of a wing profile element */
-    CCPACSCoordinateContainer upperCoordinates;   /**< Coordinates of the upper part of the wing profile*/
-    CCPACSCoordinateContainer lowerCoordinates;   /**< Coordinates of the upper part of the wing profile*/
     std::string               ProfileDataXPath;   /**< CPACS path to profile data (pointList or cst2D) */
     TopoDS_Edge               upperEdge;          /**< edge of the upper wing profile */
     TopoDS_Edge               lowerEdge;          /**< edge of the lower wing profile */
@@ -109,7 +104,6 @@ private:
     TopoDS_Edge               trailingEdge;       /**< edge of the trailing edge */
     gp_Pnt                    lePoint;            /**< Leading edge point */
     gp_Pnt                    tePoint;            /**< Trailing edge point */
-    std::vector<double>       psi;                /**< sample points on CST curve */
     double                    upperN1;            /**< CST parameter N1 */
     double                    upperN2;            /**< CST parameter N2 */
     std::vector<double>       upperB;             /**< CST parameter B */

@@ -148,7 +148,7 @@ TiglReturnCode CTiglOptimizer::optNewton2d(const class ITiglObjectiveFunction& f
 
 #ifdef DEBUG
         DLOG(INFO) << "Iter=" << iter+1 << " eta;xi=(" << x[0] << ";" << x[1] << ") f=" << of
-                   << " norm(grad)=" << grad[0]*grad[0]+grad[1]*grad[1] <<  " alpha=" << alpha << std::endl;
+                   << " norm(grad)=" << sqrt(grad[0]*grad[0]+grad[1]*grad[1]) <<  " alpha=" << alpha << std::endl;
 #endif
 
         iter++;
