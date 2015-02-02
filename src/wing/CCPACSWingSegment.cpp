@@ -313,16 +313,12 @@ TopoDS_Wire CCPACSWingSegment::GetInnerWire(void)
     * In all other cases, we need the splitted wire to distiguish
     * upper und lower wing surface
     */
-#ifdef LOFTALGO_FOUND
     if (guideCurves.GetGuideCurveCount() > 0) {
         w = innerProfile.GetWire();
     }
     else {
         w = innerProfile.GetSplitWire();
     }
-#else
-    w = innerProfile.GetSplitWire();
-#endif
     return TopoDS::Wire(transformProfileWire(GetWing().GetTransformation(), innerConnection, w));
 }
 
@@ -338,16 +334,12 @@ TopoDS_Wire CCPACSWingSegment::GetOuterWire(void)
     * In all other cases, we need the splitted wire to distiguish
     * upper und lower wing surface
     */
-#ifdef LOFTALGO_FOUND
     if (guideCurves.GetGuideCurveCount() > 0) {
         w = outerProfile.GetWire();
     }
     else {
         w = outerProfile.GetSplitWire();
     }
-#else
-    w = outerProfile.GetSplitWire();
-#endif
     return TopoDS::Wire(transformProfileWire(GetWing().GetTransformation(), outerConnection, w));
 }
 

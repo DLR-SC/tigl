@@ -25,9 +25,6 @@ include_directories(${OpenCASCADE_INCLUDE_DIR}
                     ${TIGL_INCLUDES}
 )
 
-if(LOFTALGO_FOUND)
-  include_directories(${LOFTALGO_INCLUDE_DIRS})
-endif()
 
 file(GLOB_RECURSE TIGL_SRC
     "*.h"
@@ -64,9 +61,6 @@ set(TIGL_LIBRARIES ${OpenCASCADE_LIBRARIES} ${TIXI_LIBRARIES} ${VLD_LIBRARIES} $
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   set(TIGL_LIBRARIES  ${TIGL_LIBRARIES} rt)
 endif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-if(LOFTALGO_FOUND)
-  set(TIGL_LIBRARIES  ${TIGL_LIBRARIES} ${LOFTALGO_LIBRARIES})
-endif(LOFTALGO_FOUND)
 
 target_link_libraries (TIGL ${TIGL_LIBRARIES})
 set_target_properties( TIGL PROPERTIES VERSION ${TIGL_VERSION})

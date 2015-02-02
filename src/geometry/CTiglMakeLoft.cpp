@@ -21,15 +21,14 @@
 #include "tiglcommonfunctions.h"
 #include "CTiglLogging.h"
 
+#include "contrib/MakePatches.hxx"
+
 #include <TopoDS.hxx>
 #include <TopoDS_Compound.hxx>
 #include <TopExp.hxx>
 #include <BRep_Builder.hxx>
 #include <BRepLib.hxx>
 #include <BRepTools.hxx>
-#ifdef LOFTALGO_FOUND
-  #include <MakePatches.hxx>
-#endif
 #include <BRepOffsetAPI_ThruSections.hxx>
 #include <BRepBuilderAPI_FindPlane.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
@@ -111,12 +110,8 @@ void CTiglMakeLoft::Perform()
     }
     
     if (guides.size() > 0) {
-#ifdef LOFTALGO_FOUND
         // to the loft with guides
         makeLoftWithGuides();
-#else
-        makeLoftWithoutGuides();
-#endif
     }
     else {
         makeLoftWithoutGuides();
@@ -139,7 +134,6 @@ void CTiglMakeLoft::setMakeSmooth(bool enabled)
  */
 void CTiglMakeLoft::makeLoftWithGuides()
 {
-#ifdef LOFTALGO_FOUND
     BRep_Builder b;
     TopoDS_Compound cprof, cguid;
     b.MakeCompound(cprof);
@@ -231,7 +225,6 @@ void CTiglMakeLoft::makeLoftWithGuides()
         _result = MakeShells(faces, 1e-6);
     }
     BRepLib::EncodeRegularity(_result);
-#endif // LOFTALGO_FOUND
 }
 
 void CTiglMakeLoft::makeLoftWithoutGuides()

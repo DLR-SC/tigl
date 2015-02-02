@@ -82,9 +82,6 @@ else(OCE_FOUND)
   find_package(OpenCASCADE 6.6.0 REQUIRED COMPONENTS ${OCC_LIBS})
 endif(OCE_FOUND)
 
-# search loftalgo library
-find_package(LOFTALGO)
-
 # search TiXI
 set(TIXI_PATH "" CACHE PATH "TiXI installation prefix")
 set(CMAKE_PREFIX_PATH "${TIXI_PATH};${CMAKE_PREFIX_PATH}")
@@ -105,6 +102,8 @@ if(TIGL_USE_GLOG)
       message(STATUS "Google GLOG not found. Advanced logging disabled.")
     endif()
 endif(TIGL_USE_GLOG)
+
+OPTION(TIGL_OCE_COONS_PATCHED "Check, if you have the OCCT source patched with the C2 coons algorithm" OFF)
 
 # check for include files and other functions
 INCLUDE(CheckCXXSourceCompiles)
