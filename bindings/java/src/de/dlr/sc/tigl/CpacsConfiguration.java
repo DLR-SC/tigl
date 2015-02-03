@@ -30,10 +30,12 @@ import com.sun.jna.ptr.DoubleByReference;
 import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.ptr.PointerByReference;
 
-import de.dlr.sc.tigl.Tigl.GetPointDirectionResult;
+import de.dlr.sc.tigl.Tigl.WCSFindSegmentResult;
+import de.dlr.sc.tigl.Tigl.WCSGetSegmentEtaXsiResult;
+import de.dlr.sc.tigl.Tigl.WGetPointDirectionResult;
+import de.dlr.sc.tigl.Tigl.WSProjectionResult;
 import de.dlr.sc.tigl.Tigl.WingCoordinates;
 import de.dlr.sc.tigl.Tigl.WingGetSegmentIndexResult;
-import de.dlr.sc.tigl.Tigl.WingSegmentProjectionResult;
 
 public class CpacsConfiguration implements AutoCloseable {
     
@@ -214,10 +216,20 @@ public class CpacsConfiguration implements AutoCloseable {
         return new WingGetSegmentIndexResult(c_windex.getValue(), c_sindex.getValue());
     }
 
+
     /**
+     * Inverse function to tiglWingGetLowerPoint and tiglWingGetLowerPoint. 
+     * Calculates to a point (x,y,z) in global coordinates the wing segment
+     * coordinates and the wing segment index. 
      * 
+     * @param wingIndex - The index of the wing, starting at 1 
+     * @param p - The point that should be projected onto the wing segment
+     * 
+     * @return Eta and Xsi coordinates of the point in segment coordinates
+     * 
+     * @throws TiglException
      */
-    public WingSegmentProjectionResult wingGetSegmentEtaXsi(final int wingIndex, final TiglPoint p) throws TiglException {
+    public WSProjectionResult wingGetSegmentEtaXsi(final int wingIndex, final TiglPoint p) throws TiglException {
         checkTiglConfiguration();
         DoubleByReference c_eta = new DoubleByReference();
         DoubleByReference c_xsi = new DoubleByReference();
@@ -230,10 +242,40 @@ public class CpacsConfiguration implements AutoCloseable {
         
         throwIfError("tiglWingGetSegmentEtaXsi", errorCode);
         
-        return new WingSegmentProjectionResult(
+        return new WSProjectionResult(
                 new WingCoordinates(c_eta.getValue(), c_xsi.getValue()),
                 c_Top.getValue() == 1,
                 c_sIdx.getValue());
+    }
+    
+    /**
+     * Returns eta, xsi coordinates of a componentSegment given 
+     * segmentEta and segmentXsi on a wing segment.
+     * 
+     * @param segmentUID - UID of the wing segment to search for 
+     * @param componentSegmentUID - UID of the associated componentSegment 
+     * @param segmentEta, segmentXsi - Eta and Xsi coordinates of the point on the wing segment
+     *  
+     * @return  Eta and Xsi Coordinates of the point on the corresponding component segment. 
+     * 
+     * @throws TiglException
+     */
+    public WingCoordinates wingSegmentPointGetComponentSegmentEtaXsi(
+            final String segmentUID, final String componentSegmentUID,
+            final double segmentEta, final double segmentXsi) throws TiglException {
+        
+        checkTiglConfiguration();
+        
+        DoubleByReference c_eta = new DoubleByReference();
+        DoubleByReference c_xsi = new DoubleByReference();
+        
+        errorCode = TiglNativeInterface.tiglWingSegmentPointGetComponentSegmentEtaXsi(
+                cpacsHandle, segmentUID, componentSegmentUID, 
+                segmentEta, segmentXsi, c_eta, c_eta);
+        
+        throwIfError("tiglWingSegmentPointGetComponentSegmentEtaXsi", errorCode);
+        
+        return new WingCoordinates(c_eta.getValue(), c_xsi.getValue());
     }
     
     /**
@@ -318,7 +360,7 @@ public class CpacsConfiguration implements AutoCloseable {
      * @return - a Point and an error distance (see documentation)
      * @throws TiglException 
      */
-    public GetPointDirectionResult wingGetUpperPointAtDirection(final int wingIndex, final int segmentIndex, final double eta, final double xsi, TiglPoint direction) throws TiglException {
+    public WGetPointDirectionResult wingGetUpperPointAtDirection(final int wingIndex, final int segmentIndex, final double eta, final double xsi, final TiglPoint direction) throws TiglException {
         TiglPoint point = new TiglPoint();
 
         checkTiglConfiguration();
@@ -339,7 +381,7 @@ public class CpacsConfiguration implements AutoCloseable {
         point.setY(pointY.getValue());
         point.setZ(pointZ.getValue());
 
-        GetPointDirectionResult result = new GetPointDirectionResult(point, errDist.getValue());
+        WGetPointDirectionResult result = new WGetPointDirectionResult(point, errDist.getValue());
 
         return result;
     }
@@ -361,7 +403,7 @@ public class CpacsConfiguration implements AutoCloseable {
      * @return - The point and an error distance (see documentation)
      * @throws TiglException 
      */
-    public GetPointDirectionResult wingGetLowerPointAtDirection(final int wingIndex, final int segmentIndex, final double eta, final double xsi, TiglPoint direction) throws TiglException {
+    public WGetPointDirectionResult wingGetLowerPointAtDirection(final int wingIndex, final int segmentIndex, final double eta, final double xsi, final TiglPoint direction) throws TiglException {
         TiglPoint point = new TiglPoint();
 
         checkTiglConfiguration();
@@ -382,7 +424,7 @@ public class CpacsConfiguration implements AutoCloseable {
         point.setY(pointY.getValue());
         point.setZ(pointZ.getValue());
 
-        GetPointDirectionResult result = new GetPointDirectionResult(point, errDist.getValue());
+        WGetPointDirectionResult result = new WGetPointDirectionResult(point, errDist.getValue());
 
         return result;
     }
@@ -428,7 +470,7 @@ public class CpacsConfiguration implements AutoCloseable {
      * @return Number of connected segments
      * @throws TiglException
      */
-    public int wingGetInnerConnectedSegmentCount(int wingIndex, int segmentIndex) throws TiglException {
+    public int wingGetInnerConnectedSegmentCount(final int wingIndex, final int segmentIndex) throws TiglException {
         checkTiglConfiguration();
         
         IntByReference c_segCount = new IntByReference();
@@ -448,7 +490,7 @@ public class CpacsConfiguration implements AutoCloseable {
      * @return Number of connected segments
      * @throws TiglException
      */
-    public int wingGetOuterConnectedSegmentCount(int wingIndex, int segmentIndex) throws TiglException {
+    public int wingGetOuterConnectedSegmentCount(final int wingIndex, final int segmentIndex) throws TiglException {
         checkTiglConfiguration();
         
         IntByReference c_segCount = new IntByReference();
@@ -469,7 +511,7 @@ public class CpacsConfiguration implements AutoCloseable {
      * @return Index of the n-th connected segment
      * @throws TiglException
      */
-    public int wingGetInnerConnectedSegmentIndex(int wingIndex, int segmentIndex, int n) throws TiglException {
+    public int wingGetInnerConnectedSegmentIndex(final int wingIndex, final int segmentIndex, final int n) throws TiglException {
         checkTiglConfiguration();
         
         IntByReference c_segIndex = new IntByReference();
@@ -490,7 +532,7 @@ public class CpacsConfiguration implements AutoCloseable {
      * @return Index of the n-th connected segment
      * @throws TiglException
      */
-    public int wingGetOuterConnectedSegmentIndex(int wingIndex, int segmentIndex, int n) throws TiglException {
+    public int wingGetOuterConnectedSegmentIndex(final int wingIndex, final int segmentIndex, final int n) throws TiglException {
         checkTiglConfiguration();
         
         IntByReference c_segIndex = new IntByReference();
@@ -532,6 +574,38 @@ public class CpacsConfiguration implements AutoCloseable {
         return point;
     }
     
+    /**
+     * Returns the name of a wing profile.
+     * 
+     * @param wingIndex - The index of a wing, starting at 1
+     * @param sectionIndex - The index of a section, starting at 1 
+     * @param elementIndex - The index of an element on the section
+     * 
+     * @return The name of the wing profile
+     * 
+     * @throws TiglException
+     */
+    public String wingGetProfileName(final int wingIndex, final int sectionIndex, final int elementIndex) throws TiglException {
+        checkTiglConfiguration();
+        PointerByReference c_puid = new PointerByReference();
+        
+        errorCode = TiglNativeInterface.tiglWingGetProfileName(cpacsHandle, wingIndex, sectionIndex, elementIndex, c_puid);
+        
+        throwIfError("tiglWingGetProfileName", elementIndex);
+        
+        return c_puid.getValue().getString(0);
+    }
+    
+    /**
+     * Returns the reference area of the wing. 
+     * 
+     * @param wingIndex - Index of the Wing to calculate the area, starting at 1 
+     * @param projectionPlane - Plane on which the wing is projected for calculating the refarea
+     *
+     * @return The reference area of the wing
+     * 
+     * @throws TiglException
+     */
     public double wingGetReferenceArea(final int wingIndex, final TiglSymmetryAxis projectionPlane) throws TiglException {
         checkTiglConfiguration();
         
@@ -552,7 +626,7 @@ public class CpacsConfiguration implements AutoCloseable {
      * @return Point on the wing component segment
      * @throws TiglException 
      */
-    public TiglPoint wingComponentSegmentGetPoint(String componentSegmentUID, double eta, double xsi) throws TiglException {
+    public TiglPoint wingComponentSegmentGetPoint(final String componentSegmentUID, final double eta, final double xsi) throws TiglException {
         TiglPoint point = new TiglPoint();
 
         checkTiglConfiguration();
@@ -571,6 +645,143 @@ public class CpacsConfiguration implements AutoCloseable {
 
         return point;
     }
+    
+    /**
+     * Returns the segmentUID and wingUID for a given point on a componentSegment.
+     * 
+     * @param componentSegmentUID - UID of the componentSegment to search for 
+     * @param p - 3D Coordinates of the point of the componentSegment
+     * 
+     * @return Wing UID and SegmentUID to which the point belongs to
+     * 
+     * @throws TiglException
+     */
+    public WCSFindSegmentResult wingComponentSegmentFindSegment(final String componentSegmentUID, final TiglPoint p) throws TiglException {
+        checkTiglConfiguration();
+        
+        PointerByReference c_wuid = new PointerByReference();
+        PointerByReference c_suid = new PointerByReference();
+        
+        errorCode = TiglNativeInterface.tiglWingComponentSegmentFindSegment(
+                cpacsHandle, 
+                componentSegmentUID, 
+                p.getX(), p.getY(), p.getZ(), 
+                c_suid, c_wuid);
+        throwIfError("tiglWingComponentSegmentFindSegment", errorCode);
+        
+        
+        return new WCSFindSegmentResult(
+                c_wuid.getValue().getString(0), 
+                c_suid.getValue().getString(0));
+    }
+    
+    /**
+     * Returns eta, xsi, segmentUID and wingUID for a given eta and xsi on a componentSegment. 
+     * 
+     * @param componentSegmentUID - UID of the componentSegment to search for
+     * @param csEta, csXsi - Eta and Xsi of the point of the componentSegment 
+     * 
+     * 
+     * @return Wing UID, SegmentUID, eta and xsi coordinates of the wing segment 
+     * @throws TiglException
+     */
+    public WCSGetSegmentEtaXsiResult wingComponentSegmentPointGetSegmentEtaXsi(final String componentSegmentUID, final double csEta, final double csXsi)  throws TiglException {
+        checkTiglConfiguration();
+        
+        PointerByReference c_wuid = new PointerByReference();
+        PointerByReference c_suid = new PointerByReference();
+        DoubleByReference  c_eta = new DoubleByReference();
+        DoubleByReference  c_xsi = new DoubleByReference();
+        
+        errorCode = TiglNativeInterface.tiglWingComponentSegmentPointGetSegmentEtaXsi(
+                cpacsHandle, 
+                componentSegmentUID, csEta, csXsi, 
+                c_wuid, c_suid, c_eta, c_xsi);
+        
+        throwIfError("tiglWingComponentSegmentPointGetSegmentEtaXsi", errorCode);
+        
+        return new WCSGetSegmentEtaXsiResult(
+                c_wuid.getValue().getString(0),
+                c_suid.getValue().getString(0),
+                c_eta.getValue(),
+                c_xsi.getValue());
+    }
+    
+    /**
+     * Computes the intersection of a line (defined by component segment coordinates) 
+     * with an iso-eta line on a specified wing segment. 
+     * 
+     * @param componenSegmentUID - UID of the componentSegment 
+     * @param segmentUID - UID of the segment, the intersection should be calculated with
+     * @param csEta1, csEta2 - Start and end eta coordinates of the intersection line (given as component segment coordinates) 
+     * @param csXsi1, csXsi2 - Start and end xsi coordinates of the intersection line (given as component segment coordinates) 
+     * @param segmentEta -  Eta coordinate of the iso-eta segment intersection line
+     * 
+     * @return Xsi coordinate of the intersection point on the wing segment
+     * @throws TiglException
+     */
+    public double wingComponentSegmentGetSegmentIntersection(final String componentSegmentUID,
+            final String segmentUID,
+            final double csEta1, final double csXsi1,
+            final double csEta2, final double csXsi2,
+            final double segmentEta) throws TiglException {
+        
+        checkTiglConfiguration();
+        
+        DoubleByReference c_sxsi = new DoubleByReference();
+        
+        errorCode = TiglNativeInterface.tiglWingComponentSegmentGetSegmentIntersection(
+                cpacsHandle, 
+                componentSegmentUID, 
+                segmentUID, 
+                csEta1, csXsi1, csEta2, csXsi2, 
+                segmentEta, c_sxsi);
+        
+        throwIfError("tiglWingComponentSegmentGetSegmentIntersection", errorCode);
+        
+        return c_sxsi.getValue();
+    }
+    
+    /**
+     * Returns the number of segments belonging to a component segment.
+     * 
+     * @param componentSegmentUID - UID of the componentSegment
+     * 
+     * @return Number of segments belonging to the component segment
+     * @throws TiglException
+     */
+    public int wingComponentSegmentGetNumberOfSegments(final String componentSegmentUID) throws TiglException {
+        
+        checkTiglConfiguration();
+        
+        IntByReference c_scount = new IntByReference();
+        
+        errorCode = TiglNativeInterface.tiglWingComponentSegmentGetNumberOfSegments(cpacsHandle, componentSegmentUID, c_scount);
+        throwIfError("tiglWingComponentSegmentGetNumberOfSegments", errorCode);
+        
+        return c_scount.getValue();
+    }
+    
+    /**
+     * Returns the segment UID of a segment belonging to a component segment. The segment is
+     * specified with its index,which is in the 1...nsegments. The number of segments
+     * nsegments can be queried with tiglWingComponentSegmentGetNumberOfSegments. 
+     * 
+     * @param componentSegmentUID - UID of the componentSegment 
+     * @param segmentIndex - Index of the segment (1 <= index <= nsegments) 
+     * @return UID of the segment
+     * 
+     * @throws TiglException
+     */
+    public String wingComponentSegmentGetSegmentUID(final String componentSegmentUID, final int segmentIndex) throws TiglException {
+        checkTiglConfiguration();
+        
+        PointerByReference c_suid = new PointerByReference();
+        errorCode = TiglNativeInterface.tiglWingComponentSegmentGetSegmentUID(cpacsHandle, componentSegmentUID, segmentIndex, c_suid);
+        throwIfError("tiglWingComponentSegmentGetSegmentUID", cpacsHandle);
+        
+        return c_suid.getValue().getString(0);
+    }
 
     /**
      * Returns the number of fuselages defined for the current configuration
@@ -587,7 +798,14 @@ public class CpacsConfiguration implements AutoCloseable {
         return fuselageCount.getValue();
     }
     
-    
+    /**
+     * Returns the UID of a fuselage.
+     * 
+     * @param fuselageIndex - The index of a fuselage, starting at 1 
+     * 
+     * @return The uid of the fuselage
+     * @throws TiglException
+     */
     public String fuselageGetUID(final int fuselageIndex) throws TiglException {
         checkTiglConfiguration();
 
@@ -646,7 +864,7 @@ public class CpacsConfiguration implements AutoCloseable {
      * @return Number of fuselage segments
      * @throws TiglException 
      */
-    public int fuselageGetSegmentCount(int fuselageIndex) throws TiglException {
+    public int fuselageGetSegmentCount(final int fuselageIndex) throws TiglException {
         checkTiglConfiguration();
 
         
@@ -711,6 +929,394 @@ public class CpacsConfiguration implements AutoCloseable {
 
         return point;
     }
+    
+    /**
+     * 
+     * Returns a point on a fuselage surface for a given fuselage and segment 
+     * index and an angle alpha (degree). 
+     * 
+     * @param fuselageIndex - The index number of the fuselage starting at 1
+     * @param segmentIndex- The index of the segment of the fuselage, starting at 1 
+     * @param eta - Eta in the range 0.0 <= eta <= 1.0 
+     * @param alpha - Angle alpha in degrees. No range restrictions.
+     * 
+     * @return - a Point object with x, y, z.
+     * @throws TiglException 
+     */
+    public TiglPoint fuselageGetPointAngle(final int fuselageIndex, final int segmentIndex, final double eta, final double alpha) throws TiglException {
+        TiglPoint point = new TiglPoint();
+
+        checkTiglConfiguration();
+
+
+        DoubleByReference pointX = new DoubleByReference();
+        DoubleByReference pointY = new DoubleByReference();
+        DoubleByReference pointZ = new DoubleByReference();
+
+        // get lower Point from TIGL
+        errorCode = TiglNativeInterface.tiglFuselageGetPointAngle(cpacsHandle, fuselageIndex, segmentIndex, eta, alpha, pointX, pointY, pointZ);
+        throwIfError("tiglFuselageGetPointAngle", errorCode);
+
+        point.setX(pointX.getValue());
+        point.setY(pointY.getValue());
+        point.setZ(pointZ.getValue());
+
+        return point;
+    }
+    
+    /**
+     * Returns a point on a fuselage surface for a given fuselage and segment index
+     * and an angle alpha (degree). 0 degree of the angle alpha is meant to be "up"
+     * in the direction of the positive z-axis like specifies in cpacs. The origin of
+     * the line that will be rotated with the angle alpha could be translated via 
+     * the parameters y_cs and z_cs. 
+     * 
+     * @param fuselageIndex - The index number of the fuselage starting at 1
+     * @param segmentIndex- The index of the segment of the fuselage, starting at 1 
+     * @param eta - Eta in the range 0.0 <= eta <= 1.0 
+     * @param alpha - Angle alpha in degrees. No range restrictions.
+     * @param y_cs - Shifts the origin of the angle alpha in y-direction.
+     * @param z_cs - Shifts the origin of the angle alpha in z-direction. 
+     * 
+     * @return - A Point on the fuselage in world coordinates.
+     * @throws TiglException 
+     */
+    public TiglPoint fuselageGetPointAngleTranslated(
+            final int fuselageIndex, final int segmentIndex, 
+            final double eta, final double alpha,
+            final double y_cs, final double z_cs) throws TiglException {
+
+        checkTiglConfiguration();
+
+        DoubleByReference pointX = new DoubleByReference();
+        DoubleByReference pointY = new DoubleByReference();
+        DoubleByReference pointZ = new DoubleByReference();
+
+        // get lower Point from TIGL
+        errorCode = TiglNativeInterface.tiglFuselageGetPointAngleTranslated(
+                cpacsHandle, fuselageIndex, segmentIndex, eta, alpha, 
+                y_cs, z_cs,
+                pointX, pointY, pointZ);
+        
+        throwIfError("tiglFuselageGetPointAngleTranslated", errorCode);
+
+        return new TiglPoint(pointX.getValue(), pointY.getValue(), pointZ.getValue());
+    }
+    
+    /**
+     * Returns a point on a fuselage surface for a given fuselage and segment index.
+     * 
+     * @param fuselageIndex - The index of the fuselage, starting at 1 
+     * @param segmentIndex - The index of the segment of the fuselage, starting at 1
+     * @param eta - eta in the range 0.0 <= eta <= 1.0
+     * @param xpos - x position of a cutting plane
+     * @param pointIndex - Defines witch point if more than one.
+     * 
+     * @return Point in absolute world coordinates 
+     * @throws TiglException
+     */
+    public TiglPoint fuselageGetPointOnXPlane(final int fuselageIndex, final int segmentIndex,
+            final double eta, final double xpos, final int pointIndex) throws TiglException {
+        
+        checkTiglConfiguration();
+        
+        DoubleByReference pointX = new DoubleByReference();
+        DoubleByReference pointY = new DoubleByReference();
+        DoubleByReference pointZ = new DoubleByReference();
+        
+        errorCode = TiglNativeInterface.tiglFuselageGetPointOnXPlane(
+                cpacsHandle, fuselageIndex, segmentIndex, 
+                eta, xpos, pointIndex, 
+                pointX, pointY, pointZ);
+        
+        throwIfError("tiglFuselageGetPointOnXPlane", errorCode);
+        
+        return new TiglPoint(pointX.getValue(), pointY.getValue(), pointZ.getValue());
+    }
+    
+    /**
+     * Returns a point on a fuselage surface for a given fuselage and segment index.
+     * 
+     * @param fuselageIndex - The index of the fuselage, starting at 1 
+     * @param segmentIndex - The index of the segment of the fuselage, starting at 1
+     * @param eta - eta in the range 0.0 <= eta <= 1.0
+     * @param ypos - y position of a cutting plane
+     * @param pointIndex - Defines witch point if more than one.
+     * 
+     * @return Point in absolute world coordinates 
+     * @throws TiglException
+     */
+    public TiglPoint fuselageGetPointOnYPlane(final int fuselageIndex, final int segmentIndex,
+            final double eta, final double ypos, final int pointIndex) throws TiglException {
+        
+        checkTiglConfiguration();
+        
+        DoubleByReference pointX = new DoubleByReference();
+        DoubleByReference pointY = new DoubleByReference();
+        DoubleByReference pointZ = new DoubleByReference();
+        
+        errorCode = TiglNativeInterface.tiglFuselageGetPointOnYPlane(
+                cpacsHandle, fuselageIndex, segmentIndex, 
+                eta, ypos, pointIndex, 
+                pointX, pointY, pointZ);
+        
+        throwIfError("tiglFuselageGetPointOnYPlane", errorCode);
+        
+        return new TiglPoint(pointX.getValue(), pointY.getValue(), pointZ.getValue());
+    }
+    
+    /**
+     * Returns the number of points on a fuselage surface
+     * for a given fuselage and a give x-position.
+     * 
+     * @param fuselageIndex - The index of the fuselage, starting at 1 
+     * @param segmentIndex - The index of the segment of the fuselage, starting at 1
+     * @param eta - eta in the range 0.0 <= eta <= 1.0
+     * @param xpos - x position of a cutting plane
+     * 
+     * 
+     * @return The number of intersection points
+     * @throws TiglException
+     */
+    public int fuselageGetNumPointsOnXPlane(final int fuselageIndex, final int segmentIndex,
+            final double eta, final double xpos) throws TiglException {
+        
+        checkTiglConfiguration();
+        IntByReference c_count = new IntByReference();
+        
+        errorCode = TiglNativeInterface.tiglFuselageGetNumPointsOnXPlane(
+                cpacsHandle, fuselageIndex, segmentIndex, eta, xpos, c_count);
+        
+        throwIfError("tiglFuselageGetNumPointsOnXPlane", errorCode);
+        
+        return c_count.getValue();
+    }
+    
+    /**
+     * Returns the number of points on a fuselage surface
+     * for a given fuselage and a give x-position.
+     * 
+     * @param fuselageIndex - The index of the fuselage, starting at 1 
+     * @param segmentIndex - The index of the segment of the fuselage, starting at 1
+     * @param eta - eta in the range 0.0 <= eta <= 1.0
+     * @param ypos - x position of a cutting plane
+     * 
+     * 
+     * @return The number of intersection points
+     * @throws TiglException
+     */
+    public int fuselageGetNumPointsOnYPlane(final int fuselageIndex, final int segmentIndex,
+            final double eta, final double ypos) throws TiglException {
+        
+        checkTiglConfiguration();
+        IntByReference c_count = new IntByReference();
+        
+        errorCode = TiglNativeInterface.tiglFuselageGetNumPointsOnYPlane(
+                cpacsHandle, fuselageIndex, segmentIndex, eta, ypos, c_count);
+        
+        throwIfError("tiglFuselageGetNumPointsOnYPlane", errorCode);
+        
+        return c_count.getValue();
+    }
+    
+    /**
+     * Returns the circumference of a fuselage surface for a given fuselage and segment index and an eta.
+     * 
+     * @param fuselageIndex - The index of the fuselage, starting at 1 
+     * @param segmentIndex - The index of the segment of the fuselage, starting at 1
+     * @param eta - eta in the range 0.0 <= eta <= 1.0
+     * 
+     * @return The Circumference of the fuselage at the given position
+     * @throws TiglException
+     */
+    public double fuselageGetCircumference(final int fuselageIndex, final int segmentIndex, final double eta)  throws TiglException {
+        checkTiglConfiguration();
+        
+        DoubleByReference c_circ = new DoubleByReference();
+        
+        errorCode = TiglNativeInterface.tiglFuselageGetCircumference(cpacsHandle, fuselageIndex, segmentIndex, eta, c_circ);
+        throwIfError("tiglFuselageGetCircumference", errorCode);
+        
+        return c_circ.getValue();
+    }
+    
+    /**
+     * Returns the count of segments connected to the
+     * start section of a given fuselage segment. 
+     * 
+     * @param fuselageIndex - The index of the fuselage, starting at 1 
+     * @param segmentIndex - The index of the segment of the fuselage, starting at 1
+     *
+     * @return The number of connected segments
+     * @throws TiglException
+     */
+    public int fuselageGetStartConnectedSegmentCount(final int fuselageIndex, final int segmentIndex) throws TiglException {
+        checkTiglConfiguration();
+        
+        IntByReference c_count = new IntByReference();
+        
+        errorCode = TiglNativeInterface.tiglFuselageGetStartConnectedSegmentCount(cpacsHandle, fuselageIndex, segmentIndex, c_count);
+        throwIfError("tiglFuselageGetStartConnectedSegmentCount", errorCode);
+        
+        return c_count.getValue();
+    }
+    
+    /**
+     * Returns the count of segments connected to the
+     * end section of a given fuselage segment. 
+     * 
+     * @param fuselageIndex - The index of the fuselage, starting at 1 
+     * @param segmentIndex - The index of the segment of the fuselage, starting at 1
+     *
+     * @return The number of connected segments
+     * @throws TiglException
+     */
+    public int fuselageGetEndConnectedSegmentCount(final int fuselageIndex, final int segmentIndex) throws TiglException {
+        checkTiglConfiguration();
+        
+        IntByReference c_count = new IntByReference();
+        
+        errorCode = TiglNativeInterface.tiglFuselageGetEndConnectedSegmentCount(cpacsHandle, fuselageIndex, segmentIndex, c_count);
+        throwIfError("tiglFuselageGetStartConnectedEndCount", errorCode);
+        
+        return c_count.getValue();
+    }
+    
+    /**
+     * Returns the index (number) of the n-th segment connected to
+     * the start section of a given fuselage segment. n starts at 1. 
+     * 
+     * @param fuselageIndex - The index of the fuselage, starting at 1 
+     * @param segmentIndex - The index of the segment of the fuselage, starting at 1
+     * @param n - n-th segment searched, 1 <= n <= tiglFuselageGetStartConnectedSegmentCount(...) 
+     *
+     * @return Segment index of the n-th connected segment
+     * @throws TiglException
+     */
+    public int fuselageGetStartConnectedSegmentIndex(final int fuselageIndex, final int segmentIndex, final int n) throws TiglException {
+        checkTiglConfiguration();
+        
+        IntByReference c_index = new IntByReference();
+        errorCode = TiglNativeInterface.tiglFuselageGetStartConnectedSegmentIndex(cpacsHandle, fuselageIndex, segmentIndex, n, c_index);
+        throwIfError("tiglFuselageGetStartConnectedSegmentIndex", errorCode);
+        
+        return c_index.getValue();
+    }
+    
+    /**
+     * Returns the index (number) of the n-th segment connected to
+     * the end section of a given fuselage segment. n starts at 1. 
+     * 
+     * @param fuselageIndex - The index of the fuselage, starting at 1 
+     * @param segmentIndex - The index of the segment of the fuselage, starting at 1
+     * @param n - n-th segment searched, 1 <= n <= tiglFuselageGetEndConnectedSegmentCount(...) 
+     *
+     * @return Segment index of the n-th connected segment
+     * @throws TiglException
+     */
+    public int fuselageGetEndConnectedSegmentIndex(final int fuselageIndex, final int segmentIndex, final int n) throws TiglException {
+        checkTiglConfiguration();
+        
+        IntByReference c_index = new IntByReference();
+        errorCode = TiglNativeInterface.tiglFuselageGetEndConnectedSegmentIndex(cpacsHandle, fuselageIndex, segmentIndex, n, c_index);
+        throwIfError("tiglFuselageGetEndConnectedSegmentIndex", errorCode);
+        
+        return c_index.getValue();
+    }
+    
+    /**
+     * tiglIntersectComponents computes the intersection line(s) between two shapes
+     * specified by their CPACS uid. It returns an intersection ID for further computations
+     * on the result. To query points on the intersection line, ::tiglIntersectGetPoint has
+     * to be called.
+     * 
+     * @param componentUidOne - The UID of the first component
+     * @param componentUidTwo - The UID of the second component
+     * 
+     * @return A unique identifier that is associated with the computed intersection.
+     * @throws TiglException
+     */
+    public String intersectComponents(final String componentUidOne, final String componentUidTwo) throws TiglException {
+        checkTiglConfiguration();
+        
+        PointerByReference c_id = new PointerByReference();
+        
+        errorCode = TiglNativeInterface.tiglIntersectComponents(cpacsHandle, componentUidOne, componentUidTwo, c_id);
+        throwIfError("tiglIntersectComponents", errorCode);
+        
+        return c_id.getValue().getString(0);
+    }
+    
+    /**
+     * tiglIntersectComponents computes the intersection line(s) between two shapes
+     * specified by their CPACS uid. It returns an intersection ID for further computations
+     * on the result. To query points on the intersection line, ::tiglIntersectGetPoint has
+     * to be called.
+     * 
+     * @param componentUid - The UID of the first component
+     * @param point, normal - The plane paramters i.e. a point on the plane and the plane's normal vector
+     * 
+     * @return A unique identifier that is associated with the computed intersection.
+     * @throws TiglException
+     */
+    public String intersectWithPlane(final String componentUid, final TiglPoint point, final TiglPoint normal) throws TiglException {
+        checkTiglConfiguration();
+        
+        PointerByReference c_id = new PointerByReference();
+        
+        errorCode = TiglNativeInterface.tiglIntersectWithPlane(cpacsHandle, componentUid, 
+                point.getX(), point.getY(), point.getZ(), 
+                normal.getX(), normal.getY(), normal.getZ(), 
+                c_id);
+        throwIfError("tiglIntersectWithPlane", errorCode);
+        
+        return c_id.getValue().getString(0);
+    }
+    
+    /**
+     * tiglIntersectGetLineCount return the number of intersection lines computed by 
+     * tiglIntersectComponents or tiglIntersectWithPlane for the given intersectionID.
+     * 
+     * @param intersectionID - The intersection identifier returned by tiglIntersectComponents or tiglIntersectWithPlane
+     * 
+     * @return The number of intersection lines computed by tiglIntersectComponents or tiglIntersectWithPlane.
+     * @throws TiglException
+     */
+    public int intersectGetLineCount(final String intersectionID) throws TiglException {
+        checkTiglConfiguration();
+        
+        IntByReference c_count = new IntByReference();
+        
+        errorCode = TiglNativeInterface.tiglIntersectGetLineCount(cpacsHandle, intersectionID, c_count);
+        throwIfError("tiglIntersectGetLineCount", errorCode);
+        
+        return c_count.getValue();
+    }
+    
+    /**
+     * tiglIntersectGetPoint samples a point on an intersection line calculated by
+     * tiglIntersectComponents o::tiglIntersectWithPlane.
+     * 
+     * @param intersectionID - The intersection identifier returned by tiglIntersectComponents or tiglIntersectWithPlane
+     * @param lineIdx - Line index to sample from. To get the number of lines, call ::tiglIntersectGetLineCount.
+     *                  1 <= lineIdx <= lineCount.
+     * @param eta - Parameter on the curve that determines the point position, with 0 <= eta <= 1.
+     * 
+     * @return Point on the i-th intersection line
+     * @throws TiglException
+     */
+    public TiglPoint intersectGetPoint(final String intersectionID, final int lineIdx, final double eta) throws TiglException {
+        checkTiglConfiguration();
+        
+        DoubleByReference pointX = new DoubleByReference();
+        DoubleByReference pointY = new DoubleByReference();
+        DoubleByReference pointZ = new DoubleByReference();
+        
+        errorCode = TiglNativeInterface.tiglIntersectGetPoint(cpacsHandle, intersectionID, lineIdx, eta, pointX, pointY, pointZ);
+        throwIfError("tiglIntersectGetPoint", errorCode);
+        
+        return new TiglPoint(pointX.getValue(), pointY.getValue(), pointZ.getValue());
+    }
 
     /**
      * Returns the B-Spline parameterization of a CPACS profile (wing or fuselage currently)
@@ -718,7 +1324,7 @@ public class CpacsConfiguration implements AutoCloseable {
      * @return List of B-Spline the profile is constructed of
      * @throws TiglException 
      */
-    public ArrayList<TiglBSpline> getProfileSplines(String uid) throws TiglException {
+    public ArrayList<TiglBSpline> getProfileSplines(final String uid) throws TiglException {
         checkTiglConfiguration();
 
         ArrayList<TiglBSpline> list = new ArrayList<>();
