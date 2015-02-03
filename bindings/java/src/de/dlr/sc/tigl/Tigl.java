@@ -127,8 +127,8 @@ public class Tigl {
         public double xsi;
     }
     
-    public static class GetPointDirectionResult {
-        public GetPointDirectionResult(TiglPoint p , double errorDistance) {
+    public static class WGetPointDirectionResult {
+        public WGetPointDirectionResult(TiglPoint p , double errorDistance) {
             this.point = p;
             this.errorDistance = errorDistance;
         }
@@ -143,12 +143,11 @@ public class Tigl {
             this.segmentIndex = sIndex;
         }
         
-        public int wingIndex;
-        public int segmentIndex;
+        public int wingIndex, segmentIndex;
     }
     
-    public static class WingSegmentProjectionResult {
-        public WingSegmentProjectionResult(WingCoordinates c, boolean isOnTop, int segmentIndex) {
+    public static class WSProjectionResult {
+        public WSProjectionResult(WingCoordinates c, boolean isOnTop, int segmentIndex) {
             this.point = c;
             this.isOnTop = isOnTop;
             this.segmentIndex = segmentIndex;
@@ -157,5 +156,26 @@ public class Tigl {
         public boolean isOnTop;
         public int segmentIndex;
         public WingCoordinates point;
+    }
+    
+    public static class WCSFindSegmentResult {
+        public WCSFindSegmentResult(String winguid, String segmentuid) {
+            this.wingUID = winguid;
+            this.segmentUID = segmentuid;
+        }
+        
+        public String wingUID, segmentUID;
+    }
+    
+    public static class WCSGetSegmentEtaXsiResult {
+        public WCSGetSegmentEtaXsiResult(String wingUID, String segmentUID, double eta, double xsi) {
+            this.wingUID = wingUID;
+            this.segmentUID = segmentUID;
+            this.eta = eta;
+            this.xsi = xsi;
+        }
+        
+        public String wingUID, segmentUID;
+        public double  eta, xsi;
     }
 }

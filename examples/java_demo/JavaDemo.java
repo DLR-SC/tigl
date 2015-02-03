@@ -4,6 +4,7 @@ import com.sun.jna.ptr.DoubleByReference;
 import com.sun.jna.ptr.IntByReference;
 
 import de.dlr.sc.tigl.CpacsConfiguration;
+import de.dlr.sc.tigl.Tigl.WSProjectionResult;
 import de.dlr.sc.tigl.TiglBSpline;
 import de.dlr.sc.tigl.Tigl;
 import de.dlr.sc.tigl.TiglNativeInterface;
@@ -43,13 +44,13 @@ public class JavaDemo {
 			
 			TiglPoint p = config.wingGetLowerPoint(1, 1, 0.5, 0.5);
 			System.out.println(p);
-			Tigl.WingSegmentProjectionResult res = config.wingGetSegmentEtaXsi(1, p);
+			WSProjectionResult res = config.wingGetSegmentEtaXsi(1, p);
 			System.out.println("eta/xsi: " + res.point.eta + "," + res.point.xsi);
 			System.out.println("OnTop: " + res.isOnTop);
 			
 			System.out.println(config.wingComponentSegmentGetPoint("WING_CS1", 0.5, 0.5));
 			
-			Tigl.GetPointDirectionResult result = config.wingGetUpperPointAtDirection(1, 1, 0.5, 0.5, new TiglPoint(0, 0, 1));
+			Tigl.WGetPointDirectionResult result = config.wingGetUpperPointAtDirection(1, 1, 0.5, 0.5, new TiglPoint(0, 0, 1));
 			System.out.println("GetPointDirection point=" + result.point);
 			System.out.println("GetPointDirection error=" + result.errorDistance);
 

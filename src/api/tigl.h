@@ -3940,7 +3940,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetSegmentSurfaceArea(TiglCPACSCon
 *                                  - TIGL_X_Z_PLANE, the wing is projected onto the x-z plane (use for e.g. VTPs)
 *                                  - TIGL_Y_Z_PLANE, the wing is projected onto the y-z plane
 *
-* @param[out] referenceAreaPtr  The refence area of the wing
+* @param[out] referenceAreaPtr  The reference area of the wing
 *
 * @return
 *   - TIGL_SUCCESS if no error occurred
