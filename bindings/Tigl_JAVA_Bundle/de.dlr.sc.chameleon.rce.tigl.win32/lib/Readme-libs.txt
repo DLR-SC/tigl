@@ -1,1 +1,0 @@
-You might want to put all tixi, tigl and openCascade libs in here if you want to use or distribute the bundles with all dependencys.
