@@ -4169,7 +4169,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglLogSetFileEnding(const char* ending);
 
 /**
 * @brief Enables or disables appending a unique date/time identifier inside
-* the log file name (behind the file prefix). By default, the time indentifier
+* the log file name (behind the file prefix). By default, the time identifier
 * is enabled.
 *
 * This function has to be called before ::tiglLogToFileEnabled to have the
@@ -4306,13 +4306,24 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglConfigurationGetLength(TiglCPACSConfigurat
 TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSpan(TiglCPACSConfigurationHandle cpacsHandle, const char* wingUID, double * pSpan);
 
 
-
-//     This function calculates location of the quarter of mean aerodynamic chord, and gives the chord lenght as well.
-//     It uses the classical method that can be applied to trapozaidal wings. This method is used for each segment.
-//     The values are found by taking into account of sweep and dihedral. But the effect of insidance angle is neglected.
-//     These values should coinside with the values found with tornado tool.
+/**
+* @brief This function calculates location of the quarter of mean aerodynamic chord, and gives the chord lenght as well.
+* 
+* It uses the classical method that can be applied to trapozaidal wings. This method is used for each segment.
+* The values are found by taking into account of sweep and dihedral. But the effect of insidance angle is neglected.
+* These values should coinside with the values found with tornado tool.
+* 
+* @param[in] cpacsHandle Handle for the CPACS configuration
+* @param[in] wingUID     UID of the Wing
+* @param[out] mac_chord  Mean areadynamic chord length
+* @param[out] mac_x, mac_y, mac_z - Position of the MAC
+* 
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NULL_POINTER if wingUID, mac_chord, mac_x, mac_y or mac_z are null pointers
+*   - TIGL_ERROR In case of an unknown error
+*/
 TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetMAC(TiglCPACSConfigurationHandle cpacsHandle, const char* wingUID, double *mac_chord, double *mac_x, double *mac_y, double *mac_z);
-
 
 
 /*@}*/ // end of doxygen group

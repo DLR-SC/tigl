@@ -19,6 +19,7 @@
 package de.dlr.sc.tigl;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -30,12 +31,14 @@ import com.sun.jna.ptr.DoubleByReference;
 import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.ptr.PointerByReference;
 
+import de.dlr.sc.tigl.Tigl.SurfaceMaterial;
 import de.dlr.sc.tigl.Tigl.WCSFindSegmentResult;
 import de.dlr.sc.tigl.Tigl.WCSGetSegmentEtaXsiResult;
 import de.dlr.sc.tigl.Tigl.WGetPointDirectionResult;
 import de.dlr.sc.tigl.Tigl.WSProjectionResult;
 import de.dlr.sc.tigl.Tigl.WingCoordinates;
-import de.dlr.sc.tigl.Tigl.WingGetSegmentIndexResult;
+import de.dlr.sc.tigl.Tigl.GetSegmentIndexResult;
+import de.dlr.sc.tigl.Tigl.WingMAC;
 
 public class CpacsConfiguration implements AutoCloseable {
     
@@ -55,6 +58,22 @@ public class CpacsConfiguration implements AutoCloseable {
 
     /** UID of the CPACS configuration. */ 
     private String configUID = "";
+    
+    /**
+     * Computes the length of the whole configuration/aircraft
+     * 
+     * @return The total length
+     * @throws TiglException
+     */
+    public double getLength() throws TiglException {
+        checkTiglConfiguration();
+        
+        DoubleByReference c_len = new DoubleByReference();
+        errorCode = TiglNativeInterface.tiglConfigurationGetLength(cpacsHandle, c_len);
+        throwIfError("tiglConfigurationGetLength", errorCode);
+        
+        return c_len.getValue();
+    }
     
     /**
      * Returns the number of wings defined for the current configuration
@@ -85,6 +104,66 @@ public class CpacsConfiguration implements AutoCloseable {
         
         String wingUID = c_wuid.getValue().getString(0);
         return wingUID;
+    }
+    
+    /**
+     * Returns the number of component segments for a wing in a CPACS configuration.
+     * 
+     * @param wingIndex - Index of the wing with 1 <= index <= nWings
+     * 
+     * @return The number of component segments
+     * @throws TiglException
+     */
+    public int wingGetComponentSegmentCount(final int wingIndex) throws TiglException {
+        checkTiglConfiguration();
+        
+        IntByReference c_count = new IntByReference();
+        
+        errorCode = TiglNativeInterface.tiglWingGetComponentSegmentCount(cpacsHandle, wingIndex, c_count);
+        throwIfError("tiglWingGetComponentSegmentCount", errorCode);
+        
+        return c_count.getValue();
+    }
+    
+    
+    /**
+     * Returns the Index of a component segment of a wing.
+     * 
+     * @param wingIndex - Index of the wing with 1 <= index <= nWings
+     * @param componentSegmentUID - The CPACS UID of the wing component segment
+     * 
+     * @return The index of the component segment inside the wing
+     * @throws TiglException
+     */
+    public int wingGetComponentSegmentIndex(final int wingIndex, final String componentSegmentUID) throws TiglException {
+        checkTiglConfiguration();
+        
+        IntByReference c_index = new IntByReference();
+        
+        errorCode = TiglNativeInterface.tiglWingGetComponentSegmentIndex(cpacsHandle, wingIndex, componentSegmentUID, c_index);
+        throwIfError("tiglWingGetComponentSegmentIndex", errorCode);
+        
+        return c_index.getValue();
+    }
+    
+    /**
+     * Returns the UID of a component segment of a wing.
+     * 
+     * @param wingIndex - Index of the wing with 1 <= index <= nWings
+     * @param componentSegmentIndex - The index of a component segment, starting at 1
+     *  
+     * @return The UID of the component segment
+     * @throws TiglException
+     */
+    public String wingGetComponentSegmentUID(final int wingIndex, final int componentSegmentIndex) throws TiglException {
+        checkTiglConfiguration();
+        
+        PointerByReference c_uid = new PointerByReference();
+        
+        errorCode = TiglNativeInterface.tiglWingGetComponentSegmentUID(cpacsHandle, wingIndex, componentSegmentIndex, c_uid);
+        throwIfError("tiglWingGetComponentSegmentUID", errorCode);
+        
+        return c_uid.getValue().getString(0);
     }
     
     /**
@@ -156,7 +235,7 @@ public class CpacsConfiguration implements AutoCloseable {
         
         IntByReference c_sym = new IntByReference();
         errorCode = TiglNativeInterface.tiglWingGetSymmetry(cpacsHandle, wingIndex, c_sym);
-        throwIfError("tiglWingGetSectionUID", errorCode);
+        throwIfError("tiglWingGetSymmetry", errorCode);
         
         return TiglSymmetryAxis.getEnum(c_sym.getValue());
     }
@@ -202,10 +281,10 @@ public class CpacsConfiguration implements AutoCloseable {
      * 
      * @param segmentUID - CPACS UID of the wing segment
      * 
-     * @return Wing index and wing segment index
+     * @return Wing index (parent index) and wing segment index
      * @throws TiglException
      */
-    public WingGetSegmentIndexResult wingGetSegmentIndex(final String segmentUID) throws TiglException {
+    public GetSegmentIndexResult wingGetSegmentIndex(final String segmentUID) throws TiglException {
         checkTiglConfiguration();
         
         IntByReference c_sindex = new IntByReference();
@@ -213,7 +292,7 @@ public class CpacsConfiguration implements AutoCloseable {
         errorCode = TiglNativeInterface.tiglWingGetSegmentIndex(cpacsHandle, segmentUID, c_sindex, c_windex);
         throwIfError("tiglWingGetIndex", errorCode);
         
-        return new WingGetSegmentIndexResult(c_windex.getValue(), c_sindex.getValue());
+        return new GetSegmentIndexResult(c_windex.getValue(), c_sindex.getValue());
     }
 
 
@@ -616,6 +695,204 @@ public class CpacsConfiguration implements AutoCloseable {
         return referenceArea.getValue();
     }
     
+    /**
+     * Returns the surface area of the wing.
+     * 
+     * @param wingIndex - Index of the Wing to calculate the area, starting at 1
+     * 
+     * @return The surface area
+     * @throws TiglException
+     */
+    public double wingGetSurfaceArea(final int wingIndex) throws TiglException {
+        checkTiglConfiguration();
+        
+        DoubleByReference c_area = new DoubleByReference();
+        
+        errorCode = TiglNativeInterface.tiglWingGetSurfaceArea(cpacsHandle, wingIndex, c_area);
+        throwIfError("tiglWingGetSurfaceArea", errorCode);
+        
+        return c_area.getValue();
+    }
+    
+    /**
+     * Returns the surface area of the wing.
+     * 
+     * @param wingIndex - Index of the Wing to calculate the area, starting at 1
+     * @param segmentIndex - Index of the wing segment, with 1 <= segmentIndex <= NumberSegments
+     * 
+     * @return The wing segment surface area
+     * @throws TiglException
+     */
+    public double wingGetSegmentSurfaceArea(final int wingIndex, final int segmentIndex) throws TiglException {
+        checkTiglConfiguration();
+        
+        DoubleByReference c_area = new DoubleByReference();
+        
+        errorCode = TiglNativeInterface.tiglWingGetSegmentSurfaceArea(cpacsHandle, wingIndex, segmentIndex, c_area);
+        throwIfError("tiglWingGetSegmentSurfaceArea", errorCode);
+        
+        return c_area.getValue();
+    }
+    
+    /**
+     * Computes the area of the trimmed upper wing segment surface. 
+     * This function can be e.g. used to determine the area of the wing flaps.
+     *
+     * The computed area does not include the trailing edge or any closing side faces.
+     * The trimmed area is defined with the four corner point P1, P2, P3, and P4. 
+     * The order of the points should be right handed (see documentation)
+     * 
+     * @param wingIndex - Index of the Wing to calculate the area, starting at 1
+     * @param segmentIndex - Index of the wing segment, with 1 <= segmentIndex <= NumberSegments
+     * @param p1 - eta, xsi coordinates of the first point on the wing segment
+     * @param p2 - eta, xsi coordinates of the second point on the wing segment
+     * @param p3 - eta, xsi coordinates of the third point on the wing segment
+     * @param p4 - eta, xsi coordinates of the fourth point on the wing segment
+     * 
+     * @return Area of the trimmed upper wing surface
+     * @throws TiglException
+     */
+    public double wingGetSegmentUpperSurfaceAreaTrimmed(
+            final int wingIndex, final int segmentIndex,
+            final WingCoordinates p1, final WingCoordinates p2,
+            final WingCoordinates p3, final WingCoordinates p4) throws TiglException {
+        
+        checkTiglConfiguration();
+        
+        DoubleByReference c_area = new DoubleByReference();
+        
+        errorCode = TiglNativeInterface.tiglWingGetSegmentUpperSurfaceAreaTrimmed(
+                cpacsHandle, wingIndex, segmentIndex, 
+                p1.eta, p1.xsi, 
+                p2.eta, p2.xsi, 
+                p3.eta, p3.xsi, 
+                p4.eta, p4.xsi, 
+                c_area);
+        
+        throwIfError("tiglWingGetSegmentUpperSurfaceAreaTrimmed", errorCode);
+        
+        return c_area.getValue();
+    }
+    
+    /**
+     * Computes the area of the trimmed lower wing segment surface. 
+     * This function can be e.g. used to determine the area of the wing flaps.
+     *
+     * The computed area does not include the trailing edge or any closing side faces.
+     * The trimmed area is defined with the four corner point P1, P2, P3, and P4. 
+     * The order of the points should be right handed (see documentation)
+     * 
+     * @param wingIndex - Index of the Wing to calculate the area, starting at 1
+     * @param segmentIndex - Index of the wing segment, with 1 <= segmentIndex <= NumberSegments
+     * @param p1 - eta, xsi coordinates of the first point on the wing segment
+     * @param p2 - eta, xsi coordinates of the second point on the wing segment
+     * @param p3 - eta, xsi coordinates of the third point on the wing segment
+     * @param p4 - eta, xsi coordinates of the fourth point on the wing segment
+     * 
+     * @return Area of the trimmed lower wing surface
+     * @throws TiglException
+     */
+    public double wingGetSegmentLowerSurfaceAreaTrimmed(
+            final int wingIndex, final int segmentIndex,
+            final WingCoordinates p1, final WingCoordinates p2,
+            final WingCoordinates p3, final WingCoordinates p4) throws TiglException {
+        
+        checkTiglConfiguration();
+        
+        DoubleByReference c_area = new DoubleByReference();
+        
+        errorCode = TiglNativeInterface.tiglWingGetSegmentLowerSurfaceAreaTrimmed(
+                cpacsHandle, wingIndex, segmentIndex, 
+                p1.eta, p1.xsi, 
+                p2.eta, p2.xsi, 
+                p3.eta, p3.xsi, 
+                p4.eta, p4.xsi, 
+                c_area);
+        
+        throwIfError("tiglWingGetSegmentLowerSurfaceAreaTrimmed", errorCode);
+        
+        return c_area.getValue();
+    }
+    
+    /**
+     * Returns the wetted area of the wing. 
+     * 
+     * @param wingUID - wingUID UID of the Wing to calculate the wetted area
+     *  
+     * @return The wetted area of the wing
+     * @throws TiglException
+     */
+    public double wingGetWettedArea(final String wingUID) throws TiglException {
+        checkTiglConfiguration();
+        
+        DoubleByReference c_area = new DoubleByReference();
+        
+        errorCode = TiglNativeInterface.tiglWingGetWettedArea(cpacsHandle, wingUID, c_area);
+        throwIfError("tiglWingGetWettedArea", errorCode);
+        
+        return c_area.getValue();
+    }
+    
+    /**
+     * Computes the volume of the wing
+     * 
+     * @param wingIndex - Index of the Wing to calculate the volume, starting at 1
+     * 
+     * @return Volume of the wing
+     * @throws TiglException
+     */
+    public double wingGetVolume(final int wingIndex) throws TiglException {
+        checkTiglConfiguration();
+        DoubleByReference c_vol = new DoubleByReference();
+        
+        errorCode = TiglNativeInterface.tiglWingGetVolume(cpacsHandle, wingIndex, c_vol);
+        throwIfError("tiglWingGetVolume", errorCode);
+        
+        return c_vol.getValue();
+    }
+    
+    /**
+     * Returns the span of a wing. Fore more details, see documentation.
+     * 
+     * @param wingUID - CPACS UID of the Wing
+     *  
+     * @return The wing span.
+     * @throws TiglException
+     */
+    public double wingGetSpan(final String wingUID) throws TiglException {
+        checkTiglConfiguration();
+        
+        DoubleByReference c_span = new DoubleByReference();
+        
+        errorCode = TiglNativeInterface.tiglWingGetSpan(cpacsHandle, wingUID, c_span);
+        throwIfError("tiglWingGetSpan", errorCode);
+        
+        return c_span.getValue();
+    }
+    
+    /**
+     * Computes the mean aerodynamic chord and its position.
+     * 
+     * @param wingUID  CPACS UID of the Wing
+     * 
+     * @return Object containing MAC and MAC position
+     * @throws TiglException
+     */
+    public WingMAC wingGetMAC(String wingUID) throws TiglException {
+        checkTiglConfiguration();
+        
+        DoubleByReference pointX = new DoubleByReference();
+        DoubleByReference pointY = new DoubleByReference();
+        DoubleByReference pointZ = new DoubleByReference();
+        DoubleByReference mac    = new DoubleByReference();
+        
+        errorCode = TiglNativeInterface.tiglWingGetMAC(cpacsHandle, wingUID, mac, pointZ, pointY, pointZ);
+        throwIfError("tiglWingGetMAC", errorCode);
+        
+        TiglPoint p = new TiglPoint(pointX.getValue(), pointY.getValue(), pointZ.getValue());
+        return new WingMAC(mac.getValue(), p);
+    }
+    
     
     /**
      * Returns a points on the wing component segment
@@ -782,6 +1059,45 @@ public class CpacsConfiguration implements AutoCloseable {
         
         return c_suid.getValue().getString(0);
     }
+    
+    /**
+     * Returns all materials that are defined at a certain position on the wing component segment
+     * 
+     * @param componentSegmentUID - UID of the componentSegment 
+     * @param type - The type of the surface to query, i.e. upper wing, lower wing, or inner structure
+     * @param eta, xsi - The coordinates of the point (wing component segment coordinates)
+     *
+     * @return List of Materials defined on the point
+     * @throws TiglException
+     */
+    public List<SurfaceMaterial> wingCompomentSegmentGetMaterials(final String componentSegmentUID, final TiglStructureType type, 
+            final double eta, final double xsi) throws TiglException {
+        
+        checkTiglConfiguration();
+        
+        // get number of materials at a point on the component segment
+        IntByReference c_matcount = new IntByReference();
+        errorCode = TiglNativeInterface.tiglWingComponentSegmentGetMaterialCount(cpacsHandle, componentSegmentUID, type.getValue(), eta, xsi, c_matcount);
+        throwIfError("tiglWingComponentSegmentGetMaterialCount", errorCode);
+        
+        List<SurfaceMaterial> materials = new ArrayList<>();
+        
+        for (int i = 1; i <= c_matcount.getValue(); ++i) {
+            DoubleByReference c_thick = new DoubleByReference();
+            PointerByReference c_uid  = new PointerByReference();
+            
+            errorCode = TiglNativeInterface.tiglWingComponentSegmentGetMaterialThickness(cpacsHandle, componentSegmentUID, type.getValue(), eta, xsi, i, c_thick);
+            throwIfError("tiglWingComponentSegmentGetMaterialThickness", errorCode);
+            
+            errorCode = TiglNativeInterface.tiglWingComponentSegmentGetMaterialUID(cpacsHandle, componentSegmentUID, type.getValue(), eta, xsi, i, c_uid);
+            throwIfError("tiglWingComponentSegmentGetMaterialUID", errorCode);
+            
+            SurfaceMaterial mat = new SurfaceMaterial(c_uid.getValue().getString(0), c_thick.getValue());
+            materials.add(mat);
+        }
+        
+        return materials;
+    }
 
     /**
      * Returns the number of fuselages defined for the current configuration
@@ -796,6 +1112,46 @@ public class CpacsConfiguration implements AutoCloseable {
         throwIfError("tiglGetFuselageCount", errorCode);
         
         return fuselageCount.getValue();
+    }
+    
+    /**
+     * Returns the index of a fuselage given its UID
+     * 
+     * @param fuselageUID - CPACS UID of the fuselage
+     * 
+     * @return Wing index
+     * @throws TiglException
+     */
+    public int fuselageGetIndex(final String fuselageUID) throws TiglException {
+        checkTiglConfiguration();
+        
+        IntByReference c_findex = new IntByReference();
+        errorCode = TiglNativeInterface.tiglFuselageGetIndex(cpacsHandle, fuselageUID, c_findex);
+        throwIfError("tiglFuselageGetIndex", errorCode);
+        
+        return c_findex.getValue();
+    }
+    
+    /**
+     * Returns the name of a fuselage profile.
+     * 
+     * @param fuselageIndex - The index of a fuselage, starting at 1
+     * @param sectionIndex - The index of a section, starting at 1 
+     * @param elementIndex - The index of an element on the section
+     * 
+     * @return The name of the fuselage profile
+     * 
+     * @throws TiglException
+     */
+    public String fuselageGetProfileName(final int fuselageIndex, final int sectionIndex, final int elementIndex) throws TiglException {
+        checkTiglConfiguration();
+        PointerByReference c_puid = new PointerByReference();
+        
+        errorCode = TiglNativeInterface.tiglFuselageGetProfileName(cpacsHandle, fuselageIndex, sectionIndex, elementIndex, c_puid);
+        
+        throwIfError("tiglFuselageGetProfileName", elementIndex);
+        
+        return c_puid.getValue().getString(0);
     }
     
     /**
@@ -875,6 +1231,24 @@ public class CpacsConfiguration implements AutoCloseable {
         return segmentCount.getValue();
     }
     
+    /**
+     * Returns the index of a fuselage given its UID
+     * 
+     * @param fuselageSegmentUID - CPACS UID of the fuselage segment
+     * 
+     * @return Fuselage index (parent index) and fuselage segment index
+     * @throws TiglException
+     */
+    public GetSegmentIndexResult fuselageGetSegmentIndex(final String fuselageSegmentUID) throws TiglException {
+        checkTiglConfiguration();
+        
+        IntByReference c_sindex = new IntByReference();
+        IntByReference c_findex = new IntByReference();
+        errorCode = TiglNativeInterface.tiglFuselageGetSegmentIndex(cpacsHandle, fuselageSegmentUID, c_sindex, c_findex);
+        throwIfError("tiglFuselageGetSegmentIndex", errorCode);
+        
+        return new GetSegmentIndexResult(c_findex.getValue(), c_sindex.getValue());
+    }
     
     /**
      * Returns the UID of a fuselage segment
@@ -896,6 +1270,62 @@ public class CpacsConfiguration implements AutoCloseable {
         return segmentUID;
     }
     
+    /**
+     * Returns the surface area of the fuselage.
+     * 
+     * @param fuselageIndex - Index of the fuselage to calculate the area, starting at 1
+     * 
+     * @return The surface area
+     * @throws TiglException
+     */
+    public double fuselageGetSurfaceArea(final int fuselageIndex) throws TiglException {
+        checkTiglConfiguration();
+        
+        DoubleByReference c_area = new DoubleByReference();
+        
+        errorCode = TiglNativeInterface.tiglFuselageGetSurfaceArea(cpacsHandle, fuselageIndex, c_area);
+        throwIfError("tiglFuselageGetSurfaceArea", errorCode);
+        
+        return c_area.getValue();
+    }
+    
+    /**
+     * Returns the surface area of the fuselage.
+     * 
+     * @param fuselageIndex - Index of the fuselage to calculate the area, starting at 1
+     * @param segmentIndex - Index of the fuselage segment, with 1 <= segmentIndex <= NumberSegments
+     * 
+     * @return The fuselage segment surface area
+     * @throws TiglException
+     */
+    public double fuselageGetSegmentSurfaceArea(final int fuselageIndex, final int segmentIndex) throws TiglException {
+        checkTiglConfiguration();
+        
+        DoubleByReference c_area = new DoubleByReference();
+        
+        errorCode = TiglNativeInterface.tiglFuselageGetSegmentSurfaceArea(cpacsHandle, fuselageIndex, segmentIndex, c_area);
+        throwIfError("tiglFuselageGetSegmentSurfaceArea", errorCode);
+        
+        return c_area.getValue();
+    }
+    
+    /**
+     * Returns the symmetry of a fuselage
+     * 
+     * @param fuselageIndex - Index of the fuselage with 1 <= index <= nFuselages
+     * 
+     * @return Symmetry Axis of the fuselage
+     * @throws TiglException
+     */
+    public TiglSymmetryAxis fuselageGetSymmetry(final int fuselageIndex) throws TiglException {
+        checkTiglConfiguration();
+        
+        IntByReference c_sym = new IntByReference();
+        errorCode = TiglNativeInterface.tiglFuselageGetSymmetry(cpacsHandle, fuselageIndex, c_sym);
+        throwIfError("tiglFuselageGetSymmetry", errorCode);
+        
+        return TiglSymmetryAxis.getEnum(c_sym.getValue());
+    }
     
     /**
      * 
@@ -1225,6 +1655,56 @@ public class CpacsConfiguration implements AutoCloseable {
     }
     
     /**
+     * Computes the volume of the fuselage
+     * 
+     * @param fuselageIndex - Index of the fuselage to calculate the volume, starting at 1
+     * 
+     * @return Volume of the fuselage
+     * @throws TiglException
+     */
+    public double fuselageGetVolume(final int fuselageIndex) throws TiglException {
+        checkTiglConfiguration();
+        DoubleByReference c_vol = new DoubleByReference();
+        
+        errorCode = TiglNativeInterface.tiglFuselageGetVolume(cpacsHandle, fuselageIndex, c_vol);
+        throwIfError("tiglFuselageGetVolume", errorCode);
+        
+        return c_vol.getValue();
+    }
+    
+    /**
+     * Returns the point where the distance between the selected fuselage 
+     * and the ground is at minimum. The Fuselage could be turned with a 
+     * given angle at at given axis, specified by a point and a direction
+     *  
+     * @param fuselageUID - CPACS UID of the fuselage
+     * @param pointOnAxis, direction - The axis , around which the fuselage should be rotated
+     * @param angle - Angle of rotation around the axis (in degree).
+     * 
+     * @return Point on fuselage with minimum distance to the ground (z=const)
+     * @throws TiglException
+     */
+    public TiglPoint fuselageGetMinumumDistanceToGround(final String fuselageUID, 
+            final TiglPoint pointOnAxis, final TiglPoint direction, double angle) throws TiglException {
+        
+        checkTiglConfiguration();
+        
+        DoubleByReference c_pointX = new DoubleByReference();
+        DoubleByReference c_pointY = new DoubleByReference();
+        DoubleByReference c_pointZ = new DoubleByReference();
+        
+        errorCode = TiglNativeInterface.tiglFuselageGetMinumumDistanceToGround(
+                cpacsHandle, fuselageUID, 
+                pointOnAxis.getX(), pointOnAxis.getY(), pointOnAxis.getZ(), 
+                direction.getX(), direction.getY(), direction.getZ(), angle, 
+                c_pointX, c_pointY, c_pointZ);
+        
+        throwIfError("tiglFuselageGetMinumumDistanceToGround", errorCode);
+        
+        return new TiglPoint(c_pointX.getValue(), c_pointY.getValue(), c_pointZ.getValue());
+    }
+    
+    /**
      * tiglIntersectComponents computes the intersection line(s) between two shapes
      * specified by their CPACS uid. It returns an intersection ID for further computations
      * on the result. To query points on the intersection line, ::tiglIntersectGetPoint has
@@ -1324,10 +1804,10 @@ public class CpacsConfiguration implements AutoCloseable {
      * @return List of B-Spline the profile is constructed of
      * @throws TiglException 
      */
-    public ArrayList<TiglBSpline> getProfileSplines(final String uid) throws TiglException {
+    public List<TiglBSpline> getProfileSplines(final String uid) throws TiglException {
         checkTiglConfiguration();
 
-        ArrayList<TiglBSpline> list = new ArrayList<>();
+        List<TiglBSpline> list = new ArrayList<>();
         
         IntByReference splineCount = new IntByReference(0);
         errorCode = TiglNativeInterface.tiglProfileGetBSplineCount(cpacsHandle, uid, splineCount);
@@ -1391,6 +1871,21 @@ public class CpacsConfiguration implements AutoCloseable {
     }
     
     /**
+     * Exports the trimmed/fused CPACS Geometry in IGES format a file. 
+     * 
+     * @param exportFileName
+     *            The full filename of the file to be exported.
+     * @throws TiglException 
+     */    
+    public void exportFusedIGES(final String exportFileName) throws TiglException { 
+        checkTiglConfiguration();
+
+        // export to the file
+        errorCode = TiglNativeInterface.tiglExportFusedWingFuselageIGES(cpacsHandle, exportFileName);
+        throwIfError("tiglExportFusedWingFuselageIGES", errorCode);
+    }
+    
+    /**
      * Exports a CPACS Geometry in STEP format to a local file. 
      * 
      * @param exportFileName
@@ -1403,6 +1898,21 @@ public class CpacsConfiguration implements AutoCloseable {
         // export to the file
         errorCode = TiglNativeInterface.tiglExportSTEP(cpacsHandle, exportFileName);
         throwIfError("tiglExportSTEP", errorCode);
+    }
+    
+    /**
+     * Exports the trimmed/fused CPACS Geometry in STEP format a file. 
+     * 
+     * @param exportFileName
+     *            The full filename of the file to be exported.
+     * @throws TiglException 
+     */    
+    public void exportFusedSTEP(final String exportFileName) throws TiglException { 
+        checkTiglConfiguration();
+
+        // export to the file
+        errorCode = TiglNativeInterface.tiglExportFusedSTEP(cpacsHandle, exportFileName);
+        throwIfError("tiglExportFusedSTEP", errorCode);
     }
     
     
@@ -1477,6 +1987,38 @@ public class CpacsConfiguration implements AutoCloseable {
     }
     
     /**
+     * Exports the trimmed/fused CPACS geometry in VTK format to a local file. The output file
+     * includes metadata, i.e. location of each triangle on each segment etc.
+     * 
+     * @param fileName - The filename to save with.
+     * @param deflection - The deflection of the meshing.
+     * @throws TiglException 
+     */
+    public void exportMeshedGeometryVTK(final String fileName, final double deflection) throws TiglException {
+        checkTiglConfiguration();
+
+        // export to the file
+        errorCode = TiglNativeInterface.tiglExportMeshedGeometryVTK(cpacsHandle, fileName, deflection); 
+        throwIfError("tiglExportMeshedGeometryVTK", errorCode);
+    }
+    
+    /**
+     * Exports the trimmed/fused CPACS geometry in VTK format to a local file. This export does not contain
+     * any metadata and is faster to compute.
+     * 
+     * @param fileName - The filename to save with.
+     * @param deflection - The deflection of the meshing.
+     * @throws TiglException 
+     */
+    public void exportMeshedGeometryVTKSimple(final String fileName, final double deflection) throws TiglException {
+        checkTiglConfiguration();
+
+        // export to the file
+        errorCode = TiglNativeInterface.tiglExportMeshedGeometryVTKSimple(cpacsHandle, fileName, deflection); 
+        throwIfError("tiglExportMeshedGeometryVTKSimple", errorCode);
+    }
+    
+    /**
      * Exports a wing of a CPACS Geometry as a collada file for the use in Blender.
      * 
      * @param wingUID - The UID of the wing to export.
@@ -1489,6 +2031,53 @@ public class CpacsConfiguration implements AutoCloseable {
         
         errorCode = TiglNativeInterface.tiglExportWingColladaByUID(cpacsHandle, wingUID, fileName, deflection);
         throwIfError("tiglExportWingColladaByUID", errorCode);
+    }
+    
+    /**
+     * Exports a CPACS fuselage geometry in STL format to a local file.
+     * 
+     * @param fuselageUID - The UID of the fuselage to export.
+     * @param fileName - The filename to save with.
+     * @param deflection - The deflection of the meshing.
+     * @throws TiglException 
+     */
+    public void exportMeshedFuselageSTL(final String fuselageUID, final String fileName, final double deflection) throws TiglException {
+        checkTiglConfiguration();
+
+        // export to the file
+        errorCode = TiglNativeInterface.tiglExportMeshedFuselageSTLByUID(cpacsHandle, fuselageUID, fileName, deflection); 
+        throwIfError("tiglExportMeshedFuselageSTLByUID", errorCode);
+    }
+    
+    /**
+     * Exports a CPACS wing geometry in STL format to a local file.
+     * 
+     * @param wingUID - The UID of the wing to export.
+     * @param fileName - The filename to save with.
+     * @param deflection - The deflection of the meshing.
+     * @throws TiglException 
+     */
+    public void exportMeshedWingSTL(final String wingUID, final String fileName, final double deflection) throws TiglException {
+        checkTiglConfiguration();
+
+        // export to the file
+        errorCode = TiglNativeInterface.tiglExportMeshedWingSTLByUID(cpacsHandle, wingUID, fileName, deflection); 
+        throwIfError("tiglExportMeshedWingSTLByUID", errorCode);
+    }
+    
+    /**
+     * Exports the trimmed/fused CPACS geometry in STL format to a local file.
+     * 
+     * @param fileName - The filename to save with.
+     * @param deflection - The deflection of the meshing.
+     * @throws TiglException 
+     */
+    public void exportMeshedGeometrySTL(final String fileName, final double deflection) throws TiglException {
+        checkTiglConfiguration();
+
+        // export to the file
+        errorCode = TiglNativeInterface.tiglExportMeshedGeometrySTL(cpacsHandle, fileName, deflection); 
+        throwIfError("tiglExportMeshedGeometrySTL", errorCode);
     }
     
     /**
@@ -1545,7 +2134,7 @@ public class CpacsConfiguration implements AutoCloseable {
         IntByReference isValid = new IntByReference();
         TiglNativeInterface.tiglIsCPACSConfigurationHandleValid(cpacsHandle, isValid);
         if (isValid.getValue() != TiglBoolean.TIGL_TRUE.getValue()) {
-            LOGGER.error("checkTiglConfiguration::Tried to work with a cpacs configuration whose handle is invalid (not loaded/imported before)");
+            LOGGER.error("TiGL: checkTiglConfiguration::Tried to work with a cpacs configuration whose handle is invalid (not loaded/imported before)");
             throw new TiglException("Invalid cpacs handle", TiglReturnCode.TIGL_NOT_FOUND);
         }
     }
@@ -1554,6 +2143,7 @@ public class CpacsConfiguration implements AutoCloseable {
         if (errorCode != TiglReturnCode.TIGL_SUCCESS.getValue()) {
             String message = " In TiGL function \"" + methodname + "."
                     + "\"";
+            LOGGER.error("TiGL: Function " + methodname + " returned " + TiglReturnCode.getEnum(errorCode).toString() + ".");
             throw new TiglException(message, TiglReturnCode.getEnum(errorCode));
         }
     }
