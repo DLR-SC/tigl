@@ -1,4 +1,4 @@
-import java.util.ArrayList;
+import java.util.List;
 
 import com.sun.jna.ptr.DoubleByReference;
 import com.sun.jna.ptr.IntByReference;
@@ -29,7 +29,7 @@ public class JavaDemo {
 		try (CpacsConfiguration config = Tigl.openCPACSConfiguration(filename, "")) {
 			
 			// get splines from a profile NACA0012
-			ArrayList<TiglBSpline> splines = config.getProfileSplines("NACA0012");
+			List<TiglBSpline> splines = config.getProfileSplines("NACA0012");
 			for (int ispl = 0; ispl < splines.size(); ++ispl) {
 				TiglBSpline spl = splines.get(ispl);
 				System.out.println(spl.degree + " " + spl.controlPoints.size() + " " + spl.knots.size());
