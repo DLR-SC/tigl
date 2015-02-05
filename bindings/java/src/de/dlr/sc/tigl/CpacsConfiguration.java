@@ -31,6 +31,8 @@ import com.sun.jna.ptr.DoubleByReference;
 import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.ptr.PointerByReference;
 
+import de.dlr.sc.tigl.Tigl.SectionAndElementIndex;
+import de.dlr.sc.tigl.Tigl.SectionAndElementUID;
 import de.dlr.sc.tigl.Tigl.SurfaceMaterial;
 import de.dlr.sc.tigl.Tigl.WCSFindSegmentResult;
 import de.dlr.sc.tigl.Tigl.WCSGetSegmentEtaXsiResult;
@@ -58,6 +60,28 @@ public class CpacsConfiguration implements AutoCloseable {
 
     /** UID of the CPACS configuration. */ 
     private String configUID = "";
+    
+    /**
+     * Returns a unique HashCode for a geometric component. 
+     *
+     * The component, for example a wing or a fuselage, could be specified via
+     * its UID. The HashCode is the same as long as the geometry of this component
+     * has not changed. The HashCode is valid through the current session only!
+     * The hash value is computed from the value of the underlying shape reference. 
+     *
+     * @param componentUID
+     * @return
+     * @throws TiglException
+     */
+    public int componentGetHashCode(String componentUID)  throws TiglException {
+        checkTiglConfiguration();
+        IntByReference c_hash = new IntByReference();
+        
+        errorCode = TiglNativeInterface.tiglComponentGetHashCode(cpacsHandle, componentUID, c_hash);
+        throwIfError("tiglComponentGetHashCode", errorCode);
+        
+        return c_hash.getValue();
+    }
     
     /**
      * Computes the length of the whole configuration/aircraft
@@ -220,6 +244,90 @@ public class CpacsConfiguration implements AutoCloseable {
         
         String sectionUID = c_suid.getValue().getString(0);
         return sectionUID;
+    }
+    
+    /**
+     * Returns the section UID and section element UID of the inner side of a given wing segment. 
+     * 
+     * @param wingIndex - Index of the wing, starting at 1
+     * @param segmentIndex - Index of the wing segment, starting at 1
+     * 
+     * @return The section UID and the section element UID of the inner side 
+     * @throws TiglException
+     */
+    public SectionAndElementUID wingGetInnerSectionAndElementUID(final int wingIndex, final int segmentIndex) throws TiglException {
+        checkTiglConfiguration();
+        
+        PointerByReference c_suid = new PointerByReference();
+        PointerByReference c_euid = new PointerByReference();
+        
+        errorCode = TiglNativeInterface.tiglWingGetInnerSectionAndElementUID(cpacsHandle, wingIndex, segmentIndex, c_suid, c_euid);
+        throwIfError("tiglWingGetInnerSectionAndElementUID", segmentIndex);
+        
+        return new SectionAndElementUID(c_suid.getValue().getString(0), c_euid.getValue().getString(0));
+    }
+    
+    /**
+     * Returns the section UID and section element UID of the outer side of a given wing segment. 
+     * 
+     * @param wingIndex - Index of the wing, starting at 1
+     * @param segmentIndex - Index of the wing segment, starting at 1
+     * 
+     * @return The section UID and the section element UID of the outer side 
+     * @throws TiglException
+     */
+    public SectionAndElementUID wingGetOuterSectionAndElementUID(final int wingIndex, final int segmentIndex) throws TiglException {
+        checkTiglConfiguration();
+        
+        PointerByReference c_suid = new PointerByReference();
+        PointerByReference c_euid = new PointerByReference();
+        
+        errorCode = TiglNativeInterface.tiglWingGetOuterSectionAndElementUID(cpacsHandle, wingIndex, segmentIndex, c_suid, c_euid);
+        throwIfError("tiglWingGetOuterSectionAndElementUID", segmentIndex);
+        
+        return new SectionAndElementUID(c_suid.getValue().getString(0), c_euid.getValue().getString(0));
+    }
+    
+    /**
+     * Returns the section index and section element index of the inner side of a given wing segment. 
+     * 
+     * @param wingIndex - Index of the wing, starting at 1
+     * @param segmentIndex - Index of the wing segment, starting at 1
+     * 
+     * @return The section index and the section element index of the inner side 
+     * @throws TiglException
+     */
+    public SectionAndElementIndex wingGetStartSectionAndElementIndex(final int wingIndex, final int segmentIndex) throws TiglException {
+        checkTiglConfiguration();
+        
+        IntByReference c_sindex = new IntByReference();
+        IntByReference c_eindex = new IntByReference();
+        
+        errorCode = TiglNativeInterface.tiglWingGetInnerSectionAndElementIndex(cpacsHandle, wingIndex, segmentIndex, c_sindex, c_eindex);
+        throwIfError("tiglWingGetInnerSectionAndElementIndex", segmentIndex);
+        
+        return new SectionAndElementIndex(c_sindex.getValue(), c_eindex.getValue());
+    }
+    
+    /**
+     * Returns the section index and section element index of the outer side of a given wing segment. 
+     * 
+     * @param wingIndex - Index of the wing, starting at 1
+     * @param segmentIndex - Index of the wing segment, starting at 1
+     * 
+     * @return The section index and the section element index of the outer side 
+     * @throws TiglException
+     */
+    public SectionAndElementIndex wingGetOuterSectionAndElementIndex(final int wingIndex, final int segmentIndex) throws TiglException {
+        checkTiglConfiguration();
+        
+        IntByReference c_sindex = new IntByReference();
+        IntByReference c_eindex = new IntByReference();
+        
+        errorCode = TiglNativeInterface.tiglWingGetOuterSectionAndElementIndex(cpacsHandle, wingIndex, segmentIndex, c_sindex, c_eindex);
+        throwIfError("tiglWingGetOuterSectionAndElementIndex", segmentIndex);
+        
+        return new SectionAndElementIndex(c_sindex.getValue(), c_eindex.getValue());
     }
     
     /**
@@ -1196,7 +1304,7 @@ public class CpacsConfiguration implements AutoCloseable {
     /**
      * Returns the UID of the i-th fuselage section
      * 
-     * @param wingIndex - Index of the fuselage 
+     * @param fuselageIndex - Index of the fuselage 
      * @param sectionIndex - Index of the section
      * @return
      * @throws TiglException
@@ -1210,6 +1318,90 @@ public class CpacsConfiguration implements AutoCloseable {
         
         String sectionUID = c_suid.getValue().getString(0);
         return sectionUID;
+    }
+    
+    /**
+     * Returns the section UID and section element UID of the start side of a given fuselage segment. 
+     * 
+     * @param fuselageIndex - Index of the fuselage, starting at 1
+     * @param segmentIndex - Index of the fuselage segment, starting at 1
+     * 
+     * @return The section UID and the section element UID of the start side 
+     * @throws TiglException
+     */
+    public SectionAndElementUID fuselageGetStartSectionAndElementUID(final int fuselageIndex, final int segmentIndex) throws TiglException {
+        checkTiglConfiguration();
+        
+        PointerByReference c_suid = new PointerByReference();
+        PointerByReference c_euid = new PointerByReference();
+        
+        errorCode = TiglNativeInterface.tiglFuselageGetStartSectionAndElementUID(cpacsHandle, fuselageIndex, segmentIndex, c_suid, c_euid);
+        throwIfError("tiglFuselageGetStartSectionAndElementUID", segmentIndex);
+        
+        return new SectionAndElementUID(c_suid.getValue().getString(0), c_euid.getValue().getString(0));
+    }
+    
+    /**
+     * Returns the section UID and section element UID of the end side of a given fuselage segment. 
+     * 
+     * @param fuselageIndex - Index of the fuselage, starting at 1
+     * @param segmentIndex - Index of the fuselage segment, starting at 1
+     * 
+     * @return The section UID and the section element UID of the end side 
+     * @throws TiglException
+     */
+    public SectionAndElementUID fuselageGetEndSectionAndElementUID(final int fuselageIndex, final int segmentIndex) throws TiglException {
+        checkTiglConfiguration();
+        
+        PointerByReference c_suid = new PointerByReference();
+        PointerByReference c_euid = new PointerByReference();
+        
+        errorCode = TiglNativeInterface.tiglFuselageGetEndSectionAndElementUID(cpacsHandle, fuselageIndex, segmentIndex, c_suid, c_euid);
+        throwIfError("tiglFuselageGetEndSectionAndElementUID", segmentIndex);
+        
+        return new SectionAndElementUID(c_suid.getValue().getString(0), c_euid.getValue().getString(0));
+    }
+    
+    /**
+     * Returns the section index and section element index of the start side of a given fuselage segment. 
+     * 
+     * @param fuselageIndex - Index of the fuselage, starting at 1
+     * @param segmentIndex - Index of the fuselage segment, starting at 1
+     * 
+     * @return The section index and the section element index of the start side 
+     * @throws TiglException
+     */
+    public SectionAndElementIndex fuselageGetStartSectionAndElementIndex(final int fuselageIndex, final int segmentIndex) throws TiglException {
+        checkTiglConfiguration();
+        
+        IntByReference c_sindex = new IntByReference();
+        IntByReference c_eindex = new IntByReference();
+        
+        errorCode = TiglNativeInterface.tiglFuselageGetStartSectionAndElementIndex(cpacsHandle, fuselageIndex, segmentIndex, c_sindex, c_eindex);
+        throwIfError("tiglFuselageGetStartSectionAndElementIndex", segmentIndex);
+        
+        return new SectionAndElementIndex(c_sindex.getValue(), c_eindex.getValue());
+    }
+    
+    /**
+     * Returns the section index and section element index of the end side of a given fuselage segment. 
+     * 
+     * @param fuselageIndex - Index of the fuselage, starting at 1
+     * @param segmentIndex - Index of the fuselage segment, starting at 1
+     * 
+     * @return The section index and the section element index of the end side 
+     * @throws TiglException
+     */
+    public SectionAndElementIndex fuselageGetEndSectionAndElementIndex(final int fuselageIndex, final int segmentIndex) throws TiglException {
+        checkTiglConfiguration();
+        
+        IntByReference c_sindex = new IntByReference();
+        IntByReference c_eindex = new IntByReference();
+        
+        errorCode = TiglNativeInterface.tiglFuselageGetEndSectionAndElementIndex(cpacsHandle, fuselageIndex, segmentIndex, c_sindex, c_eindex);
+        throwIfError("tiglFuselageGetEndSectionAndElementIndex", segmentIndex);
+        
+        return new SectionAndElementIndex(c_sindex.getValue(), c_eindex.getValue());
     }
     
     

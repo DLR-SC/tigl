@@ -276,6 +276,26 @@ public class Tigl {
         public double thickness = 0 ;
     }
     
+    public static class SectionAndElementIndex {
+        public SectionAndElementIndex(int sectionIndex, int elementIndex) {
+            this.sectionIndex = sectionIndex;
+            this.elementIndex = elementIndex;
+        }
+        
+        public int sectionIndex = 0;
+        public int elementIndex = 0;
+    }
+    
+    public static class SectionAndElementUID {
+        public SectionAndElementUID(String sectionUID, String elementUID) {
+            this.sectionUID = sectionUID;
+            this.elementUID = elementUID;
+        }
+        
+        public String sectionUID;
+        public String elementUID;
+    }
+    
     /**
      * Helper class to store the mean aerodynamic chord
      * and position
