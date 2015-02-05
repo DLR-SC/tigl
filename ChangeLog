@@ -1,3 +1,26 @@
+Version 2.1.4
+-------------
+06/02/2015
+
+    - Changed API:
+        - Added an output argument in the functions``tiglWingGetUpperPointAtDirection`` and ``tiglWingGetLowerPointAtDirection`` that returns the error of the computation
+
+    - New API functions:
+        -  ``tiglFuselageGetIndex`` and ``tiglFuselageGetSegmentIndex`` to retrieve the index of a fuselage and fuselage segment given a CPACS UID
+
+    - Fixes:
+        - Fixed some warnings using CMake 3
+
+    - TiGL Viewer:
+        - Fixed a crash in case of a missing model UID 
+        - Fixed a bug, where debugging BREP files where always created on Linux
+        - Improved scripting interface for wingGetLower/UpperPointAtDirection to return the error
+
+    - Language bindings:
+        - Completed the new Java bindings for TiGL 
+        - Removed Fortran bindings since nobody is using them
+
+
 Version 2.1.3
 -------------
 08/12/2014
