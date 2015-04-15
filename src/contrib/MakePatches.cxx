@@ -42,6 +42,11 @@
 #include <TColStd_Array1OfReal.hxx>
 #include <SurfTools.hxx>
 #include <BSplCLib.hxx>
+#include <ShapeAnalysis_Wire.hxx>
+
+#ifdef DEBUG
+#include <BRepTools.hxx>
+#endif
 
 static Standard_Real MaxTolVer(const TopoDS_Shape& aShape)
 {
@@ -142,6 +147,16 @@ void MakePatches::Perform(const Standard_Real theTolConf,
         }
     }
     myGrid = Fuser->Shape();
+#ifdef DEBUG
+    // save vertex-edge map for debugging purposes
+    static int iMakePatches = 0;
+    iMakePatches++;
+    
+    std::stringstream smygrid;
+    smygrid << "makePatches_" << iMakePatches << "_wireGrid.brep";
+    BRepTools::Write(myGrid, smygrid.str().c_str());
+
+#endif
     TopTools_MapOfShape GuideEdges, ProfileEdges;
     TopTools_ListIteratorOfListOfShape itl;
     TopExp_Explorer Explo(myGuides, TopAbs_EDGE);
