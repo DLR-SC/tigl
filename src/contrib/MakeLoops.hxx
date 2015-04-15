@@ -26,6 +26,29 @@
 #endif
 
 /**
+ * \brief Return code of make loops algorithm
+ * MAKELOOPS_OK : Algorithm successful
+ * MAKELOOPS_FAIL_STARTINGPOINT : Algorithm failed while searching starting point
+ * MAKELOOPS_FAIL_NODATA : Algorithm failed due to unsufficient data
+ * MAKELOOPS_FAIL_FIRSTEDGE : Algorithm failed while searching for first edge
+ * MAKELOOPS_FAIL_SECONDEDGE : Algorithm failed while searching for second edge
+ * MAKELOOPS_FAIL_THIRDEDGE : Algorithm failed while searching for third edge
+ * MAKELOOPS_FAIL_FOURTHEDGE : Algorithm failed while searching for fourth edge
+ * MAKELOOPS_FAIL : Algorithm failed since no closed profile/section was found
+ */
+enum MakeLoopsStatus
+{
+    MAKELOOPS_OK                    = 0,
+    MAKELOOPS_FAIL_STARTINGPOINT    = 1,
+    MAKELOOPS_FAIL_NODATA           = 2,
+    MAKELOOPS_FAIL_FIRSTEDGE        = 3,
+    MAKELOOPS_FAIL_SECONDEDGE       = 4,
+    MAKELOOPS_FAIL_THIRDEDGE        = 5,
+    MAKELOOPS_FAIL_FOURTHEDGE       = 6,
+    MAKELOOPS_FAIL_NOCLOSED_PROFILE = 7
+};
+
+/**
  * Implementation of algorithm for building closed 4-sides loops
  * from grid consisting of guide and section edges
  */
@@ -101,7 +124,12 @@ public:
      */
     Standard_EXPORT  const Handle(TopTools_HArray2OfShape)& Cells() const;
 
+    /**
+     * Returns status of calculations
+     * 0 - success, 1 - algorithm failed
+     */
 
+    Standard_EXPORT Standard_Integer GetStatus() const;
 
 
 
@@ -128,6 +156,7 @@ private:
     TopTools_MapOfShape             myProfileEdges;
     Handle(TopTools_HArray2OfShape) myCellGrid;
     TopTools_ListOfShape            myCells;
+    Standard_Integer                myStatus;
 
 
 };

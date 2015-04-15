@@ -66,7 +66,7 @@ static Standard_Real MaxTolVer(const TopoDS_Shape& aShape)
 
 MakePatches::MakePatches()
 {
-    myStatus = 0;
+    myStatus = MAKEPATCHES_OK;
 }
 
 //=======================================================================
@@ -90,14 +90,14 @@ void MakePatches::Init(const TopoDS_Shape& Guides,
     myPatches.Nullify();
     myGuides = Guides;
     myProfiles = Profiles;
-    myStatus = 0;
+    myStatus = MAKEPATCHES_OK;
 }
 
 //=======================================================================
 //function : GetStatus
 //purpose  :
 //=======================================================================
-Standard_Integer MakePatches::GetStatus() const
+MakePatchesStatus MakePatches::GetStatus() const
 {
     return myStatus;
 }
@@ -129,13 +129,15 @@ void MakePatches::Perform(const Standard_Real theTolConf,
 
     Standard_Integer iErr = aPF.ErrorStatus();
     if (iErr) {
-        myStatus = 1; //intersection of guides with profiles failed
+        //intersection of guides with profiles failed
+        myStatus = MAKEPATCHES_FAIL_INTERSECTION;
         return;
     }
     else {
         Fuser = new BRepAlgoAPI_Fuse(myGuides, myProfiles, aPF);
         if (!Fuser->IsDone()) {
-            myStatus = 1; //intersection of guides with profiles failed
+            //intersection of guides with profiles failed
+            myStatus = MAKEPATCHES_FAIL_INTERSECTION;
             return;
         }
     }
@@ -171,10 +173,14 @@ void MakePatches::Perform(const Standard_Real theTolConf,
     //Creating list of cells
     MakeLoops aLoopMaker(myGrid,  GuideEdges, ProfileEdges);
     aLoopMaker.Perform();
+    if (aLoopMaker.GetStatus() != MAKELOOPS_OK) {
+        myStatus = MAKEPATCHES_FAIL_PATCHES;
+        return;
+    }
     const Handle(TopTools_HArray2OfShape)& PatchFrames = aLoopMaker.Cells();
 
     if (PatchFrames.IsNull()) {
-        myStatus = 2;
+        myStatus = MAKEPATCHES_FAIL_PATCHES;
         return;
     }
 

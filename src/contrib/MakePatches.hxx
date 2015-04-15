@@ -35,6 +35,19 @@
 #include <Standard_Macro.hxx>
 #endif
 
+/**
+ * \brief Return code of make patches algorithm
+ * MAKEPATCHES_OK : Algorithm successful
+ * MAKEPATCHES_FAIL_INTERSECTION : Algorithm failed during intersection of guides and profiles
+ * MAKEPATCHES_FAIL_PATCHES : Algorithm failed due to failure in MakeLoops algorithm
+ */
+enum MakePatchesStatus
+{
+    MAKEPATCHES_OK                 = 0,
+    MAKEPATCHES_FAIL_INTERSECTION  = 1,
+    MAKEPATCHES_FAIL_PATCHES       = 2
+};
+
 class TopoDS_Shape;
 class Handle_Geom_BSplineSurface;
 class TColGeom_SequenceOfBoundedCurve;
@@ -143,10 +156,9 @@ public:
                  const GeomFill_FillingStyle theStyle = GeomFill_CoonsStyle);
     /**
      * Returns status of calculations\n
-     * 0 - success, 1 - algorithm failed
      */
 
-    Standard_EXPORT Standard_Integer GetStatus() const;
+    Standard_EXPORT MakePatchesStatus GetStatus() const;
 
 protected:
 
@@ -170,7 +182,7 @@ private:
     TopoDS_Shape myProfiles;
     TopoDS_Shape myGrid;
     TopoDS_Shape myPatches;
-    Standard_Integer myStatus;
+    MakePatchesStatus myStatus;
 
 
 };
