@@ -76,7 +76,7 @@ void MakeLoops::Perform()
         return;
     }
 
-    Standard_Integer i, j, MinExtent = 10;
+    Standard_Integer i, j, MinExtent = INT_MAX;
     for (i = 1; i <= GridVertices.Extent(); i++) {
         Standard_Integer anExtent = GridVertices(i).Extent();
         if (anExtent < MinExtent) {
@@ -148,7 +148,7 @@ void MakeLoops::Perform()
 
         TopoDS_Vertex CurVertex = TopExp::LastVertex(E1, Standard_True);
         NextCorner = CurVertex;
-        if (GridVertices.Contains(Corner)) {
+        if (GridVertices.Contains(CurVertex)) {
             for (iter.Initialize(GridVertices.FindFromKey(CurVertex)); iter.More(); iter.Next()) {
                 const TopoDS_Edge& anEdge  = TopoDS::Edge(iter.Value());
                 if (myGuideEdges.Contains(anEdge)) {
