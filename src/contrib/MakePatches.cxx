@@ -43,6 +43,8 @@
 #include <SurfTools.hxx>
 #include <BSplCLib.hxx>
 #include <ShapeAnalysis_Wire.hxx>
+#include <vector>
+#include <TopTools_ListIteratorOfListOfShape.hxx>
 
 #ifdef DEBUG
 #include <BRepTools.hxx>
@@ -118,35 +120,127 @@ void MakePatches::Perform(const Standard_Real theTolConf,
                           const GeomFill_FillingStyle theStyle,
                           const Standard_Boolean theSewing)
 {
-    //Fuse <myGuides> and <myProfiles>
-    BRepAlgoAPI_Fuse* Fuser;
-
-    BOPCol_ListOfShape aLC;
-    aLC.Append(myGuides);
-    aLC.Append(myProfiles);
-
-    Handle(NCollection_BaseAllocator) aAL = new NCollection_IncAllocator;
-    BOPAlgo_PaveFiller aPF(aAL);
-    //
-    aPF.SetArguments(aLC);
-    //
-    aPF.Perform();
-
-    Standard_Integer iErr = aPF.ErrorStatus();
-    if (iErr) {
-        //intersection of guides with profiles failed
-        myStatus = MAKEPATCHES_FAIL_INTERSECTION;
-        return;
-    }
-    else {
-        Fuser = new BRepAlgoAPI_Fuse(myGuides, myProfiles, aPF);
-        if (!Fuser->IsDone()) {
-            //intersection of guides with profiles failed
+    // ************************************************************
+    // Fuse all guides and profiles one after another, since the
+    // fusing in one step is buggy in OpenCASCADE
+    // ************************************************************
+    // save fusers
+    std::vector<BRepAlgoAPI_Fuse*> fusers;
+    TopExp_Explorer ex(myGuides, TopAbs_EDGE);
+    // resulting grid wire
+    myGrid = ex.Current();;
+    for(; ex.More(); ex.Next()) {
+        TopoDS_Edge E = TopoDS::Edge(ex.Current());
+        BRepAlgoAPI_Fuse* fuser = new BRepAlgoAPI_Fuse(myGrid, E);
+        if (!fuser->IsDone()) {
             myStatus = MAKEPATCHES_FAIL_INTERSECTION;
             return;
         }
+        myGrid = fuser->Shape();
+        fusers.push_back(fuser);
     }
-    myGrid = Fuser->Shape();
+    for(TopExp_Explorer pex(myProfiles, TopAbs_EDGE); pex.More(); pex.Next()) {
+        TopoDS_Edge E = TopoDS::Edge(pex.Current());
+        BRepAlgoAPI_Fuse* fuser = new BRepAlgoAPI_Fuse(myGrid, E);
+        if (!fuser->IsDone()) {
+            myStatus = MAKEPATCHES_FAIL_INTERSECTION;
+            return;
+        }
+        myGrid = fuser->Shape();
+        fusers.push_back(fuser);
+    }
+
+    // ************************************************************
+    // Get the profile and guide edges after fusing
+    // (they might be cutted)
+    // ************************************************************
+    TopoDS_Compound cuttedProfiles;
+    BRep_Builder profileBuilder;
+    profileBuilder.MakeCompound(cuttedProfiles);
+    TopoDS_Compound cuttedGuides;
+    BRep_Builder guideBuilder;
+    guideBuilder.MakeCompound(cuttedGuides);
+
+    TopTools_ListIteratorOfListOfShape itl;
+    TopExp_Explorer Explo(myGuides, TopAbs_EDGE);
+    for (; Explo.More(); Explo.Next()) {
+        const TopoDS_Shape& anEdge = Explo.Current();
+        bool ModifiedEdgeFound = false;
+        for (int i = 0; i < fusers.size(); i++) {
+            const TopTools_ListOfShape& aList = fusers[i]->Modified(anEdge);
+            if (!aList.IsEmpty()) {
+                for (itl.Initialize(aList); itl.More(); itl.Next()) {
+                    guideBuilder.Add(cuttedGuides, itl.Value());
+                }
+                ModifiedEdgeFound = true;
+                break;
+            }
+        }
+        if (!ModifiedEdgeFound) {
+            guideBuilder.Add(cuttedGuides, anEdge);
+        }
+    }
+    for (Explo.Init(myProfiles, TopAbs_EDGE); Explo.More(); Explo.Next()) {
+        const TopoDS_Shape& anEdge = Explo.Current();
+        bool ModifiedEdgeFound = false;
+        for (int i = 0; i < fusers.size(); i++) {
+            const TopTools_ListOfShape& aList = fusers[i]->Modified(anEdge);
+            if (!aList.IsEmpty()) {
+                for (itl.Initialize(aList); itl.More(); itl.Next()) {
+                    profileBuilder.Add(cuttedProfiles, itl.Value());
+                }
+                ModifiedEdgeFound = true;
+                break;
+            }
+        }
+        if (!ModifiedEdgeFound) {
+            profileBuilder.Add(cuttedProfiles, anEdge);
+        }
+    }
+
+    // ************************************************************
+    // Fuse the cutted guides and cutted profiles
+    // ************************************************************
+    BRepAlgoAPI_Fuse fuser2(cuttedGuides, cuttedProfiles);
+    if (!fuser2.IsDone()) {
+        myStatus = MAKEPATCHES_FAIL_INTERSECTION;
+        return;
+    }
+    myGrid = fuser2.Shape();
+
+    // ************************************************************
+    // Get the guide and profile edges after fusing 
+    // ************************************************************
+    // guides as input for makeLoops
+    TopTools_MapOfShape GuideEdges;
+    // profiles as input for makeLoops
+    TopTools_MapOfShape ProfileEdges;
+    Explo.Init(cuttedGuides, TopAbs_EDGE);
+    for (; Explo.More(); Explo.Next()) {
+        const TopoDS_Shape& anEdge = Explo.Current();
+        const TopTools_ListOfShape& aList = fuser2.Modified(anEdge);
+        if (!aList.IsEmpty()) {
+            for (itl.Initialize(aList); itl.More(); itl.Next()) {
+                GuideEdges.Add(itl.Value());
+            }
+        }
+        else {
+            GuideEdges.Add(anEdge);
+        }
+    }
+    for (Explo.Init(cuttedProfiles, TopAbs_EDGE); Explo.More(); Explo.Next()) {
+        const TopoDS_Shape& anEdge = Explo.Current();
+        const TopTools_ListOfShape& aList = fuser2.Modified(anEdge);
+        if (!aList.IsEmpty()) {
+            for (itl.Initialize(aList); itl.More(); itl.Next()) {
+                ProfileEdges.Add(itl.Value());
+            }
+        }
+        else {
+            ProfileEdges.Add(anEdge);
+        }
+    }
+
 #ifdef DEBUG
     // save vertex-edge map for debugging purposes
     static int iMakePatches = 0;
@@ -155,38 +249,10 @@ void MakePatches::Perform(const Standard_Real theTolConf,
     std::stringstream smygrid;
     smygrid << "makePatches_" << iMakePatches << "_wireGrid.brep";
     BRepTools::Write(myGrid, smygrid.str().c_str());
-
 #endif
-    TopTools_MapOfShape GuideEdges, ProfileEdges;
-    TopTools_ListIteratorOfListOfShape itl;
-    TopExp_Explorer Explo(myGuides, TopAbs_EDGE);
-    for (; Explo.More(); Explo.Next()) {
-        const TopoDS_Shape& anEdge = Explo.Current();
-        const TopTools_ListOfShape& aList = Fuser->Modified(anEdge);
-        if (aList.IsEmpty()) {
-            GuideEdges.Add(anEdge);
-        }
-        else {
-            for (itl.Initialize(aList); itl.More(); itl.Next()) {
-                GuideEdges.Add(itl.Value());
-            }
-        }
-    }
-    for (Explo.Init(myProfiles, TopAbs_EDGE); Explo.More(); Explo.Next()) {
-        const TopoDS_Shape& anEdge = Explo.Current();
-        const TopTools_ListOfShape& aList = Fuser->Modified(anEdge);
-        if (aList.IsEmpty()) {
-            ProfileEdges.Add(anEdge);
-        }
-        else {
-            for (itl.Initialize(aList); itl.More(); itl.Next()) {
-                ProfileEdges.Add(itl.Value());
-            }
-        }
-    }
 
     //Creating list of cells
-    MakeLoops aLoopMaker(myGrid,  GuideEdges, ProfileEdges);
+    MakeLoops aLoopMaker(myGrid, GuideEdges, ProfileEdges);
     aLoopMaker.Perform();
     if (aLoopMaker.GetStatus() != MAKELOOPS_OK) {
         myStatus = MAKEPATCHES_FAIL_PATCHES;
