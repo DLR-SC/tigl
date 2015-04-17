@@ -129,7 +129,7 @@ void MakePatches::Perform(const Standard_Real theTolConf,
     TopExp_Explorer ex(myGuides, TopAbs_EDGE);
     // resulting grid wire
     myGrid = ex.Current();;
-    for(; ex.More(); ex.Next()) {
+    for (; ex.More(); ex.Next()) {
         TopoDS_Edge E = TopoDS::Edge(ex.Current());
         BRepAlgoAPI_Fuse* fuser = new BRepAlgoAPI_Fuse(myGrid, E);
         if (!fuser->IsDone()) {
@@ -139,7 +139,7 @@ void MakePatches::Perform(const Standard_Real theTolConf,
         myGrid = fuser->Shape();
         fusers.push_back(fuser);
     }
-    for(TopExp_Explorer pex(myProfiles, TopAbs_EDGE); pex.More(); pex.Next()) {
+    for (TopExp_Explorer pex(myProfiles, TopAbs_EDGE); pex.More(); pex.Next()) {
         TopoDS_Edge E = TopoDS::Edge(pex.Current());
         BRepAlgoAPI_Fuse* fuser = new BRepAlgoAPI_Fuse(myGrid, E);
         if (!fuser->IsDone()) {
