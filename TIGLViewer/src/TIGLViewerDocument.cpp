@@ -150,9 +150,9 @@ TiglReturnCode TIGLViewerDocument::openCpacsConfiguration(const QString fileName
     tixiRet = tixiGetNamedChildrenCount( tixiHandle, CPACS_XPATH_ROTORCRAFT, "model", &countRotorcrafts );
     for (int i = 0; i < countAircrafts; i++) {
         char *text;
-        char xpath[90];
-        sprintf(xpath, "%s[%d]", CPACS_XPATH_AIRCRAFT_MODEL, i+1);
-        tixiRet = tixiGetTextAttribute( tixiHandle, xpath, "uID", &text);
+        std::stringstream xpath;
+        xpath << CPACS_XPATH_AIRCRAFT_MODEL << "[" << i+1 << "]";
+        tixiRet = tixiGetTextAttribute( tixiHandle, xpath.str().c_str(), "uID", &text);
         if (tixiRet == SUCCESS) {
             configurations << text;
         }
@@ -163,9 +163,9 @@ TiglReturnCode TIGLViewerDocument::openCpacsConfiguration(const QString fileName
     }    
     for (int i = 0; i < countRotorcrafts; i++) {
         char *text;
-        char xpath[90];
-        sprintf(xpath, "%s[%d]", CPACS_XPATH_ROTORCRAFT_MODEL, i+1);
-        tixiRet = tixiGetTextAttribute(tixiHandle, xpath, "uID", &text);
+        std::stringstream xpath;
+        xpath << CPACS_XPATH_ROTORCRAFT_MODEL << "[" << i+1 << "]";
+        tixiRet = tixiGetTextAttribute(tixiHandle, xpath.str().c_str(), "uID", &text);
         if (tixiRet == SUCCESS) {
             configurations << text;
         }
