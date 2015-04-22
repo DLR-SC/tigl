@@ -2879,6 +2879,25 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportWingColladaByUID(const TiglCPACSConf
                                                              const char* wingUID, 
                                                              const char* filename, 
                                                              double deflection);
+
+/**
+* @brief Exports the fused/trimmed geometry of a CPACS configuration to BREP format.
+*
+* In order to fuse the geometry, boolean operations are performed. Depending on the
+* complexity of the configuration, the fusing can take several minutes.
+*
+*
+* @param[in]  cpacsHandle Handle for the CPACS configuration
+* @param[in]  filename    BREP export file name
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_NULL_POINTER if filenamePtr is a null pointer
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglExportFusedBREP(TiglCPACSConfigurationHandle cpacsHandle,
+                                                      const char* filename);
 /*@}*/
 /*****************************************************************************************************/
 

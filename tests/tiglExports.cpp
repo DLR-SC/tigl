@@ -217,6 +217,11 @@ TEST_F(tiglExportSimple, check_face_traits)
     ASSERT_EQ(TIGL_SUCCESS, tiglExportFusedWingFuselageIGES(tiglSimpleHandle,"TestData/export/simpletest_fused.iges"));
 }
 
+TEST_F(tiglExportSimple, exportFusedBRep)
+{
+    ASSERT_EQ(TIGL_SUCCESS, tiglExportFusedBREP(tiglSimpleHandle,"TestData/export/simpletest.brep"));
+}
+
 // check if face names were set correctly in the case without a trailing edge
 TEST_F(tiglExportRectangularWing, check_face_traits)
 {

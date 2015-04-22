@@ -46,6 +46,7 @@
 #include "CTiglExportStl.h"
 #include "CTiglExportVtk.h"
 #include "CTiglExportCollada.h"
+#include "CTiglExportBrep.h"
 #include "CTiglLogging.h"
 #include "CCPACSFuselageSection.h"
 #include "CCPACSFuselageSectionElement.h"
@@ -4321,7 +4322,34 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedGeometryVTKSimple(const TiglCP
     }
 }
 
+TIGL_COMMON_EXPORT TiglReturnCode tiglExportFusedBREP(TiglCPACSConfigurationHandle cpacsHandle, const char* filename)
+{
+    if (filename == 0) {
+        LOG(ERROR) << "Error: Null pointer argument for filename";
+        LOG(ERROR) << "in function call to tiglExportFusedBREP." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
 
+    try {
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+        tigl::CTiglExportBrep exporter;
+        exporter.ExportFusedBrep(config, filename);
+        return TIGL_SUCCESS;
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglExportFusedBREP!" << std::endl;
+        return TIGL_ERROR;
+    }
+}
 
 
 /*****************************************************************************************************/
