@@ -461,8 +461,11 @@ const std::vector<std::string> filenamesSimpleTest(fnst, fnst + 4);
 // test case for simple wing
 const char * fnsw[] = {"simpleWing", "TestData/guideCurvePatch_simpleWingGuides.brep", "TestData/guideCurvePatch_simpleWingProfiles.brep", "fusingAtOnceFail"};
 const std::vector<std::string> filenamesSimpleWing(fnsw, fnsw + 4);
+// test case for nacelle
+const char * fnnc[] = {"nacelle", "TestData/guideCurvePatch_nacelleGuides.brep", "TestData/guideCurvePatch_nacelleProfiles.brep", "fusingAtOnceSuccess"};
+const std::vector<std::string> filenamesNacelle(fnsw, fnsw + 4);
 // combine all test cases
-const std::vector<std::string> fn[] = {filenamesSegment, filenamesSimpleTest, filenamesSimpleWing};
-const std::vector<std::vector< std::string> >filenames(fn, fn + 3);
+const std::vector<std::string> fn[] = {filenamesSegment, filenamesSimpleTest, filenamesSimpleWing, filenamesNacelle};
+const std::vector<std::vector< std::string> >filenames(fn, fn + 4);
 
 INSTANTIATE_TEST_CASE_P(makeLoops, guideCurvePatches, ::testing::ValuesIn(filenames));

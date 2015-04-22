@@ -34,7 +34,7 @@
  * MAKELOOPS_FAIL_SECONDEDGE : Algorithm failed while searching for second edge
  * MAKELOOPS_FAIL_THIRDEDGE : Algorithm failed while searching for third edge
  * MAKELOOPS_FAIL_FOURTHEDGE : Algorithm failed while searching for fourth edge
- * MAKELOOPS_FAIL : Algorithm failed since no closed profile/section was found
+ * MAKELOOPS_FAIL : Algorithm failed 
  */
 enum MakeLoopsStatus
 {
@@ -45,7 +45,7 @@ enum MakeLoopsStatus
     MAKELOOPS_FAIL_SECONDEDGE       = 4,
     MAKELOOPS_FAIL_THIRDEDGE        = 5,
     MAKELOOPS_FAIL_FOURTHEDGE       = 6,
-    MAKELOOPS_FAIL_NOCLOSED_PROFILE = 7
+    MAKELOOPS_FAIL                  = 7
 };
 
 /**

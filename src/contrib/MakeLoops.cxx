@@ -196,7 +196,8 @@ void MakeLoops::Perform()
     TopoDS_Vertex NextStartCorner;
     Standard_Boolean IsFirstRow = Standard_True;
     Standard_Integer RowLength = 0;
-    for (;;) {
+    unsigned int maxLoop = 1000;
+    for (unsigned int count = 0; count<maxLoop; count++) {
         // the four edges of the patch
         TopoDS_Edge E1, E2, E3, E4;
         // set current starting corner as the NextCorner from the previous iteration
@@ -280,6 +281,10 @@ void MakeLoops::Perform()
         // If this it the case, the guide edge is assigned to be the 2nd 
         // edge of the patch
         TopoDS_Vertex CurVertex = TopExp::LastVertex(E1, Standard_True);
+        // set the starting corner for the next iteration as the last vertex of E1
+        // with this, one iterates trough the segment patches along the profile e.g first 
+        // the lower wing patch than the upper wing patch and in the end the trailing
+        // edge patch. 
         NextCorner = CurVertex;
         if (GridVertices.Contains(CurVertex)) {
             for (iter.Initialize(GridVertices.FindFromKey(CurVertex)); iter.More(); iter.Next()) {
@@ -379,8 +384,8 @@ void MakeLoops::Perform()
         CurVertex = TopExp::FirstVertex(E3, Standard_True);
 
 
-        // if E1 is not closed, the next global starting corner is set to be
-        // the first vertex of E3
+        // if the current profile is not closed, the next global starting corner is set to be
+        // the current first vertex of E3
         // With this, the next segment is reached
         if (Corner.IsSame(StartCorner)) {
             NextStartCorner = CurVertex;
@@ -413,14 +418,21 @@ void MakeLoops::Perform()
         BB.Add(aCell, E2);
         BB.Add(aCell, E3);
         BB.Add(aCell, E4);
+
+        // in the case of closed guides, stop the algorithm the current 
+        // cell is the same as the first one. 
+        if (!myCells.IsEmpty()) {
+            if (myCells.First().IsSame(aCell)) {
+                break;
+            }
+        }
+        // otherwise store it in the list of cells
         myCells.Append(aCell);
 
 #ifdef DEBUG
-        static int iMakeLoopsInner = 0;
-        iMakeLoopsInner++;
         // save edges for debugging purposes
         std::stringstream siMakeLoopsInner;
-        siMakeLoopsInner << "_innerLoop" << iMakeLoopsInner;
+        siMakeLoopsInner << "_innerLoop" << count;
         BRepTools::Write(aCell, (currentName + siMakeLoopsInner.str() +  "_cell.brep").c_str());
         BRepTools::Write(E1, (currentName + siMakeLoopsInner.str() + "_edge1.brep").c_str());
         BRepTools::Write(E2, (currentName + siMakeLoopsInner.str() + "_edge2.brep").c_str());
@@ -443,10 +455,15 @@ void MakeLoops::Perform()
                 IsFirstRow = Standard_False;
             }
         }
+        // if the loop was not broken, an error has occured
+        if (count == maxLoop) {
+            myStatus = MAKELOOPS_FAIL;
+            break;
+        }
     }
 
     if (RowLength == 0) {
-        myStatus = MAKELOOPS_FAIL_NOCLOSED_PROFILE;
+        myStatus = MAKELOOPS_FAIL;
         return;
     }
     // save cells segment-wise: Each column in myCellGrid represents
@@ -464,7 +481,6 @@ void MakeLoops::Perform()
             j = 1;
         }
     }
-
 }
 
 //=======================================================================
