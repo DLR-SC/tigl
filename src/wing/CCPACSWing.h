@@ -156,9 +156,6 @@ protected:
     // Cleanup routine
     void Cleanup(void);
 
-    // Build transformation matrix for the wing
-    void BuildMatrix(void);
-
     // Update internal wing data
     void Update(void);
 

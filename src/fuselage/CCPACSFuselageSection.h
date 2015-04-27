@@ -29,7 +29,7 @@
 #include "tigl_internal.h"
 #include "tixi.h"
 #include "CCPACSFuselageSectionElements.h"
-#include "CTiglTransformation.h"
+#include "CCPACSTransformation.h"
 #include <string>
 
 namespace tigl
@@ -67,9 +67,6 @@ protected:
     // Build transformation matrix for the section
     void BuildMatrix(void);
 
-    // Update internal section data
-    void Update(void);
-
 private:
     // Copy constructor
     CCPACSFuselageSection(const CCPACSFuselageSection& );
@@ -80,10 +77,7 @@ private:
 private:
     std::string                   name;           /**< Section name             */
     std::string                   uid;            /**< Section uid              */
-    CTiglTransformation           transformation; /**< Section transfromation   */
-    CTiglPoint                    translation;    /**< Section translation      */
-    CTiglPoint                    scaling;        /**< Section scaling          */
-    CTiglPoint                    rotation;       /**< Section rotation         */
+    CCPACSTransformation          transformation; /**< Section transfromation   */
     CCPACSFuselageSectionElements elements;       /**< Section elements         */
 
 };

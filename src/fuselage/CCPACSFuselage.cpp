@@ -80,41 +80,12 @@ void CCPACSFuselage::Invalidate(void)
 void CCPACSFuselage::Cleanup(void)
 {
     name = "";
-    transformation.SetIdentity();
-    translation = CTiglPoint(0.0, 0.0, 0.0);
-    scaling     = CTiglPoint(1.0, 1.0, 1.0);
-    rotation    = CTiglPoint(0.0, 0.0, 0.0);
+    transformation.reset();
 
     // Calls ITiglGeometricComponent interface Reset to delete e.g. all childs.
     Reset();
 
     Invalidate();
-}
-
-// Builds transformation matrix for the fuselage
-void CCPACSFuselage::BuildMatrix(void)
-{
-    transformation.SetIdentity();
-
-    // Step 1: scale the fuselage around the orign
-    transformation.AddScaling(scaling.x, scaling.y, scaling.z);
-
-    // Step 2: rotate the fuselage
-    // Step 2a: rotate the fuselage around z (yaw   += right tip forward)
-    transformation.AddRotationZ(rotation.z);
-    // Step 2b: rotate the fuselage around y (pitch += nose up)
-    transformation.AddRotationY(rotation.y);
-    // Step 2c: rotate the fuselage around x (roll  += right tip up)
-    transformation.AddRotationX(rotation.x);
-
-    // Step 3: translate the rotated fuselage into its position
-    transformation.AddTranslation(translation.x, translation.y, translation.z);
-}
-
-// Update internal data
-void CCPACSFuselage::Update(void)
-{
-    BuildMatrix();
 }
 
 // Read CPACS fuselage element
@@ -151,34 +122,7 @@ void CCPACSFuselage::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string&
         SetParentUID(ptrParentUID);
     }
 
-
-
-    // Get subelement "/transformation/translation"
-    tempString  = fuselageXPath + "/transformation/translation";
-    elementPath = const_cast<char*>(tempString.c_str());
-    if (tixiCheckElement(tixiHandle, elementPath) == SUCCESS) {
-        if (tixiGetPoint(tixiHandle, elementPath, &(translation.x), &(translation.y), &(translation.z)) != SUCCESS) {
-            throw CTiglError("Error: XML error while reading <translation/> in CCPACSFuselage::ReadCPACS", TIGL_XML_ERROR);
-        }
-    }
-
-    // Get subelement "/transformation/scaling"
-    tempString  = fuselageXPath + "/transformation/scaling";
-    elementPath = const_cast<char*>(tempString.c_str());
-    if (tixiCheckElement(tixiHandle, elementPath) == SUCCESS) {
-        if (tixiGetPoint(tixiHandle, elementPath, &(scaling.x), &(scaling.y), &(scaling.z)) != SUCCESS) {
-            throw CTiglError("Error: XML error while reading <scaling/> in CCPACSFuselage::ReadCPACS", TIGL_XML_ERROR);
-        }
-    }
-
-    // Get subelement "/transformation/rotation"
-    tempString  = fuselageXPath + "/transformation/rotation";
-    elementPath = const_cast<char*>(tempString.c_str());
-    if (tixiCheckElement(tixiHandle, elementPath) == SUCCESS) {
-        if (tixiGetPoint(tixiHandle, elementPath, &(rotation.x), &(rotation.y), &(rotation.z)) != SUCCESS) {
-            throw CTiglError("Error: XML error while reading <rotation/> in CCPACSFuselage::ReadCPACS", TIGL_XML_ERROR);
-        }
-    }
+    transformation.ReadCPACS(tixiHandle, fuselageXPath);
 
     // Get subelement "sections"
     sections.ReadCPACS(tixiHandle, fuselageXPath);
@@ -198,8 +142,6 @@ void CCPACSFuselage::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string&
     if (tixiGetTextAttribute(tixiHandle, const_cast<char*>(fuselageXPath.c_str()), const_cast<char*>(tempString.c_str()), &ptrSym) == SUCCESS) {
         SetSymmetryAxis(ptrSym);
     }
-
-    Update();
 }
 
 // Returns the name of the fuselage
@@ -295,7 +237,7 @@ PNamedShape CCPACSFuselage::BuildLoft(void)
 // Gets the fuselage transformation
 CTiglTransformation CCPACSFuselage::GetFuselageTransformation(void)
 {
-    return transformation;
+    return transformation.getTransformationMatrix();
 }
 
 // Get the positioning transformation for a given section index
@@ -330,13 +272,6 @@ double CCPACSFuselage::GetVolume(void)
 CTiglTransformation CCPACSFuselage::GetTransformation(void)
 {
     return GetFuselageTransformation();
-}
-
-// Sets the Transformation object
-void CCPACSFuselage::Translate(CTiglPoint trans)
-{
-    CTiglAbstractGeometricComponent::Translate(trans);
-    Update();
 }
 
 // Returns the circumference of the segment "segmentIndex" at a given eta

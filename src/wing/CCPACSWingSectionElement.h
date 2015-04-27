@@ -28,7 +28,7 @@
 
 #include "tigl_internal.h"
 #include "tixi.h"
-#include "CTiglTransformation.h"
+#include "CCPACSTransformation.h"
 #include "CTiglPoint.h"
 #include <string>
 
@@ -64,12 +64,6 @@ protected:
     // Cleanup routine
     void Cleanup(void);
 
-    // Build transformation matrix for the section element
-    void BuildMatrix(void);
-
-    // Update internal section element data
-    void Update(void);
-
 private:
     // Copy constructor
     CCPACSWingSectionElement(const CCPACSWingSectionElement& );
@@ -81,10 +75,7 @@ private:
     std::string           name;           /**< Section name                          */
     std::string           profileUID;     /**< Profile index in wing profile library */
     std::string           uID;            /**< UID of the WingSectionElement         */
-    CTiglTransformation   transformation; /**< Section element transformation        */
-    CTiglPoint            translation;
-    CTiglPoint            scaling;
-    CTiglPoint            rotation;
+    CCPACSTransformation  transformation; /**< Section element transformation        */
 
 };
 

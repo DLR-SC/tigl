@@ -91,12 +91,7 @@ protected:
     
     virtual PNamedShape BuildLoft(void) = 0;
 
-    CTiglTransformation        transformation;
-    CTiglTransformation        backTransformation;
-    CTiglPoint                 translation;
-    ECPACSTranslationType      translationType;
-    CTiglPoint                 scaling;
-    CTiglPoint                 rotation;
+    CCPACSTransformation       transformation;
     PNamedShape                loft;
 
 private:
