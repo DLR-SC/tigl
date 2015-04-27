@@ -167,8 +167,7 @@ namespace tigl
 {
 
 // Constructor
-CTiglExportIges::CTiglExportIges(CCPACSConfiguration& config)
-    : _config(config)
+CTiglExportIges::CTiglExportIges()
 {
     _groupMode = NAMED_COMPOUNDS;
 }
@@ -195,61 +194,41 @@ void CTiglExportIges::SetTranslationParameters() const
 
 // Exports the whole configuration as IGES file
 // All wing- and fuselage segments are exported as single bodys
-void CTiglExportIges::ExportIGES(const std::string& filename) const
+void CTiglExportIges::AddConfiguration(CCPACSConfiguration& config)
 {
-    if ( filename.empty()) {
-       LOG(ERROR) << "Error: Empty filename in ExportIGES.";
-       return;
-    }
-
-    ListPNamedShape shapes;
-
     // Export all wings of the configuration
-    for (int w = 1; w <= _config.GetWingCount(); w++) {
-        CCPACSWing& wing = _config.GetWing(w);
+    for (int w = 1; w <= config.GetWingCount(); w++) {
+        CCPACSWing& wing = config.GetWing(w);
 
         for (int i = 1; i <= wing.GetSegmentCount(); i++) {
             CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(i);
             PNamedShape loft = segment.GetLoft();
-            shapes.push_back(loft);
+            AddShape(loft);
         }
     }
 
     // Export all fuselages of the configuration
-    for (int f = 1; f <= _config.GetFuselageCount(); f++) {
-        CCPACSFuselage& fuselage = _config.GetFuselage(f);
+    for (int f = 1; f <= config.GetFuselageCount(); f++) {
+        CCPACSFuselage& fuselage = config.GetFuselage(f);
 
         for (int i = 1; i <= fuselage.GetSegmentCount(); i++) {
             CCPACSFuselageSegment& segment = (tigl::CCPACSFuselageSegment &) fuselage.GetSegment(i);
             PNamedShape loft = segment.GetLoft();
-            shapes.push_back(loft);
+            AddShape(loft);
         }
     }
 
-    CCPACSFarField& farfield = _config.GetFarField();
+    CCPACSFarField& farfield = config.GetFarField();
     if (farfield.GetFieldType() != NONE) {
-        shapes.push_back(farfield.GetLoft());
-    }
-
-    // write iges
-    try {
-        ExportShapes(shapes, filename);
-    }
-    catch (CTiglError&) {
-        throw CTiglError("Cannot export airplane in CTiglExportIges", TIGL_ERROR);
+        AddShape(farfield.GetLoft());
     }
 }
 
 
-// Exports the whole configuration as one fused part to an IGES file
-void CTiglExportIges::ExportFusedIGES(const std::string& filename)
+// Exports the whole configuration as one fused part to an STEP file
+void CTiglExportIges::AddFusedConfiguration(CCPACSConfiguration& config)
 {
-    if (filename.empty()) {
-       LOG(ERROR) << "Error: Empty filename in ExportFusedIGES.";
-       return;
-    }
-
-    PTiglFusePlane fuser = _config.AircraftFusingAlgo();
+    PTiglFusePlane fuser = config.AircraftFusingAlgo();
     fuser->SetResultMode(HALF_PLANE_TRIMMED_FF);
     assert(fuser);
 
@@ -259,42 +238,39 @@ void CTiglExportIges::ExportFusedIGES(const std::string& filename)
         throw CTiglError("Error computing fused airplane.", TIGL_NULL_POINTER);
     }
 
-    try {
-        ListPNamedShape l;
-        l.push_back(fusedAirplane);
-        l.push_back(farField);
+    AddShape(fusedAirplane);
+    AddShape(farField);
 
-        // add intersections
-        const ListPNamedShape& ints = fuser->Intersections();
-        ListPNamedShape::const_iterator it;
-        for (it = ints.begin(); it != ints.end(); ++it) {
-            l.push_back(*it);
-        }
-
-        ExportShapes(l, filename);
+    // add intersections
+    const ListPNamedShape& ints = fuser->Intersections();
+    ListPNamedShape::const_iterator it;
+    for (it = ints.begin(); it != ints.end(); ++it) {
+        AddShape(*it);
     }
-    catch (CTiglError&) {
-        throw CTiglError("Cannot export fused Airplane as IGES", TIGL_ERROR);
+}
+
+void CTiglExportIges::AddShape(PNamedShape shape)
+{
+    if (shape) {
+        _shapes.push_back(shape);
     }
 }
 
 
-
-
 // Save a sequence of shapes in IGES Format
-void CTiglExportIges::ExportShapes(const ListPNamedShape& shapes, const std::string& filename) const
+bool CTiglExportIges::Write(const std::string& filename) const
 {
-    IGESControl_Controller::Init();
-
-    if ( filename.empty()) {
-       LOG(ERROR) << "Error: Empty filename in ExportShapes.";
-       return;
+    if (filename.empty()) {
+       LOG(ERROR) << "Error: Empty filename in CTiglExportIges::Write.";
+       return false;
     }
 
-    ListPNamedShape::const_iterator it;
+    IGESControl_Controller::Init();
+
     // scale all shapes to mm
     ListPNamedShape shapeScaled;
-    for (it = shapes.begin(); it != shapes.end(); ++it) {
+    ListPNamedShape::const_iterator it;
+    for (it = _shapes.begin(); it != _shapes.end(); ++it) {
         PNamedShape pshape = *it;
         if (pshape) {
             CTiglTransformation trafo;
@@ -304,7 +280,7 @@ void CTiglExportIges::ExportShapes(const ListPNamedShape& shapes, const std::str
             shapeScaled.push_back(pScaledShape);
         }
     }
-    
+
     ListPNamedShape list;
     for (it = shapeScaled.begin(); it != shapeScaled.end(); ++it) {
         ListPNamedShape templist = GroupFaces(*it, _groupMode);
@@ -312,7 +288,7 @@ void CTiglExportIges::ExportShapes(const ListPNamedShape& shapes, const std::str
             list.push_back(*it2);
         }
     }
-    
+
     SetTranslationParameters();
 
     IGESControl_Writer igesWriter("MM", 0);
@@ -326,9 +302,7 @@ void CTiglExportIges::ExportShapes(const ListPNamedShape& shapes, const std::str
 
     igesWriter.ComputeModel();
 
-    if (igesWriter.Write(const_cast<char*>(filename.c_str())) != Standard_True) {
-        throw CTiglError("Error: Export of shapes to IGES file failed in CCPACSImportExport::SaveIGES", TIGL_ERROR);
-    }
+    return igesWriter.Write(const_cast<char*>(filename.c_str()));
 }
 
 void CTiglExportIges::SetGroupMode(ShapeGroupMode mode)

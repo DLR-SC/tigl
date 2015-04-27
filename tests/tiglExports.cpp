@@ -204,7 +204,9 @@ TEST_F(tiglExportSimple, export_wing_collada)
     tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglSimpleHandle);
     tigl::CCPACSWing& wing = config.GetWing(1);
 
-    TiglReturnCode ret = tigl::CTiglExportCollada::write(wing.GetLoft(), "TestData/export/simpletest_wing.dae", 0.001);
+    tigl::CTiglExportCollada colladaWriter;
+    colladaWriter.AddShape(wing.GetLoft(), 0.001);
+    TiglReturnCode ret = colladaWriter.Write("TestData/export/simpletest_wing.dae");
 
     ASSERT_EQ(TIGL_SUCCESS, ret);
 }

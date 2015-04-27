@@ -36,12 +36,9 @@ public:
     TIGL_EXPORT CTiglExportCollada();
     
     // adds a shape to export
-    TIGL_EXPORT void addShape(PNamedShape shape, double deflection = 0.1);
-    TIGL_EXPORT TiglReturnCode write(const std::string& filename);
-    
-    // convenience function
-    TIGL_EXPORT static TiglReturnCode write(PNamedShape shape, const std::string& filename, double deflection = 0.1);
-    
+    TIGL_EXPORT void AddShape(PNamedShape shape, double deflection = 0.1);
+    TIGL_EXPORT TiglReturnCode Write(const std::string& filename);
+
 private:
     /// Exports a polygon object to a collada file, the true export code
     TiglReturnCode writeToDisc(class CTiglPolyData &polyData, const char * id, const char * filename);

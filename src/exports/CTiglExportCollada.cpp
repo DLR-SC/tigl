@@ -58,7 +58,7 @@ CTiglExportCollada::CTiglExportCollada()
 {
 }
 
-void CTiglExportCollada::addShape(PNamedShape shape, double deflection)
+void CTiglExportCollada::AddShape(PNamedShape shape, double deflection)
 {
     if (!shape) {
         return;
@@ -281,7 +281,7 @@ bool writeSceneNode(TixiDocumentHandle handle, std::string scenePath, std::strin
 }
 
 
-TiglReturnCode CTiglExportCollada::write(const std::string& filename)
+TiglReturnCode CTiglExportCollada::Write(const std::string& filename)
 {
     TixiDocumentHandle handle = -1;  
     if (tixiCreateDocument("COLLADA", &handle) != SUCCESS) {
@@ -324,13 +324,6 @@ TiglReturnCode CTiglExportCollada::write(const std::string& filename)
     }
 
     return TIGL_SUCCESS;
-}
-
-TiglReturnCode CTiglExportCollada::write(PNamedShape shape, const std::string& filename, double deflection)
-{
-    CTiglExportCollada exporter;
-    exporter.addShape(shape, deflection);
-    return exporter.write(filename);
 }
 
 } // namespace tigl

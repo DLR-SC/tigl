@@ -1315,18 +1315,18 @@ void TIGLViewerDocument::exportConfigCollada()
             tigl::CCPACSFuselage& fusel = config.GetFuselage(ifusel);
             writeToStatusBar(tr("Computing ") + fusel.GetUID().c_str() + ".");
             PNamedShape fshape = fusel.GetLoft();
-            exporter.addShape(fshape, getAbsDeflection(fshape->Shape(), relDeflect));
+            exporter.AddShape(fshape, getAbsDeflection(fshape->Shape(), relDeflect));
         }
         
         for (int iwing = 1; iwing <= config.GetWingCount(); ++iwing) {
             tigl::CCPACSWing& wing = config.GetWing(iwing);
             writeToStatusBar(tr("Computing ") + wing.GetUID().c_str() + ".");
             PNamedShape wshape = wing.GetLoft();
-            exporter.addShape(wshape, getAbsDeflection(wshape->Shape(), relDeflect));
+            exporter.AddShape(wshape, getAbsDeflection(wshape->Shape(), relDeflect));
         }
         
         writeToStatusBar(tr("Meshing and writing COLLADA file ") + fileName + ".");
-        TiglReturnCode err = exporter.write(fileName.toStdString());
+        TiglReturnCode err = exporter.Write(fileName.toStdString());
         writeToStatusBar("");
         if (err != TIGL_SUCCESS) {
             displayError(QString("Error while exporting to COLLADA. Error code: %1").arg(err), "TIGL Error");

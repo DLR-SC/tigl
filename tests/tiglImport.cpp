@@ -21,7 +21,6 @@
 #include "CTiglStepReader.h"
 #include "CTiglExportStep.h"
 #include "CNamedShape.h"
-#include "CCPACSConfiguration.h"
 
 TEST(TiglImport, Step)
 {
@@ -29,10 +28,8 @@ TEST(TiglImport, Step)
     PNamedShape shape = reader.read("TestData/nacelle.stp");
     ASSERT_TRUE(shape != NULL);
     shape->SetName("Nacelle");
-    tigl::CCPACSConfiguration config(0);
     
-    ListPNamedShape list;
-    list.push_back(shape);
-    tigl::CTiglExportStep writer(config);
-    writer.ExportShapes(list, "TestData/export/nacelle-out.stp");
+    tigl::CTiglExportStep writer;
+    writer.AddShape(shape);
+    writer.Write("TestData/export/nacelle-out.stp");
 }

@@ -237,8 +237,7 @@ namespace tigl
 {
 
 // Constructor
-CTiglExportStep::CTiglExportStep(CCPACSConfiguration& config)
-:_config(config)
+CTiglExportStep::CTiglExportStep()
 {
     SetGroupMode(NAMED_COMPOUNDS);
 }
@@ -296,61 +295,41 @@ void CTiglExportStep::AddToStep(PNamedShape shape, STEPControl_Writer& writer) c
 
 // Exports the whole configuration as STEP file
 // All wing- and fuselage segments are exported as single bodys
-void CTiglExportStep::ExportStep(const std::string& filename) const
+void CTiglExportStep::AddConfiguration(CCPACSConfiguration& config)
 {
-    if ( filename.empty()) {
-       LOG(ERROR) << "Error: Empty filename in ExportStep.";
-       return;
-    }
-
-    ListPNamedShape shapes;
-
     // Export all wings of the configuration
-    for (int w = 1; w <= _config.GetWingCount(); w++) {
-        CCPACSWing& wing = _config.GetWing(w);
+    for (int w = 1; w <= config.GetWingCount(); w++) {
+        CCPACSWing& wing = config.GetWing(w);
 
         for (int i = 1; i <= wing.GetSegmentCount(); i++) {
             CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(i);
             PNamedShape loft = segment.GetLoft();
-            shapes.push_back(loft);
+            AddShape(loft);
         }
     }
 
     // Export all fuselages of the configuration
-    for (int f = 1; f <= _config.GetFuselageCount(); f++) {
-        CCPACSFuselage& fuselage = _config.GetFuselage(f);
+    for (int f = 1; f <= config.GetFuselageCount(); f++) {
+        CCPACSFuselage& fuselage = config.GetFuselage(f);
 
         for (int i = 1; i <= fuselage.GetSegmentCount(); i++) {
             CCPACSFuselageSegment& segment = (tigl::CCPACSFuselageSegment &) fuselage.GetSegment(i);
             PNamedShape loft = segment.GetLoft();
-            shapes.push_back(loft);
+            AddShape(loft);
         }
     }
 
-    CCPACSFarField& farfield = _config.GetFarField();
+    CCPACSFarField& farfield = config.GetFarField();
     if (farfield.GetFieldType() != NONE) {
-        shapes.push_back(farfield.GetLoft());
-    }
-
-    // write step
-    try {
-        ExportShapes(shapes, filename);
-    }
-    catch (CTiglError&) {
-        throw CTiglError("Cannot export airplane in CTiglExportStep", TIGL_ERROR);
+        AddShape(farfield.GetLoft());
     }
 }
 
 
 // Exports the whole configuration as one fused part to an STEP file
-void CTiglExportStep::ExportFusedStep(const std::string& filename)
+void CTiglExportStep::AddFusedConfiguration(CCPACSConfiguration& config)
 {
-    if (filename.empty()) {
-       LOG(ERROR) << "Error: Empty filename in ExportFusedStep.";
-       return;
-    }
-
-    PTiglFusePlane fuser = _config.AircraftFusingAlgo();
+    PTiglFusePlane fuser = config.AircraftFusingAlgo();
     fuser->SetResultMode(HALF_PLANE_TRIMMED_FF);
     assert(fuser);
 
@@ -360,43 +339,40 @@ void CTiglExportStep::ExportFusedStep(const std::string& filename)
         throw CTiglError("Error computing fused airplane.", TIGL_NULL_POINTER);
     }
 
-    try {
-        ListPNamedShape l;
-        l.push_back(fusedAirplane);
-        l.push_back(farField);
+    AddShape(fusedAirplane);
+    AddShape(farField);
 
-        // add intersections
-        const ListPNamedShape& ints = fuser->Intersections();
-        ListPNamedShape::const_iterator it;
-        for (it = ints.begin(); it != ints.end(); ++it) {
-            l.push_back(*it);
-        }
-
-        ExportShapes(l, filename);
+    // add intersections
+    const ListPNamedShape& ints = fuser->Intersections();
+    ListPNamedShape::const_iterator it;
+    for (it = ints.begin(); it != ints.end(); ++it) {
+        AddShape(*it);
     }
-    catch (CTiglError&) {
-        throw CTiglError("Cannot export fused Airplane as STEP", TIGL_ERROR);
+}
+
+void CTiglExportStep::AddShape(PNamedShape shape)
+{
+    if (shape) {
+        _shapes.push_back(shape);
     }
 }
 
 
-
-
 // Save a sequence of shapes in STEP Format
-void CTiglExportStep::ExportShapes(const ListPNamedShape& shapes, const std::string& filename) const
+bool CTiglExportStep::Write(const std::string& filename) const
 {
+    if ( filename.empty()) {
+       LOG(ERROR) << "Error: Empty filename in CTiglExportStep::Write.";
+       return false;
+    }
+
     STEPControl_Controller::Init();
     Interface_Static::SetCVal("xstep.cascade.unit", "M");
     Interface_Static::SetCVal("write.step.unit", "M");
 
-    if ( filename.empty()) {
-       LOG(ERROR) << "Error: Empty filename in ExportShapes.";
-       return;
-    }
-
     ListPNamedShape::const_iterator it;
     ListPNamedShape list;
-    for (it = shapes.begin(); it != shapes.end(); ++it) {
+    for (it = _shapes.begin(); it != _shapes.end(); ++it) {
         ListPNamedShape templist = GroupFaces(*it, _groupMode);
         for (ListPNamedShape::iterator it2 = templist.begin(); it2 != templist.end(); ++it2) {
             list.push_back(*it2);
@@ -404,15 +380,13 @@ void CTiglExportStep::ExportShapes(const ListPNamedShape& shapes, const std::str
     }
 
     STEPControl_Writer stepWriter;
-    
+
     for (it = list.begin(); it != list.end(); ++it) {
         PNamedShape pshape = *it;
         AddToStep(pshape, stepWriter);
     }
-    
-    if (stepWriter.Write(const_cast<char*>(filename.c_str())) > IFSelect_RetDone) {
-        throw CTiglError("Error: Export of shapes to STEP file failed in CTiglExportStep::ExportShapes", TIGL_ERROR);
-    }
+
+    return stepWriter.Write(const_cast<char*>(filename.c_str())) <= IFSelect_RetDone;
 }
 
 void CTiglExportStep::SetGroupMode(ShapeGroupMode mode)

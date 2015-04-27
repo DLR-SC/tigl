@@ -44,22 +44,25 @@ class CTiglExportIges
 
 public:
     // Constructor
-    TIGL_EXPORT CTiglExportIges(CCPACSConfiguration& config);
+    TIGL_EXPORT CTiglExportIges();
 
     // Virtual Destructor
     TIGL_EXPORT virtual ~CTiglExportIges(void);
 
-    // Exports the whole configuration as IGES file
-    TIGL_EXPORT void ExportIGES(const std::string& filename) const;
+    //  Adds the whole configuration fused, to the step file
+    TIGL_EXPORT void AddConfiguration(CCPACSConfiguration& config);
 
-    // Exports the whole configuration, boolean fused, as IGES file
-    TIGL_EXPORT void ExportFusedIGES(const std::string& filename);
+    //  Adds the configuration, boolean fused, to the step file
+    TIGL_EXPORT void AddFusedConfiguration(CCPACSConfiguration& config);
 
-    // Save a sequence of shapes in IGES Format
-    TIGL_EXPORT void ExportShapes(const ListPNamedShape& shapes, const std::string& filename) const;
+    // Adds a shape to the step file
+    TIGL_EXPORT void AddShape(PNamedShape shape);
 
     // Sets the type of storing shapes to iges
     TIGL_EXPORT void SetGroupMode(ShapeGroupMode mode);
+
+    // Writes the IGES file
+    TIGL_EXPORT bool Write(const std::string& filename) const;
 
 protected:
 
@@ -68,8 +71,8 @@ private:
     void operator=(const CTiglExportIges& ) { /* Do nothing */ }
     void AddToIges(PNamedShape shape, IGESControl_Writer& writer, int level = 0) const;
 
-    CCPACSConfiguration&          _config;       /**< TIGL configuration object */
-    ShapeGroupMode                _groupMode;    /**< Type specifying how to group faces in the iges file */
+    ShapeGroupMode  _groupMode;    /**< Type specifying how to group faces in the iges file */
+    ListPNamedShape _shapes;
     void SetTranslationParameters() const;
 };
 
