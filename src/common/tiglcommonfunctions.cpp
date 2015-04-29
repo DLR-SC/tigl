@@ -21,6 +21,10 @@
  * data structures.
  */
 
+#if defined _WIN32 || defined __WIN32__
+#include <Shlwapi.h>
+#endif
+
 #include "tiglcommonfunctions.h"
 
 #include "CTiglError.h"
@@ -445,4 +449,19 @@ Handle_Geom_BSplineCurve GetBSplineCurve(const TopoDS_Edge& e)
     // convert to bspline
     Handle_Geom_BSplineCurve bspl =  GeomConvert::CurveToBSplineCurve(curve);
     return bspl;
+}
+
+
+bool IsPathRelative(const std::string& path)
+{
+#if defined _WIN32 || defined __WIN32__
+    return PathIsRelative(path.c_str()) == 1;
+#else
+    if (path.size() > 0 && path[0] == '/') {
+        return true;
+    }
+    else {
+        return false;
+    }
+#endif
 }
