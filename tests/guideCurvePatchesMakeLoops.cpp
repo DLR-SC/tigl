@@ -44,51 +44,6 @@
 #include <ShapeFix_Wire.hxx>
 #include <ShapeFix_Shape.hxx>
 
-/******************************************************************************/
-
-TEST(guideCurvePatches, segment)
-{
-    TopoDS_Shape guides;
-    BRep_Builder b;
-    ifstream in;
-    in.open("TestData/guideCurvePatch_segmentGuides.brep");
-    BRepTools::Read(guides, in, b);
-    in.close();
-    
-    TopoDS_Shape profiles;
-    in.open("TestData/guideCurvePatch_segmentProfiles.brep");
-    BRepTools::Read(profiles, in, b);
-    in.close();
-    MakePatches SurfMaker(guides, profiles);
-    Standard_Real tolConf = Precision::Confusion();
-    Standard_Real tolPara = Precision::Confusion();
-    GeomFill_FillingStyle style = GeomFill_CoonsC2Style;
-    SurfMaker.Perform(tolConf, tolPara, style, Standard_True);
-    TopoDS_Shape faces = SurfMaker.Patches();
-    ASSERT_EQ(SurfMaker.GetStatus(), 0);
-}
-
-TEST(guideCurvePatches, simpleWing)
-{
-    TopoDS_Shape guides;
-    BRep_Builder b;
-    ifstream in;
-    in.open("TestData/guideCurvePatch_simpleWingGuides.brep");
-    BRepTools::Read(guides, in, b);
-    in.close();
-    
-    TopoDS_Shape profiles;
-    in.open("TestData/guideCurvePatch_simpleWingProfiles.brep");
-    BRepTools::Read(profiles, in, b);
-    in.close();
-    MakePatches SurfMaker(guides, profiles);
-    Standard_Real tolConf = Precision::Confusion();
-    Standard_Real tolPara = Precision::Confusion();
-    GeomFill_FillingStyle style = GeomFill_CoonsC2Style;
-    SurfMaker.Perform(tolConf, tolPara, style, Standard_True);
-    TopoDS_Shape faces = SurfMaker.Patches();
-    ASSERT_EQ(SurfMaker.GetStatus(), 0);
-}
 
 
 gp_Pnt EdgeFirstPoint(TopoDS_Edge e) 
@@ -119,7 +74,10 @@ gp_Pnt EdgeLastPoint(TopoDS_Edge e)
 
 // implements the fusing part part and tests only the makeLoops part of the whole pipeline
 // depending on two strings containing the filenames of the guides and profiles brep files
-class guideCurvePatches: public ::testing::TestWithParam<std::vector<std::string> > {
+// as well as a keyword 'fusingAtOnceSuccess' or 'fusingAtOnceFail' as a flag which fusing
+// strategy will be performed
+class guideCurvePatchesMakeLoops: public ::testing::TestWithParam<std::vector<std::string> > 
+{
     
 protected:
     virtual void SetUp()
@@ -140,6 +98,9 @@ protected:
         BRepTools::Read(profiles, in, b);
         in.close();
 
+        ASSERT_FALSE(guides.IsNull());
+        ASSERT_FALSE(profiles.IsNull());
+
         // flag for success of fusing of guides and profiles
         // it is expected to fail for the simpleWing test case
         // if fusing is performed in one step (fusingAtOnce)
@@ -153,14 +114,14 @@ protected:
         // *******************************************************************
         // Check guide and profile shapes
         // *******************************************************************
-        for(TopExp_Explorer ex(guides, TopAbs_WIRE); ex.More(); ex.Next()) {
+        for (TopExp_Explorer ex(guides, TopAbs_WIRE); ex.More(); ex.Next()) {
             TopoDS_Wire W = TopoDS::Wire (ex.Current());
             ASSERT_FALSE(W.IsNull());
             TopoDS_Face F;
             ShapeAnalysis_Wire saw(W, F, Precision::Confusion());
             ASSERT_FALSE(saw.Perform());
         }
-        for(TopExp_Explorer ex(profiles, TopAbs_WIRE); ex.More(); ex.Next()) {
+        for (TopExp_Explorer ex(profiles, TopAbs_WIRE); ex.More(); ex.Next()) {
             TopoDS_Wire W = TopoDS::Wire (ex.Current());
             ASSERT_FALSE(W.IsNull());
             TopoDS_Face F;
@@ -177,11 +138,11 @@ protected:
         // Check fused shape
         // *******************************************************************
         ShapeAnalysis_Edge sae;
-        for(TopExp_Explorer ex(myGrid, TopAbs_EDGE); ex.More(); ex.Next()) {
+        for (TopExp_Explorer ex(myGrid, TopAbs_EDGE); ex.More(); ex.Next()) {
             TopoDS_Edge E = TopoDS::Edge (ex.Current());
             ASSERT_TRUE(sae.HasCurve3d(E));
         }
-        for(TopExp_Explorer ex(myGrid, TopAbs_WIRE); ex.More(); ex.Next()) {
+        for (TopExp_Explorer ex(myGrid, TopAbs_WIRE); ex.More(); ex.Next()) {
             TopoDS_Wire W = TopoDS::Wire (ex.Current());
             ASSERT_FALSE(W.IsNull());
             TopoDS_Face F;
@@ -203,14 +164,14 @@ protected:
         BRepTools::Write(myGrid, sgrid.str().c_str());
 
         int gCount = 0;
-        for(TopTools_MapIteratorOfMapOfShape it(GuideEdges); it.More(); it.Next()) {
+        for (TopTools_MapIteratorOfMapOfShape it(GuideEdges); it.More(); it.Next()) {
             std::stringstream sguide;
             sguide << "TestData/export/guideCurvePatches_makeLoops_" << name << "_modifiedGuideEdge" << gCount << ".brep";
             BRepTools::Write(it.Key(), sguide.str().c_str());
             gCount++;
         }
         int pCount = 0;
-        for(TopTools_MapIteratorOfMapOfShape it(ProfileEdges); it.More(); it.Next()) {
+        for (TopTools_MapIteratorOfMapOfShape it(ProfileEdges); it.More(); it.Next()) {
             std::stringstream sprofile;
             sprofile << "TestData/export/guideCurvePatches_makeLoops_" << name << "_modifiedProfileEdge" << pCount << ".brep";
             BRepTools::Write(it.Key(), sprofile.str().c_str());
@@ -283,7 +244,7 @@ protected:
 };
 
 // check fusing at once, should fail for some test cases due to buggy opencascade fusing
-TEST_P(guideCurvePatches, fuseAtOnce)
+TEST_P(guideCurvePatchesMakeLoops, fuseAtOnce)
 {
     // *******************************************************************
     // Fuse guides and edges at once
@@ -338,7 +299,7 @@ TEST_P(guideCurvePatches, fuseAtOnce)
     }
 }
 
-TEST_P(guideCurvePatches, fuseSequential)
+TEST_P(guideCurvePatchesMakeLoops, fuseSequential)
 {
     // ************************************************************
     // Fuse all guides and profiles one after another, since the
@@ -463,9 +424,9 @@ const char * fnsw[] = {"simpleWing", "TestData/guideCurvePatch_simpleWingGuides.
 const std::vector<std::string> filenamesSimpleWing(fnsw, fnsw + 4);
 // test case for nacelle
 const char * fnnc[] = {"nacelle", "TestData/guideCurvePatch_nacelleGuides.brep", "TestData/guideCurvePatch_nacelleProfiles.brep", "fusingAtOnceSuccess"};
-const std::vector<std::string> filenamesNacelle(fnsw, fnsw + 4);
+const std::vector<std::string> filenamesNacelle(fnnc, fnnc + 4);
 // combine all test cases
 const std::vector<std::string> fn[] = {filenamesSegment, filenamesSimpleTest, filenamesSimpleWing, filenamesNacelle};
 const std::vector<std::vector< std::string> >filenames(fn, fn + 4);
 
-INSTANTIATE_TEST_CASE_P(makeLoops, guideCurvePatches, ::testing::ValuesIn(filenames));
+INSTANTIATE_TEST_CASE_P(varyGuidesAndProfiles, guideCurvePatchesMakeLoops, ::testing::ValuesIn(filenames));

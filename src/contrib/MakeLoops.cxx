@@ -189,6 +189,11 @@ void MakeLoops::Perform()
     // **********************************************************************
     BRep_Builder BB;
 
+    TopoDS_Compound firstCell;
+    TopoDS_Edge firstCellEdge1;
+    TopoDS_Edge firstCellEdge2;
+    TopoDS_Edge firstCellEdge3;
+    TopoDS_Edge firstCellEdge4;
     // iterate through the wire to find the boundaries of four sided patches
     // NextCorner : Defines the starting corner for the next iteration
     TopoDS_Vertex NextCorner = StartCorner;
@@ -196,8 +201,8 @@ void MakeLoops::Perform()
     TopoDS_Vertex NextStartCorner;
     Standard_Boolean IsFirstRow = Standard_True;
     Standard_Integer RowLength = 0;
-    unsigned int maxLoop = 1000;
-    for (unsigned int count = 0; count<maxLoop; count++) {
+    unsigned int maxLoop = 20;
+    for (unsigned int count = 0; count <= maxLoop; count++) {
         // the four edges of the patch
         TopoDS_Edge E1, E2, E3, E4;
         // set current starting corner as the NextCorner from the previous iteration
@@ -419,10 +424,22 @@ void MakeLoops::Perform()
         BB.Add(aCell, E3);
         BB.Add(aCell, E4);
 
+        // save edges of first cell
+        if (myCells.IsEmpty()) {
+            firstCellEdge1 = E1;
+            firstCellEdge2 = E2;
+            firstCellEdge3 = E3;
+            firstCellEdge4 = E4;
+        }
         // in the case of closed guides, stop the algorithm the current 
         // cell is the same as the first one. 
-        if (!myCells.IsEmpty()) {
-            if (myCells.First().IsSame(aCell)) {
+        else {
+            bool isSameAsFirstCell = true;
+            isSameAsFirstCell = isSameAsFirstCell && E1.IsSame(firstCellEdge1);
+            isSameAsFirstCell = isSameAsFirstCell && E2.IsSame(firstCellEdge2);
+            isSameAsFirstCell = isSameAsFirstCell && E3.IsSame(firstCellEdge3);
+            isSameAsFirstCell = isSameAsFirstCell && E4.IsSame(firstCellEdge4);
+            if (isSameAsFirstCell) {
                 break;
             }
         }
@@ -433,6 +450,7 @@ void MakeLoops::Perform()
         // save edges for debugging purposes
         std::stringstream siMakeLoopsInner;
         siMakeLoopsInner << "_innerLoop" << count;
+        BRepTools::Write(myCells.First(), (currentName + siMakeLoopsInner.str() +  "_firstcell.brep").c_str());
         BRepTools::Write(aCell, (currentName + siMakeLoopsInner.str() +  "_cell.brep").c_str());
         BRepTools::Write(E1, (currentName + siMakeLoopsInner.str() + "_edge1.brep").c_str());
         BRepTools::Write(E2, (currentName + siMakeLoopsInner.str() + "_edge2.brep").c_str());
@@ -458,7 +476,7 @@ void MakeLoops::Perform()
         // if the loop was not broken, an error has occured
         if (count == maxLoop) {
             myStatus = MAKELOOPS_FAIL;
-            break;
+            return;
         }
     }
 
