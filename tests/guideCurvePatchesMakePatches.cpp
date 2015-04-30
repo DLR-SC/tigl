@@ -121,3 +121,30 @@ TEST(guideCurvePatches, nacelle)
     BRepTools::Write(SurfMaker.Patches(), "TestData/export/guideCurvePatch_nacellePatches.brep");
 }
 
+
+/******************************************************************************/
+// test surface maker for nacelle (closed guide curves) with closed profiles
+/******************************************************************************/
+TEST(guideCurvePatches, nacelleClosedProfiles)
+{
+    TopoDS_Shape guides;
+    BRep_Builder b;
+    ifstream in;
+    in.open("TestData/guideCurvePatch_nacelleGuides.brep");
+    BRepTools::Read(guides, in, b);
+    in.close();
+    
+    TopoDS_Shape profiles;
+    in.open("TestData/guideCurvePatch_nacelleProfilesClosed.brep");
+    BRepTools::Read(profiles, in, b);
+    in.close();
+    MakePatches SurfMaker(guides, profiles);
+    Standard_Real tolConf = Precision::Confusion();
+    Standard_Real tolPara = Precision::Confusion();
+    GeomFill_FillingStyle style = GeomFill_CoonsC2Style;
+    SurfMaker.Perform(tolConf, tolPara, style, Standard_True);
+    TopoDS_Shape faces = SurfMaker.Patches();
+    ASSERT_EQ(SurfMaker.GetStatus(), 0);
+    SurfMaker.Patches();
+    BRepTools::Write(SurfMaker.Patches(), "TestData/export/guideCurvePatch_nacelleClosedProfilesPatches.brep");
+}

@@ -414,19 +414,22 @@ TEST_P(guideCurvePatchesMakeLoops, fuseSequential)
 }
 
 // test case for single segment
-const char * fnsg[] = {"segment", "TestData/guideCurvePatch_segmentGuides.brep", "TestData/guideCurvePatch_segmentProfiles.brep", "fusingAtOnceSuccess"};
-const std::vector<std::string> filenamesSegment(fnsg, fnsg + 4);
+const char * keywords1[] = {"segment", "TestData/guideCurvePatch_segmentGuides.brep", "TestData/guideCurvePatch_segmentProfiles.brep", "fusingAtOnceSuccess"};
+const std::vector<std::string> filenamesSegment(keywords1, keywords1 + 4);
 // test case for simple wing from simpletest.xml file
-const char * fnst[] = {"simpleTest", "TestData/guideCurvePatch_simpleWingSimpleTestGuides.brep", "TestData/guideCurvePatch_simpleWingSimpleTestProfiles.brep", "fusingAtOnceSuccess"};
-const std::vector<std::string> filenamesSimpleTest(fnst, fnst + 4);
+const char * keywords2[] = {"simpleTest", "TestData/guideCurvePatch_simpleWingSimpleTestGuides.brep", "TestData/guideCurvePatch_simpleWingSimpleTestProfiles.brep", "fusingAtOnceSuccess"};
+const std::vector<std::string> filenamesSimpleTest(keywords2, keywords2 + 4);
 // test case for simple wing
-const char * fnsw[] = {"simpleWing", "TestData/guideCurvePatch_simpleWingGuides.brep", "TestData/guideCurvePatch_simpleWingProfiles.brep", "fusingAtOnceFail"};
-const std::vector<std::string> filenamesSimpleWing(fnsw, fnsw + 4);
+const char * keywords3[] = {"simpleWing", "TestData/guideCurvePatch_simpleWingGuides.brep", "TestData/guideCurvePatch_simpleWingProfiles.brep", "fusingAtOnceFail"};
+const std::vector<std::string> filenamesSimpleWing(keywords3, keywords3 + 4);
 // test case for nacelle
-const char * fnnc[] = {"nacelle", "TestData/guideCurvePatch_nacelleGuides.brep", "TestData/guideCurvePatch_nacelleProfiles.brep", "fusingAtOnceSuccess"};
-const std::vector<std::string> filenamesNacelle(fnnc, fnnc + 4);
+const char * keywords4[] = {"nacelle", "TestData/guideCurvePatch_nacelleGuides.brep", "TestData/guideCurvePatch_nacelleProfiles.brep", "fusingAtOnceSuccess"};
+const std::vector<std::string> filenamesNacelle(keywords4, keywords4 + 4);
+// test case for nacelle with closed profiles
+const char * keywords5[] = {"nacelleClosedProfiles", "TestData/guideCurvePatch_nacelleGuides.brep", "TestData/guideCurvePatch_nacelleProfilesClosed.brep", "fusingAtOnceSuccess"};
+const std::vector<std::string> filenamesNacelleClosedProfiles(keywords5, keywords5 + 4);
 // combine all test cases
-const std::vector<std::string> fn[] = {filenamesSegment, filenamesSimpleTest, filenamesSimpleWing, filenamesNacelle};
-const std::vector<std::vector< std::string> >filenames(fn, fn + 4);
+const std::vector<std::string> fn[] = {filenamesSegment, filenamesSimpleTest, filenamesSimpleWing, filenamesNacelle, filenamesNacelleClosedProfiles};
+const std::vector<std::vector< std::string> >filenames(fn, fn + 5);
 
 INSTANTIATE_TEST_CASE_P(varyGuidesAndProfiles, guideCurvePatchesMakeLoops, ::testing::ValuesIn(filenames));
