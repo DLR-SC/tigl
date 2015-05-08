@@ -81,13 +81,10 @@ endif(OCE_FOUND)
 # search TiXI
 set(TIXI_PATH "" CACHE PATH "TiXI installation prefix")
 set(CMAKE_PREFIX_PATH "${TIXI_PATH};${CMAKE_PREFIX_PATH}")
-find_package( TIXI 2.1.0 REQUIRED)
+find_package( TIXI 2.2.0 REQUIRED)
 get_target_property(TIXI_LIBRARY TIXI LOCATION)
 get_filename_component(TIXI_LIB_PATH ${TIXI_LIBRARY} PATH)
 
-if(TIXI_VERSION VERSION_GREATER 2.1.0)
-  set(HAVE_TIXI_SETPRINTMSG TRUE)
-endif()
 
 find_package( PythonInterp )
 
