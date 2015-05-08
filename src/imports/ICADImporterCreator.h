@@ -1,7 +1,7 @@
 /*
-* Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
+* Copyright (C) 2015 German Aerospace Center (DLR/SC)
 *
-* Created: 2014-02-15 Martin Siggel <Martin.Siggel@dlr.de>
+* Created: 2015-05-08 Martin Siggel <Martin.Siggel@dlr.de>
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -16,24 +16,30 @@
 * limitations under the License.
 */
 
-#include "CTiglTypeRegistry.h"
+#ifndef ICADIMPORTERCREATOR_H
+#define ICADIMPORTERCREATOR_H
 
-#define REGISTER_TYPE(type) \
-    AUTORUN(type); \
-    static const bool registered_ ## type = type ## _RegisterType();
+#include "ITiglCADImporter.h"
 
 namespace tigl
 {
 
-// register all dynamic types to prevent linker optimization
-REGISTER_TYPE(CCPACSWingProfileCST)
-REGISTER_TYPE(CCPACSWingProfilePointList)
-REGISTER_TYPE(CTiglStepReader)
-
-
-void CTiglTypeRegistry::Init()
+class ICADImporterCreator
 {
-// dummy implementation
+public:
+   virtual ITiglCADImporter* create() const = 0;
+};
+
+template <class T>
+class ICADImporterCreatorImpl : public ICADImporterCreator
+{
+public:
+   ITiglCADImporter* create() const
+   {
+       return new T;
+   }
+};
+
 }
- 
-} // namespace tigl
+
+#endif // ICADIMPORTERCREATOR_H

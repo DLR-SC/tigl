@@ -1,7 +1,7 @@
 /*
-* Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
+* Copyright (C) 2015 German Aerospace Center (DLR/SC)
 *
-* Created: 2014-02-15 Martin Siggel <Martin.Siggel@dlr.de>
+* Created: 2015-05-08 Martin Siggel <Martin.Siggel@dlr.de>
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -15,25 +15,24 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
+#include "tiglcommonfunctions.h"
+#include "test.h"
 
-#include "CTiglTypeRegistry.h"
 
-#define REGISTER_TYPE(type) \
-    AUTORUN(type); \
-    static const bool registered_ ## type = type ## _RegisterType();
 
-namespace tigl
+TEST(TiglCommonFunctions, isPathRelative)
 {
+    ASSERT_TRUE(IsPathRelative("./test.txt"));
 
-// register all dynamic types to prevent linker optimization
-REGISTER_TYPE(CCPACSWingProfileCST)
-REGISTER_TYPE(CCPACSWingProfilePointList)
-REGISTER_TYPE(CTiglStepReader)
+    ASSERT_TRUE(IsPathRelative("test.txt"));
 
+    ASSERT_TRUE(IsPathRelative("../test.txt"));
 
-void CTiglTypeRegistry::Init()
-{
-// dummy implementation
+    // check absolute paths
+#ifdef WIN32
+    ASSERT_FALSE(IsPathRelative("d:/data/test.txt"));
+#else
+    ASSERT_FALSE(IsPathRelative("/usr/bin/test.txt"));
+#endif
 }
- 
-} // namespace tigl
+

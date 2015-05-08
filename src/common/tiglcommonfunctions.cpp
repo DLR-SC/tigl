@@ -458,10 +458,10 @@ bool IsPathRelative(const std::string& path)
     return PathIsRelative(path.c_str()) == 1;
 #else
     if (path.size() > 0 && path[0] == '/') {
-        return true;
+        return false;
     }
     else {
-        return false;
+        return true;
     }
 #endif
 }

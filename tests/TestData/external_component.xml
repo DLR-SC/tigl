@@ -19,7 +19,4 @@
     </transformation>
     <file type = "step">nacelle.stp</file>
   </externalComponent>
-  <externalComponent uid = "nacelleabsolute">
-    <file type = "step">d:/data/nacelle.stp</file>
-  </externalComponent>
 </root>

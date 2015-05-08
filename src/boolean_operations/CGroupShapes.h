@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2015 German Aerospace Center (DLR/SC)
 *
-* Created: 2015-05-05 Martin Siggel <Martin.Siggel@dlr.de>
+* Created: 2015-05-08 Martin Siggel <Martin.Siggel@dlr.de>
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -16,31 +16,31 @@
 * limitations under the License.
 */
 
-#ifndef CTIGLSTEPREADER_H
-#define CTIGLSTEPREADER_H
+#ifndef CGROUPSHAPES_H
+#define CGROUPSHAPES_H
 
 #include "tigl_internal.h"
-#include "tigl_config.h"
-#include "ITiglCADImporter.h"
-
-#include <string>
+#include "PNamedShape.h"
+#include "ListPNamedShape.h"
 
 namespace tigl
 {
 
-class CTiglStepReader : public ITiglCADImporter
+class CGroupShapes
 {
 public:
-    TIGL_EXPORT CTiglStepReader();
-    
-    /// reads in a step file
-    TIGL_EXPORT ListPNamedShape Read(const std::string stepFileName);
+    // groups multiple shapes into one shape by creating a TopoDS_Compound
+    TIGL_EXPORT CGroupShapes(const ListPNamedShape& shapeList);
+    TIGL_EXPORT virtual ~CGroupShapes();
 
-    TIGL_EXPORT std::string SupportedFileType() const;
-    
-    TIGL_EXPORT ~CTiglStepReader();
+    TIGL_EXPORT operator PNamedShape ();
+
+    TIGL_EXPORT const PNamedShape NamedShape();
+
+private:
+    PNamedShape _result;
 };
 
-}
+} // namespace tigl
 
-#endif // CTIGLSTEPREADER_H
+#endif // CGROUPSHAPES_H

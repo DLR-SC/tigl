@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2015 German Aerospace Center (DLR/SC)
 *
-* Created: 2015-05-27 Martin Siggel <Martin.Siggel@dlr.de>
+* Created: 2015-05-05 Martin Siggel <Martin.Siggel@dlr.de>
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -19,6 +19,10 @@
 
 #include "CTiglLogging.h"
 #include "CNamedShape.h"
+#include "ICADImporterCreator.h"
+#include "CTiglImporterFactory.h"
+#include "CTiglTypeRegistry.h"
+
 
 #include <STEPControl_Reader.hxx>
 #include <IFSelect_ReturnStatus.hxx>
@@ -26,12 +30,23 @@
 namespace tigl
 {
 
+// register at factory
+
+AUTORUN(CTiglStepReader)
+{
+    static ICADImporterCreatorImpl<CTiglStepReader> stepImporterCreator;
+    CTiglImporterFactory::Instance().RegisterImporter(&stepImporterCreator);
+    return true;
+}
+
 CTiglStepReader::CTiglStepReader()
 {
 }
 
-PNamedShape CTiglStepReader::read(const std::string stepFileName)
+ListPNamedShape CTiglStepReader::Read(const std::string stepFileName)
 {
+    ListPNamedShape shapeList;
+
     STEPControl_Reader aReader;
     IFSelect_ReturnStatus status = aReader.ReadFile(stepFileName.c_str());
     if ( status == IFSelect_RetDone ) {
@@ -42,22 +57,32 @@ PNamedShape CTiglStepReader::read(const std::string stepFileName)
     }
     else {
         LOG(ERROR) << "Error reading in step file " << stepFileName << "!";
-        return PNamedShape();
+        return shapeList;
     }
 
     int nbs = aReader.NbShapes();
-    if ( nbs > 0 ) {
-        PNamedShape pshape(new CNamedShape(aReader.OneShape(), "StepImport", "StepFile"));
-        return pshape;
+    if ( nbs == 0 ) {
+        LOG(WARNING) << "No shapes could be found in step file " << stepFileName << "!";
     }
-    else {
-        LOG(ERROR) << "No shapes could be read from step file " << stepFileName << "!";
-        return PNamedShape();
+    for (int ishape = 1; ishape <= nbs; ++ishape) {
+        std::stringstream shapeName, shapeShortName;
+        shapeName << "StepImport_" << ishape;
+        shapeShortName << "STEP" << ishape;
+
+        PNamedShape pshape(new CNamedShape(aReader.Shape(ishape), shapeName.str().c_str(), shapeShortName.str().c_str()));
+        shapeList.push_back(pshape);
     }
+
+    return shapeList;
 }
 
 CTiglStepReader::~CTiglStepReader()
 {
+}
+
+std::string tigl::CTiglStepReader::SupportedFileType() const
+{
+    return "step";
 }
 
 }

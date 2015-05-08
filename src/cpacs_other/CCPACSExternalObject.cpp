@@ -19,48 +19,45 @@
 #include "CCPACSExternalObject.h"
 
 #include "CCPACSConfiguration.h"
+#include "CTiglImporterFactory.h"
 #include "tiglcommonfunctions.h"
-
-namespace 
-{
-
-    std::string getPathRelativeToApp(TixiDocumentHandle handle, const std::string& pathInCPACS)
-    {
-        if (IsPathRelative(pathInCPACS)) {
-            // the path is relative to the xml file
-            // we need the path relative or absolute to the
-            // executable that opened the cpacs file
-            
-            char* tixiDocPath = NULL;
-            if (tixiGetDocumentPath(handle, &tixiDocPath) == SUCCESS && tixiDocPath != NULL ) {
-                
-                // get directory of cpacs file
-                // TODO: check in case of only filename without path
-                std::string cpacsPath = tixiDocPath;
-                size_t pos = cpacsPath.find_last_of("/\\");
-                if (pos == std::string::npos) {
-                    // no separator found, current directory
-                    return pathInCPACS;
-                }
-                std::string dirPath = cpacsPath.substr(0,pos);
-                
-                // create path of file
-                return dirPath + "/" + pathInCPACS;
-            }
-            else {
-                return pathInCPACS;
-            }
-        }
-        else {
-            return pathInCPACS;
-        }
-    }
-
-
-}
 
 namespace tigl
 {
+
+namespace external_object_private
+{
+
+    TIGL_EXPORT std::string getPathRelativeToApp(const std::string& cpacsPath, const std::string& linkedFilePath)
+    {
+        if (IsPathRelative(linkedFilePath)) {
+            // the path is relative to the xml file
+            // we need the path relative or absolute to the
+            // executable that opened the cpacs file
+
+            size_t pos = cpacsPath.find_last_of("/\\");
+            if (pos == std::string::npos) {
+                // no separator found, current directory
+                return linkedFilePath;
+            }
+            std::string dirPath = cpacsPath.substr(0,pos);
+
+            // create path of file
+            return dirPath + "/" + linkedFilePath;
+        }
+        else {
+            return linkedFilePath;
+        }
+    }
+
+    /// Returns true, if the fileType is supported by the component loader
+    TIGL_EXPORT bool fileTypeSupported(const std::string& fileType) {
+        return CTiglImporterFactory::Instance().ImporterSupported(fileType);
+    }
+
+} // internal
+
+using namespace external_object_private;
 
 CCPACSExternalObject::CCPACSExternalObject(CCPACSConfiguration* config)
     : _config(config)
@@ -95,9 +92,13 @@ void CCPACSExternalObject::ReadCPACS(TixiDocumentHandle tixiHandle, const std::s
     // Get File Path, and type
     std::string fileXPath  = objectXPath + "/file";
     if (tixiCheckElement(tixiHandle, fileXPath.c_str()) == SUCCESS) {
-        char* cFilePath = NULL;
+        char *cFilePath = NULL, *cCPACSPath = NULL;
+
+        tixiGetDocumentPath(tixiHandle, &cCPACSPath);
+        std::string cpacsPath = cCPACSPath ? cCPACSPath : "";
+
         if (tixiGetTextElement(tixiHandle, fileXPath.c_str(), &cFilePath) == SUCCESS) {
-            _filePath = getPathRelativeToApp(tixiHandle, cFilePath);
+            _filePath = getPathRelativeToApp(cpacsPath, cFilePath);
         }
         else {
             throw tigl::CTiglError("No file specified in " + objectXPath + " !");
@@ -106,6 +107,9 @@ void CCPACSExternalObject::ReadCPACS(TixiDocumentHandle tixiHandle, const std::s
         char* cFileType = NULL;
         if (tixiGetTextAttribute(tixiHandle, fileXPath.c_str(), "type", &cFileType) == SUCCESS) {
             _fileType = cFileType;
+            if (!fileTypeSupported(_fileType)) {
+                throw tigl::CTiglError("File type " + _fileType + " not supported for external components!");
+            }
         }
         else {
             throw tigl::CTiglError("No file type attribute specified in " + fileXPath + " !");
@@ -142,8 +146,10 @@ CCPACSExternalObject::~CCPACSExternalObject()
     
 }
 
+
 PNamedShape CCPACSExternalObject::BuildLoft()
 {
+
     return PNamedShape();
 }
 

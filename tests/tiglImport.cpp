@@ -21,15 +21,33 @@
 #include "CTiglStepReader.h"
 #include "CTiglExportStep.h"
 #include "CNamedShape.h"
+#include "CTiglImporterFactory.h"
 
 TEST(TiglImport, Step)
 {
     tigl::CTiglStepReader reader;
-    PNamedShape shape = reader.read("TestData/nacelle.stp");
-    ASSERT_TRUE(shape != NULL);
-    shape->SetName("Nacelle");
+    ListPNamedShape shapes = reader.Read("TestData/nacelle.stp");
+    ASSERT_EQ(1, shapes.size());
+}
+
+TEST(TiglImport, ImporterFactory)
+{
+    tigl::CTiglImporterFactory factory = tigl::CTiglImporterFactory::Instance();
+
+    tigl::ITiglCADImporter* importer = NULL;
+    importer = factory.Create("step");
+    ASSERT_TRUE(importer != NULL);
+    ASSERT_STREQ("step", importer->SupportedFileType().c_str());
+    delete importer;
+
+    importer = factory.Create("STEP");
+    ASSERT_TRUE(importer != NULL);
+    ASSERT_STREQ("step", importer->SupportedFileType().c_str());
+    delete importer;
+
+    importer = factory.Create("invalidformat");
+    ASSERT_TRUE(importer == NULL);
     
-    tigl::CTiglExportStep writer;
-    writer.AddShape(shape);
-    writer.Write("TestData/export/nacelle-out.stp");
+    ASSERT_TRUE(factory.ImporterSupported("step"));
+    ASSERT_FALSE(factory.ImporterSupported("invalidformat"));
 }

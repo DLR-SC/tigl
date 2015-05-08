@@ -19,6 +19,14 @@
 #include "test.h"
 #include "CCPACSExternalObject.h"
 
+namespace tigl
+{
+namespace  external_object_private {
+    std::string getPathRelativeToApp(const std::string& cpacsPath, const std::string& linkedFilePath);
+    bool fileTypeSupported(const std::string& fileType);
+}
+}
+
 class TiglExternalComponent : public ::testing::Test
 {
 protected:
@@ -50,10 +58,34 @@ TEST_F(TiglExternalComponent, getFileNameRelative)
     ASSERT_STREQ("TestData/nacelle.stp", object.GetFilePath().c_str());
 }
 
-TEST_F(TiglExternalComponent, getFileNameAbsolute)
+TEST(TiglExternalComponentInternal, getPathRelativeToApp)
 {
-    tigl::CCPACSExternalObject object;
-    object.ReadCPACS(tixiHandle, "/root/externalComponent[2]");
-    
-    ASSERT_STREQ("d:/data/nacelle.stp", object.GetFilePath().c_str());
+    std::string resultPath;
+    using tigl::external_object_private::getPathRelativeToApp;
+
+    resultPath = getPathRelativeToApp("TestData/aircraft.xml", "nacelle.stp");
+    ASSERT_STREQ("TestData/nacelle.stp", resultPath.c_str());
+
+    resultPath = getPathRelativeToApp("TestData\\aircraft.xml", "nacelle.stp");
+    ASSERT_STREQ("TestData/nacelle.stp", resultPath.c_str());
+
+    // check some absolute paths
+#ifdef _WIN32
+    resultPath = getPathRelativeToApp("TestData/aircraft.xml", "c:/nacelle.stp");
+    ASSERT_STREQ("c:/nacelle.stp", resultPath.c_str());
+
+    resultPath = getPathRelativeToApp("TestData/aircraft.xml", "c:\\nacelle.stp");
+    ASSERT_STREQ("c:\\nacelle.stp", resultPath.c_str());
+#else
+    resultPath = getPathRelativeToApp("TestData/aircraft.xml", "/data/nacelle.stp");
+    ASSERT_STREQ("/data/nacelle.stp", resultPath.c_str());
+#endif
+
+    // check, if cpacs path not available
+    resultPath = getPathRelativeToApp("", "mydata/nacelle.stp");
+    ASSERT_STREQ("mydata/nacelle.stp", resultPath.c_str());
+
+    resultPath = getPathRelativeToApp("aircraft.xml", "nacelle.stp");
+    ASSERT_STREQ("nacelle.stp", resultPath.c_str());
 }
+
