@@ -27,16 +27,16 @@ namespace tigl
 class ICADImporterCreator
 {
 public:
-   virtual ITiglCADImporter* create() const = 0;
+   virtual PTiglCADImporter create() const = 0;
 };
 
 template <class T>
 class ICADImporterCreatorImpl : public ICADImporterCreator
 {
 public:
-   ITiglCADImporter* create() const
+   PTiglCADImporter create() const
    {
-       return new T;
+       return PTiglCADImporter(new T);
    }
 };
 

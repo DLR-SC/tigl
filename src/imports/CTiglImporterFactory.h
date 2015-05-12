@@ -39,7 +39,7 @@ public:
 
     /// Creates an importer for the matching file format
     /// Returns NULL, if the format is unknown
-    TIGL_EXPORT ITiglCADImporter* Create(const std::string& filetype) const;
+    TIGL_EXPORT PTiglCADImporter Create(const std::string& filetype) const;
    
     /// Returns true, if an importer was registered for the specified file type
     TIGL_EXPORT bool ImporterSupported(const std::string& filetype) const;

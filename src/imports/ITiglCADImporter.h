@@ -20,6 +20,7 @@
 #define ITIGLCADIMPORTER_H
 
 #include "ListPNamedShape.h"
+#include "CSharedPtr.h"
 
 #include <string>
 
@@ -40,6 +41,8 @@ public:
     virtual std::string SupportedFileType() const  = 0;
 
 };
+
+typedef CSharedPtr<ITiglCADImporter> PTiglCADImporter;
 
 }
 

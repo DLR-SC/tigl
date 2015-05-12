@@ -37,16 +37,15 @@ void CTiglImporterFactory::RegisterImporter(ICADImporterCreator* importerCreator
 {
     if (importerCreator) {
         // build an importer to get supported file type
-        ITiglCADImporter* importer = importerCreator->create();
+        PTiglCADImporter importer = importerCreator->create();
         if (importer) {
             std::string filetype = importer->SupportedFileType();
             _importerBuilders[filetype] = importerCreator;
-            delete importer;
         }
     }
 }
 
-ITiglCADImporter* CTiglImporterFactory::Create(const std::string &filetype) const
+PTiglCADImporter CTiglImporterFactory::Create(const std::string &filetype) const
 {
     // make the requested filetype to lowercase
     std::string fileTypeToLower = filetype;

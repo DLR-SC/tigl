@@ -34,16 +34,14 @@ TEST(TiglImport, ImporterFactory)
 {
     tigl::CTiglImporterFactory factory = tigl::CTiglImporterFactory::Instance();
 
-    tigl::ITiglCADImporter* importer = NULL;
+    tigl::PTiglCADImporter importer;
     importer = factory.Create("step");
     ASSERT_TRUE(importer != NULL);
     ASSERT_STREQ("step", importer->SupportedFileType().c_str());
-    delete importer;
 
     importer = factory.Create("STEP");
     ASSERT_TRUE(importer != NULL);
     ASSERT_STREQ("step", importer->SupportedFileType().c_str());
-    delete importer;
 
     importer = factory.Create("invalidformat");
     ASSERT_TRUE(importer == NULL);
