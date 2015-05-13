@@ -275,12 +275,22 @@ void MakePatches::Perform(const Standard_Real theTolConf,
     Handle(Geom_TrimmedCurve) aTC;
     TColGeom_SequenceOfBoundedCurve aCurves;
     Standard_Real eps = theTolParam, err;
+    // iterate through the two dimensional array of cell/patch boundaries
     for (Standard_Integer icell = 1; icell <= PatchFrames->ColLength(); icell++) {
         for (Standard_Integer jcell = 1; jcell <= PatchFrames->RowLength(); jcell++) {
+            // ****************************************************************
+            // Convert the boundaries to Geom_TrimmedCurve and leave out
+            // BSpline knots which are to close to the start and end point
+            // of the trimmed curve. Save the trimmed curves in 
+            //
+            // aCurves
+            // 
+            // ****************************************************************
             const TopoDS_Shape& aFrame =  PatchFrames->Value(icell, jcell);
             Standard_Real MaxTol = Max(MaxTolVer(aFrame), theTolConf);
             TopExp_Explorer anExp(aFrame, TopAbs_EDGE);
             aCurves.Clear();
+            // iterate through cell boundaries
             for (; anExp.More(); anExp.Next()) {
                 const TopoDS_Edge& anE = TopoDS::Edge(anExp.Current());
                 Standard_Real f, l;
@@ -326,17 +336,22 @@ void MakePatches::Perform(const Standard_Real theTolConf,
                 aCurves.Append(aTC);
             }
 
+            // *****************************************************************************************
+            // Build patch surface
+            // *****************************************************************************************
             Handle(Geom_BSplineSurface) aS = BuildSurface(aCurves, MaxTol, theTolParam, BaseCurveIndex, theStyle);
 
             if (aS.IsNull()) {
                 continue;
             }
 
+            // reparametrize surface
             if (theSewing) {
                 SurfTools::UReparametrize(aS, 0., 1.);
                 SurfTools::VReparametrize(aS, 0., 1.);
             }
 
+            // convert to face
             BRepBuilderAPI_MakeFace aMkFace(aS, Precision::Confusion());
 
             if (!aMkFace.IsDone()) {
@@ -347,6 +362,7 @@ void MakePatches::Perform(const Standard_Real theTolConf,
             aBB.UpdateFace(aF, theTolConf);
             BRepLib::UpdateTolerances(aF, Standard_True);
 
+            // add patch to the list of patches
             aBB.Add(aFaces, aF);
         }
     }
@@ -387,23 +403,61 @@ Handle(Geom_BSplineSurface) MakePatches::BuildSurface(
     Standard_Integer i;
     Standard_Integer nc = theCurves.Length();
 
+    // allow only 3 or 4 boundary curves
     if (nc != 3 && nc != 4) {
         return NULL;
     }
+    // the base curve index must not be out of range
     if (theBaseCurve < 1 || theBaseCurve > nc) {
         return NULL;
     }
 
+    // convert boundary curves to BSpline curve
     Handle(Geom_BSplineCurve) C[4];
     for ( i = 0; i < nc; i++) {
         C[i] = GeomConvert::CurveToBSplineCurve(theCurves.Value(i+1), Convert_RationalC1);
     }
 
-    //To arrange curves according to requirements of GeomFill_BSplineCurves
+    // **********************************************************************
+    // Arrange boundary curves according to requirements of GeomFill_BSplineCurves:
+    // 
+    // 
+    //                            2 
+    //                  o--------->---------o 
+    //                  |                   | 
+    //                  |                   |
+    //                  |                   |
+    //                  |                   |
+    //                3 ^                   ^ 1
+    //                  |                   |
+    //                  |                   |
+    //                  |                   |
+    //                  |                   |
+    //                  o--------->---------o 
+    //                            0 
+    //                  
+    //
+    // The resulting boundary curves are stored in C1 and serve as input to
+    // the surface generating algorithm. During this process, the input boundary
+    // curves are nullified.
+    // **********************************************************************
+    
+    // **********************************************************************
+    // Set the first boundary curve to the input boundary curve with index
+    // theBaseCurve - 1
+    // **********************************************************************
     Standard_Real tol = theTolConf*theTolConf;
     Handle(Geom_BSplineCurve) C1[4];
     C1[0] = C[theBaseCurve-1];
+    // nullify input
     C[theBaseCurve-1].Nullify();
+
+    // **********************************************************************
+    // Find the boundary curve whichs starts at the starting point of the
+    // input boundary curve with index theBaseCurve - 1. Reverse direction if
+    // necessary. Set this curve to the last index boundary curve C1[3].
+    // Nullify the corresponding input curve afterwards.
+    // **********************************************************************
     gp_Pnt aPRef = C1[0]->StartPoint();
     for (i = 1; i <= nc; ++i) {
         if (C[i-1].IsNull()) {
@@ -426,6 +480,12 @@ Handle(Geom_BSplineSurface) MakePatches::BuildSurface(
         }
     }
 
+    // **********************************************************************
+    // Find the boundary curve whichs starts or ends at the end point of the
+    // boundary curve with index theBaseCurve - 1. 
+    // Set this curve to the second index boundary curve C1[1]
+    // Nullify the corresponding input curve afterwards.
+    // **********************************************************************
     aPRef = C1[0]->EndPoint();
     for (i = 1; i <= nc; ++i) {
         if (C[i-1].IsNull()) {
@@ -448,6 +508,7 @@ Handle(Geom_BSplineSurface) MakePatches::BuildSurface(
         }
     }
 
+    // check if 3 initial boundary curves were set to NULL
     for (i = 0; i < 4; ++i) {
         if (!C[i].IsNull()) {
             break;
@@ -458,9 +519,18 @@ Handle(Geom_BSplineSurface) MakePatches::BuildSurface(
         return NULL;
     }
 
+    // **********************************************************************
+    // Set the remaining input boundary curve to the third index boundary
+    // curve C1[2]
+    // **********************************************************************
     C1[2] = C[i];
     C[i].Nullify();
 
+
+    // **********************************************************************
+    // Make sure that boundaries located opposite to each other have the same
+    // degree, number of knots and poles, etc.
+    // **********************************************************************
     for (i = 0; i <= 1; ++i) {
         Standard_Boolean SameDistribution = Standard_True;
         if (C1[i]->IsRational() || C1[i+2]->IsRational() ||
