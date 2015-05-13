@@ -20,6 +20,7 @@
 
 #include "CCPACSConfiguration.h"
 #include "CTiglImporterFactory.h"
+#include "CGroupShapes.h"
 #include "tiglcommonfunctions.h"
 
 namespace tigl
@@ -149,8 +150,24 @@ CCPACSExternalObject::~CCPACSExternalObject()
 
 PNamedShape CCPACSExternalObject::BuildLoft()
 {
+    PTiglCADImporter importer = CTiglImporterFactory::Instance().Create(_fileType);
+    if (importer) {
+        ListPNamedShape shapes = importer->Read(_filePath);
+        PNamedShape shapeGroup = CGroupShapes(shapes);
+        if (shapeGroup) {
+            shapeGroup->SetName(GetUID().c_str());
+            shapeGroup->SetShortName(GetUID().c_str());
 
-    return PNamedShape();
+            // Apply transformation
+            TopoDS_Shape sh = GetTransformation().Transform(shapeGroup->Shape());
+            shapeGroup->SetShape(sh);
+        }
+
+        return shapeGroup;
+    }
+    else {
+        throw CTiglError("Cannot open externalComponent. Unknown file type " + _fileType);
+    }
 }
 
 } // namespace tigl

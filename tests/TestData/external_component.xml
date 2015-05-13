@@ -1,5 +1,5 @@
 <root>
-  <externalComponent uid = "nacelle">
+  <externalComponent uID = "nacelle">
     <transformation>
     <scaling>
       <x>1.0</x>
@@ -18,5 +18,8 @@
     </translation>
     </transformation>
     <file type = "step">nacelle.stp</file>
+  </externalComponent>
+    <externalComponent uID = "nacelle2">
+    <file type = "unknownformat">nacelle.x3x</file>
   </externalComponent>
 </root>

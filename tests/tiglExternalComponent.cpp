@@ -18,6 +18,7 @@
 
 #include "test.h"
 #include "CCPACSExternalObject.h"
+#include "CTiglError.h"
 
 namespace tigl
 {
@@ -56,6 +57,22 @@ TEST_F(TiglExternalComponent, getFileNameRelative)
     object.ReadCPACS(tixiHandle, "/root/externalComponent[1]");
     
     ASSERT_STREQ("TestData/nacelle.stp", object.GetFilePath().c_str());
+}
+
+TEST_F(TiglExternalComponent, getShape)
+{
+    tigl::CCPACSExternalObject object;
+    object.ReadCPACS(tixiHandle, "/root/externalComponent[1]");
+    
+    PNamedShape shape = object.GetLoft();
+    ASSERT_TRUE(shape != NULL);
+    ASSERT_STREQ("nacelle", shape->Name());
+}
+
+TEST_F(TiglExternalComponent, invalidFiletype)
+{
+    tigl::CCPACSExternalObject object;
+    ASSERT_THROW(object.ReadCPACS(tixiHandle, "/root/externalComponent[2]"), tigl::CTiglError);
 }
 
 TEST(TiglExternalComponentInternal, getPathRelativeToApp)

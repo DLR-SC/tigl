@@ -57,7 +57,7 @@ PTiglCADImporter CTiglImporterFactory::Create(const std::string &filetype) const
         return creator->create();
     }
     else {
-        return NULL;
+        return PTiglCADImporter();
     }
 }
 
