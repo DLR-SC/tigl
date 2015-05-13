@@ -75,10 +75,14 @@ Handle_V3d_Viewer TIGLViewerContext::createViewer( const Standard_ExtString aNam
                                                    const Standard_CString aDomain,
                                                    const Standard_Real ViewSize )
 {
-    static Handle(Graphic3d_GraphicDriver) deviceHandle;
+    static Handle(OpenGl_GraphicDriver) deviceHandle;
+
     if (deviceHandle.IsNull()) {
-        deviceHandle = new OpenGl_GraphicDriver ("TKOpenGl");
-        deviceHandle->Begin (new Aspect_DisplayConnection());
+      Handle(Aspect_DisplayConnection) aDisplayConnection;
+#if !defined(_WIN32) && !defined(__WIN32__) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
+      aDisplayConnection = new Aspect_DisplayConnection (qgetenv ("DISPLAY").constData());
+#endif
+      deviceHandle = new OpenGl_GraphicDriver (aDisplayConnection);
     }
 
     return new V3d_Viewer(  deviceHandle,

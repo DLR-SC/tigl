@@ -30,7 +30,7 @@
 #include "Standard_CString.hxx"
 #include "ShapeFix_Shape.hxx"
 #include "BRep_Builder.hxx"
-#include "BRepMesh.hxx"
+#include "BRepMesh_IncrementalMesh.hxx"
 #include "StlAPI_Writer.hxx"
 #include "Interface_Static.hxx"
 #include "StlAPI.hxx"
@@ -54,7 +54,7 @@ void CTiglExportStl::ExportMeshedWingSTL(int wingIndex, const std::string& filen
     CCPACSWing& wing = myConfig.GetWing(wingIndex);
     PNamedShape loft = wing.GetLoft();
 
-    BRepMesh::Mesh(loft->Shape(), deflection);
+    BRepMesh_IncrementalMesh(loft->Shape(), deflection);
     StlAPI_Writer *StlWriter = new StlAPI_Writer();
     StlWriter->Write(loft->Shape(), const_cast<char*>(filename.c_str()));
 }
@@ -66,7 +66,7 @@ void CTiglExportStl::ExportMeshedFuselageSTL(int fuselageIndex, const std::strin
     CCPACSFuselage& fuselage = myConfig.GetFuselage(fuselageIndex);
     PNamedShape loft = fuselage.GetLoft();
 
-    BRepMesh::Mesh(loft->Shape(), deflection);
+    BRepMesh_IncrementalMesh(loft->Shape(), deflection);
     StlAPI_Writer *StlWriter = new StlAPI_Writer();
     StlWriter->Write(loft->Shape(), const_cast<char*>(filename.c_str()));
 }
@@ -86,7 +86,7 @@ void CTiglExportStl::ExportMeshedGeometrySTL(const std::string& filename, double
 
     TopoDS_Shape loft = ac->Shape();
 
-    BRepMesh::Mesh(loft, deflection);
+    BRepMesh_IncrementalMesh(loft, deflection);
     StlAPI_Writer *StlWriter = new StlAPI_Writer();
     StlWriter->Write(loft, const_cast<char*>(filename.c_str()));
 }
