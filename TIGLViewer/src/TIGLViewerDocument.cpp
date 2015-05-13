@@ -39,7 +39,7 @@
 #include <AIS_Shape.hxx>
 #include <AIS_InteractiveContext.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
-#include <BRepMesh.hxx>
+#include <BRepMesh_IncrementalMesh.hxx>
 #include <TopoDS_Shell.hxx>
 #include <Poly_Triangulation.hxx>
 #include <BRepBuilderAPI_MakePolygon.hxx>
@@ -273,7 +273,7 @@ bool meshShape(const TopoDS_Shape& loft, double rel_deflection)
     double deflection = max(rel_deflection, dist * rel_deflection);
     if (!BRepTools::Triangulation (loft, deflection)) {
         BRepTools::Clean(loft);
-        BRepMesh::Mesh(loft, deflection);
+        BRepMesh_IncrementalMesh(loft, deflection);
         return true;
     }
     else {

@@ -136,8 +136,7 @@ void CCPACSWingProfileCST::BuildWires()
     gp_Trsf yzSwitch;
     yzSwitch.SetValues(1,0,0,0,
                        0,0,1,0,
-                       0,1,0,0,
-                       0., 0.);
+                       0,1,0,0);
     
     // Build upper wire
     CCSTCurveBuilder upperBuilder(upperN1, upperN2, upperB);
