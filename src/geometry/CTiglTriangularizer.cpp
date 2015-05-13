@@ -34,7 +34,7 @@
 #include <Poly_Triangulation.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepGProp_Face.hxx>
-#include <BRepMesh.hxx>
+#include <BRepMesh_IncrementalMesh.hxx>
 #include <BRepTools.hxx>
 
 #include <gp_Pnt.hxx>
@@ -77,7 +77,7 @@ CTiglTriangularizer::CTiglTriangularizer(const TopoDS_Shape& shape, double defle
     // check if we have already a mesh with given deflection
     if (!BRepTools::Triangulation (shape, deflection)) {
         BRepTools::Clean (shape);
-        BRepMesh::Mesh(shape, deflection);
+        BRepMesh_IncrementalMesh(shape, deflection);
     }
     triangularizeShape(shape);
 }
@@ -132,7 +132,7 @@ CTiglTriangularizer::CTiglTriangularizer(CCPACSConfiguration &config, bool fuseS
             CCPACSWing& wing = config.GetWing(iWing);
 
             TopoDS_Shape wshape = wing.GetLoft()->Shape();
-            BRepMesh::Mesh(wshape,deflection);
+            BRepMesh_IncrementalMesh(wshape,deflection);
             triangularizeShape(wshape);
 
             if (wing.GetSymmetryAxis() == TIGL_NO_SYMMETRY) {
@@ -140,7 +140,7 @@ CTiglTriangularizer::CTiglTriangularizer(CCPACSConfiguration &config, bool fuseS
             }
 
             TopoDS_Shape wshape_m = wing.GetMirroredLoft()->Shape();
-            BRepMesh::Mesh(wshape_m,deflection);
+            BRepMesh_IncrementalMesh(wshape_m,deflection);
             triangularizeShape(wshape_m);
         }
 
@@ -148,7 +148,7 @@ CTiglTriangularizer::CTiglTriangularizer(CCPACSConfiguration &config, bool fuseS
             CCPACSFuselage& fuselage = config.GetFuselage(iFuselage);
 
             TopoDS_Shape wshape = fuselage.GetLoft()->Shape();
-            BRepMesh::Mesh(wshape,deflection);
+            BRepMesh_IncrementalMesh(wshape,deflection);
             triangularizeShape(wshape);
 
             if (fuselage.GetSymmetryAxis() == TIGL_NO_SYMMETRY) {
@@ -156,7 +156,7 @@ CTiglTriangularizer::CTiglTriangularizer(CCPACSConfiguration &config, bool fuseS
             }
 
             TopoDS_Shape wshape_m = fuselage.GetMirroredLoft()->Shape();
-            BRepMesh::Mesh(wshape_m,deflection);
+            BRepMesh_IncrementalMesh(wshape_m,deflection);
             triangularizeShape(wshape_m);
         }
     }
@@ -180,7 +180,7 @@ int CTiglTriangularizer::triangularizeComponent(CTiglAbstractPhysicalComponent &
     allcomponents.push_front(&component);
     
     BRepTools::Clean (shape);
-    BRepMesh::Mesh(shape, deflection);
+    BRepMesh_IncrementalMesh(shape, deflection);
     LOG(INFO) << "Done meshing";
     
     TopExp_Explorer faceExplorer;

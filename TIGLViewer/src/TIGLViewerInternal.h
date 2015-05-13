@@ -34,18 +34,11 @@
 #include <AIS_Trihedron.hxx>
 
 #include <Aspect_Background.hxx>
-#include <Aspect_ColorMapEntry.hxx>
-#include <Aspect_GenericColorMap.hxx>
 #include <Aspect_GridDrawMode.hxx>
 #include <Aspect_GridType.hxx>
-#include <Aspect_LineStyle.hxx>
-#include <Aspect_MarkMap.hxx>
 #include <Aspect_RectangularGrid.hxx>
-#include <Aspect_TypeMap.hxx>
-#include <Aspect_TypeMapEntry.hxx>
 #include <Aspect_TypeOfLine.hxx>
 #include <Aspect_TypeOfText.hxx>
-#include <Aspect_WidthMapEntry.hxx>
 #include <Aspect_WidthOfLine.hxx>
 #include <Aspect_Window.hxx>
 
@@ -171,7 +164,6 @@
 #include <V3d_View.hxx>
 #include <V3d_Viewer.hxx>
 #include <Visual3d_View.hxx>
-#include <Visual3d_ViewMapping.hxx>
 #include <Visual3d_ViewManager.hxx>
 
 // specific to ISession2D_Shape

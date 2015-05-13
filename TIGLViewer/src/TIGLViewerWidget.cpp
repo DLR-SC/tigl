@@ -166,7 +166,6 @@ void TIGLViewerWidget::initializeOCC(const Handle_AIS_InteractiveContext& aConte
 
 #if defined _WIN32 || defined __WIN32__
         myWindow = new WNT_Window(winId());
-        myWindow->SetFlags( WDF_NOERASEBKGRND );
 #elif defined __APPLE__
         myWindow = new Cocoa_Window((NSView *)winId());
 #else
