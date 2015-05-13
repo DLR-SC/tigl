@@ -28,6 +28,9 @@ TEST(TiglImport, Step)
     tigl::CTiglStepReader reader;
     ListPNamedShape shapes = reader.Read("TestData/nacelle.stp");
     ASSERT_EQ(1, shapes.size());
+
+    // test shape names
+    ASSERT_STREQ("Nacelle", shapes[0]->Name());
 }
 
 TEST(TiglImport, ImporterFactory)
