@@ -134,9 +134,7 @@ void CCPACSWingProfileCST::ReadCPACS(TixiDocumentHandle tixiHandle)
 void CCPACSWingProfileCST::BuildWires()
 {
     gp_Trsf yzSwitch;
-    yzSwitch.SetValues(1,0,0,0,
-                       0,0,1,0,
-                       0,1,0,0);
+    yzSwitch.SetMirror(gp_Ax2(gp_Pnt(0.,0.,0.), gp_Dir(0.,-1.,1.)));
     
     // Build upper wire
     CCSTCurveBuilder upperBuilder(upperN1, upperN2, upperB);
