@@ -67,6 +67,7 @@ TEST(guideCurvePatches, segment)
     SurfMaker.Perform(tolConf, tolPara, style, Standard_True);
     TopoDS_Shape faces = SurfMaker.Patches();
     ASSERT_EQ(SurfMaker.GetStatus(), 0);
+    BRepTools::Write(SurfMaker.Patches(), "TestData/export/guideCurvePatch_segment.brep");
 }
 
 /******************************************************************************/
@@ -92,6 +93,7 @@ TEST(guideCurvePatches, simpleWing)
     SurfMaker.Perform(tolConf, tolPara, style, Standard_True);
     TopoDS_Shape faces = SurfMaker.Patches();
     ASSERT_EQ(SurfMaker.GetStatus(), 0);
+    BRepTools::Write(SurfMaker.Patches(), "TestData/export/guideCurvePatch_simpleWing.brep");
 }
 
 /******************************************************************************/
@@ -147,4 +149,32 @@ TEST(guideCurvePatches, nacelleClosedProfiles)
     ASSERT_EQ(SurfMaker.GetStatus(), 0);
     SurfMaker.Patches();
     BRepTools::Write(SurfMaker.Patches(), "TestData/export/guideCurvePatch_nacelleClosedProfilesPatches.brep");
+}
+
+
+/******************************************************************************/
+// test surface maker for nacelle with inverted (closed guide curves) with open profiles
+/******************************************************************************/
+TEST(guideCurvePatches, nacelleInverted)
+{
+    TopoDS_Shape guides;
+    BRep_Builder b;
+    ifstream in;
+    in.open("TestData/guideCurvePatch_nacelleGuidesInverted.brep");
+    BRepTools::Read(guides, in, b);
+    in.close();
+    
+    TopoDS_Shape profiles;
+    in.open("TestData/guideCurvePatch_nacelleProfiles.brep");
+    BRepTools::Read(profiles, in, b);
+    in.close();
+    MakePatches SurfMaker(guides, profiles);
+    Standard_Real tolConf = Precision::Confusion();
+    Standard_Real tolPara = Precision::Confusion();
+    GeomFill_FillingStyle style = GeomFill_CoonsC2Style;
+    SurfMaker.Perform(tolConf, tolPara, style, Standard_True);
+    TopoDS_Shape faces = SurfMaker.Patches();
+    ASSERT_EQ(SurfMaker.GetStatus(), 0);
+    SurfMaker.Patches();
+    BRepTools::Write(SurfMaker.Patches(), "TestData/export/guideCurvePatch_nacellePatchesInverted.brep");
 }
