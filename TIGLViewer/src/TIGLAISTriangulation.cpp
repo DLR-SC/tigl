@@ -109,8 +109,7 @@ void TIGLAISTriangulation::Compute(const Handle(PrsMgr_PresentationManager3d)& a
                         myNbTriangles * 3,//maxEdges
                         hasVNormals,      //hasVNormals
                         hasVColors,       //hasVColors
-                        Standard_False,   //hasTexels
-                        Standard_True     //hasEdgeInfos
+                        Standard_False    //hasTexels
                         );
 
             Standard_Integer i;
