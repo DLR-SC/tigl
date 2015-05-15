@@ -10,9 +10,14 @@ set(PROGNAME "TIGLViewer")
 
 if(TIGL_VIEWER)
 
-find_package(Qt4 4.4.3)
+include(SearchQt)
+# disable automatic linking of qtmain
+if (POLICY CMP0020)
+  cmake_policy(SET CMP0020 OLD)
+endif (POLICY CMP0020)
+
 #build only tiglviewer if qt was found
-if(QT4_FOUND)	
+if(QT4_FOUND OR Qt5Widgets_FOUND)
 
 include(tiglmacros)
 AddToCheckstyle()
@@ -51,12 +56,7 @@ if(CMAKE_SYSTEM_NAME STREQUAL Linux)
     message(STATUS ${RELDIR})
     set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_RPATH}:\$ORIGIN/../lib")
   endif()
-endif() # linux
-
-set( QT_USE_QTSCRIPT TRUE )
-set( QT_USE_QTMAIN   TRUE )
-include(${QT_USE_FILE} ${GLOG_INCLUDE_DIR})
-add_definitions(${QT_DEFINITIONS})
+endif() # linux‚
 
 # add all tigl directories to include path
 set(TIGL_INCLUDES ${PROJECT_SOURCE_DIR}/src/)
@@ -218,7 +218,8 @@ add_executable(${PROGNAME} ${TYPE}
 target_link_libraries(${PROGNAME} 
 	TIGL_static
 	${TIXI_LIBRARIES} 
-	${QT_LIBRARIES} 
+	${CMake_QT_LIBRARIES} 
+	${QT_QTMAIN_LIBRARY} 
 	${OPENGL_LIBRARIES} 
 	${OpenCASCADE_LIBRARIES} 
 	${EXTRA_LIBRARIES} 
@@ -267,13 +268,25 @@ INCLUDE(InstallRequiredSystemLibraries)
 set(DIRS ${TIXI_LIB_PATH} ${OpenCASCADE_DLL_DIRECTORY}  ${OpenCASCADE_LINK_DIRECTORY} ${QT_BINARY_DIR} ${TIGL_ADD_LIB_PATH})
 
 if (WIN32 OR APPLE)
-  include(DeployQt4)
-  INSTALL_QT4_EXECUTABLE(${APPS} "" "" "${DIRS}" "" "" viewer)
+  if(Qt5Widgets_FOUND)
+    if(APPLE)
+      set(QT_PLUGINS  "qcocoa;qtaccessiblewidgets")
+    endif()
+    if(WIN32)
+      set(QT_PLUGINS  "qwindows")
+    endif()
+
+    include(DeployQt5)
+    INSTALL_QT5_EXECUTABLE(${APPS} "${QT_PLUGINS}" "" "${DIRS}" "" "" viewer)
+  else()
+    include(DeployQt4)
+    INSTALL_QT4_EXECUTABLE(${APPS} "" "" "${DIRS}" "" "" viewer)
+  endif()
 endif()
 
-else (QT4_FOUND)
-message(STATUS "No qt4 was found. TIGLViewer will not be build!")
-endif(QT4_FOUND)
+else (QT4_FOUND OR Qt5Widgets_FOUND)
+message(STATUS "No qt was found. TIGLViewer will not be build!")
+endif(QT4_FOUND OR Qt5Widgets_FOUND)
 
 endif(TIGL_VIEWER)
 

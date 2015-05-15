@@ -24,6 +24,7 @@
 #include "TIGLScriptProxy.h"
 
 #include <QWidget>
+#include <QMetaMethod>
 
 template <class T>
 QScriptValue qobjectToScriptValue(QScriptEngine *engine, T* const &in)
@@ -123,7 +124,11 @@ QScriptValue QMetaObjectGetMemberFunctions(QScriptContext *context, QScriptEngin
             continue;
         }
         
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+        QString name =  method.methodSignature();
+#else
         QString name =  method.signature();
+#endif
         int idx = name.indexOf("(");
         if (idx >= 0) {
             name = name.left(idx);
