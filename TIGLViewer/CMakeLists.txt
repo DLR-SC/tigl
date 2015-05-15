@@ -1,4 +1,4 @@
-﻿# TIGLViewer cmake project
+# TIGLViewer cmake project
 # author: Martin Siggel
 
 # set up QT
