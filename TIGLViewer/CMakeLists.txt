@@ -1,4 +1,4 @@
-# TIGLViewer cmake project
+﻿# TIGLViewer cmake project
 # author: Martin Siggel
 
 # set up QT
@@ -11,6 +11,10 @@ set(PROGNAME "TIGLViewer")
 if(TIGL_VIEWER)
 
 include(SearchQt)
+# disable automatic linking of qtmain
+if (POLICY CMP0020)
+  cmake_policy(SET CMP0020 OLD)
+endif (POLICY CMP0020)
 
 #build only tiglviewer if qt was found
 if(QT4_FOUND OR Qt5Widgets_FOUND)
@@ -215,6 +219,7 @@ target_link_libraries(${PROGNAME}
 	TIGL_static
 	${TIXI_LIBRARIES} 
 	${CMake_QT_LIBRARIES} 
+	${QT_QTMAIN_LIBRARY} 
 	${OPENGL_LIBRARIES} 
 	${OpenCASCADE_LIBRARIES} 
 	${EXTRA_LIBRARIES} 

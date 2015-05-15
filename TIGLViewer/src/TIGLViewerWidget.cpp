@@ -165,7 +165,7 @@ void TIGLViewerWidget::initializeOCC(const Handle_AIS_InteractiveContext& aConte
         myView    = myViewer->CreateView();
 
 #if defined _WIN32 || defined __WIN32__
-        myWindow = new WNT_Window(winId());
+        myWindow = new WNT_Window((Aspect_Handle)winId());
 #elif defined __APPLE__
         myWindow = new Cocoa_Window((NSView *)winId());
 #else
