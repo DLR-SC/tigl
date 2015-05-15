@@ -1,3 +1,4 @@
+set(CMAKE_PREFIX_PATH "${CMAKE_PREFIX_PATH};${QT_PATH}")
 find_package(Qt5Widgets QUIET)
 if (Qt5Widgets_FOUND)
   find_package(Qt5Script REQUIRED)
