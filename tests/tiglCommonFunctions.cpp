@@ -36,3 +36,9 @@ TEST(TiglCommonFunctions, isPathRelative)
 #endif
 }
 
+TEST(TiglCommonFunctions, isFileReadable)
+{
+    ASSERT_TRUE(IsFileReadable("TestData/nacelle.stp"));
+    ASSERT_FALSE(IsFileReadable("invalidfile.txt"));
+}
+

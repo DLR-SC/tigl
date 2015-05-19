@@ -23,6 +23,9 @@
 
 #if defined _WIN32 || defined __WIN32__
 #include <Shlwapi.h>
+#include <io.h>
+#else
+#include <unistd.h>
 #endif
 
 #include "tiglcommonfunctions.h"
@@ -463,5 +466,14 @@ bool IsPathRelative(const std::string& path)
     else {
         return true;
     }
+#endif
+}
+
+bool IsFileReadable(const std::string& filename)
+{
+#ifdef _MSC_VER
+    return _access(filename.c_str(), 4) == 0;
+#else
+    return access(filename.c_str(), R_OK) == 0;
 #endif
 }

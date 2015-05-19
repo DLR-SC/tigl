@@ -105,6 +105,11 @@ void CCPACSExternalObject::ReadCPACS(TixiDocumentHandle tixiHandle, const std::s
             throw tigl::CTiglError("No file specified in " + objectXPath + " !");
         }
         
+        // test if file can be read
+        if (!IsFileReadable(_filePath)) {
+            throw tigl::CTiglError("File " + _filePath + " can not be read!", TIGL_OPEN_FAILED);
+        }
+        
         char* cFileType = NULL;
         if (tixiGetTextAttribute(tixiHandle, fileXPath.c_str(), "type", &cFileType) == SUCCESS) {
             _fileType = cFileType;
