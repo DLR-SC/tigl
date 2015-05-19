@@ -53,6 +53,7 @@
 #include "TIGLViewerInternal.h"
 #include "CCPACSConfigurationManager.h"
 #include "CCPACSFarField.h"
+#include "CCPACSExternalObject.h"
 #include "TIGLViewerInputoutput.h"
 #include "ISession_Point.h"
 #include "ISession_Text.h"
@@ -479,43 +480,61 @@ QString TIGLViewerDocument::dlgGetFuselageProfileSelection()
 
 void TIGLViewerDocument::drawAllFuselagesAndWings( )
 {
-    START_COMMAND();
-    // Draw all wings
-    for (int w = 1; w <= GetConfiguration().GetWingCount(); w++) {
-        tigl::CCPACSWing& wing = GetConfiguration().GetWing(w);
-
-        for (int i = 1; i <= wing.GetSegmentCount(); i++) {
-            tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(i);
-            app->getScene()->displayShape(segment.GetLoft()->Shape());
+    try {
+        START_COMMAND();
+        // Draw all wings
+        for (int w = 1; w <= GetConfiguration().GetWingCount(); w++) {
+            tigl::CCPACSWing& wing = GetConfiguration().GetWing(w);
+    
+            for (int i = 1; i <= wing.GetSegmentCount(); i++) {
+                tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(i);
+                app->getScene()->displayShape(segment.GetLoft()->Shape());
+            }
+    
+            if (wing.GetSymmetryAxis() == TIGL_NO_SYMMETRY) {
+                continue;
+            }
+    
+            for (int i = 1; i <= wing.GetSegmentCount(); i++) {
+                tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(i);
+                app->getScene()->displayShape(segment.GetMirroredLoft()->Shape(), Quantity_NOC_MirrShapeCol);
+            }
         }
-
-        if (wing.GetSymmetryAxis() == TIGL_NO_SYMMETRY) {
-            continue;
+    
+        // Draw all fuselages
+        for (int f = 1; f <= GetConfiguration().GetFuselageCount(); f++) {
+            tigl::CCPACSFuselage& fuselage = GetConfiguration().GetFuselage(f);
+    
+            for (int i = 1; i <= fuselage.GetSegmentCount(); i++) {
+                tigl::CCPACSFuselageSegment& segment = (tigl::CCPACSFuselageSegment &) fuselage.GetSegment(i);
+                app->getScene()->displayShape(segment.GetLoft()->Shape());
+            }
+    
+            if (fuselage.GetSymmetryAxis() == TIGL_NO_SYMMETRY) {
+                continue;
+            }
+    
+            for (int i = 1; i <= fuselage.GetSegmentCount(); i++) {
+                tigl::CCPACSFuselageSegment& segment = (tigl::CCPACSFuselageSegment &) fuselage.GetSegment(i);
+                app->getScene()->displayShape(segment.GetMirroredLoft()->Shape(), Quantity_NOC_MirrShapeCol);
+            }
         }
-
-        for (int i = 1; i <= wing.GetSegmentCount(); i++) {
-            tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(i);
-            app->getScene()->displayShape(segment.GetMirroredLoft()->Shape(), Quantity_NOC_MirrShapeCol);
+        
+        // Draw all external objects
+        for (int eo = 1; eo <= GetConfiguration().GetExternalObjectCount(); eo++) {
+            tigl::CCPACSExternalObject& obj = GetConfiguration().GetExternalObject(eo);
+    
+            app->getScene()->displayShape(obj.GetLoft()->Shape());
+    
+            if (obj.GetSymmetryAxis() == TIGL_NO_SYMMETRY) {
+                continue;
+            }
+    
+            app->getScene()->displayShape(obj.GetMirroredLoft()->Shape(), Quantity_NOC_MirrShapeCol);
         }
     }
-
-    // Draw all fuselages
-    for (int f = 1; f <= GetConfiguration().GetFuselageCount(); f++) {
-        tigl::CCPACSFuselage& fuselage = GetConfiguration().GetFuselage(f);
-
-        for (int i = 1; i <= fuselage.GetSegmentCount(); i++) {
-            tigl::CCPACSFuselageSegment& segment = (tigl::CCPACSFuselageSegment &) fuselage.GetSegment(i);
-            app->getScene()->displayShape(segment.GetLoft()->Shape());
-        }
-
-        if (fuselage.GetSymmetryAxis() == TIGL_NO_SYMMETRY) {
-            continue;
-        }
-
-        for (int i = 1; i <= fuselage.GetSegmentCount(); i++) {
-            tigl::CCPACSFuselageSegment& segment = (tigl::CCPACSFuselageSegment &) fuselage.GetSegment(i);
-            app->getScene()->displayShape(segment.GetMirroredLoft()->Shape(), Quantity_NOC_MirrShapeCol);
-        }
+    catch(tigl::CTiglError& err) {
+        displayError(err.getError());
     }
 }
 
@@ -1315,18 +1334,18 @@ void TIGLViewerDocument::exportConfigCollada()
             tigl::CCPACSFuselage& fusel = config.GetFuselage(ifusel);
             writeToStatusBar(tr("Computing ") + fusel.GetUID().c_str() + ".");
             PNamedShape fshape = fusel.GetLoft();
-            exporter.addShape(fshape, getAbsDeflection(fshape->Shape(), relDeflect));
+            exporter.AddShape(fshape, getAbsDeflection(fshape->Shape(), relDeflect));
         }
         
         for (int iwing = 1; iwing <= config.GetWingCount(); ++iwing) {
             tigl::CCPACSWing& wing = config.GetWing(iwing);
             writeToStatusBar(tr("Computing ") + wing.GetUID().c_str() + ".");
             PNamedShape wshape = wing.GetLoft();
-            exporter.addShape(wshape, getAbsDeflection(wshape->Shape(), relDeflect));
+            exporter.AddShape(wshape, getAbsDeflection(wshape->Shape(), relDeflect));
         }
         
         writeToStatusBar(tr("Meshing and writing COLLADA file ") + fileName + ".");
-        TiglReturnCode err = exporter.write(fileName.toStdString());
+        TiglReturnCode err = exporter.Write(fileName.toStdString());
         writeToStatusBar("");
         if (err != TIGL_SUCCESS) {
             displayError(QString("Error while exporting to COLLADA. Error code: %1").arg(err), "TIGL Error");

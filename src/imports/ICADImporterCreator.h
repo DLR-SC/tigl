@@ -1,7 +1,7 @@
 /*
-* Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
+* Copyright (C) 2015 German Aerospace Center (DLR/SC)
 *
-* Created: 2013-04-23 Martin Siggel <Martin.Siggel@dlr.de>
+* Created: 2015-05-08 Martin Siggel <Martin.Siggel@dlr.de>
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -16,13 +16,30 @@
 * limitations under the License.
 */
 
-#ifndef CONFIG_H
-#define CONFIG_H
+#ifndef ICADIMPORTERCREATOR_H
+#define ICADIMPORTERCREATOR_H
 
-// include files and other standard functionality
-#cmakedefine HAVE_STDSHARED_PTR
+#include "ITiglCADImporter.h"
 
-// optional libraries
-#cmakedefine GLOG_FOUND
+namespace tigl
+{
 
-#endif // CONFIG_H
+class ICADImporterCreator
+{
+public:
+   virtual PTiglCADImporter create() const = 0;
+};
+
+template <class T>
+class ICADImporterCreatorImpl : public ICADImporterCreator
+{
+public:
+   PTiglCADImporter create() const
+   {
+       return PTiglCADImporter(new T);
+   }
+};
+
+}
+
+#endif // ICADIMPORTERCREATOR_H

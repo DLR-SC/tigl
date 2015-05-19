@@ -45,15 +45,8 @@ CTiglExportBrep::~CTiglExportBrep()
 {
 }
 
-void CTiglExportBrep::ExportBrep(CCPACSConfiguration& config, const std::string& filename) const
+void CTiglExportBrep::AddConfiguration(CCPACSConfiguration& config)
 {
-    if ( filename.empty()) {
-       LOG(ERROR) << "Error: Empty filename in ExportBrep.";
-       return;
-    }
-
-    ListPNamedShape shapes;
-
     // Export all wings of the configuration
     for (int w = 1; w <= config.GetWingCount(); w++) {
         CCPACSWing& wing = config.GetWing(w);
@@ -61,7 +54,7 @@ void CTiglExportBrep::ExportBrep(CCPACSConfiguration& config, const std::string&
         for (int i = 1; i <= wing.GetSegmentCount(); i++) {
             CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(i);
             PNamedShape loft = segment.GetLoft();
-            shapes.push_back(loft);
+            AddShape(loft);
         }
     }
 
@@ -72,30 +65,18 @@ void CTiglExportBrep::ExportBrep(CCPACSConfiguration& config, const std::string&
         for (int i = 1; i <= fuselage.GetSegmentCount(); i++) {
             CCPACSFuselageSegment& segment = (tigl::CCPACSFuselageSegment &) fuselage.GetSegment(i);
             PNamedShape loft = segment.GetLoft();
-            shapes.push_back(loft);
+            AddShape(loft);
         }
     }
 
     CCPACSFarField& farfield = config.GetFarField();
     if (farfield.GetFieldType() != NONE) {
-        shapes.push_back(farfield.GetLoft());
-    }
-
-    // write brep
-    try {
-        ExportShapes(shapes, filename);
-    }
-    catch (CTiglError&) {
-        throw CTiglError("Cannot export airplane in CTiglExportBrep", TIGL_ERROR);
+        AddShape(farfield.GetLoft());
     }
 }
 
-void CTiglExportBrep::ExportFusedBrep(CCPACSConfiguration& config, const std::string& filename)
+void CTiglExportBrep::AddFusedConfiguration(CCPACSConfiguration& config)
 {
-    if (filename.empty()) {
-       LOG(ERROR) << "Error: Empty filename in ExportFusedBrep.";
-       return;
-    }
 
     PTiglFusePlane fuser = config.AircraftFusingAlgo();
     fuser->SetResultMode(HALF_PLANE_TRIMMED_FF);
@@ -107,33 +88,37 @@ void CTiglExportBrep::ExportFusedBrep(CCPACSConfiguration& config, const std::st
         throw CTiglError("Error computing fused airplane.", TIGL_NULL_POINTER);
     }
 
-    try {
-        ListPNamedShape l;
-        l.push_back(fusedAirplane);
-        l.push_back(farField);
+    AddShape(fusedAirplane);
+    AddShape(farField);
 
-        // add intersections
-        const ListPNamedShape& ints = fuser->Intersections();
-        ListPNamedShape::const_iterator it;
-        for (it = ints.begin(); it != ints.end(); ++it) {
-            l.push_back(*it);
-        }
-
-        ExportShapes(l, filename);
-    }
-    catch (CTiglError&) {
-        throw CTiglError("Cannot export fused Airplane as Brep", TIGL_ERROR);
+    // add intersections
+    const ListPNamedShape& ints = fuser->Intersections();
+    ListPNamedShape::const_iterator it;
+    for (it = ints.begin(); it != ints.end(); ++it) {
+        AddShape(*it);
     }
 }
 
-void CTiglExportBrep::ExportShapes(const ListPNamedShape& shapes, const std::string& filename) const
+void CTiglExportBrep::AddShape(PNamedShape shape)
 {
-    if (shapes.size() > 1) {
+    if (shape) {
+        _shapes.push_back(shape);
+    }
+}
+
+bool CTiglExportBrep::Write(const std::string& filename) const
+{
+    if (filename.empty()) {
+       LOG(ERROR) << "Error: Empty filename in CTiglExportBrep::Write.";
+       return false;
+    }
+    
+    if (_shapes.size() > 1) {
         TopoDS_Compound c;
         BRep_Builder b;
         b.MakeCompound(c);
         
-        for (ListPNamedShape::const_iterator it = shapes.begin(); it != shapes.end(); ++it) {
+        for (ListPNamedShape::const_iterator it = _shapes.begin(); it != _shapes.end(); ++it) {
             PNamedShape shape = *it;
             if (shape) {
                 b.Add(c, shape->Shape());
@@ -141,18 +126,15 @@ void CTiglExportBrep::ExportShapes(const ListPNamedShape& shapes, const std::str
         }
         
         // write the file
-        BRepTools::Write(c, filename.c_str());
+        return BRepTools::Write(c, filename.c_str());
     }
-    else if ( shapes.size() == 1) {
-        PNamedShape shape = shapes[0];
-        if (!shape) {
-            LOG(WARNING) << "No shapes defined in BRep export. Abort!";
-            return;
-        }
-        BRepTools::Write(shape->Shape(), filename.c_str());
+    else if ( _shapes.size() == 1) {
+        PNamedShape shape = _shapes[0];
+        return BRepTools::Write(shape->Shape(), filename.c_str());
     }
     else {
         LOG(WARNING) << "No shapes defined in BRep export. Abort!";
+        return false;
     }
 }
 

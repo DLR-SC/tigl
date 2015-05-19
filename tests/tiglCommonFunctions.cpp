@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2015 German Aerospace Center (DLR/SC)
 *
-* Created: 2015-05-05 Martin Siggel <Martin.Siggel@dlr.de>
+* Created: 2015-05-08 Martin Siggel <Martin.Siggel@dlr.de>
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -15,32 +15,30 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
+#include "tiglcommonfunctions.h"
+#include "test.h"
 
-#ifndef CTIGLSTEPREADER_H
-#define CTIGLSTEPREADER_H
 
-#include "tigl_internal.h"
-#include "tigl_config.h"
-#include "ITiglCADImporter.h"
 
-#include <string>
-
-namespace tigl
+TEST(TiglCommonFunctions, isPathRelative)
 {
+    ASSERT_TRUE(IsPathRelative("./test.txt"));
 
-class CTiglStepReader : public ITiglCADImporter
-{
-public:
-    TIGL_EXPORT CTiglStepReader();
-    
-    /// reads in a step file
-    TIGL_EXPORT ListPNamedShape Read(const std::string stepFileName);
+    ASSERT_TRUE(IsPathRelative("test.txt"));
 
-    TIGL_EXPORT std::string SupportedFileType() const;
-    
-    TIGL_EXPORT ~CTiglStepReader();
-};
+    ASSERT_TRUE(IsPathRelative("../test.txt"));
 
+    // check absolute paths
+#ifdef WIN32
+    ASSERT_FALSE(IsPathRelative("d:/data/test.txt"));
+#else
+    ASSERT_FALSE(IsPathRelative("/usr/bin/test.txt"));
+#endif
 }
 
-#endif // CTIGLSTEPREADER_H
+TEST(TiglCommonFunctions, isFileReadable)
+{
+    ASSERT_TRUE(IsFileReadable("TestData/nacelle.stp"));
+    ASSERT_FALSE(IsFileReadable("invalidfile.txt"));
+}
+

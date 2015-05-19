@@ -21,18 +21,34 @@
 #include "CTiglStepReader.h"
 #include "CTiglExportStep.h"
 #include "CNamedShape.h"
-#include "CCPACSConfiguration.h"
+#include "CTiglImporterFactory.h"
 
 TEST(TiglImport, Step)
 {
     tigl::CTiglStepReader reader;
-    PNamedShape shape = reader.read("TestData/nacelle.stp");
-    ASSERT_TRUE(shape != NULL);
-    shape->SetName("Nacelle");
-    tigl::CCPACSConfiguration config(0);
+    ListPNamedShape shapes = reader.Read("TestData/nacelle.stp");
+    ASSERT_EQ(1, shapes.size());
+
+    // test shape names
+    ASSERT_STREQ("Nacelle", shapes[0]->Name());
+}
+
+TEST(TiglImport, ImporterFactory)
+{
+    tigl::CTiglImporterFactory factory = tigl::CTiglImporterFactory::Instance();
+
+    tigl::PTiglCADImporter importer;
+    importer = factory.Create("step");
+    ASSERT_TRUE(importer != NULL);
+    ASSERT_STREQ("step", importer->SupportedFileType().c_str());
+
+    importer = factory.Create("STEP");
+    ASSERT_TRUE(importer != NULL);
+    ASSERT_STREQ("step", importer->SupportedFileType().c_str());
+
+    importer = factory.Create("invalidformat");
+    ASSERT_TRUE(importer == NULL);
     
-    ListPNamedShape list;
-    list.push_back(shape);
-    tigl::CTiglExportStep writer(config);
-    writer.ExportShapes(list, "TestData/export/nacelle-out.stp");
+    ASSERT_TRUE(factory.ImporterSupported("step"));
+    ASSERT_FALSE(factory.ImporterSupported("invalidformat"));
 }

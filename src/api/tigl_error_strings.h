@@ -34,7 +34,8 @@ const static char * TiglErrorStrings[] =
     "TIGL_UID_ERROR",
     "TIGL_WRONG_CPACS_VERSION",
     "TIGL_UNINITIALIZED",
-    "TIGL_MATH_ERROR"
+    "TIGL_MATH_ERROR",
+    "TIGL_WRITE_FAILED"
 };
 
 #endif // TIGL_ERROR_STRINGS_H

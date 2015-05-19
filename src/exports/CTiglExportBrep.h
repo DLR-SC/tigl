@@ -43,18 +43,21 @@ public:
     // Virtual Destructor
     TIGL_EXPORT virtual ~CTiglExportBrep(void);
 
-    // Exports the whole configuration as IGES file
-    TIGL_EXPORT void ExportBrep(CCPACSConfiguration& config, const std::string& filename) const;
+    // Adds the whole configuration
+    TIGL_EXPORT void AddConfiguration(CCPACSConfiguration& config);
 
-    // Exports the whole configuration, boolean fused, as IGES file
-    TIGL_EXPORT void ExportFusedBrep(CCPACSConfiguration& config, const std::string& filename);
+    // Adds the whole configuration, boolean fused
+    TIGL_EXPORT void AddFusedConfiguration(CCPACSConfiguration& config);
 
-    // Save a sequence of shapes in BRep Format as a compound
-    TIGL_EXPORT void ExportShapes(const ListPNamedShape& shapes, const std::string& filename) const;
+    // Adds a shape
+    TIGL_EXPORT void AddShape(PNamedShape shape);
+    
+    // Writes the shapes to BREP. In multiple shapes were added
+    // a compound is created.
+    TIGL_EXPORT bool Write(const std::string& filename) const;
 
 private:
-    // Assignment operator
-    void operator=(const CTiglExportBrep& ) { /* Do nothing */ }
+    ListPNamedShape _shapes;
 };
 
 } // namespace tigl

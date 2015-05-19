@@ -84,4 +84,10 @@ TIGL_EXPORT void GetShapeExtension(const TopoDS_Shape& shape,
 // Returns a unique Hashcode for a specific geometric component based on its loft
 TIGL_EXPORT int GetComponentHashCode(tigl::ITiglGeometricComponent&);
 
+// Returns true, if a path is relative
+TIGL_EXPORT bool IsPathRelative(const std::string&);
+
+// Returns true, if a file is readable
+TIGL_EXPORT bool IsFileReadable(const std::string& filename);
+
 #endif // TIGLCOMMONFUNCTIONS_H

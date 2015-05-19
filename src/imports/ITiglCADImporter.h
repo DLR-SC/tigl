@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2015 German Aerospace Center (DLR/SC)
 *
-* Created: 2015-05-05 Martin Siggel <Martin.Siggel@dlr.de>
+* Created: 2015-05-27 Martin Siggel <Martin.Siggel@dlr.de>
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -16,31 +16,34 @@
 * limitations under the License.
 */
 
-#ifndef CTIGLSTEPREADER_H
-#define CTIGLSTEPREADER_H
+#ifndef ITIGLCADIMPORTER_H
+#define ITIGLCADIMPORTER_H
 
-#include "tigl_internal.h"
-#include "tigl_config.h"
-#include "ITiglCADImporter.h"
+#include "ListPNamedShape.h"
+#include "CSharedPtr.h"
 
 #include <string>
 
 namespace tigl
 {
 
-class CTiglStepReader : public ITiglCADImporter
+/**
+ * @brief The ITiglCADImporter Interface class should be common
+ * for all CAD importing implementations
+ */
+class ITiglCADImporter
 {
 public:
-    TIGL_EXPORT CTiglStepReader();
-    
-    /// reads in a step file
-    TIGL_EXPORT ListPNamedShape Read(const std::string stepFileName);
+    /// read in file name
+    virtual ListPNamedShape Read(const std::string fileName) = 0;
 
-    TIGL_EXPORT std::string SupportedFileType() const;
-    
-    TIGL_EXPORT ~CTiglStepReader();
+    /// should return the supported file type, e.g. "step"
+    virtual std::string SupportedFileType() const  = 0;
+
 };
+
+typedef CSharedPtr<ITiglCADImporter> PTiglCADImporter;
 
 }
 
-#endif // CTIGLSTEPREADER_H
+#endif // ITIGLCADIMPORTER_H
