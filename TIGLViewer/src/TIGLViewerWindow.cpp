@@ -19,14 +19,15 @@
 * limitations under the License.
 */
 
-#include <QtGui/QtGui>
-#include <QtGui/QFileDialog>
+#include <QtGui>
+#include <QFileDialog>
 #include <QtCore/QTextStream>
 #include <QtCore/QFileInfo>
 #include <QtCore/QString>
 #include <QShortcut>
 #include <QTimer>
 #include <QProcessEnvironment>
+#include <QMessageBox>
 
 #include <BRepBuilderAPI_MakeVertex.hxx>
 #include <TopoDS_Vertex.hxx>
@@ -211,7 +212,7 @@ TIGLViewerWindow::TIGLViewerWindow()
 
     statusBar()->showMessage(tr("A context menu is available by right-clicking"));
 
-    setWindowTitle(tr(PARAMS.windowTitle.toAscii().data()));
+    setWindowTitle(tr(PARAMS.windowTitle.toLatin1().data()));
     setMinimumSize(160, 160);
 }
 

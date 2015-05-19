@@ -21,6 +21,10 @@
 
 #include "TiglViewerConsole.h"
 
+#include <QScrollBar>
+#include <QMenu>
+#include <QAction>
+
 #include <iostream>
 
 Console::Console(QWidget *parent) :

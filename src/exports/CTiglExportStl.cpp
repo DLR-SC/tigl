@@ -31,7 +31,7 @@
 #include "ShapeFix_Shape.hxx"
 #include "BRep_Builder.hxx"
 #include "BRepTools.hxx"
-#include "BRepMesh.hxx"
+#include "BRepMesh_IncrementalMesh.hxx"
 #include "StlAPI_Writer.hxx"
 #include "Interface_Static.hxx"
 #include "StlAPI.hxx"
@@ -53,7 +53,7 @@ void CTiglExportStl::AddShape(PNamedShape shape, double deflection)
         return;
     }
     
-    BRepMesh::Mesh(shape->Shape(), deflection);
+    BRepMesh_IncrementalMesh(shape->Shape(), deflection);
     _shapes.push_back(shape);
 }
 

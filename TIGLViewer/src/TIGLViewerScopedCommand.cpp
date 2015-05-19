@@ -20,6 +20,8 @@
 
 #include "TiglViewerConsole.h"
 
+#include <QApplication>
+
 TIGLViewerScopedCommand::TIGLViewerScopedCommand(Console* console, bool showLoadCursor)
 {
     _console = console;

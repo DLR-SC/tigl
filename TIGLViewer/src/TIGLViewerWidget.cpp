@@ -31,10 +31,10 @@
 #include <QPainter>
 #include <QInputEvent>
 #include <QColorDialog>
-#include <QPlastiqueStyle>
 #include <QRubberBand>
 #include <QMessageBox>
 #include <QInputDialog>
+#include <QStyleFactory>
 
 #include "TIGLViewerInternal.h"
 #include "TIGLViewerDocument.h"
@@ -143,7 +143,7 @@ void TIGLViewerWidget::initialize()
     if (myRubberBand) {
         // If you don't set a style, QRubberBand doesn't work properly
         // take this line out if you don't believe me.
-        myRubberBand->setStyle( (QStyle*) new QPlastiqueStyle() );
+        myRubberBand->setStyle( QStyleFactory::create("windows")  );
     }
 }
 
@@ -165,8 +165,7 @@ void TIGLViewerWidget::initializeOCC(const Handle_AIS_InteractiveContext& aConte
         myView    = myViewer->CreateView();
 
 #if defined _WIN32 || defined __WIN32__
-        myWindow = new WNT_Window(winId());
-        myWindow->SetFlags( WDF_NOERASEBKGRND );
+        myWindow = new WNT_Window((Aspect_Handle)winId());
 #elif defined __APPLE__
         myWindow = new Cocoa_Window((NSView *)winId());
 #else
