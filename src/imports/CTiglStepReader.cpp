@@ -22,6 +22,7 @@
 #include "ICADImporterCreator.h"
 #include "CTiglImporterFactory.h"
 #include "CTiglTypeRegistry.h"
+#include "CTiglError.h"
 
 #include <STEPControl_Reader.hxx>
 #include <StepBasic_ProductDefinition.hxx>
@@ -31,6 +32,7 @@
 #include <XSControl_TransferReader.hxx>
 
 #include <Interface_InterfaceModel.hxx>
+#include <Interface_Static.hxx>
 #include <IFSelect_ReturnStatus.hxx>
 
 #include <TColStd_HSequenceOfTransient.hxx>
@@ -123,6 +125,7 @@ ListPNamedShape CTiglStepReader::Read(const std::string stepFileName)
     ListPNamedShape shapeList;
 
     STEPControl_Reader aReader;
+    Interface_Static::SetCVal("xstep.cascade.unit", "M");
     IFSelect_ReturnStatus status = aReader.ReadFile(stepFileName.c_str());
     if ( status == IFSelect_RetDone ) {
         int nbr = aReader.NbRootsForTransfer();
@@ -131,8 +134,7 @@ ListPNamedShape CTiglStepReader::Read(const std::string stepFileName)
         }
     }
     else {
-        LOG(ERROR) << "Error reading in step file " << stepFileName << "!";
-        return shapeList;
+        throw CTiglError( "Cannot read step file " + stepFileName + "!", TIGL_OPEN_FAILED);
     }
 
     int nbs = aReader.NbShapes();
