@@ -60,6 +60,7 @@ CCPACSConfiguration::CCPACSConfiguration(TixiDocumentHandle tixiHandle)
     , header()
     , wings(this)
     , fuselages(this)
+    , externalObjects(this)
     , uidManager()
 {
 }
@@ -92,6 +93,7 @@ void CCPACSConfiguration::ReadCPACS(const char* configurationUID)
     wings.ReadCPACS(tixiDocumentHandle, configurationUID);
     fuselages.ReadCPACS(tixiDocumentHandle, configurationUID);
     farField.ReadCPACS(tixiDocumentHandle);
+    externalObjects.ReadCPACS(tixiDocumentHandle, configurationUID);
 
     configUID = configurationUID;
     // Now do parent <-> child transformations. Child should use the
@@ -220,6 +222,16 @@ CCPACSFuselage& CCPACSConfiguration::GetFuselage(int index) const
 CCPACSFarField& CCPACSConfiguration::GetFarField()
 {
     return farField;
+}
+
+int CCPACSConfiguration::GetExternalObjectCount() const
+{
+    return externalObjects.GetObjectCount();
+}
+
+CCPACSExternalObject&CCPACSConfiguration::GetExternalObject(int index) const
+{
+    return externalObjects.GetObject(index);
 }
 
 // Returns the fuselage for a given UID.

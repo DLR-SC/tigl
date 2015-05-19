@@ -35,6 +35,7 @@
 #include "CCPACSWingProfile.h"
 #include "CCPACSFuselages.h"
 #include "CCPACSFuselageProfile.h"
+#include "CCPACSExternalObjects.h"
 #include "CCPACSFarField.h"
 #include "CCPACSGuideCurveProfiles.h"
 #include "TopoDS_Compound.hxx"
@@ -113,6 +114,11 @@ public:
 
     TIGL_EXPORT CCPACSFarField& GetFarField();
 
+    // Returns the number of external objects (i.e. linked CAD files like STEP, IGES)
+    TIGL_EXPORT int GetExternalObjectCount(void) const;
+
+    TIGL_EXPORT CCPACSExternalObject& GetExternalObject(int index) const;
+
     // Returns the guide curve profile for a given UID.
     TIGL_EXPORT CCPACSGuideCurveProfile& GetGuideCurveProfile(std::string UID) const;
 
@@ -149,6 +155,7 @@ private:
     CCPACSWings                  wings;                /**< Configuration wings element */
     CCPACSFuselages              fuselages;            /**< Configuration fuselages element */
     CCPACSFarField               farField;             /**< Far field configuration for CFD tools */
+    CCPACSExternalObjects        externalObjects;      /**< External loaded CAD components */
     CCPACSGuideCurveProfiles     guideCurveProfiles;   /**< Guide curve profiles */
     CTiglUIDManager              uidManager;           /**< Stores the unique ids of the components */
     PTiglFusePlane               aircraftFuser;        /**< The aircraft fusing algo */
