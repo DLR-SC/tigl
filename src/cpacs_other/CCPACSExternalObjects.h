@@ -33,7 +33,7 @@ class CCPACSConfiguration;
 class CCPACSExternalObjects
 {
 public:
-    TIGL_EXPORT CCPACSExternalObjects(CCPACSConfiguration* config = NULL);
+    TIGL_EXPORT CCPACSExternalObjects(CCPACSConfiguration* config = 0);
     TIGL_EXPORT ~CCPACSExternalObjects();
     
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const char* configurationUID);
