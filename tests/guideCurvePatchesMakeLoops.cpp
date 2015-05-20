@@ -152,7 +152,7 @@ protected:
                 // this will fail for simpleWing + fuseAtOnce
                 ASSERT_FALSE(saw.CheckSmall(Precision::Confusion()));
             }
-            ASSERT_FALSE(saw.CheckDegenerated(Precision::Confusion()));
+            ASSERT_FALSE(saw.CheckDegenerated());
             ASSERT_FALSE(saw.CheckSelfIntersection());
         }
 
@@ -341,7 +341,7 @@ TEST_P(guideCurvePatchesMakeLoops, fuseSequential)
     for (; Explo.More(); Explo.Next()) {
         const TopoDS_Shape& anEdge = Explo.Current();
         bool ModifiedEdgeFound = false;
-        for (int i = 0; i < fusers.size(); i++) {
+        for (unsigned int i = 0; i < fusers.size(); i++) {
             const TopTools_ListOfShape& aList = fusers[i]->Modified(anEdge);
             if (!aList.IsEmpty()) {
                 for (itl.Initialize(aList); itl.More(); itl.Next()) {
@@ -358,7 +358,7 @@ TEST_P(guideCurvePatchesMakeLoops, fuseSequential)
     for (Explo.Init(profiles, TopAbs_EDGE); Explo.More(); Explo.Next()) {
         const TopoDS_Shape& anEdge = Explo.Current();
         bool ModifiedEdgeFound = false;
-        for (int i = 0; i < fusers.size(); i++) {
+        for (unsigned int i = 0; i < fusers.size(); i++) {
             const TopTools_ListOfShape& aList = fusers[i]->Modified(anEdge);
             if (!aList.IsEmpty()) {
                 for (itl.Initialize(aList); itl.More(); itl.Next()) {

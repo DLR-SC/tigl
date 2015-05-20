@@ -739,7 +739,7 @@ void CCPACSWing::BuildGuideCurveWires()
                 if (fromRef >= 1. && !hasBluntTE) {
                     fromRef = -1.;
                 }
-                roots.insert(std::make_pair<double, CCPACSGuideCurve*>(fromRef, &curve));
+                roots.insert(std::make_pair(fromRef, &curve));
             }
             else {
                 CCPACSGuideCurve& fromCurve = GetGuideCurveSegment(fromCurveUID);

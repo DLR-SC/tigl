@@ -384,7 +384,7 @@ void CCPACSFuselage::BuildGuideCurves()
                 double relCirc= curve.GetFromRelativeCircumference();
                 //TODO: determine if half fuselage or not. If not
                 //the guide curve at relCirc=1 should be inserted at relCirc=0
-                roots.insert(std::make_pair<double, CCPACSGuideCurve*>(relCirc, &curve));
+                roots.insert(std::make_pair(relCirc, &curve));
             }
             else {
                 CCPACSGuideCurve& fromCurve = GetGuideCurveSegment(fromCurveUID);

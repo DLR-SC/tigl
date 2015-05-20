@@ -404,7 +404,7 @@ PNamedShape CCPACSWingSegment::BuildLoft(void)
                 // this is a trailing edge profile, we should add it first
                 value = -1.;
             }
-            guideMap.insert(std::make_pair<double, CCPACSGuideCurve*>(value, curve));
+            guideMap.insert(std::make_pair(value, curve));
         }
         
         std::multimap<double, CCPACSGuideCurve*>::iterator it;

@@ -166,7 +166,7 @@ void MakePatches::Perform(const Standard_Real theTolConf,
     for (; Explo.More(); Explo.Next()) {
         const TopoDS_Shape& anEdge = Explo.Current();
         bool ModifiedEdgeFound = false;
-        for (int i = 0; i < fusers.size(); i++) {
+        for (unsigned int i = 0; i < fusers.size(); i++) {
             const TopTools_ListOfShape& aList = fusers[i]->Modified(anEdge);
             if (!aList.IsEmpty()) {
                 for (itl.Initialize(aList); itl.More(); itl.Next()) {
@@ -183,7 +183,7 @@ void MakePatches::Perform(const Standard_Real theTolConf,
     for (Explo.Init(myProfiles, TopAbs_EDGE); Explo.More(); Explo.Next()) {
         const TopoDS_Shape& anEdge = Explo.Current();
         bool ModifiedEdgeFound = false;
-        for (int i = 0; i < fusers.size(); i++) {
+        for (unsigned int i = 0; i < fusers.size(); i++) {
             const TopTools_ListOfShape& aList = fusers[i]->Modified(anEdge);
             if (!aList.IsEmpty()) {
                 for (itl.Initialize(aList); itl.More(); itl.Next()) {

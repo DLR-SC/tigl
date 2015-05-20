@@ -19,6 +19,8 @@
 #ifndef CMAKELOFT_H
 #define CMAKELOFT_H
 
+#include "tigl_internal.h"
+
 #include <vector>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Wire.hxx>
@@ -31,22 +33,22 @@
 class CTiglMakeLoft
 {
 public:
-    CTiglMakeLoft(double tolerance = 1e-5);
-    CTiglMakeLoft(const TopoDS_Shape& profiles, const TopoDS_Shape& guides, double tolerance = 1e-6);
+    TIGL_EXPORT CTiglMakeLoft(double tolerance = 1e-5);
+    TIGL_EXPORT CTiglMakeLoft(const TopoDS_Shape& profiles, const TopoDS_Shape& guides, double tolerance = 1e-6);
     
     /**
      * @brief Should be called to add sections/profiles to the algorithm.
      *
      * @param profiles A shape that is either a wire or a compound consisting of multiple wires.
      */
-    void addProfiles(const TopoDS_Shape& profiles);
+    TIGL_EXPORT void addProfiles(const TopoDS_Shape& profiles);
     
     /** 
      * This function may be called to add guide curves to
      * the lofting algo. The shape should be either a wire
      * or a Compound consisting of multiple wires
      */
-    void addGuides(const TopoDS_Shape& guides);
+    TIGL_EXPORT void addGuides(const TopoDS_Shape& guides);
     
     /**
      * @brief Use the function to adjust, if you want to get a closed
@@ -55,7 +57,7 @@ public:
      * 
      * @param enabled If true, a solid is built.
      */
-    void setMakeSolid(bool enabled);
+    TIGL_EXPORT void setMakeSolid(bool enabled);
     
     /**
      * @brief setMakeSmooth switches, wether the resulting loft will be ruled
@@ -63,17 +65,17 @@ public:
      * 
      * @param enabled Set to true, if smoothing should be enabled.
      */
-    void setMakeSmooth(bool enabled);
+    TIGL_EXPORT void setMakeSmooth(bool enabled);
     
-    TopoDS_Shape& Shape();
+    TIGL_EXPORT TopoDS_Shape& Shape();
     
-    operator TopoDS_Shape& ();
+    TIGL_EXPORT operator TopoDS_Shape& ();
     
     /**
      * @brief Performs the algorithm. Doesn't need to be called
      * manually.
      */
-    void Perform();
+    TIGL_EXPORT void Perform();
     
 private:
     void makeLoftWithGuides();
