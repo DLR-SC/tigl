@@ -52,7 +52,8 @@ namespace external_object_private
     }
 
     /// Returns true, if the fileType is supported by the component loader
-    TIGL_EXPORT bool fileTypeSupported(const std::string& fileType) {
+    TIGL_EXPORT bool fileTypeSupported(const std::string& fileType)
+    {
         return CTiglImporterFactory::Instance().ImporterSupported(fileType);
     }
 

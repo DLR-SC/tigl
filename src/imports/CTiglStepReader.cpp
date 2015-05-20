@@ -44,7 +44,8 @@
 
 namespace
 {
-    void ReadShapeNames(const STEPControl_Reader& reader, ListPNamedShape& shapes) {
+    void ReadShapeNames(const STEPControl_Reader& reader, ListPNamedShape& shapes)
+    {
         // create a hash of each shape 
         typedef std::map<int, unsigned int> HashMap;
         HashMap shapeMap;

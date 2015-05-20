@@ -38,7 +38,7 @@ CGroupShapes::CGroupShapes(const ListPNamedShape& list)
     TopoDS_Compound c;
     b.MakeCompound(c);
 
-    for(ListPNamedShape::const_iterator it=list.begin(); it != list.end(); ++it) {
+    for (ListPNamedShape::const_iterator it=list.begin(); it != list.end(); ++it) {
         PNamedShape shape = *it;
         if (!shape) {
             continue;
@@ -50,7 +50,7 @@ CGroupShapes::CGroupShapes(const ListPNamedShape& list)
     _result = PNamedShape(new CNamedShape(c, "ShapeGroup"));
 
     // apply face names from the shapes
-    for(ListPNamedShape::const_iterator it=list.begin(); it != list.end(); ++it) {
+    for (ListPNamedShape::const_iterator it=list.begin(); it != list.end(); ++it) {
         PNamedShape shape = *it;
         if (!shape) {
             continue;
