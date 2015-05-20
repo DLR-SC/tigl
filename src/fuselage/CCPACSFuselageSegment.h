@@ -109,10 +109,10 @@ public:
     TIGL_EXPORT int GetEndConnectedSegmentIndex(int n);
 
     // helper function to get the wire of the start section
-    TopoDS_Wire GetStartWire(void);
+    TIGL_EXPORT TopoDS_Wire GetStartWire(void);
 
     // helper function to get the wire of the end section
-    TopoDS_Wire GetEndWire(void);
+    TIGL_EXPORT TopoDS_Wire GetEndWire(void);
 
     // Gets a point on the fuselage segment in dependence of parameters eta and zeta with
     // 0.0 <= eta <= 1.0 and 0.0 <= zeta <= 1.0. For eta = 0.0 the point lies on the start
