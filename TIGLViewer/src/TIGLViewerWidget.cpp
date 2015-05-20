@@ -134,6 +134,10 @@ void TIGLViewerWidget::initialize()
         p.drawRect( 18, 18, 12, 12 );
     p.end();
     myCrossCursor = QCursor( curb2, curb1, 24, 24 );
+
+    // create win id, this is required on qt 5
+    // without winid, the view can't be properly initialized
+    winId();
 }
 
 
@@ -144,9 +148,6 @@ TIGLViewerWidget::~TIGLViewerWidget()
 void TIGLViewerWidget::setContext(const Handle_AIS_InteractiveContext& aContext)
 {
     myContext = aContext;
-#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0) && (defined _WIN32 || defined __WIN32__)
-    initializeOCC(myContext);
-#endif
 }
 
 
