@@ -15,7 +15,7 @@ if (JAVA_FOUND)
 		DEPENDS ${TIGL_JAVA_SRC}
 		WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
 		COMMAND   ${Java_JAVA_EXECUTABLE}
-		ARGS      "-classpath \"${CMAKE_CURRENT_SOURCE_DIR}/gradle/wrapper/gradle-wrapper.jar\" org.gradle.wrapper.GradleWrapperMain assemble" 
+		ARGS      -classpath ${CMAKE_CURRENT_SOURCE_DIR}/gradle/wrapper/gradle-wrapper.jar org.gradle.wrapper.GradleWrapperMain assemble
 	)
 	
 	ADD_CUSTOM_TARGET(
