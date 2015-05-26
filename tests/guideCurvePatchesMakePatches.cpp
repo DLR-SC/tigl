@@ -20,30 +20,11 @@
 #include "test.h" 
 #include "tigl_config.h"
 #include "contrib/MakePatches.hxx" 
-#include "contrib/MakeLoops.hxx" 
 
 #include <BRepTools.hxx>
 #include <BRep_Builder.hxx>
 #include <Precision.hxx>
 #include <GeomFill_FillingStyle.hxx>
-
-#include <BRepAlgoAPI_Fuse.hxx>
-#include <BOPCol_ListOfShape.hxx>
-#include <BOPAlgo_PaveFiller.hxx>
-#include <TopExp_Explorer.hxx>
-#include <TopTools_ListIteratorOfListOfShape.hxx>
-#include <TopoDS.hxx>
-#include <TopoDS_Edge.hxx>
-#include <Geom_Curve.hxx>
-#include <BRepBuilderAPI_MakeVertex.hxx>
-#include <TopTools_MapIteratorOfMapOfShape.hxx>
-#include <TopExp.hxx>
-#include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
-#include <ShapeAnalysis_Edge.hxx>
-#include <ShapeAnalysis_Wire.hxx>
-#include <ShapeFix_Wireframe.hxx>
-#include <ShapeFix_Wire.hxx>
-#include <ShapeFix_Shape.hxx>
 
 #ifdef TIGL_OCE_COONS_PATCHED
 #define COONS_FILLING_STYLE GeomFill_CoonsC2Style
@@ -56,25 +37,19 @@
 /******************************************************************************/
 TEST(guideCurvePatches, segment)
 {
-    TopoDS_Shape guides;
+    TopoDS_Shape guides, profiles;
     BRep_Builder b;
-    ifstream in;
-    in.open("TestData/guideCurvePatch_segmentGuides.brep");
-    BRepTools::Read(guides, in, b);
-    in.close();
-    
-    TopoDS_Shape profiles;
-    in.open("TestData/guideCurvePatch_segmentProfiles.brep");
-    BRepTools::Read(profiles, in, b);
-    in.close();
+    BRepTools::Read(guides, "TestData/guideCurvePatch_segmentGuides.brep", b);
+    BRepTools::Read(profiles, "TestData/guideCurvePatch_segmentProfiles.brep", b);
+
     MakePatches SurfMaker(guides, profiles);
     Standard_Real tolConf = Precision::Confusion();
     Standard_Real tolPara = Precision::Confusion();
     GeomFill_FillingStyle style = COONS_FILLING_STYLE;
     SurfMaker.Perform(tolConf, tolPara, style, Standard_True);
-    TopoDS_Shape faces = SurfMaker.Patches();
     ASSERT_EQ(SurfMaker.GetStatus(), 0);
-    BRepTools::Write(SurfMaker.Patches(), "TestData/export/guideCurvePatch_segment.brep");
+    TopoDS_Shape faces = SurfMaker.Patches();
+    BRepTools::Write(faces, "TestData/export/guideCurvePatch_segment.brep");
 }
 
 /******************************************************************************/
@@ -82,25 +57,19 @@ TEST(guideCurvePatches, segment)
 /******************************************************************************/
 TEST(guideCurvePatches, simpleWing)
 {
-    TopoDS_Shape guides;
+    TopoDS_Shape guides, profiles;
     BRep_Builder b;
-    ifstream in;
-    in.open("TestData/guideCurvePatch_simpleWingGuides.brep");
-    BRepTools::Read(guides, in, b);
-    in.close();
-    
-    TopoDS_Shape profiles;
-    in.open("TestData/guideCurvePatch_simpleWingProfiles.brep");
-    BRepTools::Read(profiles, in, b);
-    in.close();
+    BRepTools::Read(guides, "TestData/guideCurvePatch_simpleWingGuides.brep", b);
+    BRepTools::Read(profiles, "TestData/guideCurvePatch_simpleWingProfiles.brep", b);
+
     MakePatches SurfMaker(guides, profiles);
     Standard_Real tolConf = Precision::Confusion();
     Standard_Real tolPara = Precision::Confusion();
     GeomFill_FillingStyle style = COONS_FILLING_STYLE;
     SurfMaker.Perform(tolConf, tolPara, style, Standard_True);
-    TopoDS_Shape faces = SurfMaker.Patches();
     ASSERT_EQ(SurfMaker.GetStatus(), 0);
-    BRepTools::Write(SurfMaker.Patches(), "TestData/export/guideCurvePatch_simpleWing.brep");
+    TopoDS_Shape faces = SurfMaker.Patches();
+    BRepTools::Write(faces, "TestData/export/guideCurvePatch_simpleWing.brep");
 }
 
 /******************************************************************************/
@@ -108,26 +77,19 @@ TEST(guideCurvePatches, simpleWing)
 /******************************************************************************/
 TEST(guideCurvePatches, nacelle)
 {
-    TopoDS_Shape guides;
+    TopoDS_Shape guides, profiles;
     BRep_Builder b;
-    ifstream in;
-    in.open("TestData/guideCurvePatch_nacelleGuides.brep");
-    BRepTools::Read(guides, in, b);
-    in.close();
-    
-    TopoDS_Shape profiles;
-    in.open("TestData/guideCurvePatch_nacelleProfiles.brep");
-    BRepTools::Read(profiles, in, b);
-    in.close();
+    BRepTools::Read(guides, "TestData/guideCurvePatch_nacelleGuides.brep", b);
+    BRepTools::Read(profiles, "TestData/guideCurvePatch_nacelleProfiles.brep", b);
+
     MakePatches SurfMaker(guides, profiles);
     Standard_Real tolConf = Precision::Confusion();
     Standard_Real tolPara = Precision::Confusion();
     GeomFill_FillingStyle style = COONS_FILLING_STYLE;
     SurfMaker.Perform(tolConf, tolPara, style, Standard_True);
-    TopoDS_Shape faces = SurfMaker.Patches();
     ASSERT_EQ(SurfMaker.GetStatus(), 0);
-    SurfMaker.Patches();
-    BRepTools::Write(SurfMaker.Patches(), "TestData/export/guideCurvePatch_nacellePatches.brep");
+    TopoDS_Shape faces = SurfMaker.Patches();
+    BRepTools::Write(faces, "TestData/export/guideCurvePatch_nacellePatches.brep");
 }
 
 
@@ -136,26 +98,19 @@ TEST(guideCurvePatches, nacelle)
 /******************************************************************************/
 TEST(guideCurvePatches, nacelleClosedProfiles)
 {
-    TopoDS_Shape guides;
+    TopoDS_Shape guides, profiles;
     BRep_Builder b;
-    ifstream in;
-    in.open("TestData/guideCurvePatch_nacelleGuides.brep");
-    BRepTools::Read(guides, in, b);
-    in.close();
+    BRepTools::Read(guides, "TestData/guideCurvePatch_nacelleGuides.brep", b);
+    BRepTools::Read(profiles, "TestData/guideCurvePatch_nacelleProfilesClosed.brep", b);
     
-    TopoDS_Shape profiles;
-    in.open("TestData/guideCurvePatch_nacelleProfilesClosed.brep");
-    BRepTools::Read(profiles, in, b);
-    in.close();
     MakePatches SurfMaker(guides, profiles);
     Standard_Real tolConf = Precision::Confusion();
     Standard_Real tolPara = Precision::Confusion();
     GeomFill_FillingStyle style = COONS_FILLING_STYLE;
     SurfMaker.Perform(tolConf, tolPara, style, Standard_True);
-    TopoDS_Shape faces = SurfMaker.Patches();
     ASSERT_EQ(SurfMaker.GetStatus(), 0);
-    SurfMaker.Patches();
-    BRepTools::Write(SurfMaker.Patches(), "TestData/export/guideCurvePatch_nacelleClosedProfilesPatches.brep");
+    TopoDS_Shape faces = SurfMaker.Patches();
+    BRepTools::Write(faces, "TestData/export/guideCurvePatch_nacelleClosedProfilesPatches.brep");
 }
 
 
@@ -164,24 +119,17 @@ TEST(guideCurvePatches, nacelleClosedProfiles)
 /******************************************************************************/
 TEST(guideCurvePatches, nacelleInverted)
 {
-    TopoDS_Shape guides;
+    TopoDS_Shape guides, profiles;
     BRep_Builder b;
-    ifstream in;
-    in.open("TestData/guideCurvePatch_nacelleGuidesInverted.brep");
-    BRepTools::Read(guides, in, b);
-    in.close();
-    
-    TopoDS_Shape profiles;
-    in.open("TestData/guideCurvePatch_nacelleProfiles.brep");
-    BRepTools::Read(profiles, in, b);
-    in.close();
+    BRepTools::Read(guides, "TestData/guideCurvePatch_nacelleGuidesInverted.brep", b);
+    BRepTools::Read(profiles, "TestData/guideCurvePatch_nacelleProfiles.brep", b);
+
     MakePatches SurfMaker(guides, profiles);
     Standard_Real tolConf = Precision::Confusion();
     Standard_Real tolPara = Precision::Confusion();
     GeomFill_FillingStyle style = COONS_FILLING_STYLE;
     SurfMaker.Perform(tolConf, tolPara, style, Standard_True);
-    TopoDS_Shape faces = SurfMaker.Patches();
     ASSERT_EQ(SurfMaker.GetStatus(), 0);
-    SurfMaker.Patches();
-    BRepTools::Write(SurfMaker.Patches(), "TestData/export/guideCurvePatch_nacellePatchesInverted.brep");
+    TopoDS_Shape faces = SurfMaker.Patches();
+    BRepTools::Write(faces, "TestData/export/guideCurvePatch_nacellePatchesInverted.brep");
 }
