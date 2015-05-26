@@ -96,7 +96,7 @@ public:
     ~TIGLViewerWidget();
 
     // the scene context must be set before first use
-    void setContext(const Handle_AIS_InteractiveContext& aContext){ myContext = aContext; }
+    void setContext(const Handle_AIS_InteractiveContext& aContext);
 
     Handle_V3d_View                  getView( void )    { return myView; }
 
@@ -191,7 +191,6 @@ private: // members
                                     myV3dY,
                                     myV3dZ;
         
-    class QRubberBand*              myRubberBand;
     QPoint                          myStartPoint;
     QPoint                          myCurrentPoint;
     
@@ -226,7 +225,6 @@ private: // methods
     Standard_Real viewPrecision( bool resized = false );
 
     void drawRubberBand( const QPoint origin, const QPoint position );
-    void showRubberBand( void );
     void hideRubberBand( void );
 
     Standard_Boolean convertToPlane(Standard_Integer Xs, 

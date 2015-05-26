@@ -23,7 +23,7 @@
 
 #include <QtCore/QString>
 #include <QtCore/QObject>
-#include <QtGui/QLineEdit>
+#include <QLineEdit>
 #include <QtScript>
 
 #include "TIGLScriptProxy.h"

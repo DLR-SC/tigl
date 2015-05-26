@@ -19,7 +19,7 @@
 * limitations under the License.
 */
 
-#include <QtGui/QApplication>
+#include <QApplication>
 
 #include "TIGLViewerInternal.h"
 #include "TIGLViewerInputoutput.h"
@@ -228,7 +228,7 @@ Handle_TopTools_HSequenceOfShape TIGLViewerInputOutput::importBREP( const QStrin
     TopoDS_Shape aShape;
     BRep_Builder aBuilder;
 
-    Standard_Boolean result = BRepTools::Read(  aShape, file.toAscii().data(), aBuilder );
+    Standard_Boolean result = BRepTools::Read(  aShape, file.toLatin1().data(), aBuilder );
     if ( result ) {
         aSequence = new TopTools_HSequenceOfShape();
         if (aShape.ShapeType() == TopAbs_COMPOUND) {
@@ -250,7 +250,7 @@ Handle_TopTools_HSequenceOfShape TIGLViewerInputOutput::importIGES( const QStrin
     Handle_TopTools_HSequenceOfShape aSequence;
     IGESControl_Reader Reader;
     Interface_Static::SetCVal("xstep.cascade.unit", "M");
-    int status = Reader.ReadFile( file.toAscii().data() );
+    int status = Reader.ReadFile( file.toLatin1().data() );
 
     if ( status == IFSelect_RetDone ) {
         Reader.TransferRoots();
@@ -305,7 +305,7 @@ Handle_TopTools_HSequenceOfShape TIGLViewerInputOutput::importSTEP( const QStrin
 
     STEPControl_Reader aReader;
     Interface_Static::SetCVal("xstep.cascade.unit", "M");
-    IFSelect_ReturnStatus status = aReader.ReadFile( file.toAscii().data() );
+    IFSelect_ReturnStatus status = aReader.ReadFile( file.toLatin1().data() );
     if ( status == IFSelect_RetDone ) {
         //Interface_TraceFile::SetDefault();
         bool failsonly = false;
@@ -340,12 +340,12 @@ Handle_TopTools_HSequenceOfShape TIGLViewerInputOutput::importCSFDB( const QStri
     Handle_TopTools_HSequenceOfShape aSequence;
 
     // Check file type
-    if ( FSD_File::IsGoodFileType( file.toAscii().data() ) != Storage_VSOk ) {
+    if ( FSD_File::IsGoodFileType( file.toLatin1().data() ) != Storage_VSOk ) {
         return aSequence;
     }
 
     static FSD_File fileDriver;
-    TCollection_AsciiString aName( file.toAscii().data() );
+    TCollection_AsciiString aName( file.toLatin1().data() );
     if ( fileDriver.Open( aName, Storage_VSRead ) != Storage_VSOk ) {
         return aSequence;
     }
@@ -396,7 +396,7 @@ bool TIGLViewerInputOutput::exportBREP( const QString& file, const Handle_TopToo
     else {
         shape = shapes->Value(1);
     }
-    return BRepTools::Write( shape, file.toAscii().data() );
+    return BRepTools::Write( shape, file.toLatin1().data() );
 }
 
 bool TIGLViewerInputOutput::exportIGES( const QString& file, const Handle_TopTools_HSequenceOfShape& shapes )
@@ -418,7 +418,7 @@ bool TIGLViewerInputOutput::exportIGES( const QString& file, const Handle_TopToo
         writer.AddShape ( shapes->Value( i ) );
     }
     writer.ComputeModel();
-    return writer.Write( file.toAscii().data() );
+    return writer.Write( file.toLatin1().data() );
 }
 
 bool TIGLViewerInputOutput::exportSTEP( const QString& file, const Handle_TopTools_HSequenceOfShape& shapes )
@@ -439,7 +439,7 @@ bool TIGLViewerInputOutput::exportSTEP( const QString& file, const Handle_TopToo
         }
     }
 
-    status = writer.Write( file.toAscii().data() );
+    status = writer.Write( file.toLatin1().data() );
 
     switch ( status ) {
     case IFSelect_RetError:
@@ -475,7 +475,7 @@ bool TIGLViewerInputOutput::exportCSFDB( const QString& file, const Handle_TopTo
     data->AddToUserInfo( "Storing a persistent set of shapes in a flat file" );
     data->AddToComments( TCollection_ExtendedString( "Application is based on TIGL 1.0 and OpenCASCADE 6.3.0" ) );
 
-    if ( fileDriver.Open( file.toAscii().data(), Storage_VSWrite ) != Storage_VSOk ) {
+    if ( fileDriver.Open( file.toLatin1().data(), Storage_VSWrite ) != Storage_VSOk ) {
         myInfo = tr( "INF_TRANSLATE_ERROR_CANTSAVEFILE" ).arg( file );
         return false;
     }
@@ -523,7 +523,7 @@ bool TIGLViewerInputOutput::exportSTL( const QString& file, const Handle_TopTool
     }
 
     StlAPI_Writer writer;
-    writer.Write( res, file.toAscii().data() );
+    writer.Write( res, file.toLatin1().data() );
 
     return true;
 }
@@ -548,7 +548,7 @@ bool TIGLViewerInputOutput::exportVRML( const QString& file, const Handle_TopToo
     }
 
     VrmlAPI_Writer writer;
-    writer.Write( res, file.toAscii().data() );
+    writer.Write( res, file.toLatin1().data() );
 
     return true;
 }

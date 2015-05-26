@@ -162,9 +162,6 @@ protected:
     // Cleanup routine
     void Cleanup(void);
 
-    // Build transformation matrix for the wing
-    void BuildMatrix(void);
-    
     void ConnectGuideCurveSegments(void);
 
     // Update internal wing data

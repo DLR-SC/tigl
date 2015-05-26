@@ -28,7 +28,4 @@
 // Default off: Activate, if OpenCASCADE is patched to provide the C2 coons algorithm
 #cmakedefine TIGL_OCE_COONS_PATCHED
 
-// tixi settings
-#cmakedefine HAVE_TIXI_SETPRINTMSG
-
 #endif // CONFIG_H

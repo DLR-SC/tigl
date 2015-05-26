@@ -6,12 +6,6 @@ if (JAVA_FOUND)
 
 	configure_file(${CMAKE_CURRENT_SOURCE_DIR}/build.gradle.in ${CMAKE_CURRENT_BINARY_DIR}/build.gradle)
 
-	if(NOT WIN32)
-		set(GRADLE_CMD "gradlew")
-	else()
-		set(GRADLE_CMD "gradlew.bat")	
-	endif()
-
 	file(GLOB_RECURSE TIGL_JAVA_SRC "*.java")
 
 	SET(TIGL_JAR "${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}/tigl-${TIGL_VERSION}.jar")
@@ -20,8 +14,8 @@ if (JAVA_FOUND)
 		OUTPUT  ${TIGL_JAR}
 		DEPENDS ${TIGL_JAVA_SRC}
 		WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-		COMMAND   ${CMAKE_CURRENT_SOURCE_DIR}/${GRADLE_CMD}
-		ARGS      "assemble" 
+		COMMAND   ${Java_JAVA_EXECUTABLE}
+		ARGS      -classpath ${CMAKE_CURRENT_SOURCE_DIR}/gradle/wrapper/gradle-wrapper.jar org.gradle.wrapper.GradleWrapperMain assemble
 	)
 	
 	ADD_CUSTOM_TARGET(

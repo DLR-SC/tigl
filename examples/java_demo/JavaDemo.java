@@ -1,9 +1,10 @@
-import java.util.ArrayList;
+import java.util.List;
 
 import com.sun.jna.ptr.DoubleByReference;
 import com.sun.jna.ptr.IntByReference;
 
 import de.dlr.sc.tigl.CpacsConfiguration;
+import de.dlr.sc.tigl.Tigl.WSProjectionResult;
 import de.dlr.sc.tigl.TiglBSpline;
 import de.dlr.sc.tigl.Tigl;
 import de.dlr.sc.tigl.TiglNativeInterface;
@@ -28,7 +29,7 @@ public class JavaDemo {
 		try (CpacsConfiguration config = Tigl.openCPACSConfiguration(filename, "")) {
 			
 			// get splines from a profile NACA0012
-			ArrayList<TiglBSpline> splines = config.getProfileSplines("NACA0012");
+			List<TiglBSpline> splines = config.getProfileSplines("NACA0012");
 			for (int ispl = 0; ispl < splines.size(); ++ispl) {
 				TiglBSpline spl = splines.get(ispl);
 				System.out.println(spl.degree + " " + spl.controlPoints.size() + " " + spl.knots.size());
@@ -43,16 +44,20 @@ public class JavaDemo {
 			
 			TiglPoint p = config.wingGetLowerPoint(1, 1, 0.5, 0.5);
 			System.out.println(p);
+			WSProjectionResult res = config.wingGetSegmentEtaXsi(1, p);
+			System.out.println("eta/xsi: " + res.point.eta + "," + res.point.xsi);
+			System.out.println("OnTop: " + res.isOnTop);
 			
 			System.out.println(config.wingComponentSegmentGetPoint("WING_CS1", 0.5, 0.5));
 			
-			Tigl.GetPointDirectionResult result = config.wingGetUpperPointAtDirection(1, 1, 0.5, 0.5, new TiglPoint(0, 0, 1));
+			Tigl.WGetPointDirectionResult result = config.wingGetUpperPointAtDirection(1, 1, 0.5, 0.5, new TiglPoint(0, 0, 1));
 			System.out.println("GetPointDirection point=" + result.point);
 			System.out.println("GetPointDirection error=" + result.errorDistance);
 
 			// do some exports
 			config.exportIGES("test.igs");
 			config.exportSTEP("test.stp");
+			config.exportWingCollada(config.wingGetUID(1), "wing.dae", 0.01);
 			
 			// example how to access low level tigl interface
 			IntByReference wingCount = new IntByReference();

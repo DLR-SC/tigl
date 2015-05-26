@@ -31,8 +31,6 @@
 #include <QPainter>
 #include <QInputEvent>
 #include <QColorDialog>
-#include <QPlastiqueStyle>
-#include <QRubberBand>
 #include <QMessageBox>
 #include <QInputDialog>
 
@@ -42,6 +40,7 @@
 #include "ISession_Point.h"
 #include "ISession_Direction.h"
 #include "ISession_Text.h"
+#include "CTiglLogging.h"
 #include "tiglcommonfunctions.h"
 
 #include <OpenGl_GraphicDriver.hxx>
@@ -84,7 +83,6 @@ TIGLViewerWidget::TIGLViewerWidget( const Handle_AIS_InteractiveContext& aContex
     myMode              ( CurAction3d_Undefined ),
     myGridSnap        ( Standard_False ),
     myDetection          ( AIS_SOD_Nothing ),
-    myRubberBand      ( NULL ),
     myPrecision          ( 0.001 ),
     myViewPrecision   ( 0.0 ),
     myKeyboardFlags   ( Qt::NoModifier ),
@@ -99,7 +97,6 @@ void TIGLViewerWidget::initialize()
     myView            = NULL;
     myViewer          = NULL;
     myLayer           = NULL;
-    myRubberBand      = NULL;
     myMode              = CurAction3d_Undefined;
     myGridSnap        = Standard_False;
     myViewResized      = Standard_False;
@@ -138,21 +135,19 @@ void TIGLViewerWidget::initialize()
     p.end();
     myCrossCursor = QCursor( curb2, curb1, 24, 24 );
 
-    // Create a rubber band box for later mouse activity
-    myRubberBand = new QRubberBand( QRubberBand::Rectangle, this );
-    if (myRubberBand) {
-        // If you don't set a style, QRubberBand doesn't work properly
-        // take this line out if you don't believe me.
-        myRubberBand->setStyle( (QStyle*) new QPlastiqueStyle() );
-    }
+    // create win id, this is required on qt 5
+    // without winid, the view can't be properly initialized
+    winId();
 }
 
 
 TIGLViewerWidget::~TIGLViewerWidget()
 {
-    if ( myRubberBand ) {
-        delete myRubberBand;
-    }
+}
+
+void TIGLViewerWidget::setContext(const Handle_AIS_InteractiveContext& aContext)
+{
+    myContext = aContext;
 }
 
 
@@ -165,8 +160,7 @@ void TIGLViewerWidget::initializeOCC(const Handle_AIS_InteractiveContext& aConte
         myView    = myViewer->CreateView();
 
 #if defined _WIN32 || defined __WIN32__
-        myWindow = new WNT_Window(winId());
-        myWindow->SetFlags( WDF_NOERASEBKGRND );
+        myWindow = new WNT_Window((Aspect_Handle)winId());
 #elif defined __APPLE__
         myWindow = new Cocoa_Window((NSView *)winId());
 #else
@@ -1036,27 +1030,54 @@ Standard_Boolean TIGLViewerWidget::convertToPlane(Standard_Integer Xs,
 
 void TIGLViewerWidget::drawRubberBand( const QPoint origin, const QPoint position )
 {
-    if ( myRubberBand ) {
-        redraw();
-        hideRubberBand();
-        myRubberBand->setGeometry( QRect( origin, position ).normalized() );
-        showRubberBand();
-    }
-}
+    if ( !myLayer.IsNull() && !myView.IsNull() ) {
 
+        double left   = origin.x();
+        double right  = position.x();
+        double top    = origin.y();
+        double bottom = position.y();
 
-void TIGLViewerWidget::showRubberBand( void )
-{
-    if ( myRubberBand ) {
-        myRubberBand->show();
+        int witdh, height;
+        myView->Window()->Size(witdh, height);
+        
+        myLayer->Clear(); 
+        // The -1 is a hack from the opencascade forums to avoid clipping
+        // of the coordinates. This way it behaves identically to opengl
+        myLayer->SetOrtho(0, witdh, height, 0, (Aspect_TypeOfConstraint) -1);
+        
+        myLayer->Begin();
+        myLayer->SetTransparency(1.0);
+        myLayer->SetLineAttributes(Aspect_TOL_DOT, 1.);
+
+        // Draw black-white dotted, imitate a shadowy look
+        // This makes it possible to draw even on white or
+        // black backgrounds
+        myLayer->SetColor(Quantity_NOC_WHITE);
+        myLayer->BeginPolyline();
+        myLayer->AddVertex(left,  top);
+        myLayer->AddVertex(right, top);
+        myLayer->AddVertex(right, bottom);
+        myLayer->AddVertex(left,  bottom);
+        myLayer->AddVertex(left,  top);
+        myLayer->ClosePrimitive();
+
+        myLayer->SetColor(Quantity_NOC_BLACK);
+        myLayer->BeginPolyline();
+        myLayer->AddVertex(left+1,  top+1);
+        myLayer->AddVertex(right+1, top+1);
+        myLayer->AddVertex(right+1, bottom+1);
+        myLayer->AddVertex(left+1,  bottom+1);
+        myLayer->AddVertex(left+1,  top+1);
+        myLayer->ClosePrimitive();
+        myLayer->End();
     }
 }
 
 
 void TIGLViewerWidget::hideRubberBand( void )
 {
-    if ( myRubberBand ) {
-        myRubberBand->hide();
+    if (!myLayer.IsNull() ) {
+        myLayer->Clear();
     }
 }
 

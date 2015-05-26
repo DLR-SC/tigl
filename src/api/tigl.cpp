@@ -46,6 +46,7 @@
 #include "CTiglExportStl.h"
 #include "CTiglExportVtk.h"
 #include "CTiglExportCollada.h"
+#include "CTiglExportBrep.h"
 #include "CTiglLogging.h"
 #include "CCPACSFuselageSection.h"
 #include "CCPACSFuselageSectionElement.h"
@@ -3626,10 +3627,10 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportIGES(TiglCPACSConfigurationHandle cp
     try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
-        tigl::CTiglExportIges exporter(config);
-        std::string filename = filenamePtr;
-        exporter.ExportIGES(filename);
-        return TIGL_SUCCESS;
+        tigl::CTiglExportIges exporter;
+        exporter.AddConfiguration(config);
+        bool ret = exporter.Write(filenamePtr);
+        return ret ? TIGL_SUCCESS : TIGL_WRITE_FAILED;
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what() << std::endl;
@@ -3658,10 +3659,10 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportFusedWingFuselageIGES(TiglCPACSConfi
     try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
-        tigl::CTiglExportIges exporter(config);
-        std::string filename = filenamePtr;
-        exporter.ExportFusedIGES(filename);
-        return TIGL_SUCCESS;
+        tigl::CTiglExportIges exporter;
+        exporter.AddFusedConfiguration(config);
+        bool ret = exporter.Write(filenamePtr);
+        return ret ? TIGL_SUCCESS : TIGL_WRITE_FAILED;
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what() << std::endl;
@@ -3689,10 +3690,10 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportSTEP(TiglCPACSConfigurationHandle cp
     try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
-        tigl::CTiglExportStep exporter(config);
-        std::string filename = filenamePtr;
-        exporter.ExportStep(filename);
-        return TIGL_SUCCESS;
+        tigl::CTiglExportStep exporter;
+        exporter.AddConfiguration(config);
+        bool ret = exporter.Write(filenamePtr);
+        return ret ? TIGL_SUCCESS : TIGL_WRITE_FAILED;
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what() << std::endl;
@@ -3719,10 +3720,10 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportFusedSTEP(TiglCPACSConfigurationHand
     try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
-        tigl::CTiglExportStep exporter(config);
-        std::string filename = filenamePtr;
-        exporter.ExportFusedStep(filename);
-        return TIGL_SUCCESS;
+        tigl::CTiglExportStep exporter;
+        exporter.AddFusedConfiguration(config);
+        bool ret = exporter.Write(filenamePtr);
+        return ret ? TIGL_SUCCESS : TIGL_WRITE_FAILED;
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what() << std::endl;
@@ -3756,10 +3757,12 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedWingSTL(TiglCPACSConfiguration
     try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
-        tigl::CTiglExportStl exporter(config);
-        std::string filename = filenamePtr;
-        exporter.ExportMeshedWingSTL(wingIndex, filename, deflection);
-        return TIGL_SUCCESS;
+        tigl::CCPACSWing& wing = config.GetWing(wingIndex);
+        PNamedShape loft = wing.GetLoft();
+        
+        tigl::CTiglExportStl exporter;
+        exporter.AddShape(loft, deflection);
+        return exporter.Write(filenamePtr);
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what() << std::endl;
@@ -3794,13 +3797,14 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedWingSTLByUID(TiglCPACSConfigur
     try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
-        tigl::CTiglExportStl exporter(config);
-        std::string filename = filenamePtr;
         for (int iWing = 1; iWing <= config.GetWingCount(); ++iWing) {
             tigl::CCPACSWing& wing = config.GetWing(iWing);
             if (wing.GetUID() == wingUID) {
-                exporter.ExportMeshedWingSTL(iWing, filename, deflection);
-                return TIGL_SUCCESS;
+                PNamedShape loft = wing.GetLoft();
+                
+                tigl::CTiglExportStl exporter;
+                exporter.AddShape(loft, deflection);
+                return exporter.Write(filenamePtr);
             }
         }
         
@@ -3840,10 +3844,12 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedFuselageSTL(TiglCPACSConfigura
     try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
-        tigl::CTiglExportStl exporter(config);
-        std::string filename = filenamePtr;
-        exporter.ExportMeshedFuselageSTL(fuselageIndex, filename, deflection);
-        return TIGL_SUCCESS;
+        tigl::CCPACSFuselage& fuselage = config.GetFuselage(fuselageIndex);
+        PNamedShape loft = fuselage.GetLoft();
+        
+        tigl::CTiglExportStl exporter;
+        exporter.AddShape(loft, deflection);
+        return exporter.Write(filenamePtr);
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what() << std::endl;
@@ -3879,14 +3885,15 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedFuselageSTLByUID(TiglCPACSConf
     try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
-        tigl::CTiglExportStl exporter(config);
-        std::string filename = filenamePtr;
         
         for (int ifusel = 1; ifusel <= config.GetFuselageCount(); ++ifusel) {
             tigl::CCPACSFuselage& fuselage = config.GetFuselage(ifusel);
             if (fuselage.GetUID() == fuselageUID) {
-                exporter.ExportMeshedFuselageSTL(ifusel, filename, deflection);
-                return TIGL_SUCCESS;
+                PNamedShape loft = fuselage.GetLoft();
+                
+                tigl::CTiglExportStl exporter;
+                exporter.AddShape(loft, deflection);
+                return exporter.Write(filenamePtr);
             }
         }
         
@@ -3920,10 +3927,9 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedGeometrySTL(TiglCPACSConfigura
     try {
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
-        tigl::CTiglExportStl exporter(config);
-        std::string filename = filenamePtr;
-        exporter.ExportMeshedGeometrySTL(filename, deflection);
-        return TIGL_SUCCESS;
+        tigl::CTiglExportStl exporter;
+        exporter.AddConfiguration(config, deflection);
+        return exporter.Write(filenamePtr);
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what() << std::endl;
@@ -4240,7 +4246,9 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportFuselageColladaByUID(const TiglCPACS
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSFuselage& fuselage = config.GetFuselage(fuselageUID);
-        return tigl::CTiglExportCollada::write(fuselage.GetLoft(), filenamePtr, deflection);
+        tigl::CTiglExportCollada colladaWriter;
+        colladaWriter.AddShape(fuselage.GetLoft(), deflection);
+        return colladaWriter.Write(filenamePtr);
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what() << std::endl;
@@ -4273,7 +4281,9 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportWingColladaByUID(const TiglCPACSConf
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSWing& wing = config.GetWing(wingUID);
-        return tigl::CTiglExportCollada::write(wing.GetLoft(), filenamePtr, deflection);
+        tigl::CTiglExportCollada colladaWriter;
+        colladaWriter.AddShape(wing.GetLoft(), deflection);
+        return colladaWriter.Write(filenamePtr);
     }
     catch (std::exception& ex) {
         LOG(ERROR) << ex.what() << std::endl;
@@ -4321,7 +4331,35 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglExportMeshedGeometryVTKSimple(const TiglCP
     }
 }
 
+TIGL_COMMON_EXPORT TiglReturnCode tiglExportFusedBREP(TiglCPACSConfigurationHandle cpacsHandle, const char* filename)
+{
+    if (filename == 0) {
+        LOG(ERROR) << "Error: Null pointer argument for filename";
+        LOG(ERROR) << "in function call to tiglExportFusedBREP." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
 
+    try {
+        tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+        tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+        tigl::CTiglExportBrep exporter;
+        exporter.AddFusedConfiguration(config);
+        bool ret = exporter.Write(filename);
+        return ret == true? TIGL_SUCCESS : TIGL_WRITE_FAILED;
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return ex.getCode();
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglExportFusedBREP!" << std::endl;
+        return TIGL_ERROR;
+    }
+}
 
 
 /*****************************************************************************************************/

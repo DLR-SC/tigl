@@ -57,7 +57,7 @@
 #include <iostream>
 #include <limits>
 #include <sstream>
-
+#include <algorithm>
 
 namespace tigl
 {

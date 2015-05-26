@@ -19,14 +19,15 @@
 * limitations under the License.
 */
 
-#include <QtGui/QtGui>
-#include <QtGui/QFileDialog>
+#include <QtGui>
+#include <QFileDialog>
 #include <QtCore/QTextStream>
 #include <QtCore/QFileInfo>
 #include <QtCore/QString>
 #include <QShortcut>
 #include <QTimer>
 #include <QProcessEnvironment>
+#include <QMessageBox>
 
 #include <BRepBuilderAPI_MakeVertex.hxx>
 #include <TopoDS_Vertex.hxx>
@@ -74,7 +75,6 @@ void ShowOrigin ( Handle_AIS_InteractiveContext theContext )
     AddVertex ( 0.0, 0.0, 0.0, theContext);
 }
 
-#ifdef HAVE_TIXI_SETPRINTMSG
 void TixiMessageHandler(MessageType type, const char *message, ...)
 {
     va_list varArgs;
@@ -93,7 +93,6 @@ void TixiMessageHandler(MessageType type, const char *message, ...)
         LOG(INFO) << str.toStdString();
     }
 }
-#endif
 
 void TIGLViewerWindow::contextMenuEvent(QContextMenuEvent *event)
  {
@@ -213,7 +212,7 @@ TIGLViewerWindow::TIGLViewerWindow()
 
     statusBar()->showMessage(tr("A context menu is available by right-clicking"));
 
-    setWindowTitle(tr(PARAMS.windowTitle.toAscii().data()));
+    setWindowTitle(tr(PARAMS.windowTitle.toLatin1().data()));
     setMinimumSize(160, 160);
 }
 

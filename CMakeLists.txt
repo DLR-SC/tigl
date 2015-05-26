@@ -12,7 +12,7 @@ endif()
 project (TIGL)
 set(TIGL_VERSION_MAJOR 2)
 set(TIGL_VERSION_MINOR 1)
-set(TIGL_VERSION_PATCH 3)
+set(TIGL_VERSION_PATCH 4)
 set(TIGL_VERSION "${TIGL_VERSION_MAJOR}.${TIGL_VERSION_MINOR}.${TIGL_VERSION_PATCH}")
 
 set(TIGL_ADD_INCLUDE_PATH "" CACHE PATH "Additional include path for package search")
@@ -85,13 +85,10 @@ endif(OCE_FOUND)
 # search TiXI
 set(TIXI_PATH "" CACHE PATH "TiXI installation prefix")
 set(CMAKE_PREFIX_PATH "${TIXI_PATH};${CMAKE_PREFIX_PATH}")
-find_package( TIXI 2.1.0 REQUIRED)
+find_package( TIXI 2.2.0 REQUIRED)
 get_target_property(TIXI_LIBRARY TIXI LOCATION)
 get_filename_component(TIXI_LIB_PATH ${TIXI_LIBRARY} PATH)
 
-if(TIXI_VERSION VERSION_GREATER 2.1.0)
-  set(HAVE_TIXI_SETPRINTMSG TRUE)
-endif()
 
 find_package( PythonInterp )
 

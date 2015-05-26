@@ -151,37 +151,12 @@ void CCPACSWing::Invalidate(void)
 void CCPACSWing::Cleanup(void)
 {
     name = "";
-    transformation.SetIdentity();
-    translation = CTiglPoint(0.0, 0.0, 0.0);
-    scaling     = CTiglPoint(1.0, 1.0, 1.0);
-    rotation    = CTiglPoint(0.0, 0.0, 0.0);
+    transformation.reset();
 
     // Calls ITiglGeometricComponent interface Reset to delete e.g. all childs.
     Reset();
 
     Invalidate();
-}
-
-// Builds transformation matrix for the wing
-void CCPACSWing::BuildMatrix(void)
-{
-    transformation.SetIdentity();
-
-    // Step 1: scale the wing around the orign
-    transformation.AddScaling(scaling.x, scaling.y, scaling.z);
-
-    // Step 2: rotate the wing
-    // Step 2a: rotate the wing around z (yaw   += right tip forward)
-    transformation.AddRotationZ(rotation.z);
-    // Step 2b: rotate the wing around y (pitch += nose up)
-    transformation.AddRotationY(rotation.y);
-    // Step 2c: rotate the wing around x (roll  += right tip up)
-    transformation.AddRotationX(rotation.x);
-
-    // Step 3: translate the rotated wing into its position
-    transformation.AddTranslation(translation.x, translation.y, translation.z);
-
-    backTransformation = transformation.Inverted();
 }
 
 void CCPACSWing::ConnectGuideCurveSegments(void)
@@ -207,7 +182,7 @@ void CCPACSWing::Update(void)
         return;
     }
 
-    BuildMatrix();
+    transformation.updateMatrix();
     invalidated = false;
     rebuildFusedSegments = true;    // forces a rebuild of all segments with regards to the updated translation
     rebuildShells = true;
@@ -247,47 +222,8 @@ void CCPACSWing::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& win
         SetParentUID(ptrParentUID);
     }
 
-
-    // Get subelement "/transformation/translation"
-    tempString  = wingXPath + "/transformation/translation";
-    elementPath = const_cast<char*>(tempString.c_str());
-    if (tixiCheckElement(tixiHandle, elementPath) == SUCCESS) {
-        if (tixiGetPoint(tixiHandle, elementPath, &(translation.x), &(translation.y), &(translation.z)) != SUCCESS) {
-            throw CTiglError("Error: XML error while reading <translation/> in CCPACSWing::ReadCPACS", TIGL_XML_ERROR);
-        }
-    }
-    
-    // Get translation type (attribute of "/transformation/translation")
-    if (tixiCheckAttribute(tixiHandle, elementPath, "refType") == SUCCESS) {
-        char * refTypeVal = NULL;
-        if (tixiGetTextAttribute(tixiHandle, elementPath, "refType", &refTypeVal) == SUCCESS) {
-            std::string refTypeStr(refTypeVal);
-            if (refTypeStr == "absGlobal") {
-                translationType = ABS_GLOBAL;
-            }
-            else if (refTypeStr == "absLocal") {
-                translationType = ABS_LOCAL;
-            }
-        }
-    }
-
-    // Get subelement "/transformation/scaling"
-    tempString  = wingXPath + "/transformation/scaling";
-    elementPath = const_cast<char*>(tempString.c_str());
-    if (tixiCheckElement(tixiHandle, elementPath) == SUCCESS) {
-        if (tixiGetPoint(tixiHandle, elementPath, &(scaling.x), &(scaling.y), &(scaling.z)) != SUCCESS) {
-            throw CTiglError("Error: XML error while reading <scaling/> in CCPACSWing::ReadCPACS", TIGL_XML_ERROR);
-        }
-    }
-
-    // Get subelement "/transformation/rotation"
-    tempString  = wingXPath + "/transformation/rotation";
-    elementPath = const_cast<char*>(tempString.c_str());
-    if (tixiCheckElement(tixiHandle, elementPath) == SUCCESS) {
-        if (tixiGetPoint(tixiHandle, elementPath, &(rotation.x), &(rotation.y), &(rotation.z)) != SUCCESS) {
-            throw CTiglError("Error: XML error while reading <rotation/> in CCPACSWing::ReadCPACS", TIGL_XML_ERROR);
-        }
-    }
+    // Get Transformation
+    transformation.ReadCPACS(tixiHandle, wingXPath);
 
     // Get subelement "sections"
     sections.ReadCPACS(tixiHandle, wingXPath);
@@ -490,8 +426,7 @@ void CCPACSWing::BuildUpperLowerShells()
 // Gets the wing transformation (original wing implementation, but see GetTransformation)
 CTiglTransformation CCPACSWing::GetWingTransformation(void)
 {
-    Update();   // create new transformation matrix if scaling, rotation or translation was changed
-    return transformation;
+    return transformation.getTransformationMatrix();
 }
 
 // Get the positioning transformation for a given section-uid

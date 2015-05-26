@@ -88,4 +88,10 @@ TIGL_EXPORT int GetComponentHashCode(tigl::ITiglGeometricComponent&);
 // Creates an Edge from the given Points by B-Spline interpolation
 TIGL_EXPORT TopoDS_Edge EdgeSplineFromPoints(const std::vector<gp_Pnt>& points);
 
+// Returns true, if a path is relative
+TIGL_EXPORT bool IsPathRelative(const std::string&);
+
+// Returns true, if a file is readable
+TIGL_EXPORT bool IsFileReadable(const std::string& filename);
+
 #endif // TIGLCOMMONFUNCTIONS_H

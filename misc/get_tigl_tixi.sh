@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
+# Copyright (C) 2015 German Aerospace Center (DLR/SC)
 #
 # Created: 2013-01-17 Martin Siggel <martin.siggel@dlr.de>
 #
@@ -39,15 +39,11 @@ function printUsage {
     echo "Valid distributions:"
     echo "    SLE_11_SP1     Suse Linux Enterprise 11 SP1"
     echo "    SLE_11_SP2     Suse Linux Enterprise 11 SP2"
-    echo "    openSUSE_12.1  openSUSE 12.1"
-    echo "    openSUSE_12.2  openSUSE 12.2"
     echo "    openSUSE_13.1  openSUSE 13.1"
     echo "    ubuntu_12.04   Ubuntu 12.04"
-    echo "    ubuntu_12.10   Ubuntu 12.10"
-    echo "    ubuntu_13.04   Ubuntu 13.04"
     echo "    ubuntu_13.10   Ubuntu 13.10"
     echo "    ubuntu_14.04   Ubuntu 14.04"
-    echo "    fedora_17      Fedora 17"
+    echo "    fedora_20      Fedora 20"
     echo "    rhel_5         Red Hat Enterprise Linux 5"
     echo "    rhel_6         Red Hat Enterprise Linux 6"
     echo "    centos_6       CentOS 6"
@@ -98,24 +94,6 @@ function checkArguments {
             PACK_ARCH=x86_64
             LIBDIR=lib64
 	fi
-    elif [[ $tmp_dist == openSUSE_12.1 ]]; then
-    	DIST=openSUSE_12.1
-	PACK_TYPE=rpm
-	if [[  $tmp_arch == i386 ]]; then
-	    PACK_ARCH=i586
-        else
-            PACK_ARCH=x86_64
-            LIBDIR=lib64
-	fi
-    elif [[ $tmp_dist == openSUSE_12.2 ]]; then
-    	DIST=openSUSE_12.2
-	PACK_TYPE=rpm
-	if [[  $tmp_arch == i386 ]]; then
-	    PACK_ARCH=i586
-        else
-            PACK_ARCH=x86_64
-            LIBDIR=lib64
-	fi
     elif [[ $tmp_dist == openSUSE_13.1 ]]; then
         DIST=openSUSE_13.1
         PACK_TYPE=rpm
@@ -152,8 +130,8 @@ function checkArguments {
             PACK_ARCH=x86_64
             LIBDIR=lib64
 	fi
-   elif [[ $tmp_dist == fedora_17 ]]; then
-    	DIST=Fedora_17
+   elif [[ $tmp_dist == fedora_20 ]]; then
+    	DIST=Fedora_20
 	PACK_TYPE=rpm
 	if [[  $tmp_arch == i386 ]]; then
 	    PACK_ARCH=i686
@@ -163,22 +141,6 @@ function checkArguments {
 	fi
     elif [[ $tmp_dist == ubuntu_12.04 ]]; then
     	DIST=xUbuntu_12.04
-	PACK_TYPE=deb
-	if [[  $tmp_arch == i386 ]]; then
-	    PACK_ARCH=i386
-        else
-            PACK_ARCH=amd64
-	fi
-    elif [[ $tmp_dist == ubuntu_12.10 ]]; then
-    	DIST=xUbuntu_12.10
-	PACK_TYPE=deb
-	if [[  $tmp_arch == i386 ]]; then
-	    PACK_ARCH=i386
-        else
-            PACK_ARCH=amd64
-	fi
-    elif [[ $tmp_dist == ubuntu_13.04 ]]; then
-    	DIST=xUbuntu_13.04
 	PACK_TYPE=deb
 	if [[  $tmp_arch == i386 ]]; then
 	    PACK_ARCH=i386
@@ -332,7 +294,6 @@ if [[ $DIST != RedHat_RHEL-5 ]]; then
   if [[ $PACK_TYPE == deb ]]; then
       echo 'export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$CURDIR/'$LIBDIR/$ARCH-linux-gnu/ >> tiglviewer.sh   
   fi
-  echo 'export CSF_GraphicShr=$CURDIR/'$LIBDIR/libTKOpenGl.so.7 >> tiglviewer.sh
   echo '$CURDIR/bin/TIGLViewer' >> tiglviewer.sh
   chmod +x tiglviewer.sh
 fi

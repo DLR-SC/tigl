@@ -104,9 +104,6 @@ public:
     // get the Transformation object
     TIGL_EXPORT CTiglTransformation GetTransformation(void);
 
-    // sets a Transformation object
-    TIGL_EXPORT void Translate(CTiglPoint trans);
-
     // Gets the surfade area of this wing
     TIGL_EXPORT double GetSurfaceArea();
 
@@ -135,12 +132,6 @@ protected:
 
     // Cleanup routine
     void Cleanup(void);
-
-    // Build transformation matrix for the fuselage
-    void BuildMatrix(void);
-
-    // Update internal fuselage data
-    void Update(void);
         
     // Adds all segments of this fuselage to one shape
     PNamedShape BuildLoft(void);
