@@ -18,6 +18,7 @@
 
 
 #include "test.h" 
+#include "tigl_config.h"
 #include "contrib/MakePatches.hxx" 
 #include "contrib/MakeLoops.hxx" 
 
@@ -44,6 +45,12 @@
 #include <ShapeFix_Wire.hxx>
 #include <ShapeFix_Shape.hxx>
 
+#ifdef TIGL_OCE_COONS_PATCHED
+#define COONS_FILLING_STYLE GeomFill_CoonsC2Style
+#else
+#define COONS_FILLING_STYLE GeomFill_CoonsStyle
+#endif
+
 /******************************************************************************/
 // test surface maker for single segment
 /******************************************************************************/
@@ -63,7 +70,7 @@ TEST(guideCurvePatches, segment)
     MakePatches SurfMaker(guides, profiles);
     Standard_Real tolConf = Precision::Confusion();
     Standard_Real tolPara = Precision::Confusion();
-    GeomFill_FillingStyle style = GeomFill_CoonsC2Style;
+    GeomFill_FillingStyle style = COONS_FILLING_STYLE;
     SurfMaker.Perform(tolConf, tolPara, style, Standard_True);
     TopoDS_Shape faces = SurfMaker.Patches();
     ASSERT_EQ(SurfMaker.GetStatus(), 0);
@@ -89,7 +96,7 @@ TEST(guideCurvePatches, simpleWing)
     MakePatches SurfMaker(guides, profiles);
     Standard_Real tolConf = Precision::Confusion();
     Standard_Real tolPara = Precision::Confusion();
-    GeomFill_FillingStyle style = GeomFill_CoonsC2Style;
+    GeomFill_FillingStyle style = COONS_FILLING_STYLE;
     SurfMaker.Perform(tolConf, tolPara, style, Standard_True);
     TopoDS_Shape faces = SurfMaker.Patches();
     ASSERT_EQ(SurfMaker.GetStatus(), 0);
@@ -115,7 +122,7 @@ TEST(guideCurvePatches, nacelle)
     MakePatches SurfMaker(guides, profiles);
     Standard_Real tolConf = Precision::Confusion();
     Standard_Real tolPara = Precision::Confusion();
-    GeomFill_FillingStyle style = GeomFill_CoonsC2Style;
+    GeomFill_FillingStyle style = COONS_FILLING_STYLE;
     SurfMaker.Perform(tolConf, tolPara, style, Standard_True);
     TopoDS_Shape faces = SurfMaker.Patches();
     ASSERT_EQ(SurfMaker.GetStatus(), 0);
@@ -143,7 +150,7 @@ TEST(guideCurvePatches, nacelleClosedProfiles)
     MakePatches SurfMaker(guides, profiles);
     Standard_Real tolConf = Precision::Confusion();
     Standard_Real tolPara = Precision::Confusion();
-    GeomFill_FillingStyle style = GeomFill_CoonsC2Style;
+    GeomFill_FillingStyle style = COONS_FILLING_STYLE;
     SurfMaker.Perform(tolConf, tolPara, style, Standard_True);
     TopoDS_Shape faces = SurfMaker.Patches();
     ASSERT_EQ(SurfMaker.GetStatus(), 0);
@@ -171,7 +178,7 @@ TEST(guideCurvePatches, nacelleInverted)
     MakePatches SurfMaker(guides, profiles);
     Standard_Real tolConf = Precision::Confusion();
     Standard_Real tolPara = Precision::Confusion();
-    GeomFill_FillingStyle style = GeomFill_CoonsC2Style;
+    GeomFill_FillingStyle style = COONS_FILLING_STYLE;
     SurfMaker.Perform(tolConf, tolPara, style, Standard_True);
     TopoDS_Shape faces = SurfMaker.Patches();
     ASSERT_EQ(SurfMaker.GetStatus(), 0);
