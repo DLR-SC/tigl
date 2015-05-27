@@ -62,6 +62,7 @@ private:
     std::string uID;
     PNamedShape loft;
     CCPACSWingComponentSegment* _segment;
+    // @todo: hingeline not freed
     CTiglControlSurfaceHingeLine* _hingeLine;
 
     gp_Pnt s1;

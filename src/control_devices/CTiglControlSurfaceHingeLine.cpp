@@ -28,6 +28,9 @@
 namespace tigl
 {
 
+// @todo: All work is done in constructor
+// this is not correct. in particalar the wing transformation is not completely known at
+// this point. we should not call any getPoint functions at this stage
 CTiglControlSurfaceHingeLine::CTiglControlSurfaceHingeLine(CCPACSControlSurfaceDeviceOuterShape outerShape, CCPACSControlSurfaceDevicePath path,
                                                            CCPACSWingComponentSegment* segment)
 {
