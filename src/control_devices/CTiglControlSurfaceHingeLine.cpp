@@ -55,11 +55,8 @@ CTiglControlSurfaceHingeLine::CTiglControlSurfaceHingeLine(CCPACSControlSurfaceD
             hingeEta = (borderEtaTE + borderEtaLE)/2;
         }
         else {
-            double m = ( borders[borderCounter].getXsiLE() - 1 ) /( borderEtaLE - borderEtaTE );
-            double x = borderEtaLE;
-            double y = 1;
-            double b = - ( ( m * x) / (y));
-            hingeEta = ( y - b ) / m;
+            double m = ( borderEtaLE - borderEtaTE )/(borders[borderCounter].getXsiLE() - borders[borderCounter].getXsiTE());
+            hingeEta = m * (hingeXsi - borders[borderCounter].getXsiLE()) + borderEtaLE;
         }
 
         double eta = 0.,xsi = 0.;
