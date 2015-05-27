@@ -38,23 +38,20 @@ namespace tigl
 
 class CCPACSControlSurfaceHingeTranslation
 {
-
-private:
-
-    double x;
-    double y;
-    double z;
-
-
 public:
     TIGL_EXPORT CCPACSControlSurfaceHingeTranslation();
 
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle,
-            const std::string & HingeTranslationXPath);
+                               const std::string & HingeTranslationXPath);
 
     TIGL_EXPORT double getX();
     TIGL_EXPORT double getY();
     TIGL_EXPORT double getZ();
+
+private:
+    double x;
+    double y;
+    double z;
 
 };
 

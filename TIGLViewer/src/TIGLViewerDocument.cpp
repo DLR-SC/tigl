@@ -823,8 +823,7 @@ void TIGLViewerDocument::drawWingFlaps()
 {
     QStringList wings;
     tigl::CCPACSConfiguration& config = GetConfiguration();
-    for (int i = 1; i <= config.GetWingCount(); i++)
-    {
+    for (int i = 1; i <= config.GetWingCount(); i++) {
         tigl::CCPACSWing& wing = config.GetWing(i);
         std::string name = wing.GetUID();
         if (name == "") {
@@ -836,14 +835,13 @@ void TIGLViewerDocument::drawWingFlaps()
     TIGLViewerSelectWingAndFlapStatusDialog dialog(0,m_cpacsHandle, this);
     int dialogValue = dialog.exec(wings);
     if ( dialogValue == 0 ) {
-        for ( int i = 1; i <= GetConfiguration().GetWingCount(); i++ )
-        {
+        for ( int i = 1; i <= GetConfiguration().GetWingCount(); i++ ) {
             GetConfiguration().GetWing(i).ResetWingShape();
         }
         app->getScene()->deleteAllObjects();
         return;
-    } else if ( dialog.getSelectedWing() == "" )
-    {
+    }
+    else if ( dialog.getSelectedWing() == "" ) {
         app->getScene()->deleteAllObjects();
         return;
     }

@@ -15,10 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * @file
- * @brief  Implementation of CPACS ...  handling routines.
- */
 
 #include <iostream>
 #include <sstream>
@@ -37,7 +33,7 @@ CCPACSControlSurfaces::CCPACSControlSurfaces(CCPACSWingComponentSegment* cs)
 
 // Read CPACS segment elements
 void CCPACSControlSurfaces::ReadCPACS(TixiDocumentHandle tixiHandle,
-        const std::string& segmentXPath)
+                                      const std::string& segmentXPath)
 {
     char* elementPath;
     std::string tempString;

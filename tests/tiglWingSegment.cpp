@@ -797,8 +797,9 @@ TEST_F(WingSegmentSimple, getIsOnTop_performance)
     unsigned int nruns = 100;
     clock_t start = clock();
     bool isOnTop = true;
-    for(unsigned int i = 0; i < nruns; ++i)
+    for (unsigned int i = 0; i < nruns; ++i) {
         isOnTop = isOnTop && segment2.GetIsOnTop(gp_Pnt(x,y,z));
+    }
     clock_t stop = clock();
 
     cout << "Runtime getIsOnTop [us]: " << double(stop-start)/double(CLOCKS_PER_SEC)/double(nruns)*1.e6 << endl;

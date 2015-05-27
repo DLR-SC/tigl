@@ -27,8 +27,7 @@
 
 TEST(TiglControlSurfaceTransformation, localTransformation)
 {
-    for ( int i = 0; i < 5; i++ )
-    {
+    for ( int i = 0; i < 5; i++ ) {
         gp_XYZ* xyz1;
         gp_XYZ* xyz2;
         gp_XYZ* xyz3;
@@ -40,25 +39,29 @@ TEST(TiglControlSurfaceTransformation, localTransformation)
             xyz2 = new gp_XYZ(2,2,2);
             xyz3 = new gp_XYZ(1,2,4);
             xyz4 = new gp_XYZ(3,7,1);
-        } else if ( i == 1) {
+        }
+        else if ( i == 1) {
             // testing mixed negative and positive values
             xyz1 = new gp_XYZ(-1,-1,-1);
             xyz2 = new gp_XYZ(-2,-2,-2);
             xyz3 = new gp_XYZ(1,2,4);
             xyz4 = new gp_XYZ(3,7,1);
-        } else if ( i == 2) {
+        }
+        else if ( i == 2) {
             // testing with no Translation
             xyz1 = new gp_XYZ(1,1,0);
             xyz2 = new gp_XYZ(1,2,0);
             xyz3 = new gp_XYZ(1,1,0);
             xyz4 = new gp_XYZ(1,2,0);
-        } else if ( i == 3) {
+        }
+        else if ( i == 3) {
             // testing with only negative calues
             xyz1 = new gp_XYZ(-1,-1,0);
             xyz2 = new gp_XYZ(-1,-2,0);
             xyz3 = new gp_XYZ(-1,-1,0);
             xyz4 = new gp_XYZ(-1,-2,0);
-        } else if ( i == 4) {
+        }
+        else if ( i == 4) {
             // testing with big values
             xyz1 = new gp_XYZ(818,1,0);
             xyz2 = new gp_XYZ(1,2048,0);
@@ -110,24 +113,26 @@ TEST(TiglControlSurfaceTransformation, rotAlphaTransformation)
     gp_Pnt p2(1,2,1);
     gp_Pnt p1s(4,1,1);
     gp_Pnt p2s(5,2,1);
-    /* rotate by 45° */
 
-    for ( int i = 0; i < 3; i++ )
-    {
+    for ( int i = 0; i <= 3; i++ ) {
         float rotAlpha;
-        if ( i == 0 ) rotAlpha = 45;
-        if ( i == 1 ) rotAlpha = 0;
-        if ( i == 2 ) rotAlpha = 90;
-        if ( i == 3 ) rotAlpha = -45;
+        if ( i == 0 ) {
+            rotAlpha = 45;
+        }
+        else if ( i == 1 ) {
+            rotAlpha = 0;
+        }
+        else if ( i == 2 ) {
+            rotAlpha = 90;
+        }
+        else if ( i == 3 ) {
+            rotAlpha = -45;
+        }
 
         tigl::CTiglControlSurfaceTransformation transformation(p1,p2,p1s,p2s,rotAlpha);
         gp_Trsf t = transformation.getRotAlphaTransformation();
         gp_Quaternion quad = t.GetRotation();
-        /* check if rotation actually is 45° = Pi / 4 */
-        if ( i== 0 ) ASSERT_NEAR(quad.GetRotationAngle(),M_PI/4,1e-8);
-        if ( i== 1 ) ASSERT_NEAR(quad.GetRotationAngle(),0,1e-8);
-        if ( i== 2 ) ASSERT_NEAR(quad.GetRotationAngle(),M_PI/2,1e-8);
-        if ( i== 3 ) ASSERT_NEAR(quad.GetRotationAngle(),-M_PI/4,1e-8);
+        ASSERT_NEAR(quad.GetRotationAngle(),fabs(rotAlpha/180.*M_PI),1e-8);
     }
 }
 
@@ -190,7 +195,9 @@ TEST(TiglControlSurfaceTransformation, translationTransformation)
     ASSERT_NEAR(translationPart.Z(),1,1e-6);
 }
 
-TEST(TiglControlSurfaceTransformation, scaleTransformation)
+// MS: The test is disabled, since unisotropic scaling is not supported
+// by the gp_Trsf class.
+TEST(TiglControlSurfaceTransformation, DISABLED_scaleTransformation)
 {
     gp_Pnt p1(1,3,1);
     gp_Pnt p2(1,2,112);

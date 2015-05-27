@@ -15,10 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * @file
- * @brief  not implemented yet...
- */
 
 #ifndef CCPACSControlSurfaceDeviceWingCutOutProfile_H
 #define CCPACSControlSurfaceDeviceWingCutOutProfile_H
@@ -35,22 +31,19 @@ namespace tigl
 
 class CCPACSControlSurfaceDeviceWingCutOutProfile
 {
-
-private:
-
-    double eta;
-    double rotZ;
-    std::string profileUID;
-
 public:
     TIGL_EXPORT CCPACSControlSurfaceDeviceWingCutOutProfile();
 
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle,
-            const std::string & controlSurfaceDeviceWingCutOutProfileXPath);
+                               const std::string & controlSurfaceDeviceWingCutOutProfileXPath);
 
     TIGL_EXPORT double getEta();
     TIGL_EXPORT double getRotZ();
 
+private:
+    double eta;
+    double rotZ;
+    std::string profileUID;
 };
 
 } // end namespace tigl

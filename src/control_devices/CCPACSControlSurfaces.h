@@ -39,19 +39,17 @@ class CCPACSWingComponentSegment;
 
 class CCPACSControlSurfaces
 {
-
-private:
-    CCPACSControlSurfaceDevicesPtr controlSurfaceDevices;
-    CCPACSWingComponentSegment* _componentSegment;
-
 public:
     TIGL_EXPORT CCPACSControlSurfaces(CCPACSWingComponentSegment*);
 
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle,
-            const std::string & segmentXPath);
+                               const std::string & segmentXPath);
 
     TIGL_EXPORT CCPACSControlSurfaceDevices* getControlSurfaceDevices();
 
+private:
+    CCPACSControlSurfaceDevicesPtr controlSurfaceDevices;
+    CCPACSWingComponentSegment* _componentSegment;
 };
 
 typedef CSharedPtr<CCPACSControlSurfaces> CCPACSControlSurfacesPtr;

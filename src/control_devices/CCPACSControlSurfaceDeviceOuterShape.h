@@ -15,10 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * @file
- * @brief  Implementation of ..
- */
 
 #ifndef CCPACSCONTROLSURFACEDEVICEOUTERSHAPE_H
 #define CCPACSCONTROLSURFACEDEVICEOUTERSHAPE_H
@@ -39,20 +35,20 @@ namespace tigl
 
 class CCPACSControlSurfaceDeviceOuterShape
 {
+public:
+    TIGL_EXPORT CCPACSControlSurfaceDeviceOuterShape();
+
+    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle,
+                               const std::string & outerShapeXPath,
+                               TiglControlSurfaceType type = TRAILING_EDGE_DEVICE);
+
+    TIGL_EXPORT const CCPACSControlSurfaceDeviceOuterShapeBorder& getInnerBorder();
+    TIGL_EXPORT const CCPACSControlSurfaceDeviceOuterShapeBorder& getOuterBorder();
 
 private:
     // intermediateAirfoils
     CCPACSControlSurfaceDeviceOuterShapeBorder outerBorder;
     CCPACSControlSurfaceDeviceOuterShapeBorder innerBorder;
-
-public:
-    TIGL_EXPORT CCPACSControlSurfaceDeviceOuterShape();
-
-    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle,
-            const std::string & outerShapeXPath, TiglControlSurfaceType type = TRAILING_EDGE_DEVICE);
-
-    TIGL_EXPORT const CCPACSControlSurfaceDeviceOuterShapeBorder& getInnerBorder();
-    TIGL_EXPORT const CCPACSControlSurfaceDeviceOuterShapeBorder& getOuterBorder();
 
 };
 

@@ -27,8 +27,9 @@
 #include "CCPACSControlSurfaceDevice.h"
 #include "TIGLViewerDocument.h"
 
-namespace Ui {
-class TIGLViewerSelectWingAndFlapStatusDialog;
+namespace Ui
+{
+    class TIGLViewerSelectWingAndFlapStatusDialog;
 }
 
 static std::map< std::string, double> _controlSurfaceDevices;

@@ -32,21 +32,13 @@
 #include "CSharedPtr.h"
 #include "tigl_internal.h"
 
-namespace tigl {
+namespace tigl
+{
 
 class CCPACSWingComponentSegment;
 
 class CCPACSControlSurfaceDevices
 {
-
-private:
-
-    typedef std::vector<CCPACSControlSurfaceDevice*> controlSurfaceDeviceContainer;
-    controlSurfaceDeviceContainer controlSurfaceDevices;
-    CCPACSWingComponentSegment* _componentSegment;
-
-    void Cleanup();
-
 public:
 
     TIGL_EXPORT CCPACSControlSurfaceDevices(CCPACSWingComponentSegment*);
@@ -57,6 +49,14 @@ public:
     TIGL_EXPORT int getControlSurfaceDeviceCount();
 
     TIGL_EXPORT ~CCPACSControlSurfaceDevices();
+
+private:
+
+    typedef std::vector<CCPACSControlSurfaceDevice*> controlSurfaceDeviceContainer;
+    controlSurfaceDeviceContainer controlSurfaceDevices;
+    CCPACSWingComponentSegment* _componentSegment;
+
+    void Cleanup();
 };
 
 typedef CSharedPtr<CCPACSControlSurfaceDevices> CCPACSControlSurfaceDevicesPtr;

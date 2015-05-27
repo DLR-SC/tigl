@@ -15,11 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * @file
- * @brief  Implementation of CPACS ...  handling routines.
- */
-
 
 #include "CTiglControlSurfaceHingeLine.h"
 #include "CCPACSWingComponentSegment.h"
@@ -31,6 +26,7 @@ namespace tigl
 // @todo: All work is done in constructor
 // this is not correct. in particalar the wing transformation is not completely known at
 // this point. we should not call any getPoint functions at this stage
+// @todo: check for null pointer
 CTiglControlSurfaceHingeLine::CTiglControlSurfaceHingeLine(CCPACSControlSurfaceDeviceOuterShape outerShape, CCPACSControlSurfaceDevicePath path,
                                                            CCPACSWingComponentSegment* segment)
 {
@@ -39,8 +35,7 @@ CTiglControlSurfaceHingeLine::CTiglControlSurfaceHingeLine(CCPACSControlSurfaceD
     borders[0] = outerShape.getOuterBorder();
     borders[1] = outerShape.getInnerBorder();
 
-    for ( int borderCounter = 0; borderCounter < 2; borderCounter++ )
-    {
+    for ( int borderCounter = 0; borderCounter < 2; borderCounter++ ) {
         double hingeXsi;
         if (borderCounter == 0) {
             hingeXsi = path.getOuterHingePoint().getXsi();

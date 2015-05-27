@@ -15,10 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * @file
- * @brief  Implementation of CPACS ...  handling routines.
- */
 
 #include <iostream>
 #include <sstream>
@@ -72,7 +68,8 @@
 
 #define USE_ADVANCED_MODELING 0
 
-namespace tigl {
+namespace tigl
+{
 
 CCPACSControlSurfaceDevice::CCPACSControlSurfaceDevice(CCPACSWingComponentSegment* segment)
     : _segment(segment)
@@ -90,8 +87,7 @@ void CCPACSControlSurfaceDevice::ReadCPACS(TixiDocumentHandle tixiHandle, const 
     char* ptrName = NULL;
     tempString    = controlSurfaceDeviceXPath + "/outerShape";
     elementPath   = const_cast<char*>(tempString.c_str());
-    if (tixiGetTextElement(tixiHandle, elementPath, &ptrName) == SUCCESS)
-    {
+    if (tixiGetTextElement(tixiHandle, elementPath, &ptrName) == SUCCESS) {
         outerShape.ReadCPACS(tixiHandle, elementPath, type);
     }
 
@@ -253,7 +249,8 @@ TopoDS_Shape CCPACSControlSurfaceDevice::getCutOutShape()
              * This is just a Placeholder.
              */
             vec.Multiply(determineSpoilerThickness()*100);
-        } else {
+        }
+        else {
             vec.Multiply(determineCutOutPrismThickness()*2);
         }
 
@@ -323,8 +320,8 @@ double CCPACSControlSurfaceDevice::linearInterpolation(std::vector<double> list1
 }
 
 void CCPACSControlSurfaceDevice::getProjectedPoints(gp_Pnt point1, gp_Pnt point2, gp_Pnt point3, gp_Pnt point4,
-                                                  gp_Vec& projectedPoint1, gp_Vec& projectedPoint2, gp_Vec&
-                                                  projectedPoint3, gp_Vec& projectedPoint4 )
+                                                    gp_Vec& projectedPoint1, gp_Vec& projectedPoint2, gp_Vec&
+                                                    projectedPoint3, gp_Vec& projectedPoint4 )
 {
     // This Method Projects 4 Points on a given Surface.
     gp_Vec sv;
@@ -338,7 +335,8 @@ void CCPACSControlSurfaceDevice::getProjectedPoints(gp_Pnt point1, gp_Pnt point2
          */
         nvV.Multiply(determineSpoilerThickness());
         sv = gp_Vec(point1.XYZ()) - (nvV);
-    } else {
+    }
+    else {
         nvV.Multiply(determineCutOutPrismThickness());
         sv = gp_Vec(point1.XYZ()) - (nvV);
     }
@@ -427,9 +425,11 @@ std::string CCPACSControlSurfaceDevice::GetShortShapeName()
             std::stringstream shortName;
             if (_type == LEADING_EDGE_DEVICE) {
                 shortName << tmp << "LED" << j;
-            } else if(_type == TRAILING_EDGE_DEVICE) {
+            }
+            else if (_type == TRAILING_EDGE_DEVICE) {
                 shortName << tmp << "TED" << j;
-            } else if(_type == SPOILER) {
+            }
+            else if (_type == SPOILER) {
                 shortName << tmp << "SPO" << j;
             }
             return shortName.str();
@@ -459,7 +459,8 @@ gp_Pnt CCPACSControlSurfaceDevice::getLeadingEdgeShapeLeadingEdgePoint(bool isIn
         leadingPointEta = getOuterShape().getInnerBorder().getEtaLE();
         leadingPointXsi = getOuterShape().getInnerBorder().getXsiLE();
         relHeight = getOuterShape().getInnerBorder().getLeadingEdgeShape().getRelHeightLE();
-    } else {
+    }
+    else {
         leadingPointEta = getOuterShape().getOuterBorder().getEtaLE();
         leadingPointXsi = getOuterShape().getOuterBorder().getXsiLE();
         relHeight = getOuterShape().getOuterBorder().getLeadingEdgeShape().getRelHeightLE();
@@ -488,7 +489,8 @@ gp_Pnt CCPACSControlSurfaceDevice::getLeadingEdgeShapeLowerPoint(bool isInnerBor
         return _segment->GetPointDirection(getOuterShape().getInnerBorder().getEtaLE(),
                                            getOuterShape().getInnerBorder().getLeadingEdgeShape().getXsiLowerSkin(),
                                            controlSurfaceNormal.X(),controlSurfaceNormal.Y(),controlSurfaceNormal.Z(),false);
-    } else {
+    }
+    else {
         return _segment->GetPointDirection(getOuterShape().getOuterBorder().getEtaLE(),
                                            getOuterShape().getOuterBorder().getLeadingEdgeShape().getXsiLowerSkin(),
                                            controlSurfaceNormal.X(),controlSurfaceNormal.Y(),controlSurfaceNormal.Z(),false);
@@ -502,7 +504,8 @@ gp_Pnt CCPACSControlSurfaceDevice::getLeadingEdgeShapeUpperPoint(bool isInnerBor
         return _segment->GetPointDirection(getOuterShape().getInnerBorder().getEtaLE(),
                                            getOuterShape().getInnerBorder().getLeadingEdgeShape().getXsiUpperSkin(),
                                            controlSurfaceNormal.X(),controlSurfaceNormal.Y(),controlSurfaceNormal.Z(),true);
-    } else {
+    }
+    else {
         return _segment->GetPointDirection(getOuterShape().getOuterBorder().getEtaLE(),
                                            getOuterShape().getOuterBorder().getLeadingEdgeShape().getXsiUpperSkin(),
                                            controlSurfaceNormal.X(),controlSurfaceNormal.Y(),controlSurfaceNormal.Z(),true);
@@ -524,7 +527,8 @@ gp_Vec CCPACSControlSurfaceDevice::getLeadingEdgeShapeTangent(gp_Pnt leadingPoin
     if (!isInnerBorder) {
         eta = getOuterShape().getOuterBorder().getEtaLE();
         border = getOuterShape().getOuterBorder();
-    } else {
+    }
+    else {
         eta = getOuterShape().getInnerBorder().getEtaLE();
         border = getOuterShape().getInnerBorder();
     }
@@ -532,7 +536,8 @@ gp_Vec CCPACSControlSurfaceDevice::getLeadingEdgeShapeTangent(gp_Pnt leadingPoin
     if (!isUpper) {
         controlSurfaceNormal.Multiply(-1);
         xsi = getOuterShape().getOuterBorder().getLeadingEdgeShape().getXsiLowerSkin();
-    } else {
+    }
+    else {
         xsi = getOuterShape().getOuterBorder().getLeadingEdgeShape().getXsiUpperSkin();
     }
 
@@ -642,4 +647,5 @@ TopoDS_Wire CCPACSControlSurfaceDevice::buildLeadingEdgeShapeWire(bool isInnerBo
     wireMaker.Build();
     return wireMaker.Wire();
 }
+
 } // end namespace tigl

@@ -208,7 +208,7 @@ TEST(TiglPointTranslator, performance){
 
     clock_t start = clock();
 
-    for(int i = 0; i < nruns; ++i){
+    for (int i = 0; i < nruns; ++i) {
         trans.translate(p, &eta, &xsi) ;
         //just some dummy to prevent compiler optimization
         x = x + 1.0;

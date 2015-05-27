@@ -15,10 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * @file
- * @brief  Implementation of ..
- */
 
 #ifndef CTiglControlSurfaceHingeLine_H
 #define CTiglControlSurfaceHingeLine_H
@@ -38,11 +34,6 @@ class CCPACSWingComponentSegment;
 
 class CTiglControlSurfaceHingeLine
 {
-
-private:
-    gp_Pnt innerHingePoint;
-    gp_Pnt outerHingePoint;
-
 public:
     TIGL_EXPORT CTiglControlSurfaceHingeLine(CCPACSControlSurfaceDeviceOuterShape outerShape,
                                              CCPACSControlSurfaceDevicePath path, CCPACSWingComponentSegment* segment);
@@ -53,6 +44,9 @@ public:
     TIGL_EXPORT gp_Pnt getInnerHingePoint();
     TIGL_EXPORT gp_Pnt getOuterHingePoint();
 
+private:
+    gp_Pnt innerHingePoint;
+    gp_Pnt outerHingePoint;
 };
 
 } // end namespace tigl

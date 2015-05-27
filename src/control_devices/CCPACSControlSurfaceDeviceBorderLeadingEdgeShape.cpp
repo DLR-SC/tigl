@@ -15,10 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * @file
- * @brief  Implementation of CPACS ...  handling routines.
- */
 
 #include "CCPACSControlSurfaceDeviceBorderLeadingEdgeShape.h"
 
@@ -32,13 +28,15 @@ CCPACSControlSurfaceDeviceBorderLeadingEdgeShape::CCPACSControlSurfaceDeviceBord
     xsiLowerSkin = -1;
 }
 
-void CCPACSControlSurfaceDeviceBorderLeadingEdgeShape::ReadCPACS(TixiDocumentHandle tixiHandle,
-        const std::string& leadingEdgeShapeXPath, TiglControlSurfaceType type)
+void CCPACSControlSurfaceDeviceBorderLeadingEdgeShape::ReadCPACS(
+        TixiDocumentHandle tixiHandle, const std::string& leadingEdgeShapeXPath,
+        TiglControlSurfaceType /* type */)
 {
     char* elementPath;
     std::string tempString;
     // getting subelements
 
+    // @todo: handle missing cpacs values
     tempString = leadingEdgeShapeXPath + "/relHeightLE";
     elementPath = const_cast<char*>(tempString.c_str());
     if (tixiGetDoubleElement(tixiHandle, elementPath, &relHeightLE) != SUCCESS) {

@@ -15,10 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * @file
- * @brief  Implementation of CPACS ...  handling routines.
- */
 
 #include <iostream>
 #include <sstream>
@@ -38,8 +34,8 @@ namespace tigl
 {
 
 CTiglControlSurfaceTransformation::CTiglControlSurfaceTransformation(gp_Pnt hingePoint1 ,gp_Pnt hingePoint2,
-                                                                         gp_Pnt hingePoint1s, gp_Pnt hingePoint2s,
-                                                                         double rotationAlpha )
+                                                                     gp_Pnt hingePoint1s, gp_Pnt hingePoint2s,
+                                                                     double rotationAlpha )
 {
 
     // four points, defining HingeLine before and after the translation.

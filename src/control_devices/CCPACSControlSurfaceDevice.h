@@ -15,10 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * @file
- * @brief  Implementation of ..
- */
 
 #ifndef CCPACSControlSurfaceDevice_H
 #define CCPACSControlSurfaceDevice_H
@@ -37,43 +33,13 @@
 #include "CCPACSControlSurfaceDeviceWingCutOut.h"
 #include "gp_Lin.hxx"
 
-namespace tigl {
+namespace tigl
+{
 
 class CCPACSWingComponentSegment;
 
 class CCPACSControlSurfaceDevice : public CTiglAbstractPhysicalComponent
 {
-
-private:
-
-    // name
-    // description
-    // parentUID
-    // wingCutOut
-    // structure
-    // tracks
-    // actuators
-    // cruiseRollers
-    // interconnectionStruts
-    // zCouplings
-
-    CCPACSControlSurfaceDevicePath path;
-    CCPACSControlSurfaceDeviceOuterShape outerShape;
-    std::string uID;
-    PNamedShape loft;
-    CCPACSWingComponentSegment* _segment;
-    // @todo: hingeline not freed
-    CTiglControlSurfaceHingeLine* _hingeLine;
-
-    gp_Pnt s1;
-    gp_Pnt s2;
-    gp_Pnt s1s;
-    gp_Pnt s2s;
-
-    TiglControlSurfaceType _type;
-
-    CCPACSControlSurfaceDeviceWingCutOut wingCutOut;
-
 public:
     TIGL_EXPORT CCPACSControlSurfaceDevice(CCPACSWingComponentSegment* segment);
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string & controlSurfaceDeviceXPath, TiglControlSurfaceType type = TRAILING_EDGE_DEVICE);
@@ -109,6 +75,21 @@ private:
     gp_Vec getLeadingEdgeShapeTangent(gp_Pnt leadingPoint, gp_Pnt lowerPoint, gp_Pnt upperPoint,bool isInnerBorder, bool isUpper);
     gp_Vec getLeadingEdgeShapeNormal(gp_Pnt point, gp_Vec tangent,gp_Pln etaPlane, gp_Vec checker);
     TopoDS_Wire buildLeadingEdgeShapeWire(bool isInnerBorder);
+
+    CCPACSControlSurfaceDevicePath path;
+    CCPACSControlSurfaceDeviceOuterShape outerShape;
+    CCPACSControlSurfaceDeviceWingCutOut wingCutOut;
+
+    std::string uID;
+    // @todo: remove - loft belongs to abstractcomponent
+    PNamedShape loft;
+    CCPACSWingComponentSegment* _segment;
+    // @todo: hingeline not freed
+    CTiglControlSurfaceHingeLine* _hingeLine;
+
+    TiglControlSurfaceType _type;
+
+
 
 };
 

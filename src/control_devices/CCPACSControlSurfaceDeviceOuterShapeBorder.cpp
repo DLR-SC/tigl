@@ -15,10 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * @file
- * @brief  Implementation of CPACS ...  handling routines.
- */
 
 #include "CCPACSControlSurfaceDeviceOuterShapeBorder.h"
 
@@ -36,8 +32,9 @@ CCPACSControlSurfaceDeviceOuterShapeBorder::CCPACSControlSurfaceDeviceOuterShape
 }
 
 // Read CPACS Border element
-void CCPACSControlSurfaceDeviceOuterShapeBorder::ReadCPACS(TixiDocumentHandle tixiHandle,
-        const std::string& BorderXPath, TiglControlSurfaceType type)
+void CCPACSControlSurfaceDeviceOuterShapeBorder::ReadCPACS(
+        TixiDocumentHandle tixiHandle, const std::string& BorderXPath,
+        TiglControlSurfaceType type)
 {
     char* elementPath;
     std::string tempString;
@@ -67,12 +64,12 @@ void CCPACSControlSurfaceDeviceOuterShapeBorder::ReadCPACS(TixiDocumentHandle ti
 
         tempString = BorderXPath + "/leadingEdgeShape";
         elementPath = const_cast<char*>(tempString.c_str());
-        if (tixiCheckElement(tixiHandle,elementPath) == SUCCESS)
-        {
+        if (tixiCheckElement(tixiHandle,elementPath) == SUCCESS) {
             leadingEdgeShape.ReadCPACS(tixiHandle,elementPath,TRAILING_EDGE_DEVICE);
             leadingEdgeShapeAvailible = true;
         }
-    } else if (type == LEADING_EDGE_DEVICE) {
+    }
+    else if (type == LEADING_EDGE_DEVICE) {
 
         tempString = BorderXPath + "/xsiTEUpper";
         elementPath = const_cast<char*>(tempString.c_str());
@@ -81,7 +78,8 @@ void CCPACSControlSurfaceDeviceOuterShapeBorder::ReadCPACS(TixiDocumentHandle ti
         }
 
         xsiLE = 0;
-    } else if (type == SPOILER) {
+    }
+    else if (type == SPOILER) {
 
         tempString = BorderXPath + "/xsiLE";
         elementPath = const_cast<char*>(tempString.c_str());

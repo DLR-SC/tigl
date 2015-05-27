@@ -15,10 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * @file
- * @brief  Implementation of CPACS ...  handling routines.
- */
 
 #include <iostream>
 #include <sstream>
@@ -44,13 +40,15 @@ CCPACSControlSurfaceDevices::~CCPACSControlSurfaceDevices()
 
 void CCPACSControlSurfaceDevices::Cleanup()
 {
+    // @todo: memory leak - use shared pointer or delete here
     for (std::size_t i = 0; i < controlSurfaceDevices.size(); i++) {
         controlSurfaceDevices.pop_back();
     }
 }
 
 // Read CPACS TrailingEdgeDevices elements
-void CCPACSControlSurfaceDevices::ReadCPACS(TixiDocumentHandle tixiHandle,
+void CCPACSControlSurfaceDevices::ReadCPACS(
+        TixiDocumentHandle tixiHandle,
         const std::string& controlSurfaceDevicesXPath, TiglControlSurfaceType type)
 {
     ReturnCode tixiRet;
@@ -86,7 +84,7 @@ void CCPACSControlSurfaceDevices::ReadCPACS(TixiDocumentHandle tixiHandle,
         controlSurfaceDevices.push_back(controlSurfaceDevice);
 
 
-        if(type == LEADING_EDGE_DEVICE) {
+        if (type == LEADING_EDGE_DEVICE) {
             tempString = controlSurfaceDevicesXPath + "/leadingEdgeDevice[";
         }
         else if (type == TRAILING_EDGE_DEVICE) {

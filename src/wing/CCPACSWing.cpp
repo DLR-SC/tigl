@@ -330,7 +330,8 @@ void CCPACSWing::BuildFlapsAndWingWithoutFlaps()
     if ( wingCleanShape.IsNull() ) {
         // remeber old wing loft
         wingCleanShape = GetLoft()->Shape();
-    } else {
+    }
+    else {
         // nothing to do, because everything is built already.
         return;
     }
@@ -453,8 +454,7 @@ PNamedShape CCPACSWing::BuildLoft()
 
 TopoDS_Shape & CCPACSWing::GetWingWithoutFlaps()
 {
-    if(wingCutOutShape.IsNull())
-    {
+    if (wingCutOutShape.IsNull()) {
         std::map<std::string,double> flapStatus;
         BuildFusedSegmentsWithFlaps(false, flapStatus);
     }
@@ -799,7 +799,7 @@ CCPACSGuideCurve& CCPACSWing::GetGuideCurve(std::string uid)
 
 void CCPACSWing::ResetWingShape()
 {
-    if(!wingCleanShape.IsNull()) {
+    if (!wingCleanShape.IsNull()) {
         loft->SetShape(wingCleanShape);
     }
 }

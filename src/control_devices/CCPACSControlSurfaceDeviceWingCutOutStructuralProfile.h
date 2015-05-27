@@ -15,10 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * @file
- * @brief  Implementation of ..
- */
 
 #ifndef CCPACSCONTROLSURFACEDEVICEWINGCUTOUTSTRUCTURALPROFILE_H
 #define CCPACSCONTROLSURFACEDEVICEWINGCUTOUTSTRUCTURALPROFILE_H
@@ -37,17 +33,13 @@
 
 namespace tigl
 {
+// @todo: replace pointer on points to simple points
 class CTiglPoint;
 typedef class CSharedPtr<CTiglPoint> PCTiglPoint;
 
 
 class CCPACSControlSurfaceDeviceWingCutOutStructuralProfile
 {
-
-private:
-    // Typedef for a container to store the coordinates of a wingCutOut profile element.
-    typedef std::vector<PCTiglPoint> CCPACSCoordinateContainer;
-
 public:
     // Constructor
     TIGL_EXPORT CCPACSControlSurfaceDeviceWingCutOutStructuralProfile(const std::string& path);
@@ -68,15 +60,14 @@ public:
     TIGL_EXPORT const std::string& GetUID(void) const;
 
     // Returns the wingCutOut points as read from TIXI.
+    // @todo: return const CCPACSCoordinateContainer& instead
     TIGL_EXPORT std::vector<PCTiglPoint> GetWingCutOutProfilePoints();
-protected:
 
 private:
     // Copy constructor
     CCPACSControlSurfaceDeviceWingCutOutStructuralProfile(const CCPACSControlSurfaceDeviceWingCutOutStructuralProfile&);
 
-
-private:
+    typedef std::vector<PCTiglPoint> CCPACSCoordinateContainer;
     CCPACSCoordinateContainer        coordinates;    /**< Coordinates of a wingCutOut profile element */
     std::string                      wingCutOutProfileXPath;   /**< The XPath to this wingCutOut in cpacs */
     std::string                      name;              /**< The Name of the wingCutOut*/

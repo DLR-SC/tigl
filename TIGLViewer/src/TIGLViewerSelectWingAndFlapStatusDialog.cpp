@@ -157,10 +157,10 @@ void TIGLViewerSelectWingAndFlapStatusDialog::drawGUI(bool redrawModel)
         for ( int j = 1; j <= componentSegment.getControlSurfaces().getControlSurfaceDevices()->getControlSurfaceDeviceCount(); j++ ) {
             tigl::CCPACSControlSurfaceDevice& controlSurfaceDevice = componentSegment.getControlSurfaces().getControlSurfaceDevices()->getControlSurfaceDeviceByID(j);
 
-            if ((!ui->checkTED->isChecked() && controlSurfaceDevice.getType() == TRAILING_EDGE_DEVICE)
-                    || (!ui->checkLED->isChecked() && controlSurfaceDevice.getType() == LEADING_EDGE_DEVICE)
-                    || (!ui->checkSpoiler->isChecked() && controlSurfaceDevice.getType() == SPOILER))
-            {
+            if ((!ui->checkTED->isChecked() && controlSurfaceDevice.getType() == TRAILING_EDGE_DEVICE) ||
+                (!ui->checkLED->isChecked() && controlSurfaceDevice.getType() == LEADING_EDGE_DEVICE) ||
+                (!ui->checkSpoiler->isChecked() && controlSurfaceDevice.getType() == SPOILER)) {
+
                 continue;
             }
 
@@ -193,6 +193,7 @@ void TIGLViewerSelectWingAndFlapStatusDialog::drawGUI(bool redrawModel)
             QString def = "Deflection: ";
             QString rot = "Rotation: ";
 
+            // @todo: refactor, chained object calls are ugly
             if ( controlSurfaceDevice.getMovementPath().getSteps().getControlSurfaceDeviceStepCount() > 0 ) {
                 def.append(QString::number(controlSurfaceDevice.getMovementPath().getSteps().getControlSurfaceDeviceStepByID(1).getRelDeflection()));
                 rot.append(QString::number(controlSurfaceDevice.getMovementPath().getSteps().getControlSurfaceDeviceStepByID(1).getHingeLineRotation()));
@@ -211,11 +212,12 @@ void TIGLViewerSelectWingAndFlapStatusDialog::drawGUI(bool redrawModel)
             double savedValue;
             if (_controlSurfaceDevices.find(uid.toStdString()) != _controlSurfaceDevices.end()) {
                 savedValue = _controlSurfaceDevices[uid.toStdString()];
-            } else {
+            }
+            else {
                 std::vector<double> relDeflections;
                 std::vector<double> rotations;
-                for ( int steps = 0; steps < controlSurfaceDevice.getMovementPath().getSteps().getControlSurfaceDeviceStepCount(); steps++ )
-                {
+                // @todo: refactor, chained object calls are ugly
+                for ( int steps = 0; steps < controlSurfaceDevice.getMovementPath().getSteps().getControlSurfaceDeviceStepCount(); steps++ ) {
                     relDeflections.push_back(controlSurfaceDevice.getMovementPath().getSteps().getControlSurfaceDeviceStepByID(steps+1).getRelDeflection());
                     rotations.push_back(controlSurfaceDevice.getMovementPath().getSteps().getControlSurfaceDeviceStepByID(steps+1).getHingeLineRotation());
                 }
@@ -227,7 +229,8 @@ void TIGLViewerSelectWingAndFlapStatusDialog::drawGUI(bool redrawModel)
                     double deflectionRange = relDeflections[relDeflections.size()-1] - minDef;
                     savedValue = ((deflection - minDef)/deflectionRange)*100;
 
-                } else {
+                }
+                else {
                     savedValue = 50;
                 }
             }
@@ -252,9 +255,9 @@ void TIGLViewerSelectWingAndFlapStatusDialog::drawGUI(bool redrawModel)
             slider->setWindowTitle( uid );
             vLayout->addWidget(innerWidget);
 
-            if ( _controlSurfaceDevices[uid.toStdString()] == NULL )
-            {
-               _controlSurfaceDevices[uid.toStdString()] = 0;
+            // @todo: this looks really awkward
+            if ( _controlSurfaceDevices[uid.toStdString()] == NULL ) {
+                _controlSurfaceDevices[uid.toStdString()] = 0;
             }
 
             connect(slider, SIGNAL(valueChanged(int)), this, SLOT(slider_value_changed(int)));
@@ -292,8 +295,8 @@ void TIGLViewerSelectWingAndFlapStatusDialog::setSliderAndLabels(std::string con
 
     std::vector<double> relDeflections;
     std::vector<double> rotations;
-    for ( int steps = 0; steps < _controlSurfaceDevicesPointer[controlSurfaceDeviceUID]->getMovementPath().getSteps().getControlSurfaceDeviceStepCount(); steps++ )
-    {
+    // @todo: refactor, chained object calls are ugly
+    for ( int steps = 0; steps < _controlSurfaceDevicesPointer[controlSurfaceDeviceUID]->getMovementPath().getSteps().getControlSurfaceDeviceStepCount(); steps++ ) {
         relDeflections.push_back(_controlSurfaceDevicesPointer[controlSurfaceDeviceUID]->getMovementPath().getSteps().getControlSurfaceDeviceStepByID(steps+1).getRelDeflection());
         rotations.push_back(_controlSurfaceDevicesPointer[controlSurfaceDeviceUID]->getMovementPath().getSteps().getControlSurfaceDeviceStepByID(steps+1).getHingeLineRotation());
     }

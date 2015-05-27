@@ -15,10 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * @file
- * @brief  Implementation of ..
- */
 
 #ifndef CCTiglControlSurfaceTransformation_H
 #define CCTiglControlSurfaceTransformation_H
@@ -30,29 +26,17 @@
 
 #include "gp_Trsf.hxx"
 
-namespace tigl {
-
-class CTiglControlSurfaceTransformation
+namespace tigl
 {
 
-private:
-
-    gp_Trsf rotAlpha;
-    gp_Trsf rotPhi;
-    gp_Trsf rotTheta;
-    gp_Trsf translation;
-    gp_Trsf scale;
-    gp_Trsf transformationToLocal;
-    gp_Trsf transformationFromLocal;
-    gp_Trsf totalTransformation;
-
-
-
+//@todo: small description of the class
+class CTiglControlSurfaceTransformation
+{
 public:
 
     TIGL_EXPORT CTiglControlSurfaceTransformation(gp_Pnt hingePoint1 ,gp_Pnt hingePoint2,
-                                      gp_Pnt hingePoint1s, gp_Pnt hingePoint2s,
-                                      double rotationAlpha);
+                                                  gp_Pnt hingePoint1s, gp_Pnt hingePoint2s,
+                                                  double rotationAlpha);
 
     TIGL_EXPORT gp_Trsf getTotalTransformation();
     TIGL_EXPORT gp_Trsf getTranslationTransformation();
@@ -64,6 +48,16 @@ public:
     TIGL_EXPORT gp_Trsf getFromLocalTransformation();
 
     TIGL_EXPORT ~CTiglControlSurfaceTransformation();
+
+private:
+    gp_Trsf rotAlpha;
+    gp_Trsf rotPhi;
+    gp_Trsf rotTheta;
+    gp_Trsf translation;
+    gp_Trsf scale;
+    gp_Trsf transformationToLocal;
+    gp_Trsf transformationFromLocal;
+    gp_Trsf totalTransformation;
 };
 
 

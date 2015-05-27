@@ -15,10 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * @file
- * @brief  Implementation of ..
- */
 
 #ifndef CCPACSCONTROLSURFACEDEVICEBORDERLEADINGEDGESHAPE_H
 #define CCPACSCONTROLSURFACEDEVICEBORDERLEADINGEDGESHAPE_H
@@ -34,24 +30,22 @@ namespace tigl
 
 class CCPACSControlSurfaceDeviceBorderLeadingEdgeShape
 {
-
-private:
-
-    /* LeadingEdgeShape */
-    double relHeightLE;
-    double xsiUpperSkin;
-    double xsiLowerSkin;
-
 public:
     TIGL_EXPORT CCPACSControlSurfaceDeviceBorderLeadingEdgeShape();
 
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle,
-            const std::string & leadingEdgeShapeXPath, TiglControlSurfaceType type = TRAILING_EDGE_DEVICE);
+                               const std::string & leadingEdgeShapeXPath,
+                               TiglControlSurfaceType type = TRAILING_EDGE_DEVICE);
 
     TIGL_EXPORT double getRelHeightLE() const;
     TIGL_EXPORT double getXsiUpperSkin() const;
     TIGL_EXPORT double getXsiLowerSkin() const;
 
+private:
+    /* LeadingEdgeShape */
+    double relHeightLE;
+    double xsiUpperSkin;
+    double xsiLowerSkin;
 };
 
 } // end namespace tigl

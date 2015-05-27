@@ -15,10 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * @file
- * @brief  Implementation of ..
- */
 
 #ifndef CCPACSCONTROLSURFACEDEVICEOUTERSHAPEBORDER_H
 #define CCPACSCONTROLSURFACEDEVICEOUTERSHAPEBORDER_H
@@ -35,9 +31,22 @@ namespace tigl
 
 class CCPACSControlSurfaceDeviceOuterShapeBorder
 {
+public:
+    TIGL_EXPORT CCPACSControlSurfaceDeviceOuterShapeBorder();
+
+    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle,
+                               const std::string & BorderXPath,
+                               TiglControlSurfaceType type = TRAILING_EDGE_DEVICE);
+
+    TIGL_EXPORT double getEtaLE() const;
+    TIGL_EXPORT double getEtaTE() const;
+    TIGL_EXPORT double getXsiLE() const;
+    TIGL_EXPORT double getXsiTE() const;
+
+    TIGL_EXPORT CCPACSControlSurfaceDeviceBorderLeadingEdgeShape getLeadingEdgeShape() const;
+    TIGL_EXPORT bool isLeadingEdgeShapeAvailible() const;
 
 private:
-
     std::string xsiType;
 
     /* Simple Border */
@@ -48,21 +57,6 @@ private:
 
     CCPACSControlSurfaceDeviceBorderLeadingEdgeShape leadingEdgeShape;
     bool leadingEdgeShapeAvailible;
-
-public:
-    TIGL_EXPORT CCPACSControlSurfaceDeviceOuterShapeBorder();
-
-    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle,
-            const std::string & BorderXPath, TiglControlSurfaceType type = TRAILING_EDGE_DEVICE);
-
-    TIGL_EXPORT double getEtaLE() const;
-    TIGL_EXPORT double getEtaTE() const;
-    TIGL_EXPORT double getXsiLE() const;
-    TIGL_EXPORT double getXsiTE() const;
-
-    TIGL_EXPORT CCPACSControlSurfaceDeviceBorderLeadingEdgeShape getLeadingEdgeShape() const;
-    TIGL_EXPORT bool isLeadingEdgeShapeAvailible() const;
-
 };
 
 } // end namespace tigl

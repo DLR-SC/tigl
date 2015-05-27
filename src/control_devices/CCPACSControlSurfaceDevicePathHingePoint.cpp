@@ -15,10 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * @file
- * @brief  Implementation of CPACS ...  handling routines.
- */
 
 #include <iostream>
 #include <sstream>
@@ -36,13 +32,15 @@ CCPACSControlSurfaceDevicePathHingePoint::CCPACSControlSurfaceDevicePathHingePoi
 }
 
 // Read CPACS TrailingEdgeDevicePathHingePoint element
-void CCPACSControlSurfaceDevicePathHingePoint::ReadCPACS(TixiDocumentHandle tixiHandle,
+void CCPACSControlSurfaceDevicePathHingePoint::ReadCPACS(
+        TixiDocumentHandle tixiHandle,
         const std::string& controlSurfaceDevicePathHingePointXPath)
 {
     char* elementPath;
     std::string tempString;
 
     // getting subelements
+    // @todo: handle missing cpacs values
     tempString = controlSurfaceDevicePathHingePointXPath + "/hingeXsi";
     elementPath = const_cast<char*>(tempString.c_str());
     if (tixiGetDoubleElement(tixiHandle, elementPath, &xsi) != SUCCESS) {

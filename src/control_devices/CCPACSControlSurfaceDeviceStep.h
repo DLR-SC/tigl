@@ -15,10 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * @file
- * @brief  Implementation of ..
- */
 
 #ifndef CCPACSControlSurfaceDeviceStep_H
 #define CCPACSControlSurfaceDeviceStep_H
@@ -36,20 +32,11 @@ namespace tigl
 
 class CCPACSControlSurfaceDeviceStep
 {
-
-private:
-
-    double relDeflection;
-    double hingeLineRotation;
-
-    CCPACSControlSurfaceHingeTranslation innerHingeTranslation;
-    CCPACSControlSurfaceHingeTranslation outerHingeTranslation;
-
 public:
     TIGL_EXPORT CCPACSControlSurfaceDeviceStep();
 
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle,
-            const std::string & controlSurfaceDeviceStepXPath);
+                               const std::string & controlSurfaceDeviceStepXPath);
 
     TIGL_EXPORT CCPACSControlSurfaceHingeTranslation getInnerHingeTranslation();
     TIGL_EXPORT CCPACSControlSurfaceHingeTranslation getOuterHingeTranslation();
@@ -57,6 +44,12 @@ public:
     TIGL_EXPORT double getRelDeflection();
     TIGL_EXPORT double getHingeLineRotation();
 
+private:
+    double relDeflection;
+    double hingeLineRotation;
+
+    CCPACSControlSurfaceHingeTranslation innerHingeTranslation;
+    CCPACSControlSurfaceHingeTranslation outerHingeTranslation;
 };
 
 } // end namespace tigl

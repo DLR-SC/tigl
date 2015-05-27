@@ -15,16 +15,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * @file
- * @brief not implemented yet...
- */
 
 #ifndef CCPACSControlSurfaceDeviceWingCutOut_H
 #define CCPACSControlSurfaceDeviceWingCutOut_H
 
 #include "tixi.h"
-#include "CTiglError.h"
 #include "CCPACSControlSurfaceDeviceWingCutOutProfiles.h"
 #include "tigl_internal.h"
 
@@ -34,22 +29,14 @@ namespace tigl
 
 class CCPACSControlSurfaceDeviceWingCutOut
 {
-
-private:
-
-    // upper Skin
-    // lower Skin
-    // cutOutProfiles
-    // ControlPoint
-
-    CCPACSControlSurfaceDeviceWingCutOutProfiles wingCutOutProfiles;
-
 public:
     TIGL_EXPORT CCPACSControlSurfaceDeviceWingCutOut();
 
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle,
-            const std::string & controlSurfaceDeviceWingCutOutXPath);
+                               const std::string & controlSurfaceDeviceWingCutOutXPath);
 
+private:
+    CCPACSControlSurfaceDeviceWingCutOutProfiles wingCutOutProfiles;
 };
 
 } // end namespace tigl

@@ -15,10 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * @file
- * @brief  Implementation of CPACS ...  handling routines.
- */
 
 #include <iostream>
 #include <exception>
@@ -47,7 +43,8 @@ void CCPACSControlSurfaceDeviceSteps::Cleanup()
 }
 
 // Read CPACS TrailingEdgeDeviceSteps element
-void CCPACSControlSurfaceDeviceSteps::ReadCPACS(TixiDocumentHandle tixiHandle,
+void CCPACSControlSurfaceDeviceSteps::ReadCPACS(
+        TixiDocumentHandle tixiHandle,
         const std::string& controlSurfaceDeviceStepsXPath)
 {
     Cleanup();

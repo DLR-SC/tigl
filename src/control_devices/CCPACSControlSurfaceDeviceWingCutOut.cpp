@@ -15,17 +15,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * @file
- * @brief  not implemented yet...
- */
 
-#include <iostream>
-#include <sstream>
-#include <exception>
+#include "CTiglError.h"
 
 #include "CCPACSControlSurfaceDeviceWingCutOut.h"
 #include "CCPACSControlSurfaceDeviceWingCutOutProfiles.h"
+
+#include <string>
 
 namespace tigl
 {
@@ -35,7 +31,8 @@ CCPACSControlSurfaceDeviceWingCutOut::CCPACSControlSurfaceDeviceWingCutOut()
 }
 
 // Read CPACS ControlSurface DeviceWingCutOut element
-void CCPACSControlSurfaceDeviceWingCutOut::ReadCPACS(TixiDocumentHandle tixiHandle,
+void CCPACSControlSurfaceDeviceWingCutOut::ReadCPACS(
+        TixiDocumentHandle tixiHandle,
         const std::string& controlSurfaceDeviceWingCutOutXPath)
 {
     char* elementPath;

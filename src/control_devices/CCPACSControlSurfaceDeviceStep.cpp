@@ -15,10 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * @file
- * @brief  Implementation of CPACS ...  handling routines.
- */
 
 #include "CCPACSControlSurfaceDeviceStep.h"
 
@@ -33,7 +29,7 @@ CCPACSControlSurfaceDeviceStep::CCPACSControlSurfaceDeviceStep()
 
 // Read CPACS TrailingEdgeDeviceStep element
 void CCPACSControlSurfaceDeviceStep::ReadCPACS(TixiDocumentHandle tixiHandle,
-        const std::string& controlSurfaceDeviceStepXPath)
+                                               const std::string& controlSurfaceDeviceStepXPath)
 {
 
     char*       elementPath;
@@ -49,7 +45,8 @@ void CCPACSControlSurfaceDeviceStep::ReadCPACS(TixiDocumentHandle tixiHandle,
     elementPath = const_cast<char*>(tempString.c_str());
     if (tixiCheckElement(tixiHandle, elementPath) == SUCCESS) {
         outerHingeTranslation.ReadCPACS(tixiHandle, elementPath);
-    } else {
+    }
+    else {
         outerHingeTranslation = innerHingeTranslation;
     }
 

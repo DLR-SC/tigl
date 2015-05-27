@@ -15,10 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * @file
- * @brief  Implementation of ..
- */
 
 #ifndef CCPACSControlSurfaceDeviceSteps_H
 #define CCPACSControlSurfaceDeviceSteps_H
@@ -36,23 +32,21 @@ namespace tigl
 
 class CCPACSControlSurfaceDeviceSteps
 {
-
-private:
-    typedef std::vector<CCPACSControlSurfaceDeviceStep*> controlSurfaceDeviceStepContainer;
-
-    controlSurfaceDeviceStepContainer controlSurfaceDeviceSteps;
-
-    void Cleanup();
-
 public:
     TIGL_EXPORT CCPACSControlSurfaceDeviceSteps();
     TIGL_EXPORT ~CCPACSControlSurfaceDeviceSteps();
 
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle,
-            const std::string & controlSurfaceDeviceStepsXPath);
+                               const std::string & controlSurfaceDeviceStepsXPath);
 
     TIGL_EXPORT CCPACSControlSurfaceDeviceStep& getControlSurfaceDeviceStepByID( int id );
     TIGL_EXPORT int getControlSurfaceDeviceStepCount();
+
+private:
+    typedef std::vector<CCPACSControlSurfaceDeviceStep*> ControlSurfaceDeviceStepContainer;
+    ControlSurfaceDeviceStepContainer controlSurfaceDeviceSteps;
+
+    void Cleanup();
 };
 
 } // end namespace tigl
