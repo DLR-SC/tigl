@@ -70,6 +70,8 @@
 #include "TDataXtd_Shape.hxx"
 #endif
 
+#define USE_ADVANCED_MODELING 0
+
 namespace tigl {
 
 CCPACSControlSurfaceDevice::CCPACSControlSurfaceDevice(CCPACSWingComponentSegment* segment)
@@ -189,6 +191,7 @@ TopoDS_Shape CCPACSControlSurfaceDevice::getCutOutShape()
      * And if the leadingEdge Eta is the same as the trailingEdge Eta. Even if Etas arent the same, the Algorithm
      * would work, but the results wouldnt be 100% Correct.
      */
+#if USE_ADVANCED_MODELING
     if (_type == TRAILING_EDGE_DEVICE && getOuterShape().getInnerBorder().isLeadingEdgeShapeAvailible()
             && getOuterShape().getOuterBorder().isLeadingEdgeShapeAvailible() &&
             getOuterShape().getOuterBorder().getEtaLE() == getOuterShape().getOuterBorder().getEtaTE() &&
@@ -235,8 +238,11 @@ TopoDS_Shape CCPACSControlSurfaceDevice::getCutOutShape()
         sewer.Perform();
 
         return BRepBuilderAPI_MakeSolid(TopoDS::Shell(sewer.SewedShape()));
-    } else {
-
+    }
+    else {
+#else
+    {
+#endif
         // Build Simple Flap Geometry.
         TopoDS_Face face = getFace();
         gp_Vec vec = getNormalOfControlSurfaceDevice();
@@ -276,7 +282,7 @@ TopoDS_Face CCPACSControlSurfaceDevice::getFace()
     dirP1P2.Normalize();
     dirP3P4.Normalize();
 
-    double fac = 0.1;
+    double fac = 2.0;
     if ( _type == LEADING_EDGE_DEVICE ) {
         p1 = p1 - dirP1P2.Multiplied(fac);
         p3 = p3 - dirP3P4.Multiplied(fac);

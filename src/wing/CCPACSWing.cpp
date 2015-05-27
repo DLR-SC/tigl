@@ -441,9 +441,9 @@ TopoDS_Shape CCPACSWing::BuildFusedSegmentsWithFlaps(bool splitWingInUpperAndLow
         BuildFlapsAndWingWithoutFlaps();
     }
 
-    TopoDS_Compound allFlaps;
-    BRep_Builder compoundBuilderFlaps;
-    compoundBuilderFlaps.MakeCompound (allFlaps);
+    TopoDS_Compound flapsAndWing;
+    BRep_Builder b;
+    b.MakeCompound (flapsAndWing);
 
     for ( int i = 1; i <= GetComponentSegmentCount(); i++ ) {
 
@@ -456,19 +456,16 @@ TopoDS_Shape CCPACSWing::BuildFusedSegmentsWithFlaps(bool splitWingInUpperAndLow
 
             TopoDS_Shape deviceShape = controlSurfaceDevice.GetLoft()->Shape();
             BRepBuilderAPI_Transform form(deviceShape,controlSurfaceDevice.getTransformation(flapStatus[controlSurfaceDevice.getUID()]));
-            compoundBuilderFlaps.Add(allFlaps,form.Shape());
+            b.Add(flapsAndWing,form.Shape());
        }
     }
 
-    TopoDS_Compound wingAndFlaps;
-    BRep_Builder compoundBuilder;
-    compoundBuilder.MakeCompound (wingAndFlaps);
+    b.Add(flapsAndWing, wingCutOutShape);
+    if (loft) {
+        loft->SetShape(flapsAndWing);
+    }
 
-    compoundBuilder.Add(wingAndFlaps,allFlaps);
-    compoundBuilder.Add(wingAndFlaps,wingCutOutShape);
-    loft->SetShape(wingAndFlaps);
-
-    return wingAndFlaps;
+    return flapsAndWing;
 }
 
 // Gets the loft of the whole wing.
