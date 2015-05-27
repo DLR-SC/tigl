@@ -22,6 +22,7 @@
 
 #include "tigl_internal.h"
 #include <vector>
+#include <math_Vector.hxx>
 
 namespace tigl 
 {
@@ -119,6 +120,48 @@ TIGL_EXPORT double cstcurve(const double& N1, const double& N2, const std::vecto
  */
 TIGL_EXPORT double cstcurve_deriv(const double& N1, const double& N2, const std::vector<double>& B, const int& n, const double& x);
 
+
+/**
+ * 1D Function accepting one parameter t and returning
+ * the function value
+ * 
+ * The argument obj can be used to apply additional paramters
+ * to the function
+ */
+typedef double (*MathFunc)(double t, void* obj);
+
+/**
+ * @brief Chebycheff approximation of a function f(x), x in [a,b]
+ *
+ * @throws CTiglError (TIGL_MATH_ERROR) if N <= 0 
+ * 
+ * @param func The 1D funktion to approximate
+ * @param parms Additional data passed to the function func (may be NULL)
+ * @param N Number of function evaluations ( = polynomial degree + 1)
+ * @param a First parameter of the function to approximate
+ * @param b Last  parameter of the function to approximate
+ * @return Chebycheff coefficients
+ */
+TIGL_EXPORT math_Vector cheb_approx(MathFunc func, void* parms, int N, double a, double b);
+
+
+/** 
+ * @brief Computes the chebycheff to monomial transformation matrix
+ * 
+ * Use this NxN matrix to translate chebychev coefficients into monomial
+ * coefficients of polynomes.
+ * 
+ * @param N Dimension of the matrix
+ */
+TIGL_EXPORT math_Matrix cheb_to_monomial(int N);
+
+/**
+* @brief Monomial to Bernstein conversion matrix
+*
+ * Use this NxN matrix to translate monimial coefficients into bezier
+ * coefficients (control points).
+*/
+TIGL_EXPORT math_Matrix monimial_to_bezier(int N);
 
 } // namespace tigl
 

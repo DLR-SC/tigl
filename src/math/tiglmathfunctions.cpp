@@ -27,6 +27,7 @@
 #include <CTiglPoint.h>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
+#include <math_Matrix.hxx>
 
 namespace tigl 
 {
@@ -239,6 +240,93 @@ double cstcurve_deriv(const double& N1, const double& N2, const std::vector<doub
              * shape_function_deriv(B, n-i, x);
     }
     return res;
+}
+
+/**
+ * @brief Chebycheff approximation of a function f(x), x in [a,b]
+ *
+ * @param func The 1D funktion to approximate
+ * @param parms Additional data passed to the function func (may be NULL)
+ * @param N Number of function evaluations ( = polynomial degree + 1)
+ * @param a First parameter of the function to approximate
+ * @param b Last  parameter of the function to approximate
+ * @return Chebycheff coefficients
+ */
+math_Vector cheb_approx(MathFunc func, void* parms, int N, double a, double b)
+{
+    if (N <= 0) {
+        throw CTiglError("N <= 0 in cheb_approx", TIGL_MATH_ERROR);
+    }
+    math_Vector c(0, N-1);
+    
+    double * fx = new double[N];
+    for (int k = 1; k <= N; ++k) {
+        double x = cos(M_PI * ((double)k - 0.5) / (double)N);
+        // shift to correct intervall
+        x = (x + 1.) / 2. *(b-a) + a;
+        
+        // evaluate function at x
+        fx[k-1] = func(x, parms);
+    }
+    
+    for (int j = 0; j < N; ++j) {
+        double cj = 0;
+        for (int k = 1; k <= N; ++k) {
+            double v = fx[k-1] * cos(M_PI * (double)j * ((double)k - 0.5)/ (double)N);
+            cj += 2./(double) N * v;
+        }
+        c(j) = cj;
+    }
+    delete[] fx;
+    
+    c(0) *= 0.5;
+    
+    return c;
+}
+
+/// computes the chebycheff to monomial transformation matrix
+math_Matrix cheb_to_monomial(int N)
+{
+    math_Matrix matrix(0,N-1, 0, N-1, 0.);
+    
+    matrix(0,0) =1.;
+    matrix(0,1) =-1.;
+    matrix(1,1) =2.;
+    
+    for (int j = 2; j < N; ++j) {
+        for (int i = 0; i <= j; ++i) {
+            double val = 0.;
+            if (i > 0) {
+                val += 4.*matrix(i-1, j-1);
+            }
+            val -= 2.*matrix(i,j-1) + matrix(i,j-2);
+            
+            matrix(i,j)= val;
+        }
+    }
+    return matrix;
+}
+
+/**
+* @brief Monomial to Bernstein conversion matrix
+*
+* Returns a NxN matrix to be multiplied with
+* a vector of Monomial coefficients,
+* generating a vector of Bernstein coefficients.
+*/
+math_Matrix monimial_to_bezier(int N)
+{
+    math_Matrix matrix(0,N-1, 0, N-1, 0.);
+    
+    for (int j=0; j < N; ++j) {
+        for (int i = j; i < N; ++i) {
+            double div1= binom(i, i-j);
+            double div2= binom(N-1, j);
+            matrix(i,j) = div1 / div2;
+        }
+    }
+    
+    return matrix;
 }
 
 } // namespace tigl

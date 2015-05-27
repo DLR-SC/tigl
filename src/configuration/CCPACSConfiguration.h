@@ -35,6 +35,7 @@
 #include "CCPACSWingProfile.h"
 #include "CCPACSFuselages.h"
 #include "CCPACSFuselageProfile.h"
+#include "CCPACSExternalObjects.h"
 #include "CCPACSFarField.h"
 #include "CCPACSGuideCurveProfiles.h"
 #include "TopoDS_Compound.hxx"
@@ -72,6 +73,8 @@ public:
     // Returns the total count of wing profiles in this configuration
     TIGL_EXPORT int GetWingProfileCount(void) const;
 
+    TIGL_EXPORT bool HasWingProfile(std::string uid) const;
+
     // Returns the wing profile for a given index - TODO: depricated!
     TIGL_EXPORT CCPACSWingProfile& GetWingProfile(int index) const;
 
@@ -88,6 +91,8 @@ public:
     TIGL_EXPORT CCPACSWing& GetWing(const std::string& UID) const;
 
     TIGL_EXPORT TopoDS_Shape GetParentLoft(const std::string& UID);
+
+    TIGL_EXPORT bool HasFuselageProfile(std::string uid) const;
 
     // Returns the total count of fuselage profiles in this configuration
     TIGL_EXPORT int GetFuselageProfileCount(void) const;
@@ -108,6 +113,11 @@ public:
     TIGL_EXPORT CCPACSFuselage& GetFuselage(std::string UID) const;
 
     TIGL_EXPORT CCPACSFarField& GetFarField();
+
+    // Returns the number of external objects (i.e. linked CAD files like STEP, IGES)
+    TIGL_EXPORT int GetExternalObjectCount(void) const;
+
+    TIGL_EXPORT CCPACSExternalObject& GetExternalObject(int index) const;
 
     // Returns the guide curve profile for a given UID.
     TIGL_EXPORT CCPACSGuideCurveProfile& GetGuideCurveProfile(std::string UID) const;
@@ -145,6 +155,7 @@ private:
     CCPACSWings                  wings;                /**< Configuration wings element */
     CCPACSFuselages              fuselages;            /**< Configuration fuselages element */
     CCPACSFarField               farField;             /**< Far field configuration for CFD tools */
+    CCPACSExternalObjects        externalObjects;      /**< External loaded CAD components */
     CCPACSGuideCurveProfiles     guideCurveProfiles;   /**< Guide curve profiles */
     CTiglUIDManager              uidManager;           /**< Stores the unique ids of the components */
     PTiglFusePlane               aircraftFuser;        /**< The aircraft fusing algo */

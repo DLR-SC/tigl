@@ -10,9 +10,14 @@ set(PROGNAME "TIGLViewer")
 
 if(TIGL_VIEWER)
 
-find_package(Qt4 4.4.3)
+include(SearchQt)
+# disable automatic linking of qtmain
+if (POLICY CMP0020)
+  cmake_policy(SET CMP0020 OLD)
+endif (POLICY CMP0020)
+
 #build only tiglviewer if qt was found
-if(QT4_FOUND)
+if(QT4_FOUND OR Qt5Widgets_FOUND)
 
 include(tiglmacros)
 AddToCheckstyle()
@@ -35,10 +40,23 @@ endif(OCE_FOUND)
 # we need opengl in order to build tiglviewer
 find_package(OpenGL REQUIRED)
 
-set( QT_USE_QTSCRIPT TRUE )
-set( QT_USE_QTMAIN   TRUE )
-include(${QT_USE_FILE} ${GLOG_INCLUDE_DIR})
-add_definitions(${QT_DEFINITIONS})
+if(CMAKE_SYSTEM_NAME STREQUAL Linux)
+  # set library search path to local lib directory during installation
+  set(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE) 
+  set(RELDIR "../${CMAKE_INSTALL_LIBDIR}")
+
+  if (IS_ABSOLUTE ${CMAKE_INSTALL_LIBDIR})
+    # get relative path to tiglviewer binary
+    file(RELATIVE_PATH RELDIR ${CMAKE_INSTALL_PREFIX}/bin "${CMAKE_INSTALL_LIBDIR}")
+  endif()
+  
+  set(CMAKE_INSTALL_RPATH \$ORIGIN/${RELDIR})
+
+  if (NOT RELDIR STREQUAL "../lib")
+    message(STATUS ${RELDIR})
+    set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_RPATH}:\$ORIGIN/../lib")
+  endif()
+endif() # linux‚
 
 # add all tigl directories to include path
 set(TIGL_INCLUDES ${PROJECT_SOURCE_DIR}/src/)
@@ -55,7 +73,6 @@ set(tv_src
     ISession_Direction.cpp
     ISession_Text.cpp
     main.cpp
-    TIGLViewerApplication.cpp
     TIGLViewerContext.cpp
     TIGLViewerDocument.cpp
     TIGLViewerInputoutput.cpp
@@ -81,6 +98,7 @@ set(tv_src
     TIGLViewerScreenshotDialog.cpp
     TIGLViewerSelectWingAndFlapStatusDialog.cpp
     TIGLViewerDrawVectorDialog.cpp
+    TIGLViewerScopedCommand.cpp
 )
 
 # normal header files
@@ -96,43 +114,43 @@ set(tv_hdr
     CHotsoseMeshReader.h
     TIGLViewerLogHistory.h
     TIGLViewerLoggerHTMLDecorator.h
+    TIGLViewerScopedCommand.h
 )
 
 # qobject header files that have to be moced
 set(tv_hdr_qobj
-    TIGLDebugStream.h
-    TIGLViewerApplication.h
-    TIGLViewerContext.h
-    TIGLViewerDocument.h
-    TIGLViewerInputoutput.h
-    TIGLViewerInputoutput.h
-    TIGLViewerWidget.h
-    TIGLViewerWindow.h
-    TIGLViewerSettingsDialog.h
-    TIGLScriptProxy.h
-    TIXIScriptProxy.h
-    TIGLScriptEngine.h
-    TiglViewerConsole.h
-    TIGLViewerEtaXsiDialog.h
-    TIGLViewerErrorDialog.h
-    TIGLViewerDrawVectorDialog.h
-    TIGLViewerLogRedirection.h
-    TIGLViewerSelectWingAndFlapStatusDialog.h
-    TIGLViewerFuseDialog.h
-    TIGLViewerShapeIntersectionDialog.h
-    TIGLViewerScreenshotDialog.h
+	TIGLDebugStream.h
+	TIGLViewerContext.h
+	TIGLViewerDocument.h
+	TIGLViewerInputoutput.h
+	TIGLViewerInputoutput.h
+	TIGLViewerWidget.h
+	TIGLViewerWindow.h
+	TIGLViewerSettingsDialog.h
+	TIGLScriptProxy.h
+	TIXIScriptProxy.h
+	TIGLScriptEngine.h
+	TiglViewerConsole.h
+	TIGLViewerEtaXsiDialog.h
+	TIGLViewerErrorDialog.h
+	TIGLViewerDrawVectorDialog.h
+	TIGLViewerLogRedirection.h
+	TIGLViewerSelectWingAndFlapStatusDialog.h
+	TIGLViewerFuseDialog.h
+	TIGLViewerShapeIntersectionDialog.h
+	TIGLViewerScreenshotDialog.h
 )
 
 set(tv_ui_comp
-    src/TIGLViewerWindow.ui
-    src/TIGLViewerSettingsDialog.ui
-    src/TIGLViewerEtaXsiDialog.ui
-    src/TIGLViewerErrorDialog.ui
-    src/TIGLViewerSelectWingAndFlapStatusDialog.ui
-    src/TIGLViewerFuseDialog.ui
-    src/TIGLViewerShapeIntersectionDialog.ui
-    src/TIGLViewerScreenshotDialog.ui
-    src/TIGLViewerDrawVectorDialog.ui
+	src/TIGLViewerWindow.ui
+	src/TIGLViewerSettingsDialog.ui
+	src/TIGLViewerEtaXsiDialog.ui
+	src/TIGLViewerErrorDialog.ui
+	src/TIGLViewerSelectWingAndFlapStatusDialog.ui
+	src/TIGLViewerFuseDialog.ui
+	src/TIGLViewerShapeIntersectionDialog.ui
+	src/TIGLViewerScreenshotDialog.ui
+	src/TIGLViewerDrawVectorDialog.ui
 )
 
 foreach ( _fname ${tv_src})
@@ -204,13 +222,14 @@ add_executable(${PROGNAME} ${TYPE}
         ${tv_icon_rc}
 )
 
-target_link_libraries(${PROGNAME}
-    TIGL_static
-    ${TIXI_LIBRARIES}
-    ${QT_LIBRARIES}
-    ${OPENGL_LIBRARIES}
-    ${OpenCASCADE_LIBRARIES}
-    ${EXTRA_LIBRARIES}
+target_link_libraries(${PROGNAME} 
+	TIGL_static
+	${TIXI_LIBRARIES} 
+	${CMake_QT_LIBRARIES} 
+	${QT_QTMAIN_LIBRARY} 
+	${OPENGL_LIBRARIES} 
+	${OpenCASCADE_LIBRARIES} 
+	${EXTRA_LIBRARIES} 
 )
 
 if(GLOG_FOUND)
@@ -256,13 +275,25 @@ INCLUDE(InstallRequiredSystemLibraries)
 set(DIRS ${TIXI_LIB_PATH} ${OpenCASCADE_DLL_DIRECTORY}  ${OpenCASCADE_LINK_DIRECTORY} ${QT_BINARY_DIR} ${TIGL_ADD_LIB_PATH})
 
 if (WIN32 OR APPLE)
-  include(DeployQt4)
-  INSTALL_QT4_EXECUTABLE(${APPS} "" "" "${DIRS}" "" "" viewer)
+  if(Qt5Widgets_FOUND)
+    if(APPLE)
+      set(QT_PLUGINS  "qcocoa;qtaccessiblewidgets")
+    endif()
+    if(WIN32)
+      set(QT_PLUGINS  "qwindows")
+    endif()
+
+    include(DeployQt5)
+    INSTALL_QT5_EXECUTABLE(${APPS} "${QT_PLUGINS}" "" "${DIRS}" "" "" viewer)
+  else()
+    include(DeployQt4)
+    INSTALL_QT4_EXECUTABLE(${APPS} "" "" "${DIRS}" "" "" viewer)
+  endif()
 endif()
 
-else (QT4_FOUND)
-message(STATUS "No qt4 was found. TIGLViewer will not be build!")
-endif(QT4_FOUND)
+else (QT4_FOUND OR Qt5Widgets_FOUND)
+message(STATUS "No qt was found. TIGLViewer will not be build!")
+endif(QT4_FOUND OR Qt5Widgets_FOUND)
 
 endif(TIGL_VIEWER)
 

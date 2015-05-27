@@ -38,6 +38,7 @@
 #include "CCPACSConfiguration.h"
 #include "CTiglError.h"
 #include "tiglcommonfunctions.h"
+#include "tigl_config.h"
 #include "math/tiglmathfunctions.h"
 
 #include "BRepOffsetAPI_ThruSections.hxx"
@@ -52,6 +53,7 @@
 #include "gp_Lin.hxx"
 #include "Geom_TrimmedCurve.hxx"
 #include "GC_MakeSegment.hxx"
+#include "GCE2d_MakeSegment.hxx"
 #include "GeomAPI_IntCS.hxx"
 #include "Geom_Surface.hxx"
 #include "Geom_Line.hxx"
@@ -68,6 +70,7 @@
 #include "BRepBuilderAPI_MakeFace.hxx"
 #include "BRepMesh.hxx"
 #include "BRepTools.hxx"
+#include "BRepLib.hxx"
 #include "BRepBndLib.hxx"
 #include "BRepGProp.hxx"
 #include "BRepBuilderAPI_MakePolygon.hxx"
@@ -121,7 +124,7 @@ namespace
         return transformedPoint;
     }
 
-    TopoDS_Wire transformProfileWire(const tigl::CTiglTransformation& wingTransform, const tigl::CCPACSWingConnection& connection, const TopoDS_Wire& wire)
+    TopoDS_Shape transformProfileWire(const tigl::CTiglTransformation& wingTransform, const tigl::CCPACSWingConnection& connection, const TopoDS_Shape& wire)
     {
         TopoDS_Shape transformedWire(wire);
 
@@ -136,12 +139,7 @@ namespace
 
         transformedWire = wingTransform.Transform(transformedWire);
 
-        // Cast shapes to wires, see OpenCascade documentation
-        if (transformedWire.ShapeType() != TopAbs_WIRE) {
-            throw tigl::CTiglError("Error: Wrong shape type in CCPACSWingSegment::transformProfileWire", TIGL_ERROR);
-        }
-
-        return TopoDS::Wire(transformedWire);
+        return transformedWire;
     }
 
     // Set the face traits
@@ -161,7 +159,8 @@ namespace
 
         // check if number of faces is correct (only valid for ruled surfaces lofts)
         if (map.Extent() != 5 && map.Extent() != 4) {
-            throw tigl::CTiglError("CCPACSWingSegment: Unable to name face traits in ruled surface loft", TIGL_ERROR);
+            LOG(ERROR) << "CCPACSWingSegment: Unable to determine face names in ruled surface loft";
+            return;
         }
         // remove trailing edge name if there is no trailing edge
         if (map.Extent() == 4) {
@@ -174,7 +173,23 @@ namespace
             loft->SetFaceTraits(i, traits);
         }
     }
-
+    
+    /**
+     * @brief getFaceTrimmingEdge Creates an edge in parameter space to trim a face
+     * @return 
+     */
+    TopoDS_Edge getFaceTrimmingEdge(const TopoDS_Face& face, double ustart, double vstart, double uend, double vend)
+    {
+        Handle_Geom_Surface surf = BRep_Tool::Surface(face);
+        Handle(Geom2d_TrimmedCurve) line = GCE2d_MakeSegment(gp_Pnt2d(ustart,vstart), gp_Pnt2d(uend,vend));
+    
+        BRepBuilderAPI_MakeEdge edgemaker(line, surf);
+        TopoDS_Edge edge =  edgemaker.Edge();
+        
+        // this here is really important
+        BRepLib::BuildCurves3d(edge);
+        return edge;
+    }
 }
 
 // Constructor
@@ -285,14 +300,50 @@ CCPACSWing& CCPACSWingSegment::GetWing(void) const
 TopoDS_Wire CCPACSWingSegment::GetInnerWire(void)
 {
     CCPACSWingProfile& innerProfile = innerConnection.GetProfile();
-    return transformProfileWire(GetWing().GetTransformation(), innerConnection, innerProfile.GetWire());
+    TopoDS_Wire w;
+    
+    /*
+    * The loft algorithm with guide curves does not like splitted
+    * wing profiles, we have to give him the unsplitted one.
+    * In all other cases, we need the splitted wire to distiguish
+    * upper und lower wing surface
+    */
+#ifdef LOFTALGO_FOUND
+    if (guideCurves.GetGuideCurveCount() > 0) {
+        w = innerProfile.GetWire();
+    }
+    else {
+        w = innerProfile.GetSplitWire();
+    }
+#else
+    w = innerProfile.GetSplitWire();
+#endif
+    return TopoDS::Wire(transformProfileWire(GetWing().GetTransformation(), innerConnection, w));
 }
 
 // helper function to get the outer transformed chord line wire
 TopoDS_Wire CCPACSWingSegment::GetOuterWire(void)
 {
     CCPACSWingProfile& outerProfile = outerConnection.GetProfile();
-    return transformProfileWire(GetWing().GetTransformation(), outerConnection, outerProfile.GetWire());
+    TopoDS_Wire w;
+    
+    /*
+    * The loft algorithm with guide curves does not like splitted
+    * wing profiles, we have to give him the unsplitted one.
+    * In all other cases, we need the splitted wire to distiguish
+    * upper und lower wing surface
+    */
+#ifdef LOFTALGO_FOUND
+    if (guideCurves.GetGuideCurveCount() > 0) {
+        w = outerProfile.GetWire();
+    }
+    else {
+        w = outerProfile.GetSplitWire();
+    }
+#else
+    w = outerProfile.GetSplitWire();
+#endif
+    return TopoDS::Wire(transformProfileWire(GetWing().GetTransformation(), outerConnection, w));
 }
 
 // helper function to get the inner closing of the wing segment
@@ -356,11 +407,6 @@ PNamedShape CCPACSWingSegment::BuildLoft(void)
     GProp_GProps System;
     BRepGProp::VolumeProperties(loftShape, System);
     myVolume = System.Mass();
-
-    // Calculate surface area
-    GProp_GProps AreaSystem;
-    BRepGProp::SurfaceProperties(loftShape, AreaSystem);
-    mySurfaceArea = AreaSystem.Mass();
 
     // Set Names
     std::string loftName = GetUID();
@@ -452,8 +498,78 @@ double CCPACSWingSegment::GetVolume(void)
 // Returns the surface area of this segment
 double CCPACSWingSegment::GetSurfaceArea(void)
 {
-    Update();
+    MakeSurfaces();
     return( mySurfaceArea );
+}
+
+void CCPACSWingSegment::etaXsiToUV(bool isFromUpper, double eta, double xsi, double& u, double& v)
+{
+    gp_Pnt pnt = GetPoint(eta,xsi, isFromUpper);
+
+    Handle_Geom_Surface surf;
+    if (isFromUpper) {
+        surf = upperSurface;
+    }
+    else {
+        surf = lowerSurface;
+    }
+
+    GeomAPI_ProjectPointOnSurf Proj(pnt, surf);
+    if (Proj.NbPoints() > 0) {
+        Proj.LowerDistanceParameters(u,v);
+    }
+    else {
+        LOG(WARNING) << "Could not project point on wing segment surface in CCPACSWingSegment::etaXsiToUV";
+
+        double umin, umax, vmin, vmax;
+        surf->Bounds(umin,umax,vmin, vmax);
+        if (isFromUpper) {
+            u = umin*(1-xsi) + umax;
+            v = vmin*(1-eta) + vmax;
+        }
+        else {
+            u = umin*xsi + umax*(1-xsi);
+            v = vmin*eta + vmax*(1-eta);
+        }
+    }
+}
+
+double CCPACSWingSegment::GetSurfaceArea(bool fromUpper, 
+                                         double eta1, double xsi1,
+                                         double eta2, double xsi2,
+                                         double eta3, double xsi3,
+                                         double eta4, double xsi4)
+{
+    MakeSurfaces();
+    
+    TopoDS_Face face;
+    if (fromUpper) {
+        face = TopoDS::Face(upperShape);
+    }
+    else {
+        face = TopoDS::Face(lowerShape);
+    }
+    
+    // convert eta xsi coordinates to u,v
+    double u1, u2, u3, u4, v1, v2, v3, v4;
+    etaXsiToUV(fromUpper, eta1, xsi1, u1, v1);
+    etaXsiToUV(fromUpper, eta2, xsi2, u2, v2);
+    etaXsiToUV(fromUpper, eta3, xsi3, u3, v3);
+    etaXsiToUV(fromUpper, eta4, xsi4, u4, v4);
+    
+    TopoDS_Edge e1 = getFaceTrimmingEdge(face, u1, v1, u2, v2);
+    TopoDS_Edge e2 = getFaceTrimmingEdge(face, u2, v2, u3, v3);
+    TopoDS_Edge e3 = getFaceTrimmingEdge(face, u3, v3, u4, v4);
+    TopoDS_Edge e4 = getFaceTrimmingEdge(face, u4, v4, u1, v1);
+    
+    TopoDS_Wire w = BRepBuilderAPI_MakeWire(e1,e2,e3,e4);
+    TopoDS_Face f = BRepBuilderAPI_MakeFace(BRep_Tool::Surface(face), w);
+    
+    // compute the surface area
+    GProp_GProps sprops;
+    BRepGProp::SurfaceProperties(f, sprops);
+    
+    return sprops.Mass();
 }
 
 // Gets the count of segments connected to the inner section of this segment // TODO can this be optimized instead of iterating over all segments?
@@ -583,7 +699,7 @@ gp_Pnt CCPACSWingSegment::GetPoint(double eta, double xsi, bool fromUpper)
     return profilePoint;
 }
 
-gp_Pnt CCPACSWingSegment::GetPointDirection(double eta, double xsi, double dirx, double diry, double dirz, bool fromUpper)
+gp_Pnt CCPACSWingSegment::GetPointDirection(double eta, double xsi, double dirx, double diry, double dirz, bool fromUpper, double& deviation)
 {
     if (eta < 0.0 || eta > 1.0) {
         throw CTiglError("Error: Parameter eta not in the range 0.0 <= eta <= 1.0 in CCPACSWingSegment::GetPoint", TIGL_ERROR);
@@ -604,20 +720,38 @@ gp_Pnt CCPACSWingSegment::GetPointDirection(double eta, double xsi, double dirx,
     gp_Dir direction(dirx, diry, dirz);
     gp_Lin line(tiglPoint.Get_gp_Pnt(), direction);
     
-    BRepIntCurveSurface_Inter inter;
-    double tol = 1e-6;
+    TopoDS_Shape skin;
     if (fromUpper) {
-        inter.Init(wing->GetUpperShape(), line, tol);
+        skin = wing->GetUpperShape();
     }
     else {
-        inter.Init(wing->GetLowerShape(), line, tol);
+        skin = wing->GetLowerShape();
     }
     
+    BRepIntCurveSurface_Inter inter;
+    double tol = 1e-6;
+    inter.Init(skin, line, tol);
+    
     if (inter.More()) {
+        deviation = 0.;
         return inter.Pnt();
     }
     else {
-        throw CTiglError("Could not calculate intersection of line with wing shell in CCPACSWingSegment::GetPointDirection", TIGL_NOT_FOUND);
+        // there is not intersection, lets compute the point next to the line
+        BRepExtrema_DistShapeShape extrema;
+        extrema.LoadS1(BRepBuilderAPI_MakeEdge(line));
+        extrema.LoadS2(skin);
+        extrema.Perform();
+        
+        if (!extrema.IsDone()) {
+            throw CTiglError("Could not calculate intersection of line with wing shell in CCPACSWingSegment::GetPointDirection", TIGL_NOT_FOUND);
+        }
+        
+        gp_Pnt p1 = extrema.PointOnShape1(1);
+        gp_Pnt p2 = extrema.PointOnShape2(1);
+
+        deviation = p1.Distance(p2);
+        return p2;
     }
 }
 
@@ -746,58 +880,55 @@ void CCPACSWingSegment::MakeSurfaces()
 
     cordSurface.setQuadriangle(inner_lep.XYZ(), outer_lep.XYZ(), inner_tep.XYZ(), outer_tep.XYZ());
 
-    TopoDS_Wire iu_wire = innerConnection.GetProfile().GetUpperWire();
-    TopoDS_Wire ou_wire = outerConnection.GetProfile().GetUpperWire();
-    TopoDS_Wire il_wire = innerConnection.GetProfile().GetLowerWire();
-    TopoDS_Wire ol_wire = outerConnection.GetProfile().GetLowerWire();
+    TopoDS_Edge iu_wire = innerConnection.GetProfile().GetUpperWire();
+    TopoDS_Edge ou_wire = outerConnection.GetProfile().GetUpperWire();
+    TopoDS_Edge il_wire = innerConnection.GetProfile().GetLowerWire();
+    TopoDS_Edge ol_wire = outerConnection.GetProfile().GetLowerWire();
 
-    iu_wire = transformProfileWire(GetWing().GetTransformation(), innerConnection, iu_wire);
-    ou_wire = transformProfileWire(GetWing().GetTransformation(), outerConnection, ou_wire);
-    il_wire = transformProfileWire(GetWing().GetTransformation(), innerConnection, il_wire);
-    ol_wire = transformProfileWire(GetWing().GetTransformation(), outerConnection, ol_wire);
+    iu_wire = TopoDS::Edge(transformProfileWire(GetWing().GetTransformation(), innerConnection, iu_wire));
+    ou_wire = TopoDS::Edge(transformProfileWire(GetWing().GetTransformation(), outerConnection, ou_wire));
+    il_wire = TopoDS::Edge(transformProfileWire(GetWing().GetTransformation(), innerConnection, il_wire));
+    ol_wire = TopoDS::Edge(transformProfileWire(GetWing().GetTransformation(), outerConnection, ol_wire));
 
 
     BRepOffsetAPI_ThruSections upperSections(Standard_False,Standard_True);
-    upperSections.AddWire(iu_wire);
-    upperSections.AddWire(ou_wire);
+    upperSections.AddWire(BRepBuilderAPI_MakeWire(iu_wire));
+    upperSections.AddWire(BRepBuilderAPI_MakeWire(ou_wire));
     upperSections.Build();
 
     BRepOffsetAPI_ThruSections lowerSections(Standard_False,Standard_True);
-    lowerSections.AddWire(il_wire);
-    lowerSections.AddWire(ol_wire);
+    lowerSections.AddWire(BRepBuilderAPI_MakeWire(il_wire));
+    lowerSections.AddWire(BRepBuilderAPI_MakeWire(ol_wire));
     lowerSections.Build();
 
-    upperShape = upperSections.Shape();
-    lowerShape = lowerSections.Shape();
+#ifndef NDEBUG
+    assert(GetNumberOfFaces(upperSections.Shape()) == 1);
+    assert(GetNumberOfFaces(lowerSections.Shape()) == 1);
+#endif
 
-    // we select the largest face to be the upperface (we can not include the trailing edge)
     TopExp_Explorer faceExplorer;
-    double maxArea = DBL_MIN;
-    for (faceExplorer.Init(upperShape, TopAbs_FACE); faceExplorer.More(); faceExplorer.Next()) {
-        const TopoDS_Face& face = TopoDS::Face(faceExplorer.Current());
-        GProp_GProps System;
-        BRepGProp::SurfaceProperties(face, System);
-        double surfaceArea = System.Mass();
-        if (surfaceArea > maxArea) {
-            const BRepLib_FindSurface findSurface(face, /* tolerance */1.01);
-            upperSurface = findSurface.Surface();
-            maxArea = surfaceArea;
-        }
-    }
-
-    // we select the largest face to be the lowerface (we can not include the trailing edge)
-    maxArea = DBL_MIN;
-    for (faceExplorer.Init(lowerShape, TopAbs_FACE); faceExplorer.More(); faceExplorer.Next()) {
-        const TopoDS_Face& face = TopoDS::Face(faceExplorer.Current());
-        GProp_GProps System;
-        BRepGProp::SurfaceProperties(face, System);
-        double surfaceArea = System.Mass();
-        if (surfaceArea > maxArea) {
-            const BRepLib_FindSurface findSurface(face, /* tolerance */1.01);
-            lowerSurface = findSurface.Surface();
-            maxArea = surfaceArea;
-        }
-    }
+    faceExplorer.Init(upperSections.Shape(), TopAbs_FACE);
+#ifndef NDEBUG
+    assert(faceExplorer.More());
+#endif
+    upperShape = faceExplorer.Current();
+    upperSurface = BRep_Tool::Surface(TopoDS::Face(upperShape));
+    
+    faceExplorer.Init(lowerSections.Shape(), TopAbs_FACE);
+#ifndef NDEBUG
+    assert(faceExplorer.More());
+#endif
+    lowerShape = faceExplorer.Current();
+    lowerSurface = BRep_Tool::Surface(TopoDS::Face(lowerShape));
+    
+    // compute total surface area
+    GProp_GProps sprops;
+    BRepGProp::SurfaceProperties(upperShape, sprops);
+    double upperArea = sprops.Mass();
+    BRepGProp::SurfaceProperties(lowerShape, sprops);
+    double lowerArea = sprops.Mass();
+    
+    mySurfaceArea = upperArea + lowerArea;
 
     surfacesAreValid = true;
 }
@@ -906,13 +1037,13 @@ void CCPACSWingSegment::BuildGuideCurveWires(void)
     if (guideCurvesPresent) {
         // get upper and lower part of inner profile in world coordinates
         CCPACSWingProfile& innerProfile = innerConnection.GetProfile();
-        TopoDS_Wire upperInnerWire = transformProfileWire(GetWing().GetTransformation(), innerConnection, innerProfile.GetUpperWire());
-        TopoDS_Wire lowerInnerWire = transformProfileWire(GetWing().GetTransformation(), innerConnection, innerProfile.GetLowerWire());
+        TopoDS_Edge upperInnerWire = TopoDS::Edge(transformProfileWire(GetWing().GetTransformation(), innerConnection, innerProfile.GetUpperWire()));
+        TopoDS_Edge lowerInnerWire = TopoDS::Edge(transformProfileWire(GetWing().GetTransformation(), innerConnection, innerProfile.GetLowerWire()));
 
         // get upper and lower part of outer profile in world coordinates
         CCPACSWingProfile& outerProfile = outerConnection.GetProfile();
-        TopoDS_Wire upperOuterWire = transformProfileWire(GetWing().GetTransformation(), outerConnection, outerProfile.GetUpperWire());
-        TopoDS_Wire lowerOuterWire = transformProfileWire(GetWing().GetTransformation(), outerConnection, outerProfile.GetLowerWire());
+        TopoDS_Edge upperOuterWire = TopoDS::Edge(transformProfileWire(GetWing().GetTransformation(), outerConnection, outerProfile.GetUpperWire()));
+        TopoDS_Edge lowerOuterWire = TopoDS::Edge(transformProfileWire(GetWing().GetTransformation(), outerConnection, outerProfile.GetLowerWire()));
 
         // concatenate inner profile wires for guide curve construction algorithm
         TopTools_SequenceOfShape concatenatedInnerWires;
@@ -925,8 +1056,8 @@ void CCPACSWingSegment::BuildGuideCurveWires(void)
         concatenatedOuterWires.Append(upperOuterWire);
 
         // get chord lengths for inner profile in word coordinates
-        TopoDS_Wire innerChordLineWire = transformProfileWire(GetWing().GetTransformation(), innerConnection, innerProfile.GetChordLineWire());
-        TopoDS_Wire outerChordLineWire = transformProfileWire(GetWing().GetTransformation(), outerConnection, outerProfile.GetChordLineWire());
+        TopoDS_Wire innerChordLineWire = TopoDS::Wire(transformProfileWire(GetWing().GetTransformation(), innerConnection, innerProfile.GetChordLineWire()));
+        TopoDS_Wire outerChordLineWire = TopoDS::Wire(transformProfileWire(GetWing().GetTransformation(), outerConnection, outerProfile.GetChordLineWire()));
         double innerScale = GetWireLength(innerChordLineWire);
         double outerScale = GetWireLength(outerChordLineWire);
 

@@ -24,11 +24,8 @@
 #include <clocale>
 
 #include <QString>
-#include <QtGui/QtGui>
-#include <QtGui/QPlastiqueStyle>
 #include <QMessageBox>
 
-#include "TIGLViewerApplication.h"
 #include "TIGLViewerWindow.h"
 #include "CommandLineParameters.h"
 
@@ -39,7 +36,7 @@ void showHelp(QString);
 
 int main(int argc, char *argv[])
 {
-    TIGLViewerApplication app( argc, argv );
+    QApplication app(argc, argv);
     
 #ifdef __APPLE__
     if (!getenv("CSF_GraphicShr")){
@@ -67,18 +64,26 @@ int main(int argc, char *argv[])
     window->show();
 
     if (!PARAMS.controlFile.isEmpty()){
-        if (window->getMyOCC()) {
-            window->getMyOCC()->repaint();
+        if (window->getViewer()) {
+            window->getViewer()->repaint();
         }
         window->setInitialControlFile(PARAMS.controlFile);
     }
 
     // if a filename is given, open the configuration
     if (!PARAMS.initialFilename.isEmpty()) {
-        if (window->getMyOCC()) {
-            window->getMyOCC()->repaint();
+        if (window->getViewer()) {
+            window->getViewer()->repaint();
         }
-        window->setInitialCpacsFileName(PARAMS.initialFilename);
+        window->openFile(PARAMS.initialFilename);
+    }
+    
+    // if a script is given
+    if (!PARAMS.initialScript.isEmpty()) {
+        if (window->getViewer()) {
+            window->getViewer()->repaint();
+        }
+        window->openScript(PARAMS.initialScript);
     }
 
     retval = app.exec();
@@ -96,6 +101,7 @@ void showHelp(QString appName)
     helpText += "  --help                      This help page\n";
     helpText += "  --filename <filename>    Initial CPACS file to open and display.\n";
     helpText += "  --modelUID <uid>         Initial model uid open and display.\n";
+    helpText += "  --script <filename>       Script to execute.\n";
     helpText += "  --windowtitle <title>    The titel of the TIGLViewer window.\n";
     helpText += "  --controlFile <filename>    Name of the control file.\n";
     helpText += "  --JediMode <on|off>      Makes you some kind of superhero like CPACS-Ninja.\n";
@@ -123,6 +129,15 @@ int parseArguments(QStringList argList)
             }
             else {
                 PARAMS.initialFilename = argList.at(++i);
+            }
+        }
+        else if (arg.compare("--script") == 0) {
+            if (i+1 >= argList.size()) {
+                cout << "missing script filename" << endl;
+                return -1;
+            }
+            else {
+                PARAMS.initialScript = argList.at(++i);
             }
         }
         else if (arg.compare("--windowtitle") == 0) {

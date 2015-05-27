@@ -208,6 +208,6 @@ TEST_F(tiglCPACSConfigurationHandleValid,validHandle)
 */
 TEST_F(tiglCPACSConfigurationHandleValid, version_valid)
 {
-    ASSERT_STREQ(TIGL_VERSION, tiglGetVersion());
+    ASSERT_STREQ(tiglGetVersion(), TIGL_VERSION);
 }
 

@@ -23,6 +23,12 @@
 #include <qnamespace.h>
 #include "TIGLViewerContext.h"
 #include "TIGLViewerInternal.h"
+#include "TIGLViewerSettings.h"
+#include "tiglcommonfunctions.h"
+
+#include "ISession_Point.h"
+#include "ISession_Text.h"
+#include "ISession_Direction.h"
 
 #include <OpenGl_GraphicDriver.hxx>
 
@@ -69,10 +75,14 @@ Handle_V3d_Viewer TIGLViewerContext::createViewer( const Standard_ExtString aNam
                                                    const Standard_CString aDomain,
                                                    const Standard_Real ViewSize )
 {
-    static Handle(Graphic3d_GraphicDriver) deviceHandle;
+    static Handle(OpenGl_GraphicDriver) deviceHandle;
+
     if (deviceHandle.IsNull()) {
-        deviceHandle = new OpenGl_GraphicDriver ("TKOpenGl");
-        deviceHandle->Begin (new Aspect_DisplayConnection());
+      Handle(Aspect_DisplayConnection) aDisplayConnection;
+#if !defined(_WIN32) && !defined(__WIN32__) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
+      aDisplayConnection = new Aspect_DisplayConnection (qgetenv ("DISPLAY").constData());
+#endif
+      deviceHandle = new OpenGl_GraphicDriver (aDisplayConnection);
     }
 
     return new V3d_Viewer(  deviceHandle,
@@ -99,6 +109,7 @@ void TIGLViewerContext::deleteAllObjects()
     for ( aListIterator.Initialize( aList ); aListIterator.More(); aListIterator.Next() ) {
         myContext->Remove( aListIterator.Value(), Standard_False);
     }
+    myContext->UpdateCurrentViewer();
 }
 /*! 
 \brief    Sets the privileged plane to the XY Axis.  
@@ -211,6 +222,79 @@ void TIGLViewerContext::setGridOffset (Quantity_Length offset)
 
     myViewer->RectangularGridGraphicValues(xSize, ySize, oldOffset);
     myViewer->SetRectangularGridGraphicValues(xSize, ySize, offset);
+}
+
+// a small helper when we just want to display a shape
+Handle(AIS_Shape) TIGLViewerContext::displayShape(const TopoDS_Shape& loft, Quantity_Color color)
+{
+    TIGLViewerSettings& settings = TIGLViewerSettings::Instance();
+    Handle(AIS_Shape) shape = new AIS_Shape(loft);
+    shape->SetMaterial(Graphic3d_NOM_METALIZED);
+    shape->SetColor(color);
+    shape->SetOwnDeviationCoefficient(settings.tesselationAccuracy());
+    myContext->Display(shape, Standard_True);
+    
+    if (settings.enumerateFaces()) {
+        TopTools_IndexedMapOfShape shapeMap;
+        TopExp::MapShapes(loft, TopAbs_FACE, shapeMap);
+        for (int i = 1; i <= shapeMap.Extent(); ++i) {
+            const TopoDS_Face& face = TopoDS::Face(shapeMap(i));
+            gp_Pnt p = GetCentralFacePoint(face);
+            QString s = QString("%1").arg(i);
+            displayPoint(p, s.toStdString().c_str(), false, 0., 0., 0., 10.);
+        }
+    }
+    
+    return shape;
+}
+
+// Displays a point on the screen
+void TIGLViewerContext::displayPoint(const gp_Pnt& aPoint,
+                                     const char* aText,
+                                     Standard_Boolean UpdateViewer,
+                                     Standard_Real anXoffset,
+                                     Standard_Real anYoffset,
+                                     Standard_Real aZoffset,
+                                     Standard_Real TextScale)
+{
+    Handle(ISession_Point) aGraphicPoint = new ISession_Point(aPoint.X(), aPoint.Y(), aPoint.Z());
+    myContext->Display(aGraphicPoint,UpdateViewer);
+    Handle(ISession_Text) aGraphicText = new ISession_Text(aText, aPoint.X() + anXoffset,
+                                                 aPoint.Y() + anYoffset,
+                                                 aPoint.Z() + aZoffset);
+    aGraphicText->SetScale(TextScale);
+    myContext->Display(aGraphicText,UpdateViewer);
+}
+
+// convenience wrapper
+void TIGLViewerContext::drawPoint(double x, double y, double z)
+{
+    displayPoint(gp_Pnt(x,y,z), "", Standard_True, 0,0,0, 1.0);
+}
+
+// Displays a vector on the screen
+void TIGLViewerContext::displayVector(const gp_Pnt& aPoint,
+                                      const gp_Vec& aVec,
+                                      const char* aText,
+                                      Standard_Boolean UpdateViewer,
+                                      Standard_Real anXoffset,
+                                      Standard_Real anYoffset,
+                                      Standard_Real aZoffset,
+                                      Standard_Real TextScale)
+{
+    Handle(ISession_Direction) aGraphicDirection = new ISession_Direction(aPoint, aVec);
+    myContext->Display(aGraphicDirection,UpdateViewer);
+    Handle(ISession_Text) aGraphicText = new ISession_Text(aText, aPoint.X() + anXoffset,
+                                                 aPoint.Y() + anYoffset,
+                                                 aPoint.Z() + aZoffset);
+    aGraphicText->SetScale(TextScale);
+    myContext->Display(aGraphicText,UpdateViewer);
+}
+
+// convenience wrapper
+void TIGLViewerContext::drawVector(double x, double y, double z, double dirx, double diry, double dirz)
+{
+    displayVector(gp_Pnt(x,y,z), gp_Vec(dirx, diry, dirz), "", Standard_True, 0,0,0, 1.0);
 }
 
 

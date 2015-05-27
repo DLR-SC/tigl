@@ -21,15 +21,17 @@
 #ifndef TIGLVIEWERDOCUMENT_H
 #define TIGLVIEWERDOCUMENT_H
 
-#include <QtCore/QObject>
+#include <QObject>
+#include <QMetaType>
 #include "TIGLViewer.h"
-#include "TIGLViewerColors.h"
 #include "CCPACSConfiguration.h"
 
 #include <Handle_AIS_Shape.hxx>
 #include <Quantity_Color.hxx>
 
-class QOCC_DECLSPEC TIGLViewerDocument : public QObject
+class TIGLViewerWindow;
+
+class TIGLViewerDocument : public QObject
 {
     Q_OBJECT
 
@@ -40,24 +42,12 @@ class QOCC_DECLSPEC TIGLViewerDocument : public QObject
 
 public:
 
-    TIGLViewerDocument( QWidget *parentWidget, const Handle_AIS_InteractiveContext& ic );
+    TIGLViewerDocument(TIGLViewerWindow *parentWidget);
     ~TIGLViewerDocument( );
 
     TiglReturnCode openCpacsConfiguration(const QString fileName);
     void closeCpacsConfiguration();
     TiglCPACSConfigurationHandle getCpacsHandle(void) const;
-
-    // a small helper when we just want to display a shape
-    Handle(AIS_Shape) displayShape(const TopoDS_Shape& shape, Quantity_Color col = Quantity_NOC_ShapeCol);
-
-    // Draws a point
-    void DisplayPoint(gp_Pnt& aPoint,
-                      const char* aText,
-                      Standard_Boolean UpdateViewer,
-                      Standard_Real anXoffset,
-                      Standard_Real anYoffset,
-                      Standard_Real aZoffset,
-                      Standard_Real TextScale);
 
     // Returns the CPACS configuration
     tigl::CCPACSConfiguration& GetConfiguration(void) const;
@@ -98,10 +88,6 @@ public slots:
     void drawFuselageSamplePointsAngle();
     void drawFusedFuselage();
     void drawFuselageGuideCurves();
-    
-    // Misc slots
-    void drawPoint();
-    void drawVector();
 
     // TIGL slots
     void exportAsIges();
@@ -118,6 +104,7 @@ public slots:
     void exportMeshedConfigVTKNoFuse();
     void exportWingCollada();
     void exportFuselageCollada();
+    void exportConfigCollada();
     void exportWingBRep();
     void exportFuselageBRep();
     void exportWingCurvesBRep();
@@ -143,13 +130,12 @@ private slots:
     QString dlgGetFuselageProfileSelection();
 
 
-private:
-    TiglCPACSConfigurationHandle                    m_cpacsHandle;
-    QWidget*                                        parent;
-    Handle_AIS_InteractiveContext                   myAISContext;
-    class TIGLViewerWidget*                         myOCC;
-    QString                                         loadedConfigurationFileName;
-    std::map<std::string,Handle(AIS_Shape)>         flapsForInteractiveUse;
+private: 
+    TiglCPACSConfigurationHandle            m_cpacsHandle;
+    TIGLViewerWindow*                       app;
+    QString                                 loadedConfigurationFileName;
+    // @todo: remove flapsForInteractiveUse from class
+    std::map<std::string,Handle(AIS_Shape)> flapsForInteractiveUse;
 
     void writeToStatusBar(QString text);
     void displayError(QString text, QString header="");
@@ -158,5 +144,7 @@ private:
     void createShapeTriangulation(const class TopoDS_Shape& shape, class TopoDS_Compound& compound);
 
 };
+
+Q_DECLARE_METATYPE(TIGLViewerDocument*)
 
 #endif // TIGLVIEWERDOCUMENT_H

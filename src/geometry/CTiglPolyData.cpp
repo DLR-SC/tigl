@@ -172,8 +172,6 @@ struct PolyIndexList
     
     void addPoint(int index);
     
-    void repair();
-    
     void setRealData(const char * txt, double value)
     {
         realDataMap[txt] = value;
@@ -572,17 +570,6 @@ void PolyIndexList::addPoint(int index)
     // dont add same point twice
     if (pindex.size() == 0 || pindex.back() != index) {
          pindex.push_back(index);
-    }
-}
-
-void PolyIndexList::repair()
-{
-    if (pindex.size() > 0 && pindex.front() == pindex.back()) {
-        pindex.pop_back();
-    }
-    if (pindex.size() < 3) {
-        std::cerr << "ERROR: polygon " << myid << " must contain at least 3 points!" << pindex.size()<< std::endl;
-        exit(1);
     }
 }
 

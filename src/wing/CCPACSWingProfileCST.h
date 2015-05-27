@@ -27,6 +27,7 @@
 #include "ITiglWingProfileAlgo.h"
 
 #include <vector>
+#include <TopoDS_Edge.hxx>
 
 #ifndef CCPACSWINGPROFILECST_H
 #define CCPACSWINGPROFILECST_H
@@ -66,17 +67,17 @@ public:
     // get profiles CPACS XML path
     TIGL_EXPORT const std::string & GetProfileDataXPath() const;
 
-    // get forced closed wing profile wire
-    TIGL_EXPORT const TopoDS_Wire & GetWireClosed() const;
-
     // get upper wing profile wire
-    TIGL_EXPORT const TopoDS_Wire & GetUpperWire() const;
+    TIGL_EXPORT const TopoDS_Edge & GetUpperWire() const;
 
     // get lower wing profile wire
-    TIGL_EXPORT const TopoDS_Wire & GetLowerWire() const;
+    TIGL_EXPORT const TopoDS_Edge & GetLowerWire() const;
 
     // get trailing edge
-    TIGL_EXPORT const TopoDS_Wire & GetTrailingEdge() const;
+    TIGL_EXPORT const TopoDS_Edge & GetTrailingEdge() const;
+    
+    // gets the upper and lower wing profile into on edge
+    TIGL_EXPORT const TopoDS_Edge & GetUpperLowerWire() const;
 
     // get leading edge point();
     TIGL_EXPORT const gp_Pnt & GetLEPoint() const;
@@ -88,9 +89,6 @@ protected:
     // Builds the wing profile wires.
     void BuildWires();
 
-    // Builds leading and trailing edge points of the wing profile wire.
-    void BuildLETEPoints(void);
-
 private:
     // Copy constructor
     CCPACSWingProfileCST(const CCPACSWingProfileCST& );
@@ -99,17 +97,13 @@ private:
     void operator=(const CCPACSWingProfileCST& );
 
 private:
-    CCPACSCoordinateContainer coordinates;        /**< Coordinates of a wing profile element */
-    CCPACSCoordinateContainer upperCoordinates;   /**< Coordinates of the upper part of the wing profile*/
-    CCPACSCoordinateContainer lowerCoordinates;   /**< Coordinates of the upper part of the wing profile*/
     std::string               ProfileDataXPath;   /**< CPACS path to profile data (pointList or cst2D) */
-    TopoDS_Wire               wireClosed;         /**< Forced closed wing profile wire */
-    TopoDS_Wire               upperWire;          /**< wire of the upper wing profile */
-    TopoDS_Wire               lowerWire;          /**< wire of the lower wing profile */
-    TopoDS_Wire               trailingEdge;       /**< wire of the trailing edge */
+    TopoDS_Edge               upperWire;          /**< wire of the upper wing profile */
+    TopoDS_Edge               lowerWire;          /**< wire of the lower wing profile */
+    TopoDS_Edge               upperLowerEdge;     /**< edge consisting of upper and lower wing profile */
+    TopoDS_Edge               trailingEdge;       /**< wire of the trailing edge */
     gp_Pnt                    lePoint;            /**< Leading edge point */
     gp_Pnt                    tePoint;            /**< Trailing edge point */
-    std::vector<double>       psi;                /**< sample points on CST curve */
     double                    upperN1;            /**< CST parameter N1 */
     double                    upperN2;            /**< CST parameter N2 */
     std::vector<double>       upperB;             /**< CST parameter B */

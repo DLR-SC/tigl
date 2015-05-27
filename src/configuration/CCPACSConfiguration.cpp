@@ -60,6 +60,7 @@ CCPACSConfiguration::CCPACSConfiguration(TixiDocumentHandle tixiHandle)
     , header()
     , wings(this)
     , fuselages(this)
+    , externalObjects(this)
     , uidManager()
 {
 }
@@ -88,10 +89,11 @@ void CCPACSConfiguration::ReadCPACS(const char* configurationUID)
     }
 
     header.ReadCPACS(tixiDocumentHandle);
+    guideCurveProfiles.ReadCPACS(tixiDocumentHandle);
     wings.ReadCPACS(tixiDocumentHandle, configurationUID);
     fuselages.ReadCPACS(tixiDocumentHandle, configurationUID);
     farField.ReadCPACS(tixiDocumentHandle);
-    guideCurveProfiles.ReadCPACS(tixiDocumentHandle);
+    externalObjects.ReadCPACS(tixiDocumentHandle, configurationUID);
 
     configUID = configurationUID;
     // Now do parent <-> child transformations. Child should use the
@@ -137,6 +139,11 @@ TixiDocumentHandle CCPACSConfiguration::GetTixiDocumentHandle(void) const
     return tixiDocumentHandle;
 }
 
+bool CCPACSConfiguration::HasWingProfile(std::string uid) const
+{
+    return wings.HasProfile(uid);
+}
+
 // Returns the total count of wing profiles in this configuration
 int CCPACSConfiguration::GetWingProfileCount(void) const
 {
@@ -177,6 +184,11 @@ TopoDS_Shape CCPACSConfiguration::GetParentLoft(const std::string& UID)
     return uidManager.GetParentComponent(UID)->GetLoft()->Shape();
 }
 
+bool CCPACSConfiguration::HasFuselageProfile(std::string uid) const
+{
+    return fuselages.HasProfile(uid);
+}
+
 // Returns the total count of fuselage profiles in this configuration
 int CCPACSConfiguration::GetFuselageProfileCount(void) const
 {
@@ -210,6 +222,16 @@ CCPACSFuselage& CCPACSConfiguration::GetFuselage(int index) const
 CCPACSFarField& CCPACSConfiguration::GetFarField()
 {
     return farField;
+}
+
+int CCPACSConfiguration::GetExternalObjectCount() const
+{
+    return externalObjects.GetObjectCount();
+}
+
+CCPACSExternalObject&CCPACSConfiguration::GetExternalObject(int index) const
+{
+    return externalObjects.GetObject(index);
 }
 
 // Returns the fuselage for a given UID.

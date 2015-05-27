@@ -21,6 +21,13 @@
  * data structures.
  */
 
+#if defined _WIN32 || defined __WIN32__
+#include <Shlwapi.h>
+#include <io.h>
+#else
+#include <unistd.h>
+#endif
+
 #include "tiglcommonfunctions.h"
 
 #include "CTiglError.h"
@@ -38,6 +45,8 @@
 #include "TopExp_Explorer.hxx"
 #include "TopExp.hxx"
 #include "TopoDS.hxx"
+#include "TopoDS_Shape.hxx"
+#include "TopoDS_Edge.hxx"
 #include "TopTools_IndexedMapOfShape.hxx"
 #include "TopTools_HSequenceOfShape.hxx"
 #include "GeomAdaptor_Curve.hxx"
@@ -57,19 +66,14 @@
 #include <Geom2d_Line.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
 #include <Geom2dAPI_InterCurveCurve.hxx>
+#include <Geom_TrimmedCurve.hxx>
+#include <GeomConvert.hxx>
 
 #include "ShapeAnalysis_FreeBounds.hxx"
 
 #include <list>
 #include <algorithm>
 #include <cassert>
-
-// OCAF
-#include "TDF_Label.hxx"
-#include "TDataStd_Name.hxx"
-#ifdef TIGL_USE_XCAF
-#include "XCAFDoc_ShapeTool.hxx"
-#endif
 
 namespace
 {
@@ -92,6 +96,15 @@ Standard_Real GetWireLength(const TopoDS_Wire& wire)
     return GCPnts_AbscissaPoint::Length( aCompoundCurve );
 }
 
+Standard_Real GetEdgeLength(const TopoDS_Edge &edge)
+{
+    Standard_Real umin, umax;
+    Handle_Geom_Curve curve = BRep_Tool::Curve(edge, umin, umax);
+    GeomAdaptor_Curve adaptorCurve(curve, umin, umax);
+    Standard_Real length = GCPnts_AbscissaPoint::Length(adaptorCurve, umin, umax);
+    return length;
+}
+
 unsigned int GetNumberOfEdges(const TopoDS_Shape& shape)
 {
     TopExp_Explorer edgeExpl(shape, TopAbs_EDGE);
@@ -101,6 +114,31 @@ unsigned int GetNumberOfEdges(const TopoDS_Shape& shape)
     }
 
     return iEdges;
+}
+
+unsigned int GetNumberOfFaces(const TopoDS_Shape& shape)
+{
+    TopExp_Explorer faceExpl(shape, TopAbs_FACE);
+    unsigned int iFaces = 0;
+    for (; faceExpl.More(); faceExpl.Next()) {
+        iFaces++;
+    }
+
+    return iFaces;
+}
+
+unsigned int GetNumberOfSubshapes(const TopoDS_Shape &shape)
+{
+    if (shape.ShapeType() == TopAbs_COMPOUND) {
+        unsigned int n = 0;
+        for (TopoDS_Iterator anIter(shape); anIter.More(); anIter.Next()) {
+            n++;
+        }
+        return n;
+    }
+    else {
+        return 0;
+    }
 }
 
 // Gets a point on the wire line in dependence of a parameter alpha with
@@ -117,7 +155,7 @@ gp_Pnt WireGetPoint(const TopoDS_Wire& wire, double alpha)
 void WireGetPointTangent(const TopoDS_Wire& wire, double alpha, gp_Pnt& point, gp_Vec& tangent)
 {
     if (alpha < 0.0 || alpha > 1.0) {
-        throw tigl::CTiglError("Error: Parameter alpha not in the range 0.0 <= alpha <= 1.0 in WireGetPointTangent2", TIGL_ERROR);
+        throw tigl::CTiglError("Error: Parameter alpha not in the range 0.0 <= alpha <= 1.0 in WireGetPointTangent", TIGL_ERROR);
     }
     // ETA 3D point
     BRepAdaptor_CompCurve aCompoundCurve(wire, Standard_True);
@@ -132,6 +170,36 @@ void WireGetPointTangent(const TopoDS_Wire& wire, double alpha, gp_Pnt& point, g
     }
     else {
         throw tigl::CTiglError("WireGetPointTangent: Cannot compute point on curve.", TIGL_MATH_ERROR);
+    }
+}
+
+gp_Pnt EdgeGetPoint(const TopoDS_Edge& edge, double alpha)
+{
+    gp_Pnt point;
+    gp_Vec tangent;
+    EdgeGetPointTangent(edge, alpha, point, tangent);
+    return point;
+}
+
+void EdgeGetPointTangent(const TopoDS_Edge& edge, double alpha, gp_Pnt& point, gp_Vec& tangent)
+{
+    if (alpha < 0.0 || alpha > 1.0) {
+        throw tigl::CTiglError("Error: Parameter alpha not in the range 0.0 <= alpha <= 1.0 in EdgeGetPointTangent", TIGL_ERROR);
+    }
+    // ETA 3D point
+    Standard_Real umin, umax;
+    Handle_Geom_Curve curve = BRep_Tool::Curve(edge, umin, umax);
+    GeomAdaptor_Curve adaptorCurve(curve, umin, umax);
+    Standard_Real len =  GCPnts_AbscissaPoint::Length( adaptorCurve, umin, umax );
+    GCPnts_AbscissaPoint algo(adaptorCurve, len*alpha, umin);
+    if (algo.IsDone()) {
+        double par = algo.Parameter();
+        adaptorCurve.D1( par, point, tangent );
+        // normalize tangent to length of the curve
+        tangent = len*tangent/tangent.Magnitude();
+    }
+    else {
+        throw tigl::CTiglError("EdgeGetPointTangent: Cannot compute point on curve.", TIGL_MATH_ERROR);
     }
 }
 
@@ -241,7 +309,7 @@ gp_Pnt GetCentralFacePoint(const TopoDS_Face& face)
     return p;
 }
 
-ListPNamedShape GroupFaces(const PNamedShape shape, tigl::ShapeStoreType groupType)
+ListPNamedShape GroupFaces(const PNamedShape shape, tigl::ShapeGroupMode groupType)
 {
     ListPNamedShape shapeList;
     if (!shape) {
@@ -349,50 +417,6 @@ void GetShapeExtension(const TopoDS_Shape& shape,
     boundingBox.Get(minx, miny, minz, maxx, maxy, maxz);
 }
 
-#ifdef TIGL_USE_XCAF
-void InsertShapeToCAF(Handle(XCAFDoc_ShapeTool) myAssembly, const PNamedShape shape, bool useShortnames)
-{
-    if (!shape) {
-        return;
-    }
-
-    TopTools_IndexedMapOfShape faceMap;
-    TopExp::MapShapes(shape->Shape(),   TopAbs_FACE, faceMap);
-    // any faces?
-    if (faceMap.Extent() > 0) {
-        TDF_Label shapeLabel = myAssembly->NewShape();
-        myAssembly->SetShape(shapeLabel, shape->Shape());
-        if (useShortnames) {
-            TDataStd_Name::Set(shapeLabel, shape->ShortName());
-        }
-        else {
-            TDataStd_Name::Set(shapeLabel, shape->Name());
-        }
-    }
-    else {
-        // no faces, export edges as wires
-        Handle(TopTools_HSequenceOfShape) Edges = new TopTools_HSequenceOfShape();
-        TopExp_Explorer myEdgeExplorer (shape->Shape(), TopAbs_EDGE);
-        while (myEdgeExplorer.More()) {
-            Edges->Append(TopoDS::Edge(myEdgeExplorer.Current()));
-            myEdgeExplorer.Next();
-        }
-        ShapeAnalysis_FreeBounds::ConnectEdgesToWires(Edges, 1e-7, false, Edges);
-        for (int iwire = 1; iwire <= Edges->Length(); ++iwire) {
-            TDF_Label wireLabel = myAssembly->NewShape();
-            myAssembly->SetShape(wireLabel, Edges->Value(iwire));
-            if (useShortnames) {
-                TDataStd_Name::Set(wireLabel, shape->ShortName());
-            }
-            else {
-                TDataStd_Name::Set(wireLabel, shape->Name());
-            }
-        }
-    }
-}
-
-#endif
-
 // Returns a unique Hashcode for a specific geometric component
 int GetComponentHashCode(tigl::ITiglGeometricComponent& component)
 {
@@ -403,4 +427,53 @@ int GetComponentHashCode(tigl::ITiglGeometricComponent& component)
     else {
         return 0;
     }
+}
+
+
+TopoDS_Edge GetEdge(const TopoDS_Shape &shape, int iEdge)
+{
+    TopTools_IndexedMapOfShape edgeMap;
+    TopExp::MapShapes(shape, TopAbs_EDGE, edgeMap);
+    
+    if (iEdge < 0 || iEdge >= edgeMap.Extent()) {
+        return TopoDS_Edge();
+    }
+    else {
+        return TopoDS::Edge(edgeMap(iEdge+1));
+    }
+}
+
+Handle_Geom_BSplineCurve GetBSplineCurve(const TopoDS_Edge& e)
+{
+    double u1, u2;
+    Handle_Geom_Curve curve = BRep_Tool::Curve(e, u1, u2);
+    curve = new Geom_TrimmedCurve(curve, u1, u2);
+    
+    // convert to bspline
+    Handle_Geom_BSplineCurve bspl =  GeomConvert::CurveToBSplineCurve(curve);
+    return bspl;
+}
+
+
+bool IsPathRelative(const std::string& path)
+{
+#if defined _WIN32 || defined __WIN32__
+    return PathIsRelative(path.c_str()) == 1;
+#else
+    if (path.size() > 0 && path[0] == '/') {
+        return false;
+    }
+    else {
+        return true;
+    }
+#endif
+}
+
+bool IsFileReadable(const std::string& filename)
+{
+#ifdef _MSC_VER
+    return _access(filename.c_str(), 4) == 0;
+#else
+    return access(filename.c_str(), R_OK) == 0;
+#endif
 }

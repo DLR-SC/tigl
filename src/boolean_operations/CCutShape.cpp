@@ -31,14 +31,14 @@
 #define USE_OWN_ALGO
 
 CCutShape::CCutShape(const PNamedShape shape, const PNamedShape cuttingTool)
-    : _dsfiller(NULL), _source(shape), _tool(cuttingTool), _resultshape()
+    :  _resultshape(), _tool(cuttingTool), _source(shape), _dsfiller(NULL)
 {
     _fillerAllocated = false;
     _hasPerformed = false;
 }
 
 CCutShape::CCutShape(const PNamedShape shape, const PNamedShape cuttingTool, const BOPAlgo_PaveFiller & filler)
-    : _source(shape), _tool(cuttingTool), _resultshape()
+    :  _resultshape(), _tool(cuttingTool), _source(shape)
 {
     _fillerAllocated = false;
     _hasPerformed = false;

@@ -204,9 +204,9 @@ TEST_F(tiglExportSimple, export_wing_collada)
     tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglSimpleHandle);
     tigl::CCPACSWing& wing = config.GetWing(1);
 
-    tigl::CTiglTriangularizer t(wing.GetLoft()->Shape(), 0.001);
-
-    TiglReturnCode ret = tigl::CTiglExportCollada::writeToDisc(t, "simple_wing", "TestData/export/simpletest_wing.dae");
+    tigl::CTiglExportCollada colladaWriter;
+    colladaWriter.AddShape(wing.GetLoft(), 0.001);
+    TiglReturnCode ret = colladaWriter.Write("TestData/export/simpletest_wing.dae");
 
     ASSERT_EQ(TIGL_SUCCESS, ret);
 }
@@ -217,6 +217,11 @@ TEST_F(tiglExportSimple, check_face_traits)
 {
     ASSERT_EQ(TIGL_SUCCESS, tiglExportIGES(tiglSimpleHandle,"TestData/export/simpletest.iges"));
     ASSERT_EQ(TIGL_SUCCESS, tiglExportFusedWingFuselageIGES(tiglSimpleHandle,"TestData/export/simpletest_fused.iges"));
+}
+
+TEST_F(tiglExportSimple, exportFusedBRep)
+{
+    ASSERT_EQ(TIGL_SUCCESS, tiglExportFusedBREP(tiglSimpleHandle,"TestData/export/simpletest.brep"));
 }
 
 // check if face names were set correctly in the case without a trailing edge

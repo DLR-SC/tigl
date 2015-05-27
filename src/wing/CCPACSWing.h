@@ -128,9 +128,6 @@ public:
     // Sets a Transformation object
     TIGL_EXPORT void Translate(CTiglPoint trans);
 
-    // Get Translation
-    TIGL_EXPORT CTiglPoint GetTranslation(void);
-
     // Gets the surfade area of this wing
     TIGL_EXPORT double GetSurfaceArea();
 
@@ -172,9 +169,6 @@ public:
 protected:
     // Cleanup routine
     void Cleanup(void);
-
-    // Build transformation matrix for the wing
-    void BuildMatrix(void);
 
     // Update internal wing data
     void Update(void);

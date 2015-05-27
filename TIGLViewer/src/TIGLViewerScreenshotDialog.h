@@ -38,6 +38,8 @@ public:
     
     void setQualityValue(int quality);
     int  getQualityValue() const;
+    
+    bool getWhiteBGEnabled() const;
 
     ~TIGLViewerScreenshotDialog();
     

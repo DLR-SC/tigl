@@ -43,6 +43,7 @@
 #include "BRepAlgoAPI_Cut.hxx"
 #include "Bnd_Box.hxx"
 #include "BRepBndLib.hxx"
+#include <BRepBuilderAPI_MakeWire.hxx>
 #include <TopExp.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
 #include "BRepBuilderAPI_Transform.hxx"
@@ -106,7 +107,8 @@ namespace
         // check if number of faces without inside and outside surface (nFaces-2)
         // is a multiple of 2 (without Trailing Edges) or 3 (with Trailing Edges)
         if (!((nFaces-2)/nSegments == 2 || (nFaces-2)/nSegments == 3) || nFaces < 4) {
-            throw tigl::CTiglError("CCPACSWing: Unable to name face traits in ruled surface loft", TIGL_ERROR);
+            LOG(ERROR) << "CCPACSWing: Unable to determine wing face names from wing loft.";
+            return;
         }
         // remove trailing edge name if there is no trailing edge
         if ((nFaces-2)/nSegments == 2) {
@@ -158,37 +160,12 @@ void CCPACSWing::Invalidate(void)
 void CCPACSWing::Cleanup(void)
 {
     name = "";
-    transformation.SetIdentity();
-    translation = CTiglPoint(0.0, 0.0, 0.0);
-    scaling     = CTiglPoint(1.0, 1.0, 1.0);
-    rotation    = CTiglPoint(0.0, 0.0, 0.0);
+    transformation.reset();
 
     // Calls ITiglGeometricComponent interface Reset to delete e.g. all childs.
     Reset();
 
     Invalidate();
-}
-
-// Builds transformation matrix for the wing
-void CCPACSWing::BuildMatrix(void)
-{
-    transformation.SetIdentity();
-
-    // Step 1: scale the wing around the orign
-    transformation.AddScaling(scaling.x, scaling.y, scaling.z);
-
-    // Step 2: rotate the wing
-    // Step 2a: rotate the wing around z (yaw   += right tip forward)
-    transformation.AddRotationZ(rotation.z);
-    // Step 2b: rotate the wing around y (pitch += nose up)
-    transformation.AddRotationY(rotation.y);
-    // Step 2c: rotate the wing around x (roll  += right tip up)
-    transformation.AddRotationX(rotation.x);
-
-    // Step 3: translate the rotated wing into its position
-    transformation.AddTranslation(translation.x, translation.y, translation.z);
-
-    backTransformation = transformation.Inverted();
 }
 
 // Update internal wing data
@@ -198,7 +175,7 @@ void CCPACSWing::Update(void)
         return;
     }
 
-    BuildMatrix();
+    transformation.updateMatrix();
     invalidated = false;
     rebuildFusedSegments = true;    // forces a rebuild of all segments with regards to the updated translation
     rebuildShells = true;
@@ -238,47 +215,8 @@ void CCPACSWing::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& win
         SetParentUID(ptrParentUID);
     }
 
-
-    // Get subelement "/transformation/translation"
-    tempString  = wingXPath + "/transformation/translation";
-    elementPath = const_cast<char*>(tempString.c_str());
-    if (tixiCheckElement(tixiHandle, elementPath) == SUCCESS) {
-        if (tixiGetPoint(tixiHandle, elementPath, &(translation.x), &(translation.y), &(translation.z)) != SUCCESS) {
-            throw CTiglError("Error: XML error while reading <translation/> in CCPACSWing::ReadCPACS", TIGL_XML_ERROR);
-        }
-    }
-
-    // Get translation type (attribute of "/transformation/translation")
-    if (tixiCheckAttribute(tixiHandle, elementPath, "refType") == SUCCESS) {
-        char * refTypeVal = NULL;
-        if (tixiGetTextAttribute(tixiHandle, elementPath, "refType", &refTypeVal) == SUCCESS) {
-            std::string refTypeStr(refTypeVal);
-            if (refTypeStr == "absGlobal") {
-                translationType = ABS_GLOBAL;
-            }
-            else if (refTypeStr == "absLocal") {
-                translationType = ABS_LOCAL;
-            }
-        }
-    }
-
-    // Get subelement "/transformation/scaling"
-    tempString  = wingXPath + "/transformation/scaling";
-    elementPath = const_cast<char*>(tempString.c_str());
-    if (tixiCheckElement(tixiHandle, elementPath) == SUCCESS) {
-        if (tixiGetPoint(tixiHandle, elementPath, &(scaling.x), &(scaling.y), &(scaling.z)) != SUCCESS) {
-            throw CTiglError("Error: XML error while reading <scaling/> in CCPACSWing::ReadCPACS", TIGL_XML_ERROR);
-        }
-    }
-
-    // Get subelement "/transformation/rotation"
-    tempString  = wingXPath + "/transformation/rotation";
-    elementPath = const_cast<char*>(tempString.c_str());
-    if (tixiCheckElement(tixiHandle, elementPath) == SUCCESS) {
-        if (tixiGetPoint(tixiHandle, elementPath, &(rotation.x), &(rotation.y), &(rotation.z)) != SUCCESS) {
-            throw CTiglError("Error: XML error while reading <rotation/> in CCPACSWing::ReadCPACS", TIGL_XML_ERROR);
-        }
-    }
+    // Get Transformation
+    transformation.ReadCPACS(tixiHandle, wingXPath);
 
     // Get subelement "sections"
     sections.ReadCPACS(tixiHandle, wingXPath);
@@ -530,24 +468,17 @@ PNamedShape CCPACSWing::BuildFusedSegments(bool splitWingInUpperAndLower)
     BRepOffsetAPI_ThruSections generator(Standard_True, Standard_True, Precision::Confusion() );
 
     for (int i=1; i <= segments.GetSegmentCount(); i++) {
-        CCPACSWingConnection& startConnection = segments.GetSegment(i).GetInnerConnection();
-        CCPACSWingProfile& startProfile = startConnection.GetProfile();
-        TopoDS_Wire startWire = transformToWingCoords(startConnection, startProfile.GetWire());
-
+        TopoDS_Wire startWire = segments.GetSegment(i).GetInnerWire();
         generator.AddWire(startWire);
     }
 
-    CCPACSWingConnection& endConnection = segments.GetSegment(segments.GetSegmentCount()).GetOuterConnection();
-    CCPACSWingProfile& endProfile = endConnection.GetProfile();
-    TopoDS_Wire endWire = transformToWingCoords(endConnection,endProfile.GetWire());
-
+    TopoDS_Wire endWire = segments.GetSegment(segments.GetSegmentCount()).GetOuterWire();
     generator.AddWire(endWire);
 
     generator.CheckCompatibility(Standard_False);
     generator.Build();
-
-
-    TopoDS_Shape loftShape = GetWingTransformation().Transform(generator.Shape());
+        
+    TopoDS_Shape loftShape = generator.Shape();
     std::string loftName = GetUID();
     std::string loftShortName = GetShortShapeName();
     PNamedShape loft(new CNamedShape(loftShape, loftName.c_str(), loftShortName.c_str()));
@@ -567,8 +498,8 @@ void CCPACSWing::BuildUpperLowerShells()
         CCPACSWingConnection& startConnection = segments.GetSegment(i).GetInnerConnection();
         CCPACSWingProfile& startProfile = startConnection.GetProfile();
         TopoDS_Wire upperWire, lowerWire;
-        upperWire = transformToWingCoords(startConnection, startProfile.GetUpperWire());
-        lowerWire = transformToWingCoords(startConnection, startProfile.GetLowerWire());
+        upperWire = TopoDS::Wire(transformToWingCoords(startConnection, BRepBuilderAPI_MakeWire(startProfile.GetUpperWire())));
+        lowerWire = TopoDS::Wire(transformToWingCoords(startConnection, BRepBuilderAPI_MakeWire(startProfile.GetLowerWire())));
         generatorUp.AddWire(upperWire);
         generatorLow.AddWire(lowerWire);
     }
@@ -577,8 +508,8 @@ void CCPACSWing::BuildUpperLowerShells()
     CCPACSWingProfile& endProfile = endConnection.GetProfile();
     TopoDS_Wire endUpWire, endLowWire;
 
-    endUpWire = transformToWingCoords(endConnection, endProfile.GetUpperWire());
-    endLowWire = transformToWingCoords(endConnection, endProfile.GetLowerWire());
+    endUpWire  = TopoDS::Wire(transformToWingCoords(endConnection, BRepBuilderAPI_MakeWire(endProfile.GetUpperWire())));
+    endLowWire = TopoDS::Wire(transformToWingCoords(endConnection, BRepBuilderAPI_MakeWire(endProfile.GetLowerWire())));
 
     generatorUp.AddWire(endUpWire);
     generatorLow.AddWire(endLowWire);
@@ -593,8 +524,7 @@ void CCPACSWing::BuildUpperLowerShells()
 // Gets the wing transformation (original wing implementation, but see GetTransformation)
 CTiglTransformation CCPACSWing::GetWingTransformation(void)
 {
-    Update();   // create new transformation matrix if scaling, rotation or translation was changed
-    return transformation;
+    return transformation.getTransformationMatrix();
 }
 
 // Get the positioning transformation for a given section-uid
@@ -641,12 +571,6 @@ void CCPACSWing::Translate(CTiglPoint trans)
     segments.Invalidate();
     componentSegments.Invalidate();
     Update();
-}
-
-// Get Translation
-CTiglPoint CCPACSWing::GetTranslation(void)
-{
-    return translation;
 }
 
 // Returns the surface area of this wing

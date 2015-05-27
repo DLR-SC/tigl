@@ -22,6 +22,8 @@
 
 #include "CTiglPoint.h"
 
+#include <math_Matrix.hxx>
+
 TEST(TiglMath, factorial)
 {
     ASSERT_EQ(1, tigl::factorial(0));
@@ -149,4 +151,148 @@ TEST(TiglMath, CSTCurve)
     ASSERT_NEAR(0.0, tigl::cstcurve_deriv(N1, N2, Br, 1, 1.0), 1e-7);
     // check 1st derivative of cst curve at maximum of cstcurve (found numerically)
     ASSERT_NEAR(0.0, tigl::cstcurve_deriv(N1, N2, Br, 1, 0.322954559162619), 1e-7);
+}
+
+TEST(TiglMath, Tchebycheff2Bezier_N3)
+{
+    math_Matrix Mmt = tigl::cheb_to_monomial(3);
+    math_Matrix Mbm = tigl::monimial_to_bezier(3);
+    
+    // see Watkins 1988: degree reduction of bezier curves, p. 403
+    
+    math_Matrix M = Mbm * Mmt;
+    M.Transpose();
+    ASSERT_NEAR(1., M.Value(0,0), 1e-12);
+    ASSERT_NEAR(1., M.Value(0,1), 1e-12);
+    ASSERT_NEAR(1., M.Value(0,2), 1e-12);
+    
+    ASSERT_NEAR(-1., M.Value(1,0), 1e-12);
+    ASSERT_NEAR( 0., M.Value(1,1), 1e-12);
+    ASSERT_NEAR( 1., M.Value(1,2), 1e-12);
+    
+    ASSERT_NEAR( 1., M.Value(2,0), 1e-12);
+    ASSERT_NEAR(-3., M.Value(2,1), 1e-12);
+    ASSERT_NEAR( 1., M.Value(2,2), 1e-12);
+}
+
+TEST(TiglMath, Tchebycheff2Bezier_N4)
+{
+    math_Matrix Mmt = tigl::cheb_to_monomial(4);
+    math_Matrix Mbm = tigl::monimial_to_bezier(4);
+    
+    // see Watkins 1988: degree reduction of bezier curves, p. 403
+    
+    math_Matrix M = Mbm * Mmt * 3;
+    M.Transpose();
+    ASSERT_NEAR(3., M.Value(0,0), 1e-12);
+    ASSERT_NEAR(3., M.Value(0,1), 1e-12);
+    ASSERT_NEAR(3., M.Value(0,2), 1e-12);
+    ASSERT_NEAR(3., M.Value(0,3), 1e-12);
+    
+    ASSERT_NEAR(-3., M.Value(1,0), 1e-12);
+    ASSERT_NEAR(-1., M.Value(1,1), 1e-12);
+    ASSERT_NEAR(1.,  M.Value(1,2), 1e-12);
+    ASSERT_NEAR(3.,  M.Value(1,3), 1e-12);
+    
+    ASSERT_NEAR(3.,  M.Value(2,0), 1e-12);
+    ASSERT_NEAR(-5., M.Value(2,1), 1e-12);
+    ASSERT_NEAR(-5., M.Value(2,2), 1e-12);
+    ASSERT_NEAR(3.,  M.Value(2,3), 1e-12);
+    
+    ASSERT_NEAR(-3.,  M.Value(3,0), 1e-12);
+    ASSERT_NEAR(15.,  M.Value(3,1), 1e-12);
+    ASSERT_NEAR(-15., M.Value(3,2), 1e-12);
+    ASSERT_NEAR(3.,   M.Value(3,3), 1e-12);
+}
+
+TEST(TiglMath, Tchebycheff2Bezier_N5)
+{
+    math_Matrix Mmt = tigl::cheb_to_monomial(5);
+    math_Matrix Mbm = tigl::monimial_to_bezier(5);
+    
+    // see Watkins 1988: degree reduction of bezier curves p. 403
+    
+    math_Matrix M = Mbm * Mmt * 6;
+    M.Transpose();
+    ASSERT_NEAR(6., M.Value(0,0), 1e-12);
+    ASSERT_NEAR(6., M.Value(0,1), 1e-12);
+    ASSERT_NEAR(6., M.Value(0,2), 1e-12);
+    ASSERT_NEAR(6., M.Value(0,3), 1e-12);
+    ASSERT_NEAR(6., M.Value(0,4), 1e-12);
+    
+    ASSERT_NEAR(-6., M.Value(1,0), 1e-12);
+    ASSERT_NEAR(-3., M.Value(1,1), 1e-12);
+    ASSERT_NEAR(0.,  M.Value(1,2), 1e-12);
+    ASSERT_NEAR(3.,  M.Value(1,3), 1e-12);
+    ASSERT_NEAR(6.,  M.Value(1,4), 1e-12);
+    
+    ASSERT_NEAR(6.,   M.Value(2,0), 1e-12);
+    ASSERT_NEAR(-6.,  M.Value(2,1), 1e-12);
+    ASSERT_NEAR(-10., M.Value(2,2), 1e-12);
+    ASSERT_NEAR(-6.,  M.Value(2,3), 1e-12);
+    ASSERT_NEAR(6,    M.Value(2,4), 1e-12);
+    
+    ASSERT_NEAR(-6., M.Value(3,0), 1e-12);
+    ASSERT_NEAR(21., M.Value(3,1), 1e-12);
+    ASSERT_NEAR(0.,  M.Value(3,2), 1e-12);
+    ASSERT_NEAR(-21., M.Value(3,3), 1e-12);
+    ASSERT_NEAR(6.,   M.Value(3,4), 1e-12);
+    
+    ASSERT_NEAR(6.,   M.Value(4,0), 1e-12);
+    ASSERT_NEAR(-42., M.Value(4,1), 1e-12);
+    ASSERT_NEAR(70.,  M.Value(4,2), 1e-12);
+    ASSERT_NEAR(-42., M.Value(4,3), 1e-12);
+    ASSERT_NEAR(6.,   M.Value(4,4), 1e-12);
+}
+
+TEST(TiglMath, Tchebycheff2Bezier_N6)
+{
+    math_Matrix Mmt = tigl::cheb_to_monomial(6);
+    math_Matrix Mbm = tigl::monimial_to_bezier(6);
+    
+    // see Watkins 1988: degree reduction of bezier curves p. 404
+    
+    math_Matrix M = Mbm * Mmt * 5;
+    M.Transpose();
+    ASSERT_NEAR(5., M.Value(0,0), 1e-12);
+    ASSERT_NEAR(5., M.Value(0,1), 1e-12);
+    ASSERT_NEAR(5., M.Value(0,2), 1e-12);
+    ASSERT_NEAR(5., M.Value(0,3), 1e-12);
+    ASSERT_NEAR(5., M.Value(0,4), 1e-12);
+    ASSERT_NEAR(5., M.Value(0,5), 1e-12);
+
+    ASSERT_NEAR(-5., M.Value(1,0), 1e-12);
+    ASSERT_NEAR(-3., M.Value(1,1), 1e-12);
+    ASSERT_NEAR(-1., M.Value(1,2), 1e-12);
+    ASSERT_NEAR( 1., M.Value(1,3), 1e-12);
+    ASSERT_NEAR( 3., M.Value(1,4), 1e-12);
+    ASSERT_NEAR( 5., M.Value(1,5), 1e-12);
+    
+    ASSERT_NEAR( 5., M.Value(2,0), 1e-12);
+    ASSERT_NEAR(-3., M.Value(2,1), 1e-12);
+    ASSERT_NEAR(-7., M.Value(2,2), 1e-12);
+    ASSERT_NEAR(-7., M.Value(2,3), 1e-12);
+    ASSERT_NEAR(-3., M.Value(2,4), 1e-12);
+    ASSERT_NEAR( 5., M.Value(2,5), 1e-12);
+    
+    ASSERT_NEAR(-5., M.Value(3,0), 1e-12);
+    ASSERT_NEAR(13., M.Value(3,1), 1e-12);
+    ASSERT_NEAR( 7., M.Value(3,2), 1e-12);
+    ASSERT_NEAR(-7., M.Value(3,3), 1e-12);
+    ASSERT_NEAR(-13., M.Value(3,4), 1e-12);
+    ASSERT_NEAR( 5., M.Value(3,5), 1e-12);
+    
+    ASSERT_NEAR(  5., M.Value(4,0), 1e-12);
+    ASSERT_NEAR(-27., M.Value(4,1), 1e-12);
+    ASSERT_NEAR( 21., M.Value(4,2), 1e-12);
+    ASSERT_NEAR( 21., M.Value(4,3), 1e-12);
+    ASSERT_NEAR(-27., M.Value(4,4), 1e-12);
+    ASSERT_NEAR(  5., M.Value(4,5), 1e-12);
+    
+    ASSERT_NEAR(  -5., M.Value(5,0), 1e-12);
+    ASSERT_NEAR(  45., M.Value(5,1), 1e-12);
+    ASSERT_NEAR(-105., M.Value(5,2), 1e-12);
+    ASSERT_NEAR( 105., M.Value(5,3), 1e-12);
+    ASSERT_NEAR( -45., M.Value(5,4), 1e-12);
+    ASSERT_NEAR(   5., M.Value(5,5), 1e-12);
 }

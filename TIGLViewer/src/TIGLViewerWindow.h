@@ -25,6 +25,7 @@
 #include <QMainWindow>
 
 #include "TIGLViewerContext.h"
+#include "TIGLViewerDocument.h"
 #include "tigl.h"
 #include "CSharedPtr.h"
 
@@ -41,22 +42,21 @@ class TIGLViewerLogRedirection;
 class TIGLViewerWindow : public QMainWindow, private Ui::TIGLViewerWindow
 {
     Q_OBJECT
+    Q_PROPERTY(TIGLViewerWidget*  viewer READ getViewer)
+    Q_PROPERTY(TIGLViewerContext* scene  READ getScene)
+    Q_CLASSINFO("Description", "TiGL Viewer Application")
 
 public:
     enum { MaxRecentFiles = 5 };
 
     TIGLViewerWindow();
     virtual ~TIGLViewerWindow();
-    Handle_AIS_InteractiveContext& getContext() { return myVC->getContext(); };
 
-    void setInitialCpacsFileName(QString filename);
-
+    
     void setInitialControlFile(QString filename);
 
-    // Returns the Open CASCADE Widget and Context.
-    TIGLViewerWidget* getMyOCC();
-
     class TIGLViewerSettings& getSettings();
+    class Console*            getConsole();
 
     // Displays a simple dialog for error messages
     void displayErrorMessage (const QString aMessage, QString aHeader);
@@ -67,23 +67,24 @@ protected:
      void dragEnterEvent(QDragEnterEvent *ev);
 
 public slots:
-    void updateMenus(TiglCPACSConfigurationHandle);
+    void openFile(const QString& fileName);
+    void openScript(const QString& scriptFileName);
+    bool saveFile(const QString& fileName);
+    void closeConfiguration();
+    
+    TIGLViewerWidget*   getViewer();
+    TIGLViewerContext*  getScene() { return myScene; }
+    TIGLViewerDocument* getDocument() { return cpacsConfiguration; }
 
 private slots:
+    void updateMenus();
     void newFile();
     void open();
     void reopenFile();
     void openScript();
     void openRecentFile();
-    void closeConfiguration();
     void save();
-    void print();
     void setBackgroundImage();
-    void undo();
-    void redo();
-    void cut();
-    void copy();
-    void paste();
     void about();
     void aboutQt();
     void xyzPosition (V3d_Coordinate X,
@@ -98,24 +99,27 @@ private slots:
     void applySettings();
     void changeSettings();
     void makeScreenShot();
+    void drawPoint();
+    void drawVector();
 
 private:
     void connectSignals();
+    void connectConfiguration();
     void createMenus();
-    void openFile(const QString&);
     void updateRecentFileActions();
     void setCurrentFile(const QString &);
 
     void closeEvent(QCloseEvent*);
+    bool deleteEnvVar(const char* varname);
 
     QAction *recentFileActions[MaxRecentFiles];
 
     // The OpenCASCADE context;
-    TIGLViewerContext*      myVC;
+    TIGLViewerContext*      myScene;
 
     QString                 myLastFolder;
 
-    class TIGLViewerDocument* cpacsConfiguration;
+    TIGLViewerDocument* cpacsConfiguration;
     QString currentFile;
     QString controlFileName;
     QFileSystemWatcher *watcher;

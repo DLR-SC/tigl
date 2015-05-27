@@ -26,13 +26,11 @@
 #include <cmath>
 #include <iostream>
 
-#include <QtGui/QApplication>
-#include <QtGui/QBitmap>
+#include <QApplication>
+#include <QBitmap>
 #include <QPainter>
-#include <QtGui/QInputEvent>
-#include <QtGui/QColorDialog>
-#include <QtGui/QPlastiqueStyle>
-#include <QRubberBand>
+#include <QInputEvent>
+#include <QColorDialog>
 #include <QMessageBox>
 #include <QInputDialog>
 
@@ -42,6 +40,7 @@
 #include "ISession_Point.h"
 #include "ISession_Direction.h"
 #include "ISession_Text.h"
+#include "CTiglLogging.h"
 #include "tiglcommonfunctions.h"
 
 #include <OpenGl_GraphicDriver.hxx>
@@ -84,7 +83,6 @@ TIGLViewerWidget::TIGLViewerWidget( const Handle_AIS_InteractiveContext& aContex
     myMode              ( CurAction3d_Undefined ),
     myGridSnap        ( Standard_False ),
     myDetection          ( AIS_SOD_Nothing ),
-    myRubberBand      ( NULL ),
     myPrecision          ( 0.001 ),
     myViewPrecision   ( 0.0 ),
     myKeyboardFlags   ( Qt::NoModifier ),
@@ -99,7 +97,6 @@ void TIGLViewerWidget::initialize()
     myView            = NULL;
     myViewer          = NULL;
     myLayer           = NULL;
-    myRubberBand      = NULL;
     myMode              = CurAction3d_Undefined;
     myGridSnap        = Standard_False;
     myViewResized      = Standard_False;
@@ -138,43 +135,40 @@ void TIGLViewerWidget::initialize()
     p.end();
     myCrossCursor = QCursor( curb2, curb1, 24, 24 );
 
-    // Create a rubber band box for later mouse activity
-    myRubberBand = new QRubberBand( QRubberBand::Rectangle, this );
-    if (myRubberBand) {
-        // If you don't set a style, QRubberBand doesn't work properly
-        // take this line out if you don't believe me.
-        myRubberBand->setStyle( (QStyle*) new QPlastiqueStyle() );
-    }
+    // create win id, this is required on qt 5
+    // without winid, the view can't be properly initialized
+    winId();
 }
 
 
 TIGLViewerWidget::~TIGLViewerWidget()
 {
-    if ( myRubberBand ) {
-        delete myRubberBand;
-    }
+}
+
+void TIGLViewerWidget::setContext(const Handle_AIS_InteractiveContext& aContext)
+{
+    myContext = aContext;
 }
 
 
 void TIGLViewerWidget::initializeOCC(const Handle_AIS_InteractiveContext& aContext)
 {
-    Aspect_RenderingContext rc = 0;
-    myContext = aContext;
-    myViewer  = myContext->CurrentViewer();
-    myView    = myViewer->CreateView();
+    if (myView.IsNull()) {
+        Aspect_RenderingContext rc = 0;
+        myContext = aContext;
+        myViewer  = myContext->CurrentViewer();
+        myView    = myViewer->CreateView();
 
 #if defined _WIN32 || defined __WIN32__
-    myWindow = new WNT_Window(winId());
-    myWindow->SetFlags( WDF_NOERASEBKGRND );
+        myWindow = new WNT_Window((Aspect_Handle)winId());
 #elif defined __APPLE__
-    myWindow = new Cocoa_Window((NSView *)winId());
+        myWindow = new Cocoa_Window((NSView *)winId());
 #else
-    Aspect_Handle windowHandle = (Aspect_Handle)winId();
-    myWindow = new Xw_Window(myContext->CurrentViewer()->Driver()->GetDisplayConnection(),
-                             windowHandle);
+        Aspect_Handle windowHandle = (Aspect_Handle)winId();
+        myWindow = new Xw_Window(myContext->CurrentViewer()->Driver()->GetDisplayConnection(),
+                                 windowHandle);
 #endif
 
-    if (!myView.IsNull()) {
         // Set my window (Hwnd) into the OCC view
         myView->SetWindow( myWindow, rc , paintCallBack, this  );
         // Set up axes (Trihedron) in lower left corner.
@@ -199,7 +193,7 @@ void TIGLViewerWidget::initializeOCC(const Handle_AIS_InteractiveContext& aConte
 
         myLayer   = new Visual3d_Layer (myViewer->Viewer(), Aspect_TOL_OVERLAY, Standard_True /*aSizeDependant*/);
 
-        setBackgroundColor(myBGColor);
+        setBackgroundGradient(myBGColor.red(), myBGColor.green(), myBGColor.blue());
 
         emit initialized();
     }
@@ -551,13 +545,13 @@ void TIGLViewerWidget::hiddenLineOn()
     }
 }
 
-void TIGLViewerWidget::setBackgroundColor(const QColor& col)
+void TIGLViewerWidget::setBackgroundGradient(int r, int g, int b)
 {
-    myBGColor = col;
+    myBGColor = QColor(r,g,b);
     if (!myView.IsNull()) {
-        Standard_Real R1 = col.red()/255.;
-        Standard_Real G1 = col.green()/255.;
-        Standard_Real B1 = col.blue()/255.;
+        Standard_Real R1 = r/255.;
+        Standard_Real G1 = g/255.;
+        Standard_Real B1 = b/255.;
 
         // Disable provious gradient
         myView->SetBgGradientColors ( Quantity_NOC_BLACK , Quantity_NOC_BLACK, Aspect_GFM_NONE, Standard_False);
@@ -569,9 +563,18 @@ void TIGLViewerWidget::setBackgroundColor(const QColor& col)
         Quantity_Color down(R1*fd > 1 ? 1. : R1*fd, G1*fd > 1 ? 1. : G1*fd, B1*fd > 1 ? 1. : B1*fd, Quantity_TOC_RGB);
 
         myView->SetBgGradientColors( up, down, Aspect_GFM_VER, Standard_False);
-
     } 
     redraw();
+}
+
+void TIGLViewerWidget::setBackgroundColor(int r, int g, int b)
+{
+    if (!myView.IsNull()) {
+        // Disable provious gradient
+        myView->SetBgGradientColors ( Quantity_NOC_BLACK , Quantity_NOC_BLACK, Aspect_GFM_NONE, Standard_False);
+        myView->SetBackgroundColor(Quantity_TOC_RGB, r/255., g/255., b/255.);
+        redraw();
+    }
 }
 
 void TIGLViewerWidget::setReset ()
@@ -1027,27 +1030,54 @@ Standard_Boolean TIGLViewerWidget::convertToPlane(Standard_Integer Xs,
 
 void TIGLViewerWidget::drawRubberBand( const QPoint origin, const QPoint position )
 {
-    if ( myRubberBand ) {
-        redraw();
-        hideRubberBand();
-        myRubberBand->setGeometry( QRect( origin, position ).normalized() );
-        showRubberBand();
-    }
-}
+    if ( !myLayer.IsNull() && !myView.IsNull() ) {
 
+        double left   = origin.x();
+        double right  = position.x();
+        double top    = origin.y();
+        double bottom = position.y();
 
-void TIGLViewerWidget::showRubberBand( void )
-{
-    if ( myRubberBand ) {
-        myRubberBand->show();
+        int witdh, height;
+        myView->Window()->Size(witdh, height);
+        
+        myLayer->Clear(); 
+        // The -1 is a hack from the opencascade forums to avoid clipping
+        // of the coordinates. This way it behaves identically to opengl
+        myLayer->SetOrtho(0, witdh, height, 0, (Aspect_TypeOfConstraint) -1);
+        
+        myLayer->Begin();
+        myLayer->SetTransparency(1.0);
+        myLayer->SetLineAttributes(Aspect_TOL_DOT, 1.);
+
+        // Draw black-white dotted, imitate a shadowy look
+        // This makes it possible to draw even on white or
+        // black backgrounds
+        myLayer->SetColor(Quantity_NOC_WHITE);
+        myLayer->BeginPolyline();
+        myLayer->AddVertex(left,  top);
+        myLayer->AddVertex(right, top);
+        myLayer->AddVertex(right, bottom);
+        myLayer->AddVertex(left,  bottom);
+        myLayer->AddVertex(left,  top);
+        myLayer->ClosePrimitive();
+
+        myLayer->SetColor(Quantity_NOC_BLACK);
+        myLayer->BeginPolyline();
+        myLayer->AddVertex(left+1,  top+1);
+        myLayer->AddVertex(right+1, top+1);
+        myLayer->AddVertex(right+1, bottom+1);
+        myLayer->AddVertex(left+1,  bottom+1);
+        myLayer->AddVertex(left+1,  top+1);
+        myLayer->ClosePrimitive();
+        myLayer->End();
     }
 }
 
 
 void TIGLViewerWidget::hideRubberBand( void )
 {
-    if ( myRubberBand ) {
-        myRubberBand->hide();
+    if (!myLayer.IsNull() ) {
+        myLayer->Clear();
     }
 }
 
@@ -1093,93 +1123,61 @@ Standard_Real TIGLViewerWidget::viewPrecision( bool resized )
     return myViewPrecision;
 }
 
-void TIGLViewerWidget::makeScreenshot(int width, int height, int quality, const QString& filename)
+/** 
+ * Note:This function with custom width and height seems to be working only on windows
+ * If it fails, we are switching back to the current screen resolution.
+ */
+bool TIGLViewerWidget::makeScreenshot(const QString& filename, bool whiteBGEnabled, int width, int height, int quality)
 {
-    if (myView) {
-        // get window size
-        // we could also use a higher resolution if we want
-        if (width == 0 || height == 0) {
-            myView->Window()->Size(width, height);
-        }
-
-        // write screenshot to pixmap
-        Image_PixMap pixmap;
-        myView->ToPixMap(pixmap, width, height);
-
-        // copy to qimage which supports a variety of file formats
-        QImage img(QSize(pixmap.Width(), pixmap.Height()), QImage::Format_RGB888);
-        for (unsigned int aRow = 0; aRow <  pixmap.Height(); ++aRow) {
-          for (unsigned int aCol = 0; aCol < pixmap.Width(); ++aCol) {
-            // extremely SLOW but universal (implemented for all supported pixel formats)
-            Quantity_Color aColor = pixmap.PixelColor ((Standard_Integer )aCol, (Standard_Integer )aRow);
-            QColor qcol(aColor.Red()*255., aColor.Green()*255, aColor.Blue()*255);
-            img.setPixel(aCol, aRow, qcol.rgb());
-          }
-        }
-
-        if (!img.save(filename, NULL, quality)) {
-            throw tigl::CTiglError("Cannot save screenshot to file.");
-        }
+    if (!myView) {
+        return false;
     }
-}
 
-// a small helper when we just want to display a shape
-Handle(AIS_Shape) TIGLViewerWidget::displayShape(const TopoDS_Shape& loft, Quantity_Color color)
-{
-    TIGLViewerSettings& settings = TIGLViewerSettings::Instance();
-    Handle(AIS_Shape) shape = new AIS_Shape(loft);
-    shape->SetMaterial(Graphic3d_NOM_METALIZED);
-    shape->SetColor(color);
-    shape->SetOwnDeviationCoefficient(settings.tesselationAccuracy());
-    myContext->Display(shape, Standard_True);
-    
-    if (settings.enumerateFaces()) {
-        TopTools_IndexedMapOfShape shapeMap;
-        TopExp::MapShapes(loft, TopAbs_FACE, shapeMap);
-        for (int i = 1; i <= shapeMap.Extent(); ++i) {
-            const TopoDS_Face& face = TopoDS::Face(shapeMap(i));
-            gp_Pnt p = GetCentralFacePoint(face);
-            QString s = QString("%1").arg(i);
-            DisplayPoint(p, s.toStdString().c_str(), false, 0., 0., 0., 10.);
-        }
+    if (whiteBGEnabled) {
+        myView->SetBgGradientColors ( Quantity_NOC_BLACK , Quantity_NOC_BLACK, Aspect_GFM_NONE, Standard_False);
+        myView->SetBackgroundColor(Quantity_NOC_WHITE);
+        myView->Redraw();
+    }
+
+    // get window size
+    // we could also use a higher resolution if we want
+    if (width == 0 || height == 0) {
+        myView->Window()->Size(width, height);
+    }
+
+    // write screenshot to pixmap
+    Image_PixMap pixmap;
+    bool success = myView->ToPixMap(pixmap, width, height, Graphic3d_BT_RGB);
+    if (!success) {
+        // use size of the window
+        LOG(WARNING) << "Error changing image size to " << width << "x" << height 
+                     << " for screenshot. Using current resolution.";
+        myView->Window()->Size(width, height);
+        success = myView->ToPixMap(pixmap, width, height, Graphic3d_BT_RGB);
+    }
+
+    if (whiteBGEnabled) {
+        // reset color
+        setBackgroundGradient(myBGColor.red(), myBGColor.green(), myBGColor.blue());
+    }
+
+    // copy to qimage which supports a variety of file formats
+    QImage img(QSize(pixmap.Width(), pixmap.Height()), QImage::Format_RGB888);
+    for (unsigned int aRow = 0; aRow <  pixmap.Height(); ++aRow) {
+      for (unsigned int aCol = 0; aCol < pixmap.Width(); ++aCol) {
+        // extremely SLOW but universal (implemented for all supported pixel formats)
+        Quantity_Color aColor = pixmap.PixelColor ((Standard_Integer )aCol, (Standard_Integer )aRow);
+        QColor qcol(aColor.Red()*255., aColor.Green()*255, aColor.Blue()*255);
+        img.setPixel(aCol, aRow, qcol.rgb());
+      }
     }
     
-    return shape;
-}
+    if (!img.save(filename, NULL, quality)) {
+        LOG(ERROR) << "Unable to save screenshot to file '" + filename.toStdString() + "'";
+        return false;
+    }
+    else {
+        return true;
+    }
 
-// Displays a point on the screen
-void TIGLViewerWidget::DisplayPoint(const gp_Pnt& aPoint,
-                                    const char* aText,
-                                    Standard_Boolean UpdateViewer,
-                                    Standard_Real anXoffset,
-                                    Standard_Real anYoffset,
-                                    Standard_Real aZoffset,
-                                    Standard_Real TextScale)
-{
-    Handle(ISession_Point) aGraphicPoint = new ISession_Point(aPoint.X(), aPoint.Y(), aPoint.Z());
-    myContext->Display(aGraphicPoint,UpdateViewer);
-    Handle(ISession_Text) aGraphicText = new ISession_Text(aText, aPoint.X() + anXoffset,
-                                                 aPoint.Y() + anYoffset,
-                                                 aPoint.Z() + aZoffset);
-    aGraphicText->SetScale(TextScale);
-    myContext->Display(aGraphicText,UpdateViewer);
-}
-
-// Displays a vector on the screen
-void TIGLViewerWidget::DisplayVector(const gp_Pnt& aPoint,
-                                     const gp_Vec& aVec,
-                                     const char* aText,
-                                     Standard_Boolean UpdateViewer,
-                                     Standard_Real anXoffset,
-                                     Standard_Real anYoffset,
-                                     Standard_Real aZoffset,
-                                     Standard_Real TextScale)
-{
-    Handle(ISession_Direction) aGraphicDirection = new ISession_Direction(aPoint, aVec);
-    myContext->Display(aGraphicDirection,UpdateViewer);
-    Handle(ISession_Text) aGraphicText = new ISession_Text(aText, aPoint.X() + anXoffset,
-                                                 aPoint.Y() + anYoffset,
-                                                 aPoint.Z() + aZoffset);
-    aGraphicText->SetScale(TextScale);
-    myContext->Display(aGraphicText,UpdateViewer);
 }

@@ -26,6 +26,7 @@
 struct CommandLineParameters 
 {
     QString initialFilename;
+    QString initialScript;
     QString windowTitle;
     QString modelUID;
     QString controlFile;

@@ -293,27 +293,41 @@ TEST_F(WingGetPointSimple, checkCamberLine)
 
 TEST_F(WingGetPointSimple, getPointDirection)
 {
-    double px, py, pz;
-    ASSERT_EQ(TIGL_SUCCESS, tiglWingGetUpperPointAtDirection(tiglHandle, 1, 1, 0.5, 0.5, 0., 0., 1., &px, &py, &pz));
+    double px, py, pz, distance;
+    ASSERT_EQ(TIGL_SUCCESS, tiglWingGetUpperPointAtDirection(tiglHandle, 1, 1, 0.5, 0.5, 0., 0., 1., &px, &py, &pz, &distance));
     ASSERT_NEAR(0.5, px, 1e-9);
     ASSERT_NEAR(0.5, py, 1e-9);
     ASSERT_NEAR(0.0529403, pz, 1e-6);
-    ASSERT_EQ(TIGL_SUCCESS, tiglWingGetLowerPointAtDirection(tiglHandle, 1, 1, 0.5, 0.5, 0., 0., 1., &px, &py, &pz));
+    ASSERT_LE(distance, 1e-10);
+    ASSERT_EQ(TIGL_SUCCESS, tiglWingGetLowerPointAtDirection(tiglHandle, 1, 1, 0.5, 0.5, 0., 0., 1., &px, &py, &pz, &distance));
     ASSERT_NEAR(0.5, px, 1e-9);
     ASSERT_NEAR(0.5, py, 1e-9);
     ASSERT_NEAR(-0.0529403, pz, 1e-6);
+    ASSERT_LE(distance, 1e-10);
     
-    ASSERT_EQ(TIGL_NOT_FOUND,  tiglWingGetUpperPointAtDirection(tiglHandle, 1, 1, 0.5, 0.9, 0., 1., 0., &px, &py, &pz));
-    ASSERT_EQ(TIGL_NOT_FOUND,  tiglWingGetLowerPointAtDirection(tiglHandle, 1, 1, 0.5, 0.9, 0., 1., 0., &px, &py, &pz));
-    ASSERT_EQ(TIGL_MATH_ERROR, tiglWingGetUpperPointAtDirection(tiglHandle, 1, 1, 0.5, 0.5, 0., 0., 0., &px, &py, &pz));
-    ASSERT_EQ(TIGL_MATH_ERROR, tiglWingGetLowerPointAtDirection(tiglHandle, 1, 1, 0.5, 0.5, 0., 0., 0., &px, &py, &pz));
+    ASSERT_EQ(TIGL_SUCCESS,    tiglWingGetUpperPointAtDirection(tiglHandle, 1, 1, 0.5, 0.9, 0., 1., 0., &px, &py, &pz, &distance));
+    ASSERT_GT(distance, 1e-3);
+    ASSERT_EQ(TIGL_SUCCESS,    tiglWingGetLowerPointAtDirection(tiglHandle, 1, 1, 0.5, 0.9, 0., 1., 0., &px, &py, &pz, &distance));
+    ASSERT_GT(distance, 1e-3);
+    ASSERT_EQ(TIGL_MATH_ERROR, tiglWingGetUpperPointAtDirection(tiglHandle, 1, 1, 0.5, 0.5, 0., 0., 0., &px, &py, &pz, &distance));
+    ASSERT_EQ(TIGL_MATH_ERROR, tiglWingGetLowerPointAtDirection(tiglHandle, 1, 1, 0.5, 0.5, 0., 0., 0., &px, &py, &pz, &distance));
     
-    ASSERT_EQ(TIGL_NULL_POINTER, tiglWingGetUpperPointAtDirection(tiglHandle, 1, 1, 0.5, 0.5, 0., 0., 1., NULL, &py, &pz));
-    ASSERT_EQ(TIGL_NULL_POINTER, tiglWingGetUpperPointAtDirection(tiglHandle, 1, 1, 0.5, 0.5, 0., 0., 1., &px, NULL, &pz));
-    ASSERT_EQ(TIGL_NULL_POINTER, tiglWingGetUpperPointAtDirection(tiglHandle, 1, 1, 0.5, 0.5, 0., 0., 1., &px, &py, NULL));
+    ASSERT_EQ(TIGL_NULL_POINTER, tiglWingGetUpperPointAtDirection(tiglHandle, 1, 1, 0.5, 0.5, 0., 0., 1., NULL, &py, &pz, &distance));
+    ASSERT_EQ(TIGL_NULL_POINTER, tiglWingGetUpperPointAtDirection(tiglHandle, 1, 1, 0.5, 0.5, 0., 0., 1., &px, NULL, &pz, &distance));
+    ASSERT_EQ(TIGL_NULL_POINTER, tiglWingGetUpperPointAtDirection(tiglHandle, 1, 1, 0.5, 0.5, 0., 0., 1., &px, &py, NULL, &distance));
     
-    ASSERT_EQ(TIGL_INDEX_ERROR, tiglWingGetUpperPointAtDirection(tiglHandle, 0, 1, 0.5, 0.5, 0., 0., 1., &px, &py, &pz));
-    ASSERT_EQ(TIGL_INDEX_ERROR, tiglWingGetUpperPointAtDirection(tiglHandle, 1, 0, 0.5, 0.5, 0., 0., 1., &px, &py, &pz));
+    ASSERT_EQ(TIGL_INDEX_ERROR, tiglWingGetUpperPointAtDirection(tiglHandle, 0, 1, 0.5, 0.5, 0., 0., 1., &px, &py, &pz, &distance));
+    ASSERT_EQ(TIGL_INDEX_ERROR, tiglWingGetUpperPointAtDirection(tiglHandle, 1, 0, 0.5, 0.5, 0., 0., 1., &px, &py, &pz, &distance));
+}
+
+TEST_F(WingGetPointSimple, getPointDirection_smallmiss)
+{
+    double px, py, pz, distance;
+    ASSERT_EQ(TIGL_SUCCESS, tiglWingGetUpperPointAtDirection(tiglHandle, 1, 1, 0.0, 0.5, 0., -0.01, 1., &px, &py, &pz, &distance));
+    ASSERT_NEAR(0.5, px, 1e-6);
+    ASSERT_NEAR(0.0, py, 1e-6);
+    ASSERT_LT(distance, 1e-3);
+    ASSERT_GT(distance, 1e-10);
 }
 
 TEST_F(WingGetPointSimple, getChordPoint_success)
@@ -405,17 +419,28 @@ TEST(WingGetPointBugs, getPointDirection_Fuehrer)
     ASSERT_TRUE(tiglRet == TIGL_SUCCESS);
     
     double px, py, pz;
-    double dirx, diry, dirz;
+    double dirx, diry, dirz, distance;
+    double tolerance = 1e-10;
     dirx = 0.0; diry =  -0.069756473744125316; dirz = 0.99756405025982431;
-    ASSERT_EQ(TIGL_SUCCESS, tiglWingGetUpperPointAtDirection(tiglHandle, 1, 1, 0.04, 0.0001, dirx, diry, dirz, &px, &py, &pz));
-    ASSERT_EQ(TIGL_SUCCESS, tiglWingGetUpperPointAtDirection(tiglHandle, 1, 1, 0.06, 0.0001, dirx, diry, dirz, &px, &py, &pz));
-    ASSERT_EQ(TIGL_SUCCESS, tiglWingGetUpperPointAtDirection(tiglHandle, 1, 1, 0.08, 0.0001, dirx, diry, dirz, &px, &py, &pz));
-    ASSERT_EQ(TIGL_SUCCESS, tiglWingGetUpperPointAtDirection(tiglHandle, 1, 1, 0.088, 0.004, dirx, diry, dirz, &px, &py, &pz));
+    ASSERT_EQ(TIGL_SUCCESS, tiglWingGetUpperPointAtDirection(tiglHandle, 1, 1, 0.04, 0.0001, dirx, diry, dirz, &px, &py, &pz, &distance));
+    ASSERT_LT(distance, tolerance);
+    ASSERT_EQ(TIGL_SUCCESS, tiglWingGetUpperPointAtDirection(tiglHandle, 1, 1, 0.06, 0.0001, dirx, diry, dirz, &px, &py, &pz, &distance));
+    ASSERT_LT(distance, tolerance);
+    ASSERT_EQ(TIGL_SUCCESS, tiglWingGetUpperPointAtDirection(tiglHandle, 1, 1, 0.08, 0.0001, dirx, diry, dirz, &px, &py, &pz, &distance));
+    ASSERT_LT(distance, tolerance);
+    ASSERT_EQ(TIGL_SUCCESS, tiglWingGetUpperPointAtDirection(tiglHandle, 1, 1, 0.088, 0.004, dirx, diry, dirz, &px, &py, &pz, &distance));
+    ASSERT_LT(distance, tolerance);
     
-    ASSERT_EQ(TIGL_SUCCESS, tiglWingGetUpperPointAtDirection(tiglHandle, 1, 1, 0.0, 0.0001, dirx, diry, dirz, &px, &py, &pz));
-    ASSERT_EQ(TIGL_SUCCESS, tiglWingGetUpperPointAtDirection(tiglHandle, 1, 1, 0.0, 0.004, dirx, diry, dirz, &px, &py, &pz));
-    ASSERT_EQ(TIGL_SUCCESS, tiglWingGetUpperPointAtDirection(tiglHandle, 1, 1, 0.0, 0.036, dirx, diry, dirz, &px, &py, &pz));
-    ASSERT_EQ(TIGL_SUCCESS, tiglWingGetUpperPointAtDirection(tiglHandle, 1, 1, 0.0, 0.07568, dirx, diry, dirz, &px, &py, &pz));
-    ASSERT_EQ(TIGL_SUCCESS, tiglWingGetUpperPointAtDirection(tiglHandle, 1, 1, 0.0, 0.16569, dirx, diry, dirz, &px, &py, &pz));
-    ASSERT_EQ(TIGL_SUCCESS, tiglWingGetUpperPointAtDirection(tiglHandle, 1, 1, 0.0, 1.0, dirx, diry, dirz, &px, &py, &pz));
+    ASSERT_EQ(TIGL_SUCCESS, tiglWingGetUpperPointAtDirection(tiglHandle, 1, 1, 0.0, 0.0001, dirx, diry, dirz, &px, &py, &pz, &distance));
+    ASSERT_LT(distance, tolerance);
+    ASSERT_EQ(TIGL_SUCCESS, tiglWingGetUpperPointAtDirection(tiglHandle, 1, 1, 0.0, 0.004, dirx, diry, dirz, &px, &py, &pz, &distance));
+    ASSERT_LT(distance, tolerance);
+    ASSERT_EQ(TIGL_SUCCESS, tiglWingGetUpperPointAtDirection(tiglHandle, 1, 1, 0.0, 0.036, dirx, diry, dirz, &px, &py, &pz, &distance));
+    ASSERT_LT(distance, tolerance);
+    ASSERT_EQ(TIGL_SUCCESS, tiglWingGetUpperPointAtDirection(tiglHandle, 1, 1, 0.0, 0.07568, dirx, diry, dirz, &px, &py, &pz, &distance));
+    ASSERT_LT(distance, tolerance);
+    ASSERT_EQ(TIGL_SUCCESS, tiglWingGetUpperPointAtDirection(tiglHandle, 1, 1, 0.0, 0.16569, dirx, diry, dirz, &px, &py, &pz, &distance));
+    ASSERT_LT(distance, tolerance);
+    ASSERT_EQ(TIGL_SUCCESS, tiglWingGetUpperPointAtDirection(tiglHandle, 1, 1, 0.0, 1.0, dirx, diry, dirz, &px, &py, &pz, &distance));
+    ASSERT_LT(distance, tolerance);
 }

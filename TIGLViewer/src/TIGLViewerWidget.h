@@ -23,6 +23,7 @@
 #define TIGLVIEWERWIDGET_H
 
 #include <QWidget>
+#include <QMetaType>
 #include <Quantity_Color.hxx>
 
 #if defined WNT
@@ -32,7 +33,6 @@
 #endif
 
 #include "TIGLViewer.h"
-#include "TIGLViewerColors.h"
 
 
 /** the key for multi selection */
@@ -95,11 +95,9 @@ public:
 
     ~TIGLViewerWidget();
 
-    void setContext(const Handle_AIS_InteractiveContext& aContext){ myContext = aContext; }
+    // the scene context must be set before first use
+    void setContext(const Handle_AIS_InteractiveContext& aContext);
 
-    void initializeOCC(const Handle_AIS_InteractiveContext& aContext = NULL);
-
-    Handle_AIS_InteractiveContext    getContext( void ) { return myContext; }
     Handle_V3d_View                  getView( void )    { return myView; }
 
     //Overrides
@@ -107,24 +105,6 @@ public:
     class QToolBar* myToolBar;
 
     void redraw( bool isPainting = false );
-    
-    Handle_AIS_Shape displayShape(const TopoDS_Shape& loft, Quantity_Color color = Quantity_NOC_ShapeCol);
-    void DisplayPoint(const gp_Pnt& aPoint,
-                      const char*   aText,
-                      Standard_Boolean UpdateViewer,
-                      Standard_Real anXoffset,
-                      Standard_Real anYoffset,
-                      Standard_Real aZoffset,
-                      Standard_Real TextScale);
-    
-    void DisplayVector(const gp_Pnt& aPoint,
-                       const gp_Vec& aVec,
-                       const char* aText,
-                       Standard_Boolean UpdateViewer,
-                       Standard_Real anXoffset,
-                       Standard_Real anYoffset,
-                       Standard_Real aZoffset,
-                       Standard_Real TextScale);
 
 signals:
 
@@ -151,7 +131,8 @@ public slots:
     void selecting();
     void hiddenLineOn();
     void hiddenLineOff();
-    void setBackgroundColor(const QColor&);
+    void setBackgroundGradient(int r, int g, int b);
+    void setBackgroundColor(int r, int g, int b);
     void setBGImage(const QString&);
     void viewFront();
     void viewBack();
@@ -171,7 +152,7 @@ public slots:
     void setObjectsShading();
     void setObjectsColor();
     void setObjectsMaterial();
-    void makeScreenshot(int width, int height, int quality, const QString& filename);
+    bool makeScreenshot(const QString& filename, bool whiteBGEnabled = true, int width=0, int height=0, int quality=90);
 
 protected: // methods
 
@@ -186,6 +167,7 @@ protected: // methods
     virtual void leaveEvent           ( QEvent * );
 
 private: // members
+    void initializeOCC(const Handle_AIS_InteractiveContext& aContext = NULL);
 
 #if defined WNT
     Handle_WNT_Window               myWindow;
@@ -209,7 +191,6 @@ private: // members
                                     myV3dY,
                                     myV3dZ;
         
-    class QRubberBand*              myRubberBand;
     QPoint                          myStartPoint;
     QPoint                          myCurrentPoint;
     
@@ -236,7 +217,7 @@ private: // methods
 
     AIS_StatusOfPick        dragEvent ( const QPoint startPoint, const QPoint endPoint, const bool multi = false );
     AIS_StatusOfPick        inputEvent( const bool multi = false );
-    AIS_StatusOfDetection    moveEvent ( const QPoint point );
+    AIS_StatusOfDetection   moveEvent ( const QPoint point );
     
     void setMode( const CurrentAction3d mode );
     
@@ -244,7 +225,6 @@ private: // methods
     Standard_Real viewPrecision( bool resized = false );
 
     void drawRubberBand( const QPoint origin, const QPoint position );
-    void showRubberBand( void );
     void hideRubberBand( void );
 
     Standard_Boolean convertToPlane(Standard_Integer Xs, 
@@ -259,5 +239,7 @@ private: // methods
                               Aspect_GraphicCallbackStruct*);
 
 };
+
+Q_DECLARE_METATYPE(TIGLViewerWidget*)
 
 #endif // TIGLVIEWERWIDGET_H

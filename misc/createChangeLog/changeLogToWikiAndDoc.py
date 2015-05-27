@@ -66,25 +66,9 @@ def main():
         run("git push")
         os.chdir('../')
 
-    # Create Latex file
-    print 'Create Latex file...'
-    if os.path.exists('pdf'):
-        shutil.rmtree('pdf')
-    os.mkdir('pdf')
-    os.chdir('pdf')
-    texfile = 'changeLog.tex'
-    run('pandoc -V documentclass=scrartcl -V include-before="\\title{TiGL -- Latest Changes} \\maketitle" -s %s -o %s' % ('../' + rstfile, texfile))
-
-    # Move Latex file
-    print 'Move Latex file...'
-    shutil.move(texfile,  '../../../doc/changeLog/' + texfile)
-    # clean up
-
     # Clean up
     print 'Clean up...'
-    os.chdir('../')
     os.remove(rstfile)
-    shutil.rmtree('pdf')
     if not args.local:
         shutil.rmtree('tigl.wiki')
     else:

@@ -56,6 +56,7 @@ class PythonGenerator(object):
             string += self.create_enum(enumname, values) + '\n\n'
 
         string += self.create_error_handler(cparser)+'\n\n'
+        string += self.get_helpers() + "\n\n"
         
         string += 'class %s(object):\n\n' % (self.classname)
         string += self.create_constructor()
@@ -111,25 +112,27 @@ class PythonGenerator(object):
     def create_constructor(self):
         indent = 4*' '
         string = ''
-        string += indent + 'def __init__(self):\n'
-        indent +=  4*' '
-        string += indent + 'self.%s = ctypes.c_int(-1)\n\n' % self.handle_str
-               
-        string += indent + '# We only support python2.5 - 3.0 now\n'
-        string += indent + 'if sys.version_info>(3,0,0):\n'
-        string += indent + '    print("Python3 not supported in %sWrapper.")\n'\
-            % self.prefix
-        string += indent + '    sys.exit()\n'
-        string += indent + 'elif sys.version_info<(2,5,0):\n'
+        string += indent + '# load the %s library\n' % self.libname
+        string += indent + '# We only support python2.5 and newer\n'
+        string += indent + 'if sys.version_info<(2,5,0):\n'
         string += indent + '    print("At least python 2.5 is needed from %sWrapper.")\n\n' \
             % self.prefix
         
-        string += indent + 'if sys.platform == \'win32\':\n'
-        string += indent + '    self.lib = ctypes.cdll.%s\n' % self.libname
-        string += indent + 'elif sys.platform == \'darwin\':\n'
-        string += indent + '    self.lib = ctypes.CDLL("lib%s.dylib")\n' % self.libname
-        string += indent + 'else:\n'
-        string += indent + '    self.lib = ctypes.CDLL("lib%s.so")\n' % self.libname
+        string += indent + 'try:\n'
+        string += indent + '    if sys.platform == \'win32\':\n'
+        string += indent + '        lib = ctypes.cdll.%s\n' % self.libname
+        string += indent + '    elif sys.platform == \'darwin\':\n'
+        string += indent + '        lib = ctypes.CDLL("lib%s.dylib")\n' % self.libname
+        string += indent + '    else:\n'
+        string += indent + '        lib = ctypes.CDLL("lib%s.so")\n' % self.libname
+        string += indent + 'except:\n'
+        string += indent + '    raise Exception("Could not load the %s library. Please check if:\\n" +\n' % self.libname 
+        string += indent + '    "  1) The PATH (Windows) / LD_LIBRARY_PATH (Linux) environment variable points to the library\\n" +\n' 
+        string += indent + '    "  2) The architecture of the library matches the architecture of python (a 32 bit python needs a 32 bit shared library)\\n")\n\n'
+
+        string += indent + 'def __init__(self):\n'
+        indent +=  4*' '
+        string += indent + 'self.%s = ctypes.c_int(-1)\n\n' % self.handle_str
         
         return string
         
@@ -217,15 +220,17 @@ class PythonGenerator(object):
             if arg.is_handle:
                 continue
             elif arg.is_string and not arg.arrayinfos['is_array']:
-                tmp_str = '_c_%s = ctypes.c_char_p(%s)' \
+                tmp_str = '_c_%s = ctypes.c_char_p(encode_for_c(%s))' \
                     % (arg.name, arg.name)
             elif arg.is_string and arg.arrayinfos['is_array']:
                 # create type
                 tmp_str = 'array_t_%s = ctypes.c_char_p * len(%s)\n' \
                     % (arg.name, arg.name)
-                tmp_str += indent
-                tmp_str += '_c_%s = array_t_%s(*%s)' \
-                    % (arg.name, arg.name, arg.name)
+                tmp_str += indent + '_c_%s = array_t_%s()\n' \
+                    % (arg.name, arg.name)
+                tmp_str += indent + 'for i in range(len(%s)):\n' % (arg.name)
+                tmp_str += indent + '    _c_%s[i] = encode_for_c(%s[i])' % (arg.name, arg.name)
+
             elif not arg.arrayinfos['is_array'] and arg.npointer == 0:
                 tmp_str = '_c_%s = ctypes.c_%s(%s)' \
                     % (arg.name, arg.type, arg.name)
@@ -371,13 +376,22 @@ class PythonGenerator(object):
             string += '\n'
         # non array value
         for arg in outargs:
-            if not arg.arrayinfos['is_array'] and not arg is ret_val and not arg.is_handle:
+            if not arg.arrayinfos['is_array'] and not arg is ret_val and not arg.is_handle and not arg.is_string:
                 tmp_str = '_py_%s = _c_%s.value' \
                     % (arg.name, arg.name)
             
                 string += 2*indent + tmp_str + '\n'
-            elif arg is ret_val:
+            elif not arg.arrayinfos['is_array'] and not arg is ret_val and not arg.is_handle and arg.is_string:
+                tmp_str = '_py_%s = decode_for_py(_c_%s.value)' \
+                    % (arg.name, arg.name)
+            
+                string += 2*indent + tmp_str + '\n'
+            elif arg is ret_val and not arg.is_string:
                 tmp_str = '_py_%s = _c_%s' \
+                    % (arg.name, arg.name)
+            
+            elif arg is ret_val and arg.is_string:
+                tmp_str = '_py_%s = decode_for_py(_c_%s)' \
                     % (arg.name, arg.name)
             
                 string += 2*indent + tmp_str + '\n' 
@@ -397,9 +411,13 @@ class PythonGenerator(object):
                     else:
                         size_str += ' _py_%s *' % sizearg.name
                         
-            string += 2*indent + size_str[0:-1] + '\n'       
-            tmp_str = '_py_%s = tuple(_c_%s[i] for i in xrange(%s_array_size))' \
-                % (arg.name, arg.name, arg.name)
+            string += 2*indent + size_str[0:-1] + '\n'
+            if not arg.is_string:
+                tmp_str = '_py_%s = tuple(_c_%s[i] for i in range(%s_array_size))' \
+                    % (arg.name, arg.name, arg.name)
+            else:
+                tmp_str = '_py_%s = tuple(decode_for_py(_c_%s[i]) for i in range(%s_array_size))' \
+                    % (arg.name, arg.name, arg.name)
         
             string += 2*indent + tmp_str + '\n'
                 
@@ -421,3 +439,18 @@ class PythonGenerator(object):
             string += ')\n'
         
         return string + '\n'
+        
+    def get_helpers(self):
+        return """
+def encode_for_c(thestring):
+    if type(thestring) is str:
+        return str.encode(thestring)
+    else:
+        return thestring
+        
+def decode_for_py(thestring):
+    if sys.version_info[0] >= 3:
+        return thestring.decode("utf-8")
+    else:
+        return thestring
+"""

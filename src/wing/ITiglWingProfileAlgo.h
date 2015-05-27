@@ -33,6 +33,7 @@
 #include "CTiglPoint.h"
 
 class TopoDS_Wire;
+class TopoDS_Edge;
 
 namespace tigl 
 {
@@ -54,13 +55,16 @@ public:
     virtual const std::string & GetProfileDataXPath() const = 0;
 
     // get upper wing profile wire
-    virtual const TopoDS_Wire & GetUpperWire() const = 0;
+    virtual const TopoDS_Edge & GetUpperWire() const = 0;
 
     // get lower wing profile wire
-    virtual const TopoDS_Wire & GetLowerWire() const = 0;
+    virtual const TopoDS_Edge & GetLowerWire() const = 0;
+
+    // get the upper and lower wing profile combined into one edge
+    virtual const TopoDS_Edge & GetUpperLowerWire() const = 0;
 
     // get trailing edge
-    virtual const TopoDS_Wire & GetTrailingEdge() const = 0;
+    virtual const TopoDS_Edge & GetTrailingEdge() const = 0;
 
     // get leading edge point();
     virtual const gp_Pnt & GetLEPoint() const = 0;
