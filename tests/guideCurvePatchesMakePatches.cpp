@@ -133,3 +133,23 @@ TEST(guideCurvePatches, nacelleInverted)
     TopoDS_Shape faces = SurfMaker.Patches();
     BRepTools::Write(faces, "TestData/export/guideCurvePatch_nacellePatchesInverted.brep");
 }
+
+/******************************************************************************/
+// test surface maker for heli fuselage
+/******************************************************************************/
+TEST(guideCurvePatches, bugHeliFuselage)
+{
+    TopoDS_Shape guides, profiles;
+    BRep_Builder b;
+    BRepTools::Read(guides, "TestData/bugs/145/Fuselage_guides.brep", b);
+    BRepTools::Read(profiles, "TestData/bugs/145/Fuselage_profiles.brep", b);
+
+    MakePatches SurfMaker(guides, profiles);
+    Standard_Real tolConf = Precision::Confusion();
+    Standard_Real tolPara = Precision::Confusion();
+    GeomFill_FillingStyle style = COONS_FILLING_STYLE;
+    ASSERT_NO_THROW(SurfMaker.Perform(tolConf, tolPara, style, Standard_True));
+    ASSERT_EQ(SurfMaker.GetStatus(), 0);
+    TopoDS_Shape faces = SurfMaker.Patches();
+    BRepTools::Write(faces, "TestData/export/bug_145_helipatch.brep");
+}
