@@ -104,9 +104,9 @@ TEST_F(TiglControlSurfaceDevice, getFaceAndWCSNormal)
             gp_Vec normalCSD = controlSurface.getNormalOfControlSurfaceDevice();
             gp_Vec normalWCS = gp_Vec(props.Normal().XYZ());
 
-            ASSERT_NEAR(std::fabs(normalCSD.X()),std::fabs(normalWCS.X()),1e-4);
-            ASSERT_NEAR(std::fabs(normalCSD.Y()),std::fabs(normalWCS.Y()),1e-4);
-            ASSERT_NEAR(std::fabs(normalCSD.Z()),std::fabs(normalWCS.Z()),1e-4);
+            ASSERT_NEAR(fabs(normalCSD.X()),fabs(normalWCS.X()),1e-4);
+            ASSERT_NEAR(fabs(normalCSD.Y()),fabs(normalWCS.Y()),1e-4);
+            ASSERT_NEAR(fabs(normalCSD.Z()),fabs(normalWCS.Z()),1e-4);
         }
     }
 }
