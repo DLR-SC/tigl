@@ -41,6 +41,8 @@ TEST(makeLoft, nacelleInverted)
     loftMaker.addGuides(guides);
     loftMaker.setMakeSolid(false);
     TopoDS_Shape loft = loftMaker.Shape();
+    ASSERT_FALSE(loft.IsNull());
+    ASSERT_EQ(TopAbs_SHELL, loft.ShapeType());
     BRepTools::Write(loft, "TestData/export/makeLoft_nacellePatchesInverted.brep");
 }
 
@@ -61,6 +63,8 @@ TEST(makeLoft, nacelleClosedInverted)
     loftMaker.addProfiles(profiles);
     loftMaker.addGuides(guides);
     TopoDS_Shape loft = loftMaker.Shape();
+    ASSERT_FALSE(loft.IsNull());
+    ASSERT_EQ(TopAbs_SOLID, loft.ShapeType());
     BRepTools::Write(loft, "TestData/export/makeLoft_nacellePatchesClosedInverted.brep");
 }
 
@@ -81,5 +85,7 @@ TEST(makeLoft, nacelleClosed)
     loftMaker.addProfiles(profiles);
     loftMaker.addGuides(guides);
     TopoDS_Shape loft = loftMaker.Shape();
+    ASSERT_FALSE(loft.IsNull());
+    ASSERT_EQ(TopAbs_SOLID, loft.ShapeType());
     BRepTools::Write(loft, "TestData/export/makeLoft_nacellePatchesClosed.brep");
 }
