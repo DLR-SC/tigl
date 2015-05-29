@@ -22,26 +22,16 @@
 #ifndef _SurfTools_HeaderFile
 #define _SurfTools_HeaderFile
 
-#ifndef _Handle_Geom_BSplineSurface_HeaderFile
+#include "tigl_internal.h"
+
 #include <Handle_Geom_BSplineSurface.hxx>
-#endif
-#ifndef _Standard_Real_HeaderFile
 #include <Standard_Real.hxx>
-#endif
-#ifndef _Standard_Integer_HeaderFile
 #include <Standard_Integer.hxx>
-#endif
 
 class TColGeom_SequenceOfSurface;
 
 
-
-#ifndef _Standard_HeaderFile
 #include <Standard.hxx>
-#endif
-#ifndef _Standard_Macro_HeaderFile
-#include <Standard_Macro.hxx>
-#endif
 
 class SurfTools
 {
@@ -73,9 +63,9 @@ public:
     @param theUlast the value of the last parameter
     @return None
     */
-    Standard_EXPORT static  void UReparametrize(Handle_Geom_BSplineSurface& theS,
-                                                const Standard_Real theUfirst,
-                                                const Standard_Real theUlast) ;
+    TIGL_EXPORT static  void UReparametrize(Handle_Geom_BSplineSurface& theS,
+                                            const Standard_Real theUfirst,
+                                            const Standard_Real theUlast) ;
 
     /**
     @brief V reparametrization of B-Spline surface
@@ -85,9 +75,9 @@ public:
     @param theVlast the value of the last parameter
     @return None
     */
-    Standard_EXPORT static  void VReparametrize(Handle_Geom_BSplineSurface& theS,
-                                                const Standard_Real theVfirst,
-                                                const Standard_Real theVlast) ;
+    TIGL_EXPORT static  void VReparametrize(Handle_Geom_BSplineSurface& theS,
+                                            const Standard_Real theVfirst,
+                                            const Standard_Real theVlast) ;
 
     /**
     @brief Smoothing B-Spline surface along U direction
@@ -98,10 +88,10 @@ public:
     @param theInsertKnots the flag that allows to insert new knots.
     @return None
     */
-    Standard_EXPORT static  void USmoothing(Handle_Geom_BSplineSurface& theS,
-                                            const Standard_Integer theCont,const Standard_Real theTol,
-                                            const Standard_Boolean theInsertKnots = Standard_True) ;
-
+    TIGL_EXPORT static  void USmoothing(Handle_Geom_BSplineSurface& theS,
+                                        const Standard_Integer theCont,const Standard_Real theTol,
+                                        const Standard_Boolean theInsertKnots = Standard_True) ;
+    
     /**
     @brief Smoothing B-Spline surface along V direction
 
@@ -111,9 +101,9 @@ public:
     @param theInsertKnots the flag that allows to insert new knots.
     @return None
     */
-    Standard_EXPORT static  void VSmoothing(Handle_Geom_BSplineSurface& theS,
-                                            const Standard_Integer theCont,const Standard_Real theTol,
-                                            const Standard_Boolean theInsertKnots = Standard_True) ;
+    TIGL_EXPORT static  void VSmoothing(Handle_Geom_BSplineSurface& theS,
+                                        const Standard_Integer theCont,const Standard_Real theTol,
+                                        const Standard_Boolean theInsertKnots = Standard_True) ;
 
     /**
     @brief Concatenate two surfaces along V boundary
@@ -124,7 +114,7 @@ public:
     @param theS resulting surface
     @return 0 if the concatenation has been done successfully
     */
-    Standard_EXPORT static  Standard_Integer 
+    TIGL_EXPORT static  Standard_Integer 
     ConcatenateSurfacesV(const Handle_Geom_BSplineSurface& theS1,
                          const Handle_Geom_BSplineSurface& theS2,
                          const Standard_Real theTol,
@@ -139,7 +129,7 @@ public:
     @param theS resulting surface
     @return 0 if the concatenation has been done successfully
     */
-    Standard_EXPORT static  Standard_Integer 
+    TIGL_EXPORT static  Standard_Integer 
     ConcatenateSurfacesU(const Handle_Geom_BSplineSurface& theS1,
                          const Handle_Geom_BSplineSurface& theS2,
                          const Standard_Real theTol,
@@ -154,7 +144,7 @@ public:
     @param theS resulting surface
     @return 0 if the concatenation has been done successfully
     */
-    Standard_EXPORT static Standard_Integer 
+    TIGL_EXPORT static Standard_Integer 
     ConcatenateSurfaces(const Handle(Geom_BSplineSurface)& theS1,
                         const Handle(Geom_BSplineSurface)& theS2,
                         const Standard_Real theTol,
@@ -170,7 +160,7 @@ public:
     @param theS resulting surface
     @return 0 if the concatenation has been done successfully
     */
-    Standard_EXPORT static Standard_Integer ConcatenateSurfaces(
+    TIGL_EXPORT static Standard_Integer ConcatenateSurfaces(
         const TColGeom_SequenceOfSurface& theSurfaces,
         const Standard_Real theTol,
         Handle(Geom_BSplineSurface)& theS);

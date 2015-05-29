@@ -12,28 +12,14 @@
 #ifndef _MakePatches_HeaderFile
 #define _MakePatches_HeaderFile
 
-#ifndef _TopoDS_Shape_HeaderFile
-#include <TopoDS_Shape.hxx>
-#endif
-#ifndef _Standard_Real_HeaderFile
-#include <Standard_Real.hxx>
-#endif
-#ifndef _GeomFill_FillingStyle_HeaderFile
-#include <GeomFill_FillingStyle.hxx>
-#endif
-#ifndef _Handle_Geom_Surface_HeaderFile
-#include <Handle_Geom_Surface.hxx>
-#endif
-#ifndef _Standard_Integer_HeaderFile
-#include <Standard_Integer.hxx>
-#endif
+#include <tigl_internal.h>
 
-#ifndef _Standard_HeaderFile
+#include <TopoDS_Shape.hxx>
+#include <Standard_Real.hxx>
+#include <GeomFill_FillingStyle.hxx>
+#include <Handle_Geom_Surface.hxx>
+#include <Standard_Integer.hxx>
 #include <Standard.hxx>
-#endif
-#ifndef _Standard_Macro_HeaderFile
-#include <Standard_Macro.hxx>
-#endif
 
 /**
  * \brief Return code of make patches algorithm
@@ -84,7 +70,7 @@ public:
      * Empty constructop
      */
 
-    Standard_EXPORT MakePatches();
+    TIGL_EXPORT MakePatches();
 
     /**
      * Constructor with initialisation of data
@@ -93,7 +79,7 @@ public:
      * @param theProfiles
      * compound consisting of profile (section) edges or wires
      */
-    Standard_EXPORT MakePatches(const TopoDS_Shape& theGuides, const TopoDS_Shape& theProfiles);
+    TIGL_EXPORT MakePatches(const TopoDS_Shape& theGuides, const TopoDS_Shape& theProfiles);
 
     /**
      * Method for initialisation of data
@@ -102,7 +88,7 @@ public:
      * @param theProfiles
      * compound consisting of profile (section) edges or wires
      */
-    Standard_EXPORT   void Init(const TopoDS_Shape& theGuides, const TopoDS_Shape& theProfiles) ;
+    TIGL_EXPORT   void Init(const TopoDS_Shape& theGuides, const TopoDS_Shape& theProfiles) ;
 
     /**
      * Perform building patches
@@ -119,17 +105,17 @@ public:
      * @param theSewing
      * Boolean flag that enable/disable sewing of patches
      */
-    Standard_EXPORT   void Perform(const Standard_Real theTolConf,
-                                   const Standard_Real theTolParam,
-                                   const GeomFill_FillingStyle theStyle = GeomFill_CoonsStyle,
-                                   const Standard_Boolean theSewing = Standard_True) ;
+    TIGL_EXPORT   void Perform(const Standard_Real theTolConf,
+                               const Standard_Real theTolParam,
+                               const GeomFill_FillingStyle theStyle = GeomFill_CoonsStyle,
+                               const Standard_Boolean theSewing = Standard_True) ;
 
     /**
      * Returns result
      * Result can be compound pf faces or shell depending on value of theSewing
      */
 
-    Standard_EXPORT  const TopoDS_Shape& Patches() const;
+    TIGL_EXPORT  const TopoDS_Shape& Patches() const;
 
     /**
      * Method for building surface by filling 4-side closed contour consisting of 4 curves
@@ -148,7 +134,7 @@ public:
      * The style of filling, to provide C2 continuity between patches it is necessary using\n
      * GeomFill_CoonsC2Style
      */
-    Standard_EXPORT static  Handle_Geom_BSplineSurface
+    TIGL_EXPORT static  Handle_Geom_BSplineSurface
     BuildSurface(const TColGeom_SequenceOfBoundedCurve& theCurves,
                  const Standard_Real theTolConf,
                  const Standard_Real theTolParam,
@@ -158,7 +144,7 @@ public:
      * Returns status of calculations\n
      */
 
-    Standard_EXPORT MakePatchesStatus GetStatus() const;
+    TIGL_EXPORT MakePatchesStatus GetStatus() const;
 
 protected:
 

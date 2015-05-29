@@ -11,7 +11,9 @@
 
 #include <MakeLoops.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
+#include <TopTools_MapOfShape.hxx>
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
+#include <TopTools_HArray2OfShape.hxx>
 #include <TopExp.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS.hxx>

@@ -38,6 +38,7 @@
 #include <TopTools_MapIteratorOfMapOfShape.hxx>
 #include <TopExp.hxx>
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
+#include <TopTools_HArray2OfShape.hxx>
 #include <ShapeAnalysis_Edge.hxx>
 #include <ShapeAnalysis_Wire.hxx>
 #include <ShapeFix_Wireframe.hxx>

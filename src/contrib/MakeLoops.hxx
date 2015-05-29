@@ -12,18 +12,14 @@
 #ifndef _MakeLoops_HeaderFile
 #define _MakeLoops_HeaderFile
 
+#include "tigl_internal.h"
+
 #include <TopoDS_Shape.hxx>
 #include <TopTools_ListOfShape.hxx>
 #include <TopTools_MapOfShape.hxx>
-#include <TopTools_HArray2OfShape.hxx>
+#include <Handle_TopTools_HArray2OfShape.hxx>
 
 
-#ifndef _Standard_HeaderFile
-#include <Standard.hxx>
-#endif
-#ifndef _Standard_Macro_HeaderFile
-#include <Standard_Macro.hxx>
-#endif
 
 /**
  * \brief Return code of make loops algorithm
@@ -77,7 +73,7 @@ public:
     /**
      * Empty constructop
      */
-    Standard_EXPORT MakeLoops();
+    TIGL_EXPORT MakeLoops();
 
     /**
      * Constructor with initialisation of data
@@ -90,9 +86,9 @@ public:
      * Map that contains only profile (section) edges
      */
 
-    Standard_EXPORT MakeLoops(const TopoDS_Shape& theNetWork,
-                              const TopTools_MapOfShape& GuidesEdges,
-                              const TopTools_MapOfShape& ProfileEdges);
+    TIGL_EXPORT MakeLoops(const TopoDS_Shape& theNetWork,
+                          const TopTools_MapOfShape& GuidesEdges,
+                          const TopTools_MapOfShape& ProfileEdges);
 
     /**
      * Method for initialisation of data
@@ -105,14 +101,14 @@ public:
      * Map that contains only profile (section) edges
      */
 
-    Standard_EXPORT   void Init(const TopoDS_Shape& theNetWork,
-                                const TopTools_MapOfShape& GuidesEdges,
-                                const TopTools_MapOfShape& ProfileEdges);
+    TIGL_EXPORT   void Init(const TopoDS_Shape& theNetWork,
+                            const TopTools_MapOfShape& GuidesEdges,
+                            const TopTools_MapOfShape& ProfileEdges);
 
     /**
      * Method implements algorithm of building loops
      */
-    Standard_EXPORT   void Perform() ;
+    TIGL_EXPORT   void Perform() ;
 
     /**
      * Method returns result loops stored in 2d array\n
@@ -122,14 +118,14 @@ public:
      * First index of array correspons guide edge,\n
      * second index corresponds of section edge\n
      */
-    Standard_EXPORT  const Handle(TopTools_HArray2OfShape)& Cells() const;
+    TIGL_EXPORT  const Handle(TopTools_HArray2OfShape)& Cells() const;
 
     /**
      * Returns status of calculations
      * 0 - success, 1 - algorithm failed
      */
 
-    Standard_EXPORT Standard_Integer GetStatus() const;
+    TIGL_EXPORT Standard_Integer GetStatus() const;
 
 
 
