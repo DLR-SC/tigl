@@ -90,7 +90,7 @@ public:
 
     // Returns the segment to a given point on the componentSegment and the nearest point projected onto the loft.
     // Returns null if the point is not an that wing, i.e. deviates more than 1 cm from the wing
-    TIGL_EXPORT const CTiglAbstractSegment* findSegment(double x, double y, double z, gp_Pnt& nearestPoint);
+    TIGL_EXPORT const CTiglAbstractSegment* findSegment(double x, double y, double z, gp_Pnt& nearestPoint, double& deviation);
 
     TIGL_EXPORT TiglGeometricComponentType GetComponentType(){ return TIGL_COMPONENT_WINGCOMPSEGMENT | TIGL_COMPONENT_SEGMENT | TIGL_COMPONENT_LOGICAL; }
 

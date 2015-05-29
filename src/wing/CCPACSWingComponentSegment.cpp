@@ -782,7 +782,7 @@ const std::string & CCPACSWingComponentSegment::GetToElementUID(void) const
 
 // Returns the segment to a given point on the componentSegment. 
 // Returns null if the point is not an that wing!
-const CTiglAbstractSegment* CCPACSWingComponentSegment::findSegment(double x, double y, double z, gp_Pnt& nearestPoint)
+const CTiglAbstractSegment* CCPACSWingComponentSegment::findSegment(double x, double y, double z, gp_Pnt& nearestPoint, double& deviation)
 {
     CTiglAbstractSegment* result = NULL;
     gp_Pnt pnt(x, y, z);
@@ -815,10 +815,7 @@ const CTiglAbstractSegment* CCPACSWingComponentSegment::findSegment(double x, do
         }
     }
 
-    // check if pnt lies on component segment shape with 1cm tolerance
-    if (minDist > 1.e-2) {
-        return NULL;
-    }
+    deviation = minDist;
 
     return result;
 }
