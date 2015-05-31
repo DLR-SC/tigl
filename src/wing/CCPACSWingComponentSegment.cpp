@@ -629,20 +629,6 @@ gp_Pnt CCPACSWingComponentSegment::GetPoint(double eta, double xsi)
         pointIndex++;
     }
 
-    double wingLenApprox = GetWireLength(projLeadingEdge);
-
-    // create iso xsi line as linear interpolation between xsi points
-    GeomAPI_PointsToBSpline linearInterpolation(xsiPoints, 1, 1, GeomAbs_C0, Precision::Confusion());
-    Handle_Geom_BoundedCurve xsiCurve = linearInterpolation.Curve();
-
-    // extend iso xsi line, so that we can still intersect it
-    // even if we have twisted sections
-    gp_Pnt p; gp_Vec v;
-    xsiCurve->D1(xsiCurve->LastParameter(), p, v);
-    GeomLib::ExtendCurveToPoint(xsiCurve, p.XYZ() + v.Normalized().XYZ()*wingLenApprox, 1, true);
-    xsiCurve->D1(xsiCurve->FirstParameter(), p, v);
-    GeomLib::ExtendCurveToPoint(xsiCurve, p.XYZ() - v.Normalized().XYZ()*wingLenApprox, 1, false);
-
     // compute eta point and normal on the projected LE
     gp_Pnt etaPnt; gp_Vec etaNormal;
     WireGetPointTangent(projLeadingEdge, eta, etaPnt, etaNormal);
@@ -651,20 +637,38 @@ gp_Pnt CCPACSWingComponentSegment::GetPoint(double eta, double xsi)
     gp_Pln gpPlane(etaPnt, gp_Dir(etaNormal.XYZ()));
     Handle_Geom_Surface plane = new Geom_Plane(gpPlane);
 
-    // compute intersection of plane with iso-xsi line
-    GeomAPI_IntCS Intersector(xsiCurve, plane);
-    if (Intersector.IsDone() && Intersector.NbPoints() > 0) {
-        gp_Pnt p = Intersector.Point(1);
-        return p;
+    // compute intersection with line strips
+    bool haveIntersection = false;
+    gp_Pnt intersectionPoint;
+    for (unsigned int i = 1; i <= segments.size(); ++i) {
+        gp_Pnt p1 = xsiPoints.Value(i);
+        gp_Pnt p2 = xsiPoints.Value(i+1);
+
+        double denominator = gp_Vec(p2.XYZ() - p1.XYZ())*etaNormal;
+        if (fabs(denominator) < 1e-8) {
+            continue;
+        }
+        double alpha = gp_Vec(etaPnt.XYZ() - p1.XYZ())*etaNormal / denominator ;
+        if (i == 1 && alpha < 0.) {
+            haveIntersection = true;
+            intersectionPoint = p1.XYZ() + alpha*(p2.XYZ()-p1.XYZ());
+        }
+        if (alpha >= 0. && alpha <= 1.) {
+            haveIntersection = true;
+            intersectionPoint = p1.XYZ() + alpha*(p2.XYZ()-p1.XYZ());
+            break;
+        }
+        if (i == segments.size() && alpha > 1.) {
+            haveIntersection = true;
+            intersectionPoint = p1.XYZ() + alpha*(p2.XYZ()-p1.XYZ());
+        }
+    }
+
+    if (haveIntersection) {
+        return intersectionPoint;
     }
     else {
-        // Fallback mode, if they are not intersecting
-        // we don't need it, if we make leading/trailing edge longer
-        TopoDS_Shape xsiWire = BRepBuilderAPI_MakeEdge(xsiCurve);
-        TopoDS_Shape etaFace = BRepBuilderAPI_MakeFace(gpPlane);
-        BRepExtrema_DistShapeShape extrema(xsiWire, etaFace);
-        extrema.Perform();
-        return extrema.PointOnShape1(1);
+        throw CTiglError("Can not compute point in CCPACSWingComponentSegment::GetPoint.", TIGL_MATH_ERROR);
     }
 }
 
