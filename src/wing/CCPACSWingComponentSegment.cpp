@@ -425,7 +425,7 @@ void CCPACSWingComponentSegment::GetSegmentIntersection(const std::string& segme
     }
         
     // test if eta,xsi is valid
-    if (segment.GetChordPoint(eta,xsi).Distance(result) > 1e-6) {
+    if (segment.GetChordPoint(eta,xsi).Distance(result) > 1e-4) {
         throw CTiglError("Error determining proper eta, xsi coordinates in CCPACSWingComponentSegment::GetSegmentIntersection.", TIGL_MATH_ERROR);
     }
 }
