@@ -640,3 +640,45 @@ TEST(WingComponentSegment5, GetSegmentIntersection_BUG)
     ASSERT_EQ(SUCCESS, tixiCloseDocument(tixiHandle));
 }
 
+/// This is a component segment with many segments
+TEST(WingComponentSegment5, GetPointPerformance)
+{
+    const char* filename = "TestData/component-segment-bwb.xml";
+    char* csUID = NULL;
+    ReturnCode tixiRet;
+    TiglReturnCode tiglRet;
+
+    TiglCPACSConfigurationHandle tiglHandle = -1;
+    TixiDocumentHandle tixiHandle = -1;
+
+    tixiRet = tixiOpenDocument(filename, &tixiHandle);
+    ASSERT_EQ (SUCCESS, tixiRet);
+    tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "", &tiglHandle);
+    ASSERT_EQ(TIGL_SUCCESS, tiglRet);
+    
+    tiglWingGetComponentSegmentUID(tiglHandle, 1, 1, &csUID);
+
+    int nruns = 50;
+    double x, y, z;
+    double w = 0.;
+    
+    // first run takes longer due to creation of leading edge. we dont count it
+    tiglRet = tiglWingComponentSegmentGetPoint(tiglHandle, csUID, 0.95, 0.8, &x, &y, &z);
+    
+    clock_t start = clock();
+    for(int i = 0; i < nruns; ++i){
+        tiglRet = tiglWingComponentSegmentGetPoint(tiglHandle, csUID, 0.95, 0.8, &x, &y, &z);
+        //just some dummy to prevent compiler optimization
+        w = w + 1.0;
+    }
+
+    clock_t stop = clock();
+    ASSERT_EQ((double)nruns, w);
+        
+    double time_elapsed = (double)(stop - start)/(double)CLOCKS_PER_SEC/(double)nruns;
+    time_elapsed *= 1000.;
+    printf("Average time: %f [ms]\n", time_elapsed);
+    
+    ASSERT_EQ(TIGL_SUCCESS, tiglCloseCPACSConfiguration(tiglHandle));
+    ASSERT_EQ(SUCCESS, tixiCloseDocument(tixiHandle));
+}
