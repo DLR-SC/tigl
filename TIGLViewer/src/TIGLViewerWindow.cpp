@@ -18,6 +18,7 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
+#define _USE_MATH_DEFINES
 
 #include <QtGui>
 #include <QFileDialog>
@@ -56,6 +57,7 @@
 #include "TIGLViewerScreenshotDialog.h"
 #include "TIGLViewerScopedCommand.h"
 #include "tigl_config.h"
+#include "CCPACSConfigurationManager.h"
 
 #include <cstdlib>
 

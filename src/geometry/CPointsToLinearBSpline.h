@@ -19,6 +19,8 @@
 #ifndef CPOINTSTOLINEARBSPLINE_H
 #define CPOINTSTOLINEARBSPLINE_H
 
+#include "tigl_internal.h"
+
 #include <vector>
 #include <gp_Pnt.hxx>
 #include <Handle_Geom_BSplineCurve.hxx>
@@ -33,13 +35,13 @@ namespace tigl
 class CPointsToLinearBSpline
 {
 public:
-    CPointsToLinearBSpline(const std::vector<gp_Pnt>& points);
+    TIGL_EXPORT CPointsToLinearBSpline(const std::vector<gp_Pnt>& points);
 
-    Handle_Geom_BSplineCurve Curve() const;
+    TIGL_EXPORT Handle_Geom_BSplineCurve Curve() const;
 
-    operator Handle_Geom_BSplineCurve() const;
+    TIGL_EXPORT operator Handle_Geom_BSplineCurve() const;
 
-    ~CPointsToLinearBSpline();
+    TIGL_EXPORT ~CPointsToLinearBSpline();
 
 private:
     const std::vector<gp_Pnt>& _points;

@@ -33,14 +33,14 @@ CPointsToLinearBSpline::CPointsToLinearBSpline(const std::vector<gp_Pnt>& points
 
 Handle_Geom_BSplineCurve CPointsToLinearBSpline::Curve() const
 {
-    int ncp = _points.size();
+    int ncp = (int) _points.size();
     std::vector<gp_Pnt>::const_iterator iter;
 
     // compute total length and copy control points
     int icp = 1;
     gp_Pnt lastP = _points[0];
     double totalLen = 0.;
-    TColgp_Array1OfPnt cp(1, _points.size());
+    TColgp_Array1OfPnt cp(1, ncp);
     for (iter = _points.begin(); iter != _points.end(); ++iter) {
         gp_Pnt p = *iter;
         double segLen = p.Distance(lastP);
