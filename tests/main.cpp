@@ -25,9 +25,7 @@
 #endif
 
 // make tixi quiet
-#ifdef HAVE_TIXI_SETPRINTMSG
 void tixiSilentMessage(MessageType , const char *, ...){}
-#endif
 
 int main(int argc, char **argv)
 {
@@ -36,10 +34,8 @@ int main(int argc, char **argv)
     // disable any console logging
     tigl::CTiglLogging::Instance().SetConsoleVerbosity(TILOG_SILENT);
     tigl::CTiglLogging::Instance().LogToFile("tigltest");
-#ifdef HAVE_TIXI_SETPRINTMSG
     // disable tixi output
     tixiSetPrintMsgFunc(tixiSilentMessage);
-#endif
     int retval = RUN_ALL_TESTS();
     tixiCleanup();
     return retval;
