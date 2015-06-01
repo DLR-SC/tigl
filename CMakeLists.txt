@@ -129,6 +129,11 @@ if(WIN32)
     endif(CMAKE_BUILD_TYPE STREQUAL "Debug")
 endif(WIN32)
 
+if(WIN32)
+    # avoid export of oce/occt classes into tigl library
+    add_definitions(-DStandard_EXPORT=)
+endif(WIN32)
+
 # style checks
 add_custom_target(checkstyle)
 add_custom_target(checkstylexml)
