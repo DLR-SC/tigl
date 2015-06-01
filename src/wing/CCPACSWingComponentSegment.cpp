@@ -36,6 +36,7 @@
 #include "CTiglLogging.h"
 #include "CCPACSWingCell.h"
 #include "CTiglApproximateBsplineWire.h"
+#include "CPointsToLinearBSpline.h"
 #include "tiglcommonfunctions.h"
 
 #include "BRepOffsetAPI_ThruSections.hxx"
@@ -44,6 +45,7 @@
 #include "TopoDS_Wire.hxx"
 #include "GeomAPI_IntCS.hxx"
 #include "GeomAPI_ProjectPointOnSurf.hxx"
+#include "GeomAPI_ProjectPointOnCurve.hxx"
 #include "Geom_Plane.hxx"
 #include "gp_Pln.hxx"
 //#include "Geom_Surface.hxx"
@@ -579,13 +581,8 @@ void CCPACSWingComponentSegment::UpdateProjectedLeadingEdge()
     LEPointsProjected[nPoints-1] = outnew;
     LEPointsProjected[0]         = innew;
 
-    // build projected leading edge wire
-    BRepBuilderAPI_MakeWire wireBuilder;
-    for (unsigned int j = 1; j < LEPointsProjected.size(); j++) {
-        TopoDS_Edge edge = BRepBuilderAPI_MakeEdge(LEPointsProjected[j - 1], LEPointsProjected[j]);
-        wireBuilder.Add(edge);
-    }
-    projLeadingEdge = wireBuilder.Wire();
+    // build projected leading edge curve
+    projLeadingEdge = CPointsToLinearBSpline(LEPointsProjected);
 }
 
 
@@ -631,11 +628,7 @@ gp_Pnt CCPACSWingComponentSegment::GetPoint(double eta, double xsi)
 
     // compute eta point and normal on the projected LE
     gp_Pnt etaPnt; gp_Vec etaNormal;
-    WireGetPointTangent(projLeadingEdge, eta, etaPnt, etaNormal);
-
-    // plane normal to projected leading edge
-    gp_Pln gpPlane(etaPnt, gp_Dir(etaNormal.XYZ()));
-    Handle_Geom_Surface plane = new Geom_Plane(gpPlane);
+    projLeadingEdge->D1(eta, etaPnt, etaNormal);
 
     // compute intersection with line strips
     bool haveIntersection = false;
@@ -700,7 +693,13 @@ void CCPACSWingComponentSegment::GetEtaXsiFromSegmentEtaXsi(const std::string& s
     xsi = sxsi;
 
     UpdateProjectedLeadingEdge();
-    eta = ProjectPointOnWire(projLeadingEdge, point3d);
+    GeomAPI_ProjectPointOnCurve proj(point3d, projLeadingEdge);
+    if (proj.NbPoints() > 0) {
+        eta = proj.LowerDistanceParameter();
+    }
+    else {
+        throw CTiglError("Cannot compute eta value in CCPACSWingComponentSegment::GetEtaXsiFromSegmentEtaXsi", TIGL_ERROR);
+    }
 }
 
 
