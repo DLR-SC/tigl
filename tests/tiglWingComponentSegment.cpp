@@ -640,6 +640,27 @@ TEST(WingComponentSegment5, GetSegmentIntersection_BUG)
     ASSERT_EQ(SUCCESS, tixiCloseDocument(tixiHandle));
 }
 
+/// A reported bug, where tigl creates an invalid error
+TEST(WingComponentSegment5, GetSegmentIntersection_BUG2)
+{
+    const char* filename = "TestData/component-segment-bwb.xml";
+
+    TiglCPACSConfigurationHandle tiglHandle = -1;
+    TixiDocumentHandle tixiHandle = -1;
+
+    ASSERT_EQ (SUCCESS, tixiOpenDocument(filename, &tixiHandle));
+    ASSERT_EQ(TIGL_SUCCESS, tiglOpenCPACSConfiguration(tixiHandle, "", &tiglHandle));
+
+    double xsi = 0;
+    ASSERT_EQ(TIGL_SUCCESS, tiglWingComponentSegmentGetSegmentIntersection(
+               tiglHandle, "BWB_CST_wing_CS", "BWB_CST_wingSegment49ID", 
+               0.81268, 1., 0.96, 1., 1., 
+               &xsi));
+
+    ASSERT_EQ(TIGL_SUCCESS, tiglCloseCPACSConfiguration(tiglHandle));
+    ASSERT_EQ(SUCCESS, tixiCloseDocument(tixiHandle));
+}
+
 /// This is a component segment with many segments
 TEST(WingComponentSegment5, GetPointPerformance)
 {
