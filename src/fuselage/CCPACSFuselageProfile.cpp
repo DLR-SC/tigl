@@ -35,6 +35,7 @@
 #include "BRepBuilderAPI_MakeEdge.hxx"
 #include "BRepBuilderAPI_MakeWire.hxx"
 #include "Geom_TrimmedCurve.hxx"
+#include "Geom_Plane.hxx"
 #include "GCE2d_MakeSegment.hxx"
 #include "Geom2d_Line.hxx"
 #include "TopExp_Explorer.hxx"
@@ -52,6 +53,7 @@
 #include "CTiglInterpolateBsplineWire.h"
 #include "tiglcommonfunctions.h"
 #include "CTiglLogging.h"
+#include "GeomAPI_IntCS.hxx"
 
 #include "math.h"
 #include <iostream>
@@ -303,15 +305,35 @@ void CCPACSFuselageProfile::BuildWires(void)
         }
     }
 
-    // we always want to include the endpoint, if it's the same as the startpoint
-    // we use the startpoint to enforce closing of the spline
-    gp_Pnt pStart =  coordinates[0]->Get_gp_Pnt();
-    gp_Pnt pEnd   =  coordinates[coordinates.size()-1]->Get_gp_Pnt();
-    if (checkSamePoints(pStart,pEnd)) {
-        points.push_back(pStart);
+    if (!mirrorSymmetry) {
+
+        // we always want to include the endpoint, if it's the same as the startpoint
+        // we use the startpoint to enforce closing of the spline
+        gp_Pnt pStart =  coordinates[0]->Get_gp_Pnt();
+        gp_Pnt pEnd   =  coordinates[coordinates.size()-1]->Get_gp_Pnt();
+        if (checkSamePoints(pStart,pEnd)) {
+            points.push_back(pStart);
+        }
+        else {
+            points.push_back(pEnd);
+        }
     }
     else {
+        gp_Pnt pEnd =  coordinates[coordinates.size()-1]->Get_gp_Pnt();
         points.push_back(pEnd);
+
+        // mirror each point at x-z plane i.e. mirror y coordinate
+        ITiglWireAlgorithm::CPointContainer tmpPoints = points;
+        for (int i = points.size() - 1; i >= 0; i--) {
+            gp_Pnt curP = points[i];
+            if (i == tmpPoints.size()-1 && fabs(curP.Y()) < 1e-6) {
+                // do not add the same points twice
+                continue;
+            }
+            curP.SetY(-1. * curP.Y());
+            //tmpPoints.push_back(curP);
+        }
+        points = tmpPoints;
     }
 
     // Build wire from fuselage profile points
@@ -329,6 +351,48 @@ void CCPACSFuselageProfile::BuildWires(void)
 
     if (tempWireClosed.IsNull() == Standard_True || tempWireOriginal.IsNull() == Standard_True) {
         throw CTiglError("Error: TopoDS_Wire is null in CCPACSFuselageProfile::BuildWire", TIGL_ERROR);
+    }
+
+    if (mirrorSymmetry) {
+        // trim the wire with the xz plane
+        TopoDS_Edge edge = GetEdge(tempWireOriginal, 0);
+        double wstart, wend;
+        Handle_Geom_Curve   curve = BRep_Tool::Curve(edge, wstart, wend);
+        Handle_Geom_Surface plane = new Geom_Plane(gp_Pln(gp_Pnt(0,0,0), gp_Dir(0,1,0)));
+
+        GeomAPI_IntCS Intersector(curve, plane);
+        std::vector<double> parms;
+        if (Intersector.IsDone()) {
+            for (int isect = 1; isect <= Intersector.NbPoints(); ++isect) {
+                // get curve paramter
+                double w, u,v;
+                Intersector.Parameters(isect, u, v, w);
+                parms.push_back(w);
+            }
+        }
+        // sort ascending
+        std::sort(parms.begin(), parms.end());
+        if (parms.size() == 1 || parms.size() == 3) {
+            double wstartNew, wmeanNew, wendNew;
+            if (parms.size() == 1) {
+                wstartNew = wstart;
+                wmeanNew  = parms[0];
+                wendNew   = wend;
+            }
+            else {
+                wstartNew = parms[0];
+                wmeanNew  = parms[1];
+                wendNew   = parms[2];
+            }
+
+            TopoDS_Edge halfFuselage = BRepBuilderAPI_MakeEdge(curve, wstartNew, wmeanNew);
+            tempWireOriginal = BRepBuilderAPI_MakeWire(halfFuselage);
+            gp_Pnt p1 = curve->Value(wmeanNew);
+            gp_Pnt p2 = curve->Value(wendNew);
+            tempWireClosed = BRepBuilderAPI_MakeWire(
+                                 halfFuselage,
+                                 BRepBuilderAPI_MakeEdge(p1, p2));
+        }
     }
 
     // Apply fuselage profile transformation to wire
