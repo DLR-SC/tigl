@@ -331,7 +331,7 @@ void CCPACSFuselageProfile::BuildWires(void)
                 continue;
             }
             curP.SetY(-1. * curP.Y());
-            //tmpPoints.push_back(curP);
+            tmpPoints.push_back(curP);
         }
         points = tmpPoints;
     }
