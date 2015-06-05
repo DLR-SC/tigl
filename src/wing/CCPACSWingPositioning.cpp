@@ -28,6 +28,8 @@
 #include "CTiglError.h"
 #include "gp_Pnt.hxx"
 #include <iostream>
+// [[CAS_AES]] include helper routines for save method
+#include "TixiSaveExt.h"
 
 namespace tigl
 {
@@ -187,6 +189,33 @@ void CCPACSWingPositioning::ReadCPACS(TixiDocumentHandle tixiHandle, const std::
     }
 
     Update();
+}
+
+// [[CAS_AES]] Write CPACS segment elements
+void CCPACSWingPositioning::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& positioningXPath)
+{
+    // Set the subelement "length" 
+    TixiSaveExt::TixiSaveDoubleElement(tixiHandle, positioningXPath.c_str(), "length", length, NULL);
+    
+    // Set subelement "fromSectionUID" - the inner section
+    TixiSaveExt::TixiSaveTextElement(tixiHandle, positioningXPath.c_str(), "fromSectionUID", innerSection.c_str());
+    
+    // Set subelement "sweepAngle"
+    TixiSaveExt::TixiSaveDoubleElement(tixiHandle, positioningXPath.c_str(), "sweepAngle", sweepangle, NULL);
+    
+    // Set subelement "dihedralAngle"
+    TixiSaveExt::TixiSaveDoubleElement(tixiHandle, positioningXPath.c_str(), "dihedralAngle", dihedralangle, NULL);
+    
+    // Set subelement "fromSectionUID" - the inner section
+    TixiSaveExt::TixiSaveTextElement(tixiHandle, positioningXPath.c_str(), "fromSectionUID", innerSection.c_str());
+    
+    // Set subelement "toSectionUID" - the outer section
+    if (length != 0) {
+        TixiSaveExt::TixiSaveTextElement(tixiHandle, positioningXPath.c_str(), "toSectionUID", outerSection.c_str());
+    }
+    else {
+        TixiSaveExt::TixiSaveTextElement(tixiHandle, positioningXPath.c_str(), "toSectionUID", "");
+    }
 }
 
 void CCPACSWingPositioning::ConnectChildPositioning(CCPACSWingPositioning* child)

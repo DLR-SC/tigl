@@ -48,6 +48,8 @@
 #include <Bnd_Box.hxx>
 #include "CTiglFusePlane.h"
 #include "CNamedShape.h"
+// [[CAS_AES]] include helper routines for save method
+#include "TixiSaveExt.h"
 
 #include <cfloat>
 
@@ -87,6 +89,32 @@ void CCPACSConfiguration::ReadCPACS(const char* configurationUID)
         return;
     }
 
+    // [[CAS_AES]] BEGIN
+    // reading name and description
+    std::string tempString;
+    std::string xpath;
+    char* path;
+
+    // memory for path freed by tixi when document is closed
+    tempString = configurationUID;
+    if (tixiUIDGetXPath(tixiDocumentHandle, tempString.c_str(), &path) != SUCCESS) {
+        throw CTiglError("Error: XML error while reading in CCPACSConfiguration::ReadCPACS", TIGL_XML_ERROR);
+    }
+    xpath = path;
+
+    char* ptrName = NULL;
+    tempString    = xpath + "/name";
+    if (tixiGetTextElement(tixiDocumentHandle, tempString.c_str(), &ptrName) == SUCCESS) {
+        name = ptrName;
+    }
+
+    char* ptrDescription = "";
+    tempString    = xpath + "/description";
+    if (tixiGetTextElement(tixiDocumentHandle, tempString.c_str(), &ptrDescription) == SUCCESS) {
+        description = ptrDescription;
+    }
+    // [[CAS_AES]] END
+
     header.ReadCPACS(tixiDocumentHandle);
     guideCurveProfiles.ReadCPACS(tixiDocumentHandle);
     wings.ReadCPACS(tixiDocumentHandle, configurationUID);
@@ -102,6 +130,22 @@ void CCPACSConfiguration::ReadCPACS(const char* configurationUID)
     catch (tigl::CTiglError& ex) {
         LOG(ERROR) << ex.getError() << std::endl;
     }
+}
+
+// [[CAS_AES]] Write CPACS structure to tixiHandle
+void CCPACSConfiguration::WriteCPACS(TixiDocumentHandle tixiHandle, const char* configurationUID)
+{
+    header.WriteCPACS(tixiHandle);
+    
+    // TODO: overwrites a previous model (if one exists) with the new configuration, which could lead to 
+    //       inconsistency since not all elements/attributes are replaced (not implemented yet)
+    TixiSaveExt::TixiSaveTextAttribute(tixiHandle, "/cpacs/vehicles/aircraft/model", "uID", configurationUID);
+    TixiSaveExt::TixiSaveTextElement(tixiHandle, "/cpacs/vehicles/aircraft/model", "name", name.c_str());
+    TixiSaveExt::TixiSaveTextElement(tixiHandle, "/cpacs/vehicles/aircraft/model", "description", description.c_str());
+
+    fuselages.WriteCPACS(tixiHandle, configurationUID);
+    wings.WriteCPACS(tixiHandle, configurationUID);
+
 }
 
 // transform all components relative to their parents

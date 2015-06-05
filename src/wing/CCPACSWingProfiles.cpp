@@ -27,6 +27,8 @@
 #include "CTiglError.h"
 #include <sstream>
 #include <iostream>
+// [[CAS_AES]] include helper routines for save method
+#include "TixiSaveExt.h"
 
 namespace tigl
 {
@@ -73,13 +75,11 @@ void CCPACSWingProfiles::ReadCPACS(TixiDocumentHandle tixiHandle)
 
     ReturnCode    tixiRet;
     int           elementCount;
-    std::string   elementString;
-    char*         elementPath;
+    std::string   elementPath;
 
     /* Get wing element count */
-    elementString  = "/cpacs/vehicles/profiles/wingAirfoils";
-    elementPath = const_cast<char*>(elementString.c_str());
-    tixiRet = tixiGetNamedChildrenCount(tixiHandle, elementPath, "wingAirfoil", &elementCount);
+    elementPath = "/cpacs/vehicles/profiles/wingAirfoils";
+    tixiRet = tixiGetNamedChildrenCount(tixiHandle, elementPath.c_str(), "wingAirfoil", &elementCount);
     if (tixiRet != SUCCESS) {
         cerr << "Warning: no wing profiles are defined!" << endl;
         return;
@@ -93,6 +93,44 @@ void CCPACSWingProfiles::ReadCPACS(TixiDocumentHandle tixiHandle)
         CCPACSWingProfile* profile = new CCPACSWingProfile(airfoilTmpStream.str());
         profile->ReadCPACS(tixiHandle);
         profiles[profile->GetUID()] = profile;
+    }
+}
+
+// [[CAS_AES]] Write CPACS wing profiles
+void CCPACSWingProfiles::WriteCPACS(TixiDocumentHandle tixiHandle)
+{
+    std::string elementPath = "/cpacs/vehicles/profiles/wingAirfoils";
+    std::string path;
+    ReturnCode tixiRet;
+    int wingAirfoilCount, test;
+
+    TixiSaveExt::TixiSaveElement(tixiHandle, "/cpacs/vehicles", "profiles");
+    TixiSaveExt::TixiSaveElement(tixiHandle, "/cpacs/vehicles/profiles", "wingAirfoils");
+
+    if (tixiGetNamedChildrenCount(tixiHandle, elementPath.c_str(), "wingAirfoil", &test) != SUCCESS) {
+        throw CTiglError("XML error: tixiGetNamedChildrenCount failed in CCPACSWings::ReadCPACS", TIGL_XML_ERROR);
+    }
+
+    wingAirfoilCount = profiles.size();
+
+    for (int i = 1;i <= wingAirfoilCount;i++) {
+        std::stringstream ss;
+        ss << elementPath << "/wingAirfoil[" << i << "]";
+        path = ss.str();
+        CCPACSWingProfile& wingAirfoil = GetProfile(i);
+        if ((tixiRet = tixiCheckElement(tixiHandle, path.c_str())) == ELEMENT_NOT_FOUND) {
+            if ((tixiRet = tixiCreateElement(tixiHandle, elementPath.c_str(), "wingAirfoil")) != SUCCESS) {
+                throw CTiglError("XML error: tixiCreateElement failed in CCPACSWings::WriteCPACS", TIGL_XML_ERROR);
+            }
+        }
+        wingAirfoil.WriteCPACS(tixiHandle, path);
+    }
+
+    for (int i = wingAirfoilCount+1; i <= test; i++) {
+        std::stringstream ss;
+        ss << elementPath << "/wingAirfoil[" << wingAirfoilCount+1 << "]";
+        path = ss.str();
+        tixiRet = tixiRemoveElement(tixiHandle, path.c_str());
     }
 }
 

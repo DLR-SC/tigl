@@ -52,8 +52,15 @@ public:
     // Getter/Setter for member timestamp
     TIGL_EXPORT std::string GetTimestamp(void) const;
 
+    // [[CAS_AES]] Getter/Setter for member description
+    TIGL_EXPORT void SetDescription(const std::string& aDescription);
+    TIGL_EXPORT const std::string& GetDescription(void) const;
+
     // Read CPACS header elements
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle);
+
+    // [[CAS_AES]] Write (and Save) header element, or create it if don't exist yet
+    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle);
 
 protected:
     // Cleanup routine
@@ -68,6 +75,8 @@ private:
 
 private:
     std::string name;       /**< Configuration name          */
+    // [[CAS_AES]] added description
+    std::string description;/**< Configuration description   */
     std::string creator;    /**< Configuration author        */
     std::string timestamp;  /**< Configuration creation time */
 

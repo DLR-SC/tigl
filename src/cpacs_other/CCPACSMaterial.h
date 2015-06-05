@@ -33,6 +33,9 @@ public:
     
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string &materialXPath);
     
+    // [[CAS_AES]] added write method
+    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string&);
+    
     TIGL_EXPORT void Invalidate();
     
     // returns true, if the material could be read from CPACS file
@@ -42,6 +45,9 @@ public:
     
     TIGL_EXPORT const std::string& GetUID() const;
     TIGL_EXPORT double GetThickness() const;
+
+    // [[CAS_AES]] added getter for thickness scaling
+    TIGL_EXPORT double GetThicknessScaling() const;
 
     TIGL_EXPORT void Cleanup();
 private:

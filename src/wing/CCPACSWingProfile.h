@@ -59,6 +59,9 @@ public:
     // Read CPACS wing profile file
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle);
 
+    // [[CAS_AES]] Write CPACS wing profile file
+    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& profileXPath);
+
     // Returns the name of the wing profile
     TIGL_EXPORT const std::string& GetName(void) const;
 

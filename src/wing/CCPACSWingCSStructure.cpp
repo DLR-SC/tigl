@@ -21,6 +21,9 @@
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 
+// [[CAS_AES]] added include for save helper methods
+#include "TixiSaveExt.h"
+
 namespace tigl
 {
 
@@ -59,6 +62,25 @@ void CCPACSWingCSStructure::ReadCPACS(TixiDocumentHandle tixiHandle, const std::
     }
     
     isvalid = true;
+}
+
+// [[CAS_AES]] Write CPACS structure elements
+void CCPACSWingCSStructure::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& structureXPath)
+{
+    std::string elementPath;
+
+    // for each element, if it exist in the model, the function call the saving subfunction
+    // if not existing in the model, it try to remove an eventuel pre-existing subsection (no error if not pre-existing)
+    elementPath = structureXPath + "/upperShell";
+    // create the subelement Spars
+    TixiSaveExt::TixiSaveElement(tixiHandle,structureXPath.c_str(), "upperShell");
+    upperShell.WriteCPACS(tixiHandle, elementPath);
+
+    elementPath = structureXPath + "/lowerShell";
+    // create the subelement Spars
+    TixiSaveExt::TixiSaveElement(tixiHandle,structureXPath.c_str(), "lowerShell");
+    lowerShell.WriteCPACS(tixiHandle, elementPath);
+
 }
 
 CCPACSWingShell& CCPACSWingCSStructure::GetLowerShell()

@@ -24,6 +24,8 @@
 */
 
 #include "CCPACSHeader.h"
+// [[CAS_AES]] include helper routines for save method
+#include "TixiSaveExt.h"
 
 namespace tigl
 {
@@ -57,6 +59,18 @@ std::string CCPACSHeader::GetTimestamp(void) const
     return timestamp;
 }
 
+// [[CAS_AES]] Getter/Setter for member description
+void CCPACSHeader::SetDescription(const std::string& aDescription)
+{
+    description = aDescription;
+}
+
+// [[CAS_AES]] Getter/Setter for member description
+const std::string& CCPACSHeader::GetDescription(void) const
+{
+    return description;
+}
+
 // Read CPACS header elements
 void CCPACSHeader::ReadCPACS(TixiDocumentHandle tixiHandle)
 {
@@ -64,6 +78,8 @@ void CCPACSHeader::ReadCPACS(TixiDocumentHandle tixiHandle)
 
     char* ptrName      = NULL;
     char* ptrCreator   = NULL;
+    // [[CAS_AES]] added for reading description
+    char* ptrDescription = NULL;
     char* ptrTimestamp = NULL;
 
     if (tixiGetTextElement(tixiHandle, "/cpacs/header/name",      &ptrName) == SUCCESS) {
@@ -74,9 +90,25 @@ void CCPACSHeader::ReadCPACS(TixiDocumentHandle tixiHandle)
         creator   = ptrCreator;
     }
 
+    // [[CAS_AES]] reading description
+    if (tixiGetTextElement(tixiHandle, "/cpacs/header/description", &ptrDescription) == SUCCESS) {
+        description = ptrDescription;
+    }
+
     if (tixiGetTextElement(tixiHandle, "/cpacs/header/timestamp", &ptrTimestamp) == SUCCESS) {
         timestamp = ptrTimestamp;
     }
+}
+
+// [[CAS_AES]] Write (and Save) header element, or create it if don't exist yet
+void CCPACSHeader::WriteCPACS(TixiDocumentHandle tixiHandle)
+{
+    TixiSaveExt::TixiSaveTextElement(tixiHandle, "/cpacs/header", "name", name.c_str());
+    TixiSaveExt::TixiSaveTextElement(tixiHandle, "/cpacs/header", "creator", creator.c_str());
+    TixiSaveExt::TixiSaveTextElement(tixiHandle, "/cpacs/header", "description", description.c_str());
+    TixiSaveExt::TixiSaveTextElement(tixiHandle, "/cpacs/header", "timestamp", timestamp.c_str());
+    TixiSaveExt::TixiSaveTextElement(tixiHandle, "/cpacs/header", "version", "1.0"); // TODO : let the user choose the version of his project
+    TixiSaveExt::TixiSaveTextElement(tixiHandle, "/cpacs/header", "cpacsVersion", tiglGetVersion());
 }
 
 // Cleanup routine
@@ -85,6 +117,8 @@ void CCPACSHeader::Cleanup(void)
     name      = "";
     creator   = "";
     timestamp = "";
+    // [[CAS_AES]] added description
+    description = "";
 }
 
 } // end namespace tigl

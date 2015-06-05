@@ -52,6 +52,9 @@ public:
     // Read CPACS fuselage profiles
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle);
 
+    // [[CAS_AES]] Write CPACS fuselage profiles
+    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle);
+
     TIGL_EXPORT bool HasProfile(std::string uid) const;
 
     // Returns the total count of fuselage profiles in this configuration

@@ -51,6 +51,9 @@ public:
     // Read CPACS connection element
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& connectionXPath);
 
+    // [[CAS_AES]] Write CPACS connection element
+    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& connectionXPath, char* direction);
+
     // Returns the section uid of this connection
     TIGL_EXPORT const std::string& GetSectionUID(void) const;
 

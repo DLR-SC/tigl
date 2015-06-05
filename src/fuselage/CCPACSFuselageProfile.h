@@ -60,6 +60,9 @@ public:
     // Read CPACS fuselage profile file
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle);
 
+    // [[CAS_AES]] Write CPACS fuselage profile file
+    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& ProfileXPath);
+
     // Returns the filename of the fuselage profile file
     TIGL_EXPORT const std::string& GetFileName(void) const;
 
