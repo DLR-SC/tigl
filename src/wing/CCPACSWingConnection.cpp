@@ -31,6 +31,8 @@
 #include "CCPACSWingSection.h"
 #include "CCPACSWingSegment.h"
 #include "CCPACSConfiguration.h"
+// [[CAS_AES]] include helper routines for save method
+#include "TixiSaveExt.h"
 
 namespace tigl
 {
@@ -171,6 +173,12 @@ void CCPACSWingConnection::ReadCPACS(TixiDocumentHandle tixiHandle, const std::s
             }
         }
     }
+}
+
+// [[CAS_AES]] Write CPACS connection element
+void CCPACSWingConnection::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& connectionXPath, char* direction)
+{
+    TixiSaveExt::TixiSaveTextElement(tixiHandle, connectionXPath.c_str(), direction, elementUID.c_str());
 }
 
 } // end namespace tigl

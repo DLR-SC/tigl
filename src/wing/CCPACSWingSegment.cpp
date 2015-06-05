@@ -101,6 +101,9 @@
 #include <TopExp.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
 
+// [[CAS_AES]] include helper routines for save method
+#include "TixiSaveExt.h"
+
 namespace tigl
 {
 
@@ -251,6 +254,12 @@ void CCPACSWingSegment::ReadCPACS(TixiDocumentHandle tixiHandle, const std::stri
         name          = ptrName;
     }
 
+    // [[CAS_AES]] Get subelement "description"
+    char* ptrDescription = "";
+    tempString    = segmentXPath + "/description";
+    tixiGetTextElement(tixiHandle, tempString.c_str(), &ptrDescription);
+    description          = ptrDescription;
+
     // Get attribute "uid"
     char* ptrUID = NULL;
     tempString   = "uID";
@@ -288,6 +297,28 @@ void CCPACSWingSegment::ReadCPACS(TixiDocumentHandle tixiHandle, const std::stri
     }
 
     Update();
+}
+
+// [[CAS_AES]] Write CPACS segment elements
+void CCPACSWingSegment::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& segmentXPath)
+{
+    // Set the name subelement
+    TixiSaveExt::TixiSaveTextElement(tixiHandle, segmentXPath.c_str(), "name", GetName().c_str());
+    // Set the name subelement
+    TixiSaveExt::TixiSaveTextElement(tixiHandle, segmentXPath.c_str(), "description", description.c_str());
+    // Set the uID attribute
+    TixiSaveExt::TixiSaveTextAttribute(tixiHandle, segmentXPath.c_str(), "uID", GetUID().c_str());
+    
+    // Inner connection
+    innerConnection.WriteCPACS(tixiHandle, segmentXPath.c_str(), "fromElementUID");
+    // Inner connection
+    outerConnection.WriteCPACS(tixiHandle, segmentXPath.c_str(), "toElementUID");
+}
+
+// [[CAS_AES]] added getter for name
+const std::string& CCPACSWingSegment::GetName() const
+{
+    return name;
 }
 
 // Returns the wing this segment belongs to

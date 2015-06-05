@@ -68,6 +68,10 @@
 #include "BRepBndLib.hxx"
 #include "ShapeFix_Wire.hxx"
 
+// [[CAS_AES]] include helper routines for save method
+#include "TixiSaveExt.h"
+
+
 namespace tigl
 {
 
@@ -193,6 +197,50 @@ void CCPACSWingProfilePointList::ReadCPACS(TixiDocumentHandle tixiHandle)
     }
     catch (...) {
         throw;
+    }
+}
+
+// [[CAS_AES]] added save method
+void CCPACSWingProfilePointList::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& profileXPath)
+{
+    std::string path;
+    std::string elementPath;
+        
+    // Set the element "point"
+    TixiSaveExt::TixiSaveElement(tixiHandle, profileXPath.c_str(), "pointList");
+    
+    path = profileXPath + "/pointList";
+    // TODO : find how to get the number of 'point' (and eventually the definition...)
+    int pointCount = 1;
+    for (int i = 1; i <= pointCount; i++) {
+        if (pointCount > 1) {
+            std::stringstream ss;
+            ss << path << "/point[" << i << "]";
+            elementPath = ss.str();
+            TixiSaveExt::TixiSaveElement(tixiHandle, path.c_str(), "point");
+        }
+        else {
+            elementPath = path;
+        }
+        
+        std::vector<double> point_X(coordinates.size());
+        std::vector<double> point_Y(coordinates.size());
+        std::vector<double> point_Z(coordinates.size());
+
+        for (int j = 0; j < coordinates.size(); j++) {
+            point_X[j] = coordinates[j]->x;
+            point_Y[j] = coordinates[j]->y;
+            point_Z[j] = coordinates[j]->z;
+        }
+        
+        // Set the x coordinates
+        TixiSaveExt::TixiSaveVector(tixiHandle, elementPath, "x", point_X);
+        
+        // Set the y coordinates
+        TixiSaveExt::TixiSaveVector(tixiHandle, elementPath, "y", point_Y);
+        
+        // Set the z coordinates
+        TixiSaveExt::TixiSaveVector(tixiHandle, elementPath, "z", point_Z);
     }
 }
 

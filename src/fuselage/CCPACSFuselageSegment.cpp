@@ -81,6 +81,9 @@
 #include "ShapeAnalysis_Surface.hxx"
 #include "BRepLib_FindSurface.hxx"
 
+// [[CAS_AES]] include helper routines for save method
+#include "TixiSaveExt.h"
+
 #ifndef max
 #define max(a, b) (((a) > (b)) ? (a) : (b))
 #endif
@@ -234,6 +237,17 @@ void CCPACSFuselageSegment::ReadCPACS(TixiDocumentHandle tixiHandle, const std::
     }
 
     Update();
+}
+
+// [[CAS_AES]] Write CPACS segment elements
+void CCPACSFuselageSegment::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& segmentXPath)
+{
+    TixiSaveExt::TixiSaveTextAttribute(tixiHandle, segmentXPath.c_str(), "uID", GetUID().c_str());
+    TixiSaveExt::TixiSaveTextElement(tixiHandle, segmentXPath.c_str(), "name", name.c_str());
+    TixiSaveExt::TixiSaveTextElement(tixiHandle, segmentXPath.c_str(), "description", name.c_str());
+    
+    TixiSaveExt::TixiSaveTextElement(tixiHandle, segmentXPath.c_str(), "fromElementUID", startConnection.GetSectionElementUID().c_str());
+    TixiSaveExt::TixiSaveTextElement(tixiHandle, segmentXPath.c_str(), "toElementUID", endConnection.GetSectionElementUID().c_str());
 }
 
 // Returns the fuselage this segment belongs to

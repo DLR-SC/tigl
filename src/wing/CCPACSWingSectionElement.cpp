@@ -26,6 +26,8 @@
 #include "CCPACSWingSectionElement.h"
 #include "CTiglError.h"
 #include <iostream>
+// [[CAS_AES]] include helper routines for save method
+#include "TixiSaveExt.h"
 
 namespace tigl
 {
@@ -95,6 +97,12 @@ void CCPACSWingSectionElement::ReadCPACS(TixiDocumentHandle tixiHandle, const st
         name          = ptrName;
     }
 
+    // [[CAS_AES]] Get subelement "description"
+    char* ptrdescription = "";
+    tempString    = elementXPath + "/description";
+    tixiGetTextElement(tixiHandle, tempString.c_str(), &ptrdescription);
+    description          = ptrdescription;
+
     // Get subelement "profileUID"
     char* ptrUID  = NULL;
     tempString    = elementXPath + "/airfoilUID";
@@ -139,6 +147,45 @@ void CCPACSWingSectionElement::ReadCPACS(TixiDocumentHandle tixiHandle, const st
     }
 
     Update();
+}
+
+// [[CAS_AES]] Write CPACS wing section elements
+void CCPACSWingSectionElement::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& elementXPath)
+{
+    std::string path;
+    std::string subPath;
+
+    // Set attribute "uID"
+    TixiSaveExt::TixiSaveTextAttribute(tixiHandle, elementXPath.c_str(), "uID", uID.c_str());
+
+    // Set subelement "name"
+    TixiSaveExt::TixiSaveTextElement(tixiHandle, elementXPath.c_str(), "name", name.c_str());
+
+    // Set subelement "name"
+    TixiSaveExt::TixiSaveTextElement(tixiHandle, elementXPath.c_str(), "description", description.c_str());
+
+    // Set subelement "profileUID"
+    TixiSaveExt::TixiSaveTextElement(tixiHandle, elementXPath.c_str(), "airfoilUID", profileUID.c_str());
+
+    // Set the subelement "transformation"
+    TixiSaveExt::TixiSaveElement(tixiHandle, elementXPath.c_str(), "transformation");
+
+    path = elementXPath + "/transformation";
+    // Set subelement "/transformation/scaling"
+    subPath = path + "/scaling";
+    TixiSaveExt::TixiSaveElement(tixiHandle, path.c_str(), "scaling");
+    TixiSaveExt::TixiSavePoint(tixiHandle, subPath.c_str(), scaling.x, scaling.y, scaling.z, NULL);
+
+    // Set subelement "/transformation/rotation"
+    subPath = path + "/rotation";
+    TixiSaveExt::TixiSaveElement(tixiHandle, path.c_str(), "rotation");
+    TixiSaveExt::TixiSavePoint(tixiHandle, subPath.c_str(), rotation.x, rotation.y, rotation.z, NULL);
+
+    // Set subelement "/transformation/translation"
+    subPath = path + "/translation";
+    TixiSaveExt::TixiSaveElement(tixiHandle, path.c_str(), "translation");
+    TixiSaveExt::TixiSaveTextAttribute(tixiHandle, subPath.c_str(), "refType", "absLocal");
+    TixiSaveExt::TixiSavePoint(tixiHandle, subPath.c_str(), translation.x, translation.y, translation.z, NULL);
 }
 
 // Returns the UID of the referenced wing profile

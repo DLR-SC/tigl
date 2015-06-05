@@ -305,6 +305,10 @@ typedef enum TiglImportExportFormat TiglImportExportFormat;
 */
 TIGL_COMMON_EXPORT TiglReturnCode tiglOpenCPACSConfiguration(TixiDocumentHandle tixiHandle, const char* configurationUID, TiglCPACSConfigurationHandle* cpacsHandlePtr);
 
+
+// [[CAS_AES]] added routine for saving a CPACS configuration
+TIGL_COMMON_EXPORT TiglReturnCode tiglSaveCPACSConfiguration(TixiDocumentHandle tixiHandle, const char* configurationUID, const TiglCPACSConfigurationHandle& cpacsHandle);
+
 /**
 * @brief Closes a CPACS configuration and cleans up all memory used by the configuration.
 *        After closing a configuration the associated configuration handle is no longer valid.

@@ -28,6 +28,8 @@
 #include "CTiglError.h"
 #include <iostream>
 #include <sstream>
+// [[CAS_AES]] include helper routines for save method
+#include "TixiSaveExt.h"
 
 namespace tigl
 {
@@ -98,6 +100,56 @@ void CCPACSFuselages::ReadCPACS(TixiDocumentHandle tixiHandle, const char* confi
         std::ostringstream xpath;
         xpath << fuselagesXPath << "/fuselage[" << i << "]";
         fuselage->ReadCPACS(tixiHandle, xpath.str());
+    }
+}
+
+// [[CAS_AES]] Write CPACS fuselage elements
+void CCPACSFuselages::WriteCPACS(TixiDocumentHandle tixiHandle, const char* configurationUID)
+{
+    std::string fuselageXPathPrt;
+    char *tmpString = NULL;
+    std::string xpath;
+    int test, fuselageCount;
+    ReturnCode tixiRet;
+
+    // when the model doesn't exist, an error is thrown
+    // assuming that tixi does not modify configurationUID
+    if (tixiUIDGetXPath(tixiHandle, configurationUID, &tmpString) != SUCCESS) {
+        throw CTiglError("XML error: tixiUIDGetXPath failed in CCPACSFuselages::WriteCPACS", TIGL_XML_ERROR);
+    }
+    if (strcmp(tmpString, "") == 0) {
+        throw CTiglError("XML error in CCPACSFuselages::WriteCPACS : Path not found", TIGL_XML_ERROR);
+    }
+
+    std::stringstream ss;
+    ss << tmpString << "[@uID=\"" << configurationUID << "\"]";
+    xpath = ss.str();
+    fuselageXPathPrt = xpath + "/fuselages";
+    
+    profiles.WriteCPACS(tixiHandle);
+    TixiSaveExt::TixiSaveElement(tixiHandle, xpath.c_str(), "fuselages");
+
+    tixiRet = tixiGetNamedChildrenCount(tixiHandle, fuselageXPathPrt.c_str(), "fuselage", &test);
+    fuselageCount = this->GetFuselageCount();
+
+    for (int i = 1; i <= fuselageCount; i++) {
+        std::stringstream ss;
+        ss << fuselageXPathPrt << "/fuselage[" << i << "]";
+        xpath = ss.str();
+        CCPACSFuselage& fuselage = GetFuselage(i);
+        if ((tixiRet = tixiCheckElement(tixiHandle, xpath.c_str())) == ELEMENT_NOT_FOUND) {
+            if ((tixiRet = tixiCreateElement(tixiHandle, fuselageXPathPrt.c_str(), "fuselage")) != SUCCESS) {
+                throw CTiglError("XML error: tixiCreateElement failed in CCPACSFuselages::WriteCPACS", TIGL_XML_ERROR);
+            }
+        }
+        fuselage.WriteCPACS(tixiHandle,xpath);
+    }
+
+    for (int i = fuselageCount+1; i <= test; i++) {
+        std::stringstream ss;
+        ss << fuselageXPathPrt << "/fuselage[" << fuselageCount+1 << "]";
+        xpath = ss.str();
+        tixiRet = tixiRemoveElement(tixiHandle, xpath.c_str());
     }
 }
 

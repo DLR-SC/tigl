@@ -61,6 +61,9 @@ public:
     // Read CPACS wing profile file
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle);
 
+    // [[CAS_AES]] added save method
+    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& profileXPath);
+
     // Returns the profile points as read from TIXI.
     TIGL_EXPORT std::vector<CTiglPoint*> GetSamplePoints() const;
 

@@ -57,6 +57,9 @@ public:
     // Read CPACS wings elements
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const char* configurationUID);
 
+    // [[CAS_AES]] Write CPACS wings elements
+    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const char* configurationUID);
+
     TIGL_EXPORT bool HasProfile(std::string uid) const;
     
     // Returns the total count of wing profiles in this configuration

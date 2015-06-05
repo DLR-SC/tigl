@@ -28,6 +28,8 @@
 #include <exception>
 
 #include "CCPACSWingComponentSegments.h"
+// [[CAS_AES]] include helper routines for save method
+#include "TixiSaveExt.h"
 
 namespace tigl
 {
@@ -120,6 +122,43 @@ void CCPACSWingComponentSegments::ReadCPACS(TixiDocumentHandle tixiHandle, const
         componentSegment->ReadCPACS(tixiHandle, xpath.str());
     }
 
+}
+
+// [[CAS_AES]] Write CPACS segments element
+void CCPACSWingComponentSegments::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& wingXPath)
+{
+    std::string xpath;
+    std::string subPath;
+    ReturnCode  tixiRet;
+    int         componentSegmentCount, test;
+    
+    TixiSaveExt::TixiSaveElement(tixiHandle, wingXPath.c_str(), "componentSegments");
+    xpath = wingXPath + "/componentSegments";
+    
+    if (tixiGetNamedChildrenCount(tixiHandle, xpath.c_str(), "componentSegment", &test) != SUCCESS) {
+        throw CTiglError("XML error: tixiGetNamedChildrenCount failed in CCPACSComponentSegments::ReadCPACS", TIGL_XML_ERROR);
+    }
+    componentSegmentCount = this->GetComponentSegmentCount();
+    
+    for (int i = 1; i <= componentSegmentCount; i++) {
+        std::stringstream ss;
+        ss << xpath << "/componentSegment[" << i << "]";
+        subPath = ss.str();
+        CCPACSWingComponentSegment& componentSegment = GetComponentSegment(i);
+        if ((tixiRet = tixiCheckElement(tixiHandle, subPath.c_str())) == ELEMENT_NOT_FOUND) {
+            if ((tixiRet = tixiCreateElement(tixiHandle, xpath.c_str(), "componentSegment")) != SUCCESS) {
+                throw CTiglError("XML error: tixiCreateElement failed in CCPACSComponentSegments::WriteCPACS", TIGL_XML_ERROR);
+            }
+        }
+        componentSegment.WriteCPACS(tixiHandle,subPath);
+    }
+
+    for (int i = componentSegmentCount+1; i <= test; i++) {
+        std::stringstream ss;
+        ss << xpath << "/componentSegment[" << componentSegmentCount+1 << "]";
+        subPath = ss.str();
+        tixiRet = tixiRemoveElement(tixiHandle, subPath.c_str());
+    }
 }
 
 } // end namespace tigl

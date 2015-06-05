@@ -26,6 +26,8 @@
 #include "CCPACSWingSection.h"
 #include "CTiglError.h"
 #include <iostream>
+// [[CAS_AES]] include helper routines for save method
+#include "TixiSaveExt.h"
 
 namespace tigl
 {
@@ -94,6 +96,12 @@ void CCPACSWingSection::ReadCPACS(TixiDocumentHandle tixiHandle, const std::stri
         name = ptrName;
     }
 
+    //[[CAS_AES]]  Get subelement "description"
+    char* ptrDescription = "";
+    tempString    = sectionXPath + "/description";
+    tixiGetTextElement(tixiHandle, tempString.c_str(), &ptrDescription);
+    description          = ptrDescription;
+
     // Get attribute "uID"
     char* ptrUID = NULL;
     tempString    = sectionXPath;
@@ -135,6 +143,45 @@ void CCPACSWingSection::ReadCPACS(TixiDocumentHandle tixiHandle, const std::stri
     Update();
 }
 
+// [[CAS_AES]] Write CPACS section elements
+void CCPACSWingSection::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& sectionXPath)
+{
+    std::string elementPath;
+    std::string subelementPath;
+
+    // Set subelement "name"
+    TixiSaveExt::TixiSaveTextElement(tixiHandle, sectionXPath.c_str(), "name", GetName().c_str());
+
+    // Set subelement "description"
+    TixiSaveExt::TixiSaveTextElement(tixiHandle, sectionXPath.c_str(), "description", description.c_str());
+
+    // Set attribute "uID"
+    TixiSaveExt::TixiSaveTextAttribute(tixiHandle, sectionXPath.c_str(), "uID", GetUID().c_str());
+
+    // Set the subelement "transformation"
+    elementPath = sectionXPath + "/transformation";
+    TixiSaveExt::TixiSaveElement(tixiHandle, sectionXPath.c_str(), "transformation");
+
+    // Set subelement "/transformation/scaling"
+    subelementPath = elementPath + "/scaling";
+    TixiSaveExt::TixiSaveElement(tixiHandle, elementPath.c_str(), "scaling");
+    TixiSaveExt::TixiSavePoint(tixiHandle, subelementPath.c_str(), GetScaling().x, GetScaling().y, GetScaling().z, NULL);
+
+    // Set subelement "/transformation/rotation"
+    subelementPath = elementPath + "/rotation";
+    TixiSaveExt::TixiSaveElement(tixiHandle, elementPath.c_str(), "rotation");
+    TixiSaveExt::TixiSavePoint(tixiHandle, subelementPath.c_str(), GetRotation().x, GetRotation().y, GetRotation().z, NULL);
+
+    // Set subelement "/transformation/translation"
+    subelementPath = elementPath + "/translation";
+    TixiSaveExt::TixiSaveElement(tixiHandle, elementPath.c_str(), "translation");
+    TixiSaveExt::TixiSaveTextAttribute(tixiHandle, subelementPath.c_str(), "refType", "absLocal");
+    TixiSaveExt::TixiSavePoint(tixiHandle, subelementPath.c_str(), GetTranslation().x, GetTranslation().y, GetTranslation().z, NULL);
+
+    // Get subelement "elements"
+    elements.WriteCPACS(tixiHandle, sectionXPath);
+}
+
 // Get profile count for this section
 int CCPACSWingSection::GetSectionElementCount(void) const
 {
@@ -147,6 +194,12 @@ const std::string& CCPACSWingSection::GetUID(void) const
     return uID;
 }
 
+// [[CAS_AES]] added getter for name
+const std::string& CCPACSWingSection::GetName() const
+{
+    return name;
+}
+
 // Get element for a given index
 CCPACSWingSectionElement& CCPACSWingSection::GetSectionElement(int index) const
 {
@@ -157,6 +210,24 @@ CCPACSWingSectionElement& CCPACSWingSection::GetSectionElement(int index) const
 CTiglTransformation CCPACSWingSection::GetSectionTransformation(void) const
 {
     return transformation;
+}
+
+// [[CAS_AES]] added getter for translation
+const CTiglPoint& CCPACSWingSection::GetTranslation() const
+{
+    return translation;
+}
+
+// [[CAS_AES]] added getter for rotation
+const CTiglPoint& CCPACSWingSection::GetRotation() const
+{
+    return rotation;
+}
+
+// [[CAS_AES]] added getter for scaling
+const CTiglPoint& CCPACSWingSection::GetScaling() const
+{
+    return scaling;
 }
 
 } // end namespace tigl

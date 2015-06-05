@@ -24,6 +24,9 @@
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 
+// [[CAS_AES]] added include for save methods
+#include "TixiSaveExt.h"
+
 namespace tigl
 {
 
@@ -78,6 +81,41 @@ void CCPACSWingCells::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string
             cell->ReadCPACS(tixiHandle, stream.str().c_str());
             cells.push_back(cell);
         }
+    }
+}
+
+// [[CAS_AES]] added write method
+void CCPACSWingCells::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& cellsXPath)
+{
+    std::string elementPath;
+    std::string xpath;
+    ReturnCode    tixiRet;
+    int           cellCount, test;
+
+    elementPath = cellsXPath;
+//     TixiSaveExt::TixiSaveElement(tixiHandle, cellsXPath.c_str(), "cells");
+    
+    tixiRet = tixiGetNamedChildrenCount(tixiHandle, elementPath.c_str(), "cell", &test);
+    cellCount = GetCellCount();
+
+    for (int i = 1; i <= cellCount; i++) {
+        std::stringstream ss;
+        ss << elementPath << "/cell[" << i << "]";
+        xpath = ss.str();
+        CCPACSWingCell& cell = GetCell(i);
+        if (tixiCheckElement(tixiHandle, xpath.c_str()) == ELEMENT_NOT_FOUND) {
+            if (tixiCreateElement(tixiHandle, elementPath.c_str(), "cell") != SUCCESS) {
+                throw CTiglError("XML error: tixiCreateElement failed in CCPACSWingCells::WriteCPACS", TIGL_XML_ERROR);
+            }
+        }
+        cell.WriteCPACS(tixiHandle, xpath);
+    }
+
+    for (int i = cellCount+1; i <= test; i++) {
+        std::stringstream ss;
+        ss << elementPath << "/cell[" << cellCount+1 << "]";
+        xpath = ss.str();
+        tixiRemoveElement(tixiHandle, xpath.c_str());
     }
 }
 

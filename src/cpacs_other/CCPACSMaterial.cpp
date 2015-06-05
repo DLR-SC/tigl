@@ -21,6 +21,9 @@
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 
+// [[CAS_AES]] added include for save helper methods
+#include "TixiSaveExt.h"
+
 namespace tigl
 {
 
@@ -87,6 +90,29 @@ void CCPACSMaterial::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string 
     isvalid = true;
 }
 
+// [[CAS_AES]] added write method
+void CCPACSMaterial::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& xpath)
+{
+    std::string path;
+    std::string elementPath;
+
+    if (!isComposite()) {
+        // Save isotropicMaterial
+        // Save materialUID
+        TixiSaveExt::TixiSaveTextElement(tixiHandle, xpath.c_str(), "materialUID", GetUID().c_str());
+
+        // Save thickness
+        TixiSaveExt::TixiSaveDoubleElement(tixiHandle, xpath.c_str(), "thickness", GetThickness(), NULL);
+    }
+    else {
+        // Save compositeUID
+        TixiSaveExt::TixiSaveTextElement(tixiHandle, xpath.c_str(), "compositeUID", GetUID().c_str());
+
+        // Save thicknessScaling
+        TixiSaveExt::TixiSaveDoubleElement(tixiHandle, xpath.c_str(), "thicknessScaling", GetThicknessScaling(), NULL);
+    }
+}
+
 void CCPACSMaterial::Invalidate()
 {
     isvalid = false;
@@ -110,6 +136,12 @@ const std::string& CCPACSMaterial::GetUID() const
 double CCPACSMaterial::GetThickness() const
 {
     return thickness;
+}
+
+// [[CAS_AES]] added getter for thickness scaling
+double CCPACSMaterial::GetThicknessScaling() const
+{
+    return thicknessScaling;
 }
 
 } // namespace tigl
