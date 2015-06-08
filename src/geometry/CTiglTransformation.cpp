@@ -383,9 +383,24 @@ void CTiglTransformation::AddMirroringAtYZPlane(void)
 // returns the transformed shape
 TopoDS_Shape CTiglTransformation::Transform(const TopoDS_Shape& shape) const
 {
-    const BRepBuilderAPI_GTransform brepBuilderGTransform(shape, Get_gp_GTrsf(), Standard_True);
-    const TopoDS_Shape& transformedShape = brepBuilderGTransform.Shape();
-    return transformedShape;
+    try {
+        gp_Trsf t;
+        t.SetValues(m_matrix[0][0], m_matrix[0][1], m_matrix[0][2], m_matrix[0][3],
+                    m_matrix[1][0], m_matrix[1][1], m_matrix[1][2], m_matrix[1][3],
+                    m_matrix[2][0], m_matrix[2][1], m_matrix[2][2], m_matrix[2][3],1e-10, 1e-10);
+        
+        gp_Trsf oldTrsf = shape.Location().Transformation();
+        gp_Trsf newTrsf = t*oldTrsf;
+        
+        TopoDS_Shape newShape = shape;
+        newShape.Location(newTrsf);
+        return newShape;
+    }
+    catch(Standard_ConstructionError&) {
+        const BRepBuilderAPI_GTransform brepBuilderGTransform(shape, Get_gp_GTrsf(), Standard_True);
+        const TopoDS_Shape& transformedShape = brepBuilderGTransform.Shape();
+        return transformedShape;
+    }
 }
 
 // Transforms a point with the current transformation matrix and
