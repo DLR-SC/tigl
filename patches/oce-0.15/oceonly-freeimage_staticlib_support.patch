@@ -1,0 +1,70 @@
+From 8cf4b70f1e64d5f2bbe2ece9a75c76a51d99ee97 Mon Sep 17 00:00:00 2001
+From: Martin Siggel <martin.siggel@dlr.de>
+Date: Mon, 2 Jun 2014 00:36:44 +0200
+Subject: [PATCH] Added support for static freeimage library
+
+Signed-off-by: Martin Siggel <martin.siggel@dlr.de>
+
+The patch should only be applied, if freeimage is linked
+statically. This patch provides link and compile support 
+for a static freeimage library on windows. It obeys the 
+instruction from http://freeimage.sourceforge.net/faq.html
+---
+ adm/cmake/TKOpenGl/CMakeLists.txt  | 2 +-
+ adm/cmake/TKService/CMakeLists.txt | 2 +-
+ src/Image/Image_AlienPixMap.cxx    | 6 ++++++
+ 3 files changed, 8 insertions(+), 2 deletions(-)
+
+diff --git a/adm/cmake/TKOpenGl/CMakeLists.txt b/adm/cmake/TKOpenGl/CMakeLists.txt
+index 4639836..8300ac7 100644
+--- a/adm/cmake/TKOpenGl/CMakeLists.txt
++++ b/adm/cmake/TKOpenGl/CMakeLists.txt
+@@ -21,7 +21,7 @@ set(TOOLKIT_INCLUDE_DIRECTORIES ${OPENGL_INCLUDE_DIR} ${FREETYPE_INCLUDE_DIRS})
+ 
+ # OpenGl_Workspace::Print is available only on Windows
+ if(WIN32 AND FREEIMAGE_LIBRARY AND OCE_WITH_FREEIMAGE)
+-	add_definitions(-DHAVE_FREEIMAGE)
++	add_definitions(-DHAVE_FREEIMAGE -DFREEIMAGE_LIB)
+ 
+ 	if(CMAKE_CONFIGURATION_TYPES OR NMAKE)
+ 		set(TOOLKIT_LIBS_DEBUG ${TOOLKIT_LIBS_DEBUG} ${FREEIMAGEPLUS_LIBRARY_DEBUG} ${FREEIMAGE_LIBRARY_DEBUG})
+diff --git a/adm/cmake/TKService/CMakeLists.txt b/adm/cmake/TKService/CMakeLists.txt
+index 88c5a08..7c8acaa 100644
+--- a/adm/cmake/TKService/CMakeLists.txt
++++ b/adm/cmake/TKService/CMakeLists.txt
+@@ -48,7 +48,7 @@ else(CMAKE_CONFIGURATION_TYPES OR NMAKE)
+ endif(CMAKE_CONFIGURATION_TYPES OR NMAKE)
+ 
+ if(FREEIMAGE_LIBRARY AND OCE_WITH_FREEIMAGE)
+-	add_definitions(-DHAVE_FREEIMAGE)
++	add_definitions(-DHAVE_FREEIMAGE -DFREEIMAGE_LIB)
+ 
+ 	if(CMAKE_CONFIGURATION_TYPES OR NMAKE)
+ 		set(TOOLKIT_LIBS_DEBUG ${TOOLKIT_LIBS_DEBUG} ${FREEIMAGE_LIBRARY_DEBUG})
+diff --git a/src/Image/Image_AlienPixMap.cxx b/src/Image/Image_AlienPixMap.cxx
+index 0a16b66..1b33e80 100644
+--- a/src/Image/Image_AlienPixMap.cxx
++++ b/src/Image/Image_AlienPixMap.cxx
+@@ -106,6 +106,9 @@ IMPLEMENT_STANDARD_RTTIEXT(Image_AlienPixMap, Image_PixMap)
+ Image_AlienPixMap::Image_AlienPixMap()
+ : myLibImage (NULL)
+ {
++#ifdef HAVE_FREEIMAGE
++    FreeImage_Initialise();
++#endif
+   SetTopDown (false);
+ }
+ 
+@@ -116,6 +119,9 @@ Image_AlienPixMap::Image_AlienPixMap()
+ Image_AlienPixMap::~Image_AlienPixMap()
+ {
+   Clear();
++#ifdef HAVE_FREEIMAGE
++    FreeImage_DeInitialise();
++#endif
+ }
+ 
+ // =======================================================================
+-- 
+1.8.1.msysgit.1
+
