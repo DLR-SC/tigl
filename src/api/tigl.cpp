@@ -63,31 +63,68 @@
 /*****************************************************************************/
 
 static char * version = NULL;
+TixiPrintMsgFnc oldTixiMessageHandler = NULL;
 
-void tiglCleanup(void);
-bool tiglInit(void);
+namespace
+{
+
+    void tiglCleanup(void);
+    bool tiglInit(void);
+    void TixiMessageHandler(MessageType type, const char *message);
+
+
+    bool tiglInit(void)
+    {
+        atexit(tiglCleanup);
+    
+        // Initialize logger
+        tigl::CTiglLogging::Instance();
+        // Register dynamic tigl types
+        tigl::CTiglTypeRegistry::Init();
+        if (tixiGetPrintMsgFunc() != TixiMessageHandler) {
+            oldTixiMessageHandler = tixiGetPrintMsgFunc();
+        }
+        tixiSetPrintMsgFunc(TixiMessageHandler);
+        return true;
+    }
+    
+    void tiglCleanup(void)
+    {
+        if (version) {
+            delete[] version;
+        }
+        version = NULL;
+    }
+    
+    // This function pulls all tixi messages, puts them into the tigl
+    // log and pushes them back to tixi
+    void TixiMessageHandler(MessageType type, const char *message)
+    {
+        std::string cppMessage(message);
+
+        // reroute back to tixi
+        if (oldTixiMessageHandler && oldTixiMessageHandler != TixiMessageHandler) {
+            oldTixiMessageHandler(type, cppMessage.c_str());
+        }
+
+        cppMessage = "[TiXI] " + cppMessage;
+
+        if (type == MESSAGETYPE_ERROR) {
+            LOG(ERROR) << cppMessage;
+        }
+        else if (type == MESSAGETYPE_WARNING) {
+            LOG(WARNING) << cppMessage;
+        }
+        else {
+            LOG(INFO) << cppMessage;
+        }
+
+    }
+
+}
 
 // make tigl initialize on start
 const bool tiglInitialized = tiglInit();
-
-bool tiglInit(void)
-{
-    atexit(tiglCleanup);
-
-    // Initialize logger
-    tigl::CTiglLogging::Instance();
-    // Register dynamic tigl types
-    tigl::CTiglTypeRegistry::Init();
-    return true;
-}
-
-void tiglCleanup(void)
-{
-    if (version) {
-        delete[] version;
-    }
-    version = NULL;
-}
 
 /*****************************************************************************/
 /* Public visible functions.                                                 */
@@ -95,6 +132,8 @@ void tiglCleanup(void)
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglOpenCPACSConfiguration(TixiDocumentHandle tixiHandle, const char* configurationUID_cstr, TiglCPACSConfigurationHandle* cpacsHandlePtr)
 {
+    tiglInit();
+
     std::string configurationUID;
     if (configurationUID_cstr) {
         configurationUID = configurationUID_cstr;
