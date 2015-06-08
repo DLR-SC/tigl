@@ -280,8 +280,8 @@ void CCPACSWingSegment::ReadCPACS(TixiDocumentHandle tixiHandle, const std::stri
     }
 
     // check that the profiles are consistent
-    if (GetNumberOfEdges(GetInnerWire()) !=
-        GetNumberOfEdges(GetOuterWire())) {
+    if (innerConnection.GetProfile().HasBluntTE() !=
+        outerConnection.GetProfile().HasBluntTE()) {
 
         throw CTiglError("The wing profiles " + innerConnection.GetProfile().GetUID() +
                          " and " + outerConnection.GetProfile().GetUID() +

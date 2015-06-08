@@ -114,6 +114,9 @@ public:
     // get profile algorithm type
     TIGL_EXPORT PTiglWingProfileAlgo GetProfileAlgo(void) const;
 
+    // Checks, whether the trailing edge is blunt or not
+    TIGL_EXPORT bool HasBluntTE(void) const;
+
 protected:
     // Cleanup routine
     void Cleanup(void);

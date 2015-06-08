@@ -125,8 +125,6 @@ void CCPACSWingProfile::ReadCPACS(TixiDocumentHandle tixiHandle)
     catch (...) {
         throw;
     }
-
-    Update();
 }
 
 // Returns the name of the wing profile
@@ -397,6 +395,15 @@ Handle(Geom2d_TrimmedCurve) CCPACSWingProfile::GetChordLine()
 PTiglWingProfileAlgo CCPACSWingProfile::GetProfileAlgo(void) const
 {
     return profileAlgo;
+}
+
+bool CCPACSWingProfile::HasBluntTE() const
+{
+    PTiglWingProfileAlgo algo = GetProfileAlgo();
+    if (!algo) {
+        throw CTiglError("No wing profile algorithm regsitered in CCPACSWingProfile::HasBluntTE()!");
+    }
+    return algo->HasBluntTE();
 }
 
 } // end namespace tigl

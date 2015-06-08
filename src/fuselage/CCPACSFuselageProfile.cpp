@@ -215,8 +215,6 @@ void CCPACSFuselageProfile::ReadCPACS(TixiDocumentHandle tixiHandle)
         }
         throw;
     }
-
-    Update();
 }
 
 // Returns the filename of the fuselage profile file
