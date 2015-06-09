@@ -31,4 +31,6 @@
     #define TIGL_EXPORT
 #endif
 
+#define VERSION_HEX_CODE(MAJOR, MINOR, PATCH) ((MAJOR) << 16 | (MINOR) << 8 | (PATCH))
+
 #endif // TIGL_INTERNAL_H
