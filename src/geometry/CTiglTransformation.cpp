@@ -27,6 +27,7 @@
 #include "CTiglError.h"
 #include "tigl.h"
 #include "BRepBuilderAPI_GTransform.hxx"
+#include "BRepBuilderAPI_Transform.hxx"
 #include "gp_XYZ.hxx"
 #include "Standard_Version.hxx"
 
@@ -395,13 +396,8 @@ TopoDS_Shape CTiglTransformation::Transform(const TopoDS_Shape& shape) const
 #else
                 ,1e-10, 1e-10);
 #endif
-
-        gp_Trsf oldTrsf = shape.Location().Transformation();
-        gp_Trsf newTrsf = t*oldTrsf;
-        
-        TopoDS_Shape newShape = shape;
-        newShape.Location(newTrsf);
-        return newShape;
+        BRepBuilderAPI_Transform trafo(shape, t);
+        return trafo.Shape();
     }
     else {
         const BRepBuilderAPI_GTransform brepBuilderGTransform(shape, Get_gp_GTrsf(), Standard_True);
