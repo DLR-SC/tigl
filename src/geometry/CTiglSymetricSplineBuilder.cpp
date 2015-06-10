@@ -27,6 +27,8 @@
 #include <GeomConvert.hxx>
 #include <Precision.hxx>
 
+#include <algorithm>
+
 #include <cassert>
 
 namespace
@@ -54,7 +56,7 @@ namespace
 namespace tigl
 {
 
-CTiglSymetricSplineBuilder::CTiglSymetricSplineBuilder(const CTiglSymetricSplineBuilder::CPointContainer& points)
+CTiglSymetricSplineBuilder::CTiglSymetricSplineBuilder(const CPointContainer& points)
     : _points(points)
 {
 }
@@ -63,13 +65,49 @@ Handle_Geom_BSplineCurve CTiglSymetricSplineBuilder::GetBSpline() const
 {
     checkInputData();
 
-    CPointContainer points = _points;
+    // spline through the points in both directions
+    // then take the average of both curves to achieve
+    // symmetry wrt x-y plane
+
+    // forward spline
+    Handle_Geom_BSplineCurve c1 =  GetBSplineInternal(_points);
+
+    CPointContainer pointsRev = _points;
+    std::reverse(pointsRev.begin(), pointsRev.end());
+
+    // backward spline
+    Handle_Geom_BSplineCurve c2 =  GetBSplineInternal(pointsRev);
+    // reverse it, to achieve same direction as c1
+    c2->Reverse();
+
+#ifdef DEBUG
+    // check assumptions (knots must be same in both curves)
+    assert(c1->NbKnots() == c2->NbKnots());
+    assert(c1->NbPoles() == c2->NbPoles());
+
+    for (int ik = 1; ik <= c1->NbKnots(); ++ik) {
+        assert(fabs(c1->Knot(ik) - c2->Knot(ik)) < 1e-8);
+    }
+#endif
+
+    // symmetrize control points values
+    for (int icp = 1; icp <= c1->NbPoles(); ++icp) {
+        gp_Pnt pMean = 0.5*(c1->Pole(icp).XYZ() + c2->Pole(icp).XYZ());
+        c1->SetPole(icp, pMean);
+    }
+
+    return c1;
+}
+
+Handle_Geom_BSplineCurve CTiglSymetricSplineBuilder::GetBSplineInternal(const CPointContainer& inputPoints) const
+{
+    CPointContainer points = inputPoints;
 
     // mirror each point at x-z plane i.e. mirror y coordinate to close the profile
     // and skip first point
-    for (int i = _points.size() - 1; i > 0; i--) {
-        gp_Pnt curP = _points[i];
-        if (i == _points.size()-1 && fabs(curP.Y()) < 1e-6) {
+    for (int i = inputPoints.size() - 1; i > 0; i--) {
+        gp_Pnt curP = inputPoints[i];
+        if (i == inputPoints.size()-1 && fabs(curP.Y()) < 1e-6) {
             // do not add the same points twice
             continue;
         }
@@ -113,10 +151,16 @@ Handle_Geom_BSplineCurve CTiglSymetricSplineBuilder::GetBSpline() const
 void CTiglSymetricSplineBuilder::checkInputData() const
 {
     gp_Pnt pstart = _points[0];
-    
+    gp_Pnt plast = _points[_points.size()-1];
+
     // the first point must start at the symmetry plane
     if (fabs(pstart.Y()) > Precision::Confusion()) {
         throw CTiglError("First point does not lie on x-z Plane (CTiglSymetricSplineBuilder::GetBSpline)!");
+    }
+
+    // the last point must start at the symmetry plane
+    if (fabs(plast.Y()) > Precision::Confusion()) {
+        throw CTiglError("Last point does not lie on x-z Plane (CTiglSymetricSplineBuilder::GetBSpline)!");
     }
 }
 

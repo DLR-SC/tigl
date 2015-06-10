@@ -51,6 +51,7 @@
 #include "GeomAdaptor_Curve.hxx"
 #include "GCPnts_AbscissaPoint.hxx"
 #include "CTiglInterpolateBsplineWire.h"
+#include "CTiglSymetricSplineBuilder.h"
 #include "tiglcommonfunctions.h"
 #include "CTiglLogging.h"
 #include "GeomAPI_IntCS.hxx"
@@ -305,93 +306,61 @@ void CCPACSFuselageProfile::BuildWires(void)
         }
     }
 
-    if (!mirrorSymmetry) {
 
-        // we always want to include the endpoint, if it's the same as the startpoint
-        // we use the startpoint to enforce closing of the spline
-        gp_Pnt pStart =  coordinates[0]->Get_gp_Pnt();
-        gp_Pnt pEnd   =  coordinates[coordinates.size()-1]->Get_gp_Pnt();
-        if (checkSamePoints(pStart,pEnd)) {
-            points.push_back(pStart);
-        }
-        else {
-            points.push_back(pEnd);
-        }
+    // we always want to include the endpoint, if it's the same as the startpoint
+    // we use the startpoint to enforce closing of the spline
+    gp_Pnt pStart =  coordinates[0]->Get_gp_Pnt();
+    gp_Pnt pEnd   =  coordinates[coordinates.size()-1]->Get_gp_Pnt();
+    if (checkSamePoints(pStart,pEnd)) {
+        points.push_back(pStart);
     }
     else {
-        gp_Pnt pEnd =  coordinates[coordinates.size()-1]->Get_gp_Pnt();
         points.push_back(pEnd);
-
-        // mirror each point at x-z plane i.e. mirror y coordinate
-        ITiglWireAlgorithm::CPointContainer tmpPoints = points;
-        for (int i = points.size() - 1; i >= 0; i--) {
-            gp_Pnt curP = points[i];
-            if (i == tmpPoints.size()-1 && fabs(curP.Y()) < 1e-6) {
-                // do not add the same points twice
-                continue;
-            }
-            curP.SetY(-1. * curP.Y());
-            tmpPoints.push_back(curP);
-        }
-        points = tmpPoints;
     }
 
-    // Build wire from fuselage profile points
-    const ITiglWireAlgorithm& wireBuilder = *profileWireAlgo;
-    const CTiglInterpolateBsplineWire* pSplineBuilder = dynamic_cast<const CTiglInterpolateBsplineWire*>(&wireBuilder);
-    if (pSplineBuilder) {
-        const_cast<CTiglInterpolateBsplineWire*>(pSplineBuilder)->setEndpointContinuity(C1);
-    }
+    TopoDS_Wire tempWireClosed, tempWireOriginal;
 
-    TopoDS_Wire tempWireClosed   = wireBuilder.BuildWire(points, true);
-    TopoDS_Wire tempWireOriginal = wireBuilder.BuildWire(points, false);
-    if (pSplineBuilder) {
-        const_cast<CTiglInterpolateBsplineWire*>(pSplineBuilder)->setEndpointContinuity(C0);
-    }
-
-    if (tempWireClosed.IsNull() == Standard_True || tempWireOriginal.IsNull() == Standard_True) {
-        throw CTiglError("Error: TopoDS_Wire is null in CCPACSFuselageProfile::BuildWire", TIGL_ERROR);
-    }
-
+    bool mirrorAlgorithmSuccess = true;
     if (mirrorSymmetry) {
-        // trim the wire with the xz plane
-        TopoDS_Edge edge = GetEdge(tempWireOriginal, 0);
-        double wstart, wend;
-        Handle_Geom_Curve   curve = BRep_Tool::Curve(edge, wstart, wend);
-        Handle_Geom_Surface plane = new Geom_Plane(gp_Pln(gp_Pnt(0,0,0), gp_Dir(0,1,0)));
+        try {
+            CTiglSymetricSplineBuilder builder(points);
+            Handle_Geom_BSplineCurve c = builder.GetBSpline();
 
-        GeomAPI_IntCS Intersector(curve, plane);
-        std::vector<double> parms;
-        if (Intersector.IsDone()) {
-            for (int isect = 1; isect <= Intersector.NbPoints(); ++isect) {
-                // get curve paramter
-                double w, u,v;
-                Intersector.Parameters(isect, u, v, w);
-                parms.push_back(w);
-            }
+            TopoDS_Edge edge = BRepBuilderAPI_MakeEdge(c);
+            gp_Pnt pstart = c->Value(c->FirstParameter());
+            gp_Pnt pend   = c->Value(c->LastParameter());
+
+            tempWireOriginal = BRepBuilderAPI_MakeWire(edge);
+            tempWireClosed   = BRepBuilderAPI_MakeWire(
+                                   edge,
+                                   BRepBuilderAPI_MakeEdge(pend, pstart));
+
+            mirrorAlgorithmSuccess = true;
         }
-        // sort ascending
-        std::sort(parms.begin(), parms.end());
-        if (parms.size() == 1 || parms.size() == 3) {
-            double wstartNew, wmeanNew, wendNew;
-            if (parms.size() == 1) {
-                wstartNew = wstart;
-                wmeanNew  = parms[0];
-                wendNew   = wend;
-            }
-            else {
-                wstartNew = parms[0];
-                wmeanNew  = parms[1];
-                wendNew   = parms[2];
-            }
+        catch (CTiglError&) {
+            LOG(WARNING) << "The points in fuselage profile " << GetUID() << " can not be used to create a symmetric half profile."
+                         << "The y value of the first point must be zero!";
+            mirrorAlgorithmSuccess = false;
+        }
+    }
 
-            TopoDS_Edge halfFuselage = BRepBuilderAPI_MakeEdge(curve, wstartNew, wmeanNew);
-            tempWireOriginal = BRepBuilderAPI_MakeWire(halfFuselage);
-            gp_Pnt p1 = curve->Value(wmeanNew);
-            gp_Pnt p2 = curve->Value(wendNew);
-            tempWireClosed = BRepBuilderAPI_MakeWire(
-                                 halfFuselage,
-                                 BRepBuilderAPI_MakeEdge(p1, p2));
+
+    if (!mirrorSymmetry || !mirrorAlgorithmSuccess) {
+        // Build wire from fuselage profile points
+        const ITiglWireAlgorithm& wireBuilder = *profileWireAlgo;
+        const CTiglInterpolateBsplineWire* pSplineBuilder = dynamic_cast<const CTiglInterpolateBsplineWire*>(&wireBuilder);
+        if (pSplineBuilder) {
+            const_cast<CTiglInterpolateBsplineWire*>(pSplineBuilder)->setEndpointContinuity(C1);
+        }
+
+        tempWireClosed   = wireBuilder.BuildWire(points, true);
+        tempWireOriginal = wireBuilder.BuildWire(points, false);
+        if (pSplineBuilder) {
+            const_cast<CTiglInterpolateBsplineWire*>(pSplineBuilder)->setEndpointContinuity(C0);
+        }
+
+        if (tempWireClosed.IsNull() == Standard_True || tempWireOriginal.IsNull() == Standard_True) {
+            throw CTiglError("Error: TopoDS_Wire is null in CCPACSFuselageProfile::BuildWire", TIGL_ERROR);
         }
     }
 

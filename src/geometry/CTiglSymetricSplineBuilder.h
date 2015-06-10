@@ -39,7 +39,7 @@ namespace tigl
  * it matches the input data)
  * 
  * Currently, only splines symmetric to the x-z plane are supported.
- * The y-Coordinate of the first point must be exactly zero!
+ * The y-Coordinate of the first and the last point must be exactly zero!
  */
 class CTiglSymetricSplineBuilder
 {
@@ -51,6 +51,7 @@ public:
     TIGL_EXPORT Handle_Geom_BSplineCurve GetBSpline() const;
 
 private:
+    Handle_Geom_BSplineCurve GetBSplineInternal(const CPointContainer& inputPoints) const;
     void checkInputData() const;
 
     const CPointContainer& _points;
