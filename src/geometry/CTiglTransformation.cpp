@@ -27,7 +27,9 @@
 #include "CTiglError.h"
 #include "tigl.h"
 #include "BRepBuilderAPI_GTransform.hxx"
+#include "BRepBuilderAPI_Transform.hxx"
 #include "gp_XYZ.hxx"
+#include "Standard_Version.hxx"
 
 namespace tigl 
 {
@@ -383,9 +385,25 @@ void CTiglTransformation::AddMirroringAtYZPlane(void)
 // returns the transformed shape
 TopoDS_Shape CTiglTransformation::Transform(const TopoDS_Shape& shape) const
 {
-    const BRepBuilderAPI_GTransform brepBuilderGTransform(shape, Get_gp_GTrsf(), Standard_True);
-    const TopoDS_Shape& transformedShape = brepBuilderGTransform.Shape();
-    return transformedShape;
+
+    if (IsUniform()) {
+        gp_Trsf t;
+        t.SetValues(m_matrix[0][0], m_matrix[0][1], m_matrix[0][2], m_matrix[0][3],
+                    m_matrix[1][0], m_matrix[1][1], m_matrix[1][2], m_matrix[1][3],
+                    m_matrix[2][0], m_matrix[2][1], m_matrix[2][2], m_matrix[2][3]
+#if OCC_VERSION_HEX >= VERSION_HEX_CODE(6,8,0)
+                );
+#else
+                ,1e-10, 1e-10);
+#endif
+        BRepBuilderAPI_Transform trafo(shape, t);
+        return trafo.Shape();
+    }
+    else {
+        const BRepBuilderAPI_GTransform brepBuilderGTransform(shape, Get_gp_GTrsf(), Standard_True);
+        const TopoDS_Shape& transformedShape = brepBuilderGTransform.Shape();
+        return transformedShape;
+    }
 }
 
 // Transforms a point with the current transformation matrix and
@@ -405,6 +423,90 @@ void CTiglTransformation::printTransformMatrix()
         }
         cout << endl;
     }
+}
+
+bool CTiglTransformation::IsUniform() const
+{
+    // The following code is copied from gp_Trsf
+    
+    gp_XYZ col1(m_matrix[0][0],m_matrix[1][0],m_matrix[2][0]);
+    gp_XYZ col2(m_matrix[0][1],m_matrix[1][1],m_matrix[2][1]);
+    gp_XYZ col3(m_matrix[0][2],m_matrix[1][2],m_matrix[2][2]);
+
+    // compute the determinant
+    gp_Mat M(col1,col2,col3);
+    Standard_Real s = M.Determinant();
+    
+    if (fabs(s) < Precision::Confusion()) {
+        return false;
+    }
+    
+    if (s > 0) {
+      s = Pow(s,1./3.);
+    }
+    else {
+      s = -Pow(-s,1./3.);
+    }
+    M.Divide(s);
+    
+    // check if the matrix is a rotation matrix
+    // i.e. check if M^T * M = I
+    gp_Mat TM(M);
+    TM.Transpose();
+    TM.Multiply(M);
+
+    // don t trust the initial values !
+    gp_Mat anIdentity ;
+    anIdentity.SetIdentity() ;
+    TM.Subtract(anIdentity);
+    
+    double v = 0;
+    v = TM.Value(1,1);
+    if (fabs(v) > Precision::Confusion()) {
+        return false;
+    }
+    
+    v = TM.Value(1,2);
+    if (fabs(v) > Precision::Confusion()) {
+        return false;
+    }
+    
+    v = TM.Value(1,3);
+    if (fabs(v) > Precision::Confusion()) {
+        return false;
+    }
+    
+    v = TM.Value(2,1);
+    if (fabs(v) > Precision::Confusion()) {
+        return false;
+    }
+    
+    v = TM.Value(2,2);
+    if (fabs(v) > Precision::Confusion()) {
+        return false;
+    }
+    
+    v = TM.Value(2,3);
+    if (fabs(v) > Precision::Confusion()) {
+        return false;
+    }
+    
+    v = TM.Value(3,1);
+    if (fabs(v) > Precision::Confusion()) {
+        return false;
+    }
+    
+    v = TM.Value(3,2);
+    if (fabs(v) > Precision::Confusion()) {
+        return false;
+    }
+    
+    v = TM.Value(3,3);
+    if (fabs(v) > Precision::Confusion()) {
+        return false;
+    }
+    
+    return true;
 }
 
 CTiglTransformation CTiglTransformation::Inverted() const 

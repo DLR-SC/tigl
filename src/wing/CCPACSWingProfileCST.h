@@ -85,6 +85,9 @@ public:
     // get trailing edge point();
     TIGL_EXPORT const gp_Pnt & GetTEPoint() const;
 
+    // CST profiles have always sharp trailing edges
+    TIGL_EXPORT bool HasBluntTE() const { return false;}
+
 protected:
     // Builds the wing profile wires.
     void BuildWires();

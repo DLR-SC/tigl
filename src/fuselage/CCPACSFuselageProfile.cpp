@@ -215,8 +215,6 @@ void CCPACSFuselageProfile::ReadCPACS(TixiDocumentHandle tixiHandle)
         }
         throw;
     }
-
-    Update();
 }
 
 // Returns the filename of the fuselage profile file
@@ -331,18 +329,8 @@ void CCPACSFuselageProfile::BuildWires(void)
         throw CTiglError("Error: TopoDS_Wire is null in CCPACSFuselageProfile::BuildWire", TIGL_ERROR);
     }
 
-    // Apply fuselage profile transformation to wire
-    CTiglTransformation transformation;
-    TopoDS_Shape tempShapeClosed   = transformation.Transform(tempWireClosed);
-    TopoDS_Shape tempShapeOriginal = transformation.Transform(tempWireOriginal);
-
-    // Cast shapes to wires, see OpenCascade documentation
-    if (tempShapeClosed.ShapeType() != TopAbs_WIRE || tempShapeOriginal.ShapeType() != TopAbs_WIRE) {
-        throw CTiglError("Error: Wrong shape type in CCPACSFuselageProfile::BuildWire", TIGL_ERROR);
-    }
-
-    wireClosed   = TopoDS::Wire(tempShapeClosed);
-    wireOriginal = TopoDS::Wire(tempShapeOriginal);
+    wireClosed   = tempWireClosed;
+    wireOriginal = tempWireOriginal;
 
     wireLength = GetWireLength(wireOriginal);
 }
