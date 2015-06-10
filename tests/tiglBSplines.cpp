@@ -19,6 +19,8 @@
 #include "test.h"
 
 #include "CPointsToLinearBSpline.h"
+#include "CTiglSymetricSplineBuilder.h"
+#include "CTiglError.h"
 #include <Geom_BSplineCurve.hxx>
 
 TEST(BSplines, pointsToLinear)
@@ -46,4 +48,88 @@ TEST(BSplines, pointsToLinear)
     
     curve->D1(0.8, p, v);
     ASSERT_NEAR(v.Magnitude(), v*gp_Vec(-1,0,0), 1e-10);
+}
+
+TEST(BSplines, symmetricBSpline)
+{
+    std::vector<gp_Pnt> points;
+    points.push_back(gp_Pnt(0,0,1));
+    points.push_back(gp_Pnt(0,-sqrt(0.5),sqrt(0.5)));
+    points.push_back(gp_Pnt(0,-1,0));
+    points.push_back(gp_Pnt(0,-sqrt(0.5),-sqrt(0.5)));
+    points.push_back(gp_Pnt(0,0,-1));
+
+    Handle_Geom_BSplineCurve curve;
+    tigl::CTiglSymetricSplineBuilder builder(points);
+
+    ASSERT_NO_THROW(curve = builder.GetBSpline());
+
+    double umin = curve->FirstParameter();
+    double umax = curve->LastParameter();
+
+    // check, that curve is perpendicular to x-z plane
+    gp_Pnt p; gp_Vec v;
+    curve->D1(umin, p, v);
+    ASSERT_NEAR(0., v * gp_Vec(1,0,0), 1e-10);
+    ASSERT_NEAR(0., v * gp_Vec(0,0,1), 1e-10);
+
+    // check interpolation at start
+    ASSERT_NEAR(0., p.Distance(gp_Pnt(0,0,1)), 1e-10);
+
+    curve->D1(umax, p, v);
+    ASSERT_NEAR(0., v * gp_Vec(1,0,0), 1e-10);
+    ASSERT_NEAR(0., v * gp_Vec(0,0,1), 1e-10);
+
+    // check interpolation at end
+    ASSERT_NEAR(0., p.Distance(points[points.size()-1]), 1e-10);
+}
+
+TEST(BSplines, symmetricBSpline_alternative)
+{
+    std::vector<gp_Pnt> points;
+    points.push_back(gp_Pnt(0,0,1));
+    points.push_back(gp_Pnt(0,-sqrt(0.5),sqrt(0.5)));
+    points.push_back(gp_Pnt(0,-1,0));
+    points.push_back(gp_Pnt(0,-sqrt(0.5),-sqrt(0.5)));
+    // the last point at y==0 is missing
+
+    Handle_Geom_BSplineCurve curve;
+    tigl::CTiglSymetricSplineBuilder builder(points);
+
+    ASSERT_NO_THROW(curve = builder.GetBSpline());
+
+    double umin = curve->FirstParameter();
+    double umax = curve->LastParameter();
+
+    // check, that curve is perpendicular to x-z plane
+    gp_Pnt p; gp_Vec v;
+    curve->D1(umin, p, v);
+    ASSERT_NEAR(0., v * gp_Vec(1,0,0), 1e-10);
+    ASSERT_NEAR(0., v * gp_Vec(0,0,1), 1e-10);
+
+    // check interpolation at start
+    ASSERT_NEAR(0., p.Distance(points[0]), 1e-10);
+
+    curve->D1(umax, p, v);
+    ASSERT_NEAR(0., v * gp_Vec(1,0,0), 1e-10);
+    ASSERT_NEAR(0., v * gp_Vec(0,0,1), 1e-10);
+
+    // check interpolation at end
+    ASSERT_NEAR(0., p.Y(), 1e-10);
+}
+
+TEST(BSplines, symmetricBSpline_invalidInput)
+{
+    std::vector<gp_Pnt> points;
+    // the first point should have y == 0
+    points.push_back(gp_Pnt(0,-0.1 ,1));
+    points.push_back(gp_Pnt(0,-sqrt(0.5),sqrt(0.5)));
+    points.push_back(gp_Pnt(0,-1,0));
+    points.push_back(gp_Pnt(0,-sqrt(0.5),-sqrt(0.5)));
+    points.push_back(gp_Pnt(0,0,-1));
+
+    Handle_Geom_BSplineCurve curve;
+    tigl::CTiglSymetricSplineBuilder builder(points);
+
+    ASSERT_THROW(curve = builder.GetBSpline(), tigl::CTiglError);
 }
