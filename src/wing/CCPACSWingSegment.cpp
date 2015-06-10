@@ -111,15 +111,17 @@ namespace
         gp_Pnt transformedPoint(pointOnProfile);
 
         // Do section element transformation on points
-        transformedPoint = connection.GetSectionElementTransformation().Transform(transformedPoint);
+        CTiglTransformation trafo = connection.GetSectionElementTransformation();
 
         // Do section transformations
-        transformedPoint = connection.GetSectionTransformation().Transform(transformedPoint);
+        trafo.PreMultiply(connection.GetSectionTransformation());
 
         // Do positioning transformations
-        transformedPoint = connection.GetPositioningTransformation().Transform(transformedPoint);
+        trafo.PreMultiply(connection.GetPositioningTransformation());
 
-        transformedPoint = wingTransform.Transform(transformedPoint);
+        trafo.PreMultiply(wingTransform);
+
+        transformedPoint = trafo.Transform(transformedPoint);
 
         return transformedPoint;
     }
@@ -129,15 +131,17 @@ namespace
         TopoDS_Shape transformedWire(wire);
 
         // Do section element transformation on points
-        transformedWire = connection.GetSectionElementTransformation().Transform(transformedWire);
+        CTiglTransformation trafo = connection.GetSectionElementTransformation();
 
         // Do section transformations
-        transformedWire = connection.GetSectionTransformation().Transform(transformedWire);
+        trafo.PreMultiply(connection.GetSectionTransformation());
 
         // Do positioning transformations
-        transformedWire = connection.GetPositioningTransformation().Transform(transformedWire);
+        trafo.PreMultiply(connection.GetPositioningTransformation());
 
-        transformedWire = wingTransform.Transform(transformedWire);
+        trafo.PreMultiply(wingTransform);
+
+        transformedWire = trafo.Transform(transformedWire);
 
         return transformedWire;
     }
