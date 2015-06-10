@@ -25,7 +25,7 @@
 #endif
 
 // make tixi quiet
-void tixiSilentMessage(MessageType , const char *, ...){}
+void tixiSilentMessage(MessageType , const char *){}
 
 int main(int argc, char **argv)
 {
