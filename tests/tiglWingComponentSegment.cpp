@@ -661,6 +661,36 @@ TEST(WingComponentSegment5, GetSegmentIntersection_BUG2)
     ASSERT_EQ(SUCCESS, tixiCloseDocument(tixiHandle));
 }
 
+/// A reported bug, where the specified points do only
+/// almost intersect the section border. TiGL has to be
+/// friendly enough to let this small deviation happen
+TEST(WingComponentSegment5, GetSegmentIntersection_BUG3)
+{
+    const char* filename = "TestData/simpletest.cpacs.xml";
+
+    TiglCPACSConfigurationHandle tiglHandle = -1;
+    TixiDocumentHandle tixiHandle = -1;
+
+    ASSERT_EQ (SUCCESS, tixiOpenDocument(filename, &tixiHandle));
+    ASSERT_EQ(TIGL_SUCCESS, tiglOpenCPACSConfiguration(tixiHandle, "", &tiglHandle));
+
+    double xsi = 0;
+    // The segment border is at eta = 0.5. we test if 0.499995 is okay (all values below should fail)
+    ASSERT_EQ(TIGL_SUCCESS, tiglWingComponentSegmentGetSegmentIntersection(
+               tiglHandle, "WING_CS1", "Cpacs2Test_Wing_Seg_1_2", 
+               0.0, 0.7, (1. - 1e-5)/2. + 1e-6, 0.7, 1., 
+               &xsi));
+    
+    ASSERT_NEAR(0.7, xsi, 1e-7);
+    // This is too inaccurate now
+    ASSERT_EQ(TIGL_MATH_ERROR, tiglWingComponentSegmentGetSegmentIntersection(
+               tiglHandle, "WING_CS1", "Cpacs2Test_Wing_Seg_1_2", 
+               0.0, 0.7, (1. - 1e-5)/2. - 1e-5, 0.7, 1., 
+               &xsi));
+    ASSERT_EQ(TIGL_SUCCESS, tiglCloseCPACSConfiguration(tiglHandle));
+    ASSERT_EQ(SUCCESS, tixiCloseDocument(tixiHandle));
+}
+
 /// This is a component segment with many segments
 TEST(WingComponentSegment5, GetPointPerformance)
 {

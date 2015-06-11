@@ -379,11 +379,23 @@ void CCPACSWingComponentSegment::GetSegmentIntersection(const std::string& segme
 
             
         // now lets check in between which points the intersection lies
-        int ifound = 0;
+        int ifound = -1;
         for (int i = 0; i < NSTEPS-1; ++i) {
             if (inBetween(result, points[i], points[i+1])) {
                 ifound = i;
                 break;
+            }
+        }
+        
+        if (ifound < 0 && iter == 0) {
+            // There is not actual intersection!
+            // Check if almost intersecting, i.e. last point or first point is near to the segment iso line
+            // This should make the algorithm more robust for small user errors
+            if (points.front().Distance(result) < 1e-5 || points.back().Distance(result) < 1e-5) {
+                break;
+            }
+            else {
+                throw CTiglError("Component segment line does not intersect iso eta line of segment in CCPACSWingComponentSegment::GetSegmentIntersection.", TIGL_MATH_ERROR);
             }
         }
             
@@ -421,7 +433,7 @@ void CCPACSWingComponentSegment::GetSegmentIntersection(const std::string& segme
         }
     }
     else {
-        throw CTiglError("Component segment line does not intersect outer segment border in CCPACSWingComponentSegment::GetSegmentIntersection.", TIGL_MATH_ERROR);
+        throw CTiglError("Component segment line does not intersect iso eta line of segment in CCPACSWingComponentSegment::GetSegmentIntersection.", TIGL_MATH_ERROR);
     }
         
     // test if eta,xsi is valid
