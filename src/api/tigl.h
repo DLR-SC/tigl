@@ -1311,6 +1311,16 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingSegmentPointGetComponentSegmentEtaXsi(
 * @brief Computes the intersection of a line (defined by component segment coordinates) with an iso-eta line on a
 * specified wing segment.
 *
+* The component segment line is defined by its inner and outer point, both defined in
+* component segment coordinates. Typically, these might be spar positions or leading
+* edge coordinates of flaps. The segment line is defined by a iso-eta line. Typically,
+* the intersection with a wing section would be computed (i.e. eta=1 or eta=0).
+* The function returns the xsi coordinate (depth coordinate) of the intersection point.
+* This coordinate is given in the segment coordinate system. See image below for details.
+*
+* @image html segment-compseg-intersect.png "Computation of the component segment - segment intersection point."
+* @image latex segment-compseg-intersect.pdf "Computation of the component segment - segment intersection point." width=7cm 
+*
 * @param[in]  cpacsHandle             Handle for the CPACS configuration
 * @param[in]  componentSegmentUID     UID of the componentSegment
 * @param[in]  segmentUID              UID of the segment, the intersection should be calculated with
