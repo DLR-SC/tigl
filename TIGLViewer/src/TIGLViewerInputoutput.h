@@ -38,8 +38,6 @@ public:
         FormatBREP, 
         FormatIGES, 
         FormatSTEP, 
-        FormatCSFDB, 
-        FormatVRML, 
         FormatSTL,
         FormatMESH
     };
@@ -80,13 +78,11 @@ private:
     Handle_TopTools_HSequenceOfShape importIGES ( const QString& );
     Handle_TopTools_HSequenceOfShape importSTL  ( const QString& );
     Handle_TopTools_HSequenceOfShape importSTEP ( const QString& );
-    Handle_TopTools_HSequenceOfShape importCSFDB( const QString& );
     Handle_TopTools_HSequenceOfShape importMESH ( const QString& );
 
     bool exportBREP ( const QString& fileName, const Handle_TopTools_HSequenceOfShape& shapes );
     bool exportIGES ( const QString& fileName, const Handle_TopTools_HSequenceOfShape& shapes );
     bool exportSTEP ( const QString& fileName, const Handle_TopTools_HSequenceOfShape& shapes );
-    bool exportCSFDB( const QString& fileName, const Handle_TopTools_HSequenceOfShape& shapes );
     bool exportSTL  ( const QString& fileName, const Handle_TopTools_HSequenceOfShape& shapes );
     bool exportVRML ( const QString& fileName, const Handle_TopTools_HSequenceOfShape& shapes );
 

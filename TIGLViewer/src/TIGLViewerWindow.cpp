@@ -271,8 +271,8 @@ void TIGLViewerWindow::open()
                                                   tr("Open File"),
                                                 myLastFolder,
                                                 tr( "CPACS (*.xml);;"
-                                                    "Other drawing types (*.brep *.rle *.igs *iges *.stp *.step *.mesh);;"
-                                                    "BREP (*.brep *.rle);;"
+                                                    "Other drawing types (*.brep *.igs *iges *.stp *.step *.mesh);;"
+                                                    "BREP (*.brep);;"
                                                     "STEP (*.step *.stp);;"
                                                     "IGES (*.iges *.igs);;"
                                                     "STL  (*.stl);;"
@@ -350,7 +350,7 @@ void TIGLViewerWindow::openFile(const QString& fileName)
         }
         else {
 
-            if (fileType.toLower() == tr("brep") || fileType.toLower() == tr("rle")) {
+            if (fileType.toLower() == tr("brep")) {
                 format = TIGLViewerInputOutput::FormatBREP;
             }
             if (fileType.toLower() == tr("step") || fileType.toLower() == tr("stp")) {
