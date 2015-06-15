@@ -503,13 +503,13 @@ TEST_F(WingComponentSegmentSimple, GetSegmentIntersection)
     double eta = 1.;
     double xsi = 0;
     compSegment.GetSegmentIntersection("Cpacs2Test_Wing_Seg_1_2", 0.1, 0.1, 0.9, 0.1, eta, xsi);
-    ASSERT_NEAR(0.1, xsi, 1e-6);
-
-    compSegment.GetSegmentIntersection("Cpacs2Test_Wing_Seg_1_2", 0.1, 0.1, 0.8, 0.1, eta, xsi);
-    ASSERT_NEAR(0.1, xsi, 1e-6);
+    ASSERT_NEAR(0.28, xsi, 1e-6);
 
     compSegment.GetSegmentIntersection("Cpacs2Test_Wing_Seg_1_2", 0.0, 0.0, 1.0, 1.0, eta, xsi);
     ASSERT_NEAR(0.5, xsi, 1e-6);
+
+    compSegment.GetSegmentIntersection("Cpacs2Test_Wing_Seg_1_2", 0.0, 1.0, 1.0, 0.0, eta, xsi);
+    ASSERT_NEAR(0.75, xsi, 1e-6);
 
     compSegment.GetSegmentIntersection("Cpacs2Test_Wing_Seg_1_2", 0.0, 0.0, 1.0, 1.0, 0.0, xsi);
     ASSERT_NEAR(0.0, xsi, 1e-6);
@@ -521,9 +521,9 @@ TEST_F(WingComponentSegmentSimple, GetSegmentIntersection_cinterface)
 {
     double xsi;
     TiglReturnCode ret;
-    ret = tiglWingComponentSegmentGetSegmentIntersection(tiglHandle, "WING_CS1", "Cpacs2Test_Wing_Seg_1_2", 0.1, 0.1, 0.9, 0.1, 1.0, &xsi);
+    ret = tiglWingComponentSegmentGetSegmentIntersection(tiglHandle, "WING_CS1", "Cpacs2Test_Wing_Seg_1_2", 0.0, 0.0, 1.0, 1.0, 1.0, &xsi);
     ASSERT_EQ(TIGL_SUCCESS, ret);
-    ASSERT_NEAR(0.1, xsi, 1e-6);
+    ASSERT_NEAR(0.5, xsi, 1e-6);
 
     ret = tiglWingComponentSegmentGetSegmentIntersection(tiglHandle, "WING_CS1","Cpacs2Test_Wing_Seg_2_3", 0.1, 0.1, 0.9, 0.1, 1.0, &xsi);
     ASSERT_EQ(TIGL_MATH_ERROR, ret);
@@ -680,13 +680,27 @@ TEST(WingComponentSegment5, GetSegmentIntersection_BUG3)
                tiglHandle, "WING_CS1", "Cpacs2Test_Wing_Seg_1_2", 
                0.0, 0.7, (1. - 1e-5)/2. + 1e-6, 0.7, 1., 
                &xsi));
-    
+
     ASSERT_NEAR(0.7, xsi, 1e-7);
     // This is too inaccurate now
     ASSERT_EQ(TIGL_MATH_ERROR, tiglWingComponentSegmentGetSegmentIntersection(
                tiglHandle, "WING_CS1", "Cpacs2Test_Wing_Seg_1_2", 
                0.0, 0.7, (1. - 1e-5)/2. - 1e-5, 0.7, 1., 
                &xsi));
+
+    // check inner section
+    // The segment border is at eta = 0.0. we test if 0.000005 is okay (all values below should fail)
+    ASSERT_EQ(TIGL_SUCCESS, tiglWingComponentSegmentGetSegmentIntersection(
+               tiglHandle, "WING_CS1", "Cpacs2Test_Wing_Seg_1_2", 
+               (1e-5)/2. - 1e-6, 0.7, 0.5 + 1e-5, 0.7, 0., 
+               &xsi));
+
+    // This should be too inaccurate now
+    ASSERT_EQ(TIGL_MATH_ERROR, tiglWingComponentSegmentGetSegmentIntersection(
+               tiglHandle, "WING_CS1", "Cpacs2Test_Wing_Seg_1_2", 
+               (1e-5)/2. + 1e-5, 0.7, 0.5 + 1e-5, 0.7, 0., 
+               &xsi));
+
     ASSERT_EQ(TIGL_SUCCESS, tiglCloseCPACSConfiguration(tiglHandle));
     ASSERT_EQ(SUCCESS, tixiCloseDocument(tixiHandle));
 }
