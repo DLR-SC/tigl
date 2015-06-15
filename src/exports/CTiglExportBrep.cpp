@@ -126,11 +126,11 @@ bool CTiglExportBrep::Write(const std::string& filename) const
         }
         
         // write the file
-        return BRepTools::Write(c, filename.c_str());
+        return (BRepTools::Write(c, filename.c_str()) > 0);
     }
     else if ( _shapes.size() == 1) {
         PNamedShape shape = _shapes[0];
-        return BRepTools::Write(shape->Shape(), filename.c_str());
+        return (BRepTools::Write(shape->Shape(), filename.c_str()) > 0);
     }
     else {
         LOG(WARNING) << "No shapes defined in BRep export. Abort!";

@@ -39,11 +39,7 @@ int main(int argc, char *argv[])
     QApplication app(argc, argv);
     
 #ifdef __APPLE__
-    if (!getenv("CSF_GraphicShr")){
-        static char env[64];
-        strcpy(env,"CSF_GraphicShr=@executable_path/libTKOpenGl.dylib");
-        putenv(env);
-    }
+    app.setAttribute(Qt::AA_DontCreateNativeWidgetSiblings, true);
 #endif
 
 #if defined __linux__
@@ -60,35 +56,24 @@ int main(int argc, char *argv[])
         return retval;
     }
 
-    TIGLViewerWindow *window = new TIGLViewerWindow();
-    window->show();
+    TIGLViewerWindow window;
+    window.show();
 
     if (!PARAMS.controlFile.isEmpty()){
-        if (window->getViewer()) {
-            window->getViewer()->repaint();
-        }
-        window->setInitialControlFile(PARAMS.controlFile);
+        window.setInitialControlFile(PARAMS.controlFile);
     }
 
     // if a filename is given, open the configuration
     if (!PARAMS.initialFilename.isEmpty()) {
-        if (window->getViewer()) {
-            window->getViewer()->repaint();
-        }
-        window->openFile(PARAMS.initialFilename);
+        window.openFile(PARAMS.initialFilename);
     }
     
     // if a script is given
     if (!PARAMS.initialScript.isEmpty()) {
-        if (window->getViewer()) {
-            window->getViewer()->repaint();
-        }
-        window->openScript(PARAMS.initialScript);
+        window.openScript(PARAMS.initialScript);
     }
 
     retval = app.exec();
-    window->hide();
-    delete window;
     return retval;
 }
 

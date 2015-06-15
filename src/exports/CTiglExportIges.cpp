@@ -302,7 +302,7 @@ bool CTiglExportIges::Write(const std::string& filename) const
 
     igesWriter.ComputeModel();
 
-    return igesWriter.Write(const_cast<char*>(filename.c_str()));
+    return (igesWriter.Write(const_cast<char*>(filename.c_str())) > 0);
 }
 
 void CTiglExportIges::SetGroupMode(ShapeGroupMode mode)

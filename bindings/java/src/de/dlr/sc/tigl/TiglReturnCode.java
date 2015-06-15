@@ -17,7 +17,7 @@
 */
 
 /* 
-* This file is automatically created from tigl.h on 2014-10-21.
+* This file is automatically created from tigl.h on 2015-06-01.
 * If you experience any bugs please contact the authors
 */
 
@@ -39,7 +39,8 @@ public enum TiglReturnCode {
     TIGL_UID_ERROR(10),
     TIGL_WRONG_CPACS_VERSION(11),
     TIGL_UNINITIALIZED(12),
-    TIGL_MATH_ERROR(13);
+    TIGL_MATH_ERROR(13),
+    TIGL_WRITE_FAILED(14);
 
     private static ArrayList<TiglReturnCode> codes = new ArrayList<>();
 
@@ -58,6 +59,7 @@ public enum TiglReturnCode {
         codes.add(TIGL_WRONG_CPACS_VERSION);
         codes.add(TIGL_UNINITIALIZED);
         codes.add(TIGL_MATH_ERROR);
+        codes.add(TIGL_WRITE_FAILED);
     }
 
     private final int code;

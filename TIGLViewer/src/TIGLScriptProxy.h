@@ -18,17 +18,21 @@
 #ifndef TIGLSCRIPTPOXY_H
 #define TIGLSCRIPTPOXY_H
 
+#include "TIGLScriptProxy.h"
+#include "tigl.h"
+
 #include <QtCore/QString>
 #include <QtCore/QObject>
 
 #include <QtScript>
 #include <QString>
 
-#include "tigl.h"
-#include "tixi.h"
-#include "CCPACSConfiguration.h"
-#include "CCPACSConfigurationManager.h"
-#include "TIGLViewerWindow.h"
+namespace tigl
+{
+class CCPACSConfiguration;
+}
+
+class TIGLViewerWindow;
 
 class TIGLScriptProxy :public QObject, public QScriptable
 {

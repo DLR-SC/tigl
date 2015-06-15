@@ -85,7 +85,7 @@ endif(OCE_FOUND)
 # search TiXI
 set(TIXI_PATH "" CACHE PATH "TiXI installation prefix")
 set(CMAKE_PREFIX_PATH "${TIXI_PATH};${CMAKE_PREFIX_PATH}")
-find_package( TIXI 2.2.0 REQUIRED)
+find_package( TIXI 2.2.1 REQUIRED)
 get_target_property(TIXI_LIBRARY TIXI LOCATION)
 get_filename_component(TIXI_LIB_PATH ${TIXI_LIBRARY} PATH)
 
@@ -133,6 +133,11 @@ if(WIN32)
             include_directories(${VLD_INCLUDE_DIRS})
         endif(TIGL_USE_VLD)
     endif(CMAKE_BUILD_TYPE STREQUAL "Debug")
+endif(WIN32)
+
+if(WIN32)
+    # avoid export of oce/occt classes into tigl library
+    add_definitions(-DStandard_EXPORT=)
 endif(WIN32)
 
 # style checks

@@ -199,7 +199,9 @@ void MakeLoops::Perform()
     TopoDS_Vertex NextStartCorner;
     Standard_Boolean IsFirstRow = Standard_True;
     Standard_Integer RowLength = 0;
-    for(;;) {
+
+    int count = 0;
+    while (true) {
         // the four edges of the patch
         TopoDS_Edge E1, E2, E3, E4;
         // set current starting corner as the NextCorner from the previous iteration
@@ -432,7 +434,7 @@ void MakeLoops::Perform()
 #ifdef DEBUG
         // save edges for debugging purposes
         std::stringstream siMakeLoopsInner;
-        siMakeLoopsInner << "_innerLoop" << count;
+        siMakeLoopsInner << "_innerLoop" << count++;
         BRepTools::Write(myCells.First(), (currentName + siMakeLoopsInner.str() +  "_firstcell.brep").c_str());
         BRepTools::Write(aCell, (currentName + siMakeLoopsInner.str() +  "_cell.brep").c_str());
         BRepTools::Write(E1, (currentName + siMakeLoopsInner.str() + "_edge1.brep").c_str());

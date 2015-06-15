@@ -1245,11 +1245,12 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetPoint(TiglCPACSConf
 /**
 * @brief Returns eta, xsi, segmentUID and wingUID for a given eta and xsi on a componentSegment.
 *
-* If the given component segment point deviates more than 1 cm from any segment, the function returns
-* ::TIGL_MATH_ERROR. If the point is outside any segment but deviates less than 1 cm from a segment,
-* the point is first projected onto the segment. Then, this point is transformed into segment coordinates.
-* In this case, a warning is generated to inform the user, that he can fix his setup.
+* If the given component segment point lies outside the wing chord surface, the function returns
+* an error distance > 0. If this distance is larger than 1 mm, the point is first projected onto the segment (see image). Then, 
+* this point is transformed into segment coordinates. It is up to the user to handle this case correctly.
 *
+* @image html compseg-getetaxsi.png "If the given point (black) lies outside the wing chord surface, it will be projected onto the wing (red)."
+* @image latex compseg-getetaxsi.pdf "If the given point (black) lies outside the wing chord surface, it will be projected onto the wing (red)." width=10cm  
 *
 * @param[in]  cpacsHandle             Handle for the CPACS configuration
 * @param[in]  componentSegmentUID     UID of the componentSegment to search for
@@ -1260,6 +1261,10 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetPoint(TiglCPACSConf
 *                                     In contrast to old releases, the returned string <b>must not be freed </b>by the user!
 * @param[out] segmentEta              Eta of the point on the corresponding segment.
 * @param[out] segmentXsi              Xsi of the point on the corresponding segment.
+* @param[out] errorDistance           If the point given in component segment lies outside the wing chord surface
+*                                     this paramter returns the distance of the point to the nearest point on the
+*                                     wing. Normally, this should be zero! In older releases, an error was generated
+*                                     if this distance was larger than 1 cm. Now, it is up to the user to handle this case.
 *
 * @return
 *   - TIGL_SUCCESS if no error occurred
@@ -1274,7 +1279,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentPointGetSegmentEtaXsi(
                                                                                 double eta, double xsi,
                                                                                 char** wingUID, 
                                                                                 char** segmentUID,
-                                                                                double *segmentEta, double *segmentXsi);
+                                                                                double *segmentEta, double *segmentXsi,
+                                                                                double *errorDistance);
 
 
 
@@ -1304,6 +1310,16 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingSegmentPointGetComponentSegmentEtaXsi(
 /**
 * @brief Computes the intersection of a line (defined by component segment coordinates) with an iso-eta line on a
 * specified wing segment.
+*
+* The component segment line is defined by its inner and outer point, both defined in
+* component segment coordinates. Typically, these might be spar positions or leading
+* edge coordinates of flaps. The segment line is defined by a iso-eta line. Typically,
+* the intersection with a wing section would be computed (i.e. eta=1 or eta=0).
+* The function returns the xsi coordinate (depth coordinate) of the intersection point.
+* This coordinate is given in the segment coordinate system. See image below for details.
+*
+* @image html segment-compseg-intersect.png "Computation of the component segment - segment intersection point."
+* @image latex segment-compseg-intersect.pdf "Computation of the component segment - segment intersection point." width=7cm 
 *
 * @param[in]  cpacsHandle             Handle for the CPACS configuration
 * @param[in]  componentSegmentUID     UID of the componentSegment

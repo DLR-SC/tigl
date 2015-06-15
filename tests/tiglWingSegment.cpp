@@ -913,11 +913,11 @@ TEST_F(WingSegmentSpecial, getCompSegEtaXsi)
 {
     double eta, xsi;
     ASSERT_EQ(TIGL_SUCCESS, tiglWingSegmentPointGetComponentSegmentEtaXsi(tiglSpecialHandle, "Aircraft1_Wing1_Seg3", "Aircraft1_Wing1_CompSeg1", 1.0, 0.25, &eta, &xsi));
-    ASSERT_EQ(eta, 1.0);
-    ASSERT_EQ(xsi, 0.25);
+    ASSERT_NEAR(1.0,  eta, 1e-7);
+    ASSERT_NEAR(0.25, xsi, 1e-7);
     ASSERT_EQ(TIGL_SUCCESS, tiglWingSegmentPointGetComponentSegmentEtaXsi(tiglSpecialHandle, "Aircraft1_Wing1_Seg3", "Aircraft1_Wing1_CompSeg1", 1.0, 1.0, &eta, &xsi));
-    ASSERT_EQ(eta, 1.0);
-    ASSERT_EQ(xsi, 1.0);
+    ASSERT_NEAR(1.0, eta, 1e-7);
+    ASSERT_NEAR(1.0, xsi, 1e-7);
 }
 
 TEST_F(WingSegmentSimple, getSurfacArea)

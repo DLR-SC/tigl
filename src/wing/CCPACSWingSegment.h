@@ -226,7 +226,13 @@ private:
 
     // Builds upper and lower surfaces
     void MakeSurfaces();
-    
+
+    // Builds the chord surface
+    void MakeChordSurface();
+
+    // Returns the chord surface (and builds it if required)
+    CTiglPointTranslator& ChordFace();
+
     // converts segment eta xsi coordinates to face uv koordinates
     void etaXsiToUV(bool isFromUpper, double eta, double xsi, double& u, double& v);
 
@@ -243,6 +249,7 @@ private:
     Handle(Geom_Surface) lowerSurface;
     CTiglPointTranslator cordSurface;
     bool                 surfacesAreValid;
+    bool                 chordsurfaceValid;
     bool                 guideCurvesPresent;   /**< If guide curves are not present, lofted surface is possible */
     bool                 guideCurvesBuilt;     /**< True, if guide curves are already built                     */
 

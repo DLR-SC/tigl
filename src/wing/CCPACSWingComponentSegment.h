@@ -38,6 +38,7 @@
 
 #include "TopoDS_Shape.hxx"
 #include "TopoDS_Wire.hxx"
+#include "Handle_Geom_Curve.hxx"
 #include "Geom_BSplineSurface.hxx"
 #include "CCPACSMaterial.h"
 
@@ -84,7 +85,7 @@ public:
 
     // Returns the segment to a given point on the componentSegment and the nearest point projected onto the loft.
     // Returns null if the point is not an that wing, i.e. deviates more than 1 cm from the wing
-    TIGL_EXPORT const CTiglAbstractSegment* findSegment(double x, double y, double z, gp_Pnt& nearestPoint);
+    TIGL_EXPORT const CTiglAbstractSegment* findSegment(double x, double y, double z, gp_Pnt& nearestPoint, double& deviation);
 
     TIGL_EXPORT TiglGeometricComponentType GetComponentType(){ return TIGL_COMPONENT_WINGCOMPSEGMENT | TIGL_COMPONENT_SEGMENT | TIGL_COMPONENT_LOGICAL; }
 
@@ -143,7 +144,7 @@ private:
     double               mySurfaceArea;        /**< Surface area of this segment            */
     TopoDS_Shape         upperShape;           /**< Upper shape of this componentSegment    */
     TopoDS_Shape         lowerShape;           /**< Lower shape of this componentSegment    */
-    TopoDS_Wire          projLeadingEdge;      /**< (Extended) Leading edge projected into y-z plane */
+    Handle_Geom_Curve    projLeadingEdge;      /**< (Extended) Leading edge projected into y-z plane */
     SegmentList          wingSegments;         /**< List of segments belonging to the component segment */
     Handle(Geom_Surface) upperSurface;
     Handle(Geom_Surface) lowerSurface;

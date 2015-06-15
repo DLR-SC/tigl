@@ -1162,7 +1162,7 @@ bool TIGLViewerWidget::makeScreenshot(const QString& filename, bool whiteBGEnabl
     }
 
     // copy to qimage which supports a variety of file formats
-    QImage img(QSize(pixmap.Width(), pixmap.Height()), QImage::Format_RGB888);
+    QImage img(QSize((int) pixmap.Width(), (int) pixmap.Height()), QImage::Format_RGB888);
     for (unsigned int aRow = 0; aRow <  pixmap.Height(); ++aRow) {
       for (unsigned int aCol = 0; aCol < pixmap.Width(); ++aCol) {
         // extremely SLOW but universal (implemented for all supported pixel formats)

@@ -63,31 +63,68 @@
 /*****************************************************************************/
 
 static char * version = NULL;
+TixiPrintMsgFnc oldTixiMessageHandler = NULL;
 
-void tiglCleanup(void);
-bool tiglInit(void);
+namespace
+{
+
+    void tiglCleanup(void);
+    bool tiglInit(void);
+    void TixiMessageHandler(MessageType type, const char *message);
+
+
+    bool tiglInit(void)
+    {
+        atexit(tiglCleanup);
+    
+        // Initialize logger
+        tigl::CTiglLogging::Instance();
+        // Register dynamic tigl types
+        tigl::CTiglTypeRegistry::Init();
+        if (tixiGetPrintMsgFunc() != TixiMessageHandler) {
+            oldTixiMessageHandler = tixiGetPrintMsgFunc();
+        }
+        tixiSetPrintMsgFunc(TixiMessageHandler);
+        return true;
+    }
+    
+    void tiglCleanup(void)
+    {
+        if (version) {
+            delete[] version;
+        }
+        version = NULL;
+    }
+    
+    // This function pulls all tixi messages, puts them into the tigl
+    // log and pushes them back to tixi
+    void TixiMessageHandler(MessageType type, const char *message)
+    {
+        std::string cppMessage(message);
+
+        // reroute back to tixi
+        if (oldTixiMessageHandler && oldTixiMessageHandler != TixiMessageHandler) {
+            oldTixiMessageHandler(type, cppMessage.c_str());
+        }
+
+        cppMessage = "[TiXI] " + cppMessage;
+
+        if (type == MESSAGETYPE_ERROR) {
+            LOG(ERROR) << cppMessage;
+        }
+        else if (type == MESSAGETYPE_WARNING) {
+            LOG(WARNING) << cppMessage;
+        }
+        else {
+            LOG(INFO) << cppMessage;
+        }
+
+    }
+
+}
 
 // make tigl initialize on start
 const bool tiglInitialized = tiglInit();
-
-bool tiglInit(void)
-{
-    atexit(tiglCleanup);
-
-    // Initialize logger
-    tigl::CTiglLogging::Instance();
-    // Register dynamic tigl types
-    tigl::CTiglTypeRegistry::Init();
-    return true;
-}
-
-void tiglCleanup(void)
-{
-    if (version) {
-        delete[] version;
-    }
-    version = NULL;
-}
 
 /*****************************************************************************/
 /* Public visible functions.                                                 */
@@ -95,6 +132,8 @@ void tiglCleanup(void)
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglOpenCPACSConfiguration(TixiDocumentHandle tixiHandle, const char* configurationUID_cstr, TiglCPACSConfigurationHandle* cpacsHandlePtr)
 {
+    tiglInit();
+
     std::string configurationUID;
     if (configurationUID_cstr) {
         configurationUID = configurationUID_cstr;
@@ -1739,11 +1778,16 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentFindSegment(TiglCPACSC
                 tigl::CCPACSWingComponentSegment& cs = (tigl::CCPACSWingComponentSegment&) wing.GetComponentSegment(componentSegment);
                 if ( cs.GetUID() == componentSegmentUID) {
                     gp_Pnt nearestPointOnSegment;
-                    const tigl::CTiglAbstractSegment* segment =  cs.findSegment(x, y, z, nearestPointOnSegment);
+                    double distance = 0;
+                    const tigl::CTiglAbstractSegment* segment =  cs.findSegment(x, y, z, nearestPointOnSegment, distance);
                     if (!segment) {
+                        LOG(ERROR) << "Can not find any segment that does belong to the provided point.";
+                        return TIGL_NOT_FOUND;
+                    }
+                    if (distance > 1e-2) {
                         // point does not lie on component segment
                         LOG(ERROR) << "Given point does not lie on component segment within 1cm tolerance."
-                                   << " Diviation is " << nearestPointOnSegment.Distance(gp_Pnt(x,y,z))*1000. << " mm.";
+                                   << " Diviation is " << distance*1000. << " mm.";
                         return TIGL_NOT_FOUND;
                     }
 
@@ -1830,17 +1874,24 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetPoint(TiglCPACSConf
 TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentPointGetSegmentEtaXsi(TiglCPACSConfigurationHandle cpacsHandle,
                                                                                 const char *componentSegmentUID, double eta, double xsi,
                                                                                 char** wingUID, char** segmentUID,
-                                                                                double *segmentEta, double *segmentXsi)
+                                                                                double *segmentEta, double *segmentXsi,
+                                                                                double *errorDistance)
 {
     if (segmentUID == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for segmentUID ";
-        LOG(ERROR) << "in function call to tiglWingComponentSegmentPointGetSegmentEtaXsi." << std::endl;
+        LOG(ERROR) << "Error: Null pointer argument for segmentUID "
+                   << "in function call to tiglWingComponentSegmentPointGetSegmentEtaXsi.";
         return TIGL_NULL_POINTER;
     }
 
     if (wingUID == 0) {
-        LOG(ERROR) << "Error: Null pointer argument for wingUID ";
-        LOG(ERROR) << "in function call to tiglWingComponentSegmentPointGetSegmentEtaXsi." << std::endl;
+        LOG(ERROR) << "Error: Null pointer argument for wingUID "
+                   << "in function call to tiglWingComponentSegmentPointGetSegmentEtaXsi.";
+        return TIGL_NULL_POINTER;
+    }
+    
+    if (errorDistance == 0) {
+        LOG(ERROR) << "Error: Null pointer argument for errorDistance "
+                   << "in function call to tiglWingComponentSegmentPointGetSegmentEtaXsi.";
         return TIGL_NULL_POINTER;
     }
 
@@ -1862,17 +1913,17 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentPointGetSegmentEtaXsi(
 
 
                     gp_Pnt nearestPoint;
-                    tigl::CCPACSWingSegment* segment = (tigl::CCPACSWingSegment*) compSeg.findSegment(pnt.X(), pnt.Y(), pnt.Z(), nearestPoint);
-                    double deviation = nearestPoint.Distance(pnt);
+                    double tmp = 0;
+                    tigl::CCPACSWingSegment* segment = (tigl::CCPACSWingSegment*) compSeg.findSegment(pnt.X(), pnt.Y(), pnt.Z(), nearestPoint, tmp);
                     if (!segment) {
-                        LOG(ERROR) << "Given point does not lie on component segment within 1cm tolerance."
-                                   << " The actual diviation is " << deviation*1000. << " mm.";
+                        LOG(ERROR) << "Can not find any segment that does belong to the provided point.";
                         return TIGL_MATH_ERROR;
                     }
+                    *errorDistance = nearestPoint.Distance(pnt);
                     // warn if cs point is more than 1mm outside from segment
-                    if ( deviation > 1e-3) {
+                    if ( *errorDistance > 1e-3) {
                         LOG(WARNING) << "Given point is located more than 1mm from the wing component segment body."
-                                     << " The actual diviation is " << deviation*1000.  << " mm."
+                                     << " The actual diviation is " << *errorDistance*1000.  << " mm."
                                      << " The point will be projected onto the wing segment.";
                         segment->GetEtaXsi(nearestPoint, *segmentEta, *segmentXsi);
                     }

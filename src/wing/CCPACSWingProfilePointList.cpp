@@ -396,6 +396,13 @@ const gp_Pnt& CCPACSWingProfilePointList::GetTEPoint() const
 }
 
 
+bool CCPACSWingProfilePointList::HasBluntTE() const
+{
+    gp_Pnt firstPnt = coordinates[0]->Get_gp_Pnt();
+    gp_Pnt lastPnt  = coordinates[coordinates.size() - 1]->Get_gp_Pnt();
+    return firstPnt.Distance(lastPnt) > Precision::Confusion();
+}
+
 } // end namespace tigl
 
 

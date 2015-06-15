@@ -25,7 +25,7 @@ AddToCheckstyle()
 # required opencascade libraries
 set (TV_OCC_LIBS 
     TKOpenGl 
-    TKVRML TKShapeSchema TKPShape TKCDF PTKernel ${OCC_VISU_LIBS} ${OCC_LIBS}
+    ${OCC_VISU_LIBS} ${OCC_LIBS}
 )
 
 if(NOT OpenCASCADE_DONT_SEARCH_OCE)

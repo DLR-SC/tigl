@@ -19,9 +19,13 @@
 * limitations under the License.
 */
 
+#define _USE_MATH_DEFINES
+
 #include "TIGLScriptProxy.h"
 #include "TIGLViewerDocument.h"
 #include "TIGLScriptEngine.h"
+#include "TIGLViewerWindow.h"
+#include "CCPACSConfigurationManager.h"
 
 #include <QWidget>
 

@@ -247,15 +247,16 @@ TEST_F(WingComponentSegment, tiglWingComponentGetEtaXsi_success)
     char * wingUID = NULL;
     char * segmentUID = NULL;
     double segmentEta = 0., segmentXsi = 0.;
+    double errorDistance = 0;
 
-    TiglReturnCode ret = tiglWingComponentSegmentPointGetSegmentEtaXsi(tiglHandle, "D150_VAMP_W1_CompSeg1", eta, xsi, &wingUID, &segmentUID, &segmentEta, &segmentXsi);
+    TiglReturnCode ret = tiglWingComponentSegmentPointGetSegmentEtaXsi(tiglHandle, "D150_VAMP_W1_CompSeg1", eta, xsi, &wingUID, &segmentUID, &segmentEta, &segmentXsi, &errorDistance);
     ASSERT_TRUE( ret == TIGL_SUCCESS);
     ASSERT_STREQ("D150_VAMP_W1", wingUID);
 
     // test for a bug  in tigl 2.0.2, occurs when component segment does not lie on first wing
     eta = 0.16;
     xsi = 0.577506;
-    ret = tiglWingComponentSegmentPointGetSegmentEtaXsi(tiglHandle, "D150_VAMP_HL1_CompSeg1", eta, xsi, &wingUID, &segmentUID, &segmentEta, &segmentXsi);
+    ret = tiglWingComponentSegmentPointGetSegmentEtaXsi(tiglHandle, "D150_VAMP_HL1_CompSeg1", eta, xsi, &wingUID, &segmentUID, &segmentEta, &segmentXsi, &errorDistance);
     ASSERT_TRUE(ret == TIGL_SUCCESS);
     ASSERT_STREQ("D150_VAMP_HL1", wingUID);
 }
@@ -267,8 +268,9 @@ TEST_F(WingComponentSegment, tiglWingComponentGetEtaXsi_wrongUID)
     char * wingUID = NULL;
     char * segmentUID = NULL;
     double segmentEta = 0., segmentXsi = 0.;
+    double errorDistance = 0;
 
-    TiglReturnCode ret = tiglWingComponentSegmentPointGetSegmentEtaXsi(tiglHandle, "invalid_comp_seg", eta, xsi, &wingUID, &segmentUID, &segmentEta, &segmentXsi);
+    TiglReturnCode ret = tiglWingComponentSegmentPointGetSegmentEtaXsi(tiglHandle, "invalid_comp_seg", eta, xsi, &wingUID, &segmentUID, &segmentEta, &segmentXsi, &errorDistance);
     ASSERT_TRUE(ret == TIGL_UID_ERROR);
 }
 
@@ -280,15 +282,17 @@ TEST_F(WingComponentSegment2, tiglWingComponentGetEtaXsi_success)
     char * wingUID = NULL;
     char * segmentUID = NULL;
     double segmentEta = 0., segmentXsi = 0.;
+    double errorDistance = 0;
 
-    TiglReturnCode ret = tiglWingComponentSegmentPointGetSegmentEtaXsi(tiglHandle, "D250_wing_CS", eta, xsi, &wingUID, &segmentUID, &segmentEta, &segmentXsi);
+    TiglReturnCode ret = tiglWingComponentSegmentPointGetSegmentEtaXsi(tiglHandle, "D250_wing_CS", eta, xsi, &wingUID, &segmentUID, &segmentEta, &segmentXsi, &errorDistance);
     ASSERT_EQ(TIGL_SUCCESS, ret);
+    ASSERT_LT(errorDistance, 1e-2);
     ASSERT_STREQ("D250_wing", wingUID);
 
     eta = 0.;
     xsi = 0.5;
 
-    ret = tiglWingComponentSegmentPointGetSegmentEtaXsi(tiglHandle, "D250_wing_CS", eta, xsi, &wingUID, &segmentUID, &segmentEta, &segmentXsi);
+    ret = tiglWingComponentSegmentPointGetSegmentEtaXsi(tiglHandle, "D250_wing_CS", eta, xsi, &wingUID, &segmentUID, &segmentEta, &segmentXsi, &errorDistance);
     ASSERT_EQ(TIGL_SUCCESS, ret);
     ASSERT_STREQ("D250_wing", wingUID);
 }
@@ -321,23 +325,27 @@ TEST_F(WingComponentSegmentSimple, tiglWingComponentSegmentPointGetSegmentEtaXsi
     // now the tests
     double csEta = 0., csXsi = 0.;
     char *wingUID = NULL, *segmentUID = NULL;
-    tiglWingComponentSegmentPointGetSegmentEtaXsi(tiglHandle, "WING_CS1", 0.25, 0.5, &wingUID, &segmentUID, &csEta, &csXsi);
+    double errorDistance = 0;
+    tiglWingComponentSegmentPointGetSegmentEtaXsi(tiglHandle, "WING_CS1", 0.25, 0.5, &wingUID, &segmentUID, &csEta, &csXsi, &errorDistance);
     ASSERT_STREQ("Wing",wingUID);
     ASSERT_STREQ("Cpacs2Test_Wing_Seg_1_2", segmentUID);
     ASSERT_NEAR(csEta, 0.5, 1e-7);
     ASSERT_NEAR(csXsi, 0.5, 1e-7);
+    ASSERT_LT(errorDistance, 1e-2);
 
-    tiglWingComponentSegmentPointGetSegmentEtaXsi(tiglHandle, "WING_CS1", 0.49, 0.5, &wingUID, &segmentUID, &csEta, &csXsi);
+    tiglWingComponentSegmentPointGetSegmentEtaXsi(tiglHandle, "WING_CS1", 0.49, 0.5, &wingUID, &segmentUID, &csEta, &csXsi, &errorDistance);
     ASSERT_STREQ("Wing",wingUID);
     ASSERT_STREQ("Cpacs2Test_Wing_Seg_1_2", segmentUID);
     ASSERT_NEAR(csEta, 0.98, 1e-7);
     ASSERT_NEAR(csXsi, 0.5, 1e-7);
+    ASSERT_LT(errorDistance, 1e-2);
 
-    tiglWingComponentSegmentPointGetSegmentEtaXsi(tiglHandle, "WING_CS1", 0.75, 0.5, &wingUID, &segmentUID, &csEta, &csXsi);
+    tiglWingComponentSegmentPointGetSegmentEtaXsi(tiglHandle, "WING_CS1", 0.75, 0.5, &wingUID, &segmentUID, &csEta, &csXsi, &errorDistance);
     ASSERT_STREQ("Wing",wingUID);
     ASSERT_STREQ("Cpacs2Test_Wing_Seg_2_3", segmentUID);
     ASSERT_NEAR(csEta, 0.5, 1e-7);
     ASSERT_NEAR(csXsi, 0.5, 1e-7);
+    ASSERT_LT(errorDistance, 1e-2);
 }
 
 TEST_F(WingComponentSegmentSimple, tiglWingComponentSegmentGetPoint_success)
@@ -541,8 +549,10 @@ TEST_F(WingComponentSegment3, tiglWingComponentSegmentPointGetSegmentEtaXsi_BUG1
     // now the tests
     double sEta = 0., sXsi = 0.;
     char *wingUID = NULL, *segmentUID = NULL;
-    TiglReturnCode ret = tiglWingComponentSegmentPointGetSegmentEtaXsi(tiglHandle, "D150_wing_CS", 0.0, 0.0, &wingUID, &segmentUID, &sEta, &sXsi);
+    double errorDistance = 0;
+    TiglReturnCode ret = tiglWingComponentSegmentPointGetSegmentEtaXsi(tiglHandle, "D150_wing_CS", 0.0, 0.0, &wingUID, &segmentUID, &sEta, &sXsi, &errorDistance);
     ASSERT_EQ(TIGL_SUCCESS, ret);
+    ASSERT_LT(errorDistance, 1e-2);
     ASSERT_STREQ("D150_wing_1ID", wingUID);
     ASSERT_STREQ("D150_wing_1Segment2ID", segmentUID);
     cout << "eta_s / xsi_s: " << sEta << "/" << sXsi << endl;
@@ -562,8 +572,10 @@ TEST(WingComponentSegment4, tiglWingComponentSegmentPointGetSegmentEtaXsi_BUG2)
     
     double sEta = 0., sXsi = 0.;
     char *wingUID = NULL, *segmentUID = NULL;
-    tiglRet = tiglWingComponentSegmentPointGetSegmentEtaXsi(tiglHandle, "D150_wing_CS", 0.5, 0.10142, &wingUID, &segmentUID, &sEta, &sXsi);
+    double errorDistance = 0;
+    tiglRet = tiglWingComponentSegmentPointGetSegmentEtaXsi(tiglHandle, "D150_wing_CS", 0.5, 0.10142, &wingUID, &segmentUID, &sEta, &sXsi, &errorDistance);
     ASSERT_EQ(TIGL_SUCCESS, tiglRet);
+    ASSERT_LT(errorDistance, 1e-2);
     ASSERT_STREQ("D150_wing_1Segment3ID", segmentUID);
     ASSERT_NEAR(0.5, sEta, 0.0001);
 
@@ -575,8 +587,10 @@ TEST_F(WingComponentSegment3, tiglWingComponentSegmentPointGetSegmentEtaXsi_BUG3
 {
     double sEta = 0., sXsi = 0.;
     char *wingUID = NULL, *segmentUID = NULL;
-    TiglReturnCode ret = tiglWingComponentSegmentPointGetSegmentEtaXsi(tiglHandle, "D150_VTP_CS", 0.0, 1.0, &wingUID, &segmentUID, &sEta, &sXsi);
+    double errorDistance = 0;
+    TiglReturnCode ret = tiglWingComponentSegmentPointGetSegmentEtaXsi(tiglHandle, "D150_VTP_CS", 0.0, 1.0, &wingUID, &segmentUID, &sEta, &sXsi, &errorDistance);
     ASSERT_EQ(TIGL_SUCCESS, ret);
+    ASSERT_LT(errorDistance, 1e-2);
     ASSERT_STREQ("D150_VTP_1ID", wingUID);
     ASSERT_STREQ("D150_VTP_1Segment2ID", segmentUID);
 
@@ -588,8 +602,10 @@ TEST_F(WingComponentSegment, tiglWingComponentSegmentPointGetSegmentEtaXsi_BUG4)
 {
     double sEta = 0., sXsi = 0.;
     char *wingUID = NULL, *segmentUID = NULL;
-    TiglReturnCode tiglRet = tiglWingComponentSegmentPointGetSegmentEtaXsi(tiglHandle, "D150_VAMP_SL1_CompSeg1", 0.95, 0.714, &wingUID, &segmentUID, &sEta, &sXsi);
+    double errorDistance = 0;
+    TiglReturnCode tiglRet = tiglWingComponentSegmentPointGetSegmentEtaXsi(tiglHandle, "D150_VAMP_SL1_CompSeg1", 0.95, 0.714, &wingUID, &segmentUID, &sEta, &sXsi, &errorDistance);
     ASSERT_EQ(TIGL_SUCCESS, tiglRet);
+    ASSERT_LT(errorDistance, 1e-2);
 }
 
 TEST_F(WingComponentSegment, tiglWingComponentFindSegment_BUG)
@@ -624,3 +640,96 @@ TEST(WingComponentSegment5, GetSegmentIntersection_BUG)
     ASSERT_EQ(SUCCESS, tixiCloseDocument(tixiHandle));
 }
 
+/// A reported bug, where tigl creates an invalid error
+TEST(WingComponentSegment5, GetSegmentIntersection_BUG2)
+{
+    const char* filename = "TestData/component-segment-bwb.xml";
+
+    TiglCPACSConfigurationHandle tiglHandle = -1;
+    TixiDocumentHandle tixiHandle = -1;
+
+    ASSERT_EQ (SUCCESS, tixiOpenDocument(filename, &tixiHandle));
+    ASSERT_EQ(TIGL_SUCCESS, tiglOpenCPACSConfiguration(tixiHandle, "", &tiglHandle));
+
+    double xsi = 0;
+    ASSERT_EQ(TIGL_SUCCESS, tiglWingComponentSegmentGetSegmentIntersection(
+               tiglHandle, "BWB_CST_wing_CS", "BWB_CST_wingSegment49ID", 
+               0.81268, 1., 0.96, 1., 1., 
+               &xsi));
+
+    ASSERT_EQ(TIGL_SUCCESS, tiglCloseCPACSConfiguration(tiglHandle));
+    ASSERT_EQ(SUCCESS, tixiCloseDocument(tixiHandle));
+}
+
+/// A reported bug, where the specified points do only
+/// almost intersect the section border. TiGL has to be
+/// friendly enough to let this small deviation happen
+TEST(WingComponentSegment5, GetSegmentIntersection_BUG3)
+{
+    const char* filename = "TestData/simpletest.cpacs.xml";
+
+    TiglCPACSConfigurationHandle tiglHandle = -1;
+    TixiDocumentHandle tixiHandle = -1;
+
+    ASSERT_EQ (SUCCESS, tixiOpenDocument(filename, &tixiHandle));
+    ASSERT_EQ(TIGL_SUCCESS, tiglOpenCPACSConfiguration(tixiHandle, "", &tiglHandle));
+
+    double xsi = 0;
+    // The segment border is at eta = 0.5. we test if 0.499995 is okay (all values below should fail)
+    ASSERT_EQ(TIGL_SUCCESS, tiglWingComponentSegmentGetSegmentIntersection(
+               tiglHandle, "WING_CS1", "Cpacs2Test_Wing_Seg_1_2", 
+               0.0, 0.7, (1. - 1e-5)/2. + 1e-6, 0.7, 1., 
+               &xsi));
+    
+    ASSERT_NEAR(0.7, xsi, 1e-7);
+    // This is too inaccurate now
+    ASSERT_EQ(TIGL_MATH_ERROR, tiglWingComponentSegmentGetSegmentIntersection(
+               tiglHandle, "WING_CS1", "Cpacs2Test_Wing_Seg_1_2", 
+               0.0, 0.7, (1. - 1e-5)/2. - 1e-5, 0.7, 1., 
+               &xsi));
+    ASSERT_EQ(TIGL_SUCCESS, tiglCloseCPACSConfiguration(tiglHandle));
+    ASSERT_EQ(SUCCESS, tixiCloseDocument(tixiHandle));
+}
+
+/// This is a component segment with many segments
+TEST(WingComponentSegment5, GetPointPerformance)
+{
+    const char* filename = "TestData/component-segment-bwb.xml";
+    char* csUID = NULL;
+    ReturnCode tixiRet;
+    TiglReturnCode tiglRet;
+
+    TiglCPACSConfigurationHandle tiglHandle = -1;
+    TixiDocumentHandle tixiHandle = -1;
+
+    tixiRet = tixiOpenDocument(filename, &tixiHandle);
+    ASSERT_EQ (SUCCESS, tixiRet);
+    tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "", &tiglHandle);
+    ASSERT_EQ(TIGL_SUCCESS, tiglRet);
+    
+    tiglWingGetComponentSegmentUID(tiglHandle, 1, 1, &csUID);
+
+    int nruns = 50;
+    double x, y, z;
+    double w = 0.;
+    
+    // first run takes longer due to creation of leading edge. we dont count it
+    tiglRet = tiglWingComponentSegmentGetPoint(tiglHandle, csUID, 0.95, 0.8, &x, &y, &z);
+    
+    clock_t start = clock();
+    for(int i = 0; i < nruns; ++i){
+        tiglRet = tiglWingComponentSegmentGetPoint(tiglHandle, csUID, 0.95, 0.8, &x, &y, &z);
+        //just some dummy to prevent compiler optimization
+        w = w + 1.0;
+    }
+
+    clock_t stop = clock();
+    ASSERT_EQ((double)nruns, w);
+        
+    double time_elapsed = (double)(stop - start)/(double)CLOCKS_PER_SEC/(double)nruns;
+    time_elapsed *= 1000.;
+    printf("Average time: %f [ms]\n", time_elapsed);
+    
+    ASSERT_EQ(TIGL_SUCCESS, tiglCloseCPACSConfiguration(tiglHandle));
+    ASSERT_EQ(SUCCESS, tixiCloseDocument(tixiHandle));
+}
