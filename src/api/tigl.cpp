@@ -202,16 +202,21 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglOpenCPACSConfiguration(TixiDocumentHandle 
 }
 
 // [[CAS_AES]] added save routine
-TIGL_COMMON_EXPORT TiglReturnCode tiglSaveCPACSConfiguration(TixiDocumentHandle tixiHandle, const char* configurationUID, const TiglCPACSConfigurationHandle& cpacsHandle)
+TIGL_COMMON_EXPORT TiglReturnCode tiglSaveCPACSConfiguration(TixiDocumentHandle tixiHandle, const char* configurationUID, const TiglCPACSConfigurationHandle* cpacsHandlePtr)
 {
+    if (cpacsHandlePtr == 0) {
+        LOG(ERROR) << "Null pointer argument for cpacsHandlePtr in function call to tiglSaveCPACSConfiguration." << std::endl;
+        return TIGL_NULL_POINTER;
+    }
+
     tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
 
-    if (!manager.IsValid(cpacsHandle)) {
+    if (!manager.IsValid(*cpacsHandlePtr)) {
         LOG(ERROR) << "Invalid cpacsHandlePtr passed to tiglSaveCPACSConfiguration!" << std::endl;
         return TIGL_UNINITIALIZED;
     }
 
-    tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+    tigl::CCPACSConfiguration& config = manager.GetConfiguration(*cpacsHandlePtr);
 
     try {
         config.WriteCPACS(tixiHandle, configurationUID);
