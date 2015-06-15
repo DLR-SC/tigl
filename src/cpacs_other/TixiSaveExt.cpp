@@ -194,7 +194,7 @@ void TixiSaveExt::TixiSaveVector(TixiDocumentHandle tixiHandle, const char* elem
         }
     }
     // set the new vector with new values
-    if (tixiAddFloatVector(tixiHandle, elementPath, element, vector, length) != SUCCESS) {
+    if (tixiAddFloatVector(tixiHandle, elementPath, element, vector, length, NULL) != SUCCESS) {
         throw CTiglError("Error: XML error while saving vector in TixiSaveExt::TixiSaveVector", TIGL_XML_ERROR);
     }
 }
