@@ -319,49 +319,47 @@ TopoDS_Wire CCPACSWingComponentSegment::GetCSLine(double eta1, double xsi1, doub
     
 void CCPACSWingComponentSegment::GetSegmentIntersection(const std::string& segmentUID, double csEta1, double csXsi1, double csEta2, double csXsi2, double eta, double &xsi)
 {
-        
     CCPACSWingSegment& segment = (CCPACSWingSegment&) wing->GetSegment(segmentUID);
-    
+
     // compute component segment line
     gp_Pnt p1 = GetPoint(csEta1, csXsi1);
     gp_Pnt p2 = GetPoint(csEta2, csXsi2);
     double csLen = p1.Distance(p2);
-    
+
     gp_Lin csLine(p1, p2.XYZ() - p1.XYZ());
-    
+
     // compute iso eta line of segment
     gp_Pnt pLE = segment.GetChordPoint(eta, 0.);
     gp_Pnt pTE = segment.GetChordPoint(eta, 1.);
     double chordDepth = pTE.Distance(pLE);
-    
+
     gp_Lin etaLine(pLE, pTE.XYZ() - pLE.XYZ());
-    
+
     // check, if both lines are parallel
     if (etaLine.Direction().IsParallel(csLine.Direction(), M_PI/180.)) {
         throw CTiglError("Component segment line does not intersect iso eta line of segment in CCPACSWingComponentSegment::GetSegmentIntersection.", TIGL_MATH_ERROR);
     }
-    
+
     Handle_Geom_Curve csCurve = new Geom_Line(csLine);
     Handle_Geom_Curve etaCurve = new Geom_Line(etaLine);
     GeomAdaptor_Curve csAdptAcuve(csCurve);
     GeomAdaptor_Curve etaAdptCurve(etaCurve);
-    
+
     // find point on etaLine, that minimizes distance to csLine
     Extrema_ExtCC minimizer(csAdptAcuve, etaAdptCurve);
-    
     minimizer.Perform();
-    
+
     if (!minimizer.IsDone()) {
         throw CTiglError("Component segment line does not intersect iso eta line of segment in CCPACSWingComponentSegment::GetSegmentIntersection.", TIGL_MATH_ERROR);
     }
-    
+
     // there should be exactly on minimum between two lines
     // if they are not parallel
     assert(minimizer.NbExt() == 1);
-    
+
     Extrema_POnCurv pOnCSLine, pOnEtaLine;
     minimizer.Points(1, pOnCSLine, pOnEtaLine);
-    
+
     // If parameter on CS line is < 0 or larger than 
     // Length of line, there is not actual intersection,
     // i.e. the CS Line is choosen to small
@@ -370,10 +368,10 @@ void CCPACSWingComponentSegment::GetSegmentIntersection(const std::string& segme
     if (pOnCSLine.Parameter() < -tol || pOnCSLine.Parameter() > csLen + tol) {
         throw CTiglError("Component segment line does not intersect iso eta line of segment in CCPACSWingComponentSegment::GetSegmentIntersection.", TIGL_MATH_ERROR);
     }
-    
+
     // compute xsi value
     xsi = pOnEtaLine.Parameter()/chordDepth;
-    
+
     // TODO: handle invalid xsi values (xsi > 1 and xsi < 0)
     if (xsi > 1) {
         xsi = 1.;
