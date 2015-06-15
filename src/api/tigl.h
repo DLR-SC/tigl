@@ -307,7 +307,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglOpenCPACSConfiguration(TixiDocumentHandle 
 
 
 // [[CAS_AES]] added routine for saving a CPACS configuration
-TIGL_COMMON_EXPORT TiglReturnCode tiglSaveCPACSConfiguration(TixiDocumentHandle tixiHandle, const char* configurationUID, const TiglCPACSConfigurationHandle& cpacsHandle);
+TIGL_COMMON_EXPORT TiglReturnCode tiglSaveCPACSConfiguration(TixiDocumentHandle tixiHandle, const char* configurationUID, const TiglCPACSConfigurationHandle* cpacsHandlePtr);
 
 /**
 * @brief Closes a CPACS configuration and cleans up all memory used by the configuration.
