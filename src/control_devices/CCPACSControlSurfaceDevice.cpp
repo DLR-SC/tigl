@@ -66,7 +66,7 @@
 #include "TDataXtd_Shape.hxx"
 #endif
 
-#define USE_ADVANCED_MODELING 0
+#define USE_ADVANCED_MODELING 1
 
 namespace tigl
 {

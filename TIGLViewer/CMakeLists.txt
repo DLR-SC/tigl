@@ -23,9 +23,9 @@ include(tiglmacros)
 AddToCheckstyle()
 
 # required opencascade libraries
-set (TV_OCC_LIBS
-    TKOpenGl
-    TKVRML TKShapeSchema TKPShape TKCDF PTKernel ${OCC_VISU_LIBS} ${OCC_LIBS}
+set (TV_OCC_LIBS 
+    TKOpenGl 
+    ${OCC_VISU_LIBS} ${OCC_LIBS}
 )
 
 find_package(OCE 0.15 COMPONENTS ${TV_OCC_LIBS} QUIET)

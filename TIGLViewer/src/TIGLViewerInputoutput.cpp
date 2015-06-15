@@ -115,9 +115,6 @@ Handle_TopTools_HSequenceOfShape TIGLViewerInputOutput::importModel( const FileF
         case FormatSTEP:
             shapes = importSTEP( file );
             break;
-        case FormatCSFDB:
-            shapes = importCSFDB( file );
-            break;
         case FormatMESH:
             shapes = importMESH( file );
             break;
@@ -166,14 +163,8 @@ bool TIGLViewerInputOutput::exportModel( const FileFormat format, const QString&
         case FormatSTEP:
             status = exportSTEP( file, shapes );
             break;
-        case FormatCSFDB:
-            status = exportCSFDB( file, shapes );
-            break;
         case FormatSTL:
             status = exportSTL( file, shapes );
-            break;
-        case FormatVRML:
-            status = exportVRML( file, shapes );
             break;
         default:
             status = false;
@@ -335,46 +326,6 @@ Handle_TopTools_HSequenceOfShape TIGLViewerInputOutput::importSTEP( const QStrin
     return aSequence;
 }
 
-Handle_TopTools_HSequenceOfShape TIGLViewerInputOutput::importCSFDB( const QString& file )
-{
-    Handle_TopTools_HSequenceOfShape aSequence;
-
-    // Check file type
-    if ( FSD_File::IsGoodFileType( file.toLatin1().data() ) != Storage_VSOk ) {
-        return aSequence;
-    }
-
-    static FSD_File fileDriver;
-    TCollection_AsciiString aName( file.toLatin1().data() );
-    if ( fileDriver.Open( aName, Storage_VSRead ) != Storage_VSOk ) {
-        return aSequence;
-    }
-
-    Handle(ShapeSchema) schema = new ShapeSchema();
-    Handle(Storage_Data) data  = schema->Read( fileDriver );
-    if ( data->ErrorStatus() != Storage_VSOk ) {
-        return aSequence;
-    }
-
-    fileDriver.Close();
-
-    aSequence = new TopTools_HSequenceOfShape();
-    Handle(Storage_HSeqOfRoot) roots = data->Roots();
-    for ( int i = 1; i <= roots->Length() ; i++ ) {
-        Handle(Storage_Root) r = roots->Value( i );
-        Handle(Standard_Persistent) p = r->Object();
-        Handle(PTopoDS_HShape) aPShape = Handle(PTopoDS_HShape)::DownCast(p);
-        if ( !aPShape.IsNull() ) {
-            PTColStd_PersistentTransientMap aMap;
-            TopoDS_Shape aTShape;
-            MgtBRep::Translate( aPShape, aMap, aTShape, MgtBRep_WithTriangle );
-            aSequence->Append( aTShape );
-        }
-    }
-
-    return aSequence;
-}
-
 
 bool TIGLViewerInputOutput::exportBREP( const QString& file, const Handle_TopTools_HSequenceOfShape& shapes )
 {
@@ -457,52 +408,6 @@ bool TIGLViewerInputOutput::exportSTEP( const QString& file, const Handle_TopToo
     return status == IFSelect_RetDone;
 }
 
-bool TIGLViewerInputOutput::exportCSFDB( const QString& file, const Handle_TopTools_HSequenceOfShape& shapes )
-{
-    if ( shapes.IsNull() || shapes->IsEmpty() ) {
-        return false;
-    }
-
-    static FSD_File fileDriver;
-
-    Handle(ShapeSchema) schema = new ShapeSchema();
-    Handle(Storage_Data) data  = new Storage_Data();
-    data->ClearErrorStatus();
-
-    data->SetApplicationName( TCollection_ExtendedString( "Sample Import / Export" ) );
-    data->SetApplicationVersion( "1" );
-    data->SetDataType( TCollection_ExtendedString( "Shapes" ) );
-    data->AddToUserInfo( "Storing a persistent set of shapes in a flat file" );
-    data->AddToComments( TCollection_ExtendedString( "Application is based on TIGL 1.0 and OpenCASCADE 6.3.0" ) );
-
-    if ( fileDriver.Open( file.toLatin1().data(), Storage_VSWrite ) != Storage_VSOk ) {
-        myInfo = tr( "INF_TRANSLATE_ERROR_CANTSAVEFILE" ).arg( file );
-        return false;
-    }
-
-    PTColStd_TransientPersistentMap aMap;
-    for ( int i = 1; i <= shapes->Length(); i++ ) {
-        TopoDS_Shape shape = shapes->Value( i );
-        if ( shape.IsNull() ) {
-            myInfo = tr( "INF_TRANSLATE_ERROR_INVALIDSHAPE" );
-            return false;
-        }
-
-        Handle(PTopoDS_HShape) pshape = MgtBRep::Translate( shape, aMap, MgtBRep_WithTriangle );
-        TCollection_AsciiString objName = TCollection_AsciiString( "Object_" ) + TCollection_AsciiString( i );
-        data->AddRoot( objName, pshape );
-    }
-
-    schema->Write( fileDriver, data );
-    fileDriver.Close();
-
-    if ( data->ErrorStatus() != Storage_VSOk ) {
-        myInfo = tr( "INF_TRANSLATE_ERROR_CANTSAVEDATA" );
-        return false;
-    }
-    return true;
-}
-
 bool TIGLViewerInputOutput::exportSTL( const QString& file, const Handle_TopTools_HSequenceOfShape& shapes )
 {
     if ( shapes.IsNull() || shapes->IsEmpty() ) {
@@ -523,31 +428,6 @@ bool TIGLViewerInputOutput::exportSTL( const QString& file, const Handle_TopTool
     }
 
     StlAPI_Writer writer;
-    writer.Write( res, file.toLatin1().data() );
-
-    return true;
-}
-
-bool TIGLViewerInputOutput::exportVRML( const QString& file, const Handle_TopTools_HSequenceOfShape& shapes )
-{
-    if ( shapes.IsNull() || shapes->IsEmpty() ) {
-        return false;
-    }
-
-    TopoDS_Compound res;
-    BRep_Builder builder;
-    builder.MakeCompound( res );
-
-    for ( int i = 1; i <= shapes->Length(); i++ ) {
-        TopoDS_Shape shape = shapes->Value( i );
-        if ( shape.IsNull() ) {
-            myInfo = tr( "INF_TRANSLATE_ERROR_INVALIDSHAPE" );
-            return false;
-        }
-        builder.Add( res, shape );
-    }
-
-    VrmlAPI_Writer writer;
     writer.Write( res, file.toLatin1().data() );
 
     return true;

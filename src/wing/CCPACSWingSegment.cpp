@@ -111,15 +111,17 @@ namespace
         gp_Pnt transformedPoint(pointOnProfile);
 
         // Do section element transformation on points
-        transformedPoint = connection.GetSectionElementTransformation().Transform(transformedPoint);
+        CTiglTransformation trafo = connection.GetSectionElementTransformation();
 
         // Do section transformations
-        transformedPoint = connection.GetSectionTransformation().Transform(transformedPoint);
+        trafo.PreMultiply(connection.GetSectionTransformation());
 
         // Do positioning transformations
-        transformedPoint = connection.GetPositioningTransformation().Transform(transformedPoint);
+        trafo.PreMultiply(connection.GetPositioningTransformation());
 
-        transformedPoint = wingTransform.Transform(transformedPoint);
+        trafo.PreMultiply(wingTransform);
+
+        transformedPoint = trafo.Transform(transformedPoint);
 
         return transformedPoint;
     }
@@ -129,15 +131,17 @@ namespace
         TopoDS_Shape transformedWire(wire);
 
         // Do section element transformation on points
-        transformedWire = connection.GetSectionElementTransformation().Transform(transformedWire);
+        CTiglTransformation trafo = connection.GetSectionElementTransformation();
 
         // Do section transformations
-        transformedWire = connection.GetSectionTransformation().Transform(transformedWire);
+        trafo.PreMultiply(connection.GetSectionTransformation());
 
         // Do positioning transformations
-        transformedWire = connection.GetPositioningTransformation().Transform(transformedWire);
+        trafo.PreMultiply(connection.GetPositioningTransformation());
 
-        transformedWire = wingTransform.Transform(transformedWire);
+        trafo.PreMultiply(wingTransform);
+
+        transformedWire = trafo.Transform(transformedWire);
 
         return transformedWire;
     }
@@ -199,6 +203,7 @@ CCPACSWingSegment::CCPACSWingSegment(CCPACSWing* aWing, int aSegmentIndex)
     , outerConnection(this)
     , wing(aWing)
     , surfacesAreValid(false)
+    , chordsurfaceValid(false)
     , guideCurvesPresent(false)
 {
     Cleanup();
@@ -215,6 +220,7 @@ void CCPACSWingSegment::Invalidate(void)
 {
     CTiglAbstractSegment::Invalidate();
     surfacesAreValid = false;
+    chordsurfaceValid = false;
     guideCurveWires.Clear();
 }
 
@@ -225,6 +231,7 @@ void CCPACSWingSegment::Cleanup(void)
     upperShape.Nullify();
     lowerShape.Nullify();
     surfacesAreValid = false;
+    chordsurfaceValid = false;
     guideCurvesPresent = false;
     CTiglAbstractSegment::Cleanup();
 }
@@ -277,8 +284,8 @@ void CCPACSWingSegment::ReadCPACS(TixiDocumentHandle tixiHandle, const std::stri
     }
 
     // check that the profiles are consistent
-    if (GetNumberOfEdges(GetInnerWire()) !=
-        GetNumberOfEdges(GetOuterWire())) {
+    if (innerConnection.GetProfile().HasBluntTE() !=
+        outerConnection.GetProfile().HasBluntTE()) {
 
         throw CTiglError("The wing profiles " + innerConnection.GetProfile().GetUID() +
                          " and " + outerConnection.GetProfile().GetUID() +
@@ -715,7 +722,7 @@ gp_Pnt CCPACSWingSegment::GetPointDirection(double eta, double xsi, double dirx,
     }
 
     CTiglPoint tiglPoint;
-    cordSurface.translate(eta, xsi, &tiglPoint);
+    ChordFace().translate(eta, xsi, &tiglPoint);
 
     gp_Dir direction(dirx, diry, dirz);
     gp_Lin line(tiglPoint.Get_gp_Pnt(), direction);
@@ -757,20 +764,16 @@ gp_Pnt CCPACSWingSegment::GetPointDirection(double eta, double xsi, double dirx,
 
 gp_Pnt CCPACSWingSegment::GetChordPoint(double eta, double xsi)
 {
-    MakeSurfaces();
-
-    CTiglPoint profilePoint;
-    cordSurface.translate(eta,xsi, &profilePoint);
+    CTiglPoint profilePoint; 
+    ChordFace().translate(eta,xsi, &profilePoint);
 
     return profilePoint.Get_gp_Pnt();
 }
 
 gp_Vec CCPACSWingSegment::GetChordNormal(double eta, double xsi)
 {
-    MakeSurfaces();
-
-    CTiglPoint normal;
-    cordSurface.getNormal(eta,xsi, &normal);
+    CTiglPoint normal; 
+    ChordFace().getNormal(eta,xsi, &normal);
 
     return gp_Vec(normal.Get_gp_Pnt().XYZ());
 }
@@ -831,9 +834,8 @@ double CCPACSWingSegment::GetXsi(gp_Pnt pnt, bool isUpper)
 // Returns xsi as parametric distance from a given point on the surface
 void CCPACSWingSegment::GetEtaXsi(gp_Pnt pnt, double& eta, double& xsi)
 {
-    MakeSurfaces();
     CTiglPoint tmpPnt(pnt.XYZ());
-    if (cordSurface.translate(tmpPnt, &eta, &xsi) != TIGL_SUCCESS) {
+    if (ChordFace().translate(tmpPnt, &eta, &xsi) != TIGL_SUCCESS) {
         throw tigl::CTiglError("Cannot determine eta, xsi coordinates of current point in CCPACSWingSegment::GetEtaXsi!", TIGL_MATH_ERROR);
     }
 }
@@ -854,12 +856,9 @@ bool CCPACSWingSegment::GetIsOnTop(gp_Pnt pnt)
     }
 }
 
-// Builds upper/lower surfaces as shapes
-// we split the wing profile into upper and lower wire.
-// To do so, we have to determine, what is up
-void CCPACSWingSegment::MakeSurfaces()
+void CCPACSWingSegment::MakeChordSurface()
 {
-    if (surfacesAreValid) {
+    if (chordsurfaceValid) {
         return;
     }
 
@@ -879,6 +878,27 @@ void CCPACSWingSegment::MakeSurfaces()
     outer_tep = transformProfilePoint(wing->GetTransformation(), outerConnection, outer_tep);
 
     cordSurface.setQuadriangle(inner_lep.XYZ(), outer_lep.XYZ(), inner_tep.XYZ(), outer_tep.XYZ());
+
+    chordsurfaceValid = true;
+}
+
+CTiglPointTranslator& CCPACSWingSegment::ChordFace()
+{
+    if (!chordsurfaceValid) {
+        MakeChordSurface();
+    }
+
+    return cordSurface;
+}
+
+// Builds upper/lower surfaces as shapes
+// we split the wing profile into upper and lower wire.
+// To do so, we have to determine, what is up
+void CCPACSWingSegment::MakeSurfaces()
+{
+    if (surfacesAreValid) {
+        return;
+    }
 
     TopoDS_Edge iu_wire = innerConnection.GetProfile().GetUpperWire();
     TopoDS_Edge ou_wire = outerConnection.GetProfile().GetUpperWire();

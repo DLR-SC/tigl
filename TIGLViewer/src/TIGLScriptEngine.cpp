@@ -18,10 +18,12 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
+#define _USE_MATH_DEFINES
 
 #include "TIGLScriptEngine.h"
 #include "TIXIScriptProxy.h"
 #include "TIGLScriptProxy.h"
+#include "TIGLViewerWindow.h"
 
 #include <QWidget>
 #include <QMetaMethod>

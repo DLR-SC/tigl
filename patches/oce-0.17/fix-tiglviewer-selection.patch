@@ -1,0 +1,33 @@
+X-Git-Url: http://git.dev.opencascade.org/gitweb/?p=occt.git;a=blobdiff_plain;f=src%2FV3d%2FV3d_View.cxx;h=5d9213a2014b65bf63321c53b13a1f05847af9a0;hb=f25b82d624730900a95bed31bbc6688dfa36f091;hpb=8ba678133b4bdc2928c2e4f0ad49660b1df9b4e9
+
+diff --git a/src/V3d/V3d_View.cxx b/src/V3d/V3d_View.cxx
+index 74a5319..5d9213a 100644
+--- a/src/V3d/V3d_View.cxx
++++ b/src/V3d/V3d_View.cxx
+@@ -1792,14 +1792,6 @@ void V3d_View::Convert(const Standard_Integer Xp,
+   X = aResult.X();
+   Y = aResult.Y();
+   Z = aResult.Z();
+-
+-  Graphic3d_Vertex aVrp;
+-  aVrp.SetCoord (X, Y, Z);
+-
+-  if( MyViewer->Grid()->IsActive() ) {
+-    Graphic3d_Vertex aNewVrp = Compute (aVrp) ;
+-    aNewVrp.Coord (X, Y, Z) ;
+-  }
+ }
+ 
+ //=======================================================================
+@@ -1843,11 +1835,6 @@ void V3d_View::ConvertWithProj(const Standard_Integer Xp,
+   Dx = aNormDir.x();
+   Dy = aNormDir.y();
+   Dz = aNormDir.z();
+-
+-  if( MyViewer->Grid()->IsActive() ) {
+-    Graphic3d_Vertex aNewVrp = Compute (aVrp) ;
+-    aNewVrp.Coord (X, Y, Z) ;
+-  }
+ }
+ 
+ //=======================================================================

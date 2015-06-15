@@ -1,0 +1,30 @@
+From ae93f81d0631739c4575cd0b7408820ac9675d8e Mon Sep 17 00:00:00 2001
+From: Denis Barbier <bouzim@gmail.com>
+Date: Fri, 18 Apr 2014 16:25:35 +0200
+Subject: [PATCH] Fix Standard_Construction_Error exception in BOP
+
+gp_Vec.setXYZ() may be called on a null vector within
+BOPTools::FindPointInFace, which throws an exception if
+they have not been disabled.
+
+Fix #485.
+
+This patch fixes BOP problems with the XRF1 configuration.
+---
+ src/BOPTools/BOPTools_AlgoTools.cxx | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/src/BOPTools/BOPTools_AlgoTools.cxx b/src/BOPTools/BOPTools_AlgoTools.cxx
+index 2f9993c..d103df0 100644
+--- a/src/BOPTools/BOPTools_AlgoTools.cxx
++++ b/src/BOPTools/BOPTools_AlgoTools.cxx
+@@ -1872,6 +1872,7 @@ Standard_Boolean FindPointInFace(const TopoDS_Edge& aE,
+     aPOut = aProjPL.NearestPoint();
+     //
+     gp_Vec aV(aP, aPOut);
++    if (aV.XYZ().Modulus() <= gp::Resolution()) break;
+     aDB.SetXYZ(aV.XYZ());
+   } while (aDist>Precision::Angular() && --aNbItMax);
+   //
+-- 
+1.9.3

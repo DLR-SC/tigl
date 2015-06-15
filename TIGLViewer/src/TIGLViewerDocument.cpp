@@ -661,23 +661,15 @@ void TIGLViewerDocument::drawWingOverlayProfilePoints()
         tigl::CCPACSWingProfile& innerProfile = innerConnection.GetProfile();
         std::vector<tigl::CTiglPoint*> innerProfilePointList=innerProfile.GetProfileAlgo()->GetSamplePoints();
         // get points and transform them
-        std::vector<tigl::CTiglPoint*> innerPoints;
+        tigl::CTiglTransformation innerT = innerConnection.GetSectionElementTransformation();
+        innerT.PreMultiply(innerConnection.GetSectionTransformation());
+        innerT.PreMultiply(innerConnection.GetPositioningTransformation());
+        innerT.PreMultiply(wing.GetWingTransformation());
         for (std::vector<tigl::CTiglPoint*>::size_type i = 0; i < innerProfilePointList.size(); i++) {
 
             gp_Pnt pnt = innerProfilePointList[i]->Get_gp_Pnt();
+            pnt = innerT.Transform(pnt);
 
-            pnt = innerConnection.GetSectionElementTransformation().Transform(pnt);
-            pnt = innerConnection.GetSectionTransformation().Transform(pnt);
-            pnt = innerConnection.GetPositioningTransformation().Transform(pnt);
-
-            tigl::CTiglPoint *tiglPoint = new tigl::CTiglPoint(pnt.X(), pnt.Y(), pnt.Z());
-            innerPoints.push_back(tiglPoint);
-        }
-
-        // Draw inner profile points
-        for (std::vector<tigl::CTiglPoint*>::size_type i = 0; i < innerPoints.size(); i++) {
-            gp_Pnt pnt = innerPoints[i]->Get_gp_Pnt();
-            pnt = wing.GetWingTransformation().Transform(pnt);
             app->getScene()->displayPoint(pnt, "", Standard_False, 0.0, 0.0, 0.0, 2.0);
         }
 
@@ -685,26 +677,20 @@ void TIGLViewerDocument::drawWingOverlayProfilePoints()
         tigl::CCPACSWingConnection& outerConnection = segment.GetOuterConnection();
         tigl::CCPACSWingProfile& outerProfile = outerConnection.GetProfile();
         std::vector<tigl::CTiglPoint*> outerProfilePointList=outerProfile.GetProfileAlgo()->GetSamplePoints();
+
         // get points and transform them
-        std::vector<tigl::CTiglPoint*> outerPoints;
+        tigl::CTiglTransformation outerT = outerConnection.GetSectionElementTransformation();
+        outerT.PreMultiply(outerConnection.GetSectionTransformation());
+        outerT.PreMultiply(outerConnection.GetPositioningTransformation());
+        outerT.PreMultiply(wing.GetWingTransformation());
         for (std::vector<tigl::CTiglPoint*>::size_type i = 0; i < outerProfilePointList.size(); i++) {
 
             gp_Pnt pnt = outerProfilePointList[i]->Get_gp_Pnt();
+            pnt = outerT.Transform(pnt);
 
-            pnt = outerConnection.GetSectionElementTransformation().Transform(pnt);
-            pnt = outerConnection.GetSectionTransformation().Transform(pnt);
-            pnt = outerConnection.GetPositioningTransformation().Transform(pnt);
-
-            tigl::CTiglPoint *tiglPoint = new tigl::CTiglPoint(pnt.X(), pnt.Y(), pnt.Z());
-            outerPoints.push_back(tiglPoint);
-        }
-
-        // Draw outer profile points
-        for (std::vector<tigl::CTiglPoint*>::size_type i = 0; i < outerPoints.size(); i++) {
-            gp_Pnt pnt = outerPoints[i]->Get_gp_Pnt();
-            pnt = wing.GetWingTransformation().Transform(pnt);
             app->getScene()->displayPoint(pnt, "", Standard_False, 0.0, 0.0, 0.0, 2.0);
         }
+
     }
 }
 
@@ -890,9 +876,8 @@ void TIGLViewerDocument::updateControlSurfacesInteractiveObjects(std::string sel
             if (flapsForInteractiveUse.find(controlSurfaceDevice.getUID()) != flapsForInteractiveUse.end() && controlUID == controlSurfaceDevice.getUID()) {
                gp_Trsf trsf = controlSurfaceDevice.getTransformation(flapStatus[controlSurfaceDevice.getUID()]);
                // @todo: check 
-               // myAISContext->SetLocation((Handle_AIS_InteractiveObject) flapsForInteractiveUse[controlSurfaceDevice.getUID()],trsf);
                Handle(AIS_Shape) flap = flapsForInteractiveUse[controlSurfaceDevice.getUID()];
-               flap->SetLocation(trsf);
+               app->getScene()->getContext()->SetLocation(flap, trsf);
             }
         }
     }

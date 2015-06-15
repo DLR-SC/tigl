@@ -118,6 +118,8 @@ public:
     TIGL_EXPORT void printTransformMatrix();
 
 private:
+    bool IsUniform() const;
+
     double m_matrix[4][4];
 
 };

@@ -71,6 +71,9 @@ public:
     
     // get trailing edge point();
     virtual const gp_Pnt & GetTEPoint() const = 0;
+
+    // Checks, whether the trailing edge is blunt or not
+    virtual bool HasBluntTE() const = 0;
 };
 
 } // end namespace tigl

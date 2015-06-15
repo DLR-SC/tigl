@@ -35,6 +35,7 @@
 #include "BRepBuilderAPI_MakeEdge.hxx"
 #include "BRepBuilderAPI_MakeWire.hxx"
 #include "Geom_TrimmedCurve.hxx"
+#include "Geom_Plane.hxx"
 #include "GCE2d_MakeSegment.hxx"
 #include "Geom2d_Line.hxx"
 #include "TopExp_Explorer.hxx"
@@ -50,8 +51,10 @@
 #include "GeomAdaptor_Curve.hxx"
 #include "GCPnts_AbscissaPoint.hxx"
 #include "CTiglInterpolateBsplineWire.h"
+#include "CTiglSymetricSplineBuilder.h"
 #include "tiglcommonfunctions.h"
 #include "CTiglLogging.h"
+#include "GeomAPI_IntCS.hxx"
 
 #include "math.h"
 #include <iostream>
@@ -215,8 +218,6 @@ void CCPACSFuselageProfile::ReadCPACS(TixiDocumentHandle tixiHandle)
         }
         throw;
     }
-
-    Update();
 }
 
 // Returns the filename of the fuselage profile file
@@ -303,6 +304,7 @@ void CCPACSFuselageProfile::BuildWires(void)
         }
     }
 
+
     // we always want to include the endpoint, if it's the same as the startpoint
     // we use the startpoint to enforce closing of the spline
     gp_Pnt pStart =  coordinates[0]->Get_gp_Pnt();
@@ -314,35 +316,54 @@ void CCPACSFuselageProfile::BuildWires(void)
         points.push_back(pEnd);
     }
 
-    // Build wire from fuselage profile points
-    const ITiglWireAlgorithm& wireBuilder = *profileWireAlgo;
-    const CTiglInterpolateBsplineWire* pSplineBuilder = dynamic_cast<const CTiglInterpolateBsplineWire*>(&wireBuilder);
-    if (pSplineBuilder) {
-        const_cast<CTiglInterpolateBsplineWire*>(pSplineBuilder)->setEndpointContinuity(C1);
+    TopoDS_Wire tempWireClosed, tempWireOriginal;
+
+    bool mirrorAlgorithmSuccess = true;
+    if (mirrorSymmetry) {
+        try {
+            CTiglSymetricSplineBuilder builder(points);
+            Handle_Geom_BSplineCurve c = builder.GetBSpline();
+
+            TopoDS_Edge edge = BRepBuilderAPI_MakeEdge(c);
+            gp_Pnt pstart = c->Value(c->FirstParameter());
+            gp_Pnt pend   = c->Value(c->LastParameter());
+
+            tempWireOriginal = BRepBuilderAPI_MakeWire(edge);
+            tempWireClosed   = BRepBuilderAPI_MakeWire(
+                                   edge,
+                                   BRepBuilderAPI_MakeEdge(pend, pstart));
+
+            mirrorAlgorithmSuccess = true;
+        }
+        catch (CTiglError&) {
+            LOG(WARNING) << "The points in fuselage profile " << GetUID() << " can not be used to create a symmetric half profile."
+                         << "The y value of the first point must be zero!";
+            mirrorAlgorithmSuccess = false;
+        }
     }
 
-    TopoDS_Wire tempWireClosed   = wireBuilder.BuildWire(points, true);
-    TopoDS_Wire tempWireOriginal = wireBuilder.BuildWire(points, false);
-    if (pSplineBuilder) {
-        const_cast<CTiglInterpolateBsplineWire*>(pSplineBuilder)->setEndpointContinuity(C0);
+
+    if (!mirrorSymmetry || !mirrorAlgorithmSuccess) {
+        // Build wire from fuselage profile points
+        const ITiglWireAlgorithm& wireBuilder = *profileWireAlgo;
+        const CTiglInterpolateBsplineWire* pSplineBuilder = dynamic_cast<const CTiglInterpolateBsplineWire*>(&wireBuilder);
+        if (pSplineBuilder) {
+            const_cast<CTiglInterpolateBsplineWire*>(pSplineBuilder)->setEndpointContinuity(C1);
+        }
+
+        tempWireClosed   = wireBuilder.BuildWire(points, true);
+        tempWireOriginal = wireBuilder.BuildWire(points, false);
+        if (pSplineBuilder) {
+            const_cast<CTiglInterpolateBsplineWire*>(pSplineBuilder)->setEndpointContinuity(C0);
+        }
+
+        if (tempWireClosed.IsNull() == Standard_True || tempWireOriginal.IsNull() == Standard_True) {
+            throw CTiglError("Error: TopoDS_Wire is null in CCPACSFuselageProfile::BuildWire", TIGL_ERROR);
+        }
     }
 
-    if (tempWireClosed.IsNull() == Standard_True || tempWireOriginal.IsNull() == Standard_True) {
-        throw CTiglError("Error: TopoDS_Wire is null in CCPACSFuselageProfile::BuildWire", TIGL_ERROR);
-    }
-
-    // Apply fuselage profile transformation to wire
-    CTiglTransformation transformation;
-    TopoDS_Shape tempShapeClosed   = transformation.Transform(tempWireClosed);
-    TopoDS_Shape tempShapeOriginal = transformation.Transform(tempWireOriginal);
-
-    // Cast shapes to wires, see OpenCascade documentation
-    if (tempShapeClosed.ShapeType() != TopAbs_WIRE || tempShapeOriginal.ShapeType() != TopAbs_WIRE) {
-        throw CTiglError("Error: Wrong shape type in CCPACSFuselageProfile::BuildWire", TIGL_ERROR);
-    }
-
-    wireClosed   = TopoDS::Wire(tempShapeClosed);
-    wireOriginal = TopoDS::Wire(tempShapeOriginal);
+    wireClosed   = tempWireClosed;
+    wireOriginal = tempWireOriginal;
 
     wireLength = GetWireLength(wireOriginal);
 }

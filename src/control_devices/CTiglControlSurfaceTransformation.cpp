@@ -27,6 +27,7 @@
 
 #include "gp_Pnt.hxx"
 #include "gp_Ax1.hxx"
+#include "Standard_Version.hxx"
 
 
 
@@ -79,8 +80,12 @@ CTiglControlSurfaceTransformation::CTiglControlSurfaceTransformation(gp_Pnt hing
     gp_Trsf wToS;
     wToS.SetValues(exV.X(), exV.Y(), exV.Z(), 0,
                    eyV.X(), eyV.Y(), eyV.Z(), 0,
-                   ezV.X(), ezV.Y(), ezV.Z(), 0,
-                   1e-7, 1e-7);
+                   ezV.X(), ezV.Y(), ezV.Z(), 0
+#if OCC_VERSION_HEX < VERSION_HEX_CODE(6,8,0)
+                   , 1e-7, 1e-7);
+#else
+                   );
+#endif
 
     gp_Trsf TransP;
     TransP.SetTranslation(-p1);
