@@ -66,7 +66,7 @@ public:
     // Read CPACS configuration
     TIGL_EXPORT void ReadCPACS(const char* configurationUID);
 
-    // [[CAS_AES]] Write CPACS configuration
+    // Write CPACS configuration
     TIGL_EXPORT void WriteCPACS(TixiDocumentHandle, const char* configurationUID);
 
     // Returns the underlying tixi document handle used by a CPACS configuration
@@ -147,10 +147,8 @@ private:
     void operator=(const CCPACSConfiguration&);
 
 private:
-// [[CAS_AES]] BEGIN
-    std::string                  name;
-    std::string                  description;
-// [[CAS_AES]] END
+    std::string                  name;                 /**< Configuration name */
+    std::string                  description;          /**< Configuration description */
     TixiDocumentHandle           tixiDocumentHandle;   /**< Handle for internal TixiDocument */
     CCPACSHeader                 header;               /**< Configuration header element */
     CCPACSWings                  wings;                /**< Configuration wings element */

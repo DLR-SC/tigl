@@ -29,7 +29,7 @@
 #include "gp_Pnt.hxx"
 #include <iostream>
 #include <sstream>
-// [[CAS_AES]] include helper routines for save method
+
 #include "TixiSaveExt.h"
 
 namespace tigl
@@ -152,7 +152,6 @@ void CCPACSFuselagePositioning::ReadCPACS(TixiDocumentHandle tixiHandle, const s
     char*       elementPath;
     std::string tempString;
 
-// [[CAS_AES]] BEGIN
     // Get subelement "name"
     char* ptrName = "";
     tempString  = positioningXPath + "/name";
@@ -166,7 +165,6 @@ void CCPACSFuselagePositioning::ReadCPACS(TixiDocumentHandle tixiHandle, const s
     if (tixiGetTextElement(tixiHandle, tempString.c_str(), &ptrDescription) == SUCCESS) {
         description = ptrDescription;
     }
-// [[CAS_AES]] END
 
     // Get subelement "length"
     tempString  = positioningXPath + "/length";
@@ -210,7 +208,7 @@ void CCPACSFuselagePositioning::ReadCPACS(TixiDocumentHandle tixiHandle, const s
     Update();
 }
 
-// [[CAS_AES]] Write CPACS segment elements
+// Write CPACS segment elements
 void CCPACSFuselagePositioning::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& positioningXPath)
 {
     TixiSaveExt::TixiSaveTextElement(tixiHandle, positioningXPath.c_str(), "name", name.c_str());

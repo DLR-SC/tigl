@@ -52,13 +52,13 @@
 #include "CTiglInterpolateBsplineWire.h"
 #include "tiglcommonfunctions.h"
 #include "CTiglLogging.h"
+#include "TixiSaveExt.h"
 
 #include "math.h"
 #include <iostream>
 #include <limits>
 #include <sstream>
-// [[CAS_AES]] include helper routines for save method
-#include "TixiSaveExt.h"
+#include <algorithm>
 
 
 namespace tigl
@@ -221,7 +221,7 @@ void CCPACSFuselageProfile::ReadCPACS(TixiDocumentHandle tixiHandle)
     Update();
 }
 
-// [[CAS_AES]] Write fuselage profile file
+// Write fuselage profile file
 void CCPACSFuselageProfile::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& profileXPath)
 {
     // Set attribute "uID"

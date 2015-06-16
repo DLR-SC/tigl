@@ -305,8 +305,20 @@ typedef enum TiglImportExportFormat TiglImportExportFormat;
 */
 TIGL_COMMON_EXPORT TiglReturnCode tiglOpenCPACSConfiguration(TixiDocumentHandle tixiHandle, const char* configurationUID, TiglCPACSConfigurationHandle* cpacsHandlePtr);
 
-
-// [[CAS_AES]] added routine for saving a CPACS configuration
+/**
+* @brief Writes a CPACS configuration based on the data and geometry structure in memory.
+*
+*
+* @param[in]  tixiHandle     Handle to a TIXI document.
+* @param[in]  configurationUID The UID of the configuration that should be written. 
+* @param[out] cpacsHandlePtr Handle to the CPACS configuration. This handle is used in calls to other TIGL functions.
+*
+* @return
+*   - TIGL_SUCCESS if the CPACS configuration was successfully written
+*   - TIGL_NULL_POINTER if cpacsHandlePtr is an invalid null pointer
+*   - TIGL_UNINITIALIZED if cpacsHandlePtr is not managed by the CCPACSConfigurationManager
+*   - TIGL_ERROR if some other kind of error occurred
+*/
 TIGL_COMMON_EXPORT TiglReturnCode tiglSaveCPACSConfiguration(TixiDocumentHandle tixiHandle, const char* configurationUID, const TiglCPACSConfigurationHandle* cpacsHandlePtr);
 
 /**

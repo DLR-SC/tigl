@@ -50,7 +50,6 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
-// [[CAS_AES]] include helper routines for save method
 #include "TixiSaveExt.h"
 
 namespace tigl
@@ -135,7 +134,7 @@ void CCPACSFuselage::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string&
         name = ptrName;
     }
 
-    // [[CAS_AES]] Get subelement "description"
+    // Get subelement "description"
     char* ptrDescription = NULL;
     tempString    = fuselageXPath + "/description";
     if (tixiGetTextElement(tixiHandle, tempString.c_str(), &ptrDescription) == SUCCESS) {
@@ -211,7 +210,7 @@ void CCPACSFuselage::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string&
     Update();
 }
 
-// [[CAS_AES]] Write CPACS fuselage elements
+// Write CPACS fuselage elements
 void CCPACSFuselage::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& fuselageXPath)
 {
     std::string elementPath;

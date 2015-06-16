@@ -25,10 +25,9 @@
 
 #include "CCPACSWingProfiles.h"
 #include "CTiglError.h"
+#include "TixiSaveExt.h"
 #include <sstream>
 #include <iostream>
-// [[CAS_AES]] include helper routines for save method
-#include "TixiSaveExt.h"
 
 namespace tigl
 {
@@ -96,7 +95,7 @@ void CCPACSWingProfiles::ReadCPACS(TixiDocumentHandle tixiHandle)
     }
 }
 
-// [[CAS_AES]] Write CPACS wing profiles
+// Write CPACS wing profiles
 void CCPACSWingProfiles::WriteCPACS(TixiDocumentHandle tixiHandle)
 {
     std::string elementPath = "/cpacs/vehicles/profiles/wingAirfoils";

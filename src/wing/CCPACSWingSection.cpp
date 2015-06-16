@@ -25,9 +25,8 @@
 
 #include "CCPACSWingSection.h"
 #include "CTiglError.h"
-#include <iostream>
-// [[CAS_AES]] include helper routines for save method
 #include "TixiSaveExt.h"
+#include <iostream>
 
 namespace tigl
 {
@@ -96,7 +95,7 @@ void CCPACSWingSection::ReadCPACS(TixiDocumentHandle tixiHandle, const std::stri
         name = ptrName;
     }
 
-    //[[CAS_AES]]  Get subelement "description"
+    // Get subelement "description"
     char* ptrDescription = "";
     tempString    = sectionXPath + "/description";
     tixiGetTextElement(tixiHandle, tempString.c_str(), &ptrDescription);
@@ -143,7 +142,7 @@ void CCPACSWingSection::ReadCPACS(TixiDocumentHandle tixiHandle, const std::stri
     Update();
 }
 
-// [[CAS_AES]] Write CPACS section elements
+// Write CPACS section elements
 void CCPACSWingSection::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& sectionXPath)
 {
     std::string elementPath;
@@ -194,7 +193,7 @@ const std::string& CCPACSWingSection::GetUID(void) const
     return uID;
 }
 
-// [[CAS_AES]] added getter for name
+// Get the name of this WingSection
 const std::string& CCPACSWingSection::GetName() const
 {
     return name;
@@ -212,19 +211,19 @@ CTiglTransformation CCPACSWingSection::GetSectionTransformation(void) const
     return transformation;
 }
 
-// [[CAS_AES]] added getter for translation
+// Gets the section translation
 const CTiglPoint& CCPACSWingSection::GetTranslation() const
 {
     return translation;
 }
 
-// [[CAS_AES]] added getter for rotation
+// Gets the section rotation
 const CTiglPoint& CCPACSWingSection::GetRotation() const
 {
     return rotation;
 }
 
-// [[CAS_AES]] added getter for scaling
+// Gets the section scaling
 const CTiglPoint& CCPACSWingSection::GetScaling() const
 {
     return scaling;

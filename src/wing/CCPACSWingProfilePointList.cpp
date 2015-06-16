@@ -38,6 +38,7 @@
 #include "CCPACSWingProfile.h"
 #include "CCPACSWingProfileFactory.h"
 #include "tiglcommonfunctions.h"
+#include "TixiSaveExt.h"
 
 #include "gp_Pnt2d.hxx"
 #include "gp_Vec2d.hxx"
@@ -67,9 +68,6 @@
 #include "BRepBuilderAPI_MakeWire.hxx"
 #include "BRepBndLib.hxx"
 #include "ShapeFix_Wire.hxx"
-
-// [[CAS_AES]] include helper routines for save method
-#include "TixiSaveExt.h"
 
 
 namespace tigl
@@ -200,7 +198,6 @@ void CCPACSWingProfilePointList::ReadCPACS(TixiDocumentHandle tixiHandle)
     }
 }
 
-// [[CAS_AES]] added save method
 void CCPACSWingProfilePointList::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& profileXPath)
 {
     std::string path;

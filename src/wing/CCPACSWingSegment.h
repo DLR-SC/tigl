@@ -64,10 +64,10 @@ public:
     // Read CPACS segment elements
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& segmentXPath);
 
-    // [[CAS_AES]] Write CPACS segment elements
+    // Write CPACS segment elements
     TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string & segmentXPath);
 
-    // [[CAS_AES]] added getter for name
+    // Gets the segment name
     TIGL_EXPORT const std::string& GetName() const;
 
     // Returns the wing this segment belongs to
@@ -243,7 +243,6 @@ private:
     void etaXsiToUV(bool isFromUpper, double eta, double xsi, double& u, double& v);
 
     std::string          name;                 /**< Segment name                            */
-    // [[CAS_AES]] added description
     std::string          description;          /**< Segment description                     */
     CCPACSWingConnection innerConnection;      /**< Inner segment connection (root)         */
     CCPACSWingConnection outerConnection;      /**< Outer segment connection (tip)          */

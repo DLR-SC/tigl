@@ -25,9 +25,8 @@
 
 #include "CCPACSWingSectionElement.h"
 #include "CTiglError.h"
-#include <iostream>
-// [[CAS_AES]] include helper routines for save method
 #include "TixiSaveExt.h"
+#include <iostream>
 
 namespace tigl
 {
@@ -97,7 +96,7 @@ void CCPACSWingSectionElement::ReadCPACS(TixiDocumentHandle tixiHandle, const st
         name          = ptrName;
     }
 
-    // [[CAS_AES]] Get subelement "description"
+    // Get subelement "description"
     char* ptrdescription = "";
     tempString    = elementXPath + "/description";
     tixiGetTextElement(tixiHandle, tempString.c_str(), &ptrdescription);
@@ -149,7 +148,7 @@ void CCPACSWingSectionElement::ReadCPACS(TixiDocumentHandle tixiHandle, const st
     Update();
 }
 
-// [[CAS_AES]] Write CPACS wing section elements
+// Write CPACS wing section elements
 void CCPACSWingSectionElement::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& elementXPath)
 {
     std::string path;

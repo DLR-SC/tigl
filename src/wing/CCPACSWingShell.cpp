@@ -20,9 +20,6 @@
 
 #include "CTiglError.h"
 #include "CTiglLogging.h"
-
-
-// [[CAS_AES]] include helper routines for save method
 #include "TixiSaveExt.h"
 
 namespace tigl 
@@ -84,7 +81,7 @@ void CCPACSWingShell::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string
     isvalid = true;
 }
 
-// [[CAS_AES]] Write CPACS segment elements
+// Write CPACS segment elements
 void CCPACSWingShell::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& shellDefinitionXPath)
 {
     std::string elementPath;

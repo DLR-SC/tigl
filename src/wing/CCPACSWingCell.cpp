@@ -22,8 +22,6 @@
 
 #include "CTiglError.h"
 #include "CTiglLogging.h"
-
-// [[CAS_AES]] added include for save methods
 #include "TixiSaveExt.h"
 
 #include <cmath>
@@ -70,12 +68,11 @@ CCPACSWingCell::CCPACSWingCell()
     reset();
 }
 
-
-// [[CAS_AES]] added missing getter for uid
 const std::string& CCPACSWingCell::GetUID() const
 {
     return uid;
 }
+
 void CCPACSWingCell::reset()
 {
     innerBorderEta1 = 0.;
@@ -279,7 +276,6 @@ void CCPACSWingCell::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string 
     trailingEdgeXsi2 = tEX2;
 }
 
-// [[CAS_AES]] Write CPACS wings elements
 void CCPACSWingCell::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string & cellXPath)
 {
     TixiSaveExt::TixiSaveTextAttribute(tixiHandle, cellXPath.c_str(), "uID", GetUID().c_str());

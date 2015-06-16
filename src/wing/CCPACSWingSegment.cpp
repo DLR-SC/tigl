@@ -40,6 +40,7 @@
 #include "tiglcommonfunctions.h"
 #include "tigl_config.h"
 #include "math/tiglmathfunctions.h"
+#include "TixiSaveExt.h"
 
 #include "BRepOffsetAPI_ThruSections.hxx"
 #include "TopExp_Explorer.hxx"
@@ -100,9 +101,6 @@
 #include "BRepTools.hxx"
 #include <TopExp.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
-
-// [[CAS_AES]] include helper routines for save method
-#include "TixiSaveExt.h"
 
 namespace tigl
 {
@@ -254,7 +252,7 @@ void CCPACSWingSegment::ReadCPACS(TixiDocumentHandle tixiHandle, const std::stri
         name          = ptrName;
     }
 
-    // [[CAS_AES]] Get subelement "description"
+    // Get subelement "description"
     char* ptrDescription = "";
     tempString    = segmentXPath + "/description";
     tixiGetTextElement(tixiHandle, tempString.c_str(), &ptrDescription);
@@ -299,7 +297,7 @@ void CCPACSWingSegment::ReadCPACS(TixiDocumentHandle tixiHandle, const std::stri
     Update();
 }
 
-// [[CAS_AES]] Write CPACS segment elements
+// Write CPACS segment elements
 void CCPACSWingSegment::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& segmentXPath)
 {
     // Set the name subelement
@@ -315,7 +313,6 @@ void CCPACSWingSegment::WriteCPACS(TixiDocumentHandle tixiHandle, const std::str
     outerConnection.WriteCPACS(tixiHandle, segmentXPath.c_str(), "toElementUID");
 }
 
-// [[CAS_AES]] added getter for name
 const std::string& CCPACSWingSegment::GetName() const
 {
     return name;

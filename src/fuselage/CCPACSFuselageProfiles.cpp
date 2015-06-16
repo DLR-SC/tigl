@@ -25,10 +25,9 @@
 
 #include "CCPACSFuselageProfiles.h"
 #include "CTiglError.h"
+#include "TixiSaveExt.h"
 #include <sstream>
 #include <iostream>
-// [[CAS_AES]] include helper routines for save method
-#include "TixiSaveExt.h"
 
 namespace tigl
 {
@@ -92,7 +91,7 @@ void CCPACSFuselageProfiles::ReadCPACS(TixiDocumentHandle tixiHandle)
     }
 }
 
-// [[CAS_AES]] Write CPACS fuselage profiles
+// Write CPACS fuselage profiles
 void CCPACSFuselageProfiles::WriteCPACS(TixiDocumentHandle tixiHandle)
 {
     const char* elementPath = "/cpacs/vehicles/profiles/fuselageProfiles";

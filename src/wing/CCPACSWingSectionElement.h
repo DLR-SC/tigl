@@ -48,7 +48,7 @@ public:
     // Read CPACS wing section element
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& elementXPath);
 
-    // [[CAS_AES]] Write CPACS wing section element
+    // Write CPACS wing section element
     TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& elementXPath);
 
     // Returns the UID of the referenced wing profile
@@ -82,7 +82,6 @@ private:
 
 private:
     std::string           name;           /**< Section name                          */
-    // [[CAS_AES]] added description
     std::string           description;    /**< Section name                          */
     std::string           profileUID;     /**< Profile index in wing profile library */
     std::string           uID;            /**< UID of the WingSectionElement         */

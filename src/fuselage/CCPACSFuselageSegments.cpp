@@ -123,7 +123,7 @@ void CCPACSFuselageSegments::ReadCPACS(TixiDocumentHandle tixiHandle, const std:
 
 }
 
-// [[CAS_AES]] Write CPACS segments element
+// Write CPACS segments element
 void CCPACSFuselageSegments::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& fuselageXPath)
 {
     std::string elementPath;

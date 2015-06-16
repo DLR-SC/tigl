@@ -48,7 +48,7 @@ public:
     // Read CPACS section elements
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& sectionXPath);
 
-    // [[CAS_AES]] Write CPACS section elements
+    // Write CPACS section elements
     TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& sectionXPath);
 
     // Get element count for this section
@@ -57,7 +57,7 @@ public:
     // Get the UID of this WingSection
     TIGL_EXPORT const std::string& GetUID(void) const;
 
-    // [[CAS_AES]] added getter for name
+    // Get name of this WingSection
     TIGL_EXPORT const std::string& GetName() const;
 
     // Get element for a given index
@@ -66,13 +66,13 @@ public:
     // Gets the section transformation
     TIGL_EXPORT CTiglTransformation GetSectionTransformation(void) const;
 
-    // [[CAS_AES]] added getter for translation
+    // Gets the section translation
     TIGL_EXPORT const CTiglPoint& GetTranslation() const;
 
-    // [[CAS_AES]] added getter for rotation
+    // Gets the section rotation
     TIGL_EXPORT const CTiglPoint& GetRotation() const;
 
-    // [[CAS_AES]] added getter for scaling
+    // Gets the section scaling
     TIGL_EXPORT const CTiglPoint& GetScaling() const;
 
 protected:
@@ -95,7 +95,6 @@ private:
 private:
     std::string               name;           /**< Section name             */
     std::string               uID;              /**< Section uid                */
-    // [[CAS_AES]] added description
     std::string               description;    /**< Section description      */
     CTiglTransformation       transformation; /**< Section transfromation   */
     CTiglPoint                translation;    /**< Section translation      */

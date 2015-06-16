@@ -26,10 +26,9 @@
 #include "CCPACSFuselages.h"
 #include "CCPACSFuselage.h"
 #include "CTiglError.h"
+#include "TixiSaveExt.h"
 #include <iostream>
 #include <sstream>
-// [[CAS_AES]] include helper routines for save method
-#include "TixiSaveExt.h"
 
 namespace tigl
 {
@@ -103,7 +102,7 @@ void CCPACSFuselages::ReadCPACS(TixiDocumentHandle tixiHandle, const char* confi
     }
 }
 
-// [[CAS_AES]] Write CPACS fuselage elements
+// Write CPACS fuselage elements
 void CCPACSFuselages::WriteCPACS(TixiDocumentHandle tixiHandle, const char* configurationUID)
 {
     std::string fuselageXPathPrt;

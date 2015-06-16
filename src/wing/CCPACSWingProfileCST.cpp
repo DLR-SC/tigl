@@ -33,6 +33,7 @@
 #include "CTiglTransformation.h"
 #include "CWireToCurve.h"
 #include "CCPACSWingProfileFactory.h"
+#include "TixiSaveExt.h"
 #include "math.h"
 
 #include <TopoDS.hxx>
@@ -40,10 +41,6 @@
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepBuilderAPI_MakeWire.hxx>
 #include <Geom_BSplineCurve.hxx>
-
-// [[CAS_AES]] include helper routines for save method
-#include "TixiSaveExt.h"
-
 
 
 namespace tigl
@@ -131,7 +128,7 @@ void CCPACSWingProfileCST::ReadCPACS(TixiDocumentHandle tixiHandle)
     lowerN2=readTixiDouble(tixiHandle, ProfileDataXPath, "/lowerN2", "CCPACSWingProfileCST::ReadCPACS"); 
 }
 
-// [[CAS_AES]]  added save method
+// Write CPACS wing profile
 void CCPACSWingProfileCST::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& ProfileXPath)
 {
     throw CTiglError("ERROR: CCPACSWingProfileCST::WriteCPACS not implemented!!!");

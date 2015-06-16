@@ -32,7 +32,6 @@ public:
     
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& structureXPath);
     
-    // [[CAS_AES]] Write CPACS structure elements
     TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string & structureXPath);
 
     TIGL_EXPORT CCPACSWingShell& GetLowerShell();

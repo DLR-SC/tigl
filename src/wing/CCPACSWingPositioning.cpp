@@ -26,10 +26,9 @@
 #include "tigl.h"
 #include "CCPACSWingPositioning.h"
 #include "CTiglError.h"
+#include "TixiSaveExt.h"
 #include "gp_Pnt.hxx"
 #include <iostream>
-// [[CAS_AES]] include helper routines for save method
-#include "TixiSaveExt.h"
 
 namespace tigl
 {
@@ -191,7 +190,7 @@ void CCPACSWingPositioning::ReadCPACS(TixiDocumentHandle tixiHandle, const std::
     Update();
 }
 
-// [[CAS_AES]] Write CPACS segment elements
+// Write CPACS segment elements
 void CCPACSWingPositioning::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& positioningXPath)
 {
     // Set the subelement "length" 

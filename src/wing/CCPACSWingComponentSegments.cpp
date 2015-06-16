@@ -28,7 +28,6 @@
 #include <exception>
 
 #include "CCPACSWingComponentSegments.h"
-// [[CAS_AES]] include helper routines for save method
 #include "TixiSaveExt.h"
 
 namespace tigl
@@ -124,7 +123,7 @@ void CCPACSWingComponentSegments::ReadCPACS(TixiDocumentHandle tixiHandle, const
 
 }
 
-// [[CAS_AES]] Write CPACS segments element
+// Write CPACS segments element
 void CCPACSWingComponentSegments::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& wingXPath)
 {
     std::string xpath;

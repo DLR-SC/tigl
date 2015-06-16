@@ -59,8 +59,6 @@
 #include "ITiglWingProfileAlgo.h"
 #include "CCPACSWingProfile.h"
 #include "CCPACSWingProfileFactory.h"
-
-// [[CAS_AES]] include helper routines for save method
 #include "TixiSaveExt.h"
 
 namespace tigl 
@@ -132,7 +130,7 @@ void CCPACSWingProfile::ReadCPACS(TixiDocumentHandle tixiHandle)
     Update();
 }
 
-// [[CAS_AES]] Write CPACS wing profile file
+// Write CPACS wing profile file
 void CCPACSWingProfile::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& ProfileXPath)
 {
     // Set attribute "uID"

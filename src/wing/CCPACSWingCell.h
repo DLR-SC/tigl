@@ -43,7 +43,6 @@ public:
     
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& cellXPath);
     
-    // [[CAS_AES]] Write CPACS wings elements
     TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string & cellXPath);
 
     // get corner coordinates of cell
