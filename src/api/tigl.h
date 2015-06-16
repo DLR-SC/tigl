@@ -318,7 +318,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglOpenCPACSConfiguration(TixiDocumentHandle 
 *   - TIGL_UNINITIALIZED if cpacsHandlePtr is not managed by the CCPACSConfigurationManager
 *   - TIGL_ERROR if some other kind of error occurred
 */
-TIGL_COMMON_EXPORT TiglReturnCode tiglSaveCPACSConfiguration(const char* configurationUID, const TiglCPACSConfigurationHandle* cpacsHandlePtr);
+TIGL_COMMON_EXPORT TiglReturnCode tiglSaveCPACSConfiguration(const char* configurationUID, TiglCPACSConfigurationHandle cpacsHandle);
 
 /**
 * @brief Closes a CPACS configuration and cleans up all memory used by the configuration.
