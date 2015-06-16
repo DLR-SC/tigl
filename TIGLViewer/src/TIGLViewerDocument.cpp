@@ -842,6 +842,7 @@ void TIGLViewerDocument::drawWingFlaps()
 
 void TIGLViewerDocument::drawWingFlapsForInteractiveUse(std::string selectedWing, std::map<std::string,double> flapStatus)
 {
+    START_COMMAND();
     flapsForInteractiveUse.clear();
     app->getScene()->deleteAllObjects();
     tigl::CCPACSWing& wing = GetConfiguration().GetWing( selectedWing );
