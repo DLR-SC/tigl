@@ -3,10 +3,6 @@
 *
 * Created: 2013-03-11 Pierre Thomazo
 *
-* Changed: $Id: TixiSaveExt.cpp 951 2015-02-13 16:10:02Z rlandert $
-*
-* Version: $Revision: 951 $
-*
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
 * You may obtain a copy of the License at
@@ -18,6 +14,10 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the License for the specific language governing permissions and
 * limitations under the License.
+*/
+/**
+* @file TixiSaveExt.cpp
+* @brief  Routines for writing XML elements and attributes with TiXI
 */
 
 #include "TixiSaveExt.h"
