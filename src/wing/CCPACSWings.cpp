@@ -103,7 +103,7 @@ void CCPACSWings::ReadCPACS(TixiDocumentHandle tixiHandle, const char* configura
 }
 
 // Write CPACS wings elements
-void CCPACSWings::WriteCPACS(TixiDocumentHandle tixiHandle, const char* configurationUID)
+void CCPACSWings::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& configurationUID)
 {
     std::string wingXPathPrt;
     char *tmpString = NULL;
@@ -112,7 +112,7 @@ void CCPACSWings::WriteCPACS(TixiDocumentHandle tixiHandle, const char* configur
     ReturnCode tixiRet;
 
     // tixi frees tmpString internally when finished
-    if (tixiUIDGetXPath(tixiHandle, configurationUID, &tmpString) != SUCCESS) {
+    if (tixiUIDGetXPath(tixiHandle, configurationUID.c_str(), &tmpString) != SUCCESS) {
         throw CTiglError("XML error: tixiUIDGetXPath failed in CCPACSWings::WriteCPACS", TIGL_XML_ERROR);
     }
     if (strcmp(tmpString, "") == 0) {

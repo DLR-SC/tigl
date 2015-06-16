@@ -103,7 +103,7 @@ void CCPACSFuselages::ReadCPACS(TixiDocumentHandle tixiHandle, const char* confi
 }
 
 // Write CPACS fuselage elements
-void CCPACSFuselages::WriteCPACS(TixiDocumentHandle tixiHandle, const char* configurationUID)
+void CCPACSFuselages::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& configurationUID)
 {
     std::string fuselageXPathPrt;
     char *tmpString = NULL;
@@ -112,8 +112,7 @@ void CCPACSFuselages::WriteCPACS(TixiDocumentHandle tixiHandle, const char* conf
     ReturnCode tixiRet;
 
     // when the model doesn't exist, an error is thrown
-    // assuming that tixi does not modify configurationUID
-    if (tixiUIDGetXPath(tixiHandle, configurationUID, &tmpString) != SUCCESS) {
+    if (tixiUIDGetXPath(tixiHandle, configurationUID.c_str(), &tmpString) != SUCCESS) {
         throw CTiglError("XML error: tixiUIDGetXPath failed in CCPACSFuselages::WriteCPACS", TIGL_XML_ERROR);
     }
     if (strcmp(tmpString, "") == 0) {
