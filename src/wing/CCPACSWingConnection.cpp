@@ -175,9 +175,9 @@ void CCPACSWingConnection::ReadCPACS(TixiDocumentHandle tixiHandle, const std::s
 }
 
 // Write CPACS connection element
-void CCPACSWingConnection::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& connectionXPath, char* direction)
+void CCPACSWingConnection::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& connectionXPath, const std::string& direction)
 {
-    TixiSaveExt::TixiSaveTextElement(tixiHandle, connectionXPath.c_str(), direction, elementUID.c_str());
+    TixiSaveExt::TixiSaveTextElement(tixiHandle, connectionXPath.c_str(), direction.c_str(), elementUID.c_str());
 }
 
 } // end namespace tigl

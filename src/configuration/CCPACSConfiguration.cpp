@@ -130,11 +130,11 @@ void CCPACSConfiguration::ReadCPACS(const char* configurationUID)
 }
 
 // Write CPACS structure to tixiHandle
-void CCPACSConfiguration::WriteCPACS(TixiDocumentHandle tixiHandle, const char* configurationUID)
+void CCPACSConfiguration::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& configurationUID)
 {
     header.WriteCPACS(tixiHandle);
     
-    TixiSaveExt::TixiSaveTextAttribute(tixiHandle, "/cpacs/vehicles/aircraft/model", "uID", configurationUID);
+    TixiSaveExt::TixiSaveTextAttribute(tixiHandle, "/cpacs/vehicles/aircraft/model", "uID", configurationUID.c_str());
     TixiSaveExt::TixiSaveTextElement(tixiHandle, "/cpacs/vehicles/aircraft/model", "name", name.c_str());
     TixiSaveExt::TixiSaveTextElement(tixiHandle, "/cpacs/vehicles/aircraft/model", "description", description.c_str());
 
