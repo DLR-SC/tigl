@@ -24,10 +24,9 @@
 */
 
 #include "CCPACSWingPositionings.h"
+#include "TixiSaveExt.h"
 #include <iostream>
 #include <sstream>
-// [[CAS_AES]] include helper routines for save method
-#include "TixiSaveExt.h"
 
 namespace tigl
 {
@@ -185,7 +184,7 @@ void CCPACSWingPositionings::ReadCPACS(TixiDocumentHandle tixiHandle, const std:
     Update();
 }
 
-    // [[CAS_AES]] Write CPACS positionings element
+// Write CPACS positionings element
 void CCPACSWingPositionings::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& wingXPath)
 {
     std::string elementPath;

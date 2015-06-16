@@ -39,7 +39,6 @@ public:
     
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& shellXPath);
 
-    // [[CAS_AES]] Write CPACS segment elements
     TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string & shellDefinitionXPath);
 
     TIGL_EXPORT void Invalidate();

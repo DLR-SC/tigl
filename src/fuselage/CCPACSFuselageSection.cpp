@@ -25,9 +25,8 @@
 
 #include "CCPACSFuselageSection.h"
 #include "CTiglError.h"
-#include <iostream>
-// [[CAS_AES]] include helper routines for save method
 #include "TixiSaveExt.h"
+#include <iostream>
 
 namespace tigl
 {
@@ -96,7 +95,7 @@ void CCPACSFuselageSection::ReadCPACS(TixiDocumentHandle tixiHandle, const std::
         name = ptrName;
     }
 
-    // [[CAS_AES]] Get subelement "description"
+    // Get subelement "description"
     char* ptrDescription = "";
     tempString    = sectionXPath + "/description";
     if (tixiGetTextElement(tixiHandle, tempString.c_str(), &ptrDescription) == SUCCESS) {
@@ -144,7 +143,7 @@ void CCPACSFuselageSection::ReadCPACS(TixiDocumentHandle tixiHandle, const std::
     Update();
 }
 
-// [[CAS_AES]] Write CPACS section elements
+// Write CPACS section elements
 void CCPACSFuselageSection::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& sectionXPath)
 {
     std::string elementPath;

@@ -60,7 +60,7 @@ public:
     // Read CPACS fuselage elements
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const char* configurationUID);
 
-    // [[CAS_AES]] Write CPACS fuselage elements
+    // Write CPACS fuselage elements
     TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const char* configurationUID);
 
     TIGL_EXPORT bool HasProfile(std::string uid) const;

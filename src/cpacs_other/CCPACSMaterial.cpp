@@ -20,8 +20,6 @@
 
 #include "CTiglError.h"
 #include "CTiglLogging.h"
-
-// [[CAS_AES]] added include for save helper methods
 #include "TixiSaveExt.h"
 
 namespace tigl
@@ -90,7 +88,6 @@ void CCPACSMaterial::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string 
     isvalid = true;
 }
 
-// [[CAS_AES]] added write method
 void CCPACSMaterial::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& xpath)
 {
     std::string path;
@@ -138,7 +135,6 @@ double CCPACSMaterial::GetThickness() const
     return thickness;
 }
 
-// [[CAS_AES]] added getter for thickness scaling
 double CCPACSMaterial::GetThicknessScaling() const
 {
     return thicknessScaling;

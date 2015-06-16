@@ -55,7 +55,7 @@ public:
     // Read CPACS positionings element
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& wingXPath);
 
-    // [[CAS_AES]] Write CPACS positionings element
+    // Write CPACS positionings element
     TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& wingXPath);
 
     // Invalidates internal state

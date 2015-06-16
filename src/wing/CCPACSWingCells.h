@@ -48,7 +48,7 @@ public:
     // Read CPACS wings elements
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& cellsXPath);
     
-    // [[CAS_AES]] added write method
+    // Writing CPACS wing cells
     TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& cellsXPath);
     
     // Returns the total count of wing cells for that wing component segment

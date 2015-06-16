@@ -37,6 +37,7 @@
 #include "CCPACSWingCell.h"
 #include "CTiglApproximateBsplineWire.h"
 #include "tiglcommonfunctions.h"
+#include "TixiSaveExt.h"
 
 #include "BRepOffsetAPI_ThruSections.hxx"
 #include "TopoDS_Edge.hxx"
@@ -64,9 +65,6 @@
 #include "TColgp_Array1OfPnt.hxx"
 #include <TopExp.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
-
-// [[CAS_AES]] include helper routines for save method
-#include "TixiSaveExt.h"
 
 namespace tigl
 {
@@ -233,7 +231,7 @@ void CCPACSWingComponentSegment::ReadCPACS(TixiDocumentHandle tixiHandle, const 
     Update();
 }
 
-// [[CAS_AES]] Write CPACS segment elements
+// Write CPACS segment elements
 void CCPACSWingComponentSegment::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& segmentXPath)
 {
     std::string elementPath;

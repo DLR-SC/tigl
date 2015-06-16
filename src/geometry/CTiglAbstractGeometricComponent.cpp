@@ -79,7 +79,7 @@ TiglSymmetryAxis CTiglAbstractGeometricComponent::GetSymmetryAxis(void)
     return mySymmetryAxis;
 }
 
-// [[CAS_AES]] Gets symmetry axis as string
+// Gets symmetry axis as string
 const char* CTiglAbstractGeometricComponent::GetSymmetryAxisString(void) const
 {
     if (mySymmetryAxis == TIGL_X_Z_PLANE) {
@@ -122,13 +122,11 @@ ECPACSTranslationType CTiglAbstractGeometricComponent::GetTranslationType(void) 
     return translationType;
 }
 
-// [[CAS_AES]] added getter for rotation
 CTiglPoint CTiglAbstractGeometricComponent::GetRotation() const
 {
     return rotation;
 }
 
-// [[CAS_AES]] added getter for scaling
 CTiglPoint CTiglAbstractGeometricComponent::GetScaling() const
 {
     return scaling;

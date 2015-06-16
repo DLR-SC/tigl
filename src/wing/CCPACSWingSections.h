@@ -53,7 +53,7 @@ public:
     // Read CPACS wing sections element
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& wingXPath);
 
-    // [[CAS_AES]] Write CPACS wing sections element
+    // Write CPACS wing sections element
     TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& wingXPath);
 
     // Get section count

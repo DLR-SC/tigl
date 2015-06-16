@@ -48,7 +48,7 @@ public:
     // Returns the algorithm code identifier for an algorithm
     virtual void ReadCPACS(TixiDocumentHandle tixiHandle)  = 0;
 
-    // [[CAS_AES]] added save method
+    // Saves the profile data
     virtual void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& profileXPath) = 0;
 
     // Returns points on profile.

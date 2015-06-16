@@ -36,6 +36,7 @@
 #include "CTiglLogging.h"
 #include "CCPACSConfiguration.h"
 #include "tiglcommonfunctions.h"
+#include "TixiSaveExt.h"
 
 #include "BRepOffsetAPI_ThruSections.hxx"
 #include "TopExp_Explorer.hxx"
@@ -80,9 +81,6 @@
 #include "BRepBuilderAPI_Transform.hxx"
 #include "ShapeAnalysis_Surface.hxx"
 #include "BRepLib_FindSurface.hxx"
-
-// [[CAS_AES]] include helper routines for save method
-#include "TixiSaveExt.h"
 
 #ifndef max
 #define max(a, b) (((a) > (b)) ? (a) : (b))
@@ -239,7 +237,7 @@ void CCPACSFuselageSegment::ReadCPACS(TixiDocumentHandle tixiHandle, const std::
     Update();
 }
 
-// [[CAS_AES]] Write CPACS segment elements
+// Write CPACS segment elements
 void CCPACSFuselageSegment::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& segmentXPath)
 {
     TixiSaveExt::TixiSaveTextAttribute(tixiHandle, segmentXPath.c_str(), "uID", GetUID().c_str());

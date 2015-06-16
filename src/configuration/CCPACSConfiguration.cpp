@@ -48,7 +48,6 @@
 #include <Bnd_Box.hxx>
 #include "CTiglFusePlane.h"
 #include "CNamedShape.h"
-// [[CAS_AES]] include helper routines for save method
 #include "TixiSaveExt.h"
 
 #include <cfloat>
@@ -89,7 +88,6 @@ void CCPACSConfiguration::ReadCPACS(const char* configurationUID)
         return;
     }
 
-    // [[CAS_AES]] BEGIN
     // reading name and description
     std::string tempString;
     std::string xpath;
@@ -113,7 +111,6 @@ void CCPACSConfiguration::ReadCPACS(const char* configurationUID)
     if (tixiGetTextElement(tixiDocumentHandle, tempString.c_str(), &ptrDescription) == SUCCESS) {
         description = ptrDescription;
     }
-    // [[CAS_AES]] END
 
     header.ReadCPACS(tixiDocumentHandle);
     guideCurveProfiles.ReadCPACS(tixiDocumentHandle);
@@ -132,13 +129,11 @@ void CCPACSConfiguration::ReadCPACS(const char* configurationUID)
     }
 }
 
-// [[CAS_AES]] Write CPACS structure to tixiHandle
+// Write CPACS structure to tixiHandle
 void CCPACSConfiguration::WriteCPACS(TixiDocumentHandle tixiHandle, const char* configurationUID)
 {
     header.WriteCPACS(tixiHandle);
     
-    // TODO: overwrites a previous model (if one exists) with the new configuration, which could lead to 
-    //       inconsistency since not all elements/attributes are replaced (not implemented yet)
     TixiSaveExt::TixiSaveTextAttribute(tixiHandle, "/cpacs/vehicles/aircraft/model", "uID", configurationUID);
     TixiSaveExt::TixiSaveTextElement(tixiHandle, "/cpacs/vehicles/aircraft/model", "name", name.c_str());
     TixiSaveExt::TixiSaveTextElement(tixiHandle, "/cpacs/vehicles/aircraft/model", "description", description.c_str());

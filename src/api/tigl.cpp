@@ -201,7 +201,6 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglOpenCPACSConfiguration(TixiDocumentHandle 
     }
 }
 
-// [[CAS_AES]] added save routine
 TIGL_COMMON_EXPORT TiglReturnCode tiglSaveCPACSConfiguration(TixiDocumentHandle tixiHandle, const char* configurationUID, const TiglCPACSConfigurationHandle* cpacsHandlePtr)
 {
     if (cpacsHandlePtr == 0) {

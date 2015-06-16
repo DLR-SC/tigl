@@ -23,8 +23,6 @@
 #include "CCPACSWingCell.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
-
-// [[CAS_AES]] added include for save methods
 #include "TixiSaveExt.h"
 
 namespace tigl
@@ -84,7 +82,6 @@ void CCPACSWingCells::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string
     }
 }
 
-// [[CAS_AES]] added write method
 void CCPACSWingCells::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& cellsXPath)
 {
     std::string elementPath;
