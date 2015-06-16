@@ -3,10 +3,6 @@
 *
 * Created: 2013-03-11 Pierre Thomazo
 *
-* Changed: $Id: TixiSaveExt.h 950 2015-02-13 08:15:23Z rlandert $
-*
-* Version: $Revision: 950 $
-*
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
 * You may obtain a copy of the License at
@@ -20,13 +16,16 @@
 * limitations under the License.
 */
 /**
-    This file is an extension to the tixi functions, in order to simplify the xml file saving
-    this functions have all the same procedure :
-        - check the existence of the element parameter
-        - create it if necessary
-        - update or set the value
-    at each tixi function used, if an error occurs, a TIGL_XML_ERROR is thrown
-
+* @file TixiSaveExt.h
+* @brief  Routines for writing XML elements and attributes with TiXI
+*
+* This file is an extension to the tixi functions, in order to simplify the xml file saving.
+* These functions have all the same procedure :
+* - check the existence of the element parameter
+* - create it if necessary
+* - update or set the value
+* The functions internally use the according tixi functions.
+* If an error occurs, a TIGL_XML_ERROR is thrown.
 */
 
 #ifndef TIXISAVEEXT_H
