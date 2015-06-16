@@ -201,7 +201,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglOpenCPACSConfiguration(TixiDocumentHandle 
     }
 }
 
-TIGL_COMMON_EXPORT TiglReturnCode tiglSaveCPACSConfiguration(TixiDocumentHandle tixiHandle, const char* configurationUID, const TiglCPACSConfigurationHandle* cpacsHandlePtr)
+TIGL_COMMON_EXPORT TiglReturnCode tiglSaveCPACSConfiguration(const char* configurationUID, const TiglCPACSConfigurationHandle* cpacsHandlePtr)
 {
     if (cpacsHandlePtr == 0) {
         LOG(ERROR) << "Null pointer argument for cpacsHandlePtr in function call to tiglSaveCPACSConfiguration." << std::endl;
@@ -218,7 +218,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglSaveCPACSConfiguration(TixiDocumentHandle 
     tigl::CCPACSConfiguration& config = manager.GetConfiguration(*cpacsHandlePtr);
 
     try {
-        config.WriteCPACS(tixiHandle, configurationUID);
+        config.WriteCPACS(configurationUID);
         return TIGL_SUCCESS;
     }
     catch (std::exception& ex) {

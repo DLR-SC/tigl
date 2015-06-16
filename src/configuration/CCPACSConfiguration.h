@@ -67,7 +67,7 @@ public:
     TIGL_EXPORT void ReadCPACS(const char* configurationUID);
 
     // Write CPACS configuration
-    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle, const std::string& configurationUID);
+    TIGL_EXPORT void WriteCPACS(const std::string& configurationUID);
 
     // Returns the underlying tixi document handle used by a CPACS configuration
     TIGL_EXPORT TixiDocumentHandle GetTixiDocumentHandle(void) const;

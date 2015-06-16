@@ -309,9 +309,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglOpenCPACSConfiguration(TixiDocumentHandle 
 * @brief Writes a CPACS configuration based on the data and geometry structure in memory.
 *
 *
-* @param[in]  tixiHandle     Handle to a TIXI document.
-* @param[in]  configurationUID The UID of the configuration that should be written. 
-* @param[out] cpacsHandlePtr Handle to the CPACS configuration. This handle is used in calls to other TIGL functions.
+* @param[in] configurationUID The UID of the configuration that should be written. 
+* @param[in] cpacsHandlePtr Handle to the CPACS configuration. This handle is used in calls to other TIGL functions.
 *
 * @return
 *   - TIGL_SUCCESS if the CPACS configuration was successfully written
@@ -319,7 +318,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglOpenCPACSConfiguration(TixiDocumentHandle 
 *   - TIGL_UNINITIALIZED if cpacsHandlePtr is not managed by the CCPACSConfigurationManager
 *   - TIGL_ERROR if some other kind of error occurred
 */
-TIGL_COMMON_EXPORT TiglReturnCode tiglSaveCPACSConfiguration(TixiDocumentHandle tixiHandle, const char* configurationUID, const TiglCPACSConfigurationHandle* cpacsHandlePtr);
+TIGL_COMMON_EXPORT TiglReturnCode tiglSaveCPACSConfiguration(const char* configurationUID, const TiglCPACSConfigurationHandle* cpacsHandlePtr);
 
 /**
 * @brief Closes a CPACS configuration and cleans up all memory used by the configuration.
