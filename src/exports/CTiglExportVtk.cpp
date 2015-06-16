@@ -105,7 +105,7 @@ void CTiglExportVtk::ExportMeshedGeometryVTK(const std::string& filename, const 
 void CTiglExportVtk::ExportMeshedWingVTKSimpleByUID(const std::string& wingUID, const std::string& filename, const double deflection)
 {
     CCPACSWing & component = dynamic_cast<CCPACSWing&>(myConfig.GetWing(wingUID));
-    TopoDS_Shape& loft = component.GetLoftWithLeadingEdge();
+    TopoDS_Shape loft = component.GetLoft()->Shape();
     CTiglTriangularizer loftTrian(loft, deflection);
     loftTrian.writeVTK(filename.c_str());
 }

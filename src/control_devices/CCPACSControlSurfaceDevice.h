@@ -43,12 +43,11 @@ class CCPACSControlSurfaceDevice : public CTiglAbstractPhysicalComponent
 public:
     TIGL_EXPORT CCPACSControlSurfaceDevice(CCPACSWingComponentSegment* segment);
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string & controlSurfaceDeviceXPath, TiglControlSurfaceType type = TRAILING_EDGE_DEVICE);
-    TIGL_EXPORT std::string getUID();
     TIGL_EXPORT CCPACSControlSurfaceDeviceOuterShape getOuterShape();
     TIGL_EXPORT CCPACSControlSurfaceDevicePath getMovementPath();        // Returns the Component Type TIGL_COMPONENT_WING.
     TIGL_EXPORT TiglGeometricComponentType GetComponentType(void) {return TIGL_COMPONENT_CONTROLSURF | TIGL_COMPONENT_PHYSICAL;}
-    TIGL_EXPORT TopoDS_Shape getCutOutShape(void);
-    TIGL_EXPORT void setLoft(TopoDS_Shape loft);
+    TIGL_EXPORT PNamedShape getCutOutShape(void);
+    TIGL_EXPORT void setLoft(PNamedShape loft);
     TIGL_EXPORT TopoDS_Face getFace();
     TIGL_EXPORT gp_Trsf getTransformation(double flapStatusInPercent);
     TIGL_EXPORT void getProjectedPoints(gp_Pnt point1, gp_Pnt point2, gp_Pnt point3,
@@ -80,7 +79,6 @@ private:
     CCPACSControlSurfaceDeviceOuterShape outerShape;
     CCPACSControlSurfaceDeviceWingCutOut wingCutOut;
 
-    std::string uID;
     // @todo: remove - loft belongs to abstractcomponent
     PNamedShape loft;
     CCPACSWingComponentSegment* _segment;

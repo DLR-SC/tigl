@@ -66,7 +66,7 @@
 #include "TDataXtd_Shape.hxx"
 #endif
 
-#define USE_ADVANCED_MODELING 1
+#define USE_ADVANCED_MODELING 0
 
 namespace tigl
 {
@@ -74,7 +74,7 @@ namespace tigl
 CCPACSControlSurfaceDevice::CCPACSControlSurfaceDevice(CCPACSWingComponentSegment* segment)
     : _segment(segment)
 {
-    uID = "not loaded";
+    SetUID("ControlDevice");
 }
 
 // Read CPACS trailingEdgeDevice elements
@@ -98,13 +98,10 @@ void CCPACSControlSurfaceDevice::ReadCPACS(TixiDocumentHandle tixiHandle, const 
         path.ReadCPACS(tixiHandle, elementPath);
     }
 
-    char* atrName = NULL;
-    if ( tixiGetAttributeName(tixiHandle,controlSurfaceDeviceXPath.c_str(),1,&atrName) == SUCCESS ) {
-        if (tixiCheckAttribute(tixiHandle, controlSurfaceDeviceXPath.c_str(), atrName) == SUCCESS ) {
-            char* uIDtmp;
-            tixiGetTextAttribute(tixiHandle,controlSurfaceDeviceXPath.c_str(),atrName, &uIDtmp);
-            uID = uIDtmp;
-        }
+
+    char* ptrUID = NULL;
+    if (tixiGetTextAttribute(tixiHandle, controlSurfaceDeviceXPath.c_str(), "uID", &ptrUID) == SUCCESS) {
+        SetUID(ptrUID);
     }
 
     // Get WingCutOut, this is not implemented yet.
@@ -122,9 +119,9 @@ void CCPACSControlSurfaceDevice::ReadCPACS(TixiDocumentHandle tixiHandle, const 
     _hingeLine = new CTiglControlSurfaceHingeLine(getOuterShape(),getMovementPath(),_segment);
 }
 
-void CCPACSControlSurfaceDevice::setLoft(TopoDS_Shape loft)
+void CCPACSControlSurfaceDevice::setLoft(PNamedShape loft)
 {
-    this->loft->SetShape(loft);
+    this->loft = loft;
 }
 
 PNamedShape CCPACSControlSurfaceDevice::BuildLoft()
@@ -140,11 +137,6 @@ CCPACSControlSurfaceDeviceOuterShape CCPACSControlSurfaceDevice::getOuterShape()
 CCPACSControlSurfaceDevicePath CCPACSControlSurfaceDevice::getMovementPath()
 {
     return path;
-}
-
-std::string CCPACSControlSurfaceDevice::getUID()
-{
-    return uID;
 }
 
 gp_Trsf CCPACSControlSurfaceDevice::getTransformation(double flapStatusInPercent)
@@ -179,7 +171,7 @@ gp_Trsf CCPACSControlSurfaceDevice::getTransformation(double flapStatusInPercent
     return transformation.getTotalTransformation();
 }
 
-TopoDS_Shape CCPACSControlSurfaceDevice::getCutOutShape()
+PNamedShape CCPACSControlSurfaceDevice::getCutOutShape()
 {
     /*
      * If this is true, then there is an optional more detailed definition of the controlSurfaceDevice, that
@@ -233,7 +225,9 @@ TopoDS_Shape CCPACSControlSurfaceDevice::getCutOutShape()
         sewer.Add(innerFace);
         sewer.Perform();
 
-        return BRepBuilderAPI_MakeSolid(TopoDS::Shell(sewer.SewedShape()));
+        TopoDS_Shape sh = BRepBuilderAPI_MakeSolid(TopoDS::Shell(sewer.SewedShape()));
+        loft = PNamedShape(new CNamedShape(sh, GetUID().c_str()));
+        return loft;
     }
     else {
 #else
@@ -255,8 +249,8 @@ TopoDS_Shape CCPACSControlSurfaceDevice::getCutOutShape()
         }
 
         TopoDS_Shape prism = BRepPrimAPI_MakePrism(face,vec);
-        loft->SetShape(prism);
-        return loft->Shape();
+        loft = PNamedShape(new CNamedShape(prism, GetUID().c_str()));
+        return loft;
     }
 }
 

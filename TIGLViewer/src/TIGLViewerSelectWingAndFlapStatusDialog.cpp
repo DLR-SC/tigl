@@ -181,7 +181,7 @@ void TIGLViewerSelectWingAndFlapStatusDialog::drawGUI(bool redrawModel)
             innerWidget2->setAutoFillBackground(true);
             innerWidget2->setPalette(Pal);
 
-            QString uid = controlSurfaceDevice.getUID().c_str();
+            QString uid = controlSurfaceDevice.GetUID().c_str();
             QLabel* label = new QLabel(uid);
             label->setFixedSize(250,15);
             QSlider* slider = new QSlider(Qt::Horizontal);

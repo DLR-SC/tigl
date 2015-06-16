@@ -111,10 +111,7 @@ public:
     // Gets the upper point in absolute (world) coordinates for a given segment, eta, xsi
     TIGL_EXPORT gp_Pnt GetLowerPoint(int segmentIndex, double eta, double xsi);
 
-    TIGL_EXPORT TopoDS_Shape & GetWingWithoutFlaps();
-
-    // Gets the loft of the whole wing
-    TIGL_EXPORT TopoDS_Shape & GetLoftWithLeadingEdge(void);
+    TIGL_EXPORT TopoDS_Shape GetWingWithoutFlaps();
 
     TIGL_EXPORT TopoDS_Shape & GetUpperShape();
     TIGL_EXPORT TopoDS_Shape & GetLowerShape();
@@ -203,8 +200,8 @@ private:
     TopoDS_Shape                   fusedSegmentWithEdge;     /**< All Segments in one shape plus modelled leading edge */
     TopoDS_Shape                   upperShape;
     TopoDS_Shape                   lowerShape;
-    TopoDS_Shape                   wingCutOutShape;          /**< Wing without flaps / flaps removed */
-    TopoDS_Shape                   wingCleanShape;           /**< Clean wing surface without flaps cutout*/
+    PNamedShape                    wingCutOutShape;          /**< Wing without flaps / flaps removed */
+    PNamedShape                    wingCleanShape;           /**< Clean wing surface without flaps cutout*/
     bool                           invalidated;              /**< Internal state flag */
     bool                           rebuildFusedSegments;     /**< Indicates if segmentation fusing need rebuild */
     bool                           rebuildFusedSegWEdge;     /**< Indicates if segmentation fusing need rebuild */
