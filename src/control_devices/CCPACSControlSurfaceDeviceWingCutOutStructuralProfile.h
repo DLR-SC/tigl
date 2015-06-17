@@ -28,19 +28,17 @@
 #include <vector>
 #include <string>
 
-#include <gp_Pnt.hxx>
-
 
 namespace tigl
 {
-// @todo: replace pointer on points to simple points
-class CTiglPoint;
-typedef class CSharedPtr<CTiglPoint> PCTiglPoint;
 
+class CTiglPoint;
 
 class CCPACSControlSurfaceDeviceWingCutOutStructuralProfile
 {
 public:
+    typedef std::vector<CTiglPoint>  CCPACSCoordinateContainer;
+
     // Constructor
     TIGL_EXPORT CCPACSControlSurfaceDeviceWingCutOutStructuralProfile(const std::string& path);
 
@@ -60,14 +58,12 @@ public:
     TIGL_EXPORT const std::string& GetUID(void) const;
 
     // Returns the wingCutOut points as read from TIXI.
-    // @todo: return const CCPACSCoordinateContainer& instead
-    TIGL_EXPORT std::vector<PCTiglPoint> GetWingCutOutProfilePoints();
+    TIGL_EXPORT const CCPACSCoordinateContainer& GetWingCutOutProfilePoints();
 
 private:
     // Copy constructor
     CCPACSControlSurfaceDeviceWingCutOutStructuralProfile(const CCPACSControlSurfaceDeviceWingCutOutStructuralProfile&);
 
-    typedef std::vector<PCTiglPoint> CCPACSCoordinateContainer;
     CCPACSCoordinateContainer        coordinates;    /**< Coordinates of a wingCutOut profile element */
     std::string                      wingCutOutProfileXPath;   /**< The XPath to this wingCutOut in cpacs */
     std::string                      name;              /**< The Name of the wingCutOut*/

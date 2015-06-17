@@ -92,7 +92,7 @@ TEST_F(TiglControlSurfaceDevice, getFaceAndWCSNormal)
 
         for ( int i = 1; i <= controlSurfaceCount; i++ ) {
             tigl::CCPACSControlSurfaceDevice &controlSurface = segment.getControlSurfaces().getControlSurfaceDevices()->getControlSurfaceDeviceByID(i);
-            TopoDS_Face face = controlSurface.getFace();
+            TopoDS_Face face = controlSurface.GetBasePlane();
 
             // check if each TED-Face has the same normalvector as the WingComponentSegment
             TopoDS_Face aCurrentFace = face;

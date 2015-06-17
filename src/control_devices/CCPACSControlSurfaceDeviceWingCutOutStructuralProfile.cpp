@@ -112,7 +112,7 @@ void CCPACSControlSurfaceDeviceWingCutOutStructuralProfile::ReadCPACS(TixiDocume
 
     // Loop over all points in the vector
     for (int i = 0; i < countX; i++) {
-        PCTiglPoint point (new CTiglPoint(xCoordinates[i], yCoordinates[i], zCoordinates[i]));
+        CTiglPoint point(xCoordinates[i], yCoordinates[i], zCoordinates[i]);
         coordinates.push_back(point);
     }
 }
@@ -136,7 +136,8 @@ const std::string& CCPACSControlSurfaceDeviceWingCutOutStructuralProfile::GetUID
 }
 
 // Returns the wingCutOut points as read from TIXI.
-std::vector<PCTiglPoint> CCPACSControlSurfaceDeviceWingCutOutStructuralProfile::GetWingCutOutProfilePoints()
+const CCPACSControlSurfaceDeviceWingCutOutStructuralProfile::CCPACSCoordinateContainer& 
+CCPACSControlSurfaceDeviceWingCutOutStructuralProfile::GetWingCutOutProfilePoints()
 {
     return coordinates;
 }

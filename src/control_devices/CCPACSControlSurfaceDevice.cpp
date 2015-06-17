@@ -27,6 +27,7 @@
 #include "CTiglControlSurfaceHingeLine.h"
 #include "CCPACSControlSurfaceDeviceWingCutOut.h"
 #include "CCPACSControlSurfaceDeviceBorderLeadingEdgeShape.h"
+#include "CTiglControlSurfaceTransformation.h"
 #include "tiglcommonfunctions.h"
 
 #include "Handle_Geom_Plane.hxx"
@@ -70,6 +71,7 @@ CCPACSControlSurfaceDevice::CCPACSControlSurfaceDevice(CCPACSWingComponentSegmen
     : _segment(segment)
 {
     SetUID("ControlDevice");
+    _hingeLine = CSharedPtr<CTiglControlSurfaceHingeLine>(new CTiglControlSurfaceHingeLine(&outerShape, &path,_segment));
 }
 
 // Read CPACS trailingEdgeDevice elements
@@ -106,12 +108,7 @@ void CCPACSControlSurfaceDevice::ReadCPACS(TixiDocumentHandle tixiHandle, const 
         wingCutOut.ReadCPACS(tixiHandle, elementPath);
     }
 
-    std::string loftName = GetUID();
-    std::string loftShortName = GetShortShapeName();
-    loft  = PNamedShape(new CNamedShape(TopoDS_Shape(), loftName.c_str(), loftShortName.c_str()));
-
     _type = type;
-    _hingeLine = new CTiglControlSurfaceHingeLine(&getOuterShape(),&getMovementPath(),_segment);
 }
 
 void CCPACSControlSurfaceDevice::setLoft(PNamedShape loft)
@@ -134,14 +131,12 @@ const CCPACSControlSurfaceDevicePath& CCPACSControlSurfaceDevice::getMovementPat
     return path;
 }
 
-gp_Trsf CCPACSControlSurfaceDevice::getTransformation(double flapStatusInPercent) const
+gp_Trsf CCPACSControlSurfaceDevice::getTransformation(double deflection) const
 {
-    /*
-     * this block of code calculates all needed values to rotate and move the controlSurfaceDevice according
-     * to the given relDeflection by using a linearInterpolation.
-     */
+    // this block of code calculates all needed values to rotate and move the controlSurfaceDevice according
+    // to the given relDeflection by using a linearInterpolation.
     std::vector<double> relDeflections = this->getMovementPath().getRelDeflections();
-    double inputDeflection = ( relDeflections[relDeflections.size()-1] - relDeflections[0] ) * ( flapStatusInPercent/100 ) + relDeflections[0];
+    double inputDeflection = ( relDeflections[relDeflections.size()-1] - relDeflections[0] ) * ( deflection/100 ) + relDeflections[0];
     double rotation = Interpolate( relDeflections, this->getMovementPath().getHingeLineRotations(), inputDeflection );
     double innerTranslationX = Interpolate( relDeflections, this->getMovementPath().getInnerHingeTranslationsX(), inputDeflection );
     double innerTranslationY = Interpolate( relDeflections, this->getMovementPath().getInnerHingeTranslationsY(), inputDeflection );
@@ -153,10 +148,8 @@ gp_Trsf CCPACSControlSurfaceDevice::getTransformation(double flapStatusInPercent
     gp_Pnt innerHingeOld = _hingeLine->getInnerHingePoint();;
     gp_Pnt outerHingeOld = _hingeLine->getOuterHingePoint();;
 
-    /*
-     * innerTranslationY on hingePoint1 on purpose, maybe consider setting it to zero as default. See CPACS definition on
-     * Path/Step/HingeLineTransformation for more informations.
-     */
+    // innerTranslationY on hingePoint1 on purpose, maybe consider setting it to zero as default. See CPACS definition on
+    // Path/Step/HingeLineTransformation for more informations.
     gp_Pnt hingePoint1 = _hingeLine->getOuterHingePoint().XYZ() + gp_XYZ(outerTranslationX, innerTranslationY, outerTranslationZ);
     gp_Pnt hingePoint2 = _hingeLine->getInnerHingePoint().XYZ() + gp_XYZ(innerTranslationX, innerTranslationY, innerTranslationZ);
 
@@ -229,7 +222,7 @@ PNamedShape CCPACSControlSurfaceDevice::getCutOutShape()
     {
 #endif
         // Build Simple Flap Geometry.
-        TopoDS_Face face = getFace();
+        TopoDS_Face face = GetBasePlane();
         gp_Vec vec = getNormalOfControlSurfaceDevice();
 
         if (_type == SPOILER) {
@@ -249,7 +242,7 @@ PNamedShape CCPACSControlSurfaceDevice::getCutOutShape()
     }
 }
 
-TopoDS_Face CCPACSControlSurfaceDevice::getFace()
+TopoDS_Face CCPACSControlSurfaceDevice::GetBasePlane()
 {
     // Building a Face defining the simple Flap Geometrie.
     tigl::CCPACSControlSurfaceDeviceOuterShapeBorder outerBorder = getOuterShape().getOuterBorder();

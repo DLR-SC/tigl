@@ -40,10 +40,11 @@ CCPACSControlSurfaceDevices::~CCPACSControlSurfaceDevices()
 
 void CCPACSControlSurfaceDevices::Cleanup()
 {
-    // @todo: memory leak - use shared pointer or delete here
     for (std::size_t i = 0; i < controlSurfaceDevices.size(); i++) {
-        controlSurfaceDevices.pop_back();
+        CCPACSControlSurfaceDevice* dev = controlSurfaceDevices[i];
+        delete dev;
     }
+    controlSurfaceDevices.clear();
 }
 
 // Read CPACS TrailingEdgeDevices elements

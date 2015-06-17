@@ -22,17 +22,15 @@
 #include <string>
 #include <vector>
 
+#include "tigl_internal.h"
+#include "CSharedPtr.h"
+
 #include "tixi.h"
 #include "CTiglAbstractPhysicalComponent.h"
-#include "CTiglError.h"
 #include "CCPACSControlSurfaceDeviceOuterShape.h"
-#include "CCPACSControlSurfaceDeviceOuterShape.h"
-#include "CTiglControlSurfaceTransformation.h"
-#include "tigl_internal.h"
 #include "CTiglControlSurfaceHingeLine.h"
 #include "CCPACSControlSurfaceDeviceWingCutOut.h"
 #include "CCPACSControlSurfaceDevicePath.h"
-#include "gp_Lin.hxx"
 
 namespace tigl
 {
@@ -43,21 +41,35 @@ class CCPACSControlSurfaceDevice : public CTiglAbstractPhysicalComponent
 {
 public:
     TIGL_EXPORT CCPACSControlSurfaceDevice(CCPACSWingComponentSegment* segment);
+
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string & controlSurfaceDeviceXPath, TiglControlSurfaceType type = TRAILING_EDGE_DEVICE);
+
+    // Return the CPACS outer shape of the flap
     TIGL_EXPORT const CCPACSControlSurfaceDeviceOuterShape& getOuterShape() const;
-    TIGL_EXPORT const CCPACSControlSurfaceDevicePath& getMovementPath() const;        // Returns the Component Type TIGL_COMPONENT_WING.
+    TIGL_EXPORT const CCPACSControlSurfaceDevicePath& getMovementPath() const;
     TIGL_EXPORT TiglGeometricComponentType GetComponentType(void) {return TIGL_COMPONENT_CONTROLSURF | TIGL_COMPONENT_PHYSICAL;}
     TIGL_EXPORT PNamedShape getCutOutShape(void);
     TIGL_EXPORT void setLoft(PNamedShape loft);
-    TIGL_EXPORT TopoDS_Face getFace();
-    TIGL_EXPORT gp_Trsf getTransformation(double flapStatusInPercent) const;
+
+    // Returns the flap transformation based on the deflection
+    // @TODO: This method currently accepts a relative deflection (compared to the deflection in cpacs)
+    // This should be changed
+    TIGL_EXPORT gp_Trsf getTransformation(double deflection) const;
+
+    // TODO: missing description. Seems to be internal only, but used in tests
     TIGL_EXPORT void getProjectedPoints(gp_Pnt point1, gp_Pnt point2, gp_Pnt point3,
                                         gp_Pnt point4, gp_Vec& projectedPoint1,
                                         gp_Vec& projectedPoint2, gp_Vec& projectedPoint3,
                                         gp_Vec& projectedPoint4 );
+
+
     TIGL_EXPORT gp_Vec getNormalOfControlSurfaceDevice();
     TIGL_EXPORT CCPACSWingComponentSegment* getSegment();
     TIGL_EXPORT TiglControlSurfaceType getType();
+
+    // Actually a private class, only public for testing
+    // @TODO: should we make it private. Only used for simplistic cutout
+    TIGL_EXPORT TopoDS_Face GetBasePlane();
 
 protected:
     PNamedShape BuildLoft();
@@ -79,11 +91,8 @@ private:
     CCPACSControlSurfaceDeviceOuterShape outerShape;
     CCPACSControlSurfaceDeviceWingCutOut wingCutOut;
 
-    // @todo: remove - loft belongs to abstractcomponent
-    PNamedShape loft;
     CCPACSWingComponentSegment* _segment;
-    // @todo: hingeline not freed
-    CTiglControlSurfaceHingeLine* _hingeLine;
+    CSharedPtr<CTiglControlSurfaceHingeLine> _hingeLine;
 
     TiglControlSurfaceType _type;
 
