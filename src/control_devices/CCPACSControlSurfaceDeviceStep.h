@@ -38,11 +38,11 @@ public:
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle,
                                const std::string & controlSurfaceDeviceStepXPath);
 
-    TIGL_EXPORT CCPACSControlSurfaceHingeTranslation getInnerHingeTranslation();
-    TIGL_EXPORT CCPACSControlSurfaceHingeTranslation getOuterHingeTranslation();
+    TIGL_EXPORT CCPACSControlSurfaceHingeTranslation getInnerHingeTranslation() const;
+    TIGL_EXPORT CCPACSControlSurfaceHingeTranslation getOuterHingeTranslation() const;
 
-    TIGL_EXPORT double getRelDeflection();
-    TIGL_EXPORT double getHingeLineRotation();
+    TIGL_EXPORT double getRelDeflection() const;
+    TIGL_EXPORT double getHingeLineRotation() const;
 
 private:
     double relDeflection;

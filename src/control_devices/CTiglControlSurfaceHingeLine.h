@@ -23,30 +23,36 @@
 
 #include "gp_Pnt.hxx"
 
-#include "CCPACSControlSurfaceDeviceOuterShape.h"
-#include "CCPACSControlSurfaceDevicePath.h"
-
-
 namespace tigl
 {
+
+class CCPACSControlSurfaceDeviceOuterShape;
+class CCPACSControlSurfaceDevicePath;
 
 class CCPACSWingComponentSegment;
 
 class CTiglControlSurfaceHingeLine
 {
 public:
-    TIGL_EXPORT CTiglControlSurfaceHingeLine(CCPACSControlSurfaceDeviceOuterShape outerShape,
-                                             CCPACSControlSurfaceDevicePath path, CCPACSWingComponentSegment* segment);
+    TIGL_EXPORT CTiglControlSurfaceHingeLine(const CCPACSControlSurfaceDeviceOuterShape* outerShape,
+                                             const CCPACSControlSurfaceDevicePath* path, CCPACSWingComponentSegment* segment);
 
-    TIGL_EXPORT gp_Pnt getTransformedInnerHingePoint(gp_Vec translation);
-    TIGL_EXPORT gp_Pnt getTransformedOuterHingePoint(gp_Vec translation);
-
-    TIGL_EXPORT gp_Pnt getInnerHingePoint();
-    TIGL_EXPORT gp_Pnt getOuterHingePoint();
+    TIGL_EXPORT gp_Pnt getInnerHingePoint() const;
+    TIGL_EXPORT gp_Pnt getOuterHingePoint() const;
+    
+    void invalidate();
 
 private:
-    gp_Pnt innerHingePoint;
-    gp_Pnt outerHingePoint;
+    void buildHingeLine() const;
+    
+    const CCPACSControlSurfaceDeviceOuterShape* _outerShape;
+    const CCPACSControlSurfaceDevicePath* _path;
+    CCPACSWingComponentSegment* _segment;
+    
+    mutable bool _invalidated;
+    
+    mutable gp_Pnt _innerHingePoint;
+    mutable gp_Pnt _outerHingePoint;
 };
 
 } // end namespace tigl

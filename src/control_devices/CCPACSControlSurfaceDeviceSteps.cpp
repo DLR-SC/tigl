@@ -79,12 +79,12 @@ void CCPACSControlSurfaceDeviceSteps::ReadCPACS(
 
 
 
-CCPACSControlSurfaceDeviceStep& CCPACSControlSurfaceDeviceSteps::getControlSurfaceDeviceStepByID( int id )
+CCPACSControlSurfaceDeviceStep& CCPACSControlSurfaceDeviceSteps::getControlSurfaceDeviceStepByID( int id ) const
 {
     return *controlSurfaceDeviceSteps[id-1];
 }
 
-int CCPACSControlSurfaceDeviceSteps::getControlSurfaceDeviceStepCount()
+int CCPACSControlSurfaceDeviceSteps::getControlSurfaceDeviceStepCount() const
 {
     return controlSurfaceDeviceSteps.size();
 }

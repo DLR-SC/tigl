@@ -38,18 +38,20 @@ public:
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle,
                                const std::string & controlSurfaceDevicePathXPath);
 
-    TIGL_EXPORT CCPACSControlSurfaceDeviceSteps getSteps();
+    TIGL_EXPORT CCPACSControlSurfaceDeviceSteps getSteps() const;
 
-    TIGL_EXPORT CCPACSControlSurfaceDevicePathHingePoint getInnerHingePoint();
-    TIGL_EXPORT CCPACSControlSurfaceDevicePathHingePoint getOuterHingePoint();
+    TIGL_EXPORT CCPACSControlSurfaceDevicePathHingePoint getInnerHingePoint() const;
+    TIGL_EXPORT CCPACSControlSurfaceDevicePathHingePoint getOuterHingePoint() const;
 
-    TIGL_EXPORT std::vector<double> getInnerHingeTranslationsX();
-    TIGL_EXPORT std::vector<double> getInnerHingeTranslationsY();
-    TIGL_EXPORT std::vector<double> getInnerHingeTranslationsZ();
-    TIGL_EXPORT std::vector<double> getOuterHingeTranslationsX();
-    TIGL_EXPORT std::vector<double> getOuterHingeTranslationsZ();
-    TIGL_EXPORT std::vector<double> getRelDeflections();
-    TIGL_EXPORT std::vector<double> getHingeLineRotations();
+    // TODO: this is ugly and should be changed. Instead, provide GetInnerHingeTranslation(iStep)
+    TIGL_EXPORT std::vector<double> getInnerHingeTranslationsX() const;
+    TIGL_EXPORT std::vector<double> getInnerHingeTranslationsY() const;
+    TIGL_EXPORT std::vector<double> getInnerHingeTranslationsZ() const;
+    TIGL_EXPORT std::vector<double> getOuterHingeTranslationsX() const;
+    TIGL_EXPORT std::vector<double> getOuterHingeTranslationsZ() const;
+    
+    TIGL_EXPORT std::vector<double> getRelDeflections() const;
+    TIGL_EXPORT std::vector<double> getHingeLineRotations() const;
 
 private:
     CCPACSControlSurfaceDeviceSteps steps;

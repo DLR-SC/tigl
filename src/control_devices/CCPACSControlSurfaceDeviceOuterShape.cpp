@@ -62,11 +62,11 @@ void CCPACSControlSurfaceDeviceOuterShape::ReadCPACS(TixiDocumentHandle tixiHand
     }
 }
 
-const CCPACSControlSurfaceDeviceOuterShapeBorder& CCPACSControlSurfaceDeviceOuterShape::getInnerBorder()
+const CCPACSControlSurfaceDeviceOuterShapeBorder& CCPACSControlSurfaceDeviceOuterShape::getInnerBorder() const
 {
     return innerBorder;
 }
-const CCPACSControlSurfaceDeviceOuterShapeBorder& CCPACSControlSurfaceDeviceOuterShape::getOuterBorder()
+const CCPACSControlSurfaceDeviceOuterShapeBorder& CCPACSControlSurfaceDeviceOuterShape::getOuterBorder() const
 {
     return outerBorder;
 }

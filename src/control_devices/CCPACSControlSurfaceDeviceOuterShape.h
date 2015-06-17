@@ -42,8 +42,8 @@ public:
                                const std::string & outerShapeXPath,
                                TiglControlSurfaceType type = TRAILING_EDGE_DEVICE);
 
-    TIGL_EXPORT const CCPACSControlSurfaceDeviceOuterShapeBorder& getInnerBorder();
-    TIGL_EXPORT const CCPACSControlSurfaceDeviceOuterShapeBorder& getOuterBorder();
+    TIGL_EXPORT const CCPACSControlSurfaceDeviceOuterShapeBorder& getInnerBorder() const;
+    TIGL_EXPORT const CCPACSControlSurfaceDeviceOuterShapeBorder& getOuterBorder() const;
 
 private:
     // intermediateAirfoils

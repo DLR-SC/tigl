@@ -20,28 +20,64 @@
 #include "CCPACSWingComponentSegment.h"
 #include "CCPACSWingSegment.h"
 
+#include "CCPACSControlSurfaceDeviceOuterShape.h"
+#include "CCPACSControlSurfaceDevicePath.h"
+
 namespace tigl
 {
 
-// @todo: All work is done in constructor
-// this is not correct. in particalar the wing transformation is not completely known at
-// this point. we should not call any getPoint functions at this stage
-// @todo: check for null pointer
-CTiglControlSurfaceHingeLine::CTiglControlSurfaceHingeLine(CCPACSControlSurfaceDeviceOuterShape outerShape, CCPACSControlSurfaceDevicePath path,
+CTiglControlSurfaceHingeLine::CTiglControlSurfaceHingeLine(const CCPACSControlSurfaceDeviceOuterShape* outerShape, 
+                                                           const CCPACSControlSurfaceDevicePath* path,
                                                            CCPACSWingComponentSegment* segment)
+    : _invalidated(true)
+    , _outerShape(outerShape)
+    , _path(path)
+    , _segment(segment)
 {
+}
+
+
+gp_Pnt CTiglControlSurfaceHingeLine::getInnerHingePoint() const
+{
+    buildHingeLine();
+    
+    return _innerHingePoint;
+}
+
+gp_Pnt CTiglControlSurfaceHingeLine::getOuterHingePoint() const
+{
+    buildHingeLine();
+    
+    return _outerHingePoint;
+}
+
+void CTiglControlSurfaceHingeLine::invalidate()
+{
+    _invalidated = true;
+}
+
+void CTiglControlSurfaceHingeLine::buildHingeLine() const
+{
+    if (!_invalidated) {
+        return;
+    }
+    
+    if (!_segment || !_path || !_outerShape) {
+        throw CTiglError("Null pointer in CTiglControlSurfaceHingeLine::buildHingeLine!", TIGL_NULL_POINTER);
+    }
+    
     // Calculate inner and outer HingePoint
     tigl::CCPACSControlSurfaceDeviceOuterShapeBorder borders[2];
-    borders[0] = outerShape.getOuterBorder();
-    borders[1] = outerShape.getInnerBorder();
+    borders[0] = _outerShape->getOuterBorder();
+    borders[1] = _outerShape->getInnerBorder();
 
     for ( int borderCounter = 0; borderCounter < 2; borderCounter++ ) {
         double hingeXsi;
         if (borderCounter == 0) {
-            hingeXsi = path.getOuterHingePoint().getXsi();
+            hingeXsi = _path->getOuterHingePoint().getXsi();
         }
         else {
-            hingeXsi = path.getInnerHingePoint().getXsi();
+            hingeXsi = _path->getInnerHingePoint().getXsi();
         }
 
         double borderEtaLE = borders[borderCounter].getEtaLE();
@@ -58,41 +94,23 @@ CTiglControlSurfaceHingeLine::CTiglControlSurfaceHingeLine(CCPACSControlSurfaceD
         }
 
         double eta = 0.,xsi = 0.;
-        CCPACSWingSegment* wsegment = segment->GetSegmentEtaXsi(hingeEta,hingeXsi,eta,xsi);
+        CCPACSWingSegment* wsegment = _segment->GetSegmentEtaXsi(hingeEta,hingeXsi,eta,xsi);
         gp_Pnt hingeUpper = wsegment->GetUpperPoint(eta,xsi);
         gp_Pnt hingeLower = wsegment->GetLowerPoint(eta,xsi);
 
         if (borderCounter == 0) {
-            double relHeight = path.getOuterHingePoint().getRelHeight();
+            double relHeight = _path->getOuterHingePoint().getRelHeight();
             gp_Vec upperToLower = (gp_Vec(hingeLower.XYZ()) - gp_Vec(hingeUpper.XYZ())).Multiplied(relHeight);
-            outerHingePoint = gp_Pnt(( gp_Vec(hingeUpper.XYZ()) + gp_Vec(upperToLower.XYZ() )).XYZ());
+            _outerHingePoint = gp_Pnt(( gp_Vec(hingeUpper.XYZ()) + gp_Vec(upperToLower.XYZ() )).XYZ());
         }
         else {
-            double relHeight = path.getInnerHingePoint().getRelHeight();
+            double relHeight = _path->getInnerHingePoint().getRelHeight();
             gp_Vec upperToLower = (gp_Vec(hingeLower.XYZ()) - gp_Vec(hingeUpper.XYZ())).Multiplied(relHeight);
-            innerHingePoint = gp_Pnt(( gp_Vec(hingeUpper.XYZ()) + gp_Vec(upperToLower.XYZ() )).XYZ());
+            _innerHingePoint = gp_Pnt(( gp_Vec(hingeUpper.XYZ()) + gp_Vec(upperToLower.XYZ() )).XYZ());
         }
     }
-}
-
-gp_Pnt CTiglControlSurfaceHingeLine::getTransformedInnerHingePoint(gp_Vec translation)
-{
-    return gp_Pnt((gp_Vec(innerHingePoint.XYZ()) + translation).XYZ());
-}
-
-gp_Pnt CTiglControlSurfaceHingeLine::getTransformedOuterHingePoint(gp_Vec translation)
-{
-    return gp_Pnt((gp_Vec(outerHingePoint.XYZ()) + translation).XYZ());
-}
-
-gp_Pnt CTiglControlSurfaceHingeLine::getInnerHingePoint()
-{
-    return innerHingePoint;
-}
-
-gp_Pnt CTiglControlSurfaceHingeLine::getOuterHingePoint()
-{
-    return outerHingePoint;
+    
+    _invalidated = false;
 }
 
 

@@ -66,7 +66,29 @@
 #include "TDataXtd_Shape.hxx"
 #endif
 
-#define USE_ADVANCED_MODELING 0
+#define USE_ADVANCED_MODELING 1
+
+namespace
+{
+    double linearInterpolation(std::vector<double> list1, std::vector<double> list2, double valueRelList1)
+    {
+        double min = 0;
+        double max = 0;
+        int idefRem = 0;
+        for ( std::vector<double>::size_type idef = 1; idef < list1.size(); idef++ ) {
+            if ( list1[idef-1] <= valueRelList1 && list1[idef] >= valueRelList1 ) {
+                min = list1[idef-1];
+                max = list1[idef];
+                idefRem = idef;
+                break;
+            }
+        }
+        double value = ( valueRelList1 - list1[idefRem-1] ) / ( list1[idefRem] - list1[idefRem-1] );
+        double min2 = list2[idefRem-1];
+        double max2 = list2[idefRem];
+        return value * ( max2 - min2 ) + min2;
+    }
+}
 
 namespace tigl
 {
@@ -116,7 +138,7 @@ void CCPACSControlSurfaceDevice::ReadCPACS(TixiDocumentHandle tixiHandle, const 
     loft  = PNamedShape(new CNamedShape(TopoDS_Shape(), loftName.c_str(), loftShortName.c_str()));
 
     _type = type;
-    _hingeLine = new CTiglControlSurfaceHingeLine(getOuterShape(),getMovementPath(),_segment);
+    _hingeLine = new CTiglControlSurfaceHingeLine(&getOuterShape(),&getMovementPath(),_segment);
 }
 
 void CCPACSControlSurfaceDevice::setLoft(PNamedShape loft)
@@ -129,17 +151,17 @@ PNamedShape CCPACSControlSurfaceDevice::BuildLoft()
     return loft;
 }
 
-CCPACSControlSurfaceDeviceOuterShape CCPACSControlSurfaceDevice::getOuterShape()
+const CCPACSControlSurfaceDeviceOuterShape& CCPACSControlSurfaceDevice::getOuterShape() const
 {
     return outerShape;
 }
 
-CCPACSControlSurfaceDevicePath CCPACSControlSurfaceDevice::getMovementPath()
+const CCPACSControlSurfaceDevicePath& CCPACSControlSurfaceDevice::getMovementPath() const
 {
     return path;
 }
 
-gp_Trsf CCPACSControlSurfaceDevice::getTransformation(double flapStatusInPercent)
+gp_Trsf CCPACSControlSurfaceDevice::getTransformation(double flapStatusInPercent) const
 {
     /*
      * this block of code calculates all needed values to rotate and move the controlSurfaceDevice according
@@ -162,8 +184,8 @@ gp_Trsf CCPACSControlSurfaceDevice::getTransformation(double flapStatusInPercent
      * innerTranslationY on hingePoint1 on purpose, maybe consider setting it to zero as default. See CPACS definition on
      * Path/Step/HingeLineTransformation for more informations.
      */
-    gp_Pnt hingePoint1 = _hingeLine->getTransformedOuterHingePoint(gp_Vec(outerTranslationX, innerTranslationY, outerTranslationZ));
-    gp_Pnt hingePoint2 = _hingeLine->getTransformedInnerHingePoint(gp_Vec(innerTranslationX, innerTranslationY, innerTranslationZ));
+    gp_Pnt hingePoint1 = _hingeLine->getOuterHingePoint().XYZ() + gp_XYZ(outerTranslationX, innerTranslationY, outerTranslationZ);
+    gp_Pnt hingePoint2 = _hingeLine->getInnerHingePoint().XYZ() + gp_XYZ(innerTranslationX, innerTranslationY, innerTranslationZ);
 
     // calculating the needed transformations
     CTiglControlSurfaceTransformation transformation(innerHingeOld, outerHingeOld, hingePoint2, hingePoint1, rotation);
@@ -292,25 +314,6 @@ TopoDS_Face CCPACSControlSurfaceDevice::getFace()
     TopoDS_Face face = BRepBuilderAPI_MakeFace(wire);
 
     return face;
-}
-
-double CCPACSControlSurfaceDevice::linearInterpolation(std::vector<double> list1, std::vector<double> list2, double valueRelList1)
-{
-    double min = 0;
-    double max = 0;
-    int idefRem = 0;
-    for ( std::vector<double>::size_type idef = 1; idef < list1.size(); idef++ ) {
-        if ( list1[idef-1] <= valueRelList1 && list1[idef] >= valueRelList1 ) {
-            min = list1[idef-1];
-            max = list1[idef];
-            idefRem = idef;
-            break;
-        }
-    }
-    double value = ( valueRelList1 - list1[idefRem-1] ) / ( list1[idefRem] - list1[idefRem-1] );
-    double min2 = list2[idefRem-1];
-    double max2 = list2[idefRem];
-    return value * ( max2 - min2 ) + min2;
 }
 
 void CCPACSControlSurfaceDevice::getProjectedPoints(gp_Pnt point1, gp_Pnt point2, gp_Pnt point3, gp_Pnt point4,

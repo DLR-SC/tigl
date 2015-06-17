@@ -65,22 +65,22 @@ void CCPACSControlSurfaceDeviceStep::ReadCPACS(TixiDocumentHandle tixiHandle,
     }
 }
 
-CCPACSControlSurfaceHingeTranslation CCPACSControlSurfaceDeviceStep::getInnerHingeTranslation()
+CCPACSControlSurfaceHingeTranslation CCPACSControlSurfaceDeviceStep::getInnerHingeTranslation() const
 {
     return innerHingeTranslation;
 }
 
-CCPACSControlSurfaceHingeTranslation CCPACSControlSurfaceDeviceStep::getOuterHingeTranslation()
+CCPACSControlSurfaceHingeTranslation CCPACSControlSurfaceDeviceStep::getOuterHingeTranslation() const
 {
     return outerHingeTranslation;
 }
 
-double CCPACSControlSurfaceDeviceStep::getRelDeflection()
+double CCPACSControlSurfaceDeviceStep::getRelDeflection() const
 {
     return relDeflection;
 }
 
-double CCPACSControlSurfaceDeviceStep::getHingeLineRotation()
+double CCPACSControlSurfaceDeviceStep::getHingeLineRotation() const
 {
     return hingeLineRotation;
 }

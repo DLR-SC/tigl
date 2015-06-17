@@ -31,6 +31,7 @@
 #include "tigl_internal.h"
 #include "CTiglControlSurfaceHingeLine.h"
 #include "CCPACSControlSurfaceDeviceWingCutOut.h"
+#include "CCPACSControlSurfaceDevicePath.h"
 #include "gp_Lin.hxx"
 
 namespace tigl
@@ -43,13 +44,13 @@ class CCPACSControlSurfaceDevice : public CTiglAbstractPhysicalComponent
 public:
     TIGL_EXPORT CCPACSControlSurfaceDevice(CCPACSWingComponentSegment* segment);
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string & controlSurfaceDeviceXPath, TiglControlSurfaceType type = TRAILING_EDGE_DEVICE);
-    TIGL_EXPORT CCPACSControlSurfaceDeviceOuterShape getOuterShape();
-    TIGL_EXPORT CCPACSControlSurfaceDevicePath getMovementPath();        // Returns the Component Type TIGL_COMPONENT_WING.
+    TIGL_EXPORT const CCPACSControlSurfaceDeviceOuterShape& getOuterShape() const;
+    TIGL_EXPORT const CCPACSControlSurfaceDevicePath& getMovementPath() const;        // Returns the Component Type TIGL_COMPONENT_WING.
     TIGL_EXPORT TiglGeometricComponentType GetComponentType(void) {return TIGL_COMPONENT_CONTROLSURF | TIGL_COMPONENT_PHYSICAL;}
     TIGL_EXPORT PNamedShape getCutOutShape(void);
     TIGL_EXPORT void setLoft(PNamedShape loft);
     TIGL_EXPORT TopoDS_Face getFace();
-    TIGL_EXPORT gp_Trsf getTransformation(double flapStatusInPercent);
+    TIGL_EXPORT gp_Trsf getTransformation(double flapStatusInPercent) const;
     TIGL_EXPORT void getProjectedPoints(gp_Pnt point1, gp_Pnt point2, gp_Pnt point3,
                                         gp_Pnt point4, gp_Vec& projectedPoint1,
                                         gp_Vec& projectedPoint2, gp_Vec& projectedPoint3,
@@ -62,7 +63,6 @@ protected:
     PNamedShape BuildLoft();
 
 private:
-    double linearInterpolation(std::vector<double> list1, std::vector<double> list2, double valueRelList1);
     CCPACSControlSurfaceDevice(const CCPACSControlSurfaceDevice& segment); /* disable copy constructor */
     double determineCutOutPrismThickness();
     std::string GetShortShapeName();

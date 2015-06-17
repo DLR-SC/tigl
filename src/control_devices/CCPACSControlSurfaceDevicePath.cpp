@@ -58,22 +58,22 @@ void CCPACSControlSurfaceDevicePath::ReadCPACS(
 
 }
 
-CCPACSControlSurfaceDeviceSteps CCPACSControlSurfaceDevicePath::getSteps()
+CCPACSControlSurfaceDeviceSteps CCPACSControlSurfaceDevicePath::getSteps() const
 {
     return steps;
 }
 
-CCPACSControlSurfaceDevicePathHingePoint CCPACSControlSurfaceDevicePath::getInnerHingePoint()
+CCPACSControlSurfaceDevicePathHingePoint CCPACSControlSurfaceDevicePath::getInnerHingePoint() const
 {
     return innerPoint;
 }
 
-CCPACSControlSurfaceDevicePathHingePoint CCPACSControlSurfaceDevicePath::getOuterHingePoint()
+CCPACSControlSurfaceDevicePathHingePoint CCPACSControlSurfaceDevicePath::getOuterHingePoint() const
 {
     return outerPoint;
 }
 
-std::vector<double> CCPACSControlSurfaceDevicePath::getInnerHingeTranslationsX()
+std::vector<double> CCPACSControlSurfaceDevicePath::getInnerHingeTranslationsX() const
 {
     std::vector<double> tmp;
     for ( int i = 1; i <= steps.getControlSurfaceDeviceStepCount(); i++ ) {
@@ -82,7 +82,7 @@ std::vector<double> CCPACSControlSurfaceDevicePath::getInnerHingeTranslationsX()
     return tmp;
 }
 
-std::vector<double> CCPACSControlSurfaceDevicePath::getInnerHingeTranslationsY()
+std::vector<double> CCPACSControlSurfaceDevicePath::getInnerHingeTranslationsY() const
 {
     std::vector<double> tmp;
     for ( int i = 1; i <= steps.getControlSurfaceDeviceStepCount(); i++ ) {
@@ -91,7 +91,7 @@ std::vector<double> CCPACSControlSurfaceDevicePath::getInnerHingeTranslationsY()
     return tmp;
 }
 
-std::vector<double> CCPACSControlSurfaceDevicePath::getInnerHingeTranslationsZ()
+std::vector<double> CCPACSControlSurfaceDevicePath::getInnerHingeTranslationsZ() const
 {
     std::vector<double> tmp;
     for ( int i = 1; i <= steps.getControlSurfaceDeviceStepCount(); i++ ) {
@@ -100,7 +100,7 @@ std::vector<double> CCPACSControlSurfaceDevicePath::getInnerHingeTranslationsZ()
     return tmp;
 }
 
-std::vector<double> CCPACSControlSurfaceDevicePath::getOuterHingeTranslationsX()
+std::vector<double> CCPACSControlSurfaceDevicePath::getOuterHingeTranslationsX() const
 {
     std::vector<double> tmp;
     for ( int i = 1; i <= steps.getControlSurfaceDeviceStepCount(); i++ ) {
@@ -109,7 +109,7 @@ std::vector<double> CCPACSControlSurfaceDevicePath::getOuterHingeTranslationsX()
     return tmp;
 }
 
-std::vector<double> CCPACSControlSurfaceDevicePath::getOuterHingeTranslationsZ()
+std::vector<double> CCPACSControlSurfaceDevicePath::getOuterHingeTranslationsZ() const
 {
     std::vector<double> tmp;
     for ( int i = 1; i <= steps.getControlSurfaceDeviceStepCount(); i++ ) {
@@ -118,7 +118,7 @@ std::vector<double> CCPACSControlSurfaceDevicePath::getOuterHingeTranslationsZ()
     return tmp;
 }
 
-std::vector<double> CCPACSControlSurfaceDevicePath::getRelDeflections()
+std::vector<double> CCPACSControlSurfaceDevicePath::getRelDeflections() const
 {
     std::vector<double> tmp;
     for ( int i = 1; i <= steps.getControlSurfaceDeviceStepCount(); i++ ) {
@@ -127,7 +127,7 @@ std::vector<double> CCPACSControlSurfaceDevicePath::getRelDeflections()
     return tmp;
 }
 
-std::vector<double> CCPACSControlSurfaceDevicePath::getHingeLineRotations()
+std::vector<double> CCPACSControlSurfaceDevicePath::getHingeLineRotations() const
 {
     std::vector<double> tmp;
     for ( int i = 1; i <= steps.getControlSurfaceDeviceStepCount(); i++ ) {
