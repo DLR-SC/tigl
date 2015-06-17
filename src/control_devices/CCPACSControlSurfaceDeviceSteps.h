@@ -39,8 +39,8 @@ public:
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle,
                                const std::string & controlSurfaceDeviceStepsXPath);
 
-    TIGL_EXPORT CCPACSControlSurfaceDeviceStep& getControlSurfaceDeviceStepByID( int id ) const;
-    TIGL_EXPORT int getControlSurfaceDeviceStepCount() const;
+    TIGL_EXPORT CCPACSControlSurfaceDeviceStep& GetStep(int index) const;
+    TIGL_EXPORT int GetStepCount() const;
 
 private:
     typedef std::vector<CCPACSControlSurfaceDeviceStep*> ControlSurfaceDeviceStepContainer;

@@ -94,6 +94,8 @@ public:
     TIGL_EXPORT TopoDS_Shape ExtendFlap(std::string flapUID, double flapDeflectionPercentage );
 
     // Adds all Segments of this wing and flaps to one shape
+    // @TODO: this should not be called explicitly. Instead, it should be called by get loft, in case
+    // The control surface deflections are not zero
     TIGL_EXPORT TopoDS_Shape BuildFusedSegmentsWithFlaps(bool splitWingInUpperAndLower, std::map<std::string,double> flapStatus);
 
     // builds Wing Without Flaps.

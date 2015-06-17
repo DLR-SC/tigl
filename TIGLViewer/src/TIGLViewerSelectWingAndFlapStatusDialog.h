@@ -32,13 +32,11 @@ namespace Ui
     class TIGLViewerSelectWingAndFlapStatusDialog;
 }
 
-static std::map< std::string, double> _controlSurfaceDevices;
-
 class TIGLViewerSelectWingAndFlapStatusDialog : public QDialog
 {
     Q_OBJECT
 public:
-    explicit TIGLViewerSelectWingAndFlapStatusDialog(QWidget *parent, TiglCPACSConfigurationHandle &handle, TIGLViewerDocument* document);
+    explicit TIGLViewerSelectWingAndFlapStatusDialog(TIGLViewerDocument* document, QWidget* parent=0);
     ~TIGLViewerSelectWingAndFlapStatusDialog();
     int exec(QStringList wings);
     std::string getSelectedWing();
@@ -54,16 +52,19 @@ private slots:
     void on_checkSpoiler_stateChanged(int arg1);
 
 private:
-    bool switcher;
     double linearInterpolation(std::vector<double> list1, std::vector<double> list2, double valueRelList1);
     Ui::TIGLViewerSelectWingAndFlapStatusDialog *ui;
-    TiglCPACSConfigurationHandle _handle;
-    std::map< std::string, QLabel*> _displayer;
-    std::map< std::string, QLabel*> _displayer_deflection;
-    std::map< std::string, QLabel*> _displayer_rotation;
-    std::map< std::string, tigl::CCPACSControlSurfaceDevice*> _controlSurfaceDevicesPointer;
+
+    struct DeviceLabels {
+        QLabel* valueLabel;
+        QLabel* deflectionLabel;
+        QLabel* rotAngleLabel;
+    };
+    std::map< std::string, DeviceLabels> _guiMap;
+    std::map< std::string, tigl::CCPACSControlSurfaceDevice*> _deviceMap;
+
     TIGLViewerDocument* _document;
-    void setSliderAndLabels(std::string controlSurfaceDeviceUID, int k);
+    void updateLabels(std::string controlSurfaceDeviceUID, double flapStatusInPercent);
     void drawGUI(bool redrawModel);
     void cleanup();
 

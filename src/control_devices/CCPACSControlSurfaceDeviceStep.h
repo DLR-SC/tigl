@@ -24,8 +24,8 @@
 
 #include "tixi.h"
 #include "CTiglError.h"
-#include "CCPACSControlSurfaceHingeTranslation.h"
 #include "tigl_internal.h"
+#include "CTiglPoint.h"
 
 namespace tigl
 {
@@ -38,8 +38,8 @@ public:
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle,
                                const std::string & controlSurfaceDeviceStepXPath);
 
-    TIGL_EXPORT CCPACSControlSurfaceHingeTranslation getInnerHingeTranslation() const;
-    TIGL_EXPORT CCPACSControlSurfaceHingeTranslation getOuterHingeTranslation() const;
+    TIGL_EXPORT CTiglPoint getInnerHingeTranslation() const;
+    TIGL_EXPORT CTiglPoint getOuterHingeTranslation() const;
 
     TIGL_EXPORT double getRelDeflection() const;
     TIGL_EXPORT double getHingeLineRotation() const;
@@ -48,8 +48,8 @@ private:
     double relDeflection;
     double hingeLineRotation;
 
-    CCPACSControlSurfaceHingeTranslation innerHingeTranslation;
-    CCPACSControlSurfaceHingeTranslation outerHingeTranslation;
+    CTiglPoint innerHingeTranslation;
+    CTiglPoint outerHingeTranslation;
 };
 
 } // end namespace tigl

@@ -32,13 +32,20 @@
 #include <QSpacerItem>
 #include <QPushButton>
 
-TIGLViewerSelectWingAndFlapStatusDialog::TIGLViewerSelectWingAndFlapStatusDialog(QWidget *parent, TiglCPACSConfigurationHandle &handle, TIGLViewerDocument* document) :
+// store deflections, values are from 0 ... 1
+// TODO: this should not be static, or at least it should be cleared, if new dialog is created with
+// new configuration
+static std::map< std::string, double> _deflectionMap;
+
+double sliderToRelativeDeflect(QSlider* slider) {
+    return (slider->value() - slider->minimum())/(double)(slider->maximum()-slider->minimum());
+}
+
+TIGLViewerSelectWingAndFlapStatusDialog::TIGLViewerSelectWingAndFlapStatusDialog(TIGLViewerDocument* document, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::TIGLViewerSelectWingAndFlapStatusDialog)
 {
-    _handle = handle;
     ui->setupUi(this);
-    switcher = true;
     setFixedSize(size());
     this->setWindowTitle("Choose ControlSurface Deflections");
     _document = document;
@@ -66,7 +73,7 @@ std::string TIGLViewerSelectWingAndFlapStatusDialog::getSelectedWing()
 
 std::map<std::string,double> TIGLViewerSelectWingAndFlapStatusDialog::getControlSurfaceStatus()
 {
-    return _controlSurfaceDevices;
+    return _deflectionMap;
 }
 
 void TIGLViewerSelectWingAndFlapStatusDialog::on_comboBoxWings_currentIndexChanged(int index)
@@ -78,21 +85,19 @@ void TIGLViewerSelectWingAndFlapStatusDialog::slider_value_changed(int k)
 {
     QSlider* slider = dynamic_cast<QSlider*>(QObject::sender());
     std::string uid = slider->windowTitle().toStdString();
-    setSliderAndLabels(uid,k);
-    _document->updateControlSurfacesInteractiveObjects(getSelectedWing(),_controlSurfaceDevices,slider->windowTitle().toStdString());
+    updateLabels(uid, sliderToRelativeDeflect(slider));
+    _document->updateControlSurfacesInteractiveObjects(getSelectedWing(),_deflectionMap,slider->windowTitle().toStdString());
 }
 
 void TIGLViewerSelectWingAndFlapStatusDialog::cleanup()
 {
-    _displayer.clear();
-    _displayer_deflection.clear();
-    _displayer_rotation.clear();
+    _guiMap.clear();
     return;
 }
 
 double TIGLViewerSelectWingAndFlapStatusDialog::getTrailingEdgeFlapValue( std::string uid )
 {
-    return _controlSurfaceDevices[uid];
+    return _deflectionMap[uid];
 }
 
 double TIGLViewerSelectWingAndFlapStatusDialog::linearInterpolation(std::vector<double> list1, std::vector<double> list2, double valueRelList1)
@@ -118,7 +123,8 @@ void TIGLViewerSelectWingAndFlapStatusDialog::drawGUI(bool redrawModel)
 {
     cleanup();
     std::string wingUID = ui->comboBoxWings->currentText().toStdString();
-    tigl::CCPACSWing &wing = tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(_handle).GetWing(wingUID);
+    tigl::CCPACSConfiguration& config = _document->GetConfiguration();
+    tigl::CCPACSWing &wing = config.GetWing(wingUID);
 
     QWidget* outerWidget = new QWidget;
     QVBoxLayout* vLayout = new QVBoxLayout;
@@ -127,7 +133,7 @@ void TIGLViewerSelectWingAndFlapStatusDialog::drawGUI(bool redrawModel)
     vLayout->setSpacing(0);
     QPalette Pal(palette());
     Pal.setColor(QPalette::Background, Qt::white);
-    switcher = true;
+    bool switcher = true;
 
     int noDevices = wing.GetComponentSegmentCount();
     for ( int i = 1; i <= wing.GetComponentSegmentCount(); i++ ) {
@@ -137,7 +143,7 @@ void TIGLViewerSelectWingAndFlapStatusDialog::drawGUI(bool redrawModel)
             if (noDevices < 1) {
                 QPushButton *okButton= ui->buttonBox->button(QDialogButtonBox::Ok);
                 okButton->setEnabled(false);
-                QLabel* error = new QLabel("This wing has no ControlSurfaces");
+                QLabel* error = new QLabel("This wing has no ControlSurfaces", this);
                 error->setMargin(50);
                 QWidget* innerWidgetE = new QWidget;
                 innerWidgetE->setAutoFillBackground(true);
@@ -182,44 +188,44 @@ void TIGLViewerSelectWingAndFlapStatusDialog::drawGUI(bool redrawModel)
             innerWidget2->setPalette(Pal);
 
             QString uid = controlSurfaceDevice.GetUID().c_str();
-            QLabel* label = new QLabel(uid);
-            label->setFixedSize(250,15);
+            QLabel* labelUID = new QLabel(uid, this);
+            labelUID->setFixedSize(250,15);
             QSlider* slider = new QSlider(Qt::Horizontal);
             slider->setFixedSize(90,15);
             slider->setMaximum(1000);
 
-            QLabel* displayer = new QLabel("Value: 0% ");
-            displayer->setFixedHeight(15);
+            QLabel* labelValue = new QLabel("Value: 0% ", this);
+            labelValue->setFixedHeight(15);
             QString def = "Deflection: ";
             QString rot = "Rotation: ";
 
             // @todo: refactor, chained object calls are ugly
-            if ( controlSurfaceDevice.getMovementPath().getSteps().getControlSurfaceDeviceStepCount() > 0 ) {
-                def.append(QString::number(controlSurfaceDevice.getMovementPath().getSteps().getControlSurfaceDeviceStepByID(1).getRelDeflection()));
-                rot.append(QString::number(controlSurfaceDevice.getMovementPath().getSteps().getControlSurfaceDeviceStepByID(1).getHingeLineRotation()));
+            if ( controlSurfaceDevice.getMovementPath().getSteps().GetStepCount() > 0 ) {
+                def.append(QString::number(controlSurfaceDevice.getMovementPath().getSteps().GetStep(1).getRelDeflection()));
+                rot.append(QString::number(controlSurfaceDevice.getMovementPath().getSteps().GetStep(1).getHingeLineRotation()));
             }
 
-            QLabel* display_rotation = new QLabel(rot);
-            QLabel* display_deflection = new QLabel(def);
-            displayer->setMargin(0);
-            display_rotation->setMargin(0);
-            display_rotation->setFixedHeight(15);
+            QLabel* labelRotation   = new QLabel(rot, this);
+            QLabel* labelDeflection = new QLabel(def, this);
+            labelValue->setMargin(0);
+            labelRotation->setMargin(0);
+            labelRotation->setFixedHeight(15);
 
-            displayer->setFixedWidth(90);
-            display_rotation->setFixedWidth(90);
-            display_deflection->setFixedWidth(90);
+            labelValue->setFixedWidth(90);
+            labelRotation->setFixedWidth(90);
+            labelDeflection->setFixedWidth(90);
 
             double savedValue;
-            if (_controlSurfaceDevices.find(uid.toStdString()) != _controlSurfaceDevices.end()) {
-                savedValue = _controlSurfaceDevices[uid.toStdString()];
+            if (_deflectionMap.find(uid.toStdString()) != _deflectionMap.end()) {
+                savedValue = _deflectionMap[uid.toStdString()];
             }
             else {
                 std::vector<double> relDeflections;
                 std::vector<double> rotations;
                 // @todo: refactor, chained object calls are ugly
-                for ( int steps = 0; steps < controlSurfaceDevice.getMovementPath().getSteps().getControlSurfaceDeviceStepCount(); steps++ ) {
-                    relDeflections.push_back(controlSurfaceDevice.getMovementPath().getSteps().getControlSurfaceDeviceStepByID(steps+1).getRelDeflection());
-                    rotations.push_back(controlSurfaceDevice.getMovementPath().getSteps().getControlSurfaceDeviceStepByID(steps+1).getHingeLineRotation());
+                for ( int iStep = 1; iStep <= controlSurfaceDevice.getMovementPath().getSteps().GetStepCount(); iStep++ ) {
+                    relDeflections.push_back(controlSurfaceDevice.getMovementPath().getSteps().GetStep(iStep).getRelDeflection());
+                    rotations.push_back(controlSurfaceDevice.getMovementPath().getSteps().GetStep(iStep).getHingeLineRotation());
                 }
 
                 if (relDeflections.size() > 1) {
@@ -227,42 +233,43 @@ void TIGLViewerSelectWingAndFlapStatusDialog::drawGUI(bool redrawModel)
                     // map Deflection to Percentage.
                     double minDef = relDeflections[0];
                     double deflectionRange = relDeflections[relDeflections.size()-1] - minDef;
-                    savedValue = ((deflection - minDef)/deflectionRange)*100;
+                    savedValue = ((deflection - minDef)/deflectionRange);
 
                 }
                 else {
-                    savedValue = 50;
+                    savedValue = 0.5;
                 }
             }
 
 
-            displayer->setText("Value: " + QString::number(savedValue) + "%");
-            slider->setValue((int) savedValue*10);
+            labelValue->setText("Value: " + QString::number(savedValue) + "%");
+            slider->setValue((int)(slider->minimum() + (slider->maximum() - slider->minimum()) * savedValue));
 
-            _displayer[uid.toStdString()] = displayer;
-            _displayer_rotation[uid.toStdString()] = display_rotation;
-            _displayer_deflection[uid.toStdString()] = display_deflection;
+            DeviceLabels elements;
+            elements.valueLabel = labelValue;
+            elements.rotAngleLabel = labelRotation;
+            elements.deflectionLabel = labelDeflection;
+            _guiMap[uid.toStdString()] = elements;
 
-            hLayout->addWidget(label);
+            hLayout->addWidget(labelUID);
             hLayout->addWidget(slider);
-            hLayout->addWidget(displayer);
-            hLayout->addWidget(display_rotation);
-            hLayout->addWidget(display_deflection);
-            hLayout->addWidget(displayer);
+            hLayout->addWidget(labelValue);
+            hLayout->addWidget(labelRotation);
+            hLayout->addWidget(labelDeflection);
+            hLayout->addWidget(labelValue);
 
             innerWidget->setLayout(hLayout);
 
             slider->setWindowTitle( uid );
             vLayout->addWidget(innerWidget);
 
-            // @todo: this looks really awkward
-            if ( _controlSurfaceDevices[uid.toStdString()] == NULL ) {
-                _controlSurfaceDevices[uid.toStdString()] = 0;
+            if (_deflectionMap.find(uid.toStdString()) == _deflectionMap.end()) {
+                _deflectionMap[uid.toStdString()] = 0;
             }
 
             connect(slider, SIGNAL(valueChanged(int)), this, SLOT(slider_value_changed(int)));
-            _controlSurfaceDevicesPointer[uid.toStdString()] = &controlSurfaceDevice;
-            setSliderAndLabels(uid.toStdString(),savedValue*10);
+            _deviceMap[uid.toStdString()] = &controlSurfaceDevice;
+            updateLabels(uid.toStdString(), savedValue);
         }
         outerWidget->setLayout(vLayout);
         ui->scrollArea->setWidget(outerWidget);
@@ -287,7 +294,7 @@ void TIGLViewerSelectWingAndFlapStatusDialog::on_checkSpoiler_stateChanged(int a
     drawGUI(false);
 }
 
-void TIGLViewerSelectWingAndFlapStatusDialog::setSliderAndLabels(std::string controlSurfaceDeviceUID, int k)
+void TIGLViewerSelectWingAndFlapStatusDialog::updateLabels(std::string controlSurfaceDeviceUID, double relDeflect)
 {
     QString textVal = "Value: ";
     QString textRot = "Rotation: ";
@@ -295,23 +302,34 @@ void TIGLViewerSelectWingAndFlapStatusDialog::setSliderAndLabels(std::string con
 
     std::vector<double> relDeflections;
     std::vector<double> rotations;
-    // @todo: refactor, chained object calls are ugly
-    for ( int steps = 0; steps < _controlSurfaceDevicesPointer[controlSurfaceDeviceUID]->getMovementPath().getSteps().getControlSurfaceDeviceStepCount(); steps++ ) {
-        relDeflections.push_back(_controlSurfaceDevicesPointer[controlSurfaceDeviceUID]->getMovementPath().getSteps().getControlSurfaceDeviceStepByID(steps+1).getRelDeflection());
-        rotations.push_back(_controlSurfaceDevicesPointer[controlSurfaceDeviceUID]->getMovementPath().getSteps().getControlSurfaceDeviceStepByID(steps+1).getHingeLineRotation());
+    
+    std::map< std::string, tigl::CCPACSControlSurfaceDevice*>::iterator it;
+    it = _deviceMap.find(controlSurfaceDeviceUID);
+    
+    if (it == _deviceMap.end()) {
+        return;
+    }
+    
+    tigl::CCPACSControlSurfaceDevice* device = it->second;
+    tigl::CCPACSControlSurfaceDeviceSteps steps = device->getMovementPath().getSteps();
+    
+    for ( int iStep = 1; iStep <= steps.GetStepCount(); iStep++ ) {
+        relDeflections.push_back(steps.GetStep(iStep).getRelDeflection());
+        rotations.push_back(steps.GetStep(iStep).getHingeLineRotation());
     }
 
-    double value = k;
-    double flapStatusInPercent = value/10;
-    double inputDeflection = ( relDeflections[relDeflections.size()-1] - relDeflections[0] ) * ( flapStatusInPercent/100 ) + relDeflections[0];
+    double inputDeflection = ( relDeflections.back() - relDeflections.front() ) * relDeflect  + relDeflections.front();
     double rotation = linearInterpolation( relDeflections, rotations, inputDeflection );
 
-    textVal.append(QString::number(value/10));
+    textVal.append(QString::number(relDeflect*100.));
     textRot.append(QString::number(rotation));
     textDef.append(QString::number(inputDeflection));
     textVal.append("% ");
-    _displayer.at(controlSurfaceDeviceUID)->setText(textVal);
-    _displayer_deflection.at(controlSurfaceDeviceUID)->setText(textDef);
-    _displayer_rotation.at(controlSurfaceDeviceUID)->setText(textRot);
-    _controlSurfaceDevices[controlSurfaceDeviceUID] = value/10;
+
+    DeviceLabels& elms = _guiMap.at(controlSurfaceDeviceUID);
+    elms.valueLabel->setText(textVal);
+    elms.deflectionLabel->setText(textDef);
+    elms.rotAngleLabel->setText(textRot);
+
+    _deflectionMap[controlSurfaceDeviceUID] = relDeflect;
 }

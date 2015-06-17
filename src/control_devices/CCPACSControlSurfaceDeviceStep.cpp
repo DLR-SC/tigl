@@ -32,45 +32,60 @@ void CCPACSControlSurfaceDeviceStep::ReadCPACS(TixiDocumentHandle tixiHandle,
                                                const std::string& controlSurfaceDeviceStepXPath)
 {
 
-    char*       elementPath;
     std::string tempString;
 
     tempString = controlSurfaceDeviceStepXPath + "/innerHingeTranslation";
-    elementPath = const_cast<char*>(tempString.c_str());
-    if (tixiCheckElement(tixiHandle, elementPath) == SUCCESS) {
-        innerHingeTranslation.ReadCPACS(tixiHandle, elementPath);
+    if (tixiCheckElement(tixiHandle, tempString.c_str()) == SUCCESS) {
+        
+        if (tixiGetDoubleElement(tixiHandle, (tempString + "/x").c_str(), &(innerHingeTranslation.x)) != SUCCESS) {
+            // error
+        }
+        
+        if (tixiGetDoubleElement(tixiHandle, (tempString + "/y").c_str(), &(innerHingeTranslation.y)) != SUCCESS) {
+            // error
+        }
+        
+        if (tixiGetDoubleElement(tixiHandle, (tempString + "/z").c_str(), &(innerHingeTranslation.z)) != SUCCESS) {
+            // error
+        }
+        
     }
 
     tempString = controlSurfaceDeviceStepXPath + "/outerHingeTranslation";
-    elementPath = const_cast<char*>(tempString.c_str());
-    if (tixiCheckElement(tixiHandle, elementPath) == SUCCESS) {
-        outerHingeTranslation.ReadCPACS(tixiHandle, elementPath);
-    }
-    else {
-        outerHingeTranslation = innerHingeTranslation;
+    if (tixiCheckElement(tixiHandle, tempString.c_str()) == SUCCESS) {
+        
+        if (tixiGetDoubleElement(tixiHandle, (tempString + "/x").c_str(), &(outerHingeTranslation.x)) != SUCCESS) {
+            // error
+        }
+        
+        
+        if (tixiGetDoubleElement(tixiHandle, (tempString + "/z").c_str(), &(outerHingeTranslation.z)) != SUCCESS) {
+            // error
+        }
+        
+        // the y value of the outer hinge translation equals the inner y value
+         outerHingeTranslation.y = innerHingeTranslation.y;
     }
 
     tempString = controlSurfaceDeviceStepXPath + "/relDeflection";
-    elementPath = const_cast<char*>(tempString.c_str());
-    if ( tixiGetDoubleElement(tixiHandle,elementPath, &relDeflection) != SUCCESS) {
+    if ( tixiGetDoubleElement(tixiHandle,tempString.c_str(), &relDeflection) != SUCCESS) {
         // error while trying to read relDeflection out of CPACS data
     }
 
     tempString = controlSurfaceDeviceStepXPath + "/hingeLineRotation";
-    elementPath = const_cast<char*>(tempString.c_str());
-    if ( tixiCheckElement(tixiHandle, elementPath) == SUCCESS ) {
-        if ( tixiGetDoubleElement(tixiHandle,elementPath, &hingeLineRotation) != SUCCESS) {
+    if ( tixiCheckElement(tixiHandle, tempString.c_str()) == SUCCESS ) {
+        if ( tixiGetDoubleElement(tixiHandle,tempString.c_str(), &hingeLineRotation) != SUCCESS) {
             // error while trying to read hingeLineRotation out of CPACS data
         }
     }
 }
 
-CCPACSControlSurfaceHingeTranslation CCPACSControlSurfaceDeviceStep::getInnerHingeTranslation() const
+CTiglPoint CCPACSControlSurfaceDeviceStep::getInnerHingeTranslation() const
 {
     return innerHingeTranslation;
 }
 
-CCPACSControlSurfaceHingeTranslation CCPACSControlSurfaceDeviceStep::getOuterHingeTranslation() const
+CTiglPoint CCPACSControlSurfaceDeviceStep::getOuterHingeTranslation() const
 {
     return outerHingeTranslation;
 }

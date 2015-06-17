@@ -818,7 +818,7 @@ void TIGLViewerDocument::drawWingFlaps()
         wings << name.c_str();
     }
 
-    TIGLViewerSelectWingAndFlapStatusDialog dialog(0,m_cpacsHandle, this);
+    TIGLViewerSelectWingAndFlapStatusDialog dialog(this);
     int dialogValue = dialog.exec(wings);
     if ( dialogValue == 0 ) {
         for ( int i = 1; i <= GetConfiguration().GetWingCount(); i++ ) {
@@ -875,7 +875,7 @@ void TIGLViewerDocument::updateControlSurfacesInteractiveObjects(std::string sel
             tigl::CCPACSControlSurfaceDevice &controlSurfaceDevice = controlSurfaceDevices->getControlSurfaceDeviceByID(j);
 
             if (flapsForInteractiveUse.find(controlSurfaceDevice.GetUID()) != flapsForInteractiveUse.end() && controlUID == controlSurfaceDevice.GetUID()) {
-               gp_Trsf trsf = controlSurfaceDevice.getTransformation(flapStatus[controlSurfaceDevice.GetUID()]);
+               gp_Trsf trsf = controlSurfaceDevice.getTransformation(flapStatus[controlSurfaceDevice.GetUID()]*100.);
                // @todo: check 
                Handle(AIS_Shape) flap = flapsForInteractiveUse[controlSurfaceDevice.GetUID()];
                app->getScene()->getContext()->SetLocation(flap, trsf);

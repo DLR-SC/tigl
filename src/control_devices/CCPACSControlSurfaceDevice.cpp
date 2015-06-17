@@ -135,15 +135,27 @@ gp_Trsf CCPACSControlSurfaceDevice::getTransformation(double deflection) const
 {
     // this block of code calculates all needed values to rotate and move the controlSurfaceDevice according
     // to the given relDeflection by using a linearInterpolation.
-    std::vector<double> relDeflections = this->getMovementPath().getRelDeflections();
+    std::vector<double> relDeflections, innerXTrans, outerXTrans, innerYTrans, innerZTrans, outerZTrans, rotations;
+    
+    CCPACSControlSurfaceDeviceSteps steps = getMovementPath().getSteps();
+    for (int istep = 1; istep <= steps.GetStepCount(); ++istep) {
+        CCPACSControlSurfaceDeviceStep& step = steps.GetStep(istep);
+        relDeflections.push_back(step.getRelDeflection());
+        innerXTrans.push_back(step.getInnerHingeTranslation().x);
+        innerYTrans.push_back(step.getInnerHingeTranslation().y);
+        innerZTrans.push_back(step.getInnerHingeTranslation().z);
+        outerXTrans.push_back(step.getOuterHingeTranslation().x);
+        outerZTrans.push_back(step.getOuterHingeTranslation().z);
+        rotations.push_back(step.getHingeLineRotation());
+    }
+    
     double inputDeflection = ( relDeflections[relDeflections.size()-1] - relDeflections[0] ) * ( deflection/100 ) + relDeflections[0];
-    double rotation = Interpolate( relDeflections, this->getMovementPath().getHingeLineRotations(), inputDeflection );
-    double innerTranslationX = Interpolate( relDeflections, this->getMovementPath().getInnerHingeTranslationsX(), inputDeflection );
-    double innerTranslationY = Interpolate( relDeflections, this->getMovementPath().getInnerHingeTranslationsY(), inputDeflection );
-    double innerTranslationZ = Interpolate( relDeflections, this->getMovementPath().getInnerHingeTranslationsZ(), inputDeflection );
-    double outerTranslationX = Interpolate( relDeflections, this->getMovementPath().getOuterHingeTranslationsX(), inputDeflection );
-    double outerTranslationZ = Interpolate( relDeflections, this->getMovementPath().getOuterHingeTranslationsZ(), inputDeflection );
-    relDeflections.clear();
+    double rotation = Interpolate( relDeflections, rotations, inputDeflection );
+    double innerTranslationX = Interpolate( relDeflections, innerXTrans, inputDeflection );
+    double innerTranslationY = Interpolate( relDeflections, innerYTrans, inputDeflection );
+    double innerTranslationZ = Interpolate( relDeflections, innerZTrans, inputDeflection );
+    double outerTranslationX = Interpolate( relDeflections, outerXTrans, inputDeflection );
+    double outerTranslationZ = Interpolate( relDeflections, outerZTrans, inputDeflection );
 
     gp_Pnt innerHingeOld = _hingeLine->getInnerHingePoint();;
     gp_Pnt outerHingeOld = _hingeLine->getOuterHingePoint();;

@@ -43,16 +43,6 @@ public:
     TIGL_EXPORT CCPACSControlSurfaceDevicePathHingePoint getInnerHingePoint() const;
     TIGL_EXPORT CCPACSControlSurfaceDevicePathHingePoint getOuterHingePoint() const;
 
-    // TODO: this is ugly and should be changed. Instead, provide GetInnerHingeTranslation(iStep)
-    TIGL_EXPORT std::vector<double> getInnerHingeTranslationsX() const;
-    TIGL_EXPORT std::vector<double> getInnerHingeTranslationsY() const;
-    TIGL_EXPORT std::vector<double> getInnerHingeTranslationsZ() const;
-    TIGL_EXPORT std::vector<double> getOuterHingeTranslationsX() const;
-    TIGL_EXPORT std::vector<double> getOuterHingeTranslationsZ() const;
-    
-    TIGL_EXPORT std::vector<double> getRelDeflections() const;
-    TIGL_EXPORT std::vector<double> getHingeLineRotations() const;
-
 private:
     CCPACSControlSurfaceDeviceSteps steps;
 
