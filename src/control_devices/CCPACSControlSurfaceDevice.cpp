@@ -27,6 +27,7 @@
 #include "CTiglControlSurfaceHingeLine.h"
 #include "CCPACSControlSurfaceDeviceWingCutOut.h"
 #include "CCPACSControlSurfaceDeviceBorderLeadingEdgeShape.h"
+#include "tiglcommonfunctions.h"
 
 #include "Handle_Geom_Plane.hxx"
 #include "Geom_Plane.hxx"
@@ -58,37 +59,9 @@
 #include "BRepBuilderAPI_Sewing.hxx"
 #include "BRepBuilderAPI_MakeSolid.hxx"
 
-#ifdef TIGL_USE_XCAF
-#include "XCAFDoc_ShapeTool.hxx"
-#include "XCAFApp_Application.hxx"
-#include "XCAFDoc_DocumentTool.hxx"
-#include "TDataStd_Name.hxx"
-#include "TDataXtd_Shape.hxx"
-#endif
 
 #define USE_ADVANCED_MODELING 1
 
-namespace
-{
-    double linearInterpolation(std::vector<double> list1, std::vector<double> list2, double valueRelList1)
-    {
-        double min = 0;
-        double max = 0;
-        int idefRem = 0;
-        for ( std::vector<double>::size_type idef = 1; idef < list1.size(); idef++ ) {
-            if ( list1[idef-1] <= valueRelList1 && list1[idef] >= valueRelList1 ) {
-                min = list1[idef-1];
-                max = list1[idef];
-                idefRem = idef;
-                break;
-            }
-        }
-        double value = ( valueRelList1 - list1[idefRem-1] ) / ( list1[idefRem] - list1[idefRem-1] );
-        double min2 = list2[idefRem-1];
-        double max2 = list2[idefRem];
-        return value * ( max2 - min2 ) + min2;
-    }
-}
 
 namespace tigl
 {
@@ -169,12 +142,12 @@ gp_Trsf CCPACSControlSurfaceDevice::getTransformation(double flapStatusInPercent
      */
     std::vector<double> relDeflections = this->getMovementPath().getRelDeflections();
     double inputDeflection = ( relDeflections[relDeflections.size()-1] - relDeflections[0] ) * ( flapStatusInPercent/100 ) + relDeflections[0];
-    double rotation = linearInterpolation( relDeflections, this->getMovementPath().getHingeLineRotations(), inputDeflection );
-    double innerTranslationX = linearInterpolation( relDeflections, this->getMovementPath().getInnerHingeTranslationsX(), inputDeflection );
-    double innerTranslationY = linearInterpolation( relDeflections, this->getMovementPath().getInnerHingeTranslationsY(), inputDeflection );
-    double innerTranslationZ = linearInterpolation( relDeflections, this->getMovementPath().getInnerHingeTranslationsZ(), inputDeflection );
-    double outerTranslationX = linearInterpolation( relDeflections, this->getMovementPath().getOuterHingeTranslationsX(), inputDeflection );
-    double outerTranslationZ = linearInterpolation( relDeflections, this->getMovementPath().getOuterHingeTranslationsZ(), inputDeflection );
+    double rotation = Interpolate( relDeflections, this->getMovementPath().getHingeLineRotations(), inputDeflection );
+    double innerTranslationX = Interpolate( relDeflections, this->getMovementPath().getInnerHingeTranslationsX(), inputDeflection );
+    double innerTranslationY = Interpolate( relDeflections, this->getMovementPath().getInnerHingeTranslationsY(), inputDeflection );
+    double innerTranslationZ = Interpolate( relDeflections, this->getMovementPath().getInnerHingeTranslationsZ(), inputDeflection );
+    double outerTranslationX = Interpolate( relDeflections, this->getMovementPath().getOuterHingeTranslationsX(), inputDeflection );
+    double outerTranslationZ = Interpolate( relDeflections, this->getMovementPath().getOuterHingeTranslationsZ(), inputDeflection );
     relDeflections.clear();
 
     gp_Pnt innerHingeOld = _hingeLine->getInnerHingePoint();;

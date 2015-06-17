@@ -90,4 +90,7 @@ TIGL_EXPORT bool IsPathRelative(const std::string&);
 // Returns true, if a file is readable
 TIGL_EXPORT bool IsFileReadable(const std::string& filename);
 
+//Linear interpolation in of xdata<->ydata array at position x
+TIGL_EXPORT double Interpolate(const std::vector<double>& xdata, const std::vector<double>& ydata, double x);
+
 #endif // TIGLCOMMONFUNCTIONS_H
