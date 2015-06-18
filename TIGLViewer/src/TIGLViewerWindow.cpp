@@ -75,13 +75,9 @@ void ShowOrigin ( Handle_AIS_InteractiveContext theContext )
 }
 
 #ifdef HAVE_TIXI_SETPRINTMSG
-void TixiMessageHandler(MessageType type, const char *message, ...)
+void TixiMessageHandler(MessageType type, const char *message)
 {
-    va_list varArgs;
-    va_start(varArgs, message);
-    QString str;
-    str.vsprintf(message, varArgs);
-    va_end(varArgs);
+    QString str(message);
     
     if (type == MESSAGETYPE_ERROR) {
         LOG(ERROR) << str.toStdString();
