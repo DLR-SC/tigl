@@ -49,11 +49,16 @@ public:
     TIGL_EXPORT const CCPACSControlSurfaceDevicePath& getMovementPath() const;
     TIGL_EXPORT TiglGeometricComponentType GetComponentType(void) {return TIGL_COMPONENT_CONTROLSURF | TIGL_COMPONENT_PHYSICAL;}
     TIGL_EXPORT PNamedShape getCutOutShape(void);
+    
+    // @TODO: the loft buildup should be done inside this class. Currently it
+    // is done inside the wing class.
     TIGL_EXPORT void setLoft(PNamedShape loft);
 
     // Returns the flap transformation based on the deflection
     // @TODO: This method currently accepts a relative deflection (compared to the deflection in cpacs)
     // This should be changed
+    // @TODO: This method clashes with GetTransformation of CTiglGeometricComponent
+    // We should either rename it or apply the code to GetTransformation
     TIGL_EXPORT gp_Trsf getTransformation(double deflection) const;
 
     // TODO: missing description. Seems to be internal only, but used in tests
