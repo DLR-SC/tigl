@@ -131,7 +131,12 @@ void CCPACSWingProfileCST::ReadCPACS(TixiDocumentHandle tixiHandle)
 // Write CPACS wing profile
 void CCPACSWingProfileCST::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& ProfileXPath)
 {
-    throw CTiglError("ERROR: CCPACSWingProfileCST::WriteCPACS not implemented!!!");
+    TixiSaveExt::TixiSaveVector(tixiHandle, ProfileXPath, "upperB", upperB);
+    TixiSaveExt::TixiSaveVector(tixiHandle, ProfileXPath, "lowerB", lowerB);
+    TixiSaveExt::TixiSaveDoubleElement(tixiHandle, ProfileXPath.c_str(), "upperN1", upperN1);
+    TixiSaveExt::TixiSaveDoubleElement(tixiHandle, ProfileXPath.c_str(), "upperN2", upperN2);
+    TixiSaveExt::TixiSaveDoubleElement(tixiHandle, ProfileXPath.c_str(), "lowerN1", lowerN1);
+    TixiSaveExt::TixiSaveDoubleElement(tixiHandle, ProfileXPath.c_str(), "lowerN2", lowerN2);
 }
 
 // Builds the wing profile wire. The returned wire is already transformed by the
