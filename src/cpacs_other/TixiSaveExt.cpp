@@ -171,11 +171,40 @@ void TixiSaveExt::TixiSaveDoubleElement(TixiDocumentHandle tixiHandle, const cha
     // else, it create it.
     else if (tixiCheckElement(tixiHandle, subpath.c_str()) == ELEMENT_NOT_FOUND) {
         if (tixiAddDoubleElement(tixiHandle, elementPath, element, val, format) != SUCCESS) {
-            throw CTiglError("Error in TixiSaveExt::TixiSaveDoubleElement : tixiAddTextElement error", TIGL_XML_ERROR);
+            throw CTiglError("Error in TixiSaveExt::TixiSaveDoubleElement : tixiAddDoubleElement error", TIGL_XML_ERROR);
         }
     }
     else {
         throw CTiglError("Error in TixiSaveExt::TixiSaveDoubleElement : tixiCheckElement error", TIGL_XML_ERROR);
+    }
+}
+
+void TixiSaveExt::TixiSaveIntElement(TixiDocumentHandle tixiHandle, const char* elementPath, const char* element, int val)
+{
+    std::string subpath;
+    subpath.append(elementPath);
+    subpath.append("/");
+    subpath.append(element);
+
+    // check if the element exist
+    if (tixiCheckElement(tixiHandle, elementPath) != SUCCESS) {
+        throw CTiglError("Error in TixiSaveExt::TixiSaveIntElement : inexistant path", TIGL_XML_ERROR);
+    }
+
+    // if it exist, it update it
+    if (tixiCheckElement(tixiHandle, subpath.c_str()) == SUCCESS) {
+        if (tixiUpdateIntegerElement(tixiHandle, subpath.c_str(), val, "%d") != SUCCESS) {
+            throw CTiglError("Error: XML error while updating text in TixiSaveExt::TixiSaveIntElement", TIGL_XML_ERROR);
+        }
+    }
+    // else, it create it.
+    else if (tixiCheckElement(tixiHandle, subpath.c_str()) == ELEMENT_NOT_FOUND) {
+        if (tixiAddIntegerElement(tixiHandle, elementPath, element, val, "%d") != SUCCESS) {
+            throw CTiglError("Error in TixiSaveExt::TixiSaveIntElement : tixiAddIntElement error", TIGL_XML_ERROR);
+        }
+    }
+    else {
+        throw CTiglError("Error in TixiSaveExt::TixiSaveIntElement : tixiCheckElement error", TIGL_XML_ERROR);
     }
 }
 

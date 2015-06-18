@@ -59,14 +59,16 @@ public:
     static void TixiSavePoint(TixiDocumentHandle tixiHandle, const char* elementXPath, double x, double y, double z, const char* format);
 
     /** Save an element containing a double value */
-    static void TixiSaveDoubleElement(TixiDocumentHandle tixiHandle, const char* elementXPath, const char* element, double val, const char* format);
+    static void TixiSaveDoubleElement(TixiDocumentHandle tixiHandle, const char* elementXPath, const char* element, double val, const char* format="%g");
+
+    /** Save an element containing a int value */
+    static void TixiSaveIntElement(TixiDocumentHandle tixiHandle, const char* elementXPath, const char* element, int val);
 
     /** Save an element containing a vector (list of double value) at the path */
     static void TixiSaveVector(TixiDocumentHandle tixiHandle, const char* elementXPath, const char* element, const double* val, int length);
 
     /** Save an element containing a vector at the path */
     static void TixiSaveVector(TixiDocumentHandle tixiHandle, const std::string& elementXPath, const std::string& element, const std::vector<double>& val);
-
 
 private:
 
