@@ -456,7 +456,7 @@
                                                 <innerBorder>
                                                     <etaLE>0.26</etaLE>
                                                     <etaTE>0.26</etaTE>
-                                                    <xsiLE>0.7</xsiLE>
+                                                    <xsiLE>0.75</xsiLE>
                                                     <leadingEdgeShape>
                                                         <relHeightLE>0.5</relHeightLE>
                                                         <xsiUpperSkin>0.8</xsiUpperSkin>
@@ -466,7 +466,7 @@
                                                 <outerBorder>
                                                     <etaLE>0.49</etaLE>
                                                     <etaTE>0.49</etaTE>
-                                                    <xsiLE>0.7</xsiLE>
+                                                    <xsiLE>0.75</xsiLE>
                                                     <leadingEdgeShape>
                                                         <relHeightLE>0.5</relHeightLE>
                                                         <xsiUpperSkin>0.8</xsiUpperSkin>

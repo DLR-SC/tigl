@@ -563,12 +563,9 @@ TopoDS_Wire CCPACSControlSurfaceDevice::buildLeadingEdgeShapeWire(bool isInnerBo
     gp_Vec leadingToUpper = gp_Vec(upperPoint.XYZ()) - gp_Vec(leadingPoint.XYZ());
     gp_Vec leadingToLower = gp_Vec(lowerPoint.XYZ()) - gp_Vec(leadingPoint.XYZ());
 
-    upperPoint = gp_Pnt((gp_Vec(upperPoint.XYZ()) + leadingToUpper.Normalized().Multiplied(0.1)).XYZ());
-    lowerPoint = gp_Pnt((gp_Vec(lowerPoint.XYZ()) + leadingToLower.Normalized().Multiplied(0.1)).XYZ());
-
     gp_Vec tangentUpper = getLeadingEdgeShapeTangent(leadingPoint,lowerPoint,upperPoint,isInnerBorder,true);
     gp_Vec tangentLower = getLeadingEdgeShapeTangent(leadingPoint,lowerPoint,upperPoint,isInnerBorder,false);
-    tangentLower.Multiply(-1);
+    tangentUpper.Multiply(-1);
 
     gp_Pnt leadingEdge = _segment->GetPoint(getOuterShape().getInnerBorder().getEtaLE(),0);
     gp_Pnt trailingEdge = _segment->GetPoint(getOuterShape().getInnerBorder().getEtaLE(),1);
@@ -579,18 +576,13 @@ TopoDS_Wire CCPACSControlSurfaceDevice::buildLeadingEdgeShapeWire(bool isInnerBo
                                                                ,lowerToUpper.Multiplied(-1));
 
 
-    tangentUpper.Normalize();
-    tangentUpper.Multiply(leadingToUpper.Magnitude()/2);
-    tangentLower.Normalize();
-    tangentLower.Multiply(leadingToLower.Magnitude()/2);
-
     Handle_TColgp_HArray1OfPnt array = new TColgp_HArray1OfPnt(1,3);
     array->SetValue(1,lowerPoint);
     array->SetValue(2,leadingPoint);
     array->SetValue(3,upperPoint);
 
-    GeomAPI_Interpolate Interp(array,false,0.00001);
-    Interp.Load(tangentUpper,tangentLower,false);
+    GeomAPI_Interpolate Interp(array,false, Precision::Confusion());
+    Interp.Load(tangentLower,tangentUpper,true);
     Interp.Perform();
     Handle(Geom_BSplineCurve) C = Interp.Curve();
 
