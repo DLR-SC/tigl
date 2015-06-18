@@ -236,34 +236,27 @@ void CCPACSFuselageProfile::WriteCPACS(TixiDocumentHandle tixiHandle, const std:
     // Set the element "point"
     TixiSaveExt::TixiSaveElement(tixiHandle, profileXPath.c_str(), "pointList");
 
-    // TODO: symmetry!!!
+    std::string path = profileXPath + "/pointList";
 
-    //sprintf(profileXPath.c_str(), "%s/pointList", profileXPath.c_str());
-    // TODO : find how to get the number of 'point' (and eventually the definition...)
-    int pointCount = 1;
-    std::string elementPath = profileXPath + "/pointList";
-    for (int i = 1; i <= pointCount; i++) {
-        // TODO : multiple points is not managed yet
-        TixiSaveExt::TixiSaveElement(tixiHandle, elementPath.c_str(), "point");
+    // store points as vectors
+    std::vector<double> point_X(coordinates.size());
+    std::vector<double> point_Y(coordinates.size());
+    std::vector<double> point_Z(coordinates.size());
 
-        std::vector<double> point_X(coordinates.size());
-        std::vector<double> point_Y(coordinates.size());
-        std::vector<double> point_Z(coordinates.size());
-
-        for (int j = 0; j < coordinates.size(); j++) {
-            point_X[j] = coordinates[j]->x;
-            point_Y[j] = coordinates[j]->y;
-            point_Z[j] = coordinates[j]->z;
-        }
-
-       // Set the x coordinates
-        TixiSaveExt::TixiSaveVector(tixiHandle, elementPath, "x", point_X);
-        // Set the y coordinates
-        TixiSaveExt::TixiSaveVector(tixiHandle, elementPath, "y", point_Y);
-        // Set the z coordinates
-        TixiSaveExt::TixiSaveVector(tixiHandle, elementPath, "z", point_Z);
-        
+    for (unsigned int j = 0; j < coordinates.size(); j++) {
+        point_X[j] = coordinates[j]->x;
+        point_Y[j] = coordinates[j]->y;
+        point_Z[j] = coordinates[j]->z;
     }
+
+    // Set the x coordinates
+    TixiSaveExt::TixiSaveVector(tixiHandle, path, "x", point_X);
+
+    // Set the y coordinates
+    TixiSaveExt::TixiSaveVector(tixiHandle, path, "y", point_Y);
+
+    // Set the z coordinates
+    TixiSaveExt::TixiSaveVector(tixiHandle, path, "z", point_Z);
 }
 
 // Returns the filename of the fuselage profile file
