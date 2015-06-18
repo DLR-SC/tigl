@@ -875,7 +875,7 @@ void TIGLViewerDocument::updateControlSurfacesInteractiveObjects(std::string sel
             tigl::CCPACSControlSurfaceDevice &controlSurfaceDevice = controlSurfaceDevices->getControlSurfaceDeviceByID(j);
 
             if (flapsForInteractiveUse.find(controlSurfaceDevice.GetUID()) != flapsForInteractiveUse.end() && controlUID == controlSurfaceDevice.GetUID()) {
-               gp_Trsf trsf = controlSurfaceDevice.getTransformation(flapStatus[controlSurfaceDevice.GetUID()]*100.);
+               gp_Trsf trsf = controlSurfaceDevice.GetFlapTransform(flapStatus[controlSurfaceDevice.GetUID()]);
                // @todo: check 
                Handle(AIS_Shape) flap = flapsForInteractiveUse[controlSurfaceDevice.GetUID()];
                app->getScene()->getContext()->SetLocation(flap, trsf);

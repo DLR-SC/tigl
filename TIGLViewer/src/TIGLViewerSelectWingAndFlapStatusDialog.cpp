@@ -37,8 +37,13 @@
 // new configuration
 static std::map< std::string, double> _deflectionMap;
 
-double sliderToRelativeDeflect(QSlider* slider) {
-    return (slider->value() - slider->minimum())/(double)(slider->maximum()-slider->minimum());
+double sliderToRelativeDeflect(const QSlider* slider, double minDeflect, double maxDeflect) {
+    
+    double minSlider = (double) slider->minimum();
+    double maxSlider = (double) slider->maximum();
+    double valSlider = (double) slider->value();
+    
+    return (maxDeflect - minDeflect)/(maxSlider-minSlider) * (valSlider - minSlider) + minDeflect;
 }
 
 TIGLViewerSelectWingAndFlapStatusDialog::TIGLViewerSelectWingAndFlapStatusDialog(TIGLViewerDocument* document, QWidget *parent) :
@@ -85,7 +90,8 @@ void TIGLViewerSelectWingAndFlapStatusDialog::slider_value_changed(int k)
 {
     QSlider* slider = dynamic_cast<QSlider*>(QObject::sender());
     std::string uid = slider->windowTitle().toStdString();
-    updateLabels(uid, sliderToRelativeDeflect(slider));
+    
+    updateLabels(uid, slider);
     _document->updateControlSurfacesInteractiveObjects(getSelectedWing(),_deflectionMap,slider->windowTitle().toStdString());
 }
 
@@ -119,6 +125,8 @@ double TIGLViewerSelectWingAndFlapStatusDialog::linearInterpolation(std::vector<
     return value * ( max2 - min2 ) + min2;
 }
 
+
+// @TODO: rewrite using MVC and table layout
 void TIGLViewerSelectWingAndFlapStatusDialog::drawGUI(bool redrawModel)
 {
     cleanup();
@@ -194,7 +202,7 @@ void TIGLViewerSelectWingAndFlapStatusDialog::drawGUI(bool redrawModel)
             slider->setFixedSize(90,15);
             slider->setMaximum(1000);
 
-            QLabel* labelValue = new QLabel("Value: 0% ", this);
+            QLabel* labelValue = new QLabel("0%   ", this);
             labelValue->setFixedHeight(15);
             QString def = "Deflection: ";
             QString rot = "Rotation: ";
@@ -211,7 +219,7 @@ void TIGLViewerSelectWingAndFlapStatusDialog::drawGUI(bool redrawModel)
             labelRotation->setMargin(0);
             labelRotation->setFixedHeight(15);
 
-            labelValue->setFixedWidth(90);
+            labelValue->setFixedWidth(40);
             labelRotation->setFixedWidth(90);
             labelDeflection->setFixedWidth(90);
 
@@ -220,31 +228,19 @@ void TIGLViewerSelectWingAndFlapStatusDialog::drawGUI(bool redrawModel)
                 savedValue = _deflectionMap[uid.toStdString()];
             }
             else {
-                std::vector<double> relDeflections;
-                std::vector<double> rotations;
-                // @todo: refactor, chained object calls are ugly
-                for ( int iStep = 1; iStep <= controlSurfaceDevice.getMovementPath().getSteps().GetStepCount(); iStep++ ) {
-                    relDeflections.push_back(controlSurfaceDevice.getMovementPath().getSteps().GetStep(iStep).getRelDeflection());
-                    rotations.push_back(controlSurfaceDevice.getMovementPath().getSteps().GetStep(iStep).getHingeLineRotation());
-                }
-
-                if (relDeflections.size() > 1) {
-                    double deflection = linearInterpolation(rotations,relDeflections,0);
-                    // map Deflection to Percentage.
-                    double minDef = relDeflections[0];
-                    double deflectionRange = relDeflections[relDeflections.size()-1] - minDef;
-                    savedValue = ((deflection - minDef)/deflectionRange);
-
-                }
-                else {
-                    savedValue = 0.5;
-                }
+                savedValue = controlSurfaceDevice.GetMinDeflection() > 0 ? controlSurfaceDevice.GetMinDeflection() : 0.;
             }
 
 
             labelValue->setText("Value: " + QString::number(savedValue) + "%");
-            slider->setValue((int)(slider->minimum() + (slider->maximum() - slider->minimum()) * savedValue));
 
+            double minDeflect = controlSurfaceDevice.GetMinDeflection();
+            double maxDeflect = controlSurfaceDevice.GetMaxDeflection();
+            
+            int newSliderValue = (slider->maximum() - slider->minimum())/ (maxDeflect-minDeflect) * (savedValue - minDeflect) 
+                    + slider->minimum();
+            slider->setValue(newSliderValue);
+            
             DeviceLabels elements;
             elements.valueLabel = labelValue;
             elements.rotAngleLabel = labelRotation;
@@ -254,9 +250,8 @@ void TIGLViewerSelectWingAndFlapStatusDialog::drawGUI(bool redrawModel)
             hLayout->addWidget(labelUID);
             hLayout->addWidget(slider);
             hLayout->addWidget(labelValue);
-            hLayout->addWidget(labelRotation);
             hLayout->addWidget(labelDeflection);
-            hLayout->addWidget(labelValue);
+            hLayout->addWidget(labelRotation);
 
             innerWidget->setLayout(hLayout);
 
@@ -264,12 +259,12 @@ void TIGLViewerSelectWingAndFlapStatusDialog::drawGUI(bool redrawModel)
             vLayout->addWidget(innerWidget);
 
             if (_deflectionMap.find(uid.toStdString()) == _deflectionMap.end()) {
-                _deflectionMap[uid.toStdString()] = 0;
+                _deflectionMap[uid.toStdString()] = controlSurfaceDevice.GetMinDeflection() > 0 ? controlSurfaceDevice.GetMinDeflection() : 0.;
             }
 
             connect(slider, SIGNAL(valueChanged(int)), this, SLOT(slider_value_changed(int)));
             _deviceMap[uid.toStdString()] = &controlSurfaceDevice;
-            updateLabels(uid.toStdString(), savedValue);
+            updateLabels(uid.toStdString(), slider);
         }
         outerWidget->setLayout(vLayout);
         ui->scrollArea->setWidget(outerWidget);
@@ -294,9 +289,9 @@ void TIGLViewerSelectWingAndFlapStatusDialog::on_checkSpoiler_stateChanged(int a
     drawGUI(false);
 }
 
-void TIGLViewerSelectWingAndFlapStatusDialog::updateLabels(std::string controlSurfaceDeviceUID, double relDeflect)
+void TIGLViewerSelectWingAndFlapStatusDialog::updateLabels(std::string controlSurfaceDeviceUID, const QSlider* slider)
 {
-    QString textVal = "Value: ";
+    QString textVal;
     QString textRot = "Rotation: ";
     QString textDef = "Deflection: ";
 
@@ -313,15 +308,18 @@ void TIGLViewerSelectWingAndFlapStatusDialog::updateLabels(std::string controlSu
     tigl::CCPACSControlSurfaceDevice* device = it->second;
     tigl::CCPACSControlSurfaceDeviceSteps steps = device->getMovementPath().getSteps();
     
+    // Get rotation for current deflection value
     for ( int iStep = 1; iStep <= steps.GetStepCount(); iStep++ ) {
         relDeflections.push_back(steps.GetStep(iStep).getRelDeflection());
         rotations.push_back(steps.GetStep(iStep).getHingeLineRotation());
     }
 
-    double inputDeflection = ( relDeflections.back() - relDeflections.front() ) * relDeflect  + relDeflections.front();
+    double inputDeflection = sliderToRelativeDeflect(slider, device->GetMinDeflection(), device->GetMaxDeflection());
+    
     double rotation = linearInterpolation( relDeflections, rotations, inputDeflection );
 
-    textVal.append(QString::number(relDeflect*100.));
+    double percentage = 100. * (slider->value() - slider->minimum())/(double)(slider->maximum() - slider->minimum());
+    textVal.append(QString::number(percentage));
     textRot.append(QString::number(rotation));
     textDef.append(QString::number(inputDeflection));
     textVal.append("% ");
@@ -331,5 +329,5 @@ void TIGLViewerSelectWingAndFlapStatusDialog::updateLabels(std::string controlSu
     elms.deflectionLabel->setText(textDef);
     elms.rotAngleLabel->setText(textRot);
 
-    _deflectionMap[controlSurfaceDeviceUID] = relDeflect;
+    _deflectionMap[controlSurfaceDeviceUID] = inputDeflection;
 }

@@ -22,10 +22,12 @@
 #include <QDialog>
 #include <map>
 #include <vector>
-#include <QLabel>
 #include "CCPACSConfigurationManager.h"
 #include "CCPACSControlSurfaceDevice.h"
 #include "TIGLViewerDocument.h"
+
+class QSlider;
+class QLabel;
 
 namespace Ui
 {
@@ -64,7 +66,7 @@ private:
     std::map< std::string, tigl::CCPACSControlSurfaceDevice*> _deviceMap;
 
     TIGLViewerDocument* _document;
-    void updateLabels(std::string controlSurfaceDeviceUID, double flapStatusInPercent);
+    void updateLabels(std::string controlSurfaceDeviceUID, const QSlider* slider);
     void drawGUI(bool redrawModel);
     void cleanup();
 

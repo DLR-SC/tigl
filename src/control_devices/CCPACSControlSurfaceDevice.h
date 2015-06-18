@@ -55,11 +55,13 @@ public:
     TIGL_EXPORT void setLoft(PNamedShape loft);
 
     // Returns the flap transformation based on the deflection
-    // @TODO: This method currently accepts a relative deflection (compared to the deflection in cpacs)
-    // This should be changed
-    // @TODO: This method clashes with GetTransformation of CTiglGeometricComponent
-    // We should either rename it or apply the code to GetTransformation
-    TIGL_EXPORT gp_Trsf getTransformation(double deflection) const;
+    TIGL_EXPORT gp_Trsf GetFlapTransform(double deflection) const;
+
+    // Returns the minimal deflaction value (defined in CPACS file)
+    TIGL_EXPORT double GetMinDeflection() const;
+
+    // Returns the minimal deflaction value (defined in CPACS file)
+    TIGL_EXPORT double GetMaxDeflection() const;
 
     // TODO: missing description. Seems to be internal only, but used in tests
     TIGL_EXPORT void getProjectedPoints(gp_Pnt point1, gp_Pnt point2, gp_Pnt point3,

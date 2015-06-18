@@ -28,6 +28,7 @@
 #include "CCPACSControlSurfaceDeviceWingCutOut.h"
 #include "CCPACSControlSurfaceDeviceBorderLeadingEdgeShape.h"
 #include "CTiglControlSurfaceTransformation.h"
+#include "CCPACSControlSurfaceDeviceSteps.h"
 #include "tiglcommonfunctions.h"
 
 #include "Handle_Geom_Plane.hxx"
@@ -131,7 +132,7 @@ const CCPACSControlSurfaceDevicePath& CCPACSControlSurfaceDevice::getMovementPat
     return path;
 }
 
-gp_Trsf CCPACSControlSurfaceDevice::getTransformation(double deflection) const
+gp_Trsf CCPACSControlSurfaceDevice::GetFlapTransform(double deflection) const
 {
     // this block of code calculates all needed values to rotate and move the controlSurfaceDevice according
     // to the given relDeflection by using a linearInterpolation.
@@ -149,13 +150,12 @@ gp_Trsf CCPACSControlSurfaceDevice::getTransformation(double deflection) const
         rotations.push_back(step.getHingeLineRotation());
     }
     
-    double inputDeflection = ( relDeflections[relDeflections.size()-1] - relDeflections[0] ) * ( deflection/100 ) + relDeflections[0];
-    double rotation = Interpolate( relDeflections, rotations, inputDeflection );
-    double innerTranslationX = Interpolate( relDeflections, innerXTrans, inputDeflection );
-    double innerTranslationY = Interpolate( relDeflections, innerYTrans, inputDeflection );
-    double innerTranslationZ = Interpolate( relDeflections, innerZTrans, inputDeflection );
-    double outerTranslationX = Interpolate( relDeflections, outerXTrans, inputDeflection );
-    double outerTranslationZ = Interpolate( relDeflections, outerZTrans, inputDeflection );
+    double rotation = Interpolate( relDeflections, rotations, deflection );
+    double innerTranslationX = Interpolate( relDeflections, innerXTrans, deflection );
+    double innerTranslationY = Interpolate( relDeflections, innerYTrans, deflection );
+    double innerTranslationZ = Interpolate( relDeflections, innerZTrans, deflection );
+    double outerTranslationX = Interpolate( relDeflections, outerXTrans, deflection );
+    double outerTranslationZ = Interpolate( relDeflections, outerZTrans, deflection );
 
     gp_Pnt innerHingeOld = _hingeLine->getInnerHingePoint();;
     gp_Pnt outerHingeOld = _hingeLine->getOuterHingePoint();;
@@ -621,6 +621,22 @@ TopoDS_Wire CCPACSControlSurfaceDevice::buildLeadingEdgeShapeWire(bool isInnerBo
     wireMaker.Add(edgeLowerOuter);
     wireMaker.Build();
     return wireMaker.Wire();
+}
+
+double CCPACSControlSurfaceDevice::GetMinDeflection() const
+{
+    CCPACSControlSurfaceDeviceSteps steps = getMovementPath().getSteps();
+    CCPACSControlSurfaceDeviceStep step = steps.GetStep(1);
+    
+    return step.getRelDeflection();
+}
+
+double CCPACSControlSurfaceDevice::GetMaxDeflection() const
+{
+    CCPACSControlSurfaceDeviceSteps steps = getMovementPath().getSteps();
+    CCPACSControlSurfaceDeviceStep step = steps.GetStep(steps.GetStepCount());
+    
+    return step.getRelDeflection();
 }
 
 } // end namespace tigl
