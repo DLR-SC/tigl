@@ -52,6 +52,9 @@ public:
     // Read CPACS segment elements
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& positioningXPath);
 
+    // Write CPACS segment elements
+    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& positioningXPath);
+
     // Sets the positioning of the inner point
     TIGL_EXPORT void SetInnerPoint(const CTiglPoint& aPoint);
 

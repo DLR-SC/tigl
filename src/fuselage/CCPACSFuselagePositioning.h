@@ -52,6 +52,9 @@ public:
     // Read CPACS segment elements
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& positioningXPath);
 
+    // Write CPACS segment elements
+    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& positioningXPath);
+
     // Sets the positioning of the start point
     TIGL_EXPORT void SetStartPoint(const CTiglPoint& aPoint);
 
@@ -92,6 +95,8 @@ private:
     void operator=(const CCPACSFuselagePositioning& );
 
 private:
+    std::string          name;                 /**< Positioning name                        */
+    std::string          description;          /**< Positioning description                 */
     double               length;               /**< Positioning length                      */
     double               sweepangle;           /**< Positioning sweep angle                 */
     double               dihedralangle;        /**< Positioning dihedral angle              */

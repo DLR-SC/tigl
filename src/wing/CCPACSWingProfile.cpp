@@ -59,6 +59,7 @@
 #include "ITiglWingProfileAlgo.h"
 #include "CCPACSWingProfile.h"
 #include "CCPACSWingProfileFactory.h"
+#include "TixiSaveExt.h"
 
 namespace tigl 
 {
@@ -127,6 +128,22 @@ void CCPACSWingProfile::ReadCPACS(TixiDocumentHandle tixiHandle)
     }
 
     Update();
+}
+
+// Write CPACS wing profile file
+void CCPACSWingProfile::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& ProfileXPath)
+{
+    // Set attribute "uID"
+    TixiSaveExt::TixiSaveTextAttribute(tixiHandle, ProfileXPath.c_str(), "uID", uid.c_str());
+    
+    // Set element "name"
+    TixiSaveExt::TixiSaveTextElement(tixiHandle, ProfileXPath.c_str(), "name", name.c_str());
+    
+    // Set element "name"
+    TixiSaveExt::TixiSaveTextElement(tixiHandle, ProfileXPath.c_str(), "description", description.c_str());
+    
+    // write profile data to CPACS
+    profileAlgo->WriteCPACS(tixiHandle, ProfileXPath);
 }
 
 // Returns the name of the wing profile

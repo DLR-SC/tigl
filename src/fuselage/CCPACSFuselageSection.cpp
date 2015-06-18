@@ -25,6 +25,7 @@
 
 #include "CCPACSFuselageSection.h"
 #include "CTiglError.h"
+#include "TixiSaveExt.h"
 #include <iostream>
 
 namespace tigl
@@ -94,6 +95,13 @@ void CCPACSFuselageSection::ReadCPACS(TixiDocumentHandle tixiHandle, const std::
         name = ptrName;
     }
 
+    // Get subelement "description"
+    char* ptrDescription = "";
+    tempString    = sectionXPath + "/description";
+    if (tixiGetTextElement(tixiHandle, tempString.c_str(), &ptrDescription) == SUCCESS) {
+        description = ptrDescription;
+    }
+
     // Get attribute "uID"
     char* ptrUID  = NULL;
     tempString    = sectionXPath;
@@ -133,6 +141,35 @@ void CCPACSFuselageSection::ReadCPACS(TixiDocumentHandle tixiHandle, const std::
     elements.ReadCPACS(tixiHandle, sectionXPath);
 
     Update();
+}
+
+// Write CPACS section elements
+void CCPACSFuselageSection::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& sectionXPath)
+{
+    std::string elementPath;
+    std::string subelementPath;
+        
+    TixiSaveExt::TixiSaveTextAttribute(tixiHandle, sectionXPath.c_str(), "uID", uid.c_str());
+    TixiSaveExt::TixiSaveTextElement(tixiHandle, sectionXPath.c_str(), "name", name.c_str());
+    TixiSaveExt::TixiSaveTextElement(tixiHandle, sectionXPath.c_str(), "description", description.c_str());
+    
+    TixiSaveExt::TixiSaveElement(tixiHandle, sectionXPath.c_str(), "transformation");
+    elementPath = sectionXPath + "/transformation";
+    
+    TixiSaveExt::TixiSaveElement(tixiHandle, elementPath.c_str(), "scaling");
+    subelementPath = elementPath + "/scaling";
+    TixiSaveExt::TixiSavePoint(tixiHandle, subelementPath.c_str(), scaling.x, scaling.y, scaling.z, NULL);
+        
+    TixiSaveExt::TixiSaveElement(tixiHandle, elementPath.c_str(), "rotation");
+    subelementPath = elementPath + "/rotation";
+    TixiSaveExt::TixiSavePoint(tixiHandle, subelementPath.c_str(), rotation.x, rotation.y, rotation.z, NULL);
+        
+    TixiSaveExt::TixiSaveElement(tixiHandle, elementPath.c_str(), "translation");
+    subelementPath = elementPath + "/translation";
+    TixiSaveExt::TixiSaveTextAttribute(tixiHandle, subelementPath.c_str(), "refType", "absLocal");
+    TixiSaveExt::TixiSavePoint(tixiHandle, subelementPath.c_str(), translation.x, translation.y, translation.z, NULL);
+        
+    elements.WriteCPACS(tixiHandle, sectionXPath);
 }
 
 // Get profile count for this section

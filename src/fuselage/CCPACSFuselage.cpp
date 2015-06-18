@@ -50,6 +50,7 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
+#include "TixiSaveExt.h"
 
 namespace tigl
 {
@@ -133,6 +134,13 @@ void CCPACSFuselage::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string&
         name = ptrName;
     }
 
+    // Get subelement "description"
+    char* ptrDescription = NULL;
+    tempString    = fuselageXPath + "/description";
+    if (tixiGetTextElement(tixiHandle, tempString.c_str(), &ptrDescription) == SUCCESS) {
+        description = ptrDescription;
+    }
+
     // Get attribue "uID"
     char* ptrUID = NULL;
     tempString   = "uID";
@@ -200,6 +208,60 @@ void CCPACSFuselage::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string&
     }
 
     Update();
+}
+
+// Write CPACS fuselage elements
+void CCPACSFuselage::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& fuselageXPath)
+{
+    std::string elementPath;
+    std::string subelementPath;
+    std::string structurePath;
+
+    // Set subelement "name"
+    TixiSaveExt::TixiSaveTextElement(tixiHandle, fuselageXPath.c_str(), "name", GetName().c_str());
+
+    // Set subelement "uID" attribute
+    TixiSaveExt::TixiSaveTextAttribute(tixiHandle, fuselageXPath.c_str(), "uID", GetUID().c_str());
+
+    // Set subelement "name"
+    TixiSaveExt::TixiSaveTextElement(tixiHandle, fuselageXPath.c_str(), "description", description.c_str());
+
+    // Set subelement "parent_uid"
+    TixiSaveExt::TixiSaveTextElement(tixiHandle, fuselageXPath.c_str(), "parentUID", GetParentUID().c_str());
+
+    // Set the subelement "transformation"
+    elementPath = fuselageXPath + "/transformation";
+    TixiSaveExt::TixiSaveElement(tixiHandle, fuselageXPath.c_str(), "transformation");
+
+    // Set subelement "/transformation/scaling"
+    subelementPath = elementPath + "/scaling";
+    TixiSaveExt::TixiSaveElement(tixiHandle, elementPath.c_str(), "scaling");
+    TixiSaveExt::TixiSavePoint(tixiHandle, subelementPath.c_str(), scaling.x, scaling.y, scaling.z, NULL);
+
+    // Set subelement "/transformation/rotation"
+    subelementPath = elementPath + "/rotation";
+    TixiSaveExt::TixiSaveElement(tixiHandle, elementPath.c_str(), "rotation");
+    TixiSaveExt::TixiSavePoint(tixiHandle, subelementPath.c_str(), rotation.x, rotation.y, rotation.z, NULL);
+
+    // Determine translation relative to parent
+    CTiglPoint relativeTranslation = translation;
+    // TODO: relative translation not computed yet!!!
+
+    // Set subelement "/transformation/translation"
+    subelementPath = elementPath + "/translation";
+    TixiSaveExt::TixiSaveElement(tixiHandle, elementPath.c_str(), "translation");
+    TixiSaveExt::TixiSaveTextAttribute(tixiHandle, subelementPath.c_str(), "refType", "absLocal");
+    TixiSaveExt::TixiSavePoint(tixiHandle, subelementPath.c_str(), relativeTranslation.x, relativeTranslation.y, 
+        relativeTranslation.z, NULL);
+
+    // Set subelement "sections"
+    sections.WriteCPACS(tixiHandle, fuselageXPath);
+
+    // Set subelement "positionings"
+    positionings.WriteCPACS(tixiHandle, fuselageXPath);
+
+    // Set subelement "segments"
+    segments.WriteCPACS(tixiHandle, fuselageXPath);
 }
 
 // Returns the name of the fuselage

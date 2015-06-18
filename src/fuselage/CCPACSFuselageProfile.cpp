@@ -52,11 +52,13 @@
 #include "CTiglInterpolateBsplineWire.h"
 #include "tiglcommonfunctions.h"
 #include "CTiglLogging.h"
+#include "TixiSaveExt.h"
 
 #include "math.h"
 #include <iostream>
 #include <limits>
 #include <sstream>
+#include <algorithm>
 
 
 namespace tigl
@@ -217,6 +219,51 @@ void CCPACSFuselageProfile::ReadCPACS(TixiDocumentHandle tixiHandle)
     }
 
     Update();
+}
+
+// Write fuselage profile file
+void CCPACSFuselageProfile::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& profileXPath)
+{
+    // Set attribute "uID"
+    TixiSaveExt::TixiSaveTextAttribute(tixiHandle, profileXPath.c_str(), "uID", uid.c_str());
+    
+    // Set element "name"
+    TixiSaveExt::TixiSaveTextElement(tixiHandle, profileXPath.c_str(), "name", name.c_str());
+    
+    // Set element "name"
+    TixiSaveExt::TixiSaveTextElement(tixiHandle, profileXPath.c_str(), "description", description.c_str());
+    
+    // Set the element "point"
+    TixiSaveExt::TixiSaveElement(tixiHandle, profileXPath.c_str(), "pointList");
+
+    // TODO: symmetry!!!
+
+    //sprintf(profileXPath.c_str(), "%s/pointList", profileXPath.c_str());
+    // TODO : find how to get the number of 'point' (and eventually the definition...)
+    int pointCount = 1;
+    std::string elementPath = profileXPath + "/pointList";
+    for (int i = 1; i <= pointCount; i++) {
+        // TODO : multiple points is not managed yet
+        TixiSaveExt::TixiSaveElement(tixiHandle, elementPath.c_str(), "point");
+
+        std::vector<double> point_X(coordinates.size());
+        std::vector<double> point_Y(coordinates.size());
+        std::vector<double> point_Z(coordinates.size());
+
+        for (int j = 0; j < coordinates.size(); j++) {
+            point_X[j] = coordinates[j]->x;
+            point_Y[j] = coordinates[j]->y;
+            point_Z[j] = coordinates[j]->z;
+        }
+
+       // Set the x coordinates
+        TixiSaveExt::TixiSaveVector(tixiHandle, elementPath, "x", point_X);
+        // Set the y coordinates
+        TixiSaveExt::TixiSaveVector(tixiHandle, elementPath, "y", point_Y);
+        // Set the z coordinates
+        TixiSaveExt::TixiSaveVector(tixiHandle, elementPath, "z", point_Z);
+        
+    }
 }
 
 // Returns the filename of the fuselage profile file

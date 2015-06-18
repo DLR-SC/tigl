@@ -52,6 +52,9 @@ public:
     // Read CPACS wing profiles
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle);
 
+    // Write CPACS wing profiles
+    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle);
+
     // Returns the total count of wing profiles in this configuration
     TIGL_EXPORT int GetProfileCount(void) const;
 

@@ -33,6 +33,8 @@ public:
     
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string &materialXPath);
     
+    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string&);
+    
     TIGL_EXPORT void Invalidate();
     
     // returns true, if the material could be read from CPACS file
@@ -42,6 +44,8 @@ public:
     
     TIGL_EXPORT const std::string& GetUID() const;
     TIGL_EXPORT double GetThickness() const;
+
+    TIGL_EXPORT double GetThicknessScaling() const;
 
     TIGL_EXPORT void Cleanup();
 private:

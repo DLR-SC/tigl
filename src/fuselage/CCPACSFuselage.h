@@ -65,6 +65,9 @@ public:
     // Read CPACS fuselage elements
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& fuselageXPath);
 
+    // Write CPACS fuselage elements
+    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& fuselageXPath);
+
     // Returns the name of the fuselage
     TIGL_EXPORT std::string GetName(void) const;
 
@@ -150,6 +153,7 @@ private:
 
 private:
     std::string                name;                 /**< Fuselage name           */
+    std::string                description;          /**< Fuselage description    */
     CCPACSFuselageSections     sections;             /**< Fuselage sections       */
     CCPACSFuselageSegments     segments;             /**< Fuselage segments       */
     CCPACSFuselagePositionings positionings;         /**< Fuselage positionings   */

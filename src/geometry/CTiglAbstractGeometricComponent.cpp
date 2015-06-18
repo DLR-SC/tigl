@@ -79,6 +79,20 @@ TiglSymmetryAxis CTiglAbstractGeometricComponent::GetSymmetryAxis(void)
     return mySymmetryAxis;
 }
 
+// Gets symmetry axis as string
+const char* CTiglAbstractGeometricComponent::GetSymmetryAxisString(void) const
+{
+    if (mySymmetryAxis == TIGL_X_Z_PLANE) {
+        return "x-z-plane";
+    } else if (mySymmetryAxis == TIGL_X_Y_PLANE) {
+        return "x-y-plane";
+    } else if (mySymmetryAxis == TIGL_Y_Z_PLANE) {
+        return "y-z-plane";
+    } else {
+        return "";
+    }
+}
+
 // Gets symmetry axis
 void CTiglAbstractGeometricComponent::SetSymmetryAxis(const std::string& axis)
 {
@@ -106,6 +120,16 @@ CTiglPoint CTiglAbstractGeometricComponent::GetTranslation() const
 ECPACSTranslationType CTiglAbstractGeometricComponent::GetTranslationType(void) const
 {
     return translationType;
+}
+
+CTiglPoint CTiglAbstractGeometricComponent::GetRotation() const
+{
+    return rotation;
+}
+
+CTiglPoint CTiglAbstractGeometricComponent::GetScaling() const
+{
+    return scaling;
 }
 
 void CTiglAbstractGeometricComponent::Translate(CTiglPoint trans)

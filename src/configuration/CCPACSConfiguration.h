@@ -66,6 +66,9 @@ public:
     // Read CPACS configuration
     TIGL_EXPORT void ReadCPACS(const char* configurationUID);
 
+    // Write CPACS configuration
+    TIGL_EXPORT void WriteCPACS(const std::string& configurationUID);
+
     // Returns the underlying tixi document handle used by a CPACS configuration
     TIGL_EXPORT TixiDocumentHandle GetTixiDocumentHandle(void) const;
 
@@ -144,6 +147,8 @@ private:
     void operator=(const CCPACSConfiguration&);
 
 private:
+    std::string                  name;                 /**< Configuration name */
+    std::string                  description;          /**< Configuration description */
     TixiDocumentHandle           tixiDocumentHandle;   /**< Handle for internal TixiDocument */
     CCPACSHeader                 header;               /**< Configuration header element */
     CCPACSWings                  wings;                /**< Configuration wings element */

@@ -64,6 +64,9 @@ public:
     // Read CPACS wing elements
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string & wingXPath);
 
+    // Write CPACS wing elements
+    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string & wingXPath);
+
     // Returns the name of the wing
     TIGL_EXPORT const std::string & GetName(void) const;
 
@@ -182,6 +185,7 @@ private:
 
 private:
     std::string                    name;                     /**< Wing name           */
+    std::string                    description;              /**< Wing description    */
     CCPACSWingSections             sections;                 /**< Wing sections       */
     CCPACSWingSegments             segments;                 /**< Wing segments       */
     CCPACSWingComponentSegments    componentSegments;        /**< Wing ComponentSegments */

@@ -40,6 +40,7 @@
 #include "tiglcommonfunctions.h"
 #include "tigl_config.h"
 #include "math/tiglmathfunctions.h"
+#include "TixiSaveExt.h"
 
 #include "BRepOffsetAPI_ThruSections.hxx"
 #include "TopExp_Explorer.hxx"
@@ -251,6 +252,12 @@ void CCPACSWingSegment::ReadCPACS(TixiDocumentHandle tixiHandle, const std::stri
         name          = ptrName;
     }
 
+    // Get subelement "description"
+    char* ptrDescription = "";
+    tempString    = segmentXPath + "/description";
+    tixiGetTextElement(tixiHandle, tempString.c_str(), &ptrDescription);
+    description          = ptrDescription;
+
     // Get attribute "uid"
     char* ptrUID = NULL;
     tempString   = "uID";
@@ -288,6 +295,27 @@ void CCPACSWingSegment::ReadCPACS(TixiDocumentHandle tixiHandle, const std::stri
     }
 
     Update();
+}
+
+// Write CPACS segment elements
+void CCPACSWingSegment::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& segmentXPath)
+{
+    // Set the name subelement
+    TixiSaveExt::TixiSaveTextElement(tixiHandle, segmentXPath.c_str(), "name", GetName().c_str());
+    // Set the name subelement
+    TixiSaveExt::TixiSaveTextElement(tixiHandle, segmentXPath.c_str(), "description", description.c_str());
+    // Set the uID attribute
+    TixiSaveExt::TixiSaveTextAttribute(tixiHandle, segmentXPath.c_str(), "uID", GetUID().c_str());
+    
+    // Inner connection
+    innerConnection.WriteCPACS(tixiHandle, segmentXPath.c_str(), "fromElementUID");
+    // Inner connection
+    outerConnection.WriteCPACS(tixiHandle, segmentXPath.c_str(), "toElementUID");
+}
+
+const std::string& CCPACSWingSegment::GetName() const
+{
+    return name;
 }
 
 // Returns the wing this segment belongs to
