@@ -52,8 +52,15 @@ public:
     // Getter/Setter for member timestamp
     TIGL_EXPORT std::string GetTimestamp(void) const;
 
+    // Getter/Setter for member description
+    TIGL_EXPORT void SetDescription(const std::string& aDescription);
+    TIGL_EXPORT const std::string& GetDescription(void) const;
+
     // Read CPACS header elements
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle);
+
+    // Write (and Save) header element, or create it if doesn't exist yet
+    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle);
 
 protected:
     // Cleanup routine
@@ -68,6 +75,7 @@ private:
 
 private:
     std::string name;       /**< Configuration name          */
+    std::string description;/**< Configuration description   */
     std::string creator;    /**< Configuration author        */
     std::string timestamp;  /**< Configuration creation time */
 

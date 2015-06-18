@@ -64,6 +64,12 @@ public:
     // Read CPACS segment elements
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& segmentXPath);
 
+    // Write CPACS segment elements
+    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string & segmentXPath);
+
+    // Gets the segment name
+    TIGL_EXPORT const std::string& GetName() const;
+
     // Returns the wing this segment belongs to
     TIGL_EXPORT CCPACSWing& GetWing(void) const;
 
@@ -237,6 +243,7 @@ private:
     void etaXsiToUV(bool isFromUpper, double eta, double xsi, double& u, double& v);
 
     std::string          name;                 /**< Segment name                            */
+    std::string          description;          /**< Segment description                     */
     CCPACSWingConnection innerConnection;      /**< Inner segment connection (root)         */
     CCPACSWingConnection outerConnection;      /**< Outer segment connection (tip)          */
     CCPACSGuideCurves    guideCurves;          /**< Guide curve container                   */

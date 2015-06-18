@@ -201,6 +201,35 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglOpenCPACSConfiguration(TixiDocumentHandle 
     }
 }
 
+TIGL_COMMON_EXPORT TiglReturnCode tiglSaveCPACSConfiguration(const char* configurationUID, TiglCPACSConfigurationHandle cpacsHandle)
+{
+    tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
+
+    if (!manager.IsValid(cpacsHandle)) {
+        LOG(ERROR) << "Invalid cpacsHandlePtr passed to tiglSaveCPACSConfiguration!" << std::endl;
+        return TIGL_UNINITIALIZED;
+    }
+
+    tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
+
+    try {
+        config.WriteCPACS(configurationUID);
+        return TIGL_SUCCESS;
+    }
+    catch (std::exception& ex) {
+        LOG(ERROR) << ex.what() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (tigl::CTiglError& ex) {
+        LOG(ERROR) << ex.getError() << std::endl;
+        return TIGL_ERROR;
+    }
+    catch (...) {
+        LOG(ERROR) << "Caught an exception in tiglSaveCPACSConfiguration!" << std::endl;
+        return TIGL_ERROR;
+    }
+}
+
 
 TIGL_COMMON_EXPORT TiglReturnCode tiglCloseCPACSConfiguration(TiglCPACSConfigurationHandle cpacsHandle)
 {

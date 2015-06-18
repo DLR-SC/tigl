@@ -24,6 +24,7 @@
 */
 
 #include "CCPACSWingPositionings.h"
+#include "TixiSaveExt.h"
 #include <iostream>
 #include <sstream>
 
@@ -181,6 +182,42 @@ void CCPACSWingPositionings::ReadCPACS(TixiDocumentHandle tixiHandle, const std:
     }
 
     Update();
+}
+
+// Write CPACS positionings element
+void CCPACSWingPositionings::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& wingXPath)
+{
+    std::string elementPath;
+    std::string xpath;
+    ReturnCode  tixiRet;
+    int         positioningCount, test;
+
+    TixiSaveExt::TixiSaveElement(tixiHandle, wingXPath.c_str(), "positionings");
+    elementPath = wingXPath + "/positionings";
+    tixiRet = tixiGetNamedChildrenCount(tixiHandle, elementPath.c_str(), "positioning", &test);
+    positioningCount = positionings.size(); //GetPositioningCount();
+
+    CCPACSWingPositioningIterator it;
+    int i = 0;
+    for (it = positionings.begin(); it != positionings.end(); ++it) {
+        i++;
+        std::stringstream ss;
+        ss << elementPath << "/positioning[" << i << "]";
+        xpath = ss.str();
+        CCPACSWingPositioning* positioning = it->second;
+        if ((tixiRet = tixiCheckElement(tixiHandle, xpath.c_str())) == ELEMENT_NOT_FOUND) {
+            if ((tixiRet = tixiCreateElement(tixiHandle, elementPath.c_str(), "positioning")) != SUCCESS) {
+                throw CTiglError("XML error: tixiCreateElement failed in CCPACSWingsPositionnings::WriteCPACS", TIGL_XML_ERROR);
+            }
+        }
+        positioning->WriteCPACS(tixiHandle, xpath);
+    }
+    for (int i = positioningCount+1; i <= test; i++) {
+        std::stringstream ss;
+        ss << elementPath << "/positioning[" << positioningCount+1 << "]";
+        xpath = ss.str();
+        tixiRemoveElement(tixiHandle, xpath.c_str());
+    }
 }
 
 } // end namespace tigl

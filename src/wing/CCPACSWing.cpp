@@ -31,6 +31,7 @@
 #include "CCPACSWingSegment.h"
 #include "CTiglError.h"
 #include "tiglcommonfunctions.h"
+#include "TixiSaveExt.h"
 
 #include "BRepOffsetAPI_ThruSections.hxx"
 #include "BRepAlgoAPI_Fuse.hxx"
@@ -210,6 +211,13 @@ void CCPACSWing::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& win
         name          = ptrName;
     }
 
+    // Get subelement "description"
+    char* ptrDescription = "";
+    tempString    = wingXPath + "/description";
+    if (tixiGetTextElement(tixiHandle, tempString.c_str(), &ptrDescription) == SUCCESS) {
+        description   = ptrDescription;
+    }
+
     // Get attribute "uid"
     char* ptrUID = NULL;
     tempString   = "uID";
@@ -293,6 +301,68 @@ void CCPACSWing::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& win
     }
 
     Update();
+}
+
+// Write CPACS wing element
+void CCPACSWing::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& wingXPath)
+{
+    std::string elementPath;
+    std::string subelementPath;
+
+    // Set subelement "name"
+    TixiSaveExt::TixiSaveTextElement(tixiHandle, wingXPath.c_str(), "name", GetName().c_str());
+    // Set subelement "description"
+    TixiSaveExt::TixiSaveTextElement(tixiHandle, wingXPath.c_str(), "description", description.c_str());
+    // Set subelement "uID" attribute
+    TixiSaveExt::TixiSaveTextAttribute(tixiHandle, wingXPath.c_str(), "uID", GetUID().c_str());
+    // Set subelement "axis" attribute
+    TixiSaveExt::TixiSaveTextAttribute(tixiHandle, wingXPath.c_str(), "symmetry", GetSymmetryAxisString());
+    // Set subelement "parent_uid"
+    TixiSaveExt::TixiSaveTextElement(tixiHandle, wingXPath.c_str(), "parentUID", GetParentUID().c_str());
+
+    // Set the subelement "transformation"
+    elementPath = wingXPath + "/transformation";
+    TixiSaveExt::TixiSaveElement(tixiHandle, wingXPath.c_str(), "transformation");
+       
+        // Set subelement "/transformation/scaling"
+        subelementPath = elementPath + "/scaling";
+        TixiSaveExt::TixiSaveElement(tixiHandle, elementPath.c_str(), "scaling");
+        TixiSaveExt::TixiSavePoint(tixiHandle, subelementPath.c_str(), GetScaling().x, GetScaling().y, GetScaling().z, NULL);
+        
+        // Set subelement "/transformation/rotation"
+        subelementPath = elementPath + "/rotation";
+        TixiSaveExt::TixiSaveElement(tixiHandle, elementPath.c_str(), "rotation");
+        TixiSaveExt::TixiSavePoint(tixiHandle, subelementPath.c_str(), GetRotation().x, GetRotation().y, GetRotation().z, NULL);
+
+        // Determine translation relative to parent
+        CTiglPoint relativeTranslation = translation;
+        CTiglUIDManager& manager = configuration->GetUIDManager();
+        std::string UId = GetUID();
+        ITiglGeometricComponent* parent = manager.GetComponent(UId);
+
+//             while (parent != NULL && manager.HasUID(parent->GetParentUID())) { // check if the actual component exist AND if the component's parent is in the manager list
+//                 relativeTranslation -= parent->GetTranslation();
+//                 parent = manager.GetParentComponent(parent->GetUID());
+//             }
+
+        // Set subelement "/transformation/translation"
+        subelementPath = elementPath + "/translation";
+        TixiSaveExt::TixiSaveElement(tixiHandle, elementPath.c_str(), "translation");
+        TixiSaveExt::TixiSaveTextAttribute(tixiHandle, subelementPath.c_str(), "refType", "absLocal");
+        TixiSaveExt::TixiSavePoint(tixiHandle, subelementPath.c_str(), relativeTranslation.x, relativeTranslation.y, 
+            relativeTranslation.z, NULL);
+
+    // Set subelement "sections"
+    sections.WriteCPACS(tixiHandle, wingXPath);
+
+    // Set subelement "positionings"
+    positionings.WriteCPACS(tixiHandle, wingXPath);
+
+    // Set subelement "segments"
+    segments.WriteCPACS(tixiHandle, wingXPath);
+
+    // Set subelement "componentSegments"
+    componentSegments.WriteCPACS(tixiHandle, wingXPath);
 }
 
 // Returns the name of the wing

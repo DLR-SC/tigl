@@ -31,6 +31,7 @@
 #include "CCPACSWingSection.h"
 #include "CCPACSWingSegment.h"
 #include "CCPACSConfiguration.h"
+#include "TixiSaveExt.h"
 
 namespace tigl
 {
@@ -171,6 +172,12 @@ void CCPACSWingConnection::ReadCPACS(TixiDocumentHandle tixiHandle, const std::s
             }
         }
     }
+}
+
+// Write CPACS connection element
+void CCPACSWingConnection::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& connectionXPath, const std::string& direction)
+{
+    TixiSaveExt::TixiSaveTextElement(tixiHandle, connectionXPath.c_str(), direction.c_str(), elementUID.c_str());
 }
 
 } // end namespace tigl

@@ -38,6 +38,9 @@ public:
     TIGL_EXPORT CCPACSMaterial& GetMaterial();
     
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& shellXPath);
+
+    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string & shellDefinitionXPath);
+
     TIGL_EXPORT void Invalidate();
     TIGL_EXPORT bool IsValid() const;
 private:

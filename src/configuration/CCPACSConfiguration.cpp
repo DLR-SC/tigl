@@ -48,6 +48,7 @@
 #include <Bnd_Box.hxx>
 #include "CTiglFusePlane.h"
 #include "CNamedShape.h"
+#include "TixiSaveExt.h"
 
 #include <cfloat>
 
@@ -87,6 +88,30 @@ void CCPACSConfiguration::ReadCPACS(const char* configurationUID)
         return;
     }
 
+    // reading name and description
+    std::string tempString;
+    std::string xpath;
+    char* path;
+
+    // memory for path freed by tixi when document is closed
+    tempString = configurationUID;
+    if (tixiUIDGetXPath(tixiDocumentHandle, tempString.c_str(), &path) != SUCCESS) {
+        throw CTiglError("Error: XML error while reading in CCPACSConfiguration::ReadCPACS", TIGL_XML_ERROR);
+    }
+    xpath = path;
+
+    char* ptrName = NULL;
+    tempString    = xpath + "/name";
+    if (tixiGetTextElement(tixiDocumentHandle, tempString.c_str(), &ptrName) == SUCCESS) {
+        name = ptrName;
+    }
+
+    char* ptrDescription = "";
+    tempString    = xpath + "/description";
+    if (tixiGetTextElement(tixiDocumentHandle, tempString.c_str(), &ptrDescription) == SUCCESS) {
+        description = ptrDescription;
+    }
+
     header.ReadCPACS(tixiDocumentHandle);
     guideCurveProfiles.ReadCPACS(tixiDocumentHandle);
     wings.ReadCPACS(tixiDocumentHandle, configurationUID);
@@ -102,6 +127,20 @@ void CCPACSConfiguration::ReadCPACS(const char* configurationUID)
     catch (tigl::CTiglError& ex) {
         LOG(ERROR) << ex.getError() << std::endl;
     }
+}
+
+// Write CPACS structure to tixiHandle
+void CCPACSConfiguration::WriteCPACS(const std::string& configurationUID)
+{
+    header.WriteCPACS(tixiDocumentHandle);
+    
+    TixiSaveExt::TixiSaveTextAttribute(tixiDocumentHandle, "/cpacs/vehicles/aircraft/model", "uID", configurationUID.c_str());
+    TixiSaveExt::TixiSaveTextElement(tixiDocumentHandle, "/cpacs/vehicles/aircraft/model", "name", name.c_str());
+    TixiSaveExt::TixiSaveTextElement(tixiDocumentHandle, "/cpacs/vehicles/aircraft/model", "description", description.c_str());
+
+    fuselages.WriteCPACS(tixiDocumentHandle, configurationUID);
+    wings.WriteCPACS(tixiDocumentHandle, configurationUID);
+
 }
 
 // transform all components relative to their parents

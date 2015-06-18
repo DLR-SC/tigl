@@ -33,6 +33,7 @@
 #include "CTiglTransformation.h"
 #include "CWireToCurve.h"
 #include "CCPACSWingProfileFactory.h"
+#include "TixiSaveExt.h"
 #include "math.h"
 
 #include <TopoDS.hxx>
@@ -40,8 +41,6 @@
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepBuilderAPI_MakeWire.hxx>
 #include <Geom_BSplineCurve.hxx>
-
-
 
 
 namespace tigl
@@ -127,6 +126,12 @@ void CCPACSWingProfileCST::ReadCPACS(TixiDocumentHandle tixiHandle)
     upperN2=readTixiDouble(tixiHandle, ProfileDataXPath, "/upperN2", "CCPACSWingProfileCST::ReadCPACS"); 
     lowerN1=readTixiDouble(tixiHandle, ProfileDataXPath, "/lowerN1", "CCPACSWingProfileCST::ReadCPACS"); 
     lowerN2=readTixiDouble(tixiHandle, ProfileDataXPath, "/lowerN2", "CCPACSWingProfileCST::ReadCPACS"); 
+}
+
+// Write CPACS wing profile
+void CCPACSWingProfileCST::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& ProfileXPath)
+{
+    throw CTiglError("ERROR: CCPACSWingProfileCST::WriteCPACS not implemented!!!");
 }
 
 // Builds the wing profile wire. The returned wire is already transformed by the

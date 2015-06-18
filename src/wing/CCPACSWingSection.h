@@ -48,17 +48,32 @@ public:
     // Read CPACS section elements
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& sectionXPath);
 
+    // Write CPACS section elements
+    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& sectionXPath);
+
     // Get element count for this section
     TIGL_EXPORT int GetSectionElementCount(void) const;
 
     // Get the UID of this WingSection
     TIGL_EXPORT const std::string& GetUID(void) const;
 
+    // Get name of this WingSection
+    TIGL_EXPORT const std::string& GetName() const;
+
     // Get element for a given index
     TIGL_EXPORT CCPACSWingSectionElement& GetSectionElement(int index) const;
 
     // Gets the section transformation
     TIGL_EXPORT CTiglTransformation GetSectionTransformation(void) const;
+
+    // Gets the section translation
+    TIGL_EXPORT const CTiglPoint& GetTranslation() const;
+
+    // Gets the section rotation
+    TIGL_EXPORT const CTiglPoint& GetRotation() const;
+
+    // Gets the section scaling
+    TIGL_EXPORT const CTiglPoint& GetScaling() const;
 
 protected:
     // Cleanup routine
@@ -80,6 +95,7 @@ private:
 private:
     std::string               name;           /**< Section name             */
     std::string               uID;              /**< Section uid                */
+    std::string               description;    /**< Section description      */
     CTiglTransformation       transformation; /**< Section transfromation   */
     CTiglPoint                translation;    /**< Section translation      */
     CTiglPoint                scaling;        /**< Section scaling          */

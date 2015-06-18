@@ -37,6 +37,7 @@
 #include "CCPACSWingCell.h"
 #include "CTiglApproximateBsplineWire.h"
 #include "tiglcommonfunctions.h"
+#include "TixiSaveExt.h"
 
 #include "BRepOffsetAPI_ThruSections.hxx"
 #include "TopoDS_Edge.hxx"
@@ -228,6 +229,26 @@ void CCPACSWingComponentSegment::ReadCPACS(TixiDocumentHandle tixiHandle, const 
     }
 
     Update();
+}
+
+// Write CPACS segment elements
+void CCPACSWingComponentSegment::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& segmentXPath)
+{
+    std::string elementPath;
+
+    // Set subelement "name"
+    TixiSaveExt::TixiSaveTextElement(tixiHandle, segmentXPath.c_str(), "name", name.c_str());
+
+    // Set attribute "uID"
+    TixiSaveExt::TixiSaveTextAttribute(tixiHandle, segmentXPath.c_str(), "uID", GetUID().c_str());
+
+    // Set fromElementUID qnd toElementUID
+    TixiSaveExt::TixiSaveTextElement(tixiHandle, segmentXPath.c_str(), "fromElementUID", fromElementUID.c_str());
+    TixiSaveExt::TixiSaveTextElement(tixiHandle, segmentXPath.c_str(), "toElementUID", toElementUID.c_str());
+    
+    elementPath = segmentXPath + "/structure";
+    TixiSaveExt::TixiSaveElement(tixiHandle, segmentXPath.c_str(), "structure");
+    structure.WriteCPACS(tixiHandle, elementPath);
 }
 
 // Returns the wing this segment belongs to
