@@ -48,7 +48,13 @@ void CCPACSControlSurfaceDeviceOuterShapeBorder::ReadCPACS(
 
     tempString = BorderXPath + "/etaTE";
     elementPath = const_cast<char*>(tempString.c_str());
-    if (tixiGetDoubleElement(tixiHandle, elementPath, &etaTE) != SUCCESS) {
+    if (tixiCheckElement(tixiHandle, elementPath) == SUCCESS) {
+        if (tixiGetDoubleElement(tixiHandle, elementPath, &etaTE) != SUCCESS) {
+            // error
+        }
+    }
+    else {
+        // trailing edge is optional. default is eta of leading edge
         etaTE = etaLE;
     }
 
