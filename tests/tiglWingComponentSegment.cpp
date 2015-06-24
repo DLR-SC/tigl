@@ -521,26 +521,27 @@ TEST_F(WingComponentSegmentSimple, GetSegmentIntersection_cinterface)
 {
     double xsi;
     TiglReturnCode ret;
-    ret = tiglWingComponentSegmentGetSegmentIntersection(tiglHandle, "WING_CS1", "Cpacs2Test_Wing_Seg_1_2", 0.0, 0.0, 1.0, 1.0, 1.0, &xsi);
+    TiglBoolean hasWarning;
+    ret = tiglWingComponentSegmentGetSegmentIntersection(tiglHandle, "WING_CS1", "Cpacs2Test_Wing_Seg_1_2", 0.0, 0.0, 1.0, 1.0, 1.0, &xsi, &hasWarning);
     ASSERT_EQ(TIGL_SUCCESS, ret);
     ASSERT_NEAR(0.5, xsi, 1e-6);
 
-    ret = tiglWingComponentSegmentGetSegmentIntersection(tiglHandle, "WING_CS1","Cpacs2Test_Wing_Seg_2_3", 0.1, 0.1, 0.9, 0.1, 1.0, &xsi);
+    ret = tiglWingComponentSegmentGetSegmentIntersection(tiglHandle, "WING_CS1","Cpacs2Test_Wing_Seg_2_3", 0.1, 0.1, 0.9, 0.1, 1.0, &xsi, &hasWarning);
     ASSERT_EQ(TIGL_MATH_ERROR, ret);
 
-    ret = tiglWingComponentSegmentGetSegmentIntersection(tiglHandle, "","Cpacs2Test_Wing_Seg_1_2", 0.1, 0.1, 0.9, 0.1, 1.0, &xsi);
+    ret = tiglWingComponentSegmentGetSegmentIntersection(tiglHandle, "","Cpacs2Test_Wing_Seg_1_2", 0.1, 0.1, 0.9, 0.1, 1.0, &xsi, &hasWarning);
     ASSERT_EQ(TIGL_UID_ERROR, ret);
 
-    ret = tiglWingComponentSegmentGetSegmentIntersection(tiglHandle, "WING_CS1", "", 0.1, 0.1, 0.9, 0.1, 1.0, &xsi);
+    ret = tiglWingComponentSegmentGetSegmentIntersection(tiglHandle, "WING_CS1", "", 0.1, 0.1, 0.9, 0.1, 1.0, &xsi, &hasWarning);
     ASSERT_EQ(TIGL_UID_ERROR, ret);
 
-    ret = tiglWingComponentSegmentGetSegmentIntersection(tiglHandle, NULL, "Cpacs2Test_Wing_Seg_1_2", 0.1, 0.1, 0.9, 0.1, 1.0, &xsi);
+    ret = tiglWingComponentSegmentGetSegmentIntersection(tiglHandle, NULL, "Cpacs2Test_Wing_Seg_1_2", 0.1, 0.1, 0.9, 0.1, 1.0, &xsi, &hasWarning);
     ASSERT_EQ(TIGL_NULL_POINTER, ret);
 
-    ret = tiglWingComponentSegmentGetSegmentIntersection(tiglHandle, "WING_CS1", NULL, 0.1, 0.1, 0.9, 0.1, 1.0, &xsi);
+    ret = tiglWingComponentSegmentGetSegmentIntersection(tiglHandle, "WING_CS1", NULL, 0.1, 0.1, 0.9, 0.1, 1.0, &xsi, &hasWarning);
     ASSERT_EQ(TIGL_NULL_POINTER, ret);
 
-    ret = tiglWingComponentSegmentGetSegmentIntersection(tiglHandle, "WING_CS1", "Cpacs2Test_Wing_Seg_1_2", 0.1, 0.1, 0.9, 0.1, 1.0, NULL);
+    ret = tiglWingComponentSegmentGetSegmentIntersection(tiglHandle, "WING_CS1", "Cpacs2Test_Wing_Seg_1_2", 0.1, 0.1, 0.9, 0.1, 1.0, NULL, &hasWarning);
     ASSERT_EQ(TIGL_NULL_POINTER, ret);
 }
 
@@ -632,9 +633,11 @@ TEST(WingComponentSegment5, GetSegmentIntersection_BUG)
     ASSERT_EQ(TIGL_SUCCESS, tiglRet);
 
     double xsi = 0;
-    tiglRet = tiglWingComponentSegmentGetSegmentIntersection(tiglHandle, "wing_Cseg", "wing_Seg2", 0.0589568, 1., 0.35, 1., 1., &xsi);
+    TiglBoolean hasWarning;
+    tiglRet = tiglWingComponentSegmentGetSegmentIntersection(tiglHandle, "wing_Cseg", "wing_Seg2", 0.0589568, 1., 0.35, 1., 1., &xsi, &hasWarning);
     ASSERT_EQ(TIGL_SUCCESS, tiglRet);
-    ASSERT_NEAR(1.0, xsi, 1e-6);
+    ASSERT_EQ(TIGL_TRUE, hasWarning);
+    ASSERT_NEAR(1.0, xsi, 1e-2);
 
     ASSERT_EQ(TIGL_SUCCESS, tiglCloseCPACSConfiguration(tiglHandle));
     ASSERT_EQ(SUCCESS, tixiCloseDocument(tixiHandle));
@@ -652,11 +655,13 @@ TEST(WingComponentSegment5, GetSegmentIntersection_BUG2)
     ASSERT_EQ(TIGL_SUCCESS, tiglOpenCPACSConfiguration(tixiHandle, "", &tiglHandle));
 
     double xsi = 0;
+    TiglBoolean hasWarning;
     ASSERT_EQ(TIGL_SUCCESS, tiglWingComponentSegmentGetSegmentIntersection(
                tiglHandle, "BWB_CST_wing_CS", "BWB_CST_wingSegment49ID", 
                0.81268, 1., 0.96, 1., 1., 
-               &xsi));
+               &xsi, &hasWarning));
 
+    ASSERT_EQ(TIGL_TRUE, hasWarning);
     ASSERT_EQ(TIGL_SUCCESS, tiglCloseCPACSConfiguration(tiglHandle));
     ASSERT_EQ(SUCCESS, tixiCloseDocument(tixiHandle));
 }
@@ -679,27 +684,27 @@ TEST(WingComponentSegment5, GetSegmentIntersection_BUG3)
     ASSERT_EQ(TIGL_SUCCESS, tiglWingComponentSegmentGetSegmentIntersection(
                tiglHandle, "WING_CS1", "Cpacs2Test_Wing_Seg_1_2", 
                0.0, 0.7, (1. - 1e-5)/2. + 1e-6, 0.7, 1., 
-               &xsi));
+               &xsi, NULL));
 
     ASSERT_NEAR(0.7, xsi, 1e-7);
     // This is too inaccurate now
     ASSERT_EQ(TIGL_MATH_ERROR, tiglWingComponentSegmentGetSegmentIntersection(
                tiglHandle, "WING_CS1", "Cpacs2Test_Wing_Seg_1_2", 
                0.0, 0.7, (1. - 1e-5)/2. - 1e-5, 0.7, 1., 
-               &xsi));
+               &xsi, NULL));
 
     // check inner section
     // The segment border is at eta = 0.0. we test if 0.000005 is okay (all values below should fail)
     ASSERT_EQ(TIGL_SUCCESS, tiglWingComponentSegmentGetSegmentIntersection(
                tiglHandle, "WING_CS1", "Cpacs2Test_Wing_Seg_1_2", 
                (1e-5)/2. - 1e-6, 0.7, 0.5 + 1e-5, 0.7, 0., 
-               &xsi));
+               &xsi, NULL));
 
     // This should be too inaccurate now
     ASSERT_EQ(TIGL_MATH_ERROR, tiglWingComponentSegmentGetSegmentIntersection(
                tiglHandle, "WING_CS1", "Cpacs2Test_Wing_Seg_1_2", 
                (1e-5)/2. + 1e-5, 0.7, 0.5 + 1e-5, 0.7, 0., 
-               &xsi));
+               &xsi, NULL));
 
     ASSERT_EQ(TIGL_SUCCESS, tiglCloseCPACSConfiguration(tiglHandle));
     ASSERT_EQ(SUCCESS, tixiCloseDocument(tixiHandle));

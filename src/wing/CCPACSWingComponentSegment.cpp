@@ -371,14 +371,6 @@ void CCPACSWingComponentSegment::GetSegmentIntersection(const std::string& segme
 
     // compute xsi value
     xsi = pOnEtaLine.Parameter()/chordDepth;
-
-    // TODO: handle invalid xsi values (xsi > 1 and xsi < 0)
-    if (xsi > 1) {
-        xsi = 1.;
-    }
-    else if (xsi < 0) {
-        xsi = 0.;
-    }
 }
 
 // get short name for loft

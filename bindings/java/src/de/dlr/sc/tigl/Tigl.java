@@ -310,4 +310,14 @@ public class Tigl {
         public TiglPoint macPoint;
         public double mac;
     }
+    
+    public static class SegmentXsiAndWarning {
+        public SegmentXsiAndWarning(double segmentXsi, boolean hasWarning) {
+            this.segmentXsi = segmentXsi;
+            this.hasWarning = hasWarning;
+        }
+        
+        public double segmentXsi;
+        public boolean hasWarning; 
+    }
 }
