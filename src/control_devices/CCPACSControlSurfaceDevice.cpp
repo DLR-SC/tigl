@@ -33,36 +33,34 @@
 
 #include "Handle_Geom_Plane.hxx"
 #include "Geom_Plane.hxx"
-#include "BRepBuilderAPI_MakePolygon.hxx"
 #include "GeomAPI_ProjectPointOnSurf.hxx"
-#include "Handle_Geom_TrimmedCurve.hxx"
 #include "BRepBuilderAPI_MakeEdge.hxx"
 #include "BRepBuilderAPI_MakeFace.hxx"
 #include "BRepBuilderAPI_MakeWire.hxx"
-#include "BRepBuilderAPI_MakePolygon.hxx"
-#include "GeomAPI_ProjectPointOnSurf.hxx"
-#include "GC_MakeSegment.hxx"
-#include <BRepPrimAPI_MakePrism.hxx>
-#include <BRepAlgoAPI_Common.hxx>
-#include <BRepAlgoAPI_Cut.hxx>
+#include "BRepPrimAPI_MakePrism.hxx"
 #include "Bnd_Box.hxx"
 #include "BRepBndLib.hxx"
 #include "gp_Pln.hxx"
-#include "Handle_Geom_BSplineCurve.hxx"
-#include "Geom_BSplineCurve.hxx"
-#include "GeomAPI_Interpolate.hxx"
-#include "Handle_TColgp_HArray1OfPnt.hxx"
-#include "TColgp_HArray1OfPnt.hxx"
-#include "GeomAPI_IntSS.hxx"
-#include "Handle_Geom_Line.hxx"
-#include "Geom_Line.hxx"
+#include "Geom2dAPI_Interpolate.hxx"
+#include "TColgp_HArray1OfPnt2d.hxx"
 #include "BRepOffsetAPI_ThruSections.hxx"
-#include "gp_Lin.hxx"
-#include "BRepBuilderAPI_Sewing.hxx"
-#include "BRepBuilderAPI_MakeSolid.hxx"
+#include "BRepTools.hxx"
+#include "BRepLib.hxx"
 
 
 #define USE_ADVANCED_MODELING 1
+
+namespace
+{
+    TopoDS_Edge pointsToEdge(Handle_Geom_Surface surf, gp_Pnt2d p1, gp_Pnt2d p2)
+    {
+        gp_Pnt p13d = surf->Value(p1.X(), p1.Y());
+        gp_Pnt p23d = surf->Value(p2.X(), p2.Y());
+        BRepBuilderAPI_MakeEdge edgemaker(p13d, p23d);
+        TopoDS_Edge edge =  edgemaker.Edge();
+        return edge;
+    }
+}
 
 
 namespace tigl
@@ -187,46 +185,24 @@ PNamedShape CCPACSControlSurfaceDevice::getCutOutShape()
 
 
         // Get Wires definng the Shape of the more complex CutOutShape.
-        TopoDS_Wire innerWire = buildLeadingEdgeShapeWire(true);
-        TopoDS_Wire outerWire = buildLeadingEdgeShapeWire(false);
+        TopoDS_Wire innerWire = getCutoutWire(true);
+        TopoDS_Wire outerWire = getCutoutWire(false);
 
         // make one shape out of the 2 wires and build connections inbetween.
-        BRepOffsetAPI_ThruSections thrusections(false,true);
+        BRepOffsetAPI_ThruSections thrusections(true,true);
         thrusections.AddWire(outerWire);
         thrusections.AddWire(innerWire);
         thrusections.Build();
 
-        gp_Pnt lowerPoint = getLeadingEdgeShapeLowerPoint(false);
-        gp_Pnt upperPoint = getLeadingEdgeShapeUpperPoint(false);
-        gp_Pnt leadingPoint = getLeadingEdgeShapeLeadingEdgePoint(false);
+        loft = PNamedShape(new CNamedShape(thrusections.Shape(), GetUID().c_str()));
+        loft->SetShortName(GetShortShapeName().c_str());
 
-        gp_Vec leadingToUpper = gp_Vec(upperPoint.XYZ()) - gp_Vec(leadingPoint.XYZ());
-        gp_Vec leadingToLower = gp_Vec(lowerPoint.XYZ()) - gp_Vec(leadingPoint.XYZ());
+#ifdef DEBUG
+        std::stringstream filenamestr;
+        filenamestr << GetUID() << "_cutout.brep";
+        BRepTools::Write(loft->Shape(), filenamestr.str().c_str());
+#endif
 
-        // generate the Top of the newly formed shape.
-        TopoDS_Face outerFace = BRepBuilderAPI_MakeFace(gp_Pln(leadingPoint, leadingToLower^leadingToUpper),outerWire);
-        outerFace.Reverse();
-
-        lowerPoint = getLeadingEdgeShapeLowerPoint(true);
-        upperPoint = getLeadingEdgeShapeUpperPoint(true);
-        leadingPoint = getLeadingEdgeShapeLeadingEdgePoint(true);
-
-        leadingToUpper = gp_Vec(upperPoint.XYZ()) - gp_Vec(leadingPoint.XYZ());
-        leadingToLower = gp_Vec(lowerPoint.XYZ()) - gp_Vec(leadingPoint.XYZ());
-
-        // generate the Bottom of the newly formed shape.
-        TopoDS_Face innerFace = BRepBuilderAPI_MakeFace(gp_Pln(leadingPoint, leadingToLower^leadingToUpper),innerWire);
-        innerFace.Reverse(); // Maybe reverse only one of the two Faces ( outer and innerFace ).
-
-        // Fuse all shapes together.
-        BRepBuilderAPI_Sewing sewer;
-        sewer.Add(outerFace);
-        sewer.Add(thrusections.Shape());
-        sewer.Add(innerFace);
-        sewer.Perform();
-
-        TopoDS_Shape sh = BRepBuilderAPI_MakeSolid(TopoDS::Shell(sewer.SewedShape()));
-        loft = PNamedShape(new CNamedShape(sh, GetUID().c_str()));
         return loft;
     }
     else {
@@ -250,6 +226,7 @@ PNamedShape CCPACSControlSurfaceDevice::getCutOutShape()
 
         TopoDS_Shape prism = BRepPrimAPI_MakePrism(face,vec);
         loft = PNamedShape(new CNamedShape(prism, GetUID().c_str()));
+        loft->SetShortName(GetShortShapeName().c_str());
         return loft;
     }
 }
@@ -324,6 +301,9 @@ void CCPACSControlSurfaceDevice::getProjectedPoints(gp_Pnt point1, gp_Pnt point2
     gp_Pnt p3;
     gp_Pnt p4;
 
+    //TODO: this is wrong
+    // First, the for loops dont make any sense
+    // Second, We need a directional projection - the direction must be the direction if the prism sweep
     GeomAPI_ProjectPointOnSurf projection1(point1,plane);
     for ( int i = 1; i <= projection1.NbPoints(); i++ ) {
         p1 = projection1.Point(1);
@@ -457,43 +437,39 @@ gp_Pnt CCPACSControlSurfaceDevice::getLeadingEdgeShapeLeadingEdgePoint(bool isIn
     return gp_Pnt(( gp_Vec(helperUpper.XYZ()) + gp_Vec(upperToLower.XYZ() )).XYZ());
 }
 
-gp_Pnt CCPACSControlSurfaceDevice::getLeadingEdgeShapeLowerPoint(bool isInnerBorder)
+gp_Pln CCPACSControlSurfaceDevice::getBorderPlane(bool isInnerBorder)
 {
-    gp_Vec controlSurfaceNormal = getNormalOfControlSurfaceDevice();
+    double lEta, lXsi, tEta, tXsi;
     if (isInnerBorder) {
-        return _segment->GetPointDirection(getOuterShape().getInnerBorder().getEtaLE(),
-                                           getOuterShape().getInnerBorder().getLeadingEdgeShape().getXsiLowerSkin(),
-                                           controlSurfaceNormal.X(),controlSurfaceNormal.Y(),controlSurfaceNormal.Z(),false);
+        lEta = getOuterShape().getInnerBorder().getEtaLE();
+        lXsi = getOuterShape().getInnerBorder().getXsiLE();
+        tEta = getOuterShape().getInnerBorder().getEtaLE();
+        tXsi = getOuterShape().getInnerBorder().getXsiTE();
     }
     else {
-        return _segment->GetPointDirection(getOuterShape().getOuterBorder().getEtaLE(),
-                                           getOuterShape().getOuterBorder().getLeadingEdgeShape().getXsiLowerSkin(),
-                                           controlSurfaceNormal.X(),controlSurfaceNormal.Y(),controlSurfaceNormal.Z(),false);
+        lEta = getOuterShape().getOuterBorder().getEtaLE();
+        lXsi = getOuterShape().getOuterBorder().getXsiLE();
+        tEta = getOuterShape().getOuterBorder().getEtaLE();
+        tXsi = getOuterShape().getOuterBorder().getXsiTE();
     }
+
+    gp_Pnt pLE = _segment->GetPoint(lEta, lXsi);
+    gp_Pnt pTE = _segment->GetPoint(tEta, tXsi);
+
+    gp_Dir pX = pLE.XYZ() - pTE.XYZ();
+    gp_Dir planeNormal = getNormalOfControlSurfaceDevice().Crossed(gp_Vec(1,0,0));
+
+    gp_Pln plane(gp_Ax3(pLE, planeNormal, pX));
+
+    return plane;
 }
 
-gp_Pnt CCPACSControlSurfaceDevice::getLeadingEdgeShapeUpperPoint(bool isInnerBorder)
-{
-    gp_Vec controlSurfaceNormal = getNormalOfControlSurfaceDevice();
-    if (isInnerBorder) {
-        return _segment->GetPointDirection(getOuterShape().getInnerBorder().getEtaLE(),
-                                           getOuterShape().getInnerBorder().getLeadingEdgeShape().getXsiUpperSkin(),
-                                           controlSurfaceNormal.X(),controlSurfaceNormal.Y(),controlSurfaceNormal.Z(),true);
-    }
-    else {
-        return _segment->GetPointDirection(getOuterShape().getOuterBorder().getEtaLE(),
-                                           getOuterShape().getOuterBorder().getLeadingEdgeShape().getXsiUpperSkin(),
-                                           controlSurfaceNormal.X(),controlSurfaceNormal.Y(),controlSurfaceNormal.Z(),true);
-    }
-}
-
-gp_Vec CCPACSControlSurfaceDevice::getLeadingEdgeShapeTangent(gp_Pnt leadingPoint, gp_Pnt lowerPoint, gp_Pnt upperPoint, bool isInnerBorder, bool isUpper)
+// Compute the point and tangent of the leading edge of the control surface
+// It is tangential to the wing surface.
+void CCPACSControlSurfaceDevice::getLeadingEdgeTangent(gp_Pln borderPlane, bool isInnerBorder, bool isUpper, gp_Pnt& point, gp_Vec& result)
 {
     // Returns the Tangent of the Upper or the lower Point of the LeadingEdgeShape.
-    gp_Vec result;
     gp_Vec controlSurfaceNormal = getNormalOfControlSurfaceDevice();
-    gp_Vec leadingToUpper = gp_Vec(upperPoint.XYZ()) - gp_Vec(leadingPoint.XYZ());
-    gp_Vec leadingToLower = gp_Vec(lowerPoint.XYZ()) - gp_Vec(leadingPoint.XYZ());
 
     double eta;
     double xsi;
@@ -510,15 +486,20 @@ gp_Vec CCPACSControlSurfaceDevice::getLeadingEdgeShapeTangent(gp_Pnt leadingPoin
 
     if (!isUpper) {
         controlSurfaceNormal.Multiply(-1);
-        xsi = getOuterShape().getOuterBorder().getLeadingEdgeShape().getXsiLowerSkin();
+        xsi = border.getLeadingEdgeShape().getXsiLowerSkin();
     }
     else {
-        xsi = getOuterShape().getOuterBorder().getLeadingEdgeShape().getXsiUpperSkin();
+        xsi = border.getLeadingEdgeShape().getXsiUpperSkin();
     }
 
-    result = _segment->GetPointTangent(eta, xsi, controlSurfaceNormal.X(),
+    gp_Vec normal; gp_Pnt pnt;
+    _segment->GetPointDirectionNormal(eta, xsi, controlSurfaceNormal.X(),
                                        controlSurfaceNormal.Y(),controlSurfaceNormal.Z(),
-                                       gp_Pln(leadingPoint, leadingToLower^leadingToUpper),isUpper);
+                                       isUpper, pnt, normal);
+
+    // the tangent is the cross product of the two normal vectors
+    result = normal.Crossed(borderPlane.Axis().Direction());
+    result.Normalize();
 
     gp_Vec leading(_segment->GetPoint(eta,0).XYZ());
     gp_Vec trailing(_segment->GetPoint(eta,1).XYZ());
@@ -527,92 +508,109 @@ gp_Vec CCPACSControlSurfaceDevice::getLeadingEdgeShapeTangent(gp_Pnt leadingPoin
     if (trailingToLeading * result < 0) {
         result.Multiply(-1);
     }
-    return result;
+
+    point = pnt;
 }
 
-gp_Vec CCPACSControlSurfaceDevice::getLeadingEdgeShapeNormal(gp_Pnt point, gp_Vec tangent,gp_Pln etaPlane,gp_Vec checker)
+// Computes the wire for the cutout loft. This is done as follows
+// 1. Compute the cutout plane
+// 2. Compute all relevant points, i.e. upper wing point, leading edge point, lower wing point
+// 3. Project all points onto the cutout plane
+// 4. Add some points to close the wire
+// 5. Compute the leading edge by interpolation
+TopoDS_Wire CCPACSControlSurfaceDevice::getCutoutWire(bool isInnerBorder)
 {
-    // This Method Gets The LeadingEdgeShapeNormal, build out of the LeadingEdgeShapeTangent.
-    gp_Pln tangentPlane = gp_Pln(point,tangent);
+    // Compute cutout plane
+    gp_Pln plane = getBorderPlane(isInnerBorder);
+    Handle_Geom_Surface surf = new Geom_Plane(plane);
 
-    Handle_Geom_Plane geomEtaPlane = new Geom_Plane(etaPlane);
-    Handle_Geom_Plane geomTangentPlane = new Geom_Plane(tangentPlane);
+    gp_Vec csNormal = getNormalOfControlSurfaceDevice();
+    csNormal.Normalize();
 
-    // Get intersection curve
-    GeomAPI_IntSS     intersection;
-    intersection.Perform(geomEtaPlane, geomTangentPlane, 1.0e-7);
-    Handle(Geom_Curve) curve = intersection.Line(1);
-
-    gp_Vec value((Handle(Geom_Line)::DownCast(curve))->Lin().Direction().XYZ());
-
-    if (checker * value < 0) {
-        value.Multiply(-1);
+    gp_Pnt trailingEdgePoint;
+    if (isInnerBorder) {
+        trailingEdgePoint = _segment->GetPoint(
+                   getOuterShape().getInnerBorder().getEtaTE(),
+                   getOuterShape().getInnerBorder().getXsiTE());
     }
-    return value;
-}
+    else {
+        trailingEdgePoint = _segment->GetPoint(
+                   getOuterShape().getOuterBorder().getEtaTE(),
+                   getOuterShape().getOuterBorder().getXsiTE());
+    }
 
-TopoDS_Wire CCPACSControlSurfaceDevice::buildLeadingEdgeShapeWire(bool isInnerBorder)
-{
-    // This Methods builds a Wire defining the LeadingEdgeShape when combined
-    // With the wing Geometry.
-    gp_Pnt lowerPoint = getLeadingEdgeShapeLowerPoint(isInnerBorder);
-    gp_Pnt upperPoint = getLeadingEdgeShapeUpperPoint(isInnerBorder);
-    gp_Pnt leadingPoint = getLeadingEdgeShapeLeadingEdgePoint(isInnerBorder);
-    gp_Vec lowerToUpper = gp_Vec(upperPoint.XYZ()) - gp_Vec(lowerPoint.XYZ());
+    gp_Vec tangentUpper, tangentLower;
+    gp_Pnt lowerPoint, upperPoint, leadingPoint;
 
-    gp_Vec leadingToUpper = gp_Vec(upperPoint.XYZ()) - gp_Vec(leadingPoint.XYZ());
-    gp_Vec leadingToLower = gp_Vec(lowerPoint.XYZ()) - gp_Vec(leadingPoint.XYZ());
-
-    gp_Vec tangentUpper = getLeadingEdgeShapeTangent(leadingPoint,lowerPoint,upperPoint,isInnerBorder,true);
-    gp_Vec tangentLower = getLeadingEdgeShapeTangent(leadingPoint,lowerPoint,upperPoint,isInnerBorder,false);
+    // compute relevant points
+    leadingPoint = getLeadingEdgeShapeLeadingEdgePoint(isInnerBorder);
+    getLeadingEdgeTangent(plane, isInnerBorder, true, upperPoint, tangentUpper);
+    getLeadingEdgeTangent(plane, isInnerBorder,false, lowerPoint, tangentLower);
     tangentUpper.Multiply(-1);
 
-    gp_Pnt leadingEdge = _segment->GetPoint(getOuterShape().getInnerBorder().getEtaLE(),0);
-    gp_Pnt trailingEdge = _segment->GetPoint(getOuterShape().getInnerBorder().getEtaLE(),1);
+    // project points and vectors onto cutout plane
+    gp_Pnt2d lp2d = ProjectPointOnPlane(plane, lowerPoint);
+    gp_Pnt2d up2d = ProjectPointOnPlane(plane, upperPoint);
+    gp_Pnt2d le2d = ProjectPointOnPlane(plane, leadingPoint);
+    gp_Pnt2d te2d = ProjectPointOnPlane(plane, trailingEdgePoint);
 
-    gp_Vec etaUpperNormalDirection = getLeadingEdgeShapeNormal(upperPoint,tangentUpper,gp_Pln(leadingPoint, leadingToLower^leadingToUpper)
-                                                               ,lowerToUpper);
-    gp_Vec etaLowerNormalDirection = getLeadingEdgeShapeNormal(lowerPoint,tangentLower,gp_Pln(leadingPoint, leadingToLower^leadingToUpper)
-                                                               ,lowerToUpper.Multiplied(-1));
+    gp_Vec2d upTan2d = ProjectVecOnPlane(plane, tangentUpper);
+    gp_Vec2d loTan2d = ProjectVecOnPlane(plane, tangentLower);
+    gp_Vec2d upNorm2d(-upTan2d.Y(), upTan2d.X());
+    gp_Vec2d loNorm2d(-loTan2d.Y(), loTan2d.X());
 
+    // compute some extra points with enough offset, to close the wire outside the wing
+    double offset_factor = 5.;
+    double ymax = std::max(fabs(lp2d.Y()), fabs(up2d.Y())) * offset_factor;
+    double alphaUp = (ymax - up2d.Y())/upNorm2d.Y();
+    double alphaLo = (-ymax - lp2d.Y())/loNorm2d.Y();
 
-    Handle_TColgp_HArray1OfPnt array = new TColgp_HArray1OfPnt(1,3);
-    array->SetValue(1,lowerPoint);
-    array->SetValue(2,leadingPoint);
-    array->SetValue(3,upperPoint);
+    gp_Pnt2d upFront2d = up2d.XY() + alphaUp*upNorm2d.XY();
+    gp_Pnt2d loFront2d = lp2d.XY() + alphaLo*loNorm2d.XY();
 
-    GeomAPI_Interpolate Interp(array,false, Precision::Confusion());
-    Interp.Load(tangentLower,tangentUpper,true);
-    Interp.Perform();
-    Handle(Geom_BSplineCurve) C = Interp.Curve();
+    double xmax = le2d.X() + offset_factor*(te2d.X() - le2d.X());
 
-    TopoDS_Edge edgeLeading = BRepBuilderAPI_MakeEdge(C);
+    gp_Pnt2d upBack2d(xmax, ymax);
+    gp_Pnt2d loBack2d(xmax, -ymax);
 
-    double distance = (gp_Vec(leadingEdge.XYZ()) - gp_Vec(trailingEdge.XYZ())).Magnitude();
+    // Compute the leading edge by interpolating upper, lower and leading edge point
+    Handle_TColgp_HArray1OfPnt2d points = new TColgp_HArray1OfPnt2d(1,3);
+    points->SetValue(1, lp2d);
+    points->SetValue(2, le2d);
+    points->SetValue(3, up2d);
+    
+    Geom2dAPI_Interpolate interp(points, false, Precision::Confusion());
 
-    gp_Vec upperOuterPoint = gp_Vec(upperPoint.XYZ()) + etaUpperNormalDirection.Multiplied(distance);
-    TopoDS_Edge edgeUpperOuter = BRepBuilderAPI_MakeEdge(upperPoint,gp_Pnt(upperOuterPoint.XYZ()));
+    // only create c1 continous cutouts, if leading edge is in front of upper and lower points
+    if (le2d.X() > lp2d.X() && le2d.X() > up2d.X()) {
+        interp.Load(loTan2d, upTan2d);
+    }
+    interp.Perform();
 
-    gp_Vec lowerOuterPoint = gp_Vec(lowerPoint.XYZ()) + etaLowerNormalDirection.Multiplied(distance);
-    TopoDS_Edge edgeLowerOuter = BRepBuilderAPI_MakeEdge(gp_Pnt(lowerOuterPoint.XYZ()),lowerPoint);
+    TopoDS_Edge leadEdge = BRepBuilderAPI_MakeEdge(interp.Curve(), surf);
+    BRepLib::BuildCurves3d(leadEdge);
 
+    // create the wire
+    BRepBuilderAPI_MakeWire wiremaker;
+    wiremaker.Add(leadEdge);
+    wiremaker.Add(pointsToEdge( surf, up2d, upFront2d));
+    wiremaker.Add(pointsToEdge( surf, upFront2d, upBack2d));
+    wiremaker.Add(pointsToEdge( surf, upBack2d, loBack2d));
+    wiremaker.Add(pointsToEdge( surf, loBack2d, loFront2d));
+    wiremaker.Add(pointsToEdge( surf, loFront2d, lp2d));
 
-    gp_Vec upperOuterClosingPoint = upperOuterPoint + (gp_Vec(trailingEdge.XYZ()) - gp_Vec(leadingEdge.XYZ()));
-    gp_Vec lowerOuterClosingPoint = lowerOuterPoint + (gp_Vec(trailingEdge.XYZ()) - gp_Vec(leadingEdge.XYZ()));
+#ifdef DEBUG
+    std::stringstream filenamestr;
+    if (isInnerBorder) {
+        filenamestr << GetUID() << "_cutout_innerwire.brep";
+    }
+    else {
+        filenamestr << GetUID() << "_cutout_outerwire.brep";
+    }
+    BRepTools::Write(wiremaker.Wire(), filenamestr.str().c_str());
+#endif
 
-    TopoDS_Edge edgeUpperClosing = BRepBuilderAPI_MakeEdge(gp_Pnt(upperOuterPoint.XYZ()),gp_Pnt(upperOuterClosingPoint.XYZ()));
-    TopoDS_Edge edgeLowerClosing = BRepBuilderAPI_MakeEdge(gp_Pnt(lowerOuterClosingPoint.XYZ()),gp_Pnt(lowerOuterPoint.XYZ()));
-    TopoDS_Edge edgeClosing = BRepBuilderAPI_MakeEdge(gp_Pnt(upperOuterClosingPoint.XYZ()),gp_Pnt(lowerOuterClosingPoint.XYZ()));
-
-    BRepBuilderAPI_MakeWire wireMaker;
-    wireMaker.Add(edgeLeading);
-    wireMaker.Add(edgeUpperOuter);
-    wireMaker.Add(edgeUpperClosing);
-    wireMaker.Add(edgeClosing);
-    wireMaker.Add(edgeLowerClosing);
-    wireMaker.Add(edgeLowerOuter);
-    wireMaker.Build();
-    return wireMaker.Wire();
+    return wiremaker.Wire();
 }
 
 double CCPACSControlSurfaceDevice::GetMinDeflection() const

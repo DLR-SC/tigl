@@ -55,6 +55,12 @@ TIGL_EXPORT Standard_Real ProjectPointOnWire(const TopoDS_Wire& wire, gp_Pnt p);
 // projects a point onto the line (lineStart<->lineStop) and returns the projection parameter
 TIGL_EXPORT Standard_Real ProjectPointOnLine(gp_Pnt p, gp_Pnt lineStart, gp_Pnt lineStop);
 
+// projects a point onto a plane and returns the point in parameters of the plane
+TIGL_EXPORT gp_Pnt2d ProjectPointOnPlane(gp_Pln pln, gp_Pnt p);
+
+// projects a vector onto a plane and returns the vector in parameters of the plane
+TIGL_EXPORT gp_Vec2d ProjectVecOnPlane(gp_Pln pln, gp_Vec v);
+
 // returns the number of edges of the current shape
 TIGL_EXPORT unsigned int GetNumberOfEdges(const TopoDS_Shape& shape);
 

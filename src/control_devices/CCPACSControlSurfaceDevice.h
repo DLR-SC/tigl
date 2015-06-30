@@ -88,11 +88,9 @@ private:
     double determineSpoilerThickness();
 
     gp_Pnt getLeadingEdgeShapeLeadingEdgePoint(bool isInnerBorder);
-    gp_Pnt getLeadingEdgeShapeLowerPoint(bool isInnerBorder);
-    gp_Pnt getLeadingEdgeShapeUpperPoint(bool isInnerBorder);
-    gp_Vec getLeadingEdgeShapeTangent(gp_Pnt leadingPoint, gp_Pnt lowerPoint, gp_Pnt upperPoint,bool isInnerBorder, bool isUpper);
-    gp_Vec getLeadingEdgeShapeNormal(gp_Pnt point, gp_Vec tangent,gp_Pln etaPlane, gp_Vec checker);
-    TopoDS_Wire buildLeadingEdgeShapeWire(bool isInnerBorder);
+    gp_Pln getBorderPlane(bool isInnerBorder);
+    void getLeadingEdgeTangent(gp_Pln plane, bool isInnerBorder, bool isUpper, gp_Pnt& point, gp_Vec& vec);
+    TopoDS_Wire getCutoutWire(bool isInnerBorder);
 
     CCPACSControlSurfaceDevicePath path;
     CCPACSControlSurfaceDeviceOuterShape outerShape;

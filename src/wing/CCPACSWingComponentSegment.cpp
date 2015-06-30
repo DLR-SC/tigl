@@ -480,6 +480,16 @@ void CCPACSWingComponentSegment::GetSegmentIntersection(const std::string& segme
     }
 }
 
+gp_Pln CCPACSWingComponentSegment::GetEtaPlane(double eta)
+{
+    UpdateProjectedLeadingEdge();
+
+    gp_Pnt etaPnt; gp_Vec etaNormal;
+    projLeadingEdge->D1(eta, etaPnt, etaNormal);
+
+    return gp_Pln(etaPnt, etaNormal.XYZ());
+}
+
 // get short name for loft
 std::string CCPACSWingComponentSegment::GetShortShapeName()
 {
@@ -849,25 +859,7 @@ gp_Pnt CCPACSWingComponentSegment::GetPointDirection(double eta, double xsi, dou
     return p2;
 }
 
-gp_Vec CCPACSWingComponentSegment::GetPointTangent(double eta, double xsi, double dirx, double diry, double dirz, gp_Pln etaPlane, bool fromUpper)
-{
-    gp_Pnt point;
-    gp_Vec normal = GetPointDirectionNormal(eta,xsi,dirx,diry,dirz,fromUpper,point);
-    gp_Pln tangentPlane(point,normal);
-
-    Handle_Geom_Plane geomEtaPlane = new Geom_Plane(etaPlane);
-    Handle_Geom_Plane geomTangentPlane = new Geom_Plane(tangentPlane);
-
-    // Get intersection curve
-    GeomAPI_IntSS     intersection;
-    intersection.Perform(geomEtaPlane, geomTangentPlane, 1.0e-7);
-    Handle(Geom_Curve) curve = intersection.Line(1);
-    gp_Vec value((Handle(Geom_Line)::DownCast(curve))->Lin().Direction().XYZ());
-
-    return value;
-}
-
-gp_Vec CCPACSWingComponentSegment::GetPointDirectionNormal(double eta, double xsi, double dirx, double diry, double dirz, bool fromUpper, gp_Pnt& point)
+void CCPACSWingComponentSegment::GetPointDirectionNormal(double eta, double xsi, double dirx, double diry, double dirz, bool fromUpper, gp_Pnt& point, gp_Vec& vec)
 {
     if (eta < 0.0 || eta > 1.0) {
         throw CTiglError("Error: Parameter eta not in the range 0.0 <= eta <= 1.0 in CCPACSWingSegment::GetPoint", TIGL_ERROR);
@@ -918,7 +910,7 @@ gp_Vec CCPACSWingComponentSegment::GetPointDirectionNormal(double eta, double xs
         normal.Multiply(-1);
     }
 
-    return normal;
+    vec = normal;
 }
 
 //    // Returns an upper or lower point on the segment surface in

@@ -69,6 +69,8 @@
 #include <Geom_TrimmedCurve.hxx>
 #include <GeomConvert.hxx>
 
+#include <gp_Pln.hxx>
+
 #include "ShapeAnalysis_FreeBounds.hxx"
 
 #include <list>
@@ -251,6 +253,30 @@ Standard_Real ProjectPointOnWire(const TopoDS_Wire& wire, gp_Pnt p)
         normalizedLength = 0.0;
     }
     return normalizedLength;
+}
+
+/// Projects the point onto the plane pln
+gp_Pnt2d ProjectPointOnPlane(gp_Pln pln, gp_Pnt p)
+{
+    gp_Ax1 xAx = pln.XAxis();
+    gp_Ax1 yAx = pln.YAxis();
+    
+    double px = (p.XYZ() - xAx.Location().XYZ()) * xAx.Direction().XYZ();
+    double py = (p.XYZ() - yAx.Location().XYZ()) * yAx.Direction().XYZ();
+    
+    return gp_Pnt2d(px,py);
+}
+
+/// Projects the vector v onto the plane pln
+gp_Vec2d ProjectVecOnPlane(gp_Pln pln, gp_Vec v)
+{
+    gp_Ax1 xAx = pln.XAxis();
+    gp_Ax1 yAx = pln.YAxis();
+    
+    double vx = v.XYZ() * xAx.Direction().XYZ();
+    double vy = v.XYZ() * yAx.Direction().XYZ();
+    
+    return gp_Vec2d(vx,vy);
 }
 
 gp_Pnt GetCentralFacePoint(const TopoDS_Face& face)

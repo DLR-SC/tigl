@@ -116,15 +116,15 @@ public:
 
     TIGL_EXPORT gp_Pnt GetPointDirection(double eta, double xsi, double dirx, double diry, double dirz, bool fromUpper);
 
-    // Gets the Tangent to a point on the Shape of the Wing Geometry, the etaPlane defines the Direction.
-    TIGL_EXPORT gp_Vec GetPointTangent(double eta, double xsi, double dirx, double diry, double dirz, gp_Pln etaPlane, bool fromUpper);
-
     // Gets the Normal of a point on the Wing Geometry.
-    TIGL_EXPORT gp_Vec GetPointDirectionNormal(double eta, double xsi, double dirx, double diry, double dirz, bool fromUpper, gp_Pnt& point);
+    TIGL_EXPORT void GetPointDirectionNormal(double eta, double xsi, double dirx, double diry, double dirz, bool fromUpper, gp_Pnt& point, gp_Vec& vec);
 
     // calculates the intersection of a segment iso eta line with a component segment line (defined by its start and end point)
     // returns the xsi coordinate of the intersection
     TIGL_EXPORT void GetSegmentIntersection(const std::string& segmentUID, double csEta1, double csXsi1, double csEta2, double csXsi2, double eta, double& xsi);
+
+    // Returns the intersection plane for a given eta
+    TIGL_EXPORT gp_Pln GetEtaPlane(double eta);
 protected:
     // Cleanup routine
     void Cleanup(void);
