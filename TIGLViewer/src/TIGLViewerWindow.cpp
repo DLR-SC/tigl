@@ -573,7 +573,7 @@ void TIGLViewerWindow::about()
 
     text += "Visit the TiGL project page at <a href=\"http://software.dlr.de/p/tigl/\">http://software.dlr.de/p/tigl/</a><br/><br/>";
 
-    text += "&copy; 2014 German Aerospace Center (DLR) ";
+    text += "&copy; 2015 German Aerospace Center (DLR) ";
 
     QMessageBox::about(this, tr("About TiGL Viewer"), text);
 }
