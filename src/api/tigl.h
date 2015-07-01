@@ -257,14 +257,6 @@ enum TiglImportExportFormat
 
 typedef const char** TiglStringList;
 
-/**
- * @brief Definition of the TIGL version number.
- */
-#ifndef TIGL_VERSION
-  #define TIGL_VERSION  "2.0"
-#endif
-#define TIGL_VERSION_MAJOR 2
-
 
 /**
 * @brief Definition of the different file formats used for import/export used in TIGL.

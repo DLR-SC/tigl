@@ -168,8 +168,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglOpenCPACSConfiguration(TixiDocumentHandle 
             return TIGL_WRONG_CPACS_VERSION;
         }
         else {
-            if (dcpacsVersion < (double) TIGL_VERSION_MAJOR) {
-                LOG(ERROR) << "Too old CPACS dataset. CPACS version has to be at least " << (double) TIGL_VERSION_MAJOR << "!" << std::endl;
+            if (dcpacsVersion < (double) TIGL_MAJOR_VERSION) {
+                LOG(ERROR) << "Too old CPACS dataset. CPACS version has to be at least " << (double) TIGL_MAJOR_VERSION << "!" << std::endl;
                 return TIGL_WRONG_CPACS_VERSION;
             }
             else if (dcpacsVersion > atof(tiglGetVersion())) {

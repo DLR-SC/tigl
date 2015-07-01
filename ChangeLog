@@ -6,6 +6,7 @@ Version 2.1.5
         - The function``tiglWingComponentSegmentGetSegmentIntersection`` uses a new algorithm that should ensure straight 
           flap leading edges and straight spars. Also, a new parameter ``hasWarning`` was added, to inform the user, that the
           returned segment xsi value is not in the valid range [0,1]. This might be the case, if a spar is partially located outside the wing.
+        - Removed macro TIGL_VERSION and TIGL_VERSION_MAJOR from tigl.h. Please use tigl_version.h instead.
 
     - General changes:
         - External geometries can be included into the CPACS file using a link to a STEP file. The allows e.g. the use
