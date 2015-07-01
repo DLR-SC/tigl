@@ -1,3 +1,36 @@
+Version 2.1.5
+-------------
+
+    - Changed API:
+        - Added an output argument in the function ``tiglWingComponentSegmentPointGetSegmentEtaXsi`` that returns the error of the computation
+        - The function``tiglWingComponentSegmentGetSegmentIntersection`` uses a new algorithm that should ensure straight 
+          flap leading edges and straight spars. Also, a new parameter ``hasWarning`` was added, to inform the user, that the
+          returned segment xsi value is not in the valid range [0,1]. This might be the case, if a spar is partially located outside the wing.
+
+    - General changes:
+        - External geometries can be included into the CPACS file using a link to a STEP file. The allows e.g. the use
+          of engines and nacelles. (Note: this is not yet included in the CPACS standard)
+        - Improved computation of half model fuselage profiles. Now, fuselages are c2 continuous at the symmetry plane.
+        - Improved computation speed of ``tiglWingComponentSegmentGetPoint`` by a factor of 30 to 600 (depending on the geometry).
+        - Reduced execution time of ``tiglOpenCPACSConfiguration``.
+        - All TiXI messages (errors/warnings) are now printed to the TiGL log.
+        - Ported to OpenCASCADE 6.8.0
+
+    - New API functions:
+        - ``tiglExportFusedBREP`` to export the fused configuration to the BRep file format.
+
+    - Fixes:
+        - Fixed bug, where guide curves on half model fuselages were not touching the symmetry plane.
+        - Fixed a TIGL_MATH_ERROR bug in ``tiglWingComponentSegmentGetSegmentIntersection``.
+
+    - TiGL Viewer:
+        - Ported to Qt 5.
+        - OpenGL accelerated rubber band selection. This fixes the slow rubber band selection on Linux and 
+          the invisible rubber band selection on Mac.
+        - Fixed bug when loading a CPACS file with multiple models.
+        - Removed support for legacy VRML and CSDFB files.
+
+
 Version 2.1.4
 -------------
 06/02/2015
