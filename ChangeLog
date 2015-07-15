@@ -1,3 +1,11 @@
+Version 2.1.6
+-------------
+15/07/2015
+
+    - TiGL Viewer:
+        - Fixed critical crash on Windows 64 bit systems that occured sporadically on some systems
+
+
 Version 2.1.5
 -------------
 01/07/2015
