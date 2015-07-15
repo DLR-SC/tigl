@@ -178,6 +178,16 @@ const PNamedShape CFaceTraits::Origin() const
     return _origin;
 }
 
+void CFaceTraits::SetTransformation(const tigl::CTiglTransformation& trafo)
+{
+    _localTransformation = trafo;
+}
+
+const tigl::CTiglTransformation& CFaceTraits::Transformation() const
+{
+    return _localTransformation;
+}
+
 void CFaceTraits::SetDerivedFromShape(PNamedShape origin, unsigned int iface)
 {
     *this = origin->GetFaceTraits(iface);

@@ -115,7 +115,7 @@ public:
     // since memberwise copy is enough for this class.
 
     // for debug purposes
-    TIGL_EXPORT void printTransformMatrix();
+    TIGL_EXPORT void printTransformMatrix() const;
 
 private:
     bool IsUniform() const;

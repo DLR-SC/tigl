@@ -415,7 +415,7 @@ gp_Pnt CTiglTransformation::Transform(const gp_Pnt& point) const
     return gp_Pnt(transformed.X(), transformed.Y(), transformed.Z());
 }
 
-void CTiglTransformation::printTransformMatrix()
+void CTiglTransformation::printTransformMatrix() const
 {
     for (int i = 0; i < 4; ++i) {
         for (int j = 0; j < 4; ++j) {

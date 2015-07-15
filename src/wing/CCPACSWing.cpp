@@ -399,8 +399,20 @@ TopoDS_Shape CCPACSWing::BuildFusedSegmentsWithFlaps(bool splitWingInUpperAndLow
             CCPACSControlSurfaceDevice &controlSurfaceDevice = controlSurfaceDevices->getControlSurfaceDeviceByID(j);
 
             PNamedShape deviceShape = controlSurfaceDevice.GetLoft()->DeepCopy();
-            BRepBuilderAPI_Transform form(deviceShape->Shape(),controlSurfaceDevice.GetFlapTransform(flapStatus[controlSurfaceDevice.GetUID()]));
+            gp_Trsf T = controlSurfaceDevice.GetFlapTransform(flapStatus[controlSurfaceDevice.GetUID()]);
+            BRepBuilderAPI_Transform form(deviceShape->Shape(), T);
             deviceShape->SetShape(form.Shape());
+
+            // store the transformation
+            gp_GTrsf gT(T);
+            CTiglTransformation tiglTrafo(gT);
+            unsigned int nFaces = deviceShape->GetFaceCount();
+            for (unsigned int iFace = 0; iFace < nFaces; ++iFace) {
+                CFaceTraits ft = deviceShape->GetFaceTraits(iFace);
+                ft.SetTransformation(tiglTrafo);
+                deviceShape->SetFaceTraits(iFace, ft);
+            }
+
             flapsAndWingShapes.push_back(deviceShape);
        }
     }

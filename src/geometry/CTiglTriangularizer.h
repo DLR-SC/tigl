@@ -24,6 +24,8 @@
 
 #include "tigl_internal.h"
 #include "CTiglPolyData.h"
+#include "PNamedShape.h"
+#include "CTiglTransformation.h"
 #include <gp_Pnt.hxx>
 
 class TopoDS_Shape;
@@ -49,9 +51,9 @@ public:
     TIGL_EXPORT void useMultipleObjects(bool);
     
 private:
-    int triangularizeComponent(class CTiglAbstractPhysicalComponent &, bool includeChilds, const TopoDS_Shape& shape, double deflection, ComponentTraingMode = NO_INFO);
+    int triangularizeComponent(class CTiglAbstractPhysicalComponent &, bool includeChilds, PNamedShape shape, double deflection, ComponentTraingMode = NO_INFO);
     int triangularizeShape(const TopoDS_Shape &);
-    void annotateWingSegment(class CCPACSWingSegment &segment, gp_Pnt centralP, bool pointOnMirroredShape, unsigned long iPolyLow, unsigned long iPolyUp);
+    void annotateWingSegment(class CCPACSWingSegment &segment, gp_Pnt centralP, bool pointOnMirroredShape, const CTiglTransformation& backTrafo, unsigned long iPolyLow, unsigned long iPolyUp);
     int triangularizeFace(const TopoDS_Face &, unsigned long& nVertices, unsigned long& iPolyLow, unsigned long& iPolyUp);
     int computeVTKMetaData(class CCPACSWing&);
     
