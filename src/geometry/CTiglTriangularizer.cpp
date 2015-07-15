@@ -217,7 +217,7 @@ int CTiglTriangularizer::triangularizeComponent(CTiglAbstractPhysicalComponent &
             prop.Normal(umean,vmean,centralP,n);
             
             // backtransform point
-            centralP = inverseTrafo.Transform(centralP);
+            gp_Pnt centralPTransformed = inverseTrafo.Transform(centralP);
 
             // search to which component the current face belongs to
             bool found = false;
@@ -231,19 +231,25 @@ int CTiglTriangularizer::triangularizeComponent(CTiglAbstractPhysicalComponent &
                     bool pointOnMirroredShape = false;
                     for (int iSegment = 1 ; iSegment <= wing.GetSegmentCount(); ++iSegment) {
                         CCPACSWingSegment& segment = (CCPACSWingSegment&) wing.GetSegment(iSegment);
-                        if (segment.GetIsOn(centralP) == true) {
+                        if (segment.GetIsOn(centralPTransformed) == true) {
                             iSegmentFound = iSegment;
                             break;
                         }
-                        else if (wing.GetSymmetryAxis() != TIGL_NO_SYMMETRY && segment.GetIsOnMirrored(centralP) == true){
-                            iSegmentFound = iSegment;
-                            pointOnMirroredShape = true;
-                            break;
+                        else if (wing.GetSymmetryAxis() != TIGL_NO_SYMMETRY){
+                            gp_Pnt mirroredPnt = mirrorPoint(centralP, wing.GetSymmetryAxis());
+                            mirroredPnt = inverseTrafo.Transform(mirroredPnt);
+
+                            if (segment.GetIsOn(mirroredPnt) == true) {
+                                centralPTransformed = mirroredPnt;
+                                iSegmentFound = iSegment;
+                                pointOnMirroredShape = true;
+                                break;
+                            }
                         }
                     }
                     if (iSegmentFound > 0) {
                         CCPACSWingSegment& segment = (CCPACSWingSegment&) wing.GetSegment(iSegmentFound);
-                        annotateWingSegment(segment, centralP, pointOnMirroredShape, inverseTrafo, iPolyLower, iPolyUpper);
+                        annotateWingSegment(segment, centralPTransformed, pointOnMirroredShape, inverseTrafo, iPolyLower, iPolyUpper);
                         found = true;
                         break;
                     }
@@ -275,10 +281,6 @@ int CTiglTriangularizer::triangularizeComponent(CTiglAbstractPhysicalComponent &
  */
 void CTiglTriangularizer::annotateWingSegment(tigl::CCPACSWingSegment &segment, gp_Pnt pointOnSegmentFace, bool pointOnMirroredShape, const CTiglTransformation& backTrafo, unsigned long iPolyLower, unsigned long iPolyUpper)
 {
-    if (pointOnMirroredShape) {
-        pointOnSegmentFace = mirrorPoint(pointOnSegmentFace, segment.GetSymmetryAxis());
-    }
-    
     // GetIsOnTop is very slow, therefore we do it only once per face 
     bool isUpperFace = segment.GetIsOnTop(pointOnSegmentFace);
     
@@ -294,10 +296,10 @@ void CTiglTriangularizer::annotateWingSegment(tigl::CCPACSWingSegment &segment, 
             baryCenter += currentObject().getVertexPoint(index);
         }
         baryCenter = baryCenter*(double)(1./(double)npoints);
-        baryCenter = CTiglPoint(backTrafo.Transform(baryCenter.Get_gp_Pnt()).XYZ());
         if (pointOnMirroredShape) {
             baryCenter = mirrorPoint(baryCenter.Get_gp_Pnt(), segment.GetSymmetryAxis()).XYZ();
         }
+        baryCenter = CTiglPoint(backTrafo.Transform(baryCenter.Get_gp_Pnt()).XYZ());
         
         double eta = 0., xsi = 0.;
         segment.GetEtaXsi(baryCenter.Get_gp_Pnt(), eta, xsi);
