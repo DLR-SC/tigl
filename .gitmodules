@@ -1,0 +1,3 @@
+[submodule "tests/conftests"]
+	path = tests/conftests
+	url = https://gitlab.sc.dlr.de/TIGLConf/tigl-confidential-tests.git
