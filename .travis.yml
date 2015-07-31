@@ -15,7 +15,7 @@ before_script:
   - cd build
 
 script: 
-  - cmake -DTIGL_BUILD_TESTS=ON ..
+  - cmake -DTIGL_BUILD_TESTS=ON -DTIGL_OCE_COONS_PATCHED=ON ..
   - make
   - make test
 
