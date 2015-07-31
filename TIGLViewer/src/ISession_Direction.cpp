@@ -25,7 +25,6 @@
 #include <Prs3d_Arrow.hxx>
 #include <DsgPrs_LengthPresentation.hxx>
 #include <Prs3d_LineAspect.hxx>
-#include <AIS_Drawer.hxx>
 #include <Graphic3d_ArrayOfSegments.hxx>
 #include <Prs3d_Root.hxx>
 #include <Prs3d_Text.hxx>

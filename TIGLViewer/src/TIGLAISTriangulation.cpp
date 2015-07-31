@@ -15,7 +15,7 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-#include <AIS_Drawer.hxx>
+
 #include <TIGLAISTriangulation.h>
 #include <AIS_InteractiveObject.hxx>
 #include <Standard_DefineHandle.hxx>
