@@ -20,6 +20,8 @@
 //
 //////////////////////////////////////////////////////////////////////
 
+#include "tigl_internal.h"
+
 #include "ISession_Direction.h"
 #include <Prs3d_ArrowAspect.hxx>
 #include <Prs3d_Arrow.hxx>
@@ -29,6 +31,11 @@
 #include <Prs3d_Root.hxx>
 #include <Prs3d_Text.hxx>
 #include <Graphic3d_Group.hxx>
+#include <Standard_Version.hxx>
+
+#if OCC_VERSION_HEX < VERSION_HEX_CODE(6,9,0)
+#include <AIS_Drawer.hxx>
+#endif
 
 IMPLEMENT_STANDARD_HANDLE(ISession_Direction,AIS_InteractiveObject)
 IMPLEMENT_STANDARD_RTTIEXT(ISession_Direction,AIS_InteractiveObject)

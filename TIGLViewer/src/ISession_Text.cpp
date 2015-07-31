@@ -35,6 +35,7 @@ IMPLEMENT_STANDARD_RTTIEXT(ISession_Text,AIS_InteractiveObject)
 #include <SelectMgr_Selection.hxx>
 #include <Prs3d_Text.hxx>
 #include <Prs3d_Presentation.hxx>
+#include <PrsMgr_PresentationManager3d.hxx>
 #include <gp_Pnt.hxx>
 #include <TCollection_ExtendedString.hxx>
 
