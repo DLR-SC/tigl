@@ -115,6 +115,9 @@ CHECK_CXX_SOURCE_COMPILES(${SRC1} HAVE_STDSHARED_PTR)
 
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/src/tigl_config.h.in ${CMAKE_CURRENT_BINARY_DIR}/src/tigl_config.h)
 
+# add confidential tests
+OPTION(BUILD_TIGL_CONFIDENTIAL_TESTS "Build tests on confidential data" OFF)
+
 # code coverage analysis
 IF (CMAKE_BUILD_TYPE STREQUAL "Debug")
         OPTION(TIGL_ENABLE_COVERAGE "Enable GCov coverage analysis (defines a 'coverage' target and enforces static build of tigl)" ON)

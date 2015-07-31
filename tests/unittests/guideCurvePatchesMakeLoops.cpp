@@ -422,7 +422,7 @@ const std::vector<std::string> filenamesSegment(keywords1, keywords1 + 4);
 const char * keywords2[] = {"simpleTest", "TestData/guideCurvePatch_simpleWingSimpleTestGuides.brep", "TestData/guideCurvePatch_simpleWingSimpleTestProfiles.brep", "fusingAtOnceSuccess"};
 const std::vector<std::string> filenamesSimpleTest(keywords2, keywords2 + 4);
 // test case for simple wing
-const char * keywords3[] = {"simpleWing", "TestData/guideCurvePatch_simpleWingGuides.brep", "TestData/guideCurvePatch_simpleWingProfiles.brep", "fusingAtOnceFail"};
+const char * keywords3[] = {"simpleWing", "TestData/guideCurvePatch_simpleWingGuides.brep", "TestData/guideCurvePatch_simpleWingProfiles.brep", "fusingAtOnceSuccess"};
 const std::vector<std::string> filenamesSimpleWing(keywords3, keywords3 + 4);
 // test case for nacelle
 const char * keywords4[] = {"nacelle", "TestData/guideCurvePatch_nacelleGuides.brep", "TestData/guideCurvePatch_nacelleProfiles.brep", "fusingAtOnceSuccess"};
