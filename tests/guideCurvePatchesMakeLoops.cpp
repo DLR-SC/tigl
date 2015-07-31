@@ -44,6 +44,7 @@
 #include <ShapeFix_Wireframe.hxx>
 #include <ShapeFix_Wire.hxx>
 #include <ShapeFix_Shape.hxx>
+#include <NCollection_IncAllocator.hxx>
 
 
 
