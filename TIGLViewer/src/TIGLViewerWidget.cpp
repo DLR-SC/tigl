@@ -909,7 +909,7 @@ void TIGLViewerWidget::onMouseMove( Qt::MouseButtons buttons,
 
 AIS_StatusOfDetection TIGLViewerWidget::moveEvent( QPoint point )
 {
-    AIS_StatusOfDetection status;
+    AIS_StatusOfDetection status = AIS_SOD_Error;
     if (myContext.IsNull()) {
         return status;
     }
