@@ -32,6 +32,11 @@ if(NOT DEFINED CMAKE_INSTALL_BINDIR)
     set(CMAKE_INSTALL_BINDIR "bin")
 endif(NOT DEFINED CMAKE_INSTALL_BINDIR)
 
+# convert path to absolute (required for some scripts)
+if (NOT IS_ABSOLUTE ${CMAKE_INSTALL_PREFIX})
+   set (CMAKE_INSTALL_PREFIX ${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_PREFIX})
+endif()
+
 OPTION(TIGL_NIGHTLY "Creates a nightly build of tigl (includes git sha into tigl version)" OFF)
 mark_as_advanced(TIGL_NIGHTLY)
 if(TIGL_NIGHTLY)

@@ -79,12 +79,32 @@ install (TARGETS TIGL
 install (EXPORT tigl-targets DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/tigl)
 		 
 install (FILES api/tigl.h ${CMAKE_CURRENT_BINARY_DIR}/api/tigl_version.h
-		 DESTINATION include
+         DESTINATION include
 		 COMPONENT headers)
 
 # static lib for tiglviewer 
 add_library(TIGL_static ${TIGL_SRC})
 # this does no actual linking but keeps track of the dependencies
 target_link_libraries (TIGL_static ${TIGL_LIBRARIES})
+
+# cmake configuration export
+set(CMAKE_INSTALL_INCLUDE_DIR "include")
+set(CONFIG_INSTALL_DIR "${CMAKE_INSTALL_LIBDIR}/cmake/tigl")
+include(CMakePackageConfigHelpers)
+write_basic_package_version_file(
+  "${CMAKE_CURRENT_BINARY_DIR}/tigl-config-version.cmake"
+  VERSION ${TIGL_VERSION}
+  COMPATIBILITY AnyNewerVersion
+)
+
+configure_package_config_file (${PROJECT_SOURCE_DIR}/cmake/tigl-config.cmake.in 
+    "${CMAKE_CURRENT_BINARY_DIR}/tigl-config.cmake"
+	INSTALL_DESTINATION ${CONFIG_INSTALL_DIR}
+	PATH_VARS CMAKE_INSTALL_INCLUDE_DIR CONFIG_INSTALL_DIR
+)
+install (FILES
+  "${CMAKE_CURRENT_BINARY_DIR}/tigl-config.cmake"
+  "${CMAKE_CURRENT_BINARY_DIR}/tigl-config-version.cmake"
+  DESTINATION ${CONFIG_INSTALL_DIR})
 
 AddToCheckstyle()
