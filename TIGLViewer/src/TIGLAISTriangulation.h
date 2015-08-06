@@ -22,7 +22,6 @@
 #include <AIS_InteractiveObject.hxx>
 #include <Handle_Poly_Triangulation.hxx>
 #include <Handle_TColStd_HArray1OfInteger.hxx>
-#include <Handle_SelectMgr_Selection.hxx>
 
 DEFINE_STANDARD_HANDLE(TIGLAISTriangulation,AIS_InteractiveObject)
 

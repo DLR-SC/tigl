@@ -257,14 +257,6 @@ enum TiglImportExportFormat
 
 typedef const char** TiglStringList;
 
-/**
- * @brief Definition of the TIGL version number.
- */
-#ifndef TIGL_VERSION
-  #define TIGL_VERSION  "2.0"
-#endif
-#define TIGL_VERSION_MAJOR 2
-
 
 /**
 * @brief Definition of the different file formats used for import/export used in TIGL.
@@ -1328,6 +1320,9 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingSegmentPointGetComponentSegmentEtaXsi(
 * @param[in]  csXsi1, csXsi2          Start and end xsi coordinates of the intersection line (given as component segment coordinates)
 * @param[in]  segmentEta              Eta coordinate of the iso-eta segment intersection line
 * @param[out] segmentXsi              Xsi coordinate of the intersection point on the wing segment
+* @param[out] hasWarning              The hasWarning flag is true (1), if the resulting xsi value is outside the valid
+*                                     range [0,1]. It is up to the user to handle these cases properly. This flag is only
+*                                     valid, if the function returns TIGL_SUCCESS.
 *
 * @return
 *   - TIGL_SUCCESS if no error occurred
@@ -1342,7 +1337,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetSegmentIntersection
                                                                                  double csEta1, double csXsi1,
                                                                                  double csEta2, double csXsi2,
                                                                                  double segmentEta, 
-                                                                                 double* segmentXsi);
+                                                                                 double* segmentXsi,
+                                                                                 TiglBoolean* hasWarning);
 
 /**
 * @brief Returns the number of segments belonging to a component segment

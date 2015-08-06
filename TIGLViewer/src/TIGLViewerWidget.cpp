@@ -662,6 +662,10 @@ void TIGLViewerWidget::setObjectsColor()
 
 void TIGLViewerWidget::setObjectsMaterial()
 {
+    if (myContext.IsNull()) {
+        return;
+    }
+
     bool ok;
     QStringList items;
 
@@ -854,6 +858,9 @@ void TIGLViewerWidget::onMouseMove( Qt::MouseButtons buttons,
                                     Qt::KeyboardModifiers nFlags,
                                     const QPoint point )
 {
+    if (myView.IsNull()) {
+        return;
+    }
     myCurrentPoint = point;
 
     if ( buttons & Qt::LeftButton  || buttons & Qt::RightButton || buttons & Qt::MidButton ) {
@@ -902,7 +909,11 @@ void TIGLViewerWidget::onMouseMove( Qt::MouseButtons buttons,
 
 AIS_StatusOfDetection TIGLViewerWidget::moveEvent( QPoint point )
 {
-    AIS_StatusOfDetection status;
+    AIS_StatusOfDetection status = AIS_SOD_Error;
+    if (myContext.IsNull()) {
+        return status;
+    }
+
     status = myContext->MoveTo( point.x(), point.y(), myView );
     return status;
 }
@@ -913,6 +924,11 @@ AIS_StatusOfPick TIGLViewerWidget::dragEvent( const QPoint startPoint, const QPo
 {
     using namespace std;
     AIS_StatusOfPick pick = AIS_SOP_NothingSelected;
+
+    if (myContext.IsNull()) {
+        return pick;
+    }
+
     if (multi) {
         pick = myContext->ShiftSelect( min (startPoint.x(), endPoint.x()),
                                        min (startPoint.y(), endPoint.y()),
@@ -936,6 +952,10 @@ AIS_StatusOfPick TIGLViewerWidget::dragEvent( const QPoint startPoint, const QPo
 AIS_StatusOfPick TIGLViewerWidget::inputEvent( bool multi )
 {
     AIS_StatusOfPick pick = AIS_SOP_NothingSelected;
+
+    if (myContext.IsNull()) {
+        return pick;
+    }
 
     if (multi) {
         pick = myContext->ShiftSelect();
@@ -1006,7 +1026,12 @@ Standard_Boolean TIGLViewerWidget::convertToPlane(Standard_Integer Xs,
 {
     Standard_Real Xv, Yv, Zv;
     Standard_Real Vx, Vy, Vz;
-    gp_Pln aPlane(myView->Viewer()->PrivilegedPlane());
+
+    if (myView.IsNull() || myViewer.IsNull()) {
+        return Standard_False;
+    }
+
+    gp_Pln aPlane(myViewer->PrivilegedPlane());
 
     myView->Convert( Xs, Ys, Xv, Yv, Zv ); 
 
