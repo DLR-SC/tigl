@@ -33,6 +33,7 @@ import com.sun.jna.ptr.PointerByReference;
 
 import de.dlr.sc.tigl.Tigl.SectionAndElementIndex;
 import de.dlr.sc.tigl.Tigl.SectionAndElementUID;
+import de.dlr.sc.tigl.Tigl.SegmentXsiAndWarning;
 import de.dlr.sc.tigl.Tigl.SurfaceMaterial;
 import de.dlr.sc.tigl.Tigl.WCSFindSegmentResult;
 import de.dlr.sc.tigl.Tigl.WCSGetSegmentEtaXsiResult;
@@ -1104,10 +1105,10 @@ public class CpacsConfiguration implements AutoCloseable {
      * @param csXsi1, csXsi2 - Start and end xsi coordinates of the intersection line (given as component segment coordinates) 
      * @param segmentEta -  Eta coordinate of the iso-eta segment intersection line
      * 
-     * @return Xsi coordinate of the intersection point on the wing segment
+     * @return Xsi coordinate of the intersection point on the wing segment and a warning, if the xsi coordinate is outside valid range [0,1]
      * @throws TiglException
      */
-    public double wingComponentSegmentGetSegmentIntersection(final String componentSegmentUID,
+    public SegmentXsiAndWarning wingComponentSegmentGetSegmentIntersection(final String componentSegmentUID,
             final String segmentUID,
             final double csEta1, final double csXsi1,
             final double csEta2, final double csXsi2,
@@ -1116,17 +1117,23 @@ public class CpacsConfiguration implements AutoCloseable {
         checkTiglConfiguration();
         
         DoubleByReference c_sxsi = new DoubleByReference();
+        IntByReference c_warning = new IntByReference();
         
         errorCode = TiglNativeInterface.tiglWingComponentSegmentGetSegmentIntersection(
                 cpacsHandle, 
                 componentSegmentUID, 
                 segmentUID, 
                 csEta1, csXsi1, csEta2, csXsi2, 
-                segmentEta, c_sxsi);
+                segmentEta, c_sxsi, c_warning);
         
         throwIfError("tiglWingComponentSegmentGetSegmentIntersection", errorCode);
         
-        return c_sxsi.getValue();
+        boolean hasWarning = false;
+        if (c_warning.getValue() > 0) {
+            hasWarning = true;
+        }
+        
+        return new SegmentXsiAndWarning(c_sxsi.getValue(), hasWarning);
     }
     
     /**

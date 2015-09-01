@@ -168,8 +168,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglOpenCPACSConfiguration(TixiDocumentHandle 
             return TIGL_WRONG_CPACS_VERSION;
         }
         else {
-            if (dcpacsVersion < (double) TIGL_VERSION_MAJOR) {
-                LOG(ERROR) << "Too old CPACS dataset. CPACS version has to be at least " << (double) TIGL_VERSION_MAJOR << "!" << std::endl;
+            if (dcpacsVersion < (double) TIGL_MAJOR_VERSION) {
+                LOG(ERROR) << "Too old CPACS dataset. CPACS version has to be at least " << (double) TIGL_MAJOR_VERSION << "!" << std::endl;
                 return TIGL_WRONG_CPACS_VERSION;
             }
             else if (dcpacsVersion > atof(tiglGetVersion())) {
@@ -2034,8 +2034,9 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetSegmentIntersection
                                                                                  const char* segmentUID,
                                                                                  double csEta1, double csXsi1,
                                                                                  double csEta2, double csXsi2,
-                                                                                 double   segmentEta, 
-                                                                                 double * segmentXsi) 
+                                                                                 double   segmentEta,
+                                                                                 double * segmentXsi,
+                                                                                 TiglBoolean* hasWarning)
 {
     if (segmentUID == 0) {
         LOG(ERROR) << "Error: Null pointer argument for segmentUID ";
@@ -2066,6 +2067,17 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetSegmentIntersection
             try {
                 tigl::CCPACSWingComponentSegment & compSeg = (tigl::CCPACSWingComponentSegment &) wing.GetComponentSegment(componentSegmentUID);
                 compSeg.GetSegmentIntersection(segmentUID, csEta1, csXsi1, csEta2, csXsi2, segmentEta, *segmentXsi);
+
+                // check if xsi is valid
+                if (hasWarning) {
+                    if (*segmentXsi < 0. || *segmentXsi > 1.) {
+                        *hasWarning = TIGL_TRUE;
+                    }
+                    else {
+                        *hasWarning = TIGL_FALSE;
+                    }
+                }
+
                 return TIGL_SUCCESS;
             }
             catch (tigl::CTiglError& err){

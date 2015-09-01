@@ -24,7 +24,6 @@
 
 #include <limits.h>
 
-#include <AIS_Drawer.hxx>
 #include <AIS_InteractiveContext.hxx>
 #include <AIS_InteractiveObject.hxx>
 #include <AIS_ListOfInteractive.hxx>
@@ -38,7 +37,6 @@
 #include <Aspect_GridType.hxx>
 #include <Aspect_RectangularGrid.hxx>
 #include <Aspect_TypeOfLine.hxx>
-#include <Aspect_TypeOfText.hxx>
 #include <Aspect_WidthOfLine.hxx>
 #include <Aspect_Window.hxx>
 
@@ -121,8 +119,6 @@
 #include <Quantity_PhysicalQuantity.hxx>
 #include <Quantity_PlaneAngle.hxx>
 #include <Quantity_TypeOfColor.hxx>
-#include <SelectBasics_BasicTool.hxx>
-#include <SelectBasics_ListOfBox2d.hxx>
 #include <SelectMgr_EntityOwner.hxx>
 #include <SelectMgr_SelectableObject.hxx>
 #include <SelectMgr_Selection.hxx>

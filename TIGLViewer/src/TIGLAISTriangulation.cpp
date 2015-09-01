@@ -15,7 +15,8 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-#include <AIS_Drawer.hxx>
+#include "tigl_internal.h"
+
 #include <TIGLAISTriangulation.h>
 #include <AIS_InteractiveObject.hxx>
 #include <Standard_DefineHandle.hxx>
@@ -38,6 +39,11 @@
 #include <Prs3d_LineAspect.hxx>
 #include <Graphic3d_AspectLine3d.hxx>
 #include <Prs3d_Presentation.hxx>
+#include <Standard_Version.hxx>
+
+#if OCC_VERSION_HEX < VERSION_HEX_CODE(6,9,0)
+#include <AIS_Drawer.hxx>
+#endif
 
 IMPLEMENT_STANDARD_HANDLE(TIGLAISTriangulation, AIS_InteractiveObject)
 IMPLEMENT_STANDARD_RTTIEXT(TIGLAISTriangulation, AIS_InteractiveObject)

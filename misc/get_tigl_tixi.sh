@@ -233,7 +233,7 @@ elif [[ $PACK_TYPE == deb ]]; then
   # select required files
   for file in $filelist; do
 	#opencascade	
-	if [[ $file == liboce-*.deb ]] && [[ $file != liboce*dev* ]] && [[ $file != liboce*ocaf2* ]]
+	if [[ $file == liboce-*.deb ]] && [[ $file != liboce*dev* ]] && [[ $file != liboce*ocaf* ]]
 	then
 		bin_file_list+=($file)
 	fi
