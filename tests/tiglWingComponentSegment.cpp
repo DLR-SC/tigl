@@ -545,6 +545,71 @@ TEST_F(WingComponentSegmentSimple, GetSegmentIntersection_cinterface)
     ASSERT_EQ(TIGL_NULL_POINTER, ret);
 }
 
+TEST_F(WingComponentSegmentSimple, InterpolateOnLine)
+{
+    tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
+    tigl::CCPACSConfiguration & config = manager.GetConfiguration(tiglHandle);
+    tigl::CCPACSWing& wing = config.GetWing(1);
+    tigl::CCPACSWingComponentSegment& compSegment = (tigl::CCPACSWingComponentSegment&) wing.GetComponentSegment(1);
+
+    double xsi = 0;
+    double error = 0.;
+
+    // check trivial borders for validity
+    compSegment.InterpolateOnLine(0.0, 0.0, 1.0, 1.0, 0.0, xsi, error);
+    ASSERT_NEAR(0.0, xsi, 1e-6);
+    ASSERT_NEAR(0.0, error, 1e-6);
+
+    compSegment.InterpolateOnLine(0.0, 0.0, 1.0, 1.0, 1.0, xsi, error);
+    ASSERT_NEAR(1.0, xsi, 1e-6);
+    ASSERT_NEAR(0.0, error, 1e-6);
+
+    // check cases in first segment
+    compSegment.InterpolateOnLine(0.0, 0.0, 1.0, 1.0, 0.25, xsi, error);
+    ASSERT_NEAR(0.25, xsi, 1e-6);
+    ASSERT_NEAR(0.0, error, 1e-6);
+
+    compSegment.InterpolateOnLine(0.0, 0.0, 1.0, 1.0, 0.4, xsi, error);
+    ASSERT_NEAR(0.4, xsi, 1e-6);
+    ASSERT_NEAR(0.0, error, 1e-6);
+
+    // now check the not so trivial cases in second segment
+    compSegment.InterpolateOnLine(0.0, 0.0, 1.0, 1.0, 0.5, xsi, error);
+    ASSERT_NEAR(0.5, xsi, 1e-6);
+    ASSERT_NEAR(0.0, error, 1e-6);
+
+    compSegment.InterpolateOnLine(0.0, 0.0, 1.0, 1.0, 0.75, xsi, error);
+    ASSERT_NEAR(0.5/0.75, xsi, 1e-6);
+    ASSERT_NEAR(0.0, error, 1e-6);
+
+    compSegment.InterpolateOnLine(0.0, 0.0, 1.0, 1.0, 0.6, xsi, error);
+    ASSERT_NEAR(0.5/0.9, xsi, 1e-6);
+    ASSERT_NEAR(0.0, error, 1e-6);
+
+    compSegment.InterpolateOnLine(0.0, 0.0, 1.0, 1.0, 0.9, xsi, error);
+    ASSERT_NEAR(0.5/0.6, xsi, 1e-6);
+    ASSERT_NEAR(0.0, error, 1e-6);
+}
+
+TEST_F(WingComponentSegmentSimple, IntersectEta_cinterface)
+{
+    double xsi;
+    TiglBoolean hasWarning;
+    ASSERT_EQ(TIGL_SUCCESS, tiglWingComponentSegmentComputeEtaIntersection(tiglHandle, "WING_CS1", 0.0, 0.0, 1.0, 1.0, 0.9, &xsi, &hasWarning));
+    ASSERT_NEAR(0.5/0.6, xsi, 1e-6);
+    ASSERT_EQ(TIGL_FALSE, hasWarning);
+    ASSERT_EQ(TIGL_SUCCESS, tiglWingComponentSegmentComputeEtaIntersection(tiglHandle, "WING_CS1", 0.0, 0.0, 1.0, 1.0, 0.9, &xsi, NULL));
+
+    // check invalid input
+    ASSERT_EQ(TIGL_NULL_POINTER, tiglWingComponentSegmentComputeEtaIntersection(tiglHandle, "WING_CS1", 0.0, 0.0, 1.0, 1.0, 0.9, NULL, &hasWarning));
+
+    ASSERT_EQ(TIGL_NULL_POINTER, tiglWingComponentSegmentComputeEtaIntersection(tiglHandle, NULL, 0.0, 0.0, 1.0, 1.0, 0.9, &xsi, &hasWarning));
+
+    ASSERT_EQ(TIGL_UID_ERROR, tiglWingComponentSegmentComputeEtaIntersection(tiglHandle, "invalidcs", 0.0, 0.0, 1.0, 1.0, 0.9, &xsi, &hasWarning));
+
+    ASSERT_EQ(TIGL_MATH_ERROR, tiglWingComponentSegmentComputeEtaIntersection(tiglHandle, "WING_CS1", 0.0, 0.0, 1.0, 1.0, 2.0, &xsi, &hasWarning));
+}
+
 TEST_F(WingComponentSegment3, tiglWingComponentSegmentPointGetSegmentEtaXsi_BUG1)
 {
     // now the tests

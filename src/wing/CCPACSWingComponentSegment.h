@@ -106,6 +106,9 @@ public:
     // calculates the intersection of a segment iso eta line with a component segment line (defined by its start and end point)
     // returns the xsi coordinate of the intersection
     TIGL_EXPORT void GetSegmentIntersection(const std::string& segmentUID, double csEta1, double csXsi1, double csEta2, double csXsi2, double eta, double& xsi);
+
+    // computes the xsi coordinate on a straight line in global space, given an eta coordinate
+    TIGL_EXPORT void InterpolateOnLine(double csEta1, double csXsi1, double csEta2, double csXsi2, double eta, double &xsi, double &errorDistance);
 protected:
     // Cleanup routine
     void Cleanup(void);

@@ -373,6 +373,51 @@ void CCPACSWingComponentSegment::GetSegmentIntersection(const std::string& segme
     xsi = pOnEtaLine.Parameter()/chordDepth;
 }
 
+void CCPACSWingComponentSegment::InterpolateOnLine(double csEta1, double csXsi1, double csEta2, double csXsi2, double eta, double &xsi, double& errorDistance)
+{
+    // compute component segment line
+    gp_Pnt p1 = GetPoint(csEta1, csXsi1);
+    gp_Pnt p2 = GetPoint(csEta2, csXsi2);
+
+    UpdateProjectedLeadingEdge();
+
+    // get eta plane and compute intersection with line
+    // compute eta point and normal on the projected LE
+    gp_Pnt etaPnt; gp_Vec etaNormal;
+    projLeadingEdge->D1(eta, etaPnt, etaNormal);
+
+    double denominator = gp_Vec(p2.XYZ() - p1.XYZ())*etaNormal;
+    if (fabs(denominator) < 1e-8) {
+        throw CTiglError("Cannot interpolate for the given eta coordinate", TIGL_MATH_ERROR);
+    }
+
+    double alpha = gp_Vec(etaPnt.XYZ() - p1.XYZ())*etaNormal / denominator ;
+    gp_Pnt intersectionPoint = p1.XYZ() + alpha*(p2.XYZ()-p1.XYZ());
+
+    // get xsi coordinate
+    gp_Pnt nearestPoint;
+    double deviation = 0;
+    tigl::CCPACSWingSegment* segment = (tigl::CCPACSWingSegment*) findSegment(intersectionPoint.X(), intersectionPoint.Y(), intersectionPoint.Z(),
+                nearestPoint, deviation);
+
+    if (!segment) {
+        throw CTiglError("Cannot interpolate for the given eta coordinate", TIGL_MATH_ERROR);
+    }
+
+    if (deviation > 1e-3) {
+        throw CTiglError("The requested point lies outside the wing chord surface.", TIGL_MATH_ERROR);
+    }
+
+    double etaRes, xsiRes;
+    segment->GetEtaXsi(nearestPoint, etaRes, xsiRes);
+    xsi = xsiRes;
+
+    // compute the error distance
+    // This is the distance from the line to the nearest point on the chord face
+    gp_Lin line(p1, p2.XYZ() - p1.XYZ());
+    errorDistance = line.Distance(nearestPoint);
+}
+
 // get short name for loft
 std::string CCPACSWingComponentSegment::GetShortShapeName() 
 {
