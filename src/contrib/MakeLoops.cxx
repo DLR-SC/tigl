@@ -24,7 +24,7 @@
 #include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <TopoDS_Iterator.hxx>
 
-#ifdef DEBUG
+#ifdef DEBUG_GUIDED_SURFACE_CREATION
 #include <BRepTools.hxx>
 #endif
 
@@ -159,7 +159,7 @@ void MakeLoops::Perform()
         return;
     }
 
-#ifdef DEBUG
+#ifdef DEBUG_GUIDED_SURFACE_CREATION
     // save vertex-edge map for debugging purposes
     static int iMakeLoops = 0;
     iMakeLoops++;
@@ -431,7 +431,7 @@ void MakeLoops::Perform()
         // otherwise store it in the list of cells
         myCells.Append(aCell);
 
-#ifdef DEBUG
+#ifdef DEBUG_GUIDED_SURFACE_CREATION
         // save edges for debugging purposes
         std::stringstream siMakeLoopsInner;
         siMakeLoopsInner << "_innerLoop" << count++;

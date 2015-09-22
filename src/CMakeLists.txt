@@ -55,6 +55,9 @@ include_directories(${PROJECT_SOURCE_DIR}/thirdparty/boost_1_55_0)
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
   add_definitions(-DDEBUG)
+  if(DEBUG_EXTENSIVE)
+      add_definitions(-DDEBUG_GUIDED_SURFACE_CREATION)
+  endif()
 endif()
 
 set(TIGL_LIBRARIES ${OpenCASCADE_LIBRARIES} ${TIXI_LIBRARIES} ${VLD_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})

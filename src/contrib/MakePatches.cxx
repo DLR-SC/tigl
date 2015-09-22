@@ -47,7 +47,7 @@
 #include <vector>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
 
-#ifdef DEBUG
+#ifdef DEBUG_GUIDED_SURFACE_CREATION
 #include <BRepTools.hxx>
 #endif
 
@@ -166,7 +166,7 @@ void MakePatches::Perform(const Standard_Real theTolConf,
         }
     }
 
-#ifdef DEBUG
+#ifdef DEBUG_GUIDED_SURFACE_CREATION
     // save vertex-edge map for debugging purposes
     static int iMakePatches = 0;
     iMakePatches++;
