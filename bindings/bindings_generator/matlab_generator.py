@@ -22,6 +22,11 @@ class MatlabGenerator(object):
         
         name = fun_dec.method_name
         filename = name + '.m'
+
+        # if file already exist, don't overwrite - it might be handwritten
+        if os.path.isfile(filename):
+            return
+        
         fop = open(filename, 'w')
         
         string = 'function '

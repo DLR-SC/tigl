@@ -277,7 +277,7 @@ class PythonGenerator(object):
                     % (arg.name, arg.type, arg.name)
 
                     
-            elif arg.arrayinfos['is_array'] and arg.npointer > 0 and not arg.arrayinfos['autoalloc'] and not arg.is_string:
+            elif arg.arrayinfos['is_array'] and arg.npointer > 0 and not arg.arrayinfos['autoalloc'] and arg.is_string:
                 tmp_str = '_c_%s = (ctypes.c_char_p * %s_len)()' \
                     % (arg.name, arg.name)
             elif arg.is_string and not arg.arrayinfos['is_array']:

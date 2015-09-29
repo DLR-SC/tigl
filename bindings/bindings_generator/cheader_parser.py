@@ -174,6 +174,7 @@ class Annotation(object):
         self.outargs = {}
         self.uses_handle = True
         self.returns_error = True
+        self.raw_string = string
         
         if string:
             self.parse_string(string)
@@ -334,7 +335,7 @@ class CFunctionArg(object):
         
         regex = r'(?P<const>const\s)?(?P<name>[\w\s]+)(?P<pointer>[*]+)?'
         
-        basictypes    = ['int', 'long', 'float', 'double', 'char', 'void', 'size_t']
+        basictypes    = ['int', 'long', 'float', 'double', 'char', 'void']
 
         match = re.search(regex, mytype)
         name = match.group('name')
@@ -358,6 +359,8 @@ class CFunctionDec(object):
         self.returns_error = True
         self.method_name = ''
         self.uses_handle = True
+        self.raw_string = ''
+        self.raw_annotation = None
         
     def parse_method_header(self, string, typedeflist = None, enumlist = None,  handle_str = None, returncode_str = None):
         '''
@@ -378,6 +381,7 @@ class CFunctionDec(object):
         self.return_value.name = 'ret'
         self.returns_error =  returncode_str == self.return_value.rawtype
         self.method_name  = res.group('name') 
+        self.raw_string = string
         
         # print 'Parsed function %s' % self.method_name    
         
@@ -431,6 +435,9 @@ class CFunctionDec(object):
         the roles of the arguments (in, outs, arrays, arraysizes...)
         '''
         
+        # store raw annotation string for debugging
+        self.raw_annotation = annotation.raw_string
+
         if annotation.returns_error:
             self.returns_error = True
         else:
