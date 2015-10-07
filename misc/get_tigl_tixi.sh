@@ -46,6 +46,7 @@ function printUsage {
     echo "    fedora_20      Fedora 20"
     echo "    rhel_5         Red Hat Enterprise Linux 5"
     echo "    rhel_6         Red Hat Enterprise Linux 6"
+    echo "    rhel_7         Red Hat Enterprise Linux 7"
     echo "    centos_6       CentOS 6"
     echo
     echo "Valid architectures:"
@@ -103,6 +104,16 @@ function checkArguments {
             PACK_ARCH=x86_64
             LIBDIR=lib64
         fi
+    elif [[ $tmp_dist == rhel_7 ]]; then
+	DIST=RHEL_7
+	PACK_TYPE=rpm
+	if [[  $tmp_arch == i386 ]]; then
+	    echo "Error: x86 architecture not available on RHEL 7"
+	    exit 1
+        else
+            PACK_ARCH=x86_64
+            LIBDIR=lib64
+	fi
     elif [[ $tmp_dist == rhel_6 ]]; then
     	DIST=RedHat_RHEL-6
 	PACK_TYPE=rpm
