@@ -47,22 +47,28 @@ namespace
     TopoDS_Shape MakeShells(TopoDS_Shape& shell, const Standard_Real presPln);
 } // namespace
 
-CTiglMakeLoft::CTiglMakeLoft(double tolerance)
+CTiglMakeLoft::CTiglMakeLoft(double tolerance, double theTolConf, double theTolParam)
 {
     _hasPerformed = false;
     _makeSolid = true;
     _result.Nullify();
     _myTolerance = tolerance;
+    _myTolConf = theTolConf;
+    _myTolParam = theTolParam;
     _makeSmooth = false;
+    _specialWingAlgo = false;
 }
 
-CTiglMakeLoft::CTiglMakeLoft(const TopoDS_Shape &profiles, const TopoDS_Shape &guides, double tolerance)
+CTiglMakeLoft::CTiglMakeLoft(const TopoDS_Shape &profiles, const TopoDS_Shape &guides, double tolerance, double theTolConf, double theTolParam)
 {
     _hasPerformed = false;
     _result.Nullify();
     _myTolerance = tolerance;
+    _myTolConf = theTolConf;
+    _myTolParam = theTolParam;
     addProfiles(profiles);
     addGuides(guides);
+    _specialWingAlgo = false;
 }
 
 void CTiglMakeLoft::addProfiles(const TopoDS_Shape &profiles)
@@ -119,6 +125,10 @@ void CTiglMakeLoft::Perform()
     _hasPerformed = true;
 }
 
+void CTiglMakeLoft::setSpecialWingAlgo(bool enabled)
+{
+    _specialWingAlgo = enabled;
+}
 void CTiglMakeLoft::setMakeSolid(bool enabled)
 {
     _makeSolid = enabled;
@@ -172,7 +182,7 @@ void CTiglMakeLoft::makeLoftWithGuides()
 #else
     GeomFill_FillingStyle style = GeomFill_CoonsStyle;
 #endif
-    SurfMaker.Perform(_myTolerance, 1e-4, style, Standard_True);
+    SurfMaker.Perform2(_myTolConf, _myTolParam, style, Standard_True, _specialWingAlgo);
     TopoDS_Shape faces = SurfMaker.Patches();
     if (SurfMaker.GetStatus() > 0) {
         LOG(ERROR) << "Could not create loft with guide curves. " << "Error code = " << SurfMaker.GetStatus();
