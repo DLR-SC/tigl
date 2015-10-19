@@ -125,14 +125,6 @@ void MakePatches::Perform(const Standard_Real theTolConf,
                           const GeomFill_FillingStyle theStyle,
                           const Standard_Boolean theSewing)
 {
-    Perform2(theTolConf, theTolParam, theStyle, theSewing, false);
-}
-void MakePatches::Perform2(const Standard_Real theTolConf,
-                          const Standard_Real theTolParam,
-                          const GeomFill_FillingStyle theStyle,
-                          const Standard_Boolean theSewing,
-                          bool Wing)
-{
     // ************************************************************
     // Fuse the guides and profiles
     // ************************************************************
@@ -290,12 +282,7 @@ void MakePatches::Perform2(const Standard_Real theTolConf,
             // *****************************************************************************************
             //Handle(Geom_BSplineSurface) aS = BuildSurface(aCurves, MaxTol, theTolParam, BaseCurveIndex, theStyle);
             Handle(Geom_BSplineSurface) aS;
-            if (Wing && jcell == PatchFrames->RowLength()) {
-                aS = BuildSurface(aCurves, MaxTol, theTolParam, BaseCurveIndex, GeomFill_StretchStyle);
-            }
-            else {
-                aS = BuildSurface(aCurves, MaxTol, theTolParam, BaseCurveIndex, theStyle);
-            }
+            aS = BuildSurface(aCurves, MaxTol, theTolParam, BaseCurveIndex, theStyle);
 
 #ifdef DEBUG_GUIDED_SURFACE_CREATION
             // save edges for debugging purposes

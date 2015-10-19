@@ -33,8 +33,8 @@
 class CTiglMakeLoft
 {
 public:
-    TIGL_EXPORT CTiglMakeLoft(double tolerance = 1e-6, double tolConf = 1e-6, double tolParam = 1e-6);
-    TIGL_EXPORT CTiglMakeLoft(const TopoDS_Shape& profiles, const TopoDS_Shape& guides, double tolerance = 1e-6, double tolConf = 1e-6, double tolParam = 1e-6);
+    TIGL_EXPORT CTiglMakeLoft(double tolerance = 1e-6, double sameKnotTolerance = 1e-6);
+    TIGL_EXPORT CTiglMakeLoft(const TopoDS_Shape& profiles, const TopoDS_Shape& guides, double tolerance = 1e-6, double sameKnotTolerance = 1e-6);
     
     /**
      * @brief Should be called to add sections/profiles to the algorithm.
@@ -67,7 +67,6 @@ public:
      */
     TIGL_EXPORT void setMakeSmooth(bool enabled);
     
-    TIGL_EXPORT void setSpecialWingAlgo(bool enabled);
     TIGL_EXPORT TopoDS_Shape& Shape();
     
     TIGL_EXPORT operator TopoDS_Shape& ();
@@ -83,16 +82,12 @@ private:
     void makeLoftWithoutGuides();
     
     /**
-     * \brief Tolerance for the MakeSolid, MakeShells and BRepOffsetAPI_ThruSections
+     * \brief Tolerance for the MakeSolid, MakeShells, BRepOffsetAPI_ThruSections
+     *        and for checking coincidence of ends of curves.
+     *        (Last only relevant in the case of guide curves)
      *        Default Value is 1E-6
      */
     double _myTolerance;
-    /**
-     * \brief Absolute tolerance for checking coincidence of ends of curves.
-     *        Only relevant in the case of guide curves
-     *        Default Value is 1E-6
-     */
-    double _myTolConf;
     /**
      * \brief Relative tolerance for comparing knots of opposite curves
      *        If k1 and k2 are values of corresponding knots of opposite curves C1 and C2 
@@ -100,10 +95,9 @@ private:
      *        Only relevant in the case of guide curves
      *        Default Value is 1E-6
      */
-    double _myTolParam;
+    double _mySameKnotTolerance;
     std::vector<TopoDS_Wire> guides, profiles;
     bool _hasPerformed, _makeSolid, _makeSmooth;
-    bool _specialWingAlgo;
     
     TopoDS_Shape _result;
 };
