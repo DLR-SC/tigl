@@ -496,3 +496,45 @@ bool IsFileReadable(const std::string& filename)
     return access(filename.c_str(), R_OK) == 0;
 #endif
 }
+
+/**
+ * @brief Returns the starting point of the wire
+ */
+gp_Pnt WireGetFirstPoint(const TopoDS_Wire& w)
+{
+    TopTools_IndexedMapOfShape wireMap;
+    TopExp::MapShapes(w,TopAbs_EDGE, wireMap);
+    TopoDS_Edge e = TopoDS::Edge(wireMap(1));
+
+    double u1, u2;
+    Handle_Geom_Curve c = BRep_Tool::Curve(e, u1, u2);
+
+
+    if (e.Orientation() == TopAbs_REVERSED) {
+        return c->Value(u2);
+    }
+    else {
+        return c->Value(u1);
+    }
+}
+
+/**
+ * @brief Returns the endpoint of the wire
+ */
+gp_Pnt WireGetLastPoint(const TopoDS_Wire& w)
+{
+    TopTools_IndexedMapOfShape wireMap;
+    TopExp::MapShapes(w,TopAbs_EDGE, wireMap);
+    TopoDS_Edge e = TopoDS::Edge(wireMap(wireMap.Extent()));
+
+    double u1, u2;
+    Handle_Geom_Curve c = BRep_Tool::Curve(e, u1, u2);
+
+
+    if (e.Orientation() == TopAbs_REVERSED) {
+        return c->Value(u1);
+    }
+    else {
+        return c->Value(u2);
+    }
+}

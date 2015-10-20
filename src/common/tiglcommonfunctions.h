@@ -47,6 +47,12 @@ TIGL_EXPORT Standard_Real GetEdgeLength(const class TopoDS_Edge& edge);
 TIGL_EXPORT gp_Pnt WireGetPoint(const TopoDS_Wire& wire, double alpha);
 TIGL_EXPORT void WireGetPointTangent(const TopoDS_Wire& wire, double alpha, gp_Pnt& point, gp_Vec& normal);
 
+// returns the starting point of the wire
+TIGL_EXPORT gp_Pnt WireGetFirstPoint(const TopoDS_Wire& w);
+
+// returns the end point of the wire
+TIGL_EXPORT gp_Pnt WireGetLastPoint(const TopoDS_Wire& w);
+
 TIGL_EXPORT gp_Pnt EdgeGetPoint(const TopoDS_Edge& edge, double alpha);
 TIGL_EXPORT void EdgeGetPointTangent(const TopoDS_Edge& edge, double alpha, gp_Pnt& point, gp_Vec& normal);
 
