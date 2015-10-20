@@ -191,6 +191,7 @@ void MakePatches::Perform(const Standard_Real theTolConf,
         return;
     }
     const Handle(TopTools_HArray2OfShape)& PatchFrames = aLoopMaker.Cells();
+    NCollection_DataMap<TopoDS_Shape, TiglContinuity> patchContinuities = aLoopMaker.Continuities();
 
     if (PatchFrames.IsNull()) {
         myStatus = MAKEPATCHES_FAIL_PATCHES;
@@ -282,7 +283,12 @@ void MakePatches::Perform(const Standard_Real theTolConf,
             // *****************************************************************************************
             //Handle(Geom_BSplineSurface) aS = BuildSurface(aCurves, MaxTol, theTolParam, BaseCurveIndex, theStyle);
             Handle(Geom_BSplineSurface) aS;
-            aS = BuildSurface(aCurves, MaxTol, theTolParam, BaseCurveIndex, theStyle);
+            if (patchContinuities.Find(aFrame) == C2) {
+                aS = BuildSurface(aCurves, MaxTol, theTolParam, BaseCurveIndex, theStyle);
+            }
+            else {
+                aS = BuildSurface(aCurves, MaxTol, theTolParam, BaseCurveIndex, GeomFill_StretchStyle);
+            }
 
 #ifdef DEBUG_GUIDED_SURFACE_CREATION
             // save edges for debugging purposes
