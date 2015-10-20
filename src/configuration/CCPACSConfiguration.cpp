@@ -61,6 +61,7 @@ CCPACSConfiguration::CCPACSConfiguration(TixiDocumentHandle tixiHandle)
     , wings(this)
     , fuselages(this)
     , externalObjects(this)
+    , acSystems(this)
     , uidManager()
 {
 }
@@ -92,6 +93,7 @@ void CCPACSConfiguration::ReadCPACS(const char* configurationUID)
     guideCurveProfiles.ReadCPACS(tixiDocumentHandle);
     wings.ReadCPACS(tixiDocumentHandle, configurationUID);
     fuselages.ReadCPACS(tixiDocumentHandle, configurationUID);
+    acSystems.ReadCPACS(tixiDocumentHandle, configurationUID);
     farField.ReadCPACS(tixiDocumentHandle);
     externalObjects.ReadCPACS(tixiDocumentHandle, configurationUID);
 
@@ -160,6 +162,12 @@ CCPACSWingProfile& CCPACSConfiguration::GetWingProfile(std::string uid) const
 CCPACSWingProfile& CCPACSConfiguration::GetWingProfile(int index) const
 {
     return wings.GetProfile(index);
+}
+
+// Returns the aircraft systems object.
+CCPACSACSystems& CCPACSConfiguration::GetACSystems() const
+{
+    return acSystems;
 }
 
 // Returns the total count of wings in a configuration

@@ -36,6 +36,7 @@
 #include "CCPACSFuselages.h"
 #include "CCPACSFuselageProfile.h"
 #include "CCPACSExternalObjects.h"
+#include "CCPACSACSystems.h"
 #include "CCPACSFarField.h"
 #include "CCPACSGuideCurveProfiles.h"
 #include "TopoDS_Compound.hxx"
@@ -138,6 +139,8 @@ public:
 
     TIGL_EXPORT CTiglMemoryPool& GetMemoryPool(void);
 
+    TIGL_EXPORT CCPACSACSystems& GetACSystems(void) const;
+
 protected:
     // transform all components relative to their parents
     void transformAllComponents(CTiglAbstractPhysicalComponent* parent);
@@ -154,6 +157,7 @@ private:
     CCPACSHeader                 header;               /**< Configuration header element */
     CCPACSWings                  wings;                /**< Configuration wings element */
     CCPACSFuselages              fuselages;            /**< Configuration fuselages element */
+    CCPACSACSystems              acSystems;            /**< Configuration aircraft systems element */
     CCPACSFarField               farField;             /**< Far field configuration for CFD tools */
     CCPACSExternalObjects        externalObjects;      /**< External loaded CAD components */
     CCPACSGuideCurveProfiles     guideCurveProfiles;   /**< Guide curve profiles */
