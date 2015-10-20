@@ -15,9 +15,11 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
+#include "tigl.h"
 #include "tiglcommonfunctions.h"
 #include "test.h"
-
+#include <BRep_Builder.hxx>
+#include <BRepTools.hxx>
 
 
 TEST(TiglCommonFunctions, isPathRelative)
@@ -42,3 +44,16 @@ TEST(TiglCommonFunctions, isFileReadable)
     ASSERT_FALSE(IsFileReadable("invalidfile.txt"));
 }
 
+TEST(TiglCommonFunctions, getEdgeContinuity)
+{
+    TopoDS_Edge edge1;
+    TopoDS_Edge edge2;
+    TopoDS_Edge edge3;
+    BRep_Builder b;
+    BRepTools::Read(edge1, "TestData/checkEdgeContinuity_edge1.brep", b);
+    BRepTools::Read(edge2, "TestData/checkEdgeContinuity_edge2.brep", b);
+    BRepTools::Read(edge3, "TestData/checkEdgeContinuity_edge3.brep", b);
+    ASSERT_EQ(C2, getEdgeContinuity(edge1, edge2));
+    ASSERT_EQ(C0, getEdgeContinuity(edge2, edge3));
+    ASSERT_EQ(C0, getEdgeContinuity(edge3, edge1));
+}
