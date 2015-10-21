@@ -165,7 +165,7 @@ CCPACSWingProfile& CCPACSConfiguration::GetWingProfile(int index) const
 }
 
 // Returns the aircraft systems object.
-CCPACSACSystems& CCPACSConfiguration::GetACSystems() const
+CCPACSACSystems& CCPACSConfiguration::GetACSystems()
 {
     return acSystems;
 }
@@ -185,6 +185,23 @@ CCPACSWing& CCPACSConfiguration::GetWing(int index) const
 CCPACSWing& CCPACSConfiguration::GetWing(const std::string& UID) const
 {
     return wings.GetWing(UID);
+}
+
+// Returns the total count of generic systems in a configuration
+int CCPACSConfiguration::GetGenericSystemCount(void)
+{
+    return acSystems.GetGenericSystems().GetGenericSystemCount();
+}
+
+// Returns the generic system for a given index.
+CCPACSGenericSystem& CCPACSConfiguration::GetGenericSystem(int index)
+{
+    return acSystems.GetGenericSystems().GetGenericSystem(index);
+}
+// Returns the generic system for a given UID.
+CCPACSGenericSystem& CCPACSConfiguration::GetGenericSystem(const std::string& UID)
+{
+    return acSystems.GetGenericSystems().GetGenericSystem(UID);
 }
 
 TopoDS_Shape CCPACSConfiguration::GetParentLoft(const std::string& UID)

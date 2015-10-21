@@ -91,6 +91,15 @@ public:
     // Returns the wing for a given UID.
     TIGL_EXPORT CCPACSWing& GetWing(const std::string& UID) const;
 
+    // Returns the total count of generic systems in a configuration
+    TIGL_EXPORT int GetGenericSystemCount(void);
+
+    // Returns the generic system for a given index.
+    TIGL_EXPORT CCPACSGenericSystem& GetGenericSystem(int index);
+
+    // Returns the generic system for a given UID.
+    TIGL_EXPORT CCPACSGenericSystem& GetGenericSystem(const std::string& UID);
+
     TIGL_EXPORT TopoDS_Shape GetParentLoft(const std::string& UID);
 
     TIGL_EXPORT bool HasFuselageProfile(std::string uid) const;
@@ -139,7 +148,7 @@ public:
 
     TIGL_EXPORT CTiglMemoryPool& GetMemoryPool(void);
 
-    TIGL_EXPORT CCPACSACSystems& GetACSystems(void) const;
+    TIGL_EXPORT CCPACSACSystems& GetACSystems(void);
 
 protected:
     // transform all components relative to their parents
