@@ -1927,7 +1927,7 @@ void TIGLViewerDocument::drawSystems()
             continue;
         }
 
-        //app->getScene()->displayShape(genericSystem.GetMirroredLoft()->Shape(), Quantity_NOC_MirrShapeCol);
+        app->getScene()->displayShape(genericSystem.GetMirroredLoft()->Shape(), Quantity_NOC_MirrShapeCol);
     }
 }
 
