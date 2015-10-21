@@ -642,6 +642,7 @@ void TIGLViewerWindow::connectConfiguration()
     connect(drawIntersectionAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawIntersectionLine()));
     connect(showFusedAirplaneTriangulation, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFusedAircraftTriangulation()));
     connect(drawFarFieldAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFarField()));
+    connect(drawSystemsAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawSystems()));
 
     // CPACS Fuselage Actions
     connect(drawFuselageProfilesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFuselageProfiles()));

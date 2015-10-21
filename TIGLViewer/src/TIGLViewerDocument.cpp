@@ -1918,23 +1918,16 @@ void TIGLViewerDocument::drawFarField()
 void TIGLViewerDocument::drawSystems()
 {
     START_COMMAND();
-    // Draw all systems
-    for (int w = 1; w <= GetConfiguration().GetWingCount(); w++) {
-        tigl::CCPACSWing& wing = GetConfiguration().GetWing(w);
+    // Draw all generic systems
+    for (int gs = 1; gs <= GetConfiguration().GetGenericSystemCount(); gs++) {
+        tigl::CCPACSGenericSystem& genericSystem = GetConfiguration().GetGenericSystem(gs);
+        app->getScene()->displayShape(genericSystem.GetLoft()->Shape());
 
-        for (int i = 1; i <= wing.GetSegmentCount(); i++) {
-            tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(i);
-            app->getScene()->displayShape(segment.GetLoft()->Shape());
-        }
-
-        if (wing.GetSymmetryAxis() == TIGL_NO_SYMMETRY) {
+        if (genericSystem.GetSymmetryAxis() == TIGL_NO_SYMMETRY) {
             continue;
         }
 
-        for (int i = 1; i <= wing.GetSegmentCount(); i++) {
-            tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(i);
-            app->getScene()->displayShape(segment.GetMirroredLoft()->Shape(), Quantity_NOC_MirrShapeCol);
-        }
+        //app->getScene()->displayShape(genericSystem.GetMirroredLoft()->Shape(), Quantity_NOC_MirrShapeCol);
     }
 }
 
