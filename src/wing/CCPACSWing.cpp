@@ -560,7 +560,7 @@ double CCPACSWing::GetWingspan()
             return ymax-ymin;
             break;
         case TIGL_Y_Z_PLANE:
-            return xmax-ymin;
+            return xmax-xmin;
             break;
         default:
             return ymax-ymin;
