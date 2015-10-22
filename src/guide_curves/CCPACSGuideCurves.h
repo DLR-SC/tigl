@@ -51,7 +51,7 @@ public:
     TIGL_EXPORT virtual ~CCPACSGuideCurves(void);
 
     // Read CPACS guide curves
-    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& segmentXPath);
+    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& segmentXPath, bool isInsideFirstSegment);
 
     // Returns the total count of guide curves in this configuration
     TIGL_EXPORT int GetGuideCurveCount(void) const;

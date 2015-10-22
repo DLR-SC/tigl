@@ -58,7 +58,7 @@ void CCPACSGuideCurve::Cleanup(void)
 }
 
 // Read guide curve file
-void CCPACSGuideCurve::ReadCPACS(TixiDocumentHandle tixiHandle)
+void CCPACSGuideCurve::ReadCPACS(TixiDocumentHandle tixiHandle, bool isInsideFirstSegment)
 {
     Cleanup();
     std::string namePath                  = GuideCurveXPath + "/name";
@@ -97,6 +97,15 @@ void CCPACSGuideCurve::ReadCPACS(TixiDocumentHandle tixiHandle)
     if (foundFromRelativeCircumference && foundFromGuideCurveUID) {
         throw CTiglError("Error: It is forbidden to give fromRelativeCircumference AND fromGuideCurveUID in CCPACSGuideCurve::ReadCPACS", TIGL_XML_ERROR);
     }
+
+    if (isInsideFirstSegment && foundFromGuideCurveUID) {
+        throw CTiglError("Error: fromRelativeCircumference must be set in the first segment for the guide curve (CCPACSGuideCurve::ReadCPACS)", TIGL_XML_ERROR);
+    }
+
+    if (!isInsideFirstSegment && foundFromRelativeCircumference) {
+        throw CTiglError("Error: Invalid use of fromRelativeCircumference in subsequent guide curve segment. Use fromGuideCurveUID instead! (CCPACSGuideCurve::ReadCPACS)", TIGL_XML_ERROR);
+    }
+
     else if (foundFromRelativeCircumference) {
         fromRelativeCircumferenceIsSet = true;
         if (tixiGetDoubleElement(tixiHandle, (GuideCurveXPath + "/fromRelativeCircumference").c_str(), &fromRelativeCircumference) != SUCCESS) {

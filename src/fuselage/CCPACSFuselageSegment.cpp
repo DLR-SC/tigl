@@ -227,7 +227,7 @@ void CCPACSFuselageSegment::ReadCPACS(TixiDocumentHandle tixiHandle, const std::
     // Get guide Curves
     if (tixiCheckElement(tixiHandle, (segmentXPath + "/guideCurves").c_str()) == SUCCESS) {
         guideCurvesPresent = true;
-        guideCurves.ReadCPACS(tixiHandle, segmentXPath);
+        guideCurves.ReadCPACS(tixiHandle, segmentXPath, GetSegmentIndex() == 1);
         for (int iguide = 1; iguide <= guideCurves.GetGuideCurveCount(); ++iguide) {
             CCPACSGuideCurve& curve = guideCurves.GetGuideCurve(iguide);
             curve.SetGuideCurveBuilder(this);

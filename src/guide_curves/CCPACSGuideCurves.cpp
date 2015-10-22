@@ -50,7 +50,7 @@ void CCPACSGuideCurves::Cleanup(void)
 }
 
 // Read CPACS guide curves
-void CCPACSGuideCurves::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& segmentXPath)
+void CCPACSGuideCurves::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& segmentXPath, bool isInsideFirstSegment)
 {
     Cleanup();
 
@@ -68,7 +68,7 @@ void CCPACSGuideCurves::ReadCPACS(TixiDocumentHandle tixiHandle, const std::stri
             xpath << guideCurvesXPath << "/guideCurve[" << i << "]";
 
             PCCPACSGuideCurve guideCurve(new CCPACSGuideCurve(xpath.str()));
-            guideCurve->ReadCPACS(tixiHandle);
+            guideCurve->ReadCPACS(tixiHandle, isInsideFirstSegment);
             guideCurves[guideCurve->GetUID()] = guideCurve;
         }
     }

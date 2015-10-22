@@ -56,7 +56,7 @@ public:
     TIGL_EXPORT virtual ~CCPACSGuideCurve(void);
 
     // Read CPACS guide curve file
-    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle);
+    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, bool isInsideFirstSegment);
 
     // Returns the name of the guide curve
     TIGL_EXPORT const std::string& GetName(void) const;
