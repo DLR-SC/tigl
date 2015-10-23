@@ -619,8 +619,7 @@ gp_Pnt CCPACSWingComponentSegment::GetPoint(double eta, double xsi)
     projLeadingEdge->D1(eta, etaPnt, etaNormal);
 
     // compute intersection with line strips
-    bool haveIntersection = false;
-    gp_Pnt intersectionPoint;
+    std::vector<gp_Pnt> intersPoints;
     for (unsigned int i = 1; i <= segments.size(); ++i) {
         gp_Pnt p1 = xsiPoints.Value(i);
         gp_Pnt p2 = xsiPoints.Value(i+1);
@@ -630,22 +629,41 @@ gp_Pnt CCPACSWingComponentSegment::GetPoint(double eta, double xsi)
             continue;
         }
         double alpha = gp_Vec(etaPnt.XYZ() - p1.XYZ())*etaNormal / denominator ;
-        if (i == 1 && alpha < 0.) {
-            haveIntersection = true;
-            intersectionPoint = p1.XYZ() + alpha*(p2.XYZ()-p1.XYZ());
-        }
-        if (alpha >= 0. && alpha <= 1.) {
-            haveIntersection = true;
-            intersectionPoint = p1.XYZ() + alpha*(p2.XYZ()-p1.XYZ());
-            break;
-        }
-        if (i == segments.size() && alpha > 1.) {
-            haveIntersection = true;
-            intersectionPoint = p1.XYZ() + alpha*(p2.XYZ()-p1.XYZ());
+        gp_Pnt intersectionPoint = p1.XYZ() + alpha*(p2.XYZ()-p1.XYZ());
+
+        if ((i == 1 && alpha < 0.) || (alpha >= 0. && alpha <= 1.) || (i == segments.size() && alpha > 1.)) {
+            intersPoints.push_back(intersectionPoint);
         }
     }
 
-    if (haveIntersection) {
+    if (intersPoints.size() == 1) {
+        return intersPoints[0];
+    }
+    else if (intersPoints.size() > 1) {
+        // chose the intersection point that has minimal distance to the etaPnt
+        // first, we have to project the point on the plane, to ignore any depth distance
+
+        // compute the projection plane as done in CCPACSWingComponentSegment::UpdateProjectedLeadingEdge()
+        gp_GTrsf wingTrafo = wing->GetTransformation().Get_gp_GTrsf();
+        gp_XYZ pCenter(0,0,0);
+        gp_XYZ pDirX(1,0,0);
+        wingTrafo.Transforms(pCenter);
+        wingTrafo.Transforms(pDirX);
+        Handle(Geom_Plane) projPlane = new Geom_Plane(pCenter, pDirX-pCenter);
+
+        double minDist = FLT_MAX;
+        gp_Pnt intersectionPoint;
+        for (std::vector<gp_Pnt>::iterator it = intersPoints.begin(); it != intersPoints.end(); ++it) {
+            // project to wing plane
+            gp_Pnt pInterProj = GeomAPI_ProjectPointOnSurf(*it, projPlane).NearestPoint();
+
+            double dist = pInterProj.Distance(etaPnt);
+            if (dist < minDist) {
+                minDist = dist;
+                intersectionPoint = *it;
+            }
+        }
+
         return intersectionPoint;
     }
     else {
