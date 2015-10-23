@@ -26,6 +26,7 @@
 #include <iostream>
 
 #include "CCPACSWing.h"
+#include "CTiglWingBuilder.h"
 #include "CCPACSConfiguration.h"
 #include "CTiglAbstractSegment.h"
 #include "CCPACSWingSegment.h"
@@ -78,47 +79,6 @@ namespace
         }
         
         return TopoDS::Wire(resultWire);
-    }
-
-    // Set the face traits
-    void SetFaceTraits (PNamedShape loft, unsigned int nSegments) 
-    { 
-        // designated names of the faces
-        std::vector<std::string> names(3);
-        names[0]="Bottom";
-        names[1]="Top";
-        names[2]="TrailingEdge";
-        std::vector<std::string> endnames(2);
-        endnames[0]="Inside";
-        endnames[1]="Outside";
-
-        // map of faces
-        TopTools_IndexedMapOfShape map;
-        TopExp::MapShapes(loft->Shape(),   TopAbs_FACE, map);
-
-        unsigned int nFaces = map.Extent();
-        // check if number of faces without inside and outside surface (nFaces-2) 
-        // is a multiple of 2 (without Trailing Edges) or 3 (with Trailing Edges)
-        if (!((nFaces-2)/nSegments == 2 || (nFaces-2)/nSegments == 3) || nFaces < 4) {
-            LOG(ERROR) << "CCPACSWing: Unable to determine wing face names from wing loft.";
-            return;
-        }
-        // remove trailing edge name if there is no trailing edge
-        if ((nFaces-2)/nSegments == 2) {
-            names.erase(names.begin()+2);
-        }
-        // assign "Top" and "Bottom" to face traits
-        for (unsigned int i = 0; i < nFaces-2; i++) {
-            CFaceTraits traits = loft->GetFaceTraits(i);
-            traits.SetName(names[i%names.size()].c_str());
-            loft->SetFaceTraits(i, traits);
-        }
-        // assign "Inside" and "Outside" to face traits
-        for (unsigned int i = nFaces-2; i < nFaces; i++) {
-            CFaceTraits traits = loft->GetFaceTraits(i);
-            traits.SetName(endnames[i-nFaces+2].c_str());
-            loft->SetFaceTraits(i, traits);
-        }
     }
 }
 
@@ -370,25 +330,7 @@ PNamedShape CCPACSWing::BuildLoft()
 // Builds a fused shape of all wing segments
 PNamedShape CCPACSWing::BuildFusedSegments(bool splitWingInUpperAndLower)
 {
-    CTiglMakeLoft lofter;
-    lofter.setMakeSolid(true);
-
-    for (int i=1; i <= segments.GetSegmentCount(); i++) {
-        const TopoDS_Shape& startWire = segments.GetSegment(i).GetInnerWire();
-        lofter.addProfiles(startWire);
-    }
-    
-    TopoDS_Wire endWire =  segments.GetSegment(segments.GetSegmentCount()).GetOuterWire();
-    lofter.addProfiles(endWire);
-    
-    // add guide curves
-    lofter.addGuides(GetGuideCurveWires());
-
-    TopoDS_Shape loftShape = lofter.Shape();
-    std::string loftName = GetUID();
-    std::string loftShortName = GetShortShapeName();
-    PNamedShape loft(new CNamedShape(loftShape, loftName.c_str(), loftShortName.c_str()));
-    SetFaceTraits(loft, segments.GetSegmentCount());
+    PNamedShape loft = CTiglWingBuilder(*this);
     return loft;
 }
     

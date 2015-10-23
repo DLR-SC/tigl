@@ -51,6 +51,7 @@ class CCPACSConfiguration;
 
 class CCPACSWing : public CTiglAbstractPhysicalComponent
 {
+friend class CTiglWingBuilder;
 
 public:
     // Constructor

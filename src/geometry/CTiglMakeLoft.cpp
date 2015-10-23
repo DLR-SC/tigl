@@ -227,7 +227,7 @@ void CTiglMakeLoft::makeLoftWithGuides()
     }
     else {
         // don't make solid
-        _result = MakeShells(faces, 1e-6);
+        _result = MakeShells(faces, _myTolerance);
     }
     BRepLib::EncodeRegularity(_result);
 }
