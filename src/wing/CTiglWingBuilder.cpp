@@ -35,9 +35,10 @@
 #include <BRepBuilderAPI_FindPlane.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRepLib.hxx>
-#include <BRepTools.hxx>
 
 #include <cassert>
+
+#undef NO_EXPLICIT_TE_MODELING
 
 namespace tigl
 {
@@ -51,6 +52,7 @@ CTiglWingBuilder::CTiglWingBuilder(CCPACSWing& wing)
 {
 }
 
+#ifndef NO_EXPLICIT_TE_MODELING
 PNamedShape CTiglWingBuilder::BuildShape()
 {
     CCPACSWingSegments& segments = _wing.segments;
@@ -212,6 +214,40 @@ PNamedShape CTiglWingBuilder::BuildShape()
 
     return loft;
 }
+#else
+PNamedShape CTiglWingBuilder::BuildShape()
+{
+    CCPACSWingSegments& segments = _wing.segments;
+    CCPACSWingProfile& innerProfile = segments.GetSegment(1).GetInnerConnection().GetProfile();
+
+    // we assume, that all profiles of one wing are either blunt or not
+    // this is checked during cpacs loading of each wing segment
+    bool hasBluntTE = innerProfile.HasBluntTE();
+
+    CTiglMakeLoft lofter;
+    lofter.setMakeSolid(true);
+
+    for (int i=1; i <= segments.GetSegmentCount(); i++) {
+        const TopoDS_Shape& startWire = segments.GetSegment(i).GetInnerWire();
+        lofter.addProfiles(startWire);
+    }
+
+    TopoDS_Wire endWire =  segments.GetSegment(segments.GetSegmentCount()).GetOuterWire();
+    lofter.addProfiles(endWire);
+
+    // add guide curves
+    lofter.addGuides(_wing.GetGuideCurveWires());
+
+    TopoDS_Shape loftShape = lofter.Shape();
+    std::string loftName = _wing.GetUID();
+    std::string loftShortName = _wing.GetShortShapeName();
+    PNamedShape loft(new CNamedShape(loftShape, loftName.c_str(), loftShortName.c_str()));
+    SetFaceTraits(loft, hasBluntTE);
+    return loft;
+}
+#endif
+
+
 
 CTiglWingBuilder::operator PNamedShape()
 {
@@ -240,6 +276,8 @@ void CTiglWingBuilder::SetFaceTraits (PNamedShape loft, bool hasBluntTE)
         return;
     }
 
+#ifndef NO_EXPLICIT_TE_MODELING
+
     unsigned int nTEFaces = hasBluntTE ? nSegments : 0;
     unsigned int nAeroFaces = nFaces - nTEFaces - 2;
 
@@ -256,7 +294,18 @@ void CTiglWingBuilder::SetFaceTraits (PNamedShape loft, bool hasBluntTE)
         traits.SetName(names[2].c_str());
         loft->SetFaceTraits(i, traits);
     }
-
+#else
+    // remove trailing edge name if there is no trailing edge
+    if (hasBluntTE) {
+        names.pop_back();
+    }
+    // assign "Top" and "Bottom" to face traits
+    for (unsigned int i = 0; i < nFaces-2; i++) {
+        CFaceTraits traits = loft->GetFaceTraits(i);
+        traits.SetName(names[i%names.size()].c_str());
+        loft->SetFaceTraits(i, traits);
+    }
+#endif
 
     // assign "Inside" and "Outside" to face traits
     for (unsigned int i = nFaces-2; i < nFaces; i++) {
