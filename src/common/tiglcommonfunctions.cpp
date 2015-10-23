@@ -56,6 +56,7 @@
 #include "BRep_Builder.hxx"
 #include "BRepBuilderAPI_MakeWire.hxx"
 #include "BRepBuilderAPI_MakeEdge.hxx"
+#include "BRepBuilderAPI_MakeVertex.hxx"
 #include "GeomAPI_ProjectPointOnCurve.hxx"
 #include "BRepTools.hxx"
 #include "BRepBuilderAPI_Sewing.hxx"
@@ -69,10 +70,11 @@
 #include <GeomAPI_Interpolate.hxx>
 #include <Geom_TrimmedCurve.hxx>
 #include <GeomConvert.hxx>
-
 #include <TColgp_HArray1OfPnt.hxx>
-
 #include <ShapeAnalysis_FreeBounds.hxx>
+#include <ShapeFix_EdgeConnect.hxx>
+#include <ShapeFix_Wire.hxx>
+#include <BRep_Tool.hxx>
 
 #include <list>
 #include <algorithm>
@@ -536,5 +538,92 @@ gp_Pnt WireGetLastPoint(const TopoDS_Wire& w)
     }
     else {
         return c->Value(u2);
+    }
+}
+TiglContinuity getEdgeContinuity(const TopoDS_Edge& edge1, const TopoDS_Edge& edge2)
+{
+    // **********************************************************************************
+    // Create a wire from both edges
+    // **********************************************************************************
+    BRepBuilderAPI_MakeWire wireMaker;
+    wireMaker.Add(edge1);
+    if (!wireMaker.IsDone()) {
+        throw tigl::CTiglError("checkEdgeContinuity: Unable to create connected wire", TIGL_ERROR);
+    }
+    wireMaker.Add(edge2);
+    if (!wireMaker.IsDone()) {
+        throw tigl::CTiglError("checkEdgeContinuity: Unable to create connected wire", TIGL_ERROR);
+    }
+    TopoDS_Vertex commonVertex;
+    TopoDS_Wire wire = wireMaker.Wire();
+
+    // **********************************************************************************
+    // Fix connectivity: Create common vertex
+    // **********************************************************************************
+    ShapeFix_Wire wireFixer;
+    wireFixer.Load(wire);
+    wireFixer.FixConnected();
+    wireFixer.Perform();
+    wire = wireFixer.Wire();
+    if (wire.IsNull()) {
+        throw tigl::CTiglError("checkEdgeContinuity: Unable to create common vertex in connected wire", TIGL_ERROR);
+    }
+
+    // **********************************************************************************
+    // Get new edges with common vertex
+    // **********************************************************************************
+    TopTools_IndexedMapOfShape edges;
+    TopExp::MapShapes(wire, TopAbs_EDGE, edges);
+    if (edges.Extent() != 2) {
+        throw tigl::CTiglError("checkEdgeContinuity: Unexpected error in connected wire", TIGL_ERROR);
+    }
+    TopoDS_Edge newedge1 = TopoDS::Edge(edges(1));
+    TopoDS_Edge newedge2 = TopoDS::Edge(edges(2));
+
+    TopExp::CommonVertex(newedge1, newedge2, commonVertex);
+    if (commonVertex.IsNull()) {
+        throw tigl::CTiglError("checkEdgeContinuity: Unable to find common vertex", TIGL_ERROR);
+    }
+
+    // **********************************************************************************
+    // Get derivatives at common vertex
+    // **********************************************************************************
+    BRepAdaptor_Curve firstCurve;
+    BRepAdaptor_Curve secondCurve;
+    if (TopExp::FirstVertex(newedge1).IsSame(commonVertex) && TopExp::LastVertex(newedge2).IsSame(commonVertex)) {
+        secondCurve.Initialize(newedge1);
+        firstCurve.Initialize(newedge2);
+    }
+    else if (TopExp::LastVertex(newedge1).IsSame(commonVertex) && TopExp::FirstVertex(newedge2).IsSame(commonVertex)) {
+        firstCurve.Initialize(newedge1);
+        secondCurve.Initialize(newedge2);
+    }
+    else {
+        throw tigl::CTiglError("checkEdgeContinuity: Unexpected error: Unable to find common vertex in connected wire", TIGL_ERROR);
+    }
+
+    gp_Pnt point;
+    gp_Vec firstD1;
+    gp_Vec firstD2;
+    gp_Vec secondD1;
+    gp_Vec secondD2;
+    firstCurve.D2(firstCurve.LastParameter(), point, firstD1, firstD2);
+    secondCurve.D2(secondCurve.FirstParameter(), point, secondD1, secondD2);
+
+    // **********************************************************************************
+    // Get continuity depending on derivatives at the common vertex
+    // **********************************************************************************
+    if ((firstD1.Magnitude() >= gp::Resolution() && secondD1.Magnitude() >= gp::Resolution())
+        && gp_Dir(firstD1).IsEqual(gp_Dir(secondD1), Precision::Confusion())) {
+        if ((firstD2.Magnitude() >= gp::Resolution() && secondD2.Magnitude() >= gp::Resolution())
+            && gp_Dir(firstD2).IsEqual(gp_Dir(secondD2), Precision::Confusion())) {
+            return C2;
+        }
+        else {
+            return C1;
+        }
+    }
+    else {
+        return C0;
     }
 }

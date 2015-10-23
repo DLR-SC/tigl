@@ -13,13 +13,13 @@
 #define _MakeLoops_HeaderFile
 
 #include "tigl_internal.h"
+#include "tigl.h"
 
 #include <TopoDS_Shape.hxx>
 #include <TopTools_ListOfShape.hxx>
 #include <TopTools_MapOfShape.hxx>
 #include <Handle_TopTools_HArray2OfShape.hxx>
-
-
+#include <NCollection_DataMap.hxx>
 
 /**
  * \brief Return code of make loops algorithm
@@ -121,6 +121,48 @@ public:
     TIGL_EXPORT  const Handle(TopTools_HArray2OfShape)& Cells() const;
 
     /**
+     * \brief Return the mapping of resulting patches to a continuity
+     *        The guide and profile curves run through each of the 
+     *        four patch corner points with a certain continuity (C0, C1 or C2)
+     *        So each of the 4 corners has a certain continuity in guide 
+     *        direction as well as in profile direction.
+     *        The continuity of the patch is chosen as the highest continuity
+     *        at the corners in profile or guide direction.
+     *
+     *        E.g.
+     *
+     * 
+     *                             guide direction
+     *                              ------------>
+     *                           
+     *
+     * 
+     *                          C2                   C2
+     *                           |                   |
+     *                           |                   |
+     *                 C0 ------------------------------------ C2
+     *                           |                   |
+     *     ^                     |                   |
+     *     |                     |                   |
+     *     | profile             |                   |
+     *     | direction           |                   |
+     *     |                     |                   |
+     *                           |                   |
+     *                           |                   |
+     *                 C0 ------------------------------------ C1
+     *                           |                   |
+     *                           |                   |
+     *                           
+     *                           C1                 C2
+     *                           
+     *        Here, the highest continuity is C2. Therefore the patch surface
+     *        continuity should also be set to C2.
+     *        
+     * @returns Continuity of the resulting patch surface
+     */
+    TIGL_EXPORT  const NCollection_DataMap<TopoDS_Shape, TiglContinuity>& Continuities() const;
+
+    /**
      * Returns status of calculations
      * 0 - success, 1 - algorithm failed
      */
@@ -154,6 +196,7 @@ private:
     TopTools_ListOfShape            myCells;
     Standard_Integer                myStatus;
 
+    NCollection_DataMap<TopoDS_Shape, TiglContinuity> myContinuities;
 
 };
 

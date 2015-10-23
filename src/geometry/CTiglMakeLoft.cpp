@@ -47,20 +47,23 @@ namespace
     TopoDS_Shape MakeShells(TopoDS_Shape& shell, const Standard_Real presPln);
 } // namespace
 
-CTiglMakeLoft::CTiglMakeLoft(double tolerance)
+CTiglMakeLoft::CTiglMakeLoft(double tolerance, double sameKnotTolerance)
 {
     _hasPerformed = false;
     _makeSolid = true;
     _result.Nullify();
     _myTolerance = tolerance;
+    _mySameKnotTolerance = sameKnotTolerance;
     _makeSmooth = false;
 }
 
-CTiglMakeLoft::CTiglMakeLoft(const TopoDS_Shape &profiles, const TopoDS_Shape &guides, double tolerance)
+CTiglMakeLoft::CTiglMakeLoft(const TopoDS_Shape& profiles, const TopoDS_Shape& guides, double tolerance, double sameKnotTolerance)
 {
     _hasPerformed = false;
     _result.Nullify();
     _myTolerance = tolerance;
+    _myTolerance = tolerance;
+    _mySameKnotTolerance = sameKnotTolerance;
     addProfiles(profiles);
     addGuides(guides);
 }
@@ -172,7 +175,7 @@ void CTiglMakeLoft::makeLoftWithGuides()
 #else
     GeomFill_FillingStyle style = GeomFill_CoonsStyle;
 #endif
-    SurfMaker.Perform(_myTolerance, 1e-4, style, Standard_True);
+    SurfMaker.Perform(_myTolerance, _mySameKnotTolerance, style, Standard_True);
     TopoDS_Shape faces = SurfMaker.Patches();
     if (SurfMaker.GetStatus() > 0) {
         LOG(ERROR) << "Could not create loft with guide curves. " << "Error code = " << SurfMaker.GetStatus();
