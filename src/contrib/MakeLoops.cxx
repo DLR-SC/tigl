@@ -28,6 +28,7 @@
 #include <NCollection_DataMap.hxx>
 
 #include <vector>
+#include <algorithm>
 
 #ifdef DEBUG_GUIDED_SURFACE_CREATION
 #include <BRepTools.hxx>
