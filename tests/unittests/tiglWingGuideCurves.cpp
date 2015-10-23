@@ -149,7 +149,7 @@ TEST_F(WingGuideCurve, tiglWingGuideCurve_CCPACSGuideCurves)
 {
     tigl::CCPACSGuideCurves guideCurves;
     guideCurves.ReadCPACS(tixiHandle, "/cpacs/vehicles/aircraft/model/wings/wing/segments/segment[2]", false);
-    ASSERT_EQ(guideCurves.GetGuideCurveCount(), 5);
+    ASSERT_EQ(guideCurves.GetGuideCurveCount(), 3);
     tigl::CCPACSGuideCurve& guideCurve = guideCurves.GetGuideCurve("GuideCurveModel_Wing_Seg_2_3_GuideCurve_LeadingEdge");
     ASSERT_EQ(guideCurve.GetUID(), "GuideCurveModel_Wing_Seg_2_3_GuideCurve_LeadingEdge");
     ASSERT_EQ(guideCurve.GetName(), "Leading Edge GuideCurve from GuideCurveModel - Wing Section 2 Main Element to GuideCurveModel - Wing Section 3 Main Element ");
