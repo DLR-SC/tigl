@@ -9,6 +9,8 @@
 *    http://www.apache.org/licenses/LICENSE-2.0
 */
 
+#include "tiglcommonfunctions.h"
+
 #include <MakeLoops.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
 #include <TopTools_MapOfShape.hxx>
@@ -23,8 +25,11 @@
 #include <TopTools_ListOfShape.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <TopoDS_Iterator.hxx>
+#include <NCollection_DataMap.hxx>
 
-#ifdef DEBUG
+#include <vector>
+
+#ifdef DEBUG_GUIDED_SURFACE_CREATION
 #include <BRepTools.hxx>
 #endif
 
@@ -87,8 +92,57 @@ void MakeLoops::Perform()
         return;
     }
 
+    // integer for iterations
+    Standard_Integer i, j;
+
+    // **********************************************************************
+    // Get continuity of guides and profiles over the intersection vertices
+    // **********************************************************************
+    NCollection_DataMap<TopoDS_Vertex, TiglContinuity> continuityMapProfiles;
+    NCollection_DataMap<TopoDS_Vertex, TiglContinuity> continuityMapGuides;
+    for (i = 1; i <= GridVertices.Extent(); i++) {
+        TopoDS_Vertex currentVertex = TopoDS::Vertex(GridVertices.FindKey(i));
+        std::vector<TopoDS_Edge> neighboringProfileEdges;
+        std::vector<TopoDS_Edge> neighboringGuideEdges;
+        for (TopTools_ListIteratorOfListOfShape iter(GridVertices(i)); iter.More(); iter.Next()) {
+            const TopoDS_Edge& anEdge = TopoDS::Edge(iter.Value());
+            if (myProfileEdges.Contains(anEdge)) {
+                neighboringProfileEdges.push_back(anEdge);
+            }
+            if (myGuideEdges.Contains(anEdge)) {
+                neighboringGuideEdges.push_back(anEdge);
+            }
+        }
+        // since we assume a grid topologically equal to a rectangular grid, there should be 
+        // up to 2 attached edges of the types guide and profile
+        if (neighboringGuideEdges.size() > 2 || neighboringProfileEdges.size() > 2) {
+            myStatus = MAKELOOPS_FAIL;
+            return;
+        }
+        // for two guide edges check for continuity
+        TiglContinuity continuityProfiles;
+        if (neighboringProfileEdges.size() == 2) {
+            continuityProfiles = getEdgeContinuity(neighboringProfileEdges[0], neighboringProfileEdges[1]);
+        }
+        // for one edge, set continuity to C0
+        else {
+            continuityProfiles = C0;
+        }
+        // for two guide edges check for continuity
+        TiglContinuity continuityGuides;
+        if (neighboringGuideEdges.size() == 2) {
+            continuityGuides = getEdgeContinuity(neighboringGuideEdges[0], neighboringGuideEdges[1]);
+        }
+        // for one edge, set continuity to C0
+        else {
+            continuityGuides = C0;
+        }
+        continuityMapGuides.Bind(currentVertex, continuityGuides);
+        continuityMapProfiles.Bind(currentVertex, continuityProfiles);
+    }
+
     // get minimum number of edges attached to a grid vertex
-    Standard_Integer i, j, MinExtent = INT_MAX;
+    Standard_Integer MinExtent = INT_MAX;
     for (i = 1; i <= GridVertices.Extent(); i++) {
         Standard_Integer anExtent = GridVertices(i).Extent();
         if (anExtent < MinExtent) {
@@ -159,7 +213,7 @@ void MakeLoops::Perform()
         return;
     }
 
-#ifdef DEBUG
+#ifdef DEBUG_GUIDED_SURFACE_CREATION
     // save vertex-edge map for debugging purposes
     static int iMakeLoops = 0;
     iMakeLoops++;
@@ -168,7 +222,16 @@ void MakeLoops::Perform()
     ssedge << "makeLoopPatches_" << iMakeLoops << "_startingCorner.brep";
     BRepTools::Write(StartCorner, ssedge.str().c_str());
 
+    std::stringstream sname;
+    sname << "makeLoopPatches_" << iMakeLoops;
+    std::string currentName = sname.str();
+
+    ofstream out((currentName + "_vertexMapContinuities.txt").c_str());
+    out << "# 1. Column: Vertex index" << std::endl;
+    out << "# 2. Column: Continuity along profile direction (C0 = 0, C1 = 1, C2 = 2)" << std::endl;
+    out << "# 3. Column: Continuity along guide direction (C0 = 0, C1 = 1, C2 = 2)" << std::endl;
     for (i = 1; i <= GridVertices.Extent(); i++) {
+        out << i << "\t" << continuityMapProfiles(TopoDS::Vertex(GridVertices.FindKey(i))) << "\t" << continuityMapGuides(TopoDS::Vertex(GridVertices.FindKey(i))) << std::endl;
         std::stringstream svertex;
         svertex << "makeLoopPatches_" << iMakeLoops << "_vertexMap_vertex" << i << ".brep";
         BRepTools::Write(TopoDS::Vertex(GridVertices.FindKey(i)), svertex.str().c_str());
@@ -182,10 +245,9 @@ void MakeLoops::Perform()
             eCount++;
         }
     }
-    std::stringstream sname;
-    sname << "makeLoopPatches_" << iMakeLoops;
-    std::string currentName = sname.str();
+    out.close();
 #endif
+
     // **********************************************************************
     // Get the four sided patches
     // **********************************************************************
@@ -200,6 +262,11 @@ void MakeLoops::Perform()
     Standard_Boolean IsFirstRow = Standard_True;
     Standard_Integer RowLength = 0;
 
+    // vertices of the resulting patches
+    TopoDS_Vertex vertex12;
+    TopoDS_Vertex vertex23;
+    TopoDS_Vertex vertex34;
+    TopoDS_Vertex vertex41;
     int count = 0;
     while (true) {
         // the four edges of the patch
@@ -233,6 +300,10 @@ void MakeLoops::Perform()
                     TopoDS_Vertex aFirstVertex = TopExp::FirstVertex(anEdge, Standard_True);
                     if (aFirstVertex.IsSame(Corner)) {
                         E1 = anEdge;
+                        // save current vertex
+                        // however, since the orientation may have changed, get the object from the
+                        // gritVertices map (here, the Contains function seems to be orientation insensitive)
+                        vertex41 = TopoDS::Vertex(GridVertices.FindKey(GridVertices.FindIndex(Corner)));
                         break;
                     }
                 }
@@ -303,6 +374,10 @@ void MakeLoops::Perform()
                     TopoDS_Vertex aFirstVertex = TopExp::FirstVertex(anEdge, Standard_True);
                     if (aFirstVertex.IsSame(CurVertex)) {
                         E2 = anEdge;
+                        // save current vertex
+                        // however, since the orientation may have changed, get the object from the
+                        // gritVertices map (here, the Contains function seems to be orientation insensitive)
+                        vertex12 = TopoDS::Vertex(GridVertices.FindKey(GridVertices.FindIndex(CurVertex)));
                         break;
                     }
                 }
@@ -354,10 +429,15 @@ void MakeLoops::Perform()
         E3.Nullify();
         if (GridVertices.Contains(CurVertex)) {
             for (iter.Initialize(GridVertices.FindFromKey(CurVertex)); iter.More(); iter.Next()) {
-                E3 = TopoDS::Edge(iter.Value());
-                if (myProfileEdges.Contains(E3)) {
-                    TopoDS_Vertex aLastVertex = TopExp::LastVertex(E3, Standard_True);
+                TopoDS_Edge anEdge = TopoDS::Edge(iter.Value());
+                if (myProfileEdges.Contains(anEdge)) {
+                    TopoDS_Vertex aLastVertex = TopExp::LastVertex(anEdge, Standard_True);
                     if (aLastVertex.IsSame(CurVertex)) {
+                        E3 = anEdge;
+                        // save current vertex
+                        // however, since the orientation may have changed, get the object from the
+                        // gritVertices map (here, the Contains function seems to be orientation insensitive)
+                        vertex23 = TopoDS::Vertex(GridVertices.FindKey(GridVertices.FindIndex(CurVertex)));
                         break;
                     }
                 }
@@ -404,11 +484,16 @@ void MakeLoops::Perform()
         E4.Nullify();
         if (GridVertices.Contains(CurVertex)) {
             for (iter.Initialize(GridVertices.FindFromKey(CurVertex)); iter.More(); iter.Next()) {
-                E4 = TopoDS::Edge(iter.Value());
-                if (myGuideEdges.Contains(E4)) {
-                    TopoDS_Vertex aLastVertex = TopExp::LastVertex(E4, Standard_True);
-                    TopoDS_Vertex aFirstVertex = TopExp::FirstVertex(E4, Standard_True);
+                TopoDS_Edge anEdge = TopoDS::Edge(iter.Value());
+                if (myGuideEdges.Contains(anEdge)) {
+                    TopoDS_Vertex aLastVertex = TopExp::LastVertex(anEdge, Standard_True);
+                    TopoDS_Vertex aFirstVertex = TopExp::FirstVertex(anEdge, Standard_True);
                     if (aLastVertex.IsSame(CurVertex)) {
+                        E4 = anEdge;
+                        // save current vertex
+                        // however, since the orientation may have changed, get the object from the
+                        // gritVertices map (here, the Contains function seems to be orientation insensitive)
+                        vertex34 = TopoDS::Vertex(GridVertices.FindKey(GridVertices.FindIndex(CurVertex)));
                         break;
                     }
                 }
@@ -421,7 +506,7 @@ void MakeLoops::Perform()
             break;
         }
         
-
+        // save cell
         TopoDS_Compound aCell;
         BB.MakeCompound(aCell);
         BB.Add(aCell, E1);
@@ -431,7 +516,25 @@ void MakeLoops::Perform()
         // otherwise store it in the list of cells
         myCells.Append(aCell);
 
-#ifdef DEBUG
+        // *********************************
+        // map each cell to a continuity
+        // *********************************
+        // store all vertex continuities
+        std::vector<TiglContinuity> vertexContinuities;
+        vertexContinuities.push_back(continuityMapGuides.Find(vertex12));
+        vertexContinuities.push_back(continuityMapProfiles.Find(vertex12));
+        vertexContinuities.push_back(continuityMapGuides.Find(vertex23));
+        vertexContinuities.push_back(continuityMapProfiles.Find(vertex23));
+        vertexContinuities.push_back(continuityMapGuides.Find(vertex34));
+        vertexContinuities.push_back(continuityMapProfiles.Find(vertex34));
+        vertexContinuities.push_back(continuityMapGuides.Find(vertex41));
+        vertexContinuities.push_back(continuityMapProfiles.Find(vertex41));
+        // choose the patch surface continuity to be the maximal vertex continuity
+        TiglContinuity patchContinuity = *std::max_element(vertexContinuities.begin(), vertexContinuities.end());
+        // map the patch to the continuity
+        myContinuities.Bind(aCell, patchContinuity);
+
+#ifdef DEBUG_GUIDED_SURFACE_CREATION
         // save edges for debugging purposes
         std::stringstream siMakeLoopsInner;
         siMakeLoopsInner << "_innerLoop" << count++;
@@ -489,6 +592,16 @@ void MakeLoops::Perform()
 const Handle(TopTools_HArray2OfShape)& MakeLoops::Cells() const
 {
     return myCellGrid;
+}
+
+//=======================================================================
+//function : Continuities
+//purpose  :
+//=======================================================================
+
+const NCollection_DataMap<TopoDS_Shape, TiglContinuity>& MakeLoops::Continuities() const
+{
+    return myContinuities;
 }
 
 

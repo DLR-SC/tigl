@@ -46,9 +46,13 @@
 #include <ShapeAnalysis_Wire.hxx>
 #include <vector>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
+#include <GeomFill_FillingStyle.hxx>
 
-#ifdef DEBUG
+#ifdef DEBUG_GUIDED_SURFACE_CREATION
 #include <BRepTools.hxx>
+#include <BRepBuilderAPI_MakeWire.hxx>
+#include <BRepBuilderAPI_MakeEdge.hxx>
+#include "SplineLibIO.h"
 #endif
 
 static Standard_Real MaxTolVer(const TopoDS_Shape& aShape)
@@ -166,7 +170,7 @@ void MakePatches::Perform(const Standard_Real theTolConf,
         }
     }
 
-#ifdef DEBUG
+#ifdef DEBUG_GUIDED_SURFACE_CREATION
     // save vertex-edge map for debugging purposes
     static int iMakePatches = 0;
     iMakePatches++;
@@ -174,6 +178,9 @@ void MakePatches::Perform(const Standard_Real theTolConf,
     std::stringstream smygrid;
     smygrid << "makePatches_" << iMakePatches << "_wireGrid.brep";
     BRepTools::Write(myGrid, smygrid.str().c_str());
+
+    std::stringstream sname;
+    sname << "makePatches_" << iMakePatches;
 #endif
 
     //Creating list of cells
@@ -184,6 +191,7 @@ void MakePatches::Perform(const Standard_Real theTolConf,
         return;
     }
     const Handle(TopTools_HArray2OfShape)& PatchFrames = aLoopMaker.Cells();
+    NCollection_DataMap<TopoDS_Shape, TiglContinuity> patchContinuities = aLoopMaker.Continuities();
 
     if (PatchFrames.IsNull()) {
         myStatus = MAKEPATCHES_FAIL_PATCHES;
@@ -195,6 +203,7 @@ void MakePatches::Perform(const Standard_Real theTolConf,
     aBB.MakeCompound(aFaces);
 
     Standard_Integer BaseCurveIndex = 1;
+
 
     Handle(Geom_Curve) aC;
     Handle(Geom_TrimmedCurve) aTC;
@@ -215,6 +224,10 @@ void MakePatches::Perform(const Standard_Real theTolConf,
             Standard_Real MaxTol = Max(MaxTolVer(aFrame), theTolConf);
             TopExp_Explorer anExp(aFrame, TopAbs_EDGE);
             aCurves.Clear();
+
+#ifdef DEBUG_GUIDED_SURFACE_CREATION
+            BRepBuilderAPI_MakeWire wireMaker;
+#endif
             // iterate through cell boundaries
             for (; anExp.More(); anExp.Next()) {
                 const TopoDS_Edge& anE = TopoDS::Edge(anExp.Current());
@@ -259,12 +272,30 @@ void MakePatches::Perform(const Standard_Real theTolConf,
 
                 aTC = new Geom_TrimmedCurve(aC, f, l);
                 aCurves.Append(aTC);
+
+#ifdef DEBUG_GUIDED_SURFACE_CREATION
+                wireMaker.Add(BRepBuilderAPI_MakeEdge(Handle_Geom_Curve(aTC)));
+#endif
             }
 
             // *****************************************************************************************
             // Build patch surface
             // *****************************************************************************************
-            Handle(Geom_BSplineSurface) aS = BuildSurface(aCurves, MaxTol, theTolParam, BaseCurveIndex, theStyle);
+            //Handle(Geom_BSplineSurface) aS = BuildSurface(aCurves, MaxTol, theTolParam, BaseCurveIndex, theStyle);
+            Handle(Geom_BSplineSurface) aS;
+            if (patchContinuities.Find(aFrame) == C2) {
+                aS = BuildSurface(aCurves, MaxTol, theTolParam, BaseCurveIndex, theStyle);
+            }
+            else {
+                aS = BuildSurface(aCurves, MaxTol, theTolParam, BaseCurveIndex, GeomFill_StretchStyle);
+            }
+
+#ifdef DEBUG_GUIDED_SURFACE_CREATION
+            // save edges for debugging purposes
+            std::stringstream siiMakePatchesInner;
+            siiMakePatchesInner << sname.str() << "_curveCell_" << icell << "_" << jcell << ".brep" ;
+            BRepTools::Write(wireMaker.Shape(), (siiMakePatchesInner.str()).c_str());
+#endif
 
             if (aS.IsNull()) {
                 continue;
@@ -287,6 +318,16 @@ void MakePatches::Perform(const Standard_Real theTolConf,
             aBB.UpdateFace(aF, theTolConf);
             BRepLib::UpdateTolerances(aF, Standard_True);
 
+#ifdef DEBUG_GUIDED_SURFACE_CREATION
+            // save edges for debugging purposes
+            std::stringstream siMakePatchesInner;
+            siMakePatchesInner << sname.str() << "_patchFace_" << icell << "_" << jcell;
+            BRepTools::Write(aF, (siMakePatchesInner.str() + ".brep").c_str());
+            Handle_Geom_BSplineSurface bsplineSurf = Handle_Geom_BSplineSurface::DownCast(BRep_Tool::Surface(aF));
+            if (!bsplineSurf.IsNull()) {
+                exportSurfaceToSplineLib(bsplineSurf, siMakePatchesInner.str() + ".splinelib");
+            }
+#endif
             // add patch to the list of patches
             aBB.Add(aFaces, aF);
         }
