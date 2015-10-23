@@ -110,11 +110,6 @@ public:
                                const GeomFill_FillingStyle theStyle = GeomFill_CoonsStyle,
                                const Standard_Boolean theSewing = Standard_True);
 
-    TIGL_EXPORT   void Perform2(const Standard_Real theTolConf,
-                               const Standard_Real theTolParam,
-                               const GeomFill_FillingStyle theStyle = GeomFill_CoonsStyle,
-                               const Standard_Boolean theSewing = Standard_True,
-                               bool Wing = false);
     /**
      * Returns result
      * Result can be compound pf faces or shell depending on value of theSewing
