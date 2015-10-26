@@ -69,7 +69,7 @@ void exportCurveToSplineLib(Handle_Geom_BSplineCurve curve, const std::string& f
     if (curve->IsRational()) {
         out << "# Weights: Index, weight" << std::endl;
         for (int i = 0; i < curve->NbPoles(); i++) {
-            out << weights(i) << std::endl;
+            out << i << " " << weights(i) << std::endl;
         }
     }
     out.close();
