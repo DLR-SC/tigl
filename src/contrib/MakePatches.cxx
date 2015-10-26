@@ -10,6 +10,7 @@
 */
 
 #include "tigl_config.h"
+#include "tiglcommonfunctions.h"
 
 #include <MakePatches.hxx>
 #include <MakeLoops.hxx>

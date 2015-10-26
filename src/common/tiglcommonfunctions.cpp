@@ -627,3 +627,8 @@ TiglContinuity getEdgeContinuity(const TopoDS_Edge& edge1, const TopoDS_Edge& ed
         return C0;
     }
 }
+
+Standard_Boolean IsEqual(const TopoDS_Shape& s1, const TopoDS_Shape& s2)
+{
+    return s1.IsEqual(s2);
+}

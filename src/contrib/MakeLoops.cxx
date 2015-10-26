@@ -99,8 +99,8 @@ void MakeLoops::Perform()
     // **********************************************************************
     // Get continuity of guides and profiles over the intersection vertices
     // **********************************************************************
-    NCollection_DataMap<TopoDS_Vertex, TiglContinuity> continuityMapProfiles;
-    NCollection_DataMap<TopoDS_Vertex, TiglContinuity> continuityMapGuides;
+    NCollection_DataMap<TopoDS_Shape, TiglContinuity> continuityMapProfiles;
+    NCollection_DataMap<TopoDS_Shape, TiglContinuity> continuityMapGuides;
     for (i = 1; i <= GridVertices.Extent(); i++) {
         TopoDS_Vertex currentVertex = TopoDS::Vertex(GridVertices.FindKey(i));
         std::vector<TopoDS_Edge> neighboringProfileEdges;

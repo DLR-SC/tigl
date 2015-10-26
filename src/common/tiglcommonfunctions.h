@@ -102,4 +102,7 @@ TIGL_EXPORT bool IsFileReadable(const std::string& filename);
 
 // get the continuity of two edges which share a common vertex
 TIGL_EXPORT TiglContinuity getEdgeContinuity(const TopoDS_Edge& edge1, const TopoDS_Edge& edge2);
+
+TIGL_EXPORT Standard_Boolean IsEqual(const TopoDS_Shape& s1, const TopoDS_Shape& s2);
+
 #endif // TIGLCOMMONFUNCTIONS_H
