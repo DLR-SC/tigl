@@ -172,6 +172,38 @@ void CTiglMakeLoft::makeLoftWithGuides()
     // Don't sew yet. We do it later in solid creation
 #ifdef TIGL_OCE_COONS_PATCHED
     GeomFill_FillingStyle style = GeomFill_CoonsC2Style;
+
+    char* c_cont = getenv("TIGL_COONS_CONTINUITY");
+    if (c_cont) {
+        if (strcmp(c_cont, "0") == 0) {
+            style = GeomFill_StretchStyle;
+        }
+        else if (strcmp(c_cont, "1") == 0) {
+            style = GeomFill_CoonsStyle;
+        }
+        else if (strcmp(c_cont, "2") == 0) {
+            style = GeomFill_CoonsC2Style;
+        }
+
+        static bool has_informed = false;
+        if (!has_informed) {
+            std::string s_style;
+            switch(style) {
+            case GeomFill_StretchStyle:
+                s_style = "Stretch style (C0)";
+                break;
+            case GeomFill_CoonsStyle:
+                s_style = "Coons style (C1)";
+                break;
+            case GeomFill_CoonsC2Style:
+            default:
+                s_style = "Coons C2 style (C2)";
+            }
+            LOG(WARNING) << "Using user-defined surface modelling: " << s_style;
+            has_informed = true;
+        }
+
+    }
 #else
     GeomFill_FillingStyle style = GeomFill_CoonsStyle;
 #endif
