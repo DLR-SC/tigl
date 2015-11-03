@@ -64,10 +64,6 @@ public:
     // Returns the parent configuration
     TIGL_EXPORT CCPACSConfiguration & GetConfiguration(void) const;
 
-    // Gets the loft of the system
-    TIGL_EXPORT TopoDS_Shape & GetShape(void);
-    //TIGL_EXPORT PNamedShape GetLoft(void);
-
     // Get the Transformation object
     TIGL_EXPORT CTiglTransformation GetTransformation(void);
         
@@ -104,7 +100,6 @@ private:
     std::string                    name;                     /**< System name         */
     std::string                    geometricBaseType;        /**< Geometric base type */
     CCPACSConfiguration*           configuration;            /**< Parent configuration*/
-    TopoDS_Shape                   systemShape;
     bool                           invalidated;              /**< Internal state flag */
 };
 

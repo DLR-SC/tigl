@@ -830,14 +830,17 @@ void TIGLViewerWindow::updateMenus()
     closeAction->setEnabled(hand > 0);
 
     bool hasFarField = false;
+    bool hasACSystems = false;
     try {
         if (hand > 0) {
             tigl::CCPACSConfiguration& config = tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(hand);
             hasFarField = config.GetFarField().GetFieldType() != tigl::NONE;
+            hasACSystems = config.GetGenericSystemCount() > 0;
         }
     }
     catch(tigl::CTiglError& ){}
     drawFarFieldAction->setEnabled(hasFarField);
+    drawSystemsAction->setEnabled(hasACSystems);
 }
 
 void TIGLViewerWindow::closeEvent(QCloseEvent*)

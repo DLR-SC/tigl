@@ -163,16 +163,6 @@ CCPACSConfiguration& CCPACSGenericSystem::GetConfiguration(void) const
     return *configuration;
 }
 
-// Gets the loft of the generic system.
-TopoDS_Shape & CCPACSGenericSystem::GetShape(void)
-{
-    if (invalidated) {
-        BuildLoft();
-        invalidated = false;
-    }
-    return systemShape;
-}
-
 // build loft
 PNamedShape CCPACSGenericSystem::BuildLoft()
 {
@@ -203,14 +193,12 @@ PNamedShape CCPACSGenericSystem::BuildLoft()
         sysShape = prism.Shape();
     }
 
-    gp_GTrsf trsf = GetTransformation().Get_gp_GTrsf();
-    BRepBuilderAPI_GTransform builder(sysShape, trsf, true);
-    sysShape = builder.Shape();
+
+    sysShape = GetTransformation().Transform(sysShape);
     std::string loftName = GetUID();
     std::string loftShortName = GetShortShapeName();
     PNamedShape loft(new CNamedShape(sysShape, loftName.c_str(), loftShortName.c_str()));
-    //SetFaceTraits(loft, segments.GetSegmentCount());
-    systemShape = sysShape;
+
     return loft;
 }
 
