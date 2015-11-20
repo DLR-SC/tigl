@@ -21,6 +21,7 @@
 
 #include <Handle_Geom_BSplineCurve.hxx>
 #include "tiglmathfunctions.h"
+#include "tigl_internal.h"
 
 namespace tigl
 {
@@ -32,7 +33,7 @@ namespace tigl
  * The function to approximate is given by 3 separate functions, one for the x values,
  * one for y-values and one for the z-values.
  */
-class CFunctionToBspline
+class TIGL_EXPORT CFunctionToBspline
 {
 public:
     /**

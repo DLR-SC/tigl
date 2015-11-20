@@ -33,7 +33,7 @@ file(GLOB_RECURSE TIGL_SRC
 )
 
 if(MSVC)
-    add_definitions(-D_CRT_SECURE_NO_WARNINGS=1 /wd4355)
+    add_definitions(-D_CRT_SECURE_NO_WARNINGS=1 /wd4355 -DTIGL_INTERNAL_EXPORTS)
 endif(MSVC)
 
 if(CMAKE_COMPILER_IS_GNUCC)
