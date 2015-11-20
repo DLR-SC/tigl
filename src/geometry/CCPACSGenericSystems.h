@@ -27,6 +27,7 @@
 #include "tixi.h"
 
 #include <vector>
+#include <string>
 
 namespace tigl
 {
