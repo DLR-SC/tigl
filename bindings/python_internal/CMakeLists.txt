@@ -1,37 +1,53 @@
 option(TIGL_PYTHON_INTERNAL "Builds the python interface to the internal API(requires SWIG)" OFF)
 
 if (TIGL_PYTHON_INTERNAL)
-	include(tiglmacros)
+    include(tiglmacros)
 
-	find_package(PythonInterp)
-	find_package(PythonLibs)
-	find_package(SWIG REQUIRED)
-	find_package(PythonOCC REQUIRED)
+    find_package(PythonInterp)
+    find_package(PythonLibs)
+    find_package(SWIG REQUIRED)
+    find_package(PythonOCC REQUIRED)
 
-	include(${SWIG_USE_FILE})
+    include(${SWIG_USE_FILE})
 
-	include_directories(${PYTHON_INCLUDE_PATH})
+    include_directories(${PYTHON_INCLUDE_PATH})
 
-	# add all tigl directories to include path
-	set(TIGL_INCLUDES ${PROJECT_SOURCE_DIR}/src/)
-	subdirlist(SUBDIRS ${PROJECT_SOURCE_DIR}/src/)
-	foreach(subdir ${SUBDIRS})
-		set(TIGL_INCLUDES ${TIGL_INCLUDES} ${PROJECT_SOURCE_DIR}/src/${subdir})
-	endforeach()
-	include_directories(${TIGL_INCLUDES} ${PROJECT_BINARY_DIR}/src ${TIXI_INCLUDE_DIRS})
-	
-	include_directories(${OpenCASCADE_INCLUDE_DIR} ${PythonOCC_INCLUDE_DIRS})
+    # add all tigl directories to include path
+    set(TIGL_INCLUDES ${PROJECT_SOURCE_DIR}/src/)
+    subdirlist(SUBDIRS ${PROJECT_SOURCE_DIR}/src/)
+    foreach(subdir ${SUBDIRS})
+        set(TIGL_INCLUDES ${TIGL_INCLUDES} ${PROJECT_SOURCE_DIR}/src/${subdir})
+    endforeach()
+    include_directories(${TIGL_INCLUDES} ${PROJECT_BINARY_DIR}/src ${TIXI_INCLUDE_DIRS})
 
-	set_source_files_properties(geometry.i PROPERTIES CPLUSPLUS ON)
-        set_source_files_properties(occtaddons.i PROPERTIES CPLUSPLUS ON)
-	set_source_files_properties(tmath.i PROPERTIES CPLUSPLUS ON)
+    include_directories(${OpenCASCADE_INCLUDE_DIR} ${PythonOCC_INCLUDE_DIRS})
 
-	swig_add_module(occtaddons python occtaddons.i )
-	swig_link_libraries(occtaddons ${PYTHON_LIBRARIES} TIGL)
+    set (MODULES "geometry;occtaddons;tmath")
 
-	swig_add_module(geometry python geometry.i )
-	swig_link_libraries(geometry ${PYTHON_LIBRARIES} TIGL)
-	
-	swig_add_module(tmath python tmath.i )
-	swig_link_libraries(tmath ${PYTHON_LIBRARIES} TIGL)
+    set(LIBRARY_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR})
+
+    if(WIN32)
+       set(EXTENSION "pyd")
+    else(WIN32)
+        set(EXTENSION "so")
+    endif(WIN32)
+
+    foreach(MODULE ${MODULES})
+        set_source_files_properties(${MODULE}.i PROPERTIES CPLUSPLUS ON)
+        swig_add_module(${MODULE} python ${MODULE}.i )
+        swig_link_libraries(${MODULE} ${PYTHON_LIBRARIES} TIGL)
+
+        install(FILES ${CMAKE_CURRENT_BINARY_DIR}/_${MODULE}.${EXTENSION}
+                DESTINATION share/tigl/python/internal
+                COMPONENT interfaces
+        )
+
+        install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${MODULE}.py
+                DESTINATION share/tigl/python/internal
+                COMPONENT interfaces
+        )
+
+    endforeach(MODULE)
+
+
 endif(TIGL_PYTHON_INTERNAL)
