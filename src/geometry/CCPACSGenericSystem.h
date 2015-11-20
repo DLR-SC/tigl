@@ -2,9 +2,6 @@
 * Copyright (C) 2015 German Aerospace Center (DLR/SC)
 *
 * Created: 2015-10-21 Jonas Jepsen <Jonas.Jepsen@dlr.de>
-* Changed: $Id$ 
-*
-* Version: $Revision$
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -28,13 +25,9 @@
 
 #include <string>
 
-#include "tigl_config.h"
 #include "tixi.h"
 #include "tigl_internal.h"
-#include "CTiglTransformation.h"
 #include "CTiglAbstractPhysicalComponent.h"
-
-#include "TopoDS_Shape.hxx"
 
 
 namespace tigl
@@ -83,7 +76,7 @@ protected:
     // Update internal wing data
     void Update(void);
         
-    //TopoDS_Shape & BuildShape(void);
+    // Build the shape of the system
     PNamedShape BuildLoft(void);
 
 private:

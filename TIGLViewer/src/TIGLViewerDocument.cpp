@@ -72,6 +72,7 @@
 #include "CCPACSWingProfilePointList.h"
 #include "CCPACSWingSegment.h"
 #include "CCPACSFuselageSegment.h"
+#include "CCPACSGenericSystem.h"
 #include "tiglcommonfunctions.h"
 #include "CTiglPoint.h"
 #include "CTiglExportCollada.h"

@@ -2,9 +2,6 @@
 * Copyright (C) 2015 German Aerospace Center (DLR/SC)
 *
 * Created: 2015-10-21 Jonas Jepsen <Jonas.Jepsen@dlr.de>
-* Changed: $Id$ 
-*
-* Version: $Revision$
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -29,7 +26,6 @@
 #include "tigl_internal.h"
 #include "tixi.h"
 #include "CCPACSGenericSystems.h"
-#include <vector>
 
 namespace tigl
 {

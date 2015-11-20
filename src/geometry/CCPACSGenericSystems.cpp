@@ -2,9 +2,6 @@
 * Copyright (C) 2015 German Aerospace Center (DLR/SC)
 *
 * Created: 2015-10-21 Jonas Jepsen <Jonas.Jepsen@dlr.de>
-* Changed: $Id$ 
-*
-* Version: $Revision$
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -24,7 +21,10 @@
 */
 
 #include "CCPACSGenericSystems.h"
+
+#include "CCPACSGenericSystem.h"
 #include "CTiglError.h"
+
 #include <iostream>
 #include <sstream>
 
@@ -126,4 +126,5 @@ CCPACSGenericSystem& CCPACSGenericSystems::GetGenericSystem(const std::string& U
     // UID not there
     throw CTiglError("Error: Invalid UID in CCPACSGenericSystems::GetGenericSystem", TIGL_INDEX_ERROR);
 }
+
 } // end namespace tigl

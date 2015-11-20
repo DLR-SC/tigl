@@ -1,10 +1,7 @@
-/* 
-* Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
+/*
+* Copyright (C) 2015 German Aerospace Center (DLR/SC)
 *
-* Created: 2010-08-13 Markus Litz <Markus.Litz@dlr.de>
-* Changed: $Id$ 
-*
-* Version: $Revision$
+* Created: 2015-10-21 Jonas Jepsen <Jonas.Jepsen@dlr.de>
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -18,6 +15,7 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
+
 /**
 * @file
 * @brief  Implementation of CPACS wing handling routines.
@@ -37,17 +35,6 @@
 #include <BRepPrimAPI_MakePrism.hxx>
 #include <BRepBuilderAPI_MakePolygon.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
-
-#include "BRepOffsetAPI_ThruSections.hxx"
-#include "BRepAlgoAPI_Fuse.hxx"
-#include "ShapeFix_Shape.hxx"
-#include "GProp_GProps.hxx"
-#include "BRepGProp.hxx"
-#include "BRepAlgoAPI_Cut.hxx"
-#include "Bnd_Box.hxx"
-#include "BRepBndLib.hxx"
-#include <TopExp.hxx>
-#include <TopTools_IndexedMapOfShape.hxx>
 
 namespace tigl
 {
@@ -125,6 +112,11 @@ void CCPACSGenericSystem::ReadCPACS(TixiDocumentHandle tixiHandle, const std::st
     elementPath   = const_cast<char*>(tempString.c_str());
     if (tixiGetTextElement(tixiHandle, elementPath, &ptrBaseType) == SUCCESS) {
         geometricBaseType = ptrBaseType;
+
+        // check validity of type
+        if (geometricBaseType != "cylinder" && geometricBaseType != "sphere" && geometricBaseType != "cone" && geometricBaseType != "prism") {
+            throw CTiglError("Invalid geometry base type: " + geometricBaseType, TIGL_XML_ERROR);
+        }
     }
 
     // Get attribute "uid"
@@ -139,7 +131,9 @@ void CCPACSGenericSystem::ReadCPACS(TixiDocumentHandle tixiHandle, const std::st
     transformation.ReadCPACS(tixiHandle, genericSysXPath);
 
     // Register ourself at the unique id manager
-    configuration->GetUIDManager().AddUID(ptrUID, this);
+    if (configuration) {
+        configuration->GetUIDManager().AddUID(ptrUID, this);
+    }
 
     // Get symmetry axis attribute
     char* ptrSym = NULL;

@@ -2,9 +2,6 @@
 * Copyright (C) 2015 German Aerospace Center (DLR/SC)
 *
 * Created: 2015-10-21 Jonas Jepsen <Jonas.Jepsen@dlr.de>
-* Changed: $Id$ 
-*
-* Version: $Revision$
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -28,20 +25,17 @@
 
 #include "tigl_internal.h"
 #include "tixi.h"
-#include "CCPACSGenericSystem.h"
+
 #include <vector>
 
 namespace tigl
 {
 
 class CCPACSConfiguration;
+class CCPACSGenericSystem;
 
 class CCPACSGenericSystems
 {
-private:
-    // Typedef for a CCPACSWing container to store the wings of a configuration.
-    typedef std::vector<CCPACSGenericSystem*> CCPACSGenericSystemContainer;
-
 public:
     // Constructor
     TIGL_EXPORT CCPACSGenericSystems(CCPACSConfiguration* config);
@@ -76,6 +70,8 @@ private:
     void operator=(const CCPACSGenericSystem& );
 
 private:
+    typedef std::vector<CCPACSGenericSystem*> CCPACSGenericSystemContainer;
+
     CCPACSGenericSystemContainer    systems;            /**< Generic system elements */
     CCPACSConfiguration*            configuration;      /**< Pointer to parent configuration */
 };
