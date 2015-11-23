@@ -55,7 +55,7 @@ protected:
 TEST_F(TiglExternalComponent, getFileNameRelative)
 {
     tigl::CCPACSExternalObject object;
-    object.ReadCPACS(tixiHandle, "/root/externalComponent[1]");
+    object.ReadCPACS(tixiHandle, "/root/genericGeometryComponent[1]");
     
     ASSERT_STREQ("TestData/nacelle.stp", object.GetFilePath().c_str());
 }
@@ -63,7 +63,7 @@ TEST_F(TiglExternalComponent, getFileNameRelative)
 TEST_F(TiglExternalComponent, getShape)
 {
     tigl::CCPACSExternalObject object;
-    object.ReadCPACS(tixiHandle, "/root/externalComponent[1]");
+    object.ReadCPACS(tixiHandle, "/root/genericGeometryComponent[1]");
     
     PNamedShape shape = object.GetLoft();
     ASSERT_TRUE(shape != NULL);
@@ -73,7 +73,7 @@ TEST_F(TiglExternalComponent, getShape)
 TEST_F(TiglExternalComponent, invalidFiletype)
 {
     tigl::CCPACSExternalObject object;
-    ASSERT_THROW(object.ReadCPACS(tixiHandle, "/root/externalComponent[2]"), tigl::CTiglError);
+    ASSERT_THROW(object.ReadCPACS(tixiHandle, "/root/genericGeometryComponent[2]"), tigl::CTiglError);
 }
 
 TEST(TiglExternalComponentInternal, getPathRelativeToApp)
