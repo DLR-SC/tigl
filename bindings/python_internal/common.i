@@ -18,7 +18,24 @@
 
 %include std_string.i
 %include std_vector.i
-%include std_shared_ptr.i
 
-#define HAVE_STDSHARED_PTR
-#define TIGL_EXPORT
+%include tigl_config.h
+%include tigl_internal.h
+
+#ifdef HAVE_STDSHARED_PTR
+  %include std_shared_ptr.i
+#else
+  %include boost_shared_ptr.i
+#endif
+
+
+#define Handle(ClassName)  Handle_##ClassName
+#define TixiDocumentHandle int
+
+%{
+// includes are required to for compilation
+#include<Standard_ErrorHandler.hxx>
+#include<Standard_Failure.hxx>
+#include "tigl.h"
+%}
+

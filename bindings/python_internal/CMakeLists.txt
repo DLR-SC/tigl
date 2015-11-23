@@ -22,7 +22,7 @@ if (TIGL_PYTHON_INTERNAL)
 
     include_directories(${OpenCASCADE_INCLUDE_DIR} ${PythonOCC_INCLUDE_DIRS})
 
-    set (MODULES "geometry;occtaddons;tmath")
+    set (MODULES "geometry;occtaddons;tmath;configuration;core")
 
     set(LIBRARY_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR})
 
@@ -34,6 +34,8 @@ if (TIGL_PYTHON_INTERNAL)
 
     foreach(MODULE ${MODULES})
         set_source_files_properties(${MODULE}.i PROPERTIES CPLUSPLUS ON)
+        set(SWIG_MODULE_${MODULE}_EXTRA_DEPS common.i )
+
         swig_add_module(${MODULE} python ${MODULE}.i )
         swig_link_libraries(${MODULE} ${PYTHON_LIBRARIES} TIGL)
 

@@ -22,14 +22,12 @@
 
 
 %{
-// includes are required to for compilation
-#include<Standard_ErrorHandler.hxx>
-#include<Standard_Failure.hxx>
 #include <math_Vector.hxx>
 #include <math_Matrix.hxx>
 %}
 
 %import Math.i
+%import core.i
 %import occtaddons.i
 
 %{
@@ -38,6 +36,7 @@
 #include "CTiglOptimizer.h"
 #include "CTiglPointTranslator.h"
 #include "ITiglObjectiveFunction.h"
+#include "CTiglError.h"
 %}
 
 

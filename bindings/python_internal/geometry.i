@@ -24,9 +24,6 @@
 
 
 %{
-// includes are required to for compilation
-#include<Standard_ErrorHandler.hxx>
-#include<Standard_Failure.hxx>
 #include<TopoDS.hxx>
 #include <math_Vector.hxx>
 #include <math_Matrix.hxx>
@@ -51,6 +48,10 @@
 #include "CCSTCurveBuilder.h"
 #include "ECPACSTranslationType.h"
 #include "CTiglTransformation.h"
+#include "CTiglAbstractPhysicalComponent.h"
+#include "CTiglAbstractSegment.h"
+#include "ITiglGeometricComponent.h"
+#include "CTiglError.h"
 %}
 
 
@@ -71,6 +72,10 @@
 %include "CFunctionToBspline.h"
 %include "CCPACSTransformation.h"
 %include "CCSTCurveBuilder.h"
+%include "ITiglGeometricComponent.h"
+%include "CTiglAbstractGeometricComponent.h"
+%include "CTiglAbstractSegment.h"
+%include "CTiglAbstractPhysicalComponent.h"
 
 %inline %{
 

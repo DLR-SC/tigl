@@ -19,10 +19,12 @@
 #ifndef CTIGLMEMORYPOOL_H
 #define CTIGLMEMORYPOOL_H
 
+#include "tigl_internal.h"
+
 namespace tigl
 {
 
-class CTiglMemoryPool
+class TIGL_EXPORT CTiglMemoryPool
 {
 public:
     CTiglMemoryPool();
