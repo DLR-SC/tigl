@@ -31,6 +31,7 @@
 
 #define Handle(ClassName)  Handle_##ClassName
 #define TixiDocumentHandle int
+#define TiglCPACSConfigurationHandle int
 
 %{
 // includes are required to for compilation
