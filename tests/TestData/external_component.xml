@@ -17,9 +17,9 @@
       <z>0</z>
     </translation>
     </transformation>
-    <file type = "step">nacelle.stp</file>
+    <linkToFile format = "Step">nacelle.stp</linkToFile>
   </externalComponent>
     <externalComponent uID = "nacelle2">
-    <file type = "unknownformat">nacelle.x3x</file>
+    <linkToFile format = "unknownformat">nacelle.x3x</linkToFile>
   </externalComponent>
 </root>
