@@ -15,83 +15,14 @@
                 <description>With generic systems</description>
 				<systems>
 					<genericSystems>
-						<genericSystem uID="mySystemUID" symmetry="x-z-plane">
+						<genericSystem uID="mySystemUID">
 							<name>My example system</name>
 							<parentUID>None</parentUID>
 							<description>Example system component for testing the visualization in TIGLViewer</description>
 							<geometricBaseType>cone</geometricBaseType>
 							<transformation uID="transformationUID123764">
 								<translation refType="absGlobal">
-									<x>-1</x>
-									<y>0</y>
-									<z>0</z>
-								</translation>
-								<rotation>
 									<x>0</x>
-									<y>90</y>
-									<z>0</z>
-								</rotation>
-								<scaling>
-									<x>0.5</x>
-									<y>0.5</y>
-									<z>1</z>
-								</scaling>
-							</transformation>
-						</genericSystem>
-						<genericSystem uID="mySystemUID2" symmetry="x-z-plane">
-							<name>My example system</name>
-							<parentUID>None</parentUID>
-							<description>Example system component for testing the visualization in TIGLViewer</description>
-							<geometricBaseType>cylinder</geometricBaseType>
-							<transformation uID="transformationUID164">
-								<translation refType="absGlobal">
-									<x>0</x>
-									<y>2</y>
-									<z>1</z>
-								</translation>
-								<rotation>
-									<x>0</x>
-									<y>0</y>
-									<z>0</z>
-								</rotation>
-								<scaling>
-									<x>1</x>
-									<y>1</y>
-									<z>1</z>
-								</scaling>
-							</transformation>
-						</genericSystem>
-						<genericSystem uID="mySystemUID3" symmetry="x-z-plane">
-							<name>My example system</name>
-							<parentUID>None</parentUID>
-							<description>Example system component for testing the visualization in TIGLViewer</description>
-							<geometricBaseType>cube</geometricBaseType>
-							<transformation uID="transformationUID123764">
-								<translation refType="absGlobal">
-									<x>0</x>
-									<y>0</y>
-									<z>-1</z>
-								</translation>
-								<rotation>
-									<x>0</x>
-									<y>0</y>
-									<z>0</z>
-								</rotation>
-								<scaling>
-									<x>1</x>
-									<y>1</y>
-									<z>1</z>
-								</scaling>
-							</transformation>
-						</genericSystem>
-						<genericSystem uID="mySystemUID4" symmetry="x-z-plane">
-							<name>My example system</name>
-							<parentUID>None</parentUID>
-							<description>Example system component for testing the visualization in TIGLViewer</description>
-							<geometricBaseType>sphere</geometricBaseType>
-							<transformation uID="transformationUID123764">
-								<translation refType="absGlobal">
-									<x>-1</x>
 									<y>0</y>
 									<z>0</z>
 								</translation>

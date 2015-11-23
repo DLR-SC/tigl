@@ -32,9 +32,7 @@
 #include <BRepPrimAPI_MakeCylinder.hxx>
 #include <BRepPrimAPI_MakeSphere.hxx>
 #include <BRepPrimAPI_MakeCone.hxx>
-#include <BRepPrimAPI_MakePrism.hxx>
-#include <BRepBuilderAPI_MakePolygon.hxx>
-#include <BRepBuilderAPI_MakeFace.hxx>
+#include <BRepPrimAPI_MakeBox.hxx>
 
 namespace tigl
 {
@@ -114,7 +112,7 @@ void CCPACSGenericSystem::ReadCPACS(TixiDocumentHandle tixiHandle, const std::st
         geometricBaseType = ptrBaseType;
 
         // check validity of type
-        if (geometricBaseType != "cylinder" && geometricBaseType != "sphere" && geometricBaseType != "cone" && geometricBaseType != "prism") {
+        if (geometricBaseType != "cylinder" && geometricBaseType != "sphere" && geometricBaseType != "cone" && geometricBaseType != "cube") {
             throw CTiglError("Invalid geometry base type: " + geometricBaseType, TIGL_XML_ERROR);
         }
     }
@@ -163,30 +161,32 @@ PNamedShape CCPACSGenericSystem::BuildLoft()
     TopoDS_Shape sysShape;
     if (geometricBaseType == "cylinder") {
         BRepPrimAPI_MakeCylinder cyl(0.5, 1);
+        gp_Vec vec(0, 0, -0.5);
+        gp_Trsf trsf = gp_Trsf();
+        trsf.SetTranslation(vec);
+        TopLoc_Location loc(trsf);
         sysShape = cyl.Shape();
+        sysShape.Location(loc);
     }
     else if (geometricBaseType == "sphere") {
         BRepPrimAPI_MakeSphere sph(0.5);
         sysShape = sph.Shape();
     }
     else if (geometricBaseType == "cone") {
-        BRepPrimAPI_MakeCone cone(0, 0.5, 1);
+        BRepPrimAPI_MakeCone cone(0.5, 0, 1);
+        gp_Vec vec(0, 0, -0.5);
+        gp_Trsf trsf = gp_Trsf();
+        trsf.SetTranslation(vec);
+        TopLoc_Location loc(trsf);
         sysShape = cone.Shape();
+        sysShape.Location(loc);
     }
-    else if (geometricBaseType == "prism") {
-        BRepBuilderAPI_MakePolygon polygon;
-        polygon.Add(gp_Pnt(-0.5, -0.5, 0));
-        polygon.Add(gp_Pnt(0.5, -0.5, 0));
-        polygon.Add(gp_Pnt(0.5, 0.5, 0));
-        polygon.Add(gp_Pnt(-0.5, 0.5, 0));
-        polygon.Close();
-        TopoDS_Wire wire = polygon.Wire();
-        TopoDS_Face face = BRepBuilderAPI_MakeFace(wire);
-        gp_Vec v(0, 0, 1);
-        BRepPrimAPI_MakePrism prism(face, v);
-        sysShape = prism.Shape();
+    else if (geometricBaseType == "cube") {
+        gp_Pnt p1(-0.5, -0.5, -0.5);
+        gp_Pnt p2(0.5, 0.5, 0.5);
+        BRepPrimAPI_MakeBox cube(p1, p2);
+        sysShape = cube.Shape();
     }
-
 
     sysShape = GetTransformation().Transform(sysShape);
     std::string loftName = GetUID();
