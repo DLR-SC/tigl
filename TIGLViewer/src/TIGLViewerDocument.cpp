@@ -72,6 +72,7 @@
 #include "CCPACSWingProfilePointList.h"
 #include "CCPACSWingSegment.h"
 #include "CCPACSFuselageSegment.h"
+#include "CCPACSGenericSystem.h"
 #include "tiglcommonfunctions.h"
 #include "CTiglPoint.h"
 #include "CTiglExportCollada.h"
@@ -1911,6 +1912,23 @@ void TIGLViewerDocument::drawFarField()
         shape->SetTransparency(0.6);
         app->getScene()->getContext()->Display(shape, Standard_True);
         app->getViewer()->fitAll();
+    }
+}
+
+
+void TIGLViewerDocument::drawSystems()
+{
+    START_COMMAND();
+    // Draw all generic systems
+    for (int gs = 1; gs <= GetConfiguration().GetGenericSystemCount(); gs++) {
+        tigl::CCPACSGenericSystem& genericSystem = GetConfiguration().GetGenericSystem(gs);
+        app->getScene()->displayShape(genericSystem.GetLoft()->Shape());
+
+        if (genericSystem.GetSymmetryAxis() == TIGL_NO_SYMMETRY) {
+            continue;
+        }
+
+        app->getScene()->displayShape(genericSystem.GetMirroredLoft()->Shape(), Quantity_NOC_MirrShapeCol);
     }
 }
 

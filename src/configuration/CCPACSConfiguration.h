@@ -36,6 +36,7 @@
 #include "CCPACSFuselages.h"
 #include "CCPACSFuselageProfile.h"
 #include "CCPACSExternalObjects.h"
+#include "CCPACSACSystems.h"
 #include "CCPACSFarField.h"
 #include "CCPACSGuideCurveProfiles.h"
 #include "TopoDS_Compound.hxx"
@@ -90,6 +91,15 @@ public:
     // Returns the wing for a given UID.
     TIGL_EXPORT CCPACSWing& GetWing(const std::string& UID) const;
 
+    // Returns the total count of generic systems in a configuration
+    TIGL_EXPORT int GetGenericSystemCount(void);
+
+    // Returns the generic system for a given index.
+    TIGL_EXPORT CCPACSGenericSystem& GetGenericSystem(int index);
+
+    // Returns the generic system for a given UID.
+    TIGL_EXPORT CCPACSGenericSystem& GetGenericSystem(const std::string& UID);
+
     TIGL_EXPORT TopoDS_Shape GetParentLoft(const std::string& UID);
 
     TIGL_EXPORT bool HasFuselageProfile(std::string uid) const;
@@ -138,6 +148,8 @@ public:
 
     TIGL_EXPORT CTiglMemoryPool& GetMemoryPool(void);
 
+    TIGL_EXPORT CCPACSACSystems& GetACSystems(void);
+
 protected:
     // transform all components relative to their parents
     void transformAllComponents(CTiglAbstractPhysicalComponent* parent);
@@ -154,6 +166,7 @@ private:
     CCPACSHeader                 header;               /**< Configuration header element */
     CCPACSWings                  wings;                /**< Configuration wings element */
     CCPACSFuselages              fuselages;            /**< Configuration fuselages element */
+    CCPACSACSystems              acSystems;            /**< Configuration aircraft systems element */
     CCPACSFarField               farField;             /**< Far field configuration for CFD tools */
     CCPACSExternalObjects        externalObjects;      /**< External loaded CAD components */
     CCPACSGuideCurveProfiles     guideCurveProfiles;   /**< Guide curve profiles */

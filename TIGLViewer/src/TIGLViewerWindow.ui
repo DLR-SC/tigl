@@ -64,7 +64,7 @@
      <x>0</x>
      <y>0</y>
      <width>783</width>
-     <height>22</height>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="fileMenu">
@@ -166,6 +166,7 @@
      <addaction name="showFusedAirplaneTriangulation"/>
      <addaction name="drawIntersectionAction"/>
      <addaction name="drawFarFieldAction"/>
+     <addaction name="drawSystemsAction"/>
     </widget>
     <widget class="QMenu" name="menuWings">
      <property name="title">
@@ -1226,6 +1227,11 @@
   <action name="drawVectorAction">
    <property name="text">
     <string>Draw Vector</string>
+   </property>
+  </action>
+  <action name="drawSystemsAction">
+   <property name="text">
+    <string>Draw Systems</string>
    </property>
   </action>
  </widget>

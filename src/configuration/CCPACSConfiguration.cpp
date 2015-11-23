@@ -61,6 +61,7 @@ CCPACSConfiguration::CCPACSConfiguration(TixiDocumentHandle tixiHandle)
     , wings(this)
     , fuselages(this)
     , externalObjects(this)
+    , acSystems(this)
     , uidManager()
 {
 }
@@ -92,6 +93,7 @@ void CCPACSConfiguration::ReadCPACS(const char* configurationUID)
     guideCurveProfiles.ReadCPACS(tixiDocumentHandle);
     wings.ReadCPACS(tixiDocumentHandle, configurationUID);
     fuselages.ReadCPACS(tixiDocumentHandle, configurationUID);
+    acSystems.ReadCPACS(tixiDocumentHandle, configurationUID);
     farField.ReadCPACS(tixiDocumentHandle);
     externalObjects.ReadCPACS(tixiDocumentHandle, configurationUID);
 
@@ -162,6 +164,12 @@ CCPACSWingProfile& CCPACSConfiguration::GetWingProfile(int index) const
     return wings.GetProfile(index);
 }
 
+// Returns the aircraft systems object.
+CCPACSACSystems& CCPACSConfiguration::GetACSystems()
+{
+    return acSystems;
+}
+
 // Returns the total count of wings in a configuration
 int CCPACSConfiguration::GetWingCount(void) const
 {
@@ -177,6 +185,23 @@ CCPACSWing& CCPACSConfiguration::GetWing(int index) const
 CCPACSWing& CCPACSConfiguration::GetWing(const std::string& UID) const
 {
     return wings.GetWing(UID);
+}
+
+// Returns the total count of generic systems in a configuration
+int CCPACSConfiguration::GetGenericSystemCount(void)
+{
+    return acSystems.GetGenericSystems().GetGenericSystemCount();
+}
+
+// Returns the generic system for a given index.
+CCPACSGenericSystem& CCPACSConfiguration::GetGenericSystem(int index)
+{
+    return acSystems.GetGenericSystems().GetGenericSystem(index);
+}
+// Returns the generic system for a given UID.
+CCPACSGenericSystem& CCPACSConfiguration::GetGenericSystem(const std::string& UID)
+{
+    return acSystems.GetGenericSystems().GetGenericSystem(UID);
 }
 
 TopoDS_Shape CCPACSConfiguration::GetParentLoft(const std::string& UID)

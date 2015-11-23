@@ -205,7 +205,7 @@ typedef unsigned int TiglGeometricComponentType;
 #define  TIGL_COMPONENT_FUSELSEGMENT    128      /**< The Component is a fuselage segment */
 #define  TIGL_COMPONENT_WINGCOMPSEGMENT 256      /**< The Component is a wing component segment */
 #define  TIGL_COMPONENT_WINGSHELL       512      /**< The Component is a face of the wing (e.g. upper wing surface) */
-
+#define  TIGL_COMPONENT_GENERICSYSTEM   1024     /**< The Component is a generic system */
 
 enum TiglStructureType 
 {

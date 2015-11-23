@@ -642,6 +642,7 @@ void TIGLViewerWindow::connectConfiguration()
     connect(drawIntersectionAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawIntersectionLine()));
     connect(showFusedAirplaneTriangulation, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFusedAircraftTriangulation()));
     connect(drawFarFieldAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFarField()));
+    connect(drawSystemsAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawSystems()));
 
     // CPACS Fuselage Actions
     connect(drawFuselageProfilesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFuselageProfiles()));
@@ -829,14 +830,17 @@ void TIGLViewerWindow::updateMenus()
     closeAction->setEnabled(hand > 0);
 
     bool hasFarField = false;
+    bool hasACSystems = false;
     try {
         if (hand > 0) {
             tigl::CCPACSConfiguration& config = tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(hand);
             hasFarField = config.GetFarField().GetFieldType() != tigl::NONE;
+            hasACSystems = config.GetGenericSystemCount() > 0;
         }
     }
     catch(tigl::CTiglError& ){}
     drawFarFieldAction->setEnabled(hasFarField);
+    drawSystemsAction->setEnabled(hasACSystems);
 }
 
 void TIGLViewerWindow::closeEvent(QCloseEvent*)

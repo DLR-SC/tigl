@@ -1,0 +1,346 @@
+<?xml version="1.0" encoding="utf-8"?>
+<cpacs>
+    <header>
+        <name>Init file for the SGG</name>
+        <description>This file contains sample data for the visualization of generic system components.</description>
+        <creator>Jonas Jepsen (DLR-LY)</creator>
+        <timestamp>2015-11-16T08:55:23</timestamp>
+        <version>0.1</version>
+        <cpacsVersion>2.2</cpacsVersion>
+    </header>
+    <vehicles>
+        <aircraft>
+            <model uID="aircraftModel_612245829aab4a7">
+                <name>Aircraft23</name>
+                <description>With generic systems</description>
+				<systems>
+					<genericSystems>
+						<genericSystem uID="mySystemUID">
+							<name>My example system</name>
+							<parentUID>None</parentUID>
+							<description>Example system component for testing the visualization in TIGLViewer</description>
+							<geometricBaseType>cone</geometricBaseType>
+							<transformation uID="transformationUID123764">
+								<translation refType="absGlobal">
+									<x>0</x>
+									<y>0</y>
+									<z>0</z>
+								</translation>
+								<rotation>
+									<x>0</x>
+									<y>0</y>
+									<z>0</z>
+								</rotation>
+								<scaling>
+									<x>1</x>
+									<y>1</y>
+									<z>1</z>
+								</scaling>
+							</transformation>
+						</genericSystem>
+					</genericSystems>
+		</systems>
+                <fuselages>
+                    <fuselage uID="fuselage_ae0b3561d2c8493">
+                        <name>Fuselage</name>
+                        <parentUID>wing_1a09faf94a5a426</parentUID>
+                        <transformation uID="transformation_70744f771c75490">
+                            <scaling uID="scaling_9cd67f00820447f">
+                                <x>1.0</x>
+                                <y>1.0</y>
+                                <z>1.0</z>
+                            </scaling>
+                            <rotation uID="rotation_e76d979f08b0436">
+                                <x>0.0</x>
+                                <y>0.0</y>
+                                <z>0.0</z>
+                            </rotation>
+                            <translation refType="absLocal" uID="translation_bd56b419cdd743b">
+                                <x>0.0</x>
+                                <y>0.0</y>
+                                <z>0.0</z>
+                            </translation>
+                        </transformation>
+                        <sections>
+                            <section uID="fuselageSection_c0e4f1c88ffb499">
+                                <name>Section</name>
+                                <transformation uID="transformation_da71a23cbb4a4be">
+                                    <scaling uID="scaling_e92c708370d34cd">
+                                        <x>1.0</x>
+                                        <y>1.0</y>
+                                        <z>1.0</z>
+                                    </scaling>
+                                    <rotation uID="rotation_6af626e3d246477">
+                                        <x>0.0</x>
+                                        <y>0.0</y>
+                                        <z>0.0</z>
+                                    </rotation>
+                                    <translation refType="absLocal" uID="translation_a65e2ab704e9427">
+                                        <x>0.0</x>
+                                        <y>0.0</y>
+                                        <z>0.0</z>
+                                    </translation>
+                                </transformation>
+                                <elements>
+                                    <element uID="fuselageElement_69a9b83f9fdb46a">
+                                        <name>fuselage element</name>
+                                        <profileUID isLink="True">CircleProfile</profileUID>
+                                        <transformation uID="transformation_5a22aa2517044af">
+                                            <scaling uID="scaling_4a9a4cdda32e4bb">
+                                                <x>1.0</x>
+                                                <y>1.0</y>
+                                                <z>1.0</z>
+                                            </scaling>
+                                            <rotation uID="rotation_a8582e476bd041d">
+                                                <x>0.0</x>
+                                                <y>0.0</y>
+                                                <z>0.0</z>
+                                            </rotation>
+                                            <translation refType="absLocal" uID="translation_504e66963ec8437">
+                                                <x>0.0</x>
+                                                <y>0.0</y>
+                                                <z>0.0</z>
+                                            </translation>
+                                        </transformation>
+                                    </element>
+                                </elements>
+                            </section>
+                            <section uID="fuselageSection_481943928f7e46d">
+                                <name>Section</name>
+                                <transformation uID="transformation_4ed886f1a253410">
+                                    <scaling uID="scaling_ff2f00085be846a">
+                                        <x>1.0</x>
+                                        <y>1.0</y>
+                                        <z>1.0</z>
+                                    </scaling>
+                                    <rotation uID="rotation_8ca37a75a4a64e7">
+                                        <x>0.0</x>
+                                        <y>0.0</y>
+                                        <z>0.0</z>
+                                    </rotation>
+                                    <translation refType="absLocal" uID="translation_4c98f879831047d">
+                                        <x>0.0</x>
+                                        <y>0.0</y>
+                                        <z>0.0</z>
+                                    </translation>
+                                </transformation>
+                                <elements>
+                                    <element uID="fuselageElement_0555cf807d51436">
+                                        <name>fuselage element</name>
+                                        <profileUID isLink="True">CircleProfile</profileUID>
+                                        <transformation uID="transformation_3fa6d750acbb4b2">
+                                            <scaling uID="scaling_c9f11d0f7e47418">
+                                                <x>1.0</x>
+                                                <y>1.0</y>
+                                                <z>1.0</z>
+                                            </scaling>
+                                            <rotation uID="rotation_9ed9275ffc8248d">
+                                                <x>0.0</x>
+                                                <y>0.0</y>
+                                                <z>0.0</z>
+                                            </rotation>
+                                            <translation refType="absLocal" uID="translation_48e21132cae8487">
+                                                <x>0.0</x>
+                                                <y>0.0</y>
+                                                <z>0.0</z>
+                                            </translation>
+                                        </transformation>
+                                    </element>
+                                </elements>
+                            </section>
+                        </sections>
+                        <positionings>
+                            <positioning uID="positioning_331850a13910430">
+                                <name>Positioning</name>
+                                <length>0.0</length>
+                                <sweepAngle>90.0</sweepAngle>
+                                <dihedralAngle>0.0</dihedralAngle>
+                                <toSectionUID isLink="True">fuselageSection_c0e4f1c88ffb499</toSectionUID>
+                            </positioning>
+                            <positioning uID="positioning_b89cda0634e64ff">
+                                <name>Positioning</name>
+                                <length>1.0</length>
+                                <sweepAngle>90.0</sweepAngle>
+                                <dihedralAngle>0.0</dihedralAngle>
+                                <fromSectionUID isLink="True">fuselageSection_c0e4f1c88ffb499</fromSectionUID>
+                                <toSectionUID isLink="True">fuselageSection_481943928f7e46d</toSectionUID>
+                            </positioning>
+                        </positionings>
+                        <segments>
+                            <segment uID="fuselageSegment_be42156ccd94499">
+                                <name>Segment</name>
+                                <fromElementUID isLink="True">fuselageElement_69a9b83f9fdb46a</fromElementUID>
+                                <toElementUID isLink="True">fuselageElement_0555cf807d51436</toElementUID>
+                            </segment>
+                        </segments>
+                    </fuselage>
+                </fuselages>
+                <wings>
+                    <wing uID="wing_1a09faf94a5a426">
+                        <name>Wing</name>
+                        <transformation uID="transformation_9c41a93f9a3a494">
+                            <scaling uID="scaling_8f18ddb085774c2">
+                                <x>1.0</x>
+                                <y>1.0</y>
+                                <z>1.0</z>
+                            </scaling>
+                            <rotation uID="rotation_593b78b1e73a4c8">
+                                <x>0.0</x>
+                                <y>0.0</y>
+                                <z>0.0</z>
+                            </rotation>
+                            <translation refType="absLocal" uID="translation_c92212894593463">
+                                <x>0.0</x>
+                                <y>0.0</y>
+                                <z>0.0</z>
+                            </translation>
+                        </transformation>
+                        <sections>
+                            <section uID="wingSection_7b011e4a5bc9422">
+                                <name>Section</name>
+                                <transformation uID="transformation_71966f3628e74db">
+                                    <scaling uID="scaling_e5235c08f7544df">
+                                        <x>1.0</x>
+                                        <y>1.0</y>
+                                        <z>1.0</z>
+                                    </scaling>
+                                    <rotation uID="rotation_d9cb7d06da094ec">
+                                        <x>0.0</x>
+                                        <y>0.0</y>
+                                        <z>0.0</z>
+                                    </rotation>
+                                    <translation refType="absLocal" uID="translation_47cc317a54ca458">
+                                        <x>0.0</x>
+                                        <y>0.0</y>
+                                        <z>0.0</z>
+                                    </translation>
+                                </transformation>
+                                <elements>
+                                    <element uID="wingElement_5419337cc35f44c">
+                                        <name>wing element</name>
+                                        <airfoilUID isLink="True">NACA0009</airfoilUID>
+                                        <transformation uID="transformation_65b79a2449a44a7">
+                                            <scaling uID="scaling_5545e0277fd4489">
+                                                <x>1.0</x>
+                                                <y>1.0</y>
+                                                <z>1.0</z>
+                                            </scaling>
+                                            <rotation uID="rotation_a79ff773626a472">
+                                                <x>0.0</x>
+                                                <y>0.0</y>
+                                                <z>0.0</z>
+                                            </rotation>
+                                            <translation refType="absLocal" uID="translation_10bcfa7e060c44d">
+                                                <x>0.0</x>
+                                                <y>0.0</y>
+                                                <z>0.0</z>
+                                            </translation>
+                                        </transformation>
+                                    </element>
+                                </elements>
+                            </section>
+                            <section uID="wingSection_f20c8cbd9c7a492">
+                                <name>Section</name>
+                                <transformation uID="transformation_f27efa5caa7640c">
+                                    <scaling uID="scaling_ce4a86c5160c40e">
+                                        <x>1.0</x>
+                                        <y>1.0</y>
+                                        <z>1.0</z>
+                                    </scaling>
+                                    <rotation uID="rotation_c59b2efde0c8405">
+                                        <x>0.0</x>
+                                        <y>0.0</y>
+                                        <z>0.0</z>
+                                    </rotation>
+                                    <translation refType="absLocal" uID="translation_4e2f6bc5c8464c8">
+                                        <x>2.2</x>
+                                        <y>3.3</y>
+                                        <z>1.1</z>
+                                    </translation>
+                                </transformation>
+                                <elements>
+                                    <element uID="wingElement_1fa642cfa6974a7">
+                                        <name>wing element</name>
+                                        <airfoilUID isLink="True">NACA0009</airfoilUID>
+                                        <transformation uID="transformation_2602ebf57776454">
+                                            <scaling uID="scaling_bd0d3354c4d949a">
+                                                <x>1.0</x>
+                                                <y>1.0</y>
+                                                <z>1.0</z>
+                                            </scaling>
+                                            <rotation uID="rotation_ab3edb147b9a415">
+                                                <x>0.0</x>
+                                                <y>0.0</y>
+                                                <z>0.0</z>
+                                            </rotation>
+                                            <translation refType="absLocal" uID="translation_cbdc3f7f8a704aa">
+                                                <x>0.0</x>
+                                                <y>0.0</y>
+                                                <z>0.0</z>
+                                            </translation>
+                                        </transformation>
+                                    </element>
+                                </elements>
+                            </section>
+                        </sections>
+                        <positionings>
+                            <positioning uID="positioning_bde78fc3c6af4d3">
+                                <name>Positioning</name>
+                                <length>0.0</length>
+                                <sweepAngle>0.0</sweepAngle>
+                                <dihedralAngle>0.0</dihedralAngle>
+                                <toSectionUID isLink="True">wingSection_7b011e4a5bc9422</toSectionUID>
+                            </positioning>
+                            <positioning uID="positioning_bc4cf78cfabb49f">
+                                <name>Positioning</name>
+                                <length>1.0</length>
+                                <sweepAngle>0.0</sweepAngle>
+                                <dihedralAngle>0.0</dihedralAngle>
+                                <fromSectionUID isLink="True">wingSection_7b011e4a5bc9422</fromSectionUID>
+                                <toSectionUID isLink="True">wingSection_f20c8cbd9c7a492</toSectionUID>
+                            </positioning>
+                        </positionings>
+                        <segments>
+                            <segment uID="wingSegment_80e8ffe0139e4d3">
+                                <name>Segment</name>
+                                <fromElementUID isLink="True">wingElement_5419337cc35f44c</fromElementUID>
+                                <toElementUID isLink="True">wingElement_1fa642cfa6974a7</toElementUID>
+                            </segment>
+                        </segments>
+			<componentSegments>
+				<componentSegment uID="CS1">
+					<name>CS1</name>
+					<fromElementUID>wingElement_5419337cc35f44c</fromElementUID>
+					<toElementUID>wingElement_1fa642cfa6974a7</toElementUID>
+				</componentSegment>
+			</componentSegments>
+                    </wing>
+                </wings>
+            </model>
+        </aircraft>
+        <profiles>
+            <fuselageProfiles>
+                <fuselageProfile uID="CircleProfile">
+                    <name>Circle</name>
+                    <description>Profile build up from set of Points on Circle where may Dimensions are 1..-1</description>
+                    <pointList>
+                        <x mapType="vector">0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0</x>
+                        <y mapType="vector">0.0;0.0774924206719;0.154518792808;0.230615870742;0.305325997695;0.378199858172;0.4487991802;0.516699371152;0.581492071288;0.642787609687;0.700217347767;0.753435896328;0.802123192755;0.84598642592;0.884761797177;0.91821610688;0.946148156876;0.968389960528;0.984807753012;0.995302795793;0.999811970449;0.998308158271;0.990800403365;0.977333858251;0.957989512315;0.932883704732;0.902167424781;0.866025403784;0.824675004109;0.778364911924;0.727373641573;0.672007860556;0.612600545193;0.549508978071;0.483112599297;0.413810724505;0.342020143326;0.268172612761;0.192712260548;0.116092914125;0.0387753712568;-0.0387753712568;-0.116092914125;-0.192712260548;-0.268172612761;-0.342020143326;-0.413810724505;-0.483112599297;-0.549508978071;-0.612600545193;-0.672007860556;-0.727373641573;-0.778364911924;-0.824675004109;-0.866025403784;-0.902167424781;-0.932883704732;-0.957989512315;-0.977333858251;-0.990800403365;-0.998308158271;-0.999811970449;-0.995302795793;-0.984807753012;-0.968389960528;-0.946148156876;-0.91821610688;-0.884761797177;-0.84598642592;-0.802123192755;-0.753435896328;-0.700217347767;-0.642787609687;-0.581492071288;-0.516699371152;-0.4487991802;-0.378199858172;-0.305325997695;-0.230615870742;-0.154518792808;-0.0774924206719;0.0</y>
+                        <z mapType="vector">1.0;0.996992941168;0.987989849477;0.97304487058;0.952247885338;0.925723969269;0.893632640323;0.85616689953;0.813552070263;0.766044443119;0.713929734558;0.657521368569;0.597158591703;0.533204432802;0.466043519703;0.396079766039;0.323733942058;0.249441144058;0.173648177667;0.0968108707032;0.0193913317718;-0.0581448289105;-0.13533129975;-0.211703872229;-0.286803232711;-0.360177724805;-0.431386065681;-0.5;-0.565606875487;-0.627812124672;-0.686241637869;-0.740544013109;-0.790392669519;-0.835487811413;-0.875558231302;-0.910362940966;-0.939692620786;-0.963370878616;-0.981255310627;-0.993238357742;-0.999247952504;-0.999247952504;-0.993238357742;-0.981255310627;-0.963370878616;-0.939692620786;-0.910362940966;-0.875558231302;-0.835487811413;-0.790392669519;-0.740544013109;-0.686241637869;-0.627812124672;-0.565606875487;-0.5;-0.431386065681;-0.360177724805;-0.286803232711;-0.211703872229;-0.13533129975;-0.0581448289105;0.0193913317718;0.0968108707032;0.173648177667;0.249441144058;0.323733942058;0.396079766039;0.466043519703;0.533204432802;0.597158591703;0.657521368569;0.713929734558;0.766044443119;0.813552070263;0.85616689953;0.893632640323;0.925723969269;0.952247885338;0.97304487058;0.987989849477;0.996992941168;1.0</z>
+                    </pointList>
+                </fuselageProfile>
+            </fuselageProfiles>
+            <wingAirfoils>
+                <wingAirfoil uID="NACA0009">
+                    <name>NACA0009 Airfoil</name>
+                    <description>NACA 4-digit symmetrical airfoil with a thickness of 9percent</description>
+                    <pointList>
+                        <x mapType="vector">1.0;0.95;0.9;0.8;0.7;0.6;0.5;0.4;0.3;0.25;0.2;0.15;0.1;0.075;0.05;0.025;0.0125;0.005;0.0;0.005;0.0125;0.025;0.05;0.075;0.1;0.15;0.2;0.25;0.3;0.4;0.5;0.6;0.7;0.8;0.9;0.95;1.0</x>
+                        <y mapType="vector">0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0;0.0</y>
+                        <z mapType="vector">0.00095;0.00605;0.01086;0.01967;0.02748;0.03423;0.03971;0.04352;0.04501;0.04456;0.04303;0.04009;0.03512;0.0315;0.02666;0.01961;0.0142;0.0089;0.0;-0.0089;-0.0142;-0.01961;-0.02666;-0.0315;-0.03512;-0.04009;-0.04303;-0.04456;-0.04501;-0.04352;-0.03971;-0.03423;-0.02748;-0.01967;-0.01086;-0.00605;-0.00095</z>
+                    </pointList>
+                </wingAirfoil>
+            </wingAirfoils>
+        </profiles>
+    </vehicles>
+</cpacs>
