@@ -60,7 +60,7 @@
                   <translation refType="absLocal">
                     <x>0</x>
                     <y>0</y>
-                    <z>0</z>
+s                    <z>0</z>
                   </translation>
                 </transformation>
                 <elements>
@@ -451,8 +451,8 @@
             </componentSegments>
           </wing>
         </wings>
-        <externalComponents>
-          <externalComponent uID = "nacelle" symmetry="x-z-plane">
+        <genericGeometryComponents>
+          <genericGeometryComponent uID = "nacelle" symmetry="x-z-plane">
             <parentUID>Wing</parentUID>
             <transformation>
               <scaling>
@@ -471,9 +471,9 @@
                 <z>-0.3</z>
               </translation>
             </transformation>
-            <file type = "step">nacelle.stp</file>
-          </externalComponent>
-        </externalComponents>
+            <linkToFile format = "Step">nacelle.stp</linkToFile>
+          </genericGeometryComponent>
+        </genericGeometryComponents>
       </model>
     </aircraft>
     <profiles>

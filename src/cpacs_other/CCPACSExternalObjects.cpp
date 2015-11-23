@@ -21,8 +21,8 @@
 #include "CCPACSExternalObject.h"
 #include "CTiglError.h"
 
-#define CPACS_EXTERNAL_COMPONENTS_NODE "externalComponents"
-#define CPACS_EXTERNAL_COMPONENT_NODE "externalComponent"
+#define CPACS_EXTERNAL_COMPONENTS_NODE "genericGeometryComponents"
+#define CPACS_EXTERNAL_COMPONENT_NODE "genericGeometryComponent"
 
 namespace tigl
 {

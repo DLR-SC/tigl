@@ -92,7 +92,7 @@ void CCPACSExternalObject::ReadCPACS(TixiDocumentHandle tixiHandle, const std::s
     transformation.ReadCPACS(tixiHandle, objectXPath);
 
     // Get File Path, and type
-    std::string fileXPath  = objectXPath + "/file";
+    std::string fileXPath  = objectXPath + "/linkToFile";
     if (tixiCheckElement(tixiHandle, fileXPath.c_str()) == SUCCESS) {
         char *cFilePath = NULL, *cCPACSPath = NULL;
 
@@ -112,14 +112,14 @@ void CCPACSExternalObject::ReadCPACS(TixiDocumentHandle tixiHandle, const std::s
         }
         
         char* cFileType = NULL;
-        if (tixiGetTextAttribute(tixiHandle, fileXPath.c_str(), "type", &cFileType) == SUCCESS) {
+        if (tixiGetTextAttribute(tixiHandle, fileXPath.c_str(), "format", &cFileType) == SUCCESS) {
             _fileType = cFileType;
             if (!fileTypeSupported(_fileType)) {
-                throw tigl::CTiglError("File type " + _fileType + " not supported for external components!");
+                throw tigl::CTiglError("File format " + _fileType + " not supported for external components!");
             }
         }
         else {
-            throw tigl::CTiglError("No file type attribute specified in " + fileXPath + " !");
+            throw tigl::CTiglError("No file format attribute specified in " + fileXPath + " !");
         }
     }
 
@@ -172,7 +172,7 @@ PNamedShape CCPACSExternalObject::BuildLoft()
         return shapeGroup;
     }
     else {
-        throw CTiglError("Cannot open externalComponent. Unknown file type " + _fileType);
+        throw CTiglError("Cannot open externalComponent. Unknown file format " + _fileType);
     }
 }
 
