@@ -167,7 +167,6 @@ public:
     TIGL_EXPORT CTiglPolyObject& switchObject(unsigned int iObject);
 
     TIGL_EXPORT void writeVTK(const char * filename);
-    TIGL_EXPORT void printVTK();
 
 private:
     void writeVTKPiece(TixiDocumentHandle& handle, unsigned int iObject);
