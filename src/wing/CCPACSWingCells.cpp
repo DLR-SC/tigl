@@ -95,6 +95,19 @@ CCPACSWingCell& CCPACSWingCells::GetCell(int index) const
     return *cells.at(index-1);
 }
 
+CCPACSWingCell &CCPACSWingCells::GetCell(const std::string &UID) const
+{
+    for (int i=0; i < GetCellCount(); i++) {
+        const std::string tmpUID(cells[i]->GetUID());
+        if (tmpUID == UID) {
+            return (*cells[i]);
+        }
+    }
+
+    // UID not there
+    throw CTiglError("Error: Invalid UID in CCPACSWingCells::GetCell", TIGL_UID_ERROR);
+}
+
 
 
 } // namespace tigl

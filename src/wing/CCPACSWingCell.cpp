@@ -67,6 +67,11 @@ CCPACSWingCell::CCPACSWingCell()
     reset();
 }
 
+const std::string &CCPACSWingCell::GetUID() const
+{
+    return uid;
+}
+
 
 void CCPACSWingCell::reset()
 {
