@@ -35,6 +35,7 @@
 %include "CTiglMemoryPool.h"
 %include "CTiglError.h"
 
+%template(DoubleVector) std::vector<double>;
 
 enum TiglReturnCode
 {

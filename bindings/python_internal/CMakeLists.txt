@@ -24,7 +24,7 @@ if (TIGL_PYTHON_INTERNAL)
 
     include_directories(${PROJECT_SOURCE_DIR}/thirdparty/boost_1_55_0)
 
-    set (MODULES "geometry;occtaddons;tmath;configuration;core")
+    set (MODULES "geometry;occtaddons;tmath;configuration;core;boolean_ops;exports;imports")
 
     set(LIBRARY_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR})
 

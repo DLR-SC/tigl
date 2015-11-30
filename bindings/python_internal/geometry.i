@@ -36,6 +36,7 @@
 %import Geom.i
 %import TopoDS.i
 %import tmath.i
+%import core.i
 
 %{
 // All includes that are required for the wrapper compilation
@@ -52,6 +53,11 @@
 #include "CTiglAbstractSegment.h"
 #include "ITiglGeometricComponent.h"
 #include "CTiglError.h"
+#include "CTiglShapeCache.h"
+#include "CTiglPolyData.h"
+#include "CTiglSymetricSplineBuilder.h"
+#include "CWireToCurve.h"
+#include "ListPNamedShape.h"
 %}
 
 
@@ -61,7 +67,7 @@
 // rename file methods to python pep8 style
 %rename("%(undercase)s", %$isfunction) "";
 
-%template(DoubleVector) std::vector<double>;
+%template(CPointContainer) std::vector<gp_Pnt>;
 
 %include "ECPACSTranslationType.h"
 %include "CTiglTransformation.h"
@@ -76,11 +82,9 @@
 %include "CTiglAbstractGeometricComponent.h"
 %include "CTiglAbstractSegment.h"
 %include "CTiglAbstractPhysicalComponent.h"
+%include "CTiglShapeCache.h"
+%include "CTiglPolyData.h"
+%include "CTiglSymetricSplineBuilder.h"
+%include "CWireToCurve.h"
+%include "ListPNamedShape.h"
 
-%inline %{
-
-PNamedShape getshape() {
-    return PNamedShape(new CNamedShape(TopoDS_Shape(), "bla"));
-}
-
-%}
