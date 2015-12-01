@@ -32,7 +32,7 @@
 
 // Import python-occ definitions to
 // have a compatible interface
-%import Math.i
+%import math.i
 %import Geom.i
 %import TopoDS.i
 %import tmath.i

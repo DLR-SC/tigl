@@ -26,7 +26,7 @@
 #include <math_Matrix.hxx>
 %}
 
-%import Math.i
+%import math.i
 %import core.i
 %import occtaddons.i
 

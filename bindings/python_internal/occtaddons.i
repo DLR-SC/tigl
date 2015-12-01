@@ -31,7 +31,7 @@
 
 // Import python-occ definitions to
 // have a compatible interface
-%import Math.i
+%import math.i
 
 
 // Add missing Math_math classes
