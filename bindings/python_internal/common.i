@@ -40,3 +40,4 @@
 #include "tigl.h"
 %}
 
+%include doc.i

@@ -7,6 +7,40 @@ if (TIGL_PYTHON_INTERNAL)
     find_package(PythonLibs)
     find_package(SWIG REQUIRED)
     find_package(PythonOCC REQUIRED)
+    find_package(Doxygen 1.8.0)
+
+    if(NOT DOXYGEN_FOUND)
+        add_custom_command(
+            OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/doc.i
+            COMMAND ${CMAKE_COMMAND}
+            ARGS -E touch ${CMAKE_CURRENT_BINARY_DIR}/doc.i
+        )
+    else()
+        # we build the swig documentation as follows
+        # 1) Run doxygen to create an xml output
+        # 2) Run doxy2swig to create doc.i from the xml output
+        # 3) Include doc.i in the swig wrapper files
+
+        # create the Doxyfile
+        configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile @ONLY)
+
+        # create the xml output with doxygen
+        add_custom_command(
+            OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/doc/xml/index.xml
+            DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
+            COMMAND ${DOXYGEN_EXECUTABLE}
+            ARGS ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
+        )
+
+        # create the doc.i with doxy2swig
+        add_custom_command(
+            OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/doc.i
+            DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/doc/xml/index.xml
+            COMMAND ${PYTHON_EXECUTABLE}
+            ARGS ${PROJECT_SOURCE_DIR}/thirdparty/doxy2swig/doxy2swig.py ${CMAKE_CURRENT_BINARY_DIR}/doc/xml/index.xml ${CMAKE_CURRENT_BINARY_DIR}/doc.i
+        )
+    endif()
+
 
     include(${SWIG_USE_FILE})
 
@@ -36,7 +70,7 @@ if (TIGL_PYTHON_INTERNAL)
 
     foreach(MODULE ${MODULES})
         set_source_files_properties(${MODULE}.i PROPERTIES CPLUSPLUS ON)
-        set(SWIG_MODULE_${MODULE}_EXTRA_DEPS common.i )
+        set(SWIG_MODULE_${MODULE}_EXTRA_DEPS common.i doc.i)
 
         swig_add_module(${MODULE} python ${MODULE}.i )
         swig_link_libraries(${MODULE} ${PYTHON_LIBRARIES} TIGL)
