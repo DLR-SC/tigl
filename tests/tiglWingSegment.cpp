@@ -1091,3 +1091,12 @@ TEST_F(WingSegmentSimple, getSurfaceAreaTrimmedLower_Errors)
                                                                     0.8, 0.8,
                                                                     &lowerArea));
 }
+
+TEST_F(WingSegmentSimple, wingGetEtaXsiBug1)
+{
+    int idx = -1, onTop;
+    double eta = 0., xsi = 0.;
+    ASSERT_EQ(TIGL_SUCCESS, tiglWingGetSegmentEtaXsi(tiglSimpleHandle, 1, 0.5, 1.0005, 0.0, &idx, &eta, &xsi, &onTop));
+    ASSERT_EQ(2, idx);
+    ASSERT_NEAR(0.0005, eta, 1e-8);
+}
