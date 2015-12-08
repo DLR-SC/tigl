@@ -75,7 +75,7 @@ if (TIGL_PYTHON_INTERNAL)
         swig_add_module(${MODULE} python ${MODULE}.i )
         swig_link_libraries(${MODULE} ${PYTHON_LIBRARIES} TIGL)
 
-        install(FILES ${CMAKE_CURRENT_BINARY_DIR}/_${MODULE}.${EXTENSION}
+        install(TARGETS _${MODULE}
                 DESTINATION share/tigl/python/internal
                 COMPONENT interfaces
         )
