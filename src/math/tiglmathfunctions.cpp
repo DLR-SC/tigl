@@ -252,7 +252,7 @@ double cstcurve_deriv(const double& N1, const double& N2, const std::vector<doub
  * @param b Last  parameter of the function to approximate
  * @return Chebycheff coefficients
  */
-math_Vector cheb_approx(MathFunc func, void* parms, int N, double a, double b)
+math_Vector cheb_approx(MathFunc1d& func, int N, double a, double b)
 {
     if (N <= 0) {
         throw CTiglError("N <= 0 in cheb_approx", TIGL_MATH_ERROR);
@@ -266,7 +266,7 @@ math_Vector cheb_approx(MathFunc func, void* parms, int N, double a, double b)
         x = (x + 1.) / 2. *(b-a) + a;
         
         // evaluate function at x
-        fx[k-1] = func(x, parms);
+        fx[k-1] = func.value(x);
     }
     
     for (int j = 0; j < N; ++j) {

@@ -62,16 +62,54 @@ namespace
 namespace tigl
 {
 
+class FuncAdaptor : public MathFunc1d
+{
+public:
+    enum Direction
+    {
+        X,
+        Y,
+        Z
+    };
+
+    FuncAdaptor(MathFunc3d& f, Direction dir)
+        : _func(f), _dir(dir)
+    {
+    }
+
+    virtual ~FuncAdaptor()
+    {
+    }
+
+    double value(double t)
+    {
+        switch (_dir) {
+        case X:
+            return _func.valueX(t);
+        case Y:
+            return _func.valueY(t);
+        case Z:
+            return _func.valueZ(t);
+        }
+    }
+
+private:
+    MathFunc3d& _func;
+    Direction _dir;
+};
+
 /// actual implementation of approximation algorithm
 class CFunctionToBspline::CFunctionToBsplineImpl
 {
 public:
-    CFunctionToBsplineImpl(MathFunc x, MathFunc y, MathFunc z, void* obj,
+    CFunctionToBsplineImpl(MathFunc3d& func,
                            double umin, double umax,
                            int degree,
                            double tolerance,
                            int maxDepth)
-        : _xfunc(x), _yfunc(y), _zfunc(z), _obj(obj)
+        : _xfunc(func, FuncAdaptor::X),
+          _yfunc(func, FuncAdaptor::Y),
+          _zfunc(func, FuncAdaptor::Z)
     {
         _umin = umin;
         _umax = umax;
@@ -90,21 +128,20 @@ public:
     Handle_Geom_BSplineCurve concatC1(const std::vector<Handle_Geom_BSplineCurve>& curves);
     
     /// members
-    MathFunc _xfunc, _yfunc, _zfunc;
-    void* _obj;
+    FuncAdaptor _xfunc, _yfunc, _zfunc;
     double _umin, _umax, _tol, _err;
     int _maxDepth, _degree;
 };
 
 // ---------------- Interfacing class -------------------------- // 
 
-CFunctionToBspline::CFunctionToBspline(MathFunc x, MathFunc y, MathFunc z, void* obj,
+CFunctionToBspline::CFunctionToBspline(MathFunc3d& func,
                                        double umin, double umax,
                                        int degree,
                                        double tolerance,
                                        int maxDepth)
 {
-    pimpl = new CFunctionToBsplineImpl(x, y, z, obj, umin, umax, degree, tolerance, maxDepth);
+    pimpl = new CFunctionToBsplineImpl(func, umin, umax, degree, tolerance, maxDepth);
 }
 
 CFunctionToBspline::~CFunctionToBspline()
@@ -127,9 +164,9 @@ std::vector<ChebSegment> CFunctionToBspline::CFunctionToBsplineImpl::approxSegme
     
     double alpha = 0.5;
     
-    math_Vector cx = cheb_approx(_xfunc, _obj, K+1, umin, umax);
-    math_Vector cy = cheb_approx(_yfunc, _obj, K+1, umin, umax);
-    math_Vector cz = cheb_approx(_zfunc, _obj, K+1, umin, umax);
+    math_Vector cx = cheb_approx(_xfunc, K+1, umin, umax);
+    math_Vector cy = cheb_approx(_yfunc, K+1, umin, umax);
+    math_Vector cz = cheb_approx(_zfunc, K+1, umin, umax);
     
     // estimate error
     double errx=0., erry = 0., errz = 0.;
@@ -192,8 +229,8 @@ Handle_Geom_BSplineCurve CFunctionToBspline::CFunctionToBsplineImpl::Curve()
         }
         
         if (interpolate) {
-            gp_Pnt pstart(_xfunc(seg.umin, _obj), _yfunc(seg.umin, _obj), _zfunc(seg.umin, _obj));
-            gp_Pnt pstop (_xfunc(seg.umax, _obj), _yfunc(seg.umax, _obj), _zfunc(seg.umax, _obj));
+            gp_Pnt pstart(_xfunc.value(seg.umin), _yfunc.value(seg.umin), _zfunc.value(seg.umin));
+            gp_Pnt pstop (_xfunc.value(seg.umax), _yfunc.value(seg.umax), _zfunc.value(seg.umax));
             cp.SetValue(1, pstart);
             cp.SetValue(cpx.Length(), pstop);
         }

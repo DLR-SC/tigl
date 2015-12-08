@@ -130,6 +130,18 @@ TIGL_EXPORT double cstcurve_deriv(const double& N1, const double& N2, const std:
  */
 typedef double (*MathFunc)(double t, void* obj);
 
+class MathFunc1d {
+public:
+    virtual double value(double t) = 0;
+};
+
+class MathFunc3d {
+public:
+    virtual double valueX(double t) = 0;
+    virtual double valueY(double t) = 0;
+    virtual double valueZ(double t) = 0;
+};
+
 /**
  * @brief Chebycheff approximation of a function f(x), x in [a,b]
  *
@@ -142,7 +154,7 @@ typedef double (*MathFunc)(double t, void* obj);
  * @param b Last  parameter of the function to approximate
  * @return Chebycheff coefficients
  */
-TIGL_EXPORT math_Vector cheb_approx(MathFunc func, void* parms, int N, double a, double b);
+TIGL_EXPORT math_Vector cheb_approx(MathFunc1d& func, int N, double a, double b);
 
 
 /** 

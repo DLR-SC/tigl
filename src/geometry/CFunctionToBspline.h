@@ -39,17 +39,14 @@ public:
     /**
      * @brief CFunctionToBspline - Constructor
      *
-     * @param x Function returning the x values of the curve
-     * @param y Function returning the y values of the curve
-     * @param z Function returning the z values of the curve
-     * @param obj Additional obj that is passed to the x,y,z functions (May be NULL, depending the the functions)
+     * @param f Function returning the values of the curve
      * @param umin Start parameter of the function to approximate
      * @param umax End parameter of the function to approximate
      * @param degree Degree of the resulting B-Spline
      * @param tolerance Maximum approximation error
      * @param maxDepth Maximum depth of curve splitting -> Influences resulting segment number
      */
-    CFunctionToBspline(MathFunc x, MathFunc y, MathFunc z, void* obj,
+    CFunctionToBspline(MathFunc3d& f,
                        double umin, double umax,
                        int degree,
                        double tolerance=1e-5,
