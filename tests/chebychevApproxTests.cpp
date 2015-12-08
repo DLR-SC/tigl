@@ -40,6 +40,26 @@ protected:
 
 namespace
 {
+    typedef double (*MathFunc)(double t, void* obj);
+
+    class MathFuncAdapter : public tigl::MathFunc1d {
+    public:
+        MathFuncAdapter(MathFunc func, void* obj)
+            : _func(func)
+            , _p(obj)
+        {
+        }
+
+        double value(double t)
+        {
+            return _func(t, _p);
+        }
+
+    private:
+        void * _p;
+        MathFunc _func;
+    };
+
     // some functions to approximate
     double parabola(double x, void*)
     {
@@ -66,7 +86,8 @@ namespace
 
 TEST_F(ChebychevApproxTests, parabola)
 {
-    math_Vector v = tigl::cheb_approx(parabola, NULL, 4, -1., 1.);
+    MathFuncAdapter adapt(parabola, NULL);
+    math_Vector v = tigl::cheb_approx(adapt, 4, -1., 1.);
     ASSERT_NEAR(0.5, v(0), 1e-12);
     ASSERT_NEAR(0.0, v(1), 1e-12);
     ASSERT_NEAR(0.5, v(2), 1e-12);
@@ -75,7 +96,8 @@ TEST_F(ChebychevApproxTests, parabola)
 
 TEST_F(ChebychevApproxTests, line)
 {
-    math_Vector v = tigl::cheb_approx(line, NULL, 4, -1., 1.);
+    MathFuncAdapter adapt(line, NULL);
+    math_Vector v = tigl::cheb_approx(adapt, 4, -1., 1.);
     ASSERT_NEAR(0.0, v(0), 1e-12);
     ASSERT_NEAR(-5., v(1), 1e-12);
     ASSERT_NEAR(0.0, v(2), 1e-12);
@@ -84,13 +106,15 @@ TEST_F(ChebychevApproxTests, line)
 
 TEST_F(ChebychevApproxTests, line_invalid)
 {
-    ASSERT_THROW(tigl::cheb_approx(line, NULL, 0, -1., 1.), tigl::CTiglError);
+    MathFuncAdapter adapt(line, NULL);
+    ASSERT_THROW(tigl::cheb_approx(adapt, 0, -1., 1.), tigl::CTiglError);
    
 }
 
 TEST_F(ChebychevApproxTests, shifted_parabola)
 {
-    math_Vector v = tigl::cheb_approx(shifted_parabola, NULL, 4, 3., 5.);
+    MathFuncAdapter adapt(shifted_parabola, NULL);
+    math_Vector v = tigl::cheb_approx(adapt, 4, 3., 5.);
     ASSERT_NEAR(0.0, v(0), 1e-12);
     ASSERT_NEAR(0.0, v(1), 1e-12);
     ASSERT_NEAR(1.0, v(2), 1e-12);
@@ -100,7 +124,8 @@ TEST_F(ChebychevApproxTests, shifted_parabola)
 TEST_F(ChebychevApproxTests, cubic_with_parameter)
 {
     double parm = 7.;
-    math_Vector v = tigl::cheb_approx(cubic_with_parameter, &parm, 10, -1., 1.);
+    MathFuncAdapter adapt(cubic_with_parameter, &parm);
+    math_Vector v = tigl::cheb_approx(adapt, 10, -1., 1.);
     ASSERT_NEAR(0.0, v(0), 1e-12);
     ASSERT_NEAR(0.75*parm, v(1), 1e-12);
     ASSERT_NEAR(0.0    , v(2), 1e-12);

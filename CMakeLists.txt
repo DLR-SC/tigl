@@ -32,6 +32,14 @@ if(NOT DEFINED CMAKE_INSTALL_BINDIR)
     set(CMAKE_INSTALL_BINDIR "bin")
 endif(NOT DEFINED CMAKE_INSTALL_BINDIR)
 
+# these settings are required in order to create fully relocatable
+# libraries on osx
+set(CMAKE_MACOSX_RPATH ON)
+set(CMAKE_SKIP_BUILD_RPATH FALSE)
+set(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
+set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
+set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+
 OPTION(TIGL_NIGHTLY "Creates a nightly build of tigl (includes git sha into tigl version)" OFF)
 mark_as_advanced(TIGL_NIGHTLY)
 if(TIGL_NIGHTLY)
