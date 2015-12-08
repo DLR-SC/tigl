@@ -16,7 +16,7 @@
 * limitations under the License.
 */
 
-%module tmath
+%module(directors="1") tmath
 
 %include common.i
 
@@ -45,6 +45,8 @@
 // rename file methods to python pep8 style
 %rename("%(undercase)s", %$isfunction) "";
 
+%feature("director") MathFunc3d;
+%feature("director") MathFunc1d;
 
 %include "tiglmathfunctions.h"
 %include "ITiglObjectiveFunction.h"

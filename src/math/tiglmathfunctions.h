@@ -122,21 +122,22 @@ TIGL_EXPORT double cstcurve_deriv(const double& N1, const double& N2, const std:
 
 
 /**
- * 1D Function accepting one parameter t and returning
+ * 1D Function interface accepting one parameter t and returning
  * the function value
- * 
- * The argument obj can be used to apply additional paramters
- * to the function
  */
-typedef double (*MathFunc)(double t, void* obj);
-
 class MathFunc1d {
 public:
+    TIGL_EXPORT virtual ~MathFunc1d(){}
     virtual double value(double t) = 0;
 };
 
+/**
+ * 3D Function interface accepting one parameter t and returning
+ * the function value
+ */
 class MathFunc3d {
 public:
+    TIGL_EXPORT virtual ~MathFunc3d(){}
     virtual double valueX(double t) = 0;
     virtual double valueY(double t) = 0;
     virtual double valueZ(double t) = 0;
@@ -147,8 +148,7 @@ public:
  *
  * @throws CTiglError (TIGL_MATH_ERROR) if N <= 0 
  * 
- * @param func The 1D funktion to approximate
- * @param parms Additional data passed to the function func (may be NULL)
+ * @param func The 1D function to approximate
  * @param N Number of function evaluations ( = polynomial degree + 1)
  * @param a First parameter of the function to approximate
  * @param b Last  parameter of the function to approximate
