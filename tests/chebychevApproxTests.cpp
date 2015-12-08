@@ -42,7 +42,8 @@ namespace
 {
     typedef double (*MathFunc)(double t, void* obj);
 
-    class MathFuncAdapter : public tigl::MathFunc1d {
+    class MathFuncAdapter : public tigl::MathFunc1d
+    {
     public:
         MathFuncAdapter(MathFunc func, void* obj)
             : _func(func)

@@ -125,7 +125,8 @@ TIGL_EXPORT double cstcurve_deriv(const double& N1, const double& N2, const std:
  * 1D Function interface accepting one parameter t and returning
  * the function value
  */
-class MathFunc1d {
+class MathFunc1d
+{
 public:
     TIGL_EXPORT virtual ~MathFunc1d(){}
     virtual double value(double t) = 0;
@@ -135,7 +136,8 @@ public:
  * 3D Function interface accepting one parameter t and returning
  * the function value
  */
-class MathFunc3d {
+class MathFunc3d
+{
 public:
     TIGL_EXPORT virtual ~MathFunc3d(){}
     virtual double valueX(double t) = 0;
