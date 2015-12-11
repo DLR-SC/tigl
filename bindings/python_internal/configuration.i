@@ -45,6 +45,7 @@
 #include "CCPACSFuselageConnection.h"
 #include "CCPACSWingCell.h"
 #include "CCPACSMaterial.h"
+#include "CCPACSGenericSystem.h"
 %}
 
 %feature("autodoc", "3");
@@ -82,6 +83,9 @@
 %include "CCPACSExternalObject.h"
 %include "CTiglUIDManager.h"
 %include "CTiglShapeCache.h"
+%include "CCPACSGenericSystem.h"
+%include "CCPACSGenericSystems.h"
+%include "CCPACSACSystems.h"
 %include "CCPACSConfiguration.h"
 %include "CCPACSConfigurationManager.h"
 %include "CTiglFusePlane.h"
