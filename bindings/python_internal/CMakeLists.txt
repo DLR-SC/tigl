@@ -1,6 +1,7 @@
-option(TIGL_PYTHON_INTERNAL "Builds the python interface to the internal API(requires SWIG)" OFF)
+option(TIGL_BINDINGS_PYTHON_INTERNAL "Builds the python interface to the internal API(requires SWIG)" OFF)
+mark_as_advanced(TIGL_BINDINGS_PYTHON_INTERNAL)
 
-if (TIGL_PYTHON_INTERNAL)
+if (TIGL_BINDINGS_PYTHON_INTERNAL)
     include(tiglmacros)
 
     find_package(PythonInterp)
@@ -88,4 +89,4 @@ if (TIGL_PYTHON_INTERNAL)
     endforeach(MODULE)
 
 
-endif(TIGL_PYTHON_INTERNAL)
+endif(TIGL_BINDINGS_PYTHON_INTERNAL)

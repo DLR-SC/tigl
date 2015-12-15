@@ -1,6 +1,7 @@
-find_package(Java 1.7.0 COMPONENTS Development)
+option(TIGL_BINDINGS_JAVA "Build the java bindings of tigl (requires java)" OFF)
 
-if (JAVA_FOUND)
+if (TIGL_BINDINGS_JAVA)
+	find_package(Java 1.7.0 COMPONENTS Development REQUIRED)
 
 	set(TIGLJAVA_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
