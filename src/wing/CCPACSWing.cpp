@@ -532,9 +532,16 @@ double CCPACSWing::GetWingspan()
 {
     Bnd_Box boundingBox;
     if (GetSymmetryAxis() == TIGL_NO_SYMMETRY) {
+        // find out major direction
+        gp_XYZ cumulatedDirection(0,0,0);
         for (int i = 1; i <= GetSegmentCount(); ++i) {
-            const TopoDS_Shape& segmentShape = GetSegment(i).GetLoft()->Shape();
+            CCPACSWingSegment& segment = segments.GetSegment(i);
+            const TopoDS_Shape& segmentShape = segment.GetLoft()->Shape();
             BRepBndLib::Add(segmentShape, boundingBox);
+
+            gp_XYZ dir = segment.GetChordPoint(1,0).XYZ() - segment.GetChordPoint(0,0).XYZ();
+            dir = gp_XYZ(fabs(dir.X()), fabs(dir.Y()), fabs(dir.Z()));
+            cumulatedDirection += dir;
         }
 
         Standard_Real xmin, xmax, ymin, ymax, zmin, zmax;
@@ -543,7 +550,15 @@ double CCPACSWing::GetWingspan()
         double yw = ymax - ymin;
         double zw = zmax - zmin;
 
-        return max(xw, max(yw, zw));
+        if (cumulatedDirection.X() >= cumulatedDirection.Y() && cumulatedDirection.X() >= cumulatedDirection.Z()) {
+            return xw;
+        }
+        else if (cumulatedDirection.Y() >= cumulatedDirection.X() && cumulatedDirection.Y() >= cumulatedDirection.Z()) {
+            return yw;
+        }
+        else {
+            return zw;
+        }
     }
     else {
         for (int i = 1; i <= GetSegmentCount(); ++i) {

@@ -294,6 +294,13 @@ TEST_F(TiglWing, tiglWingGetSegmentIndex_wrongHandle){
     ASSERT_TRUE(tiglWingGetSegmentIndex(myWrongHandle, "D150_VAMP_W1_Seg1", &segmentIndex, &wingIndex) == TIGL_NOT_FOUND);
 }
 
+TEST_F(TiglWing, tiglWingGetSpanVTP){
+    double span = 0.;
+    tiglWingGetSpan(tiglHandle, "D150_VAMP_SL1", &span);
+    ASSERT_LT(span, 5.9);
+    ASSERT_GT(span, 5.8);
+}
+
 
 TEST_F(WingSimple, wingGetMAC_success)
 {
