@@ -64,7 +64,7 @@ public:
     inline   void                    SetScale  (const Quantity_Factor aNewScale) ;
 
 
-DEFINE_STANDARD_RTTI(ISession_Text)
+DEFINE_STANDARD_RTTIEXT(ISession_Text,AIS_InteractiveObject)
 
 private: 
 

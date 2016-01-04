@@ -72,7 +72,7 @@ TIGLViewerWidget::TIGLViewerWidget(QWidget * parent)
     initialize();
 }
 
-TIGLViewerWidget::TIGLViewerWidget( const Handle_AIS_InteractiveContext& aContext,
+TIGLViewerWidget::TIGLViewerWidget( const Handle(AIS_InteractiveContext)& aContext,
                                     QWidget *parent, 
                                     Qt::WindowFlags f ) :
     myView            ( NULL ),
@@ -145,13 +145,13 @@ TIGLViewerWidget::~TIGLViewerWidget()
 {
 }
 
-void TIGLViewerWidget::setContext(const Handle_AIS_InteractiveContext& aContext)
+void TIGLViewerWidget::setContext(const Handle(AIS_InteractiveContext)& aContext)
 {
     myContext = aContext;
 }
 
 
-void TIGLViewerWidget::initializeOCC(const Handle_AIS_InteractiveContext& aContext)
+void TIGLViewerWidget::initializeOCC(const Handle(AIS_InteractiveContext)& aContext)
 {
     if (myView.IsNull()) {
         Aspect_RenderingContext rc = 0;

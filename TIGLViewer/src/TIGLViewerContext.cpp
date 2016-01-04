@@ -61,17 +61,17 @@ TIGLViewerContext::~TIGLViewerContext()
 
 }
 
-Handle_V3d_Viewer& TIGLViewerContext::getViewer()
+Handle(V3d_Viewer)& TIGLViewerContext::getViewer()
 { 
     return myViewer; 
 }
 
-Handle_AIS_InteractiveContext& TIGLViewerContext::getContext()
+Handle(AIS_InteractiveContext)& TIGLViewerContext::getContext()
 { 
     return myContext; 
 }
 
-Handle_V3d_Viewer TIGLViewerContext::createViewer( const Standard_ExtString aName,
+Handle(V3d_Viewer) TIGLViewerContext::createViewer( const Standard_ExtString aName,
                                                    const Standard_CString aDomain,
                                                    const Standard_Real ViewSize )
 {

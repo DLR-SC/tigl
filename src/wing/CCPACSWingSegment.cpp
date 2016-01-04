@@ -184,7 +184,7 @@ namespace
      */
     TopoDS_Edge getFaceTrimmingEdge(const TopoDS_Face& face, double ustart, double vstart, double uend, double vend)
     {
-        Handle_Geom_Surface surf = BRep_Tool::Surface(face);
+        Handle(Geom_Surface) surf = BRep_Tool::Surface(face);
         Handle(Geom2d_TrimmedCurve) line = GCE2d_MakeSegment(gp_Pnt2d(ustart,vstart), gp_Pnt2d(uend,vend));
     
         BRepBuilderAPI_MakeEdge edgemaker(line, surf);
@@ -513,7 +513,7 @@ void CCPACSWingSegment::etaXsiToUV(bool isFromUpper, double eta, double xsi, dou
 {
     gp_Pnt pnt = GetPoint(eta,xsi, isFromUpper);
 
-    Handle_Geom_Surface surf;
+    Handle(Geom_Surface) surf;
     if (isFromUpper) {
         surf = upperSurface;
     }

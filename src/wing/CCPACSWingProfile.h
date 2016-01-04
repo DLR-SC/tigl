@@ -40,7 +40,6 @@
 #include "PTiglWingProfileAlgo.h"
 
 #include <gp_Pnt.hxx>
-#include <Handle_Geom2d_TrimmedCurve.hxx>
 
 
 namespace tigl 

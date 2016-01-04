@@ -32,7 +32,6 @@
 
 #include <BRepBuilderAPI_MakeVertex.hxx>
 #include <TopoDS_Vertex.hxx>
-#include <Handle_AIS_Shape.hxx>
 #include <AIS_Shape.hxx>
 #include <AIS_InteractiveContext.hxx>
 #include <Aspect_RectangularGrid.hxx>
@@ -61,10 +60,10 @@
 
 #include <cstdlib>
 
-void ShowOrigin ( Handle_AIS_InteractiveContext theContext );
-void AddVertex  ( double x, double y, double z, Handle_AIS_InteractiveContext theContext );
+void ShowOrigin ( Handle(AIS_InteractiveContext) theContext );
+void AddVertex  ( double x, double y, double z, Handle(AIS_InteractiveContext) theContext );
 
-void AddVertex (double x, double y, double z, Handle_AIS_InteractiveContext theContext)
+void AddVertex (double x, double y, double z, Handle(AIS_InteractiveContext) theContext)
 {
     TopoDS_Vertex aVertex=BRepBuilderAPI_MakeVertex( gp_Pnt(x,y,z) );
     Handle(AIS_Shape) AISVertex = new AIS_Shape(aVertex);
@@ -72,7 +71,7 @@ void AddVertex (double x, double y, double z, Handle_AIS_InteractiveContext theC
     theContext->Display(AISVertex);
 }
 
-void ShowOrigin ( Handle_AIS_InteractiveContext theContext )
+void ShowOrigin ( Handle(AIS_InteractiveContext) theContext )
 {
     AddVertex ( 0.0, 0.0, 0.0, theContext);
 }

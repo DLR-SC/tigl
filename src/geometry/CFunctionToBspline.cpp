@@ -119,13 +119,13 @@ public:
         _err = 0.;
     }
     
-    Handle_Geom_BSplineCurve Curve();
+    Handle(Geom_BSplineCurve) Curve();
     
     /// approximates the curve in the subrange [a, b]
     std::vector<ChebSegment> approxSegment(double a, double b, int depth);
     
     /// smooth concatenation the bspline curves to one curve
-    Handle_Geom_BSplineCurve concatC1(const std::vector<Handle_Geom_BSplineCurve>& curves);
+    Handle(Geom_BSplineCurve) concatC1(const std::vector<Handle(Geom_BSplineCurve)>& curves);
     
     /// members
     FuncAdaptor _xfunc, _yfunc, _zfunc;
@@ -149,7 +149,7 @@ CFunctionToBspline::~CFunctionToBspline()
     delete pimpl;
 }
 
-Handle_Geom_BSplineCurve CFunctionToBspline::Curve()
+Handle(Geom_BSplineCurve) CFunctionToBspline::Curve()
 {
     return pimpl->Curve();
 }
@@ -201,7 +201,7 @@ std::vector<ChebSegment> CFunctionToBspline::CFunctionToBsplineImpl::approxSegme
     
 }
 
-Handle_Geom_BSplineCurve CFunctionToBspline::CFunctionToBsplineImpl::Curve()
+Handle(Geom_BSplineCurve) CFunctionToBspline::CFunctionToBsplineImpl::Curve()
 {
     bool interpolate = true;
     
@@ -211,7 +211,7 @@ Handle_Geom_BSplineCurve CFunctionToBspline::CFunctionToBsplineImpl::Curve()
     math_Matrix Mt = monimial_to_bezier(N)*cheb_to_monomial(N);
     
     // get estimated error and create bspline segments
-    std::vector<Handle_Geom_BSplineCurve> curves;
+    std::vector<Handle(Geom_BSplineCurve)> curves;
     double errTotal = 0.;
     std::vector<ChebSegment>::iterator it = segments.begin();
     for (; it != segments.end(); ++it) {
@@ -243,7 +243,7 @@ Handle_Geom_BSplineCurve CFunctionToBspline::CFunctionToBsplineImpl::Curve()
         mults.SetValue(1, _degree+1);
         mults.SetValue(2, _degree+1);
         
-        Handle_Geom_BSplineCurve curve = new Geom_BSplineCurve(cp, knots, mults, _degree);
+        Handle(Geom_BSplineCurve) curve = new Geom_BSplineCurve(cp, knots, mults, _degree);
         curves.push_back(curve);
         
         if (seg.error > errTotal) {
@@ -253,7 +253,7 @@ Handle_Geom_BSplineCurve CFunctionToBspline::CFunctionToBsplineImpl::Curve()
     _err = errTotal;
      
     // concatenate c1 the bspline curves
-    Handle_Geom_BSplineCurve result = concatC1(curves);
+    Handle(Geom_BSplineCurve) result = concatC1(curves);
 
 #ifdef DEBUG
     LOG(INFO) << "Result of BSpline approximation of function:";
@@ -269,7 +269,7 @@ double CFunctionToBspline::ApproxError()
     return pimpl->_err;
 }
 
-Handle_Geom_BSplineCurve CFunctionToBspline::CFunctionToBsplineImpl::concatC1(const std::vector<Handle_Geom_BSplineCurve>& curves)
+Handle(Geom_BSplineCurve) CFunctionToBspline::CFunctionToBsplineImpl::concatC1(const std::vector<Handle(Geom_BSplineCurve)>& curves)
 {
     if (curves.size() == 0) {
         return NULL;
@@ -281,8 +281,8 @@ Handle_Geom_BSplineCurve CFunctionToBspline::CFunctionToBsplineImpl::concatC1(co
 #ifdef DEBUG
     // check range connectivities
     for (size_t i = 1; i < curves.size(); ++i) {
-        Handle_Geom_BSplineCurve lastCurve = curves[i-1];
-        Handle_Geom_BSplineCurve thisCurve = curves[i];
+        Handle(Geom_BSplineCurve) lastCurve = curves[i-1];
+        Handle(Geom_BSplineCurve) thisCurve = curves[i];
         assert(lastCurve->LastParameter() == thisCurve->FirstParameter());
     }
 #endif
@@ -290,9 +290,9 @@ Handle_Geom_BSplineCurve CFunctionToBspline::CFunctionToBsplineImpl::concatC1(co
     // count control points
     int ncp = 2;
     int nkn = 1;
-    std::vector<Handle_Geom_BSplineCurve>::const_iterator curveIt;
+    std::vector<Handle(Geom_BSplineCurve)>::const_iterator curveIt;
     for (curveIt = curves.begin(); curveIt != curves.end(); ++curveIt) {
-        Handle_Geom_BSplineCurve curve = *curveIt;
+        Handle(Geom_BSplineCurve) curve = *curveIt;
         ncp += curve->NbPoles() - 2;
         nkn += curve->NbKnots() - 1;
     }
@@ -305,7 +305,7 @@ Handle_Geom_BSplineCurve CFunctionToBspline::CFunctionToBsplineImpl::concatC1(co
     int iknotT = 1, imultT = 1, icpT = 1;
     int icurve = 0;
     for (curveIt = curves.begin(); curveIt != curves.end(); ++curveIt, ++icurve) {
-        Handle_Geom_BSplineCurve curve = *curveIt;
+        Handle(Geom_BSplineCurve) curve = *curveIt;
 
         // special handling of the first knot, control point
         knots.SetValue(iknotT++, curve->Knot(1));
@@ -331,12 +331,12 @@ Handle_Geom_BSplineCurve CFunctionToBspline::CFunctionToBsplineImpl::concatC1(co
     }
 
     // special handling of the last point and knot
-    Handle_Geom_BSplineCurve lastCurve = curves[curves.size()-1];
+    Handle(Geom_BSplineCurve) lastCurve = curves[curves.size()-1];
     knots.SetValue(iknotT, lastCurve->Knot(lastCurve->NbKnots()));
     mults.SetValue(imultT,  lastCurve->Multiplicity(lastCurve->NbKnots()));
     cpoints.SetValue(icpT, lastCurve->Pole(lastCurve->NbPoles()));
 
-    Handle_Geom_BSplineCurve result = new Geom_BSplineCurve(cpoints, knots, mults, _degree);
+    Handle(Geom_BSplineCurve) result = new Geom_BSplineCurve(cpoints, knots, mults, _degree);
     return result;
 }
 

@@ -26,7 +26,6 @@
 #include "TIGLViewer.h"
 #include "CCPACSConfiguration.h"
 
-#include <Handle_AIS_Shape.hxx>
 #include <Quantity_Color.hxx>
 
 class TIGLViewerWindow;

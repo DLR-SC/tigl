@@ -23,7 +23,6 @@
 
 #include <vector>
 #include <gp_Pnt.hxx>
-#include <Handle_Geom_BSplineCurve.hxx>
 
 namespace tigl
 {
@@ -37,9 +36,9 @@ class CPointsToLinearBSpline
 public:
     TIGL_EXPORT CPointsToLinearBSpline(const std::vector<gp_Pnt>& points);
 
-    TIGL_EXPORT Handle_Geom_BSplineCurve Curve() const;
+    TIGL_EXPORT Handle(Geom_BSplineCurve) Curve() const;
 
-    TIGL_EXPORT operator Handle_Geom_BSplineCurve() const;
+    TIGL_EXPORT operator Handle(Geom_BSplineCurve)() const;
 
     TIGL_EXPORT ~CPointsToLinearBSpline();
 

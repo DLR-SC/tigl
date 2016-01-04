@@ -32,6 +32,9 @@
 #include <Poly_Triangulation.hxx>
 #include <IGESData_IGESModel.hxx>
 #include <AIS_ListIteratorOfListOfInteractive.hxx>
+#include <AIS_Shape.hxx>
+#include <Geom_Plane.hxx>
+#include <Geom_Line.hxx>
 
 TIGLViewerInputOutput::TIGLViewerInputOutput(void)
 {
@@ -48,7 +51,7 @@ bool TIGLViewerInputOutput::importModel( const QString fileName,
 
     QApplication::setOverrideCursor( Qt::WaitCursor );
     scene.getContext()->SetDisplayMode(AIS_Shaded,Standard_False);
-    Handle_TopTools_HSequenceOfShape shapes = importModel( format, fileName );
+    Handle(TopTools_HSequenceOfShape) shapes = importModel( format, fileName );
     QApplication::restoreOverrideCursor();
 
     if ( shapes.IsNull() || !shapes->Length() ) {
@@ -98,9 +101,9 @@ bool TIGLViewerInputOutput::importTriangulation( const QString fileName,
 
     return true;
 }
-Handle_TopTools_HSequenceOfShape TIGLViewerInputOutput::importModel( const FileFormat format, const QString& file )
+Handle(TopTools_HSequenceOfShape) TIGLViewerInputOutput::importModel( const FileFormat format, const QString& file )
 {
-    Handle_TopTools_HSequenceOfShape shapes;
+    Handle(TopTools_HSequenceOfShape) shapes;
     try {
         switch ( format ) {
         case FormatBREP:
@@ -135,10 +138,10 @@ Handle_TopTools_HSequenceOfShape TIGLViewerInputOutput::importModel( const FileF
 
 bool TIGLViewerInputOutput::exportModel( const QString fileName,
                                          const FileFormat format,
-                                         const Handle_AIS_InteractiveContext& ic )
+                                         const Handle(AIS_InteractiveContext)& ic )
 {
 
-    Handle_TopTools_HSequenceOfShape shapes = getShapes( ic );
+    Handle(TopTools_HSequenceOfShape) shapes = getShapes( ic );
     if ( shapes.IsNull() || !shapes->Length() ) {
         return false;
     }
@@ -149,7 +152,7 @@ bool TIGLViewerInputOutput::exportModel( const QString fileName,
     return stat;
 }
 
-bool TIGLViewerInputOutput::exportModel( const FileFormat format, const QString& file, const Handle_TopTools_HSequenceOfShape& shapes )
+bool TIGLViewerInputOutput::exportModel( const FileFormat format, const QString& file, const Handle(TopTools_HSequenceOfShape)& shapes )
 {
     bool status = false;
     try {
@@ -176,15 +179,15 @@ bool TIGLViewerInputOutput::exportModel( const FileFormat format, const QString&
     return status;
 }
 
-Handle_TopTools_HSequenceOfShape TIGLViewerInputOutput::getShapes( const Handle_AIS_InteractiveContext& ic )
+Handle(TopTools_HSequenceOfShape) TIGLViewerInputOutput::getShapes( const Handle(AIS_InteractiveContext)& ic )
 {
-    Handle_TopTools_HSequenceOfShape aSequence;
-    Handle_AIS_InteractiveObject picked;
+    Handle(TopTools_HSequenceOfShape) aSequence;
+    Handle(AIS_InteractiveObject) picked;
     // export selected objects
     for ( ic->InitCurrent(); ic->MoreCurrent(); ic->NextCurrent() ) {
-        Handle_AIS_InteractiveObject obj = ic->Current();
+        Handle(AIS_InteractiveObject) obj = ic->Current();
         if ( obj->IsKind( STANDARD_TYPE( AIS_Shape ) ) ) {
-            TopoDS_Shape shape = Handle_AIS_Shape::DownCast(obj)->Shape();
+            TopoDS_Shape shape = Handle(AIS_Shape)::DownCast(obj)->Shape();
             if ( aSequence.IsNull() ) {
                 aSequence = new TopTools_HSequenceOfShape();
             }
@@ -200,9 +203,9 @@ Handle_TopTools_HSequenceOfShape TIGLViewerInputOutput::getShapes( const Handle_
     ic->DisplayedObjects(listAISShapes);
     AIS_ListIteratorOfListOfInteractive iter(listAISShapes);
     for (; iter.More(); iter.Next()) {
-        Handle_AIS_InteractiveObject obj = iter.Value();
+        Handle(AIS_InteractiveObject) obj = iter.Value();
         if ( obj->IsKind( STANDARD_TYPE( AIS_Shape ) ) ) {
-            TopoDS_Shape shape = Handle_AIS_Shape::DownCast(obj)->Shape();
+            TopoDS_Shape shape = Handle(AIS_Shape)::DownCast(obj)->Shape();
             if ( aSequence.IsNull() ) {
                 aSequence = new TopTools_HSequenceOfShape();
             }
@@ -213,9 +216,9 @@ Handle_TopTools_HSequenceOfShape TIGLViewerInputOutput::getShapes( const Handle_
 }
 
 
-Handle_TopTools_HSequenceOfShape TIGLViewerInputOutput::importBREP( const QString& file )
+Handle(TopTools_HSequenceOfShape) TIGLViewerInputOutput::importBREP( const QString& file )
 {
-    Handle_TopTools_HSequenceOfShape aSequence;
+    Handle(TopTools_HSequenceOfShape) aSequence;
     TopoDS_Shape aShape;
     BRep_Builder aBuilder;
 
@@ -236,9 +239,9 @@ Handle_TopTools_HSequenceOfShape TIGLViewerInputOutput::importBREP( const QStrin
     return aSequence;
 }
 
-Handle_TopTools_HSequenceOfShape TIGLViewerInputOutput::importIGES( const QString& file )
+Handle(TopTools_HSequenceOfShape) TIGLViewerInputOutput::importIGES( const QString& file )
 {
-    Handle_TopTools_HSequenceOfShape aSequence;
+    Handle(TopTools_HSequenceOfShape) aSequence;
     IGESControl_Reader Reader;
     Interface_Static::SetCVal("xstep.cascade.unit", "M");
     int status = Reader.ReadFile( file.toLatin1().data() );
@@ -257,9 +260,9 @@ Handle_TopTools_HSequenceOfShape TIGLViewerInputOutput::importIGES( const QStrin
     return aSequence;
 }
 
-Handle_TopTools_HSequenceOfShape TIGLViewerInputOutput::importSTL( const QString& file )
+Handle(TopTools_HSequenceOfShape) TIGLViewerInputOutput::importSTL( const QString& file )
 {
-    Handle_TopTools_HSequenceOfShape aSequence = NULL;
+    Handle(TopTools_HSequenceOfShape) aSequence = NULL;
     TopoDS_Shape aShape;
     StlAPI_Reader Reader;
     Reader.Read(aShape, file.toStdString().c_str());
@@ -273,9 +276,9 @@ Handle_TopTools_HSequenceOfShape TIGLViewerInputOutput::importSTL( const QString
     return aSequence;
 }
 
-Handle_TopTools_HSequenceOfShape TIGLViewerInputOutput::importMESH( const QString& file )
+Handle(TopTools_HSequenceOfShape) TIGLViewerInputOutput::importMESH( const QString& file )
 {
-    Handle_TopTools_HSequenceOfShape aSequence = NULL;
+    Handle(TopTools_HSequenceOfShape) aSequence = NULL;
 
     CHotsoseMeshReader meshReader;
     tigl::CTiglPolyData mesh;
@@ -290,9 +293,9 @@ Handle_TopTools_HSequenceOfShape TIGLViewerInputOutput::importMESH( const QStrin
     return aSequence;
 }
 
-Handle_TopTools_HSequenceOfShape TIGLViewerInputOutput::importSTEP( const QString& file )
+Handle(TopTools_HSequenceOfShape) TIGLViewerInputOutput::importSTEP( const QString& file )
 {
-    Handle_TopTools_HSequenceOfShape aSequence = new TopTools_HSequenceOfShape;
+    Handle(TopTools_HSequenceOfShape) aSequence = new TopTools_HSequenceOfShape;
 
     STEPControl_Reader aReader;
     Interface_Static::SetCVal("xstep.cascade.unit", "M");
@@ -327,7 +330,7 @@ Handle_TopTools_HSequenceOfShape TIGLViewerInputOutput::importSTEP( const QStrin
 }
 
 
-bool TIGLViewerInputOutput::exportBREP( const QString& file, const Handle_TopTools_HSequenceOfShape& shapes )
+bool TIGLViewerInputOutput::exportBREP( const QString& file, const Handle(TopTools_HSequenceOfShape)& shapes )
 {
     if ( shapes.IsNull() || shapes->IsEmpty() ){
         return false;
@@ -350,7 +353,7 @@ bool TIGLViewerInputOutput::exportBREP( const QString& file, const Handle_TopToo
     return BRepTools::Write( shape, file.toLatin1().data() );
 }
 
-bool TIGLViewerInputOutput::exportIGES( const QString& file, const Handle_TopTools_HSequenceOfShape& shapes )
+bool TIGLViewerInputOutput::exportIGES( const QString& file, const Handle(TopTools_HSequenceOfShape)& shapes )
 {
     if ( shapes.IsNull() || shapes->IsEmpty() ) {
         return false;
@@ -372,7 +375,7 @@ bool TIGLViewerInputOutput::exportIGES( const QString& file, const Handle_TopToo
     return writer.Write( file.toLatin1().data() );
 }
 
-bool TIGLViewerInputOutput::exportSTEP( const QString& file, const Handle_TopTools_HSequenceOfShape& shapes )
+bool TIGLViewerInputOutput::exportSTEP( const QString& file, const Handle(TopTools_HSequenceOfShape)& shapes )
 {
     if ( shapes.IsNull() || shapes->IsEmpty() ) {
         return false;
@@ -408,7 +411,7 @@ bool TIGLViewerInputOutput::exportSTEP( const QString& file, const Handle_TopToo
     return status == IFSelect_RetDone;
 }
 
-bool TIGLViewerInputOutput::exportSTL( const QString& file, const Handle_TopTools_HSequenceOfShape& shapes )
+bool TIGLViewerInputOutput::exportSTL( const QString& file, const Handle(TopTools_HSequenceOfShape)& shapes )
 {
     if ( shapes.IsNull() || shapes->IsEmpty() ) {
         return false;
@@ -433,7 +436,7 @@ bool TIGLViewerInputOutput::exportSTL( const QString& file, const Handle_TopTool
     return true;
 }
 
-bool TIGLViewerInputOutput::checkFacetedBrep( const Handle_TopTools_HSequenceOfShape& shapes )
+bool TIGLViewerInputOutput::checkFacetedBrep( const Handle(TopTools_HSequenceOfShape)& shapes )
 {
     bool err = false;
     for ( int i = 1; i <= shapes->Length(); i++ ) {

@@ -456,7 +456,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglProfileGetBSplineDataSizes(TiglCPACSConfig
         // profile found, lets get bspline data
         
         if (!e.IsNull()) {
-             Handle_Geom_BSplineCurve bspl = GetBSplineCurve(e);
+             Handle(Geom_BSplineCurve) bspl = GetBSplineCurve(e);
              *degree = bspl->Degree();
              *ncontrolPoints = bspl->NbPoles();
              
@@ -550,7 +550,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglProfileGetBSplineData(TiglCPACSConfigurati
         // profile found, lets get bspline data
         
         if (!e.IsNull()) {
-            Handle_Geom_BSplineCurve bspl = GetBSplineCurve(e);
+            Handle(Geom_BSplineCurve) bspl = GetBSplineCurve(e);
             // check correct sizes
             if (ncp != bspl->NbPoles()) {
                 return TIGL_ERROR;

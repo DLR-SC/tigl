@@ -21,7 +21,6 @@
 
 #include "tigl_internal.h"
 
-#include <Handle_Geom_BSplineCurve.hxx>
 
 #include <vector>
 
@@ -41,7 +40,7 @@ public:
     TIGL_EXPORT double N2() const;
     TIGL_EXPORT std::vector<double> B() const;
 
-    TIGL_EXPORT Handle_Geom_BSplineCurve Curve();
+    TIGL_EXPORT Handle(Geom_BSplineCurve) Curve();
 
 private:
     double _n1, _n2;

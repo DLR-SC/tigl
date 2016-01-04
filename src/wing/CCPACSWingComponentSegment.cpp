@@ -340,8 +340,8 @@ void CCPACSWingComponentSegment::GetSegmentIntersection(const std::string& segme
         throw CTiglError("Component segment line does not intersect iso eta line of segment in CCPACSWingComponentSegment::GetSegmentIntersection.", TIGL_MATH_ERROR);
     }
 
-    Handle_Geom_Curve csCurve = new Geom_Line(csLine);
-    Handle_Geom_Curve etaCurve = new Geom_Line(etaLine);
+    Handle(Geom_Curve) csCurve = new Geom_Line(csLine);
+    Handle(Geom_Curve) etaCurve = new Geom_Line(etaLine);
     GeomAdaptor_Curve csAdptAcuve(csCurve);
     GeomAdaptor_Curve etaAdptCurve(etaCurve);
 

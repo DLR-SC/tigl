@@ -27,9 +27,7 @@
 #include <Quantity_Color.hxx>
 
 #if defined WNT
-#include <Handle_WNT_Window.hxx>
 #else
-#include <Handle_Aspect_Window.hxx>
 #endif
 
 #include "TIGLViewer.h"
@@ -43,10 +41,10 @@
 
 #define VALZWMIN 1 /** For elastic bean selection */
 
-class Handle_AIS_InteractiveContext;
-class Handle_V3d_View;
-class Handle_Visual3d_Layer;
-class Handle_AIS_Shape;
+#include <AIS_InteractiveContext.hxx>
+#include <V3d_View.hxx>
+#include <Visual3d_Layer.hxx>
+#include <AIS_Shape.hxx>
 class TopoDS_Shape;
 class gp_Pnt;
 class gp_Vec;

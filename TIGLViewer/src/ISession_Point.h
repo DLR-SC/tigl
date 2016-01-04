@@ -42,7 +42,7 @@ public:
     ISession_Point(gp_Pnt& aPoint);
 
     virtual ~ISession_Point();
-    DEFINE_STANDARD_RTTI(ISession_Point)
+    DEFINE_STANDARD_RTTIEXT(ISession_Point,AIS_InteractiveObject)
 
 private :
 

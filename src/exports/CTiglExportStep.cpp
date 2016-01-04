@@ -79,7 +79,7 @@ namespace
     /**
      * @brief WriteSTEPProductName writes the shape names as the step product identifier
      */
-    void WriteStepProductName(Handle_Transfer_FinderProcess FP, const PNamedShape shape)
+    void WriteStepProductName(Handle(Transfer_FinderProcess) FP, const PNamedShape shape)
     {
         if (!shape) {
             return;
@@ -108,7 +108,7 @@ namespace
         product->SetName ( str );
     }
     
-    void WriteStepSolidName(Handle_Transfer_FinderProcess FP, const PNamedShape shape)
+    void WriteStepSolidName(Handle(Transfer_FinderProcess) FP, const PNamedShape shape)
     {
         if (!shape) {
             return;
@@ -130,7 +130,7 @@ namespace
         }
     }
     
-    void WriteStepWireName(Handle_Transfer_FinderProcess FP, const PNamedShape shape)
+    void WriteStepWireName(Handle(Transfer_FinderProcess) FP, const PNamedShape shape)
     {
         if (!shape) {
             return;
@@ -155,14 +155,14 @@ namespace
             // name edges
             for (int i = 1; i <= SGC->NbElements(); ++i) {
                 StepShape_GeometricSetSelect elem = SGC->ElementsValue(i);
-                Handle_StepGeom_Curve curve = Handle(StepGeom_Curve)::DownCast(elem.Value());
+                Handle(StepGeom_Curve) curve = Handle(StepGeom_Curve)::DownCast(elem.Value());
                 
                 if (!curve.IsNull()) {
                     curve->SetName(str);
                 }
                 
                 // CATIA does only show the basis curves. Hence we must name them too
-                Handle_StepGeom_TrimmedCurve tcurve = Handle(StepGeom_TrimmedCurve)::DownCast(elem.Value());
+                Handle(StepGeom_TrimmedCurve) tcurve = Handle(StepGeom_TrimmedCurve)::DownCast(elem.Value());
                 if (!tcurve.IsNull() && !tcurve->BasisCurve().IsNull()) {
                     tcurve->BasisCurve()->SetName(str);
                 }
@@ -170,7 +170,7 @@ namespace
         }
     }
     
-    void WriteStepShellName(Handle_Transfer_FinderProcess FP, const PNamedShape shape)
+    void WriteStepShellName(Handle(Transfer_FinderProcess) FP, const PNamedShape shape)
     {
         if (!shape) {
             return;
@@ -201,7 +201,7 @@ namespace
      * @brief WriteSTEPFaceNames takes the names of each face and writes it into the STEP model
      * as an advanced face property
      */
-    void WriteStepFaceNames(Handle_Transfer_FinderProcess FP, const PNamedShape shape)
+    void WriteStepFaceNames(Handle(Transfer_FinderProcess) FP, const PNamedShape shape)
     {
         if (!shape) {
             return;
@@ -223,7 +223,7 @@ namespace
         }
     }
 
-    void WriteStepNames(Handle_Transfer_FinderProcess FP, const PNamedShape shape)
+    void WriteStepNames(Handle(Transfer_FinderProcess) FP, const PNamedShape shape)
     {
         WriteStepFaceNames(FP, shape);
         WriteStepShellName(FP, shape);

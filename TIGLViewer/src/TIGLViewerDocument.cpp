@@ -35,7 +35,6 @@
 #include <string.h>
 
 // OpenCascade Stuff
-#include <Handle_AIS_Shape.hxx>
 #include <AIS_Shape.hxx>
 #include <AIS_InteractiveContext.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
