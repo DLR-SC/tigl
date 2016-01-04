@@ -606,9 +606,7 @@ void TIGLViewerWidget::setBGImage(const QString& filename)
 void TIGLViewerWidget::eraseSelected()
 {
     if (!myView.IsNull()) {
-        for (myContext->InitCurrent(); myContext->MoreCurrent(); myContext->NextCurrent()) {
-            myContext->Erase(myContext->Current());
-        }
+        myContext->EraseSelected(Standard_False);
 
         myContext->ClearCurrents();
     }
