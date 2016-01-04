@@ -24,7 +24,7 @@
 #include <gp_Pnt.hxx>
 #include <vector>
 
-class Geom_BSplineCurve;
+#include <Geom_BSplineCurve.hxx>
 
 namespace tigl
 {

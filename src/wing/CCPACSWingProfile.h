@@ -41,6 +41,7 @@
 
 #include <gp_Pnt.hxx>
 
+#include <Geom2d_TrimmedCurve.hxx>
 
 namespace tigl 
 {

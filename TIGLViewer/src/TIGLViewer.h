@@ -29,7 +29,6 @@
 #include <Aspect_Drawable.hxx>
 #include <Aspect_GridDrawMode.hxx>
 #include <Aspect_GridType.hxx>
-#include <Aspect_GraphicCallbackProc.hxx>
 #include <Standard_TypeDef.hxx>
 #include <Quantity_Factor.hxx>
 #include <Quantity_Length.hxx>

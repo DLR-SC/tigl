@@ -23,6 +23,8 @@
 
 #include "tigl_internal.h"
 
+#include <Geom_BSplineCurve.hxx>
+
 namespace tigl
 {
 

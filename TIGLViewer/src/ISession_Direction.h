@@ -26,6 +26,8 @@
 
 #include <AIS_InteractiveObject.hxx>
 #include <TCollection_ExtendedString.hxx>
+#include <Prs3d_LineAspect.hxx>
+#include "occt_compat.h"
 
 DEFINE_STANDARD_HANDLE(ISession_Direction,AIS_InteractiveObject)
 class ISession_Direction : public AIS_InteractiveObject

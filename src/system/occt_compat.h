@@ -1,0 +1,12 @@
+#ifndef OCCT_COMPAT_H
+#define OCCT_COMPAT_H
+
+#include <Standard_Version.hxx>
+
+#if OCC_VERSION_HEX < 0x070000
+  #define DEFINE_STANDARD_RTTIEXT(C1,C2) DEFINE_STANDARD_RTTI(C1)
+  #define DEFINE_STANDARD_RTTI_INLINE(C1,C2) DEFINE_STANDARD_RTTI(C1)
+#endif
+
+#endif // OCCT_COMPAT_H
+

@@ -25,9 +25,12 @@
 #include <QWidget>
 #include <QMetaType>
 #include <Quantity_Color.hxx>
+#include <Standard_Version.hxx>
 
 #if defined WNT
+#include <WNT_Window.hxx>
 #else
+#include <Aspect_Window.hxx>
 #endif
 
 #include "TIGLViewer.h"
@@ -43,8 +46,10 @@
 
 #include <AIS_InteractiveContext.hxx>
 #include <V3d_View.hxx>
-#include <Visual3d_Layer.hxx>
 #include <AIS_Shape.hxx>
+#if OCC_VERSION_HEX < 0x070000
+#include <Visual3d_Layer.hxx>
+#endif
 class TopoDS_Shape;
 class gp_Pnt;
 class gp_Vec;
@@ -176,8 +181,10 @@ private: // members
     Handle_V3d_View                 myView;
     Handle_V3d_Viewer               myViewer;
     Handle_AIS_InteractiveContext   myContext;
+#if OCC_VERSION_HEX < 0x070000
     Handle_Visual3d_Layer           myLayer;
-                    
+#endif
+
     Standard_Boolean                myViewResized;
     Standard_Boolean                myViewInitialized;
     CurrentAction3d                 myMode;
@@ -231,10 +238,6 @@ private: // methods
                                     Standard_Real& Y,
                                     Standard_Real& Z);
                                           
-    void paintOCC();
-    static int paintCallBack (Aspect_Drawable, 
-                              void*, 
-                              Aspect_GraphicCallbackStruct*);
 
 };
 

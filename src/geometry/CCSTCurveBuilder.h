@@ -24,6 +24,8 @@
 
 #include <vector>
 
+#include <Geom_BSplineCurve.hxx>
+
 namespace tigl
 {
 

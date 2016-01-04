@@ -97,7 +97,8 @@ namespace
             if ( FP->FindTypedTransient ( mapper, STANDARD_TYPE(IGESData_IGESEntity), entity ) ) {
                 Handle(TCollection_HAsciiString) str = new TCollection_HAsciiString(faceName.c_str());
                 entity->SetLabel(str);
-                entity->InitLevel(0, level);
+                Handle(IGESData_LevelListEntity) lle;
+                entity->InitLevel(lle, level);
             }
         }
     }
@@ -127,7 +128,8 @@ namespace
         if ( FP->FindTypedTransient ( mapper, STANDARD_TYPE(IGESData_IGESEntity), entity ) ) {
             Handle(TCollection_HAsciiString) str = new TCollection_HAsciiString(shapeName.c_str());
             entity->SetLabel(str);
-            entity->InitLevel(0, level);
+            Handle(IGESData_LevelListEntity) lle;
+            entity->InitLevel(lle, level);
         }
     }
     

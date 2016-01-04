@@ -24,6 +24,7 @@
 #include <QtCore/QObject>
 #include "TIGLViewer.h"
 #include "TIGLViewerContext.h"
+#include <TopTools_HSequenceOfShape.hxx>
 
 class TIGLViewerWidget;
 

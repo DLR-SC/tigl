@@ -31,6 +31,7 @@
 
 #include <AIS_InteractiveObject.hxx>
 #include <gp_Pnt.hxx>
+#include <occt_compat.h>
 
 DEFINE_STANDARD_HANDLE(ISession_Point,AIS_InteractiveObject)
 class ISession_Point : public AIS_InteractiveObject  

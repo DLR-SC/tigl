@@ -24,6 +24,8 @@
 #include <TopoDS_Shape.hxx>
 #include <CTiglPolyData.h>
 
+#include <Poly_Triangulation.hxx>
+
 namespace tigl 
 {
 

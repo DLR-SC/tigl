@@ -59,7 +59,11 @@
   #include <GL/glu.h>
 #endif
 
+
+#if OCC_VERSION_HEX < 0x070000
 #include "Visual3d_Layer.hxx"
+#endif
+
 #include "V3d_DirectionalLight.hxx"
 #include "V3d_AmbientLight.hxx"
 
@@ -77,7 +81,9 @@ TIGLViewerWidget::TIGLViewerWidget( const Handle(AIS_InteractiveContext)& aConte
                                     Qt::WindowFlags f ) :
     myView            ( NULL ),
     myViewer          ( NULL ),
+#if OCC_VERSION_HEX < 0x070000
     myLayer           ( NULL ),
+#endif
     myViewResized      ( Standard_False ),
     myViewInitialized ( Standard_False ),
     myMode              ( CurAction3d_Undefined ),
@@ -96,7 +102,10 @@ void TIGLViewerWidget::initialize()
 {
     myView            = NULL;
     myViewer          = NULL;
+    
+#if OCC_VERSION_HEX < 0x070000
     myLayer           = NULL;
+#endif
     myMode              = CurAction3d_Undefined;
     myGridSnap        = Standard_False;
     myViewResized      = Standard_False;
@@ -154,7 +163,6 @@ void TIGLViewerWidget::setContext(const Handle(AIS_InteractiveContext)& aContext
 void TIGLViewerWidget::initializeOCC(const Handle(AIS_InteractiveContext)& aContext)
 {
     if (myView.IsNull()) {
-        Aspect_RenderingContext rc = 0;
         myContext = aContext;
         myViewer  = myContext->CurrentViewer();
         myView    = myViewer->CreateView();
@@ -170,7 +178,7 @@ void TIGLViewerWidget::initializeOCC(const Handle(AIS_InteractiveContext)& aCont
 #endif
 
         // Set my window (Hwnd) into the OCC view
-        myView->SetWindow( myWindow, rc , paintCallBack, this  );
+        myView->SetWindow( myWindow );
         // Set up axes (Trihedron) in lower left corner.
         myView->SetScale( 2 );            // Choose a "nicer" initial scale
 
@@ -191,7 +199,9 @@ void TIGLViewerWidget::initializeOCC(const Handle(AIS_InteractiveContext)& aCont
         // This is to signal any connected slots that the view is ready.
         myViewInitialized = Standard_True;
 
+#if OCC_VERSION_HEX < 0x070000
         myLayer   = new Visual3d_Layer (myViewer->Viewer(), Aspect_TOL_OVERLAY, Standard_True /*aSizeDependant*/);
+#endif
 
         setBackgroundGradient(myBGColor.red(), myBGColor.green(), myBGColor.blue());
 
@@ -1055,6 +1065,7 @@ Standard_Boolean TIGLViewerWidget::convertToPlane(Standard_Integer Xs,
 
 void TIGLViewerWidget::drawRubberBand( const QPoint origin, const QPoint position )
 {
+#if OCC_VERSION_HEX < 0x070000
     if ( !myLayer.IsNull() && !myView.IsNull() ) {
 
         double left   = origin.x();
@@ -1096,33 +1107,19 @@ void TIGLViewerWidget::drawRubberBand( const QPoint origin, const QPoint positio
         myLayer->ClosePrimitive();
         myLayer->End();
     }
+#endif
+//TODO: selection using the new rubberband class
 }
 
 
 void TIGLViewerWidget::hideRubberBand( void )
 {
+#if OCC_VERSION_HEX < 0x070000
     if (!myLayer.IsNull() ) {
         myLayer->Clear();
     }
-}
-
-
-int TIGLViewerWidget::paintCallBack (Aspect_Drawable /* drawable */,
-                                     void* aPointer,
-                                     Aspect_GraphicCallbackStruct* /* data */)
-{
-  TIGLViewerWidget *aWidget = (TIGLViewerWidget *) aPointer;
-  aWidget->paintOCC();
-  return 0;
-}
-
-
-// TODO: this routine prevents setting the background color
-// either we should set it back here or we should skip it.
-// Also, this code confuses the ftgl renderer introduced in
-// OCC 6.4.0. Thus we should only use it with old OCC
-void TIGLViewerWidget::paintOCC( void )
-{
+#endif
+//TODO: selection using the new rubberband class
 }
 
 

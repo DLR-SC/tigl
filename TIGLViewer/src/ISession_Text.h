@@ -18,6 +18,8 @@
 #include <Standard_CString.hxx>
 #include <SelectMgr_SelectableObject.hxx>
 
+#include <occt_compat.h>
+
 class TCollection_AsciiString;
 class SelectMgr_Selection;
 

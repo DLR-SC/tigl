@@ -570,7 +570,7 @@ void CCPACSWingComponentSegment::UpdateProjectedLeadingEdge()
     LEPointsProjected[0]         = innew;
 
     // build projected leading edge curve
-    projLeadingEdge = CPointsToLinearBSpline(LEPointsProjected);
+    projLeadingEdge = CPointsToLinearBSpline(LEPointsProjected).Curve();
 }
 
 

@@ -18,8 +18,11 @@
 #define _TIGLAISTriangulation_HeaderFile
 
 #include <Standard_DefineHandle.hxx>
+#include <Poly_Triangulation.hxx>
+#include <TColStd_HArray1OfInteger.hxx>
 
 #include <AIS_InteractiveObject.hxx>
+#include <occt_compat.h>
 
 DEFINE_STANDARD_HANDLE(TIGLAISTriangulation,AIS_InteractiveObject)
 
