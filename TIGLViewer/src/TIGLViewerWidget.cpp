@@ -617,6 +617,7 @@ void TIGLViewerWidget::eraseSelected()
         myContext->EraseSelected(Standard_False);
 
         myContext->ClearCurrents();
+        myContext->UpdateCurrentViewer();
     }
 }
 

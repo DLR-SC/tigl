@@ -228,8 +228,8 @@ void TIGLViewerContext::displayShape(const TopoDS_Shape& loft, Quantity_Color co
 {
     TIGLViewerSettings& settings = TIGLViewerSettings::Instance();
     Handle(AIS_Shape) shape = new AIS_Shape(loft);
-    shape->SetMaterial(Graphic3d_NOM_METALIZED);
-    shape->SetColor(color);
+    myContext->SetMaterial(shape, Graphic3d_NOM_METALIZED, Standard_False);
+    myContext->SetColor(shape, color, Standard_False);
     shape->SetOwnDeviationCoefficient(settings.tesselationAccuracy());
     myContext->Display(shape, Standard_True);
     
