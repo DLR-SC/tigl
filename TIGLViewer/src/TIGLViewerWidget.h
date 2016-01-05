@@ -49,7 +49,11 @@
 #include <AIS_Shape.hxx>
 #if OCC_VERSION_HEX < 0x070000
 #include <Visual3d_Layer.hxx>
+#else
+#include <AIS_RubberBand.hxx>
+#define Handle_AIS_RubberBand Handle(AIS_RubberBand)
 #endif
+
 class TopoDS_Shape;
 class gp_Pnt;
 class gp_Vec;
@@ -183,6 +187,8 @@ private: // members
     Handle_AIS_InteractiveContext   myContext;
 #if OCC_VERSION_HEX < 0x070000
     Handle_Visual3d_Layer           myLayer;
+#else
+    Handle_AIS_RubberBand           whiteRect, blackRect;
 #endif
 
     Standard_Boolean                myViewResized;

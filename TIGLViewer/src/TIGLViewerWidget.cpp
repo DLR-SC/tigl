@@ -62,6 +62,8 @@
 
 #if OCC_VERSION_HEX < 0x070000
 #include "Visual3d_Layer.hxx"
+#else
+#include "AIS_RubberBand.hxx"
 #endif
 
 #include "V3d_DirectionalLight.hxx"
@@ -83,16 +85,19 @@ TIGLViewerWidget::TIGLViewerWidget( const Handle(AIS_InteractiveContext)& aConte
     myViewer          ( NULL ),
 #if OCC_VERSION_HEX < 0x070000
     myLayer           ( NULL ),
+#else
+    whiteRect         ( NULL ),
+    blackRect         ( NULL ),
 #endif
-    myViewResized      ( Standard_False ),
+    myViewResized     ( Standard_False ),
     myViewInitialized ( Standard_False ),
-    myMode              ( CurAction3d_Undefined ),
+    myMode            ( CurAction3d_Undefined ),
     myGridSnap        ( Standard_False ),
-    myDetection          ( AIS_SOD_Nothing ),
-    myPrecision          ( 0.001 ),
+    myDetection       ( AIS_SOD_Nothing ),
+    myPrecision       ( 0.001 ),
     myViewPrecision   ( 0.0 ),
     myKeyboardFlags   ( Qt::NoModifier ),
-    myButtonFlags      ( Qt::NoButton )
+    myButtonFlags     ( Qt::NoButton )
 {
     initialize();
     myContext = aContext;
@@ -105,6 +110,9 @@ void TIGLViewerWidget::initialize()
     
 #if OCC_VERSION_HEX < 0x070000
     myLayer           = NULL;
+#else
+    whiteRect = new AIS_RubberBand (Quantity_Color(Quantity_NOC_WHITE), Aspect_TOL_DOT, 1.0);
+    blackRect = new AIS_RubberBand (Quantity_Color(Quantity_NOC_BLACK), Aspect_TOL_DOT, 1.0);
 #endif
     myMode              = CurAction3d_Undefined;
     myGridSnap        = Standard_False;
@@ -1063,13 +1071,18 @@ Standard_Boolean TIGLViewerWidget::convertToPlane(Standard_Integer Xs,
 
 void TIGLViewerWidget::drawRubberBand( const QPoint origin, const QPoint position )
 {
+    double left   = origin.x();
+    double right  = position.x();
+    double top    = origin.y();
+    double bottom = position.y();
+
+    // Layers were removed in OCCT 7. Instead, the platform
+    // independent AIS_RubberBand was introduced
+    //
+    // Therefore are we using layers in OCCT 6x and
+    // AIS_Rubberband in OCCT 7x
 #if OCC_VERSION_HEX < 0x070000
     if ( !myLayer.IsNull() && !myView.IsNull() ) {
-
-        double left   = origin.x();
-        double right  = position.x();
-        double top    = origin.y();
-        double bottom = position.y();
 
         int witdh, height;
         myView->Window()->Size(witdh, height);
@@ -1105,8 +1118,26 @@ void TIGLViewerWidget::drawRubberBand( const QPoint origin, const QPoint positio
         myLayer->ClosePrimitive();
         myLayer->End();
     }
+#else
+    if (!myContext.IsNull()) {
+        // Draw black-white dotted, imitate a shadowy look
+        // This makes it possible to draw even on white or
+        // black backgrounds
+        whiteRect->SetRectangle(left, height()-bottom, right, height()-top);
+        blackRect->SetRectangle(left+1, height()-bottom-1, right+1, height()-top-1);
+
+        if (!myContext->IsDisplayed (whiteRect)) {
+            myContext->Display (whiteRect, Standard_False);
+            myContext->Display (blackRect, Standard_False);
+        }
+        else {
+            myContext->Redisplay (whiteRect, Standard_False);
+            myContext->Redisplay (blackRect, Standard_False);
+        }
+
+        myContext->CurrentViewer()->RedrawImmediate();
+    }
 #endif
-//TODO: selection using the new rubberband class
 }
 
 
@@ -1116,8 +1147,13 @@ void TIGLViewerWidget::hideRubberBand( void )
     if (!myLayer.IsNull() ) {
         myLayer->Clear();
     }
+#else
+    if (!myContext.IsNull()) {
+        myContext->Remove (whiteRect, Standard_False);
+        myContext->Remove (blackRect, Standard_False);
+        myContext->CurrentViewer()->RedrawImmediate();
+    }
 #endif
-//TODO: selection using the new rubberband class
 }
 
 
