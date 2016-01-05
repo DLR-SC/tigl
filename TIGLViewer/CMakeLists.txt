@@ -98,6 +98,7 @@ set(tv_src
     TIGLViewerScreenshotDialog.cpp
     TIGLViewerDrawVectorDialog.cpp
     TIGLViewerScopedCommand.cpp
+    TIGLQAspectWindow.cpp
 )
 	
 # normal header files
@@ -114,6 +115,7 @@ set(tv_hdr
     TIGLViewerLogHistory.h
     TIGLViewerLoggerHTMLDecorator.h
     TIGLViewerScopedCommand.h
+    TIGLQAspectWindow.h
 )
 
 # qobject header files that have to be moced

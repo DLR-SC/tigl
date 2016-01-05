@@ -27,12 +27,6 @@
 #include <Quantity_Color.hxx>
 #include <Standard_Version.hxx>
 
-#if defined WNT
-#include <WNT_Window.hxx>
-#else
-#include <Aspect_Window.hxx>
-#endif
-
 #include "TIGLViewer.h"
 
 
@@ -175,12 +169,6 @@ protected: // methods
 
 private: // members
     void initializeOCC(const Handle_AIS_InteractiveContext& aContext = NULL);
-
-#if defined WNT
-    Handle_WNT_Window               myWindow;
-#else
-    Handle_Aspect_Window            myWindow;
-#endif // WNT
 
     Handle_V3d_View                 myView;
     Handle_V3d_Viewer               myViewer;

@@ -35,6 +35,7 @@
 #include <QInputDialog>
 
 #include "TIGLViewerInternal.h"
+#include "TIGLQAspectWindow.h"
 #include "TIGLViewerDocument.h"
 #include "TIGLViewerSettings.h"
 #include "ISession_Point.h"
@@ -175,15 +176,21 @@ void TIGLViewerWidget::initializeOCC(const Handle(AIS_InteractiveContext)& aCont
         myViewer  = myContext->CurrentViewer();
         myView    = myViewer->CreateView();
 
-#if defined _WIN32 || defined __WIN32__
-        myWindow = new WNT_Window((Aspect_Handle)winId());
-#elif defined __APPLE__
-        myWindow = new Cocoa_Window((NSView *)winId());
+        Handle_Aspect_Window myWindow;
+        
+#if OCC_VERSION_HEX >= 0x060800
+        myWindow = new QtAspectWindow(this);
 #else
+  #if defined _WIN32 || defined __WIN32__
+        myWindow = new WNT_Window((Aspect_Handle)winId());
+  #elif defined __APPLE__
+        myWindow = new Cocoa_Window((NSView *)winId());
+  #else
         Aspect_Handle windowHandle = (Aspect_Handle)winId();
         myWindow = new Xw_Window(myContext->CurrentViewer()->Driver()->GetDisplayConnection(),
                                  windowHandle);
-#endif
+  #endif
+#endif // OCC_VERSION_HEX >= 0x060800
 
         // Set my window (Hwnd) into the OCC view
         myView->SetWindow( myWindow );
@@ -204,7 +211,7 @@ void TIGLViewerWidget::initializeOCC(const Handle(AIS_InteractiveContext)& aCont
         myViewResized = Standard_True;
         // Set default cursor as a cross
         setMode( CurAction3d_Nothing );
-        // This is to signal any connected slots that the view is ready.
+
         myViewInitialized = Standard_True;
 
 #if OCC_VERSION_HEX < 0x070000
@@ -212,7 +219,8 @@ void TIGLViewerWidget::initializeOCC(const Handle(AIS_InteractiveContext)& aCont
 #endif
 
         setBackgroundGradient(myBGColor.red(), myBGColor.green(), myBGColor.blue());
-
+        
+        // This is to signal any connected slots that the view is ready.
         emit initialized();
     }
 }
@@ -232,7 +240,7 @@ void TIGLViewerWidget::paintEvent ( QPaintEvent * /* e */)
         }
     }
     if ( !myViewer.IsNull() ) {
-        redraw( true );    
+        redraw( true );
     }
 }
 
