@@ -57,8 +57,25 @@ int main(int argc, char *argv[])
 #else
     shaderDir += "/../share/tigl/shaders";
 #endif
-    if (qgetenv("CSF_ShadersDirectory").isNull()) {
+    
+    QByteArray envVar = qgetenv("CSF_ShadersDirectory");
+    if (envVar.isNull()) {
         qputenv("CSF_ShadersDirectory", shaderDir.toUtf8());
+    }
+    else {
+        shaderDir = envVar;
+    }
+    
+    // check existance of shader dir
+    if (!QFile(shaderDir+"/PhongShading.fs").exists()) {
+        std::stringstream str;
+        str << "Illegal or non existing shader directory "
+            << "<p><b>" << shaderDir.toStdString() << "</b></p>"
+            << "Set the enviroment variable <b>CSF_ShadersDirectory</b> to provide a path for the OpenCASCADE shaders.";
+        QMessageBox::critical(0, "Startup error...",
+                                  str.str().c_str(),
+                                  QMessageBox::Ok );
+        return 1;
     }
 
     int retval = parseArguments(app.arguments());
