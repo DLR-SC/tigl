@@ -78,6 +78,12 @@ find_package(OCE 0.15 COMPONENTS ${OCC_LIBS} QUIET)
 if(OCE_FOUND)
   set(OpenCASCADE_LIBRARIES ${OCC_LIBS})
   set(OpenCASCADE_INCLUDE_DIR ${OCE_INCLUDE_DIRS})
+  # get opencascade version
+  IF(EXISTS "${OpenCASCADE_INCLUDE_DIR}/Standard_Version.hxx")
+    FILE(STRINGS "${OpenCASCADE_INCLUDE_DIR}/Standard_Version.hxx" occ_version_str REGEX "^#define[\t ]+OCC_VERSION_COMPLETE[\t ]+\".*\"")
+    STRING(REGEX REPLACE "^#define[\t ]+OCC_VERSION_COMPLETE[\t ]+\"([^\"]*)\".*" "\\1" OCC_VERSION_STRING "${occ_version_str}")
+    UNSET(occ_version_str)
+  ENDIF()
   # get directory of shared libs
   get_target_property(TKERNEL_LOCATION TKernel LOCATION)
   get_filename_component(OpenCASCADE_DLL_DIRECTORY ${TKERNEL_LOCATION} PATH)
