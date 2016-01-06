@@ -284,6 +284,16 @@ if (WIN32 OR APPLE)
   endif()
 endif()
 
+# install shader files from opencascade
+if (NOT OCC_VERSION_STRING VERSION_LESS "6.9.0")
+   file(GLOB SHADER_FILES PATH "${OpenCASCADE_SHADER_DIRECTORY}/*")
+   if (APPLE)
+     install(FILES ${SHADER_FILES} DESTINATION ${PROGNAME}.app/Contents/Resources/ COMPONENT viewer)
+   else()
+     install(FILES ${SHADER_FILES} DESTINATION share/tigl/shaders COMPONENT viewer)
+   endif(APPLE)
+endif()
+
 else (QT4_FOUND OR Qt5Widgets_FOUND)
 message(STATUS "No qt was found. TIGLViewer will not be build!")
 endif(QT4_FOUND OR Qt5Widgets_FOUND)
