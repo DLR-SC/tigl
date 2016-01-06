@@ -5,6 +5,7 @@ Created on Sat Apr 27 22:38:05 2013
 @author: Martin Siggel <martin.siggel@dlr.de>
 """
 
+from __future__ import print_function
 import re
 import copy
 
@@ -32,8 +33,8 @@ class CHeaderFileParser(object):
         self.read_header(filename)
         self.parse_defines()
         self.parse_methods()
-        print 'Parsed %d functions, %d enums, and %d typedefs'\
-            % (len(self.declarations), len(self.enums), len(self.typedefs))
+        print('Parsed %d functions, %d enums, and %d typedefs'\
+            % (len(self.declarations), len(self.enums), len(self.typedefs)))
     
     def read_header(self, filename):
         fop = open( filename, 'r')
@@ -444,7 +445,7 @@ class CFunctionDec(object):
             self.returns_error = False
         
         # apply outpt args
-        for index, outarg in annotation.outargs.iteritems():
+        for index, outarg in annotation.outargs.items():
             if index >= len(self.arguments):
                 raise Exception('annotation index is too large for function %s'\
                     % self.method_name)
@@ -463,7 +464,7 @@ class CFunctionDec(object):
                     self.arguments[sizeindex].size_ref = index
             
         # apply input args
-        for index, inarg in annotation.inargs.iteritems():
+        for index, inarg in annotation.inargs.items():
             if index >= len(self.arguments):
                 raise Exception('annotation index is too large for function %s'\
                     % self.method_name)

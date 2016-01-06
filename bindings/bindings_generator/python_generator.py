@@ -52,7 +52,7 @@ class PythonGenerator(object):
             string += self.license
         
         string += 'import sys, ctypes\n\n'
-        for enumname, values in cparser.enums.iteritems():
+        for enumname, values in cparser.enums.items():
             string += self.create_enum(enumname, values) + '\n\n'
 
         string += self.create_error_handler(cparser)+'\n\n'
@@ -153,10 +153,10 @@ class PythonGenerator(object):
         string = ''
         string = 'class %s(object):\n' % enumname
         indent = 4*' '
-        for index, val in values.iteritems():
+        for index, val in values.items():
             string += indent + '%s = %d\n' % (val, index)
         string += indent + '_names = {}\n'
-        for index, val in values.iteritems():
+        for index, val in values.items():
             string += indent + '_names[%d] = \'%s\'\n' % (index, val)
         
         return string

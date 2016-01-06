@@ -132,7 +132,7 @@ end type
 
         # enum declarations
         string += '\n\n'
-        for enumname, values in cparser.enums.iteritems():
+        for enumname, values in cparser.enums.items():
             string += self.create_enum(enumname, values) + '\n\n'
 
         # additional declarations
@@ -176,7 +176,7 @@ end type
 
         string += '\n\n'
         string += 'contains\n'
-        for method_code in self.helper_methods.values():
+        for method_code in list(self.helper_methods.values()):
             for line in method_code.splitlines():
                 string += indent + line + '\n'
         string += '\n\n'
@@ -215,7 +215,7 @@ end type
         string = '! enum ' + enumname + '\n'
         string += 'enum, bind(C)\n'
 
-        for index, val in values.iteritems():
+        for index, val in values.items():
             string += indent + 'enumerator :: %s = %d\n' % (val, index)
         string += 'end enum'
         

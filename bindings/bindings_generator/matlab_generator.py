@@ -5,6 +5,7 @@ Created on Sat May  4 19:28:45 2013
 @author: Martin Sigel <martin.siggel@dlr.de>
 """
 
+from __future__ import print_function
 import os
 from datetime import date
 
@@ -107,7 +108,7 @@ class MatlabGenerator(object):
                 string +='*mxGetPr(plhs[%d]) = (double)%s;\n' % (index, arg.name)
             else:
                 #pass
-                print arg.name, arg.type
+                print(arg.name, arg.type)
                 raise Exception('Conversion from "%s, %s" to mx not yet implemented' \
                     % (arg.type + '*'*arg.npointer, arg.name))    
         else:
