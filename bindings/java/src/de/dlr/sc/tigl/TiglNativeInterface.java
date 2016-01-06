@@ -17,7 +17,7 @@
 */
 
 /* 
-* This file is automatically created from tigl.h on 2015-06-24.
+* This file is automatically created from tigl.h on 2016-01-06.
 * If you experience any bugs please contact the authors
 */
 
@@ -71,6 +71,7 @@ public class TiglNativeInterface {
     public static native int tiglWingComponentSegmentPointGetSegmentEtaXsi(int cpacsHandle, String componentSegmentUID, double eta, double xsi, PointerByReference wingUID, PointerByReference segmentUID, DoubleByReference segmentEta, DoubleByReference segmentXsi, DoubleByReference errorDistance);
     public static native int tiglWingSegmentPointGetComponentSegmentEtaXsi(int cpacsHandle, String segmentUID, String componentSegmentUID, double segmentEta, double segmentXsi, DoubleByReference eta, DoubleByReference xsi);
     public static native int tiglWingComponentSegmentGetSegmentIntersection(int cpacsHandle, String componentSegmentUID, String segmentUID, double csEta1, double csXsi1, double csEta2, double csXsi2, double segmentEta, DoubleByReference segmentXsi, IntByReference hasWarning);
+    public static native int tiglWingComponentSegmentComputeEtaIntersection(int cpacsHandle, String componentSegmentUID, double csEta1, double csXsi1, double csEta2, double csXsi2, double eta, DoubleByReference xsi, IntByReference hasWarning);
     public static native int tiglWingComponentSegmentGetNumberOfSegments(int cpacsHandle, String componentSegmentUID, IntByReference nsegments);
     public static native int tiglWingComponentSegmentGetSegmentUID(int cpacsHandle, String componentSegmentUID, int segmentIndex, PointerByReference segmentUID);
     public static native int tiglGetFuselageCount(int cpacsHandle, IntByReference fuselageCountPtr);
