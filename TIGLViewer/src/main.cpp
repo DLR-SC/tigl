@@ -49,6 +49,17 @@ int main(int argc, char *argv[])
 #elif defined __APPLE__
     setlocale(LC_NUMERIC, "C");
 #endif
+    
+    // set shader file location
+    QString shaderDir = QCoreApplication::applicationDirPath();
+#ifdef __APPLE__
+    shaderDir += "/../Resources";
+#else
+    shaderDir += "/../share/tigl/shaders";
+#endif
+    if (qgetenv("CSF_ShadersDirectory").isNull()) {
+        qputenv("CSF_ShadersDirectory", shaderDir.toUtf8());
+    }
 
     int retval = parseArguments(app.arguments());
     if (retval != 0) {
