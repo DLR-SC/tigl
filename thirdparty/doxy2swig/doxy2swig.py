@@ -29,6 +29,7 @@ output will be written (the file will be clobbered).
 #
 ######################################################################
 
+from __future__ import print_function
 from xml.dom import minidom
 import re
 import textwrap
@@ -150,7 +151,7 @@ class Doxy2SWIG:
 
     def add_text(self, value):
         """Adds text corresponding to `value` into `self.pieces`."""
-        if type(value) in (types.ListType, types.TupleType):
+        if type(value) in (list, tuple):
             self.pieces.extend(value)
         else:
             self.pieces.append(value)
@@ -210,17 +211,17 @@ class Doxy2SWIG:
         kind = node.attributes['kind'].value
         if kind in ('class', 'struct'):
             prot = node.attributes['prot'].value
-            if prot <> 'public':
+            if prot != 'public':
                 return
             names = ('compoundname', 'briefdescription',
                      'detaileddescription', 'includes')
             first = self.get_specific_nodes(node, names)
             for n in names:
-                if first.has_key(n):
+                if n in first:
                     self.parse(first[n])
             self.add_text(['";','\n'])
             for n in node.childNodes:
-                if n not in first.values():
+                if n not in list(first.values()):
                     self.parse(n)
         elif kind in ('file', 'namespace'):
             nodes = node.getElementsByTagName('sectiondef')
@@ -233,7 +234,7 @@ class Doxy2SWIG:
 
     def do_parameterlist(self, node):
         text='unknown'
-        for key, val in node.attributes.items():
+        for key, val in list(node.attributes.items()):
             if key == 'kind':
                 if val == 'param': text = 'Parameters'
                 elif val == 'exception': text = 'Exceptions'
@@ -280,7 +281,7 @@ class Doxy2SWIG:
             if name[:8] == 'operator': # Don't handle operators yet.
                 return
 
-            if not first.has_key('definition') or \
+            if 'definition' not in first or \
                    kind in ['variable', 'typedef']:
                 return
 
@@ -308,7 +309,7 @@ class Doxy2SWIG:
                 self.add_text(' %s::%s "\n%s'%(cname, name, defn))
 
             for n in node.childNodes:
-                if n not in first.values():
+                if n not in list(first.values()):
                     self.parse(n)
             self.add_text(['";', '\n'])
         
@@ -372,7 +373,7 @@ class Doxy2SWIG:
             if not os.path.exists(fname):
                 fname = os.path.join(self.my_dir,  fname)
             if not self.quiet:
-                print "parsing file: %s"%fname
+                print("parsing file: %s"%fname)
             p = Doxy2SWIG(fname, self.include_function_definition, self.quiet)
             p.generate()
             self.pieces.extend(self.clean_pieces(p.pieces))
