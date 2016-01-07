@@ -29,6 +29,8 @@
 #include "TIGLViewerWindow.h"
 #include "CommandLineParameters.h"
 
+#include <Standard_Version.hxx>
+
 using namespace std;
 
 int parseArguments(QStringList);
@@ -48,6 +50,37 @@ int main(int argc, char *argv[])
     setlocale(LC_NUMERIC, "C");
 #elif defined __APPLE__
     setlocale(LC_NUMERIC, "C");
+#endif
+    
+    // set shader file location
+    QString shaderDir = QCoreApplication::applicationDirPath();
+#ifdef __APPLE__
+    shaderDir += "/../Resources";
+#else
+    shaderDir += "/../share/tigl/shaders";
+#endif
+    
+    QByteArray envVar = qgetenv("CSF_ShadersDirectory");
+    if (envVar.isNull()) {
+        qputenv("CSF_ShadersDirectory", shaderDir.toUtf8());
+    }
+    else {
+        shaderDir = envVar;
+    }
+    
+#if OCC_VERSION_HEX >= 0x060900
+    // check existance of shader dir
+    // This is only required for OpenCASCADE 6.9.0 and newer
+    if (!QFile(shaderDir+"/PhongShading.fs").exists()) {
+        std::stringstream str;
+        str << "Illegal or non existing shader directory "
+            << "<p><b>" << shaderDir.toStdString() << "</b></p>"
+            << "Set the enviroment variable <b>CSF_ShadersDirectory</b> to provide a path for the OpenCASCADE shaders.";
+        QMessageBox::critical(0, "Startup error...",
+                                  str.str().c_str(),
+                                  QMessageBox::Ok );
+        return 1;
+    }
 #endif
 
     int retval = parseArguments(app.arguments());
