@@ -29,6 +29,8 @@
 #include "TIGLViewerWindow.h"
 #include "CommandLineParameters.h"
 
+#include <Standard_Version.hxx>
+
 using namespace std;
 
 int parseArguments(QStringList);
@@ -66,7 +68,9 @@ int main(int argc, char *argv[])
         shaderDir = envVar;
     }
     
+#if OCC_VERSION_HEX >= 0x060900
     // check existance of shader dir
+    // This is only required for OpenCASCADE 6.9.0 and newer
     if (!QFile(shaderDir+"/PhongShading.fs").exists()) {
         std::stringstream str;
         str << "Illegal or non existing shader directory "
@@ -77,6 +81,7 @@ int main(int argc, char *argv[])
                                   QMessageBox::Ok );
         return 1;
     }
+#endif
 
     int retval = parseArguments(app.arguments());
     if (retval != 0) {
