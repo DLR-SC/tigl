@@ -16,7 +16,7 @@
 * limitations under the License.
 */
 
-%module configuration
+%module (package="tigl") configuration
 
 %include common.i
 

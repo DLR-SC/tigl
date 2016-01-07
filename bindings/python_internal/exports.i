@@ -16,7 +16,7 @@
 * limitations under the License.
 */
 
-%module exports
+%module (package="tigl") exports
 
 %include common.i
 

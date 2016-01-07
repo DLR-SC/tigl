@@ -17,7 +17,7 @@
 */
 
 
-%module core
+%module (package="tigl") core
 
 %include common.i
 

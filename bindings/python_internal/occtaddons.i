@@ -16,7 +16,7 @@
 * limitations under the License.
 */
 
-%module occtaddons
+%module (package="tigl") occtaddons
 
 %include std_string.i
 

@@ -16,7 +16,7 @@
 * limitations under the License.
 */
 
-%module geometry
+%module (package="tigl") geometry
 
 %include common.i
 
