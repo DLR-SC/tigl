@@ -87,6 +87,7 @@
 #include "Geom_BSplineCurve.hxx"
 #include "GeomAPI_PointsToBSpline.hxx"
 #include "GeomAdaptor_HCurve.hxx"
+#include "GeomFill.hxx"
 #include "GeomFill_SimpleBound.hxx"
 #include "GeomFill_BSplineCurves.hxx"
 #include "GeomFill_FillingStyle.hxx"
@@ -856,6 +857,27 @@ bool CCPACSWingSegment::GetIsOnTop(gp_Pnt pnt)
     }
 }
 
+bool CCPACSWingSegment::GetIsOn(const gp_Pnt& pnt)
+{
+    bool isOnLoft = CTiglAbstractSegment::GetIsOn(pnt);
+
+    if (isOnLoft) {
+        return true;
+    }
+
+    MakeChordSurface();
+
+    // check if point on chord surface
+    double tolerance = 0.03;
+    GeomAPI_ProjectPointOnSurf Proj(pnt, cordFace);
+    if (Proj.NbPoints() > 0 && Proj.LowerDistance() < tolerance) {
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
 void CCPACSWingSegment::MakeChordSurface()
 {
     if (chordsurfaceValid) {
@@ -878,6 +900,10 @@ void CCPACSWingSegment::MakeChordSurface()
     outer_tep = transformProfilePoint(wing->GetTransformation(), outerConnection, outer_tep);
         
     cordSurface.setQuadriangle(inner_lep.XYZ(), outer_lep.XYZ(), inner_tep.XYZ(), outer_tep.XYZ());
+
+    Handle(Geom_Curve) innerEdge = GC_MakeSegment(inner_lep, inner_tep).Value();
+    Handle(Geom_Curve) outerEdge = GC_MakeSegment(outer_lep, outer_tep).Value();
+    cordFace = GeomFill::Surface(innerEdge, outerEdge);
 
     chordsurfaceValid = true;
 }
