@@ -25,12 +25,7 @@
 #include <QWidget>
 #include <QMetaType>
 #include <Quantity_Color.hxx>
-
-#if defined WNT
-#include <Handle_WNT_Window.hxx>
-#else
-#include <Handle_Aspect_Window.hxx>
-#endif
+#include <Standard_Version.hxx>
 
 #include "TIGLViewer.h"
 
@@ -43,10 +38,16 @@
 
 #define VALZWMIN 1 /** For elastic bean selection */
 
-class Handle_AIS_InteractiveContext;
-class Handle_V3d_View;
-class Handle_Visual3d_Layer;
-class Handle_AIS_Shape;
+#include <AIS_InteractiveContext.hxx>
+#include <V3d_View.hxx>
+#include <AIS_Shape.hxx>
+#if OCC_VERSION_HEX < 0x070000
+#include <Visual3d_Layer.hxx>
+#else
+#include <AIS_RubberBand.hxx>
+#define Handle_AIS_RubberBand Handle(AIS_RubberBand)
+#endif
+
 class TopoDS_Shape;
 class gp_Pnt;
 class gp_Vec;
@@ -169,17 +170,15 @@ protected: // methods
 private: // members
     void initializeOCC(const Handle_AIS_InteractiveContext& aContext = NULL);
 
-#if defined WNT
-    Handle_WNT_Window               myWindow;
-#else
-    Handle_Aspect_Window            myWindow;
-#endif // WNT
-
     Handle_V3d_View                 myView;
     Handle_V3d_Viewer               myViewer;
     Handle_AIS_InteractiveContext   myContext;
+#if OCC_VERSION_HEX < 0x070000
     Handle_Visual3d_Layer           myLayer;
-                    
+#else
+    Handle_AIS_RubberBand           whiteRect, blackRect;
+#endif
+
     Standard_Boolean                myViewResized;
     Standard_Boolean                myViewInitialized;
     CurrentAction3d                 myMode;
@@ -233,10 +232,6 @@ private: // methods
                                     Standard_Real& Y,
                                     Standard_Real& Z);
                                           
-    void paintOCC();
-    static int paintCallBack (Aspect_Drawable, 
-                              void*, 
-                              Aspect_GraphicCallbackStruct*);
 
 };
 

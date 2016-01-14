@@ -170,7 +170,7 @@ void TIGLAISTriangulation::Compute(const Handle(PrsMgr_PresentationManager3d)& a
         case 0: {
             const TColgp_Array1OfPnt& nodes = myTriangulation->Nodes();
             const Poly_Array1OfTriangle& triangles = myTriangulation->Triangles();
-            Handle_Graphic3d_AspectLine3d aspect = myDrawer->WireAspect()->Aspect();
+            Handle(Graphic3d_AspectLine3d) aspect = myDrawer->WireAspect()->Aspect();
      
             Handle(Graphic3d_ArrayOfPrimitives) segments =  new Graphic3d_ArrayOfSegments(nodes.Length(),triangles.Length()*6);
             for (Standard_Integer i = nodes.Lower(); i <= nodes.Upper(); i++ ) {
@@ -204,7 +204,7 @@ void TIGLAISTriangulation::ComputeSelection(const Handle(SelectMgr_Selection)& a
     Handle(SelectMgr_EntityOwner) eown = new SelectMgr_EntityOwner(this,0);
 
     TopLoc_Location loc;
-    Handle_Select3D_SensitiveTriangulation aSensitiveTria = new Select3D_SensitiveTriangulation(eown, myTriangulation, loc);
+    Handle(Select3D_SensitiveTriangulation) aSensitiveTria = new Select3D_SensitiveTriangulation(eown, myTriangulation, loc);
     aSelection->Add(aSensitiveTria);
 }
 

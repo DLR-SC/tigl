@@ -19,9 +19,10 @@
 #ifndef FUNCTIONTOBSPLINE_H
 #define FUNCTIONTOBSPLINE_H
 
-#include <Handle_Geom_BSplineCurve.hxx>
 #include "tiglmathfunctions.h"
 #include "tigl_internal.h"
+
+#include <Geom_BSplineCurve.hxx>
 
 namespace tigl
 {
@@ -55,7 +56,7 @@ public:
     ~CFunctionToBspline();
 
     /// Computes the B-Spline approximation
-    Handle_Geom_BSplineCurve Curve();
+    Handle(Geom_BSplineCurve) Curve();
 
     /// returns the error made by spline approximation
     double ApproxError();

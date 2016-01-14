@@ -400,7 +400,7 @@ TopoDS_Shape CTiglTransformation::Transform(const TopoDS_Shape& shape) const
         return trafo.Shape();
     }
     else {
-        const BRepBuilderAPI_GTransform brepBuilderGTransform(shape, Get_gp_GTrsf(), Standard_True);
+        BRepBuilderAPI_GTransform brepBuilderGTransform(shape, Get_gp_GTrsf(), Standard_True);
         const TopoDS_Shape& transformedShape = brepBuilderGTransform.Shape();
         return transformedShape;
     }

@@ -38,7 +38,6 @@ TIGLViewerContext::TIGLViewerContext()
     TCollection_ExtendedString a3DName("Visual3D");
     myViewer = createViewer( a3DName.ToExtString(), "", 1000.0 );
     myViewer->SetDefaultLights();
-    myViewer->SetZBufferManagment(Standard_False);
     myViewer->SetDefaultViewProj( V3d_Zpos );    // Top view
     myContext = new AIS_InteractiveContext( myViewer );
 
@@ -61,17 +60,17 @@ TIGLViewerContext::~TIGLViewerContext()
 
 }
 
-Handle_V3d_Viewer& TIGLViewerContext::getViewer()
+Handle(V3d_Viewer)& TIGLViewerContext::getViewer()
 { 
     return myViewer; 
 }
 
-Handle_AIS_InteractiveContext& TIGLViewerContext::getContext()
+Handle(AIS_InteractiveContext)& TIGLViewerContext::getContext()
 { 
     return myContext; 
 }
 
-Handle_V3d_Viewer TIGLViewerContext::createViewer( const Standard_ExtString aName,
+Handle(V3d_Viewer) TIGLViewerContext::createViewer( const Standard_ExtString aName,
                                                    const Standard_CString aDomain,
                                                    const Standard_Real ViewSize )
 {
@@ -229,8 +228,8 @@ void TIGLViewerContext::displayShape(const TopoDS_Shape& loft, Quantity_Color co
 {
     TIGLViewerSettings& settings = TIGLViewerSettings::Instance();
     Handle(AIS_Shape) shape = new AIS_Shape(loft);
-    shape->SetMaterial(Graphic3d_NOM_METALIZED);
-    shape->SetColor(color);
+    myContext->SetMaterial(shape, Graphic3d_NOM_METALIZED, Standard_False);
+    myContext->SetColor(shape, color, Standard_False);
     shape->SetOwnDeviationCoefficient(settings.tesselationAccuracy());
     myContext->Display(shape, Standard_True);
     

@@ -103,7 +103,7 @@ std::vector<double> CCSTCurveBuilder::B() const
     return _b;
 }
 
-Handle_Geom_BSplineCurve CCSTCurveBuilder::Curve()
+Handle(Geom_BSplineCurve) CCSTCurveBuilder::Curve()
 {
     CSTFunction function(this);
     CFunctionToBspline approximator(function, 0., 1., 4, 1e-5, 10);
