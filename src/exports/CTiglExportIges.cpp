@@ -64,7 +64,7 @@ namespace
     /**
      * @brief WriteIGESFaceNames takes the names of each face and writes it into the IGES model.
      */
-    void WriteIGESFaceNames(Handle_Transfer_FinderProcess FP, const PNamedShape shape, int level)
+    void WriteIGESFaceNames(Handle(Transfer_FinderProcess) FP, const PNamedShape shape, int level)
     {
         if (!shape) {
             return;
@@ -97,12 +97,13 @@ namespace
             if ( FP->FindTypedTransient ( mapper, STANDARD_TYPE(IGESData_IGESEntity), entity ) ) {
                 Handle(TCollection_HAsciiString) str = new TCollection_HAsciiString(faceName.c_str());
                 entity->SetLabel(str);
-                entity->InitLevel(0, level);
+                Handle(IGESData_LevelListEntity) lle;
+                entity->InitLevel(lle, level);
             }
         }
     }
     
-    void WriteIGESShapeNames(Handle_Transfer_FinderProcess FP, const PNamedShape shape, int level)
+    void WriteIGESShapeNames(Handle(Transfer_FinderProcess) FP, const PNamedShape shape, int level)
     {
         if (!shape) {
             return;
@@ -127,11 +128,12 @@ namespace
         if ( FP->FindTypedTransient ( mapper, STANDARD_TYPE(IGESData_IGESEntity), entity ) ) {
             Handle(TCollection_HAsciiString) str = new TCollection_HAsciiString(shapeName.c_str());
             entity->SetLabel(str);
-            entity->InitLevel(0, level);
+            Handle(IGESData_LevelListEntity) lle;
+            entity->InitLevel(lle, level);
         }
     }
     
-    void WriteIgesWireName(Handle_Transfer_FinderProcess FP, const PNamedShape shape)
+    void WriteIgesWireName(Handle(Transfer_FinderProcess) FP, const PNamedShape shape)
     {
         if (!shape) {
             return;
@@ -155,7 +157,7 @@ namespace
         }
     }
     
-    void WriteIgesNames(Handle_Transfer_FinderProcess FP, const PNamedShape shape, int level)
+    void WriteIgesNames(Handle(Transfer_FinderProcess) FP, const PNamedShape shape, int level)
     {
         WriteIGESFaceNames(FP, shape, level);
         WriteIGESShapeNames(FP, shape, level);

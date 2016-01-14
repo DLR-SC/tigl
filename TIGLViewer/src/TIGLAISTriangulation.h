@@ -18,11 +18,11 @@
 #define _TIGLAISTriangulation_HeaderFile
 
 #include <Standard_DefineHandle.hxx>
+#include <Poly_Triangulation.hxx>
+#include <TColStd_HArray1OfInteger.hxx>
 
 #include <AIS_InteractiveObject.hxx>
-#include <Handle_Poly_Triangulation.hxx>
-#include <Handle_TColStd_HArray1OfInteger.hxx>
-#include <Handle_SelectMgr_Selection.hxx>
+#include <occt_compat.h>
 
 DEFINE_STANDARD_HANDLE(TIGLAISTriangulation,AIS_InteractiveObject)
 
@@ -45,13 +45,13 @@ public:
   
 //! Get the color for each node. <br>
 //! Each 32-bit color is Alpha << 24 + Blue << 16 + Green << 8 + Red <br>
-  Standard_EXPORT     Handle_TColStd_HArray1OfInteger GetColors() const;
+  Standard_EXPORT     Handle(TColStd_HArray1OfInteger) GetColors() const;
   
   Standard_EXPORT     void SetTriangulation(const Handle(Poly_Triangulation)& aTriangulation) ;
   //! Returns Poly_Triangulation . <br>
-  Standard_EXPORT     Handle_Poly_Triangulation GetTriangulation() const;
+  Standard_EXPORT     Handle(Poly_Triangulation) GetTriangulation() const;
 
-  DEFINE_STANDARD_RTTI(TIGLAISTriangulation)
+  DEFINE_STANDARD_RTTIEXT(TIGLAISTriangulation,AIS_InteractiveObject)
 
 protected:
 
@@ -71,8 +71,8 @@ private:
 //! after glColorMaterial(GL_AMBIENT_AND_DIFFUSE). Without it, colors look unnatural and flat. <br>
   Standard_EXPORT     Standard_Integer AttenuateColor(const Standard_Integer aColor,const Standard_Real aComponent) ;
 
-Handle_Poly_Triangulation myTriangulation;
-Handle_TColStd_HArray1OfInteger myColor;
+Handle(Poly_Triangulation) myTriangulation;
+Handle(TColStd_HArray1OfInteger) myColor;
 Standard_Integer myFlagColor;
 Standard_Integer myNbNodes;
 Standard_Integer myNbTriangles;

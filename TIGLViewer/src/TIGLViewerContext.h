@@ -22,6 +22,8 @@
 #define TIGLVIEWERCONTEXT_H
 
 #include <AIS_Shape.hxx>
+#include <AIS_InteractiveContext.hxx>
+#include <V3d_Viewer.hxx>
 #include <QObject>
 #include "TIGLViewer.h"
 #include "TIGLViewerColors.h"

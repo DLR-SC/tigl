@@ -24,7 +24,7 @@
 #include <gp_Pnt.hxx>
 #include <vector>
 
-class Handle_Geom_BSplineCurve;
+#include <Geom_BSplineCurve.hxx>
 
 namespace tigl
 {
@@ -48,10 +48,10 @@ public:
 
     TIGL_EXPORT CTiglSymetricSplineBuilder(const CPointContainer& points);
 
-    TIGL_EXPORT Handle_Geom_BSplineCurve GetBSpline() const;
+    TIGL_EXPORT Handle(Geom_BSplineCurve) GetBSpline() const;
 
 private:
-    Handle_Geom_BSplineCurve GetBSplineInternal(const CPointContainer& inputPoints) const;
+    Handle(Geom_BSplineCurve) GetBSplineInternal(const CPointContainer& inputPoints) const;
     void checkInputData() const;
 
     const CPointContainer& _points;

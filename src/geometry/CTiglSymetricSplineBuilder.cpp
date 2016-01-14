@@ -34,7 +34,7 @@
 namespace
 {
     // Symmetrizes two control points along the x-z plane
-    void symPole(Handle_Geom_BSplineCurve c, int i1, int i2) {
+    void symPole(Handle(Geom_BSplineCurve) c, int i1, int i2) {
         gp_Pnt p1 = c->Pole(i1);
         gp_Pnt p2 = c->Pole(i2);
 
@@ -61,7 +61,7 @@ CTiglSymetricSplineBuilder::CTiglSymetricSplineBuilder(const CPointContainer& po
 {
 }
 
-Handle_Geom_BSplineCurve CTiglSymetricSplineBuilder::GetBSpline() const
+Handle(Geom_BSplineCurve) CTiglSymetricSplineBuilder::GetBSpline() const
 {
     checkInputData();
 
@@ -70,13 +70,13 @@ Handle_Geom_BSplineCurve CTiglSymetricSplineBuilder::GetBSpline() const
     // symmetry wrt x-y plane
 
     // forward spline
-    Handle_Geom_BSplineCurve c1 =  GetBSplineInternal(_points);
+    Handle(Geom_BSplineCurve) c1 =  GetBSplineInternal(_points);
 
     CPointContainer pointsRev = _points;
     std::reverse(pointsRev.begin(), pointsRev.end());
 
     // backward spline
-    Handle_Geom_BSplineCurve c2 =  GetBSplineInternal(pointsRev);
+    Handle(Geom_BSplineCurve) c2 =  GetBSplineInternal(pointsRev);
     // reverse it, to achieve same direction as c1
     c2->Reverse();
 
@@ -99,7 +99,7 @@ Handle_Geom_BSplineCurve CTiglSymetricSplineBuilder::GetBSpline() const
     return c1;
 }
 
-Handle_Geom_BSplineCurve CTiglSymetricSplineBuilder::GetBSplineInternal(const CPointContainer& inputPoints) const
+Handle(Geom_BSplineCurve) CTiglSymetricSplineBuilder::GetBSplineInternal(const CPointContainer& inputPoints) const
 {
     CPointContainer points = inputPoints;
 
@@ -116,7 +116,7 @@ Handle_Geom_BSplineCurve CTiglSymetricSplineBuilder::GetBSplineInternal(const CP
     }
 
     // build interpolation curve
-    Handle_TColgp_HArray1OfPnt pnts = new TColgp_HArray1OfPnt(1,points.size());
+    Handle(TColgp_HArray1OfPnt) pnts = new TColgp_HArray1OfPnt(1,points.size());
     for (unsigned int i = 0; i < points.size(); ++i) {
         pnts->SetValue(i+1, points[i]);
     }
@@ -125,7 +125,7 @@ Handle_Geom_BSplineCurve CTiglSymetricSplineBuilder::GetBSplineInternal(const CP
     GeomAPI_Interpolate interpolator(pnts, true, 1e-7);
     interpolator.Perform();
 
-    Handle_Geom_BSplineCurve c = interpolator.Curve();
+    Handle(Geom_BSplineCurve) c = interpolator.Curve();
     // This is required in order to get a clamped bspline
     // with symmetric knots
     c->SetNotPeriodic();

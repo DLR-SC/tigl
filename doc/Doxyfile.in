@@ -90,9 +90,9 @@ WARN_LOGFILE           =
 #---------------------------------------------------------------------------
 # configuration options related to the input files
 #---------------------------------------------------------------------------
-INPUT                  = @PROJECT_SOURCE_DIR@/doc/ @PROJECT_SOURCE_DIR@/examples/README.md @PROJECT_BINARY_DIR@/doc @PROJECT_SOURCE_DIR@/src/api/
+INPUT                  = @PROJECT_SOURCE_DIR@/doc/ @PROJECT_SOURCE_DIR@/examples/README.md @PROJECT_BINARY_DIR@/doc @PROJECT_SOURCE_DIR@/src/api/ @PROJECT_BINARY_DIR@/src/api/
 INPUT_ENCODING         = UTF-8
-FILE_PATTERNS          = *.md tigl.h
+FILE_PATTERNS          = *.md tigl.h tigl_version.h
 RECURSIVE              = YES
 EXCLUDE                = 
 EXCLUDE_SYMLINKS       = NO

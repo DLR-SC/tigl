@@ -32,7 +32,6 @@
 
 #include <BRepBuilderAPI_MakeVertex.hxx>
 #include <TopoDS_Vertex.hxx>
-#include <Handle_AIS_Shape.hxx>
 #include <AIS_Shape.hxx>
 #include <AIS_InteractiveContext.hxx>
 #include <Aspect_RectangularGrid.hxx>
@@ -61,10 +60,10 @@
 
 #include <cstdlib>
 
-void ShowOrigin ( Handle_AIS_InteractiveContext theContext );
-void AddVertex  ( double x, double y, double z, Handle_AIS_InteractiveContext theContext );
+void ShowOrigin ( Handle(AIS_InteractiveContext) theContext );
+void AddVertex  ( double x, double y, double z, Handle(AIS_InteractiveContext) theContext );
 
-void AddVertex (double x, double y, double z, Handle_AIS_InteractiveContext theContext)
+void AddVertex (double x, double y, double z, Handle(AIS_InteractiveContext) theContext)
 {
     TopoDS_Vertex aVertex=BRepBuilderAPI_MakeVertex( gp_Pnt(x,y,z) );
     Handle(AIS_Shape) AISVertex = new AIS_Shape(aVertex);
@@ -72,7 +71,7 @@ void AddVertex (double x, double y, double z, Handle_AIS_InteractiveContext theC
     theContext->Display(AISVertex);
 }
 
-void ShowOrigin ( Handle_AIS_InteractiveContext theContext )
+void ShowOrigin ( Handle(AIS_InteractiveContext) theContext )
 {
     AddVertex ( 0.0, 0.0, 0.0, theContext);
 }
@@ -573,7 +572,7 @@ void TIGLViewerWindow::about()
 
     text += "Visit the TiGL project page at <a href=\"http://software.dlr.de/p/tigl/\">http://software.dlr.de/p/tigl/</a><br/><br/>";
 
-    text += "&copy; 2014 German Aerospace Center (DLR) ";
+    text += "&copy; 2015 German Aerospace Center (DLR) ";
 
     QMessageBox::about(this, tr("About TiGL Viewer"), text);
 }
@@ -643,6 +642,7 @@ void TIGLViewerWindow::connectConfiguration()
     connect(drawIntersectionAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawIntersectionLine()));
     connect(showFusedAirplaneTriangulation, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFusedAircraftTriangulation()));
     connect(drawFarFieldAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFarField()));
+    connect(drawSystemsAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawSystems()));
 
     // CPACS Fuselage Actions
     connect(drawFuselageProfilesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFuselageProfiles()));
@@ -830,14 +830,17 @@ void TIGLViewerWindow::updateMenus()
     closeAction->setEnabled(hand > 0);
 
     bool hasFarField = false;
+    bool hasACSystems = false;
     try {
         if (hand > 0) {
             tigl::CCPACSConfiguration& config = tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(hand);
             hasFarField = config.GetFarField().GetFieldType() != tigl::NONE;
+            hasACSystems = config.GetGenericSystemCount() > 0;
         }
     }
     catch(tigl::CTiglError& ){}
     drawFarFieldAction->setEnabled(hasFarField);
+    drawSystemsAction->setEnabled(hasACSystems);
 }
 
 void TIGLViewerWindow::closeEvent(QCloseEvent*)

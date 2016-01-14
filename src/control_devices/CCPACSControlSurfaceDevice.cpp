@@ -20,6 +20,7 @@
 #include <sstream>
 #include <exception>
 #include <cassert>
+#include <algorithm>
 
 #include "CCPACSControlSurfaceDevice.h"
 #include "CCPACSWingComponentSegment.h"
@@ -31,8 +32,8 @@
 #include "CCPACSControlSurfaceDeviceSteps.h"
 #include "tiglcommonfunctions.h"
 
-#include "Handle_Geom_Plane.hxx"
 #include "Geom_Plane.hxx"
+#include "Geom_Surface.hxx"
 #include "GeomAPI_ProjectPointOnSurf.hxx"
 #include "BRepBuilderAPI_MakeEdge.hxx"
 #include "BRepBuilderAPI_MakeFace.hxx"
@@ -46,13 +47,15 @@
 #include "BRepOffsetAPI_ThruSections.hxx"
 #include "BRepTools.hxx"
 #include "BRepLib.hxx"
-
+#include "TopoDS_Edge.hxx"
+#include "Geom2d_Curve.hxx"
+#include "Geom2d_BSplineCurve.hxx"
 
 #define USE_ADVANCED_MODELING 1
 
 namespace
 {
-    TopoDS_Edge pointsToEdge(Handle_Geom_Surface surf, gp_Pnt2d p1, gp_Pnt2d p2)
+    TopoDS_Edge pointsToEdge(Handle(Geom_Surface) surf, gp_Pnt2d p1, gp_Pnt2d p2)
     {
         gp_Pnt p13d = surf->Value(p1.X(), p1.Y());
         gp_Pnt p23d = surf->Value(p2.X(), p2.Y());
@@ -522,7 +525,7 @@ TopoDS_Wire CCPACSControlSurfaceDevice::getCutoutWire(bool isInnerBorder)
 {
     // Compute cutout plane
     gp_Pln plane = getBorderPlane(isInnerBorder);
-    Handle_Geom_Surface surf = new Geom_Plane(plane);
+    Handle(Geom_Surface) surf = new Geom_Plane(plane);
 
     gp_Vec csNormal = getNormalOfControlSurfaceDevice();
     csNormal.Normalize();
@@ -574,7 +577,7 @@ TopoDS_Wire CCPACSControlSurfaceDevice::getCutoutWire(bool isInnerBorder)
     gp_Pnt2d loBack2d(xmax, -ymax);
 
     // Compute the leading edge by interpolating upper, lower and leading edge point
-    Handle_TColgp_HArray1OfPnt2d points = new TColgp_HArray1OfPnt2d(1,3);
+    Handle(TColgp_HArray1OfPnt2d) points = new TColgp_HArray1OfPnt2d(1,3);
     points->SetValue(1, lp2d);
     points->SetValue(2, le2d);
     points->SetValue(3, up2d);

@@ -26,8 +26,8 @@
 #include "TIGLViewer.h"
 #include "CCPACSConfiguration.h"
 
-#include <Handle_AIS_Shape.hxx>
 #include <Quantity_Color.hxx>
+#include <AIS_Shape.hxx>
 
 class TIGLViewerWindow;
 
@@ -66,6 +66,7 @@ public slots:
     void drawFusedAircraftTriangulation();
     void drawIntersectionLine();
     void drawFarField();
+    void drawSystems();
 
     // Wing slots
     void drawWingProfiles();
@@ -135,7 +136,7 @@ private:
     TIGLViewerWindow*                       app;
     QString                                 loadedConfigurationFileName;
     // @todo: remove flapsForInteractiveUse from class
-    std::map<std::string,Handle(AIS_Shape)> flapsForInteractiveUse;
+    std::map<std::string, Handle_AIS_Shape> flapsForInteractiveUse;
 
     void writeToStatusBar(QString text);
     void displayError(QString text, QString header="");

@@ -32,7 +32,6 @@
 #include "GeomLProp_SLProps.hxx"
 #include "gp_Pln.hxx"
 #include "Geom_Plane.hxx"
-#include "Handle_Geom_Plane.hxx"
 
 using namespace std;
 

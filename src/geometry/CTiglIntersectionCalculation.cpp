@@ -57,7 +57,6 @@
 #include "BRepBuilderAPI_MakeFace.hxx"
 #include "BRepAlgoAPI_Section.hxx"
 #include "ShapeAnalysis_Wire.hxx"
-#include "Handle_TopTools_HSequenceOfShape.hxx"
 #include "TopTools_HSequenceOfShape.hxx"
 #include "ShapeAnalysis_FreeBounds.hxx"
 #include "BRepBuilderAPI_MakeWire.hxx"

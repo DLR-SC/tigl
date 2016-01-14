@@ -205,7 +205,8 @@ typedef unsigned int TiglGeometricComponentType;
 #define  TIGL_COMPONENT_FUSELSEGMENT    128      /**< The Component is a fuselage segment */
 #define  TIGL_COMPONENT_WINGCOMPSEGMENT 256      /**< The Component is a wing component segment */
 #define  TIGL_COMPONENT_WINGSHELL       512      /**< The Component is a face of the wing (e.g. upper wing surface) */
-#define  TIGL_COMPONENT_CONTROLSURF     1024
+#define  TIGL_COMPONENT_GENERICSYSTEM   1024     /**< The Component is a generic system */
+#define  TIGL_COMPONENT_CONTROLSURF     2048     /**< The Component is a control surface */
 
 
 enum TiglStructureType
@@ -265,14 +266,6 @@ enum TiglImportExportFormat
 };
 
 typedef const char** TiglStringList;
-
-/**
- * @brief Definition of the TIGL version number.
- */
-#ifndef TIGL_VERSION
-  #define TIGL_VERSION  "2.0"
-#endif
-#define TIGL_VERSION_MAJOR 2
 
 
 /**
@@ -1337,6 +1330,9 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingSegmentPointGetComponentSegmentEtaXsi(
 * @param[in]  csXsi1, csXsi2          Start and end xsi coordinates of the intersection line (given as component segment coordinates)
 * @param[in]  segmentEta              Eta coordinate of the iso-eta segment intersection line
 * @param[out] segmentXsi              Xsi coordinate of the intersection point on the wing segment
+* @param[out] hasWarning              The hasWarning flag is true (1), if the resulting xsi value is outside the valid
+*                                     range [0,1]. It is up to the user to handle these cases properly. This flag is only
+*                                     valid, if the function returns TIGL_SUCCESS.
 *
 * @return
 *   - TIGL_SUCCESS if no error occurred
@@ -1350,8 +1346,51 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetSegmentIntersection
                                                                                  const char* segmentUID,
                                                                                  double csEta1, double csXsi1,
                                                                                  double csEta2, double csXsi2,
-                                                                                 double segmentEta,
-                                                                                 double* segmentXsi);
+                                                                                 double segmentEta, 
+                                                                                 double* segmentXsi,
+                                                                                 TiglBoolean* hasWarning);
+
+
+/**
+* @brief Given a straight line in space defined by a pair of component segment (eta,xsi) coordinates,
+* the function computes the intersection of the line with a component segment iso-eta line.
+*
+* The function is similar to ::tiglWingComponentSegmentGetSegmentIntersection, with the difference, that
+* an iso-line of the component segment is used instead of an iso-line of a segment.
+* The line is defined by its inner and outer point, both given in
+* component segment coordinates. Typically, these might be spar positions or leading
+* edge coordinates of flaps. The eta value for the iso-eta line should be in the range [csEta1, csEta2].
+* The function returns the xsi coordinate (depth coordinate) of the intersection point.
+* This coordinate is given in the component segment coordinate system. See image below for details.
+*
+* @image html compseg-intersect.png "Computation of the component segment interpolation point."
+* @image latex compseg-intersect.pdf "Computation of the component segment interpolation point." width=7.5cm
+*
+* @param[in]  cpacsHandle             Handle for the CPACS configuration
+* @param[in]  componentSegmentUID     UID of the componentSegment
+* @param[in]  csEta1, csEta2          Start and end eta coordinates of the intersection line (given as component segment coordinates)
+* @param[in]  csXsi1, csXsi2          Start and end xsi coordinates of the intersection line (given as component segment coordinates)
+* @param[in]  eta                     Eta coordinate of the iso-eta component segment intersection line
+* @param[out] xsi                     Xsi coordinate of the intersection point on the wing component segment
+* @param[out] hasWarning              The hasWarning flag is true (1), if the resulting xsi value is either outside the valid
+*                                     range [0,1]. It is up to the user to handle these cases properly. This flag is only
+*                                     valid, if the function returns TIGL_SUCCESS.
+*
+* @return
+*   - TIGL_SUCCESS if no error occurred
+*   - TIGL_NOT_FOUND if no configuration was found for the given handle
+*   - TIGL_UID_ERROR if the segment or the component segment does not exist
+*   - TIGL_MATH_ERROR if the intersection could not be computed (e.g. if no intersection exists)
+*   - TIGL_NULL_POINTER if componentSegmentUID or xsi are null pointers
+*   - TIGL_ERROR if some other error occurred
+*/
+TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentComputeEtaIntersection(TiglCPACSConfigurationHandle cpacsHandle,
+                                                                                 const char* componentSegmentUID,
+                                                                                 double csEta1, double csXsi1,
+                                                                                 double csEta2, double csXsi2,
+                                                                                 double eta,
+                                                                                 double* xsi,
+                                                                                 TiglBoolean* hasWarning);
 
 /**
 * @brief Returns the number of segments belonging to a component segment

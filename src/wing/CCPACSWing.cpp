@@ -66,6 +66,11 @@ namespace
     {
         return a > b? a : b;
     }
+
+    inline double min(double a, double b)
+    {
+        return a < b? a : b;
+    }
     
     TopoDS_Wire transformToWingCoords(const tigl::CTiglTransformation& wingTransform, const tigl::CCPACSWingConnection& wingConnection, const TopoDS_Wire& origWire)
     {
@@ -659,9 +664,16 @@ double CCPACSWing::GetWingspan()
 {
     Bnd_Box boundingBox;
     if (GetSymmetryAxis() == TIGL_NO_SYMMETRY) {
+        // find out major direction
+        gp_XYZ cumulatedDirection(0,0,0);
         for (int i = 1; i <= GetSegmentCount(); ++i) {
-            const TopoDS_Shape& segmentShape = GetSegment(i).GetLoft()->Shape();
+            CCPACSWingSegment& segment = segments.GetSegment(i);
+            const TopoDS_Shape& segmentShape = segment.GetLoft()->Shape();
             BRepBndLib::Add(segmentShape, boundingBox);
+
+            gp_XYZ dir = segment.GetChordPoint(1,0).XYZ() - segment.GetChordPoint(0,0).XYZ();
+            dir = gp_XYZ(fabs(dir.X()), fabs(dir.Y()), fabs(dir.Z()));
+            cumulatedDirection += dir;
         }
 
         Standard_Real xmin, xmax, ymin, ymax, zmin, zmax;
@@ -670,7 +682,15 @@ double CCPACSWing::GetWingspan()
         double yw = ymax - ymin;
         double zw = zmax - zmin;
 
-        return max(xw, max(yw, zw));
+        if (cumulatedDirection.X() >= cumulatedDirection.Y() && cumulatedDirection.X() >= cumulatedDirection.Z()) {
+            return xw;
+        }
+        else if (cumulatedDirection.Y() >= cumulatedDirection.X() && cumulatedDirection.Y() >= cumulatedDirection.Z()) {
+            return yw;
+        }
+        else {
+            return zw;
+        }
     }
     else {
         for (int i = 1; i <= GetSegmentCount(); ++i) {
@@ -692,7 +712,7 @@ double CCPACSWing::GetWingspan()
             return ymax-ymin;
             break;
         case TIGL_Y_Z_PLANE:
-            return xmax-ymin;
+            return xmax-xmin;
             break;
         default:
             return ymax-ymin;
@@ -779,10 +799,17 @@ int CCPACSWing::GetSegmentEtaXsi(const gp_Pnt& point, double& eta, double& xsi, 
 {
     // search the segment
     int segmentFound = -1;
+    bool onFollowing = false;
     for (int iSeg = 1; iSeg <= GetSegmentCount(); ++iSeg) {
         CCPACSWingSegment& segment = (CCPACSWingSegment&) GetSegment(iSeg);
         if (segment.GetIsOn(point) == true) {
             segmentFound = iSeg;
+
+            // check if also on following segment
+            if (iSeg < GetSegmentCount() && GetSegment(iSeg+1).GetIsOn(point)) {
+                onFollowing = true;
+            }
+
             break;
         }
     }
@@ -791,13 +818,57 @@ int CCPACSWing::GetSegmentEtaXsi(const gp_Pnt& point, double& eta, double& xsi, 
         return -1;
     }
 
-    CCPACSWingSegment& segment = (CCPACSWingSegment&) GetSegment(segmentFound);
-    segment.GetEtaXsi(point, eta, xsi);
+    if (onFollowing) {
+        // check wich of both segments is the correct one
+        CCPACSWingSegment& segment1 = (CCPACSWingSegment&) GetSegment(segmentFound);
+        CCPACSWingSegment& segment2 = (CCPACSWingSegment&) GetSegment(segmentFound+1);
 
-    // TODO: do we need that here?
-    onTop = segment.GetIsOnTop(point);
+        double eta1, eta2, xsi1, xsi2;
+        segment1.GetEtaXsi(point, eta1, xsi1);
+        segment2.GetEtaXsi(point, eta2, xsi2);
 
-    return segmentFound;
+        // Get the points on the chord face
+        double eta1p = max(0.0, min(1.0, eta1));
+        double eta2p = max(0.0, min(1.0, eta2));
+        double xsi1p = max(0.0, min(1.0, xsi1));
+        double xsi2p = max(0.0, min(1.0, xsi2));
+
+        gp_Pnt p1 = segment1.GetChordPoint(eta1p, xsi1p);
+        gp_Pnt p2 = segment2.GetChordPoint(eta2p, xsi2p);
+
+        double d1 = p1.Distance(point);
+        double d2 = p2.Distance(point);
+
+        if (d1 <= d2) {
+            eta = eta1;
+            xsi = xsi1;
+
+            // TODO: do we need that here?
+            onTop = segment1.GetIsOnTop(point);
+
+            return segmentFound;
+        }
+        else {
+            eta = eta2;
+            xsi = xsi2;
+
+            // TODO: do we need that here?
+            onTop = segment2.GetIsOnTop(point);
+
+            return segmentFound + 1;
+        }
+
+    }
+    else {
+
+        CCPACSWingSegment& segment = (CCPACSWingSegment&) GetSegment(segmentFound);
+        segment.GetEtaXsi(point, eta, xsi);
+
+        // TODO: do we need that here?
+        onTop = segment.GetIsOnTop(point);
+
+        return segmentFound;
+    }
 }
 
 // Get the guide curve with a given UID

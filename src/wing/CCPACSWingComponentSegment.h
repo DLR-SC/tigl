@@ -38,7 +38,6 @@
 
 #include "TopoDS_Shape.hxx"
 #include "TopoDS_Wire.hxx"
-#include "Handle_Geom_Curve.hxx"
 #include "Geom_BSplineSurface.hxx"
 #include "CCPACSMaterial.h"
 #include "CCPACSControlSurfaces.h"
@@ -125,6 +124,10 @@ public:
 
     // Returns the intersection plane for a given eta
     TIGL_EXPORT gp_Pln GetEtaPlane(double eta);
+
+    // computes the xsi coordinate on a straight line in global space, given an eta coordinate
+    TIGL_EXPORT void InterpolateOnLine(double csEta1, double csXsi1, double csEta2, double csXsi2, double eta, double &xsi, double &errorDistance);
+
 protected:
     // Cleanup routine
     void Cleanup(void);
@@ -169,7 +172,7 @@ private:
     double               mySurfaceArea;        /**< Surface area of this segment            */
     TopoDS_Shape         upperShape;           /**< Upper shape of this componentSegment    */
     TopoDS_Shape         lowerShape;           /**< Lower shape of this componentSegment    */
-    Handle_Geom_Curve    projLeadingEdge;      /**< (Extended) Leading edge projected into y-z plane */
+    Handle(Geom_Curve)    projLeadingEdge;      /**< (Extended) Leading edge projected into y-z plane */
     SegmentList          wingSegments;         /**< List of segments belonging to the component segment */
     Handle(Geom_Surface) upperSurface;
     Handle(Geom_Surface) lowerSurface;

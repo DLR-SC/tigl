@@ -5,6 +5,8 @@ Created on Wed Oct 21 10:31:30 2014
 @author: Martin Siggel <martin.siggel@dlr.de>
 """
 
+from __future__ import print_function
+
 class GeneratorException(Exception):
     
     def __init__(self, errormsg, arg):
@@ -70,14 +72,14 @@ class JavaGenerator(object):
         
 
     def write_enums(self, cparser, directory):
-        for enumname, values in cparser.enums.iteritems():
+        for enumname, values in cparser.enums.items():
             string = self.create_enum(enumname, values)
             filename = directory + '/' + enumname + '.java'
-            print 'Write java enum %s to file "%s" ... ' % (enumname, filename), 
+            print('Write java enum %s to file "%s" ... ' % (enumname, filename), end=' ') 
             fop = open(filename, 'w')
             fop.write(string)
             fop.close()
-            print 'done'
+            print('done')
         
 
     def create_enum(self, enumname, values):
@@ -87,7 +89,7 @@ class JavaGenerator(object):
         string += 'import java.util.ArrayList;\n\n'
         string += 'public enum %s {\n' % enumname
         indent = 4*' '
-        for index, val in values.iteritems():
+        for index, val in values.items():
             string += indent + '%s(%d),\n' % (val, index)
             
         if len(values) > 0:
@@ -98,7 +100,7 @@ class JavaGenerator(object):
         string += indent + 'private static ArrayList<%s> codes = new ArrayList<>();\n\n' % enumname
 
         string += indent + 'static {\n'
-        for index, val in values.iteritems():
+        for index, val in values.items():
             string += 2*indent +    'codes.add(%s);\n' % val
         string += indent + '}\n\n'
         

@@ -80,7 +80,7 @@ public:
     TIGL_EXPORT virtual void Translate(CTiglPoint trans);
     
     // return if pnt lies on the loft
-    TIGL_EXPORT bool GetIsOn(const gp_Pnt &pnt);
+    TIGL_EXPORT virtual bool GetIsOn(const gp_Pnt &pnt);
     
     // return if pnt lies on the mirrored loft
     // if the loft as no symmetry, false is returned

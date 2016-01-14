@@ -99,6 +99,7 @@ set(tv_src
     TIGLViewerSelectWingAndFlapStatusDialog.cpp
     TIGLViewerDrawVectorDialog.cpp
     TIGLViewerScopedCommand.cpp
+    TIGLQAspectWindow.cpp
 )
 
 # normal header files
@@ -115,6 +116,7 @@ set(tv_hdr
     TIGLViewerLogHistory.h
     TIGLViewerLoggerHTMLDecorator.h
     TIGLViewerScopedCommand.h
+    TIGLQAspectWindow.h
 )
 
 # qobject header files that have to be moced
@@ -289,6 +291,16 @@ if (WIN32 OR APPLE)
     include(DeployQt4)
     INSTALL_QT4_EXECUTABLE(${APPS} "" "" "${DIRS}" "" "" viewer)
   endif()
+endif()
+
+# install shader files from opencascade
+if (NOT OCC_VERSION_STRING VERSION_LESS "6.9.0")
+   file(GLOB SHADER_FILES PATH "${OpenCASCADE_SHADER_DIRECTORY}/*")
+   if (APPLE)
+     install(FILES ${SHADER_FILES} DESTINATION ${PROGNAME}.app/Contents/Resources/ COMPONENT viewer)
+   else()
+     install(FILES ${SHADER_FILES} DESTINATION share/tigl/shaders COMPONENT viewer)
+   endif(APPLE)
 endif()
 
 else (QT4_FOUND OR Qt5Widgets_FOUND)

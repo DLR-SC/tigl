@@ -322,7 +322,7 @@ void CCPACSFuselageProfile::BuildWires(void)
     if (mirrorSymmetry) {
         try {
             CTiglSymetricSplineBuilder builder(points);
-            Handle_Geom_BSplineCurve c = builder.GetBSpline();
+            Handle(Geom_BSplineCurve) c = builder.GetBSpline();
 
             TopoDS_Edge edge = BRepBuilderAPI_MakeEdge(c);
             gp_Pnt pstart = c->Value(c->FirstParameter());

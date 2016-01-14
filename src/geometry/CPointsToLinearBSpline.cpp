@@ -31,7 +31,7 @@ CPointsToLinearBSpline::CPointsToLinearBSpline(const std::vector<gp_Pnt>& points
 {
 }
 
-Handle_Geom_BSplineCurve CPointsToLinearBSpline::Curve() const
+Handle(Geom_BSplineCurve) CPointsToLinearBSpline::Curve() const
 {
     int ncp = (int) _points.size();
     std::vector<gp_Pnt>::const_iterator iter;
@@ -73,7 +73,7 @@ Handle_Geom_BSplineCurve CPointsToLinearBSpline::Curve() const
     return new Geom_BSplineCurve(cp, knots, mults, 1, false);
 }
 
-CPointsToLinearBSpline::operator Handle_Geom_BSplineCurve() const
+CPointsToLinearBSpline::operator Handle(Geom_BSplineCurve)() const
 {
     return Curve();
 }

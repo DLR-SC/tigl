@@ -32,7 +32,7 @@ TEST(BSplines, pointsToLinear)
     points.push_back(gp_Pnt(2,1,0));
     points.push_back(gp_Pnt(1,1,0));
     
-    Handle_Geom_BSplineCurve curve;
+    Handle(Geom_BSplineCurve) curve;
     ASSERT_NO_THROW(curve = tigl::CPointsToLinearBSpline(points));
     
     ASSERT_NEAR(0, curve->Value(0.  ).Distance(gp_Pnt(0,0,0)), 1e-10);
@@ -64,7 +64,7 @@ TEST(BSplines, symmetricBSpline)
     points.push_back(gp_Pnt(0,-sqrt(0.5),-sqrt(0.5)));
     points.push_back(gp_Pnt(0,0,-1));
 
-    Handle_Geom_BSplineCurve curve;
+    Handle(Geom_BSplineCurve) curve;
     tigl::CTiglSymetricSplineBuilder builder(points);
 
     ASSERT_NO_THROW(curve = builder.GetBSpline());
@@ -108,7 +108,7 @@ TEST(BSplines, symmetricBSpline_interp)
     points.push_back(gp_Pnt(0,-sqrt(0.5),-sqrt(0.5)));
     points.push_back(gp_Pnt(0,0,-1));
 
-    Handle_Geom_BSplineCurve curve;
+    Handle(Geom_BSplineCurve) curve;
     tigl::CTiglSymetricSplineBuilder builder(points);
 
     ASSERT_NO_THROW(curve = builder.GetBSpline());
@@ -136,7 +136,7 @@ TEST(BSplines, symmetricBSpline_invalidInput)
     points.push_back(gp_Pnt(0,-sqrt(0.5),-sqrt(0.5)));
     points.push_back(gp_Pnt(0,0,-1));
 
-    Handle_Geom_BSplineCurve curve;
+    Handle(Geom_BSplineCurve) curve;
     tigl::CTiglSymetricSplineBuilder builder(points);
 
     ASSERT_THROW(curve = builder.GetBSpline(), tigl::CTiglError);
@@ -152,7 +152,7 @@ TEST(BSplines, symmetricBSpline_invalidInput2)
     // the last point should have y == 0
     points.push_back(gp_Pnt(0,-0.1,-1));
 
-    Handle_Geom_BSplineCurve curve;
+    Handle(Geom_BSplineCurve) curve;
     tigl::CTiglSymetricSplineBuilder builder(points);
 
     ASSERT_THROW(curve = builder.GetBSpline(), tigl::CTiglError);
