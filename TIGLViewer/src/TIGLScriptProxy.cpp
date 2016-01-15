@@ -315,6 +315,19 @@ QScriptValue TIGLScriptProxy::wingGetChordNormal(int wingIndex, int segmentIndex
     }
 }
 
+QScriptValue TIGLScriptProxy::wingComponentSegmentGetPoint(QString compSegUID, double eta, double xsi)
+{
+    double px, py, pz;
+    TiglReturnCode ret = ::tiglWingComponentSegmentGetPoint(getTiglHandle(), qString2char(compSegUID), eta, xsi, &px, &py, &pz);
+    if (ret != TIGL_SUCCESS) {
+        return context()->throwError(tiglGetErrorString(ret));
+    }
+    else {
+        QScriptValue Point3dCtor = engine()->globalObject().property("Point3d");
+        return Point3dCtor.construct(QScriptValueList() << px << py << pz);
+    }
+}
+
 QScriptValue TIGLScriptProxy::wingGetSegmentCount(int wingIndex)
 {
     int count = 0;

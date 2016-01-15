@@ -82,6 +82,7 @@ public slots:
     QScriptValue wingGetLowerPointAtDirection(int wingIndex, int segmentIndex, double eta, double xsi, double dirx, double diry, double dirz);
     QScriptValue wingGetChordPoint(int wingIndex, int segmentIndex, double eta, double xsi);
     QScriptValue wingGetChordNormal(int wingIndex, int segmentIndex, double eta, double xsi);
+    QScriptValue wingComponentSegmentGetPoint(QString compSegUID, double eta, double xsi);
     QScriptValue wingGetSegmentCount(int wingIndex);
     QScriptValue wingGetSegmentUID(int wingIndex, int segmentIndex);
     QString      getErrorString(int errorCode);
