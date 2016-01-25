@@ -68,7 +68,7 @@ if __name__ == '__main__':
     pg.postconstr = postconstr
 
     
-    print('Creating python interface... ', end=' ')
+    print('Creating java interface... ', end=' ')
     wrapper = pg.create_native_interface(parser)
     print('done')
     
