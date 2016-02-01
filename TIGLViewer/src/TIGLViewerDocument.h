@@ -35,8 +35,8 @@ class TIGLViewerDocument : public QObject
     Q_OBJECT
 
     #define CPACS_XPATH_AIRCRAFT             "/cpacs/vehicles/aircraft"
-    #define CPACS_XPATH_ROTORCRAFT             "/cpacs/vehicles/rotorcraft"
-    #define CPACS_XPATH_AIRCRAFT_MODEL         "/cpacs/vehicles/aircraft/model"
+    #define CPACS_XPATH_ROTORCRAFT           "/cpacs/vehicles/rotorcraft"
+    #define CPACS_XPATH_AIRCRAFT_MODEL       "/cpacs/vehicles/aircraft/model"
     #define CPACS_XPATH_ROTORCRAFT_MODEL     "/cpacs/vehicles/rotorcraft/model"
 
 public:
@@ -85,6 +85,24 @@ public slots:
     void drawFusedFuselage();
     void drawFuselageGuideCurves();
 
+    // Rotor blade slots
+    void drawRotorProfiles();
+    void drawRotorBlade();
+    void drawRotorBladeOverlayProfilePoints();
+    void drawRotorBladeGuideCurves();
+    void drawRotorBladeTriangulation();
+    void drawRotorBladeSamplePoints();
+    void drawFusedRotorBlade();
+    void drawRotorBladeComponentSegment();
+    void drawRotorBladeComponentSegmentPoints();
+    void drawRotorBladeShells();
+
+    // Rotorcraft slots
+    void drawRotorsWingsAndFuselages();
+    void drawRotor();
+    void drawRotorDisk();
+    void showRotorProperties();
+
     // TIGL slots
     void exportAsIges();
     void exportFusedAsIges();
@@ -114,11 +132,20 @@ public slots:
 private slots:
 
     // Wing selection dialogs
+    QString dlgGetWingOrRotorBladeSelection();
     QString dlgGetWingSelection();
     QString dlgGetWingComponentSegmentSelection();
     QString dlgGetWingSegmentSelection();
     QString dlgGetWingProfileSelection();
 
+    // Rotor selection dialogs
+    QString dlgGetRotorSelection();
+
+    // Rotor Blade selection dialogs
+    QString dlgGetRotorBladeSelection();
+    QString dlgGetRotorBladeComponentSegmentSelection();
+    QString dlgGetRotorBladeSegmentSelection();
+    QString dlgGetRotorProfileSelection();
 
     // Fuselage selection dialogs
     QString dlgGetFuselageSelection();
@@ -135,6 +162,18 @@ private:
     void displayError(QString text, QString header="");
     QString myLastFolder; // TODO: synchronize with TIGLViewerWindow
     char* qstringToCstring(QString text);
+
+    void drawAirfoil(tigl::CCPACSWingProfile& profile);
+    void drawWingOverlayProfilePoints(tigl::CCPACSWing& wing);
+    void drawWingGuideCurves(tigl::CCPACSWing& wing);
+    void drawWing(tigl::CCPACSWing& wing);
+    void drawWingTriangulation(tigl::CCPACSWing& wing);
+    void drawWingSamplePoints(tigl::CCPACSWing& wing);
+    void drawFusedWing(tigl::CCPACSWing& wing);
+    void drawWingComponentSegment(tigl::CTiglAbstractSegment& segment);
+    void drawWingComponentSegmentPoint(const std::string& csUID, const double& eta, const double& xsi);
+    void drawWingShells(tigl::CCPACSWing& wing);
+
     void createShapeTriangulation(const class TopoDS_Shape& shape, class TopoDS_Compound& compound);
     
 };

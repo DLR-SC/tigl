@@ -31,6 +31,7 @@
 #include "CCPACSWingSegment.h"
 #include "CTiglError.h"
 #include "tiglcommonfunctions.h"
+#include "tiglmathfunctions.h"
 
 #include "BRepOffsetAPI_ThruSections.hxx"
 #include "BRepAlgoAPI_Fuse.hxx"
@@ -126,8 +127,9 @@ namespace
 
 
 // Constructor
-CCPACSWing::CCPACSWing(CCPACSConfiguration* config)
-    : segments(this)
+CCPACSWing::CCPACSWing(CCPACSConfiguration* config, bool isRotorBlade)
+    : isRotorBlade(isRotorBlade)
+    , segments(this)
     , componentSegments(this)
     , configuration(config)
     , rebuildFusedSegments(true)
@@ -238,10 +240,27 @@ void CCPACSWing::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& win
     Update();
 }
 
+// Returns the Component Type TIGL_COMPONENT_WING.
+TiglGeometricComponentType CCPACSWing::GetComponentType(void)
+{
+    if (isRotorBlade) {
+        return TIGL_COMPONENT_WING;
+    }
+    else {
+        return TIGL_COMPONENT_WING | TIGL_COMPONENT_PHYSICAL;
+    }
+}
+
 // Returns the name of the wing
 const std::string& CCPACSWing::GetName(void) const
 {
     return name;
+}
+
+// Returns whether this wing is a rotor blade
+bool CCPACSWing::IsRotorBlade(void) const
+{
+    return isRotorBlade;
 }
 
 // Returns the parent configuration
@@ -434,6 +453,12 @@ gp_Pnt CCPACSWing::GetLowerPoint(int segmentIndex, double eta, double xsi)
     return  ((CCPACSWingSegment &) GetSegment(segmentIndex)).GetLowerPoint(eta, xsi);
 }
 
+// Gets a point on the chord surface in absolute (world) coordinates for a given segment, eta, xsi
+gp_Pnt CCPACSWing::GetChordPoint(int segmentIndex, double eta, double xsi)
+{
+    return  ((CCPACSWingSegment &) GetSegment(segmentIndex)).GetChordPoint(eta, xsi);
+}
+
 // Returns the volume of this wing
 double CCPACSWing::GetVolume(void)
 {
@@ -586,6 +611,14 @@ double CCPACSWing::GetWingspan()
             return ymax-ymin;
         }
     }
+}
+
+// Returns the aspect ratio of a wing: AR=b**2/A=((2s)**2)/(2A_half)
+//     b: full span; A: Reference area of full wing (wing + symmetrical wing)
+//     s: half span; A_half: Reference area of wing without symmetrical wing
+double CCPACSWing::GetAspectRatio()
+{
+    return 2.0*(pow_int(GetWingspan(),2)/GetReferenceArea(GetSymmetryAxis()));
 }
 
 

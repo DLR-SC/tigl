@@ -224,12 +224,13 @@ void TIGLViewerContext::setGridOffset (Quantity_Length offset)
 }
 
 // a small helper when we just want to display a shape
-void TIGLViewerContext::displayShape(const TopoDS_Shape& loft, Quantity_Color color)
+void TIGLViewerContext::displayShape(const TopoDS_Shape& loft, Quantity_Color color, double transparency)
 {
     TIGLViewerSettings& settings = TIGLViewerSettings::Instance();
     Handle(AIS_Shape) shape = new AIS_Shape(loft);
     myContext->SetMaterial(shape, Graphic3d_NOM_METALIZED, Standard_False);
     myContext->SetColor(shape, color, Standard_False);
+    myContext->SetTransparency(shape, transparency, Standard_False);
     shape->SetOwnDeviationCoefficient(settings.tesselationAccuracy());
     myContext->Display(shape, Standard_True);
     

@@ -32,7 +32,8 @@ namespace tigl
 // Constructor
 CTiglUIDManager::CTiglUIDManager(void) : 
     invalidated(true),
-    rootComponent(0)
+    rootComponent(0),
+    rootComponentCnt(0)
 {
 }
 
@@ -49,9 +50,16 @@ void CTiglUIDManager::Update(void)
         return;
     }
     
-    FindRootComponent();
     BuildParentChildTree();
+    FindRootComponents();
     invalidated = false;
+
+    if (rootComponentCnt == 0) {
+        throw CTiglError("Error: No root component found in CTiglUIDManager::FindRootComponents", TIGL_ERROR);
+    }
+    if (rootComponentCnt > 1) {
+        throw CTiglError("Error: More than one root component found in CTiglUIDManager::FindRootComponents", TIGL_ERROR);
+    }
 }
 
 // Function to add a UID and a geometric component to the uid store.
@@ -70,7 +78,7 @@ void CTiglUIDManager::AddUID(const std::string& uid, ITiglGeometricComponent* co
     }
 
     CTiglAbstractPhysicalComponent* tmp = dynamic_cast<CTiglAbstractPhysicalComponent*>(componentPtr);
-    if (tmp && (componentPtr->GetComponentType() | TIGL_COMPONENT_PHYSICAL) ) {
+    if (tmp && (componentPtr->GetComponentType() & TIGL_COMPONENT_PHYSICAL) ) {
         physicalShapes[uid] = tmp;
     }
     allShapes[uid] = componentPtr;
@@ -122,7 +130,10 @@ CTiglAbstractPhysicalComponent* CTiglUIDManager::GetPhysicalComponent(const std:
 void CTiglUIDManager::Clear(void) 
 {
     physicalShapes.clear();
+    allShapes.clear();
+    allRootComponentsWithChildren.clear();
     rootComponent = 0;
+    rootComponentCnt = 0;
     invalidated = true;
 }
 
@@ -142,28 +153,36 @@ CTiglAbstractPhysicalComponent* CTiglUIDManager::GetRootComponent(void)
     return rootComponent;
 }
 
-// Returns the root component of the geometric topology.
-void CTiglUIDManager::FindRootComponent(void)
+// Returns the container with all root components of the geometric topology that have children.
+const UIDStoreContainerType& CTiglUIDManager::GetAllRootComponentsWithChildren(void)
+{
+    Update();
+    return allRootComponentsWithChildren;
+}
+
+// Finds and saves all root components and the main root component of the geometric topology.
+void CTiglUIDManager::FindRootComponents(void)
 {
     rootComponent = 0;
-    UIDStoreContainerType::iterator pIter;
-    int parentCnt = 0;
+    rootComponentCnt = 0;
+    int childCnt = 0;
+    int maxChildCnt = -1;
 
-    for (pIter = physicalShapes.begin(); pIter != physicalShapes.end(); ++pIter) {
+    for (UIDStoreContainerType::iterator pIter = physicalShapes.begin(); pIter != physicalShapes.end(); ++pIter) {
         CTiglAbstractPhysicalComponent* component = pIter->second;
         if (component->GetParentUID().empty()) {
-            if (parentCnt != 0) {
-                throw CTiglError("Error: More than one root component found in CTiglUIDManager::FindRootComponent", TIGL_ERROR);
+            // Select the component with the maximum number of children as root component if there are multiple components without parentUID in the dataset
+            childCnt = component->GetChildren(true).size();
+            if (childCnt > maxChildCnt) {
+                maxChildCnt = childCnt;
+                rootComponent = component;
             }
-            parentCnt++;
-            rootComponent = component;
+            if (childCnt > 0) {
+                allRootComponentsWithChildren[pIter->first] = component;
+            }
+            rootComponentCnt++;
         }
     }
-
-    if (parentCnt == 0) {
-        throw CTiglError("Error: No root component found in CTiglUIDManager::FindRootComponent", TIGL_ERROR);
-    }
-
 }
 
 // Builds the parent child relationships.

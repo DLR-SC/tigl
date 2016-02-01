@@ -74,6 +74,11 @@ TIGL_EXPORT double bernstein_poly_deriv(int k, int i, int n, double x);
 TIGL_EXPORT double quadrilateral_area(const CTiglPoint& A, const CTiglPoint& B, const CTiglPoint& C, const CTiglPoint& D);
 
 /**
+ * @brief Calculates the distance of a point P from the line defined by a point X0 and direction DX
+ */
+TIGL_EXPORT double distance_point_from_line(const CTiglPoint& P, const CTiglPoint& X0, const CTiglPoint& DX);
+
+/**
  * @brief Computes the nth derivative of x^k
  */
 TIGL_EXPORT double pow_deriv(double x, double k, int n);

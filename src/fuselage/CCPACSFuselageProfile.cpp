@@ -23,6 +23,11 @@
 * @brief  Implementation of CPACS fuselage profile handling routines.
 */
 
+#include <cmath>
+#include <iostream>
+#include <limits>
+#include <sstream>
+
 #include "CCPACSFuselageProfile.h"
 #include "CTiglError.h"
 #include "CTiglTransformation.h"
