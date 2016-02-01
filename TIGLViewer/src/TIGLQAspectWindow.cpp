@@ -20,13 +20,13 @@
 
 #include "TIGLQAspectWindow.h"
 
-IMPLEMENT_STANDARD_RTTIEXT(QtAspectWindow, Aspect_Window)
+IMPLEMENT_STANDARD_RTTIEXT(TIGLQAspectWindow, Aspect_Window)
 
 // =======================================================================
 // function : OcctWindow
 // purpose  :
 // =======================================================================
-QtAspectWindow::QtAspectWindow ( QWidget* theWidget, const Quantity_NameOfColor theBackColor )
+TIGLQAspectWindow::TIGLQAspectWindow ( QWidget* theWidget, const Quantity_NameOfColor theBackColor )
     : Aspect_Window(),
       myWidget( theWidget )
 {
@@ -41,7 +41,7 @@ QtAspectWindow::QtAspectWindow ( QWidget* theWidget, const Quantity_NameOfColor 
 // function : Destroy
 // purpose  :
 // =======================================================================
-void QtAspectWindow::Destroy()
+void TIGLQAspectWindow::Destroy()
 {
     myWidget = NULL;
 }
@@ -50,20 +50,22 @@ void QtAspectWindow::Destroy()
 // function : NativeParentHandle
 // purpose  :
 // =======================================================================
-Aspect_Drawable QtAspectWindow::NativeParentHandle() const
+Aspect_Drawable TIGLQAspectWindow::NativeParentHandle() const
 {
     QWidget* aParentWidget = myWidget->parentWidget();
-    if ( aParentWidget != NULL )
+    if ( aParentWidget != NULL ) {
         return (Aspect_Drawable)aParentWidget->winId();
-    else
+    }
+    else {
         return 0;
+    }
 }
 
 // =======================================================================
 // function : NativeHandle
 // purpose  :
 // =======================================================================
-Aspect_Drawable QtAspectWindow::NativeHandle() const
+Aspect_Drawable TIGLQAspectWindow::NativeHandle() const
 {
     return (Aspect_Drawable)myWidget->winId();
 }
@@ -72,7 +74,7 @@ Aspect_Drawable QtAspectWindow::NativeHandle() const
 // function : IsMapped
 // purpose  :
 // =======================================================================
-Standard_Boolean QtAspectWindow::IsMapped() const
+Standard_Boolean TIGLQAspectWindow::IsMapped() const
 {
     return !( myWidget->isMinimized() || myWidget->isHidden() );
 }
@@ -81,7 +83,7 @@ Standard_Boolean QtAspectWindow::IsMapped() const
 // function : Map
 // purpose  :
 // =======================================================================
-void QtAspectWindow::Map() const
+void TIGLQAspectWindow::Map() const
 {
     myWidget->show();
     myWidget->update();
@@ -91,7 +93,7 @@ void QtAspectWindow::Map() const
 // function : Unmap
 // purpose  :
 // =======================================================================
-void QtAspectWindow::Unmap() const
+void TIGLQAspectWindow::Unmap() const
 {
     myWidget->hide();
     myWidget->update();
@@ -101,20 +103,26 @@ void QtAspectWindow::Unmap() const
 // function : DoResize
 // purpose  :
 // =======================================================================
-Aspect_TypeOfResize QtAspectWindow::DoResize() const
+Aspect_TypeOfResize TIGLQAspectWindow::DoResize() const
 {
     int                 aMask = 0;
     Aspect_TypeOfResize aMode = Aspect_TOR_UNKNOWN;
 
-    if ( !myWidget->isMinimized() )
-    {
-        if ( Abs ( myWidget->rect().left()   - myXLeft   ) > 2 ) aMask |= 1;
-        if ( Abs ( myWidget->rect().right()  - myXRight  ) > 2 ) aMask |= 2;
-        if ( Abs ( myWidget->rect().top()    - myYTop    ) > 2 ) aMask |= 4;
-        if ( Abs ( myWidget->rect().bottom() - myYBottom ) > 2 ) aMask |= 8;
+    if ( !myWidget->isMinimized() ) {
+        if ( Abs ( myWidget->rect().left()   - myXLeft   ) > 2 ) {
+            aMask |= 1;
+        }
+        if ( Abs ( myWidget->rect().right()  - myXRight  ) > 2 ) {
+            aMask |= 2;
+        }
+        if ( Abs ( myWidget->rect().top()    - myYTop    ) > 2 ) {
+            aMask |= 4;
+        }
+        if ( Abs ( myWidget->rect().bottom() - myYBottom ) > 2 ) {
+            aMask |= 8;
+        }
 
-        switch ( aMask )
-        {
+        switch ( aMask ) {
         case 0:
             aMode = Aspect_TOR_NO_BORDER;
             break;
@@ -159,7 +167,7 @@ Aspect_TypeOfResize QtAspectWindow::DoResize() const
 // function : Ratio
 // purpose  :
 // =======================================================================
-Quantity_Ratio QtAspectWindow::Ratio() const
+Quantity_Ratio TIGLQAspectWindow::Ratio() const
 {
     QRect aRect = myWidget->rect();
     return Quantity_Ratio( aRect.right() - aRect.left() ) / Quantity_Ratio( aRect.bottom() - aRect.top() );
@@ -169,7 +177,7 @@ Quantity_Ratio QtAspectWindow::Ratio() const
 // function : Size
 // purpose  :
 // =======================================================================
-void QtAspectWindow::Size ( Standard_Integer& theWidth, Standard_Integer& theHeight ) const
+void TIGLQAspectWindow::Size ( Standard_Integer& theWidth, Standard_Integer& theHeight ) const
 {
     QRect aRect = myWidget->rect();
     theWidth  = aRect.right();
@@ -180,8 +188,8 @@ void QtAspectWindow::Size ( Standard_Integer& theWidth, Standard_Integer& theHei
 // function : Position
 // purpose  :
 // =======================================================================
-void QtAspectWindow::Position ( Standard_Integer& theX1, Standard_Integer& theY1,
-                            Standard_Integer& theX2, Standard_Integer& theY2 ) const
+void TIGLQAspectWindow::Position ( Standard_Integer& theX1, Standard_Integer& theY1,
+                                   Standard_Integer& theX2, Standard_Integer& theY2 ) const
 {
     theX1 = myWidget->rect().left();
     theX2 = myWidget->rect().right();

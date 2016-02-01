@@ -71,8 +71,8 @@ Handle(AIS_InteractiveContext)& TIGLViewerContext::getContext()
 }
 
 Handle(V3d_Viewer) TIGLViewerContext::createViewer( const Standard_ExtString aName,
-                                                   const Standard_CString aDomain,
-                                                   const Standard_Real ViewSize )
+                                                    const Standard_CString aDomain,
+                                                    const Standard_Real ViewSize )
 {
     static Handle(OpenGl_GraphicDriver) deviceHandle;
 

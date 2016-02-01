@@ -29,7 +29,7 @@
 #include <QWidget>
 
 /**
-  QtAspectWindow class implements Aspect_Window interface using Qt API
+  TIGLQAspectWindow class implements Aspect_Window interface using Qt API
   as a platform-independent source of window geometry information. 
   A similar class should be used instead of platform-specific OCCT 
   classes (WNT_Window, Xw_Window) in any Qt 5 application using OCCT 
@@ -47,16 +47,16 @@
   in some cases. A reasonable solution is to provide a Qt-based implementation 
   of Aspect_Window interface at application level.
 */
-class QtAspectWindow : public Aspect_Window
+class TIGLQAspectWindow : public Aspect_Window
 {
 public:
     
-    QtAspectWindow( QWidget* theWidget, const Quantity_NameOfColor theBackColor = Quantity_NOC_MATRAGRAY );
+    TIGLQAspectWindow( QWidget* theWidget, const Quantity_NameOfColor theBackColor = Quantity_NOC_MATRAGRAY );
     
     virtual void Destroy();
     
     //! Destructor
-    ~QtAspectWindow()
+    ~TIGLQAspectWindow()
     {
         Destroy();
     }
@@ -97,7 +97,7 @@ public:
     virtual Aspect_FBConfig NativeFBConfig() const Standard_OVERRIDE { return NULL; }
 #endif
     
-    DEFINE_STANDARD_RTTIEXT( OcctWindow, Aspect_Window )
+    DEFINE_STANDARD_RTTIEXT( TIGLQAspectWindow, Aspect_Window )
     
 protected:
     Standard_Integer myXLeft;
@@ -107,7 +107,7 @@ protected:
     QWidget* myWidget;
 };
 
-DEFINE_STANDARD_HANDLE(QtAspectWindow, Aspect_Window)
+DEFINE_STANDARD_HANDLE(TIGLQAspectWindow, Aspect_Window)
 
 
 #endif // QTASPECTWINDOW_H

@@ -179,7 +179,7 @@ void TIGLViewerWidget::initializeOCC(const Handle(AIS_InteractiveContext)& aCont
         Handle_Aspect_Window myWindow;
         
 #if OCC_VERSION_HEX >= 0x060800
-        myWindow = new QtAspectWindow(this);
+        myWindow = new TIGLQAspectWindow(this);
 #else
   #if defined _WIN32 || defined __WIN32__
         myWindow = new WNT_Window((Aspect_Handle)winId());
