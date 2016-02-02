@@ -108,8 +108,7 @@ public:
     TIGL_EXPORT const CCPACSRotorHub& GetRotorHub(void) const;
 
     // Returns the rotor disk geometry
-    // TODO: pnamedshape
-    TIGL_EXPORT TopoDS_Shape GetRotorDisk(void);
+    TIGL_EXPORT PNamedShape GetRotorDisk(void);
 
     // Returns the volume of this rotor
     TIGL_EXPORT double GetVolume(void);
@@ -126,9 +125,6 @@ public:
 
     // Returns the tip speed this rotor
     TIGL_EXPORT double GetTipSpeed(void);
-
-    // Returns the diameter of this rotor
-    TIGL_EXPORT double GetDiameter(void);
 
     // Returns the sum of all blade planform areas of a rotor
     TIGL_EXPORT double GetTotalBladePlanformArea(void);
@@ -152,9 +148,9 @@ protected:
     // Update internal rotor data
     void Update(void);
 
-    // Returns the geometry of the whole rotor (assembly of all rotor blades). (implementation for abstract base class CTiglAbstractGeometricComponent)
-    // TODO: check pnamedshape
-    virtual TopoDS_Shape BuildLoft(void);
+    // Returns the geometry of the whole rotor (assembly of all rotor blades).
+    // Implementation for abstract base class CTiglAbstractGeometricComponent
+    PNamedShape BuildLoft(void);
 
 private:
     // Copy constructor

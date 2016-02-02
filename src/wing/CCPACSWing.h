@@ -53,7 +53,7 @@ class CCPACSWing : public CTiglAbstractPhysicalComponent
 
 public:
     // Constructor
-    TIGL_EXPORT CCPACSWing(CCPACSConfiguration* config, bool isRotorBlade=false);
+    TIGL_EXPORT CCPACSWing(CCPACSConfiguration* config);
 
     // Virtual destructor
     TIGL_EXPORT virtual ~CCPACSWing(void);

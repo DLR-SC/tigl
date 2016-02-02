@@ -26,10 +26,10 @@
 #include <iostream>
 #include <sstream>
 #include <vector>
-#include <cmath>
 
 #include "CTiglError.h"
 #include "CTiglLogging.h"
+#include "math.h"
 
 #include "gp_Pnt2d.hxx"
 #include "gp_Vec2d.hxx"
@@ -64,9 +64,8 @@ namespace tigl
 {
 
 // Constructor
-CCPACSWingProfile::CCPACSWingProfile(const std::string& path, bool isRotorProfile)
+CCPACSWingProfile::CCPACSWingProfile(const std::string& path)
     : ProfileXPath(path),
-    isRotorProfile(isRotorProfile),
     invalidated(true)
 {
     Cleanup();
@@ -84,6 +83,7 @@ void CCPACSWingProfile::Cleanup(void)
     name = "";
     description = "";
     uid = "";
+    isRotorProfile = false;
 
     if (profileAlgo) {
         profileAlgo->Cleanup();
@@ -96,6 +96,11 @@ void CCPACSWingProfile::Cleanup(void)
 void CCPACSWingProfile::ReadCPACS(TixiDocumentHandle tixiHandle)
 {
     Cleanup();
+    
+    if (ProfileXPath.find("rotorAirfoil") != std::string::npos) {
+        isRotorProfile = true;
+    }
+    
     std::string namePath = ProfileXPath + "/name";
     std::string describtionPath = ProfileXPath + "/description";
 

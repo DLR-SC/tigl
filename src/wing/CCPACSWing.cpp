@@ -127,9 +127,8 @@ namespace
 
 
 // Constructor
-CCPACSWing::CCPACSWing(CCPACSConfiguration* config, bool isRotorBlade)
-    : isRotorBlade(isRotorBlade)
-    , segments(this)
+CCPACSWing::CCPACSWing(CCPACSConfiguration* config)
+    : segments(this)
     , componentSegments(this)
     , configuration(config)
     , rebuildFusedSegments(true)
@@ -157,6 +156,7 @@ void CCPACSWing::Invalidate(void)
 void CCPACSWing::Cleanup(void)
 {
     name = "";
+    isRotorBlade = false;
     transformation.reset();
 
     // Calls ITiglGeometricComponent interface Reset to delete e.g. all childs.
@@ -182,6 +182,10 @@ void CCPACSWing::Update(void)
 void CCPACSWing::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& wingXPath)
 {
     Cleanup();
+
+    if (wingXPath.find("rotorBlade") != std::string::npos) {
+        isRotorBlade = true;
+    }
 
     char*       elementPath;
     std::string tempString;
@@ -620,7 +624,6 @@ double CCPACSWing::GetAspectRatio()
 {
     return 2.0*(pow_int(GetWingspan(),2)/GetReferenceArea(GetSymmetryAxis()));
 }
-
 
 /**
     * This function calculates location of the quarter of mean aerodynamic chord,

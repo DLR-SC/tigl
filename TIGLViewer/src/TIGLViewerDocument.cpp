@@ -44,6 +44,7 @@
 #include <BRepBuilderAPI_MakePolygon.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRepBuilderAPI_MakeVertex.hxx>
+#include <BRepBuilderAPI_Transform.hxx>
 #include <gce_MakeLin.hxx>
 #include <GC_MakeSegment.hxx>
 #include <BRepBndLib.hxx>
@@ -202,14 +203,7 @@ TiglReturnCode TIGLViewerDocument::openCpacsConfiguration(const QString fileName
         displayError(QString("<u>tiglOpenCPACSConfiguration</u> returned %1").arg(tiglGetErrorString(tiglRet)), "Error while reading in CPACS configuration");
         return tiglRet;
     }
-
-    if (GetConfiguration().GetRotorCount() > 0) {
-        drawRotorsWingsAndFuselages();
-    }
-    else {
-        drawAllFuselagesAndWings();
-    }
-
+    drawAllFuselagesAndWings();
     loadedConfigurationFileName = fileName;
     return TIGL_SUCCESS;
 }
@@ -357,15 +351,17 @@ QString TIGLViewerDocument::dlgGetWingComponentSegmentSelection()
     int wingCount = config.GetWingCount();
     for (int i = 1; i <= wingCount; i++) {
         tigl::CCPACSWing& wing = config.GetWing(i);
-        if (!wing.IsRotorBlade()) {
-            for (int j = 1; j <= wing.GetComponentSegmentCount(); ++j) {
-                tigl::CTiglAbstractSegment& segment = wing.GetComponentSegment(j);
-                std::string name = segment.GetUID();
-                if (name == "") {
-                    name = "Unknown component segment";
-                }
-                compSegs << name.c_str();
+        if (wing.IsRotorBlade()) {
+            continue;
+        }
+
+        for (int j = 1; j <= wing.GetComponentSegmentCount(); ++j) {
+            tigl::CTiglAbstractSegment& segment = wing.GetComponentSegment(j);
+            std::string name = segment.GetUID();
+            if (name == "") {
+                name = "Unknown component segment";
             }
+            compSegs << name.c_str();
         }
     }
 
@@ -390,15 +386,16 @@ QString TIGLViewerDocument::dlgGetWingSegmentSelection()
     int wingCount = config.GetWingCount();
     for (int i = 1; i <= wingCount; i++) {
         tigl::CCPACSWing& wing = config.GetWing(i);
-        if (!wing.IsRotorBlade()) {
-            for (int j = 1; j <= wing.GetSegmentCount(); ++j) {
-                tigl::CTiglAbstractSegment& segment = wing.GetSegment(j);
-                std::string name = segment.GetUID();
-                if (name == "") {
-                    name = "Unknown segment";
-                }
-                segs << name.c_str();
+        if (wing.IsRotorBlade()) {
+            continue;
+        }
+        for (int j = 1; j <= wing.GetSegmentCount(); ++j) {
+            tigl::CTiglAbstractSegment& segment = wing.GetSegment(j);
+            std::string name = segment.GetUID();
+            if (name == "") {
+                name = "Unknown segment";
             }
+            segs << name.c_str();
         }
     }
 
@@ -422,11 +419,12 @@ QString TIGLViewerDocument::dlgGetWingProfileSelection()
     int profileCount = config.GetWingProfileCount();
     for (int i = 1; i <= profileCount; i++) {
         tigl::CCPACSWingProfile& profile = config.GetWingProfile(i);
-        if (!profile.IsRotorProfile()) {
-            std::string profileUID = profile.GetUID();
-            std::string name     = profile.GetName();
-            wingProfiles << profileUID.c_str();
+        if (profile.IsRotorProfile()) {
+            continue;
         }
+        std::string profileUID = profile.GetUID();
+        std::string name     = profile.GetName();
+        wingProfiles << profileUID.c_str();
     }
 
     QString choice = QInputDialog::getItem(app, tr("Select Wing Profile"), tr("Available Wing Profiles:"), wingProfiles, 0, false, &ok);
@@ -457,7 +455,7 @@ QString TIGLViewerDocument::dlgGetRotorSelection()
         rotors << name.c_str();
     }
 
-    QString choice = QInputDialog::getItem(parent, tr("Select Rotor"), tr("Available Rotors:"), rotors, 0, false, &ok);
+    QString choice = QInputDialog::getItem(app, tr("Select Rotor"), tr("Available Rotors:"), rotors, 0, false, &ok);
     if (ok) {
         return choice;
     }
@@ -486,7 +484,7 @@ QString TIGLViewerDocument::dlgGetRotorBladeSelection()
         }
     }
 
-    QString choice = QInputDialog::getItem(parent, tr("Select Rotor Blade"), tr("Available Rotor Blades:"), wings, 0, false, &ok);
+    QString choice = QInputDialog::getItem(app, tr("Select Rotor Blade"), tr("Available Rotor Blades:"), wings, 0, false, &ok);
     if (ok) {
         return choice;
     }
@@ -518,7 +516,7 @@ QString TIGLViewerDocument::dlgGetRotorBladeComponentSegmentSelection()
         }
     }
 
-    QString choice = QInputDialog::getItem(parent, tr("Select Component Segment"), tr("Available Component Segments:"), compSegs, 0, false, &ok);
+    QString choice = QInputDialog::getItem(app, tr("Select Component Segment"), tr("Available Component Segments:"), compSegs, 0, false, &ok);
     if (ok) {
         return choice;
     }
@@ -550,7 +548,7 @@ QString TIGLViewerDocument::dlgGetRotorBladeSegmentSelection()
         }
     }
 
-    QString choice = QInputDialog::getItem(parent, tr("Select Segment"), tr("Available Segments:"), segs, 0, false, &ok);
+    QString choice = QInputDialog::getItem(app, tr("Select Segment"), tr("Available Segments:"), segs, 0, false, &ok);
     if (ok) {
         return choice;
     }
@@ -577,7 +575,7 @@ QString TIGLViewerDocument::dlgGetRotorProfileSelection()
         }
     }
 
-    QString choice = QInputDialog::getItem(parent, tr("Select Rotor Profile"), tr("Available Rotor Profiles:"), wingProfiles, 0, false, &ok);
+    QString choice = QInputDialog::getItem(app, tr("Select Rotor Profile"), tr("Available Rotor Profiles:"), wingProfiles, 0, false, &ok);
     if (ok) {
         return choice;
     }
@@ -766,6 +764,7 @@ void TIGLViewerDocument::drawAllFuselagesAndWings( )
 }
 
 
+
 void TIGLViewerDocument::drawWingProfiles()
 {
     QString wingProfile = dlgGetWingProfileSelection();
@@ -808,29 +807,23 @@ void TIGLViewerDocument::drawWingGuideCurves()
 }
 
 
-void TIGLViewerDocument::drawWingGuideCurves()
+/*
+ * Draw guide curves of the input wing
+ */
+void TIGLViewerDocument::drawWingGuideCurves(tigl::CCPACSWing& wing)
 {
     START_COMMAND();
+    
     // loop over all wing segments
-    tigl::CCPACSConfiguration& config = GetConfiguration();
-    int wingCount = config.GetWingCount();
-    for (int i = 1; i <= wingCount; i++) {
-        tigl::CCPACSWing& wing = config.GetWing(i);
-        std::string wingUid = wing.GetUID();
-        for (int j = 1; j <= wing.GetSegmentCount(); ++j) {
-            tigl::CTiglAbstractSegment& segment = wing.GetSegment(j);
-            std::string wingSegUid = segment.GetUID();
+    for (int j = 1; j <= wing.GetSegmentCount(); ++j) {
+        tigl::CCPACSWingSegment& wingSeg = static_cast<tigl::CCPACSWingSegment&>(wing.GetSegment(j));
 
-            tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUid);
-            tigl::CCPACSWingSegment& wingSeg = (tigl::CCPACSWingSegment&) wing.GetSegment(wingSegUid);
-
-            TopTools_SequenceOfShape& guideCurveContainer = wingSeg.GetGuideCurveWires();
-            for (int i=1; i<=guideCurveContainer.Length(); i++) {
-                TopoDS_Wire wire =TopoDS::Wire(guideCurveContainer(i));
-                Handle(AIS_Shape) shape = new AIS_Shape(wire);
-                shape->SetMaterial(Graphic3d_NOM_METALIZED);
-                app->getScene()->getContext()->Display(shape, Standard_True);
-            }
+        TopTools_SequenceOfShape& guideCurveContainer = wingSeg.GetGuideCurveWires();
+        for (int i=1; i<=guideCurveContainer.Length(); i++) {
+            TopoDS_Wire wire =TopoDS::Wire(guideCurveContainer(i));
+            Handle(AIS_Shape) shape = new AIS_Shape(wire);
+            shape->SetMaterial(Graphic3d_NOM_METALIZED);
+            app->getScene()->getContext()->Display(shape, Standard_True);
         }
     }
 }
@@ -857,7 +850,6 @@ void TIGLViewerDocument::drawFuselageProfiles()
             gp_Pnt pnt = p->Get_gp_Pnt();
             app->getScene()->displayPoint(pnt, str.str().c_str(), Standard_False, 0., 0., 0., 6.);
         }
-
     }
     else {
         for (double zeta = 0.0; zeta <= 1.0; zeta += 0.1) {
@@ -1894,7 +1886,7 @@ void TIGLViewerDocument::drawWingComponentSegmentPoints()
     START_COMMAND();
     double eta = 0.5, xsi = 0.5;
 
-    while (EtaXsiDialog::getEtaXsi(parent, eta, xsi) == QDialog::Accepted) {
+    while (EtaXsiDialog::getEtaXsi(app, eta, xsi) == QDialog::Accepted) {
         drawWingComponentSegmentPoint(csUid.toStdString(), eta, xsi);
     }
 }
@@ -2054,7 +2046,7 @@ void TIGLViewerDocument::drawRotorBladeComponentSegmentPoints()
     
     double eta = 0.5, xsi = 0.5;
 
-    while (EtaXsiDialog::getEtaXsi(parent, eta, xsi) == QDialog::Accepted) {
+    while (EtaXsiDialog::getEtaXsi(app, eta, xsi) == QDialog::Accepted) {
         drawWingComponentSegmentPoint(csUid.toStdString(), eta, xsi);
     }
 }
@@ -2123,184 +2115,51 @@ void TIGLViewerDocument::showRotorProperties()
     QString valueText;
     tigl::CTiglPoint tmpPoint;
 
-    START_COMMAND();
+    {
+        START_COMMAND();
 
-    try {
-        valueText = QString::fromStdString(rotor.GetUID());
-    }
-    catch (...) {
-        valueText = "ERROR";
-    }
-    propertiesText += "UID: " + valueText + "\n";
+#define ADD_PROPERTY_TEXT(propertyName, text) \
+        try { \
+           valueText = (text); \
+        } \
+        catch(...) { \
+           valueText = "ERROR"; \
+        } \
+        propertiesText += QString("<b>%1:</b> %2<br/>").arg(propertyName).arg(valueText);
 
-    try {
-        valueText = QString::number(rotor.GetType());
-    }
-    catch (...) {
-        valueText = "ERROR";
-    }
-    propertiesText += "Type: " + valueText + "\n";
+        ADD_PROPERTY_TEXT("UID", QString::fromStdString(rotor.GetUID()));
+        ADD_PROPERTY_TEXT("Type", QString::number(rotor.GetType()));
+        ADD_PROPERTY_TEXT("Name", QString::fromStdString(rotor.GetName()));
+        ADD_PROPERTY_TEXT("Description", QString::fromStdString(rotor.GetDescription()));
 
-    try {
-        valueText = QString::fromStdString(rotor.GetName());
-    }
-    catch (...) {
-        valueText = "ERROR";
-    }
-    propertiesText += "Name: " + valueText + "\n";
-
-    try {
-        valueText = QString::fromStdString(rotor.GetDescription());
-    }
-    catch (...) {
-        valueText = "ERROR";
-    }
-    propertiesText += "Description: " + valueText + "\n";
-
-    try {
         tmpPoint = rotor.GetTranslation();
-        valueText = "(" + QString::number(tmpPoint.x) + "; " + QString::number(tmpPoint.y) + "; " + QString::number(tmpPoint.z) + ")";
-    }
-    catch (...) {
-        valueText = "ERROR";
-    }
-    propertiesText += "Translation: " + valueText + "\n";
+        ADD_PROPERTY_TEXT("Translation", "(" + QString::number(tmpPoint.x) + "; " + QString::number(tmpPoint.y) + "; " + QString::number(tmpPoint.z) + ")")
+        ADD_PROPERTY_TEXT("RPM", QString::number(rotor.GetNominalRotationsPerMinute()));
+        ADD_PROPERTY_TEXT("Tip Speed", QString::number(rotor.GetTipSpeed()));
+        ADD_PROPERTY_TEXT("RotorBladeAttachmentCount", QString::number(rotor.GetRotorBladeAttachmentCount()));
+        ADD_PROPERTY_TEXT("RotorBladeCount", QString::number(rotor.GetRotorBladeCount()));
+        ADD_PROPERTY_TEXT("Radius", QString::number(rotor.GetRadius()));
+        ADD_PROPERTY_TEXT("Total blade planform area", QString::number(rotor.GetTotalBladePlanformArea()));
+        ADD_PROPERTY_TEXT("Reference area", QString::number(rotor.GetReferenceArea()));
+        ADD_PROPERTY_TEXT("Solidity", QString::number(rotor.GetSolidity()));
+        ADD_PROPERTY_TEXT("Surface area", QString::number(rotor.GetSurfaceArea()));
+        ADD_PROPERTY_TEXT("Volume", QString::number(rotor.GetVolume()));
 
-    try {
-        valueText = QString::number(rotor.GetNominalRotationsPerMinute());
-    }
-    catch (...) {
-        valueText = "ERROR";
-    }
-    propertiesText += "RPM: " + valueText + "\n";
+        if (rotor.GetRotorBladeCount() > 0) {
+            propertiesText += "<br/>";
+            tigl::CCPACSRotorBlade& blade = rotor.GetRotorBlade(1);
 
-    try {
-        valueText = QString::number(rotor.GetTipSpeed());
-    }
-    catch (...) {
-        valueText = "ERROR";
-    }
-    propertiesText += "Tip Speed: " + valueText + "\n";
+            ADD_PROPERTY_TEXT("Blade 1 Root Radius", QString::number(blade.GetLocalRadius(1, 0.)));
+            ADD_PROPERTY_TEXT("Blade 1 Tip Radius",
+                              QString::number(blade.GetLocalRadius(blade.GetUnattachedRotorBlade().GetSegmentCount(), 1.)));
+            ADD_PROPERTY_TEXT("Blade 1 Root Chord", QString::number(blade.GetLocalChord(1, 0.)));
+            ADD_PROPERTY_TEXT("Blade 1 Tip Chord",
+                              QString::number(blade.GetLocalChord(blade.GetUnattachedRotorBlade().GetSegmentCount(), 1.)));
 
-    try {
-        valueText = QString::number(rotor.GetRotorBladeAttachmentCount());
-    }
-    catch (...) {
-        valueText = "ERROR";
-    }
-    propertiesText += "RotorBladeAttachmentCount: " + valueText + "\n";
-
-    try {
-        valueText = QString::number(rotor.GetRotorBladeCount());
-    }
-    catch (...) {
-        valueText = "ERROR";
-    }
-    propertiesText += "RotorBladeCount: " + valueText + "\n";
-
-    try {
-        valueText = QString::number(rotor.GetRadius());
-    }
-    catch (...) {
-        valueText = "ERROR";
-    }
-    propertiesText += "Radius: " + valueText + "\n";
-
-    try {
-        valueText = QString::number(rotor.GetDiameter());
-    }
-    catch (...) {
-        valueText = "ERROR";
-    }
-    propertiesText += "Diameter: " + valueText + "\n";
-
-    try {
-        valueText = QString::number(rotor.GetTotalBladePlanformArea());
-    }
-    catch (...) {
-        valueText = "ERROR";
-    }
-    propertiesText += "Total blade planform area: " + valueText + "\n";
-
-    try {
-        valueText = QString::number(rotor.GetReferenceArea());
-    }
-    catch (...) {
-        valueText = "ERROR";
-    }
-    propertiesText += "Reference area: " + valueText + "\n";
-
-    try {
-        valueText = QString::number(rotor.GetSolidity());
-    }
-    catch (...) {
-        valueText = "ERROR";
-    }
-    propertiesText += "Solidity: " + valueText + "\n";
-
-    try {
-        valueText = QString::number(rotor.GetSurfaceArea());
-    }
-    catch (...) {
-        valueText = "ERROR";
-    }
-    propertiesText += "Surface area: " + valueText + "\n";
-
-    try {
-        valueText = QString::number(rotor.GetVolume());
-    }
-    catch (...) {
-        valueText = "ERROR";
-    }
-    propertiesText += "Volume: " + valueText;
-
-    if (rotor.GetRotorBladeCount() > 0) {
-        propertiesText += "\n";
-
-        try {
-            valueText = QString::number(rotor.GetRotorBlade(1).GetLocalRadius(1,0.));
+            ADD_PROPERTY_TEXT("Blade 1 Root Twist", QString::number(blade.GetLocalTwistAngle(1,0.)));
+            ADD_PROPERTY_TEXT("Blade 1 Tip Twist",
+                              QString::number(blade.GetLocalTwistAngle(blade.GetUnattachedRotorBlade().GetSegmentCount(),1.)));
         }
-        catch (...) {
-            valueText = "ERROR";
-        }
-        propertiesText += "Blade 1 Root Radius: " + valueText + "\n";
-        try {
-            valueText = QString::number(rotor.GetRotorBlade(1).GetLocalRadius(rotor.GetRotorBlade(1).GetUnattachedRotorBlade().GetSegmentCount(),1.));
-        }
-        catch (...) {
-            valueText = "ERROR";
-        }
-        propertiesText += "Blade 1 Tip Radius: " + valueText + "\n";
-    
-        try {
-            valueText = QString::number(rotor.GetRotorBlade(1).GetLocalChord(1,0.));
-        }
-        catch (...) {
-            valueText = "ERROR";
-        }
-        propertiesText += "Blade 1 Root Chord: " + valueText + "\n";
-        try {
-            valueText = QString::number(rotor.GetRotorBlade(1).GetLocalChord(rotor.GetRotorBlade(1).GetUnattachedRotorBlade().GetSegmentCount(),1.));
-        }
-        catch (...) {
-            valueText = "ERROR";
-        }
-        propertiesText += "Blade 1 Tip Chord: " + valueText + "\n";
-    
-        try {
-            valueText = QString::number(rotor.GetRotorBlade(1).GetLocalTwistAngle(1,0.));
-        }
-        catch (...) {
-            valueText = "ERROR";
-        }
-        propertiesText += "Blade 1 Root Twist: " + valueText + "\n";
-        try {
-            valueText = QString::number(rotor.GetRotorBlade(1).GetLocalTwistAngle(rotor.GetRotorBlade(1).GetUnattachedRotorBlade().GetSegmentCount(),1.));
-        }
-        catch (...) {
-            valueText = "ERROR";
-        }
-        propertiesText += "Blade 1 Tip Twist: " + valueText + "\n";
     }
 
     QMessageBox msgBox;
@@ -2308,18 +2167,6 @@ void TIGLViewerDocument::showRotorProperties()
     msgBox.setInformativeText(propertiesText);
 
     msgBox.exec();
-}
-
-void TIGLViewerDocument::drawFarField()
-{
-    tigl::CCPACSFarField& farField = GetConfiguration().GetFarField();
-    if (farField.GetFieldType() != tigl::NONE) {
-        Handle(AIS_Shape) shape = new AIS_Shape(farField.GetLoft());
-        shape->SetMaterial(Graphic3d_NOM_PEWTER);
-        shape->SetTransparency(0.6);
-        myAISContext->Display(shape, Standard_True);
-        myOCC->fitAll();
-    }
 }
 
 
@@ -2457,27 +2304,6 @@ void TIGLViewerDocument::drawWingOverlayProfilePoints(tigl::CCPACSWing& wing)
 }
 
 /*
- * Draw guide curves of the input wing
- */
-void TIGLViewerDocument::drawWingGuideCurves(tigl::CCPACSWing& wing)
-{
-    START_COMMAND();
-    
-    // loop over all wing segments
-    for (int j = 1; j <= wing.GetSegmentCount(); ++j) {
-        tigl::CCPACSWingSegment& wingSeg = static_cast<tigl::CCPACSWingSegment&>(wing.GetSegment(j));
-
-        TopTools_SequenceOfShape& guideCurveContainer = wingSeg.GetGuideCurveWires();
-        for (int i=1; i<=guideCurveContainer.Length(); i++) {
-            TopoDS_Wire wire =TopoDS::Wire(guideCurveContainer(i));
-            Handle(AIS_Shape) shape = new AIS_Shape(wire);
-            shape->SetMaterial(Graphic3d_NOM_METALIZED);
-            app->getScene()->getContext()->Display(shape, Standard_True);
-        }
-    }
-}
-
-/*
  * Draw the input wing
  */
 void TIGLViewerDocument::drawWing(tigl::CCPACSWing& wing)
@@ -2504,7 +2330,7 @@ void TIGLViewerDocument::drawWingTriangulation(tigl::CCPACSWing& wing)
     app->getScene()->deleteAllObjects();
 
     //we do not fuse segments anymore but build it from scratch with the profiles
-    TopoDS_Shape& fusedWing = wing.GetLoft()->Shape();
+    const TopoDS_Shape& fusedWing = wing.GetLoft()->Shape();
 
     TopoDS_Compound compound;
     createShapeTriangulation(fusedWing, compound);
@@ -2521,7 +2347,7 @@ void TIGLViewerDocument::drawWingSamplePoints(tigl::CCPACSWing& wing)
     int wingIndex = 0;
     for (int i = 1; i <= GetConfiguration().GetWingCount(); ++i) {
         tigl::CCPACSWing& curWing = GetConfiguration().GetWing(i);
-        if (wingUid.toStdString() == curWing.GetUID()) {
+        if (wing.GetUID() == curWing.GetUID()) {
             wingIndex = i;
             break;
         }
@@ -2614,8 +2440,7 @@ void TIGLViewerDocument::drawWingComponentSegmentPoint(const std::string& csUID,
         tigl::CCPACSWing& wing = GetConfiguration().GetWing(wingUID);
         tigl::CCPACSWingSegment& segment = dynamic_cast<tigl::CCPACSWingSegment&>(wing.GetSegment(segmentUID));
         gp_Pnt point = segment.GetChordPoint(alpha, beta);
-        ISession_Point* aGraphicPoint = new ISession_Point(point);
-        myAISContext->Display(aGraphicPoint,Standard_True);
+        app->getContext().DisplayPoint(point, "", Standard_True, 0,0,0,1.0);
     }
     else {
         displayError(QString("Error in <b>tiglWingComponentSegmentPointGetSegmentEtaXsi</b>. ReturnCode: %1").arg(ret), "Error");
@@ -2629,8 +2454,7 @@ void TIGLViewerDocument::drawWingComponentSegmentPoint(const std::string& csUID,
                              &x, &y, &z);
     if (ret == TIGL_SUCCESS){
         gp_Pnt point(x,y,z);
-        ISession_Point* aGraphicPoint = new ISession_Point(point);
-        myAISContext->Display(aGraphicPoint,Standard_True);
+        app->getScene()->displayPoint(point, "", Standard_True, 0,0,0,1.0);
     }
     else {
         displayError(QString("Error in <b>tiglWingComponentSegmentPointGetPoint</b>. ReturnCode: %1").arg(ret), "Error");
@@ -2702,3 +2526,5 @@ TiglCPACSConfigurationHandle TIGLViewerDocument::getCpacsHandle(void) const
 {
     return this->m_cpacsHandle;
 }
+
+

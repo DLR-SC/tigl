@@ -66,15 +66,23 @@ void CCPACSWingProfiles::Invalidate(void)
 }
 
 // Read CPACS wing profiles
-void CCPACSWingProfiles::ReadCPACS(TixiDocumentHandle tixiHandle, const bool doAppend, const bool isRotorProfile, const std::string wingProfilesLibraryPath, const std::string wingProfileElementName)
+void CCPACSWingProfiles::ReadCPACS(TixiDocumentHandle tixiHandle)
 {
-    if (!doAppend) {
-        Cleanup();
-    }
+    Cleanup();
+    
+    ReadCPACSProfiles(tixiHandle, "/cpacs/vehicles/profiles/wingAirfoils", "wingAirfoil");
+    ReadCPACSProfiles(tixiHandle, "/cpacs/vehicles/profiles/rotorAirfoils", "rotorAirfoil");
+}
+
+
+// Read CPACS wing profiles
+void CCPACSWingProfiles::ReadCPACSProfiles(TixiDocumentHandle tixiHandle,
+                                           const std::string& wingProfilesLibraryPath,
+                                           const std::string& wingProfileElementName)
+{
 
     ReturnCode    tixiRet;
     int           elementCount;
-    std::string   elementString;
 
     /* Get wing profile count */
     tixiRet = tixiGetNamedChildrenCount(tixiHandle, wingProfilesLibraryPath.c_str(), wingProfileElementName.c_str(), &elementCount);
@@ -87,7 +95,7 @@ void CCPACSWingProfiles::ReadCPACS(TixiDocumentHandle tixiHandle, const bool doA
         /* Get the appropriate airfoil */
         std::ostringstream airfoilTmpStream;
         airfoilTmpStream << wingProfilesLibraryPath << "/" << wingProfileElementName << "[" << i << "]";
-        CCPACSWingProfile* profile = new CCPACSWingProfile(airfoilTmpStream.str(), isRotorProfile);
+        CCPACSWingProfile* profile = new CCPACSWingProfile(airfoilTmpStream.str());
         profile->ReadCPACS(tixiHandle);
         CCPACSWingProfileContainer::const_iterator it = profiles.find(profile->GetUID());
         if (it != profiles.end() && it->second) {

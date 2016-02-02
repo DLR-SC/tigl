@@ -415,15 +415,6 @@ gp_Pnt CTiglTransformation::Transform(const gp_Pnt& point) const
     return gp_Pnt(transformed.X(), transformed.Y(), transformed.Z());
 }
 
-// Transforms a CTiglPoint with the current transformation matrix and
-// returns the transformed CTiglPoint
-CTiglPoint CTiglTransformation::Transform(const CTiglPoint& point) const
-{
-    return CTiglPoint(m_matrix[0][0]*point.x + m_matrix[0][1]*point.y + m_matrix[0][2]*point.z + m_matrix[0][3],
-                      m_matrix[1][0]*point.x + m_matrix[1][1]*point.y + m_matrix[1][2]*point.z + m_matrix[1][3],
-                      m_matrix[2][0]*point.x + m_matrix[2][1]*point.y + m_matrix[2][2]*point.z + m_matrix[2][3]);
-}
-
 void CTiglTransformation::printTransformMatrix()
 {
     for (int i = 0; i < 4; ++i) {

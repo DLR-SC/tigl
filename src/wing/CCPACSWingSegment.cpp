@@ -23,7 +23,7 @@
 * @brief  Implementation of CPACS wing segment handling routines.
 */
 
-#include <cmath>
+#include <math.h>
 #include <iostream>
 #include <string>
 #include <cassert>

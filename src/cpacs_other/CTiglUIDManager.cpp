@@ -25,6 +25,7 @@
 
 #include "CTiglUIDManager.h"
 #include "CTiglError.h"
+#include "CTiglLogging.h"
 
 namespace tigl 
 {
@@ -55,10 +56,10 @@ void CTiglUIDManager::Update(void)
     invalidated = false;
 
     if (rootComponentCnt == 0) {
-        throw CTiglError("Error: No root component found in CTiglUIDManager::FindRootComponents", TIGL_ERROR);
+        LOG(ERROR) << "No root component found in CTiglUIDManager::FindRootComponents";
     }
-    if (rootComponentCnt > 1) {
-        throw CTiglError("Error: More than one root component found in CTiglUIDManager::FindRootComponents", TIGL_ERROR);
+    else if (rootComponentCnt > 1) {
+        LOG(ERROR) << "More than one root component found in CTiglUIDManager::FindRootComponents";
     }
 }
 

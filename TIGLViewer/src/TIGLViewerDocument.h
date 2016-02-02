@@ -98,7 +98,6 @@ public slots:
     void drawRotorBladeShells();
 
     // Rotorcraft slots
-    void drawRotorsWingsAndFuselages();
     void drawRotor();
     void drawRotorDisk();
     void showRotorProperties();

@@ -50,7 +50,7 @@ public:
     TIGL_EXPORT virtual ~CCPACSWingProfiles(void);
 
     // Read CPACS wing profiles
-    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const bool doAppend=false, const bool isRotorProfile=false, const std::string wingProfilesLibraryPath="/cpacs/vehicles/profiles/wingAirfoils", const std::string wingProfileElementName="wingAirfoil");
+    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle);
 
     // Returns the total count of wing profiles in this configuration
     TIGL_EXPORT int GetProfileCount(void) const;
@@ -76,6 +76,10 @@ private:
 
     // Assignment operator
     void operator=(const CCPACSWingProfiles& ) { /* Do nothing */ }
+
+    void ReadCPACSProfiles(TixiDocumentHandle tixiHandle,
+                           const std::string& wingProfilesLibraryPath,
+                           const std::string& wingProfileElementName);
 
 private:
     CCPACSWingProfileContainer profiles;    // All wing profiles

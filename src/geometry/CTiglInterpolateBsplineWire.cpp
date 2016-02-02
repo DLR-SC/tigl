@@ -24,10 +24,6 @@
 *         of points by a BSpline interpolation.
 */
 
-#include <algorithm>
-#include <iostream>
-#include <cmath>
-
 #include "CTiglInterpolateBsplineWire.h"
 #include "CTiglError.h"
 #include "BRepBuilderAPI_MakeWire.hxx"
@@ -36,6 +32,9 @@
 #include "TColgp_HArray1OfPnt.hxx"
 #include "GeomAPI_Interpolate.hxx"
 #include "Precision.hxx"
+#include "math.h"
+#include <algorithm>
+#include <iostream>
 
 namespace tigl 
 {

@@ -60,17 +60,14 @@ void CCPACSRotorBlade::Invalidate(void)
 {
     invalidated = true;
 
-    rebuildRotorBladeLoft = true;
     rebuildRotorDisk = true;
 }
 
 // Cleanup routine
 void CCPACSRotorBlade::Cleanup(void)
 {
-    transformation.SetIdentity();
-    translation = CTiglPoint(0.0, 0.0, 0.0);
-    scaling     = CTiglPoint(1.0, 1.0, 1.0);
-    rotation    = CTiglPoint(0.0, 0.0, 0.0);
+    transformationMatrix.SetIdentity();
+    transformation.reset();
 
     // Calls ITiglGeometricComponent interface Reset to delete e.g. all childs.
     Reset();
@@ -83,8 +80,7 @@ void CCPACSRotorBlade::BuildMatrix(void)
 {
     double thetaDeg = 0.; // current azimuthal position of the rotor in degrees
 
-    transformation = rotorBladeAttachment->GetRotorBladeTransformationMatrix(thetaDeg, GetAzimuthAngle(), true, true, true);
-    backTransformation = transformation.Inverted();
+    transformationMatrix = rotorBladeAttachment->GetRotorBladeTransformationMatrix(thetaDeg, GetAzimuthAngle(), true, true, true);
 }
 
 // Update internal rotor blade data
@@ -131,7 +127,7 @@ double CCPACSRotorBlade::GetAzimuthAngle(void)
 // Returns the volume of this rotor blade
 double CCPACSRotorBlade::GetVolume(void)
 {
-    TopoDS_Shape& fusedSegments = GetLoft();
+    TopoDS_Shape fusedSegments = GetLoft()->Shape();
 
     // Calculate volume
     GProp_GProps System;
@@ -143,7 +139,7 @@ double CCPACSRotorBlade::GetVolume(void)
 // Returns the surface area of this rotor blade
 double CCPACSRotorBlade::GetSurfaceArea(void)
 {
-    TopoDS_Shape& fusedSegments = GetLoft();
+    TopoDS_Shape fusedSegments = GetLoft()->Shape();
 
     // Calculate surface area
     GProp_GProps System;
@@ -165,22 +161,23 @@ double CCPACSRotorBlade::GetPlanformArea(void)
 
     for (int i=1; i<=rotorBlade->GetSegmentCount(); ++i) {
         // Get corner points of the segment
-        CTiglPoint P1( bladeTransformation.Transform(rotorBlade->GetChordPoint(i, 1., 0.)).XYZ() );
-        CTiglPoint P2( bladeTransformation.Transform(rotorBlade->GetChordPoint(i, 1., 1.)).XYZ() );
-        CTiglPoint P3( bladeTransformation.Transform(rotorBlade->GetChordPoint(i, 0., 1.)).XYZ() );
-        CTiglPoint P4( bladeTransformation.Transform(rotorBlade->GetChordPoint(i, 0., 0.)).XYZ() );
+        gp_Pnt P1 = bladeTransformation.Transform(rotorBlade->GetChordPoint(i, 1., 0.)).XYZ();
+        gp_Pnt P2 = bladeTransformation.Transform(rotorBlade->GetChordPoint(i, 1., 1.)).XYZ();
+        gp_Pnt P3 = bladeTransformation.Transform(rotorBlade->GetChordPoint(i, 0., 1.)).XYZ();
+        gp_Pnt P4 = bladeTransformation.Transform(rotorBlade->GetChordPoint(i, 0., 0.)).XYZ();
 
         // Project points to xy-plane
-        P1.z =0.;
-        P2.z =0.;
-        P3.z =0.;
-        P4.z =0.;
+        P1.SetZ(0.);
+        P2.SetZ(0.);
+        P3.SetZ(0.);
+        P4.SetZ(0.);
 
         // Apply rotor transformation, calculate and add segment planform area
-        planformArea += quadrilateral_area(rotorBladeAttachment->GetRotor().GetTransformation().Transform(P1),
-                                           rotorBladeAttachment->GetRotor().GetTransformation().Transform(P2),
-                                           rotorBladeAttachment->GetRotor().GetTransformation().Transform(P3),
-                                           rotorBladeAttachment->GetRotor().GetTransformation().Transform(P4));
+        CTiglTransformation& rotorTrafo = rotorBladeAttachment->GetRotor().GetTransformation();
+        planformArea += quadrilateral_area(rotorTrafo.Transform(P1).XYZ(),
+                                           rotorTrafo.Transform(P2).XYZ(),
+                                           rotorTrafo.Transform(P3).XYZ(),
+                                           rotorTrafo.Transform(P4).XYZ());
     }
 
     return planformArea;
@@ -195,8 +192,8 @@ double CCPACSRotorBlade::GetRadius(void)
         return rotorRadius;
     }
 
-    CTiglPoint rotorAxisOrigin(    rotorBladeAttachment->GetRotor().GetTransformation().Transform(CTiglPoint(0., 0., 0.)) );
-    CTiglPoint rotorAxisDirection( rotorBladeAttachment->GetRotor().GetTransformation().Transform(CTiglPoint(0., 0., 1.)) );
+    CTiglPoint rotorAxisOrigin(    rotorBladeAttachment->GetRotor().GetTransformation().Transform(gp_Pnt(0., 0., 0.)).XYZ() );
+    CTiglPoint rotorAxisDirection( rotorBladeAttachment->GetRotor().GetTransformation().Transform(gp_Pnt(0., 0., 1.)).XYZ() );
     rotorAxisDirection -= rotorAxisOrigin;
 
     gp_Pnt maxDistPoint;
@@ -233,8 +230,8 @@ double CCPACSRotorBlade::GetLocalRadius(const int& segmentIndex, const double& e
         return radius;
     }
 
-    CTiglPoint rotorAxisOrigin(    rotorBladeAttachment->GetRotor().GetTransformation().Transform(CTiglPoint(0., 0., 0.)) );
-    CTiglPoint rotorAxisDirection( rotorBladeAttachment->GetRotor().GetTransformation().Transform(CTiglPoint(0., 0., 1.)) );
+    CTiglPoint rotorAxisOrigin(    rotorBladeAttachment->GetRotor().GetTransformation().Transform(gp_Pnt(0., 0., 0.)).XYZ() );
+    CTiglPoint rotorAxisDirection( rotorBladeAttachment->GetRotor().GetTransformation().Transform(gp_Pnt(0., 0., 1.)).XYZ() );
     rotorAxisDirection -= rotorAxisOrigin;
 
     CTiglTransformation bladeTransformation = rotorBladeAttachment->GetRotorBladeTransformationMatrix(0., 0., false, false, true);
@@ -270,8 +267,8 @@ double CCPACSRotorBlade::GetLocalTwistAngle(const int& segmentIndex, const doubl
         return twistAngle;
     }
 
-    CTiglPoint rotorAxisOrigin(    rotorBladeAttachment->GetRotor().GetTransformation().Transform(CTiglPoint(0., 0., 0.)) );
-    CTiglPoint rotorAxisDirection( rotorBladeAttachment->GetRotor().GetTransformation().Transform(CTiglPoint(0., 0., 1.)) );
+    CTiglPoint rotorAxisOrigin(    rotorBladeAttachment->GetRotor().GetTransformation().Transform(gp_Pnt(0., 0., 0.)).XYZ() );
+    CTiglPoint rotorAxisDirection( rotorBladeAttachment->GetRotor().GetTransformation().Transform(gp_Pnt(0., 0., 1.)).XYZ() );
     rotorAxisDirection -= rotorAxisOrigin;
 
     CTiglTransformation bladeTransformation = rotorBladeAttachment->GetRotorBladeTransformationMatrix(0., 0., false, false, true);
@@ -288,13 +285,13 @@ double CCPACSRotorBlade::GetLocalTwistAngle(const int& segmentIndex, const doubl
 
 
 // Create the rotor blade geometry by copying and transforming the original unattached rotor blade geometry
-TopoDS_Shape CCPACSRotorBlade::BuildLoft(void)
+PNamedShape CCPACSRotorBlade::BuildLoft(void)
 {
-    if (rebuildRotorBladeLoft) {
-        // Create a new instance of the referenced unattached rotor blade and apply the transformations to it
-        rotorBladeLoft = transformation.Transform(rotorBlade->GetLoft());
-    }
-    return rotorBladeLoft;
+    // Create a new instance of the referenced unattached rotor blade and apply the transformations to it
+    PNamedShape rotorBladeCopy = rotorBlade->GetLoft()->DeepCopy();
+    TopoDS_Shape transformedShape = transformationMatrix.Transform(rotorBladeCopy->Shape());
+    rotorBladeCopy->SetShape(transformedShape);
+    return rotorBladeCopy;
 }
 
 // Returns the rotor disk geometry
@@ -304,6 +301,13 @@ TopoDS_Shape CCPACSRotorBlade::GetRotorDisk(void)
         rotorDisk = BuildRotorDisk();
     }
     return rotorDisk;
+}
+
+CTiglTransformation CCPACSRotorBlade::GetTransformation()
+{
+    Update();
+    
+    return transformationMatrix;
 }
 
 // Creates a rotor disk (only using information of the current blade)

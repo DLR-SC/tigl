@@ -71,10 +71,7 @@ void CCPACSRotor::Cleanup(void)
 {
     name = "";
     description = "";
-    transformation.SetIdentity();
-    translation = CTiglPoint(0.0, 0.0, 0.0);
-    scaling     = CTiglPoint(1.0, 1.0, 1.0);
-    rotation    = CTiglPoint(0.0, 0.0, 0.0);
+    transformation.reset();
     type = TIGLROTOR_MAIN_ROTOR;
     nominalRotationsPerMinute = 0.;
 
@@ -84,28 +81,6 @@ void CCPACSRotor::Cleanup(void)
     Invalidate();
 }
 
-// Builds transformation matrix for the rotor
-void CCPACSRotor::BuildMatrix(void)
-{
-    transformation.SetIdentity();
-
-    // Step 1: scale the rotor around the orign
-    transformation.AddScaling(scaling.x, scaling.y, scaling.z);
-
-    // Step 2: rotate the rotor
-    // Step 2a: rotate the rotor around z (yaw   += right tip forward)
-    transformation.AddRotationZ(rotation.z);
-    // Step 2b: rotate the rotor around y (pitch += nose up)
-    transformation.AddRotationY(rotation.y);
-    // Step 2c: rotate the rotor around x (roll  += right tip up)
-    transformation.AddRotationX(rotation.x);
-
-    // Step 3: translate the rotated rotor into its position
-    transformation.AddTranslation(translation.x, translation.y, translation.z);
-
-    backTransformation = transformation.Inverted();
-}
-
 // Update internal rotor data
 void CCPACSRotor::Update(void)
 {
@@ -113,7 +88,7 @@ void CCPACSRotor::Update(void)
         return;
     }
 
-    BuildMatrix();
+    transformation.updateMatrix();
     invalidated = false;
     rebuildGeometry = true;
 
@@ -167,34 +142,9 @@ void CCPACSRotor::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& ro
 
         SetParentUID(ptrParentUID);
     }
-
-
-    // Get subelement "/transformation/translation"
-    tempString  = rotorXPath + "/transformation/translation";
-    elementPath = const_cast<char*>(tempString.c_str());
-    if (tixiCheckElement(tixiHandle, elementPath) == SUCCESS) {
-        if (tixiGetPoint(tixiHandle, elementPath, &(translation.x), &(translation.y), &(translation.z)) != SUCCESS) {
-            throw CTiglError("Error: XML error while reading <translation/> in CCPACSRotor::ReadCPACS", TIGL_XML_ERROR);
-        }
-    }
-
-    // Get subelement "/transformation/scaling"
-    tempString  = rotorXPath + "/transformation/scaling";
-    elementPath = const_cast<char*>(tempString.c_str());
-    if (tixiCheckElement(tixiHandle, elementPath) == SUCCESS) {
-        if (tixiGetPoint(tixiHandle, elementPath, &(scaling.x), &(scaling.y), &(scaling.z)) != SUCCESS) {
-            throw CTiglError("Error: XML error while reading <scaling/> in CCPACSRotor::ReadCPACS", TIGL_XML_ERROR);
-        }
-    }
-
-    // Get subelement "/transformation/rotation"
-    tempString  = rotorXPath + "/transformation/rotation";
-    elementPath = const_cast<char*>(tempString.c_str());
-    if (tixiCheckElement(tixiHandle, elementPath) == SUCCESS) {
-        if (tixiGetPoint(tixiHandle, elementPath, &(rotation.x), &(rotation.y), &(rotation.z)) != SUCCESS) {
-            throw CTiglError("Error: XML error while reading <rotation/> in CCPACSRotor::ReadCPACS", TIGL_XML_ERROR);
-        }
-    }
+    
+    // Get Transformation
+    transformation.ReadCPACS(tixiHandle, rotorXPath);
 
     // Get subelement "type"
     char* ptrType = NULL;
@@ -263,7 +213,7 @@ const std::string& CCPACSRotor::GetDescription(void) const
 CTiglTransformation CCPACSRotor::GetTransformation(void)
 {
     Update();   // create new transformation matrix if scaling, rotation or translation was changed
-    return transformation;
+    return transformation.getTransformationMatrix();
 }
 
 // Sets the Transformation object
@@ -277,7 +227,8 @@ void CCPACSRotor::Translate(CTiglPoint trans)
 // Get Translation
 CTiglPoint CCPACSRotor::GetTranslation(void)
 {
-    return translation;
+    Update();
+    return transformation.getTranslationVector();
 }
 
 // Returns the type of the rotor
@@ -329,8 +280,7 @@ const CCPACSRotorHub& CCPACSRotor::GetRotorHub(void) const
 }
 
 // Returns the rotor disk geometry (of the first attached blade)
-// TODO: pnamedshape
-TopoDS_Shape CCPACSRotor::GetRotorDisk(void)
+PNamedShape CCPACSRotor::GetRotorDisk(void)
 {
     // Create the rotor disk
     TopoDS_Shape rotorDisk;
@@ -339,31 +289,36 @@ TopoDS_Shape CCPACSRotor::GetRotorDisk(void)
             rotorDisk = GetRotorBladeAttachment(1).GetRotorBlade(1).GetRotorDisk();
         }
     }
-    // Return the generated geometry
-    return rotorDisk;
+    
+    PNamedShape diskShape(new CNamedShape(rotorDisk, std::string(GetUID() + "_Disk").c_str()));
+    return diskShape;
 }
 
-// Returns the geometry of the whole rotor (assembly of all rotor blades). (implementation for abstract base class CTiglAbstractGeometricComponent)
-TopoDS_Shape CCPACSRotor::BuildLoft()
+// Returns the geometry of the whole rotor (assembly of all rotor blades)
+PNamedShape CCPACSRotor::BuildLoft(void)
 {
     // Create rotor assembly
     TopoDS_Compound rotorGeometry;
     BRep_Builder aBuilder;
     aBuilder.MakeCompound(rotorGeometry);
-    for (int i=0; i<rotorHub.GetRotorBladeAttachmentCount(); ++i) {
-        for (int j=0; j<rotorHub.GetRotorBladeAttachment(i+1).GetRotorBladeCount(); ++j) {
+    for (int iAttach=1; iAttach <= rotorHub.GetRotorBladeAttachmentCount(); ++iAttach) {
+        CCPACSRotorBladeAttachment& attach = rotorHub.GetRotorBladeAttachment(iAttach);
+        for (int iBlade=1; iBlade <= attach.GetRotorBladeCount(); ++iBlade) {
             // Add the transformed rotor blade to the rotor assembly
-            aBuilder.Add(rotorGeometry, rotorHub.GetRotorBladeAttachment(i+1).GetRotorBlade(j+1).GetLoft());
+            TopoDS_Shape bladeShape = attach.GetRotorBlade(iBlade).GetLoft()->Shape();
+            aBuilder.Add(rotorGeometry, bladeShape);
         }
     }
     // Return the generated geometry
-    return rotorGeometry;
+    PNamedShape rotorShape(new CNamedShape(rotorGeometry, GetUID().c_str()));
+    
+    return rotorShape;
 }
 
 // Returns the volume of this rotor
 double CCPACSRotor::GetVolume(void)
 {
-    TopoDS_Shape& fusedRotorBlades = GetLoft();
+    TopoDS_Shape fusedRotorBlades = GetLoft()->Shape();
 
     // Calculate volume
     GProp_GProps System;
@@ -375,7 +330,7 @@ double CCPACSRotor::GetVolume(void)
 // Returns the surface area of this rotor
 double CCPACSRotor::GetSurfaceArea(void)
 {
-    TopoDS_Shape& fusedRotorBlades = GetLoft();
+    TopoDS_Shape fusedRotorBlades = GetLoft()->Shape();
 
     // Calculate surface area
     GProp_GProps System;
@@ -410,12 +365,6 @@ double CCPACSRotor::GetTipSpeed(void)
 {
     // return GetNominalRotationsPerMinute()/60. * 2.*M_PI*GetRadius();
     return GetNominalRotationsPerMinute()/30. * M_PI*GetRadius();
-}
-
-// Returns the diameter of this rotor
-double CCPACSRotor::GetDiameter(void)
-{
-    return 2.*GetRadius();
 }
 
 // Returns the sum of all blade planform areas of a rotor
