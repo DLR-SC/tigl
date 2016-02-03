@@ -64,7 +64,7 @@
      <x>0</x>
      <y>0</y>
      <width>783</width>
-     <height>21</height>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="fileMenu">
@@ -204,10 +204,35 @@
      <addaction name="drawRotorDisksAction"/>
      <addaction name="showRotorPropertiesAction"/>
     </widget>
+    <widget class="QMenu" name="menuRotorBlades">
+     <property name="title">
+      <string>Rotor blades</string>
+     </property>
+     <addaction name="drawRotorBladesAction"/>
+     <addaction name="drawFusedRotorBladeAction"/>
+     <addaction name="drawRotorBladeShellAction"/>
+     <addaction name="drawRotorBladeComponentSegmentAction"/>
+     <addaction name="drawRotorBladeTriangulationAction"/>
+     <addaction name="drawRotorProfilesAction"/>
+     <addaction name="drawRotorBladeGuideCurvesAction"/>
+     <addaction name="separator"/>
+     <addaction name="drawRotorBladeSamplePointsAction"/>
+     <addaction name="drawRotorBladeOverlayCPACSProfilePointsAction"/>
+     <addaction name="drawRotorBladeCSPointAction"/>
+    </widget>
+    <widget class="QMenu" name="menuMisc_Geometry">
+     <property name="title">
+      <string>Misc Geometry</string>
+     </property>
+     <addaction name="drawPointAction"/>
+     <addaction name="drawVectorAction"/>
+    </widget>
     <addaction name="menuAircraft"/>
     <addaction name="menuRotorcraft"/>
     <addaction name="menuWings"/>
+    <addaction name="menuRotorBlades"/>
     <addaction name="menuFuselages"/>
+    <addaction name="menuMisc_Geometry"/>
    </widget>
    <widget class="QMenu" name="viewMenu">
     <property name="title">

@@ -55,8 +55,7 @@ public:
     TIGL_EXPORT void Invalidate(void);
 
     // Read CPACS wings elements
-    //TODO: fix nasty api
-    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const char* configurationUID, const bool doAppend=false, const bool isRotorBlade=false,const std::string wingsLibraryName="wings", const std::string wingElementName="wing", const std::string wingProfilesLibraryPath="/cpacs/vehicles/profiles/wingAirfoils", const std::string wingProfileElementName="wingAirfoil");
+    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const char* configurationUID);
 
     TIGL_EXPORT bool HasProfile(std::string uid) const;
     
@@ -95,6 +94,11 @@ private:
     // Assignment operator
     void operator=(const CCPACSWings& );
 
+    void ReadCPACSWing(TixiDocumentHandle tixiHandle,
+                       const char* configurationUID,
+                       const char* wingsLibraryName,
+                       const char* wingElementName);
+    
 private:
     CCPACSWingProfiles   profiles;      /**< Wing profile elements */
     CCPACSWingContainer  wings;         /**< Wing elements */

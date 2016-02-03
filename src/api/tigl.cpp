@@ -1525,6 +1525,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetIndex(TiglCPACSConfigurationHandle 
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
+        *wingIndexPtr = -1;
         LOG(ERROR) << ex.getError() << std::endl;
         return ex.getCode();
     }
@@ -3100,6 +3101,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglFuselageGetIndex(TiglCPACSConfigurationHan
         return TIGL_ERROR;
     }
     catch (tigl::CTiglError& ex) {
+        *fuselageIndexPtr = -1;
         LOG(ERROR) << ex.getError() << std::endl;
         return ex.getCode();
     }

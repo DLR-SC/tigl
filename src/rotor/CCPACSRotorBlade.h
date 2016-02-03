@@ -99,6 +99,8 @@ public:
 
     // Returns the rotor disk geometry
     TIGL_EXPORT TopoDS_Shape GetRotorDisk(void);
+    
+    TIGL_EXPORT CTiglTransformation GetTransformation();
 
 protected:
     // Cleanup routine
@@ -108,7 +110,7 @@ protected:
     void BuildMatrix(void);
 
     // Create the rotor blade geometry by copying and transforming the original unattached rotor blade geometry
-    TopoDS_Shape BuildLoft(void);
+    PNamedShape BuildLoft(void);
 
 private:
     // Copy constructor
@@ -124,12 +126,12 @@ private:
     CCPACSWing*                  rotorBlade;           /**< Original unattached rotor blade         */
     int                          rotorBladeIndex;      /**< Index of the rotor blade in the rotor blade attachment */
     bool                         invalidated;          /**< Internal state flag */
-    bool                         rebuildRotorBladeLoft;/**< State flag for the rotor blade loft geometry */
     bool                         rebuildRotorDisk;     /**< State flag for the rotor disk geometry */
     TopoDS_Shape                 rotorBladeLoft;       /**< Transformed lofted geometry of the rotor blade */
     TopoDS_Shape                 rotorDisk;            /**< Rotor disk geometry of the rotor blade */
     double                       myVolume;             /**< Volume of this rotor blade              */
     double                       mySurfaceArea;        /**< Surface area of this rotor blade        */
+    CTiglTransformation          transformationMatrix;
 };
 
 } // end namespace tigl

@@ -823,7 +823,7 @@ void TIGLViewerWindow::updateMenus()
             tiglGetFuselageCount(hand, &nFuselages);
         }
     }
-    menuWings->setEnabled(nWings > 0);
+
     menuFuselages->setEnabled(nFuselages > 0);
     menuAircraft->setEnabled(nWings > 0 || nFuselages > 0);
 
@@ -865,6 +865,7 @@ void TIGLViewerWindow::updateMenus()
     drawRotorDisksAction->setEnabled(nRotors > 0);
     menuRotorcraft->setEnabled((nRotors > 0) || (nRotorBlades > 0));
     menuRotorBlades->setEnabled(nRotorBlades > 0);
+    menuWings->setEnabled(nWings - nRotorBlades > 0);
 }
 
 void TIGLViewerWindow::closeEvent(QCloseEvent*)

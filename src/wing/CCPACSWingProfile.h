@@ -51,7 +51,7 @@ class CCPACSWingProfile
 
 public:
     // Algo
-    TIGL_EXPORT CCPACSWingProfile(const std::string& aFilename, bool isRotorProfile=false);
+    TIGL_EXPORT CCPACSWingProfile(const std::string& aFilename);
 
     // Virtual Destructor
     TIGL_EXPORT virtual ~CCPACSWingProfile(void);

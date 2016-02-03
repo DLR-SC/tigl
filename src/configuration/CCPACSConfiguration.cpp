@@ -103,7 +103,6 @@ void CCPACSConfiguration::ReadCPACS(const char* configurationUID)
     guideCurveProfiles.ReadCPACS(tixiDocumentHandle);
     wings.ReadCPACS(tixiDocumentHandle, configurationUID);
     if (isRotorcraft) {
-        wings.ReadCPACS(tixiDocumentHandle, configurationUID, true, true, "rotorBlades", "rotorBlade", "/cpacs/vehicles/profiles/rotorAirfoils", "rotorAirfoil");
         rotors.ReadCPACS(tixiDocumentHandle, configurationUID);
     }
     fuselages.ReadCPACS(tixiDocumentHandle, configurationUID);
@@ -114,12 +113,6 @@ void CCPACSConfiguration::ReadCPACS(const char* configurationUID)
     configUID = configurationUID;
     // Now do parent <-> child transformations. Child should use the
     // parent coordinate system as root.
-    try {
-        uidManager.Update();
-    }
-    catch (tigl::CTiglError& ex) {
-        LOG(ERROR) << ex.getError() << std::endl;
-    }
     try {
         const UIDStoreContainerType& allRootComponentsWithChildren = uidManager.GetAllRootComponentsWithChildren();
         for (UIDStoreContainerType::const_iterator pIter = allRootComponentsWithChildren.begin(); pIter != allRootComponentsWithChildren.end(); ++pIter) {
@@ -310,10 +303,9 @@ CCPACSFuselage& CCPACSConfiguration::GetFuselage(int index) const
     return fuselages.GetFuselage(index);
 }
 
-// Returns the fuselage for a given UID.
-CCPACSFuselage& CCPACSConfiguration::GetFuselage(const std::string& UID) const
+CCPACSFarField& CCPACSConfiguration::GetFarField()
 {
-    return fuselages.GetFuselage(UID);
+    return farField;
 }
 
 // Returns the fuselage index for a given UID.
@@ -332,10 +324,10 @@ CCPACSExternalObject&CCPACSConfiguration::GetExternalObject(int index) const
     return externalObjects.GetObject(index);
 }
 
-
-CCPACSFarField& CCPACSConfiguration::GetFarField()
+// Returns the fuselage for a given UID.
+CCPACSFuselage& CCPACSConfiguration::GetFuselage(const std::string& UID) const
 {
-    return farField;
+    return fuselages.GetFuselage(UID);
 }
 
 // Returns the guide curve profile for a given UID.

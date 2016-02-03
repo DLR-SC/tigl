@@ -158,7 +158,7 @@ int CCPACSFuselages::GetFuselageIndex(const std::string& UID) const
 
     // UID not there
     throw CTiglError("Error: Invalid UID in CCPACSFuselages::GetFuselageIndex", TIGL_UID_ERROR);
-    return -1;
 }
+
 
 } // end namespace tigl
