@@ -173,7 +173,7 @@ double CCPACSRotorBlade::GetPlanformArea(void)
         P4.SetZ(0.);
 
         // Apply rotor transformation, calculate and add segment planform area
-        CTiglTransformation& rotorTrafo = rotorBladeAttachment->GetRotor().GetTransformation();
+        const CTiglTransformation& rotorTrafo = rotorBladeAttachment->GetRotor().GetTransformation();
         planformArea += quadrilateral_area(rotorTrafo.Transform(P1).XYZ(),
                                            rotorTrafo.Transform(P2).XYZ(),
                                            rotorTrafo.Transform(P3).XYZ(),

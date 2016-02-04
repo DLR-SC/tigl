@@ -901,8 +901,8 @@ void CCPACSWingSegment::MakeChordSurface()
         
     cordSurface.setQuadriangle(inner_lep.XYZ(), outer_lep.XYZ(), inner_tep.XYZ(), outer_tep.XYZ());
 
-    Handle(Geom_Curve) innerEdge = GC_MakeSegment(inner_lep, inner_tep).Value();
-    Handle(Geom_Curve) outerEdge = GC_MakeSegment(outer_lep, outer_tep).Value();
+    Handle(Geom_TrimmedCurve) innerEdge = GC_MakeSegment(inner_lep, inner_tep).Value();
+    Handle(Geom_TrimmedCurve) outerEdge = GC_MakeSegment(outer_lep, outer_tep).Value();
     cordFace = GeomFill::Surface(innerEdge, outerEdge);
 
     chordsurfaceValid = true;
