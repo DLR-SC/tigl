@@ -85,6 +85,8 @@ public slots:
     QScriptValue wingComponentSegmentGetPoint(QString compSegUID, double eta, double xsi);
     QScriptValue wingGetSegmentCount(int wingIndex);
     QScriptValue wingGetSegmentUID(int wingIndex, int segmentIndex);
+    QScriptValue wingGetSpan(QString wingUID);
+    
     QString      getErrorString(int errorCode);
     QScriptValue getShape(QString uid);
     

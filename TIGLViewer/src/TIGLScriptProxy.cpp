@@ -393,6 +393,18 @@ QScriptValue TIGLScriptProxy::wingGetLowerPointAtDirection(int wingIndex, int se
     }
 }
 
+QScriptValue TIGLScriptProxy::wingGetSpan(QString wingUID)
+{
+    double span = 0.;
+    TiglReturnCode ret = ::tiglWingGetSpan(getTiglHandle(), qString2char(wingUID), &span);
+    if (ret != TIGL_SUCCESS) {
+        return context()->throwError(tiglGetErrorString(ret));
+    }
+    else {
+        return span;
+    }
+}
+
 QScriptValue TIGLScriptProxy::getShape(QString uid)
 {
     if (!_app->getDocument()) {
