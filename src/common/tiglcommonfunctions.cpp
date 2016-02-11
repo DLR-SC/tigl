@@ -166,6 +166,9 @@ void WireGetPointTangent(const TopoDS_Wire& wire, double alpha, gp_Pnt& point, g
     BRepAdaptor_CompCurve aCompoundCurve(wire, Standard_True);
 
     Standard_Real len =  GCPnts_AbscissaPoint::Length( aCompoundCurve );
+    if (len < Precision::Confusion()) {
+        throw tigl::CTiglError("WireGetPointTangent: Unable to compute tangent on zero length wire", TIGL_MATH_ERROR);
+    }
     GCPnts_AbscissaPoint algo(aCompoundCurve, len*alpha, aCompoundCurve.FirstParameter());
     if (algo.IsDone()) {
         double par = algo.Parameter();
@@ -196,6 +199,9 @@ void EdgeGetPointTangent(const TopoDS_Edge& edge, double alpha, gp_Pnt& point, g
     Handle_Geom_Curve curve = BRep_Tool::Curve(edge, umin, umax);
     GeomAdaptor_Curve adaptorCurve(curve, umin, umax);
     Standard_Real len =  GCPnts_AbscissaPoint::Length( adaptorCurve, umin, umax );
+    if (len < Precision::Confusion()) {
+        throw tigl::CTiglError("EdgeGetPointTangent: Unable to compute tangent on zero length edge", TIGL_MATH_ERROR);
+    }
     GCPnts_AbscissaPoint algo(adaptorCurve, len*alpha, umin);
     if (algo.IsDone()) {
         double par = algo.Parameter();
