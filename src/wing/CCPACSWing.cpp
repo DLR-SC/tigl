@@ -59,7 +59,21 @@ namespace
     {
         return a < b? a : b;
     }
-    
+
+    // Returns the index of the maximum value
+    int maxIndex(double x, double y, double z)
+    {
+        if (x >= y && x >= z) {
+            return 0;
+        }
+        else if (y >= x && y >= z) {
+            return 1;
+        }
+        else {
+            return 2;
+        }
+    }
+
     TopoDS_Wire transformToWingCoords(const tigl::CTiglTransformation& wingTransform, const tigl::CCPACSWingConnection& wingConnection, const TopoDS_Wire& origWire)
     {
         // Do section element transformations
@@ -561,32 +575,57 @@ double CCPACSWing::GetWingspan()
 {
     Bnd_Box boundingBox;
     if (GetSymmetryAxis() == TIGL_NO_SYMMETRY) {
-        // find out major direction
-        gp_XYZ cumulatedDirection(0,0,0);
+        // As we have no symmetry information
+        // we have to find out the major direction
+        // of the wing.
+        // This is not so trivial, as e.g. the VTP can
+        // be longer in depth than the actual span.
+        // Boxwings have to be treated as well.
+        // Here, we apply a heuristic that finds out
+        // The major depth direction and the major
+        // spanning direction. The depth direction
+        // is then discarded in the span evaluation.
+
+        gp_XYZ cumulatedSpanDirection(0, 0, 0);
+        gp_XYZ cumulatedDepthDirection(0, 0, 0);
         for (int i = 1; i <= GetSegmentCount(); ++i) {
             CCPACSWingSegment& segment = segments.GetSegment(i);
             const TopoDS_Shape& segmentShape = segment.GetLoft()->Shape();
             BRepBndLib::Add(segmentShape, boundingBox);
 
-            gp_XYZ dir = segment.GetChordPoint(1,0).XYZ() - segment.GetChordPoint(0,0).XYZ();
-            dir = gp_XYZ(fabs(dir.X()), fabs(dir.Y()), fabs(dir.Z()));
-            cumulatedDirection += dir;
+            gp_XYZ dirSpan  = segment.GetChordPoint(1,0).XYZ() - segment.GetChordPoint(0,0).XYZ();
+            gp_XYZ dirDepth = segment.GetChordPoint(0,1).XYZ() - segment.GetChordPoint(0,0).XYZ();
+            dirSpan  = gp_XYZ(fabs(dirSpan.X()), fabs(dirSpan.Y()), fabs(dirSpan.Z()));
+            dirDepth = gp_XYZ(fabs(dirDepth.X()), fabs(dirDepth.Y()), fabs(dirDepth.Z()));
+            cumulatedSpanDirection += dirSpan;
+            cumulatedDepthDirection += dirDepth;
         }
+        CCPACSWingSegment& outerSegment = segments.GetSegment(GetSegmentCount());
+        gp_XYZ dirDepth = outerSegment.GetChordPoint(1,1).XYZ() - outerSegment.GetChordPoint(1,0).XYZ();
+        dirDepth = gp_XYZ(fabs(dirDepth.X()), fabs(dirDepth.Y()), fabs(dirDepth.Z()));
+        cumulatedDepthDirection += dirDepth;
+        
+        int depthIndex = maxIndex(cumulatedDepthDirection.X(),
+                                  cumulatedDepthDirection.Y(),
+                                  cumulatedDepthDirection.Z());
 
+        // Get the extension of the wing in all
+        // directions of the world coordinate system 
         Standard_Real xmin, xmax, ymin, ymax, zmin, zmax;
         boundingBox.Get(xmin, ymin, zmin, xmax, ymax, zmax);
         double xw = xmax - xmin;
         double yw = ymax - ymin;
         double zw = zmax - zmin;
 
-        if (cumulatedDirection.X() >= cumulatedDirection.Y() && cumulatedDirection.X() >= cumulatedDirection.Z()) {
-            return xw;
-        }
-        else if (cumulatedDirection.Y() >= cumulatedDirection.X() && cumulatedDirection.Y() >= cumulatedDirection.Z()) {
-            return yw;
-        }
-        else {
-            return zw;
+        // The direction of depth should not be included in the span evaluation
+        switch (depthIndex) {
+        default:
+        case 0:
+            return cumulatedSpanDirection.Y() >= cumulatedSpanDirection.Z() ? yw : zw;
+        case 1:
+            return cumulatedSpanDirection.X() >= cumulatedSpanDirection.Z() ? xw : zw;
+        case 2:
+            return cumulatedSpanDirection.X() >= cumulatedSpanDirection.Y() ? xw : yw;
         }
     }
     else {
