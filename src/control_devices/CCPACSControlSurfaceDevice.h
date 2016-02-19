@@ -63,20 +63,10 @@ public:
     // Returns the minimal deflaction value (defined in CPACS file)
     TIGL_EXPORT double GetMaxDeflection() const;
 
-    // TODO: missing description. Seems to be internal only, but used in tests
-    TIGL_EXPORT void getProjectedPoints(gp_Pnt point1, gp_Pnt point2, gp_Pnt point3,
-                                        gp_Pnt point4, gp_Vec& projectedPoint1,
-                                        gp_Vec& projectedPoint2, gp_Vec& projectedPoint3,
-                                        gp_Vec& projectedPoint4 );
-
 
     TIGL_EXPORT gp_Vec getNormalOfControlSurfaceDevice();
     TIGL_EXPORT CCPACSWingComponentSegment* getSegment();
     TIGL_EXPORT TiglControlSurfaceType getType();
-
-    // Actually a private class, only public for testing
-    // @TODO: should we make it private. Only used for simplistic cutout
-    TIGL_EXPORT TopoDS_Face GetBasePlane();
 
 protected:
     PNamedShape BuildLoft();
@@ -85,11 +75,8 @@ private:
     CCPACSControlSurfaceDevice(const CCPACSControlSurfaceDevice& segment); /* disable copy constructor */
     double determineCutOutPrismThickness();
     std::string GetShortShapeName();
-    double determineSpoilerThickness();
 
-    gp_Pnt getLeadingEdgeShapeLeadingEdgePoint(bool isInnerBorder);
-    gp_Pln getBorderPlane(bool isInnerBorder);
-    void getLeadingEdgeTangent(gp_Pln plane, bool isInnerBorder, bool isUpper, gp_Pnt& point, gp_Vec& vec);
+    class CSCoordSystem getBorderPlane(bool isInnerBorder);
     TopoDS_Wire getCutoutWire(bool isInnerBorder);
 
     CCPACSControlSurfaceDevicePath path;
