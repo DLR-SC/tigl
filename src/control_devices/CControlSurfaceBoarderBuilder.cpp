@@ -1,3 +1,21 @@
+/*
+* Copyright (C) 2016 German Aerospace Center (DLR/SC)
+*
+* Created: 2016-02-19 Martin Siggel <martin.siggel@dlr.de>
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
+
 #include "CControlSurfaceBoarderBuilder.h"
 
 #include "CTiglError.h"
@@ -5,28 +23,15 @@
 #include "CTiglIntersectionCalculation.h"
 
 #include <gp_Vec.hxx>
-#include <GeomAPI.hxx>
-#include <Geom2d_Line.hxx>
-#include <Geom2dAPI_InterCurveCurve.hxx>
-#include <Geom_Line.hxx>
 #include <Geom_Plane.hxx>
-#include <Geom_TrimmedCurve.hxx>
-#include <Geom2d_TrimmedCurve.hxx>
 #include <Geom2dAPI_Interpolate.hxx>
-#include <BRepAlgoAPI_Cut.hxx>
-#include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRepBuilderAPI_MakeWire.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
-#include <BRepAlgoAPI_Fuse.hxx>
-#include <BRepAlgoAPI_Common.hxx>
+#include <BRepIntCurveSurface_Inter.hxx>
 #include <BRepLib.hxx>
 #include <TopoDS_Face.hxx>
-#include <BRepTools.hxx>
 #include <BRep_Tool.hxx>
-#include <TopExp_Explorer.hxx>
-#include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
-#include <IntRes2d_IntersectionPoint.hxx>
 #include <TColgp_HArray1OfPnt2d.hxx>
 
 #include <vector>
@@ -60,7 +65,6 @@ namespace tigl
 CControlSurfaceBoarderBuilder::CControlSurfaceBoarderBuilder(const CSCoordSystem& coords, TopoDS_Shape wingShape)
     : _coords(coords), _wingShape(wingShape)
 {
-    computeWingCutWire();
 }
 
 CControlSurfaceBoarderBuilder::~CControlSurfaceBoarderBuilder()
@@ -73,68 +77,49 @@ TopoDS_Wire CControlSurfaceBoarderBuilder::boarderWithLEShape(double rLEHeight, 
     gp_Pln plane = _coords.getPlane();
     _le2d = ProjectPointOnPlane(plane, _coords.getLe());
     _te2d = ProjectPointOnPlane(plane, _coords.getTe());
-    
-    // get the points on the skin
-    computeSkinPoint(xsiUpper, true, _up2d, _upTan2d);
-    computeSkinPoint(xsiLower, false, _lp2d, _loTan2d);
-    
-    // determine the relative height
-    gp_Vec2d dummyVec;
-    gp_Pnt2d upTmp, loTmp;
-    computeSkinPoint(1.0, true, upTmp, dummyVec);
-    computeSkinPoint(1.0, false, loTmp, dummyVec);
-    
-    gp_Pnt2d lep2d = loTmp.XY() * (1. - rLEHeight) + upTmp.XY()*rLEHeight;
-    
-    gp_Pnt2d lp2d = _lp2d;
-    gp_Pnt2d up2d = _up2d;
 
-    
-    gp_Vec2d upTan2d = _upTan2d;
-    gp_Vec2d loTan2d = _loTan2d;
-    
-    gp_Vec2d upNorm2d(-upTan2d.Y(), upTan2d.X());
-    gp_Vec2d loNorm2d(-loTan2d.Y(), loTan2d.X());
-    
+    // Get the upper and lower intersection points on the skin
+    gp_Vec2d dummyVec;
+    gp_Pnt2d dummyPnt;
+    computeSkinPoints(xsiUpper, _up2d, _upTan2d, dummyPnt, dummyVec);
+    computeSkinPoints(xsiLower, dummyPnt, dummyVec, _lp2d, _loTan2d);
+
+    // Determine the nose point of the flap defined by rLEHeight
+    gp_Pnt2d upTmp, loTmp;
+    computeSkinPoints(1.0, upTmp, dummyVec, loTmp, dummyVec);
+    gp_Pnt2d nose2d = loTmp.XY() * (1. - rLEHeight) + upTmp.XY()*rLEHeight;
+
+    // Compute normals
+    gp_Vec2d upNorm2d(-_upTan2d.Y(), _upTan2d.X());
+    gp_Vec2d loNorm2d(-_loTan2d.Y(), _loTan2d.X());
+
     if (upNorm2d.Y() < 0) {
         upNorm2d.Multiply(-1.);
     }
-    
+
     if (loNorm2d.Y() > 0) {
         loNorm2d.Multiply(-1.);
     }
-    
-    // Compute the leading edge by interpolating upper, lower and leading edge point
+
+    // Compute the leading edge by interpolating upper, lower and nose point
     Handle(TColgp_HArray1OfPnt2d) points = new TColgp_HArray1OfPnt2d(1,3);
-    points->SetValue(1, lp2d);
-    points->SetValue(2, lep2d);
-    points->SetValue(3, up2d);
-    
+    points->SetValue(1, _lp2d);
+    points->SetValue(2, nose2d);
+    points->SetValue(3, _up2d);
+
     Geom2dAPI_Interpolate interp(points, false, Precision::Confusion());
 
-    // only create c1 continous cutouts, if leading edge is in front of upper and lower points
-    if (lep2d.X() > up2d.X()) {
-        if (upTan2d.X() > 0) {
-            upTan2d.Multiply(-1);
-        }
-    }
-    else {
-        if (upTan2d.X() < 0) {
-            upTan2d.Multiply(-1);
-        }
+    // make the upper tangent point away from the leading edge
+    if ((nose2d.X() > _up2d.X()) != (_upTan2d.X() < 0)) {
+        _upTan2d.Multiply(-1.);
     }
     
-    if (lep2d.X() > lp2d.X()) {
-        if (loTan2d.X() < 0) {
-            loTan2d.Multiply(-1);
-        }
+    // make the lower tangent point to the leading edge
+    if ((nose2d.X() > _lp2d.X()) != (_loTan2d.X() > 0)) {
+        _loTan2d.Multiply(-1.);
     }
-    else {
-        if (loTan2d.X() > 0) {
-            loTan2d.Multiply(-1);
-        }
-    }
-    interp.Load(loTan2d, upTan2d);
+
+    interp.Load(_loTan2d, _upTan2d);
     interp.Perform();
     
     TopoDS_Edge leadEdge = BRepBuilderAPI_MakeEdge(interp.Curve(), new Geom_Plane(plane));
@@ -142,12 +127,12 @@ TopoDS_Wire CControlSurfaceBoarderBuilder::boarderWithLEShape(double rLEHeight, 
     
     // compute some extra points with enough offset, to close the wire outside the wing
     double offset_factor = 5.;
-    double ymax = std::max(fabs(lp2d.Y()), fabs(up2d.Y())) * offset_factor;
-    double alphaUp = (ymax - up2d.Y())/upNorm2d.Y();
-    double alphaLo = (-ymax - lp2d.Y())/loNorm2d.Y();
+    double ymax = std::max(fabs(_lp2d.Y()), fabs(_up2d.Y())) * offset_factor;
+    double alphaUp = (ymax - _up2d.Y())/upNorm2d.Y();
+    double alphaLo = (-ymax - _lp2d.Y())/loNorm2d.Y();
 
-    gp_Pnt2d upFront2d = up2d.XY() + alphaUp*upNorm2d.XY();
-    gp_Pnt2d loFront2d = lp2d.XY() + alphaLo*loNorm2d.XY();
+    gp_Pnt2d upFront2d = _up2d.XY() + alphaUp*upNorm2d.XY();
+    gp_Pnt2d loFront2d = _lp2d.XY() + alphaLo*loNorm2d.XY();
 
     double xmax = _le2d.X() + offset_factor*(_te2d.X() - _le2d.X());
 
@@ -159,16 +144,13 @@ TopoDS_Wire CControlSurfaceBoarderBuilder::boarderWithLEShape(double rLEHeight, 
     // create the wire
     BRepBuilderAPI_MakeWire wiremaker;
     wiremaker.Add(leadEdge);
-    wiremaker.Add(pointsToEdge( surf, up2d, upFront2d));
+    wiremaker.Add(pointsToEdge( surf, _up2d, upFront2d));
     wiremaker.Add(pointsToEdge( surf, upFront2d, upBack2d));
     wiremaker.Add(pointsToEdge( surf, upBack2d, loBack2d));
     wiremaker.Add(pointsToEdge( surf, loBack2d, loFront2d));
-    wiremaker.Add(pointsToEdge( surf, loFront2d, lp2d));
-    
+    wiremaker.Add(pointsToEdge( surf, loFront2d, _lp2d));
+
     TopoDS_Wire result = wiremaker.Wire();
-    
-    BRepTools::Write(result, "resultwire.brep");
-    
     return result;
 }
 
@@ -180,8 +162,7 @@ TopoDS_Wire CControlSurfaceBoarderBuilder::boarderSimple()
     _te2d = ProjectPointOnPlane(plane, _coords.getTe());
     
     // get the points on the skin
-    computeSkinPoint(1.0, true, _up2d, _upTan2d);
-    computeSkinPoint(1.0, false, _lp2d, _loTan2d);
+    computeSkinPoints(1.0, _up2d, _upTan2d, _lp2d, _loTan2d);
     
     gp_Pnt2d lp2d = _lp2d;
     gp_Pnt2d up2d = _up2d;
@@ -221,9 +202,6 @@ TopoDS_Wire CControlSurfaceBoarderBuilder::boarderSimple()
     wiremaker.Add(pointsToEdge( surf, loBack2d, loFront2d));
     
     TopoDS_Wire result = wiremaker.Wire();
-    
-    BRepTools::Write(result, "resultwire.brep");
-    
     return result;
 }
 
@@ -248,95 +226,64 @@ gp_Vec2d CControlSurfaceBoarderBuilder::lowerTangent()
 }
 
 
-
-void CControlSurfaceBoarderBuilder::computeWingCutWire()
+void CControlSurfaceBoarderBuilder::computeSkinPoints(double xsi, gp_Pnt2d& pntUp, gp_Vec2d& tanUp, gp_Pnt2d& pntLo, gp_Vec2d& tanLo)
 {
-    gp_Pln pln = _coords.getPlane();
-    _wingCutFace =  BRepBuilderAPI_MakeFace(pln).Face();
-    
-    assert(!_wingCutFace.IsNull());
-    
-    BRepTools::Write(_wingCutFace, "cutface.brep");
-    BRepTools::Write(_wingShape, "wingshape.brep");
+    gp_Pnt start3d = _coords.getTe().XYZ() * (1-xsi) + _coords.getLe().XYZ()*xsi;
+    gp_Lin line3d(start3d, _coords.getYDir().XYZ());
 
-    // TODO: shape cache
-    CTiglIntersectionCalculation intersector(0, "wing", _wingShape, _coords.getLe(), _coords.getNormal().XYZ());
-
-    // TODO: There might be more faces, e.g. in case of a box wing
-    if (intersector.GetCountIntersectionLines() >= 1) {
-        _wingCutWire = intersector.GetWire(1);
-        
-        if (intersector.GetCountIntersectionLines() > 1) {
-            throw CTiglError("More than one plane-wing section found. Not yet implemented");
-        }
-    }
-    else {
-        throw CTiglError("No plane-wing section found.");
-    }
-}
-
-void CControlSurfaceBoarderBuilder::computeSkinPoint(double xsi, bool getUpper, gp_Pnt2d& pnt, gp_Vec2d& tangent)
-{
-    assert(!_wingCutWire.IsNull());
-    
-    BRepTools::Write(_wingCutWire, "cutwire.brep");
-    
-    gp_Pnt2d start = _te2d.XY() * (1-xsi) + _le2d.XY()*xsi;
-    
-    assert(fabs(start.Y()) < 1e-10);
-    
-    Handle(Geom2d_Curve) line2d = new Geom2d_Line(start, gp_Dir2d(0,1));
-    
-    
-    // compute intersection of wire with line
-    TopExp_Explorer edgeExplorer(_wingCutWire, TopAbs_EDGE);
     std::vector<Intersection2dResult> intersections;
-    for (; edgeExplorer.More(); edgeExplorer.Next()) {
-        TopoDS_Edge edge = TopoDS::Edge(edgeExplorer.Current());
-        
-        Standard_Real firstParam;
-        Standard_Real lastParam;
-        Handle(Geom2d_Curve) curve2d = BRep_Tool::CurveOnSurface(edge, _wingCutFace, firstParam, lastParam);
-        curve2d = new Geom2d_TrimmedCurve(curve2d, firstParam, lastParam);
-        
-        Geom2dAPI_InterCurveCurve intersection(line2d, curve2d);
-        for (int n = 1; n <= intersection.NbPoints(); n++) {
-            IntRes2d_IntersectionPoint pnt = intersection.Intersector().Point(n);
-            Intersection2dResult result;
-            result.parmOnFirst = pnt.ParamOnFirst();
-            curve2d->D1(pnt.ParamOnSecond(), result.pnt, result.tangent);
-            intersections.push_back(result);
-        }
+
+    BRepIntCurveSurface_Inter intersector;
+    for(intersector.Init(_wingShape, line3d, 1e-6); intersector.More(); intersector.Next()) {
+        // compute normal vector to the face
+        const TopoDS_Face& face = intersector.Face();
+
+        gp_Pnt pnt3d;
+        gp_Vec du, dv, faceNormal3d;
+        BRep_Tool::Surface(face)->D1(intersector.U(), intersector.V(), pnt3d, du, dv);
+        faceNormal3d = du.Crossed(dv);
+
+        // compute tangent, wich is a cross product of both face normals
+        gp_Vec tangent3d = _coords.getNormal().Crossed(faceNormal3d);
+
+        // convert to 2d
+        gp_Pnt2d pnt2d = ProjectPointOnPlane(_coords.getPlane(), pnt3d);
+        gp_Pnt2d stop2d = ProjectPointOnPlane(_coords.getPlane(), pnt3d.XYZ() + tangent3d.XYZ());
+
+        gp_Vec2d tan2d = stop2d.XY() - pnt2d.XY();
+
+        // store results
+        Intersection2dResult result;
+        result.parmOnFirst = intersector.W();
+        result.pnt = pnt2d;
+        result.tangent = tan2d;
+        intersections.push_back(result);
     }
-    
+
     if (intersections.size() != 2) {
         throw CTiglError("Number of intersections is not 2");
     }
-    
+
     Intersection2dResult lowerInters = intersections[0];
     Intersection2dResult upperInters = intersections[1];
-    
+
     // sort according to direction of line2d
     if (lowerInters.parmOnFirst > upperInters.parmOnFirst) {
         Intersection2dResult tmp = upperInters;
         upperInters = lowerInters;
         lowerInters = tmp;
     }
-    
-    if (getUpper) {
-        pnt = upperInters.pnt;
-        tangent = upperInters.tangent;
-    }
-    else {
-        pnt = lowerInters.pnt;
-        tangent = lowerInters.tangent;
-    }
+
+    pntUp = upperInters.pnt;
+    pntLo = lowerInters.pnt;
+    tanUp = upperInters.tangent;
+    tanLo = lowerInters.tangent;
 }
 
 
 
-CSCoordSystem::CSCoordSystem(gp_Pnt le, gp_Pnt te, gp_Vec yDir)
-    : _le(le), _te(te), _ydir(yDir)
+CSCoordSystem::CSCoordSystem(gp_Pnt le, gp_Pnt te, gp_Vec upDir)
+    : _le(le), _te(te), _ydir(upDir)
 {
 }
 
@@ -374,7 +321,6 @@ gp_Pln CSCoordSystem::getPlane() const
     gp_Pln plane(gp_Ax3(_le, getNormal().XYZ(), getXDir().XYZ()));
     return plane;
 }
-
 
 
 } // namespace tigl
