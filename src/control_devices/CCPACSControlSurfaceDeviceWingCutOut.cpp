@@ -46,28 +46,38 @@ void CCPACSControlSurfaceDeviceWingCutOut::ReadCPACS(
     }
 
     if (tixiCheckElement(tixiHandle, (xpath + "/upperSkin").c_str()) == SUCCESS) {
-        upperSkin.ReadCPACS(tixiHandle, xpath + "/upperSkin");
+        _upperSkin.ReadCPACS(tixiHandle, xpath + "/upperSkin");
     }
     else {
         throw CTiglError("Missing upperSkin element in path: " + xpath + "!", TIGL_OPEN_FAILED);
     }
     
     if (tixiCheckElement(tixiHandle, (xpath + "/upperSkin").c_str()) == SUCCESS) {
-        lowerSkin.ReadCPACS(tixiHandle, xpath + "/lowerSkin");
+        _lowerSkin.ReadCPACS(tixiHandle, xpath + "/lowerSkin");
     }
     else {
         throw CTiglError("Missing lowerSkin element in path: " + xpath + "!", TIGL_OPEN_FAILED);
     }
     
     if (tixiCheckElement(tixiHandle, (xpath + "/cutOutProfileControlPoint").c_str()) == SUCCESS) {
-        _cutOutProfileControlPoint = CCPACSCutOutControlPointsPtr(new CCPACSCutOutControlPoints);
-        _cutOutProfileControlPoint->ReadCPACS(tixiHandle, xpath + "/cutOutProfileControlPoint");
+        _cutOutProfileControlPoints = CCPACSCutOutControlPointsPtr(new CCPACSCutOutControlPoints);
+        _cutOutProfileControlPoints->ReadCPACS(tixiHandle, xpath + "/cutOutProfileControlPoint");
     }
 }
 
-const CCPACSCutOutControlPointsPtr CCPACSControlSurfaceDeviceWingCutOut::cutOutProfileControlPoint() const
+const CCPACSCutOutControlPointsPtr CCPACSControlSurfaceDeviceWingCutOut::cutOutProfileControlPoints() const
 {
-    return _cutOutProfileControlPoint;
+    return _cutOutProfileControlPoints;
+}
+
+const CCPACSControlSurfaceSkinCutOut& CCPACSControlSurfaceDeviceWingCutOut::upperSkin() const
+{
+    return _upperSkin;
+}
+
+const CCPACSControlSurfaceSkinCutOut& CCPACSControlSurfaceDeviceWingCutOut::lowerSkin() const
+{
+    return _lowerSkin;
 }
 
 }

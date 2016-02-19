@@ -44,5 +44,15 @@ void CCPACSCutOutControlPoint::ReadCPACS(TixiDocumentHandle tixiHandle, const st
     }
 }
 
+double CCPACSCutOutControlPoint::relHeight() const
+{
+    return _relHeight;
+}
+
+double CCPACSCutOutControlPoint::xsi() const
+{
+    return _xsi;
+}
+
 } // namespace tigl
 

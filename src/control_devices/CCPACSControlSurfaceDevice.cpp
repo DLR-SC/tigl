@@ -79,7 +79,6 @@ void CCPACSControlSurfaceDevice::ReadCPACS(TixiDocumentHandle tixiHandle, const 
     tempString = controlSurfaceDeviceXPath + "/wingCutOut";
     elementPath = const_cast<char*>(tempString.c_str());
     if (tixiCheckElement(tixiHandle, elementPath) == SUCCESS) {
-        LOG(ERROR) << "Create cutout";
         wingCutOut = CSharedPtr<CCPACSControlSurfaceDeviceWingCutOut>(new CCPACSControlSurfaceDeviceWingCutOut);
         wingCutOut->ReadCPACS(tixiHandle, elementPath);
     }
@@ -257,28 +256,11 @@ CSCoordSystem CCPACSControlSurfaceDevice::getOuterShapeCS(bool isInnerBorder)
 
 CSCoordSystem CCPACSControlSurfaceDevice::getCutoutCS(bool isInnerBorder)
 {
-    double lEta, lXsi, tEta, tXsi;
-    if (isInnerBorder) {
-        lEta = getOuterShape().getInnerBorder().getEtaLE();
-        lXsi = getOuterShape().getInnerBorder().getXsiLE();
-        tEta = getOuterShape().getInnerBorder().getEtaLE();
-        tXsi = getOuterShape().getInnerBorder().getXsiTE();
-    }
-    else {
-        lEta = getOuterShape().getOuterBorder().getEtaLE();
-        lXsi = getOuterShape().getOuterBorder().getXsiLE();
-        tEta = getOuterShape().getOuterBorder().getEtaLE();
-        tXsi = getOuterShape().getOuterBorder().getXsiTE();
-    }
-
-    
-    gp_Pnt pLE = _segment->GetPoint(lEta, lXsi);
-    gp_Pnt pTE = _segment->GetPoint(tEta, tXsi);
-    gp_Vec upDir = getNormalOfControlSurfaceDevice();
-
-    CSCoordSystem coords(pLE, pTE, upDir);
-    return coords;
+    // TODO: take account for custom etas two model gaps
+    return getOuterShapeCS(isInnerBorder);
 }
+
+
 
 // Computes the wire for the cutout loft. This is done as follows
 // Currently only for trailing edge devices
@@ -300,10 +282,10 @@ TopoDS_Wire CCPACSControlSurfaceDevice::getOuterShapeWire(bool isInnerBorder)
 #if USE_ADVANCED_MODELING
     if (border->isLeadingEdgeShapeAvailable()) {
         CCPACSControlSurfaceDeviceBorderLeadingEdgeShape leShape = border->getLeadingEdgeShape();
-        wire = builder.boarderWithLEShape(leShape.getRelHeightLE(), leShape.getXsiUpperSkin(), leShape.getXsiLowerSkin());
+        wire = builder.boarderWithLEShape(leShape.getRelHeightLE(), 1.0, leShape.getXsiUpperSkin(), leShape.getXsiLowerSkin());
     }
     else {
-        wire = builder.boarderSimple();
+        wire = builder.boarderSimple(1.0, 1.0);
     }
 #else
     wire = builder.boarderSimple();
@@ -327,10 +309,43 @@ TopoDS_Wire CCPACSControlSurfaceDevice::getCutoutWire(bool isInnerBorder)
 {
     TopoDS_Wire wire;
     if (!wingCutOut) {
-        LOG(ERROR) << "HERERERER";
         wire = getOuterShapeWire(isInnerBorder);
     }
     else {
+        CSCoordSystem coords(getCutoutCS(isInnerBorder));
+        CControlSurfaceBoarderBuilder builder(coords, _segment->GetLoft()->Shape());
+
+        double xsiUpper, xsiLower;
+        if (isInnerBorder) {
+            xsiUpper = wingCutOut->upperSkin().xsiInnerBorder();
+            xsiLower = wingCutOut->lowerSkin().xsiInnerBorder();
+        }
+        else {
+            xsiUpper = wingCutOut->upperSkin().xsiOuterBorder();
+            xsiLower = wingCutOut->lowerSkin().xsiOuterBorder();
+        }
+        
+        // TODO: calculate xsis into coordinate system of the border
+
+        CCPACSCutOutControlPointsPtr lePoints = wingCutOut->cutOutProfileControlPoints();
+        if (lePoints) {
+            const CCPACSCutOutControlPoint* lePoint;
+            if (isInnerBorder) {
+                lePoint = &(lePoints->innerBorder());
+            }
+            else {
+                lePoint = &(lePoints->outerBorder());
+            }
+            
+            double xsiNose = lePoint->xsi();
+            // TODO: calculate xsiNose into coordinate system of the border
+            
+            wire = builder.boarderWithLEShape(lePoint->relHeight(), xsiNose, xsiUpper, xsiLower);
+        }
+        else {
+            wire = builder.boarderSimple(xsiUpper, xsiLower);
+        }
+        
         throw CTiglError("WingCut moddeling not yet implemented");
     }
 

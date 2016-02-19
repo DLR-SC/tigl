@@ -36,8 +36,11 @@ public:
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle,
                                const std::string& CCPACSControlSurfaceSkinCutOutXPath);
     
+    TIGL_EXPORT double xsiInnerBorder() const;
+    TIGL_EXPORT double xsiOuterBorder() const;
+
 protected:
-    double xsiInnerBorder, xsiOuterBorder;
+    double _xsiInnerBorder, _xsiOuterBorder;
 };
 
 }

@@ -36,12 +36,15 @@ public:
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle,
                                const std::string & controlSurfaceDeviceWingCutOutXPath);
     
-    TIGL_EXPORT const CCPACSCutOutControlPointsPtr cutOutProfileControlPoint() const;
+    TIGL_EXPORT const CCPACSCutOutControlPointsPtr cutOutProfileControlPoints() const;
+    
+    TIGL_EXPORT const CCPACSControlSurfaceSkinCutOut& upperSkin() const;
+    TIGL_EXPORT const CCPACSControlSurfaceSkinCutOut& lowerSkin() const;
 
 private:
     CCPACSControlSurfaceDeviceWingCutOutProfiles wingCutOutProfiles;
-    CCPACSControlSurfaceSkinCutOut upperSkin, lowerSkin;
-    CCPACSCutOutControlPointsPtr _cutOutProfileControlPoint;
+    CCPACSControlSurfaceSkinCutOut _upperSkin, _lowerSkin;
+    CCPACSCutOutControlPointsPtr _cutOutProfileControlPoints;
 };
 
 } // end namespace tigl

@@ -76,8 +76,8 @@ public:
      * @param xsiUpper Upper skin point, where xsi=1 is the flap leading edge, and xsi=0 the trailing edge
      * @param xsiLower Lower skin point, where xsi=1 is the flap leading edge, and xsi=0 the trailing edge
      */
-    TopoDS_Wire boarderWithLEShape(double rLEHeight, double xsiUpper, double xsiLower);
-    TopoDS_Wire boarderSimple();
+    TopoDS_Wire boarderWithLEShape(double rLEHeight, double xsiNose, double xsiUpper, double xsiLower);
+    TopoDS_Wire boarderSimple(double xsiUpper, double xsiLower);
 
     gp_Pnt2d upperPoint();
     gp_Pnt2d lowerPoint();
@@ -89,7 +89,8 @@ private:
     CControlSurfaceBoarderBuilder();
     
     /// Computes the points on the wing skin and their tangents
-    void computeSkinPoints(double xsi, gp_Pnt2d& pntUp, gp_Vec2d& tangentUp, gp_Pnt2d& pntLo, gp_Vec2d& tanLo);
+    void computeSkinPointsImpl(double xsi, gp_Pnt2d& pntUp, gp_Vec2d& tangentUp, gp_Pnt2d& pntLo, gp_Vec2d& tanLo);
+    void computeSkinPoints(double xsiUpper, double xsiLower);
     
     TopoDS_Shape _wingShape;
     const CSCoordSystem& _coords;

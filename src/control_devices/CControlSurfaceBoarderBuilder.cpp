@@ -71,22 +71,19 @@ CControlSurfaceBoarderBuilder::~CControlSurfaceBoarderBuilder()
 {
 }
 
-TopoDS_Wire CControlSurfaceBoarderBuilder::boarderWithLEShape(double rLEHeight, double xsiUpper, double xsiLower)
+TopoDS_Wire CControlSurfaceBoarderBuilder::boarderWithLEShape(double rLEHeight, double xsiNose, double xsiUpper, double xsiLower)
 {
     // compute position of the leading and trailing edge in local coords
     gp_Pln plane = _coords.getPlane();
     _le2d = ProjectPointOnPlane(plane, _coords.getLe());
     _te2d = ProjectPointOnPlane(plane, _coords.getTe());
 
-    // Get the upper and lower intersection points on the skin
-    gp_Vec2d dummyVec;
-    gp_Pnt2d dummyPnt;
-    computeSkinPoints(xsiUpper, _up2d, _upTan2d, dummyPnt, dummyVec);
-    computeSkinPoints(xsiLower, dummyPnt, dummyVec, _lp2d, _loTan2d);
+    computeSkinPoints(xsiUpper, xsiLower);
 
     // Determine the nose point of the flap defined by rLEHeight
     gp_Pnt2d upTmp, loTmp;
-    computeSkinPoints(1.0, upTmp, dummyVec, loTmp, dummyVec);
+    gp_Vec2d dummyVec;
+    computeSkinPointsImpl(xsiNose, upTmp, dummyVec, loTmp, dummyVec);
     gp_Pnt2d nose2d = loTmp.XY() * (1. - rLEHeight) + upTmp.XY()*rLEHeight;
 
     // Compute normals
@@ -154,15 +151,14 @@ TopoDS_Wire CControlSurfaceBoarderBuilder::boarderWithLEShape(double rLEHeight, 
     return result;
 }
 
-TopoDS_Wire CControlSurfaceBoarderBuilder::boarderSimple()
+TopoDS_Wire CControlSurfaceBoarderBuilder::boarderSimple(double xsiUpper, double xsiLower)
 {
     // compute position of the leading and trailing edge in local coords
     gp_Pln plane = _coords.getPlane();
     _le2d = ProjectPointOnPlane(plane, _coords.getLe());
     _te2d = ProjectPointOnPlane(plane, _coords.getTe());
     
-    // get the points on the skin
-    computeSkinPoints(1.0, _up2d, _upTan2d, _lp2d, _loTan2d);
+    computeSkinPoints(xsiUpper, xsiLower);
     
     gp_Pnt2d lp2d = _lp2d;
     gp_Pnt2d up2d = _up2d;
@@ -226,7 +222,7 @@ gp_Vec2d CControlSurfaceBoarderBuilder::lowerTangent()
 }
 
 
-void CControlSurfaceBoarderBuilder::computeSkinPoints(double xsi, gp_Pnt2d& pntUp, gp_Vec2d& tanUp, gp_Pnt2d& pntLo, gp_Vec2d& tanLo)
+void CControlSurfaceBoarderBuilder::computeSkinPointsImpl(double xsi, gp_Pnt2d& pntUp, gp_Vec2d& tanUp, gp_Pnt2d& pntLo, gp_Vec2d& tanLo)
 {
     gp_Pnt start3d = _coords.getTe().XYZ() * (1-xsi) + _coords.getLe().XYZ()*xsi;
     gp_Lin line3d(start3d, _coords.getYDir().XYZ());
@@ -278,6 +274,20 @@ void CControlSurfaceBoarderBuilder::computeSkinPoints(double xsi, gp_Pnt2d& pntU
     pntLo = lowerInters.pnt;
     tanUp = upperInters.tangent;
     tanLo = lowerInters.tangent;
+}
+
+void CControlSurfaceBoarderBuilder::computeSkinPoints(double xsiUpper, double xsiLower)
+{
+    // get the points on the skin
+    if (fabs(xsiUpper-xsiLower) < 1e-10) {
+        computeSkinPointsImpl(xsiUpper, _up2d, _upTan2d, _lp2d, _loTan2d);
+    }
+    else {
+        gp_Pnt2d tmpPnt;
+        gp_Vec2d tmpVec;
+        computeSkinPointsImpl(xsiUpper, _up2d, _upTan2d, tmpPnt, tmpVec);
+        computeSkinPointsImpl(xsiLower,  tmpPnt, tmpVec, _lp2d, _loTan2d);
+    }
 }
 
 

@@ -36,14 +36,24 @@ CCPACSControlSurfaceSkinCutOut::~CCPACSControlSurfaceSkinCutOut()
 void CCPACSControlSurfaceSkinCutOut::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& xpath)
 {
     std::string tmp = xpath + "/xsiInnerBorder";
-    if (tixiGetDoubleElement(tixiHandle, tmp.c_str(), &xsiInnerBorder) != SUCCESS) {
+    if (tixiGetDoubleElement(tixiHandle, tmp.c_str(), &_xsiInnerBorder) != SUCCESS) {
         throw CTiglError("Missing xsiInnerBorder element in path " + xpath + "!", TIGL_OPEN_FAILED);
     }
     
     tmp = xpath + "/xsiOuterBorder";
-    if (tixiGetDoubleElement(tixiHandle, tmp.c_str(), &xsiOuterBorder) != SUCCESS) {
+    if (tixiGetDoubleElement(tixiHandle, tmp.c_str(), &_xsiOuterBorder) != SUCCESS) {
         throw CTiglError("Missing xsiOuterBorder element in path " + xpath + "!", TIGL_OPEN_FAILED);
     }
+}
+
+double CCPACSControlSurfaceSkinCutOut::xsiInnerBorder() const
+{
+    return _xsiInnerBorder;
+}
+
+double CCPACSControlSurfaceSkinCutOut::xsiOuterBorder() const
+{
+    return _xsiOuterBorder;
 }
 
 } // namespace tigl
