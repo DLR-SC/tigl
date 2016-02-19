@@ -842,24 +842,29 @@ void TIGLViewerDocument::drawWingFlaps()
 
 void TIGLViewerDocument::drawWingFlapsForInteractiveUse(std::string selectedWing, std::map<std::string,double> flapStatus)
 {
-    START_COMMAND();
-    flapsForInteractiveUse.clear();
-    app->getScene()->deleteAllObjects();
-    tigl::CCPACSWing& wing = GetConfiguration().GetWing( selectedWing );
-
-    TopoDS_Shape wingWithoutFlaps = wing.GetWingWithoutFlaps();
-    app->getScene()->displayShape(wingWithoutFlaps);
-
-    for ( int i = 1; i <= wing.GetComponentSegmentCount(); i++ ) {
-
-        tigl::CCPACSWingComponentSegment &componentSegment = (tigl::CCPACSWingComponentSegment&) wing.GetComponentSegment(i);
-        tigl::CCPACSControlSurfaceDevices* controlSurfaceDevices = componentSegment.getControlSurfaces().getControlSurfaceDevices();
-
-        for ( int j = 1; j <= controlSurfaceDevices->getControlSurfaceDeviceCount(); j++ ) {
-            tigl::CCPACSControlSurfaceDevice &controlSurfaceDevice = controlSurfaceDevices->getControlSurfaceDeviceByID(j);
-            flapsForInteractiveUse[controlSurfaceDevice.GetUID()] = app->getScene()->displayShape(controlSurfaceDevice.GetLoft()->Shape());
-            updateControlSurfacesInteractiveObjects(selectedWing,flapStatus,controlSurfaceDevice.GetUID());
+    try {
+        START_COMMAND();
+        flapsForInteractiveUse.clear();
+        app->getScene()->deleteAllObjects();
+        tigl::CCPACSWing& wing = GetConfiguration().GetWing( selectedWing );
+    
+        TopoDS_Shape wingWithoutFlaps = wing.GetWingWithoutFlaps();
+        app->getScene()->displayShape(wingWithoutFlaps);
+    
+        for ( int i = 1; i <= wing.GetComponentSegmentCount(); i++ ) {
+    
+            tigl::CCPACSWingComponentSegment &componentSegment = (tigl::CCPACSWingComponentSegment&) wing.GetComponentSegment(i);
+            tigl::CCPACSControlSurfaceDevices* controlSurfaceDevices = componentSegment.getControlSurfaces().getControlSurfaceDevices();
+    
+            for ( int j = 1; j <= controlSurfaceDevices->getControlSurfaceDeviceCount(); j++ ) {
+                tigl::CCPACSControlSurfaceDevice &controlSurfaceDevice = controlSurfaceDevices->getControlSurfaceDeviceByID(j);
+                flapsForInteractiveUse[controlSurfaceDevice.GetUID()] = app->getScene()->displayShape(controlSurfaceDevice.GetLoft()->Shape());
+                updateControlSurfacesInteractiveObjects(selectedWing,flapStatus,controlSurfaceDevice.GetUID());
+            }
         }
+    }
+    catch (tigl::CTiglError err) {
+        displayError(err.getError(), "Error");
     }
 }
 

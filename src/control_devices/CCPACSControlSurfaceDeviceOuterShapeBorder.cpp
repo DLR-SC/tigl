@@ -123,7 +123,7 @@ CCPACSControlSurfaceDeviceBorderLeadingEdgeShape CCPACSControlSurfaceDeviceOuter
     return leadingEdgeShape;
 }
 
-bool CCPACSControlSurfaceDeviceOuterShapeBorder::isLeadingEdgeShapeAvailible() const
+bool CCPACSControlSurfaceDeviceOuterShapeBorder::isLeadingEdgeShapeAvailable() const
 {
     return leadingEdgeShapeAvailible;
 }

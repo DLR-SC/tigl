@@ -76,17 +76,21 @@ private:
     double determineCutOutPrismThickness();
     std::string GetShortShapeName();
 
-    class CSCoordSystem getBorderPlane(bool isInnerBorder);
+    class CSCoordSystem getOuterShapeCS(bool isInnerBorder);
+    class CSCoordSystem getCutoutCS(bool isInnerBorder);
+    TopoDS_Wire getOuterShapeWire(bool isInnerBorder);
     TopoDS_Wire getCutoutWire(bool isInnerBorder);
 
     CCPACSControlSurfaceDevicePath path;
     CCPACSControlSurfaceDeviceOuterShape outerShape;
-    CCPACSControlSurfaceDeviceWingCutOut wingCutOut;
+    CSharedPtr<CCPACSControlSurfaceDeviceWingCutOut> wingCutOut;
 
     CCPACSWingComponentSegment* _segment;
     CSharedPtr<CTiglControlSurfaceHingeLine> _hingeLine;
 
     TiglControlSurfaceType _type;
+    
+    PNamedShape _wingCutOutShape, _outerShape;
 
 
 

@@ -44,7 +44,7 @@ public:
     TIGL_EXPORT double getXsiTE() const;
 
     TIGL_EXPORT CCPACSControlSurfaceDeviceBorderLeadingEdgeShape getLeadingEdgeShape() const;
-    TIGL_EXPORT bool isLeadingEdgeShapeAvailible() const;
+    TIGL_EXPORT bool isLeadingEdgeShapeAvailable() const;
 
 private:
     std::string xsiType;
