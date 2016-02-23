@@ -59,6 +59,16 @@ void CCPACSControlSurfaceDeviceWingCutOut::ReadCPACS(
         throw CTiglError("Missing lowerSkin element in path: " + xpath + "!", TIGL_OPEN_FAILED);
     }
     
+    if (tixiCheckElement(tixiHandle, (xpath + "/innerBorder").c_str()) == SUCCESS) {
+        _innerBorder = CCPACSControlSurfaceSkinCutoutBorderPtr(new CCPACSControlSurfaceSkinCutoutBorder);
+        _innerBorder->ReadCPACS(tixiHandle, xpath + "/innerBorder");
+    }
+    
+    if (tixiCheckElement(tixiHandle, (xpath + "/outerBorder").c_str()) == SUCCESS) {
+        _outerBorder = CCPACSControlSurfaceSkinCutoutBorderPtr(new CCPACSControlSurfaceSkinCutoutBorder);
+        _outerBorder->ReadCPACS(tixiHandle, xpath + "/outerBorder");
+    }
+    
     if (tixiCheckElement(tixiHandle, (xpath + "/cutOutProfileControlPoint").c_str()) == SUCCESS) {
         _cutOutProfileControlPoints = CCPACSCutOutControlPointsPtr(new CCPACSCutOutControlPoints);
         _cutOutProfileControlPoints->ReadCPACS(tixiHandle, xpath + "/cutOutProfileControlPoint");
@@ -78,6 +88,16 @@ const CCPACSControlSurfaceSkinCutOut& CCPACSControlSurfaceDeviceWingCutOut::uppe
 const CCPACSControlSurfaceSkinCutOut& CCPACSControlSurfaceDeviceWingCutOut::lowerSkin() const
 {
     return _lowerSkin;
+}
+
+const CCPACSControlSurfaceSkinCutoutBorderPtr CCPACSControlSurfaceDeviceWingCutOut::innerBorder() const
+{
+    return _innerBorder;
+}
+
+const CCPACSControlSurfaceSkinCutoutBorderPtr CCPACSControlSurfaceDeviceWingCutOut::outerBorder() const
+{
+    return _outerBorder;
 }
 
 }

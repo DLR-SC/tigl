@@ -310,21 +310,14 @@ TiglControlSurfaceType CCPACSControlSurfaceDevice::getType()
 
 CSCoordSystem CCPACSControlSurfaceDevice::getOuterShapeCS(bool isInnerBorder)
 {
-    double lEta, lXsi, tEta, tXsi;
-    if (isInnerBorder) {
-        lEta = getOuterShape().getInnerBorder().getEtaLE();
-        lXsi = getOuterShape().getInnerBorder().getXsiLE();
-        tEta = getOuterShape().getInnerBorder().getEtaLE();
-        tXsi = getOuterShape().getInnerBorder().getXsiTE();
-    }
-    else {
-        lEta = getOuterShape().getOuterBorder().getEtaLE();
-        lXsi = getOuterShape().getOuterBorder().getXsiLE();
-        tEta = getOuterShape().getOuterBorder().getEtaLE();
-        tXsi = getOuterShape().getOuterBorder().getXsiTE();
-    }
+    const CCPACSControlSurfaceDeviceOuterShapeBorder* outerShapeBorder = 
+            isInnerBorder ? &outerShape.getInnerBorder() : &outerShape.getOuterBorder();
 
-    
+    double lEta = outerShapeBorder->getEtaLE();
+    double lXsi = outerShapeBorder->getXsiLE();
+    double tEta = outerShapeBorder->getEtaLE();
+    double tXsi = outerShapeBorder->getXsiTE();
+
     gp_Pnt pLE = _segment->GetPoint(lEta, lXsi);
     gp_Pnt pTE = _segment->GetPoint(tEta, tXsi);
     gp_Vec upDir = getNormalOfControlSurfaceDevice();
@@ -335,8 +328,31 @@ CSCoordSystem CCPACSControlSurfaceDevice::getOuterShapeCS(bool isInnerBorder)
 
 CSCoordSystem CCPACSControlSurfaceDevice::getCutoutCS(bool isInnerBorder)
 {
-    // TODO: take account for custom etas two model gaps
-    return getOuterShapeCS(isInnerBorder);
+    if (!wingCutOut) {
+        return getOuterShapeCS(isInnerBorder);
+    }
+    
+    CCPACSControlSurfaceSkinCutoutBorderPtr cutOutBorder = 
+            isInnerBorder ? wingCutOut->innerBorder() : wingCutOut->outerBorder();
+
+    const CCPACSControlSurfaceDeviceOuterShapeBorder* outerShapeBorder = 
+            isInnerBorder ? &outerShape.getInnerBorder() : &outerShape.getOuterBorder();
+    
+    if (!cutOutBorder) {
+        return getOuterShapeCS(isInnerBorder);
+    }
+    
+    double lEta = cutOutBorder->etaLE();
+    double lXsi = outerShapeBorder->getXsiLE();
+    double tEta = cutOutBorder->etaTE();
+    double tXsi = outerShapeBorder->getXsiTE();
+
+    gp_Pnt pLE = _segment->GetPoint(lEta, lXsi);
+    gp_Pnt pTE = _segment->GetPoint(tEta, tXsi);
+    gp_Vec upDir = getNormalOfControlSurfaceDevice();
+
+    CSCoordSystem coords(pLE, pTE, upDir);
+    return coords;
 }
 
 

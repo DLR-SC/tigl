@@ -23,6 +23,7 @@
 #include "CCPACSControlSurfaceDeviceWingCutOutProfiles.h"
 #include "CCPACSControlSurfaceSkinCutOut.h"
 #include "CCPACSCutOutControlPoints.h"
+#include "CCPACSControlSurfaceSkinCutoutBorder.h"
 #include "tigl_internal.h"
 
 namespace tigl
@@ -35,16 +36,20 @@ public:
 
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle,
                                const std::string & controlSurfaceDeviceWingCutOutXPath);
-    
+
     TIGL_EXPORT const CCPACSCutOutControlPointsPtr cutOutProfileControlPoints() const;
-    
+
     TIGL_EXPORT const CCPACSControlSurfaceSkinCutOut& upperSkin() const;
     TIGL_EXPORT const CCPACSControlSurfaceSkinCutOut& lowerSkin() const;
+
+    TIGL_EXPORT const CCPACSControlSurfaceSkinCutoutBorderPtr innerBorder() const;
+    TIGL_EXPORT const CCPACSControlSurfaceSkinCutoutBorderPtr outerBorder() const;
 
 private:
     CCPACSControlSurfaceDeviceWingCutOutProfiles wingCutOutProfiles;
     CCPACSControlSurfaceSkinCutOut _upperSkin, _lowerSkin;
     CCPACSCutOutControlPointsPtr _cutOutProfileControlPoints;
+    CCPACSControlSurfaceSkinCutoutBorderPtr _innerBorder, _outerBorder;
 };
 
 } // end namespace tigl
