@@ -31,6 +31,7 @@
 #include "CCPACSControlSurfaceDeviceBorderLeadingEdgeShape.h"
 #include "CTiglControlSurfaceTransformation.h"
 #include "CCPACSControlSurfaceDeviceSteps.h"
+#include "CBopCommon.h"
 #include "tiglcommonfunctions.h"
 
 #include "BRepOffsetAPI_ThruSections.hxx"
@@ -88,15 +89,27 @@ void CCPACSControlSurfaceDevice::ReadCPACS(TixiDocumentHandle tixiHandle, const 
 
 void CCPACSControlSurfaceDevice::setLoft(PNamedShape loft)
 {
-    this->_outerShape = loft;
+    this->_flapShape = loft;
 }
 
 PNamedShape CCPACSControlSurfaceDevice::BuildLoft()
 {
-    if (!_outerShape) {
-        // TODO: build
+    return getFlapShape();
+}
+
+bool CCPACSControlSurfaceDevice::flapEqualsCutout()
+{
+    if (!wingCutOut) {
+        return true;
     }
-    return _outerShape;
+
+    return false;
+}
+
+bool CCPACSControlSurfaceDevice::needsWingIntersection()
+{
+    // TODO: implement
+    return true;
 }
 
 const CCPACSControlSurfaceDeviceOuterShape& CCPACSControlSurfaceDevice::getOuterShape() const
@@ -179,7 +192,73 @@ PNamedShape CCPACSControlSurfaceDevice::getCutOutShape()
     }
     
     return _wingCutOutShape;
+    
+}
 
+PNamedShape CCPACSControlSurfaceDevice::getFlapShape()
+{
+    if (!_flapShape) {
+        if (needsWingIntersection()) {
+
+            PNamedShape shapeBox;
+
+            if (flapEqualsCutout()) {
+                shapeBox = getCutOutShape();
+            }
+            else if (_type == TRAILING_EDGE_DEVICE) {
+
+                // Get Wires definng the Shape of the more complex CutOutShape.
+                TopoDS_Wire innerWire = getOuterShapeWire(true);
+                TopoDS_Wire outerWire = getOuterShapeWire(false);
+
+                // make one shape out of the 2 wires and build connections inbetween.
+                BRepOffsetAPI_ThruSections thrusections(true,true);
+                thrusections.AddWire(outerWire);
+                thrusections.AddWire(innerWire);
+                thrusections.Build();
+
+                shapeBox = PNamedShape(new CNamedShape(thrusections.Shape(), GetUID().c_str()));
+                shapeBox->SetShortName(GetShortShapeName().c_str());
+            }
+            else {
+                throw CTiglError("Control surface type not yet supported", TIGL_ERROR);
+            }
+
+            assert(shapeBox);
+
+#ifdef DEBUG
+            std::stringstream filenamestr;
+            filenamestr << GetUID() << "_flapShape_before_bop.brep";
+            BRepTools::Write(shapeBox->Shape(), filenamestr.str().c_str());
+#endif
+
+            // perform the boolean intersection of the flap box with the wing 
+            PNamedShape wingCleanShape = _segment->GetWing().GetWingCleanShape();
+            _flapShape = CBopCommon(wingCleanShape, shapeBox);
+
+            for (unsigned int iFace = 0; iFace < _flapShape->GetFaceCount(); ++iFace) {
+                CFaceTraits ft = _flapShape->GetFaceTraits(iFace);
+                ft.SetOrigin(shapeBox);
+                _flapShape->SetFaceTraits(iFace, ft);
+            }
+
+#ifdef DEBUG
+            std::stringstream filenamestr2;
+            filenamestr2 << GetUID() << "_flapShape.brep";
+            BRepTools::Write(_flapShape->Shape(), filenamestr2.str().c_str());
+#endif
+        }
+        else {
+            // !needsWingIntersection
+
+            // We need to model the flap like a wing by creating sections
+            throw CTiglError("Modeling from ground up not yet supported", TIGL_ERROR);
+        }
+
+
+    } // !_flapShape
+
+    return _flapShape;
 }
 
 gp_Vec CCPACSControlSurfaceDevice::getNormalOfControlSurfaceDevice()
@@ -288,7 +367,7 @@ TopoDS_Wire CCPACSControlSurfaceDevice::getOuterShapeWire(bool isInnerBorder)
         wire = builder.boarderSimple(1.0, 1.0);
     }
 #else
-    wire = builder.boarderSimple();
+    wire = builder.boarderSimple(1.0, 1.0);
 #endif
 
 #ifdef DEBUG
@@ -345,8 +424,6 @@ TopoDS_Wire CCPACSControlSurfaceDevice::getCutoutWire(bool isInnerBorder)
         else {
             wire = builder.boarderSimple(xsiUpper, xsiLower);
         }
-        
-        throw CTiglError("WingCut moddeling not yet implemented");
     }
 
     return wire;

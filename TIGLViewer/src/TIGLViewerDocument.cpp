@@ -835,8 +835,8 @@ void TIGLViewerDocument::drawWingFlaps()
     app->getScene()->deleteAllObjects();
 
     tigl::CCPACSWing& wing = GetConfiguration().GetWing( dialog.getSelectedWing() );
-    TopoDS_Shape wingShape = wing.BuildFusedSegmentsWithFlaps(false, dialog.getControlSurfaceStatus());
-    app->getScene()->displayShape(wingShape);
+    PNamedShape wingShape = wing.GroupedFlapsAndWingShapes(dialog.getControlSurfaceStatus());
+    app->getScene()->displayShape(wingShape->Shape());
 }
 
 
@@ -848,7 +848,7 @@ void TIGLViewerDocument::drawWingFlapsForInteractiveUse(std::string selectedWing
         app->getScene()->deleteAllObjects();
         tigl::CCPACSWing& wing = GetConfiguration().GetWing( selectedWing );
     
-        TopoDS_Shape wingWithoutFlaps = wing.GetWingWithoutFlaps();
+        TopoDS_Shape wingWithoutFlaps = wing.GetLoftWithCutouts();
         app->getScene()->displayShape(wingWithoutFlaps);
     
         for ( int i = 1; i <= wing.GetComponentSegmentCount(); i++ ) {

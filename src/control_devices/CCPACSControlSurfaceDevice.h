@@ -49,6 +49,7 @@ public:
     TIGL_EXPORT const CCPACSControlSurfaceDevicePath& getMovementPath() const;
     TIGL_EXPORT TiglGeometricComponentType GetComponentType(void) {return TIGL_COMPONENT_CONTROLSURF | TIGL_COMPONENT_PHYSICAL;}
     TIGL_EXPORT PNamedShape getCutOutShape(void);
+    TIGL_EXPORT PNamedShape getFlapShape(void);
     
     // @TODO: the loft buildup should be done inside this class. Currently it
     // is done inside the wing class.
@@ -73,7 +74,8 @@ protected:
 
 private:
     CCPACSControlSurfaceDevice(const CCPACSControlSurfaceDevice& segment); /* disable copy constructor */
-    double determineCutOutPrismThickness();
+    bool flapEqualsCutout();
+    bool needsWingIntersection();
     std::string GetShortShapeName();
 
     class CSCoordSystem getOuterShapeCS(bool isInnerBorder);
@@ -81,16 +83,16 @@ private:
     TopoDS_Wire getOuterShapeWire(bool isInnerBorder);
     TopoDS_Wire getCutoutWire(bool isInnerBorder);
 
+    // CPACS elements of control surface
     CCPACSControlSurfaceDevicePath path;
     CCPACSControlSurfaceDeviceOuterShape outerShape;
     CSharedPtr<CCPACSControlSurfaceDeviceWingCutOut> wingCutOut;
-
-    CCPACSWingComponentSegment* _segment;
     CSharedPtr<CTiglControlSurfaceHingeLine> _hingeLine;
 
+    // Helper members
+    CCPACSWingComponentSegment* _segment;
     TiglControlSurfaceType _type;
-    
-    PNamedShape _wingCutOutShape, _outerShape;
+    PNamedShape _wingCutOutShape, _flapShape;
 
 
 
