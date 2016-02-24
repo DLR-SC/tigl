@@ -20,6 +20,7 @@
 #include "CControlSurfaceBoarderBuilder.h"
 #include "CNamedShape.h"
 #include "CCPACSWingComponentSegment.h"
+#include "CCPACSWing.h"
 
 #include <BRepTools.hxx>
 
@@ -37,7 +38,6 @@ CCPACSControlSurfaceDeviceOuterShapeBorder::CCPACSControlSurfaceDeviceOuterShape
     xsiTE = -1;
     etaLE = -1;
     etaTE = -1;
-    leadingEdgeShapeAvailible = false;
 }
 
 // Read CPACS Border element
@@ -80,8 +80,8 @@ void CCPACSControlSurfaceDeviceOuterShapeBorder::ReadCPACS(
         tempString = BorderXPath + "/leadingEdgeShape";
         elementPath = const_cast<char*>(tempString.c_str());
         if (tixiCheckElement(tixiHandle,elementPath) == SUCCESS) {
-            leadingEdgeShape.ReadCPACS(tixiHandle,elementPath,TRAILING_EDGE_DEVICE);
-            leadingEdgeShapeAvailible = true;
+            leadingEdgeShape = CCPACSControlSurfaceDeviceBorderLeadingEdgeShapePtr(new CCPACSControlSurfaceDeviceBorderLeadingEdgeShape);
+            leadingEdgeShape->ReadCPACS(tixiHandle,elementPath,TRAILING_EDGE_DEVICE);
         }
     }
     else if (type == LEADING_EDGE_DEVICE) {
@@ -107,6 +107,13 @@ void CCPACSControlSurfaceDeviceOuterShapeBorder::ReadCPACS(
         if (tixiGetDoubleElement(tixiHandle, elementPath, &xsiTE) != SUCCESS) {
             // couldnt read xsiTE
         }
+    }
+
+    if (tixiCheckElement(tixiHandle, (BorderXPath + "/airfoil").c_str()) == SUCCESS) {
+        // TODO: avoid chaining, instead provide configuration to constructor
+        airfoil = CCPACSControlSurfaceDeviceAirfoilPtr(
+                    new CCPACSControlSurfaceDeviceAirfoil(&_segment->GetWing().GetConfiguration())); 
+        airfoil->ReadCPACS(tixiHandle, BorderXPath + "/airfoil");
     }
 }
 
@@ -135,12 +142,11 @@ TopoDS_Wire CCPACSControlSurfaceDeviceOuterShapeBorder::getWire(PNamedShape wing
     CTiglControlSurfaceBorderCoordinateSystem coords = getCoordinateSystem(upDir);
     CControlSurfaceBoarderBuilder builder(coords, wingShape->Shape());
 
-    const CCPACSControlSurfaceDeviceOuterShapeBorder * border = this;
-    
     TopoDS_Wire wire;
-    if (border->isLeadingEdgeShapeAvailable()) {
-        CCPACSControlSurfaceDeviceBorderLeadingEdgeShape leShape = border->getLeadingEdgeShape();
-        wire = builder.boarderWithLEShape(leShape.getRelHeightLE(), 1.0, leShape.getXsiUpperSkin(), leShape.getXsiLowerSkin());
+    if (leadingEdgeShape) {
+        wire = builder.boarderWithLEShape(leadingEdgeShape->getRelHeightLE(), 1.0,
+                                          leadingEdgeShape->getXsiUpperSkin(),
+                                          leadingEdgeShape->getXsiLowerSkin());
     }
     else {
         wire = builder.boarderSimple(1.0, 1.0);
@@ -164,14 +170,9 @@ CTiglControlSurfaceBorderCoordinateSystem CCPACSControlSurfaceDeviceOuterShapeBo
     return coords;
 }
 
-CCPACSControlSurfaceDeviceBorderLeadingEdgeShape CCPACSControlSurfaceDeviceOuterShapeBorder::getLeadingEdgeShape() const
+CCPACSControlSurfaceDeviceBorderLeadingEdgeShapePtr CCPACSControlSurfaceDeviceOuterShapeBorder::getLeadingEdgeShape() const
 {
     return leadingEdgeShape;
-}
-
-bool CCPACSControlSurfaceDeviceOuterShapeBorder::isLeadingEdgeShapeAvailable() const
-{
-    return leadingEdgeShapeAvailible;
 }
 
 void CCPACSControlSurfaceDeviceOuterShapeBorder::setUID(const std::string& uid)

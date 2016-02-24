@@ -26,6 +26,7 @@
 #include "tigl_internal.h"
 #include "CCPACSControlSurfaceDeviceBorderLeadingEdgeShape.h"
 #include "CTiglControlSurfaceBorderCoordinateSystem.h"
+#include "CCPACSControlSurfaceDeviceAirfoil.h"
 #include "PNamedShape.h"
 
 #include <TopoDS_Wire.hxx>
@@ -54,8 +55,7 @@ public:
 
     TIGL_EXPORT CTiglControlSurfaceBorderCoordinateSystem getCoordinateSystem(gp_Vec upDir) const;
 
-    TIGL_EXPORT CCPACSControlSurfaceDeviceBorderLeadingEdgeShape getLeadingEdgeShape() const;
-    TIGL_EXPORT bool isLeadingEdgeShapeAvailable() const;
+    TIGL_EXPORT CCPACSControlSurfaceDeviceBorderLeadingEdgeShapePtr getLeadingEdgeShape() const;
 
     TIGL_EXPORT void setUID(const std::string& uid);
 
@@ -69,8 +69,8 @@ private:
     double xsiLE;
     double xsiTE;
 
-    CCPACSControlSurfaceDeviceBorderLeadingEdgeShape leadingEdgeShape;
-    bool leadingEdgeShapeAvailible;
+    CCPACSControlSurfaceDeviceBorderLeadingEdgeShapePtr leadingEdgeShape;
+    CCPACSControlSurfaceDeviceAirfoilPtr airfoil;
 
     // helpers
     CCPACSWingComponentSegment* _segment;
