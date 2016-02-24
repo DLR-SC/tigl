@@ -21,12 +21,25 @@
 #include "CCPACSControlSurfaceDeviceWingCutOut.h"
 #include "CCPACSControlSurfaceDeviceWingCutOutProfiles.h"
 
+#include "CCPACSControlSurfaceDeviceOuterShape.h"
+#include "CControlSurfaceBoarderBuilder.h"
+#include "CTiglControlSurfaceBorderCoordinateSystem.h"
+#include "CCPACSControlSurfaceDevice.h"
+#include "CCPACSWingComponentSegment.h"
+#include "CNamedShape.h"
+#include "CTiglLogging.h"
+
+#include <BRepOffsetAPI_ThruSections.hxx>
+#include <BRepTools.hxx>
+
 #include <string>
+#include <cassert>
 
 namespace tigl
 {
 
-CCPACSControlSurfaceDeviceWingCutOut::CCPACSControlSurfaceDeviceWingCutOut()
+CCPACSControlSurfaceDeviceWingCutOut::CCPACSControlSurfaceDeviceWingCutOut(CCPACSControlSurfaceDevice* dev, CCPACSWingComponentSegment* cs)
+    : _segment(cs), _csDevice(dev)
 {
 }
 
@@ -100,6 +113,108 @@ const CCPACSControlSurfaceSkinCutoutBorderPtr CCPACSControlSurfaceDeviceWingCutO
     return _outerBorder;
 }
 
+PNamedShape CCPACSControlSurfaceDeviceWingCutOut::GetLoft(PNamedShape wingCleanShape,
+                                                              CCPACSControlSurfaceDeviceOuterShape* outerShape,
+                                                              gp_Vec upDir)
+{
+    if (_loft) {
+        return _loft;
+    }
+
+    DLOG(INFO) << "Building " << _csDevice->GetUID() << " wing cutout shape";
+
+    // Get Wires definng the Shape of the more complex CutOutShape.
+    TopoDS_Wire innerWire = getCutoutWire(true, wingCleanShape, &outerShape->getInnerBorder(), upDir);
+    TopoDS_Wire outerWire = getCutoutWire(false, wingCleanShape, &outerShape->getOuterBorder(), upDir);
+
+    // make one shape out of the 2 wires and build connections inbetween.
+    BRepOffsetAPI_ThruSections thrusections(true,true);
+    thrusections.AddWire(outerWire);
+    thrusections.AddWire(innerWire);
+    thrusections.Build();
+
+    _loft = PNamedShape(new CNamedShape(thrusections.Shape(), _csDevice->GetUID().c_str()));
+
+#ifdef DEBUG
+    std::stringstream filenamestr;
+    filenamestr << _csDevice->GetUID() << "_cutout.brep";
+    BRepTools::Write(_loft->Shape(), filenamestr.str().c_str());
+#endif
+
+
+    _loft->SetShortName(_csDevice->GetShortShapeName().c_str());
+
+    return _loft;
 }
 
-// end namespace tigl
+TopoDS_Wire CCPACSControlSurfaceDeviceWingCutOut::getCutoutWire(bool isInnerBorder,
+                                                                PNamedShape wingCleanShape,
+                                                                const CCPACSControlSurfaceDeviceOuterShapeBorder* outerBorder,
+                                                                gp_Vec upDir)
+{
+    assert(wingCleanShape);
+
+    TopoDS_Wire wire;
+
+    CTiglControlSurfaceBorderCoordinateSystem coords(getCutoutCS(isInnerBorder, outerBorder, upDir));
+    CControlSurfaceBoarderBuilder builder(coords, wingCleanShape->Shape());
+
+    double xsiUpper, xsiLower;
+    if (isInnerBorder) {
+        xsiUpper = upperSkin().xsiInnerBorder();
+        xsiLower = lowerSkin().xsiInnerBorder();
+    }
+    else {
+        xsiUpper = upperSkin().xsiOuterBorder();
+        xsiLower = lowerSkin().xsiOuterBorder();
+    }
+
+    // TODO: calculate xsis into coordinate system of the border
+
+    CCPACSCutOutControlPointsPtr lePoints = cutOutProfileControlPoints();
+    if (lePoints) {
+        const CCPACSCutOutControlPoint* lePoint;
+        if (isInnerBorder) {
+            lePoint = &(lePoints->innerBorder());
+        }
+        else {
+            lePoint = &(lePoints->outerBorder());
+        }
+
+        double xsiNose = lePoint->xsi();
+        // TODO: calculate xsiNose into coordinate system of the border
+
+        wire = builder.boarderWithLEShape(lePoint->relHeight(), xsiNose, xsiUpper, xsiLower);
+    }
+    else {
+        wire = builder.boarderSimple(xsiUpper, xsiLower);
+    }
+
+    return wire;
+}
+
+CTiglControlSurfaceBorderCoordinateSystem
+CCPACSControlSurfaceDeviceWingCutOut::getCutoutCS(bool isInnerBorder,
+                                                  const CCPACSControlSurfaceDeviceOuterShapeBorder* outerShapeBorder,
+                                                  gp_Vec upDir)
+{
+    CCPACSControlSurfaceSkinCutoutBorderPtr cutOutBorder = 
+            isInnerBorder ? innerBorder() : outerBorder();
+
+    if (!cutOutBorder) {
+        return outerShapeBorder->getCoordinateSystem(upDir);
+    }
+
+    double lEta = cutOutBorder->etaLE();
+    double lXsi = outerShapeBorder->getXsiLE();
+    double tEta = cutOutBorder->etaTE();
+    double tXsi = outerShapeBorder->getXsiTE();
+
+    gp_Pnt pLE = _segment->GetPoint(lEta, lXsi);
+    gp_Pnt pTE = _segment->GetPoint(tEta, tXsi);
+
+    CTiglControlSurfaceBorderCoordinateSystem coords(pLE, pTE, upDir);
+    return coords;
+}
+
+} // end namespace tigl

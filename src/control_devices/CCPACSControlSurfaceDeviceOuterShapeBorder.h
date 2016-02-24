@@ -25,14 +25,20 @@
 #include "CTiglError.h"
 #include "tigl_internal.h"
 #include "CCPACSControlSurfaceDeviceBorderLeadingEdgeShape.h"
+#include "CTiglControlSurfaceBorderCoordinateSystem.h"
+#include "PNamedShape.h"
+
+#include <TopoDS_Wire.hxx>
 
 namespace tigl
 {
 
+class CCPACSWingComponentSegment;
+
 class CCPACSControlSurfaceDeviceOuterShapeBorder
 {
 public:
-    TIGL_EXPORT CCPACSControlSurfaceDeviceOuterShapeBorder();
+    TIGL_EXPORT CCPACSControlSurfaceDeviceOuterShapeBorder(CCPACSWingComponentSegment*);
 
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle,
                                const std::string & BorderXPath,
@@ -43,11 +49,19 @@ public:
     TIGL_EXPORT double getXsiLE() const;
     TIGL_EXPORT double getXsiTE() const;
 
+    // computes the wire of the outershape
+    TIGL_EXPORT TopoDS_Wire getWire(PNamedShape wingShape, gp_Vec upDir) const;
+
+    TIGL_EXPORT CTiglControlSurfaceBorderCoordinateSystem getCoordinateSystem(gp_Vec upDir) const;
+
     TIGL_EXPORT CCPACSControlSurfaceDeviceBorderLeadingEdgeShape getLeadingEdgeShape() const;
     TIGL_EXPORT bool isLeadingEdgeShapeAvailable() const;
 
+    TIGL_EXPORT void setUID(const std::string& uid);
+
 private:
     std::string xsiType;
+    std::string _uid;
 
     /* Simple Border */
     double etaLE;
@@ -57,6 +71,9 @@ private:
 
     CCPACSControlSurfaceDeviceBorderLeadingEdgeShape leadingEdgeShape;
     bool leadingEdgeShapeAvailible;
+
+    // helpers
+    CCPACSWingComponentSegment* _segment;
 };
 
 } // end namespace tigl

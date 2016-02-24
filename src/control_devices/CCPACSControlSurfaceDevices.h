@@ -36,12 +36,13 @@ namespace tigl
 {
 
 class CCPACSWingComponentSegment;
+class CCPACSConfiguration;
 
 class CCPACSControlSurfaceDevices
 {
 public:
 
-    TIGL_EXPORT CCPACSControlSurfaceDevices(CCPACSWingComponentSegment*);
+    TIGL_EXPORT CCPACSControlSurfaceDevices(CCPACSConfiguration*, CCPACSWingComponentSegment*);
 
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& controlSurfaceDevicesXPath, TiglControlSurfaceType type);
 
@@ -55,6 +56,7 @@ private:
     typedef std::vector<CCPACSControlSurfaceDevice*> controlSurfaceDeviceContainer;
     controlSurfaceDeviceContainer controlSurfaceDevices;
     CCPACSWingComponentSegment* _componentSegment;
+    CCPACSConfiguration* _config;
 
     void Cleanup();
 };

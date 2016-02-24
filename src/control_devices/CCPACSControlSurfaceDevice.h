@@ -36,11 +36,12 @@ namespace tigl
 {
 
 class CCPACSWingComponentSegment;
+class CCPACSConfiguration;
 
 class CCPACSControlSurfaceDevice : public CTiglAbstractPhysicalComponent
 {
 public:
-    TIGL_EXPORT CCPACSControlSurfaceDevice(CCPACSWingComponentSegment* segment);
+    TIGL_EXPORT CCPACSControlSurfaceDevice(CCPACSConfiguration* config, CCPACSWingComponentSegment* segment);
 
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string & controlSurfaceDeviceXPath, TiglControlSurfaceType type = TRAILING_EDGE_DEVICE);
 
@@ -50,10 +51,6 @@ public:
     TIGL_EXPORT TiglGeometricComponentType GetComponentType(void) {return TIGL_COMPONENT_CONTROLSURF | TIGL_COMPONENT_PHYSICAL;}
     TIGL_EXPORT PNamedShape getCutOutShape(void);
     TIGL_EXPORT PNamedShape getFlapShape(void);
-    
-    // @TODO: the loft buildup should be done inside this class. Currently it
-    // is done inside the wing class.
-    TIGL_EXPORT void setLoft(PNamedShape loft);
 
     // Returns the flap transformation based on the deflection
     TIGL_EXPORT gp_Trsf GetFlapTransform(double deflection) const;
@@ -69,19 +66,14 @@ public:
     TIGL_EXPORT CCPACSWingComponentSegment* getSegment();
     TIGL_EXPORT TiglControlSurfaceType getType();
 
+    TIGL_EXPORT void SetUID(const std::string& uid);
+    TIGL_EXPORT std::string GetShortShapeName();
+
 protected:
     PNamedShape BuildLoft();
 
 private:
     CCPACSControlSurfaceDevice(const CCPACSControlSurfaceDevice& segment); /* disable copy constructor */
-    bool flapEqualsCutout();
-    bool needsWingIntersection();
-    std::string GetShortShapeName();
-
-    class CSCoordSystem getOuterShapeCS(bool isInnerBorder);
-    class CSCoordSystem getCutoutCS(bool isInnerBorder);
-    TopoDS_Wire getOuterShapeWire(bool isInnerBorder);
-    TopoDS_Wire getCutoutWire(bool isInnerBorder);
 
     // CPACS elements of control surface
     CCPACSControlSurfaceDevicePath path;
@@ -91,10 +83,8 @@ private:
 
     // Helper members
     CCPACSWingComponentSegment* _segment;
+    CCPACSConfiguration* _config;
     TiglControlSurfaceType _type;
-    PNamedShape _wingCutOutShape, _flapShape;
-
-
 
 };
 

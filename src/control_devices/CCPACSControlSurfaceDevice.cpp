@@ -26,24 +26,17 @@
 #include "CCPACSWingComponentSegment.h"
 #include "CCPACSWingSegment.h"
 #include "CTiglControlSurfaceHingeLine.h"
-#include "CControlSurfaceBoarderBuilder.h"
 #include "CCPACSControlSurfaceDeviceWingCutOut.h"
-#include "CCPACSControlSurfaceDeviceBorderLeadingEdgeShape.h"
 #include "CTiglControlSurfaceTransformation.h"
 #include "CCPACSControlSurfaceDeviceSteps.h"
-#include "CBopCommon.h"
 #include "tiglcommonfunctions.h"
 
-#include "BRepOffsetAPI_ThruSections.hxx"
-#include "BRepTools.hxx"
-
-#define USE_ADVANCED_MODELING 1
 
 namespace tigl
 {
 
-CCPACSControlSurfaceDevice::CCPACSControlSurfaceDevice(CCPACSWingComponentSegment* segment)
-    : _segment(segment)
+CCPACSControlSurfaceDevice::CCPACSControlSurfaceDevice(CCPACSConfiguration* config, CCPACSWingComponentSegment* segment)
+    : outerShape(this, segment), _segment(segment), _config(config)
 {
     SetUID("ControlDevice");
     _hingeLine = CSharedPtr<CTiglControlSurfaceHingeLine>(new CTiglControlSurfaceHingeLine(&outerShape, &path,_segment));
@@ -80,36 +73,16 @@ void CCPACSControlSurfaceDevice::ReadCPACS(TixiDocumentHandle tixiHandle, const 
     tempString = controlSurfaceDeviceXPath + "/wingCutOut";
     elementPath = const_cast<char*>(tempString.c_str());
     if (tixiCheckElement(tixiHandle, elementPath) == SUCCESS) {
-        wingCutOut = CSharedPtr<CCPACSControlSurfaceDeviceWingCutOut>(new CCPACSControlSurfaceDeviceWingCutOut);
+        wingCutOut = CSharedPtr<CCPACSControlSurfaceDeviceWingCutOut>(new CCPACSControlSurfaceDeviceWingCutOut(this, _segment));
         wingCutOut->ReadCPACS(tixiHandle, elementPath);
     }
 
     _type = type;
 }
 
-void CCPACSControlSurfaceDevice::setLoft(PNamedShape loft)
-{
-    this->_flapShape = loft;
-}
-
 PNamedShape CCPACSControlSurfaceDevice::BuildLoft()
 {
     return getFlapShape();
-}
-
-bool CCPACSControlSurfaceDevice::flapEqualsCutout()
-{
-    if (!wingCutOut) {
-        return true;
-    }
-
-    return false;
-}
-
-bool CCPACSControlSurfaceDevice::needsWingIntersection()
-{
-    // TODO: implement
-    return true;
 }
 
 const CCPACSControlSurfaceDeviceOuterShape& CCPACSControlSurfaceDevice::getOuterShape() const
@@ -163,102 +136,24 @@ gp_Trsf CCPACSControlSurfaceDevice::GetFlapTransform(double deflection) const
 
 PNamedShape CCPACSControlSurfaceDevice::getCutOutShape()
 {
-    if (!_wingCutOutShape) {
-        if (_type == TRAILING_EDGE_DEVICE) {
-    
-    
-            // Get Wires definng the Shape of the more complex CutOutShape.
-            TopoDS_Wire innerWire = getCutoutWire(true);
-            TopoDS_Wire outerWire = getCutoutWire(false);
-    
-            // make one shape out of the 2 wires and build connections inbetween.
-            BRepOffsetAPI_ThruSections thrusections(true,true);
-            thrusections.AddWire(outerWire);
-            thrusections.AddWire(innerWire);
-            thrusections.Build();
-    
-            _wingCutOutShape = PNamedShape(new CNamedShape(thrusections.Shape(), GetUID().c_str()));
-            _wingCutOutShape->SetShortName(GetShortShapeName().c_str());
-    
-#ifdef DEBUG
-            std::stringstream filenamestr;
-            filenamestr << GetUID() << "_cutout.brep";
-            BRepTools::Write(_wingCutOutShape->Shape(), filenamestr.str().c_str());
-#endif
-        }
-        else {
-            throw CTiglError("Control surface type not yet supported", TIGL_ERROR);
-        }
+    if (!wingCutOut) {
+        return outerShape.cutoutShape(
+                    _segment->GetWing().GetWingCleanShape(),
+                    getNormalOfControlSurfaceDevice());
     }
-    
-    return _wingCutOutShape;
-    
+    else {
+        return wingCutOut->GetLoft(
+                    _segment->GetWing().GetWingCleanShape(),
+                    &outerShape,
+                    getNormalOfControlSurfaceDevice());
+    }
 }
 
 PNamedShape CCPACSControlSurfaceDevice::getFlapShape()
 {
-    if (!_flapShape) {
-        if (needsWingIntersection()) {
-
-            PNamedShape shapeBox;
-
-            if (flapEqualsCutout()) {
-                shapeBox = getCutOutShape();
-            }
-            else if (_type == TRAILING_EDGE_DEVICE) {
-
-                // Get Wires definng the Shape of the more complex CutOutShape.
-                TopoDS_Wire innerWire = getOuterShapeWire(true);
-                TopoDS_Wire outerWire = getOuterShapeWire(false);
-
-                // make one shape out of the 2 wires and build connections inbetween.
-                BRepOffsetAPI_ThruSections thrusections(true,true);
-                thrusections.AddWire(outerWire);
-                thrusections.AddWire(innerWire);
-                thrusections.Build();
-
-                shapeBox = PNamedShape(new CNamedShape(thrusections.Shape(), GetUID().c_str()));
-                shapeBox->SetShortName(GetShortShapeName().c_str());
-            }
-            else {
-                throw CTiglError("Control surface type not yet supported", TIGL_ERROR);
-            }
-
-            assert(shapeBox);
-
-#ifdef DEBUG
-            std::stringstream filenamestr;
-            filenamestr << GetUID() << "_flapShape_before_bop.brep";
-            BRepTools::Write(shapeBox->Shape(), filenamestr.str().c_str());
-#endif
-
-            // perform the boolean intersection of the flap box with the wing 
-            PNamedShape wingCleanShape = _segment->GetWing().GetWingCleanShape();
-            _flapShape = CBopCommon(wingCleanShape, shapeBox);
-
-            for (unsigned int iFace = 0; iFace < _flapShape->GetFaceCount(); ++iFace) {
-                CFaceTraits ft = _flapShape->GetFaceTraits(iFace);
-                ft.SetOrigin(shapeBox);
-                _flapShape->SetFaceTraits(iFace, ft);
-            }
-
-#ifdef DEBUG
-            std::stringstream filenamestr2;
-            filenamestr2 << GetUID() << "_flapShape.brep";
-            BRepTools::Write(_flapShape->Shape(), filenamestr2.str().c_str());
-#endif
-        }
-        else {
-            // !needsWingIntersection
-
-            // We need to model the flap like a wing by creating sections
-            throw CTiglError("Modeling from ground up not yet supported", TIGL_ERROR);
-        }
-
-
-    } // !_flapShape
-
-    return _flapShape;
+    return outerShape.GetLoft(
+                _segment->GetWing().GetWingCleanShape(),
+                getNormalOfControlSurfaceDevice());
 }
 
 gp_Vec CCPACSControlSurfaceDevice::getNormalOfControlSurfaceDevice()
@@ -308,142 +203,14 @@ TiglControlSurfaceType CCPACSControlSurfaceDevice::getType()
     return _type;
 }
 
-CSCoordSystem CCPACSControlSurfaceDevice::getOuterShapeCS(bool isInnerBorder)
+void CCPACSControlSurfaceDevice::SetUID(const std::string& uid)
 {
-    const CCPACSControlSurfaceDeviceOuterShapeBorder* outerShapeBorder = 
-            isInnerBorder ? &outerShape.getInnerBorder() : &outerShape.getOuterBorder();
+    CTiglAbstractGeometricComponent::SetUID(uid);
 
-    double lEta = outerShapeBorder->getEtaLE();
-    double lXsi = outerShapeBorder->getXsiLE();
-    double tEta = outerShapeBorder->getEtaLE();
-    double tXsi = outerShapeBorder->getXsiTE();
-
-    gp_Pnt pLE = _segment->GetPoint(lEta, lXsi);
-    gp_Pnt pTE = _segment->GetPoint(tEta, tXsi);
-    gp_Vec upDir = getNormalOfControlSurfaceDevice();
-
-    CSCoordSystem coords(pLE, pTE, upDir);
-    return coords;
-}
-
-CSCoordSystem CCPACSControlSurfaceDevice::getCutoutCS(bool isInnerBorder)
-{
-    if (!wingCutOut) {
-        return getOuterShapeCS(isInnerBorder);
-    }
-    
-    CCPACSControlSurfaceSkinCutoutBorderPtr cutOutBorder = 
-            isInnerBorder ? wingCutOut->innerBorder() : wingCutOut->outerBorder();
-
-    const CCPACSControlSurfaceDeviceOuterShapeBorder* outerShapeBorder = 
-            isInnerBorder ? &outerShape.getInnerBorder() : &outerShape.getOuterBorder();
-    
-    if (!cutOutBorder) {
-        return getOuterShapeCS(isInnerBorder);
-    }
-    
-    double lEta = cutOutBorder->etaLE();
-    double lXsi = outerShapeBorder->getXsiLE();
-    double tEta = cutOutBorder->etaTE();
-    double tXsi = outerShapeBorder->getXsiTE();
-
-    gp_Pnt pLE = _segment->GetPoint(lEta, lXsi);
-    gp_Pnt pTE = _segment->GetPoint(tEta, tXsi);
-    gp_Vec upDir = getNormalOfControlSurfaceDevice();
-
-    CSCoordSystem coords(pLE, pTE, upDir);
-    return coords;
+    outerShape.setUID(uid + "OuterShape");
 }
 
 
-
-// Computes the wire for the cutout loft. This is done as follows
-// Currently only for trailing edge devices
-TopoDS_Wire CCPACSControlSurfaceDevice::getOuterShapeWire(bool isInnerBorder)
-{
-    // Compute cutout plane
-    CSCoordSystem coords(getOuterShapeCS(isInnerBorder));
-    CControlSurfaceBoarderBuilder builder(coords, _segment->GetLoft()->Shape());
-
-    const CCPACSControlSurfaceDeviceOuterShapeBorder * border;
-    if (isInnerBorder) {
-        border = &(getOuterShape().getInnerBorder());
-    }
-    else {
-        border = &(getOuterShape().getOuterBorder());
-    }
-    
-    TopoDS_Wire wire;
-#if USE_ADVANCED_MODELING
-    if (border->isLeadingEdgeShapeAvailable()) {
-        CCPACSControlSurfaceDeviceBorderLeadingEdgeShape leShape = border->getLeadingEdgeShape();
-        wire = builder.boarderWithLEShape(leShape.getRelHeightLE(), 1.0, leShape.getXsiUpperSkin(), leShape.getXsiLowerSkin());
-    }
-    else {
-        wire = builder.boarderSimple(1.0, 1.0);
-    }
-#else
-    wire = builder.boarderSimple(1.0, 1.0);
-#endif
-
-#ifdef DEBUG
-    std::stringstream filenamestr;
-    if (isInnerBorder) {
-        filenamestr << GetUID() << "_outershape_innerwire.brep";
-    }
-    else {
-        filenamestr << GetUID() << "_outershape_outerwire.brep";
-    }
-    BRepTools::Write(wire, filenamestr.str().c_str());
-#endif
-
-    return wire;
-}
-
-TopoDS_Wire CCPACSControlSurfaceDevice::getCutoutWire(bool isInnerBorder)
-{
-    TopoDS_Wire wire;
-    if (!wingCutOut) {
-        wire = getOuterShapeWire(isInnerBorder);
-    }
-    else {
-        CSCoordSystem coords(getCutoutCS(isInnerBorder));
-        CControlSurfaceBoarderBuilder builder(coords, _segment->GetLoft()->Shape());
-
-        double xsiUpper, xsiLower;
-        if (isInnerBorder) {
-            xsiUpper = wingCutOut->upperSkin().xsiInnerBorder();
-            xsiLower = wingCutOut->lowerSkin().xsiInnerBorder();
-        }
-        else {
-            xsiUpper = wingCutOut->upperSkin().xsiOuterBorder();
-            xsiLower = wingCutOut->lowerSkin().xsiOuterBorder();
-        }
-        
-        // TODO: calculate xsis into coordinate system of the border
-
-        CCPACSCutOutControlPointsPtr lePoints = wingCutOut->cutOutProfileControlPoints();
-        if (lePoints) {
-            const CCPACSCutOutControlPoint* lePoint;
-            if (isInnerBorder) {
-                lePoint = &(lePoints->innerBorder());
-            }
-            else {
-                lePoint = &(lePoints->outerBorder());
-            }
-            
-            double xsiNose = lePoint->xsi();
-            // TODO: calculate xsiNose into coordinate system of the border
-            
-            wire = builder.boarderWithLEShape(lePoint->relHeight(), xsiNose, xsiUpper, xsiLower);
-        }
-        else {
-            wire = builder.boarderSimple(xsiUpper, xsiLower);
-        }
-    }
-
-    return wire;
-}
 
 double CCPACSControlSurfaceDevice::GetMinDeflection() const
 {

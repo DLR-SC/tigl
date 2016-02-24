@@ -19,6 +19,7 @@
 #include "test.h"
 
 #include "CControlSurfaceBoarderBuilder.h"
+#include "CTiglControlSurfaceBorderCoordinateSystem.h"
 
 #include <TopoDS_Shape.hxx>
 #include <BRepTools.hxx>
@@ -46,7 +47,7 @@ TEST_F(TiglControlSurfaceBorder, boarderBuilder)
 {
     double lex = 0.5;
 
-    tigl::CSCoordSystem coordsystem(gp_Pnt(lex, 0.5, 0), gp_Pnt(1, 0.5, 0), gp_Vec(0, 0, 1.));
+    tigl::CTiglControlSurfaceBorderCoordinateSystem coordsystem(gp_Pnt(lex, 0.5, 0), gp_Pnt(1, 0.5, 0), gp_Vec(0, 0, 1.));
     tigl::CControlSurfaceBoarderBuilder builder(coordsystem, wingShape);
 
     builder.boarderSimple(1.0, 1.0);

@@ -17,12 +17,21 @@
  */
 
 #include "CCPACSControlSurfaceDeviceOuterShapeBorder.h"
+#include "CControlSurfaceBoarderBuilder.h"
+#include "CNamedShape.h"
+#include "CCPACSWingComponentSegment.h"
+
+#include <BRepTools.hxx>
+
+#include <cassert>
 
 namespace tigl
 {
 
-CCPACSControlSurfaceDeviceOuterShapeBorder::CCPACSControlSurfaceDeviceOuterShapeBorder()
+CCPACSControlSurfaceDeviceOuterShapeBorder::CCPACSControlSurfaceDeviceOuterShapeBorder(CCPACSWingComponentSegment* segment)
+    : _segment(segment)
 {
+    setUID("ControlSurfaceDevice_OuterShapeBorder");
     xsiType = "";
     xsiLE = -1;
     xsiTE = -1;
@@ -118,6 +127,43 @@ double CCPACSControlSurfaceDeviceOuterShapeBorder::getXsiTE() const
     return xsiTE;
 }
 
+TopoDS_Wire CCPACSControlSurfaceDeviceOuterShapeBorder::getWire(PNamedShape wingShape, gp_Vec upDir) const
+{
+    assert(wingShape);
+
+    // Compute cutout plane
+    CTiglControlSurfaceBorderCoordinateSystem coords = getCoordinateSystem(upDir);
+    CControlSurfaceBoarderBuilder builder(coords, wingShape->Shape());
+
+    const CCPACSControlSurfaceDeviceOuterShapeBorder * border = this;
+    
+    TopoDS_Wire wire;
+    if (border->isLeadingEdgeShapeAvailable()) {
+        CCPACSControlSurfaceDeviceBorderLeadingEdgeShape leShape = border->getLeadingEdgeShape();
+        wire = builder.boarderWithLEShape(leShape.getRelHeightLE(), 1.0, leShape.getXsiUpperSkin(), leShape.getXsiLowerSkin());
+    }
+    else {
+        wire = builder.boarderSimple(1.0, 1.0);
+    }
+
+#ifdef DEBUG
+    std::stringstream filenamestr;
+    filenamestr << _uid << "_wire.brep";
+    BRepTools::Write(wire, filenamestr.str().c_str());
+#endif
+
+    return wire;
+}
+
+CTiglControlSurfaceBorderCoordinateSystem CCPACSControlSurfaceDeviceOuterShapeBorder::getCoordinateSystem(gp_Vec upDir) const
+{
+    gp_Pnt pLE = _segment->GetPoint(getEtaLE(), getXsiLE());
+    gp_Pnt pTE = _segment->GetPoint(getEtaLE(), getXsiTE());
+
+    CTiglControlSurfaceBorderCoordinateSystem coords(pLE, pTE, upDir);
+    return coords;
+}
+
 CCPACSControlSurfaceDeviceBorderLeadingEdgeShape CCPACSControlSurfaceDeviceOuterShapeBorder::getLeadingEdgeShape() const
 {
     return leadingEdgeShape;
@@ -126,6 +172,11 @@ CCPACSControlSurfaceDeviceBorderLeadingEdgeShape CCPACSControlSurfaceDeviceOuter
 bool CCPACSControlSurfaceDeviceOuterShapeBorder::isLeadingEdgeShapeAvailable() const
 {
     return leadingEdgeShapeAvailible;
+}
+
+void CCPACSControlSurfaceDeviceOuterShapeBorder::setUID(const std::string& uid)
+{
+    _uid = uid;
 }
 
 } // end namespace tigl

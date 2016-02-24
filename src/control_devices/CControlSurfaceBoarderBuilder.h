@@ -19,6 +19,8 @@
 #ifndef CCONTROLSURFACEBOARDERBUILDER_H
 #define CCONTROLSURFACEBOARDERBUILDER_H
 
+#include "CTiglControlSurfaceBorderCoordinateSystem.h"
+
 #include <gp_Pln.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Wire.hxx>
@@ -30,42 +32,10 @@
 namespace tigl
 {
 
-/**
- * @brief Defines are coordiante system for the wing flap
- * border.
- * 
- * The x direction of the coordinate system points from the
- * leading edge to the trailing edge of the flap border.
- */
-class CSCoordSystem
-{
-public:
-    /**
-     * @brief CSCoordSystem constructor
-     * 
-     * @param le Leading edge point of the flap border
-     * @param te Trailing edge point of the flap border
-     * @param upDir Direction, that should be normal to the wing chord surface
-     */
-    CSCoordSystem(gp_Pnt le, gp_Pnt te, gp_Vec upDir);
-
-    gp_Vec getNormal() const;
-    gp_Pnt getLe() const;
-    gp_Pnt getTe() const;
-    gp_Vec getXDir() const;
-    gp_Vec getYDir() const;
-
-    gp_Pln getPlane() const;
-
-private:
-    gp_Pnt _le, _te;
-    gp_Vec _ydir;
-};
-
 class CControlSurfaceBoarderBuilder
 {
 public:
-    CControlSurfaceBoarderBuilder(const CSCoordSystem& coords, TopoDS_Shape wingShape);
+    CControlSurfaceBoarderBuilder(const CTiglControlSurfaceBorderCoordinateSystem& coords, TopoDS_Shape wingShape);
     ~CControlSurfaceBoarderBuilder();
 
     /**
@@ -93,7 +63,7 @@ private:
     void computeSkinPoints(double xsiUpper, double xsiLower);
     
     TopoDS_Shape _wingShape;
-    const CSCoordSystem& _coords;
+    const CTiglControlSurfaceBorderCoordinateSystem& _coords;
     
     gp_Pnt2d _up2d, _lp2d, _le2d, _te2d;
     gp_Vec2d _upTan2d, _loTan2d;

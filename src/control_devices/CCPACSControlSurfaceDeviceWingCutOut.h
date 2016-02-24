@@ -24,15 +24,25 @@
 #include "CCPACSControlSurfaceSkinCutOut.h"
 #include "CCPACSCutOutControlPoints.h"
 #include "CCPACSControlSurfaceSkinCutoutBorder.h"
+#include "CTiglControlSurfaceBorderCoordinateSystem.h"
+#include "PNamedShape.h"
 #include "tigl_internal.h"
+
+#include <TopoDS_Wire.hxx>
+#include <gp_Vec.hxx>
 
 namespace tigl
 {
 
+class CCPACSControlSurfaceDeviceOuterShapeBorder;
+class CCPACSControlSurfaceDeviceOuterShape;
+class CCPACSWingComponentSegment;
+class CCPACSControlSurfaceDevice;
+
 class CCPACSControlSurfaceDeviceWingCutOut
 {
 public:
-    TIGL_EXPORT CCPACSControlSurfaceDeviceWingCutOut();
+    TIGL_EXPORT CCPACSControlSurfaceDeviceWingCutOut(CCPACSControlSurfaceDevice*, CCPACSWingComponentSegment*);
 
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle,
                                const std::string & controlSurfaceDeviceWingCutOutXPath);
@@ -45,11 +55,27 @@ public:
     TIGL_EXPORT const CCPACSControlSurfaceSkinCutoutBorderPtr innerBorder() const;
     TIGL_EXPORT const CCPACSControlSurfaceSkinCutoutBorderPtr outerBorder() const;
 
-private:
+    TIGL_EXPORT PNamedShape GetLoft(PNamedShape wingCleanShape, CCPACSControlSurfaceDeviceOuterShape*, gp_Vec upDir);
+
+protected:
     CCPACSControlSurfaceDeviceWingCutOutProfiles wingCutOutProfiles;
     CCPACSControlSurfaceSkinCutOut _upperSkin, _lowerSkin;
     CCPACSCutOutControlPointsPtr _cutOutProfileControlPoints;
     CCPACSControlSurfaceSkinCutoutBorderPtr _innerBorder, _outerBorder;
+
+private:
+    CCPACSWingComponentSegment* _segment;
+    CCPACSControlSurfaceDevice* _csDevice;
+    PNamedShape _loft;
+
+    TopoDS_Wire getCutoutWire(bool isInnerBorder,
+                              PNamedShape wingCleanShape,
+                              const CCPACSControlSurfaceDeviceOuterShapeBorder*,
+                              gp_Vec upDir);
+
+    CTiglControlSurfaceBorderCoordinateSystem getCutoutCS(bool isInnerBorder,
+                                                          const CCPACSControlSurfaceDeviceOuterShapeBorder*,
+                                                          gp_Vec upDir);
 };
 
 } // end namespace tigl

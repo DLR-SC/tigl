@@ -62,7 +62,7 @@ namespace
 namespace tigl
 {
 
-CControlSurfaceBoarderBuilder::CControlSurfaceBoarderBuilder(const CSCoordSystem& coords, TopoDS_Shape wingShape)
+CControlSurfaceBoarderBuilder::CControlSurfaceBoarderBuilder(const CTiglControlSurfaceBorderCoordinateSystem& coords, TopoDS_Shape wingShape)
     : _coords(coords), _wingShape(wingShape)
 {
 }
@@ -288,48 +288,6 @@ void CControlSurfaceBoarderBuilder::computeSkinPoints(double xsiUpper, double xs
         computeSkinPointsImpl(xsiUpper, _up2d, _upTan2d, tmpPnt, tmpVec);
         computeSkinPointsImpl(xsiLower,  tmpPnt, tmpVec, _lp2d, _loTan2d);
     }
-}
-
-
-
-CSCoordSystem::CSCoordSystem(gp_Pnt le, gp_Pnt te, gp_Vec upDir)
-    : _le(le), _te(te), _ydir(upDir)
-{
-}
-
-gp_Vec CSCoordSystem::getNormal() const
-{
-    gp_Vec xDir = getXDir();
-    xDir.Normalize();
-    
-    gp_Vec normal = xDir.Crossed(_ydir.Normalized());
-    return normal;
-}
-
-gp_Pnt CSCoordSystem::getLe() const
-{
-    return _le;
-}
-
-gp_Pnt CSCoordSystem::getTe() const
-{
-    return _te;
-}
-
-gp_Vec CSCoordSystem::getXDir() const
-{
-    return _te.XYZ() - _le.XYZ();
-}
-
-gp_Vec CSCoordSystem::getYDir() const
-{
-    return _ydir;
-}
-
-gp_Pln CSCoordSystem::getPlane() const
-{
-    gp_Pln plane(gp_Ax3(_le, getNormal().XYZ(), getXDir().XYZ()));
-    return plane;
 }
 
 
