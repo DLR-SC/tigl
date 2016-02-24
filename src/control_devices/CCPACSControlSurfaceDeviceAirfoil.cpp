@@ -21,6 +21,8 @@
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 
+#include <cmath>
+
 namespace tigl
 {
 
