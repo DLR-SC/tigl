@@ -18,21 +18,27 @@
 
 #include "CTiglControlSurfaceBorderCoordinateSystem.h"
 
+#include <gp_Ax3.hxx>
+#include <gp_Trsf.hxx>
+
 namespace tigl
 {
 
 CTiglControlSurfaceBorderCoordinateSystem::CTiglControlSurfaceBorderCoordinateSystem(gp_Pnt le, gp_Pnt te, gp_Vec upDir)
     : _le(le), _te(te), _ydir(upDir)
 {
+    _xdir = _te.XYZ()-_le.XYZ();
+    _xdir.Normalize();
+    
+    _zdir = _xdir.Crossed(upDir.Normalized());
+    _zdir.Normalize();
+    
+    _ydir = _zdir.Crossed(_xdir);
 }
 
 gp_Vec CTiglControlSurfaceBorderCoordinateSystem::getNormal() const
 {
-    gp_Vec xDir = getXDir();
-    xDir.Normalize();
-    
-    gp_Vec normal = xDir.Crossed(_ydir.Normalized());
-    return normal;
+    return _zdir;
 }
 
 gp_Pnt CTiglControlSurfaceBorderCoordinateSystem::getLe() const
@@ -47,7 +53,7 @@ gp_Pnt CTiglControlSurfaceBorderCoordinateSystem::getTe() const
 
 gp_Vec CTiglControlSurfaceBorderCoordinateSystem::getXDir() const
 {
-    return _te.XYZ() - _le.XYZ();
+    return _xdir;
 }
 
 gp_Vec CTiglControlSurfaceBorderCoordinateSystem::getYDir() const
@@ -59,6 +65,14 @@ gp_Pln CTiglControlSurfaceBorderCoordinateSystem::getPlane() const
 {
     gp_Pln plane(gp_Ax3(_le, getNormal().XYZ(), getXDir().XYZ()));
     return plane;
+}
+
+gp_Trsf CTiglControlSurfaceBorderCoordinateSystem::globalTransform() const
+{
+    gp_Trsf t;
+    t.SetTransformation(gp_Ax3(_le, getNormal(), getXDir()), 
+                        gp_Ax3(gp_Pnt(0,0,0), gp_Vec(0,0,1), gp_Vec(1,0,0)));
+    return t;
 }
 
 } // namespace tigl

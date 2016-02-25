@@ -25,10 +25,13 @@
 #include <string>
 #include <tixi.h>
 
+#include <TopoDS_Wire.hxx>
+
 namespace tigl
 {
 
 class CCPACSConfiguration;
+class CTiglControlSurfaceBorderCoordinateSystem;
 
 class CCPACSControlSurfaceDeviceAirfoil
 {
@@ -37,6 +40,9 @@ public:
     TIGL_EXPORT ~CCPACSControlSurfaceDeviceAirfoil();
 
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle, const std::string& CCPACSControlSurfaceDeviceAirfoilXPath);
+
+    /// Returns the airdoil wire in world coordinates
+    TIGL_EXPORT TopoDS_Wire GetWire(CTiglControlSurfaceBorderCoordinateSystem&);
 
 protected:
     std::string _airfoilUID;

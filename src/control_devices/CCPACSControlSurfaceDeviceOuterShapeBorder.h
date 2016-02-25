@@ -57,11 +57,22 @@ public:
 
     TIGL_EXPORT CCPACSControlSurfaceDeviceBorderLeadingEdgeShapePtr getLeadingEdgeShape() const;
 
+    TIGL_EXPORT CCPACSControlSurfaceDeviceAirfoilPtr getAirfoil() const;
+
     TIGL_EXPORT void setUID(const std::string& uid);
 
+    enum ShapeType
+    {
+        SIMPLE   = 0,
+        LE_SHAPE = 1,
+        AIRFOIL  = 2
+    };
+
+    TIGL_EXPORT ShapeType getShapeType() const;
+
 private:
-    std::string xsiType;
     std::string _uid;
+    ShapeType _shapeType;
 
     /* Simple Border */
     double etaLE;

@@ -53,9 +53,13 @@ public:
 
     gp_Pln getPlane() const;
 
+    /// Returns the transformation from border coordinates to global coordinates
+    /// Can be used to position an airfoil (in border coordinates) to world coords
+    gp_Trsf globalTransform() const;
+
 private:
     gp_Pnt _le, _te;
-    gp_Vec _ydir;
+    gp_Vec _xdir, _ydir, _zdir;
 };
 
 } // namespace tigl

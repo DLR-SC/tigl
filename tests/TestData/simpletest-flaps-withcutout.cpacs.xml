@@ -457,35 +457,45 @@
                                                     <etaLE>0.26</etaLE>
                                                     <etaTE>0.26</etaTE>
                                                     <xsiLE>0.75</xsiLE>
-                                                    <leadingEdgeShape>
+                                                    <!--<leadingEdgeShape>
                                                         <relHeightLE>0.5</relHeightLE>
                                                         <xsiUpperSkin>0.8</xsiUpperSkin>
                                                         <xsiLowerSkin>0.8</xsiLowerSkin>
-                                                    </leadingEdgeShape>
+                                                    </leadingEdgeShape>-->
+                                                    <airfoil>
+                                                        <airfoilUID>NACA0012</airfoilUID>
+                                                        <scalY>1.0</scalY>
+                                                        <scalZ>0.3</scalZ>
+                                                    </airfoil>
                                                 </innerBorder>
                                                 <outerBorder>
                                                     <etaLE>0.49</etaLE>
                                                     <etaTE>0.49</etaTE>
                                                     <xsiLE>0.75</xsiLE>
-                                                    <leadingEdgeShape>
+                                                    <!--<leadingEdgeShape>
                                                         <relHeightLE>0.5</relHeightLE>
                                                         <xsiUpperSkin>0.8</xsiUpperSkin>
                                                         <xsiLowerSkin>0.8</xsiLowerSkin>
-                                                    </leadingEdgeShape>
+                                                    </leadingEdgeShape>-->
+                                                    <airfoil>
+                                                        <airfoilUID>NACA0012</airfoilUID>
+                                                        <scalY>1.0</scalY>
+                                                        <scalZ>0.3</scalZ>
+                                                    </airfoil>
                                                 </outerBorder>
                                             </outerShape>
                                             <wingCutOut>
                                                 <upperSkin>
-                                                    <xsiInnerBorder>1.0</xsiInnerBorder>
-                                                    <xsiOuterBorder>1.0</xsiOuterBorder>
+                                                    <xsiInnerBorder>0.7</xsiInnerBorder>
+                                                    <xsiOuterBorder>0.7</xsiOuterBorder>
                                                 </upperSkin>
                                                 <lowerSkin>
-                                                    <xsiInnerBorder>1.0</xsiInnerBorder>
-                                                    <xsiOuterBorder>1.0</xsiOuterBorder>
+                                                    <xsiInnerBorder>0.9</xsiInnerBorder>
+                                                    <xsiOuterBorder>0.9</xsiOuterBorder>
                                                 </lowerSkin>
                                                 <cutOutProfileControlPoint>
                                                     <innerBorder>
-                                                        <relHeight>0.5</relHeight>
+                                                        <relHeight>0.2</relHeight>
                                                         <xsi>1.05</xsi>
                                                     </innerBorder>
                                                     <outerBorder>
@@ -494,12 +504,12 @@
                                                     </outerBorder>
                                                 </cutOutProfileControlPoint>
                                                 <innerBorder>
-                                                    <etaLE>0.255</etaLE>
-                                                    <etaTE>0.255</etaTE>
+                                                    <etaLE>0.258</etaLE>
+                                                    <etaTE>0.258</etaTE>
                                                 </innerBorder>
                                                 <outerBorder>
-                                                    <etaLE>0.495</etaLE>
-                                                    <etaTE>0.495</etaTE>
+                                                    <etaLE>0.492</etaLE>
+                                                    <etaTE>0.492</etaTE>
                                                 </outerBorder>
                                             </wingCutOut>
                                             <path>

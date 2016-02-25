@@ -33,11 +33,11 @@ CCPACSControlSurfaceDeviceOuterShapeBorder::CCPACSControlSurfaceDeviceOuterShape
     : _segment(segment)
 {
     setUID("ControlSurfaceDevice_OuterShapeBorder");
-    xsiType = "";
     xsiLE = -1;
     xsiTE = -1;
     etaLE = -1;
     etaTE = -1;
+    _shapeType = SIMPLE;
 }
 
 // Read CPACS Border element
@@ -115,6 +115,25 @@ void CCPACSControlSurfaceDeviceOuterShapeBorder::ReadCPACS(
                     new CCPACSControlSurfaceDeviceAirfoil(&_segment->GetWing().GetConfiguration())); 
         airfoil->ReadCPACS(tixiHandle, BorderXPath + "/airfoil");
     }
+
+    // check validity of the cpacs file
+    if (type == TRAILING_EDGE_DEVICE) {
+        if (airfoil && leadingEdgeShape) {
+            throw CTiglError("Error in path: " + BorderXPath + 
+                             ". The border must not contain both elements \"airfoil\" and \"leadingEdgeShape\"!");
+        }
+    }
+
+    // determine shape type
+    if (airfoil) {
+        _shapeType = AIRFOIL;
+    }
+    else if(leadingEdgeShape) {
+        _shapeType = LE_SHAPE;
+    }
+    else {
+        _shapeType = SIMPLE;
+    }
 }
 
 double CCPACSControlSurfaceDeviceOuterShapeBorder::getEtaLE() const
@@ -148,6 +167,9 @@ TopoDS_Wire CCPACSControlSurfaceDeviceOuterShapeBorder::getWire(PNamedShape wing
                                           leadingEdgeShape->getXsiUpperSkin(),
                                           leadingEdgeShape->getXsiLowerSkin());
     }
+    else if (airfoil) {
+        wire = airfoil->GetWire(coords);
+    }
     else {
         wire = builder.boarderSimple(1.0, 1.0);
     }
@@ -175,9 +197,19 @@ CCPACSControlSurfaceDeviceBorderLeadingEdgeShapePtr CCPACSControlSurfaceDeviceOu
     return leadingEdgeShape;
 }
 
+CCPACSControlSurfaceDeviceAirfoilPtr CCPACSControlSurfaceDeviceOuterShapeBorder::getAirfoil() const
+{
+    return airfoil;
+}
+
 void CCPACSControlSurfaceDeviceOuterShapeBorder::setUID(const std::string& uid)
 {
     _uid = uid;
+}
+
+CCPACSControlSurfaceDeviceOuterShapeBorder::ShapeType CCPACSControlSurfaceDeviceOuterShapeBorder::getShapeType() const
+{
+    return _shapeType;
 }
 
 } // end namespace tigl

@@ -68,12 +68,23 @@ void CCPACSControlSurfaceDeviceOuterShape::ReadCPACS(TixiDocumentHandle tixiHand
     if (tixiGetTextElement(tixiHandle, elementPath, &ptrName) == SUCCESS) {
         outerBorder.ReadCPACS(tixiHandle, elementPath, type);
     }
+    else {
+        throw CTiglError("Missing outerBorder element in path: " + outerShapeXPath + "!");
+    }
 
     // Get innerBorder
     tempString = outerShapeXPath + "/innerBorder";
     elementPath = const_cast<char*>(tempString.c_str());
     if (tixiGetTextElement(tixiHandle, elementPath, &ptrName) == SUCCESS) {
         innerBorder.ReadCPACS(tixiHandle, elementPath, type);
+    }
+    else {
+        throw CTiglError("Missing innerBorder element in path: " + outerShapeXPath + "!");
+    }
+
+    // validate compatibility of borders 
+    if (innerBorder.getShapeType() != outerBorder.getShapeType()) {
+        throw CTiglError("Inner and outerborder not compatible in path: " + outerShapeXPath + "!");
     }
 }
 
@@ -93,11 +104,9 @@ PNamedShape CCPACSControlSurfaceDeviceOuterShape::GetLoft(PNamedShape wingCleanS
     }
 
     DLOG(INFO) << "Building " << _uid << " loft";
+    PNamedShape shapeBox = cutoutShape(wingCleanShape, upDir);
+    assert(shapeBox);
     if (needsWingIntersection()) {
-
-        PNamedShape shapeBox = cutoutShape(wingCleanShape, upDir);
-
-        assert(shapeBox);
 
         // perform the boolean intersection of the flap box with the wing 
         _outerShape = CBopCommon(wingCleanShape, shapeBox);
@@ -117,10 +126,8 @@ PNamedShape CCPACSControlSurfaceDeviceOuterShape::GetLoft(PNamedShape wingCleanS
         return _outerShape;
     }
     else {
-        // !needsWingIntersection
-
-        // We need to model the flap like a wing by creating sections
-        throw CTiglError("Modeling from ground up not yet supported", TIGL_ERROR);
+        _outerShape = shapeBox;
+        return _outerShape;
     }
     
 }
@@ -130,37 +137,31 @@ PNamedShape CCPACSControlSurfaceDeviceOuterShape::cutoutShape(PNamedShape wingSh
     if (_cutterShape) {
         return _cutterShape;
     }
-    
-    if (needsWingIntersection()) {
 
-        DLOG(INFO) << "Building " << _uid << " cutter shape";
+    DLOG(INFO) << "Building " << _uid << " cutter shape";
 
-        // Get Wires definng the Shape of the more complex CutOutShape.
-        TopoDS_Wire innerWire = innerBorder.getWire(wingShape, upDir);
-        TopoDS_Wire outerWire = outerBorder.getWire(wingShape, upDir);
+    // Get Wires definng the Shape of the more complex CutOutShape.
+    TopoDS_Wire innerWire = innerBorder.getWire(wingShape, upDir);
+    TopoDS_Wire outerWire = outerBorder.getWire(wingShape, upDir);
 
-        // make one shape out of the 2 wires and build connections inbetween.
-        BRepOffsetAPI_ThruSections thrusections(true,true);
-        thrusections.AddWire(outerWire);
-        thrusections.AddWire(innerWire);
-        thrusections.Build();
+    // make one shape out of the 2 wires and build connections inbetween.
+    BRepOffsetAPI_ThruSections thrusections(true,true);
+    thrusections.AddWire(outerWire);
+    thrusections.AddWire(innerWire);
+    thrusections.Build();
 
-        _cutterShape = PNamedShape(new CNamedShape(thrusections.Shape(), _csDevice->GetUID().c_str()));
-        _cutterShape->SetShortName(_csDevice->GetShortShapeName().c_str());
+    _cutterShape = PNamedShape(new CNamedShape(thrusections.Shape(), _csDevice->GetUID().c_str()));
+    _cutterShape->SetShortName(_csDevice->GetShortShapeName().c_str());
 
-        assert(_cutterShape);
+    assert(_cutterShape);
 
 #ifdef DEBUG
-        std::stringstream filenamestr;
-        filenamestr << _uid << "_cutter.brep";
-        BRepTools::Write(_cutterShape->Shape(), filenamestr.str().c_str());
+    std::stringstream filenamestr;
+    filenamestr << _uid << "_cutter.brep";
+    BRepTools::Write(_cutterShape->Shape(), filenamestr.str().c_str());
 #endif
-        
-        return _cutterShape;
-    }
-    else {
-        return PNamedShape();
-    }
+
+    return _cutterShape;
 }
 
 void CCPACSControlSurfaceDeviceOuterShape::setUID(const std::string& uid)
@@ -172,8 +173,12 @@ void CCPACSControlSurfaceDeviceOuterShape::setUID(const std::string& uid)
 
 bool CCPACSControlSurfaceDeviceOuterShape::needsWingIntersection() const
 {
-    // TODO: implement
-    return true;
+    if (innerBorder.getShapeType() == CCPACSControlSurfaceDeviceOuterShapeBorder::AIRFOIL) {
+        return false;
+    }
+    else {
+        return true;
+    }
 }
 
 }
