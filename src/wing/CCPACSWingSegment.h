@@ -162,6 +162,9 @@ public:
     // Returns if the given point is ont the Top of the wing or on the lower side.
     TIGL_EXPORT bool GetIsOnTop(gp_Pnt pnt);
 
+    // return if pnt lies on the loft or on the segment chord face
+    TIGL_EXPORT bool GetIsOn(const gp_Pnt &pnt);
+
     // Returns the reference area of the quadrilateral portion of the wing segment
     // by projecting the wing segment into the plane defined by the user
     TIGL_EXPORT double GetReferenceArea(TiglSymmetryAxis symPlane);
@@ -248,6 +251,7 @@ private:
     Handle(Geom_Surface) upperSurface;
     Handle(Geom_Surface) lowerSurface;
     CTiglPointTranslator cordSurface;
+    Handle(Geom_Surface) cordFace;
     bool                 surfacesAreValid;
     bool                 chordsurfaceValid;
     bool                 guideCurvesPresent;   /**< If guide curves are not present, lofted surface is possible */

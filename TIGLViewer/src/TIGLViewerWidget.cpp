@@ -35,6 +35,7 @@
 #include <QInputDialog>
 
 #include "TIGLViewerInternal.h"
+#include "TIGLQAspectWindow.h"
 #include "TIGLViewerDocument.h"
 #include "TIGLViewerSettings.h"
 #include "ISession_Point.h"
@@ -59,7 +60,13 @@
   #include <GL/glu.h>
 #endif
 
+
+#if OCC_VERSION_HEX < 0x070000
 #include "Visual3d_Layer.hxx"
+#else
+#include "AIS_RubberBand.hxx"
+#endif
+
 #include "V3d_DirectionalLight.hxx"
 #include "V3d_AmbientLight.hxx"
 
@@ -72,21 +79,26 @@ TIGLViewerWidget::TIGLViewerWidget(QWidget * parent)
     initialize();
 }
 
-TIGLViewerWidget::TIGLViewerWidget( const Handle_AIS_InteractiveContext& aContext,
+TIGLViewerWidget::TIGLViewerWidget( const Handle(AIS_InteractiveContext)& aContext,
                                     QWidget *parent, 
                                     Qt::WindowFlags f ) :
     myView            ( NULL ),
     myViewer          ( NULL ),
+#if OCC_VERSION_HEX < 0x070000
     myLayer           ( NULL ),
-    myViewResized      ( Standard_False ),
+#else
+    whiteRect         ( NULL ),
+    blackRect         ( NULL ),
+#endif
+    myViewResized     ( Standard_False ),
     myViewInitialized ( Standard_False ),
-    myMode              ( CurAction3d_Undefined ),
+    myMode            ( CurAction3d_Undefined ),
     myGridSnap        ( Standard_False ),
-    myDetection          ( AIS_SOD_Nothing ),
-    myPrecision          ( 0.001 ),
+    myDetection       ( AIS_SOD_Nothing ),
+    myPrecision       ( 0.001 ),
     myViewPrecision   ( 0.0 ),
     myKeyboardFlags   ( Qt::NoModifier ),
-    myButtonFlags      ( Qt::NoButton )
+    myButtonFlags     ( Qt::NoButton )
 {
     initialize();
     myContext = aContext;
@@ -96,7 +108,13 @@ void TIGLViewerWidget::initialize()
 {
     myView            = NULL;
     myViewer          = NULL;
+    
+#if OCC_VERSION_HEX < 0x070000
     myLayer           = NULL;
+#else
+    whiteRect = new AIS_RubberBand (Quantity_Color(Quantity_NOC_WHITE), Aspect_TOL_DOT, 1.0);
+    blackRect = new AIS_RubberBand (Quantity_Color(Quantity_NOC_BLACK), Aspect_TOL_DOT, 1.0);
+#endif
     myMode              = CurAction3d_Undefined;
     myGridSnap        = Standard_False;
     myViewResized      = Standard_False;
@@ -145,32 +163,37 @@ TIGLViewerWidget::~TIGLViewerWidget()
 {
 }
 
-void TIGLViewerWidget::setContext(const Handle_AIS_InteractiveContext& aContext)
+void TIGLViewerWidget::setContext(const Handle(AIS_InteractiveContext)& aContext)
 {
     myContext = aContext;
 }
 
 
-void TIGLViewerWidget::initializeOCC(const Handle_AIS_InteractiveContext& aContext)
+void TIGLViewerWidget::initializeOCC(const Handle(AIS_InteractiveContext)& aContext)
 {
     if (myView.IsNull()) {
-        Aspect_RenderingContext rc = 0;
         myContext = aContext;
         myViewer  = myContext->CurrentViewer();
         myView    = myViewer->CreateView();
 
-#if defined _WIN32 || defined __WIN32__
-        myWindow = new WNT_Window((Aspect_Handle)winId());
-#elif defined __APPLE__
-        myWindow = new Cocoa_Window((NSView *)winId());
+        Handle_Aspect_Window myWindow;
+        
+#if OCC_VERSION_HEX >= 0x060800
+        myWindow = new TIGLQAspectWindow(this);
 #else
+  #if defined _WIN32 || defined __WIN32__
+        myWindow = new WNT_Window((Aspect_Handle)winId());
+  #elif defined __APPLE__
+        myWindow = new Cocoa_Window((NSView *)winId());
+  #else
         Aspect_Handle windowHandle = (Aspect_Handle)winId();
         myWindow = new Xw_Window(myContext->CurrentViewer()->Driver()->GetDisplayConnection(),
                                  windowHandle);
-#endif
+  #endif
+#endif // OCC_VERSION_HEX >= 0x060800
 
         // Set my window (Hwnd) into the OCC view
-        myView->SetWindow( myWindow, rc , paintCallBack, this  );
+        myView->SetWindow( myWindow );
         // Set up axes (Trihedron) in lower left corner.
         myView->SetScale( 2 );            // Choose a "nicer" initial scale
 
@@ -188,13 +211,16 @@ void TIGLViewerWidget::initializeOCC(const Handle_AIS_InteractiveContext& aConte
         myViewResized = Standard_True;
         // Set default cursor as a cross
         setMode( CurAction3d_Nothing );
-        // This is to signal any connected slots that the view is ready.
+
         myViewInitialized = Standard_True;
 
+#if OCC_VERSION_HEX < 0x070000
         myLayer   = new Visual3d_Layer (myViewer->Viewer(), Aspect_TOL_OVERLAY, Standard_True /*aSizeDependant*/);
+#endif
 
         setBackgroundGradient(myBGColor.red(), myBGColor.green(), myBGColor.blue());
-
+        
+        // This is to signal any connected slots that the view is ready.
         emit initialized();
     }
 }
@@ -214,7 +240,7 @@ void TIGLViewerWidget::paintEvent ( QPaintEvent * /* e */)
         }
     }
     if ( !myViewer.IsNull() ) {
-        redraw( true );    
+        redraw( true );
     }
 }
 
@@ -596,11 +622,10 @@ void TIGLViewerWidget::setBGImage(const QString& filename)
 void TIGLViewerWidget::eraseSelected()
 {
     if (!myView.IsNull()) {
-        for (myContext->InitCurrent(); myContext->MoreCurrent(); myContext->NextCurrent()) {
-            myContext->Erase(myContext->Current());
-        }
+        myContext->EraseSelected(Standard_False);
 
         myContext->ClearCurrents();
+        myContext->UpdateCurrentViewer();
     }
 }
 
@@ -1055,12 +1080,18 @@ Standard_Boolean TIGLViewerWidget::convertToPlane(Standard_Integer Xs,
 
 void TIGLViewerWidget::drawRubberBand( const QPoint origin, const QPoint position )
 {
-    if ( !myLayer.IsNull() && !myView.IsNull() ) {
+    double left   = origin.x();
+    double right  = position.x();
+    double top    = origin.y();
+    double bottom = position.y();
 
-        double left   = origin.x();
-        double right  = position.x();
-        double top    = origin.y();
-        double bottom = position.y();
+    // Layers were removed in OCCT 7. Instead, the platform
+    // independent AIS_RubberBand was introduced
+    //
+    // Therefore are we using layers in OCCT 6x and
+    // AIS_Rubberband in OCCT 7x
+#if OCC_VERSION_HEX < 0x070000
+    if ( !myLayer.IsNull() && !myView.IsNull() ) {
 
         int witdh, height;
         myView->Window()->Size(witdh, height);
@@ -1096,33 +1127,42 @@ void TIGLViewerWidget::drawRubberBand( const QPoint origin, const QPoint positio
         myLayer->ClosePrimitive();
         myLayer->End();
     }
+#else
+    if (!myContext.IsNull()) {
+        // Draw black-white dotted, imitate a shadowy look
+        // This makes it possible to draw even on white or
+        // black backgrounds
+        whiteRect->SetRectangle(left, height()-bottom, right, height()-top);
+        blackRect->SetRectangle(left+1, height()-bottom-1, right+1, height()-top-1);
+
+        if (!myContext->IsDisplayed (whiteRect)) {
+            myContext->Display (whiteRect, Standard_False);
+            myContext->Display (blackRect, Standard_False);
+        }
+        else {
+            myContext->Redisplay (whiteRect, Standard_False);
+            myContext->Redisplay (blackRect, Standard_False);
+        }
+
+        myContext->CurrentViewer()->RedrawImmediate();
+    }
+#endif
 }
 
 
 void TIGLViewerWidget::hideRubberBand( void )
 {
+#if OCC_VERSION_HEX < 0x070000
     if (!myLayer.IsNull() ) {
         myLayer->Clear();
     }
-}
-
-
-int TIGLViewerWidget::paintCallBack (Aspect_Drawable /* drawable */,
-                                     void* aPointer,
-                                     Aspect_GraphicCallbackStruct* /* data */)
-{
-  TIGLViewerWidget *aWidget = (TIGLViewerWidget *) aPointer;
-  aWidget->paintOCC();
-  return 0;
-}
-
-
-// TODO: this routine prevents setting the background color
-// either we should set it back here or we should skip it.
-// Also, this code confuses the ftgl renderer introduced in
-// OCC 6.4.0. Thus we should only use it with old OCC
-void TIGLViewerWidget::paintOCC( void )
-{
+#else
+    if (!myContext.IsNull()) {
+        myContext->Remove (whiteRect, Standard_False);
+        myContext->Remove (blackRect, Standard_False);
+        myContext->CurrentViewer()->RedrawImmediate();
+    }
+#endif
 }
 
 

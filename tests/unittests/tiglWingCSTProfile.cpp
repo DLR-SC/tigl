@@ -162,7 +162,7 @@ TEST(CSTApprox, simpleAirfoil)
     B.push_back(1.0);
     
     tigl::CCSTCurveBuilder builder(N1, N2, B);
-    Handle_Geom_BSplineCurve curve = builder.Curve();
+    Handle(Geom_BSplineCurve) curve = builder.Curve();
 
     double devmax=0.0;
     // project sample points on curve and calculate distance
@@ -193,7 +193,7 @@ TEST(CSTApprox, ellipticBody)
     B.push_back(1.0);
     
     tigl::CCSTCurveBuilder builder(N1, N2, B);
-    Handle_Geom_BSplineCurve curve = builder.Curve();
+    Handle(Geom_BSplineCurve) curve = builder.Curve();
 
     double devmax=0.0;
     // project sample points on curve and calculate distance
@@ -224,7 +224,7 @@ TEST(CSTApprox, hypersonicAirfoil)
     B.push_back(1.0);
     
     tigl::CCSTCurveBuilder builder(N1, N2, B);
-    Handle_Geom_BSplineCurve curve = builder.Curve();
+    Handle(Geom_BSplineCurve) curve = builder.Curve();
 
     double devmax=0.0;
     // project sample points on curve and calculate distance

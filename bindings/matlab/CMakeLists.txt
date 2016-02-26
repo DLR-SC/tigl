@@ -1,10 +1,13 @@
 # Matlab bindings for tigl
 # @author Martin Siggel
 
-find_package(MATLAB)
-find_package(PythonInterp)
+option(TIGL_BINDINGS_MATLAB "Build the matlab bindings of tigl (requires matlab and python)" OFF)
 
-if(MATLAB_FOUND AND PYTHONINTERP_FOUND)
+
+if(TIGL_BINDINGS_MATLAB)
+
+find_package(MATLAB REQUIRED)
+find_package(PythonInterp REQUIRED)
 
 message(STATUS "Found MATLAB. Create matlab bindings.")
 
@@ -40,4 +43,4 @@ install(
 	COMPONENT interfaces
 )
 
-endif() # matlab found
+endif() # matlab bindings enabled

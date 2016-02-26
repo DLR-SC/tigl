@@ -25,6 +25,7 @@
 
 #include "CCPACSWingProfiles.h"
 #include "CTiglError.h"
+#include "CTiglLogging.h"
 #include <sstream>
 #include <iostream>
 
@@ -46,8 +47,6 @@ CCPACSWingProfiles::~CCPACSWingProfiles(void)
 // Cleanup routine
 void CCPACSWingProfiles::Cleanup(void)
 {
-    librarypath = "";
-
     CCPACSWingProfileContainer::iterator p;
     for (p = profiles.begin(); p!=profiles.end(); ++p) {
         CCPACSWingProfile *pro = p->second;
@@ -70,29 +69,43 @@ void CCPACSWingProfiles::Invalidate(void)
 void CCPACSWingProfiles::ReadCPACS(TixiDocumentHandle tixiHandle)
 {
     Cleanup();
+    
+    ReadCPACSProfiles(tixiHandle, "/cpacs/vehicles/profiles/wingAirfoils", "wingAirfoil");
+    ReadCPACSProfiles(tixiHandle, "/cpacs/vehicles/profiles/rotorAirfoils", "rotorAirfoil");
+}
+
+
+// Read CPACS wing profiles
+void CCPACSWingProfiles::ReadCPACSProfiles(TixiDocumentHandle tixiHandle,
+                                           const std::string& wingProfilesLibraryPath,
+                                           const std::string& wingProfileElementName)
+{
 
     ReturnCode    tixiRet;
     int           elementCount;
-    std::string   elementString;
-    char*         elementPath;
 
-    /* Get wing element count */
-    elementString  = "/cpacs/vehicles/profiles/wingAirfoils";
-    elementPath = const_cast<char*>(elementString.c_str());
-    tixiRet = tixiGetNamedChildrenCount(tixiHandle, elementPath, "wingAirfoil", &elementCount);
+    /* Get wing profile count */
+    tixiRet = tixiGetNamedChildrenCount(tixiHandle, wingProfilesLibraryPath.c_str(), wingProfileElementName.c_str(), &elementCount);
     if (tixiRet != SUCCESS) {
-        cerr << "Warning: no wing profiles are defined!" << endl;
         return;
     }
 
-    // Loop over all section elements
+    // Loop over all profile elements
     for (int i = 1; i <= elementCount; i++) {
         /* Get the appropriate airfoil */
         std::ostringstream airfoilTmpStream;
-        airfoilTmpStream << "/cpacs/vehicles/profiles/wingAirfoils/wingAirfoil[" << i << "]";
+        airfoilTmpStream << wingProfilesLibraryPath << "/" << wingProfileElementName << "[" << i << "]";
         CCPACSWingProfile* profile = new CCPACSWingProfile(airfoilTmpStream.str());
         profile->ReadCPACS(tixiHandle);
-        profiles[profile->GetUID()] = profile;
+        CCPACSWingProfileContainer::const_iterator it = profiles.find(profile->GetUID());
+        if (it != profiles.end() && it->second) {
+            LOG(WARNING) << "CCPACSWingProfiles::ReadCPACS(): A wing profile with UID \"" << profile->GetUID() 
+                         << "\" does already exist in the wing profile collection. It will not be replaced." << std::endl;
+            delete profile;
+        }
+        else {
+            profiles[profile->GetUID()] = profile;
+        }
     }
 }
 

@@ -341,8 +341,8 @@ void CCPACSWingComponentSegment::GetSegmentIntersection(const std::string& segme
         throw CTiglError("Component segment line does not intersect iso eta line of segment in CCPACSWingComponentSegment::GetSegmentIntersection.", TIGL_MATH_ERROR);
     }
 
-    Handle_Geom_Curve csCurve = new Geom_Line(csLine);
-    Handle_Geom_Curve etaCurve = new Geom_Line(etaLine);
+    Handle(Geom_Curve) csCurve = new Geom_Line(csLine);
+    Handle(Geom_Curve) etaCurve = new Geom_Line(etaLine);
     GeomAdaptor_Curve csAdptAcuve(csCurve);
     GeomAdaptor_Curve etaAdptCurve(etaCurve);
 
@@ -372,6 +372,51 @@ void CCPACSWingComponentSegment::GetSegmentIntersection(const std::string& segme
 
     // compute xsi value
     xsi = pOnEtaLine.Parameter()/chordDepth;
+}
+
+void CCPACSWingComponentSegment::InterpolateOnLine(double csEta1, double csXsi1, double csEta2, double csXsi2, double eta, double &xsi, double& errorDistance)
+{
+    // compute component segment line
+    gp_Pnt p1 = GetPoint(csEta1, csXsi1);
+    gp_Pnt p2 = GetPoint(csEta2, csXsi2);
+
+    UpdateProjectedLeadingEdge();
+
+    // get eta plane and compute intersection with line
+    // compute eta point and normal on the projected LE
+    gp_Pnt etaPnt; gp_Vec etaNormal;
+    projLeadingEdge->D1(eta, etaPnt, etaNormal);
+
+    double denominator = gp_Vec(p2.XYZ() - p1.XYZ())*etaNormal;
+    if (fabs(denominator) < 1e-8) {
+        throw CTiglError("Cannot interpolate for the given eta coordinate", TIGL_MATH_ERROR);
+    }
+
+    double alpha = gp_Vec(etaPnt.XYZ() - p1.XYZ())*etaNormal / denominator ;
+    gp_Pnt intersectionPoint = p1.XYZ() + alpha*(p2.XYZ()-p1.XYZ());
+
+    // get xsi coordinate
+    gp_Pnt nearestPoint;
+    double deviation = 0;
+    tigl::CCPACSWingSegment* segment = (tigl::CCPACSWingSegment*) findSegment(intersectionPoint.X(), intersectionPoint.Y(), intersectionPoint.Z(),
+                nearestPoint, deviation);
+
+    if (!segment) {
+        throw CTiglError("Cannot interpolate for the given eta coordinate", TIGL_MATH_ERROR);
+    }
+
+    if (deviation > 1e-3) {
+        throw CTiglError("The requested point lies outside the wing chord surface.", TIGL_MATH_ERROR);
+    }
+
+    double etaRes, xsiRes;
+    segment->GetEtaXsi(nearestPoint, etaRes, xsiRes);
+    xsi = xsiRes;
+
+    // compute the error distance
+    // This is the distance from the line to the nearest point on the chord face
+    gp_Lin line(p1, p2.XYZ() - p1.XYZ());
+    errorDistance = line.Distance(nearestPoint);
 }
 
 // get short name for loft
@@ -513,7 +558,7 @@ void CCPACSWingComponentSegment::UpdateProjectedLeadingEdge()
     LEPointsProjected[0]         = innew;
 
     // build projected leading edge curve
-    projLeadingEdge = CPointsToLinearBSpline(LEPointsProjected);
+    projLeadingEdge = CPointsToLinearBSpline(LEPointsProjected).Curve();
 }
 
 
@@ -562,8 +607,7 @@ gp_Pnt CCPACSWingComponentSegment::GetPoint(double eta, double xsi)
     projLeadingEdge->D1(eta, etaPnt, etaNormal);
 
     // compute intersection with line strips
-    bool haveIntersection = false;
-    gp_Pnt intersectionPoint;
+    std::vector<gp_Pnt> intersPoints;
     for (unsigned int i = 1; i <= segments.size(); ++i) {
         gp_Pnt p1 = xsiPoints.Value(i);
         gp_Pnt p2 = xsiPoints.Value(i+1);
@@ -573,22 +617,41 @@ gp_Pnt CCPACSWingComponentSegment::GetPoint(double eta, double xsi)
             continue;
         }
         double alpha = gp_Vec(etaPnt.XYZ() - p1.XYZ())*etaNormal / denominator ;
-        if (i == 1 && alpha < 0.) {
-            haveIntersection = true;
-            intersectionPoint = p1.XYZ() + alpha*(p2.XYZ()-p1.XYZ());
-        }
-        if (alpha >= 0. && alpha <= 1.) {
-            haveIntersection = true;
-            intersectionPoint = p1.XYZ() + alpha*(p2.XYZ()-p1.XYZ());
-            break;
-        }
-        if (i == segments.size() && alpha > 1.) {
-            haveIntersection = true;
-            intersectionPoint = p1.XYZ() + alpha*(p2.XYZ()-p1.XYZ());
+        gp_Pnt intersectionPoint = p1.XYZ() + alpha*(p2.XYZ()-p1.XYZ());
+
+        if ((i == 1 && alpha < 0.) || (alpha >= 0. && alpha <= 1.) || (i == segments.size() && alpha > 1.)) {
+            intersPoints.push_back(intersectionPoint);
         }
     }
 
-    if (haveIntersection) {
+    if (intersPoints.size() == 1) {
+        return intersPoints[0];
+    }
+    else if (intersPoints.size() > 1) {
+        // chose the intersection point that has minimal distance to the etaPnt
+        // first, we have to project the point on the plane, to ignore any depth distance
+
+        // compute the projection plane as done in CCPACSWingComponentSegment::UpdateProjectedLeadingEdge()
+        gp_GTrsf wingTrafo = wing->GetTransformation().Get_gp_GTrsf();
+        gp_XYZ pCenter(0,0,0);
+        gp_XYZ pDirX(1,0,0);
+        wingTrafo.Transforms(pCenter);
+        wingTrafo.Transforms(pDirX);
+        Handle(Geom_Plane) projPlane = new Geom_Plane(pCenter, pDirX-pCenter);
+
+        double minDist = FLT_MAX;
+        gp_Pnt intersectionPoint;
+        for (std::vector<gp_Pnt>::iterator it = intersPoints.begin(); it != intersPoints.end(); ++it) {
+            // project to wing plane
+            gp_Pnt pInterProj = GeomAPI_ProjectPointOnSurf(*it, projPlane).NearestPoint();
+
+            double dist = pInterProj.Distance(etaPnt);
+            if (dist < minDist) {
+                minDist = dist;
+                intersectionPoint = *it;
+            }
+        }
+
         return intersectionPoint;
     }
     else {

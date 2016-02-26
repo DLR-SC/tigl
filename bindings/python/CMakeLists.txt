@@ -1,3 +1,7 @@
+option(TIGL_BINDINGS_PYTHON "Build the python bindings of tigl (requires python >= 2.5)" ON)
+
+if (TIGL_BINDINGS_PYTHON)
+
 find_package(PythonInterp)
 
 # work around wrong python detection script of cmake (happens with old python versions)
@@ -43,5 +47,7 @@ if(PYTHONINTERP_FOUND AND NOT PYTHON_VERSION_STRING VERSION_LESS "2.5" )
 				DESTINATION share/tigl/python
 				COMPONENT interfaces)
 else()
-    message(WARNING "Python could not be found or the python installation is too old ( < 2.5). Python bindings will not be build!")
+    message(ERROR "Python could not be found or the python installation is too old ( < 2.5). Python bindings can not be build!")
 endif()
+
+endif (TIGL_BINDINGS_PYTHON)

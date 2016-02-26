@@ -22,7 +22,7 @@
 * @file
 * @brief  Implementation of CPACS fuselage handling routines.
 */
-
+#include <cmath>
 #include <iostream>
 
 #include "tigl_config.h"
@@ -49,9 +49,6 @@
 #include "BRepExtrema_DistShapeShape.hxx"
 #include "ShapeFix_Wire.hxx"
 #include "CTiglMakeLoft.h"
-
-#define _USE_MATH_DEFINES
-#include <math.h>
 
 
 namespace tigl

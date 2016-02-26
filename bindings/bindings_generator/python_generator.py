@@ -52,7 +52,7 @@ class PythonGenerator(object):
             string += self.license
         
         string += 'import sys, ctypes\n\n'
-        for enumname, values in cparser.enums.iteritems():
+        for enumname, values in cparser.enums.items():
             string += self.create_enum(enumname, values) + '\n\n'
 
         string += self.create_error_handler(cparser)+'\n\n'
@@ -153,10 +153,10 @@ class PythonGenerator(object):
         string = ''
         string = 'class %s(object):\n' % enumname
         indent = 4*' '
-        for index, val in values.iteritems():
+        for index, val in values.items():
             string += indent + '%s = %d\n' % (val, index)
         string += indent + '_names = {}\n'
-        for index, val in values.iteritems():
+        for index, val in values.items():
             string += indent + '_names[%d] = \'%s\'\n' % (index, val)
         
         return string
@@ -277,7 +277,7 @@ class PythonGenerator(object):
                     % (arg.name, arg.type, arg.name)
 
                     
-            elif arg.arrayinfos['is_array'] and arg.npointer > 0 and not arg.arrayinfos['autoalloc'] and not arg.is_string:
+            elif arg.arrayinfos['is_array'] and arg.npointer > 0 and not arg.arrayinfos['autoalloc'] and arg.is_string:
                 tmp_str = '_c_%s = (ctypes.c_char_p * %s_len)()' \
                     % (arg.name, arg.name)
             elif arg.is_string and not arg.arrayinfos['is_array']:

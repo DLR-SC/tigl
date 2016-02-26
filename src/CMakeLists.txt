@@ -9,6 +9,7 @@ configure_file (
 )
 
 source_group(Fuselage REGULAR_EXPRESSION "CCPACSFuselage")
+source_group(Rotor REGULAR_EXPRESSION "CCPACSRotor")
 source_group(Wing REGULAR_EXPRESSION "CCPACSWing")
 
 # add all subdirectories to include path
@@ -34,7 +35,7 @@ file(GLOB_RECURSE TIGL_SRC
 )
 
 if(MSVC)
-    add_definitions(-D_CRT_SECURE_NO_WARNINGS=1 /wd4355)
+    add_definitions(-D_CRT_SECURE_NO_WARNINGS=1 /wd4355 -DTIGL_INTERNAL_EXPORTS)
 endif(MSVC)
 
 if(CMAKE_COMPILER_IS_GNUCC)

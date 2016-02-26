@@ -26,7 +26,8 @@
 
 #include <AIS_InteractiveObject.hxx>
 #include <TCollection_ExtendedString.hxx>
-#include <Handle_Prs3d_LineAspect.hxx>
+#include <Prs3d_LineAspect.hxx>
+#include "occt_compat.h"
 
 DEFINE_STANDARD_HANDLE(ISession_Direction,AIS_InteractiveObject)
 class ISession_Direction : public AIS_InteractiveObject
@@ -44,7 +45,7 @@ public:
     ISession_Direction (const gp_Pnt2d& aPnt2d,const gp_Vec2d& aVec2d);
 
     virtual ~ISession_Direction();
-    DEFINE_STANDARD_RTTI(ISession_Direction)
+    DEFINE_STANDARD_RTTIEXT(ISession_Direction,AIS_InteractiveObject)
 
 private:
     void Compute         (const Handle(PrsMgr_PresentationManager3d)& aPresentationManager,

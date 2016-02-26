@@ -238,7 +238,7 @@ void CCPACSWingProfilePointList::BuildWires()
 
     // Get the curve of the wire
     Standard_Real u1,u2;
-    Handle_Geom_Curve curve = BRep_Tool::Curve(profileEdgeTmp, u1, u2);
+    Handle(Geom_Curve) curve = BRep_Tool::Curve(profileEdgeTmp, u1, u2);
     curve = new Geom_TrimmedCurve(curve, u1, u2);
     
     // Get Leading edge parameter on curve

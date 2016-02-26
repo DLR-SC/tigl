@@ -140,18 +140,24 @@ CCPACSFuselage& CCPACSFuselages::GetFuselage(int index) const
     return (*fuselages[index]);
 }
 
-// Returns the fuselage for a given index.
+// Returns the fuselage for a given UID.
 CCPACSFuselage& CCPACSFuselages::GetFuselage(const std::string& UID) const
+{
+    return (*fuselages[GetFuselageIndex(UID)-1]);
+}
+
+// Returns the fuselage index for a given UID.
+int CCPACSFuselages::GetFuselageIndex(const std::string& UID) const
 {
     for (int i=0; i < GetFuselageCount(); i++) {
         const std::string tmpUID(fuselages[i]->GetUID());
         if (tmpUID == UID) {
-            return (*fuselages[i]);
+            return i+1;
         }
     }
 
     // UID not there
-    throw CTiglError("Error: Invalid index in CCPACSFuselages::GetFuselage", TIGL_INDEX_ERROR);
+    throw CTiglError("Error: Invalid UID in CCPACSFuselages::GetFuselageIndex", TIGL_UID_ERROR);
 }
 
 

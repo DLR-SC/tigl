@@ -33,9 +33,11 @@
 #include "CCPACSHeader.h"
 #include "CCPACSWings.h"
 #include "CCPACSWingProfile.h"
+#include "CCPACSRotors.h"
 #include "CCPACSFuselages.h"
 #include "CCPACSFuselageProfile.h"
 #include "CCPACSExternalObjects.h"
+#include "CCPACSACSystems.h"
 #include "CCPACSFarField.h"
 #include "CCPACSGuideCurveProfiles.h"
 #include "TopoDS_Compound.hxx"
@@ -70,6 +72,9 @@ public:
     // Returns the underlying tixi document handle used by a CPACS configuration
     TIGL_EXPORT TixiDocumentHandle GetTixiDocumentHandle(void) const;
 
+    // Returns whether this configuration is a rotorcraft
+    TIGL_EXPORT bool IsRotorcraft(void) const;
+
     // Returns the total count of wing profiles in this configuration
     TIGL_EXPORT int GetWingProfileCount(void) const;
 
@@ -84,11 +89,38 @@ public:
     // Returns the total count of wings in a configuration
     TIGL_EXPORT int GetWingCount(void) const;
 
+    // Returns the count of wings in a configuration with the property isRotorBlade set to true
+    TIGL_EXPORT int GetRotorBladeCount(void) const;
+
     // Returns the wing for a given index.
     TIGL_EXPORT CCPACSWing& GetWing(int index) const;
 
     // Returns the wing for a given UID.
     TIGL_EXPORT CCPACSWing& GetWing(const std::string& UID) const;
+
+    // Returns the wing index for a given UID.
+    TIGL_EXPORT int GetWingIndex(const std::string& UID) const;
+
+    // Returns the total count of generic systems in a configuration
+    TIGL_EXPORT int GetGenericSystemCount(void);
+
+    // Returns the generic system for a given index.
+    TIGL_EXPORT CCPACSGenericSystem& GetGenericSystem(int index);
+
+    // Returns the generic system for a given UID.
+    TIGL_EXPORT CCPACSGenericSystem& GetGenericSystem(const std::string& UID);
+
+    // Returns the total count of rotors in a configuration
+    TIGL_EXPORT int GetRotorCount(void) const;
+
+    // Returns the rotor for a given index.
+    TIGL_EXPORT CCPACSRotor& GetRotor(int index) const;
+
+    // Returns the rotor for a given UID.
+    TIGL_EXPORT CCPACSRotor& GetRotor(const std::string& UID) const;
+
+    // Returns the rotor index for a given UID.
+    TIGL_EXPORT int GetRotorIndex(const std::string& UID) const;
 
     TIGL_EXPORT TopoDS_Shape GetParentLoft(const std::string& UID);
 
@@ -110,8 +142,12 @@ public:
     TIGL_EXPORT CCPACSFuselage& GetFuselage(int index) const;
 
     // Returns the fuselage for a given UID.
-    TIGL_EXPORT CCPACSFuselage& GetFuselage(std::string UID) const;
+    TIGL_EXPORT CCPACSFuselage& GetFuselage(const std::string& UID) const;
 
+    // Returns the fuselage index for a given UID.
+    TIGL_EXPORT int GetFuselageIndex(const std::string& UID) const;
+
+    // Returns the farfield
     TIGL_EXPORT CCPACSFarField& GetFarField();
 
     // Returns the number of external objects (i.e. linked CAD files like STEP, IGES)
@@ -138,6 +174,8 @@ public:
 
     TIGL_EXPORT CTiglMemoryPool& GetMemoryPool(void);
 
+    TIGL_EXPORT CCPACSACSystems& GetACSystems(void);
+
 protected:
     // transform all components relative to their parents
     void transformAllComponents(CTiglAbstractPhysicalComponent* parent);
@@ -151,9 +189,12 @@ private:
 
 private:
     TixiDocumentHandle           tixiDocumentHandle;   /**< Handle for internal TixiDocument */
+    bool                         isRotorcraft;         /**< Indicates whether this configuration is a rotorcraft */
     CCPACSHeader                 header;               /**< Configuration header element */
     CCPACSWings                  wings;                /**< Configuration wings element */
     CCPACSFuselages              fuselages;            /**< Configuration fuselages element */
+    CCPACSACSystems              acSystems;            /**< Configuration aircraft systems element */
+    CCPACSRotors                 rotors;               /**< Configuration rotors element */
     CCPACSFarField               farField;             /**< Far field configuration for CFD tools */
     CCPACSExternalObjects        externalObjects;      /**< External loaded CAD components */
     CCPACSGuideCurveProfiles     guideCurveProfiles;   /**< Guide curve profiles */

@@ -40,8 +40,8 @@
 #include "PTiglWingProfileAlgo.h"
 
 #include <gp_Pnt.hxx>
-#include <Handle_Geom2d_TrimmedCurve.hxx>
 
+#include <Geom2d_TrimmedCurve.hxx>
 
 namespace tigl 
 {
@@ -67,6 +67,9 @@ public:
 
     // Returns the uid of the wing profile
     TIGL_EXPORT const std::string& GetUID(void) const;
+
+    // Returns whether the profile is a rotor profile
+    TIGL_EXPORT bool IsRotorProfile(void) const;
 
     // Invalidates internal wing profile state
     TIGL_EXPORT void Invalidate(void);
@@ -147,6 +150,7 @@ private:
     std::string               name;           /**< CPACS wing profile name */
     std::string               description;    /**< CPACS wing profile description */
     std::string               uid;            /**< CPACS wing profile UID */
+    bool                      isRotorProfile; /**< Indicates if this profile is a rotor profile */
     bool                      invalidated;    /**< Flag if element is invalid */
     PTiglWingProfileAlgo      profileAlgo;    /**< Pointer to wing profile algorithm (pointList, CST, etc.) */
 

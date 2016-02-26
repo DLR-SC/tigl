@@ -64,7 +64,7 @@
      <x>0</x>
      <y>0</y>
      <width>783</width>
-     <height>22</height>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="fileMenu">
@@ -166,6 +166,7 @@
      <addaction name="showFusedAirplaneTriangulation"/>
      <addaction name="drawIntersectionAction"/>
      <addaction name="drawFarFieldAction"/>
+     <addaction name="drawSystemsAction"/>
     </widget>
     <widget class="QMenu" name="menuWings">
      <property name="title">
@@ -195,6 +196,30 @@
      <addaction name="drawFuselageSamplePointsAngleAction"/>
      <addaction name="drawFusedFuselageAction"/>
     </widget>
+    <widget class="QMenu" name="menuRotorcraft">
+     <property name="title">
+      <string>Rotorcraft</string>
+     </property>
+     <addaction name="drawRotorsAction"/>
+     <addaction name="drawRotorDisksAction"/>
+     <addaction name="showRotorPropertiesAction"/>
+    </widget>
+    <widget class="QMenu" name="menuRotorBlades">
+     <property name="title">
+      <string>Rotor blades</string>
+     </property>
+     <addaction name="drawRotorBladesAction"/>
+     <addaction name="drawFusedRotorBladeAction"/>
+     <addaction name="drawRotorBladeShellAction"/>
+     <addaction name="drawRotorBladeComponentSegmentAction"/>
+     <addaction name="drawRotorBladeTriangulationAction"/>
+     <addaction name="drawRotorProfilesAction"/>
+     <addaction name="drawRotorBladeGuideCurvesAction"/>
+     <addaction name="separator"/>
+     <addaction name="drawRotorBladeSamplePointsAction"/>
+     <addaction name="drawRotorBladeOverlayCPACSProfilePointsAction"/>
+     <addaction name="drawRotorBladeCSPointAction"/>
+    </widget>
     <widget class="QMenu" name="menuMisc_Geometry">
      <property name="title">
       <string>Misc Geometry</string>
@@ -203,7 +228,9 @@
      <addaction name="drawVectorAction"/>
     </widget>
     <addaction name="menuAircraft"/>
+    <addaction name="menuRotorcraft"/>
     <addaction name="menuWings"/>
+    <addaction name="menuRotorBlades"/>
     <addaction name="menuFuselages"/>
     <addaction name="menuMisc_Geometry"/>
    </widget>
@@ -575,6 +602,116 @@
    </property>
    <property name="whatsThis">
     <string>Shows a wing component segment</string>
+   </property>
+  </action>
+  <action name="drawRotorBladesAction">
+   <property name="text">
+    <string>Show Rotor Blade</string>
+   </property>
+   <property name="toolTip">
+    <string>Show a rotor blade only</string>
+   </property>
+  </action>
+  <action name="drawRotorProfilesAction">
+   <property name="text">
+    <string>Show Rotor Profiles</string>
+   </property>
+   <property name="toolTip">
+    <string>Show the profiles of a rotor</string>
+   </property>
+   <property name="statusTip">
+    <string>Show the profiles of a rotor</string>
+   </property>
+  </action>
+  <action name="drawRotorBladeOverlayCPACSProfilePointsAction">
+   <property name="text">
+    <string>Show Rotor Blade overlay profile points</string>
+   </property>
+   <property name="toolTip">
+    <string>Show the points of a rotor blade profile</string>
+   </property>
+  </action>
+  <action name="drawRotorBladeTriangulationAction">
+   <property name="text">
+    <string>Show Rotor Blade triangulation</string>
+   </property>
+   <property name="toolTip">
+    <string>Shows the triangulation of a rotor blade</string>
+   </property>
+  </action>
+  <action name="drawRotorBladeSamplePointsAction">
+   <property name="text">
+    <string>Show Sample Rotor Blade points</string>
+   </property>
+   <property name="toolTip">
+    <string>Show sample points on a rotor blade</string>
+   </property>
+   <property name="statusTip">
+    <string/>
+   </property>
+  </action>
+  <action name="drawFusedRotorBladeAction">
+   <property name="text">
+    <string>Show Fused Rotor Blade</string>
+   </property>
+   <property name="toolTip">
+    <string>Shows a fused rotor blade</string>
+   </property>
+   <property name="statusTip">
+    <string>Shows a fused rotor blade</string>
+   </property>
+  </action>
+  <action name="drawRotorBladeComponentSegmentAction">
+   <property name="text">
+    <string>Show Rotor Blade Component Segment</string>
+   </property>
+   <property name="statusTip">
+    <string>Shows a rotor blade component segment</string>
+   </property>
+   <property name="whatsThis">
+    <string>Shows a rotor blade component segment</string>
+   </property>
+  </action>
+  <action name="drawRotorBladeCSPointAction">
+   <property name="text">
+    <string>Show Rotor Blade Component Segment Point</string>
+   </property>
+  </action>
+  <action name="drawRotorBladeShellAction">
+   <property name="text">
+    <string>Show Rotor Blade Shells</string>
+   </property>
+  </action>
+  <action name="drawAllRotorsWingsAndFuselagesAction">
+   <property name="text">
+    <string>Show all Rotors, Wings and Fuselages</string>
+   </property>
+   <property name="toolTip">
+    <string>Show all Rotors, Wings and Fuselages</string>
+   </property>
+  </action>
+  <action name="drawRotorsAction">
+   <property name="text">
+    <string>Show a Rotor</string>
+   </property>
+   <property name="toolTip">
+    <string>Show only one rotor</string>
+   </property>
+  </action>
+  <action name="drawRotorDisksAction">
+   <property name="text">
+    <string>Show a Rotor Disk</string>
+   </property>
+   <property name="toolTip">
+    <string>Show only one rotor disk</string>
+   </property>
+  </action>
+  <action name="showRotorPropertiesAction">
+   <property name="text">
+    <string>Show Rotor Properties...</string>
+   </property>
+   <property name="toolTip">
+    <string>Show properties of a rotor</string>
    </property>
   </action>
   <action name="drawFuselageAction">
@@ -1184,6 +1321,11 @@
     <string>Show Wing Guide Curves</string>
    </property>
   </action>
+  <action name="drawRotorBladeGuideCurvesAction">
+   <property name="text">
+    <string>Show Rotor Blade Guide Curves</string>
+   </property>
+  </action>
   <action name="drawFuselageGuideCurvesAction">
    <property name="text">
     <string>Show Fuselage Guide Curves</string>
@@ -1226,6 +1368,11 @@
   <action name="drawVectorAction">
    <property name="text">
     <string>Draw Vector</string>
+   </property>
+  </action>
+  <action name="drawSystemsAction">
+   <property name="text">
+    <string>Draw Systems</string>
    </property>
   </action>
  </widget>

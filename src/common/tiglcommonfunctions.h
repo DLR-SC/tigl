@@ -70,7 +70,7 @@ TIGL_EXPORT unsigned int GetNumberOfFaces(const TopoDS_Shape& shape);
 
 TIGL_EXPORT TopoDS_Edge GetEdge(const TopoDS_Shape& shape, int iEdge);
 
-TIGL_EXPORT Handle_Geom_BSplineCurve GetBSplineCurve(const TopoDS_Edge& e);
+TIGL_EXPORT Handle(Geom_BSplineCurve) GetBSplineCurve(const TopoDS_Edge& e);
 
 // Returns the number of subshapes, if the shape is a compound
 TIGL_EXPORT unsigned int GetNumberOfSubshapes(const TopoDS_Shape& shape);
