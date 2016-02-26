@@ -52,20 +52,23 @@ void CCPACSControlSurfaceDeviceAirfoil::ReadCPACS(TixiDocumentHandle tixiHandle,
         throw CTiglError("Missing airfoilUID element in path: " + xpath + "!", TIGL_OPEN_FAILED);
     }
 
-    if (tixiGetDoubleElement(tixiHandle, (xpath + "/rotX").c_str(), &_rotX) != SUCCESS) {
-        _rotX = 90.0;
+    _rotX = 90.0;
+    if (tixiCheckElement(tixiHandle, (xpath + "/rotX").c_str()) == SUCCESS) {
+        tixiGetDoubleElement(tixiHandle, (xpath + "/rotX").c_str(), &_rotX);
     }
 
     // check, if yscale != 1. If yes, we show a warning
     double scalY;
-    if (tixiGetDoubleElement(tixiHandle, (xpath + "/scalY").c_str(), &scalY) == SUCCESS) {
+    if (tixiCheckElement(tixiHandle, (xpath + "/scalY").c_str()) == SUCCESS) {
+        tixiGetDoubleElement(tixiHandle, (xpath + "/scalY").c_str(), &scalY);
         if (fabs(scalY - 1.0) > 1e-10) {
             LOG(WARNING) << "Y scaling in \"" << xpath << "\" ignored. Only 2D profiles supported.";
         }
     }
 
-    if (tixiGetDoubleElement(tixiHandle, (xpath + "/scalZ").c_str(), &_scalZ) != SUCCESS) {
-        _scalZ = 1.0;
+    _scalZ = 1.0;
+    if (tixiCheckElement(tixiHandle, (xpath + "/scalZ").c_str()) == SUCCESS) {
+        tixiGetDoubleElement(tixiHandle, (xpath + "/scalZ").c_str(), &_scalZ);
     }
 }
 
