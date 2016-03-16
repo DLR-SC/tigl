@@ -37,6 +37,7 @@
 #include <vector>
 
 #include <cassert>
+#include <algorithm>
 
 namespace
 {
