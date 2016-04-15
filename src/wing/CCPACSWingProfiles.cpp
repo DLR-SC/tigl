@@ -71,7 +71,13 @@ void CCPACSWingProfiles::Invalidate(void)
 void CCPACSWingProfiles::ReadCPACS(TixiDocumentHandle tixiHandle)
 {
     Cleanup();
+    // [[CAS_AES]] call separate import method for reading (allows for importing
+    // additional profiles from other files)
+    ImportCPACS(tixiHandle);
+}
 
+void CCPACSWingProfiles::ImportCPACS(TixiDocumentHandle tixiHandle)
+{
     ReturnCode    tixiRet;
     int           elementCount;
     std::string   elementPath;
@@ -91,6 +97,10 @@ void CCPACSWingProfiles::ReadCPACS(TixiDocumentHandle tixiHandle)
         airfoilTmpStream << "/cpacs/vehicles/profiles/wingAirfoils/wingAirfoil[" << i << "]";
         CCPACSWingProfile* profile = new CCPACSWingProfile(airfoilTmpStream.str());
         profile->ReadCPACS(tixiHandle);
+        // [[CAS_AES]] free memory for existing profiles
+        if (profiles.find(profile->GetUID()) != profiles.end()) {
+            delete profiles[profile->GetUID()];
+        }
         profiles[profile->GetUID()] = profile;
     }
 }
@@ -130,6 +140,26 @@ void CCPACSWingProfiles::WriteCPACS(TixiDocumentHandle tixiHandle)
         ss << elementPath << "/wingAirfoil[" << wingAirfoilCount+1 << "]";
         path = ss.str();
         tixiRet = tixiRemoveElement(tixiHandle, path.c_str());
+    }
+}
+
+void CCPACSWingProfiles::AddProfile(CCPACSWingProfile* profile)
+{
+    // [[CAS_AES]] free memory for existing profiles
+    if (profiles.find(profile->GetUID()) != profiles.end()) {
+        delete profiles[profile->GetUID()];
+    }
+    profiles[profile->GetUID()] = profile;
+}
+
+
+void CCPACSWingProfiles::DeleteProfile( std::string uid ) {
+        
+    // [[CAS_AES]] free memory for existing profiles
+    if (profiles.find( uid ) != profiles.end()) {
+        profiles[ uid ]->Invalidate();
+        delete profiles[ uid ];
+        profiles.erase( uid );
     }
 }
 

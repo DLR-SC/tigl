@@ -64,6 +64,9 @@ public:
     // Clears the uid store
     TIGL_EXPORT void Clear(void);
 
+    // [[CAS_AES]] added setter for the root component (for setting the model as root component)
+    TIGL_EXPORT void SetRootComponent(CTiglAbstractPhysicalComponent* rootComponent);
+
     // Virtual Destructor
     TIGL_EXPORT virtual ~CTiglUIDManager(void);
 
@@ -71,8 +74,7 @@ protected:
        // Update internal UID manager data.
     void Update(void);
 
-    // Returns the root component of the geometric topology.
-    void FindRootComponent(void);
+    // [[CAS_AES]] removed FindRootComponent since this is always set manually
 
     // Builds the parent child relationships.
     void BuildParentChildTree(void);

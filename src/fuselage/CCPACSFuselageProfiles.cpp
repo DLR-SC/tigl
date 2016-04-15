@@ -121,9 +121,9 @@ void CCPACSFuselageProfiles::WriteCPACS(TixiDocumentHandle tixiHandle)
         fuselageProfile.WriteCPACS(tixiHandle, path);
     }
 
-    for (int i = fuselageProfileCount+1; i <= test; i++) {
+    for (int i = fuselageProfileCount + 1; i <= test; i++) {
         std::stringstream ss;
-        ss << elementPath << "/fuselageProfile[" << fuselageProfileCount+1 << "]";
+        ss << elementPath << "/fuselageProfile[" << fuselageProfileCount + 1 << "]";
         path = ss.str();
         tixiRet = tixiRemoveElement(tixiHandle, path.c_str());
     }
@@ -137,6 +137,27 @@ bool CCPACSFuselageProfiles::HasProfile(std::string uid) const
     }
     else {
         return false;
+    }
+}
+
+void CCPACSFuselageProfiles::AddProfile(CCPACSFuselageProfile* profile)
+{
+    // [[CAS_AES]] free memory for existing profiles
+    if (profiles.find(profile->GetUID()) != profiles.end())
+    {
+        delete profiles[profile->GetUID()];
+    }
+    profiles[profile->GetUID()] = profile;
+}
+
+void CCPACSFuselageProfiles::DeleteProfile( std::string uid ) {
+        
+    // [[CAS_AES]] free memory for existing profiles
+    if (profiles.find( uid ) != profiles.end())
+    {
+        profiles[ uid ]->Invalidate();
+        delete profiles[ uid ];
+        profiles.erase( uid );
     }
 }
 

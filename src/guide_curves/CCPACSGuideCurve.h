@@ -58,6 +58,9 @@ public:
     // Returns the name of the guide curve
     TIGL_EXPORT const std::string& GetName(void) const;
 
+    // Returns the name of the guide curve
+    TIGL_EXPORT const std::string& GetDescription(void) const; // EU
+
     // Returns the UID of the guide curve
     TIGL_EXPORT const std::string& GetUID(void) const;
 

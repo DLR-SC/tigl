@@ -22,27 +22,60 @@
 #include "tigl_internal.h"
 #include "CCPACSWingShell.h"
 
+// [[CAS_AES]] added include for reference to parent
+#include "TiglWingStructureReference.h"
+
 namespace tigl
 {
+
+// [[CAS_AES]] added forward declarations
+class CCPACSWingSpars;
+class CCPACSWingRibsDefinitions;
 
 class CCPACSWingCSStructure
 {
 public:
-    TIGL_EXPORT CCPACSWingCSStructure();
+    // [[CAS_AES]] added reference to parent component segment
+    TIGL_EXPORT CCPACSWingCSStructure(const TiglWingStructureReference& parent);
     
+    // [[CAS_AES]] added destructor
+    TIGL_EXPORT virtual ~CCPACSWingCSStructure(void);
+
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& structureXPath);
     
+    // Write CPACS structure elements
     TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string & structureXPath);
+
+    // [[CAS_AES]] Returns the component segment this structure belongs to
+    const TiglWingStructureReference& GetWingStructureReference(void) const;
 
     TIGL_EXPORT CCPACSWingShell& GetLowerShell();
     TIGL_EXPORT CCPACSWingShell& GetUpperShell();
     
+    // [[CAS_AES]] Check if subnode spars is present
+    TIGL_EXPORT bool HasSpars() const;
+
+    // [[CAS_AES]] Returns a reference to the spars sub-element
+    TIGL_EXPORT CCPACSWingSpars& GetSpars() const;
+
+    // [[CAS_AES]] Check if subnode ribsDefinitions is present
+    TIGL_EXPORT bool HasRibsDefinitions() const;
+
+    // [[CAS_AES]] Returns a reference to the ribsDefinitions sub-element
+    TIGL_EXPORT CCPACSWingRibsDefinitions& GetRibsDefinitions() const;
+
     TIGL_EXPORT void Cleanup();
     TIGL_EXPORT void Invalidate();
     TIGL_EXPORT bool IsValid() const;
+
 private:
     CCPACSWingShell upperShell, lowerShell;
-    
+    // [[CAS_AES]] added spar and ribs
+    CCPACSWingSpars*            spars;             /**< subnode spars*/
+    CCPACSWingRibsDefinitions*  ribsDefinitions;   /**< subnode ribsDefinitions*/
+    // [[CAS_AES]] added reference to parent element
+    TiglWingStructureReference wingStructureReference;
+
     bool isvalid;
 };
 

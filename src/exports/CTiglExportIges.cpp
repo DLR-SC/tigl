@@ -55,6 +55,15 @@
 #include <TransferBRep.hxx>
 #include <IGESData_IGESEntity.hxx>
 
+// [[CAS_AES]] added ribs definition
+#include "CCPACSWingRibsDefinition.h"
+// [[CAS_AES]] added for IGES level export
+#include "CTiglIGESWriter.h"
+// [[CAS_AES]] added for symmetry functionality
+#include <BRepBuilderAPI_Transform.hxx>
+// [[CAS_AES]] added include for common geometry functionality
+#include "CTiglCommon.h"
+
 #include <map>
 #include <cassert>
 
@@ -278,7 +287,373 @@ void CTiglExportIges::ExportFusedIGES(const std::string& filename)
     }
 }
 
+// [[CAS_AES]] Export the whole configuration including structure
+void CTiglExportIges::ExportStructureIGES(const std::string& filename) const
+{
+    // [[CAS_AES]] Required for constructor of IGES writer, without we get errors on setting the units
+    IGESControl_Controller::Init();
+    // [[CAS_AES]] Use CTiglIGESWriter
+    CTiglIGESWriter igesWriter;
 
+    Interface_Static::SetIVal("write.surfacecurve.mode", 0);
+    Interface_Static::SetIVal("write.iges.brep.mode", 1);
+    Interface_Static::SetCVal("write.iges.header.author", "Descartes");
+    Interface_Static::SetCVal("write.iges.header.company", "Airbus Defence and Space");
+
+    // Export all wings of the configuration
+    for (int w = 1; w <= _config.GetWingCount(); w++)
+    {
+        CCPACSWing& wing = _config.GetWing(w);
+
+        // [[CAS_AES]] added for symmetry
+        TiglSymmetryAxis symmetryAxis = wing.GetSymmetryAxis();
+        // [[CAS_AES]] added segment type computation
+        SegmentType segmentType = INNER_SEGMENT;
+
+        for (int i = 1; i <= wing.GetSegmentCount(); i++)
+        {
+            // [[CAS_AES]] added segment type computation
+            if (i == 1 && wing.GetSegmentCount() == 1) {
+                segmentType = INNER_OUTER_SEGMENT;
+            } else if (i > 1 && i < wing.GetSegmentCount()) {
+                segmentType = MID_SEGMENT;
+            } else if (i == wing.GetSegmentCount()) {
+                segmentType = OUTER_SEGMENT;
+            }
+            CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(i);
+            // [[CAS_AES]] export loft splitted with ribs/spars instead of plain loft
+//                 TopoDS_Shape loft = segment.GetLoft();
+            TopoDS_Shape loft = segment.GetSplittedLoft(segmentType);
+            // [[CAS_AES]] added symmetry handling
+            if (symmetryAxis != TIGL_NO_SYMMETRY) {
+                loft = CTiglCommon::mirrorShape(loft, symmetryAxis);
+            }
+
+            // [[CAS_AES]] added level information
+            igesWriter.AddShape(loft, 2*w + 2);
+        }
+
+        // [[CAS_AES]] export componentSegments
+        for (int i=1; i <= wing.GetComponentSegmentCount(); i++)
+        {
+            tigl::CCPACSWingComponentSegment& segment = (tigl::CCPACSWingComponentSegment &) wing.GetComponentSegment(i);
+            // [[CAS_AES]] export of spars
+            for (int j = 1; j <= segment.GetSparSegmentCount(); j++) {
+                tigl::CCPACSWingSparSegment& sparSegment = segment.GetSparSegment(j);
+                // get spar geometry splitted with ribs
+                TopoDS_Shape sparSegmentGeometry = sparSegment.GetSplittedSparGeometry();
+                if (symmetryAxis != TIGL_NO_SYMMETRY) {
+                    sparSegmentGeometry = CTiglCommon::mirrorShape(sparSegmentGeometry, symmetryAxis);
+                }
+
+                igesWriter.AddShape(sparSegmentGeometry, 2*w + 1);
+
+                if (sparSegment.hasCaps())
+                {
+                    // get spar caps geometry
+                    TopoDS_Shape sparCapsGeometry = sparSegment.GetSparCapsGeometry(sparSegment.UPPER);
+                    if (symmetryAxis != TIGL_NO_SYMMETRY) {
+                        sparCapsGeometry = CTiglCommon::mirrorShape(sparCapsGeometry, symmetryAxis);
+                    }
+
+                    igesWriter.AddShape(sparCapsGeometry, 2*w + 1);
+
+                    // get spar caps geometry
+                    sparCapsGeometry = sparSegment.GetSparCapsGeometry(sparSegment.LOWER);
+                    if (symmetryAxis != TIGL_NO_SYMMETRY) {
+                        sparCapsGeometry = CTiglCommon::mirrorShape(sparCapsGeometry, symmetryAxis);
+                    }
+
+                    igesWriter.AddShape(sparCapsGeometry, 2*w + 1);
+                }
+
+                // get spar reinforcements
+                if (sparSegment.HasStringerReinforcements())
+                {
+                    TopoDS_Shape sparStringer = sparSegment.GetStringerReinforcementGeometry();
+                    if (symmetryAxis != TIGL_NO_SYMMETRY) {
+                        sparStringer = CTiglCommon::mirrorShape(sparStringer, symmetryAxis);
+                    }
+                    igesWriter.AddShape(sparStringer, 2*w + 1);
+                }
+
+                if (sparSegment.HasFramesReinforcements())
+                {
+                    TopoDS_Shape sparFrames = sparSegment.GetFramesReinforcementGeometry();
+                    if (symmetryAxis != TIGL_NO_SYMMETRY) {
+                        sparFrames = CTiglCommon::mirrorShape(sparFrames, symmetryAxis);
+                    }
+                    igesWriter.AddShape(sparFrames, 2*w + 1);
+                }
+            }
+            // [[CAS_AES]] export of ribs
+            for (int j = 1; j <= segment.GetRibsDefinitionCount(); j++) {
+                tigl::CCPACSWingRibsDefinition& ribsDefinition = segment.GetRibsDefinition(j);
+                // get ribs geometry splitted with spars
+                TopoDS_Shape ribsGeometry = ribsDefinition.GetSplittedRibsGeometry();
+                if (symmetryAxis != TIGL_NO_SYMMETRY) {
+                    ribsGeometry = CTiglCommon::mirrorShape(ribsGeometry, symmetryAxis);
+                }
+
+                igesWriter.AddShape(ribsGeometry, 2*w + 1);
+
+                // get ribs cap geometry
+                if (ribsDefinition.HasCaps())
+                {
+                    TopoDS_Shape ribCapsGeometry = ribsDefinition.GetRibCapsGeometry(ribsDefinition.UPPER);
+                    if (symmetryAxis != TIGL_NO_SYMMETRY) {
+                        ribCapsGeometry = CTiglCommon::mirrorShape(ribCapsGeometry, symmetryAxis);
+                    }
+
+                    igesWriter.AddShape(ribCapsGeometry, 2*w + 1);
+
+                    ribCapsGeometry = ribsDefinition.GetRibCapsGeometry(ribsDefinition.LOWER);
+                    if (symmetryAxis != TIGL_NO_SYMMETRY) {
+                        ribCapsGeometry = CTiglCommon::mirrorShape(ribCapsGeometry, symmetryAxis);
+                    }
+
+                    igesWriter.AddShape(ribCapsGeometry, 2*w + 1);
+                }
+
+                // get ribs reinforcements
+                if (ribsDefinition.HasStringerReinforcements())
+                {
+                    TopoDS_Shape ribStringer = ribsDefinition.GetStringerReinforcementGeometry();
+                    if (symmetryAxis != TIGL_NO_SYMMETRY) {
+                        ribStringer = CTiglCommon::mirrorShape(ribStringer, symmetryAxis);
+                    }
+                    igesWriter.AddShape(ribStringer, 2*w + 1);
+                }
+
+                if (ribsDefinition.HasFramesReinforcements())
+                {
+
+                    TopoDS_Shape ribFrames = ribsDefinition.GetFramesReinforcementGeometry();
+                    if (symmetryAxis != TIGL_NO_SYMMETRY) {
+                        ribFrames = CTiglCommon::mirrorShape(ribFrames, symmetryAxis);
+                    }
+                    igesWriter.AddShape(ribFrames, 2*w + 1);
+
+                }
+            }
+
+            // [[CAS_AES]] Stringer geometry for the upper shell
+            tigl::CCPACSWingShell& upperShell = segment.GetUpperShell();
+            if (upperShell.HasStringer()) 
+            {
+                TopoDS_Shape upperStringerGeometry = upperShell.GetStringerGeometry();
+                
+                if (symmetryAxis != TIGL_NO_SYMMETRY) 
+                {
+                    upperStringerGeometry = CTiglCommon::mirrorShape(upperStringerGeometry, symmetryAxis);
+                }
+
+                igesWriter.AddShape(upperStringerGeometry,  2*w + 1);
+    }
+
+            // [[CAS_AES]] Stringer geometry for the lower shell
+            tigl::CCPACSWingShell& lowerShell = segment.GetLowerShell();
+            if (lowerShell.HasStringer()) 
+            {
+                TopoDS_Shape lowerStringerGeometry = lowerShell.GetStringerGeometry();
+
+                if (symmetryAxis != TIGL_NO_SYMMETRY) 
+                {
+                    lowerStringerGeometry = CTiglCommon::mirrorShape(lowerStringerGeometry, symmetryAxis);
+                }
+                igesWriter.AddShape(lowerStringerGeometry, 2*w + 1);
+            }
+        }
+    }
+    
+    bool exportDoorGeometry = false;
+
+    // Export all fuselages of the configuration
+    for (int f = 1; f <= _config.GetFuselageCount(); f++)
+    {
+        CCPACSFuselage& fuselage = _config.GetFuselage(f);
+
+        TiglSymmetryAxis symmetryAxis = fuselage.GetSymmetryAxis();
+
+        TopoDS_Compound compound;
+        BRep_Builder Builder;
+        Builder.MakeCompound(compound);
+
+        // [[CAS_AES]] added support for fuselage structure
+        CCPACSFuselageStructure& structure = fuselage.GetFuselageStructure();
+
+        
+        for(int i = 1;i <= structure.GetBulkheadCount();i++)            //pressureBulkheads
+        {
+            tigl::CCPACSPressureBulkhead* pressureBulkhead = structure.getPressureBulkhead(i);
+
+            TopoDS_Shape verticalReinforcementShape = pressureBulkhead->getSplittedVerticalReinforcementGeometry();     //pressureBulkheadVerticalReinforcement
+            if (symmetryAxis != TIGL_NO_SYMMETRY) 
+            {
+                verticalReinforcementShape = tigl::CTiglCommon::mirrorShape(verticalReinforcementShape, symmetryAxis);
+            }
+
+            igesWriter.AddShape(verticalReinforcementShape, 1);
+            
+            TopoDS_Shape horizontalReinforcementShape = pressureBulkhead->getSplittedHorizontalReinforcementGeometry();     //pressureBulkheadHorizontalReinforcement
+            if (symmetryAxis != TIGL_NO_SYMMETRY) 
+            {
+                horizontalReinforcementShape = tigl::CTiglCommon::mirrorShape(horizontalReinforcementShape, symmetryAxis);
+            }
+
+            igesWriter.AddShape(horizontalReinforcementShape, 1);
+            
+            TopoDS_Shape bulkheadShape = pressureBulkhead->getSplitGeometry();      //pressureBulkHead
+
+            if (symmetryAxis != TIGL_NO_SYMMETRY) 
+            {
+                bulkheadShape = tigl::CTiglCommon::mirrorShape(bulkheadShape, symmetryAxis);
+            }
+
+            igesWriter.AddShape(bulkheadShape, 1);
+            
+
+        }
+        
+        // [[CAS_AES]] added support for fuselage stringer
+        for (int i = 1; i <= structure.GetStringerCount(); i++)                 //stringers
+        {
+            // get the stringer
+            CCPACSFuselageStringer* stringer = structure.GetStringer(i);
+            // get the geometric structure of the stringer
+            TopoDS_Shape shape = stringer->GetSplitGeometry(!stringer->GeomState_3D());
+
+            if (symmetryAxis != TIGL_NO_SYMMETRY) 
+            {
+                shape = tigl::CTiglCommon::mirrorShape(shape, symmetryAxis);
+            }
+
+            igesWriter.AddShape(shape, 1);
+        }
+        for (int i = 1; i <= structure.GetCargoCrossBeamStrutCount(); i++)          //CrossbeamStrut
+        {
+            // get the CrossbeamStrut
+            tigl::CCPACSCrossBeamStrut* crossBeamStrut =  structure.GetCargoCrossBeamStrut(i);
+            // get the geometric structure of the CrossbeamStrut
+            TopoDS_Shape shape = crossBeamStrut->getGeometry(!crossBeamStrut->GeomState_3D());
+
+            if (symmetryAxis != TIGL_NO_SYMMETRY) 
+            {
+                shape = tigl::CTiglCommon::mirrorShape(shape, symmetryAxis);
+            }
+
+            igesWriter.AddShape(shape, 1);
+        }
+        
+        for (int i = 1; i <= structure.GetLongFloorBeamCount(); i++)          //longFloorBeam
+        {
+            // get the longFloorBeam
+            tigl::CCPACSLongFloorBeam* longFloorBeam =  structure.GetLongFloorBeam(i);
+            // get the geometric structure of the longFloorBeam
+            TopoDS_Shape shape =  longFloorBeam->getGeometry(!longFloorBeam->GeomState_3D());
+
+            if (symmetryAxis != TIGL_NO_SYMMETRY) 
+            {
+                shape = tigl::CTiglCommon::mirrorShape(shape, symmetryAxis);
+            }
+
+            igesWriter.AddShape(shape, 1);
+        }
+        
+        for (int i = 1; i <= structure.GetCargoCrossBeamCount(); i++)          //Crossbeam
+        {
+            // get the Crossbeam
+            tigl::CCPACSCrossBeam* crossBeam =  structure.GetCargoCrossBeam(i);
+            // get the geometric structure of the Crossbeam
+            TopoDS_Shape shape =  crossBeam->getCuttedGeometry(!crossBeam->GeomState_3D());
+
+            if (symmetryAxis != TIGL_NO_SYMMETRY) 
+            {
+                shape = tigl::CTiglCommon::mirrorShape(shape, symmetryAxis);
+            }
+
+            igesWriter.AddShape(shape, 1);
+        }
+        
+        for (int i = 1; i <= structure.GetFrameCount(); i++)            //frames
+        {
+            // get the frame
+            CCPACSFuselageFrame* frame = structure.GetFrame(i);
+            // get the geometric structure of the frame
+            TopoDS_Shape shape = frame->GetSplitGeometry(!frame->GeomState_3D());
+
+            if (symmetryAxis != TIGL_NO_SYMMETRY) 
+            {
+                shape = tigl::CTiglCommon::mirrorShape(shape, symmetryAxis);
+            }
+
+            igesWriter.AddShape(shape, 1);
+        }
+        
+        
+        for (int i = 1; i <= fuselage.GetSegmentCount(); i++)           //fuselageLoft
+        {
+
+            // [[CAS_AES]] added segment type computation
+            SegmentType segmentType = INNER_SEGMENT;
+            if (i == 1 && fuselage.GetSegmentCount() == 1) {
+                segmentType = INNER_OUTER_SEGMENT;
+            } else if (i > 1 && i < fuselage.GetSegmentCount()) {
+                segmentType = MID_SEGMENT;
+            } else if (i == fuselage.GetSegmentCount()) {
+                segmentType = OUTER_SEGMENT;
+            }
+
+            CCPACSFuselageSegment& segment = (tigl::CCPACSFuselageSegment &) fuselage.GetSegment(i);
+            
+            TopoDS_Shape loft = segment.GetSplittedLoft(segmentType);
+
+            for(int i = 1;i <= structure.GetDoorCount();i++)
+            {
+                tigl::CCPACSDoorType* door = structure.getDoorType(i);
+
+                // the next lines display the door geometry
+                if (exportDoorGeometry)
+                {
+                    TopoDS_Shape doorShape = door->getGeometry();
+                    
+                    if (symmetryAxis != TIGL_NO_SYMMETRY) 
+                    {
+                        doorShape = tigl::CTiglCommon::mirrorShape(doorShape, symmetryAxis);
+                    }
+
+                    igesWriter.AddShape(doorShape, 1);
+                }
+
+                // Here we cut the doors out of the fuselage geometry
+                loft = door->removeDoor(loft);
+
+            }
+
+            if (symmetryAxis != TIGL_NO_SYMMETRY) 
+            {
+                loft = tigl::CTiglCommon::mirrorShape(loft, symmetryAxis);
+            }
+            
+            // [[CAS_AES]] added level information
+            igesWriter.AddShape(loft, 2);
+        }
+        
+    }
+
+    // [[CAS_AES]] Export FreeFormSurfaces of the configuration
+    for (int r = 1; r<= _config.GetFFFSCount(); r++)
+    {
+        tigl::CCPACSFreeFormSurface& FFS = _config.GetFFFSbyIndex(r);
+        // boolean for half model
+        igesWriter.AddShape(FFS.getShape(false), 90+r);
+    }
+
+    // Write IGES file
+    igesWriter.ComputeModel();
+    if (igesWriter.Write(const_cast<char*>(filename.c_str())) != Standard_True)
+        throw CTiglError("Error: Export to IGES file failed in CTiglExportIges::ExportIGES", TIGL_ERROR);
+}
 
 
 // Save a sequence of shapes in IGES Format

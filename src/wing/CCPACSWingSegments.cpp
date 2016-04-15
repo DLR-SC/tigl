@@ -110,6 +110,9 @@ void CCPACSWingSegments::ReadCPACS(TixiDocumentHandle tixiHandle, const std::str
     if (tixiRet != SUCCESS) {
         throw CTiglError("XML error: tixiGetNamedChildrenCount failed in CCPACSWingSegments::ReadCPACS", TIGL_XML_ERROR);
     }
+    if (segmentCount < 1) { // A wing must have at least 1 segment according to the CPACS documentation
+        throw CTiglError("XML error: tixiGetNamedChildrenCount failed in CCPACSWingSegments::ReadCPACS: Not enough wing segments", TIGL_XML_ERROR);
+    }
 
     // Loop over all segments
     for (int i = 1; i <= segmentCount; i++) {
@@ -134,7 +137,7 @@ void CCPACSWingSegments::WriteCPACS(TixiDocumentHandle tixiHandle, const std::st
 
     elementPath = wingXPath + "/segments";
     TixiSaveExt::TixiSaveElement(tixiHandle, wingXPath.c_str(), "segments");
-    
+
     tixiRet = tixiGetNamedChildrenCount(tixiHandle, elementPath.c_str(), "segment", &test);
     segmentCount = GetSegmentCount();
 
@@ -151,9 +154,9 @@ void CCPACSWingSegments::WriteCPACS(TixiDocumentHandle tixiHandle, const std::st
         segment.WriteCPACS(tixiHandle, xpath);
     }
 
-    for (int i = segmentCount+1; i <= test; i++) {
+    for (int i = segmentCount + 1; i <= test; i++) {
         std::stringstream ss;
-        ss << elementPath << "/segment[" << segmentCount+1 << "]";
+        ss << elementPath << "/segment[" << segmentCount + 1 << "]";
         xpath = ss.str();
         tixiRemoveElement(tixiHandle, xpath.c_str());
     }

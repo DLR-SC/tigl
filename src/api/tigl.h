@@ -216,6 +216,15 @@ enum TiglStructureType
 typedef enum TiglStructureType TiglStructureType;
 
 
+enum TiglLoftSide
+{
+    UPPER_SIDE = 0,
+    LOWER_SIDE = 1
+};
+
+typedef enum TiglLoftSide TiglLoftSide;
+
+
 enum TiglContinuity
 {
     C0 = 0,
@@ -309,7 +318,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglOpenCPACSConfiguration(TixiDocumentHandle 
 * @brief Writes a CPACS configuration based on the data and geometry structure in memory.
 *
 *
-* @param[in] configurationUID The UID of the configuration that should be written. 
+* @param[in] configurationUID The UID of the configuration that should be written.
 * @param[in] cpacsHandlePtr Handle to the CPACS configuration. This handle is used in calls to other TIGL functions.
 *
 * @return

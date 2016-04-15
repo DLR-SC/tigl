@@ -108,9 +108,9 @@ void CCPACSFuselageSectionElements::WriteCPACS(TixiDocumentHandle tixiHandle, co
         }
         sectionElement.WriteCPACS(tixiHandle, xpath);
     }
-    for (int i = sectionElementCount+1; i <= test; i++) {
+    for (int i = sectionElementCount + 1; i <= test; i++) {
         std::stringstream ss;
-        ss << elementPath << "/element[" << sectionElementCount+1 << "]";
+        ss << elementPath << "/element[" << sectionElementCount + 1 << "]";
         xpath = ss.str();
         tixiRemoveElement(tixiHandle, xpath.c_str());
     }

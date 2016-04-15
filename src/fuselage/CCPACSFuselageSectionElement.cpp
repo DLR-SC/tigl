@@ -47,6 +47,7 @@ CCPACSFuselageSectionElement::~CCPACSFuselageSectionElement(void)
 void CCPACSFuselageSectionElement::Cleanup(void)
 {
     name         = "";
+    description  = "";
     uid          = "";
     profileUID   = "";
     profileIndex = -1;
@@ -98,11 +99,12 @@ void CCPACSFuselageSectionElement::ReadCPACS(TixiDocumentHandle tixiHandle, cons
     }
 
     // Get subelement "description"
-    char* ptrDescription = "";
+    char* ptrDescription = NULL;
     tempString    = elementXPath + "/description";
     elementPath   = const_cast<char*>(tempString.c_str());
-    tixiGetTextElement(tixiHandle, elementPath, &ptrDescription);
-    description   = ptrDescription;
+    if (tixiGetTextElement(tixiHandle, elementPath, &ptrDescription) == SUCCESS) {
+        description = ptrDescription;
+    }
 
     // Get subelement "profileUID"
     char* ptrUID  = NULL;
@@ -160,18 +162,18 @@ void CCPACSFuselageSectionElement::WriteCPACS(TixiDocumentHandle tixiHandle, con
     TixiSaveExt::TixiSaveTextElement(tixiHandle, elementXPath.c_str(), "name", name.c_str());
     TixiSaveExt::TixiSaveTextElement(tixiHandle, elementXPath.c_str(), "description", description.c_str());
     TixiSaveExt::TixiSaveTextElement(tixiHandle, elementXPath.c_str(), "profileUID", profileUID.c_str());
-    
+
     TixiSaveExt::TixiSaveElement(tixiHandle, elementXPath.c_str(), "transformation");
     elementPath = elementXPath + "/transformation";
-    
+
     TixiSaveExt::TixiSaveElement(tixiHandle, elementPath.c_str(), "scaling");
     subelementPath = elementPath + "/scaling";
     TixiSaveExt::TixiSavePoint(tixiHandle, subelementPath.c_str(), scaling.x, scaling.y, scaling.z, NULL);
-    
+
     TixiSaveExt::TixiSaveElement(tixiHandle, elementPath.c_str(), "rotation");
     subelementPath = elementPath + "/rotation";
     TixiSaveExt::TixiSavePoint(tixiHandle, subelementPath.c_str(), rotation.x, rotation.y, rotation.z, NULL);
-    
+
     TixiSaveExt::TixiSaveElement(tixiHandle, elementPath.c_str(), "translation");
     subelementPath = elementPath + "/translation";
     TixiSaveExt::TixiSaveTextAttribute(tixiHandle, subelementPath.c_str(), "refType", "absLocal");
@@ -200,6 +202,39 @@ std::string CCPACSFuselageSectionElement::GetProfileUID(void) const
 CTiglTransformation CCPACSFuselageSectionElement::GetSectionElementTransformation(void) const
 {
     return transformation;
+}
+
+CTiglPoint CCPACSFuselageSectionElement::GetTranslation(void) const
+{
+	return translation;
+}
+
+void CCPACSFuselageSectionElement::SetTranslation(const CTiglPoint& translation)
+{
+    this->translation = translation;
+    Update();
+}
+
+CTiglPoint CCPACSFuselageSectionElement::GetRotation(void) const
+{
+	return rotation;
+}
+
+void CCPACSFuselageSectionElement::SetRotation(const CTiglPoint& rotation)
+{
+    this->rotation = rotation;
+    Update();
+}
+
+CTiglPoint CCPACSFuselageSectionElement::GetScaling(void) const
+{
+	return scaling;
+}
+
+void CCPACSFuselageSectionElement::SetScaling(const CTiglPoint& scaling)
+{
+    this->scaling = scaling;
+    Update();
 }
 
 } // end namespace tigl

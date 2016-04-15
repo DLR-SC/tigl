@@ -22,6 +22,7 @@
 #include <iostream>
 #include "tixi.h"
 #include "tigl_internal.h"
+#include "CTiglPoint.h"
 
 namespace tigl
 {
@@ -42,16 +43,38 @@ public:
     
     TIGL_EXPORT bool isComposite() const;
     
+    // [[CAS_AES]] added setter for composite
+    TIGL_EXPORT void SetComposite(bool composite);
+
     TIGL_EXPORT const std::string& GetUID() const;
     TIGL_EXPORT double GetThickness() const;
 
     TIGL_EXPORT double GetThicknessScaling() const;
+
+    /** @brief setter for orthotropyDirection*/
+    /** @param  orthotropyDirection */
+    TIGL_EXPORT void SetOrthotropyDirection(CTiglPoint);
+
+    /** @brief getter for orthotropyDirection*/
+    // [[CAS_AES]] added getter for orthotropy direction
+    TIGL_EXPORT const CTiglPoint& GetOrthotropyDirection() const;
+
+    // [[CAS_AES]] added setter for UID
+    TIGL_EXPORT void SetUID(const std::string& uid);
+
+    // [[CAS_AES]] added setter for thicknes
+    TIGL_EXPORT void SetThickness(double thickness);
+
+    // [[CAS_AES]] added setter for thickness scaling
+    TIGL_EXPORT void SetThicknessScaling(double thicknessScaling);
 
     TIGL_EXPORT void Cleanup();
 private:
     std::string uid;
     double thickness;
     double thicknessScaling;
+    // [[CAS_AES]] added orthotropy direction
+    CTiglPoint orthotropyDirection;
     
     bool isvalid;
     bool is_composite; // whether the material is a composite

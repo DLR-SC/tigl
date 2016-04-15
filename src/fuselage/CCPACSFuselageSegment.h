@@ -55,6 +55,9 @@ public:
     // Virtual Destructor
     TIGL_EXPORT virtual ~CCPACSFuselageSegment(void);
 
+    // [[CAS_AES]] added Invalidate method
+    TIGL_EXPORT void Invalidate(void);
+
     // Read CPACS segment elements
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& segmentXPath);
 
@@ -66,6 +69,12 @@ public:
 
     // Returns the segment index of this segment
     TIGL_EXPORT int GetSegmentIndex(void) const;
+
+    // [[CAS_AES]] added getter for loft splitted by frames and stringers
+    TIGL_EXPORT TopoDS_Shape GetSplittedLoft(SegmentType segmentType, bool nMapping = false, bool nHalfModel = false);
+
+    // [[CAS_AES]] added getter for loft splitted by spars and ribs
+    TIGL_EXPORT TopoDS_Shape GetAeroLoft(SegmentType segmentType, bool nHalfModel = false);
 
     // Returns the start section UID of this segment
     TIGL_EXPORT const std::string& GetStartSectionUID(void);
@@ -170,8 +179,23 @@ protected:
     // Update internal segment data
     void Update(void);
 
+    // [[CAS_AES]] Added update method for splitted loft
+    void UpdateSplittedLoft(SegmentType segmentType, bool nMapping, bool nHalfModel);
+
+    // [[CAS_AES]] Added method for building splitted loft
+    void UpdateAeroLoft(SegmentType segmentType, bool);
+
     // Builds the loft between the two segment sections
     PNamedShape BuildLoft(void);
+
+    // [[CAS_AES]] Added method for building splitted loft
+    void BuildSplittedLoft(SegmentType segmentType, bool nMapping, bool nHalfModel);
+
+    // [[CAS_AES]] Added method for building splitted loft
+    void BuildAeroLoft(SegmentType segmentType, bool);
+
+    // [[CAS_AES]] method for cutting loft with internal structures
+    void SplitLoftWithInternalStructures(TopoDS_Shape& geometry);
 
 private:
     // get short name for loft
@@ -193,6 +217,20 @@ private:
     double                   mySurfaceArea;        /**< Surface Area of this segment            */
     double                   myWireLength;         /**< Wire length of this segment for a given zeta */
     bool                     guideCurvesPresent;   /**< If guide curves are not present, lofted surface is possible */
+
+    // [[CAS_AES]] added shape for loft splitted by spars and ribs and bool for validity check
+    TopoDS_Shape         splittedLoft;
+    bool                 splittedLoftValid;
+    SegmentType          splittedLoftType;
+
+    // [[CAS_AES]] added aero loft shape and bool for validity check
+    TopoDS_Shape         aeroLoft;
+    bool                 aeroHalfLoftValid;
+    bool                 aeroFullLoftValid;
+    
+    TopoDS_Shape        cutFrameGeometry;       //cutting geometry of the structure (frames)
+    TopoDS_Shape        cutStringerGeometry;       //cutting geometry of the structure (stringers)
+    bool                cutGeometryValid;   //if false, cutGeometry has to be generated
 
 };
 

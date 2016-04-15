@@ -236,6 +236,8 @@ void CCPACSFuselageProfile::WriteCPACS(TixiDocumentHandle tixiHandle, const std:
     // Set the element "point"
     TixiSaveExt::TixiSaveElement(tixiHandle, profileXPath.c_str(), "pointList");
 
+    // TODO: symmetry!!!
+
     std::string path = profileXPath + "/pointList";
 
     // store points as vectors
@@ -277,8 +279,19 @@ const std::string& CCPACSFuselageProfile::GetUID(void) const
     return uid;
 }
 
+// Returns the UID of the fuselage profile
+const std::string& CCPACSFuselageProfile::GetDescription(void) const
+{
+    return description;
+}
+
+const int CCPACSFuselageProfile::GetNumPoints(void) const 
+{
+    return coordinates.size();
+}
+
 // Returns the flag for the mirror symmetry with respect to the x-z-plane in the fuselage profile
-const bool CCPACSFuselageProfile::GetMirrorSymmetry(void) const
+bool CCPACSFuselageProfile::GetMirrorSymmetry(void) const
 {
     return mirrorSymmetry;
 }
