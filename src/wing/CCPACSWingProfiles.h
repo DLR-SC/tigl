@@ -52,8 +52,18 @@ public:
     // Read CPACS wing profiles
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle);
 
+    // [[CAS_AES]] importing profiles from CPACS
+    // profiles with same UID are overwritten
+    TIGL_EXPORT void ImportCPACS(TixiDocumentHandle tixiHandle);
+
     // Write CPACS wing profiles
     TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle);
+
+    // [[CAS_AES]] add a CPACS wing profile to list
+    TIGL_EXPORT void AddProfile(CCPACSWingProfile* profile);
+        
+    // [[CAS_AES]] removes a CPACS wing profile from the list
+    TIGL_EXPORT void DeleteProfile( std::string uid );
 
     // Returns the total count of wing profiles in this configuration
     TIGL_EXPORT int GetProfileCount(void) const;

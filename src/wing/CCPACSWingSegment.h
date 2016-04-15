@@ -70,11 +70,20 @@ public:
     // Gets the segment name
     TIGL_EXPORT const std::string& GetName() const;
 
+    // Getter for the member description
+    TIGL_EXPORT const std::string& GetDescription() const;
+
     // Returns the wing this segment belongs to
     TIGL_EXPORT CCPACSWing& GetWing(void) const;
 
     TIGL_EXPORT TopoDS_Shape GetInnerClosure();
     TIGL_EXPORT TopoDS_Shape GetOuterClosure();
+
+    // [[CAS_AES]] added getter for loft splitted by spars and ribs
+    TIGL_EXPORT TopoDS_Shape GetSplittedLoft(SegmentType segmentType, bool transform = true);
+
+    // [[CAS_AES]] added getter for loft splitted by spars and ribs
+    TIGL_EXPORT TopoDS_Shape GetAeroLoft(SegmentType segmentType, bool, bool, bool);
 
     // Gets the upper point in relative wing coordinates for a given eta and xsi
     TIGL_EXPORT gp_Pnt GetUpperPoint(double eta, double xsi);
@@ -95,10 +104,12 @@ public:
     TIGL_EXPORT const std::string& GetOuterSectionUID(void);
 
     // Returns the inner section element UID of this segment
-    TIGL_EXPORT const std::string& GetInnerSectionElementUID(void);
+    // [[CAS_AES]] added const
+    TIGL_EXPORT const std::string& GetInnerSectionElementUID(void) const;
 
     // Returns the outer section element UID of this segment
-    TIGL_EXPORT const std::string& GetOuterSectionElementUID(void);
+    // [[CAS_AES]] added const
+    TIGL_EXPORT const std::string& GetOuterSectionElementUID(void) const;
 
     // Returns the inner section index of this segment
     TIGL_EXPORT int GetInnerSectionIndex(void);
@@ -150,6 +161,12 @@ public:
     // helper function to get the outer transformed chord line wire, used in GetLoft and when determining triangulation midpoints projection on segments in VtkExport
     TIGL_EXPORT TopoDS_Wire GetOuterWire(void);
 
+    // [[CAS_AES]] added getter for inner wire of opened profile (containing trailing edge)
+    TIGL_EXPORT TopoDS_Wire GetInnerWireOpened(void);
+
+    // [[CAS_AES]] added getter for outer wire of opened profile (containing trailing edge)
+    TIGL_EXPORT TopoDS_Wire GetOuterWireOpened(void);
+
     // Returns eta as parametric distance from a given point on the surface
     // Get information about a point beeing on upper/lower side with "GetIsOnTop"
     TIGL_EXPORT double GetEta(gp_Pnt pnt, bool isUpper);
@@ -180,6 +197,9 @@ public:
 
     TIGL_EXPORT TopoDS_Shape& GetUpperShape();
     TIGL_EXPORT TopoDS_Shape& GetLowerShape();
+
+    // [[CAS_AES]] added getter for trailing edge shape
+    TIGL_EXPORT const TopoDS_Shape& GetTrailingEdgeShape();
 
     // Returns the guide curves of the segment as wires
     TIGL_EXPORT TopTools_SequenceOfShape& GetGuideCurveWires();
@@ -213,18 +233,33 @@ public:
         return TIGL_COMPONENT_WINGSEGMENT | TIGL_COMPONENT_SEGMENT | TIGL_COMPONENT_LOGICAL;
     }
 
+    // Getter for the number of guide curves
+    TIGL_EXPORT int GetGuideCurveCount() const;
+
 protected:
     // Cleanup routine
     void Cleanup(void);
 
     // Update internal segment data
     void Update(void);
-    
+
+    // [[CAS_AES]] Added update method for splitted loft
+    void UpdateSplittedLoft(SegmentType segmentType);
+
+    // [[CAS_AES]] Added update method for mapping loft
+    void UpdateAeroLoft(SegmentType segmentType, bool, bool, bool);
+
     // builds all guide curve wires
     void BuildGuideCurveWires(void);
 
     // Builds the loft between the two segment sections
     PNamedShape BuildLoft(void);
+
+    // [[CAS_AES]] Added method for building splitted loft
+    void BuildSplittedLoft(SegmentType segmentType);
+
+    // [[CAS_AES]] Added method for building mapping loft
+    void BuildAeroLoft(SegmentType segmentType, bool, bool, bool);
 
 private:
     // Copy constructor
@@ -253,11 +288,31 @@ private:
     double               mySurfaceArea;        /**< Surface area of this segment            */
     TopoDS_Shape         upperShape;           /**< Upper shape of this segment             */
     TopoDS_Shape         lowerShape;
+    // [[CAS_AES]] added inner and outer shape
+    TopoDS_Shape         innerShape;
+    TopoDS_Shape         outerShape;
+    // [[CAS_AES]] added upper/lower/inner/outer/trailingEdge shapes for opened profile
+    TopoDS_Shape         upperShapeOpened;
+    TopoDS_Shape         lowerShapeOpened;
+    TopoDS_Shape         innerShapeOpened;
+    TopoDS_Shape         outerShapeOpened;
+    TopoDS_Shape         trailingEdgeShape;
     Handle(Geom_Surface) upperSurface;
     Handle(Geom_Surface) lowerSurface;
     CTiglPointTranslator cordSurface;
     bool                 surfacesAreValid;
     bool                 guideCurvesPresent;   /**< If guide curves are not present, lofted surface is possible */
+
+    // [[CAS_AES]] added shape for loft splitted by spars and ribs and bool for validity check
+    TopoDS_Shape         splittedLoft;
+    bool                 splittedLoftValid;
+    SegmentType          splittedLoftType;
+
+    // [[CAS_AES]] added shape for aero loft and bool for validity check
+    TopoDS_Shape         closedAeroLoft;
+    TopoDS_Shape         openAeroLoft;
+    bool                 closedAeroLoftValid;
+    bool                 openAeroLoftValid;
 
 };
 

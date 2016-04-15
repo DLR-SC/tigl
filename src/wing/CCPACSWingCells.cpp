@@ -28,7 +28,9 @@
 namespace tigl
 {
 
-CCPACSWingCells::CCPACSWingCells()
+// [[CAS_AES]] added pointer to parent to constructor
+CCPACSWingCells::CCPACSWingCells(CCPACSWingShell* parent)
+: parentShell(parent)
 {
     Reset();
 }
@@ -53,6 +55,13 @@ void CCPACSWingCells::Cleanup()
     cells.clear();
 }
 
+void CCPACSWingCells::Invalidate()
+{
+    for (int i = 0; i < cells.size(); i++) {
+        cells[i]->Invalidate();
+    }
+}
+
 void CCPACSWingCells::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string &cellsXPath)
 {
     Cleanup();
@@ -75,7 +84,7 @@ void CCPACSWingCells::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string
         
         // check path
         if ( tixiCheckElement(tixiHandle, stream.str().c_str()) == SUCCESS) {
-            CCPACSWingCell * cell = new CCPACSWingCell();
+            CCPACSWingCell * cell = new CCPACSWingCell(this);
             cell->ReadCPACS(tixiHandle, stream.str().c_str());
             cells.push_back(cell);
         }
@@ -86,8 +95,8 @@ void CCPACSWingCells::WriteCPACS(TixiDocumentHandle tixiHandle, const std::strin
 {
     std::string elementPath;
     std::string xpath;
-    ReturnCode    tixiRet;
-    int           cellCount, test;
+    ReturnCode  tixiRet;
+    int         cellCount, test;
 
     elementPath = cellsXPath;
 //     TixiSaveExt::TixiSaveElement(tixiHandle, cellsXPath.c_str(), "cells");
@@ -108,9 +117,9 @@ void CCPACSWingCells::WriteCPACS(TixiDocumentHandle tixiHandle, const std::strin
         cell.WriteCPACS(tixiHandle, xpath);
     }
 
-    for (int i = cellCount+1; i <= test; i++) {
+    for (int i = cellCount + 1; i <= test; i++) {
         std::stringstream ss;
-        ss << elementPath << "/cell[" << cellCount+1 << "]";
+        ss << elementPath << "/cell[" << cellCount + 1 << "]";
         xpath = ss.str();
         tixiRemoveElement(tixiHandle, xpath.c_str());
     }
@@ -130,6 +139,22 @@ CCPACSWingCell& CCPACSWingCells::GetCell(int index) const
     return *cells.at(index-1);
 }
 
+// [[CAS_AES]] Returns whether a stringer definition exists or not
+bool CCPACSWingCells::HasStringer() const
+{
+    for (int i = 0; i < cells.size(); i++) {
+        if (cells[i]->HasStringer()) {
+            return cells[i]->HasStringer();
+        }
+    }
+    return false;
+}
+
+// [[CAS_AES]] get parent wing shell element
+CCPACSWingShell* CCPACSWingCells::GetParentElement()
+{
+    return parentShell;
+}
 
 
 } // namespace tigl

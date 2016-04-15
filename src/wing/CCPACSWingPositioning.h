@@ -77,10 +77,11 @@ public:
 
     TIGL_EXPORT const std::vector<CCPACSWingPositioning*> GetChilds() const;
 
-protected:
+    // [[CAS_AES]] moved Cleanup to public methods
     // Cleanup routine
-    void Cleanup(void);
+    TIGL_EXPORT void Cleanup(void);
 
+protected:
     // Build transformation matrix for the positioning
     void BuildMatrix(void);
 

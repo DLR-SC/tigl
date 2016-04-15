@@ -61,7 +61,10 @@ public:
     TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& configurationUID);
 
     TIGL_EXPORT bool HasProfile(std::string uid) const;
-    
+
+    // Returns the wing profiles in this configuration
+    TIGL_EXPORT CCPACSWingProfiles& GetProfiles(void);
+
     // Returns the total count of wing profiles in this configuration
     TIGL_EXPORT int GetProfileCount(void) const;
 
@@ -79,6 +82,17 @@ public:
 
     // Returns the wing for a given UID.
     TIGL_EXPORT CCPACSWing& GetWing(const std::string& UID) const;
+    
+    /** @brief getter for the wingFuelTank by uid
+    /** @return CCPACSWingFuelTank*/
+    TIGL_EXPORT CCPACSWingFuelTank& GetWingFuelTank(std::string nUId, bool& sym) const;
+    
+    /** @brief overloaded getter for the wingFuelTank by uid
+    /** @return CCPACSWingFuelTank*/
+    TIGL_EXPORT CCPACSWingFuelTank& GetWingFuelTank(std::string nUId, std::string& wingUId) const;
+
+    // Adds a wing to the wing list
+    TIGL_EXPORT void AddWing(CCPACSWing* wing);
 
 protected:
     // Cleanup routine

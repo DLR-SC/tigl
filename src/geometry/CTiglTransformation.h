@@ -43,6 +43,9 @@ public:
     TIGL_EXPORT CTiglTransformation(void);
     TIGL_EXPORT CTiglTransformation(const gp_GTrsf& ocMatrix);
 
+    // [[CAS_AES]] added constructor for transformation based on gp_Trsf
+    TIGL_EXPORT CTiglTransformation(const gp_Trsf& trans);
+
     // Virtual Destructor
     TIGL_EXPORT virtual ~CTiglTransformation(void);
     
@@ -62,6 +65,9 @@ public:
 
     // Returns the current transformation as gp_GTrsf object
     TIGL_EXPORT gp_GTrsf Get_gp_GTrsf(void) const;
+
+    // [[CAS_AES]] added method for simple transformations
+    TIGL_EXPORT gp_Trsf Get_gp_Trsf(void) const;
 
     // Post multiply this matrix with another matrix and stores 
     // the result in this matrix
@@ -117,8 +123,13 @@ public:
     // for debug purposes
     TIGL_EXPORT void printTransformMatrix();
 
+    // [[CAS_AES]] added getter for matrix values
+    TIGL_EXPORT double GetValue(int row, int col) const;
+
 private:
     double m_matrix[4][4];
+    // [[CAS_AES]] added support for simple transformations
+    bool isSimple;
 
 };
 

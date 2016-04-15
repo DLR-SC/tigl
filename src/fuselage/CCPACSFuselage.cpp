@@ -56,9 +56,11 @@ namespace tigl
 {
 
 // Constructor
+// [[CAS_AES]] added initialization of structure
 CCPACSFuselage::CCPACSFuselage(CCPACSConfiguration* config)
     : segments(this)
     , configuration(config)
+    , structure(this)
 {
     Cleanup();
 }
@@ -72,9 +74,13 @@ CCPACSFuselage::~CCPACSFuselage(void)
 // Invalidates internal state
 void CCPACSFuselage::Invalidate(void)
 {
+    aeroLoftValid = false;
+    
     loft.reset();
     segments.Invalidate();
     positionings.Invalidate();
+    // [[CAS_AES]] added structure
+    structure.Invalidate();
 }
 
 // Cleanup routine
@@ -197,6 +203,12 @@ void CCPACSFuselage::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string&
     // Get subelement "segments"
     segments.ReadCPACS(tixiHandle, fuselageXPath);
 
+    // [[CAS_AES]] Get subelement "structure"
+    tempString = fuselageXPath + "/structure";
+    if(tixiCheckElement(tixiHandle, (char*)tempString.c_str()) == SUCCESS) {
+        structure.ReadCPACS(tixiHandle, tempString);
+    }
+
     // Register ourself at the unique id manager
     configuration->GetUIDManager().AddUID(ptrUID, this);
 
@@ -246,6 +258,12 @@ void CCPACSFuselage::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string
     // Determine translation relative to parent
     CTiglPoint relativeTranslation = translation;
     // TODO: relative translation not computed yet!!!
+//    CTiglUIDManager& manager = configuration->GetUIDManager();
+//    ITiglGeometricComponent* parent = manager.GetComponent(GetUID());
+//         while (parent != NULL && manager.HasUID(parent->GetParentUID())) {
+//             relativeTranslation -= parent->GetTranslation();
+//             parent = manager.GetParentComponent(parent->GetUID());
+//         }
 
     // Set subelement "/transformation/translation"
     subelementPath = elementPath + "/translation";
@@ -262,6 +280,11 @@ void CCPACSFuselage::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string
 
     // Set subelement "segments"
     segments.WriteCPACS(tixiHandle, fuselageXPath);
+
+    // Set subelement "structure"
+    structurePath = fuselageXPath + "/structure";
+    TixiSaveExt::TixiSaveElement(tixiHandle, fuselageXPath.c_str(), "structure");
+    structure.WriteCPACS(tixiHandle, structurePath);
 }
 
 // Returns the name of the fuselage
@@ -320,6 +343,50 @@ std::string CCPACSFuselage::GetShortShapeName ()
         }
     }
     return "UNKNOWN";
+}
+
+TopoDS_Shape& CCPACSFuselage::getFuselageAeroLoft()
+{
+    if (!aeroLoftValid)
+        BuildAeroLoft();
+        
+    return fuselageAeroLoft;
+    
+}
+
+void CCPACSFuselage::BuildAeroLoft(void)
+{
+    // variable declaration
+    bool halfModel = false;
+    SegmentType segmentType = INNER_SEGMENT;
+    BRep_Builder builder;
+    TopoDS_Compound compFuselage;
+    builder.MakeCompound(compFuselage);
+    
+    // get all fuselage segments
+    for (int i = 1; i <= GetSegmentCount(); i++)
+    {
+        // [[CAS_AES]] added segment type computation
+
+        segmentType = INNER_SEGMENT;
+
+        if (i == 1 && GetSegmentCount() == 1) {
+            segmentType = INNER_OUTER_SEGMENT;
+        } else if (i > 1 && i < GetSegmentCount()) {
+            segmentType = MID_SEGMENT;
+        } else if (i == GetSegmentCount()) {
+            segmentType = OUTER_SEGMENT;
+        }
+
+        CCPACSFuselageSegment& segment = (tigl::CCPACSFuselageSegment &) GetSegment(i);
+
+        builder.Add(compFuselage, segment.GetAeroLoft(segmentType, halfModel));
+    }
+    
+    fuselageAeroLoft = compFuselage;
+    
+    aeroLoftValid = true;
+    
 }
 
 // Builds a fused shape of all fuselage segments
@@ -480,5 +547,13 @@ CCPACSGuideCurve& CCPACSFuselage::GetGuideCurve(std::string uid)
     }
     throw tigl::CTiglError("Error: Guide Curve with UID " + uid + " does not exists", TIGL_ERROR);
 }
+
+
+// [[CAS_AES]] added getter for fuselage structure
+CCPACSFuselageStructure& CCPACSFuselage::GetFuselageStructure()
+{
+    return structure;
+}
+
 
 } // end namespace tigl

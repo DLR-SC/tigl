@@ -29,6 +29,7 @@
 #include "tigl_internal.h"
 #include "CCPACSImportExport.h"
 #include "ListPNamedShape.h"
+#include "TopoDS_Shape.hxx"
 
 class STEPControl_Writer;
 
@@ -36,6 +37,15 @@ namespace tigl
 {
 
 class CCPACSConfiguration;
+
+// [[CAS_AES]] added helper structure
+typedef struct {
+    TopoDS_Shape Shape;
+    TopoDS_Shape trimmedShape;
+    TopoDS_Shape Solid;
+    std::string Name;
+    bool valid;
+} AeroShape;
 
 class CTiglExportStep
 {
@@ -58,6 +68,12 @@ public:
 
     // Sets the type of storing shapes to iges
     TIGL_EXPORT void SetGroupMode(ShapeGroupMode mode);
+
+    // [[CAS_AES]] added method for exporting geometry with structure
+    TIGL_EXPORT void ExportStructureStep(const std::string& filename) const;
+
+    // [[CAS_AES]] added method for exporting cfd geometry splitted with internal structures
+    TIGL_EXPORT void ExportCFDStep(const std::string& filename, bool, bool) const;
 
 protected:
 

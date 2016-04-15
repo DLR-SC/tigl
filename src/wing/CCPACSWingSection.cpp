@@ -48,6 +48,7 @@ void CCPACSWingSection::Cleanup(void)
 {
     name = "";
     uID  = "";
+    description = "";
     transformation.SetIdentity();
     translation = CTiglPoint(0.0, 0.0, 0.0);
     scaling     = CTiglPoint(1.0, 1.0, 1.0);
@@ -96,10 +97,11 @@ void CCPACSWingSection::ReadCPACS(TixiDocumentHandle tixiHandle, const std::stri
     }
 
     // Get subelement "description"
-    char* ptrDescription = "";
+    char* ptrDescription = NULL;
     tempString    = sectionXPath + "/description";
-    tixiGetTextElement(tixiHandle, tempString.c_str(), &ptrDescription);
-    description          = ptrDescription;
+    if (tixiGetTextElement(tixiHandle, tempString.c_str(), &ptrDescription) == SUCCESS) {
+        description = ptrDescription;
+    }
 
     // Get attribute "uID"
     char* ptrUID = NULL;
@@ -125,6 +127,10 @@ void CCPACSWingSection::ReadCPACS(TixiDocumentHandle tixiHandle, const std::stri
         if (tixiGetPoint(tixiHandle, elementPath, &(scaling.x), &(scaling.y), &(scaling.z)) != SUCCESS) {
             throw CTiglError("Error: XML error while reading <scaling/> in CCPACSWingSection::ReadCPACS", TIGL_XML_ERROR);
         }
+    }
+    // [[CAS_AES]] Fix scaling of y-component
+    if (scaling.x == scaling.z && scaling.x != scaling.y) {
+        scaling.y = scaling.x;
     }
 
     // Get subelement "/transformation/rotation"
@@ -199,6 +205,12 @@ const std::string& CCPACSWingSection::GetName() const
     return name;
 }
 
+// Getter for the member description
+const std::string& CCPACSWingSection::GetDescription(void) const  // EU
+{
+    return description;
+}
+
 // Get element for a given index
 CCPACSWingSectionElement& CCPACSWingSection::GetSectionElement(int index) const
 {
@@ -227,6 +239,27 @@ const CTiglPoint& CCPACSWingSection::GetRotation() const
 const CTiglPoint& CCPACSWingSection::GetScaling() const
 {
     return scaling;
+}
+
+// [[CAS_AES]] added setter for translation
+void CCPACSWingSection::SetTranslation(const CTiglPoint& trans)
+{
+    translation = trans;
+    Update();
+}
+
+// [[CAS_AES]] added setter for rotation
+void CCPACSWingSection::SetRotation(const CTiglPoint& rot)
+{
+    rotation = rot;
+    Update();
+}
+
+// [[CAS_AES]] added setter for scaling
+void CCPACSWingSection::SetScaling(const CTiglPoint& scale)
+{
+    scaling = scale;
+    Update();
 }
 
 } // end namespace tigl

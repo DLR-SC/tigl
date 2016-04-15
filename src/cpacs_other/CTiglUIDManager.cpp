@@ -49,7 +49,7 @@ void CTiglUIDManager::Update(void)
         return;
     }
     
-    FindRootComponent();
+    // [[CAS_AES]] removed FindRootComponent
     BuildParentChildTree();
     invalidated = false;
 }
@@ -111,7 +111,7 @@ CTiglAbstractPhysicalComponent* CTiglUIDManager::GetPhysicalComponent(const std:
     }
 
     if (physicalShapes.find(uid) == physicalShapes.end()) {
-        throw CTiglError("UID not found in CTiglUIDManager::GetComponent", TIGL_XML_ERROR);
+        throw CTiglError("UID '"+uid+"' not found in CTiglUIDManager::GetComponent", TIGL_XML_ERROR);
     }
 
     return physicalShapes[uid];
@@ -123,6 +123,13 @@ void CTiglUIDManager::Clear(void)
 {
     physicalShapes.clear();
     rootComponent = 0;
+    invalidated = true;
+}
+
+// [[CAS_AES]] added setter for the root component (for setting the model as root component)
+void CTiglUIDManager::SetRootComponent(CTiglAbstractPhysicalComponent* rootComponent)
+{
+    this->rootComponent = rootComponent;
     invalidated = true;
 }
 
@@ -142,40 +149,31 @@ CTiglAbstractPhysicalComponent* CTiglUIDManager::GetRootComponent(void)
     return rootComponent;
 }
 
-// Returns the root component of the geometric topology.
-void CTiglUIDManager::FindRootComponent(void)
-{
-    rootComponent = 0;
-    UIDStoreContainerType::iterator pIter;
-    int parentCnt = 0;
-
-    for (pIter = physicalShapes.begin(); pIter != physicalShapes.end(); ++pIter) {
-        CTiglAbstractPhysicalComponent* component = pIter->second;
-        if (component->GetParentUID().empty()) {
-            if (parentCnt != 0) {
-                throw CTiglError("Error: More than one root component found in CTiglUIDManager::FindRootComponent", TIGL_ERROR);
-            }
-            parentCnt++;
-            rootComponent = component;
-        }
-    }
-
-    if (parentCnt == 0) {
-        throw CTiglError("Error: No root component found in CTiglUIDManager::FindRootComponent", TIGL_ERROR);
-    }
-
-}
+// [[CAS_AES]] removed FindRootComponent since this is always set manually
 
 // Builds the parent child relationships.
 void CTiglUIDManager::BuildParentChildTree(void)
 {
+    // [[CAS_AES]] changed behavior, root component must be set manually, error if not
+    if (!rootComponent) {
+        throw CTiglError("CTiglUIDManager::BuildParentChildTree(); no root component set!");
+    }
+
     UIDStoreContainerType::iterator pIter;
 
     for (pIter = physicalShapes.begin(); pIter != physicalShapes.end(); ++pIter) {
         CTiglAbstractPhysicalComponent* component = pIter->second;
-        if (!component->GetParentUID().empty()) {
+
+        // [[CAS_AES]] here is a bug, when this method is called more than once the components will be added 
+        //             multiple times as childs
+        // [[CAS_AES]] support for defining root component manually
+        if (!component->GetParentUID().empty() && component->GetParentUID() != rootComponent->GetUID()) {
             CTiglAbstractPhysicalComponent* parent = GetPhysicalComponent(component->GetParentUID());
             parent->AddChild(component);
+        }
+        // [[CAS_AES]] support for manually set root component
+        else {
+            rootComponent->AddChild(component);
         }
     }
 }

@@ -1,4 +1,4 @@
-/*
+/* 
 * Copyright (C) 2013 Cassidian Air Systems
 *
 * Created: 2013-03-11 Pierre Thomazo
@@ -59,7 +59,7 @@ public:
     static void TixiSavePoint(TixiDocumentHandle tixiHandle, const char* elementXPath, double x, double y, double z, const char* format);
 
     /** Save an element containing a double value */
-    static void TixiSaveDoubleElement(TixiDocumentHandle tixiHandle, const char* elementXPath, const char* element, double val, const char* format="%g");
+    static void TixiSaveDoubleElement(TixiDocumentHandle tixiHandle, const char* elementXPath, const char* element, double val, const char* format = "%g");
 
     /** Save an element containing a int value */
     static void TixiSaveIntElement(TixiDocumentHandle tixiHandle, const char* elementXPath, const char* element, int val);

@@ -26,6 +26,7 @@
 
 #include "CCPACSFuselageSegment.h"
 #include "CCPACSFuselage.h"
+#include "CCPACSFuselageStructure.h"
 
 #include "CCPACSFuselageProfile.h"
 #include "CCPACSConfiguration.h"
@@ -81,6 +82,15 @@
 #include "BRepBuilderAPI_Transform.hxx"
 #include "ShapeAnalysis_Surface.hxx"
 #include "BRepLib_FindSurface.hxx"
+
+// [[CAS_AES]] BEGIN
+#include "CTiglCommon.h"
+#include <gp_Ax3.hxx>
+#include <gp_Pln.hxx>
+#include <ShapeFix_Shape.hxx>
+#include <ShapeFix_ShapeTolerance.hxx>
+#include <TopExp.hxx>
+// [[CAS_AES]] END
 
 #ifndef max
 #define max(a, b) (((a) > (b)) ? (a) : (b))
@@ -143,6 +153,7 @@ CCPACSFuselageSegment::CCPACSFuselageSegment(CCPACSFuselage* aFuselage, int aSeg
     , fuselage(aFuselage)
     , guideCurvesPresent(false)
 {
+    cutGeometryValid = false;
     Cleanup();
 }
 
@@ -150,6 +161,17 @@ CCPACSFuselageSegment::CCPACSFuselageSegment(CCPACSFuselage* aFuselage, int aSeg
 CCPACSFuselageSegment::~CCPACSFuselageSegment(void)
 {
     Cleanup();
+}
+
+// [[CAS_AES]] added Invalidate method for invalidation of local variables
+void CCPACSFuselageSegment::Invalidate(void)
+{
+    // call base class invalidation
+    CTiglAbstractSegment::Invalidate();
+    splittedLoftValid = false;
+    aeroHalfLoftValid = false;
+    aeroFullLoftValid = false;
+    cutGeometryValid = false;
 }
 
 // Cleanup routine
@@ -308,6 +330,12 @@ PNamedShape CCPACSFuselageSegment::BuildLoft(void)
     generator.CheckCompatibility(Standard_False);
     generator.Build();
     TopoDS_Shape loftShape = generator.Shape();
+
+    // [[CAS_AES]] fixing shape
+    Handle(ShapeFix_Shape) sfs = new ShapeFix_Shape;
+    sfs->Init(loftShape);
+    sfs->Perform();
+    loftShape = sfs->Shape();
 
     // Calculate volume
     GProp_GProps System;
@@ -901,5 +929,479 @@ TopTools_SequenceOfShape& CCPACSFuselageSegment::BuildGuideCurves(void)
     }
 }
 
+// [[CAS_AES]] added getter for loft splitted by spars and ribs
+TopoDS_Shape CCPACSFuselageSegment::GetSplittedLoft(SegmentType segmentType, bool nMapping, bool nHalfModel) {
+
+    UpdateSplittedLoft(segmentType, nMapping, nHalfModel);
+    return splittedLoft;
+}
+
+// [[CAS_AES]] Added update method for splitted loft
+void CCPACSFuselageSegment::UpdateSplittedLoft(SegmentType segmentType, bool nMapping, bool nHalfModel) {
+
+//         if (splittedLoftValid && segmentType == splittedLoftType)
+//             return;
+
+    BuildSplittedLoft(segmentType, nMapping, nHalfModel);
+    splittedLoftValid = true;
+    splittedLoftType = segmentType;
+}
+
+// [[CAS_AES]] Added method for building splitted loft
+void CCPACSFuselageSegment::BuildSplittedLoft(SegmentType segmentType, bool nMapping, bool nHalfModel) {
+
+    CCPACSFuselageProfile& startProfile = startConnection.GetProfile();
+    CCPACSFuselageProfile& endProfile   = endConnection.GetProfile();
+
+    TopoDS_Wire startWire = startProfile.GetWire(true);
+    TopoDS_Wire endWire   = endProfile.GetWire(true);
+
+    // Do section element transformations
+    TopoDS_Shape startShape = startConnection.GetSectionElementTransformation().Transform(startWire);
+    TopoDS_Shape endShape   = endConnection.GetSectionElementTransformation().Transform(endWire);
+
+    // Do section transformations
+    startShape = startConnection.GetSectionTransformation().Transform(startShape);
+    endShape   = endConnection.GetSectionTransformation().Transform(endShape);
+
+    // Do positioning transformations (positioning of sections)
+    startShape = startConnection.GetPositioningTransformation().Transform(startShape);
+    endShape   = endConnection.GetPositioningTransformation().Transform(endShape);
+
+    // Cast shapes to wires, see OpenCascade documentation
+    if (startShape.ShapeType() != TopAbs_WIRE || endShape.ShapeType() != TopAbs_WIRE) {
+        throw CTiglError("Error: Wrong shape type in CCPACSFuselageSegment::BuildLoft", TIGL_ERROR);
+    }
+    startWire = TopoDS::Wire(startShape);
+    endWire   = TopoDS::Wire(endShape);
+
+    // Build loft
+    //BRepOffsetAPI_ThruSections generator(Standard_False, Standard_False, Precision::Confusion());
+    BRepOffsetAPI_ThruSections generator(Standard_True, Standard_False, Precision::Confusion());
+    generator.AddWire(startWire);
+    generator.AddWire(endWire);
+    generator.CheckCompatibility(Standard_False);
+    generator.Build();
+    splittedLoft = generator.Shape();
+
+    // fix shape tolerance, required for GeomAlgo_Splitter and millimeter models
+    ShapeFix_ShapeTolerance st;
+    st.SetTolerance(splittedLoft, 1E-06);
+
+// build shell from airfoil and loft faces
+    TopoDS_Shell shell;
+    BRep_Builder shellBuilder;
+    shellBuilder.MakeShell(shell);
+    // add inner face if required
+    if (segmentType == INNER_SEGMENT || segmentType == INNER_OUTER_SEGMENT) {
+        BRepBuilderAPI_MakeFace makeInnerFace(startWire, Standard_True);
+        if (makeInnerFace.IsDone()) {
+            TopoDS_Face innerFace = makeInnerFace.Face();
+            shellBuilder.Add(shell, innerFace);
+        }
+    }
+    TopExp_Explorer ex(splittedLoft, TopAbs_FACE);
+//         while (ex.More()) {
+//             shellBuilder.Add(shell, TopoDS::Face(ex.Current()));
+//             ex.Next();
+//         }
+// Just export the loft
+    if (ex.More())
+        shellBuilder.Add(shell, TopoDS::Face(ex.Current()));
+
+    // add outer face if required
+    if (segmentType == OUTER_SEGMENT || segmentType == INNER_OUTER_SEGMENT) {
+        BRepBuilderAPI_MakeFace makeOuterFace(endWire, Standard_True);
+        if (makeOuterFace.IsDone()) {
+            TopoDS_Face outerFace = makeOuterFace.Face();
+            shellBuilder.Add(shell, outerFace);
+        }
+    }
+
+    CTiglTransformation trafo = GetFuselage().GetTransformation();
+
+    splittedLoft = trafo.Transform(shell);
+    
+    if (nHalfModel)
+    {
+
+        TopoDS_Compound halfFuselage;
+        shellBuilder.MakeCompound(halfFuselage);
+
+
+        // create a x-z plane
+        gp_Pnt p1(0., 0., 0.);
+        gp_Pnt p2(0., 1., 0.);
+        gp_Pnt p3(1., 0., 0.);
+
+        gp_Vec yDir(p1,p2);
+        yDir.Normalize();
+
+        gp_Vec xDir(p1,p3);
+        xDir.Normalize();
+
+        gp_Ax3 refAx(p1, yDir, xDir);
+        gp_Pln cutPlane(refAx);
+
+        TopoDS_Face cutFace = BRepBuilderAPI_MakeFace(cutPlane).Face();
+
+//             Split the segment with the x-z plane
+        aeroLoft = CTiglCommon::splitShape(splittedLoft, cutFace);
+
+//         CTiglCommon::dumpShape(shell,"/caehome/mare102/Aerostruct_code/Adeline","cutFuselage");
+//         CTiglCommon::dumpShape(aeroLoft,"/caehome/mare102/Aerostruct_code/Adeline","Fuselage");
+
+        TopTools_IndexedMapOfShape faceMap;
+        faceMap.Clear();
+        TopExp::MapShapes(aeroLoft, TopAbs_FACE, faceMap);
+
+        double u_min = 0.0, u_max = 0.0, v_min = 0.0, v_max = 0.0;
+
+        for (int f = 1; f <= faceMap.Extent(); f++) 
+        {
+            const TopoDS_Face loftFace = TopoDS::Face(faceMap(f));
+
+//             CTiglCommon::dumpShape(loftFace,"/caehome/mare102/Aerostruct_code/Adeline","loftFace");
+
+            gp_Pnt pnt25, pnt50,pnt75;
+            Handle(Geom_Surface) surf = BRep_Tool::Surface(loftFace);
+            BRepTools::UVBounds(loftFace, u_min, u_max, v_min, v_max);
+            pnt25 = surf->Value(u_min + ((u_max - u_min) / 4), v_min + ((v_max - v_min) / 4));
+            pnt50 = surf->Value(u_min + ((u_max - u_min) / 2), v_min + ((v_max - v_min) / 2));
+            pnt75 = surf->Value(u_min + 3 * ((u_max - u_min) / 4), v_min + 3 * ((v_max - v_min) / 4));
+
+            if (pnt25.Y() > 0.)
+            {
+                shellBuilder.Add(halfFuselage, loftFace);
+            }
+            else if (pnt50.Y() > 0.)
+            {
+                shellBuilder.Add(halfFuselage, loftFace);
+            }
+            else if (pnt75.Y() > 0.)
+            {
+                shellBuilder.Add(halfFuselage, loftFace);
+            }
+
+        }
+
+        splittedLoft = halfFuselage;
+
+//         CTiglCommon::dumpShape(aeroLoft,"/caehome/mare102/Aerostruct_code/Adeline","export");
+    }
+
+
+    // next split loft at intersection points 
+   if (!nMapping)
+        SplitLoftWithInternalStructures(splittedLoft);
+
+}
+
+// [[CAS_AES]] method for cutting loft with internal structures
+void CCPACSFuselageSegment::SplitLoftWithInternalStructures(TopoDS_Shape& geometry) {
+    
+    //The cut geometry of the stringers and frames is generated once and store on the fuselage class
+    //for the cutting of the segments, only parts of the cut geometry who are touching the segment are keept. (thanks to bounding box)
+    //then the cutting operation is performed
+    
+    CCPACSFuselageStructure& structure = fuselage->GetFuselageStructure();
+//     CTiglCommon::dumpShape(geometry,"/caehome/relu150/descartesWorkSpace","fuselage_to_cut");
+    
+    //         initialization
+    TopoDS_Compound CutCompound;
+    TopoDS_Compound CutCompoundFrame;
+    TopoDS_Compound CutCompoundStringer;
+    BRep_Builder Builder;
+    Builder.MakeCompound(CutCompound);
+    Builder.MakeCompound(CutCompoundFrame);
+    Builder.MakeCompound(CutCompoundStringer);
+    
+    if(!structure.GetCutFuselageGeometryValid())          //if CutFuselageGeometry not already build
+    {
+        structure.SetCutFuselageGeometryValid(true);      //Set the boolean to not rebuild the geometry next time
+        
+        for(int i = 1;i <= structure.GetFrameCount();i++)           //get frames cut geometry
+        {
+            tigl::CCPACSFuselageFrame* frame = structure.GetFrame(i);
+            Builder.Add(CutCompoundFrame, frame->GetFrameCutGeometry());
+//             CTiglCommon::dumpShape(CutCompoundFrame,"/caehome/relu150/descartesWorkSpace","1stFrame");
+        }
+//         CTiglCommon::dumpShape(CutCompoundFrame,"/caehome/relu150/descartesWorkSpace","cutFuselageFrame");
+        structure.SetCutFuselageFrameGeometry(CutCompoundFrame);    //save the cutFuselageGeometry   //save 
+        
+        for(int i = 1;i <= structure.GetStringerCount();i++)        //get stringers cut geometry
+        {
+            tigl::CCPACSFuselageStringer* stringer = structure.GetStringer(i);
+            Builder.Add(CutCompoundStringer, stringer->GetStringerCutGeometry());
+        }
+//         CTiglCommon::dumpShape(CutCompoundStringer,"/caehome/relu150/descartesWorkSpace","cutFuselageStringer");
+        
+        structure.SetCutStringerFuselageGeometry(CutCompoundStringer);    //save the cutFuselageGeometry
+    }
+
+    Bnd_Box fuseBoundingBox = Bnd_Box();    //fuselage
+    Bnd_Box faceBoundingBox = Bnd_Box();    //cut tool (stringers and frames cut geometry)
+    
+    BRepBndLib::Add(geometry, fuseBoundingBox);
+    
+    //frame cutting
+    TopTools_IndexedMapOfShape faceMap1;
+    TopExp::MapShapes(structure.GetCutFuselageFrameGeometry(), TopAbs_FACE, faceMap1);
+    for(int i = 1; i <= faceMap1.Extent(); i++)
+    {
+        faceBoundingBox = Bnd_Box();
+        BRepBndLib::Add(TopoDS::Face(faceMap1(i)), faceBoundingBox);
+        if(!fuseBoundingBox.IsOut(faceBoundingBox))
+            Builder.Add(CutCompound, TopoDS::Face(faceMap1(i)));
+    }
+    geometry = CTiglCommon::splitShape(geometry, CutCompound);     //Cut by frame
+    
+    //stringer cutting
+    TopoDS_Compound outCompound1;
+    Builder.MakeCompound(outCompound1);
+    TopoDS_Compound outCompound2;
+    Builder.MakeCompound(outCompound2);
+    TopoDS_Compound outCompound3;
+    Builder.MakeCompound(outCompound3);
+    
+    TopoDS_Shape geometryOut;
+    TopTools_IndexedMapOfShape faceMapFuse;
+    TopExp::MapShapes(geometry, TopAbs_FACE, faceMapFuse);
+    for(int i = 1; i <= faceMapFuse.Extent(); i++)              //explore fuselage faces
+    {
+        fuseBoundingBox = Bnd_Box();
+        BRepBndLib::Add(TopoDS::Face(faceMapFuse(i)), fuseBoundingBox);
+        
+        TopTools_IndexedMapOfShape faceMapStringer;
+        TopExp::MapShapes(structure.GetCutStringerFuselageGeometry(), TopAbs_FACE, faceMapStringer);
+        for(int j = 1; j <= faceMapStringer.Extent(); j++)         //explore stringers faces
+        {
+            faceBoundingBox = Bnd_Box();
+            BRepBndLib::Add(TopoDS::Face(faceMapStringer(j)), faceBoundingBox);
+            if(!fuseBoundingBox.IsOut(faceBoundingBox))                             //part of fuselage and part of stringer crossing
+            {
+                Builder.Add(outCompound2, TopoDS::Face(faceMapStringer(j)));
+            }
+
+        }
+//         CTiglCommon::dumpShape(outCompound1,"/caehome/relu150/descartesWorkSpace","testFuselageToCut");
+//         CTiglCommon::dumpShape(outCompound2,"/caehome/relu150/descartesWorkSpace","testCutStringer");
+        
+        Builder.Add(outCompound1, TopoDS::Face(faceMapFuse(i)));
+        Builder.Add(outCompound3, CTiglCommon::splitShape(outCompound1, outCompound2));
+        
+//         CTiglCommon::dumpShape(outCompound3,"/caehome/relu150/descartesWorkSpace","testResult");
+        
+        Builder.MakeCompound(outCompound1);
+        Builder.MakeCompound(outCompound2);
+    }
+    geometry = outCompound3;
+//     CTiglCommon::dumpShape(geometry,"/caehome/relu150/descartesWorkSpace","testFinalResult");
+}
+
+// [[CAS_AES]] added getter for loft splitted by spars and ribs
+TopoDS_Shape CCPACSFuselageSegment::GetAeroLoft(SegmentType segmentType, bool nHalfModel) {
+
+    UpdateAeroLoft(segmentType, nHalfModel);
+
+    return aeroLoft;
+}
+
+// [[CAS_AES]] Added update method for splitted loft
+void CCPACSFuselageSegment::UpdateAeroLoft(SegmentType segmentType, bool nHalfModel) {
+
+    if (aeroHalfLoftValid && nHalfModel)
+        return;
+
+    if (aeroFullLoftValid && !nHalfModel)
+        return;
+
+    BuildAeroLoft(segmentType, nHalfModel);
+}
+
+// [[CAS_AES]] Added method for building aero loft for cfd step export
+void CCPACSFuselageSegment::BuildAeroLoft(SegmentType segmentType, bool nHalfModel) {
+
+    CCPACSFuselageProfile& startProfile = startConnection.GetProfile();
+    CCPACSFuselageProfile& endProfile   = endConnection.GetProfile();
+
+    TopoDS_Wire startWire = startProfile.GetWire(true);
+    TopoDS_Wire endWire   = endProfile.GetWire(true);
+
+    // Do section element transformations
+    TopoDS_Shape startShape = startConnection.GetSectionElementTransformation().Transform(startWire);
+    TopoDS_Shape endShape   = endConnection.GetSectionElementTransformation().Transform(endWire);
+
+    // Do section transformations
+    startShape = startConnection.GetSectionTransformation().Transform(startShape);
+    endShape   = endConnection.GetSectionTransformation().Transform(endShape);
+
+    // Do positioning transformations (positioning of sections)
+    startShape = startConnection.GetPositioningTransformation().Transform(startShape);
+    endShape   = endConnection.GetPositioningTransformation().Transform(endShape);
+
+    // Cast shapes to wires, see OpenCascade documentation
+    if (startShape.ShapeType() != TopAbs_WIRE || endShape.ShapeType() != TopAbs_WIRE) {
+        throw CTiglError("Error: Wrong shape type in CCPACSFuselageSegment::BuildAeroLoft", TIGL_ERROR);
+    }
+    startWire = TopoDS::Wire(startShape);
+    endWire   = TopoDS::Wire(endShape);
+
+    // Build loft
+    //BRepOffsetAPI_ThruSections generator(Standard_False, Standard_False, Precision::Confusion());
+    BRepOffsetAPI_ThruSections generator(Standard_True, Standard_False, Precision::Confusion());
+    generator.AddWire(startWire);
+    generator.AddWire(endWire);
+    generator.CheckCompatibility(Standard_False);
+    generator.Build();
+    aeroLoft = generator.Shape();
+    
+
+    // fix shape tolerance, required for GeomAlgo_Splitter and millimeter models
+    ShapeFix_ShapeTolerance st;
+    st.SetTolerance(aeroLoft, 1E-06);
+    
+    
+
+// build shell from airfoil and loft faces
+    TopoDS_Shell shell;
+    BRep_Builder shellBuilder;
+    shellBuilder.MakeShell(shell);
+    
+    TopoDS_Compound comp;
+    shellBuilder.MakeCompound(comp);
+    
+    TopTools_IndexedMapOfShape faceMap;
+    TopExp::MapShapes(aeroLoft, TopAbs_FACE, faceMap);
+    
+    shellBuilder.Add(comp, TopoDS::Face(faceMap(1)));
+    
+    // remove inner face if required
+    if ((segmentType == INNER_SEGMENT || segmentType == INNER_OUTER_SEGMENT)) {
+        BRepBuilderAPI_MakeFace makeInnerFace(startWire, Standard_True);
+        if (makeInnerFace.IsDone()) {
+            TopoDS_Face innerFace = makeInnerFace.Face();
+            shellBuilder.Add(comp, makeInnerFace.Face());
+        }
+    }
+    
+        // add outer face if required
+    if ((segmentType == OUTER_SEGMENT || segmentType == INNER_OUTER_SEGMENT)) {
+        BRepBuilderAPI_MakeFace makeOuterFace(endWire, Standard_True);
+        if (makeOuterFace.IsDone()) {
+            TopoDS_Face outerFace = makeOuterFace.Face();
+            shellBuilder.Add(comp, makeOuterFace.Face());
+        }
+    }
+    
+    
+//     // add inner face if required
+//     if (segmentType == INNER_SEGMENT || segmentType == INNER_OUTER_SEGMENT) {
+//         BRepBuilderAPI_MakeFace makeInnerFace(startWire, Standard_True);
+//         if (makeInnerFace.IsDone()) {
+//             TopoDS_Face innerFace = makeInnerFace.Face();
+//             shellBuilder.Add(shell, innerFace);
+//         }
+//     }
+// 
+//     TopExp_Explorer ex(aeroLoft, TopAbs_FACE);
+// 
+//     if (ex.More())
+//     {
+//         shellBuilder.Add(shell, TopoDS::Face(ex.Current()));
+//     }
+// 
+//     // add outer face if required
+//     if (segmentType == OUTER_SEGMENT || segmentType == INNER_OUTER_SEGMENT) {
+//         BRepBuilderAPI_MakeFace makeOuterFace(endWire, Standard_True);
+//         if (makeOuterFace.IsDone()) {
+//             TopoDS_Face outerFace = makeOuterFace.Face();
+//             shellBuilder.Add(shell, outerFace);
+//         }
+//     }
+
+    // if a half model is required
+    
+    double YPos = fuselage->GetTranslation().y;
+        
+    
+    if (nHalfModel && (fabs(YPos) < 1e-3))
+    {
+
+        TopoDS_Compound halfFuselage;
+        shellBuilder.MakeCompound(halfFuselage);
+
+
+        // create a x-z plane
+        gp_Pnt p1(0., 0., 0.);
+        gp_Pnt p2(0., 1., 0.);
+        gp_Pnt p3(1., 0., 0.);
+
+        gp_Vec yDir(p1,p2);
+        yDir.Normalize();
+
+        gp_Vec xDir(p1,p3);
+        xDir.Normalize();
+
+        gp_Ax3 refAx(p1, yDir, xDir);
+        gp_Pln cutPlane(refAx);
+
+        TopoDS_Face cutFace = BRepBuilderAPI_MakeFace(cutPlane).Face();
+
+//             Split the segment with the x-z plane
+        aeroLoft = CTiglCommon::splitShape(comp, cutFace);
+
+//         CTiglCommon::dumpShape(shell,"/caehome/mare102/Aerostruct_code/Adeline","cutFuselage");
+//         CTiglCommon::dumpShape(aeroLoft,"/caehome/mare102/Aerostruct_code/Adeline","Fuselage");
+
+        TopTools_IndexedMapOfShape faceMap;
+        faceMap.Clear();
+        TopExp::MapShapes(aeroLoft, TopAbs_FACE, faceMap);
+
+        double u_min = 0.0, u_max = 0.0, v_min = 0.0, v_max = 0.0;
+
+        for (int f = 1; f <= faceMap.Extent(); f++) 
+        {
+            const TopoDS_Face loftFace = TopoDS::Face(faceMap(f));
+
+//             CTiglCommon::dumpShape(loftFace,"/caehome/mare102/Aerostruct_code/Adeline","loftFace");
+
+            gp_Pnt pnt25, pnt50,pnt75;
+            Handle(Geom_Surface) surf = BRep_Tool::Surface(loftFace);
+            BRepTools::UVBounds(loftFace, u_min, u_max, v_min, v_max);
+            pnt25 = surf->Value(u_min + ((u_max - u_min) / 4), v_min + ((v_max - v_min) / 4));
+            pnt50 = surf->Value(u_min + ((u_max - u_min) / 2), v_min + ((v_max - v_min) / 2));
+            pnt75 = surf->Value(u_min + 3 * ((u_max - u_min) / 4), v_min + 3 * ((v_max - v_min) / 4));
+
+            if (pnt25.Y() > 0.)
+            {
+                shellBuilder.Add(halfFuselage, loftFace);
+            }
+            else if (pnt50.Y() > 0.)
+            {
+                shellBuilder.Add(halfFuselage, loftFace);
+            }
+            else if (pnt75.Y() > 0.)
+            {
+                shellBuilder.Add(halfFuselage, loftFace);
+            }
+
+        }
+
+        aeroLoft = halfFuselage;
+
+        aeroHalfLoftValid = true;
+
+//         CTiglCommon::dumpShape(aeroLoft,"/caehome/mare102/Aerostruct_code/Adeline","export");
+    }
+
+    else
+    {
+        aeroLoft = comp;
+        aeroFullLoftValid = true;
+    }
+
+
+}
 
 } // end namespace tigl

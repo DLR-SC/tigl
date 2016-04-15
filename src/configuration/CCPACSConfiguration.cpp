@@ -56,18 +56,30 @@ namespace tigl
 {
 
 // Constructor
+// [[CAS_AES]] added initialization of structuralProfiles and structuralElements
 CCPACSConfiguration::CCPACSConfiguration(TixiDocumentHandle tixiHandle)
     : tixiDocumentHandle(tixiHandle)
     , header()
     , wings(this)
     , fuselages(this)
+    , structuralProfiles(this)
+    , structuralElements(this)
+    , materials(this)
     , uidManager()
+    // [[CAS_AES]] added CPACSModel
+    , cpacsModel(NULL)
 {
 }
 
 // Destructor
 CCPACSConfiguration::~CCPACSConfiguration(void)
 {
+    // [[CAS_AES]] added CPACSModel
+    if (cpacsModel)
+    {
+        delete cpacsModel;
+    }
+    tixiCloseDocument(tixiDocumentHandle);
 }
 
 // Invalidates the internal state of the configuration and forces
@@ -79,6 +91,10 @@ void CCPACSConfiguration::Invalidate(void)
     aircraftFuser.reset();
     shapeCache.Clear();
     configUID = "";
+    // [[CAS_AES]] added invalidation of freeform surfaces and materials
+    freeFormSurfaces.Invalidate();
+    materials.Invalidate();
+
 }
 
 // Build up memory structure for whole CPACS file
@@ -112,11 +128,37 @@ void CCPACSConfiguration::ReadCPACS(const char* configurationUID)
         description = ptrDescription;
     }
 
+    // [[CAS_AES]] added CCPACSModel as root component for CTiglUIDManager
+    // [[CAS_AES]] BEGIN
+    if (cpacsModel) {
+        delete cpacsModel;
+    }
+    cpacsModel = new CCPACSModel();
+    cpacsModel->SetUID(configurationUID);
+    uidManager.SetRootComponent(cpacsModel);
+    // [[CAS_AES]] END
+
     header.ReadCPACS(tixiDocumentHandle);
     guideCurveProfiles.ReadCPACS(tixiDocumentHandle);
     wings.ReadCPACS(tixiDocumentHandle, configurationUID);
     fuselages.ReadCPACS(tixiDocumentHandle, configurationUID);
     farField.ReadCPACS(tixiDocumentHandle);
+
+    // [[CAS_AES]] reading structural profiles
+    std::string structurePath = "/cpacs/vehicles/profiles";
+    structuralProfiles.ReadCPACS(tixiDocumentHandle, structurePath);
+    
+    // [[CAS_AES]] reading structural elements
+    std::string structureElementsPath = "/cpacs/vehicles";
+    structuralElements.ReadCPACS(tixiDocumentHandle, structureElementsPath);
+
+    // [[CAS_AES]] reading materials
+    materials.ReadCPACS(tixiDocumentHandle, structureElementsPath);
+    
+    // [[CAS_AES]] reading free form surfaces
+    std::string sFFFSPath("/cpacs/ToolSpecific/CAS");
+    freeFormSurfaces.ReadCPACS(tixiDocumentHandle, sFFFSPath, this);
+
 
     configUID = configurationUID;
     // Now do parent <-> child transformations. Child should use the
@@ -141,11 +183,22 @@ void CCPACSConfiguration::WriteCPACS(const std::string& configurationUID)
     fuselages.WriteCPACS(tixiDocumentHandle, configurationUID);
     wings.WriteCPACS(tixiDocumentHandle, configurationUID);
 
+    std::string structurePath = "/cpacs/vehicles/profiles";
+    structuralProfiles.WriteCPACS(tixiDocumentHandle, structurePath);
+        
+    std::string structureElementsPath = "/cpacs/vehicles";
+    structuralElements.WriteCPACS(tixiDocumentHandle, structureElementsPath);
+    materials.WriteCPACS(tixiDocumentHandle, structureElementsPath);
 }
 
 // transform all components relative to their parents
 void CCPACSConfiguration::transformAllComponents(CTiglAbstractPhysicalComponent* parent)
 {
+    // [[CAS_AES]] handle case when no parent object exists
+    if (!parent) {
+        return;
+    }
+
     CTiglAbstractPhysicalComponent::ChildContainerType children = parent->GetChildren(false);
     CTiglAbstractPhysicalComponent::ChildContainerType::iterator pIter;
     CTiglPoint parentTranslation = parent->GetTranslation();
@@ -185,6 +238,18 @@ bool CCPACSConfiguration::HasWingProfile(std::string uid) const
 int CCPACSConfiguration::GetWingProfileCount(void) const
 {
     return wings.GetProfileCount();
+}
+
+// Returns the class which holds all wing profiles
+CCPACSWingProfiles& CCPACSConfiguration::GetWingProfiles(void)
+{
+    return wings.GetProfiles();
+}
+
+//Victor
+CCPACSFuselageProfiles& CCPACSConfiguration::GetFuselageProfiles(void)
+{
+    return fuselages.GetProfiles();
 }
 
 // Returns the wing profile for a given uid.
@@ -255,6 +320,13 @@ CCPACSFuselage& CCPACSConfiguration::GetFuselage(int index) const
 {
     return fuselages.GetFuselage(index);
 }
+
+
+CCPACSFuselages& CCPACSConfiguration::GetFuselages()
+{
+    return fuselages;
+}
+
 
 CCPACSFarField& CCPACSConfiguration::GetFarField()
 {
@@ -331,6 +403,199 @@ CTiglShapeCache& CCPACSConfiguration::GetShapeCache()
 CTiglMemoryPool& CCPACSConfiguration::GetMemoryPool()
 {
     return memoryPool;
+}
+
+// [[CAS_AES]] Returns the total count of structural element in a configuration
+int CCPACSConfiguration::GetProfileElementCount(void) const
+{
+    return structuralElements.GetProfiles()->GetProfileBasedStructuralElementCount();
+}
+// [[CAS_AES]] Returns the structural element for a given index.
+CCPACSProfileBasedStructuralElement& CCPACSConfiguration::GetProfileElement(int index) const
+{
+    return structuralElements.GetProfiles()->GetProfileBasedStructuralElement(index);
+}
+// [[CAS_AES]] Returns the structural element for a given UID.
+CCPACSProfileBasedStructuralElement& CCPACSConfiguration::GetProfileElement(const std::string UID) const
+{
+    return structuralElements.GetProfiles()->GetProfileBasedStructuralElement(UID);
+}
+
+// [[CAS_AES]] Returns the total count of structural profile in a configuration
+int CCPACSConfiguration::GetStructuralProfileCount(void) const
+{
+    return structuralProfiles.GetStructuralProfile2DCount();
+}
+// [[CAS_AES]] Returns the structural profile for a given index.
+CCPACSStructuralProfile2D& CCPACSConfiguration::GetStructuralProfile(int index) const
+{
+    return structuralProfiles.GetStructuralProfile2D(index);
+}
+// [[CAS_AES]] Returns the structural profile for a given UID.
+CCPACSStructuralProfile2D& CCPACSConfiguration::GetStructuralProfile(const std::string UID) const
+{
+    return structuralProfiles.GetStructuralProfile2D(UID);
+}
+
+// [[CAS_AES]] added getter for free form surfaces
+CCPACSFreeFormSurfaces& CCPACSConfiguration::GetFFFS()
+{
+    return freeFormSurfaces;
+}
+
+// [[CAS_AES]] added getter for number of free form surfaces
+int CCPACSConfiguration::GetFFFSCount()
+{
+    return freeFormSurfaces.GetFreeFormSurfaceCount();
+}
+
+// [[CAS_AES]] added getter for free form surface by index
+CCPACSFreeFormSurface& CCPACSConfiguration::GetFFFSbyIndex(int index)
+{
+    return freeFormSurfaces.GetFreeFormSurface(index);
+}
+
+// [[CAS_AES]]
+CCPACSMaterialType* CCPACSConfiguration::GetMaterial(int index) const
+{
+    return materials.GetMaterial(index);
+}
+
+// [[CAS_AES]]
+CCPACSMaterialType* CCPACSConfiguration::GetMaterial(std::string nUId) const
+{
+    return materials.GetMaterial(nUId);
+}
+
+// [[CAS_AES]]
+CCPACSComposite* CCPACSConfiguration::GetComposite(std::string nUId) const
+{
+    return materials.GetComposite(nUId);
+}
+
+// [[CAS_AES]]
+CCPACSComposite* CCPACSConfiguration::GetComposite(int index) const
+{
+    return materials.GetComposite(index);
+}
+
+// [[CAS_AES]] Returns the structural element for a given index.
+CCPACSSheetBasedStructuralElement& CCPACSConfiguration::GetSheetElement(int index) const
+{
+    return structuralElements.GetSheets()->GetSheetBasedStructuralElement(index);
+}
+// [[CAS_AES]] Returns the structural element for a given UID.
+CCPACSSheetBasedStructuralElement& CCPACSConfiguration::GetSheetElement(const std::string UID) const
+{
+    return structuralElements.GetSheets()->GetSheetBasedStructuralElement(UID);
+}
+
+CCPACSPressureBulkheadElement& CCPACSConfiguration::getPressureBulheadElement(std::string nUId) const
+{
+    return structuralElements.getPressureBulkheadElements()->GetPressureBulkheadElements(nUId);
+}
+
+CCPACSPressureBulkheadElement& CCPACSConfiguration::getPressureBulheadElement(int index) const
+{
+    return structuralElements.getPressureBulkheadElements()->GetPressureBulkheadElements(index);
+}
+
+CCPACSDoor& CCPACSConfiguration::getDoorElement(std::string nUId) const
+{
+    return structuralElements.getDoors()->GetDoor(nUId);
+}
+
+CCPACSDoor& CCPACSConfiguration::getDoorElement(int index) const
+{
+    return structuralElements.getDoors()->GetDoor(index);
+}
+
+
+CCPACSWingFuelTank& CCPACSConfiguration::getWingFuelTank(std::string nUId, bool& sym) const
+{
+    return wings.GetWingFuelTank(nUId, sym);
+}
+
+CCPACSWingFuelTank& CCPACSConfiguration::getWingFuelTank(std::string nUId, std::string& wingUId) const
+{
+    return wings.GetWingFuelTank(nUId, wingUId);
+}
+
+CTiglStructuralMountParent& CCPACSConfiguration::getStructuralMount(std::string nUId, std::string& parentUID, TiglSymmetryAxis& symmetryAxis) const
+{
+    for (int w = 1; w <= GetWingCount(); w++) {
+        tigl::CCPACSWing& wing = GetWing(w);
+        
+        for ( int l = 1; l <= wing.GetComponentSegmentCount(); l++) {
+            tigl::CCPACSWingComponentSegment& CpacsWCSegment = (tigl::CCPACSWingComponentSegment&) wing.GetComponentSegment(l);
+            
+            CCPACSWingStructuralMounts& wStrMounts = CpacsWCSegment.GetWingStructuralMounts();
+            
+            for (int wsm = 1; wsm <= wStrMounts.GetWingStructuralMountCount(); wsm++) {
+                CCPACSWingStructuralMount& mount = wStrMounts.GetWingStructuralMount(wsm);
+                
+                if (mount.GetUID() == nUId) {
+                    mount.Update();
+                    parentUID = wing.GetUID();
+                    symmetryAxis = wing.GetSymmetryAxis();
+                    return mount;
+                }
+            }
+        }
+    }
+    
+    for (int f = 1; f <= GetFuselageCount(); f++) {
+        tigl::CCPACSFuselageStructuralMounts& fStrMounts = GetFuselage(f).GetFuselageStructure().getFuselageStructuralMounts();
+        
+        for (int fsm = 1; fsm <= fStrMounts.GetFuselageStructuralMountCount(); fsm++) {
+            CCPACSFuselageStructuralMount& mount = fStrMounts.GetFuselageStructuralMount(fsm);
+            
+            if (mount.GetUID() == nUId) {
+                mount.Update();
+                parentUID = GetFuselage(f).GetUID();
+                symmetryAxis = GetFuselage(f).GetSymmetryAxis();
+                return mount;
+            }
+        }
+    }
+    
+    throw CTiglError("Error: Structural Mount with uID " + nUId + " not found!\nIn CCPACSConfiguration::getStructuralMount");
+    
+}
+
+std::string CCPACSConfiguration::GetName(void) const   // EU
+{
+    return name;
+}
+
+std::string CCPACSConfiguration::GetDescription(void) const   // EU
+{
+    return description;
+}
+
+CCPACSHeader* CCPACSConfiguration::GetHeader()    // EU
+{
+    return &header;
+}
+
+CCPACSWings* CCPACSConfiguration::GetWings()  // EU
+{
+    return &wings;
+}
+
+CCPACSMaterials* CCPACSConfiguration::GetMaterials()  // EU
+{
+    return &materials;
+}
+
+CCPACSStructuralProfiles* CCPACSConfiguration::GetStructuralProfiles()  // EU
+{
+    return &structuralProfiles;
+}
+
+CCPACSStructuralElements* CCPACSConfiguration::GetStructuralElements()  // EU
+{
+    return &structuralElements;
 }
 
 } // end namespace tigl

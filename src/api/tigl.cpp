@@ -1767,7 +1767,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentFindSegment(TiglCPACSC
                 tigl::CCPACSWingComponentSegment& cs = (tigl::CCPACSWingComponentSegment&) wing.GetComponentSegment(componentSegment);
                 if ( cs.GetUID() == componentSegmentUID) {
                     gp_Pnt nearestPointOnSegment;
-                    const tigl::CTiglAbstractSegment* segment =  cs.findSegment(x, y, z, nearestPointOnSegment);
+                    const tigl::CTiglAbstractSegment* segment =  cs.FindSegment(x, y, z, nearestPointOnSegment);
                     if (!segment) {
                         // point does not lie on component segment
                         LOG(ERROR) << "Given point does not lie on component segment within 1cm tolerance."
@@ -1890,7 +1890,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentPointGetSegmentEtaXsi(
 
 
                     gp_Pnt nearestPoint;
-                    tigl::CCPACSWingSegment* segment = (tigl::CCPACSWingSegment*) compSeg.findSegment(pnt.X(), pnt.Y(), pnt.Z(), nearestPoint);
+                    tigl::CCPACSWingSegment* segment = (tigl::CCPACSWingSegment*) compSeg.FindSegment(pnt.X(), pnt.Y(), pnt.Z(), nearestPoint);
                     double deviation = nearestPoint.Distance(pnt);
                     if (!segment) {
                         LOG(ERROR) << "Given point does not lie on component segment within 1cm tolerance."
@@ -2100,7 +2100,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetNumberOfSegments(Ti
             tigl::CCPACSWing& wing = config.GetWing(iwing);
             try {
                 tigl::CCPACSWingComponentSegment & compSeg = (tigl::CCPACSWingComponentSegment &) wing.GetComponentSegment(componentSegmentUID);
-                tigl::SegmentList& segments = compSeg.GetSegmentList();
+                const tigl::SegmentList& segments = compSeg.GetSegmentList();
                 *nsegments = (int) segments.size();
                 return TIGL_SUCCESS;
             }
@@ -2160,7 +2160,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingComponentSegmentGetSegmentUID(TiglCPAC
             tigl::CCPACSWing& wing = config.GetWing(iwing);
             try {
                 tigl::CCPACSWingComponentSegment & compSeg = (tigl::CCPACSWingComponentSegment &) wing.GetComponentSegment(componentSegmentUID);
-                tigl::SegmentList& segments = compSeg.GetSegmentList();
+                const tigl::SegmentList& segments = compSeg.GetSegmentList();
                 if (segmentIndex < 1 || segmentIndex > (int) segments.size()) {
                     LOG(ERROR) << "Error: Invalid segment index in tiglWingComponentSegmentGetSegmentUID" << std::endl;
                     return TIGL_INDEX_ERROR;

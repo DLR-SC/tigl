@@ -41,6 +41,8 @@
 #include "tigl_config.h"
 #include "math/tiglmathfunctions.h"
 #include "TixiSaveExt.h"
+#include "CCPACSWingRibsDefinition.h"
+#include "CCPACSWingSparSegment.h"
 
 #include "BRepOffsetAPI_ThruSections.hxx"
 #include "TopExp_Explorer.hxx"
@@ -101,6 +103,15 @@
 #include "BRepTools.hxx"
 #include <TopExp.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
+
+// [[CAS_AES]] added includes
+// [[CAS_AES]] BEGIN
+#include <BRepBuilderAPI_MakeSolid.hxx>
+#include <BRepBuilderAPI_Sewing.hxx>
+#include <gp_Ax3.hxx>
+#include <gp_Pln.hxx>
+#include "CTiglCommon.h"
+// [[CAS_AES]] END
 
 namespace tigl
 {
@@ -217,14 +228,23 @@ void CCPACSWingSegment::Invalidate(void)
     CTiglAbstractSegment::Invalidate();
     surfacesAreValid = false;
     guideCurveWires.Clear();
+    // [[CAS_AES]] added splittedLoftValid and aeroLoftValid
+    splittedLoftValid = false;
+    closedAeroLoftValid = false;
+    openAeroLoftValid = false;
 }
 
 // Cleanup routine
 void CCPACSWingSegment::Cleanup(void)
 {
     name = "";
+    description = "";
     upperShape.Nullify();
     lowerShape.Nullify();
+    // [[CAS_AES]] added innerShape, outerShape, trailingEdgeShape
+    innerShape.Nullify();
+    outerShape.Nullify();
+    trailingEdgeShape.Nullify();
     surfacesAreValid = false;
     guideCurvesPresent = false;
     CTiglAbstractSegment::Cleanup();
@@ -236,43 +256,66 @@ void CCPACSWingSegment::Update(void)
     Invalidate();
 }
 
+// [[CAS_AES]] Added update method for splitted loft
+void CCPACSWingSegment::UpdateSplittedLoft(SegmentType segmentType)
+{
+    if (splittedLoftValid && segmentType == splittedLoftType)
+        return;
+
+    BuildSplittedLoft(segmentType);
+    
+    splittedLoftValid = true;
+    splittedLoftType = segmentType;
+}
+
+void CCPACSWingSegment::UpdateAeroLoft(SegmentType segmentType, bool nHalfModel, bool withInnerFace, bool closedTE)
+{
+    if (closedAeroLoftValid && closedTE)
+        return;
+
+    if (openAeroLoftValid && !closedTE)
+        return;
+
+    BuildAeroLoft(segmentType, nHalfModel, withInnerFace, closedTE);
+}
+
 // Read CPACS segment elements
 void CCPACSWingSegment::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& segmentXPath)
 {
     Cleanup();
 
-    char*       elementPath;
+    std::string elementPath;
     std::string tempString;
 
     // Get subelement "name"
     char* ptrName = NULL;
-    tempString    = segmentXPath + "/name";
-    elementPath   = const_cast<char*>(tempString.c_str());
-    if (tixiGetTextElement(tixiHandle, elementPath, &ptrName) == SUCCESS) {
-        name          = ptrName;
+    elementPath = segmentXPath + "/name";
+    if (tixiGetTextElement(tixiHandle, elementPath.c_str(), &ptrName) == SUCCESS) {
+        name = ptrName;
     }
 
     // Get subelement "description"
-    char* ptrDescription = "";
-    tempString    = segmentXPath + "/description";
-    tixiGetTextElement(tixiHandle, tempString.c_str(), &ptrDescription);
-    description          = ptrDescription;
+    char* ptrDescription = NULL;
+    elementPath = segmentXPath + "/description";
+    if (tixiGetTextElement(tixiHandle, elementPath.c_str(), &ptrDescription) == SUCCESS) {
+        description = ptrDescription;
+    }
 
     // Get attribute "uid"
     char* ptrUID = NULL;
     tempString   = "uID";
-    if (tixiGetTextAttribute(tixiHandle, const_cast<char*>(segmentXPath.c_str()), const_cast<char*>(tempString.c_str()), &ptrUID) == SUCCESS) {
+    if (tixiGetTextAttribute(tixiHandle, segmentXPath.c_str(), tempString.c_str(), &ptrUID) == SUCCESS) {
         SetUID(ptrUID);
         GetWing().GetConfiguration().GetUIDManager().AddUID(GetUID(), this);
     }
 
     // Inner connection
-    tempString = segmentXPath + "/fromElementUID";
-    innerConnection.ReadCPACS(tixiHandle, tempString);
+    elementPath = segmentXPath + "/fromElementUID";
+    innerConnection.ReadCPACS(tixiHandle, elementPath);
 
     // Outer connection
-    tempString = segmentXPath + "/toElementUID";
-    outerConnection.ReadCPACS(tixiHandle, tempString);
+    elementPath = segmentXPath + "/toElementUID";
+    outerConnection.ReadCPACS(tixiHandle, elementPath);
 
     // Get guide Curves
     if (tixiCheckElement(tixiHandle, (segmentXPath + "/guideCurves").c_str()) == SUCCESS) {
@@ -308,14 +351,19 @@ void CCPACSWingSegment::WriteCPACS(TixiDocumentHandle tixiHandle, const std::str
     TixiSaveExt::TixiSaveTextAttribute(tixiHandle, segmentXPath.c_str(), "uID", GetUID().c_str());
     
     // Inner connection
-    innerConnection.WriteCPACS(tixiHandle, segmentXPath.c_str(), "fromElementUID");
+    innerConnection.WriteCPACS(tixiHandle, segmentXPath, "fromElementUID");
     // Inner connection
-    outerConnection.WriteCPACS(tixiHandle, segmentXPath.c_str(), "toElementUID");
+    outerConnection.WriteCPACS(tixiHandle, segmentXPath, "toElementUID");
 }
 
 const std::string& CCPACSWingSegment::GetName() const
 {
     return name;
+}
+
+const std::string& CCPACSWingSegment::GetDescription() const
+{
+    return description;
 }
 
 // Returns the wing this segment belongs to
@@ -346,7 +394,10 @@ TopoDS_Wire CCPACSWingSegment::GetInnerWire(void)
 #else
     w = innerProfile.GetSplitWire();
 #endif
-    return TopoDS::Wire(transformProfileWire(GetWing().GetTransformation(), innerConnection, w));
+
+    // [[CAS_AES]] removed wing transformation
+    CTiglTransformation identity;
+    return TopoDS::Wire(transformProfileWire(identity, innerConnection, w));
 }
 
 // helper function to get the outer transformed chord line wire
@@ -371,21 +422,64 @@ TopoDS_Wire CCPACSWingSegment::GetOuterWire(void)
 #else
     w = outerProfile.GetSplitWire();
 #endif
-    return TopoDS::Wire(transformProfileWire(GetWing().GetTransformation(), outerConnection, w));
+
+    // [[CAS_AES]] removed wing transformation
+    CTiglTransformation identity;
+    return TopoDS::Wire(transformProfileWire(identity, outerConnection, w));
+}
+
+// [[CAS_AES]] added getter for inner wire of opened profile (containing trailing edge)
+TopoDS_Wire CCPACSWingSegment::GetInnerWireOpened(void)
+{
+    CCPACSWingProfile& innerProfile = innerConnection.GetProfile();
+    CTiglTransformation identity;
+    return TopoDS::Wire(transformProfileWire(identity, innerConnection, innerProfile.GetWireOpened()));
+}
+
+// [[CAS_AES]] added getter for outer wire of opened profile (containing trailing edge)
+TopoDS_Wire CCPACSWingSegment::GetOuterWireOpened(void)
+{
+    CCPACSWingProfile& outerProfile = outerConnection.GetProfile();
+    CTiglTransformation identity;
+    return TopoDS::Wire(transformProfileWire(identity, outerConnection, outerProfile.GetWireOpened()));
 }
 
 // helper function to get the inner closing of the wing segment
+// [[CAS_AES]] changed implementation using shape generated in MakeSurfaces
 TopoDS_Shape CCPACSWingSegment::GetInnerClosure()
 {
-    TopoDS_Wire wire = GetInnerWire();
-    return BRepBuilderAPI_MakeFace(wire).Face();
+    // [[CAS_AES]] BEGIN
+    if (!surfacesAreValid) {
+        MakeSurfaces();
+    }
+    return innerShape;
+    // [[CAS_AES]] END
 }
 
 // helper function to get the inner closing of the wing segment
+// [[CAS_AES]] changed implementation using shape generated in MakeSurfaces
 TopoDS_Shape CCPACSWingSegment::GetOuterClosure()
 {
-    TopoDS_Wire wire = GetOuterWire();
-    return BRepBuilderAPI_MakeFace(wire).Face();
+    // [[CAS_AES]] BEGIN
+    if (!surfacesAreValid) {
+        MakeSurfaces();
+    }
+    return outerShape;
+    // [[CAS_AES]] END
+}
+
+// [[CAS_AES]] added getter for loft splitted by spars and ribs
+TopoDS_Shape CCPACSWingSegment::GetSplittedLoft(SegmentType segmentType, bool transform)
+{
+    UpdateSplittedLoft(segmentType);
+
+    // transform into global coordinate system if requested
+    if (transform) {
+        return GetWing().GetWingTransformation().Transform(splittedLoft);
+    }
+    else {
+        return splittedLoft;
+    }
 }
 
 // get short name for loft
@@ -411,21 +505,60 @@ std::string CCPACSWingSegment::GetShortShapeName ()
     return "UNKNOWN";
 }
 
+// [[CAS_AES]] added getter for aero loft
+TopoDS_Shape CCPACSWingSegment::GetAeroLoft(SegmentType segmentType, bool nHalfModel, bool withInnerFace, bool closedTE)
+{
+    UpdateAeroLoft(segmentType, nHalfModel, withInnerFace,closedTE);
+    if (closedTE) {
+        return closedAeroLoft;
+    }
+    else {
+        return openAeroLoft;
+    }
+}
+
 // Builds the loft between the two segment sections
+// [[CAS_AES]] changed implementation to build loft out of faces (for compatibility with component segmen loft)
 PNamedShape CCPACSWingSegment::BuildLoft(void)
 {
-    TopoDS_Wire innerWire = GetInnerWire();
-    TopoDS_Wire outerWire = GetOuterWire();
+    // [[CAS_AES]] BEGIN
+    MakeSurfaces();
 
-    // Build loft
-    //BRepOffsetAPI_ThruSections generator(Standard_False, Standard_False, Precision::Confusion());
-    BRepOffsetAPI_ThruSections generator(/* is solid (else shell) */ Standard_True, /* ruled (else smoothed out) */ Standard_False, Precision::Confusion());
-    generator.AddWire(innerWire);
-    generator.AddWire(outerWire);
-    generator.CheckCompatibility(/* check (defaults to true) */ Standard_False);
-    generator.Build();
-    TopoDS_Shape loftShape = generator.Shape();
+    // combine faces of closed profiles to build loft
+    TopoDS_Face innerFace = CTiglCommon::getSingleFace(innerShape);
+    TopoDS_Face lowerFace = CTiglCommon::getSingleFace(lowerShape);
+    TopoDS_Face upperFace = CTiglCommon::getSingleFace(upperShape);
+    TopoDS_Face outerFace = CTiglCommon::getSingleFace(outerShape);
 
+    // sew faces and generate a solid
+    BRepBuilderAPI_Sewing sewing;
+    sewing.Add(innerFace);
+    sewing.Add(lowerFace);
+    sewing.Add(upperFace);
+    sewing.Add(outerFace);
+    sewing.Perform();
+    TopoDS_Shape shell = sewing.SewedShape();
+    TopoDS_Shape loftShape;
+    // compute solid out of shell (required for inside check)
+    if (shell.ShapeType() == TopAbs_SOLID) {
+        loftShape = shell;
+    }
+    else if (shell.ShapeType() == TopAbs_SHELL) {
+        BRepBuilderAPI_MakeSolid ms;
+        ms.Add(TopoDS::Shell(shell));
+        if (!ms.IsDone()) {
+            throw CTiglError("Error building WingSegment shape: generation of solid failed!");
+        }
+        loftShape = ms.Solid();
+    }
+    else {
+        throw CTiglError("Error building WingSegment shape: result of sewing is no shell or solid!");
+    }
+
+    // transform into global coordinate system
+    loftShape = GetWing().GetWingTransformation().Transform(loftShape);
+    // [[CAS_AES]] END
+    
     Handle(ShapeFix_Shape) sfs = new ShapeFix_Shape;
     sfs->Init ( loftShape );
     sfs->Perform();
@@ -442,6 +575,228 @@ PNamedShape CCPACSWingSegment::BuildLoft(void)
     PNamedShape loft (new CNamedShape(loftShape, loftName.c_str(), loftShortName.c_str()));
     SetFaceTraits(loft);
     return loft;
+}
+
+// [[CAS_AES]] Added method for building splitted loft
+void CCPACSWingSegment::BuildSplittedLoft(SegmentType segmentType)
+{
+    MakeSurfaces();
+
+    TopoDS_Shape splittedUpperShape = upperShape;
+    TopoDS_Shape splittedLowerShape = lowerShape;
+
+    // STEP 1: cut upper and lower faces with stringers
+    for (int i = 1; i <= wing->GetComponentSegmentCount(); i++) {
+        CCPACSWingComponentSegment& componentSegment = (CCPACSWingComponentSegment &) wing->GetComponentSegment(i);
+        // skip component segment in case segment is not part of it
+        if (!componentSegment.IsSegmentContained(*this)) {
+            continue;
+        }
+
+        // Stringer geometry for the upper shell
+        tigl::CCPACSWingShell& upperShell = componentSegment.GetUpperShell();
+        if (upperShell.HasStringer())
+        {
+            splittedUpperShape = upperShell.GetSplittedWithStringerGeometry(splittedUpperShape);
+        }
+
+        // Stringer geometry for the lower shell
+        tigl::CCPACSWingShell& lowerShell = componentSegment.GetLowerShell();
+        if (lowerShell.HasStringer())
+        {
+            splittedLowerShape = lowerShell.GetSplittedWithStringerGeometry(splittedLowerShape);
+        }
+    }
+
+    // STEP 2: build loft including stringer cut lines (combine faces to single loft)
+    BRep_Builder compBuilder;
+    TopoDS_Compound loftCompound;
+    compBuilder.MakeCompound(loftCompound);
+
+    // add inner face if required
+    if (segmentType == INNER_SEGMENT || segmentType == INNER_OUTER_SEGMENT) {
+        compBuilder.Add(loftCompound, innerShape);
+    }
+    compBuilder.Add(loftCompound, splittedLowerShape);
+    compBuilder.Add(loftCompound, splittedUpperShape);
+    // add outer face if required
+    if (segmentType == OUTER_SEGMENT || segmentType == INNER_OUTER_SEGMENT) {
+        compBuilder.Add(loftCompound, outerShape);
+    }
+
+    // STEP 3: build compound containing cut faces for ribs and spars
+    // get bounding box of loftCompound in order to identify split geometry which does not cut the segment
+    Bnd_Box geomBndBox;
+    BRepBndLib::Add(loftCompound, geomBndBox);
+    // initialize compound
+    TopoDS_Compound splitCompound;
+    BRep_Builder builder;
+    builder.MakeCompound(splitCompound);
+
+    for (int i = 1; i <= wing->GetComponentSegmentCount(); i++) {
+        CCPACSWingComponentSegment& componentSegment = (CCPACSWingComponentSegment &) wing->GetComponentSegment(i);
+        // skip component segment in case segment is not part of it
+        if (!componentSegment.IsSegmentContained(*this)) {
+            continue;
+        }
+        
+        for (int j = 1; j <= componentSegment.GetSparSegmentCount(); j++) {
+            CCPACSWingSparSegment& sparSegment = componentSegment.GetSparSegment(j);
+            TopoDS_Shape splitGeometry = sparSegment.GetSparCutGeometry();
+            Bnd_Box splitBndBox;
+            BRepBndLib::Add(splitGeometry, splitBndBox);
+            if (!geomBndBox.IsOut(splitBndBox)) {
+                builder.Add(splitCompound, splitGeometry);
+            }
+        }
+        for (int j = 1; j <= componentSegment.GetRibsDefinitionCount(); j++) {
+            CCPACSWingRibsDefinition& ribsDefinition = componentSegment.GetRibsDefinition(j);
+            for (int k = 0; k < ribsDefinition.GetNumberOfRibs(); k++)
+            {
+                const CCPACSWingRibsDefinition::CutGeometry& cutGeometry = ribsDefinition.GetRibCutGeometry(k);
+                if (!cutGeometry.IsTargetFace())
+                {
+                    Bnd_Box cutBndBox;
+                    BRepBndLib::Add(cutGeometry.Geometry(), cutBndBox);
+                    if (!geomBndBox.IsOut(cutBndBox)) {
+                        builder.Add(splitCompound, cutGeometry.Geometry());
+                    }
+                }
+            }
+        }
+        }
+
+    // STEP 4: cut generated loftCompound with splitCompound containing split faces
+    splittedLoft = CTiglCommon::splitShape(loftCompound, splitCompound);
+
+    BRepTools::Clean(splittedLoft);
+
+    Handle(ShapeFix_Shape) sfs = new ShapeFix_Shape;
+    sfs->Init ( splittedLoft );
+    sfs->Perform();
+    splittedLoft = sfs->Shape();
+}
+
+// [[CAS_AES]] added method for building aero loft
+void CCPACSWingSegment::BuildAeroLoft(SegmentType segmentType, bool nHalfModel, bool withInnerFace, bool closedTE)
+{    
+    MakeSurfaces();
+    
+    TopoDS_Shape aeroLoft;
+
+    // build shell from airfoil and loft faces
+    TopoDS_Compound comp;
+    TopoDS_Shell shell;
+    BRep_Builder shellBuilder;
+    shellBuilder.MakeShell(shell);
+    shellBuilder.MakeCompound(comp);
+    
+    if (closedTE)
+    {
+        shellBuilder.Add(comp, upperShape);
+        shellBuilder.Add(comp, lowerShape);
+    }
+    else
+    {
+//         shellBuilder.Add(shell, CTiglCommon::getSingleFace(upperShapeOpened));
+//         shellBuilder.Add(shell, CTiglCommon::getSingleFace(lowerShapeOpened));
+//         shellBuilder.Add(shell, CTiglCommon::getSingleFace(trailingEdgeShape));
+        shellBuilder.Add(comp, upperShapeOpened);
+        shellBuilder.Add(comp, lowerShapeOpened);
+        shellBuilder.Add(comp, trailingEdgeShape);
+    }
+
+    if (withInnerFace)
+    {
+        // add inner face if required
+        if (segmentType == INNER_SEGMENT || segmentType == INNER_OUTER_SEGMENT) {
+            if (closedTE)
+                shellBuilder.Add(comp, innerShape);
+            else
+                shellBuilder.Add(comp, innerShapeOpened);
+        }
+    }
+
+    // add outer face if required
+    if (segmentType == OUTER_SEGMENT || segmentType == INNER_OUTER_SEGMENT) {
+            if (closedTE)
+                shellBuilder.Add(comp, outerShape);
+            else
+                shellBuilder.Add(comp, outerShapeOpened);
+    }
+    
+    aeroLoft = comp;
+    // transform into global coordinate system
+    aeroLoft = GetWing().GetWingTransformation().Transform(aeroLoft);
+    
+    
+    if (nHalfModel)
+    {
+
+        TopoDS_Compound halfWing;
+        shellBuilder.MakeCompound(halfWing);
+
+
+        gp_Pnt p1(0., 0., 0.);
+        gp_Pnt p2(0., 1., 0.);
+        gp_Pnt p3(1., 0., 0.);
+
+        gp_Vec yDir(p1,p2);
+        yDir.Normalize();
+
+        gp_Vec xDir(p1,p3);
+        xDir.Normalize();
+
+        gp_Ax3 refAx(p1, yDir, xDir);
+        gp_Pln cutPlane(refAx);
+
+        TopoDS_Face cutFace = BRepBuilderAPI_MakeFace(cutPlane).Face();
+
+        TopTools_IndexedMapOfShape faceMap;
+        faceMap.Clear();
+        TopExp::MapShapes(aeroLoft, TopAbs_FACE, faceMap);
+        int iNr = faceMap.Extent();
+
+        aeroLoft = CTiglCommon::splitShape(aeroLoft, cutFace);
+
+        TopExp::MapShapes(aeroLoft, TopAbs_FACE, faceMap);
+
+        double u_min = 0.0, u_max = 0.0, v_min = 0.0, v_max = 0.0;
+
+        for (int f = 1; f <= faceMap.Extent(); f++) 
+        {
+            const TopoDS_Face loftFace = TopoDS::Face(faceMap(f));
+            gp_Pnt pnt;
+            Handle(Geom_Surface) surf = BRep_Tool::Surface(loftFace);
+            BRepTools::UVBounds(loftFace, u_min, u_max, v_min, v_max);
+            pnt = surf->Value(u_min + ((u_max - u_min) / 2), v_min + ((v_max - v_min) / 2));
+
+            if (pnt.Y() > 0.)
+            {
+                shellBuilder.Add(halfWing, loftFace);
+            }
+
+        }
+
+        aeroLoft = halfWing;
+    }
+    
+    BRepTools::Clean(aeroLoft);
+    
+    Handle(ShapeFix_Shape) sfs = new ShapeFix_Shape;
+    sfs->Init ( aeroLoft );
+    sfs->Perform();
+    aeroLoft = sfs->Shape();
+
+
+    if (closedTE) {
+        closedAeroLoft = aeroLoft;
+        closedAeroLoftValid = true;
+    }
+    else {
+        openAeroLoft = aeroLoft;
+        openAeroLoftValid = true;
+    }
 }
 
 // Gets the upper point in relative wing coordinates for a given eta and xsi
@@ -469,13 +824,15 @@ const std::string& CCPACSWingSegment::GetOuterSectionUID(void)
 }
 
 // Returns the inner section element UID of this segment
-const std::string& CCPACSWingSegment::GetInnerSectionElementUID(void)
+// [[CAS_AES]] added const
+const std::string& CCPACSWingSegment::GetInnerSectionElementUID(void) const
 {
     return innerConnection.GetSectionElementUID();
 }
 
 // Returns the outer section element UID of this segment
-const std::string& CCPACSWingSegment::GetOuterSectionElementUID(void)
+// [[CAS_AES]] added const
+const std::string& CCPACSWingSegment::GetOuterSectionElementUID(void) const
 {
     return outerConnection.GetSectionElementUID();
 }
@@ -713,8 +1070,10 @@ gp_Pnt CCPACSWingSegment::GetPoint(double eta, double xsi, bool fromUpper)
         outerProfilePoint = outerProfile.GetLowerPoint(xsi);
     }
 
-    innerProfilePoint = transformProfilePoint(wing->GetTransformation(), innerConnection, innerProfilePoint);
-    outerProfilePoint = transformProfilePoint(wing->GetTransformation(), outerConnection, outerProfilePoint);
+    // [[CAS_AES]] removed wing transformation
+    CTiglTransformation identity;
+    innerProfilePoint = transformProfilePoint(identity, innerConnection, innerProfilePoint);
+    outerProfilePoint = transformProfilePoint(identity, outerConnection, outerProfilePoint);
 
     // Get point on wing segment in dependence of eta by linear interpolation
     Handle(Geom_TrimmedCurve) profileLine = GC_MakeSegment(innerProfilePoint, outerProfilePoint);
@@ -908,16 +1267,17 @@ void CCPACSWingSegment::MakeSurfaces()
         
     cordSurface.setQuadriangle(inner_lep.XYZ(), outer_lep.XYZ(), inner_tep.XYZ(), outer_tep.XYZ());
 
-    TopoDS_Edge iu_wire = innerConnection.GetProfile().GetUpperWire();
-    TopoDS_Edge ou_wire = outerConnection.GetProfile().GetUpperWire();
-    TopoDS_Edge il_wire = innerConnection.GetProfile().GetLowerWire();
-    TopoDS_Edge ol_wire = outerConnection.GetProfile().GetLowerWire();
+    TopoDS_Edge iu_wire = innerConnection.GetProfile().GetUpperWireClosed();
+    TopoDS_Edge ou_wire = outerConnection.GetProfile().GetUpperWireClosed();
+    TopoDS_Edge il_wire = innerConnection.GetProfile().GetLowerWireClosed();
+    TopoDS_Edge ol_wire = outerConnection.GetProfile().GetLowerWireClosed();
 
-    iu_wire = TopoDS::Edge(transformProfileWire(GetWing().GetTransformation(), innerConnection, iu_wire));
-    ou_wire = TopoDS::Edge(transformProfileWire(GetWing().GetTransformation(), outerConnection, ou_wire));
-    il_wire = TopoDS::Edge(transformProfileWire(GetWing().GetTransformation(), innerConnection, il_wire));
-    ol_wire = TopoDS::Edge(transformProfileWire(GetWing().GetTransformation(), outerConnection, ol_wire));
-
+    // [[CAS_AES]] removed wing transformation
+    CTiglTransformation identity;
+    iu_wire = TopoDS::Edge(transformProfileWire(identity, innerConnection, iu_wire));
+    ou_wire = TopoDS::Edge(transformProfileWire(identity, outerConnection, ou_wire));
+    il_wire = TopoDS::Edge(transformProfileWire(identity, innerConnection, il_wire));
+    ol_wire = TopoDS::Edge(transformProfileWire(identity, outerConnection, ol_wire));
 
     BRepOffsetAPI_ThruSections upperSections(Standard_False,Standard_True);
     upperSections.AddWire(BRepBuilderAPI_MakeWire(iu_wire));
@@ -957,6 +1317,74 @@ void CCPACSWingSegment::MakeSurfaces()
     double lowerArea = sprops.Mass();
     
     mySurfaceArea = upperArea + lowerArea;
+
+    // [[CAS_AES]] computing inner shape, outer shape
+    // [[CAS_AES]] BEGIN
+    TopoDS_Wire wire = GetInnerWire();
+    innerShape = BRepBuilderAPI_MakeFace(wire).Face();
+    wire = GetOuterWire();
+    outerShape = BRepBuilderAPI_MakeFace(wire).Face();
+
+    // [[CAS_AES]] compute shapes for opened profiles
+    TopoDS_Edge iu_wire_open = innerConnection.GetProfile().GetUpperWireOpened();
+    TopoDS_Edge ou_wire_open = outerConnection.GetProfile().GetUpperWireOpened();
+    TopoDS_Edge il_wire_open = innerConnection.GetProfile().GetLowerWireOpened();
+    TopoDS_Edge ol_wire_open = outerConnection.GetProfile().GetLowerWireOpened();
+    iu_wire_open = TopoDS::Edge(transformProfileWire(identity, innerConnection, iu_wire_open));
+    ou_wire_open = TopoDS::Edge(transformProfileWire(identity, outerConnection, ou_wire_open));
+    il_wire_open = TopoDS::Edge(transformProfileWire(identity, innerConnection, il_wire_open));
+    ol_wire_open = TopoDS::Edge(transformProfileWire(identity, outerConnection, ol_wire_open));
+
+    // compute upper and lower shapes for opened profile
+    BRepOffsetAPI_ThruSections upperSectionsOpened(Standard_False,Standard_True);
+    upperSectionsOpened.AddWire(BRepBuilderAPI_MakeWire(iu_wire_open));
+    upperSectionsOpened.AddWire(BRepBuilderAPI_MakeWire(ou_wire_open));
+    upperSectionsOpened.Build();
+
+    BRepOffsetAPI_ThruSections lowerSectionsOpened(Standard_False,Standard_True);
+    lowerSectionsOpened.AddWire(BRepBuilderAPI_MakeWire(il_wire_open));
+    lowerSectionsOpened.AddWire(BRepBuilderAPI_MakeWire(ol_wire_open));
+    lowerSectionsOpened.Build();
+
+#ifndef NDEBUG
+    assert(GetNumberOfFaces(upperSectionsOpened.Shape()) == 1);
+    assert(GetNumberOfFaces(lowerSectionsOpened.Shape()) == 1);
+#endif
+
+    faceExplorer.Init(upperSectionsOpened.Shape(), TopAbs_FACE);
+#ifndef NDEBUG
+    assert(faceExplorer.More());
+#endif
+    upperShapeOpened = faceExplorer.Current();
+
+    faceExplorer.Init(lowerSectionsOpened.Shape(), TopAbs_FACE);
+#ifndef NDEBUG
+    assert(faceExplorer.More());
+#endif
+    lowerShapeOpened = faceExplorer.Current();
+
+    // compute inner and outer shapes for opened profiles
+    wire = GetInnerWireOpened();
+    innerShapeOpened = BRepBuilderAPI_MakeFace(wire).Face();
+    wire = GetOuterWireOpened();
+    outerShapeOpened = BRepBuilderAPI_MakeFace(wire).Face();
+
+    // get trailing edge wires from inner and outer profile
+    TopoDS_Edge innerTEWire = innerProfile.GetTrailingEdgeOpened();
+    TopoDS_Edge outerTEWire = outerProfile.GetTrailingEdgeOpened();
+    if (innerTEWire.IsNull() || outerTEWire.IsNull()) {
+        throw CTiglError("ERROR: trailing edge geometry of Wing Section Profile not found!");
+    }
+    // transform wires
+    innerTEWire = TopoDS::Edge(transformProfileWire(identity, innerConnection, innerTEWire));
+    outerTEWire = TopoDS::Edge(transformProfileWire(identity, outerConnection, outerTEWire));
+    // generate face
+    BRepOffsetAPI_ThruSections teGenerator(Standard_False, Standard_True);
+    teGenerator.AddWire(BRepBuilderAPI_MakeWire(innerTEWire));
+    teGenerator.AddWire(BRepBuilderAPI_MakeWire(outerTEWire));
+    teGenerator.Build();
+    trailingEdgeShape = teGenerator.Shape();
+    // [[CAS_AES]] END
 
     surfacesAreValid = true;
 }
@@ -1036,6 +1464,15 @@ TopoDS_Shape& CCPACSWingSegment::GetLowerShape()
         MakeSurfaces();
     }
     return lowerShape;
+}
+
+// [[CAS_AES]] added getter for trailing edge shape
+const TopoDS_Shape& CCPACSWingSegment::GetTrailingEdgeShape()
+{
+    if (!surfacesAreValid) {
+        MakeSurfaces();
+    }
+    return trailingEdgeShape;
 }
 
 // get guide curve for given UID
@@ -1123,6 +1560,11 @@ void CCPACSWingSegment::BuildGuideCurveWires(void)
             guideCurveWires.Append(guideCurveWire);
         }
     }
+}
+
+int CCPACSWingSegment::GetGuideCurveCount() const
+{
+    return guideCurves.GetGuideCurveCount();
 }
 
 } // end namespace tigl

@@ -57,11 +57,35 @@ public:
     // Returns the UID of the WingSectionElement
     TIGL_EXPORT std::string GetUID(void) const;
 
+    // Getter for the member name
+    TIGL_EXPORT std::string GetName(void) const;
+
+    // Getter for the member description
+    TIGL_EXPORT std::string GetDescription(void) const;
+
     // Returns the UID of the profile of this element
     TIGL_EXPORT std::string GetProfileUID(void) const;
 
     // Gets the section element transformation
     TIGL_EXPORT CTiglTransformation GetSectionElementTransformation(void) const;
+
+    // [[CAS_AES]] added getter for translation
+    TIGL_EXPORT const CTiglPoint& GetTranslation() const;
+
+    // [[CAS_AES]] added getter for rotation
+    TIGL_EXPORT const CTiglPoint& GetRotation() const;
+
+    // [[CAS_AES]] added getter for scaling
+    TIGL_EXPORT const CTiglPoint& GetScaling() const;
+
+    // [[CAS_AES]] added setter for translation
+    TIGL_EXPORT void SetTranslation(const CTiglPoint& trans);
+
+    // [[CAS_AES]] added setter for rotation
+    TIGL_EXPORT void SetRotation(const CTiglPoint& rot);
+
+    // [[CAS_AES]] added setter for scaling
+    TIGL_EXPORT void SetScaling(const CTiglPoint& scaling);
 
 protected:
     // Cleanup routine

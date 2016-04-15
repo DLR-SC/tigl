@@ -155,9 +155,9 @@ void CCPACSFuselageSegments::WriteCPACS(TixiDocumentHandle tixiHandle, const std
         }
         segment.WriteCPACS(tixiHandle, xpath);
     }
-    for (int i = segmentCount+1; i <= test; i++) {
+    for (int i = segmentCount + 1; i <= test; i++) {
         std::stringstream ss;
-        ss << elementPath << "/segment[" << segmentCount+1 << "]";
+        ss << elementPath << "/segment[" << segmentCount + 1 << "]";
         xpath = ss.str();
         tixiRemoveElement(tixiHandle, xpath.c_str());
     }

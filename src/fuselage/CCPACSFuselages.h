@@ -67,6 +67,9 @@ public:
 
     // Returns the total count of fuselage profiles in this configuration
     TIGL_EXPORT int GetProfileCount(void) const;
+        
+    // Returns the wing profiles in this configuration
+    TIGL_EXPORT CCPACSFuselageProfiles& GetProfiles(void);
 
     // Returns the fuselage profile for a given index.
     TIGL_EXPORT CCPACSFuselageProfile& GetProfile(int index) const;
@@ -80,6 +83,9 @@ public:
 
     // Returns the fuselage for a given UID.
     TIGL_EXPORT CCPACSFuselage& GetFuselage(const std::string& UID) const;
+
+    // Adds a new fuselage to the list of fuselages
+    TIGL_EXPORT void AddFuselage(CCPACSFuselage* fuselage);
 
 protected:
     // Cleanup routine

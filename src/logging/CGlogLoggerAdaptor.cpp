@@ -39,8 +39,8 @@ CGlogLoggerAdaptor::~CGlogLoggerAdaptor()
 
 void CGlogLoggerAdaptor::Write(bool force_flush,
                                time_t /* timestamp */,
-                               tconst char* message,
-                               tint message_len) 
+                               const char* message,
+                               int message_len) 
 {
 #ifdef LOGGER_DEBUG
     printf("CGlogLoggerAdaptor::Write called. force_flush=%d\n", force_flush);
