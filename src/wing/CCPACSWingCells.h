@@ -64,9 +64,6 @@ public:
     
     // Returns the wing cell for a given UID.
     TIGL_EXPORT CCPACSWingCell& GetCell(const std::string& UID) const;
-    
-    // [[CAS_AES]] Returns whether a stringer definition exists or not
-    TIGL_EXPORT bool HasStringer() const;
 
     // [[CAS_AES]] get parent wing shell element
     TIGL_EXPORT CCPACSWingShell* GetParentElement();

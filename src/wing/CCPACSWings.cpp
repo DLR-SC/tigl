@@ -211,57 +211,6 @@ CCPACSWing& CCPACSWings::GetWing(const std::string& UID) const
     throw CTiglError("Error: Invalid UID in CCPACSWings::GetWing", TIGL_INDEX_ERROR);
 }
 
-CCPACSWingFuelTank& CCPACSWings::GetWingFuelTank(std::string nUId, bool& sym) const
-{
-    for (int w = 0; w < GetWingCount(); w++) {
-        CCPACSWing* cWing = wings[w];
-            
-        for (int c = 1; c <= cWing->GetComponentSegmentCount(); c++) {
-            CCPACSWingComponentSegment& CpacsWCSegment = (CCPACSWingComponentSegment&) cWing->GetComponentSegment(c);
-            CCPACSWingFuelTanks& fuelTanks = CpacsWCSegment.GetWingFuelTanks();
-                
-            for (int t = 1; t <= fuelTanks.GetWingFuelTankCount(); t++) {
-                CCPACSWingFuelTank& tank = fuelTanks.GetWingFuelTank(t);
-                    
-                if (nUId == tank.GetUID()) {
-                    TiglSymmetryAxis symmetryAxis = cWing->GetSymmetryAxis();
-                        
-                    if (symmetryAxis != TIGL_NO_SYMMETRY) {
-                        sym = true;
-                    }
-                    
-                    return tank;
-                }
-            }
-        }
-    }
-        
-    throw tigl::CTiglError("Error: Invalid uid in CCPACSWingFuelTanks::GetWingFuelTank", TIGL_UID_ERROR);
-}
-
-CCPACSWingFuelTank& CCPACSWings::GetWingFuelTank(std::string nUId, std::string& wingUId) const
-{
-    for (int w = 0; w < GetWingCount(); w++) {
-        CCPACSWing* cWing = wings[w];
-            
-        for (int c = 1; c <= cWing->GetComponentSegmentCount(); c++) {
-            CCPACSWingComponentSegment& CpacsWCSegment = (CCPACSWingComponentSegment&) cWing->GetComponentSegment(c);
-            CCPACSWingFuelTanks& fuelTanks = CpacsWCSegment.GetWingFuelTanks();
-                
-            for (int t = 1; t <= fuelTanks.GetWingFuelTankCount(); t++) {
-                CCPACSWingFuelTank& tank = fuelTanks.GetWingFuelTank(t);
-                    
-                if (nUId == tank.GetUID()) {
-                    wingUId = cWing->GetUID();
-                    return tank;
-                }
-            }
-        }
-    }
-    
-    throw tigl::CTiglError("Error: Invalid uid in CCPACSWingFuelTanks::GetWingFuelTank", TIGL_UID_ERROR);
-}
-
 void CCPACSWings::AddWing(CCPACSWing* wing)
 {
     // Check whether the same wing already exists if yes remove it before adding the new one

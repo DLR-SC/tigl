@@ -170,12 +170,6 @@ public:
     //[[CAS_AES]] added getter for positionings
     TIGL_EXPORT CCPACSWingPositionings& GetPositionings();
 
-    //[[CAS_AES]] added getter for positionings
-    TIGL_EXPORT bool HasRootRib();
-
-    //[[CAS_AES]] added getter for positionings
-    TIGL_EXPORT bool HasTipRib();
-
 protected:
     // Cleanup routine
     void Cleanup(void);

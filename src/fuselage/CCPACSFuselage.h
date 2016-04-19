@@ -35,8 +35,6 @@
 #include "CCPACSFuselageSections.h"
 #include "CCPACSFuselageSegments.h"
 #include "CCPACSFuselagePositionings.h"
-// [[CAS_AES]] added include for fuselage structure
-#include "CCPACSFuselageStructure.h"
 #include "CTiglAbstractPhysicalComponent.h"
 #include "CCPACSGuideCurve.h"
 
@@ -129,9 +127,6 @@ public:
 
     // Get the guide curve with a given UID
     TIGL_EXPORT CCPACSGuideCurve& GetGuideCurve(std::string uid);
-
-    // [[CAS_AES]] added getter for fuselage structure
-    TIGL_EXPORT CCPACSFuselageStructure& GetFuselageStructure();
     
     // [CAS_AES] added getter for fuselage Loft
     TIGL_EXPORT TopoDS_Shape& getFuselageAeroLoft();
@@ -170,8 +165,6 @@ private:
     CCPACSFuselageSections     sections;             /**< Fuselage sections       */
     CCPACSFuselageSegments     segments;             /**< Fuselage segments       */
     CCPACSFuselagePositionings positionings;         /**< Fuselage positionings   */
-    // [[CAS_AES]] added fuselage structure
-    CCPACSFuselageStructure    structure;            /**< Fuselage structure      */
     CCPACSConfiguration*       configuration;        /**< Parent configuration    */
     FusedElementsContainerType fusedElements;        /**< Stores already fused segments */
 
