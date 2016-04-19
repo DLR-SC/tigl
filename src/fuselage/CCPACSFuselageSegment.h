@@ -194,9 +194,6 @@ protected:
     // [[CAS_AES]] Added method for building splitted loft
     void BuildAeroLoft(SegmentType segmentType, bool);
 
-    // [[CAS_AES]] method for cutting loft with internal structures
-    void SplitLoftWithInternalStructures(TopoDS_Shape& geometry);
-
 private:
     // get short name for loft
     std::string GetShortShapeName(void);

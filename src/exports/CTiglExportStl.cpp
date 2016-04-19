@@ -116,11 +116,9 @@ void CTiglExportStl::ExportWettedSurfaceSTL(const std::string& filename, double 
     // Vectors for the Shapes ant the solids
     std::vector<AeroShape> vFuselages;
     std::vector<AeroShape> vWings;
-    std::vector<AeroShape> vFreeFormSurfs;
 
     vFuselages.resize(myConfig.GetFuselageCount());
     vWings.resize(myConfig.GetWingCount());
-    vFreeFormSurfs.resize(myConfig.GetFFFSCount());
 
     // variable declaration
     SegmentType segmentType = INNER_SEGMENT;
@@ -132,25 +130,6 @@ void CTiglExportStl::ExportWettedSurfaceSTL(const std::string& filename, double 
     bool bFuselage = false;
 
     AeroShape* nAS;
-
-    //Export FreeFormSurfaces of the configuration
-    for (int r = 1; r <= myConfig.GetFFFSCount(); r++)
-    {
-        tigl::CCPACSFreeFormSurface& FFS = myConfig.GetFFFSbyIndex(r);
-        FFS.Invalidate();
-
-        nAS = new AeroShape;
-        nAS->Name = FFS.GetMName();
-        nAS->Shape = FFS.getShape(nHalfModel);
-
-        // TODO: create Solid of FFS
-        // find free edges, fill them.
-        // make shell, then solid
-
-        vFreeFormSurfs[r-1] = *nAS;
-
-        FFS.Invalidate();
-    }
 
     //Export all fuselages of the configuration
     for (int f = 1; f <= myConfig.GetFuselageCount(); f++)
@@ -454,14 +433,6 @@ void CTiglExportStl::ExportWettedSurfaceSTL(const std::string& filename, double 
     {
         builder.Add(wettedSurface, vWings[j].Shape);
     }
-
-    // Write FreeFormSurfaces to Step File
-
-    for (int k = 0; k < vFreeFormSurfs.size(); k++)
-    {
-        builder.Add(wettedSurface, vFreeFormSurfs[k].Shape);
-    }
-
 
     TopoDS_Shape ACloft = wettedSurface;
 

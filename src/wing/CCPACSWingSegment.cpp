@@ -41,8 +41,6 @@
 #include "tigl_config.h"
 #include "math/tiglmathfunctions.h"
 #include "TixiSaveExt.h"
-#include "CCPACSWingRibsDefinition.h"
-#include "CCPACSWingSparSegment.h"
 
 #include "BRepOffsetAPI_ThruSections.hxx"
 #include "TopExp_Explorer.hxx"
@@ -585,29 +583,6 @@ void CCPACSWingSegment::BuildSplittedLoft(SegmentType segmentType)
     TopoDS_Shape splittedUpperShape = upperShape;
     TopoDS_Shape splittedLowerShape = lowerShape;
 
-    // STEP 1: cut upper and lower faces with stringers
-    for (int i = 1; i <= wing->GetComponentSegmentCount(); i++) {
-        CCPACSWingComponentSegment& componentSegment = (CCPACSWingComponentSegment &) wing->GetComponentSegment(i);
-        // skip component segment in case segment is not part of it
-        if (!componentSegment.IsSegmentContained(*this)) {
-            continue;
-        }
-
-        // Stringer geometry for the upper shell
-        tigl::CCPACSWingShell& upperShell = componentSegment.GetUpperShell();
-        if (upperShell.HasStringer())
-        {
-            splittedUpperShape = upperShell.GetSplittedWithStringerGeometry(splittedUpperShape);
-        }
-
-        // Stringer geometry for the lower shell
-        tigl::CCPACSWingShell& lowerShell = componentSegment.GetLowerShell();
-        if (lowerShell.HasStringer())
-        {
-            splittedLowerShape = lowerShell.GetSplittedWithStringerGeometry(splittedLowerShape);
-        }
-    }
-
     // STEP 2: build loft including stringer cut lines (combine faces to single loft)
     BRep_Builder compBuilder;
     TopoDS_Compound loftCompound;
@@ -632,39 +607,6 @@ void CCPACSWingSegment::BuildSplittedLoft(SegmentType segmentType)
     TopoDS_Compound splitCompound;
     BRep_Builder builder;
     builder.MakeCompound(splitCompound);
-
-    for (int i = 1; i <= wing->GetComponentSegmentCount(); i++) {
-        CCPACSWingComponentSegment& componentSegment = (CCPACSWingComponentSegment &) wing->GetComponentSegment(i);
-        // skip component segment in case segment is not part of it
-        if (!componentSegment.IsSegmentContained(*this)) {
-            continue;
-        }
-        
-        for (int j = 1; j <= componentSegment.GetSparSegmentCount(); j++) {
-            CCPACSWingSparSegment& sparSegment = componentSegment.GetSparSegment(j);
-            TopoDS_Shape splitGeometry = sparSegment.GetSparCutGeometry();
-            Bnd_Box splitBndBox;
-            BRepBndLib::Add(splitGeometry, splitBndBox);
-            if (!geomBndBox.IsOut(splitBndBox)) {
-                builder.Add(splitCompound, splitGeometry);
-            }
-        }
-        for (int j = 1; j <= componentSegment.GetRibsDefinitionCount(); j++) {
-            CCPACSWingRibsDefinition& ribsDefinition = componentSegment.GetRibsDefinition(j);
-            for (int k = 0; k < ribsDefinition.GetNumberOfRibs(); k++)
-            {
-                const CCPACSWingRibsDefinition::CutGeometry& cutGeometry = ribsDefinition.GetRibCutGeometry(k);
-                if (!cutGeometry.IsTargetFace())
-                {
-                    Bnd_Box cutBndBox;
-                    BRepBndLib::Add(cutGeometry.Geometry(), cutBndBox);
-                    if (!geomBndBox.IsOut(cutBndBox)) {
-                        builder.Add(splitCompound, cutGeometry.Geometry());
-                    }
-                }
-            }
-        }
-        }
 
     // STEP 4: cut generated loftCompound with splitCompound containing split faces
     splittedLoft = CTiglCommon::splitShape(loftCompound, splitCompound);

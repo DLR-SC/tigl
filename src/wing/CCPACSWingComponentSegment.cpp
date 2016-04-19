@@ -40,12 +40,7 @@
 #include "TixiSaveExt.h"
 // [[CAS_AES]] BEGIN
 #include "CCPACSWingCSStructure.h"
-#include "CCPACSWingSparSegments.h"
-#include "CCPACSWingRibsDefinitions.h"
-#include "CCPACSWingRibsDefinition.h"
-#include "CCPACSWingSpars.h"
 #include "CTiglCommon.h"
-#include "CCPACSControlSurfaces.h"
 // [[CAS_AES]] END
 
 #include "BRepOffsetAPI_ThruSections.hxx"
@@ -168,10 +163,7 @@ CCPACSWingComponentSegment::CCPACSWingComponentSegment(CCPACSWing* aWing, int aS
     : CTiglAbstractSegment(aSegmentIndex)
     , wing(aWing)
     , surfacesAreValid(false)
-    , structure(this)
-    , wingFuelTanks(this)
-    , controlSurfaces(NULL)
-    , structuralMounts(this)
+    , structure()
 {
     Cleanup();
 }
@@ -194,18 +186,11 @@ void CCPACSWingComponentSegment::Invalidate(void)
     structure.Invalidate();
     // [[CAS_AES]] invalidation of lines
     linesAreValid = false;
-    wingFuelTanks.Invalidate();
-    structuralMounts.Invalidate();
 }
 
 // Cleanup routine
 void CCPACSWingComponentSegment::Cleanup(void)
 {
-    // [[CAS_AES]] free memory for control surfaces
-    if (controlSurfaces) {
-        delete controlSurfaces;
-        controlSurfaces = NULL;
-    }
     name = "";
     fromElementUID = "";
     toElementUID   = "";
@@ -218,8 +203,6 @@ void CCPACSWingComponentSegment::Cleanup(void)
     structure.Cleanup();
     projLeadingEdge.Nullify();
     wingSegments.clear();
-    wingFuelTanks.Cleanup();
-    structuralMounts.Cleanup();
 }
 
 // Update internal segment data
@@ -299,23 +282,6 @@ void CCPACSWingComponentSegment::ReadCPACS(TixiDocumentHandle tixiHandle, const 
         structure.ReadCPACS(tixiHandle, elementPath);
     }
 
-    // [[CAS_AES]] added support for control surfaces
-    elementPath = segmentXPath + "/controlSurfaces";
-    if (tixiCheckElement(tixiHandle, elementPath.c_str()) == SUCCESS){
-        controlSurfaces = new CCPACSControlSurfaces(this);
-        controlSurfaces->ReadCPACS(tixiHandle, elementPath);
-    }
-    
-    elementPath = segmentXPath + "/wingFuelTanks";
-    if (tixiCheckElement(tixiHandle, elementPath.c_str()) == SUCCESS){
-        wingFuelTanks.ReadCPACS(tixiHandle, segmentXPath );
-    }
-    
-    elementPath = segmentXPath + "/wingStructuralMounts";
-    if (tixiCheckElement(tixiHandle, elementPath.c_str()) == SUCCESS){
-        structuralMounts.ReadCPACS(tixiHandle, segmentXPath );
-    }
-    
     Update();
 }
 
@@ -338,18 +304,6 @@ void CCPACSWingComponentSegment::WriteCPACS(TixiDocumentHandle tixiHandle, const
     TixiSaveExt::TixiSaveElement(tixiHandle, segmentXPath.c_str(), "structure");
     structure.WriteCPACS(tixiHandle, elementPath);
     
-    TixiSaveExt::TixiSaveElement(tixiHandle, segmentXPath.c_str(), "wingFuelTanks");
-    wingFuelTanks.WriteCPACS(tixiHandle, segmentXPath);
-    
-    TixiSaveExt::TixiSaveElement(tixiHandle, segmentXPath.c_str(), "wingStructuralMounts");
-    structuralMounts.WriteCPACS(tixiHandle, segmentXPath);
-    
-    // Set controlSurfaces data
-    if (controlSurfaces) {
-        elementPath = segmentXPath + "/controlSurfaces";
-        TixiSaveExt::TixiSaveElement(tixiHandle, segmentXPath.c_str(), "controlSurfaces");
-        controlSurfaces->WriteCPACS(tixiHandle, elementPath);
-    }
 }
 
 // Returns the wing this segment belongs to
@@ -1875,86 +1829,6 @@ MaterialList CCPACSWingComponentSegment::GetMaterials(double eta, double xsi, Ti
     return list;
 }
 
-// [[CAS_AES]] added getter for spars and ribs
-int CCPACSWingComponentSegment::GetSparSegmentCount() const
-{
-    int sparSegmentCount = 0;
-
-    if (structure.HasSpars()) {
-        CCPACSWingSparSegments& sparSegments = structure.GetSpars().GetSparSegments();
-        sparSegmentCount = sparSegments.GetSparSegmentCount();
-    }
-
-    return sparSegmentCount;
-}
-
-// [[CAS_AES]] added getter for spars and ribs
-CCPACSWingSparSegment& CCPACSWingComponentSegment::GetSparSegment(int index) const
-{
-    if (!structure.HasSpars()) {
-        throw CTiglError("Error: no spars existing in CCPACSWingComponentSegment::GetSparSegment!");
-    }
-    CCPACSWingSparSegments& sparSegments = structure.GetSpars().GetSparSegments();
-    return sparSegments.GetSparSegment(index);
-}
-
-// [[CAS_AES]] added getter for spars and ribs
-CCPACSWingSparSegment& CCPACSWingComponentSegment::GetSparSegment(const std::string& uid) const
-{
-    if (!structure.HasSpars()) {
-        throw CTiglError("Error: no spars existing in CCPACSWingComponentSegment::GetSparSegment!");
-    }
-    CCPACSWingSparSegments& sparSegments = structure.GetSpars().GetSparSegments();
-    return sparSegments.GetSparSegment(uid);
-}
-
-// [[CAS_AES]] added getter for spars and ribs
-int CCPACSWingComponentSegment::GetRibsDefinitionCount() const
-{
-    int ribsDefinitionCount = 0;
-
-    if (structure.HasRibsDefinitions()) {
-        CCPACSWingRibsDefinitions& ribsDefinitions = structure.GetRibsDefinitions();
-        ribsDefinitionCount = ribsDefinitions.GetRibsDefinitionCount();
-    }
-
-    return ribsDefinitionCount;
-}
-
-// [[CAS_AES]] added getter for spars and ribs
-CCPACSWingRibsDefinition& CCPACSWingComponentSegment::GetRibsDefinition(int index) const
-{
-    if (!structure.HasRibsDefinitions()) {
-        throw CTiglError("Error: no ribsDefinitions existing in CCPACSWingComponentSegment::GetRibsDefinition!");
-    }
-    CCPACSWingRibsDefinitions& ribsDefinitions = structure.GetRibsDefinitions();
-    return ribsDefinitions.GetRibsDefinition(index);
-}
-
-// [[CAS_AES]] added getter for spars and ribs
-CCPACSWingRibsDefinition& CCPACSWingComponentSegment::GetRibsDefinition(const std::string& uid) const
-{
-    if (!structure.HasRibsDefinitions()) {
-        throw CTiglError("Error: no ribsDefinitions existing in CCPACSWingComponentSegment::GetRibsDefinition!");
-    }
-    CCPACSWingRibsDefinitions& ribsDefinitions = structure.GetRibsDefinitions();
-    return ribsDefinitions.GetRibsDefinition(uid);
-}
-
-// [[CAS_AES]] added getter for number of stringers
-int CCPACSWingComponentSegment::GetStringerCount() const
-{
-    /** TODO **/
-    return 0;
-}
-
-// [[CAS_AES]] added getter for stringer
-CCPACSWingStringer& CCPACSWingComponentSegment::GetStringer(int index) const
-{
-    /** TODO **/
-    throw CTiglError("Error: no Stringer existing in CCPACSWingComponentSegment::GetStringer!");
-}
-
 // [[CAS_AES]] added method for checking whether segment is contained in componentSegment
 bool CCPACSWingComponentSegment::IsSegmentContained(const CCPACSWingSegment& segment) const {
 
@@ -1993,63 +1867,6 @@ CCPACSWingShell& CCPACSWingComponentSegment::GetUpperShell()
 CCPACSWingShell& CCPACSWingComponentSegment::GetLowerShell()
 {
     return structure.GetLowerShell();
-}
-
-// [[CAS_AES]]
-CCPACSTrailingEdgeDevices* CCPACSWingComponentSegment::GetTrailingEdgeDevices()
-{
-    if (controlSurfaces) {
-        return controlSurfaces->GetTrailingEdgeDevices();
-    }
-    else {
-        return 0;
-    }
-}
-
-TopoDS_Shape CCPACSWingComponentSegment::GetWingCutOutFaces()
-{
-    BRep_Builder builder;
-    TopoDS_Compound compound;
-    builder.MakeCompound(compound);
-
-    tigl::CCPACSTrailingEdgeDevices* TEdgeDevices = GetTrailingEdgeDevices();
-
-        // Loop for tailing edge devices
-    if (TEdgeDevices) {
-        for (int v = 1; v <= TEdgeDevices->size(); v++) {
-            builder.Add(compound, TEdgeDevices->GetTrailingEdgeDevice(v).getCutOutFaces());
-        }
-    }
-
-    return compound;
-}
-
-// [[CAS_AES]]
-TopoDS_Shape CCPACSWingComponentSegment::GetTEDLoft(TopoDS_Shape TEDLoft)
-{
-
-    tigl::CCPACSTrailingEdgeDevices* TEdgeDevices = GetTrailingEdgeDevices();
-
-        // Loop for tailing edge devices
-    if (TEdgeDevices) {
-        for (int v = 1; v <= TEdgeDevices->size(); v++) {
-            TEDLoft = TEdgeDevices->GetTrailingEdgeDevice(v).cutLoft(TEDLoft);
-        }
-    }
-
-    return TEDLoft;
-}
-
-// [[CAS_AES]]
-TopoDS_Shape CCPACSWingComponentSegment::GetUpperTEDLoft()
-{
-    return GetWing().GetTransformation().Transform(GetTEDLoft(upperShape));
-}
-
-// [[CAS_AES]]
-TopoDS_Shape CCPACSWingComponentSegment::GetLowerTEDLoft()
-{
-    return GetWing().GetTransformation().Transform(GetTEDLoft(lowerShape));
 }
 
 // [[CAS_AES]]
@@ -2103,73 +1920,6 @@ int CCPACSWingComponentSegment::GetStartSegmentIndex()
     return startSegmentIndex;
 }
 
-
-CCPACSWingFuelTanks& CCPACSWingComponentSegment::GetWingFuelTanks()
-{
-    return wingFuelTanks; 
-}
-
-CCPACSWingStructuralMounts& CCPACSWingComponentSegment::GetWingStructuralMounts()
-{
-    return structuralMounts; 
-}
-
-CTiglAbstractWingStringer& CCPACSWingComponentSegment::GetStringerByUID(std::string stringerUID)
-{
-    CCPACSWingShell& upper = structure.GetUpperShell();
-    // check Stringer of the upper shell
-    if (upper.HasOverallStringer()) {
-        if (upper.GetStringer().GetUID() == stringerUID) {
-            return upper.GetStringer();
-        }
-    }
-    
-    // check cells of the upper Shell
-    for (int c = 1; c <= upper.GetCellCount(); c++) {
-        CCPACSWingCell& cell = upper.GetCell(c);
-        
-        if (cell.HasStringer()) {
-            if (cell.GetStringer().GetUID() == stringerUID) {
-                return cell.GetStringer();
-            }
-        }
-        // check explicit Stringer of the upper shell
-        for (int e = 1; e <= cell.NumberOfExplicitStringer(); e++) {
-            CCPACSExplicitWingStringer* eStringer = cell.GetExplicitStringerbyIndex(e);
-            if (eStringer->GetUID() == stringerUID) {
-                return *eStringer;
-            }
-        }
-    }
-    
-    
-    CCPACSWingShell& lower = structure.GetLowerShell();
-    // check Stringer of the upper shell
-    if (lower.HasOverallStringer()) {
-        if (lower.GetStringer().GetUID() == stringerUID) {
-            return lower.GetStringer();
-        }
-    }
-    // check cells of the lower Shell
-    for (int c = 1; c <= lower.GetCellCount(); c++) {
-        CCPACSWingCell& cell = lower.GetCell(c);
-        
-        if (cell.HasStringer()) {
-            if (cell.GetStringer().GetUID() == stringerUID) {
-                return cell.GetStringer();
-            }
-        }
-        // check explicit Stringer of the lower shell
-        for (int e = 1; e <= cell.NumberOfExplicitStringer(); e++) {
-            CCPACSExplicitWingStringer* eStringer = cell.GetExplicitStringerbyIndex(e);
-            if (eStringer->GetUID() == stringerUID) {
-                return *eStringer;
-            }
-        }
-    }
-
-    throw CTiglError("Error: no Stringer with uID " + stringerUID + " found in CCPACSWingComponentSegment::getStringerByUID!");
-}
 
 CCPACSWingCell& CCPACSWingComponentSegment::GetCellByUID(std::string cellUID)
 {

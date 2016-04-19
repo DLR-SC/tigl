@@ -60,7 +60,6 @@ namespace tigl
 CCPACSFuselage::CCPACSFuselage(CCPACSConfiguration* config)
     : segments(this)
     , configuration(config)
-    , structure(this)
 {
     Cleanup();
 }
@@ -79,8 +78,6 @@ void CCPACSFuselage::Invalidate(void)
     loft.reset();
     segments.Invalidate();
     positionings.Invalidate();
-    // [[CAS_AES]] added structure
-    structure.Invalidate();
 }
 
 // Cleanup routine
@@ -203,12 +200,6 @@ void CCPACSFuselage::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string&
     // Get subelement "segments"
     segments.ReadCPACS(tixiHandle, fuselageXPath);
 
-    // [[CAS_AES]] Get subelement "structure"
-    tempString = fuselageXPath + "/structure";
-    if(tixiCheckElement(tixiHandle, (char*)tempString.c_str()) == SUCCESS) {
-        structure.ReadCPACS(tixiHandle, tempString);
-    }
-
     // Register ourself at the unique id manager
     configuration->GetUIDManager().AddUID(ptrUID, this);
 
@@ -280,11 +271,6 @@ void CCPACSFuselage::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string
 
     // Set subelement "segments"
     segments.WriteCPACS(tixiHandle, fuselageXPath);
-
-    // Set subelement "structure"
-    structurePath = fuselageXPath + "/structure";
-    TixiSaveExt::TixiSaveElement(tixiHandle, fuselageXPath.c_str(), "structure");
-    structure.WriteCPACS(tixiHandle, structurePath);
 }
 
 // Returns the name of the fuselage
@@ -547,13 +533,5 @@ CCPACSGuideCurve& CCPACSFuselage::GetGuideCurve(std::string uid)
     }
     throw tigl::CTiglError("Error: Guide Curve with UID " + uid + " does not exists", TIGL_ERROR);
 }
-
-
-// [[CAS_AES]] added getter for fuselage structure
-CCPACSFuselageStructure& CCPACSFuselage::GetFuselageStructure()
-{
-    return structure;
-}
-
 
 } // end namespace tigl

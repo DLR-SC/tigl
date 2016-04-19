@@ -26,7 +26,6 @@
 
 #include "CCPACSFuselageSegment.h"
 #include "CCPACSFuselage.h"
-#include "CCPACSFuselageStructure.h"
 
 #include "CCPACSFuselageProfile.h"
 #include "CCPACSConfiguration.h"
@@ -1089,114 +1088,6 @@ void CCPACSFuselageSegment::BuildSplittedLoft(SegmentType segmentType, bool nMap
 
 //         CTiglCommon::dumpShape(aeroLoft,"/caehome/mare102/Aerostruct_code/Adeline","export");
     }
-
-
-    // next split loft at intersection points 
-   if (!nMapping)
-        SplitLoftWithInternalStructures(splittedLoft);
-
-}
-
-// [[CAS_AES]] method for cutting loft with internal structures
-void CCPACSFuselageSegment::SplitLoftWithInternalStructures(TopoDS_Shape& geometry) {
-    
-    //The cut geometry of the stringers and frames is generated once and store on the fuselage class
-    //for the cutting of the segments, only parts of the cut geometry who are touching the segment are keept. (thanks to bounding box)
-    //then the cutting operation is performed
-    
-    CCPACSFuselageStructure& structure = fuselage->GetFuselageStructure();
-//     CTiglCommon::dumpShape(geometry,"/caehome/relu150/descartesWorkSpace","fuselage_to_cut");
-    
-    //         initialization
-    TopoDS_Compound CutCompound;
-    TopoDS_Compound CutCompoundFrame;
-    TopoDS_Compound CutCompoundStringer;
-    BRep_Builder Builder;
-    Builder.MakeCompound(CutCompound);
-    Builder.MakeCompound(CutCompoundFrame);
-    Builder.MakeCompound(CutCompoundStringer);
-    
-    if(!structure.GetCutFuselageGeometryValid())          //if CutFuselageGeometry not already build
-    {
-        structure.SetCutFuselageGeometryValid(true);      //Set the boolean to not rebuild the geometry next time
-        
-        for(int i = 1;i <= structure.GetFrameCount();i++)           //get frames cut geometry
-        {
-            tigl::CCPACSFuselageFrame* frame = structure.GetFrame(i);
-            Builder.Add(CutCompoundFrame, frame->GetFrameCutGeometry());
-//             CTiglCommon::dumpShape(CutCompoundFrame,"/caehome/relu150/descartesWorkSpace","1stFrame");
-        }
-//         CTiglCommon::dumpShape(CutCompoundFrame,"/caehome/relu150/descartesWorkSpace","cutFuselageFrame");
-        structure.SetCutFuselageFrameGeometry(CutCompoundFrame);    //save the cutFuselageGeometry   //save 
-        
-        for(int i = 1;i <= structure.GetStringerCount();i++)        //get stringers cut geometry
-        {
-            tigl::CCPACSFuselageStringer* stringer = structure.GetStringer(i);
-            Builder.Add(CutCompoundStringer, stringer->GetStringerCutGeometry());
-        }
-//         CTiglCommon::dumpShape(CutCompoundStringer,"/caehome/relu150/descartesWorkSpace","cutFuselageStringer");
-        
-        structure.SetCutStringerFuselageGeometry(CutCompoundStringer);    //save the cutFuselageGeometry
-    }
-
-    Bnd_Box fuseBoundingBox = Bnd_Box();    //fuselage
-    Bnd_Box faceBoundingBox = Bnd_Box();    //cut tool (stringers and frames cut geometry)
-    
-    BRepBndLib::Add(geometry, fuseBoundingBox);
-    
-    //frame cutting
-    TopTools_IndexedMapOfShape faceMap1;
-    TopExp::MapShapes(structure.GetCutFuselageFrameGeometry(), TopAbs_FACE, faceMap1);
-    for(int i = 1; i <= faceMap1.Extent(); i++)
-    {
-        faceBoundingBox = Bnd_Box();
-        BRepBndLib::Add(TopoDS::Face(faceMap1(i)), faceBoundingBox);
-        if(!fuseBoundingBox.IsOut(faceBoundingBox))
-            Builder.Add(CutCompound, TopoDS::Face(faceMap1(i)));
-    }
-    geometry = CTiglCommon::splitShape(geometry, CutCompound);     //Cut by frame
-    
-    //stringer cutting
-    TopoDS_Compound outCompound1;
-    Builder.MakeCompound(outCompound1);
-    TopoDS_Compound outCompound2;
-    Builder.MakeCompound(outCompound2);
-    TopoDS_Compound outCompound3;
-    Builder.MakeCompound(outCompound3);
-    
-    TopoDS_Shape geometryOut;
-    TopTools_IndexedMapOfShape faceMapFuse;
-    TopExp::MapShapes(geometry, TopAbs_FACE, faceMapFuse);
-    for(int i = 1; i <= faceMapFuse.Extent(); i++)              //explore fuselage faces
-    {
-        fuseBoundingBox = Bnd_Box();
-        BRepBndLib::Add(TopoDS::Face(faceMapFuse(i)), fuseBoundingBox);
-        
-        TopTools_IndexedMapOfShape faceMapStringer;
-        TopExp::MapShapes(structure.GetCutStringerFuselageGeometry(), TopAbs_FACE, faceMapStringer);
-        for(int j = 1; j <= faceMapStringer.Extent(); j++)         //explore stringers faces
-        {
-            faceBoundingBox = Bnd_Box();
-            BRepBndLib::Add(TopoDS::Face(faceMapStringer(j)), faceBoundingBox);
-            if(!fuseBoundingBox.IsOut(faceBoundingBox))                             //part of fuselage and part of stringer crossing
-            {
-                Builder.Add(outCompound2, TopoDS::Face(faceMapStringer(j)));
-            }
-
-        }
-//         CTiglCommon::dumpShape(outCompound1,"/caehome/relu150/descartesWorkSpace","testFuselageToCut");
-//         CTiglCommon::dumpShape(outCompound2,"/caehome/relu150/descartesWorkSpace","testCutStringer");
-        
-        Builder.Add(outCompound1, TopoDS::Face(faceMapFuse(i)));
-        Builder.Add(outCompound3, CTiglCommon::splitShape(outCompound1, outCompound2));
-        
-//         CTiglCommon::dumpShape(outCompound3,"/caehome/relu150/descartesWorkSpace","testResult");
-        
-        Builder.MakeCompound(outCompound1);
-        Builder.MakeCompound(outCompound2);
-    }
-    geometry = outCompound3;
-//     CTiglCommon::dumpShape(geometry,"/caehome/relu150/descartesWorkSpace","testFinalResult");
 }
 
 // [[CAS_AES]] added getter for loft splitted by spars and ribs

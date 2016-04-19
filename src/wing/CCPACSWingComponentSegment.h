@@ -36,7 +36,6 @@
 #include "CTiglPoint.h"
 #include "CTiglAbstractSegment.h"
 
-#include "CCPACSWingStructuralMounts.h"
 #include "CCPACSWingCell.h"
 
 #include "TopoDS_Shape.hxx"
@@ -46,13 +45,8 @@
 
 // [[CAS_AES]] added includes
 // [[CAS_AES]] BEGIN
-#include "CCPACSWingSparSegment.h"
 #include "CCPACSWingShell.h"
-#include "CCPACSTrailingEdgeDevices.h"
-#include "CCPACSWingFuelTanks.h"
 #include "TopoDS_Face.hxx"
-
-#include "CTiglAbstractWingStringer.h"
 // [[CAS_AES]] END
 
 namespace tigl
@@ -64,13 +58,6 @@ typedef std::vector<const CCPACSMaterial*>    MaterialList;
 typedef std::vector<CCPACSWingSegment*>       SegmentList;
 
 class CCPACSWing;
-
-// [[CAS_AES]] added forward declarations
-// [[CAS_AES]] BEGIN
-class CCPACSControlSurfaces;
-class CCPACSWingRibsDefinition;
-class CCPACSWingStringer;
-// [[CAS_AES]] END
 
 class CCPACSWingComponentSegment : public CTiglAbstractSegment
 {
@@ -179,28 +166,6 @@ public:
     // returns the xsi coordinate of the intersection
     TIGL_EXPORT void GetSegmentIntersection(const std::string& segmentUID, double csEta1, double csXsi1, double csEta2, double csXsi2, double eta, double& xsi);
 
-    // [[CAS_AES]] Returns number of spar segments
-    TIGL_EXPORT int GetSparSegmentCount() const;
-
-    // [[CAS_AES]] Returns spar segment with passed index
-    TIGL_EXPORT CCPACSWingSparSegment& GetSparSegment(int index) const;
-
-    // [[CAS_AES]] Returns spar segment with passed uid
-    TIGL_EXPORT CCPACSWingSparSegment& GetSparSegment(const std::string& uid) const;
-
-    // [[CAS_AES]] Returns number of ribs definitions
-    TIGL_EXPORT int GetRibsDefinitionCount() const;
-
-    // [[CAS_AES]] Returns ribs definition with passed index
-    TIGL_EXPORT CCPACSWingRibsDefinition& GetRibsDefinition(int index) const;
-    
-    // [[CAS_AES]] Returns ribs definition with passed uid
-    TIGL_EXPORT CCPACSWingRibsDefinition& GetRibsDefinition(const std::string& uid) const;
-
-    // [[CAS_AES]] added getter for stringer
-    TIGL_EXPORT int GetStringerCount() const;
-    TIGL_EXPORT CCPACSWingStringer& GetStringer(int) const;
-
     // [[CAS_AES]] added getter for the normalized leading edge direction
     TIGL_EXPORT gp_Vec GetLeadingEdgeDirection(const std::string& segmentUID) const;
     TIGL_EXPORT gp_Vec GetLeadingEdgeDirection(const gp_Pnt& point, const std::string& defaultSegmentUID = "") const;
@@ -262,30 +227,15 @@ public:
     TIGL_EXPORT CCPACSWingShell& GetUpperShell();
     TIGL_EXPORT CCPACSWingShell& GetLowerShell();
 
-    // [[CAS_AES]] get CPACS trailing edge devices
-    TIGL_EXPORT CCPACSTrailingEdgeDevices* GetTrailingEdgeDevices();
-
-    // [[CAS_AES]] return the Component Segment Loft, cut with the Trailing Edge Wing cut outs
-    TIGL_EXPORT TopoDS_Shape GetTEDLoft(TopoDS_Shape);
-    TIGL_EXPORT TopoDS_Shape GetUpperTEDLoft();
-    TIGL_EXPORT TopoDS_Shape GetLowerTEDLoft();
-
     // [[CAS_AES]] Return the shape for the componentsegment midplane 
     TIGL_EXPORT TopoDS_Shape GetMidplaneShape();
     
     // Getter for the member name
-    TIGL_EXPORT const std::string& GetName(void) const;   // EU
+    TIGL_EXPORT const std::string& GetName(void) const;
 
     // get Wing Cut Out closing faces if they are not spar defined
     TIGL_EXPORT TopoDS_Shape GetWingCutOutFaces();
 
-    // get fuel Tanks
-    TIGL_EXPORT CCPACSWingFuelTanks& GetWingFuelTanks();
-    
-    TIGL_EXPORT CCPACSWingStructuralMounts& GetWingStructuralMounts();
-    
-    TIGL_EXPORT CTiglAbstractWingStringer& GetStringerByUID(std::string);
-    
     TIGL_EXPORT CCPACSWingCell& GetCellByUID(std::string);
     
 protected:
@@ -363,14 +313,6 @@ private:
     mutable bool         linesAreValid;
 
     CCPACSWingCSStructure structure;
-
-    // [[CAS_AES]] added control surfaces
-    CCPACSControlSurfaces* controlSurfaces;
-    
-    CCPACSWingFuelTanks wingFuelTanks;
-    
-    CCPACSWingStructuralMounts structuralMounts;
-
 };
 
 } // end namespace tigl

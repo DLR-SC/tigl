@@ -57,9 +57,7 @@ void CCPACSWingCells::Cleanup()
 
 void CCPACSWingCells::Invalidate()
 {
-    for (int i = 0; i < cells.size(); i++) {
-        cells[i]->Invalidate();
-    }
+
 }
 
 void CCPACSWingCells::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string &cellsXPath)
@@ -84,7 +82,7 @@ void CCPACSWingCells::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string
         
         // check path
         if ( tixiCheckElement(tixiHandle, stream.str().c_str()) == SUCCESS) {
-            CCPACSWingCell * cell = new CCPACSWingCell(this);
+            CCPACSWingCell * cell = new CCPACSWingCell();
             cell->ReadCPACS(tixiHandle, stream.str().c_str());
             cells.push_back(cell);
         }
@@ -137,17 +135,6 @@ CCPACSWingCell& CCPACSWingCells::GetCell(int index) const
     }
     
     return *cells.at(index-1);
-}
-
-// [[CAS_AES]] Returns whether a stringer definition exists or not
-bool CCPACSWingCells::HasStringer() const
-{
-    for (int i = 0; i < cells.size(); i++) {
-        if (cells[i]->HasStringer()) {
-            return cells[i]->HasStringer();
-        }
-    }
-    return false;
 }
 
 // [[CAS_AES]] get parent wing shell element

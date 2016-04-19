@@ -45,8 +45,6 @@
 #include <TopExp.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
 
-#include "CCPACSWingRibsDefinition.h"
-
 namespace tigl
 {
 
@@ -855,54 +853,6 @@ CCPACSGuideCurve& CCPACSWing::GetGuideCurve(std::string uid)
 CCPACSWingPositionings& CCPACSWing::GetPositionings()
 {
     return positionings;
-}
-
-
-bool CCPACSWing::HasRootRib()
-{
-    for(int c = 1; c <= componentSegments.GetComponentSegmentCount(); c++) {
-        // first find component segment(s) which start at inner wing segment (assuming inner wing segment has index 1)
-        CCPACSWingComponentSegment& cpacsWCSegment = (CCPACSWingComponentSegment&)GetComponentSegment(c);
-        
-        if (cpacsWCSegment.GetInnerSegmentUID() == segments.GetSegment(1).GetUID()) {
-            // next search if there are ribs starting at ETA==0
-            int numRibs = cpacsWCSegment.GetRibsDefinitionCount();
-
-            // loop over ribs
-            for (int m = 1; m <= numRibs; m++) {
-                CCPACSWingRibsDefinition& cpacsRib(cpacsWCSegment.GetRibsDefinition(m));
-                if (cpacsRib.GetEtaStart() <= Precision::Confusion()) {
-                    return true;
-                }
-            }
-        }
-    }
-    
-    return false;
-}
-
-bool CCPACSWing::HasTipRib()
-{
-    for(int c = 1; c <= componentSegments.GetComponentSegmentCount(); c++) {
-        // first find component segment(s) which ends at outer wing segment (assuming outer wing segment has index n)
-        CCPACSWingComponentSegment& cpacsWCSegment = (CCPACSWingComponentSegment&) GetComponentSegment(c);
-        
-        if (cpacsWCSegment.GetOuterSegmentUID() == segments.GetSegment(segments.GetSegmentCount()).GetUID()) {
-            // next search if there are ribs ending at ETA==1
-            int numRibs = cpacsWCSegment.GetRibsDefinitionCount();
-
-            // loop over ribs
-            for (int m = 1; m <= numRibs; m++) {
-                CCPACSWingRibsDefinition& cpacsRib(cpacsWCSegment.GetRibsDefinition(m));
-                if (cpacsRib.GetEtaEnd() >= (1 - Precision::Confusion())) {
-                    return true;
-                }
-            }
-        }
-
-    }
-
-    return false;
 }
 
 
