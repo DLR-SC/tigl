@@ -23,8 +23,6 @@
 #include "CCPACSWingCells.h"
 #include "CCPACSMaterial.h"
 
-#include <TopoDS_Shape.hxx>
-
 #include <string>
 
 
@@ -34,10 +32,8 @@ namespace tigl
 class CCPACSWingShell
 {
 public:
-    // [[CAS_AES]] added reference to parent element
     TIGL_EXPORT CCPACSWingShell();
 
-    // [[CAS_AES]] added destructor
     TIGL_EXPORT virtual ~CCPACSWingShell();
 
     TIGL_EXPORT void Reset();
@@ -57,19 +53,14 @@ public:
     TIGL_EXPORT void Invalidate();
     TIGL_EXPORT bool IsValid() const;
 
-    // [[CAS_AES]] added method
     TIGL_EXPORT void Update();
 
 private:
-    // Information whether the shell is located on the upper or lower side of the loft
     CCPACSWingCells cells;
     CCPACSMaterial material;
     //@todo stringers
 
-    // [[CAS_AES]] added uid
     std::string uid;
-    // [[CAS_AES]] added cutting planes
-    TopoDS_Shape mCuttingPlanes;
 
     bool isvalid;
 };

@@ -120,8 +120,7 @@ const std::string& CCPACSGuideCurve::GetName(void) const
     return name;
 }
 
-// Getter/Setter for the name of the guide curve
-const std::string& CCPACSGuideCurve::GetDescription(void) const // EU
+const std::string& CCPACSGuideCurve::GetDescription(void) const
 {
     return description;
 }

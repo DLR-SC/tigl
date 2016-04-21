@@ -77,7 +77,6 @@ public:
 
     TIGL_EXPORT const std::vector<CCPACSWingPositioning*> GetChilds() const;
 
-    // [[CAS_AES]] moved Cleanup to public methods
     // Cleanup routine
     TIGL_EXPORT void Cleanup(void);
 

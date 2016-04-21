@@ -78,13 +78,13 @@ public:
     // Gets the section scaling
     TIGL_EXPORT const CTiglPoint& GetScaling() const;
 
-    // [[CAS_AES]] added setter for translation
+    // Setter for translation
     TIGL_EXPORT void SetTranslation(const CTiglPoint& trans);
 
-    // [[CAS_AES]] added setter for rotation
+    // Setter for rotation
     TIGL_EXPORT void SetRotation(const CTiglPoint& rot);
 
-    // [[CAS_AES]] added setter for scaling
+    // Setter for scaling
     TIGL_EXPORT void SetScaling(const CTiglPoint& scaling);
 
 protected:

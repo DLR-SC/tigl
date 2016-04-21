@@ -26,9 +26,6 @@
 namespace tigl
 {
 
-// [[CAS_AES]] added reference to parent component segment
-// [[CAS_AES]] added parent reference to shells
-// [[CAS_AES]] added initialization of spar and rib pointers
 CCPACSWingCSStructure::CCPACSWingCSStructure()
 : lowerShell(),
   upperShell()
@@ -36,7 +33,6 @@ CCPACSWingCSStructure::CCPACSWingCSStructure()
     Cleanup();
 }
 
-// [[CAS_AES]] added destructor
 CCPACSWingCSStructure::~CCPACSWingCSStructure(void)
 {
     Cleanup();
@@ -90,7 +86,7 @@ void CCPACSWingCSStructure::WriteCPACS(TixiDocumentHandle tixiHandle, const std:
     // create the subelement Spars
     TixiSaveExt::TixiSaveElement(tixiHandle,structureXPath.c_str(), "lowerShell");
     lowerShell.WriteCPACS(tixiHandle, elementPath);
-    }
+}
 
 CCPACSWingShell& CCPACSWingCSStructure::GetLowerShell()
 {

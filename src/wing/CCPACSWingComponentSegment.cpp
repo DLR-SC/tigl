@@ -38,10 +38,8 @@
 #include "CTiglApproximateBsplineWire.h"
 #include "tiglcommonfunctions.h"
 #include "TixiSaveExt.h"
-// [[CAS_AES]] BEGIN
 #include "CCPACSWingCSStructure.h"
 #include "CTiglCommon.h"
-// [[CAS_AES]] END
 
 #include "BRepOffsetAPI_ThruSections.hxx"
 #include "TopoDS_Edge.hxx"
@@ -70,7 +68,6 @@
 #include <TopExp.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
 
-// [[CAS_AES]] BEGIN
 #include <BRepAdaptor_CompCurve.hxx>
 #include <BRepBndLib.hxx>
 #include <BRepBuilderAPI_MakeSolid.hxx>
@@ -81,9 +78,7 @@
 #include <gp_Pln.hxx>
 #include <ShapeAnalysis_Curve.hxx>
 #include <TopExp.hxx>
-// [[CAS_AES]] END
 
-// [[CAS_AES]] include for testing
 #ifdef _DEBUG
 #include <assert.h>
 #endif // _DEBUG
@@ -157,7 +152,6 @@ namespace
 }
 
 
-// [[CAS_AES]] added structure and control surfaces to initializer list
 // Constructor
 CCPACSWingComponentSegment::CCPACSWingComponentSegment(CCPACSWing* aWing, int aSegmentIndex)
     : CTiglAbstractSegment(aSegmentIndex)
@@ -177,14 +171,12 @@ CCPACSWingComponentSegment::~CCPACSWingComponentSegment(void)
 // Invalidates internal state
 void CCPACSWingComponentSegment::Invalidate(void)
 {
-    // [[CAS_AES]] added call to parent class instead of directly setting invalidated flag
+    // call parent class instead of directly setting invalidated flag
     CTiglAbstractSegment::Invalidate();
     surfacesAreValid = false;
     projLeadingEdge.Nullify();
     wingSegments.clear();
-    // [[CAS_AES]] invalidation of structure
     structure.Invalidate();
-    // [[CAS_AES]] invalidation of lines
     linesAreValid = false;
 }
 
@@ -197,7 +189,6 @@ void CCPACSWingComponentSegment::Cleanup(void)
     myVolume       = 0.;
     mySurfaceArea  = 0.;
     surfacesAreValid = false;
-    // [[CAS_AES]] invalidation of lines
     linesAreValid = false;
     CTiglAbstractSegment::Cleanup();
     structure.Cleanup();
@@ -243,7 +234,6 @@ void CCPACSWingComponentSegment::checkUniqueComponentSegment()
 // Read CPACS segment elements
 void CCPACSWingComponentSegment::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& segmentXPath)
 {
-    // [[CAS_AES]] enabled cleanup
     Cleanup();
 
     std::string elementPath;
@@ -303,7 +293,6 @@ void CCPACSWingComponentSegment::WriteCPACS(TixiDocumentHandle tixiHandle, const
     elementPath = segmentXPath + "/structure";
     TixiSaveExt::TixiSaveElement(tixiHandle, segmentXPath.c_str(), "structure");
     structure.WriteCPACS(tixiHandle, elementPath);
-    
 }
 
 // Returns the wing this segment belongs to
@@ -312,13 +301,13 @@ CCPACSWing& CCPACSWingComponentSegment::GetWing(void) const
     return *wing;
 }
 
-// [[CAS_AES]] Getter of the structure object
+// Getter of the structure object
 CCPACSWingCSStructure& CCPACSWingComponentSegment::GetStructure()
 {
     return structure;
 }
 
-// [[CAS_AES]] added getter for upper Shape
+// Getter for upper Shape
 TopoDS_Shape CCPACSWingComponentSegment::GetUpperShape(void)
 {
     // NOTE: Because it is not clear whether loft.IsNull or invalidated defines
@@ -327,7 +316,7 @@ TopoDS_Shape CCPACSWingComponentSegment::GetUpperShape(void)
     return upperShape;
 }
 
-// [[CAS_AES]] added getter for lower Shape
+// Getter for lower Shape
 TopoDS_Shape CCPACSWingComponentSegment::GetLowerShape(void)
 {
     // NOTE: Because it is not clear whether loft.IsNull or invalidated defines
@@ -336,7 +325,7 @@ TopoDS_Shape CCPACSWingComponentSegment::GetLowerShape(void)
     return lowerShape;
 }
 
-// [[CAS_AES]] added getter for inner segment face
+// Getter for inner segment face
 TopoDS_Face CCPACSWingComponentSegment::GetInnerFace(void)
 {
     // NOTE: Because it is not clear whether loft.IsNull or invalidated defines
@@ -345,7 +334,7 @@ TopoDS_Face CCPACSWingComponentSegment::GetInnerFace(void)
     return innerFace;
 }
 
-// [[CAS_AES]] added getter for outer segment face
+// Getter for outer segment face
 TopoDS_Face CCPACSWingComponentSegment::GetOuterFace(void)
 {
     // NOTE: Because it is not clear whether loft.IsNull or invalidated defines
@@ -354,7 +343,7 @@ TopoDS_Face CCPACSWingComponentSegment::GetOuterFace(void)
     return outerFace;
 }
 
-// [[CAS_AES]] added method for midplane points
+// Getter for midplane points
 // returns the midplane points relative to wing coordinate system
 // this method uses the eta/xsi definition for Spars, which uses the extended eta line
 // see spars definition in CPACS documentation for details
@@ -425,7 +414,7 @@ gp_Pnt CCPACSWingComponentSegment::GetMidplanePoint(double eta, double xsi)
     return xsiPnt;
 }
 
-// [[CAS_AES]] added getter for leading edge point
+// Getter for leading edge point
 gp_Pnt CCPACSWingComponentSegment::GetLeadingEdgePoint(double eta) const
 {
     // get point on leading edge line
@@ -437,7 +426,7 @@ gp_Pnt CCPACSWingComponentSegment::GetLeadingEdgePoint(double eta) const
     return lePnt;
 }
 
-// [[CAS_AES]] added getter for trailing edge point
+// Getter for trailing edge point
 gp_Pnt CCPACSWingComponentSegment::GetTrailingEdgePoint(double eta) const
 {
     // get point on trailing edge line
@@ -449,7 +438,7 @@ gp_Pnt CCPACSWingComponentSegment::GetTrailingEdgePoint(double eta) const
     return tePnt;
 }
 
-// [[CAS_AES]] added getter for inner chordline point
+// Getter for inner chordline point
 gp_Pnt CCPACSWingComponentSegment::GetInnerChordlinePoint(double xsi) const
 {
     gp_Pnt lePnt = GetLeadingEdgePoint(0);
@@ -459,7 +448,7 @@ gp_Pnt CCPACSWingComponentSegment::GetInnerChordlinePoint(double xsi) const
     return result;
 }
 
-// [[CAS_AES]] added getter for outer chordline point
+// Getter for outer chordline point
 gp_Pnt CCPACSWingComponentSegment::GetOuterChordlinePoint(double xsi) const
 {
     gp_Pnt lePnt = GetLeadingEdgePoint(1);
@@ -518,7 +507,7 @@ TopoDS_Face CCPACSWingComponentSegment::GetSectionElementFace(const std::string&
 }
 
 
-// [[CAS_AES]] added getter for the normalized leading edge direction
+// Getter for the normalized leading edge direction
 gp_Vec CCPACSWingComponentSegment::GetLeadingEdgeDirection(const std::string& segmentUID) const
 {
     tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing->GetSegment(segmentUID);
@@ -531,8 +520,8 @@ gp_Vec CCPACSWingComponentSegment::GetLeadingEdgeDirection(const std::string& se
     return lev;
 }
 
-// [[CAS_AES]] added getter for the normalized leading edge direction
-//             Parameter defaultSegmentUID can be used for inner/outer segment when point is in extended volume
+// Getter for the normalized leading edge direction
+// Parameter defaultSegmentUID can be used for inner/outer segment when point is in extended volume
 gp_Vec CCPACSWingComponentSegment::GetLeadingEdgeDirection(const gp_Pnt& point, const std::string& defaultSegmentUID) const
 {
     gp_Pnt globalPnt = wing->GetWingTransformation().Transform(point);
@@ -546,7 +535,7 @@ gp_Vec CCPACSWingComponentSegment::GetLeadingEdgeDirection(const gp_Pnt& point, 
     return GetLeadingEdgeDirection(segmentUID);
 }
 
-// [[CAS_AES]] added getter for the normalized trailing edge direction
+// Getter for the normalized trailing edge direction
 gp_Vec CCPACSWingComponentSegment::GetTrailingEdgeDirection(const std::string& segmentUID) const
 {
     tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing->GetSegment(segmentUID);
@@ -559,8 +548,8 @@ gp_Vec CCPACSWingComponentSegment::GetTrailingEdgeDirection(const std::string& s
     return tev;
 }
 
-// [[CAS_AES]] added getter for the normalized trailing edge direction
-//             Parameter defaultSegmentUID can be used for inner/outer segment when point is in extended volume
+// Getter for the normalized trailing edge direction
+// Parameter defaultSegmentUID can be used for inner/outer segment when point is in extended volume
 gp_Vec CCPACSWingComponentSegment::GetTrailingEdgeDirection(const gp_Pnt& point, const std::string& defaultSegmentUID) const
 {
     gp_Pnt globalPnt = wing->GetWingTransformation().Transform(point);
@@ -575,7 +564,7 @@ gp_Vec CCPACSWingComponentSegment::GetTrailingEdgeDirection(const gp_Pnt& point,
     return GetTrailingEdgeDirection(segmentUID);
 }
 
-// [[CAS_AES]] added getter for the normalized leading edge direction in the YZ plane
+// Getter for the normalized leading edge direction in the YZ plane
 gp_Vec CCPACSWingComponentSegment::GetLeadingEdgeDirectionYZ(const std::string& segmentUID) const
 {
     gp_Vec lev = GetLeadingEdgeDirection(segmentUID);
@@ -584,8 +573,8 @@ gp_Vec CCPACSWingComponentSegment::GetLeadingEdgeDirectionYZ(const std::string& 
     return lev;
 }
 
-// [[CAS_AES]] added getter for the normalized leading edge direction in the YZ plane
-//             Parameter defaultSegmentUID can be used for inner/outer segment when point is in extended volume
+// Getter for the normalized leading edge direction in the YZ plane
+// Parameter defaultSegmentUID can be used for inner/outer segment when point is in extended volume
 gp_Vec CCPACSWingComponentSegment::GetLeadingEdgeDirectionYZ(const gp_Pnt& point, const std::string& defaultSegmentUID) const
 {
     gp_Vec lev = GetLeadingEdgeDirection(point, defaultSegmentUID);
@@ -594,7 +583,7 @@ gp_Vec CCPACSWingComponentSegment::GetLeadingEdgeDirectionYZ(const gp_Pnt& point
     return lev;
 }
 
-// [[CAS_AES]] added getter the normal vector of the leading edge of the segment containing the passed point
+// Getter the normal vector of the leading edge of the segment containing the passed point
 gp_Vec CCPACSWingComponentSegment::GetLeadingEdgeNormal(const gp_Pnt& point, const std::string& defaultSegmentUID) const
 {
     // get direction of leading edge in YZ plane
@@ -608,7 +597,7 @@ gp_Vec CCPACSWingComponentSegment::GetLeadingEdgeNormal(const gp_Pnt& point, con
     return upVec;
 }
 
-// [[CAS_AES]] added getter for normal vector of inner section
+// Getter for normal vector of inner section
 gp_Vec CCPACSWingComponentSegment::GetInnerSectionNormal() const
 {
     int numSections = wing->GetSectionCount();
@@ -635,7 +624,7 @@ gp_Vec CCPACSWingComponentSegment::GetInnerSectionNormal() const
     throw CTiglError("INTERNAL ERROR: Unable to find inner section normal in method CCPACSWingComponentSegment::GetInnerSectionNormal!");
 }
 
-// [[CAS_AES]] added getter for normal vector of outer section
+// Getter for normal vector of outer section
 gp_Vec CCPACSWingComponentSegment::GetOuterSectionNormal() const
 {
     int numSections = wing->GetSectionCount();
@@ -663,7 +652,7 @@ gp_Vec CCPACSWingComponentSegment::GetOuterSectionNormal() const
 }
 
 
-// [[CAS_AES]] added getter for the length of the leading edge between two eta values
+// Getter for the length of the leading edge between two eta values
 double CCPACSWingComponentSegment::GetLeadingEdgeLength() const
 {
     BRepAdaptor_CompCurve leLineCurve(GetLeadingEdgeLine(), Standard_True);
@@ -671,7 +660,7 @@ double CCPACSWingComponentSegment::GetLeadingEdgeLength() const
     return length;
 }
 
-// [[CAS_AES]] added getter for the length of the trailing edge between two eta values
+// Getter for the length of the trailing edge between two eta values
 double CCPACSWingComponentSegment::GetTrailingEdgeLength() const
 {
     BRepAdaptor_CompCurve teLineCurve(GetTrailingEdgeLine(), Standard_True);
@@ -679,7 +668,7 @@ double CCPACSWingComponentSegment::GetTrailingEdgeLength() const
     return length;
 }
 
-// [[CAS_AES]] added getter for the midplane line between two eta-xsi points
+// Getter for the midplane line between two eta-xsi points
 TopoDS_Wire CCPACSWingComponentSegment::GetMidplaneLine(const gp_Pnt& startPoint, const gp_Pnt& endPoint)
 {
     // determine start and end point
@@ -802,7 +791,7 @@ TopoDS_Wire CCPACSWingComponentSegment::GetMidplaneLine(const gp_Pnt& startPoint
     return wireBuilder.Wire();
 }
 
-// [[CAS_AES]] added getter for the extended eta line
+// Getter for the extended eta line
 const TopoDS_Wire& CCPACSWingComponentSegment::GetEtaLine() const
 {
     if (!linesAreValid) {
@@ -812,7 +801,7 @@ const TopoDS_Wire& CCPACSWingComponentSegment::GetEtaLine() const
     return etaLine;
 }
 
-// [[CAS_AES]] added getter for the extended eta line
+// Getter for the extended eta line
 const TopoDS_Wire& CCPACSWingComponentSegment::GetExtendedEtaLine() const
 {
     if (!linesAreValid) {
@@ -822,7 +811,7 @@ const TopoDS_Wire& CCPACSWingComponentSegment::GetExtendedEtaLine() const
     return extendedEtaLine;
 }
 
-// [[CAS_AES]] added getter for the leading edge line
+// Getter for the leading edge line
 const TopoDS_Wire& CCPACSWingComponentSegment::GetLeadingEdgeLine() const
 {
     if (!linesAreValid) {
@@ -832,7 +821,7 @@ const TopoDS_Wire& CCPACSWingComponentSegment::GetLeadingEdgeLine() const
     return leadingEdgeLine;
 }
 
-// [[CAS_AES]] added getter for the trailing edge line
+// Getter for the trailing edge line
 const TopoDS_Wire& CCPACSWingComponentSegment::GetTrailingEdgeLine() const
 {
     if (!linesAreValid) {
@@ -842,7 +831,7 @@ const TopoDS_Wire& CCPACSWingComponentSegment::GetTrailingEdgeLine() const
     return trailingEdgeLine;
 }
 
-// [[CAS_AES]] added getter for the extended leading edge line
+// Getter for the extended leading edge line
 const TopoDS_Wire& CCPACSWingComponentSegment::GetExtendedLeadingEdgeLine() const
 {
     if (!linesAreValid) {
@@ -852,7 +841,7 @@ const TopoDS_Wire& CCPACSWingComponentSegment::GetExtendedLeadingEdgeLine() cons
     return extendedLeadingEdgeLine;
 }
 
-// [[CAS_AES]] added getter for the extended trailing edge line
+// Getter for the extended trailing edge line
 const TopoDS_Wire& CCPACSWingComponentSegment::GetExtendedTrailingEdgeLine() const
 {
     if (!linesAreValid) {
@@ -862,8 +851,9 @@ const TopoDS_Wire& CCPACSWingComponentSegment::GetExtendedTrailingEdgeLine() con
     return extendedTrailingEdgeLine;
 }
 
-// [[CAS_AES]] added getter for inner segment UID
-std::string CCPACSWingComponentSegment::GetInnerSegmentUID() const {
+// Getter for inner segment UID
+std::string CCPACSWingComponentSegment::GetInnerSegmentUID() const
+{
     std::string uid;
     for (int i = 1; i <= wing->GetSegmentCount(); i++) {
         tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing->GetSegment(i);
@@ -876,8 +866,9 @@ std::string CCPACSWingComponentSegment::GetInnerSegmentUID() const {
     return uid;
 }
 
-// [[CAS_AES]] added getter for outer segment UID
-std::string CCPACSWingComponentSegment::GetOuterSegmentUID() const {
+// Getter for outer segment UID
+std::string CCPACSWingComponentSegment::GetOuterSegmentUID() const
+{
     std::string uid;
     for (int i = 1; i <= wing->GetSegmentCount(); i++) {
         tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing->GetSegment(i);
@@ -1105,10 +1096,8 @@ std::string CCPACSWingComponentSegment::GetShortShapeName()
 }
 
 // Builds the loft between the two segment sections
-// [[CAS_AES]] changed implemention using shapes from Segments directly
 PNamedShape CCPACSWingComponentSegment::BuildLoft(void)
 {
-    // [[CAS_AES]] BEGIN
     loft.reset();
 
     // use sewing for full loft
@@ -1157,7 +1146,6 @@ PNamedShape CCPACSWingComponentSegment::BuildLoft(void)
     lowerShellSewing.Perform();
     upperShape = upperShellSewing.SewedShape();
     lowerShape = lowerShellSewing.SewedShape();
-    // [[CAS_AES]] END
 
     BRepTools::Clean(loftShape);
 
@@ -1184,7 +1172,7 @@ PNamedShape CCPACSWingComponentSegment::BuildLoft(void)
     return loft;
 }
 
-// [[CAS_AES]] added method for building wires for eta-, leading edge-, trailing edge-lines
+// Method for building wires for eta-, leading edge-, trailing edge-lines
 void CCPACSWingComponentSegment::BuildLines(void) const
 {
     // search for ETA coordinate
@@ -1204,7 +1192,7 @@ void CCPACSWingComponentSegment::BuildLines(void) const
         tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing->GetSegment(i);
 
         // Ok, we found the first segment of this componentSegment
-        if(!inComponentSection && segment.GetInnerSectionElementUID() == fromElementUID) {
+        if (!inComponentSection && segment.GetInnerSectionElementUID() == fromElementUID) {
             inComponentSection = true;
         }
 
@@ -1220,7 +1208,7 @@ void CCPACSWingComponentSegment::BuildLines(void) const
             tePointContainer.push_back(pnt);
 
             // if we found the outer section, break...
-            if( (segment.GetOuterSectionElementUID() == toElementUID)) {
+            if (segment.GetOuterSectionElementUID() == toElementUID) {
                 numberOfSections++;
                 // get leading edge point
                 pnt = segment.GetPoint(1, 0, true);
@@ -1350,7 +1338,6 @@ void CCPACSWingComponentSegment::UpdateProjectedLeadingEdge()
     }
 
     // add inner sections of each segment
-    // [[CAS_AES]] adde const
     const SegmentList& segments = GetSegmentList();
 
     if (segments.size() < 1) {
@@ -1368,7 +1355,6 @@ void CCPACSWingComponentSegment::UpdateProjectedLeadingEdge()
     Handle(Geom_Plane) projPlane = new Geom_Plane(pCenter, pDirX-pCenter);
     
     std::vector<gp_Pnt> LEPointsProjected;
-    // [[CAS_AES]] changed to const_iterator
     SegmentList::const_iterator segmentIt = segments.begin();
     int pointIndex = 1;
     for (; segmentIt != segments.end(); ++segmentIt) {
@@ -1445,7 +1431,6 @@ gp_Pnt CCPACSWingComponentSegment::GetPoint(double eta, double xsi)
 
     UpdateProjectedLeadingEdge();
 
-    // [[CAS_AES]] added const
     const SegmentList& segments = GetSegmentList();
     if (segments.size() < 1) {
         std::stringstream str;
@@ -1455,7 +1440,6 @@ gp_Pnt CCPACSWingComponentSegment::GetPoint(double eta, double xsi)
 
     // build up iso xsi line control points
     TColgp_Array1OfPnt xsiPoints(1,(Standard_Integer) segments.size() + 1);
-    // [[CAS_AES]] changed to const_iterator
     SegmentList::const_iterator segmentIt = segments.begin();
     int pointIndex = 1;
     for (; segmentIt != segments.end(); ++segmentIt) {
@@ -1513,7 +1497,7 @@ gp_Pnt CCPACSWingComponentSegment::GetPoint(double eta, double xsi)
     }
 }
 
-// [[CAS_AES]] added getter for eta value for passed point
+// Getter for eta value for passed point
 double CCPACSWingComponentSegment::GetMidplaneEta(const gp_Pnt& p) const
 {
     ShapeAnalysis_Curve sa;
@@ -1539,8 +1523,7 @@ double CCPACSWingComponentSegment::GetMidplaneEta(const gp_Pnt& p) const
 
 #ifdef _DEBUG
     // first ensure that etaPoint and projectedEtaPoint are at identical positions
-    if (etaPoint.Distance(projectedEtaPoint) > Precision::Confusion())
-    {
+    if (etaPoint.Distance(projectedEtaPoint) > Precision::Confusion()) {
         throw CTiglError("INTERNAL ERROR: CCPACSWingComponentSegment::GetMidplaneEta(): projection of point in extended eta line resulted in different position!");
     }
     // now test whether the passed point lies on the xsi-line for the passed
@@ -1572,7 +1555,7 @@ double CCPACSWingComponentSegment::GetMidplaneEta(const gp_Pnt& p) const
     return eta;
 }
 
-// [[CAS_AES]] added getter for eta direction of midplane
+// Getter for eta direction of midplane
 gp_Vec CCPACSWingComponentSegment::GetMidplaneEtaDir(double eta) const
 {
     // get point on eta line
@@ -1584,8 +1567,9 @@ gp_Vec CCPACSWingComponentSegment::GetMidplaneEtaDir(double eta) const
     return etaDir.Normalized();
 }
 
-// [[CAS_AES]] added getter for midplane normal vector
-gp_Vec CCPACSWingComponentSegment::GetMidplaneNormal(double eta) {
+// Getter for midplane normal vector
+gp_Vec CCPACSWingComponentSegment::GetMidplaneNormal(double eta)
+{
 
     if (eta < 0.0 || eta > 1.0) {
         throw CTiglError("Error: Parameter eta not in the range 0.0 <= eta <= 1.0 in CCPACSWingComponentSegment::GetMidplanePoint", TIGL_ERROR);
@@ -1610,11 +1594,9 @@ void CCPACSWingComponentSegment::GetEtaXsiFromSegmentEtaXsi(const std::string& s
         throw CTiglError("Error: Parameter sxsi not in the range 0.0 <= sxsi <= 1.0 in CCPACSWingComponentSegment::GetPoint", TIGL_ERROR);
     }
 
-    // [[CAS_AES]] added const
     const SegmentList& segments = GetSegmentList();
     // check that segment belongs to component segment
     CCPACSWingSegment* segment = NULL;
-    // [[CAS_AES]] changed to const_iterator
     for (SegmentList::const_iterator it = segments.begin(); it != segments.end(); ++it) {
         if (segmentUID == (*it)->GetUID()) {
             segment = *it;
@@ -1715,11 +1697,10 @@ const std::string & CCPACSWingComponentSegment::GetToElementUID(void) const
 
 // Returns the segment to a given point on the componentSegment. 
 // Returns null if the point is not an that wing!
-// [[CAS_AES]] added const
 const CTiglAbstractSegment* CCPACSWingComponentSegment::FindSegment(double x, double y, double z, gp_Pnt& nearestPoint) const
 {
-// [[CAS_AES]] using old implementation of findSegment because of stability problems
-// [[CAS_AES]] see #782
+// using old implementation of findSegment because of stability problems
+// see #782
 #if 0
     CTiglAbstractSegment* result = NULL;
     gp_Pnt pnt(x, y, z);
@@ -1760,19 +1741,19 @@ const CTiglAbstractSegment* CCPACSWingComponentSegment::FindSegment(double x, do
 
     return result;
 #else
-    // [[CAS_AES]] old code from TIGL 2.0.4
+    // old code from TIGL 2.0.4
     int i = 0;
     CTiglAbstractSegment* result = NULL;
     int segmentCount = wing->GetSegmentCount();
     gp_Pnt pnt(x, y, z);
 
     // Quick check if the point even is on this wing
-    // [[CAS_AES]] fix for #407: disabled quickClassifier since it generated incorrect results in some cases
+    // fix for #407: disabled quickClassifier since it generated incorrect results in some cases
 
     // now discover the right segment
     for (i=1; i <= segmentCount; i++)
     {            
-        // [[CAS_AES]] added check for only handling segments which are contained in the component segment
+        // added check for only handling segments which are contained in the component segment
         CCPACSWingSegment& segment = static_cast<CCPACSWingSegment&>(wing->GetSegment(i));
         if (!IsSegmentContained(segment)) {
             continue;
@@ -1829,9 +1810,9 @@ MaterialList CCPACSWingComponentSegment::GetMaterials(double eta, double xsi, Ti
     return list;
 }
 
-// [[CAS_AES]] added method for checking whether segment is contained in componentSegment
-bool CCPACSWingComponentSegment::IsSegmentContained(const CCPACSWingSegment& segment) const {
-
+// Method for checking whether segment is contained in componentSegment
+bool CCPACSWingComponentSegment::IsSegmentContained(const CCPACSWingSegment& segment) const
+{
     bool isSegmentContained = false;
     std::string nextElementUID = fromElementUID;
     int segmentCount = wing->GetSegmentCount();
@@ -1857,19 +1838,18 @@ bool CCPACSWingComponentSegment::IsSegmentContained(const CCPACSWingSegment& seg
     return isSegmentContained;
 }
 
-// [[CAS_AES]] added getter for upper and lower shell
+// Getter for upper and lower shell
 CCPACSWingShell& CCPACSWingComponentSegment::GetUpperShell()
 {
     return structure.GetUpperShell();
 }
 
-// [[CAS_AES]] added getter for upper and lower shell
+// Getter for upper and lower shell
 CCPACSWingShell& CCPACSWingComponentSegment::GetLowerShell()
 {
     return structure.GetLowerShell();
 }
 
-// [[CAS_AES]]
 TopoDS_Shape CCPACSWingComponentSegment::GetMidplaneShape()
 {
     int startSegmentIndex = GetStartSegmentIndex();
@@ -1905,7 +1885,6 @@ TopoDS_Shape CCPACSWingComponentSegment::GetMidplaneShape()
     return midplaneShape;
 }
 
-// [[CAS_AES]]
 int CCPACSWingComponentSegment::GetStartSegmentIndex()
 {
     int startSegmentIndex = 0;
@@ -1934,8 +1913,7 @@ CCPACSWingCell& CCPACSWingComponentSegment::GetCellByUID(std::string cellUID)
     CCPACSWingShell& lower = structure.GetLowerShell();
     for (int c = 1; c <= lower.GetCellCount(); c++) {
         CCPACSWingCell& cell = lower.GetCell(c);
-        if (cell.GetUID() == cellUID)
-        {
+        if (cell.GetUID() == cellUID) {
             return cell;
         }
     }

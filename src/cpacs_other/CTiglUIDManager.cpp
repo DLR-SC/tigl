@@ -49,7 +49,6 @@ void CTiglUIDManager::Update(void)
         return;
     }
     
-    // [[CAS_AES]] removed FindRootComponent
     BuildParentChildTree();
     invalidated = false;
 }
@@ -126,7 +125,7 @@ void CTiglUIDManager::Clear(void)
     invalidated = true;
 }
 
-// [[CAS_AES]] added setter for the root component (for setting the model as root component)
+// Sets the root component
 void CTiglUIDManager::SetRootComponent(CTiglAbstractPhysicalComponent* rootComponent)
 {
     this->rootComponent = rootComponent;
@@ -149,12 +148,10 @@ CTiglAbstractPhysicalComponent* CTiglUIDManager::GetRootComponent(void)
     return rootComponent;
 }
 
-// [[CAS_AES]] removed FindRootComponent since this is always set manually
-
 // Builds the parent child relationships.
 void CTiglUIDManager::BuildParentChildTree(void)
 {
-    // [[CAS_AES]] changed behavior, root component must be set manually, error if not
+    // root component must be set manually, error if not
     if (!rootComponent) {
         throw CTiglError("CTiglUIDManager::BuildParentChildTree(); no root component set!");
     }
@@ -164,14 +161,12 @@ void CTiglUIDManager::BuildParentChildTree(void)
     for (pIter = physicalShapes.begin(); pIter != physicalShapes.end(); ++pIter) {
         CTiglAbstractPhysicalComponent* component = pIter->second;
 
-        // [[CAS_AES]] here is a bug, when this method is called more than once the components will be added 
-        //             multiple times as childs
-        // [[CAS_AES]] support for defining root component manually
+        // TODO: when this method is called more than once the components will be added 
+        //       multiple times as childs
         if (!component->GetParentUID().empty() && component->GetParentUID() != rootComponent->GetUID()) {
             CTiglAbstractPhysicalComponent* parent = GetPhysicalComponent(component->GetParentUID());
             parent->AddChild(component);
         }
-        // [[CAS_AES]] support for manually set root component
         else {
             rootComponent->AddChild(component);
         }

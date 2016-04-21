@@ -57,9 +57,6 @@ public:
     // Exports a whole geometry, boolean fused and meshed, as STL file
     TIGL_EXPORT void ExportMeshedGeometrySTL(const std::string& filename, double deflection = 0.1);
 
-    // Exports a whole geometry, boolean fused and meshed, as STL file
-    TIGL_EXPORT void ExportWettedSurfaceSTL(const std::string& filename, double deflection = 0.1);
-
 protected:
 
 private:

@@ -56,7 +56,6 @@ namespace tigl
 {
 
 // Constructor
-// [[CAS_AES]] added initialization of structure
 CCPACSFuselage::CCPACSFuselage(CCPACSConfiguration* config)
     : segments(this)
     , configuration(config)
@@ -73,8 +72,6 @@ CCPACSFuselage::~CCPACSFuselage(void)
 // Invalidates internal state
 void CCPACSFuselage::Invalidate(void)
 {
-    aeroLoftValid = false;
-    
     loft.reset();
     segments.Invalidate();
     positionings.Invalidate();
@@ -329,50 +326,6 @@ std::string CCPACSFuselage::GetShortShapeName ()
         }
     }
     return "UNKNOWN";
-}
-
-TopoDS_Shape& CCPACSFuselage::getFuselageAeroLoft()
-{
-    if (!aeroLoftValid)
-        BuildAeroLoft();
-        
-    return fuselageAeroLoft;
-    
-}
-
-void CCPACSFuselage::BuildAeroLoft(void)
-{
-    // variable declaration
-    bool halfModel = false;
-    SegmentType segmentType = INNER_SEGMENT;
-    BRep_Builder builder;
-    TopoDS_Compound compFuselage;
-    builder.MakeCompound(compFuselage);
-    
-    // get all fuselage segments
-    for (int i = 1; i <= GetSegmentCount(); i++)
-    {
-        // [[CAS_AES]] added segment type computation
-
-        segmentType = INNER_SEGMENT;
-
-        if (i == 1 && GetSegmentCount() == 1) {
-            segmentType = INNER_OUTER_SEGMENT;
-        } else if (i > 1 && i < GetSegmentCount()) {
-            segmentType = MID_SEGMENT;
-        } else if (i == GetSegmentCount()) {
-            segmentType = OUTER_SEGMENT;
-        }
-
-        CCPACSFuselageSegment& segment = (tigl::CCPACSFuselageSegment &) GetSegment(i);
-
-        builder.Add(compFuselage, segment.GetAeroLoft(segmentType, halfModel));
-    }
-    
-    fuselageAeroLoft = compFuselage;
-    
-    aeroLoftValid = true;
-    
 }
 
 // Builds a fused shape of all fuselage segments

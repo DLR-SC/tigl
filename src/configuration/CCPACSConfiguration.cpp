@@ -56,14 +56,12 @@ namespace tigl
 {
 
 // Constructor
-// [[CAS_AES]] added initialization of structuralProfiles and structuralElements
 CCPACSConfiguration::CCPACSConfiguration(TixiDocumentHandle tixiHandle)
     : tixiDocumentHandle(tixiHandle)
     , header()
     , wings(this)
     , fuselages(this)
     , uidManager()
-    // [[CAS_AES]] added CPACSModel
     , cpacsModel(NULL)
 {
 }
@@ -71,12 +69,9 @@ CCPACSConfiguration::CCPACSConfiguration(TixiDocumentHandle tixiHandle)
 // Destructor
 CCPACSConfiguration::~CCPACSConfiguration(void)
 {
-    // [[CAS_AES]] added CPACSModel
-    if (cpacsModel)
-    {
+    if (cpacsModel) {
         delete cpacsModel;
     }
-    tixiCloseDocument(tixiDocumentHandle);
 }
 
 // Invalidates the internal state of the configuration and forces
@@ -121,15 +116,13 @@ void CCPACSConfiguration::ReadCPACS(const char* configurationUID)
         description = ptrDescription;
     }
 
-    // [[CAS_AES]] added CCPACSModel as root component for CTiglUIDManager
-    // [[CAS_AES]] BEGIN
+    // create new root component for CTiglUIDManager
     if (cpacsModel) {
         delete cpacsModel;
     }
     cpacsModel = new CCPACSModel();
     cpacsModel->SetUID(configurationUID);
     uidManager.SetRootComponent(cpacsModel);
-    // [[CAS_AES]] END
 
     header.ReadCPACS(tixiDocumentHandle);
     guideCurveProfiles.ReadCPACS(tixiDocumentHandle);
@@ -164,7 +157,6 @@ void CCPACSConfiguration::WriteCPACS(const std::string& configurationUID)
 // transform all components relative to their parents
 void CCPACSConfiguration::transformAllComponents(CTiglAbstractPhysicalComponent* parent)
 {
-    // [[CAS_AES]] handle case when no parent object exists
     if (!parent) {
         return;
     }
@@ -216,7 +208,7 @@ CCPACSWingProfiles& CCPACSConfiguration::GetWingProfiles(void)
     return wings.GetProfiles();
 }
 
-//Victor
+// Returns the class which holds all fuselage profiles
 CCPACSFuselageProfiles& CCPACSConfiguration::GetFuselageProfiles(void)
 {
     return fuselages.GetProfiles();
@@ -375,22 +367,22 @@ CTiglMemoryPool& CCPACSConfiguration::GetMemoryPool()
     return memoryPool;
 }
 
-std::string CCPACSConfiguration::GetName(void) const   // EU
+std::string CCPACSConfiguration::GetName(void) const
 {
     return name;
 }
 
-std::string CCPACSConfiguration::GetDescription(void) const   // EU
+std::string CCPACSConfiguration::GetDescription(void) const
 {
     return description;
 }
 
-CCPACSHeader* CCPACSConfiguration::GetHeader()    // EU
+CCPACSHeader* CCPACSConfiguration::GetHeader()
 {
     return &header;
 }
 
-CCPACSWings* CCPACSConfiguration::GetWings()  // EU
+CCPACSWings* CCPACSConfiguration::GetWings()
 {
     return &wings;
 }

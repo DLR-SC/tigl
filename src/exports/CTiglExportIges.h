@@ -55,9 +55,6 @@ public:
     // Exports the whole configuration, boolean fused, as IGES file
     TIGL_EXPORT void ExportFusedIGES(const std::string& filename);
 
-    // [[CAS_AES]] Export the whole configuration including structure
-    TIGL_EXPORT void ExportStructureIGES(const std::string& filename) const;
-
     // Save a sequence of shapes in IGES Format
     TIGL_EXPORT void ExportShapes(const ListPNamedShape& shapes, const std::string& filename) const;
 

@@ -29,7 +29,6 @@ namespace tigl
 {
 
 class CCPACSWingCell;
-// [[CAS_AES]] added forward declaration
 class CCPACSWingShell;
 
 class CCPACSWingCells
@@ -40,7 +39,6 @@ private:
     
 public:
     // Constructor
-    // [[CAS_AES]] added pointer to parent to constructor
     TIGL_EXPORT CCPACSWingCells(CCPACSWingShell* parent);
     
     // Virtual Destructor
@@ -65,7 +63,7 @@ public:
     // Returns the wing cell for a given UID.
     TIGL_EXPORT CCPACSWingCell& GetCell(const std::string& UID) const;
 
-    // [[CAS_AES]] get parent wing shell element
+    // Get parent wing shell element
     TIGL_EXPORT CCPACSWingShell* GetParentElement();
 
 protected:
@@ -82,7 +80,6 @@ private:
 private:
     CCPACSWingCellContainer cells;         /**< Wing Cell elements */
     
-    // [[CAS_AES]] added pointer to parent
     CCPACSWingShell* parentShell;
 
 };

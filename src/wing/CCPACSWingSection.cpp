@@ -128,7 +128,7 @@ void CCPACSWingSection::ReadCPACS(TixiDocumentHandle tixiHandle, const std::stri
             throw CTiglError("Error: XML error while reading <scaling/> in CCPACSWingSection::ReadCPACS", TIGL_XML_ERROR);
         }
     }
-    // [[CAS_AES]] Fix scaling of y-component
+    // Fix scaling of y-component
     if (scaling.x == scaling.z && scaling.x != scaling.y) {
         scaling.y = scaling.x;
     }
@@ -206,7 +206,7 @@ const std::string& CCPACSWingSection::GetName() const
 }
 
 // Getter for the member description
-const std::string& CCPACSWingSection::GetDescription(void) const  // EU
+const std::string& CCPACSWingSection::GetDescription(void) const
 {
     return description;
 }
@@ -241,21 +241,21 @@ const CTiglPoint& CCPACSWingSection::GetScaling() const
     return scaling;
 }
 
-// [[CAS_AES]] added setter for translation
+// Setter for translation
 void CCPACSWingSection::SetTranslation(const CTiglPoint& trans)
 {
     translation = trans;
     Update();
 }
 
-// [[CAS_AES]] added setter for rotation
+// Setter for rotation
 void CCPACSWingSection::SetRotation(const CTiglPoint& rot)
 {
     rotation = rot;
     Update();
 }
 
-// [[CAS_AES]] added setter for scaling
+// Setter for scaling
 void CCPACSWingSection::SetScaling(const CTiglPoint& scale)
 {
     scaling = scale;

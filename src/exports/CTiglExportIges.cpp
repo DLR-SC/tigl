@@ -55,13 +55,6 @@
 #include <TransferBRep.hxx>
 #include <IGESData_IGESEntity.hxx>
 
-// [[CAS_AES]] added for IGES level export
-#include "CTiglIGESWriter.h"
-// [[CAS_AES]] added for symmetry functionality
-#include <BRepBuilderAPI_Transform.hxx>
-// [[CAS_AES]] added include for common geometry functionality
-#include "CTiglCommon.h"
-
 #include <map>
 #include <cassert>
 
@@ -284,102 +277,6 @@ void CTiglExportIges::ExportFusedIGES(const std::string& filename)
         throw CTiglError("Cannot export fused Airplane as IGES", TIGL_ERROR);
     }
 }
-
-// [[CAS_AES]] Export the whole configuration including structure
-void CTiglExportIges::ExportStructureIGES(const std::string& filename) const
-{
-    // [[CAS_AES]] Required for constructor of IGES writer, without we get errors on setting the units
-    IGESControl_Controller::Init();
-    // [[CAS_AES]] Use CTiglIGESWriter
-    CTiglIGESWriter igesWriter;
-
-    Interface_Static::SetIVal("write.surfacecurve.mode", 0);
-    Interface_Static::SetIVal("write.iges.brep.mode", 1);
-    Interface_Static::SetCVal("write.iges.header.author", "Descartes");
-    Interface_Static::SetCVal("write.iges.header.company", "Airbus Defence and Space");
-
-    // Export all wings of the configuration
-    for (int w = 1; w <= _config.GetWingCount(); w++)
-    {
-        CCPACSWing& wing = _config.GetWing(w);
-
-        // [[CAS_AES]] added for symmetry
-        TiglSymmetryAxis symmetryAxis = wing.GetSymmetryAxis();
-        // [[CAS_AES]] added segment type computation
-        SegmentType segmentType = INNER_SEGMENT;
-
-        for (int i = 1; i <= wing.GetSegmentCount(); i++)
-        {
-            // [[CAS_AES]] added segment type computation
-            if (i == 1 && wing.GetSegmentCount() == 1) {
-                segmentType = INNER_OUTER_SEGMENT;
-            } else if (i > 1 && i < wing.GetSegmentCount()) {
-                segmentType = MID_SEGMENT;
-            } else if (i == wing.GetSegmentCount()) {
-                segmentType = OUTER_SEGMENT;
-            }
-            CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing.GetSegment(i);
-            // [[CAS_AES]] export loft splitted with ribs/spars instead of plain loft
-//                 TopoDS_Shape loft = segment.GetLoft();
-            TopoDS_Shape loft = segment.GetSplittedLoft(segmentType);
-            // [[CAS_AES]] added symmetry handling
-            if (symmetryAxis != TIGL_NO_SYMMETRY) {
-                loft = CTiglCommon::mirrorShape(loft, symmetryAxis);
-            }
-
-            // [[CAS_AES]] added level information
-            igesWriter.AddShape(loft, 2*w + 2);
-        }
-    }
-    
-    bool exportDoorGeometry = false;
-
-    // Export all fuselages of the configuration
-    for (int f = 1; f <= _config.GetFuselageCount(); f++)
-    {
-        CCPACSFuselage& fuselage = _config.GetFuselage(f);
-
-        TiglSymmetryAxis symmetryAxis = fuselage.GetSymmetryAxis();
-
-        TopoDS_Compound compound;
-        BRep_Builder Builder;
-        Builder.MakeCompound(compound);
-        
-        
-        for (int i = 1; i <= fuselage.GetSegmentCount(); i++)           //fuselageLoft
-        {
-
-            // [[CAS_AES]] added segment type computation
-            SegmentType segmentType = INNER_SEGMENT;
-            if (i == 1 && fuselage.GetSegmentCount() == 1) {
-                segmentType = INNER_OUTER_SEGMENT;
-            } else if (i > 1 && i < fuselage.GetSegmentCount()) {
-                segmentType = MID_SEGMENT;
-            } else if (i == fuselage.GetSegmentCount()) {
-                segmentType = OUTER_SEGMENT;
-            }
-
-            CCPACSFuselageSegment& segment = (tigl::CCPACSFuselageSegment &) fuselage.GetSegment(i);
-            
-            TopoDS_Shape loft = segment.GetSplittedLoft(segmentType);
-
-            if (symmetryAxis != TIGL_NO_SYMMETRY) 
-            {
-                loft = tigl::CTiglCommon::mirrorShape(loft, symmetryAxis);
-            }
-            
-            // [[CAS_AES]] added level information
-            igesWriter.AddShape(loft, 2);
-        }
-        
-    }
-
-    // Write IGES file
-    igesWriter.ComputeModel();
-    if (igesWriter.Write(const_cast<char*>(filename.c_str())) != Standard_True)
-        throw CTiglError("Error: Export to IGES file failed in CTiglExportIges::ExportIGES", TIGL_ERROR);
-}
-
 
 // Save a sequence of shapes in IGES Format
 void CTiglExportIges::ExportShapes(const ListPNamedShape& shapes, const std::string& filename) const

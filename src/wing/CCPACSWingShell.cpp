@@ -21,44 +21,16 @@
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "TixiSaveExt.h"
-// [[CAS_AES]] added includes
-// [[CAS_AES]] BEGIN
-#include "CCPACSWingCell.h"
-#include "CCPACSWing.h"
-
-#include <Bnd_Box.hxx>
-#include <BRep_Builder.hxx>
-#include <BRepAdaptor_Curve.hxx>
-#include <BRepAdaptor_Surface.hxx>
-#include <BRepBndLib.hxx>
-#include <BRepBuilderAPI_MakeEdge.hxx>
-#include <BRepBuilderAPI_MakeFace.hxx>
-#include <BRepExtrema_DistShapeShape.hxx>
-#include <BRepLib_MakeFace.hxx>
-#include <BRepTools.hxx>
-#include <Geom_Surface.hxx>
-#include <gp_Ax3.hxx>
-#include <gp_Pln.hxx>
-#include <gp_Pnt2d.hxx>
-#include <ShapeAnalysis_Surface.hxx>
-#include <TopoDS_Compound.hxx>
-#include <TopExp.hxx>
-#include <TopExp_Explorer.hxx>
-#include <TopTools_IndexedMapOfShape.hxx>
-// [[CAS_AES]] END
 
 namespace tigl 
 {
 
-// [[CAS_AES]] added reference to parent element
-// [[CAS_AES]] added initialization of stringer and cell
 CCPACSWingShell::CCPACSWingShell()
 : cells(this)
 {
     Reset();
 }
 
-// [[CAS_AES]] added destructor
 CCPACSWingShell::~CCPACSWingShell()
 {
     Reset();
@@ -100,7 +72,7 @@ void CCPACSWingShell::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string
         return;
     }
 
-    // [[CAS_AES]] Get UID
+    // Get UID
     char* ptrUID = NULL;
     if (tixiGetTextAttribute(tixiHandle, shellXPath.c_str(), "uID", &ptrUID) == SUCCESS) {
         uid = ptrUID;
@@ -122,9 +94,6 @@ void CCPACSWingShell::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string
         // @todo: should that be an error?
         LOG(WARNING) << "No material definition found for shell " << shellXPath;
     }
-    
-    // [[CAS_AES]] commented out validation flag since geometry is not generated yet
-    //isvalid = true;
 }
 
 // Write CPACS segment elements
@@ -159,7 +128,6 @@ bool CCPACSWingShell::IsValid() const
     return isvalid;
 }
 
-// [[CAS_AES]] added method
 void CCPACSWingShell::Update()
 {
     if (isvalid) {

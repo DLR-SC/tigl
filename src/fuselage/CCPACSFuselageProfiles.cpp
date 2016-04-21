@@ -142,19 +142,17 @@ bool CCPACSFuselageProfiles::HasProfile(std::string uid) const
 
 void CCPACSFuselageProfiles::AddProfile(CCPACSFuselageProfile* profile)
 {
-    // [[CAS_AES]] free memory for existing profiles
-    if (profiles.find(profile->GetUID()) != profiles.end())
-    {
+    // free memory for existing profiles
+    if (profiles.find(profile->GetUID()) != profiles.end()) {
         delete profiles[profile->GetUID()];
     }
     profiles[profile->GetUID()] = profile;
 }
 
-void CCPACSFuselageProfiles::DeleteProfile( std::string uid ) {
-        
-    // [[CAS_AES]] free memory for existing profiles
-    if (profiles.find( uid ) != profiles.end())
-    {
+void CCPACSFuselageProfiles::DeleteProfile( std::string uid )
+{
+    // free memory for existing profiles
+    if (profiles.find( uid ) != profiles.end()) {
         profiles[ uid ]->Invalidate();
         delete profiles[ uid ];
         profiles.erase( uid );

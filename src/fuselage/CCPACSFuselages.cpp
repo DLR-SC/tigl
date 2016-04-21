@@ -214,10 +214,8 @@ void CCPACSFuselages::AddFuselage(CCPACSFuselage* fuselage)
 {
     // Check whether the same fuselage already exists if yes remove it before adding the new one
     CCPACSFuselageContainer::iterator it;
-    for (it = fuselages.begin(); it != fuselages.end(); ++it)
-    {
-        if ((*it)->GetUID() == fuselage->GetUID())
-        {
+    for (it = fuselages.begin(); it != fuselages.end(); ++it) {
+        if ((*it)->GetUID() == fuselage->GetUID()) {
             delete (*it);
             fuselages.erase(it);
             break;

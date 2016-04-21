@@ -64,7 +64,7 @@ public:
     // Clears the uid store
     TIGL_EXPORT void Clear(void);
 
-    // [[CAS_AES]] added setter for the root component (for setting the model as root component)
+    // Sets the root component
     TIGL_EXPORT void SetRootComponent(CTiglAbstractPhysicalComponent* rootComponent);
 
     // Virtual Destructor
@@ -73,8 +73,6 @@ public:
 protected:
        // Update internal UID manager data.
     void Update(void);
-
-    // [[CAS_AES]] removed FindRootComponent since this is always set manually
 
     // Builds the parent child relationships.
     void BuildParentChildTree(void);
