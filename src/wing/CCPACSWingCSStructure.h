@@ -29,10 +29,8 @@ namespace tigl
 class CCPACSWingCSStructure
 {
 public:
-    // [[CAS_AES]] added reference to parent component segment
     TIGL_EXPORT CCPACSWingCSStructure();
     
-    // [[CAS_AES]] added destructor
     TIGL_EXPORT virtual ~CCPACSWingCSStructure(void);
 
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& structureXPath);

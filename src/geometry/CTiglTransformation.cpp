@@ -27,7 +27,6 @@
 #include "CTiglError.h"
 #include "tigl.h"
 #include "BRepBuilderAPI_GTransform.hxx"
-// [[CAS_AES]] added include for simple transformations
 #include "BRepBuilderAPI_Transform.hxx"
 #include "gp_XYZ.hxx"
 #include "Standard_Version.hxx"
@@ -58,7 +57,7 @@ CTiglTransformation::CTiglTransformation(const gp_GTrsf& ocMatrix)
     m_matrix[2][3] = ocMatrix.Value(3,4);
 }
 
-// [[CAS_AES]] added constructor for transformation based on gp_Trsf
+// Constructor for transformation based on gp_Trsf
 CTiglTransformation::CTiglTransformation(const gp_Trsf& trans)
 {
     SetIdentity();
@@ -82,7 +81,6 @@ CTiglTransformation& CTiglTransformation::operator=(const CTiglTransformation& m
             m_matrix[i][j] = mat.m_matrix[i][j];
         }
     }
-    // [[CAS_AES]] performance optimization for simple transformations
     isSimple = mat.isSimple;
     return *this;
 }
@@ -100,7 +98,6 @@ void CTiglTransformation::SetIdentity(void)
     for (int i = 0; i < 4; i++) {
         m_matrix[i][i] = 1.0;
     }
-    // [[CAS_AES]] performance optimization for simple transformations
     isSimple = true;
 }
 
@@ -112,7 +109,7 @@ void CTiglTransformation::SetValue(int row, int col, double value)
     }
 
     m_matrix[row][col] = value;
-    // [[CAS_AES]] not possible to identify if the new transformation is simple or not
+    // not possible to identify if the new transformation is simple or not
     isSimple = false;
 }
 
@@ -138,7 +135,7 @@ void CTiglTransformation::PostMultiply(const CTiglTransformation& aTrans)
             m_matrix[row][col] = tmp_matrix[row][col];
         }
     }
-    // [[CAS_AES]] new transformation is simple when both were simple
+    // new transformation is simple when both were simple
     isSimple = isSimple && aTrans.isSimple;
 }
 
@@ -164,7 +161,7 @@ void CTiglTransformation::PreMultiply(const CTiglTransformation& aTrans)
             m_matrix[row][col] = tmp_matrix[row][col];
         }
     }
-    // [[CAS_AES]] new transformation is simple when both were simple
+    // new transformation is simple when both were simple
     isSimple = isSimple && aTrans.isSimple;
 }
 
@@ -194,7 +191,7 @@ gp_GTrsf CTiglTransformation::Get_gp_GTrsf(void) const
     return ocMatrix;
 }
 
-// [[CAS_AES]] Returns the current transformation as gp_Trsf object
+// Returns the current transformation as gp_Trsf object
 gp_Trsf CTiglTransformation::Get_gp_Trsf(void) const
 {
     gp_Trsf ocMatrix;
@@ -242,7 +239,6 @@ void CTiglTransformation::AddTranslation(double tx, double ty, double tz)
     trans.SetValue(0, 3, tx);
     trans.SetValue(1, 3, ty);
     trans.SetValue(2, 3, tz);
-    // [[CAS_AES]]
     trans.isSimple = true;
 
     PreMultiply(trans);
@@ -261,14 +257,12 @@ void CTiglTransformation::AddScaling(double sx, double sy, double sz)
     trans.SetValue(0, 0, sx);
     trans.SetValue(1, 1, sy);
     trans.SetValue(2, 2, sz);
-    // [[CAS_AES]]
     // quickfix for bug #240, simple scale seems to cause drastic 
     // performance issues in GeomALGO_Splitter on high scale values, so 
     // transformation is only set to simple for small scale values
     if ((sx == sy) && (sx == sz) && fabs(sx) <= 10) {
         trans.isSimple = true;
     }
-    // [[CAS_AES]]
     // quickfix for bug #359: scale of zero seems to destroy shape when gp_Trsf 
     // is used
     if (sx == 0 && sy == 0 && sz == 0) {
@@ -296,7 +290,6 @@ void CTiglTransformation::AddRotationX(double degreeX)
     trans.SetValue(1, 2, -sinVal);
     trans.SetValue(2, 1, sinVal);
     trans.SetValue(2, 2, cosVal);
-    // [[CAS_AES]]
     trans.isSimple = true;
 
     PreMultiply(trans);
@@ -320,7 +313,6 @@ void CTiglTransformation::AddRotationY(double degreeY)
     trans.SetValue(0, 2, sinVal);
     trans.SetValue(2, 0, -sinVal);
     trans.SetValue(2, 2, cosVal);
-    // [[CAS_AES]]
     trans.isSimple = true;
 
     PreMultiply(trans);
@@ -344,7 +336,6 @@ void CTiglTransformation::AddRotationZ(double degreeZ)
     trans.SetValue(0, 1, -sinVal);
     trans.SetValue(1, 0, sinVal);
     trans.SetValue(1, 1, cosVal);
-    // [[CAS_AES]]
     trans.isSimple = true;
 
     PreMultiply(trans);
@@ -362,7 +353,6 @@ void CTiglTransformation::AddProjectionOnXYPlane(void)
 
     CTiglTransformation trans;
     trans.SetValue(2, 2, 0.0);
-    // [[CAS_AES]]
     trans.isSimple = false;
 
     PreMultiply(trans);
@@ -380,7 +370,6 @@ void CTiglTransformation::AddProjectionOnXZPlane(void)
 
     CTiglTransformation trans;
     trans.SetValue(1, 1, 0.0);
-    // [[CAS_AES]]
     trans.isSimple = false;
 
     PreMultiply(trans);
@@ -398,7 +387,6 @@ void CTiglTransformation::AddProjectionOnYZPlane(void)
 
     CTiglTransformation trans;
     trans.SetValue(0, 0, 0.0);
-    // [[CAS_AES]]
     trans.isSimple = false;
 
     PreMultiply(trans);
@@ -416,7 +404,6 @@ void CTiglTransformation::AddMirroringAtXYPlane(void)
 
     CTiglTransformation trans;
     trans.SetValue(2, 2, -1.0);
-    // [[CAS_AES]]
     trans.isSimple = false;
 
     PreMultiply(trans);
@@ -434,7 +421,6 @@ void CTiglTransformation::AddMirroringAtXZPlane(void)
 
     CTiglTransformation trans;
     trans.SetValue(1, 1, -1.0);
-    // [[CAS_AES]]
     trans.isSimple = false;
 
     PreMultiply(trans);
@@ -452,7 +438,6 @@ void CTiglTransformation::AddMirroringAtYZPlane(void)
 
     CTiglTransformation trans;
     trans.SetValue(0, 0, -1.0);
-    // [[CAS_AES]]
     trans.isSimple = false;
 
     PreMultiply(trans);
@@ -462,7 +447,7 @@ void CTiglTransformation::AddMirroringAtYZPlane(void)
 // returns the transformed shape
 TopoDS_Shape CTiglTransformation::Transform(const TopoDS_Shape& shape) const
 {
-    // [[CAS_AES]] added special handling for simple transformations (performance optimization)
+    // special handling for simple transformations (performance optimization)
     if (isSimple) {
         const BRepBuilderAPI_Transform brepBuilderTransform(shape, Get_gp_Trsf(), Standard_True);
         const TopoDS_Shape& transformedShape = brepBuilderTransform.Shape();
@@ -478,7 +463,7 @@ TopoDS_Shape CTiglTransformation::Transform(const TopoDS_Shape& shape) const
 // returns the transformed point
 gp_Pnt CTiglTransformation::Transform(const gp_Pnt& point) const
 {
-    // [[CAS_AES]] added special handling for simple transformations (performance optimization)
+    // special handling for simple transformations (performance optimization)
     if (isSimple) {
         gp_XYZ transformed(point.X(), point.Y(), point.Z());
         Get_gp_Trsf().Transforms(transformed);
@@ -502,7 +487,6 @@ void CTiglTransformation::printTransformMatrix()
 
 CTiglTransformation CTiglTransformation::Inverted() const 
 {
-    // [[CAS_AES]] added support for simple transformations
     if (isSimple) {
         return Get_gp_Trsf().Inverted();
     } else {
@@ -510,10 +494,12 @@ CTiglTransformation CTiglTransformation::Inverted() const
     }
 }
 
-// [[CAS_AES]] added getter for matrix values
-double CTiglTransformation::GetValue(int row, int col) const {
-    if (row < 0 || row > 3 || col < 0 || col > 3)
+// Getter for matrix values
+double CTiglTransformation::GetValue(int row, int col) const
+{
+    if (row < 0 || row > 3 || col < 0 || col > 3) {
         throw CTiglError("Error: Invalid row or column index in CTiglTransformation::GetValue", TIGL_INDEX_ERROR);
+    }
 
     return m_matrix[row][col];
 }

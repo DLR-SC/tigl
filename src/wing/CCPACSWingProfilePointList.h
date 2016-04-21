@@ -97,16 +97,16 @@ public:
     // returns the trailing edge for the opened wing profile
     TIGL_EXPORT const TopoDS_Edge& GetTrailingEdgeOpened() const;
 
-    // [[CAS_AES]] added getter for upper wire of closed profile
+    // getter for upper wire of closed profile
     TIGL_EXPORT const TopoDS_Edge& GetUpperWireClosed() const;
 
-    // [[CAS_AES]] added getter for lower wire of closed profile
+    // getter for lower wire of closed profile
     TIGL_EXPORT const TopoDS_Edge& GetLowerWireClosed() const;
 
-    // [[CAS_AES]] added getter for upper wire of opened profile
+    // getter for upper wire of opened profile
     TIGL_EXPORT const TopoDS_Edge& GetUpperWireOpened() const;
 
-    // [[CAS_AES]] added getter for lower wire of opened profile
+    // getter for lower wire of opened profile
     TIGL_EXPORT const TopoDS_Edge& GetLowerWireOpened() const;
 
     // get leading edge point();
@@ -120,21 +120,18 @@ protected:
     void BuildWires();
 
     // Builds leading and trailing edge points of the wing profile wire.
-    // [[CAS_AES]] added vector of points
     void BuildLETEPoints(const std::vector<gp_Pnt>& points);
 
-    // [[CAS_AES]] added helper method for closing profile at trailing edge
+    // Helper method for closing profile at trailing edge
     void closeProfilePoints(ITiglWireAlgorithm::CPointContainer& points);
 
-    // [[CAS_AES]] added helper method for opening profile at trailing edge
+    // Helper method for opening profile at trailing edge
     void openProfilePoints(ITiglWireAlgorithm::CPointContainer& points);
 
-    // [[CAS_AES]] added helper method extending the profile's start point
-    // to x==1
+    // Helper method extending the profile's start point to x==1
     void extendStartPoint(ITiglWireAlgorithm::CPointContainer& points);
 
-    // [[CAS_AES]] added helper method extending the profile's end point
-    // to x==1
+    // Helper method extending the profile's end point to x==1
     void extendEndPoint(ITiglWireAlgorithm::CPointContainer& points);
 
 private:
@@ -145,11 +142,11 @@ private:
     void operator=(const CCPACSWingProfilePointList&);
 
 private:
-    // [[CAS_AES]] added constant for opening profile
+    // constant for opening profile
     static const double       c_trailingEdgeRelGap;
-    // [[CAS_AES]] added constant blending distance for opening/closing trailing edge
+    // constant blending distance for opening/closing trailing edge
     static const double       c_blendingDistance;
-    // [[CAS_AES]] stores whether the defined profile is closed or has a trailing edge
+    // stores whether the defined profile is closed or has a trailing edge
     bool                      profileIsClosed;
 
     CCPACSCoordinateContainer coordinates;    /**< Coordinates of a wing profile element */

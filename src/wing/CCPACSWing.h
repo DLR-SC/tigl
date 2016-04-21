@@ -123,13 +123,13 @@ public:
     // Sets a Transformation object
     TIGL_EXPORT void Translate(CTiglPoint trans);
 
-    // [[CAS_AES]] added setter for translation
+    // Setter for translation
     TIGL_EXPORT void SetTranslation(const CTiglPoint& translation);
 
-    // [[CAS_AES]] added setter for translation
+    // Setter for translation
     TIGL_EXPORT void SetRotation(const CTiglPoint& rotation);
 
-    // [[CAS_AES]] added setter for translation
+    // Setter for translation
     TIGL_EXPORT void SetScaling(const CTiglPoint& scaling);
 
     // Gets the surfade area of this wing
@@ -167,7 +167,7 @@ public:
     // Get the guide curve with a given UID
     TIGL_EXPORT CCPACSGuideCurve& GetGuideCurve(std::string uid);
 
-    //[[CAS_AES]] added getter for positionings
+    // Getter for positionings
     TIGL_EXPORT CCPACSWingPositionings& GetPositionings();
 
 protected:

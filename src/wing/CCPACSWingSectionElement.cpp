@@ -218,39 +218,39 @@ CTiglTransformation CCPACSWingSectionElement::GetSectionElementTransformation(vo
     return transformation;
 }
 
-// [[CAS_AES]] added getter for translation
+// Getter for translation
 const CTiglPoint& CCPACSWingSectionElement::GetTranslation() const
 {
     return translation;
 }
 
-// [[CAS_AES]] added getter for rotation
+// Getter for rotation
 const CTiglPoint& CCPACSWingSectionElement::GetRotation() const
 {
     return rotation;
 }
 
-// [[CAS_AES]] added getter for scaling
+// Getter for scaling
 const CTiglPoint& CCPACSWingSectionElement::GetScaling() const
 {
     return scaling;
 }
 
-// [[CAS_AES]] added setter for translation
+// Setter for translation
 void CCPACSWingSectionElement::SetTranslation(const CTiglPoint& trans)
 {
     translation = trans;
     Update();
 }
 
-// [[CAS_AES]] added setter for rotation
+// Setter for rotation
 void CCPACSWingSectionElement::SetRotation(const CTiglPoint& rot)
 {
     rotation = rot;
     Update();
 }
 
-// [[CAS_AES]] added setter for scaling
+// Setter for scaling
 void CCPACSWingSectionElement::SetScaling(const CTiglPoint& scale)
 {
     scaling = scale;

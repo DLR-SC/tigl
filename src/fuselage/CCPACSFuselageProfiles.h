@@ -57,10 +57,10 @@ public:
 
     TIGL_EXPORT bool HasProfile(std::string uid) const;
 
-    // [[CAS_AES]] add a CPACS fuselage profile to list
+    // Adds a CPACS fuselage profile to list
     TIGL_EXPORT void AddProfile(CCPACSFuselageProfile* profile);
     
-    // [[CAS_AES]] removes a CPACS wing profile from the list
+    // Removes a CPACS wing profile from the list
     TIGL_EXPORT void DeleteProfile( std::string uid );
 
     // Returns the total count of fuselage profiles in this configuration

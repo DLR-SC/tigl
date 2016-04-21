@@ -37,7 +37,6 @@ void CCPACSMaterial::Cleanup()
     thicknessScaling = 1.;
     isvalid = false;
     is_composite = false;
-    // [[CAS_AES]] added orthotropy direction
     orthotropyDirection = CTiglPoint();
 }
 
@@ -87,75 +86,14 @@ void CCPACSMaterial::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string 
         }
     }
     
-    // [[CAS_AES]] added orthotropy direction
+    // handle orthotropy direction
     if (isComposite()) {
-        std::string tempString;
-        char* path;
-        ReturnCode tixiRet;
-        int count;
-
-        double dTemp = 0.0;
-
-        tempString = materialXPath + "/orthotropyDirection";
-        path = const_cast<char*>(tempString.c_str());
-        tixiRet = tixiGetNamedChildrenCount(tixiHandle, path, "x", &count);
-
-        if (count == 0)
-        {
-            dTemp = 0.0;
-        }
-        else
-        {
-            tempString = materialXPath + "/orthotropyDirection/x";
-            path = const_cast<char*>(tempString.c_str());
-            tixiRet = tixiGetDoubleElement(tixiHandle, path, &dTemp);
-    
-            if (tixiRet != SUCCESS) {
-                throw CTiglError("Error: Error during read of <orthotropyDirection/x> in CCPACSMaterial::ReadCPACS!", TIGL_XML_ERROR);
+        tempstring = materialXPath + "/orthotropyDirection";
+        if (tixiCheckElement(tixiHandle, tempstring.c_str()) == SUCCESS) {
+            if (tixiGetPoint(tixiHandle, tempstring.c_str(), &(orthotropyDirection.x), &(orthotropyDirection.y), &(orthotropyDirection.z)) != SUCCESS) {
+                throw CTiglError("Error: XML error while reading <orthotropyDirection/> in CCPACSMaterial::ReadCPACS", TIGL_XML_ERROR);
             }
         }
-        orthotropyDirection.x = dTemp;
-        
-
-        tempString = materialXPath + "/orthotropyDirection";
-        path = const_cast<char*>(tempString.c_str());
-        tixiRet = tixiGetNamedChildrenCount(tixiHandle, path, "y", &count);
-
-        if (count == 0)
-        {
-            dTemp = 0.0;
-        }
-        else
-        {
-            tempString = materialXPath + "/orthotropyDirection/y";
-            path = const_cast<char*>(tempString.c_str());
-            tixiRet = tixiGetDoubleElement(tixiHandle, path, &dTemp);
-    
-            if (tixiRet != SUCCESS) {
-                throw CTiglError("Error: Error during read of <orthotropyDirection/y> in CCPACSMaterial::ReadCPACS!", TIGL_XML_ERROR);
-            }
-        }
-        orthotropyDirection.y = dTemp;
-
-        tempString = materialXPath + "/orthotropyDirection";
-        path = const_cast<char*>(tempString.c_str());
-        tixiRet = tixiGetNamedChildrenCount(tixiHandle, path, "z", &count);
-
-        if (count == 0)
-        {
-            dTemp = 0.0;
-        }
-        else
-        {
-            tempString = materialXPath + "/orthotropyDirection/z";
-            path = const_cast<char*>(tempString.c_str());
-            tixiRet = tixiGetDoubleElement(tixiHandle, path, &dTemp);
-    
-            if (tixiRet != SUCCESS) {
-                throw CTiglError("Error: Error during read of <orthotropyDirection/z> in CCPACSMaterial::ReadCPACS!", TIGL_XML_ERROR);
-            }
-        }
-        orthotropyDirection.z = dTemp;
     }
 
     isvalid = true;
@@ -205,7 +143,6 @@ bool CCPACSMaterial::isComposite() const
     return is_composite;
 }
 
-// [[CAS_AES]] added setter for composite
 void CCPACSMaterial::SetComposite(bool composite)
 {
     is_composite = composite;
@@ -231,30 +168,26 @@ double CCPACSMaterial::GetThicknessScaling() const
     return thicknessScaling;
 }
 
-// [[CAS_AES]] Setter of the orthotropyDirection object
-void CCPACSMaterial::SetOrthotropyDirection(tigl::CTiglPoint D){
-    orthotropyDirection = D;
+void CCPACSMaterial::SetOrthotropyDirection(tigl::CTiglPoint direction)
+{
+    orthotropyDirection = direction;
 }
 
-// [[CAS_AES]] added getter for orthotropy direction
 const CTiglPoint& CCPACSMaterial::GetOrthotropyDirection() const
 {
     return orthotropyDirection;
 }
 
-// [[CAS_AES]] added setter for UID
 void CCPACSMaterial::SetUID(const std::string& uid)
 {
     this->uid = uid;
 }
 
-// [[CAS_AES]] added setter for thicknes
 void CCPACSMaterial::SetThickness(double thickness)
 {
     this->thickness = thickness;
 }
 
-// [[CAS_AES]] added setter for thickness scaling
 void CCPACSMaterial::SetThicknessScaling(double thicknessScaling)
 {
     this->thicknessScaling = thicknessScaling;

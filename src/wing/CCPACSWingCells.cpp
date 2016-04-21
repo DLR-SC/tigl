@@ -28,7 +28,6 @@
 namespace tigl
 {
 
-// [[CAS_AES]] added pointer to parent to constructor
 CCPACSWingCells::CCPACSWingCells(CCPACSWingShell* parent)
 : parentShell(parent)
 {
@@ -137,7 +136,7 @@ CCPACSWingCell& CCPACSWingCells::GetCell(int index) const
     return *cells.at(index-1);
 }
 
-// [[CAS_AES]] get parent wing shell element
+// Get parent wing shell element
 CCPACSWingShell* CCPACSWingCells::GetParentElement()
 {
     return parentShell;

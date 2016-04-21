@@ -40,7 +40,6 @@ namespace tigl
 class CCPACSWingPositionings
 {
 
-// [[CAS_AES]] changed to public
 public:
     // Typedef for a CCPACSWingPositioning container to store the positionings.
     typedef std::map<std::string, CCPACSWingPositioning*> CCPACSWingPositioningContainer;
@@ -65,11 +64,9 @@ public:
     // Returns the positioning matrix for a given section-uid
     TIGL_EXPORT CTiglTransformation GetPositioningTransformation(std::string sectionIndex);
 
-    // [[CAS_AES]] moved cleanup method to public
     // Cleanup routine
     TIGL_EXPORT void Cleanup(void);
 
-    // [[CAS_AES]] added accessor for the positionings member
     TIGL_EXPORT CCPACSWingPositioningContainer& GetPositionings();
 
 protected:

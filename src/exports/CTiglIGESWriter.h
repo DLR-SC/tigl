@@ -36,28 +36,29 @@
 #include <Standard_Boolean.hxx>
 #include <TopoDS_Shape.hxx>
 
-class CTiglIGESWriter {
+class CTiglIGESWriter
+{
 public:
 
-	CTiglIGESWriter();
+    CTiglIGESWriter();
 
-	Standard_Boolean AddShape(const TopoDS_Shape& sh, int level);
+    Standard_Boolean AddShape(const TopoDS_Shape& sh, int level);
 
-	void ComputeModel();
+    void ComputeModel();
 
-	Standard_Boolean Write(const Standard_CString file);
-
-protected:
-	void assignLevelToTrimmedSurfaces(Handle(IGESData_IGESEntity) ent, int level);
-	void assignLevelToAllEntities(Handle(IGESData_IGESEntity) ent, int level);
+    Standard_Boolean Write(const Standard_CString file);
 
 protected:
+    void assignLevelToTrimmedSurfaces(Handle(IGESData_IGESEntity) ent, int level);
+    void assignLevelToAllEntities(Handle(IGESData_IGESEntity) ent, int level);
 
-	Handle_Transfer_FinderProcess transferFinderProcess;
-	Handle_IGESData_IGESModel igesModel;
-	IGESData_BasicEditor editor;
-	Standard_Integer writeMode;
-	Standard_Boolean isValid;
+protected:
+
+    Handle_Transfer_FinderProcess transferFinderProcess;
+    Handle_IGESData_IGESModel igesModel;
+    IGESData_BasicEditor editor;
+    Standard_Integer writeMode;
+    Standard_Boolean isValid;
 };
 
 #endif // CTIGLIGESWRITER_HXX

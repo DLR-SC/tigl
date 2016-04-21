@@ -128,11 +128,6 @@ public:
     // Get the guide curve with a given UID
     TIGL_EXPORT CCPACSGuideCurve& GetGuideCurve(std::string uid);
     
-    // [CAS_AES] added getter for fuselage Loft
-    TIGL_EXPORT TopoDS_Shape& getFuselageAeroLoft();
-    
-    
-
 protected:
     // Cleanup routine
     void Cleanup(void);
@@ -146,9 +141,6 @@ protected:
     // Adds all segments of this fuselage to one shape
     PNamedShape BuildLoft(void);
     
-        // Adds all segments of this fuselage to one shape
-    void BuildAeroLoft(void);
-
 private:
     // get short name for loft
     std::string GetShortShapeName(void);
@@ -171,9 +163,6 @@ private:
     TopoDS_Compound            aCompound;
     BRep_Builder               aBuilder;
     double                     myVolume;             /**< Volume of this fuselage              */
-    
-    TopoDS_Shape fuselageAeroLoft;
-    bool aeroLoftValid;
 };
 
 } // end namespace tigl

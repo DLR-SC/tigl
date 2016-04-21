@@ -206,7 +206,7 @@ CTiglTransformation CCPACSFuselageSectionElement::GetSectionElementTransformatio
 
 CTiglPoint CCPACSFuselageSectionElement::GetTranslation(void) const
 {
-	return translation;
+    return translation;
 }
 
 void CCPACSFuselageSectionElement::SetTranslation(const CTiglPoint& translation)
@@ -217,7 +217,7 @@ void CCPACSFuselageSectionElement::SetTranslation(const CTiglPoint& translation)
 
 CTiglPoint CCPACSFuselageSectionElement::GetRotation(void) const
 {
-	return rotation;
+    return rotation;
 }
 
 void CCPACSFuselageSectionElement::SetRotation(const CTiglPoint& rotation)
@@ -228,7 +228,7 @@ void CCPACSFuselageSectionElement::SetRotation(const CTiglPoint& rotation)
 
 CTiglPoint CCPACSFuselageSectionElement::GetScaling(void) const
 {
-	return scaling;
+    return scaling;
 }
 
 void CCPACSFuselageSectionElement::SetScaling(const CTiglPoint& scaling)

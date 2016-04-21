@@ -85,16 +85,16 @@ public:
     // gets the upper and lower wing profile into on edge
     TIGL_EXPORT const TopoDS_Edge & GetUpperLowerWire() const;
 
-    // [[CAS_AES]] added getter for upper wire of closed profile
+    // Getter for upper wire of closed profile
     TIGL_EXPORT const TopoDS_Edge & GetUpperWireClosed() const;
 
-    // [[CAS_AES]] added getter for lower wire of closed profile
+    // Getter for lower wire of closed profile
     TIGL_EXPORT const TopoDS_Edge & GetLowerWireClosed() const;
 
-    // [[CAS_AES]] added getter for upper wire of opened profile
+    // Getter for upper wire of opened profile
     TIGL_EXPORT const TopoDS_Edge & GetUpperWireOpened() const;
 
-    // [[CAS_AES]] added getter for lower wire of opened profile
+    // Getter for lower wire of opened profile
     TIGL_EXPORT const TopoDS_Edge & GetLowerWireOpened() const;
 
     // get leading edge point();

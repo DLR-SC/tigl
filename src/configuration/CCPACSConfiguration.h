@@ -42,7 +42,6 @@
 #include "CTiglShapeCache.h"
 #include "CTiglMemoryPool.h"
 #include "CSharedPtr.h"
-// [[CAS_AES]] added include for Model as Root Component in CTiglUIDManager
 #include "CCPACSModel.h"
 
 
@@ -147,26 +146,17 @@ public:
 
     TIGL_EXPORT CTiglMemoryPool& GetMemoryPool(void);
 
-    // [[CAS_AES]] Returns the total count of StructuralElements in this configuration
-    TIGL_EXPORT int GetProfileElementCount(void) const;
-
-    // [[CAS_AES]] Returns the total count of StructuralProfiles in this configuration
-    TIGL_EXPORT int GetStructuralProfileCount(void) const;
-
-    // [[CAS_AES]] added getter for number of free form surfaces
-    TIGL_EXPORT int GetFFFSCount();
-
     /** Getter/Setter for member name */
-    TIGL_EXPORT std::string GetName(void) const;   // EU
+    TIGL_EXPORT std::string GetName(void) const;
 
     /** Getter/Setter for member description */
-    TIGL_EXPORT std::string GetDescription(void) const;   // EU
+    TIGL_EXPORT std::string GetDescription(void) const;
 
     /** Getter for member header */
-    TIGL_EXPORT CCPACSHeader* GetHeader();    // EU
+    TIGL_EXPORT CCPACSHeader* GetHeader();
 
     /** Getter for member wings */
-    TIGL_EXPORT CCPACSWings* GetWings();  // EU
+    TIGL_EXPORT CCPACSWings* GetWings();
 
 protected:
     // transform all components relative to their parents
@@ -182,8 +172,7 @@ private:
 private:
     std::string                  name;                 /**< Configuration name */
     std::string                  description;          /**< Configuration description */
-    // [[CAS_AES]] added CCPACSModel
-    CCPACSModel*                 cpacsModel;
+    CCPACSModel*                 cpacsModel;           /**< Root component for the CTiglUIDManager */
     TixiDocumentHandle           tixiDocumentHandle;   /**< Handle for internal TixiDocument */
     CCPACSHeader                 header;               /**< Configuration header element */
     CCPACSWings                  wings;                /**< Configuration wings element */

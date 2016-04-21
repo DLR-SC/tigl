@@ -277,7 +277,7 @@ TopoDS_Wire CCPACSWingProfile::GetWireOpened()
     return wireBuilder.Wire();
 }
 
-// [[CAS_AES]] Added getter for closed wire
+// Getter for closed wire
 TopoDS_Wire CCPACSWingProfile::GetWireClosed()
 {
     Update();

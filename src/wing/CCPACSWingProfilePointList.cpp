@@ -70,10 +70,12 @@
 #include "ShapeFix_Wire.hxx"
 
 
-inline gp_Pnt operator+(const gp_Pnt& a, const gp_Pnt& b) {
+inline gp_Pnt operator+(const gp_Pnt& a, const gp_Pnt& b)
+{
     return gp_Pnt(a.X()+b.X(), a.Y()+b.Y(), a.Z()+b.Z());
 }
-inline gp_Pnt operator/(const gp_Pnt& a, double b) {
+inline gp_Pnt operator/(const gp_Pnt& a, double b)
+{
     return gp_Pnt(a.X() / b, a.Y() / b, a.Z() / b);
 }
 
@@ -241,15 +243,12 @@ void CCPACSWingProfilePointList::WriteCPACS(TixiDocumentHandle tixiHandle, const
 void CCPACSWingProfilePointList::BuildWires()
 {
     ITiglWireAlgorithm::CPointContainer points;
-    // [[CAS_AES]] added container for points for opened profiles
-    //             thus points always contains the closed profile
     ITiglWireAlgorithm::CPointContainer openPoints, closedPoints;
 
     for (CCPACSCoordinateContainer::size_type i = 0; i < coordinates.size(); i++) {
         points.push_back(coordinates[i]->Get_gp_Pnt());
     }
-    // [[CAS_AES]] special handling for supporting opened and closed profiles
-    // [[CAS_AES]] BEGIN
+    // special handling for supporting opened and closed profiles
     if (points.size() < 2) {
         LOG(ERROR) << "Not enough points defined for Wing Profile" << endl;
         throw CTiglError("Not enough points defined for Wing Profile");
@@ -279,7 +278,6 @@ void CCPACSWingProfilePointList::BuildWires()
         // save information that profile is closed by default
         profileIsClosed = true;
     }
-    // [[CAS_AES]] END
 
     // Build wires from wing profile points.
     const ITiglWireAlgorithm& wireBuilder = *profileWireAlgo;
@@ -314,7 +312,6 @@ void CCPACSWingProfilePointList::BuildWires()
     TopExp_Explorer wireExClosed(tempShapeClosed, TopAbs_EDGE);
     TopoDS_Edge profileEdgeTmpClosed = TopoDS::Edge(wireExClosed.Current());
 
-    // [[CAS_AES]] added point list as argument
     BuildLETEPoints(closedPoints);
 
     // Get the curve of the wire
@@ -411,11 +408,9 @@ void CCPACSWingProfilePointList::BuildWires()
 // which is located farmost from the trailing edge point.
 // Finally, we correct the trailing edge to make sure, that the GetPoint
 // functions work correctly.
-// [[CAS_AES]] added coordinate list as argument
 void CCPACSWingProfilePointList::BuildLETEPoints(const ITiglWireAlgorithm::CPointContainer& points)
 {
     // compute TE point
-    // [[CAS_AES]] using passed point list
     gp_Pnt firstPnt = points[0];
     gp_Pnt lastPnt  = points[points.size() - 1];
     double x = (firstPnt.X() + lastPnt.X())/2.;
@@ -425,7 +420,7 @@ void CCPACSWingProfilePointList::BuildLETEPoints(const ITiglWireAlgorithm::CPoin
 
     // find the point with the max dist to TE point
     lePoint = tePoint;
-    // [[CAS_AES]] iterate over passed points
+    // iterate over passed points
     ITiglWireAlgorithm::CPointContainer::const_iterator pit = points.begin();
     for (; pit != points.end(); ++pit) {
         gp_Pnt point = (*pit);
@@ -510,25 +505,25 @@ const TopoDS_Edge& CCPACSWingProfilePointList::GetTrailingEdgeOpened() const
     return trailingEdgeOpened;
 }
 
-// [[CAS_AES]] added getter for upper wire of closed profile
+// Getter for upper wire of closed profile
 const TopoDS_Edge& CCPACSWingProfilePointList::GetUpperWireClosed() const
 {
     return upperWireClosed;
 }
 
-// [[CAS_AES]] added getter for lower wire of closed profile
+// Getter for lower wire of closed profile
 const TopoDS_Edge& CCPACSWingProfilePointList::GetLowerWireClosed() const
 {
     return lowerWireClosed;
 }
 
-// [[CAS_AES]] added getter for upper wire of closed profile
+// Getter for upper wire of closed profile
 const TopoDS_Edge& CCPACSWingProfilePointList::GetUpperWireOpened() const
 {
     return upperWireOpened;
 }
 
-// [[CAS_AES]] added getter for lower wire of closed profile
+// Getter for lower wire of closed profile
 const TopoDS_Edge& CCPACSWingProfilePointList::GetLowerWireOpened() const
 {
     return lowerWireOpened;
@@ -546,7 +541,7 @@ const gp_Pnt& CCPACSWingProfilePointList::GetTEPoint() const
     return tePoint;
 }
 
-// [[CAS_AES]] added helper method for closing profile points at trailing edge
+// Helper method for closing profile points at trailing edge
 void CCPACSWingProfilePointList::closeProfilePoints(ITiglWireAlgorithm::CPointContainer& points)
 {
     double deltayLow = points.front().Z();
@@ -593,7 +588,7 @@ void CCPACSWingProfilePointList::closeProfilePoints(ITiglWireAlgorithm::CPointCo
     }
 }
 
-// [[CAS_AES]] added helper method for opening profile points at trailing edge
+// Helper method for opening profile points at trailing edge
 void CCPACSWingProfilePointList::openProfilePoints(ITiglWireAlgorithm::CPointContainer& points)
 {
     // Pass 1: determine deltay
@@ -630,7 +625,7 @@ void CCPACSWingProfilePointList::openProfilePoints(ITiglWireAlgorithm::CPointCon
     }
 }
 
-// [[CAS_AES]] added helper method extending the profile's start point to x==1
+// Helper method extending the profile's start point to x==1
 void CCPACSWingProfilePointList::extendStartPoint(ITiglWireAlgorithm::CPointContainer& points)
 {
     LOG(WARNING) << "Wing Profile " << profileRef.GetUID() << " has start point at x<1 -> profile line will be extended until x==1 is reached!" << endl;
@@ -644,7 +639,7 @@ void CCPACSWingProfilePointList::extendStartPoint(ITiglWireAlgorithm::CPointCont
     points.insert(points.begin(), startPnt);
 }
 
-// [[CAS_AES]] added helper method extending the profile's end point to x==1
+// Helper method extending the profile's end point to x==1
 void CCPACSWingProfilePointList::extendEndPoint(ITiglWireAlgorithm::CPointContainer& points)
 {
     LOG(WARNING) << "Wing Profile " << profileRef.GetUID() << " has end point at x<1 -> profile line will be extended until x==1 is reached!" << endl;

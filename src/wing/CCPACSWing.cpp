@@ -143,7 +143,6 @@ void CCPACSWing::Invalidate(void)
     invalidated = true;
     segments.Invalidate();
     positionings.Invalidate();
-    // [[CAS_AES]] added invalidation of component segments
     componentSegments.Invalidate();
 }
 
@@ -599,7 +598,7 @@ void CCPACSWing::Translate(CTiglPoint trans)
 }
 
 
-// [[CAS_AES]] added setter for translation
+// Setter for translation
 void CCPACSWing::SetTranslation(const CTiglPoint& translation)
 {
     this->translation = translation;
@@ -608,7 +607,7 @@ void CCPACSWing::SetTranslation(const CTiglPoint& translation)
     Update();
 }
 
-// [[CAS_AES]] added setter for rotation
+// Setter for rotation
 void CCPACSWing::SetRotation(const CTiglPoint& rotation) 
 {
     this->rotation = rotation;
@@ -617,7 +616,7 @@ void CCPACSWing::SetRotation(const CTiglPoint& rotation)
     Update();
 }
 
-// [[CAS_AES]] added setter for scaling
+// Setter for scaling
 void CCPACSWing::SetScaling(const CTiglPoint& scaling)
 {
     this->scaling = scaling;
@@ -849,7 +848,7 @@ CCPACSGuideCurve& CCPACSWing::GetGuideCurve(std::string uid)
     throw tigl::CTiglError("Error: Guide Curve with UID " + uid + " does not exists", TIGL_ERROR);
 }
 
-//[[CAS_AES]] added getter for positionings
+// Getter for positionings
 CCPACSWingPositionings& CCPACSWing::GetPositionings()
 {
     return positionings;

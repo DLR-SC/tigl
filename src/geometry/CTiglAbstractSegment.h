@@ -34,8 +34,14 @@
 namespace tigl 
 {
 
-// [[CAS_AES]]] added enumeration for segment types
-enum SegmentType {INNER_SEGMENT, MID_SEGMENT, OUTER_SEGMENT, INNER_OUTER_SEGMENT};
+// Enumeration for segment types
+enum SegmentType
+{
+    INNER_SEGMENT,
+    MID_SEGMENT,
+    OUTER_SEGMENT,
+    INNER_OUTER_SEGMENT
+};
 
 class CTiglAbstractSegment : public CTiglAbstractGeometricComponent
 {
@@ -44,7 +50,6 @@ public:
     TIGL_EXPORT CTiglAbstractSegment(int segIndex);
 
     // Invalidates internal state
-    // [[CAS_AES]] added virtual
     TIGL_EXPORT virtual void Invalidate(void);
 
     // Returns the segment index of this segment

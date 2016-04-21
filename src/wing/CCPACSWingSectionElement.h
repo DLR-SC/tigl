@@ -69,22 +69,22 @@ public:
     // Gets the section element transformation
     TIGL_EXPORT CTiglTransformation GetSectionElementTransformation(void) const;
 
-    // [[CAS_AES]] added getter for translation
+    // Getter for translation
     TIGL_EXPORT const CTiglPoint& GetTranslation() const;
 
-    // [[CAS_AES]] added getter for rotation
+    // Getter for rotation
     TIGL_EXPORT const CTiglPoint& GetRotation() const;
 
-    // [[CAS_AES]] added getter for scaling
+    // Getter for scaling
     TIGL_EXPORT const CTiglPoint& GetScaling() const;
 
-    // [[CAS_AES]] added setter for translation
+    // Setter for translation
     TIGL_EXPORT void SetTranslation(const CTiglPoint& trans);
 
-    // [[CAS_AES]] added setter for rotation
+    // Setter for rotation
     TIGL_EXPORT void SetRotation(const CTiglPoint& rot);
 
-    // [[CAS_AES]] added setter for scaling
+    // Setter for scaling
     TIGL_EXPORT void SetScaling(const CTiglPoint& scaling);
 
 protected:

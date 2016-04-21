@@ -195,25 +195,25 @@ const std::string & CCPACSWingProfileCST::GetProfileDataXPath() const
     return ProfileDataXPath;
 }
 
-// [[CAS_AES]] added getter for upper wire of closed profile
+// Getter for upper wire of closed profile
 const TopoDS_Edge& CCPACSWingProfileCST::GetUpperWireClosed() const
 {
     return upperWire;
 }
 
-// [[CAS_AES]] added getter for lower wire of closed profile
+// Getter for lower wire of closed profile
 const TopoDS_Edge& CCPACSWingProfileCST::GetLowerWireClosed() const
 {
     return lowerWire;
 }
 
-// [[CAS_AES]] added getter for upper wire of opened profile
+// Getter for upper wire of opened profile
 const TopoDS_Edge& CCPACSWingProfileCST::GetUpperWireOpened() const
 {
     throw CTiglError("ERROR: GetUpperWireOpened not implemented yet for CCPACSWingProfileCST!");
 }
 
-// [[CAS_AES]] added getter for lower wire of opened profile
+// Getter for lower wire of opened profile
 const TopoDS_Edge& CCPACSWingProfileCST::GetLowerWireOpened() const
 {
     throw CTiglError("ERROR: GetLowerWireOpened not implemented yet for CCPACSWingProfileCST!");
