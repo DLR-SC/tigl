@@ -63,6 +63,8 @@ TIGL_EXPORT unsigned int GetNumberOfFaces(const TopoDS_Shape& shape);
 
 TIGL_EXPORT TopoDS_Edge GetEdge(const TopoDS_Shape& shape, int iEdge);
 
+TIGL_EXPORT TopoDS_Face GetFace(const TopoDS_Shape& shape, int iFace);
+
 TIGL_EXPORT Handle_Geom_BSplineCurve GetBSplineCurve(const TopoDS_Edge& e);
 
 // Returns the number of subshapes, if the shape is a compound
@@ -83,5 +85,19 @@ TIGL_EXPORT void GetShapeExtension(const TopoDS_Shape& shape,
 
 // Returns a unique Hashcode for a specific geometric component based on its loft
 TIGL_EXPORT int GetComponentHashCode(tigl::ITiglGeometricComponent&);
+
+// Computes the intersection point of a face and an edge
+TIGL_EXPORT bool GetIntersectionPoint(const TopoDS_Face& face, const TopoDS_Edge& edge, gp_Pnt& dst);
+
+// Computes the intersection point of a face and a wire
+TIGL_EXPORT bool GetIntersectionPoint(const TopoDS_Face& face, const TopoDS_Wire& wire, gp_Pnt& dst);
+
+// Returns the single face contained in the passed shape
+// Throws an exception when number of faces != 1
+TIGL_EXPORT TopoDS_Face GetSingleFace(const TopoDS_Shape& shape);
+
+// Builds a face out of 4 points
+TIGL_EXPORT TopoDS_Face BuildFace(const gp_Pnt& p1, const gp_Pnt& p2, const gp_Pnt& p3, const gp_Pnt& p4);
+
 
 #endif // TIGLCOMMONFUNCTIONS_H

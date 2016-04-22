@@ -39,7 +39,6 @@
 #include "tiglcommonfunctions.h"
 #include "TixiSaveExt.h"
 #include "CCPACSWingCSStructure.h"
-#include "CTiglCommon.h"
 
 #include "BRepOffsetAPI_ThruSections.hxx"
 #include "TopoDS_Edge.hxx"
@@ -397,7 +396,7 @@ gp_Pnt CCPACSWingComponentSegment::GetMidplanePoint(double eta, double xsi)
     gp_Pnt intersectPoint;
     gp_Pln plane(lePnt, etaDir);
     TopoDS_Face intersectFace = BRepBuilderAPI_MakeFace(plane).Face();
-    if (!CTiglCommon::getIntersectionPoint(intersectFace, GetExtendedTrailingEdgeLine(), intersectPoint)) {
+    if (!GetIntersectionPoint(intersectFace, GetExtendedTrailingEdgeLine(), intersectPoint)) {
         throw CTiglError("Unable to find trailing edge point in CCPACSWingComponentSegment::getMidplanePoint!");
     }
     gp_Pnt tePnt = intersectPoint;
@@ -496,11 +495,11 @@ TopoDS_Face CCPACSWingComponentSegment::GetSectionElementFace(const std::string&
         // check for inner section of first segment
         if (it == segmentList.begin()) {
             if ((*it)->GetInnerSectionElementUID() == sectionElementUID) {
-                return CTiglCommon::getSingleFace((*it)->GetInnerClosure());
+                return GetSingleFace((*it)->GetInnerClosure());
             }
         }
         if ((*it)->GetOuterSectionElementUID() == sectionElementUID) {
-            return CTiglCommon::getSingleFace((*it)->GetOuterClosure());
+            return GetSingleFace((*it)->GetOuterClosure());
         }
     }
     throw CTiglError("Error getting section element face from component segment!");
@@ -722,7 +721,7 @@ TopoDS_Wire CCPACSWingComponentSegment::GetMidplaneLine(const gp_Pnt& startPoint
     p1.SetZ(zmax);
     p2.SetZ(zmin);
     p3.SetZ(zmax);
-    TopoDS_Face cutFace = CTiglCommon::buildFace(p0, p1, p2, p3);
+    TopoDS_Face cutFace = BuildFace(p0, p1, p2, p3);
 
     // compute start and end point from intersection with inner/outer section in
     // case the points lie outside of the segments
@@ -731,14 +730,14 @@ TopoDS_Wire CCPACSWingComponentSegment::GetMidplaneLine(const gp_Pnt& startPoint
         gp_Pnt pl = segment.GetPoint(0, 0, true);
         gp_Pnt pt = segment.GetPoint(0, 1, true);
         TopoDS_Edge chordLine = BRepBuilderAPI_MakeEdge(pl, pt);
-        CTiglCommon::getIntersectionPoint(cutFace, chordLine, startPnt);
+        GetIntersectionPoint(cutFace, chordLine, startPnt);
     }
     if (endPntInSection) {
         CCPACSWingSegment& segment = (CCPACSWingSegment&)wing->GetSegment(endSegmentUID);
         gp_Pnt pl = segment.GetPoint(1, 0, true);
         gp_Pnt pt = segment.GetPoint(1, 1, true);
         TopoDS_Edge chordLine = BRepBuilderAPI_MakeEdge(pl, pt);
-        CTiglCommon::getIntersectionPoint(cutFace, chordLine, endPnt);
+        GetIntersectionPoint(cutFace, chordLine, endPnt);
     }
 
     // handle case when start and end point are in the same segment
@@ -767,7 +766,7 @@ TopoDS_Wire CCPACSWingComponentSegment::GetMidplaneLine(const gp_Pnt& startPoint
                 TopoDS_Edge outerChordLine = BRepBuilderAPI_MakeEdge(pl, pt);
                 // cut outer chord line with reference face
                 gp_Pnt nextPnt;
-                if (CTiglCommon::getIntersectionPoint(cutFace, outerChordLine, nextPnt)) {
+                if (GetIntersectionPoint(cutFace, outerChordLine, nextPnt)) {
                     // only build new edge if start and end point are not equal (can occur
                     // when the startPoint lies within a section, because then findSegment
                     // returns the inner segment first
@@ -1111,13 +1110,13 @@ PNamedShape CCPACSWingComponentSegment::BuildLoft(void)
     }
 
     TopoDS_Shape innerShape = segments.front()->GetInnerClosure();
-    innerFace = CTiglCommon::getSingleFace(innerShape);
+    innerFace = GetSingleFace(innerShape);
     sewing.Add(innerFace);
 
     for (SegmentList::const_iterator it = segments.begin(); it != segments.end(); ++it) {
         CCPACSWingSegment& segment = **it;
-        TopoDS_Face lowerSegmentFace = CTiglCommon::getSingleFace(segment.GetLowerShape());
-        TopoDS_Face upperSegmentFace = CTiglCommon::getSingleFace(segment.GetUpperShape());
+        TopoDS_Face lowerSegmentFace = GetSingleFace(segment.GetLowerShape());
+        TopoDS_Face upperSegmentFace = GetSingleFace(segment.GetUpperShape());
         upperShellSewing.Add(upperSegmentFace);
         lowerShellSewing.Add(lowerSegmentFace);
         sewing.Add(lowerSegmentFace);
@@ -1125,7 +1124,7 @@ PNamedShape CCPACSWingComponentSegment::BuildLoft(void)
     }
 
     TopoDS_Shape outerShape = segments.back()->GetOuterClosure();
-    outerFace = CTiglCommon::getSingleFace(outerShape);
+    outerFace = GetSingleFace(outerShape);
     sewing.Add(outerFace);
 
     sewing.Perform();
@@ -1509,7 +1508,7 @@ double CCPACSWingComponentSegment::GetMidplaneEta(const gp_Pnt& p) const
     TopoDS_Face intersectFace = BRepBuilderAPI_MakeFace(plane).Face();
 
     // Step2: intersect face with extended eta line
-    if (!CTiglCommon::getIntersectionPoint(intersectFace, GetExtendedEtaLine(), etaPoint)) {
+    if (!GetIntersectionPoint(intersectFace, GetExtendedEtaLine(), etaPoint)) {
         throw CTiglError("Unable to find point on eta line in CCPACSWingComponentSegment::GetMidplaneEta!");
     }
 
@@ -1519,7 +1518,13 @@ double CCPACSWingComponentSegment::GetMidplaneEta(const gp_Pnt& p) const
     sa.Project(extendedEtaLineCurve, etaPoint, Precision::Confusion(), projectedEtaPoint, curveParam);
     // compute eta
     Standard_Real len = GCPnts_AbscissaPoint::Length( extendedEtaLineCurve );
-    double eta = CTiglCommon::limitRange(curveParam / len, 0, 1);
+    double eta = curveParam / len;
+    if (eta < 0) {
+        eta = 0;
+    }
+    else if (eta > 1) {
+        eta = 1;
+    }
 
 #ifdef _DEBUG
     // first ensure that etaPoint and projectedEtaPoint are at identical positions
@@ -1874,7 +1879,7 @@ TopoDS_Shape CCPACSWingComponentSegment::GetMidplaneShape()
         outerLePnt = segment.GetChordPoint(1, 0);
         outerTePnt = segment.GetChordPoint(1, 1);
 
-        TopoDS_Face face = tigl::CTiglCommon::buildFace(innerLePnt, innerTePnt, outerLePnt, outerTePnt);
+        TopoDS_Face face = BuildFace(innerLePnt, innerTePnt, outerLePnt, outerTePnt);
         builder.Add(midplaneShape, face);
 
         // stop at last segment of componentSegment
