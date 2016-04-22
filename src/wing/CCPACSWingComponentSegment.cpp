@@ -528,7 +528,7 @@ gp_Vec CCPACSWingComponentSegment::GetLeadingEdgeDirection(const gp_Pnt& point, 
 
     std::string segmentUID = defaultSegmentUID;
     gp_Pnt nearestPnt;
-    const CTiglAbstractSegment* segment = FindSegment(globalPnt.X(), globalPnt.Y(), globalPnt.Z(), nearestPnt);
+    const CTiglAbstractSegment* segment = findSegment(globalPnt.X(), globalPnt.Y(), globalPnt.Z(), nearestPnt);
     if (segment != NULL) {
         segmentUID = segment->GetUID();
     }
@@ -556,7 +556,7 @@ gp_Vec CCPACSWingComponentSegment::GetTrailingEdgeDirection(const gp_Pnt& point,
 
     std::string segmentUID = defaultSegmentUID;
     gp_Pnt nearestPnt;
-    const CTiglAbstractSegment* segment = FindSegment(globalPnt.X(), globalPnt.Y(), globalPnt.Z(), nearestPnt);
+    const CTiglAbstractSegment* segment = findSegment(globalPnt.X(), globalPnt.Y(), globalPnt.Z(), nearestPnt);
     if (segment != NULL) {
         segmentUID = segment->GetUID();
     }
@@ -681,11 +681,11 @@ TopoDS_Wire CCPACSWingComponentSegment::GetMidplaneLine(const gp_Pnt& startPoint
     // determine wing segments containing the start and end points
     std::string startSegmentUID, endSegmentUID;
     gp_Pnt nearestPnt;
-    const CTiglAbstractSegment* startSegment = FindSegment(globalStartPnt.X(), globalStartPnt.Y(), globalStartPnt.Z(), nearestPnt);
+    const CTiglAbstractSegment* startSegment = findSegment(globalStartPnt.X(), globalStartPnt.Y(), globalStartPnt.Z(), nearestPnt);
     if (startSegment != NULL) {
         startSegmentUID = startSegment->GetUID();
     }
-    const CTiglAbstractSegment* endSegment = FindSegment(globalEndPnt.X(), globalEndPnt.Y(), globalEndPnt.Z(), nearestPnt);
+    const CTiglAbstractSegment* endSegment = findSegment(globalEndPnt.X(), globalEndPnt.Y(), globalEndPnt.Z(), nearestPnt);
     if (endSegment != NULL) {
         endSegmentUID = endSegment->GetUID();
     }
@@ -1697,7 +1697,7 @@ const std::string & CCPACSWingComponentSegment::GetToElementUID(void) const
 
 // Returns the segment to a given point on the componentSegment. 
 // Returns null if the point is not an that wing!
-const CTiglAbstractSegment* CCPACSWingComponentSegment::FindSegment(double x, double y, double z, gp_Pnt& nearestPoint) const
+const CTiglAbstractSegment* CCPACSWingComponentSegment::findSegment(double x, double y, double z, gp_Pnt& nearestPoint) const
 {
 // using old implementation of findSegment because of stability problems
 // see #782
