@@ -114,7 +114,7 @@ public:
     TIGL_EXPORT gp_Pnt GetSectionElementChordlinePoint(const std::string& sectionElementUID, double xsi) const;
 
     // Getter for section element face
-    TIGL_EXPORT TopoDS_Face GetSectionElementFace(const std::string& sectionElementUID) const;
+    TIGL_EXPORT TopoDS_Face GetSectionElementFace(const std::string& sectionElementUID);
 
     // Getter for eta value for passed point
     TIGL_EXPORT double GetMidplaneEta(const gp_Pnt& p) const;
@@ -149,7 +149,7 @@ public:
     TIGL_EXPORT MaterialList GetMaterials(double eta, double xsi, TiglStructureType);
 
     // returns a list of segments that belong to this component segment
-    TIGL_EXPORT const SegmentList& GetSegmentList() const;
+    TIGL_EXPORT SegmentList& GetSegmentList();
         
     // creates an (iso) component segment line 
     TIGL_EXPORT TopoDS_Wire GetCSLine(double eta1, double xsi1, double eta2, double xsi2, int NSTEPS=101);
