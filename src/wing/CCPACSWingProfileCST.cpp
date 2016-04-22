@@ -41,6 +41,7 @@
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepBuilderAPI_MakeWire.hxx>
 #include <Geom_BSplineCurve.hxx>
+#include <Standard_Version.hxx>
 
 
 namespace tigl
