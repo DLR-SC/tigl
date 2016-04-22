@@ -54,6 +54,8 @@
 #include "BRepBuilderAPI_Sewing.hxx"
 #include "Bnd_Box.hxx"
 #include "BRepBndLib.hxx"
+#include "BRepExtrema_ExtCF.hxx"
+#include "BRepFill.hxx"
 
 #include <Geom2d_Curve.hxx>
 #include <Geom2d_Line.hxx>
@@ -67,6 +69,7 @@
 #include <list>
 #include <algorithm>
 #include <cassert>
+#include <limits>
 
 namespace
 {
@@ -436,6 +439,19 @@ TopoDS_Edge GetEdge(const TopoDS_Shape &shape, int iEdge)
     }
 }
 
+TopoDS_Face GetFace(const TopoDS_Shape &shape, int iFace)
+{
+    TopTools_IndexedMapOfShape faceMap;
+    TopExp::MapShapes(shape, TopAbs_FACE, faceMap);
+
+    if (iFace < 0 || iFace >= faceMap.Extent()) {
+        return TopoDS_Face();
+    }
+    else {
+        return TopoDS::Face(faceMap(iFace + 1));
+    }
+}
+
 Handle_Geom_BSplineCurve GetBSplineCurve(const TopoDS_Edge& e)
 {
     double u1, u2;
@@ -445,4 +461,65 @@ Handle_Geom_BSplineCurve GetBSplineCurve(const TopoDS_Edge& e)
     // convert to bspline
     Handle_Geom_BSplineCurve bspl =  GeomConvert::CurveToBSplineCurve(curve);
     return bspl;
+}
+
+bool GetIntersectionPoint(const TopoDS_Face& face, const TopoDS_Edge& edge, gp_Pnt& dst)
+{
+    BRepExtrema_ExtCF edgeFaceIntersect(edge, face);
+    if (!edgeFaceIntersect.IsDone()) {
+        LOG(ERROR) << "Error intersecting edge and face in GetIntersectionPoint!";
+        throw tigl::CTiglError("Error intersecting edge and face in GetIntersectionPoint!");
+    }
+    double minDistance = std::numeric_limits<double>::max();
+    int minIndex = 0;
+    for (int i = 1; i <= edgeFaceIntersect.NbExt(); i++) {
+        double distance = edgeFaceIntersect.SquareDistance(i);
+        if (distance < minDistance) {
+            minDistance = distance;
+            minIndex = i;
+        }
+    }
+
+    if (minDistance <= Precision::Confusion()) {
+        dst = edgeFaceIntersect.PointOnEdge(minIndex);
+        return true;
+    }
+    return false;
+}
+
+bool GetIntersectionPoint(const TopoDS_Face& face, const TopoDS_Wire& wire, gp_Pnt& dst)
+{
+    BRepTools_WireExplorer wireExp;
+    for (wireExp.Init(wire); wireExp.More(); wireExp.Next()) {
+        const TopoDS_Edge& edge = wireExp.Current();
+        if (GetIntersectionPoint(face, edge, dst)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+TopoDS_Face GetSingleFace(const TopoDS_Shape& shape)
+{
+    unsigned numFaces = GetNumberOfFaces(shape);
+    if (numFaces < 1) {
+        LOG(ERROR) << "unable to get single face from shape: shape contains no faces";
+        throw tigl::CTiglError("ERROR: unable to get single face from shape: shape contains no faces!");
+    }
+    else if (numFaces > 1) {
+        LOG(ERROR) << "unable to get single face from shape: shape contains more than one face";
+        throw tigl::CTiglError("ERROR: unable to get single face from shape: shape contains more than one face!");
+    }
+    return GetFace(shape, 0);
+}
+
+TopoDS_Face BuildFace(const gp_Pnt& p1, const gp_Pnt& p2, const gp_Pnt& p3, const gp_Pnt& p4)
+{
+    BRepBuilderAPI_MakeEdge me1(p1, p2);
+    TopoDS_Edge e1 = me1.Edge();
+    BRepBuilderAPI_MakeEdge me2(p3, p4);
+    TopoDS_Edge e2 = me2.Edge();
+
+    TopoDS_Face face = BRepFill::Face(e1, e2);
+    return face;
 }

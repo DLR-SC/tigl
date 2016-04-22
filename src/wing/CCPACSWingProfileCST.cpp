@@ -27,7 +27,6 @@
 
 #include "CCSTCurveBuilder.h"
 
-#include "CTiglCommon.h"
 #include "CTiglError.h"
 #include "CTiglTypeRegistry.h"
 #include "CTiglLogging.h"

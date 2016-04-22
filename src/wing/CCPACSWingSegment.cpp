@@ -106,7 +106,6 @@
 #include <BRepBuilderAPI_Sewing.hxx>
 #include <gp_Ax3.hxx>
 #include <gp_Pln.hxx>
-#include "CTiglCommon.h"
 
 namespace tigl
 {
@@ -461,10 +460,10 @@ PNamedShape CCPACSWingSegment::BuildLoft(void)
     MakeSurfaces();
 
     // combine faces of closed profiles to build loft
-    TopoDS_Face innerFace = CTiglCommon::getSingleFace(innerShape);
-    TopoDS_Face lowerFace = CTiglCommon::getSingleFace(lowerShape);
-    TopoDS_Face upperFace = CTiglCommon::getSingleFace(upperShape);
-    TopoDS_Face outerFace = CTiglCommon::getSingleFace(outerShape);
+    TopoDS_Face innerFace = GetSingleFace(innerShape);
+    TopoDS_Face lowerFace = GetSingleFace(lowerShape);
+    TopoDS_Face upperFace = GetSingleFace(upperShape);
+    TopoDS_Face outerFace = GetSingleFace(outerShape);
 
     // sew faces and generate a solid
     BRepBuilderAPI_Sewing sewing;
