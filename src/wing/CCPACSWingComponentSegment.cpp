@@ -485,7 +485,7 @@ TIGL_EXPORT gp_Pnt CCPACSWingComponentSegment::GetSectionElementChordlinePoint(c
     return chordlinePoint;
 }
 
-TopoDS_Face CCPACSWingComponentSegment::GetSectionElementFace(const std::string& sectionElementUID) const
+TopoDS_Face CCPACSWingComponentSegment::GetSectionElementFace(const std::string& sectionElementUID)
 {
     // get all segments for this component segment
     const SegmentList& segmentList = GetSegmentList();
@@ -880,7 +880,7 @@ std::string CCPACSWingComponentSegment::GetOuterSegmentUID() const
     return uid;
 }
 
-const SegmentList& CCPACSWingComponentSegment::GetSegmentList() const
+SegmentList& CCPACSWingComponentSegment::GetSegmentList()
 {
     if (wingSegments.size() == 0) {
         std::vector<int> path;
