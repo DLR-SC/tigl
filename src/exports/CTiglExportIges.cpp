@@ -54,6 +54,11 @@
 #include <Transfer_FinderProcess.hxx>
 #include <TransferBRep.hxx>
 #include <IGESData_IGESEntity.hxx>
+#include <IGESBasic_Group.hxx>
+#include <IGESGeom_TrimmedSurface.hxx>
+#include <IGESGeom_CompositeCurve.hxx>
+#include <IGESBasic_Name.hxx>
+#include <IGESGeom_CurveOnSurface.hxx>
 
 #include <map>
 #include <cassert>
@@ -61,83 +66,142 @@
 namespace
 {
 
+    void AssignLevelToAllEntities(Handle(IGESData_IGESEntity) ent, int level)
+    {
+        // assign level in case of trimmed surfaces type
+        Handle(IGESData_LevelListEntity) lle;
+        ent->InitLevel(lle, level);
+        if (ent->IsInstance(STANDARD_TYPE(IGESBasic_Group))) {
+            // recurse down into single groups until trimmed surface is found
+            Handle(IGESBasic_Group) group = Handle(IGESBasic_Group)::DownCast(ent);
+            int numEntities = group->NbEntities();
+            for (int i=1; i <= numEntities; i++) {
+                AssignLevelToAllEntities(group->Entity(i), level);
+            }
+        }
+        else if (ent->IsInstance(STANDARD_TYPE(IGESGeom_TrimmedSurface))) {
+            Handle(IGESGeom_TrimmedSurface) trimmedSurf = Handle(IGESGeom_TrimmedSurface)::DownCast(ent);
+            AssignLevelToAllEntities(trimmedSurf->Surface(), level);
+            if (trimmedSurf->HasOuterContour()) {
+                AssignLevelToAllEntities(trimmedSurf->OuterContour(), level);
+            }
+            for (int i=1; i <= trimmedSurf->NbInnerContours(); i++) {
+                AssignLevelToAllEntities(trimmedSurf->InnerContour(i), level);
+            }
+        }
+        else if (ent->IsInstance(STANDARD_TYPE(IGESGeom_CurveOnSurface))) {
+            Handle(IGESGeom_CurveOnSurface) curveOnSurf = Handle(IGESGeom_CurveOnSurface)::DownCast(ent);
+            if (!curveOnSurf->CurveUV().IsNull()) {
+                AssignLevelToAllEntities(curveOnSurf->CurveUV(), level);
+            }
+            if (!curveOnSurf->Curve3D().IsNull()) {
+                AssignLevelToAllEntities(curveOnSurf->Curve3D(), level);
+            }
+        }
+        else if (ent->IsInstance(STANDARD_TYPE(IGESGeom_CompositeCurve))) {
+            Handle(IGESGeom_CompositeCurve) compositeCurve = Handle(IGESGeom_CompositeCurve)::DownCast(ent);
+            for (int i=1; i <= compositeCurve->NbCurves(); i++) {
+                AssignLevelToAllEntities(compositeCurve->Curve(i), level);
+            }
+        }
+    }
+
+    /**
+     * @brief Allows setting IGES names of more than 8 characters by appending an IGES 406 entity
+     */
+    void SetLongEntityName(IGESControl_Writer& writer, Handle(IGESData_IGESEntity) entity, const std::string& name)
+    {
+        Handle(IGESBasic_Name) nameEntity = new IGESBasic_Name;
+        nameEntity->Init(1, new TCollection_HAsciiString(name.c_str()));
+        entity->AddProperty(nameEntity);
+        writer.Model()->AddEntity(nameEntity);
+    }
+
     /**
      * @brief WriteIGESFaceNames takes the names of each face and writes it into the IGES model.
      */
-    void WriteIGESFaceNames(Handle(Transfer_FinderProcess) FP, const PNamedShape shape, int level)
+    void WriteIGESFaceNames(IGESControl_Writer& writer, const PNamedShape shape, int level)
     {
         if (!shape) {
             return;
         }
+
+        Handle(Transfer_FinderProcess) FP = writer.TransferProcess();
 
         TopTools_IndexedMapOfShape faceMap;
         TopExp::MapShapes(shape->Shape(),   TopAbs_FACE, faceMap);
         for (int iface = 1; iface <= faceMap.Extent(); ++iface) {
             TopoDS_Face face = TopoDS::Face(faceMap(iface));
             std::string faceName = shape->GetFaceTraits(iface-1).Name();
+            std::string shortFaceName = faceName;
             
-            if (faceName == shape->Name()) {
-                faceName = shape->ShortName();
+            if (shortFaceName == shape->Name()) {
+                shortFaceName = shape->ShortName();
             }
             
             PNamedShape origin = shape->GetFaceTraits(iface-1).Origin();
-            if (origin && origin->Name() == faceName) {
-                faceName = origin->ShortName();
+            if (origin && origin->Name() == shortFaceName) {
+                shortFaceName = origin->ShortName();
             }
             
             // IGES allows entity names of at max 8 characters.
             // If the string is longer than 8 characters, the IGES exports might crash
-            if (faceName.length() > 8) {
-                faceName = faceName.substr(0,8);
+            if (shortFaceName.length() > 8) {
+                shortFaceName = shortFaceName.substr(0,8);
             }
 
             // set face name
             Handle(IGESData_IGESEntity) entity;
             Handle(TransferBRep_ShapeMapper) mapper = TransferBRep::ShapeMapper ( FP, face );
             if ( FP->FindTypedTransient ( mapper, STANDARD_TYPE(IGESData_IGESEntity), entity ) ) {
-                Handle(TCollection_HAsciiString) str = new TCollection_HAsciiString(faceName.c_str());
+                Handle(TCollection_HAsciiString) str = new TCollection_HAsciiString(shortFaceName.c_str());
                 entity->SetLabel(str);
-                Handle(IGESData_LevelListEntity) lle;
-                entity->InitLevel(lle, level);
+                SetLongEntityName(writer, entity, faceName);
+                AssignLevelToAllEntities(entity, level);
             }
         }
     }
     
-    void WriteIGESShapeNames(Handle(Transfer_FinderProcess) FP, const PNamedShape shape, int level)
+    void WriteIGESShapeNames(IGESControl_Writer& writer, const PNamedShape shape, int level)
     {
         if (!shape) {
             return;
         }
 
-        std::string shapeName = shape->ShortName();
+        Handle(Transfer_FinderProcess) FP = writer.TransferProcess();
+
+        std::string shortName = shape->ShortName();
+        std::string shapeName = shape->Name();
         // IGES allows entity names of at max 8 characters.
         // If the string is longer than 8 characters, the IGES exports might crash
-        if (shapeName.length() > 8) {
-            shapeName = shapeName.substr(0,8);
+        if (shortName.length() > 8) {
+            shortName = shortName.substr(0,8);
         }
 
         // insert blanks
-        int nblanks = 8 - shapeName.length();
+        int nblanks = 8 - (int) shortName.length();
         for (int i = 0; i < nblanks; ++i) {
-            shapeName.insert(shapeName.begin(), ' ');
+            shortName.insert(shortName.begin(), ' ');
         }
 
-        // set face name
+        // set shape name
         Handle(IGESData_IGESEntity) entity;
         Handle(TransferBRep_ShapeMapper) mapper = TransferBRep::ShapeMapper ( FP, shape->Shape() );
         if ( FP->FindTypedTransient ( mapper, STANDARD_TYPE(IGESData_IGESEntity), entity ) ) {
-            Handle(TCollection_HAsciiString) str = new TCollection_HAsciiString(shapeName.c_str());
+            Handle(TCollection_HAsciiString) str = new TCollection_HAsciiString(shortName.c_str());
             entity->SetLabel(str);
-            Handle(IGESData_LevelListEntity) lle;
-            entity->InitLevel(lle, level);
+            SetLongEntityName(writer, entity, shapeName);
+            AssignLevelToAllEntities(entity, level);
         }
     }
     
-    void WriteIgesWireName(Handle(Transfer_FinderProcess) FP, const PNamedShape shape)
+    void WriteIgesWireName(IGESControl_Writer& writer, const PNamedShape shape)
     {
         if (!shape) {
             return;
         }
+
+        Handle(Transfer_FinderProcess) FP = writer.TransferProcess();
         
         TopTools_IndexedMapOfShape wireMap;
         TopExp::MapShapes(shape->Shape(),   TopAbs_EDGE, wireMap);
@@ -157,10 +221,10 @@ namespace
         }
     }
     
-    void WriteIgesNames(Handle(Transfer_FinderProcess) FP, const PNamedShape shape, int level)
+    void WriteIgesNames(IGESControl_Writer& writer, const PNamedShape shape, int level)
     {
-        WriteIGESFaceNames(FP, shape, level);
-        WriteIGESShapeNames(FP, shape, level);
+        WriteIGESFaceNames(writer, shape, level);
+        WriteIGESShapeNames(writer, shape, level);
     }
 
 } //namespace
@@ -336,7 +400,7 @@ void CTiglExportIges::AddToIges(PNamedShape shape, IGESControl_Writer& writer, i
             throw CTiglError("Error: Export to IGES file failed in CTiglExportStep. Could not translate shape " 
                              + shapeName + " to iges entity,", TIGL_ERROR);
         }
-        WriteIgesNames(FP, shape, level);
+        WriteIgesNames(writer, shape, level);
     }
     else {
         // no faces, export edges as wires
@@ -355,8 +419,8 @@ void CTiglExportIges::AddToIges(PNamedShape shape, IGESControl_Writer& writer, i
             }
             PNamedShape theWire(new CNamedShape(Edges->Value(iwire),shapeName.c_str()));
             theWire->SetShortName(shapeShortName.c_str());
-            WriteIGESShapeNames(FP, theWire, level);
-            WriteIgesWireName(FP, theWire);
+            WriteIGESShapeNames(writer, theWire, level);
+            WriteIgesWireName(writer, theWire);
         }
     }
 }
