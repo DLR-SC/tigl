@@ -87,9 +87,11 @@ PNamedShape CTiglFusePlane::FuseWithChilds(CTiglAbstractPhysicalComponent* paren
     assert(parent != NULL);
     
     PNamedShape parentShape (parent->GetLoft());
-    if (_mymode == FULL_PLANE || _mymode == FULL_PLANE_TRIMMED_FF) {
-        PNamedShape rootShapeMirr = parent->GetMirroredLoft();
-        parentShape = CMergeShapes(parentShape, rootShapeMirr);
+    if (parentShape) {
+        if (_mymode == FULL_PLANE || _mymode == FULL_PLANE_TRIMMED_FF) {
+            PNamedShape rootShapeMirr = parent->GetMirroredLoft();
+            parentShape = CMergeShapes(parentShape, rootShapeMirr);
+        }
     }
 
     CTiglAbstractPhysicalComponent::ChildContainerType childs = parent->GetChildren(false);
@@ -122,8 +124,10 @@ PNamedShape CTiglFusePlane::FuseWithChilds(CTiglAbstractPhysicalComponent* paren
         }
 
         TopoDS_Shape sh = inters->Shape();
-        sh = BRepAlgoAPI_Cut(sh, parentShape->Shape());
-        if (! sh.IsNull()) {
+        if (parentShape) {
+            sh = BRepAlgoAPI_Cut(sh, parentShape->Shape());
+        }
+        if (!sh.IsNull()) {
             inters->SetShape(sh);
             newInts.push_back(inters);
         }
