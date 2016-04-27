@@ -59,6 +59,7 @@
 #include <IGESGeom_CompositeCurve.hxx>
 #include <IGESBasic_Name.hxx>
 #include <IGESGeom_CurveOnSurface.hxx>
+#include <IGESSelect_WorkLibrary.hxx>
 
 #include <map>
 #include <cassert>
@@ -114,7 +115,7 @@ namespace
         Handle(IGESBasic_Name) nameEntity = new IGESBasic_Name;
         nameEntity->Init(1, new TCollection_HAsciiString(name.c_str()));
         entity->AddProperty(nameEntity);
-        writer.Model()->AddEntity(nameEntity);
+        writer.AddEntity(nameEntity);
     }
 
     /**
