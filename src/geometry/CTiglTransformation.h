@@ -66,9 +66,6 @@ public:
     // Returns the current transformation as gp_GTrsf object
     TIGL_EXPORT gp_GTrsf Get_gp_GTrsf(void) const;
 
-    // Method for simple transformations
-    TIGL_EXPORT gp_Trsf Get_gp_Trsf(void) const;
-
     // Post multiply this matrix with another matrix and stores 
     // the result in this matrix
     TIGL_EXPORT void PostMultiply(const CTiglTransformation& aTrans);
@@ -127,9 +124,10 @@ public:
     TIGL_EXPORT double GetValue(int row, int col) const;
 
 private:
-    double m_matrix[4][4];
-    bool isSimple;
+    bool IsUniform() const;
 
+    double m_matrix[4][4];
+    
 };
 
 } // end namespace tigl

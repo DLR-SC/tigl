@@ -604,11 +604,11 @@ gp_Vec CCPACSWingComponentSegment::GetInnerSectionNormal() const
         CCPACSWingSection& section = wing->GetSection(i);
         // TODO: only sections with single element supported here!!!
         if (section.GetSectionElement(1).GetUID() == fromElementUID) {
-            gp_Trsf elementTrans = section.GetSectionElement(1).GetSectionElementTransformation().Get_gp_Trsf();
-            gp_Trsf sectionTrans = section.GetSectionTransformation().Get_gp_Trsf();
+            gp_GTrsf elementTrans = section.GetSectionElement(1).GetSectionElementTransformation().Get_gp_GTrsf();
+            gp_GTrsf sectionTrans = section.GetSectionTransformation().Get_gp_GTrsf();
             // remove translation part
-            elementTrans.SetTranslationPart(gp_Vec(0,0,0));
-            sectionTrans.SetTranslationPart(gp_Vec(0,0,0));
+            elementTrans.SetTranslationPart(gp_XYZ(0, 0, 0));
+            sectionTrans.SetTranslationPart(gp_XYZ(0, 0, 0));
 
             gp_XYZ upDir(0,0,1);
             // first apply element transformation
@@ -631,11 +631,11 @@ gp_Vec CCPACSWingComponentSegment::GetOuterSectionNormal() const
         CCPACSWingSection& section = wing->GetSection(i);
         // TODO: only sections with single element supported here!!!
         if (section.GetSectionElement(1).GetUID() == toElementUID) {
-            gp_Trsf elementTrans = section.GetSectionElement(1).GetSectionElementTransformation().Get_gp_Trsf();
-            gp_Trsf sectionTrans = section.GetSectionTransformation().Get_gp_Trsf();
+            gp_GTrsf elementTrans = section.GetSectionElement(1).GetSectionElementTransformation().Get_gp_GTrsf();
+            gp_GTrsf sectionTrans = section.GetSectionTransformation().Get_gp_GTrsf();
             // remove translation part
-            elementTrans.SetTranslationPart(gp_Vec(0,0,0));
-            sectionTrans.SetTranslationPart(gp_Vec(0,0,0));
+            elementTrans.SetTranslationPart(gp_XYZ(0, 0, 0));
+            sectionTrans.SetTranslationPart(gp_XYZ(0, 0, 0));
 
             gp_XYZ upDir(0,0,1);
             // first apply element transformation
