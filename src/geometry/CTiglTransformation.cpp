@@ -81,7 +81,6 @@ CTiglTransformation& CTiglTransformation::operator=(const CTiglTransformation& m
             m_matrix[i][j] = mat.m_matrix[i][j];
         }
     }
-    isSimple = mat.isSimple;
     return *this;
 }
 
@@ -98,7 +97,6 @@ void CTiglTransformation::SetIdentity(void)
     for (int i = 0; i < 4; i++) {
         m_matrix[i][i] = 1.0;
     }
-    isSimple = true;
 }
 
 // Sets a value of the transformation matrix by row/col
@@ -109,8 +107,6 @@ void CTiglTransformation::SetValue(int row, int col, double value)
     }
 
     m_matrix[row][col] = value;
-    // not possible to identify if the new transformation is simple or not
-    isSimple = false;
 }
 
 // Post multiply this matrix with another matrix and stores 
@@ -135,8 +131,6 @@ void CTiglTransformation::PostMultiply(const CTiglTransformation& aTrans)
             m_matrix[row][col] = tmp_matrix[row][col];
         }
     }
-    // new transformation is simple when both were simple
-    isSimple = isSimple && aTrans.isSimple;
 }
 
 // Pre multiply this matrix with another matrix and stores 
@@ -161,8 +155,6 @@ void CTiglTransformation::PreMultiply(const CTiglTransformation& aTrans)
             m_matrix[row][col] = tmp_matrix[row][col];
         }
     }
-    // new transformation is simple when both were simple
-    isSimple = isSimple && aTrans.isSimple;
 }
 
 // Returns the current transformation as gp_GTrsf object
@@ -187,27 +179,6 @@ gp_GTrsf CTiglTransformation::Get_gp_GTrsf(void) const
     ocMatrix.SetValue(1, 4, m_matrix[0][3]);
     ocMatrix.SetValue(2, 4, m_matrix[1][3]);
     ocMatrix.SetValue(3, 4, m_matrix[2][3]);
-
-    return ocMatrix;
-}
-
-// Returns the current transformation as gp_Trsf object
-gp_Trsf CTiglTransformation::Get_gp_Trsf(void) const
-{
-    gp_Trsf ocMatrix;
-
-    // Vectorial part
-// SUPPORT for old OpenCASCADE Version
-#if OCC_VERSION_MAJOR <= 6 && OCC_VERSION_MINOR <= 7
-    ocMatrix.SetValues(m_matrix[0][0], m_matrix[0][1], m_matrix[0][2], m_matrix[0][3], 
-                        m_matrix[1][0], m_matrix[1][1], m_matrix[1][2], m_matrix[1][3],
-                        m_matrix[2][0], m_matrix[2][1], m_matrix[2][2], m_matrix[2][3],
-                        Precision::Confusion(), Precision::Confusion());
-#else
-    ocMatrix.SetValues(m_matrix[0][0], m_matrix[0][1], m_matrix[0][2], m_matrix[0][3], 
-                        m_matrix[1][0], m_matrix[1][1], m_matrix[1][2], m_matrix[1][3],
-                        m_matrix[2][0], m_matrix[2][1], m_matrix[2][2], m_matrix[2][3]);
-#endif
 
     return ocMatrix;
 }
@@ -239,7 +210,6 @@ void CTiglTransformation::AddTranslation(double tx, double ty, double tz)
     trans.SetValue(0, 3, tx);
     trans.SetValue(1, 3, ty);
     trans.SetValue(2, 3, tz);
-    trans.isSimple = true;
 
     PreMultiply(trans);
 }
@@ -257,17 +227,6 @@ void CTiglTransformation::AddScaling(double sx, double sy, double sz)
     trans.SetValue(0, 0, sx);
     trans.SetValue(1, 1, sy);
     trans.SetValue(2, 2, sz);
-    // quickfix for bug #240, simple scale seems to cause drastic 
-    // performance issues in GeomALGO_Splitter on high scale values, so 
-    // transformation is only set to simple for small scale values
-    if ((sx == sy) && (sx == sz) && fabs(sx) <= 10) {
-        trans.isSimple = true;
-    }
-    // quickfix for bug #359: scale of zero seems to destroy shape when gp_Trsf 
-    // is used
-    if (sx == 0 && sy == 0 && sz == 0) {
-        trans.isSimple = false;
-    }
 
     PreMultiply(trans);
 }
@@ -290,7 +249,6 @@ void CTiglTransformation::AddRotationX(double degreeX)
     trans.SetValue(1, 2, -sinVal);
     trans.SetValue(2, 1, sinVal);
     trans.SetValue(2, 2, cosVal);
-    trans.isSimple = true;
 
     PreMultiply(trans);
 }
@@ -313,7 +271,6 @@ void CTiglTransformation::AddRotationY(double degreeY)
     trans.SetValue(0, 2, sinVal);
     trans.SetValue(2, 0, -sinVal);
     trans.SetValue(2, 2, cosVal);
-    trans.isSimple = true;
 
     PreMultiply(trans);
 }
@@ -336,7 +293,6 @@ void CTiglTransformation::AddRotationZ(double degreeZ)
     trans.SetValue(0, 1, -sinVal);
     trans.SetValue(1, 0, sinVal);
     trans.SetValue(1, 1, cosVal);
-    trans.isSimple = true;
 
     PreMultiply(trans);
 }
@@ -353,7 +309,6 @@ void CTiglTransformation::AddProjectionOnXYPlane(void)
 
     CTiglTransformation trans;
     trans.SetValue(2, 2, 0.0);
-    trans.isSimple = false;
 
     PreMultiply(trans);
 }
@@ -370,7 +325,6 @@ void CTiglTransformation::AddProjectionOnXZPlane(void)
 
     CTiglTransformation trans;
     trans.SetValue(1, 1, 0.0);
-    trans.isSimple = false;
 
     PreMultiply(trans);
 }
@@ -387,7 +341,6 @@ void CTiglTransformation::AddProjectionOnYZPlane(void)
 
     CTiglTransformation trans;
     trans.SetValue(0, 0, 0.0);
-    trans.isSimple = false;
 
     PreMultiply(trans);
 }
@@ -404,7 +357,6 @@ void CTiglTransformation::AddMirroringAtXYPlane(void)
 
     CTiglTransformation trans;
     trans.SetValue(2, 2, -1.0);
-    trans.isSimple = false;
 
     PreMultiply(trans);
 }
@@ -421,7 +373,6 @@ void CTiglTransformation::AddMirroringAtXZPlane(void)
 
     CTiglTransformation trans;
     trans.SetValue(1, 1, -1.0);
-    trans.isSimple = false;
 
     PreMultiply(trans);
 }
@@ -438,7 +389,6 @@ void CTiglTransformation::AddMirroringAtYZPlane(void)
 
     CTiglTransformation trans;
     trans.SetValue(0, 0, -1.0);
-    trans.isSimple = false;
 
     PreMultiply(trans);
 }
@@ -447,13 +397,21 @@ void CTiglTransformation::AddMirroringAtYZPlane(void)
 // returns the transformed shape
 TopoDS_Shape CTiglTransformation::Transform(const TopoDS_Shape& shape) const
 {
-    // special handling for simple transformations (performance optimization)
-    if (isSimple) {
-        const BRepBuilderAPI_Transform brepBuilderTransform(shape, Get_gp_Trsf(), Standard_True);
-        const TopoDS_Shape& transformedShape = brepBuilderTransform.Shape();
-        return transformedShape;
-    } else {
-        const BRepBuilderAPI_GTransform brepBuilderGTransform(shape, Get_gp_GTrsf(), Standard_True);
+    if (IsUniform()) {
+        gp_Trsf t;
+        t.SetValues(m_matrix[0][0], m_matrix[0][1], m_matrix[0][2], m_matrix[0][3],
+            m_matrix[1][0], m_matrix[1][1], m_matrix[1][2], m_matrix[1][3],
+            m_matrix[2][0], m_matrix[2][1], m_matrix[2][2], m_matrix[2][3]
+#if OCC_VERSION_HEX >= VERSION_HEX_CODE(6,8,0)
+            );
+#else
+            , 1e-10, 1e-10);
+#endif
+        BRepBuilderAPI_Transform trafo(shape, t);
+        return trafo.Shape();
+    }
+    else {
+        BRepBuilderAPI_GTransform brepBuilderGTransform(shape, Get_gp_GTrsf(), Standard_True);
         const TopoDS_Shape& transformedShape = brepBuilderGTransform.Shape();
         return transformedShape;
     }
@@ -463,16 +421,9 @@ TopoDS_Shape CTiglTransformation::Transform(const TopoDS_Shape& shape) const
 // returns the transformed point
 gp_Pnt CTiglTransformation::Transform(const gp_Pnt& point) const
 {
-    // special handling for simple transformations (performance optimization)
-    if (isSimple) {
-        gp_XYZ transformed(point.X(), point.Y(), point.Z());
-        Get_gp_Trsf().Transforms(transformed);
-        return gp_Pnt(transformed.X(), transformed.Y(), transformed.Z());
-    } else {
-        gp_XYZ transformed(point.X(), point.Y(), point.Z());
-        Get_gp_GTrsf().Transforms(transformed);
-        return gp_Pnt(transformed.X(), transformed.Y(), transformed.Z());
-    }
+    gp_XYZ transformed(point.X(), point.Y(), point.Z());
+    Get_gp_GTrsf().Transforms(transformed);
+    return gp_Pnt(transformed.X(), transformed.Y(), transformed.Z());
 }
 
 void CTiglTransformation::printTransformMatrix()
@@ -485,13 +436,93 @@ void CTiglTransformation::printTransformMatrix()
     }
 }
 
+bool CTiglTransformation::IsUniform() const
+{
+    // The following code is copied from gp_Trsf
+
+    gp_XYZ col1(m_matrix[0][0], m_matrix[1][0], m_matrix[2][0]);
+    gp_XYZ col2(m_matrix[0][1], m_matrix[1][1], m_matrix[2][1]);
+    gp_XYZ col3(m_matrix[0][2], m_matrix[1][2], m_matrix[2][2]);
+
+    // compute the determinant
+    gp_Mat M(col1, col2, col3);
+    Standard_Real s = M.Determinant();
+
+    if (fabs(s) < Precision::Confusion()) {
+        return false;
+    }
+
+    if (s > 0) {
+        s = Pow(s, 1. / 3.);
+    }
+    else {
+        s = -Pow(-s, 1. / 3.);
+    }
+    M.Divide(s);
+
+    // check if the matrix is a rotation matrix
+    // i.e. check if M^T * M = I
+    gp_Mat TM(M);
+    TM.Transpose();
+    TM.Multiply(M);
+
+    // don t trust the initial values !
+    gp_Mat anIdentity;
+    anIdentity.SetIdentity();
+    TM.Subtract(anIdentity);
+
+    double v = 0;
+    v = TM.Value(1, 1);
+    if (fabs(v) > Precision::Confusion()) {
+        return false;
+    }
+
+    v = TM.Value(1, 2);
+    if (fabs(v) > Precision::Confusion()) {
+        return false;
+    }
+
+    v = TM.Value(1, 3);
+    if (fabs(v) > Precision::Confusion()) {
+        return false;
+    }
+
+    v = TM.Value(2, 1);
+    if (fabs(v) > Precision::Confusion()) {
+        return false;
+    }
+
+    v = TM.Value(2, 2);
+    if (fabs(v) > Precision::Confusion()) {
+        return false;
+    }
+
+    v = TM.Value(2, 3);
+    if (fabs(v) > Precision::Confusion()) {
+        return false;
+    }
+
+    v = TM.Value(3, 1);
+    if (fabs(v) > Precision::Confusion()) {
+        return false;
+    }
+
+    v = TM.Value(3, 2);
+    if (fabs(v) > Precision::Confusion()) {
+        return false;
+    }
+
+    v = TM.Value(3, 3);
+    if (fabs(v) > Precision::Confusion()) {
+        return false;
+    }
+
+    return true;
+}
+
 CTiglTransformation CTiglTransformation::Inverted() const 
 {
-    if (isSimple) {
-        return Get_gp_Trsf().Inverted();
-    } else {
-        return Get_gp_GTrsf().Inverted();
-    }
+    return Get_gp_GTrsf().Inverted();
 }
 
 // Getter for matrix values
