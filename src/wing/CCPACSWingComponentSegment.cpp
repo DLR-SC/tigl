@@ -199,35 +199,6 @@ void CCPACSWingComponentSegment::Cleanup(void)
 void CCPACSWingComponentSegment::Update(void)
 {
     Invalidate();
-
-    checkUniqueComponentSegment();
-}
-
-void CCPACSWingComponentSegment::checkUniqueComponentSegment()
-{
-    bool duplicate = false;
-
-    for (int i = 1; i <= wing->GetComponentSegmentCount(); i++) {
-        CCPACSWingComponentSegment& otherWCSegment = (tigl::CCPACSWingComponentSegment&) wing->GetComponentSegment(i);
-
-        if (otherWCSegment.GetUID().compare(this->GetUID()) == 0) {
-            if (duplicate) {
-                throw CTiglError("Two component segments have the same uID");
-            }
-
-            duplicate = true;
-            continue;
-        }
-
-        if (otherWCSegment.GetFromElementUID().compare(fromElementUID) == 0) {
-            throw CTiglError("Two component segments have the same start element");
-        }
-
-        if (otherWCSegment.GetToElementUID().compare(toElementUID) == 0) {
-            throw CTiglError("Two component segments have the same end element");
-        }
-
-    }
 }
 
 // Read CPACS segment elements
