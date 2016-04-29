@@ -495,11 +495,11 @@ TopoDS_Face CCPACSWingComponentSegment::GetSectionElementFace(const std::string&
         // check for inner section of first segment
         if (it == segmentList.begin()) {
             if ((*it)->GetInnerSectionElementUID() == sectionElementUID) {
-                return GetSingleFace((*it)->GetInnerClosure());
+                return GetSingleFace((*it)->GetInnerClosure(CCPACSWingSegment::WING_COORDINATE_SYSTEM));
             }
         }
         if ((*it)->GetOuterSectionElementUID() == sectionElementUID) {
-            return GetSingleFace((*it)->GetOuterClosure());
+            return GetSingleFace((*it)->GetOuterClosure(CCPACSWingSegment::WING_COORDINATE_SYSTEM));
         }
     }
     throw CTiglError("Error getting section element face from component segment!");
@@ -510,8 +510,8 @@ TopoDS_Face CCPACSWingComponentSegment::GetSectionElementFace(const std::string&
 gp_Vec CCPACSWingComponentSegment::GetLeadingEdgeDirection(const std::string& segmentUID) const
 {
     tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing->GetSegment(segmentUID);
-    gp_Pnt pl0 = segment.GetPoint(0, 0, false);
-    gp_Pnt pl1 = segment.GetPoint(1, 0, false);
+    gp_Pnt pl0 = segment.GetPoint(0, 0, false, CCPACSWingSegment::WING_COORDINATE_SYSTEM);
+    gp_Pnt pl1 = segment.GetPoint(1, 0, false, CCPACSWingSegment::WING_COORDINATE_SYSTEM);
 
     // get the normalized leading edge vector
     gp_Vec lev(pl0, pl1);
@@ -538,8 +538,8 @@ gp_Vec CCPACSWingComponentSegment::GetLeadingEdgeDirection(const gp_Pnt& point, 
 gp_Vec CCPACSWingComponentSegment::GetTrailingEdgeDirection(const std::string& segmentUID) const
 {
     tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing->GetSegment(segmentUID);
-    gp_Pnt pt0 = segment.GetPoint(0, 1, false);
-    gp_Pnt pt1 = segment.GetPoint(1, 1, false);
+    gp_Pnt pt0 = segment.GetPoint(0, 1, false, CCPACSWingSegment::WING_COORDINATE_SYSTEM);
+    gp_Pnt pt1 = segment.GetPoint(1, 1, false, CCPACSWingSegment::WING_COORDINATE_SYSTEM);
 
     // get the normalized trailing edge vector
     gp_Vec tev(pt0, pt1);
@@ -727,15 +727,15 @@ TopoDS_Wire CCPACSWingComponentSegment::GetMidplaneLine(const gp_Pnt& startPoint
     // case the points lie outside of the segments
     if (startPntInSection) {
         CCPACSWingSegment& segment = (CCPACSWingSegment&)wing->GetSegment(startSegmentUID);
-        gp_Pnt pl = segment.GetPoint(0, 0, true);
-        gp_Pnt pt = segment.GetPoint(0, 1, true);
+        gp_Pnt pl = segment.GetPoint(0, 0, true, CCPACSWingSegment::WING_COORDINATE_SYSTEM);
+        gp_Pnt pt = segment.GetPoint(0, 1, true, CCPACSWingSegment::WING_COORDINATE_SYSTEM);
         TopoDS_Edge chordLine = BRepBuilderAPI_MakeEdge(pl, pt);
         GetIntersectionPoint(cutFace, chordLine, startPnt);
     }
     if (endPntInSection) {
         CCPACSWingSegment& segment = (CCPACSWingSegment&)wing->GetSegment(endSegmentUID);
-        gp_Pnt pl = segment.GetPoint(1, 0, true);
-        gp_Pnt pt = segment.GetPoint(1, 1, true);
+        gp_Pnt pl = segment.GetPoint(1, 0, true, CCPACSWingSegment::WING_COORDINATE_SYSTEM);
+        gp_Pnt pt = segment.GetPoint(1, 1, true, CCPACSWingSegment::WING_COORDINATE_SYSTEM);
         TopoDS_Edge chordLine = BRepBuilderAPI_MakeEdge(pl, pt);
         GetIntersectionPoint(cutFace, chordLine, endPnt);
     }
@@ -760,8 +760,8 @@ TopoDS_Wire CCPACSWingComponentSegment::GetMidplaneLine(const gp_Pnt& startPoint
             // add intersection with end section only in case end point is skipped
             if (segment.GetUID() != endSegmentUID) {
                 // compute outer chord line
-                gp_Pnt pl = segment.GetPoint(1, 0, true);
-                gp_Pnt pt = segment.GetPoint(1, 1, true);
+                gp_Pnt pl = segment.GetPoint(1, 0, true, CCPACSWingSegment::WING_COORDINATE_SYSTEM);
+                gp_Pnt pt = segment.GetPoint(1, 1, true, CCPACSWingSegment::WING_COORDINATE_SYSTEM);
 
                 TopoDS_Edge outerChordLine = BRepBuilderAPI_MakeEdge(pl, pt);
                 // cut outer chord line with reference face
@@ -1109,21 +1109,21 @@ PNamedShape CCPACSWingComponentSegment::BuildLoft(void)
         throw CTiglError("Error: Could not find segments in CCPACSWingComponentSegment::BuildLoft", TIGL_ERROR);
     }
 
-    TopoDS_Shape innerShape = segments.front()->GetInnerClosure();
+    TopoDS_Shape innerShape = segments.front()->GetInnerClosure(CCPACSWingSegment::WING_COORDINATE_SYSTEM);
     innerFace = GetSingleFace(innerShape);
     sewing.Add(innerFace);
 
     for (SegmentList::const_iterator it = segments.begin(); it != segments.end(); ++it) {
         CCPACSWingSegment& segment = **it;
-        TopoDS_Face lowerSegmentFace = GetSingleFace(segment.GetLowerShape());
-        TopoDS_Face upperSegmentFace = GetSingleFace(segment.GetUpperShape());
+        TopoDS_Face lowerSegmentFace = GetSingleFace(segment.GetLowerShape(CCPACSWingSegment::WING_COORDINATE_SYSTEM));
+        TopoDS_Face upperSegmentFace = GetSingleFace(segment.GetUpperShape(CCPACSWingSegment::WING_COORDINATE_SYSTEM));
         upperShellSewing.Add(upperSegmentFace);
         lowerShellSewing.Add(lowerSegmentFace);
         sewing.Add(lowerSegmentFace);
         sewing.Add(upperSegmentFace);
     }
 
-    TopoDS_Shape outerShape = segments.back()->GetOuterClosure();
+    TopoDS_Shape outerShape = segments.back()->GetOuterClosure(CCPACSWingSegment::WING_COORDINATE_SYSTEM);
     outerFace = GetSingleFace(outerShape);
     sewing.Add(outerFace);
 
@@ -1200,20 +1200,20 @@ void CCPACSWingComponentSegment::BuildLines(void) const
             numberOfSections++;
             
             // get leading edge point
-            pnt = segment.GetPoint(0, 0, true);
+            pnt = segment.GetPoint(0, 0, true, CCPACSWingSegment::WING_COORDINATE_SYSTEM);
             lePointContainer.push_back(pnt);
             // get trailing edge point
-            pnt = segment.GetPoint(0, 1, true);
+            pnt = segment.GetPoint(0, 1, true, CCPACSWingSegment::WING_COORDINATE_SYSTEM);
             tePointContainer.push_back(pnt);
 
             // if we found the outer section, break...
             if (segment.GetOuterSectionElementUID() == toElementUID) {
                 numberOfSections++;
                 // get leading edge point
-                pnt = segment.GetPoint(1, 0, true);
+                pnt = segment.GetPoint(1, 0, true, CCPACSWingSegment::WING_COORDINATE_SYSTEM);
                 lePointContainer.push_back(pnt);
                 // get trailing edge point
-                pnt = segment.GetPoint(1, 1, true);
+                pnt = segment.GetPoint(1, 1, true, CCPACSWingSegment::WING_COORDINATE_SYSTEM);
                 tePointContainer.push_back(pnt);
                 break;
             }

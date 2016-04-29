@@ -231,8 +231,6 @@ void CCPACSWingSegment::Cleanup(void)
     description = "";
     upperShape.Nullify();
     lowerShape.Nullify();
-    innerShape.Nullify();
-    outerShape.Nullify();
     trailingEdgeShape.Nullify();
     surfacesAreValid = false;
     guideCurvesPresent = false;
@@ -339,7 +337,7 @@ CCPACSWing& CCPACSWingSegment::GetWing(void) const
 }
 
 // helper function to get the inner transformed chord line wire
-TopoDS_Wire CCPACSWingSegment::GetInnerWire(void)
+TopoDS_Wire CCPACSWingSegment::GetInnerWire(CoordinateSystem referenceCS)
 {
     CCPACSWingProfile& innerProfile = innerConnection.GetProfile();
     TopoDS_Wire w;
@@ -361,13 +359,17 @@ TopoDS_Wire CCPACSWingSegment::GetInnerWire(void)
     w = innerProfile.GetSplitWire();
 #endif
 
-    // removed wing transformation
-    CTiglTransformation identity;
-    return TopoDS::Wire(transformProfileWire(identity, innerConnection, w));
+    if (referenceCS == WING_COORDINATE_SYSTEM) {
+        CTiglTransformation identity;
+        return TopoDS::Wire(transformProfileWire(identity, innerConnection, w));
+    }
+    else {
+        return TopoDS::Wire(transformProfileWire(GetWing().GetTransformation(), innerConnection, w));
+    }
 }
 
 // helper function to get the outer transformed chord line wire
-TopoDS_Wire CCPACSWingSegment::GetOuterWire(void)
+TopoDS_Wire CCPACSWingSegment::GetOuterWire(CoordinateSystem referenceCS)
 {
     CCPACSWingProfile& outerProfile = outerConnection.GetProfile();
     TopoDS_Wire w;
@@ -389,45 +391,53 @@ TopoDS_Wire CCPACSWingSegment::GetOuterWire(void)
     w = outerProfile.GetSplitWire();
 #endif
 
-    // removed wing transformation
-    CTiglTransformation identity;
-    return TopoDS::Wire(transformProfileWire(identity, outerConnection, w));
+    if (referenceCS == WING_COORDINATE_SYSTEM) {
+        CTiglTransformation identity;
+        return TopoDS::Wire(transformProfileWire(identity, outerConnection, w));
+    }
+    else {
+        return TopoDS::Wire(transformProfileWire(GetWing().GetTransformation(), outerConnection, w));
+    }
 }
 
 // Getter for inner wire of opened profile (containing trailing edge)
-TopoDS_Wire CCPACSWingSegment::GetInnerWireOpened(void)
+TopoDS_Wire CCPACSWingSegment::GetInnerWireOpened(CoordinateSystem referenceCS)
 {
     CCPACSWingProfile& innerProfile = innerConnection.GetProfile();
-    CTiglTransformation identity;
-    return TopoDS::Wire(transformProfileWire(identity, innerConnection, innerProfile.GetWireOpened()));
+    if (referenceCS == WING_COORDINATE_SYSTEM) {
+        CTiglTransformation identity;
+        return TopoDS::Wire(transformProfileWire(identity, innerConnection, innerProfile.GetWireOpened()));
+    }
+    else {
+        return TopoDS::Wire(transformProfileWire(GetWing().GetTransformation(), innerConnection, innerProfile.GetWireOpened()));
+    }
 }
 
 // Getter for outer wire of opened profile (containing trailing edge)
-TopoDS_Wire CCPACSWingSegment::GetOuterWireOpened(void)
+TopoDS_Wire CCPACSWingSegment::GetOuterWireOpened(CoordinateSystem referenceCS)
 {
     CCPACSWingProfile& outerProfile = outerConnection.GetProfile();
-    CTiglTransformation identity;
-    return TopoDS::Wire(transformProfileWire(identity, outerConnection, outerProfile.GetWireOpened()));
+    if (referenceCS == WING_COORDINATE_SYSTEM) {
+        CTiglTransformation identity;
+        return TopoDS::Wire(transformProfileWire(identity, outerConnection, outerProfile.GetWireOpened()));
+    }
+    else {
+        return TopoDS::Wire(transformProfileWire(GetWing().GetTransformation(), outerConnection, outerProfile.GetWireOpened()));
+    }
 }
 
 // helper function to get the inner closing of the wing segment
-// using shape generated in MakeSurfaces
-TopoDS_Shape CCPACSWingSegment::GetInnerClosure()
+TopoDS_Shape CCPACSWingSegment::GetInnerClosure(CoordinateSystem referenceCS)
 {
-    if (!surfacesAreValid) {
-        MakeSurfaces();
-    }
-    return innerShape;
+    TopoDS_Wire wire = GetInnerWire(referenceCS);
+    return BRepBuilderAPI_MakeFace(wire).Face();
 }
 
 // helper function to get the inner closing of the wing segment
-// using shape generated in MakeSurfaces
-TopoDS_Shape CCPACSWingSegment::GetOuterClosure()
+TopoDS_Shape CCPACSWingSegment::GetOuterClosure(CoordinateSystem referenceCS)
 {
-    if (!surfacesAreValid) {
-        MakeSurfaces();
-    }
-    return outerShape;
+    TopoDS_Wire wire = GetOuterWire(referenceCS);
+    return BRepBuilderAPI_MakeFace(wire).Face();
 }
 
 // get short name for loft
@@ -457,13 +467,11 @@ std::string CCPACSWingSegment::GetShortShapeName ()
 // build loft out of faces (for compatibility with component segmen loft)
 PNamedShape CCPACSWingSegment::BuildLoft(void)
 {
-    MakeSurfaces();
-
     // combine faces of closed profiles to build loft
-    TopoDS_Face innerFace = GetSingleFace(innerShape);
-    TopoDS_Face lowerFace = GetSingleFace(lowerShape);
-    TopoDS_Face upperFace = GetSingleFace(upperShape);
-    TopoDS_Face outerFace = GetSingleFace(outerShape);
+    TopoDS_Face innerFace = GetSingleFace(GetInnerClosure());
+    TopoDS_Face lowerFace = GetSingleFace(GetLowerShape());
+    TopoDS_Face upperFace = GetSingleFace(GetUpperShape());
+    TopoDS_Face outerFace = GetSingleFace(GetOuterClosure());
 
     // sew faces and generate a solid
     BRepBuilderAPI_Sewing sewing;
@@ -490,9 +498,6 @@ PNamedShape CCPACSWingSegment::BuildLoft(void)
         throw CTiglError("Error building WingSegment shape: result of sewing is no shell or solid!");
     }
 
-    // transform into global coordinate system
-    loftShape = GetWing().GetWingTransformation().Transform(loftShape);
-    
     Handle(ShapeFix_Shape) sfs = new ShapeFix_Shape;
     sfs->Init ( loftShape );
     sfs->Perform();
@@ -644,7 +649,7 @@ double CCPACSWingSegment::GetSurfaceArea(bool fromUpper,
     else {
         face = TopoDS::Face(lowerShape);
     }
-    
+
     // convert eta xsi coordinates to u,v
     double u1, u2, u3, u4, v1, v2, v3, v4;
     etaXsiToUV(fromUpper, eta1, xsi1, u1, v1);
@@ -656,10 +661,10 @@ double CCPACSWingSegment::GetSurfaceArea(bool fromUpper,
     TopoDS_Edge e2 = getFaceTrimmingEdge(face, u2, v2, u3, v3);
     TopoDS_Edge e3 = getFaceTrimmingEdge(face, u3, v3, u4, v4);
     TopoDS_Edge e4 = getFaceTrimmingEdge(face, u4, v4, u1, v1);
-    
+
     TopoDS_Wire w = BRepBuilderAPI_MakeWire(e1,e2,e3,e4);
     TopoDS_Face f = BRepBuilderAPI_MakeFace(BRep_Tool::Surface(face), w);
-    
+
     // compute the surface area
     GProp_GProps sprops;
     BRepGProp::SurfaceProperties(f, sprops);
@@ -759,7 +764,7 @@ int CCPACSWingSegment::GetOuterConnectedSegmentIndex(int n)
 // inner wing profile. For eta = 1.0, xsi = 1.0 point is equal to the trailing
 // edge on the outer wing profile. If fromUpper is true, a point
 // on the upper surface is returned, otherwise from the lower.
-gp_Pnt CCPACSWingSegment::GetPoint(double eta, double xsi, bool fromUpper)
+gp_Pnt CCPACSWingSegment::GetPoint(double eta, double xsi, bool fromUpper, CoordinateSystem referenceCS)
 {
     if (eta < 0.0 || eta > 1.0) {
         throw CTiglError("Error: Parameter eta not in the range 0.0 <= eta <= 1.0 in CCPACSWingSegment::GetPoint", TIGL_ERROR);
@@ -780,10 +785,15 @@ gp_Pnt CCPACSWingSegment::GetPoint(double eta, double xsi, bool fromUpper)
         outerProfilePoint = outerProfile.GetLowerPoint(xsi);
     }
 
-    // removed wing transformation
-    CTiglTransformation identity;
-    innerProfilePoint = transformProfilePoint(identity, innerConnection, innerProfilePoint);
-    outerProfilePoint = transformProfilePoint(identity, outerConnection, outerProfilePoint);
+    if (referenceCS == WING_COORDINATE_SYSTEM) {
+        CTiglTransformation identity;
+        innerProfilePoint = transformProfilePoint(identity, innerConnection, innerProfilePoint);
+        outerProfilePoint = transformProfilePoint(identity, outerConnection, outerProfilePoint);
+    }
+    else {
+        innerProfilePoint = transformProfilePoint(GetWing().GetWingTransformation(), innerConnection, innerProfilePoint);
+        outerProfilePoint = transformProfilePoint(GetWing().GetWingTransformation(), outerConnection, outerProfilePoint);
+    }
 
     // Get point on wing segment in dependence of eta by linear interpolation
     Handle(Geom_TrimmedCurve) profileLine = GC_MakeSegment(innerProfilePoint, outerProfilePoint);
@@ -939,10 +949,8 @@ void CCPACSWingSegment::GetEtaXsi(gp_Pnt pnt, double& eta, double& xsi)
 bool CCPACSWingSegment::GetIsOnTop(gp_Pnt pnt)
 {
     double tolerance = 0.03; // 3cm
-
-    MakeSurfaces();
-
-    GeomAPI_ProjectPointOnSurf Proj(pnt, upperSurface);
+    
+    GeomAPI_ProjectPointOnSurf Proj(pnt, GetUpperSurface());
     if (Proj.NbPoints() > 0 && Proj.LowerDistance() < tolerance) {
         return true;
     }
@@ -982,12 +990,15 @@ void CCPACSWingSegment::MakeSurfaces()
     TopoDS_Edge il_wire = innerConnection.GetProfile().GetLowerWireClosed();
     TopoDS_Edge ol_wire = outerConnection.GetProfile().GetLowerWireClosed();
 
-    // removed wing transformation
     CTiglTransformation identity;
-    iu_wire = TopoDS::Edge(transformProfileWire(identity, innerConnection, iu_wire));
-    ou_wire = TopoDS::Edge(transformProfileWire(identity, outerConnection, ou_wire));
-    il_wire = TopoDS::Edge(transformProfileWire(identity, innerConnection, il_wire));
-    ol_wire = TopoDS::Edge(transformProfileWire(identity, outerConnection, ol_wire));
+    TopoDS_Edge iu_wire_local = TopoDS::Edge(transformProfileWire(identity, innerConnection, iu_wire));
+    TopoDS_Edge ou_wire_local = TopoDS::Edge(transformProfileWire(identity, outerConnection, ou_wire));
+    TopoDS_Edge il_wire_local = TopoDS::Edge(transformProfileWire(identity, innerConnection, il_wire));
+    TopoDS_Edge ol_wire_local = TopoDS::Edge(transformProfileWire(identity, outerConnection, ol_wire));
+    iu_wire = TopoDS::Edge(transformProfileWire(wing->GetTransformation(), innerConnection, iu_wire));
+    ou_wire = TopoDS::Edge(transformProfileWire(wing->GetTransformation(), outerConnection, ou_wire));
+    il_wire = TopoDS::Edge(transformProfileWire(wing->GetTransformation(), innerConnection, il_wire));
+    ol_wire = TopoDS::Edge(transformProfileWire(wing->GetTransformation(), outerConnection, ol_wire));
 
     BRepOffsetAPI_ThruSections upperSections(Standard_False,Standard_True);
     upperSections.AddWire(BRepBuilderAPI_MakeWire(iu_wire));
@@ -999,9 +1010,20 @@ void CCPACSWingSegment::MakeSurfaces()
     lowerSections.AddWire(BRepBuilderAPI_MakeWire(ol_wire));
     lowerSections.Build();
 
+    BRepOffsetAPI_ThruSections upperSectionsLocal(Standard_False, Standard_True);
+    upperSectionsLocal.AddWire(BRepBuilderAPI_MakeWire(iu_wire_local));
+    upperSectionsLocal.AddWire(BRepBuilderAPI_MakeWire(ou_wire_local));
+    upperSectionsLocal.Build();
+
+    BRepOffsetAPI_ThruSections lowerSectionsLocal(Standard_False, Standard_True);
+    lowerSectionsLocal.AddWire(BRepBuilderAPI_MakeWire(il_wire_local));
+    lowerSectionsLocal.AddWire(BRepBuilderAPI_MakeWire(ol_wire_local));
+    lowerSectionsLocal.Build();
 #ifndef NDEBUG
     assert(GetNumberOfFaces(upperSections.Shape()) == 1);
     assert(GetNumberOfFaces(lowerSections.Shape()) == 1);
+    assert(GetNumberOfFaces(upperSectionsLocal.Shape()) == 1);
+    assert(GetNumberOfFaces(lowerSectionsLocal.Shape()) == 1);
 #endif
 
     TopExp_Explorer faceExplorer;
@@ -1011,6 +1033,13 @@ void CCPACSWingSegment::MakeSurfaces()
 #endif
     upperShape = faceExplorer.Current();
     upperSurface = BRep_Tool::Surface(TopoDS::Face(upperShape));
+
+    faceExplorer.Init(upperSectionsLocal.Shape(), TopAbs_FACE);
+#ifndef NDEBUG
+    assert(faceExplorer.More());
+#endif
+    upperShapeLocal = faceExplorer.Current();
+    upperSurfaceLocal = BRep_Tool::Surface(TopoDS::Face(upperShapeLocal));
     
     faceExplorer.Init(lowerSections.Shape(), TopAbs_FACE);
 #ifndef NDEBUG
@@ -1018,6 +1047,13 @@ void CCPACSWingSegment::MakeSurfaces()
 #endif
     lowerShape = faceExplorer.Current();
     lowerSurface = BRep_Tool::Surface(TopoDS::Face(lowerShape));
+
+    faceExplorer.Init(lowerSectionsLocal.Shape(), TopAbs_FACE);
+#ifndef NDEBUG
+    assert(faceExplorer.More());
+#endif
+    lowerShapeLocal = faceExplorer.Current();
+    lowerSurfaceLocal = BRep_Tool::Surface(TopoDS::Face(lowerShapeLocal));
     
     // compute total surface area
     GProp_GProps sprops;
@@ -1027,12 +1063,6 @@ void CCPACSWingSegment::MakeSurfaces()
     double lowerArea = sprops.Mass();
     
     mySurfaceArea = upperArea + lowerArea;
-
-    // computing inner shape, outer shape
-    TopoDS_Wire wire = GetInnerWire();
-    innerShape = BRepBuilderAPI_MakeFace(wire).Face();
-    wire = GetOuterWire();
-    outerShape = BRepBuilderAPI_MakeFace(wire).Face();
 
     // compute shapes for opened profiles
     TopoDS_Edge iu_wire_open = innerConnection.GetProfile().GetUpperWireOpened();
@@ -1071,12 +1101,6 @@ void CCPACSWingSegment::MakeSurfaces()
     assert(faceExplorer.More());
 #endif
     lowerShapeOpened = faceExplorer.Current();
-
-    // compute inner and outer shapes for opened profiles
-    wire = GetInnerWireOpened();
-    innerShapeOpened = BRepBuilderAPI_MakeFace(wire).Face();
-    wire = GetOuterWireOpened();
-    outerShapeOpened = BRepBuilderAPI_MakeFace(wire).Face();
 
     // get trailing edge wires from inner and outer profile
     TopoDS_Edge innerTEWire = innerProfile.GetTrailingEdgeOpened();
@@ -1139,48 +1163,59 @@ double CCPACSWingSegment::GetReferenceArea(TiglSymmetryAxis symPlane)
 }
 
 // Returns the lower Surface of this Segment
-Handle(Geom_Surface) CCPACSWingSegment::GetLowerSurface()
+Handle(Geom_Surface) CCPACSWingSegment::GetLowerSurface(CoordinateSystem referenceCS)
 {
     if (!surfacesAreValid) {
         MakeSurfaces();
     }
-    return lowerSurface;
+    if (referenceCS == WING_COORDINATE_SYSTEM) {
+        return lowerSurfaceLocal;
+    }
+    else {
+        return lowerSurface;
+    }
 }
 
 // Returns the upper Surface of this Segment
-Handle(Geom_Surface) CCPACSWingSegment::GetUpperSurface()
+Handle(Geom_Surface) CCPACSWingSegment::GetUpperSurface(CoordinateSystem referenceCS)
 {
     if (!surfacesAreValid) {
         MakeSurfaces();
     }
-    return upperSurface;
+    if (referenceCS == WING_COORDINATE_SYSTEM) {
+        return upperSurfaceLocal;
+    }
+    else {
+        return upperSurface;
+    }
 }
 
 // Returns the upper wing shape of this Segment
-TopoDS_Shape& CCPACSWingSegment::GetUpperShape()
+TopoDS_Shape& CCPACSWingSegment::GetUpperShape(CoordinateSystem referenceCS)
 {
     if (!surfacesAreValid) {
         MakeSurfaces();
     }
-    return upperShape;
+    if (referenceCS == WING_COORDINATE_SYSTEM) {
+        return upperShapeLocal;
+    }
+    else {
+        return upperShape;
+    }
 }
 
 // Returns the lower wing shape of this Segment
-TopoDS_Shape& CCPACSWingSegment::GetLowerShape()
+TopoDS_Shape& CCPACSWingSegment::GetLowerShape(CoordinateSystem referenceCS)
 {
     if (!surfacesAreValid) {
         MakeSurfaces();
     }
-    return lowerShape;
-}
-
-// Getter for trailing edge shape
-const TopoDS_Shape& CCPACSWingSegment::GetTrailingEdgeShape()
-{
-    if (!surfacesAreValid) {
-        MakeSurfaces();
+    if (referenceCS == WING_COORDINATE_SYSTEM) {
+        return lowerShapeLocal;
     }
-    return trailingEdgeShape;
+    else {
+        return lowerShape;
+    }
 }
 
 // get guide curve for given UID
