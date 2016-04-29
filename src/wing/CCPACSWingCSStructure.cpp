@@ -100,10 +100,8 @@ CCPACSWingShell& CCPACSWingCSStructure::GetUpperShell()
 
 void CCPACSWingCSStructure::Invalidate()
 {
-    isvalid = false;
-
+    // forward invalidation
     upperShell.Invalidate();
-
     lowerShell.Invalidate();
 }
 
