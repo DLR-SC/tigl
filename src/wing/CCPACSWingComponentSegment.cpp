@@ -526,8 +526,7 @@ gp_Vec CCPACSWingComponentSegment::GetLeadingEdgeDirection(const gp_Pnt& point, 
     gp_Pnt globalPnt = wing->GetWingTransformation().Transform(point);
 
     std::string segmentUID = defaultSegmentUID;
-    gp_Pnt nearestPnt;
-    const CTiglAbstractSegment* segment = findSegment(globalPnt.X(), globalPnt.Y(), globalPnt.Z(), nearestPnt);
+    const CTiglAbstractSegment* segment = findSegmentViaShape(globalPnt.X(), globalPnt.Y(), globalPnt.Z());
     if (segment != NULL) {
         segmentUID = segment->GetUID();
     }
@@ -554,8 +553,7 @@ gp_Vec CCPACSWingComponentSegment::GetTrailingEdgeDirection(const gp_Pnt& point,
     gp_Pnt globalPnt = wing->GetWingTransformation().Transform(point);
 
     std::string segmentUID = defaultSegmentUID;
-    gp_Pnt nearestPnt;
-    const CTiglAbstractSegment* segment = findSegment(globalPnt.X(), globalPnt.Y(), globalPnt.Z(), nearestPnt);
+    const CTiglAbstractSegment* segment = findSegmentViaShape(globalPnt.X(), globalPnt.Y(), globalPnt.Z());
     if (segment != NULL) {
         segmentUID = segment->GetUID();
     }
@@ -679,12 +677,11 @@ TopoDS_Wire CCPACSWingComponentSegment::GetMidplaneLine(const gp_Pnt& startPoint
 
     // determine wing segments containing the start and end points
     std::string startSegmentUID, endSegmentUID;
-    gp_Pnt nearestPnt;
-    const CTiglAbstractSegment* startSegment = findSegment(globalStartPnt.X(), globalStartPnt.Y(), globalStartPnt.Z(), nearestPnt);
+    const CTiglAbstractSegment* startSegment = findSegmentViaShape(globalStartPnt.X(), globalStartPnt.Y(), globalStartPnt.Z());
     if (startSegment != NULL) {
         startSegmentUID = startSegment->GetUID();
     }
-    const CTiglAbstractSegment* endSegment = findSegment(globalEndPnt.X(), globalEndPnt.Y(), globalEndPnt.Z(), nearestPnt);
+    const CTiglAbstractSegment* endSegment = findSegmentViaShape(globalEndPnt.X(), globalEndPnt.Y(), globalEndPnt.Z());
     if (endSegment != NULL) {
         endSegmentUID = endSegment->GetUID();
     }
@@ -1702,39 +1699,35 @@ const std::string & CCPACSWingComponentSegment::GetToElementUID(void) const
 
 // Returns the segment to a given point on the componentSegment. 
 // Returns null if the point is not an that wing!
-const CTiglAbstractSegment* CCPACSWingComponentSegment::findSegment(double x, double y, double z, gp_Pnt& nearestPoint) const
+const CTiglAbstractSegment* CCPACSWingComponentSegment::findSegment(double x, double y, double z, gp_Pnt& nearestPoint)
 {
-// using old implementation of findSegment because of stability problems
-// see #782
-#if 0
     CTiglAbstractSegment* result = NULL;
     gp_Pnt pnt(x, y, z);
 
 
-    const SegmentList& segments = GetSegmentList();
+    SegmentList& segments = GetSegmentList();
 
     double minDist = std::numeric_limits<double>::max();
     // now discover to which segment the point belongs
-    // [[CAS_AES]] changed to const_iterator
-    for (SegmentList::const_iterator segit = segments.begin(); segit != segments.end(); ++segit) {
+    for (SegmentList::iterator segit = segments.begin(); segit != segments.end(); ++segit) {
         try {
             double eta, xsi;
             (*segit)->GetEtaXsi(pnt, eta, xsi);
-            gp_Pnt pointProjected = (*segit)->GetChordPoint(eta,xsi);
+            gp_Pnt pointProjected = (*segit)->GetChordPoint(eta, xsi);
 
             // Get nearest point on this segment
             double nextEta = GetNearestValidParameter(eta);
             double nextXsi = GetNearestValidParameter(xsi);
             gp_Pnt currentPoint = (*segit)->GetChordPoint(nextEta, nextXsi);
-            
+
             double currentDist = currentPoint.Distance(pointProjected);
             if (currentDist < minDist) {
-                minDist   = currentDist;
+                minDist = currentDist;
                 nearestPoint = currentPoint;
                 result = *segit;
             }
         }
-        catch(...) {
+        catch (...) {
             // do nothing
         }
     }
@@ -1745,38 +1738,6 @@ const CTiglAbstractSegment* CCPACSWingComponentSegment::findSegment(double x, do
     }
 
     return result;
-#else
-    // old code from TIGL 2.0.4
-    int i = 0;
-    CTiglAbstractSegment* result = NULL;
-    int segmentCount = wing->GetSegmentCount();
-    gp_Pnt pnt(x, y, z);
-
-    // Quick check if the point even is on this wing
-    // fix for #407: disabled quickClassifier since it generated incorrect results in some cases
-
-    // now discover the right segment
-    for (i=1; i <= segmentCount; i++)
-    {            
-        // added check for only handling segments which are contained in the component segment
-        CCPACSWingSegment& segment = static_cast<CCPACSWingSegment&>(wing->GetSegment(i));
-        if (!IsSegmentContained(segment)) {
-            continue;
-        }
-        //Handle_Geom_Surface aSurf = wing->GetUpperSegmentSurface(i);
-        TopoDS_Shape segmentLoft = wing->GetSegment(i).GetLoft()->Shape();
-        BRepClass3d_SolidClassifier classifier;
-        classifier.Load(segmentLoft);
-        classifier.Perform(pnt, 1.0e-3);
-        TopAbs_State aState=classifier.State();
-        if((classifier.State() == TopAbs_IN) || (classifier.State() == TopAbs_ON)){
-            result = &wing->GetSegment(i);
-            break;
-        }
-    }
-
-    return result;
-#endif
 }
 
 MaterialList CCPACSWingComponentSegment::GetMaterials(double eta, double xsi, TiglStructureType type)
@@ -1931,6 +1892,36 @@ CCPACSWingCell& CCPACSWingComponentSegment::GetCellByUID(std::string cellUID)
 const std::string& CCPACSWingComponentSegment::GetName(void) const
 {
     return name;
+}
+
+const CTiglAbstractSegment* CCPACSWingComponentSegment::findSegmentViaShape(double x, double y, double z) const
+{
+    // old code from TIGL 2.0.4
+    int i = 0;
+    CTiglAbstractSegment* result = NULL;
+    int segmentCount = wing->GetSegmentCount();
+    gp_Pnt pnt(x, y, z);
+
+    // now discover the right segment
+    for (i = 1; i <= segmentCount; i++)
+    {
+        // added check for only handling segments which are contained in the component segment
+        CCPACSWingSegment& segment = static_cast<CCPACSWingSegment&>(wing->GetSegment(i));
+        if (!IsSegmentContained(segment)) {
+            continue;
+        }
+        TopoDS_Shape segmentLoft = wing->GetSegment(i).GetLoft()->Shape();
+        BRepClass3d_SolidClassifier classifier;
+        classifier.Load(segmentLoft);
+        classifier.Perform(pnt, 1.0e-3);
+        TopAbs_State aState = classifier.State();
+        if ((classifier.State() == TopAbs_IN) || (classifier.State() == TopAbs_ON)) {
+            result = &wing->GetSegment(i);
+            break;
+        }
+    }
+
+    return result;
 }
 
 } // end namespace tigl
