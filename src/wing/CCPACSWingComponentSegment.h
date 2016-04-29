@@ -271,8 +271,6 @@ private:
     // create short name
     std::string MakeShortName();
 
-    void checkUniqueComponentSegment();
-
     // Returns the segment to a given point on the componentSegment by checking whether the
     // point lies within the segment's shape
     const CTiglAbstractSegment* findSegmentViaShape(double x, double y, double z) const;
