@@ -39,6 +39,7 @@ function printUsage {
     echo "Valid distributions:"
     echo "    SLE_11_SP1     Suse Linux Enterprise 11 SP1"
     echo "    SLE_11_SP2     Suse Linux Enterprise 11 SP2"
+    echo "    SLE_12_SP1     Suse Linux Enterprise 12 SP1"
     echo "    openSUSE_13.1  openSUSE 13.1"
     echo "    ubuntu_12.04   Ubuntu 12.04"
     echo "    ubuntu_13.10   Ubuntu 13.10"
@@ -91,6 +92,16 @@ function checkArguments {
 	PACK_TYPE=rpm
 	if [[  $tmp_arch == i386 ]]; then
 	    PACK_ARCH=i586
+        else
+            PACK_ARCH=x86_64
+            LIBDIR=lib64
+	fi
+    elif [[ $tmp_dist == SLE_12_SP1 ]]; then
+	DIST=SLE_12_SP1
+	PACK_TYPE=rpm
+	if [[  $tmp_arch == i386 ]]; then
+	    echo "Error: x86 architecture not available on SLED 12"
+	    exit 1
         else
             PACK_ARCH=x86_64
             LIBDIR=lib64
@@ -301,9 +312,9 @@ if [[ $DIST != RedHat_RHEL-5 ]]; then
   #create start script for tiglviewer
   echo "#!/bin/bash" > tiglviewer.sh
   echo 'CURDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"' >> tiglviewer.sh
-  echo 'export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$CURDIR/'$LIBDIR/ >> tiglviewer.sh
+  echo 'export LD_LIBRARY_PATH=$CURDIR/'$LIBDIR/':$LD_LIBRARY_PATH' >> tiglviewer.sh
   if [[ $PACK_TYPE == deb ]]; then
-      echo 'export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$CURDIR/'$LIBDIR/$ARCH-linux-gnu/ >> tiglviewer.sh   
+      echo 'export LD_LIBRARY_PATH=$CURDIR/'$LIBDIR/$ARCH-linux-gnu/':$LD_LIBRARY_PATH' >> tiglviewer.sh
   fi
   echo '$CURDIR/bin/TIGLViewer' >> tiglviewer.sh
   chmod +x tiglviewer.sh
