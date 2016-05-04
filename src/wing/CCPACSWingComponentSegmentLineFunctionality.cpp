@@ -14,6 +14,7 @@
 * limitations under the License.
 */
 
+#include <assert.h>
 #include <BRepBuilderAPI_MakeVertex.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>

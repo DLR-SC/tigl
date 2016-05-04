@@ -126,8 +126,6 @@ void CCPACSWingProfile::ReadCPACS(TixiDocumentHandle tixiHandle)
     catch (...) {
         throw;
     }
-
-    Update();
 }
 
 // Write CPACS wing profile file
@@ -243,8 +241,11 @@ TopoDS_Wire CCPACSWingProfile::GetSplitWire()
     Update();
     // rebuild closed wire
     BRepBuilderAPI_MakeWire closedWireBuilder;
-    closedWireBuilder.Add(profileAlgo->GetLowerWireClosed());
-    closedWireBuilder.Add(profileAlgo->GetUpperWireClosed());
+    closedWireBuilder.Add(profileAlgo->GetLowerWire());
+    closedWireBuilder.Add(profileAlgo->GetUpperWire());
+    if (!profileAlgo->GetTrailingEdge().IsNull()) {
+        closedWireBuilder.Add(profileAlgo->GetTrailingEdge());
+    }
     closedWireBuilder.Build();
     
     if (!closedWireBuilder.IsDone()) {
