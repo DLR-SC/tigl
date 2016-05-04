@@ -256,15 +256,6 @@ void CCPACSWingProfilePointList::BuildWires()
     // close profile if not already closed
     gp_Pnt startPnt = points[0];
     gp_Pnt endPnt = points[points.size()-1];
-    // handle case when profile points don't end at x==1
-    if (fabs(1 - startPnt.X()) > Precision::Confusion()) {
-        extendStartPoint(points);
-        startPnt = points[0];
-    }
-    else if (fabs(1 - endPnt.X()) > Precision::Confusion()) {
-        extendEndPoint(points);
-        endPnt = points[points.size() - 1];
-    }
     // compute list of open and closed profile points
     openPoints = points;
     closedPoints = points;
@@ -312,7 +303,7 @@ void CCPACSWingProfilePointList::BuildWires()
     TopExp_Explorer wireExClosed(tempShapeClosed, TopAbs_EDGE);
     TopoDS_Edge profileEdgeTmpClosed = TopoDS::Edge(wireExClosed.Current());
 
-    BuildLETEPoints(closedPoints);
+    BuildLETEPoints();
 
     // Get the curve of the wire
     Standard_Real u1,u2;
@@ -331,48 +322,8 @@ void CCPACSWingProfilePointList::BuildWires()
     Handle(Geom_TrimmedCurve) lowerCurveClosed = new Geom_TrimmedCurve(curveClosed, curveClosed->FirstParameter(), lep_par_closed);
     Handle(Geom_TrimmedCurve) upperCurveClosed = new Geom_TrimmedCurve(curveClosed, lep_par_closed, curveClosed->LastParameter());
 
-    gp_Pnt firstPntOpened = lowerCurveOpened->StartPoint();
-    gp_Pnt lastPntOpened  = upperCurveOpened->EndPoint();
-    gp_Pnt firstPntClosed = lowerCurveClosed->StartPoint();
-    gp_Pnt lastPntClosed  = upperCurveClosed->EndPoint();
-
-    // Trim upper and lower curve to make sure, that the trailing edge
-    // is perpendicular to the chord line
-    // TODO: may not be required any more since we extend the points to x==1
-    double tolerance = 1e-4;
-    gp_Pln plane(tePoint,gp_Vec(lePoint, tePoint));
-    GeomAPI_IntCS int1(lowerCurveClosed, new Geom_Plane(plane));
-    if (int1.IsDone() && int1.NbPoints() > 0) {
-        Standard_Real u,v,w;
-        int1.Parameters(1, u, v, w);
-        if (w > lowerCurveClosed->FirstParameter() + Precision::Confusion() && w < lowerCurveClosed->LastParameter()) {
-            double relDist = lowerCurveClosed->Value(w).Distance(firstPntOpened) / tePoint.Distance(lePoint);
-            if (relDist > tolerance) {
-                LOG(WARNING) << "The wing profile " << profileRef.GetUID() << " will be trimmed"
-                             << " to avoid a skewed trailing edge."
-                             << " The lower part is trimmed about " << relDist*100. << " % w.r.t. the chord length."
-                             << " Please correct the wing profile!";
-            }
-            lowerCurveClosed = new Geom_TrimmedCurve(lowerCurveClosed, w, lowerCurveClosed->LastParameter());
-            curveClosed = new Geom_TrimmedCurve(curveClosed, w, curveClosed->LastParameter());
-        }
-    }
-    GeomAPI_IntCS int2(upperCurveClosed, new Geom_Plane(plane));
-    if (int2.IsDone() && int2.NbPoints() > 0) {
-        Standard_Real u,v,w;
-        int2.Parameters(1, u, v, w);
-        if ( w < upperCurveClosed->LastParameter() - Precision::Confusion() && w > upperCurveClosed->FirstParameter() ) {
-            double relDist = upperCurveClosed->Value(w).Distance(lastPntClosed) / tePoint.Distance(lePoint);
-            if (relDist > tolerance) {
-                LOG(WARNING) << "The wing profile " << profileRef.GetUID() << " will be trimmed"
-                             << " to avoid a skewed trailing edge."
-                             << " The upper part is trimmed about " << relDist*100. << " % w.r.t. the chord length."
-                             << " Please correct the wing profile!";
-            }
-            upperCurveClosed = new Geom_TrimmedCurve(upperCurveClosed, upperCurveClosed->FirstParameter(), w);
-            curveClosed = new Geom_TrimmedCurve(curveClosed, curveClosed->FirstParameter(), w);
-        }
-    }
+    trimUpperLowerCurve(lowerCurveOpened, upperCurveOpened, curveOpened);
+    trimUpperLowerCurve(lowerCurveClosed, upperCurveClosed, curveClosed);
 
     // upper and lower edges
     lowerWireOpened = BRepBuilderAPI_MakeEdge(lowerCurveOpened);
@@ -408,11 +359,11 @@ void CCPACSWingProfilePointList::BuildWires()
 // which is located farmost from the trailing edge point.
 // Finally, we correct the trailing edge to make sure, that the GetPoint
 // functions work correctly.
-void CCPACSWingProfilePointList::BuildLETEPoints(const ITiglWireAlgorithm::CPointContainer& points)
+void CCPACSWingProfilePointList::BuildLETEPoints(void)
 {
     // compute TE point
-    gp_Pnt firstPnt = points[0];
-    gp_Pnt lastPnt  = points[points.size() - 1];
+    gp_Pnt firstPnt = coordinates[0]->Get_gp_Pnt();
+    gp_Pnt lastPnt = coordinates[coordinates.size() - 1]->Get_gp_Pnt();
     double x = (firstPnt.X() + lastPnt.X())/2.;
     double y = (firstPnt.Y() + lastPnt.Y())/2.;
     double z = (firstPnt.Z() + lastPnt.Z())/2.;
@@ -420,10 +371,9 @@ void CCPACSWingProfilePointList::BuildLETEPoints(const ITiglWireAlgorithm::CPoin
 
     // find the point with the max dist to TE point
     lePoint = tePoint;
-    // iterate over passed points
-    ITiglWireAlgorithm::CPointContainer::const_iterator pit = points.begin();
-    for (; pit != points.end(); ++pit) {
-        gp_Pnt point = (*pit);
+    CCPACSCoordinateContainer::iterator pit = coordinates.begin();
+    for (; pit != coordinates.end(); ++pit) {
+        gp_Pnt point = (*pit)->Get_gp_Pnt();
         if (tePoint.Distance(point) > tePoint.Distance(lePoint)) {
             lePoint = point;
         }
@@ -544,18 +494,14 @@ const gp_Pnt& CCPACSWingProfilePointList::GetTEPoint() const
 // Helper method for closing profile points at trailing edge
 void CCPACSWingProfilePointList::closeProfilePoints(ITiglWireAlgorithm::CPointContainer& points)
 {
-    double deltayLow = points.front().Z();
-    double deltayUp = points.back().Z();
-
-    if (fabs(points.front().X() - 1) >= Precision::Confusion()) {
-        LOG(WARNING) << "The start point of the profile " << profileRef.GetUID() << " doesn't lie in x==1";
-    }
-    if (fabs(points.back().X() - 1) >= Precision::Confusion()) {
-        LOG(WARNING) << "The end point of the profile " << profileRef.GetUID() << " doesn't lie in x==1";
-    }
+    gp_Pnt startPnt = points.front();
+    gp_Pnt endPnt = points.back();
+    // points are always sorted beginning at trailing edge point in
+    // direction of lower side
+    gp_Vec gap(startPnt, endPnt);
 
     // always keep last x position for determination of upper or lower side
-    double lastX = points.front().X();
+    double lastX = startPnt.X();
     ITiglWireAlgorithm::CPointContainer::iterator it;
     for (it = points.begin(); it != points.end(); ++it) {
         gp_Pnt& pnt = (*it);
@@ -563,11 +509,12 @@ void CCPACSWingProfilePointList::closeProfilePoints(ITiglWireAlgorithm::CPointCo
             // points are always sorted beginning at trailing edge point in
             // direction of lower side
             bool upperSide = lastX < pnt.X();
+            double factor = (pnt.X() - (1.0 - c_blendingDistance)) / c_blendingDistance;
             if (upperSide) { // upper side
-                pnt.SetZ(pnt.Z() - ((pnt.X() - (1.0 - c_blendingDistance)) / c_blendingDistance * deltayUp));
+                pnt.Translate(-1 * factor * 0.5 * gap);
             }
             else {//lower side
-                pnt.SetZ(pnt.Z() - ((pnt.X() - (1.0 - c_blendingDistance)) / c_blendingDistance * deltayLow));
+                pnt.Translate(factor * 0.5 * gap);
             }
         }
         lastX = pnt.X();
@@ -575,17 +522,7 @@ void CCPACSWingProfilePointList::closeProfilePoints(ITiglWireAlgorithm::CPointCo
 
     // finally set start point identical to the end point, as reference use the one with
     // the x coordinate nearest to 1
-    gp_Pnt& startPnt = points.front();
-    gp_Pnt& endPnt = points.back();
-    double deltaXStart = fabs(1.0 - startPnt.X());
-    double deltaXEnd = fabs(1.0 - endPnt.X());
-
-    if (deltaXStart < deltaXEnd) {
-        endPnt = startPnt;
-    }
-    else {
-        startPnt = endPnt;
-    }
+    points.back() = points.front();
 }
 
 // Helper method for opening profile points at trailing edge
@@ -625,32 +562,47 @@ void CCPACSWingProfilePointList::openProfilePoints(ITiglWireAlgorithm::CPointCon
     }
 }
 
-// Helper method extending the profile's start point to x==1
-void CCPACSWingProfilePointList::extendStartPoint(ITiglWireAlgorithm::CPointContainer& points)
+void CCPACSWingProfilePointList::trimUpperLowerCurve(Handle(Geom_TrimmedCurve) lowerCurve, Handle(Geom_TrimmedCurve) upperCurve, Handle_Geom_Curve curve)
 {
-    LOG(WARNING) << "Wing Profile " << profileRef.GetUID() << " has start point at x<1 -> profile line will be extended until x==1 is reached!" << endl;
-    gp_Pnt p0 = points[0];
-    gp_Pnt p1 = points[1];
+    gp_Pnt firstPnt = lowerCurve->StartPoint();
+    gp_Pnt lastPnt = upperCurve->EndPoint();
 
-    gp_Vec dir(p1, p0);
-    double dx = 1.0 - p1.X();
-    double scale = dx / dir.X();
-    gp_Pnt startPnt = p1.Translated(dir * scale);
-    points.insert(points.begin(), startPnt);
-}
-
-// Helper method extending the profile's end point to x==1
-void CCPACSWingProfilePointList::extendEndPoint(ITiglWireAlgorithm::CPointContainer& points)
-{
-    LOG(WARNING) << "Wing Profile " << profileRef.GetUID() << " has end point at x<1 -> profile line will be extended until x==1 is reached!" << endl;
-    gp_Pnt p0 = points[points.size() - 1];
-    gp_Pnt p1 = points[points.size() - 2];
-
-    gp_Vec dir(p1, p0);
-    double dx = 1.0 - p1.X();
-    double scale = dx / dir.X();
-    gp_Pnt endPnt = p1.Translated(dir * scale);
-    points.push_back(endPnt);
+    // Trim upper and lower curve to make sure, that the trailing edge
+    // is perpendicular to the chord line
+    double tolerance = 1e-4;
+    gp_Pln plane(tePoint, gp_Vec(lePoint, tePoint));
+    GeomAPI_IntCS int1(lowerCurve, new Geom_Plane(plane));
+    if (int1.IsDone() && int1.NbPoints() > 0) {
+        Standard_Real u, v, w;
+        int1.Parameters(1, u, v, w);
+        if (w > lowerCurve->FirstParameter() + Precision::Confusion() && w < lowerCurve->LastParameter()) {
+            double relDist = lowerCurve->Value(w).Distance(firstPnt) / tePoint.Distance(lePoint);
+            if (relDist > tolerance) {
+                LOG(WARNING) << "The wing profile " << profileRef.GetUID() << " will be trimmed"
+                    << " to avoid a skewed trailing edge."
+                    << " The lower part is trimmed about " << relDist*100. << " % w.r.t. the chord length."
+                    << " Please correct the wing profile!";
+            }
+            lowerCurve = new Geom_TrimmedCurve(lowerCurve, w, lowerCurve->LastParameter());
+            curve = new Geom_TrimmedCurve(curve, w, curve->LastParameter());
+        }
+    }
+    GeomAPI_IntCS int2(upperCurve, new Geom_Plane(plane));
+    if (int2.IsDone() && int2.NbPoints() > 0) {
+        Standard_Real u, v, w;
+        int2.Parameters(1, u, v, w);
+        if (w < upperCurve->LastParameter() - Precision::Confusion() && w > upperCurve->FirstParameter()) {
+            double relDist = upperCurve->Value(w).Distance(lastPnt) / tePoint.Distance(lePoint);
+            if (relDist > tolerance) {
+                LOG(WARNING) << "The wing profile " << profileRef.GetUID() << " will be trimmed"
+                    << " to avoid a skewed trailing edge."
+                    << " The upper part is trimmed about " << relDist*100. << " % w.r.t. the chord length."
+                    << " Please correct the wing profile!";
+            }
+            upperCurve = new Geom_TrimmedCurve(upperCurve, upperCurve->FirstParameter(), w);
+            curve = new Geom_TrimmedCurve(curve, curve->FirstParameter(), w);
+        }
+    }
 }
 
 } // end namespace tigl

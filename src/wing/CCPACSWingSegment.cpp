@@ -467,36 +467,17 @@ std::string CCPACSWingSegment::GetShortShapeName ()
 // build loft out of faces (for compatibility with component segmen loft)
 PNamedShape CCPACSWingSegment::BuildLoft(void)
 {
-    // combine faces of closed profiles to build loft
-    TopoDS_Face innerFace = GetSingleFace(GetInnerClosure());
-    TopoDS_Face lowerFace = GetSingleFace(GetLowerShape());
-    TopoDS_Face upperFace = GetSingleFace(GetUpperShape());
-    TopoDS_Face outerFace = GetSingleFace(GetOuterClosure());
+    TopoDS_Wire innerWire = GetInnerWire();
+    TopoDS_Wire outerWire = GetOuterWire();
 
-    // sew faces and generate a solid
-    BRepBuilderAPI_Sewing sewing;
-    sewing.Add(innerFace);
-    sewing.Add(lowerFace);
-    sewing.Add(upperFace);
-    sewing.Add(outerFace);
-    sewing.Perform();
-    TopoDS_Shape shell = sewing.SewedShape();
-    TopoDS_Shape loftShape;
-    // compute solid out of shell (required for inside check)
-    if (shell.ShapeType() == TopAbs_SOLID) {
-        loftShape = shell;
-    }
-    else if (shell.ShapeType() == TopAbs_SHELL) {
-        BRepBuilderAPI_MakeSolid ms;
-        ms.Add(TopoDS::Shell(shell));
-        if (!ms.IsDone()) {
-            throw CTiglError("Error building WingSegment shape: generation of solid failed!");
-        }
-        loftShape = ms.Solid();
-    }
-    else {
-        throw CTiglError("Error building WingSegment shape: result of sewing is no shell or solid!");
-    }
+    // Build loft
+    //BRepOffsetAPI_ThruSections generator(Standard_False, Standard_False, Precision::Confusion());
+    BRepOffsetAPI_ThruSections generator(/* is solid (else shell) */ Standard_True, /* ruled (else smoothed out) */ Standard_False, Precision::Confusion());
+    generator.AddWire(innerWire);
+    generator.AddWire(outerWire);
+    generator.CheckCompatibility(/* check (defaults to true) */ Standard_False);
+    generator.Build();
+    TopoDS_Shape loftShape = generator.Shape();
 
     Handle(ShapeFix_Shape) sfs = new ShapeFix_Shape;
     sfs->Init ( loftShape );
@@ -985,10 +966,10 @@ void CCPACSWingSegment::MakeSurfaces()
         
     cordSurface.setQuadriangle(inner_lep.XYZ(), outer_lep.XYZ(), inner_tep.XYZ(), outer_tep.XYZ());
 
-    TopoDS_Edge iu_wire = innerConnection.GetProfile().GetUpperWireClosed();
-    TopoDS_Edge ou_wire = outerConnection.GetProfile().GetUpperWireClosed();
-    TopoDS_Edge il_wire = innerConnection.GetProfile().GetLowerWireClosed();
-    TopoDS_Edge ol_wire = outerConnection.GetProfile().GetLowerWireClosed();
+    TopoDS_Edge iu_wire = innerConnection.GetProfile().GetUpperWire();
+    TopoDS_Edge ou_wire = outerConnection.GetProfile().GetUpperWire();
+    TopoDS_Edge il_wire = innerConnection.GetProfile().GetLowerWire();
+    TopoDS_Edge ol_wire = outerConnection.GetProfile().GetLowerWire();
 
     CTiglTransformation identity;
     TopoDS_Edge iu_wire_local = TopoDS::Edge(transformProfileWire(identity, innerConnection, iu_wire));

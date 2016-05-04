@@ -38,6 +38,7 @@
 #include "ITiglWireAlgorithm.h"
 #include "ITiglWingProfileAlgo.h"
 #include "PTiglWingProfileAlgo.h"
+#include "Geom_TrimmedCurve.hxx"
 #include "TopoDS_Wire.hxx"
 #include "TopoDS_Edge.hxx"
 
@@ -120,7 +121,7 @@ protected:
     void BuildWires();
 
     // Builds leading and trailing edge points of the wing profile wire.
-    void BuildLETEPoints(const std::vector<gp_Pnt>& points);
+    void BuildLETEPoints(void);
 
     // Helper method for closing profile at trailing edge
     void closeProfilePoints(ITiglWireAlgorithm::CPointContainer& points);
@@ -128,18 +129,15 @@ protected:
     // Helper method for opening profile at trailing edge
     void openProfilePoints(ITiglWireAlgorithm::CPointContainer& points);
 
-    // Helper method extending the profile's start point to x==1
-    void extendStartPoint(ITiglWireAlgorithm::CPointContainer& points);
-
-    // Helper method extending the profile's end point to x==1
-    void extendEndPoint(ITiglWireAlgorithm::CPointContainer& points);
-
 private:
     // Copy constructor
     CCPACSWingProfilePointList(const CCPACSWingProfilePointList&);
 
     // Assignment operator
     void operator=(const CCPACSWingProfilePointList&);
+
+    // Helper method for trimming upper an lower curve
+    void trimUpperLowerCurve(Handle(Geom_TrimmedCurve) lowerCurve, Handle(Geom_TrimmedCurve) upperCurve, Handle_Geom_Curve curve);
 
 private:
     // constant for opening profile
