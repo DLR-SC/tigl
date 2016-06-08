@@ -26,7 +26,7 @@
 namespace tigl
 {
 
-class CCPACSWingCSStructure // shouldn't his be CCPACSWingComponentSegmentStructure
+class CCPACSWingCSStructure
 {
 public:
     TIGL_EXPORT CCPACSWingCSStructure();
