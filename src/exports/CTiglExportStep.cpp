@@ -389,11 +389,8 @@ void CTiglExportStep::ExportFusedStep(const std::string& filename)
 void CTiglExportStep::ExportShapes(const ListPNamedShape& shapes, const std::string& filename) const
 {
     STEPControl_Controller::Init();
-    // CAS_AES write step models in mm (default value)
-//     Interface_Static::SetCVal("xstep.cascade.unit", "M");
-//     Interface_Static::SetCVal("write.step.unit", "M");
-
-    Interface_Static::SetIVal("write.surfacecurve.mode", 0);
+    Interface_Static::SetCVal("xstep.cascade.unit", "M");
+    Interface_Static::SetCVal("write.step.unit", "M");
 
     if ( filename.empty()) {
        LOG(ERROR) << "Error: Empty filename in ExportShapes.";
