@@ -8,19 +8,10 @@ std::string errorToString(ReturnCode ret);
 
 class TixiError : public std::exception {
 public:
-	TixiError(ReturnCode ret)
-		: m_ret(ret) {
-		m_message = "ReturnCode: " + errorToString(m_ret);
-	}
+	TixiError(ReturnCode ret);
+	TixiError(ReturnCode ret, const std::string& message);
 
-	TixiError(ReturnCode ret, const std::string& message)
-		: m_ret(ret) {
-		m_message = message + "\nReturnCode: " + errorToString(m_ret);
-	}
-
-	virtual const char* what() const override {
-		return m_message.c_str();
-	}
+	virtual const char* what() const override;
 
 private:
 	ReturnCode m_ret;

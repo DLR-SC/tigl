@@ -42,6 +42,20 @@ std::string errorToString(ReturnCode ret) {
 	}
 }
 
+TixiError::TixiError(ReturnCode ret)
+	: m_ret(ret) {
+	m_message = "ReturnCode: " + errorToString(m_ret);
+}
+
+TixiError::TixiError(ReturnCode ret, const std::string& message)
+	: m_ret(ret) {
+	m_message = message + "\nReturnCode: " + errorToString(m_ret);
+}
+
+const char* TixiError::what() const {
+	return m_message.c_str();
+}
+
 bool TixiCheckAttribute(const TixiDocumentHandle& tixiHandle, const std::string& xpath, const std::string& attribute) {
 	auto ret = tixiCheckAttribute(tixiHandle, xpath.c_str(), attribute.c_str());
 	if (ret == ReturnCode::SUCCESS)

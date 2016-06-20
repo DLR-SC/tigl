@@ -13,56 +13,58 @@ auto CapitalizeFirstLetter(std::string str) {
 	return str;
 }
 
-void writeFields(std::ofstream& hpp, const std::vector<Field>& members) {
-	for (const auto& m : members)
-		hpp << "\t\t" << m.type << " " << m.fieldName() << ";\n";
+void writeFields(std::ofstream& hpp, const std::vector<Field>& fields) {
+	for (const auto& f : fields)
+		hpp << "\t\t" << f.fieldType() << " " << f.fieldName() << ";\n";
 }
 
-void writeAccessorDeclarations(std::ofstream& hpp, const std::vector<Field>& members) {
-	for (const auto& m : members) {
-		hpp << "\t\tTIGL_EXPORT " << m.type << " Get" << CapitalizeFirstLetter(m.name) << "() const;\n";
-		hpp << "\t\tTIGL_EXPORT void Set" << CapitalizeFirstLetter(m.name) << "(const " << m.type << "& value);\n";
+
+
+void writeAccessorDeclarations(std::ofstream& hpp, const std::vector<Field>& fields) {
+	for (const auto& f : fields) {
+		hpp << "\t\tTIGL_EXPORT const " << f.fieldType() << "& Get" << CapitalizeFirstLetter(f.name) << "() const;\n";
+		hpp << "\t\tTIGL_EXPORT void Set" << CapitalizeFirstLetter(f.name) << "(const " << f.fieldType() << "& value);\n";
 		hpp << "\n";
 	}
 }
 
-void writeAccessorImplementations(std::ofstream& cpp, const std::string& className, const std::vector<Field>& members) {
-	for (const auto& m : members) {
-		cpp << "\t" << m.type << " " << className << "::Get" << CapitalizeFirstLetter(m.name) << "() const { return " << m.fieldName() << "; }\n";
-		cpp << "\tvoid " << className << "::Set" << CapitalizeFirstLetter(m.name) << "(const " << m.type << "& value) { " << m.fieldName() << " = value; }\n";
+void writeAccessorImplementations(std::ofstream& cpp, const std::string& className, const std::vector<Field>& fields) {
+	for (const auto& f : fields) {
+		cpp << "\t" << f.fieldType() << " " << className << "::Get" << CapitalizeFirstLetter(f.name) << "() const { return " << f.fieldName() << "; }\n";
+		cpp << "\tvoid " << className << "::Set" << CapitalizeFirstLetter(f.name) << "(const " << f.fieldType() << "& value) { " << f.fieldName() << " = value; }\n";
 		cpp << "\n";
 	}
 }
 
-void writeIODeclarations(std::ofstream& hpp, const std::string& className, const std::vector<Field>& members) {
+void writeIODeclarations(std::ofstream& hpp, const std::string& className, const std::vector<Field>& fields) {
 	hpp << "\t\tTIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);\n";
 	hpp << "\t\tTIGL_EXPORT void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);\n";
 	hpp << "\n";
 }
 
-void writeIOImplementations(std::ofstream& cpp, const std::string& className, const std::vector<Field>& members) {
+void writeIOImplementations(std::ofstream& cpp, const std::string& className, const std::vector<Field>& fields) {
 	// read
 	cpp << "\tvoid " << className << "::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) {\n";
-	for (const auto& m : members) {
-		cpp << "\t\t// read " << (m.attribute ? "attribute" : "element") << " " << m.name << "\n";
-		if (m.attribute) {
+	for (const auto& f : fields) {
+		cpp << "\t\t// read " << (f.attribute ? "attribute" : "element") << " " << f.name << "\n";
+		if (f.attribute) {
 			// we check for the attribute's existence anyway and report errors
-			cpp << "\t\tif (TixiCheckAttribute(tixiHandle, xpath, " << m.name << ")) {\n";
-			cpp << "\t\t\t" << m.fieldName() << " = TixiGetTextAttribute(tixiHandle, xpath, " << m.name << ");\n";
-			if (m.cardinality == Cardinality::One) {
+			cpp << "\t\tif (TixiCheckAttribute(tixiHandle, xpath, " << f.name << ")) {\n";
+			cpp << "\t\t\t" << f.fieldName() << " = TixiGetTextAttribute(tixiHandle, xpath, " << f.name << ");\n";
+			if (f.cardinality == Cardinality::One) {
 				// attribute must exist
 				cpp << "\t\t} else {\n";
-				cpp << "\t\t\tLOG(WARNING) << \"Required attribute " << m.name << " is missing\";\n";
+				cpp << "\t\t\tLOG(WARNING) << \"Required attribute " << f.name << " is missing\";\n";
 				cpp << "\t\t}\n";
 			} else
 				cpp << "\t\t}\n";
 		} else {
-			cpp << "\t\tif (TixiCheckElement(tixiHandle, xpath + \"/\" + " << m.name << ")) {\n";
-			cpp << "\t\t\t" << m.fieldName() << " = TixiGetTextElement(tixiHandle, xpath + \"/\" + " << m.name << ");\n";
-			if (m.cardinality == Cardinality::One || m.cardinality == Cardinality::Many) {
+			cpp << "\t\tif (TixiCheckElement(tixiHandle, xpath + \"/\" + " << f.name << ")) {\n";
+			cpp << "\t\t\t" << f.fieldName() << " = TixiGetTextElement(tixiHandle, xpath + \"/\" + " << f.name << ");\n";
+			if (f.cardinality == Cardinality::One || f.cardinality == Cardinality::Many) {
 				// element must exist
 				cpp << "\t\t} else {\n";
-				cpp << "\t\t\tLOG(WARNING) << \"Required element " << m.name << " is missing\";\n";
+				cpp << "\t\t\tLOG(WARNING) << \"Required element " << f.name << " is missing\";\n";
 				cpp << "\t\t}\n";
 			} else
 				cpp << "\t\t}\n";
@@ -75,12 +77,12 @@ void writeIOImplementations(std::ofstream& cpp, const std::string& className, co
 
 	// write
 	cpp << "\tvoid " << className << "::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) {\n";
-	for (const auto& m : members) {
-		cpp << "\t\t// write " << (m.attribute ? "attribute" : "element") << " " << m.name << "\n";
-		if (m.attribute)
-			cpp << "\t\tTixiSaveTextAttribute(tixiHandle, xpath, \"" << m.name << "\", " << m.fieldName() << ");\n";
+	for (const auto& f : fields) {
+		cpp << "\t\t// write " << (f.attribute ? "attribute" : "element") << " " << f.name << "\n";
+		if (f.attribute)
+			cpp << "\t\tTixiSaveTextAttribute(tixiHandle, xpath, \"" << f.name << "\", " << f.fieldName() << ");\n";
 		else
-			cpp << "\t\tTixiSaveTextElement(tixiHandle, xpath, \"" << m.name << "\", " << m.fieldName() << ");\n";
+			cpp << "\t\tTixiSaveTextElement(tixiHandle, xpath, \"" << f.name << "\", " << f.fieldName() << ");\n";
 		cpp << "\n";
 	}
 	cpp << "\t}\n";
@@ -103,7 +105,6 @@ void writeLicenseHeader(std::ofstream& f) {
 	f << "// limitations under the License.\n";
 	f << "\n";
 }
-
 
 void generateCode(const std::string& outputLocation, const std::vector<Class>& classes) {
 	std::system(("mkdir " + outputLocation).c_str()); // TODO

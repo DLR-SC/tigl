@@ -18,6 +18,20 @@ struct Field {
 	auto fieldName() const {
 		return "m_" + name;
 	}
+
+	auto fieldType() const {
+		switch (cardinality) {
+			case Cardinality::ZeroOrOne:
+				return "/* optional */ " + type; // TODO: use optional<T> here
+			case Cardinality::One:
+				return type;
+			case Cardinality::ZeroOrMany:
+			case Cardinality::Many:
+				return "std::vector<" + type + ">";
+			default:
+				std::logic_error("Invalid cardinality");
+		}
+	}
 };
 
 struct Class {

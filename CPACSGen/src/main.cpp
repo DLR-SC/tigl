@@ -6,6 +6,7 @@
 #include <vector>
 #include <algorithm>
 #include <iterator>
+#include <limits>
 
 #include "TixiHelper.h"
 #include "Variant.hpp"
@@ -267,7 +268,7 @@ Element readElement(const TixiDocument& document, const std::string& xpath) {
 	else {
 		const auto maxOccurs = document.textAttribute(xpath, "maxOccurs");
 		if (maxOccurs == "unbounded")
-			element.maxOccurs = -1;
+			element.maxOccurs = std::numeric_limits<decltype(element.maxOccurs)>::max();
 		else
 			element.maxOccurs = std::stoi(maxOccurs);
 	}
@@ -360,14 +361,19 @@ auto buildFieldList(const ComplexType& type) {
 			m.name = e.name;
 			m.type = resolveType(e.type);
 			m.attribute = false;
-			if(e.minOccurs == 0 && e.maxOccurs == 1)
+			if (e.minOccurs == 0 && e.maxOccurs == 1)
 				m.cardinality = Cardinality::ZeroOrOne;
-			if (e.minOccurs == 0 && e.maxOccurs > 1)
+			else if (e.minOccurs == 0 && e.maxOccurs > 1)
 				m.cardinality = Cardinality::ZeroOrMany;
 			else if (e.minOccurs == 1 && e.maxOccurs == 1)
 				m.cardinality = Cardinality::One;
-			else if(e.minOccurs == 1 && e.maxOccurs > 1)
+			else if (e.minOccurs >= 1 && e.maxOccurs > 1)
 				m.cardinality = Cardinality::Many;
+			else if (e.minOccurs == 0 && e.maxOccurs == 0) {
+				std::cerr << "Element " + e.name + " with type " + e.type + " was omitted as minOccurs and maxOccurs are both zero" << std::endl;
+				return; // skip this type
+			} else
+				throw std::runtime_error("Invalid cardinalities, min: " + std::to_string(e.minOccurs) + ", max: " + std::to_string(e.maxOccurs));
 			members.push_back(m);
 		}
 
