@@ -18,8 +18,6 @@ void writeFields(std::ofstream& hpp, const std::vector<Field>& fields) {
 		hpp << "\t\t" << f.fieldType() << " " << f.fieldName() << ";\n";
 }
 
-
-
 void writeAccessorDeclarations(std::ofstream& hpp, const std::vector<Field>& fields) {
 	for (const auto& f : fields) {
 		hpp << "\t\tTIGL_EXPORT const " << f.fieldType() << "& Get" << CapitalizeFirstLetter(f.name) << "() const;\n";
