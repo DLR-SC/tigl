@@ -1,7 +1,6 @@
 #pragma once
 
 #include <typeinfo>
-
 template <std::size_t Int, std::size_t... Ints>
 struct max {
 	static constexpr const std::size_t value = max<Int, max<Ints...>::value>::value;
@@ -68,8 +67,13 @@ public:
 
 private:
 	void erase() {
-		if (m_type)
+		if (m_type) {
+			visit([this](auto& t) {
+				using T = std::decay_t<decltype(t)>;
+				t.~T();
+			});
 			m_type = nullptr;
+		}
 	}
 
 	template <typename T>
