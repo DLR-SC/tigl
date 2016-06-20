@@ -1,6 +1,7 @@
 
 #include "schemaparser.h"
 
+const static std::string inlineTypeNameMarker = "<inlineType>";
 
 NotImplementedException::NotImplementedException(const std::string& msg)
 	: m_msg(msg) {}
@@ -168,7 +169,10 @@ std::string SchemaParser::readSimpleType(const std::string& xpath) {
 	if (document.checkElement(xpath + "/restriction")) {
 		type.base = document.textAttribute(xpath + "/restriction", "base");
 
-		// TODO: implement subelements
+		document.forEachChild(xpath + "/restriction", "enumeration", [&](auto expath) {
+			const auto enumValue = document.textAttribute(expath, "value");
+			type.restrictionValues.push_back(enumValue);
+		});
 	}
 
 	if (document.checkAttribute(xpath, "id"))

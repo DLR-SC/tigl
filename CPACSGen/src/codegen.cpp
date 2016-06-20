@@ -104,7 +104,7 @@ void writeLicenseHeader(std::ofstream& f) {
 	f << "\n";
 }
 
-void generateCode(const std::string& outputLocation, const std::vector<Class>& classes) {
+void generateCode(const std::string& outputLocation, const std::vector<Class>& classes, const std::vector<Enum>& enums) {
 	std::system(("mkdir " + outputLocation).c_str()); // TODO
 
 	for (const auto& c : classes) {
@@ -184,5 +184,43 @@ void generateCode(const std::string& outputLocation, const std::vector<Class>& c
 
 		cpp << "}\n";
 		cpp << "\n";
+	}
+
+	for (const auto& e : enums) {
+
+		//
+		// create header file
+		//
+
+		std::ofstream hpp(outputLocation + "/" + e.name + ".h");
+		hpp.exceptions(std::ios::failbit | std::ios::badbit);
+
+		hpp << "#pragma once\n";
+		hpp << "\n";
+
+		// file header
+		writeLicenseHeader(hpp);
+
+		// namespace
+		hpp << "namespace tigl {\n";
+
+		// enum name
+		hpp << "\tenum class " << e.name << " {\n";
+
+		// values
+		bool first = true;
+		for (const auto& v : e.values) {
+			if (first)
+				first = false;
+			else {
+				hpp << ",\n";
+			}
+			hpp << "\t\t" << v;
+		}
+		hpp << "\n";
+
+		hpp << "\t};\n";
+		hpp << "}\n";
+		hpp << "\n";
 	}
 }

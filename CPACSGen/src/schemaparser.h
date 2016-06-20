@@ -57,6 +57,7 @@ struct ComplexType {
 struct SimpleType {
 	std::string name;
 	std::string base;
+	std::vector<std::string> restrictionValues;
 };
 
 class SchemaParser {

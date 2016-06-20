@@ -151,8 +151,9 @@ int main() {
 		std::cout << "Parsing " << cpacsLocation << std::endl;
 		SchemaParser schema(cpacsLocation);
 		const auto& complexTypes = schema.complexTypes();
+		const auto& simpleTypes = schema.simpleTypes();
 
-		// generate class model
+		// generate classes from complex types
 		std::vector<Class> classes;
 		classes.reserve(complexTypes.size());
 		std::transform(std::begin(complexTypes), std::end(complexTypes), std::back_inserter(classes), [&](const auto& p) {
@@ -164,9 +165,22 @@ int main() {
 			return c;
 		});
 
+		// generate enums from simple types
+		std::vector<Enum> enums;
+		for (const auto& p : simpleTypes) {
+			const auto& s = p.second;
+			if (s.restrictionValues.size() > 0) {
+				// create enum
+				Enum e;
+				e.name = makeClassName(s.name);
+				e.values = s.restrictionValues;
+				enums.push_back(e);
+			}
+		}
+		
 		// generate code
 		std::cout << "Generating classes" << std::endl;
-		generateCode(outputLocation, classes);
+		generateCode(outputLocation, classes, enums);
 
 		// copy IOHelper
 		//for (const auto& filename : copyFiles) {

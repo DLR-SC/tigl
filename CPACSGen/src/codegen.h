@@ -29,7 +29,7 @@ struct Field {
 			case Cardinality::Many:
 				return "std::vector<" + type + ">";
 			default:
-				std::logic_error("Invalid cardinality");
+				throw std::logic_error("Invalid cardinality");
 		}
 	}
 };
@@ -40,4 +40,9 @@ struct Class {
 	std::vector<Field> fields;
 };
 
-void generateCode(const std::string& outputLocation, const std::vector<Class>& classes);
+struct Enum {
+	std::string name;
+	std::vector<std::string> values;
+};
+
+void generateCode(const std::string& outputLocation, const std::vector<Class>& classes, const std::vector<Enum>& enums);
