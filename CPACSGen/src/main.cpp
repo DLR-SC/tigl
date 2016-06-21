@@ -1,3 +1,4 @@
+#include <boost/filesystem.hpp>
 #include <iostream>
 #include <fstream>
 #include <unordered_map>
@@ -150,20 +151,19 @@ int main() {
 		const auto& complexTypes = schema.complexTypes();
 		const auto& simpleTypes = schema.simpleTypes();
 
+		Types types;
+
 		// generate classes from complex types
-		std::vector<Class> classes;
-		classes.reserve(complexTypes.size());
-		std::transform(std::begin(complexTypes), std::end(complexTypes), std::back_inserter(classes), [&](const auto& p) {
+		for(const auto& p : complexTypes) {
 			Class c;
 			const auto& type = p.second;
 			c.name = makeClassName(type.name);
 			c.base = makeClassName(type.base);
 			c.fields = buildFieldList(schema, type);
-			return c;
-		});
+			types.classes[c.name] = c;
+		};
 
 		// generate enums from simple types
-		std::vector<Enum> enums;
 		for (const auto& p : simpleTypes) {
 			const auto& s = p.second;
 			if (s.restrictionValues.size() > 0) {
@@ -171,20 +171,21 @@ int main() {
 				Enum e;
 				e.name = makeClassName(s.name);
 				e.values = s.restrictionValues;
-				enums.push_back(e);
+				types.enums[e.name] = e;
 			} else
 				throw NotImplementedException("Simple times which are not enums are not implemented");
 		}
 		
 		// generate code
 		std::cout << "Generating classes" << std::endl;
-		generateCode(outputLocation, classes, enums);
+		generateCode(outputLocation, types);
 
 		// copy IOHelper
-		//for (const auto& filename : copyFiles) {
-		//	const auto command = "copy " + filename + " " + outputLocation;
-		//	system(command.c_str());
-		//}
+		for (const auto& filename : copyFiles) {
+			auto src = boost::filesystem::path(filename);
+			auto dst = boost::filesystem::path(outputLocation) / src.filename();
+			boost::filesystem::copy_file(src, dst, boost::filesystem::copy_option::overwrite_if_exists);
+		}
 		
 	} catch (const std::exception& e) {
 		std::cerr << "Exception: " << e.what() << std::endl;

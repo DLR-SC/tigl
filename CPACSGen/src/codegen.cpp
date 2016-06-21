@@ -1,3 +1,4 @@
+#include <boost/filesystem.hpp>
 #include <vector>
 #include <cctype>
 #include <fstream>
@@ -86,139 +87,91 @@ void writeIODeclarations(IndentingStreamWrapper& hpp, const std::string& classNa
 	hpp << "\n";
 }
 
-auto writeAttributeReadImplementation(IndentingStreamWrapper& cpp, const Field& f, const std::vector<Enum>& enums) {
-	std::string readFunc;
-	bool isEnum = false;
-	if (f.type == "std::string")
-		readFunc = "TixiGetTextAttribute";
-	else if (f.type == "double")
-		readFunc = "TixiGetDoubleAttribute";
-	else if (f.type == "bool")
-		readFunc = "TixiGetBoolAttribute";
-	else {
-		const auto it = std::find_if(std::begin(enums), std::end(enums), [&](const auto& e) {
-			return e.name == f.type;
-		});
-		if (it != std::end(enums)) {
-			isEnum = true;
-			readFunc = it->stringToEnumFunc();
-		} else
-			throw std::logic_error("No attribute read function provided for type " + f.type);
-	}
-	// TODO: keep this list in sync with the shipped IOHelper
+auto writeAttributeReadImplementation(IndentingStreamWrapper& cpp, const Field& f, const Types& types) {
+	// fundamental types
+	if (f.type == "std::string") { cpp << f.fieldName() << " = " << "TixiGetTextAttribute"   << "(tixiHandle, xpath, \"" << f.name << "\");\n"; return; }
+	if (f.type == "double")      { cpp << f.fieldName() << " = " << "TixiGetDoubleAttribute" << "(tixiHandle, xpath, \"" << f.name << "\");\n"; return; }
+	if (f.type == "bool")        { cpp << f.fieldName() << " = " << "TixiGetBoolAttribute"   << "(tixiHandle, xpath, \"" << f.name << "\");\n"; return; }
 
-	if (!isEnum)
-		cpp << f.fieldName() << " = " << readFunc << "(tixiHandle, xpath, \"" << f.name << "\");\n";
-	else
+	// enums
+	const auto it = types.enums.find(f.type);
+	if (it != std::end(types.enums)) {
+		const auto& readFunc = it->second.stringToEnumFunc();
 		cpp << f.fieldName() << " = " << readFunc << "(TixiGetTextAttribute(tixiHandle, xpath, \"" << f.name << "\"));\n";
+		return;
+	}
+
+	throw std::logic_error("No attribute read function provided for type " + f.type);
 }
 
-auto writeAttributeWriteImplementation(IndentingStreamWrapper& cpp, const Field& f, const std::vector<Enum>& enums) {
-	std::string writeFunc;
-	bool isEnum = false;
-	if (f.type == "std::string")
-		writeFunc = "TixiSaveTextAttribute";
-	else if (f.type == "double")
-		writeFunc = "TixiSaveDoubleAttribute";
-	else if (f.type == "bool")
-		writeFunc = "TixiSaveBoolAttribute";
-	else {
-		const auto it = std::find_if(std::begin(enums), std::end(enums), [&](const auto& e) {
-			return e.name == f.type;
-		});
-		if (it != std::end(enums)) {
-			isEnum = true;
-			writeFunc = it->enumToStringFunc();
-		} else
-			throw std::logic_error("No attribute write function provided for type " + f.type);
-	}
-	// TODO: keep this list in sync with the shipped IOHelper
+auto writeAttributeWriteImplementation(IndentingStreamWrapper& cpp, const Field& f, const Types& types) {
+	// fundamental types
+	if (f.type == "std::string") { cpp << "TixiSaveTextAttribute"   << "(tixiHandle, xpath, \"" << f.name << "\", " << f.fieldName() << ");\n"; return; }
+	if (f.type == "double")      { cpp << "TixiSaveDoubleAttribute" << "(tixiHandle, xpath, \"" << f.name << "\", " << f.fieldName() << ");\n"; return; }
+	if (f.type == "bool")        { cpp << "TixiSaveBoolAttribute"   << "(tixiHandle, xpath, \"" << f.name << "\", " << f.fieldName() << ");\n"; return; }
 
-	if (!isEnum)
-		cpp << writeFunc << "(tixiHandle, xpath, \"" << f.name << "\", " << f.fieldName() << ");\n";
-	else
+	// enums
+	const auto it = types.enums.find(f.type);
+	if (it != std::end(types.enums)) {
+		const auto& writeFunc = it->second.enumToStringFunc();
 		cpp << "TixiSaveTextAttribute(tixiHandle, xpath, \"" << f.name << "\", " << writeFunc << "(" << f.fieldName() << "));\n";
+		return;
+	}
+
+	throw std::logic_error("No attribute write function provided for type " + f.type);
 }
 
-auto writeElementReadImplementation(IndentingStreamWrapper& cpp, const Field& f, const std::vector<Class>& classes, const std::vector<Enum>& enums) {
-	std::string readFunc;
-	bool isEnum = false;
-	bool isClass = false;
-	if (f.type == "std::string")
-		readFunc = "TixiGetTextElement";
-	else if (f.type == "double")
-		readFunc = "TixiGetDoubleElement";
-	else if (f.type == "bool")
-		readFunc = "TixiGetBoolElement";
-	else if (f.type == "int")
-		readFunc = "TixiGetIntElement";
-	else {
-		const auto it1 = std::find_if(std::begin(enums), std::end(enums), [&](const auto& e) {
-			return e.name == f.type;
-		});
-		if (it1 != std::end(enums)) {
-			isEnum = true;
-			readFunc = it1->stringToEnumFunc();
-		} else {
-			const auto it2 = std::find_if(std::begin(classes), std::end(classes), [&](const auto& c) {
-				return c.name == f.type;
-			});
-			if (it2 != std::end(classes))
-				isClass = true;
-			else
-				throw std::logic_error("No element read function provided for type " + f.type);
-		}
-	}
-	// TODO: keep this list in sync with the shipped IOHelper
+auto writeElementReadImplementation(IndentingStreamWrapper& cpp, const Field& f, const Types& types) {
+	// fundamental types
+	if (f.type == "std::string") { cpp << f.fieldName() << " = " << "TixiGetTextElement"   << "(tixiHandle, xpath + \"/\" + " << f.name << ");\n"; return; }
+	if (f.type == "double")      { cpp << f.fieldName() << " = " << "TixiGetDoubleElement" << "(tixiHandle, xpath + \"/\" + " << f.name << ");\n"; return; }
+	if (f.type == "bool")        { cpp << f.fieldName() << " = " << "TixiGetBoolElement"   << "(tixiHandle, xpath + \"/\" + " << f.name << ");\n"; return; }
+	if (f.type == "int")         { cpp << f.fieldName() << " = " << "TixiGetIntElement"    << "(tixiHandle, xpath + \"/\" + " << f.name << ");\n"; return; }
 
-	if (isEnum)
+	// enums
+	const auto it = types.enums.find(f.type);
+	if (it != std::end(types.enums)) {
+		const auto& readFunc = it->second.stringToEnumFunc();
 		cpp << f.fieldName() << " = " << readFunc << "(TixiGetTextElement(tixiHandle, xpath + \"/\" + " << f.name << "));\n";
-	else if (isClass)
-		cpp << f.fieldName() << ".ReadCPACS(tixiHandle, xpath + \"/\" + " << f.name << "));\n";
-	else
-		cpp << f.fieldName() << " = " << readFunc << "(tixiHandle, xpath + \"/\" + " << f.name << ");\n";
-}
-
-auto writeElementWriteImplementation(IndentingStreamWrapper& cpp, const Field& f, const std::vector<Class>& classes, const std::vector<Enum>& enums) {
-	std::string writeFunc;
-	bool isEnum = false;
-	bool isClass = false;
-	if (f.type == "std::string")
-		writeFunc = "TixiSaveTextElement";
-	else if (f.type == "double")
-		writeFunc = "TixiSaveDoubleElement";
-	else if (f.type == "bool")
-		writeFunc = "TixiSaveBoolElement";
-	else if (f.type == "int")
-		writeFunc = "TixiSaveIntElement";
-	else {
-		const auto it1 = std::find_if(std::begin(enums), std::end(enums), [&](const auto& e) {
-			return e.name == f.type;
-		});
-		if (it1 != std::end(enums)) {
-			isEnum = true;
-			writeFunc = it1->enumToStringFunc();
-		} else {
-			const auto it2 = std::find_if(std::begin(classes), std::end(classes), [&](const auto& c) {
-				return c.name == f.type;
-			});
-			if (it2 != std::end(classes))
-				isClass = true;
-			else
-				throw std::logic_error("No element write function provided for type " + f.type);
-		}
+		return;
 	}
-	// TODO: keep this list in sync with the shipped IOHelper
 
-	if (isEnum)
-		cpp << "TixiSaveTextElement(tixiHandle, xpath, " << f.name << "\", " << writeFunc << "(" << f.fieldName() << "));\n";
-	else if (isClass)
-		cpp << f.fieldName() << ".WriteCPACS(tixiHandle, xpath + \"/\" + " << f.name << "));\n";
-	else
-		cpp << writeFunc << "(tixiHandle, xpath, " << f.name << "\", " << f.fieldName() << ");\n";
+	// classes
+	const auto it2 = types.classes.find(f.type);
+	if (it2 != std::end(types.classes)) {
+		cpp << f.fieldName() << ".ReadCPACS(tixiHandle, xpath + \"/\" + " << f.name << "));\n";
+		return;
+	}
+
+	throw std::logic_error("No element read function provided for type " + f.type);
 }
 
-void writeIOImplementations(IndentingStreamWrapper& cpp, const std::string& className, const std::vector<Field>& fields, const std::vector<Class>& classes, const std::vector<Enum>& enums) {
+auto writeElementWriteImplementation(IndentingStreamWrapper& cpp, const Field& f, const Types& types) {
+	// fundamental types
+	if (f.type == "std::string") { cpp << "TixiSaveTextElement"   << "(tixiHandle, xpath, " << f.name << "\", " << f.fieldName() << ");\n"; return; }
+	if (f.type == "double")      { cpp << "TixiSaveDoubleElement" << "(tixiHandle, xpath, " << f.name << "\", " << f.fieldName() << ");\n"; return; }
+	if (f.type == "bool")        { cpp << "TixiSaveBoolElement"   << "(tixiHandle, xpath, " << f.name << "\", " << f.fieldName() << ");\n"; return; }
+	if (f.type == "int")         { cpp << "TixiSaveIntElement"    << "(tixiHandle, xpath, " << f.name << "\", " << f.fieldName() << ");\n"; return; }
+
+	// enums
+	const auto it = types.enums.find(f.type);
+	if (it != std::end(types.enums)) {
+		const auto& writeFunc = it->second.enumToStringFunc();
+		cpp << "TixiSaveTextElement(tixiHandle, xpath, " << f.name << "\", " << writeFunc << "(" << f.fieldName() << "));\n";
+		return;
+	}
+
+	// classes
+	const auto it2 = types.classes.find(f.type);
+	if (it2 != std::end(types.classes)) {
+		cpp << f.fieldName() << ".WriteCPACS(tixiHandle, xpath + \"/\" + " << f.name << "));\n";
+		return;
+	}
+
+	throw std::logic_error("No element write function provided for type " + f.type);
+}
+
+void writeIOImplementations(IndentingStreamWrapper& cpp, const std::string& className, const std::vector<Field>& fields, const Types& types) {
 	// read
 	cpp << "void " << className << "::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) {\n";
 	{
@@ -230,7 +183,7 @@ void writeIOImplementations(IndentingStreamWrapper& cpp, const std::string& clas
 				cpp << "if (TixiCheckAttribute(tixiHandle, xpath, \"" << f.name << "\")) {\n";
 				{
 					Scope s(cpp);
-					writeAttributeReadImplementation(cpp, f, enums);
+					writeAttributeReadImplementation(cpp, f, types);
 				}
 				if (f.cardinality == Cardinality::One) {
 					// attribute must exist
@@ -246,7 +199,7 @@ void writeIOImplementations(IndentingStreamWrapper& cpp, const std::string& clas
 				cpp << "if (TixiCheckElement(tixiHandle, xpath + \"/\" + " << f.name << ")) {\n";
 				{
 					Scope s(cpp);
-					writeElementReadImplementation(cpp, f, classes, enums);
+					writeElementReadImplementation(cpp, f, types);
 				}
 				if (f.cardinality == Cardinality::One || f.cardinality == Cardinality::Many) {
 					// element must exist
@@ -273,9 +226,9 @@ void writeIOImplementations(IndentingStreamWrapper& cpp, const std::string& clas
 		for (const auto& f : fields) {
 			cpp << "// write " << (f.attribute ? "attribute" : "element") << " " << f.name << "\n";
 			if (f.attribute)
-				writeAttributeWriteImplementation(cpp, f, enums);
+				writeAttributeWriteImplementation(cpp, f, types);
 			else
-				writeElementWriteImplementation(cpp, f, classes, enums);
+				writeElementWriteImplementation(cpp, f, types);
 			cpp << "\n";
 		}
 	}
@@ -300,7 +253,13 @@ void writeLicenseHeader(IndentingStreamWrapper& f) {
 	f << "\n";
 }
 
-void writeClass(IndentingStreamWrapper& hpp, IndentingStreamWrapper& cpp, const Class& c, const std::vector<Class>& classes, const std::vector<Enum>& enums) {
+void writeIncludes(IndentingStreamWrapper& hpp, const Class& c, const Types& types) {
+	for (const auto& f : c.fields) {
+
+	}
+}
+
+void writeClass(IndentingStreamWrapper& hpp, IndentingStreamWrapper& cpp, const Class& c, const Types& types) {
 	//
 	// create header file
 	//
@@ -314,6 +273,7 @@ void writeClass(IndentingStreamWrapper& hpp, IndentingStreamWrapper& cpp, const 
 	// includes
 	hpp << "#include <string>\n";
 	hpp << "#include \"tixi.h\"\n";
+	writeIncludes(hpp, c, types);
 	hpp << "\n";
 
 	// namespace
@@ -321,32 +281,38 @@ void writeClass(IndentingStreamWrapper& hpp, IndentingStreamWrapper& cpp, const 
 	{
 		Scope s(hpp);
 
-		// class name and base class
-		hpp << "class " << c.name << (c.base.empty() ? "" : " : public " + c.base) << " {\n";
-		hpp << "public:\n";
+		hpp << "namespace generated {\n";
 		{
 			Scope s(hpp);
 
-			// ctor
-			hpp << "TIGL_EXPORT " << c.name << "();\n";
-			hpp << "\n";
+			// class name and base class
+			hpp << "class " << c.name << (c.base.empty() ? "" : " : public " + c.base) << " {\n";
+			hpp << "public:\n";
+			{
+				Scope s(hpp);
 
-			// io
-			writeIODeclarations(hpp, c.name, c.fields);
+				// ctor
+				hpp << "TIGL_EXPORT " << c.name << "();\n";
+				hpp << "\n";
 
-			// accessors
-			writeAccessorDeclarations(hpp, c.fields);
+				// io
+				writeIODeclarations(hpp, c.name, c.fields);
 
+				// accessors
+				writeAccessorDeclarations(hpp, c.fields);
+
+			}
+			hpp << "private:\n";
+			{
+				Scope s(hpp);
+
+				// fields
+				writeFields(hpp, c.fields);
+				hpp << "\n";
+			}
+			hpp << "};\n";
 		}
-		hpp << "private:\n";
-		{
-			Scope s(hpp);
-
-			// fields
-			writeFields(hpp, c.fields);
-			hpp << "\n";
-		}
-		hpp << "};\n";
+		hpp << "}\n";
 	}
 	hpp << "}\n";
 	hpp << "\n";
@@ -368,16 +334,21 @@ void writeClass(IndentingStreamWrapper& hpp, IndentingStreamWrapper& cpp, const 
 	{
 		Scope s(cpp);
 
-		// ctor
-		cpp << "" << c.name << "::" << c.name << "() {}\n";
-		cpp << "\n";
+		cpp << "namespace generated {\n";
+		{
+			Scope s(cpp);
 
-		// io
-		writeIOImplementations(cpp, c.name, c.fields, classes, enums);
+			// ctor
+			cpp << "" << c.name << "::" << c.name << "() {}\n";
+			cpp << "\n";
 
-		// accessors
-		writeAccessorImplementations(cpp, c.name, c.fields);
+			// io
+			writeIOImplementations(cpp, c.name, c.fields, types);
 
+			// accessors
+			writeAccessorImplementations(cpp, c.name, c.fields);
+		}
+		cpp << "}\n";
 	}
 	cpp << "}\n";
 	cpp << "\n";
@@ -399,44 +370,50 @@ void writeEnum(IndentingStreamWrapper& hpp, const Enum& e) {
 	{
 		Scope s(hpp);
 
-		// enum name
-		hpp << "enum class " << e.name << " {\n";
+		hpp << "namespace generated {\n";
 		{
 			Scope s(hpp);
 
-			// values
-			for (const auto& v : e.values)
-				hpp << v << (&v != &e.values.back() ? "," : "") << "\n";
-		}
-		hpp << "};\n";
-
-		// enum to string function
-		hpp << "inline std::string " << e.enumToStringFunc() << "(const " << e.name << "& value) {\n";
-		{
-			Scope s(hpp);
-			hpp << "switch(value) {\n";
+			// enum name
+			hpp << "enum class " << e.name << " {\n";
 			{
 				Scope s(hpp);
-				for (const auto& v : e.values)
-					hpp << "case " << e.name << "::" << v << ": return \"" << v << "\";\n";
-			}
-			hpp << "}\n";
-		}
-		hpp << "}\n";
 
-		// string to enum function
-		hpp << "inline " << e.name << " " << e.enumToStringFunc() << "(const std::string& value) {\n";
-		{
-			Scope s(hpp);
-			for (const auto& v : e.values) {
-				hpp << "if (value == \"" << "\") {\n";
+				// values
+				for (const auto& v : e.values)
+					hpp << v << (&v != &e.values.back() ? "," : "") << "\n";
+			}
+			hpp << "};\n";
+
+			// enum to string function
+			hpp << "inline std::string " << e.enumToStringFunc() << "(const " << e.name << "& value) {\n";
+			{
+				Scope s(hpp);
+				hpp << "switch(value) {\n";
 				{
 					Scope s(hpp);
-					hpp << "return " << e.name << "::" << v << ";\n";
+					for (const auto& v : e.values)
+						hpp << "case " << e.name << "::" << v << ": return \"" << v << "\";\n";
 				}
 				hpp << "}\n";
 			}
-			hpp << "throw std::runtime_error(\"Invalid enum value \\\" + value + \\\" for enum type " << e.name << " \");";
+			hpp << "}\n";
+
+			// string to enum function
+			hpp << "inline " << e.name << " " << e.enumToStringFunc() << "(const std::string& value) {\n";
+			{
+				Scope s(hpp);
+				for (const auto& v : e.values) {
+					hpp << "if (value == \"" << "\") {\n";
+					{
+						Scope s(hpp);
+						hpp << "return " << e.name << "::" << v << ";\n";
+					}
+					hpp << "}\n";
+				}
+				hpp << "throw std::runtime_error(\"Invalid enum value \\\" + value + \\\" for enum type " << e.name << " \");";
+			}
+			hpp << "}\n";
 		}
 		hpp << "}\n";
 	}
@@ -444,10 +421,11 @@ void writeEnum(IndentingStreamWrapper& hpp, const Enum& e) {
 	hpp << "\n";
 }
 
-void generateCode(const std::string& outputLocation, const std::vector<Class>& classes, const std::vector<Enum>& enums) {
-	std::system(("mkdir " + outputLocation).c_str()); // TODO
+void generateCode(const std::string& outputLocation, const Types& types) {
+	boost::filesystem::create_directories(outputLocation);
 
-	for (const auto& c : classes) {
+	for (const auto& p : types.classes) {
+		const auto c = p.second;
 		std::ofstream hppFile(outputLocation + "/" + c.name + ".h");
 		hppFile.exceptions(std::ios::failbit | std::ios::badbit);
 		IndentingStreamWrapper hpp(hppFile);
@@ -456,10 +434,11 @@ void generateCode(const std::string& outputLocation, const std::vector<Class>& c
 		cppFile.exceptions(std::ios::failbit | std::ios::badbit);
 		IndentingStreamWrapper cpp(cppFile);
 
-		writeClass(hpp, cpp, c, classes, enums);
+		writeClass(hpp, cpp, c, types);
 	}
 
-	for (const auto& e : enums) {
+	for (const auto& p : types.enums) {
+		const auto e = p.second;
 		std::ofstream hppFile(outputLocation + "/" + e.name + ".h");
 		hppFile.exceptions(std::ios::failbit | std::ios::badbit);
 		IndentingStreamWrapper hpp(hppFile);

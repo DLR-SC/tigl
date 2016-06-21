@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <unordered_map>
 
 enum class Cardinality {
 	ZeroOrOne,
@@ -48,4 +49,9 @@ struct Enum {
 	std::string stringToEnumFunc() const;
 };
 
-void generateCode(const std::string& outputLocation, const std::vector<Class>& classes, const std::vector<Enum>& enums);
+struct Types {
+	std::unordered_map<std::string, Class> classes;
+	std::unordered_map<std::string, Enum> enums;
+};
+
+void generateCode(const std::string& outputLocation, const Types& enums);
