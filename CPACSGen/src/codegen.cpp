@@ -255,7 +255,10 @@ void writeLicenseHeader(IndentingStreamWrapper& f) {
 
 void writeIncludes(IndentingStreamWrapper& hpp, const Class& c, const Types& types) {
 	for (const auto& f : c.fields) {
-
+		if (types.enums.find(f.type) != std::end(types.enums) ||
+			types.classes.find(f.type) != std::end(types.classes)) {
+			hpp << "#include \"" << f.type << ".h\"\n";
+		}
 	}
 }
 
