@@ -1,7 +1,7 @@
 
 #include "schemaparser.h"
 
-const static std::string inlineTypeNameMarker = "<inlineType>";
+static const std::string inlineTypePrefix = "_inline_";
 
 NotImplementedException::NotImplementedException(const std::string& msg)
 	: m_msg(msg) {}
@@ -80,9 +80,11 @@ Attribute SchemaParser::readAttribute(const std::string& xpath) {
 	if (document.checkAttribute(xpath, "type"))
 		// referencing other type
 		att.type = document.textAttribute(xpath, "type");
-	else
+	else {
 		// type defined inline
-		att.type = readType(xpath);
+		const auto name = readType(xpath);
+		att.type = renameType(name, att.name + "Type");
+	}
 
 	if (document.checkAttribute(xpath, "use")) {
 		const auto use = document.textAttribute(xpath, "use");
@@ -110,9 +112,8 @@ std::string SchemaParser::readComplexType(const std::string& xpath) {
 		if (document.checkAttribute(xpath, "name"))
 			return document.textAttribute(xpath, "name");
 		else {
-			// generate unique type name
 			static auto id = 0;
-			return "inlineComplexType" + std::to_string(id++);
+			return inlineTypePrefix + "complexType" + std::to_string(id++);
 		}
 	}();
 
@@ -157,9 +158,8 @@ std::string SchemaParser::readSimpleType(const std::string& xpath) {
 		if (document.checkAttribute(xpath, "type"))
 			return document.textAttribute(xpath, "name");
 		else {
-			// generate unique type name
 			static auto id = 0;
-			return "inlineSimpleType" + std::to_string(id++);
+			return inlineTypePrefix + "simpleType" + std::to_string(id++);
 		}
 	}();
 
@@ -187,7 +187,8 @@ std::string SchemaParser::readType(const std::string& xpath) {
 	else if (document.checkElement(xpath + "/simpleType"))
 		return readSimpleType(xpath + "/simpleType");
 	else
-		return "ERROR_NO_TYPE";
+		// this happens if no type is specified for an element
+		return "__AnyContentType"; // TODO: provide this type
 	//throw std::runtime_error("Unexpected type at xpath: " + xpath);
 }
 
@@ -227,10 +228,39 @@ Element SchemaParser::readElement(const std::string& xpath) {
 	if (document.checkAttribute(xpath, "type"))
 		// referencing other type
 		element.type = document.textAttribute(xpath, "type");
-	else
+	else {
 		// type defined inline
-		element.type = readType(xpath);
+		const auto name = readType(xpath);
+		element.type = renameType(name, element.name + "Type");
+	}
+
+	assert(!element.type.empty());
 
 	return element;
 }
 
+std::string SchemaParser::renameType(const std::string& oldName, std::string newNameSuggestion) {
+	auto renameType = [&](auto& types) {
+		const auto it = types.find(oldName);
+		if (it != std::end(types)) {
+			auto type = it->second;
+			types.erase(it);
+
+			// try to find unique name based on suggestion
+			while (types.find(newNameSuggestion) != std::end(types))
+				newNameSuggestion += '_'; // TODO: replies on newNameSuggestion to have at least 4 chars (assumes suggestion ends with Type)
+
+			// insert with new name
+			type.name = newNameSuggestion;
+			types[newNameSuggestion] = type;
+			return true;
+		}
+		return false;
+	};
+	if (renameType(m_complexTypes))
+		return newNameSuggestion;
+	if (renameType(m_simpleTypes))
+		return newNameSuggestion;
+	return oldName; // TODO: remove after debugging
+	throw std::logic_error("Could not find type " + oldName);
+}

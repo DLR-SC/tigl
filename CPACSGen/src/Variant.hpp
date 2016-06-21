@@ -1,5 +1,64 @@
 #pragma once
 
+#define USE_BOOST_VARIANT
+#ifdef USE_BOOST_VARIANT
+
+#include <boost/variant.hpp>
+#include <boost/optional.hpp>
+
+template <typename... Ts>
+class Variant {
+public:
+	Variant() = default;
+
+	template<typename T>
+	Variant(const T& t) {
+		m_data = t;
+	}
+
+	Variant(const Variant& other) {
+		m_data = other.m_data;
+	}
+
+	auto& operator=(const Variant& other) {
+		m_data = other.m_data;
+		return *this;
+	}
+
+	Variant(Variant&& other) {
+		m_data = std::move(other.m_data);
+	}
+
+	auto& operator=(Variant&& other) {
+		m_data = std::move(other.m_data);
+	}
+
+	~Variant() = default;
+
+	template<typename T>
+	auto& operator=(const T& t) {
+		m_data = t;
+		return *this;
+	}
+
+	template<typename Visitor>
+	void visit(Visitor func) {
+		if(m_data)
+			boost::apply_visitor(func, *m_data);
+	}
+
+	template<typename Visitor>
+	void visit(Visitor func) const {
+		if (m_data)
+			boost::apply_visitor(func, *m_data);
+	}
+
+private:
+	boost::optional<boost::variant<Ts...>> m_data;
+};
+
+#else
+
 #include <typeinfo>
 template <std::size_t Int, std::size_t... Ints>
 struct max {
@@ -27,7 +86,7 @@ public:
 		: m_type(nullptr) { }
 
 	template<typename T>
-	Variant(const T& t)  {
+	Variant(const T& t) {
 		init(t);
 	}
 
@@ -39,6 +98,9 @@ public:
 		other.visit([this](auto& t) { init(t); });
 		return *this;
 	}
+
+	Variant(Variant&& other) = delete; // TODO: implement move
+	auto& operator=(Variant&& other) = delete; // TODO: implement move
 
 	~Variant() {
 		erase();
@@ -85,3 +147,5 @@ private:
 	const std::type_info* m_type;
 	unsigned char m_data[max_v<sizeof(Ts)...>];
 };
+
+#endif

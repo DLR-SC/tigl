@@ -65,7 +65,7 @@ auto resolveType(const SchemaParser& schema, const std::string& name) {
 			return xit->second;
 	}
 
-	if (name == "ERROR_NO_TYPE") // TODO: remove after debugging
+	if (name == "__AnyContentType") // TODO: remove after debugging
 		return name;
 
 	throw std::runtime_error("Unknown type: " + name);
@@ -88,7 +88,7 @@ auto buildFieldList(const SchemaParser& schema, const ComplexType& type) {
 	}
 
 	// elements
-	struct Visitor {
+	struct Visitor : public boost::static_visitor<> {
 		Visitor(const SchemaParser& schema, std::vector<Field>& members)
 			: schema(schema), members(members) {}
 
@@ -175,7 +175,8 @@ int main() {
 				e.name = makeClassName(s.name);
 				e.values = s.restrictionValues;
 				enums.push_back(e);
-			}
+			} else
+				throw NotImplementedException("Simple times which are not enums are not implemented");
 		}
 		
 		// generate code

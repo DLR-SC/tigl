@@ -48,7 +48,7 @@ struct Choice {
 
 struct ComplexType {
 	std::string name;
-	std::string base; // type name of base class or empty
+	std::string base;
 
 	Variant<Element, Choice, Sequence, All> elements;
 	std::vector<Attribute> attributes;
@@ -81,4 +81,6 @@ private:
 	std::string readSimpleType(const std::string& xpath);
 	std::string readType(const std::string& xpath);
 	Element readElement(const std::string& xpath);
+
+	std::string renameType(const std::string& oldName, std::string newNameSuggestion);
 };
