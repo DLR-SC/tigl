@@ -1,3 +1,4 @@
+#include <iostream>
 
 #include "schemaparser.h"
 
@@ -24,7 +25,6 @@ SchemaParser::SchemaParser(const std::string& cpacsLocation)
 		readElement(xpath);
 	});
 }
-
 
 All SchemaParser::readAll(const std::string& xpath) {
 	All all;
@@ -187,9 +187,10 @@ std::string SchemaParser::readType(const std::string& xpath) {
 	else if (document.checkElement(xpath + "/simpleType"))
 		return readSimpleType(xpath + "/simpleType");
 	else
+		std::cerr << "Element at xpath " << xpath << " has no type" << std::endl;
 		// this happens if no type is specified for an element
-		return "__AnyContentType"; // TODO: provide this type
-	//throw std::runtime_error("Unexpected type at xpath: " + xpath);
+		//return "__AnyContentType"; // TODO: provide this type
+	throw std::runtime_error("Unexpected type or no type at xpath: " + xpath);
 }
 
 Element SchemaParser::readElement(const std::string& xpath) {

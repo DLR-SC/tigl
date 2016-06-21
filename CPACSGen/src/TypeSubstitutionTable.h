@@ -13,8 +13,8 @@ public:
 			{ "doubleBaseType", "double" },
 			{ "integerBaseType", "int" },
 			{ "booleanBaseType", "bool" },
-			{ "pointXYZType", "CTiglPoint" },
-			{ "pointType", "CTiglPoint" }
+			//{ "pointXYZType", "CTiglPoint" },
+			//{ "pointType", "CTiglPoint" }
 		};
 	}
 

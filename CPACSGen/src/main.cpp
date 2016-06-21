@@ -65,9 +65,6 @@ auto resolveType(const SchemaParser& schema, const std::string& name) {
 			return xit->second;
 	}
 
-	if (name == "__AnyContentType") // TODO: remove after debugging
-		return name;
-
 	throw std::runtime_error("Unknown type: " + name);
 }
 

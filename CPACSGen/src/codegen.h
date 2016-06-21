@@ -43,6 +43,9 @@ struct Class {
 struct Enum {
 	std::string name;
 	std::vector<std::string> values;
+
+	std::string enumToStringFunc() const;
+	std::string stringToEnumFunc() const;
 };
 
 void generateCode(const std::string& outputLocation, const std::vector<Class>& classes, const std::vector<Enum>& enums);
