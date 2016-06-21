@@ -83,78 +83,148 @@ bool TixiCheckElement(const TixiDocumentHandle& tixiHandle, const std::string& x
 		);
 }
 
+namespace {
+	template <typename T, typename GetFunc>
+	auto TixiGetAttributeInternal(const TixiDocumentHandle& tixiHandle, const std::string& xpath, const std::string& attribute, GetFunc getFunc) {
+		T value;
+		const auto ret = getFunc(tixiHandle, xpath.c_str(), attribute.c_str(), &value);
+		if (ret != ReturnCode::SUCCESS)
+			throw TixiError(ret,
+				"Error getting std::string attribute value\n"
+				"xpath: " + xpath + "\n"
+				"attribute: " + attribute
+			);
+		return value;
+	}
+}
+
 std::string TixiGetTextAttribute(const TixiDocumentHandle& tixiHandle, const std::string& xpath, const std::string& attribute) {
-	char* text;
-	const auto ret = tixiGetTextAttribute(tixiHandle, xpath.c_str(), attribute.c_str(), &text);
-	if (ret != ReturnCode::SUCCESS)
-		throw TixiError(ret,
-			"Error getting attribute value\n"
-			"xpath: " + xpath + "\n"
-			"attribute: " + attribute
-		);
-	return std::string(text);
+	return std::string(TixiGetAttributeInternal<char*>(tixiHandle, xpath, attribute, tixiGetTextAttribute));
+}
+
+double TixiGetDoubleAttribute(const TixiDocumentHandle& tixiHandle, const std::string& xpath, const std::string& attribute) {
+	return TixiGetAttributeInternal<double>(tixiHandle, xpath, attribute, tixiGetDoubleAttribute);
+}
+
+bool TixiGetBoolAttribute(const TixiDocumentHandle& tixiHandle, const std::string& xpath, const std::string& attribute) {
+	return TixiGetAttributeInternal<int>(tixiHandle, xpath, attribute, tixiGetBooleanAttribute) != 0;
+}
+
+namespace {
+	template <typename T, typename GetFunc>
+	auto TixiGetElementInternal(const TixiDocumentHandle& tixiHandle, const std::string& xpath, GetFunc getFunc) {
+		T value;
+		const auto ret = getFunc(tixiHandle, xpath.c_str(), &value);
+		if (ret != ReturnCode::SUCCESS) {
+			throw TixiError(ret,
+				"Error getting element value\n"
+				"xpath: " + xpath
+			);
+		}
+		return value;
+	}
 }
 
 std::string TixiGetTextElement(const TixiDocumentHandle& tixiHandle, const std::string& xpath) {
-	char* text;
-	const auto ret = tixiGetTextElement(tixiHandle, xpath.c_str(), &text);
-	if (ret != ReturnCode::SUCCESS)
-		throw TixiError(ret,
-			"Error getting element value\n"
-			"xpath: " + xpath
-		);
-	return std::string(text);
+	return std::string(TixiGetElementInternal<char*>(tixiHandle, xpath, tixiGetTextElement));
+}
+
+double TixiGetDoubleElement(const TixiDocumentHandle& tixiHandle, const std::string& xpath) {
+	return TixiGetElementInternal<double>(tixiHandle, xpath, tixiGetDoubleElement);
+}
+
+bool TixiGetBoolElement(const TixiDocumentHandle& tixiHandle, const std::string& xpath) {
+	return TixiGetElementInternal<int>(tixiHandle, xpath, tixiGetBooleanElement) != 0;
+}
+
+int TixiGetIntElement(const TixiDocumentHandle& tixiHandle, const std::string& xpath) {
+	return TixiGetElementInternal<int>(tixiHandle, xpath, tixiGetBooleanElement);
+}
+
+namespace {
+	template<typename SaveFunc, typename... ValueAndFurtherArgs>
+	void TixiSaveAttributeInternal(const TixiDocumentHandle& tixiHandle, const std::string& xpath, const std::string& attribute, SaveFunc saveFunc, ValueAndFurtherArgs&&... args) {
+		const auto ret1 = tixiCheckElement(tixiHandle, xpath.c_str());
+		if (ret1 != SUCCESS) {
+			throw TixiError(ret1,
+				"Error setting attribute, element does not exist\n"
+				"xpath: " + xpath
+			);
+		}
+
+		const auto ret2 = saveFunc(tixiHandle, xpath.c_str(), attribute.c_str(), std::forward<ValueAndFurtherArgs>(args)...);
+		if (ret2 != SUCCESS) {
+			throw TixiError(ret2,
+				"Error setting attribute\n"
+				"xpath: " + xpath + "\n"
+				"attribute: " + attribute + "\n"
+			);
+		}
+	}
 }
 
 void TixiSaveTextAttribute(const TixiDocumentHandle& tixiHandle, const std::string& xpath, const std::string& attribute, const std::string& value) {
-	const auto ret1 = tixiCheckElement(tixiHandle, xpath.c_str());
-	if (ret1 != SUCCESS) {
-		throw TixiError(ret1,
-			"Error setting attribute, element does not exist\n"
-			"xpath: " + xpath
-		);
-	}
-
-	const auto ret2 = tixiAddTextAttribute(tixiHandle, xpath.c_str(), attribute.c_str(), value.c_str());
-	if (ret2 != SUCCESS) {
-		throw TixiError(ret2,
-			"Error setting attribute\n"
-			"xpath: " + xpath + "\n"
-			"attribute: " + attribute + "\n"
-		);
-	}
+	TixiSaveAttributeInternal(tixiHandle, xpath, attribute, tixiAddTextAttribute, value.c_str());
 }
 
-// TODO: updating an empty text doesn't work : no error, but the text is not updated
-void TixiSaveTextElement(const TixiDocumentHandle& tixiHandle, const std::string& parentXPath, const std::string& element, const std::string& value) {
-	const std::string xpath = parentXPath + "/" + element;
+void TixiSaveDoubleAttribute(const TixiDocumentHandle& tixiHandle, const std::string& xpath, const std::string& attribute, double value) {
+	TixiSaveAttributeInternal(tixiHandle, xpath, attribute, tixiAddDoubleAttribute, value, nullptr);
+}
 
-	// check if the parent elements exist
-	const auto ret1 = tixiCheckElement(tixiHandle, parentXPath.c_str());
-	if (ret1 != SUCCESS) {
-		throw TixiError(ret1,
-			"Error saving text element, parent element does not exist\n"
-			"parent xpath: " + parentXPath
-		);
-	}
+void TixiSaveBoolAttribute(const TixiDocumentHandle& tixiHandle, const std::string& xpath, const std::string& attribute, bool value) {
+	TixiSaveAttributeInternal(tixiHandle, xpath, attribute, tixiAddIntegerAttribute, value ? 1 : 0, nullptr); // TODO: no tixiAddBooleanAttribute in Tixi
+}
 
-	// first, delete the element
-	if (TixiCheckElement(tixiHandle, xpath)) {
-		const auto ret = tixiRemoveElement(tixiHandle, xpath.c_str());
-		if (ret != SUCCESS) {
-			throw TixiError(ret,
-				"Error saving text element, failed to remove previous element\n"
+namespace {
+	template<typename SaveFunc, typename... ValueAndFurtherArgs>
+	void TixiSaveElementInternal(const TixiDocumentHandle& tixiHandle, const std::string& parentXPath, const std::string& element, SaveFunc saveFunc, ValueAndFurtherArgs&&... args) {
+		const std::string xpath = parentXPath + "/" + element;
+
+		// check if the parent elements exist
+		const auto ret1 = tixiCheckElement(tixiHandle, parentXPath.c_str());
+		if (ret1 != SUCCESS) {
+			throw TixiError(ret1,
+				"Error saving element, parent element does not exist\n"
+				"parent xpath: " + parentXPath
+			);
+		}
+
+		// first, delete the element
+		if (TixiCheckElement(tixiHandle, xpath)) {
+			const auto ret = tixiRemoveElement(tixiHandle, xpath.c_str());
+			if (ret != SUCCESS) {
+				throw TixiError(ret,
+					"Error saving element, failed to remove previous element\n"
+					"xpath: " + xpath
+				);
+			}
+		}
+
+		// then, the new element is created with the text
+		const auto ret2 = saveFunc(tixiHandle, parentXPath.c_str(), element.c_str(), std::forward<ValueAndFurtherArgs>(args)...);
+		if (ret2 != SUCCESS) {
+			throw TixiError(ret2,
+				"Error saving element\n"
 				"xpath: " + xpath
 			);
 		}
 	}
 
-	// then, the new element is created with the text
-	const auto ret2 = tixiAddTextElement(tixiHandle, parentXPath.c_str(), element.c_str(), value.c_str());
-	if (ret2 != SUCCESS) {
-		throw TixiError(ret2,
-			"Error saving text element\n"
-			"xpath: " + xpath
-		);
-	}
+}
+
+// TODO: updating an empty text doesn't work : no error, but the text is not updated
+void TixiSaveTextElement(const TixiDocumentHandle& tixiHandle, const std::string& parentXPath, const std::string& element, const std::string& value) {
+	TixiSaveElementInternal(tixiHandle, parentXPath, element, tixiAddTextElement, value.c_str());
+}
+
+void TixiSaveDoubleElement(const TixiDocumentHandle& tixiHandle, const std::string& parentXPath, const std::string& element, double value) {
+	TixiSaveElementInternal(tixiHandle, parentXPath, element, tixiAddDoubleElement, value, nullptr);
+}
+
+void TixiSaveBoolElement(const TixiDocumentHandle& tixiHandle, const std::string& parentXPath, const std::string& element, bool value) {
+	TixiSaveElementInternal(tixiHandle, parentXPath, element, tixiAddBooleanElement, value ? 0 : 1);
+}
+
+void TixiSaveIntElement(const TixiDocumentHandle& tixiHandle, const std::string& parentXPath, const std::string& element, int value) {
+	TixiSaveElementInternal(tixiHandle, parentXPath, element, tixiAddIntegerElement, value, nullptr);
 }
