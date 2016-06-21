@@ -185,32 +185,32 @@ void writeIOImplementations(IndentingStreamWrapper& cpp, const std::string& clas
 					Scope s(cpp);
 					writeAttributeReadImplementation(cpp, f, types);
 				}
+				cpp << "}\n";
 				if (f.cardinality == Cardinality::One) {
 					// attribute must exist
-					cpp << "} else {\n";
+					cpp << "else {\n";
 					{
 						Scope s(cpp);
 						cpp << "LOG(WARNING) << \"Required attribute " << f.name << " is missing\";\n";
 					}
 					cpp << "}\n";
-				} else
-					cpp << "}\n";
+				}
 			} else {
 				cpp << "if (TixiCheckElement(tixiHandle, xpath + \"/\" + " << f.name << ")) {\n";
 				{
 					Scope s(cpp);
 					writeElementReadImplementation(cpp, f, types);
 				}
+				cpp << "}\n";
 				if (f.cardinality == Cardinality::One || f.cardinality == Cardinality::Many) {
 					// element must exist
-					cpp << "} else {\n";
+					cpp << "else {\n";
 					{
 						Scope s(cpp);
 						cpp << "LOG(WARNING) << \"Required element " << f.name << " is missing\";\n";
 					}
 					cpp << "}\n";
-				} else
-					cpp << "}\n";
+				}
 			}
 			cpp << "\n";
 		}
@@ -229,7 +229,6 @@ void writeIOImplementations(IndentingStreamWrapper& cpp, const std::string& clas
 				writeAttributeWriteImplementation(cpp, f, types);
 			else
 				writeElementWriteImplementation(cpp, f, types);
-			cpp << "\n";
 		}
 	}
 	cpp << "}\n";
@@ -254,6 +253,28 @@ void writeLicenseHeader(IndentingStreamWrapper& f) {
 }
 
 void writeIncludes(IndentingStreamWrapper& hpp, const Class& c, const Types& types) {
+	bool stringHeader = false;
+	bool vectorHeader = false;
+	bool optionalHeader = false;
+	for (const auto& f : c.fields) {
+		if (f.type == "std::string")
+			stringHeader = true;
+		switch (f.cardinality) {
+			case Cardinality::ZeroOrOne:
+				optionalHeader = true;
+				break;
+			case Cardinality::Many:
+			case Cardinality::ZeroOrMany:
+				vectorHeader = true;
+				break;
+			case Cardinality::One:
+				break;
+		}
+	}
+	if (stringHeader) hpp << "#include <string>";
+	if (vectorHeader) hpp << "#include <vector>";
+	//if (optionalHeader) hpp << "#include <boost/optional.hpp>";
+
 	for (const auto& f : c.fields) {
 		if (types.enums.find(f.type) != std::end(types.enums) ||
 			types.classes.find(f.type) != std::end(types.classes)) {
@@ -274,9 +295,8 @@ void writeClass(IndentingStreamWrapper& hpp, IndentingStreamWrapper& cpp, const 
 	writeLicenseHeader(hpp);
 
 	// includes
-	hpp << "#include <string>\n";
-	hpp << "#include \"tixi.h\"\n";
 	writeIncludes(hpp, c, types);
+	hpp << "#include \"tixi.h\"\n";
 	hpp << "\n";
 
 	// namespace
@@ -367,6 +387,7 @@ void writeEnum(IndentingStreamWrapper& hpp, const Enum& e) {
 
 	// includes
 	hpp << "#include <stdexcept>\n";
+	hpp << "\n";
 
 	// namespace
 	hpp << "namespace tigl {\n";
@@ -384,9 +405,10 @@ void writeEnum(IndentingStreamWrapper& hpp, const Enum& e) {
 
 				// values
 				for (const auto& v : e.values)
-					hpp << v << (&v != &e.values.back() ? "," : "") << "\n";
+					hpp << v.cppName << (&v != &e.values.back() ? "," : "") << "\n";
 			}
 			hpp << "};\n";
+			hpp << "\n";
 
 			// enum to string function
 			hpp << "inline std::string " << e.enumToStringFunc() << "(const " << e.name << "& value) {\n";
@@ -396,7 +418,7 @@ void writeEnum(IndentingStreamWrapper& hpp, const Enum& e) {
 				{
 					Scope s(hpp);
 					for (const auto& v : e.values)
-						hpp << "case " << e.name << "::" << v << ": return \"" << v << "\";\n";
+						hpp << "case " << e.name << "::" << v.cppName << ": return \"" << v.name << "\";\n";
 				}
 				hpp << "}\n";
 			}
@@ -407,14 +429,9 @@ void writeEnum(IndentingStreamWrapper& hpp, const Enum& e) {
 			{
 				Scope s(hpp);
 				for (const auto& v : e.values) {
-					hpp << "if (value == \"" << "\") {\n";
-					{
-						Scope s(hpp);
-						hpp << "return " << e.name << "::" << v << ";\n";
-					}
-					hpp << "}\n";
+					hpp << "if (value == \"" << v.name << "\") return " << e.name << "::" << v.cppName << ";\n";
 				}
-				hpp << "throw std::runtime_error(\"Invalid enum value \\\" + value + \\\" for enum type " << e.name << " \");";
+				hpp << "throw std::runtime_error(\"Invalid enum value \\\" + value + \\\" for enum type " << e.name << "\");\n";
 			}
 			hpp << "}\n";
 		}

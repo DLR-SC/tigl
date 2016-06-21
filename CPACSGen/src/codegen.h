@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <algorithm>
 #include <unordered_map>
 
 enum class Cardinality {
@@ -41,9 +42,24 @@ struct Class {
 	std::vector<Field> fields;
 };
 
+struct EnumValue {
+	EnumValue() = default;
+	EnumValue(const std::string& name)
+		: name(name) {
+		// replace some chars which are not allowed in C++ for cppName
+		cppName = name;
+		std::replace_if(std::begin(cppName), std::end(cppName), [](char c) {
+			return c == '-' || c == ' ';
+		}, '_');
+	}
+
+	std::string name;
+	std::string cppName;
+};
+
 struct Enum {
 	std::string name;
-	std::vector<std::string> values;
+	std::vector<EnumValue> values;
 
 	std::string enumToStringFunc() const;
 	std::string stringToEnumFunc() const;

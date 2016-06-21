@@ -83,7 +83,7 @@ Attribute SchemaParser::readAttribute(const std::string& xpath) {
 	else {
 		// type defined inline
 		const auto name = readType(xpath);
-		att.type = renameType(name, att.name + "Type");
+		att.type = renameType(name, att.name);
 	}
 
 	if (document.checkAttribute(xpath, "use")) {
@@ -232,7 +232,7 @@ Element SchemaParser::readElement(const std::string& xpath) {
 	else {
 		// type defined inline
 		const auto name = readType(xpath);
-		element.type = renameType(name, element.name + "Type");
+		element.type = renameType(name, element.name);
 	}
 
 	assert(!element.type.empty());
@@ -248,12 +248,14 @@ std::string SchemaParser::renameType(const std::string& oldName, std::string new
 			types.erase(it);
 
 			// try to find unique name based on suggestion
-			while (types.find(newNameSuggestion) != std::end(types))
-				newNameSuggestion += '_'; // TODO: replies on newNameSuggestion to have at least 4 chars (assumes suggestion ends with Type)
+			unsigned int id = 0;
+			while (types.find(newNameSuggestion + "Type" + std::to_string(id)) != std::end(types))
+				id++; // TODO: replies on newNameSuggestion to have at least 4 chars (assumes suggestion ends with Type)
 
 			// insert with new name
+			newNameSuggestion += "Type" + std::to_string(id);
 			type.name = newNameSuggestion;
-			types[newNameSuggestion] = type;
+			types[type.name] = type;
 			return true;
 		}
 		return false;

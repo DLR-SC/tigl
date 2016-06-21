@@ -170,7 +170,8 @@ int main() {
 				// create enum
 				Enum e;
 				e.name = makeClassName(s.name);
-				e.values = s.restrictionValues;
+				for (const auto& v : s.restrictionValues)
+					e.values.push_back(EnumValue(v));
 				types.enums[e.name] = e;
 			} else
 				throw NotImplementedException("Simple times which are not enums are not implemented");
