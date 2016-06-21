@@ -11480,7 +11480,7 @@
 			<extension base="complexBaseType">
 				<all>
 					<element minOccurs="0" name="wingPanelings" type="vSAeroWingPanelingsType"/>
-					<element minOccurs="0" name="fuselagePanelings"/>
+					<element minOccurs="0" name="fuselagePanelings" type="aeroFuseFuselagePanelingsType"/>
 				</all>
 			</extension>
 		</complexContent>
