@@ -20,11 +20,7 @@ public:
 	}
 
 	auto namedChildCount(const std::string& xpath, const std::string& child) const {
-		int count = 0;
-		auto ret = tixiGetNamedChildrenCount(m_handle, xpath.c_str(), child.c_str(), &count);
-		if (ret != ReturnCode::SUCCESS)
-			throw TixiError(ret);
-		return count;
+		return TixiGetNamedChildrenCount(m_handle, xpath, child);
 	}
 
 	template <typename Func>
@@ -40,6 +36,10 @@ public:
 
 	bool checkElement(const std::string& xpath) const {
 		return TixiCheckElement(m_handle, xpath);
+	}
+
+	bool checkElement(const std::string& xpath, const std::string& element) const {
+		return TixiCheckElement(m_handle, xpath, element);
 	}
 
 	const auto& handle() const {

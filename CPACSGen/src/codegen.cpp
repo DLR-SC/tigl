@@ -75,7 +75,7 @@ void writeAccessorDeclarations(IndentingStreamWrapper& hpp, const std::vector<Fi
 
 void writeAccessorImplementations(IndentingStreamWrapper& cpp, const std::string& className, const std::vector<Field>& fields) {
 	for (const auto& f : fields) {
-		cpp << "" << f.fieldType() << " " << className << "::Get" << CapitalizeFirstLetter(f.name) << "() const { return " << f.fieldName() << "; }\n";
+		cpp << "const " << f.fieldType() << "& " << className << "::Get" << CapitalizeFirstLetter(f.name) << "() const { return " << f.fieldName() << "; }\n";
 		cpp << "void " << className << "::Set" << CapitalizeFirstLetter(f.name) << "(const " << f.fieldType() << "& value) { " << f.fieldName() << " = value; }\n";
 		cpp << "\n";
 	}
@@ -123,23 +123,23 @@ auto writeAttributeWriteImplementation(IndentingStreamWrapper& cpp, const Field&
 
 auto writeElementReadImplementation(IndentingStreamWrapper& cpp, const Field& f, const Types& types) {
 	// fundamental types
-	if (f.type == "std::string") { cpp << f.fieldName() << " = " << "TixiGetTextElement"   << "(tixiHandle, xpath + \"/\" + " << f.name << ");\n"; return; }
-	if (f.type == "double")      { cpp << f.fieldName() << " = " << "TixiGetDoubleElement" << "(tixiHandle, xpath + \"/\" + " << f.name << ");\n"; return; }
-	if (f.type == "bool")        { cpp << f.fieldName() << " = " << "TixiGetBoolElement"   << "(tixiHandle, xpath + \"/\" + " << f.name << ");\n"; return; }
-	if (f.type == "int")         { cpp << f.fieldName() << " = " << "TixiGetIntElement"    << "(tixiHandle, xpath + \"/\" + " << f.name << ");\n"; return; }
+	if (f.type == "std::string") { cpp << f.fieldName() << " = " << "TixiGetTextElement"   << "(tixiHandle, xpath + \"/" << f.name << "\");\n"; return; }
+	if (f.type == "double")      { cpp << f.fieldName() << " = " << "TixiGetDoubleElement" << "(tixiHandle, xpath + \"/" << f.name << "\");\n"; return; }
+	if (f.type == "bool")        { cpp << f.fieldName() << " = " << "TixiGetBoolElement"   << "(tixiHandle, xpath + \"/" << f.name << "\");\n"; return; }
+	if (f.type == "int")         { cpp << f.fieldName() << " = " << "TixiGetIntElement"    << "(tixiHandle, xpath + \"/" << f.name << "\");\n"; return; }
 
 	// enums
 	const auto it = types.enums.find(f.type);
 	if (it != std::end(types.enums)) {
 		const auto& readFunc = it->second.stringToEnumFunc();
-		cpp << f.fieldName() << " = " << readFunc << "(TixiGetTextElement(tixiHandle, xpath + \"/\" + " << f.name << "));\n";
+		cpp << f.fieldName() << " = " << readFunc << "(TixiGetTextElement(tixiHandle, xpath + \"/" << f.name << "\"));\n";
 		return;
 	}
 
 	// classes
 	const auto it2 = types.classes.find(f.type);
 	if (it2 != std::end(types.classes)) {
-		cpp << f.fieldName() << ".ReadCPACS(tixiHandle, xpath + \"/\" + " << f.name << "));\n";
+		cpp << f.fieldName() << ".ReadCPACS(tixiHandle, xpath + \"/" << f.name << "\");\n";
 		return;
 	}
 
@@ -148,31 +148,30 @@ auto writeElementReadImplementation(IndentingStreamWrapper& cpp, const Field& f,
 
 auto writeElementWriteImplementation(IndentingStreamWrapper& cpp, const Field& f, const Types& types) {
 	// fundamental types
-	if (f.type == "std::string") { cpp << "TixiSaveTextElement"   << "(tixiHandle, xpath, " << f.name << "\", " << f.fieldName() << ");\n"; return; }
-	if (f.type == "double")      { cpp << "TixiSaveDoubleElement" << "(tixiHandle, xpath, " << f.name << "\", " << f.fieldName() << ");\n"; return; }
-	if (f.type == "bool")        { cpp << "TixiSaveBoolElement"   << "(tixiHandle, xpath, " << f.name << "\", " << f.fieldName() << ");\n"; return; }
-	if (f.type == "int")         { cpp << "TixiSaveIntElement"    << "(tixiHandle, xpath, " << f.name << "\", " << f.fieldName() << ");\n"; return; }
+	if (f.type == "std::string") { cpp << "TixiSaveTextElement"   << "(tixiHandle, xpath, \"" << f.name << "\", " << f.fieldName() << ");\n"; return; }
+	if (f.type == "double")      { cpp << "TixiSaveDoubleElement" << "(tixiHandle, xpath, \"" << f.name << "\", " << f.fieldName() << ");\n"; return; }
+	if (f.type == "bool")        { cpp << "TixiSaveBoolElement"   << "(tixiHandle, xpath, \"" << f.name << "\", " << f.fieldName() << ");\n"; return; }
+	if (f.type == "int")         { cpp << "TixiSaveIntElement"    << "(tixiHandle, xpath, \"" << f.name << "\", " << f.fieldName() << ");\n"; return; }
 
 	// enums
 	const auto it = types.enums.find(f.type);
 	if (it != std::end(types.enums)) {
 		const auto& writeFunc = it->second.enumToStringFunc();
-		cpp << "TixiSaveTextElement(tixiHandle, xpath, " << f.name << "\", " << writeFunc << "(" << f.fieldName() << "));\n";
+		cpp << "TixiSaveTextElement(tixiHandle, xpath, \"" << f.name << "\", " << writeFunc << "(" << f.fieldName() << "));\n";
 		return;
 	}
 
 	// classes
 	const auto it2 = types.classes.find(f.type);
 	if (it2 != std::end(types.classes)) {
-		cpp << f.fieldName() << ".WriteCPACS(tixiHandle, xpath + \"/\" + " << f.name << "));\n";
+		cpp << f.fieldName() << ".WriteCPACS(tixiHandle, xpath + \"/" << f.name << "\");\n";
 		return;
 	}
 
 	throw std::logic_error("No element write function provided for type " + f.type);
 }
 
-void writeIOImplementations(IndentingStreamWrapper& cpp, const std::string& className, const std::vector<Field>& fields, const Types& types) {
-	// read
+void writeReadImplementation(IndentingStreamWrapper& cpp, const std::string& className, const std::vector<Field>& fields, const Types& types) {
 	cpp << "void " << className << "::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) {\n";
 	{
 		Scope s(cpp);
@@ -186,40 +185,30 @@ void writeIOImplementations(IndentingStreamWrapper& cpp, const std::string& clas
 					writeAttributeReadImplementation(cpp, f, types);
 				}
 				cpp << "}\n";
-				if (f.cardinality == Cardinality::One) {
-					// attribute must exist
-					cpp << "else {\n";
-					{
-						Scope s(cpp);
-						cpp << "LOG(WARNING) << \"Required attribute " << f.name << " is missing\";\n";
-					}
-					cpp << "}\n";
-				}
 			} else {
-				cpp << "if (TixiCheckElement(tixiHandle, xpath + \"/\" + " << f.name << ")) {\n";
+				cpp << "if (TixiCheckElement(tixiHandle, xpath, \"" << f.name << "\")) {\n";
 				{
 					Scope s(cpp);
 					writeElementReadImplementation(cpp, f, types);
 				}
 				cpp << "}\n";
-				if (f.cardinality == Cardinality::One || f.cardinality == Cardinality::Many) {
-					// element must exist
-					cpp << "else {\n";
-					{
-						Scope s(cpp);
-						cpp << "LOG(WARNING) << \"Required element " << f.name << " is missing\";\n";
-					}
-					cpp << "}\n";
+			}
+			if (f.cardinality == Cardinality::One) {
+				// attribute must exist
+				cpp << "else {\n";
+				{
+					Scope s(cpp);
+					cpp << "LOG(WARNING) << \"Required " << (f.attribute ? "attribute" : "element") << " " << f.name << " is missing\";\n";
 				}
+				cpp << "}\n";
 			}
 			cpp << "\n";
 		}
 	}
 	cpp << "}\n";
-	cpp << "\n";
+}
 
-
-	// write
+void writeWriteImplementation(IndentingStreamWrapper& cpp, const std::string& className, const std::vector<Field>& fields, const Types& types) {
 	cpp << "void " << className << "::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) {\n";
 	{
 		Scope s(cpp);
@@ -229,10 +218,10 @@ void writeIOImplementations(IndentingStreamWrapper& cpp, const std::string& clas
 				writeAttributeWriteImplementation(cpp, f, types);
 			else
 				writeElementWriteImplementation(cpp, f, types);
+			cpp << "\n";
 		}
 	}
 	cpp << "}\n";
-	cpp << "\n";
 }
 
 void writeLicenseHeader(IndentingStreamWrapper& f) {
@@ -253,6 +242,7 @@ void writeLicenseHeader(IndentingStreamWrapper& f) {
 }
 
 void writeIncludes(IndentingStreamWrapper& hpp, const Class& c, const Types& types) {
+	// standard headers
 	bool stringHeader = false;
 	bool vectorHeader = false;
 	bool optionalHeader = false;
@@ -271,10 +261,15 @@ void writeIncludes(IndentingStreamWrapper& hpp, const Class& c, const Types& typ
 				break;
 		}
 	}
-	if (stringHeader) hpp << "#include <string>";
-	if (vectorHeader) hpp << "#include <vector>";
-	//if (optionalHeader) hpp << "#include <boost/optional.hpp>";
+	if (stringHeader) hpp << "#include <string>\n";
+	if (vectorHeader) hpp << "#include <vector>\n";
+	//if (optionalHeader) hpp << "#include <boost/optional.hpp>\n";
 
+	// base class
+	if (!c.base.empty())
+		hpp << "#include \"" << c.base << ".h\"\n";
+
+	// fields
 	for (const auto& f : c.fields) {
 		if (types.enums.find(f.type) != std::end(types.enums) ||
 			types.classes.find(f.type) != std::end(types.classes)) {
@@ -296,7 +291,7 @@ void writeClass(IndentingStreamWrapper& hpp, IndentingStreamWrapper& cpp, const 
 
 	// includes
 	writeIncludes(hpp, c, types);
-	hpp << "#include \"tixi.h\"\n";
+	hpp << "#include \"tigl_internal.h\"\n";
 	hpp << "\n";
 
 	// namespace
@@ -349,6 +344,7 @@ void writeClass(IndentingStreamWrapper& hpp, IndentingStreamWrapper& cpp, const 
 
 	// includes
 	cpp << "#include \"IOHelper.h\"\n";
+	cpp << "#include \"CTiglLogging.h\"\n";
 	cpp << "#include \"" << c.name << ".h\"\n";
 	cpp << "\n";
 
@@ -366,7 +362,10 @@ void writeClass(IndentingStreamWrapper& hpp, IndentingStreamWrapper& cpp, const 
 			cpp << "\n";
 
 			// io
-			writeIOImplementations(cpp, c.name, c.fields, types);
+			writeReadImplementation(cpp, c.name, c.fields, types);
+			cpp << "\n";
+			writeWriteImplementation(cpp, c.name, c.fields, types);
+			cpp << "\n";
 
 			// accessors
 			writeAccessorImplementations(cpp, c.name, c.fields);
@@ -419,6 +418,7 @@ void writeEnum(IndentingStreamWrapper& hpp, const Enum& e) {
 					Scope s(hpp);
 					for (const auto& v : e.values)
 						hpp << "case " << e.name << "::" << v.cppName << ": return \"" << v.name << "\";\n";
+					hpp << "default: throw std::runtime_error(\"Invalid enum value \\\" + value + \\\" for enum type " << e.name << "\");\n";
 				}
 				hpp << "}\n";
 			}
@@ -428,9 +428,8 @@ void writeEnum(IndentingStreamWrapper& hpp, const Enum& e) {
 			hpp << "inline " << e.name << " " << e.enumToStringFunc() << "(const std::string& value) {\n";
 			{
 				Scope s(hpp);
-				for (const auto& v : e.values) {
+				for (const auto& v : e.values)
 					hpp << "if (value == \"" << v.name << "\") return " << e.name << "::" << v.cppName << ";\n";
-				}
 				hpp << "throw std::runtime_error(\"Invalid enum value \\\" + value + \\\" for enum type " << e.name << "\");\n";
 			}
 			hpp << "}\n";

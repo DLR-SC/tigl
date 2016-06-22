@@ -83,6 +83,18 @@ bool TixiCheckElement(const TixiDocumentHandle& tixiHandle, const std::string& x
 		);
 }
 
+bool TixiCheckElement(const TixiDocumentHandle& tixiHandle, const std::string& parentPath, const std::string& element) {
+	return TixiCheckElement(tixiHandle, parentPath + "/" + element);
+}
+
+int TixiGetNamedChildrenCount(const TixiDocumentHandle& tixiHandle, const std::string& xpath, const std::string& child) {
+	int count = 0;
+	auto ret = tixiGetNamedChildrenCount(tixiHandle, xpath.c_str(), child.c_str(), &count);
+	if (ret != ReturnCode::SUCCESS)
+		throw TixiError(ret);
+	return count;
+}
+
 namespace {
 	template <typename T, typename GetFunc>
 	auto TixiGetAttributeInternal(const TixiDocumentHandle& tixiHandle, const std::string& xpath, const std::string& attribute, GetFunc getFunc) {
@@ -190,7 +202,7 @@ namespace {
 		}
 
 		// first, delete the element
-		if (TixiCheckElement(tixiHandle, xpath)) {
+		if (TixiCheckElement(tixiHandle, parentXPath, element)) {
 			const auto ret = tixiRemoveElement(tixiHandle, xpath.c_str());
 			if (ret != SUCCESS) {
 				throw TixiError(ret,

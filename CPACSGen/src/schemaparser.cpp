@@ -51,24 +51,24 @@ Choice SchemaParser::readChoice(const std::string& xpath) {
 }
 
 void SchemaParser::readComplexTypeElementConfiguration(const std::string& xpath, ComplexType& type) {
-	if (document.checkElement(xpath + "/choice")) {
+	if (document.checkElement(xpath, "choice")) {
 		document.forEachChild(xpath + "/choice", "element", [&](auto xpath) {
 			readElement(xpath);
 		});
-	} else if (document.checkElement(xpath + "/all")) {
+	} else if (document.checkElement(xpath, "all")) {
 		type.elements = readAll(xpath + "/all");
-	} else if (document.checkElement(xpath + "/sequence")) {
+	} else if (document.checkElement(xpath, "sequence")) {
 		type.elements = readSequence(xpath + "/sequence");
-	} else if (document.checkElement(xpath + "/choice")) {
+	} else if (document.checkElement(xpath, "choice")) {
 		type.elements = readChoice(xpath + "/choice");
-	} else if (document.checkElement(xpath + "/complexContent")) {
-		if (document.checkElement(xpath + "/complexContent/restriction")) {
+	} else if (document.checkElement(xpath, "complexContent")) {
+		if (document.checkElement(xpath, "complexContent/restriction")) {
 			throw NotImplementedException("XSD complextype complexcontent restriction is not implemented");
-		} else if (document.checkElement(xpath + "/complexContent/extension")) {
+		} else if (document.checkElement(xpath, "complexContent/extension")) {
 			type.base = document.textAttribute(xpath + "/complexContent/extension", "base");
 			readComplexTypeElementConfiguration(xpath + "/complexContent/extension", type);
 		}
-	} else if (document.checkElement(xpath + "/simpleContent")) {
+	} else if (document.checkElement(xpath, "simpleContent")) {
 
 	}
 }
@@ -117,6 +117,9 @@ std::string SchemaParser::readComplexType(const std::string& xpath) {
 		}
 	}();
 
+	if (m_complexTypes.find(name) != std::end(m_complexTypes))
+		throw std::runtime_error("SimpleType with name " + name + " already exists");
+
 	ComplexType& type = m_complexTypes[name];
 	type.name = name;
 
@@ -155,7 +158,7 @@ std::string SchemaParser::readComplexType(const std::string& xpath) {
 std::string SchemaParser::readSimpleType(const std::string& xpath) {
 	// read or generate type name
 	const std::string name = [&] {
-		if (document.checkAttribute(xpath, "type"))
+		if (document.checkAttribute(xpath, "name"))
 			return document.textAttribute(xpath, "name");
 		else {
 			static auto id = 0;
@@ -163,10 +166,13 @@ std::string SchemaParser::readSimpleType(const std::string& xpath) {
 		}
 	}();
 
+	if (m_simpleTypes.find(name) != std::end(m_simpleTypes))
+		throw std::runtime_error("SimpleType with name " + name + " already exists");
+
 	SimpleType& type = m_simpleTypes[name];
 	type.name = name;
 
-	if (document.checkElement(xpath + "/restriction")) {
+	if (document.checkElement(xpath, "restriction")) {
 		type.base = document.textAttribute(xpath + "/restriction", "base");
 
 		document.forEachChild(xpath + "/restriction", "enumeration", [&](auto expath) {
@@ -182,9 +188,9 @@ std::string SchemaParser::readSimpleType(const std::string& xpath) {
 }
 
 std::string SchemaParser::readType(const std::string& xpath) {
-	if (document.checkElement(xpath + "/complexType"))
+	if (document.checkElement(xpath, "complexType"))
 		return readComplexType(xpath + "/complexType");
-	else if (document.checkElement(xpath + "/simpleType"))
+	else if (document.checkElement(xpath, "simpleType"))
 		return readSimpleType(xpath + "/simpleType");
 	else
 		std::cerr << "Element at xpath " << xpath << " has no type" << std::endl;
