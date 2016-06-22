@@ -440,7 +440,7 @@ void writeEnum(IndentingStreamWrapper& hpp, const Enum& e) {
 	hpp << "\n";
 }
 
-void generateCode(const std::string& outputLocation, const Types& types) {
+CodeGen::CodeGen(const std::string& outputLocation, const Types& types) {
 	boost::filesystem::create_directories(outputLocation);
 
 	for (const auto& p : types.classes) {

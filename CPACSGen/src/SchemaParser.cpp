@@ -1,15 +1,9 @@
 #include <iostream>
 
+#include "NotImplementedException.h"
 #include "schemaparser.h"
 
 static const std::string inlineTypePrefix = "_inline_";
-
-NotImplementedException::NotImplementedException(const std::string& msg)
-	: m_msg(msg) {}
-
-const char* NotImplementedException::what() const {
-	return m_msg.c_str();
-}
 
 SchemaParser::SchemaParser(const std::string& cpacsLocation)
 	: document(cpacsLocation) {
@@ -28,6 +22,7 @@ SchemaParser::SchemaParser(const std::string& cpacsLocation)
 
 All SchemaParser::readAll(const std::string& xpath) {
 	All all;
+	all.xpath = xpath;
 	document.forEachChild(xpath, "element", [&](auto xpath) {
 		all.elements.push_back(readElement(xpath));
 	});
@@ -36,6 +31,7 @@ All SchemaParser::readAll(const std::string& xpath) {
 
 Sequence SchemaParser::readSequence(const std::string& xpath) {
 	Sequence seq;
+	seq.xpath = xpath;
 	document.forEachChild(xpath, "element", [&](auto xpath) {
 		seq.elements.push_back(readElement(xpath));
 	});
@@ -44,6 +40,7 @@ Sequence SchemaParser::readSequence(const std::string& xpath) {
 
 Choice SchemaParser::readChoice(const std::string& xpath) {
 	Choice ch;
+	ch.xpath;
 	document.forEachChild(xpath, "element", [&](auto xpath) {
 		ch.elements.push_back(readElement(xpath));
 	});
@@ -63,18 +60,19 @@ void SchemaParser::readComplexTypeElementConfiguration(const std::string& xpath,
 		type.elements = readChoice(xpath + "/choice");
 	} else if (document.checkElement(xpath, "complexContent")) {
 		if (document.checkElement(xpath, "complexContent/restriction")) {
-			throw NotImplementedException("XSD complextype complexcontent restriction is not implemented");
+			throw NotImplementedException("XSD compltexType complexContent restriction is not implemented");
 		} else if (document.checkElement(xpath, "complexContent/extension")) {
 			type.base = document.textAttribute(xpath + "/complexContent/extension", "base");
 			readComplexTypeElementConfiguration(xpath + "/complexContent/extension", type);
 		}
 	} else if (document.checkElement(xpath, "simpleContent")) {
-
+		throw NotImplementedException("XSD compltexType simpleContent is not implemented");
 	}
 }
 
 Attribute SchemaParser::readAttribute(const std::string& xpath) {
 	Attribute att;
+	att.xpath = xpath;
 	att.name = document.textAttribute(xpath, "name");
 
 	if (document.checkAttribute(xpath, "type"))
@@ -121,6 +119,7 @@ std::string SchemaParser::readComplexType(const std::string& xpath) {
 		throw std::runtime_error("SimpleType with name " + name + " already exists");
 
 	ComplexType& type = m_complexTypes[name];
+	type.xpath = xpath;
 	type.name = name;
 
 	if (document.checkAttribute(xpath, "id"))
@@ -170,6 +169,7 @@ std::string SchemaParser::readSimpleType(const std::string& xpath) {
 		throw std::runtime_error("SimpleType with name " + name + " already exists");
 
 	SimpleType& type = m_simpleTypes[name];
+	type.xpath = xpath;
 	type.name = name;
 
 	if (document.checkElement(xpath, "restriction")) {
@@ -201,6 +201,7 @@ std::string SchemaParser::readType(const std::string& xpath) {
 
 Element SchemaParser::readElement(const std::string& xpath) {
 	Element element;
+	element.xpath = xpath;
 	element.name = document.textAttribute(xpath, "name");
 
 	auto parseOccurs = [&](const std::string& att) {

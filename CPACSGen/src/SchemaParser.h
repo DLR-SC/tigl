@@ -8,17 +8,11 @@
 #include "TixiHelper.h"
 #include "Variant.hpp"
 
-class NotImplementedException : public std::exception {
-public:
-	NotImplementedException(const std::string& msg);
-
-	virtual const char* what() const override;
-
-private:
-	std::string m_msg;
+struct XSDElement {
+	std::string xpath;
 };
 
-struct Attribute {
+struct Attribute : XSDElement {
 	std::string name;
 	std::string type;
 	std::string default;
@@ -26,27 +20,27 @@ struct Attribute {
 	bool optional;
 };
 
-struct Element {
+struct Element : XSDElement {
 	std::string name;
 	std::string type;
 	int minOccurs;
 	int maxOccurs;
 };
 
-struct All {
+struct All : XSDElement {
 	std::vector<Element> elements;
 };
 
 struct Choice;
-struct Sequence {
+struct Sequence : XSDElement {
 	std::vector<Variant<Element, Choice, Sequence>> elements;
 };
 
-struct Choice {
+struct Choice : XSDElement {
 	std::vector<Variant<Element, Choice, Sequence>> elements;
 };
 
-struct ComplexType {
+struct ComplexType : XSDElement {
 	std::string name;
 	std::string base;
 
@@ -54,7 +48,7 @@ struct ComplexType {
 	std::vector<Attribute> attributes;
 };
 
-struct SimpleType {
+struct SimpleType : XSDElement {
 	std::string name;
 	std::string base;
 	std::vector<std::string> restrictionValues;

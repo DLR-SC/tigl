@@ -70,4 +70,9 @@ struct Types {
 	std::unordered_map<std::string, Enum> enums;
 };
 
-void generateCode(const std::string& outputLocation, const Types& enums);
+class CodeGen {
+public:
+	CodeGen(const std::string& outputLocation, const Types& types);
+private:
+
+};

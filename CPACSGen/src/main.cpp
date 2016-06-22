@@ -8,6 +8,7 @@
 #include <limits>
 
 #include "TypeSubstitutionTable.h"
+#include "NotImplementedException.h"
 #include "schemaparser.h"
 #include "codegen.h"
 
@@ -179,15 +180,14 @@ int main() {
 		
 		// generate code
 		std::cout << "Generating classes" << std::endl;
-		generateCode(outputLocation, types);
+		CodeGen codegen(outputLocation, types);
 
-		// copy IOHelper
+		// copy IOHelper ("runtime")
 		for (const auto& filename : copyFiles) {
 			auto src = boost::filesystem::path(filename);
 			auto dst = boost::filesystem::path(outputLocation) / src.filename();
 			boost::filesystem::copy_file(src, dst, boost::filesystem::copy_option::overwrite_if_exists);
 		}
-		
 	} catch (const std::exception& e) {
 		std::cerr << "Exception: " << e.what() << std::endl;
 	}
