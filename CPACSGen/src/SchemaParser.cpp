@@ -66,7 +66,7 @@ void SchemaParser::readComplexTypeElementConfiguration(const std::string& xpath,
 			readComplexTypeElementConfiguration(xpath + "/complexContent/extension", type);
 		}
 	} else if (document.checkElement(xpath, "simpleContent")) {
-		throw NotImplementedException("XSD compltexType simpleContent is not implemented");
+		//throw NotImplementedException("XSD compltexType simpleContent is not implemented");
 	}
 }
 

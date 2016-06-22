@@ -76,6 +76,7 @@ auto buildFieldList(const SchemaParser& schema, const ComplexType& type) {
 	// attributes
 	for (const auto& a : type.attributes) {
 		Field m;
+		m.origin = &a;
 		m.name = a.name;
 		m.type = resolveType(schema, a.type);
 		m.attribute = true;
@@ -93,6 +94,7 @@ auto buildFieldList(const SchemaParser& schema, const ComplexType& type) {
 
 		void operator()(const Element& e) const {
 			Field m;
+			m.origin = &e;
 			m.name = e.name;
 			m.type = resolveType(schema, e.type);
 			m.attribute = false;
@@ -156,8 +158,9 @@ int main() {
 
 		// generate classes from complex types
 		for(const auto& p : complexTypes) {
-			Class c;
 			const auto& type = p.second;
+			Class c;
+			c.origin = &type;
 			c.name = makeClassName(type.name);
 			c.base = makeClassName(type.base);
 			c.fields = buildFieldList(schema, type);
@@ -170,6 +173,7 @@ int main() {
 			if (s.restrictionValues.size() > 0) {
 				// create enum
 				Enum e;
+				e.origin = &s;
 				e.name = makeClassName(s.name);
 				for (const auto& v : s.restrictionValues)
 					e.values.push_back(EnumValue(v));

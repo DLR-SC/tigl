@@ -4,6 +4,9 @@
 #include <algorithm>
 #include <unordered_map>
 
+#include "Variant.hpp"
+#include "SchemaParser.h"
+
 enum class Cardinality {
 	ZeroOrOne,
 	One,
@@ -12,8 +15,9 @@ enum class Cardinality {
 };
 
 struct Field {
-	std::string type;
+	Variant<const Attribute*, const Element*> origin;
 	std::string name;
+	std::string type;
 	bool attribute;
 	Cardinality cardinality;
 
@@ -37,12 +41,16 @@ struct Field {
 };
 
 struct Class {
+	const ComplexType* origin;
 	std::string name;
 	std::string base;
 	std::vector<Field> fields;
 };
 
 struct EnumValue {
+	std::string name;
+	std::string cppName;
+
 	EnumValue() = default;
 	EnumValue(const std::string& name)
 		: name(name) {
@@ -52,12 +60,10 @@ struct EnumValue {
 			return c == '-' || c == ' ';
 		}, '_');
 	}
-
-	std::string name;
-	std::string cppName;
 };
 
 struct Enum {
+	const SimpleType* origin;
 	std::string name;
 	std::vector<EnumValue> values;
 
