@@ -8,10 +8,9 @@
 #include "SchemaParser.h"
 
 enum class Cardinality {
-	ZeroOrOne,
-	One,
-	ZeroOrMany,
-	Many
+	Optional,
+	Mandatory,
+	Vector
 };
 
 struct Field {
@@ -27,12 +26,11 @@ struct Field {
 
 	auto fieldType() const {
 		switch (cardinality) {
-			case Cardinality::ZeroOrOne:
+			case Cardinality::Optional:
 				return "/* optional */ " + type; // TODO: use optional<T> here
-			case Cardinality::One:
+			case Cardinality::Mandatory:
 				return type;
-			case Cardinality::ZeroOrMany:
-			case Cardinality::Many:
+			case Cardinality::Vector:
 				return "std::vector<" + type + ">";
 			default:
 				throw std::logic_error("Invalid cardinality");

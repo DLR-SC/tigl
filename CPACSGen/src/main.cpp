@@ -81,9 +81,9 @@ auto buildFieldList(const SchemaParser& schema, const ComplexType& type) {
 		m.type = resolveType(schema, a.type);
 		m.attribute = true;
 		if (a.optional)
-			m.cardinality = Cardinality::ZeroOrOne;
+			m.cardinality = Cardinality::Optional;
 		else
-			m.cardinality = Cardinality::One;
+			m.cardinality = Cardinality::Mandatory;
 		members.push_back(m);
 	}
 
@@ -99,13 +99,11 @@ auto buildFieldList(const SchemaParser& schema, const ComplexType& type) {
 			m.type = resolveType(schema, e.type);
 			m.attribute = false;
 			if (e.minOccurs == 0 && e.maxOccurs == 1)
-				m.cardinality = Cardinality::ZeroOrOne;
-			else if (e.minOccurs == 0 && e.maxOccurs > 1)
-				m.cardinality = Cardinality::ZeroOrMany;
+				m.cardinality = Cardinality::Optional;
 			else if (e.minOccurs == 1 && e.maxOccurs == 1)
-				m.cardinality = Cardinality::One;
-			else if (e.minOccurs >= 1 && e.maxOccurs > 1)
-				m.cardinality = Cardinality::Many;
+				m.cardinality = Cardinality::Mandatory;
+			else if (e.minOccurs >= 0 && e.maxOccurs > 1)
+				m.cardinality = Cardinality::Vector;
 			else if (e.minOccurs == 0 && e.maxOccurs == 0) {
 				std::cerr << "Element " + e.name + " with type " + e.type + " was omitted as minOccurs and maxOccurs are both zero" << std::endl;
 				return; // skip this type

@@ -122,35 +122,40 @@ bool TixiGetBoolAttribute(const TixiDocumentHandle& tixiHandle, const std::strin
 	return TixiGetAttributeInternal<int>(tixiHandle, xpath, attribute, tixiGetBooleanAttribute) != 0;
 }
 
+int TixiGetIntAttribute(const TixiDocumentHandle& tixiHandle, const std::string& xpath, const std::string& attribute) {
+	return TixiGetAttributeInternal<int>(tixiHandle, xpath, attribute, tixiGetBooleanAttribute);
+}
+
 namespace {
 	template <typename T, typename GetFunc>
-	auto TixiGetElementInternal(const TixiDocumentHandle& tixiHandle, const std::string& xpath, GetFunc getFunc) {
+	auto TixiGetElementInternal(const TixiDocumentHandle& tixiHandle, const std::string& parentXPath, const std::string& element, GetFunc getFunc) {
 		T value;
-		const auto ret = getFunc(tixiHandle, xpath.c_str(), &value);
+		const auto ret = getFunc(tixiHandle, (parentXPath + "/" + element).c_str(), &value);
 		if (ret != ReturnCode::SUCCESS) {
 			throw TixiError(ret,
 				"Error getting element value\n"
-				"xpath: " + xpath
+				"element: " + element + "\n"
+				"parentXPath: " + parentXPath
 			);
 		}
 		return value;
 	}
 }
 
-std::string TixiGetTextElement(const TixiDocumentHandle& tixiHandle, const std::string& xpath) {
-	return std::string(TixiGetElementInternal<char*>(tixiHandle, xpath, tixiGetTextElement));
+std::string TixiGetTextElement(const TixiDocumentHandle& tixiHandle, const std::string& parentXPath, const std::string& element) {
+	return std::string(TixiGetElementInternal<char*>(tixiHandle, parentXPath, element, tixiGetTextElement));
 }
 
-double TixiGetDoubleElement(const TixiDocumentHandle& tixiHandle, const std::string& xpath) {
-	return TixiGetElementInternal<double>(tixiHandle, xpath, tixiGetDoubleElement);
+double TixiGetDoubleElement(const TixiDocumentHandle& tixiHandle, const std::string& parentXPath, const std::string& element) {
+	return TixiGetElementInternal<double>(tixiHandle, parentXPath, element, tixiGetDoubleElement);
 }
 
-bool TixiGetBoolElement(const TixiDocumentHandle& tixiHandle, const std::string& xpath) {
-	return TixiGetElementInternal<int>(tixiHandle, xpath, tixiGetBooleanElement) != 0;
+bool TixiGetBoolElement(const TixiDocumentHandle& tixiHandle, const std::string& parentXPath, const std::string& element) {
+	return TixiGetElementInternal<int>(tixiHandle, parentXPath, element, tixiGetBooleanElement) != 0;
 }
 
-int TixiGetIntElement(const TixiDocumentHandle& tixiHandle, const std::string& xpath) {
-	return TixiGetElementInternal<int>(tixiHandle, xpath, tixiGetBooleanElement);
+int TixiGetIntElement(const TixiDocumentHandle& tixiHandle, const std::string& parentXPath, const std::string& element) {
+	return TixiGetElementInternal<int>(tixiHandle, parentXPath, element, tixiGetBooleanElement);
 }
 
 namespace {

@@ -4,6 +4,7 @@
 #include <fstream>
 #include <algorithm>
 
+#include "NotImplementedException.h"
 #include "codegen.h"
 
 struct Scope;
@@ -61,8 +62,12 @@ std::string Enum::stringToEnumFunc() const {
 }
 
 void writeFields(IndentingStreamWrapper& hpp, const std::vector<Field>& fields) {
-	for (const auto& f : fields)
+	for (const auto& f : fields) {
+		f.origin.visit([&](const auto* attOrElem) {
+			hpp << "// generated from " << attOrElem->xpath << "\n";
+		});
 		hpp << f.fieldType() << " " << f.fieldName() << ";\n";
+	}
 }
 
 void writeAccessorDeclarations(IndentingStreamWrapper& hpp, const std::vector<Field>& fields) {
@@ -83,92 +88,152 @@ void writeAccessorImplementations(IndentingStreamWrapper& cpp, const std::string
 
 void writeIODeclarations(IndentingStreamWrapper& hpp, const std::string& className, const std::vector<Field>& fields) {
 	hpp << "TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);\n";
-	hpp << "TIGL_EXPORT void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);\n";
+	hpp << "TIGL_EXPORT void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;\n";
 	hpp << "\n";
 }
 
-auto writeAttributeReadImplementation(IndentingStreamWrapper& cpp, const Field& f, const Types& types) {
-	// fundamental types
-	if (f.type == "std::string") { cpp << f.fieldName() << " = " << "TixiGetTextAttribute"   << "(tixiHandle, xpath, \"" << f.name << "\");\n"; return; }
-	if (f.type == "double")      { cpp << f.fieldName() << " = " << "TixiGetDoubleAttribute" << "(tixiHandle, xpath, \"" << f.name << "\");\n"; return; }
-	if (f.type == "bool")        { cpp << f.fieldName() << " = " << "TixiGetBoolAttribute"   << "(tixiHandle, xpath, \"" << f.name << "\");\n"; return; }
+namespace {
+	std::unordered_map<std::string, std::string> fundamentalTypes = {
+		{"std::string", "Text"},
+		{"double", "Double"},
+		{"bool", "Bool"},
+		{"int", "Int"}
+	};
+}
 
-	// enums
-	const auto it = types.enums.find(f.type);
-	if (it != std::end(types.enums)) {
-		const auto& readFunc = it->second.stringToEnumFunc();
-		cpp << f.fieldName() << " = " << readFunc << "(TixiGetTextAttribute(tixiHandle, xpath, \"" << f.name << "\"));\n";
+auto writeReadAttributeOrElementImplementation(IndentingStreamWrapper& cpp, const Field& f, const Types& types, bool attribute) {
+	const std::string AttOrElem = attribute ? "Attribute" : "Element";
+
+	// fundamental types
+	const auto itF = fundamentalTypes.find(f.type);
+	if (itF != std::end(fundamentalTypes)) {
+		switch (f.cardinality) {
+			case Cardinality::Optional:
+			case Cardinality::Mandatory:
+				cpp << f.fieldName() << " = " << "TixiGet" << itF->second << AttOrElem << "(tixiHandle, xpath, \"" << f.name << "\");\n";
+				break;
+			case Cardinality::Vector:
+				if (attribute)
+					throw std::runtime_error("Attributes cannot be vectors");
+				cpp << "TixiReadElements(tixiHandle, xpath, \"" << f.name << "\", " << f.fieldName() << ", [&](const std::string& childXPath) {\n";
+				{
+					Scope s(cpp);
+					cpp << "return TixiGet" << itF->second << AttOrElem << "(tixiHandle, childXPath, \"" << f.name << "\");\n";
+				}
+				cpp << "});\n";
+				break;
+		}
+
 		return;
 	}
 
-	throw std::logic_error("No attribute read function provided for type " + f.type);
-}
-
-auto writeAttributeWriteImplementation(IndentingStreamWrapper& cpp, const Field& f, const Types& types) {
-	// fundamental types
-	if (f.type == "std::string") { cpp << "TixiSaveTextAttribute"   << "(tixiHandle, xpath, \"" << f.name << "\", " << f.fieldName() << ");\n"; return; }
-	if (f.type == "double")      { cpp << "TixiSaveDoubleAttribute" << "(tixiHandle, xpath, \"" << f.name << "\", " << f.fieldName() << ");\n"; return; }
-	if (f.type == "bool")        { cpp << "TixiSaveBoolAttribute"   << "(tixiHandle, xpath, \"" << f.name << "\", " << f.fieldName() << ");\n"; return; }
-
 	// enums
-	const auto it = types.enums.find(f.type);
-	if (it != std::end(types.enums)) {
-		const auto& writeFunc = it->second.enumToStringFunc();
-		cpp << "TixiSaveTextAttribute(tixiHandle, xpath, \"" << f.name << "\", " << writeFunc << "(" << f.fieldName() << "));\n";
-		return;
-	}
-
-	throw std::logic_error("No attribute write function provided for type " + f.type);
-}
-
-auto writeElementReadImplementation(IndentingStreamWrapper& cpp, const Field& f, const Types& types) {
-	// fundamental types
-	if (f.type == "std::string") { cpp << f.fieldName() << " = " << "TixiGetTextElement"   << "(tixiHandle, xpath + \"/" << f.name << "\");\n"; return; }
-	if (f.type == "double")      { cpp << f.fieldName() << " = " << "TixiGetDoubleElement" << "(tixiHandle, xpath + \"/" << f.name << "\");\n"; return; }
-	if (f.type == "bool")        { cpp << f.fieldName() << " = " << "TixiGetBoolElement"   << "(tixiHandle, xpath + \"/" << f.name << "\");\n"; return; }
-	if (f.type == "int")         { cpp << f.fieldName() << " = " << "TixiGetIntElement"    << "(tixiHandle, xpath + \"/" << f.name << "\");\n"; return; }
-
-	// enums
-	const auto it = types.enums.find(f.type);
-	if (it != std::end(types.enums)) {
-		const auto& readFunc = it->second.stringToEnumFunc();
-		cpp << f.fieldName() << " = " << readFunc << "(TixiGetTextElement(tixiHandle, xpath + \"/" << f.name << "\"));\n";
+	const auto itE = types.enums.find(f.type);
+	if (itE != std::end(types.enums)) {
+		const auto& readFunc = itE->second.stringToEnumFunc();
+		switch (f.cardinality) {
+			case Cardinality::Optional:
+			case Cardinality::Mandatory:
+				cpp << f.fieldName() << " = " << readFunc << "(TixiGetText" << AttOrElem << "(tixiHandle, xpath + \"/" << f.name << "\"));\n";
+				break;
+			case Cardinality::Vector:
+				throw NotImplementedException("Reading enum vectors is not implemented");
+		}
 		return;
 	}
 
 	// classes
-	const auto it2 = types.classes.find(f.type);
-	if (it2 != std::end(types.classes)) {
-		cpp << f.fieldName() << ".ReadCPACS(tixiHandle, xpath + \"/" << f.name << "\");\n";
+	if (!attribute) {
+		const auto itC = types.classes.find(f.type);
+		if (itC != std::end(types.classes)) {
+			switch (f.cardinality) {
+				case Cardinality::Optional:
+				case Cardinality::Mandatory:
+					cpp << f.fieldName() << ".ReadCPACS(tixiHandle, xpath + \"/" << f.name << "\");\n";
+					break;
+				case Cardinality::Vector:
+					cpp << "TixiReadElements(tixiHandle, xpath, \"" << f.name << "\", " << f.fieldName() << ", [&](const std::string& childXPath) {\n";
+					{
+						Scope s(cpp);
+						cpp << f.type << " child;\n";
+						cpp << "child.ReadCPACS(tixiHandle, xpath + \"/" << f.name << "\");\n";
+						cpp << "return child;\n";
+					}
+					cpp << "});\n";
+					break;
+			}
+			return;
+		}
+	}
+
+	throw std::logic_error("No read function provided for type " + f.type);
+}
+
+
+auto writeWriteAttributeOrElementImplementation(IndentingStreamWrapper& cpp, const Field& f, const Types& types, bool attribute) {
+	const std::string AttOrElem = attribute ? "Attribute" : "Element";
+
+	// fundamental types
+	const auto itF = fundamentalTypes.find(f.type);
+	if (itF != std::end(fundamentalTypes)) {
+		switch (f.cardinality) {
+			case Cardinality::Optional:
+			case Cardinality::Mandatory:
+				cpp << "TixiSave" << itF->second << AttOrElem << "(tixiHandle, xpath, \"" << f.name << "\", " << f.fieldName() << ");\n";
+				break;
+			case Cardinality::Vector:
+				if (attribute)
+					throw std::runtime_error("Attributes cannot be vectors");
+				cpp << "TixiSaveElements(tixiHandle, xpath, \"" << f.name << "\", " << f.fieldName() << ", [&](const std::string& childXPath, const " << f.type << "& child) {\n";
+				{
+					Scope s(cpp);
+					cpp << "TixiSave" << itF->second << AttOrElem << "(tixiHandle, childXPath, \"" << f.name << "\", child);\n";
+				}
+				cpp << "});\n";
+				break;
+		}
+		
 		return;
 	}
 
-	throw std::logic_error("No element read function provided for type " + f.type);
-}
-
-auto writeElementWriteImplementation(IndentingStreamWrapper& cpp, const Field& f, const Types& types) {
-	// fundamental types
-	if (f.type == "std::string") { cpp << "TixiSaveTextElement"   << "(tixiHandle, xpath, \"" << f.name << "\", " << f.fieldName() << ");\n"; return; }
-	if (f.type == "double")      { cpp << "TixiSaveDoubleElement" << "(tixiHandle, xpath, \"" << f.name << "\", " << f.fieldName() << ");\n"; return; }
-	if (f.type == "bool")        { cpp << "TixiSaveBoolElement"   << "(tixiHandle, xpath, \"" << f.name << "\", " << f.fieldName() << ");\n"; return; }
-	if (f.type == "int")         { cpp << "TixiSaveIntElement"    << "(tixiHandle, xpath, \"" << f.name << "\", " << f.fieldName() << ");\n"; return; }
-
 	// enums
-	const auto it = types.enums.find(f.type);
-	if (it != std::end(types.enums)) {
-		const auto& writeFunc = it->second.enumToStringFunc();
-		cpp << "TixiSaveTextElement(tixiHandle, xpath, \"" << f.name << "\", " << writeFunc << "(" << f.fieldName() << "));\n";
+	const auto itE = types.enums.find(f.type);
+	if (itE != std::end(types.enums)) {
+		const auto& writeFunc = itE->second.enumToStringFunc();
+		switch (f.cardinality) {
+			case Cardinality::Optional:
+			case Cardinality::Mandatory:
+				cpp << "TixiSaveText" << AttOrElem << "(tixiHandle, xpath, \"" << f.name << "\", " << writeFunc << "(" << f.fieldName() << "));\n";
+				break;
+			case Cardinality::Vector:
+				throw NotImplementedException("Writing enum vectors is not implemented");
+		}
 		return;
 	}
 
 	// classes
-	const auto it2 = types.classes.find(f.type);
-	if (it2 != std::end(types.classes)) {
-		cpp << f.fieldName() << ".WriteCPACS(tixiHandle, xpath + \"/" << f.name << "\");\n";
-		return;
+	if (!attribute) {
+		const auto itC = types.classes.find(f.type);
+		if (itC != std::end(types.classes)) {
+			switch (f.cardinality) {
+				case Cardinality::Optional:
+				case Cardinality::Mandatory:
+					cpp << f.fieldName() << ".WriteCPACS(tixiHandle, xpath + \"/" << f.name << "\");\n";
+					break;
+				case Cardinality::Vector:
+					cpp << "TixiSaveElements(tixiHandle, xpath, \"" << f.name << "\", " << f.fieldName() << ", [&](const std::string& childXPath, const " << f.type << "& child) {\n";
+					{
+						Scope s(cpp);
+						cpp << "child.WriteCPACS(tixiHandle, childXPath);\n";
+					}
+					cpp << "});\n";
+					break;
+			}
+			return;
+		}
 	}
 
-	throw std::logic_error("No element write function provided for type " + f.type);
+	throw std::logic_error("No write function provided for type " + f.type);
 }
 
 void writeReadImplementation(IndentingStreamWrapper& cpp, const std::string& className, const std::vector<Field>& fields, const Types& types) {
@@ -176,29 +241,21 @@ void writeReadImplementation(IndentingStreamWrapper& cpp, const std::string& cla
 	{
 		Scope s(cpp);
 		for (const auto& f : fields) {
-			cpp << "// read " << (f.attribute ? "attribute" : "element") << " " << f.name << "\n";
-			if (f.attribute) {
-				// we check for the attribute's existence anyway and report errors
-				cpp << "if (TixiCheckAttribute(tixiHandle, xpath, \"" << f.name << "\")) {\n";
-				{
-					Scope s(cpp);
-					writeAttributeReadImplementation(cpp, f, types);
-				}
-				cpp << "}\n";
-			} else {
-				cpp << "if (TixiCheckElement(tixiHandle, xpath, \"" << f.name << "\")) {\n";
-				{
-					Scope s(cpp);
-					writeElementReadImplementation(cpp, f, types);
-				}
-				cpp << "}\n";
+			const auto attOrElem = f.attribute ? "attribute" : "element";
+			const auto AttOrElem = f.attribute ? "Attribute" : "Element";
+			cpp << "// read " << attOrElem << " " << f.name << "\n";
+			cpp << "if (TixiCheck" << AttOrElem << "(tixiHandle, xpath, \"" << f.name << "\")) {\n";
+			{
+				Scope s(cpp);
+				writeReadAttributeOrElementImplementation(cpp, f, types, f.attribute);
 			}
-			if (f.cardinality == Cardinality::One) {
-				// attribute must exist
+			cpp << "}\n";
+			if (f.cardinality == Cardinality::Mandatory) {
+				// attribute or element must exist
 				cpp << "else {\n";
 				{
 					Scope s(cpp);
-					cpp << "LOG(WARNING) << \"Required " << (f.attribute ? "attribute" : "element") << " " << f.name << " is missing\";\n";
+					cpp << "LOG(WARNING) << \"Required " << attOrElem << " " << f.name << " is missing\";\n";
 				}
 				cpp << "}\n";
 			}
@@ -209,15 +266,13 @@ void writeReadImplementation(IndentingStreamWrapper& cpp, const std::string& cla
 }
 
 void writeWriteImplementation(IndentingStreamWrapper& cpp, const std::string& className, const std::vector<Field>& fields, const Types& types) {
-	cpp << "void " << className << "::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) {\n";
+	cpp << "void " << className << "::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const {\n";
 	{
 		Scope s(cpp);
 		for (const auto& f : fields) {
-			cpp << "// write " << (f.attribute ? "attribute" : "element") << " " << f.name << "\n";
-			if (f.attribute)
-				writeAttributeWriteImplementation(cpp, f, types);
-			else
-				writeElementWriteImplementation(cpp, f, types);
+			const auto attOrElem = f.attribute ? "attribute" : "element";
+			cpp << "// write " << attOrElem << " " << f.name << "\n";
+			writeWriteAttributeOrElementImplementation(cpp, f, types, f.attribute);
 			cpp << "\n";
 		}
 	}
@@ -250,14 +305,13 @@ void writeIncludes(IndentingStreamWrapper& hpp, const Class& c, const Types& typ
 		if (f.type == "std::string")
 			stringHeader = true;
 		switch (f.cardinality) {
-			case Cardinality::ZeroOrOne:
+			case Cardinality::Optional:
 				optionalHeader = true;
 				break;
-			case Cardinality::Many:
-			case Cardinality::ZeroOrMany:
+			case Cardinality::Vector:
 				vectorHeader = true;
 				break;
-			case Cardinality::One:
+			case Cardinality::Mandatory:
 				break;
 		}
 	}
@@ -304,6 +358,7 @@ void writeClass(IndentingStreamWrapper& hpp, IndentingStreamWrapper& cpp, const 
 			Scope s(hpp);
 
 			// class name and base class
+			hpp << "// generated from " << c.origin->xpath << "\n";
 			hpp << "class " << c.name << (c.base.empty() ? "" : " : public " + c.base) << " {\n";
 			hpp << "public:\n";
 			{
