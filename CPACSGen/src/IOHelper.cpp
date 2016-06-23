@@ -180,16 +180,20 @@ namespace {
 	}
 }
 
-void TixiSaveTextAttribute(const TixiDocumentHandle& tixiHandle, const std::string& xpath, const std::string& attribute, const std::string& value) {
+void TixiSaveAttribute(const TixiDocumentHandle& tixiHandle, const std::string& xpath, const std::string& attribute, const std::string& value) {
 	TixiSaveAttributeInternal(tixiHandle, xpath, attribute, tixiAddTextAttribute, value.c_str());
 }
 
-void TixiSaveDoubleAttribute(const TixiDocumentHandle& tixiHandle, const std::string& xpath, const std::string& attribute, double value) {
+void TixiSaveAttribute(const TixiDocumentHandle& tixiHandle, const std::string& xpath, const std::string& attribute, double value) {
 	TixiSaveAttributeInternal(tixiHandle, xpath, attribute, tixiAddDoubleAttribute, value, nullptr);
 }
 
-void TixiSaveBoolAttribute(const TixiDocumentHandle& tixiHandle, const std::string& xpath, const std::string& attribute, bool value) {
+void TixiSaveAttribute(const TixiDocumentHandle& tixiHandle, const std::string& xpath, const std::string& attribute, bool value) {
 	TixiSaveAttributeInternal(tixiHandle, xpath, attribute, tixiAddIntegerAttribute, value ? 1 : 0, nullptr); // TODO: no tixiAddBooleanAttribute in Tixi
+}
+
+void TixiSaveAttribute(const TixiDocumentHandle& tixiHandle, const std::string& xpath, const std::string& attribute, int value) {
+	TixiSaveAttributeInternal(tixiHandle, xpath, attribute, tixiAddIntegerAttribute, value, nullptr);
 }
 
 namespace {
@@ -230,18 +234,18 @@ namespace {
 }
 
 // TODO: updating an empty text doesn't work : no error, but the text is not updated
-void TixiSaveTextElement(const TixiDocumentHandle& tixiHandle, const std::string& parentXPath, const std::string& element, const std::string& value) {
+void TixiSaveElement(const TixiDocumentHandle& tixiHandle, const std::string& parentXPath, const std::string& element, const std::string& value) {
 	TixiSaveElementInternal(tixiHandle, parentXPath, element, tixiAddTextElement, value.c_str());
 }
 
-void TixiSaveDoubleElement(const TixiDocumentHandle& tixiHandle, const std::string& parentXPath, const std::string& element, double value) {
+void TixiSaveElement(const TixiDocumentHandle& tixiHandle, const std::string& parentXPath, const std::string& element, double value) {
 	TixiSaveElementInternal(tixiHandle, parentXPath, element, tixiAddDoubleElement, value, nullptr);
 }
 
-void TixiSaveBoolElement(const TixiDocumentHandle& tixiHandle, const std::string& parentXPath, const std::string& element, bool value) {
+void TixiSaveElement(const TixiDocumentHandle& tixiHandle, const std::string& parentXPath, const std::string& element, bool value) {
 	TixiSaveElementInternal(tixiHandle, parentXPath, element, tixiAddBooleanElement, value ? 0 : 1);
 }
 
-void TixiSaveIntElement(const TixiDocumentHandle& tixiHandle, const std::string& parentXPath, const std::string& element, int value) {
+void TixiSaveElement(const TixiDocumentHandle& tixiHandle, const std::string& parentXPath, const std::string& element, int value) {
 	TixiSaveElementInternal(tixiHandle, parentXPath, element, tixiAddIntegerElement, value, nullptr);
 }

@@ -137,10 +137,11 @@ auto buildFieldList(const SchemaParser& schema, const ComplexType& type) {
 	return members;
 }
 
-const std::string cpacsLocation = "../schema/cpacs_schema.xsd"; // TODO: inject this path by cmake
+const std::string cpacsLocation = "../schema/cpacs_schema.xsd"; // TODO: inject this path by cmake or pass by command line
 const std::vector<std::string> copyFiles = {
 	"../src/IOHelper.h",
-	"../src/IOHelper.cpp"
+	"../src/IOHelper.cpp",
+	"../src/optional.hpp"
 };
 const std::string outputLocation = "generated";
 

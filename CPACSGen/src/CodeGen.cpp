@@ -67,21 +67,29 @@ void writeFields(IndentingStreamWrapper& hpp, const std::vector<Field>& fields) 
 			hpp << "// generated from " << attOrElem->xpath << "\n";
 		});
 		hpp << f.fieldType() << " " << f.fieldName() << ";\n";
+		hpp << "\n";
 	}
 }
 
 void writeAccessorDeclarations(IndentingStreamWrapper& hpp, const std::vector<Field>& fields) {
 	for (const auto& f : fields) {
-		hpp << "TIGL_EXPORT const " << f.fieldType() << "& Get" << CapitalizeFirstLetter(f.name) << "() const;\n";
-		hpp << "TIGL_EXPORT void Set" << CapitalizeFirstLetter(f.name) << "(const " << f.fieldType() << "& value);\n";
+		if(f.cardinality == Cardinality::Optional)
+			hpp << "TIGL_EXPORT bool has" << CapitalizeFirstLetter(f.name) << "() const;\n";
+		hpp << "TIGL_EXPORT const " << f.getterSetterType() << "& Get" << CapitalizeFirstLetter(f.name) << "() const;\n";
+		hpp << "TIGL_EXPORT " << f.getterSetterType() << "& Get" << CapitalizeFirstLetter(f.name) << "();\n";
+		//hpp << "TIGL_EXPORT void Set" << CapitalizeFirstLetter(f.name) << "(const " << f.getterSetterType() << "& value);\n";
 		hpp << "\n";
 	}
 }
 
 void writeAccessorImplementations(IndentingStreamWrapper& cpp, const std::string& className, const std::vector<Field>& fields) {
 	for (const auto& f : fields) {
-		cpp << "const " << f.fieldType() << "& " << className << "::Get" << CapitalizeFirstLetter(f.name) << "() const { return " << f.fieldName() << "; }\n";
-		cpp << "void " << className << "::Set" << CapitalizeFirstLetter(f.name) << "(const " << f.fieldType() << "& value) { " << f.fieldName() << " = value; }\n";
+		const auto op = f.cardinality == Cardinality::Optional;
+		if (op)
+			cpp << "TIGL_EXPORT bool " << className << "::has" << CapitalizeFirstLetter(f.name) << "() const { return " << f.fieldName() << ".isValid(); }\n";
+		cpp << "const " << f.getterSetterType() << "& " << className << "::Get" << CapitalizeFirstLetter(f.name) << "() const { return " << f.fieldName() << (op ? ".get()" : "") << "; }\n";
+		cpp << f.getterSetterType() << "& " << className << "::Get" << CapitalizeFirstLetter(f.name) << "() { return " << f.fieldName() << (op ? ".get()" : "") << "; }\n";
+		//cpp << "void " << className << "::Set" << CapitalizeFirstLetter(f.name) << "(const " << f.getterSetterType() << "& value) { " << f.fieldName() << " = value; }\n";
 		cpp << "\n";
 	}
 }
@@ -148,6 +156,9 @@ auto writeReadAttributeOrElementImplementation(IndentingStreamWrapper& cpp, cons
 		if (itC != std::end(types.classes)) {
 			switch (f.cardinality) {
 				case Cardinality::Optional:
+					cpp << f.fieldName() << " = " << f.getterSetterType() << "();\n";
+					cpp << f.fieldName() << "->ReadCPACS(tixiHandle, xpath + \"/" << f.name << "\");\n";
+					break;
 				case Cardinality::Mandatory:
 					cpp << f.fieldName() << ".ReadCPACS(tixiHandle, xpath + \"/" << f.name << "\");\n";
 					break;
@@ -169,7 +180,6 @@ auto writeReadAttributeOrElementImplementation(IndentingStreamWrapper& cpp, cons
 	throw std::logic_error("No read function provided for type " + f.type);
 }
 
-
 auto writeWriteAttributeOrElementImplementation(IndentingStreamWrapper& cpp, const Field& f, const Types& types, bool attribute) {
 	const std::string AttOrElem = attribute ? "Attribute" : "Element";
 
@@ -179,7 +189,7 @@ auto writeWriteAttributeOrElementImplementation(IndentingStreamWrapper& cpp, con
 		switch (f.cardinality) {
 			case Cardinality::Optional:
 			case Cardinality::Mandatory:
-				cpp << "TixiSave" << itF->second << AttOrElem << "(tixiHandle, xpath, \"" << f.name << "\", " << f.fieldName() << ");\n";
+				cpp << "TixiSave" << AttOrElem << "(tixiHandle, xpath, \"" << f.name << "\", " << f.fieldName() << ");\n";
 				break;
 			case Cardinality::Vector:
 				if (attribute)
@@ -187,7 +197,7 @@ auto writeWriteAttributeOrElementImplementation(IndentingStreamWrapper& cpp, con
 				cpp << "TixiSaveElements(tixiHandle, xpath, \"" << f.name << "\", " << f.fieldName() << ", [&](const std::string& childXPath, const " << f.type << "& child) {\n";
 				{
 					Scope s(cpp);
-					cpp << "TixiSave" << itF->second << AttOrElem << "(tixiHandle, childXPath, \"" << f.name << "\", child);\n";
+					cpp << "TixiSave" << AttOrElem << "(tixiHandle, childXPath, \"" << f.name << "\", child);\n";
 				}
 				cpp << "});\n";
 				break;
@@ -199,11 +209,10 @@ auto writeWriteAttributeOrElementImplementation(IndentingStreamWrapper& cpp, con
 	// enums
 	const auto itE = types.enums.find(f.type);
 	if (itE != std::end(types.enums)) {
-		const auto& writeFunc = itE->second.enumToStringFunc();
 		switch (f.cardinality) {
 			case Cardinality::Optional:
 			case Cardinality::Mandatory:
-				cpp << "TixiSaveText" << AttOrElem << "(tixiHandle, xpath, \"" << f.name << "\", " << writeFunc << "(" << f.fieldName() << "));\n";
+				cpp << "TixiSaveText" << AttOrElem << "(tixiHandle, xpath, \"" << f.name << "\", " << itE->second.enumToStringFunc() << "(" << f.fieldName() << "));\n";
 				break;
 			case Cardinality::Vector:
 				throw NotImplementedException("Writing enum vectors is not implemented");
@@ -217,6 +226,13 @@ auto writeWriteAttributeOrElementImplementation(IndentingStreamWrapper& cpp, con
 		if (itC != std::end(types.classes)) {
 			switch (f.cardinality) {
 				case Cardinality::Optional:
+					cpp << "if (" << f.fieldName() << ".isValid()) {\n";
+					{
+						Scope s(cpp);
+						cpp << f.fieldName() << "->WriteCPACS(tixiHandle, xpath + \"/" << f.name << "\");\n";
+					}
+					cpp << "}\n";
+					break;
 				case Cardinality::Mandatory:
 					cpp << f.fieldName() << ".WriteCPACS(tixiHandle, xpath + \"/" << f.name << "\");\n";
 					break;
@@ -296,14 +312,22 @@ void writeLicenseHeader(IndentingStreamWrapper& f) {
 	f << "\n";
 }
 
-void writeIncludes(IndentingStreamWrapper& hpp, const Class& c, const Types& types) {
-	// standard headers
-	bool stringHeader = false;
+struct Dependencies {
+	std::vector<std::string> hppIncludes;
+	std::vector<std::string> hppForwards;
+	std::vector<std::string> cppIncludes;
+};
+
+Dependencies resolveDependencies(const Class& c, const Types& types) {
+	Dependencies deps;
+
+	deps.hppIncludes.push_back("<tixi.h>");
+	deps.hppIncludes.push_back("<string>");
+
+	// optional and vector
 	bool vectorHeader = false;
 	bool optionalHeader = false;
 	for (const auto& f : c.fields) {
-		if (f.type == "std::string")
-			stringHeader = true;
 		switch (f.cardinality) {
 			case Cardinality::Optional:
 				optionalHeader = true;
@@ -315,28 +339,43 @@ void writeIncludes(IndentingStreamWrapper& hpp, const Class& c, const Types& typ
 				break;
 		}
 	}
-	if (stringHeader) hpp << "#include <string>\n";
-	if (vectorHeader) hpp << "#include <vector>\n";
-	//if (optionalHeader) hpp << "#include <boost/optional.hpp>\n";
+	if (vectorHeader)   deps.hppIncludes.push_back("<vector>");
+	if (optionalHeader) deps.hppIncludes.push_back("\"optional.hpp\"");
+
+	deps.hppIncludes.push_back("\"tigl_internal.h\"");
 
 	// base class
 	if (!c.base.empty())
-		hpp << "#include \"" << c.base << ".h\"\n";
+		deps.hppIncludes.push_back("\"" + c.base + ".h\"");
 
 	// fields
 	for (const auto& f : c.fields) {
 		if (types.enums.find(f.type) != std::end(types.enums) ||
 			types.classes.find(f.type) != std::end(types.classes)) {
-			hpp << "#include \"" << f.type << ".h\"\n";
+			// this is a class or enum type, include it
+
+			switch (f.cardinality) {
+				case Cardinality::Optional:
+					deps.hppForwards.push_back(f.type);
+					deps.cppIncludes.push_back("\"" + f.type + ".h\"");
+					break;
+				case Cardinality::Mandatory:
+				case Cardinality::Vector:
+					deps.hppIncludes.push_back("\"" + f.type + ".h\"");
+					break;
+			}
 		}
 	}
+
+	// misc cpp includes
+	deps.cppIncludes.push_back("\"IOHelper.h\"");
+	deps.cppIncludes.push_back("\"CTiglLogging.h\"");
+	deps.cppIncludes.push_back("\"" + c.name + ".h\"");
+
+	return deps;
 }
 
-void writeClass(IndentingStreamWrapper& hpp, IndentingStreamWrapper& cpp, const Class& c, const Types& types) {
-	//
-	// create header file
-	//
-
+void writeHeader(IndentingStreamWrapper& hpp, const Class& c, const Dependencies& deps, const Types& types) {
 	hpp << "#pragma once\n";
 	hpp << "\n";
 
@@ -344,8 +383,8 @@ void writeClass(IndentingStreamWrapper& hpp, IndentingStreamWrapper& cpp, const 
 	writeLicenseHeader(hpp);
 
 	// includes
-	writeIncludes(hpp, c, types);
-	hpp << "#include \"tigl_internal.h\"\n";
+	for (const auto& dep : deps.hppIncludes)
+		hpp << "#include " << dep << "\n";
 	hpp << "\n";
 
 	// namespace
@@ -357,6 +396,11 @@ void writeClass(IndentingStreamWrapper& hpp, IndentingStreamWrapper& cpp, const 
 		{
 			Scope s(hpp);
 
+			// forward declarations
+			for (const auto& dep : deps.hppForwards)
+				hpp << "class " << dep << ";\n";
+			hpp << "\n";
+
 			// class name and base class
 			hpp << "// generated from " << c.origin->xpath << "\n";
 			hpp << "class " << c.name << (c.base.empty() ? "" : " : public " + c.base) << " {\n";
@@ -366,6 +410,8 @@ void writeClass(IndentingStreamWrapper& hpp, IndentingStreamWrapper& cpp, const 
 
 				// ctor
 				hpp << "TIGL_EXPORT " << c.name << "();\n";
+				hpp << "TIGL_EXPORT " << c.name << "(" << c.name << "&&) = default;\n";
+				hpp << "TIGL_EXPORT ~" << c.name << "();\n";
 				hpp << "\n";
 
 				// io
@@ -389,18 +435,15 @@ void writeClass(IndentingStreamWrapper& hpp, IndentingStreamWrapper& cpp, const 
 	}
 	hpp << "}\n";
 	hpp << "\n";
+}
 
-	//
-	// create source file
-	//
-
+void writeSource(IndentingStreamWrapper& cpp, const Class& c, const Dependencies& deps, const Types& types) {
 	// file header
 	writeLicenseHeader(cpp);
 
 	// includes
-	cpp << "#include \"IOHelper.h\"\n";
-	cpp << "#include \"CTiglLogging.h\"\n";
-	cpp << "#include \"" << c.name << ".h\"\n";
+	for (const auto& dep : deps.cppIncludes)
+		cpp << "#include " << dep << "\n";
 	cpp << "\n";
 
 	// namespace
@@ -414,6 +457,8 @@ void writeClass(IndentingStreamWrapper& hpp, IndentingStreamWrapper& cpp, const 
 
 			// ctor
 			cpp << "" << c.name << "::" << c.name << "() {}\n";
+			cpp << "\n";
+			cpp << "" << c.name << "::~" << c.name << "() {}\n";
 			cpp << "\n";
 
 			// io
@@ -429,6 +474,13 @@ void writeClass(IndentingStreamWrapper& hpp, IndentingStreamWrapper& cpp, const 
 	}
 	cpp << "}\n";
 	cpp << "\n";
+}
+
+void writeClass(IndentingStreamWrapper& hpp, IndentingStreamWrapper& cpp, const Class& c, const Types& types) {
+	auto deps = resolveDependencies(c, types);
+	
+	writeHeader(hpp, c, deps, types);
+	writeSource(cpp, c, deps, types);
 }
 
 void writeEnum(IndentingStreamWrapper& hpp, const Enum& e) {

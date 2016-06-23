@@ -27,7 +27,19 @@ struct Field {
 	auto fieldType() const {
 		switch (cardinality) {
 			case Cardinality::Optional:
-				return "/* optional */ " + type; // TODO: use optional<T> here
+				return "Optional<" + type + ">";
+			case Cardinality::Mandatory:
+				return type;
+			case Cardinality::Vector:
+				return "std::vector<" + type + ">";
+			default:
+				throw std::logic_error("Invalid cardinality");
+		}
+	}
+
+	auto getterSetterType() const {
+		switch (cardinality) {
+			case Cardinality::Optional:
 			case Cardinality::Mandatory:
 				return type;
 			case Cardinality::Vector:

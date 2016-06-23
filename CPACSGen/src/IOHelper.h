@@ -6,6 +6,8 @@
 #include <string>
 #include <iostream>
 
+#include "optional.hpp"
+
 std::string errorToString(ReturnCode ret);
 
 class TixiError : public std::exception {
@@ -21,30 +23,40 @@ private:
 };
 
 bool TixiCheckAttribute(const TixiDocumentHandle& tixiHandle, const std::string& xpath, const std::string& attribute);
-bool TixiCheckElement(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
-bool TixiCheckElement(const TixiDocumentHandle& tixiHandle, const std::string& parentPath, const std::string& element);
+bool TixiCheckElement  (const TixiDocumentHandle& tixiHandle, const std::string& xpath);
+bool TixiCheckElement  (const TixiDocumentHandle& tixiHandle, const std::string& parentPath, const std::string& element);
 
 int TixiGetNamedChildrenCount(const TixiDocumentHandle& tixiHandle, const std::string& xpath, const std::string& child);
 
-std::string TixiGetTextAttribute(const TixiDocumentHandle& tixiHandle, const std::string& xpath, const std::string& attribute);
+std::string TixiGetTextAttribute  (const TixiDocumentHandle& tixiHandle, const std::string& xpath, const std::string& attribute);
 double      TixiGetDoubleAttribute(const TixiDocumentHandle& tixiHandle, const std::string& xpath, const std::string& attribute);
-bool        TixiGetBoolAttribute(const TixiDocumentHandle& tixiHandle, const std::string& xpath, const std::string& attribute);
-int         TixiGetIntAttribute(const TixiDocumentHandle& tixiHandle, const std::string& xpath, const std::string& attribute);
+bool        TixiGetBoolAttribute  (const TixiDocumentHandle& tixiHandle, const std::string& xpath, const std::string& attribute);
+int         TixiGetIntAttribute   (const TixiDocumentHandle& tixiHandle, const std::string& xpath, const std::string& attribute);
 
-std::string TixiGetTextElement(const TixiDocumentHandle& tixiHandle, const std::string& parentXPath, const std::string& element);
+std::string TixiGetTextElement  (const TixiDocumentHandle& tixiHandle, const std::string& parentXPath, const std::string& element);
 double      TixiGetDoubleElement(const TixiDocumentHandle& tixiHandle, const std::string& parentXPath, const std::string& element);
-bool        TixiGetBoolElement(const TixiDocumentHandle& tixiHandle, const std::string& parentXPath, const std::string& element);
-int         TixiGetIntElement(const TixiDocumentHandle& tixiHandle, const std::string& parentXPath, const std::string& element);
+bool        TixiGetBoolElement  (const TixiDocumentHandle& tixiHandle, const std::string& parentXPath, const std::string& element);
+int         TixiGetIntElement   (const TixiDocumentHandle& tixiHandle, const std::string& parentXPath, const std::string& element);
 
-void TixiSaveTextAttribute(const TixiDocumentHandle& tixiHandle, const std::string& xpath, const std::string& attribute, const std::string& value);
-void TixiSaveDoubleAttribute(const TixiDocumentHandle& tixiHandle, const std::string& xpath, const std::string& attribute, double value);
-void TixiSaveBoolAttribute(const TixiDocumentHandle& tixiHandle, const std::string& xpath, const std::string& attribute, bool value);
+void TixiSaveAttribute(const TixiDocumentHandle& tixiHandle, const std::string& xpath, const std::string& attribute, const std::string& value);
+void TixiSaveAttribute(const TixiDocumentHandle& tixiHandle, const std::string& xpath, const std::string& attribute, double             value);
+void TixiSaveAttribute(const TixiDocumentHandle& tixiHandle, const std::string& xpath, const std::string& attribute, bool               value);
+void TixiSaveAttribute(const TixiDocumentHandle& tixiHandle, const std::string& xpath, const std::string& attribute, int                value);
 
-void TixiSaveTextElement(const TixiDocumentHandle& tixiHandle, const std::string& parentXPath, const std::string& element, const std::string& value);
-void TixiSaveDoubleElement(const TixiDocumentHandle& tixiHandle, const std::string& parentXPath, const std::string& element, double value);
-void TixiSaveBoolElement(const TixiDocumentHandle& tixiHandle, const std::string& parentXPath, const std::string& element, bool value);
-void TixiSaveIntElement(const TixiDocumentHandle& tixiHandle, const std::string& parentXPath, const std::string& element, int value);
+template <typename T>
+void TixiSaveAttribute(const TixiDocumentHandle& tixiHandle, const std::string& xpath, const std::string& attribute, const Optional<T>& value) {
+	if (value.isValid()) TixiSaveAttribute(tixiHandle, xpath, attribute, value.get());
+}
 
+void TixiSaveElement(const TixiDocumentHandle& tixiHandle, const std::string& parentXPath, const std::string& element, const std::string& value);
+void TixiSaveElement(const TixiDocumentHandle& tixiHandle, const std::string& parentXPath, const std::string& element, double             value);
+void TixiSaveElement(const TixiDocumentHandle& tixiHandle, const std::string& parentXPath, const std::string& element, bool               value);
+void TixiSaveElement(const TixiDocumentHandle& tixiHandle, const std::string& parentXPath, const std::string& element, int                value);
+
+template <typename T>
+void TixiSaveElement(const TixiDocumentHandle& tixiHandle, const std::string& parentXPath, const std::string& element, const Optional<T>& value) {
+	if (value.isValid()) TixiSaveElement(tixiHandle, parentXPath, element, value.get());
+}
 
 template<typename ChildType, typename ReadChildFunc>
 void TixiReadElements(const TixiDocumentHandle& tixiHandle, const std::string& parentPath, const std::string& childName, std::vector<ChildType>& children, ReadChildFunc readChild, int minOcurrs = -1, int maxOccurs = -1) {
