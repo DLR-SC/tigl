@@ -88,7 +88,7 @@ void TixiSaveElements(const TixiDocumentHandle& tixiHandle, const std::string& p
 	int childCount = 0;
 	tixiGetNamedChildrenCount(tixiHandle, parentPath.c_str(), childName.c_str(), &childCount); // this call is allowed to fail if the element at parentPath does not exist
 
-	// test if we have children to write
+																							   // test if we have children to write
 	if (children.size() > 0) {
 		// it the container node does not exist, create it
 		if (tixiCheckElement(tixiHandle, parentPath.c_str()) == ELEMENT_NOT_FOUND) {
@@ -97,8 +97,9 @@ void TixiSaveElements(const TixiDocumentHandle& tixiHandle, const std::string& p
 				throw std::invalid_argument("parentXpath must contain a /");
 			const std::string pathBeforeParentElement = parentPath.substr(0, pos);
 			const std::string parentName = parentPath.substr(pos + 1);
-			if (tixiCreateElement(tixiHandle, pathBeforeParentElement.c_str(), parentName.c_str()) != SUCCESS) {
-				throw TixiError("tixiCreateElement failed creating element \"" + parentName + "\" at path \"" + pathBeforeParentElement + "\"");
+			const auto ret = tixiCreateElement(tixiHandle, pathBeforeParentElement.c_str(), parentName.c_str());
+			if (ret != SUCCESS) {
+				throw TixiError(ret, "tixiCreateElement failed creating element \"" + parentName + "\" at path \"" + pathBeforeParentElement + "\"");
 			}
 		}
 
@@ -107,8 +108,9 @@ void TixiSaveElements(const TixiDocumentHandle& tixiHandle, const std::string& p
 			// if child node does not exist, create it
 			const std::string childPath = childBasePath + "[" + std::to_string(i) + "]";
 			if (tixiCheckElement(tixiHandle, childPath.c_str()) == ELEMENT_NOT_FOUND) {
-				if (tixiCreateElement(tixiHandle, parentPath.c_str(), childName.c_str()) != SUCCESS) {
-					throw TixiError("tixiCreateElement failed creating element \"" + childName + "\" at path \"" + parentPath + "\"");
+				const auto ret = tixiCreateElement(tixiHandle, parentPath.c_str(), childName.c_str());
+				if (ret != SUCCESS) {
+					throw TixiError(ret, "tixiCreateElement failed creating element \"" + childName + "\" at path \"" + parentPath + "\"");
 				}
 			}
 
@@ -118,7 +120,7 @@ void TixiSaveElements(const TixiDocumentHandle& tixiHandle, const std::string& p
 
 		// delete old children which where not overwritten
 		for (std::size_t i = children.size() + 1; i <= childCount; i++) {
-			tixiRemoveElement(tixiHandle, (childBasePath + "[" + std::to_string(count + 1) + "]").c_str());
+			tixiRemoveElement(tixiHandle, (childBasePath + "[" + std::to_string(i) + "]").c_str());
 		}
 	} else {
 		// parent node must not exist if there are no child nodes
