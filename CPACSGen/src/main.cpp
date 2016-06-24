@@ -37,21 +37,11 @@ auto makeClassName(std::string name) {
 TypeSubstitutionTable typeSubstitutionTable;
 
 std::string resolveType(const SchemaParser& schema, const std::string& name) {
-	const auto& complexTypes = schema.complexTypes();
-	const auto& simpleTypes = schema.simpleTypes();
+	const auto& types = schema.types();
 
-	// search complex types
-	const auto cit = complexTypes.find(name);
-	if (cit != std::end(complexTypes)) {
-		if (typeSubstitutionTable.hasSubstitution(name))
-			return typeSubstitutionTable.substitute(name);
-		else
-			return makeClassName(name);
-	}
-
-	// search simple types
-	const auto sit = simpleTypes.find(name);
-	if (sit != std::end(simpleTypes)) {
+	// search simple and complex types
+	const auto cit = types.find(name);
+	if (cit != std::end(types)) {
 		if (typeSubstitutionTable.hasSubstitution(name))
 			return typeSubstitutionTable.substitute(name);
 		else
@@ -150,37 +140,46 @@ int main() {
 		// read types and elements
 		std::cout << "Parsing " << cpacsLocation << std::endl;
 		SchemaParser schema(cpacsLocation);
-		const auto& complexTypes = schema.complexTypes();
-		const auto& simpleTypes = schema.simpleTypes();
-
-		Types types;
 
 		// generate classes from complex types
-		for(const auto& p : complexTypes) {
+		Types types;
+		for(const auto& p : schema.types()) {
 			const auto& type = p.second;
-			Class c;
-			c.origin = &type;
-			c.name = makeClassName(type.name);
-			c.base = makeClassName(type.base);
-			c.fields = buildFieldList(schema, type);
-			types.classes[c.name] = c;
+
+			struct Visitor {
+				Visitor(SchemaParser& schema, Types& types)
+					: schema(schema), types(types) {}
+
+				void operator()(const ComplexType& type) {
+					Class c;
+					c.origin = &type;
+					c.name = makeClassName(type.name);
+					c.base = makeClassName(type.base);
+					c.fields = buildFieldList(schema, type);
+					types.classes[c.name] = c;
+				}
+
+				void operator()(const SimpleType& type) {
+					if (type.restrictionValues.size() > 0) {
+						// create enum
+						Enum e;
+						e.origin = &type;
+						e.name = makeClassName(type.name);
+						for (const auto& v : type.restrictionValues)
+							e.values.push_back(EnumValue(v));
+						types.enums[e.name] = e;
+					} else
+						throw NotImplementedException("Simple times which are not enums are not implemented");
+				}
+
+			private:
+				SchemaParser& schema;
+				Types& types;
+			};
+
+			type.visit(Visitor(schema, types));
 		};
 
-		// generate enums from simple types
-		for (const auto& p : simpleTypes) {
-			const auto& s = p.second;
-			if (s.restrictionValues.size() > 0) {
-				// create enum
-				Enum e;
-				e.origin = &s;
-				e.name = makeClassName(s.name);
-				for (const auto& v : s.restrictionValues)
-					e.values.push_back(EnumValue(v));
-				types.enums[e.name] = e;
-			} else
-				throw NotImplementedException("Simple times which are not enums are not implemented");
-		}
-		
 		// generate code
 		std::cout << "Generating classes" << std::endl;
 		CodeGen codegen(outputLocation, types);

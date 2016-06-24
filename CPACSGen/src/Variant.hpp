@@ -31,6 +31,7 @@ public:
 
 	auto& operator=(Variant&& other) {
 		m_data = std::move(other.m_data);
+		return *this;
 	}
 
 	~Variant() = default;

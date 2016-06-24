@@ -115,10 +115,10 @@ std::string SchemaParser::readComplexType(const std::string& xpath) {
 		}
 	}();
 
-	if (m_complexTypes.find(name) != std::end(m_complexTypes))
-		throw std::runtime_error("SimpleType with name " + name + " already exists");
+	if (m_types.find(name) != std::end(m_types))
+		throw std::runtime_error("Type with name " + name + " already exists");
 
-	ComplexType& type = m_complexTypes[name];
+	ComplexType type;
 	type.xpath = xpath;
 	type.name = name;
 
@@ -151,6 +151,9 @@ std::string SchemaParser::readComplexType(const std::string& xpath) {
 		}
 	}
 
+	// add
+	m_types[name] = type;
+
 	return name;
 }
 
@@ -165,10 +168,10 @@ std::string SchemaParser::readSimpleType(const std::string& xpath) {
 		}
 	}();
 
-	if (m_simpleTypes.find(name) != std::end(m_simpleTypes))
-		throw std::runtime_error("SimpleType with name " + name + " already exists");
+	if (m_types.find(name) != std::end(m_types))
+		throw std::runtime_error("Type with name " + name + " already exists");
 
-	SimpleType& type = m_simpleTypes[name];
+	SimpleType type;
 	type.xpath = xpath;
 	type.name = name;
 
@@ -183,6 +186,9 @@ std::string SchemaParser::readSimpleType(const std::string& xpath) {
 
 	if (document.checkAttribute(xpath, "id"))
 		throw NotImplementedException("XSD complextype id is not implemented");
+
+	// add
+	m_types[name] = type;
 
 	return name;
 }
@@ -248,29 +254,24 @@ Element SchemaParser::readElement(const std::string& xpath) {
 }
 
 std::string SchemaParser::renameType(const std::string& oldName, std::string newNameSuggestion) {
-	auto renameType = [&](auto& types) {
-		const auto it = types.find(oldName);
-		if (it != std::end(types)) {
-			auto type = it->second;
-			types.erase(it);
+	const auto it = m_types.find(oldName);
+	if (it == std::end(m_types))
+		throw std::logic_error("Could not find type " + oldName);
 
-			// try to find unique name based on suggestion
-			unsigned int id = 0;
-			while (types.find(newNameSuggestion + "Type" + std::to_string(id)) != std::end(types))
-				id++; // TODO: replies on newNameSuggestion to have at least 4 chars (assumes suggestion ends with Type)
+	auto type = it->second;
+	m_types.erase(it);
 
-			// insert with new name
-			newNameSuggestion += "Type" + std::to_string(id);
-			type.name = newNameSuggestion;
-			types[type.name] = type;
-			return true;
-		}
-		return false;
-	};
-	if (renameType(m_complexTypes))
-		return newNameSuggestion;
-	if (renameType(m_simpleTypes))
-		return newNameSuggestion;
-	return oldName; // TODO: remove after debugging
-	throw std::logic_error("Could not find type " + oldName);
+	// try to find unique name based on suggestion
+	unsigned int id = 0;
+	while (m_types.find(newNameSuggestion + "Type" + std::to_string(id)) != std::end(m_types))
+		id++; // TODO: replies on newNameSuggestion to have at least 4 chars (assumes suggestion ends with Type)
+
+	// insert with new name
+	newNameSuggestion += "Type" + std::to_string(id);
+	type.visit([&](Type& t) { t.name = newNameSuggestion; });
+	m_types[newNameSuggestion] = type;
+
+	std::cout << "Renamed type " << oldName << " to " << newNameSuggestion << std::endl;
+
+	return newNameSuggestion;
 }

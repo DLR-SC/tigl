@@ -40,17 +40,17 @@ struct Choice : XSDElement {
 	std::vector<Variant<Element, Choice, Sequence>> elements;
 };
 
-struct ComplexType : XSDElement {
+struct Type : XSDElement {
 	std::string name;
 	std::string base;
+};
 
+struct ComplexType : Type {
 	Variant<Element, Choice, Sequence, All> elements;
 	std::vector<Attribute> attributes;
 };
 
-struct SimpleType : XSDElement {
-	std::string name;
-	std::string base;
+struct SimpleType : Type {
 	std::vector<std::string> restrictionValues;
 };
 
@@ -58,13 +58,11 @@ class SchemaParser {
 public:
 	SchemaParser(const std::string& cpacsLocation);
 
-	const auto& complexTypes() const { return m_complexTypes; }
-	const auto& simpleTypes() const { return m_simpleTypes; }
+	const auto& types() const { return m_types; }
 
 private:
 	TixiDocument document;
-	std::unordered_map<std::string, ComplexType> m_complexTypes;
-	std::unordered_map<std::string, SimpleType> m_simpleTypes;
+	std::unordered_map<std::string, Variant<ComplexType, SimpleType>> m_types;
 
 	All readAll(const std::string& xpath);
 	Sequence readSequence(const std::string& xpath);
