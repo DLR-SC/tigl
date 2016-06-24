@@ -67,29 +67,33 @@ void writeFields(IndentingStreamWrapper& hpp, const std::vector<Field>& fields) 
 			hpp << "// generated from " << attOrElem->xpath << "\n";
 		});
 		hpp << f.fieldType() << " " << f.fieldName() << ";\n";
-		hpp << "\n";
+
+		if(&f != &fields.back())
+			hpp << "\n";
 	}
 }
 
-void writeAccessorDeclarations(IndentingStreamWrapper& hpp, const std::vector<Field>& fields) {
+void writeAccessorDeclarations(IndentingStreamWrapper& hpp, const std::vector<Field>& fields, const Types& types) {
 	for (const auto& f : fields) {
 		if(f.cardinality == Cardinality::Optional)
 			hpp << "TIGL_EXPORT bool has" << CapitalizeFirstLetter(f.name) << "() const;\n";
 		hpp << "TIGL_EXPORT const " << f.getterSetterType() << "& Get" << CapitalizeFirstLetter(f.name) << "() const;\n";
 		hpp << "TIGL_EXPORT " << f.getterSetterType() << "& Get" << CapitalizeFirstLetter(f.name) << "();\n";
-		//hpp << "TIGL_EXPORT void Set" << CapitalizeFirstLetter(f.name) << "(const " << f.getterSetterType() << "& value);\n";
+		if(types.classes.find(f.type) == std::end(types.classes)) // generate setter only for fundamental and enum types
+			hpp << "TIGL_EXPORT void Set" << CapitalizeFirstLetter(f.name) << "(const " << f.getterSetterType() << "& value);\n";
 		hpp << "\n";
 	}
 }
 
-void writeAccessorImplementations(IndentingStreamWrapper& cpp, const std::string& className, const std::vector<Field>& fields) {
+void writeAccessorImplementations(IndentingStreamWrapper& cpp, const std::string& className, const std::vector<Field>& fields, const Types& types) {
 	for (const auto& f : fields) {
 		const auto op = f.cardinality == Cardinality::Optional;
 		if (op)
 			cpp << "TIGL_EXPORT bool " << className << "::has" << CapitalizeFirstLetter(f.name) << "() const { return " << f.fieldName() << ".isValid(); }\n";
 		cpp << "const " << f.getterSetterType() << "& " << className << "::Get" << CapitalizeFirstLetter(f.name) << "() const { return " << f.fieldName() << (op ? ".get()" : "") << "; }\n";
 		cpp << f.getterSetterType() << "& " << className << "::Get" << CapitalizeFirstLetter(f.name) << "() { return " << f.fieldName() << (op ? ".get()" : "") << "; }\n";
-		//cpp << "void " << className << "::Set" << CapitalizeFirstLetter(f.name) << "(const " << f.getterSetterType() << "& value) { " << f.fieldName() << " = value; }\n";
+		if (types.classes.find(f.type) == std::end(types.classes)) // generate setter only for fundamental and enum types
+			cpp << "void " << className << "::Set" << CapitalizeFirstLetter(f.name) << "(const " << f.getterSetterType() << "& value) { " << f.fieldName() << " = value; }\n";
 		cpp << "\n";
 	}
 }
@@ -156,7 +160,7 @@ auto writeReadAttributeOrElementImplementation(IndentingStreamWrapper& cpp, cons
 		if (itC != std::end(types.classes)) {
 			switch (f.cardinality) {
 				case Cardinality::Optional:
-					cpp << f.fieldName() << " = " << f.getterSetterType() << "();\n";
+					cpp << f.fieldName() << ".construct();\n";
 					cpp << f.fieldName() << "->ReadCPACS(tixiHandle, xpath + \"/" << f.name << "\");\n";
 					break;
 				case Cardinality::Mandatory:
@@ -166,8 +170,8 @@ auto writeReadAttributeOrElementImplementation(IndentingStreamWrapper& cpp, cons
 					cpp << "TixiReadElements(tixiHandle, xpath, \"" << f.name << "\", " << f.fieldName() << ", [&](const std::string& childXPath) {\n";
 					{
 						Scope s(cpp);
-						cpp << f.type << " child;\n";
-						cpp << "child.ReadCPACS(tixiHandle, xpath + \"/" << f.name << "\");\n";
+						cpp << f.type << "* child = new " << f.type << ";\n";
+						cpp << "child->ReadCPACS(tixiHandle, xpath + \"/" << f.name << "\");\n";
 						cpp << "return child;\n";
 					}
 					cpp << "});\n";
@@ -237,10 +241,10 @@ auto writeWriteAttributeOrElementImplementation(IndentingStreamWrapper& cpp, con
 					cpp << f.fieldName() << ".WriteCPACS(tixiHandle, xpath + \"/" << f.name << "\");\n";
 					break;
 				case Cardinality::Vector:
-					cpp << "TixiSaveElements(tixiHandle, xpath, \"" << f.name << "\", " << f.fieldName() << ", [&](const std::string& childXPath, const " << f.type << "& child) {\n";
+					cpp << "TixiSaveElements(tixiHandle, xpath, \"" << f.name << "\", " << f.fieldName() << ", [&](const std::string& childXPath, const " << f.type << "* child) {\n";
 					{
 						Scope s(cpp);
-						cpp << "child.WriteCPACS(tixiHandle, childXPath);\n";
+						cpp << "child->WriteCPACS(tixiHandle, childXPath);\n";
 					}
 					cpp << "});\n";
 					break;
@@ -356,12 +360,12 @@ Dependencies resolveDependencies(const Class& c, const Types& types) {
 
 			switch (f.cardinality) {
 				case Cardinality::Optional:
+				case Cardinality::Mandatory:
+					deps.hppIncludes.push_back("\"" + f.type + ".h\"");
+					break;
+				case Cardinality::Vector:
 					deps.hppForwards.push_back(f.type);
 					deps.cppIncludes.push_back("\"" + f.type + ".h\"");
-					break;
-				case Cardinality::Mandatory:
-				case Cardinality::Vector:
-					deps.hppIncludes.push_back("\"" + f.type + ".h\"");
 					break;
 			}
 		}
@@ -409,8 +413,20 @@ void writeHeader(IndentingStreamWrapper& hpp, const Class& c, const Dependencies
 				Scope s(hpp);
 
 				// ctor
-				hpp << "TIGL_EXPORT " << c.name << "();\n";
-				hpp << "TIGL_EXPORT " << c.name << "(" << c.name << "&&) = default;\n";
+				hpp << "TIGL_EXPORT " << c.name << "() = default;\n";
+				hpp << "\n";
+
+				// copy ctor and assign
+				hpp << "TIGL_EXPORT " << c.name << "(const " << c.name << "&) = delete;\n";
+				hpp << "TIGL_EXPORT " << c.name << "& operator=(const " << c.name << "&) = delete;\n";
+				hpp << "\n";
+
+				// move ctor and assign
+				hpp << "TIGL_EXPORT " << c.name << "(" << c.name << "&&) = delete;\n";
+				hpp << "TIGL_EXPORT " << c.name << "& operator=(" << c.name << "&&) = delete;\n";
+				hpp << "\n";
+
+				// dtor
 				hpp << "TIGL_EXPORT ~" << c.name << "();\n";
 				hpp << "\n";
 
@@ -418,7 +434,7 @@ void writeHeader(IndentingStreamWrapper& hpp, const Class& c, const Dependencies
 				writeIODeclarations(hpp, c.name, c.fields);
 
 				// accessors
-				writeAccessorDeclarations(hpp, c.fields);
+				writeAccessorDeclarations(hpp, c.fields, types);
 
 			}
 			hpp << "private:\n";
@@ -427,7 +443,6 @@ void writeHeader(IndentingStreamWrapper& hpp, const Class& c, const Dependencies
 
 				// fields
 				writeFields(hpp, c.fields);
-				hpp << "\n";
 			}
 			hpp << "};\n";
 		}
@@ -455,11 +470,13 @@ void writeSource(IndentingStreamWrapper& cpp, const Class& c, const Dependencies
 		{
 			Scope s(cpp);
 
-			// ctor
-			cpp << "" << c.name << "::" << c.name << "() {}\n";
-			cpp << "\n";
-			cpp << "" << c.name << "::~" << c.name << "() {}\n";
-			cpp << "\n";
+			//// ctor
+			//cpp << c.name << "::" << c.name << "() {}\n";
+			//cpp << "\n";
+
+			//// dtor
+			//cpp << "" << c.name << "::~" << c.name << "() {}\n";
+			//cpp << "\n";
 
 			// io
 			writeReadImplementation(cpp, c.name, c.fields, types);
@@ -468,7 +485,7 @@ void writeSource(IndentingStreamWrapper& cpp, const Class& c, const Dependencies
 			cpp << "\n";
 
 			// accessors
-			writeAccessorImplementations(cpp, c.name, c.fields);
+			writeAccessorImplementations(cpp, c.name, c.fields, types);
 		}
 		cpp << "}\n";
 	}

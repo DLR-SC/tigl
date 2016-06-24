@@ -36,7 +36,7 @@ auto makeClassName(std::string name) {
 
 TypeSubstitutionTable typeSubstitutionTable;
 
-auto resolveType(const SchemaParser& schema, const std::string& name) {
+std::string resolveType(const SchemaParser& schema, const std::string& name) {
 	const auto& complexTypes = schema.complexTypes();
 	const auto& simpleTypes = schema.simpleTypes();
 

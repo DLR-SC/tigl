@@ -31,7 +31,7 @@ struct Field {
 			case Cardinality::Mandatory:
 				return type;
 			case Cardinality::Vector:
-				return "std::vector<" + type + ">";
+				return "std::vector<" + type + "*>";
 			default:
 				throw std::logic_error("Invalid cardinality");
 		}
@@ -43,7 +43,7 @@ struct Field {
 			case Cardinality::Mandatory:
 				return type;
 			case Cardinality::Vector:
-				return "std::vector<" + type + ">";
+				return "std::vector<" + type + "*>";
 			default:
 				throw std::logic_error("Invalid cardinality");
 		}

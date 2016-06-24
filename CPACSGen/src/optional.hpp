@@ -1,5 +1,6 @@
 #pragma once
 
+#include <boost/optional.hpp>
 #include <memory>
 #include <stdexcept>
 
@@ -14,34 +15,27 @@ template <typename T>
 class Optional {
 public:
 	Optional() = default;
-	Optional(T&& t)
-		: m_ptr(std::move(t)) {}
 
-	Optional(const Optional& other) = delete;
-	Optional& operator=(const Optional& other) = delete;
-
-	//Optional(const Optional& other) {
-	//	if (other.isValid())
-	//		m_ptr = std::make_unique<T>(other.get());
-	//}
-
-	//Optional& operator=(const Optional& other) {
-	//	if (other.isValid())
-	//		m_ptr = std::make_unique<T>(other.get());
-	//	return *this;
-	//}
+	Optional(const Optional&) = delete;
+	Optional& operator=(const Optional&) = delete;
 
 	Optional(Optional&&) noexcept = default;
 	Optional& operator=(Optional&&) noexcept = default;
 
-	Optional& operator=(const T& t) {
+	template<typename U>
+	Optional& operator=(const U& t) {
 		m_ptr = std::make_unique<T>(t);
 		return *this;
 	}
 
-	Optional& operator=(T&& t) {
+	template<typename U>
+	Optional& operator=(U&& t) {
 		m_ptr = std::make_unique<T>(std::move(t));
 		return *this;
+	}
+
+	void construct() {
+		m_ptr = std::make_unique<T>();
 	}
 
 	bool isValid() const {
