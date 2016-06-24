@@ -61,44 +61,68 @@ std::string Enum::stringToEnumFunc() const {
 	return "stringTo" + CapitalizeFirstLetter(name);
 }
 
-void writeFields(IndentingStreamWrapper& hpp, const std::vector<Field>& fields) {
+std::string CodeGen::fieldType(const Field& field) const {
+	switch (field.cardinality) {
+		case Cardinality::Optional:
+			return "Optional<" + getterSetterType(field) + ">";
+		default:
+			return getterSetterType(field);
+	}
+}
+
+std::string CodeGen::getterSetterType(const Field& field) const {
+	switch (field.cardinality) {
+		case Cardinality::Optional:
+		case Cardinality::Mandatory:
+			return field.type;
+		case Cardinality::Vector:
+			if(m_types.classes.find(field.type) != std::end(m_types.classes))
+				return "std::vector<" + field.type + "*>";
+			else
+				return "std::vector<" + field.type + ">";
+		default:
+			throw std::logic_error("Invalid cardinality");
+	}
+}
+
+void CodeGen::writeFields(IndentingStreamWrapper& hpp, const std::vector<Field>& fields) {
 	for (const auto& f : fields) {
 		f.origin.visit([&](const auto* attOrElem) {
 			hpp << "// generated from " << attOrElem->xpath << "\n";
 		});
-		hpp << f.fieldType() << " " << f.fieldName() << ";\n";
+		hpp << fieldType(f) << " " << f.fieldName() << ";\n";
 
 		if(&f != &fields.back())
 			hpp << "\n";
 	}
 }
 
-void writeAccessorDeclarations(IndentingStreamWrapper& hpp, const std::vector<Field>& fields, const Types& types) {
+void CodeGen::writeAccessorDeclarations(IndentingStreamWrapper& hpp, const std::vector<Field>& fields) {
 	for (const auto& f : fields) {
 		if(f.cardinality == Cardinality::Optional)
 			hpp << "TIGL_EXPORT bool has" << CapitalizeFirstLetter(f.name) << "() const;\n";
-		hpp << "TIGL_EXPORT const " << f.getterSetterType() << "& Get" << CapitalizeFirstLetter(f.name) << "() const;\n";
-		hpp << "TIGL_EXPORT " << f.getterSetterType() << "& Get" << CapitalizeFirstLetter(f.name) << "();\n";
-		if(types.classes.find(f.type) == std::end(types.classes)) // generate setter only for fundamental and enum types
-			hpp << "TIGL_EXPORT void Set" << CapitalizeFirstLetter(f.name) << "(const " << f.getterSetterType() << "& value);\n";
+		hpp << "TIGL_EXPORT const " << getterSetterType(f) << "& Get" << CapitalizeFirstLetter(f.name) << "() const;\n";
+		hpp << "TIGL_EXPORT " << getterSetterType(f) << "& Get" << CapitalizeFirstLetter(f.name) << "();\n";
+		if(m_types.classes.find(f.type) == std::end(m_types.classes)) // generate setter only for fundamental and enum types
+			hpp << "TIGL_EXPORT void Set" << CapitalizeFirstLetter(f.name) << "(const " << getterSetterType(f) << "& value);\n";
 		hpp << "\n";
 	}
 }
 
-void writeAccessorImplementations(IndentingStreamWrapper& cpp, const std::string& className, const std::vector<Field>& fields, const Types& types) {
+void CodeGen::writeAccessorImplementations(IndentingStreamWrapper& cpp, const std::string& className, const std::vector<Field>& fields) {
 	for (const auto& f : fields) {
 		const auto op = f.cardinality == Cardinality::Optional;
 		if (op)
 			cpp << "TIGL_EXPORT bool " << className << "::has" << CapitalizeFirstLetter(f.name) << "() const { return " << f.fieldName() << ".isValid(); }\n";
-		cpp << "const " << f.getterSetterType() << "& " << className << "::Get" << CapitalizeFirstLetter(f.name) << "() const { return " << f.fieldName() << (op ? ".get()" : "") << "; }\n";
-		cpp << f.getterSetterType() << "& " << className << "::Get" << CapitalizeFirstLetter(f.name) << "() { return " << f.fieldName() << (op ? ".get()" : "") << "; }\n";
-		if (types.classes.find(f.type) == std::end(types.classes)) // generate setter only for fundamental and enum types
-			cpp << "void " << className << "::Set" << CapitalizeFirstLetter(f.name) << "(const " << f.getterSetterType() << "& value) { " << f.fieldName() << " = value; }\n";
+		cpp << "const " << getterSetterType(f) << "& " << className << "::Get" << CapitalizeFirstLetter(f.name) << "() const { return " << f.fieldName() << (op ? ".get()" : "") << "; }\n";
+		cpp << getterSetterType(f) << "& " << className << "::Get" << CapitalizeFirstLetter(f.name) << "() { return " << f.fieldName() << (op ? ".get()" : "") << "; }\n";
+		if (m_types.classes.find(f.type) == std::end(m_types.classes)) // generate setter only for fundamental and enum types
+			cpp << "void " << className << "::Set" << CapitalizeFirstLetter(f.name) << "(const " << getterSetterType(f) << "& value) { " << f.fieldName() << " = value; }\n";
 		cpp << "\n";
 	}
 }
 
-void writeIODeclarations(IndentingStreamWrapper& hpp, const std::string& className, const std::vector<Field>& fields) {
+void CodeGen::writeIODeclarations(IndentingStreamWrapper& hpp, const std::string& className, const std::vector<Field>& fields) {
 	hpp << "TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);\n";
 	hpp << "TIGL_EXPORT void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;\n";
 	hpp << "\n";
@@ -113,10 +137,10 @@ namespace {
 	};
 }
 
-auto writeReadAttributeOrElementImplementation(IndentingStreamWrapper& cpp, const Field& f, const Types& types, bool attribute) {
+void CodeGen::writeReadAttributeOrElementImplementation(IndentingStreamWrapper& cpp, const Field& f, bool attribute) {
 	const std::string AttOrElem = attribute ? "Attribute" : "Element";
 
-	// fundamental types
+	// fundamental m_types
 	const auto itF = fundamentalTypes.find(f.type);
 	if (itF != std::end(fundamentalTypes)) {
 		switch (f.cardinality) {
@@ -140,13 +164,13 @@ auto writeReadAttributeOrElementImplementation(IndentingStreamWrapper& cpp, cons
 	}
 
 	// enums
-	const auto itE = types.enums.find(f.type);
-	if (itE != std::end(types.enums)) {
+	const auto itE = m_types.enums.find(f.type);
+	if (itE != std::end(m_types.enums)) {
 		const auto& readFunc = itE->second.stringToEnumFunc();
 		switch (f.cardinality) {
 			case Cardinality::Optional:
 			case Cardinality::Mandatory:
-				cpp << f.fieldName() << " = " << readFunc << "(TixiGetText" << AttOrElem << "(tixiHandle, xpath + \"/" << f.name << "\"));\n";
+				cpp << f.fieldName() << " = " << readFunc << "(TixiGetText" << AttOrElem << "(tixiHandle, xpath, \"" << f.name << "\"));\n";
 				break;
 			case Cardinality::Vector:
 				throw NotImplementedException("Reading enum vectors is not implemented");
@@ -156,8 +180,8 @@ auto writeReadAttributeOrElementImplementation(IndentingStreamWrapper& cpp, cons
 
 	// classes
 	if (!attribute) {
-		const auto itC = types.classes.find(f.type);
-		if (itC != std::end(types.classes)) {
+		const auto itC = m_types.classes.find(f.type);
+		if (itC != std::end(m_types.classes)) {
 			switch (f.cardinality) {
 				case Cardinality::Optional:
 					cpp << f.fieldName() << ".construct();\n";
@@ -184,7 +208,7 @@ auto writeReadAttributeOrElementImplementation(IndentingStreamWrapper& cpp, cons
 	throw std::logic_error("No read function provided for type " + f.type);
 }
 
-auto writeWriteAttributeOrElementImplementation(IndentingStreamWrapper& cpp, const Field& f, const Types& types, bool attribute) {
+void CodeGen::writeWriteAttributeOrElementImplementation(IndentingStreamWrapper& cpp, const Field& f, bool attribute) {
 	const std::string AttOrElem = attribute ? "Attribute" : "Element";
 
 	// fundamental types
@@ -211,12 +235,12 @@ auto writeWriteAttributeOrElementImplementation(IndentingStreamWrapper& cpp, con
 	}
 
 	// enums
-	const auto itE = types.enums.find(f.type);
-	if (itE != std::end(types.enums)) {
+	const auto itE = m_types.enums.find(f.type);
+	if (itE != std::end(m_types.enums)) {
 		switch (f.cardinality) {
 			case Cardinality::Optional:
 			case Cardinality::Mandatory:
-				cpp << "TixiSaveText" << AttOrElem << "(tixiHandle, xpath, \"" << f.name << "\", " << itE->second.enumToStringFunc() << "(" << f.fieldName() << "));\n";
+				cpp << "TixiSave" << AttOrElem << "(tixiHandle, xpath, \"" << f.name << "\", " << itE->second.enumToStringFunc() << "(" << f.fieldName() << (f.cardinality == Cardinality::Optional ? ".get()" : "") << "));\n";
 				break;
 			case Cardinality::Vector:
 				throw NotImplementedException("Writing enum vectors is not implemented");
@@ -226,8 +250,8 @@ auto writeWriteAttributeOrElementImplementation(IndentingStreamWrapper& cpp, con
 
 	// classes
 	if (!attribute) {
-		const auto itC = types.classes.find(f.type);
-		if (itC != std::end(types.classes)) {
+		const auto itC = m_types.classes.find(f.type);
+		if (itC != std::end(m_types.classes)) {
 			switch (f.cardinality) {
 				case Cardinality::Optional:
 					cpp << "if (" << f.fieldName() << ".isValid()) {\n";
@@ -256,7 +280,7 @@ auto writeWriteAttributeOrElementImplementation(IndentingStreamWrapper& cpp, con
 	throw std::logic_error("No write function provided for type " + f.type);
 }
 
-void writeReadImplementation(IndentingStreamWrapper& cpp, const std::string& className, const std::vector<Field>& fields, const Types& types) {
+void CodeGen::writeReadImplementation(IndentingStreamWrapper& cpp, const std::string& className, const std::vector<Field>& fields) {
 	cpp << "void " << className << "::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) {\n";
 	{
 		Scope s(cpp);
@@ -267,7 +291,7 @@ void writeReadImplementation(IndentingStreamWrapper& cpp, const std::string& cla
 			cpp << "if (TixiCheck" << AttOrElem << "(tixiHandle, xpath, \"" << f.name << "\")) {\n";
 			{
 				Scope s(cpp);
-				writeReadAttributeOrElementImplementation(cpp, f, types, f.attribute);
+				writeReadAttributeOrElementImplementation(cpp, f, f.attribute);
 			}
 			cpp << "}\n";
 			if (f.cardinality == Cardinality::Mandatory) {
@@ -285,21 +309,21 @@ void writeReadImplementation(IndentingStreamWrapper& cpp, const std::string& cla
 	cpp << "}\n";
 }
 
-void writeWriteImplementation(IndentingStreamWrapper& cpp, const std::string& className, const std::vector<Field>& fields, const Types& types) {
+void CodeGen::writeWriteImplementation(IndentingStreamWrapper& cpp, const std::string& className, const std::vector<Field>& fields) {
 	cpp << "void " << className << "::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const {\n";
 	{
 		Scope s(cpp);
 		for (const auto& f : fields) {
 			const auto attOrElem = f.attribute ? "attribute" : "element";
 			cpp << "// write " << attOrElem << " " << f.name << "\n";
-			writeWriteAttributeOrElementImplementation(cpp, f, types, f.attribute);
+			writeWriteAttributeOrElementImplementation(cpp, f, f.attribute);
 			cpp << "\n";
 		}
 	}
 	cpp << "}\n";
 }
 
-void writeLicenseHeader(IndentingStreamWrapper& f) {
+void CodeGen::writeLicenseHeader(IndentingStreamWrapper& f) {
 	f << "// This file was autogenerated by CPACSGen, do not edit\n";
 	f << "//\n";
 	f << "// Licensed under the Apache License, Version 2.0 (the \"License\")\n";
@@ -316,14 +340,8 @@ void writeLicenseHeader(IndentingStreamWrapper& f) {
 	f << "\n";
 }
 
-struct Dependencies {
-	std::vector<std::string> hppIncludes;
-	std::vector<std::string> hppForwards;
-	std::vector<std::string> cppIncludes;
-};
-
-Dependencies resolveDependencies(const Class& c, const Types& types) {
-	Dependencies deps;
+CodeGen::Includes CodeGen::resolveIncludes(const Class& c) {
+	Includes deps;
 
 	deps.hppIncludes.push_back("<tixi.h>");
 	deps.hppIncludes.push_back("<string>");
@@ -354,8 +372,8 @@ Dependencies resolveDependencies(const Class& c, const Types& types) {
 
 	// fields
 	for (const auto& f : c.fields) {
-		if (types.enums.find(f.type) != std::end(types.enums) ||
-			types.classes.find(f.type) != std::end(types.classes)) {
+		if (m_types.enums.find(f.type) != std::end(m_types.enums) ||
+			m_types.classes.find(f.type) != std::end(m_types.classes)) {
 			// this is a class or enum type, include it
 
 			switch (f.cardinality) {
@@ -379,7 +397,7 @@ Dependencies resolveDependencies(const Class& c, const Types& types) {
 	return deps;
 }
 
-void writeHeader(IndentingStreamWrapper& hpp, const Class& c, const Dependencies& deps, const Types& types) {
+void CodeGen::writeHeader(IndentingStreamWrapper& hpp, const Class& c, const Includes& includes) {
 	hpp << "#pragma once\n";
 	hpp << "\n";
 
@@ -387,8 +405,8 @@ void writeHeader(IndentingStreamWrapper& hpp, const Class& c, const Dependencies
 	writeLicenseHeader(hpp);
 
 	// includes
-	for (const auto& dep : deps.hppIncludes)
-		hpp << "#include " << dep << "\n";
+	for (const auto& inc : includes.hppIncludes)
+		hpp << "#include " << inc << "\n";
 	hpp << "\n";
 
 	// namespace
@@ -401,8 +419,8 @@ void writeHeader(IndentingStreamWrapper& hpp, const Class& c, const Dependencies
 			Scope s(hpp);
 
 			// forward declarations
-			for (const auto& dep : deps.hppForwards)
-				hpp << "class " << dep << ";\n";
+			for (const auto& fwd : includes.hppForwards)
+				hpp << "class " << fwd << ";\n";
 			hpp << "\n";
 
 			// class name and base class
@@ -434,7 +452,7 @@ void writeHeader(IndentingStreamWrapper& hpp, const Class& c, const Dependencies
 				writeIODeclarations(hpp, c.name, c.fields);
 
 				// accessors
-				writeAccessorDeclarations(hpp, c.fields, types);
+				writeAccessorDeclarations(hpp, c.fields);
 
 			}
 			hpp << "private:\n";
@@ -452,13 +470,13 @@ void writeHeader(IndentingStreamWrapper& hpp, const Class& c, const Dependencies
 	hpp << "\n";
 }
 
-void writeSource(IndentingStreamWrapper& cpp, const Class& c, const Dependencies& deps, const Types& types) {
+void CodeGen::writeSource(IndentingStreamWrapper& cpp, const Class& c, const Includes& includes) {
 	// file header
 	writeLicenseHeader(cpp);
 
 	// includes
-	for (const auto& dep : deps.cppIncludes)
-		cpp << "#include " << dep << "\n";
+	for (const auto& inc : includes.cppIncludes)
+		cpp << "#include " << inc << "\n";
 	cpp << "\n";
 
 	// namespace
@@ -479,13 +497,13 @@ void writeSource(IndentingStreamWrapper& cpp, const Class& c, const Dependencies
 			//cpp << "\n";
 
 			// io
-			writeReadImplementation(cpp, c.name, c.fields, types);
+			writeReadImplementation(cpp, c.name, c.fields);
 			cpp << "\n";
-			writeWriteImplementation(cpp, c.name, c.fields, types);
+			writeWriteImplementation(cpp, c.name, c.fields);
 			cpp << "\n";
 
 			// accessors
-			writeAccessorImplementations(cpp, c.name, c.fields, types);
+			writeAccessorImplementations(cpp, c.name, c.fields);
 		}
 		cpp << "}\n";
 	}
@@ -493,14 +511,13 @@ void writeSource(IndentingStreamWrapper& cpp, const Class& c, const Dependencies
 	cpp << "\n";
 }
 
-void writeClass(IndentingStreamWrapper& hpp, IndentingStreamWrapper& cpp, const Class& c, const Types& types) {
-	auto deps = resolveDependencies(c, types);
-	
-	writeHeader(hpp, c, deps, types);
-	writeSource(cpp, c, deps, types);
+void CodeGen::writeClass(IndentingStreamWrapper& hpp, IndentingStreamWrapper& cpp, const Class& c) {
+	const auto includes = resolveIncludes(c);
+	writeHeader(hpp, c, includes);
+	writeSource(cpp, c, includes);
 }
 
-void writeEnum(IndentingStreamWrapper& hpp, const Enum& e) {
+void CodeGen::writeEnum(IndentingStreamWrapper& hpp, const Enum& e) {
 
 	hpp << "#pragma once\n";
 	hpp << "\n";
@@ -549,7 +566,7 @@ void writeEnum(IndentingStreamWrapper& hpp, const Enum& e) {
 			hpp << "}\n";
 
 			// string to enum function
-			hpp << "inline " << e.name << " " << e.enumToStringFunc() << "(const std::string& value) {\n";
+			hpp << "inline " << e.name << " " << e.stringToEnumFunc() << "(const std::string& value) {\n";
 			{
 				Scope s(hpp);
 				for (const auto& v : e.values)
@@ -564,10 +581,11 @@ void writeEnum(IndentingStreamWrapper& hpp, const Enum& e) {
 	hpp << "\n";
 }
 
-CodeGen::CodeGen(const std::string& outputLocation, const Types& types) {
+CodeGen::CodeGen(const std::string& outputLocation, const Types& types)
+	: m_types(types) {
 	boost::filesystem::create_directories(outputLocation);
 
-	for (const auto& p : types.classes) {
+	for (const auto& p : m_types.classes) {
 		const auto c = p.second;
 		std::ofstream hppFile(outputLocation + "/" + c.name + ".h");
 		hppFile.exceptions(std::ios::failbit | std::ios::badbit);
@@ -577,10 +595,10 @@ CodeGen::CodeGen(const std::string& outputLocation, const Types& types) {
 		cppFile.exceptions(std::ios::failbit | std::ios::badbit);
 		IndentingStreamWrapper cpp(cppFile);
 
-		writeClass(hpp, cpp, c, types);
+		writeClass(hpp, cpp, c);
 	}
 
-	for (const auto& p : types.enums) {
+	for (const auto& p : m_types.enums) {
 		const auto e = p.second;
 		std::ofstream hppFile(outputLocation + "/" + e.name + ".h");
 		hppFile.exceptions(std::ios::failbit | std::ios::badbit);

@@ -23,31 +23,6 @@ struct Field {
 	auto fieldName() const {
 		return "m_" + name;
 	}
-
-	auto fieldType() const {
-		switch (cardinality) {
-			case Cardinality::Optional:
-				return "Optional<" + type + ">";
-			case Cardinality::Mandatory:
-				return type;
-			case Cardinality::Vector:
-				return "std::vector<" + type + "*>";
-			default:
-				throw std::logic_error("Invalid cardinality");
-		}
-	}
-
-	auto getterSetterType() const {
-		switch (cardinality) {
-			case Cardinality::Optional:
-			case Cardinality::Mandatory:
-				return type;
-			case Cardinality::Vector:
-				return "std::vector<" + type + "*>";
-			default:
-				throw std::logic_error("Invalid cardinality");
-		}
-	}
 };
 
 struct Class {
@@ -86,9 +61,35 @@ struct Types {
 	std::unordered_map<std::string, Enum> enums;
 };
 
+class IndentingStreamWrapper;
+
 class CodeGen {
 public:
 	CodeGen(const std::string& outputLocation, const Types& types);
 private:
+	struct Includes {
+		std::vector<std::string> hppIncludes;
+		std::vector<std::string> hppForwards;
+		std::vector<std::string> cppIncludes;
+	};
 
+	const Types& m_types;
+
+	std::string fieldType(const Field& field) const;
+	std::string getterSetterType(const Field& field) const;
+
+	void writeFields(IndentingStreamWrapper& hpp, const std::vector<Field>& fields);
+	void writeAccessorDeclarations(IndentingStreamWrapper& hpp, const std::vector<Field>& fields);
+	void writeAccessorImplementations(IndentingStreamWrapper& cpp, const std::string& className, const std::vector<Field>& fields);
+	void writeIODeclarations(IndentingStreamWrapper& hpp, const std::string& className, const std::vector<Field>& fields);
+	void writeReadAttributeOrElementImplementation(IndentingStreamWrapper& cpp, const Field& f, bool attribute);
+	void writeWriteAttributeOrElementImplementation(IndentingStreamWrapper& cpp, const Field& f, bool attribute);
+	void writeReadImplementation(IndentingStreamWrapper& cpp, const std::string& className, const std::vector<Field>& fields);
+	void writeWriteImplementation(IndentingStreamWrapper& cpp, const std::string& className, const std::vector<Field>& fields);
+	void writeLicenseHeader(IndentingStreamWrapper& f);
+	Includes resolveIncludes(const Class& c);
+	void writeHeader(IndentingStreamWrapper& hpp, const Class& c, const Includes& includes);
+	void writeSource(IndentingStreamWrapper& cpp, const Class& c, const Includes& includes);
+	void writeClass(IndentingStreamWrapper& hpp, IndentingStreamWrapper& cpp, const Class& c);
+	void writeEnum(IndentingStreamWrapper& hpp, const Enum& e);
 };
