@@ -8,7 +8,7 @@ Travis-CI Build-Status: [![Build Status](https://travis-ci.org/DLR-SC/tigl.svg?b
 # About TiGL
 
 The **Ti**GL **G**eometry **L**ibrary can be used for the computation and processing of aircraft geometries 
-stored inside CPACS files. TiGL offers many geometry related functions such as
+stored inside ![CPACS](https://github.com/DLR-LY/CPACS) files. TiGL offers many geometry related functions such as
  - Point retrieval functions to compute points on the aircraft surface
  - Intersection functions to compute the intersection of the aircraft with planes
  - Export functions for standard CAD file formats (STEP + IGES) or mesh formats, 
