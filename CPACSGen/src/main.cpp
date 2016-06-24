@@ -8,6 +8,7 @@
 #include <limits>
 
 #include "TypeSubstitutionTable.h"
+#include "CustomTypesTable.h"
 #include "NotImplementedException.h"
 #include "schemaparser.h"
 #include "codegen.h"
@@ -133,9 +134,17 @@ const std::vector<std::string> copyFiles = {
 	"../src/IOHelper.cpp",
 	"../src/optional.hpp"
 };
-const std::string outputLocation = "generated";
 
-int main() {
+int main(int argc, char* argv[]) {
+
+	// parse command line arguments
+	if (argc != 2) {
+		std::cerr << "Usage: CPACSGen outputDirectory" << std::endl;
+		return -1;
+	}
+
+	const std::string outputDirectory = argv[1];
+
 	try {
 		// read types and elements
 		std::cout << "Parsing " << cpacsLocation << std::endl;
@@ -182,12 +191,12 @@ int main() {
 
 		// generate code
 		std::cout << "Generating classes" << std::endl;
-		CodeGen codegen(outputLocation, types);
+		CodeGen codegen(outputDirectory, types);
 
 		// copy IOHelper ("runtime")
 		for (const auto& filename : copyFiles) {
 			auto src = boost::filesystem::path(filename);
-			auto dst = boost::filesystem::path(outputLocation) / src.filename();
+			auto dst = boost::filesystem::path(outputDirectory) / src.filename();
 			boost::filesystem::copy_file(src, dst, boost::filesystem::copy_option::overwrite_if_exists);
 		}
 	} catch (const std::exception& e) {

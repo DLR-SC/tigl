@@ -76,10 +76,12 @@ std::string CodeGen::getterSetterType(const Field& field) const {
 		case Cardinality::Mandatory:
 			return field.type;
 		case Cardinality::Vector:
-			if(m_types.classes.find(field.type) != std::end(m_types.classes))
-				return "std::vector<" + field.type + "*>";
-			else
-				return "std::vector<" + field.type + ">";
+		{
+			const bool makePointer = m_types.classes.find(field.type) != std::end(m_types.classes);
+			const auto it = m_customTypes.find(field.type);
+			const auto typeName = (it != std::end(m_customTypes)) ? it->second : field.type;
+			return "std::vector<" + typeName + (makePointer ? "*" : "") + ">";
+		}
 		default:
 			throw std::logic_error("Invalid cardinality");
 	}
@@ -194,7 +196,8 @@ void CodeGen::writeReadAttributeOrElementImplementation(IndentingStreamWrapper& 
 					cpp << "TixiReadElements(tixiHandle, xpath, \"" << f.name << "\", " << f.fieldName() << ", [&](const std::string& childXPath) {\n";
 					{
 						Scope s(cpp);
-						cpp << f.type << "* child = new " << f.type << ";\n";
+						cpp << "using ChildType = std::remove_pointer_t<" << fieldType(f) << "::value_type>;\n";
+						cpp << "ChildType* child = new ChildType;\n";
 						cpp << "child->ReadCPACS(tixiHandle, xpath + \"/" << f.name << "\");\n";
 						cpp << "return child;\n";
 					}
@@ -376,15 +379,30 @@ CodeGen::Includes CodeGen::resolveIncludes(const Class& c) {
 			m_types.classes.find(f.type) != std::end(m_types.classes)) {
 			// this is a class or enum type, include it
 
-			switch (f.cardinality) {
-				case Cardinality::Optional:
-				case Cardinality::Mandatory:
-					deps.hppIncludes.push_back("\"" + f.type + ".h\"");
-					break;
-				case Cardinality::Vector:
-					deps.hppForwards.push_back(f.type);
-					deps.cppIncludes.push_back("\"" + f.type + ".h\"");
-					break;
+			auto it = m_customTypes.find(f.type);
+			if (it == std::end(m_customTypes)) {
+				switch (f.cardinality) {
+					case Cardinality::Optional:
+					case Cardinality::Mandatory:
+						deps.hppIncludes.push_back("\"" + f.type + ".h\"");
+						break;
+					case Cardinality::Vector:
+						deps.hppForwards.push_back(f.type);
+						deps.cppIncludes.push_back("\"" + f.type + ".h\"");
+						break;
+				}
+			} else {
+				// custom types are Tigl types and resolved using include paths and require a different namespace
+				switch (f.cardinality) {
+					case Cardinality::Optional:
+					case Cardinality::Mandatory:
+						deps.hppIncludes.push_back("<" + it->second + ".h>");
+						break;
+					case Cardinality::Vector:
+						deps.hppCustomForwards.push_back(it->second);
+						deps.cppIncludes.push_back("<" + it->second + ".h>");
+						break;
+				}
 			}
 		}
 	}
@@ -414,6 +432,11 @@ void CodeGen::writeHeader(IndentingStreamWrapper& hpp, const Class& c, const Inc
 	{
 		Scope s(hpp);
 
+		// custom Tigl types declarations
+		for (const auto& fwd : includes.hppCustomForwards)
+			hpp << "class " << fwd << ";\n";
+		hpp << "\n";
+
 		hpp << "namespace generated {\n";
 		{
 			Scope s(hpp);
@@ -431,17 +454,7 @@ void CodeGen::writeHeader(IndentingStreamWrapper& hpp, const Class& c, const Inc
 				Scope s(hpp);
 
 				// ctor
-				hpp << "TIGL_EXPORT " << c.name << "() = default;\n";
-				hpp << "\n";
-
-				// copy ctor and assign
-				hpp << "TIGL_EXPORT " << c.name << "(const " << c.name << "&) = delete;\n";
-				hpp << "TIGL_EXPORT " << c.name << "& operator=(const " << c.name << "&) = delete;\n";
-				hpp << "\n";
-
-				// move ctor and assign
-				hpp << "TIGL_EXPORT " << c.name << "(" << c.name << "&&) = delete;\n";
-				hpp << "TIGL_EXPORT " << c.name << "& operator=(" << c.name << "&&) = delete;\n";
+				hpp << "TIGL_EXPORT " << c.name << "();\n";
 				hpp << "\n";
 
 				// dtor
@@ -455,12 +468,26 @@ void CodeGen::writeHeader(IndentingStreamWrapper& hpp, const Class& c, const Inc
 				writeAccessorDeclarations(hpp, c.fields);
 
 			}
-			hpp << "private:\n";
+			hpp << "protected:\n";
 			{
 				Scope s(hpp);
 
 				// fields
 				writeFields(hpp, c.fields);
+				hpp << "\n";
+			}
+			hpp << "private:\n";
+			{
+				Scope s(hpp);
+
+				// copy ctor and assign
+				hpp << "TIGL_EXPORT " << c.name << "(const " << c.name << "&) = delete;\n";
+				hpp << "TIGL_EXPORT " << c.name << "& operator=(const " << c.name << "&) = delete;\n";
+				hpp << "\n";
+
+				// move ctor and assign
+				hpp << "TIGL_EXPORT " << c.name << "(" << c.name << "&&) = delete;\n";
+				hpp << "TIGL_EXPORT " << c.name << "& operator=(" << c.name << "&&) = delete;\n";
 			}
 			hpp << "};\n";
 		}
@@ -488,13 +515,13 @@ void CodeGen::writeSource(IndentingStreamWrapper& cpp, const Class& c, const Inc
 		{
 			Scope s(cpp);
 
-			//// ctor
-			//cpp << c.name << "::" << c.name << "() {}\n";
-			//cpp << "\n";
+			// ctor
+			cpp << c.name << "::" << c.name << "() {}\n";
+			cpp << "\n";
 
-			//// dtor
-			//cpp << "" << c.name << "::~" << c.name << "() {}\n";
-			//cpp << "\n";
+			// dtor
+			cpp << "" << c.name << "::~" << c.name << "() {}\n";
+			cpp << "\n";
 
 			// io
 			writeReadImplementation(cpp, c.name, c.fields);

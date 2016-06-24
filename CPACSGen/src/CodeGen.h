@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <unordered_map>
 
+#include "CustomTypesTable.h"
 #include "Variant.hpp"
 #include "SchemaParser.h"
 
@@ -70,10 +71,12 @@ private:
 	struct Includes {
 		std::vector<std::string> hppIncludes;
 		std::vector<std::string> hppForwards;
+		std::vector<std::string> hppCustomForwards;
 		std::vector<std::string> cppIncludes;
 	};
 
 	const Types& m_types;
+	CustomTypesTable m_customTypes;
 
 	std::string fieldType(const Field& field) const;
 	std::string getterSetterType(const Field& field) const;
