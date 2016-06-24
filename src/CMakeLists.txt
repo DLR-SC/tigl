@@ -11,9 +11,13 @@ configure_file (
 source_group(Fuselage REGULAR_EXPRESSION "CCPACSFuselage")
 source_group(Wing REGULAR_EXPRESSION "CCPACSWing")
 
+file(GLOB_RECURSE TIGL_GENERATED_SRC generated/*)
+source_group(generated FILES ${TIGL_GENERATED_SRC})
+
 # add all subdirectories to include path
 set(TIGL_INCLUDES ${CMAKE_CURRENT_SOURCE_DIR})
 subdirlist(SUBDIRS ${CMAKE_CURRENT_SOURCE_DIR})
+list(REMOVE_ITEM SUBDIRS generated)
 foreach(subdir ${SUBDIRS})
   set(TIGL_INCLUDES ${TIGL_INCLUDES} ${CMAKE_CURRENT_SOURCE_DIR}/${subdir})
 endforeach()
