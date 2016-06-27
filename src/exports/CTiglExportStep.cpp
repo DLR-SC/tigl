@@ -337,6 +337,7 @@ void CTiglExportStep::ExportStep(const std::string& filename) const
         ExportShapes(shapes, filename);
     }
     catch (CTiglError&) {
+        LOG(ERROR) << "Cannot export airplane in CTiglExportStep";
         throw CTiglError("Cannot export airplane in CTiglExportStep", TIGL_ERROR);
     }
 }
@@ -357,6 +358,7 @@ void CTiglExportStep::ExportFusedStep(const std::string& filename)
     PNamedShape fusedAirplane = fuser->FusedPlane();
     PNamedShape farField      = fuser->FarField();
     if (!fusedAirplane) {
+        LOG(ERROR) << "Error computing fused airplane.";
         throw CTiglError("Error computing fused airplane.", TIGL_NULL_POINTER);
     }
 
@@ -375,6 +377,7 @@ void CTiglExportStep::ExportFusedStep(const std::string& filename)
         ExportShapes(l, filename);
     }
     catch (CTiglError&) {
+        LOG(ERROR) << "Cannot export fused Airplane as STEP";
         throw CTiglError("Cannot export fused Airplane as STEP", TIGL_ERROR);
     }
 }
@@ -411,6 +414,7 @@ void CTiglExportStep::ExportShapes(const ListPNamedShape& shapes, const std::str
     }
     
     if (stepWriter.Write(const_cast<char*>(filename.c_str())) > IFSelect_RetDone) {
+        LOG(ERROR) << "Error: Export of shapes to STEP file failed in CTiglExportStep::ExportShapes";
         throw CTiglError("Error: Export of shapes to STEP file failed in CTiglExportStep::ExportShapes", TIGL_ERROR);
     }
 }

@@ -34,6 +34,15 @@
 namespace tigl 
 {
 
+// Enumeration for segment types
+enum SegmentType
+{
+    INNER_SEGMENT,
+    MID_SEGMENT,
+    OUTER_SEGMENT,
+    INNER_OUTER_SEGMENT
+};
+
 class CTiglAbstractSegment : public CTiglAbstractGeometricComponent
 {
 
@@ -41,7 +50,7 @@ public:
     TIGL_EXPORT CTiglAbstractSegment(int segIndex);
 
     // Invalidates internal state
-    TIGL_EXPORT void Invalidate(void);
+    TIGL_EXPORT virtual void Invalidate(void);
 
     // Returns the segment index of this segment
     TIGL_EXPORT int GetSegmentIndex(void) const;

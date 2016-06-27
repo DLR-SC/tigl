@@ -70,6 +70,9 @@ public:
     // Returns the name of the wing
     TIGL_EXPORT const std::string & GetName(void) const;
 
+    // Returns the member description
+    TIGL_EXPORT const std::string & GetDescription(void) const;
+
     // Returns the parent configuration
     TIGL_EXPORT CCPACSConfiguration & GetConfiguration(void) const;
 
@@ -79,14 +82,14 @@ public:
     // Returns the section for a given index
     TIGL_EXPORT CCPACSWingSection & GetSection(int index) const;
 
-    // Get segment count
+    // Getter of the number of segments of the wing
     TIGL_EXPORT int GetSegmentCount(void) const;
 
     // Returns the segment for a given index or uid
     TIGL_EXPORT CTiglAbstractSegment & GetSegment(const int index);
     TIGL_EXPORT CTiglAbstractSegment & GetSegment(std::string uid);
 
-    // Get segment count
+    // Getter of the number of component segments of the wing
     TIGL_EXPORT int GetComponentSegmentCount(void);
 
     // Returns the segment for a given index or uid
@@ -119,6 +122,15 @@ public:
         
     // Sets a Transformation object
     TIGL_EXPORT void Translate(CTiglPoint trans);
+
+    // Setter for translation
+    TIGL_EXPORT void SetTranslation(const CTiglPoint& translation);
+
+    // Setter for translation
+    TIGL_EXPORT void SetRotation(const CTiglPoint& rotation);
+
+    // Setter for translation
+    TIGL_EXPORT void SetScaling(const CTiglPoint& scaling);
 
     // Gets the surfade area of this wing
     TIGL_EXPORT double GetSurfaceArea();
@@ -154,6 +166,9 @@ public:
 
     // Get the guide curve with a given UID
     TIGL_EXPORT CCPACSGuideCurve& GetGuideCurve(std::string uid);
+
+    // Getter for positionings
+    TIGL_EXPORT CCPACSWingPositionings& GetPositionings();
 
 protected:
     // Cleanup routine

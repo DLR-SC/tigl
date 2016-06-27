@@ -69,6 +69,21 @@ public:
     // get trailing edge
     virtual const TopoDS_Edge & GetTrailingEdge() const = 0;
 
+    // returns the trailing edge for the opened wing profile
+    virtual const TopoDS_Edge& GetTrailingEdgeOpened() const = 0;
+
+    // get the upper wire of closed profile
+    virtual const TopoDS_Edge & GetUpperWireClosed() const = 0;
+
+    // get the lower wire of closed profile
+    virtual const TopoDS_Edge & GetLowerWireClosed() const = 0;
+
+    // get the upper wire of opened profile
+    virtual const TopoDS_Edge & GetUpperWireOpened() const = 0;
+
+    // get the lower wire of opened profile
+    virtual const TopoDS_Edge & GetLowerWireOpened() const = 0;
+
     // get leading edge point();
     virtual const gp_Pnt & GetLEPoint() const = 0;
     

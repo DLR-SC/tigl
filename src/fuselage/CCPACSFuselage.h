@@ -127,7 +127,7 @@ public:
 
     // Get the guide curve with a given UID
     TIGL_EXPORT CCPACSGuideCurve& GetGuideCurve(std::string uid);
-
+    
 protected:
     // Cleanup routine
     void Cleanup(void);
@@ -140,7 +140,7 @@ protected:
         
     // Adds all segments of this fuselage to one shape
     PNamedShape BuildLoft(void);
-
+    
 private:
     // get short name for loft
     std::string GetShortShapeName(void);

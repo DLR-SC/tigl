@@ -120,13 +120,18 @@ const std::string& CCPACSGuideCurve::GetName(void) const
     return name;
 }
 
+const std::string& CCPACSGuideCurve::GetDescription(void) const
+{
+    return description;
+}
+
 // Returns the UID of the guide curve
 const std::string& CCPACSGuideCurve::GetUID(void) const
 {
     return uid;
 }
 
-// Returns the UID of the guide curve
+// Returns the profile UID of the guide curve
 const std::string& CCPACSGuideCurve::GetGuideCurveProfileUID(void) const
 {
     return profileUID;

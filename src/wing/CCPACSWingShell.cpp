@@ -25,7 +25,13 @@
 namespace tigl 
 {
 
-CCPACSWingShell::CCPACSWingShell() 
+CCPACSWingShell::CCPACSWingShell()
+: cells(this)
+{
+    Reset();
+}
+
+CCPACSWingShell::~CCPACSWingShell()
 {
     Reset();
 }
@@ -34,6 +40,11 @@ void CCPACSWingShell::Reset()
 {
     cells.Reset();
     Invalidate();
+}
+
+const std::string& CCPACSWingShell::GetUID() const
+{
+    return uid;
 }
 
 int CCPACSWingShell::GetCellCount() const
@@ -60,7 +71,13 @@ void CCPACSWingShell::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string
         LOG(ERROR) << "Wing Shell " << shellXPath << " not found in CPACS file!" << std::endl;
         return;
     }
-    
+
+    // Get UID
+    char* ptrUID = NULL;
+    if (tixiGetTextAttribute(tixiHandle, shellXPath.c_str(), "uID", &ptrUID) == SUCCESS) {
+        uid = ptrUID;
+    }
+
     // read cell data
     std::string cellpath = shellXPath + "/cells";
     if (tixiCheckElement(tixiHandle, cellpath.c_str()) == SUCCESS) {
@@ -77,8 +94,6 @@ void CCPACSWingShell::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string
         // @todo: should that be an error?
         LOG(WARNING) << "No material definition found for shell " << shellXPath;
     }
-    
-    isvalid = true;
 }
 
 // Write CPACS segment elements
@@ -105,11 +120,23 @@ void CCPACSWingShell::WriteCPACS(TixiDocumentHandle tixiHandle, const std::strin
 void CCPACSWingShell::Invalidate()
 {
     isvalid = false;
+    cells.Invalidate();
 }
 
 bool CCPACSWingShell::IsValid() const
 {
     return isvalid;
+}
+
+void CCPACSWingShell::Update()
+{
+    if (isvalid) {
+        return;
+    }
+
+    // TODO: build stringer geometry
+
+    isvalid = true;
 }
 
 } // namespace tigl

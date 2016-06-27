@@ -23,6 +23,9 @@
 #include "CCPACSWingCells.h"
 #include "CCPACSMaterial.h"
 
+#include <string>
+
+
 namespace tigl 
 {
 
@@ -30,11 +33,17 @@ class CCPACSWingShell
 {
 public:
     TIGL_EXPORT CCPACSWingShell();
-    
+
+    TIGL_EXPORT virtual ~CCPACSWingShell();
+
     TIGL_EXPORT void Reset();
     
+    TIGL_EXPORT const std::string& GetUID() const;
+
     TIGL_EXPORT int GetCellCount() const;
+
     TIGL_EXPORT CCPACSWingCell& GetCell(int index);
+
     TIGL_EXPORT CCPACSMaterial& GetMaterial();
     
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& shellXPath);
@@ -43,11 +52,16 @@ public:
 
     TIGL_EXPORT void Invalidate();
     TIGL_EXPORT bool IsValid() const;
+
+    TIGL_EXPORT void Update();
+
 private:
     CCPACSWingCells cells;
     CCPACSMaterial material;
     //@todo stringers
-    
+
+    std::string uid;
+
     bool isvalid;
 };
 

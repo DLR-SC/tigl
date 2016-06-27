@@ -67,6 +67,11 @@ void CCPACSWingPositionings::Cleanup(void)
     invalidated = true;
 }
 
+CCPACSWingPositionings::CCPACSWingPositioningContainer& CCPACSWingPositionings::GetPositionings()
+{
+    return positionings;
+}
+
 // Returns the positioning matrix for a given section index
 CTiglTransformation CCPACSWingPositionings::GetPositioningTransformation(std::string sectionIndex)
 {
@@ -212,9 +217,9 @@ void CCPACSWingPositionings::WriteCPACS(TixiDocumentHandle tixiHandle, const std
         }
         positioning->WriteCPACS(tixiHandle, xpath);
     }
-    for (int i = positioningCount+1; i <= test; i++) {
+    for (int i = positioningCount + 1; i <= test; i++) {
         std::stringstream ss;
-        ss << elementPath << "/positioning[" << positioningCount+1 << "]";
+        ss << elementPath << "/positioning[" << positioningCount + 1 << "]";
         xpath = ss.str();
         tixiRemoveElement(tixiHandle, xpath.c_str());
     }

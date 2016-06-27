@@ -143,12 +143,14 @@ void CCPACSWing::Invalidate(void)
     invalidated = true;
     segments.Invalidate();
     positionings.Invalidate();
+    componentSegments.Invalidate();
 }
 
 // Cleanup routine
 void CCPACSWing::Cleanup(void)
 {
     name = "";
+    description = "";
     transformation.SetIdentity();
     translation = CTiglPoint(0.0, 0.0, 0.0);
     scaling     = CTiglPoint(1.0, 1.0, 1.0);
@@ -212,7 +214,7 @@ void CCPACSWing::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& win
     }
 
     // Get subelement "description"
-    char* ptrDescription = "";
+    char* ptrDescription = NULL;
     tempString    = wingXPath + "/description";
     if (tixiGetTextElement(tixiHandle, tempString.c_str(), &ptrDescription) == SUCCESS) {
         description   = ptrDescription;
@@ -371,6 +373,12 @@ const std::string& CCPACSWing::GetName(void) const
     return name;
 }
 
+// Returns the description of the wing
+const std::string& CCPACSWing::GetDescription(void) const
+{
+    return description;
+}
+
 // Returns the parent configuration
 CCPACSConfiguration& CCPACSWing::GetConfiguration(void) const
 {
@@ -407,7 +415,7 @@ CTiglAbstractSegment & CCPACSWing::GetSegment(std::string uid)
     return (CTiglAbstractSegment &) segments.GetSegment(uid);
 }
 
-    // Get componentSegment count
+// Get componentSegment count
 int CCPACSWing::GetComponentSegmentCount(void)
 {
     return componentSegments.GetComponentSegmentCount();
@@ -424,7 +432,6 @@ CTiglAbstractSegment & CCPACSWing::GetComponentSegment(std::string uid)
 {
     return (CTiglAbstractSegment &) componentSegments.GetComponentSegment(uid);
 }
-
 
 // Gets the loft of the whole wing with modeled leading edge.
 TopoDS_Shape & CCPACSWing::GetLoftWithLeadingEdge(void)
@@ -587,6 +594,34 @@ void CCPACSWing::Translate(CTiglPoint trans)
     invalidated = true;
     segments.Invalidate();
     componentSegments.Invalidate();
+    Update();
+}
+
+
+// Setter for translation
+void CCPACSWing::SetTranslation(const CTiglPoint& translation)
+{
+    this->translation = translation;
+    invalidated = true;
+    // TODO: check whether we have to invalidate segments and componentsegments
+    Update();
+}
+
+// Setter for rotation
+void CCPACSWing::SetRotation(const CTiglPoint& rotation) 
+{
+    this->rotation = rotation;
+    invalidated = true;
+    // TODO: check whether we have to invalidate segments and componentsegments
+    Update();
+}
+
+// Setter for scaling
+void CCPACSWing::SetScaling(const CTiglPoint& scaling)
+{
+    this->scaling = scaling;
+    invalidated = true;
+    // TODO: check whether we have to invalidate segments and componentsegments
     Update();
 }
 
@@ -812,5 +847,12 @@ CCPACSGuideCurve& CCPACSWing::GetGuideCurve(std::string uid)
     }
     throw tigl::CTiglError("Error: Guide Curve with UID " + uid + " does not exists", TIGL_ERROR);
 }
+
+// Getter for positionings
+CCPACSWingPositionings& CCPACSWing::GetPositionings()
+{
+    return positionings;
+}
+
 
 } // end namespace tigl

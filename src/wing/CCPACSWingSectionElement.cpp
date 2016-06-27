@@ -47,7 +47,8 @@ CCPACSWingSectionElement::~CCPACSWingSectionElement(void)
 void CCPACSWingSectionElement::Cleanup(void)
 {
     name         = "";
-    profileUID     = "";
+    description  = "";
+    profileUID   = "";
     uID          = "";
     transformation.SetIdentity();
     translation = CTiglPoint(0.0, 0.0, 0.0);
@@ -85,62 +86,56 @@ void CCPACSWingSectionElement::ReadCPACS(TixiDocumentHandle tixiHandle, const st
 {
     Cleanup();
 
-    char*       elementPath;
-    std::string tempString;
+    std::string elementPath;
 
     // Get subelement "name"
     char* ptrName = NULL;
-    tempString    = elementXPath + "/name";
-    elementPath   = const_cast<char*>(tempString.c_str());
-    if (tixiGetTextElement(tixiHandle, elementPath, &ptrName) == SUCCESS) {
-        name          = ptrName;
+    elementPath = elementXPath + "/name";
+    if (tixiGetTextElement(tixiHandle, elementPath.c_str(), &ptrName) == SUCCESS) {
+        name = ptrName;
     }
 
     // Get subelement "description"
-    char* ptrdescription = "";
-    tempString    = elementXPath + "/description";
-    tixiGetTextElement(tixiHandle, tempString.c_str(), &ptrdescription);
-    description          = ptrdescription;
+    char* ptrdescription = NULL;
+    elementPath = elementXPath + "/description";
+    if (tixiGetTextElement(tixiHandle, elementPath.c_str(), &ptrdescription) == SUCCESS) {
+        description = ptrdescription;
+    }
 
     // Get subelement "profileUID"
     char* ptrUID  = NULL;
-    tempString    = elementXPath + "/airfoilUID";
-    elementPath   = const_cast<char*>(tempString.c_str());
-    if (tixiGetTextElement(tixiHandle, elementPath, &ptrUID) == SUCCESS) {
-        profileUID      = ptrUID;
+    elementPath = elementXPath + "/airfoilUID";
+    if (tixiGetTextElement(tixiHandle, elementPath.c_str(), &ptrUID) == SUCCESS) {
+        profileUID = ptrUID;
     }
 
     // Get attribute "uID"
     char* ptrMyUID  = NULL;
-    tempString    = elementXPath;
-    elementPath   = const_cast<char*>(tempString.c_str());
-    if (tixiGetTextAttribute(tixiHandle, elementPath, "uID", &ptrMyUID) == SUCCESS) {
-        uID      = ptrMyUID;
+    elementPath = elementXPath;
+    if (tixiGetTextAttribute(tixiHandle, elementPath.c_str(), "uID", &ptrMyUID) == SUCCESS) {
+        uID = ptrMyUID;
     }
 
     // Get subelement "/transformation/translation"
-    tempString  = elementXPath + "/transformation/translation";
-    elementPath = const_cast<char*>(tempString.c_str());
-    if (tixiCheckElement(tixiHandle, elementPath) == SUCCESS) {
-        if (tixiGetPoint(tixiHandle, elementPath, &(translation.x), &(translation.y), &(translation.z)) != SUCCESS) {
+    elementPath = elementXPath + "/transformation/translation";
+    if (tixiCheckElement(tixiHandle, elementPath.c_str()) == SUCCESS) {
+        if (tixiGetPoint(tixiHandle, elementPath.c_str(), &(translation.x), &(translation.y), &(translation.z)) != SUCCESS) {
             throw CTiglError("Error: XML error while reading <translation/> in CCPACSWingSectionElement::ReadCPACS", TIGL_XML_ERROR);
         }
     }
 
     // Get subelement "/transformation/scaling"
-    tempString  = elementXPath + "/transformation/scaling";
-    elementPath = const_cast<char*>(tempString.c_str());
-    if (tixiCheckElement(tixiHandle, elementPath) == SUCCESS) {
-        if (tixiGetPoint(tixiHandle, elementPath, &(scaling.x), &(scaling.y), &(scaling.z)) != SUCCESS) {
+    elementPath = elementXPath + "/transformation/scaling";
+    if (tixiCheckElement(tixiHandle, elementPath.c_str()) == SUCCESS) {
+        if (tixiGetPoint(tixiHandle, elementPath.c_str(), &(scaling.x), &(scaling.y), &(scaling.z)) != SUCCESS) {
             throw CTiglError("Error: XML error while reading <scaling/> in CCPACSWingSectionElement::ReadCPACS", TIGL_XML_ERROR);
         }
     }
 
     // Get subelement "/transformation/rotation"
-    tempString  = elementXPath + "/transformation/rotation";
-    elementPath = const_cast<char*>(tempString.c_str());
-    if (tixiCheckElement(tixiHandle, elementPath) == SUCCESS) {
-        if (tixiGetPoint(tixiHandle, elementPath, &(rotation.x), &(rotation.y), &(rotation.z)) != SUCCESS) {
+    elementPath = elementXPath + "/transformation/rotation";
+    if (tixiCheckElement(tixiHandle, elementPath.c_str()) == SUCCESS) {
+        if (tixiGetPoint(tixiHandle, elementPath.c_str(), &(rotation.x), &(rotation.y), &(rotation.z)) != SUCCESS) {
             throw CTiglError("Error: XML error while reading <rotation/> in CCPACSWingSectionElement::ReadCPACS", TIGL_XML_ERROR);
         }
     }
@@ -205,10 +200,61 @@ std::string CCPACSWingSectionElement::GetProfileUID(void) const
     return profileUID;
 }
 
+// Getter for the member name
+std::string CCPACSWingSectionElement::GetName(void) const
+{
+    return name;
+}
+
+// Getter for the member description
+std::string CCPACSWingSectionElement::GetDescription(void) const
+{
+    return description;
+}
+
 // Gets the section element transformation
 CTiglTransformation CCPACSWingSectionElement::GetSectionElementTransformation(void) const
 {
     return transformation;
+}
+
+// Getter for translation
+const CTiglPoint& CCPACSWingSectionElement::GetTranslation() const
+{
+    return translation;
+}
+
+// Getter for rotation
+const CTiglPoint& CCPACSWingSectionElement::GetRotation() const
+{
+    return rotation;
+}
+
+// Getter for scaling
+const CTiglPoint& CCPACSWingSectionElement::GetScaling() const
+{
+    return scaling;
+}
+
+// Setter for translation
+void CCPACSWingSectionElement::SetTranslation(const CTiglPoint& trans)
+{
+    translation = trans;
+    Update();
+}
+
+// Setter for rotation
+void CCPACSWingSectionElement::SetRotation(const CTiglPoint& rot)
+{
+    rotation = rot;
+    Update();
+}
+
+// Setter for scaling
+void CCPACSWingSectionElement::SetScaling(const CTiglPoint& scale)
+{
+    scaling = scale;
+    Update();
 }
 
 } // end namespace tigl

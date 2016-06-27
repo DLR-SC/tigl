@@ -22,6 +22,7 @@
 #include "tigl_internal.h"
 #include "CCPACSWingShell.h"
 
+
 namespace tigl
 {
 
@@ -30,8 +31,11 @@ class CCPACSWingCSStructure
 public:
     TIGL_EXPORT CCPACSWingCSStructure();
     
+    TIGL_EXPORT virtual ~CCPACSWingCSStructure(void);
+
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& structureXPath);
     
+    // Write CPACS structure elements
     TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string & structureXPath);
 
     TIGL_EXPORT CCPACSWingShell& GetLowerShell();
@@ -40,9 +44,10 @@ public:
     TIGL_EXPORT void Cleanup();
     TIGL_EXPORT void Invalidate();
     TIGL_EXPORT bool IsValid() const;
+
 private:
     CCPACSWingShell upperShell, lowerShell;
-    
+
     bool isvalid;
 };
 

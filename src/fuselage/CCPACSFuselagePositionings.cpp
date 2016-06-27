@@ -216,9 +216,9 @@ void CCPACSFuselagePositionings::WriteCPACS(TixiDocumentHandle tixiHandle, const
         }
         positioning->WriteCPACS(tixiHandle, xpath);
     }
-    for (int i = positioningCount+1; i <= test; i++) {
+    for (int i = positioningCount + 1; i <= test; i++) {
         std::stringstream ss;
-        ss << elementPath << "/positioning[" << positioningCount+1 << "]";
+        ss << elementPath << "/positioning[" << positioningCount + 1 << "]";
         xpath = ss.str();
         tixiRemoveElement(tixiHandle, xpath.c_str());
     }

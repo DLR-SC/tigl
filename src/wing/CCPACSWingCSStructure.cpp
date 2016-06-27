@@ -22,10 +22,18 @@
 #include "CTiglLogging.h"
 #include "TixiSaveExt.h"
 
+
 namespace tigl
 {
 
 CCPACSWingCSStructure::CCPACSWingCSStructure()
+: lowerShell(),
+  upperShell()
+{
+    Cleanup();
+}
+
+CCPACSWingCSStructure::~CCPACSWingCSStructure(void)
 {
     Cleanup();
 }
@@ -43,10 +51,10 @@ void CCPACSWingCSStructure::ReadCPACS(TixiDocumentHandle tixiHandle, const std::
     
     // check path
     if ( tixiCheckElement(tixiHandle, structureXPath.c_str()) != SUCCESS) {
-        LOG(ERROR) << "Wing structure " << structureXPath << " not found in CPACS file!" << std::endl;
+        LOG(WARNING) << "Wing structure " << structureXPath << " not found in CPACS file!" << std::endl;
         return;
     }
-    
+
     // lower shell
     std::string shellPath;
     shellPath = structureXPath + "/upperShell";
@@ -78,7 +86,6 @@ void CCPACSWingCSStructure::WriteCPACS(TixiDocumentHandle tixiHandle, const std:
     // create the subelement Spars
     TixiSaveExt::TixiSaveElement(tixiHandle,structureXPath.c_str(), "lowerShell");
     lowerShell.WriteCPACS(tixiHandle, elementPath);
-
 }
 
 CCPACSWingShell& CCPACSWingCSStructure::GetLowerShell()
@@ -93,7 +100,9 @@ CCPACSWingShell& CCPACSWingCSStructure::GetUpperShell()
 
 void CCPACSWingCSStructure::Invalidate()
 {
-    isvalid = false;
+    // forward invalidation
+    upperShell.Invalidate();
+    lowerShell.Invalidate();
 }
 
 bool CCPACSWingCSStructure::IsValid() const

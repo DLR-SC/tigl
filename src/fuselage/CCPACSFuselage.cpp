@@ -246,6 +246,12 @@ void CCPACSFuselage::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string
     // Determine translation relative to parent
     CTiglPoint relativeTranslation = translation;
     // TODO: relative translation not computed yet!!!
+//    CTiglUIDManager& manager = configuration->GetUIDManager();
+//    ITiglGeometricComponent* parent = manager.GetComponent(GetUID());
+//         while (parent != NULL && manager.HasUID(parent->GetParentUID())) {
+//             relativeTranslation -= parent->GetTranslation();
+//             parent = manager.GetParentComponent(parent->GetUID());
+//         }
 
     // Set subelement "/transformation/translation"
     subelementPath = elementPath + "/translation";

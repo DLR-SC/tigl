@@ -37,6 +37,7 @@ void CCPACSMaterial::Cleanup()
     thicknessScaling = 1.;
     isvalid = false;
     is_composite = false;
+    orthotropyDirection = CTiglPoint();
 }
 
 void CCPACSMaterial::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string &materialXPath)
@@ -85,6 +86,16 @@ void CCPACSMaterial::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string 
         }
     }
     
+    // handle orthotropy direction
+    if (isComposite()) {
+        tempstring = materialXPath + "/orthotropyDirection";
+        if (tixiCheckElement(tixiHandle, tempstring.c_str()) == SUCCESS) {
+            if (tixiGetPoint(tixiHandle, tempstring.c_str(), &(orthotropyDirection.x), &(orthotropyDirection.y), &(orthotropyDirection.z)) != SUCCESS) {
+                throw CTiglError("Error: XML error while reading <orthotropyDirection/> in CCPACSMaterial::ReadCPACS", TIGL_XML_ERROR);
+            }
+        }
+    }
+
     isvalid = true;
 }
 
@@ -107,6 +118,18 @@ void CCPACSMaterial::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string
 
         // Save thicknessScaling
         TixiSaveExt::TixiSaveDoubleElement(tixiHandle, xpath.c_str(), "thicknessScaling", GetThicknessScaling(), NULL);
+
+        // create element ortotropyDirection
+        TixiSaveExt::TixiSaveElement(tixiHandle, xpath.c_str(), "orthotropyDirection");
+
+        // Save orthotropyDirection/x
+        std::string subpath = xpath + "/orthotropyDirection";
+
+        TixiSaveExt::TixiSaveDoubleElement(tixiHandle, subpath.c_str(), "x", orthotropyDirection.x, NULL);
+
+        TixiSaveExt::TixiSaveDoubleElement(tixiHandle, subpath.c_str(), "y", orthotropyDirection.y, NULL);
+
+        TixiSaveExt::TixiSaveDoubleElement(tixiHandle, subpath.c_str(), "z", orthotropyDirection.z, NULL);
     }
 }
 
@@ -118,6 +141,11 @@ void CCPACSMaterial::Invalidate()
 bool CCPACSMaterial::isComposite() const
 {
     return is_composite;
+}
+
+void CCPACSMaterial::SetComposite(bool composite)
+{
+    is_composite = composite;
 }
 
 bool CCPACSMaterial::IsValid() const
@@ -138,6 +166,31 @@ double CCPACSMaterial::GetThickness() const
 double CCPACSMaterial::GetThicknessScaling() const
 {
     return thicknessScaling;
+}
+
+void CCPACSMaterial::SetOrthotropyDirection(tigl::CTiglPoint direction)
+{
+    orthotropyDirection = direction;
+}
+
+const CTiglPoint& CCPACSMaterial::GetOrthotropyDirection() const
+{
+    return orthotropyDirection;
+}
+
+void CCPACSMaterial::SetUID(const std::string& uid)
+{
+    this->uid = uid;
+}
+
+void CCPACSMaterial::SetThickness(double thickness)
+{
+    this->thickness = thickness;
+}
+
+void CCPACSMaterial::SetThicknessScaling(double thicknessScaling)
+{
+    this->thicknessScaling = thicknessScaling;
 }
 
 } // namespace tigl
