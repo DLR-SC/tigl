@@ -64,15 +64,15 @@ public:
     // Clears the uid store
     TIGL_EXPORT void Clear(void);
 
+    // Sets the root component
+    TIGL_EXPORT void SetRootComponent(CTiglAbstractPhysicalComponent* rootComponent);
+
     // Virtual Destructor
     TIGL_EXPORT virtual ~CTiglUIDManager(void);
 
 protected:
        // Update internal UID manager data.
     void Update(void);
-
-    // Returns the root component of the geometric topology.
-    void FindRootComponent(void);
 
     // Builds the parent child relationships.
     void BuildParentChildTree(void);

@@ -278,9 +278,6 @@ void CTiglExportIges::ExportFusedIGES(const std::string& filename)
     }
 }
 
-
-
-
 // Save a sequence of shapes in IGES Format
 void CTiglExportIges::ExportShapes(const ListPNamedShape& shapes, const std::string& filename) const
 {

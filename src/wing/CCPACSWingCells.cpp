@@ -28,7 +28,8 @@
 namespace tigl
 {
 
-CCPACSWingCells::CCPACSWingCells()
+CCPACSWingCells::CCPACSWingCells(CCPACSWingShell* parent)
+: parentShell(parent)
 {
     Reset();
 }
@@ -51,6 +52,11 @@ void CCPACSWingCells::Cleanup()
         *cellit = NULL;
     }
     cells.clear();
+}
+
+void CCPACSWingCells::Invalidate()
+{
+
 }
 
 void CCPACSWingCells::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string &cellsXPath)
@@ -86,8 +92,8 @@ void CCPACSWingCells::WriteCPACS(TixiDocumentHandle tixiHandle, const std::strin
 {
     std::string elementPath;
     std::string xpath;
-    ReturnCode    tixiRet;
-    int           cellCount, test;
+    ReturnCode  tixiRet;
+    int         cellCount, test;
 
     elementPath = cellsXPath;
 //     TixiSaveExt::TixiSaveElement(tixiHandle, cellsXPath.c_str(), "cells");
@@ -108,9 +114,9 @@ void CCPACSWingCells::WriteCPACS(TixiDocumentHandle tixiHandle, const std::strin
         cell.WriteCPACS(tixiHandle, xpath);
     }
 
-    for (int i = cellCount+1; i <= test; i++) {
+    for (int i = cellCount + 1; i <= test; i++) {
         std::stringstream ss;
-        ss << elementPath << "/cell[" << cellCount+1 << "]";
+        ss << elementPath << "/cell[" << cellCount + 1 << "]";
         xpath = ss.str();
         tixiRemoveElement(tixiHandle, xpath.c_str());
     }
@@ -130,6 +136,11 @@ CCPACSWingCell& CCPACSWingCells::GetCell(int index) const
     return *cells.at(index-1);
 }
 
+// Get parent wing shell element
+CCPACSWingShell* CCPACSWingCells::GetParentElement()
+{
+    return parentShell;
+}
 
 
 } // namespace tigl

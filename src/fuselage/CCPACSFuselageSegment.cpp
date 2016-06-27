@@ -901,5 +901,4 @@ TopTools_SequenceOfShape& CCPACSFuselageSegment::BuildGuideCurves(void)
     }
 }
 
-
 } // end namespace tigl

@@ -29,6 +29,7 @@ namespace tigl
 {
 
 class CCPACSWingCell;
+class CCPACSWingShell;
 
 class CCPACSWingCells
 {
@@ -38,12 +39,14 @@ private:
     
 public:
     // Constructor
-    TIGL_EXPORT CCPACSWingCells();
+    TIGL_EXPORT CCPACSWingCells(CCPACSWingShell* parent);
     
     // Virtual Destructor
     TIGL_EXPORT virtual ~CCPACSWingCells(void);
     
     TIGL_EXPORT void Reset();
+
+    TIGL_EXPORT void Invalidate();
     
     // Read CPACS wings elements
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& cellsXPath);
@@ -59,7 +62,10 @@ public:
     
     // Returns the wing cell for a given UID.
     TIGL_EXPORT CCPACSWingCell& GetCell(const std::string& UID) const;
-    
+
+    // Get parent wing shell element
+    TIGL_EXPORT CCPACSWingShell* GetParentElement();
+
 protected:
     // Cleanup routine
     void Cleanup(void);
@@ -74,6 +80,8 @@ private:
 private:
     CCPACSWingCellContainer cells;         /**< Wing Cell elements */
     
+    CCPACSWingShell* parentShell;
+
 };
 
 } // end namespace tigl

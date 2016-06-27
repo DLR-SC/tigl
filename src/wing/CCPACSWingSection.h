@@ -60,6 +60,9 @@ public:
     // Get name of this WingSection
     TIGL_EXPORT const std::string& GetName() const;
 
+    // Get description of this WingSection
+    TIGL_EXPORT const std::string& GetDescription(void) const;
+
     // Get element for a given index
     TIGL_EXPORT CCPACSWingSectionElement& GetSectionElement(int index) const;
 
@@ -74,6 +77,15 @@ public:
 
     // Gets the section scaling
     TIGL_EXPORT const CTiglPoint& GetScaling() const;
+
+    // Setter for translation
+    TIGL_EXPORT void SetTranslation(const CTiglPoint& trans);
+
+    // Setter for rotation
+    TIGL_EXPORT void SetRotation(const CTiglPoint& rot);
+
+    // Setter for scaling
+    TIGL_EXPORT void SetScaling(const CTiglPoint& scaling);
 
 protected:
     // Cleanup routine

@@ -62,12 +62,16 @@ CCPACSConfiguration::CCPACSConfiguration(TixiDocumentHandle tixiHandle)
     , wings(this)
     , fuselages(this)
     , uidManager()
+    , cpacsModel(NULL)
 {
 }
 
 // Destructor
 CCPACSConfiguration::~CCPACSConfiguration(void)
 {
+    if (cpacsModel) {
+        delete cpacsModel;
+    }
 }
 
 // Invalidates the internal state of the configuration and forces
@@ -112,6 +116,14 @@ void CCPACSConfiguration::ReadCPACS(const char* configurationUID)
         description = ptrDescription;
     }
 
+    // create new root component for CTiglUIDManager
+    if (cpacsModel) {
+        delete cpacsModel;
+    }
+    cpacsModel = new CCPACSModel();
+    cpacsModel->SetUID(configurationUID);
+    uidManager.SetRootComponent(cpacsModel);
+
     header.ReadCPACS(tixiDocumentHandle);
     guideCurveProfiles.ReadCPACS(tixiDocumentHandle);
     wings.ReadCPACS(tixiDocumentHandle, configurationUID);
@@ -140,12 +152,15 @@ void CCPACSConfiguration::WriteCPACS(const std::string& configurationUID)
 
     fuselages.WriteCPACS(tixiDocumentHandle, configurationUID);
     wings.WriteCPACS(tixiDocumentHandle, configurationUID);
-
 }
 
 // transform all components relative to their parents
 void CCPACSConfiguration::transformAllComponents(CTiglAbstractPhysicalComponent* parent)
 {
+    if (!parent) {
+        return;
+    }
+
     CTiglAbstractPhysicalComponent::ChildContainerType children = parent->GetChildren(false);
     CTiglAbstractPhysicalComponent::ChildContainerType::iterator pIter;
     CTiglPoint parentTranslation = parent->GetTranslation();
@@ -185,6 +200,18 @@ bool CCPACSConfiguration::HasWingProfile(std::string uid) const
 int CCPACSConfiguration::GetWingProfileCount(void) const
 {
     return wings.GetProfileCount();
+}
+
+// Returns the class which holds all wing profiles
+CCPACSWingProfiles& CCPACSConfiguration::GetWingProfiles(void)
+{
+    return wings.GetProfiles();
+}
+
+// Returns the class which holds all fuselage profiles
+CCPACSFuselageProfiles& CCPACSConfiguration::GetFuselageProfiles(void)
+{
+    return fuselages.GetProfiles();
 }
 
 // Returns the wing profile for a given uid.
@@ -255,6 +282,13 @@ CCPACSFuselage& CCPACSConfiguration::GetFuselage(int index) const
 {
     return fuselages.GetFuselage(index);
 }
+
+
+CCPACSFuselages& CCPACSConfiguration::GetFuselages()
+{
+    return fuselages;
+}
+
 
 CCPACSFarField& CCPACSConfiguration::GetFarField()
 {
@@ -331,6 +365,26 @@ CTiglShapeCache& CCPACSConfiguration::GetShapeCache()
 CTiglMemoryPool& CCPACSConfiguration::GetMemoryPool()
 {
     return memoryPool;
+}
+
+std::string CCPACSConfiguration::GetName(void) const
+{
+    return name;
+}
+
+std::string CCPACSConfiguration::GetDescription(void) const
+{
+    return description;
+}
+
+CCPACSHeader* CCPACSConfiguration::GetHeader()
+{
+    return &header;
+}
+
+CCPACSWings* CCPACSConfiguration::GetWings()
+{
+    return &wings;
 }
 
 } // end namespace tigl

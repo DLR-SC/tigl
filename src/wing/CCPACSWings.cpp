@@ -145,9 +145,9 @@ void CCPACSWings::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& c
         wing.WriteCPACS(tixiHandle, xpath);
     }
 
-    for (int i = wingCount+1; i <= test; i++) {
+    for (int i = wingCount + 1; i <= test; i++) {
         std::stringstream ss;
-        ss << wingXPathPrt << "/wing[" << wingCount+1 << "]";
+        ss << wingXPathPrt << "/wing[" << wingCount + 1 << "]";
         xpath = ss.str();
         tixiRet = tixiRemoveElement(tixiHandle, xpath.c_str());
     }
@@ -162,6 +162,11 @@ bool CCPACSWings::HasProfile(std::string uid) const
 int CCPACSWings::GetProfileCount(void) const
 {
     return profiles.GetProfileCount();
+}
+
+CCPACSWingProfiles& CCPACSWings::GetProfiles(void)
+{
+    return profiles;
 }
 
 // Returns the wing profile for a given uid.
@@ -205,4 +210,21 @@ CCPACSWing& CCPACSWings::GetWing(const std::string& UID) const
     // UID not there
     throw CTiglError("Error: Invalid UID in CCPACSWings::GetWing", TIGL_INDEX_ERROR);
 }
+
+void CCPACSWings::AddWing(CCPACSWing* wing)
+{
+    // Check whether the same wing already exists if yes remove it before adding the new one
+    CCPACSWingContainer::iterator it;
+    for (it = wings.begin(); it != wings.end(); ++it) {
+        if ((*it)->GetUID() == wing->GetUID()) {
+            delete (*it);
+            wings.erase(it);
+            break;
+        }
+    }
+
+    // Add the new wing to the wing list
+    wings.push_back(wing);
+}
+
 } // end namespace tigl

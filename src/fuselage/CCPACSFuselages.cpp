@@ -123,7 +123,7 @@ void CCPACSFuselages::WriteCPACS(TixiDocumentHandle tixiHandle, const std::strin
     ss << tmpString << "[@uID=\"" << configurationUID << "\"]";
     xpath = ss.str();
     fuselageXPathPrt = xpath + "/fuselages";
-    
+
     profiles.WriteCPACS(tixiHandle);
     TixiSaveExt::TixiSaveElement(tixiHandle, xpath.c_str(), "fuselages");
 
@@ -140,12 +140,12 @@ void CCPACSFuselages::WriteCPACS(TixiDocumentHandle tixiHandle, const std::strin
                 throw CTiglError("XML error: tixiCreateElement failed in CCPACSFuselages::WriteCPACS", TIGL_XML_ERROR);
             }
         }
-        fuselage.WriteCPACS(tixiHandle,xpath);
+        fuselage.WriteCPACS(tixiHandle, xpath);
     }
 
-    for (int i = fuselageCount+1; i <= test; i++) {
+    for (int i = fuselageCount + 1; i <= test; i++) {
         std::stringstream ss;
-        ss << fuselageXPathPrt << "/fuselage[" << fuselageCount+1 << "]";
+        ss << fuselageXPathPrt << "/fuselage[" << fuselageCount + 1 << "]";
         xpath = ss.str();
         tixiRet = tixiRemoveElement(tixiHandle, xpath.c_str());
     }
@@ -160,6 +160,11 @@ bool CCPACSFuselages::HasProfile(std::string uid) const
 int CCPACSFuselages::GetProfileCount(void) const
 {
     return profiles.GetProfileCount();
+}
+
+CCPACSFuselageProfiles& CCPACSFuselages::GetProfiles(void) 
+{
+    return profiles;
 }
 
 // Returns the fuselage profile for a given index.
@@ -203,6 +208,24 @@ CCPACSFuselage& CCPACSFuselages::GetFuselage(const std::string& UID) const
     // UID not there
     throw CTiglError("Error: Invalid index in CCPACSFuselages::GetFuselage", TIGL_INDEX_ERROR);
 }
+
+
+void CCPACSFuselages::AddFuselage(CCPACSFuselage* fuselage)
+{
+    // Check whether the same fuselage already exists if yes remove it before adding the new one
+    CCPACSFuselageContainer::iterator it;
+    for (it = fuselages.begin(); it != fuselages.end(); ++it) {
+        if ((*it)->GetUID() == fuselage->GetUID()) {
+            delete (*it);
+            fuselages.erase(it);
+            break;
+        }
+    }
+
+    // Add the new fuselage to the fuselage list
+    fuselages.push_back(fuselage);
+}
+
 
 
 } // end namespace tigl

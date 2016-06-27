@@ -42,6 +42,8 @@
 #include "CTiglShapeCache.h"
 #include "CTiglMemoryPool.h"
 #include "CSharedPtr.h"
+#include "CCPACSModel.h"
+
 
 namespace tigl
 {
@@ -76,6 +78,12 @@ public:
     TIGL_EXPORT int GetWingProfileCount(void) const;
 
     TIGL_EXPORT bool HasWingProfile(std::string uid) const;
+
+    // Returns the class which holds all wing profiles
+    TIGL_EXPORT CCPACSWingProfiles& GetWingProfiles(void);
+    
+    // Returns the class which holds all wing profiles
+    TIGL_EXPORT CCPACSFuselageProfiles& GetFuselageProfiles(void);
 
     // Returns the wing profile for a given index - TODO: depricated!
     TIGL_EXPORT CCPACSWingProfile& GetWingProfile(int index) const;
@@ -114,6 +122,9 @@ public:
     // Returns the fuselage for a given UID.
     TIGL_EXPORT CCPACSFuselage& GetFuselage(std::string UID) const;
 
+    // Returns list of fuselages
+    TIGL_EXPORT CCPACSFuselages& GetFuselages();
+
     TIGL_EXPORT CCPACSFarField& GetFarField();
 
     // Returns the guide curve profile for a given UID.
@@ -135,6 +146,18 @@ public:
 
     TIGL_EXPORT CTiglMemoryPool& GetMemoryPool(void);
 
+    /** Getter/Setter for member name */
+    TIGL_EXPORT std::string GetName(void) const;
+
+    /** Getter/Setter for member description */
+    TIGL_EXPORT std::string GetDescription(void) const;
+
+    /** Getter for member header */
+    TIGL_EXPORT CCPACSHeader* GetHeader();
+
+    /** Getter for member wings */
+    TIGL_EXPORT CCPACSWings* GetWings();
+
 protected:
     // transform all components relative to their parents
     void transformAllComponents(CTiglAbstractPhysicalComponent* parent);
@@ -149,6 +172,7 @@ private:
 private:
     std::string                  name;                 /**< Configuration name */
     std::string                  description;          /**< Configuration description */
+    CCPACSModel*                 cpacsModel;           /**< Root component for the CTiglUIDManager */
     TixiDocumentHandle           tixiDocumentHandle;   /**< Handle for internal TixiDocument */
     CCPACSHeader                 header;               /**< Configuration header element */
     CCPACSWings                  wings;                /**< Configuration wings element */

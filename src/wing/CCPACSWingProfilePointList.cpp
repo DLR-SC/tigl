@@ -70,8 +70,20 @@
 #include "ShapeFix_Wire.hxx"
 
 
+inline gp_Pnt operator+(const gp_Pnt& a, const gp_Pnt& b)
+{
+    return gp_Pnt(a.X()+b.X(), a.Y()+b.Y(), a.Z()+b.Z());
+}
+inline gp_Pnt operator/(const gp_Pnt& a, double b)
+{
+    return gp_Pnt(a.X() / b, a.Y() / b, a.Z() / b);
+}
+
 namespace tigl
 {
+
+const double CCPACSWingProfilePointList::c_trailingEdgeRelGap = 1E-2;
+const double CCPACSWingProfilePointList::c_blendingDistance = 0.1;
 
 // type creation function used by factory
 PTiglWingProfileAlgo CreateProfilePointList(const CCPACSWingProfile& profile, const std::string& cpacsPath)
@@ -231,8 +243,31 @@ void CCPACSWingProfilePointList::WriteCPACS(TixiDocumentHandle tixiHandle, const
 void CCPACSWingProfilePointList::BuildWires()
 {
     ITiglWireAlgorithm::CPointContainer points;
+    ITiglWireAlgorithm::CPointContainer openPoints, closedPoints;
+
     for (CCPACSCoordinateContainer::size_type i = 0; i < coordinates.size(); i++) {
         points.push_back(coordinates[i]->Get_gp_Pnt());
+    }
+    // special handling for supporting opened and closed profiles
+    if (points.size() < 2) {
+        LOG(ERROR) << "Not enough points defined for Wing Profile" << endl;
+        throw CTiglError("Not enough points defined for Wing Profile");
+    }
+    // close profile if not already closed
+    gp_Pnt startPnt = points[0];
+    gp_Pnt endPnt = points[points.size()-1];
+    // compute list of open and closed profile points
+    openPoints = points;
+    closedPoints = points;
+    if (startPnt.Distance(endPnt) >= Precision::Confusion()) {
+        closeProfilePoints(closedPoints);
+        // save information that profile is opened by default
+        profileIsClosed = false;
+    }
+    else {
+        openProfilePoints(openPoints);
+        // save information that profile is closed by default
+        profileIsClosed = true;
     }
 
     // Build wires from wing profile points.
@@ -246,8 +281,9 @@ void CCPACSWingProfilePointList::BuildWires()
         throw CTiglError("Linear Wing Profiles are currently not supported",TIGL_ERROR);
     }
 
-    TopoDS_Wire tempWireOpened   = wireBuilder.BuildWire(points, false);
-    if (tempWireOpened.IsNull()) {
+    TopoDS_Wire tempWireOpened = wireBuilder.BuildWire(openPoints, false);
+    TopoDS_Wire tempWireClosed = wireBuilder.BuildWire(closedPoints, true);
+    if (tempWireOpened.IsNull() || tempWireClosed.IsNull()) {
         throw CTiglError("Error: TopoDS_Wire is null in CCPACSWingProfilePointList::BuildWire", TIGL_ERROR);
     }
 
@@ -256,85 +292,65 @@ void CCPACSWingProfilePointList::BuildWires()
     CTiglTransformation transformation;
     transformation.AddProjectionOnXZPlane();
 
-    TopoDS_Wire tempShapeOpened   = TopoDS::Wire(transformation.Transform(tempWireOpened));
+    TopoDS_Wire tempShapeOpened = TopoDS::Wire(transformation.Transform(tempWireOpened));
+    TopoDS_Wire tempShapeClosed = TopoDS::Wire(transformation.Transform(tempWireClosed));
     // the open wire should consist of only 1 edge - lets check
-    if (GetNumberOfEdges(tempShapeOpened) != 1) {
+    if (GetNumberOfEdges(tempShapeOpened) != 1 || GetNumberOfEdges(tempShapeClosed) != 1) {
         throw CTiglError("Number of Wing Profile Edges is not 1. Please contact the developers");
     }
-    TopExp_Explorer wireEx(tempShapeOpened, TopAbs_EDGE);
-    TopoDS_Edge profileEdgeTmp = TopoDS::Edge(wireEx.Current());
+    TopExp_Explorer wireExOpened(tempShapeOpened, TopAbs_EDGE);
+    TopoDS_Edge profileEdgeTmpOpened = TopoDS::Edge(wireExOpened.Current());
+    TopExp_Explorer wireExClosed(tempShapeClosed, TopAbs_EDGE);
+    TopoDS_Edge profileEdgeTmpClosed = TopoDS::Edge(wireExClosed.Current());
 
     BuildLETEPoints();
 
     // Get the curve of the wire
     Standard_Real u1,u2;
-    Handle_Geom_Curve curve = BRep_Tool::Curve(profileEdgeTmp, u1, u2);
-    curve = new Geom_TrimmedCurve(curve, u1, u2);
-    
+    Handle_Geom_Curve curveOpened = BRep_Tool::Curve(profileEdgeTmpOpened, u1, u2);
+    curveOpened = new Geom_TrimmedCurve(curveOpened, u1, u2);
+    Handle_Geom_Curve curveClosed = BRep_Tool::Curve(profileEdgeTmpClosed, u1, u2);
+    curveClosed = new Geom_TrimmedCurve(curveClosed, u1, u2);
+
     // Get Leading edge parameter on curve
-    double lep_par = GeomAPI_ProjectPointOnCurve(lePoint, curve).LowerDistanceParameter();
+    double lep_par_opened = GeomAPI_ProjectPointOnCurve(lePoint, curveOpened).LowerDistanceParameter();
+    double lep_par_closed = GeomAPI_ProjectPointOnCurve(lePoint, curveClosed).LowerDistanceParameter();
 
     // upper and lower curve
-    Handle(Geom_TrimmedCurve) lowerCurve = new Geom_TrimmedCurve(curve, curve->FirstParameter(), lep_par);
-    Handle(Geom_TrimmedCurve) upperCurve = new Geom_TrimmedCurve(curve, lep_par, curve->LastParameter());
+    Handle(Geom_TrimmedCurve) lowerCurveOpened = new Geom_TrimmedCurve(curveOpened, curveOpened->FirstParameter(), lep_par_opened);
+    Handle(Geom_TrimmedCurve) upperCurveOpened = new Geom_TrimmedCurve(curveOpened, lep_par_opened, curveOpened->LastParameter());
+    Handle(Geom_TrimmedCurve) lowerCurveClosed = new Geom_TrimmedCurve(curveClosed, curveClosed->FirstParameter(), lep_par_closed);
+    Handle(Geom_TrimmedCurve) upperCurveClosed = new Geom_TrimmedCurve(curveClosed, lep_par_closed, curveClosed->LastParameter());
 
-    gp_Pnt firstPnt = lowerCurve->StartPoint();
-    gp_Pnt lastPnt  = upperCurve->EndPoint();
-
-    // Trim upper and lower curve to make sure, that the trailing edge
-    // is perpendicular to the chord line
-    double tolerance = 1e-4;
-    gp_Pln plane(tePoint,gp_Vec(lePoint, tePoint));
-    GeomAPI_IntCS int1(lowerCurve, new Geom_Plane(plane));
-    if (int1.IsDone() && int1.NbPoints() > 0) {
-        Standard_Real u,v,w;
-        int1.Parameters(1, u, v, w);
-        if ( w > lowerCurve->FirstParameter() + Precision::Confusion() && w < lowerCurve->LastParameter() ) {
-            double relDist = lowerCurve->Value(w).Distance(firstPnt) / tePoint.Distance(lePoint);
-            if (relDist > tolerance) {
-                LOG(WARNING) << "The wing profile " << profileRef.GetUID() << " will be trimmed"
-                             << " to avoid a skewed trailing edge."
-                             << " The lower part is trimmed about " << relDist*100. << " % w.r.t. the chord length."
-                             << " Please correct the wing profile!";
-            }
-            lowerCurve = new Geom_TrimmedCurve(lowerCurve, w, lowerCurve->LastParameter());
-            curve = new Geom_TrimmedCurve(curve, w, curve->LastParameter());
-        }
-    }
-    GeomAPI_IntCS int2(upperCurve, new Geom_Plane(plane));
-    if (int2.IsDone() && int2.NbPoints() > 0) {
-        Standard_Real u,v,w;
-        int2.Parameters(1, u, v, w);
-        if ( w < upperCurve->LastParameter() - Precision::Confusion() && w > upperCurve->FirstParameter() ) {
-            double relDist = upperCurve->Value(w).Distance(lastPnt) / tePoint.Distance(lePoint);
-            if (relDist > tolerance) {
-                LOG(WARNING) << "The wing profile " << profileRef.GetUID() << " will be trimmed"
-                             << " to avoid a skewed trailing edge."
-                             << " The upper part is trimmed about " << relDist*100. << " % w.r.t. the chord length."
-                             << " Please correct the wing profile!";
-            }
-            upperCurve = new Geom_TrimmedCurve(upperCurve, upperCurve->FirstParameter(), w);
-            curve = new Geom_TrimmedCurve(curve, curve->FirstParameter(), w);
-        }
-    }
+    trimUpperLowerCurve(lowerCurveOpened, upperCurveOpened, curveOpened);
+    trimUpperLowerCurve(lowerCurveClosed, upperCurveClosed, curveClosed);
 
     // upper and lower edges
-    lowerWire = BRepBuilderAPI_MakeEdge(lowerCurve);
-    upperWire = BRepBuilderAPI_MakeEdge(upperCurve);
-    upperLowerEdge = BRepBuilderAPI_MakeEdge(curve);
+    lowerWireOpened = BRepBuilderAPI_MakeEdge(lowerCurveOpened);
+    upperWireOpened = BRepBuilderAPI_MakeEdge(upperCurveOpened);
+    upperLowerEdgeOpened = BRepBuilderAPI_MakeEdge(curveOpened);
+    lowerWireClosed = BRepBuilderAPI_MakeEdge(lowerCurveClosed);
+    upperWireClosed = BRepBuilderAPI_MakeEdge(upperCurveClosed);
+    upperLowerEdgeClosed = BRepBuilderAPI_MakeEdge(curveClosed);
 
     // Trailing edge points
     gp_Pnt te_up, te_down;
-    te_up = upperCurve->EndPoint();
-    te_down = lowerCurve->StartPoint();
+    te_up = upperCurveOpened->EndPoint();
+    te_down = lowerCurveOpened->StartPoint();
 
     //check if we have to close upper and lower wing shells
+    // TODO: maybe change the implementation to ensure that this is true, since the 
+    //       open profile should always have a trailing edge
     if (te_up.Distance(te_down) > Precision::Confusion()) {
-        trailingEdge =  BRepBuilderAPI_MakeEdge(te_up,te_down);
+        trailingEdgeOpened = BRepBuilderAPI_MakeEdge(te_up,te_down);
     }
     else {
-        trailingEdge.Nullify();
+        trailingEdgeOpened.Nullify();
     }
+
+    // closed profile nevere has a trailing edge
+    trailingEdgeClosed.Nullify();
+
 }
 
 // Builds leading and trailing edge points of the wing profile wire.
@@ -347,7 +363,7 @@ void CCPACSWingProfilePointList::BuildLETEPoints(void)
 {
     // compute TE point
     gp_Pnt firstPnt = coordinates[0]->Get_gp_Pnt();
-    gp_Pnt lastPnt  = coordinates[coordinates.size() - 1]->Get_gp_Pnt();
+    gp_Pnt lastPnt = coordinates[coordinates.size() - 1]->Get_gp_Pnt();
     double x = (firstPnt.X() + lastPnt.X())/2.;
     double y = (firstPnt.Y() + lastPnt.Y())/2.;
     double z = (firstPnt.Z() + lastPnt.Z())/2.;
@@ -392,25 +408,75 @@ const std::string& CCPACSWingProfilePointList::GetProfileDataXPath() const
 // get upper wing profile wire
 const TopoDS_Edge& CCPACSWingProfilePointList::GetUpperWire() const
 {
-    return upperWire;
+    if (profileIsClosed) {
+        return upperWireClosed;
+    }
+    else {
+        return upperWireOpened;
+    }
 }
 
 // get lower wing profile wire
 const TopoDS_Edge& CCPACSWingProfilePointList::GetLowerWire() const
 {
-    return lowerWire;
+    if (profileIsClosed) {
+        return lowerWireClosed;
+    }
+    else {
+        return lowerWireOpened;
+    }
 }
 
 // get the upper and lower wing profile combined into one edge
 const TopoDS_Edge & CCPACSWingProfilePointList::GetUpperLowerWire() const 
 {
-    return upperLowerEdge;
+    if (profileIsClosed) {
+        return upperLowerEdgeClosed;
+    }
+    else {
+        return upperLowerEdgeOpened;
+    }
 }
 
 // get trailing edge
 const TopoDS_Edge& CCPACSWingProfilePointList::GetTrailingEdge() const
 {
-    return trailingEdge;
+    if (profileIsClosed) {
+        return trailingEdgeClosed;
+    }
+    else {
+        return trailingEdgeOpened;
+    }
+}
+
+// get trailing edge
+const TopoDS_Edge& CCPACSWingProfilePointList::GetTrailingEdgeOpened() const
+{
+    return trailingEdgeOpened;
+}
+
+// Getter for upper wire of closed profile
+const TopoDS_Edge& CCPACSWingProfilePointList::GetUpperWireClosed() const
+{
+    return upperWireClosed;
+}
+
+// Getter for lower wire of closed profile
+const TopoDS_Edge& CCPACSWingProfilePointList::GetLowerWireClosed() const
+{
+    return lowerWireClosed;
+}
+
+// Getter for upper wire of closed profile
+const TopoDS_Edge& CCPACSWingProfilePointList::GetUpperWireOpened() const
+{
+    return upperWireOpened;
+}
+
+// Getter for lower wire of closed profile
+const TopoDS_Edge& CCPACSWingProfilePointList::GetLowerWireOpened() const
+{
+    return lowerWireOpened;
 }
 
 // get leading edge point();
@@ -425,6 +491,119 @@ const gp_Pnt& CCPACSWingProfilePointList::GetTEPoint() const
     return tePoint;
 }
 
+// Helper method for closing profile points at trailing edge
+void CCPACSWingProfilePointList::closeProfilePoints(ITiglWireAlgorithm::CPointContainer& points)
+{
+    gp_Pnt startPnt = points.front();
+    gp_Pnt endPnt = points.back();
+    // points are always sorted beginning at trailing edge point in
+    // direction of lower side
+    gp_Vec gap(startPnt, endPnt);
+
+    // always keep last x position for determination of upper or lower side
+    double lastX = startPnt.X();
+    ITiglWireAlgorithm::CPointContainer::iterator it;
+    for (it = points.begin(); it != points.end(); ++it) {
+        gp_Pnt& pnt = (*it);
+        if (pnt.X() >= 1.0 - c_blendingDistance) { // inside the blending range:
+            // points are always sorted beginning at trailing edge point in
+            // direction of lower side
+            bool upperSide = lastX < pnt.X();
+            double factor = (pnt.X() - (1.0 - c_blendingDistance)) / c_blendingDistance;
+            if (upperSide) { // upper side
+                pnt.Translate(-1 * factor * 0.5 * gap);
+            }
+            else {//lower side
+                pnt.Translate(factor * 0.5 * gap);
+            }
+        }
+        lastX = pnt.X();
+    }
+
+    // finally set start point identical to the end point, as reference use the one with
+    // the x coordinate nearest to 1
+    points.back() = points.front();
+}
+
+// Helper method for opening profile points at trailing edge
+void CCPACSWingProfilePointList::openProfilePoints(ITiglWireAlgorithm::CPointContainer& points)
+{
+    // Pass 1: determine deltay
+    double minZ = 0;
+    double maxZ = 0;
+
+    ITiglWireAlgorithm::CPointContainer::iterator it;
+    for (it = points.begin(); it != points.end(); ++it) {
+        gp_Pnt& pnt = (*it);
+        if (pnt.Z() < minZ) {
+            minZ = pnt.Z();
+        }
+        if (pnt.Z() > maxZ) {
+            maxZ = pnt.Z();
+        }
+    }
+    double deltay = (maxZ - minZ) * c_trailingEdgeRelGap * 0.5; // applied to upper and lower side
+    double lastX = points.begin()->X();
+    // Pass 2: apply deltay
+    for (it = points.begin(); it != points.end(); ++it) {
+        gp_Pnt& pnt = (*it);
+        if (pnt.X() >= 1.0 - c_blendingDistance) { // inside the blending range:
+            // points are always sorted beginning at trailing edge point in
+            // direction of lower side
+            bool lowerSide = lastX >= pnt.X();
+            if (lowerSide) {
+                pnt.SetZ(pnt.Z() - ((pnt.X() - (1.0 - c_blendingDistance)) / c_blendingDistance * deltay));
+            }
+            else {
+                pnt.SetZ(pnt.Z() + ((pnt.X() - (1.0 - c_blendingDistance)) / c_blendingDistance * deltay));
+            }
+        }
+        lastX = pnt.X();
+    }
+}
+
+void CCPACSWingProfilePointList::trimUpperLowerCurve(Handle(Geom_TrimmedCurve) lowerCurve, Handle(Geom_TrimmedCurve) upperCurve, Handle_Geom_Curve curve)
+{
+    gp_Pnt firstPnt = lowerCurve->StartPoint();
+    gp_Pnt lastPnt = upperCurve->EndPoint();
+
+    // Trim upper and lower curve to make sure, that the trailing edge
+    // is perpendicular to the chord line
+    double tolerance = 1e-4;
+    gp_Pln plane(tePoint, gp_Vec(lePoint, tePoint));
+    GeomAPI_IntCS int1(lowerCurve, new Geom_Plane(plane));
+    if (int1.IsDone() && int1.NbPoints() > 0) {
+        Standard_Real u, v, w;
+        int1.Parameters(1, u, v, w);
+        if (w > lowerCurve->FirstParameter() + Precision::Confusion() && w < lowerCurve->LastParameter()) {
+            double relDist = lowerCurve->Value(w).Distance(firstPnt) / tePoint.Distance(lePoint);
+            if (relDist > tolerance) {
+                LOG(WARNING) << "The wing profile " << profileRef.GetUID() << " will be trimmed"
+                    << " to avoid a skewed trailing edge."
+                    << " The lower part is trimmed about " << relDist*100. << " % w.r.t. the chord length."
+                    << " Please correct the wing profile!";
+            }
+            lowerCurve = new Geom_TrimmedCurve(lowerCurve, w, lowerCurve->LastParameter());
+            curve = new Geom_TrimmedCurve(curve, w, curve->LastParameter());
+        }
+    }
+    GeomAPI_IntCS int2(upperCurve, new Geom_Plane(plane));
+    if (int2.IsDone() && int2.NbPoints() > 0) {
+        Standard_Real u, v, w;
+        int2.Parameters(1, u, v, w);
+        if (w < upperCurve->LastParameter() - Precision::Confusion() && w > upperCurve->FirstParameter()) {
+            double relDist = upperCurve->Value(w).Distance(lastPnt) / tePoint.Distance(lePoint);
+            if (relDist > tolerance) {
+                LOG(WARNING) << "The wing profile " << profileRef.GetUID() << " will be trimmed"
+                    << " to avoid a skewed trailing edge."
+                    << " The upper part is trimmed about " << relDist*100. << " % w.r.t. the chord length."
+                    << " Please correct the wing profile!";
+            }
+            upperCurve = new Geom_TrimmedCurve(upperCurve, upperCurve->FirstParameter(), w);
+            curve = new Geom_TrimmedCurve(curve, curve->FirstParameter(), w);
+        }
+    }
+}
 
 } // end namespace tigl
 
