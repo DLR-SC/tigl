@@ -27,17 +27,25 @@ struct Element : XSDElement {
 	int maxOccurs;
 };
 
+struct Any : XSDElement {
+
+};
+
+struct Group : XSDElement {
+
+};
+
 struct All : XSDElement {
 	std::vector<Element> elements;
 };
 
 struct Choice;
 struct Sequence : XSDElement {
-	std::vector<Variant<Element, Choice, Sequence>> elements;
+	std::vector<Variant<Element, Group, Choice, Sequence, Any>> elements;
 };
 
 struct Choice : XSDElement {
-	std::vector<Variant<Element, Choice, Sequence>> elements;
+	std::vector<Variant<Element, Group, Choice, Sequence, Any>> elements;
 };
 
 struct Type : XSDElement {
@@ -46,7 +54,7 @@ struct Type : XSDElement {
 };
 
 struct ComplexType : Type {
-	Variant<Element, Choice, Sequence, All> elements;
+	Variant<Group, All, Choice, Sequence> elements;
 	std::vector<Attribute> attributes;
 };
 
@@ -64,14 +72,20 @@ private:
 	TixiDocument document;
 	std::unordered_map<std::string, Variant<ComplexType, SimpleType>> m_types;
 
-	All readAll(const std::string& xpath);
+	Group    readGroup   (const std::string& xpath);
+	All      readAll     (const std::string& xpath);
+	Choice   readChoice  (const std::string& xpath);
 	Sequence readSequence(const std::string& xpath);
-	Choice readChoice(const std::string& xpath);
+	Any      readAny     (const std::string& xpath);
+
+	void readSimpleContent(const std::string& xpath, ComplexType& type);
+	void readComplexContent(const std::string& xpath, ComplexType& type);
 	void readComplexTypeElementConfiguration(const std::string& xpath, ComplexType& type);
 	Attribute readAttribute(const std::string& xpath);
+	void readRestriction(const std::string& xpath, SimpleType& type);
 	std::string readComplexType(const std::string& xpath);
 	std::string readSimpleType(const std::string& xpath);
-	std::string readType(const std::string& xpath);
+	std::string readInlineType(const std::string& xpath);
 	Element readElement(const std::string& xpath);
 
 	std::string renameType(const std::string& oldName, std::string newNameSuggestion);

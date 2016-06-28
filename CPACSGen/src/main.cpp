@@ -118,6 +118,9 @@ auto buildFieldList(const SchemaParser& schema, const ComplexType& type) {
 				operator()(e);
 		}
 
+		void operator()(const Any& a) const { }
+		void operator()(const Group& g) const { }
+
 	private:
 		const SchemaParser& schema;
 		std::vector<Field>& members;
@@ -138,12 +141,15 @@ const std::vector<std::string> copyFiles = {
 int main(int argc, char* argv[]) {
 
 	// parse command line arguments
-	if (argc != 2) {
+	std::string outputDirectory;
+	if (argc > 2) {
 		std::cerr << "Usage: CPACSGen outputDirectory" << std::endl;
 		return -1;
+	} else if (argc == 2) {
+		outputDirectory = argv[1];
+	} else if (argc == 1) {
+		outputDirectory = "generated";
 	}
-
-	const std::string outputDirectory = argv[1];
 
 	try {
 		// read types and elements
