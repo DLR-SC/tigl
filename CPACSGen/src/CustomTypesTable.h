@@ -9,8 +9,7 @@ class CustomTypesTable : public std::unordered_map<std::string, std::string> {
 public:
 	using Base = std::unordered_map<std::string, std::string>;
 
-	CustomTypesTable()
-		: Base({
-		{ "CPACSWing", "CCPACSWing" },
-	}) {}
+	CustomTypesTable();
+
+	void read(const std::string& filename);
 };
