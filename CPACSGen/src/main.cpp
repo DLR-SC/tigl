@@ -14,9 +14,21 @@
 #include "codegen.h"
 
 std::unordered_map<std::string, std::string> xsdTypes = {
-	{ "xsd:boolean", "bool" },
-	{ "xsd:double", "double" },
-	{ "xsd:string", "std::string" }
+	{ "xsd:byte",         "int8_t"      },
+	{ "xsd:unsignedByte", "uint8_t"     },
+	{ "xsd:short",        "int16_t"     },
+	{ "xsd:unsignedShort","uint16_t"    },
+	{ "xsd:int",          "int32_t"     },
+	{ "xsd:unsignedInt",  "uint32_t"    },
+	{ "xsd:long"    ,     "int64_t"     },
+	{ "xsd:unsignedLong", "uint64_t"    },
+	{ "xsd:integer",      "int"         },
+	{ "xsd:boolean",      "bool"        },
+	{ "xsd:float",        "float"       },
+	{ "xsd:double",       "double"      },
+	{" xsd:decimal",      "double"      }, // TODO: implement custom type?
+	{ "xsd:dateTime",     "time_t"      },
+	{ "xsd:string",       "std::string" },
 };
 
 auto makeClassName(std::string name) {
@@ -169,7 +181,8 @@ int main(int argc, char* argv[]) {
 					Class c;
 					c.origin = &type;
 					c.name = makeClassName(type.name);
-					c.base = makeClassName(type.base);
+					if (!type.base.empty())
+						c.base = resolveType(schema, type.base);
 					c.fields = buildFieldList(schema, type);
 					types.classes[c.name] = c;
 				}

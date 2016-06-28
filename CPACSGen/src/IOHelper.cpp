@@ -1,3 +1,5 @@
+#include <sstream>
+#include <chrono>
 
 #include "IOHelper.h"
 
@@ -158,6 +160,12 @@ int TixiGetIntElement(const TixiDocumentHandle& tixiHandle, const std::string& p
 	return TixiGetElementInternal<int>(tixiHandle, parentXPath, element, tixiGetBooleanElement);
 }
 
+std::time_t TixiGetTimeTElement(const TixiDocumentHandle& tixiHandle, const std::string& parentXPath, const std::string& element) {
+	const auto str = TixiGetTextElement(tixiHandle, parentXPath, element);
+	// TODO: implement conversion
+	return std::time_t();
+}
+
 namespace {
 	template<typename SaveFunc, typename... ValueAndFurtherArgs>
 	void TixiSaveAttributeInternal(const TixiDocumentHandle& tixiHandle, const std::string& xpath, const std::string& attribute, SaveFunc saveFunc, ValueAndFurtherArgs&&... args) {
@@ -248,4 +256,10 @@ void TixiSaveElement(const TixiDocumentHandle& tixiHandle, const std::string& pa
 
 void TixiSaveElement(const TixiDocumentHandle& tixiHandle, const std::string& parentXPath, const std::string& element, int value) {
 	TixiSaveElementInternal(tixiHandle, parentXPath, element, tixiAddIntegerElement, value, nullptr);
+}
+
+void TixiSaveElement(const TixiDocumentHandle& tixiHandle, const std::string& parentXPath, const std::string& element, std::time_t value) {
+	std::string str = "date saving not implemented";
+	// TODO: implement conversion
+	TixiSaveElement(tixiHandle, parentXPath, element, str);
 }

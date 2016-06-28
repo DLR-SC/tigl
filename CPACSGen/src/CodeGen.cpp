@@ -135,14 +135,15 @@ namespace {
 		{"std::string", "Text"},
 		{"double", "Double"},
 		{"bool", "Bool"},
-		{"int", "Int"}
+		{"int", "Int"},
+		{"time_t", "TimeT"}
 	};
 }
 
 void CodeGen::writeReadAttributeOrElementImplementation(IndentingStreamWrapper& cpp, const Field& f, bool attribute) {
 	const std::string AttOrElem = attribute ? "Attribute" : "Element";
 
-	// fundamental m_types
+	// fundamental types
 	const auto itF = fundamentalTypes.find(f.type);
 	if (itF != std::end(fundamentalTypes)) {
 		switch (f.cardinality) {
@@ -283,10 +284,58 @@ void CodeGen::writeWriteAttributeOrElementImplementation(IndentingStreamWrapper&
 	throw std::logic_error("No write function provided for type " + f.type);
 }
 
-void CodeGen::writeReadImplementation(IndentingStreamWrapper& cpp, const std::string& className, const std::vector<Field>& fields) {
-	cpp << "void " << className << "::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) {\n";
+
+void CodeGen::writeReadBaseImplementation(IndentingStreamWrapper& cpp, const std::string& type) {
+	// find type
+
+
+	// fundamental types
+	const auto itF = fundamentalTypes.find(type);
+	if (itF != std::end(fundamentalTypes)) {
+		cpp << "*this = " << "TixiGet" << itF->second << "Element(tixiHandle, xpath);\n";
+		return;
+	}
+
+	// classes
+	const auto itC = m_types.classes.find(type);
+	if (itC != std::end(m_types.classes)) {
+		cpp << type << "::ReadCPACS(tixiHandle, xpath);\n";
+		return;
+	}
+
+	throw std::logic_error("No read function provided for type " + type);
+}
+
+
+void CodeGen::writeWriteBaseImplementation(IndentingStreamWrapper& cpp, const std::string& type) {
+	// fundamental types
+	const auto itF = fundamentalTypes.find(type);
+	if (itF != std::end(fundamentalTypes)) {
+		cpp << "TixiSaveElement(tixiHandle, xpath, *this);\n";
+		return;
+	}
+
+	// classes
+	const auto itC = m_types.classes.find(type);
+	if (itC != std::end(m_types.classes)) {
+		cpp << type << "::WriteCPACS(tixiHandle, xpath);\n";
+		return;
+	}
+
+	throw std::logic_error("No write function provided for type " + type);
+}
+
+
+void CodeGen::writeReadImplementation(IndentingStreamWrapper& cpp, const Class& c, const std::vector<Field>& fields) {
+	cpp << "void " << c.name << "::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) {\n";
 	{
 		Scope s(cpp);
+
+		// base class
+		if (!c.base.empty())
+			writeReadBaseImplementation(cpp, c.base);
+
+		// fields
 		for (const auto& f : fields) {
 			const auto attOrElem = f.attribute ? "attribute" : "element";
 			const auto AttOrElem = f.attribute ? "Attribute" : "Element";
@@ -312,10 +361,16 @@ void CodeGen::writeReadImplementation(IndentingStreamWrapper& cpp, const std::st
 	cpp << "}\n";
 }
 
-void CodeGen::writeWriteImplementation(IndentingStreamWrapper& cpp, const std::string& className, const std::vector<Field>& fields) {
-	cpp << "void " << className << "::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const {\n";
+void CodeGen::writeWriteImplementation(IndentingStreamWrapper& cpp, const Class& c, const std::vector<Field>& fields) {
+	cpp << "void " << c.name << "::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const {\n";
 	{
 		Scope s(cpp);
+
+		// base class
+		if (!c.base.empty())
+			writeWriteBaseImplementation(cpp, c.base);
+
+		// fields
 		for (const auto& f : fields) {
 			const auto attOrElem = f.attribute ? "attribute" : "element";
 			cpp << "// write " << attOrElem << " " << f.name << "\n";
@@ -524,9 +579,9 @@ void CodeGen::writeSource(IndentingStreamWrapper& cpp, const Class& c, const Inc
 			cpp << "\n";
 
 			// io
-			writeReadImplementation(cpp, c.name, c.fields);
+			writeReadImplementation(cpp, c, c.fields);
 			cpp << "\n";
-			writeWriteImplementation(cpp, c.name, c.fields);
+			writeWriteImplementation(cpp, c, c.fields);
 			cpp << "\n";
 
 			// accessors

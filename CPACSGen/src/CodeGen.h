@@ -87,8 +87,10 @@ private:
 	void writeIODeclarations(IndentingStreamWrapper& hpp, const std::string& className, const std::vector<Field>& fields);
 	void writeReadAttributeOrElementImplementation(IndentingStreamWrapper& cpp, const Field& f, bool attribute);
 	void writeWriteAttributeOrElementImplementation(IndentingStreamWrapper& cpp, const Field& f, bool attribute);
-	void writeReadImplementation(IndentingStreamWrapper& cpp, const std::string& className, const std::vector<Field>& fields);
-	void writeWriteImplementation(IndentingStreamWrapper& cpp, const std::string& className, const std::vector<Field>& fields);
+	void writeReadBaseImplementation(IndentingStreamWrapper& cpp, const std::string& type);
+	void writeWriteBaseImplementation(IndentingStreamWrapper& cpp, const std::string& type);
+	void writeReadImplementation(IndentingStreamWrapper& cpp, const Class& className, const std::vector<Field>& fields);
+	void writeWriteImplementation(IndentingStreamWrapper& cpp, const Class& className, const std::vector<Field>& fields);
 	void writeLicenseHeader(IndentingStreamWrapper& f);
 	Includes resolveIncludes(const Class& c);
 	void writeHeader(IndentingStreamWrapper& hpp, const Class& c, const Includes& includes);

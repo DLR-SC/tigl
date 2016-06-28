@@ -5,6 +5,7 @@
 #include <vector>
 #include <string>
 #include <iostream>
+#include <ctime>
 
 #include "optional.hpp"
 
@@ -37,6 +38,7 @@ std::string TixiGetTextElement  (const TixiDocumentHandle& tixiHandle, const std
 double      TixiGetDoubleElement(const TixiDocumentHandle& tixiHandle, const std::string& parentXPath, const std::string& element);
 bool        TixiGetBoolElement  (const TixiDocumentHandle& tixiHandle, const std::string& parentXPath, const std::string& element);
 int         TixiGetIntElement   (const TixiDocumentHandle& tixiHandle, const std::string& parentXPath, const std::string& element);
+std::time_t TixiGetTimeTElement (const TixiDocumentHandle& tixiHandle, const std::string& parentXPath, const std::string& element);
 
 void TixiSaveAttribute(const TixiDocumentHandle& tixiHandle, const std::string& xpath, const std::string& attribute, const std::string& value);
 void TixiSaveAttribute(const TixiDocumentHandle& tixiHandle, const std::string& xpath, const std::string& attribute, double             value);
@@ -52,6 +54,7 @@ void TixiSaveElement(const TixiDocumentHandle& tixiHandle, const std::string& pa
 void TixiSaveElement(const TixiDocumentHandle& tixiHandle, const std::string& parentXPath, const std::string& element, double             value);
 void TixiSaveElement(const TixiDocumentHandle& tixiHandle, const std::string& parentXPath, const std::string& element, bool               value);
 void TixiSaveElement(const TixiDocumentHandle& tixiHandle, const std::string& parentXPath, const std::string& element, int                value);
+void TixiSaveElement(const TixiDocumentHandle& tixiHandle, const std::string& parentXPath, const std::string& element, std::time_t        value);
 
 template <typename T>
 void TixiSaveElement(const TixiDocumentHandle& tixiHandle, const std::string& parentXPath, const std::string& element, const Optional<T>& value) {

@@ -78,6 +78,7 @@ private:
 	Sequence readSequence(const std::string& xpath);
 	Any      readAny     (const std::string& xpath);
 
+	void readExtension(const std::string& xpath, ComplexType& type);
 	void readSimpleContent(const std::string& xpath, ComplexType& type);
 	void readComplexContent(const std::string& xpath, ComplexType& type);
 	void readComplexTypeElementConfiguration(const std::string& xpath, ComplexType& type);
