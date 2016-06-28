@@ -71,15 +71,15 @@ std::string CodeGen::fieldType(const Field& field) const {
 }
 
 std::string CodeGen::getterSetterType(const Field& field) const {
+	const auto it = m_customTypes.find(field.type);
+	const auto typeName = (it != std::end(m_customTypes)) ? it->second : field.type;
 	switch (field.cardinality) {
 		case Cardinality::Optional:
 		case Cardinality::Mandatory:
-			return field.type;
+			return typeName;
 		case Cardinality::Vector:
 		{
 			const bool makePointer = m_types.classes.find(field.type) != std::end(m_types.classes);
-			const auto it = m_customTypes.find(field.type);
-			const auto typeName = (it != std::end(m_customTypes)) ? it->second : field.type;
 			return "std::vector<" + typeName + (makePointer ? "*" : "") + ">";
 		}
 		default:
@@ -102,7 +102,7 @@ void CodeGen::writeFields(IndentingStreamWrapper& hpp, const std::vector<Field>&
 void CodeGen::writeAccessorDeclarations(IndentingStreamWrapper& hpp, const std::vector<Field>& fields) {
 	for (const auto& f : fields) {
 		if(f.cardinality == Cardinality::Optional)
-			hpp << "TIGL_EXPORT bool has" << CapitalizeFirstLetter(f.name) << "() const;\n";
+			hpp << "TIGL_EXPORT bool Has" << CapitalizeFirstLetter(f.name) << "() const;\n";
 		hpp << "TIGL_EXPORT const " << getterSetterType(f) << "& Get" << CapitalizeFirstLetter(f.name) << "() const;\n";
 		hpp << "TIGL_EXPORT " << getterSetterType(f) << "& Get" << CapitalizeFirstLetter(f.name) << "();\n";
 		if(m_types.classes.find(f.type) == std::end(m_types.classes)) // generate setter only for fundamental and enum types
@@ -115,7 +115,7 @@ void CodeGen::writeAccessorImplementations(IndentingStreamWrapper& cpp, const st
 	for (const auto& f : fields) {
 		const auto op = f.cardinality == Cardinality::Optional;
 		if (op)
-			cpp << "TIGL_EXPORT bool " << className << "::has" << CapitalizeFirstLetter(f.name) << "() const { return " << f.fieldName() << ".isValid(); }\n";
+			cpp << "TIGL_EXPORT bool " << className << "::Has" << CapitalizeFirstLetter(f.name) << "() const { return " << f.fieldName() << ".isValid(); }\n";
 		cpp << "const " << getterSetterType(f) << "& " << className << "::Get" << CapitalizeFirstLetter(f.name) << "() const { return " << f.fieldName() << (op ? ".get()" : "") << "; }\n";
 		cpp << getterSetterType(f) << "& " << className << "::Get" << CapitalizeFirstLetter(f.name) << "() { return " << f.fieldName() << (op ? ".get()" : "") << "; }\n";
 		if (m_types.classes.find(f.type) == std::end(m_types.classes)) // generate setter only for fundamental and enum types
