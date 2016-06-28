@@ -3,8 +3,6 @@
 #include "NotImplementedException.h"
 #include "schemaparser.h"
 
-static const std::string inlineTypePrefix = "_inline_";
-
 SchemaParser::SchemaParser(const std::string& cpacsLocation)
 	: document(cpacsLocation) {
 	document.forEachChild("/schema", "simpleType", [&](auto xpath) {
@@ -193,11 +191,9 @@ Attribute SchemaParser::readAttribute(const std::string& xpath) {
 	if (document.checkAttribute(xpath, "type"))
 		// referencing other type
 		att.type = document.textAttribute(xpath, "type");
-	else {
+	else
 		// type defined inline
-		const auto name = readInlineType(xpath);
-		att.type = renameType(name, att.name);
-	}
+		att.type = readInlineType(xpath, att.name);
 
 	if (document.checkAttribute(xpath, "use")) {
 		const auto use = document.textAttribute(xpath, "use");
@@ -219,7 +215,7 @@ Attribute SchemaParser::readAttribute(const std::string& xpath) {
 	return att;
 }
 
-std::string SchemaParser::readComplexType(const std::string& xpath) {
+std::string SchemaParser::readComplexType(const std::string& xpath, const std::string& nameHint) {
 // <complexType
 // id=ID
 // name=NCName
@@ -236,10 +232,8 @@ std::string SchemaParser::readComplexType(const std::string& xpath) {
 	const std::string name = [&] {
 		if (document.checkAttribute(xpath, "name"))
 			return document.textAttribute(xpath, "name");
-		else {
-			static auto id = 0;
-			return inlineTypePrefix + "complexType" + std::to_string(id++);
-		}
+		else
+			return generateUniqueTypeName(nameHint);
 	}();
 
 	if (m_types.find(name) != std::end(m_types))
@@ -300,7 +294,7 @@ void SchemaParser::readRestriction(const std::string& xpath, SimpleType& type) {
 		//throw NotImplementedException("XSD restriction without enumeration is not implemented");
 }
 
-std::string SchemaParser::readSimpleType(const std::string& xpath) {
+std::string SchemaParser::readSimpleType(const std::string& xpath, const std::string& nameHint) {
 	// <simpleType
 	// id=ID
 	// name=NCName
@@ -314,8 +308,7 @@ std::string SchemaParser::readSimpleType(const std::string& xpath) {
 		if (document.checkAttribute(xpath, "name"))
 			return document.textAttribute(xpath, "name");
 		else {
-			static auto id = 0;
-			return inlineTypePrefix + "simpleType" + std::to_string(id++);
+			return generateUniqueTypeName(nameHint);
 		}
 	}();
 
@@ -342,14 +335,10 @@ std::string SchemaParser::readSimpleType(const std::string& xpath) {
 	return name;
 }
 
-std::string SchemaParser::readInlineType(const std::string& xpath) {
-	     if (document.checkElement(xpath, "complexType")) return readComplexType(xpath + "/complexType");
-	else if (document.checkElement(xpath, "simpleType" )) return readSimpleType (xpath + "/simpleType" );
-	else
-		std::cerr << "Element at xpath " << xpath << " has no type" << std::endl;
-		// this happens if no type is specified for an element
-		// return "__AnyContentType"; // TODO: provide this type
-	throw std::runtime_error("Unexpected type or no type at xpath: " + xpath);
+std::string SchemaParser::readInlineType(const std::string& xpath, const std::string& nameHint) {
+	     if (document.checkElement(xpath, "complexType")) return readComplexType(xpath + "/complexType", nameHint);
+	else if (document.checkElement(xpath, "simpleType" )) return readSimpleType (xpath + "/simpleType",  nameHint);
+	else throw std::runtime_error("Unexpected type or no type at xpath: " + xpath);
 }
 
 Element SchemaParser::readElement(const std::string& xpath) {
@@ -379,36 +368,17 @@ Element SchemaParser::readElement(const std::string& xpath) {
 	if (document.checkAttribute(xpath, "type"))
 		// referencing other type
 		element.type = document.textAttribute(xpath, "type");
-	else {
-		// type defined inline
-		const auto name = readInlineType(xpath);
-		element.type = renameType(name, element.name);
-	}
+	else
+		element.type = readInlineType(xpath, element.name);
 
 	assert(!element.type.empty());
 
 	return element;
 }
 
-std::string SchemaParser::renameType(const std::string& oldName, std::string newNameSuggestion) {
-	const auto it = m_types.find(oldName);
-	if (it == std::end(m_types))
-		throw std::logic_error("Could not find type " + oldName);
-
-	auto type = it->second;
-	m_types.erase(it);
-
-	// try to find unique name based on suggestion
+std::string SchemaParser::generateUniqueTypeName(const std::string& newNameSuggestion) {
 	unsigned int id = 0;
 	while (m_types.find(newNameSuggestion + "Type" + std::to_string(id)) != std::end(m_types))
-		id++; // TODO: replies on newNameSuggestion to have at least 4 chars (assumes suggestion ends with Type)
-
-	// insert with new name
-	newNameSuggestion += "Type" + std::to_string(id);
-	type.visit([&](Type& t) { t.name = newNameSuggestion; });
-	m_types[newNameSuggestion] = type;
-
-	std::cout << "Renamed type " << oldName << " to " << newNameSuggestion << std::endl;
-
-	return newNameSuggestion;
+		id++;
+	return newNameSuggestion + "Type" + std::to_string(id);
 }

@@ -131,6 +131,7 @@ void CodeGen::writeIODeclarations(IndentingStreamWrapper& hpp, const std::string
 }
 
 namespace {
+	// TODO: we can add other integer types here (e.g. short, long, ...)
 	std::unordered_map<std::string, std::string> fundamentalTypes = {
 		{"std::string", "Text"},
 		{"double", "Double"},

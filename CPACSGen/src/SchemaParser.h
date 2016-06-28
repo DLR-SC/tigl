@@ -84,10 +84,10 @@ private:
 	void readComplexTypeElementConfiguration(const std::string& xpath, ComplexType& type);
 	Attribute readAttribute(const std::string& xpath);
 	void readRestriction(const std::string& xpath, SimpleType& type);
-	std::string readComplexType(const std::string& xpath);
-	std::string readSimpleType(const std::string& xpath);
-	std::string readInlineType(const std::string& xpath);
+	std::string readComplexType(const std::string& xpath, const std::string& nameHint = "");
+	std::string readSimpleType(const std::string& xpath, const std::string& nameHint = "");
+	std::string readInlineType(const std::string& xpath, const std::string& nameHint);
 	Element readElement(const std::string& xpath);
 
-	std::string renameType(const std::string& oldName, std::string newNameSuggestion);
+	std::string generateUniqueTypeName(const std::string& newNameSuggestion);
 };
