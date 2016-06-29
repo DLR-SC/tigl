@@ -82,7 +82,7 @@ auto buildFieldList(const SchemaParser& schema, const ComplexType& type) {
 		m.origin = &a;
 		m.name = a.name;
 		m.type = resolveType(schema, a.type);
-		m.attribute = true;
+		m.xmlType = XMLConstruct::Attribute;
 		if (a.optional)
 			m.cardinality = Cardinality::Optional;
 		else
@@ -91,8 +91,8 @@ auto buildFieldList(const SchemaParser& schema, const ComplexType& type) {
 	}
 
 	// elements
-	struct Visitor : public boost::static_visitor<> {
-		Visitor(const SchemaParser& schema, std::vector<Field>& members)
+	struct ContentVisitor : public boost::static_visitor<> {
+		ContentVisitor(const SchemaParser& schema, std::vector<Field>& members)
 			: schema(schema), members(members) {}
 
 		void operator()(const Element& e) const {
@@ -100,7 +100,7 @@ auto buildFieldList(const SchemaParser& schema, const ComplexType& type) {
 			m.origin = &e;
 			m.name = e.name;
 			m.type = resolveType(schema, e.type);
-			m.attribute = false;
+			m.xmlType = XMLConstruct::Element;
 			if (e.minOccurs == 0 && e.maxOccurs == 1)
 				m.cardinality = Cardinality::Optional;
 			else if (e.minOccurs == 1 && e.maxOccurs == 1)
@@ -117,12 +117,12 @@ auto buildFieldList(const SchemaParser& schema, const ComplexType& type) {
 
 		void operator()(const Choice& c) const {
 			for (const auto& v : c.elements)
-				v.visit(Visitor(schema, members));
+				v.visit(ContentVisitor(schema, members));
 		}
 
 		void operator()(const Sequence& s) const {
 			for (const auto& v : s.elements)
-				v.visit(Visitor(schema, members));
+				v.visit(ContentVisitor(schema, members));
 		}
 
 		void operator()(const All& a) const {
@@ -130,15 +130,30 @@ auto buildFieldList(const SchemaParser& schema, const ComplexType& type) {
 				operator()(e);
 		}
 
-		void operator()(const Any& a) const { }
-		void operator()(const Group& g) const { }
+		void operator()(const Any& a) const {
+			throw NotImplementedException("Generating fields for any is not implemented");
+		}
+
+		void operator()(const Group& g) const {
+			throw NotImplementedException("Generating fields for group is not implemented");
+		}
+
+		void operator()(const SimpleContent& g) const {
+			Field m;
+			m.origin = &g;
+			m.name = "simpleContent";
+			m.cardinality = Cardinality::Mandatory;
+			m.type = resolveType(schema, g.type);
+			m.xmlType = XMLConstruct::SimpleContent;
+			members.push_back(m);
+		}
 
 	private:
 		const SchemaParser& schema;
 		std::vector<Field>& members;
 	};
 
-	type.elements.visit(Visitor(schema, members));
+	type.content.visit(ContentVisitor(schema, members));
 
 	return members;
 }
@@ -173,8 +188,8 @@ int main(int argc, char* argv[]) {
 		for(const auto& p : schema.types()) {
 			const auto& type = p.second;
 
-			struct Visitor {
-				Visitor(SchemaParser& schema, Types& types)
+			struct TypeVisitor {
+				TypeVisitor(SchemaParser& schema, Types& types)
 					: schema(schema), types(types) {}
 
 				void operator()(const ComplexType& type) {
@@ -205,7 +220,7 @@ int main(int argc, char* argv[]) {
 				Types& types;
 			};
 
-			type.visit(Visitor(schema, types));
+			type.visit(TypeVisitor(schema, types));
 		};
 
 		// generate code

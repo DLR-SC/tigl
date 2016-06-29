@@ -14,11 +14,17 @@ enum class Cardinality {
 	Vector
 };
 
+enum class XMLConstruct {
+	Element,
+	Attribute,
+	SimpleContent
+};
+
 struct Field {
-	Variant<const Attribute*, const Element*> origin;
+	Variant<const Attribute*, const Element*, const SimpleContent*> origin;
 	std::string name;
 	std::string type;
-	bool attribute;
+	XMLConstruct xmlType;
 	Cardinality cardinality;
 
 	auto fieldName() const {
@@ -85,8 +91,8 @@ private:
 	void writeAccessorDeclarations(IndentingStreamWrapper& hpp, const std::vector<Field>& fields);
 	void writeAccessorImplementations(IndentingStreamWrapper& cpp, const std::string& className, const std::vector<Field>& fields);
 	void writeIODeclarations(IndentingStreamWrapper& hpp, const std::string& className, const std::vector<Field>& fields);
-	void writeReadAttributeOrElementImplementation(IndentingStreamWrapper& cpp, const Field& f, bool attribute);
-	void writeWriteAttributeOrElementImplementation(IndentingStreamWrapper& cpp, const Field& f, bool attribute);
+	void writeReadAttributeOrElementImplementation(IndentingStreamWrapper& cpp, const Field& f);
+	void writeWriteAttributeOrElementImplementation(IndentingStreamWrapper& cpp, const Field& f);
 	void writeReadBaseImplementation(IndentingStreamWrapper& cpp, const std::string& type);
 	void writeWriteBaseImplementation(IndentingStreamWrapper& cpp, const std::string& type);
 	void writeReadImplementation(IndentingStreamWrapper& cpp, const Class& className, const std::vector<Field>& fields);

@@ -48,13 +48,17 @@ struct Choice : XSDElement {
 	std::vector<Variant<Element, Group, Choice, Sequence, Any>> elements;
 };
 
+struct SimpleContent : XSDElement {
+	std::string type;
+};
+
 struct Type : XSDElement {
 	std::string name;
 	std::string base;
 };
 
 struct ComplexType : Type {
-	Variant<Group, All, Choice, Sequence> elements;
+	Variant<Group, All, Choice, Sequence, SimpleContent> content;
 	std::vector<Attribute> attributes;
 };
 

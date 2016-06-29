@@ -25,6 +25,7 @@ public:
 		return *this;
 	}
 
+	// constructs the optional, is used in case T is not copy- or moveable
 	void construct() {
 		m_ptr = std::make_unique<T>();
 	}

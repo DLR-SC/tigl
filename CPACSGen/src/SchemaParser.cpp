@@ -128,32 +128,28 @@ void SchemaParser::readSimpleContent(const std::string& xpath, ComplexType& type
 
 	if (document.checkElement(xpath, "restriction")) {
 		if (document.checkElement(xpath + "/restriction/enumeration")) {
-			// we simplify this case be generating an additional simpleType for this enum and creating a field for the value inside the complexType
+			// generating an additional type for this enum
 			SimpleType stype;
 			stype.xpath = xpath;
 			stype.name = type.name + "SimpleContentType";
 			readRestriction(xpath + "/restriction", stype);
-
-			Element e;
-			e.xpath = xpath;
-			e.type = stype.name;
-			e.name = "simpleContent";
-			e.minOccurs = 1;
-			e.maxOccurs = 1;
-
-			Sequence s;
-			s.xpath = xpath;
-			s.elements = { e };
-
-			type.elements = s;
-
 			m_types[stype.name] = stype;
+
+			SimpleContent sc;
+			sc.xpath = xpath;
+			sc.type = stype.name;
+			type.content = sc;
+
 		} else {
 			// we ignore other kinds of restrictions as those are hard to support
 			std::cerr << "Warning: restricted simpleContent is not an enum" << std::endl;
 		}
 	} else if (document.checkElement(xpath, "extension")) {
-		readExtension(xpath + "/extension", type);
+		// we simplify this case be creating a field for the value of the simpleContent
+		SimpleContent sc;
+		sc.xpath = xpath;
+		sc.type = document.textAttribute(xpath + "/extension", "base");
+		type.content = sc;
 	}
 }
 
@@ -173,9 +169,9 @@ void SchemaParser::readComplexContent(const std::string& xpath, ComplexType& typ
 }
 
 void SchemaParser::readComplexTypeElementConfiguration(const std::string& xpath, ComplexType& type) {
-	     if (document.checkElement(xpath, "all"))      type.elements = readAll     (xpath + "/all"     );
-	else if (document.checkElement(xpath, "sequence")) type.elements = readSequence(xpath + "/sequence");
-	else if (document.checkElement(xpath, "choice"))   type.elements = readChoice  (xpath + "/choice"  );
+	     if (document.checkElement(xpath, "all"))      type.content = readAll     (xpath + "/all"     );
+	else if (document.checkElement(xpath, "sequence")) type.content = readSequence(xpath + "/sequence");
+	else if (document.checkElement(xpath, "choice"))   type.content = readChoice  (xpath + "/choice"  );
 	else if (document.checkElement(xpath, "group"))    throw NotImplementedException("XSD complexType group is not implemented");
 	else if (document.checkElement(xpath, "any"))      throw NotImplementedException("XSD complexType any is not implemented");
 
