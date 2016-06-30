@@ -125,8 +125,8 @@ void CodeGen::writeAccessorImplementations(IndentingStreamWrapper& cpp, const st
 }
 
 void CodeGen::writeIODeclarations(IndentingStreamWrapper& hpp, const std::string& className, const std::vector<Field>& fields) {
-	hpp << "TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);\n";
-	hpp << "TIGL_EXPORT void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;\n";
+	hpp << "TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);\n";
+	hpp << "TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;\n";
 	hpp << "\n";
 }
 
@@ -532,8 +532,15 @@ void CodeGen::writeHeader(IndentingStreamWrapper& hpp, const Class& c, const Inc
 				hpp << "class " << fwd << ";\n";
 			hpp << "\n";
 
-			// class name and base class
+			// meta information from schema
+			hpp << "// This class is used in: \n";
+			for (const auto& c : c.deps.parents) {
+				hpp << "// " << c->name << "\n";
+			}
+			hpp << "\n";
 			hpp << "// generated from " << c.origin->xpath << "\n";
+
+			// class name and base class
 			hpp << "class " << c.name << (c.base.empty() ? "" : " : public " + c.base) << " {\n";
 			hpp << "public:\n";
 			{
@@ -544,7 +551,7 @@ void CodeGen::writeHeader(IndentingStreamWrapper& hpp, const Class& c, const Inc
 				hpp << "\n";
 
 				// dtor
-				hpp << "TIGL_EXPORT ~" << c.name << "();\n";
+				hpp << "TIGL_EXPORT virtual ~" << c.name << "();\n";
 				hpp << "\n";
 
 				// io
@@ -578,6 +585,10 @@ void CodeGen::writeHeader(IndentingStreamWrapper& hpp, const Class& c, const Inc
 			hpp << "};\n";
 		}
 		hpp << "}\n";
+		// export non-custom types into tigl namespace
+		if (m_customTypes.find(c.name) != std::end(m_customTypes)) {
+			hpp << "//using generated::" << c.name << ";\n";
+		}
 	}
 	hpp << "}\n";
 	hpp << "\n";
@@ -651,6 +662,14 @@ void CodeGen::writeEnum(IndentingStreamWrapper& hpp, const Enum& e) {
 		{
 			Scope s(hpp);
 
+			// meta information from schema
+			hpp << "// This enum is used in: \n";
+			for (const auto& c : e.deps.parents) {
+				hpp << "// " << c->name << "\n";
+			}
+			hpp << "\n";
+			hpp << "// generated from " << e.origin->xpath << "\n";
+
 			// enum name
 			hpp << "enum class " << e.name << " {\n";
 			{
@@ -694,9 +713,45 @@ void CodeGen::writeEnum(IndentingStreamWrapper& hpp, const Enum& e) {
 	hpp << "\n";
 }
 
-CodeGen::CodeGen(const std::string& outputLocation, const Types& types)
-	: m_types(types) {
+void CodeGen::buildDependencyTree() {
+	auto& classes = m_types.classes;
+	auto& enums = m_types.enums;
+
+	for (auto& p : classes) {
+		auto& c = p.second;
+
+		// base
+		if (!c.base.empty()) {
+			const auto it = classes.find(c.base);
+			if (it != std::end(classes)) {
+				c.deps.bases.push_back(&it->second);
+				it->second.deps.deriveds.push_back(&c);
+			} else
+				std::cerr << "Warning: class " << c.name << " has non-class base: " << c.base << std::endl;
+		}
+
+		// fields
+		for (const auto& f : c.fields) {
+			const auto eit = enums.find(f.type);
+			if (eit != std::end(enums)) {
+				c.deps.enumChildren.push_back(&eit->second);
+				eit->second.deps.parents.push_back(&c);
+			} else {
+				const auto cit = classes.find(f.type);
+				if (cit != std::end(classes)) {
+					c.deps.children.push_back(&cit->second);
+					cit->second.deps.parents.push_back(&c);
+				}
+			}
+		}
+	}
+}
+
+CodeGen::CodeGen(const std::string& outputLocation, Types types)
+	: m_types(std::move(types)) {
 	boost::filesystem::create_directories(outputLocation);
+
+	buildDependencyTree();
 
 	for (const auto& p : m_types.classes) {
 		const auto c = p.second;

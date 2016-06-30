@@ -32,11 +32,29 @@ struct Field {
 	}
 };
 
+struct Class;
+struct Enum;
+
+struct ClassDependencies {
+	// non owning
+	std::vector<Class*> bases;
+	std::vector<Class*> deriveds;
+	std::vector<Class*> parents;
+	std::vector<Class*> children;
+	std::vector<Enum*> enumChildren;
+};
+
 struct Class {
 	const ComplexType* origin;
 	std::string name;
 	std::string base;
 	std::vector<Field> fields;
+
+private:
+	friend class CodeGen;
+
+	// used by CodeGen
+	ClassDependencies deps;
 };
 
 struct EnumValue {
@@ -54,6 +72,10 @@ struct EnumValue {
 	}
 };
 
+struct EnumDependencies {
+	std::vector<Class*> parents;
+};
+
 struct Enum {
 	const SimpleType* origin;
 	std::string name;
@@ -61,6 +83,12 @@ struct Enum {
 
 	std::string enumToStringFunc() const;
 	std::string stringToEnumFunc() const;
+
+private:
+	friend class CodeGen;
+
+	// used by CodeGen
+	EnumDependencies deps;
 };
 
 struct Types {
@@ -72,7 +100,7 @@ class IndentingStreamWrapper;
 
 class CodeGen {
 public:
-	CodeGen(const std::string& outputLocation, const Types& types);
+	CodeGen(const std::string& outputLocation, Types types);
 private:
 	struct Includes {
 		std::vector<std::string> hppIncludes;
@@ -81,7 +109,7 @@ private:
 		std::vector<std::string> cppIncludes;
 	};
 
-	const Types& m_types;
+	Types m_types;
 	CustomTypesTable m_customTypes;
 
 	std::string fieldType(const Field& field) const;
@@ -103,4 +131,5 @@ private:
 	void writeSource(IndentingStreamWrapper& cpp, const Class& c, const Includes& includes);
 	void writeClass(IndentingStreamWrapper& hpp, IndentingStreamWrapper& cpp, const Class& c);
 	void writeEnum(IndentingStreamWrapper& hpp, const Enum& e);
+	void buildDependencyTree();
 };

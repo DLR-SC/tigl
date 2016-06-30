@@ -1,15 +1,29 @@
 #pragma once
 
-#include <string>
-#include <unordered_map>
+#include "Table.h"
 
-// TODO: read from file
 // custom types in Tigl which inherit from the generated ones
-class CustomTypesTable : public std::unordered_map<std::string, std::string> {
+class CustomTypesTable : public Table {
 public:
-	using Base = std::unordered_map<std::string, std::string>;
-
-	CustomTypesTable();
-
-	void read(const std::string& filename);
+	CustomTypesTable()
+		: Table({
+			// maps generated classes to actual tigl classes
+			{ "CPACSComponentSegment",              "CCPACSWingComponentSegment" },
+			{ "CPACSComponentSegments",             "CCPACSWingComponentSegments" },
+			{ "CPACSPositioning",                   "CCPACSWingPositioning" },
+			{ "CPACSPositionings",                  "CCPACSWingPositionings" },
+			{ "CPACSWing",                          "CCPACSWing" },
+			{ "CPACSWings",                         "CCPACSWings" },
+			{ "CPACSWingCell",                      "CCPACSWingCell" },
+			{ "CPACSWingCells",                     "CCPACSWingCells" },
+			{ "CPACSWingElement",                   "CCPACSWingSectionElement" },
+			{ "CPACSWingElements",                  "CCPACSWingSectionElements" },
+			{ "CPACSWingSection",                   "CCPACSWingSection" },
+			{ "CPACSWingSections",                  "CCPACSWingSections" },
+			{ "CPACSWingComponentSegmentStructure", "CCPACSWingCSStructure" },
+			{ "CPACSWingShell",                     "CCPACSWingShell" },
+			{ "CPACSWingSegment",                   "CCPACSWingSegment" },
+			{ "CPACSWingSegments",                  "CCPACSWingSegments" },
+			{ "CPACSCst2D",                         "CCPACSWingProfileCST" },
+	}) {}
 };

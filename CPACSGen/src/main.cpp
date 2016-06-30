@@ -55,8 +55,9 @@ std::string resolveType(const SchemaParser& schema, const std::string& name) {
 	// search simple and complex types
 	const auto cit = types.find(name);
 	if (cit != std::end(types)) {
-		if (typeSubstitutionTable.hasSubstitution(name))
-			return typeSubstitutionTable.substitute(name);
+		const auto it = typeSubstitutionTable.find(name);
+		if (it != std::end(typeSubstitutionTable))
+			return it->second;
 		else
 			return makeClassName(name);
 	}
@@ -64,8 +65,9 @@ std::string resolveType(const SchemaParser& schema, const std::string& name) {
 	// search predefined xml schema types and replace them
 	const auto xit = xsdTypes.find(name);
 	if (xit != std::end(xsdTypes)) {
-		if (typeSubstitutionTable.hasSubstitution(name))
-			return typeSubstitutionTable.substitute(name);
+		const auto it = typeSubstitutionTable.find(name);
+		if (it != std::end(typeSubstitutionTable))
+			return it->second;
 		else
 			return xit->second;
 	}
@@ -116,8 +118,10 @@ auto buildFieldList(const SchemaParser& schema, const ComplexType& type) {
 		}
 
 		void operator()(const Choice& c) const {
+			std::vector<Field> choiceMembers;
 			for (const auto& v : c.elements)
 				v.visit(ContentVisitor(schema, members));
+
 		}
 
 		void operator()(const Sequence& s) const {
