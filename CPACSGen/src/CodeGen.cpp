@@ -18,10 +18,18 @@ private:
 	// indents on first use
 	template<typename T>
 	friend auto& operator<<(IndentingStreamWrapper& isw, T&& t) {
+		// finish last line
+		isw.os << '\n';
+
+		// indentation
 		for (unsigned int i = 0; i < isw.level; i++)
-			isw.os << "\t";
+			isw.os << '\t';
+
+		// write
 		isw.os << std::forward<T>(t);
-		return isw.os; // just return the unterlying stream
+
+		// just return the unterlying stream
+		return isw.os;
 	}
 
 	friend struct Scope;
@@ -90,24 +98,24 @@ std::string CodeGen::getterSetterType(const Field& field) const {
 void CodeGen::writeFields(IndentingStreamWrapper& hpp, const std::vector<Field>& fields) {
 	for (const auto& f : fields) {
 		f.origin.visit([&](const auto* attOrElem) {
-			hpp << "// generated from " << attOrElem->xpath << "\n";
+			hpp << "// generated from " << attOrElem->xpath;
 		});
-		hpp << fieldType(f) << " " << f.fieldName() << ";\n";
+		hpp << fieldType(f) << " " << f.fieldName() << ";";
 
 		if(&f != &fields.back())
-			hpp << "\n";
+			hpp << "";
 	}
 }
 
 void CodeGen::writeAccessorDeclarations(IndentingStreamWrapper& hpp, const std::vector<Field>& fields) {
 	for (const auto& f : fields) {
 		if(f.cardinality == Cardinality::Optional)
-			hpp << "TIGL_EXPORT bool Has" << CapitalizeFirstLetter(f.name()) << "() const;\n";
-		hpp << "TIGL_EXPORT const " << getterSetterType(f) << "& Get" << CapitalizeFirstLetter(f.name()) << "() const;\n";
-		hpp << "TIGL_EXPORT " << getterSetterType(f) << "& Get" << CapitalizeFirstLetter(f.name()) << "();\n";
+			hpp << "TIGL_EXPORT bool Has" << CapitalizeFirstLetter(f.name()) << "() const;";
+		hpp << "TIGL_EXPORT const " << getterSetterType(f) << "& Get" << CapitalizeFirstLetter(f.name()) << "() const;";
+		hpp << "TIGL_EXPORT " << getterSetterType(f) << "& Get" << CapitalizeFirstLetter(f.name()) << "();";
 		if(m_types.classes.find(f.type) == std::end(m_types.classes)) // generate setter only for fundamental and enum types
-			hpp << "TIGL_EXPORT void Set" << CapitalizeFirstLetter(f.name()) << "(const " << getterSetterType(f) << "& value);\n";
-		hpp << "\n";
+			hpp << "TIGL_EXPORT void Set" << CapitalizeFirstLetter(f.name()) << "(const " << getterSetterType(f) << "& value);";
+		hpp << "";
 	}
 }
 
@@ -115,19 +123,19 @@ void CodeGen::writeAccessorImplementations(IndentingStreamWrapper& cpp, const st
 	for (const auto& f : fields) {
 		const auto op = f.cardinality == Cardinality::Optional;
 		if (op)
-			cpp << "TIGL_EXPORT bool " << className << "::Has" << CapitalizeFirstLetter(f.name()) << "() const { return " << f.fieldName() << ".isValid(); }\n";
-		cpp << "const " << getterSetterType(f) << "& " << className << "::Get" << CapitalizeFirstLetter(f.name()) << "() const { return " << f.fieldName() << (op ? ".get()" : "") << "; }\n";
-		cpp << getterSetterType(f) << "& " << className << "::Get" << CapitalizeFirstLetter(f.name()) << "() { return " << f.fieldName() << (op ? ".get()" : "") << "; }\n";
+			cpp << "TIGL_EXPORT bool " << className << "::Has" << CapitalizeFirstLetter(f.name()) << "() const { return " << f.fieldName() << ".isValid(); }";
+		cpp << "const " << getterSetterType(f) << "& " << className << "::Get" << CapitalizeFirstLetter(f.name()) << "() const { return " << f.fieldName() << (op ? ".get()" : "") << "; }";
+		cpp << getterSetterType(f) << "& " << className << "::Get" << CapitalizeFirstLetter(f.name()) << "() { return " << f.fieldName() << (op ? ".get()" : "") << "; }";
 		if (m_types.classes.find(f.type) == std::end(m_types.classes)) // generate setter only for fundamental and enum types
-			cpp << "void " << className << "::Set" << CapitalizeFirstLetter(f.name()) << "(const " << getterSetterType(f) << "& value) { " << f.fieldName() << " = value; }\n";
-		cpp << "\n";
+			cpp << "void " << className << "::Set" << CapitalizeFirstLetter(f.name()) << "(const " << getterSetterType(f) << "& value) { " << f.fieldName() << " = value; }";
+		cpp << "";
 	}
 }
 
 void CodeGen::writeIODeclarations(IndentingStreamWrapper& hpp, const std::string& className, const std::vector<Field>& fields) {
-	hpp << "TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);\n";
-	hpp << "TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;\n";
-	hpp << "\n";
+	hpp << "TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);";
+	hpp << "TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;";
+	hpp << "";
 }
 
 namespace {
@@ -174,17 +182,17 @@ void CodeGen::writeReadAttributeOrElementImplementation(IndentingStreamWrapper& 
 		switch (f.cardinality) {
 			case Cardinality::Optional:
 			case Cardinality::Mandatory:
-				cpp << f.fieldName() << " = " << "TixiGet" << type << AttOrElem << "(tixiHandle, xpath" << subPathArg << ");\n";
+				cpp << f.fieldName() << " = " << "TixiGet" << type << AttOrElem << "(tixiHandle, xpath" << subPathArg << ");";
 				break;
 			case Cardinality::Vector:
 				if (f.xmlType == XMLConstruct::Attribute || f.xmlType == XMLConstruct::SimpleContent)
 					throw std::runtime_error("Attributes or simpleContents cannot be vectors");
-				cpp << "TixiReadElements(tixiHandle, xpath, \"" << f.cpacsName << "\", " << f.fieldName() << ", [&](const std::string& childXPath) {\n";
+				cpp << "TixiReadElements(tixiHandle, xpath, \"" << f.cpacsName << "\", " << f.fieldName() << ", [&](const std::string& childXPath) {";
 				{
 					Scope s(cpp);
-					cpp << "return TixiGet" << type << AttOrElem << "(tixiHandle, childXPath, \"" << f.cpacsName << "\");\n";
+					cpp << "return TixiGet" << type << AttOrElem << "(tixiHandle, childXPath, \"" << f.cpacsName << "\");";
 				}
-				cpp << "});\n";
+				cpp << "});";
 				break;
 		}
 
@@ -198,7 +206,7 @@ void CodeGen::writeReadAttributeOrElementImplementation(IndentingStreamWrapper& 
 		switch (f.cardinality) {
 			case Cardinality::Optional:
 			case Cardinality::Mandatory:
-				cpp << f.fieldName() << " = " << readFunc << "(TixiGetText" << AttOrElem << "(tixiHandle, xpath" << subPathArg << "));\n";
+				cpp << f.fieldName() << " = " << readFunc << "(TixiGetText" << AttOrElem << "(tixiHandle, xpath" << subPathArg << "));";
 				break;
 			case Cardinality::Vector:
 				throw NotImplementedException("Reading enum vectors is not implemented");
@@ -213,22 +221,22 @@ void CodeGen::writeReadAttributeOrElementImplementation(IndentingStreamWrapper& 
 		if (itC != std::end(m_types.classes)) {
 			switch (f.cardinality) {
 				case Cardinality::Optional:
-					cpp << f.fieldName() << ".construct();\n";
-					cpp << f.fieldName() << "->ReadCPACS(tixiHandle, xpath + \"/" << f.cpacsName << "\");\n";
+					cpp << f.fieldName() << ".construct();";
+					cpp << f.fieldName() << "->ReadCPACS(tixiHandle, xpath + \"/" << f.cpacsName << "\");";
 					break;
 				case Cardinality::Mandatory:
-					cpp << f.fieldName() << ".ReadCPACS(tixiHandle, xpath" << subPathArg << ");\n";
+					cpp << f.fieldName() << ".ReadCPACS(tixiHandle, xpath" << subPathArg << ");";
 					break;
 				case Cardinality::Vector:
-					cpp << "TixiReadElements(tixiHandle, xpath, \"" << f.cpacsName << "\", " << f.fieldName() << ", [&](const std::string& childXPath) {\n";
+					cpp << "TixiReadElements(tixiHandle, xpath, \"" << f.cpacsName << "\", " << f.fieldName() << ", [&](const std::string& childXPath) {";
 					{
 						Scope s(cpp);
-						cpp << "using ChildType = std::remove_pointer_t<" << fieldType(f) << "::value_type>;\n";
-						cpp << "ChildType* child = new ChildType;\n";
-						cpp << "child->ReadCPACS(tixiHandle, xpath + \"/" << f.cpacsName << "\");\n";
-						cpp << "return child;\n";
+						cpp << "using ChildType = std::remove_pointer_t<" << fieldType(f) << "::value_type>;";
+						cpp << "ChildType* child = new ChildType;";
+						cpp << "child->ReadCPACS(tixiHandle, xpath + \"/" << f.cpacsName << "\");";
+						cpp << "return child;";
 					}
-					cpp << "});\n";
+					cpp << "});";
 					break;
 			}
 			return;
@@ -249,17 +257,17 @@ void CodeGen::writeWriteAttributeOrElementImplementation(IndentingStreamWrapper&
 		switch (f.cardinality) {
 			case Cardinality::Optional:
 			case Cardinality::Mandatory:
-				cpp << "TixiSave" << AttOrElem << "(tixiHandle, xpath" << subPathArg << ", " << f.fieldName() << ");\n";
+				cpp << "TixiSave" << AttOrElem << "(tixiHandle, xpath" << subPathArg << ", " << f.fieldName() << ");";
 				break;
 			case Cardinality::Vector:
 				if (f.xmlType == XMLConstruct::Attribute || f.xmlType == XMLConstruct::SimpleContent)
 					throw std::runtime_error("Attributes or simpleContents cannot be vectors");
-				cpp << "TixiSaveElements(tixiHandle, xpath, \"" << f.cpacsName << "\", " << f.fieldName() << ", [&](const std::string& childXPath, const " << f.type << "& child) {\n";
+				cpp << "TixiSaveElements(tixiHandle, xpath, \"" << f.cpacsName << "\", " << f.fieldName() << ", [&](const std::string& childXPath, const " << f.type << "& child) {";
 				{
 					Scope s(cpp);
-					cpp << "TixiSave" << AttOrElem << "(tixiHandle, childXPath, \"" << f.cpacsName << "\", child);\n";
+					cpp << "TixiSave" << AttOrElem << "(tixiHandle, childXPath, \"" << f.cpacsName << "\", child);";
 				}
-				cpp << "});\n";
+				cpp << "});";
 				break;
 		}
 		
@@ -272,7 +280,7 @@ void CodeGen::writeWriteAttributeOrElementImplementation(IndentingStreamWrapper&
 		switch (f.cardinality) {
 			case Cardinality::Optional:
 			case Cardinality::Mandatory:
-				cpp << "TixiSave" << AttOrElem << "(tixiHandle, xpath" << subPathArg << ", " << itE->second.enumToStringFunc() << "(" << f.fieldName() << (f.cardinality == Cardinality::Optional ? ".get()" : "") << "));\n";
+				cpp << "TixiSave" << AttOrElem << "(tixiHandle, xpath" << subPathArg << ", " << itE->second.enumToStringFunc() << "(" << f.fieldName() << (f.cardinality == Cardinality::Optional ? ".get()" : "") << "));";
 				break;
 			case Cardinality::Vector:
 				throw NotImplementedException("Writing enum vectors is not implemented");
@@ -287,23 +295,23 @@ void CodeGen::writeWriteAttributeOrElementImplementation(IndentingStreamWrapper&
 		if (itC != std::end(m_types.classes)) {
 			switch (f.cardinality) {
 				case Cardinality::Optional:
-					cpp << "if (" << f.fieldName() << ".isValid()) {\n";
+					cpp << "if (" << f.fieldName() << ".isValid()) {";
 					{
 						Scope s(cpp);
-						cpp << f.fieldName() << "->WriteCPACS(tixiHandle, xpath + \"/" << f.cpacsName << "\");\n";
+						cpp << f.fieldName() << "->WriteCPACS(tixiHandle, xpath + \"/" << f.cpacsName << "\");";
 					}
-					cpp << "}\n";
+					cpp << "}";
 					break;
 				case Cardinality::Mandatory:
-					cpp << f.fieldName() << ".WriteCPACS(tixiHandle, xpath" << subPathArg << ");\n";
+					cpp << f.fieldName() << ".WriteCPACS(tixiHandle, xpath" << subPathArg << ");";
 					break;
 				case Cardinality::Vector:
-					cpp << "TixiSaveElements(tixiHandle, xpath, \"" << f.cpacsName << "\", " << f.fieldName() << ", [&](const std::string& childXPath, const " << f.type << "* child) {\n";
+					cpp << "TixiSaveElements(tixiHandle, xpath, \"" << f.cpacsName << "\", " << f.fieldName() << ", [&](const std::string& childXPath, const " << f.type << "* child) {";
 					{
 						Scope s(cpp);
-						cpp << "child->WriteCPACS(tixiHandle, childXPath);\n";
+						cpp << "child->WriteCPACS(tixiHandle, childXPath);";
 					}
-					cpp << "});\n";
+					cpp << "});";
 					break;
 			}
 			return;
@@ -317,14 +325,14 @@ void CodeGen::writeReadBaseImplementation(IndentingStreamWrapper& cpp, const std
 	// fundamental types
 	const auto itF = fundamentalTypes.find(type);
 	if (itF != std::end(fundamentalTypes)) {
-		cpp << "*this = " << "TixiGet" << itF->second << "Element(tixiHandle, xpath);\n";
+		cpp << "*this = " << "TixiGet" << itF->second << "Element(tixiHandle, xpath);";
 		return;
 	}
 
 	// classes
 	const auto itC = m_types.classes.find(type);
 	if (itC != std::end(m_types.classes)) {
-		cpp << type << "::ReadCPACS(tixiHandle, xpath);\n";
+		cpp << type << "::ReadCPACS(tixiHandle, xpath);";
 		return;
 	}
 
@@ -335,14 +343,14 @@ void CodeGen::writeWriteBaseImplementation(IndentingStreamWrapper& cpp, const st
 	// fundamental types
 	const auto itF = fundamentalTypes.find(type);
 	if (itF != std::end(fundamentalTypes)) {
-		cpp << "TixiSaveElement(tixiHandle, xpath, *this);\n";
+		cpp << "TixiSaveElement(tixiHandle, xpath, *this);";
 		return;
 	}
 
 	// classes
 	const auto itC = m_types.classes.find(type);
 	if (itC != std::end(m_types.classes)) {
-		cpp << type << "::WriteCPACS(tixiHandle, xpath);\n";
+		cpp << type << "::WriteCPACS(tixiHandle, xpath);";
 		return;
 	}
 
@@ -350,7 +358,7 @@ void CodeGen::writeWriteBaseImplementation(IndentingStreamWrapper& cpp, const st
 }
 
 void CodeGen::writeReadImplementation(IndentingStreamWrapper& cpp, const Class& c, const std::vector<Field>& fields) {
-	cpp << "void " << c.name << "::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) {\n";
+	cpp << "void " << c.name << "::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) {";
 	{
 		Scope s(cpp);
 
@@ -362,30 +370,30 @@ void CodeGen::writeReadImplementation(IndentingStreamWrapper& cpp, const Class& 
 		for (const auto& f : fields) {
 			const auto construct = xmlConstructToString(f.xmlType);
 			const auto AttOrElem = tixiFuncSuffix(f.xmlType);
-			cpp << "// read " << construct << " " << f.cpacsName << "\n";
-			cpp << "if (TixiCheck" << AttOrElem << "(tixiHandle, xpath, \"" << f.cpacsName << "\")) {\n";
+			cpp << "// read " << construct << " " << f.cpacsName << "";
+			cpp << "if (TixiCheck" << AttOrElem << "(tixiHandle, xpath, \"" << f.cpacsName << "\")) {";
 			{
 				Scope s(cpp);
 				writeReadAttributeOrElementImplementation(cpp, f);
 			}
-			cpp << "}\n";
+			cpp << "}";
 			if (f.cardinality == Cardinality::Mandatory) {
 				// attribute or element must exist
-				cpp << "else {\n";
+				cpp << "else {";
 				{
 					Scope s(cpp);
-					cpp << "LOG(WARNING) << \"Required " << construct << " " << f.cpacsName << " is missing\";\n";
+					cpp << "LOG(WARNING) << \"Required " << construct << " " << f.cpacsName << " is missing\";";
 				}
-				cpp << "}\n";
+				cpp << "}";
 			}
-			cpp << "\n";
+			cpp << "";
 		}
 	}
-	cpp << "}\n";
+	cpp << "}";
 }
 
 void CodeGen::writeWriteImplementation(IndentingStreamWrapper& cpp, const Class& c, const std::vector<Field>& fields) {
-	cpp << "void " << c.name << "::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const {\n";
+	cpp << "void " << c.name << "::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const {";
 	{
 		Scope s(cpp);
 
@@ -396,37 +404,37 @@ void CodeGen::writeWriteImplementation(IndentingStreamWrapper& cpp, const Class&
 		// fields
 		for (const auto& f : fields) {
 			const auto construct = xmlConstructToString(f.xmlType);
-			cpp << "// write " << construct << " " << f.cpacsName << "\n";
+			cpp << "// write " << construct << " " << f.cpacsName;
 			if (f.cardinality == Cardinality::Optional) {
-				cpp << "if (Has" << CapitalizeFirstLetter(f.name()) << "()) {\n";
+				cpp << "if (Has" << CapitalizeFirstLetter(f.name()) << "()) {";
 				{
 					Scope s(cpp);
 					writeWriteAttributeOrElementImplementation(cpp, f);
 				}
-				cpp << "}\n";
+				cpp << "}";
 			} else
 				writeWriteAttributeOrElementImplementation(cpp, f);
-			cpp << "\n";
+			cpp << "";
 		}
 	}
-	cpp << "}\n";
+	cpp << "}";
 }
 
 void CodeGen::writeLicenseHeader(IndentingStreamWrapper& f) {
-	f << "// This file was autogenerated by CPACSGen, do not edit\n";
-	f << "//\n";
-	f << "// Licensed under the Apache License, Version 2.0 (the \"License\")\n";
-	f << "// you may not use this file except in compliance with the License.\n";
-	f << "// You may obtain a copy of the License at\n";
-	f << "//\n";
-	f << "//     http://www.apache.org/licenses/LICENSE-2.0\n";
-	f << "//\n";
-	f << "// Unless required by applicable law or agreed to in writing, software\n";
-	f << "// distributed under the License is distributed on an \"AS IS\" BASIS,\n";
-	f << "// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n";
-	f << "// See the License for the specific language governing permissions and\n";
-	f << "// limitations under the License.\n";
-	f << "\n";
+	f << "// This file was autogenerated by CPACSGen, do not edit";
+	f << "//";
+	f << "// Licensed under the Apache License, Version 2.0 (the \"License\")";
+	f << "// you may not use this file except in compliance with the License.";
+	f << "// You may obtain a copy of the License at";
+	f << "//";
+	f << "//     http://www.apache.org/licenses/LICENSE-2.0";
+	f << "//";
+	f << "// Unless required by applicable law or agreed to in writing, software";
+	f << "// distributed under the License is distributed on an \"AS IS\" BASIS,";
+	f << "// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.";
+	f << "// See the License for the specific language governing permissions and";
+	f << "// limitations under the License.";
+	f << "";
 }
 
 CodeGen::Includes CodeGen::resolveIncludes(const Class& c) {
@@ -502,57 +510,57 @@ CodeGen::Includes CodeGen::resolveIncludes(const Class& c) {
 }
 
 void CodeGen::writeHeader(IndentingStreamWrapper& hpp, const Class& c, const Includes& includes) {
-	hpp << "#pragma once\n";
-	hpp << "\n";
+	hpp << "#pragma once";
+	hpp << "";
 
 	// file header
 	writeLicenseHeader(hpp);
 
 	// includes
 	for (const auto& inc : includes.hppIncludes)
-		hpp << "#include " << inc << "\n";
-	hpp << "\n";
+		hpp << "#include " << inc << "";
+	hpp << "";
 
 	// namespace
-	hpp << "namespace tigl {\n";
+	hpp << "namespace tigl {";
 	{
 		Scope s(hpp);
 
 		// custom Tigl types declarations
 		for (const auto& fwd : includes.hppCustomForwards)
-			hpp << "class " << fwd << ";\n";
-		hpp << "\n";
+			hpp << "class " << fwd << ";";
+		hpp << "";
 
-		hpp << "namespace generated {\n";
+		hpp << "namespace generated {";
 		{
 			Scope s(hpp);
 
 			// forward declarations
 			for (const auto& fwd : includes.hppForwards)
-				hpp << "class " << fwd << ";\n";
-			hpp << "\n";
+				hpp << "class " << fwd << ";";
+			hpp << "";
 
 			// meta information from schema
-			hpp << "// This class is used in:\n";
+			hpp << "// This class is used in:";
 			for (const auto& c : c.deps.parents) {
-				hpp << "// " << c->name << "\n";
+				hpp << "// " << c->name << "";
 			}
-			hpp << "\n";
-			hpp << "// generated from " << c.origin->xpath << "\n";
+			hpp << "";
+			hpp << "// generated from " << c.origin->xpath << "";
 
 			// class name and base class
-			hpp << "class " << c.name << (c.base.empty() ? "" : " : public " + c.base) << " {\n";
-			hpp << "public:\n";
+			hpp << "class " << c.name << (c.base.empty() ? "" : " : public " + c.base) << " {";
+			hpp << "public:";
 			{
 				Scope s(hpp);
 
 				// ctor
-				hpp << "TIGL_EXPORT " << c.name << "();\n";
-				hpp << "\n";
+				hpp << "TIGL_EXPORT " << c.name << "();";
+				hpp << "";
 
 				// dtor
-				hpp << "TIGL_EXPORT virtual ~" << c.name << "();\n";
-				hpp << "\n";
+				hpp << "TIGL_EXPORT virtual ~" << c.name << "();";
+				hpp << "";
 
 				// io
 				writeIODeclarations(hpp, c.name, c.fields);
@@ -561,37 +569,37 @@ void CodeGen::writeHeader(IndentingStreamWrapper& hpp, const Class& c, const Inc
 				writeAccessorDeclarations(hpp, c.fields);
 
 			}
-			hpp << "protected:\n";
+			hpp << "protected:";
 			{
 				Scope s(hpp);
 
 				// fields
 				writeFields(hpp, c.fields);
-				hpp << "\n";
+				hpp << "";
 			}
-			hpp << "private:\n";
+			hpp << "private:";
 			{
 				Scope s(hpp);
 
 				// copy ctor and assign
-				hpp << "TIGL_EXPORT " << c.name << "(const " << c.name << "&) = delete;\n";
-				hpp << "TIGL_EXPORT " << c.name << "& operator=(const " << c.name << "&) = delete;\n";
-				hpp << "\n";
+				hpp << "TIGL_EXPORT " << c.name << "(const " << c.name << "&) = delete;";
+				hpp << "TIGL_EXPORT " << c.name << "& operator=(const " << c.name << "&) = delete;";
+				hpp << "";
 
 				// move ctor and assign
-				hpp << "TIGL_EXPORT " << c.name << "(" << c.name << "&&) = delete;\n";
-				hpp << "TIGL_EXPORT " << c.name << "& operator=(" << c.name << "&&) = delete;\n";
+				hpp << "TIGL_EXPORT " << c.name << "(" << c.name << "&&) = delete;";
+				hpp << "TIGL_EXPORT " << c.name << "& operator=(" << c.name << "&&) = delete;";
 			}
-			hpp << "};\n";
+			hpp << "};";
 		}
-		hpp << "}\n";
+		hpp << "}";
 		// export non-custom types into tigl namespace
 		if (m_customTypes.find(c.name) != std::end(m_customTypes)) {
-			hpp << "//using generated::" << c.name << ";\n";
+			hpp << "//using generated::" << c.name << ";";
 		}
 	}
-	hpp << "}\n";
-	hpp << "\n";
+	hpp << "}";
+	hpp << "";
 }
 
 void CodeGen::writeSource(IndentingStreamWrapper& cpp, const Class& c, const Includes& includes) {
@@ -600,39 +608,39 @@ void CodeGen::writeSource(IndentingStreamWrapper& cpp, const Class& c, const Inc
 
 	// includes
 	for (const auto& inc : includes.cppIncludes)
-		cpp << "#include " << inc << "\n";
-	cpp << "\n";
+		cpp << "#include " << inc << "";
+	cpp << "";
 
 	// namespace
-	cpp << "namespace tigl {\n";
+	cpp << "namespace tigl {";
 	{
 		Scope s(cpp);
 
-		cpp << "namespace generated {\n";
+		cpp << "namespace generated {";
 		{
 			Scope s(cpp);
 
 			// ctor
-			cpp << c.name << "::" << c.name << "() {}\n";
-			cpp << "\n";
+			cpp << c.name << "::" << c.name << "() {}";
+			cpp << "";
 
 			// dtor
-			cpp << "" << c.name << "::~" << c.name << "() {}\n";
-			cpp << "\n";
+			cpp << c.name << "::~" << c.name << "() {}";
+			cpp << "";
 
 			// io
 			writeReadImplementation(cpp, c, c.fields);
-			cpp << "\n";
+			cpp << "";
 			writeWriteImplementation(cpp, c, c.fields);
-			cpp << "\n";
+			cpp << "";
 
 			// accessors
 			writeAccessorImplementations(cpp, c.name, c.fields);
 		}
-		cpp << "}\n";
+		cpp << "}";
 	}
-	cpp << "}\n";
-	cpp << "\n";
+	cpp << "}";
+	cpp << "";
 }
 
 void CodeGen::writeClass(IndentingStreamWrapper& hpp, IndentingStreamWrapper& cpp, const Class& c) {
@@ -643,74 +651,74 @@ void CodeGen::writeClass(IndentingStreamWrapper& hpp, IndentingStreamWrapper& cp
 
 void CodeGen::writeEnum(IndentingStreamWrapper& hpp, const Enum& e) {
 
-	hpp << "#pragma once\n";
-	hpp << "\n";
+	hpp << "#pragma once";
+	hpp << "";
 
 	// file header
 	writeLicenseHeader(hpp);
 
 	// includes
-	hpp << "#include <stdexcept>\n";
-	hpp << "\n";
+	hpp << "#include <stdexcept>";
+	hpp << "";
 
 	// namespace
-	hpp << "namespace tigl {\n";
+	hpp << "namespace tigl {";
 	{
 		Scope s(hpp);
 
-		hpp << "namespace generated {\n";
+		hpp << "namespace generated {";
 		{
 			Scope s(hpp);
 
 			// meta information from schema
-			hpp << "// This enum is used in: \n";
+			hpp << "// This enum is used in:";
 			for (const auto& c : e.deps.parents) {
-				hpp << "// " << c->name << "\n";
+				hpp << "// " << c->name << "";
 			}
-			hpp << "\n";
-			hpp << "// generated from " << e.origin->xpath << "\n";
+			hpp << "";
+			hpp << "// generated from " << e.origin->xpath;
 
 			// enum name
-			hpp << "enum class " << e.name << " {\n";
+			hpp << "enum class " << e.name << " {";
 			{
 				Scope s(hpp);
 
 				// values
 				for (const auto& v : e.values)
-					hpp << v.cppName << (&v != &e.values.back() ? "," : "") << "\n";
+					hpp << v.cppName << (&v != &e.values.back() ? "," : "") << "";
 			}
-			hpp << "};\n";
-			hpp << "\n";
+			hpp << "};";
+			hpp << "";
 
 			// enum to string function
-			hpp << "inline std::string " << e.enumToStringFunc() << "(const " << e.name << "& value) {\n";
+			hpp << "inline std::string " << e.enumToStringFunc() << "(const " << e.name << "& value) {";
 			{
 				Scope s(hpp);
-				hpp << "switch(value) {\n";
+				hpp << "switch(value) {";
 				{
 					Scope s(hpp);
 					for (const auto& v : e.values)
-						hpp << "case " << e.name << "::" << v.cppName << ": return \"" << v.name << "\";\n";
-					hpp << "default: throw std::runtime_error(\"Invalid enum value \\\" + value + \\\" for enum type " << e.name << "\");\n";
+						hpp << "case " << e.name << "::" << v.cppName << ": return \"" << v.name << "\";";
+					hpp << "default: throw std::runtime_error(\"Invalid enum value \\\" + value + \\\" for enum type " << e.name << "\");";
 				}
-				hpp << "}\n";
+				hpp << "}";
 			}
-			hpp << "}\n";
+			hpp << "}";
 
 			// string to enum function
-			hpp << "inline " << e.name << " " << e.stringToEnumFunc() << "(const std::string& value) {\n";
+			hpp << "inline " << e.name << " " << e.stringToEnumFunc() << "(const std::string& value) {";
 			{
 				Scope s(hpp);
 				for (const auto& v : e.values)
-					hpp << "if (value == \"" << v.name << "\") return " << e.name << "::" << v.cppName << ";\n";
-				hpp << "throw std::runtime_error(\"Invalid enum value \\\" + value + \\\" for enum type " << e.name << "\");\n";
+					hpp << "if (value == \"" << v.name << "\") return " << e.name << "::" << v.cppName << ";";
+				hpp << "throw std::runtime_error(\"Invalid enum value \\\" + value + \\\" for enum type " << e.name << "\");";
 			}
-			hpp << "}\n";
+			hpp << "}";
 		}
-		hpp << "}\n";
+		hpp << "}";
 	}
-	hpp << "}\n";
-	hpp << "\n";
+	hpp << "}";
+	hpp << "";
 }
 
 void CodeGen::buildDependencyTree() {
