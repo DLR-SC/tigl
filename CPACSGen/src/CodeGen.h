@@ -6,6 +6,7 @@
 #include <unordered_map>
 
 #include "CustomTypesTable.h"
+#include "ParentPointerTable.h"
 #include "Variant.hpp"
 #include "SchemaParser.h"
 
@@ -130,6 +131,7 @@ private:
 
 	Types m_types;
 	CustomTypesTable m_customTypes;
+	ParentPointerTable m_parentPointers;
 
 	std::string fieldType(const Field& field) const;
 	std::string getterSetterType(const Field& field) const;
@@ -146,6 +148,9 @@ private:
 	void writeWriteImplementation(IndentingStreamWrapper& cpp, const Class& className, const std::vector<Field>& fields);
 	void writeLicenseHeader(IndentingStreamWrapper& f);
 	Includes resolveIncludes(const Class& c);
+	void writeParentPointerCtors(IndentingStreamWrapper& hpp, const Class& c);
+	void writeParentPointerFields(IndentingStreamWrapper& hpp, const Class& c);
+	void writeParentPointerCtorImplementations(IndentingStreamWrapper& cpp, const Class& c);
 	void writeHeader(IndentingStreamWrapper& hpp, const Class& c, const Includes& includes);
 	void writeSource(IndentingStreamWrapper& cpp, const Class& c, const Includes& includes);
 	void writeClass(IndentingStreamWrapper& hpp, IndentingStreamWrapper& cpp, const Class& c);

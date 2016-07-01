@@ -501,12 +501,49 @@ CodeGen::Includes CodeGen::resolveIncludes(const Class& c) {
 		}
 	}
 
+	// parent pointers
+	if (m_parentPointers.find(c.name) != std::end(m_parentPointers)) {
+		for (const auto& dep : c.deps.parents)
+			deps.hppForwards.push_back(dep->name);
+	}
+
 	// misc cpp includes
 	deps.cppIncludes.push_back("\"IOHelper.h\"");
 	deps.cppIncludes.push_back("\"CTiglLogging.h\"");
 	deps.cppIncludes.push_back("\"" + c.name + ".h\"");
 
 	return deps;
+}
+
+void CodeGen::writeParentPointerCtors(IndentingStreamWrapper& hpp, const Class& c) {
+	if (m_parentPointers.find(c.name) != std::end(m_parentPointers))
+		for (const auto& dep : c.deps.parents)
+			hpp << "TIGL_EXPORT " << c.name << "(" << dep->name << "* parent);";
+}
+
+void CodeGen::writeParentPointerFields(IndentingStreamWrapper& hpp, const Class& c) {
+	if (m_parentPointers.find(c.name) != std::end(m_parentPointers)) {
+		if (c.deps.parents.size() > 1) {
+			throw NotImplementedException("Multiple parent classes are not implemented");
+		}
+
+		for (const auto& dep : c.deps.parents)
+			hpp << dep->name << "* m_parent_" << dep->name << ";";
+	}
+}
+
+void CodeGen::writeParentPointerCtorImplementations(IndentingStreamWrapper& cpp, const Class& c) {
+	if (m_parentPointers.find(c.name) != std::end(m_parentPointers)) {
+		for (const auto& dep : c.deps.parents) {
+			cpp << c.name << "::" << c.name << "(" << dep->name << "* parent) {";
+			{
+				Scope s(cpp);
+				cpp << "m_parent_" << dep->name << " = parent;";
+			}
+			cpp << "}";
+			cpp << "";
+		}
+	}
 }
 
 void CodeGen::writeHeader(IndentingStreamWrapper& hpp, const Class& c, const Includes& includes) {
@@ -556,6 +593,7 @@ void CodeGen::writeHeader(IndentingStreamWrapper& hpp, const Class& c, const Inc
 
 				// ctor
 				hpp << "TIGL_EXPORT " << c.name << "();";
+				writeParentPointerCtors(hpp, c);
 				hpp << "";
 
 				// dtor
@@ -572,6 +610,10 @@ void CodeGen::writeHeader(IndentingStreamWrapper& hpp, const Class& c, const Inc
 			hpp << "protected:";
 			{
 				Scope s(hpp);
+
+				// parent pointers
+				writeParentPointerFields(hpp, c);
+				hpp << "";
 
 				// fields
 				writeFields(hpp, c.fields);
@@ -623,6 +665,7 @@ void CodeGen::writeSource(IndentingStreamWrapper& cpp, const Class& c, const Inc
 			// ctor
 			cpp << c.name << "::" << c.name << "() {}";
 			cpp << "";
+			writeParentPointerCtorImplementations(cpp, c);
 
 			// dtor
 			cpp << c.name << "::~" << c.name << "() {}";
