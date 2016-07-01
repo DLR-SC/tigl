@@ -2,6 +2,7 @@
 
 #include <string>
 #include <algorithm>
+#include <stdexcept>
 #include <unordered_map>
 
 #include "CustomTypesTable.h"
@@ -14,6 +15,15 @@ enum class Cardinality {
 	Vector
 };
 
+inline std::string toString(const Cardinality& c) {
+	switch (c) {
+		case Cardinality::Optional: return "Optional";
+		case Cardinality::Mandatory: return "Mandatory";
+		case Cardinality::Vector: return "Vector";
+		default: throw std::logic_error("No toString defined");
+	}
+}
+
 enum class XMLConstruct {
 	Element,
 	Attribute,
@@ -22,13 +32,22 @@ enum class XMLConstruct {
 
 struct Field {
 	Variant<const Attribute*, const Element*, const SimpleContent*> origin;
-	std::string name;
+	std::string cpacsName;
 	std::string type;
 	XMLConstruct xmlType;
 	Cardinality cardinality;
 
+	std::string customFieldName;
+
+	auto name() const {
+		if (!customFieldName.empty())
+			return customFieldName;
+		else
+			return cpacsName;
+	}
+
 	auto fieldName() const {
-		return "m_" + name;
+		return "m_" + name();
 	}
 };
 

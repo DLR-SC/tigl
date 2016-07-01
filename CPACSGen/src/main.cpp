@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <iterator>
 #include <limits>
+#include <algorithm>
 
 #include "TypeSubstitutionTable.h"
 #include "CustomTypesTable.h"
@@ -82,7 +83,7 @@ auto buildFieldList(const SchemaParser& schema, const ComplexType& type) {
 	for (const auto& a : type.attributes) {
 		Field m;
 		m.origin = &a;
-		m.name = a.name;
+		m.cpacsName = a.name;
 		m.type = resolveType(schema, a.type);
 		m.xmlType = XMLConstruct::Attribute;
 		if (a.optional)
@@ -100,7 +101,7 @@ auto buildFieldList(const SchemaParser& schema, const ComplexType& type) {
 		void operator()(const Element& e) const {
 			Field m;
 			m.origin = &e;
-			m.name = e.name;
+			m.cpacsName = e.name;
 			m.type = resolveType(schema, e.type);
 			m.xmlType = XMLConstruct::Element;
 			if (e.minOccurs == 0 && e.maxOccurs == 1)
@@ -118,10 +119,43 @@ auto buildFieldList(const SchemaParser& schema, const ComplexType& type) {
 		}
 
 		void operator()(const Choice& c) const {
-			std::vector<Field> choiceMembers;
-			for (const auto& v : c.elements)
-				v.visit(ContentVisitor(schema, members));
+			unsigned int choiceIndex = 1;
+			std::vector<Field> allChoiceMembers;
+			for (const auto& v : c.elements) {
+				// collect members of one choice
+				std::vector<Field> choiceMembers;
+				v.visit(ContentVisitor(schema, choiceMembers));
 
+				// make all optional
+				for (auto& f : choiceMembers)
+					if (f.cardinality == Cardinality::Mandatory)
+						f.cardinality = Cardinality::Optional;
+
+				// give custom names
+				for (auto& f : choiceMembers)
+					f.customFieldName = f.cpacsName + "_choice" + std::to_string(choiceIndex);
+
+				// copy to output
+				std::copy(std::begin(choiceMembers), std::end(choiceMembers), std::back_inserter(allChoiceMembers));
+
+				choiceIndex++;
+			}
+
+			// consistency check, two types with the same name but different types or cardinality are problematic
+			for (std::size_t i = 0; i < allChoiceMembers.size(); i++) {
+				const auto& f1 = allChoiceMembers[i];
+				for (std::size_t j = i + 1; j < allChoiceMembers.size(); j++) {
+					const auto& f2 = allChoiceMembers[j];
+					if (f1.cpacsName == f2.cpacsName && (f1.cardinality != f2.cardinality || f1.type != f2.type)) {
+						std::cerr << "Elements with same name but different cardinality or type inside choice" << std::endl;
+						for (const auto& f : { f1, f2 })
+							std::cerr << f.cpacsName << " " << toString(f.cardinality) << " " << f.type << std::endl;
+					}
+				}
+			}
+
+			// copy to output
+			std::copy(std::begin(allChoiceMembers), std::end(allChoiceMembers), std::back_inserter(members));
 		}
 
 		void operator()(const Sequence& s) const {
@@ -145,7 +179,7 @@ auto buildFieldList(const SchemaParser& schema, const ComplexType& type) {
 		void operator()(const SimpleContent& g) const {
 			Field m;
 			m.origin = &g;
-			m.name = "simpleContent";
+			m.cpacsName = "simpleContent";
 			m.cardinality = Cardinality::Mandatory;
 			m.type = resolveType(schema, g.type);
 			m.xmlType = XMLConstruct::SimpleContent;
