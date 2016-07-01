@@ -398,7 +398,7 @@ void CodeGen::writeWriteImplementation(IndentingStreamWrapper& cpp, const Class&
 			const auto construct = xmlConstructToString(f.xmlType);
 			cpp << "// write " << construct << " " << f.cpacsName << "\n";
 			if (f.cardinality == Cardinality::Optional) {
-				cpp << "if (Has" << CapitalizeFirstLetter(f.cpacsName) << "()) {\n";
+				cpp << "if (Has" << CapitalizeFirstLetter(f.name()) << "()) {\n";
 				{
 					Scope s(cpp);
 					writeWriteAttributeOrElementImplementation(cpp, f);
@@ -533,7 +533,7 @@ void CodeGen::writeHeader(IndentingStreamWrapper& hpp, const Class& c, const Inc
 			hpp << "\n";
 
 			// meta information from schema
-			hpp << "// This class is used in: \n";
+			hpp << "// This class is used in:\n";
 			for (const auto& c : c.deps.parents) {
 				hpp << "// " << c->name << "\n";
 			}

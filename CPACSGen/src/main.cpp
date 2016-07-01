@@ -13,24 +13,7 @@
 #include "NotImplementedException.h"
 #include "schemaparser.h"
 #include "codegen.h"
-
-std::unordered_map<std::string, std::string> xsdTypes = {
-	{ "xsd:byte",         "int8_t"      },
-	{ "xsd:unsignedByte", "uint8_t"     },
-	{ "xsd:short",        "int16_t"     },
-	{ "xsd:unsignedShort","uint16_t"    },
-	{ "xsd:int",          "int32_t"     },
-	{ "xsd:unsignedInt",  "uint32_t"    },
-	{ "xsd:long"    ,     "int64_t"     },
-	{ "xsd:unsignedLong", "uint64_t"    },
-	{ "xsd:integer",      "int"         },
-	{ "xsd:boolean",      "bool"        },
-	{ "xsd:float",        "float"       },
-	{ "xsd:double",       "double"      },
-	{" xsd:decimal",      "double"      }, // TODO: implement custom type?
-	{ "xsd:dateTime",     "time_t"      },
-	{ "xsd:string",       "std::string" },
-};
+#include "XsdTypesTable.h"
 
 auto makeClassName(std::string name) {
 	if (!name.empty()) {
@@ -64,6 +47,8 @@ std::string resolveType(const SchemaParser& schema, const std::string& name) {
 	}
 
 	// search predefined xml schema types and replace them
+	static const XsdTypesTable xsdTypes;
+
 	const auto xit = xsdTypes.find(name);
 	if (xit != std::end(xsdTypes)) {
 		const auto it = typeSubstitutionTable.find(name);
