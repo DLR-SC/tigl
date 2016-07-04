@@ -22,6 +22,7 @@ endif()
 
 file(GLOB ALL_SRCS src/*.cpp)
 file(GLOB ALL_HEADERS src/*.h*)
+file(GLOB ALL_TABLES src/*Table.*)
 
 #set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
 
@@ -30,6 +31,7 @@ add_executable(${PROJECT_NAME} ${ALL_SRCS} ${ALL_HEADERS})
 target_link_libraries(${PROJECT_NAME} ${TIXI_LIBRARIES})
 
 source_group(" " FILES ${ALL_SRCS} ${ALL_HEADERS})
+source_group("Tables" FILES ${ALL_TABLES})
 
 # generate files side by side to TIGL source
 set(GENERATOR_OUTPUT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../src/generated)
