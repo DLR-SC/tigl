@@ -3,10 +3,10 @@
 #include "Table.h"
 
 // contains types from the schema which should be substituted
-class TypeSubstitutionTable : public Table {
+class TypeSubstitutionTable : public MappingTable {
 public:
 	TypeSubstitutionTable()
-		: Table({
+		: MappingTable({
 			{ "stringUIDBaseType", "std::string" },
 			{ "stringBaseType", "std::string" },
 			{ "doubleBaseType", "double" },

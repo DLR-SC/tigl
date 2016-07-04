@@ -132,7 +132,10 @@ namespace {
 	template <typename T, typename GetFunc>
 	auto TixiGetElementInternal(const TixiDocumentHandle& tixiHandle, const std::string& parentXPath, const std::string& element, GetFunc getFunc) {
 		T value;
-		const auto ret = getFunc(tixiHandle, (parentXPath + "/" + element).c_str(), &value);
+		std::string xpath = parentXPath;
+		if (!element.empty())
+			xpath += "/" + element;
+		const auto ret = getFunc(tixiHandle, xpath.c_str(), &value);
 		if (ret != ReturnCode::SUCCESS) {
 			throw TixiError(ret,
 				"Error getting element value\n"
@@ -207,7 +210,9 @@ void TixiSaveAttribute(const TixiDocumentHandle& tixiHandle, const std::string& 
 namespace {
 	template<typename SaveFunc, typename... ValueAndFurtherArgs>
 	void TixiSaveElementInternal(const TixiDocumentHandle& tixiHandle, const std::string& parentXPath, const std::string& element, SaveFunc saveFunc, ValueAndFurtherArgs&&... args) {
-		const std::string xpath = parentXPath + "/" + element;
+		std::string xpath = parentXPath;
+		if (!element.empty())
+			xpath += "/" + element;
 
 		// check if the parent elements exist
 		const auto ret1 = tixiCheckElement(tixiHandle, parentXPath.c_str());

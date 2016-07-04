@@ -6,6 +6,7 @@
 #include <unordered_map>
 
 #include "CustomTypesTable.h"
+#include "ReservedNamesTable.h"
 #include "ParentPointerTable.h"
 #include "Variant.hpp"
 #include "SchemaParser.h"
@@ -84,12 +85,26 @@ struct EnumValue {
 	EnumValue() = default;
 	EnumValue(const std::string& name)
 		: name(name) {
-		// replace some chars which are not allowed in C++ for cppName
 		cppName = name;
+
+		// prefix numbers with "num" and replace minus with "neg"
+		if (std::isdigit(cppName[0]))
+			cppName = "_" + cppName;
+		if (cppName[0] == '-' && cppName.size() > 1 && std::isdigit(cppName[1]))
+			cppName = "_neg" + cppName.substr(1);
+
+		// replace some chars which are not allowed in C++ for cppName
 		std::replace_if(std::begin(cppName), std::end(cppName), [](char c) {
-			return c == '-' || c == ' ';
+			return !std::isalnum(c);
 		}, '_');
+
+		// prefix reserved identifiers
+		if (s_reserved.contains(cppName))
+			cppName = "_" + cppName;
 	}
+
+private:
+	static const ReservedNamesTable s_reserved;
 };
 
 struct EnumDependencies {

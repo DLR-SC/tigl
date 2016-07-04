@@ -2,10 +2,10 @@
 
 #include "Table.h"
 
-class XsdTypesTable : public Table {
+class XsdTypesTable : public MappingTable {
 public:
 	XsdTypesTable()
-		: Table({
+		: MappingTable({
 			{ "xsd:byte",         "int8_t" },
 			{ "xsd:unsignedByte", "uint8_t" },
 			{ "xsd:short",        "int16_t" },

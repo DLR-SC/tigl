@@ -3,11 +3,19 @@
 #include "Table.h"
 
 // custom types in Tigl which inherit from the generated ones
-class CustomTypesTable : public Table {
+class CustomTypesTable : public MappingTable {
 public:
 	CustomTypesTable()
-		: Table({
+		: MappingTable({
 			// maps generated classes to actual tigl classes
+			{ "CPACSFarField",                      "CCPACSFarField" },
+			{ "CPACSGuideCurve",                    "CCPACSGuideCurve" },
+			{ "CPACSGuideCurves",                   "CCPACSGuideCurves" },
+			{ "CPACSPositioning",                   "CCPACSPositioning" },
+			{ "CPACSPositionings",                  "CCPACSPositionings" },
+			{ "CPACSTransformation",                "CCPACSTransformation" },
+			{ "CPACSStringVectorBase",              "CCPACSStringVector" },
+
 			{ "CPACSFuselage",                      "CCPACSFuselage" },
 			{ "CPACSFuselages",                     "CCPACSFuselages" },
 			{ "CPACSProfileGeometry",               "CCPACSFuselageProfile" },
@@ -18,9 +26,7 @@ public:
 			{ "CPACSFuselageSections",              "CCPACSFuselageSections" },
 			{ "CPACSFuselageElement",               "CCPACSFuselageSectionElement" },
 			{ "CPACSFuselageElements",              "CCPACSFuselageSectionElements" },
-			{ "CPACSPositioning",                   "CCPACSPositioning" },
-			{ "CPACSPositionings",                  "CCPACSPositionings" },
-			{ "CPACSTransformation",                "CCPACSTransformation" },
+
 			{ "CPACSComponentSegment",              "CCPACSWingComponentSegment" },
 			{ "CPACSComponentSegments",             "CCPACSWingComponentSegments" },
 			{ "CPACSWing",                          "CCPACSWing" },

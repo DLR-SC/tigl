@@ -6,6 +6,6 @@ class ParentPointerTable : public Table {
 public:
 	ParentPointerTable()
 		: Table({
-			{ "CPACSWingSegment", "" }
+			"CPACSWingSegment"
 		}) {}
 };

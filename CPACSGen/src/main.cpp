@@ -39,9 +39,9 @@ std::string resolveType(const SchemaParser& schema, const std::string& name) {
 	// search simple and complex types
 	const auto cit = types.find(name);
 	if (cit != std::end(types)) {
-		const auto it = typeSubstitutionTable.find(name);
-		if (it != std::end(typeSubstitutionTable))
-			return it->second;
+		const auto p = typeSubstitutionTable.find(name);
+		if (p)
+			return *p;
 		else
 			return makeClassName(name);
 	}
@@ -49,13 +49,13 @@ std::string resolveType(const SchemaParser& schema, const std::string& name) {
 	// search predefined xml schema types and replace them
 	static const XsdTypesTable xsdTypes;
 
-	const auto xit = xsdTypes.find(name);
-	if (xit != std::end(xsdTypes)) {
-		const auto it = typeSubstitutionTable.find(name);
-		if (it != std::end(typeSubstitutionTable))
-			return it->second;
+	const auto xp = xsdTypes.find(name);
+	if (xp) {
+		const auto p = typeSubstitutionTable.find(name);
+		if (p)
+			return *p;
 		else
-			return xit->second;
+			return *xp;
 	}
 
 	throw std::runtime_error("Unknown type: " + name);
@@ -164,7 +164,8 @@ auto buildFieldList(const SchemaParser& schema, const ComplexType& type) {
 		void operator()(const SimpleContent& g) const {
 			Field m;
 			m.origin = &g;
-			m.cpacsName = "simpleContent";
+			m.cpacsName = "";
+			m.customFieldName = "simpleContent";
 			m.cardinality = Cardinality::Mandatory;
 			m.type = resolveType(schema, g.type);
 			m.xmlType = XMLConstruct::SimpleContent;
