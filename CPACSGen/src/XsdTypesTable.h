@@ -18,7 +18,7 @@ public:
 			{ "xsd:boolean",      "bool" },
 			{ "xsd:float",        "float" },
 			{ "xsd:double",       "double" },
-			{ " xsd:decimal",      "double" }, // TODO: implement custom type?
+			{ "xsd:decimal",      "double" }, // TODO: implement custom type?
 			{ "xsd:dateTime",     "time_t" },
 			{ "xsd:string",       "std::string" },
 		}) {}

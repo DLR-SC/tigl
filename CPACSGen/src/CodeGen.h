@@ -8,6 +8,7 @@
 #include "CustomTypesTable.h"
 #include "ReservedNamesTable.h"
 #include "ParentPointerTable.h"
+#include "FundamentalTypesTable.h"
 #include "Variant.hpp"
 #include "SchemaParser.h"
 
@@ -29,7 +30,8 @@ inline std::string toString(const Cardinality& c) {
 enum class XMLConstruct {
 	Element,
 	Attribute,
-	SimpleContent
+	SimpleContent,
+	FundamentalTypeBase
 };
 
 struct Field {
@@ -172,3 +174,5 @@ private:
 	void writeEnum(IndentingStreamWrapper& hpp, const Enum& e);
 	void buildDependencyTree();
 };
+
+extern const FundamentalTypesTable fundamentalTypes;

@@ -31,10 +31,13 @@ auto makeClassName(std::string name) {
 	return name;
 }
 
-TypeSubstitutionTable typeSubstitutionTable;
+
 
 std::string resolveType(const SchemaParser& schema, const std::string& name) {
 	const auto& types = schema.types();
+
+	static const TypeSubstitutionTable typeSubstitutionTable;
+	static const XsdTypesTable xsdTypes;
 
 	// search simple and complex types
 	const auto cit = types.find(name);
@@ -47,8 +50,6 @@ std::string resolveType(const SchemaParser& schema, const std::string& name) {
 	}
 
 	// search predefined xml schema types and replace them
-	static const XsdTypesTable xsdTypes;
-
 	const auto xp = xsdTypes.find(name);
 	if (xp) {
 		const auto p = typeSubstitutionTable.find(name);
@@ -220,9 +221,24 @@ int main(int argc, char* argv[]) {
 					Class c;
 					c.origin = &type;
 					c.name = makeClassName(type.name);
-					if (!type.base.empty())
-						c.base = resolveType(schema, type.base);
 					c.fields = buildFieldList(schema, type);
+					if (!type.base.empty()) {
+						c.base = resolveType(schema, type.base);
+
+						// make base a field if fundamental type
+						if (fundamentalTypes.contains(c.base)) {
+							Field f;
+							f.cpacsName = "";
+							f.customFieldName = "base";
+							f.cardinality = Cardinality::Mandatory;
+							f.type = c.base;
+							f.xmlType = XMLConstruct::FundamentalTypeBase;
+
+							c.fields.insert(std::begin(c.fields), f);
+							c.base.clear();
+						}
+					}
+
 					types.classes[c.name] = c;
 				}
 

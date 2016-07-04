@@ -9,6 +9,8 @@
 
 const ReservedNamesTable EnumValue::s_reserved;
 
+const FundamentalTypesTable fundamentalTypes;
+
 struct Scope;
 
 class IndentingStreamWrapper {
@@ -107,6 +109,8 @@ void CodeGen::writeFields(IndentingStreamWrapper& hpp, const std::vector<Field>&
 		if(&f != &fields.back())
 			hpp << "";
 	}
+	if (fields.size() > 0)
+		hpp << "";
 }
 
 void CodeGen::writeAccessorDeclarations(IndentingStreamWrapper& hpp, const std::vector<Field>& fields) {
@@ -145,21 +149,13 @@ void CodeGen::writeIODeclarations(IndentingStreamWrapper& hpp, const std::string
 }
 
 namespace {
-	// TODO: we can add other integer types here (e.g. short, long, ...)
-	std::unordered_map<std::string, std::string> fundamentalTypes = {
-		{"std::string", "Text"},
-		{"double", "Double"},
-		{"bool", "Bool"},
-		{"int", "Int"},
-		{"time_t", "TimeT"}
-	};
-
 	std::string tixiFuncSuffix(const XMLConstruct& construct) {
 		switch (construct) {
 			case XMLConstruct::Attribute:
 				return "Attribute";
 			case XMLConstruct::Element:
 			case XMLConstruct::SimpleContent:
+			case XMLConstruct::FundamentalTypeBase:
 				return "Element";
 			default:
 				throw std::logic_error("Cannot determine tixi function suffix for the given XML construct");
@@ -168,9 +164,10 @@ namespace {
 
 	std::string xmlConstructToString(const XMLConstruct& construct) {
 		switch (construct) {
-			case XMLConstruct::Attribute:     return "attribute";
-			case XMLConstruct::Element:       return "element";
-			case XMLConstruct::SimpleContent: return "simpleContent";
+			case XMLConstruct::Attribute:           return "attribute";
+			case XMLConstruct::Element:             return "element";
+			case XMLConstruct::SimpleContent:       return "simpleContent";
+			case XMLConstruct::FundamentalTypeBase: return "fundamental type base class";
 			default: throw std::logic_error("Unknown XML construct");
 		}
 	}
@@ -180,17 +177,17 @@ void CodeGen::writeReadAttributeOrElementImplementation(IndentingStreamWrapper& 
 	const std::string AttOrElem = tixiFuncSuffix(f.xmlType);
 
 	// fundamental types
-	const auto itF = fundamentalTypes.find(f.type);
-	if (itF != std::end(fundamentalTypes)) {
-		const auto& type = itF->second;
+	const auto pf = fundamentalTypes.find(f.type);
+	if (pf) {
+		const auto& type = *pf;
 		switch (f.cardinality) {
 			case Cardinality::Optional:
 			case Cardinality::Mandatory:
 				cpp << f.fieldName() << " = TixiGet" << type << AttOrElem << "(tixiHandle, xpath, \"" + f.cpacsName + "\");";
 				break;
 			case Cardinality::Vector:
-				if (f.xmlType == XMLConstruct::Attribute || f.xmlType == XMLConstruct::SimpleContent)
-					throw std::runtime_error("Attributes or simpleContents cannot be vectors");
+				if (f.xmlType == XMLConstruct::Attribute || f.xmlType == XMLConstruct::SimpleContent || f.xmlType == XMLConstruct::FundamentalTypeBase)
+					throw std::runtime_error("Attributes, simpleContents and bases cannot be vectors");
 				cpp << "TixiReadElements(tixiHandle, xpath, \"" << f.cpacsName << "\", " << f.fieldName() << ", [&](const std::string& childXPath) {";
 				{
 					Scope s(cpp);
@@ -219,7 +216,7 @@ void CodeGen::writeReadAttributeOrElementImplementation(IndentingStreamWrapper& 
 	}
 
 	// classes
-	if (f.xmlType != XMLConstruct::Attribute) {
+	if (f.xmlType != XMLConstruct::Attribute && f.xmlType != XMLConstruct::FundamentalTypeBase) {
 		const auto itC = m_types.classes.find(f.type);
 		if (itC != std::end(m_types.classes)) {
 			switch (f.cardinality) {
@@ -253,16 +250,15 @@ void CodeGen::writeWriteAttributeOrElementImplementation(IndentingStreamWrapper&
 	const std::string AttOrElem = tixiFuncSuffix(f.xmlType);
 
 	// fundamental types
-	const auto itF = fundamentalTypes.find(f.type);
-	if (itF != std::end(fundamentalTypes)) {
+	if (fundamentalTypes.contains(f.type)) {
 		switch (f.cardinality) {
 			case Cardinality::Optional:
 			case Cardinality::Mandatory:
 				cpp << "TixiSave" << AttOrElem << "(tixiHandle, xpath, \"" + f.cpacsName + "\", " << f.fieldName() << ");";
 				break;
 			case Cardinality::Vector:
-				if (f.xmlType == XMLConstruct::Attribute || f.xmlType == XMLConstruct::SimpleContent)
-					throw std::runtime_error("Attributes or simpleContents cannot be vectors");
+				if (f.xmlType == XMLConstruct::Attribute || f.xmlType == XMLConstruct::SimpleContent || f.xmlType == XMLConstruct::FundamentalTypeBase)
+					throw std::runtime_error("Attributes, simpleContents and bases cannot be vectors");
 				cpp << "TixiSaveElements(tixiHandle, xpath, \"" << f.cpacsName << "\", " << f.fieldName() << ", [&](const std::string& childXPath, const " << f.type << "& child) {";
 				{
 					Scope s(cpp);
@@ -290,7 +286,7 @@ void CodeGen::writeWriteAttributeOrElementImplementation(IndentingStreamWrapper&
 	}
 
 	// classes
-	if (f.xmlType != XMLConstruct::Attribute) {
+	if (f.xmlType != XMLConstruct::Attribute && f.xmlType != XMLConstruct::FundamentalTypeBase) {
 		const auto itC = m_types.classes.find(f.type);
 		if (itC != std::end(m_types.classes)) {
 			switch (f.cardinality) {
@@ -323,9 +319,9 @@ void CodeGen::writeWriteAttributeOrElementImplementation(IndentingStreamWrapper&
 
 void CodeGen::writeReadBaseImplementation(IndentingStreamWrapper& cpp, const std::string& type) {
 	// fundamental types
-	const auto itF = fundamentalTypes.find(type);
-	if (itF != std::end(fundamentalTypes)) {
-		cpp << "*this = TixiGet" << itF->second << "Element(tixiHandle, xpath);";
+	const auto pf = fundamentalTypes.find(type);
+	if (pf) {
+		cpp << "*this = TixiGet" << *pf << "Element(tixiHandle, xpath);";
 		return;
 	}
 
@@ -341,8 +337,7 @@ void CodeGen::writeReadBaseImplementation(IndentingStreamWrapper& cpp, const std
 
 void CodeGen::writeWriteBaseImplementation(IndentingStreamWrapper& cpp, const std::string& type) {
 	// fundamental types
-	const auto itF = fundamentalTypes.find(type);
-	if (itF != std::end(fundamentalTypes)) {
+	if (fundamentalTypes.contains(type)) {
 		cpp << "TixiSaveElement(tixiHandle, xpath, *this);";
 		return;
 	}
@@ -363,8 +358,11 @@ void CodeGen::writeReadImplementation(IndentingStreamWrapper& cpp, const Class& 
 		Scope s(cpp);
 
 		// base class
-		if (!c.base.empty())
+		if (!c.base.empty()) {
+			cpp << "// read base";
 			writeReadBaseImplementation(cpp, c.base);
+			cpp << "";
+		}
 
 		// fields
 		for (const auto& f : fields) {
@@ -390,6 +388,7 @@ void CodeGen::writeReadImplementation(IndentingStreamWrapper& cpp, const Class& 
 		}
 	}
 	cpp << "}";
+	cpp << "";
 }
 
 void CodeGen::writeWriteImplementation(IndentingStreamWrapper& cpp, const Class& c, const std::vector<Field>& fields) {
@@ -398,8 +397,11 @@ void CodeGen::writeWriteImplementation(IndentingStreamWrapper& cpp, const Class&
 		Scope s(cpp);
 
 		// base class
-		if (!c.base.empty())
+		if (!c.base.empty()) {
+			cpp << "// write base";
 			writeWriteBaseImplementation(cpp, c.base);
+			cpp << "";
+		}
 
 		// fields
 		for (const auto& f : fields) {
@@ -418,6 +420,7 @@ void CodeGen::writeWriteImplementation(IndentingStreamWrapper& cpp, const Class&
 		}
 	}
 	cpp << "}";
+	cpp << "";
 }
 
 void CodeGen::writeLicenseHeader(IndentingStreamWrapper& f) {
@@ -464,8 +467,9 @@ CodeGen::Includes CodeGen::resolveIncludes(const Class& c) {
 	deps.hppIncludes.push_back("\"tigl_internal.h\"");
 
 	// base class
-	if (!c.base.empty())
+	if (!c.base.empty() && m_types.classes.find(c.base) != std::end(m_types.classes)) {
 		deps.hppIncludes.push_back("\"" + c.base + ".h\"");
+	}
 
 	// fields
 	for (const auto& f : c.fields) {
@@ -516,19 +520,20 @@ CodeGen::Includes CodeGen::resolveIncludes(const Class& c) {
 }
 
 void CodeGen::writeParentPointerCtors(IndentingStreamWrapper& hpp, const Class& c) {
-	if (m_parentPointers.contains(c.name))
+	if (m_parentPointers.contains(c.name)) {
 		for (const auto& dep : c.deps.parents)
 			hpp << "TIGL_EXPORT " << c.name << "(" << dep->name << "* parent);";
+		hpp << "";
+	}
 }
 
 void CodeGen::writeParentPointerFields(IndentingStreamWrapper& hpp, const Class& c) {
 	if (m_parentPointers.contains(c.name)) {
-		if (c.deps.parents.size() > 1) {
+		if (c.deps.parents.size() > 1)
 			throw NotImplementedException("Multiple parent classes are not implemented");
-		}
-
 		for (const auto& dep : c.deps.parents)
 			hpp << dep->name << "* m_parent_" << dep->name << ";";
+		hpp << "";
 	}
 }
 
@@ -575,14 +580,16 @@ void CodeGen::writeHeader(IndentingStreamWrapper& hpp, const Class& c, const Inc
 			// forward declarations
 			for (const auto& fwd : includes.hppForwards)
 				hpp << "class " << fwd << ";";
-			hpp << "";
+			if (includes.hppForwards.size() > 0)
+				hpp << "";
 
 			// meta information from schema
 			hpp << "// This class is used in:";
-			for (const auto& c : c.deps.parents) {
+			for (const auto& c : c.deps.parents)
 				hpp << "// " << c->name << "";
-			}
-			hpp << "";
+			if (c.deps.parents.size() > 0)
+				hpp << "";
+
 			hpp << "// generated from " << c.origin->xpath << "";
 
 			// class name and base class
@@ -594,7 +601,6 @@ void CodeGen::writeHeader(IndentingStreamWrapper& hpp, const Class& c, const Inc
 				// ctor
 				hpp << "TIGL_EXPORT " << c.name << "();";
 				writeParentPointerCtors(hpp, c);
-				hpp << "";
 
 				// dtor
 				hpp << "TIGL_EXPORT virtual ~" << c.name << "();";
@@ -613,11 +619,9 @@ void CodeGen::writeHeader(IndentingStreamWrapper& hpp, const Class& c, const Inc
 
 				// parent pointers
 				writeParentPointerFields(hpp, c);
-				hpp << "";
 
 				// fields
 				writeFields(hpp, c.fields);
-				hpp << "";
 			}
 			hpp << "private:";
 			{
@@ -637,6 +641,8 @@ void CodeGen::writeHeader(IndentingStreamWrapper& hpp, const Class& c, const Inc
 		hpp << "}";
 		// export non-custom types into tigl namespace
 		if (!m_customTypes.contains(c.name)) {
+			hpp << "";
+			hpp << "// This type is not customized, export it into tigl namespace";
 			hpp << "using generated::" << c.name << ";";
 		}
 	}
@@ -673,9 +679,7 @@ void CodeGen::writeSource(IndentingStreamWrapper& cpp, const Class& c, const Inc
 
 			// io
 			writeReadImplementation(cpp, c, c.fields);
-			cpp << "";
 			writeWriteImplementation(cpp, c, c.fields);
-			cpp << "";
 
 			// accessors
 			writeAccessorImplementations(cpp, c.name, c.fields);
