@@ -30,6 +30,10 @@ public:
 		m_ptr = std::make_unique<T>();
 	}
 
+	void destroy() {
+		m_ptr = nullptr;
+	}
+
 	bool isValid() const {
 		return m_ptr != nullptr;
 	}
