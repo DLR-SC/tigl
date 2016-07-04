@@ -8,10 +8,21 @@ public:
 	CustomTypesTable()
 		: Table({
 			// maps generated classes to actual tigl classes
+			{ "CPACSFuselage",                      "CCPACSFuselage" },
+			{ "CPACSFuselages",                     "CCPACSFuselages" },
+			{ "CPACSProfileGeometry",               "CCPACSFuselageProfile" },
+			{ "CPACSFuselageProfiles",              "CCPACSFuselageProfiles" },
+			{ "CPACSFuselageSegment",               "CCPACSFuselageSegment" },
+			{ "CPACSFuselageSegments",              "CCPACSFuselageSegments" },
+			{ "CPACSFuselageSection",               "CCPACSFuselageSection" },
+			{ "CPACSFuselageSections",              "CCPACSFuselageSections" },
+			{ "CPACSFuselageElement",               "CCPACSFuselageSectionElement" },
+			{ "CPACSFuselageElements",              "CCPACSFuselageSectionElements" },
+			{ "CPACSPositioning",                   "CCPACSPositioning" },
+			{ "CPACSPositionings",                  "CCPACSPositionings" },
+			{ "CPACSTransformation",                "CCPACSTransformation" },
 			{ "CPACSComponentSegment",              "CCPACSWingComponentSegment" },
 			{ "CPACSComponentSegments",             "CCPACSWingComponentSegments" },
-			{ "CPACSPositioning",                   "CCPACSWingPositioning" },
-			{ "CPACSPositionings",                  "CCPACSWingPositionings" },
 			{ "CPACSWing",                          "CCPACSWing" },
 			{ "CPACSWings",                         "CCPACSWings" },
 			{ "CPACSWingCell",                      "CCPACSWingCell" },

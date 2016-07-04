@@ -112,9 +112,11 @@ void CodeGen::writeAccessorDeclarations(IndentingStreamWrapper& hpp, const std::
 		if(f.cardinality == Cardinality::Optional)
 			hpp << "TIGL_EXPORT bool Has" << CapitalizeFirstLetter(f.name()) << "() const;";
 		hpp << "TIGL_EXPORT const " << getterSetterType(f) << "& Get" << CapitalizeFirstLetter(f.name()) << "() const;";
-		hpp << "TIGL_EXPORT " << getterSetterType(f) << "& Get" << CapitalizeFirstLetter(f.name()) << "();";
-		if(m_types.classes.find(f.type) == std::end(m_types.classes)) // generate setter only for fundamental and enum types
+		const bool isClassType = m_types.classes.find(f.type) == std::end(m_types.classes);
+		if(isClassType) // generate setter only for fundamental and enum types
 			hpp << "TIGL_EXPORT void Set" << CapitalizeFirstLetter(f.name()) << "(const " << getterSetterType(f) << "& value);";
+		else
+			hpp << "TIGL_EXPORT " << getterSetterType(f) << "& Get" << CapitalizeFirstLetter(f.name()) << "();";
 		hpp << "";
 	}
 }
