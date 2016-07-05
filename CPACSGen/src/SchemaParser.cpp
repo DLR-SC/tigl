@@ -373,8 +373,16 @@ Element SchemaParser::readElement(const std::string& xpath) {
 }
 
 std::string SchemaParser::generateUniqueTypeName(const std::string& newNameSuggestion) {
+	auto toString = [](unsigned int id) {
+		//if (id == 0)
+		//	return std::string();
+		//else
+			return std::to_string(id);
+	};
+
 	unsigned int id = 0;
-	while (m_types.find(newNameSuggestion + "Type" + std::to_string(id)) != std::end(m_types))
+	while (m_types.find(newNameSuggestion + "Type" + toString(id)) != std::end(m_types))
 		id++;
-	return newNameSuggestion + "Type" + std::to_string(id);
+	const auto n = newNameSuggestion + "Type" + toString(id);
+	return n;
 }

@@ -768,10 +768,7 @@ void CodeGen::writeEnum(IndentingStreamWrapper& hpp, const Enum& e) {
 	hpp << "";
 }
 
-void CodeGen::buildDependencyTree() {
-	auto& classes = m_types.classes;
-	auto& enums = m_types.enums;
-
+void Types::buildDependencyTree() {
 	for (auto& p : classes) {
 		auto& c = p.second;
 
@@ -825,8 +822,6 @@ void CodeGen::buildDependencyTree() {
 CodeGen::CodeGen(const std::string& outputLocation, Types types)
 	: m_types(std::move(types)) {
 	boost::filesystem::create_directories(outputLocation);
-
-	buildDependencyTree();
 
 	for (const auto& p : m_types.classes) {
 		const auto c = p.second;

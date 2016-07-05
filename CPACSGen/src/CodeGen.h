@@ -73,10 +73,6 @@ struct Class {
 	std::string base;
 	std::vector<Field> fields;
 
-private:
-	friend class CodeGen;
-
-	// used by CodeGen
 	ClassDependencies deps;
 };
 
@@ -105,6 +101,10 @@ struct EnumValue {
 			cppName = "_" + cppName;
 	}
 
+	friend bool operator==(const EnumValue& a, const EnumValue& b) {
+		return a.name == b.name;
+	}
+
 private:
 	static const ReservedNamesTable s_reserved;
 };
@@ -121,16 +121,14 @@ struct Enum {
 	std::string enumToStringFunc() const;
 	std::string stringToEnumFunc() const;
 
-private:
-	friend class CodeGen;
-
-	// used by CodeGen
 	EnumDependencies deps;
 };
 
 struct Types {
 	std::unordered_map<std::string, Class> classes;
 	std::unordered_map<std::string, Enum> enums;
+
+	void buildDependencyTree();
 };
 
 class IndentingStreamWrapper;
@@ -172,7 +170,6 @@ private:
 	void writeSource(IndentingStreamWrapper& cpp, const Class& c, const Includes& includes);
 	void writeClass(IndentingStreamWrapper& hpp, IndentingStreamWrapper& cpp, const Class& c);
 	void writeEnum(IndentingStreamWrapper& hpp, const Enum& e);
-	void buildDependencyTree();
 };
 
 extern const FundamentalTypesTable fundamentalTypes;

@@ -8,9 +8,12 @@ public:
 	CustomTypesTable()
 		: MappingTable({
 			// maps generated classes to actual tigl classes
+			{ "CPACSMaterialDefinition",            "CCPACSMaterial" },
 			{ "CPACSFarField",                      "CCPACSFarField" },
 			{ "CPACSGuideCurve",                    "CCPACSGuideCurve" },
 			{ "CPACSGuideCurves",                   "CCPACSGuideCurves" },
+			{ "CPACSGuideCurveProfileGeometry",     "CCPACSGuideCurveProfile" },
+			{ "CPACSGuideCurveProfiles",            "CCPACSGuideCurveProfiles" },
 			{ "CPACSPositioning",                   "CCPACSPositioning" },
 			{ "CPACSPositionings",                  "CCPACSPositionings" },
 			{ "CPACSTransformation",                "CCPACSTransformation" },
@@ -18,7 +21,6 @@ public:
 
 			{ "CPACSFuselage",                      "CCPACSFuselage" },
 			{ "CPACSFuselages",                     "CCPACSFuselages" },
-			{ "CPACSProfileGeometry",               "CCPACSFuselageProfile" },
 			{ "CPACSFuselageProfiles",              "CCPACSFuselageProfiles" },
 			{ "CPACSFuselageSegment",               "CCPACSFuselageSegment" },
 			{ "CPACSFuselageSegments",              "CCPACSFuselageSegments" },

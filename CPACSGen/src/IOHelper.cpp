@@ -99,7 +99,7 @@ int TixiGetNamedChildrenCount(const TixiDocumentHandle& tixiHandle, const std::s
 
 namespace {
 	template <typename T, typename GetFunc>
-	auto TixiGetAttributeInternal(const TixiDocumentHandle& tixiHandle, const std::string& xpath, const std::string& attribute, GetFunc getFunc) {
+	T TixiGetAttributeInternal(const TixiDocumentHandle& tixiHandle, const std::string& xpath, const std::string& attribute, GetFunc getFunc) {
 		T value;
 		const auto ret = getFunc(tixiHandle, xpath.c_str(), attribute.c_str(), &value);
 		if (ret != ReturnCode::SUCCESS)
@@ -130,7 +130,7 @@ int TixiGetIntAttribute(const TixiDocumentHandle& tixiHandle, const std::string&
 
 namespace {
 	template <typename T, typename GetFunc>
-	auto TixiGetElementInternal(const TixiDocumentHandle& tixiHandle, const std::string& parentXPath, const std::string& element, GetFunc getFunc) {
+	T TixiGetElementInternal(const TixiDocumentHandle& tixiHandle, const std::string& parentXPath, const std::string& element, GetFunc getFunc) {
 		T value;
 		std::string xpath = parentXPath;
 		if (!element.empty())

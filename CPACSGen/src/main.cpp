@@ -183,6 +183,91 @@ auto buildFieldList(const SchemaParser& schema, const ComplexType& type) {
 	return members;
 }
 
+void collapseEnums(Types& types) {
+
+	// convert enum map to vector for easier processing
+	std::vector<Enum> enums;
+	enums.reserve(types.enums.size());
+	for (const auto& p : types.enums)
+		enums.push_back(p.second);
+
+	for (std::size_t i = 0; i < enums.size(); i++) {
+		auto& e1 = enums[i];
+		for (std::size_t j = i + 1; j < enums.size(); j++) {
+			auto& e2 = enums[j];
+
+			auto stripNumber = [](std::string name) {
+				while (!name.empty() && std::isdigit(name.back()))
+					name.pop_back();
+				return name;
+			};
+
+			if (e1.values.size () == e2.values.size() &&
+				stripNumber(e1.name) == stripNumber(e2.name) &&
+				std::equal(std::begin(e1.values), std::end(e1.values), std::begin(e2.values))) {
+				// choose new name
+				const std::string newName = std::min(e1.name, e2.name);
+
+				if (newName == e2.name) {
+					// the algorithm is implemented to delete e2, swap e1 and e2 therefore
+					using std::swap;
+					swap(e1, e2);
+				}
+
+				std::cout << "Collapsed enums " << e1.name << " and " << e2.name << " to " << newName << std::endl;
+				//for (auto& e : { e1, e2 }) {
+				//	std::cout << "Enum " << e.name << std::endl;
+				//	for (const auto& v : e.values)
+				//		std::cout << "\t" << v.name << " " << std::endl;
+				//}
+
+				// remove e2 from other types
+				for (auto& c : e2.deps.parents) {
+					//std::cout << "\t\tparent: " << c->name << std::endl;
+					auto& ec = c->deps.enumChildren;
+
+					// delete e2 from c's dependencies
+					const auto e2it = std::find_if(std::begin(ec), std::end(ec), [&](const Enum* e) {
+						return e->name == e2.name;
+					});
+					if (e2it != std::end(ec))
+						ec.erase(e2it);
+
+					// add e1 to c's dependencies
+					const auto e1it = std::find_if(std::begin(ec), std::end(ec), [&](const Enum* e) {
+						return e->name == e1.name;
+					});
+					if (e1it == std::end(ec))
+						ec.push_back(&e1);
+					
+					// add c to e1's parents
+					const auto e1pit = std::find(std::begin(e1.deps.parents), std::end(e1.deps.parents), c);
+					if (e1pit == std::end(e1.deps.parents))
+						e1.deps.parents.push_back(c);
+
+					// change type of c's fields which are of type e2
+					for (auto& f : c->fields) {
+						if (f.type == e2.name)
+							f.type = newName;
+					}
+				}
+
+				// remove e2
+				enums.erase(std::begin(enums) + j);
+
+				// rename e1
+				e1.name = newName;
+			}
+		}
+	}
+
+	// fill enum back again from vector
+	types.enums.clear();
+	types.enums.reserve(enums.size());
+	for (auto& e : enums)
+		types.enums[e.name] = std::move(e);
+}
+
 const std::string cpacsLocation = "../schema/cpacs_schema.xsd"; // TODO: inject this path by cmake or pass by command line
 const std::vector<std::string> copyFiles = {
 	"../src/IOHelper.h",
@@ -208,7 +293,7 @@ int main(int argc, char* argv[]) {
 		std::cout << "Parsing " << cpacsLocation << std::endl;
 		SchemaParser schema(cpacsLocation);
 
-		// generate classes from complex types
+		// generate type system from schema
 		Types types;
 		for(const auto& p : schema.types()) {
 			const auto& type = p.second;
@@ -262,6 +347,12 @@ int main(int argc, char* argv[]) {
 
 			type.visit(TypeVisitor(schema, types));
 		};
+
+		// build dependencies
+		types.buildDependencyTree();
+
+		// apply a few reductions and cleanups
+		collapseEnums(types);
 
 		// generate code
 		std::cout << "Generating classes" << std::endl;
