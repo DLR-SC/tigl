@@ -7,18 +7,13 @@
 #include "NotImplementedException.h"
 #include "codegen.h"
 
-const ReservedNamesTable EnumValue::s_reserved;
-
-const FundamentalTypesTable fundamentalTypes;
-
 struct Scope;
 
 class IndentingStreamWrapper {
 public:
 	IndentingStreamWrapper(std::ostream& os)
-		: os(os){}
+		: os(os) {}
 
-private:
 	// indents on first use
 	template<typename T>
 	friend auto& operator<<(IndentingStreamWrapper& isw, T&& t) {
@@ -36,6 +31,11 @@ private:
 		return isw.os;
 	}
 
+	std::ostream& raw() {
+		return os;
+	}
+
+private:
 	friend struct Scope;
 
 	unsigned int level = 0;
@@ -44,7 +44,7 @@ private:
 
 struct Scope {
 	Scope(IndentingStreamWrapper& isw)
-		: isw(isw) { 
+		: isw(isw) {
 		isw.level++;
 	}
 
@@ -56,35 +56,32 @@ private:
 	IndentingStreamWrapper& isw;
 };
 
-auto CapitalizeFirstLetter(std::string str) {
-	if (str.empty())
+namespace {
+	std::string customReplacedType(const std::string& type) {
+		const auto p = s_customTypes.find(type);
+		return p ? *p : type;
+	}
+
+	auto CapitalizeFirstLetter(std::string str) {
+		if (str.empty())
+			return str;
+
+		str[0] = std::toupper(str[0]);
+
 		return str;
-
-	str[0] = std::toupper(str[0]);
-
-	return str;
-}
-
-std::string Enum::enumToStringFunc() const {
-	return name + "ToString";
-}
-
-std::string Enum::stringToEnumFunc() const {
-	return "stringTo" + CapitalizeFirstLetter(name);
-}
-
-std::string CodeGen::fieldType(const Field& field) const {
-	switch (field.cardinality) {
-		case Cardinality::Optional:
-			return "Optional<" + getterSetterType(field) + ">";
-		default:
-			return getterSetterType(field);
 	}
 }
 
+std::string Enum::enumToStringFunc() const {
+	return customReplacedType(name) + "ToString";
+}
+
+std::string Enum::stringToEnumFunc() const {
+	return "stringTo" + CapitalizeFirstLetter(customReplacedType(name));
+}
+
 std::string CodeGen::getterSetterType(const Field& field) const {
-	const auto p = m_customTypes.find(field.type);
-	const auto typeName = p ? *p : field.type;
+	const auto typeName = customReplacedType(field.type);
 	switch (field.cardinality) {
 		case Cardinality::Optional:
 		case Cardinality::Mandatory:
@@ -96,6 +93,15 @@ std::string CodeGen::getterSetterType(const Field& field) const {
 		}
 		default:
 			throw std::logic_error("Invalid cardinality");
+	}
+}
+
+std::string CodeGen::fieldType(const Field& field) const {
+	switch (field.cardinality) {
+		case Cardinality::Optional:
+			return "Optional<" + getterSetterType(field) + ">";
+		default:
+			return getterSetterType(field);
 	}
 }
 
@@ -142,6 +148,22 @@ void CodeGen::writeAccessorImplementations(IndentingStreamWrapper& cpp, const st
 	}
 }
 
+void CodeGen::writeParentPointerGetters(IndentingStreamWrapper& hpp, const Class& c) {
+	if (s_parentPointers.contains(c.name)) {
+		if (c.deps.parents.size() > 1) {
+			hpp << "// getter for parent classes";
+			hpp << "//auto GetParentType() const { return m_parentType; }"; // TODO: create implementation in cpp file
+			for (const auto& dep : c.deps.parents)
+				hpp << customReplacedType(dep->name) << "* GetParent_" << customReplacedType(dep->name) << "() const;";
+			hpp << "";
+		} else if (c.deps.parents.size() == 1) {
+			hpp << "// getter for parent class";
+			hpp << customReplacedType(c.deps.parents[0]->name) << "* GetParent() const;";
+		}
+		hpp << "";
+	}
+}
+
 void CodeGen::writeIODeclarations(IndentingStreamWrapper& hpp, const std::string& className, const std::vector<Field>& fields) {
 	hpp << "TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);";
 	hpp << "TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;";
@@ -173,11 +195,11 @@ namespace {
 	}
 }
 
-void CodeGen::writeReadAttributeOrElementImplementation(IndentingStreamWrapper& cpp, const Field& f) {
+void CodeGen::writeReadAttributeOrElementImplementation(IndentingStreamWrapper& cpp, const Class& c, const Field& f) {
 	const std::string AttOrElem = tixiFuncSuffix(f.xmlType);
 
 	// fundamental types
-	const auto pf = fundamentalTypes.find(f.type);
+	const auto pf = s_fundamentalTypes.find(f.type);
 	if (pf) {
 		const auto& type = *pf;
 		switch (f.cardinality) {
@@ -218,10 +240,14 @@ void CodeGen::writeReadAttributeOrElementImplementation(IndentingStreamWrapper& 
 	// classes
 	if (f.xmlType != XMLConstruct::Attribute && f.xmlType != XMLConstruct::FundamentalTypeBase) {
 		const auto itC = m_types.classes.find(f.type);
+		const bool requiresParentPointer = s_parentPointers.contains(f.type);
 		if (itC != std::end(m_types.classes)) {
 			switch (f.cardinality) {
 				case Cardinality::Optional:
-					cpp << f.fieldName() << ".construct();";
+					if (requiresParentPointer)
+						cpp << f.fieldName() << ".construct(" << parentPointerThis(c) << ");";
+					else
+						cpp << f.fieldName() << ".construct();";
 					cpp << f.fieldName() << "->ReadCPACS(tixiHandle, xpath + \"/" << f.cpacsName << "\");";
 					break;
 				case Cardinality::Mandatory:
@@ -232,8 +258,11 @@ void CodeGen::writeReadAttributeOrElementImplementation(IndentingStreamWrapper& 
 					{
 						Scope s(cpp);
 						cpp << "using ChildType = std::remove_pointer_t<" << fieldType(f) << "::value_type>;";
-						cpp << "ChildType* child = new ChildType;";
-						cpp << "child->ReadCPACS(tixiHandle, childXPath + \"/" << f.cpacsName << "\");";
+						if(requiresParentPointer)
+							cpp << "ChildType* child = new ChildType(" << parentPointerThis(c) << ");";
+						else
+							cpp << "ChildType* child = new ChildType;";
+						cpp << "child->ReadCPACS(tixiHandle, childXPath);";
 						cpp << "return child;";
 					}
 					cpp << "});";
@@ -250,7 +279,7 @@ void CodeGen::writeWriteAttributeOrElementImplementation(IndentingStreamWrapper&
 	const std::string AttOrElem = tixiFuncSuffix(f.xmlType);
 
 	// fundamental types
-	if (fundamentalTypes.contains(f.type)) {
+	if (s_fundamentalTypes.contains(f.type)) {
 		switch (f.cardinality) {
 			case Cardinality::Optional:
 			case Cardinality::Mandatory:
@@ -319,7 +348,7 @@ void CodeGen::writeWriteAttributeOrElementImplementation(IndentingStreamWrapper&
 
 void CodeGen::writeReadBaseImplementation(IndentingStreamWrapper& cpp, const std::string& type) {
 	// fundamental types
-	const auto pf = fundamentalTypes.find(type);
+	const auto pf = s_fundamentalTypes.find(type);
 	if (pf) {
 		cpp << "*this = TixiGet" << *pf << "Element(tixiHandle, xpath);";
 		return;
@@ -337,7 +366,7 @@ void CodeGen::writeReadBaseImplementation(IndentingStreamWrapper& cpp, const std
 
 void CodeGen::writeWriteBaseImplementation(IndentingStreamWrapper& cpp, const std::string& type) {
 	// fundamental types
-	if (fundamentalTypes.contains(type)) {
+	if (s_fundamentalTypes.contains(type)) {
 		cpp << "TixiSaveElement(tixiHandle, xpath, *this);";
 		return;
 	}
@@ -372,7 +401,7 @@ void CodeGen::writeReadImplementation(IndentingStreamWrapper& cpp, const Class& 
 			cpp << "if (TixiCheck" << AttOrElem << "(tixiHandle, xpath, \"" << f.cpacsName << "\")) {";
 			{
 				Scope s(cpp);
-				writeReadAttributeOrElementImplementation(cpp, f);
+				writeReadAttributeOrElementImplementation(cpp, c, f);
 			}
 			cpp << "}";
 			if (f.cardinality == Cardinality::Mandatory) {
@@ -424,7 +453,10 @@ void CodeGen::writeWriteImplementation(IndentingStreamWrapper& cpp, const Class&
 }
 
 void CodeGen::writeLicenseHeader(IndentingStreamWrapper& f) {
-	f << "// This file was autogenerated by CPACSGen, do not edit";
+	f << "// Copyright (c) 2016 RISC Software GmbH";
+	f << "//";
+	f << "// This file was generated by CPACSGen from CPACS XML Schema (c) German Aerospace Center (DLR/SC).";
+	f << "// Do not edit, all changes are lost when files are re-generated.";
 	f << "//";
 	f << "// Licensed under the Apache License, Version 2.0 (the \"License\")";
 	f << "// you may not use this file except in compliance with the License.";
@@ -477,7 +509,7 @@ CodeGen::Includes CodeGen::resolveIncludes(const Class& c) {
 			m_types.classes.find(f.type) != std::end(m_types.classes)) {
 			// this is a class or enum type, include it
 
-			const auto p = m_customTypes.find(f.type);
+			const auto p = s_customTypes.find(f.type);
 			if (!p) {
 				switch (f.cardinality) {
 					case Cardinality::Optional:
@@ -506,9 +538,14 @@ CodeGen::Includes CodeGen::resolveIncludes(const Class& c) {
 	}
 
 	// parent pointers
-	if (m_parentPointers.contains(c.name)) {
-		for (const auto& dep : c.deps.parents)
-			deps.hppForwards.push_back(dep->name);
+	if (s_parentPointers.contains(c.name)) {
+		for (const auto& dep : c.deps.parents) {
+			const auto p = s_customTypes.find(dep->name);
+			if (p)
+				deps.hppCustomForwards.push_back(*p);
+			else
+				deps.hppForwards.push_back(dep->name);
+		}
 	}
 
 	// misc cpp includes
@@ -519,36 +556,109 @@ CodeGen::Includes CodeGen::resolveIncludes(const Class& c) {
 	return deps;
 }
 
-void CodeGen::writeParentPointerCtors(IndentingStreamWrapper& hpp, const Class& c) {
-	if (m_parentPointers.contains(c.name)) {
+void CodeGen::writeCtors(IndentingStreamWrapper& hpp, const Class& c) {
+	hpp << "TIGL_EXPORT " << c.name << "();";
+	if (s_parentPointers.contains(c.name)) {
 		for (const auto& dep : c.deps.parents)
-			hpp << "TIGL_EXPORT " << c.name << "(" << dep->name << "* parent);";
+			hpp << "TIGL_EXPORT " << c.name << "(" << customReplacedType(dep->name) << "* parent);";
 		hpp << "";
 	}
 }
 
 void CodeGen::writeParentPointerFields(IndentingStreamWrapper& hpp, const Class& c) {
-	if (m_parentPointers.contains(c.name)) {
-		if (c.deps.parents.size() > 1)
-			throw NotImplementedException("Multiple parent classes are not implemented");
-		for (const auto& dep : c.deps.parents)
-			hpp << dep->name << "* m_parent_" << dep->name << ";";
+	if (s_parentPointers.contains(c.name)) {
+		if (c.deps.parents.size() > 1) {
+			hpp << "// pointer to parent classes";
+			hpp << "union {";
+			{
+				Scope s(hpp);
+				for (const auto& dep : c.deps.parents)
+					hpp << customReplacedType(dep->name) << "* m_parent_" << customReplacedType(dep->name) << ";";
+				hpp << "void* m_parent;";
+			}
+			hpp << "};";
+			hpp << "";
+			hpp << "// type of parent class";
+			hpp << "enum class Parent {";
+			{
+				Scope s(hpp);
+				for (const auto& dep : c.deps.parents)
+					hpp << customReplacedType(dep->name) << ",";
+				hpp << "None";
+			}
+			hpp << "} m_parentType;";
+		} else if (c.deps.parents.size() == 1 ) {
+			hpp << "// pointer to parent class";
+			hpp << customReplacedType(c.deps.parents[0]->name) << "* m_parent;";
+		}
 		hpp << "";
 	}
 }
 
-void CodeGen::writeParentPointerCtorImplementations(IndentingStreamWrapper& cpp, const Class& c) {
-	if (m_parentPointers.contains(c.name)) {
-		for (const auto& dep : c.deps.parents) {
-			cpp << c.name << "::" << c.name << "(" << dep->name << "* parent) {";
+std::string CodeGen::parentPointerThis(const Class& c) const {
+	const auto cust = s_customTypes.find(c.name);
+	if (cust)
+		return "reinterpret_cast<" + *cust + "*>(this)";
+	else
+		return "this";
+}
+
+void CodeGen::writeCtorImplementations(IndentingStreamWrapper& cpp, const Class& c) {
+	auto writeParentPointerFieldInitializers = [&] {
+		Scope s(cpp);
+		bool first = true;
+		for (const auto& f : c.fields) {
+			if (f.cardinality == Cardinality::Mandatory && s_parentPointers.contains(f.type)) {
+				if (first) {
+					cpp.raw() << " :";
+					first = false;
+				} else
+					cpp.raw() << ", ";
+				cpp << f.fieldName() << "(" << parentPointerThis(c) << ")";
+			}
+		}
+	};
+
+	if (s_parentPointers.contains(c.name)) {
+		cpp << c.name << "::" << c.name << "()";
+		writeParentPointerFieldInitializers();
+		cpp.raw() << " {";
+		{
+			Scope s(cpp);
+			cpp << "m_parent = nullptr;";
+		}
+		cpp << "}";
+		if (c.deps.parents.size() == 1) {
+			cpp << "";
+			cpp << c.name << "::" << c.name << "(" << customReplacedType(c.deps.parents[0]->name) << "* parent)";
+			writeParentPointerFieldInitializers();
+			cpp.raw() << " {";
 			{
 				Scope s(cpp);
-				cpp << "m_parent_" << dep->name << " = parent;";
+				cpp << "m_parent = parent;";
 			}
 			cpp << "}";
-			cpp << "";
+		} else {
+			for (const auto& dep : c.deps.parents) {
+				const auto rn = customReplacedType(dep->name);
+				cpp << "";
+				cpp << c.name << "::" << c.name << "(" << rn << "* parent)";
+				writeParentPointerFieldInitializers();
+				cpp.raw() << " {";
+				{
+					Scope s(cpp);
+					cpp << "m_parent_" << rn << " = parent;";
+					cpp << "m_parentType = Parent::" << rn << ";";
+				}
+				cpp << "}";
+			}
 		}
+	} else {
+		cpp << c.name << "::" << c.name << "()";
+		writeParentPointerFieldInitializers();
+		cpp.raw() << "{}";
 	}
+	cpp << "";
 }
 
 void CodeGen::writeHeader(IndentingStreamWrapper& hpp, const Class& c, const Includes& includes) {
@@ -599,12 +709,14 @@ void CodeGen::writeHeader(IndentingStreamWrapper& hpp, const Class& c, const Inc
 				Scope s(hpp);
 
 				// ctor
-				hpp << "TIGL_EXPORT " << c.name << "();";
-				writeParentPointerCtors(hpp, c);
+				writeCtors(hpp, c);
 
 				// dtor
 				hpp << "TIGL_EXPORT virtual ~" << c.name << "();";
 				hpp << "";
+
+				// parent pointers
+				writeParentPointerGetters(hpp, c);
 
 				// io
 				writeIODeclarations(hpp, c.name, c.fields);
@@ -640,7 +752,7 @@ void CodeGen::writeHeader(IndentingStreamWrapper& hpp, const Class& c, const Inc
 		}
 		hpp << "}";
 		// export non-custom types into tigl namespace
-		if (!m_customTypes.contains(c.name)) {
+		if (!s_customTypes.contains(c.name)) {
 			hpp << "";
 			hpp << "// This type is not customized, export it into tigl namespace";
 			hpp << "using generated::" << c.name << ";";
@@ -669,9 +781,7 @@ void CodeGen::writeSource(IndentingStreamWrapper& cpp, const Class& c, const Inc
 			Scope s(cpp);
 
 			// ctor
-			cpp << c.name << "::" << c.name << "() {}";
-			cpp << "";
-			writeParentPointerCtorImplementations(cpp, c);
+			writeCtorImplementations(cpp, c);
 
 			// dtor
 			cpp << c.name << "::~" << c.name << "() {}";

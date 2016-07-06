@@ -142,7 +142,7 @@ void SchemaParser::readSimpleContent(const std::string& xpath, ComplexType& type
 
 		} else {
 			// we ignore other kinds of restrictions as those are hard to support
-			std::cerr << "Warning: restricted simpleContent is not an enum" << std::endl;
+			std::cerr << "Warning: restricted simpleContent is not an enum: " << type.name << std::endl;
 		}
 	} else if (document.checkElement(xpath, "extension")) {
 		// we simplify this case be creating a field for the value of the simpleContent

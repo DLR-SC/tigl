@@ -8,12 +8,10 @@
 #include <limits>
 #include <algorithm>
 
-#include "TypeSubstitutionTable.h"
-#include "CustomTypesTable.h"
 #include "NotImplementedException.h"
 #include "schemaparser.h"
 #include "codegen.h"
-#include "XsdTypesTable.h"
+#include "Tables.h"
 
 auto makeClassName(std::string name) {
 	if (!name.empty()) {
@@ -31,18 +29,13 @@ auto makeClassName(std::string name) {
 	return name;
 }
 
-
-
 std::string resolveType(const SchemaParser& schema, const std::string& name) {
 	const auto& types = schema.types();
-
-	static const TypeSubstitutionTable typeSubstitutionTable;
-	static const XsdTypesTable xsdTypes;
 
 	// search simple and complex types
 	const auto cit = types.find(name);
 	if (cit != std::end(types)) {
-		const auto p = typeSubstitutionTable.find(name);
+		const auto p = s_typeSubstitutions.find(name);
 		if (p)
 			return *p;
 		else
@@ -50,9 +43,9 @@ std::string resolveType(const SchemaParser& schema, const std::string& name) {
 	}
 
 	// search predefined xml schema types and replace them
-	const auto xp = xsdTypes.find(name);
+	const auto xp = s_xsdTypes.find(name);
 	if (xp) {
-		const auto p = typeSubstitutionTable.find(name);
+		const auto p = s_typeSubstitutions.find(name);
 		if (p)
 			return *p;
 		else
@@ -311,7 +304,7 @@ int main(int argc, char* argv[]) {
 						c.base = resolveType(schema, type.base);
 
 						// make base a field if fundamental type
-						if (fundamentalTypes.contains(c.base)) {
+						if (s_fundamentalTypes.contains(c.base)) {
 							Field f;
 							f.cpacsName = "";
 							f.customFieldName = "base";

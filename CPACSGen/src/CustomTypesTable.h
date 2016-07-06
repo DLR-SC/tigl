@@ -8,6 +8,9 @@ public:
 	CustomTypesTable()
 		: MappingTable({
 			// maps generated classes to actual tigl classes
+			{ "CPACSSymmetryType0",                 "TiglSymmetryAxis" },
+
+			{ "CPACSAircraftModel",                 "CCPACSModel" },
 			{ "CPACSMaterialDefinition",            "CCPACSMaterial" },
 			{ "CPACSFarField",                      "CCPACSFarField" },
 			{ "CPACSGuideCurve",                    "CCPACSGuideCurve" },

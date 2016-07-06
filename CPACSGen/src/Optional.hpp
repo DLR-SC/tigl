@@ -26,8 +26,9 @@ public:
 	}
 
 	// constructs the optional, is used in case T is not copy- or moveable
-	void construct() {
-		m_ptr = std::make_unique<T>();
+	template <typename... U>
+	void construct(U&&... args) {
+		m_ptr = std::make_unique<T>(std::forward<U>(args)...);
 	}
 
 	void destroy() {

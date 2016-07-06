@@ -5,10 +5,7 @@
 #include <stdexcept>
 #include <unordered_map>
 
-#include "CustomTypesTable.h"
-#include "ReservedNamesTable.h"
-#include "ParentPointerTable.h"
-#include "FundamentalTypesTable.h"
+#include "Tables.h"
 #include "Variant.hpp"
 #include "SchemaParser.h"
 
@@ -97,16 +94,13 @@ struct EnumValue {
 		}, '_');
 
 		// prefix reserved identifiers
-		if (s_reserved.contains(cppName))
+		if (s_reservedNames.contains(cppName))
 			cppName = "_" + cppName;
 	}
 
 	friend bool operator==(const EnumValue& a, const EnumValue& b) {
 		return a.name == b.name;
 	}
-
-private:
-	static const ReservedNamesTable s_reserved;
 };
 
 struct EnumDependencies {
@@ -145,17 +139,17 @@ private:
 	};
 
 	Types m_types;
-	CustomTypesTable m_customTypes;
-	ParentPointerTable m_parentPointers;
 
-	std::string fieldType(const Field& field) const;
 	std::string getterSetterType(const Field& field) const;
+	std::string fieldType(const Field& field) const;
+	std::string parentPointerThis(const Class& c) const;
 
 	void writeFields(IndentingStreamWrapper& hpp, const std::vector<Field>& fields);
 	void writeAccessorDeclarations(IndentingStreamWrapper& hpp, const std::vector<Field>& fields);
 	void writeAccessorImplementations(IndentingStreamWrapper& cpp, const std::string& className, const std::vector<Field>& fields);
+	void writeParentPointerGetters(IndentingStreamWrapper& hpp, const Class& c);
 	void writeIODeclarations(IndentingStreamWrapper& hpp, const std::string& className, const std::vector<Field>& fields);
-	void writeReadAttributeOrElementImplementation(IndentingStreamWrapper& cpp, const Field& f);
+	void writeReadAttributeOrElementImplementation(IndentingStreamWrapper& cpp, const Class& c, const Field& f);
 	void writeWriteAttributeOrElementImplementation(IndentingStreamWrapper& cpp, const Field& f);
 	void writeReadBaseImplementation(IndentingStreamWrapper& cpp, const std::string& type);
 	void writeWriteBaseImplementation(IndentingStreamWrapper& cpp, const std::string& type);
@@ -163,13 +157,11 @@ private:
 	void writeWriteImplementation(IndentingStreamWrapper& cpp, const Class& className, const std::vector<Field>& fields);
 	void writeLicenseHeader(IndentingStreamWrapper& f);
 	Includes resolveIncludes(const Class& c);
-	void writeParentPointerCtors(IndentingStreamWrapper& hpp, const Class& c);
+	void writeCtors(IndentingStreamWrapper& hpp, const Class& c);
 	void writeParentPointerFields(IndentingStreamWrapper& hpp, const Class& c);
-	void writeParentPointerCtorImplementations(IndentingStreamWrapper& cpp, const Class& c);
+	void writeCtorImplementations(IndentingStreamWrapper& cpp, const Class& c);
 	void writeHeader(IndentingStreamWrapper& hpp, const Class& c, const Includes& includes);
 	void writeSource(IndentingStreamWrapper& cpp, const Class& c, const Includes& includes);
 	void writeClass(IndentingStreamWrapper& hpp, IndentingStreamWrapper& cpp, const Class& c);
 	void writeEnum(IndentingStreamWrapper& hpp, const Enum& e);
 };
-
-extern const FundamentalTypesTable fundamentalTypes;
