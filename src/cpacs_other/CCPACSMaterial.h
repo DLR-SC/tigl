@@ -19,6 +19,7 @@
 #ifndef CCPACSMATERIAL_H
 #define CCPACSMATERIAL_H
 
+#include "generated/CPACSMaterialDefinition.h"
 #include <iostream>
 #include "tixi.h"
 #include "tigl_internal.h"
@@ -27,15 +28,14 @@
 namespace tigl
 {
 
-class CCPACSMaterial
+class CCPACSMaterial : public generated::CPACSMaterialDefinition
 {
 public:
     TIGL_EXPORT CCPACSMaterial();
     
-    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string &materialXPath);
-    
-    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string&);
-    
+	TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string &materialXPath);
+	TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string &materialXPath) const;
+
     TIGL_EXPORT void Invalidate();
     
     // returns true, if the material could be read from CPACS file
@@ -59,14 +59,9 @@ public:
     TIGL_EXPORT void SetThickness(double thickness);
 
     TIGL_EXPORT void SetThicknessScaling(double thicknessScaling);
-
-    TIGL_EXPORT void Cleanup();
 private:
-    std::string uid;
-    double thickness;
-    double thicknessScaling;
-    CTiglPoint orthotropyDirection;
-    
+    Optional<tigl::CTiglPoint> orthotropyDirection; // TODO: orthotropyDirection is just a double in CPACS ...
+
     bool isvalid;
     bool is_composite; // whether the material is a composite
 };

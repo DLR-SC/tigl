@@ -26,60 +26,32 @@
 #ifndef CCPACSWINGSEGMENTS_H
 #define CCPACSWINGSEGMENTS_H
 
-#include <string>
-#include <vector>
-
+#include "generated/CPACSWingSegments.h"
 #include "tigl_internal.h"
-#include "tixi.h"
 
-namespace tigl 
+namespace tigl
 {
-
 class CCPACSWing;
-class CCPACSWingSegment;
 
-class CCPACSWingSegments
+class CCPACSWingSegments : public generated::CPACSWingSegments
 {
 public:
     // Constructor
-    TIGL_EXPORT CCPACSWingSegments(CCPACSWing* aWing);
-
-    // Virtual Destructor
-    TIGL_EXPORT virtual ~CCPACSWingSegments(void);
+	TIGL_EXPORT CCPACSWingSegments(CCPACSWing* parent);
+	TIGL_EXPORT CCPACSWingSegments(generated::CPACSEnginePylon* parent);
 
     // Invalidates internal state
     TIGL_EXPORT void Invalidate(void);
 
-    // Read CPACS segments element
-    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& wingXPath);
-
-    // Write CPACS segments element
-    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& wingXPath);
-
     // Gets a segment by index or UID.
-    TIGL_EXPORT CCPACSWingSegment & GetSegment(const int index);
-    TIGL_EXPORT CCPACSWingSegment & GetSegment(const std::string& segmentUID);
+    TIGL_EXPORT CCPACSWingSegment & GetSegment(int index);
+	TIGL_EXPORT CCPACSWingSegment & GetSegment(const std::string& segmentUID);
 
     // Gets total segment count
     TIGL_EXPORT int GetSegmentCount(void) const;
 
-protected:
-    // Cleanup routine
-    void Cleanup(void);
-
 private:
-    // Typedef for a CCPACSWingSegment container to store the segments of a wing.
-    typedef std::vector<CCPACSWingSegment*> CCPACSWingSegmentContainer;
-
-    // Copy constructor
-    CCPACSWingSegments(const CCPACSWingSegments& );
-
-    // Assignment operator
-    void operator=(const CCPACSWingSegments& );
-
-    CCPACSWingSegmentContainer segments;       /**< Segment elements    */
-    CCPACSWing*                wing;           /**< Parent wing         */
-
+    CCPACSWing* wing; ///< Parent wing
 };
 
 } // end namespace tigl

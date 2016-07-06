@@ -66,7 +66,7 @@ public:
     TIGL_EXPORT void Invalidate(void);
 
     // Read CPACS configuration
-    TIGL_EXPORT void ReadCPACS(const char* configurationUID);
+    TIGL_EXPORT void ReadCPACS(const std::string& configurationUID);
 
     // Write CPACS configuration
     TIGL_EXPORT void WriteCPACS(const std::string& configurationUID);
@@ -170,13 +170,13 @@ private:
     void operator=(const CCPACSConfiguration&);
 
 private:
-    std::string                  name;                 /**< Configuration name */
-    std::string                  description;          /**< Configuration description */
+    //std::string                  name;                 /**< Configuration name */
+    //std::string                  description;          /**< Configuration description */
     CCPACSModel*                 cpacsModel;           /**< Root component for the CTiglUIDManager */
     TixiDocumentHandle           tixiDocumentHandle;   /**< Handle for internal TixiDocument */
     CCPACSHeader                 header;               /**< Configuration header element */
-    CCPACSWings                  wings;                /**< Configuration wings element */
-    CCPACSFuselages              fuselages;            /**< Configuration fuselages element */
+    //CCPACSWings                  wings;                /**< Configuration wings element */
+    //CCPACSFuselages              fuselages;            /**< Configuration fuselages element */
     CCPACSFarField               farField;             /**< Far field configuration for CFD tools */
     CCPACSGuideCurveProfiles     guideCurveProfiles;   /**< Guide curve profiles */
     CTiglUIDManager              uidManager;           /**< Stores the unique ids of the components */

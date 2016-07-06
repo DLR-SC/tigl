@@ -44,94 +44,49 @@ CCPACSFarField::~CCPACSFarField() {}
 
 void CCPACSFarField::init()
 {
-    fieldType = NONE;
-    fieldSize = 0.;
     loft.reset();
-    SetUID("FarField");
 }
 
-TiglFarFieldType CCPACSFarField::GetFieldType()
-{
-    return fieldType;
-}
-
-void CCPACSFarField::ReadCPACS(TixiDocumentHandle tixiHandle)
+void CCPACSFarField::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
 {
     init();
-
-    std::string prefix = "/cpacs/toolspecific/cFD/farField";
-    if (tixiCheckElement(tixiHandle, prefix.c_str()) != SUCCESS) {
-        LOG(INFO) << "No far-field defined.";
-        fieldType = NONE;
-        return;
-    }
-
-    // get field type
-    std::string typePath = prefix + "/type";
-    char * tmpstr = NULL;
-    if (tixiGetTextElement(tixiHandle, typePath.c_str(), &tmpstr) != SUCCESS) {
-        fieldType = NONE;
-        return;
-    }
-    else {
-        if (strcmp(tmpstr, "halfSphere") == 0){
-            fieldType = HALF_SPHERE;
-        }
-        else if (strcmp(tmpstr, "fullSphere") == 0){
-            fieldType = FULL_SPHERE;
-        }
-        else if (strcmp(tmpstr, "halfCube") == 0){
-            fieldType = HALF_CUBE;
-        }
-        else if (strcmp(tmpstr, "fullCube") == 0){
-            fieldType = FULL_CUBE;
-        }
-        else {
-            fieldType = NONE;
-            return;
-        }
-    }
-
-    // get reference length
-    std::string refLenPath = prefix + "/referenceLength";
-    if (tixiGetDoubleElement(tixiHandle, refLenPath.c_str(), &fieldSize) != SUCCESS) {
-        fieldSize = 0.;
-        throw tigl::CTiglError("No reference length defined for far-field!");
-    }
-
-    // get multiplier
-    std::string multiplierPath = prefix + "/multiplier";
-    double multiplier = 1.;
-    if (tixiGetDoubleElement(tixiHandle, multiplierPath.c_str(), &multiplier) != SUCCESS) {
-        fieldSize = 0.;
-        throw tigl::CTiglError("No multiplier defined for far-field!");
-    }
-    else {
-        fieldSize *= multiplier;
-    }
+    generated::CPACSFarField::ReadCPACS(tixiHandle, xpath);
 }
+
+const std::string& CCPACSFarField::GetUID() const {
+    static const std::string s_uid = "FarField";
+    return s_uid;
+}
+
+void CCPACSFarField::SetUID(const std::string& uid) { }
+
+TiglSymmetryAxis CCPACSFarField::GetSymmetryAxis(void) {
+    return TiglSymmetryAxis::TIGL_NO_SYMMETRY;
+}
+
+void CCPACSFarField::SetSymmetryAxis(const TiglSymmetryAxis& axis) {}
 
 PNamedShape CCPACSFarField::BuildLoft(void)
 {
+    const double fieldSize = m_referenceLength * m_multiplier;
+
     TopoDS_Shape shape;
     shape.Nullify();
     gp_Pnt center(0,0,0);
 
-    switch (fieldType) {
-    case NONE:
-        shape.Nullify();
-    case FULL_SPHERE:
+    switch (m_type.GetSimpleContent()) {
+    case generated::CPACSTypeType5SimpleContent::fullSphere:
         shape = BRepPrimAPI_MakeSphere(center, fieldSize).Shape();
         break;
-    case FULL_CUBE:
+    case generated::CPACSTypeType5SimpleContent::fullCube:
         shape = BRepPrimAPI_MakeBox(gp_Pnt(center.X()-fieldSize, center.Y()-fieldSize, center.Z()-fieldSize),
                                     fieldSize*2., fieldSize*2., fieldSize*2.).Shape();
         break;
-    case HALF_CUBE:
+    case generated::CPACSTypeType5SimpleContent::halfCube:
         shape = BRepPrimAPI_MakeBox(gp_Pnt(center.X()-fieldSize, center.Y(), center.Z()-fieldSize),
                                     fieldSize*2., fieldSize, fieldSize*2.).Shape();
         break;
-    case HALF_SPHERE:
+    case generated::CPACSTypeType5SimpleContent::halfSphere:
         shape = BRepPrimAPI_MakeSphere(gp_Ax2(center, gp_Dir(0,1,0)), fieldSize, 0., M_PI_2).Shape();
         break;
     default:

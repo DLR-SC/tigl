@@ -28,32 +28,30 @@
 
 #include <string>
 
+#include "generated/CPACSWing.h"
 #include "tigl_config.h"
-#include "tixi.h"
-#include "tigl_internal.h"
 #include "CTiglTransformation.h"
 #include "CTiglAbstractPhysicalComponent.h"
 #include "CCPACSWingSections.h"
 #include "CCPACSWingSegments.h"
 #include "CCPACSWingComponentSegments.h"
-#include "CCPACSWingPositionings.h"
+#include "CCPACSPositionings.h"
 #include "CTiglAbstractSegment.h"
 #include "CCPACSGuideCurve.h"
 
 #include "TopoDS_Shape.hxx"
 
-
 namespace tigl
 {
-
 class CCPACSConfiguration;
 
-class CCPACSWing : public CTiglAbstractPhysicalComponent
+class CCPACSWing : public generated::CPACSWing, public CTiglAbstractPhysicalComponent
 {
-
 public:
     // Constructor
     TIGL_EXPORT CCPACSWing(CCPACSConfiguration* config);
+    TIGL_EXPORT CCPACSWing(CCPACSWings* parent);
+    TIGL_EXPORT CCPACSWing(generated::CPACSRotorBlades* parent);
 
     // Virtual destructor
     TIGL_EXPORT virtual ~CCPACSWing(void);
@@ -64,14 +62,11 @@ public:
     // Read CPACS wing elements
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string & wingXPath);
 
-    // Write CPACS wing elements
-    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string & wingXPath);
+    TIGL_EXPORT virtual const std::string& GetUID() const override;
+    TIGL_EXPORT virtual void SetUID(const std::string& uid) override;
 
-    // Returns the name of the wing
-    TIGL_EXPORT const std::string & GetName(void) const;
-
-    // Returns the member description
-    TIGL_EXPORT const std::string & GetDescription(void) const;
+    TIGL_EXPORT virtual TiglSymmetryAxis GetSymmetryAxis(void) override;
+    TIGL_EXPORT virtual void SetSymmetryAxis(const TiglSymmetryAxis& axis) override;
 
     // Returns the parent configuration
     TIGL_EXPORT CCPACSConfiguration & GetConfiguration(void) const;
@@ -80,7 +75,7 @@ public:
     TIGL_EXPORT int GetSectionCount(void) const;
 
     // Returns the section for a given index
-    TIGL_EXPORT CCPACSWingSection & GetSection(int index) const;
+    TIGL_EXPORT const CCPACSWingSection & GetSection(int index) const;
 
     // Getter of the number of segments of the wing
     TIGL_EXPORT int GetSegmentCount(void) const;
@@ -162,13 +157,11 @@ public:
     // Returns the upper Surface of a Segment
     TIGL_EXPORT Handle(Geom_Surface) GetUpperSegmentSurface(int index);
 
-    TIGL_EXPORT virtual void SetSymmetryAxis(const std::string& axis);
-
     // Get the guide curve with a given UID
-    TIGL_EXPORT CCPACSGuideCurve& GetGuideCurve(std::string uid);
+    TIGL_EXPORT const CCPACSGuideCurve& GetGuideCurve(std::string uid);
 
     // Getter for positionings
-    TIGL_EXPORT CCPACSWingPositionings& GetPositionings();
+    TIGL_EXPORT const CCPACSPositionings& GetPositionings();
 
 protected:
     // Cleanup routine
@@ -187,24 +180,11 @@ protected:
         
     void BuildUpperLowerShells();
 
-
 private:
     // get short name for loft
     std::string GetShortShapeName(void);
 
-    // Copy constructor
-    CCPACSWing(const CCPACSWing & );
-
-    // Assignment operator
-    void operator=(const CCPACSWing & );
-
 private:
-    std::string                    name;                     /**< Wing name           */
-    std::string                    description;              /**< Wing description    */
-    CCPACSWingSections             sections;                 /**< Wing sections       */
-    CCPACSWingSegments             segments;                 /**< Wing segments       */
-    CCPACSWingComponentSegments    componentSegments;        /**< Wing ComponentSegments */
-    CCPACSWingPositionings         positionings;             /**< Wing positionings   */
     CCPACSConfiguration*           configuration;            /**< Parent configuration*/
     TopoDS_Shape                   fusedSegmentWithEdge;     /**< All Segments in one shape plus modelled leading edge */ 
     TopoDS_Shape                   upperShape;
@@ -218,5 +198,6 @@ private:
 };
 
 } // end namespace tigl
+
 
 #endif // CCPACSWING_H

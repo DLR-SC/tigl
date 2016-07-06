@@ -57,12 +57,7 @@ namespace tigl
 
 // Constructor
 CCPACSConfiguration::CCPACSConfiguration(TixiDocumentHandle tixiHandle)
-    : tixiDocumentHandle(tixiHandle)
-    , header()
-    , wings(this)
-    , fuselages(this)
-    , uidManager()
-    , cpacsModel(NULL)
+    : tixiDocumentHandle(tixiHandle), cpacsModel(nullptr)
 {
 }
 
@@ -78,57 +73,35 @@ CCPACSConfiguration::~CCPACSConfiguration(void)
 // recalculation of wires, lofts etc.
 void CCPACSConfiguration::Invalidate(void)
 {
-    wings.Invalidate();
-    fuselages.Invalidate();
+    cpacsModel->Invalidate();
     aircraftFuser.reset();
     shapeCache.Clear();
     configUID = "";
 }
 
 // Build up memory structure for whole CPACS file
-void CCPACSConfiguration::ReadCPACS(const char* configurationUID)
+void CCPACSConfiguration::ReadCPACS(const std::string& configurationUID)
 {
-    if (!configurationUID) {
-        return;
-    }
-
-    // reading name and description
-    std::string tempString;
-    std::string xpath;
     char* path;
-
-    // memory for path freed by tixi when document is closed
-    tempString = configurationUID;
-    if (tixiUIDGetXPath(tixiDocumentHandle, tempString.c_str(), &path) != SUCCESS) {
+    if (tixiUIDGetXPath(tixiDocumentHandle, configurationUID.c_str(), &path) != SUCCESS) {
         throw CTiglError("Error: XML error while reading in CCPACSConfiguration::ReadCPACS", TIGL_XML_ERROR);
     }
-    xpath = path;
-
-    char* ptrName = NULL;
-    tempString    = xpath + "/name";
-    if (tixiGetTextElement(tixiDocumentHandle, tempString.c_str(), &ptrName) == SUCCESS) {
-        name = ptrName;
-    }
-
-    char* ptrDescription = "";
-    tempString    = xpath + "/description";
-    if (tixiGetTextElement(tixiDocumentHandle, tempString.c_str(), &ptrDescription) == SUCCESS) {
-        description = ptrDescription;
-    }
+    const std::string xpath = path;
 
     // create new root component for CTiglUIDManager
     if (cpacsModel) {
         delete cpacsModel;
     }
-    cpacsModel = new CCPACSModel();
+    cpacsModel = new CCPACSModel(this);
     cpacsModel->SetUID(configurationUID);
     uidManager.SetRootComponent(cpacsModel);
 
-    header.ReadCPACS(tixiDocumentHandle);
-    guideCurveProfiles.ReadCPACS(tixiDocumentHandle);
-    wings.ReadCPACS(tixiDocumentHandle, configurationUID);
-    fuselages.ReadCPACS(tixiDocumentHandle, configurationUID);
-    farField.ReadCPACS(tixiDocumentHandle);
+    // TODO: why can't we just write "/cpacs/vehicles/aircraft/model[" + configurationUID + "]" ?
+    cpacsModel->ReadCPACS(tixiDocumentHandle, xpath); // reads everything underneath /cpacs/vehicles/aircraft/model
+
+    header.ReadCPACS(tixiDocumentHandle, "/cpacs/header");
+    guideCurveProfiles.ReadCPACS(tixiDocumentHandle, "/cpacs/vehicles/profiles/guideCurveProfiles");
+    farField.ReadCPACS(tixiDocumentHandle, "/cpacs/toolspecific/cFD/farField");
 
     configUID = configurationUID;
     // Now do parent <-> child transformations. Child should use the
@@ -144,14 +117,14 @@ void CCPACSConfiguration::ReadCPACS(const char* configurationUID)
 // Write CPACS structure to tixiHandle
 void CCPACSConfiguration::WriteCPACS(const std::string& configurationUID)
 {
-    header.WriteCPACS(tixiDocumentHandle);
-    
-    TixiSaveExt::TixiSaveTextAttribute(tixiDocumentHandle, "/cpacs/vehicles/aircraft/model", "uID", configurationUID.c_str());
-    TixiSaveExt::TixiSaveTextElement(tixiDocumentHandle, "/cpacs/vehicles/aircraft/model", "name", name.c_str());
-    TixiSaveExt::TixiSaveTextElement(tixiDocumentHandle, "/cpacs/vehicles/aircraft/model", "description", description.c_str());
+    char* path;
+    if (tixiUIDGetXPath(tixiDocumentHandle, configurationUID.c_str(), &path) != SUCCESS) {
+        throw CTiglError("Error: XML error while reading in CCPACSConfiguration::ReadCPACS", TIGL_XML_ERROR);
+    }
+    const std::string xpath = path;
 
-    fuselages.WriteCPACS(tixiDocumentHandle, configurationUID);
-    wings.WriteCPACS(tixiDocumentHandle, configurationUID);
+    header.WriteCPACS(tixiDocumentHandle, "/cpacs/header");
+    cpacsModel->WriteCPACS(tixiDocumentHandle, xpath);
 }
 
 // transform all components relative to their parents
@@ -193,54 +166,54 @@ TixiDocumentHandle CCPACSConfiguration::GetTixiDocumentHandle(void) const
 
 bool CCPACSConfiguration::HasWingProfile(std::string uid) const
 {
-    return wings.HasProfile(uid);
+    return cpacsModel->GetWings().HasProfile(uid);
 }
 
 // Returns the total count of wing profiles in this configuration
 int CCPACSConfiguration::GetWingProfileCount(void) const
 {
-    return wings.GetProfileCount();
+    return cpacsModel->GetWings().GetProfileCount();
 }
 
 // Returns the class which holds all wing profiles
 CCPACSWingProfiles& CCPACSConfiguration::GetWingProfiles(void)
 {
-    return wings.GetProfiles();
+    return cpacsModel->GetWings().GetProfiles();
 }
 
 // Returns the class which holds all fuselage profiles
 CCPACSFuselageProfiles& CCPACSConfiguration::GetFuselageProfiles(void)
 {
-    return fuselages.GetProfiles();
+    return cpacsModel->GetFuselages().GetProfiles();
 }
 
 // Returns the wing profile for a given uid.
 CCPACSWingProfile& CCPACSConfiguration::GetWingProfile(std::string uid) const
 {
-    return wings.GetProfile(uid);
+    return cpacsModel->GetWings().GetProfile(uid);
 }
 
 // Returns the wing profile for a given index - TODO: depricated function!
 CCPACSWingProfile& CCPACSConfiguration::GetWingProfile(int index) const
 {
-    return wings.GetProfile(index);
+    return cpacsModel->GetWings().GetProfile(index);
 }
 
 // Returns the total count of wings in a configuration
 int CCPACSConfiguration::GetWingCount(void) const
 {
-    return wings.GetWingCount();
+    return cpacsModel->GetWings().GetWingCount();
 }
 
 // Returns the wing for a given index.
 CCPACSWing& CCPACSConfiguration::GetWing(int index) const
 {
-    return wings.GetWing(index);
+    return cpacsModel->GetWings().GetWing(index);
 }
 // Returns the wing for a given UID.
 CCPACSWing& CCPACSConfiguration::GetWing(const std::string& UID) const
 {
-    return wings.GetWing(UID);
+    return cpacsModel->GetWings().GetWing(UID);
 }
 
 TopoDS_Shape CCPACSConfiguration::GetParentLoft(const std::string& UID)
@@ -250,43 +223,43 @@ TopoDS_Shape CCPACSConfiguration::GetParentLoft(const std::string& UID)
 
 bool CCPACSConfiguration::HasFuselageProfile(std::string uid) const
 {
-    return fuselages.HasProfile(uid);
+    return cpacsModel->GetFuselages().HasProfile(uid);
 }
 
 // Returns the total count of fuselage profiles in this configuration
 int CCPACSConfiguration::GetFuselageProfileCount(void) const
 {
-    return fuselages.GetProfileCount();
+    return cpacsModel->GetFuselages().GetProfileCount();
 }
 
 // Returns the fuselage profile for a given index.
 CCPACSFuselageProfile& CCPACSConfiguration::GetFuselageProfile(int index) const
 {
-    return fuselages.GetProfile(index);
+    return cpacsModel->GetFuselages().GetProfile(index);
 }
 
 // Returns the fuselage profile for a given uid.
 CCPACSFuselageProfile& CCPACSConfiguration::GetFuselageProfile(std::string uid) const
 {
-    return fuselages.GetProfile(uid);
+    return cpacsModel->GetFuselages().GetProfile(uid);
 }
 
 // Returns the total count of fuselages in a configuration
 int CCPACSConfiguration::GetFuselageCount(void) const
 {
-    return fuselages.GetFuselageCount();
+    return cpacsModel->GetFuselages().GetFuselageCount();
 }
 
 // Returns the fuselage for a given index.
 CCPACSFuselage& CCPACSConfiguration::GetFuselage(int index) const
 {
-    return fuselages.GetFuselage(index);
+    return cpacsModel->GetFuselages().GetFuselage(index);
 }
 
 
 CCPACSFuselages& CCPACSConfiguration::GetFuselages()
 {
-    return fuselages;
+    return cpacsModel->GetFuselages();
 }
 
 
@@ -298,7 +271,7 @@ CCPACSFarField& CCPACSConfiguration::GetFarField()
 // Returns the fuselage for a given UID.
 CCPACSFuselage& CCPACSConfiguration::GetFuselage(const std::string UID) const
 {
-    return fuselages.GetFuselage(UID);
+    return cpacsModel->GetFuselages().GetFuselage(UID);
 }
 
 // Returns the guide curve profile for a given UID.
@@ -369,12 +342,12 @@ CTiglMemoryPool& CCPACSConfiguration::GetMemoryPool()
 
 std::string CCPACSConfiguration::GetName(void) const
 {
-    return name;
+    return cpacsModel->GetName();
 }
 
 std::string CCPACSConfiguration::GetDescription(void) const
 {
-    return description;
+    return cpacsModel->GetDescription();
 }
 
 CCPACSHeader* CCPACSConfiguration::GetHeader()
@@ -384,7 +357,7 @@ CCPACSHeader* CCPACSConfiguration::GetHeader()
 
 CCPACSWings* CCPACSConfiguration::GetWings()
 {
-    return &wings;
+    return &cpacsModel->GetWings();
 }
 
 } // end namespace tigl

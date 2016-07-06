@@ -30,9 +30,11 @@
 #include <limits>
 
 #include "CCPACSWingComponentSegment.h"
+#include "CCPACSWingSection.h"
 #include "CCPACSWing.h"
 #include "CCPACSWingSegment.h"
 #include "CCPACSWingProfile.h"
+#include "CCPACSWingComponentSegments.h"
 #include "CTiglLogging.h"
 #include "CCPACSWingCell.h"
 #include "CTiglApproximateBsplineWire.h"
@@ -150,13 +152,19 @@ namespace
     }
 }
 
+CCPACSWingComponentSegment::CCPACSWingComponentSegment(CCPACSWingComponentSegments* parent)
+    : CTiglAbstractSegment(parent->GetComponentSegmentCount() + 1) // TODO: this is a hack, as we depend on the implementation of the vector reader in generated::CCPACSWingComponentSegments::ReadCPACS() but the current CodeGen does not support passing indices into ctors
+    , wing(parent->GetParent())
+    , surfacesAreValid(false)
+{
+    Cleanup();
+}
 
 // Constructor
 CCPACSWingComponentSegment::CCPACSWingComponentSegment(CCPACSWing* aWing, int aSegmentIndex)
     : CTiglAbstractSegment(aSegmentIndex)
     , wing(aWing)
     , surfacesAreValid(false)
-    , structure()
 {
     Cleanup();
 }
@@ -175,22 +183,21 @@ void CCPACSWingComponentSegment::Invalidate(void)
     surfacesAreValid = false;
     projLeadingEdge.Nullify();
     wingSegments.clear();
-    structure.Invalidate();
+    m_structure->Invalidate();
     linesAreValid = false;
 }
 
 // Cleanup routine
 void CCPACSWingComponentSegment::Cleanup(void)
 {
-    name = "";
-    fromElementUID = "";
-    toElementUID   = "";
+    m_name = "";
+    m_fromElementUID = "";
+    m_toElementUID   = "";
     myVolume       = 0.;
     mySurfaceArea  = 0.;
     surfacesAreValid = false;
     linesAreValid = false;
     CTiglAbstractSegment::Cleanup();
-    structure.Cleanup();
     projLeadingEdge.Nullify();
     wingSegments.clear();
 }
@@ -205,76 +212,31 @@ void CCPACSWingComponentSegment::Update(void)
 void CCPACSWingComponentSegment::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& segmentXPath)
 {
     Cleanup();
-
-    std::string elementPath;
-
-    // Get subelement "name"
-    char* ptrName = NULL;
-    elementPath = segmentXPath + "/name";
-    if (tixiGetTextElement(tixiHandle, elementPath.c_str(), &ptrName) == SUCCESS) {
-        name = ptrName;
-    }
-
-    // Get attribute "uid"
-    char* ptrUID = NULL;
-    elementPath = segmentXPath;
-    if (tixiGetTextAttribute(tixiHandle, elementPath.c_str(), "uID", &ptrUID) == SUCCESS) {
-        SetUID(ptrUID);
-    }
-
-    // Get fromElementUID
-    char* ptrFromElementUID = NULL;
-    elementPath = segmentXPath + "/fromElementUID";
-    if (tixiGetTextElement(tixiHandle, elementPath.c_str(), &ptrFromElementUID) == SUCCESS) {
-        fromElementUID = ptrFromElementUID;
-    }
-
-    // Get toElementUID
-    char* ptrToElementUID = NULL;
-    elementPath = segmentXPath + "/toElementUID";
-    if (tixiGetTextElement(tixiHandle, elementPath.c_str(), &ptrToElementUID) == SUCCESS) {
-        toElementUID = ptrToElementUID;
-    }
-        
-    // read structure
-    elementPath = segmentXPath + "/structure";
-    if (tixiCheckElement(tixiHandle, elementPath.c_str()) == SUCCESS){
-        structure.ReadCPACS(tixiHandle, elementPath);
-    }
-
+    generated::CPACSComponentSegment::ReadCPACS(tixiHandle, segmentXPath);
     Update();
 }
 
-// Write CPACS segment elements
-void CCPACSWingComponentSegment::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& segmentXPath)
-{
-    std::string elementPath;
+const std::string& CCPACSWingComponentSegment::GetUID() const {
+    return generated::CPACSComponentSegment::GetUID();
+}
 
-    // Set subelement "name"
-    TixiSaveExt::TixiSaveTextElement(tixiHandle, segmentXPath.c_str(), "name", name.c_str());
+void CCPACSWingComponentSegment::SetUID(const std::string& uid) {
+    generated::CPACSComponentSegment::SetUID(uid);
+}
 
-    // Set attribute "uID"
-    TixiSaveExt::TixiSaveTextAttribute(tixiHandle, segmentXPath.c_str(), "uID", GetUID().c_str());
+TiglSymmetryAxis CCPACSWingComponentSegment::GetSymmetryAxis(void) {
+    // TODO
+    return TiglSymmetryAxis::TIGL_NO_SYMMETRY;
+}
 
-    // Set fromElementUID qnd toElementUID
-    TixiSaveExt::TixiSaveTextElement(tixiHandle, segmentXPath.c_str(), "fromElementUID", fromElementUID.c_str());
-    TixiSaveExt::TixiSaveTextElement(tixiHandle, segmentXPath.c_str(), "toElementUID", toElementUID.c_str());
-    
-    elementPath = segmentXPath + "/structure";
-    TixiSaveExt::TixiSaveElement(tixiHandle, segmentXPath.c_str(), "structure");
-    structure.WriteCPACS(tixiHandle, elementPath);
+void CCPACSWingComponentSegment::SetSymmetryAxis(const TiglSymmetryAxis& axis) {
+    // TODO
 }
 
 // Returns the wing this segment belongs to
 CCPACSWing& CCPACSWingComponentSegment::GetWing(void) const
 {
     return *wing;
-}
-
-// Getter of the structure object
-CCPACSWingCSStructure& CCPACSWingComponentSegment::GetStructure()
-{
-    return structure;
 }
 
 // Getter for upper Shape
@@ -570,9 +532,9 @@ gp_Vec CCPACSWingComponentSegment::GetInnerSectionNormal() const
 {
     int numSections = wing->GetSectionCount();
     for (int i = 1; i <= numSections; i++) {
-        CCPACSWingSection& section = wing->GetSection(i);
+        const CCPACSWingSection& section = wing->GetSection(i);
         // TODO: only sections with single element supported here!!!
-        if (section.GetSectionElement(1).GetUID() == fromElementUID) {
+        if (section.GetSectionElement(1).GetUID() == m_fromElementUID) {
             gp_GTrsf elementTrans = section.GetSectionElement(1).GetSectionElementTransformation().Get_gp_GTrsf();
             gp_GTrsf sectionTrans = section.GetSectionTransformation().Get_gp_GTrsf();
             // remove translation part
@@ -597,9 +559,9 @@ gp_Vec CCPACSWingComponentSegment::GetOuterSectionNormal() const
 {
     int numSections = wing->GetSectionCount();
     for (int i = 1; i <= numSections; i++) {
-        CCPACSWingSection& section = wing->GetSection(i);
+        const CCPACSWingSection& section = wing->GetSection(i);
         // TODO: only sections with single element supported here!!!
-        if (section.GetSectionElement(1).GetUID() == toElementUID) {
+        if (section.GetSectionElement(1).GetUID() == m_toElementUID) {
             gp_GTrsf elementTrans = section.GetSectionElement(1).GetSectionElementTransformation().Get_gp_GTrsf();
             gp_GTrsf sectionTrans = section.GetSectionTransformation().Get_gp_GTrsf();
             // remove translation part
@@ -825,7 +787,7 @@ std::string CCPACSWingComponentSegment::GetInnerSegmentUID() const
     for (int i = 1; i <= wing->GetSegmentCount(); i++) {
         tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing->GetSegment(i);
         // Check for the inner wing segment
-        if (segment.GetInnerSectionElementUID() == fromElementUID) {
+        if (segment.GetInnerSectionElementUID() == m_fromElementUID) {
             uid = segment.GetUID();
             break;
         }
@@ -840,7 +802,7 @@ std::string CCPACSWingComponentSegment::GetOuterSegmentUID() const
     for (int i = 1; i <= wing->GetSegmentCount(); i++) {
         tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing->GetSegment(i);
         // Check for the inner wing segment
-        if (segment.GetOuterSectionElementUID() == toElementUID) {
+        if (segment.GetOuterSectionElementUID() == m_toElementUID) {
             uid = segment.GetUID();
             break;
         }
@@ -852,12 +814,12 @@ SegmentList& CCPACSWingComponentSegment::GetSegmentList()
 {
     if (wingSegments.size() == 0) {
         std::vector<int> path;
-        path = findPath(fromElementUID, toElementUID, path, true);
+        path = findPath(m_fromElementUID, m_toElementUID, path, true);
 
         if (path.size() == 0) {
             // could not find path from fromUID to toUID
             // try the other way around
-            path = findPath(toElementUID, fromElementUID, path, true);
+            path = findPath(m_toElementUID, m_fromElementUID, path, true);
         }
 
         if (path.size() == 0) {
@@ -1135,7 +1097,7 @@ PNamedShape CCPACSWingComponentSegment::BuildLoft(void)
     std::string loftName = GetUID();
     std::string loftShortName = GetShortShapeName();
     PNamedShape loft (new CNamedShape(loftShape, loftName.c_str(), loftShortName.c_str()));
-    SetFaceTraits(loft, segments.size());
+    SetFaceTraits(loft, static_cast<unsigned int>(segments.size()));
     return loft;
 }
 
@@ -1159,7 +1121,7 @@ void CCPACSWingComponentSegment::BuildLines(void) const
         tigl::CCPACSWingSegment& segment = (tigl::CCPACSWingSegment &) wing->GetSegment(i);
 
         // Ok, we found the first segment of this componentSegment
-        if (!inComponentSection && segment.GetInnerSectionElementUID() == fromElementUID) {
+        if (!inComponentSection && segment.GetInnerSectionElementUID() == m_fromElementUID) {
             inComponentSection = true;
         }
 
@@ -1175,7 +1137,7 @@ void CCPACSWingComponentSegment::BuildLines(void) const
             tePointContainer.push_back(pnt);
 
             // if we found the outer section, break...
-            if (segment.GetOuterSectionElementUID() == toElementUID) {
+            if (segment.GetOuterSectionElementUID() == m_toElementUID) {
                 numberOfSections++;
                 // get leading edge point
                 pnt = segment.GetPoint(1, 0, true, CCPACSWingSegment::WING_COORDINATE_SYSTEM);
@@ -1346,7 +1308,7 @@ void CCPACSWingComponentSegment::UpdateProjectedLeadingEdge()
     }
 
     // check if we have to extend the leading edge at wing tip
-    unsigned int nPoints = LEPointsProjected.size();
+    std::size_t nPoints = LEPointsProjected.size();
     tigl::CCPACSWingSegment& outerSegment = *segments[segments.size()-1];
     tigl::CCPACSWingSegment& innerSegment = *segments[0];
 
@@ -1656,18 +1618,6 @@ double CCPACSWingComponentSegment::GetSurfaceArea(void)
 //    }
 //
 
-// Gets the fromElementUID of this segment
-const std::string & CCPACSWingComponentSegment::GetFromElementUID(void) const
-{
-    return fromElementUID;
-}
-
-// Gets the toElementUID of this segment
-const std::string & CCPACSWingComponentSegment::GetToElementUID(void) const
-{
-    return toElementUID;
-}
-
 // Returns the segment to a given point on the componentSegment. 
 // Returns null if the point is not an that wing!
 const CTiglAbstractSegment* CCPACSWingComponentSegment::findSegment(double x, double y, double z, gp_Pnt& nearestPoint)
@@ -1715,7 +1665,7 @@ MaterialList CCPACSWingComponentSegment::GetMaterials(double eta, double xsi, Ti
 {
     MaterialList list;
         
-    if (!structure.IsValid()) {
+    if (!m_structure.isValid() || !m_structure->IsValid()) {
         // return empty list
         return list;
     }
@@ -1725,7 +1675,7 @@ MaterialList CCPACSWingComponentSegment::GetMaterials(double eta, double xsi, Ti
         return list;
     }
     else {
-        CCPACSWingShell* shell = (type == UPPER_SHELL? &structure.GetUpperShell() : &structure.GetLowerShell());
+        CCPACSWingShell* shell = (type == UPPER_SHELL? &m_structure->GetUpperShell() : &m_structure->GetLowerShell());
         int ncells = shell->GetCellCount();
         for (int i = 1; i <= ncells; ++i){
             CCPACSWingCell& cell = shell->GetCell(i);
@@ -1751,7 +1701,7 @@ MaterialList CCPACSWingComponentSegment::GetMaterials(double eta, double xsi, Ti
 bool CCPACSWingComponentSegment::IsSegmentContained(const CCPACSWingSegment& segment) const
 {
     bool isSegmentContained = false;
-    std::string nextElementUID = fromElementUID;
+    std::string nextElementUID = m_fromElementUID;
     int segmentCount = wing->GetSegmentCount();
 
     for (int i=1; i <= segmentCount; i++) {
@@ -1761,7 +1711,7 @@ bool CCPACSWingComponentSegment::IsSegmentContained(const CCPACSWingSegment& seg
         if (innerSectionElementUID != nextElementUID) {
             continue;
         }
-        if (innerSectionElementUID == toElementUID) {
+        if (innerSectionElementUID == m_toElementUID) {
             break;
         }
         
@@ -1778,13 +1728,13 @@ bool CCPACSWingComponentSegment::IsSegmentContained(const CCPACSWingSegment& seg
 // Getter for upper and lower shell
 CCPACSWingShell& CCPACSWingComponentSegment::GetUpperShell()
 {
-    return structure.GetUpperShell();
+    return m_structure->GetUpperShell();
 }
 
 // Getter for upper and lower shell
 CCPACSWingShell& CCPACSWingComponentSegment::GetLowerShell()
 {
-    return structure.GetLowerShell();
+    return m_structure->GetLowerShell();
 }
 
 TopoDS_Shape CCPACSWingComponentSegment::GetMidplaneShape()
@@ -1815,7 +1765,7 @@ TopoDS_Shape CCPACSWingComponentSegment::GetMidplaneShape()
         builder.Add(midplaneShape, face);
 
         // stop at last segment of componentSegment
-        if (segment.GetOuterSectionElementUID() == toElementUID) {
+        if (segment.GetOuterSectionElementUID() == m_toElementUID) {
             break;
         }
     }
@@ -1828,7 +1778,7 @@ int CCPACSWingComponentSegment::GetStartSegmentIndex()
     int segmentCount = wing->GetSegmentCount();
     for (int i=1; i <= segmentCount; i++) {
         CCPACSWingSegment& segment = (CCPACSWingSegment&) wing->GetSegment(i);
-        if (segment.GetInnerSectionElementUID() == fromElementUID) {
+        if (segment.GetInnerSectionElementUID() == m_fromElementUID) {
             startSegmentIndex = i;
             break;
         }
@@ -1839,7 +1789,7 @@ int CCPACSWingComponentSegment::GetStartSegmentIndex()
 
 CCPACSWingCell& CCPACSWingComponentSegment::GetCellByUID(std::string cellUID) // TODO: this algorithm operates solely on the structure, move to corresponding class?
 {
-    CCPACSWingShell& upper = structure.GetUpperShell();
+    CCPACSWingShell& upper = m_structure->GetUpperShell();
     for (int c = 1; c <= upper.GetCellCount(); c++) {
         CCPACSWingCell& cell = upper.GetCell(c);
         if (cell.GetUID() == cellUID) {
@@ -1847,7 +1797,7 @@ CCPACSWingCell& CCPACSWingComponentSegment::GetCellByUID(std::string cellUID) //
         }
     }
     
-    CCPACSWingShell& lower = structure.GetLowerShell();
+    CCPACSWingShell& lower = m_structure->GetLowerShell();
     for (int c = 1; c <= lower.GetCellCount(); c++) {
         CCPACSWingCell& cell = lower.GetCell(c);
         if (cell.GetUID() == cellUID) {
@@ -1857,12 +1807,6 @@ CCPACSWingCell& CCPACSWingComponentSegment::GetCellByUID(std::string cellUID) //
     
     throw CTiglError("Error: no cell with uID " + cellUID + " found in CCPACSWingComponentSegment::getCellByUID!");
     
-}
-
-// Getter for the member name
-const std::string& CCPACSWingComponentSegment::GetName(void) const
-{
-    return name;
 }
 
 const CTiglAbstractSegment* CCPACSWingComponentSegment::findSegmentViaShape(double x, double y, double z) const

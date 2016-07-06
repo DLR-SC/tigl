@@ -27,16 +27,24 @@
 
 namespace tigl
 {
+CCPACSModel::CCPACSModel() : config(nullptr) {}
 
-CCPACSModel::CCPACSModel(void)
-{
-    // intentionally left blank
+CCPACSModel::CCPACSModel(CCPACSConfiguration* config) : config(config) {}
+
+CCPACSModel::~CCPACSModel(void) {}
+
+const std::string& CCPACSModel::GetUID() const {
+    static const std::string s_uid = "Model";
+    return s_uid;
 }
 
-CCPACSModel::~CCPACSModel(void)
-{
-    // intentionally left blank
+void CCPACSModel::SetUID(const std::string& uid) {}
+
+TiglSymmetryAxis CCPACSModel::GetSymmetryAxis(void) {
+    return TiglSymmetryAxis::TIGL_NO_SYMMETRY;
 }
+
+void CCPACSModel::SetSymmetryAxis(const TiglSymmetryAxis& axis) {}
 
 // Returns the Geometric type of this component, e.g. Wing or Fuselage
 TiglGeometricComponentType CCPACSModel::GetComponentType(void)
@@ -48,6 +56,17 @@ PNamedShape CCPACSModel::BuildLoft(void)
 {
     // return empty loft
     return loft;
+}
+
+void CCPACSModel::Invalidate() {
+    if (m_wings.isValid())
+        m_wings->Invalidate();
+    if (m_fuselages.isValid())
+        m_fuselages.isValid();
+}
+
+CCPACSConfiguration& CCPACSModel::GetConfiguration() const {
+    return *config;
 }
 
 } // end namespace tigl

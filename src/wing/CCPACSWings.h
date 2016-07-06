@@ -26,39 +26,30 @@
 #ifndef CCPACSWINGS_H
 #define CCPACSWINGS_H
 
+#include "generated/CPACSWings.h"
+#include "generated/CPACSWingAirfoils.h"
 #include "tigl_internal.h"
-#include "tixi.h"
 #include "CCPACSWing.h"
 #include "CCPACSWingProfile.h"
 #include "CCPACSWingProfiles.h"
-#include <vector>
 
 namespace tigl
 {
-
-class CCPACSConfiguration;
-
-class CCPACSWings
+class CCPACSWings : public generated::CPACSWings //, public generated::CPACSWingAirfoils // TODO: we should separate wing airfoils from wings
 {
-private:
-    // Typedef for a CCPACSWing container to store the wings of a configuration.
-    typedef std::vector<CCPACSWing*> CCPACSWingContainer;
-
 public:
-    // Constructor
-    TIGL_EXPORT CCPACSWings(CCPACSConfiguration* config);
-
-    // Virtual Destructor
-    TIGL_EXPORT virtual ~CCPACSWings(void);
+    TIGL_EXPORT CCPACSWings();
+    TIGL_EXPORT CCPACSWings(generated::CPACSRotorcraftModel* parent);
+    TIGL_EXPORT CCPACSWings(CCPACSModel* parent);
 
     // Invalidates internal state
     TIGL_EXPORT void Invalidate(void);
 
     // Read CPACS wings elements
-    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const char* configurationUID);
+    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& xpath);
 
     // Write CPACS wings elements
-    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& configurationUID);
+    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& xpath) const;
 
     TIGL_EXPORT bool HasProfile(std::string uid) const;
 
@@ -86,22 +77,8 @@ public:
     // Adds a wing to the wing list
     TIGL_EXPORT void AddWing(CCPACSWing* wing);
 
-protected:
-    // Cleanup routine
-    void Cleanup(void);
-
 private:
-    // Copy constructor
-    CCPACSWings(const CCPACSWings& );
-
-    // Assignment operator
-    void operator=(const CCPACSWings& );
-
-private:
-    CCPACSWingProfiles   profiles;      /**< Wing profile elements */
-    CCPACSWingContainer  wings;         /**< Wing elements */
-    CCPACSConfiguration* configuration; /**< Pointer to parent configuration */
-
+    CCPACSWingProfiles profiles;      /**< Configuration wings element */
 };
 
 } // end namespace tigl

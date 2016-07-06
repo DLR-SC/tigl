@@ -31,6 +31,7 @@
 
 #include "CCPACSWingSegment.h"
 #include "CCPACSWing.h"
+#include "CCPACSWingSegments.h"
 #include "CCPACSWingProfiles.h"
 #include "CCPACSGuideCurveProfiles.h"
 #include "CCPACSGuideCurveAlgo.h"
@@ -198,11 +199,18 @@ namespace
     }
 }
 
+CCPACSWingSegment::CCPACSWingSegment(CCPACSWingSegments* parent)
+    : generated::CPACSWingSegment(parent)
+    , CTiglAbstractSegment(parent->GetSegmentCount() + 1) // TODO: this is a hack, as we depend on the implementation of the vector reader in generated::CCPACSWingSegments::ReadCPACS() but the current CodeGen does not support passing indices into ctors
+    , wing(parent->GetParent_CCPACSWing())
+    , surfacesAreValid(false)
+    , guideCurvesPresent(false) {
+    Cleanup();
+}
+
 // Constructor
 CCPACSWingSegment::CCPACSWingSegment(CCPACSWing* aWing, int aSegmentIndex)
     : CTiglAbstractSegment(aSegmentIndex)
-    , innerConnection(this)
-    , outerConnection(this)
     , wing(aWing)
     , surfacesAreValid(false)
     , guideCurvesPresent(false)
@@ -227,8 +235,8 @@ void CCPACSWingSegment::Invalidate(void)
 // Cleanup routine
 void CCPACSWingSegment::Cleanup(void)
 {
-    name = "";
-    description = "";
+    m_name = "";
+    m_description = "";
     upperShape.Nullify();
     lowerShape.Nullify();
     trailingEdgeShape.Nullify();
@@ -247,48 +255,12 @@ void CCPACSWingSegment::Update(void)
 void CCPACSWingSegment::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& segmentXPath)
 {
     Cleanup();
+    generated::CPACSWingSegment::ReadCPACS(tixiHandle, segmentXPath);
 
-    std::string elementPath;
-    std::string tempString;
+    GetWing().GetConfiguration().GetUIDManager().AddUID(m_uID, this);
 
-    // Get subelement "name"
-    char* ptrName = NULL;
-    elementPath = segmentXPath + "/name";
-    if (tixiGetTextElement(tixiHandle, elementPath.c_str(), &ptrName) == SUCCESS) {
-        name = ptrName;
-    }
-
-    // Get subelement "description"
-    char* ptrDescription = NULL;
-    elementPath = segmentXPath + "/description";
-    if (tixiGetTextElement(tixiHandle, elementPath.c_str(), &ptrDescription) == SUCCESS) {
-        description = ptrDescription;
-    }
-
-    // Get attribute "uid"
-    char* ptrUID = NULL;
-    tempString   = "uID";
-    if (tixiGetTextAttribute(tixiHandle, segmentXPath.c_str(), tempString.c_str(), &ptrUID) == SUCCESS) {
-        SetUID(ptrUID);
-        GetWing().GetConfiguration().GetUIDManager().AddUID(GetUID(), this);
-    }
-
-    // Inner connection
-    elementPath = segmentXPath + "/fromElementUID";
-    innerConnection.ReadCPACS(tixiHandle, elementPath);
-
-    // Outer connection
-    elementPath = segmentXPath + "/toElementUID";
-    outerConnection.ReadCPACS(tixiHandle, elementPath);
-
-    // Get guide Curves
-    if (tixiCheckElement(tixiHandle, (segmentXPath + "/guideCurves").c_str()) == SUCCESS) {
-        guideCurvesPresent = true;
-        guideCurves.ReadCPACS(tixiHandle, segmentXPath);
-    }
-    else {
-        guideCurvesPresent = false;
-    }
+    innerConnection = CCPACSWingConnection(m_fromElementUID, this);
+    outerConnection = CCPACSWingConnection(m_toElementUID, this);
 
     // check that the profiles are consistent
     if (GetNumberOfEdges(GetInnerWire()) !=
@@ -296,7 +268,7 @@ void CCPACSWingSegment::ReadCPACS(TixiDocumentHandle tixiHandle, const std::stri
 
         throw CTiglError("The wing profiles " + innerConnection.GetProfile().GetUID() +
                          " and " + outerConnection.GetProfile().GetUID() +
-                         " in segment " + GetUID() + " are not consistent. "
+                         " in segment " + m_uID + " are not consistent. "
                          "All profiles must either have a sharp or a blunt trailing edge. "
                          "Mixing different profile types is not allowed.");
     }
@@ -304,30 +276,21 @@ void CCPACSWingSegment::ReadCPACS(TixiDocumentHandle tixiHandle, const std::stri
     Update();
 }
 
-// Write CPACS segment elements
-void CCPACSWingSegment::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& segmentXPath)
-{
-    // Set the name subelement
-    TixiSaveExt::TixiSaveTextElement(tixiHandle, segmentXPath.c_str(), "name", GetName().c_str());
-    // Set the name subelement
-    TixiSaveExt::TixiSaveTextElement(tixiHandle, segmentXPath.c_str(), "description", description.c_str());
-    // Set the uID attribute
-    TixiSaveExt::TixiSaveTextAttribute(tixiHandle, segmentXPath.c_str(), "uID", GetUID().c_str());
-    
-    // Inner connection
-    innerConnection.WriteCPACS(tixiHandle, segmentXPath, "fromElementUID");
-    // Inner connection
-    outerConnection.WriteCPACS(tixiHandle, segmentXPath, "toElementUID");
+const std::string& CCPACSWingSegment::GetUID() const {
+    return generated::CPACSWingSegment::GetUID();
 }
 
-const std::string& CCPACSWingSegment::GetName() const
-{
-    return name;
+void CCPACSWingSegment::SetUID(const std::string& uid) {
+    generated::CPACSWingSegment::SetUID(uid);
 }
 
-const std::string& CCPACSWingSegment::GetDescription() const
-{
-    return description;
+TiglSymmetryAxis CCPACSWingSegment::GetSymmetryAxis() {
+    // TODO
+    return TiglSymmetryAxis::TIGL_NO_SYMMETRY;
+}
+
+void CCPACSWingSegment::SetSymmetryAxis(const TiglSymmetryAxis& axis) {
+    // TODO
 }
 
 // Returns the wing this segment belongs to
@@ -1200,15 +1163,15 @@ TopoDS_Shape& CCPACSWingSegment::GetLowerShape(CoordinateSystem referenceCS)
 }
 
 // get guide curve for given UID
-CCPACSGuideCurve& CCPACSWingSegment::GetGuideCurve(std::string UID)
+const CCPACSGuideCurve& CCPACSWingSegment::GetGuideCurve(std::string UID)
 {
-    return guideCurves.GetGuideCurve(UID);
+    return m_guideCurves->GetGuideCurve(UID);
 }
 
 // check if guide curve with a given UID exists
 bool CCPACSWingSegment::GuideCurveExists(std::string UID)
 {
-    return guideCurves.GuideCurveExists(UID);
+    return m_guideCurves->GuideCurveExists(UID);
 }
 
 TopTools_SequenceOfShape& CCPACSWingSegment::GetGuideCurveWires()
@@ -1251,10 +1214,11 @@ void CCPACSWingSegment::BuildGuideCurveWires(void)
         double outerScale = GetWireLength(outerChordLineWire);
 
         // loop through all guide curves and construct the corresponding wires
+        const auto& guideCurves = m_guideCurves.get();
         int nGuideCurves = guideCurves.GetGuideCurveCount();
         for (int i=0; i!=nGuideCurves; i++) {
             // get guide curve
-            CCPACSGuideCurve& guideCurve = guideCurves.GetGuideCurve(i+1);
+            const CCPACSGuideCurve& guideCurve = m_guideCurves->GetGuideCurve(i+1);
             double fromRelativeCircumference;
             // check if fromRelativeCircumference is given in the current guide curve
             if (guideCurve.GetFromRelativeCircumferenceIsSet()) {
@@ -1263,9 +1227,9 @@ void CCPACSWingSegment::BuildGuideCurveWires(void)
             // otherwise get relative circumference from neighboring segment guide curve
             else {
                 // get neighboring guide curve UID
-                std::string neighborGuideCurveUID = guideCurve.GetFromGuideCurveUID();
+                std::string neighborGuideCurveUID = guideCurve.GetFromGuideCurveUID_choice1();
                 // get neighboring guide curve
-                CCPACSGuideCurve& neighborGuideCurve = wing->GetGuideCurve(neighborGuideCurveUID);
+                const CCPACSGuideCurve& neighborGuideCurve = wing->GetGuideCurve(neighborGuideCurveUID);
                 // get relative circumference from neighboring guide curve
                 fromRelativeCircumference = neighborGuideCurve.GetToRelativeCircumference();
             }
@@ -1288,7 +1252,7 @@ void CCPACSWingSegment::BuildGuideCurveWires(void)
 
 int CCPACSWingSegment::GetGuideCurveCount() const
 {
-    return guideCurves.GetGuideCurveCount();
+    return m_guideCurves->GetGuideCurveCount();
 }
 
 } // end namespace tigl

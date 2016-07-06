@@ -92,19 +92,5 @@ void CTiglAbstractPhysicalComponent::SetParentUID(const std::string& parentUID)
     this->parentUID = parentUID;
 }
 
-void CTiglAbstractPhysicalComponent::SetSymmetryAxis(const std::string& axis)
-{
-    CTiglAbstractGeometricComponent::SetSymmetryAxis(axis);
-
-    ChildContainerType::iterator it = childContainer.begin();
-    for (; it != childContainer.end(); ++it) {
-        CTiglAbstractPhysicalComponent * pChild = *it;
-        if (pChild) {
-            pChild->SetSymmetryAxis(axis);
-        }
-    }
-}
-
-
 } // namespace tigl
 

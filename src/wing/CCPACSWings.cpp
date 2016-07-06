@@ -32,19 +32,6 @@
 namespace tigl
 {
 
-// Constructor
-CCPACSWings::CCPACSWings(CCPACSConfiguration* config)
-    : configuration(config)
-{
-    Cleanup();
-}
-
-// Destructor
-CCPACSWings::~CCPACSWings(void)
-{
-    Cleanup();
-}
-
 // Invalidates internal state
 void CCPACSWings::Invalidate(void)
 {
@@ -54,103 +41,30 @@ void CCPACSWings::Invalidate(void)
     }
 }
 
-// Cleanup routine
-void CCPACSWings::Cleanup(void)
-{
-    for (CCPACSWingContainer::size_type i = 0; i < wings.size(); i++) {
-        delete wings[i];
-    }
-    wings.clear();
+namespace {
+    const std::string profilesXPath = "/cpacs/vehicles/profiles/wingAirfoils";
 }
 
+CCPACSWings::CCPACSWings() {}
+
+CCPACSWings::CCPACSWings(generated::CPACSRotorcraftModel* parent)
+    : generated::CPACSWings(parent) {}
+
+CCPACSWings::CCPACSWings(CCPACSModel* parent)
+    : generated::CPACSWings(parent) {}
+
 // Read CPACS wings element
-void CCPACSWings::ReadCPACS(TixiDocumentHandle tixiHandle, const char* configurationUID)
+void CCPACSWings::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& xpath)
 {
-    Cleanup();
-    char *tmpString = NULL;
-
-    if (tixiUIDGetXPath(tixiHandle, configurationUID, &tmpString) != SUCCESS) {
-        throw CTiglError("XML error: tixiUIDGetXPath failed in CCPACSWings::ReadCPACS", TIGL_XML_ERROR);
-    }
-
-    std::string wingXPath= tmpString;
-    wingXPath += "[@uID=\"";
-    wingXPath += configurationUID;
-    wingXPath += "\"]/wings";
-
-    // Read wing profiles
-    profiles.ReadCPACS(tixiHandle);
-
-    if (tixiCheckElement(tixiHandle, wingXPath.c_str()) != SUCCESS) {
-        return;
-    }
-
-    /* Get wing element count */
-    int wingCount;
-    if (tixiGetNamedChildrenCount(tixiHandle, wingXPath.c_str(), "wing", &wingCount) != SUCCESS) {
-        throw CTiglError("XML error: tixiGetNamedChildrenCount failed in CCPACSWings::ReadCPACS", TIGL_XML_ERROR);
-    }
-
-    // Loop over all wings
-    for (int i = 1; i <= wingCount; i++) {
-        CCPACSWing* wing = new CCPACSWing(configuration);
-        wings.push_back(wing);
-
-        std::ostringstream xpath;
-        xpath << wingXPath << "/wing[" << i << "]";
-        wing->ReadCPACS(tixiHandle, xpath.str());
-    }
+    profiles.ReadCPACS(tixiHandle, profilesXPath);
+    generated::CPACSWings::ReadCPACS(tixiHandle, xpath);
 }
 
 // Write CPACS wings elements
-void CCPACSWings::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& configurationUID)
+void CCPACSWings::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& xpath) const
 {
-    std::string wingXPathPrt;
-    char *tmpString = NULL;
-    std::string xpath;
-    int test, wingCount;
-    ReturnCode tixiRet;
-
-    // tixi frees tmpString internally when finished
-    if (tixiUIDGetXPath(tixiHandle, configurationUID.c_str(), &tmpString) != SUCCESS) {
-        throw CTiglError("XML error: tixiUIDGetXPath failed in CCPACSWings::WriteCPACS", TIGL_XML_ERROR);
-    }
-    if (strcmp(tmpString, "") == 0) {
-        throw CTiglError("XML error in CCPACSWings::WriteCPACS : Path not found", TIGL_XML_ERROR);
-    }
-
-    std::stringstream ss;
-    ss << tmpString << "[@uID=\"" << configurationUID << "\"]";
-    xpath = ss.str();
-    wingXPathPrt = xpath;
-    wingXPathPrt.append("/wings");
-
-    // save the wing profiles
-    profiles.WriteCPACS(tixiHandle);
-    TixiSaveExt::TixiSaveElement(tixiHandle, xpath.c_str(), "wings");
-
-    tixiRet = tixiGetNamedChildrenCount(tixiHandle, wingXPathPrt.c_str(), "wing", &test);
-    wingCount = this->GetWingCount();
-
-    for (int i = 1; i <= wingCount; i++) {
-        std::stringstream ss;
-        ss << wingXPathPrt << "/wing[" << i << "]";
-        xpath = ss.str();
-        CCPACSWing& wing = GetWing(i);
-        if ((tixiRet = tixiCheckElement(tixiHandle, xpath.c_str())) == ELEMENT_NOT_FOUND) {
-            if ((tixiRet = tixiCreateElement(tixiHandle, wingXPathPrt.c_str(), "wing")) != SUCCESS) {
-                throw CTiglError("XML error: tixiCreateElement failed in CCPACSWings::WriteCPACS", TIGL_XML_ERROR);
-            }
-        }
-        wing.WriteCPACS(tixiHandle, xpath);
-    }
-
-    for (int i = wingCount + 1; i <= test; i++) {
-        std::stringstream ss;
-        ss << wingXPathPrt << "/wing[" << wingCount + 1 << "]";
-        xpath = ss.str();
-        tixiRet = tixiRemoveElement(tixiHandle, xpath.c_str());
-    }
+    generated::CPACSWings::WriteCPACS(tixiHandle, xpath);
+    profiles.WriteCPACS(tixiHandle, profilesXPath);
 }
 
 bool CCPACSWings::HasProfile(std::string uid) const
@@ -184,7 +98,7 @@ CCPACSWingProfile& CCPACSWings::GetProfile(int index) const
 // Returns the total count of wings in a configuration
 int CCPACSWings::GetWingCount(void) const
 {
-    return (static_cast<int>(wings.size()));
+    return (static_cast<int>(m_wing.size()));
 }
 
 // Returns the wing for a given index.
@@ -194,16 +108,16 @@ CCPACSWing& CCPACSWings::GetWing(int index) const
     if (index < 0 || index >= GetWingCount()) {
         throw CTiglError("Error: Invalid index in CCPACSWings::GetWing", TIGL_INDEX_ERROR);
     }
-    return (*wings[index]);
+    return *m_wing[index];
 }
 
 // Returns the wing for a given UID.
 CCPACSWing& CCPACSWings::GetWing(const std::string& UID) const
 {
     for (int i=0; i < GetWingCount(); i++) {
-        const std::string tmpUID(wings[i]->GetUID());
+        const std::string tmpUID(m_wing[i]->GetUID());
         if (tmpUID == UID) {
-            return (*wings[i]);
+            return *m_wing[i];
         }
     }
 
@@ -214,17 +128,16 @@ CCPACSWing& CCPACSWings::GetWing(const std::string& UID) const
 void CCPACSWings::AddWing(CCPACSWing* wing)
 {
     // Check whether the same wing already exists if yes remove it before adding the new one
-    CCPACSWingContainer::iterator it;
-    for (it = wings.begin(); it != wings.end(); ++it) {
+    for (auto it = m_wing.begin(); it != m_wing.end(); ++it) {
         if ((*it)->GetUID() == wing->GetUID()) {
             delete (*it);
-            wings.erase(it);
+            m_wing.erase(it);
             break;
         }
     }
 
     // Add the new wing to the wing list
-    wings.push_back(wing);
+    m_wing.push_back(wing);
 }
 
 } // end namespace tigl

@@ -65,9 +65,8 @@ namespace tigl
 {
 
 // Constructor
-CCPACSWingProfile::CCPACSWingProfile(const std::string& path)
-    : ProfileXPath(path),
-    invalidated(true)
+CCPACSWingProfile::CCPACSWingProfile()
+    : invalidated(true)
 {
     Cleanup();
 }
@@ -81,10 +80,6 @@ CCPACSWingProfile::~CCPACSWingProfile(void)
 // Cleanup routine
 void CCPACSWingProfile::Cleanup(void)
 {
-    name = "";
-    description = "";
-    uid = "";
-
     if (profileAlgo) {
         profileAlgo->Cleanup();
     }
@@ -93,73 +88,19 @@ void CCPACSWingProfile::Cleanup(void)
 }
 
 // Read wing profile file
-void CCPACSWingProfile::ReadCPACS(TixiDocumentHandle tixiHandle)
+void CCPACSWingProfile::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
 {
     Cleanup();
-    std::string namePath = ProfileXPath + "/name";
-    std::string describtionPath = ProfileXPath + "/description";
-
-    try {
-        // Get profiles "uid"
-        char* ptrUID = NULL;
-        if (tixiGetTextAttribute(tixiHandle, ProfileXPath.c_str(), "uID", &ptrUID) == SUCCESS) {
-            uid = ptrUID;
-        }
-
-        // Get subelement "name"
-        char* ptrName = NULL;
-        if (tixiGetTextElement(tixiHandle, namePath.c_str(), &ptrName) == SUCCESS) {
-            name = ptrName;
-        }
-
-        // Get subelement "description"
-        char* ptrDescription = NULL;
-        if (tixiGetTextElement(tixiHandle, describtionPath.c_str(), &ptrDescription) == SUCCESS) {
-            description = ptrDescription;
-        }
-
-        // create wing profile algorithm via factory
-        profileAlgo = CCPACSWingProfileFactory::Instance().CreateProfileAlgo(tixiHandle, *this, ProfileXPath);
-        // read in wing profile data
-        profileAlgo->ReadCPACS(tixiHandle);
-    }
-    catch (...) {
-        throw;
-    }
+    generated::CPACSProfileGeometry::ReadCPACS(tixiHandle, xpath);
+    profileAlgo = CCPACSWingProfileFactory::Instance().CreateProfileAlgo(tixiHandle, *this, xpath);
+    profileAlgo->ReadCPACS(tixiHandle, xpath);
 }
 
 // Write CPACS wing profile file
-void CCPACSWingProfile::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& ProfileXPath)
+void CCPACSWingProfile::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
 {
-    // Set attribute "uID"
-    TixiSaveExt::TixiSaveTextAttribute(tixiHandle, ProfileXPath.c_str(), "uID", uid.c_str());
-    
-    // Set element "name"
-    TixiSaveExt::TixiSaveTextElement(tixiHandle, ProfileXPath.c_str(), "name", name.c_str());
-    
-    // Set element "name"
-    TixiSaveExt::TixiSaveTextElement(tixiHandle, ProfileXPath.c_str(), "description", description.c_str());
-    
-    // write profile data to CPACS
-    profileAlgo->WriteCPACS(tixiHandle, ProfileXPath);
-}
-
-// Returns the name of the wing profile
-const std::string& CCPACSWingProfile::GetName(void) const
-{
-    return name;
-}
-
-// Returns the describtion of the wing profile
-const std::string& CCPACSWingProfile::GetDescription(void) const
-{
-    return description;
-}
-
-// Returns the UID of the wing profile
-const std::string& CCPACSWingProfile::GetUID(void) const
-{
-    return uid;
+    generated::CPACSProfileGeometry::WriteCPACS(tixiHandle, xpath);
+    profileAlgo->WriteCPACS(tixiHandle, xpath);
 }
 
 // Invalidates internal wing profile state

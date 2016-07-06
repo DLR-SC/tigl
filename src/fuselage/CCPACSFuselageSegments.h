@@ -26,42 +26,21 @@
 #ifndef CCPACSFUSELAGESEGMENTS_H
 #define CCPACSFUSELAGESEGMENTS_H
 
-#include "tigl_internal.h"
-#include "tixi.h"
-
-#include <string>
-#include <vector>
+#include "generated/CPACSFuselageSegments.h"
 
 namespace tigl
 {
-
-class CCPACSFuselage;
 class CCPACSFuselageSegment;
 
-class CCPACSFuselageSegments
+class CCPACSFuselageSegments : public generated::CPACSFuselageSegments
 {
-
-private:
-    // Typedef for a CCPACSFuselageSegment container to store the segments of a fuselage.
-    typedef std::vector<CCPACSFuselageSegment*> CCPACSFuselageSegmentContainer;
-
 public:
-    // Constructor
-    TIGL_EXPORT CCPACSFuselageSegments(CCPACSFuselage* aFuselage);
-
-    // Virtual Destructor
-    TIGL_EXPORT virtual ~CCPACSFuselageSegments(void);
+	TIGL_EXPORT CCPACSFuselageSegments(CCPACSFuselage* parent);
 
     // Invalidates internal state
     TIGL_EXPORT void Invalidate(void);
 
-    // Read CPACS segments element
-    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& fuselageXPath);
-
-    // Write CPACS segments element
-    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& fuselageXPath);
-
-    // Gets a segment by index. 
+    // Gets a segment by index.
     TIGL_EXPORT CCPACSFuselageSegment& GetSegment(int index);
 
     // Gets a segment by uid 
@@ -69,22 +48,6 @@ public:
 
     // Gets total segment count
     TIGL_EXPORT int GetSegmentCount(void) const;
-
-protected:
-    // Cleanup routine
-    void Cleanup(void);
-
-private:
-    // Copy constructor
-    CCPACSFuselageSegments(const CCPACSFuselageSegments& );
-
-    // Assignment operator
-    void operator=(const CCPACSFuselageSegments& );
-
-private:
-    CCPACSFuselageSegmentContainer segments; /**< Segment elements    */
-    CCPACSFuselage*                fuselage; /**< Parent fuselage     */
-
 };
 
 } // end namespace tigl

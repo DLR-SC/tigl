@@ -23,6 +23,7 @@
 #ifndef CCPACSGUIDECURVE_H
 #define CCPACSGUIDECURVE_H
 
+#include "generated/CPACSGuideCurve.h"
 #include "tigl_internal.h"
 #include "tixi.h"
 #include "CSharedPtr.h"
@@ -38,74 +39,33 @@ namespace tigl
 class CTiglPoint;
 typedef class CSharedPtr<CTiglPoint> PCTiglPoint;
 
-class CCPACSGuideCurve
+class CCPACSGuideCurve : public generated::CPACSGuideCurve
 {
-
-private:
-    // Typedefs for a container to store the coordinates of a guide curve element.
-    typedef std::vector<PCTiglPoint> CCPACSGuideCurvePoints;
-
 public:
     // Constructor
-    TIGL_EXPORT CCPACSGuideCurve(const std::string& path);
+    TIGL_EXPORT CCPACSGuideCurve();
 
     // Virtual Destructor
     TIGL_EXPORT virtual ~CCPACSGuideCurve(void);
 
     // Read CPACS guide curve file
-    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle);
-
-    // Returns the name of the guide curve
-    TIGL_EXPORT const std::string& GetName(void) const;
-
-    // Returns the description of the guide curve
-    TIGL_EXPORT const std::string& GetDescription(void) const;
-
-    // Returns the UID of the guide curve
-    TIGL_EXPORT const std::string& GetUID(void) const;
-
-    // Returns the guide curve profile UID
-    TIGL_EXPORT const std::string& GetGuideCurveProfileUID(void) const;
+    TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
 
     // Check if fromRelativeCircumference is set
     TIGL_EXPORT bool GetFromRelativeCircumferenceIsSet(void) const;
 
-    // Returns the UID of the neighboring guide curve
-    TIGL_EXPORT const std::string& GetFromGuideCurveUID(void) const;
-
     // Returns the relative circumference of the starting profile
-    TIGL_EXPORT const double& GetFromRelativeCircumference(void) const;
+    TIGL_EXPORT double GetFromRelativeCircumference(void) const;
 
     // Returns the relative circumference of the end profile
-    TIGL_EXPORT const double& GetToRelativeCircumference(void) const;
+    TIGL_EXPORT double GetToRelativeCircumference(void) const;
 
 protected:
     // Cleanup routine
     void Cleanup(void);
 
 private:
-    // Copy constructor
-    CCPACSGuideCurve(const CCPACSGuideCurve&)
-    {
-        /* Do nothing */
-    };
-
-    // Assignment operator
-    void operator=(const CCPACSGuideCurve&)
-    {
-        /* Do nothing */
-    };
-
-    std::string GuideCurveXPath;          /**< The XPath to this guide curve in cpacs */
-    std::string name;                     /**< The Name of the guide curve */
-    std::string description;              /**< The description of the guide curve */
-    std::string uid;                      /**< The UID of the guide curve */
-    std::string profileUID;               /**< The UID of the guide curve profile */
-    std::string fromGuideCurveUID;        /**< The UID of the neighboring guide curve */
     bool fromRelativeCircumferenceIsSet;  /**< Determine if fromRelativeCircumference is set */
-    double fromRelativeCircumference;     /**< The relative circumfence of the starting profile */ 
-    double toRelativeCircumference;       /**< The relative circumfence of the end profile */ 
-
 };
 
 } // end namespace tigl

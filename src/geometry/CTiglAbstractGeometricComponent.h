@@ -35,13 +35,10 @@
 
 #include "ITiglGeometricComponent.h"
 
-
-namespace tigl 
+namespace tigl
 {
-
 class CTiglAbstractGeometricComponent : public ITiglGeometricComponent
 {
-
 public:
     // Constructor
     TIGL_EXPORT CTiglAbstractGeometricComponent(void);
@@ -55,20 +52,17 @@ public:
     // Get the loft mirrored at the mirror plane
     TIGL_EXPORT virtual PNamedShape GetMirroredLoft(void);
 
-    // Gets the component uid
-    TIGL_EXPORT virtual const std::string& GetUID(void) const;
-
-    // Sets the component uid
-    TIGL_EXPORT virtual void SetUID(const std::string& uid);
-
     // Gets symmetry axis
-    TIGL_EXPORT virtual TiglSymmetryAxis GetSymmetryAxis(void);
-
-    // Gets symmetry axis as string
-    TIGL_EXPORT virtual const char* GetSymmetryAxisString(void) const;
+    TIGL_EXPORT virtual TiglSymmetryAxis GetSymmetryAxis(void) = 0;
 
     // Sets symmetry axis
-    TIGL_EXPORT virtual void SetSymmetryAxis(const std::string& axis);
+    TIGL_EXPORT virtual void SetSymmetryAxis(const TiglSymmetryAxis& axis) = 0;
+
+    // Gets symmetry axis as string
+    TIGL_EXPORT std::string GetSymmetryAxisString();
+
+    // Sets symmetry axis as string
+    TIGL_EXPORT void SetSymmetryAxis(const std::string& axis);
 
     // Get transformation object
     TIGL_EXPORT virtual CTiglTransformation GetTransformation(void);
@@ -101,7 +95,7 @@ protected:
     virtual PNamedShape BuildLoft(void) = 0;
 
     CTiglTransformation        transformation;
-    CTiglTransformation        backTransformation;
+    //CTiglTransformation        backTransformation;
     CTiglPoint                 translation;
     ECPACSTranslationType      translationType;
     CTiglPoint                 scaling;
@@ -110,13 +104,10 @@ protected:
 
 private:
     // Copy constructor
-    CTiglAbstractGeometricComponent(const CTiglAbstractGeometricComponent& ) { /* Do nothing */ }
+    CTiglAbstractGeometricComponent(const CTiglAbstractGeometricComponent&) = delete;
 
     // Assignment operator
-    void operator=(const CTiglAbstractGeometricComponent& );
-
-    std::string        myUID;           /**< UID of this component               */
-    TiglSymmetryAxis   mySymmetryAxis;  /**< SymmetryAxis of this component      */
+    void operator=(const CTiglAbstractGeometricComponent& ) = delete;
 };
 
 } // end namespace tigl

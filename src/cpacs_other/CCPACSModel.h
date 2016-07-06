@@ -26,25 +26,40 @@
 #ifndef CCPACSMODEL_H
 #define CCPACSMODEL_H
 
+#include "generated/CPACSAircraftModel.h"
 #include "CTiglAbstractPhysicalComponent.h"
 
 namespace tigl
 {
+class CCPACSConfiguration;
 
-class CCPACSModel : public CTiglAbstractPhysicalComponent
+class CCPACSModel : public generated::CPACSAircraftModel, public CTiglAbstractPhysicalComponent
 {
 public:
     // Construct
-    TIGL_EXPORT CCPACSModel(void);
+    TIGL_EXPORT CCPACSModel();
+    TIGL_EXPORT CCPACSModel(CCPACSConfiguration* config);
 
     // Virtual Destructor
     TIGL_EXPORT virtual ~CCPACSModel(void);
 
+    TIGL_EXPORT virtual const std::string& GetUID() const override;
+    TIGL_EXPORT virtual void SetUID(const std::string& uid) override;
+
+    TIGL_EXPORT virtual TiglSymmetryAxis GetSymmetryAxis(void) override;
+    TIGL_EXPORT virtual void SetSymmetryAxis(const TiglSymmetryAxis& axis) override;
+
     // Returns the Geometric type of this component, e.g. Wing or Fuselage
     TIGL_EXPORT TiglGeometricComponentType GetComponentType(void);
 
+    TIGL_EXPORT CCPACSConfiguration& GetConfiguration() const;
+
+    void Invalidate();
+
 protected:
     PNamedShape BuildLoft(void);
+
+	CCPACSConfiguration* config;
 };
 
 } // end namespace tigl

@@ -46,41 +46,12 @@
 
 namespace tigl
 {
-
-namespace
-{
-    // helper function to read in tixi vector
-    std::vector<double> readTixiVector (TixiDocumentHandle tixiHandle, const std::string& xpath, const std::string& name, const std::string& funcname)
-    {
-        std::string fullpath = xpath + name;
-        int count;
-        if (tixiGetVectorSize(tixiHandle, fullpath.c_str(), &count) != SUCCESS) {
-            throw CTiglError("Error: XML error while reading vector <" + name + "> in " + funcname, TIGL_XML_ERROR);
-        }
-        double *tmp;
-        if (tixiGetFloatVector(tixiHandle, fullpath.c_str(), &tmp, count) != SUCCESS)  {
-            throw CTiglError("Error: XML error while reading vector <" + name + "> in " + funcname, TIGL_XML_ERROR);
-        }
-        std::vector<double> res(tmp, tmp+count);
-        return res;
-    }
-    // helper function to read in tixi double
-    double readTixiDouble (TixiDocumentHandle tixiHandle, const std::string& xpath, const std::string& name, const std::string& funcname)
-    {
-        std::string fullpath = xpath + name;
-        double res;
-        if (tixiGetDoubleElement(tixiHandle, fullpath.c_str(), &res) != SUCCESS) {
-            throw CTiglError("Error: XML error while reading double <" + name + "> in " + funcname, TIGL_XML_ERROR);
-        }
-        return res;
-    }
-} // anonymous namespace
-
-
 // register profile algo at factory
 PTiglWingProfileAlgo CreateProfileCST(const CCPACSWingProfile& profile, const std::string& cpacsPath)
 {
-    return PTiglWingProfileAlgo(new CCPACSWingProfileCST(profile, cpacsPath));
+    auto p = new CCPACSWingProfileCST();
+    p->SetProfileDataXPath(cpacsPath);
+    return PTiglWingProfileAlgo(p);
 }
 
 AUTORUN(CCPACSWingProfileCST)
@@ -89,9 +60,8 @@ AUTORUN(CCPACSWingProfileCST)
 }
 
 // Constructor
-CCPACSWingProfileCST::CCPACSWingProfileCST(const CCPACSWingProfile& profile, const std::string& path)
+CCPACSWingProfileCST::CCPACSWingProfileCST()
 {
-    ProfileDataXPath=path + "/" + CPACSID();
     trailingEdge.Nullify();
 }
 
@@ -105,45 +75,24 @@ std::string CCPACSWingProfileCST::CPACSID()
     return "cst2D";
 }
 
+void CCPACSWingProfileCST::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& profileXPath) {
+    ProfileDataXPath = profileXPath;
+    generated::CPACSCst2D::ReadCPACS(tixiHandle, profileXPath);
+}
+
+void CCPACSWingProfileCST::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& profileXPath) const {
+    generated::CPACSCst2D::WriteCPACS(tixiHandle, profileXPath);
+}
+
 // Cleanup routine
 void CCPACSWingProfileCST::Cleanup(void)
 {
-    upperB.clear();
-    lowerB.clear();
     trailingEdge.Nullify();
 }
 
 void CCPACSWingProfileCST::Update(void)
 {
     BuildWires();
-}
-
-// Read wing profile file
-void CCPACSWingProfileCST::ReadCPACS(TixiDocumentHandle tixiHandle)
-{
-    upperB=readTixiVector(tixiHandle, ProfileDataXPath, "/upperB", "CCPACSWingProfileCST::ReadCPACS"); 
-    lowerB=readTixiVector(tixiHandle, ProfileDataXPath, "/lowerB", "CCPACSWingProfileCST::ReadCPACS"); 
-    upperN1=readTixiDouble(tixiHandle, ProfileDataXPath, "/upperN1", "CCPACSWingProfileCST::ReadCPACS"); 
-    upperN2=readTixiDouble(tixiHandle, ProfileDataXPath, "/upperN2", "CCPACSWingProfileCST::ReadCPACS"); 
-    lowerN1=readTixiDouble(tixiHandle, ProfileDataXPath, "/lowerN1", "CCPACSWingProfileCST::ReadCPACS"); 
-    lowerN2=readTixiDouble(tixiHandle, ProfileDataXPath, "/lowerN2", "CCPACSWingProfileCST::ReadCPACS"); 
-}
-
-// Write CPACS wing profile
-void CCPACSWingProfileCST::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& ProfileXPath)
-{
-    // Set the element "point"
-    TixiSaveExt::TixiSaveElement(tixiHandle, ProfileXPath.c_str(), CPACSID().c_str() );
-
-    std::string elementPath = ProfileXPath + "/" + CPACSID();
-
-    TixiSaveExt::TixiSaveVector(tixiHandle, elementPath, "upperB", upperB);
-    TixiSaveExt::TixiSaveVector(tixiHandle, elementPath, "lowerB", lowerB);
-    TixiSaveExt::TixiSaveDoubleElement(tixiHandle, elementPath.c_str(), "upperN1", upperN1);
-    TixiSaveExt::TixiSaveDoubleElement(tixiHandle, elementPath.c_str(), "upperN2", upperN2);
-    TixiSaveExt::TixiSaveDoubleElement(tixiHandle, elementPath.c_str(), "lowerN1", lowerN1);
-    TixiSaveExt::TixiSaveDoubleElement(tixiHandle, elementPath.c_str(), "lowerN2", lowerN2);
-
 }
 
 // Builds the wing profile wire. The returned wire is already transformed by the
@@ -154,15 +103,15 @@ void CCPACSWingProfileCST::BuildWires()
     yzSwitch.SetMirror(gp_Ax2(gp_Pnt(0.,0.,0.), gp_Dir(0.,-1.,1.)));
     
     // Build upper wire
-    CCSTCurveBuilder upperBuilder(upperN1, upperN2, upperB);
+    CCSTCurveBuilder upperBuilder(upperN1, upperN2, m_upperB.GetVector());
     Handle_Geom_BSplineCurve upperCurve = upperBuilder.Curve();
     upperCurve->Transform(yzSwitch);
     upperWire = BRepBuilderAPI_MakeEdge(upperCurve);
     
     // Build lower curve, 
     std::vector<double> binv;
-    for (unsigned int i = 0; i < lowerB.size(); ++i) {
-        binv.push_back(-lowerB[i]);
+    for (unsigned int i = 0; i < m_lowerB.GetVector().size(); ++i) {
+        binv.push_back(-m_lowerB.GetVector()[i]);
     }
     
     CCSTCurveBuilder lowerBuilder(lowerN1, lowerN2, binv);
@@ -193,6 +142,10 @@ std::vector<CTiglPoint*> CCPACSWingProfileCST::GetSamplePoints() const
 const std::string & CCPACSWingProfileCST::GetProfileDataXPath() const
 {
     return ProfileDataXPath;
+}
+
+void CCPACSWingProfileCST::SetProfileDataXPath(const std::string& xpath) {
+    ProfileDataXPath = xpath;
 }
 
 // Getter for upper wire of closed profile

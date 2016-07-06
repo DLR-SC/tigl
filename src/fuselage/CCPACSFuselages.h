@@ -26,10 +26,9 @@
 #ifndef CCPACSFUSELAGES_H
 #define CCPACSFUSELAGES_H
 
+#include "generated/CPACSFuselages.h"
 #include "tigl_internal.h"
-#include <vector>
 
-#include "tixi.h"
 #include "CCPACSFuselage.h"
 #include "CCPACSFuselageProfile.h"
 #include "CCPACSFuselageProfiles.h"
@@ -37,31 +36,21 @@
 
 namespace tigl
 {
-
-class CCPACSConfiguration;
-
-class CCPACSFuselages
+class CCPACSFuselages : public generated::CPACSFuselages
 {
-
-private:
-    // Typedef for a CCPACSFuselage container to store the fuselages of a configuration.
-    typedef std::vector<CCPACSFuselage*> CCPACSFuselageContainer;
-
 public:
-    // Constructor
-    TIGL_EXPORT CCPACSFuselages(CCPACSConfiguration* config);
-
-    // Virtual Destructor
-    TIGL_EXPORT virtual ~CCPACSFuselages(void);
+    TIGL_EXPORT CCPACSFuselages();
+    TIGL_EXPORT CCPACSFuselages(CCPACSModel* parent);
+    TIGL_EXPORT CCPACSFuselages(generated::CPACSRotorcraftModel* parent);
 
     // Invalidates internal state
     TIGL_EXPORT void Invalidate(void);
 
     // Read CPACS fuselage elements
-    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const char* configurationUID);
+    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& xpath);
 
     // Write CPACS fuselage elements
-    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& configurationUID);
+    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& xpath) const;
 
     TIGL_EXPORT bool HasProfile(std::string uid) const;
 
@@ -87,22 +76,8 @@ public:
     // Adds a new fuselage to the list of fuselages
     TIGL_EXPORT void AddFuselage(CCPACSFuselage* fuselage);
 
-protected:
-    // Cleanup routine
-    void Cleanup(void);
-
 private:
-    // Copy constructor
-    CCPACSFuselages(const CCPACSFuselages& );
-
-    // Assignment operator
-    void operator=(const CCPACSFuselages& );
-
-private:
-    CCPACSFuselageProfiles   profiles;      /**< Fuselage profile elements */
-    CCPACSFuselageContainer  fuselages;     /**< Fuselage elements */
-    CCPACSConfiguration*     configuration; /**< Pointer to parent configuration */
-
+    CCPACSFuselageProfiles profiles;      /**< Fuselage profile elements */
 };
 
 } // end namespace tigl

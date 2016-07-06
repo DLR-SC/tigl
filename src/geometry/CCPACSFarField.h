@@ -19,6 +19,7 @@
 #ifndef CCPACSFARFIELD_H
 #define CCPACSFARFIELD_H
 
+#include "generated/CPACSFarField.h"
 #include "CTiglAbstractGeometricComponent.h"
 #include "tixi.h"
 #include "tigl_internal.h"
@@ -27,38 +28,28 @@
 namespace tigl
 {
 
-enum TiglFarFieldType
-{
-    NONE,
-    HALF_SPHERE,
-    FULL_SPHERE,
-    HALF_CUBE,
-    FULL_CUBE
-};
-
-class CCPACSFarField : public CTiglAbstractGeometricComponent
+class CCPACSFarField : public generated::CPACSFarField, public CTiglAbstractGeometricComponent
 {
 public:
     TIGL_EXPORT CCPACSFarField();
     TIGL_EXPORT ~CCPACSFarField();
 
-    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle);
+    TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
+
+    TIGL_EXPORT virtual const std::string& GetUID() const override;
+    TIGL_EXPORT virtual void SetUID(const std::string& uid) override;
+
+    TIGL_EXPORT virtual TiglSymmetryAxis GetSymmetryAxis(void) override;
+    TIGL_EXPORT virtual void SetSymmetryAxis(const TiglSymmetryAxis& axis) override;
 
     // Returns the Geometric type of this component, e.g. Wing or Fuselage
     TIGL_EXPORT virtual TiglGeometricComponentType GetComponentType(void);
-
-    TIGL_EXPORT TiglFarFieldType GetFieldType();
 
 protected:
     virtual PNamedShape BuildLoft(void);
 
 private:
     void init();
-
-    TiglFarFieldType fieldType;
-
-    /// depending on fieldtype either cross section of sphere or sidelength of cube (reference length in cpacs)
-    double fieldSize;
 };
 
 } // namespace tigl
