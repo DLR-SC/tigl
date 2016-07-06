@@ -34,26 +34,24 @@
 namespace tigl
 {
 
+CCPACSFuselageConnection::CCPACSFuselageConnection() : elementUID(nullptr), segment(nullptr) {}
+
 // Constructor
-CCPACSFuselageConnection::CCPACSFuselageConnection(CCPACSFuselageSegment* aSegment)
-    : segment(aSegment)
+CCPACSFuselageConnection::CCPACSFuselageConnection(const std::string& elementUID, CCPACSFuselageSegment* aSegment)
+    : elementUID(&elementUID), segment(aSegment)
 {
-    Cleanup();
-}
-
-// Destructor
-CCPACSFuselageConnection::~CCPACSFuselageConnection(void)
-{
-    Cleanup();
-}
-
-// Cleanup routine
-void CCPACSFuselageConnection::Cleanup(void)
-{
-    sectionUID = "";
-    elementUID = "";
-    sectionIndex = -1;
-    elementIndex = -1;
+    // find the corresponding section to this segment
+    CCPACSFuselage& fuselage = segment->GetFuselage();
+    for (int i = 1; i <= fuselage.GetSectionCount(); i++) {
+        CCPACSFuselageSection& section = fuselage.GetSection(i);
+        for (int j = 1; j <= section.GetSectionElementCount(); j++) {
+            if (section.GetSectionElement(j).GetUID() == elementUID) {
+                sectionUID = section.GetUID();
+                sectionIndex = i;
+                elementIndex = j;
+            }
+        }
+    }
 }
 
 // Returns the section index of this connection
@@ -65,7 +63,7 @@ const std::string& CCPACSFuselageConnection::GetSectionUID(void) const
 // Returns the section element index of this connection
 const std::string& CCPACSFuselageConnection::GetSectionElementUID(void) const
 {
-    return elementUID;
+    return *elementUID;
 }
 
 
@@ -92,7 +90,7 @@ CCPACSFuselageProfile& CCPACSFuselageConnection::GetProfile(void) const
     for (int i=1; i <= fuselage.GetSectionCount(); i++) {
         CCPACSFuselageSection& section = fuselage.GetSection(i);
         for (int j=1; j <= section.GetSectionElementCount(); j++) {
-            if (section.GetSectionElement(j).GetUID() == elementUID ) {
+            if (section.GetSectionElement(j).GetUID() == *elementUID ) {
                 CCPACSFuselageSectionElement& element = section.GetSectionElement(j);
                 profileUID = element.GetProfileIndex();
                 found = true;
@@ -123,7 +121,7 @@ CTiglTransformation CCPACSFuselageConnection::GetSectionTransformation(void) con
     for (int i = 1; i <= fuselage.GetSectionCount(); i++) {
         CCPACSFuselageSection& section = fuselage.GetSection(i);
         for (int j = 1; j <= section.GetSectionElementCount(); j++) {
-            if (section.GetSectionElement(j).GetUID() == elementUID) {
+            if (section.GetSectionElement(j).GetUID() == *elementUID) {
                 transformation = section.GetSectionTransformation();
             }
         }
@@ -140,44 +138,13 @@ CTiglTransformation CCPACSFuselageConnection::GetSectionElementTransformation(vo
     for (int i = 1; i <= fuselage.GetSectionCount(); i++) {
         CCPACSFuselageSection& section = fuselage.GetSection(i);
         for (int j = 1; j <= section.GetSectionElementCount(); j++) {
-            if (section.GetSectionElement(j).GetUID() == elementUID) {
+            if (section.GetSectionElement(j).GetUID() == *elementUID) {
                 CCPACSFuselageSectionElement& element = section.GetSectionElement(j);
                 transformation = element.GetSectionElementTransformation();
             }
         }  
     }
     return transformation;
-}
-
-// Read CPACS section elements
-void CCPACSFuselageConnection::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& connectionXPath)
-{
-    Cleanup();
-
-    char*       elementPath;
-    std::string tempString;
-
-    // Get subelement "element"
-    char* ptrElementUID = NULL;
-    tempString    = connectionXPath;
-    elementPath   = const_cast<char*>(tempString.c_str());
-    if (tixiGetTextElement(tixiHandle, elementPath, &ptrElementUID) != SUCCESS) {
-        throw CTiglError("Error: Can't read element <element/> in CCPACSFuselageConnection::ReadCPACS", TIGL_XML_ERROR);
-    }
-    elementUID = ptrElementUID;
-
-    // find the corresponding section to this segment
-    CCPACSFuselage& fuselage = segment->GetFuselage();
-    for (int i=1; i <= fuselage.GetSectionCount(); i++) {
-        CCPACSFuselageSection& section = fuselage.GetSection(i);
-        for (int j=1; j <= section.GetSectionElementCount(); j++) {
-            if (section.GetSectionElement(j).GetUID() == elementUID ) {
-                sectionUID = section.GetUID();
-                sectionIndex = i;
-                elementIndex = j;
-            }
-        }
-    }
 }
 
 } // end namespace tigl

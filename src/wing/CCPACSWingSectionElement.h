@@ -26,42 +26,18 @@
 #ifndef CCPACSWINGSECTIONELEMENT_H
 #define CCPACSWINGSECTIONELEMENT_H
 
-#include "tigl_internal.h"
-#include "tixi.h"
+#include "generated/CPACSWingElement.h"
 #include "CTiglTransformation.h"
 #include "CTiglPoint.h"
-#include <string>
 
 namespace tigl
 {
 
-class CCPACSWingSectionElement
+class CCPACSWingSectionElement : public generated::CPACSWingElement
 {
-
 public:
-    // Constructor
-    TIGL_EXPORT CCPACSWingSectionElement();
-
-    // Virtual Destructor
-    TIGL_EXPORT virtual ~CCPACSWingSectionElement(void);
-
-    // Read CPACS wing section element
-    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& elementXPath);
-
-    // Write CPACS wing section element
-    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& elementXPath);
-
     // Returns the UID of the referenced wing profile
     TIGL_EXPORT std::string GetProfileIndex(void) const;
-
-    // Returns the UID of the WingSectionElement
-    TIGL_EXPORT std::string GetUID(void) const;
-
-    // Getter for the member name
-    TIGL_EXPORT std::string GetName(void) const;
-
-    // Getter for the member description
-    TIGL_EXPORT std::string GetDescription(void) const;
 
     // Returns the UID of the profile of this element
     TIGL_EXPORT std::string GetProfileUID(void) const;
@@ -86,34 +62,6 @@ public:
 
     // Setter for scaling
     TIGL_EXPORT void SetScaling(const CTiglPoint& scaling);
-
-protected:
-    // Cleanup routine
-    void Cleanup(void);
-
-    // Build transformation matrix for the section element
-    void BuildMatrix(void);
-
-    // Update internal section element data
-    void Update(void);
-
-private:
-    // Copy constructor
-    CCPACSWingSectionElement(const CCPACSWingSectionElement& );
-
-    // Assignment operator
-    void operator=(const CCPACSWingSectionElement& );
-
-private:
-    std::string           name;           /**< Section name                          */
-    std::string           description;    /**< Section name                          */
-    std::string           profileUID;     /**< Profile index in wing profile library */
-    std::string           uID;            /**< UID of the WingSectionElement         */
-    CTiglTransformation   transformation; /**< Section element transformation        */
-    CTiglPoint            translation;
-    CTiglPoint            scaling;
-    CTiglPoint            rotation;
-
 };
 
 } // end namespace tigl

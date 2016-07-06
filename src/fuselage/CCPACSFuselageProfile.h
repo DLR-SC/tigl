@@ -25,6 +25,7 @@
 #ifndef CCPACSFUSELAGEPROFILE_H
 #define CCPACSFUSELAGEPROFILE_H
 
+#include "generated/CPACSProfileGeometry.h"
 #include "tigl_internal.h"
 #include "tixi.h"
 #include "TopoDS_Wire.hxx"
@@ -43,38 +44,33 @@ class ITiglWireAlgorithm;
 
 typedef ITiglWireAlgorithm* WireAlgoPointer;
 
-class CCPACSFuselageProfile
+class CCPACSFuselageProfile : public generated::CPACSProfileGeometry
 {
-
-private:
-    // Typedef for a container to store the coordinates of a fuselage profile element.
-    typedef std::vector<CTiglPoint*> CCPACSCoordinateContainer;
-
 public:
     // Constructor
-    TIGL_EXPORT CCPACSFuselageProfile(const std::string& path);
+    TIGL_EXPORT CCPACSFuselageProfile();
 
     // Virtual Destructor
     TIGL_EXPORT virtual ~CCPACSFuselageProfile(void);
 
     // Read CPACS fuselage profile file
-    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle);
+    TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
 
     // Write CPACS fuselage profile file
-    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& profileXPath);
+    TIGL_EXPORT void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
     // Returns the filename of the fuselage profile file
-    TIGL_EXPORT const std::string& GetFileName(void) const;
+    //TIGL_EXPORT const std::string& GetFileName(void) const;
 
-    // Returns the name of the fuselage profile
-    TIGL_EXPORT const std::string& GetName(void) const;
+    //// Returns the name of the fuselage profile
+    //TIGL_EXPORT const std::string& GetName(void) const;
 
-    // Returns the UID of the fuselage profile
-    TIGL_EXPORT const std::string& GetUID(void) const;
-    
-    // Returns the name of the fuselage profile
-    TIGL_EXPORT const std::string& GetDescription(void) const;
-    
+    //// Returns the UID of the fuselage profile
+    //TIGL_EXPORT const std::string& GetUID(void) const;
+    //
+    //// Returns the name of the fuselage profile
+    //TIGL_EXPORT const std::string& GetDescription(void) const;
+    //
     // Returns the name of the fuselage profile
     TIGL_EXPORT const int GetNumPoints(void) const;
 
@@ -126,29 +122,23 @@ protected:
     void BuildDiameterPoints(void);
 
 private:
-    // Copy constructor
-    CCPACSFuselageProfile(const CCPACSFuselageProfile&);
-
-    // Assignment operator
-    void operator=(const CCPACSFuselageProfile&);
-
     // Checks is two point are the same, or nearly the same.
     bool checkSamePoints(gp_Pnt pointA, gp_Pnt pointB);
 
 private:
-    std::string               ProfileXPath;   /**< The XPath to this profile in cpacs */
-    std::string               name;           /**< The Name of the profile */
-    std::string               description;    /**< The description of the profile */
-    std::string               uid;            /**< The UID of this profile */
-    bool                      mirrorSymmetry; /**< Mirror symmetry with repect to the x-z plane */
-    CCPACSCoordinateContainer coordinates;    /**< Coordinates of a fuselage profile element */
-    bool                      invalidated;    /**< Flag if element is invalid */
-    TopoDS_Wire               wireOriginal;   /**< Original fuselage profile wire */
-    TopoDS_Wire               wireClosed;     /**< Forced closed fuselage profile wire */
-    double                    wireLength;     /**< Length of fuselage profile wire */
-    WireAlgoPointer           profileWireAlgo;
-    gp_Pnt                    startDiameterPoint; 
-    gp_Pnt                    endDiameterPoint;  
+    //std::string               ProfileXPath;   /**< The XPath to this profile in cpacs */
+    //std::string               name;           /**< The Name of the profile */
+    //std::string               description;    /**< The description of the profile */
+    //std::string               uid;            /**< The UID of this profile */
+    bool                    mirrorSymmetry; /**< Mirror symmetry with repect to the x-z plane */
+    std::vector<CTiglPoint> coordinates;    /**< Coordinates of a fuselage profile element */
+    bool                    invalidated;    /**< Flag if element is invalid */
+    TopoDS_Wire             wireOriginal;   /**< Original fuselage profile wire */
+    TopoDS_Wire             wireClosed;     /**< Forced closed fuselage profile wire */
+    double                  wireLength;     /**< Length of fuselage profile wire */
+    WireAlgoPointer         profileWireAlgo;
+    gp_Pnt                  startDiameterPoint; 
+    gp_Pnt                  endDiameterPoint;  
 
 };
 

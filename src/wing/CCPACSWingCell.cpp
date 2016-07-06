@@ -68,24 +68,17 @@ CCPACSWingCell::CCPACSWingCell()
     reset();
 }
 
-const std::string& CCPACSWingCell::GetUID() const
-{
-    return uid;
-}
-
 void CCPACSWingCell::reset()
 {
-    innerBorderEta1 = 0.;
-    innerBorderEta2 = 0.;
-    outerBorderEta1 = 0.;
-    outerBorderEta2 = 0.;
-    leadingEdgeXsi1 = 0.;
-    leadingEdgeXsi2 = 0.;
-    trailingEdgeXsi1 = 0.;
-    trailingEdgeXsi2 = 0.;
-    
-    uid = "";
-
+    m_positioningInnerBorder.SetEta1_choice1(0);
+    m_positioningInnerBorder.SetEta1_choice1(0);
+    m_positioningOuterBorder.SetEta1_choice1(0);
+    m_positioningOuterBorder.SetEta2_choice1(0);
+    m_positioningLeadingEdge.SetXsi1_choice2(0);
+    m_positioningLeadingEdge.SetXsi2_choice2(0);
+    m_positioningTrailingEdge.SetXsi1_choice2(0);
+    m_positioningTrailingEdge.SetXsi2_choice2(0);
+    m_uID = "";
 }
 
 bool CCPACSWingCell::IsConvex() const
@@ -165,177 +158,156 @@ bool CCPACSWingCell::IsInside(double eta, double xsi) const
 
 void CCPACSWingCell::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string &cellXPath)
 {
-    // check path
-    if ( tixiCheckElement(tixiHandle, cellXPath.c_str()) != SUCCESS) {
-        LOG(ERROR) << "Wing Cell " << cellXPath << " not found in CPACS file!" << std::endl;
-        return;
-    }
-    
     reset();
-    
-    // Get UID
-    char * nameStr = NULL;
-    if ( tixiGetTextAttribute(tixiHandle, cellXPath.c_str(), "uID", &nameStr) != SUCCESS ) {
-        throw tigl::CTiglError("No UID given for wing cell " + cellXPath + "!", TIGL_UID_ERROR);
-    }
-    
-    double iBE1, iBE2, oBE1, oBE2, lEX1, lEX2, tEX1, tEX2;
-    
-    // get postionings of cell
-    std::string positioningString;
-    positioningString = cellXPath + "/positioningLeadingEdge/sparUID";
-    if ( tixiCheckElement(tixiHandle, positioningString.c_str()) == SUCCESS) {
-        LOG(WARNING) << "In " << cellXPath << ": Cell positiongs via spars is currently not supported by TiGL. Please use eta/xsi definitions.";
-        lEX1 = 0.; lEX2 = 0.;
-    }
-    else {
-        positioningString = cellXPath + "/positioningLeadingEdge/xsi1";
-        if ( tixiGetDoubleElement(tixiHandle, positioningString.c_str(), &lEX1) != SUCCESS) {
-            throw tigl::CTiglError("No leading edge xsi1 positioning given for wing cell " + cellXPath + "!", TIGL_ERROR);
-        }
-        
-        positioningString = cellXPath + "/positioningLeadingEdge/xsi2";
-        if ( tixiGetDoubleElement(tixiHandle, positioningString.c_str(), &lEX2) != SUCCESS) {
-            throw tigl::CTiglError("No leading edge xsi2 positioning given for wing cell " + cellXPath + "!", TIGL_ERROR);
-        }
-    }
+    generated::CPACSWingCell::ReadCPACS(tixiHandle, cellXPath);
 
-    positioningString = cellXPath + "/positioningTrailingEdge/sparUID";
-    if ( tixiCheckElement(tixiHandle, positioningString.c_str()) == SUCCESS) {
-        LOG(WARNING) << "In " << cellXPath << ": Cell positiongs via spars is currently not supported by TiGL. Please use eta/xsi definitions.";
-        tEX1 = 0.; tEX2 = 0.;
-    }
-    else {
-        positioningString = cellXPath + "/positioningTrailingEdge/xsi1";
-        if ( tixiGetDoubleElement(tixiHandle, positioningString.c_str(), &tEX1) != SUCCESS) {
-            throw tigl::CTiglError("No leading edge xsi1 positioning given for wing cell " + cellXPath + "!", TIGL_ERROR);
-        }
-        
-        positioningString = cellXPath + "/positioningTrailingEdge/xsi2";
-        if ( tixiGetDoubleElement(tixiHandle, positioningString.c_str(), &tEX2) != SUCCESS) {
-            throw tigl::CTiglError("No leading edge xsi1 positioning given for wing cell " + cellXPath + "!", TIGL_ERROR);
-        }
-        
-    }
-    
-    positioningString = cellXPath + "/positioningInnerBorder/ribDefinitionUID";
-    if ( tixiCheckElement(tixiHandle, positioningString.c_str()) == SUCCESS) {
-        LOG(WARNING) << "In " << cellXPath << ": Cell positiongs via ribs is currently not supported by TiGL. Please use eta/xsi definitions.";
-        iBE1 = 0.; iBE2 = 0.;
-    }
-    else {
-        positioningString = cellXPath + "/positioningInnerBorder/eta1";
-        if ( tixiGetDoubleElement(tixiHandle, positioningString.c_str(), &iBE1) != SUCCESS) {
-            throw tigl::CTiglError("No inner border eta1 positioning given for wing cell " + cellXPath + "!", TIGL_ERROR);
-        }
-        
-        positioningString = cellXPath + "/positioningInnerBorder/eta2";
-        if ( tixiGetDoubleElement(tixiHandle, positioningString.c_str(), &iBE2) != SUCCESS) {
-            throw tigl::CTiglError("No inner border eta2 positioning given for wing cell " + cellXPath + "!", TIGL_ERROR);
-        }
-    }
-    
-    positioningString = cellXPath + "/positioningOuterBorder/ribDefinitionUID";
-    if ( tixiCheckElement(tixiHandle, positioningString.c_str()) == SUCCESS) {
-        LOG(WARNING) << "In " << cellXPath << ": Cell positiongs via ribs is currently not supported by TiGL. Please use eta/xsi definitions.";
-        oBE1 = 0.; oBE2 = 0.;
-    }
-    else {
-        positioningString = cellXPath + "/positioningOuterBorder/eta1";
-        if ( tixiGetDoubleElement(tixiHandle, positioningString.c_str(), &oBE1) != SUCCESS) {
-            throw tigl::CTiglError("No outer border eta1 positioning given for wing cell " + cellXPath + "!", TIGL_ERROR);
-        }
-        
-        positioningString = cellXPath + "/positioningOuterBorder/eta2";
-        if ( tixiGetDoubleElement(tixiHandle, positioningString.c_str(), &oBE2) != SUCCESS) {
-            throw tigl::CTiglError("No outer border eta2 positioning given for wing cell " + cellXPath + "!", TIGL_ERROR);
-        }
-    }
-    
-    // read material
-    std::string materialString;
-    materialString = cellXPath + "/skin/material";
-    if ( tixiCheckElement(tixiHandle, materialString.c_str()) == SUCCESS) {
-        material.ReadCPACS(tixiHandle, materialString.c_str());
-    }
-    else {
-        // @todo: should that be an error?
-        LOG(WARNING) << "No material definition found for cell " << cellXPath;
-    }
-    
-    // apply everything
-    uid = nameStr;
-    
-    innerBorderEta1 = iBE1;
-    innerBorderEta2 = iBE2;
-    outerBorderEta1 = oBE1;
-    outerBorderEta2 = oBE2;
-    leadingEdgeXsi1 = lEX1;
-    leadingEdgeXsi2 = lEX2;
-    trailingEdgeXsi1 = tEX1;
-    trailingEdgeXsi2 = tEX2;
-}
+    // TODO: implement check that sparUID is not supported yet
 
-void CCPACSWingCell::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string & cellXPath)
-{
-    TixiSaveExt::TixiSaveTextAttribute(tixiHandle, cellXPath.c_str(), "uID", GetUID().c_str());
+    //double iBE1, iBE2, oBE1, oBE2, lEX1, lEX2, tEX1, tEX2;
+    //// get postionings of cell
+    //std::string positioningString;
+    //positioningString = cellXPath + "/positioningLeadingEdge/sparUID";
+    //if ( tixiCheckElement(tixiHandle, positioningString.c_str()) == SUCCESS) {
+    //    LOG(WARNING) << "In " << cellXPath << ": Cell positiongs via spars is currently not supported by TiGL. Please use eta/xsi definitions.";
+    //    lEX1 = 0.; lEX2 = 0.;
+    //}
+    //else {
+    //    positioningString = cellXPath + "/positioningLeadingEdge/xsi1";
+    //    if ( tixiGetDoubleElement(tixiHandle, positioningString.c_str(), &lEX1) != SUCCESS) {
+    //        throw tigl::CTiglError("No leading edge xsi1 positioning given for wing cell " + cellXPath + "!", TIGL_ERROR);
+    //    }
+    //    
+    //    positioningString = cellXPath + "/positioningLeadingEdge/xsi2";
+    //    if ( tixiGetDoubleElement(tixiHandle, positioningString.c_str(), &lEX2) != SUCCESS) {
+    //        throw tigl::CTiglError("No leading edge xsi2 positioning given for wing cell " + cellXPath + "!", TIGL_ERROR);
+    //    }
+    //}
 
-    // TODO: save positionings
-
-    // TODO: write material
+    //positioningString = cellXPath + "/positioningTrailingEdge/sparUID";
+    //if ( tixiCheckElement(tixiHandle, positioningString.c_str()) == SUCCESS) {
+    //    LOG(WARNING) << "In " << cellXPath << ": Cell positiongs via spars is currently not supported by TiGL. Please use eta/xsi definitions.";
+    //    tEX1 = 0.; tEX2 = 0.;
+    //}
+    //else {
+    //    positioningString = cellXPath + "/positioningTrailingEdge/xsi1";
+    //    if ( tixiGetDoubleElement(tixiHandle, positioningString.c_str(), &tEX1) != SUCCESS) {
+    //        throw tigl::CTiglError("No leading edge xsi1 positioning given for wing cell " + cellXPath + "!", TIGL_ERROR);
+    //    }
+    //    
+    //    positioningString = cellXPath + "/positioningTrailingEdge/xsi2";
+    //    if ( tixiGetDoubleElement(tixiHandle, positioningString.c_str(), &tEX2) != SUCCESS) {
+    //        throw tigl::CTiglError("No leading edge xsi1 positioning given for wing cell " + cellXPath + "!", TIGL_ERROR);
+    //    }
+    //    
+    //}
+    //
+    //positioningString = cellXPath + "/positioningInnerBorder/ribDefinitionUID";
+    //if ( tixiCheckElement(tixiHandle, positioningString.c_str()) == SUCCESS) {
+    //    LOG(WARNING) << "In " << cellXPath << ": Cell positiongs via ribs is currently not supported by TiGL. Please use eta/xsi definitions.";
+    //    iBE1 = 0.; iBE2 = 0.;
+    //}
+    //else {
+    //    positioningString = cellXPath + "/positioningInnerBorder/eta1";
+    //    if ( tixiGetDoubleElement(tixiHandle, positioningString.c_str(), &iBE1) != SUCCESS) {
+    //        throw tigl::CTiglError("No inner border eta1 positioning given for wing cell " + cellXPath + "!", TIGL_ERROR);
+    //    }
+    //    
+    //    positioningString = cellXPath + "/positioningInnerBorder/eta2";
+    //    if ( tixiGetDoubleElement(tixiHandle, positioningString.c_str(), &iBE2) != SUCCESS) {
+    //        throw tigl::CTiglError("No inner border eta2 positioning given for wing cell " + cellXPath + "!", TIGL_ERROR);
+    //    }
+    //}
+    //
+    //positioningString = cellXPath + "/positioningOuterBorder/ribDefinitionUID";
+    //if ( tixiCheckElement(tixiHandle, positioningString.c_str()) == SUCCESS) {
+    //    LOG(WARNING) << "In " << cellXPath << ": Cell positiongs via ribs is currently not supported by TiGL. Please use eta/xsi definitions.";
+    //    oBE1 = 0.; oBE2 = 0.;
+    //}
+    //else {
+    //    positioningString = cellXPath + "/positioningOuterBorder/eta1";
+    //    if ( tixiGetDoubleElement(tixiHandle, positioningString.c_str(), &oBE1) != SUCCESS) {
+    //        throw tigl::CTiglError("No outer border eta1 positioning given for wing cell " + cellXPath + "!", TIGL_ERROR);
+    //    }
+    //    
+    //    positioningString = cellXPath + "/positioningOuterBorder/eta2";
+    //    if ( tixiGetDoubleElement(tixiHandle, positioningString.c_str(), &oBE2) != SUCCESS) {
+    //        throw tigl::CTiglError("No outer border eta2 positioning given for wing cell " + cellXPath + "!", TIGL_ERROR);
+    //    }
+    //}
+    //
+    //// read material
+    //std::string materialString;
+    //materialString = cellXPath + "/skin/material";
+    //if ( tixiCheckElement(tixiHandle, materialString.c_str()) == SUCCESS) {
+    //    material.ReadCPACS(tixiHandle, materialString.c_str());
+    //}
+    //else {
+    //    // @todo: should that be an error?
+    //    LOG(WARNING) << "No material definition found for cell " << cellXPath;
+    //}
+    //
+    //// apply everything
+    //innerBorderEta1 = iBE1;
+    //innerBorderEta2 = iBE2;
+    //outerBorderEta1 = oBE1;
+    //outerBorderEta2 = oBE2;
+    //leadingEdgeXsi1 = lEX1;
+    //leadingEdgeXsi2 = lEX2;
+    //trailingEdgeXsi1 = tEX1;
+    //trailingEdgeXsi2 = tEX2;
 }
 
 void CCPACSWingCell::SetLeadingEdgeInnerPoint(double eta, double xsi)
 {
-    leadingEdgeXsi1 = xsi;
-    innerBorderEta1 = eta;
+    m_positioningLeadingEdge.SetXsi1_choice2(xsi);
+    m_positioningInnerBorder.SetEta1_choice1(eta);
 }
 
 void CCPACSWingCell::SetLeadingEdgeOuterPoint(double eta, double xsi)
 {
-    leadingEdgeXsi2 = xsi;
-    outerBorderEta1 = eta;
+    m_positioningLeadingEdge.SetXsi2_choice2(xsi);
+    m_positioningOuterBorder.SetEta1_choice1(eta);
 }
 
 void CCPACSWingCell::SetTrailingEdgeInnerPoint(double eta, double xsi)
 {
-    trailingEdgeXsi1 = xsi;
-    innerBorderEta2 = eta;
+    m_positioningTrailingEdge.SetXsi1_choice2(xsi);
+    m_positioningInnerBorder.SetEta2_choice1(eta);
 }
 
 void CCPACSWingCell::SetTrailingEdgeOuterPoint(double eta, double xsi)
 {
-    trailingEdgeXsi2 = xsi;
-    outerBorderEta2 = eta;
+    m_positioningTrailingEdge.SetXsi2_choice2(xsi);
+    m_positioningOuterBorder.SetEta2_choice1(eta);
 }
 
 void CCPACSWingCell::GetLeadingEdgeInnerPoint(double* eta, double* xsi) const
 {
-    *xsi = leadingEdgeXsi1;
-    *eta = innerBorderEta1;
+    *xsi = m_positioningLeadingEdge.GetXsi1_choice2();
+    *eta = m_positioningInnerBorder.GetEta1_choice1();
 }
 
 void CCPACSWingCell::GetLeadingEdgeOuterPoint(double* eta, double* xsi) const
 {
-    *xsi = leadingEdgeXsi2;
-    *eta = outerBorderEta1;
+    *xsi = m_positioningLeadingEdge.GetXsi2_choice2();
+    *eta = m_positioningOuterBorder.GetEta1_choice1();
 }
 
 void CCPACSWingCell::GetTrailingEdgeInnerPoint(double* eta, double* xsi) const
 {
-    *xsi = trailingEdgeXsi1;
-    *eta = innerBorderEta2;
+    *xsi = m_positioningTrailingEdge.GetXsi1_choice2();
+    *eta = m_positioningInnerBorder.GetEta2_choice1();
 }
 
 void CCPACSWingCell::GetTrailingEdgeOuterPoint(double* eta, double* xsi) const
 {
-    *xsi = trailingEdgeXsi2;
-    *eta = outerBorderEta2;
+    *xsi = m_positioningTrailingEdge.GetXsi2_choice2();
+    *eta = m_positioningOuterBorder.GetEta2_choice1();
 }
 
-CCPACSMaterial &CCPACSWingCell::GetMaterial()
+const CCPACSMaterial &CCPACSWingCell::GetMaterial()
 {
-    return material;
+    return m_skin.GetMaterial();
 }
 
 } // namespace tigl

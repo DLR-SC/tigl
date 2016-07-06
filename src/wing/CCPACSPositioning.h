@@ -20,31 +20,29 @@
 */
 /**
 * @file
-* @brief  Implementation of CPACS fuselage positioning handling routines.
+* @brief  Implementation of CPACS wing positioning handling routines.
 */
 
-#ifndef CCPACSFUSELAGEPOSITIONING_H
-#define CCPACSFUSELAGEPOSITIONING_H
+#ifndef CCPACSPositioning_H
+#define CCPACSPositioning_H
 
-#include "tixi.h"
-#include "tigl_internal.h"
+#include <vector>
+#include "generated/CPACSPositioning.h"
 #include "CTiglTransformation.h"
 #include "CTiglPoint.h"
-#include <string>
-#include <vector>
 
 namespace tigl
 {
 
-class CCPACSFuselagePositioning
+class CCPACSPositioning : public generated::CPACSPositioning
 {
 
 public:
     // Constructor
-    TIGL_EXPORT CCPACSFuselagePositioning(void);
+    TIGL_EXPORT CCPACSPositioning(void);
 
     // Virtual Destructor
-    TIGL_EXPORT virtual ~CCPACSFuselagePositioning(void);
+    TIGL_EXPORT virtual ~CCPACSPositioning(void);
 
     // Invalidates internal state
     TIGL_EXPORT void Invalidate(void);
@@ -52,8 +50,20 @@ public:
     // Read CPACS segment elements
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& positioningXPath);
 
-    // Write CPACS segment elements
-    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& positioningXPath);
+    // Sets the positioning of the inner point
+    TIGL_EXPORT void SetInnerPoint(const CTiglPoint& aPoint);
+
+    // Gets the positioning of the outer point
+    TIGL_EXPORT CTiglPoint GetOuterPoint(void);
+
+    // Gets the outer transformation of this positioning
+    TIGL_EXPORT CTiglTransformation GetOuterTransformation(void);
+
+    // Gets the section-uid of the outer section of this positioning
+    TIGL_EXPORT std::string GetOuterSectionIndex(void);
+
+    // Gets the section-uid of the inner section of this positioning
+    TIGL_EXPORT std::string GetInnerSectionIndex(void);
 
     // Sets the positioning of the start point
     TIGL_EXPORT void SetStartPoint(const CTiglPoint& aPoint);
@@ -72,15 +82,15 @@ public:
 
     // Adds child to childs. To be successful the following condition must be met:
     // child.startSectionIndex == this.endSectionIndex
-    TIGL_EXPORT void ConnectChildPositioning(CCPACSFuselagePositioning* child);
-    TIGL_EXPORT const std::vector<CCPACSFuselagePositioning*> GetChilds() const;
-    
+    TIGL_EXPORT void ConnectChildPositioning(CCPACSPositioning* child);
     TIGL_EXPORT void DisconnectChilds();
 
-protected:
-    // Cleanup routine
-    void Cleanup(void);
+    TIGL_EXPORT const std::vector<CCPACSPositioning*> GetChilds() const;
 
+    // Cleanup routine
+    TIGL_EXPORT void Cleanup(void);
+
+protected:
     // Build transformation matrix for the positioning
     void BuildMatrix(void);
 
@@ -88,28 +98,14 @@ protected:
     void Update(void);
 
 private:
-    // Copy constructor
-    CCPACSFuselagePositioning(const CCPACSFuselagePositioning& );
-
-    // Assignment operator
-    void operator=(const CCPACSFuselagePositioning& );
-
-private:
-    std::string          name;                 /**< Positioning name                        */
-    std::string          description;          /**< Positioning description                 */
-    double               length;               /**< Positioning length                      */
-    double               sweepangle;           /**< Positioning sweep angle                 */
-    double               dihedralangle;        /**< Positioning dihedral angle              */
-    CTiglPoint           startPoint;           /**< Positioning start point                 */
-    CTiglPoint           endPoint;             /**< Positioning end point                   */
-    CTiglTransformation  endTransformation;    /**< Transformation for the end section      */
-    std::string          startSection;         /**< uid of start section                    */
-    std::string          endSection;           /**< uid of end section                      */
+    CTiglPoint           innerPoint;           /**< Positioning inner point                 */
+    CTiglPoint           outerPoint;           /**< Positioning outer point                 */
+    CTiglTransformation  outerTransformation;  /**< Transformation for the outer section    */
     bool                 invalidated;          /**< Internal state flag                     */
 
-    std::vector<CCPACSFuselagePositioning*> childPositionings;
+    std::vector<CCPACSPositioning*> childPositionings;
 };
 
 } // end namespace tigl
 
-#endif // CCPACSFUSELAGEPOSITIONING_H
+#endif // CCPACSPositioning_H

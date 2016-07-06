@@ -26,7 +26,7 @@
 #ifndef CCPACSFUSELAGESEGMENT_H
 #define CCPACSFUSELAGESEGMENT_H
 
-#include <string>
+#include "generated/CPACSFuselageSegment.h"
 
 #include "tigl_internal.h"
 #include "tigl_config.h"
@@ -38,18 +38,16 @@
 #include "TopoDS_Shape.hxx"
 #include "TopTools_SequenceOfShape.hxx"
 
-
-
 namespace tigl
 {
-
 class CCPACSFuselage;
 
-class CCPACSFuselageSegment : public CTiglAbstractSegment
+class CCPACSFuselageSegment : public generated::CPACSFuselageSegment, public CTiglAbstractSegment
 {
 
 public:
     // Constructor
+    TIGL_EXPORT CCPACSFuselageSegment(CCPACSFuselageSegments* parent);
     TIGL_EXPORT CCPACSFuselageSegment(CCPACSFuselage* aFuselage, int aSegmentIndex);
 
     // Virtual Destructor
@@ -58,8 +56,11 @@ public:
     // Read CPACS segment elements
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& segmentXPath);
 
-    // Write CPACS segment elements
-    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& segmentXPath);
+    TIGL_EXPORT virtual const std::string& GetUID() const override;
+    TIGL_EXPORT virtual void SetUID(const std::string& uid) override;
+
+    TIGL_EXPORT virtual TiglSymmetryAxis GetSymmetryAxis(void) override;
+    TIGL_EXPORT virtual void SetSymmetryAxis(const TiglSymmetryAxis& axis) override;
 
     // Returns the fuselage this segment belongs to
     TIGL_EXPORT CCPACSFuselage& GetFuselage(void) const;
@@ -158,7 +159,7 @@ public:
     TIGL_EXPORT TopTools_SequenceOfShape& BuildGuideCurves(void);
 
     // get guide curve for given UID
-    TIGL_EXPORT CCPACSGuideCurve& GetGuideCurve(std::string UID);
+    TIGL_EXPORT const CCPACSGuideCurve& GetGuideCurve(std::string UID);
 
     // check if guide curve with a given UID exists
     TIGL_EXPORT bool GuideCurveExists(std::string UID);
@@ -177,17 +178,9 @@ private:
     // get short name for loft
     std::string GetShortShapeName(void);
 
-    // Copy constructor
-    CCPACSFuselageSegment(const CCPACSFuselageSegment& );
-
-    // Assignment operator
-    void operator=(const CCPACSFuselageSegment& );
-
-    std::string              name;                 /**< Segment name                            */
     CCPACSFuselageConnection startConnection;      /**< Start segment connection                */
     CCPACSFuselageConnection endConnection;        /**< End segment connection                  */
     CCPACSFuselage*          fuselage;             /**< Parent fuselage                         */
-    CCPACSGuideCurves        guideCurves;          /**< Guide curve container                   */
     TopTools_SequenceOfShape guideCurveWires;      /**< container for the guide curve wires     */
     double                   myVolume;             /**< Volume of this segment                  */
     double                   mySurfaceArea;        /**< Surface Area of this segment            */

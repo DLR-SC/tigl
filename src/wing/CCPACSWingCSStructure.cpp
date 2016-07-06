@@ -27,82 +27,19 @@ namespace tigl
 {
 
 CCPACSWingCSStructure::CCPACSWingCSStructure()
-: lowerShell(),
-  upperShell()
-{
-    Cleanup();
+    : isvalid(false) {
+
 }
 
-CCPACSWingCSStructure::~CCPACSWingCSStructure(void)
-{
-    Cleanup();
-}
-
-void CCPACSWingCSStructure::Cleanup()
-{
-    upperShell.Reset();
-    lowerShell.Reset();
-    isvalid = false;
-}
-
-void CCPACSWingCSStructure::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string &structureXPath)
-{
-    Cleanup();
-    
-    // check path
-    if ( tixiCheckElement(tixiHandle, structureXPath.c_str()) != SUCCESS) {
-        LOG(WARNING) << "Wing structure " << structureXPath << " not found in CPACS file!" << std::endl;
-        return;
-    }
-
-    // lower shell
-    std::string shellPath;
-    shellPath = structureXPath + "/upperShell";
-    if ( tixiCheckElement(tixiHandle, shellPath.c_str()) == SUCCESS){
-        upperShell.ReadCPACS(tixiHandle, shellPath.c_str());
-    }
-    
-    shellPath = structureXPath + "/lowerShell";
-    if ( tixiCheckElement(tixiHandle, shellPath.c_str()) == SUCCESS){
-        lowerShell.ReadCPACS(tixiHandle, shellPath.c_str());
-    }
-    
+void CCPACSWingCSStructure::ReadCPACS(const TixiDocumentHandle& tixiDocument, const std::string& xpath) {
+    generated::CPACSWingComponentSegmentStructure::ReadCPACS(tixiDocument, xpath);
     isvalid = true;
-}
-
-// Write CPACS structure elements
-void CCPACSWingCSStructure::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& structureXPath)
-{
-    std::string elementPath;
-
-    // for each element, if it exist in the model, the function call the saving subfunction
-    // if not existing in the model, it try to remove an eventuel pre-existing subsection (no error if not pre-existing)
-    elementPath = structureXPath + "/upperShell";
-    // create the subelement Spars
-    TixiSaveExt::TixiSaveElement(tixiHandle,structureXPath.c_str(), "upperShell");
-    upperShell.WriteCPACS(tixiHandle, elementPath);
-
-    elementPath = structureXPath + "/lowerShell";
-    // create the subelement Spars
-    TixiSaveExt::TixiSaveElement(tixiHandle,structureXPath.c_str(), "lowerShell");
-    lowerShell.WriteCPACS(tixiHandle, elementPath);
-}
-
-CCPACSWingShell& CCPACSWingCSStructure::GetLowerShell()
-{
-    return lowerShell;
-}
-
-CCPACSWingShell& CCPACSWingCSStructure::GetUpperShell()
-{
-    return upperShell;
 }
 
 void CCPACSWingCSStructure::Invalidate()
 {
-    // forward invalidation
-    upperShell.Invalidate();
-    lowerShell.Invalidate();
+    m_upperShell.Invalidate();
+    m_lowerShell.Invalidate();
 }
 
 bool CCPACSWingCSStructure::IsValid() const

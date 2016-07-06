@@ -40,6 +40,7 @@
 #include "CTiglIntersectionCalculation.h"
 #include "CTiglUIDManager.h"
 #include "CCPACSWing.h"
+#include "CCPACSWingSection.h"
 #include "CCPACSWingSegment.h"
 #include "CTiglExportIges.h"
 #include "CTiglExportStep.h"
@@ -1422,8 +1423,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetProfileName(TiglCPACSConfigurationH
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSWing& wing = config.GetWing(wingIndex);
-        tigl::CCPACSWingSection& section = wing.GetSection(sectionIndex);
-        tigl::CCPACSWingSectionElement& element = section.GetSectionElement(elementIndex);
+        const tigl::CCPACSWingSection& section = wing.GetSection(sectionIndex);
+        const tigl::CCPACSWingSectionElement& element = section.GetSectionElement(elementIndex);
         std::string profileUID = element.GetProfileIndex();
         tigl::CCPACSWingProfile& profile = config.GetWingProfile(profileUID);
 
@@ -1686,7 +1687,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglWingGetSectionUID(TiglCPACSConfigurationHa
         tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
         tigl::CCPACSConfiguration& config = manager.GetConfiguration(cpacsHandle);
         tigl::CCPACSWing& wing = config.GetWing(wingIndex);
-        tigl::CCPACSWingSection& section = wing.GetSection(sectionIndex);
+        const tigl::CCPACSWingSection& section = wing.GetSection(sectionIndex);
         *uidNamePtr = const_cast<char*>(section.GetUID().c_str());
         return TIGL_SUCCESS;
     }

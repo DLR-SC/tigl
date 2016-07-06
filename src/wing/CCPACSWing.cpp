@@ -26,9 +26,12 @@
 #include <iostream>
 
 #include "CCPACSWing.h"
+#include "CCPACSWingSection.h"
 #include "CCPACSConfiguration.h"
 #include "CTiglAbstractSegment.h"
 #include "CCPACSWingSegment.h"
+#include "CCPACSWings.h"
+#include "CCPACSModel.h"
 #include "CTiglError.h"
 #include "tiglcommonfunctions.h"
 #include "TixiSaveExt.h"
@@ -121,14 +124,25 @@ namespace
 
 // Constructor
 CCPACSWing::CCPACSWing(CCPACSConfiguration* config)
-    : segments(this)
-    , componentSegments(this)
-    , configuration(config)
+    :  configuration(config)
     , rebuildFusedSegments(true)
     , rebuildFusedSegWEdge(true)
     , rebuildShells(true)
 {
     Cleanup();
+}
+
+CCPACSWing::CCPACSWing(CCPACSWings* parent)
+    : generated::CPACSWing(parent)
+    , configuration(&parent->GetParent_CCPACSModel()->GetConfiguration())
+    , rebuildFusedSegments(true)
+    , rebuildFusedSegWEdge(true)
+    , rebuildShells(true) {
+    Cleanup();
+}
+CCPACSWing::CCPACSWing(generated::CPACSRotorBlades* parent)
+    : generated::CPACSWing(parent) {
+    throw std::logic_error("Instantiating CCPACSWing with CPACSRotorBlades as parent is not implemented");
 }
 
 // Destructor
@@ -141,16 +155,16 @@ CCPACSWing::~CCPACSWing(void)
 void CCPACSWing::Invalidate(void)
 {
     invalidated = true;
-    segments.Invalidate();
-    positionings.Invalidate();
-    componentSegments.Invalidate();
+    m_segments.Invalidate();
+    m_positionings->Invalidate();
+    m_componentSegments->Invalidate();
 }
 
 // Cleanup routine
 void CCPACSWing::Cleanup(void)
 {
-    name = "";
-    description = "";
+    m_name = "";
+    m_description = "";
     transformation.SetIdentity();
     translation = CTiglPoint(0.0, 0.0, 0.0);
     scaling     = CTiglPoint(1.0, 1.0, 1.0);
@@ -181,7 +195,7 @@ void CCPACSWing::BuildMatrix(void)
     // Step 3: translate the rotated wing into its position
     transformation.AddTranslation(translation.x, translation.y, translation.z);
 
-    backTransformation = transformation.Inverted();
+    //backTransformation = transformation.Inverted();
 }
 
 // Update internal wing data
@@ -201,182 +215,37 @@ void CCPACSWing::Update(void)
 void CCPACSWing::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& wingXPath)
 {
     Cleanup();
-
-    char*       elementPath;
-    std::string tempString;
-
-    // Get subelement "name"
-    char* ptrName = NULL;
-    tempString    = wingXPath + "/name";
-    elementPath   = const_cast<char*>(tempString.c_str());
-    if (tixiGetTextElement(tixiHandle, elementPath, &ptrName) == SUCCESS) {
-        name          = ptrName;
-    }
-
-    // Get subelement "description"
-    char* ptrDescription = NULL;
-    tempString    = wingXPath + "/description";
-    if (tixiGetTextElement(tixiHandle, tempString.c_str(), &ptrDescription) == SUCCESS) {
-        description   = ptrDescription;
-    }
-
-    // Get attribute "uid"
-    char* ptrUID = NULL;
-    tempString   = "uID";
-    elementPath  = const_cast<char*>(tempString.c_str());
-    if (tixiGetTextAttribute(tixiHandle, const_cast<char*>(wingXPath.c_str()), const_cast<char*>(tempString.c_str()), &ptrUID) == SUCCESS) {
-        SetUID(ptrUID);
-    }
-
-    // Get subelement "parent_uid"
-    char* ptrParentUID = NULL;
-    tempString         = wingXPath + "/parentUID";
-    elementPath        = const_cast<char*>(tempString.c_str());
-    if (tixiCheckElement(tixiHandle, elementPath) == SUCCESS &&
-        tixiGetTextElement(tixiHandle, elementPath, &ptrParentUID) == SUCCESS) {
-
-        SetParentUID(ptrParentUID);
-    }
-
-
-    // Get subelement "/transformation/translation"
-    tempString  = wingXPath + "/transformation/translation";
-    elementPath = const_cast<char*>(tempString.c_str());
-    if (tixiCheckElement(tixiHandle, elementPath) == SUCCESS) {
-        if (tixiGetPoint(tixiHandle, elementPath, &(translation.x), &(translation.y), &(translation.z)) != SUCCESS) {
-            throw CTiglError("Error: XML error while reading <translation/> in CCPACSWing::ReadCPACS", TIGL_XML_ERROR);
-        }
-    }
-    
-    // Get translation type (attribute of "/transformation/translation")
-    if (tixiCheckAttribute(tixiHandle, elementPath, "refType") == SUCCESS) {
-        char * refTypeVal = NULL;
-        if (tixiGetTextAttribute(tixiHandle, elementPath, "refType", &refTypeVal) == SUCCESS) {
-            std::string refTypeStr(refTypeVal);
-            if (refTypeStr == "absGlobal") {
-                translationType = ABS_GLOBAL;
-            }
-            else if (refTypeStr == "absLocal") {
-                translationType = ABS_LOCAL;
-            }
-        }
-    }
-
-    // Get subelement "/transformation/scaling"
-    tempString  = wingXPath + "/transformation/scaling";
-    elementPath = const_cast<char*>(tempString.c_str());
-    if (tixiCheckElement(tixiHandle, elementPath) == SUCCESS) {
-        if (tixiGetPoint(tixiHandle, elementPath, &(scaling.x), &(scaling.y), &(scaling.z)) != SUCCESS) {
-            throw CTiglError("Error: XML error while reading <scaling/> in CCPACSWing::ReadCPACS", TIGL_XML_ERROR);
-        }
-    }
-
-    // Get subelement "/transformation/rotation"
-    tempString  = wingXPath + "/transformation/rotation";
-    elementPath = const_cast<char*>(tempString.c_str());
-    if (tixiCheckElement(tixiHandle, elementPath) == SUCCESS) {
-        if (tixiGetPoint(tixiHandle, elementPath, &(rotation.x), &(rotation.y), &(rotation.z)) != SUCCESS) {
-            throw CTiglError("Error: XML error while reading <rotation/> in CCPACSWing::ReadCPACS", TIGL_XML_ERROR);
-        }
-    }
-
-    // Get subelement "sections"
-    sections.ReadCPACS(tixiHandle, wingXPath);
-
-    // Get subelement "positionings"
-    positionings.ReadCPACS(tixiHandle, wingXPath);
-
-    // Get subelement "segments"
-    segments.ReadCPACS(tixiHandle, wingXPath);
-
-    // Get subelement "componentSegments"
-    componentSegments.ReadCPACS(tixiHandle, wingXPath);
+    generated::CPACSWing::ReadCPACS(tixiHandle, wingXPath);
 
     // Register ourself at the unique id manager
-    configuration->GetUIDManager().AddUID(ptrUID, this);
-
-    // Get symmetry axis attribute, has to be done, when segments are build
-    char* ptrSym = NULL;
-    tempString   = "symmetry";
-    if (tixiGetTextAttribute(tixiHandle, const_cast<char*>(wingXPath.c_str()), const_cast<char*>(tempString.c_str()), &ptrSym) == SUCCESS) {
-        SetSymmetryAxis(ptrSym);
-    }
+    configuration->GetUIDManager().AddUID(m_uID, this);
 
     Update();
 }
 
-// Write CPACS wing element
-void CCPACSWing::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& wingXPath)
-{
-    std::string elementPath;
-    std::string subelementPath;
-
-    // Set subelement "name"
-    TixiSaveExt::TixiSaveTextElement(tixiHandle, wingXPath.c_str(), "name", GetName().c_str());
-    // Set subelement "description"
-    TixiSaveExt::TixiSaveTextElement(tixiHandle, wingXPath.c_str(), "description", description.c_str());
-    // Set subelement "uID" attribute
-    TixiSaveExt::TixiSaveTextAttribute(tixiHandle, wingXPath.c_str(), "uID", GetUID().c_str());
-    // Set subelement "axis" attribute
-    TixiSaveExt::TixiSaveTextAttribute(tixiHandle, wingXPath.c_str(), "symmetry", GetSymmetryAxisString());
-    // Set subelement "parent_uid"
-    TixiSaveExt::TixiSaveTextElement(tixiHandle, wingXPath.c_str(), "parentUID", GetParentUID().c_str());
-
-    // Set the subelement "transformation"
-    elementPath = wingXPath + "/transformation";
-    TixiSaveExt::TixiSaveElement(tixiHandle, wingXPath.c_str(), "transformation");
-       
-        // Set subelement "/transformation/scaling"
-        subelementPath = elementPath + "/scaling";
-        TixiSaveExt::TixiSaveElement(tixiHandle, elementPath.c_str(), "scaling");
-        TixiSaveExt::TixiSavePoint(tixiHandle, subelementPath.c_str(), GetScaling().x, GetScaling().y, GetScaling().z, NULL);
-        
-        // Set subelement "/transformation/rotation"
-        subelementPath = elementPath + "/rotation";
-        TixiSaveExt::TixiSaveElement(tixiHandle, elementPath.c_str(), "rotation");
-        TixiSaveExt::TixiSavePoint(tixiHandle, subelementPath.c_str(), GetRotation().x, GetRotation().y, GetRotation().z, NULL);
-
-        // Determine translation relative to parent
-        CTiglPoint relativeTranslation = translation;
-        CTiglUIDManager& manager = configuration->GetUIDManager();
-        std::string UId = GetUID();
-        ITiglGeometricComponent* parent = manager.GetComponent(UId);
-
-//             while (parent != NULL && manager.HasUID(parent->GetParentUID())) { // check if the actual component exist AND if the component's parent is in the manager list
-//                 relativeTranslation -= parent->GetTranslation();
-//                 parent = manager.GetParentComponent(parent->GetUID());
-//             }
-
-        // Set subelement "/transformation/translation"
-        subelementPath = elementPath + "/translation";
-        TixiSaveExt::TixiSaveElement(tixiHandle, elementPath.c_str(), "translation");
-        TixiSaveExt::TixiSaveTextAttribute(tixiHandle, subelementPath.c_str(), "refType", "absLocal");
-        TixiSaveExt::TixiSavePoint(tixiHandle, subelementPath.c_str(), relativeTranslation.x, relativeTranslation.y, 
-            relativeTranslation.z, NULL);
-
-    // Set subelement "sections"
-    sections.WriteCPACS(tixiHandle, wingXPath);
-
-    // Set subelement "positionings"
-    positionings.WriteCPACS(tixiHandle, wingXPath);
-
-    // Set subelement "segments"
-    segments.WriteCPACS(tixiHandle, wingXPath);
-
-    // Set subelement "componentSegments"
-    componentSegments.WriteCPACS(tixiHandle, wingXPath);
+const std::string& CCPACSWing::GetUID() const {
+    return generated::CPACSWing::GetUID();
 }
 
-// Returns the name of the wing
-const std::string& CCPACSWing::GetName(void) const
-{
-    return name;
+void CCPACSWing::SetUID(const std::string& uid) {
+    generated::CPACSWing::SetUID(uid);
 }
 
-// Returns the description of the wing
-const std::string& CCPACSWing::GetDescription(void) const
-{
-    return description;
+TiglSymmetryAxis CCPACSWing::GetSymmetryAxis() {
+    return m_symmetry.get();
+}
+
+void CCPACSWing::SetSymmetryAxis(const TiglSymmetryAxis& axis) {
+    m_symmetry = axis;
+
+    for (int i = 1; i <= m_segments.GetSegmentCount(); ++i) {
+        m_segments.GetSegment(i).SetSymmetryAxis(axis);
+    }
+
+    for (int i = 1; i <= m_componentSegments->GetComponentSegmentCount(); ++i) {
+        m_componentSegments->GetComponentSegment(i).SetSymmetryAxis(axis);
+    }
+
 }
 
 // Returns the parent configuration
@@ -388,49 +257,49 @@ CCPACSConfiguration& CCPACSWing::GetConfiguration(void) const
 // Get section count
 int CCPACSWing::GetSectionCount(void) const
 {
-    return sections.GetSectionCount();
+    return static_cast<int>(m_sections.GetSection().size());
 }
 
 // Returns the section for a given index
-CCPACSWingSection& CCPACSWing::GetSection(int index) const
+const CCPACSWingSection& CCPACSWing::GetSection(int index) const
 {
-    return sections.GetSection(index);
+    return *m_sections.GetSection()[index];
 }
 
 // Get segment count
 int CCPACSWing::GetSegmentCount(void) const
 {
-    return segments.GetSegmentCount();
+    return m_segments.GetSegmentCount();
 }
 
 // Returns the segment for a given index
 CTiglAbstractSegment & CCPACSWing::GetSegment(const int index)
 {
-    return (CTiglAbstractSegment &) segments.GetSegment(index);
+    return m_segments.GetSegment(index);
 }
 
 // Returns the segment for a given uid
 CTiglAbstractSegment & CCPACSWing::GetSegment(std::string uid)
 {
-    return (CTiglAbstractSegment &) segments.GetSegment(uid);
+    return m_segments.GetSegment(uid);
 }
 
 // Get componentSegment count
 int CCPACSWing::GetComponentSegmentCount(void)
 {
-    return componentSegments.GetComponentSegmentCount();
+    return m_componentSegments->GetComponentSegmentCount();
 }
 
 // Returns the segment for a given index
 CTiglAbstractSegment & CCPACSWing::GetComponentSegment(const int index)
 {
-    return (CTiglAbstractSegment &) componentSegments.GetComponentSegment(index);
+    return m_componentSegments->GetComponentSegment(index);
 }
 
 // Returns the segment for a given uid
 CTiglAbstractSegment & CCPACSWing::GetComponentSegment(std::string uid)
 {
-    return (CTiglAbstractSegment &) componentSegments.GetComponentSegment(uid);
+    return m_componentSegments->GetComponentSegment(uid);
 }
 
 // Gets the loft of the whole wing with modeled leading edge.
@@ -492,12 +361,12 @@ PNamedShape CCPACSWing::BuildFusedSegments(bool splitWingInUpperAndLower)
     //@todo: this probably works only if the wings does not split somewere
     BRepOffsetAPI_ThruSections generator(Standard_True, Standard_True, Precision::Confusion() );
 
-    for (int i=1; i <= segments.GetSegmentCount(); i++) {
-        TopoDS_Wire startWire = segments.GetSegment(i).GetInnerWire();
+    for (int i=1; i <= m_segments.GetSegmentCount(); i++) {
+        TopoDS_Wire startWire = m_segments.GetSegment(i).GetInnerWire();
         generator.AddWire(startWire);
     }
 
-    TopoDS_Wire endWire = segments.GetSegment(segments.GetSegmentCount()).GetOuterWire();
+    TopoDS_Wire endWire = m_segments.GetSegment(m_segments.GetSegmentCount()).GetOuterWire();
     generator.AddWire(endWire);
 
     generator.CheckCompatibility(Standard_False);
@@ -507,7 +376,7 @@ PNamedShape CCPACSWing::BuildFusedSegments(bool splitWingInUpperAndLower)
     std::string loftName = GetUID();
     std::string loftShortName = GetShortShapeName();
     PNamedShape loft(new CNamedShape(loftShape, loftName.c_str(), loftShortName.c_str()));
-    SetFaceTraits(loft, segments.GetSegmentCount());
+    SetFaceTraits(loft, m_segments.GetSegmentCount());
     return loft;
 }
     
@@ -518,8 +387,8 @@ void CCPACSWing::BuildUpperLowerShells()
     BRepOffsetAPI_ThruSections generatorUp(Standard_False, Standard_True, Precision::Confusion() );
     BRepOffsetAPI_ThruSections generatorLow(Standard_False, Standard_True, Precision::Confusion() );
 
-    for (int i=1; i <= segments.GetSegmentCount(); i++) {
-        CCPACSWingConnection& startConnection = segments.GetSegment(i).GetInnerConnection();
+    for (int i=1; i <= m_segments.GetSegmentCount(); i++) {
+        CCPACSWingConnection& startConnection = m_segments.GetSegment(i).GetInnerConnection();
         CCPACSWingProfile& startProfile = startConnection.GetProfile();
         TopoDS_Wire upperWire, lowerWire;
         upperWire = TopoDS::Wire(transformToWingCoords(startConnection, BRepBuilderAPI_MakeWire(startProfile.GetUpperWire())));
@@ -528,7 +397,7 @@ void CCPACSWing::BuildUpperLowerShells()
         generatorLow.AddWire(lowerWire);
     }
 
-    CCPACSWingConnection& endConnection = segments.GetSegment(segments.GetSegmentCount()).GetOuterConnection();
+    CCPACSWingConnection& endConnection = m_segments.GetSegment(m_segments.GetSegmentCount()).GetOuterConnection();
     CCPACSWingProfile& endProfile = endConnection.GetProfile();
     TopoDS_Wire endUpWire, endLowWire;
 
@@ -554,7 +423,7 @@ CTiglTransformation CCPACSWing::GetWingTransformation(void)
 // Get the positioning transformation for a given section-uid
 CTiglTransformation CCPACSWing::GetPositioningTransformation(std::string sectionUID)
 {
-    return positionings.GetPositioningTransformation(sectionUID);
+    return m_positionings->GetPositioningTransformation(sectionUID);
 }
 
 // Gets the upper point in absolute (world) coordinates for a given segment, eta, xsi
@@ -592,8 +461,8 @@ void CCPACSWing::Translate(CTiglPoint trans)
 {
     CTiglAbstractGeometricComponent::Translate(trans);
     invalidated = true;
-    segments.Invalidate();
-    componentSegments.Invalidate();
+    m_segments.Invalidate();
+    m_componentSegments->Invalidate();
     Update();
 }
 
@@ -643,8 +512,8 @@ double CCPACSWing::GetReferenceArea(TiglSymmetryAxis symPlane)
 {
     double refArea = 0.0;
 
-    for (int i=1; i <= segments.GetSegmentCount(); i++) {
-        refArea += segments.GetSegment(i).GetReferenceArea(symPlane);
+    for (int i=1; i <= m_segments.GetSegmentCount(); i++) {
+        refArea += m_segments.GetSegment(i).GetReferenceArea(symPlane);
     }
     return refArea;
 }
@@ -666,30 +535,20 @@ double CCPACSWing::GetWettedArea(TopoDS_Shape parent)
 // Returns the lower Surface of a Segment
 Handle(Geom_Surface) CCPACSWing::GetLowerSegmentSurface(int index)
 {
-    return segments.GetSegment(index).GetLowerSurface();
+    return m_segments.GetSegment(index).GetLowerSurface();
 }
 
 // Returns the upper Surface of a Segment
 Handle(Geom_Surface) CCPACSWing::GetUpperSegmentSurface(int index)
 {
-    return segments.GetSegment(index).GetUpperSurface();
+    return m_segments.GetSegment(index).GetUpperSurface();
 }
 
-// sets the symmetry plane for all childs, segments and component segments
-void CCPACSWing::SetSymmetryAxis(const std::string& axis)
-{
-    CTiglAbstractGeometricComponent::SetSymmetryAxis(axis);
-
-    for (int i = 1; i <= segments.GetSegmentCount(); ++i) {
-        CCPACSWingSegment& segment = segments.GetSegment(i);
-        segment.SetSymmetryAxis(axis);
-    }
-
-    for (int i = 1; i <= componentSegments.GetComponentSegmentCount(); ++i) {
-        CCPACSWingComponentSegment& compSeg = componentSegments.GetComponentSegment(i);
-        compSeg.SetSymmetryAxis(axis);
-    }
-}
+//// sets the symmetry plane for all childs, segments and component segments
+//void CCPACSWing::SetSymmetryAxis(const std::string& axis)
+//{
+//
+//}
 
 double CCPACSWing::GetWingspan()
 {
@@ -751,7 +610,7 @@ void  CCPACSWing::GetWingMAC(double& mac_chord, double& mac_x, double& mac_y, do
     double cc_mac_sum=0.;
     gp_XYZ cc_mac_sum_p(0., 0., 0.);
 
-    for (int i = 1; i <= segments.GetSegmentCount(); ++i) {
+    for (int i = 1; i <= m_segments.GetSegmentCount(); ++i) {
         CCPACSWingSegment& segment = (CCPACSWingSegment&) GetSegment(i);
         gp_Pnt innerLeadingPoint   = segment.GetChordPoint(0, 0.);
         gp_Pnt innerTrailingPoint  = segment.GetChordPoint(0, 1.);
@@ -837,10 +696,10 @@ int CCPACSWing::GetSegmentEtaXsi(const gp_Pnt& point, double& eta, double& xsi, 
 }
 
 // Get the guide curve with a given UID
-CCPACSGuideCurve& CCPACSWing::GetGuideCurve(std::string uid)
+const CCPACSGuideCurve& CCPACSWing::GetGuideCurve(std::string uid)
 {
-    for (int i=1; i <= segments.GetSegmentCount(); i++) {
-        CCPACSWingSegment& segment = segments.GetSegment(i);
+    for (int i=1; i <= m_segments.GetSegmentCount(); i++) {
+        CCPACSWingSegment& segment = m_segments.GetSegment(i);
         if (segment.GuideCurveExists(uid)) {
             return segment.GetGuideCurve(uid);
         }
@@ -849,9 +708,9 @@ CCPACSGuideCurve& CCPACSWing::GetGuideCurve(std::string uid)
 }
 
 // Getter for positionings
-CCPACSWingPositionings& CCPACSWing::GetPositionings()
+const CCPACSPositionings& CCPACSWing::GetPositionings()
 {
-    return positionings;
+    return m_positionings.get();
 }
 
 

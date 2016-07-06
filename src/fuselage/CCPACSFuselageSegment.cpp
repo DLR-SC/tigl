@@ -136,11 +136,17 @@ namespace
 namespace tigl
 {
 
+CCPACSFuselageSegment::CCPACSFuselageSegment(CCPACSFuselageSegments* parent)
+	: CTiglAbstractSegment(parent->GetSegmentCount() + 1) // TODO: this is a hack, as we depend on the implementation of the vector reader in generated::CPACSFuselageSegments::ReadCPACS() but the current CodeGen does not support passing indices into ctors
+		, fuselage(parent->GetParent())
+		, guideCurvesPresent(false)
+	{
+		Cleanup();
+	}
+
 // Constructor
 CCPACSFuselageSegment::CCPACSFuselageSegment(CCPACSFuselage* aFuselage, int aSegmentIndex)
     : CTiglAbstractSegment(aSegmentIndex)
-    , startConnection(this)
-    , endConnection(this)
     , fuselage(aFuselage)
     , guideCurvesPresent(false)
 {
@@ -156,7 +162,7 @@ CCPACSFuselageSegment::~CCPACSFuselageSegment(void)
 // Cleanup routine
 void CCPACSFuselageSegment::Cleanup(void)
 {
-    name = "";
+    m_name = "";
     myVolume      = 0.;
     mySurfaceArea = 0.;
     myWireLength  = 0.;
@@ -175,78 +181,51 @@ void CCPACSFuselageSegment::Update(void)
 void CCPACSFuselageSegment::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& segmentXPath)
 {
     Cleanup();
+    generated::CPACSFuselageSegment::ReadCPACS(tixiHandle, segmentXPath);
 
-    char*       elementPath;
-    std::string tempString;
+	startConnection = CCPACSFuselageConnection(m_fromElementUID, this);
+	endConnection = CCPACSFuselageConnection(m_toElementUID, this);
 
-    // Get subelement "name"
-    char* ptrName = NULL;
-    tempString    = segmentXPath + "/name";
-    elementPath   = const_cast<char*>(tempString.c_str());
-    if (tixiGetTextElement(tixiHandle, elementPath, &ptrName) == SUCCESS) {
-        name = ptrName;
-    }
+    // TODO: continuity does not exist in CPACS spec
 
-    // Get attribute "uid"
-    char* ptrUID = NULL;
-    tempString   = "uID";
-    if (tixiGetTextAttribute(tixiHandle, const_cast<char*>(segmentXPath.c_str()), const_cast<char*>(tempString.c_str()), &ptrUID) == SUCCESS) {
-        SetUID(ptrUID);
-        GetFuselage().GetConfiguration().GetUIDManager().AddUID(GetUID(), this);
-    }
-
-    // Start connection
-    tempString = segmentXPath + "/fromElementUID";
-    startConnection.ReadCPACS(tixiHandle, tempString);
-
-    // End connection
-    tempString = segmentXPath + "/toElementUID";
-    endConnection.ReadCPACS(tixiHandle, tempString);
-
-    // Continuity
-    tempString = segmentXPath + "/continuity";
-    elementPath   = const_cast<char*>(tempString.c_str());
-    char* ptrCont = NULL;
-    if (tixiGetTextElement(tixiHandle, elementPath, &ptrCont) == SUCCESS) {
-        if (strcmp(ptrCont, "C0") == 0) {
-            continuity = TiglContinuity(C0);
-        }
-        else if (strcmp(ptrCont, "C1") == 0) {
-            continuity = TiglContinuity(C1);
-        }
-        else if (strcmp(ptrCont, "C2") == 0) {
-            continuity = TiglContinuity(C2);
-        }
-        else {
-            LOG(ERROR) << "Invalid continuity specifier " << ptrCont << " for UID " << GetUID();
-            continuity = C2;
-        }
-    }
-    else {
-        continuity = C2;
-    }
-
-    // Get guide Curves
-    if (tixiCheckElement(tixiHandle, (segmentXPath + "/guideCurves").c_str()) == SUCCESS) {
-        guideCurvesPresent = true;
-        guideCurves.ReadCPACS(tixiHandle, segmentXPath);
-    }
-    else {
-        guideCurvesPresent = false;
-    }
+    //// Continuity
+    //char* ptrCont = NULL;
+    //if (tixiGetTextElement(tixiHandle, (segmentXPath + "/continuity").c_str(); , &ptrCont) == SUCCESS) {
+    //    if (strcmp(ptrCont, "C0") == 0) {
+    //        continuity = TiglContinuity(C0);
+    //    }
+    //    else if (strcmp(ptrCont, "C1") == 0) {
+    //        continuity = TiglContinuity(C1);
+    //    }
+    //    else if (strcmp(ptrCont, "C2") == 0) {
+    //        continuity = TiglContinuity(C2);
+    //    }
+    //    else {
+    //        LOG(ERROR) << "Invalid continuity specifier " << ptrCont << " for UID " << GetUID();
+    //        continuity = C2;
+    //    }
+    //} else {
+    //    continuity = C2;
+    //}
 
     Update();
 }
 
-// Write CPACS segment elements
-void CCPACSFuselageSegment::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& segmentXPath)
-{
-    TixiSaveExt::TixiSaveTextAttribute(tixiHandle, segmentXPath.c_str(), "uID", GetUID().c_str());
-    TixiSaveExt::TixiSaveTextElement(tixiHandle, segmentXPath.c_str(), "name", name.c_str());
-    TixiSaveExt::TixiSaveTextElement(tixiHandle, segmentXPath.c_str(), "description", name.c_str());
-    
-    TixiSaveExt::TixiSaveTextElement(tixiHandle, segmentXPath.c_str(), "fromElementUID", startConnection.GetSectionElementUID().c_str());
-    TixiSaveExt::TixiSaveTextElement(tixiHandle, segmentXPath.c_str(), "toElementUID", endConnection.GetSectionElementUID().c_str());
+const std::string& CCPACSFuselageSegment::GetUID() const {
+	return generated::CPACSFuselageSegment::GetUID();
+}
+
+void CCPACSFuselageSegment::SetUID(const std::string& uid) {
+	return generated::CPACSFuselageSegment::SetUID(uid);
+}
+
+TiglSymmetryAxis CCPACSFuselageSegment::GetSymmetryAxis(void) {
+	// TODO
+	return TiglSymmetryAxis::TIGL_NO_SYMMETRY;
+}
+
+void CCPACSFuselageSegment::SetSymmetryAxis(const TiglSymmetryAxis& axis) {
+	// TODO
 }
 
 // Returns the fuselage this segment belongs to
@@ -825,15 +804,15 @@ double CCPACSFuselageSegment::GetCircumference(const double eta)
 }
 
 // get guide curve for given UID
-CCPACSGuideCurve& CCPACSFuselageSegment::GetGuideCurve(std::string UID)
+const CCPACSGuideCurve& CCPACSFuselageSegment::GetGuideCurve(std::string UID)
 {
-    return guideCurves.GetGuideCurve(UID);
+    return m_guideCurves->GetGuideCurve(UID);
 }
 
 // check if guide curve with a given UID exists
 bool CCPACSFuselageSegment::GuideCurveExists(std::string UID)
 {
-    return guideCurves.GuideCurveExists(UID);
+    return m_guideCurves->GuideCurveExists(UID);
 }
 
 // Creates all guide curves
@@ -867,10 +846,11 @@ TopTools_SequenceOfShape& CCPACSFuselageSegment::BuildGuideCurves(void)
         double outerScale = GetWireLength(outerChordLineWire);
 
         // loop through all guide curves and construct the corresponding wires
+		auto& guideCurves = m_guideCurves.get();
         int nGuideCurves = guideCurves.GetGuideCurveCount();
         for (int i=0; i!=nGuideCurves; i++) {
             // get guide curve
-            CCPACSGuideCurve& guideCurve = guideCurves.GetGuideCurve(i+1);
+            const CCPACSGuideCurve& guideCurve = guideCurves.GetGuideCurve(i+1);
             double fromRelativeCircumference;
             // check if fromRelativeCircumference is given in the current guide curve
             if (guideCurve.GetFromRelativeCircumferenceIsSet()) {
@@ -879,9 +859,9 @@ TopTools_SequenceOfShape& CCPACSFuselageSegment::BuildGuideCurves(void)
             // otherwise get relative circumference from neighboring segment guide curve
             else {
                 // get neighboring guide curve UID
-                std::string neighborGuideCurveUID = guideCurve.GetFromGuideCurveUID();
+                std::string neighborGuideCurveUID = guideCurve.GetFromGuideCurveUID_choice1();
                 // get neighboring guide curve
-                CCPACSGuideCurve& neighborGuideCurve = fuselage->GetGuideCurve(neighborGuideCurveUID);
+                const CCPACSGuideCurve& neighborGuideCurve = fuselage->GetGuideCurve(neighborGuideCurveUID);
                 // get relative circumference from neighboring guide curve
                 fromRelativeCircumference = neighborGuideCurve.GetToRelativeCircumference();
             }

@@ -23,6 +23,7 @@
 * geometry representation method.
 */
 
+#include "generated/CPACSCst2D.h"
 #include "tigl_internal.h"
 #include "ITiglWingProfileAlgo.h"
 
@@ -36,7 +37,7 @@ namespace tigl
 {
 class CCPACSWingProfile;
 
-class CCPACSWingProfileCST : public ITiglWingProfileAlgo
+class CCPACSWingProfileCST : public generated::CPACSCst2D, public ITiglWingProfileAlgo
 {
 
 private:
@@ -45,12 +46,18 @@ private:
 
 public:
     // Constructor
-    TIGL_EXPORT CCPACSWingProfileCST(const CCPACSWingProfile& profile, const std::string& aFilename);
+    TIGL_EXPORT CCPACSWingProfileCST();
 
     // Destructor
     TIGL_EXPORT ~CCPACSWingProfileCST(void);
 
     TIGL_EXPORT static std::string CPACSID();
+
+    // Read CPACS wing profile file
+    TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& profileXPath) override;
+
+    // Write CPACS wing profile
+    TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& profileXPath) const override;
 
     // Cleanup routine
     TIGL_EXPORT void Cleanup(void);
@@ -58,17 +65,14 @@ public:
     // Update of wire points ...
     TIGL_EXPORT void Update(void);
 
-    // Read CPACS wing profile file
-    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle);
-
-    // Write CPACS wing profile
-    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& profileXPath);
-
     // Returns the profile points as read from TIXI.
     TIGL_EXPORT std::vector<CTiglPoint*> GetSamplePoints() const;
 
-    // get profiles CPACS XML path
+    // get profiles CPACS XML path, TODO: do we really need this method?
     TIGL_EXPORT const std::string & GetProfileDataXPath() const;
+
+    // set profiles CPACS XML path, TODO: do we really need this method?
+    TIGL_EXPORT void SetProfileDataXPath(const std::string& xpath);
 
     // get upper wing profile wire
     TIGL_EXPORT const TopoDS_Edge & GetUpperWire() const;
@@ -108,13 +112,6 @@ protected:
     void BuildWires();
 
 private:
-    // Copy constructor
-    CCPACSWingProfileCST(const CCPACSWingProfileCST& );
-
-    // Assignment operator
-    void operator=(const CCPACSWingProfileCST& );
-
-private:
     std::string               ProfileDataXPath;   /**< CPACS path to profile data (pointList or cst2D) */
     TopoDS_Edge               upperWire;          /**< wire of the upper wing profile */
     TopoDS_Edge               lowerWire;          /**< wire of the lower wing profile */
@@ -124,10 +121,8 @@ private:
     gp_Pnt                    tePoint;            /**< Trailing edge point */
     double                    upperN1;            /**< CST parameter N1 */
     double                    upperN2;            /**< CST parameter N2 */
-    std::vector<double>       upperB;             /**< CST parameter B */
     double                    lowerN1;            /**< CST parameter N1 */
     double                    lowerN2;            /**< CST parameter N2 */
-    std::vector<double>       lowerB;             /**< CST parameter B */
 };
 
 } // end namespace tigl

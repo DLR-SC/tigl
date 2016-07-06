@@ -28,6 +28,7 @@
 
 #include <string>
 
+#include "generated/CPACSWingSegment.h"
 #include "tigl_config.h"
 #include "tigl_internal.h"
 #include "tixi.h"
@@ -48,7 +49,7 @@ namespace tigl
 
 class CCPACSWing;
 
-class CCPACSWingSegment : public CTiglAbstractSegment
+class CCPACSWingSegment : public generated::CPACSWingSegment, public CTiglAbstractSegment
 {
 public:
     enum CoordinateSystem {
@@ -58,6 +59,7 @@ public:
 
 public:
     // Constructor
+    TIGL_EXPORT CCPACSWingSegment(CCPACSWingSegments* parent);
     TIGL_EXPORT CCPACSWingSegment(CCPACSWing* aWing, int aSegmentIndex);
 
     // Virtual Destructor
@@ -69,14 +71,11 @@ public:
     // Read CPACS segment elements
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& segmentXPath);
 
-    // Write CPACS segment elements
-    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string & segmentXPath);
+    TIGL_EXPORT virtual const std::string& GetUID() const override;
+    TIGL_EXPORT virtual void SetUID(const std::string& uid) override;
 
-    // Gets the segment name
-    TIGL_EXPORT const std::string& GetName() const;
-
-    // Getter for the member description
-    TIGL_EXPORT const std::string& GetDescription() const;
+    TIGL_EXPORT virtual TiglSymmetryAxis GetSymmetryAxis(void) override;
+    TIGL_EXPORT virtual void SetSymmetryAxis(const TiglSymmetryAxis& axis) override;
 
     // Returns the wing this segment belongs to
     TIGL_EXPORT CCPACSWing& GetWing(void) const;
@@ -199,7 +198,7 @@ public:
     TIGL_EXPORT TopTools_SequenceOfShape& GetGuideCurveWires();
 
     // get guide curve for given UID
-    TIGL_EXPORT CCPACSGuideCurve& GetGuideCurve(std::string UID);
+    TIGL_EXPORT const CCPACSGuideCurve& GetGuideCurve(std::string UID);
 
     // check if guide curve with a given UID exists
     TIGL_EXPORT bool GuideCurveExists(std::string UID);
@@ -244,12 +243,6 @@ protected:
     PNamedShape BuildLoft(void);
 
 private:
-    // Copy constructor
-    CCPACSWingSegment(const CCPACSWingSegment&);
-
-    // Assignment operator
-    void operator=(const CCPACSWingSegment&);
-
     // get short name for loft
     std::string GetShortShapeName (void);
 
@@ -259,11 +252,8 @@ private:
     // converts segment eta xsi coordinates to face uv koordinates
     void etaXsiToUV(bool isFromUpper, double eta, double xsi, double& u, double& v);
 
-    std::string          name;                 /**< Segment name                            */
-    std::string          description;          /**< Segment description                     */
     CCPACSWingConnection innerConnection;      /**< Inner segment connection (root)         */
     CCPACSWingConnection outerConnection;      /**< Outer segment connection (tip)          */
-    CCPACSGuideCurves    guideCurves;          /**< Guide curve container                   */
     TopTools_SequenceOfShape guideCurveWires;  /**< container for the guide curve wires     */
     CCPACSWing*          wing;                 /**< Parent wing                             */
     double               myVolume;             /**< Volume of this segment                  */

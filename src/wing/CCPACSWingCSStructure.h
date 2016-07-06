@@ -19,6 +19,7 @@
 #ifndef CCPACSWINGCSSTRUCTURE_H
 #define CCPACSWINGCSSTRUCTURE_H
 
+#include "generated/CPACSWingComponentSegmentStructure.h"
 #include "tigl_internal.h"
 #include "CCPACSWingShell.h"
 
@@ -26,28 +27,17 @@
 namespace tigl
 {
 
-class CCPACSWingCSStructure
+class CCPACSWingCSStructure : public generated::CPACSWingComponentSegmentStructure
 {
 public:
     TIGL_EXPORT CCPACSWingCSStructure();
-    
-    TIGL_EXPORT virtual ~CCPACSWingCSStructure(void);
 
-    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& structureXPath);
-    
-    // Write CPACS structure elements
-    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string & structureXPath);
+    TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiDocument, const std::string& xpath) override;
 
-    TIGL_EXPORT CCPACSWingShell& GetLowerShell();
-    TIGL_EXPORT CCPACSWingShell& GetUpperShell();
-    
-    TIGL_EXPORT void Cleanup();
     TIGL_EXPORT void Invalidate();
     TIGL_EXPORT bool IsValid() const;
 
 private:
-    CCPACSWingShell upperShell, lowerShell;
-
     bool isvalid;
 };
 

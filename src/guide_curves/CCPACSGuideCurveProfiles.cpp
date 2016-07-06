@@ -30,66 +30,22 @@
 
 namespace tigl
 {
-
-// Constructor
-CCPACSGuideCurveProfiles::CCPACSGuideCurveProfiles(void)
-{
-    Cleanup();
-}
-
-// Destructor
-CCPACSGuideCurveProfiles::~CCPACSGuideCurveProfiles(void)
-{
-    Cleanup();
-}
-
-// Cleanup routine
-void CCPACSGuideCurveProfiles::Cleanup(void)
-{
-    guideCurves.clear();
-}
-
-// Read CPACS guide curves
-void CCPACSGuideCurveProfiles::ReadCPACS(TixiDocumentHandle tixiHandle)
-{
-    Cleanup();
-
-    if (tixiCheckElement(tixiHandle, "/cpacs/vehicles/profiles/guideCurveProfiles") == SUCCESS) {
-        // Get element count
-        int elementCount;
-        if (tixiGetNamedChildrenCount(tixiHandle, "/cpacs/vehicles/profiles/guideCurveProfiles", "guideCurveProfile", &elementCount) != SUCCESS) {
-            throw CTiglError("Error: tixiGetNamedChildrenCount failed in CCPACSGuideCurveProfiles::ReadCPACS", TIGL_XML_ERROR);
-        }
-
-        // Loop over all <guideCurve> elements
-        for (int i = 1; i <= elementCount; i++) {
-            std::ostringstream xpath;
-            xpath << "/cpacs/vehicles/profiles/guideCurveProfiles/guideCurveProfile[" << i << "]";
-
-            PCCPACSGuideCurveProfile guideCurve(new CCPACSGuideCurveProfile(xpath.str()));
-            guideCurve->ReadCPACS(tixiHandle);
-            guideCurves[guideCurve->GetUID()] = guideCurve;
-        }
-    }
-}
-
 // Returns the total count of guide curves in this configuration
 int CCPACSGuideCurveProfiles::GetGuideCurveProfileCount(void) const
 {
-    return (static_cast<int>(guideCurves.size()));
+    return static_cast<int>(m_guideCurveProfile.size());
 }
 
 // Returns the guide curve for a given uid.
-CCPACSGuideCurveProfile& CCPACSGuideCurveProfiles::GetGuideCurveProfile(std::string uid) const
+CCPACSGuideCurveProfile& CCPACSGuideCurveProfiles::GetGuideCurveProfile(const std::string& uid) const
 {
-    CCPACSGuideCurveProfileContainer::const_iterator it = guideCurves.find(uid);
-    if (it != guideCurves.end() && it->second) {
-        return *(it->second);
-    }
-    else {
-        LOG(ERROR) << "Guide curve \"" + uid + "\" not found in CPACS file!" << endl;
-        throw CTiglError("Guide curve \"" + uid + "\" not found in CPACS file!", TIGL_UID_ERROR);
-    }
+	for (const auto& p : m_guideCurveProfile) {
+		if (p->GetUID() == uid)
+			return *p;
+	}
+
+    LOG(ERROR) << "Guide curve \"" + uid + "\" not found in CPACS file!" << endl;
+    throw CTiglError("Guide curve \"" + uid + "\" not found in CPACS file!", TIGL_UID_ERROR);
 }
 
 } // end namespace tigl

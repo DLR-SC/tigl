@@ -30,94 +30,42 @@
 
 namespace tigl
 {
-
-// Constructor
-CCPACSGuideCurves::CCPACSGuideCurves(void)
-{
-    Cleanup();
-}
-
-// Destructor
-CCPACSGuideCurves::~CCPACSGuideCurves(void)
-{
-    Cleanup();
-}
-
-// Cleanup routine
-void CCPACSGuideCurves::Cleanup(void)
-{
-    guideCurves.clear();
-}
-
-// Read CPACS guide curves
-void CCPACSGuideCurves::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& segmentXPath)
-{
-    Cleanup();
-
-    std::string guideCurvesXPath = segmentXPath + "/guideCurves";
-    if (tixiCheckElement(tixiHandle, guideCurvesXPath.c_str()) == SUCCESS) {
-        // Get element count
-        int elementCount;
-        if (tixiGetNamedChildrenCount(tixiHandle, guideCurvesXPath.c_str(), "guideCurve", &elementCount) != SUCCESS) {
-            throw CTiglError("tixiGetNamedChildrenCount failed in CCPACSGuideCurves::ReadCPACS", TIGL_XML_ERROR);
-        }
-
-        // Loop over all <guideCurve> elements
-        for (int i = 1; i <= elementCount; i++) {
-            std::ostringstream xpath;
-            xpath << guideCurvesXPath << "/guideCurve[" << i << "]";
-
-            PCCPACSGuideCurve guideCurve(new CCPACSGuideCurve(xpath.str()));
-            guideCurve->ReadCPACS(tixiHandle);
-            guideCurves[guideCurve->GetUID()] = guideCurve;
-        }
-    }
-}
-
 // Returns the total count of guide curves in this configuration
 int CCPACSGuideCurves::GetGuideCurveCount(void) const
 {
-    return (static_cast<int>(guideCurves.size()));
+    return (static_cast<int>(m_guideCurve.size()));
 }
 
 // Returns the guide curve for a given index
-CCPACSGuideCurve& CCPACSGuideCurves::GetGuideCurve(int index) const
+const CCPACSGuideCurve& CCPACSGuideCurves::GetGuideCurve(int index) const
 {
     unsigned int arrayIndex = index - 1;
-    if (arrayIndex < guideCurves.size()) {
-        CCPACSGuideCurveContainer::const_iterator p = guideCurves.begin();
-        std::advance(p, arrayIndex);
-        return (*p->second);
+    if (arrayIndex < 0 || arrayIndex >= GetGuideCurveCount()) {
+        throw CTiglError("Error: Invalid index in CCPACSGuideCurves::GetGuideCurve", TIGL_INDEX_ERROR);
     }
-    else {
-        std::stringstream msg;
-        msg << "Invalid guide curve \"" << index << "\" in CCPACSGuideCurve::GetGuideCurve!";
-        throw CTiglError(msg.str(), TIGL_INDEX_ERROR);
-    }
+    return *m_guideCurve[arrayIndex];
 }
 
 // Returns the guide curve for a given uid.
-CCPACSGuideCurve& CCPACSGuideCurves::GetGuideCurve(std::string uid) const
+const CCPACSGuideCurve& CCPACSGuideCurves::GetGuideCurve(std::string uid) const
 {
-    CCPACSGuideCurveContainer::const_iterator it = guideCurves.find(uid);
-    if (it != guideCurves.end() && it->second) {
-        return *(it->second);
-    }
-    else {
-        throw CTiglError("CCPACSGuideCurve::GetGuideCurve: Guide curve \"" + uid + "\" not found in CPACS file!", TIGL_UID_ERROR);
-    }
+	for (std::size_t i = 0; i < m_guideCurve.size(); i++) {
+		if (m_guideCurve[i]->GetUID() == uid) {
+			return *m_guideCurve[i];
+		}
+	}
+	throw CTiglError("CCPACSGuideCurve::GetGuideCurve: Guide curve \"" + uid + "\" not found in CPACS file!", TIGL_UID_ERROR);
 }
 
 // Returns the guide curve for a given uid.
 bool CCPACSGuideCurves::GuideCurveExists(std::string uid) const
 {
-    CCPACSGuideCurveContainer::const_iterator it = guideCurves.find(uid);
-    if (it != guideCurves.end() && it->second) {
-        return true;
-    }
-    else {
-        return false;
-    }
+	for (std::size_t i = 0; i < m_guideCurve.size(); i++) {
+		if (m_guideCurve[i]->GetUID() == uid) {
+			return true;
+		}
+	}
+	return false;
 }
 
 } // end namespace tigl
