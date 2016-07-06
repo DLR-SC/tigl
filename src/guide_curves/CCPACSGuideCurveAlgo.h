@@ -78,7 +78,7 @@ public:
     TIGL_EXPORT operator TopoDS_Wire()
     {
         // get guide Curve points in local coordinates
-        std::vector<PCTiglPoint> guideCurveProfilePoints = _guideCurveProfile.GetGuideCurveProfilePoints();
+        std::vector<CTiglPoint> guideCurveProfilePoints = _guideCurveProfile.GetGuideCurveProfilePoints();
         // container for guide Curve points in world coordinates
         std::vector<gp_Pnt> guideCurvePoints(guideCurveProfilePoints.size()+2);
         // get anchor points in world coordinates
@@ -88,9 +88,9 @@ public:
         // loop over guide Curve profile points
         for (int i=0; i!=guideCurveProfilePoints.size(); i++) {
 
-            Standard_Real alpha = guideCurveProfilePoints[i]->x;
-            Standard_Real beta  = guideCurveProfilePoints[i]->y;
-            Standard_Real gamma = guideCurveProfilePoints[i]->z;
+            Standard_Real alpha = guideCurveProfilePoints[i].x;
+            Standard_Real beta  = guideCurveProfilePoints[i].y;
+            Standard_Real gamma = guideCurveProfilePoints[i].z;
 
             // ******************************************************************
             // construct line between anchor points at the start and end profile

@@ -26,101 +26,33 @@ namespace tigl
 {
 
 CCPACSWingShell::CCPACSWingShell()
-: cells(this)
-{
-    Reset();
-}
-
-CCPACSWingShell::~CCPACSWingShell()
-{
-    Reset();
-}
-
-void CCPACSWingShell::Reset()
-{
-    cells.Reset();
-    Invalidate();
-}
-
-const std::string& CCPACSWingShell::GetUID() const
-{
-    return uid;
+    : isvalid(false) {
 }
 
 int CCPACSWingShell::GetCellCount() const
 {
-    return cells.GetCellCount();
+    return m_cells.get().GetCellCount();
 }
 
 CCPACSWingCell& CCPACSWingShell::GetCell(int index)
 {
-    return cells.GetCell(index);
+    return m_cells->GetCell(index);
 }
 
 CCPACSMaterial& CCPACSWingShell::GetMaterial()
 {
-    return material;
+    return m_skin.GetMaterial();
 }
 
 void CCPACSWingShell::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string &shellXPath)
 {
-    Reset();
-    
-    // check path
-    if ( tixiCheckElement(tixiHandle, shellXPath.c_str()) != SUCCESS) {
-        LOG(ERROR) << "Wing Shell " << shellXPath << " not found in CPACS file!" << std::endl;
-        return;
-    }
-
-    // Get UID
-    char* ptrUID = NULL;
-    if (tixiGetTextAttribute(tixiHandle, shellXPath.c_str(), "uID", &ptrUID) == SUCCESS) {
-        uid = ptrUID;
-    }
-
-    // read cell data
-    std::string cellpath = shellXPath + "/cells";
-    if (tixiCheckElement(tixiHandle, cellpath.c_str()) == SUCCESS) {
-        cells.ReadCPACS(tixiHandle, cellpath.c_str());
-    }
-    
-    // read material
-    std::string materialString;
-    materialString = shellXPath + "/skin/material";
-    if ( tixiCheckElement(tixiHandle, materialString.c_str()) == SUCCESS) {
-        material.ReadCPACS(tixiHandle, materialString.c_str());
-    }
-    else {
-        // @todo: should that be an error?
-        LOG(WARNING) << "No material definition found for shell " << shellXPath;
-    }
-}
-
-// Write CPACS segment elements
-void CCPACSWingShell::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& shellDefinitionXPath)
-{
-    std::string elementPath;
-    
-    TixiSaveExt::TixiSaveElement(tixiHandle, shellDefinitionXPath.c_str(), "skin");
-
-    if (material.GetUID() != "UID_NOTSET") {
-        elementPath = shellDefinitionXPath + "/skin";
-        TixiSaveExt::TixiSaveElement(tixiHandle, elementPath.c_str(), "material");
-        elementPath = shellDefinitionXPath + "/skin/material";
-        material.WriteCPACS(tixiHandle, elementPath);
-    }
-    
-    if (cells.GetCellCount() > 0) {
-        TixiSaveExt::TixiSaveElement(tixiHandle, shellDefinitionXPath.c_str(), "cells");
-        elementPath = shellDefinitionXPath + "/cells";
-        cells.WriteCPACS(tixiHandle, elementPath);
-    }
+    Invalidate();
+    generated::CPACSWingShell::ReadCPACS(tixiHandle, shellXPath);
 }
 
 void CCPACSWingShell::Invalidate()
 {
     isvalid = false;
-    cells.Invalidate();
 }
 
 bool CCPACSWingShell::IsValid() const

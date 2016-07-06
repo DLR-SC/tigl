@@ -26,11 +26,9 @@
 #ifndef CCPACSWINGCOMPONENTSEGMENT_H
 #define CCPACSWINGCOMPONENTSEGMENT_H
 
-#include <string>
+#include "generated/CPACSComponentSegment.h"
 
 #include "tigl_config.h"
-#include "tigl_internal.h"
-#include "tixi.h"
 #include "CCPACSWingConnection.h"
 #include "CCPACSWingCSStructure.h"
 #include "CTiglPoint.h"
@@ -49,18 +47,19 @@
 namespace tigl
 {
 
-class CCPACSWingSegment;
+class CCPACSWingComponentSegments;
+class CCPACSComponentSegments;
 
 typedef std::vector<const CCPACSMaterial*>    MaterialList;
 typedef std::vector<CCPACSWingSegment*>       SegmentList;
 
 class CCPACSWing;
 
-class CCPACSWingComponentSegment : public CTiglAbstractSegment
+class CCPACSWingComponentSegment : public generated::CPACSComponentSegment, public CTiglAbstractSegment
 {
-
 public:
     // Constructor
+    TIGL_EXPORT CCPACSWingComponentSegment(CCPACSWingComponentSegments* parent);
     TIGL_EXPORT CCPACSWingComponentSegment(CCPACSWing* aWing, int aSegmentIndex);
 
     // Virtual Destructor
@@ -72,13 +71,14 @@ public:
     // Read CPACS segment elements
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string & segmentXPath);
 
-    // Write CPACS segment elements
-    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string & segmentXPath);
+    TIGL_EXPORT virtual const std::string& GetUID() const override;
+    TIGL_EXPORT virtual void SetUID(const std::string& uid) override;
+
+    TIGL_EXPORT virtual TiglSymmetryAxis GetSymmetryAxis(void) override;
+    TIGL_EXPORT virtual void SetSymmetryAxis(const TiglSymmetryAxis& axis) override;
 
     // Returns the wing this segment belongs to
     TIGL_EXPORT CCPACSWing& GetWing(void) const;
-
-    TIGL_EXPORT CCPACSWingCSStructure& GetStructure();
 
     // Gtter for upper Shape
     TIGL_EXPORT TopoDS_Shape GetUpperShape(void);
@@ -133,12 +133,6 @@ public:
 
     // Gets the surface area of this segment
     TIGL_EXPORT double GetSurfaceArea();
-
-    // Gets the fromElementUID of this segment
-    TIGL_EXPORT const std::string & GetFromElementUID(void) const;
-
-    // Gets the toElementUID of this segment
-    TIGL_EXPORT const std::string & GetToElementUID(void) const;
 
     // Returns the segment to a given point on the componentSegment and the nearest point projected onto the loft.
     // Returns null if the point is not an that wing, i.e. deviates more than 1 cm from the wing
@@ -222,9 +216,6 @@ public:
     //Return the shape for the componentsegment midplane 
     TIGL_EXPORT TopoDS_Shape GetMidplaneShape();
     
-    // Getter for the member name
-    TIGL_EXPORT const std::string& GetName(void) const;
-
     // get Wing Cut Out closing faces if they are not spar defined
     TIGL_EXPORT TopoDS_Shape GetWingCutOutFaces();
 
@@ -258,12 +249,6 @@ private:
     // get short name for loft
     std::string GetShortShapeName(void);
 
-    // Copy constructor
-    CCPACSWingComponentSegment(const CCPACSWingComponentSegment& );
-
-    // Assignment operator
-    void operator=(const CCPACSWingComponentSegment& );
-
     std::vector<int> findPath(const std::string& fromUid, const::std::string& toUID, const std::vector<int>& curPath, bool forward) const;
 
     void UpdateProjectedLeadingEdge();
@@ -276,9 +261,9 @@ private:
     const CTiglAbstractSegment* findSegmentViaShape(double x, double y, double z) const;
 
 private:
-    std::string          name;                 /**< Segment name                            */
-    std::string          fromElementUID;       /**< Inner segment uid (root)                */
-    std::string          toElementUID;         /**< Outer segment uid (tip)                 */
+    //std::string          name;                 /**< Segment name                            */
+    //std::string          fromElementUID;       /**< Inner segment uid (root)                */
+    //std::string          toElementUID;         /**< Outer segment uid (tip)                 */
     CCPACSWing*          wing;                 /**< Parent wing                             */
     TopoDS_Shape         upperTEDLoft;         /**< The loft between two sections           */
     TopoDS_Shape         lowerTEDLoft;         /**< The loft between two sections           */
@@ -302,7 +287,7 @@ private:
     mutable TopoDS_Wire  extendedTrailingEdgeLine; // trailing edge extended along y-axis, see CPACS spar geometry definition
     mutable bool         linesAreValid;
 
-    CCPACSWingCSStructure structure;
+    //CCPACSWingCSStructure structure;
 };
 
 } // end namespace tigl

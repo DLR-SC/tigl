@@ -30,10 +30,7 @@
 #ifndef CCPACSWINGPROFILE_H
 #define CCPACSWINGPROFILE_H
 
-#include <vector>
-#include <string>
-
-#include "tixi.h"
+#include "generated/CPACSProfileGeometry.h"
 #include "tigl_internal.h"
 #include "TopoDS_Wire.hxx"
 #include "TopoDS_Edge.hxx"
@@ -46,30 +43,21 @@
 namespace tigl 
 {
 
-class CCPACSWingProfile
+class CCPACSWingProfile : public generated::CPACSProfileGeometry
 {
 
 public:
     // Algo
-    TIGL_EXPORT CCPACSWingProfile(const std::string& aFilename);
+    TIGL_EXPORT CCPACSWingProfile();
 
     // Virtual Destructor
     TIGL_EXPORT virtual ~CCPACSWingProfile(void);
 
     // Read CPACS wing profile file
-    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle);
+    TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
 
     // Write CPACS wing profile file
-    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& profileXPath);
-
-    // Returns the name of the wing profile
-    TIGL_EXPORT const std::string& GetName(void) const;
-
-    // Returns the description of the wing profile
-    TIGL_EXPORT const std::string& GetDescription(void) const;
-
-    // Returns the uid of the wing profile
-    TIGL_EXPORT const std::string& GetUID(void) const;
+    TIGL_EXPORT void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
 
     // Invalidates internal wing profile state
     TIGL_EXPORT void Invalidate(void);
@@ -160,10 +148,7 @@ private:
     void operator=(const CCPACSWingProfile& );
 
 private:
-    std::string               ProfileXPath;   /**< CPACS path to wing profile */
-    std::string               name;           /**< CPACS wing profile name */
-    std::string               description;    /**< CPACS wing profile description */
-    std::string               uid;            /**< CPACS wing profile UID */
+    //std::string               ProfileXPath;   /**< CPACS path to wing profile */
     bool                      invalidated;    /**< Flag if element is invalid */
     PTiglWingProfileAlgo      profileAlgo;    /**< Pointer to wing profile algorithm (pointList, CST, etc.) */
 

@@ -26,6 +26,7 @@
 #ifndef CCPACSFUSELAGEPROFILES_H
 #define CCPACSFUSELAGEPROFILES_H
 
+#include "generated/CPACSFuselageProfiles.h"
 #include "tigl_internal.h"
 #include "tixi.h"
 #include "CCPACSFuselageProfile.h"
@@ -35,25 +36,17 @@
 namespace tigl
 {
 
-class CCPACSFuselageProfiles
+class CCPACSFuselageProfiles : public generated::CPACSFuselageProfiles
 {
-
 private:
     // Typedef for a container to store the fuselage profiles.
     typedef std::map<std::string, CCPACSFuselageProfile*> CCPACSFuselageProfileContainer;
 
 public:
-    // Constructor
-    TIGL_EXPORT CCPACSFuselageProfiles(void);
-
-    // Virtual Destructor
-    TIGL_EXPORT virtual ~CCPACSFuselageProfiles(void);
-
     // Read CPACS fuselage profiles
-    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle);
+    TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
 
-    // Write CPACS fuselage profiles
-    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle);
+    TIGL_EXPORT void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
     TIGL_EXPORT bool HasProfile(std::string uid) const;
 
@@ -75,19 +68,7 @@ public:
     // Invalidates internal state
     TIGL_EXPORT void Invalidate(void);
 
-protected:
-    // Cleanup routine
-    void Cleanup(void);
-
 private:
-    // Copy constructor
-    CCPACSFuselageProfiles(const CCPACSFuselageProfiles& ) { /* Do nothing */ }
-
-    // Assignment operator
-    void operator=(const CCPACSFuselageProfiles& ) { /* Do nothing */ }
-
-private:
-    std::string                    librarypath;  // Directory path to fuselage profiles
     CCPACSFuselageProfileContainer profiles;     // All fuselage profiles
 
 };

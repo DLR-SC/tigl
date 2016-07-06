@@ -37,12 +37,11 @@
 #include "CTiglTransformation.h"
 #include "CTiglPoint.h"
 
-namespace tigl 
+namespace tigl
 {
 
 class CTiglAbstractPhysicalComponent : public CTiglAbstractGeometricComponent
 {
-
 public:
     // Container type to store a components children
     typedef std::list<CTiglAbstractPhysicalComponent*> ChildContainerType;
@@ -60,8 +59,6 @@ public:
 
     // Returns a pointer to the list of children of a component.
     TIGL_EXPORT virtual ChildContainerType GetChildren(bool recursive);
-
-    TIGL_EXPORT virtual void SetSymmetryAxis(const std::string& axis);
 
 protected:
     // Define a std::map to store the indices of already fused segments

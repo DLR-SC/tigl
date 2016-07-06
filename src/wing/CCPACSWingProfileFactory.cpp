@@ -48,7 +48,7 @@ bool CCPACSWingProfileFactory::RegisterAlgo(std::string cpacsID, CreateProfileAl
 }
 
 // Create profile algo
-PTiglWingProfileAlgo CCPACSWingProfileFactory::CreateProfileAlgo(TixiDocumentHandle tixiHandle, CCPACSWingProfile& profile, std::string & ProfileXPath)
+PTiglWingProfileAlgo CCPACSWingProfileFactory::CreateProfileAlgo(TixiDocumentHandle tixiHandle, const CCPACSWingProfile& profile, const std::string & ProfileXPath)
 {
     ProfileMap::iterator it = profileMap.begin();
     for (; it != profileMap.end(); ++it) {

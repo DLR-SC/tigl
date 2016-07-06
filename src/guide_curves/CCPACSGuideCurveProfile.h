@@ -23,73 +23,24 @@
 #ifndef CCPACSGUIDECURVEPROFILE_H
 #define CCPACSGUIDECURVEPROFILE_H
 
+#include "generated/CPACSGuideCurveProfileGeometry.h"
 #include "tigl_internal.h"
 #include "tixi.h"
-#include "CSharedPtr.h"
-
-#include <gp_Pnt.hxx>
-
-#include <vector>
-#include <string>
+#include "CTiglPoint.h"
 
 namespace tigl
 {
-
-class CTiglPoint;
-typedef class CSharedPtr<CTiglPoint> PCTiglPoint;
-
-class CCPACSGuideCurveProfile
+class CCPACSGuideCurveProfile : public generated::CPACSGuideCurveProfileGeometry
 {
-
-private:
-    // Typedefs for a container to store the coordinates of a guide curve element.
-    typedef std::vector<PCTiglPoint> CCPACSGuideCurveProfilePoints;
-
 public:
-    // Constructor
-    TIGL_EXPORT CCPACSGuideCurveProfile(const std::string& path);
-
-    // Virtual Destructor
-    TIGL_EXPORT virtual ~CCPACSGuideCurveProfile(void);
-
     // Read CPACS guide curve file
-    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle);
-
-    // Returns the filename of the guide curve file
-    TIGL_EXPORT const std::string& GetFileName(void) const;
-
-    // Returns the name of the guide curve
-    TIGL_EXPORT const std::string& GetName(void) const;
-
-    // Returns the UID of the guide curve
-    TIGL_EXPORT const std::string& GetUID(void) const;
+    TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
 
     // Returns the guide curve points as read from TIXI.
-    TIGL_EXPORT std::vector<PCTiglPoint> GetGuideCurveProfilePoints();
-
-protected:
-    // Cleanup routine
-    void Cleanup(void);
+    TIGL_EXPORT const std::vector<CTiglPoint>& GetGuideCurveProfilePoints();
 
 private:
-    // Copy constructor
-    CCPACSGuideCurveProfile(const CCPACSGuideCurveProfile&)
-    {
-        /* Do nothing */
-    };
-
-    // Assignment operator
-    void operator=(const CCPACSGuideCurveProfile&)
-    {
-        /* Do nothing */
-    };
-
-    std::string                      GuideCurveProfileXPath;   /**< The XPath to this guide curve in cpacs */
-    std::string                      name;              /**< The Name of the guide curve */
-    std::string                      description;       /**< The description of the guide curve */
-    std::string                      uid;               /**< The UID of the guide curve */
-    CCPACSGuideCurveProfilePoints    coordinates;       /**< Coordinates of a guide curve points */
-
+    std::vector<CTiglPoint> coordinates; ///< Coordinates of a guide curve points
 };
 
 } // end namespace tigl

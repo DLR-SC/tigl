@@ -19,41 +19,21 @@
 #ifndef CCPACSWINGCELLS_H
 #define CCPACSWINGCELLS_H
 
-#include <vector>
-#include "tixi.h"
-#include "tigl_internal.h"
-
-#include <string>
+#include "generated\CPACSWingCells.h"
 
 namespace tigl
 {
-
-class CCPACSWingCell;
 class CCPACSWingShell;
 
-class CCPACSWingCells
+class CCPACSWingCells : public generated::CPACSWingCells
 {
-private:
-    // Typedef for a CCPACSWing container to store the wings of a configuration.
-    typedef std::vector<CCPACSWingCell*> CCPACSWingCellContainer;
-    
 public:
     // Constructor
     TIGL_EXPORT CCPACSWingCells(CCPACSWingShell* parent);
     
     // Virtual Destructor
-    TIGL_EXPORT virtual ~CCPACSWingCells(void);
-    
-    TIGL_EXPORT void Reset();
+    TIGL_EXPORT virtual ~CCPACSWingCells(void) {}
 
-    TIGL_EXPORT void Invalidate();
-    
-    // Read CPACS wings elements
-    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& cellsXPath);
-    
-    // Writing CPACS wing cells
-    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& cellsXPath);
-    
     // Returns the total count of wing cells for that wing component segment
     TIGL_EXPORT int GetCellCount(void) const;
     
@@ -66,22 +46,8 @@ public:
     // Get parent wing shell element
     TIGL_EXPORT CCPACSWingShell* GetParentElement();
 
-protected:
-    // Cleanup routine
-    void Cleanup(void);
-    
 private:
-    // Copy constructor
-    CCPACSWingCells(const CCPACSWingCells& ) { /* Do nothing */ }
-    
-    // Assignment operator
-    void operator=(const CCPACSWingCells& ) { /* Do nothing */ }
-    
-private:
-    CCPACSWingCellContainer cells;         /**< Wing Cell elements */
-    
     CCPACSWingShell* parentShell;
-
 };
 
 } // end namespace tigl

@@ -28,7 +28,6 @@
 
 #include "tixi.h"
 #include "tigl_internal.h"
-#include "CCPACSFuselageProfile.h"
 #include "CTiglTransformation.h"
 #include <string>
 
@@ -36,19 +35,16 @@ namespace tigl
 {
 
 class CCPACSFuselageSegment;
+class CCPACSFuselageProfile;
 
+// TODO: this class does not represent any class in CPACS, rename to e.g. CTiglFuselageConnection
+// TODO: this class is very similar to CCPACSWingConnection, merge into one class
 class CCPACSFuselageConnection
 {
-
 public:
     // Constructor
-    TIGL_EXPORT CCPACSFuselageConnection(CCPACSFuselageSegment* aSegment);
-
-    // Virtual Destructor
-    TIGL_EXPORT virtual ~CCPACSFuselageConnection(void);
-
-    // Read CPACS connection element
-    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& connectionXPath);
+    TIGL_EXPORT CCPACSFuselageConnection();
+    TIGL_EXPORT CCPACSFuselageConnection(const std::string& elementUID, CCPACSFuselageSegment* aSegment);
 
     // Returns the section UID of this connection
     TIGL_EXPORT const std::string& GetSectionUID(void) const;
@@ -74,22 +70,12 @@ public:
     // Returns the section element matrix referenced by this connection
     TIGL_EXPORT CTiglTransformation GetSectionElementTransformation(void) const;
 
-protected:
-    // Cleanup routine
-    void Cleanup(void);
-
 private:
-    // Copy constructor
-    CCPACSFuselageConnection(const CCPACSFuselageConnection& );
+    const std::string*             elementUID;   /**< UID in section/elements */
 
-    // Assignment operator
-    void operator=(const CCPACSFuselageConnection& );
-
-private:
     int                            sectionIndex; /**< Index in sections */
     int                            elementIndex; /**< Index in section/elements */
     std::string                    sectionUID;   /**< UID in sections */
-    std::string                    elementUID;   /**< UID in section/elements */
     CCPACSFuselageSegment*         segment;      /**< Parent segment */
 
 };

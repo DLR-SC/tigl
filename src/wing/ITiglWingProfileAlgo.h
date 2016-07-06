@@ -46,10 +46,10 @@ public:
     virtual void Update(void)   = 0;
 
     // Returns the algorithm code identifier for an algorithm
-    virtual void ReadCPACS(TixiDocumentHandle tixiHandle)  = 0;
+    virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& profileXPath)  = 0;
 
     // Saves the profile data
-    virtual void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& profileXPath) = 0;
+    virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& profileXPath) const = 0;
 
     // Returns points on profile.
     virtual std::vector<CTiglPoint*> GetSamplePoints() const = 0;

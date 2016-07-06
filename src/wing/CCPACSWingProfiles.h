@@ -26,8 +26,8 @@
 #ifndef CCPACSWINGPROFILES_H
 #define CCPACSWINGPROFILES_H
 
+#include "generated/CPACSWingAirfoils.h"
 #include "tigl_internal.h"
-#include "tixi.h"
 #include "CCPACSWingProfile.h"
 #include <string>
 #include <map>
@@ -35,7 +35,7 @@
 namespace tigl
 {
 
-class CCPACSWingProfiles
+class CCPACSWingProfiles : private generated::CPACSWingAirfoils
 {
 
 private:
@@ -43,21 +43,15 @@ private:
     typedef std::map<std::string, CCPACSWingProfile*> CCPACSWingProfileContainer;
 
 public:
-    // Constructor
-    TIGL_EXPORT CCPACSWingProfiles(void);
-
-    // Virtual Destructor
-    TIGL_EXPORT virtual ~CCPACSWingProfiles(void);
-
     // Read CPACS wing profiles
-    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle);
+    TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
 
     // importing profiles from CPACS
     // profiles with same UID are overwritten
-    TIGL_EXPORT void ImportCPACS(TixiDocumentHandle tixiHandle);
+    TIGL_EXPORT void ImportCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
 
     // Write CPACS wing profiles
-    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle);
+    TIGL_EXPORT void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
     // add a CPACS wing profile to list
     TIGL_EXPORT void AddProfile(CCPACSWingProfile* profile);
@@ -79,21 +73,8 @@ public:
     // Invalidates internal state
     TIGL_EXPORT void Invalidate(void);
 
-protected:
-    // Cleanup routine
-    void Cleanup(void);
-
 private:
-    // Copy constructor
-    CCPACSWingProfiles(const CCPACSWingProfiles& ) { /* Do nothing */ }
-
-    // Assignment operator
-    void operator=(const CCPACSWingProfiles& ) { /* Do nothing */ }
-
-private:
-    std::string                librarypath; // Directory path to wing profiles
     CCPACSWingProfileContainer profiles;    // All wing profiles
-
 };
 
 } // end namespace tigl

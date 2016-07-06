@@ -32,31 +32,6 @@
 namespace tigl
 {
 
-// Constructor
-CCPACSFuselageProfiles::CCPACSFuselageProfiles(void)
-{
-    Cleanup();
-}
-
-// Destructor
-CCPACSFuselageProfiles::~CCPACSFuselageProfiles(void)
-{
-    Cleanup();
-}
-
-// Cleanup routine
-void CCPACSFuselageProfiles::Cleanup(void)
-{
-    librarypath = "";
-
-    CCPACSFuselageProfileContainer::iterator p;
-    for (p = profiles.begin(); p!=profiles.end(); ++p) {
-        CCPACSFuselageProfile *pro = p->second;
-        delete pro;
-    }
-    profiles.clear();
-}
-
 // Invalidates internal state
 void CCPACSFuselageProfiles::Invalidate(void)
 {
@@ -66,67 +41,21 @@ void CCPACSFuselageProfiles::Invalidate(void)
 }
 
 // Read CPACS fuselage profiles
-void CCPACSFuselageProfiles::ReadCPACS(TixiDocumentHandle tixiHandle)
+void CCPACSFuselageProfiles::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
 {
-    Cleanup();
-
-    if (tixiCheckElement(tixiHandle, "/cpacs/vehicles/profiles/fuselageProfiles") != SUCCESS) {
-        return;
-    }
-
-    /* Get <geometry> element count */
-    int geometryCount;
-    if (tixiGetNamedChildrenCount(tixiHandle, "/cpacs/vehicles/profiles/fuselageProfiles", "fuselageProfile", &geometryCount) != SUCCESS) {
-        throw CTiglError("Error: tixiGetNamedChildrenCount failed in CCPACSFuselageProfiles::ReadCPACS", TIGL_XML_ERROR);
-    }
-
-    // Loop over all <fuselageProfile> elements
-    for (int i = 1; i <= geometryCount; i++) {
-        std::ostringstream xpath;
-        xpath << "/cpacs/vehicles/profiles/fuselageProfiles/fuselageProfile[" << i << "]";
-
-        CCPACSFuselageProfile* profile = new CCPACSFuselageProfile(xpath.str());
-        profile->ReadCPACS(tixiHandle);
-        profiles[profile->GetUID()] = profile;
-    }
+    profiles.clear();
+    generated::CPACSFuselageProfiles::ReadCPACS(tixiHandle, xpath);
+    for (const auto& p : GetFuselageProfile())
+        profiles[p->GetUID()] = p; // TODO: we have to transfer ownership here
+    GetFuselageProfile().clear();
 }
 
-// Write CPACS fuselage profiles
-void CCPACSFuselageProfiles::WriteCPACS(TixiDocumentHandle tixiHandle)
-{
-    const char* elementPath = "/cpacs/vehicles/profiles/fuselageProfiles";
-    std::string path;
-    ReturnCode tixiRet;
-    int fuselageProfileCount, test;
-    
-    TixiSaveExt::TixiSaveElement(tixiHandle, "/cpacs/vehicles", "profiles");
-    TixiSaveExt::TixiSaveElement(tixiHandle, "/cpacs/vehicles/profiles", "fuselageProfiles");
-    
-    if (tixiGetNamedChildrenCount(tixiHandle, elementPath, "fuselageProfile", &test) != SUCCESS) {
-        throw CTiglError("XML error: tixiGetNamedChildrenCount failed in CCPACSFuselageProfiles::WriteCPACS", TIGL_XML_ERROR);
-    }
-
-    fuselageProfileCount = GetProfileCount();
-
-    for (int i = 1; i <= fuselageProfileCount; i++) {
-        std::stringstream ss;
-        ss << elementPath << "/fuselageProfile[" << i << "]";
-        path = ss.str();
-        CCPACSFuselageProfile& fuselageProfile = GetProfile(i);
-        if ((tixiRet = tixiCheckElement(tixiHandle, path.c_str())) == ELEMENT_NOT_FOUND) {
-            if ((tixiRet = tixiCreateElement(tixiHandle, elementPath, "fuselageProfile")) != SUCCESS) {
-                throw CTiglError("XML error: tixiCreateElement failed in CCPACSFuselageProfiles::WriteCPACS", TIGL_XML_ERROR);
-            }
-        }
-        fuselageProfile.WriteCPACS(tixiHandle, path);
-    }
-
-    for (int i = fuselageProfileCount + 1; i <= test; i++) {
-        std::stringstream ss;
-        ss << elementPath << "/fuselageProfile[" << fuselageProfileCount + 1 << "]";
-        path = ss.str();
-        tixiRet = tixiRemoveElement(tixiHandle, path.c_str());
-    }
+void CCPACSFuselageProfiles::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const {
+    const auto self = const_cast<CCPACSFuselageProfiles*>(this);
+    for (const auto& p : profiles)
+        self->GetFuselageProfile().push_back(p.second); // TODO: we have to transfer ownership here
+    generated::CPACSFuselageProfiles::WriteCPACS(tixiHandle, xpath);
+    self->GetFuselageProfile().clear();
 }
 
 bool CCPACSFuselageProfiles::HasProfile(std::string uid) const

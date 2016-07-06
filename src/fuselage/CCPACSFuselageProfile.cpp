@@ -65,9 +65,8 @@ namespace tigl
 {
 
 // Constructor
-CCPACSFuselageProfile::CCPACSFuselageProfile(const std::string& path)
-    : ProfileXPath(path),
-      invalidated(true)
+CCPACSFuselageProfile::CCPACSFuselageProfile()
+    : invalidated(true)
 {
     profileWireAlgo = WireAlgoPointer(new CTiglInterpolateBsplineWire);
     Cleanup();
@@ -83,211 +82,90 @@ CCPACSFuselageProfile::~CCPACSFuselageProfile(void)
 // Cleanup routine
 void CCPACSFuselageProfile::Cleanup(void)
 {
-    name       = "";
-    uid        = "";
-    description= "";
+    m_name       = "";
+    m_uID        = "";
+    m_description= "";
     wireLength = 0.0;
     mirrorSymmetry = false;
-
-    for (CCPACSCoordinateContainer::size_type i = 0; i < coordinates.size(); i++) {
-        delete coordinates[i];
-    }
-    coordinates.clear();
 
     Invalidate();
 }
 
 // Read fuselage profile file
-void CCPACSFuselageProfile::ReadCPACS(TixiDocumentHandle tixiHandle)
+void CCPACSFuselageProfile::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
 {
     Cleanup();
-    std::string namePath        = ProfileXPath + "/name";
-    std::string describtionPath = ProfileXPath + "/description";
-    std::string elementPath     = ProfileXPath + "/pointList";
-    std::string symmetryPath    = ProfileXPath + "/symmetry";
+    generated::CPACSProfileGeometry::ReadCPACS(tixiHandle, xpath);
 
-    try {
-        // Get subelement "name"
-        char* ptrName = NULL;
-        if (tixiGetTextElement(tixiHandle, const_cast<char*>(namePath.c_str()), &ptrName) == SUCCESS) {
-            name = ptrName;
-        }
+    // TODO: m_symmetry can neber be half
+    //if (symString == "half") {
+    //	mirrorSymmetry = true;
+    //}
+    mirrorSymmetry = false;
 
-        // Get profiles "uid"
-        char* ptrUID = NULL;
-        if (tixiGetTextAttribute(tixiHandle, const_cast<char*>(ProfileXPath.c_str()), "uID", &ptrUID) == SUCCESS) {
-            uid = ptrUID;
-        }
+	// convert point list to coordinates
+    const auto& xs = m_pointList_choice1->GetX().GetVector();
+    const auto& ys = m_pointList_choice1->GetY().GetVector();
+    const auto& zs = m_pointList_choice1->GetZ().GetVector();
 
-        // Get subelement "description"
-        char* ptrDescription = NULL;
-        if (tixiGetTextElement(tixiHandle, const_cast<char*>(describtionPath.c_str()), &ptrDescription) == SUCCESS) {
-            description = ptrDescription;
+    // points with maximal/minimal z-component
+    double maxY = std::numeric_limits<double>::lowest();
+    double minY = std::numeric_limits<double>::max();
+    int maxYIndex = -1;
+    int minYIndex = -1;
+    // Loop over all points in the vector
+    for (int i = 0; i < xs.size(); i++) {
+        CTiglPoint point(xs[i], ys[i], zs[i]);
+        coordinates.push_back(point);
+        if (ys[i] > maxY) {
+            maxY = ys[i];
+            maxYIndex = i;
         }
-
-        // Get mirror symmetry flag
-        mirrorSymmetry = false;
-        char* ptrSymmetry = NULL;
-        if (tixiCheckElement(tixiHandle, symmetryPath.c_str()) == SUCCESS) {
-            if (tixiGetTextElement(tixiHandle, const_cast<char*>(symmetryPath.c_str()), &ptrSymmetry) == SUCCESS) {
-                std::string symString = ptrSymmetry;
-                if ( symString == "half") {
-                    mirrorSymmetry = true;
-                }
-            }
-        }
-
-        // check if deprecated CPACS point definition is included in the CPACS file and give warning
-        if (tixiCheckElement(tixiHandle, (elementPath + "/point[1]").c_str()) == SUCCESS) {
-                LOG(WARNING) << "Deprecated point definition in fuselage profile " << uid <<  " will be ignored" << endl;
-        }
-
-        std::string xXpath = elementPath + "/x";
-        std::string yXpath = elementPath + "/y";
-        std::string zXpath = elementPath + "/z";
-
-        // check the number of elements in all three vectors. It has to be the same, otherwise cancel
-        int countX;
-        int countY;
-        int countZ;
-        if (tixiGetVectorSize(tixiHandle, const_cast<char*>(xXpath.c_str()), &countX) != SUCCESS) {
-            throw CTiglError("Error: XML error while reading point vector <x> in CCPACSFuselageProfile::ReadCPACS", TIGL_XML_ERROR);
-        }
-        if (tixiGetVectorSize(tixiHandle, const_cast<char*>(yXpath.c_str()), &countY) != SUCCESS) {
-            throw CTiglError("Error: XML error while reading point vector <y> in CCPACSFuselageProfile::ReadCPACS", TIGL_XML_ERROR);
-        }
-        if (tixiGetVectorSize(tixiHandle, const_cast<char*>(zXpath.c_str()), &countZ) != SUCCESS) {
-            throw CTiglError("Error: XML error while reading point vector <z> in CCPACSFuselageProfile::ReadCPACS", TIGL_XML_ERROR);
-        }
-
-        if (countX != countY || countX != countZ || countY != countZ) {
-            throw CTiglError("Error: Vector size for profile points are not eqal in CCPACSFuselageProfile::ReadCPACS", TIGL_XML_ERROR);
-        }
-
-        // read in vectors, vectors are allocated and freed by tixi
-        double* xCoordinates = NULL;
-        double* yCoordinates = NULL;
-        double* zCoordinates = NULL;
-
-        if (tixiGetFloatVector(tixiHandle, const_cast<char*>(xXpath.c_str()), &xCoordinates, countX) != SUCCESS) {
-            throw CTiglError("Error: XML error while reading point vector <x> in CCPACSFuselageProfile::ReadCPACS", TIGL_XML_ERROR);
-        }
-        if (tixiGetFloatVector(tixiHandle, const_cast<char*>(yXpath.c_str()), &yCoordinates, countY) != SUCCESS) {
-            throw CTiglError("Error: XML error while reading point vector <y> in CCPACSFuselageProfile::ReadCPACS", TIGL_XML_ERROR);
-        }
-        if (tixiGetFloatVector(tixiHandle, const_cast<char*>(zXpath.c_str()), &zCoordinates, countZ) != SUCCESS) {
-            throw CTiglError("Error: XML error while reading point vector <z> in CCPACSFuselageProfile::ReadCPACS", TIGL_XML_ERROR);
-        }
-
-        // points with maximal/minimal z-component
-        double maxY=-std::numeric_limits<double>::max();
-        double minY=std::numeric_limits<double>::max();
-        int maxYIndex=-1;
-        int minYIndex=-1;
-        // Loop over all points in the vector
-        for (int i = 0; i < countX; i++) {
-            CTiglPoint* point = new CTiglPoint(xCoordinates[i], yCoordinates[i], zCoordinates[i]);
-            coordinates.push_back(point);
-            if (yCoordinates[i]>maxY) {
-                maxY = yCoordinates[i];
-                maxYIndex = i;
-            }
-            if (yCoordinates[i]<minY) {
-                minY = yCoordinates[i];
-                minYIndex = i;
-            }
-        }
-
-        if (!mirrorSymmetry) {
-            // check if points with maximal/minimal y-component were calculated correctly
-            if (maxYIndex==-1 || minYIndex==-1 || maxYIndex==minYIndex) {
-                throw CTiglError("Error: CCPACSWingProfilePointList::ReadCPACS: Unable to separate upper and lower wing profile from point list", TIGL_XML_ERROR);
-            }
-            // force order of points to run through y>0 part first
-            if (minYIndex<maxYIndex) {
-                LOG(WARNING) << "The point list order in fuselage profile " << uid <<  " is reversed in order to run through y>0 part first" << endl;
-                std::reverse(coordinates.begin(), coordinates.end());
-            }
+        if (ys[i] < minY) {
+            minY = ys[i];
+            minYIndex = i;
         }
     }
 
-    catch (...) {
-        if (tixiHandle != -1) {
-            tixiCloseDocument(tixiHandle); /* remove me`! */
+    if (!mirrorSymmetry) {
+        // check if points with maximal/minimal y-component were calculated correctly
+        if (maxYIndex == -1 || minYIndex == -1 || maxYIndex == minYIndex) {
+            throw CTiglError("Error: CCPACSWingProfilePointList::ReadCPACS: Unable to separate upper and lower wing profile from point list", TIGL_XML_ERROR);
         }
-        throw;
+        // force order of points to run through y>0 part first
+        if (minYIndex < maxYIndex) {
+            LOG(WARNING) << "The point list order in fuselage profile " << m_uID << " is reversed in order to run through y>0 part first" << endl;
+            std::reverse(coordinates.begin(), coordinates.end());
+        }
     }
 
     Update();
 }
 
 // Write fuselage profile file
-void CCPACSFuselageProfile::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& profileXPath)
+void CCPACSFuselageProfile::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
 {
-    // Set attribute "uID"
-    TixiSaveExt::TixiSaveTextAttribute(tixiHandle, profileXPath.c_str(), "uID", uid.c_str());
-    
-    // Set element "name"
-    TixiSaveExt::TixiSaveTextElement(tixiHandle, profileXPath.c_str(), "name", name.c_str());
-    
-    // Set element "name"
-    TixiSaveExt::TixiSaveTextElement(tixiHandle, profileXPath.c_str(), "description", description.c_str());
-    
-    // Set the element "point"
-    TixiSaveExt::TixiSaveElement(tixiHandle, profileXPath.c_str(), "pointList");
+	// update point lists from coordinates
+	auto& xs = const_cast<std::vector<double>&>(m_pointList_choice1->GetX().GetVector());
+	auto& ys = const_cast<std::vector<double>&>(m_pointList_choice1->GetY().GetVector());
+	auto& zs = const_cast<std::vector<double>&>(m_pointList_choice1->GetZ().GetVector());
 
-    // TODO: symmetry!!!
+	xs.resize(coordinates.size());
+	ys.resize(coordinates.size());
+	zs.resize(coordinates.size());
 
-    std::string path = profileXPath + "/pointList";
+	for (unsigned int j = 0; j < coordinates.size(); j++) {
+		xs[j] = coordinates[j].x;
+		ys[j] = coordinates[j].y;
+		zs[j] = coordinates[j].z;
+	}
 
-    // store points as vectors
-    std::vector<double> point_X(coordinates.size());
-    std::vector<double> point_Y(coordinates.size());
-    std::vector<double> point_Z(coordinates.size());
-
-    for (unsigned int j = 0; j < coordinates.size(); j++) {
-        point_X[j] = coordinates[j]->x;
-        point_Y[j] = coordinates[j]->y;
-        point_Z[j] = coordinates[j]->z;
-    }
-
-    // Set the x coordinates
-    TixiSaveExt::TixiSaveVector(tixiHandle, path, "x", point_X);
-
-    // Set the y coordinates
-    TixiSaveExt::TixiSaveVector(tixiHandle, path, "y", point_Y);
-
-    // Set the z coordinates
-    TixiSaveExt::TixiSaveVector(tixiHandle, path, "z", point_Z);
-}
-
-// Returns the filename of the fuselage profile file
-const std::string& CCPACSFuselageProfile::GetFileName(void) const
-{
-    return ProfileXPath;
-}
-
-// Returns the name of the fuselage profile
-const std::string& CCPACSFuselageProfile::GetName(void) const
-{
-    return name;
-}
-
-// Returns the UID of the fuselage profile
-const std::string& CCPACSFuselageProfile::GetUID(void) const
-{
-    return uid;
-}
-
-// Returns the UID of the fuselage profile
-const std::string& CCPACSFuselageProfile::GetDescription(void) const
-{
-    return description;
+	generated::CPACSProfileGeometry::WriteCPACS(tixiHandle, xpath);
 }
 
 const int CCPACSFuselageProfile::GetNumPoints(void) const 
 {
-    return coordinates.size();
+    return static_cast<int>(coordinates.size());
 }
 
 // Returns the flag for the mirror symmetry with respect to the x-z-plane in the fuselage profile
@@ -345,21 +223,21 @@ void CCPACSFuselageProfile::BuildWires(void)
         throw CTiglError("Error: Number of points is less than 2 in CCPACSFuselageProfile::BuildWire", TIGL_ERROR);
     }
 
-    points.push_back(coordinates[0]->Get_gp_Pnt());
-    for (CCPACSCoordinateContainer::size_type i = 1; i < coordinates.size() -1 ; i++) {
-        gp_Pnt p1 = coordinates[i-1]->Get_gp_Pnt();
-        gp_Pnt p2 = coordinates[i]->Get_gp_Pnt();
+    points.push_back(coordinates[0].Get_gp_Pnt());
+    for (std::size_t i = 1; i < coordinates.size() -1 ; i++) {
+        gp_Pnt p1 = coordinates[i-1].Get_gp_Pnt();
+        gp_Pnt p2 = coordinates[i].Get_gp_Pnt();
 
         // only take points that are not "the same"
         if ( !checkSamePoints(p1, p2) ) {
-            points.push_back(coordinates[i]->Get_gp_Pnt());
+            points.push_back(coordinates[i].Get_gp_Pnt());
         }
     }
 
     // we always want to include the endpoint, if it's the same as the startpoint
     // we use the startpoint to enforce closing of the spline
-    gp_Pnt pStart =  coordinates[0]->Get_gp_Pnt();
-    gp_Pnt pEnd   =  coordinates[coordinates.size()-1]->Get_gp_Pnt();
+    gp_Pnt pStart =  coordinates[0].Get_gp_Pnt();
+    gp_Pnt pEnd   =  coordinates[coordinates.size()-1].Get_gp_Pnt();
     if (checkSamePoints(pStart,pEnd)) {
         points.push_back(pStart);
     }
@@ -473,13 +351,13 @@ void CCPACSFuselageProfile::BuildDiameterPoints(void)
 {
     Update();
     if (mirrorSymmetry) {
-        startDiameterPoint = coordinates[0]->Get_gp_Pnt();
-        endDiameterPoint = coordinates[coordinates.size() - 1]->Get_gp_Pnt();
+        startDiameterPoint = coordinates[0].Get_gp_Pnt();
+        endDiameterPoint = coordinates[coordinates.size() - 1].Get_gp_Pnt();
     }
     else {
         // compute starting diameter point
-        gp_Pnt firstPnt = coordinates[0]->Get_gp_Pnt();
-        gp_Pnt lastPnt  = coordinates[coordinates.size() - 1]->Get_gp_Pnt();
+        gp_Pnt firstPnt = coordinates[0].Get_gp_Pnt();
+        gp_Pnt lastPnt  = coordinates[coordinates.size() - 1].Get_gp_Pnt();
         double x = (firstPnt.X() + lastPnt.X())/2.;
         double y = (firstPnt.Y() + lastPnt.Y())/2.;
         double z = (firstPnt.Z() + lastPnt.Z())/2.;
@@ -487,9 +365,8 @@ void CCPACSFuselageProfile::BuildDiameterPoints(void)
 
         // find the point with the max dist to starting point
         endDiameterPoint = startDiameterPoint;
-        CCPACSCoordinateContainer::iterator it; 
-        for (it = coordinates.begin(); it != coordinates.end(); ++it) {
-            gp_Pnt point = (*it)->Get_gp_Pnt();
+        for (auto it = coordinates.begin(); it != coordinates.end(); ++it) {
+            gp_Pnt point = it->Get_gp_Pnt();
             if (startDiameterPoint.Distance(point) > startDiameterPoint.Distance(endDiameterPoint)) {
                 endDiameterPoint = point;
             }
@@ -504,8 +381,8 @@ void CCPACSFuselageProfile::BuildDiameterPoints(void)
 std::vector<CTiglPoint*> CCPACSFuselageProfile::GetCoordinateContainer()
 {
     std::vector<CTiglPoint*> newPointVector;
-    for (CCPACSCoordinateContainer::size_type i = 0; i < coordinates.size(); i++) {
-        gp_Pnt pnt = coordinates[i]->Get_gp_Pnt();
+    for (std::size_t i = 0; i < coordinates.size(); i++) {
+        gp_Pnt pnt = coordinates[i].Get_gp_Pnt();
         pnt = TransformPoint(pnt);
         newPointVector.push_back(new CTiglPoint(pnt.X(), pnt.Y(), pnt.Z()));
     }

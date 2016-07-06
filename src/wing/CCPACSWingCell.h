@@ -21,20 +21,17 @@
 
 #include <iostream>
 
-#include "tixi.h"
-#include "tigl_internal.h"
+#include "generated/CPACSWingCell.h"
 #include "CCPACSMaterial.h"
 
 namespace tigl
 {
 
-class CCPACSWingCell
+class CCPACSWingCell : public generated::CPACSWingCell
 {
 public:
     TIGL_EXPORT CCPACSWingCell();
-    
-    TIGL_EXPORT const std::string& GetUID() const;
-    
+
     // determines if a given eta xsi koordinate is inside this cell
     TIGL_EXPORT bool IsInside(double eta, double xsi) const;
     
@@ -42,8 +39,6 @@ public:
     TIGL_EXPORT bool IsConvex() const;
     
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& cellXPath);
-    
-    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string & cellXPath);
 
     // get corner coordinates of cell
     TIGL_EXPORT void GetLeadingEdgeInnerPoint (double* eta, double* xsi) const;
@@ -57,21 +52,13 @@ public:
     TIGL_EXPORT void SetTrailingEdgeInnerPoint(double eta, double xsi);
     TIGL_EXPORT void SetTrailingEdgeOuterPoint(double eta, double xsi);
     
-    TIGL_EXPORT CCPACSMaterial& GetMaterial();
+    TIGL_EXPORT const CCPACSMaterial& GetMaterial();
 private:
     void reset();
-    
-    // relative position of the cell in component segment coordinates
-    double innerBorderEta1, innerBorderEta2, outerBorderEta1, outerBorderEta2 ;
-    double leadingEdgeXsi1, leadingEdgeXsi2, trailingEdgeXsi1, trailingEdgeXsi2;
-    
-    std::string uid;
-    CCPACSMaterial material;
 };
 
 namespace WingCellInternal
 {
-
     struct Point2D
     {
         double x;

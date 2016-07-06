@@ -32,7 +32,7 @@
 #include "gp_Pnt.hxx"
 #include "TopoDS.hxx"
 
-namespace tigl 
+namespace tigl
 {
 
 class CTiglTransformation

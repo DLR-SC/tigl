@@ -26,6 +26,7 @@
 #ifndef CCPACSWINGSECTION_H
 #define CCPACSWINGSECTION_H
 
+#include "generated/CPACSWingSection.h"
 #include "tigl_internal.h"
 #include "tixi.h"
 #include "CCPACSWingSectionElements.h"
@@ -35,7 +36,7 @@
 namespace tigl
 {
 
-class CCPACSWingSection
+class CCPACSWingSection : public generated::CPACSWingSection
 {
 
 public:
@@ -54,29 +55,20 @@ public:
     // Get element count for this section
     TIGL_EXPORT int GetSectionElementCount(void) const;
 
-    // Get the UID of this WingSection
-    TIGL_EXPORT const std::string& GetUID(void) const;
-
-    // Get name of this WingSection
-    TIGL_EXPORT const std::string& GetName() const;
-
-    // Get description of this WingSection
-    TIGL_EXPORT const std::string& GetDescription(void) const;
-
     // Get element for a given index
-    TIGL_EXPORT CCPACSWingSectionElement& GetSectionElement(int index) const;
+    TIGL_EXPORT const CCPACSWingSectionElement& GetSectionElement(int index) const;
 
     // Gets the section transformation
     TIGL_EXPORT CTiglTransformation GetSectionTransformation(void) const;
 
     // Gets the section translation
-    TIGL_EXPORT const CTiglPoint& GetTranslation() const;
+    TIGL_EXPORT CTiglPoint GetTranslation() const;
 
     // Gets the section rotation
-    TIGL_EXPORT const CTiglPoint& GetRotation() const;
+    TIGL_EXPORT CTiglPoint GetRotation() const;
 
     // Gets the section scaling
-    TIGL_EXPORT const CTiglPoint& GetScaling() const;
+    TIGL_EXPORT CTiglPoint GetScaling() const;
 
     // Setter for translation
     TIGL_EXPORT void SetTranslation(const CTiglPoint& trans);
@@ -105,13 +97,8 @@ private:
     void operator=(const CCPACSWingSection& );
 
 private:
-    std::string               name;           /**< Section name             */
-    std::string               uID;              /**< Section uid                */
-    std::string               description;    /**< Section description      */
-    CTiglTransformation       transformation; /**< Section transfromation   */
-    CTiglPoint                translation;    /**< Section translation      */
-    CTiglPoint                scaling;        /**< Section scaling          */
-    CTiglPoint                rotation;       /**< Section rotation         */
+    // value cached from m_transformation
+    CTiglTransformation transformationMatrix; /**< Section transfromation   */
     CCPACSWingSectionElements elements;       /**< Section elements         */
 
 };

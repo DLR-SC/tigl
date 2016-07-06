@@ -26,15 +26,15 @@
 #ifndef CCPACSFUSELAGE_H
 #define CCPACSFUSELAGE_H
 
+#include "generated/CPACSFuselage.h"
+
 #include <string>
 
 #include "tigl_config.h"
-#include "tigl_internal.h"
-#include "tixi.h"
 #include "CTiglTransformation.h"
 #include "CCPACSFuselageSections.h"
 #include "CCPACSFuselageSegments.h"
-#include "CCPACSFuselagePositionings.h"
+#include "CCPACSPositionings.h"
 #include "CTiglAbstractPhysicalComponent.h"
 #include "CCPACSGuideCurve.h"
 
@@ -42,19 +42,17 @@
 #include "TopoDS_Compound.hxx"
 #include "BRep_Builder.hxx"
 
-
 namespace tigl
 {
-
 class CCPACSConfiguration;
 class CTiglAbstractSegment;
 
-class CCPACSFuselage : public CTiglAbstractPhysicalComponent
+class CCPACSFuselage : public generated::CPACSFuselage, public CTiglAbstractPhysicalComponent
 {
-
 public:
     // Constructor
     TIGL_EXPORT CCPACSFuselage(CCPACSConfiguration* config);
+    TIGL_EXPORT CCPACSFuselage(CCPACSFuselages* parent);
 
     // Virtual Destructor
     TIGL_EXPORT virtual ~CCPACSFuselage(void);
@@ -65,14 +63,14 @@ public:
     // Read CPACS fuselage elements
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& fuselageXPath);
 
-    // Write CPACS fuselage elements
-    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& fuselageXPath);
-
-    // Returns the name of the fuselage
-    TIGL_EXPORT std::string GetName(void) const;
-
     // Returns the parent configuration
     TIGL_EXPORT CCPACSConfiguration & GetConfiguration(void) const;
+
+    TIGL_EXPORT virtual const std::string& GetUID() const override;
+    TIGL_EXPORT virtual void SetUID(const std::string& uid) override;
+
+    TIGL_EXPORT virtual TiglSymmetryAxis GetSymmetryAxis(void) override;
+    TIGL_EXPORT virtual void SetSymmetryAxis(const TiglSymmetryAxis& axis) override;
 
     // Get section count
     TIGL_EXPORT int GetSectionCount(void) const;
@@ -123,21 +121,13 @@ public:
     // The Fuselage could be turned with a given angle at at given axis, specified by a point and a direction.
     TIGL_EXPORT gp_Pnt GetMinumumDistanceToGround(gp_Ax1 RAxis, double angle);
 
-    TIGL_EXPORT void SetSymmetryAxis(const std::string& axis);
-
     // Get the guide curve with a given UID
-    TIGL_EXPORT CCPACSGuideCurve& GetGuideCurve(std::string uid);
+    TIGL_EXPORT const CCPACSGuideCurve& GetGuideCurve(std::string uid);
     
 protected:
     // Cleanup routine
     void Cleanup(void);
 
-    // Build transformation matrix for the fuselage
-    void BuildMatrix(void);
-
-    // Update internal fuselage data
-    void Update(void);
-        
     // Adds all segments of this fuselage to one shape
     PNamedShape BuildLoft(void);
     
@@ -145,18 +135,7 @@ private:
     // get short name for loft
     std::string GetShortShapeName(void);
 
-    // Copy constructor
-    CCPACSFuselage(const CCPACSFuselage & );
-
-    // Assignment operator
-    void operator=(const CCPACSFuselage & );
-
 private:
-    std::string                name;                 /**< Fuselage name           */
-    std::string                description;          /**< Fuselage description    */
-    CCPACSFuselageSections     sections;             /**< Fuselage sections       */
-    CCPACSFuselageSegments     segments;             /**< Fuselage segments       */
-    CCPACSFuselagePositionings positionings;         /**< Fuselage positionings   */
     CCPACSConfiguration*       configuration;        /**< Parent configuration    */
     FusedElementsContainerType fusedElements;        /**< Stores already fused segments */
 

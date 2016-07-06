@@ -328,9 +328,7 @@ void CTiglExportStep::ExportStep(const std::string& filename) const
     }
 
     CCPACSFarField& farfield = _config.GetFarField();
-    if (farfield.GetFieldType() != NONE) {
-        shapes.push_back(farfield.GetLoft());
-    }
+    shapes.push_back(farfield.GetLoft());
 
     // write step
     try {
