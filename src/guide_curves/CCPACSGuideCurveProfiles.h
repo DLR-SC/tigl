@@ -36,6 +36,9 @@ namespace tigl
 class CCPACSGuideCurveProfiles : public generated::CPACSGuideCurveProfiles
 {
 public:
+    DEPRECATED TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle);
+    TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
+
     // Returns the total count of guide curves in this configuration
     TIGL_EXPORT int GetGuideCurveProfileCount(void) const;
 
