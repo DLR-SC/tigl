@@ -24,9 +24,11 @@
 
 namespace tigl
 {
+namespace TixiSaveExt
+{
 
 // create if necessary the element
-void TixiSaveExt::TixiSaveElement(TixiDocumentHandle tixiHandle, const char* elementPath, const char* element)
+void TixiSaveElement(TixiDocumentHandle tixiHandle, const char* elementPath, const char* element)
 {
     // check if the element exist
     std::string subpath;
@@ -47,7 +49,7 @@ void TixiSaveExt::TixiSaveElement(TixiDocumentHandle tixiHandle, const char* ele
 
 // update an element with text, and create it if necessary
 // INDICATION : updating an empty text doesn't work : no error, but the text is not updated
-void TixiSaveExt::TixiSaveTextElement(TixiDocumentHandle tixiHandle, const char* elementPath, const char* element, const char* text)
+void TixiSaveTextElement(TixiDocumentHandle tixiHandle, const char* elementPath, const char* element, const char* text)
 {
     std::string subpath;
     subpath.append(elementPath);
@@ -75,7 +77,7 @@ void TixiSaveExt::TixiSaveTextElement(TixiDocumentHandle tixiHandle, const char*
 
 
 // update an attribute, or create it if necessary
-void TixiSaveExt::TixiSaveTextAttribute(TixiDocumentHandle tixiHandle, const char* attributePath, const char* attribute, const char* text)
+void TixiSaveTextAttribute(TixiDocumentHandle tixiHandle, const char* attributePath, const char* attribute, const char* text)
 {
     ReturnCode tixiRet;
     // check is it exist, and update it
@@ -92,7 +94,7 @@ void TixiSaveExt::TixiSaveTextAttribute(TixiDocumentHandle tixiHandle, const cha
 
 
 // update a point coordinates, or create it if necessary
-void TixiSaveExt::TixiSavePoint(TixiDocumentHandle tixiHandle, const char* elementPath, double x, double y, double z, const char* format)
+void TixiSavePoint(TixiDocumentHandle tixiHandle, const char* elementPath, double x, double y, double z, const char* format)
 {
     ReturnCode tixiRet;
     std::string subpath;
@@ -145,7 +147,7 @@ void TixiSaveExt::TixiSavePoint(TixiDocumentHandle tixiHandle, const char* eleme
 }
 
 // Update a element with double
-void TixiSaveExt::TixiSaveDoubleElement(TixiDocumentHandle tixiHandle, const char* elementPath, const char* element, double val, const char* format)
+void TixiSaveDoubleElement(TixiDocumentHandle tixiHandle, const char* elementPath, const char* element, double val, const char* format)
 {
     std::string subpath;
     subpath.append(elementPath);
@@ -179,7 +181,7 @@ void TixiSaveExt::TixiSaveDoubleElement(TixiDocumentHandle tixiHandle, const cha
     }
 }
 
-void TixiSaveExt::TixiSaveIntElement(TixiDocumentHandle tixiHandle, const char* elementPath, const char* element, int val)
+void TixiSaveIntElement(TixiDocumentHandle tixiHandle, const char* elementPath, const char* element, int val)
 {
     std::string subpath;
     subpath.append(elementPath);
@@ -209,7 +211,7 @@ void TixiSaveExt::TixiSaveIntElement(TixiDocumentHandle tixiHandle, const char* 
 }
 
 // update a point coordinates, or create it if necessary
-void TixiSaveExt::TixiSaveVector(TixiDocumentHandle tixiHandle, const char* elementPath, const char* element, const double* vector, int length)
+void TixiSaveVector(TixiDocumentHandle tixiHandle, const char* elementPath, const char* element, const double* vector, std::size_t length)
 {
     std::string subpath;
     subpath.append(elementPath);
@@ -223,13 +225,13 @@ void TixiSaveExt::TixiSaveVector(TixiDocumentHandle tixiHandle, const char* elem
         }
     }
     // set the new vector with new values
-    if (tixiAddFloatVector(tixiHandle, elementPath, element, vector, length, NULL) != SUCCESS) {
+    if (tixiAddFloatVector(tixiHandle, elementPath, element, vector, static_cast<int>(length), NULL) != SUCCESS) {
         throw CTiglError("Error: XML error while saving vector in TixiSaveExt::TixiSaveVector", TIGL_XML_ERROR);
     }
 }
 
 // update a point coordinates, or create it if necessary
-void TixiSaveExt::TixiSaveVector(TixiDocumentHandle tixiHandle, const std::string& elementPath, const std::string& element, const std::vector<double>& val)
+void TixiSaveVector(TixiDocumentHandle tixiHandle, const std::string& elementPath, const std::string& element, const std::vector<double>& val)
 {
     if (val.empty()) {
         TixiSaveVector(tixiHandle, elementPath.c_str(), element.c_str(), NULL, 0);
@@ -239,7 +241,5 @@ void TixiSaveExt::TixiSaveVector(TixiDocumentHandle tixiHandle, const std::strin
     }
 }
 
-
 }
-// end of file
-
+}

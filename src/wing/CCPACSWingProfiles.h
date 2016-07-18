@@ -35,13 +35,8 @@
 namespace tigl
 {
 
-class CCPACSWingProfiles : private generated::CPACSWingAirfoils
+class CCPACSWingProfiles : public generated::CPACSWingAirfoils
 {
-
-private:
-    // Typedef for a container to store the wing profiles and their uid.
-    typedef std::map<std::string, CCPACSWingProfile*> CCPACSWingProfileContainer;
-
 public:
     // Read CPACS wing profiles
     TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
@@ -49,9 +44,6 @@ public:
     // importing profiles from CPACS
     // profiles with same UID are overwritten
     TIGL_EXPORT void ImportCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
-
-    // Write CPACS wing profiles
-    TIGL_EXPORT void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
     // add a CPACS wing profile to list
     TIGL_EXPORT void AddProfile(CCPACSWingProfile* profile);
@@ -72,9 +64,6 @@ public:
 
     // Invalidates internal state
     TIGL_EXPORT void Invalidate(void);
-
-private:
-    CCPACSWingProfileContainer profiles;    // All wing profiles
 };
 
 } // end namespace tigl

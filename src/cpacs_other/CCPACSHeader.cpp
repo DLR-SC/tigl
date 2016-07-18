@@ -24,7 +24,6 @@
 */
 
 #include "CCPACSHeader.h"
-#include "TixiSaveExt.h"
 
 namespace tigl
 {
