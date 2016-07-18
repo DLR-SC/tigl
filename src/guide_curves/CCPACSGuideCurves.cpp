@@ -40,7 +40,7 @@ int CCPACSGuideCurves::GetGuideCurveCount(void) const
 const CCPACSGuideCurve& CCPACSGuideCurves::GetGuideCurve(int index) const
 {
     unsigned int arrayIndex = index - 1;
-    if (arrayIndex < 0 || arrayIndex >= GetGuideCurveCount()) {
+    if (arrayIndex < 0 || arrayIndex >= static_cast<unsigned int>(GetGuideCurveCount())) {
         throw CTiglError("Error: Invalid index in CCPACSGuideCurves::GetGuideCurve", TIGL_INDEX_ERROR);
     }
     return *m_guideCurve[arrayIndex];
@@ -49,23 +49,23 @@ const CCPACSGuideCurve& CCPACSGuideCurves::GetGuideCurve(int index) const
 // Returns the guide curve for a given uid.
 const CCPACSGuideCurve& CCPACSGuideCurves::GetGuideCurve(std::string uid) const
 {
-	for (std::size_t i = 0; i < m_guideCurve.size(); i++) {
-		if (m_guideCurve[i]->GetUID() == uid) {
-			return *m_guideCurve[i];
-		}
-	}
-	throw CTiglError("CCPACSGuideCurve::GetGuideCurve: Guide curve \"" + uid + "\" not found in CPACS file!", TIGL_UID_ERROR);
+    for (std::size_t i = 0; i < m_guideCurve.size(); i++) {
+        if (m_guideCurve[i]->GetUID() == uid) {
+            return *m_guideCurve[i];
+        }
+    }
+    throw CTiglError("CCPACSGuideCurve::GetGuideCurve: Guide curve \"" + uid + "\" not found in CPACS file!", TIGL_UID_ERROR);
 }
 
 // Returns the guide curve for a given uid.
 bool CCPACSGuideCurves::GuideCurveExists(std::string uid) const
 {
-	for (std::size_t i = 0; i < m_guideCurve.size(); i++) {
-		if (m_guideCurve[i]->GetUID() == uid) {
-			return true;
-		}
-	}
-	return false;
+    for (std::size_t i = 0; i < m_guideCurve.size(); i++) {
+        if (m_guideCurve[i]->GetUID() == uid) {
+            return true;
+        }
+    }
+    return false;
 }
 
 } // end namespace tigl

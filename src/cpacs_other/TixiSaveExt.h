@@ -41,37 +41,31 @@
 
 namespace tigl
 {
-
-class TixiSaveExt
+namespace TixiSaveExt
 {
-
-public:
     /** Save an empty element */
-    static void TixiSaveElement(TixiDocumentHandle tixiHandle, const char* elementPath, const char* element);
+    void TixiSaveElement(TixiDocumentHandle tixiHandle, const char* elementPath, const char* element);
 
     /** Save an element containing 'text' */
-    static void TixiSaveTextElement(TixiDocumentHandle tixiHandle, const char* elementXPath, const char* element, const char* text);
+    void TixiSaveTextElement(TixiDocumentHandle tixiHandle, const char* elementXPath, const char* element, const char* text);
 
     /** Save an attribute at the path */
-    static void TixiSaveTextAttribute(TixiDocumentHandle tixiHandle, const char* attributePath, const char* attribute, const char* text);
+    void TixiSaveTextAttribute(TixiDocumentHandle tixiHandle, const char* attributePath, const char* attribute, const char* text);
 
     /** Save a point (ref,x,y,z) at the path */
-    static void TixiSavePoint(TixiDocumentHandle tixiHandle, const char* elementXPath, double x, double y, double z, const char* format);
+    void TixiSavePoint(TixiDocumentHandle tixiHandle, const char* elementXPath, double x, double y, double z, const char* format);
 
     /** Save an element containing a double value */
-    static void TixiSaveDoubleElement(TixiDocumentHandle tixiHandle, const char* elementXPath, const char* element, double val, const char* format = "%g");
+    void TixiSaveDoubleElement(TixiDocumentHandle tixiHandle, const char* elementXPath, const char* element, double val, const char* format = "%g");
 
     /** Save an element containing a int value */
-    static void TixiSaveIntElement(TixiDocumentHandle tixiHandle, const char* elementXPath, const char* element, int val);
+    void TixiSaveIntElement(TixiDocumentHandle tixiHandle, const char* elementXPath, const char* element, int val);
 
     /** Save an element containing a vector (list of double value) at the path */
-    static void TixiSaveVector(TixiDocumentHandle tixiHandle, const char* elementXPath, const char* element, const double* val, int length);
+    void TixiSaveVector(TixiDocumentHandle tixiHandle, const char* elementXPath, const char* element, const double* val, std::size_t length);
 
     /** Save an element containing a vector at the path */
-    static void TixiSaveVector(TixiDocumentHandle tixiHandle, const std::string& elementXPath, const std::string& element, const std::vector<double>& val);
-
-private:
-
+    void TixiSaveVector(TixiDocumentHandle tixiHandle, const std::string& elementXPath, const std::string& element, const std::vector<double>& val);
 };
 }
 #endif

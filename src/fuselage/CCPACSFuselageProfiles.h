@@ -38,15 +38,9 @@ namespace tigl
 
 class CCPACSFuselageProfiles : public generated::CPACSFuselageProfiles
 {
-private:
-    // Typedef for a container to store the fuselage profiles.
-    typedef std::map<std::string, CCPACSFuselageProfile*> CCPACSFuselageProfileContainer;
-
 public:
     // Read CPACS fuselage profiles
     TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
-
-    TIGL_EXPORT void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
     TIGL_EXPORT bool HasProfile(std::string uid) const;
 
@@ -67,10 +61,6 @@ public:
 
     // Invalidates internal state
     TIGL_EXPORT void Invalidate(void);
-
-private:
-    CCPACSFuselageProfileContainer profiles;     // All fuselage profiles
-
 };
 
 } // end namespace tigl

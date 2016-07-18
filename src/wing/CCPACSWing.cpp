@@ -134,7 +134,7 @@ CCPACSWing::CCPACSWing(CCPACSConfiguration* config)
 
 CCPACSWing::CCPACSWing(CCPACSWings* parent)
     : generated::CPACSWing(parent)
-    , configuration(&parent->GetParent_CCPACSModel()->GetConfiguration())
+    , configuration(&parent->GetParent<CCPACSModel>()->GetConfiguration())
     , rebuildFusedSegments(true)
     , rebuildFusedSegWEdge(true)
     , rebuildShells(true) {
@@ -543,12 +543,6 @@ Handle(Geom_Surface) CCPACSWing::GetUpperSegmentSurface(int index)
 {
     return m_segments.GetSegment(index).GetUpperSurface();
 }
-
-//// sets the symmetry plane for all childs, segments and component segments
-//void CCPACSWing::SetSymmetryAxis(const std::string& axis)
-//{
-//
-//}
 
 double CCPACSWing::GetWingspan()
 {

@@ -33,15 +33,15 @@ namespace tigl {
 		return m_transformation;
 	}
 
-	TIGL_EXPORT CTiglPoint CCPACSTransformation::GetTranslation() const {
+	TIGL_EXPORT const CTiglPoint& CCPACSTransformation::GetTranslation() const {
 		return m_t;
 	}
 
-	TIGL_EXPORT CTiglPoint CCPACSTransformation::GetScaling() const {
+	TIGL_EXPORT const CTiglPoint& CCPACSTransformation::GetScaling() const {
 		return m_s;
 	}
 
-	TIGL_EXPORT CTiglPoint CCPACSTransformation::GetRotation() const {
+	TIGL_EXPORT const CTiglPoint& CCPACSTransformation::GetRotation() const {
 		return m_r;
 	}
 

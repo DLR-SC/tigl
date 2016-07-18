@@ -36,7 +36,7 @@ CCPACSWingCells::CCPACSWingCells(CCPACSWingShell* parent)
 
 int CCPACSWingCells::GetCellCount() const
 {
-    return m_cell.size();
+    return static_cast<int>(m_cell.size());
 }
 
 CCPACSWingCell& CCPACSWingCells::GetCell(int index) const
