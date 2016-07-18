@@ -19,8 +19,7 @@ auto makeClassName(std::string name) {
 		name[0] = std::toupper(name[0]);
 
 		// strip Type suffix if exists
-		if (name.size() > 4 && name.compare(name.size() - 4, 4, "Type") == 0)
-			name.erase(std::end(name) - 4, std::end(name));
+		name = stripTypeSuffix(name);
 
 		// prefix CPACS
 		name = "CPACS" + name;
@@ -90,7 +89,7 @@ auto buildFieldList(const SchemaParser& schema, const ComplexType& type) {
 			else if (e.minOccurs >= 0 && e.maxOccurs > 1)
 				m.cardinality = Cardinality::Vector;
 			else if (e.minOccurs == 0 && e.maxOccurs == 0) {
-				std::cerr << "Element " + e.name + " with type " + e.type + " was omitted as minOccurs and maxOccurs are both zero" << std::endl;
+				std::cerr << "Warning: Element " + e.name + " with type " + e.type + " was omitted as minOccurs and maxOccurs are both zero" << std::endl;
 				return; // skip this type
 			} else
 				throw std::runtime_error("Invalid cardinalities, min: " + std::to_string(e.minOccurs) + ", max: " + std::to_string(e.maxOccurs));

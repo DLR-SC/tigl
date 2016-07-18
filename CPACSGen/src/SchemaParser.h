@@ -76,22 +76,24 @@ private:
 	TixiDocument document;
 	std::unordered_map<std::string, Variant<ComplexType, SimpleType>> m_types;
 
-	Group    readGroup   (const std::string& xpath);
-	All      readAll     (const std::string& xpath);
-	Choice   readChoice  (const std::string& xpath);
-	Sequence readSequence(const std::string& xpath);
-	Any      readAny     (const std::string& xpath);
+	Group    readGroup   (const std::string& xpath, const std::string& containingTypeName);
+	All      readAll     (const std::string& xpath, const std::string& containingTypeName);
+	Choice   readChoice  (const std::string& xpath, const std::string& containingTypeName);
+	Sequence readSequence(const std::string& xpath, const std::string& containingTypeName);
+	Any      readAny     (const std::string& xpath, const std::string& containingTypeName);
 
 	void readExtension(const std::string& xpath, ComplexType& type);
 	void readSimpleContent(const std::string& xpath, ComplexType& type);
 	void readComplexContent(const std::string& xpath, ComplexType& type);
 	void readComplexTypeElementConfiguration(const std::string& xpath, ComplexType& type);
-	Attribute readAttribute(const std::string& xpath);
+	Attribute readAttribute(const std::string& xpath, const std::string& containingTypeName);
 	void readRestriction(const std::string& xpath, SimpleType& type);
 	std::string readComplexType(const std::string& xpath, const std::string& nameHint = "");
 	std::string readSimpleType(const std::string& xpath, const std::string& nameHint = "");
 	std::string readInlineType(const std::string& xpath, const std::string& nameHint);
-	Element readElement(const std::string& xpath);
+	Element readElement(const std::string& xpath, const std::string& containingTypeName = "");
 
 	std::string generateUniqueTypeName(const std::string& newNameSuggestion);
 };
+
+std::string stripTypeSuffix(std::string name);

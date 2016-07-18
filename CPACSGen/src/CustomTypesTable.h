@@ -3,12 +3,13 @@
 #include "Table.h"
 
 // custom types in Tigl which inherit from the generated ones
+// maps generated types to actual tigl types
 class CustomTypesTable : public MappingTable {
 public:
 	CustomTypesTable()
 		: MappingTable({
-			// maps generated classes to actual tigl classes
-			{ "CPACSSymmetryType0",                 "TiglSymmetryAxis" },
+			{ "CPACSWingType_symmetry",             "TiglSymmetryAxis" },
+			{ "CPACSFuselageType_symmetry",         "TiglSymmetryAxis" },
 
 			{ "CPACSAircraftModel",                 "CCPACSModel" },
 			{ "CPACSMaterialDefinition",            "CCPACSMaterial" },

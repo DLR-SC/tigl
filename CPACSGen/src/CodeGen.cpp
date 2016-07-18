@@ -137,7 +137,7 @@ void CodeGen::writeAccessorImplementations(IndentingStreamWrapper& cpp, const st
 	for (const auto& f : fields) {
 		const auto op = f.cardinality == Cardinality::Optional;
 		if (op)
-			cpp << "TIGL_EXPORT bool " << className << "::Has" << CapitalizeFirstLetter(f.name()) << "() const { return " << f.fieldName() << ".isValid(); }";
+			cpp << "bool " << className << "::Has" << CapitalizeFirstLetter(f.name()) << "() const { return " << f.fieldName() << ".isValid(); }";
 		cpp << "const " << getterSetterType(f) << "& " << className << "::Get" << CapitalizeFirstLetter(f.name()) << "() const { return " << f.fieldName() << (op ? ".get()" : "") << "; }";
 		const bool isClassType = m_types.classes.find(f.typeName) == std::end(m_types.classes);
 		if (isClassType) // generate setter only for fundamental and enum types

@@ -18,12 +18,12 @@ SchemaParser::SchemaParser(const std::string& cpacsLocation)
 	});
 }
 
-Group SchemaParser::readGroup(const std::string& xpath) {
+Group SchemaParser::readGroup(const std::string& xpath, const std::string& containingTypeName) {
 	throw NotImplementedException("XSD group is not implemented");
 	return Group();
 }
 
-All SchemaParser::readAll(const std::string& xpath) {
+All SchemaParser::readAll(const std::string& xpath, const std::string& containingTypeName) {
 	// <all
 	// id = ID
 	// maxOccurs = 1
@@ -35,12 +35,12 @@ All SchemaParser::readAll(const std::string& xpath) {
 	All all;
 	all.xpath = xpath;
 	document.forEachChild(xpath, "element", [&](auto xpath) {
-		all.elements.push_back(readElement(xpath));
+		all.elements.push_back(readElement(xpath, containingTypeName));
 	});
 	return all;
 }
 
-Choice SchemaParser::readChoice(const std::string& xpath) {
+Choice SchemaParser::readChoice(const std::string& xpath, const std::string& containingTypeName) {
 	// <choice
 	// id=ID
 	// maxOccurs=nonNegativeInteger|unbounded
@@ -52,24 +52,24 @@ Choice SchemaParser::readChoice(const std::string& xpath) {
 	Choice ch;
 	ch.xpath;
 	document.forEachChild(xpath, "element", [&](auto xpath) {
-		ch.elements.push_back(readElement(xpath));
+		ch.elements.push_back(readElement(xpath, containingTypeName));
 	});
 	document.forEachChild(xpath, "group", [&](auto xpath) {
-		ch.elements.push_back(readGroup(xpath));
+		ch.elements.push_back(readGroup(xpath, containingTypeName));
 	});
 	document.forEachChild(xpath, "choice", [&](auto xpath) {
-		ch.elements.push_back(readChoice(xpath));
+		ch.elements.push_back(readChoice(xpath, containingTypeName));
 	});
 	document.forEachChild(xpath, "sequence", [&](auto xpath) {
-		ch.elements.push_back(readSequence(xpath));
+		ch.elements.push_back(readSequence(xpath, containingTypeName));
 	});
 	document.forEachChild(xpath, "any", [&](auto xpath) {
-		ch.elements.push_back(readAny(xpath));
+		ch.elements.push_back(readAny(xpath, containingTypeName));
 	});
 	return ch;
 }
 
-Sequence SchemaParser::readSequence(const std::string& xpath) {
+Sequence SchemaParser::readSequence(const std::string& xpath, const std::string& containingTypeName) {
 	// <sequence
 	// id=ID
 	// maxOccurs=nonNegativeInteger|unbounded
@@ -81,24 +81,24 @@ Sequence SchemaParser::readSequence(const std::string& xpath) {
 	Sequence seq;
 	seq.xpath = xpath;
 	document.forEachChild(xpath, "element", [&](auto xpath) {
-		seq.elements.push_back(readElement(xpath));
+		seq.elements.push_back(readElement(xpath, containingTypeName));
 	});
 	document.forEachChild(xpath, "group", [&](auto xpath) {
-		seq.elements.push_back(readGroup(xpath));
+		seq.elements.push_back(readGroup(xpath, containingTypeName));
 	});
 	document.forEachChild(xpath, "choice", [&](auto xpath) {
-		seq.elements.push_back(readChoice(xpath));
+		seq.elements.push_back(readChoice(xpath, containingTypeName));
 	});
 	document.forEachChild(xpath, "sequence", [&](auto xpath) {
-		seq.elements.push_back(readSequence(xpath));
+		seq.elements.push_back(readSequence(xpath, containingTypeName));
 	});
 	document.forEachChild(xpath, "any", [&](auto xpath) {
-		seq.elements.push_back(readAny(xpath));
+		seq.elements.push_back(readAny(xpath, containingTypeName));
 	});
 	return seq;
 }
 
-Any SchemaParser::readAny(const std::string& xpath) {
+Any SchemaParser::readAny(const std::string& xpath, const std::string& containingTypeName) {
 	// <any
 	// id=ID
 	// maxOccurs=nonNegativeInteger|unbounded
@@ -131,7 +131,7 @@ void SchemaParser::readSimpleContent(const std::string& xpath, ComplexType& type
 			// generating an additional type for this enum
 			SimpleType stype;
 			stype.xpath = xpath;
-			stype.name = type.name + "SimpleContentType";
+			stype.name = stripTypeSuffix(type.name) + "_SimpleContentType";
 			readRestriction(xpath + "/restriction", stype);
 			m_types[stype.name] = stype;
 
@@ -169,9 +169,9 @@ void SchemaParser::readComplexContent(const std::string& xpath, ComplexType& typ
 }
 
 void SchemaParser::readComplexTypeElementConfiguration(const std::string& xpath, ComplexType& type) {
-	     if (document.checkElement(xpath, "all"))      type.content = readAll     (xpath + "/all"     );
-	else if (document.checkElement(xpath, "sequence")) type.content = readSequence(xpath + "/sequence");
-	else if (document.checkElement(xpath, "choice"))   type.content = readChoice  (xpath + "/choice"  );
+	     if (document.checkElement(xpath, "all"))      type.content = readAll     (xpath + "/all",      stripTypeSuffix(type.name));
+	else if (document.checkElement(xpath, "sequence")) type.content = readSequence(xpath + "/sequence", stripTypeSuffix(type.name));
+	else if (document.checkElement(xpath, "choice"))   type.content = readChoice  (xpath + "/choice",   stripTypeSuffix(type.name));
 	else if (document.checkElement(xpath, "group"))    throw NotImplementedException("XSD complexType group is not implemented");
 	else if (document.checkElement(xpath, "any"))      throw NotImplementedException("XSD complexType any is not implemented");
 
@@ -179,7 +179,7 @@ void SchemaParser::readComplexTypeElementConfiguration(const std::string& xpath,
 	else if (document.checkElement(xpath, "simpleContent" )) readSimpleContent (xpath + "/simpleContent",  type);
 }
 
-Attribute SchemaParser::readAttribute(const std::string& xpath) {
+Attribute SchemaParser::readAttribute(const std::string& xpath, const std::string& containingTypeName) {
 	Attribute att;
 	att.xpath = xpath;
 	att.name = document.textAttribute(xpath, "name");
@@ -189,7 +189,7 @@ Attribute SchemaParser::readAttribute(const std::string& xpath) {
 		att.type = document.textAttribute(xpath, "type");
 	else
 		// type defined inline
-		att.type = readInlineType(xpath, att.name);
+		att.type = readInlineType(xpath, containingTypeName + "_" + att.name);
 
 	if (document.checkAttribute(xpath, "use")) {
 		const auto use = document.textAttribute(xpath, "use");
@@ -263,7 +263,7 @@ std::string SchemaParser::readComplexType(const std::string& xpath, const std::s
 	}) {
 		if (document.checkElement(path)) {
 			document.forEachChild(path, "attribute", [&](auto xpath) {
-				type.attributes.push_back(readAttribute(xpath));
+				type.attributes.push_back(readAttribute(xpath, name));
 			});
 			if (document.checkElement(xpath, "attributeGroup")) {
 				throw NotImplementedException("XSD complexType attributeGroup is not implemented");
@@ -337,7 +337,7 @@ std::string SchemaParser::readInlineType(const std::string& xpath, const std::st
 	else throw std::runtime_error("Unexpected type or no type at xpath: " + xpath);
 }
 
-Element SchemaParser::readElement(const std::string& xpath) {
+Element SchemaParser::readElement(const std::string& xpath, const std::string& containingTypeName) {
 	Element element;
 	element.xpath = xpath;
 	element.name = document.textAttribute(xpath, "name");
@@ -365,7 +365,7 @@ Element SchemaParser::readElement(const std::string& xpath) {
 		// referencing other type
 		element.type = document.textAttribute(xpath, "type");
 	else
-		element.type = readInlineType(xpath, element.name);
+		element.type = readInlineType(xpath, containingTypeName + "_" + element.name);
 
 	assert(!element.type.empty());
 
@@ -374,9 +374,9 @@ Element SchemaParser::readElement(const std::string& xpath) {
 
 std::string SchemaParser::generateUniqueTypeName(const std::string& newNameSuggestion) {
 	auto toString = [](unsigned int id) {
-		//if (id == 0)
-		//	return std::string();
-		//else
+		if (id == 0)
+			return std::string();
+		else
 			return std::to_string(id);
 	};
 
@@ -385,4 +385,10 @@ std::string SchemaParser::generateUniqueTypeName(const std::string& newNameSugge
 		id++;
 	const auto n = newNameSuggestion + "Type" + toString(id);
 	return n;
+}
+
+std::string stripTypeSuffix(std::string name) {
+	if (name.size() > 4 && name.compare(name.size() - 4, 4, "Type") == 0)
+		name.erase(std::end(name) - 4, std::end(name));
+	return name;
 }
