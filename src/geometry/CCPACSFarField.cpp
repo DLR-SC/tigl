@@ -75,18 +75,18 @@ PNamedShape CCPACSFarField::BuildLoft(void)
     gp_Pnt center(0,0,0);
 
     switch (m_type.GetSimpleContent()) {
-    case generated::CPACSTypeType5SimpleContent::fullSphere:
+    case generated::CPACSFarField_type_SimpleContent::fullSphere:
         shape = BRepPrimAPI_MakeSphere(center, fieldSize).Shape();
         break;
-    case generated::CPACSTypeType5SimpleContent::fullCube:
+    case generated::CPACSFarField_type_SimpleContent::fullCube:
         shape = BRepPrimAPI_MakeBox(gp_Pnt(center.X()-fieldSize, center.Y()-fieldSize, center.Z()-fieldSize),
                                     fieldSize*2., fieldSize*2., fieldSize*2.).Shape();
         break;
-    case generated::CPACSTypeType5SimpleContent::halfCube:
+    case generated::CPACSFarField_type_SimpleContent::halfCube:
         shape = BRepPrimAPI_MakeBox(gp_Pnt(center.X()-fieldSize, center.Y(), center.Z()-fieldSize),
                                     fieldSize*2., fieldSize, fieldSize*2.).Shape();
         break;
-    case generated::CPACSTypeType5SimpleContent::halfSphere:
+    case generated::CPACSFarField_type_SimpleContent::halfSphere:
         shape = BRepPrimAPI_MakeSphere(gp_Ax2(center, gp_Dir(0,1,0)), fieldSize, 0., M_PI_2).Shape();
         break;
     default:
@@ -117,6 +117,17 @@ PNamedShape CCPACSFarField::BuildLoft(void)
 TiglGeometricComponentType CCPACSFarField::GetComponentType(void)
 {
     return TIGL_COMPONENT_LOGICAL;
+}
+
+
+TiglFarFieldType CCPACSFarField::GetFieldType() {
+    switch (m_type.GetSimpleContent()) {
+        case generated::CPACSFarField_type_SimpleContent::fullSphere: return TiglFarFieldType::FULL_SPHERE;
+        case generated::CPACSFarField_type_SimpleContent::fullCube:   return TiglFarFieldType::FULL_CUBE;
+        case generated::CPACSFarField_type_SimpleContent::halfCube:   return TiglFarFieldType::HALF_CUBE;
+        case generated::CPACSFarField_type_SimpleContent::halfSphere: return TiglFarFieldType::HALF_SPHERE;
+        default: return TiglFarFieldType::NONE;
+    }
 }
 
 } // namespace tigl

@@ -35,6 +35,9 @@ CCPACSGuideCurve::CCPACSGuideCurve()
     Cleanup();
 }
 
+CCPACSGuideCurve::CCPACSGuideCurve(const std::string& xpath)
+    : ctorXPath(xpath) {}
+
 // Destructor
 CCPACSGuideCurve::~CCPACSGuideCurve(void)
 {
@@ -49,6 +52,10 @@ void CCPACSGuideCurve::Cleanup(void)
     m_description= "";
     m_fromGuideCurveUID_choice1.destroy();
     fromRelativeCircumferenceIsSet = true;
+}
+
+void CCPACSGuideCurve::ReadCPACS(const TixiDocumentHandle& tixiHandle) {
+    ReadCPACS(tixiHandle, ctorXPath);
 }
 
 // Read guide curve file
@@ -84,6 +91,10 @@ double CCPACSGuideCurve::GetFromRelativeCircumference(void) const
 double CCPACSGuideCurve::GetToRelativeCircumference(void) const
 {
     return std::stod(m_toRelativeCircumference);
+}
+
+const std::string& CCPACSGuideCurve::GetFromGuideCurveUID() const {
+    return GetFromGuideCurveUID_choice1();
 }
 
 } // end namespace tigl
