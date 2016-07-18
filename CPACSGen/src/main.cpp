@@ -63,7 +63,7 @@ auto buildFieldList(const SchemaParser& schema, const ComplexType& type) {
 		Field m;
 		m.origin = &a;
 		m.cpacsName = a.name;
-		m.type = resolveType(schema, a.type);
+		m.typeName = resolveType(schema, a.type);
 		m.xmlType = XMLConstruct::Attribute;
 		if (a.optional)
 			m.cardinality = Cardinality::Optional;
@@ -81,7 +81,7 @@ auto buildFieldList(const SchemaParser& schema, const ComplexType& type) {
 			Field m;
 			m.origin = &e;
 			m.cpacsName = e.name;
-			m.type = resolveType(schema, e.type);
+			m.typeName = resolveType(schema, e.type);
 			m.xmlType = XMLConstruct::Element;
 			if (e.minOccurs == 0 && e.maxOccurs == 1)
 				m.cardinality = Cardinality::Optional;
@@ -125,10 +125,10 @@ auto buildFieldList(const SchemaParser& schema, const ComplexType& type) {
 				const auto& f1 = allChoiceMembers[i];
 				for (std::size_t j = i + 1; j < allChoiceMembers.size(); j++) {
 					const auto& f2 = allChoiceMembers[j];
-					if (f1.cpacsName == f2.cpacsName && (f1.cardinality != f2.cardinality || f1.type != f2.type)) {
+					if (f1.cpacsName == f2.cpacsName && (f1.cardinality != f2.cardinality || f1.typeName != f2.typeName)) {
 						std::cerr << "Elements with same name but different cardinality or type inside choice" << std::endl;
 						for (const auto& f : { f1, f2 })
-							std::cerr << f.cpacsName << " " << toString(f.cardinality) << " " << f.type << std::endl;
+							std::cerr << f.cpacsName << " " << toString(f.cardinality) << " " << f.typeName << std::endl;
 					}
 				}
 			}
@@ -161,7 +161,7 @@ auto buildFieldList(const SchemaParser& schema, const ComplexType& type) {
 			m.cpacsName = "";
 			m.customFieldName = "simpleContent";
 			m.cardinality = Cardinality::Mandatory;
-			m.type = resolveType(schema, g.type);
+			m.typeName = resolveType(schema, g.type);
 			m.xmlType = XMLConstruct::SimpleContent;
 			members.push_back(m);
 		}
@@ -240,8 +240,8 @@ void collapseEnums(Types& types) {
 
 					// change type of c's fields which are of type e2
 					for (auto& f : c->fields) {
-						if (f.type == e2.name)
-							f.type = newName;
+						if (f.typeName == e2.name)
+							f.typeName = newName;
 					}
 				}
 
@@ -309,7 +309,7 @@ int main(int argc, char* argv[]) {
 							f.cpacsName = "";
 							f.customFieldName = "base";
 							f.cardinality = Cardinality::Mandatory;
-							f.type = c.base;
+							f.typeName = c.base;
 							f.xmlType = XMLConstruct::FundamentalTypeBase;
 
 							c.fields.insert(std::begin(c.fields), f);
@@ -342,7 +342,7 @@ int main(int argc, char* argv[]) {
 		};
 
 		// build dependencies
-		types.buildDependencyTree();
+		types.buildTypeSystem();
 
 		// apply a few reductions and cleanups
 		collapseEnums(types);

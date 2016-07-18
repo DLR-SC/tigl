@@ -31,10 +31,14 @@ enum class XMLConstruct {
 	FundamentalTypeBase
 };
 
+struct Class;
+struct Enum;
+
 struct Field {
 	Variant<const Attribute*, const Element*, const SimpleContent*> origin;
 	std::string cpacsName;
-	std::string type;
+	std::string typeName;
+	//Variant<Class*, Enum*> type;
 	XMLConstruct xmlType;
 	Cardinality cardinality;
 
@@ -51,9 +55,6 @@ struct Field {
 		return "m_" + name();
 	}
 };
-
-struct Class;
-struct Enum;
 
 struct ClassDependencies {
 	// non owning
@@ -112,9 +113,6 @@ struct Enum {
 	std::string name;
 	std::vector<EnumValue> values;
 
-	std::string enumToStringFunc() const;
-	std::string stringToEnumFunc() const;
-
 	EnumDependencies deps;
 };
 
@@ -122,7 +120,7 @@ struct Types {
 	std::unordered_map<std::string, Class> classes;
 	std::unordered_map<std::string, Enum> enums;
 
-	void buildDependencyTree();
+	void buildTypeSystem();
 };
 
 class IndentingStreamWrapper;
@@ -148,6 +146,7 @@ private:
 	void writeAccessorDeclarations(IndentingStreamWrapper& hpp, const std::vector<Field>& fields);
 	void writeAccessorImplementations(IndentingStreamWrapper& cpp, const std::string& className, const std::vector<Field>& fields);
 	void writeParentPointerGetters(IndentingStreamWrapper& hpp, const Class& c);
+	void writeParentPointerGetterImplementation(IndentingStreamWrapper& cpp, const Class& c);
 	void writeIODeclarations(IndentingStreamWrapper& hpp, const std::string& className, const std::vector<Field>& fields);
 	void writeReadAttributeOrElementImplementation(IndentingStreamWrapper& cpp, const Class& c, const Field& f);
 	void writeWriteAttributeOrElementImplementation(IndentingStreamWrapper& cpp, const Field& f);

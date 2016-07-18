@@ -70,25 +70,25 @@ namespace {
 
 		return str;
 	}
-}
 
-std::string Enum::enumToStringFunc() const {
-	return customReplacedType(name) + "ToString";
-}
+	std::string enumToStringFunc(const Enum& e) {
+		return customReplacedType(e.name) + "ToString";
+	}
 
-std::string Enum::stringToEnumFunc() const {
-	return "stringTo" + CapitalizeFirstLetter(customReplacedType(name));
+	std::string stringToEnumFunc(const Enum& e) {
+		return "stringTo" + CapitalizeFirstLetter(customReplacedType(e.name));
+	}
 }
 
 std::string CodeGen::getterSetterType(const Field& field) const {
-	const auto typeName = customReplacedType(field.type);
+	const auto typeName = customReplacedType(field.typeName);
 	switch (field.cardinality) {
 		case Cardinality::Optional:
 		case Cardinality::Mandatory:
 			return typeName;
 		case Cardinality::Vector:
 		{
-			const bool makePointer = m_types.classes.find(field.type) != std::end(m_types.classes);
+			const bool makePointer = m_types.classes.find(field.typeName) != std::end(m_types.classes);
 			return "std::vector<" + typeName + (makePointer ? "*" : "") + ">";
 		}
 		default:
@@ -124,7 +124,7 @@ void CodeGen::writeAccessorDeclarations(IndentingStreamWrapper& hpp, const std::
 		if(f.cardinality == Cardinality::Optional)
 			hpp << "TIGL_EXPORT bool Has" << CapitalizeFirstLetter(f.name()) << "() const;";
 		hpp << "TIGL_EXPORT const " << getterSetterType(f) << "& Get" << CapitalizeFirstLetter(f.name()) << "() const;";
-		const bool isClassType = m_types.classes.find(f.type) == std::end(m_types.classes);
+		const bool isClassType = m_types.classes.find(f.typeName) == std::end(m_types.classes);
 		if(isClassType) // generate setter only for fundamental and enum types
 			hpp << "TIGL_EXPORT void Set" << CapitalizeFirstLetter(f.name()) << "(const " << getterSetterType(f) << "& value);";
 		else
@@ -139,7 +139,7 @@ void CodeGen::writeAccessorImplementations(IndentingStreamWrapper& cpp, const st
 		if (op)
 			cpp << "TIGL_EXPORT bool " << className << "::Has" << CapitalizeFirstLetter(f.name()) << "() const { return " << f.fieldName() << ".isValid(); }";
 		cpp << "const " << getterSetterType(f) << "& " << className << "::Get" << CapitalizeFirstLetter(f.name()) << "() const { return " << f.fieldName() << (op ? ".get()" : "") << "; }";
-		const bool isClassType = m_types.classes.find(f.type) == std::end(m_types.classes);
+		const bool isClassType = m_types.classes.find(f.typeName) == std::end(m_types.classes);
 		if (isClassType) // generate setter only for fundamental and enum types
 			cpp << "void " << className << "::Set" << CapitalizeFirstLetter(f.name()) << "(const " << getterSetterType(f) << "& value) { " << f.fieldName() << " = value; }";
 		else
@@ -152,15 +152,53 @@ void CodeGen::writeParentPointerGetters(IndentingStreamWrapper& hpp, const Class
 	if (s_parentPointers.contains(c.name)) {
 		if (c.deps.parents.size() > 1) {
 			hpp << "// getter for parent classes";
-			hpp << "//auto GetParentType() const { return m_parentType; }"; // TODO: create implementation in cpp file
-			for (const auto& dep : c.deps.parents)
-				hpp << customReplacedType(dep->name) << "* GetParent_" << customReplacedType(dep->name) << "() const;";
+			hpp << "template<typename P>";
+			hpp << "bool IsParent() const {";
+			{
+				Scope s(hpp);
+				hpp << "return *m_parentType == typeid(P);";
+			}
+			hpp << "}";
 			hpp << "";
+			hpp << "template<typename P>";
+			hpp << "P* GetParent() const {";
+			{
+				Scope s(hpp);
+				hpp << "static_assert(";
+				for (const auto& dep : c.deps.parents) {
+					if (&dep != &c.deps.parents[0])
+						hpp.raw() << " || ";
+					hpp.raw() << "std::is_same<P, " << customReplacedType(dep->name) << ">::value";
+				}
+				hpp.raw() << ", \"template argument for P is not a parent class of " << c.name << "\");";
+				hpp << "if (!IsParent<P>()) {";
+				{
+					Scope s(hpp);
+					hpp << "throw std::runtime_error(\"bad parent\");";
+				}
+				hpp << "}";
+				hpp << "return static_cast<P*>(m_parent);";
+			}
+			hpp << "}";
 		} else if (c.deps.parents.size() == 1) {
 			hpp << "// getter for parent class";
 			hpp << customReplacedType(c.deps.parents[0]->name) << "* GetParent() const;";
 		}
 		hpp << "";
+	}
+}
+
+void CodeGen::writeParentPointerGetterImplementation(IndentingStreamWrapper& cpp, const Class& c) {
+	if (s_parentPointers.contains(c.name)) {
+		if (c.deps.parents.size() == 1) {
+			cpp << customReplacedType(c.deps.parents[0]->name) << "* " << c.name << "::GetParent() const {";
+			{
+				Scope s(cpp);
+				cpp << "return m_parent;";
+			}
+			cpp << "}";
+			cpp << "";
+		}
 	}
 }
 
@@ -199,7 +237,7 @@ void CodeGen::writeReadAttributeOrElementImplementation(IndentingStreamWrapper& 
 	const std::string AttOrElem = tixiFuncSuffix(f.xmlType);
 
 	// fundamental types
-	const auto pf = s_fundamentalTypes.find(f.type);
+	const auto pf = s_fundamentalTypes.find(f.typeName);
 	if (pf) {
 		const auto& type = *pf;
 		switch (f.cardinality) {
@@ -223,9 +261,9 @@ void CodeGen::writeReadAttributeOrElementImplementation(IndentingStreamWrapper& 
 	}
 
 	// enums
-	const auto itE = m_types.enums.find(f.type);
+	const auto itE = m_types.enums.find(f.typeName);
 	if (itE != std::end(m_types.enums)) {
-		const auto& readFunc = itE->second.stringToEnumFunc();
+		const auto& readFunc = stringToEnumFunc(itE->second);
 		switch (f.cardinality) {
 			case Cardinality::Optional:
 			case Cardinality::Mandatory:
@@ -239,8 +277,8 @@ void CodeGen::writeReadAttributeOrElementImplementation(IndentingStreamWrapper& 
 
 	// classes
 	if (f.xmlType != XMLConstruct::Attribute && f.xmlType != XMLConstruct::FundamentalTypeBase) {
-		const auto itC = m_types.classes.find(f.type);
-		const bool requiresParentPointer = s_parentPointers.contains(f.type);
+		const auto itC = m_types.classes.find(f.typeName);
+		const bool requiresParentPointer = s_parentPointers.contains(f.typeName);
 		if (itC != std::end(m_types.classes)) {
 			switch (f.cardinality) {
 				case Cardinality::Optional:
@@ -272,14 +310,14 @@ void CodeGen::writeReadAttributeOrElementImplementation(IndentingStreamWrapper& 
 		}
 	}
 
-	throw std::logic_error("No read function provided for type " + f.type);
+	throw std::logic_error("No read function provided for type " + f.typeName);
 }
 
 void CodeGen::writeWriteAttributeOrElementImplementation(IndentingStreamWrapper& cpp, const Field& f) {
 	const std::string AttOrElem = tixiFuncSuffix(f.xmlType);
 
 	// fundamental types
-	if (s_fundamentalTypes.contains(f.type)) {
+	if (s_fundamentalTypes.contains(f.typeName)) {
 		switch (f.cardinality) {
 			case Cardinality::Optional:
 			case Cardinality::Mandatory:
@@ -288,7 +326,7 @@ void CodeGen::writeWriteAttributeOrElementImplementation(IndentingStreamWrapper&
 			case Cardinality::Vector:
 				if (f.xmlType == XMLConstruct::Attribute || f.xmlType == XMLConstruct::SimpleContent || f.xmlType == XMLConstruct::FundamentalTypeBase)
 					throw std::runtime_error("Attributes, simpleContents and bases cannot be vectors");
-				cpp << "TixiSaveElements(tixiHandle, xpath, \"" << f.cpacsName << "\", " << f.fieldName() << ", [&](const std::string& childXPath, const " << f.type << "& child) {";
+				cpp << "TixiSaveElements(tixiHandle, xpath, \"" << f.cpacsName << "\", " << f.fieldName() << ", [&](const std::string& childXPath, const " << f.typeName << "& child) {";
 				{
 					Scope s(cpp);
 					cpp << "TixiSave" << AttOrElem << "(tixiHandle, childXPath, \"" << f.cpacsName << "\", child);";
@@ -301,12 +339,12 @@ void CodeGen::writeWriteAttributeOrElementImplementation(IndentingStreamWrapper&
 	}
 
 	// enums
-	const auto itE = m_types.enums.find(f.type);
+	const auto itE = m_types.enums.find(f.typeName);
 	if (itE != std::end(m_types.enums)) {
 		switch (f.cardinality) {
 			case Cardinality::Optional:
 			case Cardinality::Mandatory:
-				cpp << "TixiSave" << AttOrElem << "(tixiHandle, xpath, \"" + f.cpacsName + "\", " << itE->second.enumToStringFunc() << "(" << f.fieldName() << (f.cardinality == Cardinality::Optional ? ".get()" : "") << "));";
+				cpp << "TixiSave" << AttOrElem << "(tixiHandle, xpath, \"" + f.cpacsName + "\", " << enumToStringFunc(itE->second) << "(" << f.fieldName() << (f.cardinality == Cardinality::Optional ? ".get()" : "") << "));";
 				break;
 			case Cardinality::Vector:
 				throw NotImplementedException("Writing enum vectors is not implemented");
@@ -316,7 +354,7 @@ void CodeGen::writeWriteAttributeOrElementImplementation(IndentingStreamWrapper&
 
 	// classes
 	if (f.xmlType != XMLConstruct::Attribute && f.xmlType != XMLConstruct::FundamentalTypeBase) {
-		const auto itC = m_types.classes.find(f.type);
+		const auto itC = m_types.classes.find(f.typeName);
 		if (itC != std::end(m_types.classes)) {
 			switch (f.cardinality) {
 				case Cardinality::Optional:
@@ -331,7 +369,7 @@ void CodeGen::writeWriteAttributeOrElementImplementation(IndentingStreamWrapper&
 					cpp << f.fieldName() << ".WriteCPACS(tixiHandle, xpath + \"/" + f.cpacsName + "\");";
 					break;
 				case Cardinality::Vector:
-					cpp << "TixiSaveElements(tixiHandle, xpath, \"" << f.cpacsName << "\", " << f.fieldName() << ", [&](const std::string& childXPath, const " << f.type << "* child) {";
+					cpp << "TixiSaveElements(tixiHandle, xpath, \"" << f.cpacsName << "\", " << f.fieldName() << ", [&](const std::string& childXPath, const " << f.typeName << "* child) {";
 					{
 						Scope s(cpp);
 						cpp << "child->WriteCPACS(tixiHandle, childXPath);";
@@ -343,7 +381,7 @@ void CodeGen::writeWriteAttributeOrElementImplementation(IndentingStreamWrapper&
 		}
 	}
 
-	throw std::logic_error("No write function provided for type " + f.type);
+	throw std::logic_error("No write function provided for type " + f.typeName);
 }
 
 void CodeGen::writeReadBaseImplementation(IndentingStreamWrapper& cpp, const std::string& type) {
@@ -505,20 +543,20 @@ CodeGen::Includes CodeGen::resolveIncludes(const Class& c) {
 
 	// fields
 	for (const auto& f : c.fields) {
-		if (m_types.enums.find(f.type) != std::end(m_types.enums) ||
-			m_types.classes.find(f.type) != std::end(m_types.classes)) {
+		if (m_types.enums.find(f.typeName) != std::end(m_types.enums) ||
+			m_types.classes.find(f.typeName) != std::end(m_types.classes)) {
 			// this is a class or enum type, include it
 
-			const auto p = s_customTypes.find(f.type);
+			const auto p = s_customTypes.find(f.typeName);
 			if (!p) {
 				switch (f.cardinality) {
 					case Cardinality::Optional:
 					case Cardinality::Mandatory:
-						deps.hppIncludes.push_back("\"" + f.type + ".h\"");
+						deps.hppIncludes.push_back("\"" + f.typeName + ".h\"");
 						break;
 					case Cardinality::Vector:
-						deps.hppForwards.push_back(f.type);
-						deps.cppIncludes.push_back("\"" + f.type + ".h\"");
+						deps.hppForwards.push_back(f.typeName);
+						deps.cppIncludes.push_back("\"" + f.typeName + ".h\"");
 						break;
 				}
 			} else {
@@ -569,24 +607,8 @@ void CodeGen::writeParentPointerFields(IndentingStreamWrapper& hpp, const Class&
 	if (s_parentPointers.contains(c.name)) {
 		if (c.deps.parents.size() > 1) {
 			hpp << "// pointer to parent classes";
-			hpp << "union {";
-			{
-				Scope s(hpp);
-				for (const auto& dep : c.deps.parents)
-					hpp << customReplacedType(dep->name) << "* m_parent_" << customReplacedType(dep->name) << ";";
-				hpp << "void* m_parent;";
-			}
-			hpp << "};";
-			hpp << "";
-			hpp << "// type of parent class";
-			hpp << "enum class Parent {";
-			{
-				Scope s(hpp);
-				for (const auto& dep : c.deps.parents)
-					hpp << customReplacedType(dep->name) << ",";
-				hpp << "None";
-			}
-			hpp << "} m_parentType;";
+			hpp << "void* m_parent;";
+			hpp << "const std::type_info* m_parentType;";
 		} else if (c.deps.parents.size() == 1 ) {
 			hpp << "// pointer to parent class";
 			hpp << customReplacedType(c.deps.parents[0]->name) << "* m_parent;";
@@ -608,7 +630,7 @@ void CodeGen::writeCtorImplementations(IndentingStreamWrapper& cpp, const Class&
 		Scope s(cpp);
 		bool first = true;
 		for (const auto& f : c.fields) {
-			if (f.cardinality == Cardinality::Mandatory && s_parentPointers.contains(f.type)) {
+			if (f.cardinality == Cardinality::Mandatory && s_parentPointers.contains(f.typeName)) {
 				if (first) {
 					cpp.raw() << " :";
 					first = false;
@@ -647,8 +669,8 @@ void CodeGen::writeCtorImplementations(IndentingStreamWrapper& cpp, const Class&
 				cpp.raw() << " {";
 				{
 					Scope s(cpp);
-					cpp << "m_parent_" << rn << " = parent;";
-					cpp << "m_parentType = Parent::" << rn << ";";
+					cpp << "m_parent = parent;";
+					cpp << "m_parentType = &typeid(" << rn << ");";
 				}
 				cpp << "}";
 			}
@@ -787,6 +809,9 @@ void CodeGen::writeSource(IndentingStreamWrapper& cpp, const Class& c, const Inc
 			cpp << c.name << "::~" << c.name << "() {}";
 			cpp << "";
 
+			// parent pointers
+			writeParentPointerGetterImplementation(cpp, c);
+
 			// io
 			writeReadImplementation(cpp, c, c.fields);
 			writeWriteImplementation(cpp, c, c.fields);
@@ -848,7 +873,7 @@ void CodeGen::writeEnum(IndentingStreamWrapper& hpp, const Enum& e) {
 			hpp << "";
 
 			// enum to string function
-			hpp << "inline std::string " << e.enumToStringFunc() << "(const " << e.name << "& value) {";
+			hpp << "inline std::string " << enumToStringFunc(e) << "(const " << e.name << "& value) {";
 			{
 				Scope s(hpp);
 				hpp << "switch(value) {";
@@ -863,7 +888,7 @@ void CodeGen::writeEnum(IndentingStreamWrapper& hpp, const Enum& e) {
 			hpp << "}";
 
 			// string to enum function
-			hpp << "inline " << e.name << " " << e.stringToEnumFunc() << "(const std::string& value) {";
+			hpp << "inline " << e.name << " " << stringToEnumFunc(e) << "(const std::string& value) {";
 			{
 				Scope s(hpp);
 				for (const auto& v : e.values)
@@ -878,7 +903,7 @@ void CodeGen::writeEnum(IndentingStreamWrapper& hpp, const Enum& e) {
 	hpp << "";
 }
 
-void Types::buildDependencyTree() {
+void Types::buildTypeSystem() {
 	for (auto& p : classes) {
 		auto& c = p.second;
 
@@ -893,14 +918,16 @@ void Types::buildDependencyTree() {
 		}
 
 		// fields
-		for (const auto& f : c.fields) {
-			const auto eit = enums.find(f.type);
+		for (auto& f : c.fields) {
+			const auto eit = enums.find(f.typeName);
 			if (eit != std::end(enums)) {
+				//f.type = &eit->second;
 				c.deps.enumChildren.push_back(&eit->second);
 				eit->second.deps.parents.push_back(&c);
 			} else {
-				const auto cit = classes.find(f.type);
+				const auto cit = classes.find(f.typeName);
 				if (cit != std::end(classes)) {
+					//f.type = &cit->second;
 					c.deps.children.push_back(&cit->second);
 					cit->second.deps.parents.push_back(&c);
 				}
