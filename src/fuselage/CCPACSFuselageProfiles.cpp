@@ -23,11 +23,15 @@
 * @brief  Implementation of CPACS fuselage profiles handling routines.
 */
 
+#include <sstream>
+#include <iostream>
+#include <algorithm>
+
+#include "generated/IOHelper.h"
+#include "CCPACSFuselageProfile.h"
 #include "CCPACSFuselageProfiles.h"
 #include "CTiglError.h"
 #include "TixiSaveExt.h"
-#include <sstream>
-#include <iostream>
 
 namespace tigl
 {
@@ -43,81 +47,66 @@ void CCPACSFuselageProfiles::Invalidate(void)
 // Read CPACS fuselage profiles
 void CCPACSFuselageProfiles::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
 {
-    profiles.clear();
-    generated::CPACSFuselageProfiles::ReadCPACS(tixiHandle, xpath);
-    for (const auto& p : GetFuselageProfile())
-        profiles[p->GetUID()] = p; // TODO: we have to transfer ownership here
-    GetFuselageProfile().clear();
-}
+    // we replace generated::CPACSFuselageProfiles::ReadCPACS and not call it to allow instantiation of CCPACSFuselageProfile instead of generated::CPACSProfileGeometry
 
-void CCPACSFuselageProfiles::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const {
-    const auto self = const_cast<CCPACSFuselageProfiles*>(this);
-    for (const auto& p : profiles)
-        self->GetFuselageProfile().push_back(p.second); // TODO: we have to transfer ownership here
-    generated::CPACSFuselageProfiles::WriteCPACS(tixiHandle, xpath);
-    self->GetFuselageProfile().clear();
+    // read base
+    CPACSComplexBase::ReadCPACS(tixiHandle, xpath);
+
+    // read element fuselageProfile
+    if (TixiCheckElement(tixiHandle, xpath, "fuselageProfile")) {
+        TixiReadElements(tixiHandle, xpath, "fuselageProfile", m_fuselageProfile, [&](const std::string& childXPath) {
+            CCPACSFuselageProfile* child = new CCPACSFuselageProfile;
+            child->ReadCPACS(tixiHandle, childXPath);
+            return child;
+        });
+    }
 }
 
 bool CCPACSFuselageProfiles::HasProfile(std::string uid) const
 {
-    CCPACSFuselageProfileContainer::const_iterator it = profiles.find(uid);
-    if (it != profiles.end() && it->second) {
-        return true;
-    }
-    else {
-        return false;
-    }
+    for (const auto& p : m_fuselageProfile)
+        if (p->GetUID() == uid)
+            return true;
+
+    return false;
 }
 
 void CCPACSFuselageProfiles::AddProfile(CCPACSFuselageProfile* profile)
 {
     // free memory for existing profiles
-    if (profiles.find(profile->GetUID()) != profiles.end()) {
-        delete profiles[profile->GetUID()];
-    }
-    profiles[profile->GetUID()] = profile;
+    DeleteProfile(profile->GetUID());
+    m_fuselageProfile.push_back(profile);
 }
 
 void CCPACSFuselageProfiles::DeleteProfile( std::string uid )
 {
-    // free memory for existing profiles
-    if (profiles.find( uid ) != profiles.end()) {
-        profiles[ uid ]->Invalidate();
-        delete profiles[ uid ];
-        profiles.erase( uid );
-    }
+    const auto it = std::find_if(std::begin(m_fuselageProfile), std::end(m_fuselageProfile), [&](const generated::CPACSProfileGeometry* pg) {
+        return pg->GetUID() == uid;
+    });
+    if (it != std::end(m_fuselageProfile))
+        m_fuselageProfile.erase(it);
 }
 
 // Returns the total count of fuselage profiles in this configuration
 int CCPACSFuselageProfiles::GetProfileCount(void) const
 {
-    return (static_cast<int>(profiles.size()));
+    return static_cast<int>(m_fuselageProfile.size());
 }
 
 // Returns the fuselage profile for a given uid.
 CCPACSFuselageProfile& CCPACSFuselageProfiles::GetProfile(std::string uid) const
 {
-    CCPACSFuselageProfileContainer::const_iterator it = profiles.find(uid);
-    if (it != profiles.end() && it->second) {
-        return *(it->second);
-    }
-    else {
+    for (const auto& p : m_fuselageProfile)
+        if (p->GetUID() == uid)
+            return *static_cast<CCPACSFuselageProfile*>(p);
+
         throw CTiglError("Fuselage profile \"" + uid + "\" not found in CPACS file!", TIGL_UID_ERROR);
-    }
 }
 
 // Returns the fuselage profile for a given index - TODO: depricated function!
 CCPACSFuselageProfile& CCPACSFuselageProfiles::GetProfile(int index) const
 {
-    int i = 0;
-    CCPACSFuselageProfileContainer::const_iterator p;
-    for (p = profiles.begin(); p!=profiles.end(); ++p) {
-        if (i == index-1) {
-            break;
-        }
-        i++;
-    }
-    return (*p->second);
+    return *static_cast<CCPACSFuselageProfile*>(m_fuselageProfile[index]);
 }
 
 

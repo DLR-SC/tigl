@@ -14,9 +14,9 @@ namespace tigl {
 
 		TIGL_EXPORT CTiglTransformation GetTransformation() const;
 
-		TIGL_EXPORT CTiglPoint GetScaling() const;
-		TIGL_EXPORT CTiglPoint GetRotation() const;
-		TIGL_EXPORT CTiglPoint GetTranslation() const;
+		TIGL_EXPORT const CTiglPoint& GetScaling() const;
+		TIGL_EXPORT const CTiglPoint& GetRotation() const;
+		TIGL_EXPORT const CTiglPoint& GetTranslation() const;
 
 		TIGL_EXPORT void SetScaling(const CTiglPoint& scaling);
 		TIGL_EXPORT void SetRotation(const CTiglPoint& rotation);

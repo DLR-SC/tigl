@@ -49,9 +49,7 @@
 #include "BRepExtrema_DistShapeShape.hxx"
 
 #define _USE_MATH_DEFINES
-#include <math.h>
-
-#include "TixiSaveExt.h"
+#include <cmath>
 
 namespace tigl
 {
@@ -64,7 +62,7 @@ CCPACSFuselage::CCPACSFuselage(CCPACSConfiguration* config)
 }
 
 CCPACSFuselage::CCPACSFuselage(CCPACSFuselages* parent)
-    : configuration(&parent->GetParent_CCPACSModel()->GetConfiguration()) {
+    : configuration(&parent->GetParent<CCPACSModel>()->GetConfiguration()) {
     Cleanup();
 }
 
@@ -120,11 +118,11 @@ void CCPACSFuselage::SetUID(const std::string& uid) {
     return generated::CPACSFuselage::SetUID(uid);
 }
 
-TiglSymmetryAxis CCPACSWing::GetSymmetryAxis() {
+TiglSymmetryAxis CCPACSFuselage::GetSymmetryAxis() {
     return m_symmetry.get();
 }
 
-void CCPACSWing::SetSymmetryAxis(const TiglSymmetryAxis& axis) {
+void CCPACSFuselage::SetSymmetryAxis(const TiglSymmetryAxis& axis) {
     m_symmetry = axis;
 
     for (int i = 1; i <= m_segments.GetSegmentCount(); ++i) {

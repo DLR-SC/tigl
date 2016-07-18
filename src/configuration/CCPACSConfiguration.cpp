@@ -48,7 +48,6 @@
 #include <Bnd_Box.hxx>
 #include "CTiglFusePlane.h"
 #include "CNamedShape.h"
-#include "TixiSaveExt.h"
 
 #include <cfloat>
 
