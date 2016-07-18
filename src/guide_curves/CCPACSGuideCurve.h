@@ -44,11 +44,13 @@ class CCPACSGuideCurve : public generated::CPACSGuideCurve
 public:
     // Constructor
     TIGL_EXPORT CCPACSGuideCurve();
+    DEPRECATED TIGL_EXPORT CCPACSGuideCurve(const std::string& xpath);
 
     // Virtual Destructor
     TIGL_EXPORT virtual ~CCPACSGuideCurve(void);
 
     // Read CPACS guide curve file
+    DEPRECATED TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle);
     TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
 
     // Check if fromRelativeCircumference is set
@@ -60,12 +62,16 @@ public:
     // Returns the relative circumference of the end profile
     TIGL_EXPORT double GetToRelativeCircumference(void) const;
 
+    // Returns the UID of the neighboring guide curve
+    DEPRECATED TIGL_EXPORT const std::string& GetFromGuideCurveUID() const;
+
 protected:
     // Cleanup routine
     void Cleanup(void);
 
 private:
     bool fromRelativeCircumferenceIsSet;  /**< Determine if fromRelativeCircumference is set */
+    std::string ctorXPath;
 };
 
 } // end namespace tigl

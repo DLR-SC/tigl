@@ -33,14 +33,25 @@ namespace tigl
 class CCPACSGuideCurveProfile : public generated::CPACSGuideCurveProfileGeometry
 {
 public:
+    TIGL_EXPORT CCPACSGuideCurveProfile();
+
+    DEPRECATED TIGL_EXPORT CCPACSGuideCurveProfile(const std::string& xpath);
+
     // Read CPACS guide curve file
+    DEPRECATED TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle);
     TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
+
+    DEPRECATED TIGL_EXPORT void WriteCPACS(const TixiDocumentHandle& tixiHandle) const;
+    TIGL_EXPORT void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
     // Returns the guide curve points as read from TIXI.
     TIGL_EXPORT const std::vector<CTiglPoint>& GetGuideCurveProfilePoints();
 
+    DEPRECATED TIGL_EXPORT const std::string& GetFileName() const;
+
 private:
     std::vector<CTiglPoint> coordinates; ///< Coordinates of a guide curve points
+    DEPRECATED std::string ctorXPath;
 };
 
 } // end namespace tigl

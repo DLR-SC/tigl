@@ -28,6 +28,15 @@
 
 namespace tigl
 {
+CCPACSGuideCurveProfile::CCPACSGuideCurveProfile() {}
+
+CCPACSGuideCurveProfile::CCPACSGuideCurveProfile(const std::string& xpath)
+    : ctorXPath(xpath) {}
+
+void CCPACSGuideCurveProfile::ReadCPACS(const TixiDocumentHandle& tixiHandle) {
+    ReadCPACS(tixiHandle, ctorXPath);
+}
+
 // Read guide curve file
 void CCPACSGuideCurveProfile::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
 {
@@ -43,8 +52,20 @@ void CCPACSGuideCurveProfile::ReadCPACS(const TixiDocumentHandle& tixiHandle, co
         coordinates.push_back(CTiglPoint(xs[i], ys[i], zs[i]));
 }
 
+void CCPACSGuideCurveProfile::WriteCPACS(const TixiDocumentHandle& tixiHandle) const {
+    generated::CPACSGuideCurveProfileGeometry::WriteCPACS(tixiHandle, ctorXPath);
+}
+
+void CCPACSGuideCurveProfile::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const {
+    generated::CPACSGuideCurveProfileGeometry::WriteCPACS(tixiHandle, xpath);
+}
+
 const std::vector<CTiglPoint>& CCPACSGuideCurveProfile::GetGuideCurveProfilePoints() {
     return coordinates;
+}
+
+DEPRECATED TIGL_EXPORT const std::string& CCPACSGuideCurveProfile::GetFileName() const {
+    return ctorXPath;
 }
 } // end namespace tigl
 

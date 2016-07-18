@@ -28,6 +28,14 @@
 namespace tigl
 {
 
+enum TiglFarFieldType {
+    NONE,
+    HALF_SPHERE,
+    FULL_SPHERE,
+    HALF_CUBE,
+    FULL_CUBE
+};
+
 class CCPACSFarField : public generated::CPACSFarField, public CTiglAbstractGeometricComponent
 {
 public:
@@ -44,6 +52,8 @@ public:
 
     // Returns the Geometric type of this component, e.g. Wing or Fuselage
     TIGL_EXPORT virtual TiglGeometricComponentType GetComponentType(void);
+
+    TIGL_EXPORT TiglFarFieldType GetFieldType();
 
 protected:
     virtual PNamedShape BuildLoft(void);
