@@ -2,7 +2,7 @@
 
 #include "Table.h"
 
-// custom types in Tigl which inherit from the generated ones
+// custom types in Tigl which should inherit from the generated ones (except enums)
 // maps generated types to actual tigl types
 class CustomTypesTable : public MappingTable {
 public:

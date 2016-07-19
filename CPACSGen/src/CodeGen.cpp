@@ -136,14 +136,41 @@ void CodeGen::writeAccessorDeclarations(IndentingStreamWrapper& hpp, const std::
 void CodeGen::writeAccessorImplementations(IndentingStreamWrapper& cpp, const std::string& className, const std::vector<Field>& fields) {
 	for (const auto& f : fields) {
 		const auto op = f.cardinality == Cardinality::Optional;
-		if (op)
-			cpp << "bool " << className << "::Has" << CapitalizeFirstLetter(f.name()) << "() const { return " << f.fieldName() << ".isValid(); }";
-		cpp << "const " << getterSetterType(f) << "& " << className << "::Get" << CapitalizeFirstLetter(f.name()) << "() const { return " << f.fieldName() << (op ? ".get()" : "") << "; }";
+		if (op) {
+			cpp << "bool " << className << "::Has" << CapitalizeFirstLetter(f.name()) << "() const {";
+			{
+				Scope s(cpp);
+				cpp << "return " << f.fieldName() << ".isValid(); ";
+			}
+			cpp << "}";
+			cpp << "";
+		}
+
+		cpp << "const " << getterSetterType(f) << "& " << className << "::Get" << CapitalizeFirstLetter(f.name()) << "() const {";
+		{
+			Scope s(cpp);
+			cpp << "return " << f.fieldName() << (op ? ".get()" : "") << ";";
+		}
+		cpp << "}";
+		cpp << "";
+
 		const bool isClassType = m_types.classes.find(f.typeName) == std::end(m_types.classes);
-		if (isClassType) // generate setter only for fundamental and enum types
-			cpp << "void " << className << "::Set" << CapitalizeFirstLetter(f.name()) << "(const " << getterSetterType(f) << "& value) { " << f.fieldName() << " = value; }";
-		else
-			cpp << getterSetterType(f) << "& " << className << "::Get" << CapitalizeFirstLetter(f.name()) << "() { return " << f.fieldName() << (op ? ".get()" : "") << "; }";
+		// generate setter only for fundamental and enum types
+		if (isClassType) {
+			cpp << "void " << className << "::Set" << CapitalizeFirstLetter(f.name()) << "(const " << getterSetterType(f) << "& value) {";
+			{
+				Scope s(cpp);
+				cpp << f.fieldName() << " = value;";
+			}
+			cpp << "}";
+		} else {
+			cpp << getterSetterType(f) << "& " << className << "::Get" << CapitalizeFirstLetter(f.name()) << "() {";
+			{
+				Scope s(cpp);
+				cpp << "return " << f.fieldName() << (op ? ".get()" : "") << ";";
+			}
+			cpp << "}";
+		}
 		cpp << "";
 	}
 }
