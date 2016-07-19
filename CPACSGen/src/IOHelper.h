@@ -25,7 +25,7 @@ private:
 
 bool TixiCheckAttribute(const TixiDocumentHandle& tixiHandle, const std::string& xpath, const std::string& attribute);
 bool TixiCheckElement(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
-bool TixiCheckElement(const TixiDocumentHandle& tixiHandle, const std::string& parentPath, const std::string& element);
+bool TixiCheckElement(const TixiDocumentHandle& tixiHandle, const std::string& parentXPath, const std::string& element);
 
 int TixiGetNamedChildrenCount(const TixiDocumentHandle& tixiHandle, const std::string& xpath, const std::string& child);
 

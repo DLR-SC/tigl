@@ -85,8 +85,11 @@ bool TixiCheckElement(const TixiDocumentHandle& tixiHandle, const std::string& x
 		);
 }
 
-bool TixiCheckElement(const TixiDocumentHandle& tixiHandle, const std::string& parentPath, const std::string& element) {
-	return TixiCheckElement(tixiHandle, parentPath + "/" + element);
+bool TixiCheckElement(const TixiDocumentHandle& tixiHandle, const std::string& parentXPath, const std::string& element) {
+	std::string xpath = parentXPath;
+	if (!element.empty())
+		xpath += "/" + element;
+	return TixiCheckElement(tixiHandle, xpath);
 }
 
 int TixiGetNamedChildrenCount(const TixiDocumentHandle& tixiHandle, const std::string& xpath, const std::string& child) {
