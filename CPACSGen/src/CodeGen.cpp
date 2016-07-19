@@ -183,7 +183,7 @@ void CodeGen::writeParentPointerGetters(IndentingStreamWrapper& hpp, const Class
 			hpp << "bool IsParent() const {";
 			{
 				Scope s(hpp);
-				hpp << "return *m_parentType == typeid(P);";
+				hpp << "return m_parentType != nullptr && *m_parentType == typeid(P);";
 			}
 			hpp << "}";
 			hpp << "";
@@ -198,6 +198,12 @@ void CodeGen::writeParentPointerGetters(IndentingStreamWrapper& hpp, const Class
 					hpp.raw() << "std::is_same<P, " << customReplacedType(dep->name) << ">::value";
 				}
 				hpp.raw() << ", \"template argument for P is not a parent class of " << c.name << "\");";
+				hpp << "if (m_parent == nullptr) {";
+				{
+					Scope s(hpp);
+					hpp << "return nullptr;";
+				}
+				hpp << "}";
 				hpp << "if (!IsParent<P>()) {";
 				{
 					Scope s(hpp);
@@ -501,15 +507,7 @@ void CodeGen::writeWriteImplementation(IndentingStreamWrapper& cpp, const Class&
 		for (const auto& f : fields) {
 			const auto construct = xmlConstructToString(f.xmlType);
 			cpp << "// write " << construct << " " << f.cpacsName;
-			if (f.cardinality == Cardinality::Optional) {
-				cpp << "if (Has" << CapitalizeFirstLetter(f.name()) << "()) {";
-				{
-					Scope s(cpp);
-					writeWriteAttributeOrElementImplementation(cpp, f);
-				}
-				cpp << "}";
-			} else
-				writeWriteAttributeOrElementImplementation(cpp, f);
+			writeWriteAttributeOrElementImplementation(cpp, f);
 			cpp << "";
 		}
 	}
@@ -604,6 +602,7 @@ CodeGen::Includes CodeGen::resolveIncludes(const Class& c) {
 
 	// parent pointers
 	if (s_parentPointers.contains(c.name)) {
+		deps.cppIncludes.push_back("<cassert>");
 		for (const auto& dep : c.deps.parents) {
 			const auto p = s_customTypes.find(dep->name);
 			if (p)
@@ -668,6 +667,7 @@ void CodeGen::writeCtorImplementations(IndentingStreamWrapper& cpp, const Class&
 		}
 	};
 
+	// if this class holds parent pointers, we have to provide corresponding ctor overloads
 	if (s_parentPointers.contains(c.name)) {
 		cpp << c.name << "::" << c.name << "()";
 		writeParentPointerFieldInitializers();
@@ -675,6 +675,8 @@ void CodeGen::writeCtorImplementations(IndentingStreamWrapper& cpp, const Class&
 		{
 			Scope s(cpp);
 			cpp << "m_parent = nullptr;";
+			if (c.deps.parents.size() > 1)
+				cpp << "m_parentType = nullptr;";
 		}
 		cpp << "}";
 		if (c.deps.parents.size() == 1) {
@@ -684,6 +686,7 @@ void CodeGen::writeCtorImplementations(IndentingStreamWrapper& cpp, const Class&
 			cpp.raw() << " {";
 			{
 				Scope s(cpp);
+				cpp << "assert(parent != nullptr);";
 				cpp << "m_parent = parent;";
 			}
 			cpp << "}";
@@ -696,6 +699,7 @@ void CodeGen::writeCtorImplementations(IndentingStreamWrapper& cpp, const Class&
 				cpp.raw() << " {";
 				{
 					Scope s(cpp);
+					cpp << "assert(parent != nullptr);";
 					cpp << "m_parent = parent;";
 					cpp << "m_parentType = &typeid(" << rn << ");";
 				}
