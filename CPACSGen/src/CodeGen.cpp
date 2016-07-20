@@ -725,7 +725,8 @@ namespace tigl {
 		// includes
 		for (const auto& inc : includes.hppIncludes)
 			hpp << "#include " << inc << "";
-		hpp << "";
+		if (includes.hppIncludes.size() > 0)
+			hpp << "";
 
 		// namespace
 		hpp << "namespace tigl {";
@@ -735,7 +736,8 @@ namespace tigl {
 			// custom Tigl types declarations
 			for (const auto& fwd : includes.hppCustomForwards)
 				hpp << "class " << fwd << ";";
-			hpp << "";
+			if(includes.hppCustomForwards.size() > 0)
+				hpp << "";
 
 			hpp << "namespace generated {";
 			{
@@ -823,7 +825,8 @@ namespace tigl {
 		// includes
 		for (const auto& inc : includes.cppIncludes)
 			cpp << "#include " << inc << "";
-		cpp << "";
+		if (includes.cppIncludes.size() > 0)
+			cpp << "";
 
 		// namespace
 		cpp << "namespace tigl {";
