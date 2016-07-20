@@ -258,7 +258,7 @@ void CCPACSFuselage::Translate(CTiglPoint trans)
 // Returns the circumference of the segment "segmentIndex" at a given eta
 double CCPACSFuselage::GetCircumference(const int segmentIndex, const double eta)
 {
-    return ((CCPACSFuselageSegment &) GetSegment(segmentIndex)).GetCircumference(eta);
+    return static_cast<CCPACSFuselageSegment&>(GetSegment(segmentIndex)).GetCircumference(eta);
 }
     
 // Returns the surface area of this fuselage

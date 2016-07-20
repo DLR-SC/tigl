@@ -51,7 +51,7 @@ public:
 
 private:
     std::vector<CTiglPoint> coordinates; ///< Coordinates of a guide curve points
-    DEPRECATED std::string ctorXPath;
+    DEPRECATED mutable std::string xpath;
 };
 
 } // end namespace tigl
