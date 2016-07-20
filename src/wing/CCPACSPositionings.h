@@ -26,7 +26,7 @@
 #ifndef CCPACSPositioningS_H
 #define CCPACSPositioningS_H
 
-#include "generated/CPACSPositioning.h"
+#include "generated/CPACSPositionings.h"
 #include "tigl_internal.h"
 #include "CCPACSPositioning.h"
 #include "CTiglError.h"
@@ -37,13 +37,13 @@
 namespace tigl
 {
 
-class CCPACSPositionings : public generated::CPACSPositioning
+class CCPACSPositionings : public generated::CPACSPositionings
 {
 
 public:
     // Typedef for a CCPACSPositioning container to store the positionings.
-    typedef std::map<std::string, CCPACSPositioning*> CCPACSPositioningContainer;
-    typedef CCPACSPositioningContainer::iterator CCPACSPositioningIterator;
+    //typedef std::map<std::string, CCPACSPositioning*> CCPACSPositioningContainer;
+    //typedef CCPACSPositioningContainer::iterator CCPACSPositioningIterator;
 
 public:
     // Constructor
@@ -64,7 +64,7 @@ public:
     // Cleanup routine
     TIGL_EXPORT void Cleanup();
 
-    TIGL_EXPORT CCPACSPositioningContainer& GetPositionings();
+    //TIGL_EXPORT CCPACSPositioningContainer& GetPositionings();
 
 protected:
     // Update internal positioning structure
@@ -74,7 +74,7 @@ protected:
     void UpdateNextPositioning(CCPACSPositioning*, int depth);
 
 private:
-    CCPACSPositioningContainer positionings;      /**< Positioning elements */
+    //CCPACSPositioningContainer positionings;      /**< Positioning elements */
     bool                           invalidated;       /**< Internal state flag  */
 
 };

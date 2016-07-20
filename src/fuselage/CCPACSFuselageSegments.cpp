@@ -46,13 +46,13 @@ void CCPACSFuselageSegments::Invalidate(void)
 }
 
 // Gets a segment by index. 
-CCPACSFuselageSegment & CCPACSFuselageSegments::GetSegment(const int index)
+CCPACSFuselageSegment & CCPACSFuselageSegments::GetSegment(int index)
 {
-    const int idx = index - 1;
-    if (idx < 0 || idx >= GetSegmentCount()) {
+    index--;
+    if (index < 0 || index >= GetSegmentCount()) {
         throw CTiglError("Error: Invalid index value in CCPACSFuselageSegments::GetSegment", TIGL_INDEX_ERROR);
     }
-    return *m_segment[idx];
+    return *m_segment[index];
 }
 
 // Gets a segment by uid. 

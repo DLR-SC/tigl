@@ -115,7 +115,10 @@ std::string CCPACSPositioning::GetEndSectionIndex(void) {
 std::string CCPACSPositioning::GetInnerSectionIndex(void)
 {
     Update();
-    return m_fromSectionUID.get();
+    if (m_fromSectionUID.isValid())
+        return m_fromSectionUID.get();
+    else
+        return std::string();
 }
 
 std::string CCPACSPositioning::GetStartSectionIndex(void) {

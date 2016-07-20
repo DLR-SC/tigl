@@ -156,8 +156,10 @@ void CCPACSWing::Invalidate(void)
 {
     invalidated = true;
     m_segments.Invalidate();
-    m_positionings->Invalidate();
-    m_componentSegments->Invalidate();
+    if (m_positionings.isValid())
+        m_positionings->Invalidate();
+    if (m_componentSegments.isValid())
+        m_componentSegments->Invalidate();
 }
 
 // Cleanup routine
@@ -242,10 +244,11 @@ void CCPACSWing::SetSymmetryAxis(const TiglSymmetryAxis& axis) {
         m_segments.GetSegment(i).SetSymmetryAxis(axis);
     }
 
-    for (int i = 1; i <= m_componentSegments->GetComponentSegmentCount(); ++i) {
-        m_componentSegments->GetComponentSegment(i).SetSymmetryAxis(axis);
+    if (m_componentSegments.isValid()) {
+        for (int i = 1; i <= m_componentSegments->GetComponentSegmentCount(); ++i) {
+            m_componentSegments->GetComponentSegment(i).SetSymmetryAxis(axis);
+        }
     }
-
 }
 
 // Returns the parent configuration
@@ -263,7 +266,7 @@ int CCPACSWing::GetSectionCount(void) const
 // Returns the section for a given index
 const CCPACSWingSection& CCPACSWing::GetSection(int index) const
 {
-    return *m_sections.GetSection()[index];
+    return m_sections.GetSection(index);
 }
 
 // Get segment count
@@ -287,7 +290,10 @@ CTiglAbstractSegment & CCPACSWing::GetSegment(std::string uid)
 // Get componentSegment count
 int CCPACSWing::GetComponentSegmentCount(void)
 {
-    return m_componentSegments->GetComponentSegmentCount();
+    if (m_componentSegments.isValid())
+        return m_componentSegments->GetComponentSegmentCount();
+    else
+        return 0;
 }
 
 // Returns the segment for a given index
@@ -462,10 +468,10 @@ void CCPACSWing::Translate(CTiglPoint trans)
     CTiglAbstractGeometricComponent::Translate(trans);
     invalidated = true;
     m_segments.Invalidate();
-    m_componentSegments->Invalidate();
+    if(m_componentSegments.isValid())
+        m_componentSegments->Invalidate();
     Update();
 }
-
 
 // Setter for translation
 void CCPACSWing::SetTranslation(const CTiglPoint& translation)

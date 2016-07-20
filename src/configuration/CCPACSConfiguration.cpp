@@ -48,6 +48,7 @@
 #include <Bnd_Box.hxx>
 #include "CTiglFusePlane.h"
 #include "CNamedShape.h"
+#include "generated/IOHelper.h"
 
 #include <cfloat>
 
@@ -98,9 +99,18 @@ void CCPACSConfiguration::ReadCPACS(const std::string& configurationUID)
     // TODO: why can't we just write "/cpacs/vehicles/aircraft/model[" + configurationUID + "]" ?
     cpacsModel->ReadCPACS(tixiDocumentHandle, xpath); // reads everything underneath /cpacs/vehicles/aircraft/model
 
-    header.ReadCPACS(tixiDocumentHandle, "/cpacs/header");
-    guideCurveProfiles.ReadCPACS(tixiDocumentHandle, "/cpacs/vehicles/profiles/guideCurveProfiles");
-    farField.ReadCPACS(tixiDocumentHandle, "/cpacs/toolspecific/cFD/farField");
+    const std::string headerXPath = "/cpacs/header";
+    if (TixiCheckElement(tixiDocumentHandle, headerXPath)) {
+        header.ReadCPACS(tixiDocumentHandle, headerXPath);
+    }
+    const std::string guideCurveProfilesXPath = "/cpacs/vehicles/profiles/guideCurveProfiles";
+    if (TixiCheckElement(tixiDocumentHandle, guideCurveProfilesXPath)) {
+        guideCurveProfiles.ReadCPACS(tixiDocumentHandle, guideCurveProfilesXPath);
+    }
+    const std::string farFieldXPath = "/cpacs/toolspecific/cFD/farField";
+    if (TixiCheckElement(tixiDocumentHandle, farFieldXPath)) {
+        farField.ReadCPACS(tixiDocumentHandle, farFieldXPath);
+    }
 
     configUID = configurationUID;
     // Now do parent <-> child transformations. Child should use the
@@ -222,13 +232,19 @@ TopoDS_Shape CCPACSConfiguration::GetParentLoft(const std::string& UID)
 
 bool CCPACSConfiguration::HasFuselageProfile(std::string uid) const
 {
-    return cpacsModel->GetFuselages().HasProfile(uid);
+    if (cpacsModel->HasFuselages())
+        return cpacsModel->GetFuselages().HasProfile(uid);
+    else
+        return false;
 }
 
 // Returns the total count of fuselage profiles in this configuration
 int CCPACSConfiguration::GetFuselageProfileCount(void) const
 {
-    return cpacsModel->GetFuselages().GetProfileCount();
+    if (cpacsModel->HasFuselages())
+        return cpacsModel->GetFuselages().GetProfileCount();
+    else
+        return 0;
 }
 
 // Returns the fuselage profile for a given index.
@@ -246,7 +262,10 @@ CCPACSFuselageProfile& CCPACSConfiguration::GetFuselageProfile(std::string uid) 
 // Returns the total count of fuselages in a configuration
 int CCPACSConfiguration::GetFuselageCount(void) const
 {
-    return cpacsModel->GetFuselages().GetFuselageCount();
+    if (cpacsModel->HasFuselages())
+        return cpacsModel->GetFuselages().GetFuselageCount();
+    else
+        return 0;
 }
 
 // Returns the fuselage for a given index.

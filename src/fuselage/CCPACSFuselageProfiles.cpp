@@ -106,6 +106,10 @@ CCPACSFuselageProfile& CCPACSFuselageProfiles::GetProfile(std::string uid) const
 // Returns the fuselage profile for a given index - TODO: depricated function!
 CCPACSFuselageProfile& CCPACSFuselageProfiles::GetProfile(int index) const
 {
+    index--;
+    if (index < 0 || index >= GetProfileCount()) {
+        throw CTiglError("Error: Invalid index in CCPACSFuselageProfiles::GetProfile", TIGL_INDEX_ERROR);
+    }
     return *static_cast<CCPACSFuselageProfile*>(m_fuselageProfile[index]);
 }
 

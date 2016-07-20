@@ -103,39 +103,41 @@ void CCPACSFuselageProfile::ReadCPACS(const TixiDocumentHandle& tixiHandle, cons
     //}
     mirrorSymmetry = false;
 
-	// convert point list to coordinates
-    const auto& xs = m_pointList_choice1->GetX().GetVector();
-    const auto& ys = m_pointList_choice1->GetY().GetVector();
-    const auto& zs = m_pointList_choice1->GetZ().GetVector();
+    // convert point list to coordinates
+    if (m_pointList_choice1.isValid()) {
+        const auto& xs = m_pointList_choice1->GetX().GetVector();
+        const auto& ys = m_pointList_choice1->GetY().GetVector();
+        const auto& zs = m_pointList_choice1->GetZ().GetVector();
 
-    // points with maximal/minimal z-component
-    double maxY = std::numeric_limits<double>::lowest();
-    double minY = std::numeric_limits<double>::max();
-    int maxYIndex = -1;
-    int minYIndex = -1;
-    // Loop over all points in the vector
-    for (int i = 0; i < xs.size(); i++) {
-        CTiglPoint point(xs[i], ys[i], zs[i]);
-        coordinates.push_back(point);
-        if (ys[i] > maxY) {
-            maxY = ys[i];
-            maxYIndex = i;
+        // points with maximal/minimal z-component
+        double maxY = std::numeric_limits<double>::lowest();
+        double minY = std::numeric_limits<double>::max();
+        int maxYIndex = -1;
+        int minYIndex = -1;
+        // Loop over all points in the vector
+        for (int i = 0; i < xs.size(); i++) {
+            CTiglPoint point(xs[i], ys[i], zs[i]);
+            coordinates.push_back(point);
+            if (ys[i] > maxY) {
+                maxY = ys[i];
+                maxYIndex = i;
+            }
+            if (ys[i] < minY) {
+                minY = ys[i];
+                minYIndex = i;
+            }
         }
-        if (ys[i] < minY) {
-            minY = ys[i];
-            minYIndex = i;
-        }
-    }
 
-    if (!mirrorSymmetry) {
-        // check if points with maximal/minimal y-component were calculated correctly
-        if (maxYIndex == -1 || minYIndex == -1 || maxYIndex == minYIndex) {
-            throw CTiglError("Error: CCPACSWingProfilePointList::ReadCPACS: Unable to separate upper and lower wing profile from point list", TIGL_XML_ERROR);
-        }
-        // force order of points to run through y>0 part first
-        if (minYIndex < maxYIndex) {
-            LOG(WARNING) << "The point list order in fuselage profile " << m_uID << " is reversed in order to run through y>0 part first" << endl;
-            std::reverse(coordinates.begin(), coordinates.end());
+        if (!mirrorSymmetry) {
+            // check if points with maximal/minimal y-component were calculated correctly
+            if (maxYIndex == -1 || minYIndex == -1 || maxYIndex == minYIndex) {
+                throw CTiglError("Error: CCPACSWingProfilePointList::ReadCPACS: Unable to separate upper and lower wing profile from point list", TIGL_XML_ERROR);
+            }
+            // force order of points to run through y>0 part first
+            if (minYIndex < maxYIndex) {
+                LOG(WARNING) << "The point list order in fuselage profile " << m_uID << " is reversed in order to run through y>0 part first" << endl;
+                std::reverse(coordinates.begin(), coordinates.end());
+            }
         }
     }
 
@@ -145,22 +147,24 @@ void CCPACSFuselageProfile::ReadCPACS(const TixiDocumentHandle& tixiHandle, cons
 // Write fuselage profile file
 void CCPACSFuselageProfile::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
 {
-	// update point lists from coordinates
-	auto& xs = const_cast<std::vector<double>&>(m_pointList_choice1->GetX().GetVector());
-	auto& ys = const_cast<std::vector<double>&>(m_pointList_choice1->GetY().GetVector());
-	auto& zs = const_cast<std::vector<double>&>(m_pointList_choice1->GetZ().GetVector());
+    // update point lists from coordinates
+    if (m_pointList_choice1.isValid()) {
+        auto& xs = const_cast<std::vector<double>&>(m_pointList_choice1->GetX().GetVector());
+        auto& ys = const_cast<std::vector<double>&>(m_pointList_choice1->GetY().GetVector());
+        auto& zs = const_cast<std::vector<double>&>(m_pointList_choice1->GetZ().GetVector());
 
-	xs.resize(coordinates.size());
-	ys.resize(coordinates.size());
-	zs.resize(coordinates.size());
+        xs.resize(coordinates.size());
+        ys.resize(coordinates.size());
+        zs.resize(coordinates.size());
 
-	for (unsigned int j = 0; j < coordinates.size(); j++) {
-		xs[j] = coordinates[j].x;
-		ys[j] = coordinates[j].y;
-		zs[j] = coordinates[j].z;
-	}
+        for (unsigned int j = 0; j < coordinates.size(); j++) {
+            xs[j] = coordinates[j].x;
+            ys[j] = coordinates[j].y;
+            zs[j] = coordinates[j].z;
+        }
+    }
 
-	generated::CPACSProfileGeometry::WriteCPACS(tixiHandle, xpath);
+    generated::CPACSProfileGeometry::WriteCPACS(tixiHandle, xpath);
 }
 
 const int CCPACSFuselageProfile::GetNumPoints(void) const 
