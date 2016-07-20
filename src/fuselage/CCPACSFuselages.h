@@ -39,7 +39,7 @@ namespace tigl
 class CCPACSFuselages : public generated::CPACSFuselages
 {
 public:
-    TIGL_EXPORT CCPACSFuselages();
+    //TIGL_EXPORT CCPACSFuselages();
     TIGL_EXPORT CCPACSFuselages(CCPACSModel* parent);
     TIGL_EXPORT CCPACSFuselages(generated::CPACSRotorcraftModel* parent);
 

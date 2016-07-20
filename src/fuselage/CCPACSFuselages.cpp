@@ -32,7 +32,7 @@
 
 namespace tigl
 {
-CCPACSFuselages::CCPACSFuselages() {}
+//CCPACSFuselages::CCPACSFuselages() {}
 
 CCPACSFuselages::CCPACSFuselages(CCPACSModel* parent)
     : generated::CPACSFuselages(parent) {}

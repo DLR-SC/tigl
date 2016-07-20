@@ -56,13 +56,15 @@ namespace tigl
 
 // Constructor
 CCPACSFuselage::CCPACSFuselage(CCPACSConfiguration* config)
-    : configuration(config)
+    : generated::CPACSFuselage(&config->GetFuselages())
+    , configuration(config)
 {
     Cleanup();
 }
 
 CCPACSFuselage::CCPACSFuselage(CCPACSFuselages* parent)
-    : configuration(&parent->GetParent<CCPACSModel>()->GetConfiguration()) {
+    : generated::CPACSFuselage(parent)
+    , configuration(&parent->GetParent<CCPACSModel>()->GetConfiguration()) {
     Cleanup();
 }
 

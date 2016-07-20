@@ -38,7 +38,7 @@ namespace tigl
 class CCPACSWings : public generated::CPACSWings //, public generated::CPACSWingAirfoils // TODO: we should separate wing airfoils from wings
 {
 public:
-    TIGL_EXPORT CCPACSWings();
+    //TIGL_EXPORT CCPACSWings();
     TIGL_EXPORT CCPACSWings(generated::CPACSRotorcraftModel* parent);
     TIGL_EXPORT CCPACSWings(CCPACSModel* parent);
 

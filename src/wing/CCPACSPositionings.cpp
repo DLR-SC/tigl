@@ -93,16 +93,18 @@ void CCPACSPositionings::Update()
     for (const auto& actPos : m_positioning) {
         if (actPos->HasFromSectionUID()) {
             const std::string fromUID = actPos->GetFromSectionUID();
-            const auto pos = std::find_if(std::begin(m_positioning), std::end(m_positioning), [&](CCPACSPositioning* p) {
-                return p->GetOuterSectionIndex() == fromUID;
-            });
-            if (pos != std::end(m_positioning)) {
-                CCPACSPositioning* fromPos = *pos;
-                fromPos->ConnectChildPositioning(actPos);
-            }
-            else {
-                // invalid from UID
-                throw CTiglError("Positioning fromSectionUID " + fromUID + " does not exist");
+            // fromSectionUID element may be present but empty
+            if (!fromUID.empty()) {
+                const auto pos = std::find_if(std::begin(m_positioning), std::end(m_positioning), [&](CCPACSPositioning* p) {
+                    return p->GetOuterSectionIndex() == fromUID;
+                });
+                if (pos != std::end(m_positioning)) {
+                    CCPACSPositioning* fromPos = *pos;
+                    fromPos->ConnectChildPositioning(actPos);
+                } else {
+                    // invalid from UID
+                    throw CTiglError("Positioning fromSectionUID " + fromUID + " does not exist");
+                }
             }
         }
         else {

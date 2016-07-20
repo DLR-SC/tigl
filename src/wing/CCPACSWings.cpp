@@ -45,7 +45,7 @@ namespace {
     const std::string profilesXPath = "/cpacs/vehicles/profiles/wingAirfoils";
 }
 
-CCPACSWings::CCPACSWings() {}
+//CCPACSWings::CCPACSWings() {}
 
 CCPACSWings::CCPACSWings(generated::CPACSRotorcraftModel* parent)
     : generated::CPACSWings(parent) {}
