@@ -238,6 +238,10 @@ void CCPACSWingComponentSegment::SetSymmetryAxis(const TiglSymmetryAxis& axis) {
     // TODO
 }
 
+ECPACSTranslationType CCPACSWingComponentSegment::GetTranslationType() const {
+    return ECPACSTranslationType::ABS_LOCAL; // TODO: is this correct?
+}
+
 // Returns the wing this segment belongs to
 CCPACSWing& CCPACSWingComponentSegment::GetWing(void) const
 {

@@ -34,16 +34,13 @@
 #include "PNamedShape.h"
 #include "tigl_config.h"
 #include "CTiglTransformation.h"
+#include "ECPACSTranslationType.h"
 
 
 namespace tigl 
 {
 
-enum ECPACSTranslationType
-{
-    ABS_LOCAL,
-    ABS_GLOBAL
-};
+
 
 class ITiglGeometricComponent
 {

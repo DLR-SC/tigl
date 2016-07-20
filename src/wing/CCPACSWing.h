@@ -68,6 +68,8 @@ public:
     TIGL_EXPORT virtual TiglSymmetryAxis GetSymmetryAxis(void) override;
     TIGL_EXPORT virtual void SetSymmetryAxis(const TiglSymmetryAxis& axis) override;
 
+    TIGL_EXPORT virtual ECPACSTranslationType GetTranslationType() const override;
+
     // Returns the parent configuration
     TIGL_EXPORT CCPACSConfiguration & GetConfiguration(void) const;
 
@@ -81,15 +83,15 @@ public:
     TIGL_EXPORT int GetSegmentCount(void) const;
 
     // Returns the segment for a given index or uid
-    TIGL_EXPORT CTiglAbstractSegment & GetSegment(const int index);
-    TIGL_EXPORT CTiglAbstractSegment & GetSegment(std::string uid);
+    TIGL_EXPORT CCPACSWingSegment& GetSegment(const int index);
+    TIGL_EXPORT CCPACSWingSegment& GetSegment(std::string uid);
 
     // Getter of the number of component segments of the wing
     TIGL_EXPORT int GetComponentSegmentCount(void);
 
     // Returns the segment for a given index or uid
-    TIGL_EXPORT CTiglAbstractSegment & GetComponentSegment(const int index);
-    TIGL_EXPORT CTiglAbstractSegment & GetComponentSegment(std::string uid);
+    TIGL_EXPORT CCPACSWingComponentSegment& GetComponentSegment(const int index);
+    TIGL_EXPORT CCPACSWingComponentSegment& GetComponentSegment(std::string uid);
 
     // Gets the wing transformation
     TIGL_EXPORT CTiglTransformation GetWingTransformation(void);

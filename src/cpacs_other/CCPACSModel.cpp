@@ -47,6 +47,10 @@ TiglSymmetryAxis CCPACSModel::GetSymmetryAxis(void) {
 
 void CCPACSModel::SetSymmetryAxis(const TiglSymmetryAxis& axis) {}
 
+ECPACSTranslationType CCPACSModel::GetTranslationType() const {
+    return ECPACSTranslationType::ABS_LOCAL;
+}
+
 // Returns the Geometric type of this component, e.g. Wing or Fuselage
 TiglGeometricComponentType CCPACSModel::GetComponentType(void)
 {

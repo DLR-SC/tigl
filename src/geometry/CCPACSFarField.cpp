@@ -114,6 +114,10 @@ PNamedShape CCPACSFarField::BuildLoft(void)
     return loft;
 }
 
+ECPACSTranslationType CCPACSFarField::GetTranslationType() const {
+    return ECPACSTranslationType::ABS_LOCAL;
+}
+
 TiglGeometricComponentType CCPACSFarField::GetComponentType(void)
 {
     return TIGL_COMPONENT_LOGICAL;

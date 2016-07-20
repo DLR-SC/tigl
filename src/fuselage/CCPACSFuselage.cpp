@@ -132,6 +132,10 @@ void CCPACSFuselage::SetSymmetryAxis(const TiglSymmetryAxis& axis) {
     }
 }
 
+ECPACSTranslationType CCPACSFuselage::GetTranslationType() const {
+    return m_transformation.GetTranslationType();
+}
+
 // Get section count
 int CCPACSFuselage::GetSectionCount(void) const
 {
