@@ -115,7 +115,7 @@ void CTiglAbstractGeometricComponent::Translate(CTiglPoint trans)
 
 PNamedShape CTiglAbstractGeometricComponent::GetLoft(void)
 {
-    if (!(loft)) {
+    if (!loft) {
 #ifdef DEBUG
         LOG(INFO) << "Building loft " << GetUID();
 #endif

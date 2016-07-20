@@ -137,12 +137,12 @@ namespace tigl
 {
 
 CCPACSFuselageSegment::CCPACSFuselageSegment(CCPACSFuselageSegments* parent)
-	: CTiglAbstractSegment(parent->GetSegmentCount() + 1) // TODO: this is a hack, as we depend on the implementation of the vector reader in generated::CPACSFuselageSegments::ReadCPACS() but the current CodeGen does not support passing indices into ctors
-		, fuselage(parent->GetParent())
-		, guideCurvesPresent(false)
-	{
-		Cleanup();
-	}
+    : CTiglAbstractSegment(parent->GetSegmentCount() + 1) // TODO: this is a hack, as we depend on the implementation of the vector reader in generated::CPACSFuselageSegments::ReadCPACS() but the current CodeGen does not support passing indices into ctors
+        , fuselage(parent->GetParent())
+        , guideCurvesPresent(false)
+    {
+        Cleanup();
+    }
 
 // Constructor
 CCPACSFuselageSegment::CCPACSFuselageSegment(CCPACSFuselage* aFuselage, int aSegmentIndex)
@@ -183,8 +183,8 @@ void CCPACSFuselageSegment::ReadCPACS(TixiDocumentHandle tixiHandle, const std::
     Cleanup();
     generated::CPACSFuselageSegment::ReadCPACS(tixiHandle, segmentXPath);
 
-	startConnection = CCPACSFuselageConnection(m_fromElementUID, this);
-	endConnection = CCPACSFuselageConnection(m_toElementUID, this);
+    startConnection = CCPACSFuselageConnection(m_fromElementUID, this);
+    endConnection = CCPACSFuselageConnection(m_toElementUID, this);
 
     // TODO: continuity does not exist in CPACS spec
 
@@ -212,20 +212,20 @@ void CCPACSFuselageSegment::ReadCPACS(TixiDocumentHandle tixiHandle, const std::
 }
 
 const std::string& CCPACSFuselageSegment::GetUID() const {
-	return generated::CPACSFuselageSegment::GetUID();
+    return generated::CPACSFuselageSegment::GetUID();
 }
 
 void CCPACSFuselageSegment::SetUID(const std::string& uid) {
-	return generated::CPACSFuselageSegment::SetUID(uid);
+    return generated::CPACSFuselageSegment::SetUID(uid);
 }
 
 TiglSymmetryAxis CCPACSFuselageSegment::GetSymmetryAxis(void) {
-	// TODO
-	return TiglSymmetryAxis::TIGL_NO_SYMMETRY;
+    // TODO
+    return TiglSymmetryAxis::TIGL_NO_SYMMETRY;
 }
 
 void CCPACSFuselageSegment::SetSymmetryAxis(const TiglSymmetryAxis& axis) {
-	// TODO
+    // TODO
 }
 
 // Returns the fuselage this segment belongs to
@@ -846,7 +846,7 @@ TopTools_SequenceOfShape& CCPACSFuselageSegment::BuildGuideCurves(void)
         double outerScale = GetWireLength(outerChordLineWire);
 
         // loop through all guide curves and construct the corresponding wires
-		auto& guideCurves = m_guideCurves.get();
+        auto& guideCurves = m_guideCurves.get();
         int nGuideCurves = guideCurves.GetGuideCurveCount();
         for (int i=0; i!=nGuideCurves; i++) {
             // get guide curve
