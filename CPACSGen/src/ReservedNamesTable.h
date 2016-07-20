@@ -2,10 +2,11 @@
 
 #include "Table.h"
 
-class ReservedNamesTable : public Table {
-public:
-	ReservedNamesTable()
-		: Table({
+namespace tigl {
+	class ReservedNamesTable : public Table {
+	public:
+		ReservedNamesTable()
+			: Table({
 			// from: http://en.cppreference.com/w/cpp/keyword
 			"alignas",
 			"alignof",
@@ -100,4 +101,5 @@ public:
 			"xor",
 			"xor_eq"
 		}) {}
-};
+	};
+}

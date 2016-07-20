@@ -22,7 +22,7 @@ endif()
 
 file(GLOB ALL_SRCS src/*.cpp)
 file(GLOB ALL_HEADERS src/*.h*)
-file(GLOB ALL_TABLES src/*Table.*)
+file(GLOB ALL_TABLES src/*Table*)
 
 #set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
 
