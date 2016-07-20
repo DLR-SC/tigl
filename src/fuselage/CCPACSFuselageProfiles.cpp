@@ -100,7 +100,7 @@ CCPACSFuselageProfile& CCPACSFuselageProfiles::GetProfile(std::string uid) const
         if (p->GetUID() == uid)
             return *static_cast<CCPACSFuselageProfile*>(p);
 
-        throw CTiglError("Fuselage profile \"" + uid + "\" not found in CPACS file!", TIGL_UID_ERROR);
+    throw CTiglError("Fuselage profile \"" + uid + "\" not found in CPACS file!", TIGL_UID_ERROR);
 }
 
 // Returns the fuselage profile for a given index - TODO: depricated function!

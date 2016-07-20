@@ -57,7 +57,7 @@ void CCPACSFuselageSectionElement::ReadCPACS(TixiDocumentHandle tixiHandle, cons
 // Returns the UID of the referenced fuselage profile
 std::string CCPACSFuselageSectionElement::GetProfileIndex(void) const
 {
-    return GetUID();
+    return m_profileUID;
 }
 
 // Gets the section element transformation
