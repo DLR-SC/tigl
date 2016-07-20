@@ -8,6 +8,11 @@
 #include "codegen.h"
 
 namespace tigl {
+	// some options
+	namespace {
+		bool c_generateDefaultCtorsForParentPointerTypes = false;
+	}
+
 	struct Scope;
 
 	class IndentingStreamWrapper {
@@ -622,11 +627,14 @@ namespace tigl {
 	}
 
 	void CodeGen::writeCtors(IndentingStreamWrapper& hpp, const Class& c) {
-		hpp << "TIGL_EXPORT " << c.name << "();";
 		if (s_parentPointers.contains(c.name)) {
+			if (c_generateDefaultCtorsForParentPointerTypes)
+				hpp << "TIGL_EXPORT " << c.name << "();";
 			for (const auto& dep : c.deps.parents)
 				hpp << "TIGL_EXPORT " << c.name << "(" << customReplacedType(dep->name) << "* parent);";
 			hpp << "";
+		} else {
+			hpp << "TIGL_EXPORT " << c.name << "();";
 		}
 	}
 
@@ -670,18 +678,20 @@ namespace tigl {
 
 		// if this class holds parent pointers, we have to provide corresponding ctor overloads
 		if (s_parentPointers.contains(c.name)) {
-			cpp << c.name << "::" << c.name << "()";
-			writeParentPointerFieldInitializers();
-			cpp.raw() << " {";
-			{
-				Scope s(cpp);
-				cpp << "m_parent = nullptr;";
-				if (c.deps.parents.size() > 1)
-					cpp << "m_parentType = nullptr;";
-			}
-			cpp << "}";
-			if (c.deps.parents.size() == 1) {
+			if (c_generateDefaultCtorsForParentPointerTypes) {
+				cpp << c.name << "::" << c.name << "()";
+				writeParentPointerFieldInitializers();
+				cpp.raw() << " {";
+				{
+					Scope s(cpp);
+					cpp << "m_parent = nullptr;";
+					if (c.deps.parents.size() > 1)
+						cpp << "m_parentType = nullptr;";
+				}
+				cpp << "}";
 				cpp << "";
+			}
+			if (c.deps.parents.size() == 1) {
 				cpp << c.name << "::" << c.name << "(" << customReplacedType(c.deps.parents[0]->name) << "* parent)";
 				writeParentPointerFieldInitializers();
 				cpp.raw() << " {";
@@ -691,10 +701,10 @@ namespace tigl {
 					cpp << "m_parent = parent;";
 				}
 				cpp << "}";
+				cpp << "";
 			} else {
 				for (const auto& dep : c.deps.parents) {
 					const auto rn = customReplacedType(dep->name);
-					cpp << "";
 					cpp << c.name << "::" << c.name << "(" << rn << "* parent)";
 					writeParentPointerFieldInitializers();
 					cpp.raw() << " {";
@@ -705,6 +715,7 @@ namespace tigl {
 						cpp << "m_parentType = &typeid(" << rn << ");";
 					}
 					cpp << "}";
+					cpp << "";
 				}
 			}
 		} else {
@@ -712,7 +723,6 @@ namespace tigl {
 			writeParentPointerFieldInitializers();
 			cpp.raw() << "{}";
 		}
-		cpp << "";
 	}
 
 	void CodeGen::writeHeader(IndentingStreamWrapper& hpp, const Class& c, const Includes& includes) {
