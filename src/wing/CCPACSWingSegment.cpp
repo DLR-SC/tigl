@@ -210,7 +210,8 @@ CCPACSWingSegment::CCPACSWingSegment(CCPACSWingSegments* parent)
 
 // Constructor
 CCPACSWingSegment::CCPACSWingSegment(CCPACSWing* aWing, int aSegmentIndex)
-    : CTiglAbstractSegment(aSegmentIndex)
+    : generated::CPACSWingSegment(&aWing->GetSegments())
+    , CTiglAbstractSegment(aSegmentIndex)
     , wing(aWing)
     , surfacesAreValid(false)
     , guideCurvesPresent(false)
