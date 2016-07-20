@@ -125,6 +125,7 @@ namespace
 // Constructor
 CCPACSWing::CCPACSWing(CCPACSConfiguration* config)
     : generated::CPACSWing(config->GetWings())
+    , CTiglAbstractPhysicalComponent(m_transformation)
     , configuration(config)
     , rebuildFusedSegments(true)
     , rebuildFusedSegWEdge(true)
@@ -135,6 +136,7 @@ CCPACSWing::CCPACSWing(CCPACSConfiguration* config)
 
 CCPACSWing::CCPACSWing(CCPACSWings* parent)
     : generated::CPACSWing(parent)
+    , CTiglAbstractPhysicalComponent(m_transformation)
     , configuration(&parent->GetParent<CCPACSModel>()->GetConfiguration())
     , rebuildFusedSegments(true)
     , rebuildFusedSegWEdge(true)
@@ -142,7 +144,8 @@ CCPACSWing::CCPACSWing(CCPACSWings* parent)
     Cleanup();
 }
 CCPACSWing::CCPACSWing(generated::CPACSRotorBlades* parent)
-    : generated::CPACSWing(parent) {
+    : generated::CPACSWing(parent)
+    , CTiglAbstractPhysicalComponent(m_transformation) {
     throw std::logic_error("Instantiating CCPACSWing with CPACSRotorBlades as parent is not implemented");
 }
 
@@ -168,10 +171,6 @@ void CCPACSWing::Cleanup(void)
 {
     m_name = "";
     m_description = "";
-    transformation.SetIdentity();
-    translation = CTiglPoint(0.0, 0.0, 0.0);
-    scaling     = CTiglPoint(1.0, 1.0, 1.0);
-    rotation    = CTiglPoint(0.0, 0.0, 0.0);
 
     // Calls ITiglGeometricComponent interface Reset to delete e.g. all childs.
     Reset();
@@ -179,27 +178,27 @@ void CCPACSWing::Cleanup(void)
     Invalidate();
 }
 
-// Builds transformation matrix for the wing
-void CCPACSWing::BuildMatrix(void)
-{
-    transformation.SetIdentity();
-
-    // Step 1: scale the wing around the orign
-    transformation.AddScaling(scaling.x, scaling.y, scaling.z);
-
-    // Step 2: rotate the wing
-    // Step 2a: rotate the wing around z (yaw   += right tip forward)
-    transformation.AddRotationZ(rotation.z);
-    // Step 2b: rotate the wing around y (pitch += nose up)
-    transformation.AddRotationY(rotation.y);
-    // Step 2c: rotate the wing around x (roll  += right tip up)
-    transformation.AddRotationX(rotation.x);
-
-    // Step 3: translate the rotated wing into its position
-    transformation.AddTranslation(translation.x, translation.y, translation.z);
-
-    //backTransformation = transformation.Inverted();
-}
+//// Builds transformation matrix for the wing
+//void CCPACSWing::BuildMatrix(void)
+//{
+//    transformation.SetIdentity();
+//
+//    // Step 1: scale the wing around the orign
+//    transformation.AddScaling(scaling.x, scaling.y, scaling.z);
+//
+//    // Step 2: rotate the wing
+//    // Step 2a: rotate the wing around z (yaw   += right tip forward)
+//    transformation.AddRotationZ(rotation.z);
+//    // Step 2b: rotate the wing around y (pitch += nose up)
+//    transformation.AddRotationY(rotation.y);
+//    // Step 2c: rotate the wing around x (roll  += right tip up)
+//    transformation.AddRotationX(rotation.x);
+//
+//    // Step 3: translate the rotated wing into its position
+//    transformation.AddTranslation(translation.x, translation.y, translation.z);
+//
+//    //backTransformation = transformation.Inverted();
+//}
 
 // Update internal wing data
 void CCPACSWing::Update(void)
@@ -208,7 +207,7 @@ void CCPACSWing::Update(void)
         return;
     }
 
-    BuildMatrix();
+    //BuildMatrix();
     invalidated = false;
     rebuildFusedSegments = true;    // forces a rebuild of all segments with regards to the updated translation
     rebuildShells = true;
@@ -250,10 +249,6 @@ void CCPACSWing::SetSymmetryAxis(const TiglSymmetryAxis& axis) {
             m_componentSegments->GetComponentSegment(i).SetSymmetryAxis(axis);
         }
     }
-}
-
-TIGL_EXPORT ECPACSTranslationType CCPACSWing::GetTranslationType() const {
-    return m_transformation.GetTranslationType();
 }
 
 // Returns the parent configuration
@@ -428,7 +423,7 @@ void CCPACSWing::BuildUpperLowerShells()
 CTiglTransformation CCPACSWing::GetWingTransformation(void)
 {
     Update();   // create new transformation matrix if scaling, rotation or translation was changed
-    return transformation;
+    return m_transformation.GetTransformation();
 }
 
 // Get the positioning transformation for a given section-uid
@@ -481,16 +476,16 @@ void CCPACSWing::Translate(CTiglPoint trans)
 // Setter for translation
 void CCPACSWing::SetTranslation(const CTiglPoint& translation)
 {
-    this->translation = translation;
+    m_transformation.SetTranslation(translation);
     invalidated = true;
     // TODO: check whether we have to invalidate segments and componentsegments
     Update();
 }
 
 // Setter for rotation
-void CCPACSWing::SetRotation(const CTiglPoint& rotation) 
+void CCPACSWing::SetRotation(const CTiglPoint& rotation)
 {
-    this->rotation = rotation;
+    m_transformation.SetRotation(rotation);
     invalidated = true;
     // TODO: check whether we have to invalidate segments and componentsegments
     Update();
@@ -499,7 +494,7 @@ void CCPACSWing::SetRotation(const CTiglPoint& rotation)
 // Setter for scaling
 void CCPACSWing::SetScaling(const CTiglPoint& scaling)
 {
-    this->scaling = scaling;
+	m_transformation.SetScaling(scaling);
     invalidated = true;
     // TODO: check whether we have to invalidate segments and componentsegments
     Update();

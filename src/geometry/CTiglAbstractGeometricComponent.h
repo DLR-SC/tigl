@@ -37,39 +37,40 @@
 
 namespace tigl
 {
+class CCPACSTransformation;
+
 class CTiglAbstractGeometricComponent : public ITiglGeometricComponent
 {
 public:
     // Constructor
-    TIGL_EXPORT CTiglAbstractGeometricComponent();
+    TIGL_EXPORT CTiglAbstractGeometricComponent(CCPACSTransformation& trans);
 
-    // Virtual Destructor
-    TIGL_EXPORT virtual ~CTiglAbstractGeometricComponent();
-
-       // Gets the loft of a geometric component
-    TIGL_EXPORT virtual PNamedShape GetLoft(void);
+    // Gets the loft of a geometric component
+    TIGL_EXPORT virtual PNamedShape GetLoft();
 
     // Get the loft mirrored at the mirror plane
-    TIGL_EXPORT virtual PNamedShape GetMirroredLoft(void);
+    TIGL_EXPORT virtual PNamedShape GetMirroredLoft();
 
     // Gets symmetry axis
-    TIGL_EXPORT virtual TiglSymmetryAxis GetSymmetryAxis(void) = 0;
+    TIGL_EXPORT virtual TiglSymmetryAxis GetSymmetryAxis() = 0;
 
     // Sets symmetry axis
     TIGL_EXPORT virtual void SetSymmetryAxis(const TiglSymmetryAxis& axis) = 0;
 
     // Gets symmetry axis as string
-    TIGL_EXPORT std::string GetSymmetryAxisString();
+    DEPRECATED TIGL_EXPORT std::string GetSymmetryAxisString();
 
     // Sets symmetry axis as string
-    TIGL_EXPORT void SetSymmetryAxis(const std::string& axis);
+    DEPRECATED TIGL_EXPORT void SetSymmetryAxis(const std::string& axis);
 
     // Get transformation object
-    TIGL_EXPORT virtual CTiglTransformation GetTransformation(void);
+    TIGL_EXPORT virtual CTiglTransformation GetTransformation() const override;
 
     // Get component translation
-    TIGL_EXPORT virtual CTiglPoint GetTranslation(void) const;
+    TIGL_EXPORT virtual CTiglPoint GetTranslation() const override;
     
+    TIGL_EXPORT virtual ECPACSTranslationType GetTranslationType() const override;
+
     // Get component rotation
     TIGL_EXPORT virtual CTiglPoint GetRotation() const;
 
@@ -77,7 +78,7 @@ public:
     TIGL_EXPORT virtual CTiglPoint GetScaling() const;
 
     // Set transformation object
-    TIGL_EXPORT virtual void Translate(CTiglPoint trans);
+    TIGL_EXPORT virtual void Translate(CTiglPoint trans) override;
 
     // return if pnt lies on the loft
     TIGL_EXPORT bool GetIsOn(const gp_Pnt &pnt);
@@ -91,12 +92,8 @@ protected:
     
     virtual PNamedShape BuildLoft(void) = 0;
 
-    CTiglTransformation        transformation;
+    CCPACSTransformation&        transformation; // references down to the transformation of the derived class
     //CTiglTransformation        backTransformation;
-    CTiglPoint                 translation;
-    //ECPACSTranslationType      translationType;
-    CTiglPoint                 scaling;
-    CTiglPoint                 rotation;
     PNamedShape                loft;
 
 private:

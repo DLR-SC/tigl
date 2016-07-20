@@ -36,6 +36,7 @@
 #include "CCPACSGuideCurves.h"
 #include "CTiglPoint.h"
 #include "CTiglAbstractSegment.h"
+#include "CCPACSTransformation.h"
 #include "math/CTiglPointTranslator.h"
 
 #include "TopoDS_Shape.hxx"
@@ -76,8 +77,6 @@ public:
 
     TIGL_EXPORT virtual TiglSymmetryAxis GetSymmetryAxis(void) override;
     TIGL_EXPORT virtual void SetSymmetryAxis(const TiglSymmetryAxis& axis) override;
-
-    TIGL_EXPORT virtual ECPACSTranslationType GetTranslationType() const override;
 
     // Returns the wing this segment belongs to
     TIGL_EXPORT CCPACSWing& GetWing(void) const;
@@ -254,6 +253,7 @@ private:
     // converts segment eta xsi coordinates to face uv koordinates
     void etaXsiToUV(bool isFromUpper, double eta, double xsi, double& u, double& v);
 
+    CCPACSTransformation dummyTrans; // TODO: CCPACSWingSegment must provide a CCPACSTransformation as it is a CTiglAbstractGeometricalComponent, is this correct? Can we remove the base class CTiglAbstractGeometricalComponent?
     CCPACSWingConnection innerConnection;      /**< Inner segment connection (root)         */
     CCPACSWingConnection outerConnection;      /**< Outer segment connection (tip)          */
     TopTools_SequenceOfShape guideCurveWires;  /**< container for the guide curve wires     */

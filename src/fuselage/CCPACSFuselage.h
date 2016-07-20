@@ -72,8 +72,6 @@ public:
     TIGL_EXPORT virtual TiglSymmetryAxis GetSymmetryAxis(void) override;
     TIGL_EXPORT virtual void SetSymmetryAxis(const TiglSymmetryAxis& axis) override;
 
-    TIGL_EXPORT virtual ECPACSTranslationType GetTranslationType(void) const override;
-
     // Get section count
     TIGL_EXPORT int GetSectionCount(void) const;
 
@@ -106,9 +104,6 @@ public:
 
     // get the Transformation object
     TIGL_EXPORT CTiglTransformation GetTransformation(void);
-
-    // sets a Transformation object
-    TIGL_EXPORT void Translate(CTiglPoint trans);
 
     // Gets the surfade area of this wing
     TIGL_EXPORT double GetSurfaceArea();

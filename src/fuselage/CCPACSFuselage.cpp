@@ -57,6 +57,7 @@ namespace tigl
 // Constructor
 CCPACSFuselage::CCPACSFuselage(CCPACSConfiguration* config)
     : generated::CPACSFuselage(&config->GetFuselages())
+    , CTiglAbstractPhysicalComponent(m_transformation)
     , configuration(config)
 {
     Cleanup();
@@ -64,6 +65,7 @@ CCPACSFuselage::CCPACSFuselage(CCPACSConfiguration* config)
 
 CCPACSFuselage::CCPACSFuselage(CCPACSFuselages* parent)
     : generated::CPACSFuselage(parent)
+    , CTiglAbstractPhysicalComponent(m_transformation)
     , configuration(&parent->GetParent<CCPACSModel>()->GetConfiguration()) {
     Cleanup();
 }
@@ -86,10 +88,6 @@ void CCPACSFuselage::Invalidate(void)
 void CCPACSFuselage::Cleanup(void)
 {
     m_name = "";
-    transformation.SetIdentity();
-    translation = CTiglPoint(0.0, 0.0, 0.0);
-    scaling     = CTiglPoint(1.0, 1.0, 1.0);
-    rotation    = CTiglPoint(0.0, 0.0, 0.0);
 
     // Calls ITiglGeometricComponent interface Reset to delete e.g. all childs.
     Reset();
@@ -130,10 +128,6 @@ void CCPACSFuselage::SetSymmetryAxis(const TiglSymmetryAxis& axis) {
     for (int i = 1; i <= m_segments.GetSegmentCount(); ++i) {
         m_segments.GetSegment(i).SetSymmetryAxis(axis);
     }
-}
-
-ECPACSTranslationType CCPACSFuselage::GetTranslationType() const {
-    return m_transformation.GetTranslationType();
 }
 
 // Get section count
@@ -215,9 +209,9 @@ PNamedShape CCPACSFuselage::BuildLoft(void)
 
 
 // Gets the fuselage transformation
-CTiglTransformation CCPACSFuselage::GetFuselageTransformation(void)
+CTiglTransformation CCPACSFuselage::GetFuselageTransformation()
 {
-    return transformation;
+    return m_transformation.GetTransformation();
 }
 
 // Get the positioning transformation for a given section index
@@ -252,13 +246,6 @@ double CCPACSFuselage::GetVolume(void)
 CTiglTransformation CCPACSFuselage::GetTransformation(void)
 {
     return GetFuselageTransformation();
-}
-
-// Sets the Transformation object
-void CCPACSFuselage::Translate(CTiglPoint trans)
-{
-    CTiglAbstractGeometricComponent::Translate(trans);
-   // Update();
 }
 
 // Returns the circumference of the segment "segmentIndex" at a given eta

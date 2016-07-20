@@ -39,12 +39,8 @@
 
 namespace tigl 
 {
-
-
-
 class ITiglGeometricComponent
 {
-
 public:
        // Gets the loft of a geometric component
     virtual PNamedShape GetLoft(void) = 0;
@@ -56,7 +52,7 @@ public:
     virtual void SetUID(const std::string&) = 0;
 
     // Get transformation object
-    virtual CTiglTransformation GetTransformation(void) = 0;
+    virtual CTiglTransformation GetTransformation(void) const = 0;
     
     // Set transformation object
     virtual void Translate(CTiglPoint trans) = 0;
