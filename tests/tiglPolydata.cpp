@@ -27,6 +27,7 @@
 #include "CTiglPolyData.h"
 #include "CCPACSConfigurationManager.h"
 #include "CCPACSConfiguration.h"
+#include "CCPACSWingSegment.h"
 #include "CTiglTriangularizer.h"
 
 #include <BRepMesh.hxx>

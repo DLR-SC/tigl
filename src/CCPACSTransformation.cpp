@@ -33,6 +33,10 @@ namespace tigl {
 		return m_transformation;
 	}
 
+	TIGL_EXPORT ECPACSTranslationType CCPACSTransformation::GetTranslationType() const {
+		return generated::CPACSTransformation::GetTranslation().GetRefType();
+	}
+
 	TIGL_EXPORT const CTiglPoint& CCPACSTransformation::GetTranslation() const {
 		return m_t;
 	}

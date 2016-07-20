@@ -77,6 +77,8 @@ public:
     TIGL_EXPORT virtual TiglSymmetryAxis GetSymmetryAxis(void) override;
     TIGL_EXPORT virtual void SetSymmetryAxis(const TiglSymmetryAxis& axis) override;
 
+    TIGL_EXPORT virtual ECPACSTranslationType GetTranslationType() const override;
+
     // Returns the wing this segment belongs to
     TIGL_EXPORT CCPACSWing& GetWing(void) const;
 

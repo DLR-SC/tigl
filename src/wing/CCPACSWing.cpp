@@ -252,6 +252,10 @@ void CCPACSWing::SetSymmetryAxis(const TiglSymmetryAxis& axis) {
     }
 }
 
+TIGL_EXPORT ECPACSTranslationType CCPACSWing::GetTranslationType() const {
+    return m_transformation.GetTranslationType();
+}
+
 // Returns the parent configuration
 CCPACSConfiguration& CCPACSWing::GetConfiguration(void) const
 {
@@ -277,13 +281,13 @@ int CCPACSWing::GetSegmentCount(void) const
 }
 
 // Returns the segment for a given index
-CTiglAbstractSegment & CCPACSWing::GetSegment(const int index)
+CCPACSWingSegment& CCPACSWing::GetSegment(const int index)
 {
     return m_segments.GetSegment(index);
 }
 
 // Returns the segment for a given uid
-CTiglAbstractSegment & CCPACSWing::GetSegment(std::string uid)
+CCPACSWingSegment& CCPACSWing::GetSegment(std::string uid)
 {
     return m_segments.GetSegment(uid);
 }
@@ -298,13 +302,13 @@ int CCPACSWing::GetComponentSegmentCount(void)
 }
 
 // Returns the segment for a given index
-CTiglAbstractSegment & CCPACSWing::GetComponentSegment(const int index)
+CCPACSWingComponentSegment& CCPACSWing::GetComponentSegment(const int index)
 {
     return m_componentSegments->GetComponentSegment(index);
 }
 
 // Returns the segment for a given uid
-CTiglAbstractSegment & CCPACSWing::GetComponentSegment(std::string uid)
+CCPACSWingComponentSegment& CCPACSWing::GetComponentSegment(std::string uid)
 {
     return m_componentSegments->GetComponentSegment(uid);
 }
