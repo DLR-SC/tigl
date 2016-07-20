@@ -29,10 +29,7 @@ namespace tigl
 {
 
 CCPACSWingCells::CCPACSWingCells(CCPACSWingShell* parent)
-: parentShell(parent)
-{
-
-}
+    : generated::CPACSWingCells(parent) {}
 
 int CCPACSWingCells::GetCellCount() const
 {
@@ -51,7 +48,7 @@ CCPACSWingCell& CCPACSWingCells::GetCell(int index) const
 // Get parent wing shell element
 CCPACSWingShell* CCPACSWingCells::GetParentElement()
 {
-    return parentShell;
+    return GetParent();
 }
 
 

@@ -39,15 +39,9 @@ public:
     
     // Returns the wing cell for a given index.
     TIGL_EXPORT CCPACSWingCell& GetCell(int index) const;
-    
-    // Returns the wing cell for a given UID.
-    TIGL_EXPORT CCPACSWingCell& GetCell(const std::string& UID) const;
 
     // Get parent wing shell element
-    TIGL_EXPORT CCPACSWingShell* GetParentElement();
-
-private:
-    CCPACSWingShell* parentShell;
+    DEPRECATED TIGL_EXPORT CCPACSWingShell* GetParentElement();
 };
 
 } // end namespace tigl

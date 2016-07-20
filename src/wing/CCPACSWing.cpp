@@ -124,7 +124,8 @@ namespace
 
 // Constructor
 CCPACSWing::CCPACSWing(CCPACSConfiguration* config)
-    :  configuration(config)
+    : generated::CPACSWing(config->GetWings())
+    , configuration(config)
     , rebuildFusedSegments(true)
     , rebuildFusedSegWEdge(true)
     , rebuildShells(true)

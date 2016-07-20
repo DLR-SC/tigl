@@ -49,7 +49,7 @@ class CCPACSWing : public generated::CPACSWing, public CTiglAbstractPhysicalComp
 {
 public:
     // Constructor
-    TIGL_EXPORT CCPACSWing(CCPACSConfiguration* config);
+    DEPRECATED TIGL_EXPORT CCPACSWing(CCPACSConfiguration* config);
     TIGL_EXPORT CCPACSWing(CCPACSWings* parent);
     TIGL_EXPORT CCPACSWing(generated::CPACSRotorBlades* parent);
 
