@@ -39,11 +39,11 @@ int CCPACSGuideCurves::GetGuideCurveCount(void) const
 // Returns the guide curve for a given index
 const CCPACSGuideCurve& CCPACSGuideCurves::GetGuideCurve(int index) const
 {
-    unsigned int arrayIndex = index - 1;
-    if (arrayIndex < 0 || arrayIndex >= static_cast<unsigned int>(GetGuideCurveCount())) {
+	index--;
+    if (index < 0 || index >= GetGuideCurveCount()) {
         throw CTiglError("Error: Invalid index in CCPACSGuideCurves::GetGuideCurve", TIGL_INDEX_ERROR);
     }
-    return *m_guideCurve[arrayIndex];
+    return *m_guideCurve[index];
 }
 
 // Returns the guide curve for a given uid.

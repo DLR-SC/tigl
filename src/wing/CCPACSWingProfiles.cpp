@@ -114,6 +114,10 @@ CCPACSWingProfile& CCPACSWingProfiles::GetProfile(std::string uid) const
 // Returns the wing profile for a given index - TODO: depricated function!
 CCPACSWingProfile& CCPACSWingProfiles::GetProfile(int index) const
 {
+    index--;
+    if (index < 0 || index >= GetProfileCount()) {
+        throw CTiglError("Illegal index in CCPACSWingProfile::GetProfile", TIGL_INDEX_ERROR);
+    }
     return *static_cast<CCPACSWingProfile*>(m_wingAirfoil[index]);
 }
 

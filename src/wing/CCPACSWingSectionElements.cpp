@@ -40,7 +40,7 @@ int CCPACSWingSectionElements::GetSectionElementCount(void) const
 // Get element for a given index
 CCPACSWingSectionElement& CCPACSWingSectionElements::GetSectionElement(int index) const
 {
-    index--;
+	index--;
     if (index < 0 || index >= GetSectionElementCount()) {
         throw CTiglError("Error: Invalid index in CCPACSWingSectionElements::GetSectionElement", TIGL_INDEX_ERROR);
     }

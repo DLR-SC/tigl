@@ -27,18 +27,19 @@
 
 namespace tigl
 {
-CCPACSModel::CCPACSModel() : config(nullptr) {}
+CCPACSModel::CCPACSModel()
+    : config(nullptr) {}
 
-CCPACSModel::CCPACSModel(CCPACSConfiguration* config) : config(config) {}
-
-CCPACSModel::~CCPACSModel(void) {}
+CCPACSModel::CCPACSModel(CCPACSConfiguration* config)
+    : config(config) {}
 
 const std::string& CCPACSModel::GetUID() const {
-    static const std::string s_uid = "Model";
-    return s_uid;
+    return generated::CPACSAircraftModel::GetUID();
 }
 
-void CCPACSModel::SetUID(const std::string& uid) {}
+void CCPACSModel::SetUID(const std::string& uid) {
+    generated::CPACSAircraftModel::SetUID(uid);
+}
 
 TiglSymmetryAxis CCPACSModel::GetSymmetryAxis(void) {
     return TiglSymmetryAxis::TIGL_NO_SYMMETRY;

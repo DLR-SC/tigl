@@ -105,7 +105,7 @@ int CCPACSWingSection::GetSectionElementCount(void) const
 // Get element for a given index
 const CCPACSWingSectionElement& CCPACSWingSection::GetSectionElement(int index) const
 {
-    return *m_elements.GetElement()[index];
+    return m_elements.GetSectionElement(index);
 }
 
 // Gets the section transformation
@@ -123,13 +123,13 @@ CTiglPoint CCPACSWingSection::GetTranslation() const
 // Gets the section rotation
 CTiglPoint CCPACSWingSection::GetRotation() const
 {
-	return m_transformation.GetRotation();
+    return m_transformation.GetRotation();
 }
 
 // Gets the section scaling
 CTiglPoint CCPACSWingSection::GetScaling() const
 {
-	return m_transformation.GetScaling();
+    return m_transformation.GetScaling();
 }
 
 // Setter for translation

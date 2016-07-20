@@ -41,10 +41,10 @@ class CTiglAbstractGeometricComponent : public ITiglGeometricComponent
 {
 public:
     // Constructor
-    TIGL_EXPORT CTiglAbstractGeometricComponent(void);
+    TIGL_EXPORT CTiglAbstractGeometricComponent();
 
     // Virtual Destructor
-    TIGL_EXPORT virtual ~CTiglAbstractGeometricComponent(void);
+    TIGL_EXPORT virtual ~CTiglAbstractGeometricComponent();
 
        // Gets the loft of a geometric component
     TIGL_EXPORT virtual PNamedShape GetLoft(void);
