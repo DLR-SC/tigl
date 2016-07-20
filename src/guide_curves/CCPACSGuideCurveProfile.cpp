@@ -31,15 +31,16 @@ namespace tigl
 CCPACSGuideCurveProfile::CCPACSGuideCurveProfile() {}
 
 CCPACSGuideCurveProfile::CCPACSGuideCurveProfile(const std::string& xpath)
-    : ctorXPath(xpath) {}
+    : xpath(xpath) {}
 
 void CCPACSGuideCurveProfile::ReadCPACS(const TixiDocumentHandle& tixiHandle) {
-    ReadCPACS(tixiHandle, ctorXPath);
+    ReadCPACS(tixiHandle, xpath);
 }
 
 // Read guide curve file
 void CCPACSGuideCurveProfile::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
 {
+    this->xpath = xpath;
     generated::CPACSGuideCurveProfileGeometry::ReadCPACS(tixiHandle, xpath);
 
     // convert to point vector
@@ -53,7 +54,8 @@ void CCPACSGuideCurveProfile::ReadCPACS(const TixiDocumentHandle& tixiHandle, co
 }
 
 void CCPACSGuideCurveProfile::WriteCPACS(const TixiDocumentHandle& tixiHandle) const {
-    generated::CPACSGuideCurveProfileGeometry::WriteCPACS(tixiHandle, ctorXPath);
+    this->xpath = xpath;
+    generated::CPACSGuideCurveProfileGeometry::WriteCPACS(tixiHandle, xpath);
 }
 
 void CCPACSGuideCurveProfile::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const {
@@ -65,7 +67,7 @@ const std::vector<CTiglPoint>& CCPACSGuideCurveProfile::GetGuideCurveProfilePoin
 }
 
 DEPRECATED TIGL_EXPORT const std::string& CCPACSGuideCurveProfile::GetFileName() const {
-    return ctorXPath;
+    return xpath;
 }
 } // end namespace tigl
 

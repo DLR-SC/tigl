@@ -139,16 +139,14 @@ namespace tigl
 CCPACSFuselageSegment::CCPACSFuselageSegment(CCPACSFuselageSegments* parent)
     : CTiglAbstractSegment(parent->GetSegmentCount() + 1) // TODO: this is a hack, as we depend on the implementation of the vector reader in generated::CPACSFuselageSegments::ReadCPACS() but the current CodeGen does not support passing indices into ctors
         , fuselage(parent->GetParent())
-        , guideCurvesPresent(false)
-    {
-        Cleanup();
-    }
+{
+    Cleanup();
+}
 
 // Constructor
 CCPACSFuselageSegment::CCPACSFuselageSegment(CCPACSFuselage* aFuselage, int aSegmentIndex)
     : CTiglAbstractSegment(aSegmentIndex)
     , fuselage(aFuselage)
-    , guideCurvesPresent(false)
 {
     Cleanup();
 }
@@ -167,7 +165,6 @@ void CCPACSFuselageSegment::Cleanup(void)
     mySurfaceArea = 0.;
     myWireLength  = 0.;
     continuity    = C2;
-    guideCurvesPresent = false;
     CTiglAbstractSegment::Cleanup();
 }
 
@@ -819,7 +816,7 @@ bool CCPACSFuselageSegment::GuideCurveExists(std::string UID)
 TopTools_SequenceOfShape& CCPACSFuselageSegment::BuildGuideCurves(void)
 {
     guideCurveWires.Clear();
-    if (guideCurvesPresent) {
+    if (HasGuideCurves()) {
 
         // get start and end profile
         CCPACSFuselageProfile& startProfile = startConnection.GetProfile();

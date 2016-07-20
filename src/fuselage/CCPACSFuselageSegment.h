@@ -185,8 +185,6 @@ private:
     double                   myVolume;             /**< Volume of this segment                  */
     double                   mySurfaceArea;        /**< Surface Area of this segment            */
     double                   myWireLength;         /**< Wire length of this segment for a given zeta */
-    bool                     guideCurvesPresent;   /**< If guide curves are not present, lofted surface is possible */
-
 };
 
 } // end namespace tigl
