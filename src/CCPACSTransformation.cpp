@@ -26,15 +26,27 @@ namespace tigl {
 	}
 
 	TIGL_EXPORT void CCPACSTransformation::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const {
+		// TODO: fix this ugly hackery
+		auto self = const_cast<CCPACSTransformation*>(this);
+		self->m_scaling->SetX(m_s.x);
+		self->m_scaling->SetY(m_s.y);
+		self->m_scaling->SetZ(m_s.z);
+		self->m_rotation->SetX(m_r.x);
+		self->m_rotation->SetY(m_r.y);
+		self->m_rotation->SetZ(m_r.z);
+		self->m_translation->SetX(m_t.x);
+		self->m_translation->SetY(m_t.y);
+		self->m_translation->SetZ(m_t.z);
+
 		generated::CPACSTransformation::WriteCPACS(tixiHandle, xpath);
 	}
 
-	TIGL_EXPORT CTiglTransformation CCPACSTransformation::GetTransformation() const {
+	TIGL_EXPORT const CTiglTransformation& CCPACSTransformation::GetTransformation() const {
 		return m_transformation;
 	}
 
 	TIGL_EXPORT ECPACSTranslationType CCPACSTransformation::GetTranslationType() const {
-		return generated::CPACSTransformation::GetTranslation().GetRefType();
+		return m_translation->GetRefType();
 	}
 
 	TIGL_EXPORT const CTiglPoint& CCPACSTransformation::GetTranslation() const {
@@ -75,7 +87,7 @@ namespace tigl {
 
 	TIGL_EXPORT void CCPACSTransformation::Reset() {
 		m_transformation.SetIdentity();
-		m_s = CTiglPoint(0, 0, 0);
+		m_s = CTiglPoint(1, 1, 1);
 		m_r = CTiglPoint(0, 0, 0);
 		m_t = CTiglPoint(0, 0, 0);
 	}

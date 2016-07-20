@@ -26,6 +26,8 @@
 #include "CTiglAbstractGeometricComponent.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
+#include "TiglSymmetryAxis.h"
+#include "CCPACSTransformation.h"
 
 // OCCT defines
 #include <BRepBuilderAPI_Transform.hxx>
@@ -37,74 +39,56 @@ namespace tigl
 {
 
 // Constructor
-CTiglAbstractGeometricComponent::CTiglAbstractGeometricComponent()
-    : translation(0., 0., 0.), scaling(1., 1., 1.), rotation(0., 0., 0.) {}
+CTiglAbstractGeometricComponent::CTiglAbstractGeometricComponent(CCPACSTransformation& trans)
+    : transformation(trans) {}
 
 void CTiglAbstractGeometricComponent::Reset()
 {
     SetUID("");
     SetSymmetryAxis(TiglSymmetryAxis::TIGL_NO_SYMMETRY);
-    transformation.SetIdentity();
     //backTransformation.SetIdentity();
-    translation = CTiglPoint(0.,0.,0.);
-    scaling     = CTiglPoint(1.,1.,1.);
-    rotation    = CTiglPoint(0.,0.,0.);
+    transformation.Reset();
 }
 
-// Destructor
-CTiglAbstractGeometricComponent::~CTiglAbstractGeometricComponent(void) {}
-
-
-TIGL_EXPORT std::string CTiglAbstractGeometricComponent::GetSymmetryAxisString() {
-    TiglSymmetryAxis axis = GetSymmetryAxis();
-    if (axis == TIGL_X_Z_PLANE) {
-        return "x-z-plane";
-    } else if (axis == TIGL_X_Y_PLANE) {
-        return "x-y-plane";
-    } else if (axis == TIGL_Y_Z_PLANE) {
-        return "y-z-plane";
-    } else {
-        return "";
-    }
+std::string CTiglAbstractGeometricComponent::GetSymmetryAxisString() {
+    return TiglSymmetryAxisToString(GetSymmetryAxis());
 }
 
-TIGL_EXPORT void CTiglAbstractGeometricComponent::SetSymmetryAxis(const std::string& axis) {
-    if (axis == "x-z-plane") {
-        SetSymmetryAxis(TIGL_X_Z_PLANE);
-    } else if (axis == "x-y-plane") {
-        SetSymmetryAxis(TIGL_X_Y_PLANE);
-    } else if (axis == "y-z-plane") {
-        SetSymmetryAxis(TIGL_Y_Z_PLANE);
-    } else {
-        SetSymmetryAxis(TIGL_NO_SYMMETRY);
-    }
+void CTiglAbstractGeometricComponent::SetSymmetryAxis(const std::string& axis) {
+    SetSymmetryAxis(stringToTiglSymmetryAxis(axis));
 }
 
-CTiglTransformation CTiglAbstractGeometricComponent::GetTransformation()
+CTiglTransformation CTiglAbstractGeometricComponent::GetTransformation() const
 {
-    return transformation;
+    return transformation.GetTransformation();
 }
 
 CTiglPoint CTiglAbstractGeometricComponent::GetTranslation() const
 {
-    return translation;
+    return transformation.GetTranslation();
+}
+
+ECPACSTranslationType CTiglAbstractGeometricComponent::GetTranslationType() const {
+    return transformation.GetTranslationType();
 }
 
 CTiglPoint CTiglAbstractGeometricComponent::GetRotation() const
 {
-    return rotation;
+    return transformation.GetRotation();
 }
 
 CTiglPoint CTiglAbstractGeometricComponent::GetScaling() const
 {
-    return scaling;
+    return transformation.GetScaling();
 }
 
 void CTiglAbstractGeometricComponent::Translate(CTiglPoint trans)
 {
-    translation.x += trans.x;
-    translation.y += trans.y;
-    translation.z += trans.z;
+    auto t = transformation.GetTranslation();
+    t.x += trans.x;
+    t.y += trans.y;
+    t.z += trans.z;
+    transformation.SetTranslation(t);
 }
 
 PNamedShape CTiglAbstractGeometricComponent::GetLoft(void)

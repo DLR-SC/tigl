@@ -46,8 +46,6 @@ public:
     TIGL_EXPORT virtual TiglSymmetryAxis GetSymmetryAxis(void) override;
     TIGL_EXPORT virtual void SetSymmetryAxis(const TiglSymmetryAxis& axis) override;
 
-	TIGL_EXPORT virtual ECPACSTranslationType GetTranslationType() const override;
-
     // Returns the Geometric type of this component, e.g. Wing or Fuselage
     TIGL_EXPORT TiglGeometricComponentType GetComponentType(void);
 
@@ -58,6 +56,7 @@ public:
 protected:
     PNamedShape BuildLoft(void);
 
+    CCPACSTransformation dummyTrans; // TODO: CCPACSModel must provide a CCPACSTransformation as it is a CTiglAbstractGeometricalComponent, is this correct? Can we remove the base class CTiglAbstractGeometricalComponent?
     CCPACSConfiguration* config;
 };
 

@@ -201,7 +201,7 @@ namespace
 
 CCPACSWingSegment::CCPACSWingSegment(CCPACSWingSegments* parent)
     : generated::CPACSWingSegment(parent)
-    , CTiglAbstractSegment(parent->GetSegmentCount() + 1) // TODO: this is a hack, as we depend on the implementation of the vector reader in generated::CCPACSWingSegments::ReadCPACS() but the current CodeGen does not support passing indices into ctors
+    , CTiglAbstractSegment(parent->GetSegmentCount() + 1, dummyTrans) // TODO: this is a hack, as we depend on the implementation of the vector reader in generated::CCPACSWingSegments::ReadCPACS() but the current CodeGen does not support passing indices into ctors
     , wing(parent->GetParent<CCPACSWing>())
     , surfacesAreValid(false)
     , guideCurvesPresent(false) {
@@ -211,7 +211,7 @@ CCPACSWingSegment::CCPACSWingSegment(CCPACSWingSegments* parent)
 // Constructor
 CCPACSWingSegment::CCPACSWingSegment(CCPACSWing* aWing, int aSegmentIndex)
     : generated::CPACSWingSegment(&aWing->GetSegments())
-    , CTiglAbstractSegment(aSegmentIndex)
+    , CTiglAbstractSegment(aSegmentIndex, dummyTrans)
     , wing(aWing)
     , surfacesAreValid(false)
     , guideCurvesPresent(false)
@@ -292,10 +292,6 @@ TiglSymmetryAxis CCPACSWingSegment::GetSymmetryAxis() {
 
 void CCPACSWingSegment::SetSymmetryAxis(const TiglSymmetryAxis& axis) {
     // TODO
-}
-
-ECPACSTranslationType CCPACSWingSegment::GetTranslationType() const {
-    return ECPACSTranslationType::ABS_LOCAL; // TODO: is this correct?
 }
 
 // Returns the wing this segment belongs to

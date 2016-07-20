@@ -36,11 +36,8 @@
 namespace tigl 
 {
 
-CTiglAbstractPhysicalComponent::CTiglAbstractPhysicalComponent()
-    : CTiglAbstractGeometricComponent()
-{
-    childContainer.clear();
-}
+CTiglAbstractPhysicalComponent::CTiglAbstractPhysicalComponent(CCPACSTransformation& trans)
+    : CTiglAbstractGeometricComponent(trans) {}
 
 // Adds a child to this geometric component.
 void CTiglAbstractPhysicalComponent::AddChild(CTiglAbstractPhysicalComponent* componentPtr)

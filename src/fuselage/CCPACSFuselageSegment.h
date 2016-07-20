@@ -34,6 +34,7 @@
 #include "CCPACSFuselageConnection.h"
 #include "CTiglAbstractSegment.h"
 #include "CCPACSGuideCurves.h"
+#include "CCPACSTransformation.h"
 
 #include "TopoDS_Shape.hxx"
 #include "TopTools_SequenceOfShape.hxx"
@@ -61,8 +62,6 @@ public:
 
     TIGL_EXPORT virtual TiglSymmetryAxis GetSymmetryAxis(void) override;
     TIGL_EXPORT virtual void SetSymmetryAxis(const TiglSymmetryAxis& axis) override;
-
-    TIGL_EXPORT virtual ECPACSTranslationType GetTranslationType() const override;
 
     // Returns the fuselage this segment belongs to
     TIGL_EXPORT CCPACSFuselage& GetFuselage(void) const;
@@ -180,6 +179,7 @@ private:
     // get short name for loft
     std::string GetShortShapeName(void);
 
+    CCPACSTransformation dummyTrans; // TODO: CCPACSFuselageSegment must provide a CCPACSTransformation as it is a CTiglAbstractGeometricalComponent, is this correct? Can we remove the base class CTiglAbstractGeometricalComponent?
     CCPACSFuselageConnection startConnection;      /**< Start segment connection                */
     CCPACSFuselageConnection endConnection;        /**< End segment connection                  */
     CCPACSFuselage*          fuselage;             /**< Parent fuselage                         */

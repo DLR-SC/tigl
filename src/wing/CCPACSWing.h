@@ -68,8 +68,6 @@ public:
     TIGL_EXPORT virtual TiglSymmetryAxis GetSymmetryAxis(void) override;
     TIGL_EXPORT virtual void SetSymmetryAxis(const TiglSymmetryAxis& axis) override;
 
-    TIGL_EXPORT virtual ECPACSTranslationType GetTranslationType() const override;
-
     // Returns the parent configuration
     TIGL_EXPORT CCPACSConfiguration & GetConfiguration(void) const;
 
@@ -118,7 +116,7 @@ public:
     TIGL_EXPORT CTiglTransformation GetTransformation(void);
         
     // Sets a Transformation object
-    TIGL_EXPORT void Translate(CTiglPoint trans);
+    TIGL_EXPORT virtual void Translate(CTiglPoint trans) override;
 
     // Setter for translation
     TIGL_EXPORT void SetTranslation(const CTiglPoint& translation);
@@ -170,7 +168,7 @@ protected:
     void Cleanup(void);
 
     // Build transformation matrix for the wing
-    void BuildMatrix(void);
+    //void BuildMatrix(void);
 
     // Update internal wing data
     void Update(void);

@@ -33,6 +33,7 @@
 #include "CCPACSWingCSStructure.h"
 #include "CTiglPoint.h"
 #include "CTiglAbstractSegment.h"
+#include "CCPACSTransformation.h"
 
 #include "CCPACSWingCell.h"
 
@@ -76,8 +77,6 @@ public:
 
     TIGL_EXPORT virtual TiglSymmetryAxis GetSymmetryAxis(void) override;
     TIGL_EXPORT virtual void SetSymmetryAxis(const TiglSymmetryAxis& axis) override;
-
-    TIGL_EXPORT virtual ECPACSTranslationType GetTranslationType() const override;
 
     // Returns the wing this segment belongs to
     TIGL_EXPORT CCPACSWing& GetWing(void) const;
@@ -263,6 +262,8 @@ private:
     const CTiglAbstractSegment* findSegmentViaShape(double x, double y, double z) const;
 
 private:
+    CCPACSTransformation dummyTrans; // TODO: CCPACSWingComponentSegment must provide a CCPACSTransformation as it is a CTiglAbstractGeometricalComponent, is this correct? Can we remove the base class CTiglAbstractGeometricalComponent?
+
     //std::string          name;                 /**< Segment name                            */
     //std::string          fromElementUID;       /**< Inner segment uid (root)                */
     //std::string          toElementUID;         /**< Outer segment uid (tip)                 */

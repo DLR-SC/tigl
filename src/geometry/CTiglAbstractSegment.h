@@ -47,7 +47,7 @@ class CTiglAbstractSegment : public CTiglAbstractGeometricComponent
 {
 
 public:
-    TIGL_EXPORT CTiglAbstractSegment(int segIndex);
+    TIGL_EXPORT CTiglAbstractSegment(int segIndex, CCPACSTransformation& trans);
 
     // Invalidates internal state
     TIGL_EXPORT virtual void Invalidate(void);
@@ -63,8 +63,6 @@ protected:
     int                  mySegmentIndex;       /**< Index of this segment                   */
     bool                 invalidated;          /**< Internal state flag                     */
     TiglContinuity       continuity;           /**< Continuity of the connection to the next segment */
-
-    CTiglAbstractSegment(){} /* do nothing */
 
 };  // end class CTiglAbstractSegment
 
