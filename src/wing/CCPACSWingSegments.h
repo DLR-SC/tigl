@@ -37,21 +37,18 @@ class CCPACSWingSegments : public generated::CPACSWingSegments
 {
 public:
     // Constructor
-	TIGL_EXPORT CCPACSWingSegments(CCPACSWing* parent);
-	TIGL_EXPORT CCPACSWingSegments(generated::CPACSEnginePylon* parent);
+    TIGL_EXPORT CCPACSWingSegments(CCPACSWing* parent);
+    TIGL_EXPORT CCPACSWingSegments(generated::CPACSEnginePylon* parent);
 
     // Invalidates internal state
     TIGL_EXPORT void Invalidate(void);
 
     // Gets a segment by index or UID.
     TIGL_EXPORT CCPACSWingSegment & GetSegment(int index);
-	TIGL_EXPORT CCPACSWingSegment & GetSegment(const std::string& segmentUID);
+    TIGL_EXPORT CCPACSWingSegment & GetSegment(const std::string& segmentUID);
 
     // Gets total segment count
     TIGL_EXPORT int GetSegmentCount(void) const;
-
-private:
-    CCPACSWing* wing; ///< Parent wing
 };
 
 } // end namespace tigl

@@ -38,26 +38,27 @@ namespace tigl
 
 // Constructor
 CCPACSWingSegments::CCPACSWingSegments(CCPACSWing* parent)
-    : wing(parent) {}
+    : generated::CPACSWingSegments(parent) {}
 
-CCPACSWingSegments::CCPACSWingSegments(generated::CPACSEnginePylon* parent) {}
+CCPACSWingSegments::CCPACSWingSegments(generated::CPACSEnginePylon* parent)
+    : generated::CPACSWingSegments(parent) {}
 
 // Invalidates internal state
 void CCPACSWingSegments::Invalidate(void)
 {
-	for (std::size_t i = 0; i < m_segment.size(); i++) {
-		m_segment[i]->Invalidate();
+    for (std::size_t i = 0; i < m_segment.size(); i++) {
+        m_segment[i]->Invalidate();
     }
 }
 
 // Gets a segment by index. 
 CCPACSWingSegment& CCPACSWingSegments::GetSegment(int index)
 {
-    const int idx = index - 1;
-    if (idx < 0 || idx >= GetSegmentCount()) {
+    index--;
+    if (index < 0 || index >= GetSegmentCount()) {
         throw CTiglError("Error: Invalid index value in CCPACSWingSegments::GetSegment", TIGL_INDEX_ERROR);
     }
-    return *m_segment[idx];
+    return *m_segment[index];
 }
 
 // Gets a segment by uid. 

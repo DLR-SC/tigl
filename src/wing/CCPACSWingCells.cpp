@@ -41,10 +41,10 @@ int CCPACSWingCells::GetCellCount() const
 
 CCPACSWingCell& CCPACSWingCells::GetCell(int index) const
 {
-    if (index < 1 || index > GetCellCount()) {
+    index--;;
+    if (index < 0 || index >= GetCellCount()) {
         throw CTiglError("Illegal index in CCPACSWingCells::GetCell", TIGL_INDEX_ERROR);
     }
-    
     return *m_cell[index];
 }
 

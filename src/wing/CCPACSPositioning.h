@@ -60,10 +60,10 @@ public:
     TIGL_EXPORT CTiglTransformation GetOuterTransformation(void);
 
     // Gets the section-uid of the outer section of this positioning
-    TIGL_EXPORT std::string GetOuterSectionIndex(void);
+    DEPRECATED TIGL_EXPORT std::string GetOuterSectionIndex(void);
 
     // Gets the section-uid of the inner section of this positioning
-    TIGL_EXPORT std::string GetInnerSectionIndex(void);
+    DEPRECATED TIGL_EXPORT std::string GetInnerSectionIndex(void);
 
     // Sets the positioning of the start point
     TIGL_EXPORT void SetStartPoint(const CTiglPoint& aPoint);
@@ -75,10 +75,10 @@ public:
     TIGL_EXPORT CTiglTransformation GetEndTransformation(void);
 
     // Gets the section index of the end section of this positioning
-    TIGL_EXPORT std::string GetEndSectionIndex(void);
+    DEPRECATED TIGL_EXPORT std::string GetEndSectionIndex(void);
 
     // Gets the section index of the start section of this positioning
-    TIGL_EXPORT std::string GetStartSectionIndex(void);
+    DEPRECATED TIGL_EXPORT std::string GetStartSectionIndex(void);
 
     // Adds child to childs. To be successful the following condition must be met:
     // child.startSectionIndex == this.endSectionIndex

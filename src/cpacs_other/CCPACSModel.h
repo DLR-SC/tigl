@@ -40,9 +40,6 @@ public:
     TIGL_EXPORT CCPACSModel();
     TIGL_EXPORT CCPACSModel(CCPACSConfiguration* config);
 
-    // Virtual Destructor
-    TIGL_EXPORT virtual ~CCPACSModel(void);
-
     TIGL_EXPORT virtual const std::string& GetUID() const override;
     TIGL_EXPORT virtual void SetUID(const std::string& uid) override;
 
@@ -59,7 +56,7 @@ public:
 protected:
     PNamedShape BuildLoft(void);
 
-	CCPACSConfiguration* config;
+    CCPACSConfiguration* config;
 };
 
 } // end namespace tigl

@@ -27,6 +27,7 @@
 #include "TixiSaveExt.h"
 #include <iostream>
 #include <sstream>
+#include <algorithm>
 
 namespace tigl
 {
@@ -47,10 +48,8 @@ CCPACSPositionings::~CCPACSPositionings()
 void CCPACSPositionings::Invalidate()
 {
     invalidated = true;
-    CCPACSPositioningIterator it;
-    for (it = positionings.begin(); it != positionings.end(); ++it) {
-        CCPACSPositioning* pos = it->second;
-        pos->Invalidate();
+    for (auto& p : m_positioning) {
+        p->Invalidate();
     }
 }
 
@@ -60,26 +59,16 @@ void CCPACSPositionings::Cleanup()
     invalidated = true;
 }
 
-CCPACSPositionings::CCPACSPositioningContainer& CCPACSPositionings::GetPositionings()
-{
-    return positionings;
-}
-
 // Returns the positioning matrix for a given section index
 CTiglTransformation CCPACSPositionings::GetPositioningTransformation(std::string sectionIndex)
 {
     Update();
-    CCPACSPositioningIterator iter = positionings.find(sectionIndex);
-        
-    // check, if section has positioning definition, if not
-    // return Zero-Transformation
-    if (iter == positionings.end()){
-        CTiglTransformation zeroTrans;
-        zeroTrans.SetIdentity();
-        return zeroTrans;
+    for (const auto& p : m_positioning) {
+        if (p->GetOuterSectionIndex() == sectionIndex) {
+            return p->GetOuterTransformation();
+        }
     }
-       
-    return iter->second->GetOuterTransformation();
+    return CTiglTransformation();
 }
 
 // Update internal positionings structure
@@ -90,26 +79,25 @@ void CCPACSPositionings::Update()
     }
 
     invalidated = false;
-        
+
     // reset all position base points
-    CCPACSPositioningIterator it;
-    
+
     // diconnect and reset
-    for (it = positionings.begin(); it != positionings.end(); ++it) {
-        CCPACSPositioning* actPos = it->second;
+    for (const auto& actPos : m_positioning) {
         actPos->DisconnectChilds();
         actPos->SetInnerPoint(CTiglPoint(0,0,0));
     }
     
     // connect positionings, find roots
     std::vector<CCPACSPositioning*> rootNodes;
-    for (it = positionings.begin(); it != positionings.end(); ++it) {
-        CCPACSPositioning* actPos = it->second;
-        std::string fromUID = actPos->GetInnerSectionIndex();
-        if (fromUID != "") {
-            CCPACSPositioningIterator pos = positionings.find(fromUID);
-            if (pos != positionings.end()) {
-                CCPACSPositioning* fromPos = pos->second;
+    for (const auto& actPos : m_positioning) {
+        if (actPos->HasFromSectionUID()) {
+            const std::string fromUID = actPos->GetFromSectionUID();
+            const auto pos = std::find_if(std::begin(m_positioning), std::end(m_positioning), [&](CCPACSPositioning* p) {
+                return p->GetOuterSectionIndex() == fromUID;
+            });
+            if (pos != std::end(m_positioning)) {
+                CCPACSPositioning* fromPos = *pos;
                 fromPos->ConnectChildPositioning(actPos);
             }
             else {
@@ -122,8 +110,8 @@ void CCPACSPositionings::Update()
         }
     }
 
-    for (std::vector<CCPACSPositioning*>::iterator it = rootNodes.begin(); it != rootNodes.end(); it++) {
-        UpdateNextPositioning(*it, 0);
+    for (const auto& n : rootNodes) {
+        UpdateNextPositioning(n, 0);
     }
 }
 
@@ -153,7 +141,7 @@ void CCPACSPositionings::UpdateNextPositioning(CCPACSPositioning* currPos, int d
 void CCPACSPositionings::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& wingXPath)
 {
     Cleanup();
-    generated::CPACSPositioning::ReadCPACS(tixiHandle, wingXPath);
+    generated::CPACSPositionings::ReadCPACS(tixiHandle, wingXPath);
     Update();
 }
 

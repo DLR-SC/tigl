@@ -37,9 +37,8 @@ namespace tigl
 {
 
 // Constructor
-CTiglAbstractGeometricComponent::CTiglAbstractGeometricComponent(void) {
-    Reset();
-}
+CTiglAbstractGeometricComponent::CTiglAbstractGeometricComponent()
+    : translation(0., 0., 0.), scaling(1., 1., 1.), rotation(0., 0., 0.), translationType(ABS_LOCAL) {}
 
 void CTiglAbstractGeometricComponent::Reset()
 {

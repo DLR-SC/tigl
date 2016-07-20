@@ -34,10 +34,8 @@ namespace tigl
 {
 
 // Constructor
-CCPACSWingComponentSegments::CCPACSWingComponentSegments(CCPACSWing* aWing)
-    : wing(aWing)
-{
-}
+CCPACSWingComponentSegments::CCPACSWingComponentSegments(CCPACSWing* parent)
+    : generated::CPACSComponentSegments(parent) {}
 
 // Invalidates internal state
 void CCPACSWingComponentSegments::Invalidate(void)
@@ -48,10 +46,10 @@ void CCPACSWingComponentSegments::Invalidate(void)
 }
 
 // Gets a componentSegment by index.
-CCPACSWingComponentSegment & CCPACSWingComponentSegments::GetComponentSegment(const int index)
+CCPACSWingComponentSegment & CCPACSWingComponentSegments::GetComponentSegment(int index)
 {
-    const int idx = index - 1;
-    if (idx < 0 || idx >= GetComponentSegmentCount()) {
+	index--;
+    if (index < 0 || index >= GetComponentSegmentCount()) {
         throw CTiglError("Error: Invalid index value in CCPACSWingComponentSegments::GetComponentSegment", TIGL_INDEX_ERROR);
     }
     return *m_componentSegment[index];

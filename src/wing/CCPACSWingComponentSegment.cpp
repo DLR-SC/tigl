@@ -157,6 +157,7 @@ CCPACSWingComponentSegment::CCPACSWingComponentSegment(CCPACSWingComponentSegmen
     , wing(parent->GetParent())
     , surfacesAreValid(false)
 {
+    assert(wing != nullptr);
     Cleanup();
 }
 
@@ -166,6 +167,7 @@ CCPACSWingComponentSegment::CCPACSWingComponentSegment(CCPACSWing* aWing, int aS
     , wing(aWing)
     , surfacesAreValid(false)
 {
+    assert(wing != nullptr);
     Cleanup();
 }
 
@@ -183,7 +185,8 @@ void CCPACSWingComponentSegment::Invalidate(void)
     surfacesAreValid = false;
     projLeadingEdge.Nullify();
     wingSegments.clear();
-    m_structure->Invalidate();
+    if (m_structure.isValid())
+        m_structure->Invalidate();
     linesAreValid = false;
 }
 
