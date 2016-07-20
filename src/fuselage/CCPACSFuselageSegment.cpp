@@ -138,7 +138,7 @@ namespace tigl
 
 CCPACSFuselageSegment::CCPACSFuselageSegment(CCPACSFuselageSegments* parent)
     : generated::CPACSFuselageSegment(parent)
-    , CTiglAbstractSegment(parent->GetSegmentCount() + 1) // TODO: this is a hack, as we depend on the implementation of the vector reader in generated::CPACSFuselageSegments::ReadCPACS() but the current CodeGen does not support passing indices into ctors
+    , CTiglAbstractSegment(parent->GetSegmentCount() + 1, dummyTrans) // TODO: this is a hack, as we depend on the implementation of the vector reader in generated::CPACSFuselageSegments::ReadCPACS() but the current CodeGen does not support passing indices into ctors
     , fuselage(parent->GetParent())
 {
     Cleanup();
@@ -147,7 +147,7 @@ CCPACSFuselageSegment::CCPACSFuselageSegment(CCPACSFuselageSegments* parent)
 // Constructor
 CCPACSFuselageSegment::CCPACSFuselageSegment(CCPACSFuselage* aFuselage, int aSegmentIndex)
     : generated::CPACSFuselageSegment(&aFuselage->GetSegments())
-    , CTiglAbstractSegment(aSegmentIndex)
+    , CTiglAbstractSegment(aSegmentIndex, dummyTrans)
     , fuselage(aFuselage)
 {
     Cleanup();
@@ -225,10 +225,6 @@ TiglSymmetryAxis CCPACSFuselageSegment::GetSymmetryAxis(void) {
 
 void CCPACSFuselageSegment::SetSymmetryAxis(const TiglSymmetryAxis& axis) {
     // TODO
-}
-
-TIGL_EXPORT ECPACSTranslationType CCPACSFuselageSegment::GetTranslationType() const {
-    return ECPACSTranslationType::ABS_LOCAL; // TODO: is this correct?
 }
 
 // Returns the fuselage this segment belongs to

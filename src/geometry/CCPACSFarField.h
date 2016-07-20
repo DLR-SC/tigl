@@ -21,6 +21,7 @@
 
 #include "generated/CPACSFarField.h"
 #include "CTiglAbstractGeometricComponent.h"
+#include "CCPACSTransformation.h"
 #include "tixi.h"
 #include "tigl_internal.h"
 #include "tigl_config.h"
@@ -40,7 +41,6 @@ class CCPACSFarField : public generated::CPACSFarField, public CTiglAbstractGeom
 {
 public:
     TIGL_EXPORT CCPACSFarField();
-    TIGL_EXPORT ~CCPACSFarField();
 
     TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
 
@@ -49,8 +49,6 @@ public:
 
     TIGL_EXPORT virtual TiglSymmetryAxis GetSymmetryAxis(void) override;
     TIGL_EXPORT virtual void SetSymmetryAxis(const TiglSymmetryAxis& axis) override;
-
-    TIGL_EXPORT virtual ECPACSTranslationType GetTranslationType() const override;
 
     // Returns the Geometric type of this component, e.g. Wing or Fuselage
     TIGL_EXPORT virtual TiglGeometricComponentType GetComponentType(void);
@@ -62,6 +60,8 @@ protected:
 
 private:
     void init();
+
+    CCPACSTransformation dummyTrans; // TODO: CCPACSFarField must provide a CCPACSTransformation as it is a CTiglAbstractGeometricalComponent, is this correct? Can we remove the base class CTiglAbstractGeometricalComponent?
 };
 
 } // namespace tigl

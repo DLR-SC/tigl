@@ -29,8 +29,8 @@
 namespace tigl
 {
 
-CTiglAbstractSegment::CTiglAbstractSegment(int segindex)
-    : mySegmentIndex(segindex), invalidated(true), continuity(C0)
+CTiglAbstractSegment::CTiglAbstractSegment(int segindex, CCPACSTransformation& trans)
+    : CTiglAbstractGeometricComponent(trans), mySegmentIndex(segindex), invalidated(true), continuity(C0)
 {
 }
 

@@ -13,7 +13,7 @@ namespace tigl {
 		TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
 		TIGL_EXPORT void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
-		TIGL_EXPORT CTiglTransformation GetTransformation() const;
+		TIGL_EXPORT const CTiglTransformation& GetTransformation() const;
 
 		TIGL_EXPORT ECPACSTranslationType GetTranslationType() const;
 
