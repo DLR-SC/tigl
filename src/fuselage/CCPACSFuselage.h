@@ -72,6 +72,8 @@ public:
     TIGL_EXPORT virtual TiglSymmetryAxis GetSymmetryAxis(void) override;
     TIGL_EXPORT virtual void SetSymmetryAxis(const TiglSymmetryAxis& axis) override;
 
+    TIGL_EXPORT virtual ECPACSTranslationType GetTranslationType(void) const override;
+
     // Get section count
     TIGL_EXPORT int GetSectionCount(void) const;
 

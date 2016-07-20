@@ -3,6 +3,7 @@
 #include "generated/CPACSTransformation.h"
 
 #include "CTiglTransformation.h"
+#include "ECPACSTranslationType.h"
 
 namespace tigl {
 	class CCPACSTransformation : private generated::CPACSTransformation {
@@ -13,6 +14,8 @@ namespace tigl {
 		TIGL_EXPORT void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
 		TIGL_EXPORT CTiglTransformation GetTransformation() const;
+
+		TIGL_EXPORT ECPACSTranslationType GetTranslationType() const;
 
 		TIGL_EXPORT const CTiglPoint& GetScaling() const;
 		TIGL_EXPORT const CTiglPoint& GetRotation() const;

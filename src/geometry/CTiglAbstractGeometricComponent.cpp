@@ -38,7 +38,7 @@ namespace tigl
 
 // Constructor
 CTiglAbstractGeometricComponent::CTiglAbstractGeometricComponent()
-    : translation(0., 0., 0.), scaling(1., 1., 1.), rotation(0., 0., 0.), translationType(ABS_LOCAL) {}
+    : translation(0., 0., 0.), scaling(1., 1., 1.), rotation(0., 0., 0.) {}
 
 void CTiglAbstractGeometricComponent::Reset()
 {
@@ -49,7 +49,6 @@ void CTiglAbstractGeometricComponent::Reset()
     translation = CTiglPoint(0.,0.,0.);
     scaling     = CTiglPoint(1.,1.,1.);
     rotation    = CTiglPoint(0.,0.,0.);
-    translationType = ABS_LOCAL;
 }
 
 // Destructor
@@ -89,11 +88,6 @@ CTiglTransformation CTiglAbstractGeometricComponent::GetTransformation()
 CTiglPoint CTiglAbstractGeometricComponent::GetTranslation() const
 {
     return translation;
-}
-
-ECPACSTranslationType CTiglAbstractGeometricComponent::GetTranslationType(void) const
-{
-    return translationType;
 }
 
 CTiglPoint CTiglAbstractGeometricComponent::GetRotation() const

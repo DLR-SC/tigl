@@ -11,6 +11,7 @@ namespace tigl {
 			: MappingTable({
 				{ "CPACSWingType_symmetry",             "TiglSymmetryAxis" },
 				{ "CPACSFuselageType_symmetry",         "TiglSymmetryAxis" },
+				{ "CPACSPointAbsRelType_refType",       "ECPACSTranslationType" },
 
 				{ "CPACSAircraftModel",                 "CCPACSModel" },
 				{ "CPACSMaterialDefinition",            "CCPACSMaterial" },

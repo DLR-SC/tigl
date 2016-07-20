@@ -227,6 +227,10 @@ void CCPACSFuselageSegment::SetSymmetryAxis(const TiglSymmetryAxis& axis) {
     // TODO
 }
 
+TIGL_EXPORT ECPACSTranslationType CCPACSFuselageSegment::GetTranslationType() const {
+    return ECPACSTranslationType::ABS_LOCAL; // TODO: is this correct?
+}
+
 // Returns the fuselage this segment belongs to
 CCPACSFuselage& CCPACSFuselageSegment::GetFuselage(void) const
 {

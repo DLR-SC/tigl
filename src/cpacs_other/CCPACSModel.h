@@ -46,6 +46,8 @@ public:
     TIGL_EXPORT virtual TiglSymmetryAxis GetSymmetryAxis(void) override;
     TIGL_EXPORT virtual void SetSymmetryAxis(const TiglSymmetryAxis& axis) override;
 
+	TIGL_EXPORT virtual ECPACSTranslationType GetTranslationType() const override;
+
     // Returns the Geometric type of this component, e.g. Wing or Fuselage
     TIGL_EXPORT TiglGeometricComponentType GetComponentType(void);
 
