@@ -22,6 +22,8 @@ namespace tigl {
 				{ "CPACSGuideCurveProfiles",            "CCPACSGuideCurveProfiles" },
 				{ "CPACSPositioning",                   "CCPACSPositioning" },
 				{ "CPACSPositionings",                  "CCPACSPositionings" },
+				{ "CPACSPoint",                         "CCPACSPoint" },
+				{ "CPACSPointAbsRel",                   "CCPACSPointAbsRel" },
 				{ "CPACSTransformation",                "CCPACSTransformation" },
 				{ "CPACSStringVectorBase",              "CCPACSStringVector" },
 

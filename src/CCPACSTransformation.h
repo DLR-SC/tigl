@@ -6,20 +6,17 @@
 #include "ECPACSTranslationType.h"
 
 namespace tigl {
-	class CCPACSTransformation : private generated::CPACSTransformation {
+	class CCPACSTransformation : public generated::CPACSTransformation {
 	public:
-		TIGL_EXPORT CCPACSTransformation();
+		TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) override;
 
-		TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
-		TIGL_EXPORT void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
-
-		TIGL_EXPORT const CTiglTransformation& GetTransformation() const;
+		TIGL_EXPORT const CTiglTransformation& AsTransformation() const;
 
 		TIGL_EXPORT ECPACSTranslationType GetTranslationType() const;
 
-		TIGL_EXPORT const CTiglPoint& GetScaling() const;
-		TIGL_EXPORT const CTiglPoint& GetRotation() const;
-		TIGL_EXPORT const CTiglPoint& GetTranslation() const;
+		TIGL_EXPORT CTiglPoint GetScaling() const;
+		TIGL_EXPORT CTiglPoint GetRotation() const;
+		TIGL_EXPORT CTiglPoint GetTranslation() const;
 
 		TIGL_EXPORT void SetScaling(const CTiglPoint& scaling);
 		TIGL_EXPORT void SetRotation(const CTiglPoint& rotation);
@@ -28,11 +25,9 @@ namespace tigl {
 		TIGL_EXPORT void Reset();
 
 	private:
-		TIGL_EXPORT void BuildMatrix();
+		void BuildMatrix();
 
+		// caches the transformation created from scaling, rotation and translation
 		CTiglTransformation m_transformation;
-		CTiglPoint m_t;
-		CTiglPoint m_s;
-		CTiglPoint m_r;
 	};
 }

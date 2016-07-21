@@ -211,7 +211,7 @@ PNamedShape CCPACSFuselage::BuildLoft(void)
 // Gets the fuselage transformation
 CTiglTransformation CCPACSFuselage::GetFuselageTransformation()
 {
-    return m_transformation.GetTransformation();
+    return m_transformation.AsTransformation();
 }
 
 // Get the positioning transformation for a given section index

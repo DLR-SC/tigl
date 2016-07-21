@@ -45,23 +45,23 @@ std::string CCPACSWingSectionElement::GetProfileUID(void) const
 // Gets the section element transformation
 CTiglTransformation CCPACSWingSectionElement::GetSectionElementTransformation(void) const
 {
-    return m_transformation.GetTransformation();
+    return m_transformation.AsTransformation();
 }
 
 // Getter for translation
-const CTiglPoint& CCPACSWingSectionElement::GetTranslation() const
+CTiglPoint CCPACSWingSectionElement::GetTranslation() const
 {
     return m_transformation.GetTranslation();
 }
 
 // Getter for rotation
-const CTiglPoint& CCPACSWingSectionElement::GetRotation() const
+CTiglPoint CCPACSWingSectionElement::GetRotation() const
 {
     return m_transformation.GetRotation();
 }
 
 // Getter for scaling
-const CTiglPoint& CCPACSWingSectionElement::GetScaling() const
+CTiglPoint CCPACSWingSectionElement::GetScaling() const
 {
     return m_transformation.GetScaling();
 }
@@ -69,19 +69,19 @@ const CTiglPoint& CCPACSWingSectionElement::GetScaling() const
 // Setter for translation
 void CCPACSWingSectionElement::SetTranslation(const CTiglPoint& trans)
 {
-	m_transformation.SetTranslation(trans);
+    m_transformation.SetTranslation(trans);
 }
 
 // Setter for rotation
 void CCPACSWingSectionElement::SetRotation(const CTiglPoint& rot)
 {
-	m_transformation.SetRotation(rot);
+    m_transformation.SetRotation(rot);
 }
 
 // Setter for scaling
 void CCPACSWingSectionElement::SetScaling(const CTiglPoint& scale)
 {
-	m_transformation.SetScaling(scale);
+    m_transformation.SetScaling(scale);
 }
 
 } // end namespace tigl
