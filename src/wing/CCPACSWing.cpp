@@ -423,7 +423,7 @@ void CCPACSWing::BuildUpperLowerShells()
 CTiglTransformation CCPACSWing::GetWingTransformation(void)
 {
     Update();   // create new transformation matrix if scaling, rotation or translation was changed
-    return m_transformation.GetTransformation();
+    return m_transformation.AsTransformation();
 }
 
 // Get the positioning transformation for a given section-uid
@@ -494,7 +494,7 @@ void CCPACSWing::SetRotation(const CTiglPoint& rotation)
 // Setter for scaling
 void CCPACSWing::SetScaling(const CTiglPoint& scaling)
 {
-	m_transformation.SetScaling(scaling);
+    m_transformation.SetScaling(scaling);
     invalidated = true;
     // TODO: check whether we have to invalidate segments and componentsegments
     Update();
