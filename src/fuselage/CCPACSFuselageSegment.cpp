@@ -154,13 +154,13 @@ CCPACSFuselageSegment::CCPACSFuselageSegment(CCPACSFuselage* aFuselage, int aSeg
 }
 
 // Destructor
-CCPACSFuselageSegment::~CCPACSFuselageSegment(void)
+CCPACSFuselageSegment::~CCPACSFuselageSegment()
 {
     Cleanup();
 }
 
 // Cleanup routine
-void CCPACSFuselageSegment::Cleanup(void)
+void CCPACSFuselageSegment::Cleanup()
 {
     m_name = "";
     myVolume      = 0.;
@@ -171,7 +171,7 @@ void CCPACSFuselageSegment::Cleanup(void)
 }
 
 // Update internal segment data
-void CCPACSFuselageSegment::Update(void)
+void CCPACSFuselageSegment::Update()
 {
     Invalidate();
 }
@@ -218,7 +218,7 @@ void CCPACSFuselageSegment::SetUID(const std::string& uid) {
     return generated::CPACSFuselageSegment::SetUID(uid);
 }
 
-TiglSymmetryAxis CCPACSFuselageSegment::GetSymmetryAxis(void) {
+TiglSymmetryAxis CCPACSFuselageSegment::GetSymmetryAxis() {
     // TODO
     return TiglSymmetryAxis::TIGL_NO_SYMMETRY;
 }
@@ -228,26 +228,26 @@ void CCPACSFuselageSegment::SetSymmetryAxis(const TiglSymmetryAxis& axis) {
 }
 
 // Returns the fuselage this segment belongs to
-CCPACSFuselage& CCPACSFuselageSegment::GetFuselage(void) const
+CCPACSFuselage& CCPACSFuselageSegment::GetFuselage() const
 {
     return *fuselage;
 }
 
 // Returns the segment index of this segment
-int CCPACSFuselageSegment::GetSegmentIndex(void) const
+int CCPACSFuselageSegment::GetSegmentIndex() const
 {
     return mySegmentIndex;
 }
 
 // helper function to get the wire of the start section
-TopoDS_Wire CCPACSFuselageSegment::GetStartWire(void)
+TopoDS_Wire CCPACSFuselageSegment::GetStartWire()
 {
     CCPACSFuselageProfile& startProfile = startConnection.GetProfile();
     return transformProfileWire(GetFuselage().GetTransformation(), startConnection, startProfile.GetWire(true));
 }
 
 // helper function to get the wire of the end section
-TopoDS_Wire CCPACSFuselageSegment::GetEndWire(void)
+TopoDS_Wire CCPACSFuselageSegment::GetEndWire()
 {
     CCPACSFuselageProfile& endProfile = endConnection.GetProfile();
     return transformProfileWire(GetFuselage().GetTransformation(), endConnection, endProfile.GetWire(true));
@@ -277,7 +277,7 @@ std::string CCPACSFuselageSegment::GetShortShapeName()
 }
 
 // Builds the loft between the two segment sections
-PNamedShape CCPACSFuselageSegment::BuildLoft(void)
+PNamedShape CCPACSFuselageSegment::BuildLoft()
 {
     // Build loft
     //BRepOffsetAPI_ThruSections generator(Standard_False, Standard_False, Precision::Confusion());
@@ -312,80 +312,80 @@ PNamedShape CCPACSFuselageSegment::BuildLoft(void)
 
 
 // Returns the start section UID of this segment
-const std::string& CCPACSFuselageSegment::GetStartSectionUID(void)
+const std::string& CCPACSFuselageSegment::GetStartSectionUID()
 {
     return startConnection.GetSectionUID();
 }
 
 // Returns the end section UID of this segment
-const std::string& CCPACSFuselageSegment::GetEndSectionUID(void)
+const std::string& CCPACSFuselageSegment::GetEndSectionUID()
 {
     return endConnection.GetSectionUID();
 }
 
 // Returns the start section index of this segment
-int CCPACSFuselageSegment::GetStartSectionIndex(void)
+int CCPACSFuselageSegment::GetStartSectionIndex()
 {
     return startConnection.GetSectionIndex();
 }
 
 // Returns the end section index of this segment
-int CCPACSFuselageSegment::GetEndSectionIndex(void)
+int CCPACSFuselageSegment::GetEndSectionIndex()
 {
     return endConnection.GetSectionIndex();
 }
 
 // Returns the start section element UID of this segment
-const std::string& CCPACSFuselageSegment::GetStartSectionElementUID(void)
+const std::string& CCPACSFuselageSegment::GetStartSectionElementUID()
 {
     return startConnection.GetSectionElementUID();
 }
 
 // Returns the end section element UID of this segment
-const std::string& CCPACSFuselageSegment::GetEndSectionElementUID(void)
+const std::string& CCPACSFuselageSegment::GetEndSectionElementUID()
 {
     return endConnection.GetSectionElementUID();
 }
 
 // Returns the start section element index of this segment
-int CCPACSFuselageSegment::GetStartSectionElementIndex(void)
+int CCPACSFuselageSegment::GetStartSectionElementIndex()
 {
     return startConnection.GetSectionElementIndex();
 }
 
 // Returns the end section element index of this segment
-int CCPACSFuselageSegment::GetEndSectionElementIndex(void)
+int CCPACSFuselageSegment::GetEndSectionElementIndex()
 {
     return endConnection.GetSectionElementIndex();
 }
 
 // Returns the start section element index of this segment
-CCPACSFuselageConnection& CCPACSFuselageSegment::GetStartConnection(void)
+CCPACSFuselageConnection& CCPACSFuselageSegment::GetStartConnection()
 {
     return( startConnection );
 }
 
 // Returns the end section element index of this segment
-CCPACSFuselageConnection& CCPACSFuselageSegment::GetEndConnection(void)
+CCPACSFuselageConnection& CCPACSFuselageSegment::GetEndConnection()
 {
     return( endConnection );
 }
 
 // Returns the volume of this segment
-double CCPACSFuselageSegment::GetVolume(void)
+double CCPACSFuselageSegment::GetVolume()
 {
     return( myVolume );
 }
 
 // Returns the surface area of this segment
-double CCPACSFuselageSegment::GetSurfaceArea(void)
+double CCPACSFuselageSegment::GetSurfaceArea()
 {
     return( mySurfaceArea );
 }
 
 
 // Gets the count of segments connected to the start section of this segment
-int CCPACSFuselageSegment::GetStartConnectedSegmentCount(void)
+int CCPACSFuselageSegment::GetStartConnectedSegmentCount()
 {
     int count = 0;
     for (int i = 1; i <= GetFuselage().GetSegmentCount(); i++) {
@@ -403,7 +403,7 @@ int CCPACSFuselageSegment::GetStartConnectedSegmentCount(void)
 }
 
 // Gets the count of segments connected to the end section of this segment
-int CCPACSFuselageSegment::GetEndConnectedSegmentCount(void)
+int CCPACSFuselageSegment::GetEndConnectedSegmentCount()
 {
     int count = 0;
     for (int i = 1; i <= GetFuselage().GetSegmentCount(); i++) {
@@ -815,7 +815,7 @@ bool CCPACSFuselageSegment::GuideCurveExists(std::string UID)
 }
 
 // Creates all guide curves
-TopTools_SequenceOfShape& CCPACSFuselageSegment::BuildGuideCurves(void)
+TopTools_SequenceOfShape& CCPACSFuselageSegment::BuildGuideCurves()
 {
     guideCurveWires.Clear();
     if (HasGuideCurves()) {

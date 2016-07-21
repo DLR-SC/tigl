@@ -52,7 +52,7 @@ public:
     TIGL_EXPORT void DeleteProfile( std::string uid );
 
     // Returns the total count of wing profiles in this configuration
-    TIGL_EXPORT int GetProfileCount(void) const;
+    TIGL_EXPORT int GetProfileCount() const;
 
     TIGL_EXPORT bool HasProfile(std::string uid) const;
 
@@ -63,7 +63,7 @@ public:
     TIGL_EXPORT CCPACSWingProfile& GetProfile(int index) const;
 
     // Invalidates internal state
-    TIGL_EXPORT void Invalidate(void);
+    TIGL_EXPORT void Invalidate();
 };
 
 } // end namespace tigl

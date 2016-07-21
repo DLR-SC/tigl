@@ -52,7 +52,7 @@ public:
     TIGL_EXPORT CCPACSFuselageSegment(CCPACSFuselage* aFuselage, int aSegmentIndex);
 
     // Virtual Destructor
-    TIGL_EXPORT virtual ~CCPACSFuselageSegment(void);
+    TIGL_EXPORT virtual ~CCPACSFuselageSegment();
 
     // Read CPACS segment elements
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& segmentXPath);
@@ -60,50 +60,50 @@ public:
     TIGL_EXPORT virtual const std::string& GetUID() const override;
     TIGL_EXPORT virtual void SetUID(const std::string& uid) override;
 
-    TIGL_EXPORT virtual TiglSymmetryAxis GetSymmetryAxis(void) override;
+    TIGL_EXPORT virtual TiglSymmetryAxis GetSymmetryAxis() override;
     TIGL_EXPORT virtual void SetSymmetryAxis(const TiglSymmetryAxis& axis) override;
 
     // Returns the fuselage this segment belongs to
-    TIGL_EXPORT CCPACSFuselage& GetFuselage(void) const;
+    TIGL_EXPORT CCPACSFuselage& GetFuselage() const;
 
     // Returns the segment index of this segment
-    TIGL_EXPORT int GetSegmentIndex(void) const;
+    TIGL_EXPORT int GetSegmentIndex() const;
 
     // Returns the start section UID of this segment
-    TIGL_EXPORT const std::string& GetStartSectionUID(void);
+    TIGL_EXPORT const std::string& GetStartSectionUID();
 
     // Returns the end section UID of this segment
-    TIGL_EXPORT const std::string& GetEndSectionUID(void);
+    TIGL_EXPORT const std::string& GetEndSectionUID();
 
     // Returns the start section index of this segment
-    TIGL_EXPORT int GetStartSectionIndex(void);
+    TIGL_EXPORT int GetStartSectionIndex();
 
     // Returns the end section index of this segment
-    TIGL_EXPORT int GetEndSectionIndex(void);
+    TIGL_EXPORT int GetEndSectionIndex();
 
     // Returns the starting Segement Connection
-    TIGL_EXPORT CCPACSFuselageConnection& GetStartConnection(void);
+    TIGL_EXPORT CCPACSFuselageConnection& GetStartConnection();
 
     // Return the end Segment Connection
-    TIGL_EXPORT CCPACSFuselageConnection& GetEndConnection(void);
+    TIGL_EXPORT CCPACSFuselageConnection& GetEndConnection();
 
     // Returns the start section element UID of this segment
-    TIGL_EXPORT const std::string& GetStartSectionElementUID(void);
+    TIGL_EXPORT const std::string& GetStartSectionElementUID();
 
     // Returns the end section element UID of this segment
-    TIGL_EXPORT const std::string& GetEndSectionElementUID(void);
+    TIGL_EXPORT const std::string& GetEndSectionElementUID();
 
     // Returns the start section element index of this segment
-    TIGL_EXPORT int GetStartSectionElementIndex(void);
+    TIGL_EXPORT int GetStartSectionElementIndex();
 
     // Returns the end section element index of this segment
-    TIGL_EXPORT int GetEndSectionElementIndex(void);
+    TIGL_EXPORT int GetEndSectionElementIndex();
 
     // Gets the count of segments connected to the start section of this segment
-    TIGL_EXPORT int GetStartConnectedSegmentCount(void);
+    TIGL_EXPORT int GetStartConnectedSegmentCount();
 
     // Gets the count of segments connected to the end section of this segment
-    TIGL_EXPORT int GetEndConnectedSegmentCount(void);
+    TIGL_EXPORT int GetEndConnectedSegmentCount();
 
     // Gets the index (number) of the n-th segment connected to the start section
     // of this segment. n starts at 1.
@@ -114,10 +114,10 @@ public:
     TIGL_EXPORT int GetEndConnectedSegmentIndex(int n);
 
     // helper function to get the wire of the start section
-    TIGL_EXPORT TopoDS_Wire GetStartWire(void);
+    TIGL_EXPORT TopoDS_Wire GetStartWire();
 
     // helper function to get the wire of the end section
-    TIGL_EXPORT TopoDS_Wire GetEndWire(void);
+    TIGL_EXPORT TopoDS_Wire GetEndWire();
 
     // Gets a point on the fuselage segment in dependence of parameters eta and zeta with
     // 0.0 <= eta <= 1.0 and 0.0 <= zeta <= 1.0. For eta = 0.0 the point lies on the start
@@ -157,7 +157,7 @@ public:
     TIGL_EXPORT TiglGeometricComponentType GetComponentType(){return TIGL_COMPONENT_FUSELSEGMENT | TIGL_COMPONENT_SEGMENT | TIGL_COMPONENT_LOGICAL;}
 
     // builds all guide curve wires
-    TIGL_EXPORT TopTools_SequenceOfShape& BuildGuideCurves(void);
+    TIGL_EXPORT TopTools_SequenceOfShape& BuildGuideCurves();
 
     // get guide curve for given UID
     TIGL_EXPORT const CCPACSGuideCurve& GetGuideCurve(std::string UID);
@@ -167,17 +167,17 @@ public:
 
 protected:
     // Cleanup routine
-    void Cleanup(void);
+    void Cleanup();
 
     // Update internal segment data
-    void Update(void);
+    void Update();
 
     // Builds the loft between the two segment sections
-    PNamedShape BuildLoft(void);
+    PNamedShape BuildLoft();
 
 private:
     // get short name for loft
-    std::string GetShortShapeName(void);
+    std::string GetShortShapeName();
 
     CCPACSTransformation dummyTrans; // TODO: CCPACSFuselageSegment must provide a CCPACSTransformation as it is a CTiglAbstractGeometricalComponent, is this correct? Can we remove the base class CTiglAbstractGeometricalComponent?
     CCPACSFuselageConnection startConnection;      /**< Start segment connection                */

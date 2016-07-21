@@ -71,13 +71,13 @@ CCPACSFuselage::CCPACSFuselage(CCPACSFuselages* parent)
 }
 
 // Destructor
-CCPACSFuselage::~CCPACSFuselage(void)
+CCPACSFuselage::~CCPACSFuselage()
 {
     Cleanup();
 }
 
 // Invalidates internal state
-void CCPACSFuselage::Invalidate(void)
+void CCPACSFuselage::Invalidate()
 {
     loft.reset();
     m_segments.Invalidate();
@@ -85,7 +85,7 @@ void CCPACSFuselage::Invalidate(void)
 }
 
 // Cleanup routine
-void CCPACSFuselage::Cleanup(void)
+void CCPACSFuselage::Cleanup()
 {
     m_name = "";
 
@@ -105,7 +105,7 @@ void CCPACSFuselage::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string&
 }
 
 // Returns the parent configuration
-CCPACSConfiguration& CCPACSFuselage::GetConfiguration(void) const
+CCPACSConfiguration& CCPACSFuselage::GetConfiguration() const
 {
     return *configuration;
 }
@@ -131,7 +131,7 @@ void CCPACSFuselage::SetSymmetryAxis(const TiglSymmetryAxis& axis) {
 }
 
 // Get section count
-int CCPACSFuselage::GetSectionCount(void) const
+int CCPACSFuselage::GetSectionCount() const
 {
     return m_sections.GetSectionCount();
 }
@@ -143,7 +143,7 @@ CCPACSFuselageSection& CCPACSFuselage::GetSection(int index) const
 }
 
 // Get segment count
-int CCPACSFuselage::GetSegmentCount(void) const
+int CCPACSFuselage::GetSegmentCount() const
 {
     return m_segments.GetSegmentCount();
 }
@@ -177,7 +177,7 @@ std::string CCPACSFuselage::GetShortShapeName ()
 }
 
 // Builds a fused shape of all fuselage segments
-PNamedShape CCPACSFuselage::BuildLoft(void)
+PNamedShape CCPACSFuselage::BuildLoft()
 {
     // Get Continuity of first segment
     // TODO: adapt lofting to have multiple different continuities
@@ -231,7 +231,7 @@ gp_Pnt CCPACSFuselage::GetPoint(int segmentIndex, double eta, double zeta)
 
 
 // Returns the volume of this fuselage
-double CCPACSFuselage::GetVolume(void)
+double CCPACSFuselage::GetVolume()
 {
     const TopoDS_Shape& fusedSegments = GetLoft()->Shape();
 
@@ -243,7 +243,7 @@ double CCPACSFuselage::GetVolume(void)
 }
 
 // Get the Transformation object
-CTiglTransformation CCPACSFuselage::GetTransformation(void)
+CTiglTransformation CCPACSFuselage::GetTransformation()
 {
     return GetFuselageTransformation();
 }
@@ -255,7 +255,7 @@ double CCPACSFuselage::GetCircumference(const int segmentIndex, const double eta
 }
     
 // Returns the surface area of this fuselage
-double CCPACSFuselage::GetSurfaceArea(void)
+double CCPACSFuselage::GetSurfaceArea()
 {
     const TopoDS_Shape& fusedSegments = GetLoft()->Shape();
     // Calculate surface area

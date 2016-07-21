@@ -91,7 +91,7 @@ void CTiglAbstractGeometricComponent::Translate(CTiglPoint trans)
     transformation.SetTranslation(t);
 }
 
-PNamedShape CTiglAbstractGeometricComponent::GetLoft(void)
+PNamedShape CTiglAbstractGeometricComponent::GetLoft()
 {
     if (!loft) {
 #ifdef DEBUG
@@ -102,7 +102,7 @@ PNamedShape CTiglAbstractGeometricComponent::GetLoft(void)
     return loft;
 }
 
-PNamedShape CTiglAbstractGeometricComponent::GetMirroredLoft(void)
+PNamedShape CTiglAbstractGeometricComponent::GetMirroredLoft()
 {
     const auto symmetryAxis = GetSymmetryAxis();
     if (symmetryAxis == TIGL_NO_SYMMETRY) {

@@ -32,7 +32,7 @@ namespace tigl
 {
 
 // Cleanup routine
-void CCPACSFuselageSection::Cleanup(void)
+void CCPACSFuselageSection::Cleanup()
 {
     m_name = "";
     m_uID = "";
@@ -48,7 +48,7 @@ void CCPACSFuselageSection::ReadCPACS(TixiDocumentHandle tixiHandle, const std::
 }
 
 // Get profile count for this section
-int CCPACSFuselageSection::GetSectionElementCount(void) const
+int CCPACSFuselageSection::GetSectionElementCount() const
 {
     return m_elements.GetSectionElementCount();
 }
@@ -60,7 +60,7 @@ CCPACSFuselageSectionElement& CCPACSFuselageSection::GetSectionElement(int index
 }
 
 // Gets the section transformation
-CTiglTransformation CCPACSFuselageSection::GetSectionTransformation(void) const
+CTiglTransformation CCPACSFuselageSection::GetSectionTransformation() const
 {
     return m_transformation.AsTransformation();
 }

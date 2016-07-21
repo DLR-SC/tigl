@@ -174,7 +174,7 @@ CTiglExportIges::CTiglExportIges(CCPACSConfiguration& config)
 }
 
 // Destructor
-CTiglExportIges::~CTiglExportIges(void)
+CTiglExportIges::~CTiglExportIges()
 {
 }
 

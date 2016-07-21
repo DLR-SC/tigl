@@ -47,16 +47,16 @@ public:
     TIGL_EXPORT virtual const std::string& GetUID() const override;
     TIGL_EXPORT virtual void SetUID(const std::string& uid) override;
 
-    TIGL_EXPORT virtual TiglSymmetryAxis GetSymmetryAxis(void) override;
+    TIGL_EXPORT virtual TiglSymmetryAxis GetSymmetryAxis() override;
     TIGL_EXPORT virtual void SetSymmetryAxis(const TiglSymmetryAxis& axis) override;
 
     // Returns the Geometric type of this component, e.g. Wing or Fuselage
-    TIGL_EXPORT virtual TiglGeometricComponentType GetComponentType(void);
+    TIGL_EXPORT virtual TiglGeometricComponentType GetComponentType();
 
     TIGL_EXPORT TiglFarFieldType GetFieldType();
 
 protected:
-    virtual PNamedShape BuildLoft(void);
+    virtual PNamedShape BuildLoft();
 
 private:
     void init();

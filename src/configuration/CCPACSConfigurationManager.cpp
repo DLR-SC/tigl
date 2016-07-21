@@ -30,14 +30,14 @@ namespace tigl
 {
 
 // Constructor
-CCPACSConfigurationManager::CCPACSConfigurationManager(void)
+CCPACSConfigurationManager::CCPACSConfigurationManager()
     : configurations()
     , handleCounter(0)
 {
 }
 
 // Destructor
-CCPACSConfigurationManager::~CCPACSConfigurationManager(void)
+CCPACSConfigurationManager::~CCPACSConfigurationManager()
 {
     // Delete all remaining configurations in the configuration container
     for (CCPACSConfigConstIterator iter = configurations.begin(); iter != configurations.end(); iter++) {
@@ -48,7 +48,7 @@ CCPACSConfigurationManager::~CCPACSConfigurationManager(void)
 }
 
 // Returns a reference to the only instance of this class
-CCPACSConfigurationManager& CCPACSConfigurationManager::GetInstance(void)
+CCPACSConfigurationManager& CCPACSConfigurationManager::GetInstance()
 {
     static CCPACSConfigurationManager instance;
     return instance;
@@ -111,7 +111,7 @@ bool CCPACSConfigurationManager::IsValid(TiglCPACSConfigurationHandle handle) co
 }
 
 // Invalidates all configurations and forces recalculation of wires/points etc.
-void CCPACSConfigurationManager::Invalidate(void)
+void CCPACSConfigurationManager::Invalidate()
 {
     for (CCPACSConfigConstIterator iter = configurations.begin(); iter != configurations.end(); ++iter) {
         CCPACSConfiguration* config = iter->second;

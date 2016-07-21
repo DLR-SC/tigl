@@ -39,7 +39,7 @@ void CCPACSGuideCurveProfiles::ReadCPACS(const TixiDocumentHandle& tixiHandle, c
 }
 
 // Returns the total count of guide curves in this configuration
-int CCPACSGuideCurveProfiles::GetGuideCurveProfileCount(void) const
+int CCPACSGuideCurveProfiles::GetGuideCurveProfileCount() const
 {
     return static_cast<int>(m_guideCurveProfile.size());
 }

@@ -38,7 +38,7 @@ CCPACSWingComponentSegments::CCPACSWingComponentSegments(CCPACSWing* parent)
     : generated::CPACSComponentSegments(parent) {}
 
 // Invalidates internal state
-void CCPACSWingComponentSegments::Invalidate(void)
+void CCPACSWingComponentSegments::Invalidate()
 {
     for (int i = 1; i <= GetComponentSegmentCount(); i++) {
         GetComponentSegment(i).Invalidate();
@@ -67,7 +67,7 @@ CCPACSWingComponentSegment & CCPACSWingComponentSegments::GetComponentSegment(co
 }
 
 // Gets total componentSegment count
-int CCPACSWingComponentSegments::GetComponentSegmentCount(void)
+int CCPACSWingComponentSegments::GetComponentSegmentCount()
 {
     return static_cast<int>(m_componentSegment.size());
 }

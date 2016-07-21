@@ -32,7 +32,7 @@
 namespace tigl
 {
 // Get element count for this section
-int CCPACSFuselageSectionElements::GetSectionElementCount(void) const
+int CCPACSFuselageSectionElements::GetSectionElementCount() const
 {
     return static_cast<int>(m_element.size());
 }

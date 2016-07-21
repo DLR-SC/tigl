@@ -55,31 +55,31 @@ public:
     TIGL_EXPORT CCPACSFuselage(CCPACSFuselages* parent);
 
     // Virtual Destructor
-    TIGL_EXPORT virtual ~CCPACSFuselage(void);
+    TIGL_EXPORT virtual ~CCPACSFuselage();
 
     // Invalidates internal state
-    TIGL_EXPORT void Invalidate(void);
+    TIGL_EXPORT void Invalidate();
 
     // Read CPACS fuselage elements
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& fuselageXPath);
 
     // Returns the parent configuration
-    TIGL_EXPORT CCPACSConfiguration & GetConfiguration(void) const;
+    TIGL_EXPORT CCPACSConfiguration & GetConfiguration() const;
 
     TIGL_EXPORT virtual const std::string& GetUID() const override;
     TIGL_EXPORT virtual void SetUID(const std::string& uid) override;
 
-    TIGL_EXPORT virtual TiglSymmetryAxis GetSymmetryAxis(void) override;
+    TIGL_EXPORT virtual TiglSymmetryAxis GetSymmetryAxis() override;
     TIGL_EXPORT virtual void SetSymmetryAxis(const TiglSymmetryAxis& axis) override;
 
     // Get section count
-    TIGL_EXPORT int GetSectionCount(void) const;
+    TIGL_EXPORT int GetSectionCount() const;
 
     // Returns the section for a given index
     TIGL_EXPORT CCPACSFuselageSection& GetSection(int index) const;
 
     // Get segment count
-    TIGL_EXPORT int GetSegmentCount(void) const;
+    TIGL_EXPORT int GetSegmentCount() const;
 
     // Returns the segment for a given index
     TIGL_EXPORT CTiglAbstractSegment & GetSegment(const int index);
@@ -88,7 +88,7 @@ public:
     TIGL_EXPORT CTiglAbstractSegment & GetSegment(std::string uid);
 
     // Gets the fuselage transformation
-    TIGL_EXPORT CTiglTransformation GetFuselageTransformation(void);
+    TIGL_EXPORT CTiglTransformation GetFuselageTransformation();
 
     // Get the positioning transformation for a given section index
     TIGL_EXPORT CTiglTransformation GetPositioningTransformation(const std::string& sectionUID);
@@ -103,7 +103,7 @@ public:
     TIGL_EXPORT double GetVolume();
 
     // get the Transformation object
-    TIGL_EXPORT CTiglTransformation GetTransformation(void);
+    TIGL_EXPORT CTiglTransformation GetTransformation();
 
     // Gets the surfade area of this wing
     TIGL_EXPORT double GetSurfaceArea();
@@ -112,7 +112,7 @@ public:
     TIGL_EXPORT double GetCircumference(int segmentIndex, double eta);
 
     // Returns the Component Type TIGL_COMPONENT_FUSELAGE
-    TIGL_EXPORT TiglGeometricComponentType GetComponentType(void) {return TIGL_COMPONENT_FUSELAGE | TIGL_COMPONENT_PHYSICAL;}
+    TIGL_EXPORT TiglGeometricComponentType GetComponentType() {return TIGL_COMPONENT_FUSELAGE | TIGL_COMPONENT_PHYSICAL;}
 
     // Returns the point where the distance between the selected fuselage and the ground is at minimum.
     // The Fuselage could be turned with a given angle at at given axis, specified by a point and a direction.
@@ -123,14 +123,14 @@ public:
     
 protected:
     // Cleanup routine
-    void Cleanup(void);
+    void Cleanup();
 
     // Adds all segments of this fuselage to one shape
-    PNamedShape BuildLoft(void);
+    PNamedShape BuildLoft();
     
 private:
     // get short name for loft
-    std::string GetShortShapeName(void);
+    std::string GetShortShapeName();
 
 private:
     CCPACSConfiguration*       configuration;        /**< Parent configuration    */

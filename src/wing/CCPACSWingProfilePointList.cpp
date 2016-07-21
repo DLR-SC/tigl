@@ -106,7 +106,7 @@ CCPACSWingProfilePointList::CCPACSWingProfilePointList(const CCPACSWingProfile& 
 }
 
 // Destructor
-CCPACSWingProfilePointList::~CCPACSWingProfilePointList(void)
+CCPACSWingProfilePointList::~CCPACSWingProfilePointList()
 {
     delete profileWireAlgo;
 }
@@ -117,7 +117,7 @@ std::string CCPACSWingProfilePointList::CPACSID()
 }
 
 // Cleanup routine
-void CCPACSWingProfilePointList::Cleanup(void)
+void CCPACSWingProfilePointList::Cleanup()
 {
     for (CCPACSCoordinateContainer::size_type i = 0; i < coordinates.size(); i++) {
         delete coordinates[i];
@@ -125,7 +125,7 @@ void CCPACSWingProfilePointList::Cleanup(void)
     coordinates.clear();
 }
 
-void CCPACSWingProfilePointList::Update(void)
+void CCPACSWingProfilePointList::Update()
 {
     BuildWires();
 }
@@ -353,7 +353,7 @@ void CCPACSWingProfilePointList::BuildWires()
 // which is located farmost from the trailing edge point.
 // Finally, we correct the trailing edge to make sure, that the GetPoint
 // functions work correctly.
-void CCPACSWingProfilePointList::BuildLETEPoints(void)
+void CCPACSWingProfilePointList::BuildLETEPoints()
 {
     // compute TE point
     gp_Pnt firstPnt = coordinates[0]->Get_gp_Pnt();

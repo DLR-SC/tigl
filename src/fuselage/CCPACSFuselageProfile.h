@@ -51,7 +51,7 @@ public:
     TIGL_EXPORT CCPACSFuselageProfile();
 
     // Virtual Destructor
-    TIGL_EXPORT virtual ~CCPACSFuselageProfile(void);
+    TIGL_EXPORT virtual ~CCPACSFuselageProfile();
 
     // Read CPACS fuselage profile file
     TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
@@ -60,25 +60,25 @@ public:
     TIGL_EXPORT void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const;
 
     // Returns the filename of the fuselage profile file
-    //TIGL_EXPORT const std::string& GetFileName(void) const;
+    //TIGL_EXPORT const std::string& GetFileName() const;
 
     //// Returns the name of the fuselage profile
-    //TIGL_EXPORT const std::string& GetName(void) const;
+    //TIGL_EXPORT const std::string& GetName() const;
 
     //// Returns the UID of the fuselage profile
-    //TIGL_EXPORT const std::string& GetUID(void) const;
+    //TIGL_EXPORT const std::string& GetUID() const;
     //
     //// Returns the name of the fuselage profile
-    //TIGL_EXPORT const std::string& GetDescription(void) const;
+    //TIGL_EXPORT const std::string& GetDescription() const;
     //
     // Returns the name of the fuselage profile
-    TIGL_EXPORT const int GetNumPoints(void) const;
+    TIGL_EXPORT const int GetNumPoints() const;
 
     // Returns the flag for the mirror symmetry with respect to the x-z-plane in the fuselage profile
-    TIGL_EXPORT bool GetMirrorSymmetry(void) const;
+    TIGL_EXPORT bool GetMirrorSymmetry() const;
 
     // Invalidates internal fuselage profile state
-    TIGL_EXPORT void Invalidate(void);
+    TIGL_EXPORT void Invalidate();
 
     // Returns the fuselage profile wire. The wire is already transformed by the
     // fuselage profile element transformation.
@@ -97,17 +97,17 @@ public:
 
 protected:
     // Cleanup routine
-    void Cleanup(void);
+    void Cleanup();
 
     // Update the internal state, i.g. recalculates wire
-    void Update(void);
+    void Update();
 
     // Transforms a point by the fuselage profile transformation
     gp_Pnt TransformPoint(const gp_Pnt& aPoint) const;
 
     // Builds the fuselage profile wires. The wires are already transformed by the
     // fuselage profile transformation.
-    void BuildWires(void);
+    void BuildWires();
 
     // Helper function to determine the "diameter" (the wing profile chord line equivalent) 
     // which is defined as the line intersecting Point1 and Point2
@@ -119,7 +119,7 @@ protected:
     // In the case of a mirror symmetric profile we have
     // Point1: First point in the profile point list
     // Point2: Last point in the profile point list
-    void BuildDiameterPoints(void);
+    void BuildDiameterPoints();
 
 private:
     // Checks is two point are the same, or nearly the same.

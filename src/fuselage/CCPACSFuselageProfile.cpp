@@ -73,14 +73,14 @@ CCPACSFuselageProfile::CCPACSFuselageProfile()
 }
 
 // Destructor
-CCPACSFuselageProfile::~CCPACSFuselageProfile(void)
+CCPACSFuselageProfile::~CCPACSFuselageProfile()
 {
     delete profileWireAlgo;
     Cleanup();
 }
 
 // Cleanup routine
-void CCPACSFuselageProfile::Cleanup(void)
+void CCPACSFuselageProfile::Cleanup()
 {
     m_name       = "";
     m_uID        = "";
@@ -167,25 +167,25 @@ void CCPACSFuselageProfile::WriteCPACS(const TixiDocumentHandle& tixiHandle, con
     generated::CPACSProfileGeometry::WriteCPACS(tixiHandle, xpath);
 }
 
-const int CCPACSFuselageProfile::GetNumPoints(void) const 
+const int CCPACSFuselageProfile::GetNumPoints() const 
 {
     return static_cast<int>(coordinates.size());
 }
 
 // Returns the flag for the mirror symmetry with respect to the x-z-plane in the fuselage profile
-bool CCPACSFuselageProfile::GetMirrorSymmetry(void) const
+bool CCPACSFuselageProfile::GetMirrorSymmetry() const
 {
     return mirrorSymmetry;
 }
 
 // Invalidates internal fuselage profile state
-void CCPACSFuselageProfile::Invalidate(void)
+void CCPACSFuselageProfile::Invalidate()
 {
     invalidated = true;
 }
 
 // Update the internal state, i.g. recalculates wire
-void CCPACSFuselageProfile::Update(void)
+void CCPACSFuselageProfile::Update()
 {
     if (!invalidated) {
         return;
@@ -219,7 +219,7 @@ bool CCPACSFuselageProfile::checkSamePoints(gp_Pnt pointA, gp_Pnt pointB)
 
 // Builds the fuselage profile wire. The returned wire is already transformed by the
 // fuselage profile element transformation.
-void CCPACSFuselageProfile::BuildWires(void)
+void CCPACSFuselageProfile::BuildWires()
 {
     ITiglWireAlgorithm::CPointContainer points;
 
@@ -351,7 +351,7 @@ gp_Pnt CCPACSFuselageProfile::GetPoint(double zeta)
 }
 
 
-void CCPACSFuselageProfile::BuildDiameterPoints(void)
+void CCPACSFuselageProfile::BuildDiameterPoints()
 {
     Update();
     if (mirrorSymmetry) {

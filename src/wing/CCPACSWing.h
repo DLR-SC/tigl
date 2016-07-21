@@ -54,10 +54,10 @@ public:
     TIGL_EXPORT CCPACSWing(generated::CPACSRotorBlades* parent);
 
     // Virtual destructor
-    TIGL_EXPORT virtual ~CCPACSWing(void);
+    TIGL_EXPORT virtual ~CCPACSWing();
 
     // Invalidates internal state
-    TIGL_EXPORT void Invalidate(void);
+    TIGL_EXPORT void Invalidate();
 
     // Read CPACS wing elements
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string & wingXPath);
@@ -65,34 +65,34 @@ public:
     TIGL_EXPORT virtual const std::string& GetUID() const override;
     TIGL_EXPORT virtual void SetUID(const std::string& uid) override;
 
-    TIGL_EXPORT virtual TiglSymmetryAxis GetSymmetryAxis(void) override;
+    TIGL_EXPORT virtual TiglSymmetryAxis GetSymmetryAxis() override;
     TIGL_EXPORT virtual void SetSymmetryAxis(const TiglSymmetryAxis& axis) override;
 
     // Returns the parent configuration
-    TIGL_EXPORT CCPACSConfiguration & GetConfiguration(void) const;
+    TIGL_EXPORT CCPACSConfiguration & GetConfiguration() const;
 
     // Get section count
-    TIGL_EXPORT int GetSectionCount(void) const;
+    TIGL_EXPORT int GetSectionCount() const;
 
     // Returns the section for a given index
     TIGL_EXPORT const CCPACSWingSection & GetSection(int index) const;
 
     // Getter of the number of segments of the wing
-    TIGL_EXPORT int GetSegmentCount(void) const;
+    TIGL_EXPORT int GetSegmentCount() const;
 
     // Returns the segment for a given index or uid
     TIGL_EXPORT CCPACSWingSegment& GetSegment(const int index);
     TIGL_EXPORT CCPACSWingSegment& GetSegment(std::string uid);
 
     // Getter of the number of component segments of the wing
-    TIGL_EXPORT int GetComponentSegmentCount(void);
+    TIGL_EXPORT int GetComponentSegmentCount();
 
     // Returns the segment for a given index or uid
     TIGL_EXPORT CCPACSWingComponentSegment& GetComponentSegment(const int index);
     TIGL_EXPORT CCPACSWingComponentSegment& GetComponentSegment(std::string uid);
 
     // Gets the wing transformation
-    TIGL_EXPORT CTiglTransformation GetWingTransformation(void);
+    TIGL_EXPORT CTiglTransformation GetWingTransformation();
 
     // Get the positioning transformation for a given section uid
     TIGL_EXPORT CTiglTransformation GetPositioningTransformation(std::string sectionUID);
@@ -104,16 +104,16 @@ public:
     TIGL_EXPORT gp_Pnt GetLowerPoint(int segmentIndex, double eta, double xsi);
 
     // Gets the loft of the whole wing
-    TIGL_EXPORT TopoDS_Shape & GetLoftWithLeadingEdge(void);
+    TIGL_EXPORT TopoDS_Shape & GetLoftWithLeadingEdge();
         
     TIGL_EXPORT TopoDS_Shape & GetUpperShape();
     TIGL_EXPORT TopoDS_Shape & GetLowerShape();
 
     // Gets the volume of this wing
-    TIGL_EXPORT double GetVolume(void);
+    TIGL_EXPORT double GetVolume();
 
     // Get the Transformation object
-    TIGL_EXPORT CTiglTransformation GetTransformation(void);
+    TIGL_EXPORT CTiglTransformation GetTransformation();
         
     // Sets a Transformation object
     TIGL_EXPORT virtual void Translate(CTiglPoint trans) override;
@@ -138,7 +138,7 @@ public:
     TIGL_EXPORT double GetWettedArea(TopoDS_Shape parent);
 
     // Returns the wingspan of the wing
-    TIGL_EXPORT double GetWingspan(void);
+    TIGL_EXPORT double GetWingspan();
 
     // Returns the mean aerodynamic chord of the wing
     TIGL_EXPORT void  GetWingMAC(double& mac_chord, double& mac_x, double& mac_y, double& mac_z);
@@ -149,7 +149,7 @@ public:
     TIGL_EXPORT int GetSegmentEtaXsi(const gp_Pnt& xyz, double& eta, double& xsi, bool &onTop);
 
     // Returns the Component Type TIGL_COMPONENT_WING.
-    TIGL_EXPORT TiglGeometricComponentType GetComponentType(void) {return TIGL_COMPONENT_WING | TIGL_COMPONENT_PHYSICAL;}
+    TIGL_EXPORT TiglGeometricComponentType GetComponentType() {return TIGL_COMPONENT_WING | TIGL_COMPONENT_PHYSICAL;}
 
     // Returns the lower Surface of a Segment
     TIGL_EXPORT Handle(Geom_Surface) GetLowerSegmentSurface(int index);
@@ -165,24 +165,24 @@ public:
 
 protected:
     // Cleanup routine
-    void Cleanup(void);
+    void Cleanup();
 
     // Build transformation matrix for the wing
-    //void BuildMatrix(void);
+    //void BuildMatrix();
 
     // Update internal wing data
-    void Update(void);
+    void Update();
 
     // Adds all Segments of this wing to one shape
     PNamedShape BuildFusedSegments(bool splitWingInUpperAndLower);
         
-    PNamedShape BuildLoft(void);
+    PNamedShape BuildLoft();
         
     void BuildUpperLowerShells();
 
 private:
     // get short name for loft
-    std::string GetShortShapeName(void);
+    std::string GetShortShapeName();
 
 private:
     CCPACSConfiguration*           configuration;            /**< Parent configuration*/

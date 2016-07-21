@@ -38,13 +38,13 @@ CCPACSWingSection::CCPACSWingSection()
 }
 
 // Destructor
-CCPACSWingSection::~CCPACSWingSection(void)
+CCPACSWingSection::~CCPACSWingSection()
 {
     Cleanup();
 }
 
 // Cleanup routine
-void CCPACSWingSection::Cleanup(void)
+void CCPACSWingSection::Cleanup()
 {
     m_name = "";
     m_uID  = "";
@@ -53,7 +53,7 @@ void CCPACSWingSection::Cleanup(void)
 }
 
 // Build transformation matrix for the section
-void CCPACSWingSection::BuildMatrix(void)
+void CCPACSWingSection::BuildMatrix()
 {
     const CTiglPoint& scaling = GetScaling();
     const CTiglPoint& rotation = GetRotation();
@@ -76,7 +76,7 @@ void CCPACSWingSection::BuildMatrix(void)
 }
 
 // Update internal section data
-void CCPACSWingSection::Update(void)
+void CCPACSWingSection::Update()
 {
     BuildMatrix();
 }
@@ -97,7 +97,7 @@ void CCPACSWingSection::WriteCPACS(TixiDocumentHandle tixiHandle, const std::str
 }
 
 // Get profile count for this section
-int CCPACSWingSection::GetSectionElementCount(void) const
+int CCPACSWingSection::GetSectionElementCount() const
 {
     return static_cast<int>(m_elements.GetElement().size());
 }
@@ -109,7 +109,7 @@ const CCPACSWingSectionElement& CCPACSWingSection::GetSectionElement(int index) 
 }
 
 // Gets the section transformation
-CTiglTransformation CCPACSWingSection::GetSectionTransformation(void) const
+CTiglTransformation CCPACSWingSection::GetSectionTransformation() const
 {
     return transformationMatrix;
 }

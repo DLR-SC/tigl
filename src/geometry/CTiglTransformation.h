@@ -40,14 +40,14 @@ class CTiglTransformation
 
 public:
     // Constructor
-    TIGL_EXPORT CTiglTransformation(void);
+    TIGL_EXPORT CTiglTransformation();
     TIGL_EXPORT CTiglTransformation(const gp_GTrsf& ocMatrix);
 
     // Constructor for transformation based on gp_Trsf
     TIGL_EXPORT CTiglTransformation(const gp_Trsf& trans);
 
     // Virtual Destructor
-    TIGL_EXPORT virtual ~CTiglTransformation(void);
+    TIGL_EXPORT virtual ~CTiglTransformation();
     
     TIGL_EXPORT CTiglTransformation& operator=(const CTiglTransformation&);
 
@@ -58,13 +58,13 @@ public:
     TIGL_EXPORT static double RadianToDegree(double radian);
 
     // Sets matrix to identity matrix
-    TIGL_EXPORT void SetIdentity(void);
+    TIGL_EXPORT void SetIdentity();
 
     // Sets a value of the transformation matrix by row/col
     TIGL_EXPORT void SetValue(int row, int col, double value);
 
     // Returns the current transformation as gp_GTrsf object
-    TIGL_EXPORT gp_GTrsf Get_gp_GTrsf(void) const;
+    TIGL_EXPORT gp_GTrsf Get_gp_GTrsf() const;
 
     // Post multiply this matrix with another matrix and stores 
     // the result in this matrix
@@ -86,22 +86,22 @@ public:
     TIGL_EXPORT void AddRotationZ(double degreeZ);
 
     // Adds projection on xy plane by setting the z coordinate to 0
-    TIGL_EXPORT void AddProjectionOnXYPlane(void);
+    TIGL_EXPORT void AddProjectionOnXYPlane();
 
     // Adds projection on xz plane by setting the y coordinate to 0
-    TIGL_EXPORT void AddProjectionOnXZPlane(void);
+    TIGL_EXPORT void AddProjectionOnXZPlane();
 
     // Adds projection on yz plane by setting the x coordinate to 0
-    TIGL_EXPORT void AddProjectionOnYZPlane(void);
+    TIGL_EXPORT void AddProjectionOnYZPlane();
 
     // Adds mirroring at xy plane
-    TIGL_EXPORT void AddMirroringAtXYPlane(void);
+    TIGL_EXPORT void AddMirroringAtXYPlane();
 
     // Adds mirroring at xz plane
-    TIGL_EXPORT void AddMirroringAtXZPlane(void);
+    TIGL_EXPORT void AddMirroringAtXZPlane();
 
     // Adds mirroring at yz plane
-    TIGL_EXPORT void AddMirroringAtYZPlane(void);
+    TIGL_EXPORT void AddMirroringAtYZPlane();
 
     // Transforms a shape with the current transformation matrix and
     // returns the transformed shape

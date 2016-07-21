@@ -58,13 +58,13 @@ const std::string& CCPACSFarField::GetUID() const {
 
 void CCPACSFarField::SetUID(const std::string& uid) { }
 
-TiglSymmetryAxis CCPACSFarField::GetSymmetryAxis(void) {
+TiglSymmetryAxis CCPACSFarField::GetSymmetryAxis() {
     return TiglSymmetryAxis::TIGL_NO_SYMMETRY;
 }
 
 void CCPACSFarField::SetSymmetryAxis(const TiglSymmetryAxis& axis) {}
 
-PNamedShape CCPACSFarField::BuildLoft(void)
+PNamedShape CCPACSFarField::BuildLoft()
 {
     const double fieldSize = m_referenceLength * m_multiplier;
 
@@ -112,7 +112,7 @@ PNamedShape CCPACSFarField::BuildLoft(void)
     return loft;
 }
 
-TiglGeometricComponentType CCPACSFarField::GetComponentType(void)
+TiglGeometricComponentType CCPACSFarField::GetComponentType()
 {
     return TIGL_COMPONENT_LOGICAL;
 }

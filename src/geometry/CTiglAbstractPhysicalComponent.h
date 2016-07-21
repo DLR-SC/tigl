@@ -49,7 +49,7 @@ public:
     TIGL_EXPORT CTiglAbstractPhysicalComponent(CCPACSTransformation& trans);
 
     // Returns the parent unique id
-    TIGL_EXPORT virtual std::string& GetParentUID(void);
+    TIGL_EXPORT virtual std::string& GetParentUID();
 
     // Sets the parent uid.
     TIGL_EXPORT virtual void SetParentUID(const std::string& parentUID);
@@ -65,7 +65,7 @@ protected:
     typedef std::map<int, int> FusedElementsContainerType;
 
     // Resets the geometric component.
-    virtual void Reset(void);
+    virtual void Reset();
 
     ChildContainerType childContainer;
     std::string        parentUID;       /**< UID of the parent of this component */

@@ -41,19 +41,19 @@ void CCPACSModel::SetUID(const std::string& uid) {
     generated::CPACSAircraftModel::SetUID(uid);
 }
 
-TiglSymmetryAxis CCPACSModel::GetSymmetryAxis(void) {
+TiglSymmetryAxis CCPACSModel::GetSymmetryAxis() {
     return TiglSymmetryAxis::TIGL_NO_SYMMETRY;
 }
 
 void CCPACSModel::SetSymmetryAxis(const TiglSymmetryAxis& axis) {}
 
 // Returns the Geometric type of this component, e.g. Wing or Fuselage
-TiglGeometricComponentType CCPACSModel::GetComponentType(void)
+TiglGeometricComponentType CCPACSModel::GetComponentType()
 {
     return (TIGL_COMPONENT_PHYSICAL | TIGL_COMPONENT_PLANE);
 }
 
-PNamedShape CCPACSModel::BuildLoft(void)
+PNamedShape CCPACSModel::BuildLoft()
 {
     // return empty loft
     return loft;
