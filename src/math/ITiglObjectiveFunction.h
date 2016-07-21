@@ -32,8 +32,8 @@ namespace tigl
 class ITiglObjectiveFunction
 {
 public:
-    TIGL_EXPORT ITiglObjectiveFunction(void);
-    TIGL_EXPORT virtual ~ITiglObjectiveFunction(void);
+    TIGL_EXPORT ITiglObjectiveFunction();
+    TIGL_EXPORT virtual ~ITiglObjectiveFunction();
 
     // set step size h for finite differences
     TIGL_EXPORT void setNumericalStepSize(double h);

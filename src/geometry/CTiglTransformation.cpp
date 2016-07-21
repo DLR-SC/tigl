@@ -35,7 +35,7 @@ namespace tigl
 {
 
 // Constructor
-CTiglTransformation::CTiglTransformation(void)
+CTiglTransformation::CTiglTransformation()
 {
     SetIdentity();
 }
@@ -70,7 +70,7 @@ CTiglTransformation::CTiglTransformation(const gp_Trsf& trans)
 }
 
 // Destructor
-CTiglTransformation::~CTiglTransformation(void)
+CTiglTransformation::~CTiglTransformation()
 {
 }
 
@@ -84,7 +84,7 @@ CTiglTransformation& CTiglTransformation::operator=(const CTiglTransformation& m
     return *this;
 }
 
-void CTiglTransformation::SetIdentity(void)
+void CTiglTransformation::SetIdentity()
 {
     // preset with 0
     for (int row = 0; row < 4; row++) {
@@ -158,7 +158,7 @@ void CTiglTransformation::PreMultiply(const CTiglTransformation& aTrans)
 }
 
 // Returns the current transformation as gp_GTrsf object
-gp_GTrsf CTiglTransformation::Get_gp_GTrsf(void) const
+gp_GTrsf CTiglTransformation::Get_gp_GTrsf() const
 {
     gp_GTrsf ocMatrix;
 
@@ -298,7 +298,7 @@ void CTiglTransformation::AddRotationZ(double degreeZ)
 }
 
 // Adds projection an xy plane by setting the z coordinate to 0
-void CTiglTransformation::AddProjectionOnXYPlane(void)
+void CTiglTransformation::AddProjectionOnXYPlane()
 {
     // Matrix is:
     //
@@ -314,7 +314,7 @@ void CTiglTransformation::AddProjectionOnXYPlane(void)
 }
 
 // Adds projection an xz plane by setting the y coordinate to 0
-void CTiglTransformation::AddProjectionOnXZPlane(void)
+void CTiglTransformation::AddProjectionOnXZPlane()
 {
     // Matrix is:
     //
@@ -330,7 +330,7 @@ void CTiglTransformation::AddProjectionOnXZPlane(void)
 }
 
 // Adds projection an yz plane by setting the x coordinate to 0
-void CTiglTransformation::AddProjectionOnYZPlane(void)
+void CTiglTransformation::AddProjectionOnYZPlane()
 {
     // Matrix is:
     //
@@ -346,7 +346,7 @@ void CTiglTransformation::AddProjectionOnYZPlane(void)
 }
 
 // Adds mirroring at xy plane
-void CTiglTransformation::AddMirroringAtXYPlane(void)
+void CTiglTransformation::AddMirroringAtXYPlane()
 {
     // Matrix is:
     //
@@ -362,7 +362,7 @@ void CTiglTransformation::AddMirroringAtXYPlane(void)
 }
 
 // Adds mirroring at xz plane
-void CTiglTransformation::AddMirroringAtXZPlane(void)
+void CTiglTransformation::AddMirroringAtXZPlane()
 {
     // Matrix is:
     //
@@ -378,7 +378,7 @@ void CTiglTransformation::AddMirroringAtXZPlane(void)
 }
 
 // Adds mirroring at yz plane
-void CTiglTransformation::AddMirroringAtYZPlane(void)
+void CTiglTransformation::AddMirroringAtYZPlane()
 {
     // Matrix is:
     //

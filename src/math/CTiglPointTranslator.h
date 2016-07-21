@@ -82,7 +82,7 @@ private:
         {
         }
 
-        TIGL_EXPORT virtual ~SegmentProjection(void){}
+        TIGL_EXPORT virtual ~SegmentProjection(){}
 
         TIGL_EXPORT void setProjectionPoint(const CTiglPoint& p);
 

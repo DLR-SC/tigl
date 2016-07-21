@@ -61,15 +61,15 @@ public:
     TIGL_EXPORT CCPACSWingProfilePointList(const CCPACSWingProfile& profile, const std::string& cpacsPath);
 
     // Destructor
-    TIGL_EXPORT ~CCPACSWingProfilePointList(void);
+    TIGL_EXPORT ~CCPACSWingProfilePointList();
 
     TIGL_EXPORT static std::string CPACSID();
 
     // Cleanup routine
-    TIGL_EXPORT void Cleanup(void);
+    TIGL_EXPORT void Cleanup();
 
     // Update interna
-    TIGL_EXPORT void Update(void);
+    TIGL_EXPORT void Update();
 
     // Read CPACS wing profile file
     TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& profileXPath);
@@ -121,7 +121,7 @@ protected:
     void BuildWires();
 
     // Builds leading and trailing edge points of the wing profile wire.
-    void BuildLETEPoints(void);
+    void BuildLETEPoints();
 
     // Helper method for closing profile at trailing edge
     void closeProfilePoints(ITiglWireAlgorithm::CPointContainer& points);

@@ -44,7 +44,7 @@ public:
     TIGL_EXPORT CCPACSFuselages(generated::CPACSRotorcraftModel* parent);
 
     // Invalidates internal state
-    TIGL_EXPORT void Invalidate(void);
+    TIGL_EXPORT void Invalidate();
 
     // Read CPACS fuselage elements
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& xpath);
@@ -55,17 +55,17 @@ public:
     TIGL_EXPORT bool HasProfile(std::string uid) const;
 
     // Returns the total count of fuselage profiles in this configuration
-    TIGL_EXPORT int GetProfileCount(void) const;
+    TIGL_EXPORT int GetProfileCount() const;
         
     // Returns the wing profiles in this configuration
-    TIGL_EXPORT CCPACSFuselageProfiles& GetProfiles(void);
+    TIGL_EXPORT CCPACSFuselageProfiles& GetProfiles();
 
     // Returns the fuselage profile for a given index.
     TIGL_EXPORT CCPACSFuselageProfile& GetProfile(int index) const;
     TIGL_EXPORT CCPACSFuselageProfile& GetProfile(std::string uid) const;
 
     // Returns the total count of fuselages in a configuration
-    TIGL_EXPORT int GetFuselageCount(void) const;
+    TIGL_EXPORT int GetFuselageCount() const;
 
     // Returns the fuselage for a given index.
     TIGL_EXPORT CCPACSFuselage& GetFuselage(int index) const;

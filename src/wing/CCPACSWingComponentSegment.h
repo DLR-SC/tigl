@@ -64,10 +64,10 @@ public:
     TIGL_EXPORT CCPACSWingComponentSegment(CCPACSWing* aWing, int aSegmentIndex);
 
     // Virtual Destructor
-    TIGL_EXPORT virtual ~CCPACSWingComponentSegment(void);
+    TIGL_EXPORT virtual ~CCPACSWingComponentSegment();
 
     // Invalidates internal state
-    TIGL_EXPORT void Invalidate(void);
+    TIGL_EXPORT void Invalidate();
 
     // Read CPACS segment elements
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string & segmentXPath);
@@ -75,23 +75,23 @@ public:
     TIGL_EXPORT virtual const std::string& GetUID() const override;
     TIGL_EXPORT virtual void SetUID(const std::string& uid) override;
 
-    TIGL_EXPORT virtual TiglSymmetryAxis GetSymmetryAxis(void) override;
+    TIGL_EXPORT virtual TiglSymmetryAxis GetSymmetryAxis() override;
     TIGL_EXPORT virtual void SetSymmetryAxis(const TiglSymmetryAxis& axis) override;
 
     // Returns the wing this segment belongs to
-    TIGL_EXPORT CCPACSWing& GetWing(void) const;
+    TIGL_EXPORT CCPACSWing& GetWing() const;
 
     // Gtter for upper Shape
-    TIGL_EXPORT TopoDS_Shape GetUpperShape(void);
+    TIGL_EXPORT TopoDS_Shape GetUpperShape();
 
     // Getter for lower Shape
-    TIGL_EXPORT TopoDS_Shape GetLowerShape(void);
+    TIGL_EXPORT TopoDS_Shape GetLowerShape();
 
     // Getter for inner segment face
-    TIGL_EXPORT TopoDS_Face GetInnerFace(void);
+    TIGL_EXPORT TopoDS_Face GetInnerFace();
 
     // Getter for outer segment face
-    TIGL_EXPORT TopoDS_Face GetOuterFace(void);
+    TIGL_EXPORT TopoDS_Face GetOuterFace();
 
     // Gets a point in relative wing coordinates for a given eta and xsi
     TIGL_EXPORT gp_Pnt GetPoint(double eta, double xsi);
@@ -224,16 +224,16 @@ public:
     
 protected:
     // Cleanup routine
-    void Cleanup(void);
+    void Cleanup();
 
     // Update internal segment data
-    void Update(void);
+    void Update();
 
     // Builds the loft between the two segment sections
-    PNamedShape BuildLoft(void);
+    PNamedShape BuildLoft();
 
     // Method for building wires for eta-, leading edge-, trailing edge-lines
-    void BuildLines(void) const;
+    void BuildLines() const;
 
     // Returns an upper or lower point on the segment surface in
     // dependence of parameters eta and xsi, which range from 0.0 to 1.0.
@@ -248,7 +248,7 @@ protected:
 
 private:
     // get short name for loft
-    std::string GetShortShapeName(void);
+    std::string GetShortShapeName();
 
     std::vector<int> findPath(const std::string& fromUid, const::std::string& toUID, const std::vector<int>& curPath, bool forward) const;
 

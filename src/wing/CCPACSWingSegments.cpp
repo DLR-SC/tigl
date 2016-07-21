@@ -44,7 +44,7 @@ CCPACSWingSegments::CCPACSWingSegments(generated::CPACSEnginePylon* parent)
     : generated::CPACSWingSegments(parent) {}
 
 // Invalidates internal state
-void CCPACSWingSegments::Invalidate(void)
+void CCPACSWingSegments::Invalidate()
 {
     for (std::size_t i = 0; i < m_segment.size(); i++) {
         m_segment[i]->Invalidate();
@@ -73,7 +73,7 @@ CCPACSWingSegment& CCPACSWingSegments::GetSegment(const std::string& segmentUID)
 }
 
 // Gets total segment count
-int CCPACSWingSegments::GetSegmentCount(void) const
+int CCPACSWingSegments::GetSegmentCount() const
 {
     return static_cast<int>(m_segment.size());
 }

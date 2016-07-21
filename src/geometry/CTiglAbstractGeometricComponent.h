@@ -88,9 +88,9 @@ public:
     TIGL_EXPORT bool GetIsOnMirrored(const gp_Pnt &pnt);
 protected:
     // Resets the geometric component.
-    virtual void Reset(void);
+    virtual void Reset();
     
-    virtual PNamedShape BuildLoft(void) = 0;
+    virtual PNamedShape BuildLoft() = 0;
 
     CCPACSTransformation&        transformation; // references down to the transformation of the derived class
     //CTiglTransformation        backTransformation;

@@ -38,7 +38,7 @@ CCPACSFuselageSegments::CCPACSFuselageSegments(CCPACSFuselage* parent)
 	: generated::CPACSFuselageSegments(parent) {}
 
 // Invalidates internal state
-void CCPACSFuselageSegments::Invalidate(void)
+void CCPACSFuselageSegments::Invalidate()
 {
 	for (int i = 1; i <= GetSegmentCount(); i++) {
 		GetSegment(i).Invalidate();
@@ -67,7 +67,7 @@ CCPACSFuselageSegment & CCPACSFuselageSegments::GetSegment(const std::string& se
 }
 
 // Gets total segment count
-int CCPACSFuselageSegments::GetSegmentCount(void) const
+int CCPACSFuselageSegments::GetSegmentCount() const
 {
     return static_cast<int>(m_segment.size());
 }

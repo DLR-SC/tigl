@@ -33,7 +33,7 @@ namespace tigl
 {
 
 // Invalidates internal state
-void CCPACSWings::Invalidate(void)
+void CCPACSWings::Invalidate()
 {
     profiles.Invalidate();
     for (int i = 1; i <= GetWingCount(); i++) {
@@ -73,12 +73,12 @@ bool CCPACSWings::HasProfile(std::string uid) const
 }
 
 // Returns the total count of wing profiles in this configuration
-int CCPACSWings::GetProfileCount(void) const
+int CCPACSWings::GetProfileCount() const
 {
     return profiles.GetProfileCount();
 }
 
-CCPACSWingProfiles& CCPACSWings::GetProfiles(void)
+CCPACSWingProfiles& CCPACSWings::GetProfiles()
 {
     return profiles;
 }
@@ -96,7 +96,7 @@ CCPACSWingProfile& CCPACSWings::GetProfile(int index) const
 }
 
 // Returns the total count of wings in a configuration
-int CCPACSWings::GetWingCount(void) const
+int CCPACSWings::GetWingCount() const
 {
     return (static_cast<int>(m_wing.size()));
 }

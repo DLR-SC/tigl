@@ -59,11 +59,11 @@ public:
     TIGL_EXPORT CCPACSConfiguration(TixiDocumentHandle tixiHandle);
 
     // Virtual Destructor
-    TIGL_EXPORT virtual ~CCPACSConfiguration(void);
+    TIGL_EXPORT virtual ~CCPACSConfiguration();
 
     // Invalidates the internal state of the configuration and forces
     // recalculation of wires, lofts etc.
-    TIGL_EXPORT void Invalidate(void);
+    TIGL_EXPORT void Invalidate();
 
     // Read CPACS configuration
     TIGL_EXPORT void ReadCPACS(const std::string& configurationUID);
@@ -72,18 +72,18 @@ public:
     TIGL_EXPORT void WriteCPACS(const std::string& configurationUID);
 
     // Returns the underlying tixi document handle used by a CPACS configuration
-    TIGL_EXPORT TixiDocumentHandle GetTixiDocumentHandle(void) const;
+    TIGL_EXPORT TixiDocumentHandle GetTixiDocumentHandle() const;
 
     // Returns the total count of wing profiles in this configuration
-    TIGL_EXPORT int GetWingProfileCount(void) const;
+    TIGL_EXPORT int GetWingProfileCount() const;
 
     TIGL_EXPORT bool HasWingProfile(std::string uid) const;
 
     // Returns the class which holds all wing profiles
-    TIGL_EXPORT CCPACSWingProfiles& GetWingProfiles(void);
+    TIGL_EXPORT CCPACSWingProfiles& GetWingProfiles();
     
     // Returns the class which holds all wing profiles
-    TIGL_EXPORT CCPACSFuselageProfiles& GetFuselageProfiles(void);
+    TIGL_EXPORT CCPACSFuselageProfiles& GetFuselageProfiles();
 
     // Returns the wing profile for a given index - TODO: depricated!
     TIGL_EXPORT CCPACSWingProfile& GetWingProfile(int index) const;
@@ -92,7 +92,7 @@ public:
     TIGL_EXPORT CCPACSWingProfile& GetWingProfile(std::string uid) const;
 
     // Returns the total count of wings in a configuration
-    TIGL_EXPORT int GetWingCount(void) const;
+    TIGL_EXPORT int GetWingCount() const;
 
     // Returns the wing for a given index.
     TIGL_EXPORT CCPACSWing& GetWing(int index) const;
@@ -105,7 +105,7 @@ public:
     TIGL_EXPORT bool HasFuselageProfile(std::string uid) const;
 
     // Returns the total count of fuselage profiles in this configuration
-    TIGL_EXPORT int GetFuselageProfileCount(void) const;
+    TIGL_EXPORT int GetFuselageProfileCount() const;
 
     // Returns the fuselage profile for a given index.
     TIGL_EXPORT CCPACSFuselageProfile& GetFuselageProfile(int index) const;
@@ -114,7 +114,7 @@ public:
     TIGL_EXPORT CCPACSFuselageProfile& GetFuselageProfile(std::string uid) const;
 
     // Returns the total count of fuselages in a configuration
-    TIGL_EXPORT int GetFuselageCount(void) const;
+    TIGL_EXPORT int GetFuselageCount() const;
 
     // Returns the fuselage for a given index.
     TIGL_EXPORT CCPACSFuselage& GetFuselage(int index) const;
@@ -131,26 +131,26 @@ public:
     TIGL_EXPORT CCPACSGuideCurveProfile& GetGuideCurveProfile(std::string UID) const;
 
     // Returns the uid manager
-    TIGL_EXPORT CTiglUIDManager& GetUIDManager(void);
+    TIGL_EXPORT CTiglUIDManager& GetUIDManager();
 
     // Returns the algorithm for fusing the aircraft
-    TIGL_EXPORT PTiglFusePlane AircraftFusingAlgo(void);
+    TIGL_EXPORT PTiglFusePlane AircraftFusingAlgo();
 
     // Returns the length of the airplane
-    TIGL_EXPORT double GetAirplaneLenth(void);
+    TIGL_EXPORT double GetAirplaneLenth();
 
     // Returns the UID of the loaded configuration.
-    TIGL_EXPORT const std::string& GetUID(void) const;
+    TIGL_EXPORT const std::string& GetUID() const;
 
-    TIGL_EXPORT CTiglShapeCache& GetShapeCache(void);
+    TIGL_EXPORT CTiglShapeCache& GetShapeCache();
 
-    TIGL_EXPORT CTiglMemoryPool& GetMemoryPool(void);
+    TIGL_EXPORT CTiglMemoryPool& GetMemoryPool();
 
     /** Getter/Setter for member name */
-    TIGL_EXPORT std::string GetName(void) const;
+    TIGL_EXPORT std::string GetName() const;
 
     /** Getter/Setter for member description */
-    TIGL_EXPORT std::string GetDescription(void) const;
+    TIGL_EXPORT std::string GetDescription() const;
 
     /** Getter for member header */
     TIGL_EXPORT CCPACSHeader* GetHeader();

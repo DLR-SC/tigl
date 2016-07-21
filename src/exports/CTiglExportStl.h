@@ -46,7 +46,7 @@ public:
     TIGL_EXPORT CTiglExportStl(CCPACSConfiguration& config);
 
     // Empty destructor
-    TIGL_EXPORT ~CTiglExportStl(void) { /* empty */}
+    TIGL_EXPORT ~CTiglExportStl() { /* empty */}
 
     // Exports a selected wing, boolean fused and meshed, as STL file
     TIGL_EXPORT void ExportMeshedWingSTL(int wingIndex, const std::string& filename, double deflection = 0.1);

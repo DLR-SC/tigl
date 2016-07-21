@@ -50,10 +50,10 @@ public:
     TIGL_EXPORT CTiglAbstractSegment(int segIndex, CCPACSTransformation& trans);
 
     // Invalidates internal state
-    TIGL_EXPORT virtual void Invalidate(void);
+    TIGL_EXPORT virtual void Invalidate();
 
     // Returns the segment index of this segment
-    TIGL_EXPORT int GetSegmentIndex(void) const;
+    TIGL_EXPORT int GetSegmentIndex() const;
 
     // Returns the continuityof the connection to the next segment
     TIGL_EXPORT TiglContinuity GetContinuity() const;

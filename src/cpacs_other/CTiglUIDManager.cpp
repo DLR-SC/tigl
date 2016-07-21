@@ -30,20 +30,20 @@ namespace tigl
 {
 
 // Constructor
-CTiglUIDManager::CTiglUIDManager(void) : 
+CTiglUIDManager::CTiglUIDManager() : 
     invalidated(true),
     rootComponent(0)
 {
 }
 
 // Destructor
-CTiglUIDManager::~CTiglUIDManager(void)
+CTiglUIDManager::~CTiglUIDManager()
 {
     Clear();
 }
 
 // Update internal UID manager data.
-void CTiglUIDManager::Update(void)
+void CTiglUIDManager::Update()
 {
     if (!invalidated) {
         return;
@@ -118,7 +118,7 @@ CTiglAbstractPhysicalComponent* CTiglUIDManager::GetPhysicalComponent(const std:
 
 
 // Clears the uid store
-void CTiglUIDManager::Clear(void) 
+void CTiglUIDManager::Clear() 
 {
     physicalShapes.clear();
     rootComponent = 0;
@@ -142,14 +142,14 @@ CTiglAbstractPhysicalComponent* CTiglUIDManager::GetParentComponent(const std::s
 }
 
 // Returns the root component of the geometric topology.
-CTiglAbstractPhysicalComponent* CTiglUIDManager::GetRootComponent(void)
+CTiglAbstractPhysicalComponent* CTiglUIDManager::GetRootComponent()
 {
     Update();
     return rootComponent;
 }
 
 // Builds the parent child relationships.
-void CTiglUIDManager::BuildParentChildTree(void)
+void CTiglUIDManager::BuildParentChildTree()
 {
     // root component must be set manually, error if not
     if (!rootComponent) {

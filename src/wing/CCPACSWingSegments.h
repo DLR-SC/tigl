@@ -41,14 +41,14 @@ public:
     TIGL_EXPORT CCPACSWingSegments(generated::CPACSEnginePylon* parent);
 
     // Invalidates internal state
-    TIGL_EXPORT void Invalidate(void);
+    TIGL_EXPORT void Invalidate();
 
     // Gets a segment by index or UID.
     TIGL_EXPORT CCPACSWingSegment & GetSegment(int index);
     TIGL_EXPORT CCPACSWingSegment & GetSegment(const std::string& segmentUID);
 
     // Gets total segment count
-    TIGL_EXPORT int GetSegmentCount(void) const;
+    TIGL_EXPORT int GetSegmentCount() const;
 };
 
 } // end namespace tigl

@@ -72,13 +72,13 @@ CCPACSWingProfile::CCPACSWingProfile()
 }
 
 // Destructor
-CCPACSWingProfile::~CCPACSWingProfile(void)
+CCPACSWingProfile::~CCPACSWingProfile()
 {
     Cleanup();
 }
 
 // Cleanup routine
-void CCPACSWingProfile::Cleanup(void)
+void CCPACSWingProfile::Cleanup()
 {
     if (profileAlgo) {
         profileAlgo->Cleanup();
@@ -104,13 +104,13 @@ void CCPACSWingProfile::WriteCPACS(const TixiDocumentHandle& tixiHandle, const s
 }
 
 // Invalidates internal wing profile state
-void CCPACSWingProfile::Invalidate(void)
+void CCPACSWingProfile::Invalidate()
 {
     invalidated = true;
 }
 
 // Update the internal state, i.g. recalculates wire and le, te points
-void CCPACSWingProfile::Update(void)
+void CCPACSWingProfile::Update()
 {
     if (!invalidated) {
         return;
@@ -231,7 +231,7 @@ TopoDS_Wire CCPACSWingProfile::GetWireClosed()
 
 // Returns the leading edge point of the wing profile wire. The leading edge point
 // is already transformed by the wing profile transformation.
-gp_Pnt CCPACSWingProfile::GetLEPoint(void)
+gp_Pnt CCPACSWingProfile::GetLEPoint()
 {
     Update();
     return profileAlgo->GetLEPoint();
@@ -239,7 +239,7 @@ gp_Pnt CCPACSWingProfile::GetLEPoint(void)
 
 // Returns the trailing edge point of the wing profile wire. The trailing edge point
 // is already transformed by the wing profile transformation.
-gp_Pnt CCPACSWingProfile::GetTEPoint(void)
+gp_Pnt CCPACSWingProfile::GetTEPoint()
 {
     Update();
     return profileAlgo->GetTEPoint();
@@ -403,7 +403,7 @@ Handle(Geom2d_TrimmedCurve) CCPACSWingProfile::GetChordLine()
 }
 
 // get pointer to profile algorithm
-PTiglWingProfileAlgo CCPACSWingProfile::GetProfileAlgo(void) const
+PTiglWingProfileAlgo CCPACSWingProfile::GetProfileAlgo() const
 {
     return profileAlgo;
 }

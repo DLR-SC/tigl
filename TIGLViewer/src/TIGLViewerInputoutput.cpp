@@ -33,11 +33,11 @@
 #include <IGESData_IGESModel.hxx>
 #include <AIS_ListIteratorOfListOfInteractive.hxx>
 
-TIGLViewerInputOutput::TIGLViewerInputOutput(void)
+TIGLViewerInputOutput::TIGLViewerInputOutput()
 {
 }
 
-TIGLViewerInputOutput::~TIGLViewerInputOutput(void)
+TIGLViewerInputOutput::~TIGLViewerInputOutput()
 {
 }
 

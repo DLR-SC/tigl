@@ -240,7 +240,7 @@ void TIGLViewerDocument::updateConfiguration()
 
 
 // Returns the CPACS configuration
-tigl::CCPACSConfiguration& TIGLViewerDocument::GetConfiguration(void) const
+tigl::CCPACSConfiguration& TIGLViewerDocument::GetConfiguration() const
 {
     tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
     return manager.GetConfiguration(m_cpacsHandle);
@@ -1953,7 +1953,7 @@ void TIGLViewerDocument::createShapeTriangulation(const TopoDS_Shape& shape, Top
     }
 }
 
-TiglCPACSConfigurationHandle TIGLViewerDocument::getCpacsHandle(void) const 
+TiglCPACSConfigurationHandle TIGLViewerDocument::getCpacsHandle() const 
 {
     return this->m_cpacsHandle;
 }

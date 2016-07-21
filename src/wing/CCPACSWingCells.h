@@ -32,10 +32,10 @@ public:
     TIGL_EXPORT CCPACSWingCells(CCPACSWingShell* parent);
     
     // Virtual Destructor
-    TIGL_EXPORT virtual ~CCPACSWingCells(void) {}
+    TIGL_EXPORT virtual ~CCPACSWingCells() {}
 
     // Returns the total count of wing cells for that wing component segment
-    TIGL_EXPORT int GetCellCount(void) const;
+    TIGL_EXPORT int GetCellCount() const;
     
     // Returns the wing cell for a given index.
     TIGL_EXPORT CCPACSWingCell& GetCell(int index) const;

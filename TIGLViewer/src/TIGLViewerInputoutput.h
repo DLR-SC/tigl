@@ -44,8 +44,8 @@ public:
         FormatMESH
     };
 
-    TIGLViewerInputOutput(void);
-    ~TIGLViewerInputOutput(void);
+    TIGLViewerInputOutput();
+    ~TIGLViewerInputOutput();
 
     bool importModel( const QString fileName, 
                       const FileFormat format, 

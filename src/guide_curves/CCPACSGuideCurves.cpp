@@ -31,7 +31,7 @@
 namespace tigl
 {
 // Returns the total count of guide curves in this configuration
-int CCPACSGuideCurves::GetGuideCurveCount(void) const
+int CCPACSGuideCurves::GetGuideCurveCount() const
 {
     return (static_cast<int>(m_guideCurve.size()));
 }

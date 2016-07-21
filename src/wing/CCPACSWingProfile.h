@@ -51,7 +51,7 @@ public:
     TIGL_EXPORT CCPACSWingProfile();
 
     // Virtual Destructor
-    TIGL_EXPORT virtual ~CCPACSWingProfile(void);
+    TIGL_EXPORT virtual ~CCPACSWingProfile();
 
     // Read CPACS wing profile file
     TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
@@ -60,7 +60,7 @@ public:
     TIGL_EXPORT void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
 
     // Invalidates internal wing profile state
-    TIGL_EXPORT void Invalidate(void);
+    TIGL_EXPORT void Invalidate();
 
     // Returns the wing profile wire, splitted at the leading edge
     TIGL_EXPORT TopoDS_Wire GetSplitWire();
@@ -92,11 +92,11 @@ public:
 
     // Returns the leading edge point of the wing profile wire. The leading edge point
     // is already transformed by the wing profile element transformation.
-    TIGL_EXPORT gp_Pnt GetLEPoint(void);
+    TIGL_EXPORT gp_Pnt GetLEPoint();
 
     // Returns the trailing edge point of the wing profile wire. The trailing edge point
     // is already transformed by the wing profile element transformation.
-    TIGL_EXPORT gp_Pnt GetTEPoint(void);
+    TIGL_EXPORT gp_Pnt GetTEPoint();
 
     // Returns the chord line as a wire
     TIGL_EXPORT TopoDS_Wire GetChordLineWire();
@@ -120,14 +120,14 @@ public:
     TIGL_EXPORT gp_Pnt GetLowerPoint(double xsi);
 
     // get profile algorithm type
-    TIGL_EXPORT PTiglWingProfileAlgo GetProfileAlgo(void) const;
+    TIGL_EXPORT PTiglWingProfileAlgo GetProfileAlgo() const;
 
 protected:
     // Cleanup routine
-    void Cleanup(void);
+    void Cleanup();
 
     // Update the internal state, i.g. recalculates wire and le, te points
-    void Update(void);
+    void Update();
 
     // Returns an upper or lower point on the wing profile in
     // dependence of parameter xsi, which ranges from 0.0 to 1.0.

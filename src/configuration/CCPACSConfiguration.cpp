@@ -62,7 +62,7 @@ CCPACSConfiguration::CCPACSConfiguration(TixiDocumentHandle tixiHandle)
 }
 
 // Destructor
-CCPACSConfiguration::~CCPACSConfiguration(void)
+CCPACSConfiguration::~CCPACSConfiguration()
 {
     if (cpacsModel) {
         delete cpacsModel;
@@ -71,7 +71,7 @@ CCPACSConfiguration::~CCPACSConfiguration(void)
 
 // Invalidates the internal state of the configuration and forces
 // recalculation of wires, lofts etc.
-void CCPACSConfiguration::Invalidate(void)
+void CCPACSConfiguration::Invalidate()
 {
     cpacsModel->Invalidate();
     aircraftFuser.reset();
@@ -158,7 +158,7 @@ void CCPACSConfiguration::transformAllComponents(CTiglAbstractPhysicalComponent*
 
 
 // Returns the boolean fused airplane as TopoDS_Shape
-PTiglFusePlane CCPACSConfiguration::AircraftFusingAlgo(void)
+PTiglFusePlane CCPACSConfiguration::AircraftFusingAlgo()
 {
     if (! aircraftFuser) {
         aircraftFuser = PTiglFusePlane(new CTiglFusePlane(*this));
@@ -168,7 +168,7 @@ PTiglFusePlane CCPACSConfiguration::AircraftFusingAlgo(void)
 
 
 // Returns the underlying tixi document handle used by a CPACS configuration
-TixiDocumentHandle CCPACSConfiguration::GetTixiDocumentHandle(void) const
+TixiDocumentHandle CCPACSConfiguration::GetTixiDocumentHandle() const
 {
     return tixiDocumentHandle;
 }
@@ -179,19 +179,19 @@ bool CCPACSConfiguration::HasWingProfile(std::string uid) const
 }
 
 // Returns the total count of wing profiles in this configuration
-int CCPACSConfiguration::GetWingProfileCount(void) const
+int CCPACSConfiguration::GetWingProfileCount() const
 {
     return cpacsModel->GetWings().GetProfileCount();
 }
 
 // Returns the class which holds all wing profiles
-CCPACSWingProfiles& CCPACSConfiguration::GetWingProfiles(void)
+CCPACSWingProfiles& CCPACSConfiguration::GetWingProfiles()
 {
     return cpacsModel->GetWings().GetProfiles();
 }
 
 // Returns the class which holds all fuselage profiles
-CCPACSFuselageProfiles& CCPACSConfiguration::GetFuselageProfiles(void)
+CCPACSFuselageProfiles& CCPACSConfiguration::GetFuselageProfiles()
 {
     return cpacsModel->GetFuselages().GetProfiles();
 }
@@ -209,7 +209,7 @@ CCPACSWingProfile& CCPACSConfiguration::GetWingProfile(int index) const
 }
 
 // Returns the total count of wings in a configuration
-int CCPACSConfiguration::GetWingCount(void) const
+int CCPACSConfiguration::GetWingCount() const
 {
     return cpacsModel->GetWings().GetWingCount();
 }
@@ -239,7 +239,7 @@ bool CCPACSConfiguration::HasFuselageProfile(std::string uid) const
 }
 
 // Returns the total count of fuselage profiles in this configuration
-int CCPACSConfiguration::GetFuselageProfileCount(void) const
+int CCPACSConfiguration::GetFuselageProfileCount() const
 {
     if (cpacsModel->HasFuselages())
         return cpacsModel->GetFuselages().GetProfileCount();
@@ -260,7 +260,7 @@ CCPACSFuselageProfile& CCPACSConfiguration::GetFuselageProfile(std::string uid) 
 }
 
 // Returns the total count of fuselages in a configuration
-int CCPACSConfiguration::GetFuselageCount(void) const
+int CCPACSConfiguration::GetFuselageCount() const
 {
     if (cpacsModel->HasFuselages())
         return cpacsModel->GetFuselages().GetFuselageCount();
@@ -299,12 +299,12 @@ CCPACSGuideCurveProfile& CCPACSConfiguration::GetGuideCurveProfile(std::string U
 }
 
 // Returns the uid manager
-CTiglUIDManager& CCPACSConfiguration::GetUIDManager(void)
+CTiglUIDManager& CCPACSConfiguration::GetUIDManager()
 {
     return uidManager;
 }
 
-double CCPACSConfiguration::GetAirplaneLenth(void)
+double CCPACSConfiguration::GetAirplaneLenth()
 {
     Bnd_Box boundingBox;
 
@@ -343,7 +343,7 @@ double CCPACSConfiguration::GetAirplaneLenth(void)
 }
 
 // Returns the uid manager
-const std::string& CCPACSConfiguration::GetUID(void) const
+const std::string& CCPACSConfiguration::GetUID() const
 {
     return configUID;
 }
@@ -358,12 +358,12 @@ CTiglMemoryPool& CCPACSConfiguration::GetMemoryPool()
     return memoryPool;
 }
 
-std::string CCPACSConfiguration::GetName(void) const
+std::string CCPACSConfiguration::GetName() const
 {
     return cpacsModel->GetName();
 }
 
-std::string CCPACSConfiguration::GetDescription(void) const
+std::string CCPACSConfiguration::GetDescription() const
 {
     return cpacsModel->GetDescription();
 }

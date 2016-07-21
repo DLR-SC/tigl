@@ -39,13 +39,13 @@ class CCPACSPositioning : public generated::CPACSPositioning
 
 public:
     // Constructor
-    TIGL_EXPORT CCPACSPositioning(void);
+    TIGL_EXPORT CCPACSPositioning();
 
     // Virtual Destructor
-    TIGL_EXPORT virtual ~CCPACSPositioning(void);
+    TIGL_EXPORT virtual ~CCPACSPositioning();
 
     // Invalidates internal state
-    TIGL_EXPORT void Invalidate(void);
+    TIGL_EXPORT void Invalidate();
 
     // Read CPACS segment elements
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& positioningXPath);
@@ -54,31 +54,31 @@ public:
     TIGL_EXPORT void SetInnerPoint(const CTiglPoint& aPoint);
 
     // Gets the positioning of the outer point
-    TIGL_EXPORT CTiglPoint GetOuterPoint(void);
+    TIGL_EXPORT CTiglPoint GetOuterPoint();
 
     // Gets the outer transformation of this positioning
-    TIGL_EXPORT CTiglTransformation GetOuterTransformation(void);
+    TIGL_EXPORT CTiglTransformation GetOuterTransformation();
 
     // Gets the section-uid of the outer section of this positioning
-    DEPRECATED TIGL_EXPORT std::string GetOuterSectionIndex(void);
+    DEPRECATED TIGL_EXPORT std::string GetOuterSectionIndex();
 
     // Gets the section-uid of the inner section of this positioning
-    DEPRECATED TIGL_EXPORT std::string GetInnerSectionIndex(void);
+    DEPRECATED TIGL_EXPORT std::string GetInnerSectionIndex();
 
     // Sets the positioning of the start point
     TIGL_EXPORT void SetStartPoint(const CTiglPoint& aPoint);
 
     // Gets the positioning of the end point
-    TIGL_EXPORT CTiglPoint GetEndPoint(void);
+    TIGL_EXPORT CTiglPoint GetEndPoint();
 
     // Gets the end transformation of this positioning
-    TIGL_EXPORT CTiglTransformation GetEndTransformation(void);
+    TIGL_EXPORT CTiglTransformation GetEndTransformation();
 
     // Gets the section index of the end section of this positioning
-    DEPRECATED TIGL_EXPORT std::string GetEndSectionIndex(void);
+    DEPRECATED TIGL_EXPORT std::string GetEndSectionIndex();
 
     // Gets the section index of the start section of this positioning
-    DEPRECATED TIGL_EXPORT std::string GetStartSectionIndex(void);
+    DEPRECATED TIGL_EXPORT std::string GetStartSectionIndex();
 
     // Adds child to childs. To be successful the following condition must be met:
     // child.startSectionIndex == this.endSectionIndex
@@ -88,14 +88,14 @@ public:
     TIGL_EXPORT const std::vector<CCPACSPositioning*> GetChilds() const;
 
     // Cleanup routine
-    TIGL_EXPORT void Cleanup(void);
+    TIGL_EXPORT void Cleanup();
 
 protected:
     // Build transformation matrix for the positioning
-    void BuildMatrix(void);
+    void BuildMatrix();
 
     // Update internal positioning data
-    void Update(void);
+    void Update();
 
 private:
     CTiglPoint           innerPoint;           /**< Positioning inner point                 */

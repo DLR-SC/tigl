@@ -36,13 +36,13 @@ TIGLScriptProxy::TIGLScriptProxy(TIGLViewerWindow* app)
 }
 
 // Returns the CPACS configuration
-tigl::CCPACSConfiguration& TIGLScriptProxy::GetConfiguration(void)
+tigl::CCPACSConfiguration& TIGLScriptProxy::GetConfiguration()
 {
     tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
     return manager.GetConfiguration(getTiglHandle());
 }
 
-TiglCPACSConfigurationHandle TIGLScriptProxy::getTiglHandle(void)
+TiglCPACSConfigurationHandle TIGLScriptProxy::getTiglHandle()
 {
     if (!_app->getDocument()) {
         return -1;

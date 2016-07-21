@@ -45,7 +45,7 @@ public:
     TIGL_EXPORT CTiglExportStep(CCPACSConfiguration& _config);
 
     // Virtual Destructor
-    TIGL_EXPORT virtual ~CTiglExportStep(void);
+    TIGL_EXPORT virtual ~CTiglExportStep();
 
     // Exports the whole configuration as IGES file
     TIGL_EXPORT void ExportStep(const std::string& filename) const;

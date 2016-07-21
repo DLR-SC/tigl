@@ -37,13 +37,13 @@ class CCPACSWingSectionElement : public generated::CPACSWingElement
 {
 public:
     // Returns the UID of the referenced wing profile
-    TIGL_EXPORT std::string GetProfileIndex(void) const;
+    TIGL_EXPORT std::string GetProfileIndex() const;
 
     // Returns the UID of the profile of this element
-    TIGL_EXPORT std::string GetProfileUID(void) const;
+    TIGL_EXPORT std::string GetProfileUID() const;
 
     // Gets the section element transformation
-    TIGL_EXPORT CTiglTransformation GetSectionElementTransformation(void) const;
+    TIGL_EXPORT CTiglTransformation GetSectionElementTransformation() const;
 
     // Getter for translation
     DEPRECATED TIGL_EXPORT CTiglPoint GetTranslation() const;

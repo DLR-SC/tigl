@@ -41,9 +41,9 @@ class ITiglWingProfileAlgo
 {
 public:
     // Clean up 
-    virtual void Cleanup(void)  = 0;
+    virtual void Cleanup()  = 0;
 
-    virtual void Update(void)   = 0;
+    virtual void Update()   = 0;
 
     // Returns the algorithm code identifier for an algorithm
     virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& profileXPath)  = 0;

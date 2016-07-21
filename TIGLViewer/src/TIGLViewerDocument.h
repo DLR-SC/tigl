@@ -47,10 +47,10 @@ public:
 
     TiglReturnCode openCpacsConfiguration(const QString fileName);
     void closeCpacsConfiguration();
-    TiglCPACSConfigurationHandle getCpacsHandle(void) const;
+    TiglCPACSConfigurationHandle getCpacsHandle() const;
 
     // Returns the CPACS configuration
-    tigl::CCPACSConfiguration& GetConfiguration(void) const;
+    tigl::CCPACSConfiguration& GetConfiguration() const;
 
 signals:
     void documentUpdated(TiglCPACSConfigurationHandle);

@@ -38,7 +38,7 @@ CCPACSFuselageSectionElement::CCPACSFuselageSectionElement()
 }
 
 // Cleanup routine
-void CCPACSFuselageSectionElement::Cleanup(void)
+void CCPACSFuselageSectionElement::Cleanup()
 {
     m_name         = "";
     m_description  = "";
@@ -55,13 +55,13 @@ void CCPACSFuselageSectionElement::ReadCPACS(TixiDocumentHandle tixiHandle, cons
 }
 
 // Returns the UID of the referenced fuselage profile
-std::string CCPACSFuselageSectionElement::GetProfileIndex(void) const
+std::string CCPACSFuselageSectionElement::GetProfileIndex() const
 {
     return m_profileUID;
 }
 
 // Gets the section element transformation
-CTiglTransformation CCPACSFuselageSectionElement::GetSectionElementTransformation(void) const
+CTiglTransformation CCPACSFuselageSectionElement::GetSectionElementTransformation() const
 {
     return m_transformation.AsTransformation();
 }

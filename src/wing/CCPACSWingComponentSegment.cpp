@@ -174,13 +174,13 @@ CCPACSWingComponentSegment::CCPACSWingComponentSegment(CCPACSWing* aWing, int aS
 }
 
 // Destructor
-CCPACSWingComponentSegment::~CCPACSWingComponentSegment(void)
+CCPACSWingComponentSegment::~CCPACSWingComponentSegment()
 {
     Cleanup();
 }
 
 // Invalidates internal state
-void CCPACSWingComponentSegment::Invalidate(void)
+void CCPACSWingComponentSegment::Invalidate()
 {
     // call parent class instead of directly setting invalidated flag
     CTiglAbstractSegment::Invalidate();
@@ -193,7 +193,7 @@ void CCPACSWingComponentSegment::Invalidate(void)
 }
 
 // Cleanup routine
-void CCPACSWingComponentSegment::Cleanup(void)
+void CCPACSWingComponentSegment::Cleanup()
 {
     m_name = "";
     m_fromElementUID = "";
@@ -208,7 +208,7 @@ void CCPACSWingComponentSegment::Cleanup(void)
 }
 
 // Update internal segment data
-void CCPACSWingComponentSegment::Update(void)
+void CCPACSWingComponentSegment::Update()
 {
     Invalidate();
 }
@@ -229,7 +229,7 @@ void CCPACSWingComponentSegment::SetUID(const std::string& uid) {
     generated::CPACSComponentSegment::SetUID(uid);
 }
 
-TiglSymmetryAxis CCPACSWingComponentSegment::GetSymmetryAxis(void) {
+TiglSymmetryAxis CCPACSWingComponentSegment::GetSymmetryAxis() {
     // TODO
     return TiglSymmetryAxis::TIGL_NO_SYMMETRY;
 }
@@ -239,13 +239,13 @@ void CCPACSWingComponentSegment::SetSymmetryAxis(const TiglSymmetryAxis& axis) {
 }
 
 // Returns the wing this segment belongs to
-CCPACSWing& CCPACSWingComponentSegment::GetWing(void) const
+CCPACSWing& CCPACSWingComponentSegment::GetWing() const
 {
     return *wing;
 }
 
 // Getter for upper Shape
-TopoDS_Shape CCPACSWingComponentSegment::GetUpperShape(void)
+TopoDS_Shape CCPACSWingComponentSegment::GetUpperShape()
 {
     // NOTE: Because it is not clear whether loft.IsNull or invalidated defines
     //       a valid state i call GetLoft here to ensure the geometry was built
@@ -254,7 +254,7 @@ TopoDS_Shape CCPACSWingComponentSegment::GetUpperShape(void)
 }
 
 // Getter for lower Shape
-TopoDS_Shape CCPACSWingComponentSegment::GetLowerShape(void)
+TopoDS_Shape CCPACSWingComponentSegment::GetLowerShape()
 {
     // NOTE: Because it is not clear whether loft.IsNull or invalidated defines
     //       a valid state i call GetLoft here to ensure the geometry was built
@@ -263,7 +263,7 @@ TopoDS_Shape CCPACSWingComponentSegment::GetLowerShape(void)
 }
 
 // Getter for inner segment face
-TopoDS_Face CCPACSWingComponentSegment::GetInnerFace(void)
+TopoDS_Face CCPACSWingComponentSegment::GetInnerFace()
 {
     // NOTE: Because it is not clear whether loft.IsNull or invalidated defines
     //       a valid state i call GetLoft here to ensure the geometry was built
@@ -272,7 +272,7 @@ TopoDS_Face CCPACSWingComponentSegment::GetInnerFace(void)
 }
 
 // Getter for outer segment face
-TopoDS_Face CCPACSWingComponentSegment::GetOuterFace(void)
+TopoDS_Face CCPACSWingComponentSegment::GetOuterFace()
 {
     // NOTE: Because it is not clear whether loft.IsNull or invalidated defines
     //       a valid state i call GetLoft here to ensure the geometry was built
@@ -1030,7 +1030,7 @@ std::string CCPACSWingComponentSegment::GetShortShapeName()
 }
 
 // Builds the loft between the two segment sections
-PNamedShape CCPACSWingComponentSegment::BuildLoft(void)
+PNamedShape CCPACSWingComponentSegment::BuildLoft()
 {
     loft.reset();
 
@@ -1107,7 +1107,7 @@ PNamedShape CCPACSWingComponentSegment::BuildLoft(void)
 }
 
 // Method for building wires for eta-, leading edge-, trailing edge-lines
-void CCPACSWingComponentSegment::BuildLines(void) const
+void CCPACSWingComponentSegment::BuildLines() const
 {
     // search for ETA coordinate
     std::vector<gp_Pnt> lePointContainer;
@@ -1556,14 +1556,14 @@ void CCPACSWingComponentSegment::GetEtaXsiFromSegmentEtaXsi(const std::string& s
 
 
 // Returns the volume of this segment
-double CCPACSWingComponentSegment::GetVolume(void)
+double CCPACSWingComponentSegment::GetVolume()
 {
     GetLoft();
     return( myVolume );
 }
 
 // Returns the surface area of this segment
-double CCPACSWingComponentSegment::GetSurfaceArea(void)
+double CCPACSWingComponentSegment::GetSurfaceArea()
 {
     GetLoft();
     return( mySurfaceArea );

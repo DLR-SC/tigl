@@ -35,7 +35,7 @@
 namespace tigl
 {
 
-int CCPACSFuselageSections::GetSectionCount(void) const
+int CCPACSFuselageSections::GetSectionCount() const
 {
     return static_cast<int>(m_section.size());
 }

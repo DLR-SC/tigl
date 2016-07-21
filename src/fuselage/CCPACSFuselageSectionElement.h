@@ -43,14 +43,14 @@ public:
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& elementXPath);
 
     // Returns the UID of the referenced wing profile
-    TIGL_EXPORT std::string GetProfileIndex(void) const;
+    TIGL_EXPORT std::string GetProfileIndex() const;
 
     // Gets the section element transformation
-    TIGL_EXPORT CTiglTransformation GetSectionElementTransformation(void) const;
+    TIGL_EXPORT CTiglTransformation GetSectionElementTransformation() const;
 
 protected:
     // Cleanup routine
-    void Cleanup(void);
+    void Cleanup();
 };
 
 } // end namespace tigl

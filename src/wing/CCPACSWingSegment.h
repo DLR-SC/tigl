@@ -64,10 +64,10 @@ public:
     TIGL_EXPORT CCPACSWingSegment(CCPACSWing* aWing, int aSegmentIndex);
 
     // Virtual Destructor
-    TIGL_EXPORT virtual ~CCPACSWingSegment(void);
+    TIGL_EXPORT virtual ~CCPACSWingSegment();
 
     // Invalidates internal state
-    TIGL_EXPORT void Invalidate(void);
+    TIGL_EXPORT void Invalidate();
 
     // Read CPACS segment elements
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& segmentXPath);
@@ -75,11 +75,11 @@ public:
     TIGL_EXPORT virtual const std::string& GetUID() const override;
     TIGL_EXPORT virtual void SetUID(const std::string& uid) override;
 
-    TIGL_EXPORT virtual TiglSymmetryAxis GetSymmetryAxis(void) override;
+    TIGL_EXPORT virtual TiglSymmetryAxis GetSymmetryAxis() override;
     TIGL_EXPORT virtual void SetSymmetryAxis(const TiglSymmetryAxis& axis) override;
 
     // Returns the wing this segment belongs to
-    TIGL_EXPORT CCPACSWing& GetWing(void) const;
+    TIGL_EXPORT CCPACSWing& GetWing() const;
 
     TIGL_EXPORT TopoDS_Shape GetInnerClosure(CoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM);
     TIGL_EXPORT TopoDS_Shape GetOuterClosure(CoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM);
@@ -97,40 +97,40 @@ public:
     TIGL_EXPORT gp_Pnt GetChordNormal(double eta, double xsi);
 
     // Returns the inner section UID of this segment
-    TIGL_EXPORT const std::string& GetInnerSectionUID(void);
+    TIGL_EXPORT const std::string& GetInnerSectionUID();
 
     // Returns the outer section UID of this segment
-    TIGL_EXPORT const std::string& GetOuterSectionUID(void);
+    TIGL_EXPORT const std::string& GetOuterSectionUID();
 
     // Returns the inner section element UID of this segment
-    TIGL_EXPORT const std::string& GetInnerSectionElementUID(void) const;
+    TIGL_EXPORT const std::string& GetInnerSectionElementUID() const;
 
     // Returns the outer section element UID of this segment
-    TIGL_EXPORT const std::string& GetOuterSectionElementUID(void) const;
+    TIGL_EXPORT const std::string& GetOuterSectionElementUID() const;
 
     // Returns the inner section index of this segment
-    TIGL_EXPORT int GetInnerSectionIndex(void);
+    TIGL_EXPORT int GetInnerSectionIndex();
 
     // Returns the outer section index of this segment
-    TIGL_EXPORT int GetOuterSectionIndex(void);
+    TIGL_EXPORT int GetOuterSectionIndex();
 
     // Returns the inner section element index of this segment
-    TIGL_EXPORT int GetInnerSectionElementIndex(void);
+    TIGL_EXPORT int GetInnerSectionElementIndex();
 
     // Returns the outer section element index of this segment
-    TIGL_EXPORT int GetOuterSectionElementIndex(void);
+    TIGL_EXPORT int GetOuterSectionElementIndex();
 
     // Returns the starting(inner) Segment Connection
-    TIGL_EXPORT CCPACSWingConnection& GetInnerConnection(void);
+    TIGL_EXPORT CCPACSWingConnection& GetInnerConnection();
 
     // Return the end(outer) Segment Connection
-    TIGL_EXPORT CCPACSWingConnection& GetOuterConnection(void);
+    TIGL_EXPORT CCPACSWingConnection& GetOuterConnection();
 
     // Gets the count of segments connected to the inner section of this segment
-    TIGL_EXPORT int GetInnerConnectedSegmentCount(void);
+    TIGL_EXPORT int GetInnerConnectedSegmentCount();
 
     // Gets the count of segments connected to the outer section of this segment
-    TIGL_EXPORT int GetOuterConnectedSegmentCount(void);
+    TIGL_EXPORT int GetOuterConnectedSegmentCount();
 
     // Gets the index (number) of the n-th segment connected to the inner section
     // of this segment. n starts at 1.
@@ -232,20 +232,20 @@ public:
 
 protected:
     // Cleanup routine
-    void Cleanup(void);
+    void Cleanup();
 
     // Update internal segment data
-    void Update(void);
+    void Update();
 
     // builds all guide curve wires
-    void BuildGuideCurveWires(void);
+    void BuildGuideCurveWires();
 
     // Builds the loft between the two segment sections
-    PNamedShape BuildLoft(void);
+    PNamedShape BuildLoft();
 
 private:
     // get short name for loft
-    std::string GetShortShapeName (void);
+    std::string GetShortShapeName ();
 
     // Builds upper and lower surfaces
     void MakeSurfaces();

@@ -34,25 +34,25 @@ namespace tigl
 {
 
 // Constructor
-CCPACSPositioning::CCPACSPositioning(void)
+CCPACSPositioning::CCPACSPositioning()
 {
     Cleanup();
 }
 
 // Destructor
-CCPACSPositioning::~CCPACSPositioning(void)
+CCPACSPositioning::~CCPACSPositioning()
 {
     Cleanup();
 }
 
 // Invalidates internal state
-void CCPACSPositioning::Invalidate(void)
+void CCPACSPositioning::Invalidate()
 {
     invalidated = true;
 }
 
 // Cleanup routine
-void CCPACSPositioning::Cleanup(void)
+void CCPACSPositioning::Cleanup()
 {
     m_length        = 1.0;
     m_sweepAngle    = 0.0;
@@ -77,7 +77,7 @@ void CCPACSPositioning::SetStartPoint(const CTiglPoint& aPoint) {
 }
 
 // Gets the positioning outer point
-CTiglPoint CCPACSPositioning::GetOuterPoint(void)
+CTiglPoint CCPACSPositioning::GetOuterPoint()
 {
     Update();
     return outerPoint;
@@ -89,30 +89,30 @@ CTiglPoint CCPACSPositioning::GetEndPoint() {
 }
 
 // Gets the outer transformation of this segment
-CTiglTransformation CCPACSPositioning::GetOuterTransformation(void)
+CTiglTransformation CCPACSPositioning::GetOuterTransformation()
 {
     Update();
     return outerTransformation;
 }
 
-CTiglTransformation CCPACSPositioning::GetEndTransformation(void) {
+CTiglTransformation CCPACSPositioning::GetEndTransformation() {
     Update();
     return outerTransformation;
 }
 
 // Gets the section-uid of the outer section of this positioning
-std::string CCPACSPositioning::GetOuterSectionIndex(void)
+std::string CCPACSPositioning::GetOuterSectionIndex()
 {
     Update();
     return m_toSectionUID;
 }
 
-std::string CCPACSPositioning::GetEndSectionIndex(void) {
+std::string CCPACSPositioning::GetEndSectionIndex() {
     return GetOuterSectionIndex();
 }
 
 // Gets the section-uid of the inner section of this positioning
-std::string CCPACSPositioning::GetInnerSectionIndex(void)
+std::string CCPACSPositioning::GetInnerSectionIndex()
 {
     Update();
     if (m_fromSectionUID.isValid())
@@ -121,12 +121,12 @@ std::string CCPACSPositioning::GetInnerSectionIndex(void)
         return std::string();
 }
 
-std::string CCPACSPositioning::GetStartSectionIndex(void) {
+std::string CCPACSPositioning::GetStartSectionIndex() {
     return GetInnerSectionIndex();
 }
 
 // Build outer transformation matrix for the positioning
-void CCPACSPositioning::BuildMatrix(void)
+void CCPACSPositioning::BuildMatrix()
 {
     // Compose the transformation for the tip section reference point.
     // The positioning transformation is basically a translation in two steps:
@@ -156,7 +156,7 @@ void CCPACSPositioning::BuildMatrix(void)
 }
 
 // Update internal segment data
-void CCPACSPositioning::Update(void)
+void CCPACSPositioning::Update()
 {
     if (!invalidated) {
         return;

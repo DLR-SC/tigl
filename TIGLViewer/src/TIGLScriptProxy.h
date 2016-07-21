@@ -39,8 +39,8 @@ class TIGLScriptProxy :public QObject, public QScriptable
     
 private:
     // Returns the CPACS configuration
-    tigl::CCPACSConfiguration& GetConfiguration(void);
-    TiglCPACSConfigurationHandle getTiglHandle(void);
+    tigl::CCPACSConfiguration& GetConfiguration();
+    TiglCPACSConfigurationHandle getTiglHandle();
     
 public:
     TIGLScriptProxy(TIGLViewerWindow* app);
