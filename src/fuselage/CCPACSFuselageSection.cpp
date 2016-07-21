@@ -62,7 +62,7 @@ CCPACSFuselageSectionElement& CCPACSFuselageSection::GetSectionElement(int index
 // Gets the section transformation
 CTiglTransformation CCPACSFuselageSection::GetSectionTransformation(void) const
 {
-    return m_transformation.GetTransformation();
+    return m_transformation.AsTransformation();
 }
 
 } // end namespace tigl

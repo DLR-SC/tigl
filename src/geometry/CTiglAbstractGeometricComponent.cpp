@@ -60,7 +60,7 @@ void CTiglAbstractGeometricComponent::SetSymmetryAxis(const std::string& axis) {
 
 CTiglTransformation CTiglAbstractGeometricComponent::GetTransformation() const
 {
-    return transformation.GetTransformation();
+    return transformation.AsTransformation();
 }
 
 CTiglPoint CTiglAbstractGeometricComponent::GetTranslation() const
