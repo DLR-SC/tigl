@@ -37,7 +37,7 @@ namespace tigl
 {
 
 // Invalidates internal state
-void CCPACSFuselageProfiles::Invalidate(void)
+void CCPACSFuselageProfiles::Invalidate()
 {
     for (int i = 1; i < GetProfileCount(); i++) {
         GetProfile(i).Invalidate();
@@ -88,7 +88,7 @@ void CCPACSFuselageProfiles::DeleteProfile( std::string uid )
 }
 
 // Returns the total count of fuselage profiles in this configuration
-int CCPACSFuselageProfiles::GetProfileCount(void) const
+int CCPACSFuselageProfiles::GetProfileCount() const
 {
     return static_cast<int>(m_fuselageProfile.size());
 }

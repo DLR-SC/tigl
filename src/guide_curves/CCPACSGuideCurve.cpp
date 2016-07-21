@@ -39,13 +39,13 @@ CCPACSGuideCurve::CCPACSGuideCurve(const std::string& xpath)
     : ctorXPath(xpath) {}
 
 // Destructor
-CCPACSGuideCurve::~CCPACSGuideCurve(void)
+CCPACSGuideCurve::~CCPACSGuideCurve()
 {
     Cleanup();
 }
 
 // Cleanup routine
-void CCPACSGuideCurve::Cleanup(void)
+void CCPACSGuideCurve::Cleanup()
 {
     m_name       = "";
     m_uID        = "";
@@ -76,19 +76,19 @@ void CCPACSGuideCurve::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std
 }
 
 // Check if fromRelativeCircumference is set
-bool CCPACSGuideCurve::GetFromRelativeCircumferenceIsSet(void) const
+bool CCPACSGuideCurve::GetFromRelativeCircumferenceIsSet() const
 {
     return fromRelativeCircumferenceIsSet;
 }
 
 // Returns the relative circumference of the starting profile
-double CCPACSGuideCurve::GetFromRelativeCircumference(void) const
+double CCPACSGuideCurve::GetFromRelativeCircumference() const
 {
     return std::stod(m_fromRelativeCircumference_choice2.get());
 }
 
 // Returns the relative circumference of the end profile
-double CCPACSGuideCurve::GetToRelativeCircumference(void) const
+double CCPACSGuideCurve::GetToRelativeCircumference() const
 {
     return std::stod(m_toRelativeCircumference);
 }

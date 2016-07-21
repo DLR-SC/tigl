@@ -40,7 +40,7 @@ class CCPACSFuselageSections : public generated::CPACSFuselageSections
 {
 public:
     // Get section count
-    TIGL_EXPORT int GetSectionCount(void) const;
+    TIGL_EXPORT int GetSectionCount() const;
 
     // Returns the section for a given index
     TIGL_EXPORT CCPACSFuselageSection& GetSection(int index) const;

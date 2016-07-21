@@ -43,7 +43,7 @@ public:
     TIGL_EXPORT CCPACSWings(CCPACSModel* parent);
 
     // Invalidates internal state
-    TIGL_EXPORT void Invalidate(void);
+    TIGL_EXPORT void Invalidate();
 
     // Read CPACS wings elements
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& xpath);
@@ -54,10 +54,10 @@ public:
     TIGL_EXPORT bool HasProfile(std::string uid) const;
 
     // Returns the wing profiles in this configuration
-    TIGL_EXPORT CCPACSWingProfiles& GetProfiles(void);
+    TIGL_EXPORT CCPACSWingProfiles& GetProfiles();
 
     // Returns the total count of wing profiles in this configuration
-    TIGL_EXPORT int GetProfileCount(void) const;
+    TIGL_EXPORT int GetProfileCount() const;
 
     // Returns the wing profile for a given uid.
     TIGL_EXPORT CCPACSWingProfile& GetProfile(std::string uid) const;
@@ -66,7 +66,7 @@ public:
     TIGL_EXPORT CCPACSWingProfile& GetProfile(int index) const;
 
     // Returns the total count of wings in a configuration
-    TIGL_EXPORT int GetWingCount(void) const;
+    TIGL_EXPORT int GetWingCount() const;
 
     // Returns the wing for a given index.
     TIGL_EXPORT CCPACSWing& GetWing(int index) const;

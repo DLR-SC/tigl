@@ -40,7 +40,7 @@ public:
     TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
 
     // Returns the total count of guide curves in this configuration
-    TIGL_EXPORT int GetGuideCurveProfileCount(void) const;
+    TIGL_EXPORT int GetGuideCurveProfileCount() const;
 
     // Returns the guide curve for a given uid.
     TIGL_EXPORT CCPACSGuideCurveProfile& GetGuideCurveProfile(const std::string& uid) const;

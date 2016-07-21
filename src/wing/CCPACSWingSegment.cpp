@@ -220,13 +220,13 @@ CCPACSWingSegment::CCPACSWingSegment(CCPACSWing* aWing, int aSegmentIndex)
 }
 
 // Destructor
-CCPACSWingSegment::~CCPACSWingSegment(void)
+CCPACSWingSegment::~CCPACSWingSegment()
 {
     Cleanup();
 }
 
 // Invalidates internal state
-void CCPACSWingSegment::Invalidate(void)
+void CCPACSWingSegment::Invalidate()
 {
     CTiglAbstractSegment::Invalidate();
     surfacesAreValid = false;
@@ -234,7 +234,7 @@ void CCPACSWingSegment::Invalidate(void)
 }
 
 // Cleanup routine
-void CCPACSWingSegment::Cleanup(void)
+void CCPACSWingSegment::Cleanup()
 {
     m_name = "";
     m_description = "";
@@ -247,7 +247,7 @@ void CCPACSWingSegment::Cleanup(void)
 }
 
 // Update internal segment data
-void CCPACSWingSegment::Update(void)
+void CCPACSWingSegment::Update()
 {
     Invalidate();
 }
@@ -295,7 +295,7 @@ void CCPACSWingSegment::SetSymmetryAxis(const TiglSymmetryAxis& axis) {
 }
 
 // Returns the wing this segment belongs to
-CCPACSWing& CCPACSWingSegment::GetWing(void) const
+CCPACSWing& CCPACSWingSegment::GetWing() const
 {
     return *wing;
 }
@@ -429,7 +429,7 @@ std::string CCPACSWingSegment::GetShortShapeName ()
 
 // Builds the loft between the two segment sections
 // build loft out of faces (for compatibility with component segmen loft)
-PNamedShape CCPACSWingSegment::BuildLoft(void)
+PNamedShape CCPACSWingSegment::BuildLoft()
 {
     TopoDS_Wire innerWire = GetInnerWire();
     TopoDS_Wire outerWire = GetOuterWire();
@@ -474,74 +474,74 @@ gp_Pnt CCPACSWingSegment::GetLowerPoint(double eta, double xsi)
 }
 
 // Returns the inner section UID of this segment
-const std::string& CCPACSWingSegment::GetInnerSectionUID(void)
+const std::string& CCPACSWingSegment::GetInnerSectionUID()
 {
     return innerConnection.GetSectionUID();
 }
 
 // Returns the outer section UID of this segment
-const std::string& CCPACSWingSegment::GetOuterSectionUID(void)
+const std::string& CCPACSWingSegment::GetOuterSectionUID()
 {
     return outerConnection.GetSectionUID();
 }
 
 // Returns the inner section element UID of this segment
-const std::string& CCPACSWingSegment::GetInnerSectionElementUID(void) const
+const std::string& CCPACSWingSegment::GetInnerSectionElementUID() const
 {
     return innerConnection.GetSectionElementUID();
 }
 
 // Returns the outer section element UID of this segment
-const std::string& CCPACSWingSegment::GetOuterSectionElementUID(void) const
+const std::string& CCPACSWingSegment::GetOuterSectionElementUID() const
 {
     return outerConnection.GetSectionElementUID();
 }
 
 // Returns the inner section index of this segment
-int CCPACSWingSegment::GetInnerSectionIndex(void)
+int CCPACSWingSegment::GetInnerSectionIndex()
 {
     return innerConnection.GetSectionIndex();
 }
 
 // Returns the outer section index of this segment
-int CCPACSWingSegment::GetOuterSectionIndex(void)
+int CCPACSWingSegment::GetOuterSectionIndex()
 {
     return outerConnection.GetSectionIndex();
 }
 
 // Returns the inner section element index of this segment
-int CCPACSWingSegment::GetInnerSectionElementIndex(void)
+int CCPACSWingSegment::GetInnerSectionElementIndex()
 {
     return innerConnection.GetSectionElementIndex();
 }
 
 // Returns the outer section element index of this segment
-int CCPACSWingSegment::GetOuterSectionElementIndex(void)
+int CCPACSWingSegment::GetOuterSectionElementIndex()
 {
     return outerConnection.GetSectionElementIndex();
 }
 
 // Returns the start section element index of this segment
-CCPACSWingConnection& CCPACSWingSegment::GetInnerConnection(void)
+CCPACSWingConnection& CCPACSWingSegment::GetInnerConnection()
 {
     return( innerConnection );
 }
 
 // Returns the end section element index of this segment
-CCPACSWingConnection& CCPACSWingSegment::GetOuterConnection(void)
+CCPACSWingConnection& CCPACSWingSegment::GetOuterConnection()
 {
     return( outerConnection );
 }
 
 // Returns the volume of this segment
-double CCPACSWingSegment::GetVolume(void)
+double CCPACSWingSegment::GetVolume()
 {
     Update();
     return( myVolume );
 }
 
 // Returns the surface area of this segment
-double CCPACSWingSegment::GetSurfaceArea(void)
+double CCPACSWingSegment::GetSurfaceArea()
 {
     MakeSurfaces();
     return( mySurfaceArea );
@@ -618,7 +618,7 @@ double CCPACSWingSegment::GetSurfaceArea(bool fromUpper,
 }
 
 // Gets the count of segments connected to the inner section of this segment // TODO can this be optimized instead of iterating over all segments?
-int CCPACSWingSegment::GetInnerConnectedSegmentCount(void)
+int CCPACSWingSegment::GetInnerConnectedSegmentCount()
 {
     int count = 0;
     for (int i = 1; i <= GetWing().GetSegmentCount(); i++) {
@@ -636,7 +636,7 @@ int CCPACSWingSegment::GetInnerConnectedSegmentCount(void)
 }
 
 // Gets the count of segments connected to the outer section of this segment
-int CCPACSWingSegment::GetOuterConnectedSegmentCount(void)
+int CCPACSWingSegment::GetOuterConnectedSegmentCount()
 {
     int count = 0;
     for (int i = 1; i <= GetWing().GetSegmentCount(); i++) {
@@ -1184,7 +1184,7 @@ TopTools_SequenceOfShape& CCPACSWingSegment::GetGuideCurveWires()
 }
 
 // Creates all guide curves
-void CCPACSWingSegment::BuildGuideCurveWires(void)
+void CCPACSWingSegment::BuildGuideCurveWires()
 {
     guideCurveWires.Clear();
     if (guideCurvesPresent) {

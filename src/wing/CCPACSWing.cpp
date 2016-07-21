@@ -150,13 +150,13 @@ CCPACSWing::CCPACSWing(generated::CPACSRotorBlades* parent)
 }
 
 // Destructor
-CCPACSWing::~CCPACSWing(void)
+CCPACSWing::~CCPACSWing()
 {
     Cleanup();
 }
 
 // Invalidates internal state
-void CCPACSWing::Invalidate(void)
+void CCPACSWing::Invalidate()
 {
     invalidated = true;
     m_segments.Invalidate();
@@ -167,7 +167,7 @@ void CCPACSWing::Invalidate(void)
 }
 
 // Cleanup routine
-void CCPACSWing::Cleanup(void)
+void CCPACSWing::Cleanup()
 {
     m_name = "";
     m_description = "";
@@ -179,7 +179,7 @@ void CCPACSWing::Cleanup(void)
 }
 
 //// Builds transformation matrix for the wing
-//void CCPACSWing::BuildMatrix(void)
+//void CCPACSWing::BuildMatrix()
 //{
 //    transformation.SetIdentity();
 //
@@ -201,7 +201,7 @@ void CCPACSWing::Cleanup(void)
 //}
 
 // Update internal wing data
-void CCPACSWing::Update(void)
+void CCPACSWing::Update()
 {
     if (!invalidated) {
         return;
@@ -252,13 +252,13 @@ void CCPACSWing::SetSymmetryAxis(const TiglSymmetryAxis& axis) {
 }
 
 // Returns the parent configuration
-CCPACSConfiguration& CCPACSWing::GetConfiguration(void) const
+CCPACSConfiguration& CCPACSWing::GetConfiguration() const
 {
     return *configuration;
 }
 
 // Get section count
-int CCPACSWing::GetSectionCount(void) const
+int CCPACSWing::GetSectionCount() const
 {
     return static_cast<int>(m_sections.GetSection().size());
 }
@@ -270,7 +270,7 @@ const CCPACSWingSection& CCPACSWing::GetSection(int index) const
 }
 
 // Get segment count
-int CCPACSWing::GetSegmentCount(void) const
+int CCPACSWing::GetSegmentCount() const
 {
     return m_segments.GetSegmentCount();
 }
@@ -288,7 +288,7 @@ CCPACSWingSegment& CCPACSWing::GetSegment(std::string uid)
 }
 
 // Get componentSegment count
-int CCPACSWing::GetComponentSegmentCount(void)
+int CCPACSWing::GetComponentSegmentCount()
 {
     if (m_componentSegments.isValid())
         return m_componentSegments->GetComponentSegmentCount();
@@ -309,7 +309,7 @@ CCPACSWingComponentSegment& CCPACSWing::GetComponentSegment(std::string uid)
 }
 
 // Gets the loft of the whole wing with modeled leading edge.
-TopoDS_Shape & CCPACSWing::GetLoftWithLeadingEdge(void)
+TopoDS_Shape & CCPACSWing::GetLoftWithLeadingEdge()
 {
     if (rebuildFusedSegWEdge) {
         fusedSegmentWithEdge = BuildFusedSegments(true)->Shape();
@@ -319,7 +319,7 @@ TopoDS_Shape & CCPACSWing::GetLoftWithLeadingEdge(void)
 }
     
 // Gets the loft of the whole wing.
-TopoDS_Shape & CCPACSWing::GetUpperShape(void)
+TopoDS_Shape & CCPACSWing::GetUpperShape()
 {
     if (rebuildShells) {
         BuildUpperLowerShells();
@@ -329,7 +329,7 @@ TopoDS_Shape & CCPACSWing::GetUpperShape(void)
 }
     
 // Gets the loft of the whole wing.
-TopoDS_Shape & CCPACSWing::GetLowerShape(void)
+TopoDS_Shape & CCPACSWing::GetLowerShape()
 {
     if (rebuildShells) {
         BuildUpperLowerShells();
@@ -420,7 +420,7 @@ void CCPACSWing::BuildUpperLowerShells()
 
 
 // Gets the wing transformation (original wing implementation, but see GetTransformation)
-CTiglTransformation CCPACSWing::GetWingTransformation(void)
+CTiglTransformation CCPACSWing::GetWingTransformation()
 {
     Update();   // create new transformation matrix if scaling, rotation or translation was changed
     return m_transformation.AsTransformation();
@@ -445,7 +445,7 @@ gp_Pnt CCPACSWing::GetLowerPoint(int segmentIndex, double eta, double xsi)
 }
 
 // Returns the volume of this wing
-double CCPACSWing::GetVolume(void)
+double CCPACSWing::GetVolume()
 {
     const TopoDS_Shape& fusedSegments = GetLoft()->Shape();
 
@@ -457,7 +457,7 @@ double CCPACSWing::GetVolume(void)
 }
 
 // Get the Transformation object (general interface implementation)
-CTiglTransformation CCPACSWing::GetTransformation(void)
+CTiglTransformation CCPACSWing::GetTransformation()
 {
     return GetWingTransformation();
 }
@@ -501,7 +501,7 @@ void CCPACSWing::SetScaling(const CTiglPoint& scaling)
 }
 
 // Returns the surface area of this wing
-double CCPACSWing::GetSurfaceArea(void)
+double CCPACSWing::GetSurfaceArea()
 {
     const TopoDS_Shape& fusedSegments = GetLoft()->Shape();
 

@@ -46,7 +46,7 @@ CTiglInterpolateBsplineWire::CTiglInterpolateBsplineWire()
 }
 
 // Destructor
-CTiglInterpolateBsplineWire::~CTiglInterpolateBsplineWire(void)
+CTiglInterpolateBsplineWire::~CTiglInterpolateBsplineWire()
 {
 }
 
@@ -136,7 +136,7 @@ TopoDS_Wire CTiglInterpolateBsplineWire::BuildWire(const CPointContainer& points
 }
 
 // Returns the algorithm code identifier for an algorithm
-TiglAlgorithmCode CTiglInterpolateBsplineWire::GetAlgorithmCode(void) const 
+TiglAlgorithmCode CTiglInterpolateBsplineWire::GetAlgorithmCode() const 
 {
     return TIGL_INTERPOLATE_BSPLINE_WIRE;
 }

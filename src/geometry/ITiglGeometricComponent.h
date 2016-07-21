@@ -43,31 +43,31 @@ class ITiglGeometricComponent
 {
 public:
        // Gets the loft of a geometric component
-    virtual PNamedShape GetLoft(void) = 0;
+    virtual PNamedShape GetLoft() = 0;
 
     // Returns the unique id of this component
-    virtual const std::string& GetUID(void) const = 0;
+    virtual const std::string& GetUID() const = 0;
 
     // Sets the unique id of this component
     virtual void SetUID(const std::string&) = 0;
 
     // Get transformation object
-    virtual CTiglTransformation GetTransformation(void) const = 0;
+    virtual CTiglTransformation GetTransformation() const = 0;
     
     // Set transformation object
     virtual void Translate(CTiglPoint trans) = 0;
 
     // Get component translation
-    virtual CTiglPoint GetTranslation(void) const = 0;
+    virtual CTiglPoint GetTranslation() const = 0;
     
-    virtual ECPACSTranslationType GetTranslationType(void) const = 0;
+    virtual ECPACSTranslationType GetTranslationType() const = 0;
 
     // Returns the Geometric type of this component, e.g. Wing or Fuselage
-    virtual TiglGeometricComponentType GetComponentType(void) = 0;
+    virtual TiglGeometricComponentType GetComponentType() = 0;
 
 protected:
     // Resets the geometric component.
-    virtual void Reset(void) = 0;
+    virtual void Reset() = 0;
 };
 
 } // end namespace tigl

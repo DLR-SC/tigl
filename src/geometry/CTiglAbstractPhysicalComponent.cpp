@@ -70,7 +70,7 @@ CTiglAbstractPhysicalComponent::ChildContainerType CTiglAbstractPhysicalComponen
 }
 
 // Resets the geometric component.
-void CTiglAbstractPhysicalComponent::Reset(void)
+void CTiglAbstractPhysicalComponent::Reset()
 {
     CTiglAbstractGeometricComponent::Reset();
     childContainer.clear();
@@ -78,7 +78,7 @@ void CTiglAbstractPhysicalComponent::Reset(void)
 }
 
 // Returns the parent unique id
-std::string& CTiglAbstractPhysicalComponent::GetParentUID(void)
+std::string& CTiglAbstractPhysicalComponent::GetParentUID()
 {
     return parentUID;
 }

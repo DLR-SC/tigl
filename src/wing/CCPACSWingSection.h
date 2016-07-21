@@ -44,7 +44,7 @@ public:
     TIGL_EXPORT CCPACSWingSection();
 
     // Virtual Destructor
-    TIGL_EXPORT virtual ~CCPACSWingSection(void);
+    TIGL_EXPORT virtual ~CCPACSWingSection();
 
     // Read CPACS section elements
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& sectionXPath);
@@ -53,13 +53,13 @@ public:
     TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& sectionXPath);
 
     // Get element count for this section
-    TIGL_EXPORT int GetSectionElementCount(void) const;
+    TIGL_EXPORT int GetSectionElementCount() const;
 
     // Get element for a given index
     TIGL_EXPORT const CCPACSWingSectionElement& GetSectionElement(int index) const;
 
     // Gets the section transformation
-    TIGL_EXPORT CTiglTransformation GetSectionTransformation(void) const;
+    TIGL_EXPORT CTiglTransformation GetSectionTransformation() const;
 
     // Gets the section translation
     TIGL_EXPORT CTiglPoint GetTranslation() const;
@@ -81,13 +81,13 @@ public:
 
 protected:
     // Cleanup routine
-    void Cleanup(void);
+    void Cleanup();
 
     // Build transformation matrix for the section
-    void BuildMatrix(void);
+    void BuildMatrix();
 
     // Update internal section data
-    void Update(void);
+    void Update();
 
 private:
     // Copy constructor

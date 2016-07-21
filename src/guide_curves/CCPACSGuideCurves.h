@@ -37,7 +37,7 @@ class CCPACSGuideCurves : public generated::CPACSGuideCurves
 {
 public:
     // Returns the total count of guide curves in this configuration
-    TIGL_EXPORT int GetGuideCurveCount(void) const;
+    TIGL_EXPORT int GetGuideCurveCount() const;
 
     // Returns the guide curve for a given index
     TIGL_EXPORT const CCPACSGuideCurve& GetGuideCurve(int index) const;

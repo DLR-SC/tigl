@@ -36,7 +36,7 @@
 namespace tigl
 {
 // Invalidates internal state
-void CCPACSWingProfiles::Invalidate(void)
+void CCPACSWingProfiles::Invalidate()
 {
     for (decltype(m_wingAirfoil)::iterator p = m_wingAirfoil.begin(); p != m_wingAirfoil.end(); ++p) {
         static_cast<CCPACSWingProfile*>(*p)->Invalidate();
@@ -87,7 +87,7 @@ void CCPACSWingProfiles::DeleteProfile(std::string uid)
 }
 
 // Returns the total count of wing profiles in this configuration
-int CCPACSWingProfiles::GetProfileCount(void) const
+int CCPACSWingProfiles::GetProfileCount() const
 {
     return static_cast<int>(m_wingAirfoil.size());
 }

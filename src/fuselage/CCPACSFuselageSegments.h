@@ -38,7 +38,7 @@ public:
 	TIGL_EXPORT CCPACSFuselageSegments(CCPACSFuselage* parent);
 
     // Invalidates internal state
-    TIGL_EXPORT void Invalidate(void);
+    TIGL_EXPORT void Invalidate();
 
     // Gets a segment by index.
     TIGL_EXPORT CCPACSFuselageSegment& GetSegment(int index);
@@ -47,7 +47,7 @@ public:
     TIGL_EXPORT CCPACSFuselageSegment & GetSegment(const std::string& segmentUID);
 
     // Gets total segment count
-    TIGL_EXPORT int GetSegmentCount(void) const;
+    TIGL_EXPORT int GetSegmentCount() const;
 };
 
 } // end namespace tigl

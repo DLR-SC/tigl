@@ -72,10 +72,10 @@ public:
                                              const std::string& intersectionID);
 
     // Destructor
-    TIGL_EXPORT virtual ~CTiglIntersectionCalculation(void);
+    TIGL_EXPORT virtual ~CTiglIntersectionCalculation();
 
     // returns total number of intersection lines
-    TIGL_EXPORT int GetCountIntersectionLines(void);
+    TIGL_EXPORT int GetCountIntersectionLines();
 
     // Gets a point on the intersection line in dependence of a parameter zeta with
     // 0.0 <= zeta <= 1.0. For zeta = 0.0 this is the line starting point,

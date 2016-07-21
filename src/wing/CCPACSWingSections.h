@@ -35,7 +35,7 @@ class CCPACSWingSections : public generated::CPACSWingSections
 {
 public:
     // Get section count
-    TIGL_EXPORT int GetSectionCount(void) const;
+    TIGL_EXPORT int GetSectionCount() const;
 
     // Returns the section for a given index
     TIGL_EXPORT CCPACSWingSection& GetSection(int index) const;

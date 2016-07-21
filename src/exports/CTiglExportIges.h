@@ -47,7 +47,7 @@ public:
     TIGL_EXPORT CTiglExportIges(CCPACSConfiguration& config);
 
     // Virtual Destructor
-    TIGL_EXPORT virtual ~CTiglExportIges(void);
+    TIGL_EXPORT virtual ~CTiglExportIges();
 
     // Exports the whole configuration as IGES file
     TIGL_EXPORT void ExportIGES(const std::string& filename) const;

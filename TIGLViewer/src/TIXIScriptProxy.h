@@ -37,7 +37,7 @@ class TIXIScriptProxy : public QObject
     
 private:
     // Returns the TIXI handle
-    TixiDocumentHandle GetConfiguration(void) const;
+    TixiDocumentHandle GetConfiguration() const;
     char* qString2char(QString str);
     
 public:

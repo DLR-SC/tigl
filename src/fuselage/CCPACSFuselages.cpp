@@ -41,7 +41,7 @@ CCPACSFuselages::CCPACSFuselages(generated::CPACSRotorcraftModel* parent)
     : generated::CPACSFuselages(parent) {}
 
 // Invalidates internal state
-void CCPACSFuselages::Invalidate(void)
+void CCPACSFuselages::Invalidate()
 {
     profiles.Invalidate();
     for (int i = 1; i <= GetFuselageCount(); i++) {
@@ -73,12 +73,12 @@ bool CCPACSFuselages::HasProfile(std::string uid) const
 }
 
 // Returns the total count of fuselage profiles in this configuration
-int CCPACSFuselages::GetProfileCount(void) const
+int CCPACSFuselages::GetProfileCount() const
 {
     return profiles.GetProfileCount();
 }
 
-CCPACSFuselageProfiles& CCPACSFuselages::GetProfiles(void) 
+CCPACSFuselageProfiles& CCPACSFuselages::GetProfiles() 
 {
     return profiles;
 }
@@ -96,7 +96,7 @@ CCPACSFuselageProfile& CCPACSFuselages::GetProfile(std::string uid) const
 }
 
 // Returns the total count of fuselages in a configuration
-int CCPACSFuselages::GetFuselageCount(void) const
+int CCPACSFuselages::GetFuselageCount() const
 {
     return (static_cast<int>(m_fuselage.size()));
 }

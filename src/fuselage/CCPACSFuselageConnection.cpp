@@ -55,33 +55,33 @@ CCPACSFuselageConnection::CCPACSFuselageConnection(const std::string& elementUID
 }
 
 // Returns the section index of this connection
-const std::string& CCPACSFuselageConnection::GetSectionUID(void) const
+const std::string& CCPACSFuselageConnection::GetSectionUID() const
 {
     return sectionUID;
 }
 
 // Returns the section element index of this connection
-const std::string& CCPACSFuselageConnection::GetSectionElementUID(void) const
+const std::string& CCPACSFuselageConnection::GetSectionElementUID() const
 {
     return *elementUID;
 }
 
 
 // Returns the section index of this connection
-int CCPACSFuselageConnection::GetSectionIndex(void) const
+int CCPACSFuselageConnection::GetSectionIndex() const
 {
     return sectionIndex;
 }
 
 // Returns the section element index of this connection
-int CCPACSFuselageConnection::GetSectionElementIndex(void) const
+int CCPACSFuselageConnection::GetSectionElementIndex() const
 {
     return elementIndex;
 }
 
 
 // Returns the fuselage profile referenced by this connection
-CCPACSFuselageProfile& CCPACSFuselageConnection::GetProfile(void) const
+CCPACSFuselageProfile& CCPACSFuselageConnection::GetProfile() const
 {
     CCPACSFuselage& fuselage = segment->GetFuselage();
     std::string profileUID;
@@ -107,13 +107,13 @@ CCPACSFuselageProfile& CCPACSFuselageConnection::GetProfile(void) const
 }
 
 // Returns the positioning transformation for the referenced section
-CTiglTransformation CCPACSFuselageConnection::GetPositioningTransformation(void) const
+CTiglTransformation CCPACSFuselageConnection::GetPositioningTransformation() const
 {
     return (segment->GetFuselage().GetPositioningTransformation(sectionUID));
 }
 
 // Returns the section matrix referenced by this connection
-CTiglTransformation CCPACSFuselageConnection::GetSectionTransformation(void) const
+CTiglTransformation CCPACSFuselageConnection::GetSectionTransformation() const
 {
     CCPACSFuselage& fuselage = segment->GetFuselage();
     CTiglTransformation transformation;
@@ -130,7 +130,7 @@ CTiglTransformation CCPACSFuselageConnection::GetSectionTransformation(void) con
 }
 
 // Returns the section element matrix referenced by this connection
-CTiglTransformation CCPACSFuselageConnection::GetSectionElementTransformation(void) const
+CTiglTransformation CCPACSFuselageConnection::GetSectionElementTransformation() const
 {
     CCPACSFuselage& fuselage = segment->GetFuselage();
     CTiglTransformation transformation;

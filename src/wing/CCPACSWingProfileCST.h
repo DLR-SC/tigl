@@ -49,7 +49,7 @@ public:
     TIGL_EXPORT CCPACSWingProfileCST();
 
     // Destructor
-    TIGL_EXPORT ~CCPACSWingProfileCST(void);
+    TIGL_EXPORT ~CCPACSWingProfileCST();
 
     TIGL_EXPORT static std::string CPACSID();
 
@@ -60,10 +60,10 @@ public:
     TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& profileXPath) const override;
 
     // Cleanup routine
-    TIGL_EXPORT void Cleanup(void);
+    TIGL_EXPORT void Cleanup();
 
     // Update of wire points ...
-    TIGL_EXPORT void Update(void);
+    TIGL_EXPORT void Update();
 
     // Returns the profile points as read from TIXI.
     TIGL_EXPORT std::vector<CTiglPoint*> GetSamplePoints() const;

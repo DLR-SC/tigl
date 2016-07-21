@@ -34,13 +34,13 @@ CTiglAbstractSegment::CTiglAbstractSegment(int segindex, CCPACSTransformation& t
 {
 }
 
-void CTiglAbstractSegment::Invalidate(void)
+void CTiglAbstractSegment::Invalidate()
 {
     loft.reset();
     invalidated = true;
 }
 
-void CTiglAbstractSegment::Cleanup(void)
+void CTiglAbstractSegment::Cleanup()
 {
     CTiglAbstractGeometricComponent::Reset();
     Invalidate();
@@ -48,7 +48,7 @@ void CTiglAbstractSegment::Cleanup(void)
 }
 
 // Returns the segment index of this segment
-int CTiglAbstractSegment::GetSegmentIndex(void) const
+int CTiglAbstractSegment::GetSegmentIndex() const
 {
     return mySegmentIndex;
 }

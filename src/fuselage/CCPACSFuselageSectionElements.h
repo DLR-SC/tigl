@@ -40,7 +40,7 @@ class CCPACSFuselageSectionElements : public generated::CPACSFuselageElements
 {
 public:
     // Get element count for this section
-    TIGL_EXPORT int GetSectionElementCount(void) const;
+    TIGL_EXPORT int GetSectionElementCount() const;
 
     // Get element for a given index
     TIGL_EXPORT CCPACSFuselageSectionElement& GetSectionElement(int index) const;

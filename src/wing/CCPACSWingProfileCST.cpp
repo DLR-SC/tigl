@@ -66,7 +66,7 @@ CCPACSWingProfileCST::CCPACSWingProfileCST()
 }
 
 // Destructor
-CCPACSWingProfileCST::~CCPACSWingProfileCST(void)
+CCPACSWingProfileCST::~CCPACSWingProfileCST()
 {
 }
 
@@ -85,12 +85,12 @@ void CCPACSWingProfileCST::WriteCPACS(const TixiDocumentHandle& tixiHandle, cons
 }
 
 // Cleanup routine
-void CCPACSWingProfileCST::Cleanup(void)
+void CCPACSWingProfileCST::Cleanup()
 {
     trailingEdge.Nullify();
 }
 
-void CCPACSWingProfileCST::Update(void)
+void CCPACSWingProfileCST::Update()
 {
     BuildWires();
 }

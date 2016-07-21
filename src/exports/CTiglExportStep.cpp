@@ -244,7 +244,7 @@ CTiglExportStep::CTiglExportStep(CCPACSConfiguration& config)
 }
 
 // Destructor
-CTiglExportStep::~CTiglExportStep(void)
+CTiglExportStep::~CTiglExportStep()
 {
 }
 
