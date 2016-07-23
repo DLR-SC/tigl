@@ -6005,7 +6005,7 @@
 											</border>
 											<border>
 												<ribDefinitionUID>rib_9_front</ribDefinitionUID>
-												<ribDefinitionUID>rib_9_straight</ribDefinitionUID>
+												<!--<ribDefinitionUID>rib_9_straight</ribDefinitionUID>-->
 												<ribNumber>1</ribNumber>
 											</border>
 										</geometry>
@@ -6022,7 +6022,7 @@
 											</border>
 											<border>
 												<ribDefinitionUID>rib_9_front</ribDefinitionUID>
-												<ribDefinitionUID>rib_9_straight</ribDefinitionUID>
+												<!--<ribDefinitionUID>rib_9_straight</ribDefinitionUID>-->
 												<ribNumber>1</ribNumber>
 											</border>
 											<border>
