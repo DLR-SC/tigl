@@ -203,8 +203,7 @@ CCPACSWingSegment::CCPACSWingSegment(CCPACSWingSegments* parent)
     : generated::CPACSWingSegment(parent)
     , CTiglAbstractSegment(parent->GetSegmentCount() + 1, dummyTrans) // TODO: this is a hack, as we depend on the implementation of the vector reader in generated::CCPACSWingSegments::ReadCPACS() but the current CodeGen does not support passing indices into ctors
     , wing(parent->GetParent<CCPACSWing>())
-    , surfacesAreValid(false)
-    , guideCurvesPresent(false) {
+    , surfacesAreValid(false) {
     Cleanup();
 }
 
@@ -214,7 +213,6 @@ CCPACSWingSegment::CCPACSWingSegment(CCPACSWing* aWing, int aSegmentIndex)
     , CTiglAbstractSegment(aSegmentIndex, dummyTrans)
     , wing(aWing)
     , surfacesAreValid(false)
-    , guideCurvesPresent(false)
 {
     Cleanup();
 }
@@ -242,7 +240,6 @@ void CCPACSWingSegment::Cleanup()
     lowerShape.Nullify();
     trailingEdgeShape.Nullify();
     surfacesAreValid = false;
-    guideCurvesPresent = false;
     CTiglAbstractSegment::Cleanup();
 }
 
@@ -1187,7 +1184,7 @@ TopTools_SequenceOfShape& CCPACSWingSegment::GetGuideCurveWires()
 void CCPACSWingSegment::BuildGuideCurveWires()
 {
     guideCurveWires.Clear();
-    if (guideCurvesPresent) {
+    if (HasGuideCurves()) {
         // get upper and lower part of inner profile in world coordinates
         CCPACSWingProfile& innerProfile = innerConnection.GetProfile();
         TopoDS_Edge upperInnerWire = TopoDS::Edge(transformProfileWire(GetWing().GetTransformation(), innerConnection, innerProfile.GetUpperWire()));
@@ -1253,7 +1250,10 @@ void CCPACSWingSegment::BuildGuideCurveWires()
 
 int CCPACSWingSegment::GetGuideCurveCount() const
 {
-    return m_guideCurves->GetGuideCurveCount();
+    if (m_guideCurves.isValid())
+        return m_guideCurves->GetGuideCurveCount();
+    else
+        return 0;
 }
 
 } // end namespace tigl

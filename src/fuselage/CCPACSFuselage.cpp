@@ -149,13 +149,13 @@ int CCPACSFuselage::GetSegmentCount() const
 }
 
 // Returns the segment for a given index
-CTiglAbstractSegment & CCPACSFuselage::GetSegment(const int index)
+CCPACSFuselageSegment& CCPACSFuselage::GetSegment(const int index)
 {
     return m_segments.GetSegment(index);
 }
 
 // Returns the segment for a given uid
-CTiglAbstractSegment & CCPACSFuselage::GetSegment(std::string uid)
+CCPACSFuselageSegment& CCPACSFuselage::GetSegment(std::string uid)
 {
     return m_segments.GetSegment(uid);
 }

@@ -389,7 +389,7 @@ int CCPACSFuselageSegment::GetStartConnectedSegmentCount()
 {
     int count = 0;
     for (int i = 1; i <= GetFuselage().GetSegmentCount(); i++) {
-        CCPACSFuselageSegment& nextSegment = (CCPACSFuselageSegment &) GetFuselage().GetSegment(i);
+        CCPACSFuselageSegment& nextSegment = GetFuselage().GetSegment(i);
         if (nextSegment.GetSegmentIndex() == mySegmentIndex) {
             continue;
         }
@@ -407,7 +407,7 @@ int CCPACSFuselageSegment::GetEndConnectedSegmentCount()
 {
     int count = 0;
     for (int i = 1; i <= GetFuselage().GetSegmentCount(); i++) {
-        CCPACSFuselageSegment& nextSegment = (CCPACSFuselageSegment &) GetFuselage().GetSegment(i);
+        CCPACSFuselageSegment& nextSegment = GetFuselage().GetSegment(i);
         if (nextSegment.GetSegmentIndex() == mySegmentIndex) {
             continue;
         }
@@ -429,7 +429,7 @@ int CCPACSFuselageSegment::GetStartConnectedSegmentIndex(int n)
     }
 
     for (int i = 1, count = 0; i <= GetFuselage().GetSegmentCount(); i++) {
-        CCPACSFuselageSegment& nextSegment = (CCPACSFuselageSegment &) GetFuselage().GetSegment(i);
+        CCPACSFuselageSegment& nextSegment = GetFuselage().GetSegment(i);
         if (nextSegment.GetSegmentIndex() == mySegmentIndex) {
             continue;
         }

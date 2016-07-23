@@ -98,7 +98,7 @@ CCPACSWingProfile& CCPACSWings::GetProfile(int index) const
 // Returns the total count of wings in a configuration
 int CCPACSWings::GetWingCount() const
 {
-    return (static_cast<int>(m_wing.size()));
+    return static_cast<int>(m_wing.size());
 }
 
 // Returns the wing for a given index.

@@ -31,7 +31,10 @@ CCPACSWingShell::CCPACSWingShell()
 
 int CCPACSWingShell::GetCellCount() const
 {
-    return m_cells.get().GetCellCount();
+    if (m_cells.isValid())
+        return m_cells->GetCellCount();
+    else
+        return 0;
 }
 
 CCPACSWingCell& CCPACSWingShell::GetCell(int index)
