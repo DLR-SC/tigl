@@ -63,24 +63,24 @@ namespace tigl {
 	}
 
 	template<typename ChildType, typename ReadChildFunc>
-	void TixiReadElements(const TixiDocumentHandle& tixiHandle, const std::string& parentPath, const std::string& childName, std::vector<ChildType>& children, ReadChildFunc readChild, int minOcurrs = -1, int maxOccurs = -1) {
+	void TixiReadElements(const TixiDocumentHandle& tixiHandle, const std::string& parentPath, const std::string& childName, std::vector<ChildType>& children, ReadChildFunc readChild, int minOccurs = -1, int maxOccurs = -1) {
 		const std::string childBasePath = parentPath + "/" + childName;
 
 		// read number of child nodes
 		const int childCount = TixiGetNamedChildrenCount(tixiHandle, parentPath, childName);
 
 		// validate number of child nodes
-		if (minOcurrs >= 0) {
-			if (childCount < minOcurrs) {
+		if (minOccurs >= 0) {
+			if (childCount < minOccurs) {
 				// TODO: replace by exception/warning
 				std::cerr
 					<< "Not enough child nodes for element\n"
 					<< "xpath: " << parentPath << "\n"
-					<< "minimum: " << minOcurrs << "\n"
+					<< "minimum: " << minOccurs << "\n"
 					<< "actual: " << childCount;
 			}
 		}
-		if (minOcurrs >= 0) {
+		if (maxOccurs >= 0) {
 			if (childCount > maxOccurs) {
 				// TODO: replace by exception/warning
 				std::cerr

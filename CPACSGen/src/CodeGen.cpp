@@ -11,6 +11,8 @@ namespace tigl {
 	// some options
 	namespace {
 		bool c_generateDefaultCtorsForParentPointerTypes = false;
+		bool c_generateCaseSensitiveStringToEnumConversion = false; // true would be more strict, but some test data has troubles with this
+		bool c_generateTryCatchAroundOptionalClassReads = true;
 	}
 
 	struct Scope;
@@ -325,7 +327,21 @@ namespace tigl {
 							cpp << f.fieldName() << ".construct(" << parentPointerThis(c) << ");";
 						else
 							cpp << f.fieldName() << ".construct();";
-						cpp << f.fieldName() << "->ReadCPACS(tixiHandle, xpath + \"/" << f.cpacsName << "\");";
+						if (c_generateTryCatchAroundOptionalClassReads) {
+							cpp << "try {";
+							{
+								Scope s(cpp);
+								cpp << f.fieldName() << "->ReadCPACS(tixiHandle, xpath + \"/" << f.cpacsName << "\");";
+							}
+							cpp << "} catch(const std::exception& e) {";
+							{
+								Scope s(cpp);
+								cpp << "LOG(ERROR) << \"Failed to read " << f.cpacsName << " at xpath << \" << xpath << \": \" << e.what();";
+								cpp << f.fieldName() << ".destroy();";
+							}
+							cpp << "}";
+						} else
+							cpp << f.fieldName() << "->ReadCPACS(tixiHandle, xpath + \"/" << f.cpacsName << "\");";
 						break;
 					case Cardinality::Mandatory:
 						cpp << f.fieldName() << ".ReadCPACS(tixiHandle, xpath + \"/" + f.cpacsName + "\");";
@@ -886,6 +902,9 @@ namespace tigl {
 
 		// includes
 		hpp << "#include <stdexcept>";
+		hpp << "#include <string>";
+		if (!c_generateCaseSensitiveStringToEnumConversion)
+			hpp << "#include <cctype>";
 		hpp << "";
 
 		// namespace
@@ -936,8 +955,16 @@ namespace tigl {
 				hpp << "inline " << e.name << " " << stringToEnumFunc(e) << "(const std::string& value) {";
 				{
 					Scope s(hpp);
-					for (const auto& v : e.values)
-						hpp << "if (value == \"" << v.name << "\") return " << e.name << "::" << v.cppName << ";";
+					if (c_generateCaseSensitiveStringToEnumConversion) {
+						for (const auto& v : e.values)
+							hpp << "if (value == \"" << v.name << "\") return " << e.name << "::" << v.cppName << ";";
+					} else {
+						auto toLower = [](std::string str) { for (char& c : str) c = std::tolower(c); return str; };
+						hpp << "auto toLower = [](std::string str) { for (char& c : str) c = std::tolower(c); return str; };";
+						for (const auto& v : e.values)
+							hpp << "if (toLower(value) == \"" << toLower(v.name) << "\") return " << e.name << "::" << v.cppName << ";";
+					}
+
 					hpp << "throw std::runtime_error(\"Invalid string value \\\"\" + value + \"\\\" for enum type " << e.name << "\");";
 				}
 				hpp << "}";
