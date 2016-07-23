@@ -1625,9 +1625,9 @@ double CCPACSWingComponentSegment::GetSurfaceArea()
 
 // Returns the segment to a given point on the componentSegment. 
 // Returns null if the point is not an that wing!
-const CTiglAbstractSegment* CCPACSWingComponentSegment::findSegment(double x, double y, double z, gp_Pnt& nearestPoint)
+const CCPACSWingSegment* CCPACSWingComponentSegment::findSegment(double x, double y, double z, gp_Pnt& nearestPoint)
 {
-    CTiglAbstractSegment* result = NULL;
+    CCPACSWingSegment* result = NULL;
     gp_Pnt pnt(x, y, z);
 
 
@@ -1814,18 +1814,18 @@ CCPACSWingCell& CCPACSWingComponentSegment::GetCellByUID(std::string cellUID) //
     
 }
 
-const CTiglAbstractSegment* CCPACSWingComponentSegment::findSegmentViaShape(double x, double y, double z) const
+const CCPACSWingSegment* CCPACSWingComponentSegment::findSegmentViaShape(double x, double y, double z) const
 {
     // old code from TIGL 2.0.4
     int i = 0;
-    CTiglAbstractSegment* result = NULL;
+    CCPACSWingSegment* result = NULL;
     int segmentCount = wing->GetSegmentCount();
     gp_Pnt pnt(x, y, z);
 
     // now discover the right segment
     for (i = 1; i <= segmentCount; i++) {
         // added check for only handling segments which are contained in the component segment
-        CCPACSWingSegment& segment = static_cast<CCPACSWingSegment&>(wing->GetSegment(i));
+        const CCPACSWingSegment& segment = wing->GetSegment(i);
         if (!IsSegmentContained(segment)) {
             continue;
         }

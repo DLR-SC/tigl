@@ -98,7 +98,7 @@ CCPACSFuselageProfile& CCPACSFuselages::GetProfile(std::string uid) const
 // Returns the total count of fuselages in a configuration
 int CCPACSFuselages::GetFuselageCount() const
 {
-    return (static_cast<int>(m_fuselage.size()));
+    return static_cast<int>(m_fuselage.size());
 }
 
 // Returns the fuselage for a given index.

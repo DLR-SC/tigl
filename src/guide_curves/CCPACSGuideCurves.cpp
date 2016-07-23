@@ -33,13 +33,13 @@ namespace tigl
 // Returns the total count of guide curves in this configuration
 int CCPACSGuideCurves::GetGuideCurveCount() const
 {
-    return (static_cast<int>(m_guideCurve.size()));
+    return static_cast<int>(m_guideCurve.size());
 }
 
 // Returns the guide curve for a given index
 const CCPACSGuideCurve& CCPACSGuideCurves::GetGuideCurve(int index) const
 {
-	index--;
+    index--;
     if (index < 0 || index >= GetGuideCurveCount()) {
         throw CTiglError("Error: Invalid index in CCPACSGuideCurves::GetGuideCurve", TIGL_INDEX_ERROR);
     }

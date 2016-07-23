@@ -273,8 +273,6 @@ private:
     Handle(Geom_Surface) lowerSurfaceLocal;
     CTiglPointTranslator cordSurface;
     bool                 surfacesAreValid;
-    bool                 guideCurvesPresent;   /**< If guide curves are not present, lofted surface is possible */
-
 };
 
 } // end namespace tigl
