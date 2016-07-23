@@ -406,9 +406,9 @@ TEST_F(WingGuideCurve, tiglWingGuideCurve_CCPACSWingSegment)
     tigl::CCPACSWing& wing = config.GetWing(1);
 
     ASSERT_EQ(wing.GetSegmentCount(),3);
-    tigl::CCPACSWingSegment& segment1 = (tigl::CCPACSWingSegment&) wing.GetSegment(1);
-    tigl::CCPACSWingSegment& segment2 = (tigl::CCPACSWingSegment&) wing.GetSegment(2);
-    tigl::CCPACSWingSegment& segment3 = (tigl::CCPACSWingSegment&) wing.GetSegment(3);
+    tigl::CCPACSWingSegment& segment1 = wing.GetSegment(1);
+    tigl::CCPACSWingSegment& segment2 = wing.GetSegment(2);
+    tigl::CCPACSWingSegment& segment3 = wing.GetSegment(3);
     TopTools_SequenceOfShape& guideCurveContainer1 = segment1.GetGuideCurveWires();
     TopTools_SequenceOfShape& guideCurveContainer2 = segment2.GetGuideCurveWires();
     TopTools_SequenceOfShape& guideCurveContainer3 = segment3.GetGuideCurveWires();

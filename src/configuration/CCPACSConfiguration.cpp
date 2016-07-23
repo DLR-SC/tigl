@@ -175,13 +175,19 @@ TixiDocumentHandle CCPACSConfiguration::GetTixiDocumentHandle() const
 
 bool CCPACSConfiguration::HasWingProfile(std::string uid) const
 {
-    return cpacsModel->GetWings().HasProfile(uid);
+    if (cpacsModel->HasWings())
+        return cpacsModel->GetWings().HasProfile(uid);
+    else
+        return false;
 }
 
 // Returns the total count of wing profiles in this configuration
 int CCPACSConfiguration::GetWingProfileCount() const
 {
-    return cpacsModel->GetWings().GetProfileCount();
+    if (cpacsModel->HasWings())
+        return cpacsModel->GetWings().GetProfileCount();
+    else
+        return 0;
 }
 
 // Returns the class which holds all wing profiles
@@ -211,7 +217,10 @@ CCPACSWingProfile& CCPACSConfiguration::GetWingProfile(int index) const
 // Returns the total count of wings in a configuration
 int CCPACSConfiguration::GetWingCount() const
 {
-    return cpacsModel->GetWings().GetWingCount();
+    if (cpacsModel->HasWings())
+        return cpacsModel->GetWings().GetWingCount();
+    else
+        return 0;
 }
 
 // Returns the wing for a given index.

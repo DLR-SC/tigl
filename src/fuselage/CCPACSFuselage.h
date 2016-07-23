@@ -82,10 +82,10 @@ public:
     TIGL_EXPORT int GetSegmentCount() const;
 
     // Returns the segment for a given index
-    TIGL_EXPORT CTiglAbstractSegment & GetSegment(const int index);
+    TIGL_EXPORT CCPACSFuselageSegment& GetSegment(const int index);
 
     // Returns the segment for a given UID
-    TIGL_EXPORT CTiglAbstractSegment & GetSegment(std::string uid);
+    TIGL_EXPORT CCPACSFuselageSegment& GetSegment(std::string uid);
 
     // Gets the fuselage transformation
     TIGL_EXPORT CTiglTransformation GetFuselageTransformation();

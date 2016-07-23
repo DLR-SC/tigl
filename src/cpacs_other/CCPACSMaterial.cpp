@@ -36,7 +36,7 @@ void CCPACSMaterial::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string 
     } else if (m_materialUID_choice2.isValid()) {
         is_composite = false;
     } else {
-        throw CTiglError("Neither Material UID nor Composite UID specified in " + materialXPath, TIGL_ERROR);
+        throw CTiglError("Neither materialUID nor compositeUID specified in " + materialXPath, TIGL_ERROR);
     }
 
     const std::string orthoPath = materialXPath + "/orthotropyDirection";

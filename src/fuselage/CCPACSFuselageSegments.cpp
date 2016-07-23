@@ -35,14 +35,14 @@
 namespace tigl
 {
 CCPACSFuselageSegments::CCPACSFuselageSegments(CCPACSFuselage* parent)
-	: generated::CPACSFuselageSegments(parent) {}
+    : generated::CPACSFuselageSegments(parent) {}
 
 // Invalidates internal state
 void CCPACSFuselageSegments::Invalidate()
 {
-	for (int i = 1; i <= GetSegmentCount(); i++) {
-		GetSegment(i).Invalidate();
-	}
+    for (int i = 1; i <= GetSegmentCount(); i++) {
+        GetSegment(i).Invalidate();
+    }
 }
 
 // Gets a segment by index. 
