@@ -9,10 +9,12 @@ namespace tigl {
 	public:
 		CustomTypesTable()
 			: MappingTable({
+				// enums
 				{ "CPACSWingType_symmetry",             "TiglSymmetryAxis" },
 				{ "CPACSFuselageType_symmetry",         "TiglSymmetryAxis" },
 				{ "CPACSPointAbsRelType_refType",       "ECPACSTranslationType" },
 
+				// classes
 				{ "CPACSAircraftModel",                 "CCPACSModel" },
 				{ "CPACSMaterialDefinition",            "CCPACSMaterial" },
 				{ "CPACSFarField",                      "CCPACSFarField" },
@@ -26,6 +28,7 @@ namespace tigl {
 				{ "CPACSPointAbsRel",                   "CCPACSPointAbsRel" },
 				{ "CPACSTransformation",                "CCPACSTransformation" },
 				{ "CPACSStringVectorBase",              "CCPACSStringVector" },
+				{ "CPACSPointListXYZVector",            "CCPACSPointListXYZ" },
 
 				{ "CPACSFuselage",                      "CCPACSFuselage" },
 				{ "CPACSFuselages",                     "CCPACSFuselages" },
