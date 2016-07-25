@@ -30,7 +30,9 @@
 #ifndef CCPACSWINGPROFILE_H
 #define CCPACSWINGPROFILE_H
 
+#include <memory>
 #include "generated/CPACSProfileGeometry.h"
+#include "generated/Optional.hpp"
 #include "tigl_internal.h"
 #include "TopoDS_Wire.hxx"
 #include "TopoDS_Edge.hxx"
@@ -42,6 +44,7 @@
 
 namespace tigl 
 {
+class CCPACSWingProfilePointList;
 
 class CCPACSWingProfile : public generated::CPACSProfileGeometry
 {
@@ -54,10 +57,7 @@ public:
     TIGL_EXPORT virtual ~CCPACSWingProfile();
 
     // Read CPACS wing profile file
-    TIGL_EXPORT void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
-
-    // Write CPACS wing profile file
-    TIGL_EXPORT void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
+    TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) override;
 
     // Invalidates internal wing profile state
     TIGL_EXPORT void Invalidate();
@@ -120,7 +120,8 @@ public:
     TIGL_EXPORT gp_Pnt GetLowerPoint(double xsi);
 
     // get profile algorithm type
-    TIGL_EXPORT PTiglWingProfileAlgo GetProfileAlgo() const;
+    TIGL_EXPORT ITiglWingProfileAlgo* GetProfileAlgo();
+    TIGL_EXPORT const ITiglWingProfileAlgo* GetProfileAlgo() const;
 
 protected:
     // Cleanup routine
@@ -139,18 +140,10 @@ protected:
     // Helper function to determine the chord line between leading and trailing edge in the profile plane
     Handle(Geom2d_TrimmedCurve) GetChordLine();
 
-
 private:
-    // Copy constructor
-    CCPACSWingProfile(const CCPACSWingProfile& );
-
-    // Assignment operator
-    void operator=(const CCPACSWingProfile& );
-
-private:
-    //std::string               ProfileXPath;   /**< CPACS path to wing profile */
-    bool                      invalidated;    /**< Flag if element is invalid */
-    PTiglWingProfileAlgo      profileAlgo;    /**< Pointer to wing profile algorithm (pointList, CST, etc.) */
+    bool                                        invalidated;    /**< Flag if element is invalid */
+    ITiglWingProfileAlgo*                       profileAlgo; // points to the current profile algo (non-owning)
+    std::unique_ptr<CCPACSWingProfilePointList> pointListAlgo; // is created in case the wing profile alg is a point list, otherwise cst2d constructed in the base class is used
 
 }; // class CCPACSWingProfile
 

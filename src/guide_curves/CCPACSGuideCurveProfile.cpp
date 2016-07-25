@@ -44,12 +44,12 @@ void CCPACSGuideCurveProfile::ReadCPACS(const TixiDocumentHandle& tixiHandle, co
     generated::CPACSGuideCurveProfileGeometry::ReadCPACS(tixiHandle, xpath);
 
     // convert to point vector
-    const auto& xs = m_pointList.GetRX().GetVector();
-    const auto& ys = m_pointList.GetRY().GetVector();
-    const auto& zs = m_pointList.GetRZ().GetVector();
+    const auto& xs = m_pointList.GetRX().AsVector();
+    const auto& ys = m_pointList.GetRY().AsVector();
+    const auto& zs = m_pointList.GetRZ().AsVector();
 
     coordinates.clear();
-    for (int i = 0; i < m_pointList.GetRX().GetVector().size(); i++)
+    for (int i = 0; i < m_pointList.GetRX().AsVector().size(); i++)
         coordinates.push_back(CTiglPoint(xs[i], ys[i], zs[i]));
 }
 
