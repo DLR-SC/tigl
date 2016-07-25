@@ -46,16 +46,17 @@ public:
     virtual void Update()   = 0;
 
     // Returns the algorithm code identifier for an algorithm
-    virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& profileXPath)  = 0;
+    //virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& profileXPath)  = 0;
 
     // Saves the profile data
-    virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& profileXPath) const = 0;
+    //virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& profileXPath) const = 0;
 
     // Returns points on profile.
-    virtual std::vector<CTiglPoint*> GetSamplePoints() const = 0;
+    DEPRECATED virtual std::vector<const CTiglPoint*> GetSamplePoints() const = 0; // TODO: replace by version which stores points by value, see GetSamplePoints2()
+    virtual const std::vector<CTiglPoint>& GetSamplePoints2() const = 0;
 
     // get profiles CPACS XML path
-    virtual const std::string & GetProfileDataXPath() const = 0;
+    DEPRECATED virtual const std::string & GetProfileDataXPath() const = 0;
 
     // get upper wing profile wire
     virtual const TopoDS_Edge & GetUpperWire() const = 0;

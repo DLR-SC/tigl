@@ -32,7 +32,6 @@
 #include "tigl_config.h"
 #include "tiglcommonfunctions.h"
 #include "tigl_error_strings.h"
-#include "CTiglTypeRegistry.h"
 #include "CTiglError.h"
 #include "CTiglIntersectionCalculation.h"
 #include "CCPACSConfiguration.h"
@@ -77,7 +76,6 @@ bool tiglInit(void)
     // Initialize logger
     tigl::CTiglLogging::Instance();
     // Register dynamic tigl types
-    tigl::CTiglTypeRegistry::Init();
     return true;
 }
 

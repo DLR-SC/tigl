@@ -39,11 +39,6 @@ class CCPACSWingProfile;
 
 class CCPACSWingProfileCST : public generated::CPACSCst2D, public ITiglWingProfileAlgo
 {
-
-private:
-    // Typedef for a container to store the coordinates of a wing profile element.
-    typedef std::vector<CTiglPoint*> CCPACSCoordinateContainer;
-
 public:
     // Constructor
     TIGL_EXPORT CCPACSWingProfileCST();
@@ -51,7 +46,7 @@ public:
     // Destructor
     TIGL_EXPORT ~CCPACSWingProfileCST();
 
-    TIGL_EXPORT static std::string CPACSID();
+    DEPRECATED TIGL_EXPORT static std::string CPACSID();
 
     // Read CPACS wing profile file
     TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& profileXPath) override;
@@ -66,10 +61,11 @@ public:
     TIGL_EXPORT void Update();
 
     // Returns the profile points as read from TIXI.
-    TIGL_EXPORT std::vector<CTiglPoint*> GetSamplePoints() const;
+    TIGL_EXPORT virtual std::vector<const CTiglPoint*> GetSamplePoints() const override; // TODO: why do we need those anyway, they just return an empty vector?
+    TIGL_EXPORT virtual const std::vector<CTiglPoint>& GetSamplePoints2() const override; // TODO: why do we need those anyway, they just return an empty vector?
 
     // get profiles CPACS XML path, TODO: do we really need this method?
-    TIGL_EXPORT const std::string & GetProfileDataXPath() const;
+    DEPRECATED TIGL_EXPORT const std::string & GetProfileDataXPath() const;
 
     // set profiles CPACS XML path, TODO: do we really need this method?
     TIGL_EXPORT void SetProfileDataXPath(const std::string& xpath);
@@ -119,10 +115,6 @@ private:
     TopoDS_Edge               trailingEdge;       /**< wire of the trailing edge */
     gp_Pnt                    lePoint;            /**< Leading edge point */
     gp_Pnt                    tePoint;            /**< Trailing edge point */
-    double                    upperN1;            /**< CST parameter N1 */
-    double                    upperN2;            /**< CST parameter N2 */
-    double                    lowerN1;            /**< CST parameter N1 */
-    double                    lowerN2;            /**< CST parameter N2 */
 };
 
 } // end namespace tigl

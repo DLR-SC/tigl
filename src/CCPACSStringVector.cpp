@@ -30,7 +30,6 @@ namespace tigl {
 	void CCPACSStringVector::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string &xpath) {
 		generated::CPACSStringVectorBase::ReadCPACS(tixiHandle, xpath);
 		m_vec = toDoubleVec(m_simpleContent);
-
 	}
 
 	void CCPACSStringVector::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const {
@@ -38,11 +37,11 @@ namespace tigl {
 		generated::CPACSStringVectorBase::WriteCPACS(tixiHandle, xpath);
 	}
 
-	const std::vector<double>& CCPACSStringVector::GetVector() const {
+	const std::vector<double>& CCPACSStringVector::AsVector() const {
 		return m_vec;
 	}
 
-	std::vector<double>& CCPACSStringVector::GetVector() {
+	std::vector<double>& CCPACSStringVector::AsVector() {
 		return m_vec;
 	}
 }
