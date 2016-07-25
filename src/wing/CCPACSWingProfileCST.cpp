@@ -28,11 +28,9 @@
 #include "CCSTCurveBuilder.h"
 
 #include "CTiglError.h"
-#include "CTiglTypeRegistry.h"
 #include "CTiglLogging.h"
 #include "CTiglTransformation.h"
 #include "CWireToCurve.h"
-#include "CCPACSWingProfileFactory.h"
 #include "TixiSaveExt.h"
 #include "math.h"
 
@@ -46,19 +44,6 @@
 
 namespace tigl
 {
-// register profile algo at factory
-PTiglWingProfileAlgo CreateProfileCST(const CCPACSWingProfile& profile, const std::string& cpacsPath)
-{
-    auto p = new CCPACSWingProfileCST();
-    p->SetProfileDataXPath(cpacsPath);
-    return PTiglWingProfileAlgo(p);
-}
-
-AUTORUN(CCPACSWingProfileCST)
-{
-    return CCPACSWingProfileFactory::Instance().RegisterAlgo(CCPACSWingProfileCST::CPACSID(), CreateProfileCST);
-}
-
 // Constructor
 CCPACSWingProfileCST::CCPACSWingProfileCST()
 {
@@ -103,18 +88,19 @@ void CCPACSWingProfileCST::BuildWires()
     yzSwitch.SetMirror(gp_Ax2(gp_Pnt(0.,0.,0.), gp_Dir(0.,-1.,1.)));
     
     // Build upper wire
-    CCSTCurveBuilder upperBuilder(upperN1, upperN2, m_upperB.GetVector());
+    CCSTCurveBuilder upperBuilder(m_upperN1, m_upperN2, m_upperB.AsVector());
     Handle_Geom_BSplineCurve upperCurve = upperBuilder.Curve();
     upperCurve->Transform(yzSwitch);
     upperWire = BRepBuilderAPI_MakeEdge(upperCurve);
     
-    // Build lower curve, 
+    // Build lower curve
     std::vector<double> binv;
-    for (unsigned int i = 0; i < m_lowerB.GetVector().size(); ++i) {
-        binv.push_back(-m_lowerB.GetVector()[i]);
+    const auto& lb = m_lowerB.AsVector();
+    for (unsigned int i = 0; i < lb.size(); ++i) {
+        binv.push_back(-lb[i]);
     }
     
-    CCSTCurveBuilder lowerBuilder(lowerN1, lowerN2, binv);
+    CCSTCurveBuilder lowerBuilder(m_lowerN1, m_lowerN2, binv);
     Handle_Geom_BSplineCurve lowerCurve = lowerBuilder.Curve();
     lowerCurve->Transform(yzSwitch);
     lowerCurve->Reverse();
@@ -132,10 +118,13 @@ void CCPACSWingProfileCST::BuildWires()
 }
 
 // Returns sample points
-std::vector<CTiglPoint*> CCPACSWingProfileCST::GetSamplePoints() const
-{
-    std::vector<CTiglPoint*> empty;
-    return empty;
+std::vector<const CTiglPoint*> CCPACSWingProfileCST::GetSamplePoints() const {
+    return {};
+}
+
+const std::vector<CTiglPoint>& CCPACSWingProfileCST::GetSamplePoints2() const {
+    static std::vector<CTiglPoint> dummy;
+    return dummy;
 }
 
 // get profiles CPACS XML path

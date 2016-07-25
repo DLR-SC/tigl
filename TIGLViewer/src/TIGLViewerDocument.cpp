@@ -554,10 +554,10 @@ void TIGLViewerDocument::drawWingProfiles()
     }
 
     // display points in case of a few sample points
-    std::vector<tigl::CTiglPoint*> fewPointList=profile.GetProfileAlgo()->GetSamplePoints();
+    std::vector<const tigl::CTiglPoint*> fewPointList=profile.GetProfileAlgo()->GetSamplePoints();
     if (fewPointList.size() < 15 && fewPointList.size() > 0) {
         for (unsigned int i = 0; i<fewPointList.size(); ++i) {
-            tigl::CTiglPoint * p = fewPointList.at(i);
+            const tigl::CTiglPoint * p = fewPointList.at(i);
             std::stringstream str;
             str << i << ": (" << p->x << ", " << p->y << ", " << p->z << ")";
             gp_Pnt pnt = p->Get_gp_Pnt();
@@ -622,7 +622,7 @@ void TIGLViewerDocument::drawWingOverlayProfilePoints()
         // Get inner profile point list
         tigl::CCPACSWingConnection& innerConnection = segment.GetInnerConnection();
         tigl::CCPACSWingProfile& innerProfile = innerConnection.GetProfile();
-        std::vector<tigl::CTiglPoint*> innerProfilePointList=innerProfile.GetProfileAlgo()->GetSamplePoints();
+        std::vector<const tigl::CTiglPoint*> innerProfilePointList=innerProfile.GetProfileAlgo()->GetSamplePoints();
         // get points and transform them
         std::vector<tigl::CTiglPoint*> innerPoints;
         for (std::vector<tigl::CTiglPoint*>::size_type i = 0; i < innerProfilePointList.size(); i++) {
@@ -647,7 +647,7 @@ void TIGLViewerDocument::drawWingOverlayProfilePoints()
         // Get outer profile point list
         tigl::CCPACSWingConnection& outerConnection = segment.GetOuterConnection();
         tigl::CCPACSWingProfile& outerProfile = outerConnection.GetProfile();
-        std::vector<tigl::CTiglPoint*> outerProfilePointList=outerProfile.GetProfileAlgo()->GetSamplePoints();
+        std::vector<const tigl::CTiglPoint*> outerProfilePointList=outerProfile.GetProfileAlgo()->GetSamplePoints();
         // get points and transform them
         std::vector<tigl::CTiglPoint*> outerPoints;
         for (std::vector<tigl::CTiglPoint*>::size_type i = 0; i < outerProfilePointList.size(); i++) {

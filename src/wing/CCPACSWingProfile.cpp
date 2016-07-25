@@ -29,6 +29,7 @@
 
 #include "CTiglError.h"
 #include "CTiglLogging.h"
+#include "CCPACSWingProfilePointList.h"
 #include "math.h"
 
 #include "gp_Pnt2d.hxx"
@@ -58,7 +59,6 @@
 #include "CTiglInterpolateLinearWire.h"
 #include "ITiglWingProfileAlgo.h"
 #include "CCPACSWingProfile.h"
-#include "CCPACSWingProfileFactory.h"
 #include "TixiSaveExt.h"
 
 namespace tigl 
@@ -66,7 +66,7 @@ namespace tigl
 
 // Constructor
 CCPACSWingProfile::CCPACSWingProfile()
-    : invalidated(true)
+    : invalidated(true), profileAlgo(nullptr)
 {
     Cleanup();
 }
@@ -92,15 +92,17 @@ void CCPACSWingProfile::ReadCPACS(const TixiDocumentHandle& tixiHandle, const st
 {
     Cleanup();
     generated::CPACSProfileGeometry::ReadCPACS(tixiHandle, xpath);
-    profileAlgo = CCPACSWingProfileFactory::Instance().CreateProfileAlgo(tixiHandle, *this, xpath);
-    profileAlgo->ReadCPACS(tixiHandle, xpath);
-}
-
-// Write CPACS wing profile file
-void CCPACSWingProfile::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
-{
-    generated::CPACSProfileGeometry::WriteCPACS(tixiHandle, xpath);
-    profileAlgo->WriteCPACS(tixiHandle, xpath);
+    if (HasPointList_choice1()) {
+        // in case the wing profile algorithm is a point list, create the additional algorithm instance
+        pointListAlgo.reset(new CCPACSWingProfilePointList(*this, m_pointList_choice1.get(), xpath));
+        profileAlgo = pointListAlgo.get();
+    } else if (HasCst2D_choice2()) {
+        profileAlgo = &m_cst2D_choice2.get();
+    } else {
+        throw std::runtime_error("no profile algorithm");
+    }
+    // TODO: we don't need to create profile algo, as it is already created in base class 
+    //profileAlgo = CCPACSWingProfileFactory::Instance().CreateProfileAlgo(tixiHandle, *this, xpath);
 }
 
 // Invalidates internal wing profile state
@@ -402,8 +404,11 @@ Handle(Geom2d_TrimmedCurve) CCPACSWingProfile::GetChordLine()
     return chordLine;
 }
 
-// get pointer to profile algorithm
-PTiglWingProfileAlgo CCPACSWingProfile::GetProfileAlgo() const
+ITiglWingProfileAlgo* CCPACSWingProfile::GetProfileAlgo() {
+    return profileAlgo;
+}
+
+const ITiglWingProfileAlgo* CCPACSWingProfile::GetProfileAlgo() const
 {
     return profileAlgo;
 }

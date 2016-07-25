@@ -27,7 +27,6 @@
 #include <limits>
 
 #include "CTiglError.h"
-#include "CTiglTypeRegistry.h"
 #include "CTiglLogging.h"
 #include "CTiglInterpolateBsplineWire.h"
 #include "CTiglInterpolateLinearWire.h"
@@ -36,7 +35,6 @@
 #include "CTiglTransformation.h"
 #include "math.h"
 #include "CCPACSWingProfile.h"
-#include "CCPACSWingProfileFactory.h"
 #include "tiglcommonfunctions.h"
 #include "TixiSaveExt.h"
 
@@ -85,30 +83,27 @@ namespace tigl
 const double CCPACSWingProfilePointList::c_trailingEdgeRelGap = 1E-2;
 const double CCPACSWingProfilePointList::c_blendingDistance = 0.1;
 
-// type creation function used by factory
-PTiglWingProfileAlgo CreateProfilePointList(const CCPACSWingProfile& profile, const std::string& cpacsPath)
-{
-    return PTiglWingProfileAlgo(new CCPACSWingProfilePointList(profile, cpacsPath));
-}
-
-// register algo at factory
-AUTORUN(CCPACSWingProfilePointList)
-{
-    return CCPACSWingProfileFactory::Instance().RegisterAlgo(CCPACSWingProfilePointList::CPACSID(), CreateProfilePointList);
-}
-
 // Constructor
-CCPACSWingProfilePointList::CCPACSWingProfilePointList(const CCPACSWingProfile& profile, const std::string& path)
-    : profileRef(profile)
-{
-    ProfileDataXPath = path + "/" + CPACSID();
-    profileWireAlgo = WireAlgoPointer(new CTiglInterpolateBsplineWire);
-}
+CCPACSWingProfilePointList::CCPACSWingProfilePointList(const CCPACSWingProfile& profile, const CCPACSPointListXYZ& cpacsPointList, const std::string& xpath)
+    : profileRef(profile), pointList(cpacsPointList), profileWireAlgo(new CTiglInterpolateBsplineWire), ProfileDataXPath(xpath) {
 
-// Destructor
-CCPACSWingProfilePointList::~CCPACSWingProfilePointList()
-{
-    delete profileWireAlgo;
+    // points with maximal/minimal y-component
+    coordinates = cpacsPointList.AsVector();
+    const auto minmax = std::minmax_element(std::begin(coordinates), std::end(coordinates), [](const CTiglPoint& a, const CTiglPoint& b) {
+        return a.z < b.z;
+    });
+    const auto minZIndex = minmax.first - std::begin(coordinates);
+    const auto maxZIndex = minmax.second - std::begin(coordinates);
+
+    // check if points with maximal/minimal z-component were calculated correctly
+    if (maxZIndex == minZIndex) {
+        throw CTiglError("Error: CCPACSWingProfilePointList::ReadCPACS: Unable to separate upper and lower wing profile from point list", TIGL_XML_ERROR);
+    }
+    // force order of points to run through the lower profile first and then through the upper profile
+    if (minZIndex > maxZIndex) {
+        LOG(WARNING) << "The points in profile " << profileRef.GetUID() << " don't seem to be ordered in a mathematical positive sense.";
+        std::reverse(coordinates.begin(), coordinates.end());
+    }
 }
 
 std::string CCPACSWingProfilePointList::CPACSID()
@@ -119,117 +114,12 @@ std::string CCPACSWingProfilePointList::CPACSID()
 // Cleanup routine
 void CCPACSWingProfilePointList::Cleanup()
 {
-    for (CCPACSCoordinateContainer::size_type i = 0; i < coordinates.size(); i++) {
-        delete coordinates[i];
-    }
     coordinates.clear();
 }
 
 void CCPACSWingProfilePointList::Update()
 {
     BuildWires();
-}
-
-// Read wing profile file
-void CCPACSWingProfilePointList::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& profileXPath)
-{
-    // check if deprecated CPACS point definition is included in the CPACS file and give warning
-    if (tixiCheckElement(tixiHandle, (ProfileDataXPath + "/point[1]").c_str()) == SUCCESS) {
-        LOG(WARNING) << "Deprecated point definition in wing profile " << profileRef.GetUID() <<  " will be ignored" << endl;
-    }
-
-    std::string xXpath = ProfileDataXPath +"/x";
-    std::string yXpath = ProfileDataXPath +"/y";
-    std::string zXpath = ProfileDataXPath +"/z";
-
-    // check the number of elements in all three vectors. It has to be the same, otherwise cancel
-    int countX;
-    int countY;
-    int countZ;
-    if (tixiGetVectorSize(tixiHandle, xXpath.c_str(), &countX) != SUCCESS) {
-        throw CTiglError("Error: XML error while reading point vector <x> in CCPACSWingProfilePointList::ReadCPACS", TIGL_XML_ERROR);
-    }
-    if (tixiGetVectorSize(tixiHandle, yXpath.c_str(), &countY) != SUCCESS) {
-        throw CTiglError("Error: XML error while reading point vector <y> in CCPACSWingProfilePointList::ReadCPACS", TIGL_XML_ERROR);
-    }
-    if (tixiGetVectorSize(tixiHandle, zXpath.c_str(), &countZ) != SUCCESS) {
-        throw CTiglError("Error: XML error while reading point vector <z> in CCPACSWingProfilePointList::ReadCPACS", TIGL_XML_ERROR);
-    }
-
-    if (countX != countY || countX != countZ || countY != countZ) {
-        throw CTiglError("Error: Vector size for profile points are not eqal in CCPACSWingProfilePointList::ReadCPACS", TIGL_XML_ERROR);
-    }
-
-    // read in vectors, vectors are allocated and freed by tixi
-    double* xCoordinates = NULL;
-    double* yCoordinates = NULL;
-    double* zCoordinates = NULL;
-
-    if (tixiGetFloatVector(tixiHandle, xXpath.c_str(), &xCoordinates, countX) != SUCCESS) {
-        throw CTiglError("Error: XML error while reading point vector <x> in CCPACSWingProfilePointList::ReadCPACS", TIGL_XML_ERROR);
-    }
-    if (tixiGetFloatVector(tixiHandle, yXpath.c_str(), &yCoordinates, countY) != SUCCESS) {
-        throw CTiglError("Error: XML error while reading point vector <y> in CCPACSWingProfilePointList::ReadCPACS", TIGL_XML_ERROR);
-    }
-    if (tixiGetFloatVector(tixiHandle, zXpath.c_str(), &zCoordinates, countZ) != SUCCESS) {
-        throw CTiglError("Error: XML error while reading point vector <z> in CCPACSWingProfilePointList::ReadCPACS", TIGL_XML_ERROR);
-    }
-
-    // points with maximal/minimal z-component
-    double maxZ=-std::numeric_limits<double>::max();
-    double minZ=std::numeric_limits<double>::max();
-    int maxZIndex=-1;
-    int minZIndex=-1;
-    // Loop over all points in the vector
-    for (int i = 0; i < countX; i++) {
-        CTiglPoint* point = new CTiglPoint(xCoordinates[i], yCoordinates[i], zCoordinates[i]);
-        coordinates.push_back(point);
-        if (zCoordinates[i]>maxZ) {
-            maxZ = zCoordinates[i];
-            maxZIndex = i;
-        }
-        if (zCoordinates[i]<minZ) {
-            minZ = zCoordinates[i];
-            minZIndex = i;
-        }
-    }
-    // check if points with maximal/minimal z-component were calculated correctly
-    if (maxZIndex==-1 || minZIndex==-1 || maxZIndex==minZIndex) {
-        throw CTiglError("Error: CCPACSWingProfilePointList::ReadCPACS: Unable to separate upper and lower wing profile from point list", TIGL_XML_ERROR);
-    }
-    // force order of points to run through the lower profile first and then through the upper profile
-    if (minZIndex>maxZIndex) {
-        LOG(WARNING) << "The points in profile " << profileRef.GetUID() <<  " don't seem to be ordered in a mathematical positive sense.";
-        std::reverse(coordinates.begin(), coordinates.end());
-    }
-}
-
-void CCPACSWingProfilePointList::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& profileXPath) const
-{
-    // Set the element "point"
-    TixiSaveExt::TixiSaveElement(tixiHandle, profileXPath.c_str(), "pointList");
-
-    std::string path = profileXPath + "/pointList";
-
-    // store points as vectors
-    std::vector<double> point_X(coordinates.size());
-    std::vector<double> point_Y(coordinates.size());
-    std::vector<double> point_Z(coordinates.size());
-
-    for (unsigned int j = 0; j < coordinates.size(); j++) {
-        point_X[j] = coordinates[j]->x;
-        point_Y[j] = coordinates[j]->y;
-        point_Z[j] = coordinates[j]->z;
-    }
-
-    // Set the x coordinates
-    TixiSaveExt::TixiSaveVector(tixiHandle, path, "x", point_X);
-
-    // Set the y coordinates
-    TixiSaveExt::TixiSaveVector(tixiHandle, path, "y", point_Y);
-
-    // Set the z coordinates
-    TixiSaveExt::TixiSaveVector(tixiHandle, path, "z", point_Z);
 }
 
 // Builds the wing profile wire. The returned wire is already transformed by the
@@ -239,8 +129,8 @@ void CCPACSWingProfilePointList::BuildWires()
     ITiglWireAlgorithm::CPointContainer points;
     ITiglWireAlgorithm::CPointContainer openPoints, closedPoints;
 
-    for (CCPACSCoordinateContainer::size_type i = 0; i < coordinates.size(); i++) {
-        points.push_back(coordinates[i]->Get_gp_Pnt());
+    for (const auto& p : coordinates) {
+        points.push_back(p.Get_gp_Pnt());
     }
     // special handling for supporting opened and closed profiles
     if (points.size() < 2) {
@@ -356,8 +246,8 @@ void CCPACSWingProfilePointList::BuildWires()
 void CCPACSWingProfilePointList::BuildLETEPoints()
 {
     // compute TE point
-    gp_Pnt firstPnt = coordinates[0]->Get_gp_Pnt();
-    gp_Pnt lastPnt = coordinates[coordinates.size() - 1]->Get_gp_Pnt();
+    gp_Pnt firstPnt = coordinates[0].Get_gp_Pnt();
+    gp_Pnt lastPnt = coordinates[coordinates.size() - 1].Get_gp_Pnt();
     double x = (firstPnt.X() + lastPnt.X())/2.;
     double y = (firstPnt.Y() + lastPnt.Y())/2.;
     double z = (firstPnt.Z() + lastPnt.Z())/2.;
@@ -365,9 +255,8 @@ void CCPACSWingProfilePointList::BuildLETEPoints()
 
     // find the point with the max dist to TE point
     lePoint = tePoint;
-    CCPACSCoordinateContainer::iterator pit = coordinates.begin();
-    for (; pit != coordinates.end(); ++pit) {
-        gp_Pnt point = (*pit)->Get_gp_Pnt();
+    for (const auto& p : coordinates) {
+        gp_Pnt point = p.Get_gp_Pnt();
         if (tePoint.Distance(point) > tePoint.Distance(lePoint)) {
             lePoint = point;
         }
@@ -388,9 +277,16 @@ void CCPACSWingProfilePointList::BuildLETEPoints()
 }
 
 // Returns the profile points as read from TIXI.
-std::vector<CTiglPoint*> CCPACSWingProfilePointList::GetSamplePoints() const
+std::vector<const CTiglPoint*> CCPACSWingProfilePointList::GetSamplePoints() const
 {
-    return coordinates;
+    std::vector<const CTiglPoint*> v;
+    for (const auto& p : pointList.AsVector())
+        v.push_back(&p);
+    return v;
+}
+
+const std::vector<CTiglPoint>& CCPACSWingProfilePointList::GetSamplePoints2() const {
+    return pointList.AsVector();
 }
 
 // get profiles CPACS XML path

@@ -41,29 +41,22 @@
 #include "Geom_TrimmedCurve.hxx"
 #include "TopoDS_Wire.hxx"
 #include "TopoDS_Edge.hxx"
+#include "CCPACSPointListXYZ.h"
 
 
 namespace tigl
 {
 
 class CCPACSWingProfile;
-typedef ITiglWireAlgorithm* WireAlgoPointer;
 
-class CCPACSWingProfilePointList : public ITiglWingProfileAlgo
+class CCPACSWingProfilePointList : public ITiglWingProfileAlgo // TODO: this is NOT a CPACS class, rename to e.g. WingProfilePointListAlgo
 {
-
-private:
-    // Typedef for a container to store the coordinates of a wing profile element.
-    typedef std::vector<CTiglPoint*> CCPACSCoordinateContainer;
 
 public:
     // Constructor
-    TIGL_EXPORT CCPACSWingProfilePointList(const CCPACSWingProfile& profile, const std::string& cpacsPath);
+    TIGL_EXPORT CCPACSWingProfilePointList(const CCPACSWingProfile& profile, const CCPACSPointListXYZ& cpacsPointlist, const std::string& xpath);
 
-    // Destructor
-    TIGL_EXPORT ~CCPACSWingProfilePointList();
-
-    TIGL_EXPORT static std::string CPACSID();
+    DEPRECATED TIGL_EXPORT static std::string CPACSID();
 
     // Cleanup routine
     TIGL_EXPORT void Cleanup();
@@ -71,17 +64,12 @@ public:
     // Update interna
     TIGL_EXPORT void Update();
 
-    // Read CPACS wing profile file
-    TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& profileXPath);
-
-    // Write CPACS wing profile
-    TIGL_EXPORT virtual void WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& profileXPath) const override;
-
     // Returns the profile points as read from TIXI.
-    TIGL_EXPORT std::vector<CTiglPoint*> GetSamplePoints() const;
+    TIGL_EXPORT virtual std::vector<const CTiglPoint*> GetSamplePoints() const override; // TODO: replace by version which stores points by value, see GetSamplePoints2()
+    TIGL_EXPORT virtual const std::vector<CTiglPoint>& GetSamplePoints2() const override;
 
     // get profiles CPACS XML path
-    TIGL_EXPORT const std::string& GetProfileDataXPath() const;
+    DEPRECATED TIGL_EXPORT const std::string& GetProfileDataXPath() const;
 
     // get upper wing profile wire
     TIGL_EXPORT const TopoDS_Edge& GetUpperWire() const;
@@ -147,22 +135,23 @@ private:
     // stores whether the defined profile is closed or has a trailing edge
     bool                      profileIsClosed;
 
-    CCPACSCoordinateContainer coordinates;    /**< Coordinates of a wing profile element */
-    WireAlgoPointer           profileWireAlgo;/**< Pointer to wire algorithm (e.g. CTiglInterpolateBsplineWire) */
-    const CCPACSWingProfile&  profileRef;     /**< Reference to the wing profile */
+    std::vector<CTiglPoint>             coordinates;    /**< Coordinates of a wing profile element */
+    std::unique_ptr<ITiglWireAlgorithm> profileWireAlgo;/**< Pointer to wire algorithm (e.g. CTiglInterpolateBsplineWire) */
+    const CCPACSWingProfile&            profileRef;     /**< Reference to the wing profile */
+    const CCPACSPointListXYZ&           pointList;
 
-    std::string               ProfileDataXPath; /**< CPACS path to profile data (pointList or cst2D) */
-    TopoDS_Edge               upperWireOpened;  /**< wire of upper wing profile from open profile */
-    TopoDS_Edge               lowerWireOpened;  /**< wire of lower wing profile from open profile */
-    TopoDS_Edge               upperWireClosed;        /**< wire of the upper wing profile */
-    TopoDS_Edge               lowerWireClosed;        /**< wire of the lower wing profile */
-    TopoDS_Edge               upperLowerEdgeOpened;   /**< edge of the upper and lower wing profile combined */
-    TopoDS_Edge               upperLowerEdgeClosed;
-    TopoDS_Edge               trailingEdgeOpened;     /**< wire of the trailing edge */
-    TopoDS_Edge               trailingEdgeClosed;     /**< always null, but required for consistency */
+    std::string                         ProfileDataXPath; /**< CPACS path to profile data (pointList or cst2D) */
+    TopoDS_Edge                         upperWireOpened;  /**< wire of upper wing profile from open profile */
+    TopoDS_Edge                         lowerWireOpened;  /**< wire of lower wing profile from open profile */
+    TopoDS_Edge                         upperWireClosed;        /**< wire of the upper wing profile */
+    TopoDS_Edge                         lowerWireClosed;        /**< wire of the lower wing profile */
+    TopoDS_Edge                         upperLowerEdgeOpened;   /**< edge of the upper and lower wing profile combined */
+    TopoDS_Edge                         upperLowerEdgeClosed;
+    TopoDS_Edge                         trailingEdgeOpened;     /**< wire of the trailing edge */
+    TopoDS_Edge                         trailingEdgeClosed;     /**< always null, but required for consistency */
 
-    gp_Pnt                    lePoint;          /**< Leading edge point */
-    gp_Pnt                    tePoint;          /**< Trailing edge point */
+    gp_Pnt                              lePoint;          /**< Leading edge point */
+    gp_Pnt                              tePoint;          /**< Trailing edge point */
 };
 
 } // end namespace tigl
