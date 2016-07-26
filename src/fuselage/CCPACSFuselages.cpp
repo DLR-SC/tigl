@@ -130,17 +130,15 @@ CCPACSFuselage& CCPACSFuselages::GetFuselage(const std::string& UID) const
 void CCPACSFuselages::AddFuselage(CCPACSFuselage* fuselage)
 {
     // Check whether the same fuselage already exists if yes remove it before adding the new one
-    decltype(m_fuselage)::iterator it;
-    for (it = m_fuselage.begin(); it != m_fuselage.end(); ++it) {
+    for (auto it = m_fuselage.begin(); it != m_fuselage.end(); ++it) {
         if ((*it)->GetUID() == fuselage->GetUID()) {
-            delete (*it);
             m_fuselage.erase(it);
             break;
         }
     }
 
     // Add the new fuselage to the fuselage list
-    m_fuselage.push_back(fuselage);
+    m_fuselage.emplace_back(fuselage);
 }
 
 } // end namespace tigl

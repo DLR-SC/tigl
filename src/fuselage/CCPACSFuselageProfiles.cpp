@@ -55,7 +55,7 @@ void CCPACSFuselageProfiles::ReadCPACS(const TixiDocumentHandle& tixiHandle, con
     // read element fuselageProfile
     if (TixiCheckElement(tixiHandle, xpath, "fuselageProfile")) {
         TixiReadElements(tixiHandle, xpath, "fuselageProfile", m_fuselageProfile, [&](const std::string& childXPath) {
-            CCPACSFuselageProfile* child = new CCPACSFuselageProfile;
+            auto child = std::make_unique<CCPACSFuselageProfile>();
             child->ReadCPACS(tixiHandle, childXPath);
             return child;
         });
@@ -75,12 +75,12 @@ void CCPACSFuselageProfiles::AddProfile(CCPACSFuselageProfile* profile)
 {
     // free memory for existing profiles
     DeleteProfile(profile->GetUID());
-    m_fuselageProfile.push_back(profile);
+    m_fuselageProfile.emplace_back(profile);
 }
 
 void CCPACSFuselageProfiles::DeleteProfile( std::string uid )
 {
-    const auto it = std::find_if(std::begin(m_fuselageProfile), std::end(m_fuselageProfile), [&](const generated::CPACSProfileGeometry* pg) {
+    const auto it = std::find_if(std::begin(m_fuselageProfile), std::end(m_fuselageProfile), [&](const std::unique_ptr<generated::CPACSProfileGeometry>& pg) {
         return pg->GetUID() == uid;
     });
     if (it != std::end(m_fuselageProfile))
@@ -98,8 +98,7 @@ CCPACSFuselageProfile& CCPACSFuselageProfiles::GetProfile(std::string uid) const
 {
     for (const auto& p : m_fuselageProfile)
         if (p->GetUID() == uid)
-            return *static_cast<CCPACSFuselageProfile*>(p);
-
+            return static_cast<CCPACSFuselageProfile&>(*p);
     throw CTiglError("Fuselage profile \"" + uid + "\" not found in CPACS file!", TIGL_UID_ERROR);
 }
 
@@ -110,7 +109,7 @@ CCPACSFuselageProfile& CCPACSFuselageProfiles::GetProfile(int index) const
     if (index < 0 || index >= GetProfileCount()) {
         throw CTiglError("Error: Invalid index in CCPACSFuselageProfiles::GetProfile", TIGL_INDEX_ERROR);
     }
-    return *static_cast<CCPACSFuselageProfile*>(m_fuselageProfile[index]);
+    return static_cast<CCPACSFuselageProfile&>(*m_fuselageProfile[index]);
 }
 
 
