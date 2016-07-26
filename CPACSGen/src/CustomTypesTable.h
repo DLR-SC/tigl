@@ -30,6 +30,7 @@ namespace tigl {
 				{ "CPACSTransformation",                "CCPACSTransformation" },
 				{ "CPACSStringVectorBase",              "CCPACSStringVector" },
 				{ "CPACSPointListXYZVector",            "CCPACSPointListXYZ" },
+				{ "CPACSPointListRelXYZVector",         "CCPACSPointListRelXYZ" },
 
 				{ "CPACSFuselage",                      "CCPACSFuselage" },
 				{ "CPACSFuselages",                     "CCPACSFuselages" },
