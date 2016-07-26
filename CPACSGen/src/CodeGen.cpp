@@ -97,7 +97,10 @@ namespace tigl {
 			case Cardinality::Vector:
 			{
 				const bool makePointer = m_types.classes.find(field.typeName) != std::end(m_types.classes);
-				return "std::vector<" + typeName + (makePointer ? "*" : "") + ">";
+				if(makePointer)
+					return "std::vector<std::unique_ptr<" + typeName + ">>";
+				else
+					return "std::vector<" + typeName + ">";
 			}
 			default:
 				throw std::logic_error("Invalid cardinality");
@@ -350,11 +353,7 @@ namespace tigl {
 						cpp << "TixiReadElements(tixiHandle, xpath, \"" << f.cpacsName << "\", " << f.fieldName() << ", [&](const std::string& childXPath) {";
 						{
 							Scope s(cpp);
-							cpp << "using ChildType = std::remove_pointer_t<" << fieldType(f) << "::value_type>;";
-							if (requiresParentPointer)
-								cpp << "ChildType* child = new ChildType(" << parentPointerThis(c) << ");";
-							else
-								cpp << "ChildType* child = new ChildType;";
+							cpp << "auto child = std::make_unique<" << customReplacedType(f.typeName) << ">(" << (requiresParentPointer ? parentPointerThis(c) : "") << ");";
 							cpp << "child->ReadCPACS(tixiHandle, childXPath);";
 							cpp << "return child;";
 						}
@@ -381,7 +380,7 @@ namespace tigl {
 				case Cardinality::Vector:
 					if (f.xmlType == XMLConstruct::Attribute || f.xmlType == XMLConstruct::SimpleContent || f.xmlType == XMLConstruct::FundamentalTypeBase)
 						throw std::runtime_error("Attributes, simpleContents and bases cannot be vectors");
-					cpp << "TixiSaveElements(tixiHandle, xpath, \"" << f.cpacsName << "\", " << f.fieldName() << ", [&](const std::string& childXPath, const " << f.typeName << "& child) {";
+					cpp << "TixiSaveElements(tixiHandle, xpath, \"" << f.cpacsName << "\", " << f.fieldName() << ", [&](const std::string& childXPath, const " << customReplacedType(f.typeName) << "& child) {";
 					{
 						Scope s(cpp);
 						cpp << "TixiSave" << AttOrElem << "(tixiHandle, childXPath, \"" << f.cpacsName << "\", child);";
@@ -424,7 +423,7 @@ namespace tigl {
 						cpp << f.fieldName() << ".WriteCPACS(tixiHandle, xpath + \"/" + f.cpacsName + "\");";
 						break;
 					case Cardinality::Vector:
-						cpp << "TixiSaveElements(tixiHandle, xpath, \"" << f.cpacsName << "\", " << f.fieldName() << ", [&](const std::string& childXPath, const " << f.typeName << "* child) {";
+						cpp << "TixiSaveElements(tixiHandle, xpath, \"" << f.cpacsName << "\", " << f.fieldName() << ", [&](const std::string& childXPath, const std::unique_ptr<" << customReplacedType(f.typeName) << ">& child) {";
 						{
 							Scope s(cpp);
 							cpp << "child->WriteCPACS(tixiHandle, childXPath);";
@@ -578,8 +577,12 @@ namespace tigl {
 					break;
 			}
 		}
-		if (vectorHeader)   deps.hppIncludes.push_back("<vector>");
-		if (optionalHeader) deps.hppIncludes.push_back("\"Optional.hpp\"");
+		if (vectorHeader) {
+			deps.hppIncludes.push_back("<vector>");
+			deps.hppIncludes.push_back("<memory>"); // for unique_ptr
+		}
+		if (optionalHeader)
+			deps.hppIncludes.push_back("\"Optional.hpp\"");
 
 		deps.hppIncludes.push_back("\"tigl_internal.h\"");
 

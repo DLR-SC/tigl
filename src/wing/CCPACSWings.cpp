@@ -131,14 +131,13 @@ void CCPACSWings::AddWing(CCPACSWing* wing)
     // Check whether the same wing already exists if yes remove it before adding the new one
     for (auto it = m_wing.begin(); it != m_wing.end(); ++it) {
         if ((*it)->GetUID() == wing->GetUID()) {
-            delete (*it);
             m_wing.erase(it);
             break;
         }
     }
 
     // Add the new wing to the wing list
-    m_wing.push_back(wing);
+    m_wing.emplace_back(wing);
 }
 
 } // end namespace tigl

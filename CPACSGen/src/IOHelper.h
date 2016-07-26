@@ -104,7 +104,7 @@ namespace tigl {
 		int childCount = 0;
 		tixiGetNamedChildrenCount(tixiHandle, parentPath.c_str(), childName.c_str(), &childCount); // this call is allowed to fail if the element at parentPath does not exist
 
-																								   // test if we have children to write
+		// test if we have children to write
 		if (children.size() > 0) {
 			// it the container node does not exist, create it
 			if (tixiCheckElement(tixiHandle, parentPath.c_str()) == ELEMENT_NOT_FOUND) {
