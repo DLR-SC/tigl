@@ -28,6 +28,7 @@
 #include <algorithm>
 #include <string>
 #include <limits>
+#include <cassert>
 
 #include "CCPACSWingComponentSegment.h"
 #include "CCPACSWingSection.h"
@@ -230,13 +231,10 @@ void CCPACSWingComponentSegment::SetUID(const std::string& uid) {
 }
 
 TiglSymmetryAxis CCPACSWingComponentSegment::GetSymmetryAxis() {
-    // TODO
-    return TiglSymmetryAxis::TIGL_NO_SYMMETRY;
+    return wing->GetSymmetryAxis();
 }
 
-void CCPACSWingComponentSegment::SetSymmetryAxis(const TiglSymmetryAxis& axis) {
-    // TODO
-}
+void CCPACSWingComponentSegment::SetSymmetryAxis(const TiglSymmetryAxis& axis) {}
 
 // Returns the wing this segment belongs to
 CCPACSWing& CCPACSWingComponentSegment::GetWing() const

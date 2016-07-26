@@ -124,10 +124,6 @@ TiglSymmetryAxis CCPACSFuselage::GetSymmetryAxis() {
 
 void CCPACSFuselage::SetSymmetryAxis(const TiglSymmetryAxis& axis) {
     m_symmetry = axis;
-
-    for (int i = 1; i <= m_segments.GetSegmentCount(); ++i) {
-        m_segments.GetSegment(i).SetSymmetryAxis(axis);
-    }
 }
 
 // Get section count
