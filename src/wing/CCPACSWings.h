@@ -35,10 +35,9 @@
 
 namespace tigl
 {
-class CCPACSWings : public generated::CPACSWings //, public generated::CPACSWingAirfoils // TODO: we should separate wing airfoils from wings
+class CCPACSWings : public generated::CPACSWings
 {
 public:
-    //TIGL_EXPORT CCPACSWings();
     TIGL_EXPORT CCPACSWings(generated::CPACSRotorcraftModel* parent);
     TIGL_EXPORT CCPACSWings(CCPACSModel* parent);
 
@@ -51,19 +50,20 @@ public:
     // Write CPACS wings elements
     TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& xpath) const;
 
-    TIGL_EXPORT bool HasProfile(std::string uid) const;
+    DEPRECATED TIGL_EXPORT bool HasProfile(std::string uid) const;
 
     // Returns the wing profiles in this configuration
-    TIGL_EXPORT CCPACSWingProfiles& GetProfiles();
+    DEPRECATED TIGL_EXPORT CCPACSWingProfiles& GetProfiles();
+    DEPRECATED TIGL_EXPORT const CCPACSWingProfiles& GetProfiles() const;
 
     // Returns the total count of wing profiles in this configuration
-    TIGL_EXPORT int GetProfileCount() const;
+    DEPRECATED TIGL_EXPORT int GetProfileCount() const;
 
     // Returns the wing profile for a given uid.
-    TIGL_EXPORT CCPACSWingProfile& GetProfile(std::string uid) const;
+    DEPRECATED TIGL_EXPORT CCPACSWingProfile& GetProfile(std::string uid) const;
 
     // Returns the wing profile for a given index - TODO: depricated function!
-    TIGL_EXPORT CCPACSWingProfile& GetProfile(int index) const;
+    DEPRECATED TIGL_EXPORT CCPACSWingProfile& GetProfile(int index) const;
 
     // Returns the total count of wings in a configuration
     TIGL_EXPORT int GetWingCount() const;
@@ -76,9 +76,6 @@ public:
     
     // Adds a wing to the wing list
     TIGL_EXPORT void AddWing(CCPACSWing* wing);
-
-private:
-    CCPACSWingProfiles profiles;      /**< Configuration wings element */
 };
 
 } // end namespace tigl
