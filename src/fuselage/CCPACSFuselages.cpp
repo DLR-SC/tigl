@@ -25,6 +25,9 @@
 
 #include "CCPACSFuselages.h"
 #include "CCPACSFuselage.h"
+#include "CCPACSModel.h"
+#include "CCPACSFuselageProfiles.h"
+#include "CCPACSConfiguration.h"
 #include "CTiglError.h"
 #include "TixiSaveExt.h"
 #include <iostream>
@@ -32,67 +35,65 @@
 
 namespace tigl
 {
-//CCPACSFuselages::CCPACSFuselages() {}
-
 CCPACSFuselages::CCPACSFuselages(CCPACSModel* parent)
     : generated::CPACSFuselages(parent) {}
 
 CCPACSFuselages::CCPACSFuselages(generated::CPACSRotorcraftModel* parent)
-    : generated::CPACSFuselages(parent) {}
+    : generated::CPACSFuselages(parent) {
+    throw std::logic_error("Instantiating CCPACSFuselages with CPACSRotorcraftModel as parent is not implemented");
+}
 
 // Invalidates internal state
 void CCPACSFuselages::Invalidate()
 {
-    profiles.Invalidate();
+    GetProfiles().Invalidate();
     for (int i = 1; i <= GetFuselageCount(); i++) {
         GetFuselage(i).Invalidate();
     }
-}
-
-namespace {
-    const std::string profilesXPath = "/cpacs/vehicles/profiles/fuselageProfiles";
 }
 
 // Read CPACS fuselages element
 void CCPACSFuselages::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& xpath)
 {
     generated::CPACSFuselages::ReadCPACS(tixiHandle, xpath);
-    profiles.ReadCPACS(tixiHandle, profilesXPath);
 }
 
 // Write CPACS fuselage elements
 void CCPACSFuselages::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& xpath) const
 {
-    profiles.WriteCPACS(tixiHandle, profilesXPath);
     generated::CPACSFuselages::WriteCPACS(tixiHandle, xpath);
 }
 
 bool CCPACSFuselages::HasProfile(std::string uid) const
 {
-    return profiles.HasProfile(uid);
+    return GetProfiles().HasProfile(uid);
 }
 
 // Returns the total count of fuselage profiles in this configuration
 int CCPACSFuselages::GetProfileCount() const
 {
-    return profiles.GetProfileCount();
+    return GetProfiles().GetProfileCount();
 }
 
 CCPACSFuselageProfiles& CCPACSFuselages::GetProfiles() 
 {
-    return profiles;
+    return static_cast<CCPACSModel*>(m_parent)->GetConfiguration().GetFuselageProfiles();
+}
+
+const CCPACSFuselageProfiles& CCPACSFuselages::GetProfiles() const {
+    return static_cast<const CCPACSModel*>(m_parent)->GetConfiguration().GetFuselageProfiles();
 }
 
 // Returns the fuselage profile for a given index.
 CCPACSFuselageProfile& CCPACSFuselages::GetProfile(int index) const
 {
-    return profiles.GetProfile(index);
+    return GetProfiles().GetProfile(index);
 }
 
 // Returns the fuselage profile for a given uid.
 CCPACSFuselageProfile& CCPACSFuselages::GetProfile(std::string uid) const
 {
-    return profiles.GetProfile(uid);
+    return GetProfiles().GetProfile(uid);
 }
 
 // Returns the total count of fuselages in a configuration
@@ -141,7 +142,5 @@ void CCPACSFuselages::AddFuselage(CCPACSFuselage* fuselage)
     // Add the new fuselage to the fuselage list
     m_fuselage.push_back(fuselage);
 }
-
-
 
 } // end namespace tigl
