@@ -42,8 +42,6 @@ namespace tigl
 class CTiglPoint;
 class ITiglWireAlgorithm;
 
-typedef ITiglWireAlgorithm* WireAlgoPointer;
-
 class CCPACSFuselageProfile : public generated::CPACSProfileGeometry
 {
 public:
@@ -126,19 +124,15 @@ private:
     bool checkSamePoints(gp_Pnt pointA, gp_Pnt pointB);
 
 private:
-    //std::string               ProfileXPath;   /**< The XPath to this profile in cpacs */
-    //std::string               name;           /**< The Name of the profile */
-    //std::string               description;    /**< The description of the profile */
-    //std::string               uid;            /**< The UID of this profile */
-    bool                    mirrorSymmetry; /**< Mirror symmetry with repect to the x-z plane */
-    std::vector<CTiglPoint> coordinates;    /**< Coordinates of a fuselage profile element */
-    bool                    invalidated;    /**< Flag if element is invalid */
-    TopoDS_Wire             wireOriginal;   /**< Original fuselage profile wire */
-    TopoDS_Wire             wireClosed;     /**< Forced closed fuselage profile wire */
-    double                  wireLength;     /**< Length of fuselage profile wire */
-    WireAlgoPointer         profileWireAlgo;
-    gp_Pnt                  startDiameterPoint; 
-    gp_Pnt                  endDiameterPoint;  
+    bool                                mirrorSymmetry; /**< Mirror symmetry with repect to the x-z plane */
+    std::vector<CTiglPoint>             coordinates;    /**< Coordinates of a fuselage profile element */
+    bool                                invalidated;    /**< Flag if element is invalid */
+    TopoDS_Wire                         wireOriginal;   /**< Original fuselage profile wire */
+    TopoDS_Wire                         wireClosed;     /**< Forced closed fuselage profile wire */
+    double                              wireLength;     /**< Length of fuselage profile wire */
+    std::unique_ptr<ITiglWireAlgorithm> profileWireAlgo;
+    gp_Pnt                              startDiameterPoint;
+    gp_Pnt                              endDiameterPoint;
 
 };
 

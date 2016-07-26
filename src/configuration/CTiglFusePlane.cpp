@@ -164,7 +164,7 @@ void CTiglFusePlane::Perform()
     _result = FuseWithChilds(rootComponent);
 
     CCPACSFarField& farfield = _myconfig.GetFarField();
-    if (_mymode == FULL_PLANE_TRIMMED_FF || _mymode == HALF_PLANE_TRIMMED_FF) {
+    if (farfield.GetFieldType() != NONE && (_mymode == FULL_PLANE_TRIMMED_FF || _mymode == HALF_PLANE_TRIMMED_FF)) {
         PNamedShape ff = farfield.GetLoft();
 
         BOPCol_ListOfShape aLS;

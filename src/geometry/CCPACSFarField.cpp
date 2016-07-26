@@ -36,12 +36,13 @@ namespace tigl
 {
 
 CCPACSFarField::CCPACSFarField()
-	: CTiglAbstractGeometricComponent(dummyTrans) {
+    : CTiglAbstractGeometricComponent(dummyTrans) {
     init();
 }
 
 void CCPACSFarField::init()
 {
+    SetFieldType(TiglFarFieldType::NONE);
     loft.reset();
 }
 
@@ -72,19 +73,19 @@ PNamedShape CCPACSFarField::BuildLoft()
     shape.Nullify();
     gp_Pnt center(0,0,0);
 
-    switch (m_type.GetSimpleContent()) {
-    case generated::CPACSFarField_type_SimpleContent::fullSphere:
+    switch (GetFieldType()) {
+    case TiglFarFieldType::FULL_SPHERE:
         shape = BRepPrimAPI_MakeSphere(center, fieldSize).Shape();
         break;
-    case generated::CPACSFarField_type_SimpleContent::fullCube:
+    case TiglFarFieldType::FULL_CUBE:
         shape = BRepPrimAPI_MakeBox(gp_Pnt(center.X()-fieldSize, center.Y()-fieldSize, center.Z()-fieldSize),
                                     fieldSize*2., fieldSize*2., fieldSize*2.).Shape();
         break;
-    case generated::CPACSFarField_type_SimpleContent::halfCube:
+    case TiglFarFieldType::HALF_CUBE:
         shape = BRepPrimAPI_MakeBox(gp_Pnt(center.X()-fieldSize, center.Y(), center.Z()-fieldSize),
                                     fieldSize*2., fieldSize, fieldSize*2.).Shape();
         break;
-    case generated::CPACSFarField_type_SimpleContent::halfSphere:
+    case TiglFarFieldType::HALF_SPHERE:
         shape = BRepPrimAPI_MakeSphere(gp_Ax2(center, gp_Dir(0,1,0)), fieldSize, 0., M_PI_2).Shape();
         break;
     default:
@@ -119,13 +120,11 @@ TiglGeometricComponentType CCPACSFarField::GetComponentType()
 
 
 TiglFarFieldType CCPACSFarField::GetFieldType() {
-    switch (m_type.GetSimpleContent()) {
-        case generated::CPACSFarField_type_SimpleContent::fullSphere: return TiglFarFieldType::FULL_SPHERE;
-        case generated::CPACSFarField_type_SimpleContent::fullCube:   return TiglFarFieldType::FULL_CUBE;
-        case generated::CPACSFarField_type_SimpleContent::halfCube:   return TiglFarFieldType::HALF_CUBE;
-        case generated::CPACSFarField_type_SimpleContent::halfSphere: return TiglFarFieldType::HALF_SPHERE;
-        default: return TiglFarFieldType::NONE;
-    }
+    return m_type.GetSimpleContent();
+}
+
+void CCPACSFarField::SetFieldType(const TiglFarFieldType& value) {
+    m_type.SetSimpleContent(value);
 }
 
 } // namespace tigl
