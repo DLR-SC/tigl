@@ -219,13 +219,10 @@ void CCPACSFuselageSegment::SetUID(const std::string& uid) {
 }
 
 TiglSymmetryAxis CCPACSFuselageSegment::GetSymmetryAxis() {
-    // TODO
-    return TiglSymmetryAxis::TIGL_NO_SYMMETRY;
+    return fuselage->GetSymmetryAxis();
 }
 
-void CCPACSFuselageSegment::SetSymmetryAxis(const TiglSymmetryAxis& axis) {
-    // TODO
-}
+void CCPACSFuselageSegment::SetSymmetryAxis(const TiglSymmetryAxis& axis) {}
 
 // Returns the fuselage this segment belongs to
 CCPACSFuselage& CCPACSFuselageSegment::GetFuselage() const

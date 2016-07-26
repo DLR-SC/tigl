@@ -91,20 +91,18 @@ void CCPACSPositionings::Update()
     // connect positionings, find roots
     std::vector<CCPACSPositioning*> rootNodes;
     for (const auto& actPos : m_positioning) {
-        if (actPos->HasFromSectionUID()) {
+        // fromSectionUID element may be present but empty
+        if (actPos->HasFromSectionUID() && !actPos->GetFromSectionUID().empty()) {
             const std::string fromUID = actPos->GetFromSectionUID();
-            // fromSectionUID element may be present but empty
-            if (!fromUID.empty()) {
-                const auto pos = std::find_if(std::begin(m_positioning), std::end(m_positioning), [&](CCPACSPositioning* p) {
-                    return p->GetOuterSectionIndex() == fromUID;
-                });
-                if (pos != std::end(m_positioning)) {
-                    CCPACSPositioning* fromPos = *pos;
-                    fromPos->ConnectChildPositioning(actPos);
-                } else {
-                    // invalid from UID
-                    throw CTiglError("Positioning fromSectionUID " + fromUID + " does not exist");
-                }
+            const auto pos = std::find_if(std::begin(m_positioning), std::end(m_positioning), [&](CCPACSPositioning* p) {
+                return p->GetOuterSectionIndex() == fromUID;
+            });
+            if (pos != std::end(m_positioning)) {
+                CCPACSPositioning* fromPos = *pos;
+                fromPos->ConnectChildPositioning(actPos);
+            } else {
+                // invalid from UID
+                throw CTiglError("Positioning fromSectionUID " + fromUID + " does not exist");
             }
         }
         else {
