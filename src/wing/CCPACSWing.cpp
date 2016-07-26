@@ -239,16 +239,6 @@ TiglSymmetryAxis CCPACSWing::GetSymmetryAxis() {
 
 void CCPACSWing::SetSymmetryAxis(const TiglSymmetryAxis& axis) {
     m_symmetry = axis;
-
-    for (int i = 1; i <= m_segments.GetSegmentCount(); ++i) {
-        m_segments.GetSegment(i).SetSymmetryAxis(axis);
-    }
-
-    if (m_componentSegments.isValid()) {
-        for (int i = 1; i <= m_componentSegments->GetComponentSegmentCount(); ++i) {
-            m_componentSegments->GetComponentSegment(i).SetSymmetryAxis(axis);
-        }
-    }
 }
 
 // Returns the parent configuration

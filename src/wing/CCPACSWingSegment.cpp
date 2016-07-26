@@ -283,13 +283,10 @@ void CCPACSWingSegment::SetUID(const std::string& uid) {
 }
 
 TiglSymmetryAxis CCPACSWingSegment::GetSymmetryAxis() {
-    // TODO
-    return TiglSymmetryAxis::TIGL_NO_SYMMETRY;
+    return wing->GetSymmetryAxis();
 }
 
-void CCPACSWingSegment::SetSymmetryAxis(const TiglSymmetryAxis& axis) {
-    // TODO
-}
+void CCPACSWingSegment::SetSymmetryAxis(const TiglSymmetryAxis& axis) {}
 
 // Returns the wing this segment belongs to
 CCPACSWing& CCPACSWingSegment::GetWing() const
