@@ -25,17 +25,12 @@
 #include "tixi.h"
 #include "tigl_internal.h"
 #include "tigl_config.h"
+#include "TiglFarFieldType.h"
 
 namespace tigl
 {
 
-enum TiglFarFieldType {
-    NONE,
-    HALF_SPHERE,
-    FULL_SPHERE,
-    HALF_CUBE,
-    FULL_CUBE
-};
+
 
 class CCPACSFarField : public generated::CPACSFarField, public CTiglAbstractGeometricComponent
 {
@@ -54,6 +49,7 @@ public:
     TIGL_EXPORT virtual TiglGeometricComponentType GetComponentType();
 
     TIGL_EXPORT TiglFarFieldType GetFieldType();
+    TIGL_EXPORT void SetFieldType(const TiglFarFieldType& value);
 
 protected:
     virtual PNamedShape BuildLoft();

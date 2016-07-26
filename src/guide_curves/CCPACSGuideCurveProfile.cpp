@@ -48,6 +48,10 @@ void CCPACSGuideCurveProfile::ReadCPACS(const TixiDocumentHandle& tixiHandle, co
     const auto& ys = m_pointList.GetRY().AsVector();
     const auto& zs = m_pointList.GetRZ().AsVector();
 
+    // TODO: check that vector sizes are equal
+    if (xs.size() != ys.size() || ys.size() != zs.size())
+        throw std::runtime_error("vector sizes not equal");
+
     coordinates.clear();
     for (int i = 0; i < m_pointList.GetRX().AsVector().size(); i++)
         coordinates.push_back(CTiglPoint(xs[i], ys[i], zs[i]));

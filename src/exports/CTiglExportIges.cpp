@@ -227,7 +227,8 @@ void CTiglExportIges::ExportIGES(const std::string& filename) const
     }
 
     CCPACSFarField& farfield = _config.GetFarField();
-    shapes.push_back(farfield.GetLoft());
+    if(farfield.GetFieldType() != TiglFarFieldType::NONE)
+        shapes.push_back(farfield.GetLoft());
 
     // write iges
     try {

@@ -98,7 +98,7 @@ CCPACSWingProfile& CCPACSWingConnection::GetProfile() const
     }
     CCPACSConfiguration& config = wing.GetConfiguration();
 
-    return (config.GetWingProfile(profileUID));
+    return config.GetWingProfile(profileUID);
 }
 
 // Returns the positioning transformation (segment transformation) for the referenced section
