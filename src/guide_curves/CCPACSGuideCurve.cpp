@@ -51,6 +51,7 @@ void CCPACSGuideCurve::Cleanup()
     m_uID        = "";
     m_description= "";
     m_fromGuideCurveUID_choice1.destroy();
+    m_fromRelativeCircumference_choice2.destroy();
     fromRelativeCircumferenceIsSet = true;
 }
 

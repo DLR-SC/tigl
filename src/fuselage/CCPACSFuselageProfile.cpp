@@ -23,6 +23,7 @@
 * @brief  Implementation of CPACS fuselage profile handling routines.
 */
 
+#include "generated/IOHelper.h"
 #include "CCPACSFuselageProfile.h"
 #include "CTiglError.h"
 #include "CTiglTransformation.h"
@@ -66,16 +67,14 @@ namespace tigl
 
 // Constructor
 CCPACSFuselageProfile::CCPACSFuselageProfile()
-    : invalidated(true)
+    : invalidated(true), profileWireAlgo(new CTiglInterpolateBsplineWire)
 {
-    profileWireAlgo = WireAlgoPointer(new CTiglInterpolateBsplineWire);
     Cleanup();
 }
 
 // Destructor
 CCPACSFuselageProfile::~CCPACSFuselageProfile()
 {
-    delete profileWireAlgo;
     Cleanup();
 }
 
@@ -97,11 +96,10 @@ void CCPACSFuselageProfile::ReadCPACS(const TixiDocumentHandle& tixiHandle, cons
     Cleanup();
     generated::CPACSProfileGeometry::ReadCPACS(tixiHandle, xpath);
 
-    // TODO: m_symmetry can never be half
-    //if (symString == "half") {
-    //	mirrorSymmetry = true;
-    //}
-    mirrorSymmetry = false;
+    // symmetry element does not conform to CPACS spec
+    if (TixiCheckElement(tixiHandle, xpath, "symmetry")) {
+        mirrorSymmetry = TixiGetTextElement(tixiHandle, xpath, "symmetry") == "half";
+    }
 
     // convert point list to coordinates
     if (m_pointList_choice1.isValid()) {
@@ -116,7 +114,7 @@ void CCPACSFuselageProfile::ReadCPACS(const TixiDocumentHandle& tixiHandle, cons
 
         // check if points with maximal/minimal y-component were calculated correctly
         if (maxYIndex == minYIndex) {
-            throw CTiglError("Error: CCPACSWingProfilePointList::ReadCPACS: Unable to separate upper and lower wing profile from point list", TIGL_XML_ERROR);
+            throw CTiglError("Error: CCPACSFuselageProfile::ReadCPACS: Unable to separate upper and lower wing profile from point list", TIGL_XML_ERROR);
         }
 
         if (!mirrorSymmetry) {
@@ -227,8 +225,8 @@ void CCPACSFuselageProfile::BuildWires()
 
     // we always want to include the endpoint, if it's the same as the startpoint
     // we use the startpoint to enforce closing of the spline
-    gp_Pnt pStart =  coordinates[0].Get_gp_Pnt();
-    gp_Pnt pEnd   =  coordinates[coordinates.size()-1].Get_gp_Pnt();
+    gp_Pnt pStart =  coordinates.front().Get_gp_Pnt();
+    gp_Pnt pEnd   =  coordinates.back().Get_gp_Pnt();
     if (checkSamePoints(pStart,pEnd)) {
         points.push_back(pStart);
     }
@@ -237,16 +235,15 @@ void CCPACSFuselageProfile::BuildWires()
     }
 
     // Build wire from fuselage profile points
-    const ITiglWireAlgorithm& wireBuilder = *profileWireAlgo;
-    const CTiglInterpolateBsplineWire* pSplineBuilder = dynamic_cast<const CTiglInterpolateBsplineWire*>(&wireBuilder);
+    auto pSplineBuilder = dynamic_cast<CTiglInterpolateBsplineWire*>(profileWireAlgo.get());
     if (pSplineBuilder) {
-        const_cast<CTiglInterpolateBsplineWire*>(pSplineBuilder)->setEndpointContinuity(C1);
+        pSplineBuilder->setEndpointContinuity(C1);
     }
 
-    TopoDS_Wire tempWireClosed   = wireBuilder.BuildWire(points, true);
-    TopoDS_Wire tempWireOriginal = wireBuilder.BuildWire(points, false);
+    TopoDS_Wire tempWireClosed   = profileWireAlgo->BuildWire(points, true);
+    TopoDS_Wire tempWireOriginal = profileWireAlgo->BuildWire(points, false);
     if (pSplineBuilder) {
-        const_cast<CTiglInterpolateBsplineWire*>(pSplineBuilder)->setEndpointContinuity(C0);
+        pSplineBuilder->setEndpointContinuity(C0);
     }
 
     if (tempWireClosed.IsNull() == Standard_True || tempWireOriginal.IsNull() == Standard_True) {

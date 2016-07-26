@@ -85,7 +85,7 @@ const double CCPACSWingProfilePointList::c_blendingDistance = 0.1;
 
 // Constructor
 CCPACSWingProfilePointList::CCPACSWingProfilePointList(const CCPACSWingProfile& profile, const CCPACSPointListXYZ& cpacsPointList, const std::string& xpath)
-    : profileRef(profile), pointList(cpacsPointList), profileWireAlgo(new CTiglInterpolateBsplineWire), ProfileDataXPath(xpath) {
+    : profileRef(profile), profileWireAlgo(new CTiglInterpolateBsplineWire), ProfileDataXPath(xpath) {
 
     // points with maximal/minimal y-component
     coordinates = cpacsPointList.AsVector();
@@ -280,13 +280,13 @@ void CCPACSWingProfilePointList::BuildLETEPoints()
 std::vector<const CTiglPoint*> CCPACSWingProfilePointList::GetSamplePoints() const
 {
     std::vector<const CTiglPoint*> v;
-    for (const auto& p : pointList.AsVector())
+    for (const auto& p : coordinates)
         v.push_back(&p);
     return v;
 }
 
 const std::vector<CTiglPoint>& CCPACSWingProfilePointList::GetSamplePoints2() const {
-    return pointList.AsVector();
+    return coordinates;
 }
 
 // get profiles CPACS XML path

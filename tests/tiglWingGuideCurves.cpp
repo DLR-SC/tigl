@@ -424,8 +424,7 @@ TEST_F(WingGuideCurve, tiglWingGuideCurve_CCPACSWingSegment)
     BRepTools_WireExplorer guideCurveExplorer(guideCurveWire);
     Handle(Geom_Curve) curve =  BRep_Tool::Curve(guideCurveExplorer.Current(), u1, u2);
     // gamma values of cpacs data points
-    const double temp[] = {0.0, 0.0, 0.01, 0.03, 0.09, 0.08, 0.07, 0.06, 0.02, 0.0, 0.0};
-    std::vector<double> gammaDeviation (temp, temp + sizeof(temp) / sizeof(temp[0]) );
+    std::vector<double> gammaDeviation{ 0.0, 0.0, 0.01, 0.03, 0.09, 0.08, 0.07, 0.06, 0.02, 0.0, 0.0 };
     // number of sample points
     unsigned int N=10;
     // segement width

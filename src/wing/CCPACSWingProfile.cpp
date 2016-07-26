@@ -94,7 +94,7 @@ void CCPACSWingProfile::ReadCPACS(const TixiDocumentHandle& tixiHandle, const st
     generated::CPACSProfileGeometry::ReadCPACS(tixiHandle, xpath);
     if (HasPointList_choice1()) {
         // in case the wing profile algorithm is a point list, create the additional algorithm instance
-        pointListAlgo.reset(new CCPACSWingProfilePointList(*this, m_pointList_choice1.get(), xpath));
+        pointListAlgo.reset(new CCPACSWingProfilePointList(*this, m_pointList_choice1.get(), xpath + "/pointList"));
         profileAlgo = pointListAlgo.get();
     } else if (HasCst2D_choice2()) {
         profileAlgo = &m_cst2D_choice2.get();

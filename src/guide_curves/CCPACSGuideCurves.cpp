@@ -27,9 +27,20 @@
 #include <sstream>
 #include <iostream>
 #include <fstream>
+#include <algorithm>
 
 namespace tigl
 {
+void CCPACSGuideCurves::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) {
+    generated::CPACSGuideCurves::ReadCPACS(tixiHandle, xpath);
+
+    // sort by uid as some unit tests rely on this (TODO: should we fix the tests?)
+    // WARN: this destroys the order of the guide curves as stored in the CPACS file
+    std::sort(std::begin(m_guideCurve), std::end(m_guideCurve), [](const CCPACSGuideCurve* a, const CCPACSGuideCurve* b) {
+        return a->GetUID() < b->GetUID();
+    });
+}
+
 // Returns the total count of guide curves in this configuration
 int CCPACSGuideCurves::GetGuideCurveCount() const
 {

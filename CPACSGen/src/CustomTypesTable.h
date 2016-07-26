@@ -13,6 +13,7 @@ namespace tigl {
 				{ "CPACSWingType_symmetry",             "TiglSymmetryAxis" },
 				{ "CPACSFuselageType_symmetry",         "TiglSymmetryAxis" },
 				{ "CPACSPointAbsRelType_refType",       "ECPACSTranslationType" },
+				{ "CPACSFarField_type_SimpleContent",   "TiglFarFieldType" },
 
 				// classes
 				{ "CPACSAircraftModel",                 "CCPACSModel" },

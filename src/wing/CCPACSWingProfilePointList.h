@@ -138,7 +138,6 @@ private:
     std::vector<CTiglPoint>             coordinates;    /**< Coordinates of a wing profile element */
     std::unique_ptr<ITiglWireAlgorithm> profileWireAlgo;/**< Pointer to wire algorithm (e.g. CTiglInterpolateBsplineWire) */
     const CCPACSWingProfile&            profileRef;     /**< Reference to the wing profile */
-    const CCPACSPointListXYZ&           pointList;
 
     std::string                         ProfileDataXPath; /**< CPACS path to profile data (pointList or cst2D) */
     TopoDS_Edge                         upperWireOpened;  /**< wire of upper wing profile from open profile */
