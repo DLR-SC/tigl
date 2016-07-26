@@ -38,8 +38,8 @@ namespace tigl
 // Invalidates internal state
 void CCPACSWingProfiles::Invalidate()
 {
-    for (decltype(m_wingAirfoil)::iterator p = m_wingAirfoil.begin(); p != m_wingAirfoil.end(); ++p) {
-        static_cast<CCPACSWingProfile*>(*p)->Invalidate();
+    for (auto& p : m_wingAirfoil) {
+        static_cast<CCPACSWingProfile&>(*p).Invalidate();
     }
 }
 
@@ -62,7 +62,7 @@ void CCPACSWingProfiles::ImportCPACS(const TixiDocumentHandle& tixiHandle, const
     // read element wingAirfoil
     if (TixiCheckElement(tixiHandle, xpath, "wingAirfoil")) {
         TixiReadElements(tixiHandle, xpath, "wingAirfoil", m_wingAirfoil, [&](const std::string& childXPath) {
-            CCPACSWingProfile* child = new CCPACSWingProfile;
+            auto child = std::make_unique<CCPACSWingProfile>();
             child->ReadCPACS(tixiHandle, childXPath);
             return child;
         });
@@ -73,13 +73,13 @@ void CCPACSWingProfiles::AddProfile(CCPACSWingProfile* profile)
 {
     // free memory for existing profiles
     DeleteProfile(profile->GetUID());
-    m_wingAirfoil.push_back(profile);
+    m_wingAirfoil.emplace_back(profile);
 }
 
 
 void CCPACSWingProfiles::DeleteProfile(std::string uid)
 {
-    const auto it = std::find_if(std::begin(m_wingAirfoil), std::end(m_wingAirfoil), [&](const generated::CPACSProfileGeometry* pg) {
+    const auto it = std::find_if(std::begin(m_wingAirfoil), std::end(m_wingAirfoil), [&](const std::unique_ptr<generated::CPACSProfileGeometry>& pg) {
         return pg->GetUID() == uid;
     });
     if (it != std::end(m_wingAirfoil))
@@ -106,7 +106,7 @@ CCPACSWingProfile& CCPACSWingProfiles::GetProfile(std::string uid) const
 {
     for (const auto& p : m_wingAirfoil)
         if (p->GetUID() == uid)
-            return *static_cast<CCPACSWingProfile*>(p);
+            return static_cast<CCPACSWingProfile&>(*p);
 
     throw CTiglError("Wing profile \"" + uid + "\" not found in CPACS file!", TIGL_UID_ERROR);
 }
@@ -118,7 +118,7 @@ CCPACSWingProfile& CCPACSWingProfiles::GetProfile(int index) const
     if (index < 0 || index >= GetProfileCount()) {
         throw CTiglError("Illegal index in CCPACSWingProfile::GetProfile", TIGL_INDEX_ERROR);
     }
-    return *static_cast<CCPACSWingProfile*>(m_wingAirfoil[index]);
+    return static_cast<CCPACSWingProfile&>(*m_wingAirfoil[index]);
 }
 
 } // end namespace tigl
