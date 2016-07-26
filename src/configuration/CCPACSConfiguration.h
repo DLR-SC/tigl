@@ -32,9 +32,9 @@
 #include "CTiglLogging.h"
 #include "CCPACSHeader.h"
 #include "CCPACSWings.h"
-#include "CCPACSWingProfile.h"
+#include "CCPACSWingProfiles.h"
 #include "CCPACSFuselages.h"
-#include "CCPACSFuselageProfile.h"
+#include "CCPACSFuselageProfiles.h"
 #include "CCPACSFarField.h"
 #include "CCPACSGuideCurveProfiles.h"
 #include "TopoDS_Compound.hxx"
@@ -85,8 +85,8 @@ public:
     // Returns the class which holds all wing profiles
     TIGL_EXPORT CCPACSFuselageProfiles& GetFuselageProfiles();
 
-    // Returns the wing profile for a given index - TODO: depricated!
-    TIGL_EXPORT CCPACSWingProfile& GetWingProfile(int index) const;
+    // Returns the wing profile for a given index
+    DEPRECATED TIGL_EXPORT CCPACSWingProfile& GetWingProfile(int index) const;
 
     // Returns the wing profile for a given uid.
     TIGL_EXPORT CCPACSWingProfile& GetWingProfile(std::string uid) const;
@@ -170,20 +170,18 @@ private:
     void operator=(const CCPACSConfiguration&);
 
 private:
-    //std::string                  name;                 /**< Configuration name */
-    //std::string                  description;          /**< Configuration description */
-    CCPACSModel*                 cpacsModel;           /**< Root component for the CTiglUIDManager */
-    TixiDocumentHandle           tixiDocumentHandle;   /**< Handle for internal TixiDocument */
-    CCPACSHeader                 header;               /**< Configuration header element */
-    //CCPACSWings                  wings;                /**< Configuration wings element */
-    //CCPACSFuselages              fuselages;            /**< Configuration fuselages element */
-    CCPACSFarField               farField;             /**< Far field configuration for CFD tools */
-    CCPACSGuideCurveProfiles     guideCurveProfiles;   /**< Guide curve profiles */
-    CTiglUIDManager              uidManager;           /**< Stores the unique ids of the components */
-    PTiglFusePlane               aircraftFuser;        /**< The aircraft fusing algo */
-    std::string                  configUID;            /**< UID of the opened configuration   */
-    CTiglShapeCache              shapeCache;
-    CTiglMemoryPool              memoryPool;
+    Optional<CCPACSModel>              cpacsModel;           /**< Root component for the CTiglUIDManager */
+    TixiDocumentHandle                 tixiDocumentHandle;   /**< Handle for internal TixiDocument */
+    CCPACSHeader                       header;               /**< Configuration header element */
+    CCPACSFarField                     farField;             /**< Far field configuration for CFD tools */
+    Optional<CCPACSWingProfiles>       wingProfiles;
+    Optional<CCPACSFuselageProfiles>   fuselageProfiles;
+    Optional<CCPACSGuideCurveProfiles> guideCurveProfiles;   /**< Guide curve profiles */
+    CTiglUIDManager                    uidManager;           /**< Stores the unique ids of the components */
+    PTiglFusePlane                     aircraftFuser;        /**< The aircraft fusing algo */
+    std::string                        configUID;            /**< UID of the opened configuration   */
+    CTiglShapeCache                    shapeCache;
+    CTiglMemoryPool                    memoryPool;
 };
 
 } // end namespace tigl

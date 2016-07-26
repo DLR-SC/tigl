@@ -24,8 +24,10 @@
 */
 
 #include "CCPACSWings.h"
+#include "CCPACSConfiguration.h"
 #include "CTiglError.h"
 #include "TixiSaveExt.h"
+#include "CCPACSModel.h"
 #include <iostream>
 #include <sstream>
 
@@ -35,20 +37,16 @@ namespace tigl
 // Invalidates internal state
 void CCPACSWings::Invalidate()
 {
-    profiles.Invalidate();
+    GetProfiles().Invalidate();
     for (int i = 1; i <= GetWingCount(); i++) {
         GetWing(i).Invalidate();
     }
 }
 
-namespace {
-    const std::string profilesXPath = "/cpacs/vehicles/profiles/wingAirfoils";
-}
-
-//CCPACSWings::CCPACSWings() {}
-
 CCPACSWings::CCPACSWings(generated::CPACSRotorcraftModel* parent)
-    : generated::CPACSWings(parent) {}
+    : generated::CPACSWings(parent) {
+    throw std::logic_error("Instantiating CCPACSWings with CPACSRotorcraftModel as parent is not implemented");
+}
 
 CCPACSWings::CCPACSWings(CCPACSModel* parent)
     : generated::CPACSWings(parent) {}
@@ -56,7 +54,6 @@ CCPACSWings::CCPACSWings(CCPACSModel* parent)
 // Read CPACS wings element
 void CCPACSWings::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& xpath)
 {
-    profiles.ReadCPACS(tixiHandle, profilesXPath);
     generated::CPACSWings::ReadCPACS(tixiHandle, xpath);
 }
 
@@ -64,35 +61,39 @@ void CCPACSWings::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& xp
 void CCPACSWings::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& xpath) const
 {
     generated::CPACSWings::WriteCPACS(tixiHandle, xpath);
-    profiles.WriteCPACS(tixiHandle, profilesXPath);
 }
 
 bool CCPACSWings::HasProfile(std::string uid) const
 {
-    return profiles.HasProfile(uid);
+    return GetProfiles().HasProfile(uid);
 }
 
 // Returns the total count of wing profiles in this configuration
 int CCPACSWings::GetProfileCount() const
 {
-    return profiles.GetProfileCount();
+    return GetProfiles().GetProfileCount();
 }
 
 CCPACSWingProfiles& CCPACSWings::GetProfiles()
 {
-    return profiles;
+    return static_cast<CCPACSModel*>(m_parent)->GetConfiguration().GetWingProfiles();
 }
+
+const CCPACSWingProfiles& CCPACSWings::GetProfiles() const {
+    return static_cast<CCPACSModel*>(m_parent)->GetConfiguration().GetWingProfiles();
+}
+
 
 // Returns the wing profile for a given uid.
 CCPACSWingProfile& CCPACSWings::GetProfile(std::string uid) const
 {
-    return profiles.GetProfile(uid);
+    return GetProfiles().GetProfile(uid);
 }
 
 // Returns the wing profile for a given index.
 CCPACSWingProfile& CCPACSWings::GetProfile(int index) const
 {
-    return profiles.GetProfile(index);
+    return GetProfiles().GetProfile(index);
 }
 
 // Returns the total count of wings in a configuration
