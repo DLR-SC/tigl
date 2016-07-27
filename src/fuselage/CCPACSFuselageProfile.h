@@ -35,6 +35,7 @@
 
 #include <vector>
 #include <string>
+#include <memory>
 
 namespace tigl
 {
