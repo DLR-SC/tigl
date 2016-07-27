@@ -35,7 +35,8 @@ source_group(" " FILES ${ALL_SRCS} ${ALL_HEADERS})
 source_group("Tables" FILES ${ALL_TABLES})
 
 # add post build step to generate files side by side to TIGL source
-set(GENERATOR_OUTPUT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../src/generated)
+set(GENERATOR_OUTPUT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../src/generated CACHE PATH "The output directory for the generated CPACS classes")
+set(CPACS_SCHEMA_DIR ${CMAKE_CURRENT_SOURCE_DIR}/schema/cpacs_schema.xsd CACHE FILEPATH "The location of the XML schema file specifying CPACS")
 
 # determine location if compiled generator executable (TODO: not sure if this is correct for all platforms)
 if(MSVC)
@@ -48,7 +49,7 @@ add_custom_command(
 	TARGET ${PROJECT_NAME}
 	POST_BUILD
 	COMMAND ${CPACSGEN_BINARY}
-	ARGS ${CMAKE_CURRENT_SOURCE_DIR}/schema/cpacs_schema.xsd ${GENERATOR_OUTPUT_DIR}
+	ARGS ${CPACS_SCHEMA_DIR} ${GENERATOR_OUTPUT_DIR}
 	COMMENT Running CPACSGen
 	VERBATIM
 )
