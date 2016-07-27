@@ -267,7 +267,8 @@
 
 //
 // last known and checked version is 18.00.20827.3 (VC12 RC, aka 2013 RC):
-#if (_MSC_VER > 1800 && _MSC_FULL_VER > 180020827)
+//#if (_MSC_VER > 1800 && _MSC_FULL_VER > 190024210)
+#if (_MSC_VER > 1800 && _MSC_FULL_VER > 190024210) // edited by Bernhard Manfred Gruber to allow VC14, aka 2015 update 3
 #  if defined(BOOST_ASSERT_CONFIG)
 #     error "Unknown compiler version - please run the configure tests and report the results"
 #  else
