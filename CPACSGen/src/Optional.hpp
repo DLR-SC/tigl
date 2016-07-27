@@ -1,6 +1,6 @@
 #pragma once
 
-#include <memory>
+#include <boost/optional.hpp>
 #include <stdexcept>
 #include <typeinfo>
 #include <string>
@@ -17,53 +17,73 @@ namespace tigl {
 	template <typename T>
 	class Optional {
 	public:
+		Optional() {}
+
+		Optional(const Optional& other) {
+			m_data = other.m_data;
+		}
+
+		Optional& operator=(const Optional& other) {
+			m_data = other.m_data;
+			return *this;
+		}
+
+		Optional(Optional&& other) {
+			m_data = std::move(other.m_data);
+		}
+
+		Optional& operator=(Optional&& other) {
+			m_data = std::move(other.m_data);
+			return *this;
+		}
+
 		template<typename U>
 		Optional& operator=(const U& t) {
-			m_ptr = std::make_unique<T>(t);
+			m_data = t;
 			return *this;
 		}
 
 		template<typename U>
 		Optional& operator=(U&& t) {
-			m_ptr = std::make_unique<T>(std::move(t));
+			m_data = std::move(t);
 			return *this;
 		}
 
-		// constructs the optional, is used in case T is not copy- or moveable
+		// in-place constructs the optional, is used in case T is not copy- or moveable
 		template <typename... U>
 		void construct(U&&... args) {
-			m_ptr = std::make_unique<T>(std::forward<U>(args)...);
+			m_data = boost::in_place(std::forward<U>(args)...);
 		}
 
 		void destroy() {
-			m_ptr = nullptr;
+			m_data = boost::none;
 		}
 
 		bool isValid() const {
-			return m_ptr != nullptr;
+			return static_cast<bool>(m_data);
 		}
 
 		T& get() {
 			if (!isValid())
 				throw UninitializedOptional<T>();
-			return *m_ptr;
+			return *m_data;
 		}
 
 		const T& get() const {
 			if (!isValid())
 				throw UninitializedOptional<T>();
-			return *m_ptr;
+			return *m_data;
 		}
 
 		T* const operator->() {
 			return &get();
 		}
 
-		const T*const operator->() const {
+		const T* const operator->() const {
 			return &get();
 		}
 
 	private:
-		std::unique_ptr<T> m_ptr;
+		boost::optional<T> m_data;
 	};
 }

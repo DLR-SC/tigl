@@ -1,13 +1,14 @@
 #pragma once
 
 #include <boost/variant.hpp>
-#include <boost/optional.hpp>
+
+#include "Optional.hpp"
 
 namespace tigl {
 	template <typename... Ts>
 	class Variant {
 	public:
-		Variant() = default;
+		Variant() {}
 
 		template<typename T>
 		Variant(const T& t) {
@@ -32,8 +33,6 @@ namespace tigl {
 			return *this;
 		}
 
-		~Variant() = default;
-
 		template<typename T>
 		auto& operator=(const T& t) {
 			m_data = t;
@@ -42,13 +41,13 @@ namespace tigl {
 
 		template<typename Visitor>
 		void visit(Visitor func) {
-			if (m_data)
+			if (m_data.isValid())
 				m_data->apply_visitor(VisitorWrapper<Visitor>(func));
 		}
 
 		template<typename Visitor>
 		void visit(Visitor func) const {
-			if (m_data)
+			if (m_data.isValid())
 				m_data->apply_visitor(VisitorWrapper<Visitor>(func));
 		}
 
@@ -68,6 +67,6 @@ namespace tigl {
 			Func m_func;
 		};
 
-		boost::optional<boost::variant<Ts...>> m_data;
+		Optional<boost::variant<Ts...>> m_data;
 	};
 }
