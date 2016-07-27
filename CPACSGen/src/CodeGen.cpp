@@ -1,4 +1,3 @@
-#include <boost/filesystem.hpp>
 #include <vector>
 #include <cctype>
 #include <fstream>
@@ -1033,7 +1032,9 @@ namespace tigl {
 
 	CodeGen::CodeGen(const std::string& outputLocation, Types types)
 		: m_types(std::move(types)) {
-		boost::filesystem::create_directories(outputLocation);
+
+		// output directory should already have been created my cmake when runtime files were copied
+		//boost::filesystem::create_directories(outputLocation);
 
 		for (const auto& p : m_types.classes) {
 			const auto c = p.second;

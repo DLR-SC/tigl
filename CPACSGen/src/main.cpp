@@ -1,4 +1,3 @@
-#include <boost/filesystem.hpp>
 #include <iostream>
 #include <fstream>
 #include <unordered_map>
@@ -261,14 +260,7 @@ namespace tigl {
 			types.enums[e.name] = std::move(e);
 	}
 
-	const std::string cpacsLocation = "../schema/cpacs_schema.xsd"; // TODO: inject this path by cmake or pass by command line
-	const std::vector<std::string> runtimeFiles = {
-		"../src/IOHelper.h",
-		"../src/IOHelper.cpp",
-		"../src/optional.hpp"
-	};
-
-	void run(const std::string& outputDirectory) {
+	void run(const std::string& cpacsLocation, const std::string& outputDirectory) {
 		// read types and elements
 		std::cout << "Parsing " << cpacsLocation << std::endl;
 		SchemaParser schema(cpacsLocation);
@@ -337,33 +329,27 @@ namespace tigl {
 		// generate code
 		std::cout << "Generating classes" << std::endl;
 		CodeGen codegen(outputDirectory, types);
-
-		// copy runtime files used by generated code
-		for (const auto& filename : runtimeFiles) {
-			auto src = boost::filesystem::path(filename);
-			auto dst = boost::filesystem::path(outputDirectory) / src.filename();
-			boost::filesystem::copy_file(src, dst, boost::filesystem::copy_option::overwrite_if_exists);
-		}
 	}
 }
 
 int main(int argc, char* argv[]) {
 	// parse command line arguments
-	std::string outputDirectory;
-	if (argc > 2) {
-		std::cerr << "Usage: CPACSGen outputDirectory" << std::endl;
+	if (argc != 3) {
+		std::cerr << "Usage: CPACSGen cpacsSchemaLocation outputDirectory" << std::endl;
 		return -1;
-	} else if (argc == 2) {
-		outputDirectory = argv[1];
-	} else if (argc == 1) {
-		outputDirectory = "generated";
 	}
+
+	const std::string cpacsSchemaLocation = argv[1];
+	const std::string outputDirectory     = argv[2];
 
 	try {
-		tigl::run(outputDirectory);
+		tigl::run(cpacsSchemaLocation, outputDirectory);
+		return 0;
 	} catch (const std::exception& e) {
 		std::cerr << "Exception: " << e.what() << std::endl;
+		return -1;
+	} catch (...) {
+		std::cerr << "Unknown exception" << std::endl;
+		return -1;
 	}
-
-	return 0;
 }
