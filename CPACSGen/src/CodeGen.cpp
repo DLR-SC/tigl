@@ -369,7 +369,7 @@ namespace tigl {
 						cpp << "TixiReadElements(tixiHandle, xpath, \"" << f.cpacsName << "\", " << f.fieldName() << ", [&](const std::string& childXPath) {";
 						{
 							Scope s(cpp);
-							cpp << "auto child = std::make_unique<" << customReplacedType(f.typeName) << ">(" << (requiresParentPointer ? parentPointerThis(c) : "") << ");";
+							cpp << "auto child = std_make_unique<" << customReplacedType(f.typeName) << ">(" << (requiresParentPointer ? parentPointerThis(c) : "") << ");";
 							cpp << "child->ReadCPACS(tixiHandle, childXPath);";
 							cpp << "return child;";
 						}
@@ -578,8 +578,9 @@ namespace tigl {
 		deps.hppIncludes.push_back("<tixi.h>");
 		deps.hppIncludes.push_back("<string>");
 
-		// optional and vector
+		// optional, vector and make_unique
 		bool vectorHeader = false;
+		bool makeUnique = false;
 		bool optionalHeader = false;
 		for (const auto& f : c.fields) {
 			switch (f.cardinality) {
@@ -588,6 +589,8 @@ namespace tigl {
 					break;
 				case Cardinality::Vector:
 					vectorHeader = true;
+					if (m_types.classes.find(f.typeName) != std::end(m_types.classes))
+						makeUnique = true;
 					break;
 				case Cardinality::Mandatory:
 					break;
@@ -596,6 +599,8 @@ namespace tigl {
 		if (vectorHeader) {
 			deps.hppIncludes.push_back("<vector>");
 			deps.hppIncludes.push_back("<memory>"); // for unique_ptr
+			if (makeUnique) // TODO: remove this when C++14 becomes available for Tigl
+				deps.cppIncludes.push_back("\"std_make_unique.h\"");
 		}
 		if (optionalHeader)
 			deps.hppIncludes.push_back("\"Optional.hpp\"");
