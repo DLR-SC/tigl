@@ -651,10 +651,13 @@ namespace tigl {
 			deps.cppIncludes.push_back("<cassert>");
 			for (const auto& dep : c.deps.parents) {
 				const auto p = s_customTypes.find(dep->name);
-				if (p)
+				if (p) {
 					deps.hppCustomForwards.push_back(*p);
-				else
+					deps.cppIncludes.push_back("\"" + *p + ".h\"");
+				} else {
 					deps.hppForwards.push_back(dep->name);
+					deps.cppIncludes.push_back("\"" + dep->name + ".h\"");
+				}
 			}
 		}
 
