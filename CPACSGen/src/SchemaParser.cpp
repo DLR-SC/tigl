@@ -6,15 +6,15 @@
 namespace tigl {
 	SchemaParser::SchemaParser(const std::string& cpacsLocation)
 		: document(cpacsLocation) {
-		document.forEachChild("/schema", "simpleType", [&](auto xpath) {
+		document.forEachChild("/schema", "simpleType", [&](const std::string& xpath) {
 			readSimpleType(xpath);
 		});
 
-		document.forEachChild("/schema", "complexType", [&](auto xpath) {
+		document.forEachChild("/schema", "complexType", [&](const std::string& xpath) {
 			readComplexType(xpath);
 		});
 
-		document.forEachChild("/schema", "element", [&](auto xpath) {
+		document.forEachChild("/schema", "element", [&](const std::string& xpath) {
 			readElement(xpath);
 		});
 	}
@@ -35,7 +35,7 @@ namespace tigl {
 		// </all>
 		All all;
 		all.xpath = xpath;
-		document.forEachChild(xpath, "element", [&](auto xpath) {
+		document.forEachChild(xpath, "element", [&](const std::string& xpath) {
 			all.elements.push_back(readElement(xpath, containingTypeName));
 		});
 		return all;
@@ -52,19 +52,19 @@ namespace tigl {
 		// </choice>
 		Choice ch;
 		ch.xpath;
-		document.forEachChild(xpath, "element", [&](auto xpath) {
+		document.forEachChild(xpath, "element", [&](const std::string& xpath) {
 			ch.elements.push_back(readElement(xpath, containingTypeName));
 		});
-		document.forEachChild(xpath, "group", [&](auto xpath) {
+		document.forEachChild(xpath, "group", [&](const std::string& xpath) {
 			ch.elements.push_back(readGroup(xpath, containingTypeName));
 		});
-		document.forEachChild(xpath, "choice", [&](auto xpath) {
+		document.forEachChild(xpath, "choice", [&](const std::string& xpath) {
 			ch.elements.push_back(readChoice(xpath, containingTypeName));
 		});
-		document.forEachChild(xpath, "sequence", [&](auto xpath) {
+		document.forEachChild(xpath, "sequence", [&](const std::string& xpath) {
 			ch.elements.push_back(readSequence(xpath, containingTypeName));
 		});
-		document.forEachChild(xpath, "any", [&](auto xpath) {
+		document.forEachChild(xpath, "any", [&](const std::string& xpath) {
 			ch.elements.push_back(readAny(xpath, containingTypeName));
 		});
 		return ch;
@@ -81,19 +81,19 @@ namespace tigl {
 		// </sequence>
 		Sequence seq;
 		seq.xpath = xpath;
-		document.forEachChild(xpath, "element", [&](auto xpath) {
+		document.forEachChild(xpath, "element", [&](const std::string& xpath) {
 			seq.elements.push_back(readElement(xpath, containingTypeName));
 		});
-		document.forEachChild(xpath, "group", [&](auto xpath) {
+		document.forEachChild(xpath, "group", [&](const std::string& xpath) {
 			seq.elements.push_back(readGroup(xpath, containingTypeName));
 		});
-		document.forEachChild(xpath, "choice", [&](auto xpath) {
+		document.forEachChild(xpath, "choice", [&](const std::string& xpath) {
 			seq.elements.push_back(readChoice(xpath, containingTypeName));
 		});
-		document.forEachChild(xpath, "sequence", [&](auto xpath) {
+		document.forEachChild(xpath, "sequence", [&](const std::string& xpath) {
 			seq.elements.push_back(readSequence(xpath, containingTypeName));
 		});
-		document.forEachChild(xpath, "any", [&](auto xpath) {
+		document.forEachChild(xpath, "any", [&](const std::string& xpath) {
 			seq.elements.push_back(readAny(xpath, containingTypeName));
 		});
 		return seq;
@@ -263,7 +263,7 @@ namespace tigl {
 			xpath + "/simpleContent/extension",
 		}) {
 			if (document.checkElement(path)) {
-				document.forEachChild(path, "attribute", [&](auto xpath) {
+				document.forEachChild(path, "attribute", [&](const std::string& xpath) {
 					type.attributes.push_back(readAttribute(xpath, name));
 				});
 				if (document.checkElement(xpath, "attributeGroup")) {
@@ -281,7 +281,7 @@ namespace tigl {
 	void SchemaParser::readRestriction(const std::string& xpath, SimpleType& type) {
 		type.base = document.textAttribute(xpath, "base");
 
-		document.forEachChild(xpath, "enumeration", [&](auto expath) {
+		document.forEachChild(xpath, "enumeration", [&](const std::string& expath) {
 			const auto enumValue = document.textAttribute(expath, "value");
 			type.restrictionValues.push_back(enumValue);
 		});

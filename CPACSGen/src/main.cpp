@@ -13,7 +13,7 @@
 #include "Tables.h"
 
 namespace tigl {
-	auto makeClassName(std::string name) {
+	auto makeClassName(std::string name) -> std::string {
 		if (!name.empty()) {
 			// capitalize first letter
 			name[0] = std::toupper(name[0]);
@@ -28,7 +28,7 @@ namespace tigl {
 		return name;
 	}
 
-	std::string resolveType(const SchemaParser& schema, const std::string& name) {
+	auto resolveType(const SchemaParser& schema, const std::string& name) -> std::string {
 		const auto& types = schema.types();
 
 		// search simple and complex types
@@ -54,7 +54,7 @@ namespace tigl {
 		throw std::runtime_error("Unknown type: " + name);
 	}
 
-	auto buildFieldList(const SchemaParser& schema, const ComplexType& type) {
+	auto buildFieldList(const SchemaParser& schema, const ComplexType& type) -> std::vector<Field> {
 		std::vector<Field> members;
 
 		// attributes

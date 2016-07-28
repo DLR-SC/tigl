@@ -16,11 +16,11 @@ namespace tigl {
 		Vector
 	};
 
-	inline std::string toString(const Cardinality& c) {
+	inline auto toString(const Cardinality& c) -> std::string {
 		switch (c) {
-			case Cardinality::Optional: return "Optional";
+			case Cardinality::Optional:  return "Optional";
 			case Cardinality::Mandatory: return "Mandatory";
-			case Cardinality::Vector: return "Vector";
+			case Cardinality::Vector:    return "Vector";
 			default: throw std::logic_error("No toString defined");
 		}
 	}
@@ -45,14 +45,14 @@ namespace tigl {
 
 		std::string customFieldName;
 
-		auto name() const {
+		auto name() const -> const std::string& {
 			if (!customFieldName.empty())
 				return customFieldName;
 			else
 				return cpacsName;
 		}
 
-		auto fieldName() const {
+		auto fieldName() const -> std::string {
 			return "m_" + name();
 		}
 	};
@@ -100,7 +100,7 @@ namespace tigl {
 				cppName = "_" + cppName;
 		}
 
-		friend bool operator==(const EnumValue& a, const EnumValue& b) {
+		friend auto operator==(const EnumValue& a, const EnumValue& b) -> bool {
 			return a.name == b.name;
 		}
 	};
@@ -139,9 +139,9 @@ namespace tigl {
 
 		Types m_types;
 
-		std::string getterSetterType(const Field& field) const;
-		std::string fieldType(const Field& field) const;
-		std::string parentPointerThis(const Class& c) const;
+		auto getterSetterType(const Field& field) const -> std::string;
+		auto fieldType(const Field& field) const -> std::string;
+		auto parentPointerThis(const Class& c) const -> std::string;
 
 		void writeFields(IndentingStreamWrapper& hpp, const std::vector<Field>& fields);
 		void writeAccessorDeclarations(IndentingStreamWrapper& hpp, const std::vector<Field>& fields);
@@ -156,7 +156,7 @@ namespace tigl {
 		void writeReadImplementation(IndentingStreamWrapper& cpp, const Class& className, const std::vector<Field>& fields);
 		void writeWriteImplementation(IndentingStreamWrapper& cpp, const Class& className, const std::vector<Field>& fields);
 		void writeLicenseHeader(IndentingStreamWrapper& f);
-		Includes resolveIncludes(const Class& c);
+		auto resolveIncludes(const Class& c) -> Includes;
 		void writeCtors(IndentingStreamWrapper& hpp, const Class& c);
 		void writeParentPointerFields(IndentingStreamWrapper& hpp, const Class& c);
 		void writeCtorImplementations(IndentingStreamWrapper& cpp, const Class& c);

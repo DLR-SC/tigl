@@ -23,7 +23,7 @@ namespace tigl {
 
 		// indents on first use
 		template<typename T>
-		friend auto& operator<<(IndentingStreamWrapper& isw, T&& t) {
+		friend auto operator<<(IndentingStreamWrapper& isw, T&& t) -> std::ostream& {
 			// finish last line
 			isw.os << '\n';
 
@@ -38,7 +38,7 @@ namespace tigl {
 			return isw.os;
 		}
 
-		std::ostream& raw() {
+		auto raw() -> std::ostream& {
 			return os;
 		}
 
@@ -64,12 +64,12 @@ namespace tigl {
 	};
 
 	namespace {
-		std::string customReplacedType(const std::string& type) {
+		auto customReplacedType(const std::string& type) -> const std::string& {
 			const auto p = s_customTypes.find(type);
 			return p ? *p : type;
 		}
 
-		auto CapitalizeFirstLetter(std::string str) {
+		auto CapitalizeFirstLetter(std::string str) -> std::string {
 			if (str.empty())
 				return str;
 
@@ -78,16 +78,16 @@ namespace tigl {
 			return str;
 		}
 
-		std::string enumToStringFunc(const Enum& e) {
+		auto enumToStringFunc(const Enum& e) -> std::string {
 			return customReplacedType(e.name) + "ToString";
 		}
 
-		std::string stringToEnumFunc(const Enum& e) {
+		auto stringToEnumFunc(const Enum& e) -> std::string {
 			return "stringTo" + CapitalizeFirstLetter(customReplacedType(e.name));
 		}
 	}
 
-	std::string CodeGen::getterSetterType(const Field& field) const {
+	auto CodeGen::getterSetterType(const Field& field) const -> std::string {
 		const auto typeName = customReplacedType(field.typeName);
 		switch (field.cardinality) {
 			case Cardinality::Optional:
@@ -106,7 +106,7 @@ namespace tigl {
 		}
 	}
 
-	std::string CodeGen::fieldType(const Field& field) const {
+	auto CodeGen::fieldType(const Field& field) const -> std::string {
 		switch (field.cardinality) {
 			case Cardinality::Optional:
 				return "Optional<" + getterSetterType(field) + ">";
@@ -115,11 +115,28 @@ namespace tigl {
 		}
 	}
 
+	namespace {
+		// TODO: create polymorphic lambda when C++14 is available
+		struct WriteGeneratedFromVisitor {
+			WriteGeneratedFromVisitor(IndentingStreamWrapper& hpp)
+				: hpp(hpp) {}
+
+			template <typename T>
+			void operator()(const T* attOrElem) {
+				hpp << "// generated from " << attOrElem->xpath;
+			}
+
+		private:
+			IndentingStreamWrapper& hpp;
+		};
+	}
+
 	void CodeGen::writeFields(IndentingStreamWrapper& hpp, const std::vector<Field>& fields) {
 		for (const auto& f : fields) {
-			f.origin.visit([&](const auto* attOrElem) {
-				hpp << "// generated from " << attOrElem->xpath;
-			});
+			f.origin.visit(WriteGeneratedFromVisitor(hpp));
+			//f.origin.visit([&](const auto* attOrElem) {
+			//	hpp << "// generated from " << attOrElem->xpath;
+			//});
 			hpp << fieldType(f) << " " << f.fieldName() << ";";
 
 			if (&f != &fields.back())
@@ -252,7 +269,7 @@ namespace tigl {
 	}
 
 	namespace {
-		std::string tixiFuncSuffix(const XMLConstruct& construct) {
+		auto tixiFuncSuffix(const XMLConstruct& construct) -> std::string {
 			switch (construct) {
 				case XMLConstruct::Attribute:
 					return "Attribute";
@@ -265,7 +282,7 @@ namespace tigl {
 			}
 		}
 
-		std::string xmlConstructToString(const XMLConstruct& construct) {
+		auto xmlConstructToString(const XMLConstruct& construct) -> std::string {
 			switch (construct) {
 				case XMLConstruct::Attribute:           return "attribute";
 				case XMLConstruct::Element:             return "element";
@@ -555,7 +572,7 @@ namespace tigl {
 		f << "";
 	}
 
-	CodeGen::Includes CodeGen::resolveIncludes(const Class& c) {
+	auto CodeGen::resolveIncludes(const Class& c) -> Includes {
 		Includes deps;
 
 		deps.hppIncludes.push_back("<tixi.h>");
@@ -670,7 +687,7 @@ namespace tigl {
 		}
 	}
 
-	std::string CodeGen::parentPointerThis(const Class& c) const {
+	auto CodeGen::parentPointerThis(const Class& c) const -> std::string {
 		const auto cust = s_customTypes.find(c.name);
 		if (cust)
 			return "reinterpret_cast<" + *cust + "*>(this)";
@@ -977,6 +994,17 @@ namespace tigl {
 		hpp << "";
 	}
 
+	namespace {
+		// TODO: replace by lambda when C++14 is available
+		struct SortAndUnique {
+			template <typename T>
+			void operator()(T& con) {
+				std::sort(std::begin(con), std::end(con));
+				con.erase(std::unique(std::begin(con), std::end(con)), std::end(con));
+			}
+		};
+	}
+
 	void Types::buildTypeSystem() {
 		for (auto& p : classes) {
 			auto& c = p.second;
@@ -1009,10 +1037,11 @@ namespace tigl {
 			}
 		}
 
-		auto sortAndUnique = [](auto& con) {
-			std::sort(std::begin(con), std::end(con));
-			con.erase(std::unique(std::begin(con), std::end(con)), std::end(con));
-		};
+		//auto sortAndUnique = [](auto& con) {
+		//	std::sort(std::begin(con), std::end(con));
+		//	con.erase(std::unique(std::begin(con), std::end(con)), std::end(con));
+		//};
+		SortAndUnique sortAndUnique;
 
 		// sort and unique
 		for (auto& p : classes) {

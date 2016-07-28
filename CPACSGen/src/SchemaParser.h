@@ -69,33 +69,37 @@ namespace tigl {
 
 	class SchemaParser {
 	public:
+		using Types = std::unordered_map<std::string, Variant<ComplexType, SimpleType>>;
+
 		SchemaParser(const std::string& cpacsLocation);
 
-		const auto& types() const { return m_types; }
+		auto types() const -> const Types& {
+			return m_types;
+		}
 
 	private:
 		TixiDocument document;
-		std::unordered_map<std::string, Variant<ComplexType, SimpleType>> m_types;
+		Types m_types;
 
-		Group    readGroup(const std::string& xpath, const std::string& containingTypeName);
-		All      readAll(const std::string& xpath, const std::string& containingTypeName);
-		Choice   readChoice(const std::string& xpath, const std::string& containingTypeName);
-		Sequence readSequence(const std::string& xpath, const std::string& containingTypeName);
-		Any      readAny(const std::string& xpath, const std::string& containingTypeName);
+		auto readGroup(const std::string& xpath, const std::string& containingTypeName) -> Group;
+		auto readAll(const std::string& xpath, const std::string& containingTypeName) -> All;
+		auto readChoice(const std::string& xpath, const std::string& containingTypeName) -> Choice;
+		auto readSequence(const std::string& xpath, const std::string& containingTypeName) -> Sequence;
+		auto readAny(const std::string& xpath, const std::string& containingTypeName) -> Any;
 
 		void readExtension(const std::string& xpath, ComplexType& type);
 		void readSimpleContent(const std::string& xpath, ComplexType& type);
 		void readComplexContent(const std::string& xpath, ComplexType& type);
 		void readComplexTypeElementConfiguration(const std::string& xpath, ComplexType& type);
-		Attribute readAttribute(const std::string& xpath, const std::string& containingTypeName);
+		auto readAttribute(const std::string& xpath, const std::string& containingTypeName) -> Attribute;
 		void readRestriction(const std::string& xpath, SimpleType& type);
-		std::string readComplexType(const std::string& xpath, const std::string& nameHint = "");
-		std::string readSimpleType(const std::string& xpath, const std::string& nameHint = "");
-		std::string readInlineType(const std::string& xpath, const std::string& nameHint);
-		Element readElement(const std::string& xpath, const std::string& containingTypeName = "");
+		auto readComplexType(const std::string& xpath, const std::string& nameHint = "") -> std::string;
+		auto readSimpleType(const std::string& xpath, const std::string& nameHint = "") -> std::string;
+		auto readInlineType(const std::string& xpath, const std::string& nameHint) -> std::string;
+		auto readElement(const std::string& xpath, const std::string& containingTypeName = "") -> Element;
 
-		std::string generateUniqueTypeName(const std::string& newNameSuggestion);
+		auto generateUniqueTypeName(const std::string& newNameSuggestion) -> std::string;
 	};
 
-	std::string stripTypeSuffix(std::string name);
+	auto stripTypeSuffix(std::string name) -> std::string;
 }

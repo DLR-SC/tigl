@@ -19,7 +19,7 @@ namespace tigl {
 			m_data = other.m_data;
 		}
 
-		auto& operator=(const Variant& other) {
+		Variant& operator=(const Variant& other) {
 			m_data = other.m_data;
 			return *this;
 		}
@@ -28,13 +28,13 @@ namespace tigl {
 			m_data = std::move(other.m_data);
 		}
 
-		auto& operator=(Variant&& other) {
+		Variant& operator=(Variant&& other) {
 			m_data = std::move(other.m_data);
 			return *this;
 		}
 
 		template<typename T>
-		auto& operator=(const T& t) {
+		Variant& operator=(const T& t) {
 			m_data = t;
 			return *this;
 		}

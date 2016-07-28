@@ -15,11 +15,11 @@ namespace tigl {
 			tixiCloseDocument(m_handle);
 		}
 
-		auto textAttribute(const std::string& xpath, const std::string& attribute) const {
+		std::string textAttribute(const std::string& xpath, const std::string& attribute) const {
 			return TixiGetTextAttribute(m_handle, xpath, attribute);
 		}
 
-		auto namedChildCount(const std::string& xpath, const std::string& child) const {
+		int namedChildCount(const std::string& xpath, const std::string& child) const {
 			return TixiGetNamedChildrenCount(m_handle, xpath, child);
 		}
 
@@ -42,7 +42,7 @@ namespace tigl {
 			return TixiCheckElement(m_handle, xpath, element);
 		}
 
-		const auto& handle() const {
+		const TixiDocumentHandle& handle() const {
 			return m_handle;
 		}
 
