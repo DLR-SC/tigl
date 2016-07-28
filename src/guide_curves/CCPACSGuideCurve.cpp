@@ -85,7 +85,7 @@ bool CCPACSGuideCurve::GetFromRelativeCircumferenceIsSet() const
 // Returns the relative circumference of the starting profile
 double CCPACSGuideCurve::GetFromRelativeCircumference() const
 {
-    return std::stod(m_fromRelativeCircumference_choice2.get());
+    return std::stod(*m_fromRelativeCircumference_choice2);
 }
 
 // Returns the relative circumference of the end profile

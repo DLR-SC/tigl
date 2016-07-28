@@ -60,10 +60,10 @@ PNamedShape CCPACSModel::BuildLoft()
 }
 
 void CCPACSModel::Invalidate() {
-    if (m_wings.isValid())
+    if (m_wings)
         m_wings->Invalidate();
-    if (m_fuselages.isValid())
-        m_fuselages.isValid();
+    if (m_fuselages)
+        m_fuselages;
 }
 
 CCPACSConfiguration& CCPACSModel::GetConfiguration() const {

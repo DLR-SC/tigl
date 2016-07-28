@@ -4,9 +4,9 @@ namespace tigl {
 	CTiglPoint CCPACSPoint::AsPoint() const {
 		CTiglPoint point;
 		// TODO: in case m_x, m_y ot m_z is not valid, we can set the corresponding coord to zero, thus AsPoint() never throws
-		point.x = m_x.get();
-		point.y = m_y.get();
-		point.z = m_z.get();
+		point.x = *m_x;
+		point.y = *m_y;
+		point.z = *m_z;
 		return point;
 	}
 

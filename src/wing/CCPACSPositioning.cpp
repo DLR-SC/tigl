@@ -115,8 +115,8 @@ std::string CCPACSPositioning::GetEndSectionIndex() {
 std::string CCPACSPositioning::GetInnerSectionIndex()
 {
     Update();
-    if (m_fromSectionUID.isValid())
-        return m_fromSectionUID.get();
+    if (m_fromSectionUID)
+        return *m_fromSectionUID;
     else
         return std::string();
 }
@@ -180,7 +180,7 @@ void CCPACSPositioning::ConnectChildPositioning(CCPACSPositioning* child)
         return;
     }
     
-    if (child->m_fromSectionUID.get() != this->m_toSectionUID) {
+    if (*child->m_fromSectionUID != m_toSectionUID) {
         throw CTiglError("Incompatible positioning connection in CCPACSPositioning::ConnectChildPositioning");
     }
     

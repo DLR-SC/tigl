@@ -31,7 +31,7 @@ CCPACSWingShell::CCPACSWingShell()
 
 int CCPACSWingShell::GetCellCount() const
 {
-    if (m_cells.isValid())
+    if (m_cells)
         return m_cells->GetCellCount();
     else
         return 0;

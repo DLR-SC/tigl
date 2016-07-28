@@ -1211,8 +1211,7 @@ void CCPACSWingSegment::BuildGuideCurveWires()
         double outerScale = GetWireLength(outerChordLineWire);
 
         // loop through all guide curves and construct the corresponding wires
-        const auto& guideCurves = m_guideCurves.get();
-        int nGuideCurves = guideCurves.GetGuideCurveCount();
+        int nGuideCurves = m_guideCurves->GetGuideCurveCount();
         for (int i=0; i!=nGuideCurves; i++) {
             // get guide curve
             const CCPACSGuideCurve& guideCurve = m_guideCurves->GetGuideCurve(i+1);
@@ -1249,7 +1248,7 @@ void CCPACSWingSegment::BuildGuideCurveWires()
 
 int CCPACSWingSegment::GetGuideCurveCount() const
 {
-    if (m_guideCurves.isValid())
+    if (m_guideCurves)
         return m_guideCurves->GetGuideCurveCount();
     else
         return 0;

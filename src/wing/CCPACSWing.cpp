@@ -160,9 +160,9 @@ void CCPACSWing::Invalidate()
 {
     invalidated = true;
     m_segments.Invalidate();
-    if (m_positionings.isValid())
+    if (m_positionings)
         m_positionings->Invalidate();
-    if (m_componentSegments.isValid())
+    if (m_componentSegments)
         m_componentSegments->Invalidate();
 }
 
@@ -234,7 +234,7 @@ void CCPACSWing::SetUID(const std::string& uid) {
 }
 
 TiglSymmetryAxis CCPACSWing::GetSymmetryAxis() {
-    return m_symmetry.get();
+    return *m_symmetry;
 }
 
 void CCPACSWing::SetSymmetryAxis(const TiglSymmetryAxis& axis) {
@@ -280,7 +280,7 @@ CCPACSWingSegment& CCPACSWing::GetSegment(std::string uid)
 // Get componentSegment count
 int CCPACSWing::GetComponentSegmentCount()
 {
-    if (m_componentSegments.isValid())
+    if (m_componentSegments)
         return m_componentSegments->GetComponentSegmentCount();
     else
         return 0;
@@ -458,7 +458,7 @@ void CCPACSWing::Translate(CTiglPoint trans)
     CTiglAbstractGeometricComponent::Translate(trans);
     invalidated = true;
     m_segments.Invalidate();
-    if(m_componentSegments.isValid())
+    if(m_componentSegments)
         m_componentSegments->Invalidate();
     Update();
 }
@@ -700,7 +700,7 @@ const CCPACSGuideCurve& CCPACSWing::GetGuideCurve(std::string uid)
 // Getter for positionings
 const CCPACSPositionings& CCPACSWing::GetPositionings()
 {
-    return m_positionings.get();
+    return *m_positionings;
 }
 
 

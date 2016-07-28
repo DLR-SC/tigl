@@ -102,7 +102,7 @@ void CCPACSFuselageProfile::ReadCPACS(const TixiDocumentHandle& tixiHandle, cons
     }
 
     // convert point list to coordinates
-    if (m_pointList_choice1.isValid()) {
+    if (m_pointList_choice1) {
 
         // points with maximal/minimal y-component
         coordinates = m_pointList_choice1->AsVector();
@@ -133,7 +133,7 @@ void CCPACSFuselageProfile::ReadCPACS(const TixiDocumentHandle& tixiHandle, cons
 void CCPACSFuselageProfile::WriteCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) const
 {
     // update point lists from coordinates
-    if (m_pointList_choice1.isValid()) {
+    if (m_pointList_choice1) {
         auto& xs = const_cast<std::vector<double>&>(m_pointList_choice1->GetX().AsVector());
         auto& ys = const_cast<std::vector<double>&>(m_pointList_choice1->GetY().AsVector());
         auto& zs = const_cast<std::vector<double>&>(m_pointList_choice1->GetZ().AsVector());
