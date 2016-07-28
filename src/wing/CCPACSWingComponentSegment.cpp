@@ -188,7 +188,7 @@ void CCPACSWingComponentSegment::Invalidate()
     surfacesAreValid = false;
     projLeadingEdge.Nullify();
     wingSegments.clear();
-    if (m_structure.isValid())
+    if (m_structure)
         m_structure->Invalidate();
     linesAreValid = false;
 }
@@ -1668,7 +1668,7 @@ MaterialList CCPACSWingComponentSegment::GetMaterials(double eta, double xsi, Ti
 {
     MaterialList list;
         
-    if (!m_structure.isValid() || !m_structure->IsValid()) {
+    if (!m_structure || !m_structure->IsValid()) {
         // return empty list
         return list;
     }

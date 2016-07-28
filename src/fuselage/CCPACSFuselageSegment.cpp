@@ -842,11 +842,10 @@ TopTools_SequenceOfShape& CCPACSFuselageSegment::BuildGuideCurves()
         double outerScale = GetWireLength(outerChordLineWire);
 
         // loop through all guide curves and construct the corresponding wires
-        auto& guideCurves = m_guideCurves.get();
-        int nGuideCurves = guideCurves.GetGuideCurveCount();
+        int nGuideCurves = m_guideCurves->GetGuideCurveCount();
         for (int i=0; i!=nGuideCurves; i++) {
             // get guide curve
-            const CCPACSGuideCurve& guideCurve = guideCurves.GetGuideCurve(i+1);
+            const CCPACSGuideCurve& guideCurve = m_guideCurves->GetGuideCurve(i+1);
             double fromRelativeCircumference;
             // check if fromRelativeCircumference is given in the current guide curve
             if (guideCurve.GetFromRelativeCircumferenceIsSet()) {

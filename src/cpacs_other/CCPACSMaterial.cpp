@@ -31,9 +31,9 @@ void CCPACSMaterial::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string 
 {
     generated::CPACSMaterialDefinition::ReadCPACS(tixiHandle, materialXPath);
 
-    if (m_compositeUID_choice1.isValid()) {
+    if (m_compositeUID_choice1) {
         is_composite = true;
-    } else if (m_materialUID_choice2.isValid()) {
+    } else if (m_materialUID_choice2) {
         is_composite = false;
     } else {
         throw CTiglError("Neither materialUID nor compositeUID specified in " + materialXPath, TIGL_ERROR);
@@ -42,7 +42,7 @@ void CCPACSMaterial::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string 
     const std::string orthoPath = materialXPath + "/orthotropyDirection";
     if (tixiCheckElement(tixiHandle, orthoPath.c_str())) {
         orthotropyDirection.construct();
-        CTiglPoint& p = orthotropyDirection.get();
+        CTiglPoint& p = *orthotropyDirection;
         tixiGetPoint(tixiHandle, orthoPath.c_str(), &p.x, &p.y, &p.z);
     }
 
@@ -53,8 +53,8 @@ TIGL_EXPORT void CCPACSMaterial::WriteCPACS(TixiDocumentHandle tixiHandle, const
     generated::CPACSMaterialDefinition::WriteCPACS(tixiHandle, materialXPath);
 
     const std::string orthoPath = materialXPath + "/orthotropyDirection";
-    if (orthotropyDirection.isValid()) {
-        const CTiglPoint& p = orthotropyDirection.get();
+    if (orthotropyDirection) {
+        const CTiglPoint& p = *orthotropyDirection;
         tixiAddPoint(tixiHandle, orthoPath.c_str(), p.x, p.y, p.z, nullptr);
     }
 }
@@ -104,7 +104,7 @@ void CCPACSMaterial::SetOrthotropyDirection(tigl::CTiglPoint direction)
 
 const CTiglPoint& CCPACSMaterial::GetOrthotropyDirection() const
 {
-    return orthotropyDirection.get();
+    return *orthotropyDirection;
 }
 
 void CCPACSMaterial::SetUID(const std::string& uid)
