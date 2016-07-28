@@ -119,7 +119,7 @@ void CCPACSFuselage::SetUID(const std::string& uid) {
 }
 
 TiglSymmetryAxis CCPACSFuselage::GetSymmetryAxis() {
-    return m_symmetry.get();
+    return *m_symmetry;
 }
 
 void CCPACSFuselage::SetSymmetryAxis(const TiglSymmetryAxis& axis) {

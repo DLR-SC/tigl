@@ -71,9 +71,9 @@ CCPACSConfiguration::~CCPACSConfiguration()
 void CCPACSConfiguration::Invalidate()
 {
     cpacsModel->Invalidate();
-    if (wingProfiles.isValid())
+    if (wingProfiles)
         wingProfiles->Invalidate();
-    if (fuselageProfiles.isValid())
+    if (fuselageProfiles)
         fuselageProfiles->Invalidate();
     aircraftFuser.reset();
     shapeCache.Clear();
@@ -100,19 +100,19 @@ void CCPACSConfiguration::ReadCPACS(const std::string& configurationUID)
         header.ReadCPACS(tixiDocumentHandle, headerXPath);
     }
     if (TixiCheckElement(tixiDocumentHandle, fuselageProfilesXPath)) {
-        if (fuselageProfiles.isValid())
+        if (fuselageProfiles)
             fuselageProfiles.destroy();
         fuselageProfiles.construct();
         fuselageProfiles->ReadCPACS(tixiDocumentHandle, fuselageProfilesXPath);
     }
     if (TixiCheckElement(tixiDocumentHandle, wingAirfoilsXPath)) {
-        if (wingProfiles.isValid())
+        if (wingProfiles)
             wingProfiles.destroy();
         wingProfiles.construct();
         wingProfiles->ReadCPACS(tixiDocumentHandle, wingAirfoilsXPath);
     }
     if (TixiCheckElement(tixiDocumentHandle, guideCurveProfilesXPath)) {
-        if (guideCurveProfiles.isValid())
+        if (guideCurveProfiles)
             guideCurveProfiles.destroy();
         guideCurveProfiles.construct();
         guideCurveProfiles->ReadCPACS(tixiDocumentHandle, guideCurveProfilesXPath);
@@ -122,12 +122,12 @@ void CCPACSConfiguration::ReadCPACS(const std::string& configurationUID)
     }
 
     // create new root component for CTiglUIDManager
-    if (cpacsModel.isValid()) {
+    if (cpacsModel) {
         cpacsModel.destroy();
     }
     cpacsModel.construct(this);
     cpacsModel->SetUID(configurationUID);
-    uidManager.SetRootComponent(&cpacsModel.get());
+    uidManager.SetRootComponent(&*cpacsModel);
 
     // TODO: why can't we just write "/cpacs/vehicles/aircraft/model[" + configurationUID + "]" ?
     cpacsModel->ReadCPACS(tixiDocumentHandle, path); // reads everything underneath /cpacs/vehicles/aircraft/model
@@ -151,13 +151,13 @@ void CCPACSConfiguration::WriteCPACS(const std::string& configurationUID)
         throw CTiglError("Error: XML error while reading in CCPACSConfiguration::ReadCPACS", TIGL_XML_ERROR);
     }
     header.WriteCPACS(tixiDocumentHandle, "/cpacs/header");
-    if (cpacsModel.isValid())
+    if (cpacsModel)
         cpacsModel->WriteCPACS(tixiDocumentHandle, path);
-    if (fuselageProfiles.isValid())
+    if (fuselageProfiles)
         fuselageProfiles->WriteCPACS(tixiDocumentHandle, fuselageProfilesXPath);
-    if (wingProfiles.isValid())
+    if (wingProfiles)
         wingProfiles->WriteCPACS(tixiDocumentHandle, wingAirfoilsXPath);
-    if (guideCurveProfiles.isValid())
+    if (guideCurveProfiles)
         guideCurveProfiles->WriteCPACS(tixiDocumentHandle, guideCurveProfilesXPath);
 }
 
@@ -200,7 +200,7 @@ TixiDocumentHandle CCPACSConfiguration::GetTixiDocumentHandle() const
 
 bool CCPACSConfiguration::HasWingProfile(std::string uid) const
 {
-    if (wingProfiles.isValid())
+    if (wingProfiles)
         return wingProfiles->HasProfile(uid);
     else
         return false;
@@ -209,7 +209,7 @@ bool CCPACSConfiguration::HasWingProfile(std::string uid) const
 // Returns the total count of wing profiles in this configuration
 int CCPACSConfiguration::GetWingProfileCount() const
 {
-    if (wingProfiles.isValid())
+    if (wingProfiles)
         return wingProfiles->GetProfileCount();
     else
         return 0;
@@ -218,13 +218,13 @@ int CCPACSConfiguration::GetWingProfileCount() const
 // Returns the class which holds all wing profiles
 CCPACSWingProfiles& CCPACSConfiguration::GetWingProfiles()
 {
-    return wingProfiles.get();
+    return *wingProfiles;
 }
 
 // Returns the class which holds all fuselage profiles
 CCPACSFuselageProfiles& CCPACSConfiguration::GetFuselageProfiles()
 {
-    return fuselageProfiles.get();
+    return *fuselageProfiles;
 }
 
 // Returns the wing profile for a given uid.
@@ -266,7 +266,7 @@ TopoDS_Shape CCPACSConfiguration::GetParentLoft(const std::string& UID)
 
 bool CCPACSConfiguration::HasFuselageProfile(std::string uid) const
 {
-    if (fuselageProfiles.isValid())
+    if (fuselageProfiles)
         return fuselageProfiles->HasProfile(uid);
     else
         return false;
@@ -275,7 +275,7 @@ bool CCPACSConfiguration::HasFuselageProfile(std::string uid) const
 // Returns the total count of fuselage profiles in this configuration
 int CCPACSConfiguration::GetFuselageProfileCount() const
 {
-    if (fuselageProfiles.isValid())
+    if (fuselageProfiles)
         return fuselageProfiles->GetProfileCount();
     else
         return 0;
