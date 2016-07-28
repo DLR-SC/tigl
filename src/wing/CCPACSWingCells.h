@@ -19,7 +19,7 @@
 #ifndef CCPACSWINGCELLS_H
 #define CCPACSWINGCELLS_H
 
-#include "generated\CPACSWingCells.h"
+#include "generated/CPACSWingCells.h"
 
 namespace tigl
 {
