@@ -41,13 +41,13 @@ namespace tigl {
 
 		template<typename Visitor>
 		void visit(Visitor func) {
-			if (m_data.isValid())
+			if (m_data)
 				m_data->apply_visitor(VisitorWrapper<Visitor>(func));
 		}
 
 		template<typename Visitor>
 		void visit(Visitor func) const {
-			if (m_data.isValid())
+			if (m_data)
 				m_data->apply_visitor(VisitorWrapper<Visitor>(func));
 		}
 

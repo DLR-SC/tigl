@@ -48,7 +48,7 @@ namespace tigl {
 
 	template <typename T>
 	void TixiSaveAttribute(const TixiDocumentHandle& tixiHandle, const std::string& xpath, const std::string& attribute, const Optional<T>& value) {
-		if (value.isValid()) TixiSaveAttribute(tixiHandle, xpath, attribute, value.get());
+		if (value) TixiSaveAttribute(tixiHandle, xpath, attribute, *value);
 	}
 
 	void TixiSaveElement(const TixiDocumentHandle& tixiHandle, const std::string& parentXPath, const std::string& element, const std::string& value);
@@ -59,7 +59,7 @@ namespace tigl {
 
 	template <typename T>
 	void TixiSaveElement(const TixiDocumentHandle& tixiHandle, const std::string& parentXPath, const std::string& element, const Optional<T>& value) {
-		if (value.isValid()) TixiSaveElement(tixiHandle, parentXPath, element, value.get());
+		if (value) TixiSaveElement(tixiHandle, parentXPath, element, *value);
 	}
 
 	template<typename ChildType, typename ReadChildFunc>

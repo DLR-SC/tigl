@@ -167,7 +167,7 @@ namespace tigl {
 				cpp << "bool " << className << "::Has" << CapitalizeFirstLetter(f.name()) << "() const {";
 				{
 					Scope s(cpp);
-					cpp << "return " << f.fieldName() << ".isValid(); ";
+					cpp << "return static_cast<bool>(" << f.fieldName() << ");";
 				}
 				cpp << "}";
 				cpp << "";
@@ -176,7 +176,7 @@ namespace tigl {
 			cpp << "const " << getterSetterType(f) << "& " << className << "::Get" << CapitalizeFirstLetter(f.name()) << "() const {";
 			{
 				Scope s(cpp);
-				cpp << "return " << f.fieldName() << (op ? ".get()" : "") << ";";
+				cpp << "return " << (op ? "*" : "") << f.fieldName() << ";";
 			}
 			cpp << "}";
 			cpp << "";
@@ -194,7 +194,7 @@ namespace tigl {
 				cpp << getterSetterType(f) << "& " << className << "::Get" << CapitalizeFirstLetter(f.name()) << "() {";
 				{
 					Scope s(cpp);
-					cpp << "return " << f.fieldName() << (op ? ".get()" : "") << ";";
+					cpp << "return " << (op ? "*" : "") << f.fieldName() << ";";
 				}
 				cpp << "}";
 			}
@@ -414,7 +414,7 @@ namespace tigl {
 			switch (f.cardinality) {
 				case Cardinality::Optional:
 				case Cardinality::Mandatory:
-					cpp << "TixiSave" << AttOrElem << "(tixiHandle, xpath, \"" + f.cpacsName + "\", " << enumToStringFunc(itE->second) << "(" << f.fieldName() << (f.cardinality == Cardinality::Optional ? ".get()" : "") << "));";
+					cpp << "TixiSave" << AttOrElem << "(tixiHandle, xpath, \"" + f.cpacsName + "\", " << enumToStringFunc(itE->second) << "(" << (f.cardinality == Cardinality::Optional ? "*" : "") << f.fieldName() << "));";
 					break;
 				case Cardinality::Vector:
 					throw NotImplementedException("Writing enum vectors is not implemented");
@@ -428,7 +428,7 @@ namespace tigl {
 			if (itC != std::end(m_types.classes)) {
 				switch (f.cardinality) {
 					case Cardinality::Optional:
-						cpp << "if (" << f.fieldName() << ".isValid()) {";
+						cpp << "if (" << f.fieldName() << ") {";
 						{
 							Scope s(cpp);
 							cpp << f.fieldName() << "->WriteCPACS(tixiHandle, xpath + \"/" << f.cpacsName << "\");";
