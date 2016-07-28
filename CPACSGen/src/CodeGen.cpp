@@ -4,7 +4,7 @@
 #include <algorithm>
 
 #include "NotImplementedException.h"
-#include "codegen.h"
+#include "CodeGen.h"
 
 namespace tigl {
 	// some options

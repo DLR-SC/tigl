@@ -11,6 +11,8 @@ set(BOOST_ROOT ${CMAKE_CURRENT_SOURCE_DIR}/../thirdparty/boost_1_55_0)
 find_package (Boost 1.55.0 REQUIRED)
 
 # find tixi
+set(TIXI_PATH "" CACHE PATH "TiXI installation prefix")
+set(CMAKE_PREFIX_PATH "${TIXI_PATH};${CMAKE_PREFIX_PATH}")
 find_package(TIXI 2.1.0 REQUIRED)
 if(TIXI_VERSION VERSION_GREATER 2.1.0)
   set(HAVE_TIXI_SETPRINTMSG TRUE)
@@ -53,6 +55,10 @@ add_custom_command(
 	COMMENT Running CPACSGen
 	VERBATIM
 )
+
+if (NOT WIN32)
+	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+endif (NOT WIN32)
 
 
 # copy runtime files used by generated code
