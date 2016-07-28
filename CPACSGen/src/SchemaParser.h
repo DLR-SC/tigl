@@ -16,7 +16,7 @@ namespace tigl {
 	struct Attribute : XSDElement {
 		std::string name;
 		std::string type;
-		std::string default;
+		std::string defaultValue;
 		std::string fixed;
 		bool optional;
 	};

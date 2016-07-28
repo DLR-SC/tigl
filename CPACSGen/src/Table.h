@@ -4,7 +4,7 @@
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
-#include "optional.hpp"
+#include "Optional.hpp"
 
 namespace tigl {
 	class MappingTable {

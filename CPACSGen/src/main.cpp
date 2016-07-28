@@ -8,8 +8,8 @@
 #include <algorithm>
 
 #include "NotImplementedException.h"
-#include "schemaparser.h"
-#include "codegen.h"
+#include "SchemaParser.h"
+#include "CodeGen.h"
 #include "Tables.h"
 
 namespace tigl {

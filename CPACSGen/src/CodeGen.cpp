@@ -796,8 +796,8 @@ namespace tigl {
 
 				// meta information from schema
 				hpp << "// This class is used in:";
-				for (const auto& c : c.deps.parents)
-					hpp << "// " << c->name << "";
+				for (const auto& p : c.deps.parents)
+					hpp << "// " << p->name << "";
 				if (c.deps.parents.size() > 0)
 					hpp << "";
 

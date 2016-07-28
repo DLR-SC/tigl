@@ -1,7 +1,7 @@
 #include <iostream>
 
 #include "NotImplementedException.h"
-#include "schemaparser.h"
+#include "SchemaParser.h"
 
 namespace tigl {
 	SchemaParser::SchemaParser(const std::string& cpacsLocation)
@@ -205,7 +205,7 @@ namespace tigl {
 		}
 
 		if (document.checkAttribute(xpath, "default"))
-			att.default = document.textAttribute(xpath, "default");
+			att.defaultValue = document.textAttribute(xpath, "default");
 		if (document.checkAttribute(xpath, "fixed"))
 			att.fixed = document.textAttribute(xpath, "fixed");
 

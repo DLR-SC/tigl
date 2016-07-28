@@ -41,14 +41,18 @@ namespace tigl {
 
 		template<typename Visitor>
 		void visit(Visitor func) {
-			if (m_data)
-				m_data->apply_visitor(VisitorWrapper<Visitor>(func));
+			if (m_data) {
+                VisitorWrapper<Visitor> visitor(func);
+				m_data->apply_visitor(visitor);
+			}
 		}
 
 		template<typename Visitor>
 		void visit(Visitor func) const {
-			if (m_data)
-				m_data->apply_visitor(VisitorWrapper<Visitor>(func));
+			if (m_data) {
+                VisitorWrapper<Visitor> visitor(func);
+				m_data->apply_visitor(visitor);
+			}
 		}
 
 	private:

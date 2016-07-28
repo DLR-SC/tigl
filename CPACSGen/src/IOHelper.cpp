@@ -55,7 +55,7 @@ namespace tigl {
 		m_message = message + "\nReturnCode: " + errorToString(m_ret);
 	}
 
-	const char* TixiError::what() const {
+	const char* TixiError::what() const throw() {
 		return m_message.c_str();
 	}
 

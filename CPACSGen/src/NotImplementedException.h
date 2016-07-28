@@ -9,7 +9,7 @@ namespace {
 		NotImplementedException(const std::string& msg)
 			: m_msg(msg) {}
 
-		virtual const char* what() const override {
+		virtual const char* what() const throw() override {
 			return m_msg.c_str();
 		}
 
