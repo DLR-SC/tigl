@@ -26,6 +26,7 @@
 #include <sstream>
 #include <iostream>
 #include <algorithm>
+#include "std_make_unique.h"
 
 #include "generated/IOHelper.h"
 #include "CCPACSFuselageProfile.h"
@@ -55,7 +56,7 @@ void CCPACSFuselageProfiles::ReadCPACS(const TixiDocumentHandle& tixiHandle, con
     // read element fuselageProfile
     if (TixiCheckElement(tixiHandle, xpath, "fuselageProfile")) {
         TixiReadElements(tixiHandle, xpath, "fuselageProfile", m_fuselageProfile, [&](const std::string& childXPath) {
-            auto child = std::make_unique<CCPACSFuselageProfile>();
+            auto child = std_make_unique<CCPACSFuselageProfile>();
             child->ReadCPACS(tixiHandle, childXPath);
             return child;
         });
