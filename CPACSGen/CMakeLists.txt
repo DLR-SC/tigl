@@ -63,8 +63,8 @@ endif (NOT WIN32)
 
 # copy runtime files used by generated code
 set(RUNTIME_FILES
-	${CMAKE_CURRENT_SOURCE_DIR}/src/IOHelper.h
-	${CMAKE_CURRENT_SOURCE_DIR}/src/IOHelper.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/TixiHelper.h
+	${CMAKE_CURRENT_SOURCE_DIR}/src/TixiHelper.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/Optional.hpp
 )
 file(COPY ${RUNTIME_FILES} DESTINATION ${GENERATOR_OUTPUT_DIR})

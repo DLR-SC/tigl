@@ -23,7 +23,7 @@
 * @brief  Implementation of CPACS fuselage profile handling routines.
 */
 
-#include "generated/IOHelper.h"
+#include "generated/TixiHelper.h"
 #include "CCPACSFuselageProfile.h"
 #include "CTiglError.h"
 #include "CTiglTransformation.h"
@@ -97,8 +97,8 @@ void CCPACSFuselageProfile::ReadCPACS(const TixiDocumentHandle& tixiHandle, cons
     generated::CPACSProfileGeometry::ReadCPACS(tixiHandle, xpath);
 
     // symmetry element does not conform to CPACS spec
-    if (TixiCheckElement(tixiHandle, xpath, "symmetry")) {
-        mirrorSymmetry = TixiGetTextElement(tixiHandle, xpath, "symmetry") == "half";
+    if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/symmetry")) {
+        mirrorSymmetry = tixihelper::TixiGetTextElement(tixiHandle, xpath + "/symmetry") == "half";
     }
 
     // convert point list to coordinates

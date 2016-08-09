@@ -14,6 +14,7 @@ namespace tigl {
 	};
 
 	// represents an optional type
+	// basically wraps boost::optional in a simpler form
 	template <typename T>
 	class Optional {
 	public:

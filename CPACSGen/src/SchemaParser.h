@@ -78,7 +78,7 @@ namespace tigl {
 		}
 
 	private:
-		TixiDocument document;
+		tixihelper::TixiDocument document;
 		Types m_types;
 
 		auto readGroup(const std::string& xpath, const std::string& containingTypeName) -> Group;
