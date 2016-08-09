@@ -48,7 +48,7 @@
 #include <Bnd_Box.hxx>
 #include "CTiglFusePlane.h"
 #include "CNamedShape.h"
-#include "generated/IOHelper.h"
+#include "generated/TixiHelper.h"
 
 #include <cfloat>
 
@@ -96,28 +96,28 @@ void CCPACSConfiguration::ReadCPACS(const std::string& configurationUID)
         throw CTiglError("Error: XML error while reading in CCPACSConfiguration::ReadCPACS", TIGL_XML_ERROR);
     }
 
-    if (TixiCheckElement(tixiDocumentHandle, headerXPath)) {
+    if (tixihelper::TixiCheckElement(tixiDocumentHandle, headerXPath)) {
         header.ReadCPACS(tixiDocumentHandle, headerXPath);
     }
-    if (TixiCheckElement(tixiDocumentHandle, fuselageProfilesXPath)) {
+    if (tixihelper::TixiCheckElement(tixiDocumentHandle, fuselageProfilesXPath)) {
         if (fuselageProfiles)
             fuselageProfiles.destroy();
         fuselageProfiles.construct();
         fuselageProfiles->ReadCPACS(tixiDocumentHandle, fuselageProfilesXPath);
     }
-    if (TixiCheckElement(tixiDocumentHandle, wingAirfoilsXPath)) {
+    if (tixihelper::TixiCheckElement(tixiDocumentHandle, wingAirfoilsXPath)) {
         if (wingProfiles)
             wingProfiles.destroy();
         wingProfiles.construct();
         wingProfiles->ReadCPACS(tixiDocumentHandle, wingAirfoilsXPath);
     }
-    if (TixiCheckElement(tixiDocumentHandle, guideCurveProfilesXPath)) {
+    if (tixihelper::TixiCheckElement(tixiDocumentHandle, guideCurveProfilesXPath)) {
         if (guideCurveProfiles)
             guideCurveProfiles.destroy();
         guideCurveProfiles.construct();
         guideCurveProfiles->ReadCPACS(tixiDocumentHandle, guideCurveProfilesXPath);
     }
-    if (TixiCheckElement(tixiDocumentHandle, farFieldXPath)) {
+    if (tixihelper::TixiCheckElement(tixiDocumentHandle, farFieldXPath)) {
         farField.ReadCPACS(tixiDocumentHandle, farFieldXPath);
     }
 

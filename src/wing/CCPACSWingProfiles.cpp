@@ -31,7 +31,7 @@
 #include "tigl_internal.h"
 #include "CCPACSWingProfiles.h"
 #include "CTiglError.h"
-#include "generated/IOHelper.h"
+#include "generated/TixiHelper.h"
 #include "std_make_unique.h"
 
 namespace tigl
@@ -61,8 +61,8 @@ void CCPACSWingProfiles::ImportCPACS(const TixiDocumentHandle& tixiHandle, const
     CPACSComplexBase::ReadCPACS(tixiHandle, xpath);
 
     // read element wingAirfoil
-    if (TixiCheckElement(tixiHandle, xpath, "wingAirfoil")) {
-        TixiReadElements(tixiHandle, xpath, "wingAirfoil", m_wingAirfoil, [&](const std::string& childXPath) {
+    if (tixihelper::TixiCheckElement(tixiHandle, xpath + "/wingAirfoil")) {
+        tixihelper::TixiReadElements(tixiHandle, xpath + "/wingAirfoil", m_wingAirfoil, [&](const std::string& childXPath) {
             auto child = std_make_unique<CCPACSWingProfile>();
             child->ReadCPACS(tixiHandle, childXPath);
             return child;
