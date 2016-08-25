@@ -37,7 +37,7 @@ namespace internal
 {
     // TODO (bgruber): use perfect forwarding when C++11 is available
     template <typename Arg>
-    Arg& replace(Arg& arg, int i)
+    Arg replace(Arg arg, int i)
     {
         return arg;
     }
@@ -98,20 +98,34 @@ namespace internal
     {
         // current xpath should end with the element we are about to read or write
         if (!endsWith(xpath, name)) {
+#ifdef _DEBUG
             LOG(INFO) << "Xpath does not end with current element. element: \"" + name + "\" path \"" + xpath + "\"";
+#endif
             xpath += "/" + name;
         }
         return xpath;
     }
+
+    template<class T>
+    struct remove_pointer
+    {
+        typedef T type;
+    };
+
+    template<class T>
+    struct remove_pointer<T*>
+    { 
+        typedef T type;
+    };
 }
 
 // TODO (bgruber): replace by variadic template when C++11 is available
 template<typename Container,
     //typename... ChildCtorArgs>
-    typename ChildCtorArg1 = internal::UnusedTag, typename ChildCtorArg2 = internal::UnusedTag, typename ChildCtorArg3 = internal::UnusedTag>
+    typename ChildCtorArg1, typename ChildCtorArg2, typename ChildCtorArg3>
 void ReadContainerElement(const TixiDocumentHandle& tixiHandle, const std::string& xpath, const std::string& parentName, const std::string& childName, const std::size_t minimumChildren, Container& children,
                           //ChildCtorArgs&&... args) {
-                          ChildCtorArg1 arg1 = ChildCtorArg1(), ChildCtorArg2 arg2 = ChildCtorArg2(), ChildCtorArg3 arg3 = ChildCtorArg3())
+                          ChildCtorArg1 arg1, ChildCtorArg2 arg2, ChildCtorArg3 arg3)
 {
     // xpath already contains parent node (parentName)
 
@@ -142,7 +156,8 @@ void ReadContainerElement(const TixiDocumentHandle& tixiHandle, const std::strin
     }
 
     // read child nodes
-    typedef typename std::remove_pointer<typename Container::value_type>::type ChildType;
+    // TODO: use std::remove_pointer when C++11 is available
+    typedef typename internal::remove_pointer<typename Container::value_type>::type ChildType;
     for (int i = 0; i < childCount; i++) {
         // construct a child and pass it some arguments
         //ChildType* child = new ChildType(internal::replace(std::forward<ChildCtorArgs>(args), i)...);
@@ -152,19 +167,58 @@ void ReadContainerElement(const TixiDocumentHandle& tixiHandle, const std::strin
     }
 }
 
+template<typename Container>
+void ReadContainerElement(const TixiDocumentHandle& tixiHandle, const std::string& xpath, const std::string& parentName, const std::string& childName, const std::size_t minimumChildren, Container& children)
+{
+    ReadContainerElement(tixiHandle, xpath, parentName, childName, minimumChildren, children, internal::UnusedTag(), internal::UnusedTag(), internal::UnusedTag());
+}
+
+template<typename Container, typename ChildCtorArg1>
+void ReadContainerElement(const TixiDocumentHandle& tixiHandle, const std::string& xpath, const std::string& parentName, const std::string& childName, const std::size_t minimumChildren, Container& children,
+                          ChildCtorArg1 arg1)
+{
+    ReadContainerElement(tixiHandle, xpath, parentName, childName, minimumChildren, children, arg1, internal::UnusedTag(), internal::UnusedTag());
+}
+
+template<typename Container, typename ChildCtorArg1, typename ChildCtorArg2>
+void ReadContainerElement(const TixiDocumentHandle& tixiHandle, const std::string& xpath, const std::string& parentName, const std::string& childName, const std::size_t minimumChildren, Container& children,
+    ChildCtorArg1 arg1, ChildCtorArg2 arg2)
+{
+    ReadContainerElement(tixiHandle, xpath, parentName, childName, minimumChildren, children, arg1, arg2, internal::UnusedTag());
+}
+
 // TODO (bgruber): replace by variadic when C++11 is available
 template<typename Container,
     //typename... ChildCtorArgs>
-    typename ChildCtorArg1 = internal::UnusedTag, typename ChildCtorArg2 = internal::UnusedTag, typename ChildCtorArg3 = internal::UnusedTag>
+    typename ChildCtorArg1, typename ChildCtorArg2, typename ChildCtorArg3>
 void ReadContainerElement(const TixiDocumentHandle& tixiHandle, const std::string& xpath, const std::string& childName, const std::size_t minimumChildren, Container& children,
                           //ChildCtorArgs&&... args) {
-                          ChildCtorArg1 arg1 = ChildCtorArg1(), ChildCtorArg2 arg2 = ChildCtorArg2(), ChildCtorArg3 arg3 = ChildCtorArg3())
+                          ChildCtorArg1 arg1, ChildCtorArg2 arg2, ChildCtorArg3 arg3)
 {
     ReadContainerElement(tixiHandle, xpath, childName + "s", childName, minimumChildren, children,
         //std::forward<ChildCtorArgs>(args)...
         arg1, arg2, arg3
     );
 }
+
+template<typename Container>
+void ReadContainerElement(const TixiDocumentHandle& tixiHandle, const std::string& xpath, const std::string& childName, const std::size_t minimumChildren, Container& children)
+{
+    ReadContainerElement(tixiHandle, xpath, childName + "s", childName, minimumChildren, children, internal::UnusedTag(), internal::UnusedTag(), internal::UnusedTag());
+}
+
+template<typename Container, typename ChildCtorArg1>
+void ReadContainerElement(const TixiDocumentHandle& tixiHandle, const std::string& xpath, const std::string& childName, const std::size_t minimumChildren, Container& children, ChildCtorArg1 arg1)
+{
+    ReadContainerElement(tixiHandle, xpath, childName + "s", childName, minimumChildren, children, arg1, internal::UnusedTag(), internal::UnusedTag());
+}
+
+template<typename Container, typename ChildCtorArg1, typename ChildCtorArg2>
+void ReadContainerElement(const TixiDocumentHandle& tixiHandle, const std::string& xpath, const std::string& childName, const std::size_t minimumChildren, Container& children, ChildCtorArg1 arg1, ChildCtorArg2 arg2)
+{
+    ReadContainerElement(tixiHandle, xpath, childName + "s", childName, minimumChildren, children, arg1, arg2, internal::UnusedTag());
+}
+
 
 // distinguish the element type of the children's container
 namespace internal
