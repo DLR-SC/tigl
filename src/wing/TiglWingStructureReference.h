@@ -81,8 +81,8 @@ private:
     // Enumeration for stored object type
     enum Type
     {
-        ComponentSegment,
-        TrailingEdgeDevice
+        ComponentSegmentType,
+        TrailingEdgeDeviceType
     };
     Type type;
 

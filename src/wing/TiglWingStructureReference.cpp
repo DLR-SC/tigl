@@ -24,15 +24,15 @@
 namespace tigl
 {
 //TiglWingStructureReference::TiglWingStructureReference(CCPACSTrailingEdgeDevice& parent)
-//: type(Type::TrailingEdgeDevice), trailingEdgeDevice(&parent) { }
+//: type(TrailingEdgeDeviceType), trailingEdgeDevice(&parent) { }
 
 TiglWingStructureReference::TiglWingStructureReference(CCPACSWingComponentSegment& parent)
-: type(Type::ComponentSegment), componentSegment(&parent) { }
+: type(ComponentSegmentType), componentSegment(&parent) { }
 
 #define DISPATCH(call) \
     switch (type) { \
-        case ComponentSegment: return componentSegment->call; \
-/*        case TrailingEdgeDevice: return trailingEdgeDevice->call; */ \
+        case ComponentSegmentType: return componentSegment->call; \
+/*        case TrailingEdgeDeviceType: return trailingEdgeDevice->call; */ \
         default: std::terminate(); \
     }
 
@@ -164,7 +164,7 @@ const std::string& TiglWingStructureReference::GetUID() const
 
 CCPACSWingComponentSegment& TiglWingStructureReference::GetWingComponentSegment() const
 {
-    if (type != Type::ComponentSegment) {
+    if (type != ComponentSegmentType) {
         LOG(ERROR) << "TiglWingStructureReference is not a CCPACSWingComponentSegment";
         throw CTiglError("TiglWingStructureReference is not a CCPACSWingComponentSegment");
     }
@@ -173,7 +173,7 @@ CCPACSWingComponentSegment& TiglWingStructureReference::GetWingComponentSegment(
 
 //CCPACSTrailingEdgeDevice& TiglWingStructureReference::GetTrailingEdgeDevice() const
 //{
-//    if (type != Type::TrailingEdgeDevice) {
+//    if (type != TrailingEdgeDeviceType) {
 //        LOG(ERROR) << "TiglWingStructureReference is not a CCPACSTrailingEdgeDevice";
 //        throw CTiglError("TiglWingStructureReference is not a CCPACSTrailingEdgeDevice");
 //    }
