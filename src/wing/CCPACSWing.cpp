@@ -289,7 +289,7 @@ void CCPACSWing::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& wi
     TixiSaveExt::TixiSaveTextElement(tixiHandle, wingXPath.c_str(), "name", GetName().c_str());
     TixiSaveExt::TixiSaveTextElement(tixiHandle, wingXPath.c_str(), "description", description.c_str());
     TixiSaveExt::TixiSaveTextAttribute(tixiHandle, wingXPath.c_str(), "uID", GetUID().c_str());
-    if (GetSymmetryAxis() != TiglSymmetryAxis::TIGL_NO_SYMMETRY) {
+    if (GetSymmetryAxis() != TIGL_NO_SYMMETRY) {
         TixiSaveExt::TixiSaveTextAttribute(tixiHandle, wingXPath.c_str(), "symmetry", GetSymmetryAxisString());
     }    TixiSaveExt::TixiSaveTextElement(tixiHandle, wingXPath.c_str(), "parentUID", GetParentUID().c_str());
 
