@@ -87,7 +87,7 @@ const char* CTiglAbstractGeometricComponent::GetSymmetryAxisString(void) const
     case TIGL_X_Y_PLANE: return "x-y-plane";
     case TIGL_Y_Z_PLANE: return "y-z-plane";
     case TIGL_NO_SYMMETRY: return "";
-    default: throw std::logic_error("GetSymmetryAxisString is not defined for the current value of symmetry");
+    default: throw CTiglError("GetSymmetryAxisString is not defined for the current value of symmetry");
     }
 }
 
