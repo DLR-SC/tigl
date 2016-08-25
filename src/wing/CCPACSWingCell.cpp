@@ -17,6 +17,7 @@
 */
 
 #include "CCPACSWingCell.h"
+#include "CCPACSWingCells.h"
 
 #include "tixi.h"
 
@@ -63,9 +64,15 @@ namespace WingCellInternal
 
 using namespace WingCellInternal;
 
-CCPACSWingCell::CCPACSWingCell()
+CCPACSWingCell::CCPACSWingCell(CCPACSWingCells* parentCells)
+: parent(parentCells)
 {
-    reset();
+    Reset();
+}
+
+CCPACSWingCell::~CCPACSWingCell()
+{
+    Reset();
 }
 
 const std::string& CCPACSWingCell::GetUID() const
@@ -73,7 +80,7 @@ const std::string& CCPACSWingCell::GetUID() const
     return uid;
 }
 
-void CCPACSWingCell::reset()
+void CCPACSWingCell::Reset()
 {
     innerBorderEta1 = 0.;
     innerBorderEta2 = 0.;
@@ -166,12 +173,12 @@ bool CCPACSWingCell::IsInside(double eta, double xsi) const
 void CCPACSWingCell::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string &cellXPath)
 {
     // check path
-    if ( tixiCheckElement(tixiHandle, cellXPath.c_str()) != SUCCESS) {
+    if (tixiCheckElement(tixiHandle, cellXPath.c_str()) != SUCCESS) {
         LOG(ERROR) << "Wing Cell " << cellXPath << " not found in CPACS file!" << std::endl;
         return;
     }
     
-    reset();
+    Reset();
     
     // Get UID
     char * nameStr = NULL;
@@ -253,8 +260,7 @@ void CCPACSWingCell::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string 
     }
     
     // read material
-    std::string materialString;
-    materialString = cellXPath + "/skin/material";
+    const std::string materialString = cellXPath + "/skin/material";
     if ( tixiCheckElement(tixiHandle, materialString.c_str()) == SUCCESS) {
         material.ReadCPACS(tixiHandle, materialString.c_str());
     }
@@ -276,13 +282,15 @@ void CCPACSWingCell::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string 
     trailingEdgeXsi2 = tEX2;
 }
 
-void CCPACSWingCell::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string & cellXPath)
+void CCPACSWingCell::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string & xpath) const
 {
-    TixiSaveExt::TixiSaveTextAttribute(tixiHandle, cellXPath.c_str(), "uID", GetUID().c_str());
+    TixiSaveExt::TixiSaveTextAttribute(tixiHandle, xpath.c_str(), "uID", GetUID().c_str());
 
-    // TODO: save positionings
-
-    // TODO: write material
+    if (material.GetUID() != "UID_NOTSET") {
+        TixiSaveExt::TixiSaveElement(tixiHandle, xpath.c_str(), "skin", 1);
+        TixiSaveExt::TixiSaveElement(tixiHandle, (xpath + "/skin").c_str(), "material");
+        material.WriteCPACS(tixiHandle, xpath + "/skin/material");
+    }
 }
 
 void CCPACSWingCell::SetLeadingEdgeInnerPoint(double eta, double xsi)
@@ -334,6 +342,11 @@ void CCPACSWingCell::GetTrailingEdgeOuterPoint(double* eta, double* xsi) const
 }
 
 CCPACSMaterial &CCPACSWingCell::GetMaterial()
+{
+    return material;
+}
+
+const CCPACSMaterial &CCPACSWingCell::GetMaterial() const
 {
     return material;
 }

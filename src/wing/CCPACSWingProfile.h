@@ -51,16 +51,16 @@ class CCPACSWingProfile
 
 public:
     // Algo
-    TIGL_EXPORT CCPACSWingProfile(const std::string& aFilename);
+    TIGL_EXPORT CCPACSWingProfile();
 
     // Virtual Destructor
     TIGL_EXPORT virtual ~CCPACSWingProfile(void);
 
     // Read CPACS wing profile file
-    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle);
+    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& profileXPath);
 
     // Write CPACS wing profile file
-    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& profileXPath);
+    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& profileXPath) const;
 
     // Returns the name of the wing profile
     TIGL_EXPORT const std::string& GetName(void) const;
@@ -160,7 +160,6 @@ private:
     void operator=(const CCPACSWingProfile& );
 
 private:
-    std::string               ProfileXPath;   /**< CPACS path to wing profile */
     std::string               name;           /**< CPACS wing profile name */
     std::string               description;    /**< CPACS wing profile description */
     std::string               uid;            /**< CPACS wing profile UID */

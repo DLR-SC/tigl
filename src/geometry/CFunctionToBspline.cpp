@@ -123,13 +123,10 @@ std::vector<ChebSegment> CFunctionToBspline::CFunctionToBsplineImpl::approxSegme
 {
     // to estimate the error, we do a chebycheff approximation at higher
     // degree and evaluate the coefficients
-    int K = _degree + 4;
-    
-    double alpha = 0.5;
-    
-    math_Vector cx = cheb_approx(_xfunc, _obj, K+1, umin, umax);
-    math_Vector cy = cheb_approx(_yfunc, _obj, K+1, umin, umax);
-    math_Vector cz = cheb_approx(_zfunc, _obj, K+1, umin, umax);
+    const int K = _degree + 4;
+    const math_Vector cx = cheb_approx(_xfunc, _obj, K+1, umin, umax);
+    const math_Vector cy = cheb_approx(_yfunc, _obj, K+1, umin, umax);
+    const math_Vector cz = cheb_approx(_zfunc, _obj, K+1, umin, umax);
     
     // estimate error
     double errx=0., erry = 0., errz = 0.;
@@ -138,7 +135,7 @@ std::vector<ChebSegment> CFunctionToBspline::CFunctionToBsplineImpl::approxSegme
         erry += fabs(cy(i));
         errz += fabs(cz(i));
     }
-    double error = sqrt(errx*errx + erry*erry + errz*errz);
+    const double error = std::sqrt(errx*errx + erry*erry + errz*errz);
     
     if (error < _tol || depth >= _maxDepth) {
         // we can use this approximation, store to structure
@@ -155,6 +152,7 @@ std::vector<ChebSegment> CFunctionToBspline::CFunctionToBsplineImpl::approxSegme
     }
     else {
         // we have to split the range in two parts and do the approximation for each of them
+        const double alpha = 0.5;
         std::vector<ChebSegment> list1 = approxSegment(umin, umin + (umax-umin)*alpha, depth + 1);
         std::vector<ChebSegment> list2 = approxSegment(umin + (umax-umin)*alpha, umax, depth + 1);
         // combine lists

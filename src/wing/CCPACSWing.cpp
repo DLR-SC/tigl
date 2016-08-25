@@ -45,6 +45,7 @@
 #include <TopExp.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
 
+
 namespace tigl
 {
 
@@ -202,56 +203,45 @@ void CCPACSWing::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& win
 {
     Cleanup();
 
-    char*       elementPath;
-    std::string tempString;
-
     // Get subelement "name"
     char* ptrName = NULL;
-    tempString    = wingXPath + "/name";
-    elementPath   = const_cast<char*>(tempString.c_str());
-    if (tixiGetTextElement(tixiHandle, elementPath, &ptrName) == SUCCESS) {
+    if (tixiGetTextElement(tixiHandle, (wingXPath + "/name").c_str(), &ptrName) == SUCCESS) {
         name          = ptrName;
     }
 
     // Get subelement "description"
     char* ptrDescription = NULL;
-    tempString    = wingXPath + "/description";
-    if (tixiGetTextElement(tixiHandle, tempString.c_str(), &ptrDescription) == SUCCESS) {
+    if (tixiGetTextElement(tixiHandle, (wingXPath + "/description").c_str(), &ptrDescription) == SUCCESS) {
         description   = ptrDescription;
     }
 
     // Get attribute "uid"
     char* ptrUID = NULL;
-    tempString   = "uID";
-    elementPath  = const_cast<char*>(tempString.c_str());
-    if (tixiGetTextAttribute(tixiHandle, const_cast<char*>(wingXPath.c_str()), const_cast<char*>(tempString.c_str()), &ptrUID) == SUCCESS) {
+    if (tixiGetTextAttribute(tixiHandle, wingXPath.c_str(), "uID", &ptrUID) == SUCCESS) {
         SetUID(ptrUID);
     }
 
     // Get subelement "parent_uid"
     char* ptrParentUID = NULL;
-    tempString         = wingXPath + "/parentUID";
-    elementPath        = const_cast<char*>(tempString.c_str());
-    if (tixiCheckElement(tixiHandle, elementPath) == SUCCESS &&
-        tixiGetTextElement(tixiHandle, elementPath, &ptrParentUID) == SUCCESS) {
-
+    std::string elementPath = wingXPath + "/parentUID";
+    if (tixiCheckElement(tixiHandle, elementPath.c_str()) == SUCCESS &&
+        tixiGetTextElement(tixiHandle, elementPath.c_str(), &ptrParentUID) == SUCCESS) {
         SetParentUID(ptrParentUID);
     }
 
 
     // Get subelement "/transformation/translation"
-    tempString  = wingXPath + "/transformation/translation";
-    elementPath = const_cast<char*>(tempString.c_str());
-    if (tixiCheckElement(tixiHandle, elementPath) == SUCCESS) {
-        if (tixiGetPoint(tixiHandle, elementPath, &(translation.x), &(translation.y), &(translation.z)) != SUCCESS) {
+    elementPath = wingXPath + "/transformation/translation";
+    if (tixiCheckElement(tixiHandle, elementPath.c_str()) == SUCCESS) {
+        if (tixiGetPoint(tixiHandle, elementPath.c_str(), &(translation.x), &(translation.y), &(translation.z)) != SUCCESS) {
             throw CTiglError("Error: XML error while reading <translation/> in CCPACSWing::ReadCPACS", TIGL_XML_ERROR);
         }
     }
     
     // Get translation type (attribute of "/transformation/translation")
-    if (tixiCheckAttribute(tixiHandle, elementPath, "refType") == SUCCESS) {
+    if (tixiCheckAttribute(tixiHandle, elementPath.c_str(), "refType") == SUCCESS) {
         char * refTypeVal = NULL;
-        if (tixiGetTextAttribute(tixiHandle, elementPath, "refType", &refTypeVal) == SUCCESS) {
+        if (tixiGetTextAttribute(tixiHandle, elementPath.c_str(), "refType", &refTypeVal) == SUCCESS) {
             std::string refTypeStr(refTypeVal);
             if (refTypeStr == "absGlobal") {
                 translationType = ABS_GLOBAL;
@@ -263,42 +253,30 @@ void CCPACSWing::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& win
     }
 
     // Get subelement "/transformation/scaling"
-    tempString  = wingXPath + "/transformation/scaling";
-    elementPath = const_cast<char*>(tempString.c_str());
-    if (tixiCheckElement(tixiHandle, elementPath) == SUCCESS) {
-        if (tixiGetPoint(tixiHandle, elementPath, &(scaling.x), &(scaling.y), &(scaling.z)) != SUCCESS) {
+    elementPath = wingXPath + "/transformation/scaling";
+    if (tixiCheckElement(tixiHandle, elementPath.c_str()) == SUCCESS) {
+        if (tixiGetPoint(tixiHandle, elementPath.c_str(), &(scaling.x), &(scaling.y), &(scaling.z)) != SUCCESS) {
             throw CTiglError("Error: XML error while reading <scaling/> in CCPACSWing::ReadCPACS", TIGL_XML_ERROR);
         }
     }
 
     // Get subelement "/transformation/rotation"
-    tempString  = wingXPath + "/transformation/rotation";
-    elementPath = const_cast<char*>(tempString.c_str());
-    if (tixiCheckElement(tixiHandle, elementPath) == SUCCESS) {
-        if (tixiGetPoint(tixiHandle, elementPath, &(rotation.x), &(rotation.y), &(rotation.z)) != SUCCESS) {
+    elementPath = wingXPath + "/transformation/rotation";
+    if (tixiCheckElement(tixiHandle, elementPath.c_str()) == SUCCESS) {
+        if (tixiGetPoint(tixiHandle, elementPath.c_str(), &(rotation.x), &(rotation.y), &(rotation.z)) != SUCCESS) {
             throw CTiglError("Error: XML error while reading <rotation/> in CCPACSWing::ReadCPACS", TIGL_XML_ERROR);
         }
     }
 
-    // Get subelement "sections"
     sections.ReadCPACS(tixiHandle, wingXPath);
-
-    // Get subelement "positionings"
     positionings.ReadCPACS(tixiHandle, wingXPath);
-
-    // Get subelement "segments"
     segments.ReadCPACS(tixiHandle, wingXPath);
-
-    // Get subelement "componentSegments"
     componentSegments.ReadCPACS(tixiHandle, wingXPath);
-
-    // Register ourself at the unique id manager
     configuration->GetUIDManager().AddUID(ptrUID, this);
 
     // Get symmetry axis attribute, has to be done, when segments are build
     char* ptrSym = NULL;
-    tempString   = "symmetry";
-    if (tixiGetTextAttribute(tixiHandle, const_cast<char*>(wingXPath.c_str()), const_cast<char*>(tempString.c_str()), &ptrSym) == SUCCESS) {
+    if (tixiGetTextAttribute(tixiHandle, wingXPath.c_str(), "symmetry", &ptrSym) == SUCCESS) {
         SetSymmetryAxis(ptrSym);
     }
 
@@ -308,39 +286,30 @@ void CCPACSWing::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& win
 // Write CPACS wing element
 void CCPACSWing::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& wingXPath)
 {
-    std::string elementPath;
-    std::string subelementPath;
-
-    // Set subelement "name"
     TixiSaveExt::TixiSaveTextElement(tixiHandle, wingXPath.c_str(), "name", GetName().c_str());
-    // Set subelement "description"
     TixiSaveExt::TixiSaveTextElement(tixiHandle, wingXPath.c_str(), "description", description.c_str());
-    // Set subelement "uID" attribute
     TixiSaveExt::TixiSaveTextAttribute(tixiHandle, wingXPath.c_str(), "uID", GetUID().c_str());
-    // Set subelement "axis" attribute
-    TixiSaveExt::TixiSaveTextAttribute(tixiHandle, wingXPath.c_str(), "symmetry", GetSymmetryAxisString());
-    // Set subelement "parent_uid"
-    TixiSaveExt::TixiSaveTextElement(tixiHandle, wingXPath.c_str(), "parentUID", GetParentUID().c_str());
+    if (GetSymmetryAxis() != TiglSymmetryAxis::TIGL_NO_SYMMETRY) {
+        TixiSaveExt::TixiSaveTextAttribute(tixiHandle, wingXPath.c_str(), "symmetry", GetSymmetryAxisString());
+    }    TixiSaveExt::TixiSaveTextElement(tixiHandle, wingXPath.c_str(), "parentUID", GetParentUID().c_str());
 
     // Set the subelement "transformation"
-    elementPath = wingXPath + "/transformation";
+    const std::string elementPath = wingXPath + "/transformation";
     TixiSaveExt::TixiSaveElement(tixiHandle, wingXPath.c_str(), "transformation");
-       
+    std::string subelementPath;
+
         // Set subelement "/transformation/scaling"
-        subelementPath = elementPath + "/scaling";
         TixiSaveExt::TixiSaveElement(tixiHandle, elementPath.c_str(), "scaling");
-        TixiSaveExt::TixiSavePoint(tixiHandle, subelementPath.c_str(), GetScaling().x, GetScaling().y, GetScaling().z, NULL);
+        TixiSaveExt::TixiSavePoint(tixiHandle, (elementPath + "/scaling").c_str(), GetScaling().x, GetScaling().y, GetScaling().z, NULL);
         
         // Set subelement "/transformation/rotation"
-        subelementPath = elementPath + "/rotation";
         TixiSaveExt::TixiSaveElement(tixiHandle, elementPath.c_str(), "rotation");
-        TixiSaveExt::TixiSavePoint(tixiHandle, subelementPath.c_str(), GetRotation().x, GetRotation().y, GetRotation().z, NULL);
+        TixiSaveExt::TixiSavePoint(tixiHandle, (elementPath + "/rotation").c_str(), GetRotation().x, GetRotation().y, GetRotation().z, NULL);
 
         // Determine translation relative to parent
-        CTiglPoint relativeTranslation = translation;
-        CTiglUIDManager& manager = configuration->GetUIDManager();
-        std::string UId = GetUID();
-        ITiglGeometricComponent* parent = manager.GetComponent(UId);
+        const CTiglPoint relativeTranslation = translation;
+        //CTiglUIDManager& manager = configuration->GetUIDManager();
+        //const ITiglGeometricComponent* parent = manager.GetComponent(GetUID());
 
 //             while (parent != NULL && manager.HasUID(parent->GetParentUID())) { // check if the actual component exist AND if the component's parent is in the manager list
 //                 relativeTranslation -= parent->GetTranslation();
@@ -351,19 +320,11 @@ void CCPACSWing::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& wi
         subelementPath = elementPath + "/translation";
         TixiSaveExt::TixiSaveElement(tixiHandle, elementPath.c_str(), "translation");
         TixiSaveExt::TixiSaveTextAttribute(tixiHandle, subelementPath.c_str(), "refType", "absLocal");
-        TixiSaveExt::TixiSavePoint(tixiHandle, subelementPath.c_str(), relativeTranslation.x, relativeTranslation.y, 
-            relativeTranslation.z, NULL);
+        TixiSaveExt::TixiSavePoint(tixiHandle, subelementPath.c_str(), relativeTranslation.x, relativeTranslation.y, relativeTranslation.z, NULL);
 
-    // Set subelement "sections"
     sections.WriteCPACS(tixiHandle, wingXPath);
-
-    // Set subelement "positionings"
     positionings.WriteCPACS(tixiHandle, wingXPath);
-
-    // Set subelement "segments"
     segments.WriteCPACS(tixiHandle, wingXPath);
-
-    // Set subelement "componentSegments"
     componentSegments.WriteCPACS(tixiHandle, wingXPath);
 }
 
@@ -853,6 +814,5 @@ CCPACSWingPositionings& CCPACSWing::GetPositionings()
 {
     return positionings;
 }
-
 
 } // end namespace tigl

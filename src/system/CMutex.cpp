@@ -24,7 +24,7 @@
     #include <pthread.h>
 #endif
 
-namespace tigl 
+namespace tigl
 {
 
 struct CMutex::CMutex_Impl
