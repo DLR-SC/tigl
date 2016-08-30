@@ -135,6 +135,7 @@ void CTiglPointTranslator::SegmentProjection::getHessian(const double * x, doubl
     TIGL_MATRIX2D(hess,2,0,0) = 2.*acb.norm2Sqr();
     TIGL_MATRIX2D(hess,2,1,1) = 2.*bca.norm2Sqr();
     TIGL_MATRIX2D(hess,2,0,1) = 2.*CTiglPoint::inner_prod(bca, acb) + 2.*CTiglPoint::inner_prod(p, _c);
+    TIGL_MATRIX2D(hess,2,1,0) = TIGL_MATRIX2D(hess,2,0,1);
 }
 
 TiglReturnCode CTiglPointTranslator::translate(const CTiglPoint& p, double* eta, double * xsi)
