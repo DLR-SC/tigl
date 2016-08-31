@@ -32,13 +32,11 @@
 #define TIXISAVEEXT_H
 
 #include <vector>
-#include <cmath>
 
 #include "tixi.h"
 #include "tigl.h"
 #include "CTiglPoint.h"
 #include "CTiglError.h"
-#include "CTiglLogging.h"
 
 namespace tigl
 {

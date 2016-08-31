@@ -22,6 +22,11 @@
 
 #include "TixiSaveExt.h"
 
+#include <cmath>
+
+#include "CTiglLogging.h"
+
+
 namespace tigl
 {
 
@@ -253,7 +258,7 @@ void TixiSaveVector(TixiDocumentHandle tixiHandle, const std::string& elementPat
         TixiSaveVector(tixiHandle, elementPath.c_str(), element.c_str(), NULL, 0);
     }
     else {
-        TixiSaveVector(tixiHandle, elementPath.c_str(), element.c_str(), &val[0], static_cast<int>(val.size())); // TODO (bgruber): use val.data()
+        TixiSaveVector(tixiHandle, elementPath.c_str(), element.c_str(), &val[0], static_cast<int>(val.size()));
     }
 }
 

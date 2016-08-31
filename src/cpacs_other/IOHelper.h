@@ -19,6 +19,7 @@
 #include <string>
 #include <cmath>
 
+#include "CTiglLogging.h"
 #include "TixiSaveExt.h"
 #include "to_string.h"
 
@@ -254,7 +255,7 @@ void WriteContainerElement(const TixiDocumentHandle& tixiHandle, const std::stri
     Iterator it = children.begin();
     Iterator end = children.end();
 
-    const std::size_t count = std::distance(it, end);
+    const int count = static_cast<int>(std::distance(it, end));
     if (count > 0) {
         // it the container node does not exist, create it
         if (tixiCheckElement(tixiHandle, parentPath.c_str()) == ELEMENT_NOT_FOUND) {
@@ -285,7 +286,7 @@ void WriteContainerElement(const TixiDocumentHandle& tixiHandle, const std::stri
         }
 
         // delete old children which where not overwritten
-        for (std::size_t i = count + 1; i <= childCount; i++) {
+        for (int i = count + 1; i <= childCount; i++) {
             tixiRemoveElement(tixiHandle, (childBasePath + "[" + std_to_string(count + 1) + "]").c_str());
         }
     }

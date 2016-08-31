@@ -19,8 +19,8 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-#ifndef TIGLWINGSTRUCTUREREFERENCE_H
-#define TIGLWINGSTRUCTUREREFERENCE_H
+#ifndef CCTiglWingStructureReference_H
+#define CCTiglWingStructureReference_H
 
 #include "tigl_internal.h"
 
@@ -42,11 +42,11 @@ class CCPACSWingCSStructure;
 class CCPACSWingComponentSegment;
 
 // this is a set type, encapsulating a reference to either a CCPACSTrailingEdgeDevice or a CCPACSWingComponentSegment
-class TiglWingStructureReference
+class CTiglWingStructureReference
 {
 public:
-//    TIGL_EXPORT TiglWingStructureReference(CCPACSTrailingEdgeDevice& parent);
-    TIGL_EXPORT TiglWingStructureReference(CCPACSWingComponentSegment& parent);
+//    TIGL_EXPORT CTiglWingStructureReference(CCPACSTrailingEdgeDevice& parent);
+    TIGL_EXPORT CTiglWingStructureReference(CCPACSWingComponentSegment& parent);
 
     TIGL_EXPORT CCPACSWing& GetWing() const;
     TIGL_EXPORT bool HasStructure() const;
@@ -82,7 +82,7 @@ private:
     enum Type
     {
         ComponentSegmentType,
-        TrailingEdgeDeviceType
+//        TrailingEdgeDeviceType
     };
     Type type;
 
@@ -96,4 +96,4 @@ private:
 
 } // end namespace tigl
 
-#endif // TIGLWINGSTRUCTUREREFERENCE_H
+#endif // CCTiglWingStructureReference_H

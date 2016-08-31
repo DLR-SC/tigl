@@ -28,7 +28,7 @@ namespace tigl
 {
 
 
-CCPACSWingCSStructure::CCPACSWingCSStructure(TiglWingStructureReference parent)
+CCPACSWingCSStructure::CCPACSWingCSStructure(CTiglWingStructureReference parent)
 : wingStructureReference(parent),
   lowerShell(*this, LOWER_SIDE),
   upperShell(*this, UPPER_SIDE)
@@ -86,12 +86,12 @@ void CCPACSWingCSStructure::WriteCPACS(TixiDocumentHandle tixiHandle, const std:
     lowerShell.WriteCPACS(tixiHandle, structureXPath + "/lowerShell");
 }
 
-TiglWingStructureReference& CCPACSWingCSStructure::GetWingStructureReference()
+CTiglWingStructureReference& CCPACSWingCSStructure::GetWingStructureReference()
 {
     return wingStructureReference;
 }
 
-const TiglWingStructureReference& CCPACSWingCSStructure::GetWingStructureReference() const
+const CTiglWingStructureReference& CCPACSWingCSStructure::GetWingStructureReference() const
 {
     return wingStructureReference;
 }

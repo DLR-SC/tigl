@@ -26,7 +26,7 @@ namespace tigl
 
 class CMutex;
 
-class CScopedLock // TODO: replace by std::lock_guard
+class CScopedLock
 {
 public:
     TIGL_EXPORT CScopedLock(CMutex &);

@@ -48,7 +48,7 @@ void CGlogLoggerAdaptor::Write(bool force_flush,
     
     if (_mylogger && message_len > 0) {
         if (_mutex) {
-            _mutex->lock(); // TODO (bgruber): use std::lock_guard
+            _mutex->lock();
         }
         std::string msg(message, message_len);
 

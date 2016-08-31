@@ -21,7 +21,7 @@
 
 #include "tigl_internal.h"
 #include "CCPACSWingShell.h"
-#include "TiglWingStructureReference.h"
+#include "CTiglWingStructureReference.h"
 
 
 namespace tigl
@@ -30,7 +30,7 @@ namespace tigl
 class CCPACSWingCSStructure // shouldn't his be CCPACSWingComponentSegmentStructure
 {
 public:
-    TIGL_EXPORT CCPACSWingCSStructure(TiglWingStructureReference parent);
+    TIGL_EXPORT CCPACSWingCSStructure(CTiglWingStructureReference parent);
     
     TIGL_EXPORT virtual ~CCPACSWingCSStructure(void);
 
@@ -38,8 +38,8 @@ public:
     
     TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string & structureXPath) const;
 
-    TIGL_EXPORT TiglWingStructureReference& GetWingStructureReference();
-    TIGL_EXPORT const TiglWingStructureReference& GetWingStructureReference() const;
+    TIGL_EXPORT CTiglWingStructureReference& GetWingStructureReference();
+    TIGL_EXPORT const CTiglWingStructureReference& GetWingStructureReference() const;
 
     TIGL_EXPORT CCPACSWingShell& GetLowerShell();
     TIGL_EXPORT CCPACSWingShell& GetUpperShell();
@@ -54,7 +54,7 @@ private:
 
 private:
     CCPACSWingShell upperShell, lowerShell;
-    TiglWingStructureReference wingStructureReference;
+    CTiglWingStructureReference wingStructureReference;
 
     bool isvalid;
 };
