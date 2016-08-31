@@ -19,8 +19,8 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-#ifndef CCTiglWingStructureReference_H
-#define CCTiglWingStructureReference_H
+#ifndef CTIGLWINGSTRUCTUREREFERENCE_H
+#define CTIGLWINGSTRUCTUREREFERENCE_H
 
 #include "tigl_internal.h"
 
@@ -96,4 +96,4 @@ private:
 
 } // end namespace tigl
 
-#endif // CCTiglWingStructureReference_H
+#endif // CTIGLWINGSTRUCTUREREFERENCE_H
