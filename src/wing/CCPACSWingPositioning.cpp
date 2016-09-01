@@ -176,17 +176,14 @@ void CCPACSWingPositioning::ReadCPACS(TixiDocumentHandle tixiHandle, const std::
 void CCPACSWingPositioning::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& positioningXPath)
 {
     TixiSaveExt::TixiSaveDoubleElement(tixiHandle, positioningXPath.c_str(), "length", length, NULL);
-    TixiSaveExt::TixiSaveTextElement(tixiHandle, positioningXPath.c_str(), "fromSectionUID", innerSection.c_str());
+    if (!innerSection.empty()) {
+        TixiSaveExt::TixiSaveTextElement(tixiHandle, positioningXPath.c_str(), "fromSectionUID", innerSection.c_str());
+    }
     TixiSaveExt::TixiSaveDoubleElement(tixiHandle, positioningXPath.c_str(), "sweepAngle", sweepangle, NULL);
     TixiSaveExt::TixiSaveDoubleElement(tixiHandle, positioningXPath.c_str(), "dihedralAngle", dihedralangle, NULL);
-    TixiSaveExt::TixiSaveTextElement(tixiHandle, positioningXPath.c_str(), "fromSectionUID", innerSection.c_str());
 
-    if (length != 0) {
-        TixiSaveExt::TixiSaveTextElement(tixiHandle, positioningXPath.c_str(), "toSectionUID", outerSection.c_str());
-    }
-    else {
-        TixiSaveExt::TixiSaveTextElement(tixiHandle, positioningXPath.c_str(), "toSectionUID", "");
-    }
+
+    TixiSaveExt::TixiSaveTextElement(tixiHandle, positioningXPath.c_str(), "toSectionUID", outerSection.c_str());
 }
 
 void CCPACSWingPositioning::ConnectChildPositioning(CCPACSWingPositioning* child)
