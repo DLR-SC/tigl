@@ -1100,3 +1100,18 @@ TEST_F(WingSegmentSimple, wingGetEtaXsiBug1)
     ASSERT_EQ(2, idx);
     ASSERT_NEAR(0.0005, eta, 1e-8);
 }
+
+TEST_F(WingSegmentSimple, saveCPACS)
+{
+
+    ASSERT_EQ(SUCCESS, tiglSaveCPACSConfiguration("simpletest-saved", tiglSimpleHandle));
+    ASSERT_EQ(SUCCESS, tixiSaveDocument(tixiSimpleHandle, "TestData/simpltest-saved.cpacs.xml"));
+
+    // try to reopen document
+    TiglCPACSConfigurationHandle tmpHandle = 0;
+    EXPECT_EQ(SUCCESS, tiglOpenCPACSConfiguration(tixiSimpleHandle, "", &tmpHandle));
+
+    if (tmpHandle > 0) {
+        tiglCloseCPACSConfiguration(tmpHandle);
+    }
+}
