@@ -100,11 +100,25 @@ void CCPACSWings::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& c
         throw CTiglError("XML error in CCPACSWings::WriteCPACS : Path not found", TIGL_XML_ERROR);
     }
 
+    // determine, which are wings and which are rotorbaldes
+    CCPACSWingContainer theWings, theRotorblades;
+
+    for (CCPACSWingContainer::iterator iter = wings.begin(); iter != wings.end(); ++iter) {
+        CCPACSWing* wing = *iter;
+        if (wing->IsRotorBlade()) {
+            theRotorblades.push_back(wing);
+        }
+        else {
+            theWings.push_back(wing);
+        }
+    }
     // write wings
     std::string xpath = std::string(tmpString) + "[@uID=\"" + configurationUID + "\"]/wings";
-    WriteContainerElement(tixiHandle, xpath, "wing", wings);
+    WriteContainerElement(tixiHandle, xpath, "wing", theWings);
 
-    // TODO: write rotor blades!!!
+    // write rotorblades
+    xpath = std::string(tmpString) + "[@uID=\"" + configurationUID + "\"]/rotorBlades";
+    WriteContainerElement(tixiHandle, xpath, "rotorBlade", theRotorblades);
 
 }
 
