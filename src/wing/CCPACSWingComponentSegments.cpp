@@ -29,6 +29,7 @@
 
 #include "CCPACSWingComponentSegments.h"
 #include "TixiSaveExt.h"
+#include "IOHelper.h"
 
 namespace tigl
 {
@@ -92,72 +93,16 @@ int CCPACSWingComponentSegments::GetComponentSegmentCount(void)
 }
 
 // Read CPACS componentSegments element
-void CCPACSWingComponentSegments::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& wingXPath)
+void CCPACSWingComponentSegments::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& xpath)
 {
     Cleanup();
-
-    ReturnCode    tixiRet;
-    int           componentSegmentCount;
-    std::string   tempString;
-    char*         elementPath;
-
-    /* Get componentSegment element count */
-    tempString  = wingXPath + "/componentSegments";
-    elementPath = const_cast<char*>(tempString.c_str());
-    tixiRet = tixiGetNamedChildrenCount(tixiHandle, elementPath, "componentSegment", &componentSegmentCount);
-    if (tixiRet != SUCCESS) {
-        // componentSegments are optional right now
-        return;
-    }
-
-    // Loop over all componentSegments
-    for (int i = 1; i <= componentSegmentCount; i++) {
-        CCPACSWingComponentSegment* componentSegment = new CCPACSWingComponentSegment(wing, i);
-        componentSegments.push_back(componentSegment);
-
-        tempString = wingXPath + "/componentSegments/componentSegment[";
-        std::ostringstream xpath;
-        xpath << tempString << i << "]";
-        componentSegment->ReadCPACS(tixiHandle, xpath.str());
-    }
-
+    ReadContainerElement(tixiHandle, xpath, "componentSegment", 1, componentSegments, wing, ContainerElementIndex);
 }
 
 // Write CPACS segments element
-void CCPACSWingComponentSegments::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& wingXPath)
+void CCPACSWingComponentSegments::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& xpath)
 {
-    std::string xpath;
-    std::string subPath;
-    ReturnCode  tixiRet;
-    int         componentSegmentCount, test;
-
-    TixiSaveExt::TixiSaveElement(tixiHandle, wingXPath.c_str(), "componentSegments");
-    xpath = wingXPath + "/componentSegments";
-
-    if (tixiGetNamedChildrenCount(tixiHandle, xpath.c_str(), "componentSegment", &test) != SUCCESS) {
-        throw CTiglError("XML error: tixiGetNamedChildrenCount failed in CCPACSComponentSegments::ReadCPACS", TIGL_XML_ERROR);
-    }
-    componentSegmentCount = this->GetComponentSegmentCount();
-
-    for (int i = 1; i <= componentSegmentCount; i++) {
-        std::stringstream ss;
-        ss << xpath << "/componentSegment[" << i << "]";
-        subPath = ss.str();
-        CCPACSWingComponentSegment& componentSegment = GetComponentSegment(i);
-        if ((tixiRet = tixiCheckElement(tixiHandle, subPath.c_str())) == ELEMENT_NOT_FOUND) {
-            if ((tixiRet = tixiCreateElement(tixiHandle, xpath.c_str(), "componentSegment")) != SUCCESS) {
-                throw CTiglError("XML error: tixiCreateElement failed in CCPACSComponentSegments::WriteCPACS", TIGL_XML_ERROR);
-            }
-        }
-        componentSegment.WriteCPACS(tixiHandle, subPath);
-    }
-
-    for (int i = componentSegmentCount + 1; i <= test; i++) {
-        std::stringstream ss;
-        ss << xpath << "/componentSegment[" << componentSegmentCount + 1 << "]";
-        subPath = ss.str();
-        tixiRet = tixiRemoveElement(tixiHandle, subPath.c_str());
-    }
+    WriteContainerElement(tixiHandle, xpath, "componentSegment", componentSegments);
 }
 
 } // end namespace tigl

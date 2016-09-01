@@ -54,7 +54,7 @@ public:
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& wingXPath);
 
     // Write CPACS segments element
-    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& wingXPath);
+    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& wingXPath) const;
 
     // Gets a segment by index or UID.
     TIGL_EXPORT CCPACSWingSegment & GetSegment(const int index);

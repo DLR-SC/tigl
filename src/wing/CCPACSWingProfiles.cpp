@@ -26,6 +26,7 @@
 #include "CCPACSWingProfiles.h"
 #include "CTiglError.h"
 #include "TixiSaveExt.h"
+#include "IOHelper.h"
 #include <sstream>
 #include <iostream>
 
@@ -78,69 +79,27 @@ void CCPACSWingProfiles::ReadCPACS(TixiDocumentHandle tixiHandle)
 
 void CCPACSWingProfiles::ImportCPACS(TixiDocumentHandle tixiHandle)
 {
-    ReturnCode    tixiRet;
-    int           elementCount;
-    std::string   elementPath;
-
-    /* Get wing element count */
-    elementPath = "/cpacs/vehicles/profiles/wingAirfoils";
-    tixiRet = tixiGetNamedChildrenCount(tixiHandle, elementPath.c_str(), "wingAirfoil", &elementCount);
-    if (tixiRet != SUCCESS) {
-        cerr << "Warning: no wing profiles are defined!" << endl;
-        return;
-    }
-
-    // Loop over all section elements
-    for (int i = 1; i <= elementCount; i++) {
-        /* Get the appropriate airfoil */
-        std::ostringstream airfoilTmpStream;
-        airfoilTmpStream << "/cpacs/vehicles/profiles/wingAirfoils/wingAirfoil[" << i << "]";
-        CCPACSWingProfile* profile = new CCPACSWingProfile(airfoilTmpStream.str());
-        profile->ReadCPACS(tixiHandle);
-        // free memory for existing profiles
-        if (profiles.find(profile->GetUID()) != profiles.end()) {
-            delete profiles[profile->GetUID()];
+    const std::string xpath = "/cpacs/vehicles/profiles";
+    std::vector<CCPACSWingProfile*> children;
+    ReadContainerElement(tixiHandle, xpath, "wingAirfoil", 1, children);
+    for (std::size_t i = 0; i < children.size(); i++) {
+        CCPACSWingProfile* child = children[i];
+        if (profiles.find(child->GetUID()) != profiles.end()) {
+            delete profiles[child->GetUID()];
         }
-        profiles[profile->GetUID()] = profile;
+        profiles[child->GetUID()] = child;
     }
 }
 
 // Write CPACS wing profiles
 void CCPACSWingProfiles::WriteCPACS(TixiDocumentHandle tixiHandle)
 {
-    std::string elementPath = "/cpacs/vehicles/profiles/wingAirfoils";
-    std::string path;
-    ReturnCode tixiRet;
-    int wingAirfoilCount, test;
-
-    TixiSaveExt::TixiSaveElement(tixiHandle, "/cpacs/vehicles", "profiles");
-    TixiSaveExt::TixiSaveElement(tixiHandle, "/cpacs/vehicles/profiles", "wingAirfoils");
-
-    if (tixiGetNamedChildrenCount(tixiHandle, elementPath.c_str(), "wingAirfoil", &test) != SUCCESS) {
-        throw CTiglError("XML error: tixiGetNamedChildrenCount failed in CCPACSWings::ReadCPACS", TIGL_XML_ERROR);
+    if (profiles.size() > 0) {
+        TixiSaveExt::TixiSaveElement(tixiHandle, "/cpacs/vehicles", "profiles");
     }
 
-    wingAirfoilCount = profiles.size();
-
-    for (int i = 1;i <= wingAirfoilCount;i++) {
-        std::stringstream ss;
-        ss << elementPath << "/wingAirfoil[" << i << "]";
-        path = ss.str();
-        CCPACSWingProfile& wingAirfoil = GetProfile(i);
-        if ((tixiRet = tixiCheckElement(tixiHandle, path.c_str())) == ELEMENT_NOT_FOUND) {
-            if ((tixiRet = tixiCreateElement(tixiHandle, elementPath.c_str(), "wingAirfoil")) != SUCCESS) {
-                throw CTiglError("XML error: tixiCreateElement failed in CCPACSWings::WriteCPACS", TIGL_XML_ERROR);
-            }
-        }
-        wingAirfoil.WriteCPACS(tixiHandle, path);
-    }
-
-    for (int i = wingAirfoilCount+1; i <= test; i++) {
-        std::stringstream ss;
-        ss << elementPath << "/wingAirfoil[" << wingAirfoilCount+1 << "]";
-        path = ss.str();
-        tixiRet = tixiRemoveElement(tixiHandle, path.c_str());
-    }
+    const std::string xpath = "/cpacs/vehicles/profiles";
+    WriteContainerElement(tixiHandle, xpath, "wingAirfoil", profiles);
 }
 
 void CCPACSWingProfiles::AddProfile(CCPACSWingProfile* profile)

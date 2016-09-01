@@ -147,40 +147,22 @@ void CCPACSWingPositioning::ReadCPACS(TixiDocumentHandle tixiHandle, const std::
 {
     Cleanup();
 
-    char*       elementPath;
-    std::string tempString;
-
-    // Get subelement "length"
-    tempString  = positioningXPath + "/length";
-    elementPath = const_cast<char*>(tempString.c_str());
-    tixiGetDoubleElement(tixiHandle, elementPath, &length);
-
-    // Get subelement "sweepAngle"
-    tempString  = positioningXPath + "/sweepAngle";
-    elementPath = const_cast<char*>(tempString.c_str());
-    tixiGetDoubleElement(tixiHandle, elementPath, &sweepangle);
-
-    // Get subelement "dihedralAngle"
-    tempString  = positioningXPath + "/dihedralAngle";
-    elementPath = const_cast<char*>(tempString.c_str());
-    tixiGetDoubleElement(tixiHandle, elementPath, &dihedralangle);
+    tixiGetDoubleElement(tixiHandle, (positioningXPath + "/length").c_str(), &length);
+    tixiGetDoubleElement(tixiHandle, (positioningXPath + "/sweepAngle").c_str(), &sweepangle);
+    tixiGetDoubleElement(tixiHandle, (positioningXPath + "/dihedralAngle").c_str(), &dihedralangle);
 
     // Get subelement "toSectionUID" - the outer section
-    char*          ptrOuterSection = NULL;
-    tempString  = positioningXPath + "/toSectionUID";
-    elementPath = const_cast<char*>(tempString.c_str());
-    if (tixiGetTextElement(tixiHandle, elementPath, &ptrOuterSection) != SUCCESS) {
+    char* ptrOuterSection = NULL;
+    if (tixiGetTextElement(tixiHandle, (positioningXPath + "/toSectionUID").c_str(), &ptrOuterSection) != SUCCESS) {
         throw CTiglError("Error: Can't read element <section[2]/> in CCPACSWingPositioning:ReadCPACS", TIGL_XML_ERROR);
     }
     outerSection = ptrOuterSection;
 
     // Get subelement "fromSectionUID" - the inner section
-    char*          ptrInnerSection = NULL;
-    tempString  = positioningXPath + "/fromSectionUID";
-    elementPath = const_cast<char*>(tempString.c_str());
-    if (tixiCheckElement(tixiHandle, elementPath) == SUCCESS && 
-        tixiGetTextElement(tixiHandle, elementPath, &ptrInnerSection) == SUCCESS) {
-
+    char* ptrInnerSection = NULL;
+    const std::string path = positioningXPath + "/fromSectionUID";
+    if (tixiCheckElement(tixiHandle, path.c_str()) == SUCCESS &&
+        tixiGetTextElement(tixiHandle, path.c_str(), &ptrInnerSection) == SUCCESS) {
         innerSection = ptrInnerSection;
     }
     else {
@@ -193,22 +175,12 @@ void CCPACSWingPositioning::ReadCPACS(TixiDocumentHandle tixiHandle, const std::
 // Write CPACS segment elements
 void CCPACSWingPositioning::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& positioningXPath)
 {
-    // Set the subelement "length" 
     TixiSaveExt::TixiSaveDoubleElement(tixiHandle, positioningXPath.c_str(), "length", length, NULL);
-    
-    // Set subelement "fromSectionUID" - the inner section
     TixiSaveExt::TixiSaveTextElement(tixiHandle, positioningXPath.c_str(), "fromSectionUID", innerSection.c_str());
-    
-    // Set subelement "sweepAngle"
     TixiSaveExt::TixiSaveDoubleElement(tixiHandle, positioningXPath.c_str(), "sweepAngle", sweepangle, NULL);
-    
-    // Set subelement "dihedralAngle"
     TixiSaveExt::TixiSaveDoubleElement(tixiHandle, positioningXPath.c_str(), "dihedralAngle", dihedralangle, NULL);
-    
-    // Set subelement "fromSectionUID" - the inner section
     TixiSaveExt::TixiSaveTextElement(tixiHandle, positioningXPath.c_str(), "fromSectionUID", innerSection.c_str());
-    
-    // Set subelement "toSectionUID" - the outer section
+
     if (length != 0) {
         TixiSaveExt::TixiSaveTextElement(tixiHandle, positioningXPath.c_str(), "toSectionUID", outerSection.c_str());
     }

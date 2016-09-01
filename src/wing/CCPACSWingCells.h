@@ -52,7 +52,7 @@ public:
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& cellsXPath);
     
     // Writing CPACS wing cells
-    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& cellsXPath);
+    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& cellsXPath) const;
     
     // Returns the total count of wing cells for that wing component segment
     TIGL_EXPORT int GetCellCount(void) const;
@@ -64,7 +64,7 @@ public:
     TIGL_EXPORT CCPACSWingCell& GetCell(const std::string& UID) const;
 
     // Get parent wing shell element
-    TIGL_EXPORT CCPACSWingShell* GetParentElement();
+    TIGL_EXPORT CCPACSWingShell* GetParentElement() const;
 
 protected:
     // Cleanup routine
@@ -72,10 +72,10 @@ protected:
     
 private:
     // Copy constructor
-    CCPACSWingCells(const CCPACSWingCells& ) { /* Do nothing */ }
+    CCPACSWingCells(const CCPACSWingCells&);
     
     // Assignment operator
-    void operator=(const CCPACSWingCells& ) { /* Do nothing */ }
+    void operator=(const CCPACSWingCells&);
     
 private:
     CCPACSWingCellContainer cells;         /**< Wing Cell elements */

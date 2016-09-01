@@ -121,29 +121,25 @@ void CCPACSWingProfileCST::Update(void)
 // Read wing profile file
 void CCPACSWingProfileCST::ReadCPACS(TixiDocumentHandle tixiHandle)
 {
-    upperB=readTixiVector(tixiHandle, ProfileDataXPath, "/upperB", "CCPACSWingProfileCST::ReadCPACS"); 
-    lowerB=readTixiVector(tixiHandle, ProfileDataXPath, "/lowerB", "CCPACSWingProfileCST::ReadCPACS"); 
-    upperN1=readTixiDouble(tixiHandle, ProfileDataXPath, "/upperN1", "CCPACSWingProfileCST::ReadCPACS"); 
-    upperN2=readTixiDouble(tixiHandle, ProfileDataXPath, "/upperN2", "CCPACSWingProfileCST::ReadCPACS"); 
-    lowerN1=readTixiDouble(tixiHandle, ProfileDataXPath, "/lowerN1", "CCPACSWingProfileCST::ReadCPACS"); 
-    lowerN2=readTixiDouble(tixiHandle, ProfileDataXPath, "/lowerN2", "CCPACSWingProfileCST::ReadCPACS"); 
+    upperB = readTixiVector(tixiHandle, ProfileDataXPath, "/upperB", "CCPACSWingProfileCST::ReadCPACS");
+    lowerB = readTixiVector(tixiHandle, ProfileDataXPath, "/lowerB", "CCPACSWingProfileCST::ReadCPACS");
+    upperN1 = readTixiDouble(tixiHandle, ProfileDataXPath, "/upperN1", "CCPACSWingProfileCST::ReadCPACS");
+    upperN2 = readTixiDouble(tixiHandle, ProfileDataXPath, "/upperN2", "CCPACSWingProfileCST::ReadCPACS");
+    lowerN1 = readTixiDouble(tixiHandle, ProfileDataXPath, "/lowerN1", "CCPACSWingProfileCST::ReadCPACS");
+    lowerN2 = readTixiDouble(tixiHandle, ProfileDataXPath, "/lowerN2", "CCPACSWingProfileCST::ReadCPACS");
 }
 
 // Write CPACS wing profile
 void CCPACSWingProfileCST::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& ProfileXPath)
 {
-    // Set the element "point"
     TixiSaveExt::TixiSaveElement(tixiHandle, ProfileXPath.c_str(), CPACSID().c_str() );
-
-    std::string elementPath = ProfileXPath + "/" + CPACSID();
-
+    const std::string elementPath = ProfileXPath + "/" + CPACSID();
     TixiSaveExt::TixiSaveVector(tixiHandle, elementPath, "upperB", upperB);
     TixiSaveExt::TixiSaveVector(tixiHandle, elementPath, "lowerB", lowerB);
     TixiSaveExt::TixiSaveDoubleElement(tixiHandle, elementPath.c_str(), "upperN1", upperN1);
     TixiSaveExt::TixiSaveDoubleElement(tixiHandle, elementPath.c_str(), "upperN2", upperN2);
     TixiSaveExt::TixiSaveDoubleElement(tixiHandle, elementPath.c_str(), "lowerN1", lowerN1);
     TixiSaveExt::TixiSaveDoubleElement(tixiHandle, elementPath.c_str(), "lowerN2", lowerN2);
-
 }
 
 // Builds the wing profile wire. The returned wire is already transformed by the
