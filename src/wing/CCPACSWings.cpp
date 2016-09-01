@@ -24,6 +24,7 @@
 */
 
 #include "CCPACSWings.h"
+#include "CCPACSConfiguration.h"
 #include "CTiglError.h"
 #include "TixiSaveExt.h"
 #include "IOHelper.h"
@@ -64,7 +65,6 @@ void CCPACSWings::Cleanup(void)
     wings.clear();
 }
 
-// Read CPACS wings element
 void CCPACSWings::ReadCPACS(TixiDocumentHandle tixiHandle, const char* configurationUID)
 {
     Cleanup();
@@ -76,7 +76,14 @@ void CCPACSWings::ReadCPACS(TixiDocumentHandle tixiHandle, const char* configura
     }
     const std::string wingXPath = std::string(tmpString) + "[@uID=\"" + configurationUID + "\"]/wings";
     ReadContainerElement(tixiHandle, wingXPath, "wing", 1, wings, configuration);
+
+    if (configuration->IsRotorcraft()) {
+         // read rotor blades
+         const std::string rotorbladeXPath = std::string(tmpString) + "[@uID=\"" + configurationUID + "\"]/rotorBlades";
+         ReadContainerElement(tixiHandle, rotorbladeXPath, "rotorBlade", 1, wings, configuration);
+    }
 }
+
 
 // Write CPACS wings elements
 void CCPACSWings::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& configurationUID)
@@ -96,6 +103,9 @@ void CCPACSWings::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& c
     // write wings
     std::string xpath = std::string(tmpString) + "[@uID=\"" + configurationUID + "\"]/wings";
     WriteContainerElement(tixiHandle, xpath, "wing", wings);
+
+    // TODO: write rotor blades!!!
+
 }
 
 bool CCPACSWings::HasProfile(std::string uid) const
@@ -132,6 +142,18 @@ int CCPACSWings::GetWingCount(void) const
     return (static_cast<int>(wings.size()));
 }
 
+// Returns the count of wings in a configuration with the property isRotorBlade set to true
+int CCPACSWings::GetRotorBladeCount(void) const
+{
+    int nRotorBlades = 0;
+    for (int i = 1; i <= GetWingCount(); i++) {
+        if (GetWing(i).IsRotorBlade()) {
+            nRotorBlades++;
+        }
+    }
+    return nRotorBlades;
+}
+
 // Returns the wing for a given index.
 CCPACSWing& CCPACSWings::GetWing(int index) const
 {
@@ -145,15 +167,21 @@ CCPACSWing& CCPACSWings::GetWing(int index) const
 // Returns the wing for a given UID.
 CCPACSWing& CCPACSWings::GetWing(const std::string& UID) const
 {
+    return (*wings[GetWingIndex(UID)-1]);
+}
+
+// Returns the wing index for a given UID.
+int CCPACSWings::GetWingIndex(const std::string& UID) const
+{
     for (int i=0; i < GetWingCount(); i++) {
         const std::string tmpUID(wings[i]->GetUID());
         if (tmpUID == UID) {
-            return (*wings[i]);
+            return i+1;
         }
     }
 
     // UID not there
-    throw CTiglError("Error: Invalid UID in CCPACSWings::GetWing", TIGL_INDEX_ERROR);
+    throw CTiglError("Error: Invalid UID in CCPACSWings::GetWingIndex", TIGL_UID_ERROR);
 }
 
 void CCPACSWings::AddWing(CCPACSWing* wing)

@@ -28,7 +28,7 @@
 
 #include "tigl_internal.h"
 #include "tixi.h"
-#include "CTiglTransformation.h"
+#include "CCPACSTransformation.h"
 #include "CTiglPoint.h"
 #include <string>
 
@@ -82,9 +82,6 @@ protected:
     // Build transformation matrix for the section element
     void BuildMatrix(void);
 
-    // Update internal section element data
-    void Update(void);
-
 private:
     // Copy constructor
     CCPACSFuselageSectionElement(const CCPACSFuselageSectionElement& );
@@ -98,10 +95,7 @@ private:
     std::string           profileUID;     /**< Profile index in fuselage profile library */
     std::string           uid;            /**< UID of the FuselageSectionElement         */
     int                   profileIndex;   /**< Profile index in fuselage profile library */
-    CTiglTransformation   transformation; /**< Section element transformation            */
-    CTiglPoint            translation;
-    CTiglPoint            scaling;
-    CTiglPoint            rotation;
+    CCPACSTransformation  transformation; /**< Section element transformation            */
 
 };
 

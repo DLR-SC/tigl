@@ -19,7 +19,7 @@
 * limitations under the License.
 */
 
-#include <QtGui/QApplication>
+#include <QApplication>
 
 #include "TIGLViewerInternal.h"
 #include "TIGLViewerInputoutput.h"
@@ -32,6 +32,9 @@
 #include <Poly_Triangulation.hxx>
 #include <IGESData_IGESModel.hxx>
 #include <AIS_ListIteratorOfListOfInteractive.hxx>
+#include <AIS_Shape.hxx>
+#include <Geom_Plane.hxx>
+#include <Geom_Line.hxx>
 
 TIGLViewerInputOutput::TIGLViewerInputOutput(void)
 {
@@ -48,7 +51,7 @@ bool TIGLViewerInputOutput::importModel( const QString fileName,
 
     QApplication::setOverrideCursor( Qt::WaitCursor );
     scene.getContext()->SetDisplayMode(AIS_Shaded,Standard_False);
-    Handle_TopTools_HSequenceOfShape shapes = importModel( format, fileName );
+    Handle(TopTools_HSequenceOfShape) shapes = importModel( format, fileName );
     QApplication::restoreOverrideCursor();
 
     if ( shapes.IsNull() || !shapes->Length() ) {
@@ -98,9 +101,9 @@ bool TIGLViewerInputOutput::importTriangulation( const QString fileName,
 
     return true;
 }
-Handle_TopTools_HSequenceOfShape TIGLViewerInputOutput::importModel( const FileFormat format, const QString& file )
+Handle(TopTools_HSequenceOfShape) TIGLViewerInputOutput::importModel( const FileFormat format, const QString& file )
 {
-    Handle_TopTools_HSequenceOfShape shapes;
+    Handle(TopTools_HSequenceOfShape) shapes;
     try {
         switch ( format ) {
         case FormatBREP:
@@ -114,9 +117,6 @@ Handle_TopTools_HSequenceOfShape TIGLViewerInputOutput::importModel( const FileF
             break;
         case FormatSTEP:
             shapes = importSTEP( file );
-            break;
-        case FormatCSFDB:
-            shapes = importCSFDB( file );
             break;
         case FormatMESH:
             shapes = importMESH( file );
@@ -138,10 +138,10 @@ Handle_TopTools_HSequenceOfShape TIGLViewerInputOutput::importModel( const FileF
 
 bool TIGLViewerInputOutput::exportModel( const QString fileName,
                                          const FileFormat format,
-                                         const Handle_AIS_InteractiveContext& ic )
+                                         const Handle(AIS_InteractiveContext)& ic )
 {
 
-    Handle_TopTools_HSequenceOfShape shapes = getShapes( ic );
+    Handle(TopTools_HSequenceOfShape) shapes = getShapes( ic );
     if ( shapes.IsNull() || !shapes->Length() ) {
         return false;
     }
@@ -152,7 +152,7 @@ bool TIGLViewerInputOutput::exportModel( const QString fileName,
     return stat;
 }
 
-bool TIGLViewerInputOutput::exportModel( const FileFormat format, const QString& file, const Handle_TopTools_HSequenceOfShape& shapes )
+bool TIGLViewerInputOutput::exportModel( const FileFormat format, const QString& file, const Handle(TopTools_HSequenceOfShape)& shapes )
 {
     bool status = false;
     try {
@@ -166,14 +166,8 @@ bool TIGLViewerInputOutput::exportModel( const FileFormat format, const QString&
         case FormatSTEP:
             status = exportSTEP( file, shapes );
             break;
-        case FormatCSFDB:
-            status = exportCSFDB( file, shapes );
-            break;
         case FormatSTL:
             status = exportSTL( file, shapes );
-            break;
-        case FormatVRML:
-            status = exportVRML( file, shapes );
             break;
         default:
             status = false;
@@ -185,15 +179,15 @@ bool TIGLViewerInputOutput::exportModel( const FileFormat format, const QString&
     return status;
 }
 
-Handle_TopTools_HSequenceOfShape TIGLViewerInputOutput::getShapes( const Handle_AIS_InteractiveContext& ic )
+Handle(TopTools_HSequenceOfShape) TIGLViewerInputOutput::getShapes( const Handle(AIS_InteractiveContext)& ic )
 {
-    Handle_TopTools_HSequenceOfShape aSequence;
-    Handle_AIS_InteractiveObject picked;
+    Handle(TopTools_HSequenceOfShape) aSequence;
+    Handle(AIS_InteractiveObject) picked;
     // export selected objects
     for ( ic->InitCurrent(); ic->MoreCurrent(); ic->NextCurrent() ) {
-        Handle_AIS_InteractiveObject obj = ic->Current();
+        Handle(AIS_InteractiveObject) obj = ic->Current();
         if ( obj->IsKind( STANDARD_TYPE( AIS_Shape ) ) ) {
-            TopoDS_Shape shape = Handle_AIS_Shape::DownCast(obj)->Shape();
+            TopoDS_Shape shape = Handle(AIS_Shape)::DownCast(obj)->Shape();
             if ( aSequence.IsNull() ) {
                 aSequence = new TopTools_HSequenceOfShape();
             }
@@ -209,9 +203,9 @@ Handle_TopTools_HSequenceOfShape TIGLViewerInputOutput::getShapes( const Handle_
     ic->DisplayedObjects(listAISShapes);
     AIS_ListIteratorOfListOfInteractive iter(listAISShapes);
     for (; iter.More(); iter.Next()) {
-        Handle_AIS_InteractiveObject obj = iter.Value();
+        Handle(AIS_InteractiveObject) obj = iter.Value();
         if ( obj->IsKind( STANDARD_TYPE( AIS_Shape ) ) ) {
-            TopoDS_Shape shape = Handle_AIS_Shape::DownCast(obj)->Shape();
+            TopoDS_Shape shape = Handle(AIS_Shape)::DownCast(obj)->Shape();
             if ( aSequence.IsNull() ) {
                 aSequence = new TopTools_HSequenceOfShape();
             }
@@ -222,13 +216,13 @@ Handle_TopTools_HSequenceOfShape TIGLViewerInputOutput::getShapes( const Handle_
 }
 
 
-Handle_TopTools_HSequenceOfShape TIGLViewerInputOutput::importBREP( const QString& file )
+Handle(TopTools_HSequenceOfShape) TIGLViewerInputOutput::importBREP( const QString& file )
 {
-    Handle_TopTools_HSequenceOfShape aSequence;
+    Handle(TopTools_HSequenceOfShape) aSequence;
     TopoDS_Shape aShape;
     BRep_Builder aBuilder;
 
-    Standard_Boolean result = BRepTools::Read(  aShape, file.toAscii().data(), aBuilder );
+    Standard_Boolean result = BRepTools::Read(  aShape, file.toLatin1().data(), aBuilder );
     if ( result ) {
         aSequence = new TopTools_HSequenceOfShape();
         if (aShape.ShapeType() == TopAbs_COMPOUND) {
@@ -245,12 +239,12 @@ Handle_TopTools_HSequenceOfShape TIGLViewerInputOutput::importBREP( const QStrin
     return aSequence;
 }
 
-Handle_TopTools_HSequenceOfShape TIGLViewerInputOutput::importIGES( const QString& file )
+Handle(TopTools_HSequenceOfShape) TIGLViewerInputOutput::importIGES( const QString& file )
 {
-    Handle_TopTools_HSequenceOfShape aSequence;
+    Handle(TopTools_HSequenceOfShape) aSequence;
     IGESControl_Reader Reader;
     Interface_Static::SetCVal("xstep.cascade.unit", "M");
-    int status = Reader.ReadFile( file.toAscii().data() );
+    int status = Reader.ReadFile( file.toLatin1().data() );
 
     if ( status == IFSelect_RetDone ) {
         Reader.TransferRoots();
@@ -266,9 +260,9 @@ Handle_TopTools_HSequenceOfShape TIGLViewerInputOutput::importIGES( const QStrin
     return aSequence;
 }
 
-Handle_TopTools_HSequenceOfShape TIGLViewerInputOutput::importSTL( const QString& file )
+Handle(TopTools_HSequenceOfShape) TIGLViewerInputOutput::importSTL( const QString& file )
 {
-    Handle_TopTools_HSequenceOfShape aSequence = NULL;
+    Handle(TopTools_HSequenceOfShape) aSequence = NULL;
     TopoDS_Shape aShape;
     StlAPI_Reader Reader;
     Reader.Read(aShape, file.toStdString().c_str());
@@ -282,9 +276,9 @@ Handle_TopTools_HSequenceOfShape TIGLViewerInputOutput::importSTL( const QString
     return aSequence;
 }
 
-Handle_TopTools_HSequenceOfShape TIGLViewerInputOutput::importMESH( const QString& file )
+Handle(TopTools_HSequenceOfShape) TIGLViewerInputOutput::importMESH( const QString& file )
 {
-    Handle_TopTools_HSequenceOfShape aSequence = NULL;
+    Handle(TopTools_HSequenceOfShape) aSequence = NULL;
 
     CHotsoseMeshReader meshReader;
     tigl::CTiglPolyData mesh;
@@ -299,13 +293,13 @@ Handle_TopTools_HSequenceOfShape TIGLViewerInputOutput::importMESH( const QStrin
     return aSequence;
 }
 
-Handle_TopTools_HSequenceOfShape TIGLViewerInputOutput::importSTEP( const QString& file )
+Handle(TopTools_HSequenceOfShape) TIGLViewerInputOutput::importSTEP( const QString& file )
 {
-    Handle_TopTools_HSequenceOfShape aSequence = new TopTools_HSequenceOfShape;
+    Handle(TopTools_HSequenceOfShape) aSequence = new TopTools_HSequenceOfShape;
 
     STEPControl_Reader aReader;
     Interface_Static::SetCVal("xstep.cascade.unit", "M");
-    IFSelect_ReturnStatus status = aReader.ReadFile( file.toAscii().data() );
+    IFSelect_ReturnStatus status = aReader.ReadFile( file.toLatin1().data() );
     if ( status == IFSelect_RetDone ) {
         //Interface_TraceFile::SetDefault();
         bool failsonly = false;
@@ -335,48 +329,8 @@ Handle_TopTools_HSequenceOfShape TIGLViewerInputOutput::importSTEP( const QStrin
     return aSequence;
 }
 
-Handle_TopTools_HSequenceOfShape TIGLViewerInputOutput::importCSFDB( const QString& file )
-{
-    Handle_TopTools_HSequenceOfShape aSequence;
 
-    // Check file type
-    if ( FSD_File::IsGoodFileType( file.toAscii().data() ) != Storage_VSOk ) {
-        return aSequence;
-    }
-
-    static FSD_File fileDriver;
-    TCollection_AsciiString aName( file.toAscii().data() );
-    if ( fileDriver.Open( aName, Storage_VSRead ) != Storage_VSOk ) {
-        return aSequence;
-    }
-
-    Handle(ShapeSchema) schema = new ShapeSchema();
-    Handle(Storage_Data) data  = schema->Read( fileDriver );
-    if ( data->ErrorStatus() != Storage_VSOk ) {
-        return aSequence;
-    }
-
-    fileDriver.Close();
-
-    aSequence = new TopTools_HSequenceOfShape();
-    Handle(Storage_HSeqOfRoot) roots = data->Roots();
-    for ( int i = 1; i <= roots->Length() ; i++ ) {
-        Handle(Storage_Root) r = roots->Value( i );
-        Handle(Standard_Persistent) p = r->Object();
-        Handle(PTopoDS_HShape) aPShape = Handle(PTopoDS_HShape)::DownCast(p);
-        if ( !aPShape.IsNull() ) {
-            PTColStd_PersistentTransientMap aMap;
-            TopoDS_Shape aTShape;
-            MgtBRep::Translate( aPShape, aMap, aTShape, MgtBRep_WithTriangle );
-            aSequence->Append( aTShape );
-        }
-    }
-
-    return aSequence;
-}
-
-
-bool TIGLViewerInputOutput::exportBREP( const QString& file, const Handle_TopTools_HSequenceOfShape& shapes )
+bool TIGLViewerInputOutput::exportBREP( const QString& file, const Handle(TopTools_HSequenceOfShape)& shapes )
 {
     if ( shapes.IsNull() || shapes->IsEmpty() ){
         return false;
@@ -396,10 +350,10 @@ bool TIGLViewerInputOutput::exportBREP( const QString& file, const Handle_TopToo
     else {
         shape = shapes->Value(1);
     }
-    return BRepTools::Write( shape, file.toAscii().data() );
+    return BRepTools::Write( shape, file.toLatin1().data() );
 }
 
-bool TIGLViewerInputOutput::exportIGES( const QString& file, const Handle_TopTools_HSequenceOfShape& shapes )
+bool TIGLViewerInputOutput::exportIGES( const QString& file, const Handle(TopTools_HSequenceOfShape)& shapes )
 {
     if ( shapes.IsNull() || shapes->IsEmpty() ) {
         return false;
@@ -418,10 +372,10 @@ bool TIGLViewerInputOutput::exportIGES( const QString& file, const Handle_TopToo
         writer.AddShape ( shapes->Value( i ) );
     }
     writer.ComputeModel();
-    return writer.Write( file.toAscii().data() );
+    return writer.Write( file.toLatin1().data() );
 }
 
-bool TIGLViewerInputOutput::exportSTEP( const QString& file, const Handle_TopTools_HSequenceOfShape& shapes )
+bool TIGLViewerInputOutput::exportSTEP( const QString& file, const Handle(TopTools_HSequenceOfShape)& shapes )
 {
     if ( shapes.IsNull() || shapes->IsEmpty() ) {
         return false;
@@ -439,7 +393,7 @@ bool TIGLViewerInputOutput::exportSTEP( const QString& file, const Handle_TopToo
         }
     }
 
-    status = writer.Write( file.toAscii().data() );
+    status = writer.Write( file.toLatin1().data() );
 
     switch ( status ) {
     case IFSelect_RetError:
@@ -457,53 +411,7 @@ bool TIGLViewerInputOutput::exportSTEP( const QString& file, const Handle_TopToo
     return status == IFSelect_RetDone;
 }
 
-bool TIGLViewerInputOutput::exportCSFDB( const QString& file, const Handle_TopTools_HSequenceOfShape& shapes )
-{
-    if ( shapes.IsNull() || shapes->IsEmpty() ) {
-        return false;
-    }
-
-    static FSD_File fileDriver;
-
-    Handle(ShapeSchema) schema = new ShapeSchema();
-    Handle(Storage_Data) data  = new Storage_Data();
-    data->ClearErrorStatus();
-
-    data->SetApplicationName( TCollection_ExtendedString( "Sample Import / Export" ) );
-    data->SetApplicationVersion( "1" );
-    data->SetDataType( TCollection_ExtendedString( "Shapes" ) );
-    data->AddToUserInfo( "Storing a persistent set of shapes in a flat file" );
-    data->AddToComments( TCollection_ExtendedString( "Application is based on TIGL 1.0 and OpenCASCADE 6.3.0" ) );
-
-    if ( fileDriver.Open( file.toAscii().data(), Storage_VSWrite ) != Storage_VSOk ) {
-        myInfo = tr( "INF_TRANSLATE_ERROR_CANTSAVEFILE" ).arg( file );
-        return false;
-    }
-
-    PTColStd_TransientPersistentMap aMap;
-    for ( int i = 1; i <= shapes->Length(); i++ ) {
-        TopoDS_Shape shape = shapes->Value( i );
-        if ( shape.IsNull() ) {
-            myInfo = tr( "INF_TRANSLATE_ERROR_INVALIDSHAPE" );
-            return false;
-        }
-
-        Handle(PTopoDS_HShape) pshape = MgtBRep::Translate( shape, aMap, MgtBRep_WithTriangle );
-        TCollection_AsciiString objName = TCollection_AsciiString( "Object_" ) + TCollection_AsciiString( i );
-        data->AddRoot( objName, pshape );
-    }
-
-    schema->Write( fileDriver, data );
-    fileDriver.Close();
-
-    if ( data->ErrorStatus() != Storage_VSOk ) {
-        myInfo = tr( "INF_TRANSLATE_ERROR_CANTSAVEDATA" );
-        return false;
-    }
-    return true;
-}
-
-bool TIGLViewerInputOutput::exportSTL( const QString& file, const Handle_TopTools_HSequenceOfShape& shapes )
+bool TIGLViewerInputOutput::exportSTL( const QString& file, const Handle(TopTools_HSequenceOfShape)& shapes )
 {
     if ( shapes.IsNull() || shapes->IsEmpty() ) {
         return false;
@@ -523,37 +431,12 @@ bool TIGLViewerInputOutput::exportSTL( const QString& file, const Handle_TopTool
     }
 
     StlAPI_Writer writer;
-    writer.Write( res, file.toAscii().data() );
+    writer.Write( res, file.toLatin1().data() );
 
     return true;
 }
 
-bool TIGLViewerInputOutput::exportVRML( const QString& file, const Handle_TopTools_HSequenceOfShape& shapes )
-{
-    if ( shapes.IsNull() || shapes->IsEmpty() ) {
-        return false;
-    }
-
-    TopoDS_Compound res;
-    BRep_Builder builder;
-    builder.MakeCompound( res );
-
-    for ( int i = 1; i <= shapes->Length(); i++ ) {
-        TopoDS_Shape shape = shapes->Value( i );
-        if ( shape.IsNull() ) {
-            myInfo = tr( "INF_TRANSLATE_ERROR_INVALIDSHAPE" );
-            return false;
-        }
-        builder.Add( res, shape );
-    }
-
-    VrmlAPI_Writer writer;
-    writer.Write( res, file.toAscii().data() );
-
-    return true;
-}
-
-bool TIGLViewerInputOutput::checkFacetedBrep( const Handle_TopTools_HSequenceOfShape& shapes )
+bool TIGLViewerInputOutput::checkFacetedBrep( const Handle(TopTools_HSequenceOfShape)& shapes )
 {
     bool err = false;
     for ( int i = 1; i <= shapes->Length(); i++ ) {

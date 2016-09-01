@@ -21,6 +21,13 @@
  * data structures.
  */
 
+#if defined _WIN32 || defined __WIN32__
+#include <Shlwapi.h>
+#include <io.h>
+#else
+#include <unistd.h>
+#endif
+
 #include "tiglcommonfunctions.h"
 
 #include "CTiglError.h"
@@ -95,7 +102,7 @@ Standard_Real GetWireLength(const TopoDS_Wire& wire)
 Standard_Real GetEdgeLength(const TopoDS_Edge &edge)
 {
     Standard_Real umin, umax;
-    Handle_Geom_Curve curve = BRep_Tool::Curve(edge, umin, umax);
+    Handle(Geom_Curve) curve = BRep_Tool::Curve(edge, umin, umax);
     GeomAdaptor_Curve adaptorCurve(curve, umin, umax);
     Standard_Real length = GCPnts_AbscissaPoint::Length(adaptorCurve, umin, umax);
     return length;
@@ -184,7 +191,7 @@ void EdgeGetPointTangent(const TopoDS_Edge& edge, double alpha, gp_Pnt& point, g
     }
     // ETA 3D point
     Standard_Real umin, umax;
-    Handle_Geom_Curve curve = BRep_Tool::Curve(edge, umin, umax);
+    Handle(Geom_Curve) curve = BRep_Tool::Curve(edge, umin, umax);
     GeomAdaptor_Curve adaptorCurve(curve, umin, umax);
     Standard_Real len =  GCPnts_AbscissaPoint::Length( adaptorCurve, umin, umax );
     GCPnts_AbscissaPoint algo(adaptorCurve, len*alpha, umin);
@@ -256,14 +263,14 @@ gp_Pnt GetCentralFacePoint(const TopoDS_Face& face)
 
     gp_Pnt p;
 
-    Handle_Geom_Surface surface = BRep_Tool::Surface(face);
+    Handle(Geom_Surface) surface = BRep_Tool::Surface(face);
     BRepTools::UVBounds(face, umin, umax, vmin, vmax);
     Standard_Real umean = 0.5*(umin+umax);
     Standard_Real vmean = 0.5*(vmin+vmax);
 
 
     // compute intersection of u-iso line with face boundaries
-    Handle_Geom2d_Curve uiso = new Geom2d_Line(
+    Handle(Geom2d_Curve) uiso = new Geom2d_Line(
                 gp_Pnt2d(umean,0.),
                 gp_Dir2d(0., 1.)
                 );
@@ -275,7 +282,7 @@ gp_Pnt GetCentralFacePoint(const TopoDS_Face& face)
         Standard_Real first, last;
 
         // Get geomteric curve from edge
-        Handle_Geom2d_Curve hcurve = BRep_Tool::CurveOnSurface(edge, face, first, last);
+        Handle(Geom2d_Curve) hcurve = BRep_Tool::CurveOnSurface(edge, face, first, last);
         hcurve = new Geom2d_TrimmedCurve(hcurve, first, last);
 
         Geom2dAPI_InterCurveCurve intersector(uiso, hcurve);
@@ -452,14 +459,14 @@ TopoDS_Face GetFace(const TopoDS_Shape &shape, int iFace)
     }
 }
 
-Handle_Geom_BSplineCurve GetBSplineCurve(const TopoDS_Edge& e)
+Handle(Geom_BSplineCurve) GetBSplineCurve(const TopoDS_Edge& e)
 {
     double u1, u2;
-    Handle_Geom_Curve curve = BRep_Tool::Curve(e, u1, u2);
+    Handle(Geom_Curve) curve = BRep_Tool::Curve(e, u1, u2);
     curve = new Geom_TrimmedCurve(curve, u1, u2);
     
     // convert to bspline
-    Handle_Geom_BSplineCurve bspl =  GeomConvert::CurveToBSplineCurve(curve);
+    Handle(Geom_BSplineCurve) bspl =  GeomConvert::CurveToBSplineCurve(curve);
     return bspl;
 }
 
@@ -470,7 +477,7 @@ bool GetIntersectionPoint(const TopoDS_Face& face, const TopoDS_Edge& edge, gp_P
         LOG(ERROR) << "Error intersecting edge and face in GetIntersectionPoint!";
         throw tigl::CTiglError("Error intersecting edge and face in GetIntersectionPoint!");
     }
-    double minDistance = std::numeric_limits<double>::max();
+    double minDistance = 0;//std::numeric_limits<double>::max();
     int minIndex = 0;
     for (int i = 1; i <= edgeFaceIntersect.NbExt(); i++) {
         double distance = edgeFaceIntersect.SquareDistance(i);
@@ -522,4 +529,27 @@ TopoDS_Face BuildFace(const gp_Pnt& p1, const gp_Pnt& p2, const gp_Pnt& p3, cons
 
     TopoDS_Face face = BRepFill::Face(e1, e2);
     return face;
+}
+
+bool IsPathRelative(const std::string& path)
+{
+#if defined _WIN32 || defined __WIN32__
+    return PathIsRelative(path.c_str()) == 1;
+#else
+    if (path.size() > 0 && path[0] == '/') {
+        return false;
+    }
+    else {
+        return true;
+    }
+#endif
+}
+
+bool IsFileReadable(const std::string& filename)
+{
+#ifdef _MSC_VER
+    return _access(filename.c_str(), 4) == 0;
+#else
+    return access(filename.c_str(), R_OK) == 0;
+#endif
 }

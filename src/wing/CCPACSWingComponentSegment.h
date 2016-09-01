@@ -138,7 +138,7 @@ public:
 
     // Returns the segment to a given point on the componentSegment and the nearest point projected onto the loft.
     // Returns null if the point is not an that wing, i.e. deviates more than 1 cm from the wing
-    TIGL_EXPORT const CTiglAbstractSegment* findSegment(double x, double y, double z, gp_Pnt& nearestPoint) const;
+    TIGL_EXPORT const CTiglAbstractSegment* findSegment(double x, double y, double z, gp_Pnt& nearestPoint, double& deviation) const;
 
     TIGL_EXPORT TiglGeometricComponentType GetComponentType() { return TIGL_COMPONENT_WINGCOMPSEGMENT | TIGL_COMPONENT_SEGMENT | TIGL_COMPONENT_LOGICAL; }
 
@@ -197,6 +197,8 @@ public:
     // Getter for the member name
     TIGL_EXPORT const std::string& GetName() const;
 
+    // computes the xsi coordinate on a straight line in global space, given an eta coordinate
+    TIGL_EXPORT void InterpolateOnLine(double csEta1, double csXsi1, double csEta2, double csXsi2, double eta, double &xsi, double &errorDistance);
 protected:
     // Cleanup routine
     void Cleanup(void);
@@ -248,8 +250,8 @@ private:
     double               mySurfaceArea;        /**< Surface area of this segment            */
     TopoDS_Shape         upperShape;           /**< Upper shape of this componentSegment    */
     TopoDS_Shape         lowerShape;           /**< Lower shape of this componentSegment    */
-    mutable TopoDS_Wire  projLeadingEdge;      /**< (Extended) Leading edge projected into y-z plane */
-    mutable SegmentList  wingSegments;         /**< List of segments belonging to the component segment */
+    mutable Handle(Geom_Curve)   projLeadingEdge;      /**< (Extended) Leading edge projected into y-z plane */
+    mutable SegmentList          wingSegments;         /**< List of segments belonging to the component segment */
     TopoDS_Face          innerFace;            /**< [[CAS_AES]] added inner segment face    */
     TopoDS_Face          outerFace;            /**< [[CAS_AES]] added outer segment face    */
     Handle(Geom_Surface) upperSurface;

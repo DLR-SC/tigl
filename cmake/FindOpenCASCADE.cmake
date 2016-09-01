@@ -96,9 +96,9 @@ IF( OpenCASCADE_FOUND )
   IF(OpenCASCADE_INCLUDE_DIR)
 	FOREACH(_occ_version_header Standard_Version.hxx)
      IF(EXISTS "${OpenCASCADE_INCLUDE_DIR}/${_occ_version_header}")
-      FILE(STRINGS "${OpenCASCADE_INCLUDE_DIR}/${_occ_version_header}" occ_version_str REGEX "^#define[\t ]+OCC_VERSION_STRING[\t ]+\".*\"")
+      FILE(STRINGS "${OpenCASCADE_INCLUDE_DIR}/${_occ_version_header}" occ_version_str REGEX "^#define[\t ]+OCC_VERSION_COMPLETE[\t ]+\".*\"")
 
-      STRING(REGEX REPLACE "^#define[\t ]+OCC_VERSION_STRING[\t ]+\"([^\"]*)\".*" "\\1" OCC_VERSION_STRING "${occ_version_str}")
+      STRING(REGEX REPLACE "^#define[\t ]+OCC_VERSION_COMPLETE[\t ]+\"([^\"]*)\".*" "\\1" OCC_VERSION_STRING "${occ_version_str}")
       UNSET(occ_version_str)
       BREAK()
      ENDIF()
@@ -113,6 +113,21 @@ IF( OpenCASCADE_FOUND )
       MESSAGE(STATUS "OCC Version: ${OCC_VERSION_STRING}")
   ENDIF( _firsttime STREQUAL TRUE )  
    
+  # We need to find the shader directory for OCCT 6.9.0 and newer
+  IF ( NOT OCC_VERSION_STRING VERSION_LESS "6.9.0" )
+      FIND_PATH(OpenCASCADE_SHADER_DIRECTORY
+                NAMES PhongShading.fs
+                PATH_SUFFIXES src/Shaders share/opencascade-${OCC_VERSION_STRING}/resources/Shaders share/opencascade-${OCC_VERSION_STRING}.beta/resources/Shaders
+                HINTS ${CASROOT}
+      )
+      IF(OpenCASCADE_SHADER_DIRECTORY STREQUAL OpenCASCADE_SHADER_DIRECTORY-NOTFOUND)
+        MESSAGE( FATAL_ERROR "Cannot find OCC shader directory." )
+      ENDIF(OpenCASCADE_SHADER_DIRECTORY STREQUAL OpenCASCADE_SHADER_DIRECTORY-NOTFOUND)
+      IF( _firsttime STREQUAL TRUE )
+        MESSAGE( STATUS "Found OCC shader dir: " ${OpenCASCADE_SHADER_DIRECTORY})
+      ENDIF( _firsttime STREQUAL TRUE )
+  ENDIF()
+
   IF( DEFINED OpenCASCADE_FIND_COMPONENTS )
     FOREACH( _libname ${OpenCASCADE_FIND_COMPONENTS} )
       #look for libs in OpenCASCADE_LINK_DIRECTORY

@@ -10,9 +10,14 @@ set(PROGNAME "TIGLViewer")
 
 if(TIGL_VIEWER)
 
-find_package(Qt4 4.4.3)
+include(SearchQt)
+# disable automatic linking of qtmain
+if (POLICY CMP0020)
+  cmake_policy(SET CMP0020 OLD)
+endif (POLICY CMP0020)
+
 #build only tiglviewer if qt was found
-if(QT4_FOUND)	
+if(QT4_FOUND OR Qt5Widgets_FOUND)
 
 include(tiglmacros)
 AddToCheckstyle()
@@ -20,7 +25,7 @@ AddToCheckstyle()
 # required opencascade libraries
 set (TV_OCC_LIBS 
     TKOpenGl 
-    TKVRML TKShapeSchema TKPShape TKCDF PTKernel ${OCC_VISU_LIBS} ${OCC_LIBS}
+    ${OCC_VISU_LIBS} ${OCC_LIBS}
 )
 
 find_package(OCE 0.15 COMPONENTS ${TV_OCC_LIBS} QUIET)
@@ -51,12 +56,7 @@ if(CMAKE_SYSTEM_NAME STREQUAL Linux)
     message(STATUS ${RELDIR})
     set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_RPATH}:\$ORIGIN/../lib")
   endif()
-endif() # linux
-
-set( QT_USE_QTSCRIPT TRUE )
-set( QT_USE_QTMAIN   TRUE )
-include(${QT_USE_FILE} ${GLOG_INCLUDE_DIR})
-add_definitions(${QT_DEFINITIONS})
+endif() # linux‚
 
 # add all tigl directories to include path
 set(TIGL_INCLUDES ${PROJECT_SOURCE_DIR}/src/)
@@ -98,6 +98,7 @@ set(tv_src
     TIGLViewerScreenshotDialog.cpp
     TIGLViewerDrawVectorDialog.cpp
     TIGLViewerScopedCommand.cpp
+    TIGLQAspectWindow.cpp
 )
 	
 # normal header files
@@ -114,6 +115,7 @@ set(tv_hdr
     TIGLViewerLogHistory.h
     TIGLViewerLoggerHTMLDecorator.h
     TIGLViewerScopedCommand.h
+    TIGLQAspectWindow.h
 )
 
 # qobject header files that have to be moced
@@ -218,7 +220,8 @@ add_executable(${PROGNAME} ${TYPE}
 target_link_libraries(${PROGNAME} 
 	TIGL_static
 	${TIXI_LIBRARIES} 
-	${QT_LIBRARIES} 
+	${CMake_QT_LIBRARIES} 
+	${QT_QTMAIN_LIBRARY} 
 	${OPENGL_LIBRARIES} 
 	${OpenCASCADE_LIBRARIES} 
 	${EXTRA_LIBRARIES} 
@@ -267,13 +270,35 @@ INCLUDE(InstallRequiredSystemLibraries)
 set(DIRS ${TIXI_LIB_PATH} ${OpenCASCADE_DLL_DIRECTORY}  ${OpenCASCADE_LINK_DIRECTORY} ${QT_BINARY_DIR} ${TIGL_ADD_LIB_PATH})
 
 if (WIN32 OR APPLE)
-  include(DeployQt4)
-  INSTALL_QT4_EXECUTABLE(${APPS} "" "" "${DIRS}" "" "" viewer)
+  if(Qt5Widgets_FOUND)
+    if(APPLE)
+      set(QT_PLUGINS  "qcocoa;qtaccessiblewidgets")
+    endif()
+    if(WIN32)
+      set(QT_PLUGINS  "qwindows")
+    endif()
+
+    include(DeployQt5)
+    INSTALL_QT5_EXECUTABLE(${APPS} "${QT_PLUGINS}" "" "${DIRS}" "" "" viewer)
+  else()
+    include(DeployQt4)
+    INSTALL_QT4_EXECUTABLE(${APPS} "" "" "${DIRS}" "" "" viewer)
+  endif()
 endif()
 
-else (QT4_FOUND)
-message(STATUS "No qt4 was found. TIGLViewer will not be build!")
-endif(QT4_FOUND)
+# install shader files from opencascade
+if (NOT OCC_VERSION_STRING VERSION_LESS "6.9.0")
+   file(GLOB SHADER_FILES PATH "${OpenCASCADE_SHADER_DIRECTORY}/*")
+   if (APPLE)
+     install(FILES ${SHADER_FILES} DESTINATION ${PROGNAME}.app/Contents/Resources/ COMPONENT viewer)
+   else()
+     install(FILES ${SHADER_FILES} DESTINATION share/tigl/shaders COMPONENT viewer)
+   endif(APPLE)
+endif()
+
+else (QT4_FOUND OR Qt5Widgets_FOUND)
+message(STATUS "No qt was found. TIGLViewer will not be build!")
+endif(QT4_FOUND OR Qt5Widgets_FOUND)
 
 endif(TIGL_VIEWER)
 

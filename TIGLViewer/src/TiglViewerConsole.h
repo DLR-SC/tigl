@@ -23,6 +23,7 @@
 #define CONSOLE_H
 
 #include <QtGui>
+#include <QPlainTextEdit>
 
 class Console : public QPlainTextEdit
 {

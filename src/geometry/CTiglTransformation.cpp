@@ -397,15 +397,16 @@ void CTiglTransformation::AddMirroringAtYZPlane(void)
 // returns the transformed shape
 TopoDS_Shape CTiglTransformation::Transform(const TopoDS_Shape& shape) const
 {
+
     if (IsUniform()) {
         gp_Trsf t;
         t.SetValues(m_matrix[0][0], m_matrix[0][1], m_matrix[0][2], m_matrix[0][3],
-            m_matrix[1][0], m_matrix[1][1], m_matrix[1][2], m_matrix[1][3],
-            m_matrix[2][0], m_matrix[2][1], m_matrix[2][2], m_matrix[2][3]
+                    m_matrix[1][0], m_matrix[1][1], m_matrix[1][2], m_matrix[1][3],
+                    m_matrix[2][0], m_matrix[2][1], m_matrix[2][2], m_matrix[2][3]
 #if OCC_VERSION_HEX >= VERSION_HEX_CODE(6,8,0)
-            );
+                );
 #else
-            , 1e-10, 1e-10);
+                ,1e-10, 1e-10);
 #endif
         BRepBuilderAPI_Transform trafo(shape, t);
         return trafo.Shape();

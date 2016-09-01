@@ -65,7 +65,7 @@ TIGL_EXPORT TopoDS_Edge GetEdge(const TopoDS_Shape& shape, int iEdge);
 
 TIGL_EXPORT TopoDS_Face GetFace(const TopoDS_Shape& shape, int iFace);
 
-TIGL_EXPORT Handle_Geom_BSplineCurve GetBSplineCurve(const TopoDS_Edge& e);
+TIGL_EXPORT Handle(Geom_BSplineCurve) GetBSplineCurve(const TopoDS_Edge& e);
 
 // Returns the number of subshapes, if the shape is a compound
 TIGL_EXPORT unsigned int GetNumberOfSubshapes(const TopoDS_Shape& shape);
@@ -99,5 +99,10 @@ TIGL_EXPORT TopoDS_Face GetSingleFace(const TopoDS_Shape& shape);
 // Builds a face out of 4 points
 TIGL_EXPORT TopoDS_Face BuildFace(const gp_Pnt& p1, const gp_Pnt& p2, const gp_Pnt& p3, const gp_Pnt& p4);
 
+// Returns true, if a path is relative
+TIGL_EXPORT bool IsPathRelative(const std::string&);
+
+// Returns true, if a file is readable
+TIGL_EXPORT bool IsFileReadable(const std::string& filename);
 
 #endif // TIGLCOMMONFUNCTIONS_H

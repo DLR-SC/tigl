@@ -30,6 +30,7 @@
 #include "Standard_CString.hxx"
 #include "ShapeFix_Shape.hxx"
 #include "BRep_Builder.hxx"
+#include "BRepTools.hxx"
 #include "BRepMesh_IncrementalMesh.hxx"
 #include "StlAPI_Writer.hxx"
 #include "Interface_Static.hxx"
@@ -42,53 +43,66 @@ namespace tigl
 {
 
 // Constructor
-CTiglExportStl::CTiglExportStl(CCPACSConfiguration& config)
-:myConfig(config)
+CTiglExportStl::CTiglExportStl()
 {
 }
 
-
-// Exports a selected wing, boolean fused and meshed, as STL file
-void CTiglExportStl::ExportMeshedWingSTL(int wingIndex, const std::string& filename, double deflection)
+void CTiglExportStl::AddShape(PNamedShape shape, double deflection)
 {
-    CCPACSWing& wing = myConfig.GetWing(wingIndex);
-    PNamedShape loft = wing.GetLoft();
-
-    BRepMesh_IncrementalMesh(loft->Shape(), deflection);
-    StlAPI_Writer *StlWriter = new StlAPI_Writer();
-    StlWriter->Write(loft->Shape(), const_cast<char*>(filename.c_str()));
+    if (!shape) {
+        return;
+    }
+    
+    BRepMesh_IncrementalMesh(shape->Shape(), deflection);
+    _shapes.push_back(shape);
 }
 
-
-// Exports a selected fuselage, boolean fused and meshed, as STL file
-void CTiglExportStl::ExportMeshedFuselageSTL(int fuselageIndex, const std::string& filename, double deflection)
+void CTiglExportStl::AddConfiguration(CCPACSConfiguration &config, double deflection)
 {
-    CCPACSFuselage& fuselage = myConfig.GetFuselage(fuselageIndex);
-    PNamedShape loft = fuselage.GetLoft();
-
-    BRepMesh_IncrementalMesh(loft->Shape(), deflection);
-    StlAPI_Writer *StlWriter = new StlAPI_Writer();
-    StlWriter->Write(loft->Shape(), const_cast<char*>(filename.c_str()));
-}
-
-// Exports a whole geometry, boolean fused and meshed, as STL file
-void CTiglExportStl::ExportMeshedGeometrySTL(const std::string& filename, double deflection)
-{
-    PTiglFusePlane fuser = myConfig.AircraftFusingAlgo();
+    PTiglFusePlane fuser = config.AircraftFusingAlgo();
     assert(fuser);
     fuser->SetResultMode(FULL_PLANE);
 
     // get/compute shape
     PNamedShape ac = fuser->FusedPlane();
     if (!ac) {
-        throw CTiglError("Error computing fused geometry in CTiglExportStl::ExportMeshedGeometrySTL", TIGL_ERROR);
+        throw CTiglError("Error computing fused geometry in CTiglExportStl::addConfiguration", TIGL_ERROR);
     }
 
-    TopoDS_Shape loft = ac->Shape();
+    AddShape(ac, deflection);
+}
 
-    BRepMesh_IncrementalMesh(loft, deflection);
-    StlAPI_Writer *StlWriter = new StlAPI_Writer();
-    StlWriter->Write(loft, const_cast<char*>(filename.c_str()));
+
+TiglReturnCode CTiglExportStl::Write(const std::string& filename)
+{
+    if (_shapes.size() > 1) {
+        TopoDS_Compound c;
+        BRep_Builder b;
+        b.MakeCompound(c);
+        
+        for (ListPNamedShape::const_iterator it = _shapes.begin(); it != _shapes.end(); ++it) {
+            PNamedShape shape = *it;
+            if (shape) {
+                b.Add(c, shape->Shape());
+            }
+        }
+        
+        // write the file
+        StlAPI_Writer StlWriter;
+        StlWriter.Write(c, const_cast<char*>(filename.c_str()));
+        
+        return TIGL_SUCCESS;
+    }
+    else if ( _shapes.size() == 1) {
+        PNamedShape shape = _shapes[0];
+        StlAPI_Writer StlWriter;
+        StlWriter.Write(shape->Shape(), const_cast<char*>(filename.c_str()));
+        
+        return TIGL_SUCCESS;
+    }
+    else {
+        return TIGL_ERROR;
+    }
 }
 
 } // end namespace tigl

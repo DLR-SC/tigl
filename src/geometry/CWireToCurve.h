@@ -19,10 +19,11 @@
 #ifndef WIRETOCURVE_H
 #define WIRETOCURVE_H
 
-#include <Handle_Geom_BSplineCurve.hxx>
 #include <TopoDS_Wire.hxx>
 
 #include "tigl_internal.h"
+
+#include <Geom_BSplineCurve.hxx>
 
 namespace tigl
 {
@@ -48,11 +49,11 @@ public:
 
     /// Returns the resulting spline
     /// Returns NULL Handle in case of an error
-    TIGL_EXPORT operator Handle_Geom_BSplineCurve ();
-    TIGL_EXPORT Handle_Geom_BSplineCurve curve();
+    TIGL_EXPORT operator Handle(Geom_BSplineCurve) ();
+    TIGL_EXPORT Handle(Geom_BSplineCurve) curve();
 
 private:
-    Handle_Geom_BSplineCurve ShiftCurveRange(Handle_Geom_BSplineCurve curve, double umin, double umax);
+    Handle(Geom_BSplineCurve) ShiftCurveRange(Handle(Geom_BSplineCurve) curve, double umin, double umax);
 
     TopoDS_Wire _wire;
     double _tolerance;

@@ -18,19 +18,20 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
+#define _USE_MATH_DEFINES
 
-#include <QtGui/QtGui>
-#include <QtGui/QFileDialog>
+#include <QtGui>
+#include <QFileDialog>
 #include <QtCore/QTextStream>
 #include <QtCore/QFileInfo>
 #include <QtCore/QString>
 #include <QShortcut>
 #include <QTimer>
 #include <QProcessEnvironment>
+#include <QMessageBox>
 
 #include <BRepBuilderAPI_MakeVertex.hxx>
 #include <TopoDS_Vertex.hxx>
-#include <Handle_AIS_Shape.hxx>
 #include <AIS_Shape.hxx>
 #include <AIS_InteractiveContext.hxx>
 #include <Aspect_RectangularGrid.hxx>
@@ -55,13 +56,14 @@
 #include "TIGLViewerScreenshotDialog.h"
 #include "TIGLViewerScopedCommand.h"
 #include "tigl_config.h"
+#include "CCPACSConfigurationManager.h"
 
 #include <cstdlib>
 
-void ShowOrigin ( Handle_AIS_InteractiveContext theContext );
-void AddVertex  ( double x, double y, double z, Handle_AIS_InteractiveContext theContext );
+void ShowOrigin ( Handle(AIS_InteractiveContext) theContext );
+void AddVertex  ( double x, double y, double z, Handle(AIS_InteractiveContext) theContext );
 
-void AddVertex (double x, double y, double z, Handle_AIS_InteractiveContext theContext)
+void AddVertex (double x, double y, double z, Handle(AIS_InteractiveContext) theContext)
 {
     TopoDS_Vertex aVertex=BRepBuilderAPI_MakeVertex( gp_Pnt(x,y,z) );
     Handle(AIS_Shape) AISVertex = new AIS_Shape(aVertex);
@@ -69,27 +71,10 @@ void AddVertex (double x, double y, double z, Handle_AIS_InteractiveContext theC
     theContext->Display(AISVertex);
 }
 
-void ShowOrigin ( Handle_AIS_InteractiveContext theContext )
+void ShowOrigin ( Handle(AIS_InteractiveContext) theContext )
 {
     AddVertex ( 0.0, 0.0, 0.0, theContext);
 }
-
-#ifdef HAVE_TIXI_SETPRINTMSG
-void TixiMessageHandler(MessageType type, const char *message)
-{
-    QString str(message);
-    
-    if (type == MESSAGETYPE_ERROR) {
-        LOG(ERROR) << str.toStdString();
-    }
-    else if (type == MESSAGETYPE_WARNING) {
-        LOG(WARNING) << str.toStdString();
-    }
-    else {
-        LOG(INFO) << str.toStdString();
-    }
-}
-#endif
 
 void TIGLViewerWindow::contextMenuEvent(QContextMenuEvent *event)
  {
@@ -156,11 +141,6 @@ TIGLViewerWindow::TIGLViewerWindow()
 
     myScene  = new TIGLViewerContext();
     myOCC->setContext(myScene->getContext());
-    
-#ifdef HAVE_TIXI_SETPRINTMSG
-    // set tixi logger
-    tixiSetPrintMsgFunc(TixiMessageHandler);
-#endif
 
     // we create a timer to workaround QFileSystemWatcher bug,
     // which emits multiple signals in a few milliseconds. This caused
@@ -209,7 +189,7 @@ TIGLViewerWindow::TIGLViewerWindow()
 
     statusBar()->showMessage(tr("A context menu is available by right-clicking"));
 
-    setWindowTitle(tr(PARAMS.windowTitle.toAscii().data()));
+    setWindowTitle(tr(PARAMS.windowTitle.toLatin1().data()));
     setMinimumSize(160, 160);
 }
 
@@ -290,8 +270,8 @@ void TIGLViewerWindow::open()
                                                   tr("Open File"),
                                                 myLastFolder,
                                                 tr( "CPACS (*.xml);;"
-                                                    "Other drawing types (*.brep *.rle *.igs *iges *.stp *.step *.mesh);;"
-                                                    "BREP (*.brep *.rle);;"
+                                                    "Other drawing types (*.brep *.igs *iges *.stp *.step *.mesh);;"
+                                                    "BREP (*.brep);;"
                                                     "STEP (*.step *.stp);;"
                                                     "IGES (*.iges *.igs);;"
                                                     "STL  (*.stl);;"
@@ -369,7 +349,7 @@ void TIGLViewerWindow::openFile(const QString& fileName)
         }
         else {
 
-            if (fileType.toLower() == tr("brep") || fileType.toLower() == tr("rle")) {
+            if (fileType.toLower() == tr("brep")) {
                 format = TIGLViewerInputOutput::FormatBREP;
             }
             if (fileType.toLower() == tr("step") || fileType.toLower() == tr("stp")) {
@@ -592,7 +572,7 @@ void TIGLViewerWindow::about()
 
     text += "Visit the TiGL project page at <a href=\"http://software.dlr.de/p/tigl/\">http://software.dlr.de/p/tigl/</a><br/><br/>";
 
-    text += "&copy; 2014 German Aerospace Center (DLR) ";
+    text += "&copy; 2015 German Aerospace Center (DLR) ";
 
     QMessageBox::about(this, tr("About TiGL Viewer"), text);
 }
@@ -661,6 +641,7 @@ void TIGLViewerWindow::connectConfiguration()
     connect(drawIntersectionAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawIntersectionLine()));
     connect(showFusedAirplaneTriangulation, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFusedAircraftTriangulation()));
     connect(drawFarFieldAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFarField()));
+    connect(drawSystemsAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawSystems()));
 
     // CPACS Fuselage Actions
     connect(drawFuselageProfilesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFuselageProfiles()));
@@ -670,6 +651,23 @@ void TIGLViewerWindow::connectConfiguration()
     connect(drawFuselageSamplePointsAngleAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFuselageSamplePointsAngle()));
     connect(drawFusedFuselageAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFusedFuselage()));
     connect(drawFuselageGuideCurvesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFuselageGuideCurves()));
+
+    // CPACS RotorBlade Actions
+    connect(drawRotorProfilesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawRotorProfiles()));
+    connect(drawRotorBladeOverlayCPACSProfilePointsAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawRotorBladeOverlayProfilePoints()));
+    connect(drawRotorBladeGuideCurvesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawRotorBladeGuideCurves()));
+    connect(drawRotorBladesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawRotorBlade()));
+    connect(drawRotorBladeTriangulationAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawRotorBladeTriangulation()));
+    connect(drawRotorBladeSamplePointsAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawRotorBladeSamplePoints()));
+    connect(drawFusedRotorBladeAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawFusedRotorBlade()));
+    connect(drawRotorBladeComponentSegmentAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawRotorBladeComponentSegment()));
+    connect(drawRotorBladeCSPointAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawRotorBladeComponentSegmentPoints()));
+    connect(drawRotorBladeShellAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawRotorBladeShells()));
+
+    // CPACS Rotorcraft Actions
+    connect(drawRotorsAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawRotor()));
+    connect(drawRotorDisksAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(drawRotorDisk()));
+    connect(showRotorPropertiesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(showRotorProperties()));
 
     // Export functions
     connect(tiglExportFusedIgesAction, SIGNAL(triggered()), cpacsConfiguration, SLOT(exportFusedAsIges()));
@@ -825,7 +823,7 @@ void TIGLViewerWindow::updateMenus()
             tiglGetFuselageCount(hand, &nFuselages);
         }
     }
-    menuWings->setEnabled(nWings > 0);
+
     menuFuselages->setEnabled(nFuselages > 0);
     menuAircraft->setEnabled(nWings > 0 || nFuselages > 0);
 
@@ -848,14 +846,26 @@ void TIGLViewerWindow::updateMenus()
     closeAction->setEnabled(hand > 0);
 
     bool hasFarField = false;
+    bool hasACSystems = false;
+    int nRotorBlades = 0;
+    int nRotors = 0;
     try {
         if (hand > 0) {
             tigl::CCPACSConfiguration& config = tigl::CCPACSConfigurationManager::GetInstance().GetConfiguration(hand);
             hasFarField = config.GetFarField().GetFieldType() != tigl::NONE;
+            hasACSystems = config.GetGenericSystemCount() > 0;
+            nRotorBlades = config.GetRotorBladeCount();
+            nRotors = config.GetRotorCount();
         }
     }
     catch(tigl::CTiglError& ){}
     drawFarFieldAction->setEnabled(hasFarField);
+    drawSystemsAction->setEnabled(hasACSystems);
+    drawRotorsAction->setEnabled(nRotors > 0);
+    drawRotorDisksAction->setEnabled(nRotors > 0);
+    menuRotorcraft->setEnabled((nRotors > 0) || (nRotorBlades > 0));
+    menuRotorBlades->setEnabled(nRotorBlades > 0);
+    menuWings->setEnabled(nWings - nRotorBlades > 0);
 }
 
 void TIGLViewerWindow::closeEvent(QCloseEvent*)

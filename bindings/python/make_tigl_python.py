@@ -5,6 +5,7 @@ Created on Wed May 01 11:44:49 2013
 @author: Martin Siggel <martin.siggel@dlr.de>
 """
 
+from __future__ import print_function
 import sys, os 
 from datetime import date
 
@@ -82,15 +83,15 @@ if __name__ == '__main__':
     #pg.add_alias('tiglCloseCPACSConfiguration','close')
     pg.closefunction = 'close'
     
-    print 'Creating python interface... ',
+    print('Creating python interface... ', end=' ')
     wrapper = pg.create_wrapper(parser)
-    print 'done'
+    print('done')
     
     # write file
     filename = 'tiglwrapper.py'
-    print 'Write tigl python interface to file "%s" ... ' % filename, 
+    print('Write tigl python interface to file "%s" ... ' % filename, end=' ') 
     fop = open(filename, 'w')
     fop.write(wrapper)
-    print 'done'
+    print('done')
     
     

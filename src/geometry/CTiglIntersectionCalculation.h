@@ -36,7 +36,6 @@
 
 #include "GeomAPI_IntSS.hxx"
 #include "ShapeAnalysis_Wire.hxx"
-#include "Handle_TopTools_HSequenceOfShape.hxx"
 #include "TopTools_HSequenceOfShape.hxx"
 #include "ShapeAnalysis_FreeBounds.hxx"
 

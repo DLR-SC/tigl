@@ -21,5 +21,7 @@
 
 #define Quantity_NOC_ShapeCol     (Quantity_Color(0., 170./255.,1., Quantity_TOC_RGB))
 #define Quantity_NOC_MirrShapeCol (Quantity_Color(251./255., 1., 169./255., Quantity_TOC_RGB))
+#define Quantity_NOC_RotorCol (Quantity_Color(124./255., 124./255., 124./255., Quantity_TOC_RGB))
+#define Quantity_NOC_MirrRotorCol (Quantity_Color(224./255., 224./255., 224./255., Quantity_TOC_RGB))
 
 #endif // TIGLVIEWERCOLORS_H

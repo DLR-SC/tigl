@@ -1,0 +1,25 @@
+<root>
+  <genericGeometryComponent uID = "nacelle">
+    <transformation>
+    <scaling>
+      <x>1.0</x>
+      <y>1.0</y>
+      <z>1.0</z>
+    </scaling>
+    <rotation>
+      <x>0</x>
+      <y>0</y>
+      <z>0</z>
+    </rotation>
+    <translation refType="absLocal">
+      <x>0</x>
+      <y>0</y>
+      <z>0</z>
+    </translation>
+    </transformation>
+    <linkToFile format = "Step">nacelle.stp</linkToFile>
+  </genericGeometryComponent>
+    <genericGeometryComponent uID = "nacelle2">
+    <linkToFile format = "unknownformat">nacelle.x3x</linkToFile>
+  </genericGeometryComponent>
+</root>

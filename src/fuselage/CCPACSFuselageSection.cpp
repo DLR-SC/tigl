@@ -48,35 +48,7 @@ void CCPACSFuselageSection::Cleanup(void)
 {
     name = "";
     uid = "";
-    transformation.SetIdentity();
-    translation = CTiglPoint(0.0, 0.0, 0.0);
-    scaling     = CTiglPoint(1.0, 1.0, 1.0);
-    rotation    = CTiglPoint(0.0, 0.0, 0.0);
-}
-
-// Build transformation matrix for the section
-void CCPACSFuselageSection::BuildMatrix(void)
-{
-    transformation.SetIdentity();
-
-    // scale normalized coordinates relative to (0,0,0)
-    transformation.AddScaling(scaling.x, scaling.y, scaling.z);
-
-    // rotate fuselage profile elements around their local reference points
-    transformation.AddRotationZ(rotation.z);
-    // rotate section by angle of incidence
-    transformation.AddRotationY(rotation.y);
-    // rotate section according to fuselage profile roll
-    transformation.AddRotationX(rotation.x);
-
-    // move local reference point to (0,0,0)
-    transformation.AddTranslation(translation.x, translation.y, translation.z);
-}
-
-// Update internal section data
-void CCPACSFuselageSection::Update(void)
-{
-    BuildMatrix();
+    transformation.reset();
 }
 
 // Read CPACS section elements
@@ -110,64 +82,22 @@ void CCPACSFuselageSection::ReadCPACS(TixiDocumentHandle tixiHandle, const std::
         uid = ptrUID;
     }
 
-    // Get subelement "/transformation/translation"
-    tempString  = sectionXPath + "/transformation/translation";
-    elementPath = const_cast<char*>(tempString.c_str());
-    if (tixiCheckElement(tixiHandle, elementPath) == SUCCESS) {
-        if (tixiGetPoint(tixiHandle, elementPath, &(translation.x), &(translation.y), &(translation.z)) != SUCCESS) {
-            throw CTiglError("Error: XML error while reading <translation/> in CCPACSFuselageSection::ReadCPACS", TIGL_XML_ERROR);
-        }
-    }
-
-    // Get subelement "/transformation/scaling"
-    tempString  = sectionXPath + "/transformation/scaling";
-    elementPath = const_cast<char*>(tempString.c_str());
-    if (tixiCheckElement(tixiHandle, elementPath) == SUCCESS) {
-        if (tixiGetPoint(tixiHandle, elementPath, &(scaling.x), &(scaling.y), &(scaling.z)) != SUCCESS) {
-            throw CTiglError("Error: XML error while reading <scaling/> in CCPACSFuselageSection::ReadCPACS", TIGL_XML_ERROR);
-        }
-    }
-
-    // Get subelement "/transformation/rotation"
-    tempString  = sectionXPath + "/transformation/rotation";
-    elementPath = const_cast<char*>(tempString.c_str());
-    if (tixiCheckElement(tixiHandle, elementPath) == SUCCESS) {
-        if (tixiGetPoint(tixiHandle, elementPath, &(rotation.x), &(rotation.y), &(rotation.z)) != SUCCESS) {
-            throw CTiglError("Error: XML error while reading <rotation/> in CCPACSFuselageSection::ReadCPACS", TIGL_XML_ERROR);
-        }
-    }
+    // Get Transformation
+    transformation.ReadCPACS(tixiHandle, sectionXPath);
 
     // Get subelement "elements", which means the section elements
     elements.ReadCPACS(tixiHandle, sectionXPath);
-
-    Update();
 }
 
 // Write CPACS section elements
 void CCPACSFuselageSection::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& sectionXPath)
 {
-    std::string elementPath;
-    std::string subelementPath;
 
     TixiSaveExt::TixiSaveTextAttribute(tixiHandle, sectionXPath.c_str(), "uID", uid.c_str());
     TixiSaveExt::TixiSaveTextElement(tixiHandle, sectionXPath.c_str(), "name", name.c_str());
     TixiSaveExt::TixiSaveTextElement(tixiHandle, sectionXPath.c_str(), "description", description.c_str());
-    
-    TixiSaveExt::TixiSaveElement(tixiHandle, sectionXPath.c_str(), "transformation");
-    elementPath = sectionXPath + "/transformation";
 
-    TixiSaveExt::TixiSaveElement(tixiHandle, elementPath.c_str(), "scaling");
-    subelementPath = elementPath + "/scaling";
-    TixiSaveExt::TixiSavePoint(tixiHandle, subelementPath.c_str(), scaling.x, scaling.y, scaling.z, NULL);
-
-    TixiSaveExt::TixiSaveElement(tixiHandle, elementPath.c_str(), "rotation");
-    subelementPath = elementPath + "/rotation";
-    TixiSaveExt::TixiSavePoint(tixiHandle, subelementPath.c_str(), rotation.x, rotation.y, rotation.z, NULL);
-
-    TixiSaveExt::TixiSaveElement(tixiHandle, elementPath.c_str(), "translation");
-    subelementPath = elementPath + "/translation";
-    TixiSaveExt::TixiSaveTextAttribute(tixiHandle, subelementPath.c_str(), "refType", "absLocal");
-    TixiSaveExt::TixiSavePoint(tixiHandle, subelementPath.c_str(), translation.x, translation.y, translation.z, NULL);
+    transformation.WriteCPACS(tixiHandle, sectionXPath);
 
     elements.WriteCPACS(tixiHandle, sectionXPath);
 }
@@ -193,7 +123,7 @@ CCPACSFuselageSectionElement& CCPACSFuselageSection::GetSectionElement(int index
 // Gets the section transformation
 CTiglTransformation CCPACSFuselageSection::GetSectionTransformation(void) const
 {
-    return transformation;
+    return transformation.getTransformationMatrix();
 }
 
 } // end namespace tigl

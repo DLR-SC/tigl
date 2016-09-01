@@ -176,6 +176,9 @@ public:
     // Returns if the given point is ont the Top of the wing or on the lower side.
     TIGL_EXPORT bool GetIsOnTop(gp_Pnt pnt) const;
 
+    // return if pnt lies on the loft or on the segment chord face
+    TIGL_EXPORT bool GetIsOn(const gp_Pnt &pnt);
+
     // Returns the reference area of the quadrilateral portion of the wing segment
     // by projecting the wing segment into the plane defined by the user
     TIGL_EXPORT double GetReferenceArea(TiglSymmetryAxis symPlane) const;
@@ -249,7 +252,14 @@ private:
 
     // Builds upper and lower surfaces
     void MakeSurfaces() const;
-    
+
+    // Builds the chord surface
+    void MakeChordSurface() const;
+
+    // Returns the chord surface (and builds it if required)
+    CTiglPointTranslator& ChordFace() const;
+
+
     // converts segment eta xsi coordinates to face uv koordinates
     void etaXsiToUV(bool isFromUpper, double eta, double xsi, double& u, double& v) const;
 
@@ -265,6 +275,7 @@ private:
     struct SurfaceCache
     {
         bool                 valid;
+        bool                 chordsurfaceValid;
         double               mySurfaceArea;    /**< Surface area of this segment            */
         TopoDS_Shape         upperShape;       /**< Upper shape of this segment             */
         TopoDS_Shape         lowerShape;       /**< Lower shape of this segment             */
@@ -278,8 +289,10 @@ private:
         Handle(Geom_Surface) upperSurfaceLocal;
         Handle(Geom_Surface) lowerSurfaceLocal;
         CTiglPointTranslator cordSurface;
+        Handle(Geom_Surface) cordFace;
     };
     mutable SurfaceCache surfaceCache;
+
     bool                 guideCurvesPresent;   /**< If guide curves are not present, lofted surface is possible */
 
 };

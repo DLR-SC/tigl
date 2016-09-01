@@ -29,7 +29,7 @@
 #include "tigl_internal.h"
 #include "tixi.h"
 #include "CCPACSWingSectionElements.h"
-#include "CTiglTransformation.h"
+#include "CCPACSTransformation.h"
 #include <string>
 
 namespace tigl
@@ -69,33 +69,9 @@ public:
     // Gets the section transformation
     TIGL_EXPORT CTiglTransformation GetSectionTransformation(void) const;
 
-    // Gets the section translation
-    TIGL_EXPORT const CTiglPoint& GetTranslation() const;
-
-    // Gets the section rotation
-    TIGL_EXPORT const CTiglPoint& GetRotation() const;
-
-    // Gets the section scaling
-    TIGL_EXPORT const CTiglPoint& GetScaling() const;
-
-    // Setter for translation
-    TIGL_EXPORT void SetTranslation(const CTiglPoint& trans);
-
-    // Setter for rotation
-    TIGL_EXPORT void SetRotation(const CTiglPoint& rot);
-
-    // Setter for scaling
-    TIGL_EXPORT void SetScaling(const CTiglPoint& scaling);
-
 protected:
     // Cleanup routine
     void Cleanup(void);
-
-    // Build transformation matrix for the section
-    void BuildMatrix(void);
-
-    // Update internal section data
-    void Update(void);
 
 private:
     // Copy constructor
@@ -106,12 +82,9 @@ private:
 
 private:
     std::string               name;           /**< Section name             */
-    std::string               uID;              /**< Section uid                */
+    std::string               uID;            /**< Section uid              */
     std::string               description;    /**< Section description      */
-    CTiglTransformation       transformation; /**< Section transfromation   */
-    CTiglPoint                translation;    /**< Section translation      */
-    CTiglPoint                scaling;        /**< Section scaling          */
-    CTiglPoint                rotation;       /**< Section rotation         */
+    CCPACSTransformation      transformation; /**< Section transfromation   */
     CCPACSWingSectionElements elements;       /**< Section elements         */
 
 };

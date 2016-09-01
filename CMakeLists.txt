@@ -12,7 +12,7 @@ endif()
 project (TIGL)
 set(TIGL_VERSION_MAJOR 2)
 set(TIGL_VERSION_MINOR 1)
-set(TIGL_VERSION_PATCH 4)
+set(TIGL_VERSION_PATCH 6)
 set(TIGL_VERSION "${TIGL_VERSION_MAJOR}.${TIGL_VERSION_MINOR}.${TIGL_VERSION_PATCH}")
 
 set(TIGL_ADD_INCLUDE_PATH "" CACHE PATH "Additional include path for package search")
@@ -31,6 +31,14 @@ endif(NOT DEFINED CMAKE_INSTALL_LIBDIR)
 if(NOT DEFINED CMAKE_INSTALL_BINDIR)
     set(CMAKE_INSTALL_BINDIR "bin")
 endif(NOT DEFINED CMAKE_INSTALL_BINDIR)
+
+# these settings are required in order to create fully relocatable
+# libraries on osx
+set(CMAKE_MACOSX_RPATH ON)
+set(CMAKE_SKIP_BUILD_RPATH FALSE)
+set(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
+set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
+set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 
 OPTION(TIGL_NIGHTLY "Creates a nightly build of tigl (includes git sha into tigl version)" OFF)
 mark_as_advanced(TIGL_NIGHTLY)
@@ -70,6 +78,12 @@ find_package(OCE 0.15 COMPONENTS ${OCC_LIBS} QUIET)
 if(OCE_FOUND)
   set(OpenCASCADE_LIBRARIES ${OCC_LIBS})
   set(OpenCASCADE_INCLUDE_DIR ${OCE_INCLUDE_DIRS})
+  # get opencascade version
+  IF(EXISTS "${OpenCASCADE_INCLUDE_DIR}/Standard_Version.hxx")
+    FILE(STRINGS "${OpenCASCADE_INCLUDE_DIR}/Standard_Version.hxx" occ_version_str REGEX "^#define[\t ]+OCC_VERSION_COMPLETE[\t ]+\".*\"")
+    STRING(REGEX REPLACE "^#define[\t ]+OCC_VERSION_COMPLETE[\t ]+\"([^\"]*)\".*" "\\1" OCC_VERSION_STRING "${occ_version_str}")
+    UNSET(occ_version_str)
+  ENDIF()
   # get directory of shared libs
   get_target_property(TKERNEL_LOCATION TKernel LOCATION)
   get_filename_component(OpenCASCADE_DLL_DIRECTORY ${TKERNEL_LOCATION} PATH)
@@ -81,13 +95,10 @@ endif(OCE_FOUND)
 # search TiXI
 set(TIXI_PATH "" CACHE PATH "TiXI installation prefix")
 set(CMAKE_PREFIX_PATH "${TIXI_PATH};${CMAKE_PREFIX_PATH}")
-find_package( TIXI 2.1.0 REQUIRED)
+find_package( TIXI 2.2.1 REQUIRED)
 get_target_property(TIXI_LIBRARY TIXI LOCATION)
 get_filename_component(TIXI_LIB_PATH ${TIXI_LIBRARY} PATH)
 
-if(TIXI_VERSION VERSION_GREATER 2.1.0)
-  set(HAVE_TIXI_SETPRINTMSG TRUE)
-endif()
 
 find_package( PythonInterp )
 
@@ -130,6 +141,11 @@ if(WIN32)
             include_directories(${VLD_INCLUDE_DIRS})
         endif(TIGL_USE_VLD)
     endif(CMAKE_BUILD_TYPE STREQUAL "Debug")
+endif(WIN32)
+
+if(WIN32)
+    # avoid export of oce/occt classes into tigl library
+    add_definitions(-DStandard_EXPORT=)
 endif(WIN32)
 
 # style checks

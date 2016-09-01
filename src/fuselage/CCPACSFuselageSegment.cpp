@@ -23,6 +23,7 @@
 * @brief  Implementation of CPACS fuselage segment handling routines.
 */
 #include <iostream>
+#include <cmath>
 
 #include "CCPACSFuselageSegment.h"
 #include "CCPACSFuselage.h"
@@ -86,42 +87,40 @@
 #define max(a, b) (((a) > (b)) ? (a) : (b))
 #endif
 
-#define _USE_MATH_DEFINES
-#include <math.h>
 namespace
 {
     gp_Pnt transformProfilePoint(const tigl::CTiglTransformation& fuselTransform, const tigl::CCPACSFuselageConnection& connection, const gp_Pnt& pointOnProfile)
     {
-        gp_Pnt transformedPoint(pointOnProfile);
-
         // Do section element transformation on points
-        transformedPoint = connection.GetSectionElementTransformation().Transform(transformedPoint);
+        tigl::CTiglTransformation trafo = connection.GetSectionElementTransformation();
 
         // Do section transformations
-        transformedPoint = connection.GetSectionTransformation().Transform(transformedPoint);
+        trafo.PreMultiply(connection.GetSectionTransformation());
 
         // Do positioning transformations
-        transformedPoint = connection.GetPositioningTransformation().Transform(transformedPoint);
+        trafo.PreMultiply(connection.GetPositioningTransformation());
 
-        transformedPoint = fuselTransform.Transform(transformedPoint);
+        trafo.PreMultiply(fuselTransform);
+
+        gp_Pnt transformedPoint = trafo.Transform(pointOnProfile);
 
         return transformedPoint;
     }
 
     TopoDS_Wire transformProfileWire(const tigl::CTiglTransformation& fuselTransform, const tigl::CCPACSFuselageConnection& connection, const TopoDS_Wire& wire)
     {
-        TopoDS_Shape transformedWire(wire);
-
         // Do section element transformation on points
-        transformedWire = connection.GetSectionElementTransformation().Transform(transformedWire);
+        tigl::CTiglTransformation trafo = connection.GetSectionElementTransformation();
 
         // Do section transformations
-        transformedWire = connection.GetSectionTransformation().Transform(transformedWire);
+        trafo.PreMultiply(connection.GetSectionTransformation());
 
         // Do positioning transformations
-        transformedWire = connection.GetPositioningTransformation().Transform(transformedWire);
+        trafo.PreMultiply(connection.GetPositioningTransformation());
 
-        transformedWire = fuselTransform.Transform(transformedWire);
+        trafo.PreMultiply(fuselTransform);
+
+        TopoDS_Shape transformedWire = trafo.Transform(wire);
 
         // Cast shapes to wires, see OpenCascade documentation
         if (transformedWire.ShapeType() != TopAbs_WIRE) {
@@ -526,9 +525,7 @@ std::vector<CTiglPoint*> CCPACSFuselageSegment::GetRawStartProfilePoints()
     for (std::vector<tigl::CTiglPoint*>::size_type i = 0; i < points.size(); i++) {
         gp_Pnt pnt = points[i]->Get_gp_Pnt();
 
-        pnt = startConnection.GetSectionElementTransformation().Transform(pnt);
-        pnt = startConnection.GetSectionTransformation().Transform(pnt);
-        pnt = startConnection.GetPositioningTransformation().Transform(pnt);
+        pnt = transformProfilePoint(fuselage->GetTransformation(), startConnection, pnt);
 
         CTiglPoint *tiglPoint = new CTiglPoint(pnt.X(), pnt.Y(), pnt.Z());
         pointsTransformed.push_back(tiglPoint);
@@ -546,9 +543,7 @@ std::vector<CTiglPoint*> CCPACSFuselageSegment::GetRawEndProfilePoints()
     for (std::vector<tigl::CTiglPoint*>::size_type i = 0; i < points.size(); i++) {
         gp_Pnt pnt = points[i]->Get_gp_Pnt();
 
-        pnt = endConnection.GetSectionElementTransformation().Transform(pnt);
-        pnt = endConnection.GetSectionTransformation().Transform(pnt);
-        pnt = endConnection.GetPositioningTransformation().Transform(pnt);
+        pnt = transformProfilePoint(fuselage->GetTransformation(), endConnection, pnt);
 
         CTiglPoint *tiglPoint = new CTiglPoint(pnt.X(), pnt.Y(), pnt.Z());
         pointsTransformed.push_back(tiglPoint);

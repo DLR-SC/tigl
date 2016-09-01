@@ -48,12 +48,7 @@ void CTiglAbstractGeometricComponent::Reset()
 {
     SetUID("");
     mySymmetryAxis = TIGL_NO_SYMMETRY;
-    transformation.SetIdentity();
-    backTransformation.SetIdentity();
-    translation = CTiglPoint(0.,0.,0.);
-    scaling     = CTiglPoint(1.,1.,1.);
-    rotation    = CTiglPoint(0.,0.,0.);
-    translationType = ABS_LOCAL;
+    transformation.reset();
 }
 
 // Destructor
@@ -107,34 +102,25 @@ void CTiglAbstractGeometricComponent::SetSymmetryAxis(const std::string& axis)
 
 CTiglTransformation CTiglAbstractGeometricComponent::GetTransformation()
 {
-    return transformation;
+    return transformation.getTransformationMatrix();
 }
 
 CTiglPoint CTiglAbstractGeometricComponent::GetTranslation() const
 {
-    return translation;
+    return transformation.getTranslationVector();
 }
 
 ECPACSTranslationType CTiglAbstractGeometricComponent::GetTranslationType(void) const
 {
-    return translationType;
-}
-
-CTiglPoint CTiglAbstractGeometricComponent::GetRotation() const
-{
-    return rotation;
-}
-
-CTiglPoint CTiglAbstractGeometricComponent::GetScaling() const
-{
-    return scaling;
+    return transformation.getTranslationType();
 }
 
 void CTiglAbstractGeometricComponent::Translate(CTiglPoint trans)
 {
-    translation.x += trans.x;
-    translation.y += trans.y;
-    translation.z += trans.z;
+    CTiglPoint newTrans(transformation.getTranslationVector());
+    newTrans += trans;
+    transformation.setTranslation(newTrans, transformation.getTranslationType());
+    transformation.updateMatrix();
 }
 
 PNamedShape CTiglAbstractGeometricComponent::GetLoft(void)

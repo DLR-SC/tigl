@@ -27,6 +27,8 @@
 #include "CTiglError.h"
 #include "TixiSaveExt.h"
 #include "IOHelper.h"
+#include "CTiglLogging.h"
+
 #include <sstream>
 #include <iostream>
 
@@ -48,8 +50,6 @@ CCPACSWingProfiles::~CCPACSWingProfiles(void)
 // Cleanup routine
 void CCPACSWingProfiles::Cleanup(void)
 {
-    librarypath = "";
-
     CCPACSWingProfileContainer::iterator p;
     for (p = profiles.begin(); p!=profiles.end(); ++p) {
         CCPACSWingProfile *pro = p->second;

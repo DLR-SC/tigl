@@ -22,7 +22,7 @@
 * @file
 * @brief  Implementation of CPACS fuselage handling routines.
 */
-
+#include <cmath>
 #include <iostream>
 
 #include "tigl_config.h"
@@ -31,6 +31,7 @@
 #include "CCPACSFuselageSegment.h"
 #include "CCPACSConfiguration.h"
 #include "tiglcommonfunctions.h"
+#include "TixiSaveExt.h"
 
 #include "BRepOffsetAPI_ThruSections.hxx"
 #include "BRepAlgoAPI_Fuse.hxx"
@@ -47,10 +48,6 @@
 #include "GC_MakeSegment.hxx"
 #include "BRepExtrema_DistShapeShape.hxx"
 
-#define _USE_MATH_DEFINES
-#include <math.h>
-
-#include "TixiSaveExt.h"
 
 namespace tigl
 {
@@ -81,41 +78,12 @@ void CCPACSFuselage::Invalidate(void)
 void CCPACSFuselage::Cleanup(void)
 {
     name = "";
-    transformation.SetIdentity();
-    translation = CTiglPoint(0.0, 0.0, 0.0);
-    scaling     = CTiglPoint(1.0, 1.0, 1.0);
-    rotation    = CTiglPoint(0.0, 0.0, 0.0);
+    transformation.reset();
 
     // Calls ITiglGeometricComponent interface Reset to delete e.g. all childs.
     Reset();
 
     Invalidate();
-}
-
-// Builds transformation matrix for the fuselage
-void CCPACSFuselage::BuildMatrix(void)
-{
-    transformation.SetIdentity();
-
-    // Step 1: scale the fuselage around the orign
-    transformation.AddScaling(scaling.x, scaling.y, scaling.z);
-
-    // Step 2: rotate the fuselage
-    // Step 2a: rotate the fuselage around z (yaw   += right tip forward)
-    transformation.AddRotationZ(rotation.z);
-    // Step 2b: rotate the fuselage around y (pitch += nose up)
-    transformation.AddRotationY(rotation.y);
-    // Step 2c: rotate the fuselage around x (roll  += right tip up)
-    transformation.AddRotationX(rotation.x);
-
-    // Step 3: translate the rotated fuselage into its position
-    transformation.AddTranslation(translation.x, translation.y, translation.z);
-}
-
-// Update internal data
-void CCPACSFuselage::Update(void)
-{
-    BuildMatrix();
 }
 
 // Read CPACS fuselage element
@@ -159,34 +127,7 @@ void CCPACSFuselage::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string&
         SetParentUID(ptrParentUID);
     }
 
-
-
-    // Get subelement "/transformation/translation"
-    tempString  = fuselageXPath + "/transformation/translation";
-    elementPath = const_cast<char*>(tempString.c_str());
-    if (tixiCheckElement(tixiHandle, elementPath) == SUCCESS) {
-        if (tixiGetPoint(tixiHandle, elementPath, &(translation.x), &(translation.y), &(translation.z)) != SUCCESS) {
-            throw CTiglError("Error: XML error while reading <translation/> in CCPACSFuselage::ReadCPACS", TIGL_XML_ERROR);
-        }
-    }
-
-    // Get subelement "/transformation/scaling"
-    tempString  = fuselageXPath + "/transformation/scaling";
-    elementPath = const_cast<char*>(tempString.c_str());
-    if (tixiCheckElement(tixiHandle, elementPath) == SUCCESS) {
-        if (tixiGetPoint(tixiHandle, elementPath, &(scaling.x), &(scaling.y), &(scaling.z)) != SUCCESS) {
-            throw CTiglError("Error: XML error while reading <scaling/> in CCPACSFuselage::ReadCPACS", TIGL_XML_ERROR);
-        }
-    }
-
-    // Get subelement "/transformation/rotation"
-    tempString  = fuselageXPath + "/transformation/rotation";
-    elementPath = const_cast<char*>(tempString.c_str());
-    if (tixiCheckElement(tixiHandle, elementPath) == SUCCESS) {
-        if (tixiGetPoint(tixiHandle, elementPath, &(rotation.x), &(rotation.y), &(rotation.z)) != SUCCESS) {
-            throw CTiglError("Error: XML error while reading <rotation/> in CCPACSFuselage::ReadCPACS", TIGL_XML_ERROR);
-        }
-    }
+    transformation.ReadCPACS(tixiHandle, fuselageXPath);
 
     // Get subelement "sections"
     sections.ReadCPACS(tixiHandle, fuselageXPath);
@@ -206,8 +147,6 @@ void CCPACSFuselage::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string&
     if (tixiGetTextAttribute(tixiHandle, const_cast<char*>(fuselageXPath.c_str()), const_cast<char*>(tempString.c_str()), &ptrSym) == SUCCESS) {
         SetSymmetryAxis(ptrSym);
     }
-
-    Update();
 }
 
 // Write CPACS fuselage elements
@@ -229,36 +168,8 @@ void CCPACSFuselage::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string
     // Set subelement "parent_uid"
     TixiSaveExt::TixiSaveTextElement(tixiHandle, fuselageXPath.c_str(), "parentUID", GetParentUID().c_str());
 
-    // Set the subelement "transformation"
-    elementPath = fuselageXPath + "/transformation";
-    TixiSaveExt::TixiSaveElement(tixiHandle, fuselageXPath.c_str(), "transformation");
-
-    // Set subelement "/transformation/scaling"
-    subelementPath = elementPath + "/scaling";
-    TixiSaveExt::TixiSaveElement(tixiHandle, elementPath.c_str(), "scaling");
-    TixiSaveExt::TixiSavePoint(tixiHandle, subelementPath.c_str(), scaling.x, scaling.y, scaling.z, NULL);
-
-    // Set subelement "/transformation/rotation"
-    subelementPath = elementPath + "/rotation";
-    TixiSaveExt::TixiSaveElement(tixiHandle, elementPath.c_str(), "rotation");
-    TixiSaveExt::TixiSavePoint(tixiHandle, subelementPath.c_str(), rotation.x, rotation.y, rotation.z, NULL);
-
-    // Determine translation relative to parent
-    CTiglPoint relativeTranslation = translation;
-    // TODO: relative translation not computed yet!!!
-//    CTiglUIDManager& manager = configuration->GetUIDManager();
-//    ITiglGeometricComponent* parent = manager.GetComponent(GetUID());
-//         while (parent != NULL && manager.HasUID(parent->GetParentUID())) {
-//             relativeTranslation -= parent->GetTranslation();
-//             parent = manager.GetParentComponent(parent->GetUID());
-//         }
-
-    // Set subelement "/transformation/translation"
-    subelementPath = elementPath + "/translation";
-    TixiSaveExt::TixiSaveElement(tixiHandle, elementPath.c_str(), "translation");
-    TixiSaveExt::TixiSaveTextAttribute(tixiHandle, subelementPath.c_str(), "refType", "absLocal");
-    TixiSaveExt::TixiSavePoint(tixiHandle, subelementPath.c_str(), relativeTranslation.x, relativeTranslation.y, 
-        relativeTranslation.z, NULL);
+    // Set subelement transformation
+    transformation.WriteCPACS(tixiHandle, fuselageXPath);
 
     // Set subelement "sections"
     sections.WriteCPACS(tixiHandle, fuselageXPath);
@@ -363,7 +274,7 @@ PNamedShape CCPACSFuselage::BuildLoft(void)
 // Gets the fuselage transformation
 CTiglTransformation CCPACSFuselage::GetFuselageTransformation(void)
 {
-    return transformation;
+    return transformation.getTransformationMatrix();
 }
 
 // Get the positioning transformation for a given section index
@@ -398,13 +309,6 @@ double CCPACSFuselage::GetVolume(void)
 CTiglTransformation CCPACSFuselage::GetTransformation(void)
 {
     return GetFuselageTransformation();
-}
-
-// Sets the Transformation object
-void CCPACSFuselage::Translate(CTiglPoint trans)
-{
-    CTiglAbstractGeometricComponent::Translate(trans);
-    Update();
 }
 
 // Returns the circumference of the segment "segmentIndex" at a given eta

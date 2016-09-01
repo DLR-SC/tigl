@@ -83,6 +83,7 @@ void CCPACSWingProfile::Cleanup(void)
     name = "";
     description = "";
     uid = "";
+    isRotorProfile = false;
 
     if (profileAlgo) {
         profileAlgo->Cleanup();
@@ -95,6 +96,10 @@ void CCPACSWingProfile::Cleanup(void)
 void CCPACSWingProfile::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& xpath)
 {
     Cleanup();
+
+    if (xpath.find("rotorAirfoil") != std::string::npos) {
+        isRotorProfile = true;
+    }
 
     // Get profiles "uid"
     char* ptrUID = NULL;
@@ -146,6 +151,12 @@ const std::string& CCPACSWingProfile::GetDescription(void) const
 const std::string& CCPACSWingProfile::GetUID(void) const
 {
     return uid;
+}
+
+// Returns whether the profile is a rotor profile
+bool CCPACSWingProfile::IsRotorProfile(void) const
+{
+    return isRotorProfile;
 }
 
 // Invalidates internal wing profile state
@@ -451,6 +462,15 @@ Handle(Geom2d_TrimmedCurve) CCPACSWingProfile::GetChordLine()
 PTiglWingProfileAlgo CCPACSWingProfile::GetProfileAlgo(void) const
 {
     return profileAlgo;
+}
+
+bool CCPACSWingProfile::HasBluntTE() const
+{
+    PTiglWingProfileAlgo algo = GetProfileAlgo();
+    if (!algo) {
+        throw CTiglError("No wing profile algorithm regsitered in CCPACSWingProfile::HasBluntTE()!");
+    }
+    return algo->HasBluntTE();
 }
 
 } // end namespace tigl

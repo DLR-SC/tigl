@@ -29,7 +29,6 @@
 #include "tixi.h"
 #include "TopoDS_Wire.hxx"
 
-#include <Handle_Geom2d_TrimmedCurve.hxx>
 #include <gp_Pnt.hxx>
 
 #include <vector>

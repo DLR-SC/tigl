@@ -28,7 +28,7 @@
 
 #include "tigl_internal.h"
 #include "tixi.h"
-#include "CTiglTransformation.h"
+#include "CCPACSTransformation.h"
 #include "CTiglPoint.h"
 #include <string>
 
@@ -69,33 +69,9 @@ public:
     // Gets the section element transformation
     TIGL_EXPORT CTiglTransformation GetSectionElementTransformation(void) const;
 
-    // Getter for translation
-    TIGL_EXPORT const CTiglPoint& GetTranslation() const;
-
-    // Getter for rotation
-    TIGL_EXPORT const CTiglPoint& GetRotation() const;
-
-    // Getter for scaling
-    TIGL_EXPORT const CTiglPoint& GetScaling() const;
-
-    // Setter for translation
-    TIGL_EXPORT void SetTranslation(const CTiglPoint& trans);
-
-    // Setter for rotation
-    TIGL_EXPORT void SetRotation(const CTiglPoint& rot);
-
-    // Setter for scaling
-    TIGL_EXPORT void SetScaling(const CTiglPoint& scaling);
-
 protected:
     // Cleanup routine
     void Cleanup(void);
-
-    // Build transformation matrix for the section element
-    void BuildMatrix(void);
-
-    // Update internal section element data
-    void Update(void);
 
 private:
     // Copy constructor
@@ -109,10 +85,7 @@ private:
     std::string           description;    /**< Section name                          */
     std::string           profileUID;     /**< Profile index in wing profile library */
     std::string           uID;            /**< UID of the WingSectionElement         */
-    CTiglTransformation   transformation; /**< Section element transformation        */
-    CTiglPoint            translation;
-    CTiglPoint            scaling;
-    CTiglPoint            rotation;
+    CCPACSTransformation  transformation; /**< Section element transformation        */
 
 };
 

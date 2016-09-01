@@ -50,35 +50,7 @@ void CCPACSWingSectionElement::Cleanup(void)
     description  = "";
     profileUID   = "";
     uID          = "";
-    transformation.SetIdentity();
-    translation = CTiglPoint(0.0, 0.0, 0.0);
-    scaling     = CTiglPoint(1.0, 1.0, 1.0);
-    rotation    = CTiglPoint(0.0, 0.0, 0.0);
-}
-
-// Build transformation matrix for the wing section element
-void CCPACSWingSectionElement::BuildMatrix(void)
-{
-    transformation.SetIdentity();
-
-    // scale normalized coordinates relative to (0,0,0)
-    transformation.AddScaling(scaling.x, scaling.y, scaling.z);
-
-    // rotate section element around z
-    transformation.AddRotationZ(rotation.z);
-    // rotate section element by angle of incidence
-    transformation.AddRotationY(rotation.y);
-    // rotate section element according to wing profile roll
-    transformation.AddRotationX(rotation.x);
-
-    // Translate section element to final position relative to section plane
-    transformation.AddTranslation(translation.x, translation.y, translation.z);
-}
-
-// Update internal section element data
-void CCPACSWingSectionElement::Update(void)
-{
-    BuildMatrix();
+    transformation.reset();
 }
 
 // Read CPACS wing section elements
@@ -106,28 +78,8 @@ void CCPACSWingSectionElement::ReadCPACS(TixiDocumentHandle tixiHandle, const st
         uID = ptrMyUID;
     }
 
-    std::string elementPath = elementXPath + "/transformation/translation";
-    if (tixiCheckElement(tixiHandle, elementPath.c_str()) == SUCCESS) {
-        if (tixiGetPoint(tixiHandle, elementPath.c_str(), &(translation.x), &(translation.y), &(translation.z)) != SUCCESS) {
-            throw CTiglError("Error: XML error while reading <translation/> in CCPACSWingSectionElement::ReadCPACS", TIGL_XML_ERROR);
-        }
-    }
-
-    elementPath = elementXPath + "/transformation/scaling";
-    if (tixiCheckElement(tixiHandle, elementPath.c_str()) == SUCCESS) {
-        if (tixiGetPoint(tixiHandle, elementPath.c_str(), &(scaling.x), &(scaling.y), &(scaling.z)) != SUCCESS) {
-            throw CTiglError("Error: XML error while reading <scaling/> in CCPACSWingSectionElement::ReadCPACS", TIGL_XML_ERROR);
-        }
-    }
-
-    elementPath = elementXPath + "/transformation/rotation";
-    if (tixiCheckElement(tixiHandle, elementPath.c_str()) == SUCCESS) {
-        if (tixiGetPoint(tixiHandle, elementPath.c_str(), &(rotation.x), &(rotation.y), &(rotation.z)) != SUCCESS) {
-            throw CTiglError("Error: XML error while reading <rotation/> in CCPACSWingSectionElement::ReadCPACS", TIGL_XML_ERROR);
-        }
-    }
-
-    Update();
+    // Get Transformation
+    transformation.ReadCPACS(tixiHandle, elementXPath);
 }
 
 // Write CPACS wing section elements
@@ -137,21 +89,8 @@ void CCPACSWingSectionElement::WriteCPACS(TixiDocumentHandle tixiHandle, const s
     TixiSaveExt::TixiSaveTextElement(tixiHandle, elementXPath.c_str(), "name", name.c_str());
     TixiSaveExt::TixiSaveTextElement(tixiHandle, elementXPath.c_str(), "description", description.c_str());
     TixiSaveExt::TixiSaveTextElement(tixiHandle, elementXPath.c_str(), "airfoilUID", profileUID.c_str());
-    TixiSaveExt::TixiSaveElement(tixiHandle, elementXPath.c_str(), "transformation");
 
-    const std::string path = elementXPath + "/transformation";
-
-    TixiSaveExt::TixiSaveElement(tixiHandle, path.c_str(), "scaling");
-    TixiSaveExt::TixiSavePoint(tixiHandle, (path + "/scaling").c_str(), scaling.x, scaling.y, scaling.z, NULL);
-
-
-    TixiSaveExt::TixiSaveElement(tixiHandle, path.c_str(), "rotation");
-    TixiSaveExt::TixiSavePoint(tixiHandle, (path + "/rotation").c_str(), rotation.x, rotation.y, rotation.z, NULL);
-
-    const std::string subPath = path + "/translation";
-    TixiSaveExt::TixiSaveElement(tixiHandle, path.c_str(), "translation");
-    TixiSaveExt::TixiSaveTextAttribute(tixiHandle, subPath.c_str(), "refType", "absLocal");
-    TixiSaveExt::TixiSavePoint(tixiHandle, subPath.c_str(), translation.x, translation.y, translation.z, NULL);
+    transformation.WriteCPACS(tixiHandle, elementXPath);
 }
 
 // Returns the UID of the referenced wing profile
@@ -187,46 +126,7 @@ std::string CCPACSWingSectionElement::GetDescription(void) const
 // Gets the section element transformation
 CTiglTransformation CCPACSWingSectionElement::GetSectionElementTransformation(void) const
 {
-    return transformation;
-}
-
-// Getter for translation
-const CTiglPoint& CCPACSWingSectionElement::GetTranslation() const
-{
-    return translation;
-}
-
-// Getter for rotation
-const CTiglPoint& CCPACSWingSectionElement::GetRotation() const
-{
-    return rotation;
-}
-
-// Getter for scaling
-const CTiglPoint& CCPACSWingSectionElement::GetScaling() const
-{
-    return scaling;
-}
-
-// Setter for translation
-void CCPACSWingSectionElement::SetTranslation(const CTiglPoint& trans)
-{
-    translation = trans;
-    Update();
-}
-
-// Setter for rotation
-void CCPACSWingSectionElement::SetRotation(const CTiglPoint& rot)
-{
-    rotation = rot;
-    Update();
-}
-
-// Setter for scaling
-void CCPACSWingSectionElement::SetScaling(const CTiglPoint& scale)
-{
-    scaling = scale;
-    Update();
+    return transformation.getTransformationMatrix();
 }
 
 } // end namespace tigl

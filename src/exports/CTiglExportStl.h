@@ -33,6 +33,7 @@
 #include "CCPACSWingProfile.h"
 #include "CCPACSFuselages.h"
 #include "CCPACSFuselageProfile.h"
+#include "ListPNamedShape.h"
 
 
 namespace tigl 
@@ -43,19 +44,18 @@ class CTiglExportStl
 
 public:
     // Constructor
-    TIGL_EXPORT CTiglExportStl(CCPACSConfiguration& config);
+    TIGL_EXPORT CTiglExportStl();
 
     // Empty destructor
     TIGL_EXPORT ~CTiglExportStl(void) { /* empty */}
 
-    // Exports a selected wing, boolean fused and meshed, as STL file
-    TIGL_EXPORT void ExportMeshedWingSTL(int wingIndex, const std::string& filename, double deflection = 0.1);
-
-    // Exports a selected fuselage, boolean fused and meshed, as STL file
-    TIGL_EXPORT void ExportMeshedFuselageSTL(int fuselageIndex, const std::string& filename, double deflection = 0.1);
-
-    // Exports a whole geometry, boolean fused and meshed, as STL file
-    TIGL_EXPORT void ExportMeshedGeometrySTL(const std::string& filename, double deflection = 0.1);
+    // Adds a shape
+    TIGL_EXPORT void AddShape(PNamedShape shape, double deflection);
+    
+    // Adds a whole geometry, boolean fused and meshed
+    TIGL_EXPORT void AddConfiguration(CCPACSConfiguration& config, double deflection = 0.1);
+    
+    TIGL_EXPORT TiglReturnCode Write(const std::string& filename);
 
 protected:
 
@@ -63,7 +63,7 @@ private:
     // Assignment operator
     void operator=(const CTiglExportStl& ) { /* Do nothing */ }
 
-    CCPACSConfiguration & myConfig;       /**< TIGL configuration object */
+    ListPNamedShape _shapes;
 };
 
 } // end namespace tigl

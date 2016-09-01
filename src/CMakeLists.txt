@@ -9,6 +9,7 @@ configure_file (
 )
 
 source_group(Fuselage REGULAR_EXPRESSION "CCPACSFuselage")
+source_group(Rotor REGULAR_EXPRESSION "CCPACSRotor")
 source_group(Wing REGULAR_EXPRESSION "CCPACSWing")
 
 # add all subdirectories to include path
@@ -33,7 +34,7 @@ file(GLOB_RECURSE TIGL_SRC
 )
 
 if(MSVC)
-    add_definitions(-D_CRT_SECURE_NO_WARNINGS=1 /wd4355)
+    add_definitions(-D_CRT_SECURE_NO_WARNINGS=1 /wd4355 -DTIGL_INTERNAL_EXPORTS)
 endif(MSVC)
 
 if(CMAKE_COMPILER_IS_GNUCC)
@@ -60,6 +61,9 @@ set(TIGL_LIBRARIES ${OpenCASCADE_LIBRARIES} ${TIXI_LIBRARIES} ${VLD_LIBRARIES} $
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   set(TIGL_LIBRARIES  ${TIGL_LIBRARIES} rt)
 endif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+if (WIN32)
+  set(TIGL_LIBRARIES  ${TIGL_LIBRARIES} Shlwapi)
+endif(WIN32)
 
 target_link_libraries (TIGL ${TIGL_LIBRARIES})
 set_target_properties( TIGL PROPERTIES VERSION ${TIGL_VERSION})
