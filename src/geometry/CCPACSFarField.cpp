@@ -59,7 +59,7 @@ void CCPACSFarField::ReadCPACS(TixiDocumentHandle tixiHandle)
 {
     init();
 
-    std::string prefix = "/cpacs/toolspecific/cFD/farField";
+    const std::string prefix = "/cpacs/toolspecific/cFD/farField";
     if (tixiCheckElement(tixiHandle, prefix.c_str()) != SUCCESS) {
         LOG(INFO) << "No far-field defined.";
         fieldType = NONE;
@@ -67,9 +67,8 @@ void CCPACSFarField::ReadCPACS(TixiDocumentHandle tixiHandle)
     }
 
     // get field type
-    std::string typePath = prefix + "/type";
     char * tmpstr = NULL;
-    if (tixiGetTextElement(tixiHandle, typePath.c_str(), &tmpstr) != SUCCESS) {
+    if (tixiGetTextElement(tixiHandle, (prefix + "/type").c_str(), &tmpstr) != SUCCESS) {
         fieldType = NONE;
         return;
     }
@@ -93,16 +92,14 @@ void CCPACSFarField::ReadCPACS(TixiDocumentHandle tixiHandle)
     }
 
     // get reference length
-    std::string refLenPath = prefix + "/referenceLength";
-    if (tixiGetDoubleElement(tixiHandle, refLenPath.c_str(), &fieldSize) != SUCCESS) {
+    if (tixiGetDoubleElement(tixiHandle, (prefix + "/referenceLength").c_str(), &fieldSize) != SUCCESS) {
         fieldSize = 0.;
         throw tigl::CTiglError("No reference length defined for far-field!");
     }
 
     // get multiplier
-    std::string multiplierPath = prefix + "/multiplier";
     double multiplier = 1.;
-    if (tixiGetDoubleElement(tixiHandle, multiplierPath.c_str(), &multiplier) != SUCCESS) {
+    if (tixiGetDoubleElement(tixiHandle, (prefix + "/multiplier").c_str(), &multiplier) != SUCCESS) {
         fieldSize = 0.;
         throw tigl::CTiglError("No multiplier defined for far-field!");
     }

@@ -18,15 +18,20 @@
 
 #include "CCPACSWingShell.h"
 
+#include "CCPACSWingCSStructure.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "TixiSaveExt.h"
+#include "CCPACSWingCell.h"
+
 
 namespace tigl 
 {
 
-CCPACSWingShell::CCPACSWingShell()
-: cells(this)
+CCPACSWingShell::CCPACSWingShell(CCPACSWingCSStructure& parent, TiglLoftSide side)
+    : parent(parent),
+    side(side),
+    cells(this)
 {
     Reset();
 }
@@ -52,14 +57,35 @@ int CCPACSWingShell::GetCellCount() const
     return cells.GetCellCount();
 }
 
-CCPACSWingCell& CCPACSWingShell::GetCell(int index)
+const CCPACSWingCell& CCPACSWingShell::GetCell(int index) const
 {
     return cells.GetCell(index);
+}
+
+CCPACSWingCell& CCPACSWingShell::GetCell(int index)
+{
+    // forward call to const method
+    return const_cast<CCPACSWingCell&>(static_cast<const CCPACSWingShell&>(*this).GetCell(index));
+}
+
+const CCPACSMaterial& CCPACSWingShell::GetMaterial() const
+{
+    return material;
 }
 
 CCPACSMaterial& CCPACSWingShell::GetMaterial()
 {
     return material;
+}
+
+const CCPACSWingCSStructure& CCPACSWingShell::GetStructure() const
+{
+    return parent;
+}
+
+CCPACSWingCSStructure& CCPACSWingShell::GetStructure()
+{
+    return parent;
 }
 
 void CCPACSWingShell::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string &shellXPath)
@@ -79,14 +105,13 @@ void CCPACSWingShell::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string
     }
 
     // read cell data
-    std::string cellpath = shellXPath + "/cells";
+    const std::string cellpath = shellXPath + "/cells";
     if (tixiCheckElement(tixiHandle, cellpath.c_str()) == SUCCESS) {
         cells.ReadCPACS(tixiHandle, cellpath.c_str());
     }
     
     // read material
-    std::string materialString;
-    materialString = shellXPath + "/skin/material";
+    const std::string materialString = shellXPath + "/skin/material";
     if ( tixiCheckElement(tixiHandle, materialString.c_str()) == SUCCESS) {
         material.ReadCPACS(tixiHandle, materialString.c_str());
     }
@@ -97,46 +122,46 @@ void CCPACSWingShell::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string
 }
 
 // Write CPACS segment elements
-void CCPACSWingShell::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& shellDefinitionXPath)
+void CCPACSWingShell::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& shellDefinitionXPath) const
 {
-    std::string elementPath;
-    
-    TixiSaveExt::TixiSaveElement(tixiHandle, shellDefinitionXPath.c_str(), "skin");
+    TixiSaveExt::TixiSaveElement(tixiHandle, shellDefinitionXPath.c_str(), "skin", 1);
 
     if (material.GetUID() != "UID_NOTSET") {
-        elementPath = shellDefinitionXPath + "/skin";
-        TixiSaveExt::TixiSaveElement(tixiHandle, elementPath.c_str(), "material");
-        elementPath = shellDefinitionXPath + "/skin/material";
-        material.WriteCPACS(tixiHandle, elementPath);
+        TixiSaveExt::TixiSaveElement(tixiHandle, (shellDefinitionXPath + "/skin").c_str(), "material");
+        material.WriteCPACS(tixiHandle, shellDefinitionXPath + "/skin/material");
     }
-    
+
     if (cells.GetCellCount() > 0) {
         TixiSaveExt::TixiSaveElement(tixiHandle, shellDefinitionXPath.c_str(), "cells");
-        elementPath = shellDefinitionXPath + "/cells";
-        cells.WriteCPACS(tixiHandle, elementPath);
+        cells.WriteCPACS(tixiHandle, shellDefinitionXPath + "/cells");
     }
 }
 
 void CCPACSWingShell::Invalidate()
 {
-    isvalid = false;
+    geometryCache.valid = false;
     cells.Invalidate();
 }
 
 bool CCPACSWingShell::IsValid() const
 {
-    return isvalid;
+    return geometryCache.valid;
 }
 
-void CCPACSWingShell::Update()
+void CCPACSWingShell::Update() const
 {
-    if (isvalid) {
+    if ( geometryCache.valid) {
         return;
     }
 
     // TODO: build stringer geometry
 
-    isvalid = true;
+     geometryCache.valid = true;
+}
+
+TiglLoftSide CCPACSWingShell::GetLoftSide() const
+{
+    return side;
 }
 
 } // namespace tigl

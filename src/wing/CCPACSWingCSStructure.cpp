@@ -22,13 +22,16 @@
 #include "CTiglLogging.h"
 #include "TixiSaveExt.h"
 
+#include "CCPACSWingCell.h"
 
 namespace tigl
 {
 
-CCPACSWingCSStructure::CCPACSWingCSStructure()
-: lowerShell(),
-  upperShell()
+
+CCPACSWingCSStructure::CCPACSWingCSStructure(CTiglWingStructureReference parent)
+: wingStructureReference(parent),
+  lowerShell(*this, LOWER_SIDE),
+  upperShell(*this, UPPER_SIDE)
 {
     Cleanup();
 }
@@ -50,42 +53,47 @@ void CCPACSWingCSStructure::ReadCPACS(TixiDocumentHandle tixiHandle, const std::
     Cleanup();
     
     // check path
-    if ( tixiCheckElement(tixiHandle, structureXPath.c_str()) != SUCCESS) {
+    if (tixiCheckElement(tixiHandle, structureXPath.c_str()) != SUCCESS) {
         LOG(WARNING) << "Wing structure " << structureXPath << " not found in CPACS file!" << std::endl;
         return;
     }
 
     // lower shell
-    std::string shellPath;
-    shellPath = structureXPath + "/upperShell";
-    if ( tixiCheckElement(tixiHandle, shellPath.c_str()) == SUCCESS){
-        upperShell.ReadCPACS(tixiHandle, shellPath.c_str());
+    std::string upperShellPath = structureXPath + "/upperShell";
+    if ( tixiCheckElement(tixiHandle, upperShellPath.c_str()) == SUCCESS){
+        upperShell.ReadCPACS(tixiHandle, upperShellPath.c_str());
     }
     
-    shellPath = structureXPath + "/lowerShell";
-    if ( tixiCheckElement(tixiHandle, shellPath.c_str()) == SUCCESS){
-        lowerShell.ReadCPACS(tixiHandle, shellPath.c_str());
+    std::string lowerShellPath = structureXPath + "/lowerShell";
+    if ( tixiCheckElement(tixiHandle, lowerShellPath.c_str()) == SUCCESS){
+        lowerShell.ReadCPACS(tixiHandle, lowerShellPath.c_str());
     }
     
     isvalid = true;
 }
 
 // Write CPACS structure elements
-void CCPACSWingCSStructure::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& structureXPath)
+void CCPACSWingCSStructure::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& structureXPath) const
 {
-    std::string elementPath;
-
     // for each element, if it exist in the model, the function call the saving subfunction
     // if not existing in the model, it try to remove an eventuel pre-existing subsection (no error if not pre-existing)
-    elementPath = structureXPath + "/upperShell";
     // create the subelement Spars
     TixiSaveExt::TixiSaveElement(tixiHandle,structureXPath.c_str(), "upperShell");
-    upperShell.WriteCPACS(tixiHandle, elementPath);
+    upperShell.WriteCPACS(tixiHandle, structureXPath + "/upperShell");
 
-    elementPath = structureXPath + "/lowerShell";
     // create the subelement Spars
     TixiSaveExt::TixiSaveElement(tixiHandle,structureXPath.c_str(), "lowerShell");
-    lowerShell.WriteCPACS(tixiHandle, elementPath);
+    lowerShell.WriteCPACS(tixiHandle, structureXPath + "/lowerShell");
+}
+
+CTiglWingStructureReference& CCPACSWingCSStructure::GetWingStructureReference()
+{
+    return wingStructureReference;
+}
+
+const CTiglWingStructureReference& CCPACSWingCSStructure::GetWingStructureReference() const
+{
+    return wingStructureReference;
 }
 
 CCPACSWingShell& CCPACSWingCSStructure::GetLowerShell()

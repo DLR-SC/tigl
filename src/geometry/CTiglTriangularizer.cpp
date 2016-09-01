@@ -300,7 +300,7 @@ void CTiglTriangularizer::annotateWingSegment(tigl::CCPACSWingSegment &segment, 
 int CTiglTriangularizer::triangularizeFace(const TopoDS_Face & face, unsigned long &nVertices, unsigned long &iPolyLower, unsigned long &iPolyUpper)
 {
     TopLoc_Location location;
-    unsigned long* indexBuffer = NULL;
+    std::vector<unsigned long> indexBuffer;
     
     const Handle(Poly_Triangulation) triangulation = BRep_Tool::Triangulation(face, location);
     if (triangulation.IsNull()) {
@@ -323,8 +323,7 @@ int CTiglTriangularizer::triangularizeFace(const TopoDS_Face & face, unsigned lo
         ilower = uvnodes.Lower();
         
         iBufferSize = uvnodes.Upper()-uvnodes.Lower()+1;
-        indexBuffer = new unsigned long [iBufferSize];
-        unsigned long * pIndexBuf = indexBuffer;
+        indexBuffer.reserve(iBufferSize);
         for (int inode = uvnodes.Lower(); inode <= uvnodes.Upper(); ++inode) {
             const gp_Pnt2d& uv_pnt = uvnodes(inode);
             gp_Pnt p; gp_Vec n;
@@ -335,7 +334,7 @@ int CTiglTriangularizer::triangularizeFace(const TopoDS_Face & face, unsigned lo
             if (face.Orientation() == TopAbs_INTERNAL) {
                 n.Reverse();
             } 
-            *pIndexBuf++ = currentObject().addPointNormal(p.XYZ(), n.XYZ());
+            indexBuffer.push_back(currentObject().addPointNormal(p.XYZ(), n.XYZ()));
         }
     } 
     else {
@@ -345,11 +344,9 @@ int CTiglTriangularizer::triangularizeFace(const TopoDS_Face & face, unsigned lo
         ilower = nodes.Lower();
         
         iBufferSize = nodes.Upper()-nodes.Lower()+1;
-        indexBuffer = new unsigned long [iBufferSize];
-        unsigned long * pIndexBuf = indexBuffer;
-        for (int inode = nodes.Lower(); inode <= nodes.Upper(); inode++) {
+        indexBuffer.reserve(iBufferSize);        for (int inode = nodes.Lower(); inode <= nodes.Upper(); inode++) {
             const gp_Pnt& p = nodes(inode).Transformed(nodeTransformation);
-            *pIndexBuf++ = currentObject().addPointNormal(p.XYZ(), CTiglPoint(1,0,0));
+            indexBuffer.push_back(currentObject().addPointNormal(p.XYZ(), CTiglPoint(1,0,0)));
         }
     }
 
@@ -390,7 +387,6 @@ int CTiglTriangularizer::triangularizeFace(const TopoDS_Face & face, unsigned lo
         
     } // for triangles
 
-    delete[] indexBuffer;
     nVertices = iBufferSize;
     return 0;
 }

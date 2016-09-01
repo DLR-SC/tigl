@@ -116,7 +116,7 @@ namespace
         }
 
         // insert blanks
-        int nblanks = 8 - shapeName.length();
+        int nblanks = 8 - static_cast<int>(shapeName.length());
         for (int i = 0; i < nblanks; ++i) {
             shapeName.insert(shapeName.begin(), ' ');
         }

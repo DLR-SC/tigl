@@ -24,7 +24,7 @@ using namespace tigl;
 
 TEST(WingCell, IsInner)
 {
-    tigl::CCPACSWingCell cell;
+    tigl::CCPACSWingCell cell(NULL);
     cell.SetLeadingEdgeInnerPoint (0,0);
     cell.SetLeadingEdgeOuterPoint (1,0);
     cell.SetTrailingEdgeInnerPoint(0,1);
@@ -59,7 +59,7 @@ TEST(WingCell, IsInner)
 
 TEST(WingCell, IsInner_NonConvex)
 {
-    tigl::CCPACSWingCell cell;
+    tigl::CCPACSWingCell cell(NULL);
     cell.SetLeadingEdgeInnerPoint (0,0);
     cell.SetLeadingEdgeOuterPoint (1,0);
     cell.SetTrailingEdgeInnerPoint(0,1);
@@ -76,7 +76,7 @@ TEST(WingCell, IsInner_NonConvex)
 
 TEST(WingCell, IsConvex)
 {
-    tigl::CCPACSWingCell cell;
+    tigl::CCPACSWingCell cell(NULL);
     cell.SetLeadingEdgeInnerPoint (0,0);
     cell.SetLeadingEdgeOuterPoint (1,0);
     cell.SetTrailingEdgeInnerPoint(0,1);

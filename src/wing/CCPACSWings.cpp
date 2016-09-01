@@ -26,6 +26,7 @@
 #include "CCPACSWings.h"
 #include "CTiglError.h"
 #include "TixiSaveExt.h"
+#include "IOHelper.h"
 #include <iostream>
 #include <sstream>
 
@@ -67,90 +68,34 @@ void CCPACSWings::Cleanup(void)
 void CCPACSWings::ReadCPACS(TixiDocumentHandle tixiHandle, const char* configurationUID)
 {
     Cleanup();
-    char *tmpString = NULL;
+    profiles.ReadCPACS(tixiHandle);
 
+    char* tmpString = NULL;
     if (tixiUIDGetXPath(tixiHandle, configurationUID, &tmpString) != SUCCESS) {
         throw CTiglError("XML error: tixiUIDGetXPath failed in CCPACSWings::ReadCPACS", TIGL_XML_ERROR);
     }
-
-    std::string wingXPath= tmpString;
-    wingXPath += "[@uID=\"";
-    wingXPath += configurationUID;
-    wingXPath += "\"]/wings";
-
-    // Read wing profiles
-    profiles.ReadCPACS(tixiHandle);
-
-    if (tixiCheckElement(tixiHandle, wingXPath.c_str()) != SUCCESS) {
-        return;
-    }
-
-    /* Get wing element count */
-    int wingCount;
-    if (tixiGetNamedChildrenCount(tixiHandle, wingXPath.c_str(), "wing", &wingCount) != SUCCESS) {
-        throw CTiglError("XML error: tixiGetNamedChildrenCount failed in CCPACSWings::ReadCPACS", TIGL_XML_ERROR);
-    }
-
-    // Loop over all wings
-    for (int i = 1; i <= wingCount; i++) {
-        CCPACSWing* wing = new CCPACSWing(configuration);
-        wings.push_back(wing);
-
-        std::ostringstream xpath;
-        xpath << wingXPath << "/wing[" << i << "]";
-        wing->ReadCPACS(tixiHandle, xpath.str());
-    }
+    const std::string wingXPath = std::string(tmpString) + "[@uID=\"" + configurationUID + "\"]/wings";
+    ReadContainerElement(tixiHandle, wingXPath, "wing", 1, wings, configuration);
 }
 
 // Write CPACS wings elements
 void CCPACSWings::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& configurationUID)
 {
-    std::string wingXPathPrt;
-    char *tmpString = NULL;
-    std::string xpath;
-    int test, wingCount;
-    ReturnCode tixiRet;
+    // save the wing profiles
+    profiles.WriteCPACS(tixiHandle);
 
     // tixi frees tmpString internally when finished
+    char *tmpString = NULL;
     if (tixiUIDGetXPath(tixiHandle, configurationUID.c_str(), &tmpString) != SUCCESS) {
         throw CTiglError("XML error: tixiUIDGetXPath failed in CCPACSWings::WriteCPACS", TIGL_XML_ERROR);
     }
-    if (strcmp(tmpString, "") == 0) {
+    if (tmpString == "") {
         throw CTiglError("XML error in CCPACSWings::WriteCPACS : Path not found", TIGL_XML_ERROR);
     }
 
-    std::stringstream ss;
-    ss << tmpString << "[@uID=\"" << configurationUID << "\"]";
-    xpath = ss.str();
-    wingXPathPrt = xpath;
-    wingXPathPrt.append("/wings");
-
-    // save the wing profiles
-    profiles.WriteCPACS(tixiHandle);
-    TixiSaveExt::TixiSaveElement(tixiHandle, xpath.c_str(), "wings");
-
-    tixiRet = tixiGetNamedChildrenCount(tixiHandle, wingXPathPrt.c_str(), "wing", &test);
-    wingCount = this->GetWingCount();
-
-    for (int i = 1; i <= wingCount; i++) {
-        std::stringstream ss;
-        ss << wingXPathPrt << "/wing[" << i << "]";
-        xpath = ss.str();
-        CCPACSWing& wing = GetWing(i);
-        if ((tixiRet = tixiCheckElement(tixiHandle, xpath.c_str())) == ELEMENT_NOT_FOUND) {
-            if ((tixiRet = tixiCreateElement(tixiHandle, wingXPathPrt.c_str(), "wing")) != SUCCESS) {
-                throw CTiglError("XML error: tixiCreateElement failed in CCPACSWings::WriteCPACS", TIGL_XML_ERROR);
-            }
-        }
-        wing.WriteCPACS(tixiHandle, xpath);
-    }
-
-    for (int i = wingCount + 1; i <= test; i++) {
-        std::stringstream ss;
-        ss << wingXPathPrt << "/wing[" << wingCount + 1 << "]";
-        xpath = ss.str();
-        tixiRet = tixiRemoveElement(tixiHandle, xpath.c_str());
-    }
+    // write wings
+    std::string xpath = std::string(tmpString) + "[@uID=\"" + configurationUID + "\"]/wings";
+    WriteContainerElement(tixiHandle, xpath, "wing", wings);
 }
 
 bool CCPACSWings::HasProfile(std::string uid) const

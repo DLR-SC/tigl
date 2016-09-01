@@ -32,7 +32,7 @@ namespace tigl
  * windows the native windows treading support is used 
  * to implement the mutex.
  */
-class CMutex
+class CMutex // TODO: replace by std::mutex
 {
 public:
     TIGL_EXPORT CMutex();

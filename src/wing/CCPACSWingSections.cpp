@@ -25,6 +25,7 @@
 
 #include "CCPACSWingSections.h"
 #include "TixiSaveExt.h"
+#include "IOHelper.h"
 #include <iostream>
 #include <sstream>
 
@@ -53,67 +54,16 @@ void CCPACSWingSections::Cleanup(void)
 }
 
 // Read CPACS wing sections element
-void CCPACSWingSections::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& wingXPath)
+void CCPACSWingSections::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& xpath)
 {
     Cleanup();
-
-    ReturnCode    tixiRet;
-    int           sectionCount;
-    std::string   tempString;
-    char*         elementPath;
-
-    /* Get section element count */
-    tempString  = wingXPath + "/sections";
-    elementPath = const_cast<char*>(tempString.c_str());
-    tixiRet = tixiGetNamedChildrenCount(tixiHandle, elementPath, "section", &sectionCount);
-    if (tixiRet != SUCCESS) {
-        throw CTiglError("XML error: tixiGetNamedChildrenCount failed in CCPACSWingSections::ReadCPACS", TIGL_XML_ERROR);
-    }
-
-    // Loop over all sections
-    for (int i = 1; i <= sectionCount; i++) {
-        CCPACSWingSection* section = new CCPACSWingSection();
-        sections.push_back(section);
-
-        tempString = wingXPath + "/sections/section[";
-        std::ostringstream xpath;
-        xpath << tempString << i << "]";
-        section->ReadCPACS(tixiHandle, xpath.str());
-    }
+    ReadContainerElement(tixiHandle, xpath, "section", 2, sections);
 }
 
 // Write CPACS wing sections element
-void CCPACSWingSections::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& wingXPath)
+void CCPACSWingSections::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& xpath) const
 {
-    std::string elementPath;
-    std::string xpath;
-    ReturnCode    tixiRet;
-    int           sectionCount, test;
-
-    TixiSaveExt::TixiSaveElement(tixiHandle, wingXPath.c_str(), "sections");
-    elementPath = wingXPath + "/sections";
-    tixiRet = tixiGetNamedChildrenCount(tixiHandle, elementPath.c_str(), "section", &test);
-    sectionCount = GetSectionCount();
-
-    for (int i = 1; i <= sectionCount; i++) {
-        std::stringstream ss;
-        ss << elementPath << "/section[" << i << "]";
-        xpath = ss.str();
-        CCPACSWingSection& section = GetSection(i);
-        if ((tixiRet = tixiCheckElement(tixiHandle, xpath.c_str())) == ELEMENT_NOT_FOUND) {
-            if ((tixiRet = tixiCreateElement(tixiHandle, elementPath.c_str(), "section")) != SUCCESS) {
-                throw CTiglError("XML error: tixiCreateElement failed in CCPACSWings::WriteCPACS", TIGL_XML_ERROR);
-            }
-        }
-        section.WriteCPACS(tixiHandle, xpath);
-    }
-
-    for (int i = sectionCount + 1; i <= test; i++) {
-        std::stringstream ss;
-        ss << elementPath << "/section[" << sectionCount + 1 << "]";
-        xpath = ss.str();
-        tixiRemoveElement(tixiHandle, xpath.c_str());
-    }
+    WriteContainerElement(tixiHandle, xpath, "section", sections);
 }
 
 // Get section count

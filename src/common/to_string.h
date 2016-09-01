@@ -1,7 +1,5 @@
-/* 
-* Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
-*
-* Created: 2014-01-30 Martin Siggel <Martin.Siggel@dlr.de>
+/*
+* Copyright (C) 2016 Airbus Defense and Space
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -15,27 +13,23 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
+#ifndef TO_STRING_H
+#define TO_STRING_H
 
-#ifndef CSCOPEDLOCK_H
-#define CSCOPEDLOCK_H
-
-#include "tigl_internal.h"
+#include <sstream>
 
 namespace tigl
 {
 
-class CMutex;
-
-class CScopedLock
+// TODO: replace by std::to_string() when C++11 is available
+template<typename T>
+std::string std_to_string(T value)
 {
-public:
-    TIGL_EXPORT CScopedLock(CMutex &);
-    TIGL_EXPORT ~CScopedLock();
-    // TODO: prevent copy ctor and copy assignment
-private:
-    CMutex& _mutex;
-};
+    std::stringstream ss;
+    ss << value;
+    return ss.str();
+}
 
-} // namespace tigl
+}
 
-#endif // CSCOPEDLOCK_H
+#endif

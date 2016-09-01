@@ -216,6 +216,24 @@ enum TiglStructureType
 typedef enum TiglStructureType TiglStructureType;
 
 
+enum TiglLoftSide
+{
+    UPPER_SIDE = 0,
+    LOWER_SIDE = 1
+};
+
+typedef enum TiglLoftSide TiglLoftSide;
+
+
+enum TiglCoordinateSystem
+{
+    GLOBAL_COORDINATE_SYSTEM   = 0,
+    WING_COORDINATE_SYSTEM     = 1,
+    FUSELAGE_COORDINATE_SYSTEM = 2
+};
+
+typedef enum TiglCoordinateSystem TiglCoordinateSystem;
+
 enum TiglContinuity
 {
     C0 = 0,
@@ -309,7 +327,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglOpenCPACSConfiguration(TixiDocumentHandle 
 * @brief Writes a CPACS configuration based on the data and geometry structure in memory.
 *
 *
-* @param[in] configurationUID The UID of the configuration that should be written. 
+* @param[in] configurationUID The UID of the configuration that should be written.
 * @param[in] cpacsHandlePtr Handle to the CPACS configuration. This handle is used in calls to other TIGL functions.
 *
 * @return
@@ -370,7 +388,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglIsCPACSConfigurationHandleValid(TiglCPACSC
     @return
         - char* A string with the version number.
 */
-TIGL_COMMON_EXPORT char* tiglGetVersion();
+TIGL_COMMON_EXPORT const char* tiglGetVersion();
 
 
 /*@}*/

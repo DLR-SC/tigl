@@ -86,45 +86,33 @@ void CCPACSWingSectionElement::ReadCPACS(TixiDocumentHandle tixiHandle, const st
 {
     Cleanup();
 
-    std::string elementPath;
-
-    // Get subelement "name"
     char* ptrName = NULL;
-    elementPath = elementXPath + "/name";
-    if (tixiGetTextElement(tixiHandle, elementPath.c_str(), &ptrName) == SUCCESS) {
+    if (tixiGetTextElement(tixiHandle, (elementXPath + "/name").c_str(), &ptrName) == SUCCESS) {
         name = ptrName;
     }
 
-    // Get subelement "description"
     char* ptrdescription = NULL;
-    elementPath = elementXPath + "/description";
-    if (tixiGetTextElement(tixiHandle, elementPath.c_str(), &ptrdescription) == SUCCESS) {
+    if (tixiGetTextElement(tixiHandle, (elementXPath + "/description").c_str(), &ptrdescription) == SUCCESS) {
         description = ptrdescription;
     }
 
-    // Get subelement "profileUID"
     char* ptrUID  = NULL;
-    elementPath = elementXPath + "/airfoilUID";
-    if (tixiGetTextElement(tixiHandle, elementPath.c_str(), &ptrUID) == SUCCESS) {
+    if (tixiGetTextElement(tixiHandle, (elementXPath + "/airfoilUID").c_str(), &ptrUID) == SUCCESS) {
         profileUID = ptrUID;
     }
 
-    // Get attribute "uID"
     char* ptrMyUID  = NULL;
-    elementPath = elementXPath;
-    if (tixiGetTextAttribute(tixiHandle, elementPath.c_str(), "uID", &ptrMyUID) == SUCCESS) {
+    if (tixiGetTextAttribute(tixiHandle, elementXPath.c_str(), "uID", &ptrMyUID) == SUCCESS) {
         uID = ptrMyUID;
     }
 
-    // Get subelement "/transformation/translation"
-    elementPath = elementXPath + "/transformation/translation";
+    std::string elementPath = elementXPath + "/transformation/translation";
     if (tixiCheckElement(tixiHandle, elementPath.c_str()) == SUCCESS) {
         if (tixiGetPoint(tixiHandle, elementPath.c_str(), &(translation.x), &(translation.y), &(translation.z)) != SUCCESS) {
             throw CTiglError("Error: XML error while reading <translation/> in CCPACSWingSectionElement::ReadCPACS", TIGL_XML_ERROR);
         }
     }
 
-    // Get subelement "/transformation/scaling"
     elementPath = elementXPath + "/transformation/scaling";
     if (tixiCheckElement(tixiHandle, elementPath.c_str()) == SUCCESS) {
         if (tixiGetPoint(tixiHandle, elementPath.c_str(), &(scaling.x), &(scaling.y), &(scaling.z)) != SUCCESS) {
@@ -132,7 +120,6 @@ void CCPACSWingSectionElement::ReadCPACS(TixiDocumentHandle tixiHandle, const st
         }
     }
 
-    // Get subelement "/transformation/rotation"
     elementPath = elementXPath + "/transformation/rotation";
     if (tixiCheckElement(tixiHandle, elementPath.c_str()) == SUCCESS) {
         if (tixiGetPoint(tixiHandle, elementPath.c_str(), &(rotation.x), &(rotation.y), &(rotation.z)) != SUCCESS) {
@@ -146,37 +133,22 @@ void CCPACSWingSectionElement::ReadCPACS(TixiDocumentHandle tixiHandle, const st
 // Write CPACS wing section elements
 void CCPACSWingSectionElement::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& elementXPath)
 {
-    std::string path;
-    std::string subPath;
-
-    // Set attribute "uID"
     TixiSaveExt::TixiSaveTextAttribute(tixiHandle, elementXPath.c_str(), "uID", uID.c_str());
-
-    // Set subelement "name"
     TixiSaveExt::TixiSaveTextElement(tixiHandle, elementXPath.c_str(), "name", name.c_str());
-
-    // Set subelement "name"
     TixiSaveExt::TixiSaveTextElement(tixiHandle, elementXPath.c_str(), "description", description.c_str());
-
-    // Set subelement "profileUID"
     TixiSaveExt::TixiSaveTextElement(tixiHandle, elementXPath.c_str(), "airfoilUID", profileUID.c_str());
-
-    // Set the subelement "transformation"
     TixiSaveExt::TixiSaveElement(tixiHandle, elementXPath.c_str(), "transformation");
 
-    path = elementXPath + "/transformation";
-    // Set subelement "/transformation/scaling"
-    subPath = path + "/scaling";
+    const std::string path = elementXPath + "/transformation";
+
     TixiSaveExt::TixiSaveElement(tixiHandle, path.c_str(), "scaling");
-    TixiSaveExt::TixiSavePoint(tixiHandle, subPath.c_str(), scaling.x, scaling.y, scaling.z, NULL);
+    TixiSaveExt::TixiSavePoint(tixiHandle, (path + "/scaling").c_str(), scaling.x, scaling.y, scaling.z, NULL);
 
-    // Set subelement "/transformation/rotation"
-    subPath = path + "/rotation";
+
     TixiSaveExt::TixiSaveElement(tixiHandle, path.c_str(), "rotation");
-    TixiSaveExt::TixiSavePoint(tixiHandle, subPath.c_str(), rotation.x, rotation.y, rotation.z, NULL);
+    TixiSaveExt::TixiSavePoint(tixiHandle, (path + "/rotation").c_str(), rotation.x, rotation.y, rotation.z, NULL);
 
-    // Set subelement "/transformation/translation"
-    subPath = path + "/translation";
+    const std::string subPath = path + "/translation";
     TixiSaveExt::TixiSaveElement(tixiHandle, path.c_str(), "translation");
     TixiSaveExt::TixiSaveTextAttribute(tixiHandle, subPath.c_str(), "refType", "absLocal");
     TixiSaveExt::TixiSavePoint(tixiHandle, subPath.c_str(), translation.x, translation.y, translation.z, NULL);

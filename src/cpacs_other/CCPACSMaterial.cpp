@@ -45,19 +45,18 @@ void CCPACSMaterial::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string 
     Cleanup();
     
     // check path
-    if ( tixiCheckElement(tixiHandle, materialXPath.c_str()) != SUCCESS) {
+    if (tixiCheckElement(tixiHandle, materialXPath.c_str()) != SUCCESS) {
         LOG(ERROR) << "Material definition" << materialXPath << " not found in CPACS file!" << std::endl;
         return;
     }
     
     // test whether composite or normal material
-    std::string tempstring = materialXPath + "/materialUID";
     char * matUID = NULL;
-    if (tixiGetTextElement(tixiHandle, tempstring.c_str(), &matUID) == SUCCESS){
+    if (tixiGetTextElement(tixiHandle, (materialXPath + "/materialUID").c_str(), &matUID) == SUCCESS){
         uid = matUID;
         is_composite = false;
     }
-    else if (tixiGetTextElement(tixiHandle, std::string(materialXPath + "/compositeUID").c_str(), &matUID) == SUCCESS){
+    else if (tixiGetTextElement(tixiHandle, (materialXPath + "/compositeUID").c_str(), &matUID) == SUCCESS){
         uid = matUID;
         is_composite = true;
     }
@@ -66,14 +65,14 @@ void CCPACSMaterial::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string 
     }
     
     // get thickness (not mandatory)
-    tempstring = materialXPath + "/thickness";
-    if (tixiCheckElement(tixiHandle, tempstring.c_str())== SUCCESS) {
-       if (tixiGetDoubleElement(tixiHandle, tempstring.c_str(), &thickness) != SUCCESS) {
+    std::string path = materialXPath + "/thickness";
+    if (tixiCheckElement(tixiHandle, path.c_str())== SUCCESS) {
+       if (tixiGetDoubleElement(tixiHandle, path.c_str(), &thickness) != SUCCESS) {
            LOG(ERROR) << "Invalid material thickness in " << materialXPath;
        }
     }
-    else if (tixiCheckElement(tixiHandle, std::string(materialXPath + "/thicknessScaling").c_str())== SUCCESS) {
-       if (tixiGetDoubleElement(tixiHandle, std::string(materialXPath + "/thicknessScaling").c_str(), &thicknessScaling) != SUCCESS) {
+    else if (tixiCheckElement(tixiHandle, (materialXPath + "/thicknessScaling").c_str())== SUCCESS) {
+       if (tixiGetDoubleElement(tixiHandle, (materialXPath + "/thicknessScaling").c_str(), &thicknessScaling) != SUCCESS) {
            LOG(ERROR) << "Invalid composite thickness scaling in " << materialXPath;
        }
     }
@@ -88,9 +87,9 @@ void CCPACSMaterial::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string 
     
     // handle orthotropy direction
     if (isComposite()) {
-        tempstring = materialXPath + "/orthotropyDirection";
-        if (tixiCheckElement(tixiHandle, tempstring.c_str()) == SUCCESS) {
-            if (tixiGetPoint(tixiHandle, tempstring.c_str(), &(orthotropyDirection.x), &(orthotropyDirection.y), &(orthotropyDirection.z)) != SUCCESS) {
+        path = materialXPath + "/orthotropyDirection";
+        if (tixiCheckElement(tixiHandle, path.c_str()) == SUCCESS) {
+            if (tixiGetPoint(tixiHandle, path.c_str(), &(orthotropyDirection.x), &(orthotropyDirection.y), &(orthotropyDirection.z)) != SUCCESS) {
                 throw CTiglError("Error: XML error while reading <orthotropyDirection/> in CCPACSMaterial::ReadCPACS", TIGL_XML_ERROR);
             }
         }
@@ -99,36 +98,21 @@ void CCPACSMaterial::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string 
     isvalid = true;
 }
 
-void CCPACSMaterial::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& xpath)
+void CCPACSMaterial::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& xpath) const
 {
-    std::string path;
-    std::string elementPath;
-
     if (!isComposite()) {
-        // Save isotropicMaterial
-        // Save materialUID
         TixiSaveExt::TixiSaveTextElement(tixiHandle, xpath.c_str(), "materialUID", GetUID().c_str());
-
-        // Save thickness
-        TixiSaveExt::TixiSaveDoubleElement(tixiHandle, xpath.c_str(), "thickness", GetThickness(), NULL);
+        if (thickness > 0) {
+            TixiSaveExt::TixiSaveDoubleElement(tixiHandle, xpath.c_str(), "thickness", thickness, NULL);
+        }
     }
     else {
-        // Save compositeUID
         TixiSaveExt::TixiSaveTextElement(tixiHandle, xpath.c_str(), "compositeUID", GetUID().c_str());
-
-        // Save thicknessScaling
         TixiSaveExt::TixiSaveDoubleElement(tixiHandle, xpath.c_str(), "thicknessScaling", GetThicknessScaling(), NULL);
-
-        // create element ortotropyDirection
         TixiSaveExt::TixiSaveElement(tixiHandle, xpath.c_str(), "orthotropyDirection");
-
-        // Save orthotropyDirection/x
-        std::string subpath = xpath + "/orthotropyDirection";
-
+        const std::string subpath = xpath + "/orthotropyDirection";
         TixiSaveExt::TixiSaveDoubleElement(tixiHandle, subpath.c_str(), "x", orthotropyDirection.x, NULL);
-
         TixiSaveExt::TixiSaveDoubleElement(tixiHandle, subpath.c_str(), "y", orthotropyDirection.y, NULL);
-
         TixiSaveExt::TixiSaveDoubleElement(tixiHandle, subpath.c_str(), "z", orthotropyDirection.z, NULL);
     }
 }

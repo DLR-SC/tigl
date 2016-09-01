@@ -44,7 +44,7 @@ public:
 
     bool RegisterAlgo(std::string cpacsID, CreateProfileAlgoCallback);
 
-    TIGL_EXPORT PTiglWingProfileAlgo CreateProfileAlgo(TixiDocumentHandle tixiHandle, CCPACSWingProfile& profile, std::string & ProfileXPath);
+    TIGL_EXPORT PTiglWingProfileAlgo CreateProfileAlgo(TixiDocumentHandle tixiHandle, CCPACSWingProfile& profile, const std::string & ProfileXPath);
 private:
     typedef std::map<std::string, CreateProfileAlgoCallback> ProfileMap;
     ProfileMap profileMap;

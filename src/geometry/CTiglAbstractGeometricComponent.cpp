@@ -82,14 +82,12 @@ TiglSymmetryAxis CTiglAbstractGeometricComponent::GetSymmetryAxis(void)
 // Gets symmetry axis as string
 const char* CTiglAbstractGeometricComponent::GetSymmetryAxisString(void) const
 {
-    if (mySymmetryAxis == TIGL_X_Z_PLANE) {
-        return "x-z-plane";
-    } else if (mySymmetryAxis == TIGL_X_Y_PLANE) {
-        return "x-y-plane";
-    } else if (mySymmetryAxis == TIGL_Y_Z_PLANE) {
-        return "y-z-plane";
-    } else {
-        return "";
+    switch (mySymmetryAxis) {
+    case TIGL_X_Z_PLANE: return "x-z-plane";
+    case TIGL_X_Y_PLANE: return "x-y-plane";
+    case TIGL_Y_Z_PLANE: return "y-z-plane";
+    case TIGL_NO_SYMMETRY: return "";
+    default: throw CTiglError("GetSymmetryAxisString is not defined for the current value of symmetry");
     }
 }
 
