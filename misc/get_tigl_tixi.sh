@@ -37,15 +37,12 @@ function printUsage {
     echo "usage: get_tigl.sh <distro> <arch>"
     echo
     echo "Valid distributions:"
-    echo "    SLE_11_SP1     Suse Linux Enterprise 11 SP1"
     echo "    SLE_11_SP2     Suse Linux Enterprise 11 SP2"
     echo "    SLE_12_SP1     Suse Linux Enterprise 12 SP1"
     echo "    openSUSE_13.1  openSUSE 13.1"
     echo "    ubuntu_12.04   Ubuntu 12.04"
-    echo "    ubuntu_13.10   Ubuntu 13.10"
     echo "    ubuntu_14.04   Ubuntu 14.04"
     echo "    fedora_20      Fedora 20"
-    echo "    rhel_5         Red Hat Enterprise Linux 5"
     echo "    rhel_6         Red Hat Enterprise Linux 6"
     echo "    rhel_7         Red Hat Enterprise Linux 7"
     echo "    centos_6       CentOS 6"
@@ -78,16 +75,7 @@ function checkArguments {
     LIBDIR=lib
 
     #check dist
-    if [[ $tmp_dist == SLE_11_SP1 ]]; then
-    	DIST=SLE_11_SP1
-	PACK_TYPE=rpm
-	if [[  $tmp_arch == i386 ]]; then
-	    PACK_ARCH=i586
-        else
-            PACK_ARCH=x86_64
-            LIBDIR=lib64
-	fi
-    elif [[ $tmp_dist == SLE_11_SP2 ]]; then
+    if [[ $tmp_dist == SLE_11_SP2 ]]; then
     	DIST=SLE_11_SP2
 	PACK_TYPE=rpm
 	if [[  $tmp_arch == i386 ]]; then
@@ -134,15 +122,6 @@ function checkArguments {
             PACK_ARCH=x86_64
             LIBDIR=lib64
 	fi
-    elif [[ $tmp_dist == rhel_5 ]]; then
-    	DIST=RedHat_RHEL-5
-	PACK_TYPE=rpm
-	if [[  $tmp_arch == i386 ]]; then
-	    PACK_ARCH=i386
-        else
-            PACK_ARCH=x86_64
-            LIBDIR=lib64
-	fi
    elif [[ $tmp_dist == centos_6 ]]; then
     	DIST=CentOS_CentOS-6
 	PACK_TYPE=rpm
@@ -169,14 +148,6 @@ function checkArguments {
         else
             PACK_ARCH=amd64
 	fi
-    elif [[ $tmp_dist == ubuntu_13.10 ]]; then
-        DIST=xUbuntu_13.10
-        PACK_TYPE=deb
-        if [[  $tmp_arch == i386 ]]; then
-            PACK_ARCH=i386
-        else
-            PACK_ARCH=amd64
-        fi
     elif [[ $tmp_dist == ubuntu_14.04 ]]; then
         DIST=xUbuntu_14.04
         PACK_TYPE=deb
@@ -210,7 +181,7 @@ pwdir=`pwd`
 tmpdir=`mktemp -d`
 cd $tmpdir
 
-prefix=http://download.opensuse.org/repositories/home:/martinsiggel/$DIST/$PACK_ARCH/
+prefix=http://download.opensuse.org/repositories/science:/dlr/$DIST/$PACK_ARCH/
 
 echo "Downloading from repository $prefix"
 echo "Using working directory: $tmpdir"
@@ -236,13 +207,13 @@ if [[ $PACK_TYPE == rpm ]]; then
 	fi
 
 	#TIXI
-	if [[ $file == libTIXI2*.rpm ]]  || [[ $file == tixi-*.rpm ]] && [[ $file != *debuginfo* ]]
+	if [[ $file == libTIXI2*.rpm ]]  || [[ $file == tixi-*.rpm ]] && [[ $file != *debuginfo* ]] && [[ $file != *debugsource* ]]
 	then
 		bin_file_list+=($file)
 	fi
 	
 	#TIGL
-	if [[ $file == libTIGL2*.rpm ]] || [[ $file == tigl-*.rpm ]] && [[ $file != *debuginfo* ]]
+	if [[ $file == libTIGL2*.rpm ]] || [[ $file == tigl-*.rpm ]] && [[ $file != *debuginfo* ]]  && [[ $file != *debugsource* ]]
 	then
 		bin_file_list+=($file)
         	#extract version number        
