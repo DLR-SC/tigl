@@ -419,6 +419,7 @@ void CCPACSWingComponentSegment::InterpolateOnLine(double csEta1, double csXsi1,
             segment = GetSegmentList().front();
             extendedOuterChord.translate(curEta, curXsi, &nearestPointTmp);
             nearestPoint = nearestPointTmp.Get_gp_Pnt();
+            xsi = curXsi;
         }
         else {
             retValProj = extendedInnerChord.translate(intersectionPoint.XYZ(), &curEta, &curXsi);
@@ -427,16 +428,18 @@ void CCPACSWingComponentSegment::InterpolateOnLine(double csEta1, double csXsi1,
                 segment = GetSegmentList().back();
                 extendedInnerChord.translate(curEta, curXsi, &nearestPointTmp);
                 nearestPoint = nearestPointTmp.Get_gp_Pnt();
+                xsi = curXsi;
             }
             else {
                 throw CTiglError("The requested point lies outside the wing chord surface.", TIGL_MATH_ERROR);
             }
         }
     }
-
-    double etaRes, xsiRes;
-    segment->GetEtaXsi(nearestPoint, etaRes, xsiRes);
-    xsi = xsiRes;
+    else {
+        double etaRes, xsiRes;
+        segment->GetEtaXsi(nearestPoint, etaRes, xsiRes);
+        xsi = xsiRes;
+    }
 
     // compute the error distance
     // This is the distance from the line to the nearest point on the chord face
