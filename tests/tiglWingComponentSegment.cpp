@@ -837,6 +837,15 @@ TEST(WingComponentSegment5, IntersectEta_bug)
     ASSERT_EQ(TIGL_SUCCESS, tiglWingComponentSegmentComputeEtaIntersection(tiglHandle, "D150_wing_CS", 0.0, 0.5, 1.0, 0.5, 0.9, &xsi, &hasWarning));
     ASSERT_NEAR(0.5, xsi, 1e-6);
 
+    ASSERT_EQ(TIGL_SUCCESS, tiglWingComponentSegmentComputeEtaIntersection(tiglHandle, "D150_wing_CS", 0.0, 0.5, 1.0, 0.5, 0.1, &xsi, &hasWarning));
+    ASSERT_NEAR(0.5, xsi, 1e-6);
+
+    // Test some invalid inputs
+    ASSERT_EQ(TIGL_MATH_ERROR, tiglWingComponentSegmentComputeEtaIntersection(tiglHandle, "D150_wing_CS", 0.0, 0.5, 1.0, 0.5, 1.1, &xsi, &hasWarning));
+    ASSERT_EQ(TIGL_MATH_ERROR, tiglWingComponentSegmentComputeEtaIntersection(tiglHandle, "D150_wing_CS", 0.0, 0.5, 1.0, 0.5, -0.1, &xsi, &hasWarning));
+    ASSERT_EQ(TIGL_ERROR, tiglWingComponentSegmentComputeEtaIntersection(tiglHandle, "D150_wing_CS", -0.1, 0.5, 1.0, 0.5, 0.7, &xsi, &hasWarning));
+    ASSERT_EQ(TIGL_ERROR, tiglWingComponentSegmentComputeEtaIntersection(tiglHandle, "D150_wing_CS", 0.0, 0.5, 1.1, 0.5, 0.7, &xsi, &hasWarning));
+
     ASSERT_EQ(TIGL_SUCCESS, tiglCloseCPACSConfiguration(tiglHandle));
     ASSERT_EQ(SUCCESS, tixiCloseDocument(tixiHandle));
 }

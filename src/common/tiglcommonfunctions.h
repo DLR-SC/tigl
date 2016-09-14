@@ -55,6 +55,16 @@ TIGL_EXPORT Standard_Real ProjectPointOnWire(const TopoDS_Wire& wire, gp_Pnt p);
 // projects a point onto the line (lineStart<->lineStop) and returns the projection parameter
 TIGL_EXPORT Standard_Real ProjectPointOnLine(gp_Pnt p, gp_Pnt lineStart, gp_Pnt lineStop);
 
+enum IntStatus {
+    BetweenPoints, // The intersection point lies between p1 and p2
+    OutsideBefore, // The intersection point lies before p1
+    OutsideAfter,  // The intersection point lies after p2
+    NoIntersection // the plane and the line are parallel to each other
+};
+
+// returns the intersection point between a line (p1-p2) and the plane
+TIGL_EXPORT IntStatus IntersectLinePlane(gp_Pnt p1, gp_Pnt p2, gp_Pln plane, gp_Pnt& result);
+
 // returns the number of edges of the current shape
 TIGL_EXPORT unsigned int GetNumberOfEdges(const TopoDS_Shape& shape);
 

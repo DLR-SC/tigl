@@ -49,14 +49,14 @@
                                 <name>D150_wing_1Section1</name>
                                 <transformation>
                                     <scaling>
-                                        <x>1</x>
+                                        <x>1.4142135624</x>
                                         <y>1</y>
                                         <z>1</z>
                                     </scaling>
                                     <rotation>
                                         <x>0</x>
                                         <y>0.0</y>
-                                        <z>0</z>
+                                        <z>45.</z>
                                     </rotation>
                                     <translation refType = "absLocal">
                                         <x>0</x>
@@ -135,7 +135,7 @@
                                 <name>D150_wing_1Section3</name>
                                 <transformation>
                                     <scaling>
-                                        <x>1.41421</x>
+                                        <x>1.4142135624</x>
                                         <y>1</y>
                                         <z>1</z>
                                     </scaling>

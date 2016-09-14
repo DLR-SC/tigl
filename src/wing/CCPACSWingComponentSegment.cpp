@@ -380,19 +380,17 @@ void CCPACSWingComponentSegment::InterpolateOnLine(double csEta1, double csXsi1,
     gp_Pnt p2 = GetPoint(csEta2, csXsi2);
 
     UpdateProjectedLeadingEdge();
+    UpdateExtendedChordFaces();
 
     // get eta plane and compute intersection with line
     // compute eta point and normal on the projected LE
-    gp_Pnt etaPnt; gp_Vec etaNormal;
+    gp_Pnt etaPnt, intersectionPoint;
+    gp_Vec etaNormal;
     projLeadingEdge->D1(eta, etaPnt, etaNormal);
 
-    double denominator = gp_Vec(p2.XYZ() - p1.XYZ())*etaNormal;
-    if (fabs(denominator) < 1e-8) {
+    if (IntersectLinePlane(p1, p2, gp_Pln(etaPnt, etaNormal.XYZ()), intersectionPoint) == NoIntersection) {
         throw CTiglError("Cannot interpolate for the given eta coordinate", TIGL_MATH_ERROR);
     }
-
-    double alpha = gp_Vec(etaPnt.XYZ() - p1.XYZ())*etaNormal / denominator ;
-    gp_Pnt intersectionPoint = p1.XYZ() + alpha*(p2.XYZ()-p1.XYZ());
 
     // get xsi coordinate
     gp_Pnt nearestPoint;
@@ -405,7 +403,35 @@ void CCPACSWingComponentSegment::InterpolateOnLine(double csEta1, double csXsi1,
     }
 
     if (deviation > 1e-3) {
-        throw CTiglError("The requested point lies outside the wing chord surface.", TIGL_MATH_ERROR);
+        // There are two options:
+        // Either, the point is completely outside the component segment or on the extended
+        // surfaces
+
+        double tol = 1e-4;
+        double curEta = 0.;
+        double curXsi = 0.;
+        CTiglPoint nearestPointTmp;
+
+        // Test outer surface
+        TiglReturnCode retValProj = extendedOuterChord.translate(intersectionPoint.XYZ(), &curEta, &curXsi);
+        if (retValProj == TIGL_SUCCESS && curEta > -tol && curEta < 1. + tol && curXsi > -tol && curXsi < 1. + tol) {
+            // we are on the extended surface
+            segment = GetSegmentList().front();
+            extendedOuterChord.translate(curEta, curXsi, &nearestPointTmp);
+            nearestPoint = nearestPointTmp.Get_gp_Pnt();
+        }
+        else {
+            retValProj = extendedInnerChord.translate(intersectionPoint.XYZ(), &curEta, &curXsi);
+            if (retValProj == TIGL_SUCCESS && curEta > -tol && curEta < 1. + tol && curXsi > -tol && curXsi < 1. + tol) {
+                // we are on the extended surface
+                segment = GetSegmentList().back();
+                extendedInnerChord.translate(curEta, curXsi, &nearestPointTmp);
+                nearestPoint = nearestPointTmp.Get_gp_Pnt();
+            }
+            else {
+                throw CTiglError("The requested point lies outside the wing chord surface.", TIGL_MATH_ERROR);
+            }
+        }
     }
 
     double etaRes, xsiRes;
@@ -573,6 +599,68 @@ void CCPACSWingComponentSegment::UpdateProjectedLeadingEdge()
     projLeadingEdge = CPointsToLinearBSpline(LEPointsProjected).Curve();
 }
 
+void CCPACSWingComponentSegment::UpdateExtendedChordFaces()
+{
+    if (surfacesAreValid) {
+        return;
+    }
+
+    UpdateProjectedLeadingEdge();
+
+    const SegmentList& segments = GetSegmentList();
+
+    // outer segment
+    // compute eta point and normal on the projected LE
+    gp_Pnt etaPnt; gp_Vec etaNormal; gp_Pln plane;
+    projLeadingEdge->D1(1.0, etaPnt, etaNormal);
+    plane = gp_Pln(etaPnt, etaNormal.XYZ());
+
+    CCPACSWingSegment* outerSegment = segments.back();
+    gp_Pnt pLEOuter = outerSegment->GetChordPoint(1., 0.);
+    gp_Pnt pLEInner = outerSegment->GetChordPoint(0., 0.);
+    gp_Pnt pTEOuter = outerSegment->GetChordPoint(1., 1.);
+    gp_Pnt pTEInner = outerSegment->GetChordPoint(0., 1.);
+
+    gp_Pnt pLEOuterExt, pTEOuterExt;
+    if (IntersectLinePlane(pLEInner, pLEOuter, plane, pLEOuterExt) == NoIntersection) {
+        throw CTiglError("Leading edge of last wing segment must no go in x direction!");
+    }
+    pLEOuter = pLEOuterExt;
+
+    if (IntersectLinePlane(pTEInner, pTEOuter, plane, pTEOuterExt) == NoIntersection) {
+        throw CTiglError("Trailing edge of last wing segment must no go in x direction!");
+    }
+    pTEOuter = pTEOuterExt;
+
+    extendedOuterChord.setQuadriangle(pLEInner.XYZ(), pLEOuter.XYZ(), pTEInner.XYZ(), pTEOuter.XYZ());
+
+    // Inner segment
+    projLeadingEdge->D1(0.0, etaPnt, etaNormal);
+    plane = gp_Pln(etaPnt, etaNormal.XYZ());
+
+    CCPACSWingSegment* innerSegment = segments.front();
+    pLEOuter = innerSegment->GetChordPoint(1., 0.);
+    pLEInner = innerSegment->GetChordPoint(0., 0.);
+    pTEOuter = innerSegment->GetChordPoint(1., 1.);
+    pTEInner = innerSegment->GetChordPoint(0., 1.);
+
+    gp_Pnt pLEInnerExt, pTEInnerExt;
+    if (IntersectLinePlane(pLEOuter, pLEInner, plane, pLEInnerExt) == NoIntersection) {
+        throw CTiglError("Leading edge of first wing segment must no go in x direction!");
+    }
+    pLEInner = pLEInnerExt;
+
+    if (IntersectLinePlane(pTEOuter, pTEInner, plane, pTEInnerExt) == NoIntersection) {
+        throw CTiglError("Leading edge of first wing segment must no go in x direction!");
+    }
+    pTEInner = pTEInnerExt;
+
+    extendedInnerChord.setQuadriangle(pLEInner.XYZ(), pLEOuter.XYZ(), pTEInner.XYZ(), pTEOuter.XYZ());
+
+
+    surfacesAreValid = true;
+}
+
 
 // Gets a point in relative wing coordinates for a given eta and xsi
 gp_Pnt CCPACSWingComponentSegment::GetPoint(double eta, double xsi)
@@ -623,15 +711,15 @@ gp_Pnt CCPACSWingComponentSegment::GetPoint(double eta, double xsi)
     for (unsigned int i = 1; i <= segments.size(); ++i) {
         gp_Pnt p1 = xsiPoints.Value(i);
         gp_Pnt p2 = xsiPoints.Value(i+1);
+        gp_Pnt intersectionPoint;
 
-        double denominator = gp_Vec(p2.XYZ() - p1.XYZ())*etaNormal;
-        if (fabs(denominator) < 1e-8) {
+        IntStatus status = IntersectLinePlane(p1, p2, gp_Pln(etaPnt, etaNormal.XYZ()), intersectionPoint);
+
+        if (status == NoIntersection) {
             continue;
         }
-        double alpha = gp_Vec(etaPnt.XYZ() - p1.XYZ())*etaNormal / denominator ;
-        gp_Pnt intersectionPoint = p1.XYZ() + alpha*(p2.XYZ()-p1.XYZ());
 
-        if ((i == 1 && alpha < 0.) || (alpha >= 0. && alpha <= 1.) || (i == segments.size() && alpha > 1.)) {
+        if ((i == 1 && status == OutsideBefore) || (status == BetweenPoints) || (i == segments.size() && status == OutsideAfter)) {
             intersPoints.push_back(intersectionPoint);
         }
     }
