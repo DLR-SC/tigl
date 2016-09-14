@@ -35,6 +35,7 @@
 #include "CCPACSWingCSStructure.h"
 #include "CTiglPoint.h"
 #include "CTiglAbstractSegment.h"
+#include "CTiglPointTranslator.h"
 
 #include "TopoDS_Shape.hxx"
 #include "TopoDS_Wire.hxx"
@@ -139,6 +140,7 @@ private:
     std::vector<int> findPath(const std::string& fromUid, const::std::string& toUID, const std::vector<int>& curPath, bool forward) const;
 
     void UpdateProjectedLeadingEdge();
+    void UpdateExtendedChordFaces();
 
     // create short name
     std::string MakeShortName();
@@ -152,7 +154,9 @@ private:
     double               mySurfaceArea;        /**< Surface area of this segment            */
     TopoDS_Shape         upperShape;           /**< Upper shape of this componentSegment    */
     TopoDS_Shape         lowerShape;           /**< Lower shape of this componentSegment    */
-    Handle(Geom_Curve)    projLeadingEdge;      /**< (Extended) Leading edge projected into y-z plane */
+    Handle(Geom_Curve)   projLeadingEdge;      /**< (Extended) Leading edge projected into y-z plane */
+    CTiglPointTranslator extendedOuterChord;   /**< Extended outer segment chord face */
+    CTiglPointTranslator extendedInnerChord;   /**< Extended inner segment chord face */
     SegmentList          wingSegments;         /**< List of segments belonging to the component segment */
     Handle(Geom_Surface) upperSurface;
     Handle(Geom_Surface) lowerSurface;

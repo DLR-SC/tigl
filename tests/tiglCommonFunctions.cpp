@@ -18,7 +18,7 @@
 #include "tiglcommonfunctions.h"
 #include "test.h"
 
-
+#include <gp_Pln.hxx>
 
 TEST(TiglCommonFunctions, isPathRelative)
 {
@@ -42,3 +42,19 @@ TEST(TiglCommonFunctions, isFileReadable)
     ASSERT_FALSE(IsFileReadable("invalidfile.txt"));
 }
 
+TEST(TiglCommonFunctions, IntersectLinePlane)
+{
+    gp_Pln plane(gp_Pnt(10., 2., 0.), gp_Dir(0., 1., 0));
+
+    gp_Pnt result;
+    ASSERT_EQ(BetweenPoints, IntersectLinePlane(gp_Pnt(0., 0., 0.), gp_Pnt(0., 4., 0.), plane, result));
+    ASSERT_NEAR(0., result.Distance(gp_Pnt(0., 2., 0)), 1e-10);
+
+    ASSERT_EQ(OutsideBefore, IntersectLinePlane(gp_Pnt(1., 3., 0.), gp_Pnt(1., 4., 0.), plane, result));
+    ASSERT_NEAR(0., result.Distance(gp_Pnt(1., 2., 0)), 1e-10);
+
+    ASSERT_EQ(OutsideAfter, IntersectLinePlane(gp_Pnt(1., 0., 0.), gp_Pnt(1., 1., 0.), plane, result));
+    ASSERT_NEAR(0., result.Distance(gp_Pnt(1., 2., 0)), 1e-10);
+
+    ASSERT_EQ(NoIntersection, IntersectLinePlane(gp_Pnt(1., 3., 0.), gp_Pnt(10., 3., 0.), plane, result));
+}
