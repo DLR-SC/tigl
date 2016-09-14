@@ -817,3 +817,26 @@ TEST(WingComponentSegment5, GetPointPerformance)
     ASSERT_EQ(TIGL_SUCCESS, tiglCloseCPACSConfiguration(tiglHandle));
     ASSERT_EQ(SUCCESS, tixiCloseDocument(tixiHandle));
 }
+
+TEST(WingComponentSegment5, IntersectEta_bug)
+{
+    const char* filename = "TestData/compseg-rotated.xml";
+    ReturnCode tixiRet;
+    TiglReturnCode tiglRet;
+
+    TiglCPACSConfigurationHandle tiglHandle = -1;
+    TixiDocumentHandle tixiHandle = -1;
+
+    tixiRet = tixiOpenDocument(filename, &tixiHandle);
+    ASSERT_EQ (SUCCESS, tixiRet);
+    tiglRet = tiglOpenCPACSConfiguration(tixiHandle, "", &tiglHandle);
+    ASSERT_EQ(TIGL_SUCCESS, tiglRet);
+
+    double xsi;
+    TiglBoolean hasWarning;
+    ASSERT_EQ(TIGL_SUCCESS, tiglWingComponentSegmentComputeEtaIntersection(tiglHandle, "D150_wing_CS", 0.0, 0.5, 1.0, 0.5, 0.9, &xsi, &hasWarning));
+    ASSERT_NEAR(0.5, xsi, 1e-6);
+
+    ASSERT_EQ(TIGL_SUCCESS, tiglCloseCPACSConfiguration(tiglHandle));
+    ASSERT_EQ(SUCCESS, tixiCloseDocument(tixiHandle));
+}
