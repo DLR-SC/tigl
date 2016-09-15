@@ -23,15 +23,15 @@ install:
       Write-Output "Platform: $env:PLATFORM"
       $generator = "Visual Studio 10 2010"
       $ocedist = "oce.017.win32_msvc2010_static"
+      $ocebindir = "Win32"
       $tixidist = "TIXI-2.2.4-win32"
       if ($env:PLATFORM -eq "x64")
       {
           $generator = "$generator Win64"
           $ocedist = "oce.017.win64_msvc2010_static"
+          $ocebindir = "Win64"
           $tixidist = "TIXI-2.2.4-win64"
       }
-      Write-Output "Tixi Distribution: $tixidist"
-      Write-Output "OCE Distribution: $ocedist"
       If (!(Test-Path -Path "c:\$ocedist.7z")) {
         Write-Output "Downloading OCE"
         (new-object System.Net.WebClient).Downloadfile("https://sourceforge.net/projects/tigl/files/Thirdparty/$ocedist.7z", "c:\$ocedist.7z")
@@ -44,7 +44,6 @@ install:
       & 7z x -y "c:\$ocedist.7z" -oC:\ > null
       Write-Output "Extract TiXI"
       & 7z x -y "c:\$tixidist.zip" -oC:\ > null
-  - dir c:\
 
 build_script:
 - ps: |
@@ -66,11 +65,10 @@ after_build:
 test_script:
 - ps: |
     cd tests
+    $env:PATH = "c:\$ocedist\$ocebindir\bin;c:\$tixidist\bin;$env:PATH"
     & $env:CONFIGURATION\TIGL-unittests.exe --gtest_output=xml:test_results.xml
     if ($LastExitCode -ne 0) {
         throw "Exec: $ErrorMessage"
     }
+    (new-object net.webclient).UploadFile("https://ci.appveyor.com/api/testresults/junit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .\test_results.xml))
     cd ..
-
-on_finish:
-- ps: (new-object net.webclient).UploadFile("https://ci.appveyor.com/api/testresults/junit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .\test_results.xml))
