@@ -1,4 +1,6 @@
-Travis-CI Build-Status: [![Build Status](https://travis-ci.org/DLR-SC/tigl.svg?branch=master)](https://travis-ci.org/DLR-SC/tigl) [![Anaconda-Server Badge](https://anaconda.org/dlr-sc/tigl/badges/installer/conda.svg)](https://conda.anaconda.org/dlr-sc)
+Build-Status: [![Build Status](https://travis-ci.org/DLR-SC/tigl.svg?branch=master)](https://travis-ci.org/DLR-SC/tigl) [![Build status](https://ci.appveyor.com/api/projects/status/twbrx01mbb043uj5/branch/master?svg=true)](https://ci.appveyor.com/project/rainman110/tigl/branch/master)
+
+[![Anaconda-Server Badge](https://anaconda.org/dlr-sc/tigl/badges/installer/conda.svg)](https://conda.anaconda.org/dlr-sc)
 
  - Binary Downloads:  https://github.com/DLR-SC/tigl/wiki/Downloads
  - API Documentation: http://tigl.sourceforge.net/Doc/index.html
