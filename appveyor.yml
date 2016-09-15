@@ -1,0 +1,73 @@
+version: '{build}'
+
+os: Visual Studio 2015
+
+platform:
+  - Win32
+  - x64
+
+configuration:
+  - Release
+#  - Debug
+
+build:
+  verbosity: minimal
+
+artifacts:
+  - path: '_build/*.zip'
+    name: binaries
+
+before_build:
+- ps: |
+    Write-Output "Configuration: $env:CONFIGURATION"
+    Write-Output "Platform: $env:PLATFORM"
+    $generator = "Visual Studio 10 2010"
+    $ocedist = "oce.017.win32_msvc2010_static"
+    $tixidist = "TIXI-2.2.4-win32"
+    if ($env:PLATFORM -eq "x64")
+    {
+        $generator = "$generator Win64"
+        $ocedist = "oce.017.win64_msvc2010_static"
+        $tixidist = "TIXI-2.2.4-win64"
+    }
+
+install:
+  - ps: |
+      If (!(Test-Path -Path "c:\$ocedist.7z")) {
+        (new-object System.Net.WebClient).Downloadfile("https://sourceforge.net/projects/tigl/files/Thirdparty/$ocedist.7z", "c:\$ocedist.7z")
+      }
+      If (!(Test-Path -Path "c:\$tixidist.zip")) {
+        (new-object System.Net.WebClient).Downloadfile("https://github.com/DLR-SC/tixi/releases/download/v2.2.4/$tixidist.zip", "c:\$tixidist.zip")
+      }
+  - 7z x -y "c:\$ocedist.7z" -o"C:\" > nul
+  - 7z x -y "c:\$tixidist.7z" -o"C:\" > nul
+
+build_script:
+- ps: |
+    md _build -Force | Out-Null
+    cd _build
+	
+    & cmake -G "$generator" -DCASROOT=c:\$ocedist -DTIXI_PATH=c:\$tixidist -DTIGL_BUILD_TESTS=ON  ..
+    if ($LastExitCode -ne 0) {
+        throw "Exec: $ErrorMessage"
+    }
+    & cmake --build . --config $env:CONFIGURATION
+    if ($LastExitCode -ne 0) {
+        throw "Exec: $ErrorMessage"
+    }
+
+after_build:
+- ps: |
+    & cpack -G ZIP
+
+test_script:
+- ps: |
+    cd tests
+    & $env:CONFIGURATION\TIGL-unittests.exe --gtest_output=xml:test_results.xml
+    if ($LastExitCode -ne 0) {
+        throw "Exec: $ErrorMessage"
+    }
+    cd ..
+
+on_finish:
+- ps: (new-object net.webclient).UploadFile("https://ci.appveyor.com/api/testresults/junit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .\test_results.xml))
