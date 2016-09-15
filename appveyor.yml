@@ -18,6 +18,7 @@ artifacts:
     name: binaries
 
 install:
+  - ps: cinst doxygen.install
   - ps: |
       Write-Output "Configuration: $env:CONFIGURATION"
       Write-Output "Platform: $env:PLATFORM"
@@ -61,9 +62,6 @@ build_script:
         throw "Exec: $ErrorMessage"
     }
 
-after_build:
-- ps: |
-    & cpack -G ZIP
 
 test_script:
 - ps: |
@@ -75,6 +73,11 @@ test_script:
     }
     (new-object net.webclient).UploadFile("https://ci.appveyor.com/api/testresults/junit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .\test_results.xml))
     cd ..
+
+after_test:
+- ps: |
+    & cmake --build . --config $env:CONFIGURATION --target doc
+    & cpack -G ZIP
 
 cache:
  - c:\oce
