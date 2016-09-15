@@ -38,9 +38,9 @@ install:
       If (!(Test-Path -Path "c:\$tixidist.zip")) {
         (new-object System.Net.WebClient).Downloadfile("https://github.com/DLR-SC/tixi/releases/download/v2.2.4/$tixidist.zip", "c:\$tixidist.zip")
       }
+  - 7z x -y "c:\%ocedist%.7z" -o"C:\" > nul
+  - 7z x -y "c:\%tixidist%.7z" -o"C:\" > nul
   - dir c:\
-  - 7z x -y "c:\$ocedist.7z" -o"C:\" > nul
-  - 7z x -y "c:\$tixidist.7z" -o"C:\" > nul
 
 build_script:
 - ps: |
