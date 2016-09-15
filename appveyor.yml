@@ -17,22 +17,19 @@ artifacts:
   - path: '_build/*.zip'
     name: binaries
 
-before_install:
-- ps: |
-    Write-Output "Configuration: $env:CONFIGURATION"
-    Write-Output "Platform: $env:PLATFORM"
-    $generator = "Visual Studio 10 2010"
-    $ocedist = "oce.017.win32_msvc2010_static"
-    $tixidist = "TIXI-2.2.4-win32"
-    if ($env:PLATFORM -eq "x64")
-    {
-        $generator = "$generator Win64"
-        $ocedist = "oce.017.win64_msvc2010_static"
-        $tixidist = "TIXI-2.2.4-win64"
-    }
-
 install:
   - ps: |
+      Write-Output "Configuration: $env:CONFIGURATION"
+      Write-Output "Platform: $env:PLATFORM"
+      $generator = "Visual Studio 10 2010"
+      $ocedist = "oce.017.win32_msvc2010_static"
+      $tixidist = "TIXI-2.2.4-win32"
+      if ($env:PLATFORM -eq "x64")
+      {
+          $generator = "$generator Win64"
+          $ocedist = "oce.017.win64_msvc2010_static"
+          $tixidist = "TIXI-2.2.4-win64"
+      }
       Write-Output "Tixi Distribution: $tixidist"
       Write-Output "OCE Distribution: $ocedist"
       If (!(Test-Path -Path "c:\$ocedist.7z")) {
