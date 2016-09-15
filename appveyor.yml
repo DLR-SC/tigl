@@ -46,7 +46,6 @@ build_script:
 - ps: |
     md _build -Force | Out-Null
     cd _build
-	
     & cmake -G "$generator" -DCASROOT=c:\$ocedist -DTIXI_PATH=c:\$tixidist -DTIGL_BUILD_TESTS=ON  ..
     if ($LastExitCode -ne 0) {
         throw "Exec: $ErrorMessage"
