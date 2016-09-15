@@ -17,7 +17,7 @@ artifacts:
   - path: '_build/*.zip'
     name: binaries
 
-before_build:
+before_install:
 - ps: |
     Write-Output "Configuration: $env:CONFIGURATION"
     Write-Output "Platform: $env:PLATFORM"
@@ -33,6 +33,8 @@ before_build:
 
 install:
   - ps: |
+      Write-Output "Tixi Distribution: $tixidist"
+      Write-Output "OCE Distribution: $ocedist"
       If (!(Test-Path -Path "c:\$ocedist.7z")) {
         (new-object System.Net.WebClient).Downloadfile("https://sourceforge.net/projects/tigl/files/Thirdparty/$ocedist.7z", "c:\$ocedist.7z")
       }
