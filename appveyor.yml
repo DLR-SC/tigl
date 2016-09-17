@@ -53,7 +53,7 @@ build_script:
 - ps: |
     md _build -Force | Out-Null
     cd _build
-    & cmake -G "$generator" -DCASROOT=c:\oce\$ocedist -DTIXI_PATH=c:\tixi\$tixidist -DTIGL_BUILD_TESTS=ON  ..
+    & cmake -G "$generator" -DCASROOT=c:\oce\$ocedist -DTIXI_PATH=c:\tixi\$tixidist -DTIGL_BINDINGS_MATLAB=ON -DTIGL_BUILD_TESTS=ON  ..
     if ($LastExitCode -ne 0) {
         throw "Exec: $ErrorMessage"
     }
