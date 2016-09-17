@@ -162,6 +162,7 @@ add_subdirectory(examples)
 option(TIGL_BUILD_TESTS "Build TIGL Testsuite" OFF)
 
 if(TIGL_BUILD_TESTS)
+  enable_testing()
   option(gtest_force_shared_crt "" ON)
   mark_as_advanced(gtest_force_shared_crt)
   set (gtest_SOURCE_DIR "thirdparty/gtest-1.6.0")
