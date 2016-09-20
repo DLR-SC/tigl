@@ -17,6 +17,6 @@ before_script:
 script: 
   - cmake -DTIGL_BUILD_TESTS=ON -DTIGL_BINDINGS_MATLAB=ON ..
   - make
-  - make test
+  - make check
 
 
