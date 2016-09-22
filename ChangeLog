@@ -3,58 +3,58 @@ Version 2.1.7
 22/09/2016
 
     - General changes:
-        - Support for generic aircraft systems (by Jonas Jepsen)
-        - External components are now conforming with the CPACS 2.3 standard (by Jonas Jepsen)
-        - Support for rotorcraft (by Philipp Kunze)
-        - Improved IGES export: Added support for long names is IGES (more than 8 characters as before).
-        - Removed support for RedHat 5 and Ubuntu 13.10
-        - Added support for RedHat 7
-        - Ported to OpenCASCADE 6.9.0 and 7.0.0
+        - Support for generic aircraft systems (by Jonas Jepsen).
+        - External components are now conforming with the CPACS 2.3 standard (by Jonas Jepsen).
+        - Support for rotorcraft (by Philipp Kunze).
+        - Improved IGES export: Added support for long names in IGES (more than 8 characters as before).
+        - Removed support for RedHat 5 and Ubuntu 13.10.
+        - Added support for RedHat 7.
+        - Ported to OpenCASCADE 6.9.0 and 7.0.0.
 
     - New API functions:
-        - `tiglWingComponentSegmentComputeEtaIntersection``: This function should be used to compute points on the wing,
-           that lie on a straight line between to given points.
-        - ``tiglFuselageGetIndex`` to compute the index based on the fuselage UID
+        - ``::tiglWingComponentSegmentComputeEtaIntersection``: This function should be used to compute points on the wing
+           that lie on a straight line between two given points.
+        - ``::tiglFuselageGetIndex`` to compute the index based on the fuselage UID.
         - Added new API functions for rotors and rotor blades:
-          - ``tiglGetRotorCount``
-          - ``tiglRotorGetUID``
-          - ``tiglRotorGetIndex``
-          - ``tiglRotorGetRadius``
-          - ``tiglRotorGetReferenceArea``
-          - ``tiglRotorGetTotalBladePlanformArea``
-          - ``tiglRotorGetSolidity``
-          - ``tiglRotorGetSurfaceArea``
-          - ``tiglRotorGetVolume``
-          - ``tiglRotorGetTipSpeed``
-          - ``tiglRotorGetRotorBladeCount``
-          - ``tiglRotorBladeGetWingIndex``
-          - ``tiglRotorBladeGetWingUID``
-          - ``tiglRotorBladeGetAzimuthAngle``
-          - ``tiglRotorBladeGetRadius``
-          - ``tiglRotorBladeGetPlanformArea``
-          - ``tiglRotorBladeGetSurfaceArea``
-          - ``tiglRotorBladeGetVolume``
-          - ``tiglRotorBladeGetTipSpeed``
-          - ``tiglRotorBladeGetLocalRadius``
-          - ``tiglRotorBladeGetLocalChord``
-          - ``tiglRotorBladeGetLocalTwistAngle``
+          - ``::tiglGetRotorCount``
+          - ``::tiglRotorGetUID``
+          - ``::tiglRotorGetIndex``
+          - ``::tiglRotorGetRadius``
+          - ``::tiglRotorGetReferenceArea``
+          - ``::tiglRotorGetTotalBladePlanformArea``
+          - ``::tiglRotorGetSolidity``
+          - ``::tiglRotorGetSurfaceArea``
+          - ``::tiglRotorGetVolume``
+          - ``::tiglRotorGetTipSpeed``
+          - ``::tiglRotorGetRotorBladeCount``
+          - ``::tiglRotorBladeGetWingIndex``
+          - ``::tiglRotorBladeGetWingUID``
+          - ``::tiglRotorBladeGetAzimuthAngle``
+          - ``::tiglRotorBladeGetRadius``
+          - ``::tiglRotorBladeGetPlanformArea``
+          - ``::tiglRotorBladeGetSurfaceArea``
+          - ``::tiglRotorBladeGetVolume``
+          - ``::tiglRotorBladeGetTipSpeed``
+          - ``::tiglRotorBladeGetLocalRadius``
+          - ``::tiglRotorBladeGetLocalChord``
+          - ``::tiglRotorBladeGetLocalTwistAngle``
 
     - Fixes:
-        - Fixed parent-child transformations in case of multiple root components
-        - Fixed an error in ``tiglWingComponentSegmentGetPoint`` in case of multiple intersections of the eta plane with the wing. 
-          This was the case for e.g. box wings. (issue #176)
-        - Fixed bug ``tiglWingGetSpan`` in wing span computation when no wing symmetry is given (e.g. for a VTP) (issue #185 and #195)
-        - Fixed another bug ``tiglWingGetSpan`` when the symmetry plane was the Y-Z plane (issue #174)
-        - Fixed incorrect ``tiglWingGetSegmentEtaXsi`` near wing sections, when the wrong section was returned (issue#187)
-        - Fixed an issue in ``tiglWingGetSegmentEtaXsi`` in case the airfoil is completely above the chord surface.
-        - Fixed point projection on the geometry for large scale data (eg a factor of 1000) by making the convergence criterium size dependent (issue #203)
+        - Fixed parent-child transformations in case of multiple root components.
+        - Fixed an error in ``::tiglWingComponentSegmentGetPoint`` in case of multiple intersections of the eta plane with the wing. 
+          This was the case for e.g. box wings. (issue #176).
+        - Fixed bug ``::tiglWingGetSpan`` in wing span computation when no wing symmetry is given (e.g. for a VTP) (issue #185 and #195).
+        - Fixed another bug in ``::tiglWingGetSpan`` when the symmetry plane was the Y-Z plane (issue #174).
+        - Fixed incorrect result in ``::tiglWingGetSegmentEtaXsi`` near wing sections, returning the wrong section (issue#187).
+        - Fixed an issue in ``::tiglWingGetSegmentEtaXsi`` in case the airfoil is completely above the chord surface.
+        - Fixed point projection on the geometry for large scale data (eg a factor of 1000) by making the convergence criterium size dependent (issue #203).
 
     - TiGLViewer:
         - Visualization of rotorcraft and rotorcraft specific menus.
         - Visualization of generic aircraft systems.
         - Added ``wingGetSpan`` function to TiGLViewer scripting.
-        - Added script function ``wingComponentSegmentGetPoint``
-        - Fixed tiglviewer.sh script loading wrong OpenCASCADE libraries
+        - Added script function ``wingComponentSegmentGetPoint``.
+        - Fixed tiglviewer.sh script loading wrong OpenCASCADE libraries.
 
     - Language bindings:
         - Started experimental python bindings for the internal API.
@@ -62,7 +62,8 @@ Version 2.1.7
           from python together with the OpenCASCADE python bindings (pythoncc).
         - The source code of the matlab bindings is now shipped on all systems. In addition,
           we distribute a Makefile which can be used to compile the Matlab bindings when needed.
-        - Added function ``tiglWingComponentSegmentComputeEtaIntersection`` to java bindings
+        - Added function ``::tiglWingComponentSegmentComputeEtaIntersection`` to java bindings.
+
 
 Version 2.1.6
 -------------
