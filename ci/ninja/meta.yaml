@@ -1,0 +1,23 @@
+﻿package:
+  name: ninja
+  version: 1.7.1
+
+source:
+  fn: ninja-1.7.1.tar.gz
+  url: https://github.com/ninja-build/ninja/archive/v1.7.1.tar.gz
+
+build:
+  number: 0
+  features:
+    - vc9              # [win and py27]
+    - vc10             # [win and py34]
+    - vc14             # [win and py35]
+
+requirements:
+  build:
+    - python
+    - gcc [linux]
+
+about:
+  home: https://ninja-build.org/
+  summary: A small build system with a focus on speed.

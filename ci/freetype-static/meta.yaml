@@ -1,0 +1,28 @@
+{% set version = "2.6" %}
+
+package:
+  name: freetype-static
+  version: {{ version }}
+
+source:
+  fn: freetype-{{ version }}.tar.gz
+  url: http://download.savannah.gnu.org/releases/freetype/freetype-{{ version }}.tar.gz
+
+build:
+  number: 0
+  features:
+    - vc9              # [win and py27]
+    - vc10             # [win and py34]
+    - vc14             # [win and py35]
+
+requirements:
+  build:
+    - cmake
+    - ninja ==1.7.1
+    - python
+
+
+about:
+  home: http://www.freetype.org/
+  license: GNU GPL Version 2 and FreeType License
+  summary: FreeType is a freely available software library to render fonts

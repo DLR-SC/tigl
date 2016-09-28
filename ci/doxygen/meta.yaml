@@ -1,0 +1,25 @@
+package:
+  name: doxygen
+  version: 1.8.10
+
+source:
+  fn: doxygen-1.8.10.windows.bin.zip                                             [win32]
+  url: http://ftp.stack.nl/pub/users/dimitri/doxygen-1.8.10.windows.bin.zip      [win32]
+  fn: doxygen-1.8.10.windows.x64.bin.zip                                         [win64]
+  url: http://ftp.stack.nl/pub/users/dimitri/doxygen-1.8.10.windows.x64.bin.zip  [win64]
+  url: http://ftp.stack.nl/pub/users/dimitri/doxygen-1.8.10.src.tar.gz           [not win]
+  fn: doxygen-1.8.10.src.tar.gz                                                  [not win]
+
+requirements: [not win]
+  build:      [not win]
+    - cmake   [not win]
+    - gcc     [linux]
+
+test:
+  commands:
+    - doxygen -v
+
+about:
+    home: http://www.stack.nl/~dimitri/doxygen/index.html
+    license: GPLv3
+

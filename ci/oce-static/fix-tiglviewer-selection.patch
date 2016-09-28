@@ -1,0 +1,31 @@
+diff --git src/V3d/V3d_View.cxx src/V3d/V3d_View.cxx
+index 9eb2e8d..19502be 100644
+--- src/V3d/V3d_View.cxx
++++ src/V3d/V3d_View.cxx
+@@ -1828,14 +1828,6 @@ void V3d_View::Convert(const Standard_Integer Xp,
+   X = aResult.X();
+   Y = aResult.Y();
+   Z = aResult.Z();
+-
+-  Graphic3d_Vertex aVrp;
+-  aVrp.SetCoord (X, Y, Z);
+-
+-  if( MyViewer->Grid()->IsActive() ) {
+-    Graphic3d_Vertex aNewVrp = Compute (aVrp) ;
+-    aNewVrp.Coord (X, Y, Z) ;
+-  }
+ }
+ 
+ //=======================================================================
+@@ -1879,11 +1871,6 @@ void V3d_View::ConvertWithProj(const Standard_Integer Xp,
+   Dx = aNormDir.x();
+   Dy = aNormDir.y();
+   Dz = aNormDir.z();
+-
+-  if( MyViewer->Grid()->IsActive() ) {
+-    Graphic3d_Vertex aNewVrp = Compute (aVrp) ;
+-    aNewVrp.Coord (X, Y, Z) ;
+-  }
+ }
+ 
+ //=======================================================================

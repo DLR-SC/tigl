@@ -1,0 +1,22 @@
+package:
+  name: libxml2-static
+  version: 2.9.3
+
+source:
+  fn: libxml2-2.9.3.tar.gz
+  url: ftp://xmlsoft.org/libxml2/libxml2-2.9.3.tar.gz
+
+build:
+  number: 1
+  features:
+    - vc9               [win and py27]
+    - vc10              [win and py34]
+    - vc14              [win and py35]
+
+requirements:
+  build:
+    - gcc               [linux]
+
+about:
+  home: http://www.xmlsoft.org/
+  summary: The XML C parser and toolkit of Gnome

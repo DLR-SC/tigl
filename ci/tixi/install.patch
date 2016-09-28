@@ -1,0 +1,39 @@
+diff --git examples/Demo/CMakeLists.txt examples/Demo/CMakeLists.txt
+index 427a87f..1492219 100644
+--- examples/Demo/CMakeLists.txt
++++ examples/Demo/CMakeLists.txt
+@@ -35,7 +35,7 @@ add_custom_command(
+ 
+ SET(APPS "\${CMAKE_INSTALL_PREFIX}/bin/tixiDemo")
+ IF(APPLE)
+-  SET(APPS "\${CMAKE_INSTALL_PREFIX}/tixiDemo.app")
++  SET(APPS "\${CMAKE_INSTALL_PREFIX}/bin/tixiDemo")
+ ENDIF(APPLE)
+ IF(WIN32)
+   SET(APPS "\${CMAKE_INSTALL_PREFIX}/bin/tixiDemo.exe")
+@@ -43,12 +43,6 @@ ENDIF(WIN32)
+ 
+ #--------------------------------------------------------------------------------
+ 
+-# directories to look for dependencies
+-SET(DIRS ${ADD_LIB_PATH} ${XML_INCLUDE_DIR} ${XSLT_INCLUDE_DIR} ${CURL_INCLUDE_DIR})
+-SET(DIRS ${DIRS} ${LIBRARY_OUTPUT_PATH})
+-
+-if (WIN32 OR APPLE)
+-
+ # Install the tixiDemo application, on Apple, the bundle is at the root of the
+ # install tree, and on other platforms it'll go into the bin directory.
+ INSTALL(TARGETS tixiDemo 
+@@ -56,6 +50,12 @@ INSTALL(TARGETS tixiDemo
+     RUNTIME DESTINATION bin COMPONENT Runtime
+     )
+ 
++# directories to look for dependencies
++SET(DIRS ${ADD_LIB_PATH} ${XML_INCLUDE_DIR} ${XSLT_INCLUDE_DIR} ${CURL_INCLUDE_DIR})
++SET(DIRS ${DIRS} ${LIBRARY_OUTPUT_PATH})
++
++if (WIN32)
++
+ # Now the work of copying dependencies into the bundle/package
+ # The quotes are escaped and variables to use at install time have their $ escaped
+ # An alternative is the do a configure_file() on a script and use install(SCRIPT  ...).
