@@ -9,6 +9,7 @@ source:
   url: https://github.com/DLR-SC/tixi/archive/v{{ version }}.tar.gz
   patches:
     - install.patch
+    - remove_hard_links.patch
 
 build:
   number: 1
@@ -24,6 +25,9 @@ requirements:
     - libxml2-static ==2.9.3
     - libxslt-static ==1.1.29
     - gcc               # [linux]
+
+  run:
+    - python
 
 test:
   requires:

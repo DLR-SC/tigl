@@ -27,6 +27,9 @@ REM Build step
 ninja
 if errorlevel 1 exit 1
 
+ninja doc
+if errorlevel 1 exit 1
+
 REM Install step
 ninja install
 if errorlevel 1 exit 1
