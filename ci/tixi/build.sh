@@ -1,3 +1,7 @@
+
+# To make libTIXI.so back-portable, we have to use clock_gettime
+# from librt instead of glibc. Thus we have to link rt explicitly
+
 mkdir build
 cd build
 
@@ -6,7 +10,7 @@ cmake -DCMAKE_INSTALL_PREFIX=$PREFIX \
  -DCMAKE_BUILD_TYPE=Release \
  -DCMAKE_PREFIX_PATH=$PREFIX \
  -DCMAKE_SYSTEM_PREFIX_PATH=$PREFIX \
- -DCMAKE_SHARED_LINKER_FLAGS=-lm \
+ -DCMAKE_SHARED_LINKER_FLAGS="-lm -lrt" \
  -DTIXI_BUILD_TESTS=ON \
  -DPYTHON_EXECUTABLE:FILEPATH=$PYTHON \
  ..
