@@ -1,0 +1,49 @@
+diff --git TIGLViewer/CMakeLists.txt TIGLViewer/CMakeLists.txt
+index f0d862b..a7395a4 100644
+--- TIGLViewer/CMakeLists.txt
++++ TIGLViewer/CMakeLists.txt
+@@ -43,6 +43,7 @@ find_package(OpenGL REQUIRED)
+ if(CMAKE_SYSTEM_NAME STREQUAL Linux)
+   # set library search path to local lib directory during installation
+   set(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE) 
++  SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH FALSE)
+   set(RELDIR "../${CMAKE_INSTALL_LIBDIR}")
+ 
+   if (IS_ABSOLUTE ${CMAKE_INSTALL_LIBDIR})
+@@ -269,7 +270,15 @@ INCLUDE(InstallRequiredSystemLibraries)
+ # set directories to look for dependencies
+ set(DIRS ${TIXI_LIB_PATH} ${OpenCASCADE_DLL_DIRECTORY}  ${OpenCASCADE_LINK_DIRECTORY} ${QT_BINARY_DIR} ${TIGL_ADD_LIB_PATH})
+ 
+-if (WIN32 OR APPLE)
++configure_file(${CMAKE_SOURCE_DIR}/cmake/PostInstall.cmake.in ${CMAKE_BINARY_DIR}/PostInstall.cmake @ONLY)
++
++if (DEFINED ENV{TIGL_FORCE_FIXUP})
++ set(FORCE_FIXUP TRUE)
++else()
++ set(FORCE_FIXUP FALSE)
++endif()
++
++if (WIN32 OR APPLE OR FORCE_FIXUP)
+   if(Qt5Widgets_FOUND)
+     if(APPLE)
+       set(QT_PLUGINS  "qcocoa;qtaccessiblewidgets")
+@@ -283,6 +293,7 @@ if (WIN32 OR APPLE)
+   else()
+     include(DeployQt4)
+     INSTALL_QT4_EXECUTABLE(${APPS} "" "" "${DIRS}" "" "" viewer)
++    install (SCRIPT ${CMAKE_BINARY_DIR}/PostInstall.cmake)
+   endif()
+ endif()
+ 
+diff --git cmake/PostInstall.cmake.in cmake/PostInstall.cmake.in
+new file mode 100644
+index 0000000..4fa5234
+--- /dev/null
++++ cmake/PostInstall.cmake.in
+@@ -0,0 +1,6 @@
++# move all *.so file from bin to lib
++#
++file(GLOB thelibs RELATIVE ${CMAKE_INSTALL_PREFIX}/bin/ ${CMAKE_INSTALL_PREFIX}/bin/*.so*)
++foreach(thelib ${thelibs})
++  file(RENAME ${CMAKE_INSTALL_PREFIX}/bin/${thelib} ${CMAKE_INSTALL_PREFIX}/lib/${thelib})
++endforeach(thelib)

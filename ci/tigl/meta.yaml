@@ -7,6 +7,10 @@ package:
 source:
   fn: tigl-{{ version }}.tar.gz
   url: https://github.com/DLR-SC/tigl/archive/v{{ version }}.tar.gz
+  #path: ../../
+  patches:
+    - force_qt4.patch     # [linux]
+    - fixup_linux.patch   # [linux]
 
 build:
   number: 0
@@ -25,7 +29,8 @@ requirements:
     - nsis ==3.0        # [win]
     - tixi ==2.2.4
     - oce-static ==0.17.2
-    - qt ==5.6.0
+    - qt ==5.6.0        # [win and mac]
+    - qt ==4.8.7        # [linux]
     # OCE deps
     - freetype-static ==2.6
 
@@ -33,7 +38,8 @@ requirements:
   run:
     - tixi ==2.2.4
     - python
-    - qt ==5.6.0
+    - qt ==5.6.0        # [win and mac]
+    - qt ==4.8.7        # [linux]
 
 
 about:

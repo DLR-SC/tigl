@@ -15,10 +15,13 @@ fi
 
 # Configure step
 cmake -G "Ninja" -DCMAKE_INSTALL_PREFIX=$PREFIX \
+ -DCMAKE_EXE_LINKER_FLAGS=-fopenmp \
+ -DCMAKE_SHARED_LINKER_FLAGS=-fopenmp \
  -DCMAKE_BUILD_TYPE=Release \
  -DCMAKE_PREFIX_PATH=$PREFIX \
  -DCMAKE_SYSTEM_PREFIX_PATH=$PREFIX \
  -DTIGL_VIEWER=ON \
+ -DTIGL_BINDINGS_MATLAB=ON \
  -DPYTHON_EXECUTABLE:FILEPATH=$PYTHON \
  -DTIGL_BUILD_TESTS=ON \
  ..
@@ -27,12 +30,17 @@ cmake -G "Ninja" -DCMAKE_INSTALL_PREFIX=$PREFIX \
 # Build step
 ninja
 
+ninja doc
+
 # Install step
 ninja install
 
+export TIGL_FORCE_FIXUP=1
+cmake .
+
 # Create the packages
 ninja package
-cp *.tar.gz *.dmg $RECIPE_DIR\
+cp *.tar.gz *.dmg $RECIPE_DIR/ 2>/dev/null || :
 
 # install python packages
 mkdir -p $SP_DIR/tigl
