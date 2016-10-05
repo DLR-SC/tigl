@@ -3,6 +3,7 @@ cd build
 
 # Configure step
 cmake -G "Ninja" -DCMAKE_INSTALL_PREFIX=$PREFIX \
+ -DCMAKE_C_FLAGS=-fPIC -DCMAKE_CXX_FLAGS=-fPIC \
  -DCMAKE_BUILD_TYPE=Release \
  -DOCE_TESTING=OFF \
  -DOCE_BUILD_SHARED_LIB=OFF \
@@ -14,8 +15,8 @@ cmake -G "Ninja" -DCMAKE_INSTALL_PREFIX=$PREFIX \
  -DOCE_INSTALL_PREFIX=$PREFIX -DOCE_ENABLE_DEB_FLAG=OFF ..
 
 # Build step
-make -j $CPU_COUNT
+ninja
 
 # Install step
-make install
+ninja install
 
