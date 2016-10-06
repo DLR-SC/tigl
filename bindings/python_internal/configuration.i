@@ -46,6 +46,7 @@
 #include "CCPACSWingCell.h"
 #include "CCPACSMaterial.h"
 #include "CCPACSGenericSystem.h"
+#include "CCPACSRotorBladeAttachment.h"
 %}
 
 %feature("autodoc", "3");
@@ -72,6 +73,12 @@
 %include "CCPACSWingSegment.h"
 %include "CCPACSFuselageSegment.h"
 %include "CCPACSWing.h"
+%include "CCPACSRotorBlade.h"
+%include "CCPACSRotorHinge.h"
+%include "CCPACSRotorBladeAttachment.h"
+%include "CCPACSRotorHub.h"
+%include "CCPACSRotor.h"
+%include "CCPACSRotors.h"
 %include "CCPACSWingProfiles.h"
 %include "CCPACSFuselageProfiles.h"
 %include "CCPACSFuselage.h"

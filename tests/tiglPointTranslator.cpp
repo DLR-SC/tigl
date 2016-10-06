@@ -294,3 +294,27 @@ TEST(TiglPointTranslator, Bug4){
     ASSERT_EQ ( TIGL_SUCCESS,  trans.translate(p, &eta, &xsi) );
 }
 
+
+/**
+ * This bug occured because of the different scale. In this case,
+ * the tolerance of the gradient was chosen too small.
+ * The gradient is quadratic in the scale, hence, the tolerance
+ * must be adapted.
+ */
+TEST(TiglPointTranslator, Bug5){
+    CTiglPoint x1(4000.0000000000000, 0.00000000000000000, 3000.0000000000000);
+    CTiglPoint x2(6893.7199999999993, 4250.0000000000000, 3000.0000000000000);
+    CTiglPoint x3(7554.9955629914994, 0.00000000000000000, 3017.7749461533222);
+    CTiglPoint x4(8693.7789747175666, 4250.0000000000000, 3006.3001935476932);
+
+    CTiglPoint p(7060.6260619422628, 1062.5000000000005, 3011.1796935014363);
+
+    double eta, xsi;
+
+    CTiglPointTranslator trans(x1, x2, x3, x4);
+
+    ASSERT_EQ ( TIGL_SUCCESS, trans.translate(p, &eta, &xsi) );
+    ASSERT_NEAR(0.25, eta, 1e-5);
+    ASSERT_NEAR(0.75, xsi, 1e-5);
+}
+

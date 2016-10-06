@@ -67,6 +67,9 @@ public:
     // Returns the name of the wing
     TIGL_EXPORT const std::string & GetName(void) const;
 
+    // Returns whether this wing is a rotor blade
+    TIGL_EXPORT bool IsRotorBlade(void) const;
+
     // Returns the parent configuration
     TIGL_EXPORT CCPACSConfiguration & GetConfiguration(void) const;
 
@@ -115,6 +118,12 @@ public:
 
     TIGL_EXPORT TopoDS_Shape GetLoftWithCutouts();
 
+    // Gets a point on the chord surface in absolute (world) coordinates for a given segment, eta, xsi
+    TIGL_EXPORT gp_Pnt GetChordPoint(int segmentIndex, double eta, double xsi);
+
+    // Gets the loft of the whole wing
+    TIGL_EXPORT TopoDS_Shape & GetLoftWithLeadingEdge(void);
+
     TIGL_EXPORT TopoDS_Shape & GetUpperShape();
     TIGL_EXPORT TopoDS_Shape & GetLowerShape();
 
@@ -140,6 +149,9 @@ public:
     // Returns the wingspan of the wing
     TIGL_EXPORT double GetWingspan(void);
 
+    // Returns the aspect ratio of the wing
+    TIGL_EXPORT double GetAspectRatio(void);
+
     // Returns the mean aerodynamic chord of the wing
     TIGL_EXPORT void  GetWingMAC(double& mac_chord, double& mac_x, double& mac_y, double& mac_z);
 
@@ -149,7 +161,7 @@ public:
     TIGL_EXPORT int GetSegmentEtaXsi(const gp_Pnt& xyz, double& eta, double& xsi, bool &onTop);
 
     // Returns the Component Type TIGL_COMPONENT_WING.
-    TIGL_EXPORT TiglGeometricComponentType GetComponentType(void) {return TIGL_COMPONENT_WING | TIGL_COMPONENT_PHYSICAL;}
+    TIGL_EXPORT TiglGeometricComponentType GetComponentType(void);
 
     // Returns the lower Surface of a Segment
     TIGL_EXPORT Handle(Geom_Surface) GetLowerSegmentSurface(int index);
@@ -197,6 +209,7 @@ private:
 
 private:
     std::string                    name;                     /**< Wing name           */
+    bool                           isRotorBlade;             /**< Indicates if this wing is a rotor blade */
     CCPACSWingSections             sections;                 /**< Wing sections       */
     CCPACSWingSegments             segments;                 /**< Wing segments       */
     CCPACSWingComponentSegments    componentSegments;        /**< Wing ComponentSegments */

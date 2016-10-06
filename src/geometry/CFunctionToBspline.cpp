@@ -90,6 +90,8 @@ public:
             return _func.valueY(t);
         case Z:
             return _func.valueZ(t);
+        default:
+            return 0.;
         }
     }
 

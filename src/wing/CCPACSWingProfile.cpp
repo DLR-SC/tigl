@@ -83,6 +83,7 @@ void CCPACSWingProfile::Cleanup(void)
     name = "";
     description = "";
     uid = "";
+    isRotorProfile = false;
 
     if (profileAlgo) {
         profileAlgo->Cleanup();
@@ -95,6 +96,11 @@ void CCPACSWingProfile::Cleanup(void)
 void CCPACSWingProfile::ReadCPACS(TixiDocumentHandle tixiHandle)
 {
     Cleanup();
+    
+    if (ProfileXPath.find("rotorAirfoil") != std::string::npos) {
+        isRotorProfile = true;
+    }
+    
     std::string namePath = ProfileXPath + "/name";
     std::string describtionPath = ProfileXPath + "/description";
 
@@ -143,6 +149,12 @@ const std::string& CCPACSWingProfile::GetDescription(void) const
 const std::string& CCPACSWingProfile::GetUID(void) const
 {
     return uid;
+}
+
+// Returns whether the profile is a rotor profile
+bool CCPACSWingProfile::IsRotorProfile(void) const
+{
+    return isRotorProfile;
 }
 
 // Invalidates internal wing profile state

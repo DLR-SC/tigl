@@ -34,7 +34,11 @@ endif(GLOG_FOUND)
 include_directories(${PROJECT_SOURCE_DIR}/thirdparty/boost_1_55_0)
 
 ADD_CUSTOM_TARGET(check ${test_BIN} --gtest_output=xml DEPENDS ${test_BIN} COMMENT "Executing unit tests..." VERBATIM SOURCES ${test_SRCS})
-ADD_CUSTOM_TARGET(test DEPENDS check)
+
+ADD_TEST(
+  NAME unittests
+  COMMAND ${test_BIN} --gtest_output=xml
+)
 
 #execute_process(COMMAND ${CMAKE_PROGRAM} -E copy_if_different ${PROJECT_SOURCE_DIR}/tests/TestData tests/Testdata)
 file(COPY ${PROJECT_SOURCE_DIR}/tests/TestData DESTINATION ${CMAKE_CURRENT_BINARY_DIR})

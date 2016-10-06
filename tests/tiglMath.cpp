@@ -296,3 +296,13 @@ TEST(TiglMath, Tchebycheff2Bezier_N6)
     ASSERT_NEAR( -45., M.Value(5,4), 1e-12);
     ASSERT_NEAR(   5., M.Value(5,5), 1e-12);
 }
+
+TEST(TiglMath, DistancePointFromLine)
+{
+    tigl::CTiglPoint x0(0., 0., 0.);
+    tigl::CTiglPoint dx(1., 1., 0.);
+    
+    ASSERT_NEAR(0., tigl::distance_point_from_line(tigl::CTiglPoint(0., 0., 0.), x0, dx), 1e-10);
+    ASSERT_NEAR(0., tigl::distance_point_from_line(tigl::CTiglPoint(3., 3., 0.), x0, dx), 1e-10);
+    ASSERT_NEAR(sqrt(0.5), tigl::distance_point_from_line(tigl::CTiglPoint(1., 0., 0.), x0, dx), 1e-10);
+}

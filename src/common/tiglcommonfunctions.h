@@ -61,6 +61,16 @@ TIGL_EXPORT gp_Pnt2d ProjectPointOnPlane(gp_Pln pln, gp_Pnt p);
 // projects a vector onto a plane and returns the vector in parameters of the plane
 TIGL_EXPORT gp_Vec2d ProjectVecOnPlane(gp_Pln pln, gp_Vec v);
 
+enum IntStatus {
+    BetweenPoints, // The intersection point lies between p1 and p2
+    OutsideBefore, // The intersection point lies before p1
+    OutsideAfter,  // The intersection point lies after p2
+    NoIntersection // the plane and the line are parallel to each other
+};
+
+// returns the intersection point between a line (p1-p2) and the plane
+TIGL_EXPORT IntStatus IntersectLinePlane(gp_Pnt p1, gp_Pnt p2, gp_Pln plane, gp_Pnt& result);
+
 // returns the number of edges of the current shape
 TIGL_EXPORT unsigned int GetNumberOfEdges(const TopoDS_Shape& shape);
 

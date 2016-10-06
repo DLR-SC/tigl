@@ -34,6 +34,7 @@
 #include "tiglcommonfunctions.h"
 #include "CBopCommon.h"
 #include "CGroupShapes.h"
+#include "tiglmathfunctions.h"
 
 #include "PNamedShape.h"
 #include "CCutShape.h"
@@ -71,7 +72,21 @@ namespace
     {
         return a < b? a : b;
     }
-    
+
+    // Returns the index of the maximum value
+    int maxIndex(double x, double y, double z)
+    {
+        if (x >= y && x >= z) {
+            return 0;
+        }
+        else if (y >= x && y >= z) {
+            return 1;
+        }
+        else {
+            return 2;
+        }
+    }
+
     TopoDS_Wire transformToWingCoords(const tigl::CTiglTransformation& wingTransform, const tigl::CCPACSWingConnection& wingConnection, const TopoDS_Wire& origWire)
     {
         // Do section element transformations
@@ -169,6 +184,7 @@ void CCPACSWing::Invalidate(void)
 void CCPACSWing::Cleanup(void)
 {
     name = "";
+    isRotorBlade = false;
     transformation.reset();
 
     // Calls ITiglGeometricComponent interface Reset to delete e.g. all childs.
@@ -194,6 +210,10 @@ void CCPACSWing::Update(void)
 void CCPACSWing::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& wingXPath)
 {
     Cleanup();
+
+    if (wingXPath.find("rotorBlade") != std::string::npos) {
+        isRotorBlade = true;
+    }
 
     char*       elementPath;
     std::string tempString;
@@ -252,10 +272,27 @@ void CCPACSWing::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& win
     Update();
 }
 
+// Returns the Component Type TIGL_COMPONENT_WING.
+TiglGeometricComponentType CCPACSWing::GetComponentType(void)
+{
+    if (isRotorBlade) {
+        return TIGL_COMPONENT_WING;
+    }
+    else {
+        return TIGL_COMPONENT_WING | TIGL_COMPONENT_PHYSICAL;
+    }
+}
+
 // Returns the name of the wing
 const std::string& CCPACSWing::GetName(void) const
 {
     return name;
+}
+
+// Returns whether this wing is a rotor blade
+bool CCPACSWing::IsRotorBlade(void) const
+{
+    return isRotorBlade;
 }
 
 // Returns the parent configuration
@@ -558,6 +595,12 @@ gp_Pnt CCPACSWing::GetLowerPoint(int segmentIndex, double eta, double xsi)
     return  ((CCPACSWingSegment &) GetSegment(segmentIndex)).GetLowerPoint(eta, xsi);
 }
 
+// Gets a point on the chord surface in absolute (world) coordinates for a given segment, eta, xsi
+gp_Pnt CCPACSWing::GetChordPoint(int segmentIndex, double eta, double xsi)
+{
+    return  ((CCPACSWingSegment &) GetSegment(segmentIndex)).GetChordPoint(eta, xsi);
+}
+
 // Returns the volume of this wing
 double CCPACSWing::GetVolume(void)
 {
@@ -656,32 +699,57 @@ double CCPACSWing::GetWingspan()
 {
     Bnd_Box boundingBox;
     if (GetSymmetryAxis() == TIGL_NO_SYMMETRY) {
-        // find out major direction
-        gp_XYZ cumulatedDirection(0,0,0);
+        // As we have no symmetry information
+        // we have to find out the major direction
+        // of the wing.
+        // This is not so trivial, as e.g. the VTP can
+        // be longer in depth than the actual span.
+        // Boxwings have to be treated as well.
+        // Here, we apply a heuristic that finds out
+        // The major depth direction and the major
+        // spanning direction. The depth direction
+        // is then discarded in the span evaluation.
+
+        gp_XYZ cumulatedSpanDirection(0, 0, 0);
+        gp_XYZ cumulatedDepthDirection(0, 0, 0);
         for (int i = 1; i <= GetSegmentCount(); ++i) {
             CCPACSWingSegment& segment = segments.GetSegment(i);
             const TopoDS_Shape& segmentShape = segment.GetLoft()->Shape();
             BRepBndLib::Add(segmentShape, boundingBox);
 
-            gp_XYZ dir = segment.GetChordPoint(1,0).XYZ() - segment.GetChordPoint(0,0).XYZ();
-            dir = gp_XYZ(fabs(dir.X()), fabs(dir.Y()), fabs(dir.Z()));
-            cumulatedDirection += dir;
+            gp_XYZ dirSpan  = segment.GetChordPoint(1,0).XYZ() - segment.GetChordPoint(0,0).XYZ();
+            gp_XYZ dirDepth = segment.GetChordPoint(0,1).XYZ() - segment.GetChordPoint(0,0).XYZ();
+            dirSpan  = gp_XYZ(fabs(dirSpan.X()), fabs(dirSpan.Y()), fabs(dirSpan.Z()));
+            dirDepth = gp_XYZ(fabs(dirDepth.X()), fabs(dirDepth.Y()), fabs(dirDepth.Z()));
+            cumulatedSpanDirection += dirSpan;
+            cumulatedDepthDirection += dirDepth;
         }
+        CCPACSWingSegment& outerSegment = segments.GetSegment(GetSegmentCount());
+        gp_XYZ dirDepth = outerSegment.GetChordPoint(1,1).XYZ() - outerSegment.GetChordPoint(1,0).XYZ();
+        dirDepth = gp_XYZ(fabs(dirDepth.X()), fabs(dirDepth.Y()), fabs(dirDepth.Z()));
+        cumulatedDepthDirection += dirDepth;
+        
+        int depthIndex = maxIndex(cumulatedDepthDirection.X(),
+                                  cumulatedDepthDirection.Y(),
+                                  cumulatedDepthDirection.Z());
 
+        // Get the extension of the wing in all
+        // directions of the world coordinate system 
         Standard_Real xmin, xmax, ymin, ymax, zmin, zmax;
         boundingBox.Get(xmin, ymin, zmin, xmax, ymax, zmax);
         double xw = xmax - xmin;
         double yw = ymax - ymin;
         double zw = zmax - zmin;
 
-        if (cumulatedDirection.X() >= cumulatedDirection.Y() && cumulatedDirection.X() >= cumulatedDirection.Z()) {
-            return xw;
-        }
-        else if (cumulatedDirection.Y() >= cumulatedDirection.X() && cumulatedDirection.Y() >= cumulatedDirection.Z()) {
-            return yw;
-        }
-        else {
-            return zw;
+        // The direction of depth should not be included in the span evaluation
+        switch (depthIndex) {
+        default:
+        case 0:
+            return cumulatedSpanDirection.Y() >= cumulatedSpanDirection.Z() ? yw : zw;
+        case 1:
+            return cumulatedSpanDirection.X() >= cumulatedSpanDirection.Z() ? xw : zw;
+        case 2:
+            return cumulatedSpanDirection.X() >= cumulatedSpanDirection.Y() ? xw : yw;
         }
     }
     else {
@@ -712,6 +780,13 @@ double CCPACSWing::GetWingspan()
     }
 }
 
+// Returns the aspect ratio of a wing: AR=b**2/A=((2s)**2)/(2A_half)
+//     b: full span; A: Reference area of full wing (wing + symmetrical wing)
+//     s: half span; A_half: Reference area of wing without symmetrical wing
+double CCPACSWing::GetAspectRatio()
+{
+    return 2.0*(pow_int(GetWingspan(),2)/GetReferenceArea(GetSymmetryAxis()));
+}
 
 /**
     * This function calculates location of the quarter of mean aerodynamic chord,

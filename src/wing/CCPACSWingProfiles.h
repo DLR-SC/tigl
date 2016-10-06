@@ -77,8 +77,11 @@ private:
     // Assignment operator
     void operator=(const CCPACSWingProfiles& ) { /* Do nothing */ }
 
+    void ReadCPACSProfiles(TixiDocumentHandle tixiHandle,
+                           const std::string& wingProfilesLibraryPath,
+                           const std::string& wingProfileElementName);
+
 private:
-    std::string                librarypath; // Directory path to wing profiles
     CCPACSWingProfileContainer profiles;    // All wing profiles
 
 };

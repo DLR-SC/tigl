@@ -78,6 +78,9 @@ public:
     // Returns the fuselage for a given UID.
     TIGL_EXPORT CCPACSFuselage& GetFuselage(const std::string& UID) const;
 
+    // Returns the fuselage index for a given UID.
+    TIGL_EXPORT int GetFuselageIndex(const std::string& UID) const;
+
 protected:
     // Cleanup routine
     void Cleanup(void);
