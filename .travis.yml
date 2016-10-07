@@ -5,8 +5,9 @@ compiler:
 before_install:
   - curl http://download.opensuse.org/repositories/home:/martinsiggel/xUbuntu_12.04/Release.key | sudo apt-key add -
   - echo "deb http://download.opensuse.org/repositories/home:/martinsiggel/xUbuntu_12.04/ /" | sudo tee -a /etc/apt/sources.list
+  - sudo add-apt-repository ppa:george-edison55/precise-backports -y
   - sudo apt-get update -qq
-  - sudo apt-get install -y libtixi-dev liboce-dev
+  - sudo apt-get install -y libtixi-dev liboce-dev cmake cmake-data
 # oce ships a faulty config file, we have to remove it and use standard opencascade detection
   - sudo rm /usr/lib/oce-*/OCEConfig.cmake  
   
