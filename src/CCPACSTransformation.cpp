@@ -57,7 +57,7 @@ namespace tigl {
 		BuildMatrix();
 	}
 
-	TIGL_EXPORT void CCPACSTransformation::BuildMatrix() {
+	void CCPACSTransformation::BuildMatrix() {
 		m_transformation.SetIdentity();
 		if (m_scaling) {
 			const auto& s = m_scaling->AsPoint();
