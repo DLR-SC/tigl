@@ -1,7 +1,7 @@
 # CPACSGen cmake project
 # author: Bernhard Manfred Gruber
 
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 3.2)
 
 project(CPACSGen)
 
@@ -23,7 +23,7 @@ file(GLOB ALL_SRCS src/*.cpp)
 file(GLOB ALL_HEADERS src/*.h*)
 file(GLOB ALL_TABLES src/*Table*)
 
-#includes 
+#includes
 include_directories(${Boost_INCLUDE_DIRS})
 include_directories(${TIXI_INCLUDE_DIRS})
 
@@ -38,24 +38,17 @@ source_group("Tables" FILES ${ALL_TABLES})
 
 # add post build step to generate files side by side to TIGL source
 set(GENERATOR_OUTPUT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../src/generated CACHE PATH "The output directory for the generated CPACS classes")
-set(CPACS_SCHEMA_DIR ${CMAKE_CURRENT_SOURCE_DIR}/schema/cpacs_schema.xsd CACHE FILEPATH "The location of the XML schema file specifying CPACS")
+set(CPACS_SCHEMA_FILE ${CMAKE_CURRENT_SOURCE_DIR}/schema/cpacs_schema.xsd CACHE FILEPATH "The location of the XML schema file specifying CPACS")
 
-# determine location if compiled generator executable (TODO: not sure if this is correct for all platforms)
-if(MSVC)
-	set(CPACSGEN_BINARY ${CMAKE_CURRENT_BINARY_DIR}/$(Configuration)/${PROJECT_NAME}.exe)
-else()
-	set(CPACSGEN_BINARY ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME})
-endif()
-
-add_custom_command(
-	TARGET ${PROJECT_NAME}
-	POST_BUILD
-	COMMAND ${CPACSGEN_BINARY}
-	ARGS ${CPACS_SCHEMA_DIR} ${GENERATOR_OUTPUT_DIR}
+# generate target
+add_custom_target(
+	generate
+	COMMAND ${PROJECT_NAME} ${CPACS_SCHEMA_FILE} ${GENERATOR_OUTPUT_DIR}
 	COMMENT Running CPACSGen
 	VERBATIM
 )
 
+# linker flags
 if (NOT WIN32)
 	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 endif (NOT WIN32)
