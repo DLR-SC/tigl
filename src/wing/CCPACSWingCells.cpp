@@ -57,7 +57,9 @@ void CCPACSWingCells::Cleanup()
 
 void CCPACSWingCells::Invalidate()
 {
-
+    for (int i = 0; i < cells.size(); i++) {
+        cells[i]->Invalidate();
+    }
 }
 
 void CCPACSWingCells::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string &xpath)
