@@ -29,6 +29,8 @@
 
 using namespace tigl;
 
+typedef std::pair<double, double> DP;
+
 /******************************************************************************/
 
 class WingCellSpar : public ::testing::Test
@@ -196,7 +198,8 @@ TEST(WingCell, area)
 TEST_F(WingCellSpar, sparCellXsi) {
     // See: cell_test_spars.png for placement of cells
 
-    std::vector<std::pair<double, double>> expectedXsis = { { 0.2, 0.25 }, { 0.35, 0.4 }, { 0.3, 0.43 }, { 0.275, 0.4 }, { 0.47, 0.4 }, { 0.5, 0.3 } };
+    const std::pair<double, double> arr[] = { DP(0.2, 0.25), DP(0.35, 0.4), DP(0.3, 0.43), DP(0.275, 0.4), DP(0.47, 0.4), DP(0.5, 0.3) };
+    std::vector< std::pair<double, double> > expectedXsis(arr, arr + sizeof(arr) / sizeof(arr[0]));
 
     // get Component Segment
     tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
@@ -205,7 +208,7 @@ TEST_F(WingCellSpar, sparCellXsi) {
     tigl::CCPACSWingComponentSegment& componentSegment = static_cast<tigl::CCPACSWingComponentSegment&>(wing.GetComponentSegment(1));
 
     int cellIndex = 1;
-    std::vector<std::pair<double, double>>::const_iterator it;
+    std::vector< std::pair<double, double> >::const_iterator it;
     for (it = expectedXsis.begin(); it != expectedXsis.end(); ++it) {
         double xsi1Exp = it->first;
         double xsi2Exp = it->second;
@@ -220,7 +223,7 @@ TEST_F(WingCellSpar, sparCellXsi) {
 }
 
 namespace {
-    void checkCellEtaXsis(const tigl::CCPACSWingCell& cell, const std::vector<std::pair<double, double>>& expectedEtaXsi, double precision = 1e-7) {
+    void checkCellEtaXsis(const tigl::CCPACSWingCell& cell, const std::vector< std::pair<double, double> >& expectedEtaXsi, double precision = 1e-7) {
         double eta, xsi;
         int etaXsiIndex = 0;
         cell.GetLeadingEdgeInnerPoint(&eta, &xsi);
@@ -245,7 +248,8 @@ TEST_F(WingCellRibSpar, etaXsi) {
     // See: cell_rib_spar_test.png for placement of cells
 
     // next compute the expected XSI values on the spar
-    std::vector<std::pair<double, double>> expectedEtaXsi = { { 0.2, 0.3 }, { 0.95, 0.4 }, { 0.2, 0.8 }, { 0.95, 1.0 } };
+    const std::pair<double, double> arr[] = { DP(0.2, 0.3), DP(0.95, 0.4), DP(0.2, 0.8), DP(0.95, 1.0) };
+    std::vector< std::pair<double, double> > expectedEtaXsi (arr, arr + sizeof(arr) / sizeof(arr[0]));
 
     // get Component Segment
     tigl::CCPACSConfigurationManager & manager = tigl::CCPACSConfigurationManager::GetInstance();
@@ -259,13 +263,15 @@ TEST_F(WingCellRibSpar, etaXsi) {
 
     // now we change the rib definition and watch whether the cell is correctly updated
     structure.GetRibsDefinition(1).GetRibsPositioning().SetEtaEnd(0.8);
-    expectedEtaXsi = { { 0.2, 0.3 }, { 0.8, 0.48 }, { 0.2, 0.8 }, { 0.8, 1.0 } };
+    const std::pair<double, double> arr2[] = { DP(0.2, 0.3), DP(0.8, 0.48), DP(0.2, 0.8), DP(0.8, 1.0) };
+    expectedEtaXsi = std::vector< std::pair<double, double> > (arr2, arr2 + sizeof(arr2) / sizeof(arr2[0]));
     checkCellEtaXsis(cell, expectedEtaXsi);
 
     // next we change the z-rotation of the rib
     // See: cell_rib_spar_test_2.png for placement of cells
     structure.GetRibsDefinition(1).GetRibsPositioning().GetRibRotation().SetZRotation(75);
-    expectedEtaXsi = { { 0.16, 0.28 }, { 0.74, 0.47 }, { 0.09, 0.8 }, { 0.67, 1.0 } };
+    const std::pair<double, double> arr3[] = { DP(0.16, 0.28), DP(0.74, 0.47), DP(0.09, 0.8), DP(0.67, 1.0) };
+    expectedEtaXsi = std::vector< std::pair<double, double> > (arr3, arr3 + sizeof(arr3) / sizeof(arr3[0]));
     // precision at 1E-2 since expected values are estimated based on geometric inspection
     checkCellEtaXsis(cell, expectedEtaXsi, 1.E-2);
 }
