@@ -146,7 +146,7 @@ EtaXsi computeRibSparIntersectionEtaXsi(const CTiglWingStructureReference& wsr, 
 
         double rxs = r.Crossed(s);
         // ignore parallel or colinear lines
-        if (std::abs(rxs) > precision) {
+        if (fabs(rxs) > precision) {
             double t = gp_Vec2d(p, q).Crossed(s) / rxs;
             double u = gp_Vec2d(p, q).Crossed(r) / rxs;
             if (t >= zeroMin && t <= (1 + precision) && u >= zeroMin && u <= (1 + precision)) {

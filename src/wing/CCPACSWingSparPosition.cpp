@@ -43,7 +43,7 @@ void CCPACSWingSparPosition::Cleanup()
     eta = 0;
     xsi = 0;
     elementUID.clear();
-    inputType = InputType::None;
+    inputType = None;
 }
 
 void CCPACSWingSparPosition::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& sparPositionXPath)
@@ -63,7 +63,7 @@ void CCPACSWingSparPosition::ReadCPACS(TixiDocumentHandle tixiHandle, const std:
             LOG(ERROR) << "Missing eta";
             throw CTiglError("Error: Missing eta in CCPACSWingSparPosition::ReadCPACS!", TIGL_XML_ERROR);
         }
-        inputType = InputType::Eta;
+        inputType = Eta;
     }
     else if (tixiCheckElement(tixiHandle, elementUIDElementPath.c_str()) == SUCCESS) {
         if (tixiGetTextElement(tixiHandle, elementUIDElementPath.c_str(), &ptrUID) != SUCCESS) {
@@ -71,7 +71,7 @@ void CCPACSWingSparPosition::ReadCPACS(TixiDocumentHandle tixiHandle, const std:
             throw CTiglError("Error: Missing elementUID in CCPACSWingSparPosition::ReadCPACS!", TIGL_XML_ERROR);
         }
         elementUID = ptrUID;
-        inputType = InputType::ElementUID;
+        inputType = ElementUID;
     }
     else {
         LOG(ERROR) << "Missing eta or elementUID OR spacing";
@@ -89,10 +89,10 @@ void CCPACSWingSparPosition::WriteCPACS(TixiDocumentHandle tixiHandle, const std
     TixiSaveExt::TixiSaveTextAttribute(tixiHandle, sparPositionXPath.c_str(), "uID", uid.c_str());
     
     switch (inputType) {
-    case InputType::ElementUID:
+    case ElementUID:
         TixiSaveExt::TixiSaveTextElement(tixiHandle, sparPositionXPath.c_str(), "elementUID", elementUID.c_str());
         break;
-    case InputType::Eta:
+    case Eta:
         TixiSaveExt::TixiSaveDoubleElement(tixiHandle, sparPositionXPath.c_str(), "eta", eta, NULL);
         break;
     default:
@@ -114,7 +114,7 @@ CCPACSWingSparPosition::InputType CCPACSWingSparPosition::GetInputType() const
 
 const std::string& CCPACSWingSparPosition::GetElementUID() const
 {
-    if (inputType != InputType::ElementUID) {
+    if (inputType != ElementUID) {
         throw CTiglError("SparPosition is not defined via elementUID. Please check InputType first before calling CCPACSWingSparPosition::GetElementUID()");
     }
     return elementUID;
@@ -125,7 +125,7 @@ void CCPACSWingSparPosition::SetElementUID(const std::string& uid)
     elementUID = uid;
 
     eta = 0;
-    inputType = InputType::ElementUID;
+    inputType = ElementUID;
 
     // invalidate whole component segment structure, since ribs or cells could reference the spar
     spars.GetStructure().Invalidate();
@@ -133,7 +133,7 @@ void CCPACSWingSparPosition::SetElementUID(const std::string& uid)
 
 double CCPACSWingSparPosition::GetEta() const
 {
-    if (inputType != InputType::Eta) {
+    if (inputType != Eta) {
         throw CTiglError("SparPosition is not defined via eta. Please check InputType first before calling CCPACSWingSparPosition::GetEta()");
     }
     return eta;
@@ -144,7 +144,7 @@ void CCPACSWingSparPosition::SetEta(double value)
     eta = value;
    
     elementUID.clear();
-    inputType = InputType::Eta;
+    inputType = Eta;
 
     // invalidate whole component segment structure, since ribs or cells could reference the spar
     spars.GetStructure().Invalidate();
