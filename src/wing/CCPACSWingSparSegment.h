@@ -44,7 +44,8 @@ class CCPACSWingSparPosition;
 class CCPACSWingSparSegment
 {
 public:
-    enum SparCapSide {
+    enum SparCapSide
+    {
         UPPER,
         LOWER
     };
@@ -112,23 +113,27 @@ private:
     CCPACSWingSparSegment(const CCPACSWingSparSegment&);
     void operator=(const CCPACSWingSparSegment&);
 
-    struct AuxiliaryGeomCache {
+    struct AuxiliaryGeomCache
+    {
         bool valid;
         TopoDS_Wire sparMidplaneLine;
         TopoDS_Shape sparCutShape;
     };
 
-    struct GeometryCache {
+    struct GeometryCache
+    {
         bool valid;
         TopoDS_Shape shape;
     };
 
-    struct SplittedGeomCache {
+    struct SplittedGeomCache
+    {
         bool valid;
         TopoDS_Shape shape;
     };
 
-    struct SparCapsCache {
+    struct SparCapsCache
+    {
         bool valid;
         TopoDS_Shape upperCapsShape;
         TopoDS_Shape lowerCapsShape;

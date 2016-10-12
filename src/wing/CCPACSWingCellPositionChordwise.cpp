@@ -76,16 +76,16 @@ void CCPACSWingCellPositionChordwise::ReadCPACS(TixiDocumentHandle tixiHandle,  
 void CCPACSWingCellPositionChordwise::WriteCPACS(TixiDocumentHandle tixiHandle,  const std::string& xpath) const
 {
     switch (m_inputType) {
-        case Xsi:
-            TixiSaveExt::TixiSaveDoubleElement(tixiHandle, xpath.c_str(), "xsi1", m_xsi1, NULL);
-            TixiSaveExt::TixiSaveDoubleElement(tixiHandle, xpath.c_str(), "xsi2", m_xsi2, NULL);
-            break;
-        case Spar:
-            TixiSaveExt::TixiSaveTextElement(tixiHandle, xpath.c_str(), "sparUID", this->m_sparUID.c_str());
-            break;
-        default:
-            LOG(ERROR) << "Missing element <xsi1> or <sparUID>";
-            throw CTiglError("Error: Missing element <xsi1> or <sparUID> in CCPACSWingCellPositionChordwise::WriteCPACS!", TIGL_XML_ERROR);
+    case Xsi:
+        TixiSaveExt::TixiSaveDoubleElement(tixiHandle, xpath.c_str(), "xsi1", m_xsi1, NULL);
+        TixiSaveExt::TixiSaveDoubleElement(tixiHandle, xpath.c_str(), "xsi2", m_xsi2, NULL);
+        break;
+    case Spar:
+        TixiSaveExt::TixiSaveTextElement(tixiHandle, xpath.c_str(), "sparUID", this->m_sparUID.c_str());
+        break;
+    default:
+        LOG(ERROR) << "Missing element <xsi1> or <sparUID>";
+        throw CTiglError("Error: Missing element <xsi1> or <sparUID> in CCPACSWingCellPositionChordwise::WriteCPACS!", TIGL_XML_ERROR);
     }
 }
 

@@ -132,14 +132,14 @@ bool IsOuterSparPointInSection(const std::string& sparUid, double eta, const CCP
         return true;
     }
     else if (pos.GetInputType() == CCPACSWingSparPosition::Eta &&
-        (pos.GetEta() < Precision::Confusion() || pos.GetEta() > 1 - Precision::Confusion())) {
+             (pos.GetEta() < Precision::Confusion() || pos.GetEta() > 1 - Precision::Confusion())) {
         return true;
     }
     return false;
 }
 
 gp_Vec GetUpVectorWithoutXRotation(const std::string& ribReference, double currentEta, const gp_Pnt& startPnt, 
-    const std::string& sparPositionUID, const CCPACSWingCSStructure& structure)
+                                   const std::string& sparPositionUID, const CCPACSWingCSStructure& structure)
 {
     const CTiglWingStructureReference& wingStructureReference = structure.GetWingStructureReference();
 
@@ -174,7 +174,8 @@ double GetBoundingBoxSize(const TopoDS_Shape& shape)
 }
 
 TopoDS_Wire CutFaceWithSpar(TopoDS_Shape& ribCutFace, const TopoDS_Shape& sparGeometry,
-    double bboxSize, TopoDS_Wire& changedWire, const TopoDS_Wire& wire2, const gp_Vec& upVec)
+                            double bboxSize, TopoDS_Wire& changedWire, const TopoDS_Wire& wire2,
+                            const gp_Vec& upVec)
 {
     // split rib face with spar geometry
     TopoDS_Shape cutEdges = CutShapes(sparGeometry, ribCutFace);
@@ -294,7 +295,7 @@ gp_Pnt GetSparMidplanePoint(const CCPACSWingSparPosition& sparPos, const CCPACSW
 }
 
 void CheckSparPositionOnReference(const std::string& sparPositionUID, const std::string& ribReference,
-    const CCPACSWingCSStructure& structure)
+                                  const CCPACSWingCSStructure& structure)
 {
     // first ensure that the reference line is a spar
     int numSparSegments = structure.GetSparSegmentCount();

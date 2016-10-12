@@ -1052,7 +1052,7 @@ gp_Vec CCPACSWingRibsDefinition::GetRibDirection(double currentEta, const gp_Pnt
 }
 
 TopoDS_Face CCPACSWingRibsDefinition::BuildRibCutFace(const gp_Pnt& startPnt, const gp_Vec& ribDir, const std::string& ribStart,
-    const std::string& ribEnd, const gp_Vec& upVecStart, const gp_Vec& upVecEnd) const
+                                                      const std::string& ribEnd, const gp_Vec& upVecStart, const gp_Vec& upVecEnd) const
 {
     // STEP 1: compute the size of the bounding box
     double bboxSize = GetBoundingBoxSize(structure.GetWingStructureReference().GetLoft()->Shape());
@@ -1109,7 +1109,8 @@ TopoDS_Face CCPACSWingRibsDefinition::BuildRibCutFace(const gp_Pnt& startPnt, co
 }
 
 CCPACSWingRibsDefinition::RibMidplanePoints CCPACSWingRibsDefinition::ComputeRibDefinitionPoints(const std::string& ribStart, 
-    const std::string& ribEnd, const TopoDS_Face& ribCutFace) const
+                                                                                                 const std::string& ribEnd, 
+                                                                                                 const TopoDS_Face& ribCutFace) const
 {
     // Compute the intersection points of the rib definition lines and the cut face
     gp_Pnt ribStartPnt = GetRibDefinitionPoint(ribStart, ribCutFace, structure);

@@ -38,7 +38,8 @@ class CCPACSWingCell;
 class CCPACSWingCellPositionChordwise
 {
 public:
-    enum /* class */ InputType {
+    enum /* class */ InputType
+    {
         Xsi,
         Spar,
         None

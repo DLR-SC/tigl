@@ -34,7 +34,8 @@ class CCPACSWingSparSegment;
 class CTiglWingStructureReference;
 
 // TODO: find a better place for this struct
-struct EtaXsi {
+struct EtaXsi
+{
     EtaXsi() : eta(0), xsi(0) {};
     EtaXsi(double eta, double xsi) : eta(eta), xsi(xsi) {};
     double eta;

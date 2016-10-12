@@ -33,7 +33,8 @@ class CCPACSWingSpars;
 class CCPACSWingSparPosition
 {
 public:
-    enum /* class */ InputType {
+    enum /* class */ InputType
+    {
         ElementUID,
         Eta,
         None
@@ -64,7 +65,6 @@ protected:
 
 private:
     CCPACSWingSparPosition(const CCPACSWingSparPosition&);
-
     void operator=(const CCPACSWingSparPosition&);
 
 private:
