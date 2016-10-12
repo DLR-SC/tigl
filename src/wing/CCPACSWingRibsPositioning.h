@@ -33,11 +33,29 @@ class CCPACSWingRibsDefinition;
 class CCPACSWingRibsPositioning
 {
 public:
-    enum CrossingBehaviour { CROSSING_CROSS, CROSSING_END };
+    enum CrossingBehaviour 
+    { 
+        CROSSING_CROSS,
+        CROSSING_END
+    };
     // NOTE: definition of start/end of rib via spar position not conform with CPACS format (v2.3)
-    enum StartDefinitionType { ELEMENT_START, ETA_START, SPARPOSITION_START };
-    enum EndDefinitionType { ELEMENT_END, ETA_END, SPARPOSITION_END };
-    enum RibCountDefinitionType { NUMBER_OF_RIBS, SPACING };
+    enum StartDefinitionType 
+    { 
+        ELEMENT_START,
+        ETA_START,
+        SPARPOSITION_START
+    };
+    enum EndDefinitionType
+    {
+        ELEMENT_END,
+        ETA_END,
+        SPARPOSITION_END
+    };
+    enum RibCountDefinitionType
+    {
+        NUMBER_OF_RIBS,
+        SPACING
+    };
 
 public:
     TIGL_EXPORT CCPACSWingRibsPositioning(CCPACSWingRibsDefinition& parent);

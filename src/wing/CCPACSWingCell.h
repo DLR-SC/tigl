@@ -88,7 +88,8 @@ public:
     
 private:
     std::pair<double, double> computePositioningEtaXsi(const CCPACSWingCellPositionSpanwise& spanwisePos, 
-        const CCPACSWingCellPositionChordwise& chordwisePos, bool inner, bool front) const;
+                                                       const CCPACSWingCellPositionChordwise& chordwisePos, 
+                                                       bool inner, bool front) const;
 
     // calculates the Eta/Xsi values of the the cell's corner points and stores
     // them in the cache
@@ -109,7 +110,8 @@ private:
 
     CCPACSWingCells* parent;
     
-    struct Cache {
+    struct Cache
+    {
         Cache() : valid(false) {};
         bool valid;
         EtaXsi innerLeadingEdgePoint;

@@ -528,8 +528,7 @@ void CCPACSWingSparSegment::BuildSplittedSparGeometry() const
     for (int i = 1; i <= numRibs; i++) {
         // get the split geometry from the ribs
         tigl::CCPACSWingRibsDefinition& ribsDefinition = structure.GetRibsDefinition(i);
-        for (int k = 0; k < ribsDefinition.GetNumberOfRibs(); k++)
-        {
+        for (int k = 0; k < ribsDefinition.GetNumberOfRibs(); k++) {
             const tigl::CCPACSWingRibsDefinition::CutGeometry& cutGeom = ribsDefinition.GetRibCutGeometry(k + 1);
             builder.Add(compound, cutGeom.shape);
         }
@@ -553,8 +552,7 @@ void CCPACSWingSparSegment::BuildSparCapsGeometry() const
 
     TopoDS_Shape sparCutting = GetSparCutGeometry(WING_COORDINATE_SYSTEM);
 
-    if (sparCrossSection.HasUpperCap())
-    {
+    if (sparCrossSection.HasUpperCap()) {
         TopoDS_Shape loft = wingStructureReference.GetUpperShape();
 
         // Get the cutting edge of the spar cutting plane and the loft
@@ -563,14 +561,12 @@ void CCPACSWingSparSegment::BuildSparCapsGeometry() const
         TopoDS_Shape result = CutShapes(loft, sparCutting);
 
         TopoDS_Edge edge;
-        for (ExpEdges.Init(result, TopAbs_EDGE); ExpEdges.More(); ExpEdges.Next())
-        {
+        for (ExpEdges.Init(result, TopAbs_EDGE); ExpEdges.More(); ExpEdges.Next()) {
             builder.Add(upperCompound, TopoDS::Edge(ExpEdges.Current()));
         }
     }
 
-    if (sparCrossSection.HasLowerCap())
-    {
+    if (sparCrossSection.HasLowerCap()) {
         TopoDS_Shape loft = wingStructureReference.GetLowerShape();
 
         // Get the cutting edge of the spar cutting plane and the loft
@@ -579,8 +575,7 @@ void CCPACSWingSparSegment::BuildSparCapsGeometry() const
         TopoDS_Shape result = CutShapes(loft, sparCutting);
 
         TopoDS_Edge edge;
-        for (ExpEdges.Init(result, TopAbs_EDGE); ExpEdges.More(); ExpEdges.Next())
-        {
+        for (ExpEdges.Init(result, TopAbs_EDGE); ExpEdges.More(); ExpEdges.Next()) {
             builder.Add(lowerCompound, TopoDS::Edge(ExpEdges.Current()));
         }
     }

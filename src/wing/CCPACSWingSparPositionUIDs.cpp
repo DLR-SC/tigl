@@ -75,7 +75,7 @@ void CCPACSWingSparPositionUIDs::WriteCPACS(TixiDocumentHandle tixiHandle, const
     const std::string elementBasePath = positionUIDsXPath + "/sparPositionUID";
     for (int i = 1; i <= uidCount; i++) {
         const std::string elementPath = elementBasePath + "[" + std_to_string(i) + "]";
-        if(tixiCheckElement(tixiHandle, elementPath.c_str()) == ELEMENT_NOT_FOUND) {
+        if (tixiCheckElement(tixiHandle, elementPath.c_str()) == ELEMENT_NOT_FOUND) {
             if (tixiAddTextElement(tixiHandle, positionUIDsXPath.c_str(), "sparPositionUID", GetSparPositionUID(i).c_str()) != SUCCESS) {
                 LOG(ERROR) << "XML error: tixiCreateElement failed";
                 throw CTiglError("XML error: tixiCreateElement failed in CCPACSWingSparPositionUIDs::WriteCPACS", TIGL_XML_ERROR);

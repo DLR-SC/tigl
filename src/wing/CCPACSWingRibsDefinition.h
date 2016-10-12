@@ -49,19 +49,22 @@ public:
     /**
     * Struct for storing cut geometry, or if necessary the final geometry
     */
-    struct CutGeometry {
+    struct CutGeometry
+    {
         CutGeometry(const TopoDS_Face& face, bool targetFace) : shape(face), isTargetFace(targetFace) {};
 
         TopoDS_Face shape;
         bool isTargetFace;
     };
 
-    enum RibCapSide {
+    enum RibCapSide
+    {
         UPPER,
         LOWER
     };
 
-    enum RibPositioningType {
+    enum RibPositioningType
+    {
         RIB_EXPLICIT_POSITIONING,
         RIBS_POSITIONING,
         UNDEFINED_POSITIONING
@@ -126,7 +129,8 @@ public:
 private:
     // Structure for storing the start and end point of a single rib in the 
     // midplane
-    struct RibMidplanePoints {
+    struct RibMidplanePoints
+    {
         RibMidplanePoints(const gp_Pnt& startPnt, const gp_Pnt& endPnt) : startPnt(startPnt), endPnt(endPnt) {};
         gp_Pnt startPnt;
         gp_Pnt endPnt;
@@ -183,18 +187,18 @@ private:
     // When no elementUID is passed the inner or outer section are used
     // depending on the passed eta value.
     TopoDS_Face GetSectionRibGeometry(const std::string& elementUID, double eta, const std::string& ribStart,
-        const std::string& ribEnd) const;
+                                      const std::string& ribEnd) const;
 
     // Computes the direction vector for the rib
     gp_Vec GetRibDirection(double currentEta, const gp_Pnt& startPnt, const gp_Vec& upVec) const;
 
     // builds the rib cut face
     TopoDS_Face BuildRibCutFace(const gp_Pnt& startPnt, const gp_Vec& ribDir, const std::string& ribStart,
-        const std::string& ribEnd, const gp_Vec& upVecStart, const gp_Vec& upVecEnd) const;
+                                const std::string& ribEnd, const gp_Vec& upVecStart, const gp_Vec& upVecEnd) const;
 
     // Computes the start and end point of the ribs definition
     RibMidplanePoints ComputeRibDefinitionPoints(const std::string& ribStart, const std::string& ribEnd, 
-        const TopoDS_Face& ribCutFace) const;
+                                                 const TopoDS_Face& ribCutFace) const;
 
 private:
     CCPACSWingRibsDefinition(const CCPACSWingRibsDefinition&); // = delete;
@@ -202,7 +206,8 @@ private:
 
     // Structure containing data relevant when ribs are defined via 
     // ribsPositioning (defining a set or ribs)
-    struct RibSetDataCache {
+    struct RibSetDataCache
+    {
         bool valid;
         int numberOfRibs;
         double referenceEtaStart;
@@ -212,7 +217,8 @@ private:
 
     // Structure for storing the start and end points of all ribs and the cut
     // shapes for the single ribs
-    struct AuxiliaryGeomCache {
+    struct AuxiliaryGeomCache
+    {
         void clear() { midplanePoints.clear(); cutGeometries.clear(); };
 
         bool valid;
@@ -220,7 +226,8 @@ private:
         std::vector<CutGeometry> cutGeometries;
     };
 
-    struct RibGeometryCache {
+    struct RibGeometryCache
+    {
         void clear() { ribFaces.clear(); };
 
         bool valid;
@@ -228,12 +235,14 @@ private:
         std::vector<TopoDS_Face> ribFaces;
     };
 
-    struct SplittedRibGeometryCache {
+    struct SplittedRibGeometryCache
+    {
         bool valid;
         TopoDS_Shape shape;
     };
 
-    struct RibCapsGeometryCache {
+    struct RibCapsGeometryCache
+    {
         bool valid;
         TopoDS_Shape upperCapsShape;
         TopoDS_Shape lowerCapsShape;

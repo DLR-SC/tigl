@@ -32,7 +32,8 @@ namespace tigl
 class CTiglWingSpanwiseBorder
 {
 public:
-    enum /* class */ InputType {
+    enum /* class */ InputType
+    {
         Eta,
         Rib,
         None
