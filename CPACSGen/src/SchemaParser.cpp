@@ -6,15 +6,15 @@
 namespace tigl {
 	SchemaParser::SchemaParser(const std::string& cpacsLocation)
 		: document(cpacsLocation) {
-		document.forEachChild("/schema/simpleType", [&](const std::string& xpath) {
+		document.forEachChild("/xsd:schema/xsd:simpleType", [&](const std::string& xpath) {
 			readSimpleType(xpath);
 		});
 
-		document.forEachChild("/schema/complexType", [&](const std::string& xpath) {
+		document.forEachChild("/xsd:schema/xsd:complexType", [&](const std::string& xpath) {
 			readComplexType(xpath);
 		});
 
-		document.forEachChild("/schema/element", [&](const std::string& xpath) {
+		document.forEachChild("/xsd:schema/xsd:element", [&](const std::string& xpath) {
 			readElement(xpath);
 		});
 	}
@@ -35,7 +35,7 @@ namespace tigl {
 		// </all>
 		All all;
 		all.xpath = xpath;
-		document.forEachChild(xpath + "/element", [&](const std::string& xpath) {
+		document.forEachChild(xpath + "/xsd:element", [&](const std::string& xpath) {
 			all.elements.push_back(readElement(xpath, containingTypeName));
 		});
 		return all;
@@ -52,19 +52,19 @@ namespace tigl {
 		// </choice>
 		Choice ch;
 		ch.xpath;
-		document.forEachChild(xpath + "/element", [&](const std::string& xpath) {
+		document.forEachChild(xpath + "/xsd:element", [&](const std::string& xpath) {
 			ch.elements.push_back(readElement(xpath, containingTypeName));
 		});
-		document.forEachChild(xpath + "/group", [&](const std::string& xpath) {
+		document.forEachChild(xpath + "/xsd:group", [&](const std::string& xpath) {
 			ch.elements.push_back(readGroup(xpath, containingTypeName));
 		});
-		document.forEachChild(xpath + "/choice", [&](const std::string& xpath) {
+		document.forEachChild(xpath + "/xsd:choice", [&](const std::string& xpath) {
 			ch.elements.push_back(readChoice(xpath, containingTypeName));
 		});
-		document.forEachChild(xpath + "/sequence", [&](const std::string& xpath) {
+		document.forEachChild(xpath + "/xsd:sequence", [&](const std::string& xpath) {
 			ch.elements.push_back(readSequence(xpath, containingTypeName));
 		});
-		document.forEachChild(xpath + "/any", [&](const std::string& xpath) {
+		document.forEachChild(xpath + "/xsd:any", [&](const std::string& xpath) {
 			ch.elements.push_back(readAny(xpath, containingTypeName));
 		});
 		return ch;
@@ -81,19 +81,19 @@ namespace tigl {
 		// </sequence>
 		Sequence seq;
 		seq.xpath = xpath;
-		document.forEachChild(xpath + "/element", [&](const std::string& xpath) {
+		document.forEachChild(xpath + "/xsd:element", [&](const std::string& xpath) {
 			seq.elements.push_back(readElement(xpath, containingTypeName));
 		});
-		document.forEachChild(xpath + "/group", [&](const std::string& xpath) {
+		document.forEachChild(xpath + "/xsd:group", [&](const std::string& xpath) {
 			seq.elements.push_back(readGroup(xpath, containingTypeName));
 		});
-		document.forEachChild(xpath + "/choice", [&](const std::string& xpath) {
+		document.forEachChild(xpath + "/xsd:choice", [&](const std::string& xpath) {
 			seq.elements.push_back(readChoice(xpath, containingTypeName));
 		});
-		document.forEachChild(xpath + "/sequence", [&](const std::string& xpath) {
+		document.forEachChild(xpath + "/xsd:sequence", [&](const std::string& xpath) {
 			seq.elements.push_back(readSequence(xpath, containingTypeName));
 		});
-		document.forEachChild(xpath + "/any", [&](const std::string& xpath) {
+		document.forEachChild(xpath + "/xsd:any", [&](const std::string& xpath) {
 			seq.elements.push_back(readAny(xpath, containingTypeName));
 		});
 		return seq;
@@ -127,13 +127,13 @@ namespace tigl {
 		// (annotation?,(restriction|extension))
 		// </simpleContent>
 
-		if (document.checkElement(xpath + "/restriction")) {
-			if (document.checkElement(xpath + "/restriction/enumeration")) {
+		if (document.checkElement(xpath + "/xsd:restriction")) {
+			if (document.checkElement(xpath + "/xsd:restriction/xsd:enumeration")) {
 				// generating an additional type for this enum
 				SimpleType stype;
 				stype.xpath = xpath;
 				stype.name = stripTypeSuffix(type.name) + "_SimpleContentType";
-				readRestriction(xpath + "/restriction", stype);
+				readRestriction(xpath + "/xsd:restriction", stype);
 				m_types[stype.name] = stype;
 
 				SimpleContent sc;
@@ -145,11 +145,11 @@ namespace tigl {
 				// we ignore other kinds of restrictions as those are hard to support
 				std::cerr << "Warning: restricted simpleContent is not an enum: " << type.name << std::endl;
 			}
-		} else if (document.checkElement(xpath + "/extension")) {
+		} else if (document.checkElement(xpath + "/xsd:extension")) {
 			// we simplify this case be creating a field for the value of the simpleContent
 			SimpleContent sc;
 			sc.xpath = xpath;
-			sc.type = document.textAttribute(xpath + "/extension", "base");
+			sc.type = document.textAttribute(xpath + "/xsd:extension", "base");
 			type.content = sc;
 		}
 	}
@@ -163,21 +163,21 @@ namespace tigl {
 		// (annotation?,(restriction|extension))
 		// </complexContent>
 
-		if (document.checkElement(xpath + "/restriction"))
+		if (document.checkElement(xpath + "/xsd:restriction"))
 			throw NotImplementedException("XSD complexType complexContent restriction is not implemented");
-		else if (document.checkElement(xpath + "/extension"))
-			readExtension(xpath + "/extension", type);
+		else if (document.checkElement(xpath + "/xsd:extension"))
+			readExtension(xpath + "/xsd:extension", type);
 	}
 
 	void SchemaParser::readComplexTypeElementConfiguration(const std::string& xpath, ComplexType& type) {
-		     if (document.checkElement(xpath + "/all"))      type.content = readAll     (xpath + "/all",      stripTypeSuffix(type.name));
-		else if (document.checkElement(xpath + "/sequence")) type.content = readSequence(xpath + "/sequence", stripTypeSuffix(type.name));
-		else if (document.checkElement(xpath + "/choice"))   type.content = readChoice  (xpath + "/choice",   stripTypeSuffix(type.name));
-		else if (document.checkElement(xpath + "/group"))    throw NotImplementedException("XSD complexType group is not implemented");
-		else if (document.checkElement(xpath + "/any"))      throw NotImplementedException("XSD complexType any is not implemented");
+		     if (document.checkElement(xpath + "/xsd:all"))      type.content = readAll     (xpath + "/xsd:all",      stripTypeSuffix(type.name));
+		else if (document.checkElement(xpath + "/xsd:sequence")) type.content = readSequence(xpath + "/xsd:sequence", stripTypeSuffix(type.name));
+		else if (document.checkElement(xpath + "/xsd:choice"))   type.content = readChoice  (xpath + "/xsd:choice",   stripTypeSuffix(type.name));
+		else if (document.checkElement(xpath + "/xsd:group"))    throw NotImplementedException("XSD complexType group is not implemented");
+		else if (document.checkElement(xpath + "/xsd:any"))      throw NotImplementedException("XSD complexType any is not implemented");
 
-		     if (document.checkElement(xpath + "/complexContent")) readComplexContent(xpath + "/complexContent", type);
-		else if (document.checkElement(xpath + "/simpleContent"))  readSimpleContent (xpath + "/simpleContent",  type);
+		     if (document.checkElement(xpath + "/xsd:complexContent")) readComplexContent(xpath + "/xsd:complexContent", type);
+		else if (document.checkElement(xpath + "/xsd:simpleContent"))  readSimpleContent (xpath + "/xsd:simpleContent",  type);
 	}
 
 	Attribute SchemaParser::readAttribute(const std::string& xpath, const std::string& containingTypeName) {
@@ -257,16 +257,16 @@ namespace tigl {
 		// read attributes
 		for (auto path : {
 			xpath,
-			xpath + "/complexContent/restriction",
-			xpath + "/complexContent/extension",
-			xpath + "/simpleContent/restriction",
-			xpath + "/simpleContent/extension",
+			xpath + "/xsd:complexContent/xsd:restriction",
+			xpath + "/xsd:complexContent/xsd:extension",
+			xpath + "/xsd:simpleContent/xsd:restriction",
+			xpath + "/xsd:simpleContent/xsd:extension",
 		}) {
 			if (document.checkElement(path)) {
-				document.forEachChild(path + "/attribute", [&](const std::string& xpath) {
+				document.forEachChild(path + "/xsd:attribute", [&](const std::string& xpath) {
 					type.attributes.push_back(readAttribute(xpath, name));
 				});
-				if (document.checkElement(xpath + "/attributeGroup")) {
+				if (document.checkElement(xpath + "/xsd:attributeGroup")) {
 					throw NotImplementedException("XSD complexType attributeGroup is not implemented");
 				}
 			}
@@ -281,7 +281,7 @@ namespace tigl {
 	void SchemaParser::readRestriction(const std::string& xpath, SimpleType& type) {
 		type.base = document.textAttribute(xpath, "base");
 
-		document.forEachChild(xpath + "/enumeration", [&](const std::string& expath) {
+		document.forEachChild(xpath + "/xsd:enumeration", [&](const std::string& expath) {
 			const auto enumValue = document.textAttribute(expath, "value");
 			type.restrictionValues.push_back(enumValue);
 		});
@@ -319,9 +319,9 @@ namespace tigl {
 		if (document.checkAttribute(xpath, "id"))
 			throw NotImplementedException("XSD complextype id is not implemented");
 
-		     if (document.checkElement(xpath + "/restriction")) readRestriction(xpath + "/restriction", type);
-		else if (document.checkElement(xpath + "/list"))        throw NotImplementedException("XSD simpleType list is not implemented");
-		else if (document.checkElement(xpath + "/union"))       throw NotImplementedException("XSD simpleType union is not implemented");
+		     if (document.checkElement(xpath + "/xsd:restriction")) readRestriction(xpath + "/xsd:restriction", type);
+		else if (document.checkElement(xpath + "/xsd:list"))        throw NotImplementedException("XSD simpleType list is not implemented");
+		else if (document.checkElement(xpath + "/xsd:union"))       throw NotImplementedException("XSD simpleType union is not implemented");
 
 		// add
 		m_types[name] = type;
@@ -330,8 +330,8 @@ namespace tigl {
 	}
 
 	std::string SchemaParser::readInlineType(const std::string& xpath, const std::string& nameHint) {
-		     if (document.checkElement(xpath + "/complexType")) return readComplexType(xpath + "/complexType", nameHint);
-		else if (document.checkElement(xpath + "/simpleType" )) return readSimpleType (xpath + "/simpleType",  nameHint);
+		     if (document.checkElement(xpath + "/xsd:complexType")) return readComplexType(xpath + "/xsd:complexType", nameHint);
+		else if (document.checkElement(xpath + "/xsd:simpleType" )) return readSimpleType (xpath + "/xsd:simpleType",  nameHint);
 		else throw std::runtime_error("Unexpected type or no type at xpath: " + xpath);
 	}
 

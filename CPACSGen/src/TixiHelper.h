@@ -32,6 +32,8 @@ namespace tigl {
 
 		SplitXPath splitXPath(const std::string& xpath);
 
+		void RegisterNamespaces(const TixiDocumentHandle& tixiHandle);
+
 		bool TixiCheckAttribute(const TixiDocumentHandle& tixiHandle, const std::string& xpath, const std::string& attribute);
 		bool TixiCheckElement  (const TixiDocumentHandle& tixiHandle, const std::string& xpath);
 

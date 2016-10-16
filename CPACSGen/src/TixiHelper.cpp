@@ -69,6 +69,12 @@ namespace tigl {
 			return result;
 		}
 
+		void RegisterNamespaces(const TixiDocumentHandle& tixiHandle) {
+			const auto ret = tixiRegisterNamespacesFromDocument(tixiHandle);
+			if (ret != ReturnCode::SUCCESS)
+				throw TixiError(ret, "Failed to register document namespaces");
+		}
+
 		bool TixiCheckAttribute(const TixiDocumentHandle& tixiHandle, const std::string& xpath, const std::string& attribute) {
 			auto ret = tixiCheckAttribute(tixiHandle, xpath.c_str(), attribute.c_str());
 			if (ret == ReturnCode::SUCCESS)

@@ -10,6 +10,7 @@ namespace tigl {
 				auto ret = tixiOpenDocument(filename.c_str(), &m_handle);
 				if (ret != ReturnCode::SUCCESS)
 					throw TixiError(ret, "Failed to open document " + filename);
+				RegisterNamespaces(m_handle);
 			}
 
 			~TixiDocument() {
