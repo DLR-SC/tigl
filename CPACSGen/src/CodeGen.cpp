@@ -2,6 +2,7 @@
 #include <cctype>
 #include <fstream>
 #include <algorithm>
+#include <sstream>
 
 #include "NotImplementedException.h"
 #include "IndentingStreamWrapper.h"
@@ -1043,32 +1044,87 @@ namespace tigl {
 		}
 	}
 
+	class WriteIfDifferentFile {
+	public:
+		static std::size_t written;
+		static std::size_t overwritten;
+		static std::size_t skipped;
+
+		WriteIfDifferentFile(const std::string& fileLocation)
+		: m_fileLocation(fileLocation) {}
+
+		auto stream() -> std::ostream& {
+			return m_stream;
+		}
+
+		~WriteIfDifferentFile() {
+			const auto newContent = m_stream.str();
+
+			{
+				// check if a file already exists
+				std::ifstream existingFile(m_fileLocation);
+				if (existingFile) {
+					// read existing file to string and compare
+					existingFile.seekg(0, existingFile.end);
+					const auto length = existingFile.tellg();
+					existingFile.seekg(0, existingFile.beg);
+					std::string content;
+					content.reserve(length);
+					content.assign(std::istreambuf_iterator<char>{existingFile}, std::istreambuf_iterator<char>{});
+
+					// if existing file has same content, skip overwriting it
+					if (content == newContent) {
+						skipped++;
+						return;
+					}
+
+					overwritten++;
+				}
+			}
+
+			// write new content to file
+			std::ofstream f(m_fileLocation);
+			f.exceptions(std::ios::failbit | std::ios::badbit);
+			f.write(newContent.c_str(), newContent.size());
+
+			written++;
+		}
+
+	private:
+		std::stringstream m_stream;
+		std::string m_fileLocation;
+	};
+
+	std::size_t WriteIfDifferentFile::written = 0;
+	std::size_t WriteIfDifferentFile::overwritten = 0;
+	std::size_t WriteIfDifferentFile::skipped = 0;
+
 	CodeGen::CodeGen(const std::string& outputLocation, Types types)
 		: m_types(std::move(types)) {
 
-		// output directory should already have been created my cmake when runtime files were copied
+		// output directory should already have been created by cmake when runtime files were copied
 		//boost::filesystem::create_directories(outputLocation);
 
 		for (const auto& p : m_types.classes) {
 			const auto c = p.second;
-			std::ofstream hppFile(outputLocation + "/" + c.name + ".h");
-			hppFile.exceptions(std::ios::failbit | std::ios::badbit);
-			IndentingStreamWrapper hpp(hppFile);
+			WriteIfDifferentFile hppFile(outputLocation + "/" + c.name + ".h");
+			IndentingStreamWrapper hpp(hppFile.stream());
 
-			std::ofstream cppFile(outputLocation + "/" + c.name + ".cpp");
-			cppFile.exceptions(std::ios::failbit | std::ios::badbit);
-			IndentingStreamWrapper cpp(cppFile);
+			WriteIfDifferentFile cppFile(outputLocation + "/" + c.name + ".cpp");
+			IndentingStreamWrapper cpp(cppFile.stream());
 
 			writeClass(hpp, cpp, c);
 		}
 
 		for (const auto& p : m_types.enums) {
 			const auto e = p.second;
-			std::ofstream hppFile(outputLocation + "/" + e.name + ".h");
-			hppFile.exceptions(std::ios::failbit | std::ios::badbit);
-			IndentingStreamWrapper hpp(hppFile);
+			WriteIfDifferentFile hppFile(outputLocation + "/" + e.name + ".h");
+			IndentingStreamWrapper hpp(hppFile.stream());
 
 			writeEnum(hpp, e);
 		}
+
+		std::cout << "Wrote " << WriteIfDifferentFile::written << " files (" << WriteIfDifferentFile::overwritten << " updated)" << std::endl;
+		std::cout << "Skipped " << WriteIfDifferentFile::skipped << " files, no changes" << std::endl;
 	}
 }
