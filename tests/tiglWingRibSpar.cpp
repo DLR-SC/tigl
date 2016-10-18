@@ -27,6 +27,8 @@
 
 using namespace tigl;
 
+typedef std::pair<double, double> DP;
+
 /******************************************************************************/
 
 class WingCellRibSpar2: public ::testing::Test
@@ -112,7 +114,8 @@ TEST_F(WingCellRibSpar2, computeSparXsi) {
     tigl::CCPACSWingComponentSegment& componentSegment = static_cast<tigl::CCPACSWingComponentSegment&>(wing.GetComponentSegment(1));
     const tigl::CCPACSWingSparSegment& spar = componentSegment.GetStructure().GetSparSegment(1);
 
-    std::vector<double> expectedXsis = { 0.2, 0.225, 0.25, 0.275, 0.3, 0.325, 0.35, 0.375, 0.4, 0.41, 0.42, 0.43, 0.44, 0.45, 0.46, 0.47, 0.48, 0.49, 0.5, 0.4, 0.3 };
+    const double arr[] = { 0.2, 0.225, 0.25, 0.275, 0.3, 0.325, 0.35, 0.375, 0.4, 0.41, 0.42, 0.43, 0.44, 0.45, 0.46, 0.47, 0.48, 0.49, 0.5, 0.4, 0.3 };
+    std::vector<double> expectedXsis (arr, arr + sizeof(arr) / sizeof(arr[0]));
     for (int i = 0; i < expectedXsis.size(); ++i) {
         // minus one since we have 21 points, but i goes from 0 to 20
         double eta = (double)i / (expectedXsis.size() - 1);
@@ -130,12 +133,14 @@ TEST_F(DistortedWing, computeSparXsi) {
     tigl::CCPACSWingComponentSegment& componentSegment = static_cast<tigl::CCPACSWingComponentSegment&>(wing.GetComponentSegment(1));
     const tigl::CCPACSWingSparSegment& spar = componentSegment.GetStructure().GetSparSegment(1);
 
+    const std::pair<double, double> arr[] = { DP(0, 0.2), DP(0.33, 0.29), DP(0.5, 0.2), DP(0.9, 0.33) };
+    std::vector< std::pair<double, double> > expectedEtaXsis (arr, arr + sizeof(arr) / sizeof(arr[0])); 
     // low precision because expected xsi values are measured from model
     const double precision = 1E-2;
-    std::vector<std::pair<double, double>> expectedEtaXsis = { { 0, 0.2 }, { 0.33, 0.29 }, { 0.5, 0.2 }, { 0.9, 0.33 } };
-    for (const auto& expectedEtaXsi : expectedEtaXsis) {
-        double eta = expectedEtaXsi.first;
-        double expect = expectedEtaXsi.second;
+    std::vector< std::pair<double, double> >::const_iterator it;
+    for (it = expectedEtaXsis.begin(); it != expectedEtaXsis.end(); ++it) {
+        double eta = it->first;
+        double expect = it->second;
         double xsi = tigl::computeSparXsiValue(componentSegment, spar, eta);
         ASSERT_NEAR(xsi, expect, precision);
     }
@@ -155,11 +160,13 @@ TEST_F(WingCellRibSpar2, computeRibEta) {
     ribsDefinition.GetRibsPositioning().GetRibRotation().SetZRotation(75);
 
     // measured from geometry
-    std::vector<std::pair<double, double>> expectedEtas = { { 0.3, 0.159808 }, { 0.4, 0.14641 }, { 0.5, 0.133013 }, { 0.6, 0.119615 }, { 0.7, 0.106218 }, { 0.8, 0.092820 }, { 0.9, 0.079423 }, { 1.0, 0.066025 } };
+    const std::pair<double, double> arr[] = { DP(0.3, 0.159808), DP(0.4, 0.14641), DP(0.5, 0.133013), DP(0.6, 0.119615), DP(0.7, 0.106218), DP(0.8, 0.092820), DP(0.9, 0.079423), DP(1.0, 0.066025) };
+    std::vector< std::pair<double, double> > expectedEtas (arr, arr + sizeof(arr) / sizeof(arr[0]));
 
-    for (const auto& expect : expectedEtas) {
-        double xsi = expect.first;
-        double expectedEta = expect.second;
+    std::vector< std::pair<double, double> >::const_iterator it;
+    for (it = expectedEtas.begin(); it != expectedEtas.end(); ++it) {
+        double xsi = it->first;
+        double expectedEta = it->second;
         double eta = tigl::computeRibEtaValue(componentSegment, ribsDefinition, 1, xsi);
         ASSERT_NEAR(eta, expectedEta, 1e-6);
     }
@@ -180,13 +187,15 @@ TEST_F(WingCellRibSpar2, computeSparIntersectionEtaXsi) {
     ribsDefinition.GetRibsPositioning().GetRibRotation().SetZRotation(75);
 
     // measured from geometry
-    std::vector<tigl::EtaXsi> expectedEtaXsis = { { 0.162331, 0.281166 }, { 0.737370, 0.467474 } };
+    const tigl::EtaXsi arr[] = { tigl::EtaXsi(0.162331, 0.281166), tigl::EtaXsi(0.737370, 0.467474) };
+    std::vector<tigl::EtaXsi> expectedEtaXsis (arr, arr + sizeof(arr) / sizeof(arr[0]));
 
     int ribIndex = 1;
-    for (const auto& expected : expectedEtaXsis) {
+    std::vector<tigl::EtaXsi>::const_iterator it;
+    for (it = expectedEtaXsis.begin(); it != expectedEtaXsis.end(); ++it) {
         tigl::EtaXsi got = tigl::computeRibSparIntersectionEtaXsi(componentSegment, ribsDefinition, ribIndex, spar);
-        ASSERT_NEAR(got.eta, expected.eta, 1e-6);
-        ASSERT_NEAR(got.xsi, expected.xsi, 1e-6);
+        ASSERT_NEAR(got.eta, it->eta, 1e-6);
+        ASSERT_NEAR(got.xsi, it->xsi, 1e-6);
         ribIndex++;
     }
 }

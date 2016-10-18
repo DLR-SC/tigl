@@ -906,7 +906,7 @@ int CCPACSWingRibsDefinition::ComputeNumberOfRibs(double etaStart, double etaEnd
         }
         else {
             // get the length of the reference line between the two points
-            double length = GetRibReferenceLength(ribsPositioning->GetRibReference(), structure) * std::abs(etaEnd - etaStart);
+            double length = GetRibReferenceLength(ribsPositioning->GetRibReference(), structure) * fabs(etaEnd - etaStart);
             // finally compute the number of ribs by dividing the length by the spacing
             // NOTE: adding of Precision::Confusion in order to avoid floating point problems
             numberOfRibs = (int)((length + Precision::Confusion()) / spacing) + 1;
