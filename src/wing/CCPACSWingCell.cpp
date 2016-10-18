@@ -397,7 +397,8 @@ void CCPACSWingCell::UpdateCache() const
 
 
 std::pair<double, double> CCPACSWingCell::computePositioningEtaXsi(const CCPACSWingCellPositionSpanwise& spanwisePos,
-    const CCPACSWingCellPositionChordwise& chordwisePos, bool inner, bool front) const
+                                                                   const CCPACSWingCellPositionChordwise& chordwisePos, 
+                                                                   bool inner, bool front) const
 {
     double eta, xsi;
 
@@ -417,7 +418,7 @@ std::pair<double, double> CCPACSWingCell::computePositioningEtaXsi(const CCPACSW
         }
     }
     else if (spanwisePos.GetInputType() == CCPACSWingCellPositionSpanwise::Eta &&
-        chordwisePos.GetInputType() == CCPACSWingCellPositionChordwise::Spar) {
+             chordwisePos.GetInputType() == CCPACSWingCellPositionChordwise::Spar) {
         if (front) {
             eta = spanwisePos.GetEta().first;
         }
@@ -430,7 +431,7 @@ std::pair<double, double> CCPACSWingCell::computePositioningEtaXsi(const CCPACSW
         xsi = computeSparXsiValue(structure.GetWingStructureReference(), spar, eta);
     }
     else if (spanwisePos.GetInputType() == CCPACSWingCellPositionSpanwise::Rib &&
-        chordwisePos.GetInputType() == CCPACSWingCellPositionChordwise::Xsi) {
+             chordwisePos.GetInputType() == CCPACSWingCellPositionChordwise::Xsi) {
         std::string ribUid;
         int ribIndex;
         // get the ribs definition from the wing structure reference
@@ -446,7 +447,7 @@ std::pair<double, double> CCPACSWingCell::computePositioningEtaXsi(const CCPACSW
         eta = computeRibEtaValue(structure.GetWingStructureReference(), ribsDefinition, ribIndex, xsi);
     }
     else if (spanwisePos.GetInputType() == CCPACSWingCellPositionSpanwise::Rib &&
-        chordwisePos.GetInputType() == CCPACSWingCellPositionChordwise::Spar) {
+             chordwisePos.GetInputType() == CCPACSWingCellPositionChordwise::Spar) {
         // get the spar from the wing structure reference
         const CCPACSWingCSStructure& structure = parent->GetParentElement()->GetStructure();
         CTiglWingStructureReference wsr = structure.GetWingStructureReference();

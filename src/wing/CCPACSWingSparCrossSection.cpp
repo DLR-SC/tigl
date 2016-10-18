@@ -105,13 +105,13 @@ void CCPACSWingSparCrossSection::ReadCPACS(TixiDocumentHandle tixiHandle, const 
 
 void CCPACSWingSparCrossSection::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& crossSectionXPath) const
 {
-    if(upperCap != NULL) {
+    if (upperCap != NULL) {
         const std::string elementPath = crossSectionXPath + "/upperCap";
         TixiSaveExt::TixiSaveElement(tixiHandle, crossSectionXPath.c_str(), "upperCap");
         upperCap->WriteCPACS(tixiHandle, elementPath);
     }
 
-    if(lowerCap != NULL) {
+    if (lowerCap != NULL) {
         const std::string elementPath = crossSectionXPath + "/lowerCap";
         TixiSaveExt::TixiSaveElement(tixiHandle, crossSectionXPath.c_str(), "lowerCap");
         lowerCap->WriteCPACS(tixiHandle, elementPath);
@@ -121,7 +121,7 @@ void CCPACSWingSparCrossSection::WriteCPACS(TixiDocumentHandle tixiHandle, const
     TixiSaveExt::TixiSaveElement(tixiHandle, crossSectionXPath.c_str(), "web1");
     web1.WriteCPACS(tixiHandle, elementPath);
         
-    if(web2 != NULL) {
+    if (web2 != NULL) {
         const std::string elementPath = crossSectionXPath + "/web2";
         TixiSaveExt::TixiSaveElement(tixiHandle, crossSectionXPath.c_str(), "web2");
         web2->WriteCPACS(tixiHandle, elementPath);

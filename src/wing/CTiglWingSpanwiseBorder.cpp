@@ -85,17 +85,17 @@ void CTiglWingSpanwiseBorder::ReadCPACS(TixiDocumentHandle tixiHandle, const std
 void CTiglWingSpanwiseBorder::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& xpath) const
 {
     switch (m_inputType) {
-        case Eta:
-            TixiSaveExt::TixiSaveDoubleElement(tixiHandle, xpath.c_str(), m_eta1CPACSName.c_str(), m_eta1, NULL);
-            TixiSaveExt::TixiSaveDoubleElement(tixiHandle, xpath.c_str(), m_eta2CPACSName.c_str(), m_eta2, NULL);
-            break;
-        case Rib:
-            TixiSaveExt::TixiSaveTextElement(tixiHandle, xpath.c_str(), "ribDefinitionUID", m_ribDefinitionUID.c_str());
-            TixiSaveExt::TixiSaveDoubleElement(tixiHandle, xpath.c_str(), "ribNumber", m_ribNumber, NULL);
-            break;
-        default:
-            LOG(ERROR) << "Missing element <eta1> or <ribDefinitionUID>";
-            throw CTiglError("Error: Missing element <eta1> or <ribDefinitionUID> in CTiglWingSpanwiseBorder::WriteCPACS!", TIGL_XML_ERROR);
+    case Eta:
+        TixiSaveExt::TixiSaveDoubleElement(tixiHandle, xpath.c_str(), m_eta1CPACSName.c_str(), m_eta1, NULL);
+        TixiSaveExt::TixiSaveDoubleElement(tixiHandle, xpath.c_str(), m_eta2CPACSName.c_str(), m_eta2, NULL);
+        break;
+    case Rib:
+        TixiSaveExt::TixiSaveTextElement(tixiHandle, xpath.c_str(), "ribDefinitionUID", m_ribDefinitionUID.c_str());
+        TixiSaveExt::TixiSaveDoubleElement(tixiHandle, xpath.c_str(), "ribNumber", m_ribNumber, NULL);
+        break;
+    default:
+        LOG(ERROR) << "Missing element <eta1> or <ribDefinitionUID>";
+        throw CTiglError("Error: Missing element <eta1> or <ribDefinitionUID> in CTiglWingSpanwiseBorder::WriteCPACS!", TIGL_XML_ERROR);
     }
 }
 
@@ -125,7 +125,8 @@ void CTiglWingSpanwiseBorder::GetEta(double& eta1, double& eta2) const
     eta2 = etas.second;
 }
 
-std::pair<double, double> CTiglWingSpanwiseBorder::GetEta() const {
+std::pair<double, double> CTiglWingSpanwiseBorder::GetEta() const
+{
     if (m_inputType != Eta) {
         throw CTiglError("CTiglWingSpanwiseBorder::GetEta method called, but position is defined via ribDefinitionUID!");
     }
@@ -152,7 +153,8 @@ void CTiglWingSpanwiseBorder::GetRib(std::string& ribUid, int& ribNumber) const
     ribNumber = ribDefinition.second;
 }
 
-std::pair<std::string, int> CTiglWingSpanwiseBorder::GetRib() const {
+std::pair<std::string, int> CTiglWingSpanwiseBorder::GetRib() const
+{
     if (m_inputType != Rib) {
         throw CTiglError("CTiglWingSpanwiseBorder::GetRib method called, but position is defined via eta1/eta2!");
     }

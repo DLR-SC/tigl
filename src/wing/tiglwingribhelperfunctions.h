@@ -54,7 +54,7 @@ bool IsOuterSparPointInSection(const std::string& sparUid, double eta, const CCP
 
 // Computes the rib up vector for the passed eta and start point
 gp_Vec GetUpVectorWithoutXRotation(const std::string& ribReference, double currentEta, const gp_Pnt& startPnt,
-    const std::string& sparPositionUID, const CCPACSWingCSStructure& structure);
+                                   const std::string& sparPositionUID, const CCPACSWingCSStructure& structure);
 
 // Rotates the passed up-vector by the passed angle around the passed rib direction
 void ApplyXRotationToUpVector(double angle, gp_Vec& upVec, const gp_Vec& ribDir);
@@ -65,11 +65,12 @@ double GetBoundingBoxSize(const TopoDS_Shape& shape);
 // Cuts the passed face with the passed spar geometry and returns the 
 // new corner-points p1 and p2 for the new rib cut face
 TopoDS_Wire CutFaceWithSpar(TopoDS_Shape& ribCutFace, const TopoDS_Shape& sparGeometry,
-    double bboxSize, TopoDS_Wire& changedWire, const TopoDS_Wire& wire2, const gp_Vec& upVec);
+                            double bboxSize, TopoDS_Wire& changedWire, const TopoDS_Wire& wire2,
+                            const gp_Vec& upVec);
 
 // returns the intersection point of the definition line and the untrimmed rib cut face
 gp_Pnt GetRibDefinitionPoint(const std::string& definition, const TopoDS_Face& ribCutFace,
-    const CCPACSWingCSStructure& structure);
+                             const CCPACSWingCSStructure& structure);
 
 // returns the midplane point of the passed spar position
 gp_Pnt GetSparMidplanePoint(const CCPACSWingSparPosition& sparPos, const CCPACSWingCSStructure& structure);
@@ -77,7 +78,7 @@ gp_Pnt GetSparMidplanePoint(const CCPACSWingSparPosition& sparPos, const CCPACSW
 // checks whether the passed spar position is part of the reference line
 // and throws an exception if not
 void CheckSparPositionOnReference(const std::string& sparPositionUID, const std::string& ribReference,
-    const CCPACSWingCSStructure& structure);
+                                  const CCPACSWingCSStructure& structure);
 
 } // namespace
 

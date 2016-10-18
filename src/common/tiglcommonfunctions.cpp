@@ -540,12 +540,10 @@ TopoDS_Face BuildFace(const TopoDS_Wire& wire1, const TopoDS_Wire& wire2)
     TopoDS_Wire closedWire = CloseWires(wire1, wire2);
     BRepBuilderAPI_MakeFace mf(closedWire);
     TopoDS_Face face;
-    if (mf.IsDone())
-    {
+    if (mf.IsDone()) {
         face = mf.Face();
     }
-    else
-    {
+    else {
         face = BuildRuledFace(wire1, wire2);
     }
     return face;
