@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 2.6)
+cmake_minimum_required (VERSION 2.8.12)
 
 # Set a default build type if none was specified
 if(NOT DEFINED CMAKE_BUILD_TYPE)
@@ -12,7 +12,7 @@ endif()
 project (TIGL)
 set(TIGL_VERSION_MAJOR 2)
 set(TIGL_VERSION_MINOR 1)
-set(TIGL_VERSION_PATCH 6)
+set(TIGL_VERSION_PATCH 7)
 set(TIGL_VERSION "${TIGL_VERSION_MAJOR}.${TIGL_VERSION_MINOR}.${TIGL_VERSION_PATCH}")
 
 set(TIGL_ADD_INCLUDE_PATH "" CACHE PATH "Additional include path for package search")
@@ -162,6 +162,7 @@ add_subdirectory(examples)
 option(TIGL_BUILD_TESTS "Build TIGL Testsuite" OFF)
 
 if(TIGL_BUILD_TESTS)
+  enable_testing()
   option(gtest_force_shared_crt "" ON)
   mark_as_advanced(gtest_force_shared_crt)
   set (gtest_SOURCE_DIR "thirdparty/gtest-1.6.0")

@@ -34,6 +34,8 @@
 #include <TopoDS_Wire.hxx>
 
 #include <tixi.h>
+#include "tigl_config.h"
+#include "tigl_internal.h"
 
 #include "CCPACSMaterial.h"
 #include "CCPACSWingConnection.h"
@@ -41,8 +43,7 @@
 #include "CCPACSWingShell.h"
 #include "CTiglAbstractSegment.h"
 #include "CTiglPoint.h"
-#include "tigl_config.h"
-#include "tigl_internal.h"
+#include "CTiglPointTranslator.h"
 
 
 namespace tigl
@@ -232,13 +233,14 @@ private:
 
     std::vector<int> findPath(const std::string& fromUid, const::std::string& toUID, const std::vector<int>& curPath, bool forward) const;
 
-    void UpdateProjectedLeadingEdge() const;
-
     // Returns the leading edge direction of the segment with the passed UID
     gp_Vec GetLeadingEdgeDirection(const std::string& segmentUID) const;
 
     // Returns the trailing edge direction of the segment with the passed UID
     gp_Vec GetTrailingEdgeDirection(const std::string& segmentUID) const;
+
+    void UpdateProjectedLeadingEdge() const;
+    void UpdateExtendedChordFaces();
 
 
 private:
@@ -250,10 +252,12 @@ private:
     double               mySurfaceArea;        /**< Surface area of this segment            */
     TopoDS_Shape         upperShape;           /**< Upper shape of this componentSegment    */
     TopoDS_Shape         lowerShape;           /**< Lower shape of this componentSegment    */
-    mutable Handle(Geom_Curve)   projLeadingEdge;      /**< (Extended) Leading edge projected into y-z plane */
-    mutable SegmentList          wingSegments;         /**< List of segments belonging to the component segment */
+    mutable Handle(Geom_Curve) projLeadingEdge;/**< (Extended) Leading edge projected into y-z plane */
+    mutable SegmentList        wingSegments;   /**< List of segments belonging to the component segment */
     TopoDS_Face          innerFace;            /**< [[CAS_AES]] added inner segment face    */
     TopoDS_Face          outerFace;            /**< [[CAS_AES]] added outer segment face    */
+    CTiglPointTranslator extendedOuterChord;   /**< Extended outer segment chord face */
+    CTiglPointTranslator extendedInnerChord;   /**< Extended inner segment chord face */
     Handle(Geom_Surface) upperSurface;
     Handle(Geom_Surface) lowerSurface;
     bool                 surfacesAreValid;

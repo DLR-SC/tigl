@@ -70,6 +70,8 @@
 #include <Geom2dAPI_InterCurveCurve.hxx>
 #include <Geom_TrimmedCurve.hxx>
 #include <GeomConvert.hxx>
+#include <gp_Pln.hxx>
+#include <gp_Pnt.hxx>
 
 #include "ShapeAnalysis_FreeBounds.hxx"
 
@@ -407,6 +409,30 @@ ListPNamedShape GroupFaces(const PNamedShape shape, tigl::ShapeGroupMode groupTy
 Standard_Real ProjectPointOnLine(gp_Pnt p, gp_Pnt lineStart, gp_Pnt lineStop)
 {
     return gp_Vec(lineStart, p) * gp_Vec(lineStart, lineStop) / gp_Vec(lineStart, lineStop).SquareMagnitude();
+}
+
+IntStatus IntersectLinePlane(gp_Pnt p1, gp_Pnt p2, gp_Pln plane, gp_Pnt& result) {
+    gp_Vec normal = plane.Axis().Direction();
+    gp_Pnt center = plane.Axis().Location();
+
+    double denominator = gp_Vec(p2.XYZ() - p1.XYZ())*normal;
+    if (fabs(denominator) < 1e-8) {
+        return NoIntersection;
+    }
+
+    double alpha = gp_Vec(center.XYZ() - p1.XYZ())*normal / denominator ;
+    result = p1.XYZ() + alpha*(p2.XYZ()-p1.XYZ());
+
+    if (alpha >= 0. && alpha <= 1.) {
+        return BetweenPoints;
+    }
+    else if (alpha < 0.){
+        return OutsideBefore;
+    }
+    else {
+        // alpha > 1.
+        return OutsideAfter;
+    }
 }
 
 // Returns the coordinates of the bounding box of the shape

@@ -2412,8 +2412,8 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorGetRadius(TiglCPACSConfigurationHandl
 /**
 * @brief Returns the reference area of the rotor.
 *
-* The area of the rotor disk is taken as reference area of the rotor. It is calculated using the formula \f$\pi R^2\f$,
-* where \f$R\f$ denotes the radius of the largest attached blade.
+* The area of the rotor disk is taken as reference area of the rotor. It is calculated using the formula pi*r^2,
+* where r denotes the radius of the largest attached blade.
 *
 * <b>Fortran syntax:</b>
 *
@@ -2551,7 +2551,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorGetVolume(TiglCPACSConfigurationHandl
 * @param[in]  cpacsHandle       Handle for the CPACS configuration
 * @param[in]  rotorIndex        Index of the rotor to calculate the area, starting at 1
 *
-* @param[out] solidityPtr       The tip speed of the rotor
+* @param[out] tipSpeedPtr       The tip speed of the rotor
 *
 * @return
 *   - TIGL_SUCCESS if no error occurred
@@ -2658,19 +2658,19 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglRotorBladeGetWingUID(TiglCPACSConfiguratio
 *
 * <b>Fortran syntax:</b>
 *
-* tigl_get_rotor_blade_azimuth(integer cpacsHandle, integer rotorIndex, integer rotorBladeIndex, real azimuthPtr, integer returnCode)
+* tigl_get_rotor_blade_azimuth(integer cpacsHandle, integer rotorIndex, integer rotorBladeIndex, real azimuthAngle, integer returnCode)
 *
 *
 * @param[in]  cpacsHandle       Handle for the CPACS configuration
 * @param[in]  rotorIndex        Index of the rotor
 * @param[in]  rotorBladeIndex   Index of the rotor blade
-* @param[out] azimuthPtr        Pointer to the azimuth angle
+* @param[out] azimuthAnglePtr   Pointer to the azimuth angle
 *
 * @return
 *   - TIGL_SUCCESS if no error occurred
 *   - TIGL_NOT_FOUND if no configuration was found for the given handle
 *   - TIGL_INDEX_ERROR if rotorIndex or rotorBladeIndex are invalid
-*   - TIGL_NULL_POINTER if azimuthPtr is a null pointer
+*   - TIGL_NULL_POINTER if azimuthAnglePtr is a null pointer
 *   - TIGL_ERROR if some other error occurred
 */
 TIGL_COMMON_EXPORT TiglReturnCode tiglRotorBladeGetAzimuthAngle(TiglCPACSConfigurationHandle cpacsHandle,
