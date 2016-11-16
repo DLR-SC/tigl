@@ -81,7 +81,6 @@
 #include "BRepBuilderAPI_Transform.hxx"
 #include "ShapeAnalysis_Surface.hxx"
 #include "BRepLib_FindSurface.hxx"
-#include "ShapeFix_Shape.hxx"
 
 #ifndef max
 #define max(a, b) (((a) > (b)) ? (a) : (b))
@@ -284,12 +283,6 @@ PNamedShape CCPACSFuselageSegment::BuildLoft()
     generator.CheckCompatibility(Standard_False);
     generator.Build();
     TopoDS_Shape loftShape = generator.Shape();
-
-    // fixing shape
-    Handle(ShapeFix_Shape) sfs = new ShapeFix_Shape;
-    sfs->Init(loftShape);
-    sfs->Perform();
-    loftShape = sfs->Shape();
 
     // Calculate volume
     GProp_GProps System;

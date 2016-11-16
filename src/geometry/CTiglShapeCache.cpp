@@ -52,7 +52,7 @@ bool CTiglShapeCache::HasShape(const std::string& id)
 
 unsigned int CTiglShapeCache::GetNShape() const 
 {
-    return shapeContainer.size();
+    return static_cast<unsigned int>(shapeContainer.size());
 }
 
 

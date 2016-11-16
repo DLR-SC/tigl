@@ -20,22 +20,45 @@
 #define CCPACSWINGCELL_H
 
 #include <iostream>
+#include <vector>
+
+#include <gp_Pln.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Edge.hxx>
 
 #include "generated/CPACSWingCell.h"
 #include "CCPACSMaterial.h"
+#include "CCPACSWingCellPositionChordwise.h"
+#include "CCPACSWingCellPositionSpanwise.h"
+#include "tigl_internal.h"
+#include "tigletaxsifunctions.h"
+#include "tixi.h"
+
 
 namespace tigl
 {
 
+// forward declarations
+class CCPACSWingCells;
+
+
 class CCPACSWingCell : public generated::CPACSWingCell
 {
 public:
-    TIGL_EXPORT CCPACSWingCell();
+    TIGL_EXPORT CCPACSWingCell(CCPACSWingCells* parentCells);
+    TIGL_EXPORT virtual ~CCPACSWingCell();
 
-    // determines if a given eta xsi koordinate is inside this cell
+    TIGL_EXPORT const std::string& GetUID() const;
+
+    TIGL_EXPORT void Invalidate();
+
+    // determines if a given eta xsi coordinate is inside this cell
+    // TODO: missing support for spar cell borders
     TIGL_EXPORT bool IsInside(double eta, double xsi) const;
     
-    // determines if the cell defines a convex qudriangle or nor
+    // determines if the cell defines a convex qudriangle or not
+    // TODO: missing support for spar cell borders
     TIGL_EXPORT bool IsConvex() const;
     
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& cellXPath);
@@ -51,10 +74,54 @@ public:
     TIGL_EXPORT void SetLeadingEdgeOuterPoint (double eta, double xsi);
     TIGL_EXPORT void SetTrailingEdgeInnerPoint(double eta, double xsi);
     TIGL_EXPORT void SetTrailingEdgeOuterPoint(double eta, double xsi);
+
+    // set cell borders via ribs or spars
+    TIGL_EXPORT void SetLeadingEdgeSpar(const std::string& sparUID);
+    TIGL_EXPORT void SetTrailingEdgeSpar(const std::string& sparUID);
+    TIGL_EXPORT void SetInnerBorderRib(const std::string& ribDefinitionUID, int ribNumber);
+    TIGL_EXPORT void SetOuterBorderRib(const std::string& ribDefinitionUID, int ribNumber);
+
+    TIGL_EXPORT CCPACSMaterial& GetMaterial();
+    TIGL_EXPORT const CCPACSMaterial& GetMaterial() const;
+
+    TIGL_EXPORT void Update() const;
     
-    TIGL_EXPORT const CCPACSMaterial& GetMaterial();
 private:
-    void reset();
+    std::pair<double, double> computePositioningEtaXsi(const CCPACSWingCellPositionSpanwise& spanwisePos, 
+                                                       const CCPACSWingCellPositionChordwise& chordwisePos, 
+                                                       bool inner, bool front) const;
+
+    // calculates the Eta/Xsi values of the the cell's corner points and stores
+    // them in the cache
+    void UpdateEtaXsiValues() const;
+
+    // helper method which updates the cache in case it is not valid
+    void UpdateCache() const;
+
+    void Reset();
+
+    std::string uid;
+    CCPACSMaterial material;
+
+    CCPACSWingCellPositionChordwise positionLeadingEdge;
+    CCPACSWingCellPositionChordwise positionTrailingEdge;
+    CCPACSWingCellPositionSpanwise positionInnerBorder;
+    CCPACSWingCellPositionSpanwise positionOuterBorder;
+
+    CCPACSWingCells* parent;
+    
+    struct Cache
+    {
+        Cache() : valid(false) {};
+        bool valid;
+        EtaXsi innerLeadingEdgePoint;
+        EtaXsi innerTrailingEdgePoint;
+        EtaXsi outerLeadingEdgePoint;
+        EtaXsi outerTrailingEdgePoint;
+    };
+
+    mutable Cache cache;
+
 };
 
 namespace WingCellInternal

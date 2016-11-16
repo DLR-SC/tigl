@@ -31,6 +31,7 @@
 #include "CTiglAbstractPhysicalComponent.h"
 #include <TopoDS_Edge.hxx>
 #include <Geom_BSplineCurve.hxx>
+#include <TopTools_ListOfShape.hxx>
 
 #include <map>
 #include <string>
@@ -99,5 +100,84 @@ TIGL_EXPORT TopoDS_Face GetSingleFace(const TopoDS_Shape& shape);
 // Builds a face out of 4 points
 TIGL_EXPORT TopoDS_Face BuildFace(const gp_Pnt& p1, const gp_Pnt& p2, const gp_Pnt& p3, const gp_Pnt& p4);
 
+// Method for building a face out of two wires
+TIGL_EXPORT TopoDS_Face BuildFace(const TopoDS_Wire& wire1, const TopoDS_Wire& wire2);
+
+// Method for building a face out of two wires and a direction vector
+TIGL_EXPORT TopoDS_Face BuildFace(const TopoDS_Wire& wire1, const TopoDS_Wire& wire2, const gp_Vec& dir);
+
+// Method for building a face out of closed wire.
+// The algorithm tries to build a face using a plane as surface, in case this fails
+// the BRepFill_Filling class is used.
+TIGL_EXPORT TopoDS_Face BuildFace(const TopoDS_Wire& wire);
+
+// Method for building a ruled face between the two wires. The method
+// approximates the two wires by curves, and generates a single face
+// between these curves.
+// This can be used for generating non-planar faces. For planar faces
+// see buildFace method
+TIGL_EXPORT TopoDS_Face BuildRuledFace(const TopoDS_Wire& wire1, const TopoDS_Wire& wire2);
+
+// Method for building a wire out of two points
+TIGL_EXPORT TopoDS_Wire BuildWire(const gp_Pnt& p1, const gp_Pnt& p2);
+
+// Method for building a wire out of the edges from the passed geometry
+TIGL_EXPORT TopoDS_Wire BuildWireFromEdges(const TopoDS_Shape& edges);
+
+// Returns a list of wires built from all connected edges in the passed shape
+TIGL_EXPORT void BuildWiresFromConnectedEdges(const TopoDS_Shape& shape, TopTools_ListOfShape& wireList);
+
+// Method for creating a face from an opened wire
+TIGL_EXPORT TopoDS_Wire CloseWire(const TopoDS_Wire& wire);
+
+// Method for closing two wires to a single one, 
+// The method determines a direction vector based on the end vertices of wire1
+// and calls the second closeWires method
+TIGL_EXPORT TopoDS_Wire CloseWires(const TopoDS_Wire& wire1, const TopoDS_Wire& wire2);
+
+// Method for closing two wires to a single one, 
+// the passed vector is used to define the upper and lower end vertices of the wires
+TIGL_EXPORT TopoDS_Wire CloseWires(const TopoDS_Wire& wire1, const TopoDS_Wire& wire2, const gp_Vec& dir);
+
+// Method for sorting the edges of a wire
+TIGL_EXPORT TopoDS_Wire SortWireEdges(const TopoDS_Wire& wire);
+
+// Returns the first and last vertex of the passed shape along the passed 
+// direction
+TIGL_EXPORT bool GetMinMaxPoint(const TopoDS_Shape& shape, const gp_Vec& dir, gp_Pnt& minPnt, gp_Pnt& maxPnt);
+
+// Returns the list of shapes of the passed type from the passed shape
+TIGL_EXPORT void GetListOfShape(const TopoDS_Shape& shape, TopAbs_ShapeEnum type, TopTools_ListOfShape& result);
+
+// Cuts two shapes and returns the common geometry (e.g. intersection edges)
+// Throws an exception in case the interesection failed
+TIGL_EXPORT TopoDS_Shape CutShapes(const TopoDS_Shape& shape1, const TopoDS_Shape& shape2);
+
+// Helper for splitting a shape by another shape
+TIGL_EXPORT TopoDS_Shape SplitShape(const TopoDS_Shape& src, const TopoDS_Shape& tool);
+
+// Method for finding all directly and indirectly connected edges
+// The method loops over the passed edgeList and checks for each element if it
+// is connected to the passed edge. When an edge is found it is removed from 
+// the edgeList and added to the targetList. Additionally for this edge all
+// connected edges are also added to the targetList by recursively calling this
+// method. Finally all directly or indirectly connected edges to the passed
+// edge are moved from the edgeList to the targetList
+TIGL_EXPORT void FindAllConnectedEdges(const TopoDS_Edge& edge, TopTools_ListOfShape& edgeList, TopTools_ListOfShape& targetList);
+
+// Method for checking if two edges have a common vertex (same position)
+TIGL_EXPORT bool CheckCommonVertex(const TopoDS_Edge& e1, const TopoDS_Edge& e2);
+
+// Method for searching all vertices which are only connected to a single edge
+TIGL_EXPORT void GetEndVertices(const TopoDS_Shape& shape, TopTools_ListOfShape& endVertices);
+
+// Method for finding the face which has the lowest distance to the passed point
+TIGL_EXPORT TopoDS_Face GetNearestFace(const TopoDS_Shape& src, const gp_Pnt& pnt);
+
+// Method for checking for duplicate edges in the passed shape.
+// The method returns a shape with only unique edges
+// NOTE: THIS METHOD ONLY CHECKS THE VERTEX POSITIONS, AND THE MIDDLE POINT 
+//       OF THE EDGES, BUT DOES NOT COMPARE THE CURVES EXACTLY
+TIGL_EXPORT TopoDS_Shape RemoveDuplicateEdges(const TopoDS_Shape& shape);
 
 #endif // TIGLCOMMONFUNCTIONS_H

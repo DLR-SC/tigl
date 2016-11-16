@@ -116,7 +116,7 @@ namespace
         }
 
         // insert blanks
-        std::size_t nblanks = 8 - shapeName.length();
+        int nblanks = 8 - static_cast<int>(shapeName.length());
         for (int i = 0; i < nblanks; ++i) {
             shapeName.insert(shapeName.begin(), ' ');
         }
@@ -227,8 +227,9 @@ void CTiglExportIges::ExportIGES(const std::string& filename) const
     }
 
     CCPACSFarField& farfield = _config.GetFarField();
-    if(farfield.GetFieldType() != TiglFarFieldType::NONE)
+    if (farfield.GetFieldType() != NONE) {
         shapes.push_back(farfield.GetLoft());
+    }
 
     // write iges
     try {

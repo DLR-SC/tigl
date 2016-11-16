@@ -48,6 +48,7 @@
 #include <TopExp.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
 
+
 namespace tigl
 {
 
@@ -702,6 +703,5 @@ const CCPACSPositionings& CCPACSWing::GetPositionings()
 {
     return *m_positionings;
 }
-
 
 } // end namespace tigl

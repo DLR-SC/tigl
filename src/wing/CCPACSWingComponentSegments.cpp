@@ -29,6 +29,7 @@
 
 #include "CCPACSWingComponentSegments.h"
 #include "TixiSaveExt.h"
+#include "IOHelper.h"
 
 namespace tigl
 {

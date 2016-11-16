@@ -53,12 +53,6 @@ class CCPACSWing;
 class CCPACSWingSegment : public generated::CPACSWingSegment, public CTiglAbstractSegment
 {
 public:
-    enum CoordinateSystem {
-        GLOBAL_COORDINATE_SYSTEM,
-        WING_COORDINATE_SYSTEM
-    };
-
-public:
     // Constructor
     TIGL_EXPORT CCPACSWingSegment(CCPACSWingSegments* parent);
     TIGL_EXPORT CCPACSWingSegment(CCPACSWing* aWing, int aSegmentIndex);
@@ -81,26 +75,26 @@ public:
     // Returns the wing this segment belongs to
     TIGL_EXPORT CCPACSWing& GetWing() const;
 
-    TIGL_EXPORT TopoDS_Shape GetInnerClosure(CoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM);
-    TIGL_EXPORT TopoDS_Shape GetOuterClosure(CoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM);
+    TIGL_EXPORT TopoDS_Shape GetInnerClosure(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const;
+    TIGL_EXPORT TopoDS_Shape GetOuterClosure(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const;
 
     // Gets the upper point in relative wing coordinates for a given eta and xsi
-    TIGL_EXPORT gp_Pnt GetUpperPoint(double eta, double xsi);
+    TIGL_EXPORT gp_Pnt GetUpperPoint(double eta, double xsi) const;
 
     // Gets the lower point in relative wing coordinates for a given eta and xsi
-    TIGL_EXPORT gp_Pnt GetLowerPoint(double eta, double xsi);
+    TIGL_EXPORT gp_Pnt GetLowerPoint(double eta, double xsi) const;
 
     // Gets the point on the wing chord surface in relative wing coordinates for a given eta and xsi
-    TIGL_EXPORT gp_Pnt GetChordPoint(double eta, double xsi);
+    TIGL_EXPORT gp_Pnt GetChordPoint(double eta, double xsi) const;
 
     // Gets the point on the wing chord surface in relative wing coordinates for a given eta and xsi
-    TIGL_EXPORT gp_Pnt GetChordNormal(double eta, double xsi);
+    TIGL_EXPORT gp_Pnt GetChordNormal(double eta, double xsi) const;
 
     // Returns the inner section UID of this segment
-    TIGL_EXPORT const std::string& GetInnerSectionUID();
+    TIGL_EXPORT const std::string& GetInnerSectionUID() const;
 
     // Returns the outer section UID of this segment
-    TIGL_EXPORT const std::string& GetOuterSectionUID();
+    TIGL_EXPORT const std::string& GetOuterSectionUID() const;
 
     // Returns the inner section element UID of this segment
     TIGL_EXPORT const std::string& GetInnerSectionElementUID() const;
@@ -109,16 +103,16 @@ public:
     TIGL_EXPORT const std::string& GetOuterSectionElementUID() const;
 
     // Returns the inner section index of this segment
-    TIGL_EXPORT int GetInnerSectionIndex();
+    TIGL_EXPORT int GetInnerSectionIndex() const;
 
     // Returns the outer section index of this segment
-    TIGL_EXPORT int GetOuterSectionIndex();
+    TIGL_EXPORT int GetOuterSectionIndex() const;
 
     // Returns the inner section element index of this segment
-    TIGL_EXPORT int GetInnerSectionElementIndex();
+    TIGL_EXPORT int GetInnerSectionElementIndex() const;
 
     // Returns the outer section element index of this segment
-    TIGL_EXPORT int GetOuterSectionElementIndex();
+    TIGL_EXPORT int GetOuterSectionElementIndex() const;
 
     // Returns the starting(inner) Segment Connection
     TIGL_EXPORT CCPACSWingConnection& GetInnerConnection();
@@ -127,82 +121,82 @@ public:
     TIGL_EXPORT CCPACSWingConnection& GetOuterConnection();
 
     // Gets the count of segments connected to the inner section of this segment
-    TIGL_EXPORT int GetInnerConnectedSegmentCount();
+    TIGL_EXPORT int GetInnerConnectedSegmentCount() const;
 
     // Gets the count of segments connected to the outer section of this segment
-    TIGL_EXPORT int GetOuterConnectedSegmentCount();
+    TIGL_EXPORT int GetOuterConnectedSegmentCount() const;
 
     // Gets the index (number) of the n-th segment connected to the inner section
     // of this segment. n starts at 1.
-    TIGL_EXPORT int GetInnerConnectedSegmentIndex(int n);
+    TIGL_EXPORT int GetInnerConnectedSegmentIndex(int n) const;
 
     // Gets the index (number) of the n-th segment connected to the outer section
     // of this segment. n starts at 1.
-    TIGL_EXPORT int GetOuterConnectedSegmentIndex(int n);
+    TIGL_EXPORT int GetOuterConnectedSegmentIndex(int n) const;
 
     // Gets the volume of this segment
     TIGL_EXPORT double GetVolume();
 
     // Gets the surface area of this segment
-    TIGL_EXPORT double GetSurfaceArea();
+    TIGL_EXPORT double GetSurfaceArea() const;
     
     TIGL_EXPORT double GetSurfaceArea(bool fromUpper, 
                                       double eta1, double xsi1,
                                       double eta2, double xsi2,
                                       double eta3, double xsi3,
-                                      double eta4, double xsi4);
+                                      double eta4, double xsi4) const;
 
     // helper function to get the inner transformed chord line wire, used in GetLoft and when determining triangulation midpoints projection on segments in VtkExport
-    TIGL_EXPORT TopoDS_Wire GetInnerWire(CoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM);
+    TIGL_EXPORT TopoDS_Wire GetInnerWire(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const;
 
     // helper function to get the outer transformed chord line wire, used in GetLoft and when determining triangulation midpoints projection on segments in VtkExport
-    TIGL_EXPORT TopoDS_Wire GetOuterWire(CoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM);
+    TIGL_EXPORT TopoDS_Wire GetOuterWire(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const;
 
     // Getter for inner wire of opened profile (containing trailing edge)
-    TIGL_EXPORT TopoDS_Wire GetInnerWireOpened(CoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM);
+    TIGL_EXPORT TopoDS_Wire GetInnerWireOpened(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const;
 
     // Getter for outer wire of opened profile (containing trailing edge)
-    TIGL_EXPORT TopoDS_Wire GetOuterWireOpened(CoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM);
+    TIGL_EXPORT TopoDS_Wire GetOuterWireOpened(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const;
 
     // Returns eta as parametric distance from a given point on the surface
     // Get information about a point beeing on upper/lower side with "GetIsOnTop"
-    TIGL_EXPORT double GetEta(gp_Pnt pnt, bool isUpper);
+    TIGL_EXPORT double GetEta(gp_Pnt pnt, bool isUpper) const;
 
     // calculates eta from a given XSI and
-    TIGL_EXPORT double GetEta(gp_Pnt pnt, double xsi);
+    TIGL_EXPORT double GetEta(gp_Pnt pnt, double xsi) const;
 
     // Returns zeta as parametric distance from a given point on the surface
     // Get information about a point beeing on upper/lower side with "GetIsOnTop"
-    TIGL_EXPORT double GetXsi(gp_Pnt pnt, bool isUpper);
+    TIGL_EXPORT double GetXsi(gp_Pnt pnt, bool isUpper) const;
 
     // projects a point unto the wing and returns its coordinates
-    TIGL_EXPORT void GetEtaXsi(gp_Pnt pnt, double& eta, double& xsi);
+    TIGL_EXPORT void GetEtaXsi(gp_Pnt pnt, double& eta, double& xsi) const;
 
 
     // Returns if the given point is ont the Top of the wing or on the lower side.
-    TIGL_EXPORT bool GetIsOnTop(gp_Pnt pnt);
+    TIGL_EXPORT bool GetIsOnTop(gp_Pnt pnt) const;
 
     // Returns the reference area of the quadrilateral portion of the wing segment
     // by projecting the wing segment into the plane defined by the user
-    TIGL_EXPORT double GetReferenceArea(TiglSymmetryAxis symPlane);
+    TIGL_EXPORT double GetReferenceArea(TiglSymmetryAxis symPlane) const;
 
     // Returns the lower Surface of this Segment
-    TIGL_EXPORT Handle(Geom_Surface) GetLowerSurface(CoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM);
+    TIGL_EXPORT Handle(Geom_Surface) GetLowerSurface(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const;
 
     // Returns the upper Surface of this Segment
-    TIGL_EXPORT Handle(Geom_Surface) GetUpperSurface(CoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM);
+    TIGL_EXPORT Handle(Geom_Surface) GetUpperSurface(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const;
 
-    TIGL_EXPORT TopoDS_Shape& GetUpperShape(CoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM);
-    TIGL_EXPORT TopoDS_Shape& GetLowerShape(CoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM);
+    TIGL_EXPORT TopoDS_Shape& GetUpperShape(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const;
+    TIGL_EXPORT TopoDS_Shape& GetLowerShape(TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const;
 
     // Returns the guide curves of the segment as wires
-    TIGL_EXPORT TopTools_SequenceOfShape& GetGuideCurveWires();
+    TIGL_EXPORT TopTools_SequenceOfShape& GetGuideCurveWires() const;
 
     // get guide curve for given UID
-    TIGL_EXPORT const CCPACSGuideCurve& GetGuideCurve(std::string UID);
+    TIGL_EXPORT const CCPACSGuideCurve& GetGuideCurve(std::string UID) const;
 
     // check if guide curve with a given UID exists
-    TIGL_EXPORT bool GuideCurveExists(std::string UID);
+    TIGL_EXPORT bool GuideCurveExists(std::string UID) const;
 
     // Returns an upper or lower point on the segment surface in
     // dependence of parameters eta and xsi, which range from 0.0 to 1.0.
@@ -210,7 +204,7 @@ public:
     // inner wing profile. For eta = 1.0, xsi = 1.0 point is equal to the trailing
     // edge on the outer wing profile. If fromUpper is true, a point
     // on the upper surface is returned, otherwise from the lower.
-    TIGL_EXPORT gp_Pnt GetPoint(double eta, double xsi, bool fromUpper, CoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM);
+    TIGL_EXPORT gp_Pnt GetPoint(double eta, double xsi, bool fromUpper, TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const;
 
     // Returns an upper or lower point on the segment surface in
     // dependence of parameters eta and xsi, which range from 0.0 to 1.0.
@@ -220,7 +214,7 @@ public:
     // on the upper surface is returned, otherwise from the lower.
     // The intersection is with the wing surface is computed with a line
     // starting at a point on the chord face with the given direction dir.
-    TIGL_EXPORT gp_Pnt GetPointDirection(double eta, double xsi, double dirx, double diry, double dirz, bool fromUpper, double& deviation);
+    TIGL_EXPORT gp_Pnt GetPointDirection(double eta, double xsi, double dirx, double diry, double dirz, bool fromUpper, double& deviation) const;
 
     TIGL_EXPORT TiglGeometricComponentType GetComponentType()
     {
@@ -238,7 +232,7 @@ protected:
     void Update();
 
     // builds all guide curve wires
-    void BuildGuideCurveWires();
+    void BuildGuideCurveWires() const;
 
     // Builds the loft between the two segment sections
     PNamedShape BuildLoft();
@@ -248,17 +242,21 @@ private:
     std::string GetShortShapeName ();
 
     // Builds upper and lower surfaces
-    void MakeSurfaces();
+    void MakeSurfaces() const;
     
     // converts segment eta xsi coordinates to face uv koordinates
-    void etaXsiToUV(bool isFromUpper, double eta, double xsi, double& u, double& v);
+    void etaXsiToUV(bool isFromUpper, double eta, double xsi, double& u, double& v) const;
 
     CCPACSTransformation dummyTrans; // TODO: CCPACSWingSegment must provide a CCPACSTransformation as it is a CTiglAbstractGeometricalComponent, is this correct? Can we remove the base class CTiglAbstractGeometricalComponent?
     CCPACSWingConnection innerConnection;      /**< Inner segment connection (root)         */
     CCPACSWingConnection outerConnection;      /**< Outer segment connection (tip)          */
-    TopTools_SequenceOfShape guideCurveWires;  /**< container for the guide curve wires     */
+    mutable TopTools_SequenceOfShape guideCurveWires;  /**< container for the guide curve wires     */
     CCPACSWing*          wing;                 /**< Parent wing                             */
     double               myVolume;             /**< Volume of this segment                  */
+    
+    struct SurfaceCache
+    {
+        bool                 valid;
     double               mySurfaceArea;        /**< Surface area of this segment            */
     TopoDS_Shape         upperShape;           /**< Upper shape of this segment             */
     TopoDS_Shape         lowerShape;           /**< Lower shape of this segment             */
@@ -272,7 +270,8 @@ private:
     Handle(Geom_Surface) upperSurfaceLocal;
     Handle(Geom_Surface) lowerSurfaceLocal;
     CTiglPointTranslator cordSurface;
-    bool                 surfacesAreValid;
+    };
+    mutable SurfaceCache surfaceCache;
 };
 
 } // end namespace tigl

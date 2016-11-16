@@ -22,15 +22,21 @@
 #include "generated/CPACSWingComponentSegmentStructure.h"
 #include "tigl_internal.h"
 #include "CCPACSWingShell.h"
+#include "CTiglWingStructureReference.h"
 
 
 namespace tigl
 {
 
+// forward declarations
+class CCPACSWingSpars;
+class CCPACSWingRibsDefinitions;
+
+// shouldn't his be CCPACSWingComponentSegmentStructure
 class CCPACSWingCSStructure : public generated::CPACSWingComponentSegmentStructure
 {
 public:
-    TIGL_EXPORT CCPACSWingCSStructure();
+    TIGL_EXPORT CCPACSWingCSStructure(CTiglWingStructureReference parent);
 
     TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiDocument, const std::string& xpath) override;
 

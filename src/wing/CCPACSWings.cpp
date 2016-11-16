@@ -27,6 +27,7 @@
 #include "CCPACSConfiguration.h"
 #include "CTiglError.h"
 #include "TixiSaveExt.h"
+#include "IOHelper.h"
 #include "CCPACSModel.h"
 #include <iostream>
 #include <sstream>

@@ -31,6 +31,7 @@
 
 #include "CCPACSWingSegment.h"
 #include "CTiglError.h"
+#include "IOHelper.h"
 #include "TixiSaveExt.h"
 
 namespace tigl 

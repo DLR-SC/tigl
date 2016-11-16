@@ -61,7 +61,12 @@
 /* Private functions.                                                 */
 /*****************************************************************************/
 
-static char * version = NULL;
+namespace
+{
+    static std::string version = std::string(TIGL_REVISION).size() > 0 ?
+        TIGL_VERSION_STRING " rev" TIGL_REVISION :
+        TIGL_VERSION_STRING;
+}
 
 void tiglCleanup(void);
 bool tiglInit(void);
@@ -81,10 +86,6 @@ bool tiglInit(void)
 
 void tiglCleanup(void)
 {
-    if (version) {
-        delete[] version;
-    }
-    version = NULL;
 }
 
 template<typename Func>
@@ -211,7 +212,7 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglSaveCPACSConfiguration(const char* configu
     tigl::CCPACSConfigurationManager& manager = tigl::CCPACSConfigurationManager::GetInstance();
 
     if (!manager.IsValid(cpacsHandle)) {
-        LOG(ERROR) << "Invalid cpacsHandlePtr passed to tiglSaveCPACSConfiguration!" << std::endl;
+        LOG(ERROR) << "Invalid cpacsHandle passed to tiglSaveCPACSConfiguration!" << std::endl;
         return TIGL_UNINITIALIZED;
     }
 
@@ -263,18 +264,9 @@ TIGL_COMMON_EXPORT TiglReturnCode tiglIsCPACSConfigurationHandleValid(TiglCPACSC
 /**
 * gives the tigl version number
 */
-TIGL_COMMON_EXPORT char* tiglGetVersion()
+TIGL_COMMON_EXPORT const char* tiglGetVersion()
 {
-    if (!version) {
-        version = new char[512];
-        if (std::string(TIGL_REVISION).size() > 0) {
-            sprintf(version, "%s rev%s", TIGL_VERSION_STRING, TIGL_REVISION);
-        }
-        else {
-            sprintf(version, "%s", TIGL_VERSION_STRING);
-        }
-    }
-    return version;
+    return version.c_str();
 }
 
 /*** General geometry function ***/
