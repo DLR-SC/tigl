@@ -104,18 +104,16 @@ void CTiglLogging::initLogger()
 
 void CTiglLogging::LogToFile(const char* prefix) 
 {
-    time_t rawtime;
-    time (&rawtime);
-    struct tm *timeinfo = localtime (&rawtime);
-    char buffer [80];
+    char buffer[80];
     if (_timeIdInFilename) {
-        strftime (buffer,80,"%y%m%d-%H%M%S",timeinfo);
+        time_t rawtime;
+        time(&rawtime);
+        tm *timeinfo = localtime(&rawtime);
+        strftime(buffer, 80, "%y%m%d-%H%M%S", timeinfo);
+    } else {
+        buffer[0] = 0;
     }
-
-    else {
-        strncpy(buffer, "", 80);
-    }
-    std::string filename = std::string(prefix) + buffer+ "." + _fileEnding;
+    std::string filename = std::string(prefix) + buffer + "." + _fileEnding;
     
     // add file and console logger to splitter
     CSharedPtr<CTiglLogSplitter> splitter (new CTiglLogSplitter);

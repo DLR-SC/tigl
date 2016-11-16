@@ -22,13 +22,21 @@
 
 #include "TixiSaveExt.h"
 
+#include <cmath>
+
+#include "CTiglLogging.h"
+
+
 namespace tigl
 {
 namespace TixiSaveExt
 {
 
+namespace TixiSaveExt
+{
+
 // create if necessary the element
-void TixiSaveElement(TixiDocumentHandle tixiHandle, const char* elementPath, const char* element)
+void TixiSaveElement(TixiDocumentHandle tixiHandle, const char* elementPath, const char* element, int index)
 {
     // check if the element exist
     std::string subpath;
@@ -38,7 +46,14 @@ void TixiSaveElement(TixiDocumentHandle tixiHandle, const char* elementPath, con
 
     // if the element doesn't exist already, it create it
     if (tixiCheckElement(tixiHandle, subpath.c_str()) == ELEMENT_NOT_FOUND) {
-        if (tixiCreateElement(tixiHandle, elementPath, element) != SUCCESS) {
+        ReturnCode status;
+        if (index > 0) {
+            status = tixiCreateElementAtIndex(tixiHandle, elementPath, element, index);
+        }
+        else {
+            status = tixiCreateElement(tixiHandle, elementPath, element);
+        }
+        if (status != SUCCESS) {
             throw CTiglError("Error in TixiSaveExt::TixiSaveElement : tixiCreateElement error", TIGL_XML_ERROR);
         }
     }
@@ -48,7 +63,6 @@ void TixiSaveElement(TixiDocumentHandle tixiHandle, const char* elementPath, con
 }
 
 // update an element with text, and create it if necessary
-// INDICATION : updating an empty text doesn't work : no error, but the text is not updated
 void TixiSaveTextElement(TixiDocumentHandle tixiHandle, const char* elementPath, const char* element, const char* text)
 {
     std::string subpath;
@@ -61,16 +75,20 @@ void TixiSaveTextElement(TixiDocumentHandle tixiHandle, const char* elementPath,
         throw CTiglError("Error in TixiSaveExt::TixiSaveTextElement : inexistant path", TIGL_XML_ERROR);
     }
 
-    // first, delete the element
+    // if it exist, it update it
     if (tixiCheckElement(tixiHandle, subpath.c_str()) == SUCCESS) {
-        if (tixiRemoveElement(tixiHandle, subpath.c_str()) != SUCCESS) {
-            throw CTiglError("Error: XML error while removing text in TixiSaveExt::TixiSaveTextElement", TIGL_XML_ERROR);
+        if (tixiUpdateTextElement(tixiHandle, subpath.c_str(), text) != SUCCESS) {
+            throw CTiglError("Error: XML error while updating text in TixiSaveExt::TixiSaveTextElement", TIGL_XML_ERROR);
         }
     }
-
-    // then, the new element is created with the text
-    if (tixiAddTextElement(tixiHandle, elementPath, element, text) != SUCCESS) {
-        throw CTiglError("Error in TixiSaveExt::TixiSaveTextElement : tixiAddTextElement error", TIGL_XML_ERROR);
+    else if (tixiCheckElement(tixiHandle, subpath.c_str()) == ELEMENT_NOT_FOUND) {
+        // then, the new element is created with the text
+        if (tixiAddTextElement(tixiHandle, elementPath, element, text) != SUCCESS) {
+            throw CTiglError("Error in TixiSaveExt::TixiSaveTextElement : tixiAddTextElement error", TIGL_XML_ERROR);
+        }
+    }
+    else {
+        throw CTiglError("Error: XML error while creating a text element in TixiSaveExt::TixiSaveTextElement", TIGL_XML_ERROR);
     }
 
 }
@@ -220,13 +238,18 @@ void TixiSaveVector(TixiDocumentHandle tixiHandle, const char* elementPath, cons
 
     // check if element exist, if yes, it destroy it
     if (tixiCheckElement(tixiHandle, subpath.c_str()) == SUCCESS) {
-        if (tixiRemoveElement(tixiHandle, subpath.c_str()) != SUCCESS) {
-            throw CTiglError("Error: XML error while removing vector in TixiSaveExt::TixiSaveVector", TIGL_XML_ERROR);
+        if (tixiUpdateFloatVector(tixiHandle, subpath.c_str(), vector, length, NULL) != SUCCESS) {
+            throw CTiglError("Error: XML error while updating vector in TixiSaveExt::TixiSaveVector", TIGL_XML_ERROR);
         }
     }
-    // set the new vector with new values
-    if (tixiAddFloatVector(tixiHandle, elementPath, element, vector, static_cast<int>(length), NULL) != SUCCESS) {
-        throw CTiglError("Error: XML error while saving vector in TixiSaveExt::TixiSaveVector", TIGL_XML_ERROR);
+    else if (tixiCheckElement(tixiHandle, subpath.c_str()) == ELEMENT_NOT_FOUND) {
+        // set the new vector with new values
+        if (tixiAddFloatVector(tixiHandle, elementPath, element, vector, static_cast<int>(length), NULL) != SUCCESS) {
+            throw CTiglError("Error: XML error while saving vector in TixiSaveExt::TixiSaveVector", TIGL_XML_ERROR);
+        }
+    }
+    else {
+        throw CTiglError("Error in TixiSaveExt::TixiSaveVector : tixiCheckElement error", TIGL_XML_ERROR);
     }
 }
 
@@ -237,7 +260,7 @@ void TixiSaveVector(TixiDocumentHandle tixiHandle, const std::string& elementPat
         TixiSaveVector(tixiHandle, elementPath.c_str(), element.c_str(), NULL, 0);
     }
     else {
-        TixiSaveVector(tixiHandle, elementPath.c_str(), element.c_str(), &val[0], val.size());
+        TixiSaveVector(tixiHandle, elementPath.c_str(), element.c_str(), &val[0], static_cast<int>(val.size()));
     }
 }
 

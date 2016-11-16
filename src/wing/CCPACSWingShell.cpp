@@ -18,15 +18,20 @@
 
 #include "CCPACSWingShell.h"
 
+#include "CCPACSWingCSStructure.h"
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "TixiSaveExt.h"
+#include "CCPACSWingCell.h"
+
 
 namespace tigl 
 {
 
-CCPACSWingShell::CCPACSWingShell()
-    : isvalid(false) {
+CCPACSWingShell::CCPACSWingShell(CCPACSWingCSStructure& parent, TiglLoftSide side)
+    : side(side)
+{
+    Reset();
 }
 
 int CCPACSWingShell::GetCellCount() const
@@ -37,9 +42,20 @@ int CCPACSWingShell::GetCellCount() const
         return 0;
 }
 
-CCPACSWingCell& CCPACSWingShell::GetCell(int index)
+const CCPACSWingCell& CCPACSWingShell::GetCell(int index) const
 {
     return m_cells->GetCell(index);
+}
+
+CCPACSWingCell& CCPACSWingShell::GetCell(int index)
+{
+    // forward call to const method
+    return const_cast<CCPACSWingCell&>(static_cast<const CCPACSWingShell&>(*this).GetCell(index));
+}
+
+const CCPACSMaterial& CCPACSWingShell::GetMaterial() const
+{
+    return material;
 }
 
 CCPACSMaterial& CCPACSWingShell::GetMaterial()
@@ -47,31 +63,46 @@ CCPACSMaterial& CCPACSWingShell::GetMaterial()
     return m_skin.GetMaterial();
 }
 
+const CCPACSWingCSStructure& CCPACSWingShell::GetStructure() const
+{
+    return parent;
+}
+
+CCPACSWingCSStructure& CCPACSWingShell::GetStructure()
+{
+    return parent;
+}
+
 void CCPACSWingShell::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string &shellXPath)
 {
-    Invalidate();
+    Reset();
     generated::CPACSWingShell::ReadCPACS(tixiHandle, shellXPath);
 }
 
 void CCPACSWingShell::Invalidate()
 {
-    isvalid = false;
+    geometryCache.valid = false;
 }
 
 bool CCPACSWingShell::IsValid() const
 {
-    return isvalid;
+    return geometryCache.valid;
 }
 
-void CCPACSWingShell::Update()
+void CCPACSWingShell::Update() const
 {
-    if (isvalid) {
+    if ( geometryCache.valid) {
         return;
     }
 
     // TODO: build stringer geometry
 
-    isvalid = true;
+    geometryCache.valid = true;
+}
+
+TiglLoftSide CCPACSWingShell::GetLoftSide() const
+{
+    return side;
 }
 
 } // namespace tigl

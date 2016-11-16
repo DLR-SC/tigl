@@ -37,14 +37,13 @@
 #include "tigl.h"
 #include "CTiglPoint.h"
 #include "CTiglError.h"
-#include "math.h"
 
 namespace tigl
 {
 namespace TixiSaveExt
 {
     /** Save an empty element */
-    void TixiSaveElement(TixiDocumentHandle tixiHandle, const char* elementPath, const char* element);
+    void TixiSaveElement(TixiDocumentHandle tixiHandle, const char* elementPath, const char* element, int index = 0);
 
     /** Save an element containing 'text' */
     void TixiSaveTextElement(TixiDocumentHandle tixiHandle, const char* elementXPath, const char* element, const char* text);
@@ -67,5 +66,6 @@ namespace TixiSaveExt
     /** Save an element containing a vector at the path */
     void TixiSaveVector(TixiDocumentHandle tixiHandle, const std::string& elementXPath, const std::string& element, const std::vector<double>& val);
 };
+}
 }
 #endif

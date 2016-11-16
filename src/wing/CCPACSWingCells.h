@@ -34,6 +34,8 @@ public:
     // Virtual Destructor
     TIGL_EXPORT virtual ~CCPACSWingCells() {}
 
+    TIGL_EXPORT void Invalidate();
+    
     // Returns the total count of wing cells for that wing component segment
     TIGL_EXPORT int GetCellCount() const;
     
@@ -41,7 +43,12 @@ public:
     TIGL_EXPORT CCPACSWingCell& GetCell(int index) const;
 
     // Get parent wing shell element
-    DEPRECATED TIGL_EXPORT CCPACSWingShell* GetParentElement();
+    TIGL_EXPORT CCPACSWingShell* GetParentElement() const;
+
+protected:
+    // Cleanup routine
+    void Cleanup(void);
+    
 };
 
 } // end namespace tigl

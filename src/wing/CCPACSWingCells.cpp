@@ -24,6 +24,7 @@
 #include "CTiglError.h"
 #include "CTiglLogging.h"
 #include "TixiSaveExt.h"
+#include "IOHelper.h"
 
 namespace tigl
 {
@@ -33,7 +34,7 @@ CCPACSWingCells::CCPACSWingCells(CCPACSWingShell* parent)
 
 int CCPACSWingCells::GetCellCount() const
 {
-    return static_cast<int>(m_cell.size());
+    return static_cast<int>(cells.size());
 }
 
 CCPACSWingCell& CCPACSWingCells::GetCell(int index) const
@@ -46,7 +47,7 @@ CCPACSWingCell& CCPACSWingCells::GetCell(int index) const
 }
 
 // Get parent wing shell element
-CCPACSWingShell* CCPACSWingCells::GetParentElement()
+CCPACSWingShell* CCPACSWingCells::GetParentElement() const
 {
     return GetParent();
 }

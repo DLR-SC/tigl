@@ -62,9 +62,9 @@ TopoDS_Wire CTiglApproximateBsplineWire::BuildWire(const CPointContainer& points
         forceClosed = true;
     }
 
-    TColgp_Array1OfPnt pointsArray(1, points.size());
+    TColgp_Array1OfPnt pointsArray(1, static_cast<Standard_Integer>(points.size()));
     for (CPointContainer::size_type i = 0; i < points.size(); i++) {
-        pointsArray.SetValue(i + 1, points[i]);
+        pointsArray.SetValue(static_cast<Standard_Integer>(i + 1), points[i]);
     }
 
     Handle(Geom_BSplineCurve) hcurve = GeomAPI_PointsToBSpline(

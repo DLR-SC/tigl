@@ -1091,3 +1091,18 @@ TEST_F(WingSegmentSimple, getSurfaceAreaTrimmedLower_Errors)
                                                                     0.8, 0.8,
                                                                     &lowerArea));
 }
+
+TEST_F(WingSegmentSimple, saveCPACS)
+{
+
+    ASSERT_EQ(SUCCESS, tiglSaveCPACSConfiguration("simpletest-saved", tiglSimpleHandle));
+    ASSERT_EQ(SUCCESS, tixiSaveDocument(tixiSimpleHandle, "TestData/simpltest-saved.cpacs.xml"));
+
+    // try to reopen document
+    TiglCPACSConfigurationHandle tmpHandle = 0;
+    EXPECT_EQ(SUCCESS, tiglOpenCPACSConfiguration(tixiSimpleHandle, "", &tmpHandle));
+
+    if (tmpHandle > 0) {
+        tiglCloseCPACSConfiguration(tmpHandle);
+    }
+}

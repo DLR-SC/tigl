@@ -59,6 +59,16 @@ public:
     // Read CPACS wing profile file
     TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath) override;
 
+
+    // Returns the name of the wing profile
+    TIGL_EXPORT const std::string& GetName(void) const;
+
+    // Returns the description of the wing profile
+    TIGL_EXPORT const std::string& GetDescription(void) const;
+
+    // Returns the uid of the wing profile
+    TIGL_EXPORT const std::string& GetUID(void) const;
+
     // Invalidates internal wing profile state
     TIGL_EXPORT void Invalidate();
 
@@ -141,6 +151,16 @@ protected:
     Handle(Geom2d_TrimmedCurve) GetChordLine();
 
 private:
+    // Copy constructor
+    CCPACSWingProfile(const CCPACSWingProfile& );
+
+    // Assignment operator
+    void operator=(const CCPACSWingProfile& );
+
+private:
+    std::string               name;           /**< CPACS wing profile name */
+    std::string               description;    /**< CPACS wing profile description */
+    std::string               uid;            /**< CPACS wing profile UID */
     bool                                        invalidated;    /**< Flag if element is invalid */
     ITiglWingProfileAlgo*                       profileAlgo; // points to the current profile algo (non-owning)
     std::unique_ptr<CCPACSWingProfilePointList> pointListAlgo; // is created in case the wing profile alg is a point list, otherwise cst2d constructed in the base class is used

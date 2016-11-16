@@ -192,7 +192,7 @@ double class_function_deriv(const double& N1, const double& N2, const int& n, co
 double shape_function(const std::vector<double>& B, const double& x)
 {
     double ret = 0.;
-    int order = B.size()-1;
+    int order = static_cast<int>(B.size()) - 1;
     int i = 0;
     for (std::vector<double>::const_iterator bIT = B.begin(); bIT != B.end(); ++bIT, ++i) {
         ret += *bIT * bernstein_poly(i, order, x);
@@ -206,7 +206,7 @@ double shape_function(const std::vector<double>& B, const double& x)
 double shape_function_deriv(const std::vector<double>& B, const int& n, const double& x)
 {
     double ret = 0.;
-    int order = B.size()-1;
+    int order = static_cast<int>(B.size()) - 1;
     int i = 0;
     for (std::vector<double>::const_iterator bIT = B.begin(); bIT != B.end(); ++bIT, ++i) {
         ret += *bIT * tigl::bernstein_poly_deriv(n, i, order, x);

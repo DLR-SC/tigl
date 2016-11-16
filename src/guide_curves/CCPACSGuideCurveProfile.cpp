@@ -30,9 +30,13 @@ namespace tigl
 {
 CCPACSGuideCurveProfile::CCPACSGuideCurveProfile() {}
 
-CCPACSGuideCurveProfile::CCPACSGuideCurveProfile(const std::string& xpath)
-    : xpath(xpath) {}
+// Constructor
+CCPACSGuideCurveProfile::CCPACSGuideCurveProfile()
+{
+    Cleanup();
+}
 
+// Destructor
 void CCPACSGuideCurveProfile::ReadCPACS(const TixiDocumentHandle& tixiHandle) {
     ReadCPACS(tixiHandle, xpath);
 }
@@ -40,7 +44,7 @@ void CCPACSGuideCurveProfile::ReadCPACS(const TixiDocumentHandle& tixiHandle) {
 // Read guide curve file
 void CCPACSGuideCurveProfile::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath)
 {
-    this->xpath = xpath;
+    std::string elementPath     = GuideCurveProfileXPath + "/pointList";
     generated::CPACSGuideCurveProfileGeometry::ReadCPACS(tixiHandle, xpath);
 
     // convert to point vector

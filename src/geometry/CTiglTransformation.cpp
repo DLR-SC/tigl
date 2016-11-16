@@ -520,7 +520,7 @@ bool CTiglTransformation::IsUniform() const
     return true;
 }
 
-CTiglTransformation CTiglTransformation::Inverted() const 
+CTiglTransformation CTiglTransformation::Inverted() const
 {
     return Get_gp_GTrsf().Inverted();
 }
