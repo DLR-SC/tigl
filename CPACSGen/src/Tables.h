@@ -1,17 +1,12 @@
 #pragma once
 
-#include "CustomTypesTable.h"
-#include "FundamentalTypesTable.h"
-#include "ParentPointerTable.h"
-#include "ReservedNamesTable.h"
-#include "TypeSubstitutionTable.h"
-#include "XsdTypesTable.h"
+#include "Table.h"
 
 namespace tigl {
-	extern CustomTypesTable s_customTypes;
-	extern FundamentalTypesTable s_fundamentalTypes;
-	extern ParentPointerTable s_parentPointers;
-	extern ReservedNamesTable s_reservedNames;
-	extern TypeSubstitutionTable s_typeSubstitutions;
-	extern XsdTypesTable s_xsdTypes;
+	extern MappingTable s_customTypes;
+	extern MappingTable s_fundamentalTypes;
+	extern MappingTable s_parentPointers;
+	extern MappingTable s_reservedNames;
+	extern MappingTable s_typeSubstitutions;
+	extern MappingTable s_xsdTypes;
 }

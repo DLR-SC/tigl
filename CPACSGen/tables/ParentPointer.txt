@@ -1,0 +1,14 @@
+// specifies classes for which to generate ctors accepting the pointer to their parent class
+
+CPACSWing
+CPACSWings
+CPACSWingCells
+CPACSWingSegment
+CPACSWingSegments
+CPACSComponentSegment
+CPACSComponentSegments
+CPACSFuselage
+CPACSFuselages
+CPACSFuselageSegment
+CPACSFuselageSegments
+CPACSRotorBlades

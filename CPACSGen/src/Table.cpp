@@ -1,23 +1,37 @@
 #include <fstream>
 #include <sstream>
+#include <regex>
 
 #include "Table.h"
 
 namespace tigl {
+	MappingTable::MappingTable(const std::string& filename) {
+		read(filename);
+	}
+
 	MappingTable::MappingTable(std::initializer_list<std::pair<const std::string, std::string>> init)
 		: m_map(init) {}
 
 	void MappingTable::read(const std::string& filename) {
 		std::ifstream f(filename);
-		f.exceptions(std::ios::badbit | std::ios::failbit);
+		if (!f)
+			throw std::ios::failure("Failed to open file " + filename + " for reading");
 
 		std::string line;
 		while (std::getline(f, line)) {
+			// skip empty lines and comments
+			if (line.empty() || line.compare(0, 2, "//") == 0)
+				continue;
+
 			// skip spaces and read two type names
 			std::istringstream ss(line);
 			std::string first;
 			std::string second;
 			ss >> first >> second;
+
+			if (first.empty() || second.empty())
+				continue;
+
 			m_map.insert(std::make_pair(first, second));
 		}
 	}
@@ -40,17 +54,31 @@ namespace tigl {
 			value = *p;
 	}
 
+	Table::Table(const std::string& filename) {
+		read(filename);
+	}
 
 	Table::Table(std::initializer_list<std::string> init)
 		: m_set(init) {}
 
 	void Table::read(const std::string& filename) {
 		std::ifstream f(filename);
-		f.exceptions(std::ios::badbit | std::ios::failbit);
+		if (!f)
+			throw std::ios::failure("Failed to open file " + filename + " for reading");
 
 		std::string line;
-		while (std::getline(f, line))
-			m_set.insert(line);
+		while (std::getline(f, line)) {
+			// skip empty lines and comments
+			if (line.empty() || line.compare(0, 2, "//") == 0)
+				continue;
+
+			// skip spaces and read one type name
+			std::istringstream ss(line);
+			std::string name;
+			ss >> name;
+
+			m_set.insert(name);
+		}
 	}
 
 	bool Table::contains(const std::string& key) const {

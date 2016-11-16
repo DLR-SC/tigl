@@ -1,0 +1,51 @@
+// custom types in Tigl which should inherit from the generated ones (except enums)
+// maps generated types to actual tigl types
+
+// enums
+CPACSWingType_symmetry             TiglSymmetryAxis
+CPACSFuselageType_symmetry         TiglSymmetryAxis
+CPACSPointAbsRelType_refType       ECPACSTranslationType
+CPACSFarField_type_SimpleContent   TiglFarFieldType
+
+// classes
+CPACSAircraftModel                 CCPACSModel
+CPACSMaterialDefinition            CCPACSMaterial
+CPACSFarField                      CCPACSFarField
+CPACSGuideCurve                    CCPACSGuideCurve
+CPACSGuideCurves                   CCPACSGuideCurves
+CPACSGuideCurveProfileGeometry     CCPACSGuideCurveProfile
+CPACSGuideCurveProfiles            CCPACSGuideCurveProfiles
+CPACSPositioning                   CCPACSPositioning
+CPACSPositionings                  CCPACSPositionings
+CPACSPoint                         CCPACSPoint
+CPACSPointAbsRel                   CCPACSPointAbsRel
+CPACSTransformation                CCPACSTransformation
+CPACSStringVectorBase              CCPACSStringVector
+CPACSPointListXYZVector            CCPACSPointListXYZ
+CPACSPointListRelXYZVector         CCPACSPointListRelXYZ
+
+CPACSFuselage                      CCPACSFuselage
+CPACSFuselages                     CCPACSFuselages
+CPACSFuselageProfiles              CCPACSFuselageProfiles
+CPACSFuselageSegment               CCPACSFuselageSegment
+CPACSFuselageSegments              CCPACSFuselageSegments
+CPACSFuselageSection               CCPACSFuselageSection
+CPACSFuselageSections              CCPACSFuselageSections
+CPACSFuselageElement               CCPACSFuselageSectionElement
+CPACSFuselageElements              CCPACSFuselageSectionElements
+
+CPACSComponentSegment              CCPACSWingComponentSegment
+CPACSComponentSegments             CCPACSWingComponentSegments
+CPACSWing                          CCPACSWing
+CPACSWings                         CCPACSWings
+CPACSWingCell                      CCPACSWingCell
+CPACSWingCells                     CCPACSWingCells
+CPACSWingElement                   CCPACSWingSectionElement
+CPACSWingElements                  CCPACSWingSectionElements
+CPACSWingSection                   CCPACSWingSection
+CPACSWingSections                  CCPACSWingSections
+CPACSWingComponentSegmentStructure CCPACSWingCSStructure
+CPACSWingShell                     CCPACSWingShell
+CPACSWingSegment                   CCPACSWingSegment
+CPACSWingSegments                  CCPACSWingSegments
+CPACSCst2D                         CCPACSWingProfileCST

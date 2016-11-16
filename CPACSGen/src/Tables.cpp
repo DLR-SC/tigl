@@ -2,10 +2,10 @@
 #include "Tables.h"
 
 namespace tigl {
-	CustomTypesTable s_customTypes;
-	FundamentalTypesTable s_fundamentalTypes;
-	ParentPointerTable s_parentPointers;
-	ReservedNamesTable s_reservedNames;
-	TypeSubstitutionTable s_typeSubstitutions;
-	XsdTypesTable s_xsdTypes;
+	MappingTable s_customTypes("../tables/CustomTypes.txt");
+	MappingTable s_fundamentalTypes("../tables/FundamentalTypes.txt");
+	MappingTable s_parentPointers("../tables/ParentPointer.txt");
+	MappingTable s_reservedNames("../tables/ReservedNames.txt");
+	MappingTable s_typeSubstitutions("../tables/TypeSubstitution.txt");
+	MappingTable s_xsdTypes("../tables/XsdTypes.txt");
 }

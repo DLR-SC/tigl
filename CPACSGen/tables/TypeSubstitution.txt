@@ -1,0 +1,7 @@
+// contains types from the schema which should be substituted instantly
+
+stringUIDBaseType std::string
+stringBaseType    std::string
+doubleBaseType    double
+integerBaseType   int
+booleanBaseType   bool

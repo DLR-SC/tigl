@@ -4,11 +4,11 @@
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
-#include "Optional.hpp"
 
 namespace tigl {
 	class MappingTable {
 	public:
+		MappingTable(const std::string& filename);
 		MappingTable(std::initializer_list<std::pair<const std::string, std::string>> init);
 
 		void read(const std::string& filename);
@@ -22,6 +22,7 @@ namespace tigl {
 
 	class Table {
 	public:
+		Table(const std::string& filename);
 		Table(std::initializer_list<std::string> init);
 
 		void read(const std::string& filename);
