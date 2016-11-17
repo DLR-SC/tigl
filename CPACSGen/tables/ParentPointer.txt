@@ -2,9 +2,24 @@
 
 CPACSWing
 CPACSWings
+CPACSWingCell
 CPACSWingCells
+CPACSWingComponentSegmentStructure
+CPACSWingRibCrossSection
+CPACSRibRotation
+CPACSWingRibsDefinition
+CPACSWingRibsDefinitions
+CPACSWingRibsPositioning
+CPACSWingRibExplicitPositioning
 CPACSWingSegment
 CPACSWingSegments
+CPACSWingShell
+CPACSWingSpar
+CPACSSparCrossSection
+CPACSSparPosition
+CPACSSparPositions
+CPACSSparSegment
+CPACSSparSegments
 CPACSComponentSegment
 CPACSComponentSegments
 CPACSFuselage

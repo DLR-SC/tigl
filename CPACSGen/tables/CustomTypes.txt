@@ -40,6 +40,12 @@ CPACSWing                          CCPACSWing
 CPACSWings                         CCPACSWings
 CPACSWingCell                      CCPACSWingCell
 CPACSWingCells                     CCPACSWingCells
+CPACSWingRibCrossSection           CCPACSWingRibCrossSection
+CPACSWingRibExplicitPositioning    CCPACSWingRibExplicitPositioning
+CPACSRibRotation                   CCPACSWingRibRotation
+CPACSWingRibsDefinition            CCPACSWingRibsDefinition
+CPACSWingRibsDefinitions           CCPACSWingRibsDefinitions
+CPACSWingRibsPositioning           CCPACSWingRibsPositioning
 CPACSWingElement                   CCPACSWingSectionElement
 CPACSWingElements                  CCPACSWingSectionElements
 CPACSWingSection                   CCPACSWingSection
@@ -48,4 +54,14 @@ CPACSWingComponentSegmentStructure CCPACSWingCSStructure
 CPACSWingShell                     CCPACSWingShell
 CPACSWingSegment                   CCPACSWingSegment
 CPACSWingSegments                  CCPACSWingSegments
+CPACSWingSpar                      CCPACSWingSpars
+CPACSSparCrossSection              CCPACSWingSparCrossSection
+CPACSSparPosition                  CCPACSWingSparPosition
+CPACSSparPositions                 CCPACSWingSparPositions
+CPACSSparPositionUIDs              CCPACSWingSparPositionUIDs
+CPACSSparSegment                   CCPACSWingSparSegment
+CPACSSparSegments                  CCPACSWingSparSegments
+CPACSWeb                           CCPACSWingSparWeb
 CPACSCst2D                         CCPACSWingProfileCST
+CPACSCellPositioningSpanwise       CCPACSWingCellPositionSpanwise
+CPACSCellPositioningChordwise      CCPACSWingCellPositionChordwise
