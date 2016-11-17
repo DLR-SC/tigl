@@ -18,7 +18,7 @@ namespace tigl {
 
 			// indentation
 			for (unsigned int i = 0; i < isw.level; i++)
-				isw.os << '\t';
+				isw.os << "    ";
 
 			// write
 			isw.os << std::forward<T>(t);

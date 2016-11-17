@@ -21,7 +21,6 @@ endif()
 # source files
 file(GLOB ALL_SRCS src/*.cpp)
 file(GLOB ALL_HEADERS src/*.h*)
-file(GLOB ALL_TABLES src/*Table*)
 
 #includes
 include_directories(${Boost_INCLUDE_DIRS})
@@ -34,7 +33,6 @@ add_executable(${PROJECT_NAME} ${ALL_SRCS} ${ALL_HEADERS})
 target_link_libraries(${PROJECT_NAME} ${TIXI_LIBRARIES})
 
 source_group(" " FILES ${ALL_SRCS} ${ALL_HEADERS})
-source_group("Tables" FILES ${ALL_TABLES})
 
 # add post build step to generate files side by side to TIGL source
 set(GENERATOR_OUTPUT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../src/generated CACHE PATH "The output directory for the generated CPACS classes")

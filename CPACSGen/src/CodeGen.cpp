@@ -88,7 +88,7 @@ namespace tigl {
 
 	void CodeGen::writeFields(IndentingStreamWrapper& hpp, const std::vector<Field>& fields) {
 		for (const auto& f : fields) {
-			f.origin.visit(WriteGeneratedFromVisitor(hpp));
+			//f.origin.visit(WriteGeneratedFromVisitor(hpp));
 			//f.origin.visit([&](const auto* attOrElem) {
 			//	hpp << "// generated from " << attOrElem->xpath;
 			//});
@@ -843,6 +843,11 @@ namespace tigl {
 				hpp << "// This type is not customized, export it into tigl namespace";
 				hpp << "using generated::" << c.name << ";";
 			}
+			if (includes.hppForwards.size() > 0) {
+				hpp << "";
+				for (const auto& fwd : includes.hppForwards)
+					hpp << "using generated::" << fwd << ";";
+			}
 		}
 		hpp << "}";
 		hpp << "";
@@ -1124,7 +1129,7 @@ namespace tigl {
 			writeEnum(hpp, e);
 		}
 
-		std::cout << "Wrote " << WriteIfDifferentFile::written << " files (" << WriteIfDifferentFile::overwritten << " updated)" << std::endl;
+		std::cout << "Wrote " << WriteIfDifferentFile::written << " files (" << WriteIfDifferentFile::overwritten << " overwritten)" << std::endl;
 		std::cout << "Skipped " << WriteIfDifferentFile::skipped << " files, no changes" << std::endl;
 	}
 }
