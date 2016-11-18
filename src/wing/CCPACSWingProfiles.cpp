@@ -81,8 +81,12 @@ void CCPACSWingProfiles::ImportCPACS(TixiDocumentHandle tixiHandle)
 {
     const std::string xpath = "/cpacs/vehicles/profiles";
     std::vector<CCPACSWingProfile*> children;
-    ReadContainerElement(tixiHandle, xpath, "wingAirfoil", 0, children);
-    ReadContainerElement(tixiHandle, xpath, "rotorAirfoil", 0, children);
+    if (tixiCheckElement(tixiHandle, (xpath + "/wingAirfoils").c_str()) == SUCCESS) {
+        ReadContainerElement(tixiHandle, xpath, "wingAirfoil", 0, children);
+    }
+    if (tixiCheckElement(tixiHandle, (xpath + "/rotorAirfoils").c_str()) == SUCCESS) {
+        ReadContainerElement(tixiHandle, xpath, "rotorAirfoil", 0, children);
+    }
     for (std::size_t i = 0; i < children.size(); i++) {
         CCPACSWingProfile* child = children[i];
         if (profiles.find(child->GetUID()) != profiles.end()) {

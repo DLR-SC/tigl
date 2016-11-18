@@ -75,12 +75,16 @@ void CCPACSWings::ReadCPACS(TixiDocumentHandle tixiHandle, const char* configura
         throw CTiglError("XML error: tixiUIDGetXPath failed in CCPACSWings::ReadCPACS", TIGL_XML_ERROR);
     }
     const std::string wingXPath = std::string(tmpString) + "[@uID=\"" + configurationUID + "\"]/wings";
-    ReadContainerElement(tixiHandle, wingXPath, "wing", 1, wings, configuration);
+    if (tixiCheckElement(tixiHandle, wingXPath.c_str()) == SUCCESS) {
+        ReadContainerElement(tixiHandle, wingXPath, "wing", 1, wings, configuration);
+    }
 
     if (configuration->IsRotorcraft()) {
          // read rotor blades
          const std::string rotorbladeXPath = std::string(tmpString) + "[@uID=\"" + configurationUID + "\"]/rotorBlades";
-         ReadContainerElement(tixiHandle, rotorbladeXPath, "rotorBlade", 1, wings, configuration);
+         if (tixiCheckElement(tixiHandle, rotorbladeXPath.c_str()) == SUCCESS) {
+            ReadContainerElement(tixiHandle, rotorbladeXPath, "rotorBlade", 1, wings, configuration);
+         }
     }
 }
 

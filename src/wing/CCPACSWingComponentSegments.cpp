@@ -96,7 +96,10 @@ int CCPACSWingComponentSegments::GetComponentSegmentCount(void)
 void CCPACSWingComponentSegments::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& xpath)
 {
     Cleanup();
-    ReadContainerElement(tixiHandle, xpath, "componentSegment", 1, componentSegments, wing, ContainerElementIndex);
+    // The node is optional
+    if (tixiCheckElement(tixiHandle, (xpath + "/componentSegments").c_str()) == SUCCESS) {
+        ReadContainerElement(tixiHandle, xpath, "componentSegment", 1, componentSegments, wing, ContainerElementIndex);
+    }
 }
 
 // Write CPACS segments element

@@ -56,9 +56,11 @@ void CCPACSGuideCurveProfiles::ReadCPACS(TixiDocumentHandle tixiHandle)
     Cleanup();
     const std::string xpath = "/cpacs/vehicles/profiles/guideCurveProfiles";
     std::vector<CCPACSGuideCurveProfile*> children;
-    ReadContainerElement(tixiHandle, xpath, "guideCurveProfile", 1, children);
-    for (std::size_t i = 0; i < children.size(); i++) {
-        guideCurves[children[i]->GetUID()].reset(children[i]);
+    if (tixiCheckElement(tixiHandle, xpath.c_str()) == SUCCESS) {
+        ReadContainerElement(tixiHandle, xpath, "guideCurveProfile", 1, children);
+        for (std::size_t i = 0; i < children.size(); i++) {
+            guideCurves[children[i]->GetUID()].reset(children[i]);
+        }
     }
 }
 
