@@ -40,7 +40,7 @@ class CCPACSWingCSStructure;
 class CCPACSWingShell : public generated::CPACSWingShell
 {
 public:
-    TIGL_EXPORT CCPACSWingShell(CCPACSWingCSStructure& parent, TiglLoftSide side);
+    TIGL_EXPORT CCPACSWingShell(CCPACSWingCSStructure* parent);
 
     TIGL_EXPORT int GetCellCount() const;
 
@@ -63,11 +63,6 @@ public:
     TIGL_EXPORT TiglLoftSide GetLoftSide() const;
 
 private:
-
-    // Information whether the shell is located on the upper or lower side of the loft
-    TiglLoftSide side;
-    CCPACSWingCells cells;
-    CCPACSMaterial material;
     //@todo stringers
 
     struct GeometryCache

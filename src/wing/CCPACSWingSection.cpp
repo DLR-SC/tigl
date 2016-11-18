@@ -115,19 +115,19 @@ CTiglTransformation CCPACSWingSection::GetSectionTransformation() const
 }
 
 // Gets the section translation
-CTiglPoint CCPACSWingSection::GetTranslation() const
+const CTiglPoint& CCPACSWingSection::GetTranslation() const
 {
     return m_transformation.GetTranslation();
 }
 
 // Gets the section rotation
-CTiglPoint CCPACSWingSection::GetRotation() const
+const CTiglPoint& CCPACSWingSection::GetRotation() const
 {
     return m_transformation.GetRotation();
 }
 
 // Gets the section scaling
-CTiglPoint CCPACSWingSection::GetScaling() const
+const CTiglPoint& CCPACSWingSection::GetScaling() const
 {
     return m_transformation.GetScaling();
 }

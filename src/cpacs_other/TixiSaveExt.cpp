@@ -31,10 +31,6 @@ namespace tigl
 {
 namespace TixiSaveExt
 {
-
-namespace TixiSaveExt
-{
-
 // create if necessary the element
 void TixiSaveElement(TixiDocumentHandle tixiHandle, const char* elementPath, const char* element, int index)
 {
@@ -263,6 +259,5 @@ void TixiSaveVector(TixiDocumentHandle tixiHandle, const std::string& elementPat
         TixiSaveVector(tixiHandle, elementPath.c_str(), element.c_str(), &val[0], static_cast<int>(val.size()));
     }
 }
-
 }
 }

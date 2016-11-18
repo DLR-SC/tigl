@@ -16,12 +16,7 @@
 #ifndef CCPACSWINGRIBEXPLICITPOSITIONING_H
 #define CCPACSWINGRIBEXPLICITPOSITIONING_H
 
-#include <string>
-
-#include <tixi.h>
-
-#include "tigl_internal.h"
-
+#include "generated/CPACSWingRibExplicitPositioning.h"
 
 namespace tigl 
 {
@@ -29,40 +24,10 @@ namespace tigl
 // forward declarations
 class CCPACSWingRibsDefinition;
 
-class CCPACSWingRibExplicitPositioning
+class CCPACSWingRibExplicitPositioning : public generated::CPACSWingRibExplicitPositioning
 {
 public:
-    TIGL_EXPORT CCPACSWingRibExplicitPositioning(CCPACSWingRibsDefinition& parent);
-    TIGL_EXPORT virtual ~CCPACSWingRibExplicitPositioning();
-
-    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string & explicitRibPosXPath);
-    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string & explicitRibPosXPath) const;
-
-    TIGL_EXPORT const std::string& GetStartReference() const;
-    TIGL_EXPORT void SetStartReference(const std::string&);
-
-    TIGL_EXPORT const std::string& GetEndReference() const;
-    TIGL_EXPORT void SetEndReference(const std::string&);
-
-    TIGL_EXPORT double GetStartEta() const;
-    TIGL_EXPORT void SetStartEta(double);
-
-    TIGL_EXPORT double GetEndEta() const;
-    TIGL_EXPORT void SetEndEta(double);
-
-protected:
-    void Cleanup();
-
-private:
-    CCPACSWingRibExplicitPositioning(const CCPACSWingRibExplicitPositioning& );
-    void operator=(const CCPACSWingRibExplicitPositioning& );
-
-private:
-    CCPACSWingRibsDefinition& parent;
-    std::string startReference;
-    std::string endReference;
-    double startEta;
-    double endEta;
+    TIGL_EXPORT CCPACSWingRibExplicitPositioning(CCPACSWingRibsDefinition* parent);
 };
 
 } // end namespace tigl

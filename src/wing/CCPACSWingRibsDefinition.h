@@ -30,9 +30,10 @@
 #include "tigl_internal.h"
 #include "tigl.h"
 
+#include "generated/CPACSWingRibsDefinition.h"
+
 // forward declarations
 class gp_Vec;
-
 
 namespace tigl
 {
@@ -43,7 +44,7 @@ class CCPACSWingRibCrossSection;
 class CCPACSWingRibExplicitPositioning;
 class CCPACSWingSparPosition;
 
-class CCPACSWingRibsDefinition
+class CCPACSWingRibsDefinition : public generated::CPACSWingRibsDefinition
 {
 public:
     /**
@@ -71,17 +72,10 @@ public:
     };
 
 public:
-    TIGL_EXPORT CCPACSWingRibsDefinition(CCPACSWingCSStructure* structure);
-    TIGL_EXPORT virtual ~CCPACSWingRibsDefinition();
+    //TIGL_EXPORT CCPACSWingRibsDefinition(CCPACSWingCSStructure* structure);
+    TIGL_EXPORT CCPACSWingRibsDefinition(CCPACSWingRibsDefinitions* parent);
 
     TIGL_EXPORT void Invalidate();
-
-    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string & ribsDefinitionXPath);
-    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string & ribsDefinitionXPath) const;
-
-    TIGL_EXPORT const std::string & GetUID() const;
-    TIGL_EXPORT const std::string & GetName() const;
-    TIGL_EXPORT const std::string & GetDescription() const;
 
     TIGL_EXPORT RibPositioningType GetRibPositioningType() const;
 
@@ -90,9 +84,6 @@ public:
 
     TIGL_EXPORT const CCPACSWingRibExplicitPositioning& GetRibExplicitPositioning() const;
     TIGL_EXPORT CCPACSWingRibExplicitPositioning& GetRibExplicitPositioning();
-
-    TIGL_EXPORT const CCPACSWingRibCrossSection& GetRibCrossSection() const;
-    TIGL_EXPORT CCPACSWingRibCrossSection& GetRibCrossSection();
 
     TIGL_EXPORT const CCPACSWingCSStructure& GetStructure() const;
     TIGL_EXPORT CCPACSWingCSStructure& GetStructure();
@@ -250,13 +241,6 @@ private:
 
 private:
     CCPACSWingCSStructure& structure;
-    std::string uid;
-    std::string description;
-    std::string name;
-    RibPositioningType ribPositioningType;
-    CCPACSWingRibsPositioning* ribsPositioning;
-    CCPACSWingRibExplicitPositioning* explicitRibPositioning;
-    CCPACSWingRibCrossSection ribCrossSection;
 
     mutable RibSetDataCache ribSetDataCache;
 

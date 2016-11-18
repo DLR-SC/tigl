@@ -87,7 +87,7 @@ gp_Pnt GetReferencePoint(const CCPACSWingCSStructure& structure, const std::stri
     }
     else {
         // find spar with uid
-        CCPACSWingSparSegment& sparSegment = structure.GetSparSegment(reference);
+        const CCPACSWingSparSegment& sparSegment = structure.GetSparSegment(reference);
         referencePnt = sparSegment.GetPoint(currentEta);
     }
     return referencePnt;
@@ -105,7 +105,7 @@ double GetRibReferenceLength(const std::string& reference, const CCPACSWingCSStr
     }
     else {
         // find spar with uid
-        CCPACSWingSparSegment& sparSegment = structure.GetSparSegment(reference);
+        const CCPACSWingSparSegment& sparSegment = structure.GetSparSegment(reference);
         referenceLength = sparSegment.GetSparLength();
     }
     return referenceLength;
@@ -116,7 +116,7 @@ double GetRibReferenceLength(const std::string& reference, const CCPACSWingCSStr
 bool IsOuterSparPointInSection(const std::string& sparUid, double eta, const CCPACSWingCSStructure& structure)
 {
     // check whether spar point lies within a section
-    CCPACSWingSparSegment& sparSegment = structure.GetSparSegment(sparUid);
+    const CCPACSWingSparSegment& sparSegment = structure.GetSparSegment(sparUid);
     int sparPositionIndex;
     if (eta < Precision::Confusion()) {
         sparPositionIndex = 1;
@@ -267,7 +267,7 @@ gp_Pnt GetRibDefinitionPoint(const std::string& definition, const TopoDS_Face& r
     else {
         // get spar
         std::string sparUid = definition;
-        CCPACSWingSparSegment& sparSegment = structure.GetSparSegment(sparUid);
+        const CCPACSWingSparSegment& sparSegment = structure.GetSparSegment(sparUid);
         TopoDS_Wire sparMidplaneLine = sparSegment.GetSparMidplaneLine();
         if (!GetIntersectionPoint(ribCutFace, sparMidplaneLine, definitionPoint)) {
             LOG(ERROR) << "Unable to determine rib definition point!";
@@ -311,7 +311,7 @@ void CheckSparPositionOnReference(const std::string& sparPositionUID, const std:
     }
 
     // next ensure that the spar position is part of the spar segment
-    CCPACSWingSparSegment& sparSegment = structure.GetSparSegment(sparSegmentIndex);
+    const CCPACSWingSparSegment& sparSegment = structure.GetSparSegment(sparSegmentIndex);
     int numSparPositions = sparSegment.GetSparPositionUIDCount();
     int sparPositionIndex = 1;
     for (; sparPositionIndex <= numSparPositions; ++sparPositionIndex) {

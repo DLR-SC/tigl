@@ -276,16 +276,7 @@ void CCPACSWingProfilePointList::BuildLETEPoints()
     tePoint = lePoint.XYZ() + alphamin*(vchord.XYZ());
 }
 
-// Returns the profile points as read from TIXI.
-std::vector<const CTiglPoint*> CCPACSWingProfilePointList::GetSamplePoints() const
-{
-    std::vector<const CTiglPoint*> v;
-    for (const auto& p : coordinates)
-        v.push_back(&p);
-    return v;
-}
-
-const std::vector<CTiglPoint>& CCPACSWingProfilePointList::GetSamplePoints2() const {
+const std::vector<CTiglPoint>& CCPACSWingProfilePointList::GetSamplePoints() const {
     return coordinates;
 }
 

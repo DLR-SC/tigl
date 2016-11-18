@@ -65,7 +65,6 @@ namespace TixiSaveExt
 
     /** Save an element containing a vector at the path */
     void TixiSaveVector(TixiDocumentHandle tixiHandle, const std::string& elementXPath, const std::string& element, const std::vector<double>& val);
-};
 }
 }
 #endif

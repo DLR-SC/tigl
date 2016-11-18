@@ -71,17 +71,19 @@ public:
     // Read CPACS segment elements
     TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string & segmentXPath);
 
+    TIGL_EXPORT virtual const std::string& GetUID() const;
+    TIGL_EXPORT virtual void SetUID(const std::string& uid);
 
     TIGL_EXPORT virtual TiglSymmetryAxis GetSymmetryAxis() override;
     TIGL_EXPORT virtual void SetSymmetryAxis(const TiglSymmetryAxis& axis) override;
-
-    // Returns the wing this segment belongs to
 
     // Returns whether a structure is defined or not
     TIGL_EXPORT bool HasStructure() const;
 
     TIGL_EXPORT const CCPACSWingCSStructure& GetStructure() const;
     TIGL_EXPORT CCPACSWingCSStructure& GetStructure();
+
+    TIGL_EXPORT CCPACSWing& GetWing() const;
 
     // Getter for upper Shape
     TIGL_EXPORT TopoDS_Shape GetUpperShape(void);
@@ -227,6 +229,7 @@ private:
 
 
 private:
+    CCPACSTransformation dummyTrans; // TODO: CCPACSWingComponentSegment must provide a CCPACSTransformation as it is a CTiglAbstractGeometricalComponent, is this correct? Can we remove the base class CTiglAbstractGeometricalComponent?
     std::string          toElementUID;         /**< Outer segment uid (tip)                 */
     CCPACSWing*          wing;                 /**< Parent wing                             */
     double               myVolume;             /**< Volume of this segment                  */
@@ -248,8 +251,6 @@ private:
     mutable TopoDS_Wire  trailingEdgeLine;         // trailing edge as wire
     mutable TopoDS_Wire  extendedTrailingEdgeLine; // trailing edge extended along y-axis, see CPACS spar geometry definition
     mutable bool         linesAreValid;
-
-    CCPACSWingCSStructure structure;
 };
 
 } // end namespace tigl

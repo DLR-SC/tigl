@@ -68,7 +68,6 @@ public:
 
     // Get component translation
     TIGL_EXPORT virtual CTiglPoint GetTranslation() const override;
-    
     TIGL_EXPORT virtual ECPACSTranslationType GetTranslationType() const override;
 
     // Get component rotation

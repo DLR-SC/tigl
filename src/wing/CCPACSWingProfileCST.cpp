@@ -61,7 +61,6 @@ std::string CCPACSWingProfileCST::CPACSID()
 }
 
 void CCPACSWingProfileCST::ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& profileXPath) {
-    ProfileDataXPath = profileXPath;
     generated::CPACSCst2D::ReadCPACS(tixiHandle, profileXPath);
 }
 
@@ -118,23 +117,9 @@ void CCPACSWingProfileCST::BuildWires()
 }
 
 // Returns sample points
-std::vector<const CTiglPoint*> CCPACSWingProfileCST::GetSamplePoints() const {
-    return {};
-}
-
-const std::vector<CTiglPoint>& CCPACSWingProfileCST::GetSamplePoints2() const {
+const std::vector<CTiglPoint>& CCPACSWingProfileCST::GetSamplePoints() const {
     static std::vector<CTiglPoint> dummy;
     return dummy;
-}
-
-// get profiles CPACS XML path
-const std::string & CCPACSWingProfileCST::GetProfileDataXPath() const
-{
-    return ProfileDataXPath;
-}
-
-void CCPACSWingProfileCST::SetProfileDataXPath(const std::string& xpath) {
-    ProfileDataXPath = xpath;
 }
 
 // Getter for upper wire of closed profile

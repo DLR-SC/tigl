@@ -46,13 +46,13 @@ public:
     TIGL_EXPORT CTiglTransformation GetSectionElementTransformation() const;
 
     // Getter for translation
-    DEPRECATED TIGL_EXPORT CTiglPoint GetTranslation() const;
+    TIGL_EXPORT CTiglPoint GetTranslation() const;
 
     // Getter for rotation
-    DEPRECATED TIGL_EXPORT CTiglPoint GetRotation() const;
+    TIGL_EXPORT CTiglPoint GetRotation() const;
 
     // Getter for scaling
-    DEPRECATED TIGL_EXPORT CTiglPoint GetScaling() const;
+    TIGL_EXPORT CTiglPoint GetScaling() const;
 
     // Setter for translation
     TIGL_EXPORT void SetTranslation(const CTiglPoint& trans);
