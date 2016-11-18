@@ -1,5 +1,7 @@
-/* 
-* Copyright (C) 2016 Airbus Defence and Space
+/*
+* Copyright (C) 2007-2013 German Aerospace Center (DLR/SC)
+*
+* Created: 2014-02-15 Martin Siggel <Martin.Siggel@dlr.de>
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -13,23 +15,24 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-#ifndef CCPACSWINGSPARPOSITIONUIDS_H
-#define CCPACSWINGSPARPOSITIONUIDS_H
 
-#include "generated/CPACSSparPositionUIDs.h"
+#include "CTiglTypeRegistry.h"
+
+#define REGISTER_TYPE(type) \
+    AUTORUN(type); \
+    static const bool registered_ ## type = type ## _RegisterType();
 
 namespace tigl
 {
 
-class CCPACSWingSparPositionUIDs : public generated::CPACSSparPositionUIDs
+// register all dynamic types to prevent linker optimization
+REGISTER_TYPE(CCPACSWingProfileCST)
+REGISTER_TYPE(CCPACSWingProfilePointList)
+
+
+void CTiglTypeRegistry::Init()
 {
-public:
-    TIGL_EXPORT CCPACSWingSparPositionUIDs();
-
-    TIGL_EXPORT int GetSparPositionUIDCount() const;
-    TIGL_EXPORT const std::string& GetSparPositionUID(int index) const;
-};
-
-} // end namespace tigl
-
-#endif // CCPACSWINGSPARPOSITIONUIDS_H
+// dummy implementation
+}
+ 
+} // namespace tigl

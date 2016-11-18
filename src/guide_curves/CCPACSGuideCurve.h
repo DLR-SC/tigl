@@ -49,7 +49,7 @@ public:
     TIGL_EXPORT virtual ~CCPACSGuideCurve();
 
     // Read CPACS guide curve file
-    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& xpath);
+    TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiHandle, const std::string& xpath);
 
     // Check if fromRelativeCircumference is set
     TIGL_EXPORT bool GetFromRelativeCircumferenceIsSet() const;

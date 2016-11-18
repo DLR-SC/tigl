@@ -98,23 +98,13 @@ namespace WingCellInternal
 using namespace WingCellInternal;
 
 CCPACSWingCell::CCPACSWingCell(CCPACSWingCells* parentCells)
-: parent(parentCells),
-  positionLeadingEdge(this),
-  positionTrailingEdge(this),
-  positionInnerBorder(this),
-  positionOuterBorder(this)
-{
+    : generated::CPACSWingCell(parentCells) {
     Reset();
 }
 
 CCPACSWingCell::~CCPACSWingCell()
 {
     Reset();
-}
-
-const std::string& CCPACSWingCell::GetUID() const
-{
-    return uid;
 }
 
 void CCPACSWingCell::Invalidate()
@@ -124,14 +114,9 @@ void CCPACSWingCell::Invalidate()
 
 void CCPACSWingCell::Reset()
 {
-    uid = "";
+    m_uID = "";
     
     cache.valid = false;
-
-    positionLeadingEdge.Reset();
-    positionTrailingEdge.Reset();
-    positionInnerBorder.Reset();
-    positionOuterBorder.Reset();
 }
 
 bool CCPACSWingCell::IsConvex() const
@@ -213,101 +198,6 @@ void CCPACSWingCell::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string 
 {
     Reset();
     generated::CPACSWingCell::ReadCPACS(tixiHandle, cellXPath);
-
-    // TODO: implement check that sparUID is not supported yet
-
-    //double iBE1, iBE2, oBE1, oBE2, lEX1, lEX2, tEX1, tEX2;
-    //// get postionings of cell
-    //std::string positioningString;
-    //positioningString = cellXPath + "/positioningLeadingEdge/sparUID";
-    //if ( tixiCheckElement(tixiHandle, positioningString.c_str()) == SUCCESS) {
-    //    LOG(WARNING) << "In " << cellXPath << ": Cell positiongs via spars is currently not supported by TiGL. Please use eta/xsi definitions.";
-    //    lEX1 = 0.; lEX2 = 0.;
-    //}
-    //else {
-    //    positioningString = cellXPath + "/positioningLeadingEdge/xsi1";
-    //    if ( tixiGetDoubleElement(tixiHandle, positioningString.c_str(), &lEX1) != SUCCESS) {
-    //        throw tigl::CTiglError("No leading edge xsi1 positioning given for wing cell " + cellXPath + "!", TIGL_ERROR);
-    //    }
-    //    
-    //    positioningString = cellXPath + "/positioningLeadingEdge/xsi2";
-    //    if ( tixiGetDoubleElement(tixiHandle, positioningString.c_str(), &lEX2) != SUCCESS) {
-    //        throw tigl::CTiglError("No leading edge xsi2 positioning given for wing cell " + cellXPath + "!", TIGL_ERROR);
-    //    }
-    //}
-
-    //positioningString = cellXPath + "/positioningTrailingEdge/sparUID";
-    //if ( tixiCheckElement(tixiHandle, positioningString.c_str()) == SUCCESS) {
-    //    LOG(WARNING) << "In " << cellXPath << ": Cell positiongs via spars is currently not supported by TiGL. Please use eta/xsi definitions.";
-    //    tEX1 = 0.; tEX2 = 0.;
-    //}
-    //else {
-    //    positioningString = cellXPath + "/positioningTrailingEdge/xsi1";
-    //    if ( tixiGetDoubleElement(tixiHandle, positioningString.c_str(), &tEX1) != SUCCESS) {
-    //        throw tigl::CTiglError("No leading edge xsi1 positioning given for wing cell " + cellXPath + "!", TIGL_ERROR);
-    //    }
-    //    
-    //    positioningString = cellXPath + "/positioningTrailingEdge/xsi2";
-    //    if ( tixiGetDoubleElement(tixiHandle, positioningString.c_str(), &tEX2) != SUCCESS) {
-    //        throw tigl::CTiglError("No leading edge xsi1 positioning given for wing cell " + cellXPath + "!", TIGL_ERROR);
-    //    }
-    //    
-    //}
-    //
-    //positioningString = cellXPath + "/positioningInnerBorder/ribDefinitionUID";
-    //if ( tixiCheckElement(tixiHandle, positioningString.c_str()) == SUCCESS) {
-    //    LOG(WARNING) << "In " << cellXPath << ": Cell positiongs via ribs is currently not supported by TiGL. Please use eta/xsi definitions.";
-    //    iBE1 = 0.; iBE2 = 0.;
-    //}
-    //else {
-    //    positioningString = cellXPath + "/positioningInnerBorder/eta1";
-    //    if ( tixiGetDoubleElement(tixiHandle, positioningString.c_str(), &iBE1) != SUCCESS) {
-    //        throw tigl::CTiglError("No inner border eta1 positioning given for wing cell " + cellXPath + "!", TIGL_ERROR);
-    //    }
-    //    
-    //    positioningString = cellXPath + "/positioningInnerBorder/eta2";
-    //    if ( tixiGetDoubleElement(tixiHandle, positioningString.c_str(), &iBE2) != SUCCESS) {
-    //        throw tigl::CTiglError("No inner border eta2 positioning given for wing cell " + cellXPath + "!", TIGL_ERROR);
-    //    }
-    //}
-    //
-    //positioningString = cellXPath + "/positioningOuterBorder/ribDefinitionUID";
-    //if ( tixiCheckElement(tixiHandle, positioningString.c_str()) == SUCCESS) {
-    //    LOG(WARNING) << "In " << cellXPath << ": Cell positiongs via ribs is currently not supported by TiGL. Please use eta/xsi definitions.";
-    //    oBE1 = 0.; oBE2 = 0.;
-    //}
-    //else {
-    //    positioningString = cellXPath + "/positioningOuterBorder/eta1";
-    //    if ( tixiGetDoubleElement(tixiHandle, positioningString.c_str(), &oBE1) != SUCCESS) {
-    //        throw tigl::CTiglError("No outer border eta1 positioning given for wing cell " + cellXPath + "!", TIGL_ERROR);
-    //    }
-    //    
-    //    positioningString = cellXPath + "/positioningOuterBorder/eta2";
-    //    if ( tixiGetDoubleElement(tixiHandle, positioningString.c_str(), &oBE2) != SUCCESS) {
-    //        throw tigl::CTiglError("No outer border eta2 positioning given for wing cell " + cellXPath + "!", TIGL_ERROR);
-    //    }
-    //}
-    //
-    //// read material
-    //std::string materialString;
-    //materialString = cellXPath + "/skin/material";
-    //if ( tixiCheckElement(tixiHandle, materialString.c_str()) == SUCCESS) {
-    //    material.ReadCPACS(tixiHandle, materialString.c_str());
-    //}
-    //else {
-    //    // @todo: should that be an error?
-    //    LOG(WARNING) << "No material definition found for cell " << cellXPath;
-    //}
-    //
-    //// apply everything
-    //innerBorderEta1 = iBE1;
-    //innerBorderEta2 = iBE2;
-    //outerBorderEta1 = oBE1;
-    //outerBorderEta2 = oBE2;
-    //leadingEdgeXsi1 = lEX1;
-    //leadingEdgeXsi2 = lEX2;
-    //trailingEdgeXsi1 = tEX1;
-    //trailingEdgeXsi2 = tEX2;
 }
 
 void CCPACSWingCell::GetLeadingEdgeInnerPoint(double* eta, double* xsi) const
@@ -341,59 +231,59 @@ void CCPACSWingCell::GetTrailingEdgeOuterPoint(double* eta, double* xsi) const
 void CCPACSWingCell::SetLeadingEdgeInnerPoint(double eta, double xsi)
 {
     UpdateCache();
-    positionInnerBorder.SetEta(eta, cache.innerTrailingEdgePoint.eta);
-    positionLeadingEdge.SetXsi(xsi, cache.outerLeadingEdgePoint.xsi);
+    m_positioningInnerBorder.SetEta(eta, cache.innerTrailingEdgePoint.eta);
+    m_positioningLeadingEdge.SetXsi(xsi, cache.outerLeadingEdgePoint.xsi);
 }
 
 void CCPACSWingCell::SetLeadingEdgeOuterPoint(double eta, double xsi)
 {
     UpdateCache();
-    positionOuterBorder.SetEta(eta, cache.outerTrailingEdgePoint.eta);
-    positionLeadingEdge.SetXsi(cache.innerLeadingEdgePoint.xsi, xsi);
+    m_positioningOuterBorder.SetEta(eta, cache.outerTrailingEdgePoint.eta);
+    m_positioningLeadingEdge.SetXsi(cache.innerLeadingEdgePoint.xsi, xsi);
 }
 
 void CCPACSWingCell::SetTrailingEdgeInnerPoint(double eta, double xsi)
 {
     UpdateCache();
-    positionInnerBorder.SetEta(cache.innerLeadingEdgePoint.eta, eta);
-    positionTrailingEdge.SetXsi(xsi, cache.outerTrailingEdgePoint.xsi);
+    m_positioningInnerBorder.SetEta(cache.innerLeadingEdgePoint.eta, eta);
+    m_positioningTrailingEdge.SetXsi(xsi, cache.outerTrailingEdgePoint.xsi);
 }
 
 void CCPACSWingCell::SetTrailingEdgeOuterPoint(double eta, double xsi)
 {
     UpdateCache();
-    positionOuterBorder.SetEta(cache.outerLeadingEdgePoint.eta, eta);
-    positionTrailingEdge.SetXsi(cache.innerTrailingEdgePoint.xsi, xsi);
+    m_positioningOuterBorder.SetEta(cache.outerLeadingEdgePoint.eta, eta);
+    m_positioningTrailingEdge.SetXsi(cache.innerTrailingEdgePoint.xsi, xsi);
 }
 
 void CCPACSWingCell::SetLeadingEdgeSpar(const std::string& sparUID)
 {
-    positionLeadingEdge.SetSparUId(sparUID);
+    m_positioningLeadingEdge.SetSparUId(sparUID);
 }
 
 void CCPACSWingCell::SetTrailingEdgeSpar(const std::string& sparUID)
 {
-    positionTrailingEdge.SetSparUId(sparUID);
+    m_positioningTrailingEdge.SetSparUId(sparUID);
 }
 
 void CCPACSWingCell::SetInnerBorderRib(const std::string& ribDefinitionUID, int ribNumber)
 {
-    positionInnerBorder.SetRib(ribDefinitionUID, ribNumber);
+    m_positioningInnerBorder.SetRib(ribDefinitionUID, ribNumber);
 }
 
 void CCPACSWingCell::SetOuterBorderRib(const std::string& ribDefinitionUID, int ribNumber)
 {
-    positionOuterBorder.SetRib(ribDefinitionUID, ribNumber);
+    m_positioningOuterBorder.SetRib(ribDefinitionUID, ribNumber);
 }
 
-const CCPACSMaterial &CCPACSWingCell::GetMaterial()
+CCPACSMaterial& CCPACSWingCell::GetMaterial()
 {
     return m_skin.GetMaterial();
 }
 
-const CCPACSMaterial &CCPACSWingCell::GetMaterial() const
+const CCPACSMaterial& CCPACSWingCell::GetMaterial() const
 {
-    return material;
+    return m_skin.GetMaterial();
 }
 
 void CCPACSWingCell::UpdateCache() const
@@ -435,8 +325,8 @@ std::pair<double, double> CCPACSWingCell::computePositioningEtaXsi(const CCPACSW
             eta = spanwisePos.GetEta().second;
         }
         // get the spar from the wing structure
-        const CCPACSWingCSStructure& structure = parent->GetParentElement()->GetStructure();
-        CCPACSWingSparSegment& spar = structure.GetSparSegment(chordwisePos.GetSparUId());
+        const CCPACSWingCSStructure& structure = m_parent->GetParentElement()->GetStructure();
+        const CCPACSWingSparSegment& spar = structure.GetSparSegment(chordwisePos.GetSparUId());
         xsi = computeSparXsiValue(structure.GetWingStructureReference(), spar, eta);
     }
     else if (spanwisePos.GetInputType() == CCPACSWingCellPositionSpanwise::Rib &&
@@ -445,8 +335,8 @@ std::pair<double, double> CCPACSWingCell::computePositioningEtaXsi(const CCPACSW
         int ribIndex;
         // get the ribs definition from the wing structure reference
         spanwisePos.GetRib(ribUid, ribIndex);
-        const CCPACSWingCSStructure& structure = parent->GetParentElement()->GetStructure();
-        CCPACSWingRibsDefinition& ribsDefinition = structure.GetRibsDefinition(ribUid);
+        const CCPACSWingCSStructure& structure = m_parent->GetParentElement()->GetStructure();
+        const CCPACSWingRibsDefinition& ribsDefinition = structure.GetRibsDefinition(ribUid);
         if (inner) {
             xsi = chordwisePos.GetXsi().first;
         }
@@ -458,14 +348,14 @@ std::pair<double, double> CCPACSWingCell::computePositioningEtaXsi(const CCPACSW
     else if (spanwisePos.GetInputType() == CCPACSWingCellPositionSpanwise::Rib &&
              chordwisePos.GetInputType() == CCPACSWingCellPositionChordwise::Spar) {
         // get the spar from the wing structure reference
-        const CCPACSWingCSStructure& structure = parent->GetParentElement()->GetStructure();
+        const CCPACSWingCSStructure& structure = m_parent->GetParentElement()->GetStructure();
         CTiglWingStructureReference wsr = structure.GetWingStructureReference();
-        CCPACSWingSparSegment& spar = structure.GetSparSegment(chordwisePos.GetSparUId());
+        const CCPACSWingSparSegment& spar = structure.GetSparSegment(chordwisePos.GetSparUId());
         // get the ribs definition from the wing structure reference
         std::string ribUid;
         int ribIndex;
         spanwisePos.GetRib(ribUid, ribIndex);
-        CCPACSWingRibsDefinition& ribsDefinition = structure.GetRibsDefinition(ribUid);
+        const CCPACSWingRibsDefinition& ribsDefinition = structure.GetRibsDefinition(ribUid);
 
         tigl::EtaXsi result = computeRibSparIntersectionEtaXsi(wsr, ribsDefinition, ribIndex, spar);
         eta = result.eta;
@@ -479,19 +369,19 @@ void CCPACSWingCell::UpdateEtaXsiValues() const
 {
     cache.valid = false;
 
-    std::pair<double, double> innerLePoint = computePositioningEtaXsi(positionInnerBorder, positionLeadingEdge, true, true);
+    std::pair<double, double> innerLePoint = computePositioningEtaXsi(m_positioningInnerBorder, m_positioningLeadingEdge, true, true);
     cache.innerLeadingEdgePoint.eta = innerLePoint.first;
     cache.innerLeadingEdgePoint.xsi = innerLePoint.second;
 
-    std::pair<double, double> outerLePoint = computePositioningEtaXsi(positionOuterBorder, positionLeadingEdge, false, true);
+    std::pair<double, double> outerLePoint = computePositioningEtaXsi(m_positioningOuterBorder, m_positioningLeadingEdge, false, true);
     cache.outerLeadingEdgePoint.eta = outerLePoint.first;
     cache.outerLeadingEdgePoint.xsi = outerLePoint.second;
 
-    std::pair<double, double> innerTePoint = computePositioningEtaXsi(positionInnerBorder, positionTrailingEdge, true, false);
+    std::pair<double, double> innerTePoint = computePositioningEtaXsi(m_positioningInnerBorder, m_positioningTrailingEdge, true, false);
     cache.innerTrailingEdgePoint.eta = innerTePoint.first;
     cache.innerTrailingEdgePoint.xsi = innerTePoint.second;
 
-    std::pair<double, double> outerTePoint = computePositioningEtaXsi(positionOuterBorder, positionTrailingEdge, false, false);
+    std::pair<double, double> outerTePoint = computePositioningEtaXsi(m_positioningOuterBorder, m_positioningTrailingEdge, false, false);
     cache.outerTrailingEdgePoint.eta = outerTePoint.first;
     cache.outerTrailingEdgePoint.xsi = outerTePoint.second;
 

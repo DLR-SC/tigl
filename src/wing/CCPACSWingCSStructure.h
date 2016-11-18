@@ -36,15 +36,47 @@ class CCPACSWingRibsDefinitions;
 class CCPACSWingCSStructure : public generated::CPACSWingComponentSegmentStructure
 {
 public:
-    TIGL_EXPORT CCPACSWingCSStructure(CTiglWingStructureReference parent);
+    TIGL_EXPORT CCPACSWingCSStructure(CCPACSWingComponentSegment* parent);
+    TIGL_EXPORT CCPACSWingCSStructure(CPACSLeadingEdgeDevice* parent);
+    TIGL_EXPORT CCPACSWingCSStructure(CPACSSpoiler* parent);
+    TIGL_EXPORT CCPACSWingCSStructure(CPACSTrailingEdgeDevice* parent);
 
-    TIGL_EXPORT virtual void ReadCPACS(const TixiDocumentHandle& tixiDocument, const std::string& xpath) override;
+    TIGL_EXPORT CTiglWingStructureReference GetWingStructureReference();
+    TIGL_EXPORT const CTiglWingStructureReference GetWingStructureReference() const;
+
+    // Check if subnode spars is present
+    TIGL_EXPORT bool HasSpars() const;
+
+    // Returns a reference to the spars sub-element
+    TIGL_EXPORT CCPACSWingSpars& GetSpars();
+    TIGL_EXPORT const CCPACSWingSpars& GetSpars() const;
+
+    // Returns number of spar segments
+    TIGL_EXPORT int GetSparSegmentCount() const;
+
+    // Returns spar segment with passed index
+    TIGL_EXPORT CCPACSWingSparSegment& GetSparSegment(int index);
+    TIGL_EXPORT const CCPACSWingSparSegment& GetSparSegment(int index) const;
+
+    // Returns spar segment with passed uid
+    TIGL_EXPORT CCPACSWingSparSegment& GetSparSegment(const std::string& uid);
+    TIGL_EXPORT const CCPACSWingSparSegment& GetSparSegment(const std::string& uid) const;
+
+    // Check if subnode ribsDefinitions is present
+    TIGL_EXPORT bool HasRibsDefinitions() const;
+
+    // Returns number of ribs definitions
+    TIGL_EXPORT int GetRibsDefinitionCount() const;
+
+    // Returns ribs definition with passed index
+    TIGL_EXPORT CCPACSWingRibsDefinition& GetRibsDefinition(int index);
+    TIGL_EXPORT const CCPACSWingRibsDefinition& GetRibsDefinition(int index) const;
+
+    // Returns ribs definition with passed uid
+    TIGL_EXPORT CCPACSWingRibsDefinition& GetRibsDefinition(const std::string& uid);
+    TIGL_EXPORT const CCPACSWingRibsDefinition& GetRibsDefinition(const std::string& uid) const;
 
     TIGL_EXPORT void Invalidate();
-    TIGL_EXPORT bool IsValid() const;
-
-private:
-    bool isvalid;
 };
 
 } // namespace tigl

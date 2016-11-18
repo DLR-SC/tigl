@@ -16,13 +16,7 @@
 #ifndef CCPACSWINGSPARPOSITIONS_H
 #define CCPACSWINGSPARPOSITIONS_H
 
-#include <string>
-#include <vector>
-
-#include <tixi.h>
-
-#include "tigl_internal.h"
-
+#include "generated/CPACSSparPositions.h"
 
 namespace tigl
 {
@@ -31,31 +25,16 @@ namespace tigl
 class CCPACSWingSparPosition;
 class CCPACSWingSpars;
 
-class CCPACSWingSparPositions
+class CCPACSWingSparPositions : public generated::CPACSSparPositions
 {
 private:
     typedef std::vector<CCPACSWingSparPosition*> CCPACSWingSparPositionContainer;
 
 public:
-    TIGL_EXPORT CCPACSWingSparPositions(CCPACSWingSpars& parent);
-
-    TIGL_EXPORT virtual ~CCPACSWingSparPositions(void);
-
-    TIGL_EXPORT void Cleanup(void);
-
-    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string & sparPositionsXPath);
-    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string & sparPositionsXPath) const;
+    TIGL_EXPORT CCPACSWingSparPositions(CCPACSWingSpars* parent);
 
     TIGL_EXPORT const CCPACSWingSparPosition& GetSparPosition(const std::string uid) const;
     TIGL_EXPORT CCPACSWingSparPosition& GetSparPosition(const std::string uid);
-
-private:
-    CCPACSWingSparPositions(const CCPACSWingSparPositions&);
-    void operator=(const CCPACSWingSparPositions&);
-
-private:
-    CCPACSWingSpars& parent;
-    CCPACSWingSparPositionContainer sparPositions;
 };
 
 } // end namespace tigl

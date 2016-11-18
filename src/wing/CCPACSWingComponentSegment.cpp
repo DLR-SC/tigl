@@ -237,9 +237,21 @@ TiglSymmetryAxis CCPACSWingComponentSegment::GetSymmetryAxis() {
 
 void CCPACSWingComponentSegment::SetSymmetryAxis(const TiglSymmetryAxis& axis) {}
 
+// Returns whether a structure is defined or not
+bool CCPACSWingComponentSegment::HasStructure() const {
+    return static_cast<bool>(m_structure);
+}
+
+const CCPACSWingCSStructure& CCPACSWingComponentSegment::GetStructure() const {
+    return *m_structure;
+}
+
+CCPACSWingCSStructure& CCPACSWingComponentSegment::GetStructure() {
+    return *m_structure;
+}
+
 // Returns the wing this segment belongs to
-CCPACSWing& CCPACSWingComponentSegment::GetWing() const
-{
+CCPACSWing& CCPACSWingComponentSegment::GetWing() const {
     return *wing;
 }
 
@@ -1404,7 +1416,7 @@ MaterialList CCPACSWingComponentSegment::GetMaterials(double eta, double xsi, Ti
 {
     MaterialList list;
         
-    if (!m_structure || !m_structure->IsValid()) {
+    if (!m_structure) {
         // return empty list
         return list;
     }
@@ -1466,10 +1478,10 @@ bool CCPACSWingComponentSegment::IsSegmentContained(const CCPACSWingSegment& seg
 
 const CCPACSWingShell& CCPACSWingComponentSegment::GetUpperShell() const
 {
-    if (!structure) {
+    if (!m_structure) {
         throw CTiglError("Error: no structure existing in CCPACSWingComponentSegment::GetUpperShell!");
     }
-    return structure->GetUpperShell();
+    return m_structure->GetUpperShell();
 }
 
 CCPACSWingShell& CCPACSWingComponentSegment::GetUpperShell()
@@ -1480,10 +1492,10 @@ CCPACSWingShell& CCPACSWingComponentSegment::GetUpperShell()
 
 const CCPACSWingShell& CCPACSWingComponentSegment::GetLowerShell() const
 {
-    if (!structure) {
+    if (!m_structure) {
         throw CTiglError("Error: no structure existing in CCPACSWingComponentSegment::GetLowerShell!");
     }
-    return structure->GetLowerShell();
+    return m_structure->GetLowerShell();
 }
 
 CCPACSWingShell& CCPACSWingComponentSegment::GetLowerShell()

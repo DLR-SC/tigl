@@ -100,16 +100,6 @@ private:
 
     void Reset();
 
-    std::string uid;
-    CCPACSMaterial material;
-
-    CCPACSWingCellPositionChordwise positionLeadingEdge;
-    CCPACSWingCellPositionChordwise positionTrailingEdge;
-    CCPACSWingCellPositionSpanwise positionInnerBorder;
-    CCPACSWingCellPositionSpanwise positionOuterBorder;
-
-    CCPACSWingCells* parent;
-    
     struct Cache
     {
         Cache() : valid(false) {};

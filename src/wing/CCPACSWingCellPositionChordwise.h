@@ -21,12 +21,11 @@
 #ifndef CCPACSWINGCELLPOSITIONCHORDWISE_H
 #define CCPACSWINGCELLPOSITIONCHORDWISE_H
 
-#include <string>
 #include <utility>
 
-#include <tixi.h>
 #include <TopoDS_Shape.hxx>
 
+#include "generated/CPACSCellPositioningChordwise.h"
 #include "tigl_internal.h"
 
 
@@ -35,7 +34,7 @@ namespace tigl
 // forware declarations
 class CCPACSWingCell;
 
-class CCPACSWingCellPositionChordwise
+class CCPACSWingCellPositionChordwise : private generated::CPACSCellPositioningChordwise
 {
 public:
     enum /* class */ InputType
@@ -46,12 +45,10 @@ public:
     };
 
     TIGL_EXPORT CCPACSWingCellPositionChordwise(CCPACSWingCell* parent);
-    TIGL_EXPORT virtual ~CCPACSWingCellPositionChordwise() {} // = default;
+    TIGL_EXPORT CCPACSWingCellPositionChordwise(CPACSWingIntermediateStructureCell* parent);
 
-    TIGL_EXPORT void Reset();
-
-    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& xpath);
-    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& xpath) const;
+    using generated::CPACSCellPositioningChordwise::ReadCPACS;
+    using generated::CPACSCellPositioningChordwise::WriteCPACS;
 
     TIGL_EXPORT InputType GetInputType() const;
 
@@ -61,18 +58,6 @@ public:
 
     TIGL_EXPORT const std::string& GetSparUId() const;
     TIGL_EXPORT void SetSparUId(std::string nSparUId);
-
-private:
-    CCPACSWingCellPositionChordwise(const CCPACSWingCellPositionChordwise&); // = delete;
-    void operator=(const CCPACSWingCellPositionChordwise&); // = delete;
-
-private:
-    InputType m_inputType;
-    double m_xsi1;
-    double m_xsi2;
-    std::string m_sparUID;
-
-    CCPACSWingCell* m_parent;
 };
 
 } // end namespace tigl

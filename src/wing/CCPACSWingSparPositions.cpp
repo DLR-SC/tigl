@@ -26,42 +26,14 @@
 namespace tigl
 {
 
-CCPACSWingSparPositions::CCPACSWingSparPositions(CCPACSWingSpars& parent)
-: parent(parent)
+CCPACSWingSparPositions::CCPACSWingSparPositions(CCPACSWingSpars* parent)
+: generated::CPACSSparPositions(parent)
 {
-    Cleanup();
-}
-
-CCPACSWingSparPositions::~CCPACSWingSparPositions(void)
-{
-    Cleanup();
-}
-
-void CCPACSWingSparPositions::Cleanup(void)
-{
-    CCPACSWingSparPositionContainer::iterator it;
-    for (it = sparPositions.begin(); it != sparPositions.end(); ++it) {
-        delete *it;
-    }
-    sparPositions.clear();
-}
-
-void CCPACSWingSparPositions::ReadCPACS(TixiDocumentHandle tixiHandle, const std::string& xpath)
-{
-    Cleanup();
-    ReadContainerElement(tixiHandle, xpath, "sparPosition", 2, sparPositions, &parent);
-}
-
-void CCPACSWingSparPositions::WriteCPACS(TixiDocumentHandle tixiHandle, const std::string& xpath) const
-{
-    WriteContainerElement(tixiHandle, xpath, "sparPosition", sparPositions);
 }
 
 const CCPACSWingSparPosition& CCPACSWingSparPositions::GetSparPosition(const std::string uid) const
 {
-    CCPACSWingSparPositionContainer::const_iterator it;
-
-    for (it = sparPositions.begin(); it != sparPositions.end(); ++it) {
+    for (std::vector<std::unique_ptr<CCPACSWingSparPosition>>::const_iterator it = m_sparPosition.begin(); it != m_sparPosition.end(); ++it) {
         if ((*it)->GetUID() == uid) {
             return *(*it);
         }

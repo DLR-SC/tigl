@@ -16,13 +16,7 @@
 #ifndef CCPACSWINGRIBSDEFINITIONS_H
 #define CCPACSWINGRIBSDEFINITIONS_H
 
-#include <string>
-#include <vector>
-
-#include <tixi.h>
-
-#include "tigl_internal.h"
-
+#include "generated/CPACSWingRibsDefinitions.h"
 
 namespace tigl
 {
@@ -30,19 +24,12 @@ namespace tigl
 class CCPACSWingRibsDefinition;
 class CCPACSWingCSStructure;
 
-class CCPACSWingRibsDefinitions
+class CCPACSWingRibsDefinitions : public generated::CPACSWingRibsDefinitions
 {
-private:
-    typedef std::vector<CCPACSWingRibsDefinition*> CCPACSWingRibsDefinitionContainer;
-
 public:
-    TIGL_EXPORT CCPACSWingRibsDefinitions(CCPACSWingCSStructure& structure);
-    TIGL_EXPORT virtual ~CCPACSWingRibsDefinitions();
+    TIGL_EXPORT CCPACSWingRibsDefinitions(CCPACSWingCSStructure* structure);
 
     TIGL_EXPORT void Invalidate();
-
-    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string & ribsDefinitionsXPath);
-    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string & ribsDefinitionsXPath) const;
 
     TIGL_EXPORT int GetRibsDefinitionCount() const;
 
@@ -51,17 +38,6 @@ public:
 
     TIGL_EXPORT const CCPACSWingRibsDefinition& GetRibsDefinition(const std::string& uid) const;
     TIGL_EXPORT CCPACSWingRibsDefinition& GetRibsDefinition(const std::string& uid);
-
-protected:
-    void Cleanup(void);
-
-private:
-    CCPACSWingRibsDefinitions(const CCPACSWingRibsDefinitions& );
-    void operator=(const CCPACSWingRibsDefinitions& );
-
-private:
-    CCPACSWingCSStructure& structure;
-    CCPACSWingRibsDefinitionContainer ribsDefinitions;
 };
 
 } // end namespace tigl

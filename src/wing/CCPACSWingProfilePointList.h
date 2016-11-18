@@ -65,8 +65,7 @@ public:
     TIGL_EXPORT void Update();
 
     // Returns the profile points as read from TIXI.
-    TIGL_EXPORT virtual std::vector<const CTiglPoint*> GetSamplePoints() const override; // TODO: replace by version which stores points by value, see GetSamplePoints2()
-    TIGL_EXPORT virtual const std::vector<CTiglPoint>& GetSamplePoints2() const override;
+    TIGL_EXPORT virtual const std::vector<CTiglPoint>& GetSamplePoints() const override;
 
     // get profiles CPACS XML path
     DEPRECATED TIGL_EXPORT const std::string& GetProfileDataXPath() const;

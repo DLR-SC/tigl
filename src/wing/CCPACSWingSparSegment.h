@@ -16,13 +16,11 @@
 #ifndef CCPACSWINGSPARSEGMENT_H
 #define CCPACSWINGSPARSEGMENT_H
 
-#include <string>
-
-#include <tixi.h>
 
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Wire.hxx>
 
+#include "generated/CPACSSparSegment.h"
 #include "CCPACSWingSparPositionUIDs.h"
 #include "CCPACSWingSparCrossSection.h"
 #include "tigl.h"
@@ -41,7 +39,7 @@ class CCPACSWingSpars;
 class CCPACSWingSparPosition;
 
 
-class CCPACSWingSparSegment
+class CCPACSWingSparSegment : public generated::CPACSSparSegment
 {
 public:
     enum SparCapSide
@@ -51,24 +49,13 @@ public:
     };
 
 public:
-    TIGL_EXPORT CCPACSWingSparSegment(CCPACSWingSpars* sparsNode);
-    TIGL_EXPORT virtual ~CCPACSWingSparSegment(void);
+    TIGL_EXPORT CCPACSWingSparSegment(CCPACSWingSparSegments* sparSegments);
 
     TIGL_EXPORT void Invalidate(void);
-
-    TIGL_EXPORT void ReadCPACS(TixiDocumentHandle tixiHandle, const std::string & sparSegmentXPath);
-    TIGL_EXPORT void WriteCPACS(TixiDocumentHandle tixiHandle, const std::string & sparSegmentXPath);
-
-    TIGL_EXPORT const std::string & GetUID(void) const;
-    TIGL_EXPORT const std::string& GetName() const;
-    TIGL_EXPORT const std::string& GetDescription() const;
 
     TIGL_EXPORT int GetSparPositionUIDCount() const;
     TIGL_EXPORT const std::string& GetSparPositionUID(int) const;
     TIGL_EXPORT CCPACSWingSparPosition& GetSparPosition(std::string) const;
-
-    TIGL_EXPORT const CCPACSWingSparCrossSection& GetSparCrossSection() const;
-    TIGL_EXPORT CCPACSWingSparCrossSection& GetSparCrossSection();
 
     TIGL_EXPORT gp_Pnt GetPoint(double sparEta) const;
 
@@ -93,8 +80,6 @@ public:
     TIGL_EXPORT TopoDS_Shape GetSparCapsGeometry(SparCapSide side, TiglCoordinateSystem referenceCS = GLOBAL_COORDINATE_SYSTEM) const;
 
 protected:
-    void Cleanup(void);
-
     // Builds the cutting geometry for the spar as well as the midplane line
     void BuildAuxiliaryGeometry() const;
 
@@ -141,11 +126,6 @@ private:
 
 private:
     CCPACSWingSpars& sparsNode;
-    std::string uid;
-    std::string description;
-    std::string name;
-    CCPACSWingSparPositionUIDs sparPositionUIDs;
-    CCPACSWingSparCrossSection sparCrossSection;
 
     mutable AuxiliaryGeomCache auxGeomCache;
     mutable GeometryCache geometryCache;
