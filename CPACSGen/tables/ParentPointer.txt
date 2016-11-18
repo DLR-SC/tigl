@@ -1,5 +1,7 @@
 // specifies classes for which to generate ctors accepting the pointer to their parent class
 
+CPACSCellPositioningChordwise
+CPACSCellPositioningSpanwise
 CPACSWing
 CPACSWings
 CPACSWingCell
