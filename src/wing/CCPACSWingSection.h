@@ -69,6 +69,24 @@ public:
     // Gets the section transformation
     TIGL_EXPORT CTiglTransformation GetSectionTransformation(void) const;
 
+    // Gets the section translation
+    TIGL_EXPORT const CTiglPoint& GetTranslation() const;
+
+    // Gets the section rotation
+    TIGL_EXPORT const CTiglPoint& GetRotation() const;
+
+    // Gets the section scaling
+    TIGL_EXPORT const CTiglPoint& GetScaling() const;
+
+    // Setter for translation
+    TIGL_EXPORT void SetTranslation(const CTiglPoint& trans);
+
+    // Setter for rotation
+    TIGL_EXPORT void SetRotation(const CTiglPoint& rot);
+
+    // Setter for scaling
+    TIGL_EXPORT void SetScaling(const CTiglPoint& scaling);
+
 protected:
     // Cleanup routine
     void Cleanup(void);

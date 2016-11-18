@@ -79,6 +79,12 @@ public:
     // Get type of translation (global or local)
     TIGL_EXPORT virtual ECPACSTranslationType GetTranslationType(void) const;
 
+    // Get component rotation
+    TIGL_EXPORT virtual CTiglPoint GetRotation() const;
+
+    // Get component scaling
+    TIGL_EXPORT virtual CTiglPoint GetScaling() const;
+
     // Set transformation object
     TIGL_EXPORT virtual void Translate(CTiglPoint trans);
     

@@ -76,17 +76,17 @@ void CCPACSTransformation::updateMatrix()
     _transformationMatrix.AddTranslation(_translation.x, _translation.y, _translation.z);
 }
 
-CTiglPoint CCPACSTransformation::getTranslationVector() const
+const CTiglPoint& CCPACSTransformation::getTranslationVector() const
 {
     return _translation;
 }
 
-CTiglPoint CCPACSTransformation::getRotation() const
+const CTiglPoint& CCPACSTransformation::getRotation() const
 {
     return _rotation;
 }
 
-CTiglPoint CCPACSTransformation::getScaling() const
+const CTiglPoint& CCPACSTransformation::getScaling() const
 {
     return _scaling;
 }

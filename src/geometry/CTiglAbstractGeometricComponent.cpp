@@ -115,6 +115,16 @@ ECPACSTranslationType CTiglAbstractGeometricComponent::GetTranslationType(void) 
     return transformation.getTranslationType();
 }
 
+CTiglPoint CTiglAbstractGeometricComponent::GetRotation() const
+{
+    return transformation.getRotation();
+}
+
+CTiglPoint CTiglAbstractGeometricComponent::GetScaling() const
+{
+    return transformation.getScaling();
+}
+
 void CTiglAbstractGeometricComponent::Translate(CTiglPoint trans)
 {
     CTiglPoint newTrans(transformation.getTranslationVector());
