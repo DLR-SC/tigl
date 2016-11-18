@@ -156,7 +156,7 @@ void CCPACSWingShell::Update() const
 
     // TODO: build stringer geometry
 
-     geometryCache.valid = true;
+    geometryCache.valid = true;
 }
 
 TiglLoftSide CCPACSWingShell::GetLoftSide() const

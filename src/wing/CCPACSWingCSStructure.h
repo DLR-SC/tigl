@@ -27,6 +27,10 @@
 namespace tigl
 {
 
+// forward declarations
+class CCPACSWingSpars;
+class CCPACSWingRibsDefinitions;
+
 class CCPACSWingCSStructure // shouldn't his be CCPACSWingComponentSegmentStructure
 {
 public:
@@ -44,6 +48,33 @@ public:
     TIGL_EXPORT CCPACSWingShell& GetLowerShell();
     TIGL_EXPORT CCPACSWingShell& GetUpperShell();
     
+    // Check if subnode spars is present
+    TIGL_EXPORT bool HasSpars() const;
+
+    // Returns a reference to the spars sub-element
+    TIGL_EXPORT CCPACSWingSpars& GetSpars() const;
+
+    // Returns number of spar segments
+    TIGL_EXPORT int GetSparSegmentCount() const;
+
+    // Returns spar segment with passed index
+    TIGL_EXPORT CCPACSWingSparSegment& GetSparSegment(int index) const;
+
+    // Returns spar segment with passed uid
+    TIGL_EXPORT CCPACSWingSparSegment& GetSparSegment(const std::string& uid) const;
+
+    // Check if subnode ribsDefinitions is present
+    TIGL_EXPORT bool HasRibsDefinitions() const;
+
+    // Returns number of ribs definitions
+    TIGL_EXPORT int GetRibsDefinitionCount() const;
+
+    // Returns ribs definition with passed index
+    TIGL_EXPORT CCPACSWingRibsDefinition& GetRibsDefinition(int index) const;
+
+    // Returns ribs definition with passed uid
+    TIGL_EXPORT CCPACSWingRibsDefinition& GetRibsDefinition(const std::string& uid) const;
+
     TIGL_EXPORT void Cleanup();
     TIGL_EXPORT void Invalidate();
     TIGL_EXPORT bool IsValid() const;
@@ -54,6 +85,8 @@ private:
 
 private:
     CCPACSWingShell upperShell, lowerShell;
+    CCPACSWingSpars*            spars;             /**< subnode spars*/
+    CCPACSWingRibsDefinitions*  ribsDefinitions;   /**< subnode ribsDefinitions*/
     CTiglWingStructureReference wingStructureReference;
 
     bool isvalid;
